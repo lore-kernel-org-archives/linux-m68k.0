@@ -1,54 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [patch 17/18] net/rfkill/rfkill-input.c needs <linux/sched.h>
-Date: Mon, 13 Oct 2008 21:59:03 +0200
-Message-ID: <20081013195922.392078574@mail.of.borg>
-References: <20081013195846.674654386@mail.of.borg>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from wilson.telenet-ops.be ([195.130.132.42]:43157 "EHLO
-	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753370AbYJMUFn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 16:05:43 -0400
-Content-Disposition: inline; filename=net-rfkill-rfkill-input-c-needs-linux-sched-h.diff
-Sender: linux-m68k-owner@vger.kernel.org
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [patch 17/18] net/rfkill/rfkill-input.c needs <linux/sched.h>
+Date: Mon, 13 Oct 2008 17:45:59 -0300
+Message-ID: <20081013204559.GC28597@khazad-dum.debian.net>
+References: <20081013195846.674654386@mail.of.borg> <20081013195922.392078574@mail.of.borg>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757514AbYJMUqU@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20081013195922.392078574@mail.of.borg>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+On Mon, 13 Oct 2008, Geert Uytterhoeven wrote:
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> For some m68k configs, I get:
+> 
+> | net/rfkill/rfkill-input.c: In function 'rfkill_start':
+> | net/rfkill/rfkill-input.c:208: error: dereferencing pointer to incomplete type
+> 
+> As the incomplete type is `struct task_struct', including <linux/sched.h> fixes
+> it.
 
-For some m68k configs, I get:
+Line 208 is this (in latest Linus mainline and also v2.6.27):
 
-| net/rfkill/rfkill-input.c: In function 'rfkill_start':
-| net/rfkill/rfkill-input.c:208: error: dereferencing pointer to incomplete type
+spin_unlock_irq(&handle->dev->event_lock);
 
-As the incomplete type is `struct task_struct', including <linux/sched.h> fixes
-it.
+So we need to include sched.h to everything that uses spin_unlock_irq?  If
+only some variants of m68k need that, shouldn't it have been added on the
+header that defines spin_unlock_irq() on those arches, instead?
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- net/rfkill/rfkill-input.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/net/rfkill/rfkill-input.c
-+++ b/net/rfkill/rfkill-input.c
-@@ -16,6 +16,7 @@
- #include <linux/workqueue.h>
- #include <linux/init.h>
- #include <linux/rfkill.h>
-+#include <linux/sched.h>
- 
- #include "rfkill-input.h"
- 
+Or am I looking at a different version of rfkill-input.c than what you based
+that error message on?
 
 -- 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
-
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
