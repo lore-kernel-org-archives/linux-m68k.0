@@ -1,51 +1,55 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: Linux and amiga floppy images
-Date: Mon, 13 Oct 2008 12:05:58 +0200
-Message-ID: <jeskr0zu61.fsf@sykes.suse.de>
-References: <alpine.LNX.2.00.0810130345170.4882@firda.kolla.no>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] reinstate mac rtc
+Date: Mon, 13 Oct 2008 21:21:21 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810132114590.6220@anakin>
+References: <Pine.LNX.4.64.0810061855300.28882@loopy.telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ns1.suse.de ([195.135.220.2]:38635 "EHLO mx1.suse.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1765981AbYJMKGM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 13 Oct 2008 06:06:12 -0400
-In-Reply-To: <alpine.LNX.2.00.0810130345170.4882@firda.kolla.no>
- (=?iso-8859-1?Q?=22Kolbj=F8rn?=
-	Barmen"'s message of "Mon, 13 Oct 2008 04:20:29 +0200 (CEST)")
+Received: from yergi.telenet-ops.be ([195.130.132.36]:59173 "EHLO
+	yergi.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756696AbYJMTW6 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 15:22:58 -0400
+Received: from harold.telenet-ops.be (unknown [195.130.133.65])
+	by yergi.telenet-ops.be (Postfix) with ESMTP id B0C96711776
+	for <linux-m68k@vger.kernel.org>; Mon, 13 Oct 2008 21:21:47 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.64.0810061855300.28882@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?iso-8859-1?Q?Kolbj=F8rn?= Barmen <linux-m68k@kolla.no>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org
 
-Kolbj=F8rn Barmen <linux-m68k@kolla.no> writes:
+	Hi Finn,
 
-> But I didnt give up there, I tried on different systems... much to my
-> amusement it worked fine on my linux/m68k systems - amigas, macs and
-> aranym alike!  OK, I thought, maybe endianness, so I tried on my ppc =
-ibook
-> running linux - same failures as on the PCs. So - something is done v=
-ery
-> correct on m68k in regard to affs, that isnt done correct on other ar=
-chs.
-> Anyone know what that might be?
+Thanks, I've added:
+    [PATCH] reinstate mac rtc
+    [PATCH] mac via cleanup and commentry
+    [PATCH] machw.h cleanup
+    [PATCH] mac baboon interrupt enable/disable
+    [PATCH] mac_esp asm fix
+    [PATCH] macfb annotations and compiler warning fix
+    [PATCH] fix trigraph ignored warning in setox.S
+    [PATCH] fbcon: remove broken mac vbl handler
+    [PATCH] mac_esp: fix for quadras with two esp chips
+    [PATCH] m68k: Do not overflow fb_fix_screeninfo.id in macfb
 
-If it's not the endianess then the other possible failure mode is
-alignment: on m68k all types are at most aligned at a 2 byte boundary.
-The structures in <linux/amigaffs.h> don't have any obvious alignment
-problems, though.
+Any of these I should still try to get into 2.6.28? Or is queueing for 2.6.29
+OK?
 
-Andreas.
+Not that there's any risk in breaking non-m68k stuff, but I'm just feeling a
+bit like the bastard-maintainer-from-hell who's pointing out people about
+merge windows and such ;-)
 
---=20
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
-ED5
-"And now for something completely different."
+I hope to find some time soon to push the stuff queued for 2.6.28 to
+Linus...
+
+Gr{oetje,eeting}s,
+
+						Geert
+
 --
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
