@@ -1,55 +1,48 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [patch 06/18] m68k: Disable Amiga serial console support if
-	modular
-Date: Mon, 13 Oct 2008 23:08:17 +0200
-Message-ID: <1223932097.3619.51.camel@x41.thuisdomein>
-References: <20081013195846.674654386@mail.of.borg>
-	 <20081013195915.659336491@mail.of.borg>
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [patch 17/18] net/rfkill/rfkill-input.c needs <linux/sched.h>
+Date: Mon, 13 Oct 2008 20:09:36 -0300
+Message-ID: <20081013230936.GA3927@khazad-dum.debian.net>
+References: <20081013195846.674654386@mail.of.borg> <20081013195922.392078574@mail.of.borg> <20081013204559.GC28597@khazad-dum.debian.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1759290AbYJMVI5@vger.kernel.org>
-In-Reply-To: <20081013195915.659336491@mail.of.borg>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from out4.smtp.messagingengine.com ([66.111.4.28]:43912 "EHLO
+	out4.smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757132AbYJMXJo (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 13 Oct 2008 19:09:44 -0400
+Content-Disposition: inline
+In-Reply-To: <20081013204559.GC28597@khazad-dum.debian.net>
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 2008-10-13 at 21:58 +0200, Geert Uytterhoeven wrote:
-> Apparently console_initcall() is not defined in the modular case.
+On Mon, 13 Oct 2008, Henrique de Moraes Holschuh wrote:
+> On Mon, 13 Oct 2008, Geert Uytterhoeven wrote:
+> > | net/rfkill/rfkill-input.c: In function 'rfkill_start':
+> > | net/rfkill/rfkill-input.c:208: error: dereferencing pointer to incomplete type
+> > 
+> > As the incomplete type is `struct task_struct', including <linux/sched.h> fixes
+> > it.
+> 
+> Line 208 is this (in latest Linus mainline and also v2.6.27):
+> 
+> spin_unlock_irq(&handle->dev->event_lock);
+> 
+> So we need to include sched.h to everything that uses spin_unlock_irq?  If
 
-Yes, see include/linux/init.h:
-#ifndef MODULE
-[...]
-#define console_initcall(fn) \
-        static initcall_t __initcall_##fn \
-        __used __section(.con_initcall.init) = fn
-[...]
+Never mind, I didn't check if the problem is with the argument to
+spin_unlock_irq(), but the question remains...
 
-> Any better alternative fix?
+> only some variants of m68k need that, shouldn't it have been added on the
+> header that defines spin_unlock_irq() on those arches, instead?
+> 
+> Or am I looking at a different version of rfkill-input.c than what you based
+> that error message on?
 
-Well, (a number of) other serial consoles cannot be selected if the
-corresponding serial driver is modular. Try:
-grep -B 2 -E "depends on .*=y" drivers/serial/Kconfig | \
-    grep -A 2 -E "^config .*CONSOLE"
-
-For instance:
-config SERIAL_8250_CONSOLE
-	bool "Console on 8250/16550 and compatible serial port"
-	depends on SERIAL_8250=y
-
-Maybe this config entry (in arch/m68k/Kconfig) could be cleaned up (or
-split into multiple entries):
-config SERIAL_CONSOLE
-        bool "Support for serial port console"
-        depends on (AMIGA || ATARI || MAC || SUN3 || SUN3X || VME ||
-APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || MAC_SCC=y ||
-AMIGA_BUILTIN_SERIAL=y || GVPIOEXT=y || MULTIFACE_III_TTY=y || SERIAL=y
-|| MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
-[...]
-
-That "depends on" line seems likely to lead to problems like the one you
-ran into. But your patch (which I didn't test) is probably simpler.
-
-
-Paul Bolle
+-- 
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
