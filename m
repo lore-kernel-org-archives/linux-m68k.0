@@ -1,48 +1,56 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] reinstate mac rtc
-Date: Mon, 13 Oct 2008 21:21:21 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810132114590.6220@anakin>
-References: <Pine.LNX.4.64.0810061855300.28882@loopy.telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [patch 02/18] m68k: Use new printk() extension %pS to print symbols
+Date: Mon, 13 Oct 2008 21:58:48 +0200
+Message-ID: <20081013195912.989368287@mail.of.borg>
+References: <20081013195846.674654386@mail.of.borg>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from yergi.telenet-ops.be ([195.130.132.36]:59173 "EHLO
-	yergi.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756696AbYJMTW6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 15:22:58 -0400
-Received: from harold.telenet-ops.be (unknown [195.130.133.65])
-	by yergi.telenet-ops.be (Postfix) with ESMTP id B0C96711776
-	for <linux-m68k@vger.kernel.org>; Mon, 13 Oct 2008 21:21:47 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.64.0810061855300.28882@loopy.telegraphics.com.au>
+Received: from harold.telenet-ops.be ([195.130.133.65]:44958 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752310AbYJMUFi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 16:05:38 -0400
+Content-Disposition: inline; filename=m68k-use-percent-pS-infrastructure.diff
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-	Hi Finn,
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks, I've added:
-    [PATCH] reinstate mac rtc
-    [PATCH] mac via cleanup and commentry
-    [PATCH] machw.h cleanup
-    [PATCH] mac baboon interrupt enable/disable
-    [PATCH] mac_esp asm fix
-    [PATCH] macfb annotations and compiler warning fix
-    [PATCH] fix trigraph ignored warning in setox.S
-    [PATCH] fbcon: remove broken mac vbl handler
-    [PATCH] mac_esp: fix for quadras with two esp chips
-    [PATCH] m68k: Do not overflow fb_fix_screeninfo.id in macfb
+This changes the oops and backtrace code to use the new `%pS' printk()
+extension to print out symbols rather than manually calling print_symbol.
 
-Any of these I should still try to get into 2.6.28? Or is queueing for 2.6.29
-OK?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/kernel/traps.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-Not that there's any risk in breaking non-m68k stuff, but I'm just feeling a
-bit like the bastard-maintainer-from-hell who's pointing out people about
-merge windows and such ;-)
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -883,8 +883,7 @@ void show_trace(unsigned long *stack)
+ 			if (i % 5 == 0)
+ 				printk("\n       ");
+ #endif
+-			printk(" [<%08lx>]", addr);
+-			print_symbol(" %s\n", addr);
++			printk(" [<%08lx>] %pS\n", addr, (void *)addr);
+ 			i++;
+ 		}
+ 	}
+@@ -900,10 +899,8 @@ void show_registers(struct pt_regs *regs
+ 	int i;
+ 
+ 	print_modules();
+-	printk("PC: [<%08lx>]",regs->pc);
+-	print_symbol(" %s", regs->pc);
+-	printk("\nSR: %04x  SP: %p  a2: %08lx\n",
+-	       regs->sr, regs, regs->a2);
++	printk("PC: [<%08lx>] %pS\n", regs->pc, (void *)regs->pc);
++	printk("SR: %04x  SP: %p  a2: %08lx\n", regs->sr, regs, regs->a2);
+ 	printk("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
+ 	       regs->d0, regs->d1, regs->d2, regs->d3);
+ 	printk("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
 
-I hope to find some time soon to push the stuff queued for 2.6.28 to
-Linus...
-
+-- 
 Gr{oetje,eeting}s,
 
 						Geert
@@ -53,3 +61,4 @@ Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
 							    -- Linus Torvalds
+
