@@ -1,42 +1,55 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [patch 17/18] net/rfkill/rfkill-input.c needs <linux/sched.h>
-Date: Mon, 13 Oct 2008 17:45:59 -0300
-Message-ID: <20081013204559.GC28597@khazad-dum.debian.net>
-References: <20081013195846.674654386@mail.of.borg> <20081013195922.392078574@mail.of.borg>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [patch 06/18] m68k: Disable Amiga serial console support if
+	modular
+Date: Mon, 13 Oct 2008 23:08:17 +0200
+Message-ID: <1223932097.3619.51.camel@x41.thuisdomein>
+References: <20081013195846.674654386@mail.of.borg>
+	 <20081013195915.659336491@mail.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757514AbYJMUqU@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20081013195922.392078574@mail.of.borg>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1759290AbYJMVI5@vger.kernel.org>
+In-Reply-To: <20081013195915.659336491@mail.of.borg>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 13 Oct 2008, Geert Uytterhoeven wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> For some m68k configs, I get:
-> 
-> | net/rfkill/rfkill-input.c: In function 'rfkill_start':
-> | net/rfkill/rfkill-input.c:208: error: dereferencing pointer to incomplete type
-> 
-> As the incomplete type is `struct task_struct', including <linux/sched.h> fixes
-> it.
+On Mon, 2008-10-13 at 21:58 +0200, Geert Uytterhoeven wrote:
+> Apparently console_initcall() is not defined in the modular case.
 
-Line 208 is this (in latest Linus mainline and also v2.6.27):
+Yes, see include/linux/init.h:
+#ifndef MODULE
+[...]
+#define console_initcall(fn) \
+        static initcall_t __initcall_##fn \
+        __used __section(.con_initcall.init) = fn
+[...]
 
-spin_unlock_irq(&handle->dev->event_lock);
+> Any better alternative fix?
 
-So we need to include sched.h to everything that uses spin_unlock_irq?  If
-only some variants of m68k need that, shouldn't it have been added on the
-header that defines spin_unlock_irq() on those arches, instead?
+Well, (a number of) other serial consoles cannot be selected if the
+corresponding serial driver is modular. Try:
+grep -B 2 -E "depends on .*=y" drivers/serial/Kconfig | \
+    grep -A 2 -E "^config .*CONSOLE"
 
-Or am I looking at a different version of rfkill-input.c than what you based
-that error message on?
+For instance:
+config SERIAL_8250_CONSOLE
+	bool "Console on 8250/16550 and compatible serial port"
+	depends on SERIAL_8250=y
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+Maybe this config entry (in arch/m68k/Kconfig) could be cleaned up (or
+split into multiple entries):
+config SERIAL_CONSOLE
+        bool "Support for serial port console"
+        depends on (AMIGA || ATARI || MAC || SUN3 || SUN3X || VME ||
+APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || MAC_SCC=y ||
+AMIGA_BUILTIN_SERIAL=y || GVPIOEXT=y || MULTIFACE_III_TTY=y || SERIAL=y
+|| MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
+[...]
+
+That "depends on" line seems likely to lead to problems like the one you
+ran into. But your patch (which I didn't test) is probably simpler.
+
+
+Paul Bolle
