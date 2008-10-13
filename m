@@ -1,304 +1,86 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [patch 01/18] m68k: use bcd2bin/bin2bcd
-Date: Mon, 13 Oct 2008 21:58:47 +0200
-Message-ID: <20081013195912.449178926@mail.of.borg>
+Subject: [patch 12/18] HP input: kill warnings due to suseconds_t differences
+Date: Mon, 13 Oct 2008 21:58:58 +0200
+Message-ID: <20081013195919.407702332@mail.of.borg>
 References: <20081013195846.674654386@mail.of.borg>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:56667 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752495AbYJMUFj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 16:05:39 -0400
-Content-Disposition: inline; filename=m68k-use-bcd2bin-bin2bcd.diff
+Received: from monty.telenet-ops.be ([195.130.132.56]:53368 "EHLO
+	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752310AbYJMUFl (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Oct 2008 16:05:41 -0400
+Content-Disposition: inline; filename=m68k+parisc-hp_sdc_rtc-printf-format-warnings.diff
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@kernel.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>
 
-From: Adrian Bunk <bunk@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-This patch changes m68k to use the new bcd2bin/bin2bcd functions instead 
-of the obsolete BCD_TO_BIN/BIN_TO_BCD/BCD2BIN/BIN2BCD macros.
+Kill compiler warnings related to printf() formats in the input drivers for
+various HP9000 machines, which are shared between PA-RISC (suseconds_t is int)
+and m68k (suseconds_t is long). As both are 32-bit, it's safe to cast to int.
 
-It also remove local bcd2bin/bin2bcd implementations
-in favor of the global ones.
-
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Helge Deller <deller@gmx.de>
 ---
+ drivers/input/misc/hp_sdc_rtc.c |   10 +++++-----
+ drivers/input/serio/hp_sdc.c    |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
- arch/m68k/atari/time.c      |   35 ++++++++++++++++++-----------------
- arch/m68k/bvme6000/config.c |   15 +--------------
- arch/m68k/bvme6000/rtc.c    |   30 +++++++++++++++---------------
- arch/m68k/mvme16x/rtc.c     |   26 +++++++++++++-------------
- arch/m68k/q40/config.c      |   12 +-----------
- arch/m68k/sun3x/time.c      |   28 ++++++++++++++--------------
- 6 files changed, 62 insertions(+), 84 deletions(-)
-
-7967e50519a24d3c87e55e7a5af8b71dd2dd618d 
---- a/arch/m68k/atari/time.c
-+++ b/arch/m68k/atari/time.c
-@@ -191,13 +191,14 @@ int atari_tt_hwclk( int op, struct rtc_t
-         }
- 
-         if (!(ctrl & RTC_DM_BINARY)) {
--            BIN_TO_BCD(sec);
--            BIN_TO_BCD(min);
--            BIN_TO_BCD(hour);
--            BIN_TO_BCD(day);
--            BIN_TO_BCD(mon);
--            BIN_TO_BCD(year);
--            if (wday >= 0) BIN_TO_BCD(wday);
-+	    sec = bin2bcd(sec);
-+	    min = bin2bcd(min);
-+	    hour = bin2bcd(hour);
-+	    day = bin2bcd(day);
-+	    mon = bin2bcd(mon);
-+	    year = bin2bcd(year);
-+	    if (wday >= 0)
-+		wday = bin2bcd(wday);
-         }
-     }
- 
-@@ -252,13 +253,13 @@ int atari_tt_hwclk( int op, struct rtc_t
- 	}
- 
- 	if (!(ctrl & RTC_DM_BINARY)) {
--            BCD_TO_BIN(sec);
--            BCD_TO_BIN(min);
--            BCD_TO_BIN(hour);
--            BCD_TO_BIN(day);
--            BCD_TO_BIN(mon);
--            BCD_TO_BIN(year);
--            BCD_TO_BIN(wday);
-+	    sec = bcd2bin(sec);
-+	    min = bcd2bin(min);
-+	    hour = bcd2bin(hour);
-+	    day = bcd2bin(day);
-+	    mon = bcd2bin(mon);
-+	    year = bcd2bin(year);
-+	    wday = bcd2bin(wday);
-         }
- 
-         if (!(ctrl & RTC_24H)) {
-@@ -318,7 +319,7 @@ int atari_tt_set_clock_mmss (unsigned lo
- 
-     rtc_minutes = RTC_READ (RTC_MINUTES);
-     if (!(save_control & RTC_DM_BINARY))
--        BCD_TO_BIN (rtc_minutes);
-+	rtc_minutes = bcd2bin(rtc_minutes);
- 
-     /* Since we're only adjusting minutes and seconds, don't interfere
-        with hour overflow.  This avoids messing with unknown time zones
-@@ -329,8 +330,8 @@ int atari_tt_set_clock_mmss (unsigned lo
-         {
-             if (!(save_control & RTC_DM_BINARY))
-                 {
--                    BIN_TO_BCD (real_seconds);
--                    BIN_TO_BCD (real_minutes);
-+		    real_seconds = bin2bcd(real_seconds);
-+		    real_minutes = bin2bcd(real_minutes);
-                 }
-             RTC_WRITE (RTC_SECONDS, real_seconds);
-             RTC_WRITE (RTC_MINUTES, real_minutes);
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -25,6 +25,7 @@
- #include <linux/genhd.h>
- #include <linux/rtc.h>
- #include <linux/interrupt.h>
-+#include <linux/bcd.h>
- 
- #include <asm/bootinfo.h>
- #include <asm/system.h>
-@@ -46,9 +47,6 @@ extern void bvme6000_reset (void);
- extern void bvme6000_waitbut(void);
- void bvme6000_set_vectors (void);
- 
--static unsigned char bcd2bin (unsigned char b);
--static unsigned char bin2bcd (unsigned char b);
--
- /* Save tick handler routine pointer, will point to do_timer() in
-  * kernel/sched.c, called via bvme6000_process_int() */
- 
-@@ -264,17 +262,6 @@ unsigned long bvme6000_gettimeoffset (vo
-     return v;
- }
- 
--static unsigned char bcd2bin (unsigned char b)
--{
--	return ((b>>4)*10 + (b&15));
--}
--
--static unsigned char bin2bcd (unsigned char b)
--{
--	return (((b/10)*16) + (b%10));
--}
--
--
- /*
-  * Looks like op is non-zero for setting the clock, and zero for
-  * reading the clock.
---- a/arch/m68k/bvme6000/rtc.c
-+++ b/arch/m68k/bvme6000/rtc.c
-@@ -57,16 +57,16 @@ static int rtc_ioctl(struct inode *inode
- 		rtc->msr = 0x40;
- 		memset(&wtime, 0, sizeof(struct rtc_time));
- 		do {
--			wtime.tm_sec =  BCD2BIN(rtc->bcd_sec);
--			wtime.tm_min =  BCD2BIN(rtc->bcd_min);
--			wtime.tm_hour = BCD2BIN(rtc->bcd_hr);
--			wtime.tm_mday =  BCD2BIN(rtc->bcd_dom);
--			wtime.tm_mon =  BCD2BIN(rtc->bcd_mth)-1;
--			wtime.tm_year = BCD2BIN(rtc->bcd_year);
-+			wtime.tm_sec =  bcd2bin(rtc->bcd_sec);
-+			wtime.tm_min =  bcd2bin(rtc->bcd_min);
-+			wtime.tm_hour = bcd2bin(rtc->bcd_hr);
-+			wtime.tm_mday =  bcd2bin(rtc->bcd_dom);
-+			wtime.tm_mon =  bcd2bin(rtc->bcd_mth)-1;
-+			wtime.tm_year = bcd2bin(rtc->bcd_year);
- 			if (wtime.tm_year < 70)
- 				wtime.tm_year += 100;
--			wtime.tm_wday = BCD2BIN(rtc->bcd_dow)-1;
--		} while (wtime.tm_sec != BCD2BIN(rtc->bcd_sec));
-+			wtime.tm_wday = bcd2bin(rtc->bcd_dow)-1;
-+		} while (wtime.tm_sec != bcd2bin(rtc->bcd_sec));
- 		rtc->msr = msr;
- 		local_irq_restore(flags);
- 		return copy_to_user(argp, &wtime, sizeof wtime) ?
-@@ -114,14 +114,14 @@ static int rtc_ioctl(struct inode *inode
- 
- 		rtc->t0cr_rtmr = yrs%4;
- 		rtc->bcd_tenms = 0;
--		rtc->bcd_sec   = BIN2BCD(sec);
--		rtc->bcd_min   = BIN2BCD(min);
--		rtc->bcd_hr    = BIN2BCD(hrs);
--		rtc->bcd_dom   = BIN2BCD(day);
--		rtc->bcd_mth   = BIN2BCD(mon);
--		rtc->bcd_year  = BIN2BCD(yrs%100);
-+		rtc->bcd_sec   = bin2bcd(sec);
-+		rtc->bcd_min   = bin2bcd(min);
-+		rtc->bcd_hr    = bin2bcd(hrs);
-+		rtc->bcd_dom   = bin2bcd(day);
-+		rtc->bcd_mth   = bin2bcd(mon);
-+		rtc->bcd_year  = bin2bcd(yrs%100);
- 		if (rtc_tm.tm_wday >= 0)
--			rtc->bcd_dow = BIN2BCD(rtc_tm.tm_wday+1);
-+			rtc->bcd_dow = bin2bcd(rtc_tm.tm_wday+1);
- 		rtc->t0cr_rtmr = yrs%4 | 0x08;
- 
- 		rtc->msr = msr;
---- a/arch/m68k/mvme16x/rtc.c
-+++ b/arch/m68k/mvme16x/rtc.c
-@@ -52,15 +52,15 @@ static int rtc_ioctl(struct inode *inode
- 		/* Ensure clock and real-time-mode-register are accessible */
- 		rtc->ctrl = RTC_READ;
- 		memset(&wtime, 0, sizeof(struct rtc_time));
--		wtime.tm_sec =  BCD2BIN(rtc->bcd_sec);
--		wtime.tm_min =  BCD2BIN(rtc->bcd_min);
--		wtime.tm_hour = BCD2BIN(rtc->bcd_hr);
--		wtime.tm_mday =  BCD2BIN(rtc->bcd_dom);
--		wtime.tm_mon =  BCD2BIN(rtc->bcd_mth)-1;
--		wtime.tm_year = BCD2BIN(rtc->bcd_year);
-+		wtime.tm_sec =  bcd2bin(rtc->bcd_sec);
-+		wtime.tm_min =  bcd2bin(rtc->bcd_min);
-+		wtime.tm_hour = bcd2bin(rtc->bcd_hr);
-+		wtime.tm_mday =  bcd2bin(rtc->bcd_dom);
-+		wtime.tm_mon =  bcd2bin(rtc->bcd_mth)-1;
-+		wtime.tm_year = bcd2bin(rtc->bcd_year);
- 		if (wtime.tm_year < 70)
- 			wtime.tm_year += 100;
--		wtime.tm_wday = BCD2BIN(rtc->bcd_dow)-1;
-+		wtime.tm_wday = bcd2bin(rtc->bcd_dow)-1;
- 		rtc->ctrl = 0;
- 		local_irq_restore(flags);
- 		return copy_to_user(argp, &wtime, sizeof wtime) ?
-@@ -104,12 +104,12 @@ static int rtc_ioctl(struct inode *inode
- 		local_irq_save(flags);
- 		rtc->ctrl     = RTC_WRITE;
- 
--		rtc->bcd_sec  = BIN2BCD(sec);
--		rtc->bcd_min  = BIN2BCD(min);
--		rtc->bcd_hr   = BIN2BCD(hrs);
--		rtc->bcd_dom  = BIN2BCD(day);
--		rtc->bcd_mth  = BIN2BCD(mon);
--		rtc->bcd_year = BIN2BCD(yrs%100);
-+		rtc->bcd_sec  = bin2bcd(sec);
-+		rtc->bcd_min  = bin2bcd(min);
-+		rtc->bcd_hr   = bin2bcd(hrs);
-+		rtc->bcd_dom  = bin2bcd(day);
-+		rtc->bcd_mth  = bin2bcd(mon);
-+		rtc->bcd_year = bin2bcd(yrs%100);
- 
- 		rtc->ctrl     = 0;
- 		local_irq_restore(flags);
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -23,6 +23,7 @@
- #include <linux/serial_reg.h>
- #include <linux/rtc.h>
- #include <linux/vt_kern.h>
-+#include <linux/bcd.h>
- 
- #include <asm/io.h>
- #include <asm/rtc.h>
-@@ -216,17 +217,6 @@ int q40_parse_bootinfo(const struct bi_r
- }
- 
- 
--static inline unsigned char bcd2bin(unsigned char b)
--{
--	return (b >> 4) * 10 + (b & 15);
--}
--
--static inline unsigned char bin2bcd(unsigned char b)
--{
--	return (b / 10) * 16 + (b % 10);
--}
--
--
- static unsigned long q40_gettimeoffset(void)
- {
- 	return 5000 * (ql_ticks != 0);
---- a/arch/m68k/sun3x/time.c
-+++ b/arch/m68k/sun3x/time.c
-@@ -47,23 +47,23 @@ int sun3x_hwclk(int set, struct rtc_time
- 
- 	if(set) {
- 		h->csr |= C_WRITE;
--		h->sec = BIN2BCD(t->tm_sec);
--		h->min = BIN2BCD(t->tm_min);
--		h->hour = BIN2BCD(t->tm_hour);
--		h->wday = BIN2BCD(t->tm_wday);
--		h->mday = BIN2BCD(t->tm_mday);
--		h->month = BIN2BCD(t->tm_mon);
--		h->year = BIN2BCD(t->tm_year);
-+		h->sec = bin2bcd(t->tm_sec);
-+		h->min = bin2bcd(t->tm_min);
-+		h->hour = bin2bcd(t->tm_hour);
-+		h->wday = bin2bcd(t->tm_wday);
-+		h->mday = bin2bcd(t->tm_mday);
-+		h->month = bin2bcd(t->tm_mon);
-+		h->year = bin2bcd(t->tm_year);
- 		h->csr &= ~C_WRITE;
+--- a/drivers/input/misc/hp_sdc_rtc.c
++++ b/drivers/input/misc/hp_sdc_rtc.c
+@@ -458,35 +458,35 @@ static int hp_sdc_rtc_proc_output (char 
+ 		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
  	} else {
- 		h->csr |= C_READ;
--		t->tm_sec = BCD2BIN(h->sec);
--		t->tm_min = BCD2BIN(h->min);
--		t->tm_hour = BCD2BIN(h->hour);
--		t->tm_wday = BCD2BIN(h->wday);
--		t->tm_mday = BCD2BIN(h->mday);
--		t->tm_mon = BCD2BIN(h->month);
--		t->tm_year = BCD2BIN(h->year);
-+		t->tm_sec = bcd2bin(h->sec);
-+		t->tm_min = bcd2bin(h->min);
-+		t->tm_hour = bcd2bin(h->hour);
-+		t->tm_wday = bcd2bin(h->wday);
-+		t->tm_mday = bcd2bin(h->mday);
-+		t->tm_mon = bcd2bin(h->month);
-+		t->tm_year = bcd2bin(h->year);
- 		h->csr &= ~C_READ;
+ 		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
  	}
  
+ 	if (hp_sdc_rtc_read_fhs(&tv)) {
+ 		p += sprintf(p, "handshake\t: READ FAILED!\n");
+ 	} else {
+         	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_mt(&tv)) {
+ 		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_dt(&tv)) {
+ 		p += sprintf(p, "delay\t\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+ 	if (hp_sdc_rtc_read_ct(&tv)) {
+ 		p += sprintf(p, "periodic\t: READ FAILED!\n");
+ 	} else {
+ 		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
+-			     tv.tv_sec, tv.tv_usec/1000);
++			     tv.tv_sec, (int)tv.tv_usec/1000);
+ 	}
+ 
+         p += sprintf(p,
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -323,7 +323,7 @@ static void hp_sdc_tasklet(unsigned long
+ 			 * it back to the application. and be less verbose.
+ 			 */
+ 			printk(KERN_WARNING PREFIX "read timeout (%ius)!\n",
+-			       tv.tv_usec - hp_sdc.rtv.tv_usec);
++			       (int)(tv.tv_usec - hp_sdc.rtv.tv_usec));
+ 			curr->idx += hp_sdc.rqty;
+ 			hp_sdc.rqty = 0;
+ 			tmp = curr->seq[curr->actidx];
 
 -- 
 Gr{oetje,eeting}s,
