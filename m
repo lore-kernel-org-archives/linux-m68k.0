@@ -1,57 +1,61 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch 3/2] m68k: Atari EtherNAT - add writew_be for data push
-Date: Tue, 14 Oct 2008 21:47:31 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810142146480.25759@anakin>
-References: <20080903071542.615137611@mail.of.borg> <20080903071741.424551678@mail.of.borg>
- <20080903073629.GD4104@cs181140183.pp.htv.fi> <Pine.LNX.4.64.0809032114590.23421@anakin>
- <alpine.DEB.1.00.0809042347400.3429@zirkon.biophys.uni-duesseldorf.de>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: write ordering and macfb nop() usage
+Date: Tue, 14 Oct 2008 15:04:55 -0700
+Message-ID: <20081014220454.GA6601@cynthia.pants.nu>
+References: <Pine.LNX.4.64.0810150251270.14578@loopy.telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from wilson.telenet-ops.be ([195.130.132.42]:43665 "EHLO
-	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750812AbYJNTre (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Oct 2008 15:47:34 -0400
-In-Reply-To: <alpine.DEB.1.00.0809042347400.3429@zirkon.biophys.uni-duesseldorf.de>
+Received: from [76.245.85.235] ([76.245.85.235]:36882 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1751056AbYJNWFO (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 14 Oct 2008 18:05:14 -0400
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0810150251270.14578@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org
 
-	Hi Michael,
-
-On Thu, 4 Sep 2008, Michael Schmitz wrote:
-> as you've probably noticed, my previous EtherNAT patch does not compile
-> without this one being applied as well.
+On Wed, Oct 15, 2008 at 03:56:35AM +1100, Finn Thain wrote:
+> I've been working on macfb.c, and I notice that it is full of stuff like 
+> this:
 > 
-> Comments welcome (is there anyone on this list with access to an EtherNAT
-> card,
-> besides cts and myself?).
+>         /* the nop's are there to order writes. */
+>         nubus_writeb(_regno, &cmap_regs->addr); nop();
+>         nubus_writeb(_red, &cmap_regs->lut);    nop();
+>         nubus_writeb(_green, &cmap_regs->lut);  nop();
+>         nubus_writeb(_blue, &cmap_regs->lut);
 > 
-> Regarding performance afforded by having a 100 Mbit PHY instead of a 10 Mbit
-> one:
-> 
-> EtherNAT: 210 KB/s out, 140 KB/s in (scp of a 35 MB vmlinux file)
-> EtherNEC: 175 KB/s out, 128 KB/s in (same file)
-> 
-> Hardly worth it, eh?
+> Timing aside, I don't see what are the nop's are for. I thought accessors 
+> like nubus_write/raw_out/out are intended to issue these writes in order 
+> anyway?
 
-That's slower than my Ariadne?
+I would expect the accessor functions to do the right thing, but I would
+not be surprised if they don't. The NuBus code is pretty hackish in general
+due to lack of documentation of all the implementations. This reminds me
+of the via memory bogon stuff that used to be in via.c. Some of the early
+mac code is very sloppy. The basic nubus.c code could use some attention.
+It's on my list, but that list keeps getting longer and this one isn't
+that close to the top of my list.
 
-BTW, do you have a patch for this?
+> And why were nop's were used instead of an empty asm() or just a volatile 
+> qualifier anyway? Some accident of history like a compiler bug?
 
-| drivers/net/atari_91C111.c:2317: error: 'struct smc91x_platdata' has no member named 'irq_flags'
-| drivers/net/atari_91C111.c:2361: error: 'struct smc91x_platdata' has no member named 'irq_flags'
-| drivers/net/atari_91C111.c:2371: error: 'struct smc91x_platdata' has no member named 'irq_flags'
-| drivers/net/atari_91C111.c:2411: error: 'struct smc91x_platdata' has no member named 'irq_flags'
+My guess is that this was easier in some way.
 
-Gr{oetje,eeting}s,
+> Also, can a nop provide a useful timing constraint when bus speed can vary 
+> so much from one machine to another?
 
-						Geert
+No, it can't. The bus interface circuits are supposed to do the clock sync
+for us in any case. It's possible that we really should be reading some
+kind of status from the card and this delay just happens to make it work
+most of the time.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> I'm baffled.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+I'd think you'd be used to that by now.  :)
+
+	Brad Boyer
+	flar@allandria.com
+
