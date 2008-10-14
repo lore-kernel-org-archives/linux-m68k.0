@@ -1,63 +1,49 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch 06/18] m68k: Disable Amiga serial console support if
- modular
-Date: Tue, 14 Oct 2008 21:22:18 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810142118440.25759@anakin>
-References: <20081013195846.674654386@mail.of.borg> <20081013195915.659336491@mail.of.borg>
- <alpine.LFD.2.00.0810141018590.3288@nehalem.linux-foundation.org>
+Subject: Re: [patch 3/2] m68k: Atari EtherNAT - add writew_be for data push
+Date: Tue, 14 Oct 2008 21:47:31 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810142146480.25759@anakin>
+References: <20080903071542.615137611@mail.of.borg> <20080903071741.424551678@mail.of.borg>
+ <20080903073629.GD4104@cs181140183.pp.htv.fi> <Pine.LNX.4.64.0809032114590.23421@anakin>
+ <alpine.DEB.1.00.0809042347400.3429@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from monty.telenet-ops.be ([195.130.132.56]:39392 "EHLO
-	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750970AbYJNTW2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Oct 2008 15:22:28 -0400
-In-Reply-To: <alpine.LFD.2.00.0810141018590.3288@nehalem.linux-foundation.org>
+Received: from wilson.telenet-ops.be ([195.130.132.42]:43665 "EHLO
+	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750812AbYJNTre (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Oct 2008 15:47:34 -0400
+In-Reply-To: <alpine.DEB.1.00.0809042347400.3429@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 
-	Hi Linus,
+	Hi Michael,
 
-On Tue, 14 Oct 2008, Linus Torvalds wrote:
-> On Mon, 13 Oct 2008, Geert Uytterhoeven wrote:
-> > Apparently console_initcall() is not defined in the modular case.
+On Thu, 4 Sep 2008, Michael Schmitz wrote:
+> as you've probably noticed, my previous EtherNAT patch does not compile
+> without this one being applied as well.
 > 
-> We can certainly fix that. 
+> Comments welcome (is there anyone on this list with access to an EtherNAT
+> card,
+> besides cts and myself?).
 > 
-> Does this make things work for you? If so, send it back with a sign-off 
-> (add you can add mine too - but I'm not going to add it until it's tested)
+> Regarding performance afforded by having a 100 Mbit PHY instead of a 10 Mbit
+> one:
 > 
-> 		Linus
-> ---
->  include/linux/init.h |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+> EtherNAT: 210 KB/s out, 140 KB/s in (scp of a 35 MB vmlinux file)
+> EtherNEC: 175 KB/s out, 128 KB/s in (same file)
 > 
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 93538b6..d9625b5 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -273,6 +273,7 @@ void __init parse_early_param(void);
->  #else /* MODULE */
->  
->  /* Don't use these in modules, but some people do... */
-> +#define console_initcall(fn)		module_init(fn)
->  #define core_initcall(fn)		module_init(fn)
->  #define postcore_initcall(fn)		module_init(fn)
->  #define arch_initcall(fn)		module_init(fn)
+> Hardly worth it, eh?
 
-That won't help amiserial.c, as there's already a module_init() in that
-file for the normal serial driver part.
+That's slower than my Ariadne?
 
-But even if it would work, does it really make sense to have a modular
-serial console driver?
+BTW, do you have a patch for this?
 
-  - If you have only one console driver, it would be registered and become
-    your console when you load the module; but you wouldn't have had any
-    console before it got loaded.
-  - If you have several console drivers, you need a `console=' parameter
-    anyway to control which one is used.
+| drivers/net/atari_91C111.c:2317: error: 'struct smc91x_platdata' has no member named 'irq_flags'
+| drivers/net/atari_91C111.c:2361: error: 'struct smc91x_platdata' has no member named 'irq_flags'
+| drivers/net/atari_91C111.c:2371: error: 'struct smc91x_platdata' has no member named 'irq_flags'
+| drivers/net/atari_91C111.c:2411: error: 'struct smc91x_platdata' has no member named 'irq_flags'
 
 Gr{oetje,eeting}s,
 
