@@ -1,54 +1,100 @@
-From: Riccardo <riccardo@kaffe.org>
-Subject: Re: [PATCH] reinstate mac rtc
-Date: Wed, 15 Oct 2008 23:41:05 +0200
-Message-ID: <F86D8C33-9B01-11DD-B097-00050249ADE1@kaffe.org>
-References: <Pine.LNX.4.64.0810132114590.6220@anakin>
-Mime-Version: 1.0 (Apple Message framework v553)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Laurent Vivier <laurent@lvivier.info>
+Subject: Re: I'm back on linux-m68k
+Date: Thu, 16 Oct 2008 01:05:05 +0200
+Message-ID: <CEE35843-1B20-4782-A5F9-35F0C62FE0A8@lvivier.info>
+References: <6C4F43D4-2A75-48DC-98A2-ABE37A2FB1A9@gmail.com> <Pine.LNX.4.64.0810160022330.21195@loopy.telegraphics.com.au>
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cp-out11.libero.it ([212.52.84.111]:50310 "EHLO
-	cp-out11.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752269AbYJOVlO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 15 Oct 2008 17:41:14 -0400
-In-Reply-To: <Pine.LNX.4.64.0810132114590.6220@anakin>
+Received: from moutng.kundenserver.de ([212.227.126.177]:61690 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753156AbYJOXFP convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 15 Oct 2008 19:05:15 -0400
+In-Reply-To: <Pine.LNX.4.64.0810160022330.21195@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, linux-m68k@vger.kernel.org
-
-Finn, Geert,
-
-so there is hope of not having a screwed clock time on my IIfx / QUadra 
-950? the 2.2 series kernel had the clock, but no later kernel ever had 
-it.
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Joshua Juran <jjuran@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
 
-Generally, do you have a kernel to use on the above machines? I sitll 
-have 2.2 but I can't upgrade libc due to that and this is breaking my 
-upgrades and made my box a mess...
+Le 15 oct. 08 =E0 16:20, Finn Thain a =E9crit :
 
-
-
-Riccardo
-On Monday, October 13, 2008, at 09:21  PM, Geert Uytterhoeven wrote:
-
-> 	Hi Finn,
 >
-> Thanks, I've added:
->     [PATCH] reinstate mac rtc
->     [PATCH] mac via cleanup and commentry
->     [PATCH] machw.h cleanup
->     [PATCH] mac baboon interrupt enable/disable
->     [PATCH] mac_esp asm fix
->     [PATCH] macfb annotations and compiler warning fix
->     [PATCH] fix trigraph ignored warning in setox.S
->     [PATCH] fbcon: remove broken mac vbl handler
->     [PATCH] mac_esp: fix for quadras with two esp chips
->     [PATCH] m68k: Do not overflow fb_fix_screeninfo.id in macfb
+> Hi Josh,
 >
-> Any of these I should still try to get into 2.6.28? Or is queueing for 
-> 2.6.29
-> OK?
+> On Wed, 15 Oct 2008, Joshua Juran wrote:
 >
+>> Hello,
+>>
+>> I thought I'd mention that I'm back lurking on linux-m68k.  Some of =
+=20
+>> you
+>> may remember me as one of the Penguin contributors.
+>>
+>> My interests with regard to hacking tend to remain on the Mac OS sid=
+e
+>> (and to support this I've picked up some 68K asm knowledge), but =20
+>> perhaps
+>> this can be useful -- at least, I would have liked to have a Mac =20
+>> program
+>> that downloaded the necessary files, copied the floppy images, and
+>> verified the drive setup.
+>>
+>> Please let me know if you would find anything running on the Mac OS =
+=20
+>> side
+>> helpful.
+>
+> [...]
+>
+> Laurent can fill in the details (and probably correct me here), but I
+> would imagine that, like XPostFacto**, we'd need to copy the boot =20
+> loader
+> to the helper volume, copy the kernel binary, set kernel arguments,
+> configure boot blocks on the helper device and set the boot device in
+> PRAM. The tools to do all this from the linux side are part of =20
+> Emile. But
+> if/when something goes awry, it may be most easily fixed from MacOS.
 
+It's a good idea but the primary goal of EMILE is to totally remove =20
+MacOS from the disk...
+
+Now, as we are able to boot linux directly from a CD the tools can =20
+stay on linux side.
+
+EMILE in fact is a MacOS application :-P , perhaps you can make some =20
+developments for EMILE.
+
+Like PC bootloaders which use BIOS to access devices (disk, screen, =20
+keyboard, ...) EMILE uses MacOS ROM to access devices.
+
+Inside EMILE, I've written libmacos which is a "wrapper" between the =20
+linux side of EMILE and the MacOS side of EMILE (yeah, EMILE is almost =
+=20
+like Darth Vader... )
+
+So perhaps Joshua can help me to write some parts, in my TODO there are=
+:
+
+- save/change/restore the gamma of the screen (I don't like the green =20
+display of my Q610)
+- save/change/restore the video mode
+- save/change/restore the boot device
+
+Regards,
+Laurent
+----------------------- Laurent Vivier ----------------------
+"The best way to predict the future is to invent it."
+- Alan Kay
+
+
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
