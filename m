@@ -1,51 +1,84 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: [patch 17/18] net/rfkill/rfkill-input.c needs <linux/sched.h>
-Date: Wed, 15 Oct 2008 16:12:05 +0300
-Message-ID: <20081015131205.GD10917@cs181140183.pp.htv.fi>
-References: <20081013195846.674654386@mail.of.borg> <20081013195922.392078574@mail.of.borg> <20081013204559.GC28597@khazad-dum.debian.net> <Pine.LNX.4.64.0810140920320.6220@anakin> <20081015031018.GA25190@khazad-dum.debian.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: I'm back on linux-m68k
+Date: Thu, 16 Oct 2008 01:20:24 +1100 (EST)
+Message-ID: <Pine.LNX.4.64.0810160022330.21195@loopy.telegraphics.com.au>
+References: <6C4F43D4-2A75-48DC-98A2-ABE37A2FB1A9@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp5.pp.htv.fi ([213.243.153.39]:59433 "EHLO smtp5.pp.htv.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752855AbYJONMI (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 15 Oct 2008 09:12:08 -0400
-Content-Disposition: inline
-In-Reply-To: <20081015031018.GA25190@khazad-dum.debian.net>
+Received: from loopy.telegraphics.com.au ([202.45.126.152]:52216 "EHLO
+	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755456AbYJOOU2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 15 Oct 2008 10:20:28 -0400
+In-Reply-To: <6C4F43D4-2A75-48DC-98A2-ABE37A2FB1A9@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Joshua Juran <jjuran@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, Oct 15, 2008 at 12:10:18AM -0300, Henrique de Moraes Holschuh wrote:
-> On Tue, 14 Oct 2008, Geert Uytterhoeven wrote:
-> > Unfortunately that's not possible, due to Include Hell(tm).
-> > Therefore, including <linux/sched.h> is the way this has been fixed in
-> > the past.
+
+Hi Josh,
+
+On Wed, 15 Oct 2008, Joshua Juran wrote:
+
+> Hello,
 > 
-> I see.  Well, when doing this I'd suggest adding a comment, otherwise the
-> include could end up getting removed sooner or later without anyone asking
-> linux-m68k first (I seriously douby anyone will do git blame to find out why
-> an #include line exists before removing it).
+> I thought I'd mention that I'm back lurking on linux-m68k.  Some of you 
+> may remember me as one of the Penguin contributors.
 > 
-> Something like:
-> #include <sched.h> /* m68k needs task_struct for <whatever> */
+> My interests with regard to hacking tend to remain on the Mac OS side 
+> (and to support this I've picked up some 68K asm knowledge), but perhaps 
+> this can be useful -- at least, I would have liked to have a Mac program 
+> that downloaded the necessary files, copied the floppy images, and 
+> verified the drive setup.
+>
+> Please let me know if you would find anything running on the Mac OS side 
+> helpful.
 
-Such comments in the kernel tend to be old ones you cannot trust.
+Thanks for the kind offer! There are several minor bugs in Penguin that 
+I'd love to see fixed but I never got as far as setting up Code Worrier... 
+The source code is on sourceforge if you want to try compiling it,
 
-And #include removals are not really a common case - sometimes someone 
-cleans up something specific, but I don't think anyone will remove 
-#include's of sched.h from random .c files (considering how much 
-sched.h pulls in the fallout of such #include removals would be many
-build breakages) unless someone seriously reorganizes sched.h itself.
+http://linux-mac68k.cvs.sourceforge.net/viewvc/linux-mac68k/
 
-cu
-Adrian
+Aside from that, we could use an Emile* installer on the MacOS side. I'm 
+thinking something similar to Ryan Rempel's excellent XPostFacto program 
+for booting Mac OS X on Old World h/w.
 
--- 
+Laurent can fill in the details (and probably correct me here), but I 
+would imagine that, like XPostFacto**, we'd need to copy the boot loader 
+to the helper volume, copy the kernel binary, set kernel arguments, 
+configure boot blocks on the helper device and set the boot device in 
+PRAM. The tools to do all this from the linux side are part of Emile. But 
+if/when something goes awry, it may be most easily fixed from MacOS.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Regarding your suggestion WRT downloading, floppy images and drive setup: 
+I think that the tools already exist. They aren't for novices, but then 
+only enthusiasts really use the port anyway.
 
+I think downloading is pretty much covered by Fetch, iCab etc.
+
+The BSD projects have a port of Apple's pdisk program, which is fine for 
+setting up/verifying disk partitions. It's basically an early version of 
+the Mac OS X cmd line utility of the same name. Penguin can also dump scsi 
+partition maps.
+
+The SUntar program provides raw access to floppy devices (and almost any 
+other device for that matter), and can read and write floppy images. I 
+think perhaps apple's Disk Copy can too.
+
+Regards,
+Finn
+
+* http://emile.sourceforge.net/index.php
+** http://eshop.macsales.com/OSXCenter/XPostFacto/
+
+> 
+> Josh
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
