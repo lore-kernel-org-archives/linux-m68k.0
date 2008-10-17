@@ -1,180 +1,72 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: [RFC PATCH] falconide: remove needless ST-DMA locking
-Date: Fri, 17 Oct 2008 20:41:17 +0200
-Message-ID: <200810172041.17191.bzolnier@gmail.com>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [RFC PATCH] falconide: remove needless ST-DMA locking
+Date: Sat, 18 Oct 2008 00:32:41 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0810180023010.22248@zirkon.biophys.uni-duesseldorf.de>
+References: <200810172041.17191.bzolnier@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nf-out-0910.google.com ([64.233.182.187]:60751 "EHLO
-	nf-out-0910.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753342AbYJQSqf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Oct 2008 14:46:35 -0400
-Received: by nf-out-0910.google.com with SMTP id d3so394760nfc.21
-        for <linux-m68k@vger.kernel.org>; Fri, 17 Oct 2008 11:46:33 -0700 (PDT)
-Content-Disposition: inline
+Received: from mail.rz.uni-duesseldorf.de ([134.99.128.30]:54358 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753223AbYJQWcp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 17 Oct 2008 18:32:45 -0400
+In-reply-to: <200810172041.17191.bzolnier@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-ide@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, Stephen R Marenka <stephen@marenka.net>
+To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Cc: linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, Stephen R Marenka <stephen@marenka.net>
 
-While working on ide_do_request() improvements I stumbled upon
-mismatched ide_get_lock() / ide_release_lock() calls.
+Hi Bartlomiej,
 
-[ It seems to be known issue:
-  http://marc.info/?l=linux-m68k&m=121423752829622&w=2 ]
+> While working on ide_do_request() improvements I stumbled upon
+> mismatched ide_get_lock() / ide_release_lock() calls.
+>
+> [ It seems to be known issue:
+>  http://marc.info/?l=linux-m68k&m=121423752829622&w=2 ]
 
-I may be completely wrong but how's about the following patch?
+It is a known issue, and I submitted a simple fix to Geert a month or so ago. It 
+involves moving the ide_get_lock call inside the request loop instead of doing 
+it once at the start of the function.
 
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: [RFC PATCH] falconide: remove needless ST-DMA locking
+> I may be completely wrong but how's about the following patch?
 
-According to comments in arch/m68k/atari/stdma.c IDE controller on
-Atari Falcon doesn't use ST-DMA chip itself and no locking is needed
-(both ST-DMA and IDE IRQ handlers are registered with IRQF_SHARED).
+You are, indeed .
 
-* Remove code for locking ST-DMA from <asm-m68k/ide.h>
-  and falconide.c.
+> From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> Subject: [RFC PATCH] falconide: remove needless ST-DMA locking
+>
+> According to comments in arch/m68k/atari/stdma.c IDE controller on
+> Atari Falcon doesn't use ST-DMA chip itself and no locking is needed
+> (both ST-DMA and IDE IRQ handlers are registered with IRQF_SHARED).
 
-* Remove ide_{get,release}_lock() from ide_do_request()
-  (it was broken anyway).
+The IDE controller does not use the DMA chip, but it does use the same
+interrupt vector as floppy controller, SCSI controller and DMA do. SCSI, as well 
+as floppy do shart DMA. From what I recall, it is not possible to figure out if 
+the interrupt was a DMA complete from the DMA chip state. That's basically whi 
+we need to reserve DMA and interrupt for exclusive use of a single driver a a 
+time.
 
-* Remove #ifndef IDE_ARCH_LOCK handling from <linux/ide.h>.
+> * Remove code for locking ST-DMA from <asm-m68k/ide.h>
+>  and falconide.c.
+>
+> * Remove ide_{get,release}_lock() from ide_do_request()
+>  (it was broken anyway).
+>
+> * Remove #ifndef IDE_ARCH_LOCK handling from <linux/ide.h>.
+>
+> This patch should fix "ide_release_lock: bug" errors reported
+> by Stephen R Marenka.
+>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michael Schmitz <schmitz@debian.org>
+> Cc: Stephen R Marenka <stephen@marenka.net>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
 
-This patch should fix "ide_release_lock: bug" errors reported
-by Stephen R Marenka.
+Objected: Michael Schmitz <schmitz@debian.org>
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@debian.org>
-Cc: Stephen R Marenka <stephen@marenka.net>
-Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
----
-against Linus' tree
+Do not apply, please.
 
- drivers/ide/ide-io.c           |   12 +-----------
- drivers/ide/legacy/falconide.c |   11 -----------
- include/asm-m68k/ide.h         |   31 -------------------------------
- include/linux/ide.h            |    6 ------
- 4 files changed, 1 insertion(+), 59 deletions(-)
+ 	Michael
 
-Index: b/drivers/ide/ide-io.c
-===================================================================
---- a/drivers/ide/ide-io.c
-+++ b/drivers/ide/ide-io.c
-@@ -967,9 +967,6 @@ static void ide_do_request (ide_hwgroup_
- 	ide_startstop_t	startstop;
- 	int             loops = 0;
- 
--	/* for atari only: POSSIBLY BROKEN HERE(?) */
--	ide_get_lock(ide_intr, hwgroup);
--
- 	/* caller must own ide_lock */
- 	BUG_ON(!irqs_disabled());
- 
-@@ -1008,15 +1005,8 @@ static void ide_do_request (ide_hwgroup_
- 				mod_timer(&hwgroup->timer, sleep);
- 				/* we purposely leave hwgroup->busy==1
- 				 * while sleeping */
--			} else {
--				/* Ugly, but how can we sleep for the lock
--				 * otherwise? perhaps from tq_disk?
--				 */
--
--				/* for atari only */
--				ide_release_lock();
-+			} else
- 				hwgroup->busy = 0;
--			}
- 
- 			/* no more work for this hwgroup (for now) */
- 			return;
-Index: b/drivers/ide/legacy/falconide.c
-===================================================================
---- a/drivers/ide/legacy/falconide.c
-+++ b/drivers/ide/legacy/falconide.c
-@@ -35,14 +35,6 @@
- 
- #define ATA_HD_CONTROL	0x39
- 
--    /*
--     *  falconide_intr_lock is used to obtain access to the IDE interrupt,
--     *  which is shared between several drivers.
--     */
--
--int falconide_intr_lock;
--EXPORT_SYMBOL(falconide_intr_lock);
--
- static void falconide_input_data(ide_drive_t *drive, struct request *rq,
- 				 void *buf, unsigned int len)
- {
-@@ -133,10 +125,7 @@ static int __init falconide_init(void)
- 		goto err;
- 	}
- 
--	ide_get_lock(NULL, NULL);
- 	rc = ide_host_register(host, &falconide_port_info, hws);
--	ide_release_lock();
--
- 	if (rc)
- 		goto err_free;
- 
-Index: b/include/asm-m68k/ide.h
-===================================================================
---- a/include/asm-m68k/ide.h
-+++ b/include/asm-m68k/ide.h
-@@ -101,37 +101,6 @@
- #define M68K_IDE_SWAPW  (MACH_IS_Q40 || MACH_IS_ATARI)
- #endif
- 
--#ifdef CONFIG_BLK_DEV_FALCON_IDE
--#define IDE_ARCH_LOCK
--
--extern int falconide_intr_lock;
--
--static __inline__ void ide_release_lock (void)
--{
--	if (MACH_IS_ATARI) {
--		if (falconide_intr_lock == 0) {
--			printk("ide_release_lock: bug\n");
--			return;
--		}
--		falconide_intr_lock = 0;
--		stdma_release();
--	}
--}
--
--static __inline__ void
--ide_get_lock(irq_handler_t handler, void *data)
--{
--	if (MACH_IS_ATARI) {
--		if (falconide_intr_lock == 0) {
--			if (in_interrupt() > 0)
--				panic( "Falcon IDE hasn't ST-DMA lock in interrupt" );
--			stdma_lock(handler, data);
--			falconide_intr_lock = 1;
--		}
--	}
--}
--#endif /* CONFIG_BLK_DEV_FALCON_IDE */
--
- #define IDE_ARCH_ACK_INTR
- #define ide_ack_intr(hwif)	((hwif)->ack_intr ? (hwif)->ack_intr(hwif) : 1)
- 
-Index: b/include/linux/ide.h
-===================================================================
---- a/include/linux/ide.h
-+++ b/include/linux/ide.h
-@@ -241,12 +241,6 @@ static inline int __ide_default_irq(unsi
- # define ide_ack_intr(hwif) (1)
- #endif
- 
--/* Currently only Atari needs it */
--#ifndef IDE_ARCH_LOCK
--# define ide_release_lock()			do {} while (0)
--# define ide_get_lock(hdlr, data)		do {} while (0)
--#endif /* IDE_ARCH_LOCK */
--
- /*
-  * Now for the data we need to maintain per-drive:  ide_drive_t
-  */
