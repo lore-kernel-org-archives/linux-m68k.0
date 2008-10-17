@@ -1,129 +1,180 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [PATCH 06/31] proc: move /proc/stram to m68k-specific code
-Date: Fri, 17 Oct 2008 16:42:22 +0400
-Message-ID: <20081017124222.GG22653@x200.localdomain>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [RFC PATCH] falconide: remove needless ST-DMA locking
+Date: Fri, 17 Oct 2008 20:41:17 +0200
+Message-ID: <200810172041.17191.bzolnier@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from nf-out-0910.google.com ([64.233.182.187]:60751 "EHLO
+	nf-out-0910.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753342AbYJQSqf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Oct 2008 14:46:35 -0400
+Received: by nf-out-0910.google.com with SMTP id d3so394760nfc.21
+        for <linux-m68k@vger.kernel.org>; Fri, 17 Oct 2008 11:46:33 -0700 (PDT)
 Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: geert@linux-m68k.org, zippel@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+To: linux-ide@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, Stephen R Marenka <stephen@marenka.net>
 
+While working on ide_do_request() improvements I stumbled upon
+mismatched ide_get_lock() / ide_release_lock() calls.
 
->From 0b0306563d7b79ad215c62499ed538d15372f574 Mon Sep 17 00:00:00 2001
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Date: Sat, 4 Oct 2008 13:49:34 +0400
-Subject: [PATCH 06/31] proc: move /proc/stram to m68k-specific code
+[ It seems to be known issue:
+  http://marc.info/?l=linux-m68k&m=121423752829622&w=2 ]
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+I may be completely wrong but how's about the following patch?
+
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [RFC PATCH] falconide: remove needless ST-DMA locking
+
+According to comments in arch/m68k/atari/stdma.c IDE controller on
+Atari Falcon doesn't use ST-DMA chip itself and no locking is needed
+(both ST-DMA and IDE IRQ handlers are registered with IRQF_SHARED).
+
+* Remove code for locking ST-DMA from <asm-m68k/ide.h>
+  and falconide.c.
+
+* Remove ide_{get,release}_lock() from ide_do_request()
+  (it was broken anyway).
+
+* Remove #ifndef IDE_ARCH_LOCK handling from <linux/ide.h>.
+
+This patch should fix "ide_release_lock: bug" errors reported
+by Stephen R Marenka.
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitz@debian.org>
+Cc: Stephen R Marenka <stephen@marenka.net>
+Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
 ---
- arch/m68k/atari/stram.c |   28 ++++++++++++++++++++++------
- fs/proc/proc_misc.c     |   13 -------------
- 2 files changed, 22 insertions(+), 19 deletions(-)
+against Linus' tree
 
-diff --git a/arch/m68k/atari/stram.c b/arch/m68k/atari/stram.c
-index 04c69ff..6ec3b7f 100644
---- a/arch/m68k/atari/stram.c
-+++ b/arch/m68k/atari/stram.c
-@@ -42,6 +42,7 @@
- /* abbrev for the && above... */
- #define DO_PROC
- #include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
- #endif
+ drivers/ide/ide-io.c           |   12 +-----------
+ drivers/ide/legacy/falconide.c |   11 -----------
+ include/asm-m68k/ide.h         |   31 -------------------------------
+ include/linux/ide.h            |    6 ------
+ 4 files changed, 1 insertion(+), 59 deletions(-)
+
+Index: b/drivers/ide/ide-io.c
+===================================================================
+--- a/drivers/ide/ide-io.c
++++ b/drivers/ide/ide-io.c
+@@ -967,9 +967,6 @@ static void ide_do_request (ide_hwgroup_
+ 	ide_startstop_t	startstop;
+ 	int             loops = 0;
  
- /*
-@@ -323,19 +324,16 @@ static int remove_region( BLOCK *block )
+-	/* for atari only: POSSIBLY BROKEN HERE(?) */
+-	ide_get_lock(ide_intr, hwgroup);
+-
+ 	/* caller must own ide_lock */
+ 	BUG_ON(!irqs_disabled());
  
- #ifdef DO_PROC
+@@ -1008,15 +1005,8 @@ static void ide_do_request (ide_hwgroup_
+ 				mod_timer(&hwgroup->timer, sleep);
+ 				/* we purposely leave hwgroup->busy==1
+ 				 * while sleeping */
+-			} else {
+-				/* Ugly, but how can we sleep for the lock
+-				 * otherwise? perhaps from tq_disk?
+-				 */
+-
+-				/* for atari only */
+-				ide_release_lock();
++			} else
+ 				hwgroup->busy = 0;
+-			}
  
--#define	PRINT_PROC(fmt,args...) len += sprintf( buf+len, fmt, ##args )
-+#define	PRINT_PROC(fmt,args...) seq_printf( m, fmt, ##args )
+ 			/* no more work for this hwgroup (for now) */
+ 			return;
+Index: b/drivers/ide/legacy/falconide.c
+===================================================================
+--- a/drivers/ide/legacy/falconide.c
++++ b/drivers/ide/legacy/falconide.c
+@@ -35,14 +35,6 @@
  
--int get_stram_list( char *buf )
-+static int stram_proc_show(struct seq_file *m, void *v)
+ #define ATA_HD_CONTROL	0x39
+ 
+-    /*
+-     *  falconide_intr_lock is used to obtain access to the IDE interrupt,
+-     *  which is shared between several drivers.
+-     */
+-
+-int falconide_intr_lock;
+-EXPORT_SYMBOL(falconide_intr_lock);
+-
+ static void falconide_input_data(ide_drive_t *drive, struct request *rq,
+ 				 void *buf, unsigned int len)
  {
--	int len = 0;
- 	BLOCK *p;
- 
- 	PRINT_PROC("Total ST-RAM:      %8u kB\n",
- 			   (stram_end - stram_start) >> 10);
- 	PRINT_PROC( "Allocated regions:\n" );
- 	for( p = alloc_list; p; p = p->next ) {
--		if (len + 50 >= PAGE_SIZE)
--			break;
- 		PRINT_PROC("0x%08lx-0x%08lx: %s (",
- 			   virt_to_phys(p->start),
- 			   virt_to_phys(p->start+p->size-1),
-@@ -346,9 +344,27 @@ int get_stram_list( char *buf )
- 			PRINT_PROC( "??)\n" );
+@@ -133,10 +125,7 @@ static int __init falconide_init(void)
+ 		goto err;
  	}
  
--	return( len );
-+	return 0;
-+}
-+
-+static int stram_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, stram_proc_show, NULL);
- }
+-	ide_get_lock(NULL, NULL);
+ 	rc = ide_host_register(host, &falconide_port_info, hws);
+-	ide_release_lock();
+-
+ 	if (rc)
+ 		goto err_free;
  
-+static const struct file_operations stram_proc_fops = {
-+	.open		= stram_proc_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
-+static int __init proc_stram_init(void)
-+{
-+	proc_create("stram", 0, NULL, &stram_proc_fops);
-+	return 0;
-+}
-+module_init(proc_stram_init);
+Index: b/include/asm-m68k/ide.h
+===================================================================
+--- a/include/asm-m68k/ide.h
++++ b/include/asm-m68k/ide.h
+@@ -101,37 +101,6 @@
+ #define M68K_IDE_SWAPW  (MACH_IS_Q40 || MACH_IS_ATARI)
  #endif
  
- 
-diff --git a/fs/proc/proc_misc.c b/fs/proc/proc_misc.c
-index 8a9fc90..c70e2f5 100644
---- a/fs/proc/proc_misc.c
-+++ b/fs/proc/proc_misc.c
-@@ -62,7 +62,6 @@
-  * have a way to deal with that gracefully. Right now I used straightforward
-  * wrappers, but this needs further analysis wrt potential overflows.
-  */
--extern int get_stram_list(char *);
- extern int get_exec_domain_list(char *);
- 
- static int proc_calc_metrics(char *page, char **start, off_t off,
-@@ -196,15 +195,6 @@ static const struct file_operations proc_vmstat_file_operations = {
- 	.release	= seq_release,
- };
- 
--#ifdef CONFIG_STRAM_PROC
--static int stram_read_proc(char *page, char **start, off_t off,
--				 int count, int *eof, void *data)
--{
--	int len = get_stram_list(page);
--	return proc_calc_metrics(page, start, off, count, eof, len);
--}
--#endif
+-#ifdef CONFIG_BLK_DEV_FALCON_IDE
+-#define IDE_ARCH_LOCK
 -
- #ifdef CONFIG_BLOCK
- static int partitions_open(struct inode *inode, struct file *file)
- {
-@@ -660,9 +650,6 @@ void __init proc_misc_init(void)
- 		char *name;
- 		int (*read_proc)(char*,char**,off_t,int,int*,void*);
- 	} *p, simple_ones[] = {
--#ifdef CONFIG_STRAM_PROC
--		{"stram",	stram_read_proc},
--#endif
- 		{"filesystems",	filesystems_read_proc},
- 		{"cmdline",	cmdline_read_proc},
- 		{"execdomains",	execdomains_read_proc},
--- 
-1.5.6.5
-
+-extern int falconide_intr_lock;
+-
+-static __inline__ void ide_release_lock (void)
+-{
+-	if (MACH_IS_ATARI) {
+-		if (falconide_intr_lock == 0) {
+-			printk("ide_release_lock: bug\n");
+-			return;
+-		}
+-		falconide_intr_lock = 0;
+-		stdma_release();
+-	}
+-}
+-
+-static __inline__ void
+-ide_get_lock(irq_handler_t handler, void *data)
+-{
+-	if (MACH_IS_ATARI) {
+-		if (falconide_intr_lock == 0) {
+-			if (in_interrupt() > 0)
+-				panic( "Falcon IDE hasn't ST-DMA lock in interrupt" );
+-			stdma_lock(handler, data);
+-			falconide_intr_lock = 1;
+-		}
+-	}
+-}
+-#endif /* CONFIG_BLK_DEV_FALCON_IDE */
+-
+ #define IDE_ARCH_ACK_INTR
+ #define ide_ack_intr(hwif)	((hwif)->ack_intr ? (hwif)->ack_intr(hwif) : 1)
+ 
+Index: b/include/linux/ide.h
+===================================================================
+--- a/include/linux/ide.h
++++ b/include/linux/ide.h
+@@ -241,12 +241,6 @@ static inline int __ide_default_irq(unsi
+ # define ide_ack_intr(hwif) (1)
+ #endif
+ 
+-/* Currently only Atari needs it */
+-#ifndef IDE_ARCH_LOCK
+-# define ide_release_lock()			do {} while (0)
+-# define ide_get_lock(hdlr, data)		do {} while (0)
+-#endif /* IDE_ARCH_LOCK */
+-
+ /*
+  * Now for the data we need to maintain per-drive:  ide_drive_t
+  */
