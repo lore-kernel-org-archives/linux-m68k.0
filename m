@@ -1,40 +1,79 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] reinstate mac rtc
-Date: Sat, 25 Oct 2008 18:08:29 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0810251806130.12937@loopy.telegraphics.com.au>
-References: <A4BCBF08-9D05-11DD-9A2B-00050249ADE1@kaffe.org>
- <alpine.LNX.2.00.0810181928560.1848@firda.kolla.no>
- <Pine.LNX.4.64.0810191352510.27783@loopy.telegraphics.com.au>
- <alpine.LNX.2.00.0810191813240.1848@firda.kolla.no>
- <alpine.DEB.1.00.0810200140300.14463@zirkon.biophys.uni-duesseldorf.de>
- <A064497F-167C-4BC4-9565-6530A6914285@lvivier.info>
- <alpine.DEB.1.00.0810220916590.18164@zirkon.biophys.uni-duesseldorf.de>
- <alpine.LNX.2.00.0810221309050.3377@halbrend.uninett.no>
- <5AC01130-D57C-4A0E-81EB-D10549A1146C@lvivier.info>
- <alpine.DEB.1.00.0810230538410.22587@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0810230910460.7533@anakin>
- <alpine.DEB.1.00.0810250611540.13617@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0810251527500.7411@loopy.telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ftrace: handle archs that do not support irqs_disabled_flags
+Date: Sat, 25 Oct 2008 10:24:11 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810251018370.15317@anakin>
+References: <20081023213637.eff9b414.sfr@canb.auug.org.au>
+ <20081023121145.GB27984@x200.localdomain> <c62985530810230548t1b569f61g34d1900bb94fde83@mail.gmail.com>
+ <c62985530810230615s3252a54ao6488e763d72dc939@mail.gmail.com>
+ <49008D12.5090204@gmail.com> <Pine.LNX.4.64.0810231635440.18978@anakin>
+ <c62985530810230757r411b4e3dj4ecec649cf8cf0b3@mail.gmail.com>
+ <Pine.LNX.4.64.0810231727430.18978@anakin> <4900B414.7090002@gmail.com>
+ <20081023163433.GA3160@x200.localdomain> <20081023163850.GB16591@elte.hu>
+ <4901D8CD.7000405@gmail.com> <alpine.DEB.1.10.0810240937130.3882@gandalf.stny.rr.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:57665 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752061AbYJYHIa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 Oct 2008 03:08:30 -0400
-In-Reply-To: <Pine.LNX.4.64.0810251527500.7411@loopy.telegraphics.com.au>
+Received: from nelson.telenet-ops.be ([195.130.133.66]:58939 "EHLO
+	nelson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751878AbYJYIYX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 Oct 2008 04:24:23 -0400
+In-Reply-To: <alpine.DEB.1.10.0810240937130.3882@gandalf.stny.rr.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Laurent Vivier <laurent@lvivier.info>, =?ISO-8859-15?Q?Kolbj=F8rn_Barmen?= <linux-m68k@kolla.no>, Riccardo <riccardo@kaffe.org>, Brad Boyer <flar@allandria.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>, Ingo Molnar <mingo@elte.hu>, Alexey Dobriyan <adobriyan@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Richard Henderson <rth@twiddle.net>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 
+On Fri, 24 Oct 2008, Steven Rostedt wrote:
+> Some architectures do not support a way to read the irq flags that
+> is set from "local_irq_save(flags)" to determine if interrupts were
+> disabled or enabled. Ftrace uses this information to display to the user
+> if the trace occurred with interrupts enabled or disabled.
 
+Both alpha
 
-On Sat, 25 Oct 2008, Finn Thain wrote:
+	#define irqs_disabled() (getipl() == IPL_MAX)
 
-> I'd use a new kernel parameter for this... Best let userland make the call.
+and m68k
 
-Sorry, I misunderstood the patch. It still requires a call to hwclock or 
-similar so I see no need for a kernel parameter at all.
+	static inline int irqs_disabled(void)
+	{
+		unsigned long flags;
+		local_save_flags(flags);
+		return flags & ~ALLOWINT;
+	}
 
-Finn
+do have irqs_disabled(), but they don't have irqs_disabled_flags().
+
+M68knommu has both, but they don't check the same thing:
+
+	#define irqs_disabled()                 \
+	({                                      \
+		unsigned long flags;            \
+		local_save_flags(flags);        \
+		((flags & 0x0700) == 0x0700);   \
+	})
+
+	static inline int irqs_disabled_flags(unsigned long flags)
+	{
+		if (flags & 0x0700)
+			return 0;
+		else
+			return 1;
+	}
+
+Is there a semantic difference between them (except that the latter takes the
+flags as a parameter)?
+
+Or can we just extract the core logic of irqs_disabled() into
+irqs_disabled_flags()?
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
