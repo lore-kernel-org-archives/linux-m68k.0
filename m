@@ -1,257 +1,51 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] macfb: Do not overflow fb_fix_screeninfo.id
-Date: Mon, 27 Oct 2008 08:23:43 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0810270822540.15317@anakin>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [PATCH] gayle: set IDE_HFLAG_SERIALIZE explictly
+Date: Mon, 27 Oct 2008 20:59:32 +0100
+Message-ID: <200810272059.32694.bzolnier@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:42419 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751718AbYJ0HXr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Oct 2008 03:23:47 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-ide-owner@vger.kernel.org
+To: linux-ide@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>
 
-From: Finn Thain <fthain@telegraphics.com.au>
+If IDE doubler is used ports need to be serialized.  Currently
+init_irq() handles it fine but lets also set IDE_HFLAG_SERIALIZE
+host flag explicitly in preparation for future changes.
 
-Don't overflow the 16-character fb_fix_screeninfo id string (fixes some 
-console erasing and blanking artifacts). Have the ID default to "Unknown" 
-on machines with no built-in video and no nubus devices. Check for 
-fb_alloc_cmap failure.
+Also convert the driver to use struct ide_port_info while at it.
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
 ---
- drivers/video/macfb.c |   74 +++++++++++++++++++++++---------------------------
- 1 file changed, 35 insertions(+), 39 deletions(-)
+ drivers/ide/gayle.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/video/macfb.c
-+++ b/drivers/video/macfb.c
-@@ -164,7 +164,6 @@ static struct fb_var_screeninfo macfb_de
- };
- 
- static struct fb_fix_screeninfo macfb_fix = {
--	.id	= "Macintosh ",
- 	.type	= FB_TYPE_PACKED_PIXELS,
- 	.accel	= FB_ACCEL_NONE,
- };
-@@ -760,22 +759,22 @@ static int __init macfb_init(void)
- 
- 		switch(ndev->dr_hw) {
- 		case NUBUS_DRHW_APPLE_MDC:
--			strcat( macfb_fix.id, "Display Card" );
-+			strcpy(macfb_fix.id, "Mac Disp. Card");
- 			macfb_setpalette = mdc_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			break;
- 		case NUBUS_DRHW_APPLE_TFB:
--			strcat( macfb_fix.id, "Toby" );
-+			strcpy(macfb_fix.id, "Toby");
- 			macfb_setpalette = toby_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			break;
- 		case NUBUS_DRHW_APPLE_JET:
--			strcat( macfb_fix.id, "Jet");
-+			strcpy(macfb_fix.id, "Jet");
- 			macfb_setpalette = jet_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			break;			
- 		default:
--			strcat( macfb_fix.id, "Generic NuBus" );
-+			strcpy(macfb_fix.id, "Generic NuBus");
- 			break;
- 		}
- 	}
-@@ -786,21 +785,11 @@ static int __init macfb_init(void)
- 	if (!video_is_nubus)
- 		switch( mac_bi_data.id )
- 		{
--			/* These don't have onboard video.  Eventually, we may
--			   be able to write separate framebuffer drivers for
--			   them (tobyfb.c, hiresfb.c, etc, etc) */
--		case MAC_MODEL_II:
--		case MAC_MODEL_IIX:
--		case MAC_MODEL_IICX:
--		case MAC_MODEL_IIFX:
--			strcat( macfb_fix.id, "Generic NuBus" );
--			break;
--
- 			/* Valkyrie Quadras */
- 		case MAC_MODEL_Q630:
- 			/* I'm not sure about this one */
- 		case MAC_MODEL_P588:
--			strcat( macfb_fix.id, "Valkyrie built-in" );
-+			strcpy(macfb_fix.id, "Valkyrie");
- 			macfb_setpalette = valkyrie_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			valkyrie_cmap_regs = ioremap(DAC_BASE, 0x1000);
-@@ -823,7 +812,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_Q700:
- 		case MAC_MODEL_Q900:
- 		case MAC_MODEL_Q950:
--			strcat( macfb_fix.id, "DAFB built-in" );
-+			strcpy(macfb_fix.id, "DAFB");
- 			macfb_setpalette = dafb_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			dafb_cmap_regs = ioremap(DAFB_BASE, 0x1000);
-@@ -831,7 +820,7 @@ static int __init macfb_init(void)
- 
- 			/* LC II uses the V8 framebuffer */
- 		case MAC_MODEL_LCII:
--			strcat( macfb_fix.id, "V8 built-in" );
-+			strcpy(macfb_fix.id, "V8");
- 			macfb_setpalette = v8_brazil_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			v8_brazil_cmap_regs = ioremap(DAC_BASE, 0x1000);
-@@ -843,7 +832,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_IIVI:
- 		case MAC_MODEL_IIVX:
- 		case MAC_MODEL_P600:
--			strcat( macfb_fix.id, "Brazil built-in" );
-+			strcpy(macfb_fix.id, "Brazil");
- 			macfb_setpalette = v8_brazil_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
- 			v8_brazil_cmap_regs = ioremap(DAC_BASE, 0x1000);
-@@ -860,7 +849,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_P460:
- 			macfb_setpalette = v8_brazil_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
--			strcat( macfb_fix.id, "Sonora built-in" );
-+			strcpy(macfb_fix.id, "Sonora");
- 			v8_brazil_cmap_regs = ioremap(DAC_BASE, 0x1000);
- 			break;
- 
-@@ -871,7 +860,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_IISI:
- 			macfb_setpalette = rbv_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
--			strcat( macfb_fix.id, "RBV built-in" );
-+			strcpy(macfb_fix.id, "RBV");
- 			rbv_cmap_regs = ioremap(DAC_BASE, 0x1000);
- 			break;
- 
-@@ -880,7 +869,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_C660:
- 			macfb_setpalette = civic_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
--			strcat( macfb_fix.id, "Civic built-in" );
-+			strcpy(macfb_fix.id, "Civic");
- 			civic_cmap_regs = ioremap(CIVIC_BASE, 0x1000);
- 			break;
- 
-@@ -901,7 +890,7 @@ static int __init macfb_init(void)
- 				v8_brazil_cmap_regs =
- 					ioremap(DAC_BASE, 0x1000);
- 			}
--			strcat( macfb_fix.id, "LC built-in" );
-+			strcpy(macfb_fix.id, "LC");
- 			break;
- 			/* We think this may be like the LC II */
- 		case MAC_MODEL_CCL:
-@@ -911,18 +900,18 @@ static int __init macfb_init(void)
- 				v8_brazil_cmap_regs =
- 					ioremap(DAC_BASE, 0x1000);
- 			}
--			strcat( macfb_fix.id, "Color Classic built-in" );
-+			strcpy(macfb_fix.id, "Color Classic");
- 			break;
- 
- 			/* And we *do* mean "weirdos" */
- 		case MAC_MODEL_TV:
--			strcat( macfb_fix.id, "Mac TV built-in" );
-+			strcpy(macfb_fix.id, "Mac TV");
- 			break;
- 
- 			/* These don't have colour, so no need to worry */
- 		case MAC_MODEL_SE30:
- 		case MAC_MODEL_CLII:
--			strcat( macfb_fix.id, "Monochrome built-in" );
-+			strcpy(macfb_fix.id, "Monochrome");
- 			break;
- 
- 			/* Powerbooks are particularly difficult.  Many of
-@@ -935,7 +924,7 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_PB140:
- 		case MAC_MODEL_PB145:
- 		case MAC_MODEL_PB170:
--			strcat( macfb_fix.id, "DDC built-in" );
-+			strcpy(macfb_fix.id, "DDC");
- 			break;
- 
- 			/* Internal is GSC, External (if present) is ViSC */
-@@ -945,13 +934,13 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_PB180:
- 		case MAC_MODEL_PB210:
- 		case MAC_MODEL_PB230:
--			strcat( macfb_fix.id, "GSC built-in" );
-+			strcpy(macfb_fix.id, "GSC");
- 			break;
- 
- 			/* Internal is TIM, External is ViSC */
- 		case MAC_MODEL_PB165C:
- 		case MAC_MODEL_PB180C:
--			strcat( macfb_fix.id, "TIM built-in" );
-+			strcpy(macfb_fix.id, "TIM");
- 			break;
- 
- 			/* Internal is CSC, External is Keystone+Ariel. */
-@@ -963,12 +952,12 @@ static int __init macfb_init(void)
- 		case MAC_MODEL_PB280C:
- 			macfb_setpalette = csc_setpalette;
- 			macfb_defined.activate = FB_ACTIVATE_NOW;
--			strcat( macfb_fix.id, "CSC built-in" );
-+			strcpy(macfb_fix.id, "CSC");
- 			csc_cmap_regs = ioremap(CSC_BASE, 0x1000);
- 			break;
- 		
- 		default:
--			strcat( macfb_fix.id, "Unknown/Unsupported built-in" );
-+			strcpy(macfb_fix.id, "Unknown");
- 			break;
- 		}
- 
-@@ -978,16 +967,23 @@ static int __init macfb_init(void)
- 	fb_info.pseudo_palette	= pseudo_palette;
- 	fb_info.flags		= FBINFO_DEFAULT;
- 
--	fb_alloc_cmap(&fb_info.cmap, video_cmap_len, 0);
-+	err = fb_alloc_cmap(&fb_info.cmap, video_cmap_len, 0);
-+	if (err)
-+		goto fail_unmap;
- 	
- 	err = register_framebuffer(&fb_info);
--	if (!err)
--		printk("fb%d: %s frame buffer device\n",
--		       fb_info.node, fb_info.fix.id);
--	else {
--		iounmap(fb_info.screen_base);
--		iounmap_macfb();
--	}
-+	if (err)
-+		goto fail_dealloc;
-+
-+	printk("fb%d: %s frame buffer device\n",
-+	       fb_info.node, fb_info.fix.id);
-+	return 0;
-+
-+fail_dealloc:
-+	fb_dealloc_cmap(&fb_info.cmap);
-+fail_unmap:
-+	iounmap(fb_info.screen_base);
-+	iounmap_macfb();
- 	return err;
+Index: b/drivers/ide/gayle.c
+===================================================================
+--- a/drivers/ide/gayle.c
++++ b/drivers/ide/gayle.c
+@@ -117,6 +117,10 @@ static void __init gayle_setup_ports(hw_
+ 	hw->chipset = ide_generic;
  }
  
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
++static const struct ide_port_info gayle_port_info = {
++	.host_flags		= IDE_HFLAG_SERIALIZE | IDE_HFLAG_NO_DMA,
++};
++
+     /*
+      *  Probe for a Gayle IDE interface (and optionally for an IDE doubler)
+      */
+@@ -178,7 +182,7 @@ found:
+ 	hws[i] = &hw[i];
+     }
+ 
+-    rc = ide_host_add(NULL, hws, NULL);
++    rc = ide_host_add(&gayle_port_info, hws, NULL);
+     if (rc)
+ 	release_mem_region(res_start, res_n);
+ 
