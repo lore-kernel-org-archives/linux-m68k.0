@@ -1,51 +1,34 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: [PATCH] gayle: set IDE_HFLAG_SERIALIZE explictly
-Date: Mon, 27 Oct 2008 20:59:32 +0100
-Message-ID: <200810272059.32694.bzolnier@gmail.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] macfb: Do not overflow fb_fix_screeninfo.id
+Date: Mon, 27 Oct 2008 22:09:57 -0700
+Message-ID: <20081027220957.42cac1db.akpm@linux-foundation.org>
+References: <Pine.LNX.4.64.0810270822540.15317@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-ide-owner@vger.kernel.org
-To: linux-ide@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from smtp1.linux-foundation.org ([140.211.169.13]:34360 "EHLO
+	smtp1.linux-foundation.org" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752108AbYJ1FLI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 28 Oct 2008 01:11:08 -0400
+In-Reply-To: <Pine.LNX.4.64.0810270822540.15317@anakin>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>, Linux/m68k <linux-m68k@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, stable@kernel.org
 
-If IDE doubler is used ports need to be serialized.  Currently
-init_irq() handles it fine but lets also set IDE_HFLAG_SERIALIZE
-host flag explicitly in preparation for future changes.
+On Mon, 27 Oct 2008 08:23:43 +0100 (CET) Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Also convert the driver to use struct ide_port_info while at it.
+> From: Finn Thain <fthain@telegraphics.com.au>
+> 
+> Don't overflow the 16-character fb_fix_screeninfo id string (fixes some 
+> console erasing and blanking artifacts). Have the ID default to "Unknown" 
+> on machines with no built-in video and no nubus devices. Check for 
+> fb_alloc_cmap failure.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
----
- drivers/ide/gayle.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The patch applies OK to 2.6.27, 2.6.26 and 2.6.25 (at least).
 
-Index: b/drivers/ide/gayle.c
-===================================================================
---- a/drivers/ide/gayle.c
-+++ b/drivers/ide/gayle.c
-@@ -117,6 +117,10 @@ static void __init gayle_setup_ports(hw_
- 	hw->chipset = ide_generic;
- }
- 
-+static const struct ide_port_info gayle_port_info = {
-+	.host_flags		= IDE_HFLAG_SERIALIZE | IDE_HFLAG_NO_DMA,
-+};
-+
-     /*
-      *  Probe for a Gayle IDE interface (and optionally for an IDE doubler)
-      */
-@@ -178,7 +182,7 @@ found:
- 	hws[i] = &hw[i];
-     }
- 
--    rc = ide_host_add(NULL, hws, NULL);
-+    rc = ide_host_add(&gayle_port_info, hws, NULL);
-     if (rc)
- 	release_mem_region(res_start, res_n);
- 
+Should we backport it and if so, how far?
+
+Thanks.
