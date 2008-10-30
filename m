@@ -1,48 +1,97 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] macfb: Do not overflow fb_fix_screeninfo.id
-Date: Tue, 28 Oct 2008 19:58:00 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0810281845250.31382@loopy.telegraphics.com.au>
-References: <Pine.LNX.4.64.0810270822540.15317@anakin>
- <20081027220957.42cac1db.akpm@linux-foundation.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Laurent@lvivier.info
+Subject: [PATCH] Add install target for m68k architecture.
+Date: Thu, 30 Oct 2008 21:17:47 +0100
+Message-ID: <12253978673698-git-send-email-Laurent@lvivier.info>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:37367 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751575AbYJ1I6E (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Oct 2008 04:58:04 -0400
-In-Reply-To: <20081027220957.42cac1db.akpm@linux-foundation.org>
+Received: from smtp5-g19.free.fr ([212.27.42.35]:51666 "EHLO smtp5-g19.free.fr"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753765AbYJ3URx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 30 Oct 2008 16:17:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>, Linux/m68k <linux-m68k@vger.kernel.org>, stable@kernel.org
+To: geert@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@lvivier.info>
 
+From: Laurent Vivier <Laurent@lvivier.info>
 
+This patch enables the use of "make install" on m68k architecture
+to copy kernel to /boot.
 
-On Mon, 27 Oct 2008, Andrew Morton wrote:
+Signed-off-by: Laurent Vivier <Laurent@lvivier.info>
+---
+ arch/m68k/Makefile   |    3 ++
+ arch/m68k/install.sh |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+), 0 deletions(-)
 
-> On Mon, 27 Oct 2008 08:23:43 +0100 (CET) Geert Uytterhoeven 
-> <geert@linux-m68k.org> wrote:
-> 
-> > From: Finn Thain <fthain@telegraphics.com.au>
-> > 
-> > Don't overflow the 16-character fb_fix_screeninfo id string (fixes 
-> > some console erasing and blanking artifacts). Have the ID default to 
-> > "Unknown" on machines with no built-in video and no nubus devices. 
-> > Check for fb_alloc_cmap failure.
-> 
-> The patch applies OK to 2.6.27, 2.6.26 and 2.6.25 (at least).
-> 
-> Should we backport it and if so, how far?
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index 8133dbc..570d85c 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -117,3 +117,6 @@ endif
+ 
+ archclean:
+ 	rm -f vmlinux.gz vmlinux.bz2
++
++install:
++	sh $(srctree)/arch/m68k/install.sh $(KERNELRELEASE) vmlinux.gz System.map "$(INSTALL_PATH)"
+diff --git a/arch/m68k/install.sh b/arch/m68k/install.sh
+new file mode 100644
+index 0000000..9c6bae6
+--- /dev/null
++++ b/arch/m68k/install.sh
+@@ -0,0 +1,52 @@
++#!/bin/sh
++#
++# This file is subject to the terms and conditions of the GNU General Public
++# License.  See the file "COPYING" in the main directory of this archive
++# for more details.
++#
++# Copyright (C) 1995 by Linus Torvalds
++#
++# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
++#
++# "make install" script for m68k architecture
++#
++# Arguments:
++#   $1 - kernel version
++#   $2 - kernel image file
++#   $3 - kernel map file
++#   $4 - default install path (blank if root directory)
++#
++
++verify () {
++	if [ ! -f "$1" ]; then
++		echo ""                                                   1>&2
++		echo " *** Missing file: $1"                              1>&2
++		echo ' *** You need to run "make" before "make install".' 1>&2
++		echo ""                                                   1>&2
++		exit 1
++	fi
++}
++
++# Make sure the files actually exist
++verify "$2"
++verify "$3"
++
++# User may have a custom install script
++
++if [ -x ~/bin/${CROSS_COMPILE}installkernel ]; then exec ~/bin/${CROSS_COMPILE}installkernel "$@"; fi
++if [ -x /sbin/${CROSS_COMPILE}installkernel ]; then exec /sbin/${CROSS_COMPILE}installkernel "$@"; fi
++
++# Default install - same as make zlilo
++
++if [ -f $4/vmlinuz ]; then
++	mv $4/vmlinuz $4/vmlinuz.old
++fi
++
++if [ -f $4/System.map ]; then
++	mv $4/System.map $4/System.old
++fi
++
++cat $2 > $4/vmlinuz
++cp $3 $4/System.map
++
++sync
+-- 
+1.4.4.4
 
-Please do. The problem was introduced somewhere in the 2.5 series.
-
-Thanks,
-
-Finn
-
-> 
-> Thanks. -- To unsubscribe from this list: send the line "unsubscribe 
-> linux-m68k" in the body of a message to majordomo@vger.kernel.org More 
-> majordomo info at http://vger.kernel.org/majordomo-info.html
-> 
