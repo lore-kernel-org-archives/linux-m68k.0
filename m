@@ -1,97 +1,46 @@
-From: Laurent@lvivier.info
-Subject: [PATCH] Add install target for m68k architecture.
-Date: Thu, 30 Oct 2008 21:17:47 +0100
-Message-ID: <12253978673698-git-send-email-Laurent@lvivier.info>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp5-g19.free.fr ([212.27.42.35]:51666 "EHLO smtp5-g19.free.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753765AbYJ3URx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 30 Oct 2008 16:17:53 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] tracing: fix a build error on alpha and m68k
+Date: Fri, 31 Oct 2008 09:50:06 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0810310949190.22521@anakin>
+References: <20081023213637.eff9b414.sfr@canb.auug.org.au>
+ <20081023121145.GB27984@x200.localdomain> <c62985530810230548t1b569f61g34d1900bb94fde83@mail.gmail.com>
+ <c62985530810230615s3252a54ao6488e763d72dc939@mail.gmail.com>
+ <49008D12.5090204@gmail.com> <Pine.LNX.4.64.0810231635440.18978@anakin>
+ <c62985530810230757r411b4e3dj4ecec649cf8cf0b3@mail.gmail.com>
+ <Pine.LNX.4.64.0810231727430.18978@anakin> <4900B414.7090002@gmail.com>
+ <20081023163433.GA3160@x200.localdomain> <20081030214910.GA14679@x200.localdomain>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20081030214910.GA14679@x200.localdomain>
+Sender: linux-next-owner@vger.kernel.org
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>, Ingo Molnar <mingo@elte.hu>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@lvivier.info>
 
-From: Laurent Vivier <Laurent@lvivier.info>
+On Fri, 31 Oct 2008, Alexey Dobriyan wrote:
+> On Thu, Oct 23, 2008 at 08:34:33PM +0400, Alexey Dobriyan wrote:
+> > On Thu, Oct 23, 2008 at 07:27:48PM +0200, Frederic Weisbecker wrote:
+> > > When tracing is enabled, some arch have included <linux/irqflags.h>
+> > > on their <asm/system.h> but others like alpha or m68k don't.
+> > > 
+> > > Build error on alpha:
+> > > 
+> > > kernel/trace/trace.c: In function 'tracing_generic_entry_update':
+> > > kernel/trace/trace.c:658: error: implicit declaration of function 'irqs_disabled_flags'
+> 
+> FYI, this error still exists in mainline (7f82f000ed030d1108b4de47d9e2d556092980c6).
 
-This patch enables the use of "make install" on m68k architecture
-to copy kernel to /boot.
+Now it hit mainline (I can't be bothered to develop _new_ code to fix things in
+-next ;-), I'm implementing irqs_disabled_flags() for m68k. Stay tuned...
 
-Signed-off-by: Laurent Vivier <Laurent@lvivier.info>
----
- arch/m68k/Makefile   |    3 ++
- arch/m68k/install.sh |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+), 0 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 8133dbc..570d85c 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -117,3 +117,6 @@ endif
- 
- archclean:
- 	rm -f vmlinux.gz vmlinux.bz2
-+
-+install:
-+	sh $(srctree)/arch/m68k/install.sh $(KERNELRELEASE) vmlinux.gz System.map "$(INSTALL_PATH)"
-diff --git a/arch/m68k/install.sh b/arch/m68k/install.sh
-new file mode 100644
-index 0000000..9c6bae6
---- /dev/null
-+++ b/arch/m68k/install.sh
-@@ -0,0 +1,52 @@
-+#!/bin/sh
-+#
-+# This file is subject to the terms and conditions of the GNU General Public
-+# License.  See the file "COPYING" in the main directory of this archive
-+# for more details.
-+#
-+# Copyright (C) 1995 by Linus Torvalds
-+#
-+# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-+#
-+# "make install" script for m68k architecture
-+#
-+# Arguments:
-+#   $1 - kernel version
-+#   $2 - kernel image file
-+#   $3 - kernel map file
-+#   $4 - default install path (blank if root directory)
-+#
-+
-+verify () {
-+	if [ ! -f "$1" ]; then
-+		echo ""                                                   1>&2
-+		echo " *** Missing file: $1"                              1>&2
-+		echo ' *** You need to run "make" before "make install".' 1>&2
-+		echo ""                                                   1>&2
-+		exit 1
-+	fi
-+}
-+
-+# Make sure the files actually exist
-+verify "$2"
-+verify "$3"
-+
-+# User may have a custom install script
-+
-+if [ -x ~/bin/${CROSS_COMPILE}installkernel ]; then exec ~/bin/${CROSS_COMPILE}installkernel "$@"; fi
-+if [ -x /sbin/${CROSS_COMPILE}installkernel ]; then exec /sbin/${CROSS_COMPILE}installkernel "$@"; fi
-+
-+# Default install - same as make zlilo
-+
-+if [ -f $4/vmlinuz ]; then
-+	mv $4/vmlinuz $4/vmlinuz.old
-+fi
-+
-+if [ -f $4/System.map ]; then
-+	mv $4/System.map $4/System.old
-+fi
-+
-+cat $2 > $4/vmlinuz
-+cp $3 $4/System.map
-+
-+sync
--- 
-1.4.4.4
+						Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
