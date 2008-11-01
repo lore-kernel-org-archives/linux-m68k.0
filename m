@@ -1,62 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] tracing: fix a build error on alpha and m68k
-Date: Sat, 1 Nov 2008 11:16:52 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811011116010.7456@anakin>
-References: <c62985530810230548t1b569f61g34d1900bb94fde83@mail.gmail.com>
- <c62985530810230615s3252a54ao6488e763d72dc939@mail.gmail.com>
- <49008D12.5090204@gmail.com> <Pine.LNX.4.64.0810231635440.18978@anakin>
- <c62985530810230757r411b4e3dj4ecec649cf8cf0b3@mail.gmail.com>
- <Pine.LNX.4.64.0810231727430.18978@anakin> <4900B414.7090002@gmail.com>
- <20081023163433.GA3160@x200.localdomain> <20081030214910.GA14679@x200.localdomain>
- <Pine.LNX.4.64.0810310949190.22521@anakin> <20081031095544.GI30317@elte.hu>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
+Date: Sat, 1 Nov 2008 11:10:13 -0700
+Message-ID: <20081101181013.GA25819@cynthia.pants.nu>
+References: <12255325912043-git-send-email-Laurent@lvivier.info>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from monty.telenet-ops.be ([195.130.132.56]:35896 "EHLO
-	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751310AbYKAKQ5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 1 Nov 2008 06:16:57 -0400
-In-Reply-To: <20081031095544.GI30317@elte.hu>
+Received: from [76.245.85.235] ([76.245.85.235]:60115 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1751735AbYKASKn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 1 Nov 2008 14:10:43 -0400
+Content-Disposition: inline
+In-Reply-To: <12255325912043-git-send-email-Laurent@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>, Frederic Weisbecker <fweisbec@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Laurent@lvivier.info
+Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
-On Fri, 31 Oct 2008, Ingo Molnar wrote:
-> * Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, 31 Oct 2008, Alexey Dobriyan wrote:
-> > > On Thu, Oct 23, 2008 at 08:34:33PM +0400, Alexey Dobriyan wrote:
-> > > > On Thu, Oct 23, 2008 at 07:27:48PM +0200, Frederic Weisbecker wrote:
-> > > > > When tracing is enabled, some arch have included <linux/irqflags.h>
-> > > > > on their <asm/system.h> but others like alpha or m68k don't.
-> > > > > 
-> > > > > Build error on alpha:
-> > > > > 
-> > > > > kernel/trace/trace.c: In function 'tracing_generic_entry_update':
-> > > > > kernel/trace/trace.c:658: error: implicit declaration of function 'irqs_disabled_flags'
-> > > 
-> > > FYI, this error still exists in mainline (7f82f000ed030d1108b4de47d9e2d556092980c6).
-> > 
-> > Now it hit mainline (I can't be bothered to develop _new_ code to 
-> > fix things in -next ;-), I'm implementing irqs_disabled_flags() for 
-> > m68k. Stay tuned...
+On Sat, Nov 01, 2008 at 10:43:11AM +0100, Laurent@lvivier.info wrote:
+> It allows to read data from a floppy, but not to write to, and to eject the
+> floppy (useful on our Mac without eject button).
 > 
-> this (now mainline) commit should have fixed it:
+> I have tested it on a Quadra 800, but it is supposed to work on:
 > 
->  9244489: ftrace: handle archs that do not support irqs_disabled_flags
-> 
-> can you still see problems?
+> II, IIci, IIsi, IIvx, IIx, IIcx, SE/30,
+> PowerBook 100, PowerBook 140, PowerBook 145, PowerBook 160,
+> PowerBook 165, PowerBook 165c, PowerBook 170, PowerBook 180,
+> PowerBook 180c, PowerBook 190, PowerBook 190cs, PowerBook 500,
+> Performa 460, Performa 550, LC II, LC III, LC 520, Color Classic,
+> Color Classic II, ClassicII,
+> Quadra 700, Quadra 800, Quadra 650, Quadra 605, Quadra 610,
+> Centris 610, Quadra 630, Performa 580, LC 475, LC 575,
 
-Yes, the "undefined reference to `save_stack_trace'", as already pointed out
-by Al. I'm trying his fix now...
+I just have one comment and one question. The model check looks like
+it will end up printing out a warning message on the AV models. You
+should add them explicitly to the unsupported list the way you did
+for the IIfx and Q900/Q950. Also, I'm not sure this driver would
+work on a Mac II. They didn't originally ship with a SWIM chip at
+all, but that was available as an upgrade. From the factory they
+came with the old IWM chip. It's not clear to me if the driver uses
+any of the SWIM features other than the capability to detect and
+read high density media which the old drives obviously don't do.
 
-Gr{oetje,eeting}s,
+Other than that, it's good to see someone working on this.
 
-						Geert
+	Brad Boyer
+	flar@allandria.com
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
