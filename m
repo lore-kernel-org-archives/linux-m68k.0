@@ -1,51 +1,80 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Laurent Vivier <Laurent@lvivier.info>
 Subject: Re: [PATCH] Add install target for m68k architecture.
-Date: Sun, 2 Nov 2008 10:02:53 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811021001530.5281@anakin>
-References: <12253978673698-git-send-email-Laurent@lvivier.info>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Date: Sun, 2 Nov 2008 11:40:00 +0100
+Message-ID: <77483457-4E75-4F82-8F7B-7E541AFDC4D1@lvivier.info>
+References: <12253978673698-git-send-email-Laurent@lvivier.info> <Pine.LNX.4.64.0811021001530.5281@anakin>
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:56493 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752805AbYKBJC6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 2 Nov 2008 04:02:58 -0500
-In-Reply-To: <12253978673698-git-send-email-Laurent@lvivier.info>
+Received: from moutng.kundenserver.de ([212.227.126.171]:53568 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753352AbYKBKkO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 2 Nov 2008 05:40:14 -0500
+In-Reply-To: <Pine.LNX.4.64.0811021001530.5281@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <Laurent@lvivier.info>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, 30 Oct 2008, Laurent@lvivier.info wrote:
-> From: Laurent Vivier <Laurent@lvivier.info>
-> 
-> This patch enables the use of "make install" on m68k architecture
-> to copy kernel to /boot.
-> 
-> Signed-off-by: Laurent Vivier <Laurent@lvivier.info>
-> ---
->  arch/m68k/Makefile   |    3 ++
->  arch/m68k/install.sh |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-It seems like we have lots of install.sh files in arch/*/{boot/}. No two of
-them are identical, but they're all very similar.
-Perhaps it's better to consolidate them?
+Le 2 nov. 08 =E0 10:02, Geert Uytterhoeven a =E9crit :
 
-> +# User may have a custom install script
-> +
-> +if [ -x ~/bin/${CROSS_COMPILE}installkernel ]; then exec ~/bin/${CROSS_COMPILE}installkernel "$@"; fi
-> +if [ -x /sbin/${CROSS_COMPILE}installkernel ]; then exec /sbin/${CROSS_COMPILE}installkernel "$@"; fi
+> On Thu, 30 Oct 2008, Laurent@lvivier.info wrote:
+>> From: Laurent Vivier <Laurent@lvivier.info>
+>>
+>> This patch enables the use of "make install" on m68k architecture
+>> to copy kernel to /boot.
+>>
+>> Signed-off-by: Laurent Vivier <Laurent@lvivier.info>
+>> ---
+>> arch/m68k/Makefile   |    3 ++
+>> arch/m68k/install.sh |   52 ++++++++++++++++++++++++++++++++++++++++=
+=20
+>> ++++++++++
+>
+> It seems like we have lots of install.sh files in arch/*/{boot/}. No =
+=20
+> two of
+> them are identical, but they're all very similar.
+> Perhaps it's better to consolidate them?
 
-I know the original one has the same limitation, but shouldn't we check for
-all ${CROSS_COMPILE}installkernel in the user's $PATH?
+I agree, but introducing a modification touching several architectures =
+=20
+and maintainers are harder to push into kernel.
+But I'm going to try.
 
-Gr{oetje,eeting}s,
+>> +# User may have a custom install script
+>> +
+>> +if [ -x ~/bin/${CROSS_COMPILE}installkernel ]; then exec ~/bin/$=20
+>> {CROSS_COMPILE}installkernel "$@"; fi
+>> +if [ -x /sbin/${CROSS_COMPILE}installkernel ]; then exec /sbin/$=20
+>> {CROSS_COMPILE}installkernel "$@"; fi
+>
+> I know the original one has the same limitation, but shouldn't we =20
+> check for
+> all ${CROSS_COMPILE}installkernel in the user's $PATH?
 
-						Geert
+
+I've copied the original one and though having a cross-compile install =
+=20
+kernel is a good idea, it's why I let these two lines.
+Is there security issues by trying all installkernel scripts ?
+Otherwise, I agree, and it's easy to to scan PATH to do that.
+
+Regards,
+Laurent
+----------------------- Laurent Vivier ----------------------
+"The best way to predict the future is to invent it."
+- Alan Kay
+
+
+
+
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
