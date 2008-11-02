@@ -1,45 +1,53 @@
-From: "Jan Dittmer" <jdi@l4x.org>
-Subject: m68k, gcc 4.2.4 internal compiler error: in find_reloads_address_1
-Date: Sun, 2 Nov 2008 19:53:06 +0100
-Message-ID: <621d098f0811021053t125f7231na46af9a59767927e@mail.gmail.com>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
+Date: Sun, 2 Nov 2008 13:28:52 -0800
+Message-ID: <20081102212852.GA8162@cynthia.pants.nu>
+References: <12255325912043-git-send-email-Laurent@lvivier.info> <Pine.LNX.4.64.0811020947320.5281@anakin> <AC634DD2-CE12-4975-BB8E-B564C7DFDC06@lvivier.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from [76.245.85.235] ([76.245.85.235]:49825 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1754208AbYKBV3Z (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 2 Nov 2008 16:29:25 -0500
 Content-Disposition: inline
+In-Reply-To: <AC634DD2-CE12-4975-BB8E-B564C7DFDC06@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Laurent Vivier <Laurent@lvivier.info>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Hi,
+On Sun, Nov 02, 2008 at 12:21:23PM +0100, Laurent Vivier wrote:
+> Le 2 nov. 08 =E0 09:54, Geert Uytterhoeven a =E9crit :
+> > The preferred way to do this these days is to create a platform =20
+> > device with a
+> > struct resource that points to the SWIMBase.
+>=20
+> Is this what Finn explains also in his answer ?
+> If so, I agree.
 
-somewhere between 2.6.27-git8 (0cfd81031a26717fe14380d18275f8e217571615)
-and 2.6.27-git9 (a50c22eed593f474e75f693381e4d42e81762de8) my cross-compile
-toolchain broke. Using gcc 4.2.4, ld 2.17.50.0.17.20070615 configured for m68k,
-and building amiga_defconfig yields
+Not exactly. What Finn suggested is to match the way we handle
+many of the other on-board things like ADB and SCSI. What Geert
+suggests is a much more recent way to do things that we generally
+haven't done for Mac-only drivers. I think Finn used it for the
+new Sonic ethernet driver because we share it with other systems.
+The code in macsonic.c also has the extra complexity from having
+both NuBus and on-board hardware to support, and NuBus also hasn't
+been updated to the new driver model.
 
-  CC      fs/proc/stat.o
-/fs/proc/stat.c: In function 'show_stat':
-/fs/proc/stat.c:115: internal compiler error: in
-find_reloads_address_1, at reload.c:5639
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://gcc.gnu.org/bugs.html> for instructions.
-make[3]: *** [fs/proc/stat.o] Error 1
-make[2]: *** [fs/proc] Error 2
-make[1]: *** [fs] Error 2
-make: *** [sub-make] Error 2
+=46inn's suggestion of using the macintosh_config entry and data
+table is the easiest way to get it working, but Geert's method
+would move to the real device/driver model that most other
+systems are using now. Ideally this would be a macio driver
+instead of a platform driver in my opinion, but I haven't finished
+getting the macio bus code working on m68k.
 
-(Full log at http://l4x.org/k/?d=52637)
+	Brad Boyer
+	flar@allandria.com
 
-is this problem known or worth the hassle to report to gcc bugzilla?
-Also, with which
-version are you guys currently compiling?
-
-Thanks,
-
-Jan
-
-
--- 
-Jan Dittmer <jdi@l4x.org>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
