@@ -1,254 +1,58 @@
 From: Laurent Vivier <Laurent@lvivier.info>
 Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Sun, 2 Nov 2008 12:59:25 +0100
-Message-ID: <B6BD01E4-96D5-4F50-BFEA-B40DCFF51D96@lvivier.info>
-References: <12255325912043-git-send-email-Laurent@lvivier.info> <Pine.LNX.4.64.0811021504530.29476@loopy.telegraphics.com.au>
+Date: Sun, 2 Nov 2008 13:02:32 +0100
+Message-ID: <6865D876-3805-41B4-A3AD-15E8659254F2@lvivier.info>
+References: <12255325912043-git-send-email-Laurent@lvivier.info> <20081101181013.GA25819@cynthia.pants.nu>
 Mime-Version: 1.0 (Apple Message framework v929.2)
 Content-Type: text/plain; charset=ISO-8859-1;
 	format=flowed	delsp=yes
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.177]:60086 "EHLO
+Received: from moutng.kundenserver.de ([212.227.126.177]:60518 "EHLO
 	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753236AbYKBL7c convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 2 Nov 2008 06:59:32 -0500
-In-Reply-To: <Pine.LNX.4.64.0811021504530.29476@loopy.telegraphics.com.au>
+	with ESMTP id S1753288AbYKBMCw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 2 Nov 2008 07:02:52 -0500
+In-Reply-To: <20081101181013.GA25819@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
+To: Brad Boyer <flar@allandria.com>
 Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
 
-Le 2 nov. 08 =E0 07:00, Finn Thain a =E9crit :
+Le 1 nov. 08 =E0 19:10, Brad Boyer a =E9crit :
 
->
-> Nice work!
->
-
-Thank you.
-
-> Critique follows.
->
-> On Sat, 1 Nov 2008, Laurent@lvivier.info wrote:
->
->> Index: linux-2.6/arch/m68k/mac/config.c
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- linux-2.6.orig/arch/m68k/mac/config.c	2008-11-01 =20
->> 06:13:53.000000000 +0100
->> +++ linux-2.6/arch/m68k/mac/config.c	2008-11-01 06:14:39.000000000 =20
->> +0100
->> @@ -70,6 +70,7 @@
->> extern void oss_init(void);
->> extern void psc_init(void);
->> extern void baboon_init(void);
->> +extern void swim_init(void);
+> On Sat, Nov 01, 2008 at 10:43:11AM +0100, Laurent@lvivier.info wrote:
+>> It allows to read data from a floppy, but not to write to, and to =20
+>> eject the
+>> floppy (useful on our Mac without eject button).
 >>
->> extern void mac_mksound(unsigned int, unsigned int);
+>> I have tested it on a Quadra 800, but it is supposed to work on:
 >>
->> @@ -815,6 +816,7 @@
->> 	oss_init();
->> 	psc_init();
->> 	baboon_init();
->> +	swim_init();
->> }
+>> II, IIci, IIsi, IIvx, IIx, IIcx, SE/30,
+>> PowerBook 100, PowerBook 140, PowerBook 145, PowerBook 160,
+>> PowerBook 165, PowerBook 165c, PowerBook 170, PowerBook 180,
+>> PowerBook 180c, PowerBook 190, PowerBook 190cs, PowerBook 500,
+>> Performa 460, Performa 550, LC II, LC III, LC 520, Color Classic,
+>> Color Classic II, ClassicII,
+>> Quadra 700, Quadra 800, Quadra 650, Quadra 605, Quadra 610,
+>> Centris 610, Quadra 630, Performa 580, LC 475, LC 575,
 >
-> It would reduce coupling if config.c didn't need to know about the =20
-> floppy
-> drive... I suspect that the initialisation can be simplified with
-> device_initcall.
-
-OK.
-
->
->
->> static void __init mac_report_hardware(void)
->> Index: linux-2.6/arch/m68k/mac/swim.c
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
->> +++ linux-2.6/arch/m68k/mac/swim.c	2008-11-01 06:14:39.000000000 =20
->> +0100
-> ...
->> +#define writePhase	*(SWIMBase + 0x0800)
->> +#define readPhase	*(SWIMBase + 0x1800)
->
-> These are unused.
+> I just have one comment and one question. The model check looks like
+> it will end up printing out a warning message on the AV models. You
+> should add them explicitly to the unsupported list the way you did
+> for the IIfx and Q900/Q950. Also, I'm not sure this driver would
 
 OK
 
 >
-> ...
->> +	default:
->> +		SWIMBase =3D NULL;
->> +		printk("SWIM: unknown Macintosh: report to maintainer !\n");
->
-> If macintosh_config->ident is not in mac_data_table, config.c prints
-> "Detected Macintosh model: Unknown", so there's no need to repeat it =
-=20
-> here.
->
-> ...
->> Index: linux-2.6/drivers/block/swim.c
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
->> +++ linux-2.6/drivers/block/swim.c	2008-11-01 10:36:05.000000000 =20
->> +0100
->> @@ -0,0 +1,886 @@
->> +/*
->> + * Driver for SWIM (Sander. Woz Integrated Machine) floppy =20
->> controller
->
-> Sander Woz Integrated Machine, also known as Super Woz Integrated =20
-> Machine.
->
-
-OK
-
-> ...
->> +
->> +/* bits in mode register */
->> +
->> +#define CLFIFO		0x01
->> +#define ENBL1		0x02
->> +#define ENBL2		0x04
->> +#define ACTION		0x08
->> +#define	WRITE_MODE	0x10
->> +#define	HEDSEL		0x20
->> +#define	MOTON		0x80
->
-> Extra tabs.
-
-OK
-
-> HEAD_SEL? MOTOR_ON?
-
-Yes
-
->
-> ...
->> +
->> +static inline void swim_head(head_t head)
->> +{
->> +	/* FIXME: IWM reads bits SEL, CA2, CA1 to wait drive ready... */
->
-> By SEL, do you mean VIA1A_vHeadSel or the chip register? I wonder if =
-=20
-> CA1
-> and CA2 were used for the floppy on 68000 macs... CA1 and CA2 are =20
-> timers
-> on the Macs we support. Guide to Mac Family hardware might be able to
-> clarify this a bit.
->
-
-I check that.
-
->> +
->> +	/* wait drive is ready */
->> +
->> +	if (head =3D=3D UPPER_HEAD)
->> +		swim_select(READ_DATA_1);
->> +	else if (head =3D=3D LOWER_HEAD)
->> +		swim_select(READ_DATA_0);
->> +}
->> +
->> +static inline int swim_step(void)
->> +{
->> +	int wait;
->> +
->> +	swim_action(STEP);
->> +
->> +	for (wait =3D 0; wait < 80; wait++) {
->
-> Should this loop counter be referred to HZ too?
-
-I check that, too.
-
->
->
->> ...
->> +
->> +static struct floppy_struct floppy_type[4] =3D {
->> +	{    0, 0,0, 0,0,0x00,0x00,0x00,0x00,NULL },	/*  0 no testing    *=
-/
->> +	{  720, 9,1,80,0,0x2A,0x02,0xDF,0x50,NULL },	/*  3 360KB SS 3.5" *=
-/
->> +	{ 1440, 9,2,80,0,0x2A,0x02,0xDF,0x50,NULL },	/*  4 720KB 3.5"    *=
-/
->> +	{ 2880,18,2,80,0,0x1B,0x00,0xCF,0x6C,NULL },    /*  7 1.44MB =20
->> 3.5"   */
->> +};
->
-> The last 3 entries are unused...
->
-
-You're wrong...
-
->> +
->> +static int get_floppy_geometry(int drive, int type, struct =20
->> floppy_struct **g)
->> +{
->> +	struct floppy_state *fs;
->> +	fs =3D &unit[drive];
->> +
->> +	if (drive > floppy_count)
->> +		return -ENODEV;
->> +
->> +	if (type >=3D ARRAY_SIZE(floppy_type))
->> +		return -EINVAL;
->> +
->> +	if (type)
->> +		*g =3D &floppy_type[type];
->> +	else if (fs->type =3D=3D HD_MEDIA) /* High-Density media */
->> +		*g =3D &floppy_type[3];
->> +	else if (fs->head_number =3D=3D 2) /* double-sided */
->> +		*g =3D &floppy_type[2];
->> +	else
->> +		*g =3D &floppy_type[1];
->
-> ...since type is always 0. I wonder how we should deal with 400K and =
-=20
-> 800K
-> floppies. It's academic I guess
-
-type is always 0, but floppy_type[] is used with values 3, 2 and 1.
-
-Well, as I've not a lot of time, I'm working only on the MFM support =20
-(to read floppy written on a PC)
-
->
-> ...
->> +
->> +static int __init swim_init(void)
->> +{
->> +	printk(KERN_INFO "Inserting SWIM floppy driver\n");
->
-> Is this for debugging purposes? I'd prefer to avoid the log spam.
->
-
-OK
-
->> +
->> +	if (base) {
->> +		printk(KERN_INFO "SWIM: Setting SWIMBase to 0x%p\n", base);
->> +		SWIMBase =3D (struct swim *)base;
->> +	}
->> +
->> +	return swim_floppy_init();
->> +}
->> +module_init(swim_init)
->
-> Can we elimiate the additions to arch/m68k/mac and merge the init =20
-> routine
-> from arch/m68k/mac/swim.c with this one by making it a =20
-> device_initcall?
+> work on a Mac II. They didn't originally ship with a SWIM chip at
+> all, but that was available as an upgrade. From the factory they
+> came with the old IWM chip. It's not clear to me if the driver uses
+> any of the SWIM features other than the capability to detect and
+> read high density media which the old drives obviously don't do.
 
 
-I try  this.
+I don't have MacII to test. But this driver needs a SWIM chip to work.
 
 Regards,
 Laurent
