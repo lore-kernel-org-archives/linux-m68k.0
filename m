@@ -1,39 +1,40 @@
 From: Riccardo <riccardo@kaffe.org>
-Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Tue, 4 Nov 2008 19:34:41 +0100
-Message-ID: <3E58F122-AA9F-11DD-9F63-00050249ADE1@kaffe.org>
-References: <6865D876-3805-41B4-A3AD-15E8659254F2@lvivier.info>
+Subject: Re: I'm back on linux-m68k
+Date: Tue, 4 Nov 2008 19:37:01 +0100
+Message-ID: <91DF3A3F-AA9F-11DD-9F63-00050249ADE1@kaffe.org>
+References: <Pine.LNX.4.64.0811031259300.21302@anakin>
 Mime-Version: 1.0 (Apple Message framework v553)
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cp-out11.libero.it ([212.52.84.111]:36589 "EHLO
-	cp-out11.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756107AbYKDSfE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Nov 2008 13:35:04 -0500
-In-Reply-To: <6865D876-3805-41B4-A3AD-15E8659254F2@lvivier.info>
+Received: from cp-out12.libero.it ([212.52.84.112]:50174 "EHLO
+	cp-out12.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754070AbYKDShO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Nov 2008 13:37:14 -0500
+In-Reply-To: <Pine.LNX.4.64.0811031259300.21302@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <Laurent@lvivier.info>
-Cc: Brad Boyer <flar@allandria.com>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Juran <jjuran@gmail.com>, Laurent Vivier <laurent@lvivier.info>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi,
+Hey
 
-On Sunday, November 2, 2008, at 01:02  PM, Laurent Vivier wrote:
+On Monday, November 3, 2008, at 01:01  PM, Geert Uytterhoeven wrote:
 
->> work on a Mac II. They didn't originally ship with a SWIM chip at
->> all, but that was available as an upgrade. From the factory they
->> came with the old IWM chip. It's not clear to me if the driver uses
->> any of the SWIM features other than the capability to detect and
->> read high density media which the old drives obviously don't do.
+> On Mon, 3 Nov 2008, Joshua Juran wrote:
+>> I don't remember if 68K machines can have multiple SCSI buses.  If 
+>> so, we'll
+>> need to figure out how to address external vs. internal.
 >
->
-> I don't have MacII to test. But this driver needs a SWIM chip to work.
+> At least the Quadra 900 and 950 have two SCSI buses, as deducted from 
+> Finn'ss
+> recent patch.
 
-I have a mac II, but I upgraded the SWIM chip, IIRC. I think I upgraded 
-only one of the two drives to high density, but that shouldn't affect 
-you I suppose, since the problem would be the chip. I'll look in my 
-spare parts bin.
+the quadras 9x0 have them but you could also add scsi cards via NuBus. 
+The Q9x0 I think even supported a third ultra-scsi card especially 
+designed as an upgrade for servers. I have seen just one recently and 
+it is not in my possession.
+
 
 Riccardo
 
