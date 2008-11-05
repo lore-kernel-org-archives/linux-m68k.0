@@ -1,38 +1,71 @@
-From: Riccardo <riccardo@kaffe.org>
-Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Wed, 5 Nov 2008 22:45:30 +0100
-Message-ID: <10DF5AA6-AB83-11DD-9A74-00050249ADE1@kaffe.org>
-References: <Pine.LNX.4.64.0811051746550.23115@loopy.telegraphics.com.au>
-Mime-Version: 1.0 (Apple Message framework v553)
-Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 2/2] Add SWIM floppy support for m68k Macs.
+Date: Thu, 6 Nov 2008 10:43:47 +1100 (EST)
+Message-ID: <Pine.LNX.4.64.0811061037460.2469@loopy.telegraphics.com.au>
+References: <12258061372635-git-send-email-laurent@lvivier.info>
+ <12258061372626-git-send-email-laurent@lvivier.info>
+ <Pine.LNX.4.64.0811052151480.25360@loopy.telegraphics.com.au>
+ <65B5034D-7911-45D4-B013-75EA92922608@lvivier.info>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cp-out8.libero.it ([212.52.84.108]:47217 "EHLO
-	cp-out8.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750943AbYKEVpe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 16:45:34 -0500
-In-Reply-To: <Pine.LNX.4.64.0811051746550.23115@loopy.telegraphics.com.au>
+Received: from loopy.telegraphics.com.au ([202.45.126.152]:46032 "EHLO
+	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752649AbYKEXnt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 18:43:49 -0500
+In-Reply-To: <65B5034D-7911-45D4-B013-75EA92922608@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org
+To: Laurent Vivier <laurent@lvivier.info>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
 
-Hi,
 
-On Wednesday, November 5, 2008, at 07:58  AM, Finn Thain wrote:
+On Wed, 5 Nov 2008, Laurent Vivier wrote:
 
-> I've seen this with more recent kernels. Not sure about 2.6.18. It  
-> happens
-> because a proc file is registered twice by the nubus probe code. It is
-> only a cosmetic problem, but I have been working on a patch for it.
->
-> You may want to try Stephen's daily build,
->
-> http://people.debian.org/~smarenka/m68k/kernel/linux-image-2.6.26-1- 
-> mac_2.6.26-9_m68k.deb
+> > >+		break;
+> > >+	default:
+> > >+		swim_base = NULL;
+> > >+		break;
+> > >+	}
+> > >+
+> > >+	if (dev->id == 0 && base)
+> > >+		swim_base = (struct swim *)base;
+> > >+
+> > >+	if (swim_base == NULL)
+> > >+		return -ENODEV;
+> >
+> >I think dev->id is always 0?
+> 
+> Yes, but as platform driver allows to have several instance of platform device
+> I though if we suppose we have several SWIM we should use the module parameter
+> only with the first one.
+> I can remove this if you think it is useless.
 
-Thank you, but I used one of those, from yesterday.
+Dead code adds complexity and therefore requires more work (if only to 
+figure out whether it is a bug or not). Compare with,
 
-Riccardo
+default:
+	swim_base = (struct swim *)base;
+	break;
+}
 
+if (swim_base == NULL)
+	return -ENODEV;
+
+Finn
+
+> 
+> Thank you for your comments.
+> 
+> Regards,
+> Laurent
+> ----------------------- Laurent Vivier ----------------------
+> "The best way to predict the future is to invent it."
+> - Alan Kay
+> 
+> 
+> 
+> 
+> 
+> 
