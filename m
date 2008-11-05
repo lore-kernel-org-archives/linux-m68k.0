@@ -1,59 +1,136 @@
-From: Laurent Vivier <Laurent@lvivier.info>
-Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Wed, 5 Nov 2008 15:32:13 +0100
-Message-ID: <8E70C812-7878-494E-A2D8-66BB7402A74E@lvivier.info>
-References: <6865D876-3805-41B4-A3AD-15E8659254F2@lvivier.info> <3E58F122-AA9F-11DD-9F63-00050249ADE1@kaffe.org> <20081104200600.GA32663@cynthia.pants.nu> <F4658C02-D1D5-44E5-BF17-671AE770CD71@gmail.com> <Pine.LNX.4.64.0811051852060.23823@loopy.telegraphics.com.au> <B0EA0FB1-9FEF-4159-ADAB-B5C2EA910352@gmail.com> <Pine.LNX.4.64.0811052352001.26662@loopy.telegraphics.com.au>
+From: Laurent Vivier <laurent@lvivier.info>
+Subject: Re: [PATCH 2/2] Add SWIM floppy support for m68k Macs.
+Date: Wed, 5 Nov 2008 16:53:18 +0100
+Message-ID: <65B5034D-7911-45D4-B013-75EA92922608@lvivier.info>
+References: <12258061372635-git-send-email-laurent@lvivier.info> <12258061372626-git-send-email-laurent@lvivier.info> <Pine.LNX.4.64.0811052151480.25360@loopy.telegraphics.com.au>
 Mime-Version: 1.0 (Apple Message framework v929.2)
 Content-Type: text/plain; charset=ISO-8859-1;
 	format=flowed	delsp=yes
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.188]:50323 "EHLO
+Received: from moutng.kundenserver.de ([212.227.126.177]:59946 "EHLO
 	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752082AbYKEOct convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 09:32:49 -0500
-In-Reply-To: <Pine.LNX.4.64.0811052352001.26662@loopy.telegraphics.com.au>
+	with ESMTP id S1752540AbYKEPxi convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 10:53:38 -0500
+In-Reply-To: <Pine.LNX.4.64.0811052151480.25360@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Joshua Juran <jjuran@gmail.com>, Brad Boyer <flar@allandria.com>, Riccardo <riccardo@kaffe.org>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
 
-Le 5 nov. 08 =E0 14:10, Finn Thain a =E9crit :
+Le 5 nov. 08 =E0 12:10, Finn Thain a =E9crit :
 
 >
 >
-> On Wed, 5 Nov 2008, Joshua Juran wrote:
+> On Tue, 4 Nov 2008, Laurent Vivier wrote:
 >
->> On Nov 5, 2008, at 2:31 AM, Finn Thain wrote:
->>
->>> On Tue, 4 Nov 2008, Joshua Juran wrote:
->>>
->>>> On Nov 4, 2008, at 12:06 PM, Brad Boyer wrote:
->>>>
->>>>> On Tue, Nov 04, 2008 at 07:34:41PM +0100, Riccardo wrote:
->>>>>
->>>>> Hopefully there's a logical way to detect this upgrade
+>> +#define swim_write(base, reg, v) 	out_8(&(base)->write_##reg, (v))
+>> +#define swim_read(base, reg)		in_8(&(base)->read_##reg)
+>> +
+>> +/* bits in phase register */
+>> +
+>> +#define SEEK_POSITIVE	0x070
+>> +#define SEEK_NEGATIVE	0x074
+>> +#define STEP		0x071
+>> +#define MOTOR_ON	0x072
+>> +#define MOTOR_OFF	0x076
+>> +#define INDEX		0x073
+>> +#define EJECT		0x077
+>> +#define SETMFM		0x171
+>> +#define SETGCR		0x175
+>> +
+>> +#define RELAX		0x033
+>> +#define LSTRB		0x008
+>> +
+>> +#define CA_MASK		0x077
+>> +
+>> +/* Select values for swim_select and swim_readbit */
+>> +
+>> +#define STEP_DIR	0x070
+>> +#define STEPPING	0x071
+>> +#define MOTOR_ON	0x072
 >
-> ...
->>
->> It's probably a good idea for the kernel to know the address and =20
->> size of
->> the ROM
->
-> No need (the less code the better).
->
-> And passing just a checksum from the bootloader is still an awful hac=
-k
-> compared to probing for IWM or SWIM on a Mac II.
+> MOTOR_ON is defined twice. Are STEP & STEPPING the same?
 
-The SWIM chip can act like an IWM one and there is a procedure to know =
-=20
-in which mode it is.
+In fact, I took this from swim3 driver.
+Values used here (with swim_select() and swim_readbit()) are closely =20
+linked with values defined for phase register.
+But I think it is a good idea to rename them.
 
-If we suppose the SWIM chip on MacII is at the same address than the =20
-IWM one, we should be able to use this procedure to know if it is an =20
-IWM or a SWIM.
+>
+>
+>> +#define ELAX		0x073	/* also eject in progress */
+>> +#define READ_DATA_0	0x074
+>> +#define TWOMEG_DRIVE	0x075
+>> +#define SINGLE_SIDED	0x076
+>> +#define DRIVE_PRESENT	0x077
+>> +#define DISK_IN		0x170
+>> +#define WRITE_PROT	0x171
+>> +#define TRACK_ZERO	0x172
+>> +#define TACHO		0x173
+>> +#define READ_DATA_1	0x174
+>> +#define MFM_MODE	0x175
+>> +#define SEEK_COMPLETE	0x176
+>> +#define ONEMEG_MEDIA	0x177
+>> +
+>> +/* Bits in handshake register */
+>> +
+>> +#define MARK_BYTE	0x01
+>> +#define CRC_ZERO	0x02
+>> +#define RDDATA		0x04
+>> +#define SENSE		0x08
+>> +#define MOTEN		0x10
+>> +#define ERROR		0x20
+>> +#define DAT2BYTE	0x40
+>> +#define DAT1BYTE	0x80
+>> +
+>> +/* bits in setup register */
+>> +
+>> +#define S_INV_WDATA	0x01
+>> +#define S_3_5_SELECT	0x02
+>> +#define S_GCR		0x04
+>> +#define S_FCLK_DIV2	0x08
+>> +#define S_ERROR_CORR	0x10
+>> +#define S_IBM_DRIVE	0x20
+>> +#define S_GCR_WRITE	0x40
+>> +#define S_TIMEOUT	0x80
+>> +
+>> +/* bits in mode register */
+>> +
+>> +#define CLFIFO		0x01
+>> +#define ENBL1		0x02
+>> +#define ENBL2		0x04
+>> +#define ACTION		0x08
+>> +#define	WRITE_MODE	0x10
+>> +#define	HEDSEL		0x20
+>> +#define	MOTON		0x80
+>
+> There extra tabs are still here.
+>
+
+Yes, sorry, I correct this (again...).
+
+>> +		break;
+>> +	default:
+>> +		swim_base =3D NULL;
+>> +		break;
+>> +	}
+>> +
+>> +	if (dev->id =3D=3D 0 && base)
+>> +		swim_base =3D (struct swim *)base;
+>> +
+>> +	if (swim_base =3D=3D NULL)
+>> +		return -ENODEV;
+>
+> I think dev->id is always 0?
+
+Yes, but as platform driver allows to have several instance of =20
+platform device I though if we suppose we have several SWIM we should =20
+use the module parameter only with the first one.
+I can remove this if you think it is useless.
+
+Thank you for your comments.
 
 Regards,
 Laurent
