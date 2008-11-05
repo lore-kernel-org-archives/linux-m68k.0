@@ -1,48 +1,38 @@
 From: Riccardo <riccardo@kaffe.org>
 Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Wed, 5 Nov 2008 22:43:54 +0100
-Message-ID: <D804E89A-AB82-11DD-9A74-00050249ADE1@kaffe.org>
-References: <20081105022850.GA3243@cynthia.pants.nu>
+Date: Wed, 5 Nov 2008 22:45:30 +0100
+Message-ID: <10DF5AA6-AB83-11DD-9A74-00050249ADE1@kaffe.org>
+References: <Pine.LNX.4.64.0811051746550.23115@loopy.telegraphics.com.au>
 Mime-Version: 1.0 (Apple Message framework v553)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cp-out11.libero.it ([212.52.84.111]:52987 "EHLO
-	cp-out11.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751954AbYKEVoM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 16:44:12 -0500
-In-Reply-To: <20081105022850.GA3243@cynthia.pants.nu>
+Received: from cp-out8.libero.it ([212.52.84.108]:47217 "EHLO
+	cp-out8.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750943AbYKEVpe (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 16:45:34 -0500
+In-Reply-To: <Pine.LNX.4.64.0811051746550.23115@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Brad Boyer <flar@allandria.com>
-Cc: Laurent Vivier <Laurent@lvivier.info>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org
 
-Brad,
 
-On Wednesday, November 5, 2008, at 03:28  AM, Brad Boyer wrote:
+Hi,
 
-> On Wed, Nov 05, 2008 at 01:58:48AM +0100, Riccardo wrote:
->> Under Mac 7.1 it gets definitively recognized as Mac II. I 
->> definitively
->> have a SWIM, since one of my two floppies reads HD disks, I checked
->>
->> Penguin says my  gestalt is 6, Mac II
->>
->> A clue for the MacII is the 68020 CPU + FPU + MMU, AFAIK the only 
->> apple
->> machine with these specs.
+On Wednesday, November 5, 2008, at 07:58  AM, Finn Thain wrote:
+
+> I've seen this with more recent kernels. Not sure about 2.6.18. It  
+> happens
+> because a proc file is registered twice by the nubus probe code. It is
+> only a cosmetic problem, but I have been working on a patch for it.
 >
-> That definitely answers my question. Thank you.
+> You may want to try Stephen's daily build,
 >
-true. But if the gestalt remains 6 even with a HD drive chip, how can 
-you detect it?
+> http://people.debian.org/~smarenka/m68k/kernel/linux-image-2.6.26-1- 
+> mac_2.6.26-9_m68k.deb
 
-
-- original IWM 800k drives
-- SWIM with 800k drives or mixed drives
-- SWIM with only 1.4k drives
-
-I'm in the second situation, btw.
+Thank you, but I used one of those, from yesterday.
 
 Riccardo
 
