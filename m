@@ -1,71 +1,37 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 2/2] Add SWIM floppy support for m68k Macs.
-Date: Thu, 6 Nov 2008 10:43:47 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0811061037460.2469@loopy.telegraphics.com.au>
-References: <12258061372635-git-send-email-laurent@lvivier.info>
- <12258061372626-git-send-email-laurent@lvivier.info>
- <Pine.LNX.4.64.0811052151480.25360@loopy.telegraphics.com.au>
- <65B5034D-7911-45D4-B013-75EA92922608@lvivier.info>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
+Date: Wed, 5 Nov 2008 20:09:23 -0800
+Message-ID: <20081106040923.GA17813@cynthia.pants.nu>
+References: <6865D876-3805-41B4-A3AD-15E8659254F2@lvivier.info> <3E58F122-AA9F-11DD-9F63-00050249ADE1@kaffe.org> <20081104200600.GA32663@cynthia.pants.nu> <F4658C02-D1D5-44E5-BF17-671AE770CD71@gmail.com> <Pine.LNX.4.64.0811051852060.23823@loopy.telegraphics.com.au> <B0EA0FB1-9FEF-4159-ADAB-B5C2EA910352@gmail.com> <Pine.LNX.4.64.0811052352001.26662@loopy.telegraphics.com.au> <8E70C812-7878-494E-A2D8-66BB7402A74E@lvivier.info>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:46032 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752649AbYKEXnt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2008 18:43:49 -0500
-In-Reply-To: <65B5034D-7911-45D4-B013-75EA92922608@lvivier.info>
+Received: from [76.245.85.235] ([76.245.85.235]:51199 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1753008AbYKFEKg (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 5 Nov 2008 23:10:36 -0500
+Content-Disposition: inline
+In-Reply-To: <8E70C812-7878-494E-A2D8-66BB7402A74E@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <laurent@lvivier.info>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Laurent Vivier <Laurent@lvivier.info>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Joshua Juran <jjuran@gmail.com>, Riccardo <riccardo@kaffe.org>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
+On Wed, Nov 05, 2008 at 03:32:13PM +0100, Laurent Vivier wrote:
+> The SWIM chip can act like an IWM one and there is a procedure to know  
+> in which mode it is.
 
+That is good to know. Hopefully that can also be used to detect which
+chip it is, possibly by checking for a mode change failure.
 
-On Wed, 5 Nov 2008, Laurent Vivier wrote:
+> If we suppose the SWIM chip on MacII is at the same address than the  
+> IWM one, we should be able to use this procedure to know if it is an  
+> IWM or a SWIM.
 
-> > >+		break;
-> > >+	default:
-> > >+		swim_base = NULL;
-> > >+		break;
-> > >+	}
-> > >+
-> > >+	if (dev->id == 0 && base)
-> > >+		swim_base = (struct swim *)base;
-> > >+
-> > >+	if (swim_base == NULL)
-> > >+		return -ENODEV;
-> >
-> >I think dev->id is always 0?
-> 
-> Yes, but as platform driver allows to have several instance of platform device
-> I though if we suppose we have several SWIM we should use the module parameter
-> only with the first one.
-> I can remove this if you think it is useless.
+It would have to be the same address, since the address decoding logic
+is part of the bus interface circuits on 68k macs. Each IO chip just
+has a chip select and a few address lines based on what I've seen.
 
-Dead code adds complexity and therefore requires more work (if only to 
-figure out whether it is a bug or not). Compare with,
+	Brad Boyer
+	flar@allandria.com
 
-default:
-	swim_base = (struct swim *)base;
-	break;
-}
-
-if (swim_base == NULL)
-	return -ENODEV;
-
-Finn
-
-> 
-> Thank you for your comments.
-> 
-> Regards,
-> Laurent
-> ----------------------- Laurent Vivier ----------------------
-> "The best way to predict the future is to invent it."
-> - Alan Kay
-> 
-> 
-> 
-> 
-> 
-> 
