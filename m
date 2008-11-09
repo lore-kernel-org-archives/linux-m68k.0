@@ -1,52 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Laurent Vivier <laurent@lvivier.info>
 Subject: Re: [PATCH 2/2][v3] Add SWIM floppy support for m68k Macs.
-Date: Sun, 9 Nov 2008 20:42:33 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811092041300.19341@anakin>
-References: <12260012691527-git-send-email-laurent@lvivier.info>
- <Pine.LNX.4.64.0811091716590.19341@anakin> <914807AF-2B1B-4E28-BB75-8E1FAA5463C5@lvivier.info>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
+Date: Sun, 9 Nov 2008 22:06:08 +0100
+Message-ID: <53A1BB3E-6764-4127-92A0-AA0ADFE0E632@lvivier.info>
+References: <12260012691527-git-send-email-laurent@lvivier.info> <Pine.LNX.4.64.0811091716590.19341@anakin> <914807AF-2B1B-4E28-BB75-8E1FAA5463C5@lvivier.info> <Pine.LNX.4.64.0811092041300.19341@anakin>
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:52290 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750730AbYKITmh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2008 14:42:37 -0500
-In-Reply-To: <914807AF-2B1B-4E28-BB75-8E1FAA5463C5@lvivier.info>
+Received: from moutng.kundenserver.de ([212.227.17.8]:49832 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756125AbYKIVGV convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2008 16:06:21 -0500
+In-Reply-To: <Pine.LNX.4.64.0811092041300.19341@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <laurent@lvivier.info>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, 9 Nov 2008, Laurent Vivier wrote:
-> Le 9 nov. 08 =E0 17:19, Geert Uytterhoeven a =E9crit :
-> > On Thu, 6 Nov 2008, Laurent Vivier wrote:
-> > > --- /dev/null
-> > > +++ b/drivers/block/swim.c
-> >=20
-> > > +static struct platform_device *swim_device;
-> >=20
-> > One global instance?
->=20
-> Yes, why not ? Could you explain ?
 
-It prevents the driver from working if you have multiple SWIM devices.
+Le 9 nov. 08 =E0 20:42, Geert Uytterhoeven a =E9crit :
 
-Didn't I read something about SWIM chips on expansion cards?
+> On Sun, 9 Nov 2008, Laurent Vivier wrote:
+>> Le 9 nov. 08 =E0 17:19, Geert Uytterhoeven a =E9crit :
+>>> On Thu, 6 Nov 2008, Laurent Vivier wrote:
+>>>> --- /dev/null
+>>>> +++ b/drivers/block/swim.c
+>>>
+>>>> +static struct platform_device *swim_device;
+>>>
+>>> One global instance?
+>>
+>> Yes, why not ? Could you explain ?
+>
+> It prevents the driver from working if you have multiple SWIM devices=
+=2E
 
-Gr{oetje,eeting}s,
+If we have multiple SWIM devices the driver is only able to know the =20
+base address of the onboard controller.
+So, it manages only one.
 
-						Geert
+>
+> Didn't I read something about SWIM chips on expansion cards?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+I think you speak about the expansion card for the MacII allowing to =20
+replace the WIM controller by a SWIM one, but what I understood is the =
+=20
+SWIM replaces the WIM at the same base address. Moreover the SWIM has =20
+a WIM compatibility mode: it's why I've added the set_swim_mode() and =20
+get_swim_mode() to detect in which case we are. But there is only one =20
+controller at a time.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+Regards,
+Laurent
+----------------------- Laurent Vivier ----------------------
+"The best way to predict the future is to invent it."
+- Alan Kay
+
+
+
+
+
 --
 To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
 n
