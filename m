@@ -1,73 +1,88 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: Re: [RFC PATCH] falconide: remove needless ST-DMA locking
-Date: Sun, 9 Nov 2008 20:01:05 +0100
-Message-ID: <200811092001.05628.bzolnier@gmail.com>
-References: <200810172041.17191.bzolnier@gmail.com> <Pine.LNX.4.64.0810181043550.11796@anakin> <200810181225.48329.bzolnier@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <200810181225.48329.bzolnier@gmail.com>
-Content-Disposition: inline
-Sender: linux-ide-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>, Stephen R Marenka <stephen@marenka.net>
+From: Laurent Vivier <laurent@lvivier.info>
+Subject: Re: [PATCH 2/2][v3] Add SWIM floppy support for m68k Macs.
+Date: Sun, 9 Nov 2008 20:14:52 +0100
+Message-ID: <914807AF-2B1B-4E28-BB75-8E1FAA5463C5@lvivier.info>
+References: <12260012691527-git-send-email-laurent@lvivier.info> <Pine.LNX.4.64.0811091716590.19341@anakin>
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed	delsp=yes
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from moutng.kundenserver.de ([212.227.126.186]:57351 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755643AbYKITUS convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2008 14:20:18 -0500
+In-Reply-To: <Pine.LNX.4.64.0811091716590.19341@anakin>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Saturday 18 October 2008, Bartlomiej Zolnierkiewicz wrote:
-> On Saturday 18 October 2008, Geert Uytterhoeven wrote:
-> > On Sat, 18 Oct 2008, Michael Schmitz wrote:
-> > > > While working on ide_do_request() improvements I stumbled upon
-> > > > mismatched ide_get_lock() / ide_release_lock() calls.
-> > > > 
-> > > > [ It seems to be known issue:
-> > > >  http://marc.info/?l=linux-m68k&m=121423752829622&w=2 ]
-> > > 
-> > > It is a known issue, and I submitted a simple fix to Geert a month or so ago.
-> > > It involves moving the ide_get_lock call inside the request loop instead of
-> > > doing it once at the start of the function.
-> > 
-> > See http://marc.info/?l=linux-ide&m=121473433631934&w=2
-> > 
-> > In response to this patch, I wondered:
-> > 
-> > > > If hwgroup->busy serves a similar purpose to falconide_intr_lock, what
-> > > > about
-> > > > moving the setting/clearing of hwgroup->busy into
-> > > > ide_{get,release}_lock()
-> > > > (and possibly renaming ide_{get,release}_lock() to e.g.
-> > > > ide_hwgroup_{set,clear}_busy())?
-> > > > 
-> > > > What about the other places where hwgroup->busy is set/cleared?
-> > 
-> > And Michael responsed:
-> > 
-> > > Uh - that's where it gets a bit sticky again. hwgroup->busy is set and
-> > > cleared quite a lot 'preemptively' all over ide-io.c, f.e. in timeout
-> > > handling. I'm not sure
-> > > whether this would just reintroduce the bug message.
-> > > 
-> > > The lock must be held as long as there are any interrupts to be expected
-> > > from IDE. If the hwgroup->busy semantics reflects just that, it's worth
-> > > a try.
-> > 
-> > Bart, can you shed a light on the hwgroup->busy semantics?
-> 
-> hwgroup->busy means that hwgroup is busy ;-)
-> 
-> It protects against any access to the underlying hardware so it is
-> also used when device is accessed in polling mode (without waiting
-> for IRQ).  However your proposal still sounds fine.  We can treat
-> hwgroup->busy as "waiting for IRQ" flag on Falcon and it would be
-> correct (we will just hold the lock needlessly sometimes but we're
-> already doing exactly that).
-> 
-> [ The one thing that we have to watch out is not to leak IDE core
->   specific things to <asm/ide.h> and host/platform specific ones to
->   IDE core so some new abstraction level may be needed for handling
->   ST-DMA lock itself (->[un]lock_host methods in struct ide_port_ops
->   or something along the lines)... ]
 
-Since there was no follow-ups on this I've just applied Michael's
-patch for now (& will push it to Linus for .28)...
+Le 9 nov. 08 =E0 17:19, Geert Uytterhoeven a =E9crit :
+
+> On Thu, 6 Nov 2008, Laurent Vivier wrote:
+>> --- /dev/null
+>> +++ b/drivers/block/swim.c
+>
+>> +static struct platform_device *swim_device;
+>
+> One global instance?
+
+
+Yes, why not ? Could you explain ?
+
+>
+>
+>> +static int __devinit swim_probe(struct platform_device *dev)
+>> +{
+>> +	struct swim *swim_base;
+>> +	struct swim_priv *swd;
+>> +
+>> +	if (!MACH_IS_MAC)
+>> +		return -ENODEV;
+>> +
+>> +	switch (macintosh_config->floppy_type) {
+>> +	case MAC_FLOPPY_SWIM_ADDR1:
+>> +		swim_base =3D (struct swim *)(VIA1_BASE + 0x1E000);
+>> +		break;
+>> +	case MAC_FLOPPY_SWIM_ADDR2:
+>> +		swim_base =3D (struct swim *)(VIA1_BASE + 0x16000);
+>> +		break;
+>> +	default:
+>> +		swim_base =3D (struct swim *)base;
+>> +		break;
+>> +	}
+>> +
+>> +	if (swim_base =3D=3D NULL)
+>> +		return -ENODEV;
+>> +
+>> +	printk(KERN_INFO "SWIM base adress 0x%p\n", swim_base);
+>> +
+>> +	/* probe device */
+>> +
+>> +	set_swim_mode(swim_base, 1);
+>> +	if (!get_swim_mode(swim_base)) {
+>
+> get_swim_mode() is also written in assembly. Is plain C not fast =20
+> enough?
+> If speed matters, what about disabling interrupts here?
+
+I can rewrite it in C.
+
+Regards,
+Laurent
+
+----------------------- Laurent Vivier ----------------------
+"The best way to predict the future is to invent it."
+- Alan Kay
+
+
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
