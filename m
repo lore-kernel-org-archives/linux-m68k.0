@@ -1,75 +1,68 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] Add SWIM floppy support for m68k Macs.
-Date: Mon, 10 Nov 2008 11:15:02 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0811101041560.365@loopy.telegraphics.com.au>
-References: <12255325912043-git-send-email-Laurent@lvivier.info>
- <Pine.LNX.4.64.0811020947320.5281@anakin> <AC634DD2-CE12-4975-BB8E-B564C7DFDC06@lvivier.info>
- <20081102212852.GA8162@cynthia.pants.nu> <Pine.LNX.4.64.0811031102090.10345@loopy.telegraphics.com.au>
- <Pine.LNX.4.64.0811091711150.19341@anakin>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: [PATCH 2/2][v3] Add SWIM floppy support for m68k Macs.
+Date: Sun, 9 Nov 2008 17:04:10 -0800
+Message-ID: <20081110010409.GA930@cynthia.pants.nu>
+References: <12260012691527-git-send-email-laurent@lvivier.info> <Pine.LNX.4.64.0811091716590.19341@anakin> <914807AF-2B1B-4E28-BB75-8E1FAA5463C5@lvivier.info> <Pine.LNX.4.64.0811092041300.19341@anakin> <53A1BB3E-6764-4127-92A0-AA0ADFE0E632@lvivier.info>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:53641 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756245AbYKJAPF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2008 19:15:05 -0500
-In-Reply-To: <Pine.LNX.4.64.0811091711150.19341@anakin>
+Received: from [76.245.85.235] ([76.245.85.235]:40919 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1755310AbYKJBFX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 9 Nov 2008 20:05:23 -0500
+Content-Disposition: inline
+In-Reply-To: <53A1BB3E-6764-4127-92A0-AA0ADFE0E632@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Brad Boyer <flar@allandria.com>, Laurent Vivier <Laurent@lvivier.info>, linux-m68k@vger.kernel.org
+To: Laurent Vivier <laurent@lvivier.info>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
+On Sun, Nov 09, 2008 at 10:06:08PM +0100, Laurent Vivier wrote:
+> Le 9 nov. 08 =E0 20:42, Geert Uytterhoeven a =E9crit :
+> > It prevents the driver from working if you have multiple SWIM devic=
+es.
+>=20
+> If we have multiple SWIM devices the driver is only able to know the =
+=20
+> base address of the onboard controller.
+> So, it manages only one.
 
+There is never a second SWIM chip. However, there is one system
+(the unsupported Mac SE) that can have 3 floppy drives attached
+to a single SWIM chip. It's unlikely to ever be supported in
+Linux due to using a 68000 CPU rather than a 68020 or 68030.
 
-On Sun, 9 Nov 2008, Geert Uytterhoeven wrote:
+Geert's suggestion would be the ideal thing in my opinion even
+though we know there are never multiple chips, but I think it's
+a low priority.
 
-> On Mon, 3 Nov 2008, Finn Thain wrote:
-> > 
-> > I agree with Geert. Ignore my comment about device_initcall -- I was 
-> > looking at via-cuda.c but that is not a good example. 
-> > drivers/scsi/mac_esp.c is a better example.
-> > 
-> > esp_mac_probe checks the macintosh_config entry. That and 
-> > esp_mac_remove are the platform device entry points Geert referred to. 
-> > The module entry points are mac_esp_init and mac_esp_exit. I think you 
-> > could use either of the platform device probe routine or the module 
-> > init routine to set the base address.
-> 
-> Ideally, the _probe() routine should not look at the bits in 
-> macintosh_config, but only at the platform device and its resources.
+> > Didn't I read something about SWIM chips on expansion cards?
+>=20
+> I think you speak about the expansion card for the MacII allowing to =
+=20
+> replace the WIM controller by a SWIM one, but what I understood is th=
+e =20
+> SWIM replaces the WIM at the same base address. Moreover the SWIM has=
+ =20
+> a WIM compatibility mode: it's why I've added the set_swim_mode() and=
+ =20
+> get_swim_mode() to detect in which case we are. But there is only one=
+ =20
+> controller at a time.
 
-Makes sense.
+I think the discussion in question was the one about adding a nubus ESP
+driver for SCSI expansion cards. That was pretty recent.
 
-> The creation of the platform device should be moved to 
-> arch/m68k/mac/config
+You are right that there is just a single socket for the floppy control=
+ler
+on the Mac II and the upgrade replaces the old chip with a new one.
 
-That means adding #if CONFIG_BLK_DEV_SWIM to config.c.
+	Brad Boyer
+	flar@allandria.com
 
-It also makes drivers/block/swim.c less cohesive.
-
-> which would create the platform device, and only if the bits in 
-> macintosh_config indicate that the hardware is present. The actual value 
-> of swim_base can be stored in a struct resource linked to the platform 
-> device.
-
-I'm probably missing something here, but I can see some benefit in doing 
-this only in the absence of a global macintosh_config.
-
-But if you didn't have a global macintosh_config, several parts of 
-macintosh_config (especially macintosh_config->ident) would end up 
-duplicated in each of the struct resources for the platform devices, no? 
-
-Would you explain it is we gain from moving platform init routines into 
-config.c? I can only see disadvantages.
-
-Finn
- 
-> So far the only platform device for m68k (not in mainline) is Michael's 
-> EtherNAT driver, cfr. arch/m68k/atari/config.c. Note that that one 
-> registers the platform device unconditionally, as there's no magic 
-> predictor for its presence in the firmware or machine tables.
-> 
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
-> 
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
