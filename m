@@ -1,113 +1,90 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH][v4] Add SWIM floppy support for m68k Macs.
-Date: Fri, 14 Nov 2008 10:44:32 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0811141042380.18881@loopy.telegraphics.com.au>
-References: <A9169170-9D86-420C-B4DB-3049650C77F7@lvivier.info>
+From: Stephen N Chivers <schivers@csc.com.au>
+Subject: Re: Kernel 2.6.24, binutils-2.18, and tftplilo on diskless MVME167.
+Date: Fri, 14 Nov 2008 09:59:09 +1000
+Message-ID: <OF5B7AD7F9.7094DDB7-ONCA257500.008363C6-CA257500.0083C21C@csc.com>
+References: <Pine.LNX.4.64.0811111055100.19341@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:60195 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751854AbYKMXoe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 13 Nov 2008 18:44:34 -0500
-In-Reply-To: <A9169170-9D86-420C-B4DB-3049650C77F7@lvivier.info>
+Received: from mail164.messagelabs.com ([216.82.253.131]:64103 "EHLO
+	mail164.messagelabs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752943AbYKMX7E (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 13 Nov 2008 18:59:04 -0500
+In-Reply-To: <Pine.LNX.4.64.0811111055100.19341@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <laurent@lvivier.info>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Debian GNU/Linux m68k <debian-68k@lists.debian.org>, geert@linux-m68k.org, Linux/m68k <linux-m68k@vger.kernel.org>, Stephen N Chivers <schivers@csc.com.au>, Andreas Schwab <schwab@suse.de>, Roman Zippel <zippel@linux-m68k.org>
 
+On Tue, 11 Nov 2008, Geert Uytterhoeven wrote:
+   >On Tue, 11 Nov 2008, Stephen N Chivers wrote:
+   >> In the past few days I have attempted to get 2.6 kernels booting on
+   my
+   >> diskless MVME167 boards.
+   >> I have tried several kernels, including:
+   >> linux-image-2.6.26-1-mvme16x_2.6.26-9_m68k.deb.
+   >>
+   >> None of them appear to continue beyond the initialisation code in:
+   >>
+   >>       arch/m68k/kernel/head.S
+   >>
+   >> They load normally via tftplilo and commence executing, apparently
+   stopping
+   >> with the only
+   >> diagnostic available at the console being the magic:
+   >>
+   >>       ABCGHIJK
+   >>
+   >> In frustration, I compiled my own 2.6.24 kernel from clean source
+   using a
+   >> cross compilation
+   >> system based on binutils-2.18 and gcc-4.1.2. The linking of vmlinux
+   failed
+   >> with the infamous:
+   >>
+   >>       m68k-linux-gnu-ld: .tmp_vmlinux1: Not enough room for program
+   >> headers, try linking with -N
+   >>
+   >> I applied the patch for vmlinux-std.lds provided by Andreas Schwab:
+   >>
+   >>        http://marc.info/?l=linux-m68k&m=120596505621019&w=2
+   >>
+   >That patch is not in the m68k tree. It also doesn't apply anymore, as
+   we
+   >already have a NOTES somewhere else now.
+   >
+   >Do you still need it on e.g. 2.6.27?
+   >
+   Thanks, but no. I had found that the NOTES section was in a later
+   kernel version. I use 2.6.24 here as it is my 'configuration baseline'
+   for
+   x86 and ppc. I have a number of MVME5110 PPC boards running 2.6 kernels
+   in VME racks as well as the MVME167. I have tried compiling 2.6.27 but
+   it failed with my toolchain.
+   >> I traced the "freeze" of the kernel to the 'BUG_ON' test in
+   >> 'm68k_setup_user_interrupt' in file
+   >> arch/m68k/ints.c:
+   >>
+   >>       BUG_ON(IRQ_USER + cnt >= NR_IRQS);
+   >>
+   >> Now, for the VME boards, IRQ_USER is 8, cnt is 192 and NR_IRQS is
+   200. So
+   >> this test will
+   >> trigger the BUG_ON action, and so the kernel appears to stop without
+   >> logging any diagnostics.
+   >>
+   >Oops, that looks like an off-by-one error.  It has been introduced by
+   commit
+   >69961c375288bdab7604e0bb1c8d22999bb8a347 ("[PATCH] m68k/Atari:
+   Interrupt
+   >updates").
+   >
+   >I'll fix it.
+   Yes, please, I would appreciate it. I am not comfortable with
+   submitting patches to the kernel and feel that it is better left
+   to those with more experience.
+   >
+   >Gr{oetje,eeting}s
 
-On Thu, 13 Nov 2008, Laurent Vivier wrote:
-
-> +
-> +/* IWM registers */
-> +
-> +#define ph0L		0x0000
-> +#define ph0H		0x0200
-> +#define ph1L		0x0400
-> +#define ph1H		0x0600
-> +#define ph2L		0x0800
-> +#define ph2H		0x0a00
-> +#define ph3L		0x0c00
-> +#define ph3H		0x0e00
-> +#define mtrOff		0x1000
-> +#define mtrOn		0x1200
-> +#define intDrive	0x1400
-> +#define extDrive	0x1600
-> +#define q6L		0x1800
-> +#define q6H		0x1a00
-> +#define q7L		0x1c00
-> +#define q7H		0x1e00
-
-The style guide says macro names should be in uppercase.
-
->...
-> Index: linux-2.6/arch/m68k/mac/config.c
-> ===================================================================
-> --- linux-2.6.orig/arch/m68k/mac/config.c	2008-11-12 18:17:52.000000000
-> +0100
-> +++ linux-2.6/arch/m68k/mac/config.c	2008-11-12 18:17:55.000000000 +0100
-> @@ -22,6 +22,7 @@
-> /* keyb */
-> #include <linux/init.h>
-> #include <linux/vt_kern.h>
-> +#include <linux/platform_device.h>
-> 
-> #define BOOTINFO_COMPAT_1_0
-> #include <asm/setup.h>
-> @@ -882,3 +883,42 @@
-> 	strcpy(str, "Macintosh ");
-> 	strcat(str, macintosh_config->name);
-> }
-> +
-> +static struct resource swim_resources[1];
-> +
-> +static struct platform_device swim_device = {
-> +	.name		= "swim",
-> +	.id		= -1,
-> +	.num_resources	= ARRAY_SIZE(swim_resources),
-> +	.resource	= swim_resources,
-> +};
-> +
-> +static struct platform_device *mac_platform_devices[] __initdata = {
-> +	&swim_device
-> +};
-> +
-> +int __init mac_platform_init(void)
-> +{
-> +	u8 *swim_base;
-> +
-> +	switch (macintosh_config->floppy_type) {
-> +	case MAC_FLOPPY_SWIM_ADDR1:
-> +		swim_base = (u8 *)(VIA1_BASE + 0x1E000);
-> +		break;
-> +	case MAC_FLOPPY_SWIM_ADDR2:
-> +		swim_base = (u8 *)(VIA1_BASE + 0x16000);
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	swim_resources[0].name = "swim-regs";
-> +	swim_resources[0].start = (resource_size_t)swim_base;
-> +	swim_resources[0].end = (resource_size_t)(swim_base + 0x2000);
-> +	swim_resources[0].flags = IORESOURCE_MEM;
-> +
-> +	return platform_add_devices(mac_platform_devices,
-> +				    ARRAY_SIZE(mac_platform_devices));
-> +}
-> +
-> +arch_initcall(mac_platform_init);
-> 
-
-Looks fine to me as long as we can be certain that the arch_initcall 
-happens after config_mac() runs...
-
-I guess that the bloat that this approach will cause when we adopt it more 
-widely can be dealt with later by dynamically allocating resources and 
-devices based on mac model (mac "platform"), and converting 
-macintosh_config into init data. No need to do that in this patch though, 
-since almost every model can use this driver anyway.
-
-Finn
+   Stephen Chivers,
+   CSC  Australia, Pty. Ltd.
 
