@@ -1,34 +1,51 @@
-From: Stephen N Chivers <schivers@csc.com.au>
-Subject: Re: Kernel 2.6.24, binutils-2.18, and tftplilo on diskless MVME167.
-Date: Fri, 14 Nov 2008 10:04:52 +1000
-Message-ID: <OF230B0A8F.E04CFE94-ONCA257501.000022B8-CA257501.00007248@csc.com>
-References: <1226611986.4267.16.camel@kars.perseus.home>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Fix off-by-one in m68k_setup_user_interrupt()
+Date: Fri, 14 Nov 2008 08:10:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811140809070.18275@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail87.messagelabs.com ([216.82.250.19]:51641 "EHLO
-	mail87.messagelabs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751420AbYKNAEp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 13 Nov 2008 19:04:45 -0500
-In-Reply-To: <1226611986.4267.16.camel@kars.perseus.home>
+Received: from harold.telenet-ops.be ([195.130.133.65]:50413 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750777AbYKNHKW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 14 Nov 2008 02:10:22 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Kars de Jong <jongk@linux-m68k.org>
-Cc: Debian GNU/Linux m68k <debian-68k@lists.debian.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Andreas Schwab <schwab@suse.de>, Roman Zippel <zippel@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Friday 14/11/2008, Kars de Jong wrote:
+commit 69961c375288bdab7604e0bb1c8d22999bb8a347 ("[PATCH] m68k/Atari: Interrupt
+updates") added a BUG_ON() with an incorrect upper bound comparison, which
+causes an early crash on VME boards, where IRQ_USER is 8, cnt is 192 and
+NR_IRQS is 200.
 
->By the way, I tested Linus' HEAD today (with your quilt patches, Geert)
->on my MVME167, it only needed the above fixed and it booted.
->
->I couldn't compile it with my old cross compiler (gcc version 4.1.3
->20080623 (prerelease) (Debian 4.1.2-23)), it ICEed somewhere in
->net/sunrpc.
-That is also where my attempts to cross compile 2.6.27 failed.
->
->The new cross compiler I built after that (gcc version 4.3.2 (Debian
->4.3.2-1)) had no problems with it.
+Reported-by: Stephen N Chivers <schivers@csc.com.au>
+Tested-by: Kars de Jong <jongk@linux-m68k.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: stable@kernel.org
+---
+ arch/m68k/kernel/ints.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Stephen Chivers,
-CSC Australia, Pty. Ltd.
+--- a/arch/m68k/kernel/ints.c
++++ b/arch/m68k/kernel/ints.c
+@@ -133,7 +133,7 @@ void __init m68k_setup_user_interrupt(un
+ {
+ 	int i;
+ 
+-	BUG_ON(IRQ_USER + cnt >= NR_IRQS);
++	BUG_ON(IRQ_USER + cnt > NR_IRQS);
+ 	m68k_first_user_vec = vec;
+ 	for (i = 0; i < cnt; i++)
+ 		irq_controller[IRQ_USER + i] = &user_irq_controller;
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
