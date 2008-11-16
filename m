@@ -1,83 +1,77 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH][v5] Add SWIM floppy support for m68k Macs.
-Date: Sun, 16 Nov 2008 19:12:31 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811161910340.17182@anakin>
-References: <03320726-C601-4EE0-8337-1821119EF3FF@lvivier.info>
- <Pine.LNX.4.64.0811161140280.5978@anakin> <E74B8270-AED1-40B5-AA6A-948F1443328A@lvivier.info>
+Subject: [PATCH/RFC] atafb line length
+Date: Sun, 16 Nov 2008 22:34:23 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811162228270.20005@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from harold.telenet-ops.be ([195.130.133.65]:36521 "EHLO
+Received: from harold.telenet-ops.be ([195.130.133.65]:58575 "EHLO
 	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752851AbYKPSMe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Nov 2008 13:12:34 -0500
-In-Reply-To: <E74B8270-AED1-40B5-AA6A-948F1443328A@lvivier.info>
+	with ESMTP id S1751827AbYKPVe0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Nov 2008 16:34:26 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <laurent@lvivier.info>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, 16 Nov 2008, Laurent Vivier wrote:
-> Le 16 nov. 08 =E0 11:52, Geert Uytterhoeven a =E9crit :
-> > On Sat, 15 Nov 2008, Laurent Vivier wrote:
-> > > +static inline void set_swim_mode(struct swim *base, int enable)
-> > 					       ^ __iomem
-> > > +{
-> > > +	struct iwm *iwm_base;
-> >                 ^ __iomem
-> >=20
-> > (cfr. sparse warnings, when building with `make C=3D1')
->=20
-> I don't have the command sparse on my system (debian stable).
+Make sure fix->line_length is always set, as some applications need it because
+they don't have fallback code if line_length is zero.
 
-It's available in lenny and sid. I used to compile my own.
+Works on ARAnyM (Falcon emulation), but par->next_line is not set on any other
+Atari variant?
 
-> > > +	unsigned long flags;
-> > > +
-> > > +	if (!enable) {
-> > > +		swim_write(base, mode0, 0xf8);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	iwm_base =3D (struct iwm *)base;
-> > > +	local_save_flags(flags);
-> > > +	local_irq_disable();
-> >=20
-> > local_save_flags(flags) + local_irq_disable() =3D local_irq_save(fl=
-ags)
-> >=20
-> > However, to make the driver future-save (we don't have SMP nor pree=
-mpt
-> > support
-> > yet), it's better to add a spinlock and use spin_lock_irqsave().
-> >=20
-> > > +	local_irq_restore(flags);
-> >=20
-> > ... and spin_unlock_irqrestore().
->=20
-> Is it really needed as this driver will only work on mac m68k and all=
- are
-> uniprocessor ?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/video/atafb.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-If we ever want to support CONFIG_PREEMPT, we also need it.
-But as we currently don't support that, you can ignore me ;-)
+--- a/drivers/video/atafb.c
++++ b/drivers/video/atafb.c
+@@ -613,7 +613,7 @@ static int tt_encode_fix(struct fb_fix_s
+ 	fix->xpanstep = 0;
+ 	fix->ypanstep = 1;
+ 	fix->ywrapstep = 0;
+-	fix->line_length = 0;
++	fix->line_length = par->next_line;
+ 	fix->accel = FB_ACCEL_ATARIBLITT;
+ 	return 0;
+ }
+@@ -917,7 +917,8 @@ static int falcon_encode_fix(struct fb_f
+ 		fix->visual = FB_VISUAL_TRUECOLOR;
+ 		fix->xpanstep = 2;
+ 	}
+-	fix->line_length = 0;
++	fix->line_length =
++		(par->hw.falcon.line_width + par->hw.falcon.line_offset) * 2;
+ 	fix->accel = FB_ACCEL_ATARIBLITT;
+ 	return 0;
+ }
+@@ -1844,7 +1845,7 @@ static int stste_encode_fix(struct fb_fi
+ 		fix->ypanstep = 0;
+ 	}
+ 	fix->ywrapstep = 0;
+-	fix->line_length = 0;
++	fix->line_length = par->next_line;
+ 	fix->accel = FB_ACCEL_ATARIBLITT;
+ 	return 0;
+ }
+@@ -2161,7 +2162,7 @@ static int ext_encode_fix(struct fb_fix_
+ 	fix->xpanstep = 0;
+ 	fix->ypanstep = 0;
+ 	fix->ywrapstep = 0;
+-	fix->line_length = 0;
++	fix->line_length = par->next_line;
+ 	return 0;
+ }
+ 
 
 Gr{oetje,eeting}s,
 
 						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
 							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
