@@ -1,69 +1,40 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC] atafb and panning
-Date: Wed, 19 Nov 2008 09:15:57 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811190912190.27671@anakin>
-References: <Pine.LNX.4.64.0811162235251.20005@anakin>
- <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: linux-m68k.git
+Date: Wed, 19 Nov 2008 09:44:03 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811190942490.27671@anakin>
+References: <Pine.LNX.4.64.0811182136060.27671@anakin>
+ <20081119081951.a1a33403.sfr@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from harold.telenet-ops.be ([195.130.133.65]:40157 "EHLO
-	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752029AbYKSIQA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Nov 2008 03:16:00 -0500
-In-Reply-To: <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20081119081951.a1a33403.sfr@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, David Woodhouse <dwmw2@infradead.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, 19 Nov 2008, Michael Schmitz wrote:
-> > Fix panning on ARAnyM (Falcon emulation). Without this, `fbtest test011' fails
-> > (for a 320x200x8 display with virtual 640x400).
-> 
-> Fails how, exactly? 
+	Hi Stephen,
 
-It shows a corrupted display (bad line length) if xoffset & 15 != 0.
-
-> > As the original code in 2.4.x was the same, I'm wondering:
-> >   o Is this a bug in the ARAnyM emulation?
-> >   o xpanstep is 1, but judging from the visual output on ARAnyM, it looks like
-> >     it should be 16?
+On Wed, 19 Nov 2008, Stephen Rothwell wrote:
+> On Tue, 18 Nov 2008 21:49:01 +0100 (CET) Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > (Finally) I created an experimental git tree for Linux/m68k:
+> > http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git
 > > 
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >  drivers/video/atafb.c |    2 ++
-> >  1 file changed, 2 insertions(+)
+> > It contains more or less all patches I had in my quilt series at
+> > http://www.kernel.org/pub/linux/kernel/people/geert/linux-m68k-patches-2.6/
+> > A notable exception is m68k-PRIVATE-m68k-changes.diff, which hardcoded ARCH to
+> > m68k.
 > > 
-> > --- a/drivers/video/atafb.c
-> > +++ b/drivers/video/atafb.c
-> > @@ -1697,8 +1697,10 @@ static int falcon_pan_display(struct fb_
-> >  	}
-> >  	par->hw.falcon.line_offset = bpp *
-> >  		(info->var.xres_virtual - info->var.xres) / 16;
-> > +#if 0
-> >  	if (par->hw.falcon.xoffset)
-> >  		par->hw.falcon.line_offset -= bpp;
-> > +#endif;
+> > I also created for-next and for-linus branches. Do they look OK?
 > 
-> The way I understand this code is:
-> 
-> If var->xoffset has the low order bits set (sub-word pixel offset) 
-> par->hw.falcon.xoffset takes care of that, and xoffset takes care of the rest. 
-> Since the partial word offset shifts the beginnig of the scan line into the 
-> first word, the offset to the next scan line (par->hw.falcon.line_offset) has to 
-> be shortened. 
+> They look good.  I have added the for-linus branch as my m68k-current
 
-Sounds reasonable. But the shortening part doesn't work on ARAnyM, nor do
-small panning increments. So it really smells like an ARAnyM bug.
+What's the purpose of your m68k-current tree? There should not be anything
+in m68k#for-linus that's not in m68k#for-next.
 
-> I am pretty sure the pan step can be one (see par->hw.falcon.xoffset).
-> 
-> I'll test your patch as soon as I get fbtest to work (missing libgcc_s.so.2).
+> tree and changed my m68k tree over to the for-next branch.
 
-The alternative is to compile fbtest yourself (CVS module
-FBdev/utlilities/fbtest from project linux-fbdev on sf.net).
-I've been thinking of putting a git clone on kernel.org...
+Thanks!
 
 Gr{oetje,eeting}s,
 
