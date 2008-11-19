@@ -1,69 +1,45 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Subject: Re: linux-m68k.git
-Date: Wed, 19 Nov 2008 08:19:51 +1100
-Message-ID: <20081119081951.a1a33403.sfr@canb.auug.org.au>
+Date: Wed, 19 Nov 2008 07:45:47 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0811190737360.5649@zirkon.biophys.uni-duesseldorf.de>
 References: <Pine.LNX.4.64.0811182136060.27671@anakin>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Wed__19_Nov_2008_08_19_51_+1100_jLC8i6D0Jx//GW3."
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0811182136060.27671@anakin>
-Sender: linux-next-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, David Woodhouse <dwmw2@infradead.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:52541 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751312AbYKSGpt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 19 Nov 2008 01:45:49 -0500
+In-reply-to: <Pine.LNX.4.64.0811182136060.27671@anakin>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-
---Signature=_Wed__19_Nov_2008_08_19_51_+1100_jLC8i6D0Jx//GW3.
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, David Woodhouse <dwmw2@infradead.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org
 
 Hi Geert,
 
-On Tue, 18 Nov 2008 21:49:01 +0100 (CET) Geert Uytterhoeven <geert@linux-m6=
-8k.org> wrote:
->
+On Tue, 18 Nov 2008, Geert Uytterhoeven wrote:
+
 > (Finally) I created an experimental git tree for Linux/m68k:
-> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git
->=20
+> http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git
+
+Sweet :-) Cloning already. 
+ 
 > It contains more or less all patches I had in my quilt series at
-> http://www.kernel.org/pub/linux/kernel/people/geert/linux-m68k-patches-2.=
-6/
-> A notable exception is m68k-PRIVATE-m68k-changes.diff, which hardcoded AR=
-CH to
+> http://www.kernel.org/pub/linux/kernel/people/geert/linux-m68k-patches-2.6/
+> A notable exception is m68k-PRIVATE-m68k-changes.diff, which hardcoded ARCH to
 > m68k.
->=20
-> I also created for-next and for-linus branches. Do they look OK?
+> 
+> As suggested by David Woodhouse, I grouped the commits by topic. But unlike
+> David's suggestion, I used topic branches, not topic repositories. Oh well,
+> we'll see...
 
-They look good.  I have added the for-linus branch as my m68k-current
-tree and changed my m68k tree over to the for-next branch.
+As most of your 'topcis' are rather small self-contained patch sets, that should 
+be OK. 
 
-> If I did something wrong, please let me know.
-> This is still experimental stuff, which may be rebased if needed.
+Thanks so much!
 
-That's fine as long as the commits in the for-next branch are: posted
-somewhere relevant, reviewed, tested and destined for the next merge
-window. (None of these requirements have changed from what should have
-been in your quilt tree.)
-
-I expect the for-linus branch to be fixes and stuff for the current
-release.
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Wed__19_Nov_2008_08_19_51_+1100_jLC8i6D0Jx//GW3.
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkkjMXcACgkQjjKRsyhoI8zHCwCgjiI+Nso5hfFTXAEB/VGI4Jz5
-6QsAn3GHWK8BwBVDsT+9J8JLebGQHhRj
-=PfH1
------END PGP SIGNATURE-----
-
---Signature=_Wed__19_Nov_2008_08_19_51_+1100_jLC8i6D0Jx//GW3.--
+	Michael
+ 
