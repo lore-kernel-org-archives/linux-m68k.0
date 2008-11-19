@@ -1,61 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC] atafb line length
-Date: Wed, 19 Nov 2008 09:12:14 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811190909530.27671@anakin>
-References: <Pine.LNX.4.64.0811162228270.20005@anakin>
- <alpine.DEB.1.00.0811190757430.6915@zirkon.biophys.uni-duesseldorf.de>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: linux-m68k.git
+Date: Wed, 19 Nov 2008 08:13:59 +0000
+Message-ID: <20081119081359.GB794@linux-mips.org>
+References: <Pine.LNX.4.64.0811182136060.27671@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from monty.telenet-ops.be ([195.130.132.56]:47775 "EHLO
-	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751187AbYKSIMS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Nov 2008 03:12:18 -0500
-In-Reply-To: <alpine.DEB.1.00.0811190757430.6915@zirkon.biophys.uni-duesseldorf.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0811182136060.27671@anakin>
+Sender: linux-next-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, 19 Nov 2008, Michael Schmitz wrote:
-> > Make sure fix->line_length is always set, as some applications need it because
-> > they don't have fallback code if line_length is zero.
-> > 
-> > Works on ARAnyM (Falcon emulation), but par->next_line is not set on any other
-> > Atari variant?
+On Tue, Nov 18, 2008 at 09:49:01PM +0100, Geert Uytterhoeven wrote:
+
+> (Finally) I created an experimental git tree for Linux/m68k:
+> http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git
 > 
-> You're right - while testing on the Falcon framebuffer I noticed 
-> fix->line_length needs to be set, and kludged around to get it set to something 
-> more or less sane, but I could not test the other code paths. 
+> It contains more or less all patches I had in my quilt series at
+> http://www.kernel.org/pub/linux/kernel/people/geert/linux-m68k-patches-2.6/
+> A notable exception is m68k-PRIVATE-m68k-changes.diff, which hardcoded ARCH to
+> m68k.
 > 
-> It looks like par->next_line should be set to linelen in all other decode_var 
-> variants. The quilt tree here does have fix->line_length = par->next_line 
-> already, what is your patch based on? 
+> As suggested by David Woodhouse, I grouped the commits by topic. But unlike
+> David's suggestion, I used topic branches, not topic repositories. Oh well,
+> we'll see...
 
-It was based on mainline. Yes, a part of my patch had been in my quilt series
-for a while, but I wanted to post the full thing for review.
+That's easy enough to undo if the need should arise.
 
-> I had 
+> I also created for-next and for-linus branches. Do they look OK?
 > 
-> fix->line_length = (par->hw.falcon.line_width + par->hw.falcon.line_offset) *
-> 		par->hw.falcon.bpp / 8;
+> If I did something wrong, please let me know.
+> This is still experimental stuff, which may be rebased if needed.
 > 
-> originally - I suppose this had to change with your cfb fixes? 
+> In addition, one day I may pull from Ralf's repository that reflects the state
+> of Linux/m68k CVS a few commits before our server died...
 
-That should be OK. Strange, it's not what I got from you, cfr. atafb in
-mainline.
+It's CVS that must die, not the poor server ;-)  If you're actually going
+to pull the old CVS stuff into the new git repository and you happen to have
+a newer snapshot than the one which I've converted I can re-run my converter.
 
-Cfb16 needed
-  1. fix->line_length to be valid (it was zero)
-  2. info->pseudo_palette
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Ralf
