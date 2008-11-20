@@ -1,58 +1,233 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-m68k.git
-Date: Wed, 19 Nov 2008 20:28:59 +1100
-Message-ID: <20081119202859.783a97d5.sfr@canb.auug.org.au>
-References: <Pine.LNX.4.64.0811182136060.27671@anakin>
-	<20081119081951.a1a33403.sfr@canb.auug.org.au>
-	<Pine.LNX.4.64.0811190942490.27671@anakin>
+From: Kars de Jong <jongk@linux-m68k.org>
+Subject: [PATCH] MVME16x: add support for EARLY_PRINTK
+Date: Thu, 20 Nov 2008 14:08:52 +0100
+Message-ID: <1227186532.19809.3.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Wed__19_Nov_2008_20_28_59_+1100_/VGpR_lDW6d8uwZQ"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0811190942490.27671@anakin>
-Sender: linux-next-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, David Woodhouse <dwmw2@infradead.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from smtpq4.gn.mail.iss.as9143.net ([212.54.34.167]:55178 "EHLO
+	smtpq4.gn.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752629AbYKTNJR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 20 Nov 2008 08:09:17 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>
 
---Signature=_Wed__19_Nov_2008_20_28_59_+1100_/VGpR_lDW6d8uwZQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Kars de Jong <jongk@linux-m68k.org>
+Date: Thu, 20 Nov 2008 13:47:18 +0100
+Subject: [PATCH] MVME16x: add support for EARLY_PRINTK
 
-Hi Geert,
+Added support for EARLY_PRINTK when running on an MVME16x board.
 
-On Wed, 19 Nov 2008 09:44:03 +0100 (CET) Geert Uytterhoeven <geert@linux-m6=
-8k.org> wrote:
->
-> What's the purpose of your m68k-current tree? There should not be anything
-> in m68k#for-linus that's not in m68k#for-next.
+Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
+---
+ arch/m68k/Kconfig.debug    |   11 +++
+ arch/m68k/mvme16x/config.c |  160 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 171 insertions(+), 0 deletions(-)
 
-I have a set of trees (15 so far) that are just patches pending for the
-current release (mostly bug fixes).  These trees are usually empty (since
-things get sent to Linus fairly quickly during the -rc's) but it means
-that between the time between when the fixes are ready and when Linus
-integrates them, people testing linux-next don't have to worry about bugs
-that already have fixes.
+diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
+index f53b6d5..e0283a0 100644
+--- a/arch/m68k/Kconfig.debug
++++ b/arch/m68k/Kconfig.debug
+@@ -2,4 +2,15 @@ menu "Kernel hacking"
+ 
+ source "lib/Kconfig.debug"
+ 
++config EARLY_PRINTK
++	bool "Early printk" if EMBEDDED
++	depends on MVME16x
++	default y
++	help
++          Write kernel log output directly to a serial port.
++
++          This is useful for kernel debugging when your machine crashes very
++          early before the console code is initialized.
++          You should normally say N here, unless you want to debug such a crash.
++
+ endmenu
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index 1521826..baf5a69 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -125,6 +125,163 @@ static void __init mvme16x_init_IRQ (void)
+ #define PccSCCMICR	0x1d
+ #define PccSCCTICR	0x1e
+ #define PccSCCRICR	0x1f
++#define PccTPIACKR	0x25
++
++#ifdef CONFIG_EARLY_PRINTK
++
++/**** cd2401 registers ****/
++#define CD2401_ADDR	(0xfff45000)
++
++#define CyGFRCR         (0x81)
++#define CyCCR		(0x13)
++#define      CyCLR_CHAN		(0x40)
++#define      CyINIT_CHAN	(0x20)
++#define      CyCHIP_RESET	(0x10)
++#define      CyENB_XMTR		(0x08)
++#define      CyDIS_XMTR		(0x04)
++#define      CyENB_RCVR		(0x02)
++#define      CyDIS_RCVR		(0x01)
++#define CyCAR		(0xee)
++#define CyIER		(0x11)
++#define      CyMdmCh		(0x80)
++#define      CyRxExc		(0x20)
++#define      CyRxData		(0x08)
++#define      CyTxMpty		(0x02)
++#define      CyTxRdy		(0x01)
++#define CyLICR		(0x26)
++#define CyRISR		(0x89)
++#define      CyTIMEOUT		(0x80)
++#define      CySPECHAR		(0x70)
++#define      CyOVERRUN		(0x08)
++#define      CyPARITY		(0x04)
++#define      CyFRAME		(0x02)
++#define      CyBREAK		(0x01)
++#define CyREOIR		(0x84)
++#define CyTEOIR		(0x85)
++#define CyMEOIR		(0x86)
++#define      CyNOTRANS		(0x08)
++#define CyRFOC		(0x30)
++#define CyRDR		(0xf8)
++#define CyTDR		(0xf8)
++#define CyMISR		(0x8b)
++#define CyRISR		(0x89)
++#define CyTISR		(0x8a)
++#define CyMSVR1		(0xde)
++#define CyMSVR2		(0xdf)
++#define      CyDSR		(0x80)
++#define      CyDCD		(0x40)
++#define      CyCTS		(0x20)
++#define      CyDTR		(0x02)
++#define      CyRTS		(0x01)
++#define CyRTPRL		(0x25)
++#define CyRTPRH		(0x24)
++#define CyCOR1		(0x10)
++#define      CyPARITY_NONE	(0x00)
++#define      CyPARITY_E		(0x40)
++#define      CyPARITY_O		(0xC0)
++#define      Cy_5_BITS		(0x04)
++#define      Cy_6_BITS		(0x05)
++#define      Cy_7_BITS		(0x06)
++#define      Cy_8_BITS		(0x07)
++#define CyCOR2		(0x17)
++#define      CyETC		(0x20)
++#define      CyCtsAE		(0x02)
++#define CyCOR3		(0x16)
++#define      Cy_1_STOP		(0x02)
++#define      Cy_2_STOP		(0x04)
++#define CyCOR4		(0x15)
++#define      CyREC_FIFO		(0x0F)  /* Receive FIFO threshold */
++#define CyCOR5		(0x14)
++#define CyCOR6		(0x18)
++#define CyCOR7		(0x07)
++#define CyRBPR		(0xcb)
++#define CyRCOR		(0xc8)
++#define CyTBPR		(0xc3)
++#define CyTCOR		(0xc0)
++#define CySCHR1		(0x1f)
++#define CySCHR2 	(0x1e)
++#define CyTPR		(0xda)
++#define CyPILR1		(0xe3)
++#define CyPILR2		(0xe0)
++#define CyPILR3		(0xe1)
++#define CyCMR		(0x1b)
++#define      CyASYNC		(0x02)
++#define CyLICR          (0x26)
++#define CyLIVR          (0x09)
++#define CySCRL		(0x23)
++#define CySCRH		(0x22)
++#define CyTFTC		(0x80)
++
++static void cons_write(struct console *co, const char *str, unsigned count)
++{
++	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
++	volatile u_char sink;
++	u_char ier;
++	int port;
++	u_char do_lf = 0;
++	int i = 0;
++
++	/* Ensure transmitter is enabled! */
++
++	port = 0;
++	base_addr[CyCAR] = (u_char)port;
++	while (base_addr[CyCCR])
++		;
++	base_addr[CyCCR] = CyENB_XMTR;
++
++	ier = base_addr[CyIER];
++	base_addr[CyIER] = CyTxMpty;
++
++	while (1) {
++		if (pcc2chip[PccSCCTICR] & 0x20)
++		{
++			/* We have a Tx int. Acknowledge it */
++			sink = pcc2chip[PccTPIACKR];
++			if ((base_addr[CyLICR] >> 2) == port) {
++				if (i == count) {
++					/* Last char of string is now output */
++					base_addr[CyTEOIR] = CyNOTRANS;
++					break;
++				}
++				if (do_lf) {
++					base_addr[CyTDR] = '\n';
++					str++;
++					i++;
++					do_lf = 0;
++				}
++				else if (*str == '\n') {
++					base_addr[CyTDR] = '\r';
++					do_lf = 1;
++				}
++				else {
++					base_addr[CyTDR] = *str++;
++					i++;
++				}
++				base_addr[CyTEOIR] = 0;
++			}
++			else
++				base_addr[CyTEOIR] = CyNOTRANS;
++		}
++	}
++
++	base_addr[CyIER] = ier;
++}
++
++static struct console cons_info =
++{
++	.name	= "sercon",
++	.write	= cons_write,
++	.flags	= CON_PRINTBUFFER | CON_BOOT,
++	.index	= -1,
++};
++
++void __init mvme16x_early_console(void)
++{
++	register_console(&cons_info);
++
++	printk(KERN_INFO "MVME16x: early console registered\n");
++}
++#endif
+ 
+ void __init config_mvme16x(void)
+ {
+@@ -184,6 +341,9 @@ void __init config_mvme16x(void)
+ 	pcc2chip[PccSCCMICR] = 0x10;
+ 	pcc2chip[PccSCCTICR] = 0x10;
+ 	pcc2chip[PccSCCRICR] = 0x10;
++#ifdef CONFIG_EARLY_PRINTK
++	mvme16x_early_console();
++#endif
+     }
+ }
+ 
+-- 
+1.5.6.5
 
-Having them in a (logically) separate tree, as far as linux-next is
-concerned, means that if I have to drop your -next tree for any reason
-then the bug fixes can stay.
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
 
---Signature=_Wed__19_Nov_2008_20_28_59_+1100_/VGpR_lDW6d8uwZQ
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkkj3FsACgkQjjKRsyhoI8xLJACgp5eS/t4DrMiS+zWSoSeEtI/X
-oHoAniE/gO80CkijpMEjQ5cCXrMrfm7r
-=Axp3
------END PGP SIGNATURE-----
-
---Signature=_Wed__19_Nov_2008_20_28_59_+1100_/VGpR_lDW6d8uwZQ--
