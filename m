@@ -1,42 +1,50 @@
-From: Kars de Jong <jongk@linux-m68k.org>
-Subject: [PATCH] .gitignore update for m68k arch
-Date: Thu, 20 Nov 2008 14:35:25 +0100
-Message-ID: <1227188125.25134.2.camel@kars.perseus.home>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] MVME16x: add support for EARLY_PRINTK
+Date: Fri, 21 Nov 2008 11:29:22 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811211129070.26004@anakin>
+References: <1227186532.19809.3.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtpq3.tb.mail.iss.as9143.net ([212.54.42.166]:35951 "EHLO
-	smtpq3.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751317AbYKTNfi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 20 Nov 2008 08:35:38 -0500
+Received: from edna.telenet-ops.be ([195.130.132.58]:38357 "EHLO
+	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752623AbYKUK3Y (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 21 Nov 2008 05:29:24 -0500
+In-Reply-To: <1227186532.19809.3.camel@kars.perseus.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Kars de Jong <jongk@linux-m68k.org>
 Cc: Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>
 
-From: Kars de Jong <jongk@linux-m68k.org>
-Date: Thu, 20 Nov 2008 14:28:30 +0100
-Subject: [PATCH] .gitignore update for m68k arch
+On Thu, 20 Nov 2008, Kars de Jong wrote:
+> +void __init mvme16x_early_console(void)
 
-arch/m68k/kernel/.gitignore: Added vmlinux.lds to .gitignore file because it shouldn't be tracked.
+static?
 
-Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
----
- arch/m68k/kernel/.gitignore |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
- create mode 100644 arch/m68k/kernel/.gitignore
+> +{
+> +	register_console(&cons_info);
+> +
+> +	printk(KERN_INFO "MVME16x: early console registered\n");
+> +}
+> +#endif
+>  
+>  void __init config_mvme16x(void)
+>  {
+> @@ -184,6 +341,9 @@ void __init config_mvme16x(void)
+>  	pcc2chip[PccSCCMICR] = 0x10;
+>  	pcc2chip[PccSCCTICR] = 0x10;
+>  	pcc2chip[PccSCCRICR] = 0x10;
+> +#ifdef CONFIG_EARLY_PRINTK
+> +	mvme16x_early_console();
+> +#endif
 
-diff --git a/arch/m68k/kernel/.gitignore b/arch/m68k/kernel/.gitignore
-new file mode 100644
-index 0000000..c5f676c
---- /dev/null
-+++ b/arch/m68k/kernel/.gitignore
-@@ -0,0 +1 @@
-+vmlinux.lds
--- 
-1.5.6.5
+Gr{oetje,eeting}s,
 
+						Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
