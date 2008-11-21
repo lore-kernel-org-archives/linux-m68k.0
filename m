@@ -1,243 +1,59 @@
 From: Kars de Jong <jongk@linux-m68k.org>
-Subject: Re: [PATCH] MVME16x: add support for EARLY_PRINTK
-Date: Fri, 21 Nov 2008 13:27:11 +0100
-Message-ID: <1227270431.13195.2.camel@kars.perseus.home>
-References: <1227186532.19809.3.camel@kars.perseus.home>
-	 <Pine.LNX.4.64.0811211129070.26004@anakin>
+Subject: Re: [PATCH] .gitignore update for m68k arch
+Date: Fri, 21 Nov 2008 13:30:37 +0100
+Message-ID: <1227270637.13195.5.camel@kars.perseus.home>
+References: <1227188125.25134.2.camel@kars.perseus.home>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtpq2.tb.mail.iss.as9143.net ([212.54.42.165]:40066 "EHLO
+Received: from smtpq2.tb.mail.iss.as9143.net ([212.54.42.165]:40723 "EHLO
 	smtpq2.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753573AbYKUM1Y (ORCPT
+	by vger.kernel.org with ESMTP id S1753360AbYKUMav (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 21 Nov 2008 07:27:24 -0500
-In-Reply-To: <Pine.LNX.4.64.0811211129070.26004@anakin>
+	Fri, 21 Nov 2008 07:30:51 -0500
+In-Reply-To: <1227188125.25134.2.camel@kars.perseus.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>
 
-On vr, 2008-11-21 at 11:29 +0100, Geert Uytterhoeven wrote:
-> On Thu, 20 Nov 2008, Kars de Jong wrote:
-> > +void __init mvme16x_early_console(void)
-> 
-> static?
+On do, 2008-11-20 at 14:35 +0100, Kars de Jong wrote:
+> Subject: [PATCH] .gitignore update for m68k arch
 
-Yes, you're right.
-Here is an updated version:
+Here is a new version, which also includes some generated files in
+drivers/zorro.
 
 From: Kars de Jong <jongk@linux-m68k.org>
-Date: Fri, 21 Nov 2008 13:15:56 +0100
-Subject: [PATCH] MVME16x: add support for EARLY_PRINTK
+Date: Fri, 21 Nov 2008 13:18:12 +0100
+Subject: [PATCH] .gitignore update for m68k arch
 
-Added support for EARLY_PRINTK when running on an MVME16x board.
+arch/m68k/kernel/.gitignore: Added vmlinux.lds to .gitignore file because it shouldn't be tracked.
+drivers/zorro/.gitignore: Added devlist.h and gen-devlist to .gitignore file because they shouldn't be tracked.
 
 Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
 ---
- arch/m68k/Kconfig.debug    |   11 +++
- arch/m68k/mvme16x/config.c |  160 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 171 insertions(+), 0 deletions(-)
+ arch/m68k/kernel/.gitignore |    1 +
+ drivers/zorro/.gitignore    |    2 ++
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/kernel/.gitignore
+ create mode 100644 drivers/zorro/.gitignore
 
-diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
-index f53b6d5..e0283a0 100644
---- a/arch/m68k/Kconfig.debug
-+++ b/arch/m68k/Kconfig.debug
-@@ -2,4 +2,15 @@ menu "Kernel hacking"
- 
- source "lib/Kconfig.debug"
- 
-+config EARLY_PRINTK
-+	bool "Early printk" if EMBEDDED
-+	depends on MVME16x
-+	default y
-+	help
-+          Write kernel log output directly to a serial port.
-+
-+          This is useful for kernel debugging when your machine crashes very
-+          early before the console code is initialized.
-+          You should normally say N here, unless you want to debug such a crash.
-+
- endmenu
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 1521826..84ce1d8 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -125,6 +125,163 @@ static void __init mvme16x_init_IRQ (void)
- #define PccSCCMICR	0x1d
- #define PccSCCTICR	0x1e
- #define PccSCCRICR	0x1f
-+#define PccTPIACKR	0x25
-+
-+#ifdef CONFIG_EARLY_PRINTK
-+
-+/**** cd2401 registers ****/
-+#define CD2401_ADDR	(0xfff45000)
-+
-+#define CyGFRCR         (0x81)
-+#define CyCCR		(0x13)
-+#define      CyCLR_CHAN		(0x40)
-+#define      CyINIT_CHAN	(0x20)
-+#define      CyCHIP_RESET	(0x10)
-+#define      CyENB_XMTR		(0x08)
-+#define      CyDIS_XMTR		(0x04)
-+#define      CyENB_RCVR		(0x02)
-+#define      CyDIS_RCVR		(0x01)
-+#define CyCAR		(0xee)
-+#define CyIER		(0x11)
-+#define      CyMdmCh		(0x80)
-+#define      CyRxExc		(0x20)
-+#define      CyRxData		(0x08)
-+#define      CyTxMpty		(0x02)
-+#define      CyTxRdy		(0x01)
-+#define CyLICR		(0x26)
-+#define CyRISR		(0x89)
-+#define      CyTIMEOUT		(0x80)
-+#define      CySPECHAR		(0x70)
-+#define      CyOVERRUN		(0x08)
-+#define      CyPARITY		(0x04)
-+#define      CyFRAME		(0x02)
-+#define      CyBREAK		(0x01)
-+#define CyREOIR		(0x84)
-+#define CyTEOIR		(0x85)
-+#define CyMEOIR		(0x86)
-+#define      CyNOTRANS		(0x08)
-+#define CyRFOC		(0x30)
-+#define CyRDR		(0xf8)
-+#define CyTDR		(0xf8)
-+#define CyMISR		(0x8b)
-+#define CyRISR		(0x89)
-+#define CyTISR		(0x8a)
-+#define CyMSVR1		(0xde)
-+#define CyMSVR2		(0xdf)
-+#define      CyDSR		(0x80)
-+#define      CyDCD		(0x40)
-+#define      CyCTS		(0x20)
-+#define      CyDTR		(0x02)
-+#define      CyRTS		(0x01)
-+#define CyRTPRL		(0x25)
-+#define CyRTPRH		(0x24)
-+#define CyCOR1		(0x10)
-+#define      CyPARITY_NONE	(0x00)
-+#define      CyPARITY_E		(0x40)
-+#define      CyPARITY_O		(0xC0)
-+#define      Cy_5_BITS		(0x04)
-+#define      Cy_6_BITS		(0x05)
-+#define      Cy_7_BITS		(0x06)
-+#define      Cy_8_BITS		(0x07)
-+#define CyCOR2		(0x17)
-+#define      CyETC		(0x20)
-+#define      CyCtsAE		(0x02)
-+#define CyCOR3		(0x16)
-+#define      Cy_1_STOP		(0x02)
-+#define      Cy_2_STOP		(0x04)
-+#define CyCOR4		(0x15)
-+#define      CyREC_FIFO		(0x0F)  /* Receive FIFO threshold */
-+#define CyCOR5		(0x14)
-+#define CyCOR6		(0x18)
-+#define CyCOR7		(0x07)
-+#define CyRBPR		(0xcb)
-+#define CyRCOR		(0xc8)
-+#define CyTBPR		(0xc3)
-+#define CyTCOR		(0xc0)
-+#define CySCHR1		(0x1f)
-+#define CySCHR2 	(0x1e)
-+#define CyTPR		(0xda)
-+#define CyPILR1		(0xe3)
-+#define CyPILR2		(0xe0)
-+#define CyPILR3		(0xe1)
-+#define CyCMR		(0x1b)
-+#define      CyASYNC		(0x02)
-+#define CyLICR          (0x26)
-+#define CyLIVR          (0x09)
-+#define CySCRL		(0x23)
-+#define CySCRH		(0x22)
-+#define CyTFTC		(0x80)
-+
-+static void cons_write(struct console *co, const char *str, unsigned count)
-+{
-+	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
-+	volatile u_char sink;
-+	u_char ier;
-+	int port;
-+	u_char do_lf = 0;
-+	int i = 0;
-+
-+	/* Ensure transmitter is enabled! */
-+
-+	port = 0;
-+	base_addr[CyCAR] = (u_char)port;
-+	while (base_addr[CyCCR])
-+		;
-+	base_addr[CyCCR] = CyENB_XMTR;
-+
-+	ier = base_addr[CyIER];
-+	base_addr[CyIER] = CyTxMpty;
-+
-+	while (1) {
-+		if (pcc2chip[PccSCCTICR] & 0x20)
-+		{
-+			/* We have a Tx int. Acknowledge it */
-+			sink = pcc2chip[PccTPIACKR];
-+			if ((base_addr[CyLICR] >> 2) == port) {
-+				if (i == count) {
-+					/* Last char of string is now output */
-+					base_addr[CyTEOIR] = CyNOTRANS;
-+					break;
-+				}
-+				if (do_lf) {
-+					base_addr[CyTDR] = '\n';
-+					str++;
-+					i++;
-+					do_lf = 0;
-+				}
-+				else if (*str == '\n') {
-+					base_addr[CyTDR] = '\r';
-+					do_lf = 1;
-+				}
-+				else {
-+					base_addr[CyTDR] = *str++;
-+					i++;
-+				}
-+				base_addr[CyTEOIR] = 0;
-+			}
-+			else
-+				base_addr[CyTEOIR] = CyNOTRANS;
-+		}
-+	}
-+
-+	base_addr[CyIER] = ier;
-+}
-+
-+static struct console cons_info =
-+{
-+	.name	= "sercon",
-+	.write	= cons_write,
-+	.flags	= CON_PRINTBUFFER | CON_BOOT,
-+	.index	= -1,
-+};
-+
-+static void __init mvme16x_early_console(void)
-+{
-+	register_console(&cons_info);
-+
-+	printk(KERN_INFO "MVME16x: early console registered\n");
-+}
-+#endif
- 
- void __init config_mvme16x(void)
- {
-@@ -184,6 +341,9 @@ void __init config_mvme16x(void)
- 	pcc2chip[PccSCCMICR] = 0x10;
- 	pcc2chip[PccSCCTICR] = 0x10;
- 	pcc2chip[PccSCCRICR] = 0x10;
-+#ifdef CONFIG_EARLY_PRINTK
-+	mvme16x_early_console();
-+#endif
-     }
- }
- 
+diff --git a/arch/m68k/kernel/.gitignore b/arch/m68k/kernel/.gitignore
+new file mode 100644
+index 0000000..c5f676c
+--- /dev/null
++++ b/arch/m68k/kernel/.gitignore
+@@ -0,0 +1 @@
++vmlinux.lds
+diff --git a/drivers/zorro/.gitignore b/drivers/zorro/.gitignore
+new file mode 100644
+index 0000000..34f980b
+--- /dev/null
++++ b/drivers/zorro/.gitignore
+@@ -0,0 +1,2 @@
++devlist.h
++gen-devlist
 -- 
 1.5.6.5
 
