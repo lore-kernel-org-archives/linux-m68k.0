@@ -1,52 +1,71 @@
-From: Petr =?ISO-8859-1?Q?Stehl=EDk?= <pstehlik@sophics.cz>
-Subject: Re: [PATCH/RFC] atafb and panning
-Date: Sat, 22 Nov 2008 09:45:06 +0100
-Message-ID: <1227343506.6129.0.camel@joy>
-References: <Pine.LNX.4.64.0811162235251.20005@anakin>
-	 <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
-	 <Pine.LNX.4.64.0811190912190.27671@anakin>
-	 <alpine.DEB.1.00.0811220812440.7263@zirkon.biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: vme_scc.c breakage (was: Re: linux-next: Tree for November 21)
+Date: Sat, 22 Nov 2008 16:07:46 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0811221558340.30025@anakin>
+References: <20081121181948.ee771502.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp2.vol.cz ([195.250.128.75]:49955 "EHLO smtp2.vol.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751072AbYKVIpK (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 22 Nov 2008 03:45:10 -0500
-In-Reply-To: <alpine.DEB.1.00.0811220812440.7263@zirkon.biophys.uni-duesseldorf.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20081121181948.ee771502.sfr@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Michael Schmitz p=ED=B9e v So 22. 11. 2008 v 08:16 +0100:
-> > > If var->xoffset has the low order bits set (sub-word pixel offset=
-)=20
-> > > par->hw.falcon.xoffset takes care of that, and xoffset takes care=
- of the rest.=20
-> > > Since the partial word offset shifts the beginnig of the scan lin=
-e into the=20
-> > > first word, the offset to the next scan line (par->hw.falcon.line=
-_offset) has to=20
-> > > be shortened.=20
-> >=20
-> > Sounds reasonable. But the shortening part doesn't work on ARAnyM, =
-nor do
-> > small panning increments. So it really smells like an ARAnyM bug.
->=20
-> Petr said as much if I understand him right. No need to fix ARAnyM th=
-ough, we=20
-> just need to keep that in mind.=20
+	Hi Alan,
 
-ARAnyM's VIDEL emulation has already been fixed by Patrice (yesterday
-night, in CVS).
+drivers/char/vme_scc.c no longer compiles in linux-next:
+http://kisskb.ellerman.id.au/kisskb/buildresult/56964/
 
-Petr
+I get a slightly different error message, though:
 
+| drivers/char/vme_scc.c: In function 'scc_carrier_raised':
+| drivers/char/vme_scc.c:634: error: expected identifier or '(' before 'volatile'
+| drivers/char/vme_scc.c:634: error: expected ')' before '(' token
+| drivers/char/vme_scc.c:634: error: expected statement before ')' token
+| drivers/char/vme_scc.c:635: error: 'struct tty_port' has no member named 'channel'
+
+The problem seems to be introduced by commit
+e21405cbbaa859c68119b260c0fe43afdb86a385 ("tty-port-extract-cd"). The relevant
+part is below:
+
+| diff --git a/drivers/char/vme_scc.c b/drivers/char/vme_scc.c
+| index 1718b3c..d4e1534 100644
+| --- a/drivers/char/vme_scc.c
+| +++ b/drivers/char/vme_scc.c
+| @@ -624,9 +629,9 @@ static void scc_enable_rx_interrupts(void *ptr)
+|  }
+|  
+|  
+| -static int scc_get_CD(void *ptr)
+| +static int scc_carrier_raised(struct tty_port *port)
+|  {
+| -	struct scc_port *port = ptr;
+| +	struct scc_port *scc = container_of(port, struct scc_port, gs.port);
+|  	unsigned channel = port->channel;
+|  
+|  	return !!(scc_last_status_reg[channel] & SR_DCD);
+
+Issues:
+  1. When Atari support is enabled, `scc' is defined in
+     include/asm-m68k/atari.h as:
+
+	# define scc ((*(volatile struct SCC*)SCC_BAS))
+
+     However, renaming the variable `scc' doesn't help, as
+
+  2. the variable `scc' is not used in scc_carrier_raised(),
+
+  3. `port->channel' on line 635 still fails as `port' is not longer `struct
+     scc_port', but a 'struct tty_port', which has no member named 'channel'.
+
+Gr{oetje,eeting}s,
+
+						Geert
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
