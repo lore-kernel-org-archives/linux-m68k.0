@@ -1,54 +1,43 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: vme_scc.c breakage (was: Re: linux-next: Tree for November 21)
-Date: Sun, 23 Nov 2008 03:29:19 +0100 (CET)
-Message-ID: <alpine.DEB.1.00.0811230250290.8478@zirkon.biophys.uni-duesseldorf.de>
-References: <20081121181948.ee771502.sfr@canb.auug.org.au>
- <Pine.LNX.4.64.0811221558340.30025@anakin>
- <20081122164738.2226b63e@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH/RFC] atafb and panning
+Date: Sun, 23 Nov 2008 03:38:34 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0811230336120.8478@zirkon.biophys.uni-duesseldorf.de>
+References: <Pine.LNX.4.64.0811162235251.20005@anakin>
+ <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0811190912190.27671@anakin>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:41764 "EHLO
+Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:56991 "EHLO
 	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1755290AbYKWC3a (ORCPT
+	by vger.kernel.org with ESMTP id S1755290AbYKWCig (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 22 Nov 2008 21:29:30 -0500
-In-reply-to: <20081122164738.2226b63e@lxorguk.ukuu.org.uk>
+	Sat, 22 Nov 2008 21:38:36 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KAR00M00M0BS800@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Sun, 23 Nov 2008 03:38:35 +0100 (MET)
+In-reply-to: <Pine.LNX.4.64.0811190912190.27671@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi,
+Hi Geert,
 
-> > Issues:
-> >   1. When Atari support is enabled, `scc' is defined in
-> >      include/asm-m68k/atari.h as:
-> > 
-> > 	# define scc ((*(volatile struct SCC*)SCC_BAS))
-
-This can be renamed - it is only used for control and data port address init 
-(aside from serial console, which should probably be separated out if it cannot 
-be reconciled). 
-
-> > 
-> >      However, renaming the variable `scc' doesn't help, as
-> > 
-> >   2. the variable `scc' is not used in scc_carrier_raised(),
-> > 
-> >   3. `port->channel' on line 635 still fails as `port' is not longer `struct
-> >      scc_port', but a 'struct tty_port', which has no member named 'channel'.
+> > I'll test your patch as soon as I get fbtest to work (missing libgcc_s.so.2).
 > 
-> Will take a look at this, but gs is going to away so at some point
-> someone with hardware is going to have to admit to owning this driver or
-> just mark it BROKEN..
+> The alternative is to compile fbtest yourself (CVS module
+> FBdev/utlilities/fbtest from project linux-fbdev on sf.net).
 
-Time to merge with pmac_zilog or ip22zilog (the latter even needing similar 
-register access delays as Ataris). 
+Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/linux-fbdev
+CVS password: 
+cvs [login aborted]: connect to cvs.sourceforge.net(216.34.181.96):2401 failed: 
+Connection refused
 
-What is the time frame to gs being removed? I admit to 'owning' atari_scc which 
-was based on vme_scc so I'll have to deal with that sooner or later.
+cvsweb access is down as well. 
 
 	Michael
 
