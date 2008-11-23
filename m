@@ -1,68 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC] atafb and panning
-Date: Sun, 23 Nov 2008 14:03:51 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0811231403070.30025@anakin>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: fbtest (was: Re: [PATCH/RFC] atafb and panning)
+Date: Mon, 24 Nov 2008 00:05:39 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0811232238550.12331@zirkon.biophys.uni-duesseldorf.de>
 References: <Pine.LNX.4.64.0811162235251.20005@anakin>
  <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
  <Pine.LNX.4.64.0811190912190.27671@anakin>
- <alpine.DEB.1.00.0811220812440.7263@zirkon.biophys.uni-duesseldorf.de>
- <1227343506.6129.0.camel@joy>
+ <alpine.DEB.1.00.0811230336120.8478@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0811231133580.30025@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:44406 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753075AbYKWNDx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Nov 2008 08:03:53 -0500
-In-Reply-To: <1227343506.6129.0.camel@joy>
+Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:62960 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1750818AbYKWXFs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 23 Nov 2008 18:05:48 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KAT00C006TMGU00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Mon, 24 Nov 2008 00:05:47 +0100 (MET)
+In-reply-to: <Pine.LNX.4.64.0811231133580.30025@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr =?ISO-8859-1?Q?Stehl=EDk?= <pstehlik@sophics.cz>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>
 
-On Sat, 22 Nov 2008, Petr Stehl=EDk wrote:
-> Michael Schmitz p=ED=B9e v So 22. 11. 2008 v 08:16 +0100:
-> > > > If var->xoffset has the low order bits set (sub-word pixel offs=
-et)=20
-> > > > par->hw.falcon.xoffset takes care of that, and xoffset takes ca=
-re of the rest.=20
-> > > > Since the partial word offset shifts the beginnig of the scan l=
-ine into the=20
-> > > > first word, the offset to the next scan line (par->hw.falcon.li=
-ne_offset) has to=20
-> > > > be shortened.=20
-> > >=20
-> > > Sounds reasonable. But the shortening part doesn't work on ARAnyM=
-, nor do
-> > > small panning increments. So it really smells like an ARAnyM bug.
-> >=20
-> > Petr said as much if I understand him right. No need to fix ARAnyM =
-though, we=20
-> > just need to keep that in mind.=20
->=20
-> ARAnyM's VIDEL emulation has already been fixed by Patrice (yesterday
-> night, in CVS).
+Hi Geert,
 
-I can confirm that (for depths 2, 4, and 8). However, it's not flicker-=
-free.
-Dunno if that's an atafb or ARAnyM issue.
+> > cvs [login aborted]: connect to cvs.sourceforge.net(216.34.181.96):2401 failed: 
+> > Connection refused
+> > 
+> > cvsweb access is down as well. 
+> 
+> I put a git clone at
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/fbtest.git
 
-Gr{oetje,eeting}s,
+Cloned and built. Thank you! 
 
-						Geert
+	Michael
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
