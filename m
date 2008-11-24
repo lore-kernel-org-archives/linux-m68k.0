@@ -1,47 +1,33 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: David Miller <davem@davemloft.net>
 Subject: Re: Conversion of old Amiga NCR53C9x drivers to esp_scsi
-Date: Mon, 24 Nov 2008 22:08:33 +0100 (CET)
-Message-ID: <alpine.DEB.1.00.0811242206540.22809@zirkon.biophys.uni-duesseldorf.de>
+Date: Mon, 24 Nov 2008 13:50:26 -0800 (PST)
+Message-ID: <20081124.135026.241886343.davem@davemloft.net>
 References: <1227560510.15190.18.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:57220 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1750910AbYKXVIf (ORCPT
+Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:36134
+	"EHLO sunset.davemloft.net" rhost-flags-OK-FAIL-OK-OK)
+	by vger.kernel.org with ESMTP id S1753335AbYKXVu1 (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 24 Nov 2008 16:08:35 -0500
-In-reply-to: <1227560510.15190.18.camel@kars.perseus.home>
+	Mon, 24 Nov 2008 16:50:27 -0500
+In-Reply-To: <1227560510.15190.18.camel@kars.perseus.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Kars de Jong <jongk@linux-m68k.org>
-Cc: Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>, linux-scsi <linux-scsi@vger.kernel.org>
+To: jongk@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
 
-Hi,
+From: Kars de Jong <jongk@linux-m68k.org>
+Date: Mon, 24 Nov 2008 22:01:50 +0100
 
-> After an initial failure in February this year I have now gotten my
-> Blizzard SCSI Kit IV to work with the esp_scsi core.
-
-Congratulations!
- 
-> It turns out the DMA engine doesn't like a transfer size of only 2 bytes
-> (at least not when receiving). The bytes were in the FSC FIFO, but
-> didn't get transferred to DRAM and the final interrupt didn't occur so
-> the driver got stuck.
-> 
-> The old driver used to do such small transfers using PIO, so that is
-> what I do now in the glue driver.
-> 
 > What is the way to go? Revive the glue named drivers/scsi/blz1230.c?
 > Or should it be renamed?
-
-I'd rename it to blz1230_esp.c. 
- 
+> 
 > Some of the other drivers may be a little more problematic because they
 > had more driver operations which are not present in the esp_scsi DMA
 > abstraction.
 
-Can you fall back to PIO for those cases? 
-
-	Michael
+Whatever tweaks you need to make to the DMA abstraction to make
+your parts work are probably fine.  Get your hardware working
+and then post your esp_scsi core changes for review here.
