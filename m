@@ -1,44 +1,57 @@
-From: Roman Zippel <zippel@linux-m68k.org>
-Subject: Re: [PATCH] MVME16x: add support for EARLY_PRINTK
-Date: Tue, 25 Nov 2008 02:26:53 +0100
-Message-ID: <200811250226.54137.zippel@linux-m68k.org>
-References: <1227186532.19809.3.camel@kars.perseus.home>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: Conversion of old Amiga NCR53C9x drivers to esp_scsi
+Date: Mon, 24 Nov 2008 17:00:42 -0600
+Message-ID: <1227567642.3568.5.camel@localhost.localdomain>
+References: <1227560510.15190.18.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp-vbr10.xs4all.nl ([194.109.24.30]:1753 "EHLO
-	smtp-vbr10.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753102AbYKYBfB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 24 Nov 2008 20:35:01 -0500
-In-Reply-To: <1227186532.19809.3.camel@kars.perseus.home>
-Content-Disposition: inline
+Received: from accolon.hansenpartnership.com ([76.243.235.52]:58424 "EHLO
+	accolon.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752751AbYKYCsU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 24 Nov 2008 21:48:20 -0500
+In-Reply-To: <1227560510.15190.18.camel@kars.perseus.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Kars de Jong <jongk@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>
+Cc: Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>, linux-scsi <linux-scsi@vger.kernel.org>
 
-Hi,
+On Mon, 2008-11-24 at 22:01 +0100, Kars de Jong wrote:
+> Hello everyone,
+> 
+> 
+> After an initial failure in February this year I have now gotten my
+> Blizzard SCSI Kit IV to work with the esp_scsi core.
+> 
+> It turns out the DMA engine doesn't like a transfer size of only 2 bytes
+> (at least not when receiving). The bytes were in the FSC FIFO, but
+> didn't get transferred to DRAM and the final interrupt didn't occur so
+> the driver got stuck.
 
-On Thursday 20. November 2008, Kars de Jong wrote:
+Oh, that's a known problem with some NCR chips.  The way the manual
+recommends handling it as a PIO transaction to empty the DMA engine.
+Checking whether this condition occurs can be tricky, though.
 
-> diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
-> index f53b6d5..e0283a0 100644
-> --- a/arch/m68k/Kconfig.debug
-> +++ b/arch/m68k/Kconfig.debug
-> @@ -2,4 +2,15 @@ menu "Kernel hacking"
->
->  source "lib/Kconfig.debug"
->
-> +config EARLY_PRINTK
-> +	bool "Early printk" if EMBEDDED
-> +	depends on MVME16x
-> +	default y
-> +	help
+> The old driver used to do such small transfers using PIO, so that is
+> what I do now in the glue driver.
+> 
+> What is the way to go? Revive the glue named drivers/scsi/blz1230.c?
+> Or should it be renamed?
 
-This is really misnamed, the option is mvme specific but the name is rather 
-generic. Depending on the code size you could include the code 
-unconditionally (like we do on other ports).
+What I did when converting the 53c700 and 710 based drivers to the
+generic core was simply to keep the old name and gut the innards of the
+driver.  Whichever way you want to do it will be fine, though.
 
-bye, Roman
+> Some of the other drivers may be a little more problematic because they
+> had more driver operations which are not present in the esp_scsi DMA
+> abstraction.
+
+Any changes you need to make in the generic to support these, just post
+here for review as a separate patch (and CC the esp_scsi maintainer:
+Dave Miller).
+
+James
+
+
