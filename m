@@ -1,33 +1,44 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: Conversion of old Amiga NCR53C9x drivers to esp_scsi
-Date: Mon, 24 Nov 2008 13:50:26 -0800 (PST)
-Message-ID: <20081124.135026.241886343.davem@davemloft.net>
-References: <1227560510.15190.18.camel@kars.perseus.home>
+From: Roman Zippel <zippel@linux-m68k.org>
+Subject: Re: [PATCH] MVME16x: add support for EARLY_PRINTK
+Date: Tue, 25 Nov 2008 02:26:53 +0100
+Message-ID: <200811250226.54137.zippel@linux-m68k.org>
+References: <1227186532.19809.3.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:36134
-	"EHLO sunset.davemloft.net" rhost-flags-OK-FAIL-OK-OK)
-	by vger.kernel.org with ESMTP id S1753335AbYKXVu1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 24 Nov 2008 16:50:27 -0500
-In-Reply-To: <1227560510.15190.18.camel@kars.perseus.home>
+Received: from smtp-vbr10.xs4all.nl ([194.109.24.30]:1753 "EHLO
+	smtp-vbr10.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753102AbYKYBfB (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 24 Nov 2008 20:35:01 -0500
+In-Reply-To: <1227186532.19809.3.camel@kars.perseus.home>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: jongk@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
+To: Kars de Jong <jongk@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k kernel mailing list <linux-m68k@vger.kernel.org>
 
-From: Kars de Jong <jongk@linux-m68k.org>
-Date: Mon, 24 Nov 2008 22:01:50 +0100
+Hi,
 
-> What is the way to go? Revive the glue named drivers/scsi/blz1230.c?
-> Or should it be renamed?
-> 
-> Some of the other drivers may be a little more problematic because they
-> had more driver operations which are not present in the esp_scsi DMA
-> abstraction.
+On Thursday 20. November 2008, Kars de Jong wrote:
 
-Whatever tweaks you need to make to the DMA abstraction to make
-your parts work are probably fine.  Get your hardware working
-and then post your esp_scsi core changes for review here.
+> diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
+> index f53b6d5..e0283a0 100644
+> --- a/arch/m68k/Kconfig.debug
+> +++ b/arch/m68k/Kconfig.debug
+> @@ -2,4 +2,15 @@ menu "Kernel hacking"
+>
+>  source "lib/Kconfig.debug"
+>
+> +config EARLY_PRINTK
+> +	bool "Early printk" if EMBEDDED
+> +	depends on MVME16x
+> +	default y
+> +	help
+
+This is really misnamed, the option is mvme specific but the name is rather 
+generic. Depending on the code size you could include the code 
+unconditionally (like we do on other ports).
+
+bye, Roman
