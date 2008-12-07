@@ -1,62 +1,102 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: m68k: define __fls (was: Re: Yet more ARM breakage in linux-next
- (fwd))
-Date: Fri, 5 Dec 2008 09:58:57 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812050957510.4875@anakin>
+Subject: Re: Yet more ARM breakage in linux-next
+Date: Sun, 7 Dec 2008 22:50:59 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812072248430.14941@anakin>
+References: <20081203192905.GA12502@flint.arm.linux.org.uk>
+ <20081203124109.79f8f15b.akpm@linux-foundation.org> <Pine.LNX.4.64.0812041017470.10635@anakin>
+ <200812050042.28222.rusty@rustcorp.com.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from wilson.telenet-ops.be ([195.130.132.42]:42539 "EHLO
-	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750831AbYLEI67 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Dec 2008 03:58:59 -0500
+Received: from harold.telenet-ops.be ([195.130.133.65]:56718 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751823AbYLGVvG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Dec 2008 16:51:06 -0500
+In-Reply-To: <200812050042.28222.rusty@rustcorp.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Russell King <rmk+lkml@arm.linux.org.uk>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
----------- Forwarded message ----------
-Date: Fri, 5 Dec 2008 00:42:27 +1030
-From: Rusty Russell <rusty@rustcorp.com.au>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-    Russell King <rmk+lkml@arm.linux.org.uk>, linux-kernel@vger.kernel.org
-Subject: Re: Yet more ARM breakage in linux-next
+On Fri, 5 Dec 2008, Rusty Russell wrote:
+> On Thursday 04 December 2008 19:48:06 Geert Uytterhoeven wrote:
+> > Also broke m68k (a bit more hidden due to other build failures).
+> 
+> And m68knommu has similar issues.
+> 
+> Here's what I have for m68k for tomorrow's linux-next.  Please steal.
+> 
+> m68k: define __fls
+> 
+> Like fls, but can't be handed 0 and returns the bit number.
+> 
+> (I broke this arch in linux-next by using __fls in generic code).
+> 
+> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+> 
+> diff --git a/include/asm-m68k/bitops.h b/include/asm-m68k/bitops.h
+> --- a/include/asm-m68k/bitops.h
+> +++ b/include/asm-m68k/bitops.h
+> @@ -315,6 +315,11 @@ static inline int fls(int x)
+>  	return 32 - cnt;
+>  }
+>  
+> +static inline int __fls(int x)
+                 ^^^       ^^^
+Other implementations take `unsigned long' and return `unsigned long'...
 
-On Thursday 04 December 2008 19:48:06 Geert Uytterhoeven wrote:
-> Also broke m68k (a bit more hidden due to other build failures).
+> +{
+> +	return fls(x) - 1;
+> +}
+> +
 
-And m68knommu has similar issues.
+On Thu, 4 Dec 2008, Rusty Russell wrote:
+> Like fls, but can't be handed 0 and returns the bit number.
+> 
+> (I added find_last_bit() to bitmap.h which broke archs which didn't
+>  define this)
+> 
+> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+> ---
+>  arch/avr32/include/asm/bitops.h |    5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/avr32/include/asm/bitops.h b/arch/avr32/include/asm/bitops.h
+> --- a/arch/avr32/include/asm/bitops.h
+> +++ b/arch/avr32/include/asm/bitops.h
+> @@ -263,6 +263,11 @@ static inline int fls(unsigned long word
+>  	return 32 - result;
+>  }
+>  
+> +static inline int __fls(unsigned long word)
+                 ^^^       ^^^^^^^^^^^^^
+> +{
+> +	return fls(word) - 1;
+> +}
+> +
 
-Here's what I have for m68k for tomorrow's linux-next.  Please steal.
+... but this one uses mixed types?
 
-m68k: define __fls
+What are the official semantics of __fls()?
 
-Like fls, but can't be handed 0 and returns the bit number.
+Gr{oetje,eeting}s,
 
-(I broke this arch in linux-next by using __fls in generic code).
-
-Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-
-diff --git a/include/asm-m68k/bitops.h b/include/asm-m68k/bitops.h
---- a/include/asm-m68k/bitops.h
-+++ b/include/asm-m68k/bitops.h
-@@ -315,6 +315,11 @@ static inline int fls(int x)
- 	return 32 - cnt;
- }
- 
-+static inline int __fls(int x)
-+{
-+	return fls(x) - 1;
-+}
-+
- #include <asm-generic/bitops/fls64.h>
- #include <asm-generic/bitops/sched.h>
- #include <asm-generic/bitops/hweight.h>
-
-
+						Geert
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
