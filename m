@@ -1,63 +1,171 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Badness at mm/backing-dev.c:179
-Date: Mon, 8 Dec 2008 13:54:42 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812081353540.21492@anakin>
-References: <49367691.5060007@mimc.co.uk> <ac3eb2510812030422n15f1be2cn77aa5f66f1046933@mail.gmail.com>
- <Pine.LNX.4.64.0812080915120.14941@anakin> <ac3eb2510812080442u749eb997o1ad6d6036b6d7c5c@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Andreas Bombe <aeb@debian.org>
+Subject: [PATCH] amiflop: get rid of sleep_on calls
+Date: Mon,  8 Dec 2008 16:59:38 +0000
+Message-ID: <1228755578-26069-1-git-send-email-aeb@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nelson.telenet-ops.be ([195.130.133.66]:48933 "EHLO
-	nelson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752030AbYLHMyq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Dec 2008 07:54:46 -0500
-In-Reply-To: <ac3eb2510812080442u749eb997o1ad6d6036b6d7c5c@mail.gmail.com>
+Received: from infernal.debian.net ([87.230.26.131]:48483 "EHLO
+	infernal.debian.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751235AbYLHRuG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Dec 2008 12:50:06 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Kay Sievers <kay.sievers@vrfy.org>
-Cc: Mark Jackson <mpfj@mimc.co.uk>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Haavard Skinnemoen <haavard.skinnemoen@atmel.com>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, David Woodhouse <dwmw2@infradead.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Andreas Bombe <aeb@debian.org>
 
-On Mon, 8 Dec 2008, Kay Sievers wrote:
-> On Mon, Dec 8, 2008 at 09:16, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, 3 Dec 2008, Kay Sievers wrote:
-> >> On Wed, Dec 3, 2008 at 13:07, Mark Jackson <mpfj@mimc.co.uk> wrote:
-> >> > The following commit causes a "Badness at mm/backing-dev.c:179":-
-> >> >
-> >> > f1d0b063d993527754f062c589b73f125024d216 is first bad commit
-> >> > commit f1d0b063d993527754f062c589b73f125024d216
-> >> > Author: Kay Sievers <kay.sievers@vrfy.org>
-> >> > Date:   Tue Dec 2 10:31:50 2008 -0800
-> >> >
-> >> >    bdi: register sysfs bdi device only once per queue
-> >>
-> >> > Below is the extract from dmesg:-
-> >> >
-> >> > ------------[ cut here ]------------
-> >> > Badness at mm/backing-dev.c:179
-> >>
-> >> That's a known issue, and will not cause any harm besides printing
-> >> this warning. Andrew added the warning to catch drivers who use one
-> >> single request queue for multiple devices. Currently known are mtd and
-> >> floppy (triggers only if you have more than one device per driver).
-> >> The drivers need to be changed to use a separate queue per device, to
-> >> get rid of this warning.
-> >
-> > I guess this one (introduced after 2.6.28-rc7) is an incarnation of the same
-> > issue?
-> 
-> You have more than one floppy device registered at the same time,
-> right? Then it's very likely the same issue, that both devices share
-> the same request queue, like the x86 floppy.c.
+Apart from sleep_on() calls that could be easily converted to
+wait_event() and completion calls amiflop also used a flag in ms_delay()
+and ms_isr() as a custom mutex for ms_delay() without a need for
+explicit unlocking.  I converted that to a standard mutex semaphore.
 
-Yep, ataflop.c (and amiflop.c) forked from floppy.c a long time ago...
+The replacement for the unconditional sleep_on() in fd_motor_on() is a
+complete_all() together with a INIT_COMPLETION() before the mod_timer()
+call.  It appears to me that fd_motor_on() might be called concurrently
+and fd_select() does not guarantee mutual exclusivity in the case the
+same drive gets selected again.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Andreas Bombe <aeb@debian.org>
+---
 
-						Geert
+Note: I haven't tested these changes beyond correct compilation.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The complete_all() with INIT_COMPLETION() was because I'm not sure about
+whether fd_motor_on() might run concurrently.  Better safe than sorry.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+
+ drivers/block/amiflop.c |   40 ++++++++++++++++------------------------
+ 1 files changed, 16 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
+index 4b1d4ac..42e4d71 100644
+--- a/drivers/block/amiflop.c
++++ b/drivers/block/amiflop.c
+@@ -156,7 +156,7 @@ static volatile int fdc_busy = -1;
+ static volatile int fdc_nested;
+ static DECLARE_WAIT_QUEUE_HEAD(fdc_wait);
+  
+-static DECLARE_WAIT_QUEUE_HEAD(motor_wait);
++static DECLARE_COMPLETION(motor_on_completion);
+ 
+ static volatile int selected = -1;	/* currently selected drive */
+ 
+@@ -184,8 +184,7 @@ static unsigned char mfmencode[16]={
+ static unsigned char mfmdecode[128];
+ 
+ /* floppy internal millisecond timer stuff */
+-static volatile int ms_busy = -1;
+-static DECLARE_WAIT_QUEUE_HEAD(ms_wait);
++static DECLARE_COMPLETION(ms_wait_completion);
+ #define MS_TICKS ((amiga_eclock+50)/1000)
+ 
+ /*
+@@ -211,8 +210,7 @@ static int fd_device[4] = { 0, 0, 0, 0 };
+ 
+ static irqreturn_t ms_isr(int irq, void *dummy)
+ {
+-	ms_busy = -1;
+-	wake_up(&ms_wait);
++	complete(&ms_wait_completion);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -220,19 +218,17 @@ static irqreturn_t ms_isr(int irq, void *dummy)
+    A more generic routine would do a schedule a la timer.device */
+ static void ms_delay(int ms)
+ {
+-	unsigned long flags;
+ 	int ticks;
++	static DECLARE_MUTEX(mutex);
++
+ 	if (ms > 0) {
+-		local_irq_save(flags);
+-		while (ms_busy == 0)
+-			sleep_on(&ms_wait);
+-		ms_busy = 0;
+-		local_irq_restore(flags);
++		down(&mutex);
+ 		ticks = MS_TICKS*ms-1;
+ 		ciaa.tblo=ticks%256;
+ 		ciaa.tbhi=ticks/256;
+ 		ciaa.crb=0x19; /*count eclock, force load, one-shoot, start */
+-		sleep_on(&ms_wait);
++		wait_for_completion(&ms_wait_completion);
++		up(&mutex);
+ 	}
+ }
+ 
+@@ -254,8 +250,7 @@ static void get_fdc(int drive)
+ 	printk("get_fdc: drive %d  fdc_busy %d  fdc_nested %d\n",drive,fdc_busy,fdc_nested);
+ #endif
+ 	local_irq_save(flags);
+-	while (!try_fdc(drive))
+-		sleep_on(&fdc_wait);
++	wait_event(fdc_wait, try_fdc(drive));
+ 	fdc_busy = drive;
+ 	fdc_nested++;
+ 	local_irq_restore(flags);
+@@ -330,7 +325,7 @@ static void fd_deselect (int drive)
+ static void motor_on_callback(unsigned long nr)
+ {
+ 	if (!(ciaa.pra & DSKRDY) || --on_attempts == 0) {
+-		wake_up (&motor_wait);
++		complete_all(&motor_on_completion);
+ 	} else {
+ 		motor_on_timer.expires = jiffies + HZ/10;
+ 		add_timer(&motor_on_timer);
+@@ -347,11 +342,12 @@ static int fd_motor_on(int nr)
+ 		unit[nr].motor = 1;
+ 		fd_select(nr);
+ 
++		INIT_COMPLETION(motor_on_completion);
+ 		motor_on_timer.data = nr;
+ 		mod_timer(&motor_on_timer, jiffies + HZ/2);
+ 
+ 		on_attempts = 10;
+-		sleep_on (&motor_wait);
++		wait_for_completion(&motor_on_completion);
+ 		fd_deselect(nr);
+ 	}
+ 
+@@ -582,8 +578,7 @@ static void raw_read(int drive)
+ {
+ 	drive&=3;
+ 	get_fdc(drive);
+-	while (block_flag)
+-		sleep_on(&wait_fd_block);
++	wait_event(wait_fd_block, !block_flag);
+ 	fd_select(drive);
+ 	/* setup adkcon bits correctly */
+ 	custom.adkcon = ADK_MSBSYNC;
+@@ -598,8 +593,7 @@ static void raw_read(int drive)
+ 
+ 	block_flag = 1;
+ 
+-	while (block_flag)
+-		sleep_on (&wait_fd_block);
++	wait_event(wait_fd_block, !block_flag);
+ 
+ 	custom.dsklen = 0;
+ 	fd_deselect(drive);
+@@ -616,8 +610,7 @@ static int raw_write(int drive)
+ 		rel_fdc();
+ 		return 0;
+ 	}
+-	while (block_flag)
+-		sleep_on(&wait_fd_block);
++	wait_event(wait_fd_block, !block_flag);
+ 	fd_select(drive);
+ 	/* clear adkcon bits */
+ 	custom.adkcon = ADK_PRECOMP1|ADK_PRECOMP0|ADK_WORDSYNC|ADK_MSBSYNC;
+@@ -1294,8 +1287,7 @@ static int non_int_flush_track (unsigned long nr)
+ 			writepending = 0;
+ 			return 0;
+ 		}
+-		while (block_flag == 2)
+-			sleep_on (&wait_fd_block);
++		wait_event(wait_fd_block, block_flag != 2);
+ 	}
+ 	else {
+ 		local_irq_restore(flags);
+-- 
+1.5.6.5
+
