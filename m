@@ -1,74 +1,61 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Merge headerfiles for m68k and m68knommu to
-	arch/m68k/include/asm
-Date: Tue, 9 Dec 2008 00:01:15 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812082359190.29640@anakin>
-References: <20081208205814.GA22697@uranus.ravnborg.org>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
+Date: Tue, 9 Dec 2008 00:26:05 +0100
+Message-ID: <200812090026.06689.arnd@arndb.de>
+References: <20081208205814.GA22697@uranus.ravnborg.org> <Pine.LNX.4.64.0812082359190.29640@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <20081208205814.GA22697@uranus.ravnborg.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>, uclinux-dev <uclinux-dev@uclinux.org>, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, Roman Zippel <zippel@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0812082359190.29640@anakin>
+Content-Disposition: inline
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 8 Dec 2008, Sam Ravnborg wrote:
-> Following is a pseudo patch (a script + a patch) that merges
-> the include files for m68k and m68knommu in one place at:
+On Tuesday 09 December 2008, Geert Uytterhoeven wrote:
+> > I have used the following include guard:
+> > 
+> > #ifdef __uClinux__
+> > #include "atomic_no.h"
+> > #else
+> > #include "atomic_mm.h"
+> > #endif
+> > 
+> > gcc -E -dM for the two compilers revealed that this was the
+> > only symbol that differed.
 > 
->     arch/m68k/include/asm
+> I think you can share a toolchain for m68k and m68knommu, at least for the
+> kernel (I used my plain m68k toolchain when experimenting with m68knommu for
+> Amiga).
 > 
-> The script was written by Arnd and I added a few modifications.
-
-Thanks! I'll take a closer look when I'll find some spare time...
-
-> I have used the following include guard:
+> > With the above construct we do the "right thing" also for
+> > headers exported to userspace.
+> > But actually none of the headers using the above are
+> > subject for export at the moment so we could use a
+> > CONFIG_ symbol for the same.
 > 
-> #ifdef __uClinux__
-> #include "atomic_no.h"
-> #else
-> #include "atomic_mm.h"
-> #endif
-> 
-> gcc -E -dM for the two compilers revealed that this was the
-> only symbol that differed.
+> So I prefer to just check CONFIG_MMU.
 
-I think you can share a toolchain for m68k and m68knommu, at least for the
-kernel (I used my plain m68k toolchain when experimenting with m68knommu for
-Amiga).
+Some of them are, by means of include/asm-generic/Kbuild.asm, e.g.
+unistd.h!
 
-> With the above construct we do the "right thing" also for
-> headers exported to userspace.
-> But actually none of the headers using the above are
-> subject for export at the moment so we could use a
-> CONFIG_ symbol for the same.
+I'm not sure if it's entirely correct, but I think you can use
 
-So I prefer to just check CONFIG_MMU.
+#ifdef __KERNEL__
+# ifdef CONFIG_MMU
+#  include "atomic_mm.h
+# else
+#  include "atomic_no.h
+# endif
+#else
+# ifndef __uClinux__
+#  include "atomic_mm.h
+# else
+#  include "atomic_no.h
+# endif
+#endif
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+	Arnd <><
