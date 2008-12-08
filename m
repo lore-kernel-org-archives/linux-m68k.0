@@ -1,171 +1,208 @@
-From: Andreas Bombe <aeb@debian.org>
-Subject: [PATCH] amiflop: get rid of sleep_on calls
-Date: Mon,  8 Dec 2008 16:59:38 +0000
-Message-ID: <1228755578-26069-1-git-send-email-aeb@debian.org>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
+Date: Mon, 8 Dec 2008 21:58:14 +0100
+Message-ID: <20081208205814.GA22697__32219.9878668927$1228769918$gmane$org@uranus.ravnborg.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from infernal.debian.net ([87.230.26.131]:48483 "EHLO
-	infernal.debian.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751235AbYLHRuG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Dec 2008 12:50:06 -0500
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Andreas Bombe <aeb@debian.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-d>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>
 
-Apart from sleep_on() calls that could be easily converted to
-wait_event() and completion calls amiflop also used a flag in ms_delay()
-and ms_isr() as a custom mutex for ms_delay() without a need for
-explicit unlocking.  I converted that to a standard mutex semaphore.
+[this mail is cross posted to uclinux mailing list which is subscriber only]
 
-The replacement for the unconditional sleep_on() in fd_motor_on() is a
-complete_all() together with a INIT_COMPLETION() before the mod_timer()
-call.  It appears to me that fd_motor_on() might be called concurrently
-and fd_select() does not guarantee mutual exclusivity in the case the
-same drive gets selected again.
+Following is a pseudo patch (a script + a patch) that merges
+the include files for m68k and m68knommu in one place at:
 
-Signed-off-by: Andreas Bombe <aeb@debian.org>
----
+    arch/m68k/include/asm
 
-Note: I haven't tested these changes beyond correct compilation.
+The script was written by Arnd and I added a few modifications.
 
-The complete_all() with INIT_COMPLETION() was because I'm not sure about
-whether fd_motor_on() might run concurrently.  Better safe than sorry.
+The scripts does the following:
+
+1) move all header files from include/asm-m68k to arch/m68k/include/asm
+2) delete all header files in arch/m68knommu/include/asm that are equal
+3) copy all unique files from arch/m68knommu/include/asm to m68k
+4) merge the reminaing files using a small helper .h files.
+
+The original m68k file is named <file>_mm.h  [mm for memory manager]
+The m68knommu file is named <file>_no.h [no for no memory manager]
+
+I have used the following include guard:
+
+#ifdef __uClinux__
+#include "atomic_no.h"
+#else
+#include "atomic_mm.h"
+#endif
+
+gcc -E -dM for the two compilers revealed that this was the
+only symbol that differed.
+
+With the above construct we do the "right thing" also for
+headers exported to userspace.
+But actually none of the headers using the above are
+subject for export at the moment so we could use a
+CONFIG_ symbol for the same.
+
+The script assumes the repository is kept in git and shall be
+executed in the root of the kernel source.
+
+Originally we developed support for sharing same set of header files
+between two architectures for sparc. So only a minimal patch is
+needed in the top-level Makefile which is now a good thing for m68k.
+
+I have tested the following:
+- a defconfig build for m68k [partly - I lost patience]
+- a allnoconfig build for m68knommu
+- headers_check for m68k
+- headers_check for m68knommu
+
+To merge the header files run the script and then apply the patch.
+The patch has my:
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+
+I looked at doing this in smaller steps but that
+was not doable. And using the script it is anyway a simple
+operation to do.
+
+I hope you m68k* guys accept a two step approach where we
+merge header files before source code.
+Note: we just completed merge of sparc and sparc64 and it
+was a painless experience to do so so do not be scared.
+
+Note: the part touching the top-level Makefile will conflict
+with some pending sparc changes. But this is trivial to fix.
+Or just beat sparc and get this in first :-)
+
+	Sam
 
 
- drivers/block/amiflop.c |   40 ++++++++++++++++------------------------
- 1 files changed, 16 insertions(+), 24 deletions(-)
+Script:
+TARGET=arch/m68k/include/asm
+SOURCE=arch/m68knommu/include/asm
 
-diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
-index 4b1d4ac..42e4d71 100644
---- a/drivers/block/amiflop.c
-+++ b/drivers/block/amiflop.c
-@@ -156,7 +156,7 @@ static volatile int fdc_busy = -1;
- static volatile int fdc_nested;
- static DECLARE_WAIT_QUEUE_HEAD(fdc_wait);
-  
--static DECLARE_WAIT_QUEUE_HEAD(motor_wait);
-+static DECLARE_COMPLETION(motor_on_completion);
+# files that just do a simple include of the m68k variant
+INCLUDE="cachectl.h errno.h fcntl.h hwtest.h ioctls.h ipcbuf.h \
+linkage.h math-emu.h md.h mman.h movs.h msgbuf.h openprom.h \
+oplib.h poll.h posix_types.h resource.h rtc.h sembuf.h shmbuf.h \
+shm.h shmparam.h socket.h sockios.h spinlock.h statfs.h stat.h \
+termbits.h termios.h tlb.h types.h user.h"
+
+# files are equal or only include guards differ
+EQUAL="auxvec.h cputime.h device.h emergency-restart.h futex.h \
+ioctl.h irq_regs.h kdebug.h local.h mutex.h percpu.h \
+sections.h topology.h"
+
+# only in nommu68k
+NOMUUFILES="anchor.h bootstd.h coldfire.h commproc.h dbg.h \
+elia.h flat.h m5206sim.h m520xsim.h m523xsim.h m5249sim.h \
+m5272sim.h m527xsim.h m528xsim.h m5307sim.h m532xsim.h \
+m5407sim.h m68360_enet.h m68360.h m68360_pram.h m68360_quicc.h \
+m68360_regs.h MC68328.h MC68332.h MC68EZ328.h MC68VZ328.h \
+mcfcache.h mcfdma.h mcfmbus.h mcfne.h mcfpci.h mcfpit.h \
+mcfsim.h mcfsmc.h mcftimer.h mcfuart.h mcfwdebug.h \
+nettel.h quicc_simple.h smp.h"
+
+# files that differ
+FILES="atomic.h bitops.h bootinfo.h bug.h bugs.h byteorder.h cache.h \
+cacheflush.h checksum.h current.h delay.h div64.h \
+dma-mapping.h dma.h elf.h entry.h fb.h fpu.h hardirq.h hw_irq.h io.h \
+irq.h kmap_types.h machdep.h mc146818rtc.h mmu.h mmu_context.h \
+module.h page.h page_offset.h param.h pci.h pgalloc.h \
+pgtable.h processor.h ptrace.h scatterlist.h segment.h \
+setup.h sigcontext.h siginfo.h signal.h string.h system.h \
+thread_info.h timex.h tlbflush.h traps.h uaccess.h ucontext.h \
+unaligned.h unistd.h"
+
+mergefile() {
+	BASE=${1%.h}
+	git mv ${SOURCE}/$1 ${TARGET}/${BASE}_no.h
+	git mv ${TARGET}/$1 ${TARGET}/${BASE}_mm.h
+
+cat << EOF > ${TARGET}/$1
+#ifdef __uClinux__
+#include "${BASE}_no.h"
+#else
+#include "${BASE}_mm.h"
+#endif
+EOF
+
+	git add ${TARGET}/$1
+}
+
+#catch bugs in script
+set -e
+
+mkdir -p ${TARGET}
+
+# move all m68k header files
+git mv include/asm-m68k/* ${TARGET}
+rmdir include/asm-m68k
+
+# Kbuild n m68knommu is no longer needed - the m68k variant has it all
+git rm ${SOURCE}/Kbuild
+# Files that are equal or just include the m68k variant can be deleted
+for F in $INCLUDE $EQUAL; do
+	git rm ${SOURCE}/$F
+done
+
+# Files that are unique for m68knommu can be moved
+for F in $NOMUUFILES; do
+	git mv ${SOURCE}/$F ${TARGET}/$F
+done
+
+# merge the incompatible files
+for F in $FILES ; do
+	mergefile $F
+done
+
+#directory should be empty now - remove it (and fail if not empty)
+rmdir arch/m68knommu/include/asm
+rmdir arch/m68knommu/include
+
+
+
+
+Patch:
+diff --git a/Makefile b/Makefile
+index 9a49960..fa5a33d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -211,6 +211,9 @@ ifeq ($(ARCH),sparc64)
+ else
+        hdr-arch  := $(SRCARCH)
+ endif
++ifeq ($(ARCH),m68knommu)
++       hdr-arch  := m68k
++endif
  
- static volatile int selected = -1;	/* currently selected drive */
+ KCONFIG_CONFIG	?= .config
  
-@@ -184,8 +184,7 @@ static unsigned char mfmencode[16]={
- static unsigned char mfmdecode[128];
+diff --git a/arch/m68k/include/asm/pci_no.h b/arch/m68k/include/asm/pci_no.h
+index a13f3cc..9abbc03 100644
+--- a/arch/m68k/include/asm/pci_no.h
++++ b/arch/m68k/include/asm/pci_no.h
+@@ -1,7 +1,7 @@
+ #ifndef M68KNOMMU_PCI_H
+ #define	M68KNOMMU_PCI_H
  
- /* floppy internal millisecond timer stuff */
--static volatile int ms_busy = -1;
--static DECLARE_WAIT_QUEUE_HEAD(ms_wait);
-+static DECLARE_COMPLETION(ms_wait_completion);
- #define MS_TICKS ((amiga_eclock+50)/1000)
+-#include <asm-m68k/pci.h>
++#include <asm/pci_mm.h>
  
+ #ifdef CONFIG_COMEMPCI
  /*
-@@ -211,8 +210,7 @@ static int fd_device[4] = { 0, 0, 0, 0 };
+diff --git a/arch/m68k/include/asm/setup_no.h b/arch/m68k/include/asm/setup_no.h
+index fb86bb2..45d286c 100644
+--- a/arch/m68k/include/asm/setup_no.h
++++ b/arch/m68k/include/asm/setup_no.h
+@@ -1,6 +1,6 @@
+ #ifdef __KERNEL__
  
- static irqreturn_t ms_isr(int irq, void *dummy)
- {
--	ms_busy = -1;
--	wake_up(&ms_wait);
-+	complete(&ms_wait_completion);
- 	return IRQ_HANDLED;
- }
+-#include <asm-m68k/setup.h>
++#include <asm/setup_mm.h>
  
-@@ -220,19 +218,17 @@ static irqreturn_t ms_isr(int irq, void *dummy)
-    A more generic routine would do a schedule a la timer.device */
- static void ms_delay(int ms)
- {
--	unsigned long flags;
- 	int ticks;
-+	static DECLARE_MUTEX(mutex);
-+
- 	if (ms > 0) {
--		local_irq_save(flags);
--		while (ms_busy == 0)
--			sleep_on(&ms_wait);
--		ms_busy = 0;
--		local_irq_restore(flags);
-+		down(&mutex);
- 		ticks = MS_TICKS*ms-1;
- 		ciaa.tblo=ticks%256;
- 		ciaa.tbhi=ticks/256;
- 		ciaa.crb=0x19; /*count eclock, force load, one-shoot, start */
--		sleep_on(&ms_wait);
-+		wait_for_completion(&ms_wait_completion);
-+		up(&mutex);
- 	}
- }
- 
-@@ -254,8 +250,7 @@ static void get_fdc(int drive)
- 	printk("get_fdc: drive %d  fdc_busy %d  fdc_nested %d\n",drive,fdc_busy,fdc_nested);
- #endif
- 	local_irq_save(flags);
--	while (!try_fdc(drive))
--		sleep_on(&fdc_wait);
-+	wait_event(fdc_wait, try_fdc(drive));
- 	fdc_busy = drive;
- 	fdc_nested++;
- 	local_irq_restore(flags);
-@@ -330,7 +325,7 @@ static void fd_deselect (int drive)
- static void motor_on_callback(unsigned long nr)
- {
- 	if (!(ciaa.pra & DSKRDY) || --on_attempts == 0) {
--		wake_up (&motor_wait);
-+		complete_all(&motor_on_completion);
- 	} else {
- 		motor_on_timer.expires = jiffies + HZ/10;
- 		add_timer(&motor_on_timer);
-@@ -347,11 +342,12 @@ static int fd_motor_on(int nr)
- 		unit[nr].motor = 1;
- 		fd_select(nr);
- 
-+		INIT_COMPLETION(motor_on_completion);
- 		motor_on_timer.data = nr;
- 		mod_timer(&motor_on_timer, jiffies + HZ/2);
- 
- 		on_attempts = 10;
--		sleep_on (&motor_wait);
-+		wait_for_completion(&motor_on_completion);
- 		fd_deselect(nr);
- 	}
- 
-@@ -582,8 +578,7 @@ static void raw_read(int drive)
- {
- 	drive&=3;
- 	get_fdc(drive);
--	while (block_flag)
--		sleep_on(&wait_fd_block);
-+	wait_event(wait_fd_block, !block_flag);
- 	fd_select(drive);
- 	/* setup adkcon bits correctly */
- 	custom.adkcon = ADK_MSBSYNC;
-@@ -598,8 +593,7 @@ static void raw_read(int drive)
- 
- 	block_flag = 1;
- 
--	while (block_flag)
--		sleep_on (&wait_fd_block);
-+	wait_event(wait_fd_block, !block_flag);
- 
- 	custom.dsklen = 0;
- 	fd_deselect(drive);
-@@ -616,8 +610,7 @@ static int raw_write(int drive)
- 		rel_fdc();
- 		return 0;
- 	}
--	while (block_flag)
--		sleep_on(&wait_fd_block);
-+	wait_event(wait_fd_block, !block_flag);
- 	fd_select(drive);
- 	/* clear adkcon bits */
- 	custom.adkcon = ADK_PRECOMP1|ADK_PRECOMP0|ADK_WORDSYNC|ADK_MSBSYNC;
-@@ -1294,8 +1287,7 @@ static int non_int_flush_track (unsigned long nr)
- 			writepending = 0;
- 			return 0;
- 		}
--		while (block_flag == 2)
--			sleep_on (&wait_fd_block);
-+		wait_event(wait_fd_block, block_flag != 2);
- 	}
- 	else {
- 		local_irq_restore(flags);
--- 
-1.5.6.5
-
+ /* We have a bigger command line buffer. */
+ #undef COMMAND_LINE_SIZE
