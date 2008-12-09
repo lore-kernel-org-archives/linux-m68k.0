@@ -1,120 +1,76 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
-Date: Tue, 9 Dec 2008 09:24:47 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812090921310.29640@anakin>
-References: <20081208205814.GA22697@uranus.ravnborg.org>
- <Pine.LNX.4.64.0812082359190.29640@anakin> <200812090026.06689.arnd@arndb.de>
- <20081209054528.GA1407@uranus.ravnborg.org>
+Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
+Date: Tue, 9 Dec 2008 09:31:11 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812090927580.29640@anakin>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from harold.telenet-ops.be ([195.130.133.65]:35709 "EHLO
-	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751395AbYLIIYu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Dec 2008 03:24:50 -0500
-In-Reply-To: <20081209054528.GA1407@uranus.ravnborg.org>
+Received: from edna.telenet-ops.be ([195.130.132.58]:36768 "EHLO
+	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751395AbYLIIbO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Dec 2008 03:31:14 -0500
+In-Reply-To: <1228755578-26069-1-git-send-email-aeb@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
+To: Andreas Bombe <aeb@debian.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, 9 Dec 2008, Sam Ravnborg wrote:
-> On Tue, Dec 09, 2008 at 12:26:05AM +0100, Arnd Bergmann wrote:
-> > On Tuesday 09 December 2008, Geert Uytterhoeven wrote:
-> > > > I have used the following include guard:
-> > > > 
-> > > > #ifdef __uClinux__
-> > > > #include "atomic_no.h"
-> > > > #else
-> > > > #include "atomic_mm.h"
-> > > > #endif
-> > > > 
-> > > > gcc -E -dM for the two compilers revealed that this was the
-> > > > only symbol that differed.
-> > > 
-> > > I think you can share a toolchain for m68k and m68knommu, at least for the
-> > > kernel (I used my plain m68k toolchain when experimenting with m68knommu for
-> > > Amiga).
-> > > 
-> > > > With the above construct we do the "right thing" also for
-> > > > headers exported to userspace.
-> > > > But actually none of the headers using the above are
-> > > > subject for export at the moment so we could use a
-> > > > CONFIG_ symbol for the same.
-> > > 
-> > > So I prefer to just check CONFIG_MMU.
-> > 
-> > Some of them are, by means of include/asm-generic/Kbuild.asm, e.g.
-> > unistd.h!
-
-Interesting, I'd expect unistd.h to be the same!
-
-Ah, it's the restart_syscall:
-
---- include/asm-m68k/unistd.h	2008-10-18 10:34:15.000000000 +0200
-+++ arch/m68knommu/include/asm/unistd.h	2008-10-12 14:08:01.000000000 +0200
-@@ -5,6 +5,7 @@
-  * This file contains the system call numbers.
-  */
- 
-+#define __NR_restart_syscall      0
- #define __NR_exit		  1
- #define __NR_fork		  2
- #define __NR_read		  3
-@@ -359,9 +360,6 @@
- #define __ARCH_WANT_SYS_SIGPROCMASK
- #define __ARCH_WANT_SYS_RT_SIGACTION
- 
--/* whitelist for checksyscalls */
--#define __IGNORE_restart_syscall
--
- /*
-  * "Conditional" syscalls
-  *
-
-Sorry, I don't know about syscall restart handling, and why it differs. Anyone
-who can enlighten me?
-
-> I was fooled by make headers_check showing no errros.
-> But it turns out that headers_check does not recognize
-> includes made with "".
+On Mon, 8 Dec 2008, Andreas Bombe wrote:
+> Apart from sleep_on() calls that could be easily converted to
+> wait_event() and completion calls amiflop also used a flag in ms_delay()
+> and ms_isr() as a custom mutex for ms_delay() without a need for
+> explicit unlocking.  I converted that to a standard mutex semaphore.
 > 
-> So I will update the patch to include revevant *_{no,mm}.h files
-> in Kbuild.
+> The replacement for the unconditional sleep_on() in fd_motor_on() is a
+> complete_all() together with a INIT_COMPLETION() before the mod_timer()
+> call.  It appears to me that fd_motor_on() might be called concurrently
+> and fd_select() does not guarantee mutual exclusivity in the case the
+> same drive gets selected again.
 > 
-> > 
-> > I'm not sure if it's entirely correct, but I think you can use
-> > 
-> > #ifdef __KERNEL__
-> > # ifdef CONFIG_MMU
-> > #  include "atomic_mm.h
-> > # else
-> > #  include "atomic_no.h
-> > # endif
-> > #else
-> > # ifndef __uClinux__
-> > #  include "atomic_mm.h
-> > # else
-> > #  include "atomic_no.h
-> > # endif
-> > #endif
+> Signed-off-by: Andreas Bombe <aeb@debian.org>
+> ---
 > 
-> Can someone with a shared (m68k/m68knommu) please check if
-> __uClinux__ is only set in the m68knommu case.
-                 ^^^^
-		 always and only
+> Note: I haven't tested these changes beyond correct compilation.
 > 
-> Use:
-> 
->     touch foo.h; gcc -E -dM
-> 
-> to see what is defined by the compiler.
-> You will also need to specify if this is for m68k or m68knommu.
+> The complete_all() with INIT_COMPLETION() was because I'm not sure about
+> whether fd_motor_on() might run concurrently.  Better safe than sorry.
 
-Still, I don't see why the compiler needs to be aware of being configured for
-m68k or m68knommu, so IMHO this is a very fragile test...
+I'm afraid my Amiga floppy drive doesn't work anymore...
+Any other testers available?
 
-What are the other exported headers that differ?
+> --- a/drivers/block/amiflop.c
+> +++ b/drivers/block/amiflop.c
+> @@ -220,19 +218,17 @@ static irqreturn_t ms_isr(int irq, void *dummy)
+>     A more generic routine would do a schedule a la timer.device */
+>  static void ms_delay(int ms)
+>  {
+> -	unsigned long flags;
+>  	int ticks;
+> +	static DECLARE_MUTEX(mutex);
+               ^^^^^^^^^^^^^
+Shouldn't this be a real mutex (declared using DEFINE_MUTEX(mutex)) instead of
+a semaphore used as a mutex?
+
+> +
+>  	if (ms > 0) {
+> -		local_irq_save(flags);
+> -		while (ms_busy == 0)
+> -			sleep_on(&ms_wait);
+> -		ms_busy = 0;
+> -		local_irq_restore(flags);
+> +		down(&mutex);
+                ^^^^
+		mutex_lock
+
+>  		ticks = MS_TICKS*ms-1;
+>  		ciaa.tblo=ticks%256;
+>  		ciaa.tbhi=ticks/256;
+>  		ciaa.crb=0x19; /*count eclock, force load, one-shoot, start */
+> -		sleep_on(&ms_wait);
+> +		wait_for_completion(&ms_wait_completion);
+> +		up(&mutex);
+		mutex_unlock
 
 Gr{oetje,eeting}s,
 
