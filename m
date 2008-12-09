@@ -1,84 +1,59 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Joerg Dorchain <joerg@dorchain.net>
 Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
-Date: Tue, 9 Dec 2008 09:31:11 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812090927580.29640@anakin>
+Date: Tue, 9 Dec 2008 09:26:08 +0100
+Message-ID: <20081209082608.GA10651@Redstar.dorchain.net>
 References: <1228755578-26069-1-git-send-email-aeb@debian.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:36768 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751395AbYLIIbO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Dec 2008 03:31:14 -0500
+Received: from RedStar.dorchain.net ([212.88.133.153]:44192 "EHLO
+	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753215AbYLIIxd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Dec 2008 03:53:33 -0500
+Content-Disposition: inline
 In-Reply-To: <1228755578-26069-1-git-send-email-aeb@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Andreas Bombe <aeb@debian.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, 8 Dec 2008, Andreas Bombe wrote:
-> Apart from sleep_on() calls that could be easily converted to
-> wait_event() and completion calls amiflop also used a flag in ms_delay()
-> and ms_isr() as a custom mutex for ms_delay() without a need for
-> explicit unlocking.  I converted that to a standard mutex semaphore.
-> 
+
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 08, 2008 at 04:59:38PM +0000, Andreas Bombe wrote:
 > The replacement for the unconditional sleep_on() in fd_motor_on() is a
 > complete_all() together with a INIT_COMPLETION() before the mod_timer()
 > call.  It appears to me that fd_motor_on() might be called concurrently
 > and fd_select() does not guarantee mutual exclusivity in the case the
 > same drive gets selected again.
-> 
-> Signed-off-by: Andreas Bombe <aeb@debian.org>
-> ---
-> 
-> Note: I haven't tested these changes beyond correct compilation.
-> 
-> The complete_all() with INIT_COMPLETION() was because I'm not sure about
-> whether fd_motor_on() might run concurrently.  Better safe than sorry.
 
-I'm afraid my Amiga floppy drive doesn't work anymore...
-Any other testers available?
+Selecting the same drive repeatly does not matter. The selected
+drive is the one the next command or transfer applies to.
 
-> --- a/drivers/block/amiflop.c
-> +++ b/drivers/block/amiflop.c
-> @@ -220,19 +218,17 @@ static irqreturn_t ms_isr(int irq, void *dummy)
->     A more generic routine would do a schedule a la timer.device */
->  static void ms_delay(int ms)
->  {
-> -	unsigned long flags;
->  	int ticks;
-> +	static DECLARE_MUTEX(mutex);
-               ^^^^^^^^^^^^^
-Shouldn't this be a real mutex (declared using DEFINE_MUTEX(mutex)) instead of
-a semaphore used as a mutex?
+It is possible to select one drive, start the motor, select the
+next one, start the motor, as long as as trasnfer is tried until
+the drive is up to speed (either by signal or the timeout)
 
-> +
->  	if (ms > 0) {
-> -		local_irq_save(flags);
-> -		while (ms_busy == 0)
-> -			sleep_on(&ms_wait);
-> -		ms_busy = 0;
-> -		local_irq_restore(flags);
-> +		down(&mutex);
-                ^^^^
-		mutex_lock
+At first glance, the patch looks ok.
 
->  		ticks = MS_TICKS*ms-1;
->  		ciaa.tblo=ticks%256;
->  		ciaa.tbhi=ticks/256;
->  		ciaa.crb=0x19; /*count eclock, force load, one-shoot, start */
-> -		sleep_on(&ms_wait);
-> +		wait_for_completion(&ms_wait_completion);
-> +		up(&mutex);
-		mutex_unlock
+Bye,
 
-Gr{oetje,eeting}s,
+Joerg
 
-						Geert
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+iEYEARECAAYFAkk+K6AACgkQjY4+4PdzvOAInQCeMimYOg9/ZFRn12nvlSWMcEp+
+IA0AoIOMiGFlazwfBeE1iOpdDjNgGmGG
+=BNAn
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
