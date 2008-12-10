@@ -1,42 +1,65 @@
-From: Andreas Bombe <aeb@debian.org>
+From: Joerg Dorchain <joerg@dorchain.net>
 Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
-Date: Wed, 10 Dec 2008 01:48:10 +0100
-Message-ID: <20081210004810.GA5073@infernal.debian.net>
-References: <1228755578-26069-1-git-send-email-aeb@debian.org> <20081209082608.GA10651@Redstar.dorchain.net>
+Date: Wed, 10 Dec 2008 09:16:40 +0100
+Message-ID: <20081210081640.GG30213@Redstar.dorchain.net>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org> <20081209082608.GA10651@Redstar.dorchain.net> <20081210004810.GA5073@infernal.debian.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nHwqXXcoX0o6fKCv"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx02.qsc.de ([213.148.130.14]:60793 "EHLO mx02.qsc.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752835AbYLJBOl (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 9 Dec 2008 20:14:41 -0500
+Received: from RedStar.dorchain.net ([212.88.133.153]:40220 "EHLO
+	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753652AbYLJIQn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Dec 2008 03:16:43 -0500
 Content-Disposition: inline
-In-Reply-To: <20081209082608.GA10651@Redstar.dorchain.net>
+In-Reply-To: <20081210004810.GA5073@infernal.debian.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Joerg Dorchain <joerg@dorchain.net>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, Dec 09, 2008 at 09:26:08AM +0100, Joerg Dorchain wrote:
-> On Mon, Dec 08, 2008 at 04:59:38PM +0000, Andreas Bombe wrote:
-> > The replacement for the unconditional sleep_on() in fd_motor_on() is a
-> > complete_all() together with a INIT_COMPLETION() before the mod_timer()
-> > call.  It appears to me that fd_motor_on() might be called concurrently
-> > and fd_select() does not guarantee mutual exclusivity in the case the
-> > same drive gets selected again.
-> 
-> Selecting the same drive repeatly does not matter. The selected
-> drive is the one the next command or transfer applies to.
 
-I think we're not talking about the same problem.  If I were to use
-complete() together with wait_for_completion() there would be a problem
-if fd_motor_on() can get as far as wait_for_completion() while a
-previous completion is yet uncompleted.  This can not happen for
-different drives, as the fd_select() would block.  If it could happen
-for the same drive, the complete() would allow only one task to
-continue.  The complete_all() takes care of that.
+--nHwqXXcoX0o6fKCv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If requests are serialized for a drive so that there won't ever be two
-running at the same time for certain (thinking about it, it's probable),
-I could make it a simple complete().  It's hardly worth the risk,
-however.
+On Wed, Dec 10, 2008 at 01:48:10AM +0100, Andreas Bombe wrote:
+> I think we're not talking about the same problem.  If I were to use
+> complete() together with wait_for_completion() there would be a problem
+> if fd_motor_on() can get as far as wait_for_completion() while a
+> previous completion is yet uncompleted.  This can not happen for
+> different drives, as the fd_select() would block.  If it could happen
+> for the same drive, the complete() would allow only one task to
+> continue.  The complete_all() takes care of that.
+>=20
+> If requests are serialized for a drive so that there won't ever be two
+> running at the same time for certain (thinking about it, it's probable),
+> I could make it a simple complete().  It's hardly worth the risk,
+> however.
+
+IIRC (have not touched the driver for quite some time) at a
+certain stage all requests for a specific drive are serialized.
+The amiga floppy drives read and write whole tracks only, so
+follow-up acesses are likely to be on the same track and then
+served from the buffer of decoded blocks. I you do wild track
+jumping, it is slower than the original AmigaOS-driver.
+
+But as I am not sure, and floppy drives are slow anyway, the
+complete_all() won't give any notable performance penalty, I guess.
+
+Joerg
+
+--nHwqXXcoX0o6fKCv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkk/eucACgkQjY4+4PdzvOBtywCfdVKNeWcWJsy9XGuGgFx3OnR3
+zmIAmgIQkODWeSwuRFRHzyRMqzWwBca+
+=3w/d
+-----END PGP SIGNATURE-----
+
+--nHwqXXcoX0o6fKCv--
