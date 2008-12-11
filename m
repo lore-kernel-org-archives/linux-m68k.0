@@ -1,65 +1,96 @@
-From: Joerg Dorchain <joerg@dorchain.net>
-Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
-Date: Wed, 10 Dec 2008 09:16:40 +0100
-Message-ID: <20081210081640.GG30213@Redstar.dorchain.net>
-References: <1228755578-26069-1-git-send-email-aeb@debian.org> <20081209082608.GA10651@Redstar.dorchain.net> <20081210004810.GA5073@infernal.debian.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
+Date: Thu, 11 Dec 2008 09:33:55 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812110932510.7310@anakin>
+References: <20081208205814.GA22697@uranus.ravnborg.org>
+ <Pine.LNX.4.64.0812082359190.29640@anakin> <200812090026.06689.arnd@arndb.de>
+ <20081209054528.GA1407@uranus.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nHwqXXcoX0o6fKCv"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from RedStar.dorchain.net ([212.88.133.153]:40220 "EHLO
-	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753652AbYLJIQn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Dec 2008 03:16:43 -0500
-Content-Disposition: inline
-In-Reply-To: <20081210004810.GA5073@infernal.debian.net>
+Received: from harold.telenet-ops.be ([195.130.133.65]:50843 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754789AbYLKIeL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Dec 2008 03:34:11 -0500
+In-Reply-To: <20081209054528.GA1407@uranus.ravnborg.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
 
+On Tue, 9 Dec 2008, Sam Ravnborg wrote:
+> On Tue, Dec 09, 2008 at 12:26:05AM +0100, Arnd Bergmann wrote:
+> > On Tuesday 09 December 2008, Geert Uytterhoeven wrote:
+> > > > I have used the following include guard:
+> > > > 
+> > > > #ifdef __uClinux__
+> > > > #include "atomic_no.h"
+> > > > #else
+> > > > #include "atomic_mm.h"
+> > > > #endif
+> > > > 
+> > > > gcc -E -dM for the two compilers revealed that this was the
+> > > > only symbol that differed.
+> > > 
+> > > I think you can share a toolchain for m68k and m68knommu, at least for the
+> > > kernel (I used my plain m68k toolchain when experimenting with m68knommu for
+> > > Amiga).
+> > > 
+> > > > With the above construct we do the "right thing" also for
+> > > > headers exported to userspace.
+> > > > But actually none of the headers using the above are
+> > > > subject for export at the moment so we could use a
+> > > > CONFIG_ symbol for the same.
+> > > 
+> > > So I prefer to just check CONFIG_MMU.
+> > 
+> > Some of them are, by means of include/asm-generic/Kbuild.asm, e.g.
+> > unistd.h!
+> I was fooled by make headers_check showing no errros.
+> But it turns out that headers_check does not recognize
+> includes made with "".
+> 
+> So I will update the patch to include revevant *_{no,mm}.h files
+> in Kbuild.
+> 
+> > 
+> > I'm not sure if it's entirely correct, but I think you can use
+> > 
+> > #ifdef __KERNEL__
+> > # ifdef CONFIG_MMU
+> > #  include "atomic_mm.h
+> > # else
+> > #  include "atomic_no.h
+> > # endif
+> > #else
+> > # ifndef __uClinux__
+> > #  include "atomic_mm.h
+> > # else
+> > #  include "atomic_no.h
+> > # endif
+> > #endif
+> 
+> Can someone with a shared (m68k/m68knommu) please check if
+> __uClinux__ is only set in the m68knommu case.
+> 
+> Use:
+> 
+>     touch foo.h; gcc -E -dM
+> 
+> to see what is defined by the compiler.
+> You will also need to specify if this is for m68k or m68knommu.
 
---nHwqXXcoX0o6fKCv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Any comments from the m68knommu toolchain people?
 
-On Wed, Dec 10, 2008 at 01:48:10AM +0100, Andreas Bombe wrote:
-> I think we're not talking about the same problem.  If I were to use
-> complete() together with wait_for_completion() there would be a problem
-> if fd_motor_on() can get as far as wait_for_completion() while a
-> previous completion is yet uncompleted.  This can not happen for
-> different drives, as the fd_select() would block.  If it could happen
-> for the same drive, the complete() would allow only one task to
-> continue.  The complete_all() takes care of that.
->=20
-> If requests are serialized for a drive so that there won't ever be two
-> running at the same time for certain (thinking about it, it's probable),
-> I could make it a simple complete().  It's hardly worth the risk,
-> however.
+None of my m68k-linux compilers set __uClinux__, as expected.
 
-IIRC (have not touched the driver for quite some time) at a
-certain stage all requests for a specific drive are serialized.
-The amiga floppy drives read and write whole tracks only, so
-follow-up acesses are likely to be on the same track and then
-served from the buffer of decoded blocks. I you do wild track
-jumping, it is slower than the original AmigaOS-driver.
+Gr{oetje,eeting}s,
 
-But as I am not sure, and floppy drives are slow anyway, the
-complete_all() won't give any notable performance penalty, I guess.
+						Geert
 
-Joerg
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---nHwqXXcoX0o6fKCv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkk/eucACgkQjY4+4PdzvOBtywCfdVKNeWcWJsy9XGuGgFx3OnR3
-zmIAmgIQkODWeSwuRFRHzyRMqzWwBca+
-=3w/d
------END PGP SIGNATURE-----
-
---nHwqXXcoX0o6fKCv--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
