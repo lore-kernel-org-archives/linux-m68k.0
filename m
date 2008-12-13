@@ -1,104 +1,32 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
-Date: Fri, 12 Dec 2008 15:40:10 +1000
-Message-ID: <4941F93A.7090604@snapgear.com>
-References: <20081208205814.GA22697@uranus.ravnborg.org> <Pine.LNX.4.64.0812082359190.29640@anakin> <200812090026.06689.arnd@arndb.de> <20081209054528.GA1407@uranus.ravnborg.org> <Pine.LNX.4.64.0812110932510.7310@anakin>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
+Date: Sat, 13 Dec 2008 16:20:28 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0812131614360.20992@firda.kolla.no>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org> <Pine.LNX.4.64.0812090927580.29640@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kbuild-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0812110932510.7310@anakin>
-Sender: linux-kbuild-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ufisa.uninett.no ([158.38.152.126]:52038 "EHLO ufisa.uninett.no"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751235AbYLMPsS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 13 Dec 2008 10:48:18 -0500
+In-Reply-To: <Pine.LNX.4.64.0812090927580.29640@anakin>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Bombe <aeb@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
 
+On Tue, 9 Dec 2008, Geert Uytterhoeven wrote:
 
-Geert Uytterhoeven wrote:
-> On Tue, 9 Dec 2008, Sam Ravnborg wrote:
->> On Tue, Dec 09, 2008 at 12:26:05AM +0100, Arnd Bergmann wrote:
->>> On Tuesday 09 December 2008, Geert Uytterhoeven wrote:
->>>>> I have used the following include guard:
->>>>>
->>>>> #ifdef __uClinux__
->>>>> #include "atomic_no.h"
->>>>> #else
->>>>> #include "atomic_mm.h"
->>>>> #endif
->>>>>
->>>>> gcc -E -dM for the two compilers revealed that this was the
->>>>> only symbol that differed.
->>>> I think you can share a toolchain for m68k and m68knommu, at least for the
->>>> kernel (I used my plain m68k toolchain when experimenting with m68knommu for
->>>> Amiga).
->>>>
->>>>> With the above construct we do the "right thing" also for
->>>>> headers exported to userspace.
->>>>> But actually none of the headers using the above are
->>>>> subject for export at the moment so we could use a
->>>>> CONFIG_ symbol for the same.
->>>> So I prefer to just check CONFIG_MMU.
->>> Some of them are, by means of include/asm-generic/Kbuild.asm, e.g.
->>> unistd.h!
->> I was fooled by make headers_check showing no errros.
->> But it turns out that headers_check does not recognize
->> includes made with "".
->>
->> So I will update the patch to include revevant *_{no,mm}.h files
->> in Kbuild.
->>
->>> I'm not sure if it's entirely correct, but I think you can use
->>>
->>> #ifdef __KERNEL__
->>> # ifdef CONFIG_MMU
->>> #  include "atomic_mm.h
->>> # else
->>> #  include "atomic_no.h
->>> # endif
->>> #else
->>> # ifndef __uClinux__
->>> #  include "atomic_mm.h
->>> # else
->>> #  include "atomic_no.h
->>> # endif
->>> #endif
->> Can someone with a shared (m68k/m68knommu) please check if
->> __uClinux__ is only set in the m68knommu case.
->>
->> Use:
->>
->>     touch foo.h; gcc -E -dM
->>
->> to see what is defined by the compiler.
->> You will also need to specify if this is for m68k or m68knommu.
+> > The complete_all() with INIT_COMPLETION() was because I'm not sure about
+> > whether fd_motor_on() might run concurrently.  Better safe than sorry.
 > 
-> Any comments from the m68knommu toolchain people?
- >
-> None of my m68k-linux compilers set __uClinux__, as expected.
+> I'm afraid my Amiga floppy drive doesn't work anymore...
+> Any other testers available?
 
-A m68k-uclinux- gcc will. From a gcc-4.2.4
+I have some, even enough external ones to chain up to the max of 4
+floppy drives (floppy raid anyone? :)). What needs to be tested?
+I havent updated kernel for quite some time (still running 2.6.22),
+should I now pull sources from git or what?
 
-   m68k-uclinux-gcc -E -dM /tmp/foo.h | grep -i linux
-
-   #define __linux 1
-   #define __linux__ 1
-   #define __uClinux__ 1
-   #define __gnu_linux__ 1
-   #define linux 1
-
-(I think that is one of the very few differences of m68k-linux
-over m68k-uclinux...)
-
-I would rather just have a m68k-linux myself, and not have a
-separate m68k-uclinux toolchain.
-
-Regards
-Greg
-
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear, a McAfee Company                  PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+-- kolla
