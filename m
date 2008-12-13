@@ -1,32 +1,34 @@
-From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
-Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
-Date: Sat, 13 Dec 2008 16:20:28 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0812131614360.20992@firda.kolla.no>
-References: <1228755578-26069-1-git-send-email-aeb@debian.org> <Pine.LNX.4.64.0812090927580.29640@anakin>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Merge headerfiles for m68k and m68knommu to arch/m68k/include/asm
+Date: Sat, 13 Dec 2008 17:16:30 +0100
+Message-ID: <200812131716.31874.arnd@arndb.de>
+References: <20081208205814.GA22697@uranus.ravnborg.org> <Pine.LNX.4.64.0812110932510.7310@anakin> <Pine.LNX.4.64.0812112116060.333@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ufisa.uninett.no ([158.38.152.126]:52038 "EHLO ufisa.uninett.no"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751235AbYLMPsS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 13 Dec 2008 10:48:18 -0500
-In-Reply-To: <Pine.LNX.4.64.0812090927580.29640@anakin>
+Received: from moutng.kundenserver.de ([212.227.126.187]:52789 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750745AbYLMQQx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Dec 2008 11:16:53 -0500
+In-Reply-To: <Pine.LNX.4.64.0812112116060.333@anakin>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Bombe <aeb@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
+Cc: Sam Ravnborg <sam@ravnborg.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
 
-On Tue, 9 Dec 2008, Geert Uytterhoeven wrote:
-
-> > The complete_all() with INIT_COMPLETION() was because I'm not sure about
-> > whether fd_motor_on() might run concurrently.  Better safe than sorry.
+On Thursday 11 December 2008, Geert Uytterhoeven wrote:
 > 
-> I'm afraid my Amiga floppy drive doesn't work anymore...
-> Any other testers available?
+> > None of my m68k-linux compilers set __uClinux__, as expected.
+> 
+> Can't we unifdef out in scripts/headers_install.pl based on CONFIG_MMU?
 
-I have some, even enough external ones to chain up to the max of 4
-floppy drives (floppy raid anyone? :)). What needs to be tested?
-I havent updated kernel for quite some time (still running 2.6.22),
-should I now pull sources from git or what?
+That should work, but I'm not convinced that it is what you want.
+If you want binaries to be used interchangably between the two,
+you really need to fix the signal handling and pt_regs on m68knommu,
+and someone should try to work out what EXEC_PAGESIZE and COMMAND_LINE_SIZE
+should really be defined to.
 
--- kolla
+	Arnd <><
