@@ -1,144 +1,48 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k,m68knommu: merge header files
-Date: Sun, 14 Dec 2008 17:13:51 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812141710530.5936@anakin>
-References: <20081208205814.GA22697@uranus.ravnborg.org>
- <20081213205251.GC27748@uranus.ravnborg.org> <20081213205828.GD27748@uranus.ravnborg.org>
+Subject: Re: [PATCH v2] amiflop: get rid of sleep_on calls
+Date: Sun, 14 Dec 2008 17:21:17 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812141719300.5936@anakin>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org>
+ <Pine.LNX.4.64.0812090927580.29640@anakin> <20081210010219.GB5073@infernal.debian.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from harold.telenet-ops.be ([195.130.133.65]:55279 "EHLO
-	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753290AbYLNQNy (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Dec 2008 11:13:54 -0500
-In-Reply-To: <20081213205828.GD27748@uranus.ravnborg.org>
+Received: from winston.telenet-ops.be ([195.130.137.75]:55696 "EHLO
+	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753126AbYLNQVU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Dec 2008 11:21:20 -0500
+In-Reply-To: <20081210010219.GB5073@infernal.debian.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>
+To: Andreas Bombe <aeb@debian.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Sat, 13 Dec 2008, Sam Ravnborg wrote:
-> >From 5a8b9717a399679c4753e596ea864b02a1197025 Mon Sep 17 00:00:00 2001
-> From: Sam Ravnborg <sam@ravnborg.org>
-> Date: Sat, 13 Dec 2008 21:23:08 +0100
-> Subject: [PATCH] m68k,m68knommu: merge header files
+On Wed, 10 Dec 2008, Andreas Bombe wrote:
+> Apart from sleep_on() calls that could be easily converted to
+> wait_event() and completion calls amiflop also used a flag in ms_delay()
+> and ms_isr() as a custom mutex for ms_delay() without a need for
+> explicit unlocking.  I converted that to a standard mutex.
 > 
-> Merge header files for m68k and m68knommu to the single location:
+> The replacement for the unconditional sleep_on() in fd_motor_on() is a
+> complete_all() together with a INIT_COMPLETION() before the mod_timer()
+> call.  It appears to me that fd_motor_on() might be called concurrently
+> and fd_select() does not guarantee mutual exclusivity in the case the
+> same drive gets selected again.
 > 
->     arch/m68k/include/asm
+> Signed-off-by: Andreas Bombe <aeb@debian.org>
+> ---
 > 
-> The majority of this patch was the result of the
-> script that is included in the changelog below.
+> This version changes the struct semaphore used as mutex into a struct
+> mutex.  Still only compile tested.
 > 
-> The script was originally written by Arnd Bergman and
-                                            ^^^^^^^
-					    Bergmann
-> exten by me to cover a few more files.
-  ^^^^^
-  extended
+> I just tried out my Amiga and it appears to be in better shape than
+> expected.  So I might get to actually test it when I find the time.  My
+> Amiga has no Linux installation so I need to whip up a ramdisk or
+> something else sufficient to test it.
 
-> When the header files differed the script uses the following:
-> 
-> The original m68k file is named <file>_mm.h  [mm for memory manager]
-> The m68knommu file is named <file>_no.h [no for no memory manager]
-> 
-> The files uses the following include guard:
-> 
-> This include gaurd works as the m68knommu toolchain set
-               ^^^^^
-	       guard
-> the __uClinux__ symbol - so this should work in userspace too.
-> 
-> Merging the header files for m68k and m68knommu exposes the
-> (unexpected?) ABI differences thus it is easier to actually
-> identify these and thus to fix them.
-> 
-> The commit has been build tested with both a m68k and
-> a m68knommu toolchain - with success.
-> 
-> The commit has also been tested with "make headers_check"
-> and this patch fixes make headers_check for m68knommu.
-> 
-> The script used:
-> TARGET=arch/m68k/include/asm
-> SOURCE=arch/m68knommu/include/asm
-> 
-> INCLUDE="cachectl.h errno.h fcntl.h hwtest.h ioctls.h ipcbuf.h \
-> linkage.h math-emu.h md.h mman.h movs.h msgbuf.h openprom.h \
-> oplib.h poll.h posix_types.h resource.h rtc.h sembuf.h shmbuf.h \
-> shm.h shmparam.h socket.h sockios.h spinlock.h statfs.h stat.h \
-> termbits.h termios.h tlb.h types.h user.h"
-> 
-> EQUAL="auxvec.h cputime.h device.h emergency-restart.h futex.h \
-> ioctl.h irq_regs.h kdebug.h local.h mutex.h percpu.h \
-> sections.h topology.h"
-> 
-> NOMUUFILES="anchor.h bootstd.h coldfire.h commproc.h dbg.h \
-  ^^^^^^^^^^
-  NOMMUFILES (as the same typo is present in the other parts of the script
-              it still worked ;-)
-
-> elia.h flat.h m5206sim.h m520xsim.h m523xsim.h m5249sim.h \
-> m5272sim.h m527xsim.h m528xsim.h m5307sim.h m532xsim.h \
-> m5407sim.h m68360_enet.h m68360.h m68360_pram.h m68360_quicc.h \
-> m68360_regs.h MC68328.h MC68332.h MC68EZ328.h MC68VZ328.h \
-> mcfcache.h mcfdma.h mcfmbus.h mcfne.h mcfpci.h mcfpit.h \
-> mcfsim.h mcfsmc.h mcftimer.h mcfuart.h mcfwdebug.h \
-> nettel.h quicc_simple.h smp.h"
-> 
-> FILES="atomic.h bitops.h bootinfo.h bug.h bugs.h byteorder.h cache.h \
-> cacheflush.h checksum.h current.h delay.h div64.h \
-> dma-mapping.h dma.h elf.h entry.h fb.h fpu.h hardirq.h hw_irq.h io.h \
-> irq.h kmap_types.h machdep.h mc146818rtc.h mmu.h mmu_context.h \
-> module.h page.h page_offset.h param.h pci.h pgalloc.h \
-> pgtable.h processor.h ptrace.h scatterlist.h segment.h \
-> setup.h sigcontext.h siginfo.h signal.h string.h system.h \
-> thread_info.h timex.h tlbflush.h traps.h uaccess.h ucontext.h \
-> unaligned.h unistd.h"
-> 
-> mergefile() {
-> 	BASE=${1%.h}
-> 	git mv ${SOURCE}/$1 ${TARGET}/${BASE}_no.h
-> 	git mv ${TARGET}/$1 ${TARGET}/${BASE}_mm.h
-> 
-> cat << EOF > ${TARGET}/$1
-> EOF
-> 
-> 	git add ${TARGET}/$1
-> }
-> 
-> set -e
-> 
-> mkdir -p ${TARGET}
-> 
-> git mv include/asm-m68k/* ${TARGET}
-> rmdir include/asm-m68k
-> 
-> git rm ${SOURCE}/Kbuild
-> for F in $INCLUDE $EQUAL; do
-> 	git rm ${SOURCE}/$F
-> done
-> 
-> for F in $NOMUUFILES; do
-> 	git mv ${SOURCE}/$F ${TARGET}/$F
-> done
-> 
-> for F in $FILES ; do
-> 	mergefile $F
-> done
-> 
-> rmdir arch/m68knommu/include/asm
-> rmdir arch/m68knommu/include
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Greg Ungerer <gerg@uclinux.org>
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-
-m68k-bits are
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Thanks a lot, Arnd, Sam!
+I think the good old ELF ramdisk at
+ftp://ftp.uni-erlangen.de/pub/unix/Linux/680x0/v2.0/filesys/filesys-ELF-2.0.x-1400K-2.gz
+should be sufficient to give it a try...
 
 Gr{oetje,eeting}s,
 
