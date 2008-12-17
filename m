@@ -1,63 +1,52 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: atari_mouse_interrupt_hook (was: Re: [PATCH/RFC] atafb and panning)
-Date: Wed, 17 Dec 2008 02:13:43 +0100 (CET)
-Message-ID: <alpine.DEB.1.00.0812170212310.14228@zirkon.biophys.uni-duesseldorf.de>
-References: <Pine.LNX.4.64.0811162235251.20005@anakin>
- <alpine.DEB.1.00.0811190828090.6915@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0811190912190.27671@anakin>
- <alpine.DEB.1.00.0811220812440.7263@zirkon.biophys.uni-duesseldorf.de>
- <1227343506.6129.0.camel@joy> <1227379735.6118.10.camel@joy>
- <Pine.LNX.4.64.0811232242480.30025@anakin>
- <alpine.DEB.1.00.0811240050090.15319@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0812141725090.5936@anakin>
- <alpine.DEB.1.00.0812150457400.29644@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0812162144140.29433@anakin>
+From: Joerg Dorchain <joerg@dorchain.net>
+Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
+Date: Wed, 17 Dec 2008 09:00:05 +0100
+Message-ID: <20081217080005.GN30213@Redstar.dorchain.net>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org> <20081209082608.GA10651@Redstar.dorchain.net> <Pine.LNX.4.64.0812162119330.29433@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qoTlaiD+Y2fIM3Ll"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:47230 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751914AbYLQBO4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 16 Dec 2008 20:14:56 -0500
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
- id <0KBZ00200Y4T3X00@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Wed, 17 Dec 2008 02:14:53 +0100 (MET)
-In-reply-to: <Pine.LNX.4.64.0812162144140.29433@anakin>
+Received: from RedStar.dorchain.net ([212.88.133.153]:40026 "EHLO
+	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751562AbYLQIAZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 17 Dec 2008 03:00:25 -0500
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0812162119330.29433@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Joerg Dorchain <joerg@dorchain.net>, Andreas Bombe <aeb@debian.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Geert,
 
-> > > Who should use atari_mouse_interrupt_hook (no users left)?
-> > 
-> > No one should be using atari_mouse_interrupt_hook anymore so it can be killed 
-> > off. I probably renamed the hook in all but that one place following a 
-> > recommendation from the list. My bad, as usual.
-> 
-> Looks like you missed one more spot, so I came up with this. OK?
-> 
-> commit 896d2f2715d1fadd4c510c4125b1e4c0f1918f6f
-> Author: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-> Date:   Tue Dec 16 21:26:03 2008 +0100
-> 
->     atari: Use the correct mouse interrupt hook
->     
->     The Atari keyboard driver calls atari_mouse_interrupt_hook if it's set, not
->     atari_input_mouse_interrupt_hook. Fix below.
->     
->     [geert] Killed off atari_mouse_interrupt_hook completely, after fixing another
->     incorrect assignment in atarimouse.c.
->     
->     Signed-off-by: Michael Schmitz <schmitz@debian.org>
->     Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+--qoTlaiD+Y2fIM3Ll
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That should fix it for good. Thanks!
+On Tue, Dec 16, 2008 at 09:23:00PM +0100, Geert Uytterhoeven wrote:
+> >=20
+> > At first glance, the patch looks ok.
+>=20
+> Does that mean I can add your Acked-by?
 
-	Michael
+Yes. Although real world testing would be nice, though.
 
+Bye,
+
+Joerg
+
+--qoTlaiD+Y2fIM3Ll
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAklIsYUACgkQjY4+4PdzvODOgACfY9W/8N8ligpNbYtVtcR5Cfau
+ZicAn3N2nWCr+vJCRM2ongcylfOD8wDb
+=1tgK
+-----END PGP SIGNATURE-----
+
+--qoTlaiD+Y2fIM3Ll--
