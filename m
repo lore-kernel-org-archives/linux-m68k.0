@@ -1,52 +1,50 @@
-From: Joerg Dorchain <joerg@dorchain.net>
-Subject: Re: [PATCH] amiflop: get rid of sleep_on calls
-Date: Wed, 17 Dec 2008 09:00:05 +0100
-Message-ID: <20081217080005.GN30213@Redstar.dorchain.net>
-References: <1228755578-26069-1-git-send-email-aeb@debian.org> <20081209082608.GA10651@Redstar.dorchain.net> <Pine.LNX.4.64.0812162119330.29433@anakin>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-next: boot-params tree build failure
+Date: Wed, 17 Dec 2008 09:18:32 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812170915400.29433@anakin>
+References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qoTlaiD+Y2fIM3Ll"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from RedStar.dorchain.net ([212.88.133.153]:40026 "EHLO
-	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751562AbYLQIAZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 17 Dec 2008 03:00:25 -0500
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0812162119330.29433@anakin>
+Received: from winston.telenet-ops.be ([195.130.137.75]:34661 "EHLO
+	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752634AbYLQISh (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 17 Dec 2008 03:18:37 -0500
+In-Reply-To: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joerg Dorchain <joerg@dorchain.net>, Andreas Bombe <aeb@debian.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, linux-next@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
+On Wed, 17 Dec 2008, Stephen Rothwell wrote:
+> The build of next-20081216 (m68k defconfig) failed like this:
+> 
+> arch/m68k/kernel/setup.c:230: error: conflicting types for '_end'
+> arch/m68k/kernel/setup.c:215: error: previous declaration of '_end' was here
+> 
+> Caused by commit 0de5c2d9f02d2018fd671ca1015432dffa5eb338 ("param:
+> arch_get_boot_command_line()") from the poot-params tree.
 
---qoTlaiD+Y2fIM3Ll
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is due to the existing
 
-On Tue, Dec 16, 2008 at 09:23:00PM +0100, Geert Uytterhoeven wrote:
-> >=20
-> > At first glance, the patch looks ok.
->=20
-> Does that mean I can add your Acked-by?
+    extern int _etext, _edata, _end;
 
-Yes. Although real world testing would be nice, though.
+in and the newly added
 
-Bye,
+    extern char _end[];
 
-Joerg
+to arch/m68k/kernel/setup.c.
 
---qoTlaiD+Y2fIM3Ll
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+As these are already declared in asm-generic/sections.h (which is used by
+asm-m68k/sections.h), I'll switch arch/m68k/kernel/setup.c to using them.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Gr{oetje,eeting}s,
 
-iEYEARECAAYFAklIsYUACgkQjY4+4PdzvODOgACfY9W/8N8ligpNbYtVtcR5Cfau
-ZicAn3N2nWCr+vJCRM2ongcylfOD8wDb
-=1tgK
------END PGP SIGNATURE-----
+						Geert
 
---qoTlaiD+Y2fIM3Ll--
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
