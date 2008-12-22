@@ -1,42 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Kill several external declarations in source files
- (was: Re: linux-next: boot-params tree build failure)
-Date: Mon, 22 Dec 2008 08:30:34 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812220830170.3499@anakin>
-References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
- <Pine.LNX.4.64.0812170915400.29433@anakin> <Pine.LNX.4.64.0812211205270.3499@anakin>
- <200812220851.44880.rusty@rustcorp.com.au>
+From: mrsabdul120 <mrsabdul120@gmail.com>
+Subject: CAN YOU REAL.LY BE TRUSTED BELOVED?
+Date: Mon, 22 Dec 2008 15:50:18 +0100
+Message-ID: <86bb99540812220650o58833032oa66717e4669823a1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <200812220851.44880.rusty@rustcorp.com.au>
-Sender: linux-next-owner@vger.kernel.org
-To: Rusty Russell <rusty@rustcorp.com.au>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 22 Dec 2008, Rusty Russell wrote:
-> On Sunday 21 December 2008 21:42:44 Geert Uytterhoeven wrote:
-> > Shall I cherry pick this into my for-next branch (breaking Rusty's changes),
-> > or wait until the current linux-next has been merged by Linus (and maybe
-> > postpone to .30)?
-> 
-> Good q.  I can take the just setup.c changes and roll them into the
-> boot-params tree if you want?
+Mrs. Abdul Esther,
+Demark Lout Street,
+93050 Kuching,
+Sarawak,Malaysia
 
-Fine for me! Thx!
+Beloved Friend,
 
-> ie. something like:
-> 
-> Subject: m68k: Use asm/sections.h in kernel/setup.c
+I am writing this mail to you with heavy tears In my eyes and great
 
-Gr{oetje,eeting}s,
+sorrow in my heart because my Doctor told me that I will die in
 
-						Geert
+three months time due to my illness causer. Base on this
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+development I want to will my money which is deposited in a security
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+company. I sound pessimistic about my health because from the
+
+look of things here in the hospital, I know I will surely die
+
+anytime. All my hairs are falling off. I am also finding it a
+
+difficult to breath freely because of the internal injuries. I am in
+
+search of a reliable person who will use the Money to build charity
+
+organization for the saints and the person will take 20% of the
+
+total sum. While 80% of the money will go to charity organization
+
+and helping the
+ orphanage. I grew up as an Orphan and i don't have
+
+anybody/family member to take care of my wealth. The total money in
+
+question is $3.5million dollars. I will provide you with other
+
+information's once you indicate your willingness.
+Please do contact me on my personal email,because i may not be able
+
+to open this dating site any longer due to my precarious
+
+condition.you can now contact me If really you are out to take up
+
+this great challenge.Waiting to read your message. I have limited internet
+access in the hospital.So I am still stuck to the laptop to read your message.
+contact me on my private email:
+
+
+mrsestherabdul11@yahoo.com in your next reply.
+
+
+Yours sincerely.
+
+Mrs Abdul Esther.
