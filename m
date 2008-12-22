@@ -1,66 +1,121 @@
-From: mrsabdul120 <mrsabdul120@gmail.com>
-Subject: CAN YOU REAL.LY BE TRUSTED BELOVED?
-Date: Mon, 22 Dec 2008 15:50:18 +0100
-Message-ID: <86bb99540812220650o58833032oa66717e4669823a1@mail.gmail.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [patch 3/6] fbdev: c2p - Cleanups
+Date: Mon, 22 Dec 2008 15:22:06 -0800
+Message-ID: <20081222152206.707c3214.akpm@linux-foundation.org>
+References: <20081221150059.844577615@mail.of.borg>
+	<20081221150122.473385775@mail.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+Received: from smtp1.linux-foundation.org ([140.211.169.13]:60891 "EHLO
+	smtp1.linux-foundation.org" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752422AbYLVXWd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 22 Dec 2008 18:22:33 -0500
+In-Reply-To: <20081221150122.473385775@mail.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: schmitz@opal.biophys.uni-duesseldorf.de, linux-fbdev-devel@lists.sourceforge.net, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Mrs. Abdul Esther,
-Demark Lout Street,
-93050 Kuching,
-Sarawak,Malaysia
+On Sun, 21 Dec 2008 16:01:02 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Beloved Friend,
+>   - Improve comments and naming
+>   - Use void * for arbitrary pointers
+>   - Use a union to represent pixels/words, to avoid casts
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/video/c2p.c |   80 +++++++++++++++++++++++++++-------------------------
+>  drivers/video/c2p.h |    6 +--
+>  2 files changed, 45 insertions(+), 41 deletions(-)
+> 
+> --- a/drivers/video/c2p.c
+> +++ b/drivers/video/c2p.c
+> @@ -54,7 +54,7 @@ static inline u32 get_mask(int n)
+>      return 0;
+>  }
+>  
+> -#define transp_nx1(d, n)				\
+> +#define transp8_nx1(d, n)				\
+>      do {						\
+>  	u32 mask = get_mask(n);				\
+>  	/* First block */				\
+> @@ -67,7 +67,7 @@ static inline u32 get_mask(int n)
+>  	_transp(d, 6, 7, n, mask);			\
+>      } while (0)
+> -#define transp_nx2(d, n)				\
+> +#define transp8_nx2(d, n)				\
+>      do {						\
+>  	u32 mask = get_mask(n);				\
+>  	/* First block */				\
+> @@ -78,40 +78,41 @@ static inline u32 get_mask(int n)
 
-I am writing this mail to you with heavy tears In my eyes and great
+I was going to say:
 
-sorrow in my heart because my Doctor told me that I will die in
+- these don't need to be implemented as macros
 
-three months time due to my illness causer. Base on this
+- these reference their arguments multiple times and will cause
+  problems when passed an expression with side-effects.
 
-development I want to will my money which is deposited in a security
+- they should be converted to inlined C function, but those functions
+  will be waaaaaaaay to big to inline.
 
-company. I sound pessimistic about my health because from the
+but happily, they appear to not have any callers?
 
-look of things here in the hospital, I know I will surely die
+>  	_transp(d, 5, 7, n, mask);			\
+>      } while (0)
+>  
+> -#define transp_nx4(d, n)				\
+> +#define transp8_nx4(d, n)				\
+>      do {						\
+>  	u32 mask = get_mask(n);				\
+> +	/* Single block */				\
+>  	_transp(d, 0, 4, n, mask);			\
+>  	_transp(d, 1, 5, n, mask);			\
+>  	_transp(d, 2, 6, n, mask);			\
+>  	_transp(d, 3, 7, n, mask);			\
+>      } while (0)
+>  
+> -#define transp(d, n, m)	transp_nx ## m(d, n)
+> +#define transp8(d, n, m)	transp8_nx ## m(d, n)
 
-anytime. All my hairs are falling off. I am also finding it a
+ah, yes they do.  Tricky!
 
-difficult to breath freely because of the internal injuries. I am in
+>  
+>      /*
+> @@ -130,12 +131,12 @@ static inline unsigned long comp(unsigne
+>       *  Store a full block of planar data after c2p conversion
+>       */
+>  
+> -static inline void store_planar(char *dst, u32 dst_inc, u32 bpp, u32 d[8])
+> +static inline void store_planar(void *dst, u32 dst_inc, u32 bpp, u32 d[8])
+>  {
+>      int i;
+>  
+>      for (i = 0; i < bpp; i++, dst += dst_inc)
+> -	*(u32 *)dst = d[perm_c2p_8bpp[i]];
+> +	*(u32 *)dst = d[perm_c2p_32x8[i]];
+>  }
+>  
+>  
+> @@ -143,13 +144,13 @@ static inline void store_planar(char *ds
+>       *  Store a partial block of planar data after c2p conversion
+>       */
+>  
+> -static inline void store_planar_masked(char *dst, u32 dst_inc, u32 bpp,
+> +static inline void store_planar_masked(void *dst, u32 dst_inc, u32 bpp,
+>  				       u32 d[8], u32 mask)
+>  {
+>      int i;
+>  
+>      for (i = 0; i < bpp; i++, dst += dst_inc)
+> -	*(u32 *)dst = comp(d[perm_c2p_8bpp[i]], *(u32 *)dst, mask);
+> +	*(u32 *)dst = comp(d[perm_c2p_32x8[i]], *(u32 *)dst, mask);
+>  }
 
-search of a reliable person who will use the Money to build charity
-
-organization for the saints and the person will take 20% of the
-
-total sum. While 80% of the money will go to charity organization
-
-and helping the
- orphanage. I grew up as an Orphan and i don't have
-
-anybody/family member to take care of my wealth. The total money in
-
-question is $3.5million dollars. I will provide you with other
-
-information's once you indicate your willingness.
-Please do contact me on my personal email,because i may not be able
-
-to open this dating site any longer due to my precarious
-
-condition.you can now contact me If really you are out to take up
-
-this great challenge.Waiting to read your message. I have limited internet
-access in the hospital.So I am still stuck to the laptop to read your message.
-contact me on my private email:
+This driver needs a inlineectomy.
 
 
-mrsestherabdul11@yahoo.com in your next reply.
-
-
-Yours sincerely.
-
-Mrs Abdul Esther.
