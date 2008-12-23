@@ -1,138 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch 3/6] fbdev: c2p - Cleanups
-Date: Tue, 23 Dec 2008 09:13:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812230908330.17497@anakin>
-References: <20081221150059.844577615@mail.of.borg> <20081221150122.473385775@mail.of.borg>
- <20081222152206.707c3214.akpm@linux-foundation.org>
+From: Andreas Bombe <aeb@debian.org>
+Subject: Re: [PATCH v2] amiflop: get rid of sleep_on calls
+Date: Tue, 23 Dec 2008 15:22:46 +0100
+Message-ID: <20081223142246.GA5122@infernal.debian.net>
+References: <1228755578-26069-1-git-send-email-aeb@debian.org> <Pine.LNX.4.64.0812090927580.29640@anakin> <20081210010219.GB5073@infernal.debian.net> <Pine.LNX.4.64.0812141719300.5936@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from wilson.telenet-ops.be ([195.130.132.42]:40599 "EHLO
-	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753350AbYLWINj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Dec 2008 03:13:39 -0500
-In-Reply-To: <20081222152206.707c3214.akpm@linux-foundation.org>
+Received: from mx02.qsc.de ([213.148.130.14]:51319 "EHLO mx02.qsc.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751142AbYLWOWs (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 23 Dec 2008 09:22:48 -0500
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0812141719300.5936@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: schmitz@opal.biophys.uni-duesseldorf.de, linux-fbdev-devel@lists.sourceforge.net, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, 22 Dec 2008, Andrew Morton wrote:
-> On Sun, 21 Dec 2008 16:01:02 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Sun, Dec 14, 2008 at 05:21:17PM +0100, Geert Uytterhoeven wrote:
+> On Wed, 10 Dec 2008, Andreas Bombe wrote:
+> > I just tried out my Amiga and it appears to be in better shape than
+> > expected.  So I might get to actually test it when I find the time.  My
+> > Amiga has no Linux installation so I need to whip up a ramdisk or
+> > something else sufficient to test it.
 > 
-> >   - Improve comments and naming
-> >   - Use void * for arbitrary pointers
-> >   - Use a union to represent pixels/words, to avoid casts
-> > 
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >  drivers/video/c2p.c |   80 +++++++++++++++++++++++++++-------------------------
-> >  drivers/video/c2p.h |    6 +--
-> >  2 files changed, 45 insertions(+), 41 deletions(-)
-> > 
-> > --- a/drivers/video/c2p.c
-> > +++ b/drivers/video/c2p.c
-> > @@ -54,7 +54,7 @@ static inline u32 get_mask(int n)
-> >      return 0;
-> >  }
-> >  
-> > -#define transp_nx1(d, n)				\
-> > +#define transp8_nx1(d, n)				\
-> >      do {						\
-> >  	u32 mask = get_mask(n);				\
-> >  	/* First block */				\
-> > @@ -67,7 +67,7 @@ static inline u32 get_mask(int n)
-> >  	_transp(d, 6, 7, n, mask);			\
-> >      } while (0)
-> > -#define transp_nx2(d, n)				\
-> > +#define transp8_nx2(d, n)				\
-> >      do {						\
-> >  	u32 mask = get_mask(n);				\
-> >  	/* First block */				\
-> > @@ -78,40 +78,41 @@ static inline u32 get_mask(int n)
-> 
-> I was going to say:
-> 
-> - these don't need to be implemented as macros
-> 
-> - these reference their arguments multiple times and will cause
->   problems when passed an expression with side-effects.
+> I think the good old ELF ramdisk at
+> ftp://ftp.uni-erlangen.de/pub/unix/Linux/680x0/v2.0/filesys/filesys-ELF-2.0.x-1400K-2.gz
+> should be sufficient to give it a try...
 
-You're right. These could be inline functions.
+Not that easy with just 8 Megs of Fast RAM.  Besides, I couldn't gunzip
+the file to look at the image, gzip gives a format error.
 
-> - they should be converted to inlined C function, but those functions
->   will be waaaaaaaay to big to inline.
-
-They're actually not _that_ big. And "n" is known at compile-time.
-
-> but happily, they appear to not have any callers?
-> 
-> >  	_transp(d, 5, 7, n, mask);			\
-> >      } while (0)
-> >  
-> > -#define transp_nx4(d, n)				\
-> > +#define transp8_nx4(d, n)				\
-> >      do {						\
-> >  	u32 mask = get_mask(n);				\
-> > +	/* Single block */				\
-> >  	_transp(d, 0, 4, n, mask);			\
-> >  	_transp(d, 1, 5, n, mask);			\
-> >  	_transp(d, 2, 6, n, mask);			\
-> >  	_transp(d, 3, 7, n, mask);			\
-> >      } while (0)
-> >  
-> > -#define transp(d, n, m)	transp_nx ## m(d, n)
-> > +#define transp8(d, n, m)	transp8_nx ## m(d, n)
-> 
-> ah, yes they do.  Tricky!
-
-But this macro exist to provide one single transp8(d, n, m) API.
-Perhaps it'll work as one big inline function too. I'll check if gcc
-is smart enough to optimize it ("m" is known at compile-time, too).
-
-> >      /*
-> > @@ -130,12 +131,12 @@ static inline unsigned long comp(unsigne
-> >       *  Store a full block of planar data after c2p conversion
-> >       */
-> >  
-> > -static inline void store_planar(char *dst, u32 dst_inc, u32 bpp, u32 d[8])
-> > +static inline void store_planar(void *dst, u32 dst_inc, u32 bpp, u32 d[8])
-> >  {
-> >      int i;
-> >  
-> >      for (i = 0; i < bpp; i++, dst += dst_inc)
-> > -	*(u32 *)dst = d[perm_c2p_8bpp[i]];
-> > +	*(u32 *)dst = d[perm_c2p_32x8[i]];
-> >  }
-> >  
-> >  
-> > @@ -143,13 +144,13 @@ static inline void store_planar(char *ds
-> >       *  Store a partial block of planar data after c2p conversion
-> >       */
-> >  
-> > -static inline void store_planar_masked(char *dst, u32 dst_inc, u32 bpp,
-> > +static inline void store_planar_masked(void *dst, u32 dst_inc, u32 bpp,
-> >  				       u32 d[8], u32 mask)
-> >  {
-> >      int i;
-> >  
-> >      for (i = 0; i < bpp; i++, dst += dst_inc)
-> > -	*(u32 *)dst = comp(d[perm_c2p_8bpp[i]], *(u32 *)dst, mask);
-> > +	*(u32 *)dst = comp(d[perm_c2p_32x8[i]], *(u32 *)dst, mask);
-> >  }
-> 
-> This driver needs a inlineectomy.
-
-I actually want it to be inlined.
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Now, I finally got to test it with a very simply self-made initrd.  So
+far I only did some read tests in a single thread (dd to /dev/null at
+various offsets).  It didn't crash or hang, but I noticed that the
+floppy motor is never shut off (I'm not sure about the motor, at least
+the floppy LED stays on).  However, that is not a regression, I tested
+the mainline code and it shows the same problem.
