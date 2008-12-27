@@ -1,48 +1,46 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH] m68k: fix recursive dependency in Kconfig
-Date: Fri, 26 Dec 2008 22:46:43 +0100
-Message-ID: <20081226214643.GA17590@uranus.ravnborg.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] input/keyboard/hilkbd.c: fix crash when removing hilkbd
+ module
+Date: Sat, 27 Dec 2008 18:47:39 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812271847140.20983@anakin>
+References: <495535B9.5070009@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+Received: from monty.telenet-ops.be ([195.130.132.56]:40150 "EHLO
+	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753012AbYL0Rrn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Dec 2008 12:47:43 -0500
+In-Reply-To: <495535B9.5070009@gmx.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Helge Deller <deller@gmx.de>
+Cc: linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Frans Pop <elendil@planet.nl>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-We had a recursive dependency between MMU_MOTOROLA and MMU_SUN3
-Fix it by dropping the unused dependencies on MMU_MOTOROLA.
+On Fri, 26 Dec 2008, Helge Deller wrote:
+> On parisc machines, which don't have HIL, removing the hilkbd module
+> panics the kernel. Fix this by adding proper implementations for the
+> probe and remove functions to the parisc_driver structure.
+> 
+> A few functions were renamed to clean up the code and make it easier
+> readable.
+> 
+> Disable the MODULE_DEVICE_TABLE() macro on parisc since the kernel
+> module autoloader should instead prefer the hp_sdc driver which takes
+> care of full HIL support, including HIL mouse and HIL tablets.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> CC: Geert Uytterhoeven <geert@linux-m68k.org>
 
-MMU_MOTOROLA is set to y only using select so any dependencies
-are anyway ignored.
+Looks OK, and still compiles fine on m68k/HP300.
 
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
----
+Gr{oetje,eeting}s,
 
-I hit this recursive dependency with a patched version
-of kconfig so you may not see it today.
-The fix is obvious - please apply.
+						Geert
 
-	Sam
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
- arch/m68k/Kconfig |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 836fb66..c825bde 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -280,7 +280,6 @@ config M68060
- 
- config MMU_MOTOROLA
- 	bool
--	depends on MMU && !MMU_SUN3
- 
- config MMU_SUN3
- 	bool
--- 
-1.6.0.2.GIT
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
