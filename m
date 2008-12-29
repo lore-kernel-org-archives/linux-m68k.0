@@ -1,85 +1,87 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Fix atarimouse init
-Date: Mon, 29 Dec 2008 11:57:57 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812291151200.20983@anakin>
-References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
- <Pine.LNX.4.64.0812170915400.29433@anakin> <Pine.LNX.4.64.0812211205270.3499@anakin>
- <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH] input/HIL drivers: add MODULE_ALIAS()
+Date: Mon, 29 Dec 2008 13:17:25 +0100
+Message-ID: <4958BFD5.3080403@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:38296 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752604AbYL2K57 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Dec 2008 05:57:59 -0500
-In-Reply-To: <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------060600040009040903010106"
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Frans Pop <elendil@planet.nl>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, 28 Dec 2008, Michael Schmitz wrote:
-> following up on Geert's report that atarimouse does fail to load as a module 
-> (with ENODEV), here's the fix. 
-> 
-> Brown paper bag, well and truely. Got the semantics of the atari_keyb_init 
-> return reversed (not that atari_keyb_init ever returns anything but success, but 
-> that's for another day).
-> 
-> I still get no mouse events in either /dev/input/mice or .../mouse0, though. I 
-> suspect the mouse open hook never gets called. Same bug might affect amimouse 
-> (though the open function does do the full hardware setup there).
+This is a multi-part message in MIME format.
+--------------060600040009040903010106
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Thanks, we're making progress :-)
+resending, as I forgot to CC: Geert and linux-m68k
 
-I get events from /dev/input/mouse0 and /dev/input/mice (atari_defconfig).
+-------- Original Message --------
+Subject: [PATCH] input/HIL drivers: add MODULE_ALIAS()
+Date: Fri, 26 Dec 2008 21:09:00 +0100
+From: Helge Deller <deller@gmx.de>
+To: linux-input@vger.kernel.org,  Dmitry Torokhov
+<dmitry.torokhov@gmail.com>
+CC: Helge Deller <deller@gmx.de>, Frans Pop <elendil@planet.nl>
 
-The kernel says (ARAnyM, windowed mode):
-| input: Atari mouse as /devices/virtual/input/input1
-| Reseting weird mouse packet: 942, 379, 0
-| Reseting weird mouse packet: 943, 379, 0
-| Reseting weird mouse packet: 945, 378, 0
-| Reseting weird mouse packet: 948, 378, 0
-| Reseting weird mouse packet: 956, 376, 0
+Add MODULE_ALIAS() to the HIL keyboard (hil_kbd.c) and HIL mouse
+(hil_ptr.c) drivers to make kernel module autoloader functional.
+Report HIL port number ID in serio id.id field.
 
-When running X under ARAnyM (depth 16), some shortcomings show up:
-  - up and down are interchanged (works fine when rolling the mouse over the
-    bottom surface of the table --- old arabic map style ;-)
-  - the left and right mouse button are interchanged
-  - the middle mouse button is dead
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Please put a `---' here, so `git am' will strip the signature and the diffstat.
+ keyboard/hil_kbd.c |    1 +
+ mouse/hil_ptr.c    |    2 +-
+ serio/hil_mlc.c    |    1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-> 	Michael
-> 
->  drivers/input/mouse/atarimouse.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/input/mouse/atarimouse.c b/drivers/input/mouse/atarimouse.c
-> index a57143c..1b5f4dd 100644
-> --- a/drivers/input/mouse/atarimouse.c
-> +++ b/drivers/input/mouse/atarimouse.c
-> @@ -118,7 +118,7 @@ static int __init atamouse_init(void)
->  	if (!MACH_IS_ATARI || !ATARIHW_PRESENT(ST_MFP))
->  		return -ENODEV;
->  
-> -	if (!atari_keyb_init())
-> +	if (atari_keyb_init())
->  		return -ENODEV;
->  
->  	atamouse_dev = input_allocate_device();
-> 
-> Signed-off-by: Michael Schmitz <schmitz@debian.org>
 
-Please put the SoB just below the changelog, else `git am' will strip it off.
+--------------060600040009040903010106
+Content-Type: text/x-patch;
+ name="hil_drivers.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="hil_drivers.patch"
 
-Gr{oetje,eeting}s,
+diff --git a/drivers/input/keyboard/hil_kbd.c b/drivers/input/keyboard/hil_kbd.c
+index 71c1971..7d40c69 100644
+--- a/drivers/input/keyboard/hil_kbd.c
++++ b/drivers/input/keyboard/hil_kbd.c
+@@ -47,6 +47,7 @@
+ MODULE_AUTHOR("Brian S. Julin <bri@calyx.com>");
+ MODULE_DESCRIPTION(HIL_GENERIC_NAME " driver");
+ MODULE_LICENSE("Dual BSD/GPL");
++MODULE_ALIAS("serio:ty03pr25id00ex*");
+ 
+ #define HIL_KBD_MAX_LENGTH 16
+ 
+diff --git a/drivers/input/mouse/hil_ptr.c b/drivers/input/mouse/hil_ptr.c
+index e532c48..0fd42e6 100644
+--- a/drivers/input/mouse/hil_ptr.c
++++ b/drivers/input/mouse/hil_ptr.c
+@@ -46,7 +46,7 @@
+ MODULE_AUTHOR("Brian S. Julin <bri@calyx.com>");
+ MODULE_DESCRIPTION(HIL_GENERIC_NAME " driver");
+ MODULE_LICENSE("Dual BSD/GPL");
+-
++MODULE_ALIAS("serio:ty03pr25id0Fex*");
+ 
+ #define TABLET_SIMULATES_MOUSE	/* allow tablet to be used as mouse */
+ #undef  TABLET_AUTOADJUST	/* auto-adjust valid tablet ranges */
+diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
+index 37586a6..7ba9f2b 100644
+--- a/drivers/input/serio/hil_mlc.c
++++ b/drivers/input/serio/hil_mlc.c
+@@ -934,6 +934,7 @@ int hil_mlc_register(hil_mlc *mlc)
+ 		snprintf(mlc_serio->name, sizeof(mlc_serio->name)-1, "HIL_SERIO%d", i);
+ 		snprintf(mlc_serio->phys, sizeof(mlc_serio->phys)-1, "HIL%d", i);
+ 		mlc_serio->id			= hil_mlc_serio_id;
++		mlc_serio->id.id		= i; /* HIL port no. */
+ 		mlc_serio->write		= hil_mlc_serio_write;
+ 		mlc_serio->open			= hil_mlc_serio_open;
+ 		mlc_serio->close		= hil_mlc_serio_close;
 
-						Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+--------------060600040009040903010106--
