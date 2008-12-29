@@ -1,124 +1,54 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] drivers/input/serio/hp_sdc.c: fix crash when removing hp_sdc
- module
-Date: Mon, 29 Dec 2008 13:19:45 +0100
-Message-ID: <4958C061.2050702@gmx.de>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH] m68k: fix recursive dependency in Kconfig
+Date: Mon, 29 Dec 2008 15:02:02 +0100
+Message-ID: <20081229140202.GA7327@uranus.ravnborg.org>
+References: <20081226214643.GA17590@uranus.ravnborg.org> <Pine.LNX.4.64.0812282011390.20983@anakin> <20081228194205.GA22825@uranus.ravnborg.org> <Pine.LNX.4.64.0812291117540.20983@anakin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050402010102020408030801"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.gmx.net ([213.165.64.20]:44238 "HELO mail.gmx.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1752930AbYL2MTo (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 29 Dec 2008 07:19:44 -0500
+Received: from pfepb.post.tele.dk ([195.41.46.236]:33368 "EHLO
+	pfepb.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753341AbYL2OA3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Dec 2008 09:00:29 -0500
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0812291117540.20983@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Frans Pop <elendil@planet.nl>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------050402010102020408030801
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Mon, Dec 29, 2008 at 11:18:45AM +0100, Geert Uytterhoeven wrote:
+> On Sun, 28 Dec 2008, Sam Ravnborg wrote:
+> > On Sun, Dec 28, 2008 at 08:12:27PM +0100, Geert Uytterhoeven wrote:
+> > > On Fri, 26 Dec 2008, Sam Ravnborg wrote:
+> > > > We had a recursive dependency between MMU_MOTOROLA and MMU_SUN3
+> > > > Fix it by dropping the unused dependencies on MMU_MOTOROLA.
+> > > > 
+> > > > MMU_MOTOROLA is set to y only using select so any dependencies
+> > > > are anyway ignored.
+> > > > 
+> > > > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> > > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > Cc: Roman Zippel <zippel@linux-m68k.org>
+> > > > ---
+> > > > 
+> > > > I hit this recursive dependency with a patched version
+> > > > of kconfig so you may not see it today.
+> > > > The fix is obvious - please apply.
+> > > 
+> > > Queued in for-next.
+> > > 
+> > > I guess you want this in Linus' tree for 2.6.29?
+> > 
+> > Yes please. I plan to submit the improved dependency check in my second
+> > kbuild update if Roman do not nack it.
+> 
+> As Linus just pulled from the m68k tree, it may take a while before I have
+> some more stuff ready. So please feel free to add it to the kbuild tree
+> before submitting the improved dependency check.
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-resending, as I forgot to CC: Geert and linux-m68k
+OK - I added it to kbuild with your ack - thanks.
 
--------- Original Message --------
-Subject: [PATCH] drivers/input/serio/hp_sdc.c: fix crash when removing
-hp_sdc module
-Date: Fri, 26 Dec 2008 21:24:31 +0100
-From: Helge Deller <deller@gmx.de>
-To: linux-input@vger.kernel.org,  Dmitry Torokhov
-<dmitry.torokhov@gmail.com>
-CC: Helge Deller <deller@gmx.de>, Frans Pop <elendil@planet.nl>
-
-On parisc machines, which don't have HIL, removing the hp_sdc module
-panics the kernel. Fix this by returning early in hp_sdc_exit() if no HP
-SDC controller was found.
-
-Add functionality to probe for the hp_sdc_mlc kernel module (which takes
-care of the upper layer HIL functionality on parisc) after two seconds.
-This is needed to get all the other HIL drivers (keyboard / mouse/ ..)
-drivers automatically loaded by udev later as well.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-
- hp_sdc.c |   24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-
-
---------------050402010102020408030801
-Content-Type: text/x-patch;
- name="hp_sdc.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="hp_sdc.patch"
-
-diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
-index bfe4924..1c9410d 100644
---- a/drivers/input/serio/hp_sdc.c
-+++ b/drivers/input/serio/hp_sdc.c
-@@ -819,6 +819,7 @@ static const struct parisc_device_id hp_sdc_tbl[] = {
- MODULE_DEVICE_TABLE(parisc, hp_sdc_tbl);
- 
- static int __init hp_sdc_init_hppa(struct parisc_device *d);
-+static struct delayed_work moduleloader_work;
- 
- static struct parisc_driver hp_sdc_driver = {
- 	.name =		"hp_sdc",
-@@ -930,8 +931,15 @@ static int __init hp_sdc_init(void)
- 
- #if defined(__hppa__)
- 
-+static void request_module_delayed(struct work_struct *work)
-+{
-+	request_module("hp_sdc_mlc");
-+}
-+
- static int __init hp_sdc_init_hppa(struct parisc_device *d)
- {
-+	int ret;
-+
- 	if (!d)
- 		return 1;
- 	if (hp_sdc.dev != NULL)
-@@ -944,13 +952,26 @@ static int __init hp_sdc_init_hppa(struct parisc_device *d)
- 	hp_sdc.data_io		= d->hpa.start + 0x800;
- 	hp_sdc.status_io	= d->hpa.start + 0x801;
- 
--	return hp_sdc_init();
-+	INIT_DELAYED_WORK(&moduleloader_work, request_module_delayed);
-+
-+	ret = hp_sdc_init();
-+	/* after sucessfull initialization give SDC some time to settle
-+	 * and then load the hp_sdc_mlc upper layer driver */
-+	if (!ret)
-+		schedule_delayed_work(&moduleloader_work,
-+			msecs_to_jiffies(2000));
-+
-+	return ret;
- }
- 
- #endif /* __hppa__ */
- 
- static void hp_sdc_exit(void)
- {
-+	/* do nothing if we don't have a SDC */
-+	if (!hp_sdc.dev)
-+		return;
-+
- 	write_lock_irq(&hp_sdc.lock);
- 
- 	/* Turn off all maskable "sub-function" irq's. */
-@@ -969,6 +990,7 @@ static void hp_sdc_exit(void)
- 	tasklet_kill(&hp_sdc.task);
- 
- #if defined(__hppa__)
-+	cancel_delayed_work_sync(&moduleloader_work);
- 	if (unregister_parisc_driver(&hp_sdc_driver))
- 		printk(KERN_WARNING PREFIX "Error unregistering HP SDC");
- #endif
-
-
---------------050402010102020408030801--
+	Sam
