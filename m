@@ -1,44 +1,74 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
-Subject: Re: [PATCH] m68k: Fix atarimouse init
-Date: Tue, 30 Dec 2008 10:18:21 +0100
-Message-ID: <1230628701.6336.7.camel@joy>
-References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
-	 <Pine.LNX.4.64.0812170915400.29433@anakin>
-	 <Pine.LNX.4.64.0812211205270.3499@anakin>
-	 <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
-	 <Pine.LNX.4.64.0812291151200.20983@anakin>
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Subject: [PATCH for 2.6.28 stable] m68knommu: fix m68knommu defconfig can't build
+Date: Tue, 30 Dec 2008 19:44:20 +0900 (JST)
+Message-ID: <20081230193943.1281.KOSAKI.MOTOHIRO@jp.fujitsu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp2.vol.cz ([195.250.128.75]:58105 "EHLO smtp2.vol.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751133AbYL3Jgt (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 30 Dec 2008 04:36:49 -0500
-In-Reply-To: <Pine.LNX.4.64.0812291151200.20983@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux/m68k <linux-m68k@vger.kernel.org>
-
-Geert Uytterhoeven p=ED=B9e v Po 29. 12. 2008 v 11:57 +0100:
-
-> I get events from /dev/input/mouse0 and /dev/input/mice (atari_defcon=
-fig).
->=20
-> When running X under ARAnyM (depth 16), some shortcomings show up:
->   - the middle mouse button is dead
-
-BTW, ARAnyM implements a mouse extension for the wheels that is
-compatible with an existing hardware modification (or an add-on).
-Sometime later we could implement its support in linux to get true
-middle mouse button and its wheels.
-
-Petr
+To: "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k
+Cc: kosaki.motohiro@jp.fujitsu.com
 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I guess nobody don't test m68knommu at all last three month.
+Do we still need to maintain this architecture?
+
+
+==
+Currently, m68knommu defconfig can't build. it cause following error.
+
+net/built-in.o: In function `skb_dma_map':
+: undefined reference to `dma_mapping_error'
+net/built-in.o: In function `skb_dma_unmap':
+: undefined reference to `dma_unmap_single'
+net/built-in.o: In function `skb_dma_unmap':
+: undefined reference to `dma_unmap_page'
+net/built-in.o: In function `skb_dma_map':
+: undefined reference to `dma_map_single'
+net/built-in.o: In function `skb_dma_map':
+: undefined reference to `dma_map_page'
+net/built-in.o: In function `skb_dma_map':
+: undefined reference to `dma_unmap_page'
+net/built-in.o: In function `skb_dma_map':
+: undefined reference to `dma_unmap_single'
+
+because
+ - CONFIG_DMA depend on !NO_DMA
+ - m68knommu always doesn't turn on NO_DMA
+ - if CONFIG_PCI=n, m68knommu/include/asm/dma-magging.h include
+    asm-generic/dma-mapping-broken.h
+ - dma-mapping-broken.h generate link time error.
+ - m68knommu defconfig doesn't have CONFIG_PCI
+ - On the other hand, net/core/skb_dma_map.c assume CONFIG_DMA=y mean
+   dma related function is callable
+
+So, we want to turn on CONFIG_DMA if CONFIG_PCI=y only.
+
+
+CC: David S. Miller <davem@davemloft.net>
+CC: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: Roman Zippel <zippel@linux-m68k.org>
+CC: Greg Ungerer <gerg@uclinux.org>
+CC: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68knommu/Kconfig |    3 +++
+ 1 file changed, 3 insertions(+)
+
+Index: b/arch/m68knommu/Kconfig
+===================================================================
+--- a/arch/m68knommu/Kconfig	2008-12-25 08:26:37.000000000 +0900
++++ b/arch/m68knommu/Kconfig	2008-12-28 21:09:58.000000000 +0900
+@@ -73,6 +73,9 @@ config GENERIC_CLOCKEVENTS
+ config NO_IOPORT
+ 	def_bool y
+ 
++config NO_DMA
++	def_bool !PCI
++
+ source "init/Kconfig"
+ 
+ source "kernel/Kconfig.freezer"
+
+
