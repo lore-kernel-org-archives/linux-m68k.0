@@ -1,74 +1,37 @@
-From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Subject: [PATCH for 2.6.28 stable] m68knommu: fix m68knommu defconfig can't build
-Date: Tue, 30 Dec 2008 19:44:20 +0900 (JST)
-Message-ID: <20081230193943.1281.KOSAKI.MOTOHIRO@jp.fujitsu.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: wire up sys_restart_syscall
+Date: Tue, 30 Dec 2008 13:12:33 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812301311241.14380@anakin>
+References: <jezliekey6.fsf@sykes.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from edna.telenet-ops.be ([195.130.132.58]:40073 "EHLO
+	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751303AbYL3MMf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 30 Dec 2008 07:12:35 -0500
+In-Reply-To: <jezliekey6.fsf@sykes.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k
-Cc: kosaki.motohiro@jp.fujitsu.com
+To: Andreas Schwab <schwab@suse.de>
+Cc: linux-m68k@vger.kernel.org
 
+	Hi Andreas,
 
-I guess nobody don't test m68knommu at all last three month.
-Do we still need to maintain this architecture?
+On Mon, 29 Dec 2008, Andreas Schwab wrote:
+> Make restart blocks working, required for proper syscall restarting.
 
+Thanks!
 
-==
-Currently, m68knommu defconfig can't build. it cause following error.
+Is there an easy way to test this?
 
-net/built-in.o: In function `skb_dma_map':
-: undefined reference to `dma_mapping_error'
-net/built-in.o: In function `skb_dma_unmap':
-: undefined reference to `dma_unmap_single'
-net/built-in.o: In function `skb_dma_unmap':
-: undefined reference to `dma_unmap_page'
-net/built-in.o: In function `skb_dma_map':
-: undefined reference to `dma_map_single'
-net/built-in.o: In function `skb_dma_map':
-: undefined reference to `dma_map_page'
-net/built-in.o: In function `skb_dma_map':
-: undefined reference to `dma_unmap_page'
-net/built-in.o: In function `skb_dma_map':
-: undefined reference to `dma_unmap_single'
+Gr{oetje,eeting}s,
 
-because
- - CONFIG_DMA depend on !NO_DMA
- - m68knommu always doesn't turn on NO_DMA
- - if CONFIG_PCI=n, m68knommu/include/asm/dma-magging.h include
-    asm-generic/dma-mapping-broken.h
- - dma-mapping-broken.h generate link time error.
- - m68knommu defconfig doesn't have CONFIG_PCI
- - On the other hand, net/core/skb_dma_map.c assume CONFIG_DMA=y mean
-   dma related function is callable
+						Geert
 
-So, we want to turn on CONFIG_DMA if CONFIG_PCI=y only.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-CC: David S. Miller <davem@davemloft.net>
-CC: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Roman Zippel <zippel@linux-m68k.org>
-CC: Greg Ungerer <gerg@uclinux.org>
-CC: linux-m68k@lists.linux-m68k.org
----
- arch/m68knommu/Kconfig |    3 +++
- 1 file changed, 3 insertions(+)
-
-Index: b/arch/m68knommu/Kconfig
-===================================================================
---- a/arch/m68knommu/Kconfig	2008-12-25 08:26:37.000000000 +0900
-+++ b/arch/m68knommu/Kconfig	2008-12-28 21:09:58.000000000 +0900
-@@ -73,6 +73,9 @@ config GENERIC_CLOCKEVENTS
- config NO_IOPORT
- 	def_bool y
- 
-+config NO_DMA
-+	def_bool !PCI
-+
- source "init/Kconfig"
- 
- source "kernel/Kconfig.freezer"
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
