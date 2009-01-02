@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: dio - kill warn_unused_result warnings
-Date: Fri,  2 Jan 2009 11:41:27 +0100
-Message-ID: <1230892892-25751-15-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68k: dmasound - kill warn_unused_result warnings
+Date: Fri,  2 Jan 2009 11:41:31 +0100
+Message-ID: <1230892892-25751-19-git-send-email-geert@linux-m68k.org>
 References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
@@ -16,116 +16,88 @@ References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-12-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-13-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-14-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-15-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-16-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-17-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-18-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from monty.telenet-ops.be ([195.130.132.56]:34159 "EHLO
-	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757323AbZABKll (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:41 -0500
-In-Reply-To: <1230892892-25751-14-git-send-email-geert@linux-m68k.org>
+Received: from winston.telenet-ops.be ([195.130.137.75]:45073 "EHLO
+	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757204AbZABKlj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:39 -0500
+In-Reply-To: <1230892892-25751-18-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Philip Blundell <philb@gnu.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-warning: ignoring return value of 'device_register', declared with attribute
+warning: ignoring return value of 'request_irq', declared with attribute
 warn_unused_result
-warning: ignoring return value of 'device_create_file', declared with
-attribute warn_unused_result
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Philip Blundell <philb@gnu.org>
 ---
- drivers/dio/dio-sysfs.c |   16 ++++++++++------
- drivers/dio/dio.c       |   18 +++++++++++++++---
- include/linux/dio.h     |    2 +-
- 3 files changed, 26 insertions(+), 10 deletions(-)
+ sound/oss/dmasound/dmasound_atari.c |    5 +++--
+ sound/oss/dmasound/dmasound_q40.c   |   16 ++++++++++------
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/dio/dio-sysfs.c b/drivers/dio/dio-sysfs.c
-index f464630..91d5f4d 100644
---- a/drivers/dio/dio-sysfs.c
-+++ b/drivers/dio/dio-sysfs.c
-@@ -63,15 +63,19 @@ static ssize_t dio_show_resource(struct device *dev, struct device_attribute *at
- }
- static DEVICE_ATTR(resource, S_IRUGO, dio_show_resource, NULL);
- 
--void dio_create_sysfs_dev_files(struct dio_dev *d)
-+int dio_create_sysfs_dev_files(struct dio_dev *d)
+diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
+index 4d45bd6..57d9f15 100644
+--- a/sound/oss/dmasound/dmasound_atari.c
++++ b/sound/oss/dmasound/dmasound_atari.c
+@@ -851,8 +851,9 @@ static int __init AtaIrqInit(void)
+ 	mfp.tim_dt_a = 1;	/* Cause interrupt after first event. */
+ 	mfp.tim_ct_a = 8;	/* Turn on event counting. */
+ 	/* Register interrupt handler. */
+-	request_irq(IRQ_MFP_TIMA, AtaInterrupt, IRQ_TYPE_SLOW, "DMA sound",
+-		    AtaInterrupt);
++	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, IRQ_TYPE_SLOW, "DMA sound",
++			AtaInterrupt))
++		return 0;
+ 	mfp.int_en_a |= 0x20;	/* Turn interrupt on. */
+ 	mfp.int_mk_a |= 0x20;
+ 	return 1;
+diff --git a/sound/oss/dmasound/dmasound_q40.c b/sound/oss/dmasound/dmasound_q40.c
+index 1855b14..99bcb21 100644
+--- a/sound/oss/dmasound/dmasound_q40.c
++++ b/sound/oss/dmasound/dmasound_q40.c
+@@ -371,8 +371,9 @@ static void Q40Free(void *ptr, unsigned int size)
+ static int __init Q40IrqInit(void)
  {
- 	struct device *dev = &d->dev;
+ 	/* Register interrupt handler. */
+-	request_irq(Q40_IRQ_SAMPLE, Q40StereoInterrupt, 0,
+-		    "DMA sound", Q40Interrupt);
++	if (request_irq(Q40_IRQ_SAMPLE, Q40StereoInterrupt, 0,
++		    "DMA sound", Q40Interrupt))
++		return 0;
+ 
+ 	return(1);
+ }
+@@ -401,6 +402,7 @@ static void Q40PlayNextFrame(int index)
+ 	u_char *start;
+ 	u_long size;
+ 	u_char speed;
 +	int error;
  
- 	/* current configuration's attributes */
--	device_create_file(dev, &dev_attr_id);
--	device_create_file(dev, &dev_attr_ipl);
--	device_create_file(dev, &dev_attr_secid);
--	device_create_file(dev, &dev_attr_name);
--	device_create_file(dev, &dev_attr_resource);
-+	if ((error = device_create_file(dev, &dev_attr_id)) ||
-+	    (error = device_create_file(dev, &dev_attr_ipl)) ||
-+	    (error = device_create_file(dev, &dev_attr_secid)) ||
-+	    (error = device_create_file(dev, &dev_attr_name)) ||
-+	    (error = device_create_file(dev, &dev_attr_resource)))
-+		return error;
-+
-+	return 0;
- }
+ 	/* used by Q40Play() if all doubts whether there really is something
+ 	 * to be played are already wiped out.
+@@ -419,11 +421,13 @@ static void Q40PlayNextFrame(int index)
+ 	master_outb( 0,SAMPLE_ENABLE_REG);
+ 	free_irq(Q40_IRQ_SAMPLE, Q40Interrupt);
+ 	if (dmasound.soft.stereo)
+-	  	request_irq(Q40_IRQ_SAMPLE, Q40StereoInterrupt, 0,
+-		    "Q40 sound", Q40Interrupt);
++		error = request_irq(Q40_IRQ_SAMPLE, Q40StereoInterrupt, 0,
++				    "Q40 sound", Q40Interrupt);
+ 	  else
+-	        request_irq(Q40_IRQ_SAMPLE, Q40MonoInterrupt, 0,
+-		    "Q40 sound", Q40Interrupt);
++		error = request_irq(Q40_IRQ_SAMPLE, Q40MonoInterrupt, 0,
++				    "Q40 sound", Q40Interrupt);
++	if (error && printk_ratelimit())
++		pr_err("Couldn't register sound interrupt\n");
  
-diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
-index 07f274f..10c3c49 100644
---- a/drivers/dio/dio.c
-+++ b/drivers/dio/dio.c
-@@ -173,6 +173,7 @@ static int __init dio_init(void)
- 	mm_segment_t fs;
- 	int i;
- 	struct dio_dev *dev;
-+	int error;
- 
- 	if (!MACH_IS_HP300)
- 		return 0;
-@@ -182,7 +183,11 @@ static int __init dio_init(void)
- 	/* Initialize the DIO bus */ 
- 	INIT_LIST_HEAD(&dio_bus.devices);
- 	strcpy(dio_bus.dev.bus_id, "dio");
--	device_register(&dio_bus.dev);
-+	error = device_register(&dio_bus.dev);
-+	if (error) {
-+		pr_err("DIO: Error registering dio_bus\n");
-+		return error;
-+	}
- 
- 	/* Request all resources */
- 	dio_bus.num_resources = (hp300_model == HP_320 ? 1 : 2);
-@@ -252,8 +257,15 @@ static int __init dio_init(void)
- 
- 		if (scode >= DIOII_SCBASE)
- 			iounmap(va);
--		device_register(&dev->dev);
--		dio_create_sysfs_dev_files(dev);
-+		error = device_register(&dev->dev);
-+		if (error) {
-+			pr_err("DIO: Error registering device %s\n",
-+			       dev->name);
-+			continue;
-+		}
-+		error = dio_create_sysfs_dev_files(dev);
-+		if (error)
-+			dev_err(&dev->dev, "Error creating sysfs files\n");
-         }
- 	return 0;
- }
-diff --git a/include/linux/dio.h b/include/linux/dio.h
-index 1e65ebc..b2dd31c 100644
---- a/include/linux/dio.h
-+++ b/include/linux/dio.h
-@@ -241,7 +241,7 @@ struct dio_driver {
- 
- extern int dio_find(int deviceid);
- extern unsigned long dio_scodetophysaddr(int scode);
--extern void dio_create_sysfs_dev_files(struct dio_dev *);
-+extern int dio_create_sysfs_dev_files(struct dio_dev *);
- 
- /* New-style probing */
- extern int dio_register_driver(struct dio_driver *);
+ 	master_outb( speed, SAMPLE_RATE_REG);
+ 	master_outb( 1,SAMPLE_CLEAR_REG);
 -- 
 1.5.6.5
 
