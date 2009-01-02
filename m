@@ -1,76 +1,79 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
-Subject: Re: [PATCH] m68k: Fix atarimouse init
-Date: Fri, 02 Jan 2009 11:20:08 +0100
-Message-ID: <1230891608.6383.8.camel@joy>
-References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
-	 <Pine.LNX.4.64.0812170915400.29433@anakin>
-	 <Pine.LNX.4.64.0812211205270.3499@anakin>
-	 <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
-	 <Pine.LNX.4.64.0812291151200.20983@anakin>
-	 <alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
-	 <jed4f6gi2l.fsf@sykes.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: amiga core - kill warn_unused_result warnings
+Date: Fri,  2 Jan 2009 11:41:14 +0100
+Message-ID: <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
+References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp3.vol.cz ([195.250.128.83]:60225 "EHLO smtp3.vol.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751587AbZABKUN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 2 Jan 2009 05:20:13 -0500
-In-Reply-To: <jed4f6gi2l.fsf@sykes.suse.de>
+Received: from wilson.telenet-ops.be ([195.130.132.42]:47480 "EHLO
+	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751587AbZABKlf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:35 -0500
+In-Reply-To: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@suse.de>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Andreas Schwab p=ED=B9e v P=E1 02. 01. 2009 v 10:42 +0100:
-> > Hi Geert,
-> >
-> >> The kernel says (ARAnyM, windowed mode):
-> >> | Reseting weird mouse packet: 942, 379, 0
-> >> | Reseting weird mouse packet: 943, 379, 0
-> >> | Reseting weird mouse packet: 945, 378, 0
-> >> | Reseting weird mouse packet: 948, 378, 0
-> >> | Reseting weird mouse packet: 956, 376, 0
->=20
-> These messages come from ARAnyM.
+warning: ignoring return value of 'request_irq', declared with attribute
+warn_unused_result
 
-=2E.and indicates that something wrong is going on. Normally there is o=
-nly
-one such message when entering the ARAnyM window.
-=20
-> ARAnyM's emulation of the IKBD does not support changing the y origin=
-=2E
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/amiga/amiints.c |   12 ++++++++----
+ arch/m68k/amiga/cia.c     |    4 +++-
+ arch/m68k/amiga/config.c  |    3 ++-
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-will add it there.
+diff --git a/arch/m68k/amiga/amiints.c b/arch/m68k/amiga/amiints.c
+index 907a553..c5b5212 100644
+--- a/arch/m68k/amiga/amiints.c
++++ b/arch/m68k/amiga/amiints.c
+@@ -72,10 +72,14 @@ static struct irq_controller amiga_irq_controller = {
+ 
+ void __init amiga_init_IRQ(void)
+ {
+-	request_irq(IRQ_AUTO_1, ami_int1, 0, "int1", NULL);
+-	request_irq(IRQ_AUTO_3, ami_int3, 0, "int3", NULL);
+-	request_irq(IRQ_AUTO_4, ami_int4, 0, "int4", NULL);
+-	request_irq(IRQ_AUTO_5, ami_int5, 0, "int5", NULL);
++	if (request_irq(IRQ_AUTO_1, ami_int1, 0, "int1", NULL))
++		pr_err("Couldn't register int%d\n", 1);
++	if (request_irq(IRQ_AUTO_3, ami_int3, 0, "int3", NULL))
++		pr_err("Couldn't register int%d\n", 3);
++	if (request_irq(IRQ_AUTO_4, ami_int4, 0, "int4", NULL))
++		pr_err("Couldn't register int%d\n", 4);
++	if (request_irq(IRQ_AUTO_5, ami_int5, 0, "int5", NULL))
++		pr_err("Couldn't register int%d\n", 5);
+ 
+ 	m68k_setup_irq_controller(&amiga_irq_controller, IRQ_USER, AMI_STD_IRQS);
+ 
+diff --git a/arch/m68k/amiga/cia.c b/arch/m68k/amiga/cia.c
+index 343fab4..ecd0f7c 100644
+--- a/arch/m68k/amiga/cia.c
++++ b/arch/m68k/amiga/cia.c
+@@ -176,5 +176,7 @@ void __init cia_init_IRQ(struct ciabase *base)
+ 	/* override auto int and install CIA handler */
+ 	m68k_setup_irq_controller(&auto_irq_controller, base->handler_irq, 1);
+ 	m68k_irq_startup(base->handler_irq);
+-	request_irq(base->handler_irq, cia_handler, IRQF_SHARED, base->name, base);
++	if (request_irq(base->handler_irq, cia_handler, IRQF_SHARED,
++			base->name, base))
++		pr_err("Couldn't register %s interrupt\n", base->name);
+ }
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 78466f3..71232cd 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -499,7 +499,8 @@ static void __init amiga_sched_init(irq_handler_t timer_routine)
+ 	 * Please don't change this to use ciaa, as it interferes with the
+ 	 * SCSI code. We'll have to take a look at this later
+ 	 */
+-	request_irq(IRQ_AMIGA_CIAB_TA, timer_routine, 0, "timer", NULL);
++	if (request_irq(IRQ_AMIGA_CIAB_TA, timer_routine, 0, "timer", NULL))
++		pr_err("Couldn't register timer interrupt\n");
+ 	/* start timer */
+ 	ciab.cra |= 0x11;
+ }
+-- 
+1.5.6.5
 
-> >>   - the middle mouse button is dead
-> >
-> > As is expexcted - the original code was for a two-button mouse only=
-=2E If Petr=20
-> > knows what the ikbd format for the third button is (on real hardwar=
-e) it's easy=20
-> > to add that in.
->=20
-> The IKBD does not support more than two buttons.  For a three button
-> mouse the middle button was apparently wired to the joystick port.
-
-Yes, that was an old Linux-m68k extension.
-
-What I meant by hardware supporting the mouse wheels was Eiffel:=20
-http://pagesperso-orange.fr/didierm/eiffel-e.htm
-
-In about 3/4 of the long page there is a table labelled "Mouse elements=
-"
-that shows the mouse wheels and buttons scan codes. ARAnyM supports the
-wheels (not sure about the buttons 3,4,5 - will check and add it there
-eventually).
-
-Petr
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
