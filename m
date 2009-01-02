@@ -1,15 +1,20 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: apollo core - kill warn_unused_result warnings
-Date: Fri,  2 Jan 2009 11:41:15 +0100
-Message-ID: <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68k: sun3 core - kill warn_unused_result warnings
+Date: Fri,  2 Jan 2009 11:41:20 +0100
+Message-ID: <1230892892-25751-8-git-send-email-geert@linux-m68k.org>
 References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-4-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-5-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-6-git-send-email-geert@linux-m68k.org>
+ <1230892892-25751-7-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from monty.telenet-ops.be ([195.130.132.56]:34092 "EHLO
-	monty.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752801AbZABKlg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:36 -0500
-In-Reply-To: <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
+Received: from wilson.telenet-ops.be ([195.130.132.42]:47499 "EHLO
+	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756557AbZABKlh (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:37 -0500
+In-Reply-To: <1230892892-25751-7-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -20,23 +25,27 @@ warn_unused_result
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/apollo/config.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ arch/m68k/sun3/sun3ints.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-index cf215a0..8d3eafa 100644
---- a/arch/m68k/apollo/config.c
-+++ b/arch/m68k/apollo/config.c
-@@ -200,7 +200,8 @@ void dn_sched_init(irq_handler_t timer_routine)
- 	printk("*(0x10803) %02x\n",*(volatile unsigned char *)(timer+0x3));
- #endif
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 7364cd6..ad90393 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -105,7 +105,10 @@ void __init sun3_init_IRQ(void)
+ 	m68k_setup_irq_controller(&sun3_irq_controller, IRQ_AUTO_1, 7);
+ 	m68k_setup_user_interrupt(VEC_USER, 128, NULL);
  
--	request_irq(IRQ_APOLLO, dn_timer_int, 0, "time", timer_routine);
-+	if (request_irq(IRQ_APOLLO, dn_timer_int, 0, "time", timer_routine))
-+		pr_err("Couldn't register timer interrupt\n");
+-	request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL);
+-	request_irq(IRQ_AUTO_7, sun3_int7, 0, "int7", NULL);
+-	request_irq(IRQ_USER+127, sun3_vec255, 0, "vec255", NULL);
++	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL))
++		pr_err("Couldn't register %s interrupt\n", "int5");
++	if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "int7", NULL))
++		pr_err("Couldn't register %s interrupt\n", "int7");
++	if (request_irq(IRQ_USER+127, sun3_vec255, 0, "vec255", NULL))
++		pr_err("Couldn't register %s interrupt\n", "vec255");
  }
- 
- unsigned long dn_gettimeoffset(void) {
 -- 
 1.5.6.5
 
