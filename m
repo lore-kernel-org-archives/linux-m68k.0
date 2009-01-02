@@ -1,89 +1,111 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: [PATCH] m68k: Fix atarimouse init
-Date: Fri, 02 Jan 2009 10:42:26 +0100
-Message-ID: <jed4f6gi2l.fsf@sykes.suse.de>
-References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
-	<Pine.LNX.4.64.0812170915400.29433@anakin>
-	<Pine.LNX.4.64.0812211205270.3499@anakin>
-	<alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
-	<Pine.LNX.4.64.0812291151200.20983@anakin>
-	<alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] fbdev: Kill Atari vblank cursor blinking
+Date: Fri, 2 Jan 2009 11:11:05 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0901021109210.24191@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cantor.suse.de ([195.135.220.2]:49613 "EHLO mx1.suse.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752164AbZABJma (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 2 Jan 2009 04:42:30 -0500
-In-Reply-To: <alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
-	(Michael Schmitz's message of "Fri, 02 Jan 2009 01:12:55 +0100 (CET)")
+Received: from winston.telenet-ops.be ([195.130.137.75]:49437 "EHLO
+	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750999AbZABKLI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:11:08 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Michael Schmitz <schmitz@biophys.uni-duesseldorf.de> writes:
+Kill the last remaining vblank cursor blinking user
 
-> Hi Geert,
->
->> The kernel says (ARAnyM, windowed mode):
->> | Reseting weird mouse packet: 942, 379, 0
->> | Reseting weird mouse packet: 943, 379, 0
->> | Reseting weird mouse packet: 945, 378, 0
->> | Reseting weird mouse packet: 948, 378, 0
->> | Reseting weird mouse packet: 956, 376, 0
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/video/console/fbcon.c |   38 --------------------------------------
+ 1 files changed, 0 insertions(+), 38 deletions(-)
 
-These messages come from ARAnyM.
+diff --git a/drivers/video/console/fbcon.c b/drivers/video/console/fbcon.c
+index 4bcff81..1657b96 100644
+--- a/drivers/video/console/fbcon.c
++++ b/drivers/video/console/fbcon.c
+@@ -78,13 +78,6 @@
+ #include <asm/fb.h>
+ #include <asm/irq.h>
+ #include <asm/system.h>
+-#ifdef CONFIG_ATARI
+-#include <asm/atariints.h>
+-#endif
+-#if defined(__mc68000__)
+-#include <asm/machdep.h>
+-#include <asm/setup.h>
+-#endif
+ 
+ #include "fbcon.h"
+ 
+@@ -155,9 +148,6 @@ static int fbcon_set_origin(struct vc_data *);
+ 
+ #define CURSOR_DRAW_DELAY		(1)
+ 
+-/* # VBL ints between cursor state changes */
+-#define ATARI_CURSOR_BLINK_RATE		(42)
+-
+ static int vbl_cursor_cnt;
+ static int fbcon_cursor_noblink;
+ 
+@@ -403,20 +393,6 @@ static void fb_flashcursor(struct work_struct *work)
+ 	release_console_sem();
+ }
+ 
+-#ifdef CONFIG_ATARI
+-static int cursor_blink_rate;
+-static irqreturn_t fb_vbl_handler(int irq, void *dev_id)
+-{
+-	struct fb_info *info = dev_id;
+-
+-	if (vbl_cursor_cnt && --vbl_cursor_cnt == 0) {
+-		schedule_work(&info->queue);	
+-		vbl_cursor_cnt = cursor_blink_rate; 
+-	}
+-	return IRQ_HANDLED;
+-}
+-#endif
+-	
+ static void cursor_timer_handler(unsigned long dev_addr)
+ {
+ 	struct fb_info *info = (struct fb_info *) dev_addr;
+@@ -1017,15 +993,6 @@ static const char *fbcon_startup(void)
+ 		info->var.yres,
+ 		info->var.bits_per_pixel);
+ 
+-#ifdef CONFIG_ATARI
+-	if (MACH_IS_ATARI) {
+-		cursor_blink_rate = ATARI_CURSOR_BLINK_RATE;
+-		(void)request_irq(IRQ_AUTO_4, fb_vbl_handler,
+-				IRQ_TYPE_PRIO, "framebuffer vbl",
+-				info);
+-	}
+-#endif /* CONFIG_ATARI */
+-
+ 	fbcon_add_cursor_timer(info);
+ 	fbcon_has_exited = 0;
+ 	return display_desc;
+@@ -3454,11 +3421,6 @@ static void fbcon_exit(void)
+ 	if (fbcon_has_exited)
+ 		return;
+ 
+-#ifdef CONFIG_ATARI
+-	if (MACH_IS_ATARI)
+-		free_irq(IRQ_AUTO_4, fb_vbl_handler);
+-#endif
+-
+ 	kfree((void *)softback_buf);
+ 	softback_buf = 0UL;
+ 
 
->>=20
->> When running X under ARAnyM (depth 16), some shortcomings show up:
->>   - up and down are interchanged (works fine when rolling the mouse =
-over the
->>     bottom surface of the table --- old arabic map style ;-)
->
-> Weird - the inversion of the y direction increment is taken from the =
-old=20
-> busmouse driver code where it used to work OK. The point of reference=
- is set to=20
-> be at the top of the 'screen' so moving the mouse down ought to gener=
-ate=20
-> positive increments.
+Gr{oetje,eeting}s,
 
-ARAnyM's emulation of the IKBD does not support changing the y origin.
+						Geert
 
->>   - the left and right mouse button are interchanged
->
-> The busmouse driver had no annotation as to the semantics of the butt=
-ons so O=20
-> guessed bit 0 was for the left button. Guessed wrong, it seems.
-
-Note that the mouse button bits are also inverted, ie. 0 means down.
-
->>   - the middle mouse button is dead
->
-> As is expexcted - the original code was for a two-button mouse only. =
-If Petr=20
-> knows what the ikbd format for the third button is (on real hardware)=
- it's easy=20
-> to add that in.
-
-The IKBD does not support more than two buttons.  For a three button
-mouse the middle button was apparently wired to the joystick port.
-
-See also <http://dev-docs.atariforge.org/files/ikbd_Prot_2-26-1985.pdf>=
-=2E
-
-Andreas.
-
---=20
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
-ED5
-"And now for something completely different."
 --
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
