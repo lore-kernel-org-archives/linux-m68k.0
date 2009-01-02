@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: atari_scc - kill fake config variables
-Date: Fri,  2 Jan 2009 11:41:32 +0100
-Message-ID: <1230892892-25751-20-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68k: dio - kill resource_size_t format warnings
+Date: Fri,  2 Jan 2009 11:41:29 +0100
+Message-ID: <1230892892-25751-17-git-send-email-geert@linux-m68k.org>
 References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
@@ -18,124 +18,40 @@ References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-14-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-15-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-16-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-17-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-18-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-19-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from wilson.telenet-ops.be ([195.130.132.42]:47562 "EHLO
-	wilson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757209AbZABKlk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:40 -0500
-In-Reply-To: <1230892892-25751-19-git-send-email-geert@linux-m68k.org>
+Received: from harold.telenet-ops.be ([195.130.133.65]:48883 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757339AbZABKll (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:41 -0500
+In-Reply-To: <1230892892-25751-16-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Philip Blundell <philb@gnu.org>
 
-Rename CONFIG_{TT,FALCON,ST}_SCC to SUPPORT_{TT,FALCON,ST}_SCC and reduce ifdef
-clutter
+warning: format '%08lx' expects type 'long unsigned int', but argument 3 has
+type 'resource_size_t'
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Philip Blundell <philb@gnu.org>
 ---
- drivers/char/atari_scc.c |   39 ++++++++++++++++++++++++---------------
- 1 files changed, 24 insertions(+), 15 deletions(-)
+ drivers/dio/dio-sysfs.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/char/atari_scc.c b/drivers/char/atari_scc.c
-index 5dc59ff..fefff96 100644
---- a/drivers/char/atari_scc.c
-+++ b/drivers/char/atari_scc.c
-@@ -49,9 +49,9 @@
+diff --git a/drivers/dio/dio-sysfs.c b/drivers/dio/dio-sysfs.c
+index 91d5f4d..ee1a3b5 100644
+--- a/drivers/dio/dio-sysfs.c
++++ b/drivers/dio/dio-sysfs.c
+@@ -58,7 +58,8 @@ static ssize_t dio_show_resource(struct device *dev, struct device_attribute *at
+ 	struct dio_dev *d = to_dio_dev(dev);
  
- #include "scc.h"
- 
--#define CONFIG_TT_SCC     1
--#define CONFIG_FALCON_SCC 1
--#define CONFIG_ST_SCC     1
-+#define SUPPORT_TT_SCC     1
-+#define SUPPORT_FALCON_SCC 1
-+#define SUPPORT_ST_SCC     1
- 
- #define CHANNEL_A	0
- #define CHANNEL_B	1
-@@ -364,7 +364,7 @@ static void atari_scc_b_free_irqs(struct scc_port *port)
- 	free_irq(IRQ_SCCB_SPCOND, port);
+ 	return sprintf(buf, "0x%08lx 0x%08lx 0x%08lx\n",
+-		       dio_resource_start(d), dio_resource_end(d),
++		       (unsigned long)dio_resource_start(d),
++		       (unsigned long)dio_resource_end(d),
+ 		       dio_resource_flags(d));
  }
- 
--#ifdef CONFIG_TT_SCC
-+#ifdef SUPPORT_TT_SCC
- static int atari_tt_scc_init(void)
- {
- 	struct scc_port *port;
-@@ -464,10 +464,15 @@ static int atari_tt_scc_init(void)
- 
- 	return 0;
- }
--#endif
-+#else /* !SUPPORT_TT_SCC */
-+static inline int atari_tt_scc_init(void)
-+{
-+	return -ENODEV;
-+}
-+#endif /* !SUPPORT_TT_SCC */
- 
- 
--#ifdef CONFIG_FALCON_SCC
-+#ifdef SUPPORT_FALCON_SCC
- static int atari_falcon_scc_init(void)
- {
- 	struct scc_port *port;
-@@ -541,10 +546,15 @@ static int atari_falcon_scc_init(void)
- 
- 	return 0;
- }
--#endif
-+#else /* !SUPPORT_FALCON_SCC */
-+static inline int atari_falcon_scc_init(void)
-+{
-+	return -ENODEV;
-+}
-+#endif /* !SUPPORT_FALCON_SCC */
- 
- 
--#ifdef CONFIG_ST_SCC
-+#ifdef SUPPORT_ST_SCC
- static int atari_st_scc_init(void)
- {
- 	struct scc_port *port;
-@@ -618,7 +628,12 @@ static int atari_st_scc_init(void)
- 
- 	return 0;
- }
--#endif
-+#else /* !SUPPORT_ST_SCC */
-+static inline int atari_st_scc_init(void)
-+{
-+	return -ENODEV;
-+}
-+#endif /* !SUPPORT_ST_SCC */
- 
- 
- int atari_scc_init(void)
-@@ -635,18 +650,12 @@ int atari_scc_init(void)
- 
- 	scc_del = &mfp.par_dt_reg;
- 
--#ifdef CONFIG_TT_SCC
- 	if (MACH_IS_TT)
- 		res = atari_tt_scc_init();
--#endif
--#ifdef CONFIG_FALCON_SCC
- 	if (MACH_IS_FALCON)
- 		res = atari_falcon_scc_init();
--#endif
--#ifdef CONFIG_ST_SCC
- 	if (MACH_IS_ST)
- 		res = atari_st_scc_init();
--#endif
- 	return res;
- }
- 
+ static DEVICE_ATTR(resource, S_IRUGO, dio_show_resource, NULL);
 -- 
 1.5.6.5
 
