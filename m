@@ -1,68 +1,89 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: atafb - kill warn_unused_result warnings
-Date: Fri,  2 Jan 2009 11:41:25 +0100
-Message-ID: <1230892892-25751-13-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68k: atari core - kill warn_unused_result warnings
+Date: Fri,  2 Jan 2009 11:41:16 +0100
+Message-ID: <1230892892-25751-4-git-send-email-geert@linux-m68k.org>
 References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
  <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-4-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-5-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-6-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-7-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-8-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-9-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-10-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-11-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-12-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:45061 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757049AbZABKli (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:38 -0500
-In-Reply-To: <1230892892-25751-12-git-send-email-geert@linux-m68k.org>
+Received: from edna.telenet-ops.be ([195.130.132.58]:37311 "EHLO
+	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754912AbZABKlg (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:36 -0500
+In-Reply-To: <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-fbdev-devel@lists.sourceforge.net
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
 warning: ignoring return value of 'request_irq', declared with attribute
 warn_unused_result
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-fbdev-devel@lists.sourceforge.net
 ---
- drivers/video/atafb.c |   11 +++++++----
- 1 files changed, 7 insertions(+), 4 deletions(-)
+ arch/m68k/atari/atakeyb.c |    9 +++++++--
+ arch/m68k/atari/stdma.c   |    5 +++--
+ arch/m68k/atari/time.c    |    5 +++--
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/video/atafb.c b/drivers/video/atafb.c
-index 477ce55..8058572 100644
---- a/drivers/video/atafb.c
-+++ b/drivers/video/atafb.c
-@@ -3075,8 +3075,7 @@ int __init atafb_setup(char *options)
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index dedfc09..e384f97 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -563,14 +563,19 @@ static int atari_keyb_done = 0;
  
- int __init atafb_init(void)
+ int atari_keyb_init(void)
  {
--	int pad;
--	int detected_mode;
-+	int pad, detected_mode, error;
- 	unsigned int defmode = 0;
- 	unsigned long mem_req;
++	int error;
++
+ 	if (atari_keyb_done)
+ 		return 0;
  
-@@ -3116,8 +3115,12 @@ int __init atafb_init(void)
- 			printk("atafb_init: initializing Falcon hw\n");
- 			fbhw = &falcon_switch;
- 			atafb_ops.fb_setcolreg = &falcon_setcolreg;
--			request_irq(IRQ_AUTO_4, falcon_vbl_switcher, IRQ_TYPE_PRIO,
--			            "framebuffer/modeswitch", falcon_vbl_switcher);
-+			error = request_irq(IRQ_AUTO_4, falcon_vbl_switcher,
-+					    IRQ_TYPE_PRIO,
-+					    "framebuffer/modeswitch",
-+					    falcon_vbl_switcher);
-+			if (error)
-+				return error;
- 			defmode = DEFMODE_F30;
- 			break;
- 		}
+ 	kb_state.state = KEYBOARD;
+ 	kb_state.len = 0;
+ 
+-	request_irq(IRQ_MFP_ACIA, atari_keyboard_interrupt, IRQ_TYPE_SLOW,
+-		    "keyboard/mouse/MIDI", atari_keyboard_interrupt);
++	error = request_irq(IRQ_MFP_ACIA, atari_keyboard_interrupt,
++			    IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
++			    atari_keyboard_interrupt);
++	if (error)
++		return error;
+ 
+ 	atari_turnoff_irq(IRQ_MFP_ACIA);
+ 	do {
+diff --git a/arch/m68k/atari/stdma.c b/arch/m68k/atari/stdma.c
+index d1bd029..604329f 100644
+--- a/arch/m68k/atari/stdma.c
++++ b/arch/m68k/atari/stdma.c
+@@ -179,8 +179,9 @@ EXPORT_SYMBOL(stdma_islocked);
+ void __init stdma_init(void)
+ {
+ 	stdma_isr = NULL;
+-	request_irq(IRQ_MFP_FDC, stdma_int, IRQ_TYPE_SLOW | IRQF_SHARED,
+-	            "ST-DMA: floppy/ACSI/IDE/Falcon-SCSI", stdma_int);
++	if (request_irq(IRQ_MFP_FDC, stdma_int, IRQ_TYPE_SLOW | IRQF_SHARED,
++			"ST-DMA: floppy/ACSI/IDE/Falcon-SCSI", stdma_int))
++		pr_err("Couldn't register ST-DMA interrupt\n");
+ }
+ 
+ 
+diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+index 1edde27..d076ff8 100644
+--- a/arch/m68k/atari/time.c
++++ b/arch/m68k/atari/time.c
+@@ -31,8 +31,9 @@ atari_sched_init(irq_handler_t timer_routine)
+     /* start timer C, div = 1:100 */
+     mfp.tim_ct_cd = (mfp.tim_ct_cd & 15) | 0x60;
+     /* install interrupt service routine for MFP Timer C */
+-    request_irq(IRQ_MFP_TIMC, timer_routine, IRQ_TYPE_SLOW,
+-                "timer", timer_routine);
++    if (request_irq(IRQ_MFP_TIMC, timer_routine, IRQ_TYPE_SLOW,
++		    "timer", timer_routine))
++	pr_err("Couldn't register timer interrupt\n");
+ }
+ 
+ /* ++andreas: gettimeoffset fixed to check for pending interrupt */
 -- 
 1.5.6.5
 
