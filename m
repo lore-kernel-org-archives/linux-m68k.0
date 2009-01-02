@@ -1,111 +1,76 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] fbdev: Kill Atari vblank cursor blinking
-Date: Fri, 2 Jan 2009 11:11:05 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0901021109210.24191@anakin>
+From: Petr Stehlik <pstehlik@sophics.cz>
+Subject: Re: [PATCH] m68k: Fix atarimouse init
+Date: Fri, 02 Jan 2009 11:20:08 +0100
+Message-ID: <1230891608.6383.8.camel@joy>
+References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
+	 <Pine.LNX.4.64.0812170915400.29433@anakin>
+	 <Pine.LNX.4.64.0812211205270.3499@anakin>
+	 <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
+	 <Pine.LNX.4.64.0812291151200.20983@anakin>
+	 <alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
+	 <jed4f6gi2l.fsf@sykes.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:49437 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750999AbZABKLI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:11:08 -0500
+Received: from smtp3.vol.cz ([195.250.128.83]:60225 "EHLO smtp3.vol.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751587AbZABKUN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 2 Jan 2009 05:20:13 -0500
+In-Reply-To: <jed4f6gi2l.fsf@sykes.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux Frame Buffer Device Development <linux-fbdev-devel@lists.sourceforge.net>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andreas Schwab <schwab@suse.de>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Kill the last remaining vblank cursor blinking user
+Andreas Schwab p=ED=B9e v P=E1 02. 01. 2009 v 10:42 +0100:
+> > Hi Geert,
+> >
+> >> The kernel says (ARAnyM, windowed mode):
+> >> | Reseting weird mouse packet: 942, 379, 0
+> >> | Reseting weird mouse packet: 943, 379, 0
+> >> | Reseting weird mouse packet: 945, 378, 0
+> >> | Reseting weird mouse packet: 948, 378, 0
+> >> | Reseting weird mouse packet: 956, 376, 0
+>=20
+> These messages come from ARAnyM.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/video/console/fbcon.c |   38 --------------------------------------
- 1 files changed, 0 insertions(+), 38 deletions(-)
+=2E.and indicates that something wrong is going on. Normally there is o=
+nly
+one such message when entering the ARAnyM window.
+=20
+> ARAnyM's emulation of the IKBD does not support changing the y origin=
+=2E
 
-diff --git a/drivers/video/console/fbcon.c b/drivers/video/console/fbcon.c
-index 4bcff81..1657b96 100644
---- a/drivers/video/console/fbcon.c
-+++ b/drivers/video/console/fbcon.c
-@@ -78,13 +78,6 @@
- #include <asm/fb.h>
- #include <asm/irq.h>
- #include <asm/system.h>
--#ifdef CONFIG_ATARI
--#include <asm/atariints.h>
--#endif
--#if defined(__mc68000__)
--#include <asm/machdep.h>
--#include <asm/setup.h>
--#endif
- 
- #include "fbcon.h"
- 
-@@ -155,9 +148,6 @@ static int fbcon_set_origin(struct vc_data *);
- 
- #define CURSOR_DRAW_DELAY		(1)
- 
--/* # VBL ints between cursor state changes */
--#define ATARI_CURSOR_BLINK_RATE		(42)
--
- static int vbl_cursor_cnt;
- static int fbcon_cursor_noblink;
- 
-@@ -403,20 +393,6 @@ static void fb_flashcursor(struct work_struct *work)
- 	release_console_sem();
- }
- 
--#ifdef CONFIG_ATARI
--static int cursor_blink_rate;
--static irqreturn_t fb_vbl_handler(int irq, void *dev_id)
--{
--	struct fb_info *info = dev_id;
--
--	if (vbl_cursor_cnt && --vbl_cursor_cnt == 0) {
--		schedule_work(&info->queue);	
--		vbl_cursor_cnt = cursor_blink_rate; 
--	}
--	return IRQ_HANDLED;
--}
--#endif
--	
- static void cursor_timer_handler(unsigned long dev_addr)
- {
- 	struct fb_info *info = (struct fb_info *) dev_addr;
-@@ -1017,15 +993,6 @@ static const char *fbcon_startup(void)
- 		info->var.yres,
- 		info->var.bits_per_pixel);
- 
--#ifdef CONFIG_ATARI
--	if (MACH_IS_ATARI) {
--		cursor_blink_rate = ATARI_CURSOR_BLINK_RATE;
--		(void)request_irq(IRQ_AUTO_4, fb_vbl_handler,
--				IRQ_TYPE_PRIO, "framebuffer vbl",
--				info);
--	}
--#endif /* CONFIG_ATARI */
--
- 	fbcon_add_cursor_timer(info);
- 	fbcon_has_exited = 0;
- 	return display_desc;
-@@ -3454,11 +3421,6 @@ static void fbcon_exit(void)
- 	if (fbcon_has_exited)
- 		return;
- 
--#ifdef CONFIG_ATARI
--	if (MACH_IS_ATARI)
--		free_irq(IRQ_AUTO_4, fb_vbl_handler);
--#endif
--
- 	kfree((void *)softback_buf);
- 	softback_buf = 0UL;
- 
+will add it there.
 
-Gr{oetje,eeting}s,
+> >>   - the middle mouse button is dead
+> >
+> > As is expexcted - the original code was for a two-button mouse only=
+=2E If Petr=20
+> > knows what the ikbd format for the third button is (on real hardwar=
+e) it's easy=20
+> > to add that in.
+>=20
+> The IKBD does not support more than two buttons.  For a three button
+> mouse the middle button was apparently wired to the joystick port.
 
-						Geert
+Yes, that was an old Linux-m68k extension.
+
+What I meant by hardware supporting the mouse wheels was Eiffel:=20
+http://pagesperso-orange.fr/didierm/eiffel-e.htm
+
+In about 3/4 of the long page there is a table labelled "Mouse elements=
+"
+that shows the mouse wheels and buttons scan codes. ARAnyM supports the
+wheels (not sure about the buttons 3,4,5 - will check and add it there
+eventually).
+
+Petr
+
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
