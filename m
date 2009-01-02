@@ -1,105 +1,96 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] amiflop: get rid of sleep_on calls
-Date: Wed, 31 Dec 2008 17:30:00 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0812311728430.14380@anakin>
-References: <1228755578-26069-1-git-send-email-aeb@debian.org>
- <Pine.LNX.4.64.0812090927580.29640@anakin> <20081210010219.GB5073@infernal.debian.net>
- <Pine.LNX.4.64.0812141719300.5936@anakin> <20081223142246.GA5122@infernal.debian.net>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k: Fix atarimouse init
+Date: Fri, 02 Jan 2009 01:12:55 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
+References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
+ <Pine.LNX.4.64.0812170915400.29433@anakin>
+ <Pine.LNX.4.64.0812211205270.3499@anakin>
+ <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0812291151200.20983@anakin>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:60674 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756011AbYLaQaG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 31 Dec 2008 11:30:06 -0500
-In-Reply-To: <20081223142246.GA5122@infernal.debian.net>
+Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:52558 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751536AbZABANA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 1 Jan 2009 19:13:00 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KCT00300HXK4V00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Fri, 02 Jan 2009 01:12:56 +0100 (MET)
+In-reply-to: <Pine.LNX.4.64.0812291151200.20983@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Bombe <aeb@debian.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, 23 Dec 2008, Andreas Bombe wrote:
-> On Sun, Dec 14, 2008 at 05:21:17PM +0100, Geert Uytterhoeven wrote:
-> > On Wed, 10 Dec 2008, Andreas Bombe wrote:
-> > > I just tried out my Amiga and it appears to be in better shape than
-> > > expected.  So I might get to actually test it when I find the time.  My
-> > > Amiga has no Linux installation so I need to whip up a ramdisk or
-> > > something else sufficient to test it.
-> > 
-> > I think the good old ELF ramdisk at
-> > ftp://ftp.uni-erlangen.de/pub/unix/Linux/680x0/v2.0/filesys/filesys-ELF-2.0.x-1400K-2.gz
-> > should be sufficient to give it a try...
+Hi Geert,
+
+> > I still get no mouse events in either /dev/input/mice or .../mouse0, though. I 
+> > suspect the mouse open hook never gets called. Same bug might affect amimouse 
+> > (though the open function does do the full hardware setup there).
 > 
-> Not that easy with just 8 Megs of Fast RAM.  Besides, I couldn't gunzip
-> the file to look at the image, gzip gives a format error.
+> Thanks, we're making progress :-)
+
+Sort of ... 
+ 
+> I get events from /dev/input/mouse0 and /dev/input/mice (atari_defconfig).
 > 
-> Now, I finally got to test it with a very simply self-made initrd.  So
-> far I only did some read tests in a single thread (dd to /dev/null at
-> various offsets).  It didn't crash or hang, but I noticed that the
-> floppy motor is never shut off (I'm not sure about the motor, at least
-> the floppy LED stays on).  However, that is not a regression, I tested
-> the mainline code and it shows the same problem.
+> The kernel says (ARAnyM, windowed mode):
+> | input: Atari mouse as /devices/virtual/input/input1
+> | Reseting weird mouse packet: 942, 379, 0
+> | Reseting weird mouse packet: 943, 379, 0
+> | Reseting weird mouse packet: 945, 378, 0
+> | Reseting weird mouse packet: 948, 378, 0
+> | Reseting weird mouse packet: 956, 376, 0
 
-Indeed, the floppy motor keeps on running.
+That's the broken packets - the real ones shoule be fine (small x and y 
+increments in byte 1 and 2, 0x8 in byte 0 unless button pressed).
 
-I added some debug code and got this:
+> 
+> When running X under ARAnyM (depth 16), some shortcomings show up:
+>   - up and down are interchanged (works fine when rolling the mouse over the
+>     bottom surface of the table --- old arabic map style ;-)
 
-	floppy_off: nr = 0x40000000
-	floppy_off: mod motor_off_timer 0 jiffies + 3*HZ
-	fd_motor_off: drive = 0xc0000000
+Weird - the inversion of the y direction increment is taken from the old 
+busmouse driver code where it used to work OK. The point of reference is set to 
+be at the top of the 'screen' so moving the mouse down ought to generate 
+positive increments. I'll test that. If the point of reference changed between 
+busmouse and generic input mouse, just drop the sign inversion on buf[2].
 
+>   - the left and right mouse button are interchanged
 
-diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
-index 8df436f..e42f168 100644
---- a/drivers/block/amiflop.c
-+++ b/drivers/block/amiflop.c
-@@ -336,6 +336,7 @@ static int fd_motor_on(int nr)
- {
- 	nr &= 3;
+The busmouse driver had no annotation as to the semantics of the buttons so O 
+guessed bit 0 was for the left button. Guessed wrong, it seems.
+
+>   - the middle mouse button is dead
+
+As is expexcted - the original code was for a two-button mouse only. If Petr 
+knows what the ikbd format for the third button is (on real hardware) it's easy 
+to add that in. WAG: bit three of the first byte, so make 
+
+buttons = (buf[0] & 1) | ((buf[0] & 2) << 1);
+
+into
+
+buttons = ((buf[0] & 1) << 2) | ((buf[0] & 2) >> 1) | ((buf[0] & 4) >> 1) ;
+
+and give it a whirl!
+
+> 
+> Please put a `---' here, so `git am' will strip the signature and the diffstat.
+
+OK, noted.
  
-+pr_err("%s: del motor_off_timer %d\n", __func__, nr);
- 	del_timer(motor_off_timer + nr);
+> > Signed-off-by: Michael Schmitz <schmitz@debian.org>
+> 
+> Please put the SoB just below the changelog, else `git am' will strip it off.
+
+OK; I'll stick that into my commit message and try to get that into the diff. 
+
+Cheers,
+
+	Michael
  
- 	if (!unit[nr].motor) {
-@@ -368,16 +369,13 @@ static int fd_motor_on(int nr)
- static void fd_motor_off(unsigned long drive)
- {
- 	long calledfromint;
--#ifdef MODULE
--	long decusecount;
--
--	decusecount = drive & 0x40000000;
--#endif
-+pr_err("%s: drive = 0x%lx\n", __func__, drive);
- 	calledfromint = drive & 0x80000000;
- 	drive&=3;
- 	if (calledfromint && !try_fdc(drive)) {
- 		/* We would be blocked in an interrupt, so try again later */
- 		motor_off_timer[drive].expires = jiffies + 1;
-+pr_err("%s: add motor_off_timer %ld jiffies + 1\n", __func__, drive);
- 		add_timer(motor_off_timer + drive);
- 		return;
- 	}
-@@ -391,9 +389,11 @@ static void floppy_off (unsigned int nr)
- {
- 	int drive;
- 
-+pr_err("%s: nr = 0x%x\n", __func__, nr);
- 	drive = nr & 3;
- 	/* called this way it is always from interrupt */
- 	motor_off_timer[drive].data = nr | 0x80000000;
-+pr_err("%s: mod motor_off_timer %d jiffies + 3*HZ\n", __func__, drive);
- 	mod_timer(motor_off_timer + drive, jiffies + 3*HZ);
- }
- 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
