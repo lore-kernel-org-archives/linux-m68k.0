@@ -1,133 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: zorro - kill warn_unused_result warnings
-Date: Fri,  2 Jan 2009 11:41:28 +0100
-Message-ID: <1230892892-25751-16-git-send-email-geert@linux-m68k.org>
-References: <1230892892-25751-1-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-2-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-3-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-4-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-5-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-6-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-7-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-8-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-9-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-10-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-11-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-12-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-13-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-14-git-send-email-geert@linux-m68k.org>
- <1230892892-25751-15-git-send-email-geert@linux-m68k.org>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k: Fix atarimouse init
+Date: Fri, 02 Jan 2009 23:10:18 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0901022257150.738@zirkon.biophys.uni-duesseldorf.de>
+References: <20081217165557.b4898a4b.sfr@canb.auug.org.au>
+ <Pine.LNX.4.64.0812170915400.29433@anakin>
+ <Pine.LNX.4.64.0812211205270.3499@anakin>
+ <alpine.DEB.1.00.0812282252230.10733@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0812291151200.20983@anakin>
+ <alpine.DEB.1.00.0901020046280.25512@zirkon.biophys.uni-duesseldorf.de>
+ <jed4f6gi2l.fsf@sykes.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:37348 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757127AbZABKlj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 05:41:39 -0500
-In-Reply-To: <1230892892-25751-15-git-send-email-geert@linux-m68k.org>
+Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:39370 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751573AbZABWKX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jan 2009 17:10:23 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KCV001006X77U00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Fri, 02 Jan 2009 23:10:19 +0100 (MET)
+In-reply-to: <jed4f6gi2l.fsf@sykes.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Andreas Schwab <schwab@suse.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-warning: ignoring return value of 'device_register', declared with attribute
-warn_unused_result
-warning: ignoring return value of 'device_create_file', declared with
-attribute warn_unused_result
+Hi Andreas,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/zorro/zorro-sysfs.c |   22 +++++++++++++---------
- drivers/zorro/zorro.c       |   17 ++++++++++++++---
- drivers/zorro/zorro.h       |    2 +-
- 3 files changed, 28 insertions(+), 13 deletions(-)
+> > Weird - the inversion of the y direction increment is taken from the old 
+> > busmouse driver code where it used to work OK. The point of reference is set to 
+> > be at the top of the 'screen' so moving the mouse down ought to generate 
+> > positive increments.
+> 
+> ARAnyM's emulation of the IKBD does not support changing the y origin.
 
-diff --git a/drivers/zorro/zorro-sysfs.c b/drivers/zorro/zorro-sysfs.c
-index 7139ec2..eb924e0 100644
---- a/drivers/zorro/zorro-sysfs.c
-+++ b/drivers/zorro/zorro-sysfs.c
-@@ -87,18 +87,22 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+Bummer - any reason the origin was set to the top initially? I guess we could 
+reverse that (at least for ARAnyM). Would make the rest of the code more sane as 
+well. How would I go about figuring out the kernel runs on ARAnyM, Petr?
  
- static DEVICE_ATTR(modalias, S_IRUGO, modalias_show, NULL);
- 
--void zorro_create_sysfs_dev_files(struct zorro_dev *z)
-+int zorro_create_sysfs_dev_files(struct zorro_dev *z)
- {
- 	struct device *dev = &z->dev;
-+	int error;
- 
- 	/* current configuration's attributes */
--	device_create_file(dev, &dev_attr_id);
--	device_create_file(dev, &dev_attr_type);
--	device_create_file(dev, &dev_attr_serial);
--	device_create_file(dev, &dev_attr_slotaddr);
--	device_create_file(dev, &dev_attr_slotsize);
--	device_create_file(dev, &dev_attr_resource);
--	device_create_file(dev, &dev_attr_modalias);
--	sysfs_create_bin_file(&dev->kobj, &zorro_config_attr);
-+	if ((error = device_create_file(dev, &dev_attr_id)) ||
-+	    (error = device_create_file(dev, &dev_attr_type)) ||
-+	    (error = device_create_file(dev, &dev_attr_serial)) ||
-+	    (error = device_create_file(dev, &dev_attr_slotaddr)) ||
-+	    (error = device_create_file(dev, &dev_attr_slotsize)) ||
-+	    (error = device_create_file(dev, &dev_attr_resource)) ||
-+	    (error = device_create_file(dev, &dev_attr_modalias)) ||
-+	    (error = sysfs_create_bin_file(&dev->kobj, &zorro_config_attr)))
-+		return error;
-+
-+	return 0;
- }
- 
-diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
-index dff16d9..2dda20a 100644
---- a/drivers/zorro/zorro.c
-+++ b/drivers/zorro/zorro.c
-@@ -130,6 +130,7 @@ static int __init zorro_init(void)
- {
-     struct zorro_dev *z;
-     unsigned int i;
-+    int error;
- 
-     if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(ZORRO))
- 	return 0;
-@@ -140,7 +141,11 @@ static int __init zorro_init(void)
-     /* Initialize the Zorro bus */
-     INIT_LIST_HEAD(&zorro_bus.devices);
-     strcpy(zorro_bus.dev.bus_id, "zorro");
--    device_register(&zorro_bus.dev);
-+    error = device_register(&zorro_bus.dev);
-+    if (error) {
-+	pr_err("Zorro: Error registering zorro_bus\n");
-+	return error;
-+    }
- 
-     /* Request the resources */
-     zorro_bus.num_resources = AMIGAHW_PRESENT(ZORRO3) ? 4 : 2;
-@@ -167,8 +172,14 @@ static int __init zorro_init(void)
- 	sprintf(z->dev.bus_id, "%02x", i);
- 	z->dev.parent = &zorro_bus.dev;
- 	z->dev.bus = &zorro_bus_type;
--	device_register(&z->dev);
--	zorro_create_sysfs_dev_files(z);
-+	error = device_register(&z->dev);
-+	if (error) {
-+	    pr_err("Zorro: Error registering device %s\n", z->name);
-+	    continue;
-+	}
-+	error = zorro_create_sysfs_dev_files(z);
-+	if (error)
-+	    dev_err(&z->dev, "Error creating sysfs files\n");
-     }
- 
-     /* Mark all available Zorro II memory */
-diff --git a/drivers/zorro/zorro.h b/drivers/zorro/zorro.h
-index 5c91ada..b682d5c 100644
---- a/drivers/zorro/zorro.h
-+++ b/drivers/zorro/zorro.h
-@@ -1,4 +1,4 @@
- 
- extern void zorro_name_device(struct zorro_dev *z);
--extern void zorro_create_sysfs_dev_files(struct zorro_dev *z);
-+extern int zorro_create_sysfs_dev_files(struct zorro_dev *z);
- 
--- 
-1.5.6.5
+> >>   - the left and right mouse button are interchanged
+> >
+> > The busmouse driver had no annotation as to the semantics of the buttons so O 
+> > guessed bit 0 was for the left button. Guessed wrong, it seems.
+> 
+> Note that the mouse button bits are also inverted, ie. 0 means down.
+
+You're right. I'd been wondering about that part in the old mouse driver...
+
+> > knows what the ikbd format for the third button is (on real hardware) it's easy 
+> > to add that in.
+> 
+> The IKBD does not support more than two buttons.  For a three button
+> mouse the middle button was apparently wired to the joystick port.
+> 
+> See also <http://dev-docs.atariforge.org/files/ikbd_Prot_2-26-1985.pdf>.
+
+Thanks, Andreas. Seems I'll have to revive the old joystick code, then. 
+
+Cheers,
+
+	Michael
 
