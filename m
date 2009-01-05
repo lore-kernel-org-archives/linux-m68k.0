@@ -1,32 +1,37 @@
-From: dontsendemailhere@mail.rocket.co.th
-Subject: MD Listing
-Date: Mon,  5 Jan 2009 14:44:28 +0700 (ICT)
-Message-ID: <20090105074451.4DBAA3D00A9@mail.rocket.co.th>
-Reply-To: dontreply@idocinfo.com
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: [PATCH] fix --build-id breakage for sun3
+Date: Mon, 5 Jan 2009 17:28:10 +0000
+Message-ID: <20090105172810.GQ28946@ZenIV.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: carmen.ehrenstein@genpharmtox.de, g82405xi4l.ln2@recgroups.com, paul@marketingwine.com, fabio.nobile@polimi.it, contactme@adexmedical.com, linux-m68k@lists.linux-m68k.org, ronnie.fiel
+To: geert@linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-Practicing Doctors in the USA 
+Counterpart of commit 08a3db94f2a36c28278922732bc281c1722ceb18 for
+sun3 build.
 
-Medical Doctors in many different specialties
+Signet-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/m68k/kernel/vmlinux-sun3.lds |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Sort by over a dozen different fields
+diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
+index 8a4919e..d9368c0 100644
+--- a/arch/m68k/kernel/vmlinux-sun3.lds
++++ b/arch/m68k/kernel/vmlinux-sun3.lds
+@@ -33,6 +33,7 @@ SECTIONS
+ 	} :data
+   /* End of data goes *here* so that freeing init code works properly. */
+   _edata = .;
++  NOTES
+ 
+   /* will be freed after init */
+   . = ALIGN(PAGE_SIZE);	/* Init code and data */
+-- 
+1.5.6.5
 
-Now offered at the lower rate:  $398
 
-
-+++ Also you will get this data below with your purchase: ===
-
-++ Chiropractors
-
---> Alternative Medicine
-
-++ Acupuncturists
-
-++ Massage Therapists
-
-send email to:: Hayden@umedpro.com
-  
-good until Jan 9 ````````````````````````````````````````````````   this is where to go to stop the mailing please send an email to cancelnow@umedpro.com
