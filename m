@@ -1,88 +1,62 @@
-From: Laurent Vivier <laurent@lvivier.info>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
 Subject: Re: Macintosh booloader - EMILE
-Date: Wed, 7 Jan 2009 18:14:28 +0100
-Message-ID: <E254E686-E5C3-4432-BB1A-3EC5472A300C@lvivier.info>
-References: <D044A55A-7048-4F40-82E2-B69770D8FED8@lvivier.info> <alpine.LNX.2.00.0901071606030.6444@halbrend.uninett.no>
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed	delsp=yes
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Date: Thu, 8 Jan 2009 01:13:15 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0901080100400.17180@firda.kolla.no>
+References: <D044A55A-7048-4F40-82E2-B69770D8FED8@lvivier.info> <alpine.LNX.2.00.0901071606030.6444@halbrend.uninett.no> <E254E686-E5C3-4432-BB1A-3EC5472A300C@lvivier.info>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from moutng.kundenserver.de ([212.227.126.188]:57545 "EHLO
-	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750865AbZAGROc convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 7 Jan 2009 12:14:32 -0500
-In-Reply-To: <alpine.LNX.2.00.0901071606030.6444@halbrend.uninett.no>
+Received: from ufisa.uninett.no ([158.38.152.126]:57941 "EHLO ufisa.uninett.no"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752803AbZAHANS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 7 Jan 2009 19:13:18 -0500
+In-Reply-To: <E254E686-E5C3-4432-BB1A-3EC5472A300C@lvivier.info>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?ISO-8859-1?Q?Kolbj=F8rn_Barmen?= <linux-m68k@kolla.no>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Laurent Vivier <laurent@lvivier.info>
+Cc: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>, Linux/m68k <linux-m68k@vger.kernel.org>
+
+On Wed, 7 Jan 2009, Laurent Vivier wrote:
+
+> > aranym emile # make
+> > Makefile:9: tools.mk: No such file or directory
+> > sh scripts/tools.sh > tools.mk
+> > Cannot find powerpc cross-compiler
+> > make -C docs all
+> > Missing tools to generate emile.conf.5 from emile.conf.sgml
+> > make[1]: *** [emile.conf.5] Error 1
+> > make: *** [docs] Error 2
+> > aranym emile #
+...
+> > Huh? It requires toolchain for PowerPC? What's going on?
+> 
+> Not required, but one day I tried to boot Linux on powermac to replace bootx.
+
+That's what I figured after looking at it more closely after I prematurely
+sent the first mail.
 
 
-Le 7 janv. 09 =E0 16:17, Kolbj=F8rn Barmen a =E9crit :
+> > I just want to build it on m68k :)
+> 
+> You just need to install docbook-to-man
 
-> On Wed, 6 Aug 2008, Laurent Vivier wrote:
->
->> Hi guys,
->>
->> a new version of EMILE is available.
->>
->> It adds multiboot and ext2 support.
->>
->> So, macintosh m68k developers, you can:
->>
->> modify your kernel, compile it, install it and reboot ... as it is =20
->> done on
->> i386.
->
-> I'm pussled. I decided to try emile on my q610, so I downloaded the =20
-> rescue
-> floppy and it works nicely, great! But the kernel was slightly old =20
-> (to put
-> it mildly) and I really just want to make a scsi disk I can boot =20
-> directly
-> from, so I decided to build emile myself... what pussles me is this:
->
-> aranym emile # make
-> Makefile:9: tools.mk: No such file or directory
-> sh scripts/tools.sh > tools.mk
-> Cannot find powerpc cross-compiler
-> make -C docs all
-> Missing tools to generate emile.conf.5 from emile.conf.sgml
-> make[1]: *** [emile.conf.5] Error 1
-> make: *** [docs] Error 2
-> aranym emile #
->
->
-> scripts/tools.sh says:
->
->  if test "${ARCH}" !=3D "ppc"
->  then
->          PPC_CROSS_COMPILE=3Dpowerpc-linux-
->          if ! type "${PPC_CROSS_COMPILE}${CC}" > /dev/null 2>&1
->  ...
->
-> Huh? It requires toolchain for PowerPC? What's going on?
+Yes, I realised that. I cant really have been quite awake when I sent the
+first mail. Anyways, emile seems to build fine on my aranym now, so
+tomorrow I will hopefully be able to test a self-buildt floppy on my
+quadra. :)
 
-Not required, but one day I tried to boot Linux on powermac to replace =
-=20
-bootx.
+I currently have two 2GB SCSI disks, one with original MacOS on, and
+one external with a tiny MacOS partition and the rest with linux, I never
+got the mac to boot properly from this tiny MacOS partition, so I will now
+try to repartition the disk with only Linux partitions, and initially use
+an emile floppy to boot from, to test. If it works well, I replace the
+internal 2GB "MacOS" disk with the Linux disk, and continue to use emile
+from floppy, or perhaps install it on the disk if I feel brave...
 
->
->
-> I just want to build it on m68k :)
+(And hopefully I will also have a SCSI-SATA-adapter soon, and let new,
+high capasity and _quiet_ 2.5" SATA drives (or even SSD) replace those old
+noisy tiny SCSI drives)
 
+Anyways, thanks a bunch for emile! :)
 
-You just need to install docbook-to-man
-
-Regards,
-Laurent
------------------------ Laurent Vivier ----------------------
-"The best way to predict the future is to invent it."
-- Alan Kay
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- kolla
