@@ -1,93 +1,28 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH for 2.6.28 stable] m68knommu: fix m68knommu defconfig
- can't build
-Date: Mon, 06 Oct 2008 16:20:06 +1000
-Message-ID: <48E9AE16.2000002@snapgear.com>
+From: "KOSAKI Motohiro" <kosaki.motohiro@jp.fujitsu.com>
+Subject: Re: [PATCH for 2.6.28 stable] m68knommu: fix m68knommu defconfig can't build
+Date: Mon, 12 Jan 2009 19:35:55 +0900
+Message-ID: <2f11576a0901120235x3b16ae90y61ef9ba10d743894@mail.gmail.com>
 References: <20081230193943.1281.KOSAKI.MOTOHIRO@jp.fujitsu.com>
+	 <48E9AE16.2000002@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20081230193943.1281.KOSAKI.MOTOHIRO@jp.fujitsu.com>
+In-Reply-To: <48E9AE16.2000002@snapgear.com>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+To: Greg Ungerer <gerg@snapgear.com>
 Cc: "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, stable@kernel.org, LKML <linux-kernel@vger.kernel.org>
 
-Hi Kosako,
+> Hi Kosako,
+>
+> KOSAKI Motohiro wrote:
+>>
+>> I guess nobody don't test m68knommu at all last three month.
+>> Do we still need to maintain this architecture?
+>
+> Yes, we do.
 
-KOSAKI Motohiro wrote:
-> I guess nobody don't test m68knommu at all last three month.
-> Do we still need to maintain this architecture?
-
-Yes, we do.
-
-Regards
-Greg
-
-
-
-> ==
-> Currently, m68knommu defconfig can't build. it cause following error.
-> 
-> net/built-in.o: In function `skb_dma_map':
-> : undefined reference to `dma_mapping_error'
-> net/built-in.o: In function `skb_dma_unmap':
-> : undefined reference to `dma_unmap_single'
-> net/built-in.o: In function `skb_dma_unmap':
-> : undefined reference to `dma_unmap_page'
-> net/built-in.o: In function `skb_dma_map':
-> : undefined reference to `dma_map_single'
-> net/built-in.o: In function `skb_dma_map':
-> : undefined reference to `dma_map_page'
-> net/built-in.o: In function `skb_dma_map':
-> : undefined reference to `dma_unmap_page'
-> net/built-in.o: In function `skb_dma_map':
-> : undefined reference to `dma_unmap_single'
-> 
-> because
->  - CONFIG_DMA depend on !NO_DMA
->  - m68knommu always doesn't turn on NO_DMA
->  - if CONFIG_PCI=n, m68knommu/include/asm/dma-magging.h include
->     asm-generic/dma-mapping-broken.h
->  - dma-mapping-broken.h generate link time error.
->  - m68knommu defconfig doesn't have CONFIG_PCI
->  - On the other hand, net/core/skb_dma_map.c assume CONFIG_DMA=y mean
->    dma related function is callable
-> 
-> So, we want to turn on CONFIG_DMA if CONFIG_PCI=y only.
-> 
-> 
-> CC: David S. Miller <davem@davemloft.net>
-> CC: Geert Uytterhoeven <geert@linux-m68k.org>
-> CC: Roman Zippel <zippel@linux-m68k.org>
-> CC: Greg Ungerer <gerg@uclinux.org>
-> CC: linux-m68k@lists.linux-m68k.org
-> ---
->  arch/m68knommu/Kconfig |    3 +++
->  1 file changed, 3 insertions(+)
-> 
-> Index: b/arch/m68knommu/Kconfig
-> ===================================================================
-> --- a/arch/m68knommu/Kconfig	2008-12-25 08:26:37.000000000 +0900
-> +++ b/arch/m68knommu/Kconfig	2008-12-28 21:09:58.000000000 +0900
-> @@ -73,6 +73,9 @@ config GENERIC_CLOCKEVENTS
->  config NO_IOPORT
->  	def_bool y
->  
-> +config NO_DMA
-> +	def_bool !PCI
-> +
->  source "init/Kconfig"
->  
->  source "kernel/Kconfig.freezer"
-> 
-> 
-> 
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear, a McAfee Company                  PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+ok. I don't have objection.
+thank you.
