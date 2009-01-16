@@ -1,65 +1,56 @@
-From: mike <localgost@gmail.com>
-Subject: Re: cirrusfb not working?
-Date: Fri, 16 Jan 2009 19:11:26 +0100
-Message-ID: <8259f0250901161011t24eb0351l6b39739f0a20179@mail.gmail.com>
-References: <49706C81.7000905@agn.forthnet.gr>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k,m68knommu: merge header files
+Date: Fri, 16 Jan 2009 22:53:54 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0901162242010.25319@anakin>
+References: <20081208205814.GA22697@uranus.ravnborg.org>
+ <20081213205251.GC27748@uranus.ravnborg.org> <20081213205828.GD27748@uranus.ravnborg.org>
+ <49707AE0.1040803@opengear.com> <Pine.LNX.4.64.0901161354410.18756@anakin>
+ <49709800.70009@snapgear.com> <20090116143429.GB22152@uranus.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fg-out-1718.google.com ([72.14.220.159]:20052 "EHLO
-	fg-out-1718.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S936647AbZAPSL3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Jan 2009 13:11:29 -0500
-Received: by fg-out-1718.google.com with SMTP id 19so874495fgg.17
-        for <linux-m68k@vger.kernel.org>; Fri, 16 Jan 2009 10:11:26 -0800 (PST)
-In-Reply-To: <49706C81.7000905@agn.forthnet.gr>
-Content-Disposition: inline
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+In-Reply-To: <20090116143429.GB22152@uranus.ravnborg.org>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Greg Ungerer <gerg@snapgear.com>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Emmanouel Vasilakis <evas@agn.forthnet.gr>
-Cc: linux-m68k@vger.kernel.org
 
-Try cirrusfb:640x480 or something
+On Fri, 16 Jan 2009, Sam Ravnborg wrote:
+> > >>More review, testing, comments welcome...
+> > >>Where to from here?
+> > >
+> > >I'll pull from it and give it some m68k test builds.
+> > >After that, you can move it to for-next. If everything's well, it can go to
+> > >Linus.
+> > 
+> > Sounds like a plan.
+> > 
+> > 
+> > >Or should I amend and add my SoB and put it in m68k for-next?
+> > 
+> > I am happy to go either way.
+> 
+> For my part I like this to reach mainline ASAP. So whatever suits the
+> two of you is fine with me.
 
+I pulled from Greg's tree, and built atari_defconfig, multi_defconfig,
+sun3_defconfig. Atari_defconfig runs fine under ARAnyM.
 
-Default video modes
--------------------
-At the moment, there are two kernel command line arguments supported:
+As I'll be on a business trip to Japan next week, I probably won't be able to
+do a proper follow-up. So Greg, can you put it on your for-next branch and
+send it to Linus if everything goes well?
 
-mode:640x480
-mode:800x600
-	or
-mode:1024x768
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Full support for startup video modes (modedb) will be integrated soon.
+Thx!
 
+Gr{oetje,eeting}s,
 
-2009/1/16 Emmanouel Vasilakis <evas@agn.forthnet.gr>:
-> Hi,
->
-> I was trying a few days ago to boot a recent 2.6 kernel on my Amiga 3000.
->
-> From what I found online, in order to get a framebuffer display from my
-> Picasso IV, I needed to use the cirrusfb driver to the kernel which replaced
-> the older clgen driver (In latest 2.6 kernels).
->
-> I tried stuff like:
->
-> amiboot -k vmlinuz video=cirrusfb:
->
-> No matter what I append to the video parameter, I can never get a display
-> from the graphics card, it always comes up from the native ECS. Kernel
-> messages say that a cirrusfb supported card was found. I was then told that
-> cirrusfb does not work as expected, so any information on that?
->
-> What eventually worked somehow, was: video=amifb:off, which produced a
-> display from the Picasso, but was full of garbage.
->
-> Thanks,
-> Emmanuel
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
