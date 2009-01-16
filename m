@@ -1,31 +1,34 @@
-From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+From: mike <localgost@gmail.com>
 Subject: Re: 16bit pcmcia nic & pci bus board support - amiga
-Date: Fri, 16 Jan 2009 00:11:51 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0901160007070.7149@firda.kolla.no>
+Date: Fri, 16 Jan 2009 12:05:06 +0100
+Message-ID: <8259f0250901160305r1721b8ecn70a6dfe462a66258@mail.gmail.com>
 References: <8259f0250901150528w1a57266fm4bc1f65bb7f1860d@mail.gmail.com>
+	 <alpine.LNX.2.00.0901160007070.7149@firda.kolla.no>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <8259f0250901150528w1a57266fm4bc1f65bb7f1860d@mail.gmail.com>
+In-Reply-To: <alpine.LNX.2.00.0901160007070.7149@firda.kolla.no>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: mike <localgost@gmail.com>
+To: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
 Cc: linux-m68k@lists.linux-m68k.org
 
-On Thu, 15 Jan 2009, mike wrote:
-
-> Hey,
-> 
-> So if i get this right, pcmcia network cards is disabled because it
-> depends on config_pci and usb/usb net?
-> Whats the progress on this front?
-> And how is support for Mediator/Grex/Prometheus pci bus boards and or
-> others, would that just autoconfig or?
-
-Your problem is that you're looking at 3com cards, not NE2000 cards :)
-
-Even though there is driver for 3Com389 (iirc) pcmcia cards in amigaos
-(well, third party), there is only support NE2000 in Linux/m68k on amiga,
-look for the "apne" driver.
-
--- kolla
+SGV5CgpQcm9ibGVtIGlzLCBhbG90IG9mIGFtaWdhIDYwMC8xMjAwIHVzZXJzIHVzZSB0aGlzIGNh
+cmQsIGluY2x1ZGluZwpteXNlbGYsIHNvIGkgd2FzIHdvbmRlcmluZyB3aGF0IHRoZSBzdHVtYmxp
+bmcgYmxvY2sgd2FzLCBpJ3ZlIGJlZW4KcG9raW5nIGFyb3VuZCBpbiB0aGUga2VybmVsIHRyeWlu
+ZyB0byBlbmFibGUgdGhlIHNlY3Rpb24gYWdhaW4sIHdpdGgKbm8gbHVjaywgaSBndWVzcyBpbSBq
+dXN0IG5vdCBmYW1pbGlhciBlbm91Z2ggd2l0aCBob3cgaXQgd29ya3MuIGlmIGkKY291bGQgZ2V0
+IGF0IHRoZSBwcm9ibGVtIGltIHN1cmUgd2UgY291bGQgZml4IGl0LgoKLU1pa2UKCjIwMDkvMS8x
+NiBLb2xiasO4cm4gQmFybWVuIDxsaW51eC1tNjhrQGtvbGxhLm5vPjoKPiBPbiBUaHUsIDE1IEph
+biAyMDA5LCBtaWtlIHdyb3RlOgo+Cj4+IEhleSwKPj4KPj4gU28gaWYgaSBnZXQgdGhpcyByaWdo
+dCwgcGNtY2lhIG5ldHdvcmsgY2FyZHMgaXMgZGlzYWJsZWQgYmVjYXVzZSBpdAo+PiBkZXBlbmRz
+IG9uIGNvbmZpZ19wY2kgYW5kIHVzYi91c2IgbmV0Pwo+PiBXaGF0cyB0aGUgcHJvZ3Jlc3Mgb24g
+dGhpcyBmcm9udD8KPj4gQW5kIGhvdyBpcyBzdXBwb3J0IGZvciBNZWRpYXRvci9HcmV4L1Byb21l
+dGhldXMgcGNpIGJ1cyBib2FyZHMgYW5kIG9yCj4+IG90aGVycywgd291bGQgdGhhdCBqdXN0IGF1
+dG9jb25maWcgb3I/Cj4KPiBZb3VyIHByb2JsZW0gaXMgdGhhdCB5b3UncmUgbG9va2luZyBhdCAz
+Y29tIGNhcmRzLCBub3QgTkUyMDAwIGNhcmRzIDopCj4KPiBFdmVuIHRob3VnaCB0aGVyZSBpcyBk
+cml2ZXIgZm9yIDNDb20zODkgKGlpcmMpIHBjbWNpYSBjYXJkcyBpbiBhbWlnYW9zCj4gKHdlbGws
+IHRoaXJkIHBhcnR5KSwgdGhlcmUgaXMgb25seSBzdXBwb3J0IE5FMjAwMCBpbiBMaW51eC9tNjhr
+IG9uIGFtaWdhLAo+IGxvb2sgZm9yIHRoZSAiYXBuZSIgZHJpdmVyLgo+Cj4gLS0ga29sbGEKPgo=
