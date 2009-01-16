@@ -1,34 +1,47 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH] m68k,m68knommu: merge header files
-Date: Fri, 16 Jan 2009 15:34:29 +0100
-Message-ID: <20090116143429.GB22152@uranus.ravnborg.org>
-References: <20081208205814.GA22697@uranus.ravnborg.org> <20081213205251.GC27748@uranus.ravnborg.org> <20081213205828.GD27748@uranus.ravnborg.org> <49707AE0.1040803@opengear.com> <Pine.LNX.4.64.0901161354410.18756@anakin> <49709800.70009@snapgear.com>
+From: Emmanouel Vasilakis <evas@agn.forthnet.gr>
+Subject: cirrusfb not working?
+Date: Fri, 16 Jan 2009 13:16:17 +0200
+Message-ID: <49706C81.7000905@agn.forthnet.gr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kbuild-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <49709800.70009@snapgear.com>
-Sender: linux-kbuild-owner@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, uclinux-dev <uclinux-dev@uclinux.org>, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-7; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx-out.forthnet.gr ([193.92.150.104]:58767 "EHLO
+	mx-out.forthnet.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755805AbZAPRv2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Jan 2009 12:51:28 -0500
+Received: from mx-av-05.forthnet.gr (mx-av.forthnet.gr [193.92.150.27])
+	by mx-out-03.forthnet.gr (8.14.3/8.14.3) with ESMTP id n0GBHP8g030920
+	for <linux-m68k@vger.kernel.org>; Fri, 16 Jan 2009 13:17:25 +0200
+Received: from MX-IN-05.forthnet.gr (mx-in-05.forthnet.gr [193.92.150.30])
+	by mx-av-05.forthnet.gr (8.14.3/8.14.3) with ESMTP id n0GBGNHK029873
+	for <linux-m68k@vger.kernel.org>; Fri, 16 Jan 2009 13:16:23 +0200
+Received: from [212.251.99.200] (sylvester.rd.forthnet.gr [212.251.99.200])
+	by MX-IN-05.forthnet.gr (8.14.3/8.14.3) with ESMTP id n0GBGHXV015704
+	for <linux-m68k@vger.kernel.org>; Fri, 16 Jan 2009 13:16:18 +0200
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-> >>
-> >>More review, testing, comments welcome...
-> >>Where to from here?
-> >
-> >I'll pull from it and give it some m68k test builds.
-> >After that, you can move it to for-next. If everything's well, it can go to
-> >Linus.
-> 
-> Sounds like a plan.
-> 
-> 
-> >Or should I amend and add my SoB and put it in m68k for-next?
-> 
-> I am happy to go either way.
+Hi,
 
-For my part I like this to reach mainline ASAP. So whatever suits the
-two of you is fine with me.
+I was trying a few days ago to boot a recent 2.6 kernel on my Amiga 3000.
 
-	Sam
+ From what I found online, in order to get a framebuffer display from my 
+Picasso IV, I needed to use the cirrusfb driver to the kernel which 
+replaced the older clgen driver (In latest 2.6 kernels).
+
+I tried stuff like:
+
+amiboot -k vmlinuz video=cirrusfb:
+
+No matter what I append to the video parameter, I can never get a 
+display from the graphics card, it always comes up from the native ECS. 
+Kernel messages say that a cirrusfb supported card was found. I was then 
+told that cirrusfb does not work as expected, so any information on that?
+
+What eventually worked somehow, was: video=amifb:off, which produced a 
+display from the Picasso, but was full of garbage.
+
+Thanks,
+Emmanuel
