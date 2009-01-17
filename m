@@ -1,51 +1,49 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: mac68k serial
-Date: Sat, 17 Jan 2009 00:24:24 -0800
-Message-ID: <20090117082424.GA3651@cynthia.pants.nu>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com> <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au> <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de> <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
+From: Emmanuel Vasilakis <evas@agn.forthnet.gr>
+Subject: Re: cirrusfb not working?
+Date: Sat, 17 Jan 2009 12:30:24 +0200
+Message-ID: <4971B340.2070604@agn.forthnet.gr>
+References: <49706C81.7000905@agn.forthnet.gr> <8259f0250901161011t24eb0351l6b39739f0a20179@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
+Received: from mx-out.forthnet.gr ([193.92.150.104]:58054 "EHLO
+	mx-out.forthnet.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752570AbZAQKah (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Jan 2009 05:30:37 -0500
+In-Reply-To: <8259f0250901161011t24eb0351l6b39739f0a20179@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, flameman mayer <flamemaniii@gmail.com>, linux-m68k@lists.linux-m68k.org
+To: mike <localgost@gmail.com>
+Cc: linux-m68k@vger.kernel.org
 
-On Sat, Jan 17, 2009 at 05:59:51PM +1100, Finn Thain wrote:
-> On Sat, 17 Jan 2009, Michael Schmitz wrote:
-> > Can't you add an empty SCC dispatch that just returns, or will that 
-> > cause an interrupt storm?
+Hi Mike,
+
+mike wrote:
+> Try cirrusfb:640x480 or something
 > 
-> The VIA would be OK with that. Whether it would work or not would depend 
-> on the SCC. That is, I don't know.
-
-The SCC IRQ isn't a VIA interrupt as far as I can tell. It looks like
-only models with OSS (the IIfx) or PSC (Q660AV + Q840AV) have a way
-to block the SCC IRQ. The comments in mac_scc_dispatch specifically
-say that the SCC causes interrupt storms if we ignore it.
-
-We really ought to redesign the interrupt handling for macs so it's
-obvious how the interrupts wander through all the layers. There is
-all that logic in the common m68k interrupt handling to register
-different interrupt controllers and the mac code just registers one
-giant synthetic interrupt source rather than having each driver
-register directly with the core for VIA, OSS, PSC, etc.
-
-> You could also ifdef 0 the relevant code in via.c --
 > 
-> 311                 request_irq(IRQ_AUTO_4, mac_scc_dispatch, IRQ_FLG_LOCK,
-> 312                                 "scc", mac_scc_dispatch);
+> Default video modes
+> -------------------
+> At the moment, there are two kernel command line arguments supported:
 > 
-> I don't really care enough to send a temporary patch upstream since the 
-> serial port is presently only useful to those hacking on the kernel 
-> anyway.
+> mode:640x480
+> mode:800x600
+> 	or
+> mode:1024x768
+> 
+> Full support for startup video modes (modedb) will be integrated soon.
+> 
 
-I don't think that will really fix anything, since IRQ_AUTO_* interrupts
-aren't really blocked or ignored if you don't register them. They go
-directly into the CPU which doesn't have a true IRQ mask.
+Did try those opts, and everything else I could think off. No go.
 
-	Brad Boyer
-	flar@allandria.com
+Am I supposed to see the kernel booting in that resolution, or will it 
+first boot and switch to picasso when the cirrusfb module is loaded?
+
+My exact amiboot line is:
+
+1> amiboot -k vmlinuz video=cirrusfb:640x480
+
+Thanks!
+
 
