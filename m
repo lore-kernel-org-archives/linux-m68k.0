@@ -1,61 +1,51 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Brad Boyer <flar@allandria.com>
 Subject: Re: mac68k serial
-Date: Sat, 17 Jan 2009 17:59:51 +1100 (EST)
-Message-ID: <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com>
- <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
- <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
+Date: Sat, 17 Jan 2009 00:24:24 -0800
+Message-ID: <20090117082424.GA3651@cynthia.pants.nu>
+References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com> <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au> <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de> <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Brad Boyer <flar@allandria.com>, flameman mayer <flamemaniii@gmail.com>, linux-m68k@lists.linux-m68k.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, flameman mayer <flamemaniii@gmail.com>, linux-m68k@lists.linux-m68k.org
 
-
-
-On Sat, 17 Jan 2009, Michael Schmitz wrote:
-
-> Hi,
+On Sat, Jan 17, 2009 at 05:59:51PM +1100, Finn Thain wrote:
+> On Sat, 17 Jan 2009, Michael Schmitz wrote:
+> > Can't you add an empty SCC dispatch that just returns, or will that 
+> > cause an interrupt storm?
 > 
-> > > > 000004 modules linked in: m68k_handle_int+0x1c/0x36
-> > > > 
-> > > > call trace mac_scc_dispatch+0x3a/0x40 
-> > > > auto_irqhandler_fixup+0x4/0x6
-> > > > 
-> > > > also, i hacked the "emile-0.12" sources to build a monitor able to 
-> > > > serially talk: it works for both the 2 LC475 serial lines :P
-> > > > 
-> > > > is there anything about serial support for linux-m68k ?
-> > > 
-> > > The real driver for the serial ports on m68k Macintosh systems got 
-> > > removed from the tree a long time ago and has not been replaced as 
-> > > of this time. However, we still register mac_scc_dispatch as an 
-> > > interrupt handler for the line that the SCC uses. This looks like 
-> > > you got an interrupt for the serial chip and the interrupt code got 
-> > > confused trying to dispatch to nothing. I've never seen it happen, 
-> > > but it does look like that would be the expected behavior of the 
-> > > current code.
-> > 
-> > I've seen it happen. You should avoid sending anything to the mac 
-> > serial port. But you can still capture kernel messages from the mac 
-> > serial port without triggering the panic.
+> The VIA would be OK with that. Whether it would work or not would depend 
+> on the SCC. That is, I don't know.
+
+The SCC IRQ isn't a VIA interrupt as far as I can tell. It looks like
+only models with OSS (the IIfx) or PSC (Q660AV + Q840AV) have a way
+to block the SCC IRQ. The comments in mac_scc_dispatch specifically
+say that the SCC causes interrupt storms if we ignore it.
+
+We really ought to redesign the interrupt handling for macs so it's
+obvious how the interrupts wander through all the layers. There is
+all that logic in the common m68k interrupt handling to register
+different interrupt controllers and the mac code just registers one
+giant synthetic interrupt source rather than having each driver
+register directly with the core for VIA, OSS, PSC, etc.
+
+> You could also ifdef 0 the relevant code in via.c --
 > 
-> Can't you add an empty SCC dispatch that just returns, or will that 
-> cause an interrupt storm?
+> 311                 request_irq(IRQ_AUTO_4, mac_scc_dispatch, IRQ_FLG_LOCK,
+> 312                                 "scc", mac_scc_dispatch);
+> 
+> I don't really care enough to send a temporary patch upstream since the 
+> serial port is presently only useful to those hacking on the kernel 
+> anyway.
 
-The VIA would be OK with that. Whether it would work or not would depend 
-on the SCC. That is, I don't know.
+I don't think that will really fix anything, since IRQ_AUTO_* interrupts
+aren't really blocked or ignored if you don't register them. They go
+directly into the CPU which doesn't have a true IRQ mask.
 
-You could also ifdef 0 the relevant code in via.c --
+	Brad Boyer
+	flar@allandria.com
 
-311                 request_irq(IRQ_AUTO_4, mac_scc_dispatch, IRQ_FLG_LOCK,
-312                                 "scc", mac_scc_dispatch);
-
-I don't really care enough to send a temporary patch upstream since the 
-serial port is presently only useful to those hacking on the kernel 
-anyway.
-
-Finn
