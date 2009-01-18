@@ -1,79 +1,63 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: [PATCH 3/3] m68k: section mismatch fixes: Atari SCSI
-Date: Sun, 18 Jan 2009 03:22:15 +0100 (CET)
-Message-ID: <alpine.DEB.1.00.0901180319130.9820@zirkon.biophys.uni-duesseldorf.de>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com>
- <20090114003245.GA4419@cynthia.pants.nu>
- <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
- <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
- <alpine.DEB.1.00.0901170354200.1528@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0901171258170.25319@anakin>
- <alpine.DEB.1.00.0901180302190.9820@zirkon.biophys.uni-duesseldorf.de>
+From: mike <localgost@gmail.com>
+Subject: Re: cirrusfb not working?
+Date: Sun, 18 Jan 2009 03:25:05 +0100
+Message-ID: <8259f0250901171825q3e7ef5b0oafdb1bcf1a7638f4@mail.gmail.com>
+References: <49706C81.7000905@agn.forthnet.gr>
+	 <8259f0250901161011t24eb0351l6b39739f0a20179@mail.gmail.com>
+	 <4971B340.2070604@agn.forthnet.gr>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:61963 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1752671AbZARCWR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 17 Jan 2009 21:22:17 -0500
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
- id <0KDN00200AL4GV00@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Sun, 18 Jan 2009 03:22:16 +0100 (MET)
-In-reply-to: <alpine.DEB.1.00.0901180302190.9820@zirkon.biophys.uni-duesseldorf.de>
+Received: from fg-out-1718.google.com ([72.14.220.152]:12320 "EHLO
+	fg-out-1718.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753344AbZARCZG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Jan 2009 21:25:06 -0500
+Received: by fg-out-1718.google.com with SMTP id 19so1076613fgg.17
+        for <linux-m68k@vger.kernel.org>; Sat, 17 Jan 2009 18:25:05 -0800 (PST)
+In-Reply-To: <4971B340.2070604@agn.forthnet.gr>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Emmanuel Vasilakis <evas@agn.forthnet.gr>
 Cc: linux-m68k@vger.kernel.org
 
-Part 3: Atari SCSI
+Hm, im out of ideas, you could try 2.8.28, i uploaded it to aminet a
+few days ago, but something tells me that wont make any difference. If
+that doesnt work, try 2.4, and if that works, holler.
 
-There's one remaining section mismatch that I cannot fix:
+-Mike
 
-WARNING: vmlinux.o(.text+0x69fc): Section mismatch in reference from the 
-function atari_stram_alloc() to the function .init.text:__alloc_bootmem_low()
-The function atari_stram_alloc() references
-the function __init __alloc_bootmem_low().
-This is often because atari_stram_alloc lacks a __init 
-annotation or the annotation of __alloc_bootmem_low is wrong.
-
-atari_stram_alloc() is needed after kernel init, and __alloc_bootmem_low is 
-never called after MMU init, so that seems harmless.
-
-commit 0937bf535329004b055dacdaf4d06fa424f716a2
-Author: Michael Schmitz <schmitz@xplor.waratah.dyndns.org>
-Date:   Fri Jan 2 23:44:01 2009 +0100
-
-    [m68k] Atari SCSI: add __init annotations to probe routines
-    
-    Signed-off-by: Michael Schmitz <schmitz@debian.org>
-
-diff --git a/drivers/scsi/atari_NCR5380.c b/drivers/scsi/atari_NCR5380.c
-index 00f944d..a3d5371 100644
---- a/drivers/scsi/atari_NCR5380.c
-+++ b/drivers/scsi/atari_NCR5380.c
-@@ -844,7 +844,7 @@ static char *lprint_Scsi_Cmnd(Scsi_Cmnd *cmd, char *pos, char *buffer, int lengt
-  *
-  */
- 
--static int NCR5380_init(struct Scsi_Host *instance, int flags)
-+static int __init NCR5380_init(struct Scsi_Host *instance, int flags)
- {
- 	int i;
- 	SETUP_HOSTDATA(instance);
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index d97ab66..03541e3 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -619,7 +619,7 @@ int atari_queue_command(Scsi_Cmnd *cmd, void (*done)(Scsi_Cmnd *))
- #endif
- 
- 
--int atari_scsi_detect(struct scsi_host_template *host)
-+int __init atari_scsi_detect(struct scsi_host_template *host)
- {
- 	static int called = 0;
- 	struct Scsi_Host *instance;
+2009/1/17 Emmanuel Vasilakis <evas@agn.forthnet.gr>:
+> Hi Mike,
+>
+> mike wrote:
+>>
+>> Try cirrusfb:640x480 or something
+>>
+>>
+>> Default video modes
+>> -------------------
+>> At the moment, there are two kernel command line arguments supported:
+>>
+>> mode:640x480
+>> mode:800x600
+>>        or
+>> mode:1024x768
+>>
+>> Full support for startup video modes (modedb) will be integrated soon.
+>>
+>
+> Did try those opts, and everything else I could think off. No go.
+>
+> Am I supposed to see the kernel booting in that resolution, or will it first
+> boot and switch to picasso when the cirrusfb module is loaded?
+>
+> My exact amiboot line is:
+>
+> 1> amiboot -k vmlinuz video=cirrusfb:640x480
+>
+> Thanks!
+>
+>
+>
