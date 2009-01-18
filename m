@@ -1,69 +1,63 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: mac68k serial
-Date: Sun, 18 Jan 2009 01:43:07 +0100 (CET)
-Message-ID: <alpine.DEB.1.00.0901180133220.8392@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: Falcon IDE breakage
+Date: Sun, 18 Jan 2009 01:58:07 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0901180144530.8392@zirkon.biophys.uni-duesseldorf.de>
 References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com>
  <20090114003245.GA4419@cynthia.pants.nu>
  <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
  <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au>
- <20090117082424.GA3651@cynthia.pants.nu>
+ <alpine.DEB.1.00.0901170354200.1528@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0901171258170.25319@anakin>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <20090117082424.GA3651@cynthia.pants.nu>
+Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:50141 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1752789AbZARA6J (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 17 Jan 2009 19:58:09 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KDN00J006OWX900@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Sun, 18 Jan 2009 01:58:08 +0100 (MET)
+In-reply-to: <Pine.LNX.4.64.0901171258170.25319@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Brad Boyer <flar@allandria.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, flameman mayer <flamemaniii@gmail.com>, linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>, linux-m68k@vger.kernel.org
 
-> > On Sat, 17 Jan 2009, Michael Schmitz wrote:
-> > > Can't you add an empty SCC dispatch that just returns, or will that 
-> > > cause an interrupt storm?
-> > 
-> > The VIA would be OK with that. Whether it would work or not would depend 
-> > on the SCC. That is, I don't know.
+> On Sat, 17 Jan 2009, Michael Schmitz wrote:
+> > your commit 5b31f855f10d0053e738baa6d91fb6a3fad35119 (introduction of IDE lock 
+> > helpers) breaks Atari Falcon IDE on the first request going out to the drive, if 
+> > I remove the request_irq() call from ide-probe.c (as it should be).
 > 
-> The SCC IRQ isn't a VIA interrupt as far as I can tell. It looks like
+> I assume this is on real hardware, as I didn't notice on ARAnyM?
 
-If it's not on the same level as one of the VIAs the SCC definitely would be 
-handling the exception protocol itself. But then, it should have been possible 
-to specify an interrupt vector for each side - ISTR someone telling me that's 
-not possible because of how it is hooked up. 
+No, this was on ARAnyM (my git tree had the IDE irq request #ifdef'ed out for a 
+while now). I'm sure it would work the same on hardware. 
 
-> only models with OSS (the IIfx) or PSC (Q660AV + Q840AV) have a way
-> to block the SCC IRQ. The comments in mac_scc_dispatch specifically
-> say that the SCC causes interrupt storms if we ignore it.
+Did you still get the IDE driver to work after taking out request_irq in 
+ide-probe?
 
-It should still be possible to shut down the SCC - after all, we have the base 
-address in the bootinfo? Best do that in the early arch init code before 
-interrupts are turned on. 
+diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
+index 0ccbb44..1571ab7 100644
+--- a/drivers/ide/ide-probe.c
++++ b/drivers/ide/ide-probe.c
+@@ -968,8 +968,10 @@ static int init_irq (ide_hwif_t *hwif)
+        if (io_ports->ctl_addr)
+                hwif->tp_ops->set_irq(hwif, 1);
+ 
++#if !defined(CONFIG_BLK_DEV_FALCON_IDE) && !defined(CONFIG_BLK_DEV_FALCON_IDE_M
+        if (request_irq(hwif->irq, &ide_intr, sa, hwif->name, hwif))
+                goto out_up;
++#endif
+ 
+        if (!hwif->rqsize) {
+                if ((hwif->host_flags & IDE_HFLAG_NO_LBA48) ||
 
-> We really ought to redesign the interrupt handling for macs so it's
-> obvious how the interrupts wander through all the layers. There is
-> all that logic in the common m68k interrupt handling to register
-> different interrupt controllers and the mac code just registers one
-> giant synthetic interrupt source rather than having each driver
-> register directly with the core for VIA, OSS, PSC, etc.
-> 
-> > You could also ifdef 0 the relevant code in via.c --
-> > 
-> > 311                 request_irq(IRQ_AUTO_4, mac_scc_dispatch, IRQ_FLG_LOCK,
-> > 312                                 "scc", mac_scc_dispatch);
-> > 
-> > I don't really care enough to send a temporary patch upstream since the 
-> > serial port is presently only useful to those hacking on the kernel 
-> > anyway.
-> 
-> I don't think that will really fix anything, since IRQ_AUTO_* interrupts
-> aren't really blocked or ignored if you don't register them. They go
-> directly into the CPU which doesn't have a true IRQ mask.
-
-Right - not registering will only invoke the spurious interrupt handler. The 
-interrupt has to be disabled in the SCC to prevent the interrupt storm. 
-
-Can we just use boilerplate SCC init code on all Mac models for this, or does 
-OSS/PSC/IOP make life more interesting there? 
+If so, do you perchance have two IDE drivers defined in the ARAnyM config file?
 
 	Michael
+
