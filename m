@@ -1,79 +1,57 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: mac68k serial
-Date: Sat, 17 Jan 2009 21:18:29 -0800
-Message-ID: <20090118051829.GB15876@cynthia.pants.nu>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com> <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au> <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de> <Pine.LNX.4.64.0901171736060.19123@loopy.telegraphics.com.au> <20090117082424.GA3651@cynthia.pants.nu> <alpine.DEB.1.00.0901180133220.8392@zirkon.biophys.uni-duesseldorf.de>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: Re: Falcon IDE breakage [patch]
+Date: Mon, 19 Jan 2009 13:24:58 +0100
+Message-ID: <200901191324.59086.bzolnier@gmail.com>
+References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com> <Pine.LNX.4.64.0901171258170.25319@anakin>  <alpine.DEB.1.00.0901180219340.9820@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-bw0-f21.google.com ([209.85.218.21]:50824 "EHLO
+	mail-bw0-f21.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759967AbZASNAx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Jan 2009 08:00:53 -0500
+Received: by bwz14 with SMTP id 14so8303587bwz.13
+        for <linux-m68k@vger.kernel.org>; Mon, 19 Jan 2009 05:00:50 -0800 (PST)
+In-Reply-To: <alpine.DEB.1.00.0901180219340.9820@zirkon.biophys.uni-duesseldorf.de>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.1.00.0901180133220.8392@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Finn Thain <fthain@telegraphics.com.au>, flameman mayer <flamemaniii@gmail.com>, linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-On Sun, Jan 18, 2009 at 01:43:07AM +0100, Michael Schmitz wrote:
-> > The SCC IRQ isn't a VIA interrupt as far as I can tell. It looks like
-> 
-> If it's not on the same level as one of the VIAs the SCC definitely would be 
-> handling the exception protocol itself. But then, it should have been
-> possible to specify an interrupt vector for each side - ISTR someone telling
-> me that's not possible because of how it is hooked up. 
-
-The standard way it is connected is as follows:
-
-VIA1 IRQ -> bus logic -> CPU IRQ 1
-VIA2 IRQ -> bus logic -> CPU IRQ 2
-SCC [all IRQ outputs together] -> bus logic -> CPU IRQ 4
-
-Apple was really sloppy with their IRQ usage back in the old days,
-especially on the early Macs that we don't support. On the original
-Macintosh model (and up to the SE), it was like this:
-
-VIA IRQ output -> /IPL0 line on CPU
-SCC IRQ output -> /IPL1 line on CPU
-"Interrupt Switch" -> /IPL2 line on CPU
-
-This means that they don't even decode properly such that if you
-have both chips assert an interrupt at the same time, you end up
-with the addition of them. There was a PAL that would force /IPL0
-high when /IPL1 went low, but there was enough time for the CPU
-to see both and trigger the wrong interrupt. The Mac II added the
-GLUE chip that handled the IRQ interface among other things. The
-IIfx is the odd one in that it is the only 68k Mac that really
-has a single top-level interrupt controller that mediates all
-IRQ lines. The GLUE chip is not programmable in any way, which
-means that an SCC interrupt will always get to the CPU on anything
-but the IIfx and AV Macs (or the Q900/950 if the IOP chip is running).
-
-Apple was famous for these kinds of hacks to reduce the chip count
-of the Macintosh (the PWM sound was another one).
-
-> It should still be possible to shut down the SCC - after all, we have the
-> base address in the bootinfo? Best do that in the early arch init code before 
-> interrupts are turned on. 
-
-Yes, we do have the SCC base in the bootinfo. However, shutting off the
-chip would break the serial debug output. I know I've used that from
-time to time and would miss it.
-
-> Can we just use boilerplate SCC init code on all Mac models for this, or does 
-> OSS/PSC/IOP make life more interesting there? 
-
-The IOP is the only thing that makes any difference here, although the
-only model with OSS is also one of the models with IOPs (Mac IIfx). We
-already have the code in iop.c to put the SCC IOP into bypass mode. The
-OSS and PSC just change how it shows up in the IRQ range. For OSS,
-we make it show up as IRQ 4 but it can be masked in the OSS. With PSC, the
-SCC interrupts show up through the PSC. In fact, there are apparently
-two different SCC interrupt lines in this case. The code found in
-m68k/mac/macints.c specifically lists two bits for SCC interrupts
-with one labelled as channel A and one for channel B on PSC systems.
-These two interrupts on the PSC are the same numbers that the
-mac_scc_dispatch code generates per channel so that the actual
-SCC driver could register these two numbers and have it work everywhere.
-
-	Brad Boyer
-	flar@allandria.com
-
+T24gU3VuZGF5IDE4IEphbnVhcnkgMjAwOSwgTWljaGFlbCBTY2htaXR6IHdyb3RlOgo+IEhpLAo+
+IAo+ID4gPiB5b3VyIGNvbW1pdCA1YjMxZjg1NWYxMGQwMDUzZTczOGJhYTZkOTFmYjZhM2ZhZDM1
+MTE5IChpbnRyb2R1Y3Rpb24gb2YgSURFIGxvY2sgCj4gPiA+IGhlbHBlcnMpIGJyZWFrcyBBdGFy
+aSBGYWxjb24gSURFIG9uIHRoZSBmaXJzdCByZXF1ZXN0IGdvaW5nIG91dCB0byB0aGUgZHJpdmUs
+IGlmIAo+ID4gPiBJIHJlbW92ZSB0aGUgcmVxdWVzdF9pcnEoKSBjYWxsIGZyb20gaWRlLXByb2Jl
+LmMgKGFzIGl0IHNob3VsZCBiZSkuCj4gPiAKPiA+IEkgYXNzdW1lIHRoaXMgaXMgb24gcmVhbCBo
+YXJkd2FyZSwgYXMgSSBkaWRuJ3Qgbm90aWNlIG9uIEFSQW55TT8KPiAKPiBGb2xsb3d1cDogbmV2
+ZXIgbWluZCwgSSBmb3VuZCBvdXQgdGhhdCB0aGlzIHBhdGNoIGZpeGVzIHRoZSBwcm9ibGVtIGZv
+ciBtZToKPiAoTkI6IHN0aWxsIG9uIEFSQW55TSwgaGF2aW5nIHR3byBJREUgZHJpdmVycyBkaWRu
+J3QgbWF0dGVyLCBhbmQgSSBzdGlsbCBoYXZlIHRvIAo+IHRlc3QgdGhlIGludGVyYWN0aW9uIG9m
+IG5ldyBJREUgbG9ja2luZyB3aXRoIFNDU0kpCgpJIGFwcGxpZWQgeW91ciBwYXRjaCwgdGhhbmtz
+LgoKPiBBbnkgb3RoZXIgc2lkZSBlZmZlY3RzIG9mIElERV9IRkxBR19TRVJJQUxJWkUgPz8KCk5v
+cGUuCgo+IChBY3R1YWxseSBJIHJlYWxpemUgSSBjb3VsZCBoYXZlIHN0dWNrIHRoZSBmbGFnIGlu
+IAo+IGZhbGNvbmlkZV9wb3J0X2luZm8uaG9zdF9mbGFncyBpbnN0ZWFkIC0gd29ya3MganVzdCBh
+cyB3ZWxsLiBQaWNrIHdoYXRldmVyIHN1aXRzIAo+IHRoZSBJREUgZ3V5cyBiZXN0KQoKT0ssIEkg
+bWFkZSB0aGlzIGZpeHVwIHdoaWxlIG1lcmdpbmcgdGhlIHBhdGNoOgoKRnJvbTogTWljaGFlbCBT
+Y2htaXR6IDxzY2htaXR6QGJpb3BoeXMudW5pLWR1ZXNzZWxkb3JmLmRlPgpTdWJqZWN0OiBpZGU6
+IGZpeCBGYWxjb24gSURFIGJyZWFrYWdlCgpbbTY4a10gRmFsY29uIElERTogYWx3YXlzIHNlcmlh
+bGl6ZSwgaW4gb3JkZXIgdG8gZm9yY2UgZXhlY3V0aW9uIG9mCiAgICAgICBpZGVfZ2V0X2xvY2so
+KSBhbmQgZnJpZW5kcy4KClNpZ25lZC1vZmYtQnk6IE1pY2hhZWwgU2NobWl0eiA8c2NobWl0ekBk
+ZWJpYW4ub3JnPgpDYzogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4K
+W2JhcnQ6IHNldCBmbGFnIGluIGZhbGNvbmlkZV9wb3J0X2luZm8gaW5zdGVhZCBvZiBmYWxjb25p
+ZGVfaW5pdCgpXQpTaWduZWQtb2ZmLWJ5OiBCYXJ0bG9taWVqIFpvbG5pZXJraWV3aWN6IDxiem9s
+bmllckBnbWFpbC5jb20+Ci0tLQogZHJpdmVycy9pZGUvZmFsY29uaWRlLmMgfCAgICAyICstCiAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCkluZGV4OiBiL2Ry
+aXZlcnMvaWRlL2ZhbGNvbmlkZS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGEvZHJpdmVycy9pZGUvZmFsY29u
+aWRlLmMKKysrIGIvZHJpdmVycy9pZGUvZmFsY29uaWRlLmMKQEAgLTgyLDcgKzgyLDcgQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBpZGVfdHBfb3BzIGZhbGNvbmlkZQogCiBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IGlkZV9wb3J0X2luZm8gZmFsY29uaWRlX3BvcnRfaW5mbyA9IHsKIAkudHBfb3BzCQkJPSAm
+ZmFsY29uaWRlX3RwX29wcywKLQkuaG9zdF9mbGFncwkJPSBJREVfSEZMQUdfTk9fRE1BLAorCS5o
+b3N0X2ZsYWdzCQk9IElERV9IRkxBR19OT19ETUEgfCBJREVfSEZMQUdfU0VSSUFMSVpFLAogfTsK
+IAogc3RhdGljIHZvaWQgX19pbml0IGZhbGNvbmlkZV9zZXR1cF9wb3J0cyhod19yZWdzX3QgKmh3
+KQoACg==
