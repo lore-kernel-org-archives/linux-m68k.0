@@ -1,32 +1,40 @@
-From: "David D. Kilzer" <ddkilzer@kilzer.net>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Subject: Re: [PATCH 1/4] ide: remove IDE_ARCH_INTR
-Date: Tue, 27 Jan 2009 11:42:54 -0800 (PST)
-Message-ID: <393174.25588.qm@web52403.mail.re2.yahoo.com>
-References: <20090127180246.28089.2981.sendpatchset@localhost.localdomain> <20090127180252.28089.70513.sendpatchset@localhost.localdomain>
-Reply-To: "David D. Kilzer" <ddkilzer@kilzer.net>
+Date: Thu, 29 Jan 2009 05:22:48 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0901290521300.7218@zirkon.biophys.uni-duesseldorf.de>
+References: <20090127180246.28089.2981.sendpatchset@localhost.localdomain>
+ <20090127180252.28089.70513.sendpatchset@localhost.localdomain>
+ <393174.25588.qm@web52403.mail.re2.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from web52403.mail.re2.yahoo.com ([206.190.48.166]:20169 "HELO
-	web52403.mail.re2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1755879AbZA0Tm4 (ORCPT
+Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:36584 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1753959AbZA2EWv (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 27 Jan 2009 14:42:56 -0500
+	Wed, 28 Jan 2009 23:22:51 -0500
+In-reply-to: <393174.25588.qm@web52403.mail.re2.yahoo.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-ide@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>, linux-m68k@vger.kernel.org
+To: "David D. Kilzer" <ddkilzer@kilzer.net>
+Cc: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>, linux-ide@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
-[Apologies for resending. The mailing lists on vger freaked out over MIME content in the last message.]
+Hi,
 
--            (void)ide_ack_intr(hwif);
-+            if (hwif->ack_intr(hwif))
-+                hwif->ack_intr(hwif);
+> 
+> -            (void)ide_ack_intr(hwif);
+> +            if (hwif->ack_intr(hwif))
+> +                hwif->ack_intr(hwif);
+> 
+> Shouldn't that be:
+> 
+> -            (void)ide_ack_intr(hwif);
+> +            if (hwif->ack_intr)
+> +                hwif->ack_intr(hwif);
 
-Shouldn't that be:
+Seconded. No point in ack'ing the int twice (not to mention the other side 
+effects).
 
--            (void)ide_ack_intr(hwif);
-+            if (hwif->ack_intr)
-+                hwif->ack_intr(hwif);
+	Michael
 
-Dave
