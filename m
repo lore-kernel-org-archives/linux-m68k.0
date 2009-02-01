@@ -1,57 +1,54 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/3] m68k: section mismatch fixes: Atari SCSI
-Date: Fri, 30 Jan 2009 19:38:20 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0901301937550.23582@anakin>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 1/3] m68k: section mismatch fixes: EtherNAT
+Date: Sun, 01 Feb 2009 01:14:19 +0100 (CET)
+Message-ID: <alpine.DEB.1.00.0902010110530.2001@zirkon.biophys.uni-duesseldorf.de>
 References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com>
- <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
+ <20090114003245.GA4419@cynthia.pants.nu>
+ <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
  <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
  <alpine.DEB.1.00.0901170354200.1528@zirkon.biophys.uni-duesseldorf.de>
  <Pine.LNX.4.64.0901171258170.25319@anakin>
  <alpine.DEB.1.00.0901180302190.9820@zirkon.biophys.uni-duesseldorf.de>
- <alpine.DEB.1.00.0901180319130.9820@zirkon.biophys.uni-duesseldorf.de>
+ <Pine.LNX.4.64.0901301934430.23582@anakin>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from edna.telenet-ops.be ([195.130.132.58]:59704 "EHLO
-	edna.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752288AbZA3SiW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 30 Jan 2009 13:38:22 -0500
-In-Reply-To: <alpine.DEB.1.00.0901180319130.9820@zirkon.biophys.uni-duesseldorf.de>
+Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:32892 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751797AbZBAAOW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 31 Jan 2009 19:14:22 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KED003001ZVF100@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Sun, 01 Feb 2009 01:14:20 +0100 (MET)
+In-reply-to: <Pine.LNX.4.64.0901301934430.23582@anakin>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
-On Sun, 18 Jan 2009, Michael Schmitz wrote:
-> There's one remaining section mismatch that I cannot fix:
+Hi Geert,
+
+> > -static int smc_drv_probe(struct platform_device *pdev)
+> > +static int __init smc_drv_probe(struct platform_device *pdev)
+>               ^^^^^^
+> >  {
+> >  	struct smc91x_platdata *pd = pdev->dev.platform_data;
+> >  	struct smc_local *lp;
 > 
-> WARNING: vmlinux.o(.text+0x69fc): Section mismatch in reference from the 
-> function atari_stram_alloc() to the function .init.text:__alloc_bootmem_low()
-> The function atari_stram_alloc() references
-> the function __init __alloc_bootmem_low().
-> This is often because atari_stram_alloc lacks a __init 
-> annotation or the annotation of __alloc_bootmem_low is wrong.
-> 
-> atari_stram_alloc() is needed after kernel init, and __alloc_bootmem_low is 
-> never called after MMU init, so that seems harmless.
+> smc_drv_probe() should be marked __devinit, not __init.
+> And smc_drv_remove() should be marked __devexit.
 
-Yep, I went through the same logic before...
+Yep, only saw that after sending the patch. Do you want to fix that, or shall I 
+send a new patch? (My git tree is in a rough state after I've started to play 
+with switching Atari SCSI to NCR5380.c, or at least a fresh clone of that!)
 
-> commit 0937bf535329004b055dacdaf4d06fa424f716a2
-> Author: Michael Schmitz <schmitz@xplor.waratah.dyndns.org>
-> Date:   Fri Jan 2 23:44:01 2009 +0100
-> 
->     [m68k] Atari SCSI: add __init annotations to probe routines
+The DMA sound section mismatch I'll double check.
 
-OK, thx.
+Cheers,
 
-Gr{oetje,eeting}s,
+	Michael
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
