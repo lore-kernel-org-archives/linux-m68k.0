@@ -1,30 +1,116 @@
-From: "David D. Kilzer" <ddkilzer@yahoo.com>
-Subject: Re: [PATCH 1/3] m68k: section mismatch fixes: EtherNAT
-Date: Sun, 1 Feb 2009 05:09:31 -0800 (PST)
-Message-ID: <357469.86134.qm@web52404.mail.re2.yahoo.com>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com> <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au> <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de> <alpine.DEB.1.00.0901170354200.1528@zirkon.biophys.uni-duesseldorf.de> <Pine.LNX.4.64.0901171258170.25319@anakin> <alpine.DEB.1.00.0901180302190.9820@zirkon.biophys.uni-duesseldorf.de> <Pine.LNX.4.64.0901301934430.23582@anakin> <alpine.DEB.1.00.0902010110530.2001@zirkon.biophys.uni-duesseldorf.de>
-Reply-To: "David D. Kilzer" <ddkilzer@yahoo.com>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: Re: [PATCH 1/4] ide: remove IDE_ARCH_INTR
+Date: Sun, 1 Feb 2009 16:53:42 +0100
+Message-ID: <200902011653.42527.bzolnier@gmail.com>
+References: <20090127180246.28089.2981.sendpatchset@localhost.localdomain> <393174.25588.qm@web52403.mail.re2.yahoo.com>  <alpine.DEB.1.00.0901290521300.7218@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from web52404.mail.re2.yahoo.com ([206.190.48.167]:32052 "HELO
-	web52404.mail.re2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1751219AbZBANQN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Feb 2009 08:16:13 -0500
+Received: from fg-out-1718.google.com ([72.14.220.158]:51302 "EHLO
+	fg-out-1718.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752480AbZBARYM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Feb 2009 12:24:12 -0500
+In-Reply-To: <alpine.DEB.1.00.0901290521300.7218@zirkon.biophys.uni-duesseldorf.de>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
-
-Michael Schmitz <schmitz@biophys.uni-duesseldorf.de> wrote:
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: "David D. Kilzer" <ddkilzer@kilzer.net>, linux-ide@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
 
-> (My git tree is in a rough state after I've started to play 
-> with switching Atari SCSI to NCR5380.c, or at least a fresh
-> clone of that!)
+On Thursday 29 January 2009, Michael Schmitz wrote:
+> Hi,
+> 
+> > 
+> > -            (void)ide_ack_intr(hwif);
+> > +            if (hwif->ack_intr(hwif))
+> > +                hwif->ack_intr(hwif);
+> > 
+> > Shouldn't that be:
+> > 
+> > -            (void)ide_ack_intr(hwif);
+> > +            if (hwif->ack_intr)
+> > +                hwif->ack_intr(hwif);
+> 
+> Seconded. No point in ack'ing the int twice (not to mention the other side 
+> effects).
 
+Brown paper bag time and another proof that having helpful people looking
+over your patches really matters...
 
-Have you tried "git stash" yet?
+Thanks guys, I fixed it in v2.
 
-Dave
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [PATCH] ide: remove IDE_ARCH_INTR (v2)
+
+This micro-optimization is not worth it.  Just always check for
+existence of ->ack_intr method in ide_intr() and ide_timer_expiry().
+
+v2:
+Fix brown-paper-bag bug spotted by David D. Kilzer.
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitz@debian.org>
+Cc: "David D. Kilzer" <ddkilzer@kilzer.net>
+Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+---
+ drivers/ide/ide-io.c   |    5 +++--
+ include/asm-m68k/ide.h |    3 ---
+ include/linux/ide.h    |    5 -----
+ 3 files changed, 3 insertions(+), 10 deletions(-)
+
+Index: b/drivers/ide/ide-io.c
+===================================================================
+--- a/drivers/ide/ide-io.c
++++ b/drivers/ide/ide-io.c
+@@ -736,7 +736,8 @@ void ide_timer_expiry (unsigned long dat
+ 		} else if (drive_is_ready(drive)) {
+ 			if (drive->waiting_for_dma)
+ 				hwif->dma_ops->dma_lost_irq(drive);
+-			(void)ide_ack_intr(hwif);
++			if (hwif->ack_intr)
++				hwif->ack_intr(hwif);
+ 			printk(KERN_WARNING "%s: lost interrupt\n",
+ 				drive->name);
+ 			startstop = handler(drive);
+@@ -851,7 +852,7 @@ irqreturn_t ide_intr (int irq, void *dev
+ 
+ 	spin_lock_irqsave(&hwif->lock, flags);
+ 
+-	if (!ide_ack_intr(hwif))
++	if (hwif->ack_intr && hwif->ack_intr(hwif) == 0)
+ 		goto out;
+ 
+ 	handler = hwif->handler;
+Index: b/include/asm-m68k/ide.h
+===================================================================
+--- a/include/asm-m68k/ide.h
++++ b/include/asm-m68k/ide.h
+@@ -123,8 +123,5 @@ ide_get_lock(irq_handler_t handler, void
+ }
+ #endif /* CONFIG_BLK_DEV_FALCON_IDE */
+ 
+-#define IDE_ARCH_ACK_INTR
+-#define ide_ack_intr(hwif)	((hwif)->ack_intr ? (hwif)->ack_intr(hwif) : 1)
+-
+ #endif /* __KERNEL__ */
+ #endif /* _M68K_IDE_H */
+Index: b/include/linux/ide.h
+===================================================================
+--- a/include/linux/ide.h
++++ b/include/linux/ide.h
+@@ -202,11 +202,6 @@ static inline void ide_std_init_ports(hw
+ 
+ #define MAX_HWIFS	10
+ 
+-/* Currently only m68k, apus and m8xx need it */
+-#ifndef IDE_ARCH_ACK_INTR
+-# define ide_ack_intr(hwif) (1)
+-#endif
+-
+ /* Currently only Atari needs it */
+ #ifndef IDE_ARCH_LOCK
+ # define ide_release_lock()			do {} while (0)
 
