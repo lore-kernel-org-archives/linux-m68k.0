@@ -1,116 +1,49 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: Re: [PATCH 1/4] ide: remove IDE_ARCH_INTR
-Date: Sun, 1 Feb 2009 16:53:42 +0100
-Message-ID: <200902011653.42527.bzolnier@gmail.com>
-References: <20090127180246.28089.2981.sendpatchset@localhost.localdomain> <393174.25588.qm@web52403.mail.re2.yahoo.com>  <alpine.DEB.1.00.0901290521300.7218@zirkon.biophys.uni-duesseldorf.de>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [uClinux-dev] [PATCH] m68k: Unify arch/m68k/include/asm/unistd.h
+Date: Sun, 1 Feb 2009 23:39:11 +0100
+Message-ID: <20090201223911.GA30935@uranus.ravnborg.org>
+References: <Pine.LNX.4.64.0902011114410.30504@anakin> <498599A6.7080202@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fg-out-1718.google.com ([72.14.220.158]:51302 "EHLO
-	fg-out-1718.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752480AbZBARYM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Feb 2009 12:24:12 -0500
-In-Reply-To: <alpine.DEB.1.00.0901290521300.7218@zirkon.biophys.uni-duesseldorf.de>
+Received: from pfepb.post.tele.dk ([195.41.46.236]:34885 "EHLO
+	pfepb.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752410AbZBAWh2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Feb 2009 17:37:28 -0500
 Content-Disposition: inline
+In-Reply-To: <498599A6.7080202@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: "David D. Kilzer" <ddkilzer@kilzer.net>, linux-ide@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-
-On Thursday 29 January 2009, Michael Schmitz wrote:
-> Hi,
+On Sun, Feb 01, 2009 at 10:46:30PM +1000, Greg Ungerer wrote:
+> Hi Geert,
 > 
-> > 
-> > -            (void)ide_ack_intr(hwif);
-> > +            if (hwif->ack_intr(hwif))
-> > +                hwif->ack_intr(hwif);
-> > 
-> > Shouldn't that be:
-> > 
-> > -            (void)ide_ack_intr(hwif);
-> > +            if (hwif->ack_intr)
-> > +                hwif->ack_intr(hwif);
+> Geert Uytterhoeven wrote:
+> >>From b708bab9dbc93bc80bd06c9222ab34530736f737 Mon Sep 17 00:00:00 2001
+> >From: Geert Uytterhoeven <geert@linux-m68k.org>
+> >Date: Thu, 29 Jan 2009 21:21:40 +0100
+> >Subject: [PATCH] m68k: Unify arch/m68k/include/asm/unistd.h
+> >
+> >arch/m68k/include/asm/unistd_{no,mm}.h are identical, except for whitespace
+> >differences, so unify them.
+> >
+> >Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >---
 > 
-> Seconded. No point in ack'ing the int twice (not to mention the other side 
-> effects).
+> Looks good to me.
+> 
+> I started down the track of merging similar headers on Friday too.
+> 
+> So far I have about 12 or so for review at in the git tree below.
+> (One of which is exactly this unistd.h merge :-)  Still plenty of
+> easy merges amongst the other files too...
 
-Brown paper bag time and another proof that having helpful people looking
-over your patches really matters...
+Glad to see this. When we merged sparc we likewise identified
+more that was relatively easy to merge than at least I initially anticipated.
 
-Thanks guys, I fixed it in v2.
+I am not able to help at least not the next month or so.
+After that I hope to be able to have mroe Linux time again.
 
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: [PATCH] ide: remove IDE_ARCH_INTR (v2)
-
-This micro-optimization is not worth it.  Just always check for
-existence of ->ack_intr method in ide_intr() and ide_timer_expiry().
-
-v2:
-Fix brown-paper-bag bug spotted by David D. Kilzer.
-
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@debian.org>
-Cc: "David D. Kilzer" <ddkilzer@kilzer.net>
-Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
----
- drivers/ide/ide-io.c   |    5 +++--
- include/asm-m68k/ide.h |    3 ---
- include/linux/ide.h    |    5 -----
- 3 files changed, 3 insertions(+), 10 deletions(-)
-
-Index: b/drivers/ide/ide-io.c
-===================================================================
---- a/drivers/ide/ide-io.c
-+++ b/drivers/ide/ide-io.c
-@@ -736,7 +736,8 @@ void ide_timer_expiry (unsigned long dat
- 		} else if (drive_is_ready(drive)) {
- 			if (drive->waiting_for_dma)
- 				hwif->dma_ops->dma_lost_irq(drive);
--			(void)ide_ack_intr(hwif);
-+			if (hwif->ack_intr)
-+				hwif->ack_intr(hwif);
- 			printk(KERN_WARNING "%s: lost interrupt\n",
- 				drive->name);
- 			startstop = handler(drive);
-@@ -851,7 +852,7 @@ irqreturn_t ide_intr (int irq, void *dev
- 
- 	spin_lock_irqsave(&hwif->lock, flags);
- 
--	if (!ide_ack_intr(hwif))
-+	if (hwif->ack_intr && hwif->ack_intr(hwif) == 0)
- 		goto out;
- 
- 	handler = hwif->handler;
-Index: b/include/asm-m68k/ide.h
-===================================================================
---- a/include/asm-m68k/ide.h
-+++ b/include/asm-m68k/ide.h
-@@ -123,8 +123,5 @@ ide_get_lock(irq_handler_t handler, void
- }
- #endif /* CONFIG_BLK_DEV_FALCON_IDE */
- 
--#define IDE_ARCH_ACK_INTR
--#define ide_ack_intr(hwif)	((hwif)->ack_intr ? (hwif)->ack_intr(hwif) : 1)
--
- #endif /* __KERNEL__ */
- #endif /* _M68K_IDE_H */
-Index: b/include/linux/ide.h
-===================================================================
---- a/include/linux/ide.h
-+++ b/include/linux/ide.h
-@@ -202,11 +202,6 @@ static inline void ide_std_init_ports(hw
- 
- #define MAX_HWIFS	10
- 
--/* Currently only m68k, apus and m8xx need it */
--#ifndef IDE_ARCH_ACK_INTR
--# define ide_ack_intr(hwif) (1)
--#endif
--
- /* Currently only Atari needs it */
- #ifndef IDE_ARCH_LOCK
- # define ide_release_lock()			do {} while (0)
-
+	Sam
