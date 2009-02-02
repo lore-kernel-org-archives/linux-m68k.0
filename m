@@ -1,52 +1,60 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uClinux-dev] [PATCH] m68k: Unify arch/m68k/include/asm/unistd.h
-Date: Mon, 2 Feb 2009 22:46:28 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0902022245400.15898@anakin>
-References: <Pine.LNX.4.64.0902011114410.30504@anakin> <498599A6.7080202@snapgear.com>
+Subject: Re: [PATCH] m68k: Unify arch/m68k/include/asm/unistd.h
+Date: Mon, 2 Feb 2009 22:47:20 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0902022246320.15898@anakin>
+References: <Pine.LNX.4.64.0902011114410.30504@anakin>
+	<498599A6.7080202@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from harold.telenet-ops.be ([195.130.133.65]:60071 "EHLO
-	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754133AbZBBVqg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Feb 2009 16:46:36 -0500
+Return-path: <uclinux-dev-bounces@uclinux.org>
 In-Reply-To: <498599A6.7080202@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Sam Ravnborg <sam@ravnborg.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>
+List-Id: linux-m68k@vger.kernel.org
 
 On Sun, 1 Feb 2009, Greg Ungerer wrote:
-> Geert Uytterhoeven wrote:
->       m68k: use mmu scatterlist.h for non-mmu setups as well
+>       m68k: use non-mmu version of unaligned.h for all m68k
 
-A small cleanup:
+And another one. The rest looks OK.
 
->From bb3640a02d427175006f8d0c49311bf7a2290dd0 Mon Sep 17 00:00:00 2001
+>From f94c9409356de883fd343cc7c0f25dd955bcad42 Mon Sep 17 00:00:00 2001
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 2 Feb 2009 22:14:23 +0100
-Subject: [PATCH] m68k: Use dma_addr_t for scatterlist.dma_address
-
-dma_addr_t (as was used by m68knommu) is more correct than u32.
+Date: Mon, 2 Feb 2009 22:12:36 +0100
+Subject: [PATCH] m68k: Restore correct include guards for <asm/unaligned.h>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/scatterlist.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/m68k/include/asm/unaligned.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/scatterlist.h b/arch/m68k/include/asm/scatterlist.h
-index d3a7a0e..e27ad90 100644
---- a/arch/m68k/include/asm/scatterlist.h
-+++ b/arch/m68k/include/asm/scatterlist.h
-@@ -11,7 +11,7 @@ struct scatterlist {
- 	unsigned int offset;
- 	unsigned int length;
+diff --git a/arch/m68k/include/asm/unaligned.h b/arch/m68k/include/asm/unaligned.h
+index eb1ea4c..019caa7 100644
+--- a/arch/m68k/include/asm/unaligned.h
++++ b/arch/m68k/include/asm/unaligned.h
+@@ -1,5 +1,5 @@
+-#ifndef _ASM_M68KNOMMU_UNALIGNED_H
+-#define _ASM_M68KNOMMU_UNALIGNED_H
++#ifndef _ASM_M68K_UNALIGNED_H
++#define _ASM_M68K_UNALIGNED_H
  
--	__u32 dma_address;	/* A place to hang host-specific addresses at. */
-+	dma_addr_t dma_address;	/* A place to hang host-specific addresses at. */
- };
  
- /* This is bogus and should go away. */
+ #ifdef CONFIG_COLDFIRE
+@@ -22,4 +22,4 @@
+ 
+ #endif
+ 
+-#endif /* _ASM_M68KNOMMU_UNALIGNED_H */
++#endif /* _ASM_M68K_UNALIGNED_H */
 -- 
 1.5.6.5
 
@@ -61,3 +69,10 @@ Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
 							    -- Linus Torvalds
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
