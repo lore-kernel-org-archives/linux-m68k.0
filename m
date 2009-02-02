@@ -1,45 +1,55 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/3] m68k: section mismatch fixes: EtherNAT
-Date: Mon, 2 Feb 2009 08:43:04 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0902020841490.11930@anakin>
-References: <1b1304130901131349n6b67eac5j1c17f4791dd6718e@mail.gmail.com>
- <20090114003245.GA4419@cynthia.pants.nu> <Pine.LNX.4.64.0901141224080.16246@loopy.telegraphics.com.au>
- <alpine.DEB.1.00.0901170022250.27520@zirkon.biophys.uni-duesseldorf.de>
- <alpine.DEB.1.00.0901170354200.1528@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0901171258170.25319@anakin>
- <alpine.DEB.1.00.0901180302190.9820@zirkon.biophys.uni-duesseldorf.de>
- <Pine.LNX.4.64.0901301934430.23582@anakin>
- <alpine.DEB.1.00.0902010110530.2001@zirkon.biophys.uni-duesseldorf.de>
- <357469.86134.qm@web52404.mail.re2.yahoo.com>
- <alpine.DEB.1.00.0902020431040.19384@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: [uClinux-dev] [PATCH] m68k: Unify arch/m68k/include/asm/unistd.h
+Date: Mon, 2 Feb 2009 22:46:28 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0902022245400.15898@anakin>
+References: <Pine.LNX.4.64.0902011114410.30504@anakin> <498599A6.7080202@snapgear.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nelson.telenet-ops.be ([195.130.133.66]:59948 "EHLO
-	nelson.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752695AbZBBHnI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Feb 2009 02:43:08 -0500
-In-Reply-To: <alpine.DEB.1.00.0902020431040.19384@zirkon.biophys.uni-duesseldorf.de>
+Received: from harold.telenet-ops.be ([195.130.133.65]:60071 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754133AbZBBVqg (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Feb 2009 16:46:36 -0500
+In-Reply-To: <498599A6.7080202@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: "David D. Kilzer" <ddkilzer@yahoo.com>, linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Sam Ravnborg <sam@ravnborg.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-	Hi Michael,
+On Sun, 1 Feb 2009, Greg Ungerer wrote:
+> Geert Uytterhoeven wrote:
+>       m68k: use mmu scatterlist.h for non-mmu setups as well
 
-On Mon, 2 Feb 2009, Michael Schmitz wrote:
-> > > (My git tree is in a rough state after I've started to play 
-> > > with switching Atari SCSI to NCR5380.c, or at least a fresh
-> > > clone of that!)
-> > 
-> > Have you tried "git stash" yet?
-> 
-> Obviously not :-) Might be just what I need, thanks. So far I've been working on 
-> a local branch while pulling from Geert's master branch but that may be getting 
-> a bit tricky.
+A small cleanup:
 
-If you use `git pull --rebase' it will rebase your changes against my tree,
-and all patches you sent and I integrated will automatically be detected.
+>From bb3640a02d427175006f8d0c49311bf7a2290dd0 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 2 Feb 2009 22:14:23 +0100
+Subject: [PATCH] m68k: Use dma_addr_t for scatterlist.dma_address
+
+dma_addr_t (as was used by m68knommu) is more correct than u32.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/scatterlist.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/include/asm/scatterlist.h b/arch/m68k/include/asm/scatterlist.h
+index d3a7a0e..e27ad90 100644
+--- a/arch/m68k/include/asm/scatterlist.h
++++ b/arch/m68k/include/asm/scatterlist.h
+@@ -11,7 +11,7 @@ struct scatterlist {
+ 	unsigned int offset;
+ 	unsigned int length;
+ 
+-	__u32 dma_address;	/* A place to hang host-specific addresses at. */
++	dma_addr_t dma_address;	/* A place to hang host-specific addresses at. */
+ };
+ 
+ /* This is bogus and should go away. */
+-- 
+1.5.6.5
+
 
 Gr{oetje,eeting}s,
 
