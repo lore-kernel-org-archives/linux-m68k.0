@@ -1,54 +1,114 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Fix support for console port other than ttyS0 on mcf.c
-Date: Wed, 4 Feb 2009 22:00:58 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0902042200340.25136@anakin>
-References: <20090204201518.GH26064@csclub.uwaterloo.ca>
- <20090204202009.GI26064@csclub.uwaterloo.ca>
+Subject: Re: [PATCH 2/4] ide: remove IDE_ARCH_LOCK
+Date: Wed, 4 Feb 2009 22:27:36 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0902042226440.25136@anakin>
+References: <20090127180246.28089.2981.sendpatchset@localhost.localdomain>
+ <20090127180259.28089.56908.sendpatchset@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from winston.telenet-ops.be ([195.130.137.75]:56021 "EHLO
-	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756160AbZBDVBF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Feb 2009 16:01:05 -0500
-In-Reply-To: <20090204202009.GI26064@csclub.uwaterloo.ca>
+Received: from harold.telenet-ops.be ([195.130.133.65]:41815 "EHLO
+	harold.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751699AbZBDV1j (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Feb 2009 16:27:39 -0500
+In-Reply-To: <20090127180259.28089.56908.sendpatchset@localhost.localdomain>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, uClinux list <uclinux-dev@uclinux.org>
+To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Cc: linux-ide@vger.kernel.org, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
-On Wed, 4 Feb 2009, Lennart Sorensen wrote:
-> Perhaps CCing linux-m68k@lists.linux-m68k.org would be a good idea.
+On Tue, 27 Jan 2009, Bartlomiej Zolnierkiewicz wrote:
+> From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> Subject: [PATCH] ide: remove IDE_ARCH_LOCK
+> 
+> * Add ->{get,release}_lock methods to struct ide_port_info
+>   and struct ide_host.
+> 
+> * Convert core IDE code, m68k IDE code and falconide support to use
+>   ->{get,release}_lock methods instead of ide_{get,release}_lock().
+> 
+> * Remove IDE_ARCH_LOCK.
+> 
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michael Schmitz <schmitz@debian.org>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> ---
+> We may also consider adding struct ide_host_ops later...
+> 
+>  drivers/ide/falconide.c |   25 +++++++++++++++++++++++--
+>  drivers/ide/ide-io.c    |    8 ++++----
+>  drivers/ide/ide-probe.c |    2 ++
+>  include/asm-m68k/ide.h  |   36 ------------------------------------
+>  include/linux/ide.h     |   16 ++++++++++------
+>  5 files changed, 39 insertions(+), 48 deletions(-)
+> 
+> Index: b/drivers/ide/falconide.c
+> ===================================================================
+> --- a/drivers/ide/falconide.c
+> +++ b/drivers/ide/falconide.c
+> @@ -40,8 +40,27 @@
+>       *  which is shared between several drivers.
+>       */
+>  
+> -int falconide_intr_lock;
+> -EXPORT_SYMBOL(falconide_intr_lock);
+> +static int falconide_intr_lock;
+> +
+> +static void falconide_release_lock(void)
+> +{
+> +	if (falconide_intr_lock == 0) {
+> +		printk(KERN_ERR "%s: bug\n", __func__);
+> +		return;
+> +	}
+> +	falconide_intr_lock = 0;
+> +	stdma_release();
+> +}
+> +
+> +static void falconide_get_lock(irq_handler_t handler, void *data)
+> +{
+> +	if (falconide_intr_lock == 0) {
+> +		if (in_interrupt() > 0)
+> +			panic("Falcon IDE hasn't ST-DMA lock in interrupt");
+> +		stdma_lock(handler, data);
+> +		falconide_intr_lock = 1;
+> +	}
+> +}
+>  
+>  static void falconide_input_data(ide_drive_t *drive, struct request *rq,
+>  				 void *buf, unsigned int len)
+> @@ -81,6 +100,8 @@ static const struct ide_tp_ops falconide
+>  };
+>  
+>  static const struct ide_port_info falconide_port_info = {
+> +	.get_lock		= falconide_get_lock,
+> +	.release_lock		= falconide_release_lock,
+>  	.tp_ops			= &falconide_tp_ops,
+>  	.host_flags		= IDE_HFLAG_NO_DMA | IDE_HFLAG_SERIALIZE,
+>  };
 
-Thanks, but this is a uClinux driver.
+http://kisskb.ellerman.id.au/kisskb/buildresult/71775/
 
-> On Wed, Feb 04, 2009 at 03:15:18PM -0500, Lennart Sorensen wrote:
-> > Due to a case of backwards logic, mfc.c always makes the console port be
-> > ttyS0 even when you ask for another port.
-> > 
-> > This patch fixes this issue.
-> > 
-> > Only when the requested port is NOT in the range 0 to MAXPORTS-1 do we
-> > force it to be treated as if port 0 was requested.  Forcing the port to
-> > 0 when it is in fact in the range 0 to MAXPORTS is not helpful.
-> > 
-> > Tested with working console on ttyS2 on a 5271evb.
-> > 
-> > Signed-off-by: Len Sorensen <lsorense@csclub.uwaterloo.ca>
-> > 
-> > diff --git a/drivers/serial/mcf.c b/drivers/serial/mcf.c
-> > index 56841fe..0eefb07 100644
-> > --- a/drivers/serial/mcf.c
-> > +++ b/drivers/serial/mcf.c
-> > @@ -513,7 +513,7 @@ static int __init mcf_console_setup(struct console *co, char *options)
-> >         int parity = 'n';
-> >         int flow = 'n';
-> > 
-> > -       if ((co->index >= 0) && (co->index <= MCF_MAXPORTS))
-> > +       if ((co->index < 0) || (co->index >= MCF_MAXPORTS))
-> >                 co->index = 0;
-> >         port = &mcf_ports[co->index].port;
-> >         if (port->membase == 0)
+drivers/ide/falconide.c:157: error: implicit declaration of function 'ide_get_lock'
+drivers/ide/falconide.c:159: error: implicit declaration of function 'ide_release_lock'
+
+Seems like you forgot to update two callers?
+
+diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+index 1203796..bb0c86e 100644
+--- a/drivers/ide/falconide.c
++++ b/drivers/ide/falconide.c
+@@ -154,9 +154,9 @@ static int __init falconide_init(void)
+ 		goto err;
+ 	}
+ 
+-	ide_get_lock(NULL, NULL);
++	falconide_get_lock(NULL, NULL);
+ 	rc = ide_host_register(host, &falconide_port_info, hws);
+-	ide_release_lock();
++	falconide_release_lock();
+ 
+ 	if (rc)
+ 		goto err_free;
 
 Gr{oetje,eeting}s,
 
