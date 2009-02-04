@@ -1,75 +1,62 @@
-From: lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
-Subject: Re: Missing unistd_no.h and unistd_mm.h export on m68k
-Date: Wed, 4 Feb 2009 15:20:36 -0500
-Message-ID: <20090204202036.GJ26064__20008.5111814134$1233780545$gmane$org@csclub.uwaterloo.ca>
-References: <20090204181453.GE26064@csclub.uwaterloo.ca> <20090204183142.GF26064@csclub.uwaterloo.ca> <20090204184659.GG26064@csclub.uwaterloo.ca>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Fix support for console port other than ttyS0 on mcf.c
+Date: Wed, 4 Feb 2009 22:00:58 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0902042200340.25136@anakin>
+References: <20090204201518.GH26064@csclub.uwaterloo.ca>
+ <20090204202009.GI26064@csclub.uwaterloo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20090204184659.GG26064@csclub.uwaterloo.ca>
+Received: from winston.telenet-ops.be ([195.130.137.75]:56021 "EHLO
+	winston.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756160AbZBDVBF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Feb 2009 16:01:05 -0500
+In-Reply-To: <20090204202009.GI26064@csclub.uwaterloo.ca>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
+To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, uClinux list <uclinux-dev@uclinux.org>
 
-Add linux-m68k@lists.linux-m68k.org to CC
+On Wed, 4 Feb 2009, Lennart Sorensen wrote:
+> Perhaps CCing linux-m68k@lists.linux-m68k.org would be a good idea.
 
--- 
-Len Sorensen
+Thanks, but this is a uClinux driver.
 
-On Wed, Feb 04, 2009 at 01:46:59PM -0500, Lennart Sorensen wrote:
-> On Wed, Feb 04, 2009 at 01:31:42PM -0500, Lennart Sorensen wrote:
-> > On Wed, Feb 04, 2009 at 01:14:53PM -0500, Lennart Sorensen wrote:
-> > > make header_install fails to include the files unistd_no.h and
-> > > unistd_mm.h on m68k, while those two files are included by unistd.h.
-> > > 
-> > > This patch fixes this by adding these two files to the list of m68k
-> > > specific headers to export.
-> > > 
-> > > Signed-off-by: Len Sorensen <lsorense@csclub.uwaterloo.ca>
-> > > 
-> > > Signed
-> > > diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-> > > index 1a922fa..2bb4738 100644
-> > > --- a/arch/m68k/include/asm/Kbuild
-> > > +++ b/arch/m68k/include/asm/Kbuild
-> > > @@ -1,2 +1,2 @@
-> > >  include include/asm-generic/Kbuild.asm
-> > > -header-y += cachectl.h
-> > > +header-y += cachectl.h unistd_no.h unistd_mm.h
+> On Wed, Feb 04, 2009 at 03:15:18PM -0500, Lennart Sorensen wrote:
+> > Due to a case of backwards logic, mfc.c always makes the console port be
+> > ttyS0 even when you ask for another port.
 > > 
-> > Hmm, seems it is actually much worse than I thought.  All _no.h and
-> > _mm.h are being missed, making m68k compiles of things like uclibc
-> > rather broken.  Yuck.
-> 
-> So updated patch that makes uclibc actually compile for m68k.
-> 
-> -- 
-> Len Sorensen
-> 
-> 
-> 
-> make header_install fails to include the files *_no.h and
-> *_mm.h on m68k, while those files are included by the matching *.h
-> 
-> This patch fixes this by adding these missing files to the list of m68k
-> specific headers to export.  With this patch, uclibc compiles again.
-> 
-> Signed-off-by: Len Sorensen <lsorense@csclub.uwaterloo.ca>
-> 
-> diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-> index 1a922fa..c69926c 100644
-> --- a/arch/m68k/include/asm/Kbuild
-> +++ b/arch/m68k/include/asm/Kbuild
-> @@ -1,2 +1,2 @@
->  include include/asm-generic/Kbuild.asm
-> -header-y += cachectl.h
-> +header-y += cachectl.h atomic_mm.h atomic_no.h bitops_mm.h bitops_no.h bootinfo_mm.h bootinfo_no.h bug_mm.h bug_no.h bugs_mm.h bugs_no.h cache_mm.h cache_no.h cacheflush_mm.h cacheflush_no.h checksum_mm.h checksum_no.h current_mm.h current_no.h delay_mm.h delay_no.h div64_mm.h div64_no.h dma-mapping_mm.h dma-mapping_no.h dma_mm.h dma_no.h elf_mm.h elf_no.h entry_mm.h entry_no.h fb_mm.h fb_no.h fpu_mm.h fpu_no.h hardirq_mm.h hardirq_no.h hw_irq_mm.h hw_irq_no.h io_mm.h io_no.h irq_mm.h irq_no.h kmap_types_mm.h kmap_types_no.h machdep_mm.h machdep_no.h mc146818rtc_mm.h mc146818rtc_no.h mmu_context_mm.h mmu_context_no.h mmu_mm.h mmu_no.h module_mm.h module_no.h page_mm.h page_no.h page_offset_mm.h page_offset_no.h param_mm.h param_no.h pci_mm.h pci_no.h pgalloc_mm.h pgalloc_no.h pgtable_mm
- .h pgtable_no.h processor_mm.h processor_no.h ptrace_mm.h ptrace_no.h scatterlist_mm.h scatterlist_no.h segment_mm.h segment_no.h setup_mm.h setup_no.h sigcontext_mm.h sigcontext_no.h siginfo_mm.h siginfo_no.h signal_mm.h signal_no.h string_mm.h string_no.h swab_mm.h swab_no.h system_mm.h system_no.h thread_info_mm.h thread_info_no.h timex_mm.h timex_no.h tlbflush_mm.h tlbflush_no.h traps_mm.h traps_no.h uaccess_mm.h uaccess_no.h ucontext_mm.h ucontext_no.h unaligned_mm.h unaligned_no.h unistd_mm.h unistd_no.h
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+> > This patch fixes this issue.
+> > 
+> > Only when the requested port is NOT in the range 0 to MAXPORTS-1 do we
+> > force it to be treated as if port 0 was requested.  Forcing the port to
+> > 0 when it is in fact in the range 0 to MAXPORTS is not helpful.
+> > 
+> > Tested with working console on ttyS2 on a 5271evb.
+> > 
+> > Signed-off-by: Len Sorensen <lsorense@csclub.uwaterloo.ca>
+> > 
+> > diff --git a/drivers/serial/mcf.c b/drivers/serial/mcf.c
+> > index 56841fe..0eefb07 100644
+> > --- a/drivers/serial/mcf.c
+> > +++ b/drivers/serial/mcf.c
+> > @@ -513,7 +513,7 @@ static int __init mcf_console_setup(struct console *co, char *options)
+> >         int parity = 'n';
+> >         int flow = 'n';
+> > 
+> > -       if ((co->index >= 0) && (co->index <= MCF_MAXPORTS))
+> > +       if ((co->index < 0) || (co->index >= MCF_MAXPORTS))
+> >                 co->index = 0;
+> >         port = &mcf_ports[co->index].port;
+> >         if (port->membase == 0)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
