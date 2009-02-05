@@ -1,41 +1,33 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
 Subject: Re: Fix support for console port other than ttyS0 on mcf.c
-Date: Thu, 5 Feb 2009 16:53:50 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0902051652080.5127@anakin>
-References: <20090204201518.GH26064@csclub.uwaterloo.ca>
- <20090204202009.GI26064@csclub.uwaterloo.ca> <Pine.LNX.4.64.0902042200340.25136@anakin>
- <20090205152751.GL26064@csclub.uwaterloo.ca>
+Date: Thu, 5 Feb 2009 10:57:00 -0500
+Message-ID: <20090205155700.GO26064@csclub.uwaterloo.ca>
+References: <20090204201518.GH26064@csclub.uwaterloo.ca> <20090204202009.GI26064@csclub.uwaterloo.ca> <Pine.LNX.4.64.0902042200340.25136@anakin> <20090205152751.GL26064@csclub.uwaterloo.ca> <Pine.LNX.4.64.0902051652080.5127@anakin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758203AbZBEPyH@vger.kernel.org>
-In-Reply-To: <20090205152751.GL26064@csclub.uwaterloo.ca>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, uClinux list <uclinux-dev@uclinux.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from caffeine.csclub.uwaterloo.ca ([129.97.134.17]:55846 "EHLO
+	caffeine.csclub.uwaterloo.ca" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751890AbZBEP5D (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Feb 2009 10:57:03 -0500
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0902051652080.5127@anakin>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, uClinux list <uclinux-dev@uclinux.org>
 
-On Thu, 5 Feb 2009, Lennart Sorensen wrote:
-> On Wed, Feb 04, 2009 at 10:00:58PM +0100, Geert Uytterhoeven wrote:
-> > On Wed, 4 Feb 2009, Lennart Sorensen wrote:
-> > > Perhaps CCing linux-m68k@lists.linux-m68k.org would be a good idea.
-> > 
-> > Thanks, but this is a uClinux driver.
-> 
-> This is a patch against Linus's current tree.  How is that a uClinux
-> driver?  I am using a build of yesterday's git tree from Linus on a
-> 5271evb board and this fixes the console port with it.  I have no user
-> space yet, so whatever does uClinux have to do with anything?
+On Thu, Feb 05, 2009 at 04:53:50PM +0100, Geert Uytterhoeven wrote:
+> linux-m68k@lists.linux-m68k.org handles m68k (with MMU) only.
+> uclinux-dev@uclinux.org handles m68knommu.
 
-linux-m68k@lists.linux-m68k.org handles m68k (with MMU) only.
-uclinux-dev@uclinux.org handles m68knommu.
+Oh.  I think I got confused by the fact the same arch/m68k/include is
+used for both. so I looked up m68k in MAINTAINERS.
 
-Gr{oetje,eeting}s,
+I will start bothering uclinux-dev@uclinux.org instead.
 
-						Geert
+So by uclinux driver you meant m68knommu uclinux driver.  I was thinking
+uclibc for some reason.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Len Sorensen
