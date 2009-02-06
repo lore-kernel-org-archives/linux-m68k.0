@@ -1,73 +1,30 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [uClinux-dev] Re: Fix support for console port other than ttyS0
- on	mcf.c
-Date: Fri, 06 Feb 2009 09:45:33 +1000
-Message-ID: <498B7A1D.8060303@snapgear.com>
-References: <20090204201518.GH26064@csclub.uwaterloo.ca>	<20090204202009.GI26064@csclub.uwaterloo.ca>	<Pine.LNX.4.64.0902042200340.25136@anakin>	<20090205152751.GL26064@csclub.uwaterloo.ca>	<Pine.LNX.4.64.0902051652080.5127@anakin>	<20090205155700.GO26064@csclub.uwaterloo.ca> <Pine.LNX.4.64.0902051734500.5127@anakin>
+From: Andreas Schwab <schwab@suse.de>
+Subject: Re: [PATCH/RFC] m68k: atari - Rename "mfp" to "st_mfp"
+Date: Fri, 06 Feb 2009 11:37:29 +0100
+Message-ID: <jeiqnnvok6.fsf@sykes.suse.de>
+References: <Pine.LNX.4.64.0902052159220.16817@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:53116 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1752353AbZBEXpf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Feb 2009 18:45:35 -0500
-In-Reply-To: <Pine.LNX.4.64.0902051734500.5127@anakin>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0902052159220.16817@anakin> (Geert Uytterhoeven's
+	message of "Thu, 5 Feb 2009 22:07:08 +0100 (CET)")
+Sender: linux-next-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: uClinux development list <uclinux-dev@uclinux.org>
-Cc: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>, linux-m68k@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Geert Uytterhoeven wrote:
-> On Thu, 5 Feb 2009, Lennart Sorensen wrote:
->> On Thu, Feb 05, 2009 at 04:53:50PM +0100, Geert Uytterhoeven wrote:
->>> linux-m68k@lists.linux-m68k.org handles m68k (with MMU) only.
->>> uclinux-dev@uclinux.org handles m68knommu.
->> Oh.  I think I got confused by the fact the same arch/m68k/include is
->> used for both. so I looked up m68k in MAINTAINERS.
+> Atari guys: If I'm not mistaken, the first MFP is the ST-MFP?
 
-Well, you could try sending to the listed author at the top of mcf.c
-as well :-)
+Right.
 
-Regards
-Greg
+Andreas.
 
-
-
-> Yeah, we just merged it a few day ago :-)
-> 
-> The goal is to merge arch/m68k{,nommu}, too (eventually)...
-> 
->> I will start bothering uclinux-dev@uclinux.org instead.
->>
->> So by uclinux driver you meant m68knommu uclinux driver.  I was thinking
->> uclibc for some reason.
-> 
-> Yes, m68knommu uclinux driver.
-> 
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
-> 							    -- Linus Torvalds
-> _______________________________________________
-> uClinux-dev mailing list
-> uClinux-dev@uclinux.org
-> http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-> This message was resent by uclinux-dev@uclinux.org
-> To unsubscribe see:
-> http://mailman.uclinux.org/mailman/options/uclinux-dev
-> 
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear, a McAfee Company                  PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+--=20
+Andreas Schwab, SuSE Labs, schwab@suse.de
+SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
+PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
+ED5
+"And now for something completely different."
