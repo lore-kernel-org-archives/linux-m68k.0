@@ -1,30 +1,31 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: [PATCH/RFC] m68k: atari - Rename "mfp" to "st_mfp"
-Date: Fri, 06 Feb 2009 11:37:29 +0100
-Message-ID: <jeiqnnvok6.fsf@sykes.suse.de>
-References: <Pine.LNX.4.64.0902052159220.16817@anakin>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH] m68k: count can reach 51, not 50
+Date: Tue, 10 Feb 2009 23:52:47 +0100
+Message-ID: <4992053F.9080900@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0902052159220.16817@anakin> (Geert Uytterhoeven's
-	message of "Thu, 5 Feb 2009 22:07:08 +0100 (CET)")
-Sender: linux-next-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, Andrew Morton <akpm@linux-foundation.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+with while (count++ < 50) { ... } count can reach 51, not 50,
+so we shouldn't give an error message on a count of 50.
 
-> Atari guys: If I'm not mistaken, the first MFP is the ST-MFP?
-
-Right.
-
-Andreas.
-
---=20
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
-ED5
-"And now for something completely different."
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/drivers/macintosh/via-maciisi.c b/drivers/macintosh/via-maciisi.c
+index 4d686c0..e964357 100644
+--- a/drivers/macintosh/via-maciisi.c
++++ b/drivers/macintosh/via-maciisi.c
+@@ -288,7 +288,7 @@ static void maciisi_sync(struct adb_request *req)
+ 	}
+ 	/* This could be BAD... when the ADB controller doesn't respond
+ 	 * for this long, it's probably not coming back :-( */
+-	if(count >= 50) /* Hopefully shouldn't happen */
++	if(count > 50) /* Hopefully shouldn't happen */
+ 		printk(KERN_ERR "maciisi_send_request: poll timed out!\n");
+ }
+ 
