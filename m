@@ -1,55 +1,39 @@
-From: Joerg Dorchain <joerg@dorchain.net>
-Subject: Re: [PATCH] m68k: amiflop: *ptr incremented past 0x4489
-Date: Fri, 13 Feb 2009 09:07:56 +0100
-Message-ID: <20090213080756.GA1008@Redstar.dorchain.net>
-References: <4992E3EE.2020308@gmail.com>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [git pull] preempt-count: force hardirq-count to max of 10
+Date: Fri, 13 Feb 2009 12:58:51 +0100
+Message-ID: <20090213115851.GK15679@elte.hu>
+References: <alpine.DEB.1.10.0902121139230.15469@gandalf.stny.rr.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from RedStar.dorchain.net ([212.88.133.153]:53784 "EHLO
-	Redstar.dorchain.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751431AbZBMIYS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Feb 2009 03:24:18 -0500
-Content-Disposition: inline
-In-Reply-To: <4992E3EE.2020308@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: Roel Kluin <roel.kluin@gmail.com>
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>
-
-
---+HP7ph2BbKc20aGI
 Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-alpha-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <alpine.DEB.1.10.0902121139230.15469@gandalf.stny.rr.com>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, kernel@avr32linux.org, Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>, Kenji Kaneshige <kaneshige.kenji@jp.fujitsu.com>, Tony Luck <tony.luck@intel.com>, Mike Travis <travis@sgi.com>, isimatu.yasuaki@jp.fujitsu.com
+List-Id: linux-m68k@vger.kernel.org
 
-On Wed, Feb 11, 2009 at 03:42:54PM +0100, Roel Kluin wrote:
-> With while (*ptr++ != 0x4489) { ... } *ptr will be incremented past 0x4489
-> after
-> the loop.
 
-Yes, that is on purpose. The magic bytes of 0x4489 are a sync
-mark, the interesting stuff always starts afterwards. The whole
-decoding routing uses the current pointer the way that it always
-points to the next unprocessed position when it arrives at the
-next segment of decoding. I'd rather have this consistent in the
-whole driver.
+* Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Bye,
+> Ingo,
+> 
+> Please pull the latest tip/tracing/core tree, which can be found at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-2.6-trace.git
+> tip/tracing/core
+> 
+> 
+> Steven Rostedt (1):
+>       preempt-count: force hardirq-count to max of 10
+> 
+> ----
+>  arch/alpha/include/asm/hardirq.h |   13 ----------
+>  arch/avr32/include/asm/hardirq.h |   11 --------
+>  arch/ia64/include/asm/hardirq.h  |   10 --------
+>  include/linux/hardirq.h          |   48 +++++++++++++++++++-------------------
+>  4 files changed, 24 insertions(+), 58 deletions(-)
 
-Joerg
+Pulled, thanks Steve.
 
---+HP7ph2BbKc20aGI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkmVKlwACgkQjY4+4PdzvOC0fgCfXKO+U7iKzB7zr8ELcINxEgpH
-CGMAn1BfBjOtNAgtMu6nxpNo5g8ivn0X
-=eF0h
------END PGP SIGNATURE-----
-
---+HP7ph2BbKc20aGI--
+	Ingo
