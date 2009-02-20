@@ -1,36 +1,31 @@
-From: admin <info@ekipate.es>
-Subject: MEETING
-Date: Tue, 17 Feb 2009 19:44:49 +0100
-Message-ID: <0823383f53edfe72d42502c2f5b3793c@www.ekipate.es>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: [PATCH/RFC 1/5] rtc-parisc: Add missing module alias
+Date: Fri, 20 Feb 2009 16:46:45 +0100
+Message-ID: <1235144809-32468-2-git-send-email-Geert.Uytterhoeven__8826.6535349705$1235144955$gmane$org@sonycom.com>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vds-790543.amen-pro.com ([62.193.199.169]:49114 "EHLO
-	vds-790543.amen-pro.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1761667AbZBRWrN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Feb 2009 17:47:13 -0500
+In-Reply-To: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Alessandro Zummo <a.zummo@towertech.it>
+Cc: rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>, David Woodhouse <dwmw2@infradead.org>, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-Estas buscando pareja.
+Make udev autoload the driver
 
- <http://www.ekipate.es/lists/lt.php?id=YR5QBAMLVgUYCFpMBg0EVwA%3D>
+Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+---
+ drivers/rtc/rtc-parisc.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-
-
---
-To unsubscribe from this list visit
-http://www.ekipate.es/lists/lt.php?id=YR5QBAMLVgYYCFpMBg0EVwA%3D
-
-To update your preferences visit
-http://www.ekipate.es/lists/lt.php?id=YR5QBAMLVgcYCFpMBg0EVwA%3D
-
-
-
---
-Powered by PHPlist, www.phplist.com --
-
-
+diff --git a/drivers/rtc/rtc-parisc.c b/drivers/rtc/rtc-parisc.c
+index c6bfa6f..28fb7d3 100644
+--- a/drivers/rtc/rtc-parisc.c
++++ b/drivers/rtc/rtc-parisc.c
+@@ -110,3 +110,4 @@ module_exit(parisc_rtc_fini);
+ MODULE_AUTHOR("Kyle McMartin <kyle@mcmartin.ca>");
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("HP PA-RISC RTC driver");
++MODULE_ALIAS("platform:rtc-parisc");
+-- 
+1.6.0.4
 
