@@ -1,58 +1,57 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Tue, 24 Feb 2009 19:37:08 +0100
-Message-ID: <20090224193708.5f8be86c@i1501.lan.towertech.it>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Tue, 24 Feb 2009 19:46:07 +0100
+Message-ID: <49A4406F.2010407__32680.9785482057$1235501279$gmane$org@gmx.de>
 References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-	<20090223160506.04e347c7@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902241848500.544@vixen.sonytel.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx0.towertech.it ([213.215.222.73]:53818 "HELO mx0.towertech.it"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1751777AbZBXShS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 24 Feb 2009 13:37:18 -0500
-In-Reply-To: <alpine.LRH.2.00.0902241848500.544@vixen.sonytel.be>
+In-Reply-To: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: rtc-linux@googlegroups.com
-Cc: Geert.Uytterhoeven@sonycom.com, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Woodhouse <dwmw2@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>, David Woodhouse <dwmw2@infradead.org>, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, dann frazier <dannf@dannf.org>
 
-On Tue, 24 Feb 2009 18:56:03 +0100 (CET)
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
-
+Geert Uytterhoeven wrote:
+> I've been looking into problems with auto-loading the RTC driver on PPC (more
+> specifically on PS3):
+>   - The recent "rtc-ppc" RTC class driver is not autoloaded by udev because
+>     it's an old style platform driver that contains its own platform device.
+>   - The alternative old "genrtc" driver is autoloaded on non-udev systems only
+>     because it contains the module alias char-major-10-135. However, it's not
+>     a new-style RTC class driver.
 > 
-> On Mon, 23
-> > 
-> >  I'd start writing a working driver and then see how we should eventually
-> >  adapt the rtc subsystem to cope with your needs.
+> Fortunately there already exists a generic RTC class driver: "rtc-parisc".
+> Despite it's name, it's platform-independent, as it's build on top of the RTC
+> abstraction used by "genrtc".
 > 
-> OK, so here's a first example: rtc-ps3.
+> This patch series
+>   - adds a missing module alias to rtc-parisc,
+>   - renames rtc-parisc to rtc-generic,
+>   - converts the architectures that currently have CONFIG_GEN_RTC enabled in
+>     their defconfig (m68k, parisc, powerpc) to rtc-generic,
+>   - removes the obsolete rtc-ppc driver,
+>   - removes the old genrtc driver.
+>   
+> Note that genrtc may be used on other archictectures as well: at least alpha
+> has the required infrastructure ([gs]et_rtc_time()). The Kconfig rules allow
+> genrtc to be enabled on several others (cris, h8300, mn10300, um, x86, xtensa).
 > 
-> Note that this single patch adds 100+ lines of code, while my previous patch
-> series removed 500+ lines of code, while solving the autoloading problem for
-> several ppc and m68k platforms.
+> Furthermore genrtc and rtc-generic are not 100% userspace compatible:
+>   - /dev/rtc provided by genrtc uses a misc character device (10:135),
+>   - /dev/rtc provided by rtc-generic uses a dynamic character device.
+>   
+> So perhaps we don't want to kill gen-rtc yet?
+> 
+> Any comments are welcomed!
 
- This patch has a much cleaner approach, imho.
+Hi Geert,
+FYI, I didn't followed any discussions or changes around the RTC drivers for parisc,
+but Dann Frazier did some work on the parisc RTC driver as well.
+His patches were merged (not upstream yet!) in Kyle's "rtc-parisc" branch at:
+http://git.kernel.org/?p=linux/kernel/git/kyle/parisc-2.6.git;a=shortlog;h=rtc-parisc
 
-> Converting all (ca. 20?) ppc and m68k RTC support code into individual RTC
-> class drivers would add ca. 100+ lines of code for each individual driver.
+Not sure if they conflict (or are in sync) with your patches...
 
-
-
- How different are all of those boards? It's simply a matter
- of parameters and offsets? can we group them somehow?
-
- 
--- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+Helge
