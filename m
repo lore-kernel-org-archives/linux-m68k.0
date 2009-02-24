@@ -1,57 +1,39 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Tue, 24 Feb 2009 19:46:07 +0100
-Message-ID: <49A4406F.2010407__32680.9785482057$1235501279$gmane$org@gmx.de>
+From: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [rtc-linux] [PATCH/RFC 0/5] Generic RTC class driver
+Date: Wed, 25 Feb 2009 06:35:27 +0900
+Message-ID: <1235511327.18632.73.camel@macbook.infradead.org>
 References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	 <20090220170454.04382e9e@i1501.lan.towertech.it>
+	 <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>, David Woodhouse <dwmw2@infradead.org>, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, dann frazier <dannf@dannf.org>
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, rtc-linux@googlegroups.com, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-Geert Uytterhoeven wrote:
-> I've been looking into problems with auto-loading the RTC driver on PPC (more
-> specifically on PS3):
->   - The recent "rtc-ppc" RTC class driver is not autoloaded by udev because
->     it's an old style platform driver that contains its own platform device.
->   - The alternative old "genrtc" driver is autoloaded on non-udev systems only
->     because it contains the module alias char-major-10-135. However, it's not
->     a new-style RTC class driver.
+On Mon, 2009-02-23 at 13:34 +0100, Geert Uytterhoeven wrote:
+> >    my opinion on this kind of stuff is that I want to avoid the layering
+> >  of implementations under the rtc subsystem. I'd rather prefer that each
+> >  rtc device had its own driver. 
+> >  
+> >   I've made error in the past, by accepting such kind of drivers, and
+> >  would like to avoid that it happens again.
 > 
-> Fortunately there already exists a generic RTC class driver: "rtc-parisc".
-> Despite it's name, it's platform-independent, as it's build on top of the RTC
-> abstraction used by "genrtc".
-> 
-> This patch series
->   - adds a missing module alias to rtc-parisc,
->   - renames rtc-parisc to rtc-generic,
->   - converts the architectures that currently have CONFIG_GEN_RTC enabled in
->     their defconfig (m68k, parisc, powerpc) to rtc-generic,
->   - removes the obsolete rtc-ppc driver,
->   - removes the old genrtc driver.
->   
-> Note that genrtc may be used on other archictectures as well: at least alpha
-> has the required infrastructure ([gs]et_rtc_time()). The Kconfig rules allow
-> genrtc to be enabled on several others (cris, h8300, mn10300, um, x86, xtensa).
-> 
-> Furthermore genrtc and rtc-generic are not 100% userspace compatible:
->   - /dev/rtc provided by genrtc uses a misc character device (10:135),
->   - /dev/rtc provided by rtc-generic uses a dynamic character device.
->   
-> So perhaps we don't want to kill gen-rtc yet?
-> 
-> Any comments are welcomed!
+> So you want us to kill the ppc_md.[gs]et_rtc_time() [ppc], mach_hwclk() [m68k],
+> mach_gettod() [m68knommu] (and probably a few other) abstractions, and move all
+> RTC code out of arch/ into seperate drivers under drivers/rtc/ instead?
 
-Hi Geert,
-FYI, I didn't followed any discussions or changes around the RTC drivers for parisc,
-but Dann Frazier did some work on the parisc RTC driver as well.
-His patches were merged (not upstream yet!) in Kyle's "rtc-parisc" branch at:
-http://git.kernel.org/?p=linux/kernel/git/kyle/parisc-2.6.git;a=shortlog;h=rtc-parisc
+That's the ideal... although did we get NTP sync working again yet?
 
-Not sure if they conflict (or are in sync) with your patches...
+The rtc-ppc driver was intended as a short-term workaround so that we
+can enable the generic RTC class (which was required for PA Semi
+Electra, iirc), and still have stuff work on other platforms.
 
-Helge
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
+
