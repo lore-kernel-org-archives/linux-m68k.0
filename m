@@ -1,60 +1,70 @@
-From: krzysztof.h1@poczta.fm
-Subject: =?UTF-8?q?Re:_Re:_[Linux-fbdev-devel]_[PATCH_4/4]_cirrusfb:_fix_error_paths_in__cirrusfb=5Fxxx=5Fregister()?=
-Date: 25 Feb 2009 10:42:10 +0100
-Message-ID: <20090225094210.5DB9D9F34DD@f34.poczta.interia.pl>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] [PATCH/RFC 0/5] Generic RTC class driver
+Date: Wed, 25 Feb 2009 10:54:33 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0902251051370.4063@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <20090220170454.04382e9e@i1501.lan.towertech.it> <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be> <1235511327.18632.73.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=ISO-8859-2
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1235511327.18632.73.camel@macbook.infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert.uytterhoeven@gmail.com>, Krzysztof Helt <krzysztof.h1@poczta.fm>, Linux-fbdev-devel <linux-fbdev-devel@lists.sourceforge.net>, Andrew Morton <akpm@linux-foun>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, rtc-linux@googlegroups.com, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-Geert Uytterhoeven napisa=B3(a):
-> Hi Krzysztof,
+On Wed, 25 Feb 2009, David Woodhouse wrote:
+> On Mon, 2009-02-23 at 13:34 +0100, Geert Uytterhoeven wrote:
+> > >    my opinion on this kind of stuff is that I want to avoid the l=
+ayering
+> > >  of implementations under the rtc subsystem. I'd rather prefer th=
+at each
+> > >  rtc device had its own driver.=20
+> > > =20
+> > >   I've made error in the past, by accepting such kind of drivers,=
+ and
+> > >  would like to avoid that it happens again.
+> >=20
+> > So you want us to kill the ppc_md.[gs]et_rtc_time() [ppc], mach_hwc=
+lk() [m68k],
+> > mach_gettod() [m68knommu] (and probably a few other) abstractions, =
+and move all
+> > RTC code out of arch/ into seperate drivers under drivers/rtc/ inst=
+ead?
 >=20
-> On Tue, Feb 24, 2009 at 22:37, Krzysztof Helt >krzysztof.h1@poczta.fm=
->
-> wrote:
-> > It is not an end to cirrusfb patches unfortunately.
-> > I have just got a GD5446 (Picasso4) and it locks up
-> > my computer when the cirrusfb module is loaded.
-> > Time to fix this model as well...
+> That's the ideal... although did we get NTP sync working again yet?
 >=20
-> Cool! Which Amiga model do you have?
->=20
+> The rtc-ppc driver was intended as a short-term workaround so that we
+> can enable the generic RTC class (which was required for PA Semi
+> Electra, iirc), and still have stuff work on other platforms.
 
-I do not have the Amiga computer. I have a PC (x86) PCI card GP-5446.=20
-It does not work in the PC.
+Sure. The only differences between your rtc-ppc driver and rtc-parisc w=
+ere:
+  - rtc-ppc uses the PPC RTC abstraction (ppc_md.[gs]et_rtc_time()),
+    while rtc-parisc uses the genrtc abstraction layer ([gs]et_rtc_time=
+()),
+    which is shared by several architectures,
+  - rtc-ppc has the platform device built-in in the driver, while rtc-p=
+arisc
+    relies on the creation of the platform device in platform code.
 
-> The Picasso4 is also not yet supported in Zorro II mode. There are so=
-me
-> docs
-> available (it&#039;s just about using the right offsets), but as I do=
-n&#039;t
-> have the hardware,
-> I never did it myself. Christian Steigies is probably most interested=
-=2E..
->=20
+With kind regards,
 
-I promised to compile Amiga kernel for user who reported problem
-with Picasso4 (Amiga computer) card in January. I want to build=20
-Amiga kernel for him (and anybody interested in testing=20
-with Amiga computer).
-I want to fix the chip handling on x86 first (correct register
-values for modes, line pitches, offsets, colors etc.) then
-try to help Amiga guys.
+Geert Uytterhoeven
+Software Architect
 
-Regards,
-Krzysztof
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
 
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
 
-
-
-----------------------------------------------------------------------
-Strzelec, Byk, a moze Panna? Wszystkich 12 znakow zodiaku!
-Sprawd=BC swoj horoskop na dzis >> http://link.interia.pl/f2051
-
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
 --
 To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
 n
