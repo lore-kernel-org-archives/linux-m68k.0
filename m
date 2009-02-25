@@ -1,52 +1,78 @@
 From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [rtc-linux] [PATCH/RFC 0/5] Generic RTC class driver
-Date: Wed, 25 Feb 2009 10:54:33 +0100 (CET)
-Message-ID: <alpine.LRH.2.00.0902251051370.4063@vixen.sonytel.be>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <20090220170454.04382e9e@i1501.lan.towertech.it> <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be> <1235511327.18632.73.camel@macbook.infradead.org>
+Subject: Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Wed, 25 Feb 2009 10:54:54 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0902251054371.4063__7091.62304779074$1235555794$gmane$org@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <49A4406F.2010407@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Type: TEXT/PLAIN; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1235511327.18632.73.camel@macbook.infradead.org>
+In-Reply-To: <49A4406F.2010407@gmx.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, rtc-linux@googlegroups.com, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Helge Deller <deller@gmx.de>
+Cc: Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Kyle McMartin <kyle@mcmartin.ca>, David Woodhouse <dwmw2@infradead.org>, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, dann frazier <dannf@dannf.org>
 
-On Wed, 25 Feb 2009, David Woodhouse wrote:
-> On Mon, 2009-02-23 at 13:34 +0100, Geert Uytterhoeven wrote:
-> > >    my opinion on this kind of stuff is that I want to avoid the l=
-ayering
-> > >  of implementations under the rtc subsystem. I'd rather prefer th=
-at each
-> > >  rtc device had its own driver.=20
-> > > =20
-> > >   I've made error in the past, by accepting such kind of drivers,=
- and
-> > >  would like to avoid that it happens again.
+On Tue, 24 Feb 2009, Helge Deller wrote:
+> Geert Uytterhoeven wrote:
+> > I've been looking into problems with auto-loading the RTC driver on=
+ PPC (more
+> > specifically on PS3):
+> >   - The recent "rtc-ppc" RTC class driver is not autoloaded by udev=
+ because
+> >     it's an old style platform driver that contains its own platfor=
+m device.
+> >   - The alternative old "genrtc" driver is autoloaded on non-udev s=
+ystems only
+> >     because it contains the module alias char-major-10-135. However=
+, it's not
+> >     a new-style RTC class driver.
 > >=20
-> > So you want us to kill the ppc_md.[gs]et_rtc_time() [ppc], mach_hwc=
-lk() [m68k],
-> > mach_gettod() [m68knommu] (and probably a few other) abstractions, =
-and move all
-> > RTC code out of arch/ into seperate drivers under drivers/rtc/ inst=
-ead?
+> > Fortunately there already exists a generic RTC class driver: "rtc-p=
+arisc".
+> > Despite it's name, it's platform-independent, as it's build on top =
+of the RTC
+> > abstraction used by "genrtc".
+> >=20
+> > This patch series
+> >   - adds a missing module alias to rtc-parisc,
+> >   - renames rtc-parisc to rtc-generic,
+> >   - converts the architectures that currently have CONFIG_GEN_RTC e=
+nabled in
+> >     their defconfig (m68k, parisc, powerpc) to rtc-generic,
+> >   - removes the obsolete rtc-ppc driver,
+> >   - removes the old genrtc driver.
+> >  =20
+> > Note that genrtc may be used on other archictectures as well: at le=
+ast alpha
+> > has the required infrastructure ([gs]et_rtc_time()). The Kconfig ru=
+les allow
+> > genrtc to be enabled on several others (cris, h8300, mn10300, um, x=
+86, xtensa).
+> >=20
+> > Furthermore genrtc and rtc-generic are not 100% userspace compatibl=
+e:
+> >   - /dev/rtc provided by genrtc uses a misc character device (10:13=
+5),
+> >   - /dev/rtc provided by rtc-generic uses a dynamic character devic=
+e.
+> >  =20
+> > So perhaps we don't want to kill gen-rtc yet?
+> >=20
+> > Any comments are welcomed!
 >=20
-> That's the ideal... although did we get NTP sync working again yet?
+> Hi Geert,
+> FYI, I didn't followed any discussions or changes around the RTC driv=
+ers for parisc,
+> but Dann Frazier did some work on the parisc RTC driver as well.
+> His patches were merged (not upstream yet!) in Kyle's "rtc-parisc" br=
+anch at:
+> http://git.kernel.org/?p=3Dlinux/kernel/git/kyle/parisc-2.6.git;a=3Ds=
+hortlog;h=3Drtc-parisc
 >=20
-> The rtc-ppc driver was intended as a short-term workaround so that we
-> can enable the generic RTC class (which was required for PA Semi
-> Electra, iirc), and still have stuff work on other platforms.
+> Not sure if they conflict (or are in sync) with your patches...
 
-Sure. The only differences between your rtc-ppc driver and rtc-parisc w=
-ere:
-  - rtc-ppc uses the PPC RTC abstraction (ppc_md.[gs]et_rtc_time()),
-    while rtc-parisc uses the genrtc abstraction layer ([gs]et_rtc_time=
-()),
-    which is shared by several architectures,
-  - rtc-ppc has the platform device built-in in the driver, while rtc-p=
-arisc
-    relies on the creation of the platform device in platform code.
+Thanks, they provide some nice cleanups.
 
 With kind regards,
 
@@ -54,8 +80,8 @@ Geert Uytterhoeven
 Software Architect
 
 Sony Techsoft Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
-gium
+The Corporate Village =C2=B7 Da Vincilaan 7-D1 =C2=B7 B-1935 Zaventem =C2=
+=B7 Belgium
 
 Phone:    +32 (0)2 700 8453
 =46ax:      +32 (0)2 700 8622
@@ -63,8 +89,8 @@ E-mail:   Geert.Uytterhoeven@sonycom.com
 Internet: http://www.sony-europe.com/
 
 A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+VAT BE 0413.825.160 =C2=B7 RPR Brussels
+=46ortis =C2=B7 BIC GEBABEBB =C2=B7 IBAN BE41293037680010
 --
 To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
 n
