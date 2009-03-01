@@ -1,68 +1,42 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Mon, 23 Feb 2009 16:05:06 +0100
-Message-ID: <20090223160506.04e347c7__26505.6096054197$1236214416$gmane$org@i1501.lan.towertech.it>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k patches for 2.6.30
+Date: Sun,  1 Mar 2009 10:21:09 +0100
+Message-ID: <1235899275-23630-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx0.towertech.it ([213.215.222.73]:51803 "HELO mx0.towertech.it"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1754572AbZBWPFK (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 23 Feb 2009 10:05:10 -0500
-In-Reply-To: <alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
+Received: from georges.telenet-ops.be ([195.130.137.68]:35979 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754655AbZCAJVT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Mar 2009 04:21:19 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: rtc-linux@googlegroups.com
-Cc: Geert.Uytterhoeven@sonycom.com, Richard Zidlicky <rz@linux-m68k.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, David@ozlabs.org, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Woodhouse <dwmw2@infradead.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-On Mon, 23 Feb 2009 13:34:49 +0100 (CET)
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
+Here are the m68k patches I have queued up for 2.6.30:
+    [1/6] m68k: Add install target
+    [2/6] m68k: mac - Add a new entry in mac_model to identify the floppy
+                controller type.
+    [3/6] m68k: mac - Add SWIM floppy support
+    [4/6] MAINTAINERS: Replace dead link to m68k CVS repository by link to new
+                       git repository
+    [5/6] m68k: section mismatch fixes: DMAsound for Atari
+    [6/6] m68k: section mismatch fixes: Atari SCSI
 
-> >  Hello,
-> > 
-> >    my opinion on this kind of stuff is that I want to avoid the layering
-> >  of implementations under the rtc subsystem. I'd rather prefer that each
-> >  rtc device had its own driver. 
-> >  
-> >   I've made error in the past, by accepting such kind of drivers, and
-> >  would like to avoid that it happens again.
-> 
-> So you want us to kill the ppc_md.[gs]et_rtc_time() [ppc], mach_hwclk() [m68k],
-> mach_gettod() [m68knommu] (and probably a few other) abstractions, and move all
-> RTC code out of arch/ into seperate drivers under drivers/rtc/ instead?
+They're also available on my for-2.6.30 branch (which may be rebased):
 
- not all at once :) 
+    http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=shortlog;h=for-2.6.30
 
- I'd start writing a working driver and then see how we should eventually
- adapt the rtc subsystem to cope with your needs.
- 
-> What about ppc_md.get_boot_time() [ppc]?
-> Please note that the functions above may also be used for very early clock
-> setting (e.g. time_init()) and in read_persistent_clock().
-> How should we handle these?
+If anything is missing, please let me know.
 
- read_persistent_clock is something that should be reconsidered
- as well along with all the ntp stuff.
+Thanks for reviewing!
 
-> Even on x86 there seems to be way too much RTC logic in arch/x86/kernel/rtc.c
+Gr{oetje,eeting}s,
 
-> (e.g. mach_get_cmos_time()), which is duplicated in drivers/rtc/rtc-cmos.c
-> through the inline function __get_rtc_time() in include/asm-generic/rtc.h
-> (clever, hardware-specific stuff in asm-generic ;-)
+                                                Geert
 
- yep, I know :( that hardcoded rtc stuff seems to be everywhere!
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
--- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                                            -- Linus Torvalds
