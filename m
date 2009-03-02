@@ -1,84 +1,71 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Mon, 2 Mar 2009 12:09:50 +0100
-Message-ID: <20090302120950.0d35e06c@i1501.lan.towertech.it>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-	<1235511327.18632.73.camel@macbook.infradead.org>
-	<20090224231154.60ba18d6@i1501.lan.towertech.it>
-	<1235514727.18632.93.camel@macbook.infradead.org>
-	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
-	<20090225111836.621412c1@i1501.lan.towertech.it>
-	<20090227185514.GA1071@linux-m68k.org>
-	<alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
-	<20090302110310.35af50ea@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: debian kernel m68k patches for 2.6.28
+Date: Mon, 2 Mar 2009 15:45:40 +0100
+Message-ID: <10f740e80903020645l510c31c7u9530e20d9b54cb2@mail.gmail.com>
+References: <20090301202823.GF13268@marenka.net>
+	 <10f740e80903020148i23db9424vd2fa529f6d7a4134@mail.gmail.com>
+	 <20090302143747.GG10135@marenka.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Richard Zidlicky <rz@linux-m68k.org>, rtc-linux@googlegroups.com, David Woodhouse <dwmw2@infradead.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20090302143747.GG10135@marenka.net>
+Resent-Message-ID: <WZP4SBzHtOH.A.M4G.mE_qJB@liszt>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: debian-68k@lists.debian.org
+Cc: linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 2 Mar 2009 11:28:01 +0100 (CET)
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
+On Mon, Mar 2, 2009 at 15:37, Stephen R Marenka <stephen@marenka.net> wrote:
+> On Mon, Mar 02, 2009 at 10:48:48AM +0100, Geert Uytterhoeven wrote:
+>> On Sun, Mar 1, 2009 at 21:28, Stephen R Marenka <stephen@marenka.net> wrote:
+>> > The debian 2.6.28 kernel has hit sid, so it's probably time to
+>> > update the m68k patches.
+>
+>> Please note that I no longer maintain the quilt series file. I'm using
+>> git only now.
+>
+> I was wondering if that wasn't true.
+>
+>> For 2.6.28, there's a separate branch:
+>> http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=shortlog;h=m68k-v2.6.28
+>>
+>> Hmm, I've just noticed this is Linus' v2.6.28 with only a few new m68k
+>> patches applied, while I think
+>> I intended it to be the master (m68k) branch just after I merged it
+>> with v2.6.28, with newer
+>> critical patches applied when needed. Oh well...
+>
+> So what do you recommend for 2.6.28? I'd like to get a functional
+> debian kernel in the meantime. Should I start with the quilt patches?
 
-> So I can solve my problem (autoloading the RTC driver on PS3 by udev) by
-> converting the old genrtc driver into a platform device driver and creating
-> platform devices where appropriate.
+For 2.6.28, using the quilt patches should be OK.
+You may want to add the few patches in git branch m68k-v2.6.28, too.
 
- yes. btw, if you are building a kernel specific for the PS3, I would
- compile the rtc driver statically, otherwise it won't be available
- early on boot.
- 
-> However, this doesn't solve the distro's problem: as the old RTC framework
-> depends on RTC_LIB=n, you cannot have both old and new RTC drivers in your
-> (single) distro kernel. That's why dmwm2 created drivers/rtc/rtc-ppc.c: Fedora
-> had to support machines with both old and new RTC drivers. As all of the old
-> drivers are actually behind the ppc_md.[sg]et_rtc_time() abstraction, this was
-> very easy.
+>> But even if it was what I had intended, you'd still have to use `git
+>> cherry' to find the m68k-specific commits
+>> and import them into Debian. So I should have all changes nicely
+>> rebased (and reordered/squashed) against Linus' latest tree, so you
+>> can easily export them. This would also help in keeping track what
+>> needs to be submitted upstream.
+>
+> That sounds like a whole new world of workflow to me. So I'll need
+> your 2.6.x, linus's 2.6.x, and debian svn to figure out which patches
+> need applying?
 
- ok, generic kernel. you will have to load the modules on initrd. no, sadly you
- can't have both of them. you might stick with the old interface or
- convert them all. 
+Yeah, so let's wait for 2.6.29 for reworking the workflow...
 
-> Hence it's all or nothing, and we have to convert all of them.
-> 
-> drivers/rtc/rtc-generic.c would allow to have a working system without old
-> RTC drivers, until all low-level code has been converted to individual RTC
-> drivers.
+Gr{oetje,eeting}s,
 
- I know but I have enough experience to foresee that once a generic over generic
- framework is in place it's very hard to get rid of it because people
- will have no incentives.
+						Geert
 
- If you really need rtc-generic you can keep using it even if it's 
- not in the kernel, distributions often have their specific
- set of kernel patches.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
- But I'd strongly suggest to plan and execute a conversion process.
-
-
-> >  Layering a generic framework over another generic framework
-> >  is quite a nonsense . 
-> 
-> IMHO these two generic frameworks are quite different: [sg]et_rtc_time()
-> abstracts the low-level RTC hardware interface, while RTC class handles the
-> interaction with userspace.
-
- When I wrote it my intention was to make it as an abstraction _between_
- the userspace and the hardware according to the platform/device model.
-
--- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
