@@ -1,61 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: debian kernel m68k patches for 2.6.28
-Date: Mon, 2 Mar 2009 10:48:48 +0100
-Message-ID: <10f740e80903020148i23db9424vd2fa529f6d7a4134@mail.gmail.com>
-References: <20090301202823.GF13268@marenka.net>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Mon, 2 Mar 2009 10:54:14 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<20090220170454.04382e9e@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
+	<1235511327.18632.73.camel@macbook.infradead.org>
+	<20090224231154.60ba18d6@i1501.lan.towertech.it>
+	<1235514727.18632.93.camel@macbook.infradead.org>
+	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
+	<20090225111836.621412c1@i1501.lan.towertech.it>
+	<20090227185514.GA1071@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090301202823.GF13268@marenka.net>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <20090227185514.GA1071@linux-m68k.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Richard Zidlicky <rz@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Alessandro Zummo <alessandro.zummo@towertech.it>, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, David@ozlabs.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org
-Cc: linux-m68k@lists.linux-m68k.org
 
-On Sun, Mar 1, 2009 at 21:28, Stephen R Marenka <stephen@marenka.net> wrote:
-> The debian 2.6.28 kernel has hit sid, so it's probably time to
-> update the m68k patches.
->
-> So how many of these [1] patches should go into the debian kernel?
-> Everything that's not commented, POSTPONED, or PRIVATE?
->
-> If anyone else wants the job, please jump right on it. ;)
->
-> Thanks,
->
-> Stephen
->
-> [1] http://www.kernel.org/pub/linux/kernel/people/geert/linux-m68k-patches-2.6/series
-
-Please note that I no longer maintain the quilt series file. I'm using
-git only now.
-
-For 2.6.28, there's a separate branch:
-http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=shortlog;h=m68k-v2.6.28
-
-Hmm, I've just noticed this is Linus' v2.6.28 with only a few new m68k
-patches applied, while I think
-I intended it to be the master (m68k) branch just after I merged it
-with v2.6.28, with newer
-critical patches applied when needed. Oh well...
-
-But even if it was what I had intended, you'd still have to use `git
-cherry' to find the m68k-specific commits
-and import them into Debian. So I should have all changes nicely
-rebased (and reordered/squashed) against Linus' latest tree, so you
-can easily export them. This would also help in keeping track what
-needs to be submitted upstream.
-
-I'll try to do it right when v2.6.29 is released...
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+T24gRnJpLCAyNyBGZWIgMjAwOSwgUmljaGFyZCBaaWRsaWNreSB3cm90ZToKPiBPbiBXZWQsIEZl
+YiAyNSwgMjAwOSBhdCAxMToxODozNkFNICswMTAwLCBBbGVzc2FuZHJvIFp1bW1vIHdyb3RlOgo+
+ID4gT24gV2VkLCAyNSBGZWIgMjAwOSAxMTowMDoxMyArMDEwMCAoQ0VUKQo+ID4gR2VlcnQgVXl0
+dGVyaG9ldmVuIDxHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5jb20+IHdyb3RlOgo+ID4gCj4g
+PiA+IEkgZGlkbid0IGtub3cgTlRQIHdhcyBicm9rZW4gd2l0aCBSVEMgY2xhc3MgZHJpdmVycz8K
+PiA+ID4gCj4gPiA+IFNvIHdlIHNob3VsZCBhY3R1YWxseSBrZWVwIG9uIHVzaW5nIGdlbnJ0YyBp
+bnN0ZWFkIG9mIHJ0Yy1wcGMvcnRjLWdlbmVyaWMgZm9yCj4gPiA+IG5vdz8gOy0pCj4gPiAKPiA+
+ICBicm9rZW4gaGVyZSBtZWFucyB0aGF0IHRoZSBrZXJuZWwgd29uJ3Qgc2F2ZSB0aGUgdGltZSB0
+byB0aGUgaGFyZHdhcmUKPiA+ICBydGMgZXZlcnkgMTEgbWludXRlcyBhcyBpdCB1c2VkIHRvIGRv
+LiBub3JtYWwgTlRQIG9wZXJhdGlvbnMgYXJlIHVuYWZmZWN0ZWQuCj4gCj4gc2VlbXMgbGlrZSBz
+byBmYXIgcHBjIGlzIHRoZSBvbmx5IGFyY2hpdGVjdHVyZSBhdHRlbXB0aW5nIHRvIGltcGxlbWVu
+dCBpdAo+IGNvcnJlY3RseSwgYWxsIG90aGVycyBlaXRoZXIgaGF2ZSBpdCB1bmltcGxlbWVudGVk
+IG9yIHVzZSB0aGUgYnJva2VuCj4gYnkgZGVzaWduIHNldF9ydGNfbW1zcyBtZXRob2QuIAo+IEFs
+c28gbm90ZSB0aGF0IGluIG1vc3QgY2FzZXMgaHdjbG9jayBoYXMgbXVjaCBiZXR0ZXIgcG9zc2li
+aWxpdGllcwo+IHRvIGRvIGEgZ29vZCBqb2IuCj4gCj4gUmVnYXJkaW5nIGdlbnJ0YyB2cyBydGMt
+cHBjL3J0Yy1nZW5lcmljIGl0IGlzIHdvcnRoIG5vdGluZyB0aGF0IGdlbnJ0Ywo+IHByb3ZpZGVz
+IFJUQ19VSUUgZW11bGF0aW9uIHdoaWNoIGlzIG9mIHNvbWUgdXNlIGZvciBleG90aWMgcHJvZ3Jh
+bXMgbGlrZSAKPiAiY2hyb255Ii4KPiBBZmFpY3MgdGhpcyBpcyBhbHNvIHRoZSBvbmx5IHNpdHVh
+dGlvbiB3aXRob3V0IGEgZ29vZCB1c2Vyc3BhY2Ugd29ya2Fyb3VuZCAKPiBhbmQgY2hyb255IG5l
+dmVyIHdvcmtlZCB3ZWxsIGZvciBtZSBzbyBJIGhhdmUgbm90aGluZyBhZ2FpbnN0IGp1bmtpbmcg
+dGhlIAo+IGNvZGUuCgpXaGF0IGFib3V0IENPTkZJR19SVENfSU5URl9ERVZfVUlFX0VNVUwgZm9y
+IFJUQyBjbGFzcyBkZXZpY2VzPwoKPiBSZWdhcmRpbmcgYSBwb3NzaWJsZSByZW9yZ2FuaXNhdGlv
+biBmcm9tIHRoZSBnZW5lcmljIHRvIGFsbCBzZXBhcmF0ZSBkcml2ZXJzCj4gSSBhZ3JlZSB0aGF0
+IHRoZSBoYWJpdCBvZiBwdXR0aW5nIHJ0Yy1jaGlwIHNwZWNpZmljIGNvZGUgaW4gYXNtLWdlbmVy
+aWMgaXMgCj4gY29uZnVzaW5nIGF0IGJlc3QuIAo+IEluIG1hbnkgY2FzZXMgc3VjaCBjb2RlIG1p
+Z2h0IGJlIGJldHRlciBwbGFjZWQgaW4gZHJpdmVycy9ydGMgb3IgCj4gaW5jbHVkZS9saW51eC9y
+dGMvY2hpcG5hbWUuCj4gCj4gSW1obyB0aGlzIGRvZXMgbm90IHByZWNsdWRlIHRoZSBwb3NzaWJp
+bGl0eSB0byB1c2UgYSBnZW5lcmljIGZyYW1ld29yay4gV2hpbGUKPiB0aGVyZSBjZXJ0YWlubHkg
+YXJlIHZhbGlkIHJlYXNvbnMgdG8gaGF2ZSBzZXBhcmF0ZSBkcml2ZXJzIGluIHNvbWUgY2FzZXMg
+Cj4gSSBkbyBub3Qgc2VlIG11Y2ggdmFsdWUgaW4gcmV3cml0aW5nIGV2ZXJ5dGhpbmcgYXMgc2Vw
+YXJhdGUgZHJpdmVycyB3aGVyZSAKPiB0aGUgZ2VuZXJpYyBmcmFtZXdvcmsgd29ya3Mgd2VsbC4K
+CkluZGVlZC4gWW91IGNhbiBoYXZlIGEgd29ya2luZyBSVEMgY2xhc3MgZHJpdmVyIGZvciBsb3Rz
+IG9mIGhhcmR3YXJlIGJ5IGp1c3QKd3JpdGluZyBjYS4gMTAwIGxpbmVzIG9mIGNvZGUgb24gdG9w
+IG9mIHRoZSBnZW5lcmljIGZyYW1ld29yay4KCldpdGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0
+dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hpdGVjdAoKU29ueSBUZWNoc29mdCBDZW50cmUgRXVyb3Bl
+ClRoZSBDb3Jwb3JhdGUgVmlsbGFnZSDCtyBEYSBWaW5jaWxhYW4gNy1EMSDCtyBCLTE5MzUgWmF2
+ZW50ZW0gwrcgQmVsZ2l1bQoKUGhvbmU6ICAgICszMiAoMCkyIDcwMCA4NDUzCkZheDogICAgICAr
+MzIgKDApMiA3MDAgODYyMgpFLW1haWw6ICAgR2VlcnQuVXl0dGVyaG9ldmVuQHNvbnljb20uY29t
+CkludGVybmV0OiBodHRwOi8vd3d3LnNvbnktZXVyb3BlLmNvbS8KCkEgZGl2aXNpb24gb2YgU29u
+eSBFdXJvcGUgKEJlbGdpdW0pIE4uVi4KVkFUIEJFIDA0MTMuODI1LjE2MCDCtyBSUFIgQnJ1c3Nl
+bHMKRm9ydGlzIMK3IEJJQyBHRUJBQkVCQiDCtyBJQkFOIEJFNDEyOTMwMzc2ODAwMTAKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1h
+aWxpbmcgbGlzdApMaW51eHBwYy1kZXZAb3psYWJzLm9yZwpodHRwczovL296bGFicy5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eHBwYy1kZXY=
