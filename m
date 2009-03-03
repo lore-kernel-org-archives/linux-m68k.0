@@ -1,44 +1,23 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
+From: Paul Mundt <lethal@linux-sh.org>
 Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
-Date: Tue, 3 Mar 2009 14:53:45 +0100
-Message-ID: <20090303145345.3751a471@i1501.lan.towertech.it>
-References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<20090220170454.04382e9e@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
-	<1235511327.18632.73.camel@macbook.infradead.org>
-	<20090224231154.60ba18d6@i1501.lan.towertech.it>
-	<1235514727.18632.93.camel@macbook.infradead.org>
-	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
-	<20090225111836.621412c1@i1501.lan.towertech.it>
-	<20090227185514.GA1071@linux-m68k.org>
-	<alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
-	<20090302110310.35af50ea@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
-	<20090302120950.0d35e06c@i1501.lan.towertech.it>
-	<alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
+Date: Wed, 4 Mar 2009 04:06:10 +0900
+Message-ID: <20090303190609.GB6907@linux-sh.org>
+References: <20090224231154.60ba18d6@i1501.lan.towertech.it> <1235514727.18632.93.camel@macbook.infradead.org> <alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be> <20090225111836.621412c1@i1501.lan.towertech.it> <20090227185514.GA1071@linux-m68k.org> <alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be> <20090302110310.35af50ea@i1501.lan.towertech.it> <alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be> <20090302120950.0d35e06c@i1501.lan.towertech.it> <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx0.towertech.it ([213.215.222.73]:54961 "HELO mx0.towertech.it"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1750750AbZCCNxz (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 3 Mar 2009 08:53:55 -0500
+Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]:42053 "EHLO
+	master.linux-sh.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752654AbZCCTKB (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Mar 2009 14:10:01 -0500
+Content-Disposition: inline
 In-Reply-To: <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: rtc-linux@googlegroups.com
-Cc: Geert.Uytterhoeven@sonycom.com, Richard Zidlicky <rz@linux-m68k.org>, David Woodhouse <dwmw2@infradead.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, Richard Zidlicky <rz@linux-m68k.org>, rtc-linux@googlegroups.com, David Woodhouse <dwmw2@infradead.org>, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-On Tue, 3 Mar 2009 11:41:23 +0100 (CET)
-Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
-
-> rtc-generic is already in the kernel, it's just called rtc-parisc ;-)
-
- Really? I never saw it :)
-
-> >  But I'd strongly suggest to plan and execute a conversion process.
-> 
+On Tue, Mar 03, 2009 at 11:41:23AM +0100, Geert Uytterhoeven wrote:
 > So would you accept a patch series that:
 >   1. Adds the missing module aliases to rtc-parisc (which is a bugfix),
 >   2. Moves the platform device creation out of rtc-ppc and into arch-specific
@@ -55,19 +34,8 @@ Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
 > ? If yes, I'll cook it up.
 > 
 > Other RTC platform support can be converted into separate drivers later.
+> 
+Did you miss the rtc-firmware thread?
 
- Seems reasonable. But please add a list of users of rtc-generic and information
- about their respective rtc hardware along with some general planning about
- which future driver would cover which users.
-
- And let's hope this is a beginning :)
-
--- 
-
- Best regards,
-
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
-
-  http://www.towertech.it
-
+http://groups.google.com/group/rtc-linux/browse_thread/thread/53e8d98966048f66/1d730cb4aa2f85f0?lnk=gst&q=rtc-firmware#1d730cb4aa2f85f0
+http://groups.google.com/group/rtc-linux/browse_thread/thread/b3d10115c7e147f2/cb9c1530d9c3a433?lnk=gst&q=rtc-firmware#cb9c1530d9c3a433
