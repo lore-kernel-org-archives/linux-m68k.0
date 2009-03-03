@@ -1,82 +1,132 @@
-From: Stephen R Marenka <stephen@marenka.net>
-Subject: Re: debian kernel m68k patches for 2.6.28
-Date: Mon, 2 Mar 2009 08:37:47 -0600
-Message-ID: <20090302143747.GG10135__36496.2595202543$1236005355$gmane$org@marenka.net>
-References: <20090301202823.GF13268@marenka.net> <10f740e80903020148i23db9424vd2fa529f6d7a4134@mail.gmail.com>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [rtc-linux] Re: [PATCH/RFC 0/5] Generic RTC class driver
+Date: Tue, 3 Mar 2009 11:41:23 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903031121280.31985@vixen.sonytel.be>
+References: <1235144809-32468-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<20090220170454.04382e9e@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0902231319170.22762@vixen.sonytel.be>
+	<1235511327.18632.73.camel@macbook.infradead.org>
+	<20090224231154.60ba18d6@i1501.lan.towertech.it>
+	<1235514727.18632.93.camel@macbook.infradead.org>
+	<alpine.LRH.2.00.0902251059110.4063@vixen.sonytel.be>
+	<20090225111836.621412c1@i1501.lan.towertech.it>
+	<20090227185514.GA1071@linux-m68k.org>
+	<alpine.LRH.2.00.0903021051040.25117@vixen.sonytel.be>
+	<20090302110310.35af50ea@i1501.lan.towertech.it>
+	<alpine.LRH.2.00.0903021116450.25117@vixen.sonytel.be>
+	<20090302120950.0d35e06c@i1501.lan.towertech.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp.knology.net ([24.214.63.101]:35828 "EHLO smtp.knology.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752117AbZCBOrf (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 2 Mar 2009 09:47:35 -0500
-Content-Disposition: inline
-In-Reply-To: <10f740e80903020148i23db9424vd2fa529f6d7a4134@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-
-
---TakKZr9L6Hm6aLOc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <20090302120950.0d35e06c@i1501.lan.towertech.it>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Alessandro Zummo <alessandro.zummo@towertech.it>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Richard Zidlicky <rz@linux-m68k.org>, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, David Woodhouse <dwmw2@infradead.org>
+List-Id: linux-m68k@vger.kernel.org
 
-On Mon, Mar 02, 2009 at 10:48:48AM +0100, Geert Uytterhoeven wrote:
-> On Sun, Mar 1, 2009 at 21:28, Stephen R Marenka <stephen@marenka.net> wro=
-te:
-> > The debian 2.6.28 kernel has hit sid, so it's probably time to
-> > update the m68k patches.
+On Mon, 2 Mar 2009, Alessandro Zummo wrote:
+> On Mon, 2 Mar 2009 11:28:01 +0100 (CET)
+> Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com> wrote:
+> > So I can solve my problem (autoloading the RTC driver on PS3 by udev) by
+> > converting the old genrtc driver into a platform device driver and crea=
+ting
+> > platform devices where appropriate.
+> =
 
-> Please note that I no longer maintain the quilt series file. I'm using
-> git only now.
+>  yes. btw, if you are building a kernel specific for the PS3, I would
+>  compile the rtc driver statically, otherwise it won't be available
+>  early on boot.
+>  =
 
-I was wondering if that wasn't true.
+> > However, this doesn't solve the distro's problem: as the old RTC framew=
+ork
+> > depends on RTC_LIB=3Dn, you cannot have both old and new RTC drivers in=
+ your
+> > (single) distro kernel. That's why dmwm2 created drivers/rtc/rtc-ppc.c:=
+ Fedora
+> > had to support machines with both old and new RTC drivers. As all of th=
+e old
+> > drivers are actually behind the ppc_md.[sg]et_rtc_time() abstraction, t=
+his was
+> > very easy.
+> =
 
-> For 2.6.28, there's a separate branch:
-> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3Dshor=
-tlog;h=3Dm68k-v2.6.28
->=20
-> Hmm, I've just noticed this is Linus' v2.6.28 with only a few new m68k
-> patches applied, while I think
-> I intended it to be the master (m68k) branch just after I merged it
-> with v2.6.28, with newer
-> critical patches applied when needed. Oh well...
+>  ok, generic kernel. you will have to load the modules on initrd. no, sad=
+ly you
+>  can't have both of them. you might stick with the old interface or
+>  convert them all. =
 
-So what do you recommend for 2.6.28? I'd like to get a functional=20
-debian kernel in the meantime. Should I start with the quilt patches?
+> =
 
-> But even if it was what I had intended, you'd still have to use `git
-> cherry' to find the m68k-specific commits
-> and import them into Debian. So I should have all changes nicely
-> rebased (and reordered/squashed) against Linus' latest tree, so you
-> can easily export them. This would also help in keeping track what
-> needs to be submitted upstream.
+> > Hence it's all or nothing, and we have to convert all of them.
+> > =
 
-That sounds like a whole new world of workflow to me. So I'll need
-your 2.6.x, linus's 2.6.x, and debian svn to figure out which patches
-need applying?
+> > drivers/rtc/rtc-generic.c would allow to have a working system without =
+old
+> > RTC drivers, until all low-level code has been converted to individual =
+RTC
+> > drivers.
+> =
 
-Thanks,
+>  I know but I have enough experience to foresee that once a generic over =
+generic
+>  framework is in place it's very hard to get rid of it because people
+>  will have no incentives.
 
-Stephen
+I know.
 
---=20
-Stephen R. Marenka     If life's not fun, you're not doing it right!
-<stephen@marenka.net>
+>  If you really need rtc-generic you can keep using it even if it's =
 
---TakKZr9L6Hm6aLOc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+>  not in the kernel, distributions often have their specific
+>  set of kernel patches.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+rtc-generic is already in the kernel, it's just called rtc-parisc ;-)
 
-iD8DBQFJq+87VKM4J7YoSbMRAiO7AJ0XtMh0fmULo3U5ncBJIIS5z1PhGACfflN6
-Mhs/gg9HLZK4S7fp8PFiDmw=
-=r3ru
------END PGP SIGNATURE-----
+>  But I'd strongly suggest to plan and execute a conversion process.
 
---TakKZr9L6Hm6aLOc--
+So would you accept a patch series that:
+  1. Adds the missing module aliases to rtc-parisc (which is a bugfix),
+  2. Moves the platform device creation out of rtc-ppc and into arch-specif=
+ic
+     code (which is also a bugfix),
+  3. Consolidates rtc-parisc and rtc-ppc into rtc-generic (which is a clean=
+up),
+  4. Makes rtc-generic dependent on PARISC, PPC, and M68K (the existing
+     [sg]et_rtc_time() users):
+       a. without introducing ARCH_HAS_GENERIC_RTC,
+       b. with a big fat warning in the Kconfig comment not relaxing the
+          dependencies, as it's supposed to go away.
+  4. Converts the PS3 RTC support into a separate driver, called rtc-ps3
+     (as a bonus ;-)
+
+? If yes, I'll cook it up.
+
+Other RTC platform support can be converted into separate drivers later.
+
+Thanks!
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
