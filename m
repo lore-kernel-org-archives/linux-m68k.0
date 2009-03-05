@@ -1,192 +1,133 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
 Subject: Re: cirrusfb: Picasso 4 card
-Date: Wed, 4 Mar 2009 22:46:59 +0100
-Message-ID: <10f740e80903041346g66852195t6ba370f0d7c7a65a@mail.gmail.com>
+Date: Thu, 5 Mar 2009 21:14:25 +0100
+Message-ID: <20090305211425.2b6f7895.krzysztof.h1@poczta.fm>
 References: <20090224223702.86f7e129.krzysztof.h1@poczta.fm>
-	 <10f740e80902250048j31a9a2c5n5c39066ba156c10d@mail.gmail.com>
-	 <20090225093729.GA18736@chumley.debian.net>
-	 <20090304212348.7d1e7df3.krzysztof.h1@poczta.fm>
+	<10f740e80902250048j31a9a2c5n5c39066ba156c10d@mail.gmail.com>
+	<20090225093729.GA18736@chumley.debian.net>
+	<20090304212348.7d1e7df3.krzysztof.h1@poczta.fm>
+	<10f740e80903041346g66852195t6ba370f0d7c7a65a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090304212348.7d1e7df3.krzysztof.h1@poczta.fm>
+In-Reply-To: <10f740e80903041346g66852195t6ba370f0d7c7a65a@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: "Christian T. Steigies" <cts@debian.org>, linux-m68k@lists.linux-m68k.org
 
-On Wed, Mar 4, 2009 at 21:23, Krzysztof Helt <krzysztof.h1@poczta.fm> w=
-rote:
-> I have finished Cirrus GD5446 chip fixes for x86.
-> The same chipset is used on the Picasso 4 card.
+Thank you Geert for all information about Zorro and Picasso4 card.
 
-Thanks a lot!
+I assume I do not understand half of at (at least) so my patch may be not correct yet.
 
-> I would be grateful if you can test the cirrusfb driver
-> with your Zorro =C2=A0card.
+I mapped only the first 2MB of RAM (I can add another 2MB in next patch if the patch works).
 
-Unfortunately I don't have a Picasso card, and Christian has a Picasso
-IV in an Amiga 2000,
-which has Zorro II slots only.
+The patch to add a preliminary support for Zorro II and Picasso4 card is below.
 
-> I am not Amiga specialist I see that these defines
-> are not used in the driver.
->
-> #define =C2=A0ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM1 =C2=A0 =C2=
-=A0 =C2=A0 ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
-> #define =C2=A0ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM2 =C2=A0 =C2=
-=A0 =C2=A0 ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
-> #define =C2=A0ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG =C2=A0 =C2=A0=
- =C2=A0 =C2=A0ZORRO_ID(VILLAGE_TRONIC, 0x17, 0)
->
-> Does anybody know how to use them inside the driver?
+Christian, please test it if you can. This patch must be applied after -mm tree patches
+or I can send you final version of the cirrusfb.c file (it is about 70KB text).
 
-Zorro II is a 16-bit bus with 24-bit adressing.
-Zorro III is a faster 32-bit bus with 32-bit adressing.
+Regards,
+Krzysztof
 
-The Picasso IV can work in both Zorro II and Zorro III mode. But
-currently cirrusfb handles Zorro III mode only.
+>From 7961de35767aff0014cb222f6794fc3fe5c2a7a1 Mon Sep 17 00:00:00 2001
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Date: Thu, 5 Mar 2009 18:39:15 +0100
+Subject: [PATCH] cirrusfb: Picasso4 with Zorro II support
 
-As Zorro II doesn't provide much address space, the Picasso IV shows
-up as _3_ separate Zorro devices in Zorro II mode, hence the 3
-different Zorro IDs.
+---
+ drivers/video/cirrusfb.c |   28 +++++++++++++++++++---------
+ 1 files changed, 19 insertions(+), 9 deletions(-)
 
-=46rom a conversation I had with Christian 4 years ago:
+diff --git a/drivers/video/cirrusfb.c b/drivers/video/cirrusfb.c
+index 0ef7ccc..7d5e069 100644
+--- a/drivers/video/cirrusfb.c
++++ b/drivers/video/cirrusfb.c
+@@ -104,6 +104,7 @@ enum cirrus_board {
+ 	BT_GD5480,
+ 	BT_LAGUNA,	/* GD5462/64 */
+ 	BT_LAGUNAB,	/* GD5465 */
++	BT_PICASSO4_Z2,	/* GD5446 for Zorro II bus*/
+ };
+ 
+ /*
+@@ -295,6 +296,9 @@ static const struct zorro_device_id cirrusfb_zorro_table[] = {
+ 	}, {
+ 		.id		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3,
+ 		.driver_data	= BT_PICASSO4,
++	}, {
++		.id		= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM1,
++		.driver_data	= BT_PICASSO4_Z2,
+ 	},
+ 	{ 0 }
+ };
+@@ -322,6 +326,10 @@ static const struct {
+ 	[BT_PICASSO4] = {
+ 		.id2	= 0,
+ 		.size	= 0x400000
++	},
++	[BT_PICASSO4_Z2] = {
++		.id2	= ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG,
++		.size	= 0x200000
+ 	}
+ };
+ #endif /* CONFIG_ZORRO */
+@@ -1968,7 +1976,7 @@ static void cirrusfb_pci_unmap(struct fb_info *info)
+ 	struct pci_dev *pdev = to_pci_dev(info->device);
+ 	struct cirrusfb_info *cinfo = info->par;
+ 
+-	if (cinfo->laguna_mmio == NULL)
++	if (cinfo->laguna_mmio != NULL)
+ 		iounmap(cinfo->laguna_mmio);
+ 	iounmap(info->screen_base);
+ #if 0 /* if system didn't claim this region, we would... */
+@@ -2268,11 +2276,11 @@ static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
+ 		goto err_out;
+ 	}
+ 
+-	dev_info(info->device, "%s board detected\n",
+-		 cirrusfb_board_info[btype].name);
+-
+ 	cinfo = info->par;
+-	cinfo->btype = btype;
++	cinfo->btype = (btype == BT_PICASSO4_Z2) ? BT_PICASSO4 : btype;
++
++	dev_info(info->device, "%s board detected\n",
++		 cirrusfb_board_info[cinfo->btype].name);
+ 
+ 	assert(z);
+ 	assert(btype != BT_NONE);
+@@ -2311,9 +2319,6 @@ static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
+ 		if (!info->screen_base)
+ 			goto err_unmap_regbase;
+ 	} else {
+-		dev_info(info->device, " REG at $%lx\n",
+-			 (unsigned long) z2->resource.start);
+-
+ 		info->fix.smem_start = board_addr;
+ 		if (board_addr > 0x01000000)
+ 			info->screen_base = ioremap(board_addr, board_size);
+@@ -2324,7 +2329,12 @@ static int __devinit cirrusfb_zorro_register(struct zorro_dev *z,
+ 
+ 		/* set address for REG area of board */
+ 		cinfo->regbase = (caddr_t) ZTWO_VADDR(z2->resource.start);
+-		info->fix.mmio_start = z2->resource.start;
++		if (btype == BT_PICASSO4_Z2)
++			cinfo->regbase += 0x10000;
++		info->fix.mmio_start = (unsigned long)cinfo->regbase;
++
++		dev_info(info->device, " REG at $%lx\n",
++			 (unsigned long) info->fix.mmio_start);
+ 
+ 		dev_dbg(info->device, "Virtual address for board set to: $%p\n",
+ 			cinfo->regbase);
+-- 
+1.5.2.2
 
---- snip ---
-
-zorro.ids has:
-
-0877  Village Tronic
-        1500  Picasso IV Z2 RAM [Graphics Card]
-        1600  Picasso IV Z2 RAM [Graphics Card]
-        1700  Picasso IV Z2 [Graphics Card]
-        1800  Picasso IV Z3 [Graphics Card]
 
 
-`lszorro -v -v' shows:
 
-Your Z2 has 3 Zorro IDs:
+----------------------------------------------------------------------
+"Teraz gry" - program dla prawdziwych graczy! >>> http://link.interia.pl/f2080
 
-> 01: Village Tronic Picasso IV Z2 RAM [Graphics Card]
->       Type: Zorro II
->       Address: 00200000 (00200000 bytes)
->       Serial number: 00000000
->       Slot address: 0020
->       Slot size: 0020
-
-2 MiB for the graphics memory
-
-> 02: Village Tronic Picasso IV Z2 RAM [Graphics Card]
->       Type: Zorro II
->       Address: 00400000 (00200000 bytes)
->       Serial number: 00000000
->       Slot address: 0040
->       Slot size: 0020
-
-Another 2 MiB for the graphics memory. You have a 4 MiB card? (yes, of =
-course,
-since it does 1024x768x24). Probably they used 2x2 MiB instead of 1x4 M=
-iB to
-reduce pressure on the Z2 address space.
-
-> 03: Village Tronic Picasso IV Z2 [Graphics Card]
->       Type: Zorro II
->       Address: 00ec0000 (00020000 bytes)
->       Serial number: 00000000
->       Slot address: 00ec
->       Slot size: 0002
-
-128 kiB for the registers.
-
-Z3 cards have only one ID, since Z3 has plenty of address space. So the
-`difficult' part is to find out how the pieces are related.
-
-And it may become tricky if the 2 pieces of 2 MiB are not contiguous in
-memory. Hmm, probably that's impossible, since I guess the 3 parts are =
-always
-initialized after each other. So if there's enough Z2 space to handle t=
-he full
-4 MiB, it will be contiguous, else only the first 2 MiB will be there.
-
----snip---
-
-To handle Zorro II mode, the driver needs to handle the 3 IDs.
-
-Probably you can add ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG to
-cirrusfb_zorro_table[],
-and handle the other 2 IDs using zorro_find() in the probe code.
-
-I thought to remember Christian once emailed me more register offset
-info for the Zorro II mode, but I can't seem to find it.
-
-=46ortunately we still have the NetBSD source at
-http://cvsweb.netbsd.org/bsdweb.cgi/~checkout~/src/sys/arch/amiga/dev/g=
-rf_cl.c?rev=3D1.41&content-type=3Dtext/plain&only_with_tag=3DMAIN
-
-=46or Picasso IV, look for the code that matches with
-zap->prodid =3D 21/22/23 (0x15/0x16/0x17 i.e. Picasso IV Z2)
-zap->prodid =3D 24 (0x18 i.e. Picasso IV Z3)
-
-The relevant part is:
-
-    switch (zap->prodid) {
-        case 21:
-            cl_fbaddr =3D zap->va;
-            cl_fbautosize =3D zap->size;
-            break;
-        case 22:
-            cl_fbautosize +=3D zap->size;
-            break;
-        case 23:
-            cl_regaddr =3D (void *)((unsigned long)(zap->va) + 0x10000)=
-;
-            break;
-        case 24:
-            cl_regaddr =3D (void *)((unsigned long)(zap->va) + 0x600000=
-);
-            /* check for PicassoIV with 64MB config and handle it */
-            if (zap->size =3D=3D 0x04000000) {
-                cl_fbaddr =3D (void *)((unsigned long)(zap->va) + 0x020=
-00000);
-            } else {
-                cl_fbaddr =3D (void *)((unsigned long)(zap->va) + 0x010=
-00000);
-            }
-            cl_fbautosize =3D 0x400000;
-            break;
-        default:
-            return (0);
-    }
-
-So in Zorro III mode, the Cirrus Logic's chip registers are at offset
-0x600000 of the single Zorro device,
-while the frame buffer can be at offset 0x1000000 or 0x2000000
-(cirrusfb seems to handle the former case only?).
-
-In Zorro II mode, the Cirrus Logic's chip registers are at offset
-0x10000 of the `reg' Zorro device,
-while the 1 or 2 `RAM' Zorro devices are the frame buffer memory (2
-MiB or 4 MiB).
-
-Hope this helps...
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
