@@ -1,52 +1,72 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [rtc-linux] Re: [PATCH 7/7] powerpc/ps3: Add rtc-ps3
-Date: Mon, 09 Mar 2009 12:18:42 -0700
-Message-ID: <1236626322.8307.9.camel@localhost>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-5-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-6-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-7-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	 <20090309151216.17f13862@i1501.lan.towertech.it>
-	 <49B55A21.2010801@am.sony.com>
-	 <20090309194307.154f3e95@i1501.lan.towertech.it>
-	 <49B568D0.5000901@am.sony.com>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 7/7] powerpc/ps3: Add rtc-ps3
+Date: Tue, 10 Mar 2009 10:21:14 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.0903101015470.24318@vixen.sonytel.be>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-2-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-3-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
+ <1236605183-22718-5-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-6-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-7-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
+ <49B5618E.9050501@am.sony.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <49B568D0.5000901@am.sony.com>
-Sender: linux-parisc-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754382AbZCJJVc@vger.kernel.org>
+In-Reply-To: <49B5618E.9050501@am.sony.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Geoff Levand <geoffrey.levand@am.sony.com>
-Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, rtc-linux@googlegroups.com, Geert.Uytterhoeven@sonycom.com, Kyle McMartin <kyle@mcmartin.ca>, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 2009-03-09 at 12:06 -0700, Geoff Levand wrote:
-> There was some work by Joe Perches to list the files a maintainer is
-> responsible for into the MAINTAINERS file.  I think that would give
-> you what you want, a way to automatically get the maintainer of a
-> file.
-> 
-> Joe, could you let us know the status of that work?
+On Mon, 9 Mar 2009, Geoff Levand wrote:
+> On 03/09/2009 06:26 AM, Geert Uytterhoeven wrote:
+> > Create a real RTC driver for PS3, and unhook the deprecated
+> > ppc_md.[gs]et_rtc_time.
+>=20
+> >  8 files changed, 132 insertions(+), 18 deletions(-)
+>=20
+> Sorry, I hadn't been following the discussion closely, but
+> could you explain why we are going from a generic framework
+> where we hook in our platform specific part to a totally
+> independent driver that has such an increase in code size.
 
-I think it works fine, and is an acceptable
-approach to finding a maintainer for either a
-patch or a specific file.
+Alessandro prefers not to have generic RTC drivers on top of some other
+abstraction, but wants platform/chip-specific drivers under drivers/rtc=
+/
+instead. The goal is to convert all RTC drivers buried in platform code
+to separate RTC drivers.
 
-The changes I've posted are probably not suitable
-for merging by anyone other than Linus as
-MAINTAINERS is the most heavily modified file
-in the kernel tree.
+(Alessandro, please correct me if I'm wrong)
 
-I've submitted it several times after merging it
-with the latest kernel without response from Linus.
+> Why couldn't you fix the generic part so that udev could
+> load it automatically?
 
-I'd merge and submit it again if it could be accepted.
+BTW, I also fixed the generic part, which is now called rtc-generic and
+autoloaded (patch 4).
 
-If someone would propose a mechanism that would
-improve the possibility to get it merged, I'd
-also appreciate that.
+> I much prefer to have this code in the platform support
+> code as it was.  It is much more effort (a pain) to maintain
+> a separate driver were I have to cater to a subsystem's
+> maintainer, and with this rtc it seems everyone who was
+> using the generic PPC driver will need to do the same.
 
+They can keep on using rtc-generic for now (patch 6).
+
+If you do not want rtc-ps3, you can nak it, and keep on using rtc-gener=
+ic :-)
+But please consider before doing that...
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
+
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
