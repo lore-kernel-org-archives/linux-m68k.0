@@ -1,35 +1,102 @@
-From: Geoff Levand <geoffrey.levand@am.sony.com>
-Subject: Re: [PATCH 7/7] powerpc/ps3: Add rtc-ps3
-Date: Tue, 10 Mar 2009 09:18:52 -0700
-Message-ID: <49B692EC.1020505@am.sony.com>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-2-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-3-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-4-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-5-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-6-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-7-git-send-email-Geert.Uytterhoeven@sonycom.com> <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: linux-next: NCR_700_detect warnings
+Date: Tue, 10 Mar 2009 21:47:05 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0903102139150.20676@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1236605183-22718-8-git-send-email-Geert.Uytterhoeven@sonycom.com>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Alessandro Zummo <alessandro.zummo@towertech.it>, Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from georges.telenet-ops.be ([195.130.137.68]:35755 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751866AbZCJUrL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Mar 2009 16:47:11 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Ming Lei <tom.leiming@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, David Brownell <dbrownell@users.sourceforge.net>, linux-next@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 03/09/2009 06:26 AM, Geert Uytterhoeven wrote:
-> Create a real RTC driver for PS3, and unhook the deprecated
-> ppc_md.[gs]et_rtc_time.
-> 
-> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> Cc: Geoff Levand <geoffrey.levand@am.sony.com>
-> ---
->  arch/powerpc/include/asm/ps3.h        |    3 +
->  arch/powerpc/platforms/ps3/os-area.c  |    2 +
->  arch/powerpc/platforms/ps3/platform.h |    2 -
->  arch/powerpc/platforms/ps3/setup.c    |    2 -
->  arch/powerpc/platforms/ps3/time.c     |   26 ++++-----
->  drivers/rtc/Kconfig                   |    9 +++
->  drivers/rtc/Makefile                  |    1 +
->  drivers/rtc/rtc-ps3.c                 |  105 +++++++++++++++++++++++++++++++++
->  8 files changed, 132 insertions(+), 18 deletions(-)
->  create mode 100644 drivers/rtc/rtc-ps3.c
+commit 76afea5b078d36ec080a75c29ff5a3fbc5774fee
+Author: Ming Lei <tom.leiming@gmail.com>
+Date:   Fri Feb 6 23:40:12 2009 +0800
 
-Acked-by: Geoff Levand <geoffrey.levand@am.sony.com>
+    platform driver: fix incorrect use of 'platform_bus_type' with 'struct devic
+    
+    This patch fixes the bug reported in
+        http://bugzilla.kernel.org/show_bug.cgi?id=11681.
+    
+    "Lots of device drivers register a 'struct device_driver' with
+    the '.bus' member set to '&platform_bus_type'. This is wrong,
+    since the platform_bus functions expect the 'struct device_driver'
+    to be wrapped up in a 'struct platform_driver' which provides
+    some additional callbacks (like suspend_late, resume_early).
+    The effect may be that platform_suspend_late() uses bogus data
+    outside the device_driver struct as a pointer pointer to the
+    device driver's suspend_late() function or other hard to
+    reproduce failures."(Lothar Wassmann)
+    
+    Signed-off-by: Ming Lei <tom.leiming@gmail.com>
+    Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+    Acked-by: David Brownell <dbrownell@users.sourceforge.net>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
+This introduced the following warnings on m68k, as `dev' is now a
+`struct platform_device *' instead of a `struct device *':
+
+| drivers/scsi/a4000t.c:64: warning: passing argument 3 of 'NCR_700_detect' from incompatible pointer type
+| drivers/scsi/mvme16x_scsi.c:67: warning: passing argument 3 of 'NCR_700_detect' from incompatible pointer type
+| drivers/scsi/bvme6000_scsi.c:61: warning: passing argument 3 of 'NCR_700_detect' from incompatible pointer type
+
+I think the below is missing (untested on real hardware)?
+
+diff --git a/drivers/scsi/a4000t.c b/drivers/scsi/a4000t.c
+index 6d25aca..61af3d9 100644
+--- a/drivers/scsi/a4000t.c
++++ b/drivers/scsi/a4000t.c
+@@ -61,7 +61,8 @@ static int __devinit a4000t_probe(struct platform_device *dev)
+ 	hostdata->dcntl_extra = EA_710;
+ 
+ 	/* and register the chip */
+-	host = NCR_700_detect(&a4000t_scsi_driver_template, hostdata, dev);
++	host = NCR_700_detect(&a4000t_scsi_driver_template, hostdata,
++			      &dev->dev);
+ 	if (!host) {
+ 		printk(KERN_ERR "a4000t-scsi: No host detected; "
+ 				"board configuration problem?\n");
+diff --git a/drivers/scsi/bvme6000_scsi.c b/drivers/scsi/bvme6000_scsi.c
+index 9e9a82b..5799cb5 100644
+--- a/drivers/scsi/bvme6000_scsi.c
++++ b/drivers/scsi/bvme6000_scsi.c
+@@ -58,7 +58,8 @@ bvme6000_probe(struct platform_device *dev)
+ 	hostdata->ctest7_extra = CTEST7_TT1;
+ 
+ 	/* and register the chip */
+-	host = NCR_700_detect(&bvme6000_scsi_driver_template, hostdata, dev);
++	host = NCR_700_detect(&bvme6000_scsi_driver_template, hostdata,
++			      &dev->dev);
+ 	if (!host) {
+ 		printk(KERN_ERR "bvme6000-scsi: No host detected; "
+ 				"board configuration problem?\n");
+diff --git a/drivers/scsi/mvme16x_scsi.c b/drivers/scsi/mvme16x_scsi.c
+index 7794fc1..b5fbfd6 100644
+--- a/drivers/scsi/mvme16x_scsi.c
++++ b/drivers/scsi/mvme16x_scsi.c
+@@ -64,7 +64,8 @@ mvme16x_probe(struct platform_device *dev)
+ 	hostdata->ctest7_extra = CTEST7_TT1;
+ 
+ 	/* and register the chip */
+-	host = NCR_700_detect(&mvme16x_scsi_driver_template, hostdata, dev);
++	host = NCR_700_detect(&mvme16x_scsi_driver_template, hostdata,
++			      &dev->dev);
+ 	if (!host) {
+ 		printk(KERN_ERR "mvme16x-scsi: No host detected; "
+ 				"board configuration problem?\n");
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
