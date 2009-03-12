@@ -1,50 +1,38 @@
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH 0/7] Generic RTC class driver
-Date: Wed, 11 Mar 2009 18:26:12 +0100 (CET)
-Message-ID: <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: m68k: kernel/up.c:16: error: dereferencing pointer to incomplete type
+Date: Thu, 12 Mar 2009 14:08:57 +0100
+Message-ID: <10f740e80903120608v314be360u30911fa003ab5ebc__26047.375080134$1236863804$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753430AbZCKR01@vger.kernel.org>
-In-Reply-To: <20090311154505.GB5448@bombadil.infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kyle McMartin <kyle@infradead.org>
-Cc: Kyle McMartin <kyle@mcmartin.ca>, Alessandro Zummo <alessandro.zummo@towertech.it>, linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-	Hi Kyle,
+Hi Stephen,
 
-On Wed, 11 Mar 2009, Kyle McMartin wrote:
-> On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrote:
-> > Is it OK for you to take it through your PA-RISC tree?
-> > If yes, I can resend the patch series with the collected acks.
->=20
-> That's fine with me, just hit me up with a git tree address and I'll
-> suck it all into the rtc-parisc tree?
+I can't seem to reproduce the compile failure of kernel/up.c on m68k,
+as shown on
+http://kisskb.ellerman.id.au/kisskb/buildresult/186066/:
 
-I put it up at:
+| kernel/up.c:16: error: dereferencing pointer to incomplete type
 
-master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-rtc-generic.git
+I am using the exact same version (ebdcc81c71937b30e09110c02a1e8a21fa770b6f).
+I'm using a different compiler, though (gcc 4.1.2).
 
-The master branch should be a descendant of your rtc-parisc branch.
+If it is reproducible, can you please send me kernel/up.i?
 
 Thanks!
 
-With kind regards,
+Gr{oetje,eeting}s,
 
-Geert Uytterhoeven
-Software Architect
+						Geert
 
-Sony Techsoft Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
-gium
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Phone:    +32 (0)2 700 8453
-=46ax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
