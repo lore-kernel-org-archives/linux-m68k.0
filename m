@@ -1,60 +1,41 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: m68k: kernel/up.c:16: error: dereferencing pointer to
- incomplete type
-Date: Fri, 13 Mar 2009 14:20:33 +1100
-Message-ID: <20090313142033.d69d9d2e.sfr__6441.05614997006$1236914560$gmane$org@canb.auug.org.au>
-References: <10f740e80903120608v314be360u30911fa003ab5ebc@mail.gmail.com>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [PATCH 0/7] Generic RTC class driver
+Date: Fri, 13 Mar 2009 00:25:43 -0400
+Message-ID: <20090313042543.GA3907@bombadil.infradead.org>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Fri__13_Mar_2009_14_20_33_+1100_Yt3vwrjjHNWEpdTS"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <10f740e80903120608v314be360u30911fa003ab5ebc@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org, michael@ellerman.id.au
-
---Signature=_Fri__13_Mar_2009_14_20_33_+1100_Yt3vwrjjHNWEpdTS
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-parisc-owner@vger.kernel.org>
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+Sender: linux-parisc-owner@vger.kernel.org
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Kyle McMartin <kyle@infradead.org>, Kyle McMartin <kyle@mcmartin.ca>, Alessandro Zummo <alessandro.zummo@towertech.it>, linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
+List-Id: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-On Thu, 12 Mar 2009 14:08:57 +0100 Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
+On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
+> 	Hi Kyle,
+> 
+> On Wed, 11 Mar 2009, Kyle McMartin wrote:
+> > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrote:
+> > > Is it OK for you to take it through your PA-RISC tree?
+> > > If yes, I can resend the patch series with the collected acks.
+> > 
+> > That's fine with me, just hit me up with a git tree address and I'll
+> > suck it all into the rtc-parisc tree?
+> 
+> I put it up at:
+> 
+> master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-rtc-generic.git
+> 
+> The master branch should be a descendant of your rtc-parisc branch.
+> 
+> Thanks!
 >
-> I can't seem to reproduce the compile failure of kernel/up.c on m68k,
-> as shown on
-> http://kisskb.ellerman.id.au/kisskb/buildresult/186066/:
->=20
-> | kernel/up.c:16: error: dereferencing pointer to incomplete type
 
-When kisskb gets an error in building a kernel, it tries to bisect the
-problem starting from a known good kernel.  The above error occurs
-during the bisection process not when building the original kernel.  I
-guess we need to be a bit more careful when reporting the errors.  Sorry
-about that.
+Great, thanks Geert!
 
-It was actually building commit
-"[ad33ea3a8d2ec324dc0f46b6ae404d824d2b349b] bnx2x: Missing mask when
-calculating flow control", I think.
+I've pulled it and pushed it back out, I'll submit it when the merge
+window opens.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Fri__13_Mar_2009_14_20_33_+1100_Yt3vwrjjHNWEpdTS
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkm50QEACgkQjjKRsyhoI8xMagCguZru8KMKipN45xXgIkxFHGtw
-k9QAnRyYOjPCG9QwohO4YXVVVnvEP2kV
-=EeCD
------END PGP SIGNATURE-----
-
---Signature=_Fri__13_Mar_2009_14_20_33_+1100_Yt3vwrjjHNWEpdTS--
+cheers, Kyle
