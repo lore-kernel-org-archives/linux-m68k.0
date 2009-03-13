@@ -1,70 +1,139 @@
-From: Michael Ellerman <michael@ellerman.id.au>
-Subject: Re: m68k: kernel/up.c:16: error: dereferencing pointer to
- incomplete type
-Date: Fri, 13 Mar 2009 21:18:20 +1100
-Message-ID: <1236939500.11012.1.camel__20889.269168447$1236939611$gmane$org@localhost>
-References: <10f740e80903120608v314be360u30911fa003ab5ebc@mail.gmail.com>
-	 <20090313142033.d69d9d2e.sfr@canb.auug.org.au>
-Reply-To: michael@ellerman.id.au
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: make headers_install broken for ARCH=m68k in 2.6.29-rc7.
+Date: Fri, 13 Mar 2009 13:14:32 +0100
+Message-ID: <10f740e80903130514k194fbdackd373d2951a9f76ba@mail.gmail.com>
+References: <200903120437.03837.rob@landley.net>
+	 <20090312210216.GB14205@uranus.ravnborg.org>
+	 <10f740e80903121540i30fdaddr600ce21f4159530a@mail.gmail.com>
+	 <200903122225.04560.rob@landley.net> <49BA0599.6070206@snapgear.com>
+	 <20090313082555.GA19045@uranus.ravnborg.org>
+	 <10f740e80903130133r130b8713v690437f0f38eb0b8@mail.gmail.com>
+	 <20090313085930.GA19274@uranus.ravnborg.org>
+	 <49BA3B05.9020906@snapgear.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-FqRXnL4imdIu6mPHI218"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090313142033.d69d9d2e.sfr@canb.auug.org.au>
+In-Reply-To: <49BA3B05.9020906@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, dwmw2@infradead.org, linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
+On Fri, Mar 13, 2009 at 11:52, Greg Ungerer <gerg@snapgear.com> wrote:
+> Sam Ravnborg wrote:
+>> On Fri, Mar 13, 2009 at 09:33:18AM +0100, Geert Uytterhoeven wrote:
+>>> On Fri, Mar 13, 2009 at 09:25, Sam Ravnborg <sam@ravnborg.org> wrot=
+e:
+>>>> On Fri, Mar 13, 2009 at 05:04:57PM +1000, Greg Ungerer wrote:
+>>>>> I pretty quick time I can fix up the last couple on the above lis=
+t.
+>>>>> But do we want to put all that change into 2.6.29-rc at this poin=
+t?
+>>>>
+>>>> In general we do not want to have headers_check broken in mainline=
+,
+>>>
+>>> headers_check is not broken, headers_install is.
+>>>
+>>> Hmm, in some sense headers_check _is_ broken, as it doesn't notice
+>>> headers_install
+>>> installs headers that refer to other headers that are not installed=
+=2E..
+>>
+>> This is what scripts/headers_check are supposed to do - strange.
+>>
+>>> Greg, I had a quick look at your signcontext.h and signal.h merge, =
+and
+>>> the MMU
+>>> part seems to be OK.
+>>>
+>>> However, some of the installed headers still have checks for CONFIG=
+_MMU:
+>>>
+>>> param.h:#ifdef CONFIG_MMU
+>>> sigcontext.h:#ifndef CONFIG_MMU
+>>> sigcontext.h:#ifdef CONFIG_MMU
+>>> siginfo.h:#ifdef CONFIG_MMU
+>>> siginfo.h:#ifdef CONFIG_MMU
+>>> siginfo.h:#endif /* CONFIG_MMU */
+>>> swab.h:#elif defined(CONFIG_MMU)
+>>>
+>>> so these have to be added to the generic unifdef-y list (is that
+>>> include/asm-generic/Kbuild.asm?).
+>
+> Hmmm, yes your right.
+>
+>
+>> include/asm-generic/Kbuild.asm impacts all architectures so be caref=
+ull
+>> there.
+>> It looks like some updates to arch/m68k/include/asm/Kbuild is needed=
+,
+>> and not the generic list of files to export.
+>>
+>> Also use og CONFIG_MMU suprises me.
+>> We used #ifdef __uClinux__ in the non-merged headers to avoid use
+>> of a CONFIG_* symbol that is not valid outside the kernel namespace.
+>> So if param.h in m68k uses CONFIG_MMU it is broken.
+>
+> I have been trying to use CONFIG_MMU wherever possible (so for non-
+> exported headers), since that matches what is actually in the code
+> proper. I am concerned at the longer term use of __uClinux__ for
+> distinguishing MMU and non-MMU. I plan on switching to use a normal
+> m68k toolchain soon. And it won't define __uClinux__ on its own.
+> (I already do this on ARM for example - same toolchain on both
+> MMU an non-MMU).
+>
+> What I have done so far is or the most part a very simple merge
+> of the files. I know there is room for some improvements in quite a
+> few of these files.
+>
+> The use of CONFIG_MMU in swab.h (is this actually exported to user
+> space?) is not actually for code that is MMU or non-MMU. It is
+> actually architecture specific. Most ColdFire parts don't have the
+> "rolw" instruction. The condition test can be better. Geert, any
+> ideas on what is more appropriate here?
 
---=-FqRXnL4imdIu6mPHI218
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The `rolw' variant is already protected by `#if defined
+(__mcfisaaplus__) || defined (__mcfisac__)',
+so I think you can replace the `#elif defined(CONFIG_MMU)' by a plain `=
+#else'.
+Or are there cases where you don't want to have __arch_swab32 at all?
 
-On Fri, 2009-03-13 at 14:20 +1100, Stephen Rothwell wrote:
-> Hi Geert,
->=20
-> On Thu, 12 Mar 2009 14:08:57 +0100 Geert Uytterhoeven <geert@linux-m68k.o=
-rg> wrote:
-> >
-> > I can't seem to reproduce the compile failure of kernel/up.c on m68k,
-> > as shown on
-> > http://kisskb.ellerman.id.au/kisskb/buildresult/186066/:
-> >=20
-> > | kernel/up.c:16: error: dereferencing pointer to incomplete type
->=20
-> When kisskb gets an error in building a kernel, it tries to bisect the
-> problem starting from a known good kernel.  The above error occurs
-> during the bisection process not when building the original kernel.  I
-> guess we need to be a bit more careful when reporting the errors.  Sorry
-> about that.
+> I can switch back to using __uClinux__ on siginfo.h and sigcontext.h.
+> If I am not mistaken we can't change these structures without breakin=
+g
+> backwards compatibility? =C2=A0The sigcontext change is particularly =
+ugly :-(
 
-Yeah sorry that is confusing.
+Copying the signal experts on linux-m68k...
 
-Should be fixed now.
+> Similarly for param.h, it looks like a switch back to using
+> __uClinux__ for now is the only option.
+>
+> Now after these fixups should I create a git branch with these header
+> merges in for inclusion into 2.6.29-rc? =C2=A0To fix the regression w=
+e
+> only need to do the handful of files that Rob listed, right?
 
-cheers
+Yes.
 
---=20
-Michael Ellerman
-OzLabs, IBM Australia Development Lab
+Gr{oetje,eeting}s,
 
-wwweb: http://michael.ellerman.id.au
-phone: +61 2 6212 1183 (tie line 70 21183)
+						Geert
 
-We do not inherit the earth from our ancestors,
-we borrow it from our children. - S.M.A.R.T Person
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
---=-FqRXnL4imdIu6mPHI218
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkm6MusACgkQdSjSd0sB4dLKpQCcDFqcv/G/LtZ8GmY8huWW9c+1
-4mkAnjB7AIDKWzjEHSmc8F91YRQuLP2e
-=gX5W
------END PGP SIGNATURE-----
-
---=-FqRXnL4imdIu6mPHI218--
-
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
