@@ -1,41 +1,71 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH 0/7] Generic RTC class driver
-Date: Fri, 13 Mar 2009 00:25:43 -0400
-Message-ID: <20090313042543.GA3907@bombadil.infradead.org>
-References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: m68k: kernel/up.c:16: error: dereferencing pointer to incomplete
+	type
+Date: Fri, 13 Mar 2009 08:59:31 +0100
+Message-ID: <10f740e80903130059h7c6b9b3bpe2a204eba15c37b6@mail.gmail.com>
+References: <10f740e80903120608v314be360u30911fa003ab5ebc@mail.gmail.com>
+	 <20090313142033.d69d9d2e.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-parisc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Kyle McMartin <kyle@infradead.org>, Kyle McMartin <kyle@mcmartin.ca>, Alessandro Zummo <alessandro.zummo@towertech.it>, linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-fx0-f176.google.com ([209.85.220.176]:40965 "EHLO
+	mail-fx0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753647AbZCMIGJ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Mar 2009 04:06:09 -0400
+Received: by fxm24 with SMTP id 24so2538516fxm.37
+        for <linux-m68k@vger.kernel.org>; Fri, 13 Mar 2009 01:06:06 -0700 (PDT)
+In-Reply-To: <20090313142033.d69d9d2e.sfr@canb.auug.org.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-next@vger.kernel.org, linux-m68k@vger.kernel.org, michael@ellerman.id.au
 
-On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
-> 	Hi Kyle,
-> 
-> On Wed, 11 Mar 2009, Kyle McMartin wrote:
-> > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrote:
-> > > Is it OK for you to take it through your PA-RISC tree?
-> > > If yes, I can resend the patch series with the collected acks.
-> > 
-> > That's fine with me, just hit me up with a git tree address and I'll
-> > suck it all into the rtc-parisc tree?
-> 
-> I put it up at:
-> 
-> master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-rtc-generic.git
-> 
-> The master branch should be a descendant of your rtc-parisc branch.
-> 
-> Thanks!
+Hi Stephe,
+
+On Fri, Mar 13, 2009 at 04:20, Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+> On Thu, 12 Mar 2009 14:08:57 +0100 Geert Uytterhoeven <geert@linux-m6=
+8k.org> wrote:
+>>
+>> I can't seem to reproduce the compile failure of kernel/up.c on m68k=
+,
+>> as shown on
+>> http://kisskb.ellerman.id.au/kisskb/buildresult/186066/:
+>>
+>> | kernel/up.c:16: error: dereferencing pointer to incomplete type
 >
+> When kisskb gets an error in building a kernel, it tries to bisect th=
+e
+> problem starting from a known good kernel. =C2=A0The above error occu=
+rs
+> during the bisection process not when building the original kernel. =C2=
+=A0I
+> guess we need to be a bit more careful when reporting the errors. =C2=
+=A0Sorry
+> about that.
 
-Great, thanks Geert!
+Ah, that explains it, thanks!
 
-I've pulled it and pushed it back out, I'll submit it when the merge
-window opens.
+I had also just noticed kernel/up.o was compiled twice, and the first
+one succeeded.
+Now I understand why...
 
-cheers, Kyle
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
