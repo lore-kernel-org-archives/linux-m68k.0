@@ -1,53 +1,49 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: make headers_install broken for ARCH=m68k in 2.6.29-rc7.
-Date: Wed, 18 Mar 2009 15:34:43 +1000
-Message-ID: <49C087F3.3080507__49133.6115207106$1237354582$gmane$org@snapgear.com>
-References: <200903120437.03837.rob@landley.net> <200903161521.00036.rob@landley.net> <49BEDC75.1080704@snapgear.com> <200903172304.00157.rob@landley.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] RTC updates for Amiga
+Date: Wed, 18 Mar 2009 15:29:20 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0903181521590.9249@anakin>
+References: <1046634024.1620.22.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <200903172304.00157.rob@landley.net>
+Received: from gerard.telenet-ops.be ([195.130.132.48]:54592 "EHLO
+	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755278AbZCRO3Y (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Mar 2009 10:29:24 -0400
+In-Reply-To: <1046634024.1620.22.camel@kars.perseus.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Rob Landley <rob@landley.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org, dwmw2@infradead.org, linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Kars de Jong <jongk@linux-m68k.org>
+Cc: Linux/m68k mailing list <linux-m68k@vger.kernel.org>
 
-Hi Rob,
+	Hi Kars,
 
-Rob Landley wrote:
-> On Monday 16 March 2009 18:10:45 Greg Ungerer wrote:
->>>>    git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
->>>> fix-includes
-> ...
->> Did you get the "fix-includes" branch?
-> 
-> Quite possibly not.  (I'm not a git person.)
-> 
-> I did a "git clone git://blah fix-includes" of the branch you gave a URL to, 
-> checked for tags and saw nothing particularly interesting, did a log -v and 
-> exported an archive of the most recent commit, and built it.
-> 
-> (Just tried it again with the same result.)
-> 
-> What _should_ I have done?
+On Sun, 2 Mar 2003 (yeah, that's a long time ago), Kars de Jong wrote:
+> I got tired of my Amiga locking up every time when hwclock got run (see
+> http://lists.linux-m68k.org/pipermail/linux-m68k/2002-January/000730.html for details) even with CONFIG_GEN_RTC_X=y in my .config, so I decided to look at the OKI website for the datasheet of the MSM6242RS clock (the one used in A2000 / A1200).
 
-The git clone you have done will just get the master branch,
-and put it in a directory named fix-includes.
+While looking into creating separate rtc-msm6242 (`A2000 RTC') and rtc-rp5c01
+(`A3000 RTC') drivers, as per current RTC policy, I browsed through the various
+Amiga schematics to identify RTC chips.
 
-Which is ok, but you still won't have the "fix-includes" branch.
-Do this after the clone:
+Surprisingly, I discovered a Ricoh RP5C01 (not an Oki MSM6242) on the A1200
+schematics:
+http://www.symbolengine.com/index.php/2007/04/21/amiga-1200-schematics-in-pdf-format/
+Hence does arch/m68k/amiga/config.c:amiga_identify() handle the A1200
+incorrectly?
 
-   git pull 
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git 
-fix-includes
+It also seems the CDTV has a builtin MSM6242, while the CD32 hasn't any RTC,
+like A1000/A500/A600. So ideally, we have to probe for RTC presence. I guess
+for the MSM6242 we can use the existing loop (timeout = no MSM6242). What about
+the RP5C01?
 
-Regards
-Greg
+Gr{oetje,eeting}s,
 
+						Geert
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear, a McAfee Company                  PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
