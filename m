@@ -1,54 +1,109 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: make headers_install broken for ARCH=m68k in 2.6.29-rc7.
-Date: Thu, 19 Mar 2009 09:53:43 +1000
-Message-ID: <49C18987.5000009__40245.9758254283$1237420525$gmane$org@snapgear.com>
-References: <200903120437.03837.rob@landley.net> <200903172304.00157.rob@landley.net> <49C087F3.3080507@snapgear.com> <200903181312.02047.rob@landley.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [git pull] m68k fix user exported includes
+Date: Thu, 19 Mar 2009 10:28:57 +1000
+Message-ID: <200903190028.n2J0Sv7h002641@localhost.localdomain>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <200903181312.02047.rob@landley.net>
+Received: from rex.securecomputing.com ([203.24.151.4]:44656 "EHLO
+	snapgear.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753088AbZCSAcx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 18 Mar 2009 20:32:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Rob Landley <rob@landley.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org, dwmw2@infradead.org, linux-next@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: torvalds@linux-foundation.org
+Cc: dwmw2@infradead.org, geert@linux-m68k.org, gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-next@vger.kernel.org, rob@landley.net, sam@ravnborg.org
 
-Hi Rob,
 
-Rob Landley wrote:
-> On Wednesday 18 March 2009 00:34:43 Greg Ungerer wrote:
->> Hi Rob,
->>
->> Rob Landley wrote:
->>> On Monday 16 March 2009 18:10:45 Greg Ungerer wrote:
->>>>>>    git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
->>>>>> fix-includes
-> ...
->>> What _should_ I have done?
->> The git clone you have done will just get the master branch,
->> and put it in a directory named fix-includes.
->>
->> Which is ok, but you still won't have the "fix-includes" branch.
->> Do this after the clone:
->>
->>    git pull
->> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
->> fix-includes
-> 
-> Ah, that did something interesting...  And the resulting headers built in 
-> uClibc.  (Works for me!)
-> 
-> confirmed-uClibc-builds-with-it-by: Rob Landley <rob@landley.net>
+Linus,
 
-Thats great, thanks.
-I'll push to Linus then.
+The merge of the m68knommu and m68k includes broke "headers_install"
+for these arches. For files with differences on each of m68k and m68knommu
+a simple include of either varient was done for many of the user exported
+headers. But the specific files that are included are not exported by
+"headers_install".
 
-Regards
+The problem results in errors like:
+
+  build/cross-compiler-m68k/include/asm/param.h:4:22: error: param_mm.h: No
+  such file or directory
+
+when building user space libraries.
+
+Files known to be affected are:
+
+  param.h ptrace.h setup.h sigcontext.h siginfo.h signal.h swab.h unistd.h
+
+All of these cases only have minor differences for each of the m68k and
+m68knommu varient. The best solution is to merge back into a single file
+for these cases (which was always the longer term intention anyway).
+
+Geert Uytterhoeven has checked m68k builds are still ok with this.
+Rob Landley has confirmed uClibc now builds (for m68k) with this.
+I have checked m68knommu builds are still ok.
+
+Please pull to get a fix for this regresion.
+
+Thanks
 Greg
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear, a McAfee Company                  PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+
+The following changes since commit 5bee17f18b595937e6beafeee5197868a3f74a06:
+  Kyle McMartin (1):
+        parisc: sba_iommu: fix build bug when CONFIG_PARISC_AGP=y
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git fix-includes
+
+Greg Ungerer (8):
+      m68k: merge the non-MMU and MMU versions of param.h
+      m68k: merge the non-MMU and MMU versions of swab.h
+      m68k: merge the non-MMU and MMU versions of sigcontext.h
+      m68k: use MMU version of setup.h for both MMU and non-MMU
+      m68k: merge the non-MMU and MMU versions of ptrace.h
+      m68k: merge the non-MMU and MMU versions of signal.h
+      m68k: use the MMU version of unistd.h for all m68k platforms
+      m68k: merge the non-MMU and MMU versions of siginfo.h
+
+ arch/m68k/include/asm/param.h         |   25 ++-
+ arch/m68k/include/asm/param_mm.h      |   22 --
+ arch/m68k/include/asm/param_no.h      |   22 --
+ arch/m68k/include/asm/ptrace.h        |   88 ++++++++-
+ arch/m68k/include/asm/ptrace_mm.h     |   80 -------
+ arch/m68k/include/asm/ptrace_no.h     |   87 --------
+ arch/m68k/include/asm/setup.h         |  377 ++++++++++++++++++++++++++++++++-
+ arch/m68k/include/asm/setup_mm.h      |  376 --------------------------------
+ arch/m68k/include/asm/setup_no.h      |   10 -
+ arch/m68k/include/asm/sigcontext.h    |   25 ++-
+ arch/m68k/include/asm/sigcontext_mm.h |   19 --
+ arch/m68k/include/asm/sigcontext_no.h |   17 --
+ arch/m68k/include/asm/siginfo.h       |   98 +++++++++-
+ arch/m68k/include/asm/siginfo_mm.h    |   92 --------
+ arch/m68k/include/asm/siginfo_no.h    |    6 -
+ arch/m68k/include/asm/signal.h        |  216 ++++++++++++++++++-
+ arch/m68k/include/asm/signal_mm.h     |  206 ------------------
+ arch/m68k/include/asm/signal_no.h     |  159 --------------
+ arch/m68k/include/asm/swab.h          |   30 +++-
+ arch/m68k/include/asm/swab_mm.h       |   16 --
+ arch/m68k/include/asm/swab_no.h       |   24 --
+ arch/m68k/include/asm/unistd.h        |  377 ++++++++++++++++++++++++++++++++-
+ arch/m68k/include/asm/unistd_mm.h     |  372 --------------------------------
+ arch/m68k/include/asm/unistd_no.h     |  372 --------------------------------
+ 24 files changed, 1209 insertions(+), 1907 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/param_mm.h
+ delete mode 100644 arch/m68k/include/asm/param_no.h
+ delete mode 100644 arch/m68k/include/asm/ptrace_mm.h
+ delete mode 100644 arch/m68k/include/asm/ptrace_no.h
+ delete mode 100644 arch/m68k/include/asm/setup_mm.h
+ delete mode 100644 arch/m68k/include/asm/setup_no.h
+ delete mode 100644 arch/m68k/include/asm/sigcontext_mm.h
+ delete mode 100644 arch/m68k/include/asm/sigcontext_no.h
+ delete mode 100644 arch/m68k/include/asm/siginfo_mm.h
+ delete mode 100644 arch/m68k/include/asm/siginfo_no.h
+ delete mode 100644 arch/m68k/include/asm/signal_mm.h
+ delete mode 100644 arch/m68k/include/asm/signal_no.h
+ delete mode 100644 arch/m68k/include/asm/swab_mm.h
+ delete mode 100644 arch/m68k/include/asm/swab_no.h
+ delete mode 100644 arch/m68k/include/asm/unistd_mm.h
+ delete mode 100644 arch/m68k/include/asm/unistd_no.h
+
