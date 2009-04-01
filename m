@@ -1,144 +1,126 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Sun, 29 Mar 2009 15:07:57 +0200
-Message-ID: <10f740e80903290607y743bada9w829754722e9f7d9f__11042.430290445$1238332217$gmane$org@mail.gmail.com>
-References: <20090326123822.GD8081@marenka.net>
-	 <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+Subject: [PATCH] ide: falconide/q40ide - Use __ide_mm_{in,out}sw() for data
+ transfer
+Date: Wed, 1 Apr 2009 22:43:50 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0904012243060.29342@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+Received: from juliette.telenet-ops.be ([195.130.137.74]:40290 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754414AbZDAUn4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 1 Apr 2009 16:43:56 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org
-Cc: linux-m68k@lists.linux-m68k.org
+To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Cc: linux-ide@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, Mar 26, 2009 at 15:10, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Mar 26, 2009 at 13:38, Stephen R Marenka <stephen@marenka.net> wrote:
->> So 2.6.29 has hit sid. Anyone want to update the kernel patches? Also,
->> what patches to apply now that we have git-based goodness?
->
-> You can start with the ones on the for-next branch.
-> I still have to cherry-pick the others to the (to be created) queue branch.
-> I'll let you know when I'm finished.
+Both of commits f94116aeec7a299640dd692128e1d22178affa8d ("ide: cleanup
+<asm-m68k/ide.h>") and 15a453a955f89f6545118770c669b52e925368bd ("ide: include
+<asm/ide.h> only when needed") break falconide:
 
-Now my git skills have been growing, I created two new branches:
-  - m68k-v2.6.29
-  - queue
+| Uniform Multi-Platform E-IDE driver
+| ide: Falcon IDE controller
+| Probing IDE interface ide0...
+| hda: Sarge m68k, ATA DISK drive
+| ide0 at 0xfff00000 on irq 15 (serialized)
+| ide-gd driver 1.18
+| hda: max request size: 128KiB
+| hda: 2118816 sectors (1084 MB) w/256KiB Cache, CHS=2102/16/63
+|  hda:<4>hda: lost interrupt
 
-Currently they're identical, but queue will soon be updated (rebased),
-to track Linus' latest.
+This happens because falconide relies on {in,out}sw() being redefined in
+<asm/ide.h>, as included by <linux/ide.h>, which is no longer the case.
+Use __ide_mm_{in,out}sw() from <asm/ide.h> instead, just like
+ide_{in,out}put_data() do.
 
-The idea is that:
-  - master is never rebased, as it's a continuous development branch,
-  - queue contains everything sufficiently stable, against Linus' latest.
-    I.e. it contains cherry-picked and rebased commits from master.
-  - m68k-vX.y.Z contains the stable stuff you want to see in e.g. Debian,
-    against a vX.Y.Z tag (I don't track stable vX.Y.Z.T)
+The same problem seems to exist in q40ide.
 
-m68k-v2.6.29 contains commits from the following topic branches:
-  - for-2.6.30
-        Already taken by Linus, incl. mac-swim
-  - atari-aranym
-  - atari-ethernat
-  - atari-ethernec
-  - atari-scc
-  - atari-fat
-        Should this be dropped? Last time nobody spoke up to care about it
-  - device-model
-        Only "Add Amiga Zorro bus modalias and uevent support",
-        I'm working on converting Amiga drivers to the platform device framework
-  - misc
-        "m68k: Fix debug=mem on Amiga"
-        "m68k-allow-all-kernel-traps-to-be-handled-via-exception-fixups-all.diff"
-        "m68k: Add support for EARLY_PRINTK on MVME16x" and
-        "Update for m68k: Add support for EARLY_PRINTK on MVME16x"
-And a few things from master, the continuous development branch:
-  - atari mouse/keyboard fixes (are they complete? IIRC not yet)
-  - adb raw (anyone who cares?)
-  - defconfigs updates (may still need some work, comments are welcome!)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/ide/falconide.c |   13 +++++++++----
+ drivers/ide/q40ide.c    |   14 ++++++++++----
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-If you want to create a patch series from m68k-v2.6.29 against v2.6.29:
-
-    git format-patch v2.6.29..m68k-v2.6.29
-
-
-git shortlog v2.6.29.. says:
-Andreas Schwab (1):
-      m68k-allow-all-kernel-traps-to-be-handled-via-exception-fixups-all.diff
-
-Geert Uytterhoeven (22):
-      MAINTAINERS: Replace dead link to m68k CVS repository by link to new git r
-      m68k: irq_node.handler() should return irqreturn_t
-      m68k: Export ARAnyM native feature API
-      m68k/ARAnyM: early_param() does not exist in the modular case
-      m68k: Wrap nfblock natfeat calls
-      m68k: Atari EtherNAT warning fixes
-      m68k: Atari SCC serial driver needs atari_SCC_init_done
-      m68k: Atari SCC serial driver needs CONFIG_ATARI_SCC
-      m68k: Atari SCC serial driver checkpatch cleanups
-      m68k: Atari SCC serial driver gs update
-      m68k: Atari SCC serial driver break_ctl update
-      m68k: Disable Atari serial console support if modular
-      m68k: Atari SCC support for ST
-      m68k: atari_scc - kill warn_unused_result warnings
-      m68k: atari_scc - kill fake config variables
-      Revert "msdos fs: remove unsettable atari option"
-      Add Amiga Zorro bus modalias support
-      m68k: Fix debug=mem on Amiga
-      Update for m68k: Add support for EARLY_PRINTK on MVME16x
-      m68k: atari_scc - Upstream updates
-      m68k: atari - Rename "mfp" to "st_mfp"
-      m68k: Update defconfigs for 2.6.29
-
-Kars de Jong (1):
-      m68k: Add support for EARLY_PRINTK on MVME16x
-
-Laurent Vivier (3):
-      m68k: Add install target
-      m68k: mac - Add a new entry in mac_model to identify the floppy controller
-      m68k: mac - Add SWIM floppy support
-
-Linux/m68k legacy (2):
-      Atari FAT updates
-      ADB raw packets
-
-Michael Schmitz (13):
-      m68k: section mismatch fixes: DMAsound for Atari
-      m68k: section mismatch fixes: Atari SCSI
-      m68k: Atari ARAnyM support
-      m68k: Atari EtherNAT (SMC91C111) driver
-      m68k: Atari EtherNAT updates
-      m68k: section mismatch fixes: EtherNAT
-      m68k: Atari ROM port ISA adapter support
-      m68k: Atari io.h fixes for EtherNAT driver
-      m68k: Atari EtherNEC driver
-      atari-ethernec-fixes.diff
-      m68k: Atari SCC serial driver
-      atari: Use the correct mouse interrupt hook
-      m68k: Fix atarimouse init
-
-Roman Zippel (1):
-      m68k: Add support for ARAnyM block and console access
-
-
-If you (talking to `owners' of the stuff on the big topic branches now ;-) think
-something is finished and ready for upstream, I can squash the commits together
-using `git rebase -i' and submit them upstream...
-
-
-Other stuff (a.o. garbage? :-) still on master:
-  - Amiga/Atari/Mac platform device beginnings
-  - Make SERIAL_PORT_DFNS depend on CONFIG_ISA
-  - Amiga GVP I/O Extender PLIP
-  - MC68681 DUART register definitions for the Amiga MultiFace III serial
-  - scsi: Clean up mvme147.c
-  - CONFIG_SWAP=n: include/linux/swap.h needs <linux/pagemap.h>
-  - module: Kill warning: label 'free_init' defined but not used
-  - drivers/net/dnet.c needs <linux/io.h>
-
-Enjoy!
+diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+index b368a5e..1f790da 100644
+--- a/drivers/ide/falconide.c
++++ b/drivers/ide/falconide.c
+@@ -20,6 +20,7 @@
+ #include <asm/atarihw.h>
+ #include <asm/atariints.h>
+ #include <asm/atari_stdma.h>
++#include <asm/ide.h>
+ 
+ #define DRV_NAME "falconide"
+ 
+@@ -67,8 +68,10 @@ static void falconide_input_data(ide_drive_t *drive, struct ide_cmd *cmd,
+ {
+ 	unsigned long data_addr = drive->hwif->io_ports.data_addr;
+ 
+-	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS))
+-		return insw(data_addr, buf, (len + 1) / 2);
++	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS)) {
++		__ide_mm_insw(data_addr, buf, (len + 1) / 2);
++		return;
++	}
+ 
+ 	raw_insw_swapw((u16 *)data_addr, buf, (len + 1) / 2);
+ }
+@@ -78,8 +81,10 @@ static void falconide_output_data(ide_drive_t *drive, struct ide_cmd *cmd,
+ {
+ 	unsigned long data_addr = drive->hwif->io_ports.data_addr;
+ 
+-	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS))
+-		return outsw(data_addr, buf, (len + 1) / 2);
++	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS)) {
++		__ide_mm_outsw(data_addr, buf, (len + 1) / 2);
++		return;
++	}
+ 
+ 	raw_outsw_swapw((u16 *)data_addr, buf, (len + 1) / 2);
+ }
+diff --git a/drivers/ide/q40ide.c b/drivers/ide/q40ide.c
+index 2a43a2f..f054186 100644
+--- a/drivers/ide/q40ide.c
++++ b/drivers/ide/q40ide.c
+@@ -16,6 +16,8 @@
+ #include <linux/blkdev.h>
+ #include <linux/ide.h>
+ 
++#include <asm/ide.h>
++
+     /*
+      *  Bases of the IDE interfaces
+      */
+@@ -77,8 +79,10 @@ static void q40ide_input_data(ide_drive_t *drive, struct ide_cmd *cmd,
+ {
+ 	unsigned long data_addr = drive->hwif->io_ports.data_addr;
+ 
+-	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS))
+-		return insw(data_addr, buf, (len + 1) / 2);
++	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS)) {
++		__ide_mm_insw(data_addr, buf, (len + 1) / 2);
++		return;
++	}
+ 
+ 	raw_insw_swapw((u16 *)data_addr, buf, (len + 1) / 2);
+ }
+@@ -88,8 +92,10 @@ static void q40ide_output_data(ide_drive_t *drive, struct ide_cmd *cmd,
+ {
+ 	unsigned long data_addr = drive->hwif->io_ports.data_addr;
+ 
+-	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS))
+-		return outsw(data_addr, buf, (len + 1) / 2);
++	if (drive->media == ide_disk && cmd && (cmd->tf_flags & IDE_TFLAG_FS)) {
++		__ide_mm_outsw(data_addr, buf, (len + 1) / 2);
++		return;
++	}
+ 
+ 	raw_outsw_swapw((u16 *)data_addr, buf, (len + 1) / 2);
+ }
+-- 
+1.6.2.1
 
 Gr{oetje,eeting}s,
 
