@@ -1,227 +1,59 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates
-Date: Thu, 2 Apr 2009 14:53:37 +1000
-Message-ID: <200904020453.n324rbR3018691@localhost.localdomain>
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 0/7] Generic RTC class driver
+Date: Thu, 2 Apr 2009 11:42:02 +0200 (CEST)
+Message-ID: <alpine.LRH.2.00.0904021141080.30882@vixen.sonytel.be>
+References: <1236605183-22718-1-git-send-email-Geert.Uytterhoeven@sonycom.com> <alpine.LRH.2.00.0903111134270.1040@vixen.sonytel.be> <20090311154505.GB5448@bombadil.infradead.org> <alpine.LRH.2.00.0903111825040.1040@vixen.sonytel.be>
+ <20090313042543.GA3907@bombadil.infradead.org>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:38057 "EHLO
-	snapgear.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751620AbZDBEyu (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 2 Apr 2009 00:54:50 -0400
+Received: from vervifontaine.sonytel.be ([80.88.33.193]:54192 "EHLO
+	pophost.sonytel.be" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1764682AbZDBJmI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Apr 2009 05:42:08 -0400
+In-Reply-To: <20090313042543.GA3907@bombadil.infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Kyle McMartin <kyle@infradead.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>, Alessandro Zummo <alessandro.zummo@towertech.it>, linux-m68k@vger.kernel.org, rtc-linux@googlegroups.com, linux-parisc@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/PPC Development <linuxppc-dev@ozlabs.org>, Paul Mundt <lethal@linux-sh.org>, Dann Frazier <dannf@dannf.org>
 
+On Fri, 13 Mar 2009, Kyle McMartin wrote:
+> On Wed, Mar 11, 2009 at 06:26:12PM +0100, Geert Uytterhoeven wrote:
+> > On Wed, 11 Mar 2009, Kyle McMartin wrote:
+> > > On Wed, Mar 11, 2009 at 11:36:02AM +0100, Geert Uytterhoeven wrot=
+e:
+> > > > Is it OK for you to take it through your PA-RISC tree?
+> > > > If yes, I can resend the patch series with the collected acks.
+> > >=20
+> I've pulled it and pushed it back out, I'll submit it when the merge
+> window opens.
 
-Hi Linus,
+Apparently the first half went it through akpm. Will you take care of t=
+he
+remaining commits?
 
-Please pull from to get a set of updates for the m68knommu arch.
+Thanks!
 
-There is a lot of header file clean ups after the m68knommu/m68k
-header file merge.  Most of the separate files only differ in minor
-ways, and are easy to merge into a single file.
+With kind regards,
 
-There is a handful of other fixes too. In particular to the UART
-settings in the platform code of some ColdFire family members.
+Geert Uytterhoeven
+Software Architect
 
-Regards
-Greg
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Bel=
+gium
 
+Phone:    +32 (0)2 700 8453
+=46ax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
 
-
-The following changes since commit 8e0ee43bc2c3e19db56a4adaa9a9b04ce885cd84:
-  Linus Torvalds (1):
-        Linux 2.6.29
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Geert Uytterhoeven (2):
-      m68k: Use dma_addr_t for scatterlist.dma_address
-      m68k: Restore correct include guards for <asm/unaligned.h>
-
-Greg Ungerer (38):
-      m68knommu: mark all RAM as ZONE_DMA
-      m68knommu: add a local dma_sync_single_for_cpu() function
-      m68k: use the mmu pci.h for m68knommu as well
-      m68k: swtich non-mmu setups to use the mmu dma-mapping.h
-      m68k: use the mc146818rtc.h for non-mmu setups as well.
-      m68k: use mmu kmap_types.h for non-mmu setups as well
-      m68knommu: remove no longer used mcfpci.h
-      m68k: merge the mmu and non-mmu versions of mmu.h
-      m68k: use mmu scatterlist.h for non-mmu setups as well
-      m68k: use mmu fpu.h for non-mmu builds as well
-      m68k: use mmu timex.h for non-mmu setups as well
-      m68k: use mmu version of elf.h for non-mmu builds as well
-      m68k: use non-mmu version of unaligned.h for all m68k
-      m68k: the one hw_irq.h can be used buy all m68k
-      m68k: merge the mmu and non-mmu versions of page_offset.h
-      m68knommu: mv definition of check_pgt_cache()
-      m68k: merge the mmu and non-mmu versions of pgalloc.h
-      m68k: merge the mmu and non-mmu versions of ucontext.h
-      m68k: merge the mmu and non-mmu versions of segment.h
-      m68k: merge the mmu and non-mmu versions of fb.h
-      m68k: use the mmu version of bootinfo.h for m68knommu as well
-      m68k: use the mmu version of cache.h for m68knommu as well
-      m68k: merge the mmu and non-mmu versions of bug.h
-      m68k: merge the mmu and non-mmu versions of bugs.h
-      m68k: merge the mmu and non-mmu versions of div64.h
-      m68k: merge the mmu and non-mmu versions of current.h
-      m68k: merge the mmu and non-mmu versions of mmu_context.h
-      m68knommu: add missing interrupt line definition for UART 2
-      m68k: merge the mmu and non-mmu versions of module.h
-      m68knommu: introduce basic clk infrastructure
-      m68k: merge the mmu and non-mmu versions of tlbflush.h
-      m68knommu: switch to using generic_handle_irq()
-      m68knommu: fix end of uart table marker
-      m68knommu: fix 5249 ColdFire UART setup
-      m68knommu: fix 5249 ColdFire UART vector setup
-      m68knommu: fix 5307 ColdFire UART vector setup
-      m68knommu: fix 5407 ColdFire UART vector setup
-      m68knommu: improve compile arch switch settings
-
-Len Sorensen (1):
-      m68knommu: Fix support for console port other than ttyS0 on mcf.c
-
- arch/m68k/include/asm/bootinfo.h          |  381 ++++++++++++++++++++++++++++-
- arch/m68k/include/asm/bootinfo_mm.h       |  378 ----------------------------
- arch/m68k/include/asm/bootinfo_no.h       |    2 -
- arch/m68k/include/asm/bug.h               |   31 ++-
- arch/m68k/include/asm/bug_mm.h            |   29 ---
- arch/m68k/include/asm/bug_no.h            |    4 -
- arch/m68k/include/asm/bugs.h              |   21 ++-
- arch/m68k/include/asm/bugs_mm.h           |   14 -
- arch/m68k/include/asm/bugs_no.h           |   16 --
- arch/m68k/include/asm/cache.h             |   14 +-
- arch/m68k/include/asm/cache_mm.h          |   11 -
- arch/m68k/include/asm/cache_no.h          |   12 -
- arch/m68k/include/asm/current.h           |   31 ++-
- arch/m68k/include/asm/current_mm.h        |    6 -
- arch/m68k/include/asm/current_no.h        |   24 --
- arch/m68k/include/asm/div64.h             |   37 +++-
- arch/m68k/include/asm/div64_mm.h          |   28 --
- arch/m68k/include/asm/div64_no.h          |    1 -
- arch/m68k/include/asm/dma-mapping.h       |  113 +++++++++-
- arch/m68k/include/asm/dma-mapping_mm.h    |  112 ---------
- arch/m68k/include/asm/dma-mapping_no.h    |    6 -
- arch/m68k/include/asm/elf.h               |  120 +++++++++-
- arch/m68k/include/asm/elf_mm.h            |  119 ---------
- arch/m68k/include/asm/elf_no.h            |  110 ---------
- arch/m68k/include/asm/fb.h                |   41 +++-
- arch/m68k/include/asm/fb_mm.h             |   34 ---
- arch/m68k/include/asm/fb_no.h             |   12 -
- arch/m68k/include/asm/fpu.h               |   22 ++-
- arch/m68k/include/asm/fpu_mm.h            |   21 --
- arch/m68k/include/asm/fpu_no.h            |   21 --
- arch/m68k/include/asm/hw_irq.h            |    9 +-
- arch/m68k/include/asm/hw_irq_mm.h         |    6 -
- arch/m68k/include/asm/hw_irq_no.h         |    4 -
- arch/m68k/include/asm/kmap_types.h        |   26 ++-
- arch/m68k/include/asm/kmap_types_mm.h     |   21 --
- arch/m68k/include/asm/kmap_types_no.h     |   21 --
- arch/m68k/include/asm/m532xsim.h          |    1 +
- arch/m68k/include/asm/mc146818rtc.h       |   31 ++-
- arch/m68k/include/asm/mc146818rtc_mm.h    |   26 --
- arch/m68k/include/asm/mc146818rtc_no.h    |    9 -
- arch/m68k/include/asm/mcfpci.h            |  119 ---------
- arch/m68k/include/asm/mmu.h               |   14 +-
- arch/m68k/include/asm/mmu_context.h       |  176 +++++++++++++-
- arch/m68k/include/asm/mmu_context_mm.h    |  154 ------------
- arch/m68k/include/asm/mmu_context_no.h    |   33 ---
- arch/m68k/include/asm/mmu_mm.h            |    7 -
- arch/m68k/include/asm/mmu_no.h            |   10 -
- arch/m68k/include/asm/module.h            |   51 ++++-
- arch/m68k/include/asm/module_mm.h         |   39 ---
- arch/m68k/include/asm/module_no.h         |   11 -
- arch/m68k/include/asm/page_offset.h       |   12 +-
- arch/m68k/include/asm/page_offset_mm.h    |    8 -
- arch/m68k/include/asm/page_offset_no.h    |    5 -
- arch/m68k/include/asm/pci.h               |   17 +-
- arch/m68k/include/asm/pci_mm.h            |   12 -
- arch/m68k/include/asm/pci_no.h            |   29 ---
- arch/m68k/include/asm/pgalloc.h           |   20 ++-
- arch/m68k/include/asm/pgalloc_mm.h        |   19 --
- arch/m68k/include/asm/pgalloc_no.h        |    8 -
- arch/m68k/include/asm/pgtable_no.h        |    2 +
- arch/m68k/include/asm/scatterlist.h       |   26 ++-
- arch/m68k/include/asm/scatterlist_mm.h    |   23 --
- arch/m68k/include/asm/scatterlist_no.h    |   22 --
- arch/m68k/include/asm/segment.h           |   64 +++++-
- arch/m68k/include/asm/segment_mm.h        |   57 -----
- arch/m68k/include/asm/segment_no.h        |   51 ----
- arch/m68k/include/asm/timex.h             |   21 ++-
- arch/m68k/include/asm/timex_mm.h          |   18 --
- arch/m68k/include/asm/timex_no.h          |   23 --
- arch/m68k/include/asm/tlbflush.h          |  268 ++++++++++++++++++++-
- arch/m68k/include/asm/tlbflush_mm.h       |  219 -----------------
- arch/m68k/include/asm/tlbflush_no.h       |   55 ----
- arch/m68k/include/asm/ucontext.h          |   33 +++-
- arch/m68k/include/asm/ucontext_mm.h       |   30 ---
- arch/m68k/include/asm/ucontext_no.h       |   32 ---
- arch/m68k/include/asm/unaligned.h         |   26 ++-
- arch/m68k/include/asm/unaligned_mm.h      |   13 -
- arch/m68k/include/asm/unaligned_no.h      |   25 --
- arch/m68knommu/Makefile                   |   14 +-
- arch/m68knommu/kernel/dma.c               |    8 +-
- arch/m68knommu/kernel/irq.c               |    2 +-
- arch/m68knommu/mm/init.c                  |    6 +-
- arch/m68knommu/platform/5249/config.c     |   11 +-
- arch/m68knommu/platform/5307/config.c     |    8 +-
- arch/m68knommu/platform/5407/config.c     |    8 +-
- arch/m68knommu/platform/coldfire/Makefile |    2 +-
- arch/m68knommu/platform/coldfire/clk.c    |   40 +++
- drivers/serial/mcf.c                      |    2 +-
- 88 files changed, 1589 insertions(+), 2189 deletions(-)
- delete mode 100644 arch/m68k/include/asm/bootinfo_mm.h
- delete mode 100644 arch/m68k/include/asm/bootinfo_no.h
- delete mode 100644 arch/m68k/include/asm/bug_mm.h
- delete mode 100644 arch/m68k/include/asm/bug_no.h
- delete mode 100644 arch/m68k/include/asm/bugs_mm.h
- delete mode 100644 arch/m68k/include/asm/bugs_no.h
- delete mode 100644 arch/m68k/include/asm/cache_mm.h
- delete mode 100644 arch/m68k/include/asm/cache_no.h
- delete mode 100644 arch/m68k/include/asm/current_mm.h
- delete mode 100644 arch/m68k/include/asm/current_no.h
- delete mode 100644 arch/m68k/include/asm/div64_mm.h
- delete mode 100644 arch/m68k/include/asm/div64_no.h
- delete mode 100644 arch/m68k/include/asm/dma-mapping_mm.h
- delete mode 100644 arch/m68k/include/asm/dma-mapping_no.h
- delete mode 100644 arch/m68k/include/asm/elf_mm.h
- delete mode 100644 arch/m68k/include/asm/elf_no.h
- delete mode 100644 arch/m68k/include/asm/fb_mm.h
- delete mode 100644 arch/m68k/include/asm/fb_no.h
- delete mode 100644 arch/m68k/include/asm/fpu_mm.h
- delete mode 100644 arch/m68k/include/asm/fpu_no.h
- delete mode 100644 arch/m68k/include/asm/hw_irq_mm.h
- delete mode 100644 arch/m68k/include/asm/hw_irq_no.h
- delete mode 100644 arch/m68k/include/asm/kmap_types_mm.h
- delete mode 100644 arch/m68k/include/asm/kmap_types_no.h
- delete mode 100644 arch/m68k/include/asm/mc146818rtc_mm.h
- delete mode 100644 arch/m68k/include/asm/mc146818rtc_no.h
- delete mode 100644 arch/m68k/include/asm/mcfpci.h
- delete mode 100644 arch/m68k/include/asm/mmu_context_mm.h
- delete mode 100644 arch/m68k/include/asm/mmu_context_no.h
- delete mode 100644 arch/m68k/include/asm/mmu_mm.h
- delete mode 100644 arch/m68k/include/asm/mmu_no.h
- delete mode 100644 arch/m68k/include/asm/module_mm.h
- delete mode 100644 arch/m68k/include/asm/module_no.h
- delete mode 100644 arch/m68k/include/asm/page_offset_mm.h
- delete mode 100644 arch/m68k/include/asm/page_offset_no.h
- delete mode 100644 arch/m68k/include/asm/pci_mm.h
- delete mode 100644 arch/m68k/include/asm/pci_no.h
- delete mode 100644 arch/m68k/include/asm/pgalloc_mm.h
- delete mode 100644 arch/m68k/include/asm/pgalloc_no.h
- delete mode 100644 arch/m68k/include/asm/scatterlist_mm.h
- delete mode 100644 arch/m68k/include/asm/scatterlist_no.h
- delete mode 100644 arch/m68k/include/asm/segment_mm.h
- delete mode 100644 arch/m68k/include/asm/segment_no.h
- delete mode 100644 arch/m68k/include/asm/timex_mm.h
- delete mode 100644 arch/m68k/include/asm/timex_no.h
- delete mode 100644 arch/m68k/include/asm/tlbflush_mm.h
- delete mode 100644 arch/m68k/include/asm/tlbflush_no.h
- delete mode 100644 arch/m68k/include/asm/ucontext_mm.h
- delete mode 100644 arch/m68k/include/asm/ucontext_no.h
- delete mode 100644 arch/m68k/include/asm/unaligned_mm.h
- delete mode 100644 arch/m68k/include/asm/unaligned_no.h
- create mode 100644 arch/m68knommu/platform/coldfire/clk.c
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+=46ortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
