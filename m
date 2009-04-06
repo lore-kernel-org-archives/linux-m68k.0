@@ -1,44 +1,66 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Subject: Re: [PATCH] ide: falconide/q40ide - Use __ide_mm_{in,out}sw() for data transfer
-Date: Thu, 2 Apr 2009 20:50:51 +0200
-Message-ID: <200904022050.52002.bzolnier@gmail.com>
-References: <Pine.LNX.4.64.0904012243060.29342@anakin>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: debian kernel m68k patches for 2.6.29
+Date: Tue, 07 Apr 2009 01:48:59 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0904062346180.32327@zirkon.biophys.uni-duesseldorf.de>
+References: <20090326123822.GD8081@marenka.net>
+ <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+ <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0904012243060.29342@anakin>
-Content-Disposition: inline
-Sender: linux-ide-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-ide@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-reply-to: <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-On Wednesday 01 April 2009, Geert Uytterhoeven wrote:
-> Both of commits f94116aeec7a299640dd692128e1d22178affa8d ("ide: cleanup
-> <asm-m68k/ide.h>") and 15a453a955f89f6545118770c669b52e925368bd ("ide: include
-> <asm/ide.h> only when needed") break falconide:
-> 
-> | Uniform Multi-Platform E-IDE driver
-> | ide: Falcon IDE controller
-> | Probing IDE interface ide0...
-> | hda: Sarge m68k, ATA DISK drive
-> | ide0 at 0xfff00000 on irq 15 (serialized)
-> | ide-gd driver 1.18
-> | hda: max request size: 128KiB
-> | hda: 2118816 sectors (1084 MB) w/256KiB Cache, CHS=2102/16/63
-> |  hda:<4>hda: lost interrupt
-> 
-> This happens because falconide relies on {in,out}sw() being redefined in
-> <asm/ide.h>, as included by <linux/ide.h>, which is no longer the case.
-> Use __ide_mm_{in,out}sw() from <asm/ide.h> instead, just like
-> ide_{in,out}put_data() do.
-> 
-> The same problem seems to exist in q40ide.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Geert,
 
-applied
+> Now my git skills have been growing, I created two new branches:
+>   - m68k-v2.6.29
+>   - queue
 
-Many thanks for fixing this issue and the IRQF_SHARED one!
+Cool... 
+
+I had to fix a merge conflict in atari_defconfig and multi_defconfig 
+when pulling the m68k-v2.6.29 branch (EtherNEC builtin vs. module, which is the 
+correct setting?). Looks like I better restart from a fresh clone just for the 
+Debian stuff. 
+ 
+> m68k-v2.6.29 contains commits from the following topic branches:
+>   - for-2.6.30
+>         Already taken by Linus, incl. mac-swim
+>   - atari-aranym
+>   - atari-ethernat
+>   - atari-ethernec
+>   - atari-scc
+>   - atari-fat
+>         Should this be dropped? Last time nobody spoke up to care about it
+
+My problem with FAT as I remember it was the limitation on the cluster size to 
+be less or equal to the MMU page size in 2.6. My FAT filesystems are all 
+configured the wrong way... so the cluster size is too big and I could never 
+test the FAT modifications in a meaningful way. 
+
+I've reformatted one of the IDE disks on my Falcon in the meantime - I'll look 
+into that problem over Easter. 
+
+> And a few things from master, the continuous development branch:
+>   - atari mouse/keyboard fixes (are they complete? IIRC not yet)
+
+There's a bit of Eiffel emulation code missing (mouse wheel IIRC) that I could 
+not test on ARAnyM at that time. My development tree has the necessary bits 
+already, I just need to test them. The mouse driver (input driver part) looks 
+incredibly messy as a result of all this, and could need a review. 
+
+> If you (talking to `owners' of the stuff on the big topic branches now ;-) think
+> something is finished and ready for upstream, I can squash the commits together
+> using `git rebase -i' and submit them upstream...
+
+Hint, hint ... what's the policy regarding driver duplication these days? 
+
+Cheers,
+
+  Michael
+ 
