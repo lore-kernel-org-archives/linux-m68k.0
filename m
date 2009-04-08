@@ -1,22 +1,75 @@
-From: Richie Whitten <lynne.smith@flinders.edu.au>
-Subject: =?windows-1251?B?QmVjb21lIG91ciBCZXN0IFBhaWQgbWVtYmVyIQ==?=
-Date: Wed, 8 Apr 2009 14:50:12 +0700
-Message-ID: <5343.91937912932$1239178382@news.gmane.org>
-Reply-To: Richie Whitten <1581honoraroos@gmail.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 02/10] MAINTAINERS - Add file patterns
+Date: Wed, 08 Apr 2009 08:44:27 -0700
+Message-ID: <1239205467.32726.40.camel@localhost>
+References: <1239167872-8179-1-git-send-email-joe@perches.com>
+	 <1239167872-8179-3-git-send-email-joe@perches.com>
+	 <10f740e80904072359n49ab104fjc545fa9f4617d5ad@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="windows-1251"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from google-58-137-222-2.google.com ([58.137.222.2]:36825 "HELO
-	your.mail.server.name.com" rhost-flags-OK-FAIL-OK-FAIL)
-	by vger.kernel.org with SMTP id S1751964AbZDHIL2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Apr 2009 04:11:28 -0400
+Received: from 136-022.dsl.LABridge.com ([206.117.136.22]:1096 "EHLO
+	mail.perches.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755748AbZDHPqu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Apr 2009 11:46:50 -0400
+In-Reply-To: <10f740e80904072359n49ab104fjc545fa9f4617d5ad@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@kernel.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, Joshua Thompson <funaho@jurai.org>
 
-RG8geW91IHdhbnQgdG8gZ2V0IHBhaWQgYnkgbWFqb3Igb25saW5lIHJldGFpbGVycyBmb3IgZG9pbmcgc29tZSBzaW1wbGUgb25saW5lIHN1cnZleXM/DQoNCkFsbCB5b3UgbmVlZCBpcyBhIGxpdHRsZSBmcmVlIHRpbWUgdG8gc3RhdGUgeW91ciBob25lc3Qgb3BpbmlvbiBvbiB0aGUgdG9waWNzIHByb3ZpZGVkLg0KDQpJZiB5b3UgZG8gbGlrZSB0byBiZWNvbWUgb25lIG9mIG91ciBoaWdobHkgdmFsdWVkIHN1cnZleSB0YWtlcnMsIHBsZWFzZSBlLW1haWwgdXMgYmFjayB0byB0cmV2aW5zdWxjMTI0MUBnbWFpbC5jb20gYW5kIHdlIHdpbGwgc2VuZCB5b3UgYWRkaXRpb25hbCBpbmZvcm1hdGlvbi4NCg0KVGhpcyBpcyBhIHNlcmlvdXMgYW5kIHNpbmNlcmUgaW5xdWlyeS4gVGhlIGF2YWlsYWJsZSBmcmVlIHBsYWNlcyBhcmUgdmVyeSBsaW1pdGVkIHNvIGh1cnJ5IHVwIGlmIHlvdSB3YW50IHRvIGJlIGEgcGFydCENCg0KS2luZGVzdCByZWdhcmRzLA0KQ29uc3VtZXIgT3BpbmlvbiBBZG1pbmlzdHJhdGlvbgoKCgoKCgoKCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlz
- IGVtYWlsIGhhcyBiZWVuIHdyaXR0ZW4gYW5kIHByb3ZlZCB0byBiZSBpbiBjb21wbGlhbmNlIHdpdGggdGhlIHJlY2VudGx5IGVzdGFibGlzaGVkIGNhbi1zcGFtIGFjdCBsYXcgaW4gVVMuIFdlIGFyZSBub3QgcHJvdm9raW5nIG9yIGZvcmNpbmcgYW55IHBlcnNvbiBpbiBhbnkgd2F5IHRvIHBhcnRpY2lwYXRlIGluIG91ciBwcm9ncmFtcy4gVG8gcGFydGljaXBhdGUgaXMgeW91ciBvd24gZGVjaXNpb24gYW5kIHlvdSBjYXJyeSB0aGUgcmVzcG9uc2liaWxpdHkgb2YgdGFraW5nIGZ1cnRoZXIgcGFydCBpbiB0aGlzIHByb21vdGlvbi4gQW55d2F5LCBpZiB5b3UgZG9uJ3Qgd2FudCB0byByZWNlaXZlIG1vcmUgZ29vZCBvZmZlcnMgZnJvbSB1cywgeW91IGNhbiBzaW1wbHkgVW5zdWJzY3JpYmUgYnkgc2VuZGluZyB1cyBhIG5vdGlmaWNhdGlvbiBlbWFpbCB0byBnZXQub3V0X2Zyb21fbGlzdEB5YWhvby5jb20gd2l0aCBhIG1haWwtc3ViamVjdCBhbmQgdGV4dCAiVW5zdWJzY3JpYmUgbWUiLCBhbmQgd2Ugd2lsbCBnZXQgeW91ciBlbWFpbCBvdXQgb2Ygb3VyIGxpc3Qgd2l0aGluIDEwIGRheXMuCgpUaGlzIG1lc3NhZ2UgaXMgU1RSSUNUTFkgQ09ORk
- lERU5USUFMIGFuZCBpcyBzb2xlbHkgZm9yIHRoZSBpbmRpdmlkdWFsIG9yIG9yZ2FuaXNhdGlvbiB0byB3aG9tIGl0IGlzIGFkZHJlc3NlZC4gSXQgbWF5IGNvbnRhaW4gUFJJVklMRUdFRCBhbmQgQ09ORklERU5USUFMIGluZm9ybWF0aW9uLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVieSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGNvbW11bmljYXRpb24gYW5kIGl0cyBjb250ZW50cyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBzaG91bGQgbm90IHJlYWQsIGNvcHksIGRpc3RyaWJ1dGUsIGRpc2Nsb3NlIG9yIG90aGVyd2lzZSB1c2UgdGhlIGluZm9ybWF0aW9uIGluIHRoaXMgZW1haWwuIEVtYWlsIG1heSBiZSBzdXNjZXB0aWJsZSB0byBkYXRhIGNvcnJ1cHRpb24sIGludGVyY2VwdGlvbiBhbmQgdW5hdXRob3Jpc2VkIGFtZW5kbWVudCwgYW5kIHdlIGRvIG5vdCBhY2NlcHQgbGlhYmlsaXR5IGZvciBhbnkgc3VjaCBjb3JydXB0aW9uLCBpbnRlcmNlcHRp
- b24gb3IgYW1lbmRtZW50IG9yIHRoZSBjb25zZXF1ZW5jZXMgdGhlcmVvZiBvciB5b3VyIHJlbGlhbmNlIG9uIGFueSBpbmZvcm1hdGlvbiBjb250YWluZWQgdGhlcmVpbiBpZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LiBJZiB5b3UgYXJlIG5vdCBpbnRlcmVzdGVkIGluIHRoZSBvZmZlcmVkIHByb21vdGlvbnMsIHBsZWFzZSBqdXN0IGRvbid0IGFuc3dlci4gSWYgeW91IHRoaW5rIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGNvbnRlbnRzIGluIGVycm9yLCBwbGVhc2UgZGVsZXRlIGl0IGZyb20geW91ciBjb21wdXRlciwgb3IgZm9sbG93IHRoZSB1bnN1YnNjcmliaW5nIHByb2NlZHVyZSBzaG93biBhYm92ZS4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgkJ
+On Wed, 2009-04-08 at 08:59 +0200, Geert Uytterhoeven wrote:
+> On Wed, Apr 8, 2009 at 07:17, Joe Perches <joe@perches.com> wrote:
+> >  M68K ARCHITECTURE
+> You can add drivers/zorro/ (Amiga Zorro bus) there, too
+> >  M68K ON APPLE MACINTOSH
+> That would be arch/m68k/mac/
+
+commit 9cd0444bdf1476798f118cc6e4abe3f3072a3f76
+Author: Joe Perches <joe@perches.com>
+Date:   Wed Apr 8 08:39:56 2009 -0700
+
+    MAINTAINERS - Update M68K patterns
+    
+    Signed-off-by: Joe Perches <joe@perches.com>
+---
+ MAINTAINERS |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 34c7903..b663cea 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3510,27 +3510,29 @@ F:	include/asm-m32r/
+ M68K ARCHITECTURE
+ P:	Geert Uytterhoeven
+ M:	geert@linux-m68k.org
+ P:	Roman Zippel
+ M:	zippel@linux-m68k.org
+ L:	linux-m68k@lists.linux-m68k.org
+ W:	http://www.linux-m68k.org/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git
+ S:	Maintained
+ F:	arch/m68k/
++F:	drivers/zorro/
+ 
+ M68K ON APPLE MACINTOSH
+ P:	Joshua Thompson
+ M:	funaho@jurai.org
+ W:	http://www.mac.linux-m68k.org/
+ L:	linux-m68k@lists.linux-m68k.org
+ S:	Maintained
++F:	arch/m68k/mac/
+ 
+ M68K ON HP9000/300
+ P:	Philip Blundell
+ M:	philb@gnu.org
+ W:	http://www.tazenda.demon.co.uk/phil/linux-hp
+ S:	Maintained
+ F:	arch/m68k/hp300/
+ 
+ MAC80211
+ P:	Johannes Berg
+
+
