@@ -1,72 +1,77 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Wed, 08 Apr 2009 01:23:18 +0200 (CEST)
-Message-ID: <alpine.DEB.1.00.0904080049540.12771@zirkon.biophys.uni-duesseldorf.de>
-References: <20090326123822.GD8081@marenka.net>
- <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
- <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
- <alpine.DEB.1.00.0904062346180.32327@zirkon.biophys.uni-duesseldorf.de>
- <10f740e80904070014o479b9a45u45b2f9bb7a175b73@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 02/10] MAINTAINERS - Add file patterns
+Date: Wed, 8 Apr 2009 08:59:54 +0200
+Message-ID: <10f740e80904072359n49ab104fjc545fa9f4617d5ad@mail.gmail.com>
+References: <1239167872-8179-1-git-send-email-joe@perches.com>
+	 <1239167872-8179-3-git-send-email-joe@perches.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-reply-to: <10f740e80904070014o479b9a45u45b2f9bb7a175b73@mail.gmail.com>
-Resent-Message-ID: <MPr0FRkYsZF.A.l3.lQ-2JB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1239167872-8179-3-git-send-email-joe@perches.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@kernel.org>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-Hi Geert,
+On Wed, Apr 8, 2009 at 07:17, Joe Perches <joe@perches.com> wrote:
+> Better description of file pattern tag "F:"
+> Add file exclusion tag "X:"
+> Add patterns to sections
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c3b2159..a8034dd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -55,422 +55,522 @@ trivial patch so apply some common sense.
 
-> > I had to fix a merge conflict in atari_defconfig and multi_defconfig
-> > when pulling the m68k-v2.6.29 branch (EtherNEC builtin vs. module, which is the
-> > correct setting?). Looks like I better restart from a fresh clone just for the
-> > Debian stuff.
-> 
-> If you pulled from my master branch before, and now try to merge the
-> m68k-v2.6.29 branch,
-> then you will get conflicts.
+> =C2=A0M68K ARCHITECTURE
+> =C2=A0P: =C2=A0 =C2=A0 Geert Uytterhoeven
+> =C2=A0M: =C2=A0 =C2=A0 geert@linux-m68k.org
+> =C2=A0P: =C2=A0 =C2=A0 Roman Zippel
+> =C2=A0M: =C2=A0 =C2=A0 zippel@linux-m68k.org
+> =C2=A0L: =C2=A0 =C2=A0 linux-m68k@lists.linux-m68k.org
+> =C2=A0W: =C2=A0 =C2=A0 http://www.linux-m68k.org/
+> =C2=A0T: =C2=A0 =C2=A0 git git.kernel.org/pub/scm/linux/kernel/git/ge=
+ert/linux-m68k.git
+> =C2=A0S: =C2=A0 =C2=A0 Maintained
+> +F: =C2=A0 =C2=A0 arch/m68k/
 
-Figured that when v2.6.29 or m68k-v2.6.29 would not show up no matter what...
+You can add drivers/zorro/ (Amiga Zorro bus) there, too
 
-> > There's a bit of Eiffel emulation code missing (mouse wheel IIRC) that I could
-> > not test on ARAnyM at that time. My development tree has the necessary bits
-> > already, I just need to test them. The mouse driver (input driver part) looks
-> > incredibly messy as a result of all this, and could need a review.
-> 
-> IIRC, there were still some other problems with the version I have, when I last
-> tried on ARAnyM. Don't remember the details, I'll have to dig into my
-> mail archive.
+> =C2=A0M68K ON APPLE MACINTOSH
+> =C2=A0P: =C2=A0 =C2=A0 Joshua Thompson
+> =C2=A0M: =C2=A0 =C2=A0 funaho@jurai.org
+> =C2=A0W: =C2=A0 =C2=A0 http://www.mac.linux-m68k.org/
+> =C2=A0L: =C2=A0 =C2=A0 linux-m68k@lists.linux-m68k.org
+> =C2=A0S: =C2=A0 =C2=A0 Maintained
 
-I've updated ARAnyM on my devel system and we'll see about that shortly. My 
-latest changes are stuck in my old git tree, should be trivial to merge over. 
- 
-> > Hint, hint ... what's the policy regarding driver duplication these days?
-> 
-> Avoid it. Extract the common part. I guess you mean for scc?
+That would be arch/m68k/mac/
 
-Nope, EtherNAT/EtherNEC. I've found some bits in the CTPCI docs regarding 
-interrupt vectors used on the EtherNAT, that should make it possible to mostly 
-use the common code there. 
+> =C2=A0M68K ON HP9000/300
+> =C2=A0P: =C2=A0 =C2=A0 Philip Blundell
+> =C2=A0M: =C2=A0 =C2=A0 philb@gnu.org
+> =C2=A0W: =C2=A0 =C2=A0 http://www.tazenda.demon.co.uk/phil/linux-hp
+> =C2=A0S: =C2=A0 =C2=A0 Maintained
+> +F: =C2=A0 =C2=A0 arch/m68k/hp300/
 
-Using the platform interface, it should be possible to use a specialized driver 
-probe function while keeping the other code, right? 
+Gr{oetje,eeting}s,
 
-Regarding SCC - there's three separate zilog drivers in drivers/serial already. 
-The m68k SCC drivers should all move there eventually. What common code should 
-we use there? (ip22 and sun drivers appear to be complicated by keyboard/mouse 
-use, pmac is quirky...)
+						Geert
 
-I cannot find the Mac serial driver anymore (in the m68k-v2.6.29 branch). Leaves 
-VME and Atari SCC to be merged and ported to the serial core model. 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-If further merge is intended, the ip22 seems the most generic, can anyone 
-confirm this? 
-
-	Michael
- 
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
