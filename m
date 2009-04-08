@@ -1,77 +1,22 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 02/10] MAINTAINERS - Add file patterns
-Date: Wed, 8 Apr 2009 08:59:54 +0200
-Message-ID: <10f740e80904072359n49ab104fjc545fa9f4617d5ad@mail.gmail.com>
-References: <1239167872-8179-1-git-send-email-joe@perches.com>
-	 <1239167872-8179-3-git-send-email-joe@perches.com>
+From: Richie Whitten <lynne.smith@flinders.edu.au>
+Subject: =?windows-1251?B?QmVjb21lIG91ciBCZXN0IFBhaWQgbWVtYmVyIQ==?=
+Date: Wed, 8 Apr 2009 14:50:12 +0700
+Message-ID: <5343.91937912932$1239178382@news.gmane.org>
+Reply-To: Richie Whitten <1581honoraroos@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+        charset="windows-1251"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1239167872-8179-3-git-send-email-joe@perches.com>
+Received: from google-58-137-222-2.google.com ([58.137.222.2]:36825 "HELO
+	your.mail.server.name.com" rhost-flags-OK-FAIL-OK-FAIL)
+	by vger.kernel.org with SMTP id S1751964AbZDHIL2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Apr 2009 04:11:28 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@kernel.org>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: linux-m68k@lists.linux-m68k.org
 
-On Wed, Apr 8, 2009 at 07:17, Joe Perches <joe@perches.com> wrote:
-> Better description of file pattern tag "F:"
-> Add file exclusion tag "X:"
-> Add patterns to sections
->
-> Signed-off-by: Joe Perches <joe@perches.com>
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c3b2159..a8034dd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -55,422 +55,522 @@ trivial patch so apply some common sense.
-
-> =C2=A0M68K ARCHITECTURE
-> =C2=A0P: =C2=A0 =C2=A0 Geert Uytterhoeven
-> =C2=A0M: =C2=A0 =C2=A0 geert@linux-m68k.org
-> =C2=A0P: =C2=A0 =C2=A0 Roman Zippel
-> =C2=A0M: =C2=A0 =C2=A0 zippel@linux-m68k.org
-> =C2=A0L: =C2=A0 =C2=A0 linux-m68k@lists.linux-m68k.org
-> =C2=A0W: =C2=A0 =C2=A0 http://www.linux-m68k.org/
-> =C2=A0T: =C2=A0 =C2=A0 git git.kernel.org/pub/scm/linux/kernel/git/ge=
-ert/linux-m68k.git
-> =C2=A0S: =C2=A0 =C2=A0 Maintained
-> +F: =C2=A0 =C2=A0 arch/m68k/
-
-You can add drivers/zorro/ (Amiga Zorro bus) there, too
-
-> =C2=A0M68K ON APPLE MACINTOSH
-> =C2=A0P: =C2=A0 =C2=A0 Joshua Thompson
-> =C2=A0M: =C2=A0 =C2=A0 funaho@jurai.org
-> =C2=A0W: =C2=A0 =C2=A0 http://www.mac.linux-m68k.org/
-> =C2=A0L: =C2=A0 =C2=A0 linux-m68k@lists.linux-m68k.org
-> =C2=A0S: =C2=A0 =C2=A0 Maintained
-
-That would be arch/m68k/mac/
-
-> =C2=A0M68K ON HP9000/300
-> =C2=A0P: =C2=A0 =C2=A0 Philip Blundell
-> =C2=A0M: =C2=A0 =C2=A0 philb@gnu.org
-> =C2=A0W: =C2=A0 =C2=A0 http://www.tazenda.demon.co.uk/phil/linux-hp
-> =C2=A0S: =C2=A0 =C2=A0 Maintained
-> +F: =C2=A0 =C2=A0 arch/m68k/hp300/
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+RG8geW91IHdhbnQgdG8gZ2V0IHBhaWQgYnkgbWFqb3Igb25saW5lIHJldGFpbGVycyBmb3IgZG9pbmcgc29tZSBzaW1wbGUgb25saW5lIHN1cnZleXM/DQoNCkFsbCB5b3UgbmVlZCBpcyBhIGxpdHRsZSBmcmVlIHRpbWUgdG8gc3RhdGUgeW91ciBob25lc3Qgb3BpbmlvbiBvbiB0aGUgdG9waWNzIHByb3ZpZGVkLg0KDQpJZiB5b3UgZG8gbGlrZSB0byBiZWNvbWUgb25lIG9mIG91ciBoaWdobHkgdmFsdWVkIHN1cnZleSB0YWtlcnMsIHBsZWFzZSBlLW1haWwgdXMgYmFjayB0byB0cmV2aW5zdWxjMTI0MUBnbWFpbC5jb20gYW5kIHdlIHdpbGwgc2VuZCB5b3UgYWRkaXRpb25hbCBpbmZvcm1hdGlvbi4NCg0KVGhpcyBpcyBhIHNlcmlvdXMgYW5kIHNpbmNlcmUgaW5xdWlyeS4gVGhlIGF2YWlsYWJsZSBmcmVlIHBsYWNlcyBhcmUgdmVyeSBsaW1pdGVkIHNvIGh1cnJ5IHVwIGlmIHlvdSB3YW50IHRvIGJlIGEgcGFydCENCg0KS2luZGVzdCByZWdhcmRzLA0KQ29uc3VtZXIgT3BpbmlvbiBBZG1pbmlzdHJhdGlvbgoKCgoKCgoKCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlz
+ IGVtYWlsIGhhcyBiZWVuIHdyaXR0ZW4gYW5kIHByb3ZlZCB0byBiZSBpbiBjb21wbGlhbmNlIHdpdGggdGhlIHJlY2VudGx5IGVzdGFibGlzaGVkIGNhbi1zcGFtIGFjdCBsYXcgaW4gVVMuIFdlIGFyZSBub3QgcHJvdm9raW5nIG9yIGZvcmNpbmcgYW55IHBlcnNvbiBpbiBhbnkgd2F5IHRvIHBhcnRpY2lwYXRlIGluIG91ciBwcm9ncmFtcy4gVG8gcGFydGljaXBhdGUgaXMgeW91ciBvd24gZGVjaXNpb24gYW5kIHlvdSBjYXJyeSB0aGUgcmVzcG9uc2liaWxpdHkgb2YgdGFraW5nIGZ1cnRoZXIgcGFydCBpbiB0aGlzIHByb21vdGlvbi4gQW55d2F5LCBpZiB5b3UgZG9uJ3Qgd2FudCB0byByZWNlaXZlIG1vcmUgZ29vZCBvZmZlcnMgZnJvbSB1cywgeW91IGNhbiBzaW1wbHkgVW5zdWJzY3JpYmUgYnkgc2VuZGluZyB1cyBhIG5vdGlmaWNhdGlvbiBlbWFpbCB0byBnZXQub3V0X2Zyb21fbGlzdEB5YWhvby5jb20gd2l0aCBhIG1haWwtc3ViamVjdCBhbmQgdGV4dCAiVW5zdWJzY3JpYmUgbWUiLCBhbmQgd2Ugd2lsbCBnZXQgeW91ciBlbWFpbCBvdXQgb2Ygb3VyIGxpc3Qgd2l0aGluIDEwIGRheXMuCgpUaGlzIG1lc3NhZ2UgaXMgU1RSSUNUTFkgQ09ORk
+ lERU5USUFMIGFuZCBpcyBzb2xlbHkgZm9yIHRoZSBpbmRpdmlkdWFsIG9yIG9yZ2FuaXNhdGlvbiB0byB3aG9tIGl0IGlzIGFkZHJlc3NlZC4gSXQgbWF5IGNvbnRhaW4gUFJJVklMRUdFRCBhbmQgQ09ORklERU5USUFMIGluZm9ybWF0aW9uLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVieSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGNvbW11bmljYXRpb24gYW5kIGl0cyBjb250ZW50cyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBzaG91bGQgbm90IHJlYWQsIGNvcHksIGRpc3RyaWJ1dGUsIGRpc2Nsb3NlIG9yIG90aGVyd2lzZSB1c2UgdGhlIGluZm9ybWF0aW9uIGluIHRoaXMgZW1haWwuIEVtYWlsIG1heSBiZSBzdXNjZXB0aWJsZSB0byBkYXRhIGNvcnJ1cHRpb24sIGludGVyY2VwdGlvbiBhbmQgdW5hdXRob3Jpc2VkIGFtZW5kbWVudCwgYW5kIHdlIGRvIG5vdCBhY2NlcHQgbGlhYmlsaXR5IGZvciBhbnkgc3VjaCBjb3JydXB0aW9uLCBpbnRlcmNlcHRp
+ b24gb3IgYW1lbmRtZW50IG9yIHRoZSBjb25zZXF1ZW5jZXMgdGhlcmVvZiBvciB5b3VyIHJlbGlhbmNlIG9uIGFueSBpbmZvcm1hdGlvbiBjb250YWluZWQgdGhlcmVpbiBpZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LiBJZiB5b3UgYXJlIG5vdCBpbnRlcmVzdGVkIGluIHRoZSBvZmZlcmVkIHByb21vdGlvbnMsIHBsZWFzZSBqdXN0IGRvbid0IGFuc3dlci4gSWYgeW91IHRoaW5rIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBhbmQgaXRzIGNvbnRlbnRzIGluIGVycm9yLCBwbGVhc2UgZGVsZXRlIGl0IGZyb20geW91ciBjb21wdXRlciwgb3IgZm9sbG93IHRoZSB1bnN1YnNjcmliaW5nIHByb2NlZHVyZSBzaG93biBhYm92ZS4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgkJ
