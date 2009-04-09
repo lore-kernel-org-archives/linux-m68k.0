@@ -1,23 +1,53 @@
-From: postmaster@neuf.fr
-Subject: (unknown)
-Date: Thu,  9 Apr 2009 19:46:06 +0200 (CEST)
-Message-ID: <20090409174606.91CB47000091@msfrf2314.sfr.fr>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] scsi: a4000 - Correct driver unregistration in case of
+ failure
+Date: Thu, 9 Apr 2009 21:26:50 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0904092125540.22008@anakin>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp23.services.sfr.fr ([93.17.128.21]:13160 "EHLO
-	smtp23.services.sfr.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1762308AbZDISCX (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Apr 2009 14:02:23 -0400
-Received: from smtp23.services.sfr.fr (msfrf2314 [10.18.27.28])
-	by msfrf2310.sfr.fr (SMTP Server) with ESMTP id 72241700018B
-	for <linux-m68k@vger.kernel.org>; Thu,  9 Apr 2009 19:52:06 +0200 (CEST)
-Received: from filter.sfr.fr (localhost [127.0.0.1])
-	by msfrf2314.sfr.fr (SMTP Server) with ESMTP id DD26A70000A2
-	for <linux-m68k@vger.kernel.org>; Thu,  9 Apr 2009 19:46:06 +0200 (CEST)
-Received: from serveur80 (161.189.81-79.rev.gaoland.net [79.81.189.161])
-	by msfrf2314.sfr.fr (SMTP Server) with ESMTP id 91CB47000091
-	for <linux-m68k@vger.kernel.org>; Thu,  9 Apr 2009 19:46:06 +0200 (CEST)
-Subject: 
+Received: from gerard.telenet-ops.be ([195.130.132.48]:33186 "EHLO
+	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1764374AbZDIT04 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Apr 2009 15:26:56 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Ming Lei <tom.leiming@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-scsi@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
+commit 7a192ec334cab9fafe3a8665a65af398b0e24730 ("platform driver: fix
+incorrect use of 'platform_bus_type' with 'struct device_driver') turned a
+driver_UNregister into platform_driver_REGISTER. Correct this to
+platform_driver_UNregister.
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/scsi/a4000t.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/scsi/a4000t.c b/drivers/scsi/a4000t.c
+index 61af3d9..e3519fa 100644
+--- a/drivers/scsi/a4000t.c
++++ b/drivers/scsi/a4000t.c
+@@ -129,7 +129,7 @@ static int __init a4000t_scsi_init(void)
+ 	a4000t_scsi_device = platform_device_register_simple("a4000t-scsi",
+ 			-1, NULL, 0);
+ 	if (IS_ERR(a4000t_scsi_device)) {
+-		platform_driver_register(&a4000t_scsi_driver);
++		platform_driver_unregister(&a4000t_scsi_driver);
+ 		return PTR_ERR(a4000t_scsi_device);
+ 	}
+ 
+-- 
+1.6.2.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
