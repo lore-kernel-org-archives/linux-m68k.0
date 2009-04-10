@@ -1,58 +1,35 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH 1/6] ariadne: convert to net_device_ops
-Date: Fri, 10 Apr 2009 07:24:07 +0400
-Message-ID: <20090410032407.GA9004__4322.14039979062$1239334305$gmane$org@orion>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/6] ariadne: convert to net_device_ops
+Date: Fri, 10 Apr 2009 09:03:22 +0200
+Message-ID: <10f740e80904100003i1a71ae9bh4bf21caaba7865f9@mail.gmail.com>
+References: <20090410032407.GA9004@orion>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+Received: from mail-ew0-f165.google.com ([209.85.219.165]:52993 "EHLO
+	mail-ew0-f165.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758218AbZDJHDY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Apr 2009 03:03:24 -0400
+In-Reply-To: <20090410032407.GA9004@orion>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Alexander Beregalov <a.beregalov@gmail.com>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
+On Fri, Apr 10, 2009 at 05:24, Alexander Beregalov
+<a.beregalov@gmail.com> wrote:
+> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
 
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
+Gr{oetje,eeting}s,
 
- drivers/net/ariadne.c |   19 +++++++++++++------
- 1 files changed, 13 insertions(+), 6 deletions(-)
+						Geert
 
-diff --git a/drivers/net/ariadne.c b/drivers/net/ariadne.c
-index e1d72e0..6c5826a 100644
---- a/drivers/net/ariadne.c
-+++ b/drivers/net/ariadne.c
-@@ -155,6 +155,18 @@ static struct zorro_driver ariadne_driver = {
-     .remove	= __devexit_p(ariadne_remove_one),
- };
- 
-+static const struct net_device_ops ariadne_netdev_ops = {
-+	.ndo_open		= ariadne_open,
-+	.ndo_stop		= ariadne_close,
-+	.ndo_start_xmit		= ariadne_start_xmit,
-+	.ndo_tx_timeout		= ariadne_tx_timeout,
-+	.ndo_get_stats		= ariadne_get_stats,
-+	.ndo_set_multicast_list	= set_multicast_list,
-+	.ndo_validate_addr	= eth_validate_addr,
-+	.ndo_change_mtu		= eth_change_mtu,
-+	.ndo_set_mac_address	= eth_mac_addr,
-+};
-+
- static int __devinit ariadne_init_one(struct zorro_dev *z,
- 				      const struct zorro_device_id *ent)
- {
-@@ -197,13 +209,8 @@ static int __devinit ariadne_init_one(struct zorro_dev *z,
-     dev->mem_start = ZTWO_VADDR(mem_start);
-     dev->mem_end = dev->mem_start+ARIADNE_RAM_SIZE;
- 
--    dev->open = &ariadne_open;
--    dev->stop = &ariadne_close;
--    dev->hard_start_xmit = &ariadne_start_xmit;
--    dev->tx_timeout = &ariadne_tx_timeout;
-+    dev->netdev_ops = &ariadne_netdev_ops;;
-     dev->watchdog_timeo = 5*HZ;
--    dev->get_stats = &ariadne_get_stats;
--    dev->set_multicast_list = &set_multicast_list;
- 
-     err = register_netdev(dev);
-     if (err) {
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
