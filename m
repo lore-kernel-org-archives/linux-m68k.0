@@ -1,35 +1,38 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Jan Ceuleers <jan.ceuleers@computer.org>
 Subject: Re: [PATCH 1/6] ariadne: convert to net_device_ops
-Date: Fri, 10 Apr 2009 09:03:22 +0200
-Message-ID: <10f740e80904100003i1a71ae9bh4bf21caaba7865f9@mail.gmail.com>
+Date: Fri, 10 Apr 2009 18:13:54 +0200
+Message-ID: <49DF7042.7090502@computer.org>
 References: <20090410032407.GA9004@orion>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f165.google.com ([209.85.219.165]:52993 "EHLO
-	mail-ew0-f165.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758218AbZDJHDY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Apr 2009 03:03:24 -0400
+Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:48727 "EHLO
+	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758721AbZDJQON (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 10 Apr 2009 12:14:13 -0400
 In-Reply-To: <20090410032407.GA9004@orion>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Alexander Beregalov <a.beregalov@gmail.com>
 Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Fri, Apr 10, 2009 at 05:24, Alexander Beregalov
-<a.beregalov@gmail.com> wrote:
+Alexander Beregalov wrote:
+> 
 > Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+...
+> @@ -197,13 +209,8 @@ static int __devinit ariadne_init_one(struct zorro_dev *z,
+>      dev->mem_start = ZTWO_VADDR(mem_start);
+>      dev->mem_end = dev->mem_start+ARIADNE_RAM_SIZE;
+>  
+> -    dev->open = &ariadne_open;
+> -    dev->stop = &ariadne_close;
+> -    dev->hard_start_xmit = &ariadne_start_xmit;
+> -    dev->tx_timeout = &ariadne_tx_timeout;
+> +    dev->netdev_ops = &ariadne_netdev_ops;;
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+We don't really need two semicolons there but I suppose that they won't 
+hurt.
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Cheers, Jan
