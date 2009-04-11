@@ -1,47 +1,50 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 1/6] ariadne: convert to net_device_ops
-Date: Sat, 11 Apr 2009 02:56:26 -0700 (PDT)
-Message-ID: <20090411.025626.125053437.davem@davemloft.net>
-References: <20090410032407.GA9004@orion>
-	<49DF7042.7090502@computer.org>
-	<20090410175924.GA20243@orion>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: How to get m68k sources?
+Date: Sat, 11 Apr 2009 12:14:49 +0200
+Message-ID: <m2ab6nts2u.fsf@igel.home>
+References: <alpine.LNX.2.01.0904102301250.22946@halbrend.uninett.no>
+	<10f740e80904110116j6626b564m92b0fbf9fca79106@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:52599
-	"EHLO sunset.davemloft.net" rhost-flags-OK-FAIL-OK-OK)
-	by vger.kernel.org with ESMTP id S1756767AbZDKJ4g (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 11 Apr 2009 05:56:36 -0400
-In-Reply-To: <20090410175924.GA20243@orion>
+Received: from mail-out.m-online.net ([212.18.0.10]:42701 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752823AbZDKKO4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Apr 2009 06:14:56 -0400
+In-Reply-To: <10f740e80904110116j6626b564m92b0fbf9fca79106@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Sat, 11 Apr 2009 10:16:29 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: a.beregalov@gmail.com
-Cc: jan.ceuleers@computer.org, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, geert@linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: =?utf-8?Q?Kolbj=C3=B8rn?= Barmen <linux-m68k@kolla.no>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Date: Fri, 10 Apr 2009 21:59:24 +0400
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-> On Fri, Apr 10, 2009 at 06:13:54PM +0200, Jan Ceuleers wrote:
->> Alexander Beregalov wrote:
->> > 
->> > Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
->> ...
->> > @@ -197,13 +209,8 @@ static int __devinit ariadne_init_one(struct zorro_dev *z,
->> >      dev->mem_start = ZTWO_VADDR(mem_start);
->> >      dev->mem_end = dev->mem_start+ARIADNE_RAM_SIZE;
->> >  
->> > -    dev->open = &ariadne_open;
->> > -    dev->stop = &ariadne_close;
->> > -    dev->hard_start_xmit = &ariadne_start_xmit;
->> > -    dev->tx_timeout = &ariadne_tx_timeout;
->> > +    dev->netdev_ops = &ariadne_netdev_ops;;
->> 
->> We don't really need two semicolons there but I suppose that they won't 
->> hurt.
-> Thanks!
-> 
-> David, please apply this patch
+> 2.6.29 development is done on branch `m68k-v2.6.29', use
+>
+>     git checkout m68k-v2.6.29
 
-Just FYI I made sure to integrate this fixed up version.
+After cloning the repository you first have to create the tracking
+m68k-v2.6.29 branch:
+
+$ git checkout -t origin/m68k-v2.6.29
+
+>   2. Set up a remote (if you want a combined one with Linus' and m68k):
+>
+>     git remote add linux-m68k
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git
+>     git remote update
+>     git checkout linux-m68k/master
+> or  git checkout linux-m68k/m68k-v2.6.29
+
+Same here, you need to add -t to the checkout commands to tell git to
+create tracking branches.  In the first case when checking out
+linux-m68k/master you also have to add "-b <branch>" to name the local
+branch differently from the already existing master branch.
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
