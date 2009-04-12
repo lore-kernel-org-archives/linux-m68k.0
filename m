@@ -1,50 +1,76 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
 Subject: Re: How to get m68k sources?
-Date: Sat, 11 Apr 2009 12:14:49 +0200
-Message-ID: <m2ab6nts2u.fsf@igel.home>
-References: <alpine.LNX.2.01.0904102301250.22946@halbrend.uninett.no>
-	<10f740e80904110116j6626b564m92b0fbf9fca79106@mail.gmail.com>
+Date: Sun, 12 Apr 2009 06:35:27 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.0904120619100.22946@halbrend.uninett.no>
+References: <alpine.LNX.2.01.0904102301250.22946@halbrend.uninett.no> <10f740e80904110116j6626b564m92b0fbf9fca79106@mail.gmail.com> <m2ab6nts2u.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:42701 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752823AbZDKKO4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Apr 2009 06:14:56 -0400
-In-Reply-To: <10f740e80904110116j6626b564m92b0fbf9fca79106@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Sat, 11 Apr 2009 10:16:29 +0200")
+Received: from ufisa.uninett.no ([158.38.152.126]:50416 "EHLO ufisa.uninett.no"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751127AbZDLEek (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 12 Apr 2009 00:34:40 -0400
+In-Reply-To: <m2ab6nts2u.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: =?utf-8?Q?Kolbj=C3=B8rn?= Barmen <linux-m68k@kolla.no>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Sat, 11 Apr 2009, Andreas Schwab wrote:
 
-> 2.6.29 development is done on branch `m68k-v2.6.29', use
->
->     git checkout m68k-v2.6.29
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> 
+> > 2.6.29 development is done on branch `m68k-v2.6.29', use
+> >
+> >     git checkout m68k-v2.6.29
 
-After cloning the repository you first have to create the tracking
-m68k-v2.6.29 branch:
+Well, noone says this, but obviously one has to step into the "linux-m68k"
+directory one first "cloned" to do this... so "cd linux-m68k", and then...
 
-$ git checkout -t origin/m68k-v2.6.29
+> After cloning the repository you first have to create the tracking
+> m68k-v2.6.29 branch:
+> 
+> $ git checkout -t origin/m68k-v2.6.29
 
->   2. Set up a remote (if you want a combined one with Linus' and m68k):
->
->     git remote add linux-m68k
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git
->     git remote update
->     git checkout linux-m68k/master
-> or  git checkout linux-m68k/m68k-v2.6.29
+did you test this?
 
-Same here, you need to add -t to the checkout commands to tell git to
-create tracking branches.  In the first case when checking out
-linux-m68k/master you also have to add "-b <branch>" to name the local
-branch differently from the already existing master branch.
+[kolla@haugum] /home/kolla/linux-m68k $ git checkout -t origin/m68k-v2.6.29
+fatal: git checkout: --track and --no-track require -b
 
-Andreas.
+So after some fumbling...
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+[kolla@haugum] /home/kolla/linux-m68k $ git checkout -t -b origin/m68k-v2.6.29
+Branch origin/m68k-v2.6.29 set up to track local branch refs/heads/master.
+Switched to a new branch "origin/m68k-v2.6.29"
+
+But so what - git tells me I have switched to new branch, but where is it?
+I have not received anything, nor do I have any new files, and...
+
+[kolla@haugum] /home/kolla/linux-m68k $ git checkout m68k-v2.6.29
+error: pathspec 'm68k-v2.6.29' did not match any file(s) known to git.
+ 
+[kolla@haugum] /home/kolla/linux-m68k $ git checkout origin/m68k-v2.6.29
+warning: refname 'origin/m68k-v2.6.29' is ambiguous.
+Already on "origin/m68k-v2.6.29"
+
+[kolla@haugum] /home/kolla/linux-m68k $ git status | cat
+# On branch origin/m68k-v2.6.29
+nothing to commit (working directory clean)
+
+[kolla@haugum] /home/kolla/linux-m68k $ git pull
+>From .
+ * branch            master     -> FETCH_HEAD
+Already up-to-date.
+
+[kolla@haugum] /home/kolla/linux-m68k $ head -n5 Makefile
+VERSION = 2
+PATCHLEVEL = 6
+SUBLEVEL = 30
+EXTRAVERSION = -rc1
+NAME = Temporary Tasmanian Devil
+
+Obviously not 2.6.29...
+
+So what now?
+
+-- kolla
