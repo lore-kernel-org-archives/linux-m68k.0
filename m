@@ -1,45 +1,54 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Petr Stehlik <pstehlik@sophics.cz>
 Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Wed, 15 Apr 2009 03:25:01 +0200 (CEST)
-Message-ID: <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
+Date: Wed, 15 Apr 2009 07:56:06 +0200
+Message-ID: <1239774966.20245.4.camel@petr>
 References: <20090326123822.GD8081@marenka.net>
- <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
- <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
- <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
- <1239696787.2049.8.camel@petr>
- <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
- <1239698381.2049.25.camel@petr>
+	 <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+	 <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+	 <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
+	 <1239696787.2049.8.camel@petr>
+	 <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
+	 <1239698381.2049.25.camel@petr>
+	 <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <1239698381.2049.25.camel@petr>
+In-Reply-To: <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-Hi,
+Michael Schmitz p=ED=B9e v St 15. 04. 2009 v 03:25 +0200:
+> > BTW, does it mean that there is a problem with mounting small GEMDO=
+S
+> > partitions in Linux (<32 MB?)? And at the same time you can't mount
+> > larger partitions because of the logical sector size limit (>511 MB=
+)?
+>=20
+> Small partitions I can mount as regular MSDOS FAT (-o atari=3Dno) onl=
+y, unless=20
+> they are <32 MB (in which case it's a 16 bit FAT with few enough clus=
+ters to be=20
+> treated as 16 bit FAT by the Atari FAT patch).
 
-> Well, many years ago it used to be suggested to create a smallish boot
-> partition and then larger data/application partition(s). I think the
-> reason for this was that some of the early Atari disk drivers used to
-> loose the first partition's contents occasionally. 
-> 
-> Anyway, the point is that even these days you can encounter a small
-> partitions on Atari.
+I don't think I understand it.
 
-OK, 
- 
-> BTW, does it mean that there is a problem with mounting small GEMDOS
-> partitions in Linux (<32 MB?)? And at the same time you can't mount
-> larger partitions because of the logical sector size limit (>511 MB)?
+What if I created a disk image with 15, 31, 63, 127, 255 and 511 MB
+partitions and sent it to you? Would you please list what partition
+sizes are mountable with _and_ without the Atari FAT patch that we are
+discussing here? That could finally clear it up (for me at least).
 
-Small partitions I can mount as regular MSDOS FAT (-o atari=no) only, unless 
-they are <32 MB (in which case it's a 16 bit FAT with few enough clusters to be 
-treated as 16 bit FAT by the Atari FAT patch).
+> What disk driver did you create these partitions with?
 
-I'll try your disk image and see what I get. What disk driver did you create 
-these partitions with?
+HDDRIVER, so it should be fully AHDI compatible.
 
-	Michael
+Petr
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
