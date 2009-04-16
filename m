@@ -1,51 +1,35 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
-Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Thu, 16 Apr 2009 10:01:43 +0200
-Message-ID: <1239868903.12777.25.camel@petr>
-References: <20090326123822.GD8081@marenka.net>
-	 <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
-	 <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
-	 <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
-	 <1239696787.2049.8.camel@petr>
-	 <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
-	 <1239698381.2049.25.camel@petr>
-	 <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
-	 <1239774966.20245.4.camel@petr>
-	 <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
-	 <1239862075.12777.14.camel@petr>
-	 <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+Subject: Network died completely in 2.6.29 - also on m68k :)
+Date: Thu, 16 Apr 2009 10:19:31 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.0904160950280.9424@halbrend.uninett.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
+Content-Type: TEXT/PLAIN; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-
-Michael Schmitz p=ED=B9e v =C8t 16. 04. 2009 v 09:45 +0200:
-> There's something wrong with the Atari FAT option code then - this is=
- what I get=20
-> with atari=3Dyes on the first of your partitions (128MB?):
-
-255 MB, IIRC (same sector/cluster size as 128 MB)
-
-> FAT (before atari): FAT bits 0 clusters 32622 sectors 65280=20
-> FAT (option atari): FAT bits 12 clusters 32622 sectors 65280=20
-> FAT (after atari): FAT bits 12 clusters 32622 sectors 65280=20
->=20
-> The GEMDOS option code picks a 12 bit FAT even though it should clear=
-ly fit into=20
-> a 16 bit FAT.=20
-
-I don't know what you mean by "before/after atari" but it's clearly all
-wrong. FAT12 is on floppies only... Besides that how could 32622 value
-fit into 12 bit number?
-
-Petr
+To: linux-m68k@lists.linux-m68k.org
 
 
+After getting my ebuilds going, I compiled and installed 2.6.29 first o=
+n
+aranym, where it works just fine, and then on one of my A1200s. On the
+A1200 it seemed to work fine, for a while that is, suddenly the network
+stopped up - completely. Nothing in dmesg, but rmmod/modprobe apne does
+not make any difference, and I cant even ping 127.0.0.1 - so I guess th=
+is
+is the infamous 2.6.29 bug that was fixed in 2.6.29.1, and that is
+described here http://lkml.org/lkml/2009/3/27/421
+
+So, I tryed to pull out a m68k-v2.6.29.1 from git, but appearantly ther=
+e is no
+such thing. So=C2=B8 it is probably to add the "Disable GRO on legacy n=
+etif_rx
+path" patch (in posting above) to the v2.6.29 branch, no?
+
+I will put it in locally now and see if it works for me.
+
+-- kolla
 --
 To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
 n
