@@ -1,37 +1,63 @@
-From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
-Subject: Network died completely in 2.6.29 - also on m68k :)
-Date: Thu, 16 Apr 2009 10:19:31 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.0904160950280.9424@halbrend.uninett.no>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Linux/m68k on Atari
+Date: Thu, 16 Apr 2009 11:19:09 +0200
+Message-ID: <10f740e80904160219j7f4a71e5rceb634e3fb9cc4a3@mail.gmail.com>
+References: <20090327163917.e2b1d865.mandin.patrice@orange.fr>
+	 <alpine.DEB.1.00.0904051035290.30160@zirkon.biophys.uni-duesseldorf.de>
+	 <20090409214055.f250de3c.mandin.patrice@orange.fr>
+	 <1239307252.11875.4.camel@joy>
+	 <20090410185538.04034623.mandin.patrice@orange.fr>
+	 <alpine.DEB.1.00.0904120652210.2715@zirkon.biophys.uni-duesseldorf.de>
+	 <20090412094419.ab2ba909.mandin.patrice@orange.fr>
+	 <alpine.DEB.1.00.0904140429240.18464@zirkon.biophys.uni-duesseldorf.de>
+	 <20090414084002.2d6f20ef.mandin.patrice@orange.fr>
+	 <alpine.DEB.1.00.0904140911470.29340@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ew0-f165.google.com ([209.85.219.165]:49657 "EHLO
+	mail-ew0-f165.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752600AbZDPJTL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 16 Apr 2009 05:19:11 -0400
+Received: by ewy9 with SMTP id 9so303063ewy.37
+        for <linux-m68k@vger.kernel.org>; Thu, 16 Apr 2009 02:19:09 -0700 (PDT)
+In-Reply-To: <alpine.DEB.1.00.0904140911470.29340@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Patrice Mandin <mandin.patrice@orange.fr>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
 
+On Tue, Apr 14, 2009 at 09:22, Michael Schmitz
+<schmitz@biophys.uni-duesseldorf.de> wrote:
+>> > Anyway: do you have a section like this in your log?
+>> >
+>> > Ignoring memory chunk at 0x0:0xe00000 before the first chunk
+>> > Fix your bootloader or use a memfile to make use of this area!
+>>
+>> Yes, I have this message in my log. Full log attached (seems minicom
+>> cut it at 80 cols).
+>
+> Must be a minicom setting problem - mine doesn't (at least not what's copied to
+> the log after ^A L).
+>
+> Geert, Roman: does paging_init rely on part of the first memory chunk being
+> mapped in head.S, or just part of the chunk the kernel resides in? Could I
+> reorder the m68k_memory[] elements in setup.c to fix the ordering problems?
 
-After getting my ebuilds going, I compiled and installed 2.6.29 first o=
-n
-aranym, where it works just fine, and then on one of my A1200s. On the
-A1200 it seemed to work fine, for a while that is, suddenly the network
-stopped up - completely. Nothing in dmesg, but rmmod/modprobe apne does
-not make any difference, and I cant even ping 127.0.0.1 - so I guess th=
-is
-is the infamous 2.6.29 bug that was fixed in 2.6.29.1, and that is
-described here http://lkml.org/lkml/2009/3/27/421
+Should work. config_amiga() removes Zorro II memory chunks, and that's
+just before
+paging_init() is called. of course you cannot reorder the first chunk,
+as that one is
+already in use.
 
-So, I tryed to pull out a m68k-v2.6.29.1 from git, but appearantly ther=
-e is no
-such thing. So=C2=B8 it is probably to add the "Disable GRO on legacy n=
-etif_rx
-path" patch (in posting above) to the v2.6.29 branch, no?
+Gr{oetje,eeting}s,
 
-I will put it in locally now and see if it works for me.
+						Geert
 
--- kolla
 --
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
