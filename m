@@ -1,52 +1,58 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Petr Stehlik <pstehlik@sophics.cz>
 Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Thu, 16 Apr 2009 01:38:29 +0200 (CEST)
-Message-ID: <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
+Date: Thu, 16 Apr 2009 08:07:55 +0200
+Message-ID: <1239862075.12777.14.camel@petr>
 References: <20090326123822.GD8081@marenka.net>
- <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
- <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
- <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
- <1239696787.2049.8.camel@petr>
- <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
- <1239698381.2049.25.camel@petr>
- <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
- <1239774966.20245.4.camel@petr>
+	 <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+	 <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+	 <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
+	 <1239696787.2049.8.camel@petr>
+	 <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
+	 <1239698381.2049.25.camel@petr>
+	 <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
+	 <1239774966.20245.4.camel@petr>
+	 <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <1239774966.20245.4.camel@petr>
+In-Reply-To: <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-Hi,
+Michael Schmitz p=ED=B9e v =C8t 16. 04. 2009 v 01:38 +0200:
+> > What if I created a disk image with 15, 31, 63, 127, 255 and 511 MB
+> > partitions and sent it to you? Would you please list what partition
+> > sizes are mountable with _and_ without the Atari FAT patch that we =
+are
+> > discussing here? That could finally clear it up (for me at least).
+>=20
+> I'm happy to do that. Can you please specify what parameters (logical=
+ sector=20
+> size, number of sectors per cluster) the partitions were generated wi=
+th?
 
-> > Small partitions I can mount as regular MSDOS FAT (-o atari=no) only, unless 
-> > they are <32 MB (in which case it's a 16 bit FAT with few enough clusters to be 
-> > treated as 16 bit FAT by the Atari FAT patch).
-> 
-> I don't think I understand it.
+Atari GEMDOS and Atari partition programs always use 2 sectors per
+cluster. Since FAT16 can hold max 32k entries you can compute the rest
+of information from this (example: 63 MB partition needs 2 kB clusters
+to fit into 32k cluster limit so the logical sector size for 32-63 MB
+partition needs to be 1 kB).
 
-It is a bit weird, yes. I may have to get the vfat module to dump more 
-information about the volume format to see what goes wrong. 
+> Yup - did AHDI use particular values for logical sector size and sect=
+ors per=20
+> cluster that we'd need to make sure will still work?=20
 
-> What if I created a disk image with 15, 31, 63, 127, 255 and 511 MB
-> partitions and sent it to you? Would you please list what partition
-> sizes are mountable with _and_ without the Atari FAT patch that we are
-> discussing here? That could finally clear it up (for me at least).
+See above - 2 logical sectors in a cluster. That is actually the only
+difference from MS-DOS where they stick with fixed logical sector size
+and are adding more sectors to a cluster, IIRC.
 
-I'm happy to do that. Can you please specify what parameters (logical sector 
-size, number of sectors per cluster) the partitions were generated with? I'd 
-like to compare that with what the vfat module figures out from the disk image.
- 
-> > What disk driver did you create these partitions with?
-> 
-> HDDRIVER, so it should be fully AHDI compatible.
+Petr
 
-Yup - did AHDI use particular values for logical sector size and sectors per 
-cluster that we'd need to make sure will still work? 
 
-	Michael
-
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
