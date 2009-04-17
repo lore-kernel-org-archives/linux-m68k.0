@@ -1,54 +1,63 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: Linux/m68k on Atari
-Date: Fri, 17 Apr 2009 03:06:45 +0200 (CEST)
-Message-ID: <alpine.DEB.1.00.0904170304330.18855@zirkon.biophys.uni-duesseldorf.de>
-References: <20090327163917.e2b1d865.mandin.patrice@orange.fr>
- <alpine.DEB.1.00.0904051035290.30160@zirkon.biophys.uni-duesseldorf.de>
- <20090409214055.f250de3c.mandin.patrice@orange.fr>
- <1239307252.11875.4.camel@joy>
- <20090410185538.04034623.mandin.patrice@orange.fr>
- <alpine.DEB.1.00.0904120652210.2715@zirkon.biophys.uni-duesseldorf.de>
- <20090412094419.ab2ba909.mandin.patrice@orange.fr>
- <alpine.DEB.1.00.0904140429240.18464@zirkon.biophys.uni-duesseldorf.de>
- <20090414084002.2d6f20ef.mandin.patrice@orange.fr>
- <alpine.DEB.1.00.0904140911470.29340@zirkon.biophys.uni-duesseldorf.de>
- <10f740e80904160219j7f4a71e5rceb634e3fb9cc4a3@mail.gmail.com>
+Subject: Re: debian kernel m68k patches for 2.6.29
+Date: Fri, 17 Apr 2009 03:22:24 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0904170314220.18855@zirkon.biophys.uni-duesseldorf.de>
+References: <20090326123822.GD8081@marenka.net>
+ <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+ <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+ <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
+ <1239696787.2049.8.camel@petr>
+ <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
+ <1239698381.2049.25.camel@petr>
+ <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
+ <1239774966.20245.4.camel@petr>
+ <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
+ <1239862075.12777.14.camel@petr>
+ <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
+ <1239868903.12777.25.camel@petr>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:53213 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751649AbZDQBGr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 16 Apr 2009 21:06:47 -0400
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
- id <0KI800K000FABN00@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Fri, 17 Apr 2009 03:06:46 +0200 (MEST)
-In-reply-to: <10f740e80904160219j7f4a71e5rceb634e3fb9cc4a3@mail.gmail.com>
+In-reply-to: <1239868903.12777.25.camel@petr>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Patrice Mandin <mandin.patrice@orange.fr>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+To: Petr Stehlik <pstehlik@sophics.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-Hi Geert,
+Hi Petr,
 
-> > Geert, Roman: does paging_init rely on part of the first memory chunk being
-> > mapped in head.S, or just part of the chunk the kernel resides in? Could I
-> > reorder the m68k_memory[] elements in setup.c to fix the ordering problems?
+> > There's something wrong with the Atari FAT option code then - this is what I get 
+> > with atari=yes on the first of your partitions (128MB?):
 > 
-> Should work. config_amiga() removes Zorro II memory chunks, and that's
-> just before
-> paging_init() is called. of course you cannot reorder the first chunk,
-> as that one is
-> already in use.
+> 255 MB, IIRC (same sector/cluster size as 128 MB)
 
-Found that out the hard way. So what's the fix for this? Does the first chunk 
-always have to be the one the kernel resides in? 
+Right - 
+ 
+> > FAT (before atari): FAT bits 0 clusters 32622 sectors 65280 
+> > FAT (option atari): FAT bits 12 clusters 32622 sectors 65280 
+> > FAT (after atari): FAT bits 12 clusters 32622 sectors 65280 
+> > 
+> > The GEMDOS option code picks a 12 bit FAT even though it should clearly fit into 
+> > a 16 bit FAT. 
+> 
+> I don't know what you mean by "before/after atari" but it's clearly all
 
-What is the reason for dropping chunks that are residing below the fisrst one, 
-in paging_init ?? 
+'before' is right before the FAT bit size is set in inode.c - without the GEMDOS
+option, the FAT is assumed to be 16 bit if it's not set to 32 bit. 
+
+'after' is the final result once the GEMDOS option has been processed. If the 
+total number of clusters is found to be larger than the maximum for 16 bit FAT, 
+the FAT size is assumed to be 12 bit (with no further adjustment of logical 
+sector size or sectors per cluster).
+
+That test clearly goes wrong here.
+
+> wrong. FAT12 is on floppies only... Besides that how could 32622 value
+> fit into 12 bit number?
+
+That's the beauty of it, apparently. Just kidding. 
+
+I'll go back to the pre-2.6 code to see if it made sense there. 
 
 	Michael
