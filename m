@@ -1,73 +1,119 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 01/16] platform: Make platform resources input parameters const
-Date: Sat, 18 Apr 2009 20:52:09 +0200
-Message-ID: <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 05/16] m68k: amiga - Sound platform device conversion
+Date: Sat, 18 Apr 2009 20:52:13 +0200
+Message-ID: <1240080744-14995-6-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-4-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-5-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from georges.telenet-ops.be ([195.130.137.68]:46995 "EHLO
-	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755173AbZDRSw1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:27 -0400
-In-Reply-To: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:55363 "EHLO
+	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756594AbZDRSw3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:29 -0400
+In-Reply-To: <1240080744-14995-5-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@suse.de>
-
-Make the platform resources input parameters of platform_device_add_resources()
-and platform_device_register_simple() const, as the resources are copied and
-never modified.
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
 ---
- drivers/base/platform.c         |    4 ++--
- include/linux/platform_device.h |    6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ arch/m68k/amiga/platform.c          |    5 +++
+ sound/oss/dmasound/dmasound_paula.c |   51 +++++++++++++++++++++-------------
+ 2 files changed, 36 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index b5b6c97..2c83e21 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -184,7 +184,7 @@ EXPORT_SYMBOL_GPL(platform_device_alloc);
-  * released.
-  */
- int platform_device_add_resources(struct platform_device *pdev,
--				  struct resource *res, unsigned int num)
-+				  const struct resource *res, unsigned int num)
+diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
+index 7fa929c..2e308e7 100644
+--- a/arch/m68k/amiga/platform.c
++++ b/arch/m68k/amiga/platform.c
+@@ -67,6 +67,11 @@ static int __init amiga_init_devices(void)
+ 	if (AMIGAHW_PRESENT(AMI_VIDEO))
+ 		platform_device_register_simple("amiga-video", -1, NULL, 0);
+ 
++
++	/* sound hardware */
++	if (AMIGAHW_PRESENT(AMI_AUDIO))
++		platform_device_register_simple("amiga-audio", -1, NULL, 0);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/oss/dmasound/dmasound_paula.c b/sound/oss/dmasound/dmasound_paula.c
+index 06e9e88..98acde8 100644
+--- a/sound/oss/dmasound/dmasound_paula.c
++++ b/sound/oss/dmasound/dmasound_paula.c
+@@ -21,6 +21,7 @@
+ #include <linux/ioport.h>
+ #include <linux/soundcard.h>
+ #include <linux/interrupt.h>
++#include <linux/platform_device.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/setup.h>
+@@ -710,31 +711,41 @@ static MACHINE machAmiga = {
+ /*** Config & Setup **********************************************************/
+ 
+ 
+-static int __init dmasound_paula_init(void)
++static int __init amiga_audio_probe(struct platform_device *pdev)
  {
- 	struct resource *r;
+-	int err;
+-
+-	if (MACH_IS_AMIGA && AMIGAHW_PRESENT(AMI_AUDIO)) {
+-	    if (!request_mem_region(CUSTOM_PHYSADDR+0xa0, 0x40,
+-				    "dmasound [Paula]"))
+-		return -EBUSY;
+-	    dmasound.mach = machAmiga;
+-	    dmasound.mach.default_hard = def_hard ;
+-	    dmasound.mach.default_soft = def_soft ;
+-	    err = dmasound_init();
+-	    if (err)
+-		release_mem_region(CUSTOM_PHYSADDR+0xa0, 0x40);
+-	    return err;
+-	} else
+-	    return -ENODEV;
++	dmasound.mach = machAmiga;
++	dmasound.mach.default_hard = def_hard ;
++	dmasound.mach.default_soft = def_soft ;
++	return dmasound_init();
+ }
  
-@@ -379,7 +379,7 @@ EXPORT_SYMBOL_GPL(platform_device_unregister);
-  */
- struct platform_device *platform_device_register_simple(const char *name,
- 							int id,
--							struct resource *res,
-+							const struct resource *res,
- 							unsigned int num)
+-static void __exit dmasound_paula_cleanup(void)
++static int __exit amiga_audio_remove(struct platform_device *pdev)
  {
- 	struct platform_device *pdev;
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index 72736fd..1391a5d 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -42,12 +42,14 @@ extern int platform_get_irq_byname(struct platform_device *, char *);
- extern int platform_add_devices(struct platform_device **, int);
+ 	dmasound_deinit();
+-	release_mem_region(CUSTOM_PHYSADDR+0xa0, 0x40);
++	return 0;
++}
++
++static struct platform_driver amiga_audio_driver = {
++	.remove = __exit_p(amiga_audio_remove),
++	.driver   = {
++		.name	= "amiga-audio",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init amiga_audio_init(void)
++{
++	return platform_driver_probe(&amiga_audio_driver, amiga_audio_probe);
+ }
  
- extern struct platform_device *platform_device_register_simple(const char *, int id,
--					struct resource *, unsigned int);
-+					const struct resource *, unsigned int);
- extern struct platform_device *platform_device_register_data(struct device *,
- 		const char *, int, const void *, size_t);
- 
- extern struct platform_device *platform_device_alloc(const char *name, int id);
--extern int platform_device_add_resources(struct platform_device *pdev, struct resource *res, unsigned int num);
-+extern int platform_device_add_resources(struct platform_device *pdev,
-+					 const struct resource *res,
-+					 unsigned int num);
- extern int platform_device_add_data(struct platform_device *pdev, const void *data, size_t size);
- extern int platform_device_add(struct platform_device *pdev);
- extern void platform_device_del(struct platform_device *pdev);
+-module_init(dmasound_paula_init);
+-module_exit(dmasound_paula_cleanup);
++module_init(amiga_audio_init);
++
++static void __exit amiga_audio_exit(void)
++{
++	platform_driver_unregister(&amiga_audio_driver);
++}
++
++module_exit(amiga_audio_exit);
++
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:amiga-audio");
 -- 
 1.6.2.3
 
