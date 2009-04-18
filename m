@@ -1,56 +1,73 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 0/16] m68k: Device model patches
-Date: Sat, 18 Apr 2009 20:52:08 +0200
-Message-ID: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 01/16] platform: Make platform resources input parameters const
+Date: Sat, 18 Apr 2009 20:52:09 +0200
+Message-ID: <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
+References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from juliette.telenet-ops.be ([195.130.137.74]:59946 "EHLO
-	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751913AbZDRSw1 (ORCPT
+Received: from georges.telenet-ops.be ([195.130.137.68]:46995 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755173AbZDRSw1 (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:27 -0400
+In-Reply-To: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@suse.de>
 
-This set of patches brings Amiga hardware support better in line with to the
-Linux device model:
-  - Add module alias support for Zorro drivers (not all drivers can
-    benefit from this yet though, as some still use zorro_find_device()
-    instead of struct zorro_driver),
-  - Convert the various builtin Amiga hardware to the platform driver
-    framework.
+Make the platform resources input parameters of platform_device_add_resources()
+and platform_device_register_simple() const, as the resources are copied and
+never modified.
 
-[01] platform: Make platform resources input parameters const
-[02] m68k: amiga - Zorro bus modalias support
-[03] m68k: amiga - Zorro host bridge platform device conversion
-[04] m68k: amiga - Frame buffer platform device conversion
-[05] m68k: amiga - Sound platform device conversion
-[06] m68k: amiga - Floppy platform device conversion
-[07] m68k: amiga - A3000 SCSI platform device conversion
-[08] m68k: amiga - A4000T SCSI platform device conversion
-[09] m68k: amiga - Amiga Gayle IDE platform device conversion
-[10] m68k: amiga - Keyboard platform device conversion
-[11] m68k: amiga - Mouse platform device conversion
-[12] m68k: amiga - Serial port platform device conversion
-[13] m68k: amiga - Parallel port platform device conversion
-[14] rtc: Add an RTC driver for the Oki MSM6242
-[15] rtc: Add an RTC driver for the Ricoh RP5C01
-[16] m68k: amiga - RTC platform device conversion
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ drivers/base/platform.c         |    4 ++--
+ include/linux/platform_device.h |    6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-Due to lack of hardware (only Amiga 4000 here), I couldn't test all drivers.
-Especially the SCSI drivers could use some testing feedback.
-The changes to most other drivers are fairly trivial.
-Note that I removed all request_mem_region() calls for subregions of the Amiga
-custom chips, as the drivers now bind to the platform device.
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index b5b6c97..2c83e21 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -184,7 +184,7 @@ EXPORT_SYMBOL_GPL(platform_device_alloc);
+  * released.
+  */
+ int platform_device_add_resources(struct platform_device *pdev,
+-				  struct resource *res, unsigned int num)
++				  const struct resource *res, unsigned int num)
+ {
+ 	struct resource *r;
+ 
+@@ -379,7 +379,7 @@ EXPORT_SYMBOL_GPL(platform_device_unregister);
+  */
+ struct platform_device *platform_device_register_simple(const char *name,
+ 							int id,
+-							struct resource *res,
++							const struct resource *res,
+ 							unsigned int num)
+ {
+ 	struct platform_device *pdev;
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 72736fd..1391a5d 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -42,12 +42,14 @@ extern int platform_get_irq_byname(struct platform_device *, char *);
+ extern int platform_add_devices(struct platform_device **, int);
+ 
+ extern struct platform_device *platform_device_register_simple(const char *, int id,
+-					struct resource *, unsigned int);
++					const struct resource *, unsigned int);
+ extern struct platform_device *platform_device_register_data(struct device *,
+ 		const char *, int, const void *, size_t);
+ 
+ extern struct platform_device *platform_device_alloc(const char *name, int id);
+-extern int platform_device_add_resources(struct platform_device *pdev, struct resource *res, unsigned int num);
++extern int platform_device_add_resources(struct platform_device *pdev,
++					 const struct resource *res,
++					 unsigned int num);
+ extern int platform_device_add_data(struct platform_device *pdev, const void *data, size_t size);
+ extern int platform_device_add(struct platform_device *pdev);
+ extern void platform_device_del(struct platform_device *pdev);
+-- 
+1.6.2.3
 
-Thanks for your review comments (and other feedback, of course)!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
