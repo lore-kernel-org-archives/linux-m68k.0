@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 16/16] m68k: amiga - RTC platform device conversion
-Date: Sat, 18 Apr 2009 20:52:24 +0200
-Message-ID: <1240080744-14995-17-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 15/16] rtc: Add an RTC driver for the Ricoh RP5C01
+Date: Sat, 18 Apr 2009 20:52:23 +0200
+Message-ID: <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
@@ -17,273 +17,302 @@ References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-13-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-14-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from georges.telenet-ops.be ([195.130.137.68]:47002 "EHLO
-	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759105AbZDRSwb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:31 -0400
-In-Reply-To: <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:55373 "EHLO
+	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757722AbZDRSwc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:32 -0400
+In-Reply-To: <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, rtc-linux@googlegroups.com
 
-The A2000 TOD is an Oki MSM6242B, while the A3000 TOD is a Ricoh RP5C01.
-
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: rtc-linux@googlegroups.com
 ---
- arch/m68k/amiga/config.c   |  172 --------------------------------------------
- arch/m68k/amiga/platform.c |   17 +++++
- 2 files changed, 17 insertions(+), 172 deletions(-)
+ drivers/rtc/Kconfig      |   10 ++
+ drivers/rtc/Makefile     |    1 +
+ drivers/rtc/rtc-rp5c01.c |  239 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 250 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/rtc/rtc-rp5c01.c
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 6e56275..d060894 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -97,10 +97,6 @@ static void amiga_get_model(char *model);
- static void amiga_get_hardware_list(struct seq_file *m);
- /* amiga specific timer functions */
- static unsigned long amiga_gettimeoffset(void);
--static int a3000_hwclk(int, struct rtc_time *);
--static int a2000_hwclk(int, struct rtc_time *);
--static int amiga_set_clock_mmss(unsigned long);
--static unsigned int amiga_get_ss(void);
- extern void amiga_mksound(unsigned int count, unsigned int ticks);
- static void amiga_reset(void);
- extern void amiga_init_sound(void);
-@@ -138,10 +134,6 @@ static struct {
- 	}
- };
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index a0f6297..150fe43 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -535,6 +535,16 @@ config RTC_DRV_MSM6242
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called rtc-msm6242.
  
--static struct resource rtc_resource = {
--	.start = 0x00dc0000, .end = 0x00dcffff
--};
--
- static struct resource ram_resource[NUM_MEMINFO];
++config RTC_DRV_RP5C01
++	tristate "Ricoh RP5C01"
++	help
++	  If you say yes here you get support for the Ricoh RP5C01
++	  timekeeping chip. It is used in some Amiga models (e.g. A3000
++	  and A4000).
++
++	  This driver can also be built as a module. If so, the module
++	  will be called rtc-rp5c01.
++
+ comment "on-CPU RTC drivers"
  
- 
-@@ -387,15 +379,6 @@ void __init config_amiga(void)
- 	mach_get_model       = amiga_get_model;
- 	mach_get_hardware_list = amiga_get_hardware_list;
- 	mach_gettimeoffset   = amiga_gettimeoffset;
--	if (AMIGAHW_PRESENT(A3000_CLK)) {
--		mach_hwclk         = a3000_hwclk;
--		rtc_resource.name = "A3000 RTC";
--		request_resource(&iomem_resource, &rtc_resource);
--	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
--		mach_hwclk         = a2000_hwclk;
--		rtc_resource.name = "A2000 RTC";
--		request_resource(&iomem_resource, &rtc_resource);
--	}
- 
- 	/*
- 	 * default MAX_DMA=0xffffffff on all machines. If we don't do so, the SCSI
-@@ -404,8 +387,6 @@ void __init config_amiga(void)
- 	 */
- 	mach_max_dma_address = 0xffffffff;
- 
--	mach_set_clock_mmss  = amiga_set_clock_mmss;
--	mach_get_ss          = amiga_get_ss;
- 	mach_reset           = amiga_reset;
- #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
- 	mach_beep            = amiga_mksound;
-@@ -530,159 +511,6 @@ static unsigned long amiga_gettimeoffset(void)
- 	return ticks + offset;
- }
- 
--static int a3000_hwclk(int op, struct rtc_time *t)
--{
--	tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
--
--	if (!op) { /* read */
--		t->tm_sec  = tod_3000.second1 * 10 + tod_3000.second2;
--		t->tm_min  = tod_3000.minute1 * 10 + tod_3000.minute2;
--		t->tm_hour = tod_3000.hour1   * 10 + tod_3000.hour2;
--		t->tm_mday = tod_3000.day1    * 10 + tod_3000.day2;
--		t->tm_wday = tod_3000.weekday;
--		t->tm_mon  = tod_3000.month1  * 10 + tod_3000.month2 - 1;
--		t->tm_year = tod_3000.year1   * 10 + tod_3000.year2;
--		if (t->tm_year <= 69)
--			t->tm_year += 100;
--	} else {
--		tod_3000.second1 = t->tm_sec / 10;
--		tod_3000.second2 = t->tm_sec % 10;
--		tod_3000.minute1 = t->tm_min / 10;
--		tod_3000.minute2 = t->tm_min % 10;
--		tod_3000.hour1   = t->tm_hour / 10;
--		tod_3000.hour2   = t->tm_hour % 10;
--		tod_3000.day1    = t->tm_mday / 10;
--		tod_3000.day2    = t->tm_mday % 10;
--		if (t->tm_wday != -1)
--			tod_3000.weekday = t->tm_wday;
--		tod_3000.month1  = (t->tm_mon + 1) / 10;
--		tod_3000.month2  = (t->tm_mon + 1) % 10;
--		if (t->tm_year >= 100)
--			t->tm_year -= 100;
--		tod_3000.year1   = t->tm_year / 10;
--		tod_3000.year2   = t->tm_year % 10;
--	}
--
--	tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
--
--	return 0;
--}
--
--static int a2000_hwclk(int op, struct rtc_time *t)
--{
--	int cnt = 5;
--
--	tod_2000.cntrl1 = TOD2000_CNTRL1_HOLD;
--
--	while ((tod_2000.cntrl1 & TOD2000_CNTRL1_BUSY) && cnt--) {
--		tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
--		udelay(70);
--		tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
--	}
--
--	if (!cnt)
--		printk(KERN_INFO "hwclk: timed out waiting for RTC (0x%x)\n",
--			tod_2000.cntrl1);
--
--	if (!op) { /* read */
--		t->tm_sec  = tod_2000.second1     * 10 + tod_2000.second2;
--		t->tm_min  = tod_2000.minute1     * 10 + tod_2000.minute2;
--		t->tm_hour = (tod_2000.hour1 & 3) * 10 + tod_2000.hour2;
--		t->tm_mday = tod_2000.day1        * 10 + tod_2000.day2;
--		t->tm_wday = tod_2000.weekday;
--		t->tm_mon  = tod_2000.month1      * 10 + tod_2000.month2 - 1;
--		t->tm_year = tod_2000.year1       * 10 + tod_2000.year2;
--		if (t->tm_year <= 69)
--			t->tm_year += 100;
--
--		if (!(tod_2000.cntrl3 & TOD2000_CNTRL3_24HMODE)) {
--			if (!(tod_2000.hour1 & TOD2000_HOUR1_PM) && t->tm_hour == 12)
--				t->tm_hour = 0;
--			else if ((tod_2000.hour1 & TOD2000_HOUR1_PM) && t->tm_hour != 12)
--				t->tm_hour += 12;
--		}
--	} else {
--		tod_2000.second1 = t->tm_sec / 10;
--		tod_2000.second2 = t->tm_sec % 10;
--		tod_2000.minute1 = t->tm_min / 10;
--		tod_2000.minute2 = t->tm_min % 10;
--		if (tod_2000.cntrl3 & TOD2000_CNTRL3_24HMODE)
--			tod_2000.hour1 = t->tm_hour / 10;
--		else if (t->tm_hour >= 12)
--			tod_2000.hour1 = TOD2000_HOUR1_PM +
--				(t->tm_hour - 12) / 10;
--		else
--			tod_2000.hour1 = t->tm_hour / 10;
--		tod_2000.hour2   = t->tm_hour % 10;
--		tod_2000.day1    = t->tm_mday / 10;
--		tod_2000.day2    = t->tm_mday % 10;
--		if (t->tm_wday != -1)
--			tod_2000.weekday = t->tm_wday;
--		tod_2000.month1  = (t->tm_mon + 1) / 10;
--		tod_2000.month2  = (t->tm_mon + 1) % 10;
--		if (t->tm_year >= 100)
--			t->tm_year -= 100;
--		tod_2000.year1   = t->tm_year / 10;
--		tod_2000.year2   = t->tm_year % 10;
--	}
--
--	tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
--
--	return 0;
--}
--
--static int amiga_set_clock_mmss(unsigned long nowtime)
--{
--	short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
--
--	if (AMIGAHW_PRESENT(A3000_CLK)) {
--		tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
--
--		tod_3000.second1 = real_seconds / 10;
--		tod_3000.second2 = real_seconds % 10;
--		tod_3000.minute1 = real_minutes / 10;
--		tod_3000.minute2 = real_minutes % 10;
--
--		tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
--	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
--		int cnt = 5;
--
--		tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
--
--		while ((tod_2000.cntrl1 & TOD2000_CNTRL1_BUSY) && cnt--) {
--			tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
--			udelay(70);
--			tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
--		}
--
--		if (!cnt)
--			printk(KERN_INFO "set_clock_mmss: timed out waiting for RTC (0x%x)\n", tod_2000.cntrl1);
--
--		tod_2000.second1 = real_seconds / 10;
--		tod_2000.second2 = real_seconds % 10;
--		tod_2000.minute1 = real_minutes / 10;
--		tod_2000.minute2 = real_minutes % 10;
--
--		tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
--	}
--
--	return 0;
--}
--
--static unsigned int amiga_get_ss(void)
--{
--	unsigned int s;
--
--	if (AMIGAHW_PRESENT(A3000_CLK)) {
--		tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
--		s = tod_3000.second1 * 10 + tod_3000.second2;
--		tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
--	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
--		s = tod_2000.second1 * 10 + tod_2000.second2;
--	}
--	return s;
--}
--
- static NORET_TYPE void amiga_reset(void)
-     ATTRIB_NORET;
- 
-diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index c985db0..7fd8b41 100644
---- a/arch/m68k/amiga/platform.c
-+++ b/arch/m68k/amiga/platform.c
-@@ -116,6 +116,13 @@ static const struct gayle_ide_platform_data a4000_ide_pdata __initconst = {
- };
- 
- 
-+static const struct resource amiga_rtc_resource __initconst = {
-+	.start	= 0x00dc0000,
-+	.end	= 0x00dcffff,
-+	.flags	= IORESOURCE_MEM,
+ config RTC_DRV_OMAP
+diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+index c70418b..6176a8a 100644
+--- a/drivers/rtc/Makefile
++++ b/drivers/rtc/Makefile
+@@ -77,4 +77,5 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
+ obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
+ obj-$(CONFIG_RTC_DRV_PCF50633)	+= rtc-pcf50633.o
+ obj-$(CONFIG_RTC_DRV_MSM6242)	+= rtc-msm6242.o
++obj-$(CONFIG_RTC_DRV_RP5C01)	+= rtc-rp5c01.o
+ obj-$(CONFIG_RTC_DRV_PS3)	+= rtc-ps3.o
+diff --git a/drivers/rtc/rtc-rp5c01.c b/drivers/rtc/rtc-rp5c01.c
+new file mode 100644
+index 0000000..d997f33
+--- /dev/null
++++ b/drivers/rtc/rtc-rp5c01.c
+@@ -0,0 +1,239 @@
++/*
++ *  Ricoh RP5C01 RTC Driver
++ *
++ *  Copyright 2009 Geert Uytterhoeven
++ *
++ *  Based on the A3000 TOD code in arch/m68k/amiga/config.c
++ *  Copyright (C) 1993 Hamish Macdonald
++ */
++
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/rtc.h>
++
++
++enum {
++	RP5C01_1_SECOND		= 0x0,	/* MODE 00 */
++	RP5C01_10_SECOND	= 0x1,	/* MODE 00 */
++	RP5C01_1_MINUTE		= 0x2,	/* MODE 00 and MODE 01 */
++	RP5C01_10_MINUTE	= 0x3,	/* MODE 00 and MODE 01 */
++	RP5C01_1_HOUR		= 0x4,	/* MODE 00 and MODE 01 */
++	RP5C01_10_HOUR		= 0x5,	/* MODE 00 and MODE 01 */
++	RP5C01_DAY_OF_WEEK	= 0x6,	/* MODE 00 and MODE 01 */
++	RP5C01_1_DAY		= 0x7,	/* MODE 00 and MODE 01 */
++	RP5C01_10_DAY		= 0x8,	/* MODE 00 and MODE 01 */
++	RP5C01_1_MONTH		= 0x9,	/* MODE 00 */
++	RP5C01_10_MONTH		= 0xa,	/* MODE 00 */
++	RP5C01_1_YEAR		= 0xb,	/* MODE 00 */
++	RP5C01_10_YEAR		= 0xc,	/* MODE 00 */
++
++	RP5C01_12_24_SELECT	= 0xa,	/* MODE 01 */
++	RP5C01_LEAP_YEAR	= 0xb,	/* MODE 01 */
++
++	RP5C01_MODE		= 0xd,	/* all modes */
++	RP5C01_TEST		= 0xe,	/* all modes */
++	RP5C01_RESET		= 0xf,	/* all modes */
 +};
 +
++#define RP5C01_12_24_SELECT_12	(0 << 0)
++#define RP5C01_12_24_SELECT_24	(1 << 0)
 +
- static int __init amiga_init_devices(void)
- {
- 	struct platform_device *pdev;
-@@ -174,6 +181,16 @@ static int __init amiga_init_devices(void)
- 	if (AMIGAHW_PRESENT(AMI_PARALLEL))
- 		platform_device_register_simple("amiga-parallel", -1, NULL, 0);
- 
++#define RP5C01_10_HOUR_AM	(0 << 1)
++#define RP5C01_10_HOUR_PM	(1 << 1)
 +
-+	/* real time clocks */
-+	if (AMIGAHW_PRESENT(A2000_CLK))
-+		platform_device_register_simple("rtc-msm6242", -1,
-+						&amiga_rtc_resource, 1);
++#define RP5C01_MODE_TIMER_EN	(1 << 3)	/* timer enable */
++#define RP5C01_MODE_ALARM_EN	(1 << 2)	/* alarm enable */
 +
-+	if (AMIGAHW_PRESENT(A3000_CLK))
-+		platform_device_register_simple("rtc-rp5c01", -1,
-+						&amiga_rtc_resource, 1);
++#define RP5C01_MODE_MODE_MASK	(3 << 0)
++#define RP5C01_MODE_MODE00	(0 << 0)	/* time */
++#define RP5C01_MODE_MODE01	(1 << 0)	/* alarm, 12h/24h, leap year */
++#define RP5C01_MODE_RAM_BLOCK10	(2 << 0)	/* RAM 4 bits x 13 */
++#define RP5C01_MODE_RAM_BLOCK11	(3 << 0)	/* RAM 4 bits x 13 */
 +
- 	return 0;
- }
- 
++#define RP5C01_RESET_1HZ_PULSE	(1 << 3)
++#define RP5C01_RESET_16HZ_PULSE	(1 << 2)
++#define RP5C01_RESET_SECOND	(1 << 1)	/* reset divider stages for */
++						/* seconds or smaller units */
++#define RP5C01_RESET_ALARM	(1 << 0)	/* reset all alarm registers */
++
++
++struct rp5c01_priv {
++	u32 __iomem *regs;
++	struct rtc_device *rtc;
++};
++
++static inline unsigned int rp5c01_read(struct rp5c01_priv *priv,
++				       unsigned int reg)
++{
++	return __raw_readl(&priv->regs[reg]) & 0xf;
++}
++
++static inline void rp5c01_write(struct rp5c01_priv *priv, unsigned int val,
++				unsigned int reg)
++{
++	return __raw_writel(val, &priv->regs[reg]);
++}
++
++static void rp5c01_lock(struct rp5c01_priv *priv)
++{
++	rp5c01_write(priv, RP5C01_MODE_MODE00, RP5C01_MODE);
++}
++
++static void rp5c01_unlock(struct rp5c01_priv *priv)
++{
++	rp5c01_write(priv, RP5C01_MODE_TIMER_EN | RP5C01_MODE_MODE01,
++		     RP5C01_MODE);
++}
++
++static int rp5c01_read_time(struct device *dev, struct rtc_time *tm)
++{
++	struct rp5c01_priv *priv = dev_get_drvdata(dev);
++
++	rp5c01_lock(priv);
++
++	tm->tm_sec  = rp5c01_read(priv, RP5C01_10_SECOND) * 10 +
++		      rp5c01_read(priv, RP5C01_1_SECOND);
++	tm->tm_min  = rp5c01_read(priv, RP5C01_10_MINUTE) * 10 +
++		      rp5c01_read(priv, RP5C01_1_MINUTE);
++	tm->tm_hour = rp5c01_read(priv, RP5C01_10_HOUR) * 10 +
++		      rp5c01_read(priv, RP5C01_1_HOUR);
++	tm->tm_mday = rp5c01_read(priv, RP5C01_10_DAY) * 10 +
++		      rp5c01_read(priv, RP5C01_1_DAY);
++	tm->tm_wday = rp5c01_read(priv, RP5C01_DAY_OF_WEEK);
++	tm->tm_mon  = rp5c01_read(priv, RP5C01_10_MONTH) * 10 +
++		      rp5c01_read(priv, RP5C01_1_MONTH) - 1;
++	tm->tm_year = rp5c01_read(priv, RP5C01_10_YEAR) * 10 +
++		      rp5c01_read(priv, RP5C01_1_YEAR);
++	if (tm->tm_year <= 69)
++		tm->tm_year += 100;
++
++	rp5c01_unlock(priv);
++
++	return rtc_valid_tm(tm);
++}
++
++static int rp5c01_set_time(struct device *dev, struct rtc_time *tm)
++{
++	struct rp5c01_priv *priv = dev_get_drvdata(dev);
++
++	rp5c01_lock(priv);
++
++	rp5c01_write(priv, tm->tm_sec / 10, RP5C01_10_SECOND);
++	rp5c01_write(priv, tm->tm_sec % 10, RP5C01_1_SECOND);
++	rp5c01_write(priv, tm->tm_min / 10, RP5C01_10_MINUTE);
++	rp5c01_write(priv, tm->tm_min % 10, RP5C01_1_MINUTE);
++	rp5c01_write(priv, tm->tm_hour / 10, RP5C01_10_HOUR);
++	rp5c01_write(priv, tm->tm_hour % 10, RP5C01_1_HOUR);
++	rp5c01_write(priv, tm->tm_mday / 10, RP5C01_10_DAY);
++	rp5c01_write(priv, tm->tm_mday % 10, RP5C01_1_DAY);
++	if (tm->tm_wday != -1)
++		rp5c01_write(priv, tm->tm_wday, RP5C01_DAY_OF_WEEK);
++	rp5c01_write(priv, (tm->tm_mon + 1) / 10, RP5C01_10_MONTH);
++	rp5c01_write(priv, (tm->tm_mon + 1) % 10, RP5C01_1_MONTH);
++	if (tm->tm_year >= 100)
++		tm->tm_year -= 100;
++	rp5c01_write(priv, tm->tm_year / 10, RP5C01_10_YEAR);
++	rp5c01_write(priv, tm->tm_year % 10, RP5C01_1_YEAR);
++
++	rp5c01_unlock(priv);
++	return 0;
++}
++
++static int rp5c01_set_mmss(struct device *dev, unsigned long secs)
++{
++	struct rp5c01_priv *priv = dev_get_drvdata(dev);
++	unsigned int real_seconds = secs % 60, real_minutes = (secs / 60) % 60;
++
++	rp5c01_lock(priv);
++
++	rp5c01_write(priv, real_seconds / 10, RP5C01_10_SECOND);
++	rp5c01_write(priv, real_seconds % 10, RP5C01_1_SECOND);
++	rp5c01_write(priv, real_minutes / 10, RP5C01_10_MINUTE);
++	rp5c01_write(priv, real_minutes % 10, RP5C01_1_MINUTE);
++
++	rp5c01_unlock(priv);
++	return 0;
++}
++
++static const struct rtc_class_ops rp5c01_rtc_ops = {
++	.read_time	= rp5c01_read_time,
++	.set_time	= rp5c01_set_time,
++	.set_mmss	= rp5c01_set_mmss,
++};
++
++static int __init rp5c01_rtc_probe(struct platform_device *dev)
++{
++	struct resource *res;
++	struct rp5c01_priv *priv;
++	struct rtc_device *rtc;
++	int error;
++
++	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -ENODEV;
++
++	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->regs = ioremap(res->start, resource_size(res));
++	if (!priv->regs) {
++		error = -ENOMEM;
++		goto out_free_priv;
++	}
++
++	rtc = rtc_device_register("rtc-rp5c01", &dev->dev, &rp5c01_rtc_ops,
++				  THIS_MODULE);
++	if (IS_ERR(rtc)) {
++		error = PTR_ERR(rtc);
++		goto out_unmap;
++	}
++
++	priv->rtc = rtc;
++	platform_set_drvdata(dev, priv);
++	return 0;
++
++out_unmap:
++	iounmap(priv->regs);
++out_free_priv:
++	kfree(priv);
++	return error;
++}
++
++static int __exit rp5c01_rtc_remove(struct platform_device *dev)
++{
++	struct rp5c01_priv *priv = platform_get_drvdata(dev);
++
++	rtc_device_unregister(priv->rtc);
++	iounmap(priv->regs);
++	kfree(priv);
++	return 0;
++}
++
++static struct platform_driver rp5c01_rtc_driver = {
++	.driver	= {
++		.name	= "rtc-rp5c01",
++		.owner	= THIS_MODULE,
++	},
++	.remove	= __exit_p(rp5c01_rtc_remove),
++};
++
++static int __init rp5c01_rtc_init(void)
++{
++	return platform_driver_probe(&rp5c01_rtc_driver, rp5c01_rtc_probe);
++}
++
++static void __exit rp5c01_rtc_fini(void)
++{
++	platform_driver_unregister(&rp5c01_rtc_driver);
++}
++
++module_init(rp5c01_rtc_init);
++module_exit(rp5c01_rtc_fini);
++
++MODULE_AUTHOR("Geert Uytterhoeven");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Ricoh RP5C01 RTC driver");
++MODULE_ALIAS("platform:rtc-rp5c01");
 -- 
 1.6.2.3
 
