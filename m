@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 08/16] m68k: amiga - A4000T SCSI platform device conversion
-Date: Sat, 18 Apr 2009 20:52:16 +0200
-Message-ID: <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 12/16] m68k: amiga - Serial port platform device conversion
+Date: Sat, 18 Apr 2009 20:52:20 +0200
+Message-ID: <1240080744-14995-13-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
@@ -10,227 +10,173 @@ References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-6-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-7-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-8-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <1240080744-14995-8-git-send-email-geert@linux-m68k.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org
+ <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from juliette.telenet-ops.be ([195.130.137.74]:59946 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757724AbZDRSw3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:29 -0400
+In-Reply-To: <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-scsi@vger.kernel.org
 ---
- arch/m68k/amiga/platform.c |   11 +++++
- drivers/scsi/a4000t.c      |  101 ++++++++++++++++++++------------------------
- 2 files changed, 57 insertions(+), 55 deletions(-)
+ arch/m68k/amiga/platform.c |    3 ++
+ drivers/char/amiserial.c   |   61 +++++++++++++++++++++++++------------------
+ 2 files changed, 38 insertions(+), 26 deletions(-)
 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index df1fae3..027e4ca 100644
+index 269bafc..52aa62d 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -65,6 +65,13 @@ static const struct resource a3000_scsi_resource __initconst = {
- };
+@@ -168,6 +168,9 @@ static int __init amiga_init_devices(void)
+ 	if (AMIGAHW_PRESENT(AMI_MOUSE))
+ 		platform_device_register_simple("amiga-mouse", -1, NULL, 0);
  
- 
-+static const struct resource a4000t_scsi_resource __initconst = {
-+	.start	= 0xdd0000,
-+	.end	= 0xdd0fff,
-+	.flags	= IORESOURCE_MEM,
-+};
-+
-+
- static int __init amiga_init_devices(void)
- {
- 	if (!MACH_IS_AMIGA)
-@@ -88,6 +95,10 @@ static int __init amiga_init_devices(void)
- 		platform_device_register_simple("amiga-a3000-scsi", -1,
- 						&a3000_scsi_resource, 1);
- 
-+	if (AMIGAHW_PRESENT(A4000_SCSI))
-+		platform_device_register_simple("amiga-a4000t-scsi", -1,
-+						&a4000t_scsi_resource, 1);
++	if (AMIGAHW_PRESENT(AMI_SERIAL))
++		platform_device_register_simple("amiga-serial", -1, NULL, 0);
 +
  	return 0;
  }
  
-diff --git a/drivers/scsi/a4000t.c b/drivers/scsi/a4000t.c
-index 61af3d9..7f7a464 100644
---- a/drivers/scsi/a4000t.c
-+++ b/drivers/scsi/a4000t.c
-@@ -19,10 +19,6 @@
+diff --git a/drivers/char/amiserial.c b/drivers/char/amiserial.c
+index fd3ebd1..6826dd1 100644
+--- a/drivers/char/amiserial.c
++++ b/drivers/char/amiserial.c
+@@ -83,6 +83,7 @@ static char *serial_version = "4.30";
+ #include <linux/slab.h>
+ #include <linux/init.h>
+ #include <linux/bitops.h>
++#include <linux/platform_device.h>
  
- #include "53c700.h"
+ #include <asm/setup.h>
  
--MODULE_AUTHOR("Alan Hourihane <alanh@fairlite.demon.co.uk> / Kars de Jong <jongk@linux-m68k.org>");
--MODULE_DESCRIPTION("Amiga A4000T NCR53C710 driver");
--MODULE_LICENSE("GPL");
--
- 
- static struct scsi_host_template a4000t_scsi_driver_template = {
- 	.name		= "A4000T builtin SCSI",
-@@ -31,30 +27,35 @@ static struct scsi_host_template a4000t_scsi_driver_template = {
- 	.module		= THIS_MODULE,
- };
- 
--static struct platform_device *a4000t_scsi_device;
- 
--#define A4000T_SCSI_ADDR 0xdd0040
-+#define A4000T_SCSI_OFFSET	0x40
- 
--static int __devinit a4000t_probe(struct platform_device *dev)
-+static int __init amiga_a4000t_scsi_probe(struct platform_device *pdev)
+@@ -1953,29 +1954,16 @@ static const struct tty_operations serial_ops = {
+ /*
+  * The serial driver boot-time initialization code!
+  */
+-static int __init rs_init(void)
++static int __init amiga_serial_probe(struct platform_device *pdev)
  {
--	struct Scsi_Host *host;
-+	struct resource *res;
-+	phys_addr_t scsi_addr;
- 	struct NCR_700_Host_Parameters *hostdata;
-+	struct Scsi_Host *host;
+ 	unsigned long flags;
+ 	struct serial_state * state;
+ 	int error;
  
--	if (!(MACH_IS_AMIGA && AMIGAHW_PRESENT(A4000_SCSI)))
--		goto out;
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENODEV;
- 
--	if (!request_mem_region(A4000T_SCSI_ADDR, 0x1000,
-+	if (!request_mem_region(res->start, resource_size(res),
- 				"A4000T builtin SCSI"))
--		goto out;
-+		return -EBUSY;
- 
--	hostdata = kzalloc(sizeof(struct NCR_700_Host_Parameters), GFP_KERNEL);
-+	hostdata = kzalloc(sizeof(struct NCR_700_Host_Parameters),
-+			   GFP_KERNEL);
- 	if (!hostdata) {
--		printk(KERN_ERR "a4000t-scsi: Failed to allocate host data\n");
-+		dev_err(&pdev->dev, "Failed to allocate host data\n");
- 		goto out_release;
- 	}
- 
-+	scsi_addr = res->start + A4000T_SCSI_OFFSET;
-+
- 	/* Fill in the required pieces of hostdata */
--	hostdata->base = (void __iomem *)ZTWO_VADDR(A4000T_SCSI_ADDR);
-+	hostdata->base = (void __iomem *)ZTWO_VADDR(scsi_addr);
- 	hostdata->clock = 50;
- 	hostdata->chip710 = 1;
- 	hostdata->dmode_extra = DMODE_FC2;
-@@ -62,26 +63,25 @@ static int __devinit a4000t_probe(struct platform_device *dev)
- 
- 	/* and register the chip */
- 	host = NCR_700_detect(&a4000t_scsi_driver_template, hostdata,
--			      &dev->dev);
-+			      &pdev->dev);
- 	if (!host) {
--		printk(KERN_ERR "a4000t-scsi: No host detected; "
--				"board configuration problem?\n");
-+		dev_err(&pdev->dev,
-+			"No host detected; board configuration problem?\n");
- 		goto out_free;
- 	}
- 
- 	host->this_id = 7;
--	host->base = A4000T_SCSI_ADDR;
-+	host->base = scsi_addr;
- 	host->irq = IRQ_AMIGA_PORTS;
- 
- 	if (request_irq(host->irq, NCR_700_intr, IRQF_SHARED, "a4000t-scsi",
- 			host)) {
--		printk(KERN_ERR "a4000t-scsi: request_irq failed\n");
-+		dev_err(&pdev->dev, "request_irq failed\n");
- 		goto out_put_host;
- 	}
- 
--	platform_set_drvdata(dev, host);
-+	platform_set_drvdata(pdev, host);
- 	scsi_scan_host(host);
+-	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_SERIAL))
+-		return -ENODEV;
 -
- 	return 0;
+ 	serial_driver = alloc_tty_driver(1);
+ 	if (!serial_driver)
+ 		return -ENOMEM;
  
-  out_put_host:
-@@ -89,58 +89,49 @@ static int __devinit a4000t_probe(struct platform_device *dev)
-  out_free:
- 	kfree(hostdata);
-  out_release:
--	release_mem_region(A4000T_SCSI_ADDR, 0x1000);
-- out:
-+	release_mem_region(res->start, resource_size(res));
- 	return -ENODEV;
- }
- 
--static __devexit int a4000t_device_remove(struct platform_device *dev)
-+static int __exit amiga_a4000t_scsi_remove(struct platform_device *pdev)
- {
--	struct Scsi_Host *host = platform_get_drvdata(dev);
-+	struct Scsi_Host *host = platform_get_drvdata(pdev);
- 	struct NCR_700_Host_Parameters *hostdata = shost_priv(host);
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	scsi_remove_host(host);
--
- 	NCR_700_release(host);
- 	kfree(hostdata);
- 	free_irq(host->irq, host);
--	release_mem_region(A4000T_SCSI_ADDR, 0x1000);
--
-+	release_mem_region(res->start, resource_size(res));
- 	return 0;
- }
- 
--static struct platform_driver a4000t_scsi_driver = {
--	.driver = {
--		.name           = "a4000t-scsi",
--		.owner          = THIS_MODULE,
-+static struct platform_driver amiga_a4000t_scsi_driver = {
-+	.remove = __exit_p(amiga_a4000t_scsi_remove),
-+	.driver   = {
-+		.name	= "amiga-a4000t-scsi",
-+		.owner	= THIS_MODULE,
- 	},
--	.probe          = a4000t_probe,
--	.remove         = __devexit_p(a4000t_device_remove),
- };
- 
--static int __init a4000t_scsi_init(void)
-+static int __init amiga_a4000t_scsi_init(void)
- {
--	int err;
--
--	err = platform_driver_register(&a4000t_scsi_driver);
--	if (err)
--		return err;
--
--	a4000t_scsi_device = platform_device_register_simple("a4000t-scsi",
--			-1, NULL, 0);
--	if (IS_ERR(a4000t_scsi_device)) {
--		platform_driver_register(&a4000t_scsi_driver);
--		return PTR_ERR(a4000t_scsi_device);
+-	/*
+-	 *  We request SERDAT and SERPER only, because the serial registers are
+-	 *  too spreaded over the custom register space
+-	 */
+-	if (!request_mem_region(CUSTOM_PHYSADDR+0x30, 4,
+-				"amiserial [Paula]")) {
+-		error = -EBUSY;
+-		goto fail_put_tty_driver;
 -	}
 -
--	return err;
-+	return platform_driver_probe(&amiga_a4000t_scsi_driver,
-+				     amiga_a4000t_scsi_probe);
+ 	IRQ_ports = NULL;
+ 
+ 	show_serial_version();
+@@ -1997,7 +1985,7 @@ static int __init rs_init(void)
+ 
+ 	error = tty_register_driver(serial_driver);
+ 	if (error)
+-		goto fail_release_mem_region;
++		goto fail_put_tty_driver;
+ 
+ 	state = rs_table;
+ 	state->magic = SSTATE_MAGIC;
+@@ -2049,23 +2037,24 @@ static int __init rs_init(void)
+ 	ciab.ddra |= (SER_DTR | SER_RTS);   /* outputs */
+ 	ciab.ddra &= ~(SER_DCD | SER_CTS | SER_DSR);  /* inputs */
+ 
++	platform_set_drvdata(pdev, state);
++
+ 	return 0;
+ 
+ fail_free_irq:
+ 	free_irq(IRQ_AMIGA_TBE, state);
+ fail_unregister:
+ 	tty_unregister_driver(serial_driver);
+-fail_release_mem_region:
+-	release_mem_region(CUSTOM_PHYSADDR+0x30, 4);
+ fail_put_tty_driver:
+ 	put_tty_driver(serial_driver);
+ 	return error;
  }
  
--static void __exit a4000t_scsi_exit(void)
-+module_init(amiga_a4000t_scsi_init);
-+
-+static void __exit amiga_a4000t_scsi_exit(void)
+-static __exit void rs_exit(void) 
++static int __exit amiga_serial_remove(struct platform_device *pdev)
  {
--	platform_device_unregister(a4000t_scsi_device);
--	platform_driver_unregister(&a4000t_scsi_driver);
-+	platform_driver_unregister(&amiga_a4000t_scsi_driver);
+ 	int error;
+-	struct async_struct *info = rs_table[0].info;
++	struct serial_state *state = platform_get_drvdata(pdev);
++	struct async_struct *info = state->info;
+ 
+ 	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
+ 	tasklet_kill(&info->tlet);
+@@ -2074,19 +2063,38 @@ static __exit void rs_exit(void)
+ 		       error);
+ 	put_tty_driver(serial_driver);
+ 
+-	if (info) {
+-	  rs_table[0].info = NULL;
+-	  kfree(info);
+-	}
++	rs_table[0].info = NULL;
++	kfree(info);
+ 
+ 	free_irq(IRQ_AMIGA_TBE, rs_table);
+ 	free_irq(IRQ_AMIGA_RBF, rs_table);
+ 
+-	release_mem_region(CUSTOM_PHYSADDR+0x30, 4);
++	platform_set_drvdata(pdev, NULL);
++
++	return error;
++}
++
++static struct platform_driver amiga_serial_driver = {
++	.remove = __exit_p(amiga_serial_remove),
++	.driver   = {
++		.name	= "amiga-serial",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init amiga_serial_init(void)
++{
++	return platform_driver_probe(&amiga_serial_driver, amiga_serial_probe);
++}
++
++module_init(amiga_serial_init);
++
++static void __exit amiga_serial_exit(void)
++{
++	platform_driver_unregister(&amiga_serial_driver);
  }
  
--module_init(a4000t_scsi_init);
--module_exit(a4000t_scsi_exit);
-+module_exit(amiga_a4000t_scsi_exit);
-+
-+MODULE_AUTHOR("Alan Hourihane <alanh@fairlite.demon.co.uk> / "
-+	      "Kars de Jong <jongk@linux-m68k.org>");
-+MODULE_DESCRIPTION("Amiga A4000T NCR53C710 driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:amiga-a4000t-scsi");
+-module_init(rs_init)
+-module_exit(rs_exit)
++module_exit(amiga_serial_exit);
+ 
+ 
+ #if defined(CONFIG_SERIAL_CONSOLE) && !defined(MODULE)
+@@ -2153,3 +2161,4 @@ console_initcall(amiserial_console_init);
+ #endif /* CONFIG_SERIAL_CONSOLE && !MODULE */
+ 
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:amiga-serial");
 -- 
 1.6.2.3
 
