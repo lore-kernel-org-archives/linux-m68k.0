@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 11/16] m68k: amiga - Mouse platform device conversion
-Date: Sat, 18 Apr 2009 20:52:19 +0200
-Message-ID: <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 16/16] m68k: amiga - RTC platform device conversion
+Date: Sat, 18 Apr 2009 20:52:24 +0200
+Message-ID: <1240080744-14995-17-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
@@ -13,202 +13,277 @@ References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-13-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-14-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
+ <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from georges.telenet-ops.be ([195.130.137.68]:47005 "EHLO
+Received: from georges.telenet-ops.be ([195.130.137.68]:47002 "EHLO
 	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751913AbZDRSwb (ORCPT
+	with ESMTP id S1759105AbZDRSwb (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:31 -0400
-In-Reply-To: <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-input@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, rtc-linux@googlegroups.com
+
+The A2000 TOD is an Oki MSM6242B, while the A3000 TOD is a Ricoh RP5C01.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-input@vger.kernel.org
+Cc: rtc-linux@googlegroups.com
 ---
- arch/m68k/amiga/platform.c     |    3 +
- drivers/input/mouse/amimouse.c |   98 +++++++++++++++++++++++++--------------
- 2 files changed, 66 insertions(+), 35 deletions(-)
+ arch/m68k/amiga/config.c   |  172 --------------------------------------------
+ arch/m68k/amiga/platform.c |   17 +++++
+ 2 files changed, 17 insertions(+), 172 deletions(-)
 
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 6e56275..d060894 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -97,10 +97,6 @@ static void amiga_get_model(char *model);
+ static void amiga_get_hardware_list(struct seq_file *m);
+ /* amiga specific timer functions */
+ static unsigned long amiga_gettimeoffset(void);
+-static int a3000_hwclk(int, struct rtc_time *);
+-static int a2000_hwclk(int, struct rtc_time *);
+-static int amiga_set_clock_mmss(unsigned long);
+-static unsigned int amiga_get_ss(void);
+ extern void amiga_mksound(unsigned int count, unsigned int ticks);
+ static void amiga_reset(void);
+ extern void amiga_init_sound(void);
+@@ -138,10 +134,6 @@ static struct {
+ 	}
+ };
+ 
+-static struct resource rtc_resource = {
+-	.start = 0x00dc0000, .end = 0x00dcffff
+-};
+-
+ static struct resource ram_resource[NUM_MEMINFO];
+ 
+ 
+@@ -387,15 +379,6 @@ void __init config_amiga(void)
+ 	mach_get_model       = amiga_get_model;
+ 	mach_get_hardware_list = amiga_get_hardware_list;
+ 	mach_gettimeoffset   = amiga_gettimeoffset;
+-	if (AMIGAHW_PRESENT(A3000_CLK)) {
+-		mach_hwclk         = a3000_hwclk;
+-		rtc_resource.name = "A3000 RTC";
+-		request_resource(&iomem_resource, &rtc_resource);
+-	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
+-		mach_hwclk         = a2000_hwclk;
+-		rtc_resource.name = "A2000 RTC";
+-		request_resource(&iomem_resource, &rtc_resource);
+-	}
+ 
+ 	/*
+ 	 * default MAX_DMA=0xffffffff on all machines. If we don't do so, the SCSI
+@@ -404,8 +387,6 @@ void __init config_amiga(void)
+ 	 */
+ 	mach_max_dma_address = 0xffffffff;
+ 
+-	mach_set_clock_mmss  = amiga_set_clock_mmss;
+-	mach_get_ss          = amiga_get_ss;
+ 	mach_reset           = amiga_reset;
+ #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
+ 	mach_beep            = amiga_mksound;
+@@ -530,159 +511,6 @@ static unsigned long amiga_gettimeoffset(void)
+ 	return ticks + offset;
+ }
+ 
+-static int a3000_hwclk(int op, struct rtc_time *t)
+-{
+-	tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
+-
+-	if (!op) { /* read */
+-		t->tm_sec  = tod_3000.second1 * 10 + tod_3000.second2;
+-		t->tm_min  = tod_3000.minute1 * 10 + tod_3000.minute2;
+-		t->tm_hour = tod_3000.hour1   * 10 + tod_3000.hour2;
+-		t->tm_mday = tod_3000.day1    * 10 + tod_3000.day2;
+-		t->tm_wday = tod_3000.weekday;
+-		t->tm_mon  = tod_3000.month1  * 10 + tod_3000.month2 - 1;
+-		t->tm_year = tod_3000.year1   * 10 + tod_3000.year2;
+-		if (t->tm_year <= 69)
+-			t->tm_year += 100;
+-	} else {
+-		tod_3000.second1 = t->tm_sec / 10;
+-		tod_3000.second2 = t->tm_sec % 10;
+-		tod_3000.minute1 = t->tm_min / 10;
+-		tod_3000.minute2 = t->tm_min % 10;
+-		tod_3000.hour1   = t->tm_hour / 10;
+-		tod_3000.hour2   = t->tm_hour % 10;
+-		tod_3000.day1    = t->tm_mday / 10;
+-		tod_3000.day2    = t->tm_mday % 10;
+-		if (t->tm_wday != -1)
+-			tod_3000.weekday = t->tm_wday;
+-		tod_3000.month1  = (t->tm_mon + 1) / 10;
+-		tod_3000.month2  = (t->tm_mon + 1) % 10;
+-		if (t->tm_year >= 100)
+-			t->tm_year -= 100;
+-		tod_3000.year1   = t->tm_year / 10;
+-		tod_3000.year2   = t->tm_year % 10;
+-	}
+-
+-	tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
+-
+-	return 0;
+-}
+-
+-static int a2000_hwclk(int op, struct rtc_time *t)
+-{
+-	int cnt = 5;
+-
+-	tod_2000.cntrl1 = TOD2000_CNTRL1_HOLD;
+-
+-	while ((tod_2000.cntrl1 & TOD2000_CNTRL1_BUSY) && cnt--) {
+-		tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
+-		udelay(70);
+-		tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
+-	}
+-
+-	if (!cnt)
+-		printk(KERN_INFO "hwclk: timed out waiting for RTC (0x%x)\n",
+-			tod_2000.cntrl1);
+-
+-	if (!op) { /* read */
+-		t->tm_sec  = tod_2000.second1     * 10 + tod_2000.second2;
+-		t->tm_min  = tod_2000.minute1     * 10 + tod_2000.minute2;
+-		t->tm_hour = (tod_2000.hour1 & 3) * 10 + tod_2000.hour2;
+-		t->tm_mday = tod_2000.day1        * 10 + tod_2000.day2;
+-		t->tm_wday = tod_2000.weekday;
+-		t->tm_mon  = tod_2000.month1      * 10 + tod_2000.month2 - 1;
+-		t->tm_year = tod_2000.year1       * 10 + tod_2000.year2;
+-		if (t->tm_year <= 69)
+-			t->tm_year += 100;
+-
+-		if (!(tod_2000.cntrl3 & TOD2000_CNTRL3_24HMODE)) {
+-			if (!(tod_2000.hour1 & TOD2000_HOUR1_PM) && t->tm_hour == 12)
+-				t->tm_hour = 0;
+-			else if ((tod_2000.hour1 & TOD2000_HOUR1_PM) && t->tm_hour != 12)
+-				t->tm_hour += 12;
+-		}
+-	} else {
+-		tod_2000.second1 = t->tm_sec / 10;
+-		tod_2000.second2 = t->tm_sec % 10;
+-		tod_2000.minute1 = t->tm_min / 10;
+-		tod_2000.minute2 = t->tm_min % 10;
+-		if (tod_2000.cntrl3 & TOD2000_CNTRL3_24HMODE)
+-			tod_2000.hour1 = t->tm_hour / 10;
+-		else if (t->tm_hour >= 12)
+-			tod_2000.hour1 = TOD2000_HOUR1_PM +
+-				(t->tm_hour - 12) / 10;
+-		else
+-			tod_2000.hour1 = t->tm_hour / 10;
+-		tod_2000.hour2   = t->tm_hour % 10;
+-		tod_2000.day1    = t->tm_mday / 10;
+-		tod_2000.day2    = t->tm_mday % 10;
+-		if (t->tm_wday != -1)
+-			tod_2000.weekday = t->tm_wday;
+-		tod_2000.month1  = (t->tm_mon + 1) / 10;
+-		tod_2000.month2  = (t->tm_mon + 1) % 10;
+-		if (t->tm_year >= 100)
+-			t->tm_year -= 100;
+-		tod_2000.year1   = t->tm_year / 10;
+-		tod_2000.year2   = t->tm_year % 10;
+-	}
+-
+-	tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
+-
+-	return 0;
+-}
+-
+-static int amiga_set_clock_mmss(unsigned long nowtime)
+-{
+-	short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
+-
+-	if (AMIGAHW_PRESENT(A3000_CLK)) {
+-		tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
+-
+-		tod_3000.second1 = real_seconds / 10;
+-		tod_3000.second2 = real_seconds % 10;
+-		tod_3000.minute1 = real_minutes / 10;
+-		tod_3000.minute2 = real_minutes % 10;
+-
+-		tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
+-	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
+-		int cnt = 5;
+-
+-		tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
+-
+-		while ((tod_2000.cntrl1 & TOD2000_CNTRL1_BUSY) && cnt--) {
+-			tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
+-			udelay(70);
+-			tod_2000.cntrl1 |= TOD2000_CNTRL1_HOLD;
+-		}
+-
+-		if (!cnt)
+-			printk(KERN_INFO "set_clock_mmss: timed out waiting for RTC (0x%x)\n", tod_2000.cntrl1);
+-
+-		tod_2000.second1 = real_seconds / 10;
+-		tod_2000.second2 = real_seconds % 10;
+-		tod_2000.minute1 = real_minutes / 10;
+-		tod_2000.minute2 = real_minutes % 10;
+-
+-		tod_2000.cntrl1 &= ~TOD2000_CNTRL1_HOLD;
+-	}
+-
+-	return 0;
+-}
+-
+-static unsigned int amiga_get_ss(void)
+-{
+-	unsigned int s;
+-
+-	if (AMIGAHW_PRESENT(A3000_CLK)) {
+-		tod_3000.cntrl1 = TOD3000_CNTRL1_HOLD;
+-		s = tod_3000.second1 * 10 + tod_3000.second2;
+-		tod_3000.cntrl1 = TOD3000_CNTRL1_FREE;
+-	} else /* if (AMIGAHW_PRESENT(A2000_CLK)) */ {
+-		s = tod_2000.second1 * 10 + tod_2000.second2;
+-	}
+-	return s;
+-}
+-
+ static NORET_TYPE void amiga_reset(void)
+     ATTRIB_NORET;
+ 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index d427de2..269bafc 100644
+index c985db0..7fd8b41 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -165,6 +165,9 @@ static int __init amiga_init_devices(void)
- 	if (AMIGAHW_PRESENT(AMI_KEYBOARD))
- 		platform_device_register_simple("amiga-keyboard", -1, NULL, 0);
+@@ -116,6 +116,13 @@ static const struct gayle_ide_platform_data a4000_ide_pdata __initconst = {
+ };
  
-+	if (AMIGAHW_PRESENT(AMI_MOUSE))
-+		platform_device_register_simple("amiga-mouse", -1, NULL, 0);
-+
- 	return 0;
- }
  
-diff --git a/drivers/input/mouse/amimouse.c b/drivers/input/mouse/amimouse.c
-index a185ac7..ff5f61a 100644
---- a/drivers/input/mouse/amimouse.c
-+++ b/drivers/input/mouse/amimouse.c
-@@ -21,6 +21,7 @@
- #include <linux/init.h>
- #include <linux/input.h>
- #include <linux/interrupt.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/irq.h>
- #include <asm/setup.h>
-@@ -34,10 +35,10 @@ MODULE_DESCRIPTION("Amiga mouse driver");
- MODULE_LICENSE("GPL");
- 
- static int amimouse_lastx, amimouse_lasty;
--static struct input_dev *amimouse_dev;
- 
--static irqreturn_t amimouse_interrupt(int irq, void *dummy)
-+static irqreturn_t amimouse_interrupt(int irq, void *data)
- {
-+	struct input_dev *dev = data;
- 	unsigned short joy0dat, potgor;
- 	int nx, ny, dx, dy;
- 
-@@ -59,14 +60,14 @@ static irqreturn_t amimouse_interrupt(int irq, void *dummy)
- 
- 	potgor = amiga_custom.potgor;
- 
--	input_report_rel(amimouse_dev, REL_X, dx);
--	input_report_rel(amimouse_dev, REL_Y, dy);
-+	input_report_rel(dev, REL_X, dx);
-+	input_report_rel(dev, REL_Y, dy);
- 
--	input_report_key(amimouse_dev, BTN_LEFT,   ciaa.pra & 0x40);
--	input_report_key(amimouse_dev, BTN_MIDDLE, potgor & 0x0100);
--	input_report_key(amimouse_dev, BTN_RIGHT,  potgor & 0x0400);
-+	input_report_key(dev, BTN_LEFT,   ciaa.pra & 0x40);
-+	input_report_key(dev, BTN_MIDDLE, potgor & 0x0100);
-+	input_report_key(dev, BTN_RIGHT,  potgor & 0x0400);
- 
--	input_sync(amimouse_dev);
-+	input_sync(dev);
- 
- 	return IRQ_HANDLED;
- }
-@@ -74,63 +75,90 @@ static irqreturn_t amimouse_interrupt(int irq, void *dummy)
- static int amimouse_open(struct input_dev *dev)
- {
- 	unsigned short joy0dat;
-+	int error;
- 
- 	joy0dat = amiga_custom.joy0dat;
- 
- 	amimouse_lastx = joy0dat & 0xff;
- 	amimouse_lasty = joy0dat >> 8;
- 
--	if (request_irq(IRQ_AMIGA_VERTB, amimouse_interrupt, 0, "amimouse", amimouse_interrupt)) {
--                printk(KERN_ERR "amimouse.c: Can't allocate irq %d\n", IRQ_AMIGA_VERTB);
--                return -EBUSY;
--        }
-+	error = request_irq(IRQ_AMIGA_VERTB, amimouse_interrupt, 0, "amimouse",
-+			    dev);
-+	if (error)
-+		dev_err(&dev->dev, "Can't allocate irq %d\n", IRQ_AMIGA_VERTB);
- 
--        return 0;
-+	return error;
- }
- 
- static void amimouse_close(struct input_dev *dev)
- {
--	free_irq(IRQ_AMIGA_VERTB, amimouse_interrupt);
-+	free_irq(IRQ_AMIGA_VERTB, dev);
- }
- 
--static int __init amimouse_init(void)
-+static int __init amimouse_probe(struct platform_device *pdev)
- {
- 	int err;
-+	struct input_dev *dev;
- 
--	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_MOUSE))
--		return -ENODEV;
--
--	amimouse_dev = input_allocate_device();
--	if (!amimouse_dev)
-+	dev = input_allocate_device();
-+	if (!dev)
- 		return -ENOMEM;
- 
--	amimouse_dev->name = "Amiga mouse";
--	amimouse_dev->phys = "amimouse/input0";
--	amimouse_dev->id.bustype = BUS_AMIGA;
--	amimouse_dev->id.vendor = 0x0001;
--	amimouse_dev->id.product = 0x0002;
--	amimouse_dev->id.version = 0x0100;
-+	dev->name = pdev->name;
-+	dev->phys = "amimouse/input0";
-+	dev->id.bustype = BUS_AMIGA;
-+	dev->id.vendor = 0x0001;
-+	dev->id.product = 0x0002;
-+	dev->id.version = 0x0100;
- 
--	amimouse_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
--	amimouse_dev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
--	amimouse_dev->keybit[BIT_WORD(BTN_LEFT)] = BIT_MASK(BTN_LEFT) |
-+	dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
-+	dev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
-+	dev->keybit[BIT_WORD(BTN_LEFT)] = BIT_MASK(BTN_LEFT) |
- 		BIT_MASK(BTN_MIDDLE) | BIT_MASK(BTN_RIGHT);
--	amimouse_dev->open = amimouse_open;
--	amimouse_dev->close = amimouse_close;
-+	dev->open = amimouse_open;
-+	dev->close = amimouse_close;
-+	dev->dev.parent = &pdev->dev;
- 
--	err = input_register_device(amimouse_dev);
-+	err = input_register_device(dev);
- 	if (err) {
--		input_free_device(amimouse_dev);
-+		input_free_device(dev);
- 		return err;
- 	}
- 
-+	platform_set_drvdata(pdev, dev);
-+
- 	return 0;
- }
- 
--static void __exit amimouse_exit(void)
-+static int __exit amimouse_remove(struct platform_device *pdev)
- {
--        input_unregister_device(amimouse_dev);
-+	struct input_dev *dev = platform_get_drvdata(pdev);
-+
-+	platform_set_drvdata(pdev, NULL);
-+	input_unregister_device(dev);
-+	return 0;
-+}
-+
-+static struct platform_driver amimouse_driver = {
-+	.remove = __exit_p(amimouse_remove),
-+	.driver   = {
-+		.name	= "amiga-mouse",
-+		.owner	= THIS_MODULE,
-+	},
++static const struct resource amiga_rtc_resource __initconst = {
++	.start	= 0x00dc0000,
++	.end	= 0x00dcffff,
++	.flags	= IORESOURCE_MEM,
 +};
 +
-+static int __init amimouse_init(void)
-+{
-+	return platform_driver_probe(&amimouse_driver, amimouse_probe);
++
+ static int __init amiga_init_devices(void)
+ {
+ 	struct platform_device *pdev;
+@@ -174,6 +181,16 @@ static int __init amiga_init_devices(void)
+ 	if (AMIGAHW_PRESENT(AMI_PARALLEL))
+ 		platform_device_register_simple("amiga-parallel", -1, NULL, 0);
+ 
++
++	/* real time clocks */
++	if (AMIGAHW_PRESENT(A2000_CLK))
++		platform_device_register_simple("rtc-msm6242", -1,
++						&amiga_rtc_resource, 1);
++
++	if (AMIGAHW_PRESENT(A3000_CLK))
++		platform_device_register_simple("rtc-rp5c01", -1,
++						&amiga_rtc_resource, 1);
++
+ 	return 0;
  }
  
- module_init(amimouse_init);
-+
-+static void __exit amimouse_exit(void)
-+{
-+	platform_driver_unregister(&amimouse_driver);
-+}
-+
- module_exit(amimouse_exit);
-+
-+MODULE_ALIAS("platform:amiga-mouse");
 -- 
 1.6.2.3
 
