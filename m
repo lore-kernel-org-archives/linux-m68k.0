@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 15/16] rtc: Add an RTC driver for the Ricoh RP5C01
-Date: Sat, 18 Apr 2009 20:52:23 +0200
-Message-ID: <1240080744-14995-16-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 10/16] m68k: amiga - Keyboard platform device conversion
+Date: Sat, 18 Apr 2009 20:52:18 +0200
+Message-ID: <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
@@ -12,307 +12,199 @@ References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-8-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-13-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-14-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from brigitte.telenet-ops.be ([195.130.137.66]:55373 "EHLO
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:55368 "EHLO
 	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757722AbZDRSwc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:32 -0400
-In-Reply-To: <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
+	with ESMTP id S1758702AbZDRSwa (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:30 -0400
+In-Reply-To: <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, rtc-linux@googlegroups.com
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-input@vger.kernel.org
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: rtc-linux@googlegroups.com
+Cc: linux-input@vger.kernel.org
 ---
- drivers/rtc/Kconfig      |   10 ++
- drivers/rtc/Makefile     |    1 +
- drivers/rtc/rtc-rp5c01.c |  239 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 250 insertions(+), 0 deletions(-)
- create mode 100644 drivers/rtc/rtc-rp5c01.c
+ arch/m68k/amiga/platform.c      |    5 ++
+ drivers/input/keyboard/amikbd.c |   97 +++++++++++++++++++++++----------------
+ 2 files changed, 63 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index a0f6297..150fe43 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -535,6 +535,16 @@ config RTC_DRV_MSM6242
- 	  This driver can also be built as a module. If so, the module
- 	  will be called rtc-msm6242.
+diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
+index 907f6f5..d427de2 100644
+--- a/arch/m68k/amiga/platform.c
++++ b/arch/m68k/amiga/platform.c
+@@ -160,6 +160,11 @@ static int __init amiga_init_devices(void)
+ 					 sizeof(a4000_ide_pdata));
+ 	}
  
-+config RTC_DRV_RP5C01
-+	tristate "Ricoh RP5C01"
-+	help
-+	  If you say yes here you get support for the Ricoh RP5C01
-+	  timekeeping chip. It is used in some Amiga models (e.g. A3000
-+	  and A4000).
 +
-+	  This driver can also be built as a module. If so, the module
-+	  will be called rtc-rp5c01.
++	/* other I/O hardware */
++	if (AMIGAHW_PRESENT(AMI_KEYBOARD))
++		platform_device_register_simple("amiga-keyboard", -1, NULL, 0);
 +
- comment "on-CPU RTC drivers"
+ 	return 0;
+ }
  
- config RTC_DRV_OMAP
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index c70418b..6176a8a 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -77,4 +77,5 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
- obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
- obj-$(CONFIG_RTC_DRV_PCF50633)	+= rtc-pcf50633.o
- obj-$(CONFIG_RTC_DRV_MSM6242)	+= rtc-msm6242.o
-+obj-$(CONFIG_RTC_DRV_RP5C01)	+= rtc-rp5c01.o
- obj-$(CONFIG_RTC_DRV_PS3)	+= rtc-ps3.o
-diff --git a/drivers/rtc/rtc-rp5c01.c b/drivers/rtc/rtc-rp5c01.c
-new file mode 100644
-index 0000000..d997f33
---- /dev/null
-+++ b/drivers/rtc/rtc-rp5c01.c
-@@ -0,0 +1,239 @@
-+/*
-+ *  Ricoh RP5C01 RTC Driver
-+ *
-+ *  Copyright 2009 Geert Uytterhoeven
-+ *
-+ *  Based on the A3000 TOD code in arch/m68k/amiga/config.c
-+ *  Copyright (C) 1993 Hamish Macdonald
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
+diff --git a/drivers/input/keyboard/amikbd.c b/drivers/input/keyboard/amikbd.c
+index 35149ec..79172af 100644
+--- a/drivers/input/keyboard/amikbd.c
++++ b/drivers/input/keyboard/amikbd.c
+@@ -35,6 +35,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/keyboard.h>
 +#include <linux/platform_device.h>
-+#include <linux/rtc.h>
-+
-+
-+enum {
-+	RP5C01_1_SECOND		= 0x0,	/* MODE 00 */
-+	RP5C01_10_SECOND	= 0x1,	/* MODE 00 */
-+	RP5C01_1_MINUTE		= 0x2,	/* MODE 00 and MODE 01 */
-+	RP5C01_10_MINUTE	= 0x3,	/* MODE 00 and MODE 01 */
-+	RP5C01_1_HOUR		= 0x4,	/* MODE 00 and MODE 01 */
-+	RP5C01_10_HOUR		= 0x5,	/* MODE 00 and MODE 01 */
-+	RP5C01_DAY_OF_WEEK	= 0x6,	/* MODE 00 and MODE 01 */
-+	RP5C01_1_DAY		= 0x7,	/* MODE 00 and MODE 01 */
-+	RP5C01_10_DAY		= 0x8,	/* MODE 00 and MODE 01 */
-+	RP5C01_1_MONTH		= 0x9,	/* MODE 00 */
-+	RP5C01_10_MONTH		= 0xa,	/* MODE 00 */
-+	RP5C01_1_YEAR		= 0xb,	/* MODE 00 */
-+	RP5C01_10_YEAR		= 0xc,	/* MODE 00 */
-+
-+	RP5C01_12_24_SELECT	= 0xa,	/* MODE 01 */
-+	RP5C01_LEAP_YEAR	= 0xb,	/* MODE 01 */
-+
-+	RP5C01_MODE		= 0xd,	/* all modes */
-+	RP5C01_TEST		= 0xe,	/* all modes */
-+	RP5C01_RESET		= 0xf,	/* all modes */
-+};
-+
-+#define RP5C01_12_24_SELECT_12	(0 << 0)
-+#define RP5C01_12_24_SELECT_24	(1 << 0)
-+
-+#define RP5C01_10_HOUR_AM	(0 << 1)
-+#define RP5C01_10_HOUR_PM	(1 << 1)
-+
-+#define RP5C01_MODE_TIMER_EN	(1 << 3)	/* timer enable */
-+#define RP5C01_MODE_ALARM_EN	(1 << 2)	/* alarm enable */
-+
-+#define RP5C01_MODE_MODE_MASK	(3 << 0)
-+#define RP5C01_MODE_MODE00	(0 << 0)	/* time */
-+#define RP5C01_MODE_MODE01	(1 << 0)	/* alarm, 12h/24h, leap year */
-+#define RP5C01_MODE_RAM_BLOCK10	(2 << 0)	/* RAM 4 bits x 13 */
-+#define RP5C01_MODE_RAM_BLOCK11	(3 << 0)	/* RAM 4 bits x 13 */
-+
-+#define RP5C01_RESET_1HZ_PULSE	(1 << 3)
-+#define RP5C01_RESET_16HZ_PULSE	(1 << 2)
-+#define RP5C01_RESET_SECOND	(1 << 1)	/* reset divider stages for */
-+						/* seconds or smaller units */
-+#define RP5C01_RESET_ALARM	(1 << 0)	/* reset all alarm registers */
-+
-+
-+struct rp5c01_priv {
-+	u32 __iomem *regs;
-+	struct rtc_device *rtc;
-+};
-+
-+static inline unsigned int rp5c01_read(struct rp5c01_priv *priv,
-+				       unsigned int reg)
-+{
-+	return __raw_readl(&priv->regs[reg]) & 0xf;
-+}
-+
-+static inline void rp5c01_write(struct rp5c01_priv *priv, unsigned int val,
-+				unsigned int reg)
-+{
-+	return __raw_writel(val, &priv->regs[reg]);
-+}
-+
-+static void rp5c01_lock(struct rp5c01_priv *priv)
-+{
-+	rp5c01_write(priv, RP5C01_MODE_MODE00, RP5C01_MODE);
-+}
-+
-+static void rp5c01_unlock(struct rp5c01_priv *priv)
-+{
-+	rp5c01_write(priv, RP5C01_MODE_TIMER_EN | RP5C01_MODE_MODE01,
-+		     RP5C01_MODE);
-+}
-+
-+static int rp5c01_read_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct rp5c01_priv *priv = dev_get_drvdata(dev);
-+
-+	rp5c01_lock(priv);
-+
-+	tm->tm_sec  = rp5c01_read(priv, RP5C01_10_SECOND) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_SECOND);
-+	tm->tm_min  = rp5c01_read(priv, RP5C01_10_MINUTE) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_MINUTE);
-+	tm->tm_hour = rp5c01_read(priv, RP5C01_10_HOUR) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_HOUR);
-+	tm->tm_mday = rp5c01_read(priv, RP5C01_10_DAY) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_DAY);
-+	tm->tm_wday = rp5c01_read(priv, RP5C01_DAY_OF_WEEK);
-+	tm->tm_mon  = rp5c01_read(priv, RP5C01_10_MONTH) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_MONTH) - 1;
-+	tm->tm_year = rp5c01_read(priv, RP5C01_10_YEAR) * 10 +
-+		      rp5c01_read(priv, RP5C01_1_YEAR);
-+	if (tm->tm_year <= 69)
-+		tm->tm_year += 100;
-+
-+	rp5c01_unlock(priv);
-+
-+	return rtc_valid_tm(tm);
-+}
-+
-+static int rp5c01_set_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct rp5c01_priv *priv = dev_get_drvdata(dev);
-+
-+	rp5c01_lock(priv);
-+
-+	rp5c01_write(priv, tm->tm_sec / 10, RP5C01_10_SECOND);
-+	rp5c01_write(priv, tm->tm_sec % 10, RP5C01_1_SECOND);
-+	rp5c01_write(priv, tm->tm_min / 10, RP5C01_10_MINUTE);
-+	rp5c01_write(priv, tm->tm_min % 10, RP5C01_1_MINUTE);
-+	rp5c01_write(priv, tm->tm_hour / 10, RP5C01_10_HOUR);
-+	rp5c01_write(priv, tm->tm_hour % 10, RP5C01_1_HOUR);
-+	rp5c01_write(priv, tm->tm_mday / 10, RP5C01_10_DAY);
-+	rp5c01_write(priv, tm->tm_mday % 10, RP5C01_1_DAY);
-+	if (tm->tm_wday != -1)
-+		rp5c01_write(priv, tm->tm_wday, RP5C01_DAY_OF_WEEK);
-+	rp5c01_write(priv, (tm->tm_mon + 1) / 10, RP5C01_10_MONTH);
-+	rp5c01_write(priv, (tm->tm_mon + 1) % 10, RP5C01_1_MONTH);
-+	if (tm->tm_year >= 100)
-+		tm->tm_year -= 100;
-+	rp5c01_write(priv, tm->tm_year / 10, RP5C01_10_YEAR);
-+	rp5c01_write(priv, tm->tm_year % 10, RP5C01_1_YEAR);
-+
-+	rp5c01_unlock(priv);
-+	return 0;
-+}
-+
-+static int rp5c01_set_mmss(struct device *dev, unsigned long secs)
-+{
-+	struct rp5c01_priv *priv = dev_get_drvdata(dev);
-+	unsigned int real_seconds = secs % 60, real_minutes = (secs / 60) % 60;
-+
-+	rp5c01_lock(priv);
-+
-+	rp5c01_write(priv, real_seconds / 10, RP5C01_10_SECOND);
-+	rp5c01_write(priv, real_seconds % 10, RP5C01_1_SECOND);
-+	rp5c01_write(priv, real_minutes / 10, RP5C01_10_MINUTE);
-+	rp5c01_write(priv, real_minutes % 10, RP5C01_1_MINUTE);
-+
-+	rp5c01_unlock(priv);
-+	return 0;
-+}
-+
-+static const struct rtc_class_ops rp5c01_rtc_ops = {
-+	.read_time	= rp5c01_read_time,
-+	.set_time	= rp5c01_set_time,
-+	.set_mmss	= rp5c01_set_mmss,
-+};
-+
-+static int __init rp5c01_rtc_probe(struct platform_device *dev)
-+{
-+	struct resource *res;
-+	struct rp5c01_priv *priv;
-+	struct rtc_device *rtc;
-+	int error;
-+
-+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENODEV;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
+ 
+ #include <asm/amigaints.h>
+ #include <asm/amigahw.h>
+@@ -154,10 +155,9 @@ static const char *amikbd_messages[8] = {
+ 	[7] = KERN_WARNING "amikbd: keyboard interrupt\n"
+ };
+ 
+-static struct input_dev *amikbd_dev;
+-
+-static irqreturn_t amikbd_interrupt(int irq, void *dummy)
++static irqreturn_t amikbd_interrupt(int irq, void *data)
+ {
++	struct input_dev *dev = data;
+ 	unsigned char scancode, down;
+ 
+ 	scancode = ~ciaa.sdr;		/* get and invert scancode (keyboard is active low) */
+@@ -170,47 +170,42 @@ static irqreturn_t amikbd_interrupt(int irq, void *dummy)
+ 
+ 	if (scancode < 0x78) {		/* scancodes < 0x78 are keys */
+ 		if (scancode == 98) {	/* CapsLock is a toggle switch key on Amiga */
+-			input_report_key(amikbd_dev, scancode, 1);
+-			input_report_key(amikbd_dev, scancode, 0);
++			input_report_key(dev, scancode, 1);
++			input_report_key(dev, scancode, 0);
+ 		} else {
+-			input_report_key(amikbd_dev, scancode, down);
++			input_report_key(dev, scancode, down);
+ 		}
+ 
+-		input_sync(amikbd_dev);
++		input_sync(dev);
+ 	} else				/* scancodes >= 0x78 are error codes */
+ 		printk(amikbd_messages[scancode - 0x78]);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int __init amikbd_init(void)
++static int __init amikbd_probe(struct platform_device *pdev)
+ {
++	struct input_dev *dev;
+ 	int i, j, err;
+ 
+-	if (!AMIGAHW_PRESENT(AMI_KEYBOARD))
+-		return -ENODEV;
+-
+-	if (!request_mem_region(CIAA_PHYSADDR-1+0xb00, 0x100, "amikeyb"))
+-		return -EBUSY;
+-
+-	amikbd_dev = input_allocate_device();
+-	if (!amikbd_dev) {
+-		printk(KERN_ERR "amikbd: not enough memory for input device\n");
+-		err = -ENOMEM;
+-		goto fail1;
++	dev = input_allocate_device();
++	if (!dev) {
++		dev_err(&pdev->dev, "Not enough memory for input device\n");
 +		return -ENOMEM;
+ 	}
+ 
+-	amikbd_dev->name = "Amiga Keyboard";
+-	amikbd_dev->phys = "amikbd/input0";
+-	amikbd_dev->id.bustype = BUS_AMIGA;
+-	amikbd_dev->id.vendor = 0x0001;
+-	amikbd_dev->id.product = 0x0001;
+-	amikbd_dev->id.version = 0x0100;
++	dev->name = pdev->name;
++	dev->phys = "amikbd/input0";
++	dev->id.bustype = BUS_AMIGA;
++	dev->id.vendor = 0x0001;
++	dev->id.product = 0x0001;
++	dev->id.version = 0x0100;
++	dev->dev.parent = &pdev->dev;
+ 
+-	amikbd_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REP);
++	dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REP);
+ 
+ 	for (i = 0; i < 0x78; i++)
+-		set_bit(i, amikbd_dev->keybit);
++		set_bit(i, dev->keybit);
+ 
+ 	for (i = 0; i < MAX_NR_KEYMAPS; i++) {
+ 		static u_short temp_map[NR_KEYS] __initdata;
+@@ -229,30 +224,54 @@ static int __init amikbd_init(void)
+ 		memcpy(key_maps[i], temp_map, sizeof(temp_map));
+ 	}
+ 	ciaa.cra &= ~0x41;	 /* serial data in, turn off TA */
+-	if (request_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt, 0, "amikbd",
+-			amikbd_interrupt)) {
+-		err = -EBUSY;
++	err = request_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt, 0, "amikbd",
++			  dev);
++	if (err)
+ 		goto fail2;
+-	}
+ 
+-	err = input_register_device(amikbd_dev);
++	err = input_register_device(dev);
+ 	if (err)
+ 		goto fail3;
+ 
++	platform_set_drvdata(pdev, dev);
 +
-+	priv->regs = ioremap(res->start, resource_size(res));
-+	if (!priv->regs) {
-+		error = -ENOMEM;
-+		goto out_free_priv;
-+	}
-+
-+	rtc = rtc_device_register("rtc-rp5c01", &dev->dev, &rp5c01_rtc_ops,
-+				  THIS_MODULE);
-+	if (IS_ERR(rtc)) {
-+		error = PTR_ERR(rtc);
-+		goto out_unmap;
-+	}
-+
-+	priv->rtc = rtc;
-+	platform_set_drvdata(dev, priv);
-+	return 0;
-+
-+out_unmap:
-+	iounmap(priv->regs);
-+out_free_priv:
-+	kfree(priv);
-+	return error;
-+}
-+
-+static int __exit rp5c01_rtc_remove(struct platform_device *dev)
+ 	return 0;
+ 
+- fail3:	free_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt);
+- fail2:	input_free_device(amikbd_dev);
+- fail1:	release_mem_region(CIAA_PHYSADDR - 1 + 0xb00, 0x100);
++ fail3:	free_irq(IRQ_AMIGA_CIAA_SP, dev);
++ fail2:	input_free_device(dev);
+ 	return err;
+ }
+ 
+-static void __exit amikbd_exit(void)
++static int __exit amikbd_remove(struct platform_device *pdev)
 +{
-+	struct rp5c01_priv *priv = platform_get_drvdata(dev);
++	struct input_dev *dev = platform_get_drvdata(pdev);
 +
-+	rtc_device_unregister(priv->rtc);
-+	iounmap(priv->regs);
-+	kfree(priv);
++	platform_set_drvdata(pdev, NULL);
++	free_irq(IRQ_AMIGA_CIAA_SP, dev);
++	input_unregister_device(dev);
 +	return 0;
 +}
 +
-+static struct platform_driver rp5c01_rtc_driver = {
-+	.driver	= {
-+		.name	= "rtc-rp5c01",
++static struct platform_driver amikbd_driver = {
++	.remove = __exit_p(amikbd_remove),
++	.driver   = {
++		.name	= "amiga-keyboard",
 +		.owner	= THIS_MODULE,
 +	},
-+	.remove	= __exit_p(rp5c01_rtc_remove),
 +};
 +
-+static int __init rp5c01_rtc_init(void)
++static int __init amikbd_init(void)
+ {
+-	free_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt);
+-	input_unregister_device(amikbd_dev);
+-	release_mem_region(CIAA_PHYSADDR - 1 + 0xb00, 0x100);
++	return platform_driver_probe(&amikbd_driver, amikbd_probe);
+ }
+ 
+ module_init(amikbd_init);
++
++static void __exit amikbd_exit(void)
 +{
-+	return platform_driver_probe(&rp5c01_rtc_driver, rp5c01_rtc_probe);
++	platform_driver_unregister(&amikbd_driver);
 +}
 +
-+static void __exit rp5c01_rtc_fini(void)
-+{
-+	platform_driver_unregister(&rp5c01_rtc_driver);
-+}
+ module_exit(amikbd_exit);
 +
-+module_init(rp5c01_rtc_init);
-+module_exit(rp5c01_rtc_fini);
-+
-+MODULE_AUTHOR("Geert Uytterhoeven");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Ricoh RP5C01 RTC driver");
-+MODULE_ALIAS("platform:rtc-rp5c01");
++MODULE_ALIAS("platform:amiga-keyboard");
 -- 
 1.6.2.3
 
