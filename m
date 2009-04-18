@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 14/16] rtc: Add an RTC driver for the Oki MSM6242
-Date: Sat, 18 Apr 2009 20:52:22 +0200
-Message-ID: <1240080744-14995-15-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 09/16] m68k: amiga - Amiga Gayle IDE platform device conversion
+Date: Sat, 18 Apr 2009 20:52:17 +0200
+Message-ID: <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
@@ -11,352 +11,341 @@ References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-7-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-8-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-11-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-12-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-13-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-14-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:45709 "EHLO
+Received: from jacques.telenet-ops.be ([195.130.132.50]:45706 "EHLO
 	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759029AbZDRSwb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:31 -0400
-In-Reply-To: <1240080744-14995-14-git-send-email-geert@linux-m68k.org>
+	with ESMTP id S1757775AbZDRSwa (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:30 -0400
+In-Reply-To: <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, rtc-linux@googlegroups.com
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: rtc-linux@googlegroups.com
+Cc: linux-ide@vger.kernel.org
 ---
- drivers/rtc/Kconfig       |    9 ++
- drivers/rtc/Makefile      |    1 +
- drivers/rtc/rtc-msm6242.c |  285 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 295 insertions(+), 0 deletions(-)
- create mode 100644 drivers/rtc/rtc-msm6242.c
+ arch/m68k/amiga/platform.c       |   63 +++++++++++++++-
+ arch/m68k/include/asm/amigayle.h |    6 ++
+ drivers/ide/gayle.c              |  156 +++++++++++++++++++++-----------------
+ 3 files changed, 153 insertions(+), 72 deletions(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index ffe34a1..a0f6297 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -526,6 +526,15 @@ config RTC_DRV_PCF50633
- 	  If you say yes here you get support for the RTC subsystem of the
- 	  NXP PCF50633 used in embedded systems.
+diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
+index 027e4ca..907f6f5 100644
+--- a/arch/m68k/amiga/platform.c
++++ b/arch/m68k/amiga/platform.c
+@@ -11,6 +11,7 @@
+ #include <linux/zorro.h>
  
-+config RTC_DRV_MSM6242
-+	tristate "Oki MSM6242"
-+	help
-+	  If you say yes here you get support for the Oki MSM6242
-+	  timekeeping chip. It is used in some Amiga models (e.g. A2000).
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called rtc-msm6242.
-+
- comment "on-CPU RTC drivers"
+ #include <asm/amigahw.h>
++#include <asm/amigayle.h>
  
- config RTC_DRV_OMAP
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 6c0639a..c70418b 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -76,4 +76,5 @@ obj-$(CONFIG_RTC_DRV_VR41XX)	+= rtc-vr41xx.o
- obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
- obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
- obj-$(CONFIG_RTC_DRV_PCF50633)	+= rtc-pcf50633.o
-+obj-$(CONFIG_RTC_DRV_MSM6242)	+= rtc-msm6242.o
- obj-$(CONFIG_RTC_DRV_PS3)	+= rtc-ps3.o
-diff --git a/drivers/rtc/rtc-msm6242.c b/drivers/rtc/rtc-msm6242.c
-new file mode 100644
-index 0000000..c3af4f8
---- /dev/null
-+++ b/drivers/rtc/rtc-msm6242.c
-@@ -0,0 +1,285 @@
-+/*
-+ *  Oki MSM6242 RTC Driver
-+ *
-+ *  Copyright 2009 Geert Uytterhoeven
-+ *
-+ *  Based on the A2000 TOD code in arch/m68k/amiga/config.c
-+ *  Copyright (C) 1993 Hamish Macdonald
-+ */
+ 
+ #ifdef CONFIG_ZORRO
+@@ -55,7 +56,24 @@ static int __init amiga_init_bus(void)
+ 
+ subsys_initcall(amiga_init_bus);
+ 
+-#endif /* CONFIG_ZORRO */
 +
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
++static int z_dev_present(zorro_id id)
++{
++	unsigned int i;
++
++	for (i = 0; i < zorro_num_autocon; i++)
++		if (zorro_autocon[i].rom.er_Manufacturer == ZORRO_MANUF(id) &&
++		    zorro_autocon[i].rom.er_Product == ZORRO_PROD(id))
++			return 1;
++
++	return 0;
++}
++
++#else /* !CONFIG_ZORRO */
++
++static inline int z_dev_present(zorro_id id) { return 0; }
++
++#endif /* !CONFIG_ZORRO */
+ 
+ 
+ static const struct resource a3000_scsi_resource __initconst = {
+@@ -72,8 +90,36 @@ static const struct resource a4000t_scsi_resource __initconst = {
+ };
+ 
+ 
++static const struct resource a1200_ide_resource __initconst = {
++	.start	= 0xda0000,
++	.end	= 0xda1fff,
++	.flags	= IORESOURCE_MEM,
++};
++
++static const struct gayle_ide_platform_data a1200_ide_pdata __initconst = {
++	.base		= 0xda0000,
++	.irqport	= 0xda9000,
++	.explicit_ack	= 1,
++};
++
++
++static const struct resource a4000_ide_resource __initconst = {
++	.start	= 0xdd2000,
++	.end	= 0xdd3fff,
++	.flags	= IORESOURCE_MEM,
++};
++
++static const struct gayle_ide_platform_data a4000_ide_pdata __initconst = {
++	.base		= 0xdd2020,
++	.irqport	= 0xdd3020,
++	.explicit_ack	= 0,
++};
++
++
+ static int __init amiga_init_devices(void)
+ {
++	struct platform_device *pdev;
++
+ 	if (!MACH_IS_AMIGA)
+ 		return -ENODEV;
+ 
+@@ -99,6 +145,21 @@ static int __init amiga_init_devices(void)
+ 		platform_device_register_simple("amiga-a4000t-scsi", -1,
+ 						&a4000t_scsi_resource, 1);
+ 
++	if (AMIGAHW_PRESENT(A1200_IDE) ||
++	    z_dev_present(ZORRO_PROD_MTEC_VIPER_MK_V_E_MATRIX_530_SCSI_IDE)) {
++		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
++						       &a1200_ide_resource, 1);
++		platform_device_add_data(pdev, &a1200_ide_pdata,
++					 sizeof(a1200_ide_pdata));
++	}
++
++	if (AMIGAHW_PRESENT(A4000_IDE)) {
++		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
++						       &a4000_ide_resource, 1);
++		platform_device_add_data(pdev, &a4000_ide_pdata,
++					 sizeof(a4000_ide_pdata));
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/m68k/include/asm/amigayle.h b/arch/m68k/include/asm/amigayle.h
+index bb5a6aa..a01453d 100644
+--- a/arch/m68k/include/asm/amigayle.h
++++ b/arch/m68k/include/asm/amigayle.h
+@@ -104,4 +104,10 @@ struct GAYLE {
+ #define GAYLE_CFG_250NS		0x00
+ #define GAYLE_CFG_720NS		0x0c
+ 
++struct gayle_ide_platform_data {
++	unsigned long base;
++	unsigned long irqport;
++	int explicit_ack;	/* A1200 IDE needs explicit ack */
++};
++
+ #endif /* asm-m68k/amigayle.h */
+diff --git a/drivers/ide/gayle.c b/drivers/ide/gayle.c
+index c711951..093e976 100644
+--- a/drivers/ide/gayle.c
++++ b/drivers/ide/gayle.c
+@@ -16,6 +16,7 @@
+ #include <linux/init.h>
+ #include <linux/zorro.h>
+ #include <linux/module.h>
 +#include <linux/platform_device.h>
-+#include <linux/rtc.h>
-+
-+
-+enum {
-+	MSM6242_SECOND1		= 0x0,	/* 1-second digit register */
-+	MSM6242_SECOND10	= 0x1,	/* 10-second digit register */
-+	MSM6242_MINUTE1		= 0x2,	/* 1-minute digit register */
-+	MSM6242_MINUTE10	= 0x3,	/* 10-minute digit register */
-+	MSM6242_HOUR1		= 0x4,	/* 1-hour digit register */
-+	MSM6242_HOUR10		= 0x5,	/* PM/AM, 10-hour digit register */
-+	MSM6242_DAY1		= 0x6,	/* 1-day digit register */
-+	MSM6242_DAY10		= 0x7,	/* 10-day digit register */
-+	MSM6242_MONTH1		= 0x8,	/* 1-month digit register */
-+	MSM6242_MONTH10		= 0x9,	/* 10-month digit register */
-+	MSM6242_YEAR1		= 0xa,	/* 1-year digit register */
-+	MSM6242_YEAR10		= 0xb,	/* 10-year digit register */
-+	MSM6242_WEEK		= 0xc,	/* Week register */
-+	MSM6242_CD		= 0xd,	/* Control Register D */
-+	MSM6242_CE		= 0xe,	/* Control Register E */
-+	MSM6242_CF		= 0xf,	/* Control Register F */
-+};
-+
-+#define MSM6242_HOUR10_AM	(0 << 2)
-+#define MSM6242_HOUR10_PM	(1 << 2)
-+#define MSM6242_HOUR10_HR_MASK	(3 << 0)
-+
-+#define MSM6242_WEEK_SUNDAY	0
-+#define MSM6242_WEEK_MONDAY	1
-+#define MSM6242_WEEK_TUESDAY	2
-+#define MSM6242_WEEK_WEDNESDAY	3
-+#define MSM6242_WEEK_THURSDAY	4
-+#define MSM6242_WEEK_FRIDAY	5
-+#define MSM6242_WEEK_SATURDAY	6
-+
-+#define MSM6242_CD_30_S_ADJ	(1 << 3)	/* 30-second adjustment */
-+#define MSM6242_CD_IRQ_FLAG	(1 << 2)
-+#define MSM6242_CD_BUSY		(1 << 1)
-+#define MSM6242_CD_HOLD		(1 << 0)
-+
-+#define MSM6242_CE_T_MASK	(3 << 2)
-+#define MSM6242_CE_T_64HZ	(0 << 2)	/* period 1/64 second */
-+#define MSM6242_CE_T_1HZ	(1 << 2)	/* period 1 second */
-+#define MSM6242_CE_T_1MINUTE	(2 << 2)	/* period 1 minute */
-+#define MSM6242_CE_T_1HOUR	(3 << 2)	/* period 1 hour */
-+
-+#define MSM6242_CE_ITRPT_STND	(1 << 1)
-+#define MSM6242_CE_MASK		(1 << 0)	/* STD.P output control */
-+
-+#define MSM6242_CF_TEST		(1 << 3)
-+#define MSM6242_CF_12H		(0 << 2)
-+#define MSM6242_CF_24H		(1 << 2)
-+#define MSM6242_CF_STOP		(1 << 1)
-+#define MSM6242_CF_REST		(1 << 0)	/* reset */
-+
-+
-+struct msm6242_priv {
-+	u32 __iomem *regs;
-+	struct rtc_device *rtc;
-+};
-+
-+static inline unsigned int msm6242_read(struct msm6242_priv *priv,
-+				       unsigned int reg)
-+{
-+	return __raw_readl(&priv->regs[reg]) & 0xf;
-+}
-+
-+static inline void msm6242_write(struct msm6242_priv *priv, unsigned int val,
-+				unsigned int reg)
-+{
-+	return __raw_writel(val, &priv->regs[reg]);
-+}
-+
-+static inline void msm6242_set(struct msm6242_priv *priv, unsigned int val,
-+			       unsigned int reg)
-+{
-+	msm6242_write(priv, msm6242_read(priv, reg) | val, reg);
-+}
-+
-+static inline void msm6242_clear(struct msm6242_priv *priv, unsigned int val,
-+				 unsigned int reg)
-+{
-+	msm6242_write(priv, msm6242_read(priv, reg) & ~val, reg);
-+}
-+
-+static void msm6242_lock(struct msm6242_priv *priv)
-+{
-+	int cnt = 5;
-+
-+	msm6242_set(priv, MSM6242_CD_HOLD, MSM6242_CD);
-+
-+	while ((msm6242_read(priv, MSM6242_CD) & MSM6242_CD_BUSY) && cnt--) {
-+		msm6242_clear(priv, MSM6242_CD_HOLD, MSM6242_CD);
-+		udelay(70);
-+		msm6242_set(priv, MSM6242_CD_HOLD, MSM6242_CD);
-+	}
-+
-+	if (!cnt)
-+		pr_warning("msm6242: timed out waiting for RTC (0x%x)\n",
-+			   msm6242_read(priv, MSM6242_CD));
-+}
-+
-+static void msm6242_unlock(struct msm6242_priv *priv)
-+{
-+	msm6242_clear(priv, MSM6242_CD_HOLD, MSM6242_CD);
-+}
-+
-+static int msm6242_read_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct msm6242_priv *priv = dev_get_drvdata(dev);
-+
-+	msm6242_lock(priv);
-+
-+	tm->tm_sec  = msm6242_read(priv, MSM6242_SECOND10) * 10 +
-+		      msm6242_read(priv, MSM6242_SECOND1);
-+	tm->tm_min  = msm6242_read(priv, MSM6242_MINUTE10) * 10 +
-+		      msm6242_read(priv, MSM6242_MINUTE1);
-+	tm->tm_hour = (msm6242_read(priv, MSM6242_HOUR10 & 3)) * 10 +
-+		      msm6242_read(priv, MSM6242_HOUR1);
-+	tm->tm_mday = msm6242_read(priv, MSM6242_DAY10) * 10 +
-+		      msm6242_read(priv, MSM6242_DAY1);
-+	tm->tm_wday = msm6242_read(priv, MSM6242_WEEK);
-+	tm->tm_mon  = msm6242_read(priv, MSM6242_MONTH10) * 10 +
-+		      msm6242_read(priv, MSM6242_MONTH1) - 1;
-+	tm->tm_year = msm6242_read(priv, MSM6242_YEAR10) * 10 +
-+		      msm6242_read(priv, MSM6242_YEAR1);
-+	if (tm->tm_year <= 69)
-+		tm->tm_year += 100;
-+
-+	if (!(msm6242_read(priv, MSM6242_CF) & MSM6242_CF_24H)) {
-+		unsigned int pm = msm6242_read(priv, MSM6242_HOUR10) &
-+				  MSM6242_HOUR10_PM;
-+		if (!pm && tm->tm_hour == 12)
-+			tm->tm_hour = 0;
-+		else if (pm && tm->tm_hour != 12)
-+			tm->tm_hour += 12;
-+	}
-+
-+	msm6242_unlock(priv);
-+
-+	return rtc_valid_tm(tm);
-+}
-+
-+static int msm6242_set_time(struct device *dev, struct rtc_time *tm)
-+{
-+	struct msm6242_priv *priv = dev_get_drvdata(dev);
-+
-+	msm6242_lock(priv);
-+
-+	msm6242_write(priv, tm->tm_sec / 10, MSM6242_SECOND10);
-+	msm6242_write(priv, tm->tm_sec % 10, MSM6242_SECOND1);
-+	msm6242_write(priv, tm->tm_min / 10, MSM6242_MINUTE10);
-+	msm6242_write(priv, tm->tm_min % 10, MSM6242_MINUTE1);
-+	if (msm6242_read(priv, MSM6242_CF) & MSM6242_CF_24H)
-+		msm6242_write(priv, tm->tm_hour / 10, MSM6242_HOUR10);
-+	else if (tm->tm_hour >= 12)
-+		msm6242_write(priv, MSM6242_HOUR10_PM + (tm->tm_hour - 12) / 10,
-+			      MSM6242_HOUR10);
-+	else
-+		msm6242_write(priv, tm->tm_hour / 10, MSM6242_HOUR10);
-+	msm6242_write(priv, tm->tm_hour % 10, MSM6242_HOUR1);
-+	msm6242_write(priv, tm->tm_mday / 10, MSM6242_DAY10);
-+	msm6242_write(priv, tm->tm_mday % 10, MSM6242_DAY1);
-+	if (tm->tm_wday != -1)
-+		msm6242_write(priv, tm->tm_wday, MSM6242_WEEK);
-+	msm6242_write(priv, (tm->tm_mon + 1) / 10, MSM6242_MONTH10);
-+	msm6242_write(priv, (tm->tm_mon + 1) % 10, MSM6242_MONTH1);
-+	if (tm->tm_year >= 100)
-+		tm->tm_year -= 100;
-+	msm6242_write(priv, tm->tm_year / 10, MSM6242_YEAR10);
-+	msm6242_write(priv, tm->tm_year % 10, MSM6242_YEAR1);
-+
-+	msm6242_unlock(priv);
-+	return 0;
-+}
-+
-+static int msm6242_set_mmss(struct device *dev, unsigned long secs)
-+{
-+	struct msm6242_priv *priv = dev_get_drvdata(dev);
-+	unsigned int real_seconds = secs % 60, real_minutes = (secs / 60) % 60;
-+
-+	msm6242_lock(priv);
-+
-+	msm6242_write(priv, real_seconds / 10, MSM6242_SECOND10);
-+	msm6242_write(priv, real_seconds % 10, MSM6242_SECOND1);
-+	msm6242_write(priv, real_minutes / 10, MSM6242_MINUTE10);
-+	msm6242_write(priv, real_minutes % 10, MSM6242_MINUTE1);
-+
-+	msm6242_unlock(priv);
-+	return 0;
-+}
-+
-+static const struct rtc_class_ops msm6242_rtc_ops = {
-+	.read_time	= msm6242_read_time,
-+	.set_time	= msm6242_set_time,
-+	.set_mmss	= msm6242_set_mmss,
-+};
-+
-+static int __init msm6242_rtc_probe(struct platform_device *dev)
-+{
+ 
+ #include <asm/setup.h>
+ #include <asm/amigahw.h>
+@@ -24,15 +25,6 @@
+ 
+ 
+     /*
+-     *  Bases of the IDE interfaces
+-     */
+-
+-#define GAYLE_BASE_4000	0xdd2020	/* A4000/A4000T */
+-#define GAYLE_BASE_1200	0xda0000	/* A1200/A600 and E-Matrix 530 */
+-
+-#define GAYLE_IDEREG_SIZE	0x2000
+-
+-    /*
+      *  Offsets from one of the above bases
+      */
+ 
+@@ -66,26 +58,25 @@ MODULE_PARM_DESC(doubler, "enable support for IDE doublers");
+      *  Check and acknowledge the interrupt status
+      */
+ 
+-static int gayle_ack_intr_a4000(ide_hwif_t *hwif)
++static inline int gayle_ack_intr(ide_hwif_t *hwif)
+ {
+-    unsigned char ch;
++	unsigned char ch;
+ 
+-    ch = z_readb(hwif->io_ports.irq_addr);
+-    if (!(ch & GAYLE_IRQ_IDE))
+-	return 0;
+-    return 1;
++	ch = z_readb(hwif->io_ports.irq_addr);
++	if (!(ch & GAYLE_IRQ_IDE))
++		return 0;
++	return 1;
+ }
+ 
+-static int gayle_ack_intr_a1200(ide_hwif_t *hwif)
++static int gayle_ack_intr_explicit(ide_hwif_t *hwif)
+ {
+-    unsigned char ch;
++	int ret = gayle_ack_intr(hwif);
++	if (!ret)
++		return 0;
+ 
+-    ch = z_readb(hwif->io_ports.irq_addr);
+-    if (!(ch & GAYLE_IRQ_IDE))
+-	return 0;
+-    (void)z_readb(hwif->io_ports.status_addr);
+-    z_writeb(0x7c, hwif->io_ports.irq_addr);
+-    return 1;
++	(void)z_readb(hwif->io_ports.status_addr);
++	z_writeb(0x7c, hwif->io_ports.irq_addr);
++	return 1;
+ }
+ 
+ static void __init gayle_setup_ports(hw_regs_t *hw, unsigned long base,
+@@ -120,64 +111,87 @@ static const struct ide_port_info gayle_port_info = {
+      *  Probe for a Gayle IDE interface (and optionally for an IDE doubler)
+      */
+ 
+-static int __init gayle_init(void)
++static int __init amiga_gayle_ide_probe(struct platform_device *pdev)
+ {
+-    unsigned long phys_base, res_start, res_n;
+-    unsigned long base, ctrlport, irqport;
+-    ide_ack_intr_t *ack_intr;
+-    int a4000, i, rc;
+-    hw_regs_t hw[GAYLE_NUM_HWIFS], *hws[] = { NULL, NULL, NULL, NULL };
+-
+-    if (!MACH_IS_AMIGA)
+-	return -ENODEV;
+-
+-    if ((a4000 = AMIGAHW_PRESENT(A4000_IDE)) || AMIGAHW_PRESENT(A1200_IDE))
+-	goto found;
+-
+-#ifdef CONFIG_ZORRO
+-    if (zorro_find_device(ZORRO_PROD_MTEC_VIPER_MK_V_E_MATRIX_530_SCSI_IDE,
+-			  NULL))
+-	goto found;
+-#endif
+-    return -ENODEV;
+-
+-found:
+-	printk(KERN_INFO "ide: Gayle IDE controller (A%d style%s)\n",
+-			 a4000 ? 4000 : 1200,
+-			 ide_doubler ? ", IDE doubler" : "");
+-
+-	if (a4000) {
+-	    phys_base = GAYLE_BASE_4000;
+-	    irqport = (unsigned long)ZTWO_VADDR(GAYLE_IRQ_4000);
+-	    ack_intr = gayle_ack_intr_a4000;
+-	} else {
+-	    phys_base = GAYLE_BASE_1200;
+-	    irqport = (unsigned long)ZTWO_VADDR(GAYLE_IRQ_1200);
+-	    ack_intr = gayle_ack_intr_a1200;
 +	struct resource *res;
-+	struct msm6242_priv *priv;
-+	struct rtc_device *rtc;
++	struct gayle_ide_platform_data *pdata;
++	unsigned long base, ctrlport, irqport;
++	ide_ack_intr_t *ack_intr;
++	unsigned int i;
 +	int error;
++	hw_regs_t hw[GAYLE_NUM_HWIFS], *hws[] = { NULL, NULL, NULL, NULL };
++	struct ide_host *host;
 +
-+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 +	if (!res)
 +		return -ENODEV;
 +
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++	if (!request_mem_region(res->start, resource_size(res), "IDE"))
++		return -EBUSY;
 +
-+	priv->regs = ioremap(res->start, resource_size(res));
-+	if (!priv->regs) {
-+		error = -ENOMEM;
-+		goto out_free_priv;
-+	}
++	pdata = pdev->dev.platform_data;
++	pr_info("ide: Gayle IDE controller (A%u style%s)\n",
++		pdata->explicit_ack ? 1200 : 4000,
++		ide_doubler ? ", IDE doubler" : "");
 +
-+	rtc = rtc_device_register("rtc-msm6242", &dev->dev, &msm6242_rtc_ops,
-+				  THIS_MODULE);
-+	if (IS_ERR(rtc)) {
-+		error = PTR_ERR(rtc);
-+		goto out_unmap;
-+	}
++	base = (unsigned long)ZTWO_VADDR(pdata->base);
++	ctrlport = 0;
++	irqport = (unsigned long)ZTWO_VADDR(pdata->irqport);
++	ack_intr = pdata->explicit_ack ? gayle_ack_intr_explicit
++				       : gayle_ack_intr;
 +
-+	priv->rtc = rtc;
-+	platform_set_drvdata(dev, priv);
++	for (i = 0; i < GAYLE_NUM_PROBE_HWIFS; i++, base += GAYLE_NEXT_PORT) {
++		if (GAYLE_HAS_CONTROL_REG)
++			ctrlport = base + GAYLE_CONTROL;
++
++		gayle_setup_ports(&hw[i], base, ctrlport, irqport, ack_intr);
++		hws[i] = &hw[i];
+ 	}
+ 
+-	res_start = ((unsigned long)phys_base) & ~(GAYLE_NEXT_PORT-1);
+-	res_n = GAYLE_IDEREG_SIZE;
++	error = ide_host_add(&gayle_port_info, hws, &host);
++	if (error)
++		goto out;
+ 
+-	if (!request_mem_region(res_start, res_n, "IDE"))
+-		return -EBUSY;
++	platform_set_drvdata(pdev, host);
 +	return 0;
 +
-+out_unmap:
-+	iounmap(priv->regs);
-+out_free_priv:
-+	kfree(priv);
++out:
++	release_mem_region(res->start, resource_size(res));
 +	return error;
 +}
 +
-+static int __exit msm6242_rtc_remove(struct platform_device *dev)
++static int __exit amiga_gayle_ide_remove(struct platform_device *pdev)
 +{
-+	struct msm6242_priv *priv = platform_get_drvdata(dev);
-+
-+	rtc_device_unregister(priv->rtc);
-+	iounmap(priv->regs);
-+	kfree(priv);
++	struct ide_host *host = pdev->dev.driver_data;
++	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+-    for (i = 0; i < GAYLE_NUM_PROBE_HWIFS; i++) {
+-	base = (unsigned long)ZTWO_VADDR(phys_base + i * GAYLE_NEXT_PORT);
+-	ctrlport = GAYLE_HAS_CONTROL_REG ? (base + GAYLE_CONTROL) : 0;
++	ide_host_remove(host);
++	release_mem_region(res->start, resource_size(res));
 +	return 0;
 +}
-+
-+static struct platform_driver msm6242_rtc_driver = {
-+	.driver	= {
-+		.name	= "rtc-msm6242",
+ 
+-	gayle_setup_ports(&hw[i], base, ctrlport, irqport, ack_intr);
++static struct platform_driver amiga_gayle_ide_driver = {
++	.remove = __exit_p(amiga_gayle_ide_remove),
++	.driver   = {
++		.name	= "amiga-gayle-ide",
 +		.owner	= THIS_MODULE,
 +	},
-+	.remove	= __exit_p(msm6242_rtc_remove),
 +};
-+
-+static int __init msm6242_rtc_init(void)
+ 
+-	hws[i] = &hw[i];
+-    }
++static int __init amiga_gayle_ide_init(void)
 +{
-+	return platform_driver_probe(&msm6242_rtc_driver, msm6242_rtc_probe);
++	return platform_driver_probe(&amiga_gayle_ide_driver,
++				     amiga_gayle_ide_probe);
 +}
-+
-+static void __exit msm6242_rtc_fini(void)
+ 
+-    rc = ide_host_add(&gayle_port_info, hws, NULL);
+-    if (rc)
+-	release_mem_region(res_start, res_n);
++module_init(amiga_gayle_ide_init);
+ 
+-    return rc;
++static void __exit amiga_gayle_ide_exit(void)
 +{
-+	platform_driver_unregister(&msm6242_rtc_driver);
-+}
-+
-+module_init(msm6242_rtc_init);
-+module_exit(msm6242_rtc_fini);
-+
-+MODULE_AUTHOR("Geert Uytterhoeven");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Oki MSM6242 RTC driver");
-+MODULE_ALIAS("platform:rtc-msm6242");
++	platform_driver_unregister(&amiga_gayle_ide_driver);
+ }
+ 
+-module_init(gayle_init);
++module_exit(amiga_gayle_ide_exit);
+ 
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:amiga-gayle-ide");
 -- 
 1.6.2.3
 
