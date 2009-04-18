@@ -1,351 +1,170 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 09/16] m68k: amiga - Amiga Gayle IDE platform device conversion
-Date: Sat, 18 Apr 2009 20:52:17 +0200
-Message-ID: <1240080744-14995-10-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH/RFC 04/16] m68k: amiga - Frame buffer platform device conversion
+Date: Sat, 18 Apr 2009 20:52:12 +0200
+Message-ID: <1240080744-14995-5-git-send-email-geert@linux-m68k.org>
 References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-3-git-send-email-geert@linux-m68k.org>
  <1240080744-14995-4-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-5-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-6-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-7-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-8-git-send-email-geert@linux-m68k.org>
- <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:45706 "EHLO
+Received: from jacques.telenet-ops.be ([195.130.132.50]:45700 "EHLO
 	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757775AbZDRSwa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:30 -0400
-In-Reply-To: <1240080744-14995-9-git-send-email-geert@linux-m68k.org>
+	with ESMTP id S1756486AbZDRSw2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Apr 2009 14:52:28 -0400
+In-Reply-To: <1240080744-14995-4-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-fbdev-devel@lists.sourceforge.net
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-ide@vger.kernel.org
+Cc: linux-fbdev-devel@lists.sourceforge.net
 ---
- arch/m68k/amiga/platform.c       |   63 +++++++++++++++-
- arch/m68k/include/asm/amigayle.h |    6 ++
- drivers/ide/gayle.c              |  156 +++++++++++++++++++++-----------------
- 3 files changed, 153 insertions(+), 72 deletions(-)
+ arch/m68k/amiga/platform.c |   15 +++++++++++++
+ drivers/video/amifb.c      |   49 +++++++++++++++++++++++++++----------------
+ 2 files changed, 46 insertions(+), 18 deletions(-)
 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index 027e4ca..907f6f5 100644
+index 33a7669..7fa929c 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -11,6 +11,7 @@
- #include <linux/zorro.h>
- 
- #include <asm/amigahw.h>
-+#include <asm/amigayle.h>
- 
- 
- #ifdef CONFIG_ZORRO
-@@ -55,7 +56,24 @@ static int __init amiga_init_bus(void)
- 
+@@ -56,3 +56,18 @@ static int __init amiga_init_bus(void)
  subsys_initcall(amiga_init_bus);
  
--#endif /* CONFIG_ZORRO */
+ #endif /* CONFIG_ZORRO */
 +
-+static int z_dev_present(zorro_id id)
++
++static int __init amiga_init_devices(void)
 +{
-+	unsigned int i;
-+
-+	for (i = 0; i < zorro_num_autocon; i++)
-+		if (zorro_autocon[i].rom.er_Manufacturer == ZORRO_MANUF(id) &&
-+		    zorro_autocon[i].rom.er_Product == ZORRO_PROD(id))
-+			return 1;
-+
-+	return 0;
-+}
-+
-+#else /* !CONFIG_ZORRO */
-+
-+static inline int z_dev_present(zorro_id id) { return 0; }
-+
-+#endif /* !CONFIG_ZORRO */
- 
- 
- static const struct resource a3000_scsi_resource __initconst = {
-@@ -72,8 +90,36 @@ static const struct resource a4000t_scsi_resource __initconst = {
- };
- 
- 
-+static const struct resource a1200_ide_resource __initconst = {
-+	.start	= 0xda0000,
-+	.end	= 0xda1fff,
-+	.flags	= IORESOURCE_MEM,
-+};
-+
-+static const struct gayle_ide_platform_data a1200_ide_pdata __initconst = {
-+	.base		= 0xda0000,
-+	.irqport	= 0xda9000,
-+	.explicit_ack	= 1,
-+};
-+
-+
-+static const struct resource a4000_ide_resource __initconst = {
-+	.start	= 0xdd2000,
-+	.end	= 0xdd3fff,
-+	.flags	= IORESOURCE_MEM,
-+};
-+
-+static const struct gayle_ide_platform_data a4000_ide_pdata __initconst = {
-+	.base		= 0xdd2020,
-+	.irqport	= 0xdd3020,
-+	.explicit_ack	= 0,
-+};
-+
-+
- static int __init amiga_init_devices(void)
- {
-+	struct platform_device *pdev;
-+
- 	if (!MACH_IS_AMIGA)
- 		return -ENODEV;
- 
-@@ -99,6 +145,21 @@ static int __init amiga_init_devices(void)
- 		platform_device_register_simple("amiga-a4000t-scsi", -1,
- 						&a4000t_scsi_resource, 1);
- 
-+	if (AMIGAHW_PRESENT(A1200_IDE) ||
-+	    z_dev_present(ZORRO_PROD_MTEC_VIPER_MK_V_E_MATRIX_530_SCSI_IDE)) {
-+		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
-+						       &a1200_ide_resource, 1);
-+		platform_device_add_data(pdev, &a1200_ide_pdata,
-+					 sizeof(a1200_ide_pdata));
-+	}
-+
-+	if (AMIGAHW_PRESENT(A4000_IDE)) {
-+		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
-+						       &a4000_ide_resource, 1);
-+		platform_device_add_data(pdev, &a4000_ide_pdata,
-+					 sizeof(a4000_ide_pdata));
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/arch/m68k/include/asm/amigayle.h b/arch/m68k/include/asm/amigayle.h
-index bb5a6aa..a01453d 100644
---- a/arch/m68k/include/asm/amigayle.h
-+++ b/arch/m68k/include/asm/amigayle.h
-@@ -104,4 +104,10 @@ struct GAYLE {
- #define GAYLE_CFG_250NS		0x00
- #define GAYLE_CFG_720NS		0x0c
- 
-+struct gayle_ide_platform_data {
-+	unsigned long base;
-+	unsigned long irqport;
-+	int explicit_ack;	/* A1200 IDE needs explicit ack */
-+};
-+
- #endif /* asm-m68k/amigayle.h */
-diff --git a/drivers/ide/gayle.c b/drivers/ide/gayle.c
-index c711951..093e976 100644
---- a/drivers/ide/gayle.c
-+++ b/drivers/ide/gayle.c
-@@ -16,6 +16,7 @@
- #include <linux/init.h>
- #include <linux/zorro.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/setup.h>
- #include <asm/amigahw.h>
-@@ -24,15 +25,6 @@
- 
- 
-     /*
--     *  Bases of the IDE interfaces
--     */
--
--#define GAYLE_BASE_4000	0xdd2020	/* A4000/A4000T */
--#define GAYLE_BASE_1200	0xda0000	/* A1200/A600 and E-Matrix 530 */
--
--#define GAYLE_IDEREG_SIZE	0x2000
--
--    /*
-      *  Offsets from one of the above bases
-      */
- 
-@@ -66,26 +58,25 @@ MODULE_PARM_DESC(doubler, "enable support for IDE doublers");
-      *  Check and acknowledge the interrupt status
-      */
- 
--static int gayle_ack_intr_a4000(ide_hwif_t *hwif)
-+static inline int gayle_ack_intr(ide_hwif_t *hwif)
- {
--    unsigned char ch;
-+	unsigned char ch;
- 
--    ch = z_readb(hwif->io_ports.irq_addr);
--    if (!(ch & GAYLE_IRQ_IDE))
--	return 0;
--    return 1;
-+	ch = z_readb(hwif->io_ports.irq_addr);
-+	if (!(ch & GAYLE_IRQ_IDE))
-+		return 0;
-+	return 1;
- }
- 
--static int gayle_ack_intr_a1200(ide_hwif_t *hwif)
-+static int gayle_ack_intr_explicit(ide_hwif_t *hwif)
- {
--    unsigned char ch;
-+	int ret = gayle_ack_intr(hwif);
-+	if (!ret)
-+		return 0;
- 
--    ch = z_readb(hwif->io_ports.irq_addr);
--    if (!(ch & GAYLE_IRQ_IDE))
--	return 0;
--    (void)z_readb(hwif->io_ports.status_addr);
--    z_writeb(0x7c, hwif->io_ports.irq_addr);
--    return 1;
-+	(void)z_readb(hwif->io_ports.status_addr);
-+	z_writeb(0x7c, hwif->io_ports.irq_addr);
-+	return 1;
- }
- 
- static void __init gayle_setup_ports(hw_regs_t *hw, unsigned long base,
-@@ -120,64 +111,87 @@ static const struct ide_port_info gayle_port_info = {
-      *  Probe for a Gayle IDE interface (and optionally for an IDE doubler)
-      */
- 
--static int __init gayle_init(void)
-+static int __init amiga_gayle_ide_probe(struct platform_device *pdev)
- {
--    unsigned long phys_base, res_start, res_n;
--    unsigned long base, ctrlport, irqport;
--    ide_ack_intr_t *ack_intr;
--    int a4000, i, rc;
--    hw_regs_t hw[GAYLE_NUM_HWIFS], *hws[] = { NULL, NULL, NULL, NULL };
--
--    if (!MACH_IS_AMIGA)
--	return -ENODEV;
--
--    if ((a4000 = AMIGAHW_PRESENT(A4000_IDE)) || AMIGAHW_PRESENT(A1200_IDE))
--	goto found;
--
--#ifdef CONFIG_ZORRO
--    if (zorro_find_device(ZORRO_PROD_MTEC_VIPER_MK_V_E_MATRIX_530_SCSI_IDE,
--			  NULL))
--	goto found;
--#endif
--    return -ENODEV;
--
--found:
--	printk(KERN_INFO "ide: Gayle IDE controller (A%d style%s)\n",
--			 a4000 ? 4000 : 1200,
--			 ide_doubler ? ", IDE doubler" : "");
--
--	if (a4000) {
--	    phys_base = GAYLE_BASE_4000;
--	    irqport = (unsigned long)ZTWO_VADDR(GAYLE_IRQ_4000);
--	    ack_intr = gayle_ack_intr_a4000;
--	} else {
--	    phys_base = GAYLE_BASE_1200;
--	    irqport = (unsigned long)ZTWO_VADDR(GAYLE_IRQ_1200);
--	    ack_intr = gayle_ack_intr_a1200;
-+	struct resource *res;
-+	struct gayle_ide_platform_data *pdata;
-+	unsigned long base, ctrlport, irqport;
-+	ide_ack_intr_t *ack_intr;
-+	unsigned int i;
-+	int error;
-+	hw_regs_t hw[GAYLE_NUM_HWIFS], *hws[] = { NULL, NULL, NULL, NULL };
-+	struct ide_host *host;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
++	if (!MACH_IS_AMIGA)
 +		return -ENODEV;
 +
-+	if (!request_mem_region(res->start, resource_size(res), "IDE"))
-+		return -EBUSY;
++	/* video hardware */
++	if (AMIGAHW_PRESENT(AMI_VIDEO))
++		platform_device_register_simple("amiga-video", -1, NULL, 0);
 +
-+	pdata = pdev->dev.platform_data;
-+	pr_info("ide: Gayle IDE controller (A%u style%s)\n",
-+		pdata->explicit_ack ? 1200 : 4000,
-+		ide_doubler ? ", IDE doubler" : "");
++	return 0;
++}
 +
-+	base = (unsigned long)ZTWO_VADDR(pdata->base);
-+	ctrlport = 0;
-+	irqport = (unsigned long)ZTWO_VADDR(pdata->irqport);
-+	ack_intr = pdata->explicit_ack ? gayle_ack_intr_explicit
-+				       : gayle_ack_intr;
++device_initcall(amiga_init_devices);
+diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
+index 82bedd7..36a4018 100644
+--- a/drivers/video/amifb.c
++++ b/drivers/video/amifb.c
+@@ -51,8 +51,9 @@
+ #include <linux/fb.h>
+ #include <linux/init.h>
+ #include <linux/ioport.h>
+-
++#include <linux/platform_device.h>
+ #include <linux/uaccess.h>
 +
-+	for (i = 0; i < GAYLE_NUM_PROBE_HWIFS; i++, base += GAYLE_NEXT_PORT) {
-+		if (GAYLE_HAS_CONTROL_REG)
-+			ctrlport = base + GAYLE_CONTROL;
-+
-+		gayle_setup_ports(&hw[i], base, ctrlport, irqport, ack_intr);
-+		hws[i] = &hw[i];
+ #include <asm/system.h>
+ #include <asm/irq.h>
+ #include <asm/amigahw.h>
+@@ -1136,7 +1137,7 @@ static int amifb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg
+ 	 * Interface to the low level console driver
+ 	 */
+ 
+-static void amifb_deinit(void);
++static void amifb_deinit(struct platform_device *pdev);
+ 
+ 	/*
+ 	 * Internal routines
+@@ -2247,7 +2248,7 @@ static inline void chipfree(void)
+ 	 * Initialisation
+ 	 */
+ 
+-static int __init amifb_init(void)
++static int __init amifb_probe(struct platform_device *pdev)
+ {
+ 	int tag, i, err = 0;
+ 	u_long chipptr;
+@@ -2262,16 +2263,6 @@ static int __init amifb_init(void)
  	}
- 
--	res_start = ((unsigned long)phys_base) & ~(GAYLE_NEXT_PORT-1);
--	res_n = GAYLE_IDEREG_SIZE;
-+	error = ide_host_add(&gayle_port_info, hws, &host);
-+	if (error)
-+		goto out;
- 
--	if (!request_mem_region(res_start, res_n, "IDE"))
+ 	amifb_setup(option);
+ #endif
+-	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_VIDEO))
+-		return -ENODEV;
+-
+-	/*
+-	 * We request all registers starting from bplpt[0]
+-	 */
+-	if (!request_mem_region(CUSTOM_PHYSADDR+0xe0, 0x120,
+-				"amifb [Denise/Lisa]"))
 -		return -EBUSY;
-+	platform_set_drvdata(pdev, host);
+-
+ 	custom.dmacon = DMAF_ALL | DMAF_MASTER;
+ 
+ 	switch (amiga_chipset) {
+@@ -2378,6 +2369,7 @@ default_chipset:
+ 	fb_info.fbops = &amifb_ops;
+ 	fb_info.par = &currentpar;
+ 	fb_info.flags = FBINFO_DEFAULT;
++	fb_info.device = &pdev->dev;
+ 
+ 	if (!fb_find_mode(&fb_info.var, &fb_info, mode_option, ami_modedb,
+ 			  NUM_TOTAL_MODES, &ami_modedb[defmode], 4)) {
+@@ -2452,18 +2444,18 @@ default_chipset:
+ 	return 0;
+ 
+ amifb_error:
+-	amifb_deinit();
++	amifb_deinit(pdev);
+ 	return err;
+ }
+ 
+-static void amifb_deinit(void)
++static void amifb_deinit(struct platform_device *pdev)
+ {
+ 	if (fb_info.cmap.len)
+ 		fb_dealloc_cmap(&fb_info.cmap);
++	fb_dealloc_cmap(&fb_info.cmap);
+ 	chipfree();
+ 	if (videomemory)
+ 		iounmap((void*)videomemory);
+-	release_mem_region(CUSTOM_PHYSADDR+0xe0, 0x120);
+ 	custom.dmacon = DMAF_ALL | DMAF_MASTER;
+ }
+ 
+@@ -3795,14 +3787,35 @@ static void ami_rebuild_copper(void)
+ 	}
+ }
+ 
+-static void __exit amifb_exit(void)
++static int __exit amifb_remove(struct platform_device *pdev)
+ {
+ 	unregister_framebuffer(&fb_info);
+-	amifb_deinit();
++	amifb_deinit(pdev);
+ 	amifb_video_off();
 +	return 0;
-+
-+out:
-+	release_mem_region(res->start, resource_size(res));
-+	return error;
 +}
 +
-+static int __exit amiga_gayle_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = pdev->dev.driver_data;
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
--    for (i = 0; i < GAYLE_NUM_PROBE_HWIFS; i++) {
--	base = (unsigned long)ZTWO_VADDR(phys_base + i * GAYLE_NEXT_PORT);
--	ctrlport = GAYLE_HAS_CONTROL_REG ? (base + GAYLE_CONTROL) : 0;
-+	ide_host_remove(host);
-+	release_mem_region(res->start, resource_size(res));
-+	return 0;
-+}
- 
--	gayle_setup_ports(&hw[i], base, ctrlport, irqport, ack_intr);
-+static struct platform_driver amiga_gayle_ide_driver = {
-+	.remove = __exit_p(amiga_gayle_ide_remove),
++static struct platform_driver amifb_driver = {
++	.remove = __exit_p(amifb_remove),
 +	.driver   = {
-+		.name	= "amiga-gayle-ide",
++		.name	= "amiga-video",
 +		.owner	= THIS_MODULE,
 +	},
 +};
- 
--	hws[i] = &hw[i];
--    }
-+static int __init amiga_gayle_ide_init(void)
++
++static int __init amifb_init(void)
 +{
-+	return platform_driver_probe(&amiga_gayle_ide_driver,
-+				     amiga_gayle_ide_probe);
-+}
- 
--    rc = ide_host_add(&gayle_port_info, hws, NULL);
--    if (rc)
--	release_mem_region(res_start, res_n);
-+module_init(amiga_gayle_ide_init);
- 
--    return rc;
-+static void __exit amiga_gayle_ide_exit(void)
-+{
-+	platform_driver_unregister(&amiga_gayle_ide_driver);
++	return platform_driver_probe(&amifb_driver, amifb_probe);
  }
  
--module_init(gayle_init);
-+module_exit(amiga_gayle_ide_exit);
+ module_init(amifb_init);
++
++static void __exit amifb_exit(void)
++{
++	platform_driver_unregister(&amifb_driver);
++}
++
+ module_exit(amifb_exit);
  
  MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:amiga-gayle-ide");
++MODULE_ALIAS("platform:amiga-video");
 -- 
 1.6.2.3
 
