@@ -1,81 +1,58 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: Network died completely in 2.6.29 - also on m68k :)
-Date: Sun, 19 Apr 2009 02:19:46 +0200 (CEST)
-Message-ID: <alpine.DEB.1.00.0904190208550.7064@zirkon.biophys.uni-duesseldorf.de>
-References: <alpine.LNX.2.01.0904160950280.9424@halbrend.uninett.no>
- <10f740e80904180228y222381e9sbbac7702b5624891@mail.gmail.com>
+Subject: [PATCH] m68k: Atari GEMDOS FAT option fix: use correct logical sector
+ size
+Date: Sun, 19 Apr 2009 03:20:17 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0904190308310.8939__43034.6462213949$1240107751$gmane$org@zirkon.biophys.uni-duesseldorf.de>
+References: <20090326123822.GD8081@marenka.net>
+ <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+ <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+ <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
+ <1239696787.2049.8.camel@petr>
+ <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
+ <1239698381.2049.25.camel@petr>
+ <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
+ <1239774966.20245.4.camel@petr>
+ <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
+ <1239862075.12777.14.camel@petr>
+ <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
+ <1239868903.12777.25.camel@petr>
+ <alpine.DEB.1.00.0904170314220.18855@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_ssdwyrRn9NIW5fxB6UePiQ)"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:56034 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1754193AbZDSATu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 18 Apr 2009 20:19:50 -0400
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
- id <0KIB00B00NKZV900@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Sun, 19 Apr 2009 02:19:47 +0200 (MEST)
-In-reply-to: <10f740e80904180228y222381e9sbbac7702b5624891@mail.gmail.com>
+In-reply-to: <alpine.DEB.1.00.0904170314220.18855@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: =?ISO-8859-15?Q?Kolbj=F8rn_Barmen?= <linux-m68k@kolla.no>, linux-m68k@vger.kernel.org, Debian m68k <debian-68k@lists.debian.org>
+Cc: Petr Stehlik <pstehlik@sophics.cz>, Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Fix erroneous use of device blocksize instead of logical sector size in 
+Atari GEMDOS FAT code (GEMDOS uses a 16 bit FAT and a constant 2 logical 
+sectors per cluster, and modifies the logical sector size to cope with the 
+limits imposed by the 16 bit FAT). The bug was probably introduced by me when 
+porting this code forward from 2.4.
+With this fix, I can successfully mount GEMDOS partitons up to 256 MB in size as 
+prepared by Petr Stehlik. 512 MB require 8k sector size, sorry. 
 
---Boundary_(ID_ssdwyrRn9NIW5fxB6UePiQ)
-Content-type: TEXT/PLAIN; charset=UTF-8
-Content-transfer-encoding: QUOTED-PRINTABLE
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+---
+ fs/fat/inode.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Hi Geert,
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index 34dda7a..8156229 100644
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1387,7 +1387,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent,
+ 		 * it's a real MSDOS partition with 12-bit fat.
+ 		 */
+ 		if (sbi->fat_bits != 32 && total_clusters+2 > sbi->
+-			fat_length*SECTOR_SIZE*8/sbi->fat_bits)
++			fat_length*sb->s_blocksize*8/sbi->fat_bits)
+ 			sbi->fat_bits = 12;
+ 		/* if it's a floppy disk --> 12bit fat */
+ 		if (sbi->fat_bits != 32 && MAJOR(sb->s_dev) == FLOPPY_MAJOR)
+-- 
+1.5.6.5
 
-> > So, I tryed to pull out a m68k-v2.6.29.1 from git, but appearantly ther=
-e is no
-> > such thing. So=C2=B8 it is probably to add the "Disable GRO on legacy n=
-etif_rx
-> > path" patch (in posting above) to the v2.6.29 branch, no?
->=20
-> Usually I do not track stable myself, that's a distributor's issue ;-)
-> But I gave it a try, and did:
->=20
->     git remote add stable
-> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-2.6-stable.git
->     git remote update
->     git merge v2.6.29.1
->=20
-> (git merge stable/linux-2.6.29.y should have worked, too)
-> and pushed the result to m68k-v2.6.29. However, I don't know if I
-> should keep on doing
-> this for each stable release, as you can easily do it yourself,
-> without having to wait for me.
-
-But it's so much easier if you do it :-) With that description, there's no=
-=20
-reason why it could not be done by someone else, though. I don't think ther=
-e is=20
-enough demand for a stable m68k kernel git tree to warrant that extra tree.=
- It=20
-would be a matter of setting up a separate git repository, right?=20
-=20
-> Furthermore, it complicates the process of extracting patches for e.g.
-> the Debian kernel,
-> unless I would rebase the m68k-v2.6.29 branch on top of the latest
-> stable version.
-> But I prefer not to rebase long-lived branches like the stable branch.
->=20
-> What do people think?
-
-I think a distributor, i.e. Debian will pick up the patch in question as pa=
-rt of=20
-the generic bugfixes anyway. Having it appear a second time as part of the =
-m68k=20
-patches would make things harder, really.=20
-
-Don't rebase m68k-v2.6.29 unless absolutely necessary, please.=20
-
-=09Michael=
-
---Boundary_(ID_ssdwyrRn9NIW5fxB6UePiQ)--
