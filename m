@@ -1,81 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Network died completely in 2.6.29 - also on m68k :)
-Date: Sun, 19 Apr 2009 20:21:16 +0200
-Message-ID: <10f740e80904191121x5f3ff25bh8577140a9f9971e1@mail.gmail.com>
-References: <alpine.LNX.2.01.0904160950280.9424@halbrend.uninett.no>
-	 <10f740e80904180228y222381e9sbbac7702b5624891@mail.gmail.com>
-	 <alpine.DEB.1.00.0904190208550.7064@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH/RFC 01/16] platform: Make platform resources input
+	parameters const
+Date: Sun, 19 Apr 2009 20:23:30 +0200
+Message-ID: <10f740e80904191123w64e951beya329e4e91aa7765@mail.gmail.com>
+References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+	 <1240080744-14995-2-git-send-email-geert@linux-m68k.org>
+	 <20090418232533.GB23201@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f176.google.com ([209.85.219.176]:50557 "EHLO
-	mail-ew0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751831AbZDSSVS convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Apr 2009 14:21:18 -0400
-Received: by ewy24 with SMTP id 24so875407ewy.37
-        for <linux-m68k@vger.kernel.org>; Sun, 19 Apr 2009 11:21:16 -0700 (PDT)
-In-Reply-To: <alpine.DEB.1.00.0904190208550.7064@zirkon.biophys.uni-duesseldorf.de>
+Received: from ey-out-2122.google.com ([74.125.78.24]:23777 "EHLO
+	ey-out-2122.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752948AbZDSSXc convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Apr 2009 14:23:32 -0400
+In-Reply-To: <20090418232533.GB23201@kroah.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>, linux-m68k@vger.kernel.org, Debian m68k <debian-68k@lists.debian.org>
+To: Greg KH <greg@kroah.com>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>
 
-On Sun, Apr 19, 2009 at 02:19, Michael Schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->> > So, I tryed to pull out a m68k-v2.6.29.1 from git, but appearantly=
- there is no
->> > such thing. So=C2=B8 it is probably to add the "Disable GRO on leg=
-acy netif_rx
->> > path" patch (in posting above) to the v2.6.29 branch, no?
+On Sun, Apr 19, 2009 at 01:25, Greg KH <greg@kroah.com> wrote:
+> On Sat, Apr 18, 2009 at 08:52:09PM +0200, Geert Uytterhoeven wrote:
+>> Make the platform resources input parameters of platform_device_add_=
+resources()
+>> and platform_device_register_simple() const, as the resources are co=
+pied and
+>> never modified.
 >>
->> Usually I do not track stable myself, that's a distributor's issue ;=
--)
->> But I gave it a try, and did:
->>
->> =C2=A0 =C2=A0 git remote add stable
->> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-2.6-stabl=
-e.git
->> =C2=A0 =C2=A0 git remote update
->> =C2=A0 =C2=A0 git merge v2.6.29.1
->>
->> (git merge stable/linux-2.6.29.y should have worked, too)
->> and pushed the result to m68k-v2.6.29. However, I don't know if I
->> should keep on doing
->> this for each stable release, as you can easily do it yourself,
->> without having to wait for me.
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Cc: Greg Kroah-Hartman <gregkh@suse.de>
 >
-> But it's so much easier if you do it :-) With that description, there=
-'s no
-> reason why it could not be done by someone else, though. I don't thin=
-k there is
-> enough demand for a stable m68k kernel git tree to warrant that extra=
- tree. It
-> would be a matter of setting up a separate git repository, right?
+> If you need this for your other patches, no objection from me, feel f=
+ree
 
-Yep.
+Yes, my other patches depend on it.
 
->> Furthermore, it complicates the process of extracting patches for e.=
-g.
->> the Debian kernel,
->> unless I would rebase the m68k-v2.6.29 branch on top of the latest
->> stable version.
->> But I prefer not to rebase long-lived branches like the stable branc=
-h.
->>
->> What do people think?
+> to take it through your tree (or I can take it through mine if you
+> want.)
+
+OK, will take it. Thanks!
+
+> Either way, feel free to add:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0Signed-off-by: Greg Kroah-Hartman <gregkh@=
+suse.de>
 >
-> I think a distributor, i.e. Debian will pick up the patch in question=
- as part of
-> the generic bugfixes anyway. Having it appear a second time as part o=
-f the m68k
-> patches would make things harder, really.
+> to it.
 
-Indeed. And now I pulled stable into m68k-v2.6.29, `git format-patch
-v2.6.29' will
-give you the patches between .29 and .29.1, too.
-
-> Don't rebase m68k-v2.6.29 unless absolutely necessary, please.
+Acked-by, I assume...
 
 Gr{oetje,eeting}s,
 
