@@ -1,67 +1,75 @@
-From: Alessandro Zummo <alessandro.zummo@towertech.it>
-Subject: Re: [rtc-linux] Re: [PATCH/RFC 15/16] rtc: Add an RTC driver for
- the  Ricoh RP5C01
-Date: Sun, 19 Apr 2009 20:56:52 +0200
-Message-ID: <20090419205652.44b0b7e9@i1501.lan.towertech.it>
-References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-9-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-10-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-11-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-12-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-13-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-14-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-15-git-send-email-geert@linux-m68k.org>
-	<1240080744-14995-16-git-send-email-geert@linux-m68k.org>
-	<20090418235529.47e481e9@i1501.lan.towertech.it>
-	<10f740e80904191141i599af898wd47535cabd8c9184@mail.gmail.com>
+From: Stephen R Marenka <stephen@marenka.net>
+Subject: Re: debian kernel m68k patches for 2.6.29
+Date: Tue, 21 Apr 2009 12:20:39 -0500
+Message-ID: <20090421172039.GA26858__47828.080567024$1240335522$gmane$org@marenka.net>
+References: <20090326123822.GD8081@marenka.net> <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com> <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx0.towertech.it ([213.215.222.73]:40957 "HELO mx0.towertech.it"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1755939AbZDSS44 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Apr 2009 14:56:56 -0400
-In-Reply-To: <10f740e80904191141i599af898wd47535cabd8c9184@mail.gmail.com>
+Received: from smtp.knology.net ([24.214.63.101]:56069 "EHLO smtp.knology.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753127AbZDURhE (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 21 Apr 2009 13:37:04 -0400
+Content-Disposition: inline
+In-Reply-To: <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: rtc-linux@googlegroups.com
-Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-On Sun, 19 Apr 2009 20:41:21 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-> > =A0please implement either set_time or set_mmss, not both.
-> > =A0I don't know the chip but I suspect set_time is the one you need=
-=2E
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Mar 29, 2009 at 03:07:57PM +0200, Geert Uytterhoeven wrote:
+> On Thu, Mar 26, 2009 at 15:10, Geert Uytterhoeven <geert@linux-m68k.org> =
+wrote:
+> > On Thu, Mar 26, 2009 at 13:38, Stephen R Marenka <stephen@marenka.net> =
+wrote:
+> >> So 2.6.29 has hit sid. Anyone want to update the kernel patches? Also,
+> >> what patches to apply now that we have git-based goodness?
+> >
+> > You can start with the ones on the for-next branch.
+> > I still have to cherry-pick the others to the (to be created) queue bra=
+nch.
+> > I'll let you know when I'm finished.
 >=20
-> OK, I will remove .set_mmss. Got to confused by looking into how
-> everything is used...
-> BTW, the only remaining users of rtc_set_mmss() seem to be
-> arch/sparc/kernel/time_{32,64}.c?
+> Now my git skills have been growing, I created two new branches:
+>   - m68k-v2.6.29
+>   - queue
 
- Yes. The facility is there for drives, not users. For some chips it's =
-easier
- to implement a set_mmss like interface so it's better to have the rtc =
-framewrk
- to convert between the twos than to have repeated code in drivers.
+That pretty much rocks! Here's my process in case someone else wants
+it or wants to fix it. :)
 
-> OK, if I take the result (for both rtc-rp5c01 and rtc-msm6242) throug=
-h
-> the m68k tree?
+The only downside seems to be the 47 patch difference between m68k
+and the point release or whatever else happened on top of 2.6.29.=20
+Those pretty much all conflicted.
 
- that's ok, you can add my acked by.
+I just pushed the patches for debian 2.6.29-4.
+
+http://wiki.debian.org/M68k/Kernel/Patches
+
+Thanks,
+
+Stephen
+
 --=20
+Stephen R. Marenka     If life's not fun, you're not doing it right!
+<stephen@marenka.net>
 
- Best regards,
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
- Alessandro Zummo,
-  Tower Technologies - Torino, Italy
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-  http://www.towertech.it
+iD8DBQFJ7gBnVKM4J7YoSbMRApwyAJwL5KwJ4mlhTzDhlLL4E7YVNsiTDwCeN4Tl
+iograkmgwXlIMaEuVmgr9EE=
+=nX/R
+-----END PGP SIGNATURE-----
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Dxnq1zWXvFF0Q93v--
