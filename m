@@ -1,79 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Stephen R Marenka <stephen@marenka.net>
 Subject: Re: debian kernel m68k patches for 2.6.29
-Date: Wed, 22 Apr 2009 09:20:31 +0200
-Message-ID: <10f740e80904220020o70837da9mfb74cbbfb0f917d3@mail.gmail.com>
-References: <20090326123822.GD8081@marenka.net>
-	 <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
-	 <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
-	 <20090421172039.GA26858@marenka.net>
+Date: Wed, 22 Apr 2009 07:57:06 -0500
+Message-ID: <20090422125706.GC5886@marenka.net>
+References: <20090326123822.GD8081@marenka.net> <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com> <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com> <20090421172039.GA26858@marenka.net> <10f740e80904220020o70837da9mfb74cbbfb0f917d3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20090421172039.GA26858@marenka.net>
+Received: from smtp.knology.net ([24.214.63.101]:37154 "EHLO smtp.knology.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751650AbZDVNAS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 22 Apr 2009 09:00:18 -0400
+Content-Disposition: inline
+In-Reply-To: <10f740e80904220020o70837da9mfb74cbbfb0f917d3@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-Cc: linux-m68k@vger.kernel.org
+To: debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org, linux-m68k@vger.kernel.org
 
-On Tue, Apr 21, 2009 at 19:20, Stephen R Marenka <stephen@marenka.net> =
-wrote:
-> On Sun, Mar 29, 2009 at 03:07:57PM +0200, Geert Uytterhoeven wrote:
->> On Thu, Mar 26, 2009 at 15:10, Geert Uytterhoeven <geert@linux-m68k.=
-org> wrote:
->> > On Thu, Mar 26, 2009 at 13:38, Stephen R Marenka <stephen@marenka.=
-net> wrote:
->> >> So 2.6.29 has hit sid. Anyone want to update the kernel patches? =
-Also,
->> >> what patches to apply now that we have git-based goodness?
->> >
->> > You can start with the ones on the for-next branch.
->> > I still have to cherry-pick the others to the (to be created) queu=
-e branch.
->> > I'll let you know when I'm finished.
->>
->> Now my git skills have been growing, I created two new branches:
->> =C2=A0 - m68k-v2.6.29
->> =C2=A0 - queue
->
-> That pretty much rocks! Here's my process in case someone else wants
-> it or wants to fix it. :)
->
-> The only downside seems to be the 47 patch difference between m68k
-> and the point release or whatever else happened on top of 2.6.29.
-> Those pretty much all conflicted.
 
-Yeah, that was my biggest fear. I'll refrain from merging any stable
-revisions in the
-future.
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I just pushed the patches for debian 2.6.29-4.
->
-> http://wiki.debian.org/M68k/Kernel/Patches
+On Wed, Apr 22, 2009 at 09:20:31AM +0200, Geert Uytterhoeven wrote:
+> On Tue, Apr 21, 2009 at 19:20, Stephen R Marenka <stephen@marenka.net> wr=
+ote:
 
-A few comments:
-  - If you cloned from linux-m68k.git, you don't have to do the `git
-remote add',
-    as `origin' is already the same remote.
-  - You may want to put a `sort' in the `find ../bugfix/m68k/2.6.29
--print | sed -e 's;../;+ ;' | sed -e 's;$; m68k;' >> $series`
-    pipeline.
+> > http://wiki.debian.org/M68k/Kernel/Patches
+>=20
+> A few comments:
+>   - If you cloned from linux-m68k.git, you don't have to do the `git
+> remote add',
+>     as `origin' is already the same remote.
 
-Gr{oetje,eeting}s,
+Added.
 
-						Geert
+>   - You may want to put a `sort' in the `find ../bugfix/m68k/2.6.29
+> -print | sed -e 's;../;+ ;' | sed -e 's;$; m68k;' >> $series`
+>     pipeline.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+The patches come out numbered 0001-0090. I'm not sure what I can sort.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+
+Stephen
+
+--=20
+Stephen R. Marenka     If life's not fun, you're not doing it right!
+<stephen@marenka.net>
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iD8DBQFJ7xQiVKM4J7YoSbMRAt35AJ9iPUngPNaqKCXT1xyFM79aa3AUwwCfYhug
+6fMqihwd3CXx1djoBLuFqV0=
+=aHMC
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
