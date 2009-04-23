@@ -1,61 +1,60 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git] m68k
-Date: Thu, 23 Apr 2009 20:37:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0904232036310.17875@anakin>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch fixes
+Date: Fri, 24 Apr 2009 09:33:29 +1000
+Message-ID: <200904232333.n3NNXTKV005460@localhost.localdomain>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from juliette.telenet-ops.be ([195.130.137.74]:50625 "EHLO
-	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758430AbZDWShn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Apr 2009 14:37:43 -0400
+Received: from rex.securecomputing.com ([203.24.151.4]:38221 "EHLO
+	snapgear.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753851AbZDWXed (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 23 Apr 2009 19:34:33 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-	Hi Linus,
 
-The following changes since commit 091069740304c979f957ceacec39c461d0192158:
+Hi Linus,
+
+Please pull to get a small set of fixes for the m68knommu arch,
+and updates to the defconfigs.
+
+Regards
+Greg
+
+
+
+The following changes since commit ccc5ff94c66e628d3c501b26ace5d4339667715d:
   Linus Torvalds (1):
-        Linux 2.6.30-rc3
+        Merge git://git.kernel.org/.../mason/btrfs-unstable
 
 are available in the git repository at:
 
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-Geert Uytterhoeven (3):
-      scsi: a4000 - Correct driver unregistration in case of failure
-      m68k,m68knommu: Wire up preadv and pwritev
-      m68k: Update defconfigs for 2.6.30-rc3
+Greg Ungerer (9):
+      m68knommu: fix missing .data.cacheline_aligned section
+      m68knommu: remove unused kernel stats offsets
+      m68knommu: fix DMA support for ColdFire
+      m68knommu: update the defconfig for the ColdFire 5208evb board
+      m68knommu: add a defconfig for the ColdFire M5272C3 board
+      m68knommu: update the default config for the ColdFire 5249EVB.
+      m68knommu: update the default config for the ColdFire 5257EVB board
+      m68knommu: update the default config for the ColdFire 5307C3 board
+      m68knommu: update the default config for the ColdFire 5407C3 board
 
- arch/m68k/configs/amiga_defconfig    |  163 +++++++++++++++++++++------------
- arch/m68k/configs/apollo_defconfig   |  120 +++++++++++++++++--------
- arch/m68k/configs/atari_defconfig    |  155 +++++++++++++++++++++-----------
- arch/m68k/configs/bvme6000_defconfig |  119 +++++++++++++++++--------
- arch/m68k/configs/hp300_defconfig    |  120 +++++++++++++++++--------
- arch/m68k/configs/mac_defconfig      |  125 +++++++++++++++++---------
- arch/m68k/configs/multi_defconfig    |  157 ++++++++++++++++++++------------
- arch/m68k/configs/mvme147_defconfig  |  119 +++++++++++++++++--------
- arch/m68k/configs/mvme16x_defconfig  |  119 +++++++++++++++++--------
- arch/m68k/configs/q40_defconfig      |  122 +++++++++++++++++--------
- arch/m68k/configs/sun3_defconfig     |  120 +++++++++++++++++--------
- arch/m68k/configs/sun3x_defconfig    |  120 +++++++++++++++++--------
- arch/m68k/include/asm/unistd.h       |    4 +-
- arch/m68k/kernel/entry.S             |    2 +
- arch/m68knommu/kernel/syscalltable.S |    2 +
- drivers/scsi/a4000t.c                |    2 +-
- 16 files changed, 1042 insertions(+), 527 deletions(-)
+Richard Retanubun (1):
+      m68knommu: Fixed GPIO pin initialization for CONFIG_M5271 FEC.
 
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+ arch/m68knommu/Kconfig                    |    1 +
+ arch/m68knommu/configs/m5208evb_defconfig |  163 +++++----
+ arch/m68knommu/configs/m5249evb_defconfig |  268 ++++++++++---
+ arch/m68knommu/configs/m5272c3_defconfig  |  645 +++++++++++++++++++++++++++++
+ arch/m68knommu/configs/m5275evb_defconfig |  167 +++++----
+ arch/m68knommu/configs/m5307c3_defconfig  |  231 ++++++++---
+ arch/m68knommu/configs/m5407c3_defconfig  |  179 +++++----
+ arch/m68knommu/kernel/asm-offsets.c       |    6 -
+ arch/m68knommu/kernel/dma.c               |   37 ++-
+ arch/m68knommu/kernel/vmlinux.lds.S       |    2 +
+ arch/m68knommu/platform/527x/config.c     |    5 +
+ 11 files changed, 1346 insertions(+), 358 deletions(-)
+ create mode 100644 arch/m68knommu/configs/m5272c3_defconfig
