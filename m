@@ -1,38 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Atari SCC verbosity fix
-Date: Wed, 22 Apr 2009 21:12:11 +0200
-Message-ID: <10f740e80904221212u66fcfe90gb59347c4161e5764@mail.gmail.com>
-References: <20090326123822.GD8081@marenka.net>
-	 <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
-	 <1239698381.2049.25.camel@petr>
-	 <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
-	 <1239774966.20245.4.camel@petr>
-	 <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
-	 <1239862075.12777.14.camel@petr>
-	 <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
-	 <1239868903.12777.25.camel@petr>
-	 <alpine.DEB.1.00.0904190321350.8939@zirkon.biophys.uni-duesseldorf.de>
+Subject: [git] m68k
+Date: Thu, 23 Apr 2009 20:37:37 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0904232036310.17875@anakin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <alpine.DEB.1.00.0904190321350.8939@zirkon.biophys.uni-duesseldorf.de>
-Resent-Message-ID: <Py2qKRSNg2M.A.DuB.vw27JB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from juliette.telenet-ops.be ([195.130.137.74]:50625 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758430AbZDWShn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Apr 2009 14:37:43 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Sun, Apr 19, 2009 at 03:24, Michael Schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
-> Fix verbosity level of SCC driver (leftover 'info' message) as reported by
-> Patrice Mandin.
+	Hi Linus,
 
-Thanks, added.
+The following changes since commit 091069740304c979f957ceacec39c461d0192158:
+  Linus Torvalds (1):
+        Linux 2.6.30-rc3
+
+are available in the git repository at:
+
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+Geert Uytterhoeven (3):
+      scsi: a4000 - Correct driver unregistration in case of failure
+      m68k,m68knommu: Wire up preadv and pwritev
+      m68k: Update defconfigs for 2.6.30-rc3
+
+ arch/m68k/configs/amiga_defconfig    |  163 +++++++++++++++++++++------------
+ arch/m68k/configs/apollo_defconfig   |  120 +++++++++++++++++--------
+ arch/m68k/configs/atari_defconfig    |  155 +++++++++++++++++++++-----------
+ arch/m68k/configs/bvme6000_defconfig |  119 +++++++++++++++++--------
+ arch/m68k/configs/hp300_defconfig    |  120 +++++++++++++++++--------
+ arch/m68k/configs/mac_defconfig      |  125 +++++++++++++++++---------
+ arch/m68k/configs/multi_defconfig    |  157 ++++++++++++++++++++------------
+ arch/m68k/configs/mvme147_defconfig  |  119 +++++++++++++++++--------
+ arch/m68k/configs/mvme16x_defconfig  |  119 +++++++++++++++++--------
+ arch/m68k/configs/q40_defconfig      |  122 +++++++++++++++++--------
+ arch/m68k/configs/sun3_defconfig     |  120 +++++++++++++++++--------
+ arch/m68k/configs/sun3x_defconfig    |  120 +++++++++++++++++--------
+ arch/m68k/include/asm/unistd.h       |    4 +-
+ arch/m68k/kernel/entry.S             |    2 +
+ arch/m68knommu/kernel/syscalltable.S |    2 +
+ drivers/scsi/a4000t.c                |    2 +-
+ 16 files changed, 1042 insertions(+), 527 deletions(-)
+
+Thanks for pulling!
 
 Gr{oetje,eeting}s,
 
