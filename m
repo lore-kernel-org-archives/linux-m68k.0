@@ -1,18 +1,63 @@
-From: Maegan Leichter <hon168@pchome.com.tw>
-Subject: =?windows-1251?B?VGhlIFByb3BlciBXYXkgdG8gQXBwbHkgZm9yIHlvdXIgR3JlZW4gQ2FyZA==?=
-Date: Mon, 27 Apr 2009 22:42:10 +0200
-Message-ID: <8766.62816522202$1240864977@news.gmane.org>
-Reply-To: Maegan Leichter <18553weston.hillerud@gmail.com>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: [PATCH] m68k: Atari - leave out spurious request_irq for Falcon IDE
+Date: Tue, 28 Apr 2009 07:41:20 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0904280735550.18935@zirkon.biophys.uni-duesseldorf.de>
+References: <20090326123822.GD8081@marenka.net>
+ <10f740e80903260610k29f73c4ci76594f46881e17a5@mail.gmail.com>
+ <10f740e80903290607y743bada9w829754722e9f7d9f@mail.gmail.com>
+ <alpine.DEB.1.00.0904140556250.22987@zirkon.biophys.uni-duesseldorf.de>
+ <1239696787.2049.8.camel@petr>
+ <alpine.DEB.1.00.0904141017160.30084@zirkon.biophys.uni-duesseldorf.de>
+ <1239698381.2049.25.camel@petr>
+ <alpine.DEB.1.00.0904150319350.29525@zirkon.biophys.uni-duesseldorf.de>
+ <1239774966.20245.4.camel@petr>
+ <alpine.DEB.1.00.0904160107540.4339@zirkon.biophys.uni-duesseldorf.de>
+ <1239862075.12777.14.camel@petr>
+ <alpine.DEB.1.00.0904160934480.19859@zirkon.biophys.uni-duesseldorf.de>
+ <1239868903.12777.25.camel@petr>
+ <alpine.DEB.1.00.0904170314220.18855@zirkon.biophys.uni-duesseldorf.de>
+ <alpine.DEB.1.00.0904190308310.8939@zirkon.biophys.uni-duesseldorf.de>
+ <alpine.DEB.1.00.0904260751590.30061@zirkon.biophys.uni-duesseldorf.de>
+ <alpine.DEB.1.00.0904260909510.32441@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: base64
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-reply-to: <alpine.DEB.1.00.0904260909510.32441@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Stephen R Marenka <stephen@marenka.net>, debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 
-Q3VycmVudGx5LCB0aGUgVVMgRGVwYXJ0bWVudCBvZiBJbW1pZ3JhdGlvbiBhbGxvd3MgNTAsMDAwIGFwcGxpY2F0aW9ucyB0byBiZSBwcm9jZXNzZWQgZm9yIHRoZSB5ZWFybHkgRFYgTG90dGVyeS4NCg0KVGhpcyBpcyBqdXN0IGEgc21hbGwgbnVtYmVyIG9mIGFsbCB0aGUgYXBwbGljYXRpb25zIHRoZXkgcmVjZWl2ZSBldmVyeSB5ZWFyLiBBbnlvbmUgdGhhdCBoYXMgZXZlciBwcmV2aW91c2x5IGFwcGxpZWQgZm9yIGEgY2hhbmNlIGluIHRoZSBWaXNhIExvdHRlcnkgd2lsbCB0ZWxsIHlvdSB0aGF0IGl0J3Mgbm90IGFuIGVhc3kgcHJvY2Vzcy4NCg0KVGhlIGJpZ2dlc3QgcHJvYmxlbSBhbnkgcGVyc29uIGZhY2Ugd2hlbiBpdCBjb21lcyB0byB0aGUgR3JlZW4gQ2FyZCBMb3R0ZXJ5IGlzIHRoZSBmYWN0IHRoYXQgdGhlIGFwcGxpY2F0aW9uIG11c3QgY29uZm9ybSBwZXJmZWN0bHkgdG8gc3RyaWN0IHN1Ym1pc3Npb24gcmVxdWlyZW1lbnRzLiBFdmVuIG9uZSBzbWFsbCBtaXN0YWtlIGNhbiBjb21wbGV0ZWx5IGRpc3F1YWxpZnkgYSBwZXJzb24gZnJvbSBwYXJ0aWNpcGF0aW5nIGluIHRoZSBVUyBJbW1pZ3JhdGlvbiBMb3R0ZXJ5Lg0KDQpUaGUgR3Jl
- ZW4gQ2FyZCBMb3R0ZXJ5IG9ubHkgaGFwcGVucyBvbmNlIGEgeWVhci4gUGxlYXNlIGNvbmZpcm0geW91ciBpbnRlcmVzdCBhdCAxNDU3N2hlbnRob3JuLmpvY2VsaW5lQGdtYWlsLmNvbSB0byByZWNlaXZlIGZ1cnRoZXIgaW5mb3JtYXRpb24uDQoNCkdvb2QgbHVjayENCg0KVVNBR0MgRFYgTG90dGVyeSBTZXJ2aWNlcwoKCgoKCgoKCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIGVtYWlsIGhhcyBiZWVuIHdyaXR0ZW4gYW5kIHByb3ZlZCB0byBiZSBpbiBjb21wbGlhbmNlIHdpdGggdGhlIHJlY2VudGx5IGVzdGFibGlzaGVkIGNhbi1zcGFtIGFjdCBsYXcgaW4gVVMuIFdlIGFyZSBub3QgcHJvdm9raW5nIG9yIGZvcmNpbmcgYW55IHBlcnNvbiBpbiBhbnkgd2F5IHRvIHBhcnRpY2lwYXRlIGluIG91ciBwcm9ncmFtcy4gVG8gcGFydGljaXBhdGUgaXMgeW91ciBvd24gZGVjaXNpb24gYW5kIHlvdSBjYXJyeSB0aGUgcmVzcG9uc2liaWxpdHkgb2YgdGFraW5nIGZ1cnRoZXIgcGFydCBpbiB0aGlzIHByb21vdGlvbi4gQW55d2F5LCBpZiB5b3UgZG9uJ3Qgd2FudCB0by
- ByZWNlaXZlIG1vcmUgZ29vZCBvZmZlcnMgZnJvbSB1cywgeW91IGNhbiBzaW1wbHkgVW5zdWJzY3JpYmUgYnkgc2VuZGluZyB1cyBhIG5vdGlmaWNhdGlvbiBlbWFpbCB0byBvdXRfb2ZfdGhlX2xpc3RAeWFob28uY29tIHdpdGggYSBtYWlsLXN1YmplY3QgYW5kIHRleHQgIlVuc3Vic2NyaWJlIG1lIiwgYW5kIHdlIHdpbGwgZ2V0IHlvdXIgZW1haWwgb3V0IG9mIG91ciBsaXN0IHdpdGhpbiAxMCBkYXlzLgoKVGhpcyBtZXNzYWdlIGlzIFNUUklDVExZIENPTkZJREVOVElBTCBhbmQgaXMgc29sZWx5IGZvciB0aGUgaW5kaXZpZHVhbCBvciBvcmdhbmlzYXRpb24gdG8gd2hvbSBpdCBpcyBhZGRyZXNzZWQuIEl0IG1heSBjb250YWluIFBSSVZJTEVHRUQgYW5kIENPTkZJREVOVElBTCBpbmZvcm1hdGlvbi4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQgdGhhdCBhbnkgZGlzc2VtaW5hdGlvbiwgZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBjb21tdW5pY2F0aW9uIGFuZCBpdHMgY29udGVudHMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVu
- ZGVkIHJlY2lwaWVudCB5b3Ugc2hvdWxkIG5vdCByZWFkLCBjb3B5LCBkaXN0cmlidXRlLCBkaXNjbG9zZSBvciBvdGhlcndpc2UgdXNlIHRoZSBpbmZvcm1hdGlvbiBpbiB0aGlzIGVtYWlsLiBFbWFpbCBtYXkgYmUgc3VzY2VwdGlibGUgdG8gZGF0YSBjb3JydXB0aW9uLCBpbnRlcmNlcHRpb24gYW5kIHVuYXV0aG9yaXNlZCBhbWVuZG1lbnQsIGFuZCB3ZSBkbyBub3QgYWNjZXB0IGxpYWJpbGl0eSBmb3IgYW55IHN1Y2ggY29ycnVwdGlvbiwgaW50ZXJjZXB0aW9uIG9yIGFtZW5kbWVudCBvciB0aGUgY29uc2VxdWVuY2VzIHRoZXJlb2Ygb3IgeW91ciByZWxpYW5jZSBvbiBhbnkgaW5mb3JtYXRpb24gY29udGFpbmVkIHRoZXJlaW4gaWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudC4gSWYgeW91IGFyZSBub3QgaW50ZXJlc3RlZCBpbiB0aGUgb2ZmZXJlZCBwcm9tb3Rpb25zLCBwbGVhc2UganVzdCBkb24ndCBhbnN3ZXIuIElmIHlvdSB0aGluayB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIG1lc3NhZ2UgYW5kIGl0cyBjb250ZW50cyBpbiBlcnJvciwgcGxlYXNlIGRlbGV0ZSBpdCBmcm9tIHlvdXIgY29tcHV0ZXIsIG9yIGZvbGxvdyB0aG
- UgdW5zdWJzY3JpYmluZyBwcm9jZWR1cmUgc2hvd24gYWJvdmUuCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoJCQ==
+Hi Geert,
+
+I found I need to have this patch in order to avoid doubly registering the 
+ST-DMA interrupt for IDE on Falcon.
+
+The interrupt is registered in stdma_init and the current user of the interrupt 
+is set by stdma_get_lock. Without the lock held, no interrupt should be 
+delivered anyway, so this patch will make it easier to debug locking problems.
+
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+
+---
+ drivers/ide/ide-probe.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
+index 7f264ed..f8a86b7 100644
+--- a/drivers/ide/ide-probe.c
++++ b/drivers/ide/ide-probe.c
+@@ -843,6 +843,9 @@ static int init_irq (ide_hwif_t *hwif)
+ 	if (io_ports->ctl_addr)
+ 		hwif->tp_ops->write_devctl(hwif, ATA_DEVCTL_OBS);
+ 
++#if defined(__mc68000__) && defined (CONFIG_BLK_DEV_FALCON_IDE)
++	if (!MACH_IS_ATARI)
++#endif
+ 	if (request_irq(hwif->irq, irq_handler, sa, hwif->name, hwif))
+ 		goto out_up;
+ 
+-- 
+1.5.6.5
+
