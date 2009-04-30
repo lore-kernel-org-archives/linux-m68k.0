@@ -1,50 +1,46 @@
 From: Tim Abbott <tabbott@MIT.EDU>
-Subject: [PATCH 1/2] m68k: use new macro for .data.cacheline_aligned section.
-Date: Thu, 30 Apr 2009 19:49:22 -0400
-Message-ID: <1241135363-8506-2-git-send-email-tabbott@mit.edu>
-References: <1241135363-8506-1-git-send-email-tabbott@mit.edu>
+Subject: [PATCH 0/2] section name cleanup for m68k
+Date: Thu, 30 Apr 2009 19:49:21 -0400
+Message-ID: <1241135363-8506-1-git-send-email-tabbott@mit.edu>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Received: from BISCAYNE-ONE-STATION.MIT.EDU ([18.7.7.80]:60506 "EHLO
 	biscayne-one-station.mit.edu" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1764350AbZD3XyP (ORCPT
+	by vger.kernel.org with ESMTP id S1764214AbZD3XyR (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 30 Apr 2009 19:54:15 -0400
-In-Reply-To: <1241135363-8506-1-git-send-email-tabbott@mit.edu>
+	Thu, 30 Apr 2009 19:54:17 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Sam Ravnborg <sam@ravnborg.org>
 Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@mit.edu>, Waseem Daher <wdaher@mit.edu>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@mit.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, Tim Abbott <tabbott@mit.edu>
 
-.data.cacheline_aligned should not need a separate output section;
-this change moves it into the .data section.
+This patch series cleans up the section names on the m68k
+architecture.  It requires the architecture-independent macro
+definitions from this patch series:
 
-Signed-off-by: Tim Abbott <tabbott@mit.edu>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/kernel/vmlinux-std.lds |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+<http://www.spinics.net/lists/mips/msg33499.html>
 
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 01d212b..ac800bc 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -30,13 +30,11 @@ SECTIONS
-   RODATA
- 
-   .data : {			/* Data */
-+	CACHELINE_ALIGNED_DATA(16)
- 	DATA_DATA
- 	CONSTRUCTORS
- 	}
- 
--  . = ALIGN(16);
--  .data.cacheline_aligned : { *(.data.cacheline_aligned) }
--
-   .bss : { *(.bss) }		/* BSS */
- 
-   _edata = .;			/* End of data section */
--- 
-1.6.2.1
+The long-term goal here is to add support for building the kernel with
+-ffunction-sections -fdata-sections.  This requires renaming all the
+magic section names in the kernel of the form .text.foo, .data.foo,
+.bss.foo, and .rodata.foo to not have collisions with sections
+generated for code like:
+
+static int nosave = 0; /* -fdata-sections places in .data.nosave */
+static void head(); /* -ffunction-sections places in .text.head */
+
+Note that these patches have not been boot-tested (aside from testing
+the analogous changes on x86), since I don't have access to the
+appropriate hardware.
+
+	-Tim Abbott
+
+
+Tim Abbott (2):
+  m68k: use new macro for .data.cacheline_aligned section.
+  m68k: use new macros for .data.init_task.
+
+ arch/m68k/kernel/process.c        |    4 ++--
+ arch/m68k/kernel/vmlinux-std.lds  |    7 ++-----
+ arch/m68k/kernel/vmlinux-sun3.lds |    2 +-
+ 3 files changed, 5 insertions(+), 8 deletions(-)
 
