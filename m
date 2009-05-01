@@ -1,46 +1,66 @@
-From: Tim Abbott <tabbott@MIT.EDU>
-Subject: [PATCH 0/2] section name cleanup for m68k
-Date: Thu, 30 Apr 2009 19:49:21 -0400
-Message-ID: <1241135363-8506-1-git-send-email-tabbott@mit.edu>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from BISCAYNE-ONE-STATION.MIT.EDU ([18.7.7.80]:60506 "EHLO
-	biscayne-one-station.mit.edu" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1764214AbZD3XyR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 30 Apr 2009 19:54:17 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 0/6] macros for section name cleanup
+Date: Fri, 1 May 2009 11:04:56 +0200
+Message-ID: <20090501090455.GA18326@uranus.ravnborg.org>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+In-Reply-To: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Tim Abbott <tabbott@MIT.EDU>
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@mit.edu>, Waseem Daher <wdaher@mit.edu>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@mit.edu>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@mit.edu>, Waseem Daher <wdaher@mit.edu>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@mit.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, Tim Abbott <tabbott@mit.edu>
 
-This patch series cleans up the section names on the m68k
-architecture.  It requires the architecture-independent macro
-definitions from this patch series:
+On Thu, Apr 30, 2009 at 03:54:07PM -0400, Tim Abbott wrote:
+> (this patch series differs from v1 only in the CC list; some of the
+> architecture lists I sent the previous one to are moderated against
+> non-members; all replies should go to this version).
+> 
+> Here are the architecture-independent macro definitions needed for
+> to clean up the kernel's section names.  The overall diffstat from
+> this section name cleanup project is:
+> 
+>  96 files changed, 261 insertions(+), 503 deletions(-)
+> 
+> The decrease results from removing a lot of redundancy in the linker
+> scripts.
+> 
+> The long-term goal here is to add support for building the kernel with
+> -ffunction-sections -fdata-sections.  This requires renaming all the
+> magic section names in the kernel of the form .text.foo, .data.foo,
+> .bss.foo, and .rodata.foo to not have collisions with sections
+> generated for code like:
+> 
+> static int nosave = 0; /* -fdata-sections places in .data.nosave */
+> static void head(); /* -ffunction-sections places in .text.head */
+> 
+> Sam Ravnborg proposed that rather than just renaming all the sections
+> outright, we should start by first getting more control over the
+> section names used in the kernel so that we can later rename sections
+> without touching too many files.  These patch series implement that
+> cleanup.  Later, there will be another patch series to actually rename
+> the sections.
+> 
+> I'm hoping we can get just these macro definitions into 2.6.30 so that
+> the arch maintainers don't have to grab the macro definitions for
+> their trees while reviewing the patches for 2.6.31.
+> 
+> Shortly, I'm going to send one patch series for each of the
+> architectures updating those architectures to use these new macros
+> (and otherwise cleaning up section names on those architectures).
 
-<http://www.spinics.net/lists/mips/msg33499.html>
+Hi Tim.
 
-The long-term goal here is to add support for building the kernel with
--ffunction-sections -fdata-sections.  This requires renaming all the
-magic section names in the kernel of the form .text.foo, .data.foo,
-.bss.foo, and .rodata.foo to not have collisions with sections
-generated for code like:
+We agreed to get the common stuff and one architecture done before
+proceeding with the rest.
+Please stick to that plan so we avoid patch-bombing lkml + maintainers.
 
-static int nosave = 0; /* -fdata-sections places in .data.nosave */
-static void head(); /* -ffunction-sections places in .text.head */
+When we have this ready it will be a simple one-patch-per-arch to cover
+the rest.
 
-Note that these patches have not been boot-tested (aside from testing
-the analogous changes on x86), since I don't have access to the
-appropriate hardware.
+I will comment on your common patches for now.
 
-	-Tim Abbott
-
-
-Tim Abbott (2):
-  m68k: use new macro for .data.cacheline_aligned section.
-  m68k: use new macros for .data.init_task.
-
- arch/m68k/kernel/process.c        |    4 ++--
- arch/m68k/kernel/vmlinux-std.lds  |    7 ++-----
- arch/m68k/kernel/vmlinux-sun3.lds |    2 +-
- 3 files changed, 5 insertions(+), 8 deletions(-)
-
+	Sam
