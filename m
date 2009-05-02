@@ -1,56 +1,29 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH v2 1/6] Add new macros for page-aligned data and bss sections.
-Date: Sat, 02 May 2009 01:02:12 +0200
-Message-ID: <m2tz44o2a3.fsf@igel.home>
-References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
-	<1241121253-32341-2-git-send-email-tabbott@mit.edu>
-	<20090501091848.GB18326@uranus.ravnborg.org>
-	<alpine.DEB.1.10.0905010951100.3955@vinegar-pot.mit.edu>
-	<49FB2449.1010301@zytor.com>
-	<20090501171717.GA26401@uranus.ravnborg.org>
-	<49FB2EDC.9050300@zytor.com>
-	<20090501174457.GA26559@uranus.ravnborg.org>
-	<49FB35C4.6060107@zytor.com>
+From: payment Officer <feetfirst@winch.twcbc.com>
+Subject: claims of =?iso-8859-1?B?ozUwMCwwMDA=?= GBP
+Date: Fri, 1 May 2009 20:18:07 -0500
+Message-ID: <7h9gbp$d177gl@rrcs-agw-01b.hrndva.rr.com>
+Reply-To: agtuk_ltd005@btinternet.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <49FB35C4.6060107@zytor.com> (H. Peter Anvin's message of "Fri,
-	01 May 2009 10:47:48 -0700")
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Denys Vlasenko <vda.linux@googlemail.com>, Tim Abbott <tabbott@MIT.EDU>, Heiko Carstens <heiko.carstens@de.ibm.com>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, Greg Ungerer <gerg@uclinux.org>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-s390@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, microblaze-uclinux@itee.uq.edu.au, Jeff Dike <jdike@addtoit.com>, Jeff Arnold <jbarnold@MIT.EDU>, dev-etrax@axis.com, Mikael Starvik <starvik@axis.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: info@winner.com
 
-"H. Peter Anvin" <hpa@zytor.com> writes:
+You have been awarded the sum of =A3500,000 GBP in the on going UK Onli=
+ne Promo, get back with your
 
-> Sam Ravnborg wrote:
->>>
->>> What's wrong with @?
->> arm does not support it :-(
->> I recall it denote a comment in arm assembler.
->> 
->> I could do some magic to detect the ARM case but I'm reluctant to do so.
->> I could also ignore the arm issue for now as it is not used by arm,
->> but that strikes me as the wrong approach.
->> 
->
-> If we really have to use different tokens, I would say:
->
-> #ifdef __ARM__
-> # define _PROGBITS %progbits	/* or whatever */
-> # define _NOBITS   %nobits
-> #else
-> # define _PROGBITS @progbits
-> # define _NOBITS   @nobits
-> #endif
+Names:..................
+Address:...............
+Country:..............
+Age:..................
+Sex:................
+phone............
 
-GAS has always supported both '@' and '%', so '%' can be used
-everywhere.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Send these info to agtuk_ltd005@btinternet.com
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
