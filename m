@@ -1,85 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC 0/16] m68k: Device model patches
-Date: Tue, 5 May 2009 09:36:45 +0200
-Message-ID: <10f740e80905050036o49b536betc40125c2944eb7ec@mail.gmail.com>
-References: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+Subject: Re: m68k 2.6.26-1 vs 2.4.30 comparison
+Date: Wed, 6 May 2009 08:44:41 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.0905060843160.14304@firda.kolla.no>
+References: <20090503072811.GB3179@luminet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f224.google.com ([209.85.219.224]:61453 "EHLO
-	mail-ew0-f224.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751807AbZEEHgr convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 May 2009 03:36:47 -0400
-In-Reply-To: <1240080744-14995-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <20090503072811.GB3179@luminet.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Lance Tagliapietra <lancetag@Luminet.net>
+Cc: linux-m68k@lists.linux-m68k.org
 
-On Sat, Apr 18, 2009 at 20:52, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> This set of patches brings Amiga hardware support better in line with=
- to the
-> Linux device model:
-> =C2=A0- Add module alias support for Zorro drivers (not all drivers c=
-an
-> =C2=A0 =C2=A0benefit from this yet though, as some still use zorro_fi=
-nd_device()
-> =C2=A0 =C2=A0instead of struct zorro_driver),
-> =C2=A0- Convert the various builtin Amiga hardware to the platform dr=
-iver
-> =C2=A0 =C2=A0framework.
->
-> [01] platform: Make platform resources input parameters const
-> [02] m68k: amiga - Zorro bus modalias support
-> [03] m68k: amiga - Zorro host bridge platform device conversion
-> [04] m68k: amiga - Frame buffer platform device conversion
-> [05] m68k: amiga - Sound platform device conversion
-> [06] m68k: amiga - Floppy platform device conversion
-> [07] m68k: amiga - A3000 SCSI platform device conversion
-> [08] m68k: amiga - A4000T SCSI platform device conversion
-> [09] m68k: amiga - Amiga Gayle IDE platform device conversion
-> [10] m68k: amiga - Keyboard platform device conversion
-> [11] m68k: amiga - Mouse platform device conversion
-> [12] m68k: amiga - Serial port platform device conversion
-> [13] m68k: amiga - Parallel port platform device conversion
-> [14] rtc: Add an RTC driver for the Oki MSM6242
-> [15] rtc: Add an RTC driver for the Ricoh RP5C01
-> [16] m68k: amiga - RTC platform device conversion
->
-> Due to lack of hardware (only Amiga 4000 here), I couldn't test all d=
-rivers.
-> Especially the SCSI drivers could use some testing feedback.
-> The changes to most other drivers are fairly trivial.
+On Sun, 3 May 2009, Lance Tagliapietra wrote:
 
-I'm a bit reluctant to apply the A3000 SCSI platform device conversion =
-without
-having received any feedback, and I would like to apply the whole serie=
-s ASAP.
-Did anyone try on A3000/A3000T? Similar changes are needed to convert t=
-he
-A2091 and GVP II SCSI drivers to the zorro_driver model, so if we have
-more users
-of those, I can do that conversion first, so it can receive some testin=
-g.
+> Observations:
+> a). I 2.4.30 kernel compile was about 6 hours on this hardware (GCC 2.95.4).  The 2.6.29
+> took 4 days (GCC 4.1.2, Debian).  That was without the modules, too.  Now, it did select
+> the config option for smallest code size, and perhaps that is not well supported for m68k
+> and also added to the compile time. Make was done as nice -n 17 but the system is mostly
+> idle, otherwise, but that is how I compile the 2.4.30.
 
-Thx!
+Most of the times is spent "entering directory bla; : nothing to do here;
+leaving directory bla" - 2.6 is much bigger in terms of number of
+directories/files to parse through, and on slow IO that certainly matters :)
 
-Gr{oetje,eeting}s,
+> b). My custom 2.4.30 kernel size is about 750K uncompressed. With setting the options to
+> remove support for hardware that I don't have and features that I don't need, I still
+> came up with a kernel of 2.7M.  The goal is to have the smallest footprint kernel possible.
 
-						Geert
+My amiga kernel, which is not optimized for size, has ipv6 and lots of stuff,,
+is 2170192 bytes, stripped. I suspect you have not stripped yours?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+> c). The 2.6.26 kernel seems to want to keep more memory free and hit the swap much more
+> than the 2.4.30 kernel according to vmstat.  Under 2.4.30 I see the free memory go as low
+> as about 200K, and it will remain at that level as long as is necessary.  Under 2.6.26,
+> the free memory stays at about 800K, and if it drops below that, it will come back to that
+> level relatively quickly.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+What does "sysctl vm.min_free_kbytes" say?
+Here it says "vm.min_free_kbytes = 1763"
+
+> d). The real time clock came up on the worng month, going from 2.4.30 to
+> 2.6.26 (or 28), March vs April, in this case.
+
+Hm, this sounds familiar, allthough I cant pinpoint it.
+
+> e). Is there an option which tells the kernel the minimum amount of free RAM to maintain
+> as I describe in (c) above?  RAM is relatively precious in my m68k environment, and having
+> 500k being held in reserve seems a bit much?
+
+I'd try with "sysctl -w vm.min_free_kbytes=500" and see if that helps.
+If it does, make it permanent by adding it to /etc/sysctl.conf
+
+> f). The kernel config gives options for 3 schedulers. Does anyone here know which gives the
+> smallest memory footprint?
+
+I'm clueless on this one.
+
+-- kolla
+
