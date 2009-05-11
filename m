@@ -1,47 +1,54 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: gcc parameter for kernel compile
-Date: Sun, 10 May 2009 20:24:02 -0700
-Message-ID: <20090511032402.GA20493@cynthia.pants.nu>
-References: <20090511015210.GA15777@luminet.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: eliminate -pipe from kernel compile
+Date: Mon, 11 May 2009 08:02:16 +0200
+Message-ID: <10f740e80905102302gbed0737y61c31900564ca704@mail.gmail.com>
+References: <20090511015831.GB15777@luminet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [76.245.85.235] ([76.245.85.235]:34268 "EHLO cynthia.pants.nu"
-	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-	id S1753504AbZEKD7W (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 10 May 2009 23:59:22 -0400
-Received: from flar by cynthia.pants.nu with local (Exim 4.63)
-	(envelope-from <flar@cynthia.pants.nu>)
-	id 1M3M7W-0005LR-7o
-	for linux-m68k@vger.kernel.org; Sun, 10 May 2009 20:24:02 -0700
-Content-Disposition: inline
-In-Reply-To: <20090511015210.GA15777@luminet.net>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+In-Reply-To: <20090511015831.GB15777@luminet.net>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: lancetag@luminet.net, linux-m68k@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
 
-On Sun, May 10, 2009 at 08:52:12PM -0500, Lance Tagliapietra wrote:
-> When compiling my m68k linux kernel, gcc is being started with the
-> following first parameters, for example:
-> 
-> gcc -Wp,-MD,sound/oss/dmasound/.dmasound_core.mod.o.d
-> 
-> and all the other objects follow the same pattern.
-> 
-> I am not able to locate -Wp,-MD... in the gcc documentation, any suggestions?
+Added linux-kbuild
 
-You need to look around at multiple places in the documentation for that
-combination. The first part (-Wp) is described here (near the top):
+On Mon, May 11, 2009 at 03:58, Lance Tagliapietra <lancetag@luminet.net=
+> wrote:
+> I was noticing that kernel compiling is set up to have gcc pipe data =
+from one pass to another, instead of using
+> temporary files. =C2=A0On a memory constrained environment, this may =
+not be the best idea (or at least I'd like to
+> explore that idea). =C2=A0Instead of loading the assember, and having=
+ immediately being swapped out while the cc1 pass
+> runs, it may make more sense to have the temp files being written, in=
+stead of the swap in and out, when compiling
+> the various objects of the kernel.
+>
+> So, simply pulling out the -pipe from the compiler flag list didn't s=
+ee to have the desired effect. =C2=A0I'm afraid I'm
+> still missing something. =C2=A0I'm still observing the assembler bein=
+g loaded.
+>
+> Thoughts?
 
-http://gcc.gnu.org/onlinedocs/gcc-4.4.0/gcc/Preprocessor-Options.html#Preprocessor-Options
+Gr{oetje,eeting}s,
 
-Basically, anything that is -Wp,<something> means that the "<something>"
-is passed exactly as is to cpp. The -MD option to the preprocessor is
-described in a later section on the same page.
+						Geert
 
-The summary is that this command line is generating a dependency tree
-for the file and saving it on disk for use by make.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-	Brad Boyer
-	flar@allandria.com
-
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kbuild"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
