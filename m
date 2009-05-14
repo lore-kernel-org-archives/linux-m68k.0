@@ -1,78 +1,50 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: X11 problems
-Date: Thu, 14 May 2009 09:38:21 -0700
-Message-ID: <20090514163821.GA1898@cynthia.pants.nu>
-References: <FCFD5D59-4060-11DE-A812-00050249ADE1@kaffe.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Riccardo <riccardo@kaffe.org>
+Subject: vmlinuz-2.6.29-1-11May on IIfx
+Date: Thu, 14 May 2009 19:35:03 +0200
+Message-ID: <8EF8D4F2-40AD-11DE-9565-00050249ADE1@kaffe.org>
+Mime-Version: 1.0 (Apple Message framework v553)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [76.245.85.235] ([76.245.85.235]:52166 "EHLO cynthia.pants.nu"
-	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-	id S1751502AbZENQiq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 14 May 2009 12:38:46 -0400
-Content-Disposition: inline
-In-Reply-To: <FCFD5D59-4060-11DE-A812-00050249ADE1@kaffe.org>
+Received: from cp-out9.libero.it ([212.52.84.109]:60512 "EHLO
+	cp-out9.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751159AbZENRfJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 14 May 2009 13:35:09 -0400
+Received: from kaffe.org (151.57.116.179) by cp-out9.libero.it (8.5.107)
+        id 4A0C460200026C7E for linux-m68k@vger.kernel.org; Thu, 14 May 2009 19:35:08 +0200
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Riccardo <riccardo@kaffe.org>
-Cc: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-On Thu, May 14, 2009 at 10:26:57AM +0200, Riccardo wrote:
-> I have two problems with X11 on my Q950. The first is that the X server  
-> doesn't start up:
-> 
-> here a snippet from my X11 log:
-> <...>
-> (II) Loading /usr/lib/xorg/modules//libshadow.so
-> (II) Module shadow: vendor="X.Org Foundation"
->         compiled for 1.4.2, module version = 1.1.0
->         ABI class: X.Org ANSI C Emulation, version 0.3
-> (EE) FBDEV(0): FBIOPUT_VSCREENINFO succeeded but modified mode
-> (EE) FBDEV(0): mode initialization failed
-> 
-> Fatal server error:
-> AddScreen/ScreenInit failed for driver 0
+Hi,
 
-Are you using built-in video or a card? Also, have you specified a
-mode in your X11 configuration that is different from the one the
-card is already in? I don't think the macfb driver currently supports
-changing the video mode in any way.
+since I was so happy of the reults on the Q950, I tried my luck with 
+the current kernel on the IIfx .
 
-> Then furthermore, I compiled all my precious GNUstep stuff (make, base,  
-> back and two test apps). I export the display and then I get the  
-> following error:
-> 
-> /usr/GNUstep/Local/Applications/Terminal.app/Terminal: symbol lookup  
-> error:  
-> /usr/GNUstep/Local/Library/Bundles/libgnustep-back-017.bundle/./ 
-> libgnustep-back-017: undefined symbol: XShmQueryVersion
-> 
-> Do we miss this symbol? I recompiled gnustep-back again and got no  
-> errors... Ideas?
+The kernel completes boot. The keyboard works; I'm able to login.
+But any activity on the ethernet (remlote login or just a Ping) gives 
+me:
 
-That is a tough one to diagnose without trying it myself. It's not m68k,
-but on one of my systems I did the following to confirm that the library
-had that symbol:
+trigger_send() called  with the transmitter busy
 
-flar@cynthia:~$ objdump -T /usr/lib/libXext.so.6.4.0 | grep XShm
-0000bc34 g    DF .text  0000017c  Base        XShmDetach
-0000c844 g    DF .text  00000314  Base        XShmGetImage
-0000c404 g    DF .text  0000020c  Base        XShmPixmapFormat
-0000ce04 g    DF .text  000001b8  Base        XShmCreateImage
-0000cb64 g    DF .text  00000290  Base        XShmPutImage
-0000bdb4 g    DF .text  000001ac  Base        XShmAttach
-0000c614 g    DF .text  0000022c  Base        XShmQueryVersion
-0000bfc0 g    DF .text  00000040  Base        XShmQueryExtension
-0000bf60 g    DF .text  00000054  Base        XShmGetEventBase
-0000ba34 g    DF .text  000001fc  Base        XShmCreatePixmap
+and after a bit
 
-Confirming that you have a library with that symbol would at least
-narrow down the possibilities. After that, it would either be a
-problem that it is looking in the wrong place or that there is
-some kind of bug with the runtime environment in some way. That would
-be tougher to debug, particularly since it might be libobject or the
-objc code in the compiler.
 
-	Brad Boyer
-	flar@allandria.com
+eth0: mismatched read page pointers 45 vs  c.
+
+booting into 2.6.26 I see the driver used is the mac8390. From dmesg of 
+2.6.26
+
+[42949395.010000] mac8390.c: v0.4 2001-05-15 David Huggins-Daines 
+<dhd@debian.org> and others
+[42949395.030000] eth0: Memory length resource for slot A not found, 
+probing
+[42949395.040000] eth0: EtherNet card in slot A (type apple)
+[42949395.050000] MAC 00:80:ad:13:7c:d0 IRQ 57, 32 KB shared memory at 
+0xfaad0000,  32-bit access.
+
+
+I hope that helps a bit,
+
+Riccardo
 
