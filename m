@@ -1,68 +1,60 @@
-From: Lance Tagliapietra <lancetag@Luminet.net>
-Subject: Re: eliminate -pipe from kernel compile
-Date: Wed, 13 May 2009 22:12:37 -0500
-Message-ID: <20090514031235.GA4178@luminet.net>
-References: <20090511015831.GB15777@luminet.net> <10f740e80905102302gbed0737y61c31900564ca704@mail.gmail.com> <20090513003829.GA13155@uranus.ravnborg.org>
-Reply-To: lancetag@luminet.net
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Riccardo <riccardo@kaffe.org>
+Subject: Re: current 2.6 on Q950
+Date: Thu, 14 May 2009 09:08:47 +0200
+Message-ID: <118BBEEA-4056-11DE-A812-00050249ADE1@kaffe.org>
+References: <20090512071518.GA971@cynthia.pants.nu>
+Mime-Version: 1.0 (Apple Message framework v553)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from spamtitan.hbci.com ([206.230.105.6]:57372 "EHLO
-	spamtitan.hbci.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1762627AbZENDou (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 13 May 2009 23:44:50 -0400
-Content-Disposition: inline
-In-Reply-To: <20090513003829.GA13155@uranus.ravnborg.org>
+Received: from cp-out10.libero.it ([212.52.84.110]:53094 "EHLO
+	cp-out10.libero.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752458AbZENHIz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 14 May 2009 03:08:55 -0400
+In-Reply-To: <20090512071518.GA971@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kbuild@vger.kernel.org
+To: Brad Boyer <flar@allandria.com>
+Cc: linux-m68k@vger.kernel.org
 
-Hello,
+Hi,
 
-I just completed a test build with my patch to arch/m68k/Makefile to remove the -pipe flag (see patch below).  
-Watching the build confirmed that a) -pipe was no longer showing up in the gcc command lines and b) temporary 
-files were being created as expected without pipe; and c) the as command was not loaded waiting for cc1 to 
-complete.  Yea!  The /arch/m68k/Makefile is the only place where the -pipe flag is located, and that seems
-to be the place for all arch's.
+>> Some good news: it boots!
+>
+> That's good to hear. This is a model that doesn't get a lot of testing.
 
---- arch/m68k/Makefile.old	2009-05-13 21:58:28.000000000 -0500
-+++ arch/m68k/Makefile	2009-05-09 11:16:39.000000000 -0500
-@@ -33,7 +33,9 @@
- CHECKFLAGS += -D__mc68000__
- 
- # without -fno-strength-reduce the 53c7xx.c driver fails ;-(
--KBUILD_CFLAGS += -pipe -fno-strength-reduce -ffixed-a2
-+# delete -pipe to save RAM / minimize swap during compile
-+# original: KBUILD_CFLAGS += -pipe -fno-strength-reduce -ffixed-a2
-+KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
- 
- # enable processor switch if compiled only for a single cpu
- ifndef CONFIG_M68020
+It works also quite decently; albeit slow, I was able to compile the 
+whole GNUstep core stuff and two applications, that means several hours 
+of compilation.
 
-Pulling out the -pipe does seem to cut compile time.  I am working on hard numbers.
+> We don't know how to access the hardware clock on the Q900 or Q950. The
+> other models all had support at one point, but these two have never
+> worked. In fact, they used to crash because they were trying to use an
+> access method that didn't work for those systems.
+>
+That's unfortunate. I think to remember a disucssion some time ago 
+about this, did past version of the 2.2 kernel perhaps get the time 
+from the mac bootloader? That would help already.
 
---Lance
+> it working. The floppy is the same as the IIfx, which I have. I don't
+> have either Q9x0 model. They aren't very common. Technically speaking
+> it would be possible to use the normal swim driver, but it requires
+> disabling the ADB ports. It would be tough to use the system without
+> any input devices.
+Since my other mac I use linux on is the IIfx, I don't even bother 
+asking :)
 
-On Wed, May 13, 2009 at 02:38:29AM +0200, Sam Ravnborg wrote:
-> On Mon, May 11, 2009 at 08:02:16AM +0200, Geert Uytterhoeven wrote:
-> > Added linux-kbuild
-> > 
-> > On Mon, May 11, 2009 at 03:58, Lance Tagliapietra <lancetag@luminet.net> wrote:
-> > > I was noticing that kernel compiling is set up to have gcc pipe data from one pass to another, instead of using
-> > > temporary files. ?On a memory constrained environment, this may not be the best idea (or at least I'd like to
-> > > explore that idea). ?Instead of loading the assember, and having immediately being swapped out while the cc1 pass
-> > > runs, it may make more sense to have the temp files being written, instead of the swap in and out, when compiling
-> > > the various objects of the kernel.
-> > >
-> > > So, simply pulling out the -pipe from the compiler flag list didn't see to have the desired effect. ?I'm afraid I'm
-> > > still missing something. ?I'm still observing the assembler being loaded.
-> 
-> 1) How did you "pulling out the -pipe from the compiler flag list"?
-> Please show this as a patch.
-> 
-> 2) Did you verify that -pipe was used before and no more after your
->    changes?
->    Hint - use "make V=1" to see all command line options to gcc
-> 
-> 	Sam
+
+>
+> The SCSI is the other thing that is special on these models, so it's
+> good to hear that it still works. Does the external SCSI port work?
+> That's something that used to be broken. I think Finn was working
+> on some of that code to try to get both ports working.
+
+I have a magneto-optical drive attached externally, I turned it on and 
+at reboot I don't see it in dmesg. But it might be that in the external 
+scsi bus is disabled from the penguin, I rmember that I needed to put 
+in  an option a long time ago.
+
+Riccardo
+
