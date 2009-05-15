@@ -1,64 +1,66 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: current 2.6 on Q950
-Date: Fri, 15 May 2009 18:13:07 +1000 (EST)
-Message-ID: <Pine.LNX.4.64.0905151720210.32471@loopy.telegraphics.com.au>
-References: <75999A9B-4090-11DE-A812-00050249ADE1@kaffe.org>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: vmlinuz-2.6.29-1-11May on IIfx
+Date: Fri, 15 May 2009 10:14:17 +0200 (CEST)
+Message-ID: <alpine.DEB.1.00.0905151009380.15232@zirkon.biophys.uni-duesseldorf.de>
+References: <8EF8D4F2-40AD-11DE-9565-00050249ADE1@kaffe.org>
+ <20090514210912.GA4292@cynthia.pants.nu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:47080 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755299AbZEOINS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 15 May 2009 04:13:18 -0400
-In-Reply-To: <75999A9B-4090-11DE-A812-00050249ADE1@kaffe.org>
+Received: from mailout-apollo.uni-duesseldorf.de ([134.99.128.36]:41932 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1755673AbZEOIOU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 15 May 2009 04:14:20 -0400
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KJO00400EVVLQ00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Fri, 15 May 2009 10:14:19 +0200 (MEST)
+In-reply-to: <20090514210912.GA4292@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Riccardo <riccardo@kaffe.org>
-Cc: linux-m68k@vger.kernel.org
+To: Brad Boyer <flar@allandria.com>
+Cc: Riccardo <riccardo@kaffe.org>, linux-m68k@vger.kernel.org
 
+Hi,
 
-
-On Thu, 14 May 2009, Riccardo wrote:
-
-> Hi,
+> > But any activity on the ethernet (remlote login or just a Ping) gives 
+> > me:
+> > 
+> > trigger_send() called  with the transmitter busy
+> > 
+> > and after a bit
+> > 
+> > eth0: mismatched read page pointers 45 vs  c.
+> > 
+> > booting into 2.6.26 I see the driver used is the mac8390. From dmesg of 
+> > 2.6.26
+> > 
+> > [42949395.010000] mac8390.c: v0.4 2001-05-15 David Huggins-Daines 
+> > <dhd@debian.org> and others
+> > [42949395.030000] eth0: Memory length resource for slot A not found, 
+> > probing
+> > [42949395.040000] eth0: EtherNet card in slot A (type apple)
+> > [42949395.050000] MAC 00:80:ad:13:7c:d0 IRQ 57, 32 KB shared memory at 
+> > 0xfaad0000,  32-bit access.
 > 
-> > The patches that I sent were merged into that release (2.6.29). So X11
-> > works again, and mac_esp supports both SCSI busses on the quadras 9x0.
-> >
-> 
-> very cool, I extra checked and I still had the option to disable the scsi BUS
-> in penguin.
+> Did this ethernet card work in an older kernel? The card type detection
+> in mac8390.c is partially based on guesses and just trying different
+> cards, as I remember. It's possible that it's detecting the wrong type,
+> particularly since it isn't finding all the NuBus ROM resources it is
+> expecting to be present on this card type. I suspect that it's not
+> accessing the card correctly. Both the error messages are that the
+> card isn't in a sane state based on what the driver tried to do.
 
-That option is ignored by the current driver.
+The 'mismatched read page  pointers' I've seen on the EtherNEC 8390 based card 
+as well, it seems to indicate that the receive buffer overruns. I'm using a 
+timer interrupt there, so that is expected to happen. 
 
-> Indeed I see:
-> [42949375.000000] mac_esp: using PDMA for controller 0
-> [42949378.080000] mac_esp: using PDMA for controller 1
+Might 'trigger send called with tx busy' also indicate a failure to receive the 
+txdone interrupt? Maybe you're not getting any interrupts from the card? What 
+does /proc/interrupts register regarding the 8390 driver?
 
-Good. PDMA is significantly faster than PIO (used in 2.6.26 and earlier).
+	Michael
 
-> My external MO disk doesn't get recognized though. I'll check that it 
-> still works on MacOS though.
-> 
-> X11 doesn't work for me, but I'll write separately about that.
-> 
-> > I haven't heard anything more since you raised it on this mailing list 
-> > back in October. I never implemented the workaround that was discussed 
-> > at the time because I have more pressing bugs on my todo list, and 
-> > because I'd like to try and figure out how the hardware works before 
-> > resorting to workarounds...
-> 
-> Oh sure, also because once a workaround gets implemented, the motivation 
-> to do the real thing gets even less. The real access would be very good 
-> together with EMILE.
->
-[snip]
-
-Well, we established that the workaround would be OK with either Penguin 
-or Emile. But the workaround offers no way to update the RTC, which means 
-more clock drift between reboots worse than with a working RTC driver, 
-which makes network time more attractive (and as I said in October, clock 
-batteries are problematic to begin with, and for me this necessitates 
-network time anyway). So that's why it is a low priority for me.
-
-Finn
