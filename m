@@ -1,37 +1,51 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: vmlinuz-2.6.29-1-11May on IIfx
-Date: Fri, 15 May 2009 20:28:51 +1000 (EST)
-Message-ID: <Pine.LNX.4.64.0905152017240.3873@loopy.telegraphics.com.au>
-References: <F7CDF992-412A-11DE-9D14-00050249ADE1@kaffe.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ata: libata depends on HAS_DMA
+Date: Fri, 15 May 2009 13:16:30 +0200
+Message-ID: <200905151316.31521.arnd@arndb.de>
+References: <20090513043409.GA13577@cynthia.pants.nu> <20090514091928R.fujita.tomonori@lab.ntt.co.jp> <4A0CFE1F.5080409@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:56162 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758330AbZEOK3A (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 15 May 2009 06:29:00 -0400
-In-Reply-To: <F7CDF992-412A-11DE-9D14-00050249ADE1@kaffe.org>
+Received: from moutng.kundenserver.de ([212.227.126.188]:51762 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751956AbZEOLR6 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 15 May 2009 07:17:58 -0400
+In-Reply-To: <4A0CFE1F.5080409@gmail.com>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Riccardo <riccardo@kaffe.org>
-Cc: linux-m68k@vger.kernel.org
+To: Tejun Heo <htejun@gmail.com>
+Cc: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>, hancockrwd@gmail.com, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, jgarzik@pobox.com, linux-ide@vger.kernel.org, takata@linux-m32r.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
 
+On Friday 15 May 2009, Tejun Heo wrote:
+> FUJITA Tomonori wrote:
+> > Can libata call dma_supported() per device to decide DMA or PIO mod=
+e?
+> > Then, we can solve this problem by add dummy DMA API (just calls BU=
+G)
+> > on such architectures, without Kconfig magic or adding ifdef (like =
+the
+> > old ide stack does), I think.
 
+That would be the !CONFIG_PCI half of the old
+include/asm-generic/dma-mapping.h file that you just removed,
+right?
 
-On Fri, 15 May 2009, Riccardo wrote:
-> 
-> ...in 2.6.29 the card doesn't work and I typed the error message 
-> manually,
-> 
-> I then rebooted into 2.6.26, where the card still worked, and pasted its 
-> dmesg.
+In general, I'd prefer keeping the asm-generic/dma-mapping-broken.h
+implementation that gives us a compile-time error, but maybe there
+is an even better option based on the mn10300 implementation which
+basically pretends everything works with just page_to_phys() mappings.
 
-This commit looks a bit suspect -- it was not CC'd to this list -- in 
-particular the Makefile change:
+> Sure it can. =A0Which specific drivers are we talking about?
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=ca17584bf2ad1b1e37a5c0e4386728cc5fc9dabc
+The main problem is libata-core.c, which references DMA mapping
+API calls that are only implemented on architectures setting
+CONFIG_HAS_DMA.
 
-So now mac8390.c and 8390.c both #include "lib8390.c"... might this 
-perhaps lead to the wrong ei_inb/outb etc in the final link?
-
-Finn
+	Arnd <><
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
