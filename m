@@ -1,54 +1,72 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: vmlinuz-2.6.29-1-11May on IIfx
-Date: Thu, 14 May 2009 14:09:12 -0700
-Message-ID: <20090514210912.GA4292@cynthia.pants.nu>
-References: <8EF8D4F2-40AD-11DE-9565-00050249ADE1@kaffe.org>
+From: Lance Tagliapietra <lancetag@Luminet.net>
+Subject: Re: m68k 2.6.26-1 vs 2.4.30 comparison
+Date: Thu, 14 May 2009 21:37:45 -0500
+Message-ID: <20090515023743.GA1647@luminet.net>
+References: <20090503072811.GB3179@luminet.net> <10f740e80905030408p38f87e09ueabc45ef98d4a88f@mail.gmail.com>
+Reply-To: lancetag@luminet.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [76.245.85.235] ([76.245.85.235]:45281 "EHLO cynthia.pants.nu"
-	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-	id S1752047AbZENVJ1 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 14 May 2009 17:09:27 -0400
+Received: from spamtitan.hbci.com ([206.230.105.6]:53516 "EHLO
+	spamtitan.hbci.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754498AbZEOCdU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 14 May 2009 22:33:20 -0400
 Content-Disposition: inline
-In-Reply-To: <8EF8D4F2-40AD-11DE-9565-00050249ADE1@kaffe.org>
+In-Reply-To: <10f740e80905030408p38f87e09ueabc45ef98d4a88f@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Riccardo <riccardo@kaffe.org>
+To: Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, May 14, 2009 at 07:35:03PM +0200, Riccardo wrote:
-> But any activity on the ethernet (remlote login or just a Ping) gives 
-> me:
+On Sun, May 03, 2009 at 01:08:06PM +0200, Geert Uytterhoeven wrote:
+> > d). The real time clock came up on the worng month, going from 2.4.30 to 2.6.26 (or 28),
+> > March vs April, in this case.
 > 
-> trigger_send() called  with the transmitter busy
+> That's an interesting one...
 > 
-> and after a bit
+> In 2.4.30, you have both a2000_gettod() (for boot time setting), which does:
 > 
-> eth0: mismatched read page pointers 45 vs  c.
+>     *monp  = tod_2000.month1      * 10 + tod_2000.month2;
 > 
-> booting into 2.6.26 I see the driver used is the mac8390. From dmesg of 
-> 2.6.26
+> and amiga_hwclk() (for /dev/rtc), which does:
 > 
-> [42949395.010000] mac8390.c: v0.4 2001-05-15 David Huggins-Daines 
-> <dhd@debian.org> and others
-> [42949395.030000] eth0: Memory length resource for slot A not found, 
-> probing
-> [42949395.040000] eth0: EtherNet card in slot A (type apple)
-> [42949395.050000] MAC 00:80:ad:13:7c:d0 IRQ 57, 32 KB shared memory at 
-> 0xfaad0000,  32-bit access.
+>     t->tm_mon  = tod_2000.month1      * 10 + tod_2000.month2 - 1;
+> 
+> In 2.6.29, you only have a2000_hwclk(), which does
+> 
+>     t->tm_mon  = tod_2000.month1      * 10 + tod_2000.month2 - 1;
+> 
+> The data returned by a2000_gettod() is converted to seconds using mktime(),
+> which assumes months are in the range 1..12.
+> 
+> amiga_hwclk() and a2000_hwclk() both use struct rtc_time. This should
+> be similar to
+> struct tm in <time.h>, where the months are in the range 0..11.
+> Both rtc_proc_output()/gen_rtc_proc_output() (2.4.30) and
+> rtc_proc_show() (2.6.29) do
+> print tm.tm_mon + 1 to make them be in the range 1..12.
+> 
+> So at first sight, I don't see where the bug is...
+> 
+> What does `hwlock -ur` say, on both 2.4.30 and 2.6.29?
 
-Did this ethernet card work in an older kernel? The card type detection
-in mac8390.c is partially based on guesses and just trying different
-cards, as I remember. It's possible that it's detecting the wrong type,
-particularly since it isn't finding all the NuBus ROM resources it is
-expecting to be present on this card type. I suspect that it's not
-accessing the card correctly. Both the error messages are that the
-card isn't in a sane state based on what the driver tried to do.
+I'm afraid the result isn't going to be helpful just yet (assuming you meant hwclock, not hwlock):
 
-Incidentally, "apple" is the default type for any card the driver
-thinks it can use but can't identify with 100% certainty.
+hwclock -ur
+Cannot access the Hardware Clock via any known method.
+Use the --debug option to see the details of our search for an access method.
 
-	Brad Boyer
-	flar@allandria.com
+hwclock --debug
+hwclock: Open of /dev/rtc failed, errno=19: No such device.
+Cannot access the Hardware Clock via any known method.
+hwclock from util-linux-2.12r
+No usable clock interface found.
 
+Now, there is a /dev/rtc device of type 10 135.  Interestingly, though is that the 
+kernel is looking for an "rtc0" device based on the kernel config.  So I'll make
+that change to the kernel config and re-build and see what I get -- or would it 
+be a better approach to add a /dev/rtc0 c 10 135?
+
+Thanks,
+
+--Lance
