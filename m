@@ -1,56 +1,47 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: vmlinuz-2.6.29-1-11May on IIfx
-Date: Sun, 17 May 2009 10:29:40 +0200
-Message-ID: <10f740e80905170129i4f275533k92841282ce629270@mail.gmail.com>
-References: <F7CDF992-412A-11DE-9D14-00050249ADE1@kaffe.org>
-	 <Pine.LNX.4.64.0905152017240.3873@loopy.telegraphics.com.au>
-	 <20090517061039.GA3019@cynthia.pants.nu>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: [PATCH] ata: libata depends on HAS_DMA
+Date: Sun, 17 May 2009 03:00:25 -0600
+Message-ID: <4A0FD229.9010401@gmail.com>
+References: <20090513043409.GA13577@cynthia.pants.nu> <200905151316.31521.arnd@arndb.de> <4A0D5051.90708@gmail.com> <200905151355.09888.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f176.google.com ([209.85.219.176]:39557 "EHLO
-	mail-ew0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751872AbZEQI3k (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 May 2009 04:29:40 -0400
-Received: by ewy24 with SMTP id 24so3403459ewy.37
-        for <linux-m68k@vger.kernel.org>; Sun, 17 May 2009 01:29:40 -0700 (PDT)
-In-Reply-To: <20090517061039.GA3019@cynthia.pants.nu>
+Received: from mail-gx0-f166.google.com ([209.85.217.166]:33129 "EHLO
+	mail-gx0-f166.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753869AbZEQJA2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 May 2009 05:00:28 -0400
+In-Reply-To: <200905151355.09888.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Brad Boyer <flar@allandria.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Riccardo <riccardo@kaffe.org>, linux-m68k@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Tejun Heo <htejun@gmail.com>, FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, jgarzik@pobox.com, linux-ide@vger.kernel.org, takata@linux-m32r.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
 
-On Sun, May 17, 2009 at 08:10, Brad Boyer <flar@allandria.com> wrote:
-> On Fri, May 15, 2009 at 08:28:51PM +1000, Finn Thain wrote:
->> This commit looks a bit suspect -- it was not CC'd to this list -- in
->> particular the Makefile change:
->>
->> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=ca17584bf2ad1b1e37a5c0e4386728cc5fc9dabc
->>
->> So now mac8390.c and 8390.c both #include "lib8390.c"... might this
->> perhaps lead to the wrong ei_inb/outb etc in the final link?
->
-> It does seem like an odd change. It would be nice if this list got
-> copied on changes to any nubus drivers, but I suppose it's not anywhere
-> on the maintainers list. It might be something to bring up with David
-> for any future changes to nubus network cards.
+Arnd Bergmann wrote:
+> On Friday 15 May 2009, Tejun Heo wrote:
+>> Don't know much history here but I don't wanna sprinkle ifdefs around
+>> in libata so I would much prefer dummy implementation which doesn't
+>> fail compile.
+> 
+> My original patch did that by adding 'depends on HAS_DMA'.
+> 
+> The only architectures that don't have that are m68k, m32r,
+> h8300, s390 and microblaze. More research has shown that
+> they all found a different way to disable the ATA drivers
+> already, except microblaze.
+> 
+> Alan, you objected the patch initially (and loudly), but
+> maybe you can reconsider this. The only actual effect
+> that my patch has is to allow an allyesconfig build on
+> microblaze and that will implement dma-mapping.h in the
+> next version.
+> 
+> All existing architectures do not care at all about this
+> change, unless I'm missing something.
+> 
+> Besides, all the other users of the DMA mapping API
+> also depend on CONFIG_HAS_DMA.
 
-Probably the change looked sufficient trivial/innocent. Trivial updates for core
-changes are usually posted on the subsystem mailing list only.
-
-> I'll try to find some time to build a kernel and try it out. I have
-> several cards that use this driver.
-
-Good, thanks!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Yes, it fixes the compile problem by preventing libata from being 
+compiled at all. But the point is that libata should be able to work 
+without DMA support.
