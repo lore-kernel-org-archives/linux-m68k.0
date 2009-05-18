@@ -1,42 +1,40 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] asm-generic: add a dma-mapping.h file
-Date: Mon, 18 May 2009 10:28:00 +0200
-Message-ID: <200905181028.01914.arnd@arndb.de>
-References: <20090513043409.GA13577@cynthia.pants.nu> <200905172245.23774.arnd@arndb.de> <10f740e80905172303n4ef3cfc2j9922e19c281d471b@mail.gmail.com>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: Re: [PATCH] ata: libata depends on HAS_DMA
+Date: Mon, 18 May 2009 19:45:09 +0900
+Message-ID: <20090518194448U.fujita.tomonori@lab.ntt.co.jp>
+References: <20090514091928R.fujita.tomonori@lab.ntt.co.jp>
+	<4A0CFE1F.5080409@gmail.com>
+	<200905151316.31521.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <10f740e80905172303n4ef3cfc2j9922e19c281d471b@mail.gmail.com>
-Content-Disposition: inline
-Sender: linux-ide-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Jeff Garzik <jgarzik@pobox.com>, Robert Hancock <hancockrwd@gmail.com>, Tejun Heo <htejun@gmail.com>, FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, takata@linux-m32r.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sh.osrg.net ([192.16.179.4]:39849 "EHLO sh.osrg.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753700AbZERKqk (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 18 May 2009 06:46:40 -0400
+In-Reply-To: <200905151316.31521.arnd@arndb.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: arnd@arndb.de
+Cc: htejun@gmail.com, fujita.tomonori@lab.ntt.co.jp, hancockrwd@gmail.com, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, jgarzik@pobox.com, linux-ide@vger.kernel.org, takata@linux-m32r.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
 
-On Monday 18 May 2009, Geert Uytterhoeven wrote:
+On Fri, 15 May 2009 13:16:30 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-> > +#ifndef dma_alloc_coherent
-> > +static inline void *
-> > +dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dm=
-a_handle,
-> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0gfp=
-_t flag)
-> > +{
-> > + =C2=A0 =C2=A0 =C2=A0 void *virt =3D kmalloc(size, flag);
->=20
-> kmalloc() may fail.
->=20
-> > + =C2=A0 =C2=A0 =C2=A0 *dma_handle =3D virt_to_phys(virt);
->=20
-> Not all variants of virt_to_phys() may handle the NULL case very well=
-=2E
-> I took a statistically invalid sample: some just cast to unsigned
-> long, other subtract PAGE_OFFSET.
+> On Friday 15 May 2009, Tejun Heo wrote:
+> > FUJITA Tomonori wrote:
+> > > Can libata call dma_supported() per device to decide DMA or PIO mode?
+> > > Then, we can solve this problem by add dummy DMA API (just calls BUG)
+> > > on such architectures, without Kconfig magic or adding ifdef (like the
+> > > old ide stack does), I think.
+> 
+> That would be the !CONFIG_PCI half of the old
+> include/asm-generic/dma-mapping.h file that you just removed,
+> right?
 
-Right. It should not really hurt, because all users need to check virt
-before using dma_handle, but I can fix it just to be sure.
+No.
 
-I'll wait for comments from Fujita Tomonori and others before I repost.
-
-	Arnd <><
+The old include/asm-generic/dma-mapping.h is a workaround for lazy
+architecture maintainers who have not converted pci_* API to dma_*
+API.
