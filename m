@@ -1,77 +1,184 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Subject: Re: [PATCH] asm-generic: add a dma-mapping.h file
-Date: Tue, 19 May 2009 08:22:34 +0900
-Message-ID: <20090519082230S.fujita.tomonori@lab.ntt.co.jp>
-References: <4A106E22.1010705@pobox.com>
-	<200905172245.23774.arnd@arndb.de>
-	<4A11E739.6080106@pobox.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] m68k: ptrace fixes
+Date: Tue, 19 May 2009 15:38:01 +0200
+Message-ID: <m23ab1qkli.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sh.osrg.net ([192.16.179.4]:48446 "EHLO sh.osrg.net"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752116AbZERXYY (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 18 May 2009 19:24:24 -0400
-In-Reply-To: <4A11E739.6080106@pobox.com>
+Received: from mail-out.m-online.net ([212.18.0.9]:34444 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755274AbZESNiG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 19 May 2009 09:38:06 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: jgarzik@pobox.com
-Cc: arnd@arndb.de, hancockrwd@gmail.com, htejun@gmail.com, fujita.tomonori@lab.ntt.co.jp, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, takata@linux-m32r.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
+To: geert@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org
 
-On Mon, 18 May 2009 18:54:49 -0400
-Jeff Garzik <jgarzik@pobox.com> wrote:
+This fixes the following issues in ptrace:
 
-> Arnd Bergmann wrote:
-> > h8300 and m32r currently do not provide a DMA mapping API
-> > and therefore cannot use the ATA drivers. This adds a
-> > generic version of dma-mapping.h for architectures that
-> > have none or very minimal actual support for DMA in hardware
-> > and makes the two architectures use it.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> > On Sunday 17 May 2009 20:05:54 Jeff Garzik wrote:
-> > 
-> >> That's what needs to happen.  We provide no-op functions for e.g. PCI 
-> >> and x86 DMI, for platforms where this support does not exist.
-> >>
-> >> Pretty much all architectures support some form of ATA.  m68k, m32r, 
-> >> h8300 and microblaze all have IDE interface, which means that libata 
-> >> needs to work on that platform.
-> >>
-> >> The only !ATA arch in the entire kernel is s390, AFAICT.
-> > 
-> > m68k only defines NO_DMA for Sun3 and Dragonball. Sun3 does
-> > not have ATA, Dragonball could probably just enable HAS_DMA.
-> > 
-> > ---
-> >  arch/h8300/Kconfig                   |    2 +-
-> >  arch/h8300/include/asm/dma-mapping.h |    1 +
-> >  arch/m32r/Kconfig                    |    2 +-
-> >  arch/m32r/include/asm/dma-mapping.h  |    1 +
-> >  include/asm-generic/dma-mapping.h    |  399 ++++++++++++++++++++++++++++++++++
-> >  5 files changed, 403 insertions(+), 2 deletions(-)
-> >  create mode 100644 arch/h8300/include/asm/dma-mapping.h
-> >  create mode 100644 arch/m32r/include/asm/dma-mapping.h
-> >  create mode 100644 include/asm-generic/dma-mapping.h
-> 
-> My main comment is a bit non-specific...   I tend to think that all 
-> no-dma platforms should provide an API whose implementation always 
-> returns errors, e.g. an inlined version of dma-mapping-broken.h.
-> 
-> That sort of setup permits the compiler's dead code elimination to work 
-> on these no-dma platforms, while not crapping up the libata code with a 
-> bunch of ifdefs.
+- when single stepping into the signal handler stop at the first insn of
+  the handler
+- handle non-zero stkadj when accessing pc and sr in ptregs
+- correctly handle PT_SR in PTRACE_POKEUSR
+- report -EIO when trying to read unknown offset in PTRACE_PEEKUSR
 
-Just adding one ifdef to libata.h works? What libata needs is just
-wrapping dma_map_sg and dma_unmap_sg like the old ide stack does.
+Additionally, the handling of the special case that PT_SR accesses a 16
+bit word instead of a 32 bit word has been moved into get_reg/put_reg.
 
-I'm not against the idea of an inlined version of dma-mapping-broken.h
-but having two ways to handle this issue is a bit confusing; so far
-what we done to handle this problem is using NO_DMA, like SCSI-ml
-does, not putting the dma code in non-architecture code and having
-something like scsi_lib_dma.c.
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+This patch is to be applied on top of the ptrace patch in
+<http://marc.info/?l=linux-m68k&m=124203433410424&w=2>.
+---
+ arch/m68k/kernel/entry.S  |    6 +++++-
+ arch/m68k/kernel/ptrace.c |   45 +++++++++++++++++++++++++++++----------------
+ 2 files changed, 34 insertions(+), 17 deletions(-)
 
-Is it theoretically correct that the dma mapping API lives in low
-level drivers instead of libata-core (like how SCSI-ml does)?
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 8744f60..521ca1c 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -179,7 +179,11 @@ do_signal_return:
+ 	addql	#8,%sp
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+-	jbra	resume_userspace
++	tstl	%d0
++	jeq	resume_userspace
++	| when single stepping into handler stop at the first insn
++	btst	#6,%curptr@(TASK_INFO+TINFO_FLAGS+2)
++	jeq	resume_userspace
+ 
+ do_delayed_trace:
+ 	bclr	#7,%sp@(PT_SR)		| clear trace bit in SR
+diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
+index bd08420..1fc217e 100644
+--- a/arch/m68k/kernel/ptrace.c
++++ b/arch/m68k/kernel/ptrace.c
+@@ -46,7 +46,7 @@
+ /* Mapping from PT_xxx to the stack offset at which the register is
+    saved.  Notice that usp has no stack-slot and needs to be treated
+    specially (see get_reg/put_reg below). */
+-static int regoff[] = {
++static const int regoff[] = {
+ 	[0]	= PT_REG(d1),
+ 	[1]	= PT_REG(d2),
+ 	[2]	= PT_REG(d3),
+@@ -81,6 +81,14 @@ static inline long get_reg(struct task_struct *task, int regno)
+ 		addr = (unsigned long *)(task->thread.esp0 + regoff[regno]);
+ 	else
+ 		return 0;
++	/* Need to take stkadj into account. */
++	if (regno == PT_SR || regno == PT_PC) {
++		long stkadj = *(long *)(task->thread.esp0 + PT_REG(stkadj));
++		addr = (unsigned long *) ((unsigned long)addr + stkadj);
++		/* The sr is actually a 16 bit register.  */
++		if (regno == PT_SR)
++			return *(unsigned short *)addr;
++	}
+ 	return *addr;
+ }
+ 
+@@ -98,6 +106,16 @@ static inline int put_reg(struct task_struct *task, int regno,
+ 		addr = (unsigned long *)(task->thread.esp0 + regoff[regno]);
+ 	else
+ 		return -1;
++	/* Need to take stkadj into account. */
++	if (regno == PT_SR || regno == PT_PC) {
++		long stkadj = *(long *)(task->thread.esp0 + PT_REG(stkadj));
++		addr = (unsigned long *) ((unsigned long)addr + stkadj);
++		/* The sr is actually a 16 bit register.  */
++		if (regno == PT_SR) {
++			*(unsigned short *)addr = data;
++			return 0;
++		}
++	}
+ 	*addr = data;
+ 	return 0;
+ }
+@@ -107,7 +125,7 @@ static inline int put_reg(struct task_struct *task, int regno,
+  */
+ static inline void singlestep_disable(struct task_struct *child)
+ {
+-	unsigned long tmp = get_reg(child, PT_SR) & ~(TRACE_BITS << 16);
++	unsigned long tmp = get_reg(child, PT_SR) & ~TRACE_BITS;
+ 	put_reg(child, PT_SR, tmp);
+ 	clear_tsk_thread_flag(child, TIF_DELAYED_TRACE);
+ }
+@@ -122,15 +140,15 @@ void ptrace_disable(struct task_struct *child)
+ 
+ void user_enable_single_step(struct task_struct *child)
+ {
+-	unsigned long tmp = get_reg(child, PT_SR) & ~(TRACE_BITS << 16);
+-	put_reg(child, PT_SR, tmp | (T1_BIT << 16));
++	unsigned long tmp = get_reg(child, PT_SR) & ~TRACE_BITS;
++	put_reg(child, PT_SR, tmp | T1_BIT);
+ 	set_tsk_thread_flag(child, TIF_DELAYED_TRACE);
+ }
+ 
+ void user_enable_block_step(struct task_struct *child)
+ {
+-	unsigned long tmp = get_reg(child, PT_SR) & ~(TRACE_BITS << 16);
+-	put_reg(child, PT_SR, tmp | (T0_BIT << 16));
++	unsigned long tmp = get_reg(child, PT_SR) & ~TRACE_BITS;
++	put_reg(child, PT_SR, tmp | T0_BIT);
+ }
+ 
+ void user_disable_single_step(struct task_struct *child)
+@@ -152,8 +170,6 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+ 
+ 		if (addr >= 0 && addr < 19) {
+ 			tmp = get_reg(child, addr);
+-			if (addr == PT_SR)
+-				tmp >>= 16;
+ 		} else if (addr >= 21 && addr < 49) {
+ 			tmp = child->thread.fp[addr - 21];
+ 			/* Convert internal fpu reg representation
+@@ -163,7 +179,7 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+ 				tmp = ((tmp & 0xffff0000) << 15) |
+ 				      ((tmp & 0x0000ffff) << 16);
+ 		} else
+-			break;
++			goto out_eio;
+ 		ret = put_user(tmp, (unsigned long *)data);
+ 		break;
+ 
+@@ -174,9 +190,9 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+ 
+ 		if (addr == PT_SR) {
+ 			data &= SR_MASK;
+-			data <<= 16;
+-			data |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
+-		} else if (addr >= 0 && addr < 19) {
++			data |= get_reg(child, PT_SR) & ~SR_MASK;
++		}
++		if (addr >= 0 && addr < 19) {
+ 			if (put_reg(child, addr, data))
+ 				goto out_eio;
+ 		} else if (addr >= 21 && addr < 48) {
+@@ -196,8 +212,6 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+ 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
+ 		for (i = 0; i < 19; i++) {
+ 			tmp = get_reg(child, i);
+-			if (i == PT_SR)
+-				tmp >>= 16;
+ 			ret = put_user(tmp, (unsigned long *)data);
+ 			if (ret)
+ 				break;
+@@ -212,8 +226,7 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+ 				break;
+ 			if (i == PT_SR) {
+ 				tmp &= SR_MASK;
+-				tmp <<= 16;
+-				tmp |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
++				tmp |= get_reg(child, PT_SR) & ~SR_MASK;
+ 			}
+ 			put_reg(child, i, tmp);
+ 			data += sizeof(long);
+-- 
+1.6.3.1
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
