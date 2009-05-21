@@ -1,52 +1,40 @@
-From: Lanttor <lanttor.guo@freescale.com>
-Subject: why the PAGE_OFFSET is not 0xc0000000 on m68k platform
-Date: Thu, 21 May 2009 12:17:41 +0800
-Message-ID: <4A14D5E5.9070103@freescale.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: why the PAGE_OFFSET is not 0xc0000000 on m68k platform
+Date: Thu, 21 May 2009 13:29:44 +0200
+Message-ID: <m23aaylmmv.fsf@igel.home>
+References: <4A14D5E5.9070103@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from az33egw02.freescale.net ([192.88.158.103]:59523 "EHLO
-	az33egw02.freescale.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750757AbZEUEIQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 May 2009 00:08:16 -0400
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id n4L48HeJ029885
-	for <linux-m68k@vger.kernel.org>; Wed, 20 May 2009 21:08:17 -0700 (MST)
-Received: from zch01exm25.fsl.freescale.net (zch01exm25.ap.freescale.net [10.192.129.217])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id n4L48FSu027530
-	for <linux-m68k@vger.kernel.org>; Wed, 20 May 2009 23:08:16 -0500 (CDT)
+Received: from mail-out.m-online.net ([212.18.0.10]:49717 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752451AbZEUL3r (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 May 2009 07:29:47 -0400
+In-Reply-To: <4A14D5E5.9070103@freescale.com> (Lanttor's message of "Thu, 21
+	May 2009 12:17:41 +0800")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Lanttor <lanttor.guo@freescale.com>
+Cc: linux-m68k@vger.kernel.org
 
-Hi,
+Lanttor <lanttor.guo@freescale.com> writes:
 
-I see the definition of PAGE_OFFSET on m68k platform like that:
+> In my understanding, the kernel page mapping depends on PAGE_OFFSET.
+> For example, if PAGE_OFFSET is 0x00000000 (assuming 256M memory), the
+> kernel virtual address will be at (0x00000000 - 0x10000000), right?
 
-#define PAGE_OFFSET (PAGE_OFFSET_RAW)
+On m68k, the kernel virtual addresses are in a separate address space
+from user space, thus the value of PAGE_OFFSET is somewhat arbitrary.
 
-#ifdef CONFIG_MMU
-#ifndef CONFIG_SUN3
-#define PAGE_OFFSET_RAW         0x00000000
-#else
-#define PAGE_OFFSET_RAW         0x0E000000
-#endif
-#else
-#define PAGE_OFFSET_RAW         CONFIG_RAMBASE
-#endif
+> Could this incur some side effect? I see the definition of PAGE_OFFSET
+> is 0xc0000000 on much platforms.
 
-In my understanding, the kernel page mapping depends on PAGE_OFFSET.
-For example, if PAGE_OFFSET is 0x00000000 (assuming 256M memory), the
-kernel virtual address will be at (0x00000000 - 0x10000000), right?
+On those platforms kernel and user space share the same address space,
+and PAGE_OFFSET makes sure that they don't overlap.
 
-Could this incur some side effect? I see the definition of PAGE_OFFSET
-is 0xc0000000 on much platforms.
-
-Thanks,
+Andreas.
 
 -- 
-Best Regards,
-Lanttor
-
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
