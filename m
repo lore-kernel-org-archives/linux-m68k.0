@@ -1,40 +1,143 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: why the PAGE_OFFSET is not 0xc0000000 on m68k platform
-Date: Thu, 21 May 2009 13:29:44 +0200
-Message-ID: <m23aaylmmv.fsf@igel.home>
-References: <4A14D5E5.9070103@freescale.com>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: Re: [PATCH] asm-generic: add a dma-mapping.h file
+Date: Fri, 22 May 2009 21:12:49 +0900
+Message-ID: <20090522211258Q.fujita.tomonori@lab.ntt.co.jp>
+References: <200905181645.26305.arnd@arndb.de>
+	<20090519074355P.fujita.tomonori@lab.ntt.co.jp>
+	<200905191822.48420.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:49717 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752451AbZEUL3r (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 May 2009 07:29:47 -0400
-In-Reply-To: <4A14D5E5.9070103@freescale.com> (Lanttor's message of "Thu, 21
-	May 2009 12:17:41 +0800")
+Received: from sh.osrg.net ([192.16.179.4]:34341 "EHLO sh.osrg.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1757856AbZEVMOW (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 22 May 2009 08:14:22 -0400
+In-Reply-To: <200905191822.48420.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lanttor <lanttor.guo@freescale.com>
-Cc: linux-m68k@vger.kernel.org
+To: arnd@arndb.de
+Cc: fujita.tomonori@lab.ntt.co.jp, jgarzik@pobox.com, hancockrwd@gmail.com, htejun@gmail.com, alan@lxorguk.ukuu.org.uk, flar@allandria.com, schmitz@biophys.uni-duesseldorf.de, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, takata@linux-m32r.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, ysato@users.sourceforge.jp
 
-Lanttor <lanttor.guo@freescale.com> writes:
+On Tue, 19 May 2009 18:22:47 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-> In my understanding, the kernel page mapping depends on PAGE_OFFSET.
-> For example, if PAGE_OFFSET is 0x00000000 (assuming 256M memory), the
-> kernel virtual address will be at (0x00000000 - 0x10000000), right?
+> On Tuesday 19 May 2009, FUJITA Tomonori wrote:
+> > > Would you agree to a patch that works with the same
+> > > code on e.g. arm, microblaze, mn10300 and sh and
+> > > uses only a few #ifdefs?
+> > 
+> > Having such helper for a linear mapping might be helpful but your
+> > approach is wrong.
+> 
+> Do you like this approach better? I've merged a few architectures
+> that were relatively simple. This file should be usable by all
+> architectures that have a linear mapping and are either fully coherent
+> (like cris) or just require flushing the dcache when passing a
+> buffer to the device.
+> 
+> It's become pretty obvious where some of my bugs were in the previous
+> code, I hopefully did better this time and maybe you find the rest.
+> I've also added the dma debugging stuff in here and fixed a number
+> of bugs in all the different architectures on the way, but I can
+> send separate patches for those before doing the merge.
+> 
+> I've also tried merging frv and m68k, but they have some peculiarities
+> that made it slightly harder.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+>  include/asm-generic/dma-mapping-linear.h |  391 +++++++++++++++++++++++++++++
+>  arch/avr32/include/asm/dma-mapping.h     |  408 ++++---------------------------
+>  arch/blackfin/include/asm/dma-mapping.h  |  118 +-------
+>  arch/cris/include/asm/dma-mapping.h      |  194 +-------------
+>  arch/mn10300/include/asm/dma-mapping.h   |  266 ++------------------
+>  arch/sh/include/asm/dma-mapping.h        |  258 ++-----------------
+>  arch/xtensa/include/asm/dma-mapping.h    |  220 +++-------------
+>  7 files changed, 606 insertions(+), 1249 deletions(-)
+> 
+> diff --git a/include/asm-generic/dma-mapping-linear.h b/include/asm-generic/dma-mapping-linear.h
+> new file mode 100644
+> index 0000000..13f37db
+> --- /dev/null
+> +++ b/include/asm-generic/dma-mapping-linear.h
+> @@ -0,0 +1,391 @@
+> +#ifndef __ASM_GENERIC_DMA_MAPPING_H
+> +#define __ASM_GENERIC_DMA_MAPPING_H
+> +
+> +#include <linux/mm.h>
+> +#include <linux/device.h>
+> +#include <linux/dma-debug.h>
+> +#include <linux/scatterlist.h>
+> +#include <asm/cacheflush.h>
+> +#include <asm/io.h>
+> +
+> +#ifdef CONFIG_DMA_COHERENT
+> +/*
+> + * An architecture should override these if it needs to
+> + * perform cache flushes before passing bus addresses
+> + * to a device.
+> + * It can either do a full flush in dma_coherent_dev
+> + * and return 1 from there, or implement more specific
+> + * synchronization in dma_cache_sync, which will be
+> + * applied separately to each sg element.
+> + */
+> +static inline int
+> +dma_coherent_dev(struct device *dev)
+> +{
+> +	return 1;
+> +}
+> +
+> +static inline void
+> +dma_cache_sync(struct device *dev, void *cpu_addr, size_t size,
+> +	       enum dma_data_direction direction)
+> +{
+> +}
+> +
+> +/**
+> + * dma_alloc_coherent - allocate consistent memory for DMA
+> + * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
+> + * @size: required memory size
+> + * @handle: bus-specific DMA address
+> + *
+> + * Allocate some uncached, unbuffered memory for a device for
+> + * performing DMA.  This function allocates pages, and will
+> + * return the CPU-viewed address, and sets @handle to be the
+> + * device-viewed address.
+> + */
+> +void *dma_alloc_coherent(struct device *dev, size_t size,
+> +				dma_addr_t *dma_handle, gfp_t flag)
+> +{
+> +	void *ret;
+> +	struct page *page;
+> +	int node = dev_to_node(dev);
+> +
+> +	/* ignore region specifiers */
+> +	flag  &= ~(__GFP_HIGHMEM);
+> +
+> +	page = alloc_pages_node(node, flag, get_order(size));
+> +	if (page == NULL)
+> +		return NULL;
+> +	ret = page_address(page);
+> +	memset(ret, 0, size);
+> +	*dma_handle = virt_to_abs(ret) + get_dma_direct_offset(dev);
+> +
+> +	return ret;
+> +}
 
-On m68k, the kernel virtual addresses are in a separate address space
-from user space, thus the value of PAGE_OFFSET is somewhat arbitrary.
+I don't think that this works for all architectures because a returned
+buffer of alloc_pages_node might not be DMA-capable. Needs to use the
+coherent_dma_mask here. See x86's dma_alloc_coherent and Alpha's
+pci-noop.c (there might be other examples).
 
-> Could this incur some side effect? I see the definition of PAGE_OFFSET
-> is 0xc0000000 on much platforms.
+I think that having a generic header for simple mapping functions
+(dma_map_single, dma_map_page, dma_map_sg, etc) would be useful but
+I'm not sure if we can't have a generic version of
+dma_alloc_coherent. There are lots of architectures that do
+architecture-specific things. For example, you replaced avr32
+dma-mapping.h except for dma_alloc_coherent, which seems to be can't
+be generic.
 
-On those platforms kernel and user space share the same address space,
-and PAGE_OFFSET makes sure that they don't overlap.
+BTW, it looks odd to add dma_debug to dma_map_single, etc but not
+dma_alloc_coherent. ;)
 
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
