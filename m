@@ -1,47 +1,31 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] mac8390: use printk MAC address format
-Date: Tue, 26 May 2009 01:46:36 +1000 (EST)
-Message-ID: <Pine.LNX.4.64.0905260136450.18180@loopy.telegraphics.com.au>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] mac8390: fix regression caused during net_device_ops
+ conversion
+Date: Mon, 25 May 2009 14:38:29 -0700 (PDT)
+Message-ID: <20090525.143829.37277499.davem@davemloft.net>
+References: <Pine.LNX.4.64.0905260116120.18180@loopy.telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from loopy.telegraphics.com.au ([202.45.126.152]:35056 "EHLO
-	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751681AbZEYPqg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 May 2009 11:46:36 -0400
+Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:44630
+	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752579AbZEYVia (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 25 May 2009 17:38:30 -0400
+In-Reply-To: <Pine.LNX.4.64.0905260116120.18180@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
+To: fthain@telegraphics.com.au
+Cc: linux-m68k@vger.kernel.org, shemminger@vyatta.com
 
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+You need to post networking patches at least cc:'d to
+netdev@vger.kernel.org so that they get properly tracked
+at:
 
---- linux-2.6.29.orig/drivers/net/mac8390.c	2009-03-24 10:12:14.000000000 +1100
-+++ linux-2.6.29/drivers/net/mac8390.c	2009-05-22 01:48:07.000000000 +1000
-@@ -620,19 +620,12 @@
- 
- 	/* Good, done, now spit out some messages */
- 	printk(KERN_INFO "%s: %s in slot %X (type %s)\n",
--		   dev->name, ndev->board->name, ndev->board->slot, cardname[type]);
--	printk(KERN_INFO "MAC ");
--	{
--		int i;
--		for (i = 0; i < 6; i++) {
--			printk("%2.2x", dev->dev_addr[i]);
--			if (i < 5)
--				printk(":");
--		}
--	}
--	printk(" IRQ %d, %d KB shared memory at %#lx,  %d-bit access.\n",
--		   dev->irq, (int)((dev->mem_end - dev->mem_start)/0x1000) * 4,
--		   dev->mem_start, access_bitmode?32:16);
-+	       dev->name, ndev->board->name, ndev->board->slot, cardname[type]);
-+	printk(KERN_INFO
-+	       "MAC %pM IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
-+	       dev->dev_addr, dev->irq,
-+	       (unsigned int)(dev->mem_end - dev->mem_start) >> 10,
-+	       dev->mem_start, access_bitmode ? 32 : 16);
- 	return 0;
- }
- 
+	http://patchwork.ozlabs.org/project/netdev/list/
+
+otherwise your patches may (read as: will) get lost.
+
+Thank you.
