@@ -1,55 +1,64 @@
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: ->ack_intr in m68k IDE drivers  [was: Re: [PATCH 2/5] ide: ->ide_dma_clear_irq()
- -> ->clear_irq()]
-Date: Fri, 22 May 2009 23:19:24 +0400
-Message-ID: <4A16FABC.3010906@ru.mvista.com>
-References: <200808192031.40288.bzolnier@gmail.com> <48CEDD89.5060107@ru.mvista.com> <4A15600A.40906@ru.mvista.com> <200905222044.42688.bzolnier@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] mac8390: fix regression caused during net_device_ops conversion
+Date: Tue, 26 May 2009 01:36:41 +1000 (EST)
+Message-ID: <Pine.LNX.4.64.0905260116120.18180@loopy.telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <200905222044.42688.bzolnier@gmail.com>
+Received: from loopy.telegraphics.com.au ([202.45.126.152]:38717 "EHLO
+	loopy.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751600AbZEYPg5 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 May 2009 11:36:57 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>
 
-Bartlomiej Zolnierkiewicz wrote:
 
->>>>  It may also be worth considering turning this method into 
->>>>test-and-clear, so that we can get the actual IDE interrupt state on 
->>>>the chips that implement this...
+Changeset ca17584bf2ad1b1e37a5c0e4386728cc5fc9dabc broke mac8390 by adding 
+8390.o to the link. That meant that lib8390.c was included twice, once in 
+mac8390.c and once in 8390.c, subject to different macros. This patch 
+reverts that by avoiding the wrappers in 8390.c. They seem to be of no 
+value since COMPAT_NET_DEV_OPS is going away soon.
 
->>>  Probably might add the test_irq() method to be called on 
->>>!hwif->waiting_for_dma. Cleraing the status at once seems impractical...
+Tested with a Kinetics EtherPort card.
 
->>    Yet this seems what ack_intr() method is doing already...
->>    What it does is testing IRQ status and "acknowledging" it (the semantics 
->>of "acknowledge" is not clear to me, yet it seems that it's clearing the 
->>interrupt latch in the drivers where it's implemented). And the call site of 
->>ack_intr() method corresponds to where test_irq() should have been called, 
->>so it seems we don't need yet another method and probably didn't even need 
->>clear_irq() method in the first place?..
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-> They have different goals -- the main purpose of ack_intr() (despite its name)
-> seems to be testing whether the IRQ is ours,
-
-    It does clear some interrupt bit if it sees that IRQ is ours too, hence 
-the name.
-
-> OTOH in clear_irq() we know that
-> already and we just want to clear the pending IRQ status.
-
-    There seems to be duplication of functionality b/w ack_intr() and 
-clear_irq() now...
-
-> So I'm not sure if unification is desirable... though some improvements are
-> definitely possibly there (less confusing naming at least)...
-
->>    Bart, could you clarify about how ack_intr() is supposed to work?
-
-> Good question, m68k list would be the best place to look for an answer..
-
-    Well, I seem to have been able to infer it from the code...
-
-MBR, Sergei
+--- linux-2.6.29.orig/drivers/net/Makefile	2009-05-25 23:52:32.000000000 +1000
++++ linux-2.6.29/drivers/net/Makefile	2009-05-25 23:41:36.000000000 +1000
+@@ -100,7 +100,7 @@
+ obj-$(CONFIG_NET) += Space.o loopback.o
+ obj-$(CONFIG_SEEQ8005) += seeq8005.o
+ obj-$(CONFIG_NET_SB1000) += sb1000.o
+-obj-$(CONFIG_MAC8390) += mac8390.o 8390.o
++obj-$(CONFIG_MAC8390) += mac8390.o
+ obj-$(CONFIG_APNE) += apne.o 8390.o
+ obj-$(CONFIG_PCMCIA_PCNET) += 8390.o
+ obj-$(CONFIG_HP100) += hp100.o
+--- linux-2.6.29.orig/drivers/net/mac8390.c	2009-03-24 10:12:14.000000000 +1100
++++ linux-2.6.29/drivers/net/mac8390.c	2009-05-25 23:44:28.000000000 +1000
+@@ -304,7 +304,7 @@
+ 	if (!MACH_IS_MAC)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	dev = alloc_ei_netdev();
++	dev = ____alloc_ei_netdev(0);
+ 	if (!dev)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -481,10 +481,10 @@
+ static const struct net_device_ops mac8390_netdev_ops = {
+ 	.ndo_open 		= mac8390_open,
+ 	.ndo_stop		= mac8390_close,
+-	.ndo_start_xmit		= ei_start_xmit,
+-	.ndo_tx_timeout		= ei_tx_timeout,
+-	.ndo_get_stats		= ei_get_stats,
+-	.ndo_set_multicast_list = ei_set_multicast_list,
++	.ndo_start_xmit		= __ei_start_xmit,
++	.ndo_tx_timeout		= __ei_tx_timeout,
++	.ndo_get_stats		= __ei_get_stats,
++	.ndo_set_multicast_list = __ei_set_multicast_list,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ 	.ndo_set_mac_address 	= eth_mac_addr,
+ 	.ndo_change_mtu		= eth_change_mtu,
