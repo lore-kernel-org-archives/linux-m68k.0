@@ -1,36 +1,34 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] mac8390: fix regression caused during net_device_ops
- conversion, take 2
-Date: Wed, 27 May 2009 22:33:55 -0700 (PDT)
-Message-ID: <20090527.223355.118242797.davem@davemloft.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] mac8390: fix build with NET_POLL_CONTROLLER
+Date: Thu, 28 May 2009 22:05:53 +1000 (EST)
+Message-ID: <Pine.LNX.4.64.0905282200460.12066@loopy.telegraphics.com.au>
 References: <Pine.LNX.4.64.0905260116120.18180@loopy.telegraphics.com.au>
-	<10f740e80905270149q2b906d53u8bf71b7d382a57a3@mail.gmail.com>
-	<Pine.LNX.4.64.0905281454450.9036@loopy.telegraphics.com.au>
+ <10f740e80905270149q2b906d53u8bf71b7d382a57a3@mail.gmail.com>
+ <Pine.LNX.4.64.0905281454450.9036@loopy.telegraphics.com.au>
+ <20090527.223355.118242797.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0905281454450.9036@loopy.telegraphics.com.au>
+In-Reply-To: <20090527.223355.118242797.davem@davemloft.net>
 Sender: netdev-owner@vger.kernel.org
-To: fthain@telegraphics.com.au
+To: David Miller <davem@davemloft.net>
 Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, geert.uytterhoeven@gmail.com, shemminger@vyatta.com
 List-Id: linux-m68k@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
-Date: Thu, 28 May 2009 15:26:43 +1000 (EST)
 
-> 
-> Changeset ca17584bf2ad1b1e37a5c0e4386728cc5fc9dabc broke mac8390 by adding 
-> 8390.o to the link. That meant that lib8390.c was included twice, once in 
-> mac8390.c and once in 8390.c, subject to different macros. This patch 
-> reverts that by avoiding the wrappers in 8390.c. They seem to be of no 
-> value since COMPAT_NET_DEV_OPS is going away soon.
-> 
-> Tested with a Kinetics EtherPort card.
-> 
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Fix the build for CONFIG_NET_POLL_CONTROLLER that I broke with
+217cbfa856dc1cbc2890781626c4032d9e3ec59f.
 
-I already applied your other patch, it's in Linus's tree already
-in fact.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-So you need to send something relative to that.
+--- linux-2.6.29.orig/drivers/net/Makefile	2009-05-28 15:15:13.000000000 +1000
++++ linux-2.6.29/drivers/net/Makefile	2009-05-28 15:15:54.000000000 +1000
+@@ -489,7 +489,7 @@
+ 	.ndo_set_mac_address 	= eth_mac_addr,
+ 	.ndo_change_mtu		= eth_change_mtu,
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+-	.ndo_poll_controller	= ei_poll,
++	.ndo_poll_controller	= __ei_poll,
+ #endif
+ };
+ 
