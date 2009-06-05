@@ -1,209 +1,131 @@
-From: Matthew Lear <matt@bubblegen.co.uk>
-Subject: Re: 2.6.29 & network stack strangeness
-Date: Fri, 05 Jun 2009 17:44:19 +0100
-Message-ID: <4A294B63.7010404@bubblegen.co.uk>
-References: <4A2936AF.4080601@bubblegen.co.uk> <Pine.LNX.4.64.0906060149130.16687@loopy.telegraphics.com.au> <4A294532.7030904@bubblegen.co.uk> <Pine.LNX.4.64.0906060233071.16687@loopy.telegraphics.com.au>
+From: "NTNU.EDU.TW&#37038;&#23616;Uprade&#38431;" <customercare@8u8.us>
+Subject: &#35242;&#24859;&#30340;NTNU.EDU.TW Webmail&#24115;&#25142;&#30340;
+     &#29992;&#25142;
+Date: Fri, 5 Jun 2009 15:00:29 -0400 (CLT)
+Message-ID: <58945.78.138.34.162.1244228429.squirrel@webmail.inp.cl>
+Reply-To: customercarecenter@8u8.us
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from relay.ptn-ipout01.plus.net ([212.159.7.35]:37882 "EHLO
-	relay.ptn-ipout01.plus.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751079AbZFEQoU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Jun 2009 12:44:20 -0400
-In-Reply-To: <Pine.LNX.4.64.0906060233071.16687@loopy.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org
 
-Yes. I was suspecting that all may not be well in that area... Current set up is
-a 10ms tick with CONFIG_HZ set to 100. Further investigation is required I think.
---  Matt
 
-Finn Thain wrote:
-> My only guess would be that the network stack delayed work queues depend 
-> upon working timer interrupts...
-> 
-> But since I have no knowledge of your hardware, I don't think I'll be a 
-> lot of help with that.
-> 
-> Finn
-> 
-> 
-> On Fri, 5 Jun 2009, Matthew Lear wrote:
-> 
->> Hi - thanks for your reply.
->>
->> The problem doesn't manifest only when the DHCP lease expires and I can still
->> reproduce the problem with a static IP. With or without DHCP makes no difference.
->>
->> It seems to effect socket comms quite seriously (and quickly). If I run a simple
->> server program on the host that listens on a socket and writes a response string
->> to the socket when it receives data, and on the target I run a simple client
->> program which writes a string to the socket, reads and prints the response sent
->> the server, I only have to send data from client to server with a delay of 1ms
->> between transmissions for a few seconds and the client program hangs on calling
->> read() on the socket fd.
->>
->> If I run a simple netcat test, eg
->>
->> on target: nc -l -p 3333 > /dev/null
->> on host: dd if=/dev/zero | nc <target-ip> 3333
->>
->> ...strangely, once activity on the ethernet link as a result of the netcat test
->> ceases, running netstat -a on the target hangs for several seconds, eg:
->>
->>
->> ~ # nc -l -p 3333 > /dev/null &
->> ~ # netstat -a
->> Active Internet connections (servers and established)
->> Proto Recv-Q Send-Q Local Address           Foreign Address         State
->> tcp        0      0 *:login                 *:*                     LISTEN
->> tcp        0      0 *:shell                 *:*                     LISTEN
->> tcp        0      0 *:sunrpc                *:*                     LISTEN
->> tcp        0      0 *:finger                *:*                     LISTEN
->> tcp        0      0 *:auth                  *:*                     LISTEN
->> tcp        0      0 *:ftp                   *:*                     LISTEN
->> tcp        0      0 *:telnet                *:*                     LISTEN
->>
->> <system hangs for several seconds here>
->>
->> tcp        0      0 192.168.0.11:3333       gateway0:45645
->> ESTABLISHED
->> udp        0      0 *:ntalk                 *:*
->> udp        0      0 *:sunrpc                *:*
->> Active UNIX domain sockets (servers and established)
->> Proto RefCnt Flags       Type       State         I-Node Path
->> unix  4      [ ]         DGRAM                    111    /dev/log
->> unix  3      [ ]         STREAM     CONNECTED     123
->> unix  3      [ ]         STREAM     CONNECTED     122
->> unix  2      [ ]         DGRAM                    120
->> unix  2      [ ]         DGRAM                    114
->> ~ #
->>
->> I thought this was interesting. Also, after this, I have trouble entering
->> characters over the serial port / console. It seems like interrupts may having
->> trouble getting serviced but this may be a side-effect...
->>
->> If you run the same netstat command with strace, you can see that the delay is
->> caused by polling the socket following calling send:
->>
->> ...
->> ...
->> gettimeofday({366, 470000}, NULL)       = 0
->> poll([{fd=4, events=POLLOUT, revents=POLLOUT}], 1, 0) = 1
->> send(4, "lJ\1\0\0\1\0\0\0\0\0\0\00211\0010\003168\003192\7in-ad"..., 43,
->> 0x4000) = 43
->> poll(
->>
->>
->> <delay is here>
->>
->>
->> [{fd=4, events=POLLIN}], 1, 5000)  = 0
->> ...
->> ...
->>
->> --  Matt
->>
->>
->> Finn Thain wrote:
->>> Does the problem manifest only when the DHCP lease expires?
->>> Can you reproduce the problem with a static IP?
->>>
->>> Finn
->>>
->>>
->>> On Fri, 5 Jun 2009, Matthew Lear wrote:
->>>
->>>> Hello all,
->>>>
->>>> I'm running a 2.6.29 kernel on an MMU enabled m68k coldfire mcf54455 platform
->>>> and I'm having some throughput problems when running network tests.
->>>>
->>>> The kernel boots and mounts its rootfs from flash (jffs2). udhcpc runs, obtains
->>>> a lease from the dhcp server and configures eth0. Network connectivity is ok. I
->>>> can ping the target from the host and vice versa.
->>>>
->>>> 1/
->>>> If I run ping -s 1500 -i 0.0001 <target ip address> on the host pc, after
->>>> several mins, the kernel reports 'unexpected interrupt from 24' which is the
->>>> vector for a spurious interrupt. This message will repeat randomly (from what I
->>>> saw it appeared ~ 20 times when running the ping test above for 40 mins). The
->>>> mcf54455 reference manual describes a possible cause for spurious interrupts.
->>>> However, this test very rarely reports any packet loss, although the max time to
->>>> receive a packet can be very large indeed.
->>>>
->>>> 2/
->>>> If I reboot, start again and run a ping flood test (ping -f) from host pc ->
->>>> target, all icmp requests are acknowledged - for a while. Before the target
->>>> begins to fail to respond to the icmp requests, running top shows that the
->>>> ksoftirq daemon is running at ~ 5% cpu load. This is normal as it is involved in
->>>> processing the deferred tasks of processing data fired up to the network stack.
->>>> So when the target beings to stop responding to icmp, if I then stop the ping
->>>> flood and try to ping the host from the target, there is no reply indicated by
->>>> ping. However, if you do this with a packet sniffer running (eg wireshark) you
->>>> can see that data is still being transmitted from the target -> host and you can
->>>> see the icmp reply, only the reply from the host appears to be received ok by
->>>> the fec driver but is processed by the network stack target.
->>>>
->>>> When in this state, a proc entry that I added to the fec driver shows that the
->>>> last return value from netif_rx() (called in the fec rx interrupt handling
->>>> routine) is 1, indicating that the last packet was dropped by the network stack,
->>>> e.g.
->>>>
->>>> ~ # cat /proc/driver/fec
->>>> total interrupts: 1421619
->>>> last interrupt type: 2 [1=tx, 2=rx, 3=mii]
->>>> total tx interrupts: 709148
->>>> total rx interrupts: 712472
->>>> total mii interrupts: 1
->>>> last interrupt event: 0x2000000
->>>> total eberr interrupts: 0
->>>> total hberr interrupts: 0
->>>> tx loop current count: 0
->>>> tx loop last count: 1
->>>> rx loop current count: 0
->>>> rx loop last count: 1
->>>> rx last cbd ctrl/status: 0x800
->>>> rx last cbd len: 346
->>>> rx last cbd buff addr: 0x40410000
->>>> rx last netif_rx status: 1
->>>>
->>>> Strangely, wireshark still shows data being transmitted from the target
->>>> -> host. I can see ARP requests and I can also see DHCP discovery packets being
->>>> sent by the target when its DHCP lease expires. This all looks ok, only the
->>>> reply from host -> target is never processed by the target as the network stack
->>>> is in a state where it is dropping all incoming data provided to it by the driver.
->>>>
->>>> I believe udhcpc utilises the network device directly, ie it does not require an
->>>> intermediate network protocol being implemented in the kernel (tcpdump is
->>>> similar).
->>>>
->>>> The fec driver still seems to be running ok because I can see the ring buffer
->>>> address changing when data is received. Everything seems to be ok apart from the
->>>> network stack. Very strange indeed.
->>>>
->>>> Running network throughput tests between host and target with netcat or netperf
->>>> only run for a few seconds before activity ceases.
->>>>
->>>> Has anybody experienced anything similar? Why does the network stack appear to
->>>> be stuck and constantly dropping packets?
->>>>
->>>> Any feedback appreciated.
->>>>
->>>> Rgds,
->>>> --  Matt
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
-> 
 
+
+&#35242;&#24859;&#30340;NTNU.EDU.TW
+Webmail&#24115;&#25142;&#30340;&#29992;&#25142;,
+ &#27492;&#28040;&#24687;&#26159;&#24418;&#24335;NTNU.EDU.TW&#38651;&#3=
+7109;&#36890;&#35338;&#20013;&#24515;&#21521;&#25152;&#26377;NTNU.EDU.T=
+W
+Webmail&#24115;&#25142;&#30340;&#29992;&#25142;,&#25105;&#20497;&#24456=
+;&#25265;&#27465;&#36896;&#25104;&#24744;&#30340;&#19981;&#20415;,&#251=
+05;&#20497;&#35731;&#20320;&#36890;&#36942;,&#25105;&#20497;&#26377;&#2=
+1839;&#38988;,&#25105;&#20497;&#30340;&#25976;&#25818;&#24235;&#20013;,=
+&#30001;&#26044;&#25105;&#20497;&#26368;&#36817;&#30340;&#21319;&#32026=
+;&#21644;&#25105;&#20497;&#28961;&#27861;&#25214;&#21040;&#24744;&#3034=
+0;&#25976;&#25818;&#12290;
+   &#35531;&#24744;&#29702;&#35299;,&#25105;&#20497;&#24517;&#38920;&#3=
+1435;&#21363;&#31998;&#27491;&#36889;&#19968;&#21839;&#38988;,&#20854;&=
+#20182;&#19968;&#20999;,&#24744;&#21487;&#33021;&#28961;&#27861;&#30332=
+;&#36865;&#25110;&#25509;&#25910;&#38651;&#23376;&#37109;&#20214;&#3328=
+7;&#24744;&#30340;NTNU.EDU.TW
+Webmail&#24115;&#25142;E - mail&#22320;&#22336;&#12290;
+  &#35531;&#25552;&#20379;&#24744;&#30340;&#24115;&#25142;,&#19979;&#38=
+754;&#35443;&#32048;&#35498;&#26126;,&#20197;&#20415;&#25105;&#20497;&#=
+33021;&#22816;&#31998;&#27491;&#36889;&#19968;&#21839;&#38988;&#30433;&=
+#24555;:
+&#29992;&#25142;&#21517;: (*********)
+&#23494;&#30908;: *********)
+&#20986;&#29983;&#26085;&#26399;(&#20986;&#29983;&#26085;&#26399;)*****=
+****)
+&#22283;&#23478;*********)
+  **&#27880;**
+:&#24744;&#30340;&#25976;&#25818;&#21644;&#20449;&#24687;&#23559;&#1998=
+1;&#26371;&#34987;&#31713;&#25913;&#25110;&#24178;&#25854;,&#25105;&#20=
+497;&#23601;&#26371;&#35352;&#37636;&#24744;&#30340;&#25976;&#25818;&#2=
+0633;&#20221;&#21040;&#25105;&#20497;&#30340;&#25976;&#25818;&#24235;,&=
+#20006;&#23492;&#32102;&#24744;&#19968;&#20491;&#26032;&#30340;&#30906;=
+&#35469;&#23383;&#27597;&#25976;&#23383;&#28151;&#21512;&#23494;&#30908=
+;,&#21482;&#26371;&#26377;&#25928;,&#22312;&#27492;&#26399;&#38291;,&#2=
+1487;&#25913;&#35722;&#24744;&#30340;&#21839;&#38988;&#24460;,&#24050;&=
+#24471;&#21040;&#31998;&#27491;&#12290;
+&#27880;&#24847;&#20107;&#38917;:
+  &#27794;&#26377;&#21521;&#25105;&#20497;&#25552;&#20379;&#19978;&#368=
+48;&#24517;&#35201;&#26781;&#20214;&#30433;&#21487;&#33021;&#30701;&#30=
+340;&#26178;&#38291;&#20839;&#37117;&#23559;&#23566;&#33268;&#22833;&#2=
+5943;&#30340;&#20837;&#31449;&#21644;&#20986;&#31449;&#30340;email.This=
+&#23559;&#38459;&#27490;&#24744;&#30332;&#36865;&#25110;&#25509;&#25910=
+;&#38651;&#23376;&#37109;&#20214;&#12290;
+ &#35531;&#24171;&#21161;&#20659;&#25773;&#36889;&#20491;&#37325;&#3520=
+1;&#30340;&#20449;&#24687;&#36681;&#30332;&#32102;&#20854;&#20182;&#299=
+92;&#25142;&#12290;
+&#24863;&#35613;&#24744;&#29702;&#35299;&#25105;&#20497;&#30340;&#22256=
+;&#22659;&#12290;
+=AE NTNU.EDU.TW&#37109;&#23616;&#23458;&#25142;&#38364;&#20418;&#12290;
+                      &#29256;&#27402;&#25152;&#26377;=A9
+2009&#24180;&#12290;&#20445;&#30041;&#25152;&#26377;&#27402;&#21033;&#1=
+2290;
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+&#20146;&#29233;&#30340;NTNU.EDU.TW
+Webmail&#24080;&#25143;&#30340;&#29992;&#25143;,
+ &#27492;&#28040;&#24687;&#26159;&#24418;&#24335;NTNU.EDU.TW&#30005;&#3=
+7038;&#36890;&#35759;&#20013;&#24515;&#21521;&#25152;&#26377;NTNU.EDU.T=
+W
+Webmail&#24080;&#25143;&#30340;&#29992;&#25143;,&#25105;&#20204;&#24456=
+;&#25265;&#27465;&#36896;&#25104;&#24744;&#30340;&#19981;&#20415;,&#251=
+05;&#20204;&#35753;&#20320;&#36890;&#36807;,&#25105;&#20204;&#26377;&#3=
+8382;&#39064;,&#25105;&#20204;&#30340;&#25968;&#25454;&#24211;&#20013;,=
+&#30001;&#20110;&#25105;&#20204;&#26368;&#36817;&#30340;&#21319;&#32423=
+;&#21644;&#25105;&#20204;&#26080;&#27861;&#25214;&#21040;&#24744;&#3034=
+0;&#25968;&#25454;&#12290;
+   &#35831;&#24744;&#29702;&#35299;,&#25105;&#20204;&#24517;&#39035;&#3=
+1435;&#21363;&#32416;&#27491;&#36825;&#19968;&#38382;&#39064;,&#20854;&=
+#20182;&#19968;&#20999;,&#24744;&#21487;&#33021;&#26080;&#27861;&#21457=
+;&#36865;&#25110;&#25509;&#25910;&#30005;&#23376;&#37038;&#20214;&#1998=
+2;&#24744;&#30340;NTNU.EDU.TW
+Webmail&#24080;&#25143;E - mail&#22320;&#22336;&#12290;
+  &#35831;&#25552;&#20379;&#24744;&#30340;&#24080;&#25143;,&#19979;&#38=
+754;&#35814;&#32454;&#35828;&#26126;,&#20197;&#20415;&#25105;&#20204;&#=
+33021;&#22815;&#32416;&#27491;&#36825;&#19968;&#38382;&#39064;&#23613;&=
+#24555;:
+&#29992;&#25143;&#21517;: (*********)
+&#23494;&#30721;: *********)
+&#20986;&#29983;&#26085;&#26399;(&#20986;&#29983;&#26085;&#26399;)*****=
+****)
+&#22269;&#23478;*********)
+  **&#27880;**
+:&#24744;&#30340;&#25968;&#25454;&#21644;&#20449;&#24687;&#23558;&#1998=
+1;&#20250;&#34987;&#31713;&#25913;&#25110;&#24178;&#25200;,&#25105;&#20=
+204;&#23601;&#20250;&#35760;&#24405;&#24744;&#30340;&#25968;&#25454;&#2=
+2791;&#20221;&#21040;&#25105;&#20204;&#30340;&#25968;&#25454;&#24211;,&=
+#24182;&#23492;&#32473;&#24744;&#19968;&#20010;&#26032;&#30340;&#30830;=
+&#35748;&#23383;&#27597;&#25968;&#23383;&#28151;&#21512;&#23494;&#30721=
+;,&#21482;&#20250;&#26377;&#25928;,&#22312;&#27492;&#26399;&#38388;,&#2=
+1487;&#25913;&#21464;&#24744;&#30340;&#38382;&#39064;&#21518;,&#24050;&=
+#24471;&#21040;&#32416;&#27491;&#12290;
+&#27880;&#24847;&#20107;&#39033;:
+  &#27809;&#26377;&#21521;&#25105;&#20204;&#25552;&#20379;&#19978;&#368=
+48;&#24517;&#35201;&#26465;&#20214;&#23613;&#21487;&#33021;&#30701;&#30=
+340;&#26102;&#38388;&#20869;&#37117;&#23558;&#23548;&#33268;&#22833;&#3=
+6133;&#30340;&#20837;&#31449;&#21644;&#20986;&#31449;&#30340;email.This=
+&#23558;&#38459;&#27490;&#24744;&#21457;&#36865;&#25110;&#25509;&#25910=
+;&#30005;&#23376;&#37038;&#20214;&#12290;
+ &#35831;&#24110;&#21161;&#20256;&#25773;&#36825;&#20010;&#37325;&#3520=
+1;&#30340;&#20449;&#24687;&#36716;&#21457;&#32473;&#20854;&#20182;&#299=
+92;&#25143;&#12290;
+&#24863;&#35874;&#24744;&#29702;&#35299;&#25105;&#20204;&#30340;&#22256=
+;&#22659;&#12290;
+=AE NTNU.EDU.TW&#37038;&#23616;&#23458;&#25143;&#20851;&#31995;&#12290;
+                      &#29256;&#26435;&#25152;&#26377;=A9
+2009&#24180;&#12290;&#20445;&#30041;&#25152;&#26377;&#26435;&#21033;&#1=
+2290;
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
