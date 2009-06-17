@@ -1,74 +1,92 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: [PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
-Date: Wed, 17 Jun 2009 17:10:59 +1000
-Message-ID: <200906170710.n5H7AxxV009015@localhost.localdomain>
+Subject: [PATCH] m68k: merge mmu and non-mmu versions of dma.h
+Date: Wed, 17 Jun 2009 17:11:20 +1000
+Message-ID: <200906170711.n5H7BKVi009035@localhost.localdomain>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:60169 "EHLO
+Received: from rex.securecomputing.com ([203.24.151.4]:60177 "EHLO
 	snapgear.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753422AbZFQHLK (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 17 Jun 2009 03:11:10 -0400
+	id S1753422AbZFQHLX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 17 Jun 2009 03:11:23 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org
 
-[PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
+[PATCH] m68k: merge mmu and non-mmu versions of dma.h
 
-There is nothing different required between the non-mmu and mmu
-versions of hardirq.h, so merge them back into a single file.
+The non-mmu version of dma.h contains a lot of ColdFire specific DMA
+support, but also all of the base m68k support. So use the non-mmu
+version of dma.h for all.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/{hardirq_mm.h => hardirq.h} |    2 +
- arch/m68k/include/asm/hardirq_no.h                |   27 ---------------------
- 2 files changed, 2 insertions(+), 27 deletions(-)
- rename arch/m68k/include/asm/{hardirq_mm.h => hardirq.h} (90%)
- delete mode 100644 arch/m68k/include/asm/hardirq_no.h
+ arch/m68k/include/asm/{dma_no.h => dma.h} |   19 ++++++++-----------
+ arch/m68k/include/asm/dma_mm.h            |   16 ----------------
+ 2 files changed, 8 insertions(+), 27 deletions(-)
+ rename arch/m68k/include/asm/{dma_no.h => dma.h} (97%)
+ delete mode 100644 arch/m68k/include/asm/dma_mm.h
 
-diff --git a/arch/m68k/include/asm/hardirq_mm.h b/arch/m68k/include/asm/hardirq.h
-similarity index 90%
-rename from arch/m68k/include/asm/hardirq_mm.h
-rename to arch/m68k/include/asm/hardirq.h
-index 394ee94..7167ed2 100644
---- a/arch/m68k/include/asm/hardirq_mm.h
-+++ b/arch/m68k/include/asm/hardirq.h
-@@ -13,4 +13,6 @@ typedef struct {
+diff --git a/arch/m68k/include/asm/dma_no.h b/arch/m68k/include/asm/dma.h
+similarity index 97%
+rename from arch/m68k/include/asm/dma_no.h
+rename to arch/m68k/include/asm/dma.h
+index 939a020..7cf7066 100644
+--- a/arch/m68k/include/asm/dma_no.h
++++ b/arch/m68k/include/asm/dma.h
+@@ -1,9 +1,6 @@
+ #ifndef _M68K_DMA_H
+ #define _M68K_DMA_H 1
+  
+-//#define	DMA_DEBUG	1
+-
+-
+ #ifdef CONFIG_COLDFIRE
+ /*
+  * ColdFire DMA Model:
+@@ -479,16 +476,16 @@ static __inline__ int get_dma_residue(unsigned int dmanr)
  
- #define HARDIRQ_BITS	8
+ #endif /* !defined(CONFIG_M5272) */
+ #endif /* CONFIG_COLDFIRE */
+- 
+-#define MAX_DMA_CHANNELS 8
  
-+void ack_bad_irq(unsigned int irq);
+-/* Don't define MAX_DMA_ADDRESS; it's useless on the m68k/coldfire and any
+-   occurrence should be flagged as an error.  */
+-/* under 2.4 it is actually needed by the new bootmem allocator */
++/* it's useless on the m68k, but unfortunately needed by the new
++   bootmem allocator (but this should do it for this) */
+ #define MAX_DMA_ADDRESS PAGE_OFFSET
+ 
+-/* These are in kernel/dma.c: */
+-extern int request_dma(unsigned int dmanr, const char *device_id);	/* reserve a DMA channel */
++#define MAX_DMA_CHANNELS 8
 +
- #endif
-diff --git a/arch/m68k/include/asm/hardirq_no.h b/arch/m68k/include/asm/hardirq_no.h
++extern int request_dma(unsigned int dmanr, const char * device_id);	/* reserve a DMA channel */
+ extern void free_dma(unsigned int dmanr);	/* release it again */
+- 
++
++#define isa_dma_bridge_buggy    (0)
++
+ #endif /* _M68K_DMA_H */
+diff --git a/arch/m68k/include/asm/dma_mm.h b/arch/m68k/include/asm/dma_mm.h
 deleted file mode 100644
-index bfad281..0000000
---- a/arch/m68k/include/asm/hardirq_no.h
+index 4240fbc..0000000
+--- a/arch/m68k/include/asm/dma_mm.h
 +++ /dev/null
-@@ -1,27 +0,0 @@
--#ifndef __M68K_HARDIRQ_H
--#define __M68K_HARDIRQ_H
+@@ -1,16 +0,0 @@
+-#ifndef _M68K_DMA_H
+-#define _M68K_DMA_H 1
 -
--#include <linux/cache.h>
--#include <linux/threads.h>
--#include <asm/irq.h>
 -
--typedef struct {
--	unsigned int __softirq_pending;
--} ____cacheline_aligned irq_cpustat_t;
+-/* it's useless on the m68k, but unfortunately needed by the new
+-   bootmem allocator (but this should do it for this) */
+-#define MAX_DMA_ADDRESS PAGE_OFFSET
 -
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+-#define MAX_DMA_CHANNELS 8
 -
--#define HARDIRQ_BITS	8
+-extern int request_dma(unsigned int dmanr, const char * device_id);	/* reserve a DMA channel */
+-extern void free_dma(unsigned int dmanr);	/* release it again */
 -
--/*
-- * The hardirq mask has to be large enough to have
-- * space for potentially all IRQ sources in the system
-- * nesting on a single CPU:
-- */
--#if (1 << HARDIRQ_BITS) < NR_IRQS
--# error HARDIRQ_BITS is too low!
--#endif
+-#define isa_dma_bridge_buggy    (0)
 -
--void ack_bad_irq(unsigned int irq);
--
--#endif /* __M68K_HARDIRQ_H */
+-#endif /* _M68K_DMA_H */
