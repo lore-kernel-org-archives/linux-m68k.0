@@ -1,33 +1,49 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH 13/14] Pramfs: Write Protection
-Date: Thu, 18 Jun 2009 15:28:33 +0900
-Message-ID: <20090618062833.GB2258__9512.36245823584$1245306577$gmane$org@linux-sh.org>
-References: <4A392098.9060205@gmail.com> <20090618025736.GB26531@linux-sh.org> <2ea1731b0906172324g4654966eq22cf0bdbd3eafabf@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
+Date: Fri, 19 Jun 2009 00:07:18 +1000
+Message-ID: <4A3A4A16.6080307@snapgear.com>
+References: <200906170710.n5H7AxxV009015@localhost.localdomain> <200906170941.44383.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2ea1731b0906172324g4654966eq22cf0bdbd3eafabf@mail.gmail.com>
+Received: from rex.securecomputing.com ([203.24.151.4]:48077 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1763520AbZFROHS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Jun 2009 10:07:18 -0400
+In-Reply-To: <200906170941.44383.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Marco Stornelli <marco.stornelli@gmail.com>
-Cc: Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux@arm.linux.org.uk, linux-m68k@lists.linux-m68k.org, uclinux-dist-devel@blackfin.uclinux.org, Linux Embedded <linux-embedded@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Daniel Walker <dwalker@soe.ucsc.edu>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, gerg@uclinux.org, linux-m68k@vger.kernel.org
 
-On Thu, Jun 18, 2009 at 08:24:35AM +0200, Marco Stornelli wrote:
-> 2009/6/18 Paul Mundt <lethal@linux-sh.org>:
-> > H8300 is a nommu platform, so it has no TLB to flush. Yoshinori Sato is
-> > the maintainer. Consult the MAINTAINERS file, that's what it is there for.
+
+Hi Arnd,
+
+Arnd Bergmann wrote:
+> On Wednesday 17 June 2009, Greg Ungerer wrote:
+>> [PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
+>>
+>> There is nothing different required between the non-mmu and mmu
+>> versions of hardirq.h, so merge them back into a single file.
+>>
+>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 > 
-> I know the MAINTAINERS file but for h8300 there isn't an exactly
-> indication (/arch/h8300 as for the other archs).
-> 
-The file patterns are a new thing, I guess not all of the platforms were
-updated. In any event:
+> AFAICT this file is also the same in the new asm-generic version, so you
+> could fall back to that directly.
 
-UCLINUX FOR RENESAS H8/300 (H8300)
-P:      Yoshinori Sato
-M:      ysato@users.sourceforge.jp
-W:      http://uclinux-h8.sourceforge.jp/
-S:      Supported
+Indeed it could. It will need a clean out of ack_bad_irq() in
+arch/m68knommu/kernel.irq.c, but otherwise looks good.
 
-Which is basically the first thing you find when looking for H8.
+I'll prepare a new patch that uses that.
+
+Regards
+Greg
+
+
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
