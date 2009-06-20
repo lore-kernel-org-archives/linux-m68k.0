@@ -1,13 +1,14 @@
 From: sfking@fdwdc.com
-Subject: [PATCH 02/13] generic GPIO support for the Freescale
-	Coldfire 5206.
-Date: Fri, 19 Jun 2009 18:11:01 -0700
-Message-ID: <1245460272-4329-3-git-send-email-sfking@fdwdc.com>
+Subject: [PATCH 03/13] generic GPIO support for the Freescale
+	Coldire 5206e.
+Date: Fri, 19 Jun 2009 18:11:02 -0700
+Message-ID: <1245460272-4329-4-git-send-email-sfking@fdwdc.com>
 References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-2-git-send-email-sfking@fdwdc.com>
+	<1245460272-4329-3-git-send-email-sfking@fdwdc.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <1245460272-4329-2-git-send-email-sfking@fdwdc.com>
+In-Reply-To: <1245460272-4329-3-git-send-email-sfking@fdwdc.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
 	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -21,43 +22,20 @@ To: linux-kernel@vger.kernel.org
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
 
-Add support for the 5206.
+Add support for the 5206e.
 
 Signed-off-by: Steven King <sfking@fdwdc.com>
 ---
- arch/m68k/include/asm/m5206sim.h      |   10 +++++-
- arch/m68knommu/platform/5206/Makefile |    2 +-
- arch/m68knommu/platform/5206/gpio.c   |   49 +++++++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+), 3 deletions(-)
- create mode 100644 arch/m68knommu/platform/5206/gpio.c
+ arch/m68knommu/platform/5206e/Makefile |    2 +-
+ arch/m68knommu/platform/5206e/config.c |    1 +
+ arch/m68knommu/platform/5206e/gpio.c   |   49 ++++++++++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+), 1 deletions(-)
+ create mode 100644 arch/m68knommu/platform/5206e/gpio.c
 
-diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
-index 7e3594d..7be8a2d 100644
---- a/arch/m68k/include/asm/m5206sim.h
-+++ b/arch/m68k/include/asm/m5206sim.h
-@@ -85,10 +85,16 @@
- #define	MCFSIM_PAR		0xcb		/* Pin Assignment reg (r/w) */
- #endif
- 
--#define	MCFSIM_PADDR		0x1c5		/* Parallel Direction (r/w) */
--#define	MCFSIM_PADAT		0x1c9		/* Parallel Port Value (r/w) */
-+#define	MCFSIM_PADDR		(MCF_MBAR + 0x1c5)	/* Parallel Direction (r/w) */
-+#define	MCFSIM_PADAT		(MCF_MBAR + 0x1c9)	/* Parallel Port Value (r/w) */
- 
- /*
-+ * Generic GPIO
-+ */
-+#define MCFGPIO_PIN_MAX		8
-+#define MCFGPIO_IRQ_VECBASE	-1
-+#define MCFGPIO_IRQ_MAX		-1
-+/*
-  *	Some symbol defines for the Parallel Port Pin Assignment Register
-  */
- #ifdef CONFIG_M5206e
-diff --git a/arch/m68knommu/platform/5206/Makefile b/arch/m68knommu/platform/5206/Makefile
+diff --git a/arch/m68knommu/platform/5206e/Makefile b/arch/m68knommu/platform/5206e/Makefile
 index a439d9a..113c333 100644
---- a/arch/m68knommu/platform/5206/Makefile
-+++ b/arch/m68knommu/platform/5206/Makefile
+--- a/arch/m68knommu/platform/5206e/Makefile
++++ b/arch/m68knommu/platform/5206e/Makefile
 @@ -14,5 +14,5 @@
  
  asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
@@ -65,11 +43,23 @@ index a439d9a..113c333 100644
 -obj-y := config.o
 +obj-y := config.o gpio.o
  
-diff --git a/arch/m68knommu/platform/5206/gpio.c b/arch/m68knommu/platform/5206/gpio.c
+diff --git a/arch/m68knommu/platform/5206e/config.c b/arch/m68knommu/platform/5206e/config.c
+index db90254..1b80073 100644
+--- a/arch/m68knommu/platform/5206e/config.c
++++ b/arch/m68knommu/platform/5206e/config.c
+@@ -16,6 +16,7 @@
+ #include <asm/machdep.h>
+ #include <asm/coldfire.h>
+ #include <asm/mcfsim.h>
++#include <asm/mcfuart.h>
+ #include <asm/mcfdma.h>
+ #include <asm/mcfuart.h>
+ 
+diff --git a/arch/m68knommu/platform/5206e/gpio.c b/arch/m68knommu/platform/5206e/gpio.c
 new file mode 100644
 index 0000000..20720e5
 --- /dev/null
-+++ b/arch/m68knommu/platform/5206/gpio.c
++++ b/arch/m68knommu/platform/5206e/gpio.c
 @@ -0,0 +1,49 @@
 +/*
 + * Coldfire generic GPIO support
