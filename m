@@ -1,8 +1,8 @@
 From: sfking@fdwdc.com
-Subject: [PATCH 10/13] generic GPIO support for the Freescale
-	Coldfire 5307.
-Date: Fri, 19 Jun 2009 18:11:09 -0700
-Message-ID: <1245460272-4329-11-git-send-email-sfking@fdwdc.com>
+Subject: [PATCH 08/13] generic GPIO support for the Freescale
+	Coldfire 5272.
+Date: Fri, 19 Jun 2009 18:11:07 -0700
+Message-ID: <1245460272-4329-9-git-send-email-sfking@fdwdc.com>
 References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-2-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-3-git-send-email-sfking@fdwdc.com>
@@ -11,11 +11,9 @@ References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-6-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-7-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-8-git-send-email-sfking@fdwdc.com>
-	<1245460272-4329-9-git-send-email-sfking@fdwdc.com>
-	<1245460272-4329-10-git-send-email-sfking@fdwdc.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <1245460272-4329-10-git-send-email-sfking@fdwdc.com>
+In-Reply-To: <1245460272-4329-8-git-send-email-sfking@fdwdc.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
 	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -29,55 +27,69 @@ To: linux-kernel@vger.kernel.org
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
 
-Add support for the 5307.
+Add support for the 5272.
 
 Signed-off-by: Steven King <sfking@fdwdc.com>
 ---
- arch/m68k/include/asm/m5307sim.h      |   11 ++++++-
- arch/m68knommu/platform/5307/Makefile |    2 +-
- arch/m68knommu/platform/5307/gpio.c   |   49 +++++++++++++++++++++++++++++++++
- 3 files changed, 59 insertions(+), 3 deletions(-)
- create mode 100644 arch/m68knommu/platform/5307/gpio.c
+ arch/m68k/include/asm/m5272sim.h      |   24 ++++++----
+ arch/m68knommu/platform/5272/Makefile |    2 +-
+ arch/m68knommu/platform/5272/gpio.c   |   81 +++++++++++++++++++++++++++++++++
+ 3 files changed, 97 insertions(+), 10 deletions(-)
+ create mode 100644 arch/m68knommu/platform/5272/gpio.c
 
-diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
-index 5886728..6a1870c 100644
---- a/arch/m68k/include/asm/m5307sim.h
-+++ b/arch/m68k/include/asm/m5307sim.h
-@@ -90,8 +90,15 @@
- #define MCFSIM_DACR1		0x110		/* DRAM 1 Addr and Ctrl (r/w) */
- #define MCFSIM_DMR1		0x114		/* DRAM 1 Mask reg (r/w) */
+diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
+index 6217edc..0665ba1 100644
+--- a/arch/m68k/include/asm/m5272sim.h
++++ b/arch/m68k/include/asm/m5272sim.h
+@@ -63,16 +63,22 @@
+ #define	MCFSIM_DCMR1		0x5c		/* DRAM 1 Mask reg (r/w) */
+ #define	MCFSIM_DCCR1		0x63		/* DRAM 1 Control reg (r/w) */
  
--#define	MCFSIM_PADDR		0x244		/* Parallel Direction (r/w) */
--#define	MCFSIM_PADAT		0x248		/* Parallel Data (r/w) */
-+#define	MCFSIM_PADDR		(MCF_MBAR + 0x244)
-+#define	MCFSIM_PADAT		(MCF_MBAR + 0x248)
-+
+-#define	MCFSIM_PACNT		0x80		/* Port A Control (r/w) */
+-#define	MCFSIM_PADDR		0x84		/* Port A Direction (r/w) */
+-#define	MCFSIM_PADAT		0x86		/* Port A Data (r/w) */
+-#define	MCFSIM_PBCNT		0x88		/* Port B Control (r/w) */
+-#define	MCFSIM_PBDDR		0x8c		/* Port B Direction (r/w) */
+-#define	MCFSIM_PBDAT		0x8e		/* Port B Data (r/w) */
+-#define	MCFSIM_PCDDR		0x94		/* Port C Direction (r/w) */
+-#define	MCFSIM_PCDAT		0x96		/* Port C Data (r/w) */
+-#define	MCFSIM_PDCNT		0x98		/* Port D Control (r/w) */
++#define	MCFSIM_PACNT		(MCF_MBAR + 0x80) /* Port A Control (r/w) */
++#define	MCFSIM_PADDR		(MCF_MBAR + 0x84) /* Port A Direction (r/w) */
++#define	MCFSIM_PADAT		(MCF_MBAR + 0x86) /* Port A Data (r/w) */
++#define	MCFSIM_PBCNT		(MCF_MBAR + 0x88) /* Port B Control (r/w) */
++#define	MCFSIM_PBDDR		(MCF_MBAR + 0x8c) /* Port B Direction (r/w) */
++#define	MCFSIM_PBDAT		(MCF_MBAR + 0x8e) /* Port B Data (r/w) */
++#define	MCFSIM_PCDDR		(MCF_MBAR + 0x94) /* Port C Direction (r/w) */
++#define	MCFSIM_PCDAT		(MCF_MBAR + 0x96) /* Port C Data (r/w) */
++#define	MCFSIM_PDCNT		(MCF_MBAR + 0x98) /* Port D Control (r/w) */
+ 
+ 
 +/*
 + * Generic GPIO support
 + */
-+#define MCFGPIO_PIN_MAX			16
++#define MCFGPIO_PIN_MAX			48
 +#define MCFGPIO_IRQ_MAX			-1
 +#define MCFGPIO_IRQ_VECBASE		-1
- 
- 
- /* Definition offset address for CS2-7  -- old mask 5307 */
-diff --git a/arch/m68knommu/platform/5307/Makefile b/arch/m68knommu/platform/5307/Makefile
-index cfd5868..667db65 100644
---- a/arch/m68knommu/platform/5307/Makefile
-+++ b/arch/m68knommu/platform/5307/Makefile
+ /****************************************************************************/
+ #endif	/* m5272sim_h */
+diff --git a/arch/m68knommu/platform/5272/Makefile b/arch/m68knommu/platform/5272/Makefile
+index 26135d9..3d90e6d 100644
+--- a/arch/m68knommu/platform/5272/Makefile
++++ b/arch/m68knommu/platform/5272/Makefile
 @@ -14,5 +14,5 @@
  
  asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
  
--obj-y	+= config.o
-+obj-y	+= config.o gpio.o
+-obj-y := config.o
++obj-y := config.o gpio.o
  
-diff --git a/arch/m68knommu/platform/5307/gpio.c b/arch/m68knommu/platform/5307/gpio.c
+diff --git a/arch/m68knommu/platform/5272/gpio.c b/arch/m68knommu/platform/5272/gpio.c
 new file mode 100644
-index 0000000..7511068
+index 0000000..1542dd5
 --- /dev/null
-+++ b/arch/m68knommu/platform/5307/gpio.c
-@@ -0,0 +1,49 @@
++++ b/arch/m68knommu/platform/5272/gpio.c
+@@ -0,0 +1,81 @@
 +/*
 + * Coldfire generic GPIO support
 + *
@@ -103,7 +115,7 @@ index 0000000..7511068
 +static struct mcf_gpio_chip mcf_gpio_chips[] = {
 +	{
 +		.gpio_chip			= {
-+			.label			= "PP",
++			.label			= "PA",
 +			.request		= mcf_gpio_request,
 +			.free			= mcf_gpio_free,
 +			.direction_input	= mcf_gpio_direction_input,
@@ -115,6 +127,38 @@ index 0000000..7511068
 +		.pddr				= MCFSIM_PADDR,
 +		.podr				= MCFSIM_PADAT,
 +		.ppdr				= MCFSIM_PADAT,
++	},
++	{
++		.gpio_chip			= {
++			.label			= "PB",
++			.request		= mcf_gpio_request,
++			.free			= mcf_gpio_free,
++			.direction_input	= mcf_gpio_direction_input,
++			.direction_output	= mcf_gpio_direction_output,
++			.get			= mcf_gpio_get_value,
++			.set			= mcf_gpio_set_value,
++			.base			= 16,
++			.ngpio			= 16,
++		},
++		.pddr				= MCFSIM_PBDDR,
++		.podr				= MCFSIM_PBDAT,
++		.ppdr				= MCFSIM_PBDAT,
++	},
++	{
++		.gpio_chip			= {
++			.label			= "PC",
++			.request		= mcf_gpio_request,
++			.free			= mcf_gpio_free,
++			.direction_input	= mcf_gpio_direction_input,
++			.direction_output	= mcf_gpio_direction_output,
++			.get			= mcf_gpio_get_value,
++			.set			= mcf_gpio_set_value,
++			.base			= 32,
++			.ngpio			= 16,
++		},
++		.pddr				= MCFSIM_PCDDR,
++		.podr				= MCFSIM_PCDAT,
++		.ppdr				= MCFSIM_PCDAT,
 +	},
 +};
 +
