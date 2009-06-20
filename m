@@ -1,8 +1,8 @@
 From: sfking@fdwdc.com
-Subject: [PATCH 11/13] generic GPIO support for the Freescale
-	Coldfire 532x.
-Date: Fri, 19 Jun 2009 18:11:10 -0700
-Message-ID: <1245460272-4329-12-git-send-email-sfking@fdwdc.com>
+Subject: [PATCH 10/13] generic GPIO support for the Freescale
+	Coldfire 5307.
+Date: Fri, 19 Jun 2009 18:11:09 -0700
+Message-ID: <1245460272-4329-11-git-send-email-sfking@fdwdc.com>
 References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-2-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-3-git-send-email-sfking@fdwdc.com>
@@ -13,10 +13,9 @@ References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-8-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-9-git-send-email-sfking@fdwdc.com>
 	<1245460272-4329-10-git-send-email-sfking@fdwdc.com>
-	<1245460272-4329-11-git-send-email-sfking@fdwdc.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <1245460272-4329-11-git-send-email-sfking@fdwdc.com>
+In-Reply-To: <1245460272-4329-10-git-send-email-sfking@fdwdc.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
 	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -30,227 +29,55 @@ To: linux-kernel@vger.kernel.org
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
 
-Add support for the 532x.
+Add support for the 5307.
 
 Signed-off-by: Steven King <sfking@fdwdc.com>
 ---
- arch/m68k/include/asm/m532xsim.h      |  154 ++++++++-------
- arch/m68knommu/platform/532x/Makefile |    2 +-
- arch/m68knommu/platform/532x/config.c |    4 +-
- arch/m68knommu/platform/532x/gpio.c   |  337 +++++++++++++++++++++++++++++++++
- 4 files changed, 424 insertions(+), 73 deletions(-)
- create mode 100644 arch/m68knommu/platform/532x/gpio.c
+ arch/m68k/include/asm/m5307sim.h      |   11 ++++++-
+ arch/m68knommu/platform/5307/Makefile |    2 +-
+ arch/m68knommu/platform/5307/gpio.c   |   49 +++++++++++++++++++++++++++++++++
+ 3 files changed, 59 insertions(+), 3 deletions(-)
+ create mode 100644 arch/m68knommu/platform/5307/gpio.c
 
-diff --git a/arch/m68k/include/asm/m532xsim.h b/arch/m68k/include/asm/m532xsim.h
-index ce60345..931cf5f 100644
---- a/arch/m68k/include/asm/m532xsim.h
-+++ b/arch/m68k/include/asm/m532xsim.h
-@@ -410,70 +410,70 @@
-  *********************************************************************/
+diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
+index 5886728..6a1870c 100644
+--- a/arch/m68k/include/asm/m5307sim.h
++++ b/arch/m68k/include/asm/m5307sim.h
+@@ -90,8 +90,15 @@
+ #define MCFSIM_DACR1		0x110		/* DRAM 1 Addr and Ctrl (r/w) */
+ #define MCFSIM_DMR1		0x114		/* DRAM 1 Mask reg (r/w) */
  
- /* Register read/write macros */
--#define MCF_GPIO_PODR_FECH		MCF_REG08(0xFC0A4000)
--#define MCF_GPIO_PODR_FECL		MCF_REG08(0xFC0A4001)
--#define MCF_GPIO_PODR_SSI		MCF_REG08(0xFC0A4002)
--#define MCF_GPIO_PODR_BUSCTL		MCF_REG08(0xFC0A4003)
--#define MCF_GPIO_PODR_BE		MCF_REG08(0xFC0A4004)
--#define MCF_GPIO_PODR_CS		MCF_REG08(0xFC0A4005)
--#define MCF_GPIO_PODR_PWM		MCF_REG08(0xFC0A4006)
--#define MCF_GPIO_PODR_FECI2C		MCF_REG08(0xFC0A4007)
--#define MCF_GPIO_PODR_UART		MCF_REG08(0xFC0A4009)
--#define MCF_GPIO_PODR_QSPI		MCF_REG08(0xFC0A400A)
--#define MCF_GPIO_PODR_TIMER		MCF_REG08(0xFC0A400B)
--#define MCF_GPIO_PODR_LCDDATAH		MCF_REG08(0xFC0A400D)
--#define MCF_GPIO_PODR_LCDDATAM		MCF_REG08(0xFC0A400E)
--#define MCF_GPIO_PODR_LCDDATAL		MCF_REG08(0xFC0A400F)
--#define MCF_GPIO_PODR_LCDCTLH		MCF_REG08(0xFC0A4010)
--#define MCF_GPIO_PODR_LCDCTLL		MCF_REG08(0xFC0A4011)
--#define MCF_GPIO_PDDR_FECH		MCF_REG08(0xFC0A4014)
--#define MCF_GPIO_PDDR_FECL		MCF_REG08(0xFC0A4015)
--#define MCF_GPIO_PDDR_SSI		MCF_REG08(0xFC0A4016)
--#define MCF_GPIO_PDDR_BUSCTL		MCF_REG08(0xFC0A4017)
--#define MCF_GPIO_PDDR_BE		MCF_REG08(0xFC0A4018)
--#define MCF_GPIO_PDDR_CS		MCF_REG08(0xFC0A4019)
--#define MCF_GPIO_PDDR_PWM		MCF_REG08(0xFC0A401A)
--#define MCF_GPIO_PDDR_FECI2C		MCF_REG08(0xFC0A401B)
--#define MCF_GPIO_PDDR_UART		MCF_REG08(0xFC0A401C)
--#define MCF_GPIO_PDDR_QSPI		MCF_REG08(0xFC0A401E)
--#define MCF_GPIO_PDDR_TIMER		MCF_REG08(0xFC0A401F)
--#define MCF_GPIO_PDDR_LCDDATAH		MCF_REG08(0xFC0A4021)
--#define MCF_GPIO_PDDR_LCDDATAM		MCF_REG08(0xFC0A4022)
--#define MCF_GPIO_PDDR_LCDDATAL		MCF_REG08(0xFC0A4023)
--#define MCF_GPIO_PDDR_LCDCTLH		MCF_REG08(0xFC0A4024)
--#define MCF_GPIO_PDDR_LCDCTLL		MCF_REG08(0xFC0A4025)
--#define MCF_GPIO_PPDSDR_FECH		MCF_REG08(0xFC0A4028)
--#define MCF_GPIO_PPDSDR_FECL		MCF_REG08(0xFC0A4029)
--#define MCF_GPIO_PPDSDR_SSI		MCF_REG08(0xFC0A402A)
--#define MCF_GPIO_PPDSDR_BUSCTL		MCF_REG08(0xFC0A402B)
--#define MCF_GPIO_PPDSDR_BE		MCF_REG08(0xFC0A402C)
--#define MCF_GPIO_PPDSDR_CS		MCF_REG08(0xFC0A402D)
--#define MCF_GPIO_PPDSDR_PWM		MCF_REG08(0xFC0A402E)
--#define MCF_GPIO_PPDSDR_FECI2C		MCF_REG08(0xFC0A402F)
--#define MCF_GPIO_PPDSDR_UART		MCF_REG08(0xFC0A4031)
--#define MCF_GPIO_PPDSDR_QSPI		MCF_REG08(0xFC0A4032)
--#define MCF_GPIO_PPDSDR_TIMER		MCF_REG08(0xFC0A4033)
--#define MCF_GPIO_PPDSDR_LCDDATAH	MCF_REG08(0xFC0A4035)
--#define MCF_GPIO_PPDSDR_LCDDATAM	MCF_REG08(0xFC0A4036)
--#define MCF_GPIO_PPDSDR_LCDDATAL	MCF_REG08(0xFC0A4037)
--#define MCF_GPIO_PPDSDR_LCDCTLH		MCF_REG08(0xFC0A4038)
--#define MCF_GPIO_PPDSDR_LCDCTLL		MCF_REG08(0xFC0A4039)
--#define MCF_GPIO_PCLRR_FECH		MCF_REG08(0xFC0A403C)
--#define MCF_GPIO_PCLRR_FECL		MCF_REG08(0xFC0A403D)
--#define MCF_GPIO_PCLRR_SSI		MCF_REG08(0xFC0A403E)
--#define MCF_GPIO_PCLRR_BUSCTL		MCF_REG08(0xFC0A403F)
--#define MCF_GPIO_PCLRR_BE		MCF_REG08(0xFC0A4040)
--#define MCF_GPIO_PCLRR_CS		MCF_REG08(0xFC0A4041)
--#define MCF_GPIO_PCLRR_PWM		MCF_REG08(0xFC0A4042)
--#define MCF_GPIO_PCLRR_FECI2C		MCF_REG08(0xFC0A4043)
--#define MCF_GPIO_PCLRR_UART		MCF_REG08(0xFC0A4045)
--#define MCF_GPIO_PCLRR_QSPI		MCF_REG08(0xFC0A4046)
--#define MCF_GPIO_PCLRR_TIMER		MCF_REG08(0xFC0A4047)
--#define MCF_GPIO_PCLRR_LCDDATAH		MCF_REG08(0xFC0A4049)
--#define MCF_GPIO_PCLRR_LCDDATAM		MCF_REG08(0xFC0A404A)
--#define MCF_GPIO_PCLRR_LCDDATAL		MCF_REG08(0xFC0A404B)
--#define MCF_GPIO_PCLRR_LCDCTLH		MCF_REG08(0xFC0A404C)
--#define MCF_GPIO_PCLRR_LCDCTLL		MCF_REG08(0xFC0A404D)
-+#define MCFGPIO_PODR_FECH		(0xFC0A4000)
-+#define MCFGPIO_PODR_FECL		(0xFC0A4001)
-+#define MCFGPIO_PODR_SSI		(0xFC0A4002)
-+#define MCFGPIO_PODR_BUSCTL		(0xFC0A4003)
-+#define MCFGPIO_PODR_BE			(0xFC0A4004)
-+#define MCFGPIO_PODR_CS			(0xFC0A4005)
-+#define MCFGPIO_PODR_PWM		(0xFC0A4006)
-+#define MCFGPIO_PODR_FECI2C		(0xFC0A4007)
-+#define MCFGPIO_PODR_UART		(0xFC0A4009)
-+#define MCFGPIO_PODR_QSPI		(0xFC0A400A)
-+#define MCFGPIO_PODR_TIMER		(0xFC0A400B)
-+#define MCFGPIO_PODR_LCDDATAH		(0xFC0A400D)
-+#define MCFGPIO_PODR_LCDDATAM		(0xFC0A400E)
-+#define MCFGPIO_PODR_LCDDATAL		(0xFC0A400F)
-+#define MCFGPIO_PODR_LCDCTLH		(0xFC0A4010)
-+#define MCFGPIO_PODR_LCDCTLL		(0xFC0A4011)
-+#define MCFGPIO_PDDR_FECH		(0xFC0A4014)
-+#define MCFGPIO_PDDR_FECL		(0xFC0A4015)
-+#define MCFGPIO_PDDR_SSI		(0xFC0A4016)
-+#define MCFGPIO_PDDR_BUSCTL		(0xFC0A4017)
-+#define MCFGPIO_PDDR_BE			(0xFC0A4018)
-+#define MCFGPIO_PDDR_CS			(0xFC0A4019)
-+#define MCFGPIO_PDDR_PWM		(0xFC0A401A)
-+#define MCFGPIO_PDDR_FECI2C		(0xFC0A401B)
-+#define MCFGPIO_PDDR_UART		(0xFC0A401C)
-+#define MCFGPIO_PDDR_QSPI		(0xFC0A401E)
-+#define MCFGPIO_PDDR_TIMER		(0xFC0A401F)
-+#define MCFGPIO_PDDR_LCDDATAH		(0xFC0A4021)
-+#define MCFGPIO_PDDR_LCDDATAM		(0xFC0A4022)
-+#define MCFGPIO_PDDR_LCDDATAL		(0xFC0A4023)
-+#define MCFGPIO_PDDR_LCDCTLH		(0xFC0A4024)
-+#define MCFGPIO_PDDR_LCDCTLL		(0xFC0A4025)
-+#define MCFGPIO_PPDSDR_FECH		(0xFC0A4028)
-+#define MCFGPIO_PPDSDR_FECL		(0xFC0A4029)
-+#define MCFGPIO_PPDSDR_SSI		(0xFC0A402A)
-+#define MCFGPIO_PPDSDR_BUSCTL		(0xFC0A402B)
-+#define MCFGPIO_PPDSDR_BE		(0xFC0A402C)
-+#define MCFGPIO_PPDSDR_CS		(0xFC0A402D)
-+#define MCFGPIO_PPDSDR_PWM		(0xFC0A402E)
-+#define MCFGPIO_PPDSDR_FECI2C		(0xFC0A402F)
-+#define MCFGPIO_PPDSDR_UART		(0xFC0A4031)
-+#define MCFGPIO_PPDSDR_QSPI		(0xFC0A4032)
-+#define MCFGPIO_PPDSDR_TIMER		(0xFC0A4033)
-+#define MCFGPIO_PPDSDR_LCDDATAH		(0xFC0A4035)
-+#define MCFGPIO_PPDSDR_LCDDATAM		(0xFC0A4036)
-+#define MCFGPIO_PPDSDR_LCDDATAL		(0xFC0A4037)
-+#define MCFGPIO_PPDSDR_LCDCTLH		(0xFC0A4038)
-+#define MCFGPIO_PPDSDR_LCDCTLL		(0xFC0A4039)
-+#define MCFGPIO_PCLRR_FECH		(0xFC0A403C)
-+#define MCFGPIO_PCLRR_FECL		(0xFC0A403D)
-+#define MCFGPIO_PCLRR_SSI		(0xFC0A403E)
-+#define MCFGPIO_PCLRR_BUSCTL		(0xFC0A403F)
-+#define MCFGPIO_PCLRR_BE		(0xFC0A4040)
-+#define MCFGPIO_PCLRR_CS		(0xFC0A4041)
-+#define MCFGPIO_PCLRR_PWM		(0xFC0A4042)
-+#define MCFGPIO_PCLRR_FECI2C		(0xFC0A4043)
-+#define MCFGPIO_PCLRR_UART		(0xFC0A4045)
-+#define MCFGPIO_PCLRR_QSPI		(0xFC0A4046)
-+#define MCFGPIO_PCLRR_TIMER		(0xFC0A4047)
-+#define MCFGPIO_PCLRR_LCDDATAH		(0xFC0A4049)
-+#define MCFGPIO_PCLRR_LCDDATAM		(0xFC0A404A)
-+#define MCFGPIO_PCLRR_LCDDATAL		(0xFC0A404B)
-+#define MCFGPIO_PCLRR_LCDCTLH		(0xFC0A404C)
-+#define MCFGPIO_PCLRR_LCDCTLL		(0xFC0A404D)
- #define MCF_GPIO_PAR_FEC		MCF_REG08(0xFC0A4050)
- #define MCF_GPIO_PAR_PWM		MCF_REG08(0xFC0A4051)
- #define MCF_GPIO_PAR_BUSCTL		MCF_REG08(0xFC0A4052)
-@@ -1175,6 +1175,20 @@
- /* Bit definitions and macros for MCF_GPIO_DSCR_IRQ */
- #define MCF_GPIO_DSCR_IRQ_IRQ_DSE(x)               (((x)&0x03)<<0)
- 
+-#define	MCFSIM_PADDR		0x244		/* Parallel Direction (r/w) */
+-#define	MCFSIM_PADAT		0x248		/* Parallel Data (r/w) */
++#define	MCFSIM_PADDR		(MCF_MBAR + 0x244)
++#define	MCFSIM_PADAT		(MCF_MBAR + 0x248)
++
 +/*
 + * Generic GPIO support
 + */
-+#define MCFGPIO_PODR			MCFGPIO_PODR_FECH
-+#define MCFGPIO_PDDR			MCFGPIO_PDDR_FECH
-+#define MCFGPIO_PPDR			MCFGPIO_PPDSDR_FECH
-+#define MCFGPIO_SETR			MCFGPIO_PPDSDR_FECH
-+#define MCFGPIO_CLRR			MCFGPIO_PCLRR_FECH
-+
-+#define MCFGPIO_PIN_MAX			136
-+#define MCFGPIO_IRQ_MAX			8
-+#define MCFGPIO_IRQ_VECBASE		MCFINT_VECBASE
-+
-+
- /*********************************************************************
-  *
-  * Interrupt Controller (INTC)
-@@ -2142,12 +2156,12 @@
-  *********************************************************************/
++#define MCFGPIO_PIN_MAX			16
++#define MCFGPIO_IRQ_MAX			-1
++#define MCFGPIO_IRQ_VECBASE		-1
  
- /* Register read/write macros */
--#define MCF_EPORT_EPPAR                MCF_REG16(0xFC094000)
--#define MCF_EPORT_EPDDR                MCF_REG08(0xFC094002)
--#define MCF_EPORT_EPIER                MCF_REG08(0xFC094003)
--#define MCF_EPORT_EPDR                 MCF_REG08(0xFC094004)
--#define MCF_EPORT_EPPDR                MCF_REG08(0xFC094005)
--#define MCF_EPORT_EPFR                 MCF_REG08(0xFC094006)
-+#define MCFEPORT_EPPAR                (0xFC094000)
-+#define MCFEPORT_EPDDR                (0xFC094002)
-+#define MCFEPORT_EPIER                (0xFC094003)
-+#define MCFEPORT_EPDR                 (0xFC094004)
-+#define MCFEPORT_EPPDR                (0xFC094005)
-+#define MCFEPORT_EPFR                 (0xFC094006)
  
- /* Bit definitions and macros for MCF_EPORT_EPPAR */
- #define MCF_EPORT_EPPAR_EPPA1(x)       (((x)&0x0003)<<2)
-diff --git a/arch/m68knommu/platform/532x/Makefile b/arch/m68knommu/platform/532x/Makefile
-index e431912..4cc2324 100644
---- a/arch/m68knommu/platform/532x/Makefile
-+++ b/arch/m68knommu/platform/532x/Makefile
-@@ -15,4 +15,4 @@
+ /* Definition offset address for CS2-7  -- old mask 5307 */
+diff --git a/arch/m68knommu/platform/5307/Makefile b/arch/m68knommu/platform/5307/Makefile
+index cfd5868..667db65 100644
+--- a/arch/m68knommu/platform/5307/Makefile
++++ b/arch/m68knommu/platform/5307/Makefile
+@@ -14,5 +14,5 @@
+ 
  asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
  
- #obj-y := config.o usb-mcf532x.o spi-mcf532x.o
--obj-y := config.o
-+obj-y := config.o gpio.o
-diff --git a/arch/m68knommu/platform/532x/config.c b/arch/m68knommu/platform/532x/config.c
-index 591f2f8..6dd035f 100644
---- a/arch/m68knommu/platform/532x/config.c
-+++ b/arch/m68knommu/platform/532x/config.c
-@@ -432,8 +432,8 @@ void gpio_init(void)
- 	/* Initialize TIN3 as a GPIO output to enable the write
- 	   half of the latch */
- 	MCF_GPIO_PAR_TIMER = 0x00;
--	MCF_GPIO_PDDR_TIMER = 0x08;
--	MCF_GPIO_PCLRR_TIMER = 0x0;
-+	__raw_writeb(0x08, MCFGPIO_PDDR_TIMER);
-+	__raw_writeb(0x00, MCFGPIO_PCLRR_TIMER);
+-obj-y	+= config.o
++obj-y	+= config.o gpio.o
  
- }
- 
-diff --git a/arch/m68knommu/platform/532x/gpio.c b/arch/m68knommu/platform/532x/gpio.c
+diff --git a/arch/m68knommu/platform/5307/gpio.c b/arch/m68knommu/platform/5307/gpio.c
 new file mode 100644
-index 0000000..73d911b
+index 0000000..7511068
 --- /dev/null
-+++ b/arch/m68knommu/platform/532x/gpio.c
-@@ -0,0 +1,337 @@
++++ b/arch/m68knommu/platform/5307/gpio.c
+@@ -0,0 +1,49 @@
 +/*
 + * Coldfire generic GPIO support
 + *
@@ -276,306 +103,18 @@ index 0000000..73d911b
 +static struct mcf_gpio_chip mcf_gpio_chips[] = {
 +	{
 +		.gpio_chip			= {
-+			.label			= "PIRQ",
++			.label			= "PP",
 +			.request		= mcf_gpio_request,
 +			.free			= mcf_gpio_free,
 +			.direction_input	= mcf_gpio_direction_input,
 +			.direction_output	= mcf_gpio_direction_output,
 +			.get			= mcf_gpio_get_value,
 +			.set			= mcf_gpio_set_value,
-+			.ngpio			= 8,
++			.ngpio			= 16,
 +		},
-+		.pddr				= MCFEPORT_EPDDR,
-+		.podr				= MCFEPORT_EPDR,
-+		.ppdr				= MCFEPORT_EPPDR,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "FECH",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 8,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_FECH,
-+		.podr				= MCFGPIO_PODR_FECH,
-+		.ppdr				= MCFGPIO_PPDSDR_FECH,
-+		.setr				= MCFGPIO_PPDSDR_FECH,
-+		.clrr				= MCFGPIO_PCLRR_FECH,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "FECL",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 16,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_FECL,
-+		.podr				= MCFGPIO_PODR_FECL,
-+		.ppdr				= MCFGPIO_PPDSDR_FECL,
-+		.setr				= MCFGPIO_PPDSDR_FECL,
-+		.clrr				= MCFGPIO_PCLRR_FECL,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "SSI",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 24,
-+			.ngpio			= 5,
-+		},
-+		.pddr				= MCFGPIO_PDDR_SSI,
-+		.podr				= MCFGPIO_PODR_SSI,
-+		.ppdr				= MCFGPIO_PPDSDR_SSI,
-+		.setr				= MCFGPIO_PPDSDR_SSI,
-+		.clrr				= MCFGPIO_PCLRR_SSI,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "BUSCTL",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 32,
-+			.ngpio			= 4,
-+		},
-+		.pddr				= MCFGPIO_PDDR_BUSCTL,
-+		.podr				= MCFGPIO_PODR_BUSCTL,
-+		.ppdr				= MCFGPIO_PPDSDR_BUSCTL,
-+		.setr				= MCFGPIO_PPDSDR_BUSCTL,
-+		.clrr				= MCFGPIO_PCLRR_BUSCTL,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "BE",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 40,
-+			.ngpio			= 4,
-+		},
-+		.pddr				= MCFGPIO_PDDR_BE,
-+		.podr				= MCFGPIO_PODR_BE,
-+		.ppdr				= MCFGPIO_PPDSDR_BE,
-+		.setr				= MCFGPIO_PPDSDR_BE,
-+		.clrr				= MCFGPIO_PCLRR_BE,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "CS",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 49,
-+			.ngpio			= 5,
-+		},
-+		.pddr				= MCFGPIO_PDDR_CS,
-+		.podr				= MCFGPIO_PODR_CS,
-+		.ppdr				= MCFGPIO_PPDSDR_CS,
-+		.setr				= MCFGPIO_PPDSDR_CS,
-+		.clrr				= MCFGPIO_PCLRR_CS,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "PWM",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 58,
-+			.ngpio			= 4,
-+		},
-+		.pddr				= MCFGPIO_PDDR_PWM,
-+		.podr				= MCFGPIO_PODR_PWM,
-+		.ppdr				= MCFGPIO_PPDSDR_PWM,
-+		.setr				= MCFGPIO_PPDSDR_PWM,
-+		.clrr				= MCFGPIO_PCLRR_PWM,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "FECI2C",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 64,
-+			.ngpio			= 4,
-+		},
-+		.pddr				= MCFGPIO_PDDR_FECI2C,
-+		.podr				= MCFGPIO_PODR_FECI2C,
-+		.ppdr				= MCFGPIO_PPDSDR_FECI2C,
-+		.setr				= MCFGPIO_PPDSDR_FECI2C,
-+		.clrr				= MCFGPIO_PCLRR_FECI2C,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "UART",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 72,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_UART,
-+		.podr				= MCFGPIO_PODR_UART,
-+		.ppdr				= MCFGPIO_PPDSDR_UART,
-+		.setr				= MCFGPIO_PPDSDR_UART,
-+		.clrr				= MCFGPIO_PCLRR_UART,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "QSPI",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 80,
-+			.ngpio			= 6,
-+		},
-+		.pddr				= MCFGPIO_PDDR_QSPI,
-+		.podr				= MCFGPIO_PODR_QSPI,
-+		.ppdr				= MCFGPIO_PPDSDR_QSPI,
-+		.setr				= MCFGPIO_PPDSDR_QSPI,
-+		.clrr				= MCFGPIO_PCLRR_QSPI,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "TIMER",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 88,
-+			.ngpio			= 4,
-+		},
-+		.pddr				= MCFGPIO_PDDR_TIMER,
-+		.podr				= MCFGPIO_PODR_TIMER,
-+		.ppdr				= MCFGPIO_PPDSDR_TIMER,
-+		.setr				= MCFGPIO_PPDSDR_TIMER,
-+		.clrr				= MCFGPIO_PCLRR_TIMER,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "LCDDATAH",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 96,
-+			.ngpio			= 2,
-+		},
-+		.pddr				= MCFGPIO_PDDR_LCDDATAH,
-+		.podr				= MCFGPIO_PODR_LCDDATAH,
-+		.ppdr				= MCFGPIO_PPDSDR_LCDDATAH,
-+		.setr				= MCFGPIO_PPDSDR_LCDDATAH,
-+		.clrr				= MCFGPIO_PCLRR_LCDDATAH,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "LCDDATAM",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 104,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_LCDDATAM,
-+		.podr				= MCFGPIO_PODR_LCDDATAM,
-+		.ppdr				= MCFGPIO_PPDSDR_LCDDATAM,
-+		.setr				= MCFGPIO_PPDSDR_LCDDATAM,
-+		.clrr				= MCFGPIO_PCLRR_LCDDATAM,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "LCDDATAL",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 112,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_LCDDATAL,
-+		.podr				= MCFGPIO_PODR_LCDDATAL,
-+		.ppdr				= MCFGPIO_PPDSDR_LCDDATAL,
-+		.setr				= MCFGPIO_PPDSDR_LCDDATAL,
-+		.clrr				= MCFGPIO_PCLRR_LCDDATAL,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "LCDCTLH",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 120,
-+			.ngpio			= 1,
-+		},
-+		.pddr				= MCFGPIO_PDDR_LCDCTLH,
-+		.podr				= MCFGPIO_PODR_LCDCTLH,
-+		.ppdr				= MCFGPIO_PPDSDR_LCDCTLH,
-+		.setr				= MCFGPIO_PPDSDR_LCDCTLH,
-+		.clrr				= MCFGPIO_PCLRR_LCDCTLH,
-+	},
-+	{
-+		.gpio_chip			= {
-+			.label			= "LCDCTLL",
-+			.request		= mcf_gpio_request,
-+			.free			= mcf_gpio_free,
-+			.direction_input	= mcf_gpio_direction_input,
-+			.direction_output	= mcf_gpio_direction_output,
-+			.get			= mcf_gpio_get_value,
-+			.set			= mcf_gpio_set_value_fast,
-+			.base			= 128,
-+			.ngpio			= 8,
-+		},
-+		.pddr				= MCFGPIO_PDDR_LCDCTLL,
-+		.podr				= MCFGPIO_PODR_LCDCTLL,
-+		.ppdr				= MCFGPIO_PPDSDR_LCDCTLL,
-+		.setr				= MCFGPIO_PPDSDR_LCDCTLL,
-+		.clrr				= MCFGPIO_PCLRR_LCDCTLL,
++		.pddr				= MCFSIM_PADDR,
++		.podr				= MCFSIM_PADAT,
++		.ppdr				= MCFSIM_PADAT,
 +	},
 +};
 +
