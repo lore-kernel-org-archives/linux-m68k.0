@@ -1,54 +1,34 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
-Date: Thu, 25 Jun 2009 17:25:06 +1000
-Message-ID: <4A432652.9070907@snapgear.com>
-References: <200906170710.n5H7AxxV009015@localhost.localdomain> <200906170941.44383.arnd@arndb.de> <4A3A4A16.6080307@snapgear.com>
+From: British Telecom Plc <kevin_jones@rrohio.com>
+Subject: Confirm Your Winnings !!!
+Date: Fri, 26 Jun 2009 13:23:54 -0500
+Message-ID: <7h9gbp$dkjf45@rrcs-agw-01b.hrndva.rr.com>
+Reply-To: btprizeoffice90@btinternet.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:38576 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1752332AbZFYHZH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Jun 2009 03:25:07 -0400
-In-Reply-To: <4A3A4A16.6080307@snapgear.com>
+Received: from hrndva-commlb.mail.rr.com ([71.74.57.8]:54840 "EHLO
+	hrndva-commlb.mail.rr.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755272AbZFZSXx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Jun 2009 14:23:53 -0400
+Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
+          by hrndva-comm-mta01.mail.rr.com with ESMTP
+          id <20090626182355.QBJW7509.hrndva-comm-mta01.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
+          for <linux-m68k@vger.kernel.org>; Fri, 26 Jun 2009 18:23:55 +0000
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, gerg@uclinux.org, linux-m68k@vger.kernel.org
+To: info@co.uk
 
-Hi Arnd,
+Your email ID has been awarded =A31,000,000,00 GBP in the NEW YEAR PROM=
+O,Reply us with your info: (btprizeoffice90@btinternet.com)
 
-Greg Ungerer wrote:
-> Arnd Bergmann wrote:
->> On Wednesday 17 June 2009, Greg Ungerer wrote:
->>> [PATCH] m68k: merge the non-mmu and mmu versions of hardirq.h
->>>
->>> There is nothing different required between the non-mmu and mmu
->>> versions of hardirq.h, so merge them back into a single file.
->>>
->>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
->>
->> AFAICT this file is also the same in the new asm-generic version, so you
->> could fall back to that directly.
-> 
-> Indeed it could. It will need a clean out of ack_bad_irq() in
-> arch/m68knommu/kernel.irq.c, but otherwise looks good.
-> 
-> I'll prepare a new patch that uses that.
-
-This turns out not to be as trivial as I first thought.
-
-The include of linux/irq.h in the asm-generic/hardirq.h
-causes all sorts of include ordering problems for the m68k
-hardirq.h. The m68k hardirq.h includes asm/irq.h instead.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+Name:....................
+Country:.................  =20
+Sex:.....................
+Age: .....................  =20
+Address:...................
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
