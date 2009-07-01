@@ -1,34 +1,77 @@
-From: British Telecom Plc <kevin_jones@rrohio.com>
-Subject: Confirm Your Winnings !!!
-Date: Fri, 26 Jun 2009 13:23:54 -0500
-Message-ID: <7h9gbp$dkjf45@rrcs-agw-01b.hrndva.rr.com>
-Reply-To: btprizeoffice90@btinternet.com
+From: Lanttor <lanttor.guo@freescale.com>
+Subject: uart issues on coldfire platform
+Date: Wed, 01 Jul 2009 10:20:48 +0800
+Message-ID: <4A4AC800.3070901@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from hrndva-commlb.mail.rr.com ([71.74.57.8]:54840 "EHLO
-	hrndva-commlb.mail.rr.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755272AbZFZSXx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Jun 2009 14:23:53 -0400
-Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
-          by hrndva-comm-mta01.mail.rr.com with ESMTP
-          id <20090626182355.QBJW7509.hrndva-comm-mta01.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
-          for <linux-m68k@vger.kernel.org>; Fri, 26 Jun 2009 18:23:55 +0000
+Received: from az33egw02.freescale.net ([192.88.158.103]:53856 "EHLO
+	az33egw02.freescale.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751551AbZGACUm (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 30 Jun 2009 22:20:42 -0400
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id n612KOT7026878
+	for <linux-m68k@vger.kernel.org>; Tue, 30 Jun 2009 19:20:37 -0700 (MST)
+Received: from zch01exm25.fsl.freescale.net (zch01exm25.ap.freescale.net [10.192.129.217])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id n612KM7A017595
+	for <linux-m68k@vger.kernel.org>; Tue, 30 Jun 2009 21:20:23 -0500 (CDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: info@co.uk
+To: linux-m68k@vger.kernel.org
 
-Your email ID has been awarded =A31,000,000,00 GBP in the NEW YEAR PROM=
-O,Reply us with your info: (btprizeoffice90@btinternet.com)
+Hi,
 
-Name:....................
-Country:.................  =20
-Sex:.....................
-Age: .....................  =20
-Address:...................
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I find one issue of UART on my coldfire platforms (mcf54451evb board).
+I use the linux-2.6.29, and use drivers/serial/mcf.c and
+drivers/serial/serial_core.c as my uart driver source.
+
+Following is my test steps -- run command: cat /proc/interrupts two
+times contiguously.
+
+[root@freescale /]# cat /proc/interrupts
+M5445X    *90:       5099 UART*
+M5445X    96:       3130 timer0
+M5445X    99:          0 timer3
+M5445X   100:       1569 fec(TXF)
+M5445X   101:          0 fec(TXB)
+M5445X   102:          0 fec(TXFIFO)
+M5445X   103:          0 fec(TXCR)
+M5445X   104:       3098 fec(RXF)
+M5445X   105:          0 fec(RXB)
+M5445X   106:         41 fec(MII)
+M5445X   107:          0 fec(LC)
+M5445X   108:          0 fec(HBERR)
+M5445X   109:          0 fec(GRA)
+M5445X   110:          0 fec(EBERR)
+M5445X   111:          0 fec(BABT)
+M5445X   112:          0 fec(BABR)
+[root@freescale /]# cat /proc/interrupts
+M5445X    *90:       5714 UART*
+M5445X    96:       3700 timer0
+M5445X    99:          1 timer3
+M5445X   100:       1574 fec(TXF)
+M5445X   101:          0 fec(TXB)
+M5445X   102:          0 fec(TXFIFO)
+M5445X   103:          0 fec(TXCR)
+M5445X   104:       3108 fec(RXF)
+M5445X   105:          0 fec(RXB)
+M5445X   106:         47 fec(MII)
+M5445X   107:          0 fec(LC)
+M5445X   108:          0 fec(HBERR)
+M5445X   109:          0 fec(GRA)
+M5445X   110:          0 fec(EBERR)
+M5445X   111:          0 fec(BABT)
+M5445X   112:          0 fec(BABR)
+
+I find that the interrupts for above operation is 5714 - 5099 = 605
+Is it normal? (my opinion it's too much)
+
+I test it on the mcf5329 board, it has the same-like result (even more 605).
+Actually I don't modify any code of mcf.c and serial_core.c, but I don't
+know why so much interrupts are occurred through one operation?
+
+Regards,
+Lanttor
+
+
