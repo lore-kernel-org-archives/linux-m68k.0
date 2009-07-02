@@ -1,48 +1,35 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 00/13] revised Coldfire generic GPIO (mk68nommu)
-Date: Thu, 02 Jul 2009 14:36:42 +1000
-Message-ID: <4A4C395A.3010607@snapgear.com>
-References: <1245460272-4329-1-git-send-email-sfking@fdwdc.com> <4A41C04F.6050909@snapgear.com> <200906241209.26199.sfking@fdwdc.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Interrupt issue on m68k platform and some fix
+Date: Thu, 02 Jul 2009 10:24:35 +0200
+Message-ID: <m3hbxvtruk.fsf@hase.home>
+References: <4A4C3267.2040705@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:44922 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1750850AbZGBEgl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jul 2009 00:36:41 -0400
-In-Reply-To: <200906241209.26199.sfking@fdwdc.com>
+Received: from mx2.redhat.com ([66.187.237.31]:42679 "EHLO mx2.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750849AbZGBI0x (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 2 Jul 2009 04:26:53 -0400
+In-Reply-To: <4A4C3267.2040705@freescale.com> (Lanttor's message of "Thu, 02
+	Jul 2009 12:07:03 +0800")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Steven King <sfking@fdwdc.com>
-Cc: linux-kernel@vger.kernel.org, uclinux-dev@uclinux.org, linux-m68k@vger.kernel.org
+To: Lanttor <lanttor.guo@freescale.com>
+Cc: linux-m68k@vger.kernel.org, uClinux development list <uclinux-dev@uclinux.org>
 
-Hi Steven,
+Lanttor <lanttor.guo@freescale.com> writes:
 
-Steven King wrote:
-> On Tuesday 23 June 2009 10:57:35 Greg Ungerer wrote:
->> Hi Steven,
->>
->> This looks pretty good to me.
->> Do you want me to apply the the m68knommu git tree?
->> (Ideally I'll push it to Linus in the 2.6.32 merge window).
-> 
-> That would be great.  There are some things I'd like to add to this (support for 
-> pinmux, etc.) but that would be in the form of patches ontop of this.
+> My understanding of "*addql   #1,%curptr@(TASK_INFO+TINFO_PREEMPT+1)*"
+> is that its meaning is equal to
+> "current_thread_info()->preempt_count += HARDIRQ_OFFSET",
 
-I have pushed those patches into:
+No, it isn't.  It is equivalent to
+*(long *)((char *)&current_thread_info()->preempt_count + 1) += 1
+which is of course completely bogus.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+Andreas.
 
-(and they are also in the "for-next" branch too).
-
-Regards
-Greg
-
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
