@@ -1,47 +1,52 @@
-From: "lanttor.g" <lanttor.g@gmail.com>
-Subject: Re: [PATCH]: fix CACHE_ENABLE macro on mcf532x
-	platform
-Date: Fri, 31 Jul 2009 05:23:18 +0800
-Message-ID: <4A720F46.40109@gmail.com>
-References: <4A716808.9030705@freescale.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 9/15] arch/m68k: Use DIV_ROUND_CLOSEST
+Date: Sun, 2 Aug 2009 10:47:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0908021047280.15557__47979.7155865983$1249202994$gmane$org@ask.diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <4A716808.9030705@freescale.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-Cc: linux-m68k@vger.kernel.org, uClinux development list <uclinux-dev@uclinux.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: geert@linux-m68k.org, zippel@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-Lanttor wrote:
-> Hi,
->
-> This patch is to fix CACHE_ENABLE macro on the mcf532x platform, which
-> is defined in the file: arch/m68k/include/asm/mcfcache.h.
-> This patch is based on Linus' current git tree.
->
-> Thanks,
->
->   
-Consider the mcf5329 has 32M SDRAM, I think the original setting of ACR
-(0x4001c0000) is OK.
+From: Julia Lawall <julia@diku.dk>
 
-So this patch is cancelled, sorry for that :)
+The kernel.h macro DIV_ROUND_CLOSEST performs the computation (x + d/2)/d
+but is perhaps more readable.
 
-Lanttor
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+The semantic patch that makes this change is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@haskernel@
+@@
+
+#include <linux/kernel.h>
+
+@depends on haskernel@
+expression x,__divisor;
+@@
+
+- (((x) + ((__divisor) / 2)) / (__divisor))
++ DIV_ROUND_CLOSEST(x,__divisor)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ arch/m68k/amiga/config.c            |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 6e56275..002b9b0 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -480,7 +480,7 @@ static void __init amiga_sched_init(irq_handler_t timer_routine)
+ 	static struct resource sched_res = {
+ 		.name = "timer", .start = 0x00bfd400, .end = 0x00bfd5ff,
+ 	};
+-	jiffy_ticks = (amiga_eclock+HZ/2)/HZ;
++	jiffy_ticks = DIV_ROUND_CLOSEST(amiga_eclock, HZ);
+ 
+ 	if (request_resource(&mb_resources._ciab, &sched_res))
+ 		printk("Cannot allocate ciab.ta{lo,hi}\n");
