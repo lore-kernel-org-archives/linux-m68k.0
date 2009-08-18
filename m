@@ -1,34 +1,39 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
+From: Brad Boyer <flar@allandria.com>
 Subject: Re: Add private syscalls to support NPTL
-Date: Tue, 18 Aug 2009 00:18:44 +0200
-Message-ID: <m23a7qulrv.fsf@igel.home>
+Date: Mon, 17 Aug 2009 19:28:50 -0700
+Message-ID: <20090818022850.GA17279@cynthia.pants.nu>
 References: <4A89D037.7090807@codesourcery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:56801 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751632AbZHQWSp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 17 Aug 2009 18:18:45 -0400
-In-Reply-To: <4A89D037.7090807@codesourcery.com> (Maxim Kuvyrkov's message of
-	"Tue, 18 Aug 2009 01:48:39 +0400")
+Received: from [76.245.85.235] ([76.245.85.235]:37900 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1751011AbZHRDEN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 17 Aug 2009 23:04:13 -0400
+Content-Disposition: inline
+In-Reply-To: <4A89D037.7090807@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Maxim Kuvyrkov <maxim@codesourcery.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Maxim Kuvyrkov <maxim@codesourcery.com> writes:
+On Tue, Aug 18, 2009 at 01:48:39AM +0400, Maxim Kuvyrkov wrote:
+> +/* This syscall gets its arguments in A0 (mem), A1 (oldval) and
+> +   D1 (newval).  */
+> +asmlinkage int
+> +m68k_sys_atomic_cmpxchg_32(unsigned long newval, int d2, int d3, int d4, int d5,
+> +			unsigned long __user *mem, unsigned long oldval)
+> +{
 
-> +		{
-> +			int do_page_fault(struct pt_regs *, unsigned long,
-> +					unsigned long);
+Any particular reason for this calling convention? The real CAS instruction
+specifically takes two data registers for the two values. It seems more
+logical to me to have oldval and newval in data registers and just have
+the mem argument in an address register.
 
-Functions should always be declared in headers, and definitely never in
-block scope.
+For reference, here's the syntax summary from the m68k PRM:
 
-Andreas.
+CAS Dc, Du, <ea>
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+	Brad Boyer
+	flar@allandria.com
+
