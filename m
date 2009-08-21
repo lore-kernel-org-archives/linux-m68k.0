@@ -1,78 +1,76 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: zorro8390: Fix read buffer overflow in zorro8390_init_one()
-Date: Thu, 20 Aug 2009 13:53:51 +0200
-Message-ID: <10f740e80908200453p726acd5bpac49068f0492249a__15228.0791350224$1250769652$gmane$org@mail.gmail.com>
-References: <200908182159.n7ILxX3d013229@hera.kernel.org>
+Subject: [PATCH] m68k,m68knommu: Wire up rt_tgsigqueueinfo and
+ perf_counter_open
+Date: Fri, 21 Aug 2009 22:07:00 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0908212205300.15620@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <200908182159.n7ILxX3d013229@hera.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Roel Kluin <roel.kluin@gmail.com>
-Cc: netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
+Cc: uClinux list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Tue, Aug 18, 2009 at 23:59, Linux Kernel Mailing
-List<linux-kernel@vger.kernel.org> wrote:
-> Gitweb: =C2=A0 =C2=A0 http://git.kernel.org/linus/be12159b24c532b4b48=
-bdec5a543336438faa132
-> Commit: =C2=A0 =C2=A0 be12159b24c532b4b48bdec5a543336438faa132
-> Parent: =C2=A0 =C2=A0 5e33b719c8fcccfedc1d25167826a0f93fe6c5a1
-> Author: =C2=A0 =C2=A0 roel kluin <roel.kluin@gmail.com>
-> AuthorDate: Sun Aug 9 04:00:25 2009 +0000
-> Committer: =C2=A0David S. Miller <davem@davemloft.net>
-> CommitDate: Sun Aug 9 21:46:53 2009 -0700
->
-> =C2=A0 =C2=A0zorro8390: Fix read buffer overflow in zorro8390_init_on=
-e()
->
-> =C2=A0 =C2=A0Prevent read from cards[-1] when no card was found.
->
-> =C2=A0 =C2=A0Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> =C2=A0 =C2=A0Signed-off-by: David S. Miller <davem@davemloft.net>
-> ---
-> =C2=A0drivers/net/zorro8390.c | =C2=A0 =C2=A03 +++
-> =C2=A01 files changed, 3 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/net/zorro8390.c b/drivers/net/zorro8390.c
-> index 37c84e3..81c753a 100644
-> --- a/drivers/net/zorro8390.c
-> +++ b/drivers/net/zorro8390.c
-> @@ -120,6 +120,9 @@ static int __devinit zorro8390_init_one(struct zo=
-rro_dev *z,
-> =C2=A0 =C2=A0 for (i =3D ARRAY_SIZE(cards)-1; i >=3D 0; i--)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (z->id =3D=3D cards[i].id)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0break;
-> + =C2=A0 =C2=A0if (i < 0)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV;
-> +
-> =C2=A0 =C2=A0 board =3D z->resource.start;
-> =C2=A0 =C2=A0 ioaddr =3D board+cards[i].offset;
-> =C2=A0 =C2=A0 dev =3D alloc_ei_netdev();
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/unistd.h       |    4 +++-
+ arch/m68k/kernel/entry.S             |    2 ++
+ arch/m68knommu/kernel/syscalltable.S |    2 ++
+ 3 files changed, 7 insertions(+), 1 deletions(-)
 
-That case can never happen, as zorro8390_init_one() won't be called
-without a matching ID.
-
-But probably the information in struct card_info should be stored in
-zorro8390_zorro_tbl[].driver_data,
-so we can remove cards[] and the look up.
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index aa29a86..946d869 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -334,10 +334,12 @@
+ #define __NR_inotify_init1	328
+ #define __NR_preadv		329
+ #define __NR_pwritev		330
++#define __NR_rt_tgsigqueueinfo	331
++#define __NR_perf_counter_open	332
+ 
+ #ifdef __KERNEL__
+ 
+-#define NR_syscalls		331
++#define NR_syscalls		333
+ 
+ #define __ARCH_WANT_IPC_PARSE_VERSION
+ #define __ARCH_WANT_OLD_READDIR
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 8744f60..c3735cd 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -755,4 +755,6 @@ sys_call_table:
+ 	.long sys_inotify_init1
+ 	.long sys_preadv
+ 	.long sys_pwritev		/* 330 */
++	.long sys_rt_tgsigqueueinfo
++	.long sys_perf_counter_open
+ 
+diff --git a/arch/m68knommu/kernel/syscalltable.S b/arch/m68knommu/kernel/syscalltable.S
+index c0b8782..0ae123e 100644
+--- a/arch/m68knommu/kernel/syscalltable.S
++++ b/arch/m68knommu/kernel/syscalltable.S
+@@ -349,6 +349,8 @@ ENTRY(sys_call_table)
+ 	.long sys_inotify_init1
+ 	.long sys_preadv
+ 	.long sys_pwritev		/* 330 */
++	.long sys_rt_tgsigqueueinfo
++	.long sys_perf_counter_open
+ 
+ 	.rept NR_syscalls-(.-sys_call_table)/4
+ 		.long sys_ni_syscall
+-- 
+1.6.0.4
 
 Gr{oetje,eeting}s,
 
 						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
 							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
