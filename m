@@ -1,57 +1,69 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] aranym: Convert to net_device_ops
-Date: Fri, 21 Aug 2009 22:29:52 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0908212229210.18912@ayla.of.borg>
+Subject: [PATCH] ethernec: Convert to net_device_ops
+Date: Fri, 21 Aug 2009 22:30:37 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0908212229550.18927@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Compile test only
+Compile tested only
 
- arch/m68k/emu/nfeth.c |   18 +++++++++++++-----
- 1 files changed, 13 insertions(+), 5 deletions(-)
+ drivers/net/atari_ethernec.c |   23 +----------------------
+ 1 files changed, 1 insertions(+), 22 deletions(-)
 
-diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
-index 5b118e9..f55dfd3 100644
---- a/arch/m68k/emu/nfeth.c
-+++ b/arch/m68k/emu/nfeth.c
-@@ -196,6 +196,17 @@ static struct net_device_stats *nfeth_get_stats(struct net_device *dev)
- 	return &priv->stats;
+diff --git a/drivers/net/atari_ethernec.c b/drivers/net/atari_ethernec.c
+index 05b5e2e..4fb22ce 100644
+--- a/drivers/net/atari_ethernec.c
++++ b/drivers/net/atari_ethernec.c
+@@ -199,9 +199,6 @@ bad_clone_list[] __initdata = {
+ static int ne_probe1(struct net_device *dev, int ioaddr);
+ static int ne_probe_isapnp(struct net_device *dev);
+ 
+-static int ne_open(struct net_device *dev);
+-static int ne_close(struct net_device *dev);
+-
+ static void ne_reset_8390(struct net_device *dev);
+ static void ne_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
+ 			    int ring_page);
+@@ -680,11 +677,7 @@ static int __init ne_probe1(struct net_device *dev, int ioaddr)
+ 	ei_status.block_output = &ne_block_output;
+ 	ei_status.get_8390_hdr = &ne_get_8390_hdr;
+ 	ei_status.priv = 0;
+-	dev->open = &ne_open;
+-	dev->stop = &ne_close;
+-#ifdef CONFIG_NET_POLL_CONTROLLER
+-	dev->poll_controller = ei_poll;
+-#endif
++	dev->netdev_ops = &ei_netdev_ops;
+ 	NS8390_init(dev, 0);
+ 
+ 	ret = register_netdev(dev);
+@@ -699,20 +692,6 @@ err_out:
+ 	return ret;
  }
  
-+static const struct net_device_ops nfeth_netdev_ops = {
-+	.ndo_open		= nfeth_open,
-+	.ndo_stop		= nfeth_stop,
-+	.ndo_start_xmit		= nfeth_xmit,
-+	.ndo_tx_timeout		= nfeth_tx_timeout,
-+	.ndo_get_stats		= nfeth_get_stats,
-+	.ndo_validate_addr	= eth_validate_addr,
-+	.ndo_change_mtu		= eth_change_mtu,
-+	.ndo_set_mac_address	= eth_mac_addr,
-+};
-+
- struct net_device * __init nfeth_probe(int unit)
- {
- 	struct net_device *dev;
-@@ -212,11 +223,8 @@ struct net_device * __init nfeth_probe(int unit)
- 		return NULL;
- 
- 	dev->irq = nfEtherIRQ;
--	dev->open = nfeth_open;
--	dev->stop = nfeth_stop;
--	dev->hard_start_xmit = nfeth_xmit;
--	dev->tx_timeout = nfeth_tx_timeout;
--	dev->get_stats = nfeth_get_stats;
-+	dev->netdev_ops = &nfeth_netdev_ops;
-+
- 	dev->flags |= NETIF_F_NO_CSUM;
- 	memcpy(dev->dev_addr, mac, ETH_ALEN);
+-static int ne_open(struct net_device *dev)
+-{
+-	ei_open(dev);
+-	return 0;
+-}
+-
+-static int ne_close(struct net_device *dev)
+-{
+-	if (ei_debug > 1)
+-		printk(KERN_DEBUG "%s: Shutting down ethercard.\n", dev->name);
+-	ei_close(dev);
+-	return 0;
+-}
+-
+ /* Hard reset the card.  This used to pause for the same period that a
+    8390 reset command required, but that shouldn't be necessary. */
  
 -- 
 1.6.0.4
