@@ -1,80 +1,77 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] ethernec: Convert to net_device_ops
-Date: Fri, 21 Aug 2009 22:30:37 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0908212229550.18927@ayla.of.borg>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k,m68knommu: Wire up rt_tgsigqueueinfo and perf_counter_open
+Date: Sat, 22 Aug 2009 14:16:45 +1000
+Message-ID: <4A8F712D.6090205@snapgear.com>
+References: <alpine.DEB.2.00.0908212205300.15620@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.0908212205300.15620@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, uClinux list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Compile tested only
 
- drivers/net/atari_ethernec.c |   23 +----------------------
- 1 files changed, 1 insertions(+), 22 deletions(-)
+On 08/22/2009 06:07 AM, Geert Uytterhoeven wrote:
+> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
+> Cc: Greg Ungerer<gerg@uclinux.org>
 
-diff --git a/drivers/net/atari_ethernec.c b/drivers/net/atari_ethernec.c
-index 05b5e2e..4fb22ce 100644
---- a/drivers/net/atari_ethernec.c
-+++ b/drivers/net/atari_ethernec.c
-@@ -199,9 +199,6 @@ bad_clone_list[] __initdata = {
- static int ne_probe1(struct net_device *dev, int ioaddr);
- static int ne_probe_isapnp(struct net_device *dev);
- 
--static int ne_open(struct net_device *dev);
--static int ne_close(struct net_device *dev);
--
- static void ne_reset_8390(struct net_device *dev);
- static void ne_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
- 			    int ring_page);
-@@ -680,11 +677,7 @@ static int __init ne_probe1(struct net_device *dev, int ioaddr)
- 	ei_status.block_output = &ne_block_output;
- 	ei_status.get_8390_hdr = &ne_get_8390_hdr;
- 	ei_status.priv = 0;
--	dev->open = &ne_open;
--	dev->stop = &ne_close;
--#ifdef CONFIG_NET_POLL_CONTROLLER
--	dev->poll_controller = ei_poll;
--#endif
-+	dev->netdev_ops = &ei_netdev_ops;
- 	NS8390_init(dev, 0);
- 
- 	ret = register_netdev(dev);
-@@ -699,20 +692,6 @@ err_out:
- 	return ret;
- }
- 
--static int ne_open(struct net_device *dev)
--{
--	ei_open(dev);
--	return 0;
--}
--
--static int ne_close(struct net_device *dev)
--{
--	if (ei_debug > 1)
--		printk(KERN_DEBUG "%s: Shutting down ethercard.\n", dev->name);
--	ei_close(dev);
--	return 0;
--}
--
- /* Hard reset the card.  This used to pause for the same period that a
-    8390 reset command required, but that shouldn't be necessary. */
- 
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+
+
+>   arch/m68k/include/asm/unistd.h       |    4 +++-
+>   arch/m68k/kernel/entry.S             |    2 ++
+>   arch/m68knommu/kernel/syscalltable.S |    2 ++
+>   3 files changed, 7 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+> index aa29a86..946d869 100644
+> --- a/arch/m68k/include/asm/unistd.h
+> +++ b/arch/m68k/include/asm/unistd.h
+> @@ -334,10 +334,12 @@
+>   #define __NR_inotify_init1	328
+>   #define __NR_preadv		329
+>   #define __NR_pwritev		330
+> +#define __NR_rt_tgsigqueueinfo	331
+> +#define __NR_perf_counter_open	332
+>
+>   #ifdef __KERNEL__
+>
+> -#define NR_syscalls		331
+> +#define NR_syscalls		333
+>
+>   #define __ARCH_WANT_IPC_PARSE_VERSION
+>   #define __ARCH_WANT_OLD_READDIR
+> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+> index 8744f60..c3735cd 100644
+> --- a/arch/m68k/kernel/entry.S
+> +++ b/arch/m68k/kernel/entry.S
+> @@ -755,4 +755,6 @@ sys_call_table:
+>   	.long sys_inotify_init1
+>   	.long sys_preadv
+>   	.long sys_pwritev		/* 330 */
+> +	.long sys_rt_tgsigqueueinfo
+> +	.long sys_perf_counter_open
+>
+> diff --git a/arch/m68knommu/kernel/syscalltable.S b/arch/m68knommu/kernel/syscalltable.S
+> index c0b8782..0ae123e 100644
+> --- a/arch/m68knommu/kernel/syscalltable.S
+> +++ b/arch/m68knommu/kernel/syscalltable.S
+> @@ -349,6 +349,8 @@ ENTRY(sys_call_table)
+>   	.long sys_inotify_init1
+>   	.long sys_preadv
+>   	.long sys_pwritev		/* 330 */
+> +	.long sys_rt_tgsigqueueinfo
+> +	.long sys_perf_counter_open
+>
+>   	.rept NR_syscalls-(.-sys_call_table)/4
+>   		.long sys_ni_syscall
+
 -- 
-1.6.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
