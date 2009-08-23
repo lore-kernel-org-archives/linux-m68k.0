@@ -1,77 +1,137 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k,m68knommu: Wire up rt_tgsigqueueinfo and perf_counter_open
-Date: Sat, 22 Aug 2009 14:16:45 +1000
-Message-ID: <4A8F712D.6090205@snapgear.com>
-References: <alpine.DEB.2.00.0908212205300.15620@ayla.of.borg>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Subject: Re: Add private syscalls to support NPTL
+Date: Mon, 24 Aug 2009 00:21:28 +0400
+Message-ID: <4A91A4C8.5040803@codesourcery.com>
+References: <4A89D037.7090807@codesourcery.com> <m27hx2um3t.fsf@igel.home>	 <4A8A54F9.3080100@codesourcery.com> <m3d46tpmue.fsf@hase.home>	 <4A8A6CA2.4040806@codesourcery.com> <10f740e80908180222p4d95b19bp3069e037a6bc590e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010802040501010001030005"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0908212205300.15620@ayla.of.borg>
+Received: from mail.codesourcery.com ([65.74.133.4]:45737 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934090AbZHWUVi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Aug 2009 16:21:38 -0400
+In-Reply-To: <10f740e80908180222p4d95b19bp3069e037a6bc590e@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, uClinux list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------010802040501010001030005
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 08/22/2009 06:07 AM, Geert Uytterhoeven wrote:
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
-> Cc: Greg Ungerer<gerg@uclinux.org>
+Geert Uytterhoeven wrote:
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+> I prefer to just add them at the bottom of the list.
+> 
+> (slowly recovering from my backlog) I noticed some new syscalls got
+> added recently:
+> 
+> | <stdin>:1515:2: warning: #warning syscall rt_tgsigqueueinfo not implemented
+> | <stdin>:1519:2: warning: #warning syscall perf_counter_open not implemented
+> 
+> Probably I should wire those up first (for 2.6.31, if still possible).
+> 
+> Next I should reserve 333..336 for you?
 
+Here is the updated patch.
 
->   arch/m68k/include/asm/unistd.h       |    4 +++-
->   arch/m68k/kernel/entry.S             |    2 ++
->   arch/m68knommu/kernel/syscalltable.S |    2 ++
->   3 files changed, 7 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-> index aa29a86..946d869 100644
-> --- a/arch/m68k/include/asm/unistd.h
-> +++ b/arch/m68k/include/asm/unistd.h
-> @@ -334,10 +334,12 @@
->   #define __NR_inotify_init1	328
->   #define __NR_preadv		329
->   #define __NR_pwritev		330
-> +#define __NR_rt_tgsigqueueinfo	331
-> +#define __NR_perf_counter_open	332
->
->   #ifdef __KERNEL__
->
-> -#define NR_syscalls		331
-> +#define NR_syscalls		333
->
->   #define __ARCH_WANT_IPC_PARSE_VERSION
->   #define __ARCH_WANT_OLD_READDIR
-> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-> index 8744f60..c3735cd 100644
-> --- a/arch/m68k/kernel/entry.S
-> +++ b/arch/m68k/kernel/entry.S
-> @@ -755,4 +755,6 @@ sys_call_table:
->   	.long sys_inotify_init1
->   	.long sys_preadv
->   	.long sys_pwritev		/* 330 */
-> +	.long sys_rt_tgsigqueueinfo
-> +	.long sys_perf_counter_open
->
-> diff --git a/arch/m68knommu/kernel/syscalltable.S b/arch/m68knommu/kernel/syscalltable.S
-> index c0b8782..0ae123e 100644
-> --- a/arch/m68knommu/kernel/syscalltable.S
-> +++ b/arch/m68knommu/kernel/syscalltable.S
-> @@ -349,6 +349,8 @@ ENTRY(sys_call_table)
->   	.long sys_inotify_init1
->   	.long sys_preadv
->   	.long sys_pwritev		/* 330 */
-> +	.long sys_rt_tgsigqueueinfo
-> +	.long sys_perf_counter_open
->
->   	.rept NR_syscalls-(.-sys_call_table)/4
->   		.long sys_ni_syscall
+I moved the declaration of do_page_fault() to the beginning of the file, 
+same as another user of this function -- traps.c -- does.
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+Regards,
+
+--
+Maxim K.
+CodeSourcery
+
+--------------010802040501010001030005
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="0001-Add-syscalls-to-support-m68k-NPTL.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="0001-Add-syscalls-to-support-m68k-NPTL.patch"
+
+RnJvbSAyZTExYjI1OGM0MDZjZDVjZDcxYjgyYzM5MDY2ZDlkYzM1MDEwODkxIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBNYXhpbSBLdXZ5cmtvdiA8bWF4aW1AY29kZXNvdXJj
+ZXJ5LmNvbT4KRGF0ZTogTW9uLCAyNCBBdWcgMjAwOSAwMDoxMDozMyArMDQwMApTdWJqZWN0
+OiBbUEFUQ0hdIEFkZCBzeXNjYWxscyB0byBzdXBwb3J0IG02OGsgTlBUTC4KClRoaXMgcGF0
+Y2ggYWRkcyBzZXZlcmFsIHN5c2NhbGxzLCBwcml2YXRlIHRvIE02OEssIHRoYXQgcHJvdmlk
+ZSBuZWNlc3NhcnkKZnVuY3Rpb25hbGl0eSB0byBzdXBwb3J0IE5QVEwuClRoZSBzeXNjYWxs
+cyBhcmUgcmVhZF90cCwgd3JpdGVfdHAsIGF0b21pY19jbXB4Y2hnXzMyIGFuZCBhdG9taWNf
+YmFycmllci4KVGhlIGNtcHhjaGcgc3lzY2FsbCBpcyByZXF1aXJlZCBmb3IgQ29sZEZpcmUg
+YXMgaXQgZG9lc24ndCBzdXBwb3J0ICdjYXMnCmluc3RydWN0aW9uLgoKU2lnbmVkLW9mZi1i
+eTogTWF4aW0gS3V2eXJrb3YgPG1heGltQGNvZGVzb3VyY2VyeS5jb20+Ci0tLQogYXJjaC9t
+NjhrL2luY2x1ZGUvYXNtL3RocmVhZF9pbmZvX21tLmggfCAgICAxICsKIGFyY2gvbTY4ay9r
+ZXJuZWwvZW50cnkuUyAgICAgICAgICAgICAgIHwgICAgNCArKwogYXJjaC9tNjhrL2tlcm5l
+bC9zeXNfbTY4ay5jICAgICAgICAgICAgfCAgIDgyICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDg3IGluc2VydGlvbnMoKyksIDAgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3RocmVhZF9pbmZv
+X21tLmggYi9hcmNoL202OGsvaW5jbHVkZS9hc20vdGhyZWFkX2luZm9fbW0uaAppbmRleCBh
+ZjBmZGE0Li5hMjQwMjQ0IDEwMDY0NAotLS0gYS9hcmNoL202OGsvaW5jbHVkZS9hc20vdGhy
+ZWFkX2luZm9fbW0uaAorKysgYi9hcmNoL202OGsvaW5jbHVkZS9hc20vdGhyZWFkX2luZm9f
+bW0uaApAQCAtMTAsNiArMTAsNyBAQCBzdHJ1Y3QgdGhyZWFkX2luZm8gewogCXN0cnVjdCBl
+eGVjX2RvbWFpbgkqZXhlY19kb21haW47CS8qIGV4ZWN1dGlvbiBkb21haW4gKi8KIAlpbnQJ
+CQlwcmVlbXB0X2NvdW50OwkvKiAwID0+IHByZWVtcHRhYmxlLCA8MCA9PiBCVUcgKi8KIAlf
+X3UzMiBjcHU7IC8qIHNob3VsZCBhbHdheXMgYmUgMCBvbiBtNjhrICovCisJdW5zaWduZWQg
+bG9uZyB0cF92YWx1ZTsKIAlzdHJ1Y3QgcmVzdGFydF9ibG9jayAgICByZXN0YXJ0X2Jsb2Nr
+OwogfTsKIApkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2tlcm5lbC9lbnRyeS5TIGIvYXJjaC9t
+NjhrL2tlcm5lbC9lbnRyeS5TCmluZGV4IGMzNzM1Y2QuLmUyYTI0NWYgMTAwNjQ0Ci0tLSBh
+L2FyY2gvbTY4ay9rZXJuZWwvZW50cnkuUworKysgYi9hcmNoL202OGsva2VybmVsL2VudHJ5
+LlMKQEAgLTc1Nyw0ICs3NTcsOCBAQCBzeXNfY2FsbF90YWJsZToKIAkubG9uZyBzeXNfcHdy
+aXRldgkJLyogMzMwICovCiAJLmxvbmcgc3lzX3J0X3Rnc2lncXVldWVpbmZvCiAJLmxvbmcg
+c3lzX3BlcmZfY291bnRlcl9vcGVuCisgCS5sb25nIHN5c19yZWFkX3RwCisgCS5sb25nIHN5
+c193cml0ZV90cAorIAkubG9uZyBzeXNfYXRvbWljX2NtcHhjaGdfMzIJLyogMzM1ICovCisg
+CS5sb25nIHN5c19hdG9taWNfYmFycmllcgogCmRpZmYgLS1naXQgYS9hcmNoL202OGsva2Vy
+bmVsL3N5c19tNjhrLmMgYi9hcmNoL202OGsva2VybmVsL3N5c19tNjhrLmMKaW5kZXggN2Y1
+NGVmYS4uMDM2NTFlNSAxMDA2NDQKLS0tIGEvYXJjaC9tNjhrL2tlcm5lbC9zeXNfbTY4ay5j
+CisrKyBiL2FyY2gvbTY4ay9rZXJuZWwvc3lzX202OGsuYwpAQCAtMjksNiArMjksMTEgQEAK
+ICNpbmNsdWRlIDxhc20vdHJhcHMuaD4KICNpbmNsdWRlIDxhc20vcGFnZS5oPgogI2luY2x1
+ZGUgPGFzbS91bmlzdGQuaD4KKyNpbmNsdWRlIDxsaW51eC9lbGYuaD4KKyNpbmNsdWRlIDxh
+c20vdGxiLmg+CisKK2FzbWxpbmthZ2UgaW50IGRvX3BhZ2VfZmF1bHQoc3RydWN0IHB0X3Jl
+Z3MgKnJlZ3MsIHVuc2lnbmVkIGxvbmcgYWRkcmVzcywKKwkJCXVuc2lnbmVkIGxvbmcgZXJy
+b3JfY29kZSk7CiAKIC8qIGNvbW1vbiBjb2RlIGZvciBvbGQgYW5kIG5ldyBtbWFwcyAqLwog
+c3RhdGljIGlubGluZSBsb25nIGRvX21tYXAyKApAQCAtNjYzLDMgKzY2OCw4MCBAQCBpbnQg
+a2VybmVsX2V4ZWN2ZShjb25zdCBjaGFyICpmaWxlbmFtZSwgY2hhciAqY29uc3QgYXJndltd
+LCBjaGFyICpjb25zdCBlbnZwW10pCiAJCQk6ICJkIiAoX19hKSwgImQiIChfX2IpLCAiZCIg
+KF9fYykpOwogCXJldHVybiBfX3JlczsKIH0KKworYXNtbGlua2FnZSB1bnNpZ25lZCBsb25n
+CitzeXNfcmVhZF90cCh2b2lkKQoreworCXJldHVybiBjdXJyZW50X3RocmVhZF9pbmZvKCkt
+PnRwX3ZhbHVlOworfQorCithc21saW5rYWdlIGludAorc3lzX3dyaXRlX3RwKHVuc2lnbmVk
+IGxvbmcgdHApCit7CisJY3VycmVudF90aHJlYWRfaW5mbygpLT50cF92YWx1ZSA9IHRwOwor
+CXJldHVybiAwOworfQorCisvKiBUaGlzIHN5c2NhbGwgZ2V0cyBpdHMgYXJndW1lbnRzIGlu
+IEEwIChtZW0pLCBEMiAob2xkdmFsKSBhbmQKKyAgIEQxIChuZXd2YWwpLiAgKi8KK2FzbWxp
+bmthZ2UgaW50CitzeXNfYXRvbWljX2NtcHhjaGdfMzIodW5zaWduZWQgbG9uZyBuZXd2YWws
+IGludCBvbGR2YWwsIGludCBkMywgaW50IGQ0LCBpbnQgZDUsCisJCXVuc2lnbmVkIGxvbmcg
+X191c2VyICptZW0pCit7CisJc3RydWN0IG1tX3N0cnVjdCAqbW0gPSBjdXJyZW50LT5tbTsK
+KworCS8qIFRoaXMgd2FzIGJvcnJvd2VkIGZyb20gQVJNJ3MgaW1wbGVtZW50YXRpb24uICAq
+LworCWZvcig7OykgeworCQlwZ2RfdCAqcGdkOyBwbWRfdCAqcG1kOyBwdGVfdCAqcHRlOwor
+CQlzcGlubG9ja190ICpwdGw7CisJCXVuc2lnbmVkIGxvbmcgbWVtX3ZhbHVlOworCisJCWRv
+d25fcmVhZCgmbW0tPm1tYXBfc2VtKTsKKwkJcGdkID0gcGdkX29mZnNldChtbSwgKHVuc2ln
+bmVkIGxvbmcpbWVtKTsKKwkJaWYgKCFwZ2RfcHJlc2VudCgqcGdkKSkKKwkJCWdvdG8gYmFk
+X2FjY2VzczsKKwkJcG1kID0gcG1kX29mZnNldChwZ2QsICh1bnNpZ25lZCBsb25nKW1lbSk7
+CisJCWlmICghcG1kX3ByZXNlbnQoKnBtZCkpCisJCQlnb3RvIGJhZF9hY2Nlc3M7CisJCXB0
+ZSA9IHB0ZV9vZmZzZXRfbWFwX2xvY2sobW0sIHBtZCwgKHVuc2lnbmVkIGxvbmcpbWVtLCAm
+cHRsKTsKKwkJaWYgKCFwdGVfcHJlc2VudCgqcHRlKSB8fCAhcHRlX2RpcnR5KCpwdGUpKSB7
+CisJCQlwdGVfdW5tYXBfdW5sb2NrKHB0ZSwgcHRsKTsKKwkJCWdvdG8gYmFkX2FjY2VzczsK
+KwkJfQorCisJCW1lbV92YWx1ZSA9ICptZW07CisJCWlmIChtZW1fdmFsdWUgPT0gb2xkdmFs
+KQorCQkJKm1lbSA9IG5ld3ZhbDsKKworCQlwdGVfdW5tYXBfdW5sb2NrKHB0ZSwgcHRsKTsK
+KwkJdXBfcmVhZCgmbW0tPm1tYXBfc2VtKTsKKwkJcmV0dXJuIG1lbV92YWx1ZTsKKworCWJh
+ZF9hY2Nlc3M6CisJCXVwX3JlYWQoJm1tLT5tbWFwX3NlbSk7CisJCS8qIFRoaXMgaXMgbm90
+IG5lY2Vzc2FyaWx5IGEgYmFkIGFjY2Vzcywgd2UgY2FuIGdldCBoZXJlIGlmCisJCSAgIGEg
+bWVtb3J5IHdlJ3JlIHRyeWluZyB0byB3cml0ZSB0byBzaG91bGQgYmUgY29waWVkLW9uLXdy
+aXRlLgorCQkgICBNYWtlIHRoZSBrZXJuZWwgZG8gdGhlIG5lY2Vzc2FyeSBwYWdlIHN0dWZm
+LCB0aGVuIHJlLWl0ZXJhdGUuCisJCSAgIFNpbXVsYXRlIGEgd3JpdGUgYWNjZXNzIGZhdWx0
+IHRvIGRvIHRoYXQuICAqLworCQl7CisJCQkvKiBUaGUgZmlyc3QgYXJndW1lbnQgb2YgdGhl
+IGZ1bmN0aW9uIGNvcnJlc3BvbmRzIHRvCisJCQkgICBEMSwgd2hpY2ggaXMgdGhlIGZpcnN0
+IGZpZWxkIG9mIHN0cnVjdCBwdF9yZWdzLiAgKi8KKwkJCXN0cnVjdCBwdF9yZWdzICpmcCA9
+IChzdHJ1Y3QgcHRfcmVncyAqKSZuZXd2YWw7CisJICAgCisJCQkvKiAnMycgaXMgYW4gUk1X
+IGZsYWcuICAqLworCQkJaWYgKGRvX3BhZ2VfZmF1bHQoZnAsICh1bnNpZ25lZCBsb25nKW1l
+bSwgMykpCisJCQkJLyogSWYgdGhlIGRvX3BhZ2VfZmF1bHQoKSBmYWlsZWQsIHdlIGRvbid0
+CisJCQkJICAgaGF2ZSBhbnl0aGluZyBtZWFuaW5nZnVsIHRvIHJldHVybi4KKwkJCQkgICBU
+aGVyZSBzaG91bGQgYmUgYSBTSUdTRUdWIHBlbmRpbmcgZm9yCisJCQkJICAgdGhlIHByb2Nl
+c3MuICAqLworCQkJCXJldHVybiAweGRlYWRiZWVmOworCQl9CisJfQorfQorCithc21saW5r
+YWdlIGludAorc3lzX2F0b21pY19iYXJyaWVyKHZvaWQpCit7CisJLyogbm8gY29kZSBuZWVk
+ZWQgZm9yIHVuaXByb2NzICovCisJcmV0dXJuIDA7Cit9Ci0tIAoxLjYuNAoK
+--------------010802040501010001030005--
