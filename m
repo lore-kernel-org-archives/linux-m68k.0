@@ -1,42 +1,53 @@
-From: =?UTF-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2009.bluespice.org>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
 Subject: Re: toolchain, was Re: bogl: don't know screen type 1
-Date: Sat, 05 Sep 2009 10:49:58 +0200
-Message-ID: <566f0d5b9675d6608797323d3c3bc681@localhost>
-References: <8259f0250908302028n9b0cb56td402539007736fce@mail.gmail.com> <20090831120617.GA1114@marenka.net> <8259f0250908310558l3ddd5fam7d15946a7c1e8572@mail.gmail.com> <8259f0250908311511h77270544vb2dc3dd383f1add8@mail.gmail.com> <8259f0250908311516r49e54c7fi44ead0f040cade30@mail.gmail.com> <20090901151747.GB27514@marenka.net> <alpine.OSX.2.00.0909050045330.383@silk.local> <20090905010830.GA14809@marenka.net>
+Date: Sat, 05 Sep 2009 17:31:58 +0400
+Message-ID: <4AA2684E.1080009@codesourcery.com>
+References: <8259f0250908302028n9b0cb56td402539007736fce@mail.gmail.com> <20090831120617.GA1114@marenka.net> <8259f0250908310558l3ddd5fam7d15946a7c1e8572@mail.gmail.com> <8259f0250908311511h77270544vb2dc3dd383f1add8@mail.gmail.com> <8259f0250908311516r49e54c7fi44ead0f040cade30@mail.gmail.com> <20090901151747.GB27514@marenka.net> <alpine.OSX.2.00.0909050045330.383@silk.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vserv.windfluechter.net ([78.47.85.145]:53636 "EHLO
-	vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752286AbZIEJWx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 5 Sep 2009 05:22:53 -0400
-In-Reply-To: <20090905010830.GA14809@marenka.net>
+Received: from mail.codesourcery.com ([65.74.133.4]:39511 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751426AbZIENcF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 5 Sep 2009 09:32:05 -0400
+In-Reply-To: <alpine.OSX.2.00.0909050045330.383@silk.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen R Marenka <stephen@marenka.net>
-Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+
+Finn Thain wrote:
+...
+> But in that post (June 28) Maxim recommends using mainline binutils, and 
+> since then we have HJL binutils-2.19.51.0.14 released, "...based on 
+> binutils 2009 0722 in CVS on sourceware.org..." So I guess I should start 
+> there.
+
+The last binutils TLS patches went in on 2009-08-26; the patches fixed 
+generation of invalid TLS relocations.
+
+> I understand that the current GCC (4.4) lacks the necessary patches, and 
+> 4.5 is still uncooked (and that's a scary prospect). Can someone confirm 
+> that this is the necessary patch for 4.4:
+> http://gcc.gnu.org/ml/gcc-patches/2009-05/msg01024.html
+
+I think GCC 4.4 should be good enough.
 
 
-On Fri, 4 Sep 2009 20:08:30 -0500, Stephen R Marenka <stephen@marenka.net>
-wrote:
+> As for eglibc, there are a number of branches listed here, 
+> http://www.eglibc.org/repository
+> The question is, which branch, snapshot or release might meet be suitable?
 
-> The life is fast ebbing from debian/m68k as far as I can tell. I'm not
-> sure if there is sufficient energy to revitalize it. I'd be delighted to
-> be proven wrong.
+EGLIBC does not yet have NPTL patches checked in, they are in review on 
+libc-ports@.  Once the review is finished, I will likely backport the 
+patches from EGLIBC trunk to 2.10 branch.
 
-So am I!
-But I must confess that it's not looking good for m68k. It's getting more
-and more difficult for the port to survive after the exclusion from Debian,
-IMHO, YMMV. Currently my plan is to shutdown most of my buildds and most
-likely buildd.net as well in 1-2 years. Maybe I keep one or the other
-machine running. 
-This is for the current state of m68k. If there is a turnover and
-development with the help from other people get's some kind of momentum
-again, I'll happily keep the machines going as well as buildd.net. 
+> With this information, I could attempt to build a toolchain from upstream 
+> sources, or figure out whether or not the debian archive has the necessary 
+> source packages...
 
--- 
-Ciao...            //      Fon: 0381-2744150
-Ingo       \X/       http://blog.windfluechter.net
+You will also need a patch for kernel, posted on linux-m68k@.
 
-gpg pubkey: http://www.juergensmann.de/ij_public_key.asc
+--
+Maxim
