@@ -1,7 +1,7 @@
 From: sfking@fdwdc.com
-Subject: [RFC 14/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:04 -0700
-Message-ID: <732b3e401d3708f1abf810ff0028e48d63df7e4b.1252222134.git.sfking@fdwdc.com>
+Subject: [RFC 15/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 22:40:05 -0700
+Message-ID: <9132c5b379a84a9b9a8762fc557abcae6e6ca479.1252222134.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
  <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
  <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
@@ -16,12 +16,13 @@ References: <cover.1252222129.git.sfking@fdwdc.com>
  <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
  <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking@fdwdc.com>
  <c90263ddd638105b7df953128fd150d7fafc56ee.1252222134.git.sfking@fdwdc.com>
+ <732b3e401d3708f1abf810ff0028e48d63df7e4b.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34426 "HELO
+Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34428 "HELO
 	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758956AbZIGFrN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:13 -0400
-In-Reply-To: <c90263ddd638105b7df953128fd150d7fafc56ee.1252222134.git.sfking@fdwdc.com>
+	by vger.kernel.org with SMTP id S1758950AbZIGFrP (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:15 -0400
+In-Reply-To: <732b3e401d3708f1abf810ff0028e48d63df7e4b.1252222134.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -30,695 +31,209 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/kernel/sys_m68k.c                        |  668 +-------------------
- arch/m68k/kernel/{sys_m68k.c => sys_m68k_mm.c}     |    0 
- .../sys_m68k.c => m68k/kernel/sys_m68k_no.c}       |    0 
- 3 files changed, 4 insertions(+), 664 deletions(-)
- copy arch/m68k/kernel/{sys_m68k.c => sys_m68k_mm.c} (100%)
- copy arch/{m68knommu/kernel/sys_m68k.c => m68k/kernel/sys_m68k_no.c} (100%)
+ arch/m68k/kernel/time.c                            |  182 +-------------------
+ arch/m68k/kernel/{time.c => time_mm.c}             |    0 
+ .../kernel/time.c => m68k/kernel/time_no.c}        |    0 
+ 3 files changed, 4 insertions(+), 178 deletions(-)
+ copy arch/m68k/kernel/{time.c => time_mm.c} (100%)
+ copy arch/{m68knommu/kernel/time.c => m68k/kernel/time_no.c} (100%)
 
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 7f54efa..63013df 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -1,665 +1,5 @@
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index 54d9807..a5cf40c 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -1,179 +1,5 @@
 -/*
-- * linux/arch/m68k/kernel/sys_m68k.c
+- *  linux/arch/m68k/kernel/time.c
 - *
-- * This file contains various random system calls that
-- * have a non-standard calling sequence on the Linux/m68k
-- * platform.
+- *  Copyright (C) 1991, 1992, 1995  Linus Torvalds
+- *
+- * This file contains the m68k-specific time handling details.
+- * Most of the stuff is located in the machine specific files.
+- *
+- * 1997-09-10	Updated NTP code according to technical memorandum Jan '96
+- *		"A Kernel Model for Precision Timekeeping" by Dave Mills
 - */
 -
--#include <linux/capability.h>
 -#include <linux/errno.h>
+-#include <linux/module.h>
 -#include <linux/sched.h>
+-#include <linux/kernel.h>
+-#include <linux/param.h>
+-#include <linux/string.h>
 -#include <linux/mm.h>
--#include <linux/fs.h>
--#include <linux/smp.h>
--#include <linux/smp_lock.h>
--#include <linux/sem.h>
--#include <linux/msg.h>
--#include <linux/shm.h>
--#include <linux/stat.h>
--#include <linux/syscalls.h>
--#include <linux/mman.h>
--#include <linux/file.h>
--#include <linux/utsname.h>
--#include <linux/ipc.h>
+-#include <linux/rtc.h>
+-#include <linux/platform_device.h>
 -
--#include <asm/setup.h>
--#include <asm/uaccess.h>
--#include <asm/cachectl.h>
--#include <asm/traps.h>
--#include <asm/page.h>
--#include <asm/unistd.h>
+-#include <asm/machdep.h>
+-#include <asm/io.h>
+-#include <asm/irq_regs.h>
 -
--/* common code for old and new mmaps */
--static inline long do_mmap2(
--	unsigned long addr, unsigned long len,
--	unsigned long prot, unsigned long flags,
--	unsigned long fd, unsigned long pgoff)
+-#include <linux/time.h>
+-#include <linux/timex.h>
+-#include <linux/profile.h>
+-
+-static inline int set_rtc_mmss(unsigned long nowtime)
 -{
--	int error = -EBADF;
--	struct file * file = NULL;
--
--	flags &= ~(MAP_EXECUTABLE | MAP_DENYWRITE);
--	if (!(flags & MAP_ANONYMOUS)) {
--		file = fget(fd);
--		if (!file)
--			goto out;
--	}
--
--	down_write(&current->mm->mmap_sem);
--	error = do_mmap_pgoff(file, addr, len, prot, flags, pgoff);
--	up_write(&current->mm->mmap_sem);
--
--	if (file)
--		fput(file);
--out:
--	return error;
--}
--
--asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
--	unsigned long prot, unsigned long flags,
--	unsigned long fd, unsigned long pgoff)
--{
--	return do_mmap2(addr, len, prot, flags, fd, pgoff);
+-  if (mach_set_clock_mmss)
+-    return mach_set_clock_mmss (nowtime);
+-  return -1;
 -}
 -
 -/*
-- * Perform the select(nd, in, out, ex, tv) and mmap() system
-- * calls. Linux/m68k cloned Linux/i386, which didn't use to be able to
-- * handle more than 4 system call parameters, so these system calls
-- * used a memory block for parameter passing..
+- * timer_interrupt() needs to keep up the real-time clock,
+- * as well as call the "do_timer()" routine every clocktick
 - */
--
--struct mmap_arg_struct {
--	unsigned long addr;
--	unsigned long len;
--	unsigned long prot;
--	unsigned long flags;
--	unsigned long fd;
--	unsigned long offset;
--};
--
--asmlinkage int old_mmap(struct mmap_arg_struct __user *arg)
+-static irqreturn_t timer_interrupt(int irq, void *dummy)
 -{
--	struct mmap_arg_struct a;
--	int error = -EFAULT;
--
--	if (copy_from_user(&a, arg, sizeof(a)))
--		goto out;
--
--	error = -EINVAL;
--	if (a.offset & ~PAGE_MASK)
--		goto out;
--
--	a.flags &= ~(MAP_EXECUTABLE | MAP_DENYWRITE);
--
--	error = do_mmap2(a.addr, a.len, a.prot, a.flags, a.fd, a.offset >> PAGE_SHIFT);
--out:
--	return error;
--}
--
--#if 0
--struct mmap_arg_struct64 {
--	__u32 addr;
--	__u32 len;
--	__u32 prot;
--	__u32 flags;
--	__u64 offset; /* 64 bits */
--	__u32 fd;
--};
--
--asmlinkage long sys_mmap64(struct mmap_arg_struct64 *arg)
--{
--	int error = -EFAULT;
--	struct file * file = NULL;
--	struct mmap_arg_struct64 a;
--	unsigned long pgoff;
--
--	if (copy_from_user(&a, arg, sizeof(a)))
--		return -EFAULT;
--
--	if ((long)a.offset & ~PAGE_MASK)
--		return -EINVAL;
--
--	pgoff = a.offset >> PAGE_SHIFT;
--	if ((a.offset >> PAGE_SHIFT) != pgoff)
--		return -EINVAL;
--
--	if (!(a.flags & MAP_ANONYMOUS)) {
--		error = -EBADF;
--		file = fget(a.fd);
--		if (!file)
--			goto out;
--	}
--	a.flags &= ~(MAP_EXECUTABLE | MAP_DENYWRITE);
--
--	down_write(&current->mm->mmap_sem);
--	error = do_mmap_pgoff(file, a.addr, a.len, a.prot, a.flags, pgoff);
--	up_write(&current->mm->mmap_sem);
--	if (file)
--		fput(file);
--out:
--	return error;
--}
+-	do_timer(1);
+-#ifndef CONFIG_SMP
+-	update_process_times(user_mode(get_irq_regs()));
 +#ifdef CONFIG_MMU
-+#include "sys_m68k_mm.c"
++#include "time_mm.c"
 +#else
-+#include "sys_m68k_no.c"
++#include "time_no.c"
  #endif
+-	profile_tick(CPU_PROFILING);
 -
--struct sel_arg_struct {
--	unsigned long n;
--	fd_set __user *inp, *outp, *exp;
--	struct timeval __user *tvp;
--};
+-#ifdef CONFIG_HEARTBEAT
+-	/* use power LED as a heartbeat instead -- much more useful
+-	   for debugging -- based on the version for PReP by Cort */
+-	/* acts like an actual heart beat -- ie thump-thump-pause... */
+-	if (mach_heartbeat) {
+-	    static unsigned cnt = 0, period = 0, dist = 0;
 -
--asmlinkage int old_select(struct sel_arg_struct __user *arg)
+-	    if (cnt == 0 || cnt == dist)
+-		mach_heartbeat( 1 );
+-	    else if (cnt == 7 || cnt == dist+7)
+-		mach_heartbeat( 0 );
+-
+-	    if (++cnt > period) {
+-		cnt = 0;
+-		/* The hyperbolic function below modifies the heartbeat period
+-		 * length in dependency of the current (5min) load. It goes
+-		 * through the points f(0)=126, f(1)=86, f(5)=51,
+-		 * f(inf)->30. */
+-		period = ((672<<FSHIFT)/(5*avenrun[0]+(7<<FSHIFT))) + 30;
+-		dist = period / 4;
+-	    }
+-	}
+-#endif /* CONFIG_HEARTBEAT */
+-	return IRQ_HANDLED;
+-}
+-
+-void __init time_init(void)
 -{
--	struct sel_arg_struct a;
+-	struct rtc_time time;
 -
--	if (copy_from_user(&a, arg, sizeof(a)))
--		return -EFAULT;
--	/* sys_select() does the appropriate kernel locking */
--	return sys_select(a.n, a.inp, a.outp, a.exp, a.tvp);
+-	if (mach_hwclk) {
+-		mach_hwclk(0, &time);
+-
+-		if ((time.tm_year += 1900) < 1970)
+-			time.tm_year += 100;
+-		xtime.tv_sec = mktime(time.tm_year, time.tm_mon, time.tm_mday,
+-				      time.tm_hour, time.tm_min, time.tm_sec);
+-		xtime.tv_nsec = 0;
+-	}
+-	wall_to_monotonic.tv_sec = -xtime.tv_sec;
+-
+-	mach_sched_init(timer_interrupt);
 -}
 -
 -/*
-- * sys_ipc() is the de-multiplexer for the SysV IPC calls..
-- *
-- * This is really horribly ugly.
+- * This version of gettimeofday has near microsecond resolution.
 - */
--asmlinkage int sys_ipc (uint call, int first, int second,
--			int third, void __user *ptr, long fifth)
+-void do_gettimeofday(struct timeval *tv)
 -{
--	int version, ret;
+-	unsigned long flags;
+-	unsigned long seq;
+-	unsigned long usec, sec;
+-	unsigned long max_ntp_tick = tick_usec - tickadj;
 -
--	version = call >> 16; /* hack for backward compatibility */
--	call &= 0xffff;
+-	do {
+-		seq = read_seqbegin_irqsave(&xtime_lock, flags);
 -
--	if (call <= SEMCTL)
--		switch (call) {
--		case SEMOP:
--			return sys_semop (first, ptr, second);
--		case SEMGET:
--			return sys_semget (first, second, third);
--		case SEMCTL: {
--			union semun fourth;
--			if (!ptr)
--				return -EINVAL;
--			if (get_user(fourth.__pad, (void __user *__user *) ptr))
--				return -EFAULT;
--			return sys_semctl (first, second, third, fourth);
--			}
--		default:
--			return -ENOSYS;
--		}
--	if (call <= MSGCTL)
--		switch (call) {
--		case MSGSND:
--			return sys_msgsnd (first, ptr, second, third);
--		case MSGRCV:
--			switch (version) {
--			case 0: {
--				struct ipc_kludge tmp;
--				if (!ptr)
--					return -EINVAL;
--				if (copy_from_user (&tmp, ptr, sizeof (tmp)))
--					return -EFAULT;
--				return sys_msgrcv (first, tmp.msgp, second,
--						   tmp.msgtyp, third);
--				}
--			default:
--				return sys_msgrcv (first, ptr,
--						   second, fifth, third);
--			}
--		case MSGGET:
--			return sys_msgget ((key_t) first, second);
--		case MSGCTL:
--			return sys_msgctl (first, second, ptr);
--		default:
--			return -ENOSYS;
--		}
--	if (call <= SHMCTL)
--		switch (call) {
--		case SHMAT:
--			switch (version) {
--			default: {
--				ulong raddr;
--				ret = do_shmat (first, ptr, second, &raddr);
--				if (ret)
--					return ret;
--				return put_user (raddr, (ulong __user *) third);
--			}
--			}
--		case SHMDT:
--			return sys_shmdt (ptr);
--		case SHMGET:
--			return sys_shmget (first, second, third);
--		case SHMCTL:
--			return sys_shmctl (first, second, ptr);
--		default:
--			return -ENOSYS;
--		}
+-		usec = mach_gettimeoffset();
 -
--	return -EINVAL;
--}
--
--/* Convert virtual (user) address VADDR to physical address PADDR */
--#define virt_to_phys_040(vaddr)						\
--({									\
--  unsigned long _mmusr, _paddr;						\
--									\
--  __asm__ __volatile__ (".chip 68040\n\t"				\
--			"ptestr (%1)\n\t"				\
--			"movec %%mmusr,%0\n\t"				\
--			".chip 68k"					\
--			: "=r" (_mmusr)					\
--			: "a" (vaddr));					\
--  _paddr = (_mmusr & MMU_R_040) ? (_mmusr & PAGE_MASK) : 0;		\
--  _paddr;								\
--})
--
--static inline int
--cache_flush_040 (unsigned long addr, int scope, int cache, unsigned long len)
--{
--  unsigned long paddr, i;
--
--  switch (scope)
--    {
--    case FLUSH_SCOPE_ALL:
--      switch (cache)
--	{
--	case FLUSH_CACHE_DATA:
--	  /* This nop is needed for some broken versions of the 68040.  */
--	  __asm__ __volatile__ ("nop\n\t"
--				".chip 68040\n\t"
--				"cpusha %dc\n\t"
--				".chip 68k");
--	  break;
--	case FLUSH_CACHE_INSN:
--	  __asm__ __volatile__ ("nop\n\t"
--				".chip 68040\n\t"
--				"cpusha %ic\n\t"
--				".chip 68k");
--	  break;
--	default:
--	case FLUSH_CACHE_BOTH:
--	  __asm__ __volatile__ ("nop\n\t"
--				".chip 68040\n\t"
--				"cpusha %bc\n\t"
--				".chip 68k");
--	  break;
--	}
--      break;
--
--    case FLUSH_SCOPE_LINE:
--      /* Find the physical address of the first mapped page in the
--	 address range.  */
--      if ((paddr = virt_to_phys_040(addr))) {
--        paddr += addr & ~(PAGE_MASK | 15);
--        len = (len + (addr & 15) + 15) >> 4;
--      } else {
--	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
--
--	if (len <= tmp)
--	  return 0;
--	addr += tmp;
--	len -= tmp;
--	tmp = PAGE_SIZE;
--	for (;;)
--	  {
--	    if ((paddr = virt_to_phys_040(addr)))
--	      break;
--	    if (len <= tmp)
--	      return 0;
--	    addr += tmp;
--	    len -= tmp;
--	  }
--	len = (len + 15) >> 4;
--      }
--      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
--      while (len--)
--	{
--	  switch (cache)
--	    {
--	    case FLUSH_CACHE_DATA:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushl %%dc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    case FLUSH_CACHE_INSN:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushl %%ic,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    default:
--	    case FLUSH_CACHE_BOTH:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushl %%bc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    }
--	  if (!--i && len)
--	    {
--	      /*
--	       * No need to page align here since it is done by
--	       * virt_to_phys_040().
--	       */
--	      addr += PAGE_SIZE;
--	      i = PAGE_SIZE / 16;
--	      /* Recompute physical address when crossing a page
--	         boundary. */
--	      for (;;)
--		{
--		  if ((paddr = virt_to_phys_040(addr)))
--		    break;
--		  if (len <= i)
--		    return 0;
--		  len -= i;
--		  addr += PAGE_SIZE;
--		}
--	    }
--	  else
--	    paddr += 16;
--	}
--      break;
--
--    default:
--    case FLUSH_SCOPE_PAGE:
--      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
--      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
--	{
--	  if (!(paddr = virt_to_phys_040(addr)))
--	    continue;
--	  switch (cache)
--	    {
--	    case FLUSH_CACHE_DATA:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushp %%dc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    case FLUSH_CACHE_INSN:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushp %%ic,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    default:
--	    case FLUSH_CACHE_BOTH:
--	      __asm__ __volatile__ ("nop\n\t"
--				    ".chip 68040\n\t"
--				    "cpushp %%bc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    }
--	}
--      break;
--    }
--  return 0;
--}
--
--#define virt_to_phys_060(vaddr)				\
--({							\
--  unsigned long paddr;					\
--  __asm__ __volatile__ (".chip 68060\n\t"		\
--			"plpar (%0)\n\t"		\
--			".chip 68k"			\
--			: "=a" (paddr)			\
--			: "0" (vaddr));			\
--  (paddr); /* XXX */					\
--})
--
--static inline int
--cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
--{
--  unsigned long paddr, i;
--
--  /*
--   * 68060 manual says:
--   *  cpush %dc : flush DC, remains valid (with our %cacr setup)
--   *  cpush %ic : invalidate IC
--   *  cpush %bc : flush DC + invalidate IC
--   */
--  switch (scope)
--    {
--    case FLUSH_SCOPE_ALL:
--      switch (cache)
--	{
--	case FLUSH_CACHE_DATA:
--	  __asm__ __volatile__ (".chip 68060\n\t"
--				"cpusha %dc\n\t"
--				".chip 68k");
--	  break;
--	case FLUSH_CACHE_INSN:
--	  __asm__ __volatile__ (".chip 68060\n\t"
--				"cpusha %ic\n\t"
--				".chip 68k");
--	  break;
--	default:
--	case FLUSH_CACHE_BOTH:
--	  __asm__ __volatile__ (".chip 68060\n\t"
--				"cpusha %bc\n\t"
--				".chip 68k");
--	  break;
--	}
--      break;
--
--    case FLUSH_SCOPE_LINE:
--      /* Find the physical address of the first mapped page in the
--	 address range.  */
--      len += addr & 15;
--      addr &= -16;
--      if (!(paddr = virt_to_phys_060(addr))) {
--	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
--
--	if (len <= tmp)
--	  return 0;
--	addr += tmp;
--	len -= tmp;
--	tmp = PAGE_SIZE;
--	for (;;)
--	  {
--	    if ((paddr = virt_to_phys_060(addr)))
--	      break;
--	    if (len <= tmp)
--	      return 0;
--	    addr += tmp;
--	    len -= tmp;
--	  }
--      }
--      len = (len + 15) >> 4;
--      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
--      while (len--)
--	{
--	  switch (cache)
--	    {
--	    case FLUSH_CACHE_DATA:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushl %%dc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    case FLUSH_CACHE_INSN:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushl %%ic,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    default:
--	    case FLUSH_CACHE_BOTH:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushl %%bc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    }
--	  if (!--i && len)
--	    {
--
--	      /*
--	       * We just want to jump to the first cache line
--	       * in the next page.
--	       */
--	      addr += PAGE_SIZE;
--	      addr &= PAGE_MASK;
--
--	      i = PAGE_SIZE / 16;
--	      /* Recompute physical address when crossing a page
--	         boundary. */
--	      for (;;)
--	        {
--	          if ((paddr = virt_to_phys_060(addr)))
--	            break;
--	          if (len <= i)
--	            return 0;
--	          len -= i;
--	          addr += PAGE_SIZE;
--	        }
--	    }
--	  else
--	    paddr += 16;
--	}
--      break;
--
--    default:
--    case FLUSH_SCOPE_PAGE:
--      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
--      addr &= PAGE_MASK;	/* Workaround for bug in some
--				   revisions of the 68060 */
--      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
--	{
--	  if (!(paddr = virt_to_phys_060(addr)))
--	    continue;
--	  switch (cache)
--	    {
--	    case FLUSH_CACHE_DATA:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushp %%dc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    case FLUSH_CACHE_INSN:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushp %%ic,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    default:
--	    case FLUSH_CACHE_BOTH:
--	      __asm__ __volatile__ (".chip 68060\n\t"
--				    "cpushp %%bc,(%0)\n\t"
--				    ".chip 68k"
--				    : : "a" (paddr));
--	      break;
--	    }
--	}
--      break;
--    }
--  return 0;
--}
--
--/* sys_cacheflush -- flush (part of) the processor cache.  */
--asmlinkage int
--sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
--{
--	struct vm_area_struct *vma;
--	int ret = -EINVAL;
--
--	lock_kernel();
--	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
--	    cache & ~FLUSH_CACHE_BOTH)
--		goto out;
--
--	if (scope == FLUSH_SCOPE_ALL) {
--		/* Only the superuser may explicitly flush the whole cache. */
--		ret = -EPERM;
--		if (!capable(CAP_SYS_ADMIN))
--			goto out;
--	} else {
 -		/*
--		 * Verify that the specified address region actually belongs
--		 * to this process.
+-		 * If time_adjust is negative then NTP is slowing the clock
+-		 * so make sure not to go into next possible interval.
+-		 * Better to lose some accuracy than have time go backwards..
 -		 */
--		vma = find_vma (current->mm, addr);
--		ret = -EINVAL;
--		/* Check for overflow.  */
--		if (addr + len < addr)
--			goto out;
--		if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
--			goto out;
+-		if (unlikely(time_adjust < 0))
+-			usec = min(usec, max_ntp_tick);
+-
+-		sec = xtime.tv_sec;
+-		usec += xtime.tv_nsec/1000;
+-	} while (read_seqretry_irqrestore(&xtime_lock, seq, flags));
+-
+-
+-	while (usec >= 1000000) {
+-		usec -= 1000000;
+-		sec++;
 -	}
 -
--	if (CPU_IS_020_OR_030) {
--		if (scope == FLUSH_SCOPE_LINE && len < 256) {
--			unsigned long cacr;
--			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
--			if (cache & FLUSH_CACHE_INSN)
--				cacr |= 4;
--			if (cache & FLUSH_CACHE_DATA)
--				cacr |= 0x400;
--			len >>= 2;
--			while (len--) {
--				__asm__ __volatile__ ("movec %1, %%caar\n\t"
--						      "movec %0, %%cacr"
--						      : /* no outputs */
--						      : "r" (cacr), "r" (addr));
--				addr += 4;
--			}
--		} else {
--			/* Flush the whole cache, even if page granularity requested. */
--			unsigned long cacr;
--			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
--			if (cache & FLUSH_CACHE_INSN)
--				cacr |= 8;
--			if (cache & FLUSH_CACHE_DATA)
--				cacr |= 0x800;
--			__asm__ __volatile__ ("movec %0, %%cacr" : : "r" (cacr));
--		}
--		ret = 0;
--		goto out;
--	} else {
--	    /*
--	     * 040 or 060: don't blindly trust 'scope', someone could
--	     * try to flush a few megs of memory.
--	     */
--
--	    if (len>=3*PAGE_SIZE && scope<FLUSH_SCOPE_PAGE)
--	        scope=FLUSH_SCOPE_PAGE;
--	    if (len>=10*PAGE_SIZE && scope<FLUSH_SCOPE_ALL)
--	        scope=FLUSH_SCOPE_ALL;
--	    if (CPU_IS_040) {
--		ret = cache_flush_040 (addr, scope, cache, len);
--	    } else if (CPU_IS_060) {
--		ret = cache_flush_060 (addr, scope, cache, len);
--	    }
--	}
--out:
--	unlock_kernel();
--	return ret;
+-	tv->tv_sec = sec;
+-	tv->tv_usec = usec;
 -}
 -
--asmlinkage int sys_getpagesize(void)
+-EXPORT_SYMBOL(do_gettimeofday);
+-
+-int do_settimeofday(struct timespec *tv)
 -{
--	return PAGE_SIZE;
+-	time_t wtm_sec, sec = tv->tv_sec;
+-	long wtm_nsec, nsec = tv->tv_nsec;
+-
+-	if ((unsigned long)tv->tv_nsec >= NSEC_PER_SEC)
+-		return -EINVAL;
+-
+-	write_seqlock_irq(&xtime_lock);
+-	/* This is revolting. We need to set the xtime.tv_nsec
+-	 * correctly. However, the value in this location is
+-	 * is value at the last tick.
+-	 * Discover what correction gettimeofday
+-	 * would have done, and then undo it!
+-	 */
+-	nsec -= 1000 * mach_gettimeoffset();
+-
+-	wtm_sec  = wall_to_monotonic.tv_sec + (xtime.tv_sec - sec);
+-	wtm_nsec = wall_to_monotonic.tv_nsec + (xtime.tv_nsec - nsec);
+-
+-	set_normalized_timespec(&xtime, sec, nsec);
+-	set_normalized_timespec(&wall_to_monotonic, wtm_sec, wtm_nsec);
+-
+-	ntp_clear();
+-	write_sequnlock_irq(&xtime_lock);
+-	clock_was_set();
+-	return 0;
 -}
 -
--/*
-- * Do a system call from kernel instead of calling sys_execve so we
-- * end up with proper pt_regs.
-- */
--int kernel_execve(const char *filename, char *const argv[], char *const envp[])
+-EXPORT_SYMBOL(do_settimeofday);
+-
+-
+-static int __init rtc_init(void)
 -{
--	register long __res asm ("%d0") = __NR_execve;
--	register long __a asm ("%d1") = (long)(filename);
--	register long __b asm ("%d2") = (long)(argv);
--	register long __c asm ("%d3") = (long)(envp);
--	asm volatile ("trap  #0" : "+d" (__res)
--			: "d" (__a), "d" (__b), "d" (__c));
--	return __res;
+-	struct platform_device *pdev;
+-
+-	if (!mach_hwclk)
+-		return -ENODEV;
+-
+-	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+-	if (IS_ERR(pdev))
+-		return PTR_ERR(pdev);
+-
+-	return 0;
 -}
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k_mm.c
+-
+-module_init(rtc_init);
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time_mm.c
 similarity index 100%
-copy from arch/m68k/kernel/sys_m68k.c
-copy to arch/m68k/kernel/sys_m68k_mm.c
-diff --git a/arch/m68knommu/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k_no.c
+copy from arch/m68k/kernel/time.c
+copy to arch/m68k/kernel/time_mm.c
+diff --git a/arch/m68knommu/kernel/time.c b/arch/m68k/kernel/time_no.c
 similarity index 100%
-copy from arch/m68knommu/kernel/sys_m68k.c
-copy to arch/m68k/kernel/sys_m68k_no.c
+copy from arch/m68knommu/kernel/time.c
+copy to arch/m68k/kernel/time_no.c
 -- 
 1.5.6.5
 
