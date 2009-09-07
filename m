@@ -1,14 +1,15 @@
 From: sfking@fdwdc.com
-Subject: [RFC 26/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 23:02:29 -0700
-Message-ID: <465903f0a328dc0355b41585754da335575049a5.1252222135.git.sfking@fdwdc.com>
+Subject: [RFC 27/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 23:02:30 -0700
+Message-ID: <62b2356a9fcc7aabd73a6ac6b65ee4608a691a31.1252222135.git.sfking@fdwdc.com>
 References: <0b049a980e0bb00153e690539c9ce623e985e583.1252222135.git.sfking@fdwdc.com>
+ <465903f0a328dc0355b41585754da335575049a5.1252222135.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp100.biz.mail.mud.yahoo.com ([68.142.201.176]:48493 "HELO
+Received: from smtp100.biz.mail.mud.yahoo.com ([68.142.201.176]:48497 "HELO
 	smtp100.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758897AbZIGGCy (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 02:02:54 -0400
-In-Reply-To: <0b049a980e0bb00153e690539c9ce623e985e583.1252222135.git.sfking@fdwdc.com>
+	by vger.kernel.org with SMTP id S1758903AbZIGGC4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 02:02:56 -0400
+In-Reply-To: <465903f0a328dc0355b41585754da335575049a5.1252222135.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -17,160 +18,452 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/kernel/dma.c                             |  134 +-------------------
- arch/m68k/kernel/{dma.c => dma_mm.c}               |    0 
- .../kernel/dma.c => m68k/kernel/dma_no.c}          |    0 
- 3 files changed, 5 insertions(+), 129 deletions(-)
- copy arch/m68k/kernel/{dma.c => dma_mm.c} (100%)
- copy arch/{m68knommu/kernel/dma.c => m68k/kernel/dma_no.c} (100%)
+ arch/{m68knommu => m68k}/platform/5206/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/5206/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/5206/gpio.c      |    0 
+ .../platform/5206 => m68k/platform/5206e}/Makefile |    0 
+ arch/{m68knommu => m68k}/platform/5206e/config.c   |    0 
+ .../platform/5206 => m68k/platform/5206e}/gpio.c   |    0 
+ arch/{m68knommu => m68k}/platform/520x/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/520x/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/520x/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/523x/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/523x/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/523x/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/5249/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/5249/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/5249/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/5249/intc2.c     |    0 
+ arch/{m68knommu => m68k}/platform/5272/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/5272/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/5272/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/5272/intc.c      |    0 
+ arch/{m68knommu => m68k}/platform/527x/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/527x/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/527x/gpio.c      |    0 
+ .../platform/527x => m68k/platform/528x}/Makefile  |    0 
+ arch/{m68knommu => m68k}/platform/528x/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/528x/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/5307/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/5307/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/5307/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/532x/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/532x/config.c    |    0 
+ arch/{m68knommu => m68k}/platform/532x/gpio.c      |    0 
+ arch/{m68knommu => m68k}/platform/5407/Makefile    |    0 
+ arch/{m68knommu => m68k}/platform/5407/config.c    |    0 
+ .../platform/5307 => m68k/platform/5407}/gpio.c    |    0 
+ arch/{m68knommu => m68k}/platform/68328/Makefile   |    0 
+ arch/{m68knommu => m68k}/platform/68328/bootlogo.h |    0 
+ .../{m68knommu => m68k}/platform/68328/bootlogo.pl |    0 
+ arch/{m68knommu => m68k}/platform/68328/config.c   |    0 
+ arch/{m68knommu => m68k}/platform/68328/entry.S    |    0 
+ arch/{m68knommu => m68k}/platform/68328/head-de2.S |    0 
+ .../platform/68328/head-pilot.S                    |    0 
+ arch/{m68knommu => m68k}/platform/68328/head-ram.S |    0 
+ arch/{m68knommu => m68k}/platform/68328/head-rom.S |    0 
+ arch/{m68knommu => m68k}/platform/68328/ints.c     |    0 
+ arch/{m68knommu => m68k}/platform/68328/romvec.S   |    0 
+ arch/{m68knommu => m68k}/platform/68328/timers.c   |    0 
+ arch/{m68knommu => m68k}/platform/68360/Makefile   |    0 
+ arch/{m68knommu => m68k}/platform/68360/commproc.c |    0 
+ arch/{m68knommu => m68k}/platform/68360/config.c   |    0 
+ arch/{m68knommu => m68k}/platform/68360/entry.S    |    0 
+ arch/{m68knommu => m68k}/platform/68360/head-ram.S |    0 
+ arch/{m68knommu => m68k}/platform/68360/head-rom.S |    0 
+ arch/{m68knommu => m68k}/platform/68360/ints.c     |    0 
+ arch/{m68knommu => m68k}/platform/68EZ328/Makefile |    0 
+ .../platform/68EZ328/bootlogo.h                    |    0 
+ arch/{m68knommu => m68k}/platform/68EZ328/config.c |    0 
+ arch/{m68knommu => m68k}/platform/68VZ328/Makefile |    0 
+ arch/{m68knommu => m68k}/platform/68VZ328/config.c |    0 
+ arch/{m68knommu => m68k}/platform/Makefile         |    0 
+ .../{m68knommu => m68k}/platform/coldfire/Makefile |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/clk.c   |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/dma.c   |    0 
+ .../platform/coldfire/dma_timer.c                  |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/entry.S |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/gpio.c  |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/head.S  |    0 
+ .../{m68knommu => m68k}/platform/coldfire/intc-2.c |    0 
+ .../platform/coldfire/intc-simr.c                  |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/intc.c  |    0 
+ .../{m68knommu => m68k}/platform/coldfire/pinmux.c |    0 
+ arch/{m68knommu => m68k}/platform/coldfire/pit.c   |    0 
+ .../{m68knommu => m68k}/platform/coldfire/timers.c |    0 
+ .../platform/coldfire/vectors.c                    |    0 
+ 74 files changed, 0 insertions(+), 0 deletions(-)
+ copy arch/{m68knommu => m68k}/platform/5206/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5206/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5206/gpio.c (100%)
+ copy arch/{m68knommu/platform/5206 => m68k/platform/5206e}/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5206e/config.c (100%)
+ copy arch/{m68knommu/platform/5206 => m68k/platform/5206e}/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/520x/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/520x/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/520x/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/523x/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/523x/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/523x/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5249/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5249/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5249/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5249/intc2.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5272/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5272/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5272/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5272/intc.c (100%)
+ copy arch/{m68knommu => m68k}/platform/527x/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/527x/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/527x/gpio.c (100%)
+ copy arch/{m68knommu/platform/527x => m68k/platform/528x}/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/528x/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/528x/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5307/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5307/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5307/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/532x/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/532x/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/532x/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/5407/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/5407/config.c (100%)
+ copy arch/{m68knommu/platform/5307 => m68k/platform/5407}/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/bootlogo.h (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/bootlogo.pl (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/entry.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/head-de2.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/head-pilot.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/head-ram.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/head-rom.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/ints.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/romvec.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68328/timers.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/commproc.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/entry.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/head-ram.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/head-rom.S (100%)
+ copy arch/{m68knommu => m68k}/platform/68360/ints.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68EZ328/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/68EZ328/bootlogo.h (100%)
+ copy arch/{m68knommu => m68k}/platform/68EZ328/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/68VZ328/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/68VZ328/config.c (100%)
+ copy arch/{m68knommu => m68k}/platform/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/Makefile (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/clk.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/dma.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/dma_timer.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/entry.S (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/gpio.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/head.S (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/intc-2.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/intc-simr.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/intc.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/pinmux.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/pit.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/timers.c (100%)
+ copy arch/{m68knommu => m68k}/platform/coldfire/vectors.c (100%)
 
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index 2bb4245..90e8cb7 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -1,129 +1,5 @@
--/*
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file COPYING in the main directory of this archive
-- * for more details.
-- */
--
--#undef DEBUG
--
--#include <linux/dma-mapping.h>
--#include <linux/device.h>
--#include <linux/kernel.h>
--#include <linux/scatterlist.h>
--#include <linux/vmalloc.h>
--
--#include <asm/pgalloc.h>
--
--void *dma_alloc_coherent(struct device *dev, size_t size,
--			 dma_addr_t *handle, gfp_t flag)
--{
--	struct page *page, **map;
--	pgprot_t pgprot;
--	void *addr;
--	int i, order;
--
--	pr_debug("dma_alloc_coherent: %d,%x\n", size, flag);
--
--	size = PAGE_ALIGN(size);
--	order = get_order(size);
--
--	page = alloc_pages(flag, order);
--	if (!page)
--		return NULL;
--
--	*handle = page_to_phys(page);
--	map = kmalloc(sizeof(struct page *) << order, flag & ~__GFP_DMA);
--	if (!map) {
--		__free_pages(page, order);
--		return NULL;
--	}
--	split_page(page, order);
--
--	order = 1 << order;
--	size >>= PAGE_SHIFT;
--	map[0] = page;
--	for (i = 1; i < size; i++)
--		map[i] = page + i;
--	for (; i < order; i++)
--		__free_page(page + i);
--	pgprot = __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_DIRTY);
--	if (CPU_IS_040_OR_060)
--		pgprot_val(pgprot) |= _PAGE_GLOBAL040 | _PAGE_NOCACHE_S;
--	else
--		pgprot_val(pgprot) |= _PAGE_NOCACHE030;
--	addr = vmap(map, size, VM_MAP, pgprot);
--	kfree(map);
--
--	return addr;
--}
--EXPORT_SYMBOL(dma_alloc_coherent);
--
--void dma_free_coherent(struct device *dev, size_t size,
--		       void *addr, dma_addr_t handle)
--{
--	pr_debug("dma_free_coherent: %p, %x\n", addr, handle);
--	vfree(addr);
--}
--EXPORT_SYMBOL(dma_free_coherent);
--
--void dma_sync_single_for_device(struct device *dev, dma_addr_t handle,
--				size_t size, enum dma_data_direction dir)
--{
--	switch (dir) {
--	case DMA_TO_DEVICE:
--		cache_push(handle, size);
--		break;
--	case DMA_FROM_DEVICE:
--		cache_clear(handle, size);
--		break;
--	default:
--		if (printk_ratelimit())
--			printk("dma_sync_single_for_device: unsupported dir %u\n", dir);
--		break;
--	}
--}
--EXPORT_SYMBOL(dma_sync_single_for_device);
--
--void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg, int nents,
--			    enum dma_data_direction dir)
--{
--	int i;
--
--	for (i = 0; i < nents; sg++, i++)
--		dma_sync_single_for_device(dev, sg->dma_address, sg->length, dir);
--}
--EXPORT_SYMBOL(dma_sync_sg_for_device);
--
--dma_addr_t dma_map_single(struct device *dev, void *addr, size_t size,
--			  enum dma_data_direction dir)
--{
--	dma_addr_t handle = virt_to_bus(addr);
--
--	dma_sync_single_for_device(dev, handle, size, dir);
--	return handle;
--}
--EXPORT_SYMBOL(dma_map_single);
--
--dma_addr_t dma_map_page(struct device *dev, struct page *page,
--			unsigned long offset, size_t size,
--			enum dma_data_direction dir)
--{
--	dma_addr_t handle = page_to_phys(page) + offset;
--
--	dma_sync_single_for_device(dev, handle, size, dir);
--	return handle;
--}
--EXPORT_SYMBOL(dma_map_page);
--
--int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
--	       enum dma_data_direction dir)
--{
--	int i;
--
--	for (i = 0; i < nents; sg++, i++) {
--		sg->dma_address = sg_phys(sg);
--		dma_sync_single_for_device(dev, sg->dma_address, sg->length, dir);
--	}
--	return nents;
--}
--EXPORT_SYMBOL(dma_map_sg);
-+#ifdef CONFIG_MMU
-+#include "dma_mm.c"
-+#else
-+#include "dma_no.c"
-+#endif
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma_mm.c
+diff --git a/arch/m68knommu/platform/5206/Makefile b/arch/m68k/platform/5206/Makefile
 similarity index 100%
-copy from arch/m68k/kernel/dma.c
-copy to arch/m68k/kernel/dma_mm.c
-diff --git a/arch/m68knommu/kernel/dma.c b/arch/m68k/kernel/dma_no.c
+copy from arch/m68knommu/platform/5206/Makefile
+copy to arch/m68k/platform/5206/Makefile
+diff --git a/arch/m68knommu/platform/5206/config.c b/arch/m68k/platform/5206/config.c
 similarity index 100%
-copy from arch/m68knommu/kernel/dma.c
-copy to arch/m68k/kernel/dma_no.c
+copy from arch/m68knommu/platform/5206/config.c
+copy to arch/m68k/platform/5206/config.c
+diff --git a/arch/m68knommu/platform/5206/gpio.c b/arch/m68k/platform/5206/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5206/gpio.c
+copy to arch/m68k/platform/5206/gpio.c
+diff --git a/arch/m68knommu/platform/5206/Makefile b/arch/m68k/platform/5206e/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/5206/Makefile
+copy to arch/m68k/platform/5206e/Makefile
+diff --git a/arch/m68knommu/platform/5206e/config.c b/arch/m68k/platform/5206e/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/5206e/config.c
+copy to arch/m68k/platform/5206e/config.c
+diff --git a/arch/m68knommu/platform/5206/gpio.c b/arch/m68k/platform/5206e/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5206/gpio.c
+copy to arch/m68k/platform/5206e/gpio.c
+diff --git a/arch/m68knommu/platform/520x/Makefile b/arch/m68k/platform/520x/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/520x/Makefile
+copy to arch/m68k/platform/520x/Makefile
+diff --git a/arch/m68knommu/platform/520x/config.c b/arch/m68k/platform/520x/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/520x/config.c
+copy to arch/m68k/platform/520x/config.c
+diff --git a/arch/m68knommu/platform/520x/gpio.c b/arch/m68k/platform/520x/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/520x/gpio.c
+copy to arch/m68k/platform/520x/gpio.c
+diff --git a/arch/m68knommu/platform/523x/Makefile b/arch/m68k/platform/523x/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/523x/Makefile
+copy to arch/m68k/platform/523x/Makefile
+diff --git a/arch/m68knommu/platform/523x/config.c b/arch/m68k/platform/523x/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/523x/config.c
+copy to arch/m68k/platform/523x/config.c
+diff --git a/arch/m68knommu/platform/523x/gpio.c b/arch/m68k/platform/523x/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/523x/gpio.c
+copy to arch/m68k/platform/523x/gpio.c
+diff --git a/arch/m68knommu/platform/5249/Makefile b/arch/m68k/platform/5249/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/5249/Makefile
+copy to arch/m68k/platform/5249/Makefile
+diff --git a/arch/m68knommu/platform/5249/config.c b/arch/m68k/platform/5249/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/5249/config.c
+copy to arch/m68k/platform/5249/config.c
+diff --git a/arch/m68knommu/platform/5249/gpio.c b/arch/m68k/platform/5249/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5249/gpio.c
+copy to arch/m68k/platform/5249/gpio.c
+diff --git a/arch/m68knommu/platform/5249/intc2.c b/arch/m68k/platform/5249/intc2.c
+similarity index 100%
+copy from arch/m68knommu/platform/5249/intc2.c
+copy to arch/m68k/platform/5249/intc2.c
+diff --git a/arch/m68knommu/platform/5272/Makefile b/arch/m68k/platform/5272/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/5272/Makefile
+copy to arch/m68k/platform/5272/Makefile
+diff --git a/arch/m68knommu/platform/5272/config.c b/arch/m68k/platform/5272/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/5272/config.c
+copy to arch/m68k/platform/5272/config.c
+diff --git a/arch/m68knommu/platform/5272/gpio.c b/arch/m68k/platform/5272/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5272/gpio.c
+copy to arch/m68k/platform/5272/gpio.c
+diff --git a/arch/m68knommu/platform/5272/intc.c b/arch/m68k/platform/5272/intc.c
+similarity index 100%
+copy from arch/m68knommu/platform/5272/intc.c
+copy to arch/m68k/platform/5272/intc.c
+diff --git a/arch/m68knommu/platform/527x/Makefile b/arch/m68k/platform/527x/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/527x/Makefile
+copy to arch/m68k/platform/527x/Makefile
+diff --git a/arch/m68knommu/platform/527x/config.c b/arch/m68k/platform/527x/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/527x/config.c
+copy to arch/m68k/platform/527x/config.c
+diff --git a/arch/m68knommu/platform/527x/gpio.c b/arch/m68k/platform/527x/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/527x/gpio.c
+copy to arch/m68k/platform/527x/gpio.c
+diff --git a/arch/m68knommu/platform/527x/Makefile b/arch/m68k/platform/528x/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/527x/Makefile
+copy to arch/m68k/platform/528x/Makefile
+diff --git a/arch/m68knommu/platform/528x/config.c b/arch/m68k/platform/528x/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/528x/config.c
+copy to arch/m68k/platform/528x/config.c
+diff --git a/arch/m68knommu/platform/528x/gpio.c b/arch/m68k/platform/528x/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/528x/gpio.c
+copy to arch/m68k/platform/528x/gpio.c
+diff --git a/arch/m68knommu/platform/5307/Makefile b/arch/m68k/platform/5307/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/5307/Makefile
+copy to arch/m68k/platform/5307/Makefile
+diff --git a/arch/m68knommu/platform/5307/config.c b/arch/m68k/platform/5307/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/5307/config.c
+copy to arch/m68k/platform/5307/config.c
+diff --git a/arch/m68knommu/platform/5307/gpio.c b/arch/m68k/platform/5307/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5307/gpio.c
+copy to arch/m68k/platform/5307/gpio.c
+diff --git a/arch/m68knommu/platform/532x/Makefile b/arch/m68k/platform/532x/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/532x/Makefile
+copy to arch/m68k/platform/532x/Makefile
+diff --git a/arch/m68knommu/platform/532x/config.c b/arch/m68k/platform/532x/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/532x/config.c
+copy to arch/m68k/platform/532x/config.c
+diff --git a/arch/m68knommu/platform/532x/gpio.c b/arch/m68k/platform/532x/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/532x/gpio.c
+copy to arch/m68k/platform/532x/gpio.c
+diff --git a/arch/m68knommu/platform/5407/Makefile b/arch/m68k/platform/5407/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/5407/Makefile
+copy to arch/m68k/platform/5407/Makefile
+diff --git a/arch/m68knommu/platform/5407/config.c b/arch/m68k/platform/5407/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/5407/config.c
+copy to arch/m68k/platform/5407/config.c
+diff --git a/arch/m68knommu/platform/5307/gpio.c b/arch/m68k/platform/5407/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/5307/gpio.c
+copy to arch/m68k/platform/5407/gpio.c
+diff --git a/arch/m68knommu/platform/68328/Makefile b/arch/m68k/platform/68328/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/68328/Makefile
+copy to arch/m68k/platform/68328/Makefile
+diff --git a/arch/m68knommu/platform/68328/bootlogo.h b/arch/m68k/platform/68328/bootlogo.h
+similarity index 100%
+copy from arch/m68knommu/platform/68328/bootlogo.h
+copy to arch/m68k/platform/68328/bootlogo.h
+diff --git a/arch/m68knommu/platform/68328/bootlogo.pl b/arch/m68k/platform/68328/bootlogo.pl
+similarity index 100%
+copy from arch/m68knommu/platform/68328/bootlogo.pl
+copy to arch/m68k/platform/68328/bootlogo.pl
+diff --git a/arch/m68knommu/platform/68328/config.c b/arch/m68k/platform/68328/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/68328/config.c
+copy to arch/m68k/platform/68328/config.c
+diff --git a/arch/m68knommu/platform/68328/entry.S b/arch/m68k/platform/68328/entry.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/entry.S
+copy to arch/m68k/platform/68328/entry.S
+diff --git a/arch/m68knommu/platform/68328/head-de2.S b/arch/m68k/platform/68328/head-de2.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/head-de2.S
+copy to arch/m68k/platform/68328/head-de2.S
+diff --git a/arch/m68knommu/platform/68328/head-pilot.S b/arch/m68k/platform/68328/head-pilot.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/head-pilot.S
+copy to arch/m68k/platform/68328/head-pilot.S
+diff --git a/arch/m68knommu/platform/68328/head-ram.S b/arch/m68k/platform/68328/head-ram.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/head-ram.S
+copy to arch/m68k/platform/68328/head-ram.S
+diff --git a/arch/m68knommu/platform/68328/head-rom.S b/arch/m68k/platform/68328/head-rom.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/head-rom.S
+copy to arch/m68k/platform/68328/head-rom.S
+diff --git a/arch/m68knommu/platform/68328/ints.c b/arch/m68k/platform/68328/ints.c
+similarity index 100%
+copy from arch/m68knommu/platform/68328/ints.c
+copy to arch/m68k/platform/68328/ints.c
+diff --git a/arch/m68knommu/platform/68328/romvec.S b/arch/m68k/platform/68328/romvec.S
+similarity index 100%
+copy from arch/m68knommu/platform/68328/romvec.S
+copy to arch/m68k/platform/68328/romvec.S
+diff --git a/arch/m68knommu/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
+similarity index 100%
+copy from arch/m68knommu/platform/68328/timers.c
+copy to arch/m68k/platform/68328/timers.c
+diff --git a/arch/m68knommu/platform/68360/Makefile b/arch/m68k/platform/68360/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/68360/Makefile
+copy to arch/m68k/platform/68360/Makefile
+diff --git a/arch/m68knommu/platform/68360/commproc.c b/arch/m68k/platform/68360/commproc.c
+similarity index 100%
+copy from arch/m68knommu/platform/68360/commproc.c
+copy to arch/m68k/platform/68360/commproc.c
+diff --git a/arch/m68knommu/platform/68360/config.c b/arch/m68k/platform/68360/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/68360/config.c
+copy to arch/m68k/platform/68360/config.c
+diff --git a/arch/m68knommu/platform/68360/entry.S b/arch/m68k/platform/68360/entry.S
+similarity index 100%
+copy from arch/m68knommu/platform/68360/entry.S
+copy to arch/m68k/platform/68360/entry.S
+diff --git a/arch/m68knommu/platform/68360/head-ram.S b/arch/m68k/platform/68360/head-ram.S
+similarity index 100%
+copy from arch/m68knommu/platform/68360/head-ram.S
+copy to arch/m68k/platform/68360/head-ram.S
+diff --git a/arch/m68knommu/platform/68360/head-rom.S b/arch/m68k/platform/68360/head-rom.S
+similarity index 100%
+copy from arch/m68knommu/platform/68360/head-rom.S
+copy to arch/m68k/platform/68360/head-rom.S
+diff --git a/arch/m68knommu/platform/68360/ints.c b/arch/m68k/platform/68360/ints.c
+similarity index 100%
+copy from arch/m68knommu/platform/68360/ints.c
+copy to arch/m68k/platform/68360/ints.c
+diff --git a/arch/m68knommu/platform/68EZ328/Makefile b/arch/m68k/platform/68EZ328/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/68EZ328/Makefile
+copy to arch/m68k/platform/68EZ328/Makefile
+diff --git a/arch/m68knommu/platform/68EZ328/bootlogo.h b/arch/m68k/platform/68EZ328/bootlogo.h
+similarity index 100%
+copy from arch/m68knommu/platform/68EZ328/bootlogo.h
+copy to arch/m68k/platform/68EZ328/bootlogo.h
+diff --git a/arch/m68knommu/platform/68EZ328/config.c b/arch/m68k/platform/68EZ328/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/68EZ328/config.c
+copy to arch/m68k/platform/68EZ328/config.c
+diff --git a/arch/m68knommu/platform/68VZ328/Makefile b/arch/m68k/platform/68VZ328/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/68VZ328/Makefile
+copy to arch/m68k/platform/68VZ328/Makefile
+diff --git a/arch/m68knommu/platform/68VZ328/config.c b/arch/m68k/platform/68VZ328/config.c
+similarity index 100%
+copy from arch/m68knommu/platform/68VZ328/config.c
+copy to arch/m68k/platform/68VZ328/config.c
+diff --git a/arch/m68knommu/platform/Makefile b/arch/m68k/platform/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/Makefile
+copy to arch/m68k/platform/Makefile
+diff --git a/arch/m68knommu/platform/coldfire/Makefile b/arch/m68k/platform/coldfire/Makefile
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/Makefile
+copy to arch/m68k/platform/coldfire/Makefile
+diff --git a/arch/m68knommu/platform/coldfire/clk.c b/arch/m68k/platform/coldfire/clk.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/clk.c
+copy to arch/m68k/platform/coldfire/clk.c
+diff --git a/arch/m68knommu/platform/coldfire/dma.c b/arch/m68k/platform/coldfire/dma.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/dma.c
+copy to arch/m68k/platform/coldfire/dma.c
+diff --git a/arch/m68knommu/platform/coldfire/dma_timer.c b/arch/m68k/platform/coldfire/dma_timer.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/dma_timer.c
+copy to arch/m68k/platform/coldfire/dma_timer.c
+diff --git a/arch/m68knommu/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/entry.S
+copy to arch/m68k/platform/coldfire/entry.S
+diff --git a/arch/m68knommu/platform/coldfire/gpio.c b/arch/m68k/platform/coldfire/gpio.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/gpio.c
+copy to arch/m68k/platform/coldfire/gpio.c
+diff --git a/arch/m68knommu/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/head.S
+copy to arch/m68k/platform/coldfire/head.S
+diff --git a/arch/m68knommu/platform/coldfire/intc-2.c b/arch/m68k/platform/coldfire/intc-2.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/intc-2.c
+copy to arch/m68k/platform/coldfire/intc-2.c
+diff --git a/arch/m68knommu/platform/coldfire/intc-simr.c b/arch/m68k/platform/coldfire/intc-simr.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/intc-simr.c
+copy to arch/m68k/platform/coldfire/intc-simr.c
+diff --git a/arch/m68knommu/platform/coldfire/intc.c b/arch/m68k/platform/coldfire/intc.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/intc.c
+copy to arch/m68k/platform/coldfire/intc.c
+diff --git a/arch/m68knommu/platform/coldfire/pinmux.c b/arch/m68k/platform/coldfire/pinmux.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/pinmux.c
+copy to arch/m68k/platform/coldfire/pinmux.c
+diff --git a/arch/m68knommu/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/pit.c
+copy to arch/m68k/platform/coldfire/pit.c
+diff --git a/arch/m68knommu/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/timers.c
+copy to arch/m68k/platform/coldfire/timers.c
+diff --git a/arch/m68knommu/platform/coldfire/vectors.c b/arch/m68k/platform/coldfire/vectors.c
+similarity index 100%
+copy from arch/m68knommu/platform/coldfire/vectors.c
+copy to arch/m68k/platform/coldfire/vectors.c
 -- 
 1.5.6.5
 
