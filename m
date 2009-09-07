@@ -1,7 +1,7 @@
 From: sfking@fdwdc.com
-Subject: [RFC 10/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:00 -0700
-Message-ID: <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
+Subject: [RFC 12/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 22:40:02 -0700
+Message-ID: <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking__38605.0664158121$1252302453$gmane$org@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
  <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
  <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
@@ -12,12 +12,14 @@ References: <cover.1252222129.git.sfking@fdwdc.com>
  <f6625c80e8b3246063209517cccc855c056b2b71.1252222133.git.sfking@fdwdc.com>
  <55335001e487bd208ef4801c9df7e2d38a842ad3.1252222134.git.sfking@fdwdc.com>
  <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
+ <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
+ <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34410 "HELO
+Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34417 "HELO
 	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758830AbZIGFrJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:09 -0400
-In-Reply-To: <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
+	by vger.kernel.org with SMTP id S1758954AbZIGFrL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:11 -0400
+In-Reply-To: <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -26,381 +28,563 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/kernel/process.c                         |  353 +-------------------
- arch/m68k/kernel/{process.c => process_mm.c}       |    0 
- .../kernel/process.c => m68k/kernel/process_no.c}  |    0 
- 3 files changed, 3 insertions(+), 350 deletions(-)
- copy arch/m68k/kernel/{process.c => process_mm.c} (100%)
- copy arch/{m68knommu/kernel/process.c => m68k/kernel/process_no.c} (100%)
+ arch/m68k/kernel/setup.c                           |  535 +-------------------
+ arch/m68k/kernel/{setup.c => setup_mm.c}           |    0 
+ .../kernel/setup.c => m68k/kernel/setup_no.c}      |    0 
+ 3 files changed, 3 insertions(+), 532 deletions(-)
+ copy arch/m68k/kernel/{setup.c => setup_mm.c} (100%)
+ copy arch/{m68knommu/kernel/setup.c => m68k/kernel/setup_no.c} (100%)
 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index 72bad65..6cf4bd6 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -1,352 +1,5 @@
+diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup.c
+index 303730a..4bf129f 100644
+--- a/arch/m68k/kernel/setup.c
++++ b/arch/m68k/kernel/setup.c
+@@ -1,534 +1,5 @@
 -/*
-- *  linux/arch/m68k/kernel/process.c
+- *  linux/arch/m68k/kernel/setup.c
 - *
 - *  Copyright (C) 1995  Hamish Macdonald
-- *
-- *  68060 fixes by Jesper Skov
 - */
 -
 -/*
-- * This file handles the architecture-dependent parts of process handling..
+- * This file handles the architecture-dependent parts of system setup
 - */
 -
--#include <linux/errno.h>
--#include <linux/module.h>
--#include <linux/sched.h>
 -#include <linux/kernel.h>
 -#include <linux/mm.h>
+-#include <linux/sched.h>
+-#include <linux/delay.h>
+-#include <linux/interrupt.h>
 -#include <linux/fs.h>
--#include <linux/smp.h>
--#include <linux/smp_lock.h>
--#include <linux/stddef.h>
--#include <linux/unistd.h>
--#include <linux/ptrace.h>
--#include <linux/slab.h>
--#include <linux/user.h>
--#include <linux/reboot.h>
--#include <linux/init_task.h>
--#include <linux/mqueue.h>
+-#include <linux/console.h>
+-#include <linux/genhd.h>
+-#include <linux/errno.h>
+-#include <linux/string.h>
+-#include <linux/init.h>
+-#include <linux/bootmem.h>
+-#include <linux/proc_fs.h>
+-#include <linux/seq_file.h>
+-#include <linux/module.h>
+-#include <linux/initrd.h>
 -
--#include <asm/uaccess.h>
--#include <asm/system.h>
--#include <asm/traps.h>
--#include <asm/machdep.h>
+-#include <asm/bootinfo.h>
+-#include <asm/sections.h>
 -#include <asm/setup.h>
--#include <asm/pgtable.h>
+-#include <asm/fpu.h>
+-#include <asm/irq.h>
+-#include <asm/io.h>
+-#include <asm/machdep.h>
+-#ifdef CONFIG_AMIGA
+-#include <asm/amigahw.h>
+-#endif
+-#ifdef CONFIG_ATARI
+-#include <asm/atarihw.h>
+-#include <asm/atari_stram.h>
+-#endif
+-#ifdef CONFIG_SUN3X
+-#include <asm/dvma.h>
+-#endif
 -
--/*
-- * Initial task/thread structure. Make this a per-architecture thing,
-- * because different architectures tend to have different
-- * alignment requirements and potentially different initial
-- * setup.
-- */
--static struct signal_struct init_signals = INIT_SIGNALS(init_signals);
--static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
--union thread_union init_thread_union
--__attribute__((section(".data.init_task"), aligned(THREAD_SIZE)))
--       = { INIT_THREAD_INFO(init_task) };
+-#if !FPSTATESIZE || !NR_IRQS
+-#warning No CPU/platform type selected, your kernel will not work!
+-#warning Are you building an allnoconfig kernel?
+-#endif
 -
--/* initial task structure */
--struct task_struct init_task = INIT_TASK(init_task);
+-unsigned long m68k_machtype;
+-EXPORT_SYMBOL(m68k_machtype);
+-unsigned long m68k_cputype;
+-EXPORT_SYMBOL(m68k_cputype);
+-unsigned long m68k_fputype;
+-unsigned long m68k_mmutype;
+-EXPORT_SYMBOL(m68k_mmutype);
+-#ifdef CONFIG_VME
+-unsigned long vme_brdtype;
+-EXPORT_SYMBOL(vme_brdtype);
+-#endif
 -
--EXPORT_SYMBOL(init_task);
+-int m68k_is040or060;
+-EXPORT_SYMBOL(m68k_is040or060);
 -
--asmlinkage void ret_from_fork(void);
+-extern unsigned long availmem;
 -
+-int m68k_num_memory;
+-EXPORT_SYMBOL(m68k_num_memory);
+-int m68k_realnum_memory;
+-EXPORT_SYMBOL(m68k_realnum_memory);
+-unsigned long m68k_memoffset;
+-struct mem_info m68k_memory[NUM_MEMINFO];
+-EXPORT_SYMBOL(m68k_memory);
 -
--/*
-- * Return saved PC from a blocked thread
-- */
--unsigned long thread_saved_pc(struct task_struct *tsk)
+-struct mem_info m68k_ramdisk;
+-
+-static char m68k_command_line[CL_SIZE];
+-
+-void (*mach_sched_init) (irq_handler_t handler) __initdata = NULL;
+-/* machine dependent irq functions */
+-void (*mach_init_IRQ) (void) __initdata = NULL;
+-void (*mach_get_model) (char *model);
+-void (*mach_get_hardware_list) (struct seq_file *m);
+-/* machine dependent timer functions */
+-unsigned long (*mach_gettimeoffset) (void);
+-int (*mach_hwclk) (int, struct rtc_time*);
+-EXPORT_SYMBOL(mach_hwclk);
+-int (*mach_set_clock_mmss) (unsigned long);
+-unsigned int (*mach_get_ss)(void);
+-int (*mach_get_rtc_pll)(struct rtc_pll_info *);
+-int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+-EXPORT_SYMBOL(mach_get_ss);
+-EXPORT_SYMBOL(mach_get_rtc_pll);
+-EXPORT_SYMBOL(mach_set_rtc_pll);
+-void (*mach_reset)( void );
+-void (*mach_halt)( void );
+-void (*mach_power_off)( void );
+-long mach_max_dma_address = 0x00ffffff; /* default set to the lower 16MB */
+-#ifdef CONFIG_HEARTBEAT
+-void (*mach_heartbeat) (int);
+-EXPORT_SYMBOL(mach_heartbeat);
+-#endif
+-#ifdef CONFIG_M68K_L2_CACHE
+-void (*mach_l2_flush) (int);
+-#endif
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
+-void (*mach_beep)(unsigned int, unsigned int);
+-EXPORT_SYMBOL(mach_beep);
+-#endif
+-#if defined(CONFIG_ISA) && defined(MULTI_ISA)
+-int isa_type;
+-int isa_sex;
+-EXPORT_SYMBOL(isa_type);
+-EXPORT_SYMBOL(isa_sex);
+-#endif
+-
+-extern int amiga_parse_bootinfo(const struct bi_record *);
+-extern int atari_parse_bootinfo(const struct bi_record *);
+-extern int mac_parse_bootinfo(const struct bi_record *);
+-extern int q40_parse_bootinfo(const struct bi_record *);
+-extern int bvme6000_parse_bootinfo(const struct bi_record *);
+-extern int mvme16x_parse_bootinfo(const struct bi_record *);
+-extern int mvme147_parse_bootinfo(const struct bi_record *);
+-extern int hp300_parse_bootinfo(const struct bi_record *);
+-extern int apollo_parse_bootinfo(const struct bi_record *);
+-
+-extern void config_amiga(void);
+-extern void config_atari(void);
+-extern void config_mac(void);
+-extern void config_sun3(void);
+-extern void config_apollo(void);
+-extern void config_mvme147(void);
+-extern void config_mvme16x(void);
+-extern void config_bvme6000(void);
+-extern void config_hp300(void);
+-extern void config_q40(void);
+-extern void config_sun3x(void);
+-
+-#define MASK_256K 0xfffc0000
+-
+-extern void paging_init(void);
+-
+-static void __init m68k_parse_bootinfo(const struct bi_record *record)
 -{
--	struct switch_stack *sw = (struct switch_stack *)tsk->thread.ksp;
--	/* Check whether the thread is blocked in resume() */
--	if (in_sched_functions(sw->retpc))
--		return ((unsigned long *)sw->a6)[1];
--	else
--		return sw->retpc;
+-	while (record->tag != BI_LAST) {
+-		int unknown = 0;
+-		const unsigned long *data = record->data;
+-
+-		switch (record->tag) {
+-		case BI_MACHTYPE:
+-		case BI_CPUTYPE:
+-		case BI_FPUTYPE:
+-		case BI_MMUTYPE:
+-			/* Already set up by head.S */
+-			break;
+-
+-		case BI_MEMCHUNK:
+-			if (m68k_num_memory < NUM_MEMINFO) {
+-				m68k_memory[m68k_num_memory].addr = data[0];
+-				m68k_memory[m68k_num_memory].size = data[1];
+-				m68k_num_memory++;
+-			} else
+-				printk("m68k_parse_bootinfo: too many memory chunks\n");
+-			break;
+-
+-		case BI_RAMDISK:
+-			m68k_ramdisk.addr = data[0];
+-			m68k_ramdisk.size = data[1];
+-			break;
+-
+-		case BI_COMMAND_LINE:
+-			strlcpy(m68k_command_line, (const char *)data,
+-				sizeof(m68k_command_line));
+-			break;
+-
+-		default:
+-			if (MACH_IS_AMIGA)
+-				unknown = amiga_parse_bootinfo(record);
+-			else if (MACH_IS_ATARI)
+-				unknown = atari_parse_bootinfo(record);
+-			else if (MACH_IS_MAC)
+-				unknown = mac_parse_bootinfo(record);
+-			else if (MACH_IS_Q40)
+-				unknown = q40_parse_bootinfo(record);
+-			else if (MACH_IS_BVME6000)
+-				unknown = bvme6000_parse_bootinfo(record);
+-			else if (MACH_IS_MVME16x)
+-				unknown = mvme16x_parse_bootinfo(record);
+-			else if (MACH_IS_MVME147)
+-				unknown = mvme147_parse_bootinfo(record);
+-			else if (MACH_IS_HP300)
+-				unknown = hp300_parse_bootinfo(record);
+-			else if (MACH_IS_APOLLO)
+-				unknown = apollo_parse_bootinfo(record);
+-			else
+-				unknown = 1;
+-		}
+-		if (unknown)
+-			printk("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
+-			       record->tag);
+-		record = (struct bi_record *)((unsigned long)record +
+-					      record->size);
+-	}
+-
+-	m68k_realnum_memory = m68k_num_memory;
+-#ifdef CONFIG_SINGLE_MEMORY_CHUNK
+-	if (m68k_num_memory > 1) {
+-		printk("Ignoring last %i chunks of physical memory\n",
+-		       (m68k_num_memory - 1));
+-		m68k_num_memory = 1;
+-	}
+-#endif
 -}
 -
--/*
-- * The idle loop on an m68k..
-- */
--static void default_idle(void)
+-void __init setup_arch(char **cmdline_p)
 -{
--	if (!need_resched())
--#if defined(MACH_ATARI_ONLY)
--		/* block out HSYNC on the atari (falcon) */
--		__asm__("stop #0x2200" : : : "cc");
+-	int i;
+-
+-	/* The bootinfo is located right after the kernel bss */
+-	m68k_parse_bootinfo((const struct bi_record *)_end);
+-
+-	if (CPU_IS_040)
+-		m68k_is040or060 = 4;
+-	else if (CPU_IS_060)
+-		m68k_is040or060 = 6;
+-
+-	/* FIXME: m68k_fputype is passed in by Penguin booter, which can
+-	 * be confused by software FPU emulation. BEWARE.
+-	 * We should really do our own FPU check at startup.
+-	 * [what do we do with buggy 68LC040s? if we have problems
+-	 *  with them, we should add a test to check_bugs() below] */
+-#ifndef CONFIG_M68KFPU_EMU_ONLY
+-	/* clear the fpu if we have one */
+-	if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060)) {
+-		volatile int zero = 0;
+-		asm volatile ("frestore %0" : : "m" (zero));
+-	}
+-#endif
+-
+-	if (CPU_IS_060) {
+-		u32 pcr;
+-
+-		asm (".chip 68060; movec %%pcr,%0; .chip 68k"
+-		     : "=d" (pcr));
+-		if (((pcr >> 8) & 0xff) <= 5) {
+-			printk("Enabling workaround for errata I14\n");
+-			asm (".chip 68060; movec %0,%%pcr; .chip 68k"
+-			     : : "d" (pcr | 0x20));
+-		}
+-	}
+-
+-	init_mm.start_code = PAGE_OFFSET;
+-	init_mm.end_code = (unsigned long)_etext;
+-	init_mm.end_data = (unsigned long)_edata;
+-	init_mm.brk = (unsigned long)_end;
+-
+-	*cmdline_p = m68k_command_line;
+-	memcpy(boot_command_line, *cmdline_p, CL_SIZE);
+-
+-	parse_early_param();
+-
+-#ifdef CONFIG_DUMMY_CONSOLE
+-	conswitchp = &dummy_con;
+-#endif
+-
+-	switch (m68k_machtype) {
+-#ifdef CONFIG_AMIGA
+-	case MACH_AMIGA:
+-		config_amiga();
+-		break;
+-#endif
+-#ifdef CONFIG_ATARI
+-	case MACH_ATARI:
+-		config_atari();
+-		break;
+-#endif
+-#ifdef CONFIG_MAC
+-	case MACH_MAC:
+-		config_mac();
+-		break;
+-#endif
+-#ifdef CONFIG_SUN3
+-	case MACH_SUN3:
+-		config_sun3();
+-		break;
+-#endif
+-#ifdef CONFIG_APOLLO
+-	case MACH_APOLLO:
+-		config_apollo();
+-		break;
+-#endif
+-#ifdef CONFIG_MVME147
+-	case MACH_MVME147:
+-		config_mvme147();
+-		break;
+-#endif
+-#ifdef CONFIG_MVME16x
+-	case MACH_MVME16x:
+-		config_mvme16x();
+-		break;
+-#endif
+-#ifdef CONFIG_BVME6000
+-	case MACH_BVME6000:
+-		config_bvme6000();
+-		break;
+-#endif
+-#ifdef CONFIG_HP300
+-	case MACH_HP300:
+-		config_hp300();
+-		break;
+-#endif
+-#ifdef CONFIG_Q40
+-	case MACH_Q40:
+-		config_q40();
+-		break;
+-#endif
+-#ifdef CONFIG_SUN3X
+-	case MACH_SUN3X:
+-		config_sun3x();
+-		break;
+-#endif
+-	default:
+-		panic("No configuration setup");
+-	}
+-
+-	paging_init();
+-
+-#ifndef CONFIG_SUN3
+-	for (i = 1; i < m68k_num_memory; i++)
+-		free_bootmem_node(NODE_DATA(i), m68k_memory[i].addr,
+-				  m68k_memory[i].size);
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	if (m68k_ramdisk.size) {
+-		reserve_bootmem_node(__virt_to_node(phys_to_virt(m68k_ramdisk.addr)),
+-				     m68k_ramdisk.addr, m68k_ramdisk.size,
+-				     BOOTMEM_DEFAULT);
+-		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
+-		initrd_end = initrd_start + m68k_ramdisk.size;
+-		printk("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
+-	}
+-#endif
+-
+-#ifdef CONFIG_ATARI
+-	if (MACH_IS_ATARI)
+-		atari_stram_reserve_pages((void *)availmem);
+-#endif
+-#ifdef CONFIG_SUN3X
+-	if (MACH_IS_SUN3X) {
+-		dvma_init();
+-	}
+-#endif
+-
+-#endif /* !CONFIG_SUN3 */
+-
+-/* set ISA defs early as possible */
+-#if defined(CONFIG_ISA) && defined(MULTI_ISA)
+-	if (MACH_IS_Q40) {
+-		isa_type = ISA_TYPE_Q40;
+-		isa_sex = 0;
+-	}
+-#ifdef CONFIG_GG2
+-	if (MACH_IS_AMIGA && AMIGAHW_PRESENT(GG2_ISA)) {
+-		isa_type = ISA_TYPE_GG2;
+-		isa_sex = 0;
+-	}
+-#endif
+-#ifdef CONFIG_AMIGA_PCMCIA
+-	if (MACH_IS_AMIGA && AMIGAHW_PRESENT(PCMCIA)) {
+-		isa_type = ISA_TYPE_AG;
+-		isa_sex = 1;
+-	}
+-#endif
+-#endif
+-}
+-
+-static int show_cpuinfo(struct seq_file *m, void *v)
+-{
+-	const char *cpu, *mmu, *fpu;
+-	unsigned long clockfreq, clockfactor;
+-
+-#define LOOP_CYCLES_68020	(8)
+-#define LOOP_CYCLES_68030	(8)
+-#define LOOP_CYCLES_68040	(3)
+-#define LOOP_CYCLES_68060	(1)
+-
+-	if (CPU_IS_020) {
+-		cpu = "68020";
+-		clockfactor = LOOP_CYCLES_68020;
+-	} else if (CPU_IS_030) {
+-		cpu = "68030";
+-		clockfactor = LOOP_CYCLES_68030;
+-	} else if (CPU_IS_040) {
+-		cpu = "68040";
+-		clockfactor = LOOP_CYCLES_68040;
+-	} else if (CPU_IS_060) {
+-		cpu = "68060";
+-		clockfactor = LOOP_CYCLES_68060;
+-	} else {
+-		cpu = "680x0";
+-		clockfactor = 0;
+-	}
+-
+-#ifdef CONFIG_M68KFPU_EMU_ONLY
+-	fpu = "none(soft float)";
 +#ifdef CONFIG_MMU
-+#include "process_mm.c"
++#include "setup_mm.c"
  #else
--		__asm__("stop #0x2000" : : : "cc");
-+#include "process_no.c"
- #endif
+-	if (m68k_fputype & FPU_68881)
+-		fpu = "68881";
+-	else if (m68k_fputype & FPU_68882)
+-		fpu = "68882";
+-	else if (m68k_fputype & FPU_68040)
+-		fpu = "68040";
+-	else if (m68k_fputype & FPU_68060)
+-		fpu = "68060";
+-	else if (m68k_fputype & FPU_SUNFPA)
+-		fpu = "Sun FPA";
+-	else
+-		fpu = "none";
+-#endif
+-
+-	if (m68k_mmutype & MMU_68851)
+-		mmu = "68851";
+-	else if (m68k_mmutype & MMU_68030)
+-		mmu = "68030";
+-	else if (m68k_mmutype & MMU_68040)
+-		mmu = "68040";
+-	else if (m68k_mmutype & MMU_68060)
+-		mmu = "68060";
+-	else if (m68k_mmutype & MMU_SUN3)
+-		mmu = "Sun-3";
+-	else if (m68k_mmutype & MMU_APOLLO)
+-		mmu = "Apollo";
+-	else
+-		mmu = "unknown";
+-
+-	clockfreq = loops_per_jiffy * HZ * clockfactor;
+-
+-	seq_printf(m, "CPU:\t\t%s\n"
+-		   "MMU:\t\t%s\n"
+-		   "FPU:\t\t%s\n"
+-		   "Clocking:\t%lu.%1luMHz\n"
+-		   "BogoMips:\t%lu.%02lu\n"
+-		   "Calibration:\t%lu loops\n",
+-		   cpu, mmu, fpu,
+-		   clockfreq/1000000,(clockfreq/100000)%10,
+-		   loops_per_jiffy/(500000/HZ),(loops_per_jiffy/(5000/HZ))%100,
+-		   loops_per_jiffy);
+-	return 0;
 -}
 -
--void (*idle)(void) = default_idle;
--
--/*
-- * The idle thread. There's no useful work to be
-- * done, so just try to conserve power and have a
-- * low exit latency (ie sit in a loop waiting for
-- * somebody to say that they'd like to reschedule)
-- */
--void cpu_idle(void)
+-static void *c_start(struct seq_file *m, loff_t *pos)
 -{
--	/* endless idle loop with no priority at all */
--	while (1) {
--		while (!need_resched())
--			idle();
--		preempt_enable_no_resched();
--		schedule();
--		preempt_disable();
--	}
+-	return *pos < 1 ? (void *)1 : NULL;
 -}
--
--void machine_restart(char * __unused)
+-static void *c_next(struct seq_file *m, void *v, loff_t *pos)
 -{
--	if (mach_reset)
--		mach_reset();
--	for (;;);
+-	++*pos;
+-	return NULL;
 -}
--
--void machine_halt(void)
+-static void c_stop(struct seq_file *m, void *v)
 -{
--	if (mach_halt)
--		mach_halt();
--	for (;;);
 -}
+-const struct seq_operations cpuinfo_op = {
+-	.start	= c_start,
+-	.next	= c_next,
+-	.stop	= c_stop,
+-	.show	= show_cpuinfo,
+-};
 -
--void machine_power_off(void)
+-#ifdef CONFIG_PROC_HARDWARE
+-static int hardware_proc_show(struct seq_file *m, void *v)
 -{
--	if (mach_power_off)
--		mach_power_off();
--	for (;;);
--}
+-	char model[80];
+-	unsigned long mem;
+-	int i;
 -
--void (*pm_power_off)(void) = machine_power_off;
--EXPORT_SYMBOL(pm_power_off);
+-	if (mach_get_model)
+-		mach_get_model(model);
+-	else
+-		strcpy(model, "Unknown m68k");
 -
--void show_regs(struct pt_regs * regs)
--{
--	printk("\n");
--	printk("Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
--	       regs->format, regs->vector, regs->pc, regs->sr, print_tainted());
--	printk("ORIG_D0: %08lx  D0: %08lx  A2: %08lx  A1: %08lx\n",
--	       regs->orig_d0, regs->d0, regs->a2, regs->a1);
--	printk("A0: %08lx  D5: %08lx  D4: %08lx\n",
--	       regs->a0, regs->d5, regs->d4);
--	printk("D3: %08lx  D2: %08lx  D1: %08lx\n",
--	       regs->d3, regs->d2, regs->d1);
--	if (!(regs->sr & PS_S))
--		printk("USP: %08lx\n", rdusp());
--}
+-	seq_printf(m, "Model:\t\t%s\n", model);
+-	for (mem = 0, i = 0; i < m68k_num_memory; i++)
+-		mem += m68k_memory[i].size;
+-	seq_printf(m, "System Memory:\t%ldK\n", mem >> 10);
 -
--/*
-- * Create a kernel thread
-- */
--int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
--{
--	int pid;
--	mm_segment_t fs;
--
--	fs = get_fs();
--	set_fs (KERNEL_DS);
--
--	{
--	register long retval __asm__ ("d0");
--	register long clone_arg __asm__ ("d1") = flags | CLONE_VM | CLONE_UNTRACED;
--
--	retval = __NR_clone;
--	__asm__ __volatile__
--	  ("clrl %%d2\n\t"
--	   "trap #0\n\t"		/* Linux/m68k system call */
--	   "tstl %0\n\t"		/* child or parent */
--	   "jne 1f\n\t"			/* parent - jump */
--	   "lea %%sp@(%c7),%6\n\t"	/* reload current */
--	   "movel %6@,%6\n\t"
--	   "movel %3,%%sp@-\n\t"	/* push argument */
--	   "jsr %4@\n\t"		/* call fn */
--	   "movel %0,%%d1\n\t"		/* pass exit value */
--	   "movel %2,%%d0\n\t"		/* exit */
--	   "trap #0\n"
--	   "1:"
--	   : "+d" (retval)
--	   : "i" (__NR_clone), "i" (__NR_exit),
--	     "r" (arg), "a" (fn), "d" (clone_arg), "r" (current),
--	     "i" (-THREAD_SIZE)
--	   : "d2");
--
--	pid = retval;
--	}
--
--	set_fs (fs);
--	return pid;
--}
--EXPORT_SYMBOL(kernel_thread);
--
--void flush_thread(void)
--{
--	unsigned long zero = 0;
--	set_fs(USER_DS);
--	current->thread.fs = __USER_DS;
--	if (!FPU_IS_EMU)
--		asm volatile (".chip 68k/68881\n\t"
--			      "frestore %0@\n\t"
--			      ".chip 68k" : : "a" (&zero));
--}
--
--/*
-- * "m68k_fork()".. By the time we get here, the
-- * non-volatile registers have also been saved on the
-- * stack. We do some ugly pointer stuff here.. (see
-- * also copy_thread)
-- */
--
--asmlinkage int m68k_fork(struct pt_regs *regs)
--{
--	return do_fork(SIGCHLD, rdusp(), regs, 0, NULL, NULL);
--}
--
--asmlinkage int m68k_vfork(struct pt_regs *regs)
--{
--	return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, rdusp(), regs, 0,
--		       NULL, NULL);
--}
--
--asmlinkage int m68k_clone(struct pt_regs *regs)
--{
--	unsigned long clone_flags;
--	unsigned long newsp;
--	int __user *parent_tidptr, *child_tidptr;
--
--	/* syscall2 puts clone_flags in d1 and usp in d2 */
--	clone_flags = regs->d1;
--	newsp = regs->d2;
--	parent_tidptr = (int __user *)regs->d3;
--	child_tidptr = (int __user *)regs->d4;
--	if (!newsp)
--		newsp = rdusp();
--	return do_fork(clone_flags, newsp, regs, 0,
--		       parent_tidptr, child_tidptr);
--}
--
--int copy_thread(unsigned long clone_flags, unsigned long usp,
--		 unsigned long unused,
--		 struct task_struct * p, struct pt_regs * regs)
--{
--	struct pt_regs * childregs;
--	struct switch_stack * childstack, *stack;
--	unsigned long *retp;
--
--	childregs = (struct pt_regs *) (task_stack_page(p) + THREAD_SIZE) - 1;
--
--	*childregs = *regs;
--	childregs->d0 = 0;
--
--	retp = ((unsigned long *) regs);
--	stack = ((struct switch_stack *) retp) - 1;
--
--	childstack = ((struct switch_stack *) childregs) - 1;
--	*childstack = *stack;
--	childstack->retpc = (unsigned long)ret_from_fork;
--
--	p->thread.usp = usp;
--	p->thread.ksp = (unsigned long)childstack;
--	/*
--	 * Must save the current SFC/DFC value, NOT the value when
--	 * the parent was last descheduled - RGH  10-08-96
--	 */
--	p->thread.fs = get_fs().seg;
--
--	if (!FPU_IS_EMU) {
--		/* Copy the current fpu state */
--		asm volatile ("fsave %0" : : "m" (p->thread.fpstate[0]) : "memory");
--
--		if (!CPU_IS_060 ? p->thread.fpstate[0] : p->thread.fpstate[2])
--		  asm volatile ("fmovemx %/fp0-%/fp7,%0\n\t"
--				"fmoveml %/fpiar/%/fpcr/%/fpsr,%1"
--				: : "m" (p->thread.fp[0]), "m" (p->thread.fpcntl[0])
--				: "memory");
--		/* Restore the state in case the fpu was busy */
--		asm volatile ("frestore %0" : : "m" (p->thread.fpstate[0]));
--	}
+-	if (mach_get_hardware_list)
+-		mach_get_hardware_list(m);
 -
 -	return 0;
 -}
 -
--/* Fill in the fpu structure for a core dump.  */
--
--int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+-static int hardware_proc_open(struct inode *inode, struct file *file)
 -{
--	char fpustate[216];
+-	return single_open(file, hardware_proc_show, NULL);
+-}
 -
--	if (FPU_IS_EMU) {
--		int i;
+-static const struct file_operations hardware_proc_fops = {
+-	.open		= hardware_proc_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
 -
--		memcpy(fpu->fpcntl, current->thread.fpcntl, 12);
--		memcpy(fpu->fpregs, current->thread.fp, 96);
--		/* Convert internal fpu reg representation
--		 * into long double format
--		 */
--		for (i = 0; i < 24; i += 3)
--			fpu->fpregs[i] = ((fpu->fpregs[i] & 0xffff0000) << 15) |
--			                 ((fpu->fpregs[i] & 0x0000ffff) << 16);
--		return 1;
+-static int __init proc_hardware_init(void)
+-{
+-	proc_create("hardware", 0, NULL, &hardware_proc_fops);
+-	return 0;
+-}
+-module_init(proc_hardware_init);
++#include "setup_no.c"
+ #endif
+-
+-void check_bugs(void)
+-{
+-#ifndef CONFIG_M68KFPU_EMU
+-	if (m68k_fputype == 0) {
+-		printk(KERN_EMERG "*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
+-			"WHICH IS REQUIRED BY LINUX/M68K ***\n");
+-		printk(KERN_EMERG "Upgrade your hardware or join the FPU "
+-			"emulation project\n");
+-		panic("no FPU");
 -	}
+-#endif /* !CONFIG_M68KFPU_EMU */
+-}
 -
--	/* First dump the fpu context to avoid protocol violation.  */
--	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
--	if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
--		return 0;
--
--	asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
--		:: "m" (fpu->fpcntl[0])
--		: "memory");
--	asm volatile ("fmovemx %/fp0-%/fp7,%0"
--		:: "m" (fpu->fpregs[0])
--		: "memory");
+-#ifdef CONFIG_ADB
+-static int __init adb_probe_sync_enable (char *str) {
+-	extern int __adb_probe_sync;
+-	__adb_probe_sync = 1;
 -	return 1;
 -}
--EXPORT_SYMBOL(dump_fpu);
 -
--/*
-- * sys_execve() executes a new program.
-- */
--asmlinkage int sys_execve(char __user *name, char __user * __user *argv, char __user * __user *envp)
--{
--	int error;
--	char * filename;
--	struct pt_regs *regs = (struct pt_regs *) &name;
--
--	lock_kernel();
--	filename = getname(name);
--	error = PTR_ERR(filename);
--	if (IS_ERR(filename))
--		goto out;
--	error = do_execve(filename, argv, envp, regs);
--	putname(filename);
--out:
--	unlock_kernel();
--	return error;
--}
--
--unsigned long get_wchan(struct task_struct *p)
--{
--	unsigned long fp, pc;
--	unsigned long stack_page;
--	int count = 0;
--	if (!p || p == current || p->state == TASK_RUNNING)
--		return 0;
--
--	stack_page = (unsigned long)task_stack_page(p);
--	fp = ((struct switch_stack *)p->thread.ksp)->a6;
--	do {
--		if (fp < stack_page+sizeof(struct thread_info) ||
--		    fp >= 8184+stack_page)
--			return 0;
--		pc = ((unsigned long *)fp)[1];
--		if (!in_sched_functions(pc))
--			return pc;
--		fp = *(unsigned long *) fp;
--	} while (count++ < 16);
--	return 0;
--}
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process_mm.c
+-__setup("adb_sync", adb_probe_sync_enable);
+-#endif /* CONFIG_ADB */
+diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup_mm.c
 similarity index 100%
-copy from arch/m68k/kernel/process.c
-copy to arch/m68k/kernel/process_mm.c
-diff --git a/arch/m68knommu/kernel/process.c b/arch/m68k/kernel/process_no.c
+copy from arch/m68k/kernel/setup.c
+copy to arch/m68k/kernel/setup_mm.c
+diff --git a/arch/m68knommu/kernel/setup.c b/arch/m68k/kernel/setup_no.c
 similarity index 100%
-copy from arch/m68knommu/kernel/process.c
-copy to arch/m68k/kernel/process_no.c
+copy from arch/m68knommu/kernel/setup.c
+copy to arch/m68k/kernel/setup_no.c
 -- 
 1.5.6.5
 
