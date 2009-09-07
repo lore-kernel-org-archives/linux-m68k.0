@@ -1,7 +1,7 @@
 From: sfking@fdwdc.com
-Subject: [RFC 11/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:01 -0700
-Message-ID: <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking__48240.9768309028$1252302449$gmane$org@fdwdc.com>
+Subject: [RFC 10/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 22:40:00 -0700
+Message-ID: <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
  <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
  <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
@@ -12,13 +12,12 @@ References: <cover.1252222129.git.sfking@fdwdc.com>
  <f6625c80e8b3246063209517cccc855c056b2b71.1252222133.git.sfking@fdwdc.com>
  <55335001e487bd208ef4801c9df7e2d38a842ad3.1252222134.git.sfking@fdwdc.com>
  <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
- <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34414 "HELO
+Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34410 "HELO
 	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758949AbZIGFrL (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:11 -0400
-In-Reply-To: <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
+	by vger.kernel.org with SMTP id S1758830AbZIGFrJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:09 -0400
+In-Reply-To: <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -27,322 +26,381 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/kernel/ptrace.c                          |  296 +-------------------
- arch/m68k/kernel/{ptrace.c => ptrace_mm.c}         |    0 
- .../kernel/ptrace.c => m68k/kernel/ptrace_no.c}    |    0 
- 3 files changed, 5 insertions(+), 291 deletions(-)
- copy arch/m68k/kernel/{ptrace.c => ptrace_mm.c} (100%)
- copy arch/{m68knommu/kernel/ptrace.c => m68k/kernel/ptrace_no.c} (100%)
+ arch/m68k/kernel/process.c                         |  353 +-------------------
+ arch/m68k/kernel/{process.c => process_mm.c}       |    0 
+ .../kernel/process.c => m68k/kernel/process_no.c}  |    0 
+ 3 files changed, 3 insertions(+), 350 deletions(-)
+ copy arch/m68k/kernel/{process.c => process_mm.c} (100%)
+ copy arch/{m68knommu/kernel/process.c => m68k/kernel/process_no.c} (100%)
 
-diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
-index 2075543..07a4175 100644
---- a/arch/m68k/kernel/ptrace.c
-+++ b/arch/m68k/kernel/ptrace.c
-@@ -1,291 +1,5 @@
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 72bad65..6cf4bd6 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -1,352 +1,5 @@
 -/*
-- *  linux/arch/m68k/kernel/ptrace.c
+- *  linux/arch/m68k/kernel/process.c
 - *
-- *  Copyright (C) 1994 by Hamish Macdonald
-- *  Taken from linux/kernel/ptrace.c and modified for M680x0.
-- *  linux/kernel/ptrace.c is by Ross Biro 1/23/92, edited by Linus Torvalds
+- *  Copyright (C) 1995  Hamish Macdonald
 - *
-- * This file is subject to the terms and conditions of the GNU General
-- * Public License.  See the file COPYING in the main directory of
-- * this archive for more details.
+- *  68060 fixes by Jesper Skov
 - */
 -
--#include <linux/kernel.h>
--#include <linux/sched.h>
--#include <linux/mm.h>
--#include <linux/smp.h>
+-/*
+- * This file handles the architecture-dependent parts of process handling..
+- */
+-
 -#include <linux/errno.h>
+-#include <linux/module.h>
+-#include <linux/sched.h>
+-#include <linux/kernel.h>
+-#include <linux/mm.h>
+-#include <linux/fs.h>
+-#include <linux/smp.h>
+-#include <linux/smp_lock.h>
+-#include <linux/stddef.h>
+-#include <linux/unistd.h>
 -#include <linux/ptrace.h>
+-#include <linux/slab.h>
 -#include <linux/user.h>
--#include <linux/signal.h>
+-#include <linux/reboot.h>
+-#include <linux/init_task.h>
+-#include <linux/mqueue.h>
 -
 -#include <asm/uaccess.h>
--#include <asm/page.h>
--#include <asm/pgtable.h>
 -#include <asm/system.h>
--#include <asm/processor.h>
+-#include <asm/traps.h>
+-#include <asm/machdep.h>
+-#include <asm/setup.h>
+-#include <asm/pgtable.h>
 -
 -/*
-- * does not yet catch signals sent when the child dies.
-- * in exit.c or in signal.c.
+- * Initial task/thread structure. Make this a per-architecture thing,
+- * because different architectures tend to have different
+- * alignment requirements and potentially different initial
+- * setup.
 - */
+-static struct signal_struct init_signals = INIT_SIGNALS(init_signals);
+-static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
+-union thread_union init_thread_union
+-__attribute__((section(".data.init_task"), aligned(THREAD_SIZE)))
+-       = { INIT_THREAD_INFO(init_task) };
 -
--/* determines which bits in the SR the user has access to. */
--/* 1 = access 0 = no access */
--#define SR_MASK 0x001f
+-/* initial task structure */
+-struct task_struct init_task = INIT_TASK(init_task);
 -
--/* sets the trace bits. */
--#define TRACE_BITS 0x8000
+-EXPORT_SYMBOL(init_task);
 -
--/* Find the stack offset for a register, relative to thread.esp0. */
--#define PT_REG(reg)	((long)&((struct pt_regs *)0)->reg)
--#define SW_REG(reg)	((long)&((struct switch_stack *)0)->reg \
--			 - sizeof(struct switch_stack))
--/* Mapping from PT_xxx to the stack offset at which the register is
--   saved.  Notice that usp has no stack-slot and needs to be treated
--   specially (see get_reg/put_reg below). */
--static int regoff[] = {
--	[0]	= PT_REG(d1),
--	[1]	= PT_REG(d2),
--	[2]	= PT_REG(d3),
--	[3]	= PT_REG(d4),
--	[4]	= PT_REG(d5),
--	[5]	= SW_REG(d6),
--	[6]	= SW_REG(d7),
--	[7]	= PT_REG(a0),
--	[8]	= PT_REG(a1),
--	[9]	= PT_REG(a2),
--	[10]	= SW_REG(a3),
--	[11]	= SW_REG(a4),
--	[12]	= SW_REG(a5),
--	[13]	= SW_REG(a6),
--	[14]	= PT_REG(d0),
--	[15]	= -1,
--	[16]	= PT_REG(orig_d0),
--	[17]	= PT_REG(sr),
--	[18]	= PT_REG(pc),
--};
+-asmlinkage void ret_from_fork(void);
+-
 -
 -/*
-- * Get contents of register REGNO in task TASK.
+- * Return saved PC from a blocked thread
 - */
--static inline long get_reg(struct task_struct *task, int regno)
+-unsigned long thread_saved_pc(struct task_struct *tsk)
 -{
--	unsigned long *addr;
--
--	if (regno == PT_USP)
--		addr = &task->thread.usp;
--	else if (regno < ARRAY_SIZE(regoff))
--		addr = (unsigned long *)(task->thread.esp0 + regoff[regno]);
+-	struct switch_stack *sw = (struct switch_stack *)tsk->thread.ksp;
+-	/* Check whether the thread is blocked in resume() */
+-	if (in_sched_functions(sw->retpc))
+-		return ((unsigned long *)sw->a6)[1];
 -	else
--		return 0;
--	return *addr;
+-		return sw->retpc;
 -}
 -
 -/*
-- * Write contents of register REGNO in task TASK.
+- * The idle loop on an m68k..
 - */
--static inline int put_reg(struct task_struct *task, int regno,
--			  unsigned long data)
+-static void default_idle(void)
 -{
--	unsigned long *addr;
+-	if (!need_resched())
+-#if defined(MACH_ATARI_ONLY)
+-		/* block out HSYNC on the atari (falcon) */
+-		__asm__("stop #0x2200" : : : "cc");
++#ifdef CONFIG_MMU
++#include "process_mm.c"
+ #else
+-		__asm__("stop #0x2000" : : : "cc");
++#include "process_no.c"
+ #endif
+-}
 -
--	if (regno == PT_USP)
--		addr = &task->thread.usp;
--	else if (regno < ARRAY_SIZE(regoff))
--		addr = (unsigned long *)(task->thread.esp0 + regoff[regno]);
--	else
--		return -1;
--	*addr = data;
+-void (*idle)(void) = default_idle;
+-
+-/*
+- * The idle thread. There's no useful work to be
+- * done, so just try to conserve power and have a
+- * low exit latency (ie sit in a loop waiting for
+- * somebody to say that they'd like to reschedule)
+- */
+-void cpu_idle(void)
+-{
+-	/* endless idle loop with no priority at all */
+-	while (1) {
+-		while (!need_resched())
+-			idle();
+-		preempt_enable_no_resched();
+-		schedule();
+-		preempt_disable();
+-	}
+-}
+-
+-void machine_restart(char * __unused)
+-{
+-	if (mach_reset)
+-		mach_reset();
+-	for (;;);
+-}
+-
+-void machine_halt(void)
+-{
+-	if (mach_halt)
+-		mach_halt();
+-	for (;;);
+-}
+-
+-void machine_power_off(void)
+-{
+-	if (mach_power_off)
+-		mach_power_off();
+-	for (;;);
+-}
+-
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+-void show_regs(struct pt_regs * regs)
+-{
+-	printk("\n");
+-	printk("Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
+-	       regs->format, regs->vector, regs->pc, regs->sr, print_tainted());
+-	printk("ORIG_D0: %08lx  D0: %08lx  A2: %08lx  A1: %08lx\n",
+-	       regs->orig_d0, regs->d0, regs->a2, regs->a1);
+-	printk("A0: %08lx  D5: %08lx  D4: %08lx\n",
+-	       regs->a0, regs->d5, regs->d4);
+-	printk("D3: %08lx  D2: %08lx  D1: %08lx\n",
+-	       regs->d3, regs->d2, regs->d1);
+-	if (!(regs->sr & PS_S))
+-		printk("USP: %08lx\n", rdusp());
+-}
+-
+-/*
+- * Create a kernel thread
+- */
+-int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
+-{
+-	int pid;
+-	mm_segment_t fs;
+-
+-	fs = get_fs();
+-	set_fs (KERNEL_DS);
+-
+-	{
+-	register long retval __asm__ ("d0");
+-	register long clone_arg __asm__ ("d1") = flags | CLONE_VM | CLONE_UNTRACED;
+-
+-	retval = __NR_clone;
+-	__asm__ __volatile__
+-	  ("clrl %%d2\n\t"
+-	   "trap #0\n\t"		/* Linux/m68k system call */
+-	   "tstl %0\n\t"		/* child or parent */
+-	   "jne 1f\n\t"			/* parent - jump */
+-	   "lea %%sp@(%c7),%6\n\t"	/* reload current */
+-	   "movel %6@,%6\n\t"
+-	   "movel %3,%%sp@-\n\t"	/* push argument */
+-	   "jsr %4@\n\t"		/* call fn */
+-	   "movel %0,%%d1\n\t"		/* pass exit value */
+-	   "movel %2,%%d0\n\t"		/* exit */
+-	   "trap #0\n"
+-	   "1:"
+-	   : "+d" (retval)
+-	   : "i" (__NR_clone), "i" (__NR_exit),
+-	     "r" (arg), "a" (fn), "d" (clone_arg), "r" (current),
+-	     "i" (-THREAD_SIZE)
+-	   : "d2");
+-
+-	pid = retval;
+-	}
+-
+-	set_fs (fs);
+-	return pid;
+-}
+-EXPORT_SYMBOL(kernel_thread);
+-
+-void flush_thread(void)
+-{
+-	unsigned long zero = 0;
+-	set_fs(USER_DS);
+-	current->thread.fs = __USER_DS;
+-	if (!FPU_IS_EMU)
+-		asm volatile (".chip 68k/68881\n\t"
+-			      "frestore %0@\n\t"
+-			      ".chip 68k" : : "a" (&zero));
+-}
+-
+-/*
+- * "m68k_fork()".. By the time we get here, the
+- * non-volatile registers have also been saved on the
+- * stack. We do some ugly pointer stuff here.. (see
+- * also copy_thread)
+- */
+-
+-asmlinkage int m68k_fork(struct pt_regs *regs)
+-{
+-	return do_fork(SIGCHLD, rdusp(), regs, 0, NULL, NULL);
+-}
+-
+-asmlinkage int m68k_vfork(struct pt_regs *regs)
+-{
+-	return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, rdusp(), regs, 0,
+-		       NULL, NULL);
+-}
+-
+-asmlinkage int m68k_clone(struct pt_regs *regs)
+-{
+-	unsigned long clone_flags;
+-	unsigned long newsp;
+-	int __user *parent_tidptr, *child_tidptr;
+-
+-	/* syscall2 puts clone_flags in d1 and usp in d2 */
+-	clone_flags = regs->d1;
+-	newsp = regs->d2;
+-	parent_tidptr = (int __user *)regs->d3;
+-	child_tidptr = (int __user *)regs->d4;
+-	if (!newsp)
+-		newsp = rdusp();
+-	return do_fork(clone_flags, newsp, regs, 0,
+-		       parent_tidptr, child_tidptr);
+-}
+-
+-int copy_thread(unsigned long clone_flags, unsigned long usp,
+-		 unsigned long unused,
+-		 struct task_struct * p, struct pt_regs * regs)
+-{
+-	struct pt_regs * childregs;
+-	struct switch_stack * childstack, *stack;
+-	unsigned long *retp;
+-
+-	childregs = (struct pt_regs *) (task_stack_page(p) + THREAD_SIZE) - 1;
+-
+-	*childregs = *regs;
+-	childregs->d0 = 0;
+-
+-	retp = ((unsigned long *) regs);
+-	stack = ((struct switch_stack *) retp) - 1;
+-
+-	childstack = ((struct switch_stack *) childregs) - 1;
+-	*childstack = *stack;
+-	childstack->retpc = (unsigned long)ret_from_fork;
+-
+-	p->thread.usp = usp;
+-	p->thread.ksp = (unsigned long)childstack;
+-	/*
+-	 * Must save the current SFC/DFC value, NOT the value when
+-	 * the parent was last descheduled - RGH  10-08-96
+-	 */
+-	p->thread.fs = get_fs().seg;
+-
+-	if (!FPU_IS_EMU) {
+-		/* Copy the current fpu state */
+-		asm volatile ("fsave %0" : : "m" (p->thread.fpstate[0]) : "memory");
+-
+-		if (!CPU_IS_060 ? p->thread.fpstate[0] : p->thread.fpstate[2])
+-		  asm volatile ("fmovemx %/fp0-%/fp7,%0\n\t"
+-				"fmoveml %/fpiar/%/fpcr/%/fpsr,%1"
+-				: : "m" (p->thread.fp[0]), "m" (p->thread.fpcntl[0])
+-				: "memory");
+-		/* Restore the state in case the fpu was busy */
+-		asm volatile ("frestore %0" : : "m" (p->thread.fpstate[0]));
+-	}
+-
 -	return 0;
 -}
 -
--/*
-- * Make sure the single step bit is not set.
-- */
--static inline void singlestep_disable(struct task_struct *child)
+-/* Fill in the fpu structure for a core dump.  */
+-
+-int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
 -{
--	unsigned long tmp = get_reg(child, PT_SR) & ~(TRACE_BITS << 16);
--	put_reg(child, PT_SR, tmp);
--	clear_tsk_thread_flag(child, TIF_DELAYED_TRACE);
--}
+-	char fpustate[216];
 -
--/*
-- * Called by kernel/ptrace.c when detaching..
-- */
--void ptrace_disable(struct task_struct *child)
--{
--	singlestep_disable(child);
--}
+-	if (FPU_IS_EMU) {
+-		int i;
 -
--long arch_ptrace(struct task_struct *child, long request, long addr, long data)
--{
--	unsigned long tmp;
--	int i, ret = 0;
--
--	switch (request) {
--	/* when I and D space are separate, these will need to be fixed. */
--	case PTRACE_PEEKTEXT:	/* read word at location addr. */
--	case PTRACE_PEEKDATA:
--		ret = generic_ptrace_peekdata(child, addr, data);
--		break;
--
--	/* read the word at location addr in the USER area. */
--	case PTRACE_PEEKUSR:
--		if (addr & 3)
--			goto out_eio;
--		addr >>= 2;	/* temporary hack. */
--
--		if (addr >= 0 && addr < 19) {
--			tmp = get_reg(child, addr);
--			if (addr == PT_SR)
--				tmp >>= 16;
--		} else if (addr >= 21 && addr < 49) {
--			tmp = child->thread.fp[addr - 21];
--			/* Convert internal fpu reg representation
--			 * into long double format
--			 */
--			if (FPU_IS_EMU && (addr < 45) && !(addr % 3))
--				tmp = ((tmp & 0xffff0000) << 15) |
--				      ((tmp & 0x0000ffff) << 16);
--		} else
--			break;
--		ret = put_user(tmp, (unsigned long *)data);
--		break;
--
--	/* when I and D space are separate, this will have to be fixed. */
--	case PTRACE_POKETEXT:	/* write the word at location addr. */
--	case PTRACE_POKEDATA:
--		ret = generic_ptrace_pokedata(child, addr, data);
--		break;
--
--	case PTRACE_POKEUSR:	/* write the word at location addr in the USER area */
--		if (addr & 3)
--			goto out_eio;
--		addr >>= 2;	/* temporary hack. */
--
--		if (addr == PT_SR) {
--			data &= SR_MASK;
--			data <<= 16;
--			data |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
--		} else if (addr >= 0 && addr < 19) {
--			if (put_reg(child, addr, data))
--				goto out_eio;
--		} else if (addr >= 21 && addr < 48) {
--			/* Convert long double format
--			 * into internal fpu reg representation
--			 */
--			if (FPU_IS_EMU && (addr < 45) && !(addr % 3)) {
--				data = (unsigned long)data << 15;
--				data = (data & 0xffff0000) |
--				       ((data & 0x0000ffff) >> 1);
--			}
--			child->thread.fp[addr - 21] = data;
--		} else
--			goto out_eio;
--		break;
--
--	case PTRACE_SYSCALL:	/* continue and stop at next (return from) syscall */
--	case PTRACE_CONT:	/* restart after signal. */
--		if (!valid_signal(data))
--			goto out_eio;
--
--		if (request == PTRACE_SYSCALL)
--			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		else
--			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		child->exit_code = data;
--		singlestep_disable(child);
--		wake_up_process(child);
--		break;
--
--	/*
--	 * make the child exit.  Best I can do is send it a sigkill.
--	 * perhaps it should be put in the status that it wants to
--	 * exit.
--	 */
--	case PTRACE_KILL:
--		if (child->exit_state == EXIT_ZOMBIE) /* already dead */
--			break;
--		child->exit_code = SIGKILL;
--		singlestep_disable(child);
--		wake_up_process(child);
--		break;
--
--	case PTRACE_SINGLESTEP:	/* set the trap flag. */
--		if (!valid_signal(data))
--			goto out_eio;
--
--		clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		tmp = get_reg(child, PT_SR) | (TRACE_BITS << 16);
--		put_reg(child, PT_SR, tmp);
--		set_tsk_thread_flag(child, TIF_DELAYED_TRACE);
--
--		child->exit_code = data;
--		/* give it a chance to run. */
--		wake_up_process(child);
--		break;
--
--	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
--		for (i = 0; i < 19; i++) {
--			tmp = get_reg(child, i);
--			if (i == PT_SR)
--				tmp >>= 16;
--			ret = put_user(tmp, (unsigned long *)data);
--			if (ret)
--				break;
--			data += sizeof(long);
--		}
--		break;
--
--	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
--		for (i = 0; i < 19; i++) {
--			ret = get_user(tmp, (unsigned long *)data);
--			if (ret)
--				break;
--			if (i == PT_SR) {
--				tmp &= SR_MASK;
--				tmp <<= 16;
--				tmp |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
--			}
--			put_reg(child, i, tmp);
--			data += sizeof(long);
--		}
--		break;
--
--	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
--		if (copy_to_user((void *)data, &child->thread.fp,
--				 sizeof(struct user_m68kfp_struct)))
--			ret = -EFAULT;
--		break;
--
--	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
--		if (copy_from_user(&child->thread.fp, (void *)data,
--				   sizeof(struct user_m68kfp_struct)))
--			ret = -EFAULT;
--		break;
--
--	default:
--		ret = ptrace_request(child, request, addr, data);
--		break;
+-		memcpy(fpu->fpcntl, current->thread.fpcntl, 12);
+-		memcpy(fpu->fpregs, current->thread.fp, 96);
+-		/* Convert internal fpu reg representation
+-		 * into long double format
+-		 */
+-		for (i = 0; i < 24; i += 3)
+-			fpu->fpregs[i] = ((fpu->fpregs[i] & 0xffff0000) << 15) |
+-			                 ((fpu->fpregs[i] & 0x0000ffff) << 16);
+-		return 1;
 -	}
 -
--	return ret;
--out_eio:
--	return -EIO;
+-	/* First dump the fpu context to avoid protocol violation.  */
+-	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
+-	if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
+-		return 0;
+-
+-	asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
+-		:: "m" (fpu->fpcntl[0])
+-		: "memory");
+-	asm volatile ("fmovemx %/fp0-%/fp7,%0"
+-		:: "m" (fpu->fpregs[0])
+-		: "memory");
+-	return 1;
+-}
+-EXPORT_SYMBOL(dump_fpu);
+-
+-/*
+- * sys_execve() executes a new program.
+- */
+-asmlinkage int sys_execve(char __user *name, char __user * __user *argv, char __user * __user *envp)
+-{
+-	int error;
+-	char * filename;
+-	struct pt_regs *regs = (struct pt_regs *) &name;
+-
+-	lock_kernel();
+-	filename = getname(name);
+-	error = PTR_ERR(filename);
+-	if (IS_ERR(filename))
+-		goto out;
+-	error = do_execve(filename, argv, envp, regs);
+-	putname(filename);
+-out:
+-	unlock_kernel();
+-	return error;
 -}
 -
--asmlinkage void syscall_trace(void)
+-unsigned long get_wchan(struct task_struct *p)
 -{
--	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
--				 ? 0x80 : 0));
--	/*
--	 * this isn't the same as continuing with a signal, but it will do
--	 * for normal use.  strace only continues with a signal if the
--	 * stopping signal is not SIGTRAP.  -brl
--	 */
--	if (current->exit_code) {
--		send_sig(current->exit_code, current, 1);
--		current->exit_code = 0;
--	}
+-	unsigned long fp, pc;
+-	unsigned long stack_page;
+-	int count = 0;
+-	if (!p || p == current || p->state == TASK_RUNNING)
+-		return 0;
+-
+-	stack_page = (unsigned long)task_stack_page(p);
+-	fp = ((struct switch_stack *)p->thread.ksp)->a6;
+-	do {
+-		if (fp < stack_page+sizeof(struct thread_info) ||
+-		    fp >= 8184+stack_page)
+-			return 0;
+-		pc = ((unsigned long *)fp)[1];
+-		if (!in_sched_functions(pc))
+-			return pc;
+-		fp = *(unsigned long *) fp;
+-	} while (count++ < 16);
+-	return 0;
 -}
-+#ifdef CONFIG_MMU
-+#include "ptrace_mm.c"
-+#else
-+#include "ptrace_no.c"
-+#endif
-diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace_mm.c
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process_mm.c
 similarity index 100%
-copy from arch/m68k/kernel/ptrace.c
-copy to arch/m68k/kernel/ptrace_mm.c
-diff --git a/arch/m68knommu/kernel/ptrace.c b/arch/m68k/kernel/ptrace_no.c
+copy from arch/m68k/kernel/process.c
+copy to arch/m68k/kernel/process_mm.c
+diff --git a/arch/m68knommu/kernel/process.c b/arch/m68k/kernel/process_no.c
 similarity index 100%
-copy from arch/m68knommu/kernel/ptrace.c
-copy to arch/m68k/kernel/ptrace_no.c
+copy from arch/m68knommu/kernel/process.c
+copy to arch/m68k/kernel/process_no.c
 -- 
 1.5.6.5
 
