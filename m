@@ -1,7 +1,7 @@
 From: sfking@fdwdc.com
-Subject: [RFC 12/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:02 -0700
-Message-ID: <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking__38605.0664158121$1252302453$gmane$org@fdwdc.com>
+Subject: [RFC 13/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 22:40:03 -0700
+Message-ID: <c90263ddd638105b7df953128fd150d7fafc56ee.1252222134.git.sfking__36294.8507573039$1252302453$gmane$org@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
  <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
  <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
@@ -14,12 +14,13 @@ References: <cover.1252222129.git.sfking@fdwdc.com>
  <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
  <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
  <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
+ <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34417 "HELO
+Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34423 "HELO
 	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758954AbZIGFrL (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:11 -0400
-In-Reply-To: <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
+	by vger.kernel.org with SMTP id S1758939AbZIGFrM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:12 -0400
+In-Reply-To: <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -28,563 +29,1070 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/kernel/setup.c                           |  535 +-------------------
- arch/m68k/kernel/{setup.c => setup_mm.c}           |    0 
- .../kernel/setup.c => m68k/kernel/setup_no.c}      |    0 
- 3 files changed, 3 insertions(+), 532 deletions(-)
- copy arch/m68k/kernel/{setup.c => setup_mm.c} (100%)
- copy arch/{m68knommu/kernel/setup.c => m68k/kernel/setup_no.c} (100%)
+ arch/m68k/kernel/signal.c                          | 1043 +-------------------
+ arch/m68k/kernel/{signal.c => signal_mm.c}         |    0 
+ .../kernel/signal.c => m68k/kernel/signal_no.c}    |    0 
+ 3 files changed, 4 insertions(+), 1039 deletions(-)
+ copy arch/m68k/kernel/{signal.c => signal_mm.c} (100%)
+ copy arch/{m68knommu/kernel/signal.c => m68k/kernel/signal_no.c} (100%)
 
-diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup.c
-index 303730a..4bf129f 100644
---- a/arch/m68k/kernel/setup.c
-+++ b/arch/m68k/kernel/setup.c
-@@ -1,534 +1,5 @@
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index de2d05d..2e25713 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -1,1040 +1,5 @@
 -/*
-- *  linux/arch/m68k/kernel/setup.c
+- *  linux/arch/m68k/kernel/signal.c
 - *
-- *  Copyright (C) 1995  Hamish Macdonald
+- *  Copyright (C) 1991, 1992  Linus Torvalds
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file COPYING in the main directory of this archive
+- * for more details.
 - */
 -
 -/*
-- * This file handles the architecture-dependent parts of system setup
+- * Linux/m68k support by Hamish Macdonald
+- *
+- * 68060 fixes by Jesper Skov
+- *
+- * 1997-12-01  Modified for POSIX.1b signals by Andreas Schwab
+- *
+- * mathemu support by Roman Zippel
+- *  (Note: fpstate in the signal context is completely ignored for the emulator
+- *         and the internal floating point format is put on stack)
 - */
 -
--#include <linux/kernel.h>
--#include <linux/mm.h>
+-/*
+- * ++roman (07/09/96): implemented signal stacks (specially for tosemu on
+- * Atari :-) Current limitation: Only one sigstack can be active at one time.
+- * If a second signal with SA_ONSTACK set arrives while working on a sigstack,
+- * SA_ONSTACK is ignored. This behaviour avoids lots of trouble with nested
+- * signal handlers!
+- */
+-
 -#include <linux/sched.h>
--#include <linux/delay.h>
--#include <linux/interrupt.h>
--#include <linux/fs.h>
--#include <linux/console.h>
--#include <linux/genhd.h>
+-#include <linux/mm.h>
+-#include <linux/kernel.h>
+-#include <linux/signal.h>
+-#include <linux/syscalls.h>
 -#include <linux/errno.h>
--#include <linux/string.h>
--#include <linux/init.h>
--#include <linux/bootmem.h>
--#include <linux/proc_fs.h>
--#include <linux/seq_file.h>
--#include <linux/module.h>
--#include <linux/initrd.h>
+-#include <linux/wait.h>
+-#include <linux/ptrace.h>
+-#include <linux/unistd.h>
+-#include <linux/stddef.h>
+-#include <linux/highuid.h>
+-#include <linux/personality.h>
+-#include <linux/tty.h>
+-#include <linux/binfmts.h>
 -
--#include <asm/bootinfo.h>
--#include <asm/sections.h>
 -#include <asm/setup.h>
--#include <asm/fpu.h>
--#include <asm/irq.h>
--#include <asm/io.h>
--#include <asm/machdep.h>
--#ifdef CONFIG_AMIGA
--#include <asm/amigahw.h>
--#endif
--#ifdef CONFIG_ATARI
--#include <asm/atarihw.h>
--#include <asm/atari_stram.h>
--#endif
--#ifdef CONFIG_SUN3X
--#include <asm/dvma.h>
--#endif
+-#include <asm/uaccess.h>
+-#include <asm/pgtable.h>
+-#include <asm/traps.h>
+-#include <asm/ucontext.h>
 -
--#if !FPSTATESIZE || !NR_IRQS
--#warning No CPU/platform type selected, your kernel will not work!
--#warning Are you building an allnoconfig kernel?
--#endif
+-#define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 -
--unsigned long m68k_machtype;
--EXPORT_SYMBOL(m68k_machtype);
--unsigned long m68k_cputype;
--EXPORT_SYMBOL(m68k_cputype);
--unsigned long m68k_fputype;
--unsigned long m68k_mmutype;
--EXPORT_SYMBOL(m68k_mmutype);
--#ifdef CONFIG_VME
--unsigned long vme_brdtype;
--EXPORT_SYMBOL(vme_brdtype);
--#endif
+-asmlinkage int do_signal(sigset_t *oldset, struct pt_regs *regs);
 -
--int m68k_is040or060;
--EXPORT_SYMBOL(m68k_is040or060);
+-const int frame_extra_sizes[16] = {
+-  [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
+-  [2]	= sizeof(((struct frame *)0)->un.fmt2),
+-  [3]	= sizeof(((struct frame *)0)->un.fmt3),
+-  [4]	= sizeof(((struct frame *)0)->un.fmt4),
+-  [5]	= -1, /* sizeof(((struct frame *)0)->un.fmt5), */
+-  [6]	= -1, /* sizeof(((struct frame *)0)->un.fmt6), */
+-  [7]	= sizeof(((struct frame *)0)->un.fmt7),
+-  [8]	= -1, /* sizeof(((struct frame *)0)->un.fmt8), */
+-  [9]	= sizeof(((struct frame *)0)->un.fmt9),
+-  [10]	= sizeof(((struct frame *)0)->un.fmta),
+-  [11]	= sizeof(((struct frame *)0)->un.fmtb),
+-  [12]	= -1, /* sizeof(((struct frame *)0)->un.fmtc), */
+-  [13]	= -1, /* sizeof(((struct frame *)0)->un.fmtd), */
+-  [14]	= -1, /* sizeof(((struct frame *)0)->un.fmte), */
+-  [15]	= -1, /* sizeof(((struct frame *)0)->un.fmtf), */
+-};
 -
--extern unsigned long availmem;
--
--int m68k_num_memory;
--EXPORT_SYMBOL(m68k_num_memory);
--int m68k_realnum_memory;
--EXPORT_SYMBOL(m68k_realnum_memory);
--unsigned long m68k_memoffset;
--struct mem_info m68k_memory[NUM_MEMINFO];
--EXPORT_SYMBOL(m68k_memory);
--
--struct mem_info m68k_ramdisk;
--
--static char m68k_command_line[CL_SIZE];
--
--void (*mach_sched_init) (irq_handler_t handler) __initdata = NULL;
--/* machine dependent irq functions */
--void (*mach_init_IRQ) (void) __initdata = NULL;
--void (*mach_get_model) (char *model);
--void (*mach_get_hardware_list) (struct seq_file *m);
--/* machine dependent timer functions */
--unsigned long (*mach_gettimeoffset) (void);
--int (*mach_hwclk) (int, struct rtc_time*);
--EXPORT_SYMBOL(mach_hwclk);
--int (*mach_set_clock_mmss) (unsigned long);
--unsigned int (*mach_get_ss)(void);
--int (*mach_get_rtc_pll)(struct rtc_pll_info *);
--int (*mach_set_rtc_pll)(struct rtc_pll_info *);
--EXPORT_SYMBOL(mach_get_ss);
--EXPORT_SYMBOL(mach_get_rtc_pll);
--EXPORT_SYMBOL(mach_set_rtc_pll);
--void (*mach_reset)( void );
--void (*mach_halt)( void );
--void (*mach_power_off)( void );
--long mach_max_dma_address = 0x00ffffff; /* default set to the lower 16MB */
--#ifdef CONFIG_HEARTBEAT
--void (*mach_heartbeat) (int);
--EXPORT_SYMBOL(mach_heartbeat);
--#endif
--#ifdef CONFIG_M68K_L2_CACHE
--void (*mach_l2_flush) (int);
--#endif
--#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
--void (*mach_beep)(unsigned int, unsigned int);
--EXPORT_SYMBOL(mach_beep);
--#endif
--#if defined(CONFIG_ISA) && defined(MULTI_ISA)
--int isa_type;
--int isa_sex;
--EXPORT_SYMBOL(isa_type);
--EXPORT_SYMBOL(isa_sex);
--#endif
--
--extern int amiga_parse_bootinfo(const struct bi_record *);
--extern int atari_parse_bootinfo(const struct bi_record *);
--extern int mac_parse_bootinfo(const struct bi_record *);
--extern int q40_parse_bootinfo(const struct bi_record *);
--extern int bvme6000_parse_bootinfo(const struct bi_record *);
--extern int mvme16x_parse_bootinfo(const struct bi_record *);
--extern int mvme147_parse_bootinfo(const struct bi_record *);
--extern int hp300_parse_bootinfo(const struct bi_record *);
--extern int apollo_parse_bootinfo(const struct bi_record *);
--
--extern void config_amiga(void);
--extern void config_atari(void);
--extern void config_mac(void);
--extern void config_sun3(void);
--extern void config_apollo(void);
--extern void config_mvme147(void);
--extern void config_mvme16x(void);
--extern void config_bvme6000(void);
--extern void config_hp300(void);
--extern void config_q40(void);
--extern void config_sun3x(void);
--
--#define MASK_256K 0xfffc0000
--
--extern void paging_init(void);
--
--static void __init m68k_parse_bootinfo(const struct bi_record *record)
+-/*
+- * Atomically swap in the new signal mask, and wait for a signal.
+- */
+-asmlinkage int do_sigsuspend(struct pt_regs *regs)
 -{
--	while (record->tag != BI_LAST) {
--		int unknown = 0;
--		const unsigned long *data = record->data;
+-	old_sigset_t mask = regs->d3;
+-	sigset_t saveset;
 -
--		switch (record->tag) {
--		case BI_MACHTYPE:
--		case BI_CPUTYPE:
--		case BI_FPUTYPE:
--		case BI_MMUTYPE:
--			/* Already set up by head.S */
--			break;
+-	mask &= _BLOCKABLE;
+-	saveset = current->blocked;
+-	siginitset(&current->blocked, mask);
+-	recalc_sigpending();
 -
--		case BI_MEMCHUNK:
--			if (m68k_num_memory < NUM_MEMINFO) {
--				m68k_memory[m68k_num_memory].addr = data[0];
--				m68k_memory[m68k_num_memory].size = data[1];
--				m68k_num_memory++;
--			} else
--				printk("m68k_parse_bootinfo: too many memory chunks\n");
--			break;
--
--		case BI_RAMDISK:
--			m68k_ramdisk.addr = data[0];
--			m68k_ramdisk.size = data[1];
--			break;
--
--		case BI_COMMAND_LINE:
--			strlcpy(m68k_command_line, (const char *)data,
--				sizeof(m68k_command_line));
--			break;
--
--		default:
--			if (MACH_IS_AMIGA)
--				unknown = amiga_parse_bootinfo(record);
--			else if (MACH_IS_ATARI)
--				unknown = atari_parse_bootinfo(record);
--			else if (MACH_IS_MAC)
--				unknown = mac_parse_bootinfo(record);
--			else if (MACH_IS_Q40)
--				unknown = q40_parse_bootinfo(record);
--			else if (MACH_IS_BVME6000)
--				unknown = bvme6000_parse_bootinfo(record);
--			else if (MACH_IS_MVME16x)
--				unknown = mvme16x_parse_bootinfo(record);
--			else if (MACH_IS_MVME147)
--				unknown = mvme147_parse_bootinfo(record);
--			else if (MACH_IS_HP300)
--				unknown = hp300_parse_bootinfo(record);
--			else if (MACH_IS_APOLLO)
--				unknown = apollo_parse_bootinfo(record);
--			else
--				unknown = 1;
--		}
--		if (unknown)
--			printk("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
--			       record->tag);
--		record = (struct bi_record *)((unsigned long)record +
--					      record->size);
+-	regs->d0 = -EINTR;
+-	while (1) {
+-		current->state = TASK_INTERRUPTIBLE;
+-		schedule();
+-		if (do_signal(&saveset, regs))
+-			return -EINTR;
 -	}
--
--	m68k_realnum_memory = m68k_num_memory;
--#ifdef CONFIG_SINGLE_MEMORY_CHUNK
--	if (m68k_num_memory > 1) {
--		printk("Ignoring last %i chunks of physical memory\n",
--		       (m68k_num_memory - 1));
--		m68k_num_memory = 1;
--	}
--#endif
 -}
 -
--void __init setup_arch(char **cmdline_p)
+-asmlinkage int
+-do_rt_sigsuspend(struct pt_regs *regs)
 -{
--	int i;
+-	sigset_t __user *unewset = (sigset_t __user *)regs->d1;
+-	size_t sigsetsize = (size_t)regs->d2;
+-	sigset_t saveset, newset;
 -
--	/* The bootinfo is located right after the kernel bss */
--	m68k_parse_bootinfo((const struct bi_record *)_end);
+-	/* XXX: Don't preclude handling different sized sigset_t's.  */
+-	if (sigsetsize != sizeof(sigset_t))
+-		return -EINVAL;
 -
--	if (CPU_IS_040)
--		m68k_is040or060 = 4;
--	else if (CPU_IS_060)
--		m68k_is040or060 = 6;
+-	if (copy_from_user(&newset, unewset, sizeof(newset)))
+-		return -EFAULT;
+-	sigdelsetmask(&newset, ~_BLOCKABLE);
 -
--	/* FIXME: m68k_fputype is passed in by Penguin booter, which can
--	 * be confused by software FPU emulation. BEWARE.
--	 * We should really do our own FPU check at startup.
--	 * [what do we do with buggy 68LC040s? if we have problems
--	 *  with them, we should add a test to check_bugs() below] */
--#ifndef CONFIG_M68KFPU_EMU_ONLY
--	/* clear the fpu if we have one */
--	if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060)) {
--		volatile int zero = 0;
--		asm volatile ("frestore %0" : : "m" (zero));
+-	saveset = current->blocked;
+-	current->blocked = newset;
+-	recalc_sigpending();
+-
+-	regs->d0 = -EINTR;
+-	while (1) {
+-		current->state = TASK_INTERRUPTIBLE;
+-		schedule();
+-		if (do_signal(&saveset, regs))
+-			return -EINTR;
 -	}
--#endif
--
--	if (CPU_IS_060) {
--		u32 pcr;
--
--		asm (".chip 68060; movec %%pcr,%0; .chip 68k"
--		     : "=d" (pcr));
--		if (((pcr >> 8) & 0xff) <= 5) {
--			printk("Enabling workaround for errata I14\n");
--			asm (".chip 68060; movec %0,%%pcr; .chip 68k"
--			     : : "d" (pcr | 0x20));
--		}
--	}
--
--	init_mm.start_code = PAGE_OFFSET;
--	init_mm.end_code = (unsigned long)_etext;
--	init_mm.end_data = (unsigned long)_edata;
--	init_mm.brk = (unsigned long)_end;
--
--	*cmdline_p = m68k_command_line;
--	memcpy(boot_command_line, *cmdline_p, CL_SIZE);
--
--	parse_early_param();
--
--#ifdef CONFIG_DUMMY_CONSOLE
--	conswitchp = &dummy_con;
--#endif
--
--	switch (m68k_machtype) {
--#ifdef CONFIG_AMIGA
--	case MACH_AMIGA:
--		config_amiga();
--		break;
--#endif
--#ifdef CONFIG_ATARI
--	case MACH_ATARI:
--		config_atari();
--		break;
--#endif
--#ifdef CONFIG_MAC
--	case MACH_MAC:
--		config_mac();
--		break;
--#endif
--#ifdef CONFIG_SUN3
--	case MACH_SUN3:
--		config_sun3();
--		break;
--#endif
--#ifdef CONFIG_APOLLO
--	case MACH_APOLLO:
--		config_apollo();
--		break;
--#endif
--#ifdef CONFIG_MVME147
--	case MACH_MVME147:
--		config_mvme147();
--		break;
--#endif
--#ifdef CONFIG_MVME16x
--	case MACH_MVME16x:
--		config_mvme16x();
--		break;
--#endif
--#ifdef CONFIG_BVME6000
--	case MACH_BVME6000:
--		config_bvme6000();
--		break;
--#endif
--#ifdef CONFIG_HP300
--	case MACH_HP300:
--		config_hp300();
--		break;
--#endif
--#ifdef CONFIG_Q40
--	case MACH_Q40:
--		config_q40();
--		break;
--#endif
--#ifdef CONFIG_SUN3X
--	case MACH_SUN3X:
--		config_sun3x();
--		break;
--#endif
--	default:
--		panic("No configuration setup");
--	}
--
--	paging_init();
--
--#ifndef CONFIG_SUN3
--	for (i = 1; i < m68k_num_memory; i++)
--		free_bootmem_node(NODE_DATA(i), m68k_memory[i].addr,
--				  m68k_memory[i].size);
--#ifdef CONFIG_BLK_DEV_INITRD
--	if (m68k_ramdisk.size) {
--		reserve_bootmem_node(__virt_to_node(phys_to_virt(m68k_ramdisk.addr)),
--				     m68k_ramdisk.addr, m68k_ramdisk.size,
--				     BOOTMEM_DEFAULT);
--		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
--		initrd_end = initrd_start + m68k_ramdisk.size;
--		printk("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
--	}
--#endif
--
--#ifdef CONFIG_ATARI
--	if (MACH_IS_ATARI)
--		atari_stram_reserve_pages((void *)availmem);
--#endif
--#ifdef CONFIG_SUN3X
--	if (MACH_IS_SUN3X) {
--		dvma_init();
--	}
--#endif
--
--#endif /* !CONFIG_SUN3 */
--
--/* set ISA defs early as possible */
--#if defined(CONFIG_ISA) && defined(MULTI_ISA)
--	if (MACH_IS_Q40) {
--		isa_type = ISA_TYPE_Q40;
--		isa_sex = 0;
--	}
--#ifdef CONFIG_GG2
--	if (MACH_IS_AMIGA && AMIGAHW_PRESENT(GG2_ISA)) {
--		isa_type = ISA_TYPE_GG2;
--		isa_sex = 0;
--	}
--#endif
--#ifdef CONFIG_AMIGA_PCMCIA
--	if (MACH_IS_AMIGA && AMIGAHW_PRESENT(PCMCIA)) {
--		isa_type = ISA_TYPE_AG;
--		isa_sex = 1;
--	}
--#endif
--#endif
 -}
 -
--static int show_cpuinfo(struct seq_file *m, void *v)
+-asmlinkage int
+-sys_sigaction(int sig, const struct old_sigaction __user *act,
+-	      struct old_sigaction __user *oact)
 -{
--	const char *cpu, *mmu, *fpu;
--	unsigned long clockfreq, clockfactor;
+-	struct k_sigaction new_ka, old_ka;
+-	int ret;
 -
--#define LOOP_CYCLES_68020	(8)
--#define LOOP_CYCLES_68030	(8)
--#define LOOP_CYCLES_68040	(3)
--#define LOOP_CYCLES_68060	(1)
--
--	if (CPU_IS_020) {
--		cpu = "68020";
--		clockfactor = LOOP_CYCLES_68020;
--	} else if (CPU_IS_030) {
--		cpu = "68030";
--		clockfactor = LOOP_CYCLES_68030;
--	} else if (CPU_IS_040) {
--		cpu = "68040";
--		clockfactor = LOOP_CYCLES_68040;
--	} else if (CPU_IS_060) {
--		cpu = "68060";
--		clockfactor = LOOP_CYCLES_68060;
--	} else {
--		cpu = "680x0";
--		clockfactor = 0;
+-	if (act) {
+-		old_sigset_t mask;
+-		if (!access_ok(VERIFY_READ, act, sizeof(*act)) ||
+-		    __get_user(new_ka.sa.sa_handler, &act->sa_handler) ||
+-		    __get_user(new_ka.sa.sa_restorer, &act->sa_restorer))
+-			return -EFAULT;
+-		__get_user(new_ka.sa.sa_flags, &act->sa_flags);
+-		__get_user(mask, &act->sa_mask);
+-		siginitset(&new_ka.sa.sa_mask, mask);
 -	}
 -
--#ifdef CONFIG_M68KFPU_EMU_ONLY
--	fpu = "none(soft float)";
+-	ret = do_sigaction(sig, act ? &new_ka : NULL, oact ? &old_ka : NULL);
+-
+-	if (!ret && oact) {
+-		if (!access_ok(VERIFY_WRITE, oact, sizeof(*oact)) ||
+-		    __put_user(old_ka.sa.sa_handler, &oact->sa_handler) ||
+-		    __put_user(old_ka.sa.sa_restorer, &oact->sa_restorer))
+-			return -EFAULT;
+-		__put_user(old_ka.sa.sa_flags, &oact->sa_flags);
+-		__put_user(old_ka.sa.sa_mask.sig[0], &oact->sa_mask);
+-	}
+-
+-	return ret;
+-}
+-
+-asmlinkage int
+-sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss)
+-{
+-	return do_sigaltstack(uss, uoss, rdusp());
+-}
+-
+-
+-/*
+- * Do a signal return; undo the signal stack.
+- *
+- * Keep the return code on the stack quadword aligned!
+- * That makes the cache flush below easier.
+- */
+-
+-struct sigframe
+-{
+-	char __user *pretcode;
+-	int sig;
+-	int code;
+-	struct sigcontext __user *psc;
+-	char retcode[8];
+-	unsigned long extramask[_NSIG_WORDS-1];
+-	struct sigcontext sc;
+-};
+-
+-struct rt_sigframe
+-{
+-	char __user *pretcode;
+-	int sig;
+-	struct siginfo __user *pinfo;
+-	void __user *puc;
+-	char retcode[8];
+-	struct siginfo info;
+-	struct ucontext uc;
+-};
+-
+-
+-static unsigned char fpu_version;	/* version number of fpu, set by setup_frame */
+-
+-static inline int restore_fpu_state(struct sigcontext *sc)
+-{
+-	int err = 1;
+-
+-	if (FPU_IS_EMU) {
+-	    /* restore registers */
+-	    memcpy(current->thread.fpcntl, sc->sc_fpcntl, 12);
+-	    memcpy(current->thread.fp, sc->sc_fpregs, 24);
+-	    return 0;
+-	}
+-
+-	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
+-	    /* Verify the frame format.  */
+-	    if (!CPU_IS_060 && (sc->sc_fpstate[0] != fpu_version))
+-		goto out;
+-	    if (CPU_IS_020_OR_030) {
+-		if (m68k_fputype & FPU_68881 &&
+-		    !(sc->sc_fpstate[1] == 0x18 || sc->sc_fpstate[1] == 0xb4))
+-		    goto out;
+-		if (m68k_fputype & FPU_68882 &&
+-		    !(sc->sc_fpstate[1] == 0x38 || sc->sc_fpstate[1] == 0xd4))
+-		    goto out;
+-	    } else if (CPU_IS_040) {
+-		if (!(sc->sc_fpstate[1] == 0x00 ||
+-                      sc->sc_fpstate[1] == 0x28 ||
+-                      sc->sc_fpstate[1] == 0x60))
+-		    goto out;
+-	    } else if (CPU_IS_060) {
+-		if (!(sc->sc_fpstate[3] == 0x00 ||
+-                      sc->sc_fpstate[3] == 0x60 ||
+-		      sc->sc_fpstate[3] == 0xe0))
+-		    goto out;
+-	    } else
+-		goto out;
+-
+-	    __asm__ volatile (".chip 68k/68881\n\t"
+-			      "fmovemx %0,%%fp0-%%fp1\n\t"
+-			      "fmoveml %1,%%fpcr/%%fpsr/%%fpiar\n\t"
+-			      ".chip 68k"
+-			      : /* no outputs */
+-			      : "m" (*sc->sc_fpregs), "m" (*sc->sc_fpcntl));
+-	}
+-	__asm__ volatile (".chip 68k/68881\n\t"
+-			  "frestore %0\n\t"
+-			  ".chip 68k" : : "m" (*sc->sc_fpstate));
+-	err = 0;
+-
+-out:
+-	return err;
+-}
+-
+-#define FPCONTEXT_SIZE	216
+-#define uc_fpstate	uc_filler[0]
+-#define uc_formatvec	uc_filler[FPCONTEXT_SIZE/4]
+-#define uc_extra	uc_filler[FPCONTEXT_SIZE/4+1]
+-
+-static inline int rt_restore_fpu_state(struct ucontext __user *uc)
+-{
+-	unsigned char fpstate[FPCONTEXT_SIZE];
+-	int context_size = CPU_IS_060 ? 8 : 0;
+-	fpregset_t fpregs;
+-	int err = 1;
+-
+-	if (FPU_IS_EMU) {
+-		/* restore fpu control register */
+-		if (__copy_from_user(current->thread.fpcntl,
+-				uc->uc_mcontext.fpregs.f_fpcntl, 12))
+-			goto out;
+-		/* restore all other fpu register */
+-		if (__copy_from_user(current->thread.fp,
+-				uc->uc_mcontext.fpregs.f_fpregs, 96))
+-			goto out;
+-		return 0;
+-	}
+-
+-	if (__get_user(*(long *)fpstate, (long __user *)&uc->uc_fpstate))
+-		goto out;
+-	if (CPU_IS_060 ? fpstate[2] : fpstate[0]) {
+-		if (!CPU_IS_060)
+-			context_size = fpstate[1];
+-		/* Verify the frame format.  */
+-		if (!CPU_IS_060 && (fpstate[0] != fpu_version))
+-			goto out;
+-		if (CPU_IS_020_OR_030) {
+-			if (m68k_fputype & FPU_68881 &&
+-			    !(context_size == 0x18 || context_size == 0xb4))
+-				goto out;
+-			if (m68k_fputype & FPU_68882 &&
+-			    !(context_size == 0x38 || context_size == 0xd4))
+-				goto out;
+-		} else if (CPU_IS_040) {
+-			if (!(context_size == 0x00 ||
+-			      context_size == 0x28 ||
+-			      context_size == 0x60))
+-				goto out;
+-		} else if (CPU_IS_060) {
+-			if (!(fpstate[3] == 0x00 ||
+-			      fpstate[3] == 0x60 ||
+-			      fpstate[3] == 0xe0))
+-				goto out;
+-		} else
+-			goto out;
+-		if (__copy_from_user(&fpregs, &uc->uc_mcontext.fpregs,
+-				     sizeof(fpregs)))
+-			goto out;
+-		__asm__ volatile (".chip 68k/68881\n\t"
+-				  "fmovemx %0,%%fp0-%%fp7\n\t"
+-				  "fmoveml %1,%%fpcr/%%fpsr/%%fpiar\n\t"
+-				  ".chip 68k"
+-				  : /* no outputs */
+-				  : "m" (*fpregs.f_fpregs),
+-				    "m" (*fpregs.f_fpcntl));
+-	}
+-	if (context_size &&
+-	    __copy_from_user(fpstate + 4, (long __user *)&uc->uc_fpstate + 1,
+-			     context_size))
+-		goto out;
+-	__asm__ volatile (".chip 68k/68881\n\t"
+-			  "frestore %0\n\t"
+-			  ".chip 68k" : : "m" (*fpstate));
+-	err = 0;
+-
+-out:
+-	return err;
+-}
+-
+-static inline int
+-restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __user *fp,
+-		   int *pd0)
+-{
+-	int fsize, formatvec;
+-	struct sigcontext context;
+-	int err;
+-
+-	/* Always make any pending restarted system calls return -EINTR */
+-	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+-
+-	/* get previous context */
+-	if (copy_from_user(&context, usc, sizeof(context)))
+-		goto badframe;
+-
+-	/* restore passed registers */
+-	regs->d1 = context.sc_d1;
+-	regs->a0 = context.sc_a0;
+-	regs->a1 = context.sc_a1;
+-	regs->sr = (regs->sr & 0xff00) | (context.sc_sr & 0xff);
+-	regs->pc = context.sc_pc;
+-	regs->orig_d0 = -1;		/* disable syscall checks */
+-	wrusp(context.sc_usp);
+-	formatvec = context.sc_formatvec;
+-	regs->format = formatvec >> 12;
+-	regs->vector = formatvec & 0xfff;
+-
+-	err = restore_fpu_state(&context);
+-
+-	fsize = frame_extra_sizes[regs->format];
+-	if (fsize < 0) {
+-		/*
+-		 * user process trying to return with weird frame format
+-		 */
+-#ifdef DEBUG
+-		printk("user process returning with weird frame format\n");
 +#ifdef CONFIG_MMU
-+#include "setup_mm.c"
- #else
--	if (m68k_fputype & FPU_68881)
--		fpu = "68881";
--	else if (m68k_fputype & FPU_68882)
--		fpu = "68882";
--	else if (m68k_fputype & FPU_68040)
--		fpu = "68040";
--	else if (m68k_fputype & FPU_68060)
--		fpu = "68060";
--	else if (m68k_fputype & FPU_SUNFPA)
--		fpu = "Sun FPA";
--	else
--		fpu = "none";
--#endif
--
--	if (m68k_mmutype & MMU_68851)
--		mmu = "68851";
--	else if (m68k_mmutype & MMU_68030)
--		mmu = "68030";
--	else if (m68k_mmutype & MMU_68040)
--		mmu = "68040";
--	else if (m68k_mmutype & MMU_68060)
--		mmu = "68060";
--	else if (m68k_mmutype & MMU_SUN3)
--		mmu = "Sun-3";
--	else if (m68k_mmutype & MMU_APOLLO)
--		mmu = "Apollo";
--	else
--		mmu = "unknown";
--
--	clockfreq = loops_per_jiffy * HZ * clockfactor;
--
--	seq_printf(m, "CPU:\t\t%s\n"
--		   "MMU:\t\t%s\n"
--		   "FPU:\t\t%s\n"
--		   "Clocking:\t%lu.%1luMHz\n"
--		   "BogoMips:\t%lu.%02lu\n"
--		   "Calibration:\t%lu loops\n",
--		   cpu, mmu, fpu,
--		   clockfreq/1000000,(clockfreq/100000)%10,
--		   loops_per_jiffy/(500000/HZ),(loops_per_jiffy/(5000/HZ))%100,
--		   loops_per_jiffy);
--	return 0;
--}
--
--static void *c_start(struct seq_file *m, loff_t *pos)
--{
--	return *pos < 1 ? (void *)1 : NULL;
--}
--static void *c_next(struct seq_file *m, void *v, loff_t *pos)
--{
--	++*pos;
--	return NULL;
--}
--static void c_stop(struct seq_file *m, void *v)
--{
--}
--const struct seq_operations cpuinfo_op = {
--	.start	= c_start,
--	.next	= c_next,
--	.stop	= c_stop,
--	.show	= show_cpuinfo,
--};
--
--#ifdef CONFIG_PROC_HARDWARE
--static int hardware_proc_show(struct seq_file *m, void *v)
--{
--	char model[80];
--	unsigned long mem;
--	int i;
--
--	if (mach_get_model)
--		mach_get_model(model);
--	else
--		strcpy(model, "Unknown m68k");
--
--	seq_printf(m, "Model:\t\t%s\n", model);
--	for (mem = 0, i = 0; i < m68k_num_memory; i++)
--		mem += m68k_memory[i].size;
--	seq_printf(m, "System Memory:\t%ldK\n", mem >> 10);
--
--	if (mach_get_hardware_list)
--		mach_get_hardware_list(m);
--
--	return 0;
--}
--
--static int hardware_proc_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, hardware_proc_show, NULL);
--}
--
--static const struct file_operations hardware_proc_fops = {
--	.open		= hardware_proc_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
--
--static int __init proc_hardware_init(void)
--{
--	proc_create("hardware", 0, NULL, &hardware_proc_fops);
--	return 0;
--}
--module_init(proc_hardware_init);
-+#include "setup_no.c"
++#include "signal_mm.c"
++#else
++#include "signal_no.c"
  #endif
--
--void check_bugs(void)
--{
--#ifndef CONFIG_M68KFPU_EMU
--	if (m68k_fputype == 0) {
--		printk(KERN_EMERG "*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
--			"WHICH IS REQUIRED BY LINUX/M68K ***\n");
--		printk(KERN_EMERG "Upgrade your hardware or join the FPU "
--			"emulation project\n");
--		panic("no FPU");
+-		goto badframe;
 -	}
--#endif /* !CONFIG_M68KFPU_EMU */
--}
 -
--#ifdef CONFIG_ADB
--static int __init adb_probe_sync_enable (char *str) {
--	extern int __adb_probe_sync;
--	__adb_probe_sync = 1;
+-	/* OK.	Make room on the supervisor stack for the extra junk,
+-	 * if necessary.
+-	 */
+-
+-	if (fsize) {
+-		struct switch_stack *sw = (struct switch_stack *)regs - 1;
+-		regs->d0 = context.sc_d0;
+-#define frame_offset (sizeof(struct pt_regs)+sizeof(struct switch_stack))
+-		__asm__ __volatile__
+-			("   movel %0,%/a0\n\t"
+-			 "   subl %1,%/a0\n\t"     /* make room on stack */
+-			 "   movel %/a0,%/sp\n\t"  /* set stack pointer */
+-			 /* move switch_stack and pt_regs */
+-			 "1: movel %0@+,%/a0@+\n\t"
+-			 "   dbra %2,1b\n\t"
+-			 "   lea %/sp@(%c3),%/a0\n\t" /* add offset of fmt */
+-			 "   lsrl  #2,%1\n\t"
+-			 "   subql #1,%1\n\t"
+-			 "2: movesl %4@+,%2\n\t"
+-			 "3: movel %2,%/a0@+\n\t"
+-			 "   dbra %1,2b\n\t"
+-			 "   bral ret_from_signal\n"
+-			 "4:\n"
+-			 ".section __ex_table,\"a\"\n"
+-			 "   .align 4\n"
+-			 "   .long 2b,4b\n"
+-			 "   .long 3b,4b\n"
+-			 ".previous"
+-			 : /* no outputs, it doesn't ever return */
+-			 : "a" (sw), "d" (fsize), "d" (frame_offset/4-1),
+-			   "n" (frame_offset), "a" (fp)
+-			 : "a0");
+-#undef frame_offset
+-		/*
+-		 * If we ever get here an exception occurred while
+-		 * building the above stack-frame.
+-		 */
+-		goto badframe;
+-	}
+-
+-	*pd0 = context.sc_d0;
+-	return err;
+-
+-badframe:
 -	return 1;
 -}
 -
--__setup("adb_sync", adb_probe_sync_enable);
--#endif /* CONFIG_ADB */
-diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup_mm.c
+-static inline int
+-rt_restore_ucontext(struct pt_regs *regs, struct switch_stack *sw,
+-		    struct ucontext __user *uc, int *pd0)
+-{
+-	int fsize, temp;
+-	greg_t __user *gregs = uc->uc_mcontext.gregs;
+-	unsigned long usp;
+-	int err;
+-
+-	/* Always make any pending restarted system calls return -EINTR */
+-	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+-
+-	err = __get_user(temp, &uc->uc_mcontext.version);
+-	if (temp != MCONTEXT_VERSION)
+-		goto badframe;
+-	/* restore passed registers */
+-	err |= __get_user(regs->d0, &gregs[0]);
+-	err |= __get_user(regs->d1, &gregs[1]);
+-	err |= __get_user(regs->d2, &gregs[2]);
+-	err |= __get_user(regs->d3, &gregs[3]);
+-	err |= __get_user(regs->d4, &gregs[4]);
+-	err |= __get_user(regs->d5, &gregs[5]);
+-	err |= __get_user(sw->d6, &gregs[6]);
+-	err |= __get_user(sw->d7, &gregs[7]);
+-	err |= __get_user(regs->a0, &gregs[8]);
+-	err |= __get_user(regs->a1, &gregs[9]);
+-	err |= __get_user(regs->a2, &gregs[10]);
+-	err |= __get_user(sw->a3, &gregs[11]);
+-	err |= __get_user(sw->a4, &gregs[12]);
+-	err |= __get_user(sw->a5, &gregs[13]);
+-	err |= __get_user(sw->a6, &gregs[14]);
+-	err |= __get_user(usp, &gregs[15]);
+-	wrusp(usp);
+-	err |= __get_user(regs->pc, &gregs[16]);
+-	err |= __get_user(temp, &gregs[17]);
+-	regs->sr = (regs->sr & 0xff00) | (temp & 0xff);
+-	regs->orig_d0 = -1;		/* disable syscall checks */
+-	err |= __get_user(temp, &uc->uc_formatvec);
+-	regs->format = temp >> 12;
+-	regs->vector = temp & 0xfff;
+-
+-	err |= rt_restore_fpu_state(uc);
+-
+-	if (do_sigaltstack(&uc->uc_stack, NULL, usp) == -EFAULT)
+-		goto badframe;
+-
+-	fsize = frame_extra_sizes[regs->format];
+-	if (fsize < 0) {
+-		/*
+-		 * user process trying to return with weird frame format
+-		 */
+-#ifdef DEBUG
+-		printk("user process returning with weird frame format\n");
+-#endif
+-		goto badframe;
+-	}
+-
+-	/* OK.	Make room on the supervisor stack for the extra junk,
+-	 * if necessary.
+-	 */
+-
+-	if (fsize) {
+-#define frame_offset (sizeof(struct pt_regs)+sizeof(struct switch_stack))
+-		__asm__ __volatile__
+-			("   movel %0,%/a0\n\t"
+-			 "   subl %1,%/a0\n\t"     /* make room on stack */
+-			 "   movel %/a0,%/sp\n\t"  /* set stack pointer */
+-			 /* move switch_stack and pt_regs */
+-			 "1: movel %0@+,%/a0@+\n\t"
+-			 "   dbra %2,1b\n\t"
+-			 "   lea %/sp@(%c3),%/a0\n\t" /* add offset of fmt */
+-			 "   lsrl  #2,%1\n\t"
+-			 "   subql #1,%1\n\t"
+-			 "2: movesl %4@+,%2\n\t"
+-			 "3: movel %2,%/a0@+\n\t"
+-			 "   dbra %1,2b\n\t"
+-			 "   bral ret_from_signal\n"
+-			 "4:\n"
+-			 ".section __ex_table,\"a\"\n"
+-			 "   .align 4\n"
+-			 "   .long 2b,4b\n"
+-			 "   .long 3b,4b\n"
+-			 ".previous"
+-			 : /* no outputs, it doesn't ever return */
+-			 : "a" (sw), "d" (fsize), "d" (frame_offset/4-1),
+-			   "n" (frame_offset), "a" (&uc->uc_extra)
+-			 : "a0");
+-#undef frame_offset
+-		/*
+-		 * If we ever get here an exception occurred while
+-		 * building the above stack-frame.
+-		 */
+-		goto badframe;
+-	}
+-
+-	*pd0 = regs->d0;
+-	return err;
+-
+-badframe:
+-	return 1;
+-}
+-
+-asmlinkage int do_sigreturn(unsigned long __unused)
+-{
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+-	unsigned long usp = rdusp();
+-	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
+-	sigset_t set;
+-	int d0;
+-
+-	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+-		goto badframe;
+-	if (__get_user(set.sig[0], &frame->sc.sc_mask) ||
+-	    (_NSIG_WORDS > 1 &&
+-	     __copy_from_user(&set.sig[1], &frame->extramask,
+-			      sizeof(frame->extramask))))
+-		goto badframe;
+-
+-	sigdelsetmask(&set, ~_BLOCKABLE);
+-	current->blocked = set;
+-	recalc_sigpending();
+-
+-	if (restore_sigcontext(regs, &frame->sc, frame + 1, &d0))
+-		goto badframe;
+-	return d0;
+-
+-badframe:
+-	force_sig(SIGSEGV, current);
+-	return 0;
+-}
+-
+-asmlinkage int do_rt_sigreturn(unsigned long __unused)
+-{
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+-	unsigned long usp = rdusp();
+-	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
+-	sigset_t set;
+-	int d0;
+-
+-	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+-		goto badframe;
+-	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
+-		goto badframe;
+-
+-	sigdelsetmask(&set, ~_BLOCKABLE);
+-	current->blocked = set;
+-	recalc_sigpending();
+-
+-	if (rt_restore_ucontext(regs, sw, &frame->uc, &d0))
+-		goto badframe;
+-	return d0;
+-
+-badframe:
+-	force_sig(SIGSEGV, current);
+-	return 0;
+-}
+-
+-/*
+- * Set up a signal frame.
+- */
+-
+-static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
+-{
+-	if (FPU_IS_EMU) {
+-		/* save registers */
+-		memcpy(sc->sc_fpcntl, current->thread.fpcntl, 12);
+-		memcpy(sc->sc_fpregs, current->thread.fp, 24);
+-		return;
+-	}
+-
+-	__asm__ volatile (".chip 68k/68881\n\t"
+-			  "fsave %0\n\t"
+-			  ".chip 68k"
+-			  : : "m" (*sc->sc_fpstate) : "memory");
+-
+-	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
+-		fpu_version = sc->sc_fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
+-		    regs->vector >= (VEC_FPBRUC * 4) &&
+-		    regs->vector <= (VEC_FPNAN * 4)) {
+-			/* Clear pending exception in 68882 idle frame */
+-			if (*(unsigned short *) sc->sc_fpstate == 0x1f38)
+-				sc->sc_fpstate[0x38] |= 1 << 3;
+-		}
+-		__asm__ volatile (".chip 68k/68881\n\t"
+-				  "fmovemx %%fp0-%%fp1,%0\n\t"
+-				  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1\n\t"
+-				  ".chip 68k"
+-				  : "=m" (*sc->sc_fpregs),
+-				    "=m" (*sc->sc_fpcntl)
+-				  : /* no inputs */
+-				  : "memory");
+-	}
+-}
+-
+-static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *regs)
+-{
+-	unsigned char fpstate[FPCONTEXT_SIZE];
+-	int context_size = CPU_IS_060 ? 8 : 0;
+-	int err = 0;
+-
+-	if (FPU_IS_EMU) {
+-		/* save fpu control register */
+-		err |= copy_to_user(uc->uc_mcontext.fpregs.f_fpcntl,
+-				current->thread.fpcntl, 12);
+-		/* save all other fpu register */
+-		err |= copy_to_user(uc->uc_mcontext.fpregs.f_fpregs,
+-				current->thread.fp, 96);
+-		return err;
+-	}
+-
+-	__asm__ volatile (".chip 68k/68881\n\t"
+-			  "fsave %0\n\t"
+-			  ".chip 68k"
+-			  : : "m" (*fpstate) : "memory");
+-
+-	err |= __put_user(*(long *)fpstate, (long __user *)&uc->uc_fpstate);
+-	if (CPU_IS_060 ? fpstate[2] : fpstate[0]) {
+-		fpregset_t fpregs;
+-		if (!CPU_IS_060)
+-			context_size = fpstate[1];
+-		fpu_version = fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
+-		    regs->vector >= (VEC_FPBRUC * 4) &&
+-		    regs->vector <= (VEC_FPNAN * 4)) {
+-			/* Clear pending exception in 68882 idle frame */
+-			if (*(unsigned short *) fpstate == 0x1f38)
+-				fpstate[0x38] |= 1 << 3;
+-		}
+-		__asm__ volatile (".chip 68k/68881\n\t"
+-				  "fmovemx %%fp0-%%fp7,%0\n\t"
+-				  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1\n\t"
+-				  ".chip 68k"
+-				  : "=m" (*fpregs.f_fpregs),
+-				    "=m" (*fpregs.f_fpcntl)
+-				  : /* no inputs */
+-				  : "memory");
+-		err |= copy_to_user(&uc->uc_mcontext.fpregs, &fpregs,
+-				    sizeof(fpregs));
+-	}
+-	if (context_size)
+-		err |= copy_to_user((long __user *)&uc->uc_fpstate + 1, fpstate + 4,
+-				    context_size);
+-	return err;
+-}
+-
+-static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+-			     unsigned long mask)
+-{
+-	sc->sc_mask = mask;
+-	sc->sc_usp = rdusp();
+-	sc->sc_d0 = regs->d0;
+-	sc->sc_d1 = regs->d1;
+-	sc->sc_a0 = regs->a0;
+-	sc->sc_a1 = regs->a1;
+-	sc->sc_sr = regs->sr;
+-	sc->sc_pc = regs->pc;
+-	sc->sc_formatvec = regs->format << 12 | regs->vector;
+-	save_fpu_state(sc, regs);
+-}
+-
+-static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *regs)
+-{
+-	struct switch_stack *sw = (struct switch_stack *)regs - 1;
+-	greg_t __user *gregs = uc->uc_mcontext.gregs;
+-	int err = 0;
+-
+-	err |= __put_user(MCONTEXT_VERSION, &uc->uc_mcontext.version);
+-	err |= __put_user(regs->d0, &gregs[0]);
+-	err |= __put_user(regs->d1, &gregs[1]);
+-	err |= __put_user(regs->d2, &gregs[2]);
+-	err |= __put_user(regs->d3, &gregs[3]);
+-	err |= __put_user(regs->d4, &gregs[4]);
+-	err |= __put_user(regs->d5, &gregs[5]);
+-	err |= __put_user(sw->d6, &gregs[6]);
+-	err |= __put_user(sw->d7, &gregs[7]);
+-	err |= __put_user(regs->a0, &gregs[8]);
+-	err |= __put_user(regs->a1, &gregs[9]);
+-	err |= __put_user(regs->a2, &gregs[10]);
+-	err |= __put_user(sw->a3, &gregs[11]);
+-	err |= __put_user(sw->a4, &gregs[12]);
+-	err |= __put_user(sw->a5, &gregs[13]);
+-	err |= __put_user(sw->a6, &gregs[14]);
+-	err |= __put_user(rdusp(), &gregs[15]);
+-	err |= __put_user(regs->pc, &gregs[16]);
+-	err |= __put_user(regs->sr, &gregs[17]);
+-	err |= __put_user((regs->format << 12) | regs->vector, &uc->uc_formatvec);
+-	err |= rt_save_fpu_state(uc, regs);
+-	return err;
+-}
+-
+-static inline void push_cache (unsigned long vaddr)
+-{
+-	/*
+-	 * Using the old cache_push_v() was really a big waste.
+-	 *
+-	 * What we are trying to do is to flush 8 bytes to ram.
+-	 * Flushing 2 cache lines of 16 bytes is much cheaper than
+-	 * flushing 1 or 2 pages, as previously done in
+-	 * cache_push_v().
+-	 *                                                     Jes
+-	 */
+-	if (CPU_IS_040) {
+-		unsigned long temp;
+-
+-		__asm__ __volatile__ (".chip 68040\n\t"
+-				      "nop\n\t"
+-				      "ptestr (%1)\n\t"
+-				      "movec %%mmusr,%0\n\t"
+-				      ".chip 68k"
+-				      : "=r" (temp)
+-				      : "a" (vaddr));
+-
+-		temp &= PAGE_MASK;
+-		temp |= vaddr & ~PAGE_MASK;
+-
+-		__asm__ __volatile__ (".chip 68040\n\t"
+-				      "nop\n\t"
+-				      "cpushl %%bc,(%0)\n\t"
+-				      ".chip 68k"
+-				      : : "a" (temp));
+-	}
+-	else if (CPU_IS_060) {
+-		unsigned long temp;
+-		__asm__ __volatile__ (".chip 68060\n\t"
+-				      "plpar (%0)\n\t"
+-				      ".chip 68k"
+-				      : "=a" (temp)
+-				      : "0" (vaddr));
+-		__asm__ __volatile__ (".chip 68060\n\t"
+-				      "cpushl %%bc,(%0)\n\t"
+-				      ".chip 68k"
+-				      : : "a" (temp));
+-	}
+-	else {
+-		/*
+-		 * 68030/68020 have no writeback cache;
+-		 * still need to clear icache.
+-		 * Note that vaddr is guaranteed to be long word aligned.
+-		 */
+-		unsigned long temp;
+-		asm volatile ("movec %%cacr,%0" : "=r" (temp));
+-		temp += 4;
+-		asm volatile ("movec %0,%%caar\n\t"
+-			      "movec %1,%%cacr"
+-			      : : "r" (vaddr), "r" (temp));
+-		asm volatile ("movec %0,%%caar\n\t"
+-			      "movec %1,%%cacr"
+-			      : : "r" (vaddr + 4), "r" (temp));
+-	}
+-}
+-
+-static inline void __user *
+-get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size)
+-{
+-	unsigned long usp;
+-
+-	/* Default to using normal stack.  */
+-	usp = rdusp();
+-
+-	/* This is the X/Open sanctioned signal stack switching.  */
+-	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (!sas_ss_flags(usp))
+-			usp = current->sas_ss_sp + current->sas_ss_size;
+-	}
+-	return (void __user *)((usp - frame_size) & -8UL);
+-}
+-
+-static void setup_frame (int sig, struct k_sigaction *ka,
+-			 sigset_t *set, struct pt_regs *regs)
+-{
+-	struct sigframe __user *frame;
+-	int fsize = frame_extra_sizes[regs->format];
+-	struct sigcontext context;
+-	int err = 0;
+-
+-	if (fsize < 0) {
+-#ifdef DEBUG
+-		printk ("setup_frame: Unknown frame format %#x\n",
+-			regs->format);
+-#endif
+-		goto give_sigsegv;
+-	}
+-
+-	frame = get_sigframe(ka, regs, sizeof(*frame) + fsize);
+-
+-	if (fsize) {
+-		err |= copy_to_user (frame + 1, regs + 1, fsize);
+-		regs->stkadj = fsize;
+-	}
+-
+-	err |= __put_user((current_thread_info()->exec_domain
+-			   && current_thread_info()->exec_domain->signal_invmap
+-			   && sig < 32
+-			   ? current_thread_info()->exec_domain->signal_invmap[sig]
+-			   : sig),
+-			  &frame->sig);
+-
+-	err |= __put_user(regs->vector, &frame->code);
+-	err |= __put_user(&frame->sc, &frame->psc);
+-
+-	if (_NSIG_WORDS > 1)
+-		err |= copy_to_user(frame->extramask, &set->sig[1],
+-				    sizeof(frame->extramask));
+-
+-	setup_sigcontext(&context, regs, set->sig[0]);
+-	err |= copy_to_user (&frame->sc, &context, sizeof(context));
+-
+-	/* Set up to return from userspace.  */
+-	err |= __put_user(frame->retcode, &frame->pretcode);
+-	/* moveq #,d0; trap #0 */
+-	err |= __put_user(0x70004e40 + (__NR_sigreturn << 16),
+-			  (long __user *)(frame->retcode));
+-
+-	if (err)
+-		goto give_sigsegv;
+-
+-	push_cache ((unsigned long) &frame->retcode);
+-
+-	/* Set up registers for signal handler */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ka->sa.sa_handler;
+-
+-adjust_stack:
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
+-#ifdef DEBUG
+-		printk("Performing stackadjust=%04x\n", regs->stkadj);
+-#endif
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+-		tregs->vector = 0;
+-		tregs->format = 0;
+-		tregs->pc = regs->pc;
+-		tregs->sr = regs->sr;
+-	}
+-	return;
+-
+-give_sigsegv:
+-	force_sigsegv(sig, current);
+-	goto adjust_stack;
+-}
+-
+-static void setup_rt_frame (int sig, struct k_sigaction *ka, siginfo_t *info,
+-			    sigset_t *set, struct pt_regs *regs)
+-{
+-	struct rt_sigframe __user *frame;
+-	int fsize = frame_extra_sizes[regs->format];
+-	int err = 0;
+-
+-	if (fsize < 0) {
+-#ifdef DEBUG
+-		printk ("setup_frame: Unknown frame format %#x\n",
+-			regs->format);
+-#endif
+-		goto give_sigsegv;
+-	}
+-
+-	frame = get_sigframe(ka, regs, sizeof(*frame));
+-
+-	if (fsize) {
+-		err |= copy_to_user (&frame->uc.uc_extra, regs + 1, fsize);
+-		regs->stkadj = fsize;
+-	}
+-
+-	err |= __put_user((current_thread_info()->exec_domain
+-			   && current_thread_info()->exec_domain->signal_invmap
+-			   && sig < 32
+-			   ? current_thread_info()->exec_domain->signal_invmap[sig]
+-			   : sig),
+-			  &frame->sig);
+-	err |= __put_user(&frame->info, &frame->pinfo);
+-	err |= __put_user(&frame->uc, &frame->puc);
+-	err |= copy_siginfo_to_user(&frame->info, info);
+-
+-	/* Create the ucontext.  */
+-	err |= __put_user(0, &frame->uc.uc_flags);
+-	err |= __put_user(NULL, &frame->uc.uc_link);
+-	err |= __put_user((void __user *)current->sas_ss_sp,
+-			  &frame->uc.uc_stack.ss_sp);
+-	err |= __put_user(sas_ss_flags(rdusp()),
+-			  &frame->uc.uc_stack.ss_flags);
+-	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+-	err |= rt_setup_ucontext(&frame->uc, regs);
+-	err |= copy_to_user (&frame->uc.uc_sigmask, set, sizeof(*set));
+-
+-	/* Set up to return from userspace.  */
+-	err |= __put_user(frame->retcode, &frame->pretcode);
+-	/* moveq #,d0; notb d0; trap #0 */
+-	err |= __put_user(0x70004600 + ((__NR_rt_sigreturn ^ 0xff) << 16),
+-			  (long __user *)(frame->retcode + 0));
+-	err |= __put_user(0x4e40, (short __user *)(frame->retcode + 4));
+-
+-	if (err)
+-		goto give_sigsegv;
+-
+-	push_cache ((unsigned long) &frame->retcode);
+-
+-	/* Set up registers for signal handler */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ka->sa.sa_handler;
+-
+-adjust_stack:
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
+-#ifdef DEBUG
+-		printk("Performing stackadjust=%04x\n", regs->stkadj);
+-#endif
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+-		tregs->vector = 0;
+-		tregs->format = 0;
+-		tregs->pc = regs->pc;
+-		tregs->sr = regs->sr;
+-	}
+-	return;
+-
+-give_sigsegv:
+-	force_sigsegv(sig, current);
+-	goto adjust_stack;
+-}
+-
+-static inline void
+-handle_restart(struct pt_regs *regs, struct k_sigaction *ka, int has_handler)
+-{
+-	switch (regs->d0) {
+-	case -ERESTARTNOHAND:
+-		if (!has_handler)
+-			goto do_restart;
+-		regs->d0 = -EINTR;
+-		break;
+-
+-	case -ERESTART_RESTARTBLOCK:
+-		if (!has_handler) {
+-			regs->d0 = __NR_restart_syscall;
+-			regs->pc -= 2;
+-			break;
+-		}
+-		regs->d0 = -EINTR;
+-		break;
+-
+-	case -ERESTARTSYS:
+-		if (has_handler && !(ka->sa.sa_flags & SA_RESTART)) {
+-			regs->d0 = -EINTR;
+-			break;
+-		}
+-	/* fallthrough */
+-	case -ERESTARTNOINTR:
+-	do_restart:
+-		regs->d0 = regs->orig_d0;
+-		regs->pc -= 2;
+-		break;
+-	}
+-}
+-
+-void ptrace_signal_deliver(struct pt_regs *regs, void *cookie)
+-{
+-	if (regs->orig_d0 < 0)
+-		return;
+-	switch (regs->d0) {
+-	case -ERESTARTNOHAND:
+-	case -ERESTARTSYS:
+-	case -ERESTARTNOINTR:
+-		regs->d0 = regs->orig_d0;
+-		regs->orig_d0 = -1;
+-		regs->pc -= 2;
+-		break;
+-	}
+-}
+-
+-/*
+- * OK, we're invoking a handler
+- */
+-static void
+-handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
+-	      sigset_t *oldset, struct pt_regs *regs)
+-{
+-	/* are we from a system call? */
+-	if (regs->orig_d0 >= 0)
+-		/* If so, check system call restarting.. */
+-		handle_restart(regs, ka, 1);
+-
+-	/* set up the stack frame */
+-	if (ka->sa.sa_flags & SA_SIGINFO)
+-		setup_rt_frame(sig, ka, info, oldset, regs);
+-	else
+-		setup_frame(sig, ka, oldset, regs);
+-
+-	if (ka->sa.sa_flags & SA_ONESHOT)
+-		ka->sa.sa_handler = SIG_DFL;
+-
+-	sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
+-	if (!(ka->sa.sa_flags & SA_NODEFER))
+-		sigaddset(&current->blocked,sig);
+-	recalc_sigpending();
+-}
+-
+-/*
+- * Note that 'init' is a special process: it doesn't get signals it doesn't
+- * want to handle. Thus you cannot kill init even with a SIGKILL even by
+- * mistake.
+- */
+-asmlinkage int do_signal(sigset_t *oldset, struct pt_regs *regs)
+-{
+-	siginfo_t info;
+-	struct k_sigaction ka;
+-	int signr;
+-
+-	current->thread.esp0 = (unsigned long) regs;
+-
+-	if (!oldset)
+-		oldset = &current->blocked;
+-
+-	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+-	if (signr > 0) {
+-		/* Whee!  Actually deliver the signal.  */
+-		handle_signal(signr, &ka, &info, oldset, regs);
+-		return 1;
+-	}
+-
+-	/* Did we come from a system call? */
+-	if (regs->orig_d0 >= 0)
+-		/* Restart the system call - no handlers present */
+-		handle_restart(regs, NULL, 0);
+-
+-	return 0;
+-}
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal_mm.c
 similarity index 100%
-copy from arch/m68k/kernel/setup.c
-copy to arch/m68k/kernel/setup_mm.c
-diff --git a/arch/m68knommu/kernel/setup.c b/arch/m68k/kernel/setup_no.c
+copy from arch/m68k/kernel/signal.c
+copy to arch/m68k/kernel/signal_mm.c
+diff --git a/arch/m68knommu/kernel/signal.c b/arch/m68k/kernel/signal_no.c
 similarity index 100%
-copy from arch/m68knommu/kernel/setup.c
-copy to arch/m68k/kernel/setup_no.c
+copy from arch/m68knommu/kernel/signal.c
+copy to arch/m68k/kernel/signal_no.c
 -- 
 1.5.6.5
 
