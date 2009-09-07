@@ -1,217 +1,339 @@
 From: sfking@fdwdc.com
-Subject: [RFC 23/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:13 -0700
-Message-ID: <c4340c33259effcd3a821f48cbdd44e5ced25077.1252222134.git.sfking@fdwdc.com>
+Subject: [RFC 25/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 23:02:28 -0700
+Message-ID: <0b049a980e0bb00153e690539c9ce623e985e583.1252222135.git.sfking__30521.2710438811$1252303387$gmane$org@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
- <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
- <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
- <44c52df23985288bc2f4a819b73b3cc6da0826b9.1252222133.git.sfking@fdwdc.com>
- <6db080fb352e20adab49ed7762d3200831160b0f.1252222133.git.sfking@fdwdc.com>
- <c2e845e94079ee2a24e19456666f571c687f93f7.1252222133.git.sfking@fdwdc.com>
- <afa7a198356e79718b7682ea33cdfeec1933ae3d.1252222133.git.sfking@fdwdc.com>
- <f6625c80e8b3246063209517cccc855c056b2b71.1252222133.git.sfking@fdwdc.com>
- <55335001e487bd208ef4801c9df7e2d38a842ad3.1252222134.git.sfking@fdwdc.com>
- <1960838f2a4476b115b27420dcec29f81f0a15c1.1252222134.git.sfking@fdwdc.com>
- <491494a31232c4ce3a7fb96c3ed9db228f0ec5b4.1252222134.git.sfking@fdwdc.com>
- <b5baa71b2c543432ce8561ef7c18ef73201d47a8.1252222134.git.sfking@fdwdc.com>
- <fa246e049b7bc779d1c85def3f733a540463c3e2.1252222134.git.sfking@fdwdc.com>
- <c90263ddd638105b7df953128fd150d7fafc56ee.1252222134.git.sfking@fdwdc.com>
- <732b3e401d3708f1abf810ff0028e48d63df7e4b.1252222134.git.sfking@fdwdc.com>
- <9132c5b379a84a9b9a8762fc557abcae6e6ca479.1252222134.git.sfking@fdwdc.com>
- <f9216a12af8475d50631ae2dfea94d807aae1c1f.1252222134.git.sfking@fdwdc.com>
- <58c8b539029e276a7fc7ddeca2f2909845959c25.1252222134.git.sfking@fdwdc.com>
- <7916cd27beda9a78f37dcd9bef81229fcf67e7c6.1252222134.git.sfking@fdwdc.com>
- <f3cef3055f176a78514b07c083d19b5aec5f821f.1252222134.git.sfking@fdwdc.com>
- <572b33baa354e24a1e4ddfbaaf4b9ad71f262f0c.1252222134.git.sfking@fdwdc.com>
- <2e03009ed21c515946779f20bfbd182d04fa45fe.1252222134.git.sfking@fdwdc.com>
- <8f43ed7055e315597a6f75d70cf391cca512204b.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34456 "HELO
-	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758986AbZIGFrU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:20 -0400
-In-Reply-To: <8f43ed7055e315597a6f75d70cf391cca512204b.1252222134.git.sfking@fdwdc.com>
+Received: from smtp100.biz.mail.mud.yahoo.com ([68.142.201.176]:48492 "HELO
+	smtp100.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1758856AbZIGGCx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 02:02:53 -0400
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
-References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/mm/init.c                             |  152 +----------------------
- arch/m68k/mm/{init.c => init_mm.c}              |    0 
- arch/{m68knommu/mm/init.c => m68k/mm/init_no.c} |    0 
- 3 files changed, 4 insertions(+), 148 deletions(-)
- copy arch/m68k/mm/{init.c => init_mm.c} (100%)
- copy arch/{m68knommu/mm/init.c => m68k/mm/init_no.c} (100%)
+ arch/m68k/mm/memory.c                              |  298 +-------------------
+ arch/m68k/mm/{memory.c => memory_mm.c}             |    0 
+ .../{m68knommu/mm/memory.c => m68k/mm/memory_no.c} |    0 
+ 3 files changed, 4 insertions(+), 294 deletions(-)
+ copy arch/m68k/mm/{memory.c => memory_mm.c} (100%)
+ copy arch/{m68knommu/mm/memory.c => m68k/mm/memory_no.c} (100%)
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 0007b2a..27b5ce0 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -1,149 +1,5 @@
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
+index b747352..5e48c93 100644
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -1,295 +1,5 @@
 -/*
-- *  linux/arch/m68k/mm/init.c
+- *  linux/arch/m68k/mm/memory.c
 - *
 - *  Copyright (C) 1995  Hamish Macdonald
-- *
-- *  Contains common initialization routines, specific init code moved
-- *  to motorola.c and sun3mmu.c
 - */
 -
 -#include <linux/module.h>
--#include <linux/signal.h>
--#include <linux/sched.h>
 -#include <linux/mm.h>
--#include <linux/swap.h>
 -#include <linux/kernel.h>
 -#include <linux/string.h>
 -#include <linux/types.h>
+-#include <linux/slab.h>
 -#include <linux/init.h>
--#include <linux/bootmem.h>
+-#include <linux/pagemap.h>
 -
 -#include <asm/setup.h>
--#include <asm/uaccess.h>
+-#include <asm/segment.h>
 -#include <asm/page.h>
 -#include <asm/pgalloc.h>
 -#include <asm/system.h>
+-#include <asm/traps.h>
 -#include <asm/machdep.h>
--#include <asm/io.h>
--#ifdef CONFIG_ATARI
--#include <asm/atari_stram.h>
--#endif
--#include <asm/sections.h>
--#include <asm/tlb.h>
 -
--DEFINE_PER_CPU(struct mmu_gather, mmu_gathers);
 -
--pg_data_t pg_data_map[MAX_NUMNODES];
--EXPORT_SYMBOL(pg_data_map);
+-/* ++andreas: {get,free}_pointer_table rewritten to use unused fields from
+-   struct page instead of separately kmalloced struct.  Stolen from
+-   arch/sparc/mm/srmmu.c ... */
 -
--int m68k_virt_to_node_shift;
+-typedef struct list_head ptable_desc;
+-static LIST_HEAD(ptable_list);
 -
--#ifndef CONFIG_SINGLE_MEMORY_CHUNK
--pg_data_t *pg_data_table[65];
--EXPORT_SYMBOL(pg_data_table);
--#endif
+-#define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
+-#define PD_PAGE(ptable) (list_entry(ptable, struct page, lru))
+-#define PD_MARKBITS(dp) (*(unsigned char *)&PD_PAGE(dp)->index)
 -
--void __init m68k_setup_node(int node)
+-#define PTABLE_SIZE (PTRS_PER_PMD * sizeof(pmd_t))
+-
+-void __init init_pointer_table(unsigned long ptable)
 -{
--#ifndef CONFIG_SINGLE_MEMORY_CHUNK
--	struct mem_info *info = m68k_memory + node;
--	int i, end;
+-	ptable_desc *dp;
+-	unsigned long page = ptable & PAGE_MASK;
+-	unsigned char mask = 1 << ((ptable - page)/PTABLE_SIZE);
 -
--	i = (unsigned long)phys_to_virt(info->addr) >> __virt_to_node_shift();
--	end = (unsigned long)phys_to_virt(info->addr + info->size - 1) >> __virt_to_node_shift();
--	for (; i <= end; i++) {
--		if (pg_data_table[i])
--			printk("overlap at %u for chunk %u\n", i, node);
--		pg_data_table[i] = pg_data_map + node;
+-	dp = PD_PTABLE(page);
+-	if (!(PD_MARKBITS(dp) & mask)) {
+-		PD_MARKBITS(dp) = 0xff;
+-		list_add(dp, &ptable_list);
 -	}
--#endif
--	pg_data_map[node].bdata = bootmem_node_data + node;
--	node_set_online(node);
+-
+-	PD_MARKBITS(dp) &= ~mask;
+-#ifdef DEBUG
+-	printk("init_pointer_table: %lx, %x\n", ptable, PD_MARKBITS(dp));
++#ifdef CONFIG_MMU
++#include "memory_mm.c"
++#else
++#include "memory_no.c"
+ #endif
+-
+-	/* unreserve the page so it's possible to free that page */
+-	PD_PAGE(dp)->flags &= ~(1 << PG_reserved);
+-	init_page_count(PD_PAGE(dp));
+-
+-	return;
 -}
+-
+-pmd_t *get_pointer_table (void)
+-{
+-	ptable_desc *dp = ptable_list.next;
+-	unsigned char mask = PD_MARKBITS (dp);
+-	unsigned char tmp;
+-	unsigned int off;
+-
+-	/*
+-	 * For a pointer table for a user process address space, a
+-	 * table is taken from a page allocated for the purpose.  Each
+-	 * page can hold 8 pointer tables.  The page is remapped in
+-	 * virtual address space to be noncacheable.
+-	 */
+-	if (mask == 0) {
+-		void *page;
+-		ptable_desc *new;
+-
+-		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
+-			return NULL;
+-
+-		flush_tlb_kernel_page(page);
+-		nocache_page(page);
+-
+-		new = PD_PTABLE(page);
+-		PD_MARKBITS(new) = 0xfe;
+-		list_add_tail(new, dp);
+-
+-		return (pmd_t *)page;
+-	}
+-
+-	for (tmp = 1, off = 0; (mask & tmp) == 0; tmp <<= 1, off += PTABLE_SIZE)
+-		;
+-	PD_MARKBITS(dp) = mask & ~tmp;
+-	if (!PD_MARKBITS(dp)) {
+-		/* move to end of list */
+-		list_move_tail(dp, &ptable_list);
+-	}
+-	return (pmd_t *) (page_address(PD_PAGE(dp)) + off);
+-}
+-
+-int free_pointer_table (pmd_t *ptable)
+-{
+-	ptable_desc *dp;
+-	unsigned long page = (unsigned long)ptable & PAGE_MASK;
+-	unsigned char mask = 1 << (((unsigned long)ptable - page)/PTABLE_SIZE);
+-
+-	dp = PD_PTABLE(page);
+-	if (PD_MARKBITS (dp) & mask)
+-		panic ("table already free!");
+-
+-	PD_MARKBITS (dp) |= mask;
+-
+-	if (PD_MARKBITS(dp) == 0xff) {
+-		/* all tables in page are free, free page */
+-		list_del(dp);
+-		cache_page((void *)page);
+-		free_page (page);
+-		return 1;
+-	} else if (ptable_list.next != dp) {
+-		/*
+-		 * move this descriptor to the front of the list, since
+-		 * it has one or more free tables.
+-		 */
+-		list_move(dp, &ptable_list);
+-	}
+-	return 0;
+-}
+-
+-/* invalidate page in both caches */
+-static inline void clear040(unsigned long paddr)
+-{
+-	asm volatile (
+-		"nop\n\t"
+-		".chip 68040\n\t"
+-		"cinvp %%bc,(%0)\n\t"
+-		".chip 68k"
+-		: : "a" (paddr));
+-}
+-
+-/* invalidate page in i-cache */
+-static inline void cleari040(unsigned long paddr)
+-{
+-	asm volatile (
+-		"nop\n\t"
+-		".chip 68040\n\t"
+-		"cinvp %%ic,(%0)\n\t"
+-		".chip 68k"
+-		: : "a" (paddr));
+-}
+-
+-/* push page in both caches */
+-/* RZ: cpush %bc DOES invalidate %ic, regardless of DPI */
+-static inline void push040(unsigned long paddr)
+-{
+-	asm volatile (
+-		"nop\n\t"
+-		".chip 68040\n\t"
+-		"cpushp %%bc,(%0)\n\t"
+-		".chip 68k"
+-		: : "a" (paddr));
+-}
+-
+-/* push and invalidate page in both caches, must disable ints
+- * to avoid invalidating valid data */
+-static inline void pushcl040(unsigned long paddr)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	push040(paddr);
+-	if (CPU_IS_060)
+-		clear040(paddr);
+-	local_irq_restore(flags);
+-}
+-
+-/*
+- * 040: Hit every page containing an address in the range paddr..paddr+len-1.
+- * (Low order bits of the ea of a CINVP/CPUSHP are "don't care"s).
+- * Hit every page until there is a page or less to go. Hit the next page,
+- * and the one after that if the range hits it.
+- */
+-/* ++roman: A little bit more care is required here: The CINVP instruction
+- * invalidates cache entries WITHOUT WRITING DIRTY DATA BACK! So the beginning
+- * and the end of the region must be treated differently if they are not
+- * exactly at the beginning or end of a page boundary. Else, maybe too much
+- * data becomes invalidated and thus lost forever. CPUSHP does what we need:
+- * it invalidates the page after pushing dirty data to memory. (Thanks to Jes
+- * for discovering the problem!)
+- */
+-/* ... but on the '060, CPUSH doesn't invalidate (for us, since we have set
+- * the DPI bit in the CACR; would it cause problems with temporarily changing
+- * this?). So we have to push first and then additionally to invalidate.
+- */
 -
 -
 -/*
-- * ZERO_PAGE is a special page that is used for zero-initialized
-- * data and COW.
+- * cache_clear() semantics: Clear any cache entries for the area in question,
+- * without writing back dirty entries first. This is useful if the data will
+- * be overwritten anyway, e.g. by DMA to memory. The range is defined by a
+- * _physical_ address.
 - */
 -
--void *empty_zero_page;
--EXPORT_SYMBOL(empty_zero_page);
--
--extern void init_pointer_table(unsigned long ptable);
--
--/* References to section boundaries */
--
--extern pmd_t *zero_pgtable;
--
--void __init mem_init(void)
+-void cache_clear (unsigned long paddr, int len)
 -{
--	pg_data_t *pgdat;
--	int codepages = 0;
--	int datapages = 0;
--	int initpages = 0;
--	int i;
+-    if (CPU_IS_040_OR_060) {
+-	int tmp;
 -
--#ifdef CONFIG_ATARI
--	if (MACH_IS_ATARI)
--		atari_stram_mem_init_hook();
--#endif
--
--	/* this will put all memory onto the freelists */
--	totalram_pages = num_physpages = 0;
--	for_each_online_pgdat(pgdat) {
--		num_physpages += pgdat->node_present_pages;
--
--		totalram_pages += free_all_bootmem_node(pgdat);
--		for (i = 0; i < pgdat->node_spanned_pages; i++) {
--			struct page *page = pgdat->node_mem_map + i;
--			char *addr = page_to_virt(page);
--
--			if (!PageReserved(page))
--				continue;
--			if (addr >= _text &&
--			    addr < _etext)
--				codepages++;
--			else if (addr >= __init_begin &&
--				 addr < __init_end)
--				initpages++;
--			else
--				datapages++;
--		}
+-	/*
+-	 * We need special treatment for the first page, in case it
+-	 * is not page-aligned. Page align the addresses to work
+-	 * around bug I17 in the 68060.
+-	 */
+-	if ((tmp = -paddr & (PAGE_SIZE - 1))) {
+-	    pushcl040(paddr & PAGE_MASK);
+-	    if ((len -= tmp) <= 0)
+-		return;
+-	    paddr += tmp;
 -	}
--
--#ifndef CONFIG_SUN3
--	/* insert pointer tables allocated so far into the tablelist */
--	init_pointer_table((unsigned long)kernel_pg_dir);
--	for (i = 0; i < PTRS_PER_PGD; i++) {
--		if (pgd_present(kernel_pg_dir[i]))
--			init_pointer_table(__pgd_page(kernel_pg_dir[i]));
+-	tmp = PAGE_SIZE;
+-	paddr &= PAGE_MASK;
+-	while ((len -= tmp) >= 0) {
+-	    clear040(paddr);
+-	    paddr += tmp;
 -	}
--
--	/* insert also pointer table that we used to unmap the zero page */
--	if (zero_pgtable)
--		init_pointer_table((unsigned long)zero_pgtable);
+-	if ((len += tmp))
+-	    /* a page boundary gets crossed at the end */
+-	    pushcl040(paddr);
+-    }
+-    else /* 68030 or 68020 */
+-	asm volatile ("movec %/cacr,%/d0\n\t"
+-		      "oriw %0,%/d0\n\t"
+-		      "movec %/d0,%/cacr"
+-		      : : "i" (FLUSH_I_AND_D)
+-		      : "d0");
+-#ifdef CONFIG_M68K_L2_CACHE
+-    if(mach_l2_flush)
+-	mach_l2_flush(0);
 -#endif
--
--	printk("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
--	       (unsigned long)nr_free_pages() << (PAGE_SHIFT-10),
--	       totalram_pages << (PAGE_SHIFT-10),
--	       codepages << (PAGE_SHIFT-10),
--	       datapages << (PAGE_SHIFT-10),
--	       initpages << (PAGE_SHIFT-10));
 -}
+-EXPORT_SYMBOL(cache_clear);
 -
--#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
+-
+-/*
+- * cache_push() semantics: Write back any dirty cache data in the given area,
+- * and invalidate the range in the instruction cache. It needs not (but may)
+- * invalidate those entries also in the data cache. The range is defined by a
+- * _physical_ address.
+- */
+-
+-void cache_push (unsigned long paddr, int len)
 -{
--	int pages = 0;
--	for (; start < end; start += PAGE_SIZE) {
--		ClearPageReserved(virt_to_page(start));
--		init_page_count(virt_to_page(start));
--		free_page(start);
--		totalram_pages++;
--		pages++;
--	}
--	printk ("Freeing initrd memory: %dk freed\n", pages);
+-    if (CPU_IS_040_OR_060) {
+-	int tmp = PAGE_SIZE;
+-
+-	/*
+-         * on 68040 or 68060, push cache lines for pages in the range;
+-	 * on the '040 this also invalidates the pushed lines, but not on
+-	 * the '060!
+-	 */
+-	len += paddr & (PAGE_SIZE - 1);
+-
+-	/*
+-	 * Work around bug I17 in the 68060 affecting some instruction
+-	 * lines not being invalidated properly.
+-	 */
+-	paddr &= PAGE_MASK;
+-
+-	do {
+-	    push040(paddr);
+-	    paddr += tmp;
+-	} while ((len -= tmp) > 0);
+-    }
+-    /*
+-     * 68030/68020 have no writeback cache. On the other hand,
+-     * cache_push is actually a superset of cache_clear (the lines
+-     * get written back and invalidated), so we should make sure
+-     * to perform the corresponding actions. After all, this is getting
+-     * called in places where we've just loaded code, or whatever, so
+-     * flushing the icache is appropriate; flushing the dcache shouldn't
+-     * be required.
+-     */
+-    else /* 68030 or 68020 */
+-	asm volatile ("movec %/cacr,%/d0\n\t"
+-		      "oriw %0,%/d0\n\t"
+-		      "movec %/d0,%/cacr"
+-		      : : "i" (FLUSH_I)
+-		      : "d0");
+-#ifdef CONFIG_M68K_L2_CACHE
+-    if(mach_l2_flush)
+-	mach_l2_flush(1);
+-#endif
 -}
-+#ifdef CONFIG_MMU
-+#include "init_mm.c"
-+#else
-+#include "init_no.c"
- #endif
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init_mm.c
+-EXPORT_SYMBOL(cache_push);
+-
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory_mm.c
 similarity index 100%
-copy from arch/m68k/mm/init.c
-copy to arch/m68k/mm/init_mm.c
-diff --git a/arch/m68knommu/mm/init.c b/arch/m68k/mm/init_no.c
+copy from arch/m68k/mm/memory.c
+copy to arch/m68k/mm/memory_mm.c
+diff --git a/arch/m68knommu/mm/memory.c b/arch/m68k/mm/memory_no.c
 similarity index 100%
-copy from arch/m68knommu/mm/init.c
-copy to arch/m68k/mm/init_no.c
+copy from arch/m68knommu/mm/memory.c
+copy to arch/m68k/mm/memory_no.c
 -- 
 1.5.6.5
 
