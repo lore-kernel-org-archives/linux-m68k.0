@@ -1,7 +1,7 @@
 From: sfking@fdwdc.com
-Subject: [RFC 22/31] proof of concept merge of m68k and m68knommu
-Date: Sun,  6 Sep 2009 22:40:12 -0700
-Message-ID: <8f43ed7055e315597a6f75d70cf391cca512204b.1252222134.git.sfking@fdwdc.com>
+Subject: [RFC 23/31] proof of concept merge of m68k and m68knommu
+Date: Sun,  6 Sep 2009 22:40:13 -0700
+Message-ID: <c4340c33259effcd3a821f48cbdd44e5ced25077.1252222134.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
  <cfdcab7374087d5279ec9a1269831e8159d98f2b.1252222133.git.sfking@fdwdc.com>
  <8cb57205150fb96915e9d12c936be301a5e1e1e1.1252222133.git.sfking@fdwdc.com>
@@ -24,12 +24,13 @@ References: <cover.1252222129.git.sfking@fdwdc.com>
  <f3cef3055f176a78514b07c083d19b5aec5f821f.1252222134.git.sfking@fdwdc.com>
  <572b33baa354e24a1e4ddfbaaf4b9ad71f262f0c.1252222134.git.sfking@fdwdc.com>
  <2e03009ed21c515946779f20bfbd182d04fa45fe.1252222134.git.sfking@fdwdc.com>
+ <8f43ed7055e315597a6f75d70cf391cca512204b.1252222134.git.sfking@fdwdc.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34452 "HELO
+Received: from smtp109.biz.mail.mud.yahoo.com ([68.142.201.178]:34456 "HELO
 	smtp109.biz.mail.mud.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1758941AbZIGFrU (ORCPT
+	by vger.kernel.org with SMTP id S1758986AbZIGFrU (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Sep 2009 01:47:20 -0400
-In-Reply-To: <2e03009ed21c515946779f20bfbd182d04fa45fe.1252222134.git.sfking@fdwdc.com>
+In-Reply-To: <8f43ed7055e315597a6f75d70cf391cca512204b.1252222134.git.sfking@fdwdc.com>
 In-Reply-To: <cover.1252222129.git.sfking@fdwdc.com>
 References: <cover.1252222129.git.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -38,248 +39,179 @@ To: uclinux-dev@uclinux.org
 Cc: gerg@snapgear.com, linux-m68k@lists.linux-m68k.org
 
 ---
- arch/m68k/mm/fault.c                              |  221 +--------------------
- arch/m68k/mm/{fault.c => fault_mm.c}              |    0 
- arch/{m68knommu/mm/fault.c => m68k/mm/fault_no.c} |    0 
- 3 files changed, 4 insertions(+), 217 deletions(-)
- copy arch/m68k/mm/{fault.c => fault_mm.c} (100%)
- copy arch/{m68knommu/mm/fault.c => m68k/mm/fault_no.c} (100%)
+ arch/m68k/mm/init.c                             |  152 +----------------------
+ arch/m68k/mm/{init.c => init_mm.c}              |    0 
+ arch/{m68knommu/mm/init.c => m68k/mm/init_no.c} |    0 
+ 3 files changed, 4 insertions(+), 148 deletions(-)
+ copy arch/m68k/mm/{init.c => init_mm.c} (100%)
+ copy arch/{m68knommu/mm/init.c => m68k/mm/init_no.c} (100%)
 
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-index d0e35cf..00e9bd2 100644
---- a/arch/m68k/mm/fault.c
-+++ b/arch/m68k/mm/fault.c
-@@ -1,218 +1,5 @@
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 0007b2a..27b5ce0 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -1,149 +1,5 @@
 -/*
-- *  linux/arch/m68k/mm/fault.c
+- *  linux/arch/m68k/mm/init.c
 - *
 - *  Copyright (C) 1995  Hamish Macdonald
+- *
+- *  Contains common initialization routines, specific init code moved
+- *  to motorola.c and sun3mmu.c
 - */
 -
--#include <linux/mman.h>
--#include <linux/mm.h>
--#include <linux/kernel.h>
--#include <linux/ptrace.h>
--#include <linux/interrupt.h>
 -#include <linux/module.h>
+-#include <linux/signal.h>
+-#include <linux/sched.h>
+-#include <linux/mm.h>
+-#include <linux/swap.h>
+-#include <linux/kernel.h>
+-#include <linux/string.h>
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/bootmem.h>
 -
 -#include <asm/setup.h>
--#include <asm/traps.h>
--#include <asm/system.h>
 -#include <asm/uaccess.h>
+-#include <asm/page.h>
 -#include <asm/pgalloc.h>
+-#include <asm/system.h>
+-#include <asm/machdep.h>
+-#include <asm/io.h>
+-#ifdef CONFIG_ATARI
+-#include <asm/atari_stram.h>
+-#endif
+-#include <asm/sections.h>
+-#include <asm/tlb.h>
 -
--extern void die_if_kernel(char *, struct pt_regs *, long);
--extern const int frame_extra_sizes[]; /* in m68k/kernel/signal.c */
+-DEFINE_PER_CPU(struct mmu_gather, mmu_gathers);
 -
--int send_fault_sig(struct pt_regs *regs)
+-pg_data_t pg_data_map[MAX_NUMNODES];
+-EXPORT_SYMBOL(pg_data_map);
+-
+-int m68k_virt_to_node_shift;
+-
+-#ifndef CONFIG_SINGLE_MEMORY_CHUNK
+-pg_data_t *pg_data_table[65];
+-EXPORT_SYMBOL(pg_data_table);
+-#endif
+-
+-void __init m68k_setup_node(int node)
 -{
--	siginfo_t siginfo = { 0, 0, 0, };
+-#ifndef CONFIG_SINGLE_MEMORY_CHUNK
+-	struct mem_info *info = m68k_memory + node;
+-	int i, end;
 -
--	siginfo.si_signo = current->thread.signo;
--	siginfo.si_code = current->thread.code;
--	siginfo.si_addr = (void *)current->thread.faddr;
--#ifdef DEBUG
--	printk("send_fault_sig: %p,%d,%d\n", siginfo.si_addr, siginfo.si_signo, siginfo.si_code);
-+#ifdef CONFIG_MMU
-+#include "fault_mm.c"
-+#else
-+#include "fault_no.c"
- #endif
+-	i = (unsigned long)phys_to_virt(info->addr) >> __virt_to_node_shift();
+-	end = (unsigned long)phys_to_virt(info->addr + info->size - 1) >> __virt_to_node_shift();
+-	for (; i <= end; i++) {
+-		if (pg_data_table[i])
+-			printk("overlap at %u for chunk %u\n", i, node);
+-		pg_data_table[i] = pg_data_map + node;
+-	}
+-#endif
+-	pg_data_map[node].bdata = bootmem_node_data + node;
+-	node_set_online(node);
+-}
 -
--	if (user_mode(regs)) {
--		force_sig_info(siginfo.si_signo,
--			       &siginfo, current);
--	} else {
--		const struct exception_table_entry *fixup;
 -
--		/* Are we prepared to handle this kernel fault? */
--		if ((fixup = search_exception_tables(regs->pc))) {
--			struct pt_regs *tregs;
--			/* Create a new four word stack frame, discarding the old
--			   one.  */
--			regs->stkadj = frame_extra_sizes[regs->format];
--			tregs =	(struct pt_regs *)((ulong)regs + regs->stkadj);
--			tregs->vector = regs->vector;
--			tregs->format = 0;
--			tregs->pc = fixup->fixup;
--			tregs->sr = regs->sr;
--			return -1;
+-/*
+- * ZERO_PAGE is a special page that is used for zero-initialized
+- * data and COW.
+- */
+-
+-void *empty_zero_page;
+-EXPORT_SYMBOL(empty_zero_page);
+-
+-extern void init_pointer_table(unsigned long ptable);
+-
+-/* References to section boundaries */
+-
+-extern pmd_t *zero_pgtable;
+-
+-void __init mem_init(void)
+-{
+-	pg_data_t *pgdat;
+-	int codepages = 0;
+-	int datapages = 0;
+-	int initpages = 0;
+-	int i;
+-
+-#ifdef CONFIG_ATARI
+-	if (MACH_IS_ATARI)
+-		atari_stram_mem_init_hook();
+-#endif
+-
+-	/* this will put all memory onto the freelists */
+-	totalram_pages = num_physpages = 0;
+-	for_each_online_pgdat(pgdat) {
+-		num_physpages += pgdat->node_present_pages;
+-
+-		totalram_pages += free_all_bootmem_node(pgdat);
+-		for (i = 0; i < pgdat->node_spanned_pages; i++) {
+-			struct page *page = pgdat->node_mem_map + i;
+-			char *addr = page_to_virt(page);
+-
+-			if (!PageReserved(page))
+-				continue;
+-			if (addr >= _text &&
+-			    addr < _etext)
+-				codepages++;
+-			else if (addr >= __init_begin &&
+-				 addr < __init_end)
+-				initpages++;
+-			else
+-				datapages++;
 -		}
--
--		//if (siginfo.si_signo == SIGBUS)
--		//	force_sig_info(siginfo.si_signo,
--		//		       &siginfo, current);
--
--		/*
--		 * Oops. The kernel tried to access some bad page. We'll have to
--		 * terminate things with extreme prejudice.
--		 */
--		if ((unsigned long)siginfo.si_addr < PAGE_SIZE)
--			printk(KERN_ALERT "Unable to handle kernel NULL pointer dereference");
--		else
--			printk(KERN_ALERT "Unable to handle kernel access");
--		printk(" at virtual address %p\n", siginfo.si_addr);
--		die_if_kernel("Oops", regs, 0 /*error_code*/);
--		do_exit(SIGKILL);
 -	}
 -
--	return 1;
+-#ifndef CONFIG_SUN3
+-	/* insert pointer tables allocated so far into the tablelist */
+-	init_pointer_table((unsigned long)kernel_pg_dir);
+-	for (i = 0; i < PTRS_PER_PGD; i++) {
+-		if (pgd_present(kernel_pg_dir[i]))
+-			init_pointer_table(__pgd_page(kernel_pg_dir[i]));
+-	}
+-
+-	/* insert also pointer table that we used to unmap the zero page */
+-	if (zero_pgtable)
+-		init_pointer_table((unsigned long)zero_pgtable);
+-#endif
+-
+-	printk("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
+-	       (unsigned long)nr_free_pages() << (PAGE_SHIFT-10),
+-	       totalram_pages << (PAGE_SHIFT-10),
+-	       codepages << (PAGE_SHIFT-10),
+-	       datapages << (PAGE_SHIFT-10),
+-	       initpages << (PAGE_SHIFT-10));
 -}
 -
--/*
-- * This routine handles page faults.  It determines the problem, and
-- * then passes it off to one of the appropriate routines.
-- *
-- * error_code:
-- *	bit 0 == 0 means no page found, 1 means protection fault
-- *	bit 1 == 0 means read, 1 means write
-- *
-- * If this routine detects a bad access, it returns 1, otherwise it
-- * returns 0.
-- */
--int do_page_fault(struct pt_regs *regs, unsigned long address,
--			      unsigned long error_code)
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
 -{
--	struct mm_struct *mm = current->mm;
--	struct vm_area_struct * vma;
--	int write, fault;
--
--#ifdef DEBUG
--	printk ("do page fault:\nregs->sr=%#x, regs->pc=%#lx, address=%#lx, %ld, %p\n",
--		regs->sr, regs->pc, address, error_code,
--		current->mm->pgd);
--#endif
--
--	/*
--	 * If we're in an interrupt or have no user
--	 * context, we must not take the fault..
--	 */
--	if (in_atomic() || !mm)
--		goto no_context;
--
--	down_read(&mm->mmap_sem);
--
--	vma = find_vma(mm, address);
--	if (!vma)
--		goto map_err;
--	if (vma->vm_flags & VM_IO)
--		goto acc_err;
--	if (vma->vm_start <= address)
--		goto good_area;
--	if (!(vma->vm_flags & VM_GROWSDOWN))
--		goto map_err;
--	if (user_mode(regs)) {
--		/* Accessing the stack below usp is always a bug.  The
--		   "+ 256" is there due to some instructions doing
--		   pre-decrement on the stack and that doesn't show up
--		   until later.  */
--		if (address + 256 < rdusp())
--			goto map_err;
+-	int pages = 0;
+-	for (; start < end; start += PAGE_SIZE) {
+-		ClearPageReserved(virt_to_page(start));
+-		init_page_count(virt_to_page(start));
+-		free_page(start);
+-		totalram_pages++;
+-		pages++;
 -	}
--	if (expand_stack(vma, address))
--		goto map_err;
--
--/*
-- * Ok, we have a good vm_area for this memory access, so
-- * we can handle it..
-- */
--good_area:
--#ifdef DEBUG
--	printk("do_page_fault: good_area\n");
--#endif
--	write = 0;
--	switch (error_code & 3) {
--		default:	/* 3: write, present */
--			/* fall through */
--		case 2:		/* write, not present */
--			if (!(vma->vm_flags & VM_WRITE))
--				goto acc_err;
--			write++;
--			break;
--		case 1:		/* read, present */
--			goto acc_err;
--		case 0:		/* read, not present */
--			if (!(vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE)))
--				goto acc_err;
--	}
--
--	/*
--	 * If for any reason at all we couldn't handle the fault,
--	 * make sure we exit gracefully rather than endlessly redo
--	 * the fault.
--	 */
--
-- survive:
--	fault = handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0);
--#ifdef DEBUG
--	printk("handle_mm_fault returns %d\n",fault);
--#endif
--	if (unlikely(fault & VM_FAULT_ERROR)) {
--		if (fault & VM_FAULT_OOM)
--			goto out_of_memory;
--		else if (fault & VM_FAULT_SIGBUS)
--			goto bus_err;
--		BUG();
--	}
--	if (fault & VM_FAULT_MAJOR)
--		current->maj_flt++;
--	else
--		current->min_flt++;
--
--	up_read(&mm->mmap_sem);
--	return 0;
--
--/*
-- * We ran out of memory, or some other thing happened to us that made
-- * us unable to handle the page fault gracefully.
-- */
--out_of_memory:
--	up_read(&mm->mmap_sem);
--	if (is_global_init(current)) {
--		yield();
--		down_read(&mm->mmap_sem);
--		goto survive;
--	}
--
--	printk("VM: killing process %s\n", current->comm);
--	if (user_mode(regs))
--		do_group_exit(SIGKILL);
--
--no_context:
--	current->thread.signo = SIGBUS;
--	current->thread.faddr = address;
--	return send_fault_sig(regs);
--
--bus_err:
--	current->thread.signo = SIGBUS;
--	current->thread.code = BUS_ADRERR;
--	current->thread.faddr = address;
--	goto send_sig;
--
--map_err:
--	current->thread.signo = SIGSEGV;
--	current->thread.code = SEGV_MAPERR;
--	current->thread.faddr = address;
--	goto send_sig;
--
--acc_err:
--	current->thread.signo = SIGSEGV;
--	current->thread.code = SEGV_ACCERR;
--	current->thread.faddr = address;
--
--send_sig:
--	up_read(&mm->mmap_sem);
--	return send_fault_sig(regs);
+-	printk ("Freeing initrd memory: %dk freed\n", pages);
 -}
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault_mm.c
++#ifdef CONFIG_MMU
++#include "init_mm.c"
++#else
++#include "init_no.c"
+ #endif
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init_mm.c
 similarity index 100%
-copy from arch/m68k/mm/fault.c
-copy to arch/m68k/mm/fault_mm.c
-diff --git a/arch/m68knommu/mm/fault.c b/arch/m68k/mm/fault_no.c
+copy from arch/m68k/mm/init.c
+copy to arch/m68k/mm/init_mm.c
+diff --git a/arch/m68knommu/mm/init.c b/arch/m68k/mm/init_no.c
 similarity index 100%
-copy from arch/m68knommu/mm/fault.c
-copy to arch/m68k/mm/fault_no.c
+copy from arch/m68knommu/mm/init.c
+copy to arch/m68k/mm/init_no.c
 -- 
 1.5.6.5
 
