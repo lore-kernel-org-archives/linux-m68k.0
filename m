@@ -1,39 +1,59 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: toolchain
-Date: Tue, 8 Sep 2009 23:07:34 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.0909082212560.370@silk.local>
-References: <8259f0250908302028n9b0cb56td402539007736fce@mail.gmail.com> <20090831120617.GA1114@marenka.net> <8259f0250908310558l3ddd5fam7d15946a7c1e8572@mail.gmail.com> <8259f0250908311511h77270544vb2dc3dd383f1add8@mail.gmail.com>
- <8259f0250908311516r49e54c7fi44ead0f040cade30@mail.gmail.com> <20090901151747.GB27514@marenka.net> <alpine.OSX.2.00.0909050045330.383@silk.local> <4AA2684E.1080009@codesourcery.com> <alpine.OSX.2.00.0909061510270.415@silk.local>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] md: Fix "strchr" [drivers/md/dm-log-userspace.ko]
+ undefined!
+Date: Thu, 10 Sep 2009 23:13:28 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0909102311520.10463@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:42616 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752692AbZIHNHg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Sep 2009 09:07:36 -0400
-In-Reply-To: <alpine.OSX.2.00.0909061510270.415@silk.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org
-Cc: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Jonathan Brassow <jbrassow@redhat.com>
+Cc: dm-devel@redhat.com, "Rafael J. Wysocki" <rjw@sisk.pl>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
+Commit b8313b6da7e2e7c7f47d93d8561969a3ff9ba0ea ("dm log: remove incorrect
+field from userspace table output") added a call to strstr() with a
+single-character "needle" string parameter.
+Unfortunately some versions of gcc replace such calls to strstr() by calls
+to strchr() behind our back.  This causes linking errors if strchr() is
+defined as an inline function in <asm/string.h> (e.g. on m68k):
 
+| WARNING: "strchr" [drivers/md/dm-log-userspace.ko] undefined!
 
-On Sun, 6 Sep 2009, I wrote:
+Avoid this by explicitly calling strchr() instead.
 
-> Stephen, this patch will be needed in order to build glibc with TLS, 
-> since it provides the userspace headers for TLS.
-> 
-> http://marc.info/?l=linux-m68k&m=125145669021517&w=2
-> 
-> Not sure how debian handles the kernel headers. I presume that 
-> linux-libc-dev (probably 2.6.30) needs the patch? (As will the other 
-> kernel packages of course.)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: stable@kernel.org
+---
+This fixes a regression introduced in 2.6.31-rc9, and detected by m68k
+allmodconfig, cfr. http://kisskb.ellerman.id.au/kisskb/config/164/
 
-The patch doesn't apply to 2.6.30, because the rt_tgsigqueueinfo syscall 
-is not there.
+ drivers/md/dm-log-userspace-base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Will see how far I get with binutils and gcc while I wait for the 2.6.31 
-kernel release and eglibc patches.
+diff --git a/drivers/md/dm-log-userspace-base.c b/drivers/md/dm-log-userspace-base.c
+index 6e186b1..652bd33 100644
+--- a/drivers/md/dm-log-userspace-base.c
++++ b/drivers/md/dm-log-userspace-base.c
+@@ -582,7 +582,7 @@ static int userspace_status(struct dm_dirty_log *log, status_type_t status_type,
+ 		break;
+ 	case STATUSTYPE_TABLE:
+ 		sz = 0;
+-		table_args = strstr(lc->usr_argv_str, " ");
++		table_args = strchr(lc->usr_argv_str, ' ');
+ 		BUG_ON(!table_args); /* There will always be a ' ' */
+ 		table_args++;
+ 
+-- 
+1.6.0.4
 
-Finn
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
