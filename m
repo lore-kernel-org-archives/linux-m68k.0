@@ -1,71 +1,133 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/3] /proc/kmem cleanups and hwpoison bits
-Date: Wed, 16 Sep 2009 13:42:20 +0200
-Message-ID: <10f740e80909160442w470f70cao28a3b6de3e5689b4@mail.gmail.com>
-References: <20090915021851.168285585@intel.com>
-	 <20090915120939.bcc571e1.kamezawa.hiroyu@jp.fujitsu.com>
-	 <20090915082200.GA2588@localhost>
-	 <Pine.LNX.4.64.0909151057020.26095@sister.anvils>
-	 <10f740e80909160201l4834369s75e63fe8df0991aa@mail.gmail.com>
-	 <Pine.LNX.4.64.0909161211100.12659@sister.anvils>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Subject: [PATCH] Fix siginfo._uid bug
+Date: Wed, 16 Sep 2009 20:35:15 +0400
+Message-ID: <4AB113C3.1090606@codesourcery.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0909161211100.12659@sister.anvils>
-Sender: sparclinux-owner@vger.kernel.org
-To: Hugh Dickins <hugh.dickins@tiscali.co.uk>
-Cc: Wu Fengguang <fengguang.wu@intel.com>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Andrew Morton <akpm@linux-foundation.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Ingo Molnar <mingo@elte.hu>, Tejun Heo <tj@kernel.org>, Nick Piggin <npiggin@suse.de>, LKML <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, sparclinux@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------060303000108030905010409"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.codesourcery.com ([65.74.133.4]:44723 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1754608AbZIPQfW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Sep 2009 12:35:22 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Wed, Sep 16, 2009 at 13:26, Hugh Dickins <hugh.dickins@tiscali.co.uk=
-> wrote:
-> On Wed, 16 Sep 2009, Geert Uytterhoeven wrote:
->> On Tue, Sep 15, 2009 at 12:16, Hugh Dickins <hugh.dickins@tiscali.co=
-=2Euk> wrote:
->> > Warning: it may be rubbish, it may just be a hack which appeared t=
-o
->> > work for me the last time I tried, on a particular address range o=
-f a
->> > particular set of configurations of a particular set of architectu=
-res
->> > (x86_32, x86_64, powerpc64). =C2=A0I've never thought it through e=
-nough to
->> > consider submitting, but it _might_ contain something useful for y=
-ou
->> > to factor into your own efforts.
->> >
->> > Sorry for chucking it over the wall to you in this way, but I gues=
-s
->> > that's better than just sitting quietly on it for a few more years=
-=2E
->> >
->> > Certainly-Not-Signed-off-by: Hugh Dickins <hugh.dickins@tiscali.co=
-=2Euk>
->
-> I think that gives a good idea of the status of this patch:
-> I'm not making any policy decisions here or submitting to any tree.
+This is a multi-part message in MIME format.
+--------------060303000108030905010409
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-OK, that was my understanding, too.
+The attached patch fixes bug in m68k's struct siginfo.
 
-But I thought it would hurt to verify. You never know who's gonna take
-your patch and (try to) sneak it in ;-)
+Geert, does it look fine to you?
 
-Gr{oetje,eeting}s,
+Andreas, glibc-ports/sysdeps/unix/sysv/linux/m68k/bits/siginfo.h needs 
+the same fix.  Would you like me to submit a patch for GLIBC ports or 
+you prefer to fix it yourself?
 
-						Geert
+Thanks,
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Maxim K.
+CodeSourcery
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe sparclinux" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--------------060303000108030905010409
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="0001-Fix-siginfo._uid-bug.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="0001-Fix-siginfo._uid-bug.patch"
+
+>From 52913525698a078c594d5cf6ac746761179cd141 Mon Sep 17 00:00:00 2001
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Date: Wed, 16 Sep 2009 20:30:14 +0400
+Subject: [PATCH] Fix siginfo._uid bug.
+
+Fix erroneous aliasing of siginfo._kill._uid32 with siginfo._rt._sigval and
+siginfo._sigchld._status
+
+Signed-off-by: Maxim Kuvyrkov <maxim@codesourcery.com>
+
+---
+The bug is rather elegant and has been present in sources for years.
+The problem is that m68k uses a custom siginfo layout due to having
+a 16-bit uid field for 'backward compatibility'.  I.e., siginfo._kill
+fields are:
+
+  17                 /* kill() */
+  18                 struct {
+  19                         __kernel_pid_t _pid;    /* sender's pid */
+  20                         __kernel_uid_t _uid;    /* backwards compatibility */
+  21                         __kernel_uid32_t _uid32; /* sender's uid */
+  22                 } _kill;
+
+The same _uid32 field was also added *last* for _rt and _sigchld substructures
+(see below).  What the author didn't expect is that the si_uid macro is
+defined to _kill._uid32 *even when used in context of _rt or _sigchld*!
+Therefore, values intended for _rt._uid32 and _sigchld._uid32 are being
+written to _rt._sigval and _sigchld._status respectively.
+
+  33                 /* POSIX.1b signals */
+  34                 struct {
+  35                         __kernel_pid_t _pid;    /* sender's pid */
+  36                         __kernel_uid_t _uid;    /* backwards compatibility */
+  37                         sigval_t _sigval;
+  38                         __kernel_uid32_t _uid32; /* sender's uid */
+  39                 } _rt;
+  40
+  41                 /* SIGCHLD */
+  42                 struct {
+  43                         __kernel_pid_t _pid;    /* which child */
+  44                         __kernel_uid_t _uid;    /* backwards compatibility */
+  45                         int _status;            /* exit code */
+  46                         clock_t _utime;
+  47                         clock_t _stime;
+  48                         __kernel_uid32_t _uid32; /* sender's uid */
+  49                 } _sigchld;
+...
+  71 #define si_uid          _sifields._kill._uid32
+
+Once you know what the problem is, the fix is pretty much straightforward:
+ensure that _pid, _uid and _uid32 appear as the first fields in any of
+the substructures that mentions them.
+
+This fixes posix/tst-waitid GLIBC test that failed on the wrong value of
+_sigchld._status.
+---
+ arch/m68k/include/asm/siginfo.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/include/asm/siginfo.h b/arch/m68k/include/asm/siginfo.h
+index ca7dde8..207d610 100644
+--- a/arch/m68k/include/asm/siginfo.h
++++ b/arch/m68k/include/asm/siginfo.h
+@@ -38,18 +38,18 @@ typedef struct siginfo {
+ 		struct {
+ 			__kernel_pid_t _pid;	/* sender's pid */
+ 			__kernel_uid_t _uid;	/* backwards compatibility */
+-			sigval_t _sigval;
+ 			__kernel_uid32_t _uid32; /* sender's uid */
++			sigval_t _sigval;
+ 		} _rt;
+ 
+ 		/* SIGCHLD */
+ 		struct {
+ 			__kernel_pid_t _pid;	/* which child */
+ 			__kernel_uid_t _uid;	/* backwards compatibility */
+-			int _status;		/* exit code */
++			__kernel_uid32_t _uid32; /* sender's uid */
+ 			clock_t _utime;
+ 			clock_t _stime;
+-			__kernel_uid32_t _uid32; /* sender's uid */
++			int _status;		/* exit code */
+ 		} _sigchld;
+ 
+ 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
+-- 
+1.6.4
+
+
+--------------060303000108030905010409--
