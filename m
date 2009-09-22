@@ -1,270 +1,209 @@
-From: Lance Tagliapietra <lancetag@Luminet.net>
-Subject: 2.6.29 kernel crash in SCSI driver
-Date: Sun, 20 Sep 2009 08:59:54 -0500
-Message-ID: <20090920135952.GA3466@luminet.net>
-Reply-To: lancetag@luminet.net
+From: mike <localgost@gmail.com>
+Subject: Re: toolchain, was Re: bogl: don't know screen type 1
+Date: Tue, 22 Sep 2009 07:11:37 +0200
+Message-ID: <8259f0250909212211l6f4dd00aue3a648f1166ba582@mail.gmail.com>
+References: <8259f0250908302028n9b0cb56td402539007736fce@mail.gmail.com>
+	 <8259f0250908310558l3ddd5fam7d15946a7c1e8572@mail.gmail.com>
+	 <8259f0250908311511h77270544vb2dc3dd383f1add8@mail.gmail.com>
+	 <8259f0250908311516r49e54c7fi44ead0f040cade30@mail.gmail.com>
+	 <20090901151747.GB27514@marenka.net>
+	 <alpine.OSX.2.00.0909050045330.383@silk.local>
+	 <4AA2684E.1080009@codesourcery.com>
+	 <alpine.LNX.2.00.0909122039160.6219@nippy.intranet>
+	 <4AAC7CB6.2060400@codesourcery.com>
+	 <alpine.LNX.2.00.0909141827440.25347@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1yeeQ81UyVL57Vl7"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from spamtitan.hbci.com ([206.230.105.6]:56152 "EHLO
-	spamtitan.hbci.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751971AbZITOVf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Sep 2009 10:21:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by spamtitan.hbci.com (Postfix) with ESMTP id CD8C5AB9DAD
-	for <linux-m68k@vger.kernel.org>; Sun, 20 Sep 2009 09:10:49 -0500 (CDT)
-Received: from mail.hbci.com (ultra.hbci.com [206.230.105.5])
-	by spamtitan.hbci.com (Postfix) with ESMTP id 77CF8AB9D9B
-	for <linux-m68k@vger.kernel.org>; Sun, 20 Sep 2009 09:10:47 -0500 (CDT)
-Received: from tag1amiga.luminet.net (unknown [205.243.118.55])
-	by mail.hbci.com (Postfix) with ESMTP id B7B3D278202
-	for <linux-m68k@vger.kernel.org>; Sun, 20 Sep 2009 09:11:03 -0500 (CDT)
-Received: from lancetag by tag1amiga.luminet.net with local (Exim 3.36 #1 (Debian))
-	id 1MpN07-0000w0-00
-	for <linux-m68k@vger.kernel.org>; Sun, 20 Sep 2009 09:02:51 -0500
-Content-Disposition: inline
+Received: from mail-ew0-f211.google.com ([209.85.219.211]:52311 "EHLO
+	mail-ew0-f211.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751209AbZIVFQz convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Sep 2009 01:16:55 -0400
+Received: by ewy7 with SMTP id 7so82275ewy.17
+        for <linux-m68k@vger.kernel.org>; Mon, 21 Sep 2009 22:16:58 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.0909141827440.25347@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.hbci.com, kernel.org@hbci.com
+To: fthain@telegraphics.com.au
+Cc: Maxim Kuvyrkov <maxim@codesourcery.com>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+
+Seems im not the only soul feeling the bloat
+http://news.cnet.com/8301-13505_3-10358024-16.html
+
+I havent seen any 68k linux benchmarks for this yet
+http://cshandley.co.uk/temp/membench/
+http://amigaworld.net/modules/newbb/viewtopic.php?topic_id=3D29569&foru=
+m=3D14
+
+It would be interesting if someone could compare a binary compiled
+with gcc 2.95 to 3.33 3.40 and or 4.4 for linux, on various systems
+even. To see if the slowdown has any consistency.
+
+-Mike
 
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hello,
-
-I can generate a very repeatable kernel crash when a bad block on my
-hard drive is referenced.  The crash occurs on a 2.6.29 kernel, but not
-on a 2.4.30 kernel.  It is repeatable (the bad block hasn't changed).
-:)  The crash can occur when referencing the file which had the bad
-block allocated to it, and when running fsck -C /home -- -c
-to get that block mapped out.
-
-Hardware:
-Amiga 2000 / 40 MHz GVP 030 Combo Card (with SCSI) 9G SCSI hard disc (hosting
-/home partition mentioned above) / 16M RAM
-
-See attached DMESG with crash info.
-
-I booted in to a 2.4.30 kernel, and got the block mapped out, but I'm
-willing to help test any changes against this configuration.
-
-Thanks,
-
---Lance
-
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="fsck-2.6-crashlog.txt"
-
-Searching for SAVEKMSG magic...
-Found 10048 bytes at 0x000dc010
->>>>>>>>>>>>>>>>>>>>
-Linux version 2.6.29.1 (lancetag@tag1amiga) (gcc version 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)) #2 Wed May 13 20:22:09 CDT 2009
-Warning: no chipram present for debugging
-Amiga hardware found: [A2000] VIDEO BLITTER AUDIO FLOPPY KEYBOARD MOUSE SERIAL PARALLEL A2000_CLK CHIP_RAM PAULA DENISE_HR AGNUS_HR_NTSC ZORRO 
-console [debug0] enabled
-Ignoring memory chunk at 0x200000:0x600000 before the first chunk
-Fix your bootloader or use a memfile to make use of this area!
-On node 0 totalpages: 4096
-free_area_init_node: node 0, pgdat 001cf1c4, node_mem_map 00201000
-  DMA zone: 36 pages used for memmap
-  DMA zone: 0 pages reserved
-  DMA zone: 4060 pages, LIFO batch:0
-Built 1 zonelists in Zone order, mobility grouping off.  Total pages: 4060
-Kernel command line: debug=mem root=/dev/sda2 fb=false video=amifb:ntsc-lace single
-PID hash table entries: 64 (order: 6, 256 bytes)
-Console: colour dummy device 80x25
-console [tty0] enabled
-Linux version 2.6.29.1 (lancetag@tag1amiga) (gcc version 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)) #2 Wed May 13 20:22:09 CDT 2009
-Warning: no chipram present for debugging
-Amiga hardware found: [A2000] VIDEO BLITTER AUDIO FLOPPY KEYBOARD MOUSE SERIAL PARALLEL A2000_CLK CHIP_RAM PAULA DENISE_HR AGNUS_HR_NTSC ZORRO 
-console [debug0] enabled
-Ignoring memory chunk at 0x200000:0x600000 before the first chunk
-Fix your bootloader or use a memfile to make use of this area!
-On node 0 totalpages: 4096
-free_area_init_node: node 0, pgdat 001cf1c4, node_mem_map 00201000
-  DMA zone: 36 pages used for memmap
-  DMA zone: 0 pages reserved
-  DMA zone: 4060 pages, LIFO batch:0
-Built 1 zonelists in Zone order, mobility grouping off.  Total pages: 4060
-Kernel command line: debug=mem root=/dev/sda2 fb=false video=amifb:ntsc-lace single
-PID hash table entries: 64 (order: 6, 256 bytes)
-Console: colour dummy device 80x25
-console [tty0] enabled
-Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
-Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
-Memory: 14172k/14172k available (1348k kernel code, 768k data, 96k init)
-SLUB: Genslabs=12, HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
-Calibrating delay loop... 9.70 BogoMIPS (lpj=48512)
-Mount-cache hash table entries: 512
-net_namespace: 296 bytes
-NET: Registered protocol family 16
-bio: create slab <bio-0> at 0
-SCSI subsystem initialized
-Zorro: Probing AutoConfig expansion devices: 9 devices
-NET: Registered protocol family 2
-IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
-TCP established hash table entries: 512 (order: 0, 4096 bytes)
-TCP bind hash table entries: 512 (order: -1, 2048 bytes)
-TCP: Hash tables configured (established 512 bind 512)
-TCP reno registered
-NET: Registered protocol family 1
-msgmni has been set to 27
-alg: No test for stdrng (krng)
-io scheduler noop registered
-io scheduler deadline registered (default)
-Console: switching to colour frame buffer device 80x25
-fb0: Amiga ECS frame buffer device, using 640K of video memory
-cirrusfb: CL Spectrum board detected;  RAM (2 MB) at $800000, <6> REG at $ec0000
-Cirrus Logic chipset on Zorro bus
-cirrusfb: Driver for Cirrus Logic based graphic boards, v2.0-pre2
-Amiga-builtin serial driver version 4.30
-ttyS0 is the amiga builtin serial port
-lp: driver loaded but no devices found
-parport0: Amiga built-in port using irq
-parport0: fix this legacy no-device port driver!
-lp0: using parport0 (interrupt-driven).
-eth0 (): not using net_device_ops yet
-eth0: A2065 at 0x00ee0000, Ethernet Address 00:80:10:00:07:48
-wd33c93-0: chip=WD33c93A/9 no_sync=0xff no_dma=0 debug_flags=0x00
-           setup_args=,,,,,,,,,,
-           Version 1.26++ - 10/Feb/2007, Compiled May 12 2009 at 23:19:12
-scsi0 : GVP Series II SCSI
- sending SDTR 0103015e00 0103015e00 sync_xfer=30
-scsi 0:0:1:0: CD-ROM            DEC      RRD47   (C) DEC  1206 PQ: 0 ANSI: 2
- sending SDTR 0103015e00 0103015e00 sync_xfer=30
-scsi 0:0:3:0: Direct-Access     IBM      DCHS09F  CLAR09  2424 PQ: 0 ANSI: 2
- sending SDTR 0103015e00 0103013200 sync_xfer=20
-scsi 0:0:6:0: Direct-Access     SEAGATE  SX150176LC       BA11 PQ: 0 ANSI: 2
-Driver 'sd' needs updating - please use bus_type methods
-sd 0:0:3:0: [sda] 17796078 512-byte hardware sectors: (9.11 GB/8.48 GiB)
-sd 0:0:3:0: [sda] Write Protect is off
-sd 0:0:3:0: [sda] Mode Sense: bf 00 10 08
-sd 0:0:3:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
-sd 0:0:3:0: [sda] 17796078 512-byte hardware sectors: (9.11 GB/8.48 GiB)
-sd 0:0:3:0: [sda] Write Protect is off
-sd 0:0:3:0: [sda] Mode Sense: bf 00 10 08
-sd 0:0:3:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
- sda: RDSK (512) sda1 (LNX^@)(res 2 spb 1) sda2 (LNX^@)(res 2 spb 1)
-sd 0:0:3:0: [sda] Attached SCSI disk
-sd 0:0:6:0: [sdb] 97693755 512-byte hardware sectors: (50.0 GB/46.5 GiB)
-sd 0:0:6:0: [sdb] Write Protect is off
-sd 0:0:6:0: [sdb] Mode Sense: cb 00 10 08
-sd 0:0:6:0: [sdb] Write cache: enabled, read cache: enabled, supports DPO and FUA
-sd 0:0:6:0: [sdb] 97693755 512-byte hardware sectors: (50.0 GB/46.5 GiB)
-sd 0:0:6:0: [sdb] Write Protect is off
-sd 0:0:6:0: [sdb] Mode Sense: cb 00 10 08
-sd 0:0:6:0: [sdb] Write cache: enabled, read cache: enabled, supports DPO and FUA
- sdb: RDSK (512) sdb1 (DOS^C)(res 2 spb 1) sdb2 (DOS^C)(res 2 spb 1) sdb3 (SWP^@)(res 2 spb 1) sdb4 (LNX^@)(res 2 spb 1) sdb5 (LNX^@)(res 2 spb 1)
-sd 0:0:6:0: [sdb] Attached SCSI disk
-mice: PS/2 mouse device common for all mice
-input: Amiga Keyboard as /devices/virtual/input/input0
-test: dev (254:0)
-rtc-test rtc-test.0: rtc core: registered test as rtc0
-test: dev (254:1)
-rtc-test rtc-test.1: rtc core: registered test as rtc1
-TCP cubic registered
-rtc-test rtc-test.0: setting system clock to 2009-08-20 00:30:58 UTC (1250728258)
-VFS: Mounted root (ext2 filesystem) readonly on device 8:2.
-Adding 860500k swap on /dev/sdb3.  Priority:-1 extents:1 across:860500k 
-Generic RTC Driver v1.07
-------------[ cut here ]------------
-WARNING: at fs/proc/generic.c:547 0x1910df()
-proc_dir_entry 'driver/rtc' already registered
-Modules linked in: genrtc(+)
-Call Trace: [<0000cf72>] warn_slowpath+0x56/0x7e
- [<0000cf80>] warn_slowpath+0x64/0x7e
- [<000af710>] kobject_uevent_env+0x300/0x340
- [<000aecb6>] kobject_get+0x14/0x1e
- [<000e1b7c>] get_device+0x12/0x1c
- [<000e4eb8>] klist_class_dev_get+0x12/0x16
- [<0014d70c>] klist_node_init+0x38/0x40
- [<000aeb84>] kobject_put+0x1e/0x46
- [<000aec30>] kobject_release+0x0/0x72
- [<000ae4ac>] ida_pre_get+0x0/0x6c
- [<0001fd02>] blocking_notifier_call_chain+0x0/0x1e
- [<000adf1e>] idr_get_empty_slot+0x0/0x294
- [<000ae33c>] ida_get_new_above+0x18a/0x1e6
- [<000ae4ac>] ida_pre_get+0x0/0x6c
- [<0001fd02>] blocking_notifier_call_chain+0x0/0x1e
- [<0001fd02>] blocking_notifier_call_chain+0x0/0x1e
- [<000ae4c2>] ida_pre_get+0x16/0x6c
- [<00080130>] proc_register+0x120/0x186
- [<01875000>] rtc_generic_init+0x0/0x62 [genrtc]
- [<0001fd02>] blocking_notifier_call_chain+0x0/0x1e
- [<0014f1ae>] mutex_unlock+0x0/0x24
- [<0008029a>] create_proc_entry+0x54/0x9c
- [<0000243c>] name_to_dev_t+0x198/0x200
- [<01875036>] rtc_generic_init+0x36/0x62 [genrtc]
- [<00002024>] do_one_initcall+0x1c/0x1a4
- [<0000243c>] name_to_dev_t+0x198/0x200
- [<00014262>] __mod_timer+0x0/0x96
- [<0000243c>] name_to_dev_t+0x198/0x200
- [<0001fd1a>] blocking_notifier_call_chain+0x18/0x1e
- [<000282e8>] sys_init_module+0x72/0x18a
- [<000282fa>] sys_init_module+0x84/0x18a
- [<01875000>] rtc_generic_init+0x0/0x62 [genrtc]
- [<0000243c>] name_to_dev_t+0x198/0x200
- [<00002576>] syscall+0x8/0xc
- [<0000243c>] name_to_dev_t+0x198/0x200
- [<0001c72c>] prepare_to_wait+0x0/0x34
- [<00019114>] ____call_usermodehelper+0xb2/0xde
- [<00019062>] ____call_usermodehelper+0x0/0xde
- [<00002a7a>] kernel_thread+0x3a/0x4e
-
----[ end trace a1772effa92406e5 ]---
-sd 0:0:3:0: [sda] Sense Key : Recovered Error [current] 
-Info fld=0xa4c9cf
-sd 0:0:3:0: [sda] Add. Sense: Recovered data with error corr. & retries applied
-sd 0:0:3:0: [sda] Sense Key : Recovered Error [current] 
-Info fld=0xa91729
-sd 0:0:3:0: [sda] Add. Sense: Recovered data - recommend reassignment
-sd 0:0:3:0: [sda] Sense Key : Recovered Error [current] 
-Info fld=0xa922be
-sd 0:0:3:0: [sda] Add. Sense: Recovered data - recommend reassignment
-*** ZERO DIVIDE ***   FORMAT=2
-Current process id is 230
-BAD KERNEL TRAP: 00000000
-Modules linked in: affs genrtc
-PC: [<000f6d30>] sd_completed_bytes+0xd8/0xfa
-SR: 2002  SP: 002adedc  a2: 002b8c90
-d0: 00000000    d1: 00000001    d2: 00aa8a00    d3: 00000000
-d4: 00aa8a00    d5: 00000000    a0: 00000000    a1: 00aa8a00
-Process scsi_eh_0 (pid: 230, task=002b8c90)
-Frame format=2 instr addr=000f6d2c
-Stack from 002adf14:
-        00000008 00000008 002adfd4 002adfc4 002d2c34 00009698 002681e0 002d2c00
-        002de400 00000000 00000000 00000000 00aa8a93 002adf68 000f8eba 002681e0
-        002d2004 0001c398 00040000 7003110b 00000000 002681e0 000e90d8 002681e0
-        002681ec 002681e0 002adfb8 002adfc4 000ebe48 002681e0 002681ec 002adfd4
-        002d2c00 002adfdc 000ecb3a 002adfc4 002d2c00 00002a40 0000a7ce 00251ff4
-        0001a0e0 0001c398 000ec8f6 00008acc 002adfc4 002adfc4 000ec8f6 00008acc
-Call Trace: [<00009698>] set_user_nice+0x0/0xf8
- [<000f8eba>] sd_done+0x110/0x11c
- [<0001c398>] kthread_should_stop+0x0/0xe
- [<00040000>] copy_vma+0xe2/0x11c
- [<000e90d8>] scsi_finish_command+0x5e/0x90
- [<000ebe48>] scsi_eh_flush_done_q+0x50/0xbe
- [<000ecb3a>] scsi_error_handler+0x244/0x290
- [<00002a40>] kernel_thread+0x0/0x4e
- [<0000a7ce>] sched_setscheduler+0x0/0x1c
- [<0001a0e0>] find_task_by_pid_ns+0x0/0x18
- [<0001c398>] kthread_should_stop+0x0/0xe
- [<000ec8f6>] scsi_error_handler+0x0/0x290
- [<00008acc>] complete+0x0/0x36
- [<000ec8f6>] scsi_error_handler+0x0/0x290
- [<00008acc>] complete+0x0/0x36
- [<00008acc>] complete+0x0/0x36
- [<0001c3f0>] kthread+0x4a/0x5c
- [<0001c3a6>] kthread+0x0/0x5c
- [<0014ec34>] schedule+0x0/0x1de
- [<00002a7a>] kernel_thread+0x3a/0x4e
-
-Code: 2043 2244 2404 4283 200b 220c 4c40 2403 <2242> 2005 2206 2206 4282 260b 280c 4c43 1402 2800 2a01 6090 4cee 38fc ffcc 4e5e
-amikbd: Ctrl-Amiga-Amiga reset warning!!
-amikbd: Ctrl-Amiga-Amiga reset warning!!
-<<<<<<<<<<<<<<<<<<<<
-
---1yeeQ81UyVL57Vl7--
+2009/9/14  <fthain@telegraphics.com.au>:
+>
+> On Sun, 13 Sep 2009, Maxim Kuvyrkov wrote:
+>
+>> fthain@telegraphics.com.au wrote:
+>>
+>> > On Sat, 5 Sep 2009, Maxim Kuvyrkov wrote:
+>> >
+>> > > Finn Thain wrote: ...
+>> > >
+>> > > > I understand that the current GCC (4.4) lacks the necessary
+>> > > > patches, and 4.5 is still uncooked (and that's a scary prospec=
+t).
+>> > > > Can someone confirm that this is the necessary patch for 4.4:
+>> > > > http://gcc.gnu.org/ml/gcc-patches/2009-05/msg01024.html
+>> > > I think GCC 4.4 should be good enough.
+>> >
+>> > I tried patching 4.4.1 and the patch was rejected. It expects
+>> > m68k_legitimize_address() to have been declared and defined, but t=
+hat
+>> > routine isn't in gcc-4.4.
+>>
+>> m68k.c:m68k_legitimize_address() was macro m68k.h:LEGITIMIZE_ADDRESS=
+(),
+>> you need to move the hunk to m68k.h.
+>>
+>
+> Thanks for the tip.
+>
+> Here's a second cut. This one removes the m68k_tls_symbol_p() routine=
+ and
+> inlines that logic in the LEGITIMIZE_ADDRESS macro (avoids a referenc=
+e to
+> m68k_tls_symbol_p() from explow.o). The TARGET_HAVE_TLS macro wasn't
+> defined in explow.c so I changed it to HAVE_AS_TLS.
+>
+> It appears to work, but I won't be able to test any binary produced b=
+y
+> this compiler for a week or so.
+>
+> Finn
+>
+>
+> --- gcc-m68k-support-for-tls.patch =C2=A0 =C2=A0 =C2=A02009-09-14 15:=
+11:39.893286532 +1000
+> +++ gcc-m68k-support-for-tls-backport.patch =C2=A0 =C2=A0 2009-09-14 =
+15:11:34.563287784 +1000
+> @@ -574,13 +574,7 @@
+>
+> =C2=A0enum reg_class regno_reg_class[] =3D
+> =C2=A0{
+> -@@ -143,11 +144,13 @@ static tree m68k_handle_fndecl_attribute
+> - static void m68k_compute_frame_layout (void);
+> - static bool m68k_save_reg (unsigned int regno, bool interrupt_handl=
+er);
+> - static bool m68k_ok_for_sibcall_p (tree, tree);
+> -+static bool m68k_tls_symbol_p (rtx);
+> - static rtx m68k_legitimize_address (rtx, rtx, enum machine_mode);
+> - static bool m68k_rtx_costs (rtx, int, int, int *, bool);
+> +@@ -146,6 +147,7 @@ static tree m68k_handle_fndecl_attribute
+> =C2=A0#if M68K_HONOR_TARGET_STRICT_ALIGNMENT
+> =C2=A0static bool m68k_return_in_memory (const_tree, const_tree);
+> =C2=A0#endif
+> @@ -613,16 +607,6 @@
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0&& crtl->uses_pic_offset_table)
+> =C2=A0 =C2=A0 =C2=A0insn =3D emit_insn (gen_load_got (pic_offset_tabl=
+e_rtx));
+> =C2=A0}
+> -@@ -1431,6 +1441,9 @@ m68k_legitimize_sibcall_address (rtx x)
+> - rtx
+> - m68k_legitimize_address (rtx x, rtx oldx, enum machine_mode mode)
+> - {
+> -+ =C2=A0if (m68k_tls_symbol_p (x))
+> -+ =C2=A0 =C2=A0return m68k_legitimize_tls_address (x);
+> -+
+> - =C2=A0 if (GET_CODE (x) =3D=3D PLUS)
+> - =C2=A0 =C2=A0 {
+> - =C2=A0 =C2=A0 =C2=A0 int ch =3D (x) !=3D (oldx);
+> =C2=A0@@ -1849,7 +1862,7 @@ m68k_illegitimate_symbolic_constant_p (r
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&& !offset_within_block_p (base, IN=
+TVAL (offset)))
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return true;
+> @@ -957,7 +941,7 @@
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return orig;
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0gcc_assert (reg);
+> -@@ -2196,13 +2421,257 @@ legitimize_pic_address (rtx orig, enum m
+> +@@ -2196,13 +2421,244 @@ legitimize_pic_address (rtx orig, enum m
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 base =3D=3D re=
+g ? 0 : reg);
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (GET_CODE (orig) =3D=3D CONST_INT)
+> @@ -1164,19 +1148,6 @@
+> =C2=A0+ =C2=A0return orig;
+> =C2=A0+}
+> =C2=A0+
+> -+/* Return true if X is a TLS symbol. =C2=A0*/
+> -+
+> -+static bool
+> -+m68k_tls_symbol_p (rtx x)
+> -+{
+> -+ =C2=A0if (!TARGET_HAVE_TLS)
+> -+ =C2=A0 =C2=A0return false;
+> -+
+> -+ =C2=A0if (GET_CODE (x) !=3D SYMBOL_REF)
+> -+ =C2=A0 =C2=A0return false;
+> -+
+> -+ =C2=A0return SYMBOL_REF_TLS_MODEL (x) !=3D 0;
+> -+}
+> =C2=A0+
+> =C2=A0+/* Helper for m68k_tls_referenced_p. =C2=A0*/
+> =C2=A0+
+> @@ -1414,6 +1385,18 @@
+>
+> =C2=A0#define REG_OK_FOR_BASE_P(X) \
+> =C2=A0 =C2=A0m68k_legitimate_base_reg_p (X, REG_STRICT_P)
+> +@@ -777,7 +778,10 @@ __transfer_from_trampoline () =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
+> + #define COPY_ONCE(Y) if (!copied) { Y =3D copy_rtx (Y); copied =3D =
+ch =3D 1; }
+> + #define LEGITIMIZE_ADDRESS(X,OLDX,MODE,WIN) =C2=A0 \
+> + { register int ch =3D (X) !=3D (OLDX); =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0\
+> +- =C2=A0if (GET_CODE (X) =3D=3D PLUS) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
+> ++ =C2=A0if (HAVE_AS_TLS && (GET_CODE (X) =3D=3D SYMBOL_REF) && =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> ++ =C2=A0 =C2=A0 =C2=A0(SYMBOL_REF_TLS_MODEL (X) !=3D 0)) =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> ++ =C2=A0 =C2=A0m68k_legitimize_tls_address (X); =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> ++ =C2=A0else if (GET_CODE (X) =3D=3D PLUS) =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> + =C2=A0 =C2=A0 { int copied =3D 0; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
+> + =C2=A0 =C2=A0 =C2=A0 if (GET_CODE (XEXP (X, 0)) =3D=3D MULT) =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 \
+> + =C2=A0 =C2=A0 =C2=A0 { COPY_ONCE (X); XEXP (X, 0) =3D force_operand=
+ (XEXP (X, 0), 0);} \
+> =C2=A0@@ -974,6 +975,9 @@ do { if (cc_prev_status.flags & CC_IN_68
+> =C2=A0 =C2=A0assemble_name ((FILE), (NAME)), =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 \
+> =C2=A0 =C2=A0fprintf ((FILE), ",%u\n", (int)(ROUNDED)))
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
+ml
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
