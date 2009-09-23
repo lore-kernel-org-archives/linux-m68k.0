@@ -1,190 +1,73 @@
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Subject: Re: [PATCH] Define sigcontext ABI of ColdFire
-Date: Wed, 23 Sep 2009 01:37:31 +0400
-Message-ID: <4AB9439B.6050006@codesourcery.com>
-References: <4AB360DC.9030902@codesourcery.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [patch 158/200] m68k: convert to asm-generic/hardirq.h
+Date: Wed, 23 Sep 2009 10:19:49 +0200
+Message-ID: <10f740e80909230119x612e6f4arf5a8b007702b2e7a@mail.gmail.com>
+References: <200909220004.n8M047d1000607@imap1.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050905030803090404040401"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.codesourcery.com ([65.74.133.4]:37662 "EHLO
-	mail.codesourcery.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1752530AbZIVVhh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Sep 2009 17:37:37 -0400
-In-Reply-To: <4AB360DC.9030902@codesourcery.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754531AbZIWITs@vger.kernel.org>
+In-Reply-To: <200909220004.n8M047d1000607@imap1.linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org, torvalds@linux-foundation.org, hch@lst.de
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------050905030803090404040401
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, Sep 22, 2009 at 02:04,  <akpm@linux-foundation.org> wrote:
+> From: Christoph Hellwig <hch@lst.de>
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-Maxim Kuvyrkov wrote:
-> The following patch define sigcontext ABI of ColdFire.
-...
-> --- a/arch/m68k/kernel/signal.c
-> +++ b/arch/m68k/kernel/signal.c
-> @@ -897,9 +897,15 @@ static void setup_rt_frame (int sig, struct k_sigaction *ka, siginfo_t *info,
->  
->  	/* Set up to return from userspace.  */
->  	err |= __put_user(frame->retcode, &frame->pretcode);
-> +#ifdef __mcoldfire__
-> +	/* move.w #,d0; trap #0 */
-> +	err |= __put_user(0x303c0000 + __NR_rt_sigreturn,
-> +			  (long __user *)(frame->retcode + 0));
-> +#else
->  	/* moveq #,d0; notb d0; trap #0 */
->  	err |= __put_user(0x70004600 + ((__NR_rt_sigreturn ^ 0xff) << 16),
->  			  (long __user *)(frame->retcode + 0));
-> +#endif
->  	err |= __put_user(0x4e40, (short __user *)(frame->retcode + 4));
->  
->  	if (err)
+This one broke the m68k build, cfr.
+http://kisskb.ellerman.id.au/kisskb/buildresult/1295096/.
+I guess including <asm-generic/hardirq.h> here exposes us to Include He=
+ll...
 
-This turned out to be buggy: move.w will only set the lower 16 bits of 
-%d0 so if the signal handler leaves something in the high-order bits, 
-then the trampoline will trap into a non-existent syscall.  The attached 
-patch fixes this; nothing else in it has changed since the initial revision.
+`git revert 45d80eea87c9f8292d2d33173d6866c0ec57238a` fixes it.
 
-I was lured into thinking that the above sequence is OK by m68knommu's 
-version of the trampoline.  Arch/m68knommu/kernel/entry.S uses "move 
-#__NR_rt_sigreturn,%d0" which assembles into "move.w".  This is too is 
-buggy and I'm also attaching the fix for the nommu version.
+> ---
+>
+> =C2=A0arch/m68k/include/asm/hardirq_mm.h | =C2=A0 12 ++----------
+> =C2=A01 file changed, 2 insertions(+), 10 deletions(-)
+>
+> diff -puN arch/m68k/include/asm/hardirq_mm.h~m68k-convert-to-asm-gene=
+ric-hardirqh arch/m68k/include/asm/hardirq_mm.h
+> --- a/arch/m68k/include/asm/hardirq_mm.h~m68k-convert-to-asm-generic-=
+hardirqh
+> +++ a/arch/m68k/include/asm/hardirq_mm.h
+> @@ -1,16 +1,8 @@
+> =C2=A0#ifndef __M68K_HARDIRQ_H
+> =C2=A0#define __M68K_HARDIRQ_H
+>
+> -#include <linux/threads.h>
+> -#include <linux/cache.h>
+> -
+> -/* entry.S is sensitive to the offsets of these fields */
+> -typedef struct {
+> - =C2=A0 =C2=A0 =C2=A0 unsigned int __softirq_pending;
+> -} ____cacheline_aligned irq_cpustat_t;
+> -
+> -#include <linux/irq_cpustat.h> /* Standard mappings for irq_cpustat_=
+t above */
+> -
+> =C2=A0#define HARDIRQ_BITS =C2=A0 8
+>
+> +#include <asm-generic/hardirq.h>
+> +
+> =C2=A0#endif
 
-Regards,
+Gr{oetje,eeting}s,
+
+						Geert
 
 --
-Maxim K.
-CodeSourcery
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
---------------050905030803090404040401
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="0001-Define-sigcontext-ABI-of-ColdFire.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="0001-Define-sigcontext-ABI-of-ColdFire.patch"
-
->From bafb4e11ac13ea3095d9e8510f9a58c4cdc0481d Mon Sep 17 00:00:00 2001
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Date: Wed, 23 Sep 2009 01:22:43 +0400
-Subject: [PATCH 1/2] Define sigcontext ABI of ColdFire
-
-The following patch defines sigcontext ABI of ColdFire.  Due to ISA
-restrictions ColdFire needs different rt_sigreturn trampoline.
-
-And due to ColdFire FP registers being 8-bytes instead of 12-bytes on
-m68k, sigcontext and fpregset structures should be updated.
-
-Regarding the sc_fpstate[16+6*8] field, it would've been enough 16
-bytes to store ColdFire's FP state.  To accomodate GLIBC's libSegFault
-it would'be been enough 6*8 bytes (room for the 6 non-call-clobbered
-FP registers).  I set it to 16+6*8 to provide some extra space for any
-future changes in the ColdFire FPU.
-
-Signed-off-by: Maxim Kuvyrkov <maxim@codesourcery.com>
----
- arch/m68k/include/asm/sigcontext.h |    6 ++++++
- arch/m68k/include/asm/ucontext.h   |    4 ++++
- arch/m68k/kernel/signal.c          |    7 +++++++
- 3 files changed, 17 insertions(+), 0 deletions(-)
-
-diff --git a/arch/m68k/include/asm/sigcontext.h b/arch/m68k/include/asm/sigcontext.h
-index 523db2a..1320eaa 100644
---- a/arch/m68k/include/asm/sigcontext.h
-+++ b/arch/m68k/include/asm/sigcontext.h
-@@ -15,9 +15,15 @@ struct sigcontext {
- 	unsigned long  sc_pc;
- 	unsigned short sc_formatvec;
- #ifndef __uClinux__
-+# ifdef __mcoldfire__
-+	unsigned long  sc_fpregs[2][2];	/* room for two fp registers */
-+	unsigned long  sc_fpcntl[3];
-+	unsigned char  sc_fpstate[16+6*8];
-+# else
- 	unsigned long  sc_fpregs[2*3];  /* room for two fp registers */
- 	unsigned long  sc_fpcntl[3];
- 	unsigned char  sc_fpstate[216];
-+# endif
- #endif
- };
- 
-diff --git a/arch/m68k/include/asm/ucontext.h b/arch/m68k/include/asm/ucontext.h
-index e4e2266..00dcc51 100644
---- a/arch/m68k/include/asm/ucontext.h
-+++ b/arch/m68k/include/asm/ucontext.h
-@@ -7,7 +7,11 @@ typedef greg_t gregset_t[NGREG];
- 
- typedef struct fpregset {
- 	int f_fpcntl[3];
-+#ifdef __mcoldfire__
-+	int f_fpregs[8][2];
-+#else
- 	int f_fpregs[8*3];
-+#endif
- } fpregset_t;
- 
- struct mcontext {
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index de2d05d..4b38753 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -897,10 +897,17 @@ static void setup_rt_frame (int sig, struct k_sigaction *ka, siginfo_t *info,
- 
- 	/* Set up to return from userspace.  */
- 	err |= __put_user(frame->retcode, &frame->pretcode);
-+#ifdef __mcoldfire__
-+	/* movel #__NR_rt_sigreturn,d0; trap #0 */
-+	err |= __put_user(0x203c0000, (long __user *)(frame->retcode + 0));
-+	err |= __put_user(0x00004e40 + (__NR_rt_sigreturn << 16),
-+			  (long __user *)(frame->retcode + 4));
-+#else
- 	/* moveq #,d0; notb d0; trap #0 */
- 	err |= __put_user(0x70004600 + ((__NR_rt_sigreturn ^ 0xff) << 16),
- 			  (long __user *)(frame->retcode + 0));
- 	err |= __put_user(0x4e40, (short __user *)(frame->retcode + 4));
-+#endif
- 
- 	if (err)
- 		goto give_sigsegv;
--- 
-1.6.4
-
-
---------------050905030803090404040401
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="0002-Fix-m68k-uclinux-s-rt_sigreturn-trampoline.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename*0="0002-Fix-m68k-uclinux-s-rt_sigreturn-trampoline.patch"
-
->From ac003b05af17bb48e6acffd454cae6fdf6e80737 Mon Sep 17 00:00:00 2001
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Date: Wed, 23 Sep 2009 01:25:44 +0400
-Subject: [PATCH 2/2] Fix m68k-uclinux's rt_sigreturn trampoline
-
-
-Signed-off-by: Maxim Kuvyrkov <maxim@codesourcery.com>
----
- arch/m68knommu/kernel/entry.S |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/arch/m68knommu/kernel/entry.S b/arch/m68knommu/kernel/entry.S
-index f56faa5..2717605 100644
---- a/arch/m68knommu/kernel/entry.S
-+++ b/arch/m68knommu/kernel/entry.S
-@@ -145,6 +145,6 @@ ENTRY(ret_from_user_signal)
- 	trap #0
- 
- ENTRY(ret_from_user_rt_signal)
--	move #__NR_rt_sigreturn,%d0
-+	movel #__NR_rt_sigreturn,%d0
- 	trap #0
- 
--- 
-1.6.4
-
-
---------------050905030803090404040401--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
