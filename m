@@ -1,43 +1,53 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2 2/2] m68k: Cleanup linker scripts using new linker
-	script macros.
-Date: Wed, 30 Sep 2009 08:53:26 +0200
-Message-ID: <20090930065326.GA13850@merkur.ravnborg.org>
-References: <1253119466-19488-1-git-send-email-tabbott@ksplice.com> <1253119466-19488-3-git-send-email-tabbott@ksplice.com> <10f740e80909270258o6bde0f3dk720bd5b5c091ed2f@mail.gmail.com> <m2ocowwngg.fsf@igel.home> <alpine.DEB.1.10.0909271351110.14151@dr-wily.mit.edu> <m3zl8dbron.fsf@hase.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch fixes
+Date: Thu, 1 Oct 2009 16:16:04 +1000
+Message-ID: <200910010616.n916G4O4019086@localhost.localdomain>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [195.41.46.235] ([195.41.46.235]:47263 "EHLO pfepa.post.tele.dk"
-	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-	id S1751654AbZI3Gx2 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 30 Sep 2009 02:53:28 -0400
-Content-Disposition: inline
-In-Reply-To: <m3zl8dbron.fsf@hase.home>
+Received: from rex.securecomputing.com ([203.24.151.4]:43733 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1752674AbZJAGQl (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 1 Oct 2009 02:16:41 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@redhat.com>
-Cc: Tim Abbott <tabbott@ksplice.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Tue, Sep 29, 2009 at 07:12:56PM +0200, Andreas Schwab wrote:
-> Tim Abbott <tabbott@ksplice.com> writes:
-> 
-> > Below is a new version of the second patch that attempts to address this 
-> > by putting the ALIGN inside a section, so that _end is at the end of the 
-> > load segment (I also did a bit more cleanup):
-> >
-> >   .init_end : {
-> > 	/* This ALIGN be in a section so that _end is at the end of the
-> > 	   load segment. */
-> > 	. = ALIGN(PAGE_SIZE);
-> > 	__init_end = .;
-> >   }
-> >   
-> >   _end = .;
-> 
-> This works fine.
+Hi Linus,
 
-Thanks for testing Andreas.
+Please pull to get m68knommu arch bug fixes.
 
-Geert - I assume you take the corrected version and push to Linus?
+git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-	Sam
+The pt_regs rename fix is important, the other couple are minor fixups.
+
+Thanks
+Greg
+
+
+
+
+The following changes since commit 17d857be649a21ca90008c6dc425d849fa83db5c:
+  Linus Torvalds (1):
+        Linux 2.6.32-rc1
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Greg Ungerer (1):
+      m68knommu: fix rename of pt_regs offset defines breakage
+
+Huang Weiyi (1):
+      m68knommu: remove duplicated #include
+
+Lennart Sorensen (1):
+      m68knommu: show KiB rather than pages in "Freeing initrd memory:" message
+
+ arch/m68knommu/kernel/asm-offsets.c      |   28 +++++++++++++-------------
+ arch/m68knommu/kernel/entry.S            |    6 ++--
+ arch/m68knommu/mm/init.c                 |    2 +-
+ arch/m68knommu/platform/5206e/config.c   |    1 -
+ arch/m68knommu/platform/68328/entry.S    |   32 +++++++++++++++---------------
+ arch/m68knommu/platform/68360/entry.S    |   16 +++++++-------
+ arch/m68knommu/platform/coldfire/entry.S |   20 +++++++++---------
+ 7 files changed, 52 insertions(+), 53 deletions(-)
