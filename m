@@ -1,64 +1,64 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH] Merge m68k and m68knommu
-Date: Sun, 18 Oct 2009 09:47:45 +0200
-Message-ID: <20091018074745.GA13755@merkur.ravnborg.org>
-References: <200910171802.59072.sfking@fdwdc.com>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: Fwd: [PATCH] [RFC] ataflop: remove buggy IRQ disable from
+ do_fd_request()
+Date: Sun, 18 Oct 2009 10:24:30 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0910180956400.17222@zirkon.biophys.uni-duesseldorf.de>
+References: <alpine.LSU.2.00.0910091141150.19284@wotan.suse.de>
+ <10f740e80910100201n30367714uc57ec3c9c39b92af@mail.gmail.com>
+ <alpine.DEB.2.00.0910110846420.20140@zirkon.biophys.uni-duesseldorf.de>
+ <20091012075850.GX9228@kernel.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from pfepb.post.tele.dk ([195.41.46.236]:47941 "EHLO
-	pfepb.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751362AbZJRHrp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Oct 2009 03:47:45 -0400
-Content-Disposition: inline
-In-Reply-To: <200910171802.59072.sfking@fdwdc.com>
+Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:36682 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751180AbZJRKPe (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 18 Oct 2009 06:15:34 -0400
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KRP00702DPIRU00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Sun, 18 Oct 2009 11:15:18 +0200 (MEST)
+In-reply-to: <20091012075850.GX9228@kernel.dk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Steven King <sfking@fdwdc.com>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@snapgear.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>
+To: Jens Axboe <jens.axboe@oracle.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
 
-On Sat, Oct 17, 2009 at 06:02:58PM -0700, Steven King wrote:
-> This is a script and patch to merge the m68knommu arch into m68k.
-> 
-> The script was inspired by the script Sam Ravnborg used to merge the 
-> includes from m68knommu. For those files common to both arches but 
-> differing in content, the m68k version of the file is renamed to 
-> <file>_mm.<ext> and the m68knommu version of the file is moved into the 
-> corresponding m68k directory and renamed <file>_no.<ext> and a small 
-> wrapper file <file>.<ext> is used to select between the two version. Files 
-> that are common to both but don't differ are removed from the m68knommu 
-> tree and files and directories that are unique to the m68knommu tree are 
-> moved to the m68k tree. Finally, the arch/m68knommu tree is removed.
-> 
-> To select between the the versions of the files, the wrapper uses
-> 
-> #ifdef CONFIG_MMU
-> #include <file>_mm.<ext>
-> #else
-> #include <file>_no.<ext>
-> #endif
-> 
-> The patch modifies the toplevel Makefile so that ARCH=m68knommu still works 
-> (by setting SRCARCH=m68k) and adds the m68knommu Kconfig and Makefile 
-> to the m68k Kconfig and Makefile, using the definition of ARCH to select 
-> which values to use.
-> 
-> Thus when building for either a m68k or an m68knommu target, one still 
-> specifies either ARCH=m68k or ARCH=m68knommu and everything should 
-> build EXACTLY as it did pre-merge.  (I think).
+Hi Jens, Geert,
 
-Hi Steven.
+> > > 
+> > > If you look at the code long enough, you will notioce that the
+> > > local_irq_disable() call is actually commented out. This has been
+> > > introduced back in 2002 in [1], but as you can see, the same bug has been
+> > > there even before, with the sti() call being commented out in the very
+> > > same way :)
 
-This looks good!
-The mechanical method you are using really makes it simple to do
-the merge.
-And it also nicely highlights which files that really differs.
+Please note above: the commented out line used to be sti() - this is still 
+present in 2.4.30 which I've been running for a long time. The driver uses 
+timers for various tasks, and this was to ensure timer interrupts are on during 
+redo_fd_request. 
 
-There is obviously more that can be merged later
-but this is the first and biggest step.
+The change in 2002 substituted local_irq_disable() for the sti() which seems 
+clearly wrong.
 
+> > I would rather suggest to leave the code in, and fix the buggy
+> > comments instead.
 > 
-> Signed-off-by: Steven King <sfking@fdwdc.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> What buggy comments? The comments states that interrupts are already
+> disabled when entering this function, which is correct. The point is
+> that doing a flags save and then an irq disable is pointless, since we
+> KNOW that interrupts are already disabled.
 
-	Sam
+That's what is worrying me - enabling interrupts for the sake of getting timers 
+working used to be necessary at one time.
+
+There is something else wrong with do_fd_request - if indeed interrupts are 
+disabled, stdma_lock may attempt to sleep and would deadlock. 
+
+I guess scheduling redo_fd_request as bottom half or delayed work would be 
+required here. I need to look into this more closely.
+
+	Michael
