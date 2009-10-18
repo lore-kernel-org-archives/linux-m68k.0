@@ -1,64 +1,68 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Subject: Re: Fwd: [PATCH] [RFC] ataflop: remove buggy IRQ disable from
  do_fd_request()
-Date: Sun, 18 Oct 2009 10:24:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0910180956400.17222@zirkon.biophys.uni-duesseldorf.de>
+Date: Sun, 18 Oct 2009 23:14:32 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0910182126120.6395@zirkon.biophys.uni-duesseldorf.de>
 References: <alpine.LSU.2.00.0910091141150.19284@wotan.suse.de>
  <10f740e80910100201n30367714uc57ec3c9c39b92af@mail.gmail.com>
  <alpine.DEB.2.00.0910110846420.20140@zirkon.biophys.uni-duesseldorf.de>
- <20091012075850.GX9228@kernel.dk>
+ <alpine.LSU.2.00.0910121106330.19284@wotan.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:36682 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751180AbZJRKPe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 18 Oct 2009 06:15:34 -0400
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
- id <0KRP00702DPIRU00@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Sun, 18 Oct 2009 11:15:18 +0200 (MEST)
-In-reply-to: <20091012075850.GX9228@kernel.dk>
+In-reply-to: <alpine.LSU.2.00.0910121106330.19284@wotan.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jens Axboe <jens.axboe@oracle.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
+To: Jiri Kosina <jkosina@suse.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Tejun Heo <tj@kernel.org>, Jens Axboe <jens.axboe@oracle.com>, linux-kernel@vger.kernel.org
 
-Hi Jens, Geert,
+Hi Jiri,
 
-> > > 
+trying for a somewhat more coherent opinion: 
+
 > > > If you look at the code long enough, you will notioce that the
 > > > local_irq_disable() call is actually commented out. This has been
 > > > introduced back in 2002 in [1], but as you can see, the same bug has been
 > > > there even before, with the sti() call being commented out in the very
 > > > same way :)
 
-Please note above: the commented out line used to be sti() - this is still 
-present in 2.4.30 which I've been running for a long time. The driver uses 
-timers for various tasks, and this was to ensure timer interrupts are on during 
-redo_fd_request. 
+The substitution of sti() by local_irq_disable() had me a bit confused here. The 
+last time I worked on this driver was when we still had a big kernel lock, so 
+the  sti() might have been crucial there. 
 
-The change in 2002 substituted local_irq_disable() for the sti() which seems 
-clearly wrong.
+The code does evidently work fine without it, and redo_fd_request as well as 
+do_fd_action do not need to reenable local interupts or otherwise change the 
+interrupt level anymore. After a bit more pondering over the code I now 
+understand why this is ... 
 
-> > I would rather suggest to leave the code in, and fix the buggy
-> > comments instead.
+> > The surounding code probably hasn't been touched in ages. The floppy driver in 
+> > its current state does work. If redo_fd_request could alter timers ot queues, 
+> > rmoving the locking would be dangerous, no?
 > 
-> What buggy comments? The comments states that interrupts are already
-> disabled when entering this function, which is correct. The point is
-> that doing a flags save and then an irq disable is pointless, since we
-> KNOW that interrupts are already disabled.
+> The patch is not removing any locking. It only
+> 
+> 1) removes the local_irq_disable() that has been commented out for many 
+>    years already anyway
+> 2) removes the saving and restoring of CPU flags around do_fd_request(), 
+>    which is rather clearly a nop than any kind of "locking"
+> 
+> > > [1] http://lkml.org/lkml/2002/12/27/58
+> > > 
+> > > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+> > 
+> > NAck for my part. 
+> 
+> Please elaborate a little bit more which of the two points above you base 
+> your NACK on.
 
-That's what is worrying me - enabling interrupts for the sake of getting timers 
-working used to be necessary at one time.
+The removal of local_irq_disable() (which should have been local_irq_enable()) 
+just raised a flag, and I didn't immediately see why the interrupt enable had 
+been commented out. 
 
-There is something else wrong with do_fd_request - if indeed interrupts are 
-disabled, stdma_lock may attempt to sleep and would deadlock. 
+With a bit of further thought on the matter I am satisfied that this patch will 
+not impact on driver function at all, and do not wish to sustain my objection.
 
-I guess scheduling redo_fd_request as bottom half or delayed work would be 
-required here. I need to look into this more closely.
+IOW: Ack, and my sincere apologies for wasting your time. 
 
 	Michael
