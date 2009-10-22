@@ -1,31 +1,45 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: [PATCH] m68k allow ioremapping top of memory
-Date: Thu, 22 Oct 2009 15:54:54 +0200
-Message-ID: <20091022135454.GA27903@frolo.macqel>
+From: fthain@telegraphics.com.au
+Subject: initcall question
+Date: Fri, 23 Oct 2009 00:56:50 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.0910222357390.22095@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756062AbZJVNy6@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from www.telegraphics.com.au ([204.15.192.19]:47295 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750814AbZJVOEO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Oct 2009 10:04:14 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k <linux-m68k@vger.kernel.org>
 
-Hi all,
 
-The test in __ioremap to reject memory ranges crossing the 0 boundary
-rejects also memory ranges at the end of the memory.  Fix that.
+Hi All,
 
-Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+I've been porting the powermac zilog driver to 68k macs. It works, but I 
+can't figure out how to get the device initialisation right.
 
-diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -116,7 +115,7 @@ void __iomem *__ioremap(unsigned long ph
- 	/*
- 	 * Don't allow mappings that wrap..
- 	 */
--	if (!size || size > physaddr + size)
-+	if (!size || physaddr > (unsigned long)(-size))
- 		return NULL;
- 
- #ifdef CONFIG_AMIGA
+I've used platform devices for the serial ports. The serial controller 
+base address is passed in by the bootloader.
+
+If the platform devices are statically defined, they get no release method 
+which can result in the driver core carping, "Device 'scc.0' does not have 
+a release() function, it is broken and must be fixed", and then dumping a 
+backtrace.
+
+The alternative to statically defined devices is platform_device_alloc(), 
+which does provide a release method, but I can't call it at arch_initcall 
+time because the console_initcall has already happened. And I can't use it 
+at setup_arch() time (when the boot info is parsed) because there's no 
+kmalloc() yet.
+
+What to do? I don't want to export the bootinfo data to the pmac_zilog 
+driver for console initialisation. And I'd really like to avoid a bunch of 
+hard coded SCC base addresses.
+
+Any suggestions?
+
+Perhaps there is some other kind of initcall that runs after memory 
+management becomes available but before console initialisation?
+
+Finn
