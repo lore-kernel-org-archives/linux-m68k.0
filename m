@@ -1,53 +1,54 @@
-From: fthain@telegraphics.com.au
-Subject: Re: initcall question
-Date: Sat, 24 Oct 2009 03:30:11 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.0910240325040.26550@nippy.intranet>
-References: <alpine.LNX.2.00.0910222357390.22095@nippy.intranet> <20091022192436.GA7969@cynthia.pants.nu>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Subject: Re: [PATCH] Fix siginfo._uid bug
+Date: Mon, 26 Oct 2009 17:21:32 +0300
+Message-ID: <4AE5B06C.1090303@codesourcery.com>
+References: <4AB113C3.1090606@codesourcery.com> <m21vm6k76e.fsf@igel.home> <4AB3A4AC.6000703@codesourcery.com> <4AC5BFA8.4040805@codesourcery.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:36736 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752419AbZJWQaM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 23 Oct 2009 12:30:12 -0400
-In-Reply-To: <20091022192436.GA7969@cynthia.pants.nu>
+Received: from mail.codesourcery.com ([38.113.113.100]:49941 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751186AbZJZO2Q (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 Oct 2009 10:28:16 -0400
+In-Reply-To: <4AC5BFA8.4040805@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Brad Boyer <flar@allandria.com>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-
-
-On Thu, 22 Oct 2009, Brad Boyer wrote:
-
-> On Fri, Oct 23, 2009 at 12:56:50AM +1100, fthain@telegraphics.com.au 
-> wrote:
-> > If the platform devices are statically defined, they get no release 
-> > method which can result in the driver core carping, "Device 'scc.0' 
-> > does not have a release() function, it is broken and must be fixed", 
-> > and then dumping a backtrace.
-> > 
-> > The alternative to statically defined devices is 
-> > platform_device_alloc(), which does provide a release method, but I 
-> > can't call it at arch_initcall time because the console_initcall has 
-> > already happened. And I can't use it at setup_arch() time (when the 
-> > boot info is parsed) because there's no kmalloc() yet.
-> > 
-> > What to do? I don't want to export the bootinfo data to the pmac_zilog 
-> > driver for console initialisation. And I'd really like to avoid a 
-> > bunch of hard coded SCC base addresses.
-> > 
-> > Any suggestions?
+Maxim Kuvyrkov wrote:
+> Maxim Kuvyrkov wrote:
+>> Andreas Schwab wrote:
+>>> Maxim Kuvyrkov <maxim@codesourcery.com> writes:
+>>>
+>>>> The bug is rather elegant and has been present in sources for years.
+>>>
+>>> For more than 9 years, to be precise, when 32 bit uids were introduced.
+> ...
+>>> Given that there is no way to keep backward compatibility it might be a
+>>> good opportunity to do same cleanup here.  Like going back to the
+>>> generic layout.
+>>
+>> There is yet another bug in siginfo.  si_sigval is expected to be at 
+>> the same offsets in _timer and _rt.  At the moment si_sigval is at 
+>> offset 8 in _timer and at offset 6 in _rt (the patch for fixing uids 
+>> makes that 8@_timer and 10@_rt).
+>>
+>> This bug causes rt/tst-*timer* tests fail.
+>>
+>> Moving on to the generic version of siginfo.h will certainly fix the 
+>> problem, otherwise, one needs to pad extra 2 bytes in _timer.
 > 
-> Could you just define and set a release function that does nothing? 
-> That's kind of silly, but it seems like it should work. If it's static 
-> memory anyway, there isn't anything to free.
+> While the discussion is pending, here is an updated version of the patch 
+> that also patches up sigval.
 
-I guess it is a cheap enough. It does work.
+Ping?  Broken signal handling is a quite serious bug.
 
-Thanks,
-Finn
+Geert, which option of fixing would you prefer?
 
-> 	Brad Boyer
-> 	flar@allandria.com
-> 
+-- 
+Maxim Kuvyrkov
+CodeSourcery
+maxim@codesourcery.com
+(650) 331-3385 x724
