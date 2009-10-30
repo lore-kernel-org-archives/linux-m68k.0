@@ -1,36 +1,38 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: where to get XC68040FE33 chips? was, Re: sonic ethernet and powerbook
- 520
-Date: Thu, 29 Oct 2009 19:10:42 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0910291726140.396@silk.local>
-References: <alpine.OSX.2.00.0910281848300.523@silk.local> <20091029025006.GA32242@cynthia.pants.nu>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] Coldfire GPIO corrections
+Date: Fri, 30 Oct 2009 10:40:34 +1000
+Message-ID: <4AEA3602.1060105@snapgear.com>
+References: <200910151254.41599.sfking@fdwdc.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:43306 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752892AbZJ2IKo (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 29 Oct 2009 04:10:44 -0400
-In-Reply-To: <20091029025006.GA32242@cynthia.pants.nu>
+Received: from rex.securecomputing.com ([203.24.151.4]:43862 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1753111AbZJ3Akx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 29 Oct 2009 20:40:53 -0400
+In-Reply-To: <200910151254.41599.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Brad Boyer <flar@allandria.com>
-Cc: linux-m68k@vger.kernel.org
+To: Steven King <sfking@fdwdc.com>
+Cc: uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+
+Hi Steven,
+
+Steven King wrote:
+> Pin 0 of the EPORT is not connected on the 523x, 5271, 5275 and 528x and the 
+> TIMER on the 523x has 8 pins, not 4.
+
+Thanks, I have pushed this into the for-linus branch of
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+
+Thanks
+Greg
 
 
-
-On Wed, 28 Oct 2009, Brad Boyer wrote:
-
-> ...
-> Does the driver work if you just skip that part and program in a fixed 
-> value that you know is valid?
-
-Yes, it works fine. I'll send a patch that makes the driver read the MAC 
-from the chip when there's no PROM, like NetBSD.
-
-Unfortunately, this CPU fails my LC040 test, meaning it has the page fault 
-bug... which reminds me, does anyone know where to get XC68040FE33 chips 
-(without paying an arm and a leg)? I have some spare CPU boards that I 
-might upgrade.
-
-Finn
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
