@@ -1,206 +1,167 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 6/13] mac68k: move macsonic and macmace platform devices
-Date: Wed, 4 Nov 2009 00:42:02 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0911031447110.483@silk.local>
+Subject: [PATCH 7/13] macsonic: fix crash on PowerBook 520
+Date: Wed, 4 Nov 2009 00:42:40 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911031448060.483@silk.local>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:39927 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:39954 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751264AbZKCNl5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:41:57 -0500
+	with ESMTP id S1751475AbZKCNmf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:42:35 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Miller <davem@davemloft.net>, linux-m68k@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Move platform device code from the drivers to the platform init function.
+No-one seems to know where the PowerBook 500 series store their ethernet 
+MAC addresses. So, rather than crash, use a MAC address from the SONIC 
+CAM. Failing that, generate a random one.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/mac/config.c |   23 +++++++++++++++++++++++
- drivers/net/macmace.c  |   33 ++++-----------------------------
- drivers/net/macsonic.c |   33 ++++-----------------------------
- 3 files changed, 31 insertions(+), 58 deletions(-)
+ drivers/net/macsonic.c |  113 +++++++++++++++++++++++++------------------------
+ 1 file changed, 58 insertions(+), 55 deletions(-)
 
-Index: linux-2.6.31/drivers/net/macmace.c
-===================================================================
---- linux-2.6.31.orig/drivers/net/macmace.c	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/net/macmace.c	2009-11-03 03:23:42.000000000 +1100
-@@ -39,7 +39,6 @@
- #include "mace.h"
- 
- static char mac_mace_string[] = "macmace";
--static struct platform_device *mac_mace_device;
- 
- #define N_TX_BUFF_ORDER	0
- #define N_TX_RING	(1 << N_TX_BUFF_ORDER)
-@@ -752,6 +751,7 @@ static irqreturn_t mace_dma_intr(int irq
- 
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Macintosh MACE ethernet driver");
-+MODULE_ALIAS("platform:macmace");
- 
- static int __devexit mac_mace_device_remove (struct platform_device *pdev)
- {
-@@ -777,47 +777,22 @@ static struct platform_driver mac_mace_d
- 	.probe  = mace_probe,
- 	.remove = __devexit_p(mac_mace_device_remove),
- 	.driver	= {
--		.name = mac_mace_string,
-+		.name	= mac_mace_string,
-+		.owner	= THIS_MODULE,
- 	},
- };
- 
- static int __init mac_mace_init_module(void)
- {
--	int err;
--
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	if ((err = platform_driver_register(&mac_mace_driver))) {
--		printk(KERN_ERR "Driver registration failed\n");
--		return err;
--	}
--
--	mac_mace_device = platform_device_alloc(mac_mace_string, 0);
--	if (!mac_mace_device)
--		goto out_unregister;
--
--	if (platform_device_add(mac_mace_device)) {
--		platform_device_put(mac_mace_device);
--		mac_mace_device = NULL;
--	}
--
--	return 0;
--
--out_unregister:
--	platform_driver_unregister(&mac_mace_driver);
--
--	return -ENOMEM;
-+	return platform_driver_register(&mac_mace_driver);
- }
- 
- static void __exit mac_mace_cleanup_module(void)
- {
- 	platform_driver_unregister(&mac_mace_driver);
--
--	if (mac_mace_device) {
--		platform_device_unregister(mac_mace_device);
--		mac_mace_device = NULL;
--	}
- }
- 
- module_init(mac_mace_init_module);
 Index: linux-2.6.31/drivers/net/macsonic.c
 ===================================================================
---- linux-2.6.31.orig/drivers/net/macsonic.c	2009-11-03 03:23:24.000000000 +1100
+--- linux-2.6.31.orig/drivers/net/macsonic.c	2009-11-03 03:23:42.000000000 +1100
 +++ linux-2.6.31/drivers/net/macsonic.c	2009-11-03 03:23:42.000000000 +1100
-@@ -62,7 +62,6 @@
- #include <asm/mac_via.h>
- 
- static char mac_sonic_string[] = "macsonic";
--static struct platform_device *mac_sonic_device;
- 
- #include "sonic.h"
- 
-@@ -604,6 +603,7 @@ out:
- MODULE_DESCRIPTION("Macintosh SONIC ethernet driver");
- module_param(sonic_debug, int, 0);
- MODULE_PARM_DESC(sonic_debug, "macsonic debug level (1-4)");
-+MODULE_ALIAS("platform:macsonic");
- 
- #include "sonic.c"
- 
-@@ -624,44 +624,19 @@ static struct platform_driver mac_sonic_
- 	.probe  = mac_sonic_probe,
- 	.remove = __devexit_p(mac_sonic_device_remove),
- 	.driver	= {
--		.name = mac_sonic_string,
-+		.name	= mac_sonic_string,
-+		.owner	= THIS_MODULE,
- 	},
- };
- 
- static int __init mac_sonic_init_module(void)
- {
--	int err;
--
--	if ((err = platform_driver_register(&mac_sonic_driver))) {
--		printk(KERN_ERR "Driver registration failed\n");
--		return err;
--	}
--
--	mac_sonic_device = platform_device_alloc(mac_sonic_string, 0);
--	if (!mac_sonic_device)
--		goto out_unregister;
--
--	if (platform_device_add(mac_sonic_device)) {
--		platform_device_put(mac_sonic_device);
--		mac_sonic_device = NULL;
--	}
--
--	return 0;
--
--out_unregister:
--	platform_driver_unregister(&mac_sonic_driver);
--
--	return -ENOMEM;
-+	return platform_driver_register(&mac_sonic_driver);
- }
- 
- static void __exit mac_sonic_cleanup_module(void)
- {
- 	platform_driver_unregister(&mac_sonic_driver);
--
--	if (mac_sonic_device) {
--		platform_device_unregister(mac_sonic_device);
--		mac_sonic_device = NULL;
--	}
- }
- 
- module_init(mac_sonic_init_module);
-Index: linux-2.6.31/arch/m68k/mac/config.c
-===================================================================
---- linux-2.6.31.orig/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
-+++ linux-2.6.31/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
-@@ -921,6 +921,16 @@ static struct platform_device esp_1_pdev
- 	.id		= 1,
- };
- 
-+static struct platform_device sonic_pdev = {
-+	.name		= "macsonic",
-+	.id		= -1,
-+};
-+
-+static struct platform_device mace_pdev = {
-+	.name		= "macmace",
-+	.id		= -1,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	u8 *swim_base;
-@@ -971,6 +981,19 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * Ethernet device
-+	 */
-+
-+	switch (macintosh_config->ether_type) {
-+	case MAC_ETHER_SONIC:
-+		platform_device_register(&sonic_pdev);
-+		break;
-+	case MAC_ETHER_MACE:
-+		platform_device_register(&mace_pdev);
-+		break;
-+	}
-+
+@@ -222,69 +222,73 @@ static int __devinit macsonic_init(struc
  	return 0;
  }
  
+-static int __devinit mac_onboard_sonic_ethernet_addr(struct net_device *dev)
++#define INVALID_MAC(mac) (memcmp(mac, "\x08\x00\x07", 3) && \
++                          memcmp(mac, "\x00\xA0\x40", 3) && \
++                          memcmp(mac, "\x00\x80\x19", 3) && \
++                          memcmp(mac, "\x00\x05\x02", 3))
++
++static void __devinit mac_onboard_sonic_ethernet_addr(struct net_device *dev)
+ {
+ 	struct sonic_local *lp = netdev_priv(dev);
+ 	const int prom_addr = ONBOARD_SONIC_PROM_BASE;
+-	int i;
++	unsigned short val;
+ 
+-	/* On NuBus boards we can sometimes look in the ROM resources.
+-	   No such luck for comm-slot/onboard. */
+-	for(i = 0; i < 6; i++)
+-		dev->dev_addr[i] = SONIC_READ_PROM(i);
++	/*
++	 * On NuBus boards we can sometimes look in the ROM resources.
++	 * No such luck for comm-slot/onboard.
++	 * On the PowerBook 520, the PROM base address is a mystery.
++	 */
++	if (hwreg_present((void *)prom_addr)) {
++		int i;
++
++		for (i = 0; i < 6; i++)
++			dev->dev_addr[i] = SONIC_READ_PROM(i);
++		if (!INVALID_MAC(dev->dev_addr))
++			return;
+ 
+-	/* Most of the time, the address is bit-reversed.  The NetBSD
+-	   source has a rather long and detailed historical account of
+-	   why this is so. */
+-	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
++		/*
++		 * Most of the time, the address is bit-reversed. The NetBSD
++		 * source has a rather long and detailed historical account of
++		 * why this is so.
++		 */
+ 		bit_reverse_addr(dev->dev_addr);
+-	else
+-		return 0;
++		if (!INVALID_MAC(dev->dev_addr))
++			return;
+ 
+-	/* If we still have what seems to be a bogus address, we'll
+-           look in the CAM.  The top entry should be ours. */
+-	/* Danger! This only works if MacOS has already initialized
+-           the card... */
+-	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
+-	{
+-		unsigned short val;
++		/*
++		 * If we still have what seems to be a bogus address, we'll
++		 * look in the CAM. The top entry should be ours.
++		 */
++		printk(KERN_WARNING "macsonic: MAC address in PROM seems "
++		                    "to be invalid, trying CAM\n");
++	} else {
++		printk(KERN_WARNING "macsonic: cannot read MAC address from "
++		                    "PROM, trying CAM\n");
++	}
+ 
+-		printk(KERN_INFO "macsonic: PROM seems to be wrong, trying CAM entry 15\n");
++	/* This only works if MacOS has already initialized the card. */
+ 
+-		SONIC_WRITE(SONIC_CMD, SONIC_CR_RST);
+-		SONIC_WRITE(SONIC_CEP, 15);
++	SONIC_WRITE(SONIC_CMD, SONIC_CR_RST);
++	SONIC_WRITE(SONIC_CEP, 15);
+ 
+-		val = SONIC_READ(SONIC_CAP2);
+-		dev->dev_addr[5] = val >> 8;
+-		dev->dev_addr[4] = val & 0xff;
+-		val = SONIC_READ(SONIC_CAP1);
+-		dev->dev_addr[3] = val >> 8;
+-		dev->dev_addr[2] = val & 0xff;
+-		val = SONIC_READ(SONIC_CAP0);
+-		dev->dev_addr[1] = val >> 8;
+-		dev->dev_addr[0] = val & 0xff;
+-
+-		printk(KERN_INFO "HW Address from CAM 15: %pM\n",
+-		       dev->dev_addr);
+-	} else return 0;
+-
+-	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
+-	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
+-	{
+-		/*
+-		 * Still nonsense ... messed up someplace!
+-		 */
+-		printk(KERN_ERR "macsonic: ERROR (INVALID MAC)\n");
+-		return -EIO;
+-	} else return 0;
++	val = SONIC_READ(SONIC_CAP2);
++	dev->dev_addr[5] = val >> 8;
++	dev->dev_addr[4] = val & 0xff;
++	val = SONIC_READ(SONIC_CAP1);
++	dev->dev_addr[3] = val >> 8;
++	dev->dev_addr[2] = val & 0xff;
++	val = SONIC_READ(SONIC_CAP0);
++	dev->dev_addr[1] = val >> 8;
++	dev->dev_addr[0] = val & 0xff;
++
++	if (!INVALID_MAC(dev->dev_addr))
++		return;
++
++	/* Still nonsense ... messed up someplace! */
++
++	printk(KERN_WARNING "macsonic: MAC address in CAM entry 15 "
++	                    "seems invalid, will use a random MAC\n");
++	random_ether_addr(dev->dev_addr);
+ }
+ 
+ static int __devinit mac_onboard_sonic_probe(struct net_device *dev)
+@@ -401,8 +405,7 @@ static int __devinit mac_onboard_sonic_p
+ 	SONIC_WRITE(SONIC_ISR, 0x7fff);
+ 
+ 	/* Now look for the MAC address. */
+-	if (mac_onboard_sonic_ethernet_addr(dev) != 0)
+-		return -ENODEV;
++	mac_onboard_sonic_ethernet_addr(dev);
+ 
+ 	/* Shared init code */
+ 	return macsonic_init(dev);
