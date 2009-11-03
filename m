@@ -1,170 +1,203 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 5/13] mac68k: move mac_esp platform device
-Date: Wed, 4 Nov 2009 00:41:35 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0911031445370.483@silk.local>
+Subject: [PATCH 6/13] mac68k: move macsonic and macmace platform devices
+Date: Wed, 4 Nov 2009 00:42:02 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911031447110.483@silk.local>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:39908 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:39927 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751475AbZKCNlb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:41:31 -0500
+	with ESMTP id S1751264AbZKCNl5 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:41:57 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: David Miller <davem@davemloft.net>, linux-m68k@vger.kernel.org
 
-Move platform device code from the driver to the platform init function.
+Move platform device code from the drivers to the platform init function.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/mac/config.c |   27 +++++++++++++++++++++++
- drivers/scsi/mac_esp.c |   57 ++++---------------------------------------------
- 2 files changed, 32 insertions(+), 52 deletions(-)
+ arch/m68k/mac/config.c |   23 +++++++++++++++++++++++
+ drivers/net/macmace.c  |   33 ++++-----------------------------
+ drivers/net/macsonic.c |   33 ++++-----------------------------
+ 3 files changed, 31 insertions(+), 58 deletions(-)
 
-Index: linux-2.6.31/drivers/scsi/mac_esp.c
+Index: linux-2.6.31/drivers/net/macmace.c
 ===================================================================
---- linux-2.6.31.orig/drivers/scsi/mac_esp.c	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/scsi/mac_esp.c	2009-11-03 03:23:42.000000000 +1100
-@@ -53,7 +53,6 @@ struct mac_esp_priv {
- 	void __iomem *pdma_io;
- 	int error;
- };
--static struct platform_device *internal_pdev, *external_pdev;
- static struct esp *esp_chips[2];
+--- linux-2.6.31.orig/drivers/net/macmace.c	2009-11-03 03:23:24.000000000 +1100
++++ linux-2.6.31/drivers/net/macmace.c	2009-11-03 03:23:42.000000000 +1100
+@@ -39,7 +39,6 @@
+ #include "mace.h"
  
- #define MAC_ESP_GET_PRIV(esp) ((struct mac_esp_priv *) \
-@@ -492,29 +491,12 @@ static int __devinit esp_mac_probe(struc
- 	struct Scsi_Host *host;
- 	struct esp *esp;
- 	int err;
--	int chips_present;
- 	struct mac_esp_priv *mep;
+ static char mac_mace_string[] = "macmace";
+-static struct platform_device *mac_mace_device;
  
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
+ #define N_TX_BUFF_ORDER	0
+ #define N_TX_RING	(1 << N_TX_BUFF_ORDER)
+@@ -752,6 +751,7 @@ static irqreturn_t mace_dma_intr(int irq
  
--	switch (macintosh_config->scsi_type) {
--	case MAC_SCSI_QUADRA:
--	case MAC_SCSI_QUADRA3:
--		chips_present = 1;
--		break;
--	case MAC_SCSI_QUADRA2:
--		if ((macintosh_config->ident == MAC_MODEL_Q900) ||
--		    (macintosh_config->ident == MAC_MODEL_Q950))
--			chips_present = 2;
--		else
--			chips_present = 1;
--		break;
--	default:
--		chips_present = 0;
--	}
--
--	if (dev->id + 1 > chips_present)
-+	if (dev->id > 1)
- 		return -ENODEV;
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Macintosh MACE ethernet driver");
++MODULE_ALIAS("platform:macmace");
  
- 	host = scsi_host_alloc(tpnt, sizeof(struct esp));
-@@ -639,55 +621,26 @@ static struct platform_driver esp_mac_dr
- 	.probe    = esp_mac_probe,
- 	.remove   = __devexit_p(esp_mac_remove),
- 	.driver   = {
--		.name     = DRV_MODULE_NAME,
-+		.name	= DRV_MODULE_NAME,
+ static int __devexit mac_mace_device_remove (struct platform_device *pdev)
+ {
+@@ -777,47 +777,22 @@ static struct platform_driver mac_mace_d
+ 	.probe  = mace_probe,
+ 	.remove = __devexit_p(mac_mace_device_remove),
+ 	.driver	= {
+-		.name = mac_mace_string,
++		.name	= mac_mace_string,
 +		.owner	= THIS_MODULE,
  	},
  };
  
- static int __init mac_esp_init(void)
+ static int __init mac_mace_init_module(void)
  {
 -	int err;
 -
--	err = platform_driver_register(&esp_mac_driver);
--	if (err)
+ 	if (!MACH_IS_MAC)
+ 		return -ENODEV;
+ 
+-	if ((err = platform_driver_register(&mac_mace_driver))) {
+-		printk(KERN_ERR "Driver registration failed\n");
 -		return err;
--
--	internal_pdev = platform_device_alloc(DRV_MODULE_NAME, 0);
--	if (internal_pdev && platform_device_add(internal_pdev)) {
--		platform_device_put(internal_pdev);
--		internal_pdev = NULL;
--	}
--	external_pdev = platform_device_alloc(DRV_MODULE_NAME, 1);
--	if (external_pdev && platform_device_add(external_pdev)) {
--		platform_device_put(external_pdev);
--		external_pdev = NULL;
 -	}
 -
--	if (internal_pdev || external_pdev) {
--		return 0;
--	} else {
--		platform_driver_unregister(&esp_mac_driver);
--		return -ENOMEM;
+-	mac_mace_device = platform_device_alloc(mac_mace_string, 0);
+-	if (!mac_mace_device)
+-		goto out_unregister;
+-
+-	if (platform_device_add(mac_mace_device)) {
+-		platform_device_put(mac_mace_device);
+-		mac_mace_device = NULL;
 -	}
-+	return platform_driver_register(&esp_mac_driver);
+-
+-	return 0;
+-
+-out_unregister:
+-	platform_driver_unregister(&mac_mace_driver);
+-
+-	return -ENOMEM;
++	return platform_driver_register(&mac_mace_driver);
  }
  
- static void __exit mac_esp_exit(void)
+ static void __exit mac_mace_cleanup_module(void)
  {
- 	platform_driver_unregister(&esp_mac_driver);
+ 	platform_driver_unregister(&mac_mace_driver);
 -
--	if (internal_pdev) {
--		platform_device_unregister(internal_pdev);
--		internal_pdev = NULL;
--	}
--	if (external_pdev) {
--		platform_device_unregister(external_pdev);
--		external_pdev = NULL;
+-	if (mac_mace_device) {
+-		platform_device_unregister(mac_mace_device);
+-		mac_mace_device = NULL;
 -	}
  }
  
- MODULE_DESCRIPTION("Mac ESP SCSI driver");
- MODULE_AUTHOR("Finn Thain <fthain@telegraphics.com.au>");
- MODULE_LICENSE("GPL v2");
- MODULE_VERSION(DRV_VERSION);
-+MODULE_ALIAS("platform:" DRV_MODULE_NAME);
- 
- module_init(mac_esp_init);
- module_exit(mac_esp_exit);
-Index: linux-2.6.31/arch/m68k/mac/config.c
+ module_init(mac_mace_init_module);
+Index: linux-2.6.31/drivers/net/macsonic.c
 ===================================================================
---- linux-2.6.31.orig/arch/m68k/mac/config.c	2009-11-03 03:23:41.000000000 +1100
-+++ linux-2.6.31/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
-@@ -911,6 +911,16 @@ static struct platform_device swim_pdev 
- 	.resource	= &swim_rsrc,
+--- linux-2.6.31.orig/drivers/net/macsonic.c	2009-11-03 03:23:24.000000000 +1100
++++ linux-2.6.31/drivers/net/macsonic.c	2009-11-03 03:23:42.000000000 +1100
+@@ -62,7 +62,6 @@
+ #include <asm/mac_via.h>
+ 
+ static char mac_sonic_string[] = "macsonic";
+-static struct platform_device *mac_sonic_device;
+ 
+ #include "sonic.h"
+ 
+@@ -604,6 +603,7 @@ out:
+ MODULE_DESCRIPTION("Macintosh SONIC ethernet driver");
+ module_param(sonic_debug, int, 0);
+ MODULE_PARM_DESC(sonic_debug, "macsonic debug level (1-4)");
++MODULE_ALIAS("platform:macsonic");
+ 
+ #include "sonic.c"
+ 
+@@ -624,44 +624,19 @@ static struct platform_driver mac_sonic_
+ 	.probe  = mac_sonic_probe,
+ 	.remove = __devexit_p(mac_sonic_device_remove),
+ 	.driver	= {
+-		.name = mac_sonic_string,
++		.name	= mac_sonic_string,
++		.owner	= THIS_MODULE,
+ 	},
  };
  
-+static struct platform_device esp_0_pdev = {
-+	.name		= "mac_esp",
-+	.id		= 0,
+ static int __init mac_sonic_init_module(void)
+ {
+-	int err;
+-
+-	if ((err = platform_driver_register(&mac_sonic_driver))) {
+-		printk(KERN_ERR "Driver registration failed\n");
+-		return err;
+-	}
+-
+-	mac_sonic_device = platform_device_alloc(mac_sonic_string, 0);
+-	if (!mac_sonic_device)
+-		goto out_unregister;
+-
+-	if (platform_device_add(mac_sonic_device)) {
+-		platform_device_put(mac_sonic_device);
+-		mac_sonic_device = NULL;
+-	}
+-
+-	return 0;
+-
+-out_unregister:
+-	platform_driver_unregister(&mac_sonic_driver);
+-
+-	return -ENOMEM;
++	return platform_driver_register(&mac_sonic_driver);
+ }
+ 
+ static void __exit mac_sonic_cleanup_module(void)
+ {
+ 	platform_driver_unregister(&mac_sonic_driver);
+-
+-	if (mac_sonic_device) {
+-		platform_device_unregister(mac_sonic_device);
+-		mac_sonic_device = NULL;
+-	}
+ }
+ 
+ module_init(mac_sonic_init_module);
+Index: linux-2.6.31/arch/m68k/mac/config.c
+===================================================================
+--- linux-2.6.31.orig/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
++++ linux-2.6.31/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
+@@ -921,6 +921,16 @@ static struct platform_device esp_1_pdev
+ 	.id		= 1,
+ };
+ 
++static struct platform_device sonic_pdev = {
++	.name		= "macsonic",
++	.id		= -1,
 +};
 +
-+static struct platform_device esp_1_pdev = {
-+	.name		= "mac_esp",
-+	.id		= 1,
++static struct platform_device mace_pdev = {
++	.name		= "macmace",
++	.id		= -1,
 +};
 +
  int __init mac_platform_init(void)
  {
  	u8 *swim_base;
-@@ -944,6 +954,23 @@ int __init mac_platform_init(void)
- 		platform_device_register(&swim_pdev);
+@@ -971,6 +981,19 @@ int __init mac_platform_init(void)
+ 		break;
  	}
  
 +	/*
-+	 * SCSI device(s)
++	 * Ethernet device
 +	 */
 +
-+	switch (macintosh_config->scsi_type) {
-+	case MAC_SCSI_QUADRA:
-+	case MAC_SCSI_QUADRA3:
-+		platform_device_register(&esp_0_pdev);
++	switch (macintosh_config->ether_type) {
++	case MAC_ETHER_SONIC:
++		platform_device_register(&sonic_pdev);
 +		break;
-+	case MAC_SCSI_QUADRA2:
-+		platform_device_register(&esp_0_pdev);
-+		if ((macintosh_config->ident == MAC_MODEL_Q900) ||
-+		    (macintosh_config->ident == MAC_MODEL_Q950))
-+			platform_device_register(&esp_1_pdev);
++	case MAC_ETHER_MACE:
++		platform_device_register(&mace_pdev);
 +		break;
 +	}
 +
