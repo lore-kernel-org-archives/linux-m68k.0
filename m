@@ -1,175 +1,125 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 10/13] mac68k: start CUDA early
-Date: Wed, 4 Nov 2009 00:46:44 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0911031502250.483@silk.local>
+Subject: [PATCH 11/13] fbdev: add some missing mac modes
+Date: Wed, 4 Nov 2009 00:47:02 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911031505030.483@silk.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from www.telegraphics.com.au ([204.15.192.19]:40073 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750998AbZKCNq7 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:46:59 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-fbdev-devel@lists.sourceforge.net, linux-m68k@vger.kernel.org
 
-The valkyriefb driver needs the CUDA to work in order to set the video 
-mode at boot. Initialising the device earlier, and bring the m68k code 
-closer to the powermac code.
+Add the missing mac video modes for the Portrait and 12" RGB displays. The 
+specs come from the Mac LC III developer note.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/mac/config.c       |    6 ++++
- drivers/macintosh/via-cuda.c |   57 +++++++++++++++++++++++++++----------------
- 2 files changed, 43 insertions(+), 20 deletions(-)
+ drivers/video/macmodes.c |   52 +++++++++++++++++++++++++----------------------
+ 1 file changed, 28 insertions(+), 24 deletions(-)
 
-Index: linux-2.6.31/arch/m68k/mac/config.c
+Index: linux-2.6.31/drivers/video/macmodes.c
 ===================================================================
---- linux-2.6.31.orig/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
-+++ linux-2.6.31/arch/m68k/mac/config.c	2009-11-03 03:23:43.000000000 +1100
-@@ -23,6 +23,8 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/adb.h>
-+#include <linux/cuda.h>
+--- linux-2.6.31.orig/drivers/video/macmodes.c	2009-11-03 03:23:43.000000000 +1100
++++ linux-2.6.31/drivers/video/macmodes.c	2009-11-03 03:23:44.000000000 +1100
+@@ -33,6 +33,10 @@
  
- #define BOOTINFO_COMPAT_1_0
- #include <asm/setup.h>
-@@ -889,6 +891,10 @@ static void __init mac_identify(void)
- 	oss_init();
- 	psc_init();
- 	baboon_init();
-+
-+#ifdef CONFIG_ADB_CUDA
-+	find_via_cuda();
-+#endif
- }
- 
- static void __init mac_report_hardware(void)
-Index: linux-2.6.31/drivers/macintosh/via-cuda.c
-===================================================================
---- linux-2.6.31.orig/drivers/macintosh/via-cuda.c	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/macintosh/via-cuda.c	2009-11-03 03:23:43.000000000 +1100
-@@ -117,7 +117,33 @@ struct adb_driver via_cuda_driver = {
+ static const struct fb_videomode mac_modedb[] = {
+     {
++	/* 512x384, 60Hz, Non-Interlaced (15.67 MHz dot clock) */
++    	"mac2", 60, 512, 384, 63828, 80, 16, 19, 1, 32, 3,
++	0, FB_VMODE_NONINTERLACED
++    }, {
+ 	/* 640x480, 60 Hz, Non-Interlaced (25.175 MHz dotclock) */
+ 	"mac5", 60, 640, 480, 39722, 32, 32, 33, 10, 96, 2,
+ 	0, FB_VMODE_NONINTERLACED
+@@ -41,6 +45,10 @@ static const struct fb_videomode mac_mod
+ 	"mac6", 67, 640, 480, 33334, 80, 80, 39, 3, 64, 3,
+ 	0, FB_VMODE_NONINTERLACED
+     }, {
++	/* 640x870, 75Hz (portrait), Non-Interlaced (57.28 MHz dot clock) */
++	"mac7", 75, 640, 870, 17457, 80, 32, 42, 3, 80, 3,
++	0, FB_VMODE_NONINTERLACED
++    }, {
+ 	/* 800x600, 56 Hz, Non-Interlaced (36.00 MHz dotclock) */
+ 	"mac9", 56, 800, 600, 27778, 112, 40, 22, 1, 72, 2,
+ 	FB_SYNC_HOR_HIGH_ACT|FB_SYNC_VERT_HIGH_ACT, FB_VMODE_NONINTERLACED
+@@ -105,10 +113,6 @@ static const struct fb_videomode mac_mod
+ 	"mac1", 60, 512, 384, pixclock, left, right, upper, lower, hslen, vslen,
+ 	sync, FB_VMODE_INTERLACED
+     }, {
+-	/* VMODE_512_384_60: 512x384, 60Hz, Non-Interlaced */
+-    	"mac2", 60, 512, 384, pixclock, left, right, upper, lower, hslen, vslen,
+-	sync, FB_VMODE_NONINTERLACED
+-    }, {
+ 	/* VMODE_640_480_50I: 640x480, 50Hz, Interlaced (PAL) */
+ 	"mac3", 50, 640, 480, pixclock, left, right, upper, lower, hslen, vslen,
+ 	sync, FB_VMODE_INTERLACED
+@@ -117,10 +121,6 @@ static const struct fb_videomode mac_mod
+ 	"mac4", 60, 640, 480, pixclock, left, right, upper, lower, hslen, vslen,
+ 	sync, FB_VMODE_INTERLACED
+     }, {
+-	/* VMODE_640_870_75P: 640x870, 75Hz (portrait), Non-Interlaced */
+-	"mac7", 75, 640, 870, pixclock, left, right, upper, lower, hslen, vslen,
+-	sync, FB_VMODE_NONINTERLACED
+-    }, {
+ 	/* VMODE_768_576_50I: 768x576, 50Hz (PAL full frame), Interlaced */
+ 	"mac8", 50, 768, 576, pixclock, left, right, upper, lower, hslen, vslen,
+ 	sync, FB_VMODE_INTERLACED
+@@ -141,31 +141,35 @@ static const struct mode_map {
+     int vmode;
+     const struct fb_videomode *mode;
+ } mac_modes[] = {
++    /* 512x384 */
++    { VMODE_512_384_60, &mac_modedb[0] },
+     /* 640x480 */
+-    { VMODE_640_480_60, &mac_modedb[0] },
+-    { VMODE_640_480_67, &mac_modedb[1] },
++    { VMODE_640_480_60, &mac_modedb[1] },
++    { VMODE_640_480_67, &mac_modedb[2] },
++    /* 640x870 */
++    { VMODE_640_870_75P, &mac_modedb[3] },
+     /* 800x600 */
+-    { VMODE_800_600_56, &mac_modedb[2] },
+-    { VMODE_800_600_60, &mac_modedb[3] },
+-    { VMODE_800_600_75, &mac_modedb[5] },
+-    { VMODE_800_600_72, &mac_modedb[4] },
++    { VMODE_800_600_56, &mac_modedb[4] },
++    { VMODE_800_600_60, &mac_modedb[5] },
++    { VMODE_800_600_75, &mac_modedb[7] },
++    { VMODE_800_600_72, &mac_modedb[6] },
+     /* 832x624 */
+-    { VMODE_832_624_75, &mac_modedb[6] },
++    { VMODE_832_624_75, &mac_modedb[8] },
+     /* 1024x768 */
+-    { VMODE_1024_768_60, &mac_modedb[7] },
+-    { VMODE_1024_768_70, &mac_modedb[8] },
+-    { VMODE_1024_768_75V, &mac_modedb[9] },
+-    { VMODE_1024_768_75, &mac_modedb[10] },
++    { VMODE_1024_768_60, &mac_modedb[9] },
++    { VMODE_1024_768_70, &mac_modedb[10] },
++    { VMODE_1024_768_75V, &mac_modedb[11] },
++    { VMODE_1024_768_75, &mac_modedb[12] },
+     /* 1152x768 */
+-    { VMODE_1152_768_60, &mac_modedb[14] },
++    { VMODE_1152_768_60, &mac_modedb[16] },
+     /* 1152x870 */
+-    { VMODE_1152_870_75, &mac_modedb[11] },
++    { VMODE_1152_870_75, &mac_modedb[13] },
+     /* 1280x960 */
+-    { VMODE_1280_960_75, &mac_modedb[12] },
++    { VMODE_1280_960_75, &mac_modedb[14] },
+     /* 1280x1024 */
+-    { VMODE_1280_1024_75, &mac_modedb[13] },
++    { VMODE_1280_1024_75, &mac_modedb[15] },
+     /* 1600x1024 */
+-    { VMODE_1600_1024_60, &mac_modedb[15] },
++    { VMODE_1600_1024_60, &mac_modedb[17] },
+     { -1, NULL }
  };
- #endif /* CONFIG_ADB */
  
--#ifdef CONFIG_PPC
-+#ifdef CONFIG_MAC
-+int __init find_via_cuda(void)
-+{
-+    struct adb_request req;
-+    int err;
-+
-+    if (macintosh_config->adb_type != MAC_ADB_CUDA)
-+	return 0;
-+
-+    via = via1;
-+    cuda_state = idle;
-+
-+    err = cuda_init_via();
-+    if (err) {
-+	printk(KERN_ERR "cuda_init_via() failed\n");
-+	via = NULL;
-+	return 0;
-+    }
-+
-+    /* enable autopoll */
-+    cuda_request(&req, NULL, 3, CUDA_PACKET, CUDA_AUTOPOLL, 1);
-+    while (!req.complete)
-+	cuda_poll();
-+
-+    return 1;
-+}
-+#else
- int __init find_via_cuda(void)
- {
-     struct adb_request req;
-@@ -175,7 +201,7 @@ int __init find_via_cuda(void)
-     vias = NULL;
-     return 0;
- }
--#endif /* CONFIG_PPC */
-+#endif /* !defined CONFIG_MAC */
- 
- static int __init via_cuda_start(void)
- {
-@@ -184,14 +210,14 @@ static int __init via_cuda_start(void)
- 
- #ifdef CONFIG_MAC
-     cuda_irq = IRQ_MAC_ADB;
--#else /* CONFIG_MAC */
-+#else
-     cuda_irq = irq_of_parse_and_map(vias, 0);
-     if (cuda_irq == NO_IRQ) {
- 	printk(KERN_ERR "via-cuda: can't map interrupts for %s\n",
- 	       vias->full_name);
- 	return -ENODEV;
-     }
--#endif /* CONFIG_MAC */
-+#endif
- 
-     if (request_irq(cuda_irq, cuda_interrupt, 0, "ADB", cuda_interrupt)) {
- 	printk(KERN_ERR "via-cuda: can't request irq %d\n", cuda_irq);
-@@ -216,7 +242,6 @@ cuda_probe(void)
- #else
-     if (macintosh_config->adb_type != MAC_ADB_CUDA)
- 	return -ENODEV;
--    via = via1;
- #endif
-     return 0;
- }
-@@ -224,20 +249,9 @@ cuda_probe(void)
- static int __init
- cuda_init(void)
- {
--#ifdef CONFIG_PPC
-     if (via == NULL)
- 	return -ENODEV;
-     return 0;
--#else 
--    int err = cuda_init_via();
--    if (err) {
--	printk(KERN_ERR "cuda_init_via() failed\n");
--	return -ENODEV;
--    }
--    out_8(&via[IER], IER_SET|SR_INT); /* enable interrupt from SR */
--
--    return via_cuda_start();
--#endif
- }
- #endif /* CONFIG_ADB */
- 
-@@ -430,9 +444,12 @@ cuda_poll(void)
-     /* cuda_interrupt only takes a normal lock, we disable
-      * interrupts here to avoid re-entering and thus deadlocking.
-      */
--    disable_irq(cuda_irq);
--    cuda_interrupt(0, NULL);
--    enable_irq(cuda_irq);
-+    if (cuda_fully_inited) {
-+	disable_irq(cuda_irq);
-+	cuda_interrupt(0, NULL);
-+	enable_irq(cuda_irq);
-+    } else
-+	cuda_interrupt(0, NULL);
- }
- 
- static irqreturn_t
-@@ -446,7 +463,7 @@ cuda_interrupt(int irq, void *arg)
-     
-     spin_lock(&cuda_lock);
- 
--    /* On powermacs, this handler is registered for the VIA IRQ. But it uses
-+    /* On powermacs, this handler is registered for the VIA IRQ. But they use
-      * just the shift register IRQ -- other VIA interrupt sources are disabled.
-      * On m68k macs, the VIA IRQ sources are dispatched individually. Unless
-      * we are polling, the shift register IRQ flag has already been cleared.
