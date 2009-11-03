@@ -1,167 +1,130 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 7/13] macsonic: fix crash on PowerBook 520
-Date: Wed, 4 Nov 2009 00:42:40 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0911031448060.483@silk.local>
+Subject: [PATCH 8/13] fbdev: mac_var_to_mode() fix
+Date: Wed, 4 Nov 2009 00:43:16 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911031449170.483@silk.local>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:39954 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:39972 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751475AbZKCNmf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:42:35 -0500
+	with ESMTP id S1752597AbZKCNnM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:43:12 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, netdev@vger.kernel.org, linux-m68k@vger.kernel.org
+Cc: linux-fbdev-devel@lists.sourceforge.net, linux-m68k@vger.kernel.org
 
-No-one seems to know where the PowerBook 500 series store their ethernet 
-MAC addresses. So, rather than crash, use a MAC address from the SONIC 
-CAM. Failing that, generate a random one.
+The valkyriefb driver assumes that this logic holds:
+
+mac_vmode_to_var(X, cmode, &var);
+mac_var_to_vmode(&var, &vmode, &cmode);
+assert(vmode == X);
+
+But it doesn't hold because mac_var_to_vmode() can return a mode with a 
+slower pixel clock, even when a match is available. So we end up with this 
+failure:
+
+using video mode 11 and color mode 0.
+valkyriefb: vmode 12 not valid.
+valkyriefb: can't set default video mode
+valkyriefb: vmode 12 not valid.
+
+Rather than have mac_var_to_mode() return the first reasonable mode it 
+finds, have it return the mode that is closest to the requested one (or 
+the mode with the closest longer pixel clock period if there is no exact 
+match).
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/net/macsonic.c |  113 +++++++++++++++++++++++++------------------------
- 1 file changed, 58 insertions(+), 55 deletions(-)
+ drivers/video/macmodes.c |   40 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 9 deletions(-)
 
-Index: linux-2.6.31/drivers/net/macsonic.c
+Index: linux-2.6.31/drivers/video/macmodes.c
 ===================================================================
---- linux-2.6.31.orig/drivers/net/macsonic.c	2009-11-03 03:23:42.000000000 +1100
-+++ linux-2.6.31/drivers/net/macsonic.c	2009-11-03 03:23:42.000000000 +1100
-@@ -222,69 +222,73 @@ static int __devinit macsonic_init(struc
- 	return 0;
- }
+--- linux-2.6.31.orig/drivers/video/macmodes.c	2009-11-03 03:23:24.000000000 +1100
++++ linux-2.6.31/drivers/video/macmodes.c	2009-11-03 03:23:43.000000000 +1100
+@@ -134,7 +134,7 @@ static const struct fb_videomode mac_mod
+      *
+      *  These MUST be ordered in
+      *    - increasing resolution
+-     *    - decreasing refresh rate
++     *    - decreasing pixel clock period
+      */
  
--static int __devinit mac_onboard_sonic_ethernet_addr(struct net_device *dev)
-+#define INVALID_MAC(mac) (memcmp(mac, "\x08\x00\x07", 3) && \
-+                          memcmp(mac, "\x00\xA0\x40", 3) && \
-+                          memcmp(mac, "\x00\x80\x19", 3) && \
-+                          memcmp(mac, "\x00\x05\x02", 3))
-+
-+static void __devinit mac_onboard_sonic_ethernet_addr(struct net_device *dev)
+ static const struct mode_map {
+@@ -142,20 +142,20 @@ static const struct mode_map {
+     const struct fb_videomode *mode;
+ } mac_modes[] = {
+     /* 640x480 */
+-    { VMODE_640_480_67, &mac_modedb[1] },
+     { VMODE_640_480_60, &mac_modedb[0] },
++    { VMODE_640_480_67, &mac_modedb[1] },
+     /* 800x600 */
++    { VMODE_800_600_56, &mac_modedb[2] },
++    { VMODE_800_600_60, &mac_modedb[3] },
+     { VMODE_800_600_75, &mac_modedb[5] },
+     { VMODE_800_600_72, &mac_modedb[4] },
+-    { VMODE_800_600_60, &mac_modedb[3] },
+-    { VMODE_800_600_56, &mac_modedb[2] },
+     /* 832x624 */
+     { VMODE_832_624_75, &mac_modedb[6] },
+     /* 1024x768 */
+-    { VMODE_1024_768_75, &mac_modedb[10] },
+-    { VMODE_1024_768_75V, &mac_modedb[9] },
+-    { VMODE_1024_768_70, &mac_modedb[8] },
+     { VMODE_1024_768_60, &mac_modedb[7] },
++    { VMODE_1024_768_70, &mac_modedb[8] },
++    { VMODE_1024_768_75V, &mac_modedb[9] },
++    { VMODE_1024_768_75, &mac_modedb[10] },
+     /* 1152x768 */
+     { VMODE_1152_768_60, &mac_modedb[14] },
+     /* 1152x870 */
+@@ -299,7 +299,6 @@ EXPORT_SYMBOL(mac_vmode_to_var);
+ int mac_var_to_vmode(const struct fb_var_screeninfo *var, int *vmode,
+ 		     int *cmode)
  {
- 	struct sonic_local *lp = netdev_priv(dev);
- 	const int prom_addr = ONBOARD_SONIC_PROM_BASE;
--	int i;
-+	unsigned short val;
+-    const struct fb_videomode *mode = NULL;
+     const struct mode_map *map;
  
--	/* On NuBus boards we can sometimes look in the ROM resources.
--	   No such luck for comm-slot/onboard. */
--	for(i = 0; i < 6; i++)
--		dev->dev_addr[i] = SONIC_READ_PROM(i);
+     if (var->bits_per_pixel <= 8)
+@@ -311,8 +310,13 @@ int mac_var_to_vmode(const struct fb_var
+     else
+ 	return -EINVAL;
+ 
++    /*
++     * Find the mac_mode with a matching resolution or failing that, the
++     * closest larger resolution. Skip modes with a shorter pixel clock period.
++     */
+     for (map = mac_modes; map->vmode != -1; map++) {
+-	mode = map->mode;
++	const struct fb_videomode *mode = map->mode;
++
+ 	if (var->xres > mode->xres || var->yres > mode->yres)
+ 	    continue;
+ 	if (var->xres_virtual > mode->xres || var->yres_virtual > mode->yres)
+@@ -322,6 +326,24 @@ int mac_var_to_vmode(const struct fb_var
+ 	if ((var->vmode & FB_VMODE_MASK) != mode->vmode)
+ 	    continue;
+ 	*vmode = map->vmode;
++
 +	/*
-+	 * On NuBus boards we can sometimes look in the ROM resources.
-+	 * No such luck for comm-slot/onboard.
-+	 * On the PowerBook 520, the PROM base address is a mystery.
++	 * Having found a good resolution, find the matching pixel clock
++	 * or failing that, the closest longer pixel clock period.
 +	 */
-+	if (hwreg_present((void *)prom_addr)) {
-+		int i;
++	map++;
++	while (map->vmode != -1) {
++	    const struct fb_videomode *clk_mode = map->mode;
 +
-+		for (i = 0; i < 6; i++)
-+			dev->dev_addr[i] = SONIC_READ_PROM(i);
-+		if (!INVALID_MAC(dev->dev_addr))
-+			return;
- 
--	/* Most of the time, the address is bit-reversed.  The NetBSD
--	   source has a rather long and detailed historical account of
--	   why this is so. */
--	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
--	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
-+		/*
-+		 * Most of the time, the address is bit-reversed. The NetBSD
-+		 * source has a rather long and detailed historical account of
-+		 * why this is so.
-+		 */
- 		bit_reverse_addr(dev->dev_addr);
--	else
--		return 0;
-+		if (!INVALID_MAC(dev->dev_addr))
-+			return;
- 
--	/* If we still have what seems to be a bogus address, we'll
--           look in the CAM.  The top entry should be ours. */
--	/* Danger! This only works if MacOS has already initialized
--           the card... */
--	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
--	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
--	{
--		unsigned short val;
-+		/*
-+		 * If we still have what seems to be a bogus address, we'll
-+		 * look in the CAM. The top entry should be ours.
-+		 */
-+		printk(KERN_WARNING "macsonic: MAC address in PROM seems "
-+		                    "to be invalid, trying CAM\n");
-+	} else {
-+		printk(KERN_WARNING "macsonic: cannot read MAC address from "
-+		                    "PROM, trying CAM\n");
++	    if (mode->xres != clk_mode->xres || mode->yres != clk_mode->yres)
++		break;
++	    if (var->pixclock > mode->pixclock)
++	        break;
++	    if (mode->vmode != clk_mode->vmode)
++		continue;
++	    *vmode = map->vmode;
++	    map++;
 +	}
- 
--		printk(KERN_INFO "macsonic: PROM seems to be wrong, trying CAM entry 15\n");
-+	/* This only works if MacOS has already initialized the card. */
- 
--		SONIC_WRITE(SONIC_CMD, SONIC_CR_RST);
--		SONIC_WRITE(SONIC_CEP, 15);
-+	SONIC_WRITE(SONIC_CMD, SONIC_CR_RST);
-+	SONIC_WRITE(SONIC_CEP, 15);
- 
--		val = SONIC_READ(SONIC_CAP2);
--		dev->dev_addr[5] = val >> 8;
--		dev->dev_addr[4] = val & 0xff;
--		val = SONIC_READ(SONIC_CAP1);
--		dev->dev_addr[3] = val >> 8;
--		dev->dev_addr[2] = val & 0xff;
--		val = SONIC_READ(SONIC_CAP0);
--		dev->dev_addr[1] = val >> 8;
--		dev->dev_addr[0] = val & 0xff;
--
--		printk(KERN_INFO "HW Address from CAM 15: %pM\n",
--		       dev->dev_addr);
--	} else return 0;
--
--	if (memcmp(dev->dev_addr, "\x08\x00\x07", 3) &&
--	    memcmp(dev->dev_addr, "\x00\xA0\x40", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x80\x19", 3) &&
--	    memcmp(dev->dev_addr, "\x00\x05\x02", 3))
--	{
--		/*
--		 * Still nonsense ... messed up someplace!
--		 */
--		printk(KERN_ERR "macsonic: ERROR (INVALID MAC)\n");
--		return -EIO;
--	} else return 0;
-+	val = SONIC_READ(SONIC_CAP2);
-+	dev->dev_addr[5] = val >> 8;
-+	dev->dev_addr[4] = val & 0xff;
-+	val = SONIC_READ(SONIC_CAP1);
-+	dev->dev_addr[3] = val >> 8;
-+	dev->dev_addr[2] = val & 0xff;
-+	val = SONIC_READ(SONIC_CAP0);
-+	dev->dev_addr[1] = val >> 8;
-+	dev->dev_addr[0] = val & 0xff;
-+
-+	if (!INVALID_MAC(dev->dev_addr))
-+		return;
-+
-+	/* Still nonsense ... messed up someplace! */
-+
-+	printk(KERN_WARNING "macsonic: MAC address in CAM entry 15 "
-+	                    "seems invalid, will use a random MAC\n");
-+	random_ether_addr(dev->dev_addr);
- }
- 
- static int __devinit mac_onboard_sonic_probe(struct net_device *dev)
-@@ -401,8 +405,7 @@ static int __devinit mac_onboard_sonic_p
- 	SONIC_WRITE(SONIC_ISR, 0x7fff);
- 
- 	/* Now look for the MAC address. */
--	if (mac_onboard_sonic_ethernet_addr(dev) != 0)
--		return -ENODEV;
-+	mac_onboard_sonic_ethernet_addr(dev);
- 
- 	/* Shared init code */
- 	return macsonic_init(dev);
+ 	return 0;
+     }
+     return -EINVAL;
