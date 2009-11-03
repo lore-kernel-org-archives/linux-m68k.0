@@ -1,218 +1,175 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 9/13] valkyriefb: various fixes
-Date: Wed, 4 Nov 2009 00:43:52 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.0911031500210.483@silk.local>
+Subject: [PATCH 10/13] mac68k: start CUDA early
+Date: Wed, 4 Nov 2009 00:46:44 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911031502250.483@silk.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:40001 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750938AbZKCNnu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Nov 2009 08:43:50 -0500
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-fbdev-devel@lists.sourceforge.net, linux-m68k@vger.kernel.org
+Cc: linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Valkyriefb and macfb will adopt the same card if they get the chance, so 
-remove valkyrie support from macfb. Also fix the "valkyriefb: can't do 
-832x624x8" problem reported by Raylynn Knight some time ago, by adding 
-vmode 13 support for CONFIG_MAC. Also add vmode 11 since that works too. 
-Make use of the monitor sense lines on 68k Macs too. Also some cleanups.
+The valkyriefb driver needs the CUDA to work in order to set the video 
+mode at boot. Initialising the device earlier, and bring the m68k code 
+closer to the powermac code.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/video/macfb.c      |   53 +++------------------------------------------
- drivers/video/valkyriefb.c |    6 ++---
- drivers/video/valkyriefb.h |   31 ++++++++------------------
- 3 files changed, 17 insertions(+), 73 deletions(-)
+ arch/m68k/mac/config.c       |    6 ++++
+ drivers/macintosh/via-cuda.c |   57 +++++++++++++++++++++++++++----------------
+ 2 files changed, 43 insertions(+), 20 deletions(-)
 
-Index: linux-2.6.31/drivers/video/macfb.c
+Index: linux-2.6.31/arch/m68k/mac/config.c
 ===================================================================
---- linux-2.6.31.orig/drivers/video/macfb.c	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/video/macfb.c	2009-11-03 03:23:43.000000000 +1100
-@@ -55,9 +55,6 @@
- static int (*macfb_setpalette) (unsigned int regno, unsigned int red,
- 				unsigned int green, unsigned int blue,
- 				struct fb_info *info) = NULL;
--static int valkyrie_setpalette (unsigned int regno, unsigned int red,
--				unsigned int green, unsigned int blue,
--				struct fb_info *info);
- static int dafb_setpalette (unsigned int regno, unsigned int red,
- 			    unsigned int green, unsigned int blue,
- 			    struct fb_info *fb_info);
-@@ -79,13 +76,6 @@ static int csc_setpalette (unsigned int 
+--- linux-2.6.31.orig/arch/m68k/mac/config.c	2009-11-03 03:23:42.000000000 +1100
++++ linux-2.6.31/arch/m68k/mac/config.c	2009-11-03 03:23:43.000000000 +1100
+@@ -23,6 +23,8 @@
+ #include <linux/init.h>
+ #include <linux/vt_kern.h>
+ #include <linux/platform_device.h>
++#include <linux/adb.h>
++#include <linux/cuda.h>
  
- static struct {
- 	unsigned char addr;
--	/* Note: word-aligned */
--	char pad[3];
--	unsigned char lut;
--} __iomem *valkyrie_cmap_regs;
--
--static struct {
--	unsigned char addr;
- 	unsigned char lut;
- } __iomem *v8_brazil_cmap_regs;
- 
-@@ -172,33 +162,6 @@ static u32 pseudo_palette[16];
- static int inverse   = 0;
- static int vidtest   = 0;
- 
--static int valkyrie_setpalette (unsigned int regno, unsigned int red,
--				unsigned int green, unsigned int blue,
--				struct fb_info *info)
--{
--	unsigned long flags;
--	
--	red >>= 8;
--	green >>= 8;
--	blue >>= 8;
--
--	local_irq_save(flags);
--	
--	/* tell clut which address to fill */
--	nubus_writeb(regno, &valkyrie_cmap_regs->addr);
--	nop();
--
--	/* send one color channel at a time */
--	nubus_writeb(red, &valkyrie_cmap_regs->lut);
--	nop();
--	nubus_writeb(green, &valkyrie_cmap_regs->lut);
--	nop();
--	nubus_writeb(blue, &valkyrie_cmap_regs->lut);
--
--	local_irq_restore(flags);
--	return 0;
--}
--
- /* Unlike the Valkyrie, the DAFB cannot set individual colormap
-    registers.  Therefore, we do what the MacOS driver does (no
-    kidding!) and simply set them one by one until we hit the one we
-@@ -614,8 +577,6 @@ static void __init macfb_setup(char *opt
- 
- static void __init iounmap_macfb(void)
- {
--	if (valkyrie_cmap_regs)
--		iounmap(valkyrie_cmap_regs);
- 	if (dafb_cmap_regs)
- 		iounmap(dafb_cmap_regs);
- 	if (v8_brazil_cmap_regs)
-@@ -642,6 +603,10 @@ static int __init macfb_init(void)
- 	if (!MACH_IS_MAC) 
- 		return -ENODEV;
- 
-+	if (mac_bi_data.id == MAC_MODEL_Q630 ||
-+	    mac_bi_data.id == MAC_MODEL_P588)
-+		return -ENODEV; /* See valkyriefb.c */
+ #define BOOTINFO_COMPAT_1_0
+ #include <asm/setup.h>
+@@ -889,6 +891,10 @@ static void __init mac_identify(void)
+ 	oss_init();
+ 	psc_init();
+ 	baboon_init();
 +
- 	/* There can only be one internal video controller anyway so
- 	   we're not too worried about this */
- 	macfb_defined.xres = mac_bi_data.dimensions & 0xFFFF;
-@@ -784,16 +749,6 @@ static int __init macfb_init(void)
- 	if (!video_is_nubus)
- 		switch( mac_bi_data.id )
- 		{
--			/* Valkyrie Quadras */
--		case MAC_MODEL_Q630:
--			/* I'm not sure about this one */
--		case MAC_MODEL_P588:
--			strcpy(macfb_fix.id, "Valkyrie");
--			macfb_setpalette = valkyrie_setpalette;
--			macfb_defined.activate = FB_ACTIVATE_NOW;
--			valkyrie_cmap_regs = ioremap(DAC_BASE, 0x1000);
--			break;
--
- 			/* DAFB Quadras */
- 			/* Note: these first four have the v7 DAFB, which is
- 			   known to be rather unlike the ones used in the
-Index: linux-2.6.31/drivers/video/valkyriefb.c
-===================================================================
---- linux-2.6.31.orig/drivers/video/valkyriefb.c	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/video/valkyriefb.c	2009-11-03 03:23:43.000000000 +1100
-@@ -69,7 +69,7 @@
- #ifdef CONFIG_MAC
- /* We don't yet have functions to read the PRAM... perhaps we can
-    adapt them from the PPC code? */
--static int default_vmode = VMODE_640_480_67;
-+static int default_vmode = VMODE_CHOOSE;
- static int default_cmode = CMODE_8;
- #else
- static int default_vmode = VMODE_NVRAM;
-@@ -326,11 +326,11 @@ int __init valkyriefb_init(void)
++#ifdef CONFIG_ADB_CUDA
++	find_via_cuda();
++#endif
+ }
  
- #ifdef CONFIG_MAC
- 	if (!MACH_IS_MAC)
--		return 0;
-+		return -ENODEV;
- 	if (!(mac_bi_data.id == MAC_MODEL_Q630
- 	      /* I'm not sure about this one */
- 	    || mac_bi_data.id == MAC_MODEL_P588))
--		return 0;
-+		return -ENODEV;
- 
- 	/* Hardcoded addresses... welcome to 68k Macintosh country :-) */
- 	frame_buffer_phys = 0xf9000000;
-Index: linux-2.6.31/drivers/video/valkyriefb.h
+ static void __init mac_report_hardware(void)
+Index: linux-2.6.31/drivers/macintosh/via-cuda.c
 ===================================================================
---- linux-2.6.31.orig/drivers/video/valkyriefb.h	2009-11-03 03:23:24.000000000 +1100
-+++ linux-2.6.31/drivers/video/valkyriefb.h	2009-11-03 03:23:43.000000000 +1100
-@@ -134,15 +134,7 @@ static struct valkyrie_regvals valkyrie_
-     { 1024, 0 },
- 	1024, 768
+--- linux-2.6.31.orig/drivers/macintosh/via-cuda.c	2009-11-03 03:23:24.000000000 +1100
++++ linux-2.6.31/drivers/macintosh/via-cuda.c	2009-11-03 03:23:43.000000000 +1100
+@@ -117,7 +117,33 @@ struct adb_driver via_cuda_driver = {
  };
--
--/* Register values for 800x600, 72Hz mode (11) */
--static struct valkyrie_regvals valkyrie_reg_init_11 = {
--    13,
--    { 17, 27, 3 },  /* pixel clock = 49.63MHz for V=71.66Hz */
--    { 800, 0 },
--	800, 600
--};
--#endif /* CONFIG_MAC */
+ #endif /* CONFIG_ADB */
+ 
+-#ifdef CONFIG_PPC
++#ifdef CONFIG_MAC
++int __init find_via_cuda(void)
++{
++    struct adb_request req;
++    int err;
++
++    if (macintosh_config->adb_type != MAC_ADB_CUDA)
++	return 0;
++
++    via = via1;
++    cuda_state = idle;
++
++    err = cuda_init_via();
++    if (err) {
++	printk(KERN_ERR "cuda_init_via() failed\n");
++	via = NULL;
++	return 0;
++    }
++
++    /* enable autopoll */
++    cuda_request(&req, NULL, 3, CUDA_PACKET, CUDA_AUTOPOLL, 1);
++    while (!req.complete)
++	cuda_poll();
++
++    return 1;
++}
++#else
+ int __init find_via_cuda(void)
+ {
+     struct adb_request req;
+@@ -175,7 +201,7 @@ int __init find_via_cuda(void)
+     vias = NULL;
+     return 0;
+ }
+-#endif /* CONFIG_PPC */
 +#endif /* !defined CONFIG_MAC */
  
- /* Register values for 832x624, 75Hz mode (13) */
- static struct valkyrie_regvals valkyrie_reg_init_13 = {
-@@ -152,6 +144,14 @@ static struct valkyrie_regvals valkyrie_
- 	832, 624
- };
+ static int __init via_cuda_start(void)
+ {
+@@ -184,14 +210,14 @@ static int __init via_cuda_start(void)
  
-+/* Register values for 800x600, 72Hz mode (11) */
-+static struct valkyrie_regvals valkyrie_reg_init_11 = {
-+    13,
-+    { 17, 27, 3 },  /* pixel clock = 49.63MHz for V=71.66Hz */
-+    { 800, 0 },
-+	800, 600
-+};
-+
- /* Register values for 800x600, 60Hz mode (10) */
- static struct valkyrie_regvals valkyrie_reg_init_10 = {
-     12,
-@@ -188,24 +188,13 @@ static struct valkyrie_regvals *valkyrie
- 	NULL,
- 	NULL,
- 	&valkyrie_reg_init_10,
--#ifdef CONFIG_MAC
--	NULL,
--	NULL,
--	&valkyrie_reg_init_13,
--	NULL,
--	NULL,
--	NULL,
--	NULL,
--#else
- 	&valkyrie_reg_init_11,
- 	NULL,
- 	&valkyrie_reg_init_13,
-+#ifndef CONFIG_MAC
- 	&valkyrie_reg_init_14,
- 	&valkyrie_reg_init_15,
- 	NULL,
- 	&valkyrie_reg_init_17,
+ #ifdef CONFIG_MAC
+     cuda_irq = IRQ_MAC_ADB;
+-#else /* CONFIG_MAC */
++#else
+     cuda_irq = irq_of_parse_and_map(vias, 0);
+     if (cuda_irq == NO_IRQ) {
+ 	printk(KERN_ERR "via-cuda: can't map interrupts for %s\n",
+ 	       vias->full_name);
+ 	return -ENODEV;
+     }
+-#endif /* CONFIG_MAC */
++#endif
+ 
+     if (request_irq(cuda_irq, cuda_interrupt, 0, "ADB", cuda_interrupt)) {
+ 	printk(KERN_ERR "via-cuda: can't request irq %d\n", cuda_irq);
+@@ -216,7 +242,6 @@ cuda_probe(void)
+ #else
+     if (macintosh_config->adb_type != MAC_ADB_CUDA)
+ 	return -ENODEV;
+-    via = via1;
  #endif
--	NULL,
--	NULL,
--	NULL
- };
+     return 0;
+ }
+@@ -224,20 +249,9 @@ cuda_probe(void)
+ static int __init
+ cuda_init(void)
+ {
+-#ifdef CONFIG_PPC
+     if (via == NULL)
+ 	return -ENODEV;
+     return 0;
+-#else 
+-    int err = cuda_init_via();
+-    if (err) {
+-	printk(KERN_ERR "cuda_init_via() failed\n");
+-	return -ENODEV;
+-    }
+-    out_8(&via[IER], IER_SET|SR_INT); /* enable interrupt from SR */
+-
+-    return via_cuda_start();
+-#endif
+ }
+ #endif /* CONFIG_ADB */
+ 
+@@ -430,9 +444,12 @@ cuda_poll(void)
+     /* cuda_interrupt only takes a normal lock, we disable
+      * interrupts here to avoid re-entering and thus deadlocking.
+      */
+-    disable_irq(cuda_irq);
+-    cuda_interrupt(0, NULL);
+-    enable_irq(cuda_irq);
++    if (cuda_fully_inited) {
++	disable_irq(cuda_irq);
++	cuda_interrupt(0, NULL);
++	enable_irq(cuda_irq);
++    } else
++	cuda_interrupt(0, NULL);
+ }
+ 
+ static irqreturn_t
+@@ -446,7 +463,7 @@ cuda_interrupt(int irq, void *arg)
+     
+     spin_lock(&cuda_lock);
+ 
+-    /* On powermacs, this handler is registered for the VIA IRQ. But it uses
++    /* On powermacs, this handler is registered for the VIA IRQ. But they use
+      * just the shift register IRQ -- other VIA interrupt sources are disabled.
+      * On m68k macs, the VIA IRQ sources are dispatched individually. Unless
+      * we are polling, the shift register IRQ flag has already been cleared.
