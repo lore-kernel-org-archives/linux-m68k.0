@@ -1,54 +1,76 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] m68k: don't export static inline functions
-Date: Sat, 14 Nov 2009 18:20:28 +1100
-Message-ID: <20091114182028.16b36c84.sfr@canb.auug.org.au>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 10/13] mac68k: start CUDA early
+Date: Tue, 17 Nov 2009 13:03:41 +1100
+Message-ID: <1258423421.2140.555.camel@pasglop>
+References: <alpine.OSX.2.00.0911031502250.483@silk.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from gate.crashing.org ([63.228.1.57]:34585 "EHLO gate.crashing.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755427AbZKQCDy (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 16 Nov 2009 21:03:54 -0500
+In-Reply-To: <alpine.OSX.2.00.0911031502250.483@silk.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Rusty Russell <rusty@rustcorp.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Jochen Friedrich <jochen@scram.de>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
 
-These now cause errors due to changes present in linux-next:
+On Wed, 2009-11-04 at 00:46 +1100, Finn Thain wrote:
+> The valkyriefb driver needs the CUDA to work in order to set the video 
+> mode at boot. Initialising the device earlier, and bring the m68k code 
+> closer to the powermac code.
+> 
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-(__ksymtab_sorted+0x1258): undefined reference to `dio_dev_driver'
-(__ksymtab_sorted+0x4d48): undefined reference to `zorro_dev_driver'
+Hi Finn !
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/dio/dio-driver.c     |    1 -
- drivers/zorro/zorro-driver.c |    1 -
- 2 files changed, 0 insertions(+), 2 deletions(-)
+> @@ -224,20 +249,9 @@ cuda_probe(void)
+>  static int __init
+>  cuda_init(void)
+>  {
+> -#ifdef CONFIG_PPC
+>      if (via == NULL)
+>  	return -ENODEV;
+>      return 0;
+> -#else 
+> -    int err = cuda_init_via();
+> -    if (err) {
+> -	printk(KERN_ERR "cuda_init_via() failed\n");
+> -	return -ENODEV;
+> -    }
+> -    out_8(&via[IER], IER_SET|SR_INT); /* enable interrupt from SR */
+> -
+> -    return via_cuda_start();
+> -#endif
+>  }
+>  #endif /* CONFIG_ADB */
 
-Mind you, neither of these functions is used anywhere in the kernel
-anyway.
+Can't we just get rid of cuda_init() completely ?
+ 
+> @@ -430,9 +444,12 @@ cuda_poll(void)
+>      /* cuda_interrupt only takes a normal lock, we disable
+>       * interrupts here to avoid re-entering and thus deadlocking.
+>       */
+> -    disable_irq(cuda_irq);
+> -    cuda_interrupt(0, NULL);
+> -    enable_irq(cuda_irq);
+> +    if (cuda_fully_inited) {
+> +	disable_irq(cuda_irq);
+> +	cuda_interrupt(0, NULL);
+> +	enable_irq(cuda_irq);
+> +    } else
+> +	cuda_interrupt(0, NULL);
+>  }
 
-diff --git a/drivers/dio/dio-driver.c b/drivers/dio/dio-driver.c
-index 9c0c9af..a7b174e 100644
---- a/drivers/dio/dio-driver.c
-+++ b/drivers/dio/dio-driver.c
-@@ -140,5 +140,4 @@ postcore_initcall(dio_driver_init);
- EXPORT_SYMBOL(dio_match_device);
- EXPORT_SYMBOL(dio_register_driver);
- EXPORT_SYMBOL(dio_unregister_driver);
--EXPORT_SYMBOL(dio_dev_driver);
- EXPORT_SYMBOL(dio_bus_type);
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index e6c4390..53180a3 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -156,5 +156,4 @@ postcore_initcall(zorro_driver_init);
- EXPORT_SYMBOL(zorro_match_device);
- EXPORT_SYMBOL(zorro_register_driver);
- EXPORT_SYMBOL(zorro_unregister_driver);
--EXPORT_SYMBOL(zorro_dev_driver);
- EXPORT_SYMBOL(zorro_bus_type);
--- 
-1.6.5.2
+Wouldn't it be better that way ?
 
--- 
+	if (cuda_irq)
+		disable_irq(cuda_irq);
+	cuda_interrupt(0, NULL);
+	if (cuda_irq)
+		enable_irq(cuda_irq);
+
 Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+Ben.
