@@ -1,74 +1,36 @@
-From: Steven King <sfking@fdwdc.com>
-Subject: Re: [PATCH] [Repost without wordwrapping] Merge m68k
-	and m68knommu
-Date: Thu, 19 Nov 2009 05:49:53 -0800
-Message-ID: <200911190549.53749.sfking@fdwdc.com>
-References: <200910181655.40579.sfking00@yahoo.com>
-	<10f740e80911181332u48f8e610o4354cfd3994c8510@mail.gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Mikael Pettersson <mikpe@it.uu.se>
+Subject: Re: TIF_NOTIFY_RESUME on m68k?
+Date: Thu, 19 Nov 2009 17:21:31 +0100
+Message-ID: <19205.28811.911525.832480@pilspetsen.it.uu.se>
+References: <10f740e80911181202l6cca6b41m827f2c51f639d1f0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <10f740e80911181332u48f8e610o4354cfd3994c8510@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: linux-kernel@vger.kernel.org
-Cc: Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from fanny.its.uu.se ([130.238.4.241]:39822 "EHLO fanny.its.uu.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1756651AbZKSQVh (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 19 Nov 2009 11:21:37 -0500
+In-Reply-To: <10f740e80911181202l6cca6b41m827f2c51f639d1f0@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, linux-kernel@vger.kernel.org
 
-On Wednesday 18 November 2009 01:32:25 Geert Uytterhoeven wrote:
+Geert Uytterhoeven writes:
+ > Has anyone already looked into TIF_NOTIFY_RESUME support for m68k?
 
-> > The patch modifies the toplevel Makefile so that ARCH=3Dm68knommu still
-> > works (by setting SRCARCH=3Dm68k) and adds the m68knommu Kconfig and
-> > Makefile to the m68k Kconfig and Makefile, using the definition of ARCH
-> > to select which values to use.
->
-> (still dreaming of my pet Amiga-nommu project) I prefer to use
-> CONFIG_MMU as the selector...
+You need to change your entry.S code where it now does single-bit tests
+for TIF_SIGPENDING with lsl/jmi do_signal_return, to instead test a 2-bit
+(or larger, it that gives better code) flag field for zero/non-zero.
+TIF_SIGPENDING and TIF_NOTIFY_RESUME should be alone in that field.
+In the non-zero case you should call a new do_notify_resume() written in C,
+which will then test TIF_SIGPENDING and TIF_NOTIFY_RESUME just like many
+other archs do.
 
-CONFIG_MMU is used as the selector elsewhere, but for Kconfig and the=20
-Makefiles something else was needed.
->
-> > Thus when building for either a m68k or an m68knommu target, one still
-> > specifies either ARCH=3Dm68k or ARCH=3Dm68knommu and everything should
-> > build EXACTLY as it did pre-merge. =C2=A0(I think).
->
-> ... using CONFIG_MMU would change this?
+BTW, m68k also lacks TIF_RESTORE_SIGMASK support. You could probably use
+the one I added to ARM very recently as a model.
 
-Yes; originally I tried using CONFIG_MMU to choose between the mmu and nomm=
-u=20
-portions of the Kconfig and Makefile, but that broke the defconfigs.  Rathe=
-r=20
-than patch the defconfigs or make a more elaborate patch for the Kconfig, f=
-or=20
-this initial patch I wanted to keep it as simple and as un-invasive as=20
-possible so that it would be trivial (?) to verify the merged kernel tree=20
-produces a kernel that is the same as the pre-merged kernel tree, thus=20
-providing a baseline for bisecting any problems with the subsequent patches=
-=20
-that do the real merging of the individual files.  A later patch will do a=
-=20
-better job of merging the Kconfigs and Makefiles.  Then you'd be able to ha=
-ve=20
-your Amiga-nommu and I can have my Coldfire 5484 either as mmu or nommu...
-
-=2D-=20
-Steven King -- sfking at fdwdc dot com
-
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+Do current 2.6.3x m68k kernels boot on aranym? Last time I tried aranym
+it could only boot som ancient hacked 2.4 kernel, for 2.6 kernels I got
+disk detection errors due to what looked like byteswapping issues.
