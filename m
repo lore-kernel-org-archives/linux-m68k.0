@@ -1,36 +1,32 @@
-From: Mikael Pettersson <mikpe@it.uu.se>
+From: Andreas Schwab <schwab@redhat.com>
 Subject: Re: TIF_NOTIFY_RESUME on m68k?
-Date: Thu, 19 Nov 2009 17:21:31 +0100
-Message-ID: <19205.28811.911525.832480@pilspetsen.it.uu.se>
+Date: Thu, 19 Nov 2009 17:34:04 +0100
+Message-ID: <m3bpiywk1v.fsf@hase.home>
 References: <10f740e80911181202l6cca6b41m827f2c51f639d1f0@mail.gmail.com>
+	<19205.28811.911525.832480@pilspetsen.it.uu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fanny.its.uu.se ([130.238.4.241]:39822 "EHLO fanny.its.uu.se"
+Received: from mx1.redhat.com ([209.132.183.28]:11727 "EHLO mx1.redhat.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756651AbZKSQVh (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 19 Nov 2009 11:21:37 -0500
-In-Reply-To: <10f740e80911181202l6cca6b41m827f2c51f639d1f0@mail.gmail.com>
+	id S1752490AbZKSQeU (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 19 Nov 2009 11:34:20 -0500
+In-Reply-To: <19205.28811.911525.832480@pilspetsen.it.uu.se> (Mikael
+	Pettersson's message of "Thu, 19 Nov 2009 17:21:31 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, linux-kernel@vger.kernel.org
+To: Mikael Pettersson <mikpe@it.uu.se>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven writes:
- > Has anyone already looked into TIF_NOTIFY_RESUME support for m68k?
+Mikael Pettersson <mikpe@it.uu.se> writes:
 
-You need to change your entry.S code where it now does single-bit tests
-for TIF_SIGPENDING with lsl/jmi do_signal_return, to instead test a 2-bit
-(or larger, it that gives better code) flag field for zero/non-zero.
-TIF_SIGPENDING and TIF_NOTIFY_RESUME should be alone in that field.
-In the non-zero case you should call a new do_notify_resume() written in C,
-which will then test TIF_SIGPENDING and TIF_NOTIFY_RESUME just like many
-other archs do.
+> Do current 2.6.3x m68k kernels boot on aranym?
 
-BTW, m68k also lacks TIF_RESTORE_SIGMASK support. You could probably use
-the one I added to ARM very recently as a model.
+2.6.31 works fine here (from the linux-m68k tree).
 
-Do current 2.6.3x m68k kernels boot on aranym? Last time I tried aranym
-it could only boot som ancient hacked 2.4 kernel, for 2.6 kernels I got
-disk detection errors due to what looked like byteswapping issues.
+Andreas.
+
+-- 
+Andreas Schwab, schwab@redhat.com
+GPG Key fingerprint = D4E8 DBE3 3813 BB5D FA84  5EC7 45C6 250E 6F00 984E
+"And now for something completely different."
