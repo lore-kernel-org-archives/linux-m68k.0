@@ -1,24 +1,85 @@
-From: aaa bbb <ilana90@013net.net>
-Subject: Hello
-Date: Fri, 27 Nov 2009 23:36:17 +0000 (GMT)
-Message-ID: <f709a0203712.4b106271__5170.52438012815$1259384572$gmane$org@netvision.net.il>
-Reply-To: missojita@rediffmail.com
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: First steps towards PCMCIA support on the PB190
+Date: Mon, 30 Nov 2009 14:10:29 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0911301345130.373@localhost>
+References: <309140AF-1076-4BF1-8E6E-B3FF4E75B4A4@pvco.net> <alpine.OSX.2.00.0910101349200.377@silk.local> <10f740e80910110713r6af8ec5co6ea97b340e6d33a5@mail.gmail.com> <2905206F-BAC4-408F-83FD-288065B17B8D@pvco.net> <20091011210237.GA14381@cynthia.pants.nu>
+ <E9A8CEA5-19D7-4A25-830D-3EFE354FC789@pvco.net> <20091128034828.GB816@cynthia.pants.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mxout5.netvision.net.il ([194.90.9.29]:27763 "EHLO
-	mxout5.netvision.net.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750756AbZK1FCQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Nov 2009 00:02:16 -0500
-Content-language: en
-Content-disposition: inline
+Received: from www.telegraphics.com.au ([204.15.192.19]:64246 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752185AbZK3DK0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Nov 2009 22:10:26 -0500
+In-Reply-To: <20091128034828.GB816@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Brad Boyer <flar@allandria.com>
+Cc: diego <diego@pvco.net>, Geert Uytterhoeven <geert@linux-m68k.org>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
 
 
 
-Hello
-How are you today? I hope you are fine.If so thank be to God almighty.My name is Miss Ojita,26 years, single girl looking for honest and nice person. whom i can partner with. i have the sum of $7,000,000.00(Seven Million US Dollars) which i intend to use for business purpose.I would like to know you more,most especially what you like and what you dislike, I don't care about your colour or ethnicity, I'm sending you this beautiful mail, with a wish for much happiness.I am looking forward to hear from you,
-Love from,
-Ojita
+On Fri, 27 Nov 2009, Brad Boyer wrote:
+
+> 
+> Just as a note, I never saw the original message come across the mailing 
+> list. Also, you might want to include linux-m68k@lists.linux-m68k.org on 
+> this sort of topic.
+
+I think that is an alias for linux-m68k@vger.kernel.org
+I've added the CC.
+
+> 
+> On Tue, Nov 24, 2009 at 07:01:30PM -0200, diego wrote:
+> 
+> ...
+> > There are mainly three problems l'm facing here.... The first two 
+> > should be fairly easy to work out, whereas the 3rd represents a major 
+> > roadblock at the moment:
+> > 
+> > 1. Proper mac specific definitions that wrap around ISA bus access.
+> > 
+> > 2. If you look at the patches to the orinoco driver, you will see that 
+> > there's another enemy hiding, his name is ioport_map.
+> 
+> These should be relatively simple. We need to clean up some of that 
+> stuff anyway. It's just a matter of taking the time to do it right. This 
+> is the sort of thing that ought to be handled better in the common code 
+> anyway.
+
+Any suggestions on what needs to be done here, i.e. what needs clean up 
+and what is the right way to do it? How much code is affected?
+
+I know that the inb/outb/etc routines have come up often WRT m68k drivers, 
+e.g. byteswapping on atari and so on. But I never really understood the 
+issues.
+
+It appears that my Farallon Etherwave card has issues with byte ordering 
+(smc91c92_cs driver) when used with Diego's TRex patch.
+ 
+> > 3. This has already been haunting the driver in the nubus-ppc project, 
+> > and I couldn't come up with anything better either: I can't figure out 
+> > how to make the TREX chip use IO memory and attribute memory 
+> > simultaneously. From the little docs provided by apple it appears that 
+> > it would be possible, then again they don't provide any documentation 
+> > on how this chip works at the register level. The original author of 
+> > the driver did find out how to switch between the two modes, but this 
+> > requires the ugly patches to pcmcia_resource.c to, which in turn makes 
+> > it impossible to merge this into an all-arch kernel tree. This wasn't 
+> > a problem for the nubus-ppc port since they maintained their own 
+> > development tree, but obviously in the case of m68k this would 
+> > represent a major problem. Another thing is that it breaks some 
+> > drivers that implement more exotic features like requesting card 
+> > configuration changes etc.. If anyone happens to know how to program 
+> > the TREX chip to use both attribute and IO mem simultaneously then 
+> > this wouldn['t be an issue anymore. The alternative would be to 
+> > convince the pcmcia core maintainers to have mercy with cards that 
+> > need switching between these modes, but I doubt that this is a 
+> > realistic alternative.
+
+Can the switch be done with a fault handler? That is, does I/O generate an 
+exception that can be used to switch the memory to I/O mode so that the 
+access can be restarted? Can all attribute accesses explicitly switch to 
+attribute mode within the constraints of the pcmcia core?
+
+Finn
