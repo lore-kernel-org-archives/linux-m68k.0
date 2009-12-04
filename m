@@ -1,74 +1,158 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] [Repost without wordwrapping] Merge m68k and m68knommu
-Date: Fri, 04 Dec 2009 14:47:56 +1000
-Message-ID: <4B18947C.9090208@snapgear.com>
-References: <200910181655.40579.sfking00@yahoo.com> <200911100055.43227.sfking00@yahoo.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH] mac_esp: fix PIO mode
+Date: Fri, 4 Dec 2009 23:58:05 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.0912042321220.596@localhost>
+References: <alpine.OSX.2.00.0911231452300.468@localhost> <20091202.154045.142858043.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:44379 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1755800AbZLDEr3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 3 Dec 2009 23:47:29 -0500
-In-Reply-To: <200911100055.43227.sfking00@yahoo.com>
+Received: from www.telegraphics.com.au ([204.15.192.19]:45284 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756291AbZLDM7I (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Dec 2009 07:59:08 -0500
+In-Reply-To: <20091202.154045.142858043.davem@davemloft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Steven King <sfking00@yahoo.com>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>
+To: David Miller <davem@davemloft.net>
+Cc: linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Hi Steven,
 
-Steven King wrote:
-> On Sunday 18 October 2009 04:55:40 Steven King wrote:
->> This is a script and patch to merge the m68knommu arch into m68k.
+On Wed, 2 Dec 2009, David Miller wrote:
+
+...
 > 
-> Ping.
+> Can you explain why the esp_slave_configure() part of your patch is 
+> necessary?
+> 
+> > Index: linux-2.6.31/drivers/scsi/esp_scsi.c
+> > ===================================================================
+> > --- linux-2.6.31.orig/drivers/scsi/esp_scsi.c	2009-11-23 12:52:45.000000000 +1100
+> > +++ linux-2.6.31/drivers/scsi/esp_scsi.c	2009-11-23 12:53:30.000000000 +1100
+> > @@ -2405,12 +2405,6 @@ static int esp_slave_configure(struct sc
+> >  	struct esp_target_data *tp = &esp->target[dev->id];
+> >  	int goal_tags, queue_depth;
+> >  
+> > -	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
+> > -		/* Bypass async domain validation */
+> > -		dev->ppr  = 0;
+> > -		dev->sdtr = 0;
+> > -	}
+> > -
+> >  	goal_tags = 0;
+> >  
+> >  	if (dev->tagged_supported) {
+> > @@ -2433,6 +2427,11 @@ static int esp_slave_configure(struct sc
+> >  	}
+> >  	tp->flags |= ESP_TGT_DISCONNECT;
+> >  
+> > +	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
+> > +		dev->wdtr = spi_support_wide(dev->sdev_target) = 0;
+> > +		dev->sdtr = spi_support_sync(dev->sdev_target) = 0;
+> > +	}
+> > +
+> >  	if (!spi_initial_dv(dev->sdev_target))
+> >  		spi_dv_device(dev);
+> >  
 
-Sorry, I have just not had time to look at this yet.
-Promise to find some time soon to have a closer look soon :-)
+The aim is that domain validation will not test for sync when we know it 
+can't work (in PIO mode). This is the result:
 
-Regards
-Greg
+mac_esp: using PIO for controller 0
+esp: esp0, regs[50f18000:(null)] irq[19]
+esp: esp0 is a ESP236, 25 MHz (ccf=5), SCSI ID 7
+scsi0 : esp
+scsi 0:0:6:0: Direct-Access     QUANTUM  LPS540S          590S PQ: 0 ANSI: 2 CCS
+ target0:0:6: Beginning Domain Validation
+ target0:0:6: Ending Domain Validation
+sd 0:0:6:0: [sda] 1057616 512-byte logical blocks: (541 MB/516 MiB)
+sd 0:0:6:0: [sda] Write Protect is off
+sd 0:0:6:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
 
+Whereas, without the esp_slave_configure() code, I get this:
 
+scsi0 : esp
+scsi 0:0:6:0: Direct-Access     QUANTUM  LPS540S          590S PQ: 0 ANSI: 2 CCS
+ target0:0:6: Beginning Domain Validation
+ target0:0:6: asynchronous
+mac_esp: FIFO is empty (sreg 81)
+esp: esp0: DMA length is zero!
+esp: esp0: cur adr[010eb082] len[00000000]
+ target0:0:6: Domain Validation detected failure, dropping back
+ target0:0:6: asynchronous
+mac_esp: FIFO is empty (sreg 81)
+esp: esp0: DMA length is zero!
+esp: esp0: cur adr[010eb082] len[00000000]
+ target0:0:6: Domain Validation detected failure, dropping back
+ target0:0:6: asynchronous
+mac_esp: FIFO is empty (sreg 81)
+esp: esp0: DMA length is zero!
+esp: esp0: cur adr[010eb082] len[00000000]
+ target0:0:6: Domain Validation detected failure, dropping back
+ target0:0:6: asynchronous
+mac_esp: FIFO is empty (sreg 81)
+esp: esp0: DMA length is zero!
+esp: esp0: cur adr[010eb082] len[00000000]
+ target0:0:6: Domain Validation detected failure, dropping back
+ target0:0:6: asynchronous
+mac_esp: FIFO is empty (sreg 81)
+esp: esp0: DMA length is zero!
+esp: esp0: cur adr[010eb082] len[00000000]
+ target0:0:6: Domain Validation Failure, dropping back to Asynchronous
+ target0:0:6: Domain Validation skipping write tests
+ target0:0:6: Ending Domain Validation
+sd 0:0:6:0: [sda] 1057616 512-byte logical blocks: (541 MB/516 MiB)
+sd 0:0:6:0: [sda] Write Protect is off
+sd 0:0:6:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
 
->> The script was inspired by the script Sam Ravnborg used to merge the
->> includes from m68knommu. For those files common to both arches but
->> differing in content, the m68k version of the file is renamed to
->> <file>_mm.<ext> and the m68knommu version of the file is moved into the
->> corresponding m68k directory and renamed <file>_no.<ext> and a small
->> wrapper file <file>.<ext> is used to select between the two version.
->> Files that are common to both but don't differ are removed from the
->> m68knommu tree and files and directories that are unique to the
->> m68knommu tree are moved to the m68k tree. Finally, the arch/m68knommu
->> tree is removed.
->>
->> To select between the the versions of the files, the wrapper uses
->>
->> #ifdef CONFIG_MMU
->> #include <file>_mm.<ext>
->> #else
->> #include <file>_no.<ext>
->> #endif
->>
->> The patch modifies the toplevel Makefile so that ARCH=m68knommu still
->> works (by setting SRCARCH=m68k) and adds the m68knommu Kconfig and
->> Makefile to the m68k Kconfig and Makefile, using the definition of ARCH
->> to select which values to use.
->>
->> Thus when building for either a m68k or an m68knommu target, one still
->> specifies either ARCH=m68k or ARCH=m68knommu and everything should
->> build EXACTLY as it did pre-merge.  (I think).
->>
->>
->> Signed-off-by: Steven King <sfking@fdwdc.com>
+Which takes longer but gives the same result. The CDROM drive is worse 
+however:
 
+scsi0 : esp
+scsi 0:0:4:0: CD-ROM            TOSHIBA  CD-ROM XM-5401TA 1036 PQ: 0 ANSI: 2
+ target0:0:4: Beginning Domain Validation
+ target0:0:4: asynchronous
+mac_esp: FIFO is empty (sreg 01)
+esp: esp0: Aborting command [010dc940:12]
+esp: esp0: Current command [010dc940:12]
+esp: esp0: Active command [010dc940:12]
+esp: esp0: Dumping command log
+esp: esp0: ent[27] CMD val[01] sreg[87] seqreg[01] sreg2[00] ireg[10] ss[00] event[06]
+esp: esp0: ent[28] CMD val[10] sreg[87] seqreg[01] sreg2[00] ireg[10] ss[00] event[06]
+esp: esp0: ent[29] CMD val[12] sreg[87] seqreg[01] sreg2[00] ireg[08] ss[00] event[06]
+esp: esp0: ent[30] EVENT val[0d] sreg[87] seqreg[01] sreg2[00] ireg[08] ss[00] event[06]
+...
 
+So the esp driver then retries the aborted command a few times, with 
+delays. Multiply those retries by the five domain validation iterations. 
+Then, IIRC, the CDROM finally gets offlined at the end of that slow 
+process.
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+I did a quick test, and this works too:
+
+@@ -2405,12 +2405,6 @@ static int esp_slave_configure(struct sc
+ 	struct esp_target_data *tp = &esp->target[dev->id];
+ 	int goal_tags, queue_depth;
+ 
+-	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
+-		/* Bypass async domain validation */
+-		dev->ppr  = 0;
+-		dev->sdtr = 0;
+-	}
+-
+ 	goal_tags = 0;
+ 
+ 	if (dev->tagged_supported) {  
+@@ -2433,6 +2427,9 @@ static int esp_slave_configure(struct sc
+ 	}
+ 	tp->flags |= ESP_TGT_DISCONNECT;
+ 
++	if (esp->flags & ESP_FLAG_DISABLE_SYNC)
++		spi_support_sync(dev->sdev_target) = 0;
++
+ 	if (!spi_initial_dv(dev->sdev_target))
+ 		spi_dv_device(dev);
+ 
+I will resubmit the patch like so if you wish. Or you could go ahead and 
+make the change.
+
+Finn
