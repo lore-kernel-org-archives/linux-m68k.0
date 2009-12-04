@@ -1,69 +1,62 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: Re: [PATCH] mac_esp: fix PIO mode
-Date: Fri, 04 Dec 2009 09:31:24 -0600
-Message-ID: <1259940684.2701.8.camel@mulgrave.site>
-References: <alpine.OSX.2.00.0911231452300.468@localhost>
-	 <20091202.154045.142858043.davem@davemloft.net>
-	 <alpine.OSX.2.00.0912042321220.596@localhost>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: M68k tree updates
+Date: Fri, 4 Dec 2009 20:57:25 +0100
+Message-ID: <10f740e80912041157j41984f4ay6ca2e56d70ac08e2@mail.gmail.com>
+References: <alpine.DEB.2.00.0911252213340.31650@ayla.of.borg>
+	 <4B13CC00.9080607@codesourcery.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cantor.suse.de ([195.135.220.2]:52312 "EHLO mx1.suse.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751412AbZLDPb0 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 4 Dec 2009 10:31:26 -0500
-In-Reply-To: <alpine.OSX.2.00.0912042321220.596@localhost>
+Received: from mail-pz0-f171.google.com ([209.85.222.171]:60667 "EHLO
+	mail-pz0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754455AbZLDT5T (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Dec 2009 14:57:19 -0500
+In-Reply-To: <4B13CC00.9080607@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: David Miller <davem@davemloft.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Maxim Kuvyrkov <maxim@codesourcery.com>, Greg Ungerer <gerg@snapgear.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
 
-On Fri, 2009-12-04 at 23:58 +1100, Finn Thain wrote:
-> On Wed, 2 Dec 2009, David Miller wrote:
-> 
+On Mon, Nov 30, 2009 at 14:43, Maxim Kuvyrkov <maxim@codesourcery.com> wrote:
+> Geert Uytterhoeven wrote:
+>>
+>> It took me a while, but finally I managed to update
+>> http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git again.
+>
 > ...
-> > 
-> > Can you explain why the esp_slave_configure() part of your patch is 
-> > necessary?
-> > 
-> > > Index: linux-2.6.31/drivers/scsi/esp_scsi.c
-> > > ===================================================================
-> > > --- linux-2.6.31.orig/drivers/scsi/esp_scsi.c	2009-11-23 12:52:45.000000000 +1100
-> > > +++ linux-2.6.31/drivers/scsi/esp_scsi.c	2009-11-23 12:53:30.000000000 +1100
-> > > @@ -2405,12 +2405,6 @@ static int esp_slave_configure(struct sc
-> > >  	struct esp_target_data *tp = &esp->target[dev->id];
-> > >  	int goal_tags, queue_depth;
-> > >  
-> > > -	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
-> > > -		/* Bypass async domain validation */
-> > > -		dev->ppr  = 0;
-> > > -		dev->sdtr = 0;
-> > > -	}
-> > > -
-> > >  	goal_tags = 0;
-> > >  
-> > >  	if (dev->tagged_supported) {
-> > > @@ -2433,6 +2427,11 @@ static int esp_slave_configure(struct sc
-> > >  	}
-> > >  	tp->flags |= ESP_TGT_DISCONNECT;
-> > >  
-> > > +	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
-> > > +		dev->wdtr = spi_support_wide(dev->sdev_target) = 0;
-> > > +		dev->sdtr = spi_support_sync(dev->sdev_target) = 0;
-> > > +	}
-> > > +
-> > >  	if (!spi_initial_dv(dev->sdev_target))
-> > >  		spi_dv_device(dev);
-> > >  
-> 
-> The aim is that domain validation will not test for sync when we know it 
-> can't work (in PIO mode). This is the result:
+>>
+>> If anything is missing, please tell me. Thx!
+>
+> How about the NPTL patch (0001-Add-NPTL-support-for-m68k.patch,
+> http://marc.info/?l=linux-m68k&m=125447760017098&w=2)?
 
-So this isn't the correct way to handle the problem.  You're altering
-the disk capability flags to trick the transport class.  What you want
-to be doing is updating esp_set_period so it won't go under whatever you
-deem to be a correct period setting (or if it's really async then it
-won't set the period at all).
+As you're adding syscalls (which are shared with m68knommu), I'll have
+to ask whether
+you will make it work on nommu, too?
 
-James
+Furthermore, when building for Sun3:
+
+arch/m68k/kernel/sys_m68k.c:706: warning: passing argument 1 of
+'kunmap' from incompatible pointer type
+arch/m68k/kernel/sys_m68k.c:714: warning: passing argument 1 of
+'kunmap' from incompatible pointer type
+
+Which looks like a problem with the Sun 3 version of pte_unmap().
+
+I'm gonna add it to the m68k tree though, unless someone complains.
+
+> Also, this trivial fix (0004-Fix-m68k-s-asm-swab.h-for-ColdFire.patch,
+> http://marc.info/?l=linux-m68k&m=125447494213740&w=2) can go in.
+
+I want to run this one by the nommu people as well...
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
