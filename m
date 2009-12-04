@@ -1,74 +1,74 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] mac_esp: fix PIO mode
-Date: Wed, 02 Dec 2009 15:40:45 -0800 (PST)
-Message-ID: <20091202.154045.142858043.davem@davemloft.net>
-References: <alpine.OSX.2.00.0911231452300.468@localhost>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] [Repost without wordwrapping] Merge m68k and m68knommu
+Date: Fri, 04 Dec 2009 14:47:56 +1000
+Message-ID: <4B18947C.9090208@snapgear.com>
+References: <200910181655.40579.sfking00@yahoo.com> <200911100055.43227.sfking00@yahoo.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:42583
-	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755780AbZLBXki (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Dec 2009 18:40:38 -0500
-In-Reply-To: <alpine.OSX.2.00.0911231452300.468@localhost>
+Received: from rex.securecomputing.com ([203.24.151.4]:44379 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1755800AbZLDEr3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 3 Dec 2009 23:47:29 -0500
+In-Reply-To: <200911100055.43227.sfking00@yahoo.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: fthain@telegraphics.com.au
-Cc: linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Steven King <sfking00@yahoo.com>
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>
 
-From: Finn Thain <fthain@telegraphics.com.au>
-Date: Mon, 23 Nov 2009 14:57:42 +1100 (EST)
+Hi Steven,
 
+Steven King wrote:
+> On Sunday 18 October 2009 04:55:40 Steven King wrote:
+>> This is a script and patch to merge the m68knommu arch into m68k.
 > 
-> The mac_esp PIO algorithm no longer works in 2.6.31 and crashes my Centris 
-> 660av. So here's a better one.
-> 
-> One of the SCSI drives I tested still doesn't like the PIO mode and fails 
-> with "esp: esp0: Reconnect IRQ2 timeout" (the same drive works fine in 
-> PDMA mode).
-> 
-> This failure happens when esp_reconnect_with_tag() tries to read in two 
-> tag bytes but the chip only provides one (0x20). I don't know what causes 
-> this. I decided not to waste any more time trying to fix it because the 
-> best solution is to rip out the PIO mode altogether and use the DMA 
-> engine.
-> 
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Ping.
 
-Can you explain why the esp_slave_configure() part of your patch
-is necessary?
+Sorry, I have just not had time to look at this yet.
+Promise to find some time soon to have a closer look soon :-)
 
-> Index: linux-2.6.31/drivers/scsi/esp_scsi.c
-> ===================================================================
-> --- linux-2.6.31.orig/drivers/scsi/esp_scsi.c	2009-11-23 12:52:45.000000000 +1100
-> +++ linux-2.6.31/drivers/scsi/esp_scsi.c	2009-11-23 12:53:30.000000000 +1100
-> @@ -2405,12 +2405,6 @@ static int esp_slave_configure(struct sc
->  	struct esp_target_data *tp = &esp->target[dev->id];
->  	int goal_tags, queue_depth;
->  
-> -	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
-> -		/* Bypass async domain validation */
-> -		dev->ppr  = 0;
-> -		dev->sdtr = 0;
-> -	}
-> -
->  	goal_tags = 0;
->  
->  	if (dev->tagged_supported) {
-> @@ -2433,6 +2427,11 @@ static int esp_slave_configure(struct sc
->  	}
->  	tp->flags |= ESP_TGT_DISCONNECT;
->  
-> +	if (esp->flags & ESP_FLAG_DISABLE_SYNC) {
-> +		dev->wdtr = spi_support_wide(dev->sdev_target) = 0;
-> +		dev->sdtr = spi_support_sync(dev->sdev_target) = 0;
-> +	}
-> +
->  	if (!spi_initial_dv(dev->sdev_target))
->  		spi_dv_device(dev);
->  
+Regards
+Greg
 
-That part...
 
-Thanks.
+
+>> The script was inspired by the script Sam Ravnborg used to merge the
+>> includes from m68knommu. For those files common to both arches but
+>> differing in content, the m68k version of the file is renamed to
+>> <file>_mm.<ext> and the m68knommu version of the file is moved into the
+>> corresponding m68k directory and renamed <file>_no.<ext> and a small
+>> wrapper file <file>.<ext> is used to select between the two version.
+>> Files that are common to both but don't differ are removed from the
+>> m68knommu tree and files and directories that are unique to the
+>> m68knommu tree are moved to the m68k tree. Finally, the arch/m68knommu
+>> tree is removed.
+>>
+>> To select between the the versions of the files, the wrapper uses
+>>
+>> #ifdef CONFIG_MMU
+>> #include <file>_mm.<ext>
+>> #else
+>> #include <file>_no.<ext>
+>> #endif
+>>
+>> The patch modifies the toplevel Makefile so that ARCH=m68knommu still
+>> works (by setting SRCARCH=m68k) and adds the m68knommu Kconfig and
+>> Makefile to the m68k Kconfig and Makefile, using the definition of ARCH
+>> to select which values to use.
+>>
+>> Thus when building for either a m68k or an m68knommu target, one still
+>> specifies either ARCH=m68k or ARCH=m68knommu and everything should
+>> build EXACTLY as it did pre-merge.  (I think).
+>>
+>>
+>> Signed-off-by: Steven King <sfking@fdwdc.com>
+
+
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
