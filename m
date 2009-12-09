@@ -1,61 +1,83 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [PATCH 13/19] Unify sys_mmap*
-Date: Mon, 7 Dec 2009 15:42:24 +0000
-Message-ID: <20091207154224.GG14381@ZenIV.linux.org.uk>
-References: <E1NHUfg-0007xZ-R1@ZenIV.linux.org.uk> <10f740e80912070032j3ef3e9b2n55199d38abf710d2@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch updates
+Date: Wed, 9 Dec 2009 17:58:25 +1000
+Message-ID: <200912090758.nB97wPok013748@goober.internal.moreton.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arch-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <10f740e80912070032j3ef3e9b2n55199d38abf710d2@mail.gmail.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Al Viro <viro@ftp.linux.org.uk>, linux-arch@vger.kernel.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from rex.securecomputing.com ([203.24.151.4]:34268 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1750707AbZLIH6j (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Dec 2009 02:58:39 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Mon, Dec 07, 2009 at 09:32:05AM +0100, Geert Uytterhoeven wrote:
-> On Mon, Dec 7, 2009 at 04:54, Al Viro <viro@ftp.linux.org.uk> wrote:
+Hi Linus,
 
-> > ??asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-> > ?? ?? ?? ??unsigned long prot, unsigned long flags,
-> > ?? ?? ?? ??unsigned long fd, unsigned long pgoff)
-> > ??{
-> > - ?? ?? ?? return do_mmap2(addr, len, prot, flags, fd, pgoff);
-> > + ?? ?? ?? /* this is wrong for sun3, BTW */
-> 
-> Can you please add the why part to the comment?
-> Thanks!
+Please pull to get the latest m68knommu arch fixes. Not a lot in here,
+mostly small fixes. The biggest change is Tim Abbott's linker script
+cleanups.
 
-Try libc mmap64() with e.g. 65536 as the last argument.  On mac and sun3.
-Compare the results...
+git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-li=
+nus
 
-Basically, sun3 has larger pages and forgets to compensate.  Corresponding
-part in libc (actual libc6 m68k binary) is
-	movel %d6,%d2
-	moveq #20,%d0
-	lsll %d0,%d2
-	movel %d7,%d1
-	moveq #12,%d3
-	lsrl %d3,%d1
-	orl %d2,%d1
-	moveal %d1,%a0		/* a0 = d6d7 >> 12 */
-	movel %a3,%d5
-	movel %a4,%d4
-	movel %a5,%d3
-	movel %a2,%d2
-	%fp@(8),%d1
- 	moveq #63,%d0
-	notb %d0		/* 256 ^ 63, i.e. 192, i.e. __NR_mmap2 */
-	trap #0
+Thanks
+Greg
 
-It does the last argument of mmap2 in 4Kb units (as on almost all
-targets; ia64 is the exception, but it's actually not used by libc -
-they have mmap64 aliased to mmap and using sys_mmap, not sys_mmap2).
 
-So sun3 ought to shift the argument down by 1 before passing it to
-do_mmap_pgoff() (or sys_mmap_pgoff() with these patches) - mm/mmap.c
-stuff really expects the argument in PAGE_SIZE units.
 
-Generally I'd agree that existing behaviour is a part of ABI, however
-weird it might be, but since it's actually wrong for the only libc user
-of the syscall *and* differs from the behaviour on other subarchitectures...
+
+The following changes since commit 22763c5cf3690a681551162c15d34d935308=
+c8d7:
+  Linus Torvalds (1):
+        Linux 2.6.32
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-=
+linus
+
+Greg Ungerer (3):
+      m68knommu: define arch_has_single_step() and friends
+      m68knommu: add a task_pt_regs() macro
+      m68knommu: rename BSS define in linker script
+
+Lennart Sorensen (1):
+      m68knommu: add uboot commandline argument passing support
+
+Steven King (2):
+      m68knommu: Coldfire GPIO corrections
+      m68knommu: export clk_* symbols in clk.c
+
+Tim Abbott (7):
+      m68knommu: Don't hardcode the value of PAGE_SIZE in the linker sc=
+ript.
+      m68knommu: Make THREAD_SIZE available to assembly files.
+      m68knommu: Use INIT_TASK_DATA and CACHELINE_ALIGNED_DATA.
+      m68knommu: Use more macros inside the .init section.
+      m68knommu: Move __init_begin out of the .init section.
+      m68knommu: Move __init_end out of the .init section.
+      m68knommu: Split the .init section into INIT_TEXT_SECTION and INI=
+T_DATA_SECTION.
+
+Uwe Kleine-K=C3=B6nig (1):
+      m68knommu: move mcf_remove to .devexit.text
+
+ arch/m68k/include/asm/processor.h       |    2 +
+ arch/m68k/include/asm/ptrace.h          |   12 ++++
+ arch/m68k/include/asm/thread_info_no.h  |    4 +-
+ arch/m68knommu/Kconfig                  |    7 ++
+ arch/m68knommu/kernel/ptrace.c          |   18 +++++-
+ arch/m68knommu/kernel/setup.c           |   92 +++++++++++++++++++++++=
++++++++-
+ arch/m68knommu/kernel/vmlinux.lds.S     |   47 +++++-----------
+ arch/m68knommu/platform/523x/gpio.c     |    5 +-
+ arch/m68knommu/platform/527x/gpio.c     |    6 +-
+ arch/m68knommu/platform/528x/gpio.c     |    2 +-
+ arch/m68knommu/platform/coldfire/clk.c  |    7 ++-
+ arch/m68knommu/platform/coldfire/head.S |   10 +++
+ drivers/serial/mcf.c                    |    2 +-
+ 13 files changed, 167 insertions(+), 47 deletions(-)
