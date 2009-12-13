@@ -1,52 +1,51 @@
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Subject: Re: Add private syscalls to support NPTL
-Date: Fri, 11 Dec 2009 19:23:48 +0300
-Message-ID: <4B227214.6060004@codesourcery.com>
-References: <4A89D037.7090807@codesourcery.com>	 <4B1CBEE8.7000907@codesourcery.com> <10f740e80912110601o2b7f3f19sf0a3ee19fa2dbaad@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] ataflop: Killl warning about unused variable flags
+Date: Sun, 13 Dec 2009 20:07:31 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.0912132006430.19895@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.codesourcery.com ([38.113.113.100]:38986 "EHLO
-	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750735AbZLKQXo (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Dec 2009 11:23:44 -0500
-In-Reply-To: <10f740e80912110601o2b7f3f19sf0a3ee19fa2dbaad@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, uClinux development list <uclinux-dev@uclinux.org>
+To: Jiri Kosina <jkosina@suse.cz>, Jens Axboe <jens.axboe@oracle.com>, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On 12/11/09 5:01 PM, Geert Uytterhoeven wrote:
-> On Mon, Dec 7, 2009 at 09:38, Maxim Kuvyrkov<maxim@codesourcery.com>  wrote:
-...
->> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
->> index 48b87f5..d076bea 100644
->> --- a/arch/m68k/include/asm/unistd.h
->> +++ b/arch/m68k/include/asm/unistd.h
->> @@ -336,10 +336,14 @@
->>   #define __NR_pwritev           330
->>   #define __NR_rt_tgsigqueueinfo 331
->>   #define __NR_perf_event_open   332
->> +#define __NR_read_tp           333
->> +#define __NR_write_tp          334
->> +#define __NR_atomic_cmpxchg_32 335
->> +#define __NR_atomic_barrier    336
->
-> BTW, other architectures seem to call these __NR_[gs]et_thread_area
-> instead of __NR_{read,write}_tp?
-> Shouldn't we follow for consistency?
+After commit e0c0978699a83f26f2341f7eedc1463b79e31aff ("ataflop: remove
+buggy/commented-out IRQ disable from do_fd_request()") the `flags' variable
+became unused:
 
-Yes, we may.  As long as the syscall numbers stay the same.  I'll send 
-the updated patch once the memory handling issue is resolved.
+drivers/block/ataflop.c:1473: warning: unused variable 'flags'
 
-BTW, does the analysis of the memory handling bug 
-(http://marc.info/?l=linux-m68k&m=126043678613032&w=2) look right to you?
+Hence remove it.
 
-Regards,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/block/ataflop.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index a5af1d6..e35cf59 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -1470,8 +1470,6 @@ repeat:
+ 
+ void do_fd_request(struct request_queue * q)
+ {
+- 	unsigned long flags;
+-
+ 	DPRINT(("do_fd_request for pid %d\n",current->pid));
+ 	while( fdc_busy ) sleep_on( &fdc_wait );
+ 	fdc_busy = 1;
 -- 
-Maxim Kuvyrkov
-CodeSourcery
-maxim@codesourcery.com
-(650) 331-3385 x724
+1.6.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
