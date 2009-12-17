@@ -1,561 +1,188 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68knommu: get rid of __do_IRQ and add support for using
- gpio irqs.
-Date: Fri, 18 Dec 2009 00:03:42 +1000
-Message-ID: <4B2A3A3E.9010002__38508.6066126407$1261059205$gmane$org@snapgear.com>
-References: <200912161915.39692.sfking@fdwdc.com>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Subject: Re: Add private syscalls to support NPTL
+Date: Thu, 17 Dec 2009 20:53:26 +0300
+Message-ID: <4B2A7016.9080708@codesourcery.com>
+References: <4A89D037.7090807@codesourcery.com>	 <4B1CBEE8.7000907@codesourcery.com> <10f740e80912110601o2b7f3f19sf0a3ee19fa2dbaad@mail.gmail.com> <4B227214.6060004@codesourcery.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050701010900020605010206"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <200912161915.39692.sfking@fdwdc.com>
+Received: from mail.codesourcery.com ([38.113.113.100]:60816 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757274AbZLQRxi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Dec 2009 12:53:38 -0500
+In-Reply-To: <4B227214.6060004@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Steven King <sfking@fdwdc.com>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, uClinux development list <uclinux-dev@uclinux.org>
 
-Hi Steven
+This is a multi-part message in MIME format.
+--------------050701010900020605010206
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 12/17/2009 01:15 PM, Steven King wrote:
-> Since we now have generic irq support for m68knommu and as __do_IRQ is
-> supposed to go away real soon now, I added config GENERIC_HARDIRQS_NO__DO_IRQ
-> to m68knommu/Kconfig.  Unfortunately, that produced an unbootable kernel --
-> looking at the code for generic_handle_irq in linux/irq.h, the NO__DO_IRQ
-> version unconditionally calls desc->handle_irq, which suggests that an irq's
-> handle_irq isnt getting initialized in the early boot and indeed, adding an
-> initialization of handle_irq in init_IRQ produced a working system.
+On 12/11/09 7:23 PM, Maxim Kuvyrkov wrote:
+> On 12/11/09 5:01 PM, Geert Uytterhoeven wrote:
+>> On Mon, Dec 7, 2009 at 09:38, Maxim Kuvyrkov<maxim@codesourcery.com>
+>> wrote:
+...
+>> BTW, other architectures seem to call these __NR_[gs]et_thread_area
+>> instead of __NR_{read,write}_tp?
+>> Shouldn't we follow for consistency?
 >
-> I'm not entirely satisfied with that solution as it ignores why we are getting
-> an irq when no handler has been setup for it, but in any case, using
-> set_irq_chip_and_handler in init_IRQ to initialize all the handlers is the
-> right thing to do (or atleast, its what all the other arches do) (and I didnt
-> feel like digging out the BDM pod to figure out where the mystery irq is
-> coming from).
+> Yes, we may. As long as the syscall numbers stay the same. I'll send the
+> updated patch once the memory handling issue is resolved.
 
-Yeah, sounds odd.
+Here is the updated patch.  I renamed {read,write}_tp syscalls to 
+[gs]et_thread_area.  Regarding the memory access issue in cmpxchg 
+syscall, I looked through the mm/ files and it seems that checking for 
+!pte_write() is the right way to fix the problem; so the patch fixes 
+that too.
 
+As I understand, this patch fixes all outstanding issues and is ready 
+for merge.
 
-> Then the real reason I was digging into the irq code is to add support for
-> using gpio irqs on the gpios of the parts that support that.  The following
-> patch is against
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
->
-> only the intc-2 gpio irqs have been tested on real hardware.
-
-At a first quick pass it looks good to me. I am going to be away
-for the next 2 weeks or so. I won't push it into the m68knommu.git
-until after that - give others a chance to review and comment.
-
-Thanks
-Greg
-
-
-> ------------------------------
->
-> Get rid of __do_IRQ; use set_irq_chip_and_handler to initialize irqs.  Add
-> support for using gpio irqs and setting the edge on external irqs generally.
->
-> Signed-off-by: Steven King<sfking@fdwdc.com>
-> --
->
->   arch/m68k/include/asm/m520xsim.h             |    3 +
->   arch/m68k/include/asm/m523xsim.h             |    3 +
->   arch/m68k/include/asm/m5249sim.h             |    4 +-
->   arch/m68k/include/asm/m527xsim.h             |    3 +
->   arch/m68knommu/Kconfig                       |    4 ++
->   arch/m68knommu/platform/5272/intc.c          |   39 +++++++++++---
->   arch/m68knommu/platform/68328/ints.c         |    8 +--
->   arch/m68knommu/platform/68360/ints.c         |    8 +--
->   arch/m68knommu/platform/coldfire/intc-2.c    |   76 ++++++++++++++++++++++++--
->   arch/m68knommu/platform/coldfire/intc-simr.c |   68 ++++++++++++++++++++++--
->   arch/m68knommu/platform/coldfire/intc.c      |   59 +++++++++++++++++++--
->   11 files changed, 239 insertions(+), 36 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/m520xsim.h b/arch/m68k/include/asm/m520xsim.h
-> index ed2b69b..1b6fb8c 100644
-> --- a/arch/m68k/include/asm/m520xsim.h
-> +++ b/arch/m68k/include/asm/m520xsim.h
-> @@ -54,9 +54,12 @@
->   #define MCFSIM_SDCS0        0x000a8110	/* SDRAM Chip Select 0 Configuration */
->   #define MCFSIM_SDCS1        0x000a8114	/* SDRAM Chip Select 1 Configuration */
->
-> +#define MCFEPORT_EPPAR			0xFC088000
->   #define MCFEPORT_EPDDR			0xFC088002
-> +#define MCFEPORT_EPIER			0xFC088003
->   #define MCFEPORT_EPDR			0xFC088004
->   #define MCFEPORT_EPPDR			0xFC088005
-> +#define MCFEPORT_EPFR			0xFC088006
->
->   #define MCFGPIO_PODR_BUSCTL		0xFC0A4000
->   #define MCFGPIO_PODR_BE			0xFC0A4001
-> diff --git a/arch/m68k/include/asm/m523xsim.h b/arch/m68k/include/asm/m523xsim.h
-> index a34894c..7660277 100644
-> --- a/arch/m68k/include/asm/m523xsim.h
-> +++ b/arch/m68k/include/asm/m523xsim.h
-> @@ -110,9 +110,12 @@
->    * EPort
->    */
->
-> +#define MCFEPORT_EPPAR		(MCF_IPSBAR + 0x130000)
->   #define MCFEPORT_EPDDR		(MCF_IPSBAR + 0x130002)
-> +#define MCFEPORT_EPIER		(MCF_IPSBAR + 0x130003)
->   #define MCFEPORT_EPDR		(MCF_IPSBAR + 0x130004)
->   #define MCFEPORT_EPPDR		(MCF_IPSBAR + 0x130005)
-> +#define MCFEPORT_EPFR		(MCF_IPSBAR + 0x130006)
->
->   /*
->    * Generic GPIO support
-> diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
-> index 14bce87..840fb4a 100644
-> --- a/arch/m68k/include/asm/m5249sim.h
-> +++ b/arch/m68k/include/asm/m5249sim.h
-> @@ -126,8 +126,8 @@
->    * Generic GPIO support
->    */
->   #define MCFGPIO_PIN_MAX		64
-> -#define MCFGPIO_IRQ_MAX		-1
-> -#define MCFGPIO_IRQ_VECBASE	-1
-> +#define MCFGPIO_IRQ_MAX		MCFINTC2_GPIOIRQ7
-> +#define MCFGPIO_IRQ_VECBASE	MCFINTC2_GPIOIRQ0
->
->   /****************************************************************************/
->
-> diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
-> index 453356d..81d69a8 100644
-> --- a/arch/m68k/include/asm/m527xsim.h
-> +++ b/arch/m68k/include/asm/m527xsim.h
-> @@ -218,9 +218,12 @@
->    * EPort
->    */
->
-> +#define MCFEPORT_EPPAR		(MCF_IPSBAR + 0x130000)
->   #define MCFEPORT_EPDDR		(MCF_IPSBAR + 0x130002)
-> +#define MCFEPORT_EPIER		(MCF_IPSBAR + 0x130003)
->   #define MCFEPORT_EPDR		(MCF_IPSBAR + 0x130004)
->   #define MCFEPORT_EPPDR		(MCF_IPSBAR + 0x130005)
-> +#define MCFEPORT_EPFR		(MCF_IPSBAR + 0x130006)
->
->
->   /*
-> diff --git a/arch/m68knommu/Kconfig b/arch/m68knommu/Kconfig
-> index 064f591..63be09e 100644
-> --- a/arch/m68knommu/Kconfig
-> +++ b/arch/m68knommu/Kconfig
-> @@ -59,6 +59,10 @@ config GENERIC_HARDIRQS
->   	bool
->   	default y
->
-> +config GENERIC_HARDIRQS_NO__DO_IRQ
-> +	bool
-> +	default y
-> +
->   config GENERIC_CALIBRATE_DELAY
->   	bool
->   	default y
-> diff --git a/arch/m68knommu/platform/5272/intc.c b/arch/m68knommu/platform/5272/intc.c
-> index 7081e0a..2889f7d 100644
-> --- a/arch/m68knommu/platform/5272/intc.c
-> +++ b/arch/m68knommu/platform/5272/intc.c
-> @@ -103,8 +103,26 @@ static void intc_irq_ack(unsigned int irq)
->
->   static int intc_irq_set_type(unsigned int irq, unsigned int type)
->   {
-> -	/* We can set the edge type here for external interrupts */
-> -	return 0;
-> +	/* set the edge type for external interrupts */
-> +	u32 pitr;
-> +
-> +	if ((type != IRQF_TRIGGER_RISING) || (type != IRQF_TRIGGER_FALLING))
-> +		return -EINVAL;
-> +
-> +	switch (irq) {
-> +	case MCF_IRQ_EINT1 ... MCF_IRQ_EINT4:
-> +	case MCF_IRQ_EINT5 ... MCF_IRQ_EINT6:
-> +		pitr = __raw_readl(MCFSIM_PITR);
-> +		if (type&  IRQF_TRIGGER_RISING)
-> +			pitr |= 1<<  (96 - irq);
-> +		else
-> +			pitr&= ~(1<<  (96 - irq));
-> +		__raw_writel(pitr, MCFSIM_PITR);
-> +
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
->   }
->
->   static struct irq_chip intc_irq_chip = {
-> @@ -128,11 +146,16 @@ void __init init_IRQ(void)
->   	writel(0x88888888, MCF_MBAR + MCFSIM_ICR4);
->
->   	for (irq = 0; (irq<  NR_IRQS); irq++) {
-> -		irq_desc[irq].status = IRQ_DISABLED;
-> -		irq_desc[irq].action = NULL;
-> -		irq_desc[irq].depth = 1;
-> -		irq_desc[irq].chip =&intc_irq_chip;
-> -		intc_irq_set_type(irq, 0);
-> +		switch (irq) {
-> +		case MCF_IRQ_EINT1 ... MCF_IRQ_EINT4:
-> +		case MCF_IRQ_EINT5 ... MCF_IRQ_EINT6:
-> +			set_irq_chip_and_handler(irq,&intc_irq_chip,
-> +					handle_edge_irq);
-> +			break;
-> +		default:
-> +			set_irq_chip_and_handler(irq,&intc_irq_chip,
-> +					handle_level_irq);
-> +			break;
-> +		}
->   	}
->   }
-> -
-> diff --git a/arch/m68knommu/platform/68328/ints.c b/arch/m68knommu/platform/68328/ints.c
-> index b91ee85..8a6a102 100644
-> --- a/arch/m68knommu/platform/68328/ints.c
-> +++ b/arch/m68knommu/platform/68328/ints.c
-> @@ -178,11 +178,7 @@ void __init init_IRQ(void)
->   	/* turn off all interrupts */
->   	IMR = ~0;
->
-> -	for (i = 0; (i<  NR_IRQS); i++) {
-> -		irq_desc[i].status = IRQ_DISABLED;
-> -		irq_desc[i].action = NULL;
-> -		irq_desc[i].depth = 1;
-> -		irq_desc[i].chip =&intc_irq_chip;
-> -	}
-> +	for (i = 0; (i<  NR_IRQS); i++)
-> +		set_irq_chip_and_handler(i,&intc_irq_chip, handle_level_irq);
->   }
->
-> diff --git a/arch/m68knommu/platform/68360/ints.c b/arch/m68knommu/platform/68360/ints.c
-> index 1143f77..9b94c52 100644
-> --- a/arch/m68knommu/platform/68360/ints.c
-> +++ b/arch/m68knommu/platform/68360/ints.c
-> @@ -132,11 +132,7 @@ void init_IRQ(void)
->   	/* turn off all CPM interrupts */
->   	pquicc->intr_cimr = 0x00000000;
->
-> -	for (i = 0; (i<  NR_IRQS); i++) {
-> -		irq_desc[i].status = IRQ_DISABLED;
-> -		irq_desc[i].action = NULL;
-> -		irq_desc[i].depth = 1;
-> -		irq_desc[i].chip =&intc_irq_chip;
-> -	}
-> +	for (i = 0; (i<  NR_IRQS); i++)
-> +		set_irq_chip_and_handler(i,&intc_irq_chip, handle_level_irq);
->   }
->
-> diff --git a/arch/m68knommu/platform/coldfire/intc-2.c b/arch/m68knommu/platform/coldfire/intc-2.c
-> index 5598c8b..2863285 100644
-> --- a/arch/m68knommu/platform/coldfire/intc-2.c
-> +++ b/arch/m68knommu/platform/coldfire/intc-2.c
-> @@ -39,6 +39,15 @@ static void intc_irq_mask(unsigned int irq)
->
->   		val = __raw_readl(imraddr);
->   		__raw_writel(val | imrbit, imraddr);
-> +
-> +		/* only on eport */
-> +		if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +				irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +
-> +			u8 epier = __raw_readb(MCFEPORT_EPIER);
-> +			epier&= ~(1<<  (irq - MCFGPIO_IRQ_VECBASE));
-> +			__raw_writeb(epier, MCFEPORT_EPIER);
-> +		}
->   	}
->   }
->
-> @@ -64,13 +73,72 @@ static void intc_irq_unmask(unsigned int irq)
->
->   		val = __raw_readl(imraddr);
->   		__raw_writel(val&  ~imrbit, imraddr);
-> +
-> +		/* only on eport */
-> +		if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +				irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +
-> +			u8 epier = __raw_readb(MCFEPORT_EPIER);
-> +			epier |= 1<<  (irq - MCFGPIO_IRQ_VECBASE);
-> +			__raw_writeb(epier, MCFEPORT_EPIER);
-> +		}
-> +	}
-> +}
-> +
-> +static void intc_irq_ack(unsigned int irq)
-> +{
-> +	/* only on eport */
-> +	if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +			irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +		u8 epfr = __raw_readb(MCFEPORT_EPFR);
-> +		epfr |= 1<<  (irq - MCFGPIO_IRQ_VECBASE);
-> +		__raw_writeb(epfr, MCFEPORT_EPFR);
->   	}
->   }
->
-> +static int intc_irq_set_type(unsigned int irq, unsigned int flow_type)
-> +{
-> +	unsigned shift;
-> +	u16 eppar;
-> +
-> +	/* only on eport */
-> +	if (irq<  MCFGPIO_IRQ_VECBASE ||
-> +			irq>= (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX))
-> +		return -EINVAL;
-> +
-> +	/* we only support TRIGGER_LOW or either (or both) RISING and FALLING */
-> +	if ((flow_type&  IRQF_TRIGGER_HIGH) ||
-> +			((flow_type&  IRQF_TRIGGER_LOW)&&
-> +			 (flow_type&  (IRQF_TRIGGER_RISING |
-> +				       IRQF_TRIGGER_FALLING))))
-> +		return -EINVAL;
-> +
-> +	shift = (irq - MCFGPIO_IRQ_VECBASE) * 2;
-> +
-> +	/* default to TRIGGER_LOW */
-> +	eppar = 0;
-> +	if (flow_type&  IRQF_TRIGGER_RISING)
-> +		eppar |= (0x01<<  shift);
-> +	if (flow_type&  IRQF_TRIGGER_FALLING)
-> +		eppar |= (0x02<<  shift);
-> +
-> +	if (eppar)
-> +		set_irq_handler(irq, handle_edge_irq);
-> +	else
-> +		set_irq_handler(irq, handle_level_irq);
-> +
-> +	eppar |= (__raw_readw(MCFEPORT_EPPAR)&  ~(0x3<<  shift));
-> +	__raw_writew(eppar, MCFEPORT_EPPAR);
-> +
-> +	return 0;
-> +}
-> +
->   static struct irq_chip intc_irq_chip = {
->   	.name		= "CF-INTC",
->   	.mask		= intc_irq_mask,
->   	.unmask		= intc_irq_unmask,
-> +	.ack		= intc_irq_ack,
-> +	.set_type	= intc_irq_set_type,
->   };
->
->   void __init init_IRQ(void)
-> @@ -83,11 +151,7 @@ void __init init_IRQ(void)
->   	__raw_writel(0x1, MCF_IPSBAR + MCFICM_INTC0 + MCFINTC_IMRL);
->   	__raw_writel(0x1, MCF_IPSBAR + MCFICM_INTC1 + MCFINTC_IMRL);
->
-> -	for (irq = 0; (irq<  NR_IRQS); irq++) {
-> -		irq_desc[irq].status = IRQ_DISABLED;
-> -		irq_desc[irq].action = NULL;
-> -		irq_desc[irq].depth = 1;
-> -		irq_desc[irq].chip =&intc_irq_chip;
-> -	}
-> +	for (irq = 0; (irq<  NR_IRQS); irq++)
-> +		set_irq_chip_and_handler(irq,&intc_irq_chip, handle_level_irq);
->   }
->
-> diff --git a/arch/m68knommu/platform/coldfire/intc-simr.c b/arch/m68knommu/platform/coldfire/intc-simr.c
-> index 1b01e79..cc5473f 100644
-> --- a/arch/m68knommu/platform/coldfire/intc-simr.c
-> +++ b/arch/m68knommu/platform/coldfire/intc-simr.c
-> @@ -26,6 +26,15 @@ static void intc_irq_mask(unsigned int irq)
->   		else if ((irq<  MCFINT_VECBASE + 128)&&  MCFINTC1_SIMR)
->   			__raw_writeb(irq - MCFINT_VECBASE - 64, MCFINTC1_SIMR);
->   	}
-> +
-> +	/* only on eport */
-> +	if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +			irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +
-> +		u8 epier = __raw_readb(MCFEPORT_EPIER);
-> +		epier&= ~(1<<  (irq - MCFGPIO_IRQ_VECBASE));
-> +		__raw_writeb(epier, MCFEPORT_EPIER);
-> +	}
->   }
->
->   static void intc_irq_unmask(unsigned int irq)
-> @@ -36,10 +45,63 @@ static void intc_irq_unmask(unsigned int irq)
->   		else if ((irq<  MCFINT_VECBASE + 128)&&  MCFINTC1_CIMR)
->   			__raw_writeb(irq - MCFINT_VECBASE - 64, MCFINTC1_CIMR);
->   	}
-> +
-> +	/* only on eport */
-> +	if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +			irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +
-> +		u8 epier = __raw_readb(MCFEPORT_EPIER);
-> +		epier |= 1<<  (irq - MCFGPIO_IRQ_VECBASE);
-> +		__raw_writeb(epier, MCFEPORT_EPIER);
-> +	}
-> +}
-> +
-> +static void intc_irq_ack(unsigned int irq)
-> +{
-> +	/* only on eport */
-> +	if (irq>= MCFGPIO_IRQ_VECBASE ||
-> +			irq<  (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) {
-> +		u8 epfr = __raw_readb(MCFEPORT_EPFR);
-> +		epfr |= 1<<  (irq - MCFGPIO_IRQ_VECBASE);
-> +		__raw_writeb(epfr, MCFEPORT_EPFR);
-> +	}
->   }
->
->   static int intc_irq_set_type(unsigned int irq, unsigned int type)
->   {
-> +	unsigned shift;
-> +	u16 eppar;
-> +
-> +	/* only on eport */
-> +	if (irq<  MCFGPIO_IRQ_VECBASE ||
-> +			irq>= (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX))
-> +		return -EINVAL;
-> +
-> +	/* we only support TRIGGER_LOW or either (or both) RISING and FALLING */
-> +	if ((type&  IRQF_TRIGGER_HIGH) ||
-> +			((type&  IRQF_TRIGGER_LOW)&&
-> +			 (type&  (IRQF_TRIGGER_RISING |
-> +				       IRQF_TRIGGER_FALLING))))
-> +		return -EINVAL;
-> +
-> +	shift = (irq - MCFGPIO_IRQ_VECBASE) * 2;
-> +
-> +	/* default to TRIGGER_LOW */
-> +	eppar = 0;
-> +	if (type&  IRQF_TRIGGER_RISING)
-> +		eppar |= (0x01<<  shift);
-> +	if (type&  IRQF_TRIGGER_FALLING)
-> +		eppar |= (0x02<<  shift);
-> +
-> +	if (eppar)
-> +		set_irq_handler(irq, handle_edge_irq);
-> +	else
-> +		set_irq_handler(irq, handle_level_irq);
-> +
-> +	eppar |= (__raw_readw(MCFEPORT_EPPAR)&  ~(0x3<<  shift));
-> +	__raw_writew(eppar, MCFEPORT_EPPAR);
-> +
-> +
->   	if (irq>= MCFINT_VECBASE) {
->   		if (irq<  MCFINT_VECBASE + 64)
->   			__raw_writeb(5, MCFINTC0_ICR0 + irq - MCFINT_VECBASE);
-> @@ -53,6 +115,7 @@ static struct irq_chip intc_irq_chip = {
->   	.name		= "CF-INTC",
->   	.mask		= intc_irq_mask,
->   	.unmask		= intc_irq_unmask,
-> +	.ack		= intc_irq_ack,
->   	.set_type	= intc_irq_set_type,
->   };
->
-> @@ -68,10 +131,7 @@ void __init init_IRQ(void)
->   		__raw_writeb(0xff, MCFINTC1_SIMR);
->
->   	for (irq = 0; (irq<  NR_IRQS); irq++) {
-> -		irq_desc[irq].status = IRQ_DISABLED;
-> -		irq_desc[irq].action = NULL;
-> -		irq_desc[irq].depth = 1;
-> -		irq_desc[irq].chip =&intc_irq_chip;
-> +		set_irq_chip_and_handler(irq,&intc_irq_chip, handle_level_irq);
->   		intc_irq_set_type(irq, 0);
->   	}
->   }
-> diff --git a/arch/m68knommu/platform/coldfire/intc.c b/arch/m68knommu/platform/coldfire/intc.c
-> index a4560c8..ad392a5 100644
-> --- a/arch/m68knommu/platform/coldfire/intc.c
-> +++ b/arch/m68knommu/platform/coldfire/intc.c
-> @@ -115,16 +115,69 @@ static void intc_irq_mask(unsigned int irq)
->   {
->   	if (mcf_irq2imr[irq])
->   		mcf_setimr(mcf_irq2imr[irq]);
-> +
-> +#if defined MCFINTC2_GPIOIRQ0
-> +	if (irq>= MCFINTC2_GPIOIRQ0&&  irq<= MCFINTC2_GPIOIRQ7) {
-> +		u32 gpiointenable = __raw_readl(MCFSIM2_GPIOINTENABLE);
-> +
-> +		gpiointenable&= ~(0x101<<  (irq - MCFINTC2_GPIOIRQ0));
-> +		__raw_writel(gpiointenable, MCFSIM2_GPIOINTENABLE);
-> +	}
-> +#endif
->   }
->
->   static void intc_irq_unmask(unsigned int irq)
->   {
->   	if (mcf_irq2imr[irq])
->   		mcf_clrimr(mcf_irq2imr[irq]);
-> +
-> +#if defined MCFINTC2_GPIOIRQ0
-> +	if (irq>= MCFINTC2_GPIOIRQ0&&  irq<= MCFINTC2_GPIOIRQ7) {
-> +		struct irq_desc *desc = irq_to_desc(irq);
-> +		u32 gpiointenable = __raw_readl(MCFSIM2_GPIOINTENABLE);
-> +
-> +		if (desc->status&  IRQF_TRIGGER_RISING)
-> +			gpiointenable |= 0x0001<<  (irq - MCFINTC2_GPIOIRQ0);
-> +		if (desc->status&  IRQF_TRIGGER_FALLING)
-> +			gpiointenable |= 0x0100<<  (irq - MCFINTC2_GPIOIRQ0);
-> +		__raw_writel(gpiointenable, MCFSIM2_GPIOINTENABLE);
-> +	}
-> +#endif
-> +}
-> +
-> +static void intc_irq_ack(unsigned int irq)
-> +{
-> +#if defined MCFINTC2_GPIOIRQ0
-> +	if (irq>= MCFINTC2_GPIOIRQ0&&  irq<= MCFINTC2_GPIOIRQ7) {
-> +		u32 gpiointclear = __raw_readl(MCFSIM2_GPIOINTCLEAR);
-> +
-> +		gpiointclear |= 0x0101<<  (irq - MCFINTC2_GPIOIRQ0);
-> +		__raw_writel(gpiointclear, MCFSIM2_GPIOINTCLEAR);
-> +	}
-> +#endif
->   }
->
->   static int intc_irq_set_type(unsigned int irq, unsigned int type)
->   {
-> +#if defined MCFINTC2_GPIOIRQ0
-> +	u32 gpiointenable;
-> +
-> +	if (type&  ~(IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
-> +		return -EINVAL;
-> +
-> +	if ((irq<  MCFINTC2_GPIOIRQ0) || (irq>  MCFINTC2_GPIOIRQ7))
-> +		return -EINVAL;
-> +
-> +	/* enable rising or falling or both */
-> +	gpiointenable = __raw_readl(MCFSIM2_GPIOINTENABLE);
-> +	gpiointenable&= ~(0x101<<  (irq - MCFINTC2_GPIOIRQ0));
-> +	if (type&  IRQF_TRIGGER_RISING)
-> +		gpiointenable |= 0x0001<<  (irq - MCFINTC2_GPIOIRQ0);
-> +	if (type&  IRQF_TRIGGER_FALLING)
-> +		gpiointenable |= 0x0100<<  (irq - MCFINTC2_GPIOIRQ0);
-> +	__raw_writel(gpiointenable, MCFSIM2_GPIOINTENABLE);
-> +#endif
-> +
->   	return 0;
->   }
->
-> @@ -132,6 +185,7 @@ static struct irq_chip intc_irq_chip = {
->   	.name		= "CF-INTC",
->   	.mask		= intc_irq_mask,
->   	.unmask		= intc_irq_unmask,
-> +	.ack		= intc_irq_ack,
->   	.set_type	= intc_irq_set_type,
->   };
->
-> @@ -143,10 +197,7 @@ void __init init_IRQ(void)
->   	mcf_maskimr(0xffffffff);
->
->   	for (irq = 0; (irq<  NR_IRQS); irq++) {
-> -		irq_desc[irq].status = IRQ_DISABLED;
-> -		irq_desc[irq].action = NULL;
-> -		irq_desc[irq].depth = 1;
-> -		irq_desc[irq].chip =&intc_irq_chip;
-> +		set_irq_chip_and_handler(irq,&intc_irq_chip, handle_level_irq);
->   		intc_irq_set_type(irq, 0);
->   	}
->   }
->
->
+Regards,
 
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Maxim Kuvyrkov
+CodeSourcery
+maxim@codesourcery.com
+(650) 331-3385 x724
+
+--------------050701010900020605010206
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="0001-Add-NPTL-support-for-m68k.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="0001-Add-NPTL-support-for-m68k.patch"
+
+RnJvbSBmMWUyYmRhYTE5MWYwOGQzMzkzOGJkNDJjZjA5MGYzZDk0NjY4NjZlIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBNYXhpbSBLdXZ5cmtvdiA8bWF4aW1AY29kZXNvdXJj
+ZXJ5LmNvbT4KRGF0ZTogTW9uLCA3IERlYyAyMDA5IDAwOjI0OjI3IC0wODAwClN1YmplY3Q6
+IFtQQVRDSCAxLzJdIEFkZCBOUFRMIHN1cHBvcnQgZm9yIG02OGsKClRoaXMgcGF0Y2ggYWRk
+cyBzZXZlcmFsIHN5c2NhbGxzLCB0aGF0IHByb3ZpZGUgbmVjZXNzYXJ5CmZ1bmN0aW9uYWxp
+dHkgdG8gc3VwcG9ydCBOUFRMIG9uIG02OGsvQ29sZEZpcmUuClRoZSBzeXNjYWxscyBhcmUg
+Z2V0X3RocmVhZF9hcmVhLCBzZXRfdGhyZWFkX2FyZWEsIGF0b21pY19jbXB4Y2hnXzMyIGFu
+ZAphdG9taWNfYmFycmllci4KVGhlIGNtcHhjaGcgc3lzY2FsbCBpcyByZXF1aXJlZCBmb3Ig
+Q29sZEZpcmUgYXMgaXQgZG9lc24ndCBzdXBwb3J0ICdjYXMnCmluc3RydWN0aW9uLgoKQWxz
+byBhIHB0cmFjZSBjYWxsIFBUUkFDRV9HRVRfVEhSRUFEX0FSRUEgaXMgYWRkZWQgdG8gYWxs
+b3cgZGVidWdnZXIgdG8KaW5zcGVjdCB0aGUgVExTIHN0b3JhZ2UuCgpTaWduZWQtb2ZmLWJ5
+OiBNYXhpbSBLdXZ5cmtvdiA8bWF4aW1AY29kZXNvdXJjZXJ5LmNvbT4KLS0tCiBhcmNoL202
+OGsvaW5jbHVkZS9hc20vcHRyYWNlLmggICAgICAgICB8ICAgIDIgKwogYXJjaC9tNjhrL2lu
+Y2x1ZGUvYXNtL3N3YWIuaCAgICAgICAgICAgfCAgICAyICstCiBhcmNoL202OGsvaW5jbHVk
+ZS9hc20vdGhyZWFkX2luZm9fbW0uaCB8ICAgIDEgKwogYXJjaC9tNjhrL2luY2x1ZGUvYXNt
+L3VuaXN0ZC5oICAgICAgICAgfCAgICA2ICsrLQogYXJjaC9tNjhrL2tlcm5lbC9lbnRyeS5T
+ICAgICAgICAgICAgICAgfCAgICA0ICsrCiBhcmNoL202OGsva2VybmVsL3Byb2Nlc3MuYyAg
+ICAgICAgICAgICB8ICAgIDQgKysKIGFyY2gvbTY4ay9rZXJuZWwvcHRyYWNlLmMgICAgICAg
+ICAgICAgIHwgICAgNSArKwogYXJjaC9tNjhrL2tlcm5lbC9zeXNfbTY4ay5jICAgICAgICAg
+ICAgfCAgIDgxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiA4IGZpbGVzIGNo
+YW5nZWQsIDEwMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
+L2FyY2gvbTY4ay9pbmNsdWRlL2FzbS9wdHJhY2UuaCBiL2FyY2gvbTY4ay9pbmNsdWRlL2Fz
+bS9wdHJhY2UuaAppbmRleCBhNmFiNjYzLi40M2FiODZhIDEwMDY0NAotLS0gYS9hcmNoL202
+OGsvaW5jbHVkZS9hc20vcHRyYWNlLmgKKysrIGIvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3B0
+cmFjZS5oCkBAIC03MSw2ICs3MSw4IEBAIHN0cnVjdCBzd2l0Y2hfc3RhY2sgewogI2RlZmlu
+ZSBQVFJBQ0VfR0VURlBSRUdTICAgICAgICAgIDE0CiAjZGVmaW5lIFBUUkFDRV9TRVRGUFJF
+R1MgICAgICAgICAgMTUKIAorI2RlZmluZSBQVFJBQ0VfR0VUX1RIUkVBRF9BUkVBICAgIDI1
+CisKICNkZWZpbmUgUFRSQUNFX1NJTkdMRUJMT0NLCTMzCS8qIHJlc3VtZSBleGVjdXRpb24g
+dW50aWwgbmV4dCBicmFuY2ggKi8KIAogI2lmZGVmIF9fS0VSTkVMX18KZGlmZiAtLWdpdCBh
+L2FyY2gvbTY4ay9pbmNsdWRlL2FzbS9zd2FiLmggYi9hcmNoL202OGsvaW5jbHVkZS9hc20v
+c3dhYi5oCmluZGV4IDViNzU0YWEuLmI3YjM3YTQgMTAwNjQ0Ci0tLSBhL2FyY2gvbTY4ay9p
+bmNsdWRlL2FzbS90aHJlYWRfaW5mb19tbS5oCisrKyBiL2FyY2gvbTY4ay9pbmNsdWRlL2Fz
+bS90aHJlYWRfaW5mb19tbS5oCkBAIC0xNiw2ICsxNiw3IEBAIHN0cnVjdCB0aHJlYWRfaW5m
+byB7CiAJc3RydWN0IGV4ZWNfZG9tYWluCSpleGVjX2RvbWFpbjsJLyogZXhlY3V0aW9uIGRv
+bWFpbiAqLwogCWludAkJCXByZWVtcHRfY291bnQ7CS8qIDAgPT4gcHJlZW1wdGFibGUsIDww
+ID0+IEJVRyAqLwogCV9fdTMyIGNwdTsgLyogc2hvdWxkIGFsd2F5cyBiZSAwIG9uIG02OGsg
+Ki8KKwl1bnNpZ25lZCBsb25nCQl0cF92YWx1ZTsJLyogdGhyZWFkIHBvaW50ZXIgKi8KIAlz
+dHJ1Y3QgcmVzdGFydF9ibG9jayAgICByZXN0YXJ0X2Jsb2NrOwogfTsKICNlbmRpZiAvKiBf
+X0FTU0VNQkxZX18gKi8KZGlmZiAtLWdpdCBhL2FyY2gvbTY4ay9pbmNsdWRlL2FzbS91bmlz
+dGQuaCBiL2FyY2gvbTY4ay9pbmNsdWRlL2FzbS91bmlzdGQuaAppbmRleCA0OGI4N2Y1Li5k
+NzJhNzFkIDEwMDY0NAotLS0gYS9hcmNoL202OGsvaW5jbHVkZS9hc20vdW5pc3RkLmgKKysr
+IGIvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3VuaXN0ZC5oCkBAIC0zMzYsMTAgKzMzNiwxNCBA
+QAogI2RlZmluZSBfX05SX3B3cml0ZXYJCTMzMAogI2RlZmluZSBfX05SX3J0X3Rnc2lncXVl
+dWVpbmZvCTMzMQogI2RlZmluZSBfX05SX3BlcmZfZXZlbnRfb3BlbgkzMzIKKyNkZWZpbmUg
+X19OUl9nZXRfdGhyZWFkX2FyZWEJMzMzCisjZGVmaW5lIF9fTlJfc2V0X3RocmVhZF9hcmVh
+CTMzNAorI2RlZmluZSBfX05SX2F0b21pY19jbXB4Y2hnXzMyCTMzNQorI2RlZmluZSBfX05S
+X2F0b21pY19iYXJyaWVyCTMzNgogCiAjaWZkZWYgX19LRVJORUxfXwogCi0jZGVmaW5lIE5S
+X3N5c2NhbGxzCQkzMzMKKyNkZWZpbmUgTlJfc3lzY2FsbHMJCTMzNwogCiAjZGVmaW5lIF9f
+QVJDSF9XQU5UX0lQQ19QQVJTRV9WRVJTSU9OCiAjZGVmaW5lIF9fQVJDSF9XQU5UX09MRF9S
+RUFERElSCmRpZmYgLS1naXQgYS9hcmNoL202OGsva2VybmVsL2VudHJ5LlMgYi9hcmNoL202
+OGsva2VybmVsL2VudHJ5LlMKaW5kZXggNzdmYzdjMS4uZTEzNmI4YyAxMDA2NDQKLS0tIGEv
+YXJjaC9tNjhrL2tlcm5lbC9lbnRyeS5TCisrKyBiL2FyY2gvbTY4ay9rZXJuZWwvZW50cnku
+UwpAQCAtNzYxLDQgKzc2MSw4IEBAIHN5c19jYWxsX3RhYmxlOgogCS5sb25nIHN5c19wd3Jp
+dGV2CQkvKiAzMzAgKi8KIAkubG9uZyBzeXNfcnRfdGdzaWdxdWV1ZWluZm8KIAkubG9uZyBz
+eXNfcGVyZl9ldmVudF9vcGVuCisJLmxvbmcgc3lzX2dldF90aHJlYWRfYXJlYQorCS5sb25n
+IHN5c19zZXRfdGhyZWFkX2FyZWEKKwkubG9uZyBzeXNfYXRvbWljX2NtcHhjaGdfMzIJLyog
+MzM1ICovCisJLmxvbmcgc3lzX2F0b21pY19iYXJyaWVyCiAKZGlmZiAtLWdpdCBhL2FyY2gv
+bTY4ay9rZXJuZWwvcHJvY2Vzcy5jIGIvYXJjaC9tNjhrL2tlcm5lbC9wcm9jZXNzLmMKaW5k
+ZXggMDUyOTY1OS4uMTdjM2YzMiAxMDA2NDQKLS0tIGEvYXJjaC9tNjhrL2tlcm5lbC9wcm9j
+ZXNzLmMKKysrIGIvYXJjaC9tNjhrL2tlcm5lbC9wcm9jZXNzLmMKQEAgLTI1MSw2ICsyNTEs
+MTAgQEAgaW50IGNvcHlfdGhyZWFkKHVuc2lnbmVkIGxvbmcgY2xvbmVfZmxhZ3MsIHVuc2ln
+bmVkIGxvbmcgdXNwLAogCiAJcC0+dGhyZWFkLnVzcCA9IHVzcDsKIAlwLT50aHJlYWQua3Nw
+ID0gKHVuc2lnbmVkIGxvbmcpY2hpbGRzdGFjazsKKworCWlmIChjbG9uZV9mbGFncyAmIENM
+T05FX1NFVFRMUykKKwkJdGFza190aHJlYWRfaW5mbyhwKS0+dHBfdmFsdWUgPSByZWdzLT5k
+NTsKKwogCS8qCiAJICogTXVzdCBzYXZlIHRoZSBjdXJyZW50IFNGQy9ERkMgdmFsdWUsIE5P
+VCB0aGUgdmFsdWUgd2hlbgogCSAqIHRoZSBwYXJlbnQgd2FzIGxhc3QgZGVzY2hlZHVsZWQg
+LSBSR0ggIDEwLTA4LTk2CmRpZmYgLS1naXQgYS9hcmNoL202OGsva2VybmVsL3B0cmFjZS5j
+IGIvYXJjaC9tNjhrL2tlcm5lbC9wdHJhY2UuYwppbmRleCAxZmMyMTdlLi42MTZlNTk3IDEw
+MDY0NAotLS0gYS9hcmNoL202OGsva2VybmVsL3B0cmFjZS5jCisrKyBiL2FyY2gvbTY4ay9r
+ZXJuZWwvcHRyYWNlLmMKQEAgLTI0NSw2ICsyNDUsMTEgQEAgbG9uZyBhcmNoX3B0cmFjZShz
+dHJ1Y3QgdGFza19zdHJ1Y3QgKmNoaWxkLCBsb25nIHJlcXVlc3QsIGxvbmcgYWRkciwgbG9u
+ZyBkYXRhKQogCQkJcmV0ID0gLUVGQVVMVDsKIAkJYnJlYWs7CiAKKwljYXNlIFBUUkFDRV9H
+RVRfVEhSRUFEX0FSRUE6CisJCXJldCA9IHB1dF91c2VyKHRhc2tfdGhyZWFkX2luZm8oY2hp
+bGQpLT50cF92YWx1ZSwKKwkJCSAgICAgICAodW5zaWduZWQgbG9uZyBfX3VzZXIgKilkYXRh
+KTsKKwkJYnJlYWs7CisKIAlkZWZhdWx0OgogCQlyZXQgPSBwdHJhY2VfcmVxdWVzdChjaGls
+ZCwgcmVxdWVzdCwgYWRkciwgZGF0YSk7CiAJCWJyZWFrOwpkaWZmIC0tZ2l0IGEvYXJjaC9t
+NjhrL2tlcm5lbC9zeXNfbTY4ay5jIGIvYXJjaC9tNjhrL2tlcm5lbC9zeXNfbTY4ay5jCmlu
+ZGV4IDdkZWI0MDIuLjFmMGRiODggMTAwNjQ0Ci0tLSBhL2FyY2gvbTY4ay9rZXJuZWwvc3lz
+X202OGsuYworKysgYi9hcmNoL202OGsva2VybmVsL3N5c19tNjhrLmMKQEAgLTI4LDYgKzI4
+LDExIEBACiAjaW5jbHVkZSA8YXNtL3RyYXBzLmg+CiAjaW5jbHVkZSA8YXNtL3BhZ2UuaD4K
+ICNpbmNsdWRlIDxhc20vdW5pc3RkLmg+CisjaW5jbHVkZSA8bGludXgvZWxmLmg+CisjaW5j
+bHVkZSA8YXNtL3RsYi5oPgorCithc21saW5rYWdlIGludCBkb19wYWdlX2ZhdWx0KHN0cnVj
+dCBwdF9yZWdzICpyZWdzLCB1bnNpZ25lZCBsb25nIGFkZHJlc3MsCisJCQkgICAgIHVuc2ln
+bmVkIGxvbmcgZXJyb3JfY29kZSk7CiAKIC8qIGNvbW1vbiBjb2RlIGZvciBvbGQgYW5kIG5l
+dyBtbWFwcyAqLwogc3RhdGljIGlubGluZSBsb25nIGRvX21tYXAyKApAQCAtNjYyLDMgKzY2
+Nyw3OSBAQCBpbnQga2VybmVsX2V4ZWN2ZShjb25zdCBjaGFyICpmaWxlbmFtZSwgY2hhciAq
+Y29uc3QgYXJndltdLCBjaGFyICpjb25zdCBlbnZwW10pCiAJCQk6ICJkIiAoX19hKSwgImQi
+IChfX2IpLCAiZCIgKF9fYykpOwogCXJldHVybiBfX3JlczsKIH0KKworYXNtbGlua2FnZSB1
+bnNpZ25lZCBsb25nIHN5c19nZXRfdGhyZWFkX2FyZWEodm9pZCkKK3sKKwlyZXR1cm4gY3Vy
+cmVudF90aHJlYWRfaW5mbygpLT50cF92YWx1ZTsKK30KKworYXNtbGlua2FnZSBpbnQgc3lz
+X3NldF90aHJlYWRfYXJlYSh1bnNpZ25lZCBsb25nIHRwKQoreworCWN1cnJlbnRfdGhyZWFk
+X2luZm8oKS0+dHBfdmFsdWUgPSB0cDsKKwlyZXR1cm4gMDsKK30KKworLyogVGhpcyBzeXNj
+YWxsIGdldHMgaXRzIGFyZ3VtZW50cyBpbiBBMCAobWVtKSwgRDIgKG9sZHZhbCkgYW5kCisg
+ICBEMSAobmV3dmFsKS4gICovCithc21saW5rYWdlIGludAorc3lzX2F0b21pY19jbXB4Y2hn
+XzMyKHVuc2lnbmVkIGxvbmcgbmV3dmFsLCBpbnQgb2xkdmFsLCBpbnQgZDMsIGludCBkNCwg
+aW50IGQ1LAorCQkgICAgICB1bnNpZ25lZCBsb25nIF9fdXNlciAqIG1lbSkKK3sKKwkvKiBU
+aGlzIHdhcyBib3Jyb3dlZCBmcm9tIEFSTSdzIGltcGxlbWVudGF0aW9uLiAgKi8KKwlmb3Ig
+KDs7KSB7CisJCXN0cnVjdCBtbV9zdHJ1Y3QgKm1tID0gY3VycmVudC0+bW07CisJCXBnZF90
+ICpwZ2Q7CisJCXBtZF90ICpwbWQ7CisJCXB0ZV90ICpwdGU7CisJCXNwaW5sb2NrX3QgKnB0
+bDsKKwkJdW5zaWduZWQgbG9uZyBtZW1fdmFsdWU7CisKKwkJZG93bl9yZWFkKCZtbS0+bW1h
+cF9zZW0pOworCQlwZ2QgPSBwZ2Rfb2Zmc2V0KG1tLCAodW5zaWduZWQgbG9uZyltZW0pOwor
+CQlpZiAoIXBnZF9wcmVzZW50KCpwZ2QpKQorCQkJZ290byBiYWRfYWNjZXNzOworCQlwbWQg
+PSBwbWRfb2Zmc2V0KHBnZCwgKHVuc2lnbmVkIGxvbmcpbWVtKTsKKwkJaWYgKCFwbWRfcHJl
+c2VudCgqcG1kKSkKKwkJCWdvdG8gYmFkX2FjY2VzczsKKwkJcHRlID0gcHRlX29mZnNldF9t
+YXBfbG9jayhtbSwgcG1kLCAodW5zaWduZWQgbG9uZyltZW0sICZwdGwpOworCQlpZiAoIXB0
+ZV9wcmVzZW50KCpwdGUpIHx8ICFwdGVfZGlydHkoKnB0ZSkKKwkJICAgIHx8ICFwdGVfd3Jp
+dGUoKnB0ZSkpIHsKKwkJCXB0ZV91bm1hcF91bmxvY2socHRlLCBwdGwpOworCQkJZ290byBi
+YWRfYWNjZXNzOworCQl9CisKKwkJbWVtX3ZhbHVlID0gKm1lbTsKKwkJaWYgKG1lbV92YWx1
+ZSA9PSBvbGR2YWwpCisJCQkqbWVtID0gbmV3dmFsOworCisJCXB0ZV91bm1hcF91bmxvY2so
+cHRlLCBwdGwpOworCQl1cF9yZWFkKCZtbS0+bW1hcF9zZW0pOworCQlyZXR1cm4gbWVtX3Zh
+bHVlOworCisJICAgICAgYmFkX2FjY2VzczoKKwkJdXBfcmVhZCgmbW0tPm1tYXBfc2VtKTsK
+KwkJLyogVGhpcyBpcyBub3QgbmVjZXNzYXJpbHkgYSBiYWQgYWNjZXNzLCB3ZSBjYW4gZ2V0
+IGhlcmUgaWYKKwkJICAgYSBtZW1vcnkgd2UncmUgdHJ5aW5nIHRvIHdyaXRlIHRvIHNob3Vs
+ZCBiZSBjb3BpZWQtb24td3JpdGUuCisJCSAgIE1ha2UgdGhlIGtlcm5lbCBkbyB0aGUgbmVj
+ZXNzYXJ5IHBhZ2Ugc3R1ZmYsIHRoZW4gcmUtaXRlcmF0ZS4KKwkJICAgU2ltdWxhdGUgYSB3
+cml0ZSBhY2Nlc3MgZmF1bHQgdG8gZG8gdGhhdC4gICovCisJCXsKKwkJCS8qIFRoZSBmaXJz
+dCBhcmd1bWVudCBvZiB0aGUgZnVuY3Rpb24gY29ycmVzcG9uZHMgdG8KKwkJCSAgIEQxLCB3
+aGljaCBpcyB0aGUgZmlyc3QgZmllbGQgb2Ygc3RydWN0IHB0X3JlZ3MuICAqLworCQkJc3Ry
+dWN0IHB0X3JlZ3MgKmZwID0gKHN0cnVjdCBwdF9yZWdzICopJm5ld3ZhbDsKKworCQkJLyog
+JzMnIGlzIGFuIFJNVyBmbGFnLiAgKi8KKwkJCWlmIChkb19wYWdlX2ZhdWx0KGZwLCAodW5z
+aWduZWQgbG9uZyltZW0sIDMpKQorCQkJCS8qIElmIHRoZSBkb19wYWdlX2ZhdWx0KCkgZmFp
+bGVkLCB3ZSBkb24ndAorCQkJCSAgIGhhdmUgYW55dGhpbmcgbWVhbmluZ2Z1bCB0byByZXR1
+cm4uCisJCQkJICAgVGhlcmUgc2hvdWxkIGJlIGEgU0lHU0VHViBwZW5kaW5nIGZvcgorCQkJ
+CSAgIHRoZSBwcm9jZXNzLiAgKi8KKwkJCQlyZXR1cm4gMHhkZWFkYmVlZjsKKwkJfQorCX0K
+K30KKworYXNtbGlua2FnZSBpbnQgc3lzX2F0b21pY19iYXJyaWVyKHZvaWQpCit7CisJLyog
+bm8gY29kZSBuZWVkZWQgZm9yIHVuaXByb2NzICovCisJcmV0dXJuIDA7Cit9Ci0tIAoxLjYu
+Mi40Cgo=
+--------------050701010900020605010206--
