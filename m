@@ -1,116 +1,281 @@
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Subject: Re: [PATCH] Fix siginfo._uid bug
-Date: Wed, 23 Dec 2009 22:47:50 +0300
-Message-ID: <4B3273E6.8030407@codesourcery.com>
-References: <4AB113C3.1090606@codesourcery.com> <m21vm6k76e.fsf@igel.home>	 <4AB3A4AC.6000703@codesourcery.com>	 <4AC5BFA8.4040805@codesourcery.com>	 <4AE5B06C.1090303@codesourcery.com>	 <10f740e80911191131o4a58c67ejb3073a9c8cb9fd6c@mail.gmail.com>	 <4B05A0D0.4040401@codesourcery.com>	 <10f740e80911240501v238f023ahcdab0c1fe8600bf5@mail.gmail.com> <10f740e80912231037ua8724f4s8965b5c5b255ddfd@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 10/13] mac68k: start CUDA early, take 2
+Date: Wed, 23 Dec 2009 21:15:46 +0100
+Message-ID: <10f740e80912231215m2868aec3qb3c9a419f3635bef@mail.gmail.com>
+References: <alpine.OSX.2.00.0911031502250.483@silk.local>
+	 <1258423421.2140.555.camel@pasglop>
+	 <alpine.OSX.2.00.0911171715450.371@silk.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050408090001070401030803"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.codesourcery.com ([38.113.113.100]:35664 "EHLO
-	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754129AbZLWTry (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Dec 2009 14:47:54 -0500
-In-Reply-To: <10f740e80912231037ua8724f4s8965b5c5b255ddfd@mail.gmail.com>
+Received: from mail-ew0-f219.google.com ([209.85.219.219]:40656 "EHLO
+	mail-ew0-f219.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753892AbZLWUPv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Dec 2009 15:15:51 -0500
+Received: by ewy19 with SMTP id 19so6722178ewy.21
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Dec 2009 12:15:48 -0800 (PST)
+In-Reply-To: <alpine.OSX.2.00.0911171715450.371@silk.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------050408090001070401030803
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 12/23/09 9:37 PM, Geert Uytterhoeven wrote:
-> On Tue, Nov 24, 2009 at 14:01, Geert Uytterhoeven<geert@linux-m68k.org>  wrote:
->> On Thu, Nov 19, 2009 at 20:47, Maxim Kuvyrkov<maxim@codesourcery.com>  wrote:
-...
->>> The question is which solution should we adopt.  The patch I posted fixes
->>> all current problems with have on our hands.  Andreas suggested to move to
->>> the generic layout of `struct siginfo' which will make future problems less
->>> likely, but this approach may need additional investigation.
->>
->> If moving to the generic layout decreases the probability of future problems,
->> it's the way to go.
+On Tue, Nov 17, 2009 at 10:03, Finn Thain <fthain@telegraphics.com.au> =
+wrote:
+> The valkyriefb driver needs the CUDA to work in order to set the vide=
+o
+> mode at boot. So initialise the device earlier, and bring the m68k co=
+de
+> closer to the powermac code.
 >
-> Do we have a patch somewhere?
+> Take 2 was changed as per Benjamin Herrenschmidt's review.
 
-Here it is, the patch is rather simple.
+Ben, OK for you?
 
-I'm swamped at the moment, so I'll appreciate if someone verifies that 
-the kernel runs fine with this patch applied.
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+>
+> ---
+> =C2=A0arch/m68k/mac/config.c =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A06 ++=
++
+> =C2=A0drivers/macintosh/adb.c =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A06 ++=
+-
+> =C2=A0drivers/macintosh/via-cuda.c | =C2=A0 74 ++++++++++++++++++++++=
++--------------------
+> =C2=A03 files changed, 51 insertions(+), 35 deletions(-)
+>
+> Index: linux-2.6.31/arch/m68k/mac/config.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.31.orig/arch/m68k/mac/config.c =C2=A0 =C2=A02009-11-17 =
+17:11:47.000000000 +1100
+> +++ linux-2.6.31/arch/m68k/mac/config.c 2009-11-17 17:11:47.000000000=
+ +1100
+> @@ -23,6 +23,8 @@
+> =C2=A0#include <linux/init.h>
+> =C2=A0#include <linux/vt_kern.h>
+> =C2=A0#include <linux/platform_device.h>
+> +#include <linux/adb.h>
+> +#include <linux/cuda.h>
+>
+> =C2=A0#define BOOTINFO_COMPAT_1_0
+> =C2=A0#include <asm/setup.h>
+> @@ -889,6 +891,10 @@ static void __init mac_identify(void)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0oss_init();
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0psc_init();
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0baboon_init();
+> +
+> +#ifdef CONFIG_ADB_CUDA
+> + =C2=A0 =C2=A0 =C2=A0 find_via_cuda();
+> +#endif
+> =C2=A0}
+>
+> =C2=A0static void __init mac_report_hardware(void)
+> Index: linux-2.6.31/drivers/macintosh/via-cuda.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.31.orig/drivers/macintosh/via-cuda.c =C2=A0 =C2=A0 =C2=A0=
+2009-11-17 17:07:58.000000000 +1100
+> +++ linux-2.6.31/drivers/macintosh/via-cuda.c =C2=A0 2009-11-17 17:11=
+:47.000000000 +1100
+> @@ -89,7 +89,6 @@ static int cuda_fully_inited;
+>
+> =C2=A0#ifdef CONFIG_ADB
+> =C2=A0static int cuda_probe(void);
+> -static int cuda_init(void);
+> =C2=A0static int cuda_send_request(struct adb_request *req, int sync)=
+;
+> =C2=A0static int cuda_adb_autopoll(int devs);
+> =C2=A0static int cuda_reset_adb_bus(void);
+> @@ -107,17 +106,42 @@ int cuda_request(struct adb_request *req
+>
+> =C2=A0#ifdef CONFIG_ADB
+> =C2=A0struct adb_driver via_cuda_driver =3D {
+> - =C2=A0 =C2=A0 =C2=A0 "CUDA",
+> - =C2=A0 =C2=A0 =C2=A0 cuda_probe,
+> - =C2=A0 =C2=A0 =C2=A0 cuda_init,
+> - =C2=A0 =C2=A0 =C2=A0 cuda_send_request,
+> - =C2=A0 =C2=A0 =C2=A0 cuda_adb_autopoll,
+> - =C2=A0 =C2=A0 =C2=A0 cuda_poll,
+> - =C2=A0 =C2=A0 =C2=A0 cuda_reset_adb_bus
+> + =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D "CUDA",
+> + =C2=A0 =C2=A0 =C2=A0 .probe =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D cuda_pro=
+be,
+> + =C2=A0 =C2=A0 =C2=A0 .send_request =3D cuda_send_request,
+> + =C2=A0 =C2=A0 =C2=A0 .autopoll =C2=A0 =C2=A0 =3D cuda_adb_autopoll,
+> + =C2=A0 =C2=A0 =C2=A0 .poll =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D cuda_pol=
+l,
+> + =C2=A0 =C2=A0 =C2=A0 .reset_bus =C2=A0 =C2=A0=3D cuda_reset_adb_bus=
+,
+> =C2=A0};
+> =C2=A0#endif /* CONFIG_ADB */
+>
+> -#ifdef CONFIG_PPC
+> +#ifdef CONFIG_MAC
+> +int __init find_via_cuda(void)
+> +{
+> + =C2=A0 =C2=A0struct adb_request req;
+> + =C2=A0 =C2=A0int err;
+> +
+> + =C2=A0 =C2=A0if (macintosh_config->adb_type !=3D MAC_ADB_CUDA)
+> + =C2=A0 =C2=A0 =C2=A0 return 0;
+> +
+> + =C2=A0 =C2=A0via =3D via1;
+> + =C2=A0 =C2=A0cuda_state =3D idle;
+> +
+> + =C2=A0 =C2=A0err =3D cuda_init_via();
+> + =C2=A0 =C2=A0if (err) {
+> + =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "cuda_init_via() failed\n");
+> + =C2=A0 =C2=A0 =C2=A0 via =3D NULL;
+> + =C2=A0 =C2=A0 =C2=A0 return 0;
+> + =C2=A0 =C2=A0}
+> +
+> + =C2=A0 =C2=A0/* enable autopoll */
+> + =C2=A0 =C2=A0cuda_request(&req, NULL, 3, CUDA_PACKET, CUDA_AUTOPOLL=
+, 1);
+> + =C2=A0 =C2=A0while (!req.complete)
+> + =C2=A0 =C2=A0 =C2=A0 cuda_poll();
+> +
+> + =C2=A0 =C2=A0return 1;
+> +}
+> +#else
+> =C2=A0int __init find_via_cuda(void)
+> =C2=A0{
+> =C2=A0 =C2=A0 struct adb_request req;
+> @@ -175,7 +199,7 @@ int __init find_via_cuda(void)
+> =C2=A0 =C2=A0 vias =3D NULL;
+> =C2=A0 =C2=A0 return 0;
+> =C2=A0}
+> -#endif /* CONFIG_PPC */
+> +#endif /* !defined CONFIG_MAC */
+>
+> =C2=A0static int __init via_cuda_start(void)
+> =C2=A0{
+> @@ -184,14 +208,14 @@ static int __init via_cuda_start(void)
+>
+> =C2=A0#ifdef CONFIG_MAC
+> =C2=A0 =C2=A0 cuda_irq =3D IRQ_MAC_ADB;
+> -#else /* CONFIG_MAC */
+> +#else
+> =C2=A0 =C2=A0 cuda_irq =3D irq_of_parse_and_map(vias, 0);
+> =C2=A0 =C2=A0 if (cuda_irq =3D=3D NO_IRQ) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0printk(KERN_ERR "via-cuda: can't map inter=
+rupts for %s\n",
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 vias->full_name);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV;
+> =C2=A0 =C2=A0 }
+> -#endif /* CONFIG_MAC */
+> +#endif
+>
+> =C2=A0 =C2=A0 if (request_irq(cuda_irq, cuda_interrupt, 0, "ADB", cud=
+a_interrupt)) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0printk(KERN_ERR "via-cuda: can't request i=
+rq %d\n", cuda_irq);
+> @@ -216,28 +240,10 @@ cuda_probe(void)
+> =C2=A0#else
+> =C2=A0 =C2=A0 if (macintosh_config->adb_type !=3D MAC_ADB_CUDA)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV;
+> - =C2=A0 =C2=A0via =3D via1;
+> =C2=A0#endif
+> - =C2=A0 =C2=A0return 0;
+> -}
+> -
+> -static int __init
+> -cuda_init(void)
+> -{
+> -#ifdef CONFIG_PPC
+> =C2=A0 =C2=A0 if (via =3D=3D NULL)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV;
+> =C2=A0 =C2=A0 return 0;
+> -#else
+> - =C2=A0 =C2=A0int err =3D cuda_init_via();
+> - =C2=A0 =C2=A0if (err) {
+> - =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "cuda_init_via() failed\n");
+> - =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
+> - =C2=A0 =C2=A0}
+> - =C2=A0 =C2=A0out_8(&via[IER], IER_SET|SR_INT); /* enable interrupt =
+from SR */
+> -
+> - =C2=A0 =C2=A0return via_cuda_start();
+> -#endif
+> =C2=A0}
+> =C2=A0#endif /* CONFIG_ADB */
+>
+> @@ -430,9 +436,11 @@ cuda_poll(void)
+> =C2=A0 =C2=A0 /* cuda_interrupt only takes a normal lock, we disable
+> =C2=A0 =C2=A0 =C2=A0* interrupts here to avoid re-entering and thus d=
+eadlocking.
+> =C2=A0 =C2=A0 =C2=A0*/
+> - =C2=A0 =C2=A0disable_irq(cuda_irq);
+> + =C2=A0 =C2=A0if (cuda_irq)
+> + =C2=A0 =C2=A0 =C2=A0 disable_irq(cuda_irq);
+> =C2=A0 =C2=A0 cuda_interrupt(0, NULL);
+> - =C2=A0 =C2=A0enable_irq(cuda_irq);
+> + =C2=A0 =C2=A0if (cuda_irq)
+> + =C2=A0 =C2=A0 =C2=A0 enable_irq(cuda_irq);
+> =C2=A0}
+>
+> =C2=A0static irqreturn_t
+> @@ -446,7 +454,7 @@ cuda_interrupt(int irq, void *arg)
+>
+> =C2=A0 =C2=A0 spin_lock(&cuda_lock);
+>
+> - =C2=A0 =C2=A0/* On powermacs, this handler is registered for the VI=
+A IRQ. But it uses
+> + =C2=A0 =C2=A0/* On powermacs, this handler is registered for the VI=
+A IRQ. But they use
+> =C2=A0 =C2=A0 =C2=A0* just the shift register IRQ -- other VIA interr=
+upt sources are disabled.
+> =C2=A0 =C2=A0 =C2=A0* On m68k macs, the VIA IRQ sources are dispatche=
+d individually. Unless
+> =C2=A0 =C2=A0 =C2=A0* we are polling, the shift register IRQ flag has=
+ already been cleared.
+> Index: linux-2.6.31/drivers/macintosh/adb.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.31.orig/drivers/macintosh/adb.c =C2=A0 2009-11-17 17:07=
+:58.000000000 +1100
+> +++ linux-2.6.31/drivers/macintosh/adb.c =C2=A0 =C2=A0 =C2=A0 =C2=A02=
+009-11-17 17:11:47.000000000 +1100
+> @@ -317,9 +317,11 @@ static int __init adb_init(void)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> - =C2=A0 =C2=A0 =C2=A0 if ((adb_controller =3D=3D NULL) || adb_contro=
+ller->init()) {
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_WARNIN=
+G "Warning: no ADB interface detected\n");
+> + =C2=A0 =C2=A0 =C2=A0 if (adb_controller !=3D NULL && adb_controller=
+->init &&
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 adb_controller->init())
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0adb_controller=
+ =3D NULL;
+> + =C2=A0 =C2=A0 =C2=A0 if (adb_controller =3D=3D NULL) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_WARNIN=
+G "Warning: no ADB interface detected\n");
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0} else {
+> =C2=A0#ifdef CONFIG_PPC
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (machine_is=
+_compatible("AAPL,PowerBook1998") ||
+>
 
-Regards,
 
--- 
-Maxim Kuvyrkov
-CodeSourcery
-maxim@codesourcery.com
-(650) 331-3385 x724
 
---------------050408090001070401030803
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="0001-Switch-m68k-to-generic-siginfo-layout.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="0001-Switch-m68k-to-generic-siginfo-layout.patch"
+--=20
+Gr{oetje,eeting}s,
 
-RnJvbSA4M2VlZTFhMmVjNWY1YmVhZDE2ZjE1MzRkYzdiOGNhYzA1NjYwNjc4IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBNYXhpbSBLdXZ5cmtvdiA8bWF4aW1AY29kZXNvdXJj
-ZXJ5LmNvbT4KRGF0ZTogV2VkLCAyMyBEZWMgMjAwOSAxMToyODo0MiAtMDgwMApTdWJqZWN0
-OiBbUEFUQ0hdIFN3aXRjaCBtNjhrIHRvIGdlbmVyaWMgc2lnaW5mbyBsYXlvdXQuCgpUaGlz
-IHBhdGNoIHN3aXRjaGVzIG02OGsgdG8gZ2VuZXJpYyBzaWdpbmZvIGxheW91dC4gIFRoZSBj
-dXN0b20gbGF5b3V0Cm9mIG02OGsncyBgc3RydWN0IHNpZ2luZm8nIGhhZCBzZXZlcmFsIGlz
-c3VlcyBkdWUgdG8gbm90IGNvbnNpZGVyaW5nCmFsaWFzaW5nIG9mIG1lbWJlcnMgaW4gdGhl
-IHVuaW9uLCBlLmcuLCBfdWlkMzIgd2FzIGF0IGRpZmZlcmVudCBvZmZzZXRzCmluIC5fa2ls
-bCwgLl9ydCBhbmQgLl9zaWdjaGxkLgoKU2lnbmVkLW9mZi1ieTogTWF4aW0gS3V2eXJrb3Yg
-PG1heGltQGNvZGVzb3VyY2VyeS5jb20+Ci0tLQogYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3Np
-Z2luZm8uaCB8ICAgOTEgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CiAxIGZpbGVzIGNoYW5nZWQsIDAgaW5zZXJ0aW9ucygrKSwgOTEgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3NpZ2luZm8uaCBiL2FyY2gvbTY4
-ay9pbmNsdWRlL2FzbS9zaWdpbmZvLmgKaW5kZXggY2E3ZGRlOC4uODUxZDNkNyAxMDA2NDQK
-LS0tIGEvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3NpZ2luZm8uaAorKysgYi9hcmNoL202OGsv
-aW5jbHVkZS9hc20vc2lnaW5mby5oCkBAIC0xLDk3ICsxLDYgQEAKICNpZm5kZWYgX002OEtf
-U0lHSU5GT19ICiAjZGVmaW5lIF9NNjhLX1NJR0lORk9fSAogCi0jaWZuZGVmIF9fdUNsaW51
-eF9fCi0jZGVmaW5lIEhBVkVfQVJDSF9TSUdJTkZPX1QKLSNkZWZpbmUgSEFWRV9BUkNIX0NP
-UFlfU0lHSU5GTwotI2VuZGlmCi0KICNpbmNsdWRlIDxhc20tZ2VuZXJpYy9zaWdpbmZvLmg+
-CiAKLSNpZm5kZWYgX191Q2xpbnV4X18KLQotdHlwZWRlZiBzdHJ1Y3Qgc2lnaW5mbyB7Ci0J
-aW50IHNpX3NpZ25vOwotCWludCBzaV9lcnJubzsKLQlpbnQgc2lfY29kZTsKLQotCXVuaW9u
-IHsKLQkJaW50IF9wYWRbU0lfUEFEX1NJWkVdOwotCi0JCS8qIGtpbGwoKSAqLwotCQlzdHJ1
-Y3QgewotCQkJX19rZXJuZWxfcGlkX3QgX3BpZDsJLyogc2VuZGVyJ3MgcGlkICovCi0JCQlf
-X2tlcm5lbF91aWRfdCBfdWlkOwkvKiBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eSAqLwotCQkJ
-X19rZXJuZWxfdWlkMzJfdCBfdWlkMzI7IC8qIHNlbmRlcidzIHVpZCAqLwotCQl9IF9raWxs
-OwotCi0JCS8qIFBPU0lYLjFiIHRpbWVycyAqLwotCQlzdHJ1Y3QgewotCQkJdGltZXJfdCBf
-dGlkOwkJLyogdGltZXIgaWQgKi8KLQkJCWludCBfb3ZlcnJ1bjsJCS8qIG92ZXJydW4gY291
-bnQgKi8KLQkJCWNoYXIgX3BhZFtzaXplb2YoIF9fQVJDSF9TSV9VSURfVCkgLSBzaXplb2Yo
-aW50KV07Ci0JCQlzaWd2YWxfdCBfc2lndmFsOwkvKiBzYW1lIGFzIGJlbG93ICovCi0JCQlp
-bnQgX3N5c19wcml2YXRlOyAgICAgICAvKiBub3QgdG8gYmUgcGFzc2VkIHRvIHVzZXIgKi8K
-LQkJfSBfdGltZXI7Ci0KLQkJLyogUE9TSVguMWIgc2lnbmFscyAqLwotCQlzdHJ1Y3Qgewot
-CQkJX19rZXJuZWxfcGlkX3QgX3BpZDsJLyogc2VuZGVyJ3MgcGlkICovCi0JCQlfX2tlcm5l
-bF91aWRfdCBfdWlkOwkvKiBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eSAqLwotCQkJc2lndmFs
-X3QgX3NpZ3ZhbDsKLQkJCV9fa2VybmVsX3VpZDMyX3QgX3VpZDMyOyAvKiBzZW5kZXIncyB1
-aWQgKi8KLQkJfSBfcnQ7Ci0KLQkJLyogU0lHQ0hMRCAqLwotCQlzdHJ1Y3QgewotCQkJX19r
-ZXJuZWxfcGlkX3QgX3BpZDsJLyogd2hpY2ggY2hpbGQgKi8KLQkJCV9fa2VybmVsX3VpZF90
-IF91aWQ7CS8qIGJhY2t3YXJkcyBjb21wYXRpYmlsaXR5ICovCi0JCQlpbnQgX3N0YXR1czsJ
-CS8qIGV4aXQgY29kZSAqLwotCQkJY2xvY2tfdCBfdXRpbWU7Ci0JCQljbG9ja190IF9zdGlt
-ZTsKLQkJCV9fa2VybmVsX3VpZDMyX3QgX3VpZDMyOyAvKiBzZW5kZXIncyB1aWQgKi8KLQkJ
-fSBfc2lnY2hsZDsKLQotCQkvKiBTSUdJTEwsIFNJR0ZQRSwgU0lHU0VHViwgU0lHQlVTICov
-Ci0JCXN0cnVjdCB7Ci0JCQl2b2lkICpfYWRkcjsgLyogZmF1bHRpbmcgaW5zbi9tZW1vcnkg
-cmVmLiAqLwotCQl9IF9zaWdmYXVsdDsKLQotCQkvKiBTSUdQT0xMICovCi0JCXN0cnVjdCB7
-Ci0JCQlpbnQgX2JhbmQ7CS8qIFBPTExfSU4sIFBPTExfT1VULCBQT0xMX01TRyAqLwotCQkJ
-aW50IF9mZDsKLQkJfSBfc2lncG9sbDsKLQl9IF9zaWZpZWxkczsKLX0gc2lnaW5mb190Owot
-Ci0jZGVmaW5lIFVJRDE2X1NJR0lORk9fQ09NUEFUX05FRURFRAotCi0vKgotICogSG93IHRo
-ZXNlIGZpZWxkcyBhcmUgdG8gYmUgYWNjZXNzZWQuCi0gKi8KLSN1bmRlZiBzaV91aWQKLSNp
-ZmRlZiBfX0tFUk5FTF9fCi0jZGVmaW5lIHNpX3VpZAkJX3NpZmllbGRzLl9raWxsLl91aWQz
-MgotI2RlZmluZSBzaV91aWQxNglfc2lmaWVsZHMuX2tpbGwuX3VpZAotI2Vsc2UKLSNkZWZp
-bmUgc2lfdWlkCQlfc2lmaWVsZHMuX2tpbGwuX3VpZAotI2VuZGlmCi0KLSNpZmRlZiBfX0tF
-Uk5FTF9fCi0KLSNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4KLQotc3RhdGljIGlubGluZSB2
-b2lkIGNvcHlfc2lnaW5mbyhzdHJ1Y3Qgc2lnaW5mbyAqdG8sIHN0cnVjdCBzaWdpbmZvICpm
-cm9tKQotewotCWlmIChmcm9tLT5zaV9jb2RlIDwgMCkKLQkJbWVtY3B5KHRvLCBmcm9tLCBz
-aXplb2YoKnRvKSk7Ci0JZWxzZQotCQkvKiBfc2lnY2hsZCBpcyBjdXJyZW50bHkgdGhlIGxh
-cmdlc3Qga25vdyB1bmlvbiBtZW1iZXIgKi8KLQkJbWVtY3B5KHRvLCBmcm9tLCAzKnNpemVv
-ZihpbnQpICsgc2l6ZW9mKGZyb20tPl9zaWZpZWxkcy5fc2lnY2hsZCkpOwotfQotCi0jZW5k
-aWYgLyogX19LRVJORUxfXyAqLwotI2VuZGlmIC8qICFfX3VDbGludXhfXyAqLwotCiAjZW5k
-aWYKLS0gCjEuNi4yLjQKCg==
---------------050408090001070401030803--
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
