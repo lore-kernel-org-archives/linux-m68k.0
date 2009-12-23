@@ -1,84 +1,116 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 9/15] arch/m68k: Use DIV_ROUND_CLOSEST
-Date: Wed, 23 Dec 2009 20:20:37 +0100
-Message-ID: <10f740e80912231120r363c4e0cg9b10053788fc16d9@mail.gmail.com>
-References: <Pine.LNX.4.64.0908021047280.15557@ask.diku.dk>
+From: Maxim Kuvyrkov <maxim@codesourcery.com>
+Subject: Re: [PATCH] Fix siginfo._uid bug
+Date: Wed, 23 Dec 2009 22:47:50 +0300
+Message-ID: <4B3273E6.8030407@codesourcery.com>
+References: <4AB113C3.1090606@codesourcery.com> <m21vm6k76e.fsf@igel.home>	 <4AB3A4AC.6000703@codesourcery.com>	 <4AC5BFA8.4040805@codesourcery.com>	 <4AE5B06C.1090303@codesourcery.com>	 <10f740e80911191131o4a58c67ejb3073a9c8cb9fd6c@mail.gmail.com>	 <4B05A0D0.4040401@codesourcery.com>	 <10f740e80911240501v238f023ahcdab0c1fe8600bf5@mail.gmail.com> <10f740e80912231037ua8724f4s8965b5c5b255ddfd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755517AbZLWTUl@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0908021047280.15557@ask.diku.dk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <julia@diku.dk>
-Cc: zippel@linux-m68k.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------050408090001070401030803"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.codesourcery.com ([38.113.113.100]:35664 "EHLO
+	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754129AbZLWTry (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Dec 2009 14:47:54 -0500
+In-Reply-To: <10f740e80912231037ua8724f4s8965b5c5b255ddfd@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-On Sun, Aug 2, 2009 at 09:47, Julia Lawall <julia@diku.dk> wrote:
-> From: Julia Lawall <julia@diku.dk>
->
-> The kernel.h macro DIV_ROUND_CLOSEST performs the computation (x + d/=
-2)/d
-> but is perhaps more readable.
+This is a multi-part message in MIME format.
+--------------050408090001070401030803
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks, applied.
+On 12/23/09 9:37 PM, Geert Uytterhoeven wrote:
+> On Tue, Nov 24, 2009 at 14:01, Geert Uytterhoeven<geert@linux-m68k.org>  wrote:
+>> On Thu, Nov 19, 2009 at 20:47, Maxim Kuvyrkov<maxim@codesourcery.com>  wrote:
+...
+>>> The question is which solution should we adopt.  The patch I posted fixes
+>>> all current problems with have on our hands.  Andreas suggested to move to
+>>> the generic layout of `struct siginfo' which will make future problems less
+>>> likely, but this approach may need additional investigation.
+>>
+>> If moving to the generic layout decreases the probability of future problems,
+>> it's the way to go.
+>
+> Do we have a patch somewhere?
 
-> The semantic patch that makes this change is as follows:
-> (http://www.emn.fr/x-info/coccinelle/)
->
-> // <smpl>
-> @haskernel@
-> @@
->
-> #include <linux/kernel.h>
->
-> @depends on haskernel@
-> expression x,__divisor;
-> @@
->
-> - (((x) + ((__divisor) / 2)) / (__divisor))
-> + DIV_ROUND_CLOSEST(x,__divisor)
-> // </smpl>
->
-> Signed-off-by: Julia Lawall <julia@diku.dk>
->
-> ---
-> =C2=A0arch/m68k/amiga/config.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0| =C2=A0 =C2=A02 +-
-> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-> index 6e56275..002b9b0 100644
-> --- a/arch/m68k/amiga/config.c
-> +++ b/arch/m68k/amiga/config.c
-> @@ -480,7 +480,7 @@ static void __init amiga_sched_init(irq_handler_t=
- timer_routine)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0static struct resource sched_res =3D {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0.name =3D "tim=
-er", .start =3D 0x00bfd400, .end =3D 0x00bfd5ff,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0};
-> - =C2=A0 =C2=A0 =C2=A0 jiffy_ticks =3D (amiga_eclock+HZ/2)/HZ;
-> + =C2=A0 =C2=A0 =C2=A0 jiffy_ticks =3D DIV_ROUND_CLOSEST(amiga_eclock=
-, HZ);
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (request_resource(&mb_resources._ciab, =
-&sched_res))
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0printk("Cannot=
- allocate ciab.ta{lo,hi}\n");
->
+Here it is, the patch is rather simple.
 
+I'm swamped at the moment, so I'll appreciate if someone verifies that 
+the kernel runs fine with this patch applied.
 
+Regards,
 
---=20
-Gr{oetje,eeting}s,
+-- 
+Maxim Kuvyrkov
+CodeSourcery
+maxim@codesourcery.com
+(650) 331-3385 x724
 
-						Geert
+--------------050408090001070401030803
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="0001-Switch-m68k-to-generic-siginfo-layout.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="0001-Switch-m68k-to-generic-siginfo-layout.patch"
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+RnJvbSA4M2VlZTFhMmVjNWY1YmVhZDE2ZjE1MzRkYzdiOGNhYzA1NjYwNjc4IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBNYXhpbSBLdXZ5cmtvdiA8bWF4aW1AY29kZXNvdXJj
+ZXJ5LmNvbT4KRGF0ZTogV2VkLCAyMyBEZWMgMjAwOSAxMToyODo0MiAtMDgwMApTdWJqZWN0
+OiBbUEFUQ0hdIFN3aXRjaCBtNjhrIHRvIGdlbmVyaWMgc2lnaW5mbyBsYXlvdXQuCgpUaGlz
+IHBhdGNoIHN3aXRjaGVzIG02OGsgdG8gZ2VuZXJpYyBzaWdpbmZvIGxheW91dC4gIFRoZSBj
+dXN0b20gbGF5b3V0Cm9mIG02OGsncyBgc3RydWN0IHNpZ2luZm8nIGhhZCBzZXZlcmFsIGlz
+c3VlcyBkdWUgdG8gbm90IGNvbnNpZGVyaW5nCmFsaWFzaW5nIG9mIG1lbWJlcnMgaW4gdGhl
+IHVuaW9uLCBlLmcuLCBfdWlkMzIgd2FzIGF0IGRpZmZlcmVudCBvZmZzZXRzCmluIC5fa2ls
+bCwgLl9ydCBhbmQgLl9zaWdjaGxkLgoKU2lnbmVkLW9mZi1ieTogTWF4aW0gS3V2eXJrb3Yg
+PG1heGltQGNvZGVzb3VyY2VyeS5jb20+Ci0tLQogYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3Np
+Z2luZm8uaCB8ICAgOTEgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CiAxIGZpbGVzIGNoYW5nZWQsIDAgaW5zZXJ0aW9ucygrKSwgOTEgZGVsZXRpb25zKC0pCgpk
+aWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3NpZ2luZm8uaCBiL2FyY2gvbTY4
+ay9pbmNsdWRlL2FzbS9zaWdpbmZvLmgKaW5kZXggY2E3ZGRlOC4uODUxZDNkNyAxMDA2NDQK
+LS0tIGEvYXJjaC9tNjhrL2luY2x1ZGUvYXNtL3NpZ2luZm8uaAorKysgYi9hcmNoL202OGsv
+aW5jbHVkZS9hc20vc2lnaW5mby5oCkBAIC0xLDk3ICsxLDYgQEAKICNpZm5kZWYgX002OEtf
+U0lHSU5GT19ICiAjZGVmaW5lIF9NNjhLX1NJR0lORk9fSAogCi0jaWZuZGVmIF9fdUNsaW51
+eF9fCi0jZGVmaW5lIEhBVkVfQVJDSF9TSUdJTkZPX1QKLSNkZWZpbmUgSEFWRV9BUkNIX0NP
+UFlfU0lHSU5GTwotI2VuZGlmCi0KICNpbmNsdWRlIDxhc20tZ2VuZXJpYy9zaWdpbmZvLmg+
+CiAKLSNpZm5kZWYgX191Q2xpbnV4X18KLQotdHlwZWRlZiBzdHJ1Y3Qgc2lnaW5mbyB7Ci0J
+aW50IHNpX3NpZ25vOwotCWludCBzaV9lcnJubzsKLQlpbnQgc2lfY29kZTsKLQotCXVuaW9u
+IHsKLQkJaW50IF9wYWRbU0lfUEFEX1NJWkVdOwotCi0JCS8qIGtpbGwoKSAqLwotCQlzdHJ1
+Y3QgewotCQkJX19rZXJuZWxfcGlkX3QgX3BpZDsJLyogc2VuZGVyJ3MgcGlkICovCi0JCQlf
+X2tlcm5lbF91aWRfdCBfdWlkOwkvKiBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eSAqLwotCQkJ
+X19rZXJuZWxfdWlkMzJfdCBfdWlkMzI7IC8qIHNlbmRlcidzIHVpZCAqLwotCQl9IF9raWxs
+OwotCi0JCS8qIFBPU0lYLjFiIHRpbWVycyAqLwotCQlzdHJ1Y3QgewotCQkJdGltZXJfdCBf
+dGlkOwkJLyogdGltZXIgaWQgKi8KLQkJCWludCBfb3ZlcnJ1bjsJCS8qIG92ZXJydW4gY291
+bnQgKi8KLQkJCWNoYXIgX3BhZFtzaXplb2YoIF9fQVJDSF9TSV9VSURfVCkgLSBzaXplb2Yo
+aW50KV07Ci0JCQlzaWd2YWxfdCBfc2lndmFsOwkvKiBzYW1lIGFzIGJlbG93ICovCi0JCQlp
+bnQgX3N5c19wcml2YXRlOyAgICAgICAvKiBub3QgdG8gYmUgcGFzc2VkIHRvIHVzZXIgKi8K
+LQkJfSBfdGltZXI7Ci0KLQkJLyogUE9TSVguMWIgc2lnbmFscyAqLwotCQlzdHJ1Y3Qgewot
+CQkJX19rZXJuZWxfcGlkX3QgX3BpZDsJLyogc2VuZGVyJ3MgcGlkICovCi0JCQlfX2tlcm5l
+bF91aWRfdCBfdWlkOwkvKiBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eSAqLwotCQkJc2lndmFs
+X3QgX3NpZ3ZhbDsKLQkJCV9fa2VybmVsX3VpZDMyX3QgX3VpZDMyOyAvKiBzZW5kZXIncyB1
+aWQgKi8KLQkJfSBfcnQ7Ci0KLQkJLyogU0lHQ0hMRCAqLwotCQlzdHJ1Y3QgewotCQkJX19r
+ZXJuZWxfcGlkX3QgX3BpZDsJLyogd2hpY2ggY2hpbGQgKi8KLQkJCV9fa2VybmVsX3VpZF90
+IF91aWQ7CS8qIGJhY2t3YXJkcyBjb21wYXRpYmlsaXR5ICovCi0JCQlpbnQgX3N0YXR1czsJ
+CS8qIGV4aXQgY29kZSAqLwotCQkJY2xvY2tfdCBfdXRpbWU7Ci0JCQljbG9ja190IF9zdGlt
+ZTsKLQkJCV9fa2VybmVsX3VpZDMyX3QgX3VpZDMyOyAvKiBzZW5kZXIncyB1aWQgKi8KLQkJ
+fSBfc2lnY2hsZDsKLQotCQkvKiBTSUdJTEwsIFNJR0ZQRSwgU0lHU0VHViwgU0lHQlVTICov
+Ci0JCXN0cnVjdCB7Ci0JCQl2b2lkICpfYWRkcjsgLyogZmF1bHRpbmcgaW5zbi9tZW1vcnkg
+cmVmLiAqLwotCQl9IF9zaWdmYXVsdDsKLQotCQkvKiBTSUdQT0xMICovCi0JCXN0cnVjdCB7
+Ci0JCQlpbnQgX2JhbmQ7CS8qIFBPTExfSU4sIFBPTExfT1VULCBQT0xMX01TRyAqLwotCQkJ
+aW50IF9mZDsKLQkJfSBfc2lncG9sbDsKLQl9IF9zaWZpZWxkczsKLX0gc2lnaW5mb190Owot
+Ci0jZGVmaW5lIFVJRDE2X1NJR0lORk9fQ09NUEFUX05FRURFRAotCi0vKgotICogSG93IHRo
+ZXNlIGZpZWxkcyBhcmUgdG8gYmUgYWNjZXNzZWQuCi0gKi8KLSN1bmRlZiBzaV91aWQKLSNp
+ZmRlZiBfX0tFUk5FTF9fCi0jZGVmaW5lIHNpX3VpZAkJX3NpZmllbGRzLl9raWxsLl91aWQz
+MgotI2RlZmluZSBzaV91aWQxNglfc2lmaWVsZHMuX2tpbGwuX3VpZAotI2Vsc2UKLSNkZWZp
+bmUgc2lfdWlkCQlfc2lmaWVsZHMuX2tpbGwuX3VpZAotI2VuZGlmCi0KLSNpZmRlZiBfX0tF
+Uk5FTF9fCi0KLSNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4KLQotc3RhdGljIGlubGluZSB2
+b2lkIGNvcHlfc2lnaW5mbyhzdHJ1Y3Qgc2lnaW5mbyAqdG8sIHN0cnVjdCBzaWdpbmZvICpm
+cm9tKQotewotCWlmIChmcm9tLT5zaV9jb2RlIDwgMCkKLQkJbWVtY3B5KHRvLCBmcm9tLCBz
+aXplb2YoKnRvKSk7Ci0JZWxzZQotCQkvKiBfc2lnY2hsZCBpcyBjdXJyZW50bHkgdGhlIGxh
+cmdlc3Qga25vdyB1bmlvbiBtZW1iZXIgKi8KLQkJbWVtY3B5KHRvLCBmcm9tLCAzKnNpemVv
+ZihpbnQpICsgc2l6ZW9mKGZyb20tPl9zaWZpZWxkcy5fc2lnY2hsZCkpOwotfQotCi0jZW5k
+aWYgLyogX19LRVJORUxfXyAqLwotI2VuZGlmIC8qICFfX3VDbGludXhfXyAqLwotCiAjZW5k
+aWYKLS0gCjEuNi4yLjQKCg==
+--------------050408090001070401030803--
