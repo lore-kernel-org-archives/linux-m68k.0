@@ -1,69 +1,47 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Atari EtherNAT - Nicolas Pitre has a new email
-	address
-Date: Mon, 4 Jan 2010 08:43:58 +0100
-Message-ID: <10f740e81001032343r5f7b8066p327c2220d426e783@mail.gmail.com>
-References: <1261595749-23531-1-git-send-email-geert@linux-m68k.org>
-	 <1261595749-23531-2-git-send-email-geert@linux-m68k.org>
-	 <1261595749-23531-3-git-send-email-geert@linux-m68k.org>
-	 <1261595749-23531-4-git-send-email-geert@linux-m68k.org>
-	 <1261595749-23531-5-git-send-email-geert@linux-m68k.org>
-	 <alpine.DEB.2.00.1001040444110.8966@zirkon.biophys.uni-duesseldorf.de>
-	 <10f740e81001032327p11009b58t8fdd1a67848e9fc8@mail.gmail.com>
+From: Webmaster <noreply@ebuppies.com>
+Subject: Request for confirmation
+Date: Mon, 4 Jan 2010 17:20:26 -0500
+Message-ID: <3c47417b4f95dae83f275c2a2dd74ae8@mail.ebuppies.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f219.google.com ([209.85.219.219]:39972 "EHLO
-	mail-ew0-f219.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753184Ab0ADHn7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Jan 2010 02:43:59 -0500
-Received: by ewy19 with SMTP id 19so6985175ewy.21
-        for <linux-m68k@vger.kernel.org>; Sun, 03 Jan 2010 23:43:58 -0800 (PST)
-In-Reply-To: <10f740e81001032327p11009b58t8fdd1a67848e9fc8@mail.gmail.com>
+Received: from alona.agustinaradleylinux.net ([216.246.1.26]:37481 "EHLO
+	server.ebuppies.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+	with ESMTP id S1753812Ab0ADWUb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Jan 2010 17:20:31 -0500
+Received: from localhost ([127.0.0.1]:43918 helo=mail.ebuppies.com)
+	by server.ebuppies.com with esmtpa (Exim 4.69)
+	(envelope-from <bounces@ebuppies.com>)
+	id 1NRvHm-0006dI-7v
+	for linux-m68k@vger.kernel.org; Mon, 04 Jan 2010 17:20:26 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-On Mon, Jan 4, 2010 at 08:27, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Jan 4, 2010 at 04:49, Michael Schmitz
-> <schmitz@biophys.uni-duesseldorf.de> wrote:
->> Thanks - I've started a fresh attempt to get the Atari kernel built and tested
->> but I only get 'double bus fault' from ARAnyM regardless of cross compiler used.
->> No console output, seems to happen before console init.
->
-> I remember seeing this as well a long time ago, due to some
-> bug/misconfiguration. But that
-> got fixed.
->
->> You still test kernels on ARAnyM, do you? What kernel version was the last Atari
->
-> Sure!
->
->> defconfig based on?
->
-> According to its header:
-> # Automatically generated make config: don't edit
-> # Linux kernel version: 2.6.30-rc3
-> # Wed Apr 22 20:47:56 2009
->
-> The actual config I'm using is slightly different as we're at 2.6.33-rc2 now.
-> I'll build `atari_defconfig' on current linux-m68k/master and will
-> give it a try.
+Sorry to bother you: we are cleaning up our database and it appears that
+you have previously signed up to eBuppies.com mailinglists and not
+confirmed your subscription.We would like to give you the opportunity to
+re-confirm your subscription. The instructions on how to confirm are below.
+ 
 
-Runs fine:
+  Almost welcome to our newsletter(s) ...
 
-Linux version 2.6.33-rc2-atari-00203-gdd8abd9 (geert@ayla) (gcc
-version 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)) #1 Mon Jan 4
-08:27:54 CET 2010
+  Someone, hopefully you, has subscribed your email address to the
+following newsletters:
+  
+  
 
-Gr{oetje,eeting}s,
+  If this is correct, please click the following link to confirm your
+subscription.
+  Without this confirmation, you will not receive any newsletters.
+  
+ 
+http://ebuppies.com/emailserv/?p=confirm&uid=9031549c146c29e1d05c3ecc7285c0e9
+  
+  If this is not correct, you do not need to do anything, simply delete
+this message.
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Thank you
+  
+    
