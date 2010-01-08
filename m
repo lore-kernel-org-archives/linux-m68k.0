@@ -1,129 +1,86 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] pmac-zilog: add platform driver
-Date: Thu, 7 Jan 2010 22:12:12 +0100
-Message-ID: <10f740e81001071312p451de3c0r93d8d9d2782abde8@mail.gmail.com>
-References: <alpine.OSX.2.00.0911171657290.371@silk.local>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k: Atari EtherNAT - Nicolas Pitre has a new email
+ address
+Date: Fri, 08 Jan 2010 02:15:00 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1001072029380.15106@zirkon.biophys.uni-duesseldorf.de>
+References: <1261595749-23531-1-git-send-email-geert@linux-m68k.org>
+ <1261595749-23531-2-git-send-email-geert@linux-m68k.org>
+ <1261595749-23531-3-git-send-email-geert@linux-m68k.org>
+ <1261595749-23531-4-git-send-email-geert@linux-m68k.org>
+ <1261595749-23531-5-git-send-email-geert@linux-m68k.org>
+ <alpine.DEB.2.00.1001040444110.8966@zirkon.biophys.uni-duesseldorf.de>
+ <10f740e81001032327p11009b58t8fdd1a67848e9fc8@mail.gmail.com>
+ <10f740e81001032343r5f7b8066p327c2220d426e783@mail.gmail.com>
+ <alpine.DEB.2.00.1001070305380.15212@zirkon.biophys.uni-duesseldorf.de>
+ <10f740e81001070919l214f5a2cn9d6f6c1422934a70@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f219.google.com ([209.85.219.219]:59380 "EHLO
-	mail-ew0-f219.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753578Ab0AGVMN convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Jan 2010 16:12:13 -0500
-Received: by ewy19 with SMTP id 19so11246431ewy.21
-        for <linux-m68k@vger.kernel.org>; Thu, 07 Jan 2010 13:12:12 -0800 (PST)
-In-Reply-To: <alpine.OSX.2.00.0911171657290.371@silk.local>
+Received: from mailout-venus.uni-duesseldorf.de ([134.99.128.32]:38538 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1754556Ab0AHBPD (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Jan 2010 20:15:03 -0500
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-6.03 (built Mar 14 2008; 32bit))
+ id <0KVW00100M518Q00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Fri, 08 Jan 2010 02:15:01 +0100 (MET)
+In-reply-to: <10f740e81001070919l214f5a2cn9d6f6c1422934a70@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Tue, Nov 17, 2009 at 10:04, Finn Thain <fthain@telegraphics.com.au> =
-wrote:
-> Add platform driver to the pmac-zilog driver for mac 68k, putting the
-> powermac-specific bits inside #ifdef CONFIG_PPC_PMAC.
+Hi Geert,
 
-> --- linux-2.6.31.orig/drivers/serial/pmac_zilog.c =C2=A0 =C2=A0 =C2=A0=
- 2009-11-17 17:07:28.000000000 +1100
-> +++ linux-2.6.31/drivers/serial/pmac_zilog.c =C2=A0 =C2=A02009-11-17 =
-17:07:38.000000000 +1100
+> >> > I remember seeing this as well a long time ago, due to some
+> >> > bug/misconfiguration. But that
+> >> > got fixed.
+> >
+> > I'll dig through the mailbox ...
+> 
+> BTW, IIRC there were also some issues with some version of binutils,
+> but I never saw that problem.
+> 
+> gcc version 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
+> GNU assembler (GNU Binutils) 2.18.0.20080103
 
-> +static int pmz_attach(struct platform_device *pdev)
+The 4.1.0 I built does not get past the compiler test now (miscompiles __weak).
 
-__devinit (or __init, see platform_driver_probe() below)
+My copy of crosstool (0.43) combines 4.1.0 and 4.1.1 (the latest supported) with 
+binutils 2.16.1 ... I'll give 2.18 a try. 
 
-BTW, the same is true for the PowerMac version.
+3.3.6 is built with 2.15 - the m68k crosstool 0.38 build script of Christian did 
+use 2.16. 
 
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 int i;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i < pmz_ports_count; i++)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (pmz_ports[i].n=
-ode =3D=3D pdev)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 return 0;
-> + =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> +}
-> +
-> +static int pmz_detach(struct platform_device *pdev)
+Probably no matter though - building 2.6.33 with my old cross compiler once I 
+had revived that from the failing disk (3.3.6/2.16) results in the same double 
+fault.
+ 
+> My binutils is 2.18.1~cvs20080103-7 according to dpkg.
 
-__devexit (or __exit, see platform_driver_probe() below)
+2.18.1~cvs20080103-0ubuntu1 ... what is the host binutils even used for? 
+ 
+> > Can you send that kernel and the defconfig by PM please?
+> 
+> Done.
 
-Idem ditto for PowerMac.
+Thanks, testing ... yours does in fact boot on my ARAnyM setup. Compiling with 
+your .config results in the same error. 
+ 
+> > I tested one of the failing kernels on the real Falcon and it did spontaenously
+> > reboot there (with no output) as well.
+> 
+> Strange.
 
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
-> +}
-> +
-> +#endif /* !CONFIG_PPC_PMAC */
+Yep - I'll try to compile the last kernel version that worked for me to see what
+the various cross compilers generate for that. 2.6.30-rc6 (botched git pull so 
+I'm not too positive it isn't 2.6.29-something) does in fact compile fine with 
+my old 3.3.6 cross-gcc as well as my newly built one. 
 
-> +static struct platform_driver pmz_driver =3D {
-> + =C2=A0 =C2=A0 =C2=A0 .probe =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D p=
-mz_attach,
-> + =C2=A0 =C2=A0 =C2=A0 .remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __deve=
-xit_p(pmz_detach),
-> + =C2=A0 =C2=A0 =C2=A0 .driver =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =3D "scc",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .owner =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0=3D THIS_MODULE,
-> + =C2=A0 =C2=A0 =C2=A0 },
-> +};
-> +
-> +#endif /* !CONFIG_PPC_PMAC */
-> +
-> =C2=A0static int __init init_pmz(void)
-> =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int rc, i;
-> @@ -1942,15 +2053,23 @@ static int __init init_pmz(void)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/*
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 * Then we register the macio driver itsel=
-f
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 */
-> +#ifdef CONFIG_PPC_PMAC
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return macio_register_driver(&pmz_driver);
-> +#else
-> + =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&pmz_driver);
+I'll verify that on the new tree, and start bisecting. Sigh. 
 
-Since this device is not hot-pluggable, you could use
-platform_driver_probe() instead (and leave pmz_driver.probe() empty).
+Cheers,
 
-> --- linux-2.6.31.orig/drivers/serial/pmac_zilog.h =C2=A0 =C2=A0 =C2=A0=
- 2009-11-17 17:07:28.000000000 +1100
-> +++ linux-2.6.31/drivers/serial/pmac_zilog.h =C2=A0 =C2=A02009-11-17 =
-17:07:38.000000000 +1100
-> @@ -1,7 +1,15 @@
-> =C2=A0#ifndef __PMAC_ZILOG_H__
-> =C2=A0#define __PMAC_ZILOG_H__
->
-> +#ifdef CONFIG_PPC_PMAC
-> =C2=A0#define pmz_debug(fmt, arg...) dev_dbg(&uap->dev->ofdev.dev, fm=
-t, ## arg)
-> +#define pmz_error(fmt, arg...) dev_err(&uap->dev->ofdev.dev, fmt, ##=
- arg)
-> +#define pmz_info(fmt, arg...) =C2=A0dev_info(&uap->dev->ofdev.dev, f=
-mt, ## arg)
-> +#else
-> +#define pmz_debug(fmt, arg...) do { } while (0)
-> +#define pmz_error(fmt, arg...) printk(KERN_ERR fmt, ## arg)
-> +#define pmz_info(fmt, arg...) =C2=A0printk(KERN_INFO fmt, ## arg)
-
-Any chance you can sneak the platform device in and use dev_*()?
-
-Anyway, I'm gonna take it, and feed it upstream if BenH adds his ack. B=
-en?
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+	Michael
