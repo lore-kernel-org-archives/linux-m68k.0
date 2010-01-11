@@ -1,121 +1,80 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: "m68k: Cleanup linker scripts using new linker script macros." and
- old binutils (was: Re: [PATCH] m68k: Atari EtherNAT - Nicolas Pitre has a new
- email address)
-Date: Mon, 11 Jan 2010 03:28:43 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1001110235490.30805@zirkon.biophys.uni-duesseldorf.de>
-References: <10f740e81001100128q644cae1eg61c12b64f22e8398@mail.gmail.com>
- <alpine.DEB.1.10.1001101100540.1326@dr-wily.mit.edu>
- <alpine.DEB.2.00.1001102020420.19754@zirkon.biophys.uni-duesseldorf.de>
- <m2wrzpk81j.fsf@igel.home>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68knommu: get rid of __do_IRQ and add support for using
+ gpio irqs.
+Date: Mon, 11 Jan 2010 13:48:59 +1000
+Message-ID: <4B4A9FAB.5020109@snapgear.com>
+References: <200912161915.39692.sfking@fdwdc.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:64873 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751203Ab0AKC2p (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 10 Jan 2010 21:28:45 -0500
-In-reply-to: <m2wrzpk81j.fsf@igel.home>
+In-Reply-To: <200912161915.39692.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Tim Abbott <tabbott@ksplice.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Steven King <sfking@fdwdc.com>
+Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>
 
-Hi Andreas,
 
-> > FWIW: when stripping the new kernel, I get this warning:
-> >
-> > BFD: st7CwWnM: warning: allocated section `.init_end' not in segment
+Hi Steven,
+
+Steven King wrote:
+> Since we now have generic irq support for m68knommu and as __do_IRQ is
+> supposed to go away real soon now, I added config GENERIC_HARDIRQS_NO__DO_IRQ
+> to m68knommu/Kconfig.  Unfortunately, that produced an unbootable kernel --
+> looking at the code for generic_handle_irq in linux/irq.h, the NO__DO_IRQ
+> version unconditionally calls desc->handle_irq, which suggests that an irq's
+> handle_irq isnt getting initialized in the early boot and indeed, adding an
+> initialization of handle_irq in init_IRQ produced a working system.
 > 
-> This is actually your problem.  The .init_end section is kind of special
-> because it only contains an ALIGN.  What do you get from running
-> "readelf -l vmlinux"?
+> I'm not entirely satisfied with that solution as it ignores why we are getting
+> an irq when no handler has been setup for it, but in any case, using
+> set_irq_chip_and_handler in init_IRQ to initialize all the handlers is the
+> right thing to do (or atleast, its what all the other arches do) (and I didnt
+> feel like digging out the BDM pod to figure out where the mystery irq is
+> coming from).
+> 
+> Then the real reason I was digging into the irq code is to add support for
+> using gpio irqs on the gpios of the parts that support that.  The following
+> patch is against 
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+> 
+> only the intc-2 gpio irqs have been tested on real hardware.
+> 
+> ------------------------------
+> 
+> Get rid of __do_IRQ; use set_irq_chip_and_handler to initialize irqs.  Add
+> support for using gpio irqs and setting the edge on external irqs generally.
+> 
+> Signed-off-by: Steven King <sfking@fdwdc.com>
 
-Current LD script:
-schmitz@xplor:/org/kernel/linux2.6-m68k-git/linux-m68k$ readelf -l 
-vmlinux-newlds
+Applied to the for-linus and for-next branches of the m68knommu git
+tree.
 
-Elf file type is EXEC (Executable file)
-Entry point 0x2000
-There are 2 program headers, starting at offset 52
+Thanks
+Greg
 
-Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  LOAD           0x000000 0x00000000 0x00000000 0x2d3240 0x2f0d14 RWE 0x2000
-  LOAD           0x2d5000 0x002f1000 0x002f1000 0x1aed0 0x1aed0 RWE 0x2000
 
- Section to Segment mapping:
-  Segment Sections...
-   00     .text __ex_table .rodata __ksymtab __ksymtab_gpl __ksymtab_strings __param .data .bss 
-   01     .init.text .init.data .m68k_fixup 
 
-Old (working) LD script:
+> --
+> 
+>  arch/m68k/include/asm/m520xsim.h             |    3 +
+>  arch/m68k/include/asm/m523xsim.h             |    3 +
+>  arch/m68k/include/asm/m5249sim.h             |    4 +-
+>  arch/m68k/include/asm/m527xsim.h             |    3 +
+>  arch/m68knommu/Kconfig                       |    4 ++
+>  arch/m68knommu/platform/5272/intc.c          |   39 +++++++++++---
+>  arch/m68knommu/platform/68328/ints.c         |    8 +--
+>  arch/m68knommu/platform/68360/ints.c         |    8 +--
+>  arch/m68knommu/platform/coldfire/intc-2.c    |   76 ++++++++++++++++++++++++--
+>  arch/m68knommu/platform/coldfire/intc-simr.c |   68 ++++++++++++++++++++++--
+>  arch/m68knommu/platform/coldfire/intc.c      |   59 +++++++++++++++++++--
+>  11 files changed, 239 insertions(+), 36 deletions(-)
+> 
 
-schmitz@xplor:/org/kernel/linux2.6-m68k-git/linux-m68k$ readelf -l 
-vmlinux-oldlds
-
-Elf file type is EXEC (Executable file)
-Entry point 0x2000
-There are 2 program headers, starting at offset 52
-
-Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  LOAD           0x000000 0x00000000 0x00000000 0x2d0240 0x2edd14 RWE 0x2000
-  LOAD           0x2d2000 0x002ee000 0x002ee000 0x20000 0x20000 RWE 0x2000
-
- Section to Segment mapping:
-  Segment Sections...
-   00     .text __ex_table .rodata __ksymtab __ksymtab_gpl __ksymtab_strings __param .data .bss 
-   01     .init.text .init.data .init.setup .initcall.init .con_initcall.init .m68k_fixup .init.ramfs .data.init_task 
-
-Looks like the size of the BSS segment is not aligned in the broken case. 
-
-Putting this into the script:
-
---- arch/m68k/kernel/vmlinux-std.lds.org	2010-01-09 11:01:05.000000000 
-+1300
-+++ arch/m68k/kernel/vmlinux-std.lds	2010-01-11 09:40:24.000000000 +1300
-@@ -51,6 +51,10 @@
- 	__init_end = .;
-   }
- 
-+  . = . + 0x1000;
-+
-+  . = ALIGN(8192);
-+
-   _end = . ;
- 
-   STABS_DEBUG
-
-does place both __init_end and _end on separate aligned boundaries but leaves
-the end of the actual BSS unaligned. 
-
-Geert's kernel has this readelf output:
-
-schmitz@xplor:/org/m68k/aranym$ readelf -l 
-vmlinux-2.6.33-rc2-atari-00203-gdd8abd9
-
-Elf file type is EXEC (Executable file)
-Entry point 0x2000
-There are 2 program headers, starting at offset 52
-
-Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  LOAD           0x000000 0x00000000 0x00000000 0x2de440 0x2fb450 RWE 0x2000
-  LOAD           0x2e0000 0x002fc000 0x002fc000 0x1cf4c 0x1d000 RWE 0x2000
-
- Section to Segment mapping:
-  Segment Sections...
-   00     .text __ex_table .rodata __ksymtab __ksymtab_gpl __ksymtab_strings __param .data .bss 
-   01     .init.text .init.data .m68k_fixup .notes .init_end 
-
-The end of the BSS in memory is aligned here. 
-
-What is needed in the script to force this alignment? How do I place a null byte 
-right at __init_end ?? 
-
-Thanks,
-
-	Michael
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
