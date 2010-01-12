@@ -1,55 +1,109 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68knommu: change definitions of __pa() and __va()
-Date: Tue, 12 Jan 2010 10:25:41 +1000
-Message-ID: <4B4BC185.1030509@snapgear.com>
-References: <201001110502.o0B52HG3024292@goober.internal.moreton.com.au> <10f740e81001110744n5aaf6b4ay1afe28671f20e2c5@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] m68knommu: change definitions of __pa() and __va()
+Date: Tue, 12 Jan 2010 10:39:37 +1000
+Message-ID: <201001120039.o0C0dboQ031390@goober.internal.moreton.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:58720 "EHLO
+Received: from rex.securecomputing.com ([203.24.151.4]:59355 "EHLO
 	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1753417Ab0ALAZa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jan 2010 19:25:30 -0500
-In-Reply-To: <10f740e81001110744n5aaf6b4ay1afe28671f20e2c5@mail.gmail.com>
+	with ESMTP id S1751249Ab0ALAja (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jan 2010 19:39:30 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
+m68knommu: change definitions of __pa() and __va()
 
-Hi Geert,
+Fix compilation breakage of all m68knommu targets:
 
-Geert Uytterhoeven wrote:
-> On Mon, Jan 11, 2010 at 06:02, Greg Ungerer <gerg@snapgear.com> wrote:
->> I would like to submit this to Linus ASAP, to fix broken compilation
->> in 2.6.33-rc3 for m68knommu targets. It effects m68k includes, so I
->> wanted to get some review here first.
-> 
-> The m68kmmu part looks fine to me.
+  CC      arch/m68knommu/kernel/asm-offsets.s
+In file included from include/linux/sched.h:77,
+                 from arch/m68knommu/kernel/asm-offsets.c:12:
+include/linux/percpu.h: In function 'per_cpu_ptr_to_phys':
+include/linux/percpu.h:161: error: implicit declaration of function 'virt_to_phy
 
-Thanks, I'll send it to Linus now.
+This is broken in linux-2.6.33-rc3.
 
-Regards
-Greg
+Change the definitions of __pa() and __va() to not use virt_to_phys()
+and phys_to_virt(). Trivial 1:1 conversion required for the non-MMU case.
 
+A side effect if this is that the m68knommu can now use asm/virtconvert.h
+for the definition of virt_to_phys() and phys_to_virt().
 
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
-> 							    -- Linus Torvalds
-> 
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/io_no.h       |   14 +-------------
+ arch/m68k/include/asm/page_no.h     |    4 ++--
+ arch/m68k/include/asm/virtconvert.h |    5 +++++
+ 3 files changed, 8 insertions(+), 15 deletions(-)
 
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
+index 7f57436..359065d 100644
+--- a/arch/m68k/include/asm/io_no.h
++++ b/arch/m68k/include/asm/io_no.h
+@@ -3,6 +3,7 @@
+ 
+ #ifdef __KERNEL__
+ 
++#include <asm/virtconvert.h>
+ 
+ /*
+  * These are for ISA/PCI shared memory _only_ and should never be used
+@@ -165,19 +166,6 @@ static inline void *ioremap_fullcache(unsigned long physaddr, unsigned long size
+ 
+ extern void iounmap(void *addr);
+ 
+-/* Pages to physical address... */
+-#define page_to_phys(page)      ((page - mem_map) << PAGE_SHIFT)
+-#define page_to_bus(page)       ((page - mem_map) << PAGE_SHIFT)
+-
+-/*
+- * Macros used for converting between virtual and physical mappings.
+- */
+-#define phys_to_virt(vaddr)	((void *) (vaddr))
+-#define virt_to_phys(vaddr)	((unsigned long) (vaddr))
+-
+-#define virt_to_bus virt_to_phys
+-#define bus_to_virt phys_to_virt
+-
+ /*
+  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
+  * access
+diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+index 1f31b06..8029a33 100644
+--- a/arch/m68k/include/asm/page_no.h
++++ b/arch/m68k/include/asm/page_no.h
+@@ -56,8 +56,8 @@ extern unsigned long memory_end;
+ 
+ #ifndef __ASSEMBLY__
+ 
+-#define __pa(vaddr)		virt_to_phys((void *)(vaddr))
+-#define __va(paddr)		phys_to_virt((unsigned long)(paddr))
++#define __pa(vaddr)		((unsigned long)(vaddr))
++#define __va(paddr)		((void *)(paddr))
+ 
+ #define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
+ #define pfn_to_virt(pfn)	__va((pfn) << PAGE_SHIFT)
+diff --git a/arch/m68k/include/asm/virtconvert.h b/arch/m68k/include/asm/virtconvert.h
+index 22ab05c..8700d04 100644
+--- a/arch/m68k/include/asm/virtconvert.h
++++ b/arch/m68k/include/asm/virtconvert.h
+@@ -26,6 +26,7 @@ static inline void *phys_to_virt(unsigned long address)
+ }
+ 
+ /* Permanent address of a page. */
++#ifdef CONFIG_MMU
+ #ifdef CONFIG_SINGLE_MEMORY_CHUNK
+ #define page_to_phys(page) \
+ 	__pa(PAGE_OFFSET + (((page) - pg_data_map[0].node_mem_map) << PAGE_SHIFT))
+@@ -37,6 +38,10 @@ static inline void *phys_to_virt(unsigned long address)
+ 	page_to_pfn(__page) << PAGE_SHIFT;				\
+ })
+ #endif
++#else
++#define page_to_phys(page)	((page - mem_map) << PAGE_SHIFT)
++#define page_to_bus(page)	((page - mem_map) << PAGE_SHIFT)
++#endif
+ 
+ /*
+  * IO bus memory addresses are 1:1 with the physical address,
