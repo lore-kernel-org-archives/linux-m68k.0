@@ -1,66 +1,21 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68knommu: change definitions of __pa() and __va()
-Date: Tue, 12 Jan 2010 19:45:02 +1000
-Message-ID: <4B4C449E.5020207@snapgear.com>
-References: <201001120039.o0C0dboQ031390@goober.internal.moreton.com.au> <alpine.LFD.2.00.1001111652500.17145@localhost.localdomain> <4B4C1E82.7000907@snapgear.com>
+From: "Ruby Royale Slots" <sbjlp@eg-gasket.com>
+Subject: =?iso-8859-1?Q?1_time_=E5_vinne_s=E5_mye_penger_som_mulig.?=
+Date: Tue, 12 Jan 2010 19:32:29 +0300
+Message-ID: <001001ca93a4$d544dca0$00426158@rvodwmowvvkyh>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753949Ab0ALJpQ@vger.kernel.org>
-In-Reply-To: <4B4C1E82.7000907@snapgear.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.sura.ru ([80.95.32.16]:53361 "EHLO mail.sura.ru"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753973Ab0ALQuo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jan 2010 11:50:44 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-btrace@vger.kernel.org
 
+Det kan virkelig ikke g=E5 galt - deres utdelingsforhold er geniale, de=
+ er lisensiert og regulert i EU, har de kundeservice d=F8gnet rundt og =
+over 300 spill =E5 velge mellom!
 
-On 01/12/2010 05:02 PM, Greg Ungerer wrote:
-> Linus Torvalds wrote:
->> On Tue, 12 Jan 2010, Greg Ungerer wrote:
->>> +#else
->>> +#define page_to_phys(page) ((page - mem_map) << PAGE_SHIFT)
->>> +#define page_to_bus(page) ((page - mem_map) << PAGE_SHIFT)
->>> +#endif
->>
->> Ok, so the old ones were total crap too, but when moving things
->> around, don't just copy the crap like this.
->>
->> Look at those two #define's for five seconds, and ask yourself what is
->> wrong with them. Those macros are not good.
->
-> Ok. Easily fixed.
->
-> page_to_bus() doesn't even look like it is used anywhere (and m68k
-> itself doesn't define it). So I'll remove it.
->
-> I propose changing page_to_phys() to be:
->
-> #define page_to_phys(page) (page_to_pfn(page) << PAGE_SHIFT)
-
-Hmmm, on second thoughts maybe that change is better left
-for the next merge window. Perhaps best to just fix that
-arg bracketization now?
-
-
-> Which seems consistent with many other arches. (And it works on
-> m68knommu too :-)
->
-> I'll generate a new patch with that changed.
->
-> A quick grep shows page_to_phys() defined this way in a couple of
-> other places too:
->
-> h8300/include/asm/io.h
-> sparc/include/asm/io_32.h
-
-Strike that, only the h8300 one needs arg fixing.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+http://www.lifeluxcasino.net/no/
