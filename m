@@ -1,38 +1,52 @@
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Subject: Re: sys_recvmmsg: wire up or not?
-Date: Thu, 14 Jan 2010 09:33:22 +0000
-Message-ID: <20100114093322.GA3484@flint.arm.linux.org.uk>
-References: <10f740e80912260239n17bbbd08w6c3065c12bde9c95@mail.gmail.com> <200912261212.14264.arnd@arndb.de> <1263442833.724.325.camel@pasglop> <20100113.202807.233259060.davem@davemloft.net> <1263452379.724.348.camel@pasglop>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] pmac-zilog: add platform driver, version 3
+Date: Thu, 14 Jan 2010 14:38:39 +0100
+Message-ID: <10f740e81001140538n67710bfr17d131a8f4b25137@mail.gmail.com>
+References: <alpine.OSX.2.00.0911171657290.371@silk.local>
+	 <10f740e81001071312p451de3c0r93d8d9d2782abde8@mail.gmail.com>
+	 <alpine.LNX.2.00.1001102340340.22574@nippy.intranet>
+	 <alpine.OSX.2.00.1001110325430.620@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arch-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1263452379.724.348.camel@pasglop>
-Sender: linux-arch-owner@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: David Miller <davem@davemloft.net>, arnd@arndb.de, geert@linux-m68k.org, acme@redhat.com, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ew0-f209.google.com ([209.85.219.209]:43428 "EHLO
+	mail-ew0-f209.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755420Ab0ANNiq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 14 Jan 2010 08:38:46 -0500
+Received: by ewy1 with SMTP id 1so38344ewy.28
+        for <linux-m68k@vger.kernel.org>; Thu, 14 Jan 2010 05:38:42 -0800 (PST)
+In-Reply-To: <alpine.OSX.2.00.1001110325430.620@localhost>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
 
-On Thu, Jan 14, 2010 at 05:59:39PM +1100, Benjamin Herrenschmidt wrote:
-> Oh I definitely agree that a direct syscall is better, and I wonder in
-> fact if I should add new syscalls in addition to socketcall for powerpc,
-> for glibc to do a slow migration :-) I was just wondering about the
-> inconsistency for archs like us who have socketcall today, to also have
-> to define the syscall ...
+On Sun, Jan 10, 2010 at 17:29, Finn Thain <fthain@telegraphics.com.au> wrote:
+> Add platform driver support to the pmac-zilog driver, for m68k macs.
+> Place the powermac-specific code inside #ifdef CONFIG_PPC_PMAC.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+>
+> ---
+>
+> This patch should be applied after "[PATCH 3/13] pmac-zilog: cleanup".
+> It obsoletes "[PATCH 4/13] pmac-zilog, mac68k: replace mac68k SCC code
+> with platform device" listed in the linux-ppc patchwork.
+>
+> Version 2 of this patch adopts Geert's suggestions: make better use of
+> dev_{dbg,err,info} macros, change platform_driver_register() to
+> platform_driver_probe(), and use __init and __exit attributes.
+> Version 3 does not #include <macints.h>.
 
-On ARM, we used to use socketcall exclusively.  We've since added all
-the direct socket and IPC calls to our syscall table as part of the
-big EABI shakeup.  They certainly get used on EABI, whereas OABI has
-a choice.
+Thanks, applied.
 
-They were made available in two stages - first the numbers were reserved
-and the calls were added to the call table.  A few years later, we
-exposed the syscall numbers in unistd.h.
+Gr{oetje,eeting}s,
 
-It's now been almost 4 years since this was done, and there have been
-no bug reports.
+						Geert
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
