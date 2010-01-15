@@ -1,50 +1,38 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Eliminate unused variable in page_to_phys()
-Date: Thu, 14 Jan 2010 14:39:31 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1001141439060.3063@ayla.of.borg>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: sys_recvmmsg: wire up or not?
+Date: Fri, 15 Jan 2010 14:32:49 +1100
+Message-ID: <1263526369.724.399.camel@pasglop>
+References: <10f740e80912260239n17bbbd08w6c3065c12bde9c95@mail.gmail.com>
+	 <200912261212.14264.arnd@arndb.de> <1263442833.724.325.camel@pasglop>
+	 <20100113.202807.233259060.davem@davemloft.net>
+	 <1263452379.724.348.camel@pasglop>
+	 <20100114093322.GA3484@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20100114093322.GA3484@flint.arm.linux.org.uk>
+Sender: linux-arch-owner@vger.kernel.org
+To: Russell King <rmk+lkml@arm.linux.org.uk>
+Cc: David Miller <davem@davemloft.net>, arnd@arndb.de, geert@linux-m68k.org, acme@redhat.com, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-"pgdat" is unused, so we can eliminate it and turn page_to_phys()
-into a single-line macro.
+On Thu, 2010-01-14 at 09:33 +0000, Russell King wrote:
+> On ARM, we used to use socketcall exclusively.  We've since added all
+> the direct socket and IPC calls to our syscall table as part of the
+> big EABI shakeup.  They certainly get used on EABI, whereas OABI has
+> a choice.
+> 
+> They were made available in two stages - first the numbers were
+> reserved
+> and the calls were added to the call table.  A few years later, we
+> exposed the syscall numbers in unistd.h.
+> 
+> It's now been almost 4 years since this was done, and there have been
+> no bug reports. 
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/virtconvert.h |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+Agreed. It's definitely a switch we should do on powerpc. I'll look into
+it after LCA.
 
-diff --git a/arch/m68k/include/asm/virtconvert.h b/arch/m68k/include/asm/virtconvert.h
-index 3f834b3..f35229b 100644
---- a/arch/m68k/include/asm/virtconvert.h
-+++ b/arch/m68k/include/asm/virtconvert.h
-@@ -31,12 +31,7 @@ static inline void *phys_to_virt(unsigned long address)
- #define page_to_phys(page) \
- 	__pa(PAGE_OFFSET + (((page) - pg_data_map[0].node_mem_map) << PAGE_SHIFT))
- #else
--#define page_to_phys(_page) ({						\
--	struct page *__page = _page;					\
--	struct pglist_data *pgdat;					\
--	pgdat = pg_data_table[page_to_nid(__page)];			\
--	page_to_pfn(__page) << PAGE_SHIFT;				\
--})
-+#define page_to_phys(page)	(page_to_pfn(page) << PAGE_SHIFT)
- #endif
- #else
- #define page_to_phys(page)	(((page) - mem_map) << PAGE_SHIFT)
--- 
-1.6.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Cheers,
+Ben.
