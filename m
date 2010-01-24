@@ -1,50 +1,45 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: sys_recvmmsg: wire up or not?
-Date: Wed, 20 Jan 2010 10:14:44 +1100
-Message-ID: <1263942884.724.537.camel@pasglop>
-References: <10f740e80912260239n17bbbd08w6c3065c12bde9c95@mail.gmail.com>
-	 <200912261212.14264.arnd@arndb.de> <1263442833.724.325.camel@pasglop>
-	 <20100113.202807.233259060.davem@davemloft.net>
-	 <1263452379.724.348.camel@pasglop>  <20100119072114.GB16013@linux-sh.org>
+From: VK <noreply@vk.com>
+Subject: =?UTF-8?Q?Alexandr_Hnykin_doda=C5=82_Ciebie_do_znajomych_na_stronie_inter?=
+ =?UTF-8?Q?netowej_VK?=
+Date: Sun, 24 Jan 2010 22:40:35 +0300
+Message-ID: <4a31ba360cbe39ec44c3908dd0f8d51e@localhost.localdomain>
+Reply-To: VK <noreply@vk.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20100119072114.GB16013@linux-sh.org>
-Sender: linux-arch-owner@vger.kernel.org
-To: Paul Mundt <lethal@linux-sh.org>
-Cc: David Miller <davem@davemloft.net>, arnd@arndb.de, geert@linux-m68k.org, acme@redhat.com, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from cs120.vk.com ([93.186.224.120]:55761 "EHLO vk.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S932107Ab0AXTki (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 24 Jan 2010 14:40:38 -0500
+Received: from localhost
+	([127.0.0.1] helo=localhost.localdomain ident=www-data)
+	by vk.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@vk.com>)
+	id 1NZ8K3-0005yJ-8g
+	for linux-m68k@vger.kernel.org; Sun, 24 Jan 2010 22:40:35 +0300
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k <linux-m68k@vger.kernel.org>
 
-On Tue, 2010-01-19 at 16:21 +0900, Paul Mundt wrote:
-> 
-> > IE. I'd rather have them all duplicated into real syscalls than some of
-> > them only in socketcall and some on both since that will make any kind
-> > of userspace transition even more hellish.
-> > 
-> Presumably you're going to have to support both given that binaries with
-> both ABIs are going to be left around for the forseeable future. We
-> started out with socketcall on sh64 with the initial ABI and then
-> transitioned over to broken out direct system calls. While having both is
-> a bit inconsistent, it's not really something that can be avoided until
-> all of the old binaries go away. There are certainly enough architectures
-> today that provide both that you shouldn't really run in to any nasty
-> surprises at least.
+Drogi linux-m68k,
 
-I agree, my point was more like I'd rather not add the syscall for
-recvmmsg only right now, and others later, and instead of an
-all-or-nothing approach, ie, add all the syscalls at once (while keeping
-the socketcall around of course). That would make glibc work easier not
-having to track syscall availability on a per-syscall basis etc...
+Alexandr Hnykin doda=C5=82 Ciebie do znajomych na stronie internetowej =
+VK
 
-Cheers,
-Ben.
+Mo=C5=BCesz zalogowa=C4=87 si=C4=99 i zobaczy=C4=87 strony Twoich znajo=
+mych u=C5=BCywaj=C4=85c e-mail i has=C5=82a automatycznie wygenerowaneg=
+o przez system: JMt7Pufv
 
-> 32-bit SH only uses socketcall at the moment, but I'm also inclined to
-> add in the broken out versions and start migrating glibc over.
-> 
-> Unfortunately there are not a lot of good options for the syscall checker
-> with things like this however, given that some platforms will want one or
-> the other or both ;-)
-> 
-> 
+VK.com jest portalem spo=C5=82eczno=C5=9Bciowym, kt=C3=B3ry pomaga mili=
+onom ludzi znale=C5=BA=C4=87 dawnych znajomych, zamieszcza=C4=87 zdj=C4=
+=99cia i informowa=C4=87 o wydarzeniach z ich =C5=BCycia, oraz pozostaw=
+a=C4=87 w ci=C4=85g=C5=82ym kontakcie
+
+Aby zalogowa=C4=87 si=C4=99, kliknij na link:
+http://vk.com/login.php?regemail=3Dlinux-m68k@vger.kernel.org#JMt7Pufv
+
+Uwaga: Je=C5=9Bli zignorujesz to zaproszenie, Twoja rejestracja nie b=C4=
+=99dzie aktywowana.
+
+Z wyrazami szacunku!
