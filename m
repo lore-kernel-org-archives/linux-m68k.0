@@ -1,45 +1,35 @@
-From: VK <noreply@vk.com>
-Subject: =?UTF-8?Q?Alexandr_Hnykin_doda=C5=82_Ciebie_do_znajomych_na_stronie_inter?=
- =?UTF-8?Q?netowej_VK?=
-Date: Sun, 24 Jan 2010 22:40:35 +0300
-Message-ID: <4a31ba360cbe39ec44c3908dd0f8d51e@localhost.localdomain>
-Reply-To: VK <noreply@vk.com>
+From: fthain@telegraphics.com.au
+Subject: ping, was Re: [PATCH 1/2] pmac-zilog: add platform driver, version
+ 3
+Date: Sun, 31 Jan 2010 18:25:38 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1001311820070.5428@nippy.intranet>
+References: <alpine.OSX.2.00.0911171657290.371@silk.local>  <10f740e81001071312p451de3c0r93d8d9d2782abde8@mail.gmail.com>  <alpine.LNX.2.00.1001102340340.22574@nippy.intranet>  <alpine.OSX.2.00.1001110325430.620@localhost>
+ <10f740e81001140538n67710bfr17d131a8f4b25137@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cs120.vk.com ([93.186.224.120]:55761 "EHLO vk.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932107Ab0AXTki (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 24 Jan 2010 14:40:38 -0500
-Received: from localhost
-	([127.0.0.1] helo=localhost.localdomain ident=www-data)
-	by vk.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@vk.com>)
-	id 1NZ8K3-0005yJ-8g
-	for linux-m68k@vger.kernel.org; Sun, 24 Jan 2010 22:40:35 +0300
+Received: from www.telegraphics.com.au ([204.15.192.19]:47779 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750916Ab0AaHZo (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 31 Jan 2010 02:25:44 -0500
+In-Reply-To: <10f740e81001140538n67710bfr17d131a8f4b25137@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
 
-Drogi linux-m68k,
 
-Alexandr Hnykin doda=C5=82 Ciebie do znajomych na stronie internetowej =
-VK
+Hi Geert,
 
-Mo=C5=BCesz zalogowa=C4=87 si=C4=99 i zobaczy=C4=87 strony Twoich znajo=
-mych u=C5=BCywaj=C4=85c e-mail i has=C5=82a automatycznie wygenerowaneg=
-o przez system: JMt7Pufv
+As I understand it, this patch needs Ben's ack before it (and the others) 
+can be merged into linux-next (?)
 
-VK.com jest portalem spo=C5=82eczno=C5=9Bciowym, kt=C3=B3ry pomaga mili=
-onom ludzi znale=C5=BA=C4=87 dawnych znajomych, zamieszcza=C4=87 zdj=C4=
-=99cia i informowa=C4=87 o wydarzeniach z ich =C5=BCycia, oraz pozostaw=
-a=C4=87 w ci=C4=85g=C5=82ym kontakcie
+Finn
 
-Aby zalogowa=C4=87 si=C4=99, kliknij na link:
-http://vk.com/login.php?regemail=3Dlinux-m68k@vger.kernel.org#JMt7Pufv
+On Thu, 14 Jan 2010, Geert Uytterhoeven wrote:
 
-Uwaga: Je=C5=9Bli zignorujesz to zaproszenie, Twoja rejestracja nie b=C4=
-=99dzie aktywowana.
-
-Z wyrazami szacunku!
+> Thanks, applied.
+> 
+> Gr{oetje,eeting}s,
+> 
+> 						Geert
