@@ -1,35 +1,66 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: ping, was Re: [PATCH 1/2] pmac-zilog: add platform driver,
-	version 3
-Date: Sun, 31 Jan 2010 10:03:50 +0100
-Message-ID: <10f740e81001310103r411c5625i1affc55bc8ac713b@mail.gmail.com>
-References: <alpine.OSX.2.00.0911171657290.371@silk.local>
-	 <10f740e81001071312p451de3c0r93d8d9d2782abde8@mail.gmail.com>
-	 <alpine.LNX.2.00.1001102340340.22574@nippy.intranet>
-	 <alpine.OSX.2.00.1001110325430.620@localhost>
-	 <10f740e81001140538n67710bfr17d131a8f4b25137@mail.gmail.com>
-	 <alpine.LNX.2.00.1001311820070.5428@nippy.intranet>
+Subject: m68k/for-2.6.34
+Date: Mon, 1 Feb 2010 21:12:04 +0100
+Message-ID: <10f740e81002011212t91a087bkeb77dac23f5676e0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ew0-f219.google.com ([209.85.219.219]:33695 "EHLO
-	mail-ew0-f219.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750728Ab0AaJDw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 31 Jan 2010 04:03:52 -0500
-Received: by ewy19 with SMTP id 19so1029217ewy.1
-        for <linux-m68k@vger.kernel.org>; Sun, 31 Jan 2010 01:03:50 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1001311820070.5428@nippy.intranet>
+Received: from mail-ew0-f228.google.com ([209.85.219.228]:44991 "EHLO
+	mail-ew0-f228.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755997Ab0BAUMI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 1 Feb 2010 15:12:08 -0500
+Received: by ewy28 with SMTP id 28so3025107ewy.28
+        for <linux-m68k@vger.kernel.org>; Mon, 01 Feb 2010 12:12:04 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: fthain@telegraphics.com.au
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org, linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: uClinux development list <uclinux-dev@uclinux.org>
 
-On Sun, Jan 31, 2010 at 08:25,  <fthain@telegraphics.com.au> wrote:
-> As I understand it, this patch needs Ben's ack before it (and the others)
-> can be merged into linux-next (?)
+I added the following to the m68k for-next branch, destined for 2.6.34:
 
-He gave his ack on IRC. Still have to add them to m68k-queue and
-for-next, though.
+ Finn Thain (13):
+      mac68k: cleanup
+      mac68k: rework SWIM platform device
+      pmac-zilog: cleanup
+      pmac-zilog: add platform driver
+      mac68k: replace mac68k SCC code with platform device
+      mac68k: move mac_esp platform device
+      mac68k: move macsonic and macmace platform devices
+      fbdev: mac_var_to_mode() fix
+      valkyriefb: various fixes
+      mac68k: start CUDA early
+      fbdev: add some missing mac modes
+      macfb: cleanup
+      macfb: fix 24-bit visual and stuff
+
+Geert Uytterhoeven (2):
+      ataflop: Killl warning about unused variable flags
+      m68k: Eliminate unused variable in page_to_phys()
+
+Julia Lawall (1):
+      m68k: Use DIV_ROUND_CLOSEST
+
+Maxim Kuvyrkov (2):
+      m68k: Fix asm/swab.h for ColdFire
+      m68k: Switch to generic siginfo layout
+
+Peter Huewe (1):
+      m68k: vme_scc - __init annotations
+
+Philippe De Muyter (2):
+      m68k: Allow ioremapping top of memory
+      m68k{,nommu}/h8300: Remove obsolete comment about map_chunk
+
+If there's anything else in m68k-queue (or anyplace else :-) you
+desperately want in 2.6.34, please let me know.
+
+Should I add the NPTL support for m68k and m68knommu, or shall I wait
+for 2.6.35?
+I'd also like to `get rid' of the ARAnyM support by getting it
+mainlined, for 2.6.35 (if I find time). Who's gonna sign off those
+patches?
+
+Thanks!
 
 Gr{oetje,eeting}s,
 
