@@ -1,59 +1,55 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: m68k/for-2.6.34
-Date: Sat, 06 Feb 2010 21:08:55 +1000
-Message-ID: <4B6D4DC7.7050802@snapgear.com>
-References: <10f740e81002011212t91a087bkeb77dac23f5676e0@mail.gmail.com>	
-	<4B6B33EC.9000102@codesourcery.com>
-	<10f740e81002060144l7850f81ftd516600c27a33c7c@mail.gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Frans Pop <elendil@planet.nl>
+Subject: [PATCH 00/16] remove trailing spaces in messages
+Date: Sat, 6 Feb 2010 18:44:36 +0100
+Message-ID: <201002061844.45212.elendil__4067.47303572974$1265478455$gmane$org@planet.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <10f740e81002060144l7850f81ftd516600c27a33c7c@mail.gmail.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>
+Return-path: <linux-pm-bounces@lists.linux-foundation.org>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
+	<mailto:linux-pm-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/linux-pm>
+List-Post: <mailto:linux-pm@lists.linux-foundation.org>
+List-Help: <mailto:linux-pm-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
+	<mailto:linux-pm-request@lists.linux-foundation.org?subject=subscribe>
+Sender: linux-pm-bounces@lists.linux-foundation.org
+Errors-To: linux-pm-bounces@lists.linux-foundation.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, sparclinux@vger.kernel.org, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Helge Deller <deller@gmx.de>, x86@kernel.org, Ingo Molnar <mingo@elte.hu>, Fenghua Yu <fenghua.yu@intel.com>, Mike Frysinger <vapier@gentoo.org>, user-mode-linux-devel@lists.sourceforge.net, microblaze-uclinux@itee.uq.edu.au, Jeff Dike <jdike@addtoit.com>, linux-pm@lists.linux-foundation.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Tony Luck <tony.luck@intel.com>, Jiri Kosina <trivial@kernel.org>, linux-cris-kernel@axis.com, linux-parisc@vger.kernel.org, Ralf Baechle <ralf@linux-m>
 List-Id: linux-m68k@vger.kernel.org
 
+This is a first series of patches to remove trailing spaces in messages. 
+Patches cover arch-specific code plus one fix for PM and one in 
+Documentation. Depending on how this series is received I'll continue
+with other parts of the kernel.
 
-On 02/06/2010 07:44 PM, Geert Uytterhoeven wrote:
-> On Thu, Feb 4, 2010 at 21:54, Maxim Kuvyrkov<maxim@codesourcery.com>  wrote:
->> On 2/1/10 11:12 PM, Geert Uytterhoeven wrote:
->> ...
->>>
->>> Should I add the NPTL support for m68k and m68knommu, or shall I wait
->>> for 2.6.35?
->>
->> Notwithstanding the bias, I think you should merge the NPTL support. The
->> NPTL changes don't touch any of the existing functionality, they only add
->> the new syscalls, so the risk of breaking something is negligible.
->
-> OK for me. Greg, OK for m68knommu, too?
+Benefits are:
+- general cleanup and consistency
+- minor reduction in kernel size and user's log file size
+- reduced annoyance for people writing logcheck rules
 
-Yep, good for m68knommu too.
+The patch for m68k has been rebased against linux-next; all other
+patches apply against both mainline and -next (as of 5-2).
 
-Regards
-Greg
+Shortstat:
+ 74 files changed, 135 insertions(+), 136 deletions(-)
 
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+Frans Pop (16):
+      alpha: remove trailing spaces in messages
+      arm: remove trailing spaces in messages
+      ia64: remove trailing space in messages
+      m68k: remove trailing space in messages
+      microblaze: remove trailing space in messages
+      mips: remove trailing space in messages
+      parisc: remove trailing space in messages
+      s390: remove trailing space in messages
+      sparc: remove trailing space in messages
+      x86: remove trailing space in messages
+      blackfin: remove trailing space in messages
+      cris/trivial: remove trailing space in message
+      powerpc: remove trailing space in messages
+      um: remove trailing space in messages
+      PM: remove trailing space in message
+      trivial: remove trailing space in spidev test program
