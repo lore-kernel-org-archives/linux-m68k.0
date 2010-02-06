@@ -1,55 +1,87 @@
 From: Frans Pop <elendil@planet.nl>
-Subject: [PATCH 00/16] remove trailing spaces in messages
-Date: Sat, 6 Feb 2010 18:44:36 +0100
-Message-ID: <201002061844.45212.elendil__4067.47303572974$1265478455$gmane$org@planet.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-pm-bounces@lists.linux-foundation.org>
-Content-Disposition: inline
-List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
-	<mailto:linux-pm-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linux-foundation.org/pipermail/linux-pm>
-List-Post: <mailto:linux-pm@lists.linux-foundation.org>
-List-Help: <mailto:linux-pm-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
-	<mailto:linux-pm-request@lists.linux-foundation.org?subject=subscribe>
-Sender: linux-pm-bounces@lists.linux-foundation.org
-Errors-To: linux-pm-bounces@lists.linux-foundation.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, sparclinux@vger.kernel.org, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Helge Deller <deller@gmx.de>, x86@kernel.org, Ingo Molnar <mingo@elte.hu>, Fenghua Yu <fenghua.yu@intel.com>, Mike Frysinger <vapier@gentoo.org>, user-mode-linux-devel@lists.sourceforge.net, microblaze-uclinux@itee.uq.edu.au, Jeff Dike <jdike@addtoit.com>, linux-pm@lists.linux-foundation.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Tony Luck <tony.luck@intel.com>, Jiri Kosina <trivial@kernel.org>, linux-cris-kernel@axis.com, linux-parisc@vger.kernel.org, Ralf Baechle <ralf@linux-m>
+Subject: [PATCH 04/16] m68k: remove trailing space in messages
+Date: Sat,  6 Feb 2010 18:47:11 +0100
+Message-ID: <1265478443-31072-4-git-send-email-elendil__39242.5415725031$1265478659$gmane$org@planet.nl>
+References: <201002061844.45212.elendil@planet.nl>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <201002061844.45212.elendil@planet.nl>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Frans Pop <elendil@planet.nl>, linux-m68k@lists.linux-m68k.org, Roman Zippel <zippel@linux-m68k.org>
 
-This is a first series of patches to remove trailing spaces in messages. 
-Patches cover arch-specific code plus one fix for PM and one in 
-Documentation. Depending on how this series is received I'll continue
-with other parts of the kernel.
+Signed-off-by: Frans Pop <elendil@planet.nl>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: Roman Zippel <zippel@linux-m68k.org>
+---
+ arch/m68k/kernel/traps.c |    2 +-
+ arch/m68k/mac/config.c   |   10 +++++-----
+ arch/m68k/q40/config.c   |    2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-Benefits are:
-- general cleanup and consistency
-- minor reduction in kernel size and user's log file size
-- reduced annoyance for people writing logcheck rules
-
-The patch for m68k has been rebased against linux-next; all other
-patches apply against both mainline and -next (as of 5-2).
-
-Shortstat:
- 74 files changed, 135 insertions(+), 136 deletions(-)
-
-Frans Pop (16):
-      alpha: remove trailing spaces in messages
-      arm: remove trailing spaces in messages
-      ia64: remove trailing space in messages
-      m68k: remove trailing space in messages
-      microblaze: remove trailing space in messages
-      mips: remove trailing space in messages
-      parisc: remove trailing space in messages
-      s390: remove trailing space in messages
-      sparc: remove trailing space in messages
-      x86: remove trailing space in messages
-      blackfin: remove trailing space in messages
-      cris/trivial: remove trailing space in message
-      powerpc: remove trailing space in messages
-      um: remove trailing space in messages
-      PM: remove trailing space in message
-      trivial: remove trailing space in spidev test program
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index aacd6d1..e533f32 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -455,7 +455,7 @@ static inline void access_error040(struct frame *fp)
+ 
+ 		if (do_page_fault(&fp->ptregs, addr, errorcode)) {
+ #ifdef DEBUG
+-		        printk("do_page_fault() !=0 \n");
++			printk("do_page_fault() !=0\n");
+ #endif
+ 			if (user_mode(&fp->ptregs)){
+ 				/* delay writebacks after signal delivery */
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 0356da9..1c16b1b 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -148,7 +148,7 @@ static void mac_cache_card_flush(int writeback)
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+-		printk(KERN_ERR "ERROR: no Mac, but config_mac() called!! \n");
++		printk(KERN_ERR "ERROR: no Mac, but config_mac() called!!\n");
+ 
+ 	mach_sched_init = mac_sched_init;
+ 	mach_init_IRQ = mac_init_IRQ;
+@@ -867,7 +867,7 @@ static void __init mac_identify(void)
+ 	 */
+ 	iop_preinit();
+ 
+-	printk(KERN_INFO "Detected Macintosh model: %d \n", model);
++	printk(KERN_INFO "Detected Macintosh model: %d\n", model);
+ 
+ 	/*
+ 	 * Report booter data:
+@@ -878,12 +878,12 @@ static void __init mac_identify(void)
+ 		mac_bi_data.videoaddr, mac_bi_data.videorow,
+ 		mac_bi_data.videodepth, mac_bi_data.dimensions & 0xFFFF,
+ 		mac_bi_data.dimensions >> 16);
+-	printk(KERN_DEBUG " Videological 0x%lx phys. 0x%lx, SCC at 0x%lx \n",
++	printk(KERN_DEBUG " Videological 0x%lx phys. 0x%lx, SCC at 0x%lx\n",
+ 		mac_bi_data.videological, mac_orig_videoaddr,
+ 		mac_bi_data.sccbase);
+-	printk(KERN_DEBUG " Boottime: 0x%lx GMTBias: 0x%lx \n",
++	printk(KERN_DEBUG " Boottime: 0x%lx GMTBias: 0x%lx\n",
+ 		mac_bi_data.boottime, mac_bi_data.gmtbias);
+-	printk(KERN_DEBUG " Machine ID: %ld CPUid: 0x%lx memory size: 0x%lx \n",
++	printk(KERN_DEBUG " Machine ID: %ld CPUid: 0x%lx memory size: 0x%lx\n",
+ 		mac_bi_data.id, mac_bi_data.cpuid, mac_bi_data.memsize);
+ 
+ 	iop_init();
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 31ab3f0..ad10fec 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -126,7 +126,7 @@ static void q40_reset(void)
+ {
+         halted = 1;
+         printk("\n\n*******************************************\n"
+-		"Called q40_reset : press the RESET button!! \n"
++		"Called q40_reset : press the RESET button!!\n"
+ 		"*******************************************\n");
+ 	Q40_LED_ON();
+ 	while (1)
+-- 
+1.6.6.1
