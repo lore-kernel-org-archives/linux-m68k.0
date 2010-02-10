@@ -1,49 +1,29 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] Define sigcontext ABI for ColdFire
-Date: Wed, 10 Feb 2010 16:16:55 +1000
-Message-ID: <4B724F57.1070505@snapgear.com>
-References: <4AB360DC.9030902@codesourcery.com> <4AB9439B.6050006@codesourcery.com> <4B714579.3060508@codesourcery.com>
+From: VK <noreply@vk.com>
+Subject: Sergey Hnykin vi ha aggiunto tra gli amici nel sito vkontakte.ru
+Date: Wed, 10 Feb 2010 09:25:08 +0300
+Message-ID: <6528d8fb83ff716a3a06a50011920ce1@localhost.localdomain>
+Reply-To: VK <noreply@vk.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:35706 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1751141Ab0BJGPu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Feb 2010 01:15:50 -0500
-In-Reply-To: <4B714579.3060508@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Maxim Kuvyrkov <maxim@codesourcery.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Maxim,
+gentile ...
 
-Maxim Kuvyrkov wrote:
-> On 9/23/09 1:37 AM, Maxim Kuvyrkov wrote:
->> Maxim Kuvyrkov wrote:
->>> The following patch define sigcontext ABI of ColdFire.
-> ...
->> I was lured into thinking that the above sequence is OK by m68knommu's
->> version of the trampoline. Arch/m68knommu/kernel/entry.S uses "move
->> #__NR_rt_sigreturn,%d0" which assembles into "move.w". This is too is
->> buggy and I'm also attaching the fix for the nommu version.
-> 
-> I have cleaned up the sigcontext patch for ColdFire to only touch the 
-> necessary fields in the sigcontext structure.  Attached are the cleaned 
-> up sigcontext patch and the rt_sigreturn fix for m68knommu.
-> 
-> I hope these patches will find their way into m68k/for-2.6.34 branch.
+Ora pu=C3=B2 entrare nel sito e guardare le pagine dei Suoi amici, util=
+izzando la Sua e-mail e la parola d&#39;ordine (password) generata auto=
+maticamente.
 
-I'll take 0002-Fix-m68k-uclinux-s-rt_sigreturn-trampoline.patch
-and apply to the m68knommu git tree.
+VKONTAKTE.ru =C3=A8 un sito, che quotidianamente aiuta dieci milioni di=
+ persone a ritrovare vecchi amici, intrattenersi con loro in rete e con=
+dividere fotografie e avvenimenti della vita.
 
-Thanks
-Greg
+Per entrare nel sito, clicchi sul link sottostante:
 
+ATTENZIONE: la Sua registrazione non sar=C3=A0 attiva se ignorer=C3=A0 =
+questo invito.
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Buon divertimento!
