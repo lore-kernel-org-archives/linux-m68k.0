@@ -1,64 +1,80 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k,m68knommu: missing asterisk?
-Date: Tue, 23 Feb 2010 07:13:33 +0100
-Message-ID: <10f740e81002222213n3ef9608frd81422cd9a74c04@mail.gmail.com>
-References: <4B7F2EC7.6000305@gmail.com>
+From: Lanttor <lanttor.guo@freescale.com>
+Subject: Re: One issue during kernel porting on coldfire m5441x: dl_main:
+ Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
+Date: Tue, 23 Feb 2010 15:51:22 +0800
+Message-ID: <4B8388FA.304@freescale.com>
+References: <4B80F690.9000907@freescale.com>	<4B8149BC.5020801@codesourcery.com> <4B8235FA.4050601@freescale.com> <m2fx4tnkgf.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ey-out-2122.google.com ([74.125.78.26]:31582 "EHLO
-	ey-out-2122.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751422Ab0BWGNf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Feb 2010 01:13:35 -0500
-In-Reply-To: <4B7F2EC7.6000305@gmail.com>
+Received: from az33egw02.freescale.net ([192.88.158.103]:38498 "EHLO
+	az33egw02.freescale.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751566Ab0BWHsx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Feb 2010 02:48:53 -0500
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id o1N7ml0g013854
+	for <linux-m68k@vger.kernel.org>; Tue, 23 Feb 2010 00:48:48 -0700 (MST)
+Received: from zmy16exf40.fsl.freescale.net (zmy16exf40.ap.freescale.net [10.211.3.4])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id o1N7moJu007970
+	for <linux-m68k@vger.kernel.org>; Tue, 23 Feb 2010 01:48:51 -0600 (CST)
+In-Reply-To: <m2fx4tnkgf.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Roel Kluin <roel.kluin@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Peter 'p2' De Schrijver <p2@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Maxim Kuvyrkov <maxim@codesourcery.com>, Greg Ungerer <gerg@snapgear.com>, linux-m68k@vger.kernel.org
 
-On Sat, Feb 20, 2010 at 01:37, Roel Kluin <roel.kluin@gmail.com> wrote:
-> An asterisk was missing.
 >
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
-> Correct?
+> The assertion fails only if both l_libname and l_name are NULL.
+Thanks Andreas, you're right.
 
-No, see arch/m68k/apollo/config.c:dn_dummy_hwclk().
-Andrew: please dequeue.
+Now I have resolved this issue: I need set the value to %rambar1
+register in the head.S file.
+This register is the configure register for SRAM. Although I not use
+SRAM memory, but it
+seems I need configure this register, otherwise I will meet the issue
+before.
 
-> =C2=A0arch/m68k/include/asm/apollohw.h | =C2=A0 =C2=A02 +-
-> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
+I'm not sure why this fix will affect run time loader. I guess the
+toolchain may do some registers' check.
+
+Best Regards,
+Lanttor
+
+
+
+
+------------------------------------------------------------------------
+*From:* Andreas Schwab <schwab@linux-m68k.org>
+*Sent:* 02/23/2010 3:23:28 AM +0800
+*To:* Lanttor <lanttor.guo@freescale.com>
+*CC:* Maxim Kuvyrkov <maxim@codesourcery.com>, Greg Ungerer
+<gerg@snapgear.com>, linux-m68k@vger.kernel.org
+*Subject:* One issue during kernel porting on coldfire m5441x: dl_main:
+Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
+
+> Lanttor <lanttor.guo@freescale.com> writes:
 >
-> diff --git a/arch/m68k/include/asm/apollohw.h b/arch/m68k/include/asm=
-/apollohw.h
-> index a1373b9..87e0cc4 100644
-> --- a/arch/m68k/include/asm/apollohw.h
-> +++ b/arch/m68k/include/asm/apollohw.h
-> @@ -94,7 +94,7 @@ extern u_long timer_physaddr;
+>   
+>> 1206   if (! GL(dl_rtld_map).l_libname && GL(dl_rtld_map).l_name)
+>> 1207     {
+>> 1208       /* We were invoked directly, so the program might not have a
+>> 1209          PT_INTERP.  */
+>> 1210       _dl_rtld_libname.name = GL(dl_rtld_map).l_name;
+>> 1211       /* _dl_rtld_libname.next = NULL;  Already zero.  */
+>> 1212       GL(dl_rtld_map).l_libname =  &_dl_rtld_libname;
+>> 1213     }
+>> 1214   else
+>> 1215     assert (GL(dl_rtld_map).l_libname); /* How else did we get
+>> here?  */
+>>
+>>
+>> So I guess GL(dl_rtld_map).l_libname is not NUL and throws an
+>> exception.  The reason is still tracing...
+>>     
 >
-> =C2=A0#define sio01 ((*(volatile struct SCN2681 *)(IO_BASE + sio01_ph=
-ysaddr)))
-> =C2=A0#define sio23 ((*(volatile struct SCN2681 *)(IO_BASE + sio23_ph=
-ysaddr)))
-> -#define rtc (((volatile struct mc146818 *)(IO_BASE + rtc_physaddr)))
-> +#define rtc ((*(volatile struct mc146818 *)(IO_BASE + rtc_physaddr))=
-)
-> =C2=A0#define cpuctrl (*(volatile unsigned int *)(IO_BASE + cpuctrl_p=
-hysaddr))
-> =C2=A0#define pica (IO_BASE + pica_physaddr)
-> =C2=A0#define picb (IO_BASE + picb_physaddr)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+> The assertion fails only if both l_libname and l_name are NULL.
+>
+> Andreas.
+>
+>   
