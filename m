@@ -1,46 +1,64 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: One issue during kernel porting on coldfire m5441x: dl_main: Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
-Date: Mon, 22 Feb 2010 20:23:28 +0100
-Message-ID: <m2fx4tnkgf.fsf@igel.home>
-References: <4B80F690.9000907@freescale.com>
-	<4B8149BC.5020801@codesourcery.com> <4B8235FA.4050601@freescale.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k,m68knommu: missing asterisk?
+Date: Tue, 23 Feb 2010 07:13:33 +0100
+Message-ID: <10f740e81002222213n3ef9608frd81422cd9a74c04@mail.gmail.com>
+References: <4B7F2EC7.6000305@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:60151 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753299Ab0BVTXd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 22 Feb 2010 14:23:33 -0500
-In-Reply-To: <4B8235FA.4050601@freescale.com> (Lanttor's message of "Mon, 22
-	Feb 2010 15:44:58 +0800")
+Received: from ey-out-2122.google.com ([74.125.78.26]:31582 "EHLO
+	ey-out-2122.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751422Ab0BWGNf convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Feb 2010 01:13:35 -0500
+In-Reply-To: <4B7F2EC7.6000305@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lanttor <lanttor.guo@freescale.com>
-Cc: Maxim Kuvyrkov <maxim@codesourcery.com>, Greg Ungerer <gerg@snapgear.com>, linux-m68k@vger.kernel.org
+To: Roel Kluin <roel.kluin@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Peter 'p2' De Schrijver <p2@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Lanttor <lanttor.guo@freescale.com> writes:
-
-> 1206   if (! GL(dl_rtld_map).l_libname && GL(dl_rtld_map).l_name)
-> 1207     {
-> 1208       /* We were invoked directly, so the program might not have a
-> 1209          PT_INTERP.  */
-> 1210       _dl_rtld_libname.name = GL(dl_rtld_map).l_name;
-> 1211       /* _dl_rtld_libname.next = NULL;  Already zero.  */
-> 1212       GL(dl_rtld_map).l_libname =  &_dl_rtld_libname;
-> 1213     }
-> 1214   else
-> 1215     assert (GL(dl_rtld_map).l_libname); /* How else did we get
-> here?  */
+On Sat, Feb 20, 2010 at 01:37, Roel Kluin <roel.kluin@gmail.com> wrote:
+> An asterisk was missing.
 >
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> Correct?
+
+No, see arch/m68k/apollo/config.c:dn_dummy_hwclk().
+Andrew: please dequeue.
+
+> =C2=A0arch/m68k/include/asm/apollohw.h | =C2=A0 =C2=A02 +-
+> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
 >
-> So I guess GL(dl_rtld_map).l_libname is not NUL and throws an
-> exception.  The reason is still tracing...
+> diff --git a/arch/m68k/include/asm/apollohw.h b/arch/m68k/include/asm=
+/apollohw.h
+> index a1373b9..87e0cc4 100644
+> --- a/arch/m68k/include/asm/apollohw.h
+> +++ b/arch/m68k/include/asm/apollohw.h
+> @@ -94,7 +94,7 @@ extern u_long timer_physaddr;
+>
+> =C2=A0#define sio01 ((*(volatile struct SCN2681 *)(IO_BASE + sio01_ph=
+ysaddr)))
+> =C2=A0#define sio23 ((*(volatile struct SCN2681 *)(IO_BASE + sio23_ph=
+ysaddr)))
+> -#define rtc (((volatile struct mc146818 *)(IO_BASE + rtc_physaddr)))
+> +#define rtc ((*(volatile struct mc146818 *)(IO_BASE + rtc_physaddr))=
+)
+> =C2=A0#define cpuctrl (*(volatile unsigned int *)(IO_BASE + cpuctrl_p=
+hysaddr))
+> =C2=A0#define pica (IO_BASE + pica_physaddr)
+> =C2=A0#define picb (IO_BASE + picb_physaddr)
 
-The assertion fails only if both l_libname and l_name are NULL.
+Gr{oetje,eeting}s,
 
-Andreas.
+						Geert
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
