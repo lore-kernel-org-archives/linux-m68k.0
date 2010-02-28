@@ -1,118 +1,116 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 2.6.34
-Date: Sat, 27 Feb 2010 22:13:34 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1002272207450.9843@ayla.of.borg>
+Subject: Re: [PATCH] udf: use ext2_find_next_bit
+Date: Sun, 28 Feb 2010 15:07:17 +0100
+Message-ID: <10f740e81002280607p2ec5ec7eya6d6c2cc694b4733__26607.2809849449$1267366429$gmane$org@mail.gmail.com>
+References: <1266934273-9371-1-git-send-email-akinobu.mita@gmail.com>
+	 <20100224162152.GK3687@quack.suse.cz>
+	 <961aa3351002241738r7bbdc811p1fe80aabc336ae85@mail.gmail.com>
+	 <10f740e81002250050g287f7753g96063376ecee9487@mail.gmail.com>
+	 <961aa3351002250629p11fc4a49m60aadbf79fc10696@mail.gmail.com>
+	 <10f740e81002280204q2849317bj3e7d22c5c0c93333@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <10f740e81002280204q2849317bj3e7d22c5c0c93333@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-	Hi Linus,
+On Sun, Feb 28, 2010 at 11:04, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Feb 25, 2010 at 15:29, Akinobu Mita <akinobu.mita@gmail.com> wrote:
+>> 2010/2/25 Geert Uytterhoeven <geert@linux-m68k.org>:
+>>> On Thu, Feb 25, 2010 at 02:38, Akinobu Mita <akinobu.mita@gmail.com> wrote:
+>>>> 2010/2/25 Jan Kara <jack@suse.cz>:
+>>>>> On Tue 23-02-10 23:11:13, Akinobu Mita wrote:
+>>>>>> Use ext2_find_next_bit (generic_find_next_le_bit) to find the set bit
+>>>>>> in little endian bitmap region.
+>>>
+>>> Is any of this in linux-next now?
+>>>
+>>> http://kisskb.ellerman.id.au/kisskb/buildresult/2208481/
+>>> | fs/udf/balloc.c:274: error: implicit declaration of function
+>>> 'generic_find_next_le_bit'
+>>
+>> Yep, Jan's patch caused the build breakage.
+>>
+>> Because generic_find_next_le_bit() is not available for all
+>> archtectures. So we should use ext2_find_next_bit() here.
+>
+> Most architectures use the definitions in asm-generic, so they're OK.
+> M68k doesn't. S390 is also affected, and I think arm as well (but there's no
+> arm all-modconfig build in linux-next, so I'm not 100% sure).
+>
+> I'm cooking a patch...
 
-Please pull to receive the m68k updates for 2.6.34.
+>From c9b5c7e6ef2092be822778a0b6b3d3032c058f5b Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 28 Feb 2010 13:06:27 +0100
+Subject: [PATCH] m68k: Implement generic_find_next_{zero_,}le_bit()
 
-The parts that impact m68knommu have been acked by Greg.
-The pmac_zilog parts have been acked by BenH.
+linux-next:
+fs/udf/balloc.c: In function 'udf_bitmap_new_block':
+fs/udf/balloc.c:274: error: implicit declaration of function
+'generic_find_next_le_bit'
 
-Thanks!
+Convert ext2_find_next_{zero_,}bit() into generic_find_next_{zero_,}le_bit(),
+and wrap the ext2_find_next_{zero_,}bit() around the latter.
 
-The following changes since commit 06a79b82b2a3e4bebb9a20638ca208c780e9e507:
-  Linus Torvalds (1):
-        Merge branch 'for-linus' of git://git.kernel.org/.../rafael/suspend-2.6
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/bitops_mm.h |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
-are available in the git repository at:
+diff --git a/arch/m68k/include/asm/bitops_mm.h
+b/arch/m68k/include/asm/bitops_mm.h
+index 9bde784..b4ecdaa 100644
+--- a/arch/m68k/include/asm/bitops_mm.h
++++ b/arch/m68k/include/asm/bitops_mm.h
+@@ -365,6 +365,10 @@ static inline int minix_test_bit(int nr, const void *vaddr)
+ #define ext2_set_bit_atomic(lock, nr, addr)	test_and_set_bit((nr) ^
+24, (unsigned long *)(addr))
+ #define ext2_clear_bit(nr, addr)		__test_and_clear_bit((nr) ^ 24,
+(unsigned long *)(addr))
+ #define ext2_clear_bit_atomic(lock, nr, addr)	test_and_clear_bit((nr)
+^ 24, (unsigned long *)(addr))
++#define ext2_find_next_zero_bit(addr, size, offset) \
++	generic_find_next_zero_le_bit((unsigned long *)addr, size, offset)
++#define ext2_find_next_bit(addr, size, offset) \
++	generic_find_next_le_bit((unsigned long *)addr, size, offset)
 
-  ssh://master.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+ static inline int ext2_test_bit(int nr, const void *vaddr)
+ {
+@@ -394,10 +398,9 @@ static inline int ext2_find_first_zero_bit(const
+void *vaddr, unsigned size)
+ 	return (p - addr) * 32 + res;
+ }
 
-Finn Thain (13):
-      mac68k: cleanup
-      mac68k: rework SWIM platform device
-      pmac-zilog: cleanup
-      pmac-zilog: add platform driver
-      mac68k: replace mac68k SCC code with platform device
-      mac68k: move mac_esp platform device
-      mac68k: move macsonic and macmace platform devices
-      fbdev: mac_var_to_mode() fix
-      valkyriefb: various fixes
-      mac68k: start CUDA early
-      fbdev: add some missing mac modes
-      macfb: cleanup
-      macfb: fix 24-bit visual and stuff
+-static inline int ext2_find_next_zero_bit(const void *vaddr, unsigned size,
+-					  unsigned offset)
++static inline unsigned long generic_find_next_zero_le_bit(const
+unsigned long *addr,
++		unsigned long size, unsigned long offset)
+ {
+-	const unsigned long *addr = vaddr;
+ 	const unsigned long *p = addr + (offset >> 5);
+ 	int bit = offset & 31UL, res;
 
-Geert Uytterhoeven (2):
-      ataflop: Killl warning about unused variable flags
-      m68k: Eliminate unused variable in page_to_phys()
+@@ -437,10 +440,9 @@ static inline int ext2_find_first_bit(const void
+*vaddr, unsigned size)
+ 	return (p - addr) * 32 + res;
+ }
 
-Julia Lawall (1):
-      m68k: Use DIV_ROUND_CLOSEST
+-static inline int ext2_find_next_bit(const void *vaddr, unsigned size,
+-				     unsigned offset)
++static inline unsigned long generic_find_next_le_bit(const unsigned long *addr,
++		unsigned long size, unsigned long offset)
+ {
+-	const unsigned long *addr = vaddr;
+ 	const unsigned long *p = addr + (offset >> 5);
+ 	int bit = offset & 31UL, res;
 
-Maxim Kuvyrkov (5):
-      m68k: Fix asm/swab.h for ColdFire
-      m68k: Switch to generic siginfo layout
-      m68k: Add NPTL support
-      m68knommu: NPTL support for uClinux
-      m68k: Define sigcontext ABI of ColdFire
-
-Peter Huewe (1):
-      m68k: vme_scc - __init annotations
-
-Philippe De Muyter (2):
-      m68k: Allow ioremapping top of memory
-      m68k{,nommu}/h8300: Remove obsolete comment about map_chunk
-
- arch/h8300/mm/memory.c                 |    4 +-
- arch/m68k/Kconfig                      |    6 +-
- arch/m68k/amiga/config.c               |    2 +-
- arch/m68k/configs/mac_defconfig        |    7 +-
- arch/m68k/configs/multi_defconfig      |    6 +-
- arch/m68k/include/asm/machw.h          |   25 --
- arch/m68k/include/asm/macints.h        |   22 +-
- arch/m68k/include/asm/ptrace.h         |    2 +
- arch/m68k/include/asm/sigcontext.h     |    6 +
- arch/m68k/include/asm/siginfo.h        |   91 ----
- arch/m68k/include/asm/swab.h           |    2 +-
- arch/m68k/include/asm/thread_info_mm.h |    1 +
- arch/m68k/include/asm/thread_info_no.h |    1 +
- arch/m68k/include/asm/ucontext.h       |    4 +
- arch/m68k/include/asm/unistd.h         |    6 +-
- arch/m68k/include/asm/virtconvert.h    |    7 +-
- arch/m68k/kernel/entry.S               |    4 +
- arch/m68k/kernel/process.c             |    4 +
- arch/m68k/kernel/ptrace.c              |    5 +
- arch/m68k/kernel/signal.c              |    7 +
- arch/m68k/kernel/sys_m68k.c            |   81 ++++
- arch/m68k/mac/Makefile                 |    2 +-
- arch/m68k/mac/config.c                 |  344 ++++++++++------
- arch/m68k/mac/debug.c                  |  365 ----------------
- arch/m68k/mac/macints.c                |  101 +----
- arch/m68k/mac/oss.c                    |   20 +-
- arch/m68k/mac/via.c                    |    7 -
- arch/m68k/mm/kmap.c                    |    5 +-
- arch/m68knommu/kernel/process.c        |    4 +
- arch/m68knommu/kernel/ptrace.c         |    5 +
- arch/m68knommu/kernel/sys_m68k.c       |   36 ++
- arch/m68knommu/kernel/syscalltable.S   |    4 +
- arch/m68knommu/mm/memory.c             |    1 -
- drivers/block/ataflop.c                |    2 -
- drivers/block/swim.c                   |    4 +-
- drivers/char/vme_scc.c                 |   12 +-
- drivers/macintosh/adb.c                |    6 +-
- drivers/macintosh/via-cuda.c           |   74 ++--
- drivers/net/macmace.c                  |   33 +--
- drivers/net/macsonic.c                 |   33 +--
- drivers/scsi/mac_esp.c                 |   57 +---
- drivers/serial/Kconfig                 |   12 +-
- drivers/serial/pmac_zilog.c            |  240 ++++++++---
- drivers/serial/pmac_zilog.h            |   34 +-
- drivers/video/macfb.c                  |  736 +++++++++++++++-----------------
- drivers/video/macmodes.c               |   80 +++--
- drivers/video/valkyriefb.c             |    6 +-
- drivers/video/valkyriefb.h             |   31 +-
- 48 files changed, 1111 insertions(+), 1436 deletions(-)
- delete mode 100644 arch/m68k/mac/debug.c
+-- 
+1.6.0.4
 
 Gr{oetje,eeting}s,
 
