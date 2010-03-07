@@ -1,79 +1,65 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] M68K: Simplify param.h by using <asm-generic/param.h>
-Date: Sun, 7 Mar 2010 13:41:48 +0100
-Message-ID: <10f740e81003070441i80edc65qeb842367eb999cd1@mail.gmail.com>
-References: <alpine.LFD.2.00.0912311534590.6952@localhost>
+From: Tim Abbott <tabbott@ksplice.com>
+Subject: Re: "m68k: Cleanup linker scripts using new linker script macros."
+ and old binutils (was: Re: [PATCH] m68k: Atari EtherNAT - Nicolas Pitre has
+ a new email address)
+Date: Sun, 7 Mar 2010 13:38:20 -0500 (EST)
+Message-ID: <alpine.DEB.1.10.1003071335390.6474@dr-wily.mit.edu>
+References: <10f740e81001100128q644cae1eg61c12b64f22e8398@mail.gmail.com> <alpine.DEB.1.10.1001101100540.1326@dr-wily.mit.edu> <alpine.DEB.2.00.1001102020420.19754@zirkon.biophys.uni-duesseldorf.de> <m2wrzpk81j.fsf@igel.home>
+ <alpine.DEB.2.00.1001112040120.31572@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f46.google.com ([74.125.82.46]:38995 "EHLO
-	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753084Ab0CGMlt convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 07:41:49 -0500
-Received: by wwa36 with SMTP id 36so2815643wwa.19
-        for <linux-m68k@vger.kernel.org>; Sun, 07 Mar 2010 04:41:48 -0800 (PST)
-In-Reply-To: <alpine.LFD.2.00.0912311534590.6952@localhost>
+Received: from qw-out-2122.google.com ([74.125.92.25]:22472 "EHLO
+	qw-out-2122.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754535Ab0CGSiZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 13:38:25 -0500
+In-Reply-To: <alpine.DEB.2.00.1001112040120.31572@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Cc: Linux M68K mailing list <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, Dec 31, 2009 at 21:35, Robert P. J. Day <rpjday@crashcourse.ca>=
- wrote:
-> Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+Has this fix been merged yet?  It seems to me that the patch Michael sent 
+is a totally reasonable solution to this problem, and I had assumed that 
+it was going to get picked up in the m68k tree when I saw this patch 2 
+months ago...
 
-Thx, applied.
+	-Tim Abbott
 
- diff --git a/arch/m68k/include/asm/param.h b/arch/m68k/include/asm/par=
-am.h
-> index 85c41b7..36265cc 100644
-> --- a/arch/m68k/include/asm/param.h
-> +++ b/arch/m68k/include/asm/param.h
-> @@ -1,26 +1,12 @@
-> =C2=A0#ifndef _M68K_PARAM_H
-> =C2=A0#define _M68K_PARAM_H
->
-> -#ifdef __KERNEL__
-> -# define HZ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0CONFIG_HZ =C2=A0=
- =C2=A0 =C2=A0 /* Internal kernel timer frequency */
-> -# define USER_HZ =C2=A0 =C2=A0 =C2=A0 100 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 /* .. some user interfaces are in "ticks" */
-> -# define CLOCKS_PER_SEC =C2=A0 =C2=A0 =C2=A0 =C2=A0(USER_HZ) =C2=A0 =
-=C2=A0 =C2=A0 /* like times() */
-> -#endif
-> -
-> -#ifndef HZ
-> -#define HZ 100
-> -#endif
-> -
-> =C2=A0#ifdef __uClinux__
-> =C2=A0#define EXEC_PAGESIZE =C2=A04096
-> =C2=A0#else
-> =C2=A0#define EXEC_PAGESIZE =C2=A08192
-> =C2=A0#endif
->
-> -#ifndef NOGROUP
-> -#define NOGROUP =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0(-1)
-> -#endif
-> -
-> -#define MAXHOSTNAMELEN 64 =C2=A0 =C2=A0 =C2=A0/* max length of hostn=
-ame */
-> +#include <asm-generic/param.h>
->
-> =C2=A0#endif /* _M68K_PARAM_H */
+On Mon, 11 Jan 2010, Michael Schmitz wrote:
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+> Followup on this: You are absolutely right - the problem appears to be related 
+> to the the .init_end section _only_ having the ALIGN, and nothing else (i.e. 
+> no actual section content). 
+> 
+> Placing the align in the .m68k_fixup section like such:
+> 
+> --- arch/m68k/kernel/vmlinux-std.lds.org	2010-01-09 11:01:05.000000000 
+> +1300
+> +++ arch/m68k/kernel/vmlinux-std.lds	2010-01-12 08:43:07.000000000 +1300
+> @@ -42,6 +42,7 @@
+>  	__start_fixup = .;
+>  	*(.m68k_fixup)
+>  	__stop_fixup = .;
+> +        . = ALIGN(PAGE_SIZE);
+>    }
+>    NOTES
+>    .init_end : {
+> 
+> still puts .init_end, __init_end and _end on a page boundary, but also extends
+> the load section up to that page boundary. (Unfortunately, it also extends the 
+> kernel file size by a bit). 
+> 
+> Can the same be achieved in a more elegant way? The reason why the old script 
+> worked with my binutils appears to be the placement of the initramfs data right 
+> at the end - the start of initramfs is page aligned, and the size of the 
+> initramfs is an integer number of pages, so the end of initramfs data, 
+> __init_end and _end all are on a page boundary. With the fixup section now 
+> placed after the initramfs explicitly, this no longer happens by accident...
+> 
+> Cheers,
+> 
+> 	Michael
+> 
+> 
+> 
