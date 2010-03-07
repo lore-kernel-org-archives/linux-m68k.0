@@ -1,81 +1,47 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: drivers/net/mac8390.c: Remove useless memcpy casting
-Date: Sun, 7 Mar 2010 10:19:40 +0100
-Message-ID: <10f740e81003070119s3eb433d9r4f1cc79e59d56316@mail.gmail.com>
-References: <201003022001.o22K16vJ011337@hera.kernel.org>
+Subject: Re: [git pull] m68k updates for 2.6.34
+Date: Sun, 7 Mar 2010 10:43:56 +0100
+Message-ID: <10f740e81003070143i4db7b915ua83f9bd994d922a1@mail.gmail.com>
+References: <alpine.DEB.2.00.1002272207450.9843@ayla.of.borg>
+	 <4B8E6D6A.6050108@codesourcery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:40280 "EHLO
+Received: from mail-wy0-f174.google.com ([74.125.82.174]:64576 "EHLO
 	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751180Ab0CGJTm convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 04:19:42 -0500
-In-Reply-To: <201003022001.o22K16vJ011337@hera.kernel.org>
+	with ESMTP id S1753094Ab0CGJn6 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 04:43:58 -0500
+Received: by wya21 with SMTP id 21so2785073wya.19
+        for <linux-m68k@vger.kernel.org>; Sun, 07 Mar 2010 01:43:57 -0800 (PST)
+In-Reply-To: <4B8E6D6A.6050108@codesourcery.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Maxim Kuvyrkov <maxim@codesourcery.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, Mar 2, 2010 at 21:01, Linux Kernel Mailing List
-<linux-kernel@vger.kernel.org> wrote:
-> Gitweb: =C2=A0 =C2=A0 http://git.kernel.org/linus/5c7fffd0e3b57cb63f5=
-0bbd710868f012d67654f
-> Commit: =C2=A0 =C2=A0 5c7fffd0e3b57cb63f50bbd710868f012d67654f
-> Parent: =C2=A0 =C2=A0 35076402a9936fa8a73b57a1f97fecbeceeec34a
-> Author: =C2=A0 =C2=A0 Joe Perches <joe@perches.com>
-> AuthorDate: Mon Jan 4 11:53:00 2010 +0000
-> Committer: =C2=A0David S. Miller <davem@davemloft.net>
-> CommitDate: Wed Jan 6 20:44:02 2010 -0800
+On Wed, Mar 3, 2010 at 15:08, Maxim Kuvyrkov <maxim@codesourcery.com> w=
+rote:
+> On 2/28/10 12:13 AM, Geert Uytterhoeven wrote:
+>> Please pull to receive the m68k updates for 2.6.34.
+
+>> =C2=A0 =C2=A0 =C2=A0 m68k: Define sigcontext ABI of ColdFire
 >
-> =C2=A0 =C2=A0drivers/net/mac8390.c: Remove useless memcpy casting
+> I only now have noticed that an old version of this patch was merged =
+in.
+
+Oops, sorry about that.
+
+> =C2=A0The latest version was posted here
+> (http://marc.info/?l=3Dlinux-m68k&m=3D126571455916199&w=3D2) and incl=
+uded a fix
+> for the libSegFault to not overflow sc_fpstate field [I got the math =
+wrong
+> the first time round].
 >
-> =C2=A0 =C2=A0Signed-off-by: Joe Perches <joe@perches.com>
-> =C2=A0 =C2=A0Signed-off-by: David S. Miller <davem@davemloft.net>
-> ---
-> =C2=A0drivers/net/mac8390.c | =C2=A0 19 ++++++++++---------
-> =C2=A01 files changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/net/mac8390.c b/drivers/net/mac8390.c
-> index 6b6f375..517cee4 100644
-> --- a/drivers/net/mac8390.c
-> +++ b/drivers/net/mac8390.c
-> @@ -237,14 +237,14 @@ static enum mac8390_access __init mac8390_testi=
-o(volatile unsigned long membase)
+> The attached patch fixes this problem.
 
-As indicated by the prototype above, membase is not a pointer...
-
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long outdata =3D 0xA5A0B5B0;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long indata =3D =C2=A00x00000000;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Try writing 32 bits */
-> - =C2=A0 =C2=A0 =C2=A0 memcpy((char *)membase, (char *)&outdata, 4);
-> + =C2=A0 =C2=A0 =C2=A0 memcpy(membase, &outdata, 4);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Now compare them */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (memcmp((char *)&outdata, (char *)memba=
-se, 4) =3D=3D 0)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_=
-32;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Write 16 bit output */
-> - =C2=A0 =C2=A0 =C2=A0 word_memcpy_tocard((char *)membase, (char *)&o=
-utdata, 4);
-> + =C2=A0 =C2=A0 =C2=A0 word_memcpy_tocard(membase, &outdata, 4);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Now read it back */
-> - =C2=A0 =C2=A0 =C2=A0 word_memcpy_fromcard((char *)&indata, (char *)=
-membase, 4);
-> + =C2=A0 =C2=A0 =C2=A0 word_memcpy_fromcard(&indata, membase, 4);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (outdata =3D=3D indata)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_=
-16;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_UNKNOWN;
-
-=2E.. hence you introduced 3 compiler warnings:
-
-drivers/net/mac8390.c:249: warning: passing argument 1 of
-'__builtin_memcpy' makes pointer from integer without a cast
-drivers/net/mac8390.c:254: warning: passing argument 1 of
-'word_memcpy_tocard' makes pointer from integer without a cast
-drivers/net/mac8390.c:256: warning: passing argument 2 of
-'word_memcpy_fromcard' makes pointer from integer without a cast
+Thanks, applied. Queued for a later pull in the 2.6.34-rc timeline.
 
 Gr{oetje,eeting}s,
 
