@@ -1,128 +1,68 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 04/16] m68k: remove trailing space in messages
-Date: Sun, 7 Mar 2010 13:41:15 +0100
-Message-ID: <10f740e81003070441w64ba9c56ve17c343d6310ead9@mail.gmail.com>
-References: <201002061844.45212.elendil@planet.nl>
-	 <1265478443-31072-4-git-send-email-elendil@planet.nl>
+Subject: Re: [PATCH] M68K: Simplify param.h by using <asm-generic/param.h>
+Date: Sun, 7 Mar 2010 13:41:48 +0100
+Message-ID: <10f740e81003070441i80edc65qeb842367eb999cd1@mail.gmail.com>
+References: <alpine.LFD.2.00.0912311534590.6952@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:45251 "EHLO
-	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753645Ab0CGMlR convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 07:41:17 -0500
-In-Reply-To: <1265478443-31072-4-git-send-email-elendil@planet.nl>
+Received: from mail-ww0-f46.google.com ([74.125.82.46]:38995 "EHLO
+	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753084Ab0CGMlt convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 07:41:49 -0500
+Received: by wwa36 with SMTP id 36so2815643wwa.19
+        for <linux-m68k@vger.kernel.org>; Sun, 07 Mar 2010 04:41:48 -0800 (PST)
+In-Reply-To: <alpine.LFD.2.00.0912311534590.6952@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Frans Pop <elendil@planet.nl>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>
+To: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Cc: Linux M68K mailing list <linux-m68k@vger.kernel.org>
 
-On Sat, Feb 6, 2010 at 18:47, Frans Pop <elendil@planet.nl> wrote:
-> Signed-off-by: Frans Pop <elendil@planet.nl>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: Roman Zippel <zippel@linux-m68k.org>
+On Thu, Dec 31, 2009 at 21:35, Robert P. J. Day <rpjday@crashcourse.ca>=
+ wrote:
+> Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
 
 Thx, applied.
 
-> ---
-> =C2=A0arch/m68k/kernel/traps.c | =C2=A0 =C2=A02 +-
-> =C2=A0arch/m68k/mac/config.c =C2=A0 | =C2=A0 10 +++++-----
-> =C2=A0arch/m68k/q40/config.c =C2=A0 | =C2=A0 =C2=A02 +-
-> =C2=A03 files changed, 7 insertions(+), 7 deletions(-)
+ diff --git a/arch/m68k/include/asm/param.h b/arch/m68k/include/asm/par=
+am.h
+> index 85c41b7..36265cc 100644
+> --- a/arch/m68k/include/asm/param.h
+> +++ b/arch/m68k/include/asm/param.h
+> @@ -1,26 +1,12 @@
+> =C2=A0#ifndef _M68K_PARAM_H
+> =C2=A0#define _M68K_PARAM_H
 >
-> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-> index aacd6d1..e533f32 100644
-> --- a/arch/m68k/kernel/traps.c
-> +++ b/arch/m68k/kernel/traps.c
-> @@ -455,7 +455,7 @@ static inline void access_error040(struct frame *=
-fp)
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (do_page_fa=
-ult(&fp->ptregs, addr, errorcode)) {
-> =C2=A0#ifdef DEBUG
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 printk("do_page_fault() !=3D0 \n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 printk("do_page_fault() !=3D0\n");
+> -#ifdef __KERNEL__
+> -# define HZ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0CONFIG_HZ =C2=A0=
+ =C2=A0 =C2=A0 /* Internal kernel timer frequency */
+> -# define USER_HZ =C2=A0 =C2=A0 =C2=A0 100 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 /* .. some user interfaces are in "ticks" */
+> -# define CLOCKS_PER_SEC =C2=A0 =C2=A0 =C2=A0 =C2=A0(USER_HZ) =C2=A0 =
+=C2=A0 =C2=A0 /* like times() */
+> -#endif
+> -
+> -#ifndef HZ
+> -#define HZ 100
+> -#endif
+> -
+> =C2=A0#ifdef __uClinux__
+> =C2=A0#define EXEC_PAGESIZE =C2=A04096
+> =C2=A0#else
+> =C2=A0#define EXEC_PAGESIZE =C2=A08192
 > =C2=A0#endif
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0if (user_mode(&fp->ptregs)){
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* delay writebacks after sig=
-nal delivery */
-> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-> index 0356da9..1c16b1b 100644
-> --- a/arch/m68k/mac/config.c
-> +++ b/arch/m68k/mac/config.c
-> @@ -148,7 +148,7 @@ static void mac_cache_card_flush(int writeback)
-> =C2=A0void __init config_mac(void)
-> =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!MACH_IS_MAC)
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "E=
-RROR: no Mac, but config_mac() called!! \n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "E=
-RROR: no Mac, but config_mac() called!!\n");
 >
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mach_sched_init =3D mac_sched_init;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mach_init_IRQ =3D mac_init_IRQ;
-> @@ -867,7 +867,7 @@ static void __init mac_identify(void)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0iop_preinit();
+> -#ifndef NOGROUP
+> -#define NOGROUP =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0(-1)
+> -#endif
+> -
+> -#define MAXHOSTNAMELEN 64 =C2=A0 =C2=A0 =C2=A0/* max length of hostn=
+ame */
+> +#include <asm-generic/param.h>
 >
-> - =C2=A0 =C2=A0 =C2=A0 printk(KERN_INFO "Detected Macintosh model: %d=
- \n", model);
-> + =C2=A0 =C2=A0 =C2=A0 printk(KERN_INFO "Detected Macintosh model: %d=
-\n", model);
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/*
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 * Report booter data:
-> @@ -878,12 +878,12 @@ static void __init mac_identify(void)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.vi=
-deoaddr, mac_bi_data.videorow,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.vi=
-deodepth, mac_bi_data.dimensions & 0xFFFF,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.di=
-mensions >> 16);
-> - =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Videological 0x%lx phys. 0=
-x%lx, SCC at 0x%lx \n",
-> + =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Videological 0x%lx phys. 0=
-x%lx, SCC at 0x%lx\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.vi=
-deological, mac_orig_videoaddr,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.sc=
-cbase);
-> - =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Boottime: 0x%lx GMTBias: 0=
-x%lx \n",
-> + =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Boottime: 0x%lx GMTBias: 0=
-x%lx\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.bo=
-ottime, mac_bi_data.gmtbias);
-> - =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Machine ID: %ld CPUid: 0x%=
-lx memory size: 0x%lx \n",
-> + =C2=A0 =C2=A0 =C2=A0 printk(KERN_DEBUG " Machine ID: %ld CPUid: 0x%=
-lx memory size: 0x%lx\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mac_bi_data.id=
-, mac_bi_data.cpuid, mac_bi_data.memsize);
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0iop_init();
-> diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-> index 31ab3f0..ad10fec 100644
-> --- a/arch/m68k/q40/config.c
-> +++ b/arch/m68k/q40/config.c
-> @@ -126,7 +126,7 @@ static void q40_reset(void)
-> =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 halted =3D 1;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk("\n\n*****************************=
-**************\n"
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "Called q40_reset =
-: press the RESET button!! \n"
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "Called q40_reset =
-: press the RESET button!!\n"
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0"*************=
-******************************\n");
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0Q40_LED_ON();
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0while (1)
+> =C2=A0#endif /* _M68K_PARAM_H */
 
 Gr{oetje,eeting}s,
 
