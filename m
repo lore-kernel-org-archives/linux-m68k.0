@@ -1,99 +1,92 @@
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Subject: Re: [git pull] m68k updates for 2.6.34
-Date: Wed, 03 Mar 2010 17:08:42 +0300
-Message-ID: <4B8E6D6A.6050108@codesourcery.com>
-References: <alpine.DEB.2.00.1002272207450.9843@ayla.of.borg>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: drivers/net/mac8390.c: Remove useless memcpy casting
+Date: Sun, 7 Mar 2010 10:19:40 +0100
+Message-ID: <10f740e81003070119s3eb433d9r4f1cc79e59d56316@mail.gmail.com>
+References: <201003022001.o22K16vJ011337@hera.kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050206020508050702090808"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.codesourcery.com ([38.113.113.100]:39488 "EHLO
-	mail.codesourcery.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754293Ab0CCOIr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 3 Mar 2010 09:08:47 -0500
-In-Reply-To: <alpine.DEB.2.00.1002272207450.9843@ayla.of.borg>
+Received: from mail-wy0-f174.google.com ([74.125.82.174]:40280 "EHLO
+	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751180Ab0CGJTm convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 04:19:42 -0500
+In-Reply-To: <201003022001.o22K16vJ011337@hera.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Joe Perches <joe@perches.com>
+Cc: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------050206020508050702090808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-<CC trimmed>
-
-On 2/28/10 12:13 AM, Geert Uytterhoeven wrote:
-> 	Hi Linus,
+On Tue, Mar 2, 2010 at 21:01, Linux Kernel Mailing List
+<linux-kernel@vger.kernel.org> wrote:
+> Gitweb: =C2=A0 =C2=A0 http://git.kernel.org/linus/5c7fffd0e3b57cb63f5=
+0bbd710868f012d67654f
+> Commit: =C2=A0 =C2=A0 5c7fffd0e3b57cb63f50bbd710868f012d67654f
+> Parent: =C2=A0 =C2=A0 35076402a9936fa8a73b57a1f97fecbeceeec34a
+> Author: =C2=A0 =C2=A0 Joe Perches <joe@perches.com>
+> AuthorDate: Mon Jan 4 11:53:00 2010 +0000
+> Committer: =C2=A0David S. Miller <davem@davemloft.net>
+> CommitDate: Wed Jan 6 20:44:02 2010 -0800
 >
-> Please pull to receive the m68k updates for 2.6.34.
+> =C2=A0 =C2=A0drivers/net/mac8390.c: Remove useless memcpy casting
 >
-> The parts that impact m68knommu have been acked by Greg.
-> The pmac_zilog parts have been acked by BenH.
+> =C2=A0 =C2=A0Signed-off-by: Joe Perches <joe@perches.com>
+> =C2=A0 =C2=A0Signed-off-by: David S. Miller <davem@davemloft.net>
+> ---
+> =C2=A0drivers/net/mac8390.c | =C2=A0 19 ++++++++++---------
+> =C2=A01 files changed, 10 insertions(+), 9 deletions(-)
 >
-> Thanks!
-...
->        m68k: Define sigcontext ABI of ColdFire
+> diff --git a/drivers/net/mac8390.c b/drivers/net/mac8390.c
+> index 6b6f375..517cee4 100644
+> --- a/drivers/net/mac8390.c
+> +++ b/drivers/net/mac8390.c
+> @@ -237,14 +237,14 @@ static enum mac8390_access __init mac8390_testi=
+o(volatile unsigned long membase)
 
-I only now have noticed that an old version of this patch was merged in. 
-  The latest version was posted here 
-(http://marc.info/?l=linux-m68k&m=126571455916199&w=2) and included a 
-fix for the libSegFault to not overflow sc_fpstate field [I got the math 
-wrong the first time round].
+As indicated by the prototype above, membase is not a pointer...
 
-The attached patch fixes this problem.
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long outdata =3D 0xA5A0B5B0;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long indata =3D =C2=A00x00000000;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Try writing 32 bits */
+> - =C2=A0 =C2=A0 =C2=A0 memcpy((char *)membase, (char *)&outdata, 4);
+> + =C2=A0 =C2=A0 =C2=A0 memcpy(membase, &outdata, 4);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Now compare them */
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (memcmp((char *)&outdata, (char *)memba=
+se, 4) =3D=3D 0)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_=
+32;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Write 16 bit output */
+> - =C2=A0 =C2=A0 =C2=A0 word_memcpy_tocard((char *)membase, (char *)&o=
+utdata, 4);
+> + =C2=A0 =C2=A0 =C2=A0 word_memcpy_tocard(membase, &outdata, 4);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Now read it back */
+> - =C2=A0 =C2=A0 =C2=A0 word_memcpy_fromcard((char *)&indata, (char *)=
+membase, 4);
+> + =C2=A0 =C2=A0 =C2=A0 word_memcpy_fromcard(&indata, membase, 4);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (outdata =3D=3D indata)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_=
+16;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return ACCESS_UNKNOWN;
 
-Thanks,
+=2E.. hence you introduced 3 compiler warnings:
 
--- 
-Maxim Kuvyrkov
-CodeSourcery
-maxim@codesourcery.com
-(650) 331-3385 x724
+drivers/net/mac8390.c:249: warning: passing argument 1 of
+'__builtin_memcpy' makes pointer from integer without a cast
+drivers/net/mac8390.c:254: warning: passing argument 1 of
+'word_memcpy_tocard' makes pointer from integer without a cast
+drivers/net/mac8390.c:256: warning: passing argument 2 of
+'word_memcpy_fromcard' makes pointer from integer without a cast
 
---------------050206020508050702090808
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="0001-Fix-struct-sigcontext-for-ColdFire.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-Fix-struct-sigcontext-for-ColdFire.patch"
+Gr{oetje,eeting}s,
 
->From de4c0f12fd2fd3e8436218dfb5edba3b3d570ee0 Mon Sep 17 00:00:00 2001
-From: Maxim Kuvyrkov <maxim@codesourcery.com>
-Date: Wed, 3 Mar 2010 16:53:45 +0300
-Subject: [PATCH] Fix `struct sigcontext' for ColdFire
+						Geert
 
-LibSegFault uses piggybacks sc_fpstate field of the `struct sigcontext'
-and this patch avoids LibSegFault overflowing this field.  Also this
-removes an unnecessary divergence from classic m68k.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-Signed-off-by: Maxim Kuvyrkov <maxim@codesourcery.com>
----
- arch/m68k/include/asm/sigcontext.h |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
-
-diff --git a/arch/m68k/include/asm/sigcontext.h b/arch/m68k/include/asm/sigcontext.h
-index 1320eaa..a29dd74 100644
---- a/arch/m68k/include/asm/sigcontext.h
-+++ b/arch/m68k/include/asm/sigcontext.h
-@@ -17,13 +17,11 @@ struct sigcontext {
- #ifndef __uClinux__
- # ifdef __mcoldfire__
- 	unsigned long  sc_fpregs[2][2];	/* room for two fp registers */
--	unsigned long  sc_fpcntl[3];
--	unsigned char  sc_fpstate[16+6*8];
- # else
- 	unsigned long  sc_fpregs[2*3];  /* room for two fp registers */
-+# endif
- 	unsigned long  sc_fpcntl[3];
- 	unsigned char  sc_fpstate[216];
--# endif
- #endif
- };
- 
--- 
-1.6.6.1
-
-
---------------050206020508050702090808--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
