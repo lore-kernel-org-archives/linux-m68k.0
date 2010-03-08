@@ -1,65 +1,66 @@
-From: Tim Abbott <tabbott@ksplice.com>
-Subject: Re: "m68k: Cleanup linker scripts using new linker script macros."
- and old binutils (was: Re: [PATCH] m68k: Atari EtherNAT - Nicolas Pitre has
- a new email address)
-Date: Sun, 7 Mar 2010 13:38:20 -0500 (EST)
-Message-ID: <alpine.DEB.1.10.1003071335390.6474@dr-wily.mit.edu>
-References: <10f740e81001100128q644cae1eg61c12b64f22e8398@mail.gmail.com> <alpine.DEB.1.10.1001101100540.1326@dr-wily.mit.edu> <alpine.DEB.2.00.1001102020420.19754@zirkon.biophys.uni-duesseldorf.de> <m2wrzpk81j.fsf@igel.home>
- <alpine.DEB.2.00.1001112040120.31572@zirkon.biophys.uni-duesseldorf.de>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: BUG() in 2.6.33-rc8
+Date: Mon, 08 Mar 2010 02:35:37 +0100
+Message-ID: <m2k4tn8uja.fsf@igel.home>
+References: <m21vgkydpu.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from qw-out-2122.google.com ([74.125.92.25]:22472 "EHLO
-	qw-out-2122.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754535Ab0CGSiZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 13:38:25 -0500
-In-Reply-To: <alpine.DEB.2.00.1001112040120.31572@zirkon.biophys.uni-duesseldorf.de>
+Received: from mail-out.m-online.net ([212.18.0.10]:49615 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750963Ab0CHBfk (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Mar 2010 20:35:40 -0500
+In-Reply-To: <m21vgkydpu.fsf@igel.home> (Andreas Schwab's message of "Wed, 17
+	Feb 2010 00:15:25 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: Al Viro <viro@zeniv.linux.org.uk>
 
-Has this fix been merged yet?  It seems to me that the patch Michael sent 
-is a totally reasonable solution to this problem, and I had assumed that 
-it was going to get picked up in the m68k tree when I saw this patch 2 
-months ago...
+Andreas Schwab <schwab@linux-m68k.org> writes:
 
-	-Tim Abbott
+> I'm getting this BUG() when running 2.6.33-rc8 in Aranym:
+>
+> ida_remove called for id=13 which is not allocated.
+> BUG: Dentry 10433d14{i=f000004e,n=kmsg} still in use (1) [unmount of proc proc]
+> kernel BUG at fs/dcache.c:670!
+> *** TRAP #7 ***   FORMAT=0
+> Current process id is 1014
+> BAD KERNEL TRAP: 00000000
+> Modules linked in: nfs lockd nfs_acl sunrpc ipv6 dm_snapshot dm_mirror dm_region_hash dm_log dm_mod
+> PC: [<0007d56a>] shrink_dcache_for_umount_subtree+0x1ee/0x1f2
+> SR: 2310  SP: 10977ec4  a2: 10951030
+> d0: 00000022    d1: 0000145e    d2: 00000001    d3: 0024ca2e
+> d4: 0007cc0a    d5: 0007f064    a0: 0028bdbc    a1: 0028bdc0
+> Process pidof (pid: 1014, task=10951030)
+> Frame format=0 
+> Stack from 10977ef8:
+>         00243288 0024b83b 0000029e 0024b847 10433d14 f000004e 10433d6c 00000001
+>         0024ca2e 0080d33e 00000003 00000000 00000004 eff06a74 0080d200 0007d37c
+>         00207834 eff069f8 0007d598 00a01694 0080d200 0028ecc6 0006fc7e 0080d200
+>         0080d200 0028ecc6 c010d7a8 0006fd64 0080d200 10965f00 0007048a 0080d200
+>         0080d23a 1082c4d0 10965f40 0006bdd6 0080d200 1082c4d0 10965f00 1082c4d0
+>         10965f00 ffffffef 1082c4d0 10965f04 0006be54 1082c4d0 10965f00 80005650
+> Call Trace: [<0007d37c>] shrink_dcache_for_umount_subtree+0x0/0x1f2
+>  [<0007d598>] shrink_dcache_for_umount+0x2a/0x62
+>  [<0006fc7e>] generic_shutdown_super+0x1a/0xb0
+>  [<0006fd64>] kill_anon_super+0x18/0x3c
+>  [<0007048a>] deactivate_super+0x5a/0x78
+>  [<0006bdd6>] filp_close+0x72/0x90
+>  [<0006be54>] sys_close+0x60/0x88
+>  [<00002662>] syscall+0x8/0xc
+>
+> This is triggered by pidof when it close the file after reading one of
+> the /proc/$pid/stat files.
 
-On Mon, 11 Jan 2010, Michael Schmitz wrote:
+Reverting 86acdca1b63e6890540fa19495cfc708beff3d8b (fix
+autofs/afs/etc. magic mountpoint breakage) fixes that.
 
-> Followup on this: You are absolutely right - the problem appears to be related 
-> to the the .init_end section _only_ having the ALIGN, and nothing else (i.e. 
-> no actual section content). 
-> 
-> Placing the align in the .m68k_fixup section like such:
-> 
-> --- arch/m68k/kernel/vmlinux-std.lds.org	2010-01-09 11:01:05.000000000 
-> +1300
-> +++ arch/m68k/kernel/vmlinux-std.lds	2010-01-12 08:43:07.000000000 +1300
-> @@ -42,6 +42,7 @@
->  	__start_fixup = .;
->  	*(.m68k_fixup)
->  	__stop_fixup = .;
-> +        . = ALIGN(PAGE_SIZE);
->    }
->    NOTES
->    .init_end : {
-> 
-> still puts .init_end, __init_end and _end on a page boundary, but also extends
-> the load section up to that page boundary. (Unfortunately, it also extends the 
-> kernel file size by a bit). 
-> 
-> Can the same be achieved in a more elegant way? The reason why the old script 
-> worked with my binutils appears to be the placement of the initramfs data right 
-> at the end - the start of initramfs is page aligned, and the size of the 
-> initramfs is an integer number of pages, so the end of initramfs data, 
-> __init_end and _end all are on a page boundary. With the fixup section now 
-> placed after the initramfs explicitly, this no longer happens by accident...
-> 
-> Cheers,
-> 
-> 	Michael
-> 
-> 
-> 
+Any idea?
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
