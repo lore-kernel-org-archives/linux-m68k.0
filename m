@@ -1,70 +1,25 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates
-Date: Tue, 9 Mar 2010 13:47:50 +1000
-Message-ID: <201003090347.o293loxq004279@goober.internal.moreton.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+From: munajrdimd@yahoo.in
+Subject: Recommended reading on the members.cla.ca site
+Date: Sat, 13 Mar 2010 13:42:54 -0500 (EST)
+Message-ID: <24935338.1268505774206.JavaMail.SYSTEM@poseidon>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-Hi Linus,
+A friend thought you might be interesting in the following members.cla.ca Web page:
 
-Please pull to get m68knommu updates. The usual few fixes, and also
-changes to support NPTL, and hardware support for the ColdFire QSPI
-interface.
+This is what your friend has to say:
 
-Thanks
-Greg
-
-
-
-
-The following changes since commit 6ebdc661b608671e9ca572af8bb42d58108cc008:
-  Linus Torvalds (1):
-        Merge branch 'next-devicetree' of git://git.secretlab.ca/git/linux-2.6
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (1):
-      m68knommu: remove a duplicate vector setting line for 68360
-
-Jun Sun (1):
-      uclinux: error message when FLAT reloc symbol is invalid, v2
-
-Maxim Kuvyrkov (2):
-      m68knommu: NPTL support for m68knommu
-      Fix m68k-uclinux's rt_sigreturn trampoline
-
-Philip Nye (1):
-      m68knommu: correct the CC flags for Coldfire M5272 targets
-
-Steven King (1):
-      m68knommu: Coldfire QSPI platform support
-
- arch/m68k/include/asm/m520xsim.h       |    1 +
- arch/m68k/include/asm/m523xsim.h       |    5 +
- arch/m68k/include/asm/m5249sim.h       |    2 +
- arch/m68k/include/asm/m527xsim.h       |    7 ++
- arch/m68k/include/asm/m528xsim.h       |   67 +------------
- arch/m68k/include/asm/m532xsim.h       |    1 +
- arch/m68k/include/asm/mcfqspi.h        |   64 +++++++++++
- arch/m68k/include/asm/thread_info_no.h |    1 +
- arch/m68knommu/Makefile                |    2 +-
- arch/m68knommu/kernel/entry.S          |    2 +-
- arch/m68knommu/kernel/process.c        |    4 +
- arch/m68knommu/kernel/ptrace.c         |    5 +
- arch/m68knommu/kernel/sys_m68k.c       |   36 ++++++
- arch/m68knommu/kernel/syscalltable.S   |    4 +
- arch/m68knommu/platform/520x/config.c  |  149 ++++++++++++++++++++++++++
- arch/m68knommu/platform/523x/config.c  |  170 +++++++++++++++++++++++++++++
- arch/m68knommu/platform/5249/config.c  |  167 +++++++++++++++++++++++++++++
- arch/m68knommu/platform/527x/config.c  |  182 ++++++++++++++++++++++++++++++++
- arch/m68knommu/platform/528x/config.c  |  137 ++++++++++++++++++++++++
- arch/m68knommu/platform/532x/config.c  |  124 ++++++++++++++++++++++
- arch/m68knommu/platform/68360/ints.c   |    1 -
- fs/binfmt_flat.c                       |    2 +-
- 22 files changed, 1063 insertions(+), 70 deletions(-)
- create mode 100644 arch/m68k/include/asm/mcfqspi.h
+Hello dear,
+I know this may come to you as a surprise , because you did not know me, And am asking you to help me, it is my desire of going into relationship with you.
+I am  Munna, 21yrs girl from Sudan,i know it will not be easy for accept me, but please try.
+ 
+I  contacting you so that we can get to know each other better for relationship, beside I have a special issue to discuss with you on a very serious note.  Hope to hear from you soon. I will tell you more when you reply me. All I need is your understanding and interest for more information about me wait for your reply
+Sincerely.
+Munna D.Deng.
+              
+              
