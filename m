@@ -1,111 +1,172 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [uClinux-dev] Re: [PATCH] m68knommu: get rid of __do_IRQ and
- add support for using gpio irqs.
-Date: Tue, 16 Mar 2010 11:26:41 +1000
-Message-ID: <4B9EDE51.8070100@snapgear.com>
-References: <200912161915.39692.sfking@fdwdc.com> <4B4A9FAB.5020109@snapgear.com>
+From: Brad Boyer <flar@allandria.com>
+Subject: Re: [PATCH] Macintosh: fix brace and trailing statement coding style issues in adb-iop.c This is a patch to the adb-iop.c file that cleans up brace and trailing statement warnings found by the checkpatch.pl tool. Signed-off-by: Michael Beardsworth <mbeards2@uoregon.edu>
+Date: Sat, 20 Mar 2010 16:08:01 -0700
+Message-ID: <20100320230801.GA5000@cynthia.pants.nu>
+References: <1268171180-75624-1-git-send-email-mbeards2@uoregon.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4B4A9FAB.5020109@snapgear.com>
+Received: from [76.245.85.235] ([76.245.85.235]:34319 "EHLO cynthia.pants.nu"
+	rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+	id S1752759Ab0CTXvG (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 20 Mar 2010 19:51:06 -0400
+Content-Disposition: inline
+In-Reply-To: <1268171180-75624-1-git-send-email-mbeards2@uoregon.edu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: uClinux development list <uclinux-dev@uclinux.org>
-Cc: Steven King <sfking@fdwdc.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Michael Beardsworth <mbeards2@uoregon.edu>
+Cc: benh@kernel.crashing.or, linuxppc-dev@ozlabs.org, Michael Beardsworth <mbeards@mbeards-mbp.lulzzzzzzz.info>, linux-m68k@vger.kernel.org
 
 
-Hi Steven,
+This driver is for m68k based Macintosh systems, not PowerPC based ones. I'm
+copying the linux-m68k list on this reply so it is seen there as well.
 
-Greg Ungerer wrote:
-> Steven King wrote:
->> Since we now have generic irq support for m68knommu and as __do_IRQ is
->> supposed to go away real soon now, I added config 
->> GENERIC_HARDIRQS_NO__DO_IRQ
->> to m68knommu/Kconfig.  Unfortunately, that produced an unbootable 
->> kernel --
->> looking at the code for generic_handle_irq in linux/irq.h, the NO__DO_IRQ
->> version unconditionally calls desc->handle_irq, which suggests that an 
->> irq's
->> handle_irq isnt getting initialized in the early boot and indeed, 
->> adding an
->> initialization of handle_irq in init_IRQ produced a working system.
->>
->> I'm not entirely satisfied with that solution as it ignores why we are 
->> getting
->> an irq when no handler has been setup for it, but in any case, using
->> set_irq_chip_and_handler in init_IRQ to initialize all the handlers is 
->> the
->> right thing to do (or atleast, its what all the other arches do) (and 
->> I didnt
->> feel like digging out the BDM pod to figure out where the mystery irq is
->> coming from).
->>
->> Then the real reason I was digging into the irq code is to add support 
->> for
->> using gpio irqs on the gpios of the parts that support that.  The 
->> following
->> patch is against
->> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
->>
->> only the intc-2 gpio irqs have been tested on real hardware.
->>
->> ------------------------------
->>
->> Get rid of __do_IRQ; use set_irq_chip_and_handler to initialize irqs.  
->> Add
->> support for using gpio irqs and setting the edge on external irqs 
->> generally.
->>
->> Signed-off-by: Steven King <sfking@fdwdc.com>
+	Brad Boyer
+	flar@allandria.com
+
+On Tue, Mar 09, 2010 at 01:46:20PM -0800, Michael Beardsworth wrote:
+> From: Michael Beardsworth <mbeards@mbeards-mbp.lulzzzzzzz.info>
 > 
-> Applied to the for-linus and for-next branches of the m68knommu git
-> tree.
-
-I have dropped this from the for-linus branch of the m68knommu git
-tree for now. It causes user space to hang on boot on at least one
-of my ColdFire test platforms. I have not had a chance to debug it,
-but it is hanging on entering user space. The console output ends
-with:
-
-   FEC Ethernet Driver
-   TCP cubic registered
-   NET: Registered protocol family 17
-   VFS: Mounted root (romfs filesystem) readonly on device 31:0.
-   Freeing unused kernel memory: 44k freed (0x4015a000 - 0x40164000)
-
-Removing this patch and it boots all the way through to user
-space as usual.
-
-Regards
-Greg
-
-
-
->> -- 
->>
->>  arch/m68k/include/asm/m520xsim.h             |    3 +
->>  arch/m68k/include/asm/m523xsim.h             |    3 +
->>  arch/m68k/include/asm/m5249sim.h             |    4 +-
->>  arch/m68k/include/asm/m527xsim.h             |    3 +
->>  arch/m68knommu/Kconfig                       |    4 ++
->>  arch/m68knommu/platform/5272/intc.c          |   39 +++++++++++---
->>  arch/m68knommu/platform/68328/ints.c         |    8 +--
->>  arch/m68knommu/platform/68360/ints.c         |    8 +--
->>  arch/m68knommu/platform/coldfire/intc-2.c    |   76 
->> ++++++++++++++++++++++++--
->>  arch/m68knommu/platform/coldfire/intc-simr.c |   68 
->> ++++++++++++++++++++++--
->>  arch/m68knommu/platform/coldfire/intc.c      |   59 
->> +++++++++++++++++++--
->>  11 files changed, 239 insertions(+), 36 deletions(-)
->>
+> ---
+>  drivers/macintosh/adb-iop.c |   41 +++++++++++++++++++++++------------------
+>  1 files changed, 23 insertions(+), 18 deletions(-)
 > 
-
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
+> index 4446966..e813589 100644
+> --- a/drivers/macintosh/adb-iop.c
+> +++ b/drivers/macintosh/adb-iop.c
+> @@ -19,13 +19,13 @@
+>  #include <linux/init.h>
+>  #include <linux/proc_fs.h>
+>  
+> -#include <asm/macintosh.h> 
+> -#include <asm/macints.h> 
+> +#include <asm/macintosh.h>
+> +#include <asm/macints.h>
+>  #include <asm/mac_iop.h>
+>  #include <asm/mac_oss.h>
+>  #include <asm/adb_iop.h>
+>  
+> -#include <linux/adb.h> 
+> +#include <linux/adb.h>
+>  
+>  /*#define DEBUG_ADB_IOP*/
+>  
+> @@ -67,7 +67,8 @@ static void adb_iop_end_req(struct adb_request *req, int state)
+>  {
+>  	req->complete = 1;
+>  	current_req = req->next;
+> -	if (req->done) (*req->done)(req);
+> +	if (req->done)
+> +		(*req->done)(req);
+>  	adb_iop_state = state;
+>  }
+>  
+> @@ -85,9 +86,8 @@ static void adb_iop_complete(struct iop_msg *msg)
+>  	local_irq_save(flags);
+>  
+>  	req = current_req;
+> -	if ((adb_iop_state == sending) && req && req->reply_expected) {
+> +	if ((adb_iop_state == sending) && req && req->reply_expected)
+>  		adb_iop_state = awaiting_reply;
+> -	}
+>  
+>  	local_irq_restore(flags);
+>  }
+> @@ -113,8 +113,8 @@ static void adb_iop_listen(struct iop_msg *msg)
+>  	req = current_req;
+>  
+>  #ifdef DEBUG_ADB_IOP
+> -	printk("adb_iop_listen %p: rcvd packet, %d bytes: %02X %02X", req,
+> -		(uint) amsg->count + 2, (uint) amsg->flags, (uint) amsg->cmd);
+> +	printk(KERN_WARNING "adb_iop_listen %p: rcvd packet, %d bytes: %02X %02X",
+> +		req, (uint) amsg->count + 2, (uint) amsg->flags, (uint) amsg->cmd);
+>  	for (i = 0; i < amsg->count; i++)
+>  		printk(" %02X", (uint) amsg->data[i]);
+>  	printk("\n");
+> @@ -130,9 +130,8 @@ static void adb_iop_listen(struct iop_msg *msg)
+>  		msg->reply[0] = ADB_IOP_TIMEOUT | ADB_IOP_AUTOPOLL;
+>  		msg->reply[1] = 0;
+>  		msg->reply[2] = 0;
+> -		if (req && (adb_iop_state != idle)) {
+> +		if (req && (adb_iop_state != idle))
+>  			adb_iop_end_req(req, idle);
+> -		}
+>  	} else {
+>  		/* TODO: is it possible for more than one chunk of data  */
+>  		/*       to arrive before the timeout? If so we need to */
+> @@ -169,12 +168,13 @@ static void adb_iop_start(void)
+>  
+>  	/* get the packet to send */
+>  	req = current_req;
+> -	if (!req) return;
+> +	if (!req)
+> +		return;
+>  
+>  	local_irq_save(flags);
+>  
+>  #ifdef DEBUG_ADB_IOP
+> -	printk("adb_iop_start %p: sending packet, %d bytes:", req, req->nbytes);
+> +	printk(KERN_WARNING "adb_iop_start %p: sending packet, %d bytes:", req, req->nbytes);
+>  	for (i = 0 ; i < req->nbytes ; i++)
+>  		printk(" %02X", (uint) req->data[i]);
+>  	printk("\n");
+> @@ -203,13 +203,14 @@ static void adb_iop_start(void)
+>  
+>  int adb_iop_probe(void)
+>  {
+> -	if (!iop_ism_present) return -ENODEV;
+> +	if (!iop_ism_present)
+> +		return -ENODEV;
+>  	return 0;
+>  }
+>  
+>  int adb_iop_init(void)
+>  {
+> -	printk("adb: IOP ISM driver v0.4 for Unified ADB.\n");
+> +	printk(KERN_MESSAGE "adb: IOP ISM driver v0.4 for Unified ADB.\n");
+>  	iop_listen(ADB_IOP, ADB_CHAN, adb_iop_listen, "ADB");
+>  	return 0;
+>  }
+> @@ -219,10 +220,12 @@ int adb_iop_send_request(struct adb_request *req, int sync)
+>  	int err;
+>  
+>  	err = adb_iop_write(req);
+> -	if (err) return err;
+> +	if (err)
+> +		return err;
+>  
+>  	if (sync) {
+> -		while (!req->complete) adb_iop_poll();
+> +		while (!req->complete)
+> +			adb_iop_poll();
+>  	}
+>  	return 0;
+>  }
+> @@ -252,7 +255,8 @@ static int adb_iop_write(struct adb_request *req)
+>  	}
+>  
+>  	local_irq_restore(flags);
+> -	if (adb_iop_state == idle) adb_iop_start();
+> +	if (adb_iop_state == idle)
+> +		adb_iop_start();
+>  	return 0;
+>  }
+>  
+> @@ -264,7 +268,8 @@ int adb_iop_autopoll(int devs)
+>  
+>  void adb_iop_poll(void)
+>  {
+> -	if (adb_iop_state == idle) adb_iop_start();
+> +	if (adb_iop_state == idle)
+> +		adb_iop_start();
+>  	iop_ism_irq(0, (void *) ADB_IOP);
+>  }
+>  
+> -- 
+> 1.6.5
+> 
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/linuxppc-dev
