@@ -1,95 +1,70 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Fix asm constraints for atomic_sub_and_test() and
-	atomic_add_negative() (was: Re: atomic_sub_and_test() asm constraints)
-Date: Sun, 21 Mar 2010 11:01:24 +0100
-Message-ID: <10f740e81003210301m5886c85dwd20eb0991657fc8d@mail.gmail.com>
+Subject: Re: [PATCH] Macintosh: fix brace and trailing statement coding style
+	issues in adb-iop.c This is a patch to the adb-iop.c file that cleans up
+	brace and trailing statement warnings found by the checkpatch.pl tool.
+	Signed-off-by: Michael Beardsworth <m
+Date: Sun, 21 Mar 2010 11:15:41 +0100
+Message-ID: <10f740e81003210315h640b9918g909ef6ad397afcec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:32924 "EHLO
-	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752077Ab0CUKBZ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 21 Mar 2010 06:01:25 -0400
+Received: from mail-ww0-f46.google.com ([74.125.82.46]:33259 "EHLO
+	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752431Ab0CUKPn convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 21 Mar 2010 06:15:43 -0400
+Received: by wwe15 with SMTP id 15so2645901wwe.19
+        for <linux-m68k@vger.kernel.org>; Sun, 21 Mar 2010 03:15:42 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: Brad Boyer <flar@allandria.com>, Michael Beardsworth <mbeards2@uoregon.edu>, benh@kernel.crashing.or, linuxppc-dev@ozlabs.org, Michael Beardsworth <mbeards@mbeards-mbp.lulzzzzzzz.info>, linux-m68k@vger.kernel.org
 
-On Sun, Mar 14, 2010 at 15:30, Andreas Schwab <schwab@linux-m68k.org> w=
-rote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Sun, Mar 21, 2010 at 10:16,  <fthain@telegraphics.com.au> wrote:
+>> On Tue, Mar 09, 2010 at 01:46:20PM -0800, Michael Beardsworth wrote:
+>> >...
+>> >
+>> > =C2=A0#ifdef DEBUG_ADB_IOP
+>> > - =C2=A0 printk("adb_iop_listen %p: rcvd packet, %d bytes: %02X %0=
+2X", req,
+>> > - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (uint) amsg->count + 2, (uint=
+) amsg->flags, (uint) amsg->cmd);
+>> > + =C2=A0 printk(KERN_WARNING "adb_iop_listen %p: rcvd packet, %d b=
+ytes: %02X %02X",
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 req, (uint) amsg->count + 2, =
+(uint) amsg->flags, (uint) amsg->cmd);
+>> > =C2=A0 =C2=A0 for (i =3D 0; i < amsg->count; i++)
+>> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(" %02X", (uint) a=
+msg->data[i]);
+>> > =C2=A0 =C2=A0 printk("\n");
 >
->> | =C2=A0 CC =C2=A0 =C2=A0 =C2=A0mm/memcontrol.o
->> | {standard input}: Assembler messages:
->> | {standard input}:4076: Error: operands mismatch -- statement `subl
->> 12(%fp),170(%a0)' ignored
->>
->> Seems like we have bad asm constraints in
->>
->> static inline int atomic_sub_and_test(int i, atomic_t *v)
->> {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 char c;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 __asm__ __volatile__("subl %2,%1; seq %0=
-" : "=3Dd" (c), "+m"
->> (*v): "g" (i));
+>> >...
+>> > =C2=A0#ifdef DEBUG_ADB_IOP
+>> > - =C2=A0 printk("adb_iop_start %p: sending packet, %d bytes:", req=
+, req->nbytes);
+>> > + =C2=A0 printk(KERN_WARNING "adb_iop_start %p: sending packet, %d=
+ bytes:", req, req->nbytes);
+>> > =C2=A0 =C2=A0 for (i =3D 0 ; i < req->nbytes ; i++)
+>> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(" %02X", (uint) r=
+eq->data[i]);
+>> > =C2=A0 =C2=A0 printk("\n");
 >
-> Surely "g" is wrong, sub only accepts a data register as source opera=
-nd
-> when the destination is in memory.
+> KERN_DEBUG is used for debugging messages, not KERN_WARNING.
 
-=46rom cd2b57976949934df61c4406af344294011d5c16 Mon Sep 17 00:00:00 200=
-1
-=46rom: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 21 Mar 2010 10:52:21 +0100
-Subject: [PATCH] m68k: Fix asm constraints for atomic_sub_and_test()
-and atomic_add_negative()
+And that change is not covered by the patch description.
 
-Recently, we started seeing this on allmodconfig builds:
+BTW, pr_debug(), these days.
 
-  CC      mm/memcontrol.o
-{standard input}: Assembler messages:
-{standard input}:4076: Error: operands mismatch -- statement `subl
-12(%fp),170(%a0)' ignored
+>  int adb_iop_init(void)
+>  {
+> -       printk("adb: IOP ISM driver v0.4 for Unified ADB.\n");
+> +       printk(KERN_MESSAGE "adb: IOP ISM driver v0.4 for Unified ADB=
+=2E\n");
+>        iop_listen(ADB_IOP, ADB_CHAN, adb_iop_listen, "ADB");
+>       return 0;
+> }
 
-Correct the asm constraint, like done for m68knommu.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/atomic_mm.h |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/arch/m68k/include/asm/atomic_mm.h
-b/arch/m68k/include/asm/atomic_mm.h
-index 88b7af2..d9d2ed6 100644
---- a/arch/m68k/include/asm/atomic_mm.h
-+++ b/arch/m68k/include/asm/atomic_mm.h
-@@ -148,14 +148,18 @@ static inline int atomic_xchg(atomic_t *v, int ne=
-w)
- static inline int atomic_sub_and_test(int i, atomic_t *v)
- {
- 	char c;
--	__asm__ __volatile__("subl %2,%1; seq %0" : "=3Dd" (c), "+m" (*v): "g=
-" (i));
-+	__asm__ __volatile__("subl %2,%1; seq %0"
-+			     : "=3Dd" (c), "+m" (*v)
-+			     : "id" (i));
- 	return c !=3D 0;
- }
-
- static inline int atomic_add_negative(int i, atomic_t *v)
- {
- 	char c;
--	__asm__ __volatile__("addl %2,%1; smi %0" : "=3Dd" (c), "+m" (*v): "g=
-" (i));
-+	__asm__ __volatile__("addl %2,%1; smi %0"
-+			     : "=3Dd" (c), "+m" (*v)
-+			     : "id" (i));
- 	return c !=3D 0;
- }
-
---=20
-1.6.0.4
+Not to mention the non-existence of KERN_MESSAGE?
 
 Gr{oetje,eeting}s,
 
