@@ -1,54 +1,106 @@
-From: fthain@telegraphics.com.au
-Subject: Re: [PATCH] Macintosh: fix brace and trailing statement coding style
-	issues in adb-iop.c This is a patch to the adb-iop.c file that cleans
-	up
-	brace and trailing statement warnings found by the checkpatch.pl tool.
-	Signed-off-by: Michael Beardsworth <mbeards2@uoregon.edu>
-Date: Sun, 21 Mar 2010 20:16:02 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1003212013350.5911@nippy.intranet>
-References: <1268171180-75624-1-git-send-email-mbeards2@uoregon.edu>
-	<20100320230801.GA5000@cynthia.pants.nu>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Fix asm constraints for atomic_sub_and_test() and
+	atomic_add_negative() (was: Re: atomic_sub_and_test() asm constraints)
+Date: Sun, 21 Mar 2010 11:01:24 +0100
+Message-ID: <10f740e81003210301m5886c85dwd20eb0991657fc8d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20100320230801.GA5000@cynthia.pants.nu>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: Brad Boyer <flar@allandria.com>
-Cc: Michael Beardsworth <mbeards2@uoregon.edu>, linux-m68k@vger.kernel.org, benh@kernel.crashing.or, Michael Beardsworth <mbeards@mbeards-mbp.lulzzzzzzz.info>, linuxppc-dev@ozlabs.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-wy0-f174.google.com ([74.125.82.174]:32924 "EHLO
+	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752077Ab0CUKBZ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 21 Mar 2010 06:01:25 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
 
+On Sun, Mar 14, 2010 at 15:30, Andreas Schwab <schwab@linux-m68k.org> w=
+rote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>
+>> | =C2=A0 CC =C2=A0 =C2=A0 =C2=A0mm/memcontrol.o
+>> | {standard input}: Assembler messages:
+>> | {standard input}:4076: Error: operands mismatch -- statement `subl
+>> 12(%fp),170(%a0)' ignored
+>>
+>> Seems like we have bad asm constraints in
+>>
+>> static inline int atomic_sub_and_test(int i, atomic_t *v)
+>> {
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 char c;
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 __asm__ __volatile__("subl %2,%1; seq %0=
+" : "=3Dd" (c), "+m"
+>> (*v): "g" (i));
+>
+> Surely "g" is wrong, sub only accepts a data register as source opera=
+nd
+> when the destination is in memory.
 
+=46rom cd2b57976949934df61c4406af344294011d5c16 Mon Sep 17 00:00:00 200=
+1
+=46rom: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 21 Mar 2010 10:52:21 +0100
+Subject: [PATCH] m68k: Fix asm constraints for atomic_sub_and_test()
+and atomic_add_negative()
 
-> On Tue, Mar 09, 2010 at 01:46:20PM -0800, Michael Beardsworth wrote:
+Recently, we started seeing this on allmodconfig builds:
 
-> >...
-> >  
-> >  #ifdef DEBUG_ADB_IOP
-> > -	printk("adb_iop_listen %p: rcvd packet, %d bytes: %02X %02X", req,
-> > -		(uint) amsg->count + 2, (uint) amsg->flags, (uint) amsg->cmd);
-> > +	printk(KERN_WARNING "adb_iop_listen %p: rcvd packet, %d bytes: %02X %02X",
-> > +		req, (uint) amsg->count + 2, (uint) amsg->flags, (uint) amsg->cmd);
-> >  	for (i = 0; i < amsg->count; i++)
-> >  		printk(" %02X", (uint) amsg->data[i]);
-> >  	printk("\n");
+  CC      mm/memcontrol.o
+{standard input}: Assembler messages:
+{standard input}:4076: Error: operands mismatch -- statement `subl
+12(%fp),170(%a0)' ignored
 
-> >...
-> >  #ifdef DEBUG_ADB_IOP
-> > -	printk("adb_iop_start %p: sending packet, %d bytes:", req, req->nbytes);
-> > +	printk(KERN_WARNING "adb_iop_start %p: sending packet, %d bytes:", req, req->nbytes);
-> >  	for (i = 0 ; i < req->nbytes ; i++)
-> >  		printk(" %02X", (uint) req->data[i]);
-> >  	printk("\n");
+Correct the asm constraint, like done for m68knommu.
 
-KERN_DEBUG is used for debugging messages, not KERN_WARNING.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/atomic_mm.h |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-Finn
+diff --git a/arch/m68k/include/asm/atomic_mm.h
+b/arch/m68k/include/asm/atomic_mm.h
+index 88b7af2..d9d2ed6 100644
+--- a/arch/m68k/include/asm/atomic_mm.h
++++ b/arch/m68k/include/asm/atomic_mm.h
+@@ -148,14 +148,18 @@ static inline int atomic_xchg(atomic_t *v, int ne=
+w)
+ static inline int atomic_sub_and_test(int i, atomic_t *v)
+ {
+ 	char c;
+-	__asm__ __volatile__("subl %2,%1; seq %0" : "=3Dd" (c), "+m" (*v): "g=
+" (i));
++	__asm__ __volatile__("subl %2,%1; seq %0"
++			     : "=3Dd" (c), "+m" (*v)
++			     : "id" (i));
+ 	return c !=3D 0;
+ }
+
+ static inline int atomic_add_negative(int i, atomic_t *v)
+ {
+ 	char c;
+-	__asm__ __volatile__("addl %2,%1; smi %0" : "=3Dd" (c), "+m" (*v): "g=
+" (i));
++	__asm__ __volatile__("addl %2,%1; smi %0"
++			     : "=3Dd" (c), "+m" (*v)
++			     : "id" (i));
+ 	return c !=3D 0;
+ }
+
+--=20
+1.6.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
