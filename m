@@ -1,78 +1,47 @@
-From: Joe Perches <joe@perches.com>
+From: David Miller <davem@davemloft.net>
 Subject: Re: [PATCH] mac8390: fix pr_info() calls and change return code
-Date: Thu, 15 Apr 2010 21:34:14 -0700
-Message-ID: <1271392454.2298.37.camel@Joe-Laptop.home>
-References: <alpine.OSX.2.00.1004161214270.271@localhost>
-	 <20100415.200113.215578006.davem@davemloft.net>
-	 <alpine.OSX.2.00.1004161323340.271@localhost>
-	 <alpine.OSX.2.00.1004161403160.271@localhost>
+Date: Thu, 15 Apr 2010 22:53:43 -0700 (PDT)
+Message-ID: <20100415.225343.266704449.davem@davemloft.net>
+References: <20100415.200113.215578006.davem@davemloft.net>
+	<alpine.OSX.2.00.1004161323340.271@localhost>
+	<alpine.OSX.2.00.1004161403160.271@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.perches.com ([173.55.12.10]:1511 "EHLO mail.perches.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751170Ab0DPEeR (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 16 Apr 2010 00:34:17 -0400
+Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:44126
+	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752455Ab0DPFxj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 16 Apr 2010 01:53:39 -0400
 In-Reply-To: <alpine.OSX.2.00.1004161403160.271@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: David Miller <davem@davemloft.net>, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Fri, 2010-04-16 at 14:21 +1000, Finn Thain wrote:
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> 
-> --- a/drivers/net/mac8390.c	2010-04-16 13:31:04.000000000 +1000
-> +++ b/drivers/net/mac8390.c	2010-04-16 14:02:29.000000000 +1000
-> @@ -554,7 +554,7 @@
->  	case MAC8390_APPLE:
->  		switch (mac8390_testio(dev->mem_start)) {
->  		case ACCESS_UNKNOWN:
-> -			pr_info("Don't know how to access card memory!\n");
-> +			pr_err("Don't know how to access card memory!\n");
->  			return -ENODEV;
->  			break;
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Fri, 16 Apr 2010 14:21:00 +1000 (EST)
+
 >  
-> @@ -643,8 +643,8 @@
+> @@ -668,11 +668,11 @@
 >  {
->  	__ei_open(dev);
->  	if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
-> -		pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
-> -		return -EAGAIN;
-> +		pr_err("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
-> +		return -EBUSY;
-
-You should document the reason for the
-return code change in the changelog.
-Why is it better to use -EBUSY?
-
->  	}
->  	return 0;
->  }
-> @@ -660,7 +660,7 @@
->  {
->  	ei_status.txing = 0;
+>  	unsigned char *target = nubus_slot_addr(IRQ2SLOT(dev->irq));
 >  	if (ei_debug > 1)
-> -		pr_info("reset not supported\n");
-> +		printk(KERN_DEBUG "reset not supported\n");
-
-It'd be better to prefix this with the driver name
-or use something like netdev_dbg with #define DEBUG
-otherwise it's "huh? what device emits this message?"
-when reading the logs.
-
-Something like:
-	printk(KERN_DEBUG pr_fmt("reset not supported\n"));
-or
-#define DEBUG
-	netdev_dbg(dev, "reset not supported\n");
-or
-#define DEBUG
-	pr_debug("reset not supported\n");
-
+> -		pr_info("Need to reset the NS8390 t=%lu...", jiffies);
+> +		printk(KERN_DEBUG "Need to reset the NS8390 t=%lu...", jiffies);
+>  	ei_status.txing = 0;
+>  	target[0xC0000] = 0;
 >  	if (ei_debug > 1)
 > -		pr_cont("reset complete\n");
 > +		printk(KERN_CONT "reset complete\n");
+>  	return;
 
-unnecessary conversion.
+You're missing the whole point of using pr_info() et al.  in that it
+includes the bits we define for pr_fmt at the top of the file.
+
+Also, you write absolutely no commit log message entry for your
+change explaining why you're doing the things you are doing.
+
+And finally you are doing two completely unrelated things at one
+(changing error return values and changing log message levels).
