@@ -1,63 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] serial167: Kill unused variables
-Date: Thu, 15 Apr 2010 21:31:26 +0200
-Message-ID: <y2h10f740e81004151231x19995990y60bbab2aa389026b__30256.1140423224$1271360343$gmane$org@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH] net: mac8390 - Sort out memory/MMIO accesses and casts
+ (was: Re: drivers/net/mac8390.c: Remove useless memcpy casting)
+Date: Fri, 16 Apr 2010 12:14:02 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1004161206300.271@localhost>
+References: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from www.telegraphics.com.au ([204.15.192.19]:36817 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753516Ab0DPCWk (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Apr 2010 22:22:40 -0400
+In-Reply-To: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-commits 638157bc1461f6718eeca06bedd9a09cf1f35c36 ("serial167: prepare to push
-BKL down into drivers") and 4165fe4ef7305609a96c7f248cefb9c414d0ede5 ("tty:
-Fix up char drivers request_room usage") removed code without removing the
-corresponding variables:
 
-| drivers/char/serial167.c: In function 'cd2401_rx_interrupt':
-| drivers/char/serial167.c:630: warning: unused variable 'len'
-| drivers/char/serial167.c: In function 'cy_ioctl':
-| drivers/char/serial167.c:1531: warning: unused variable 'val'
+On Thu, 15 Apr 2010, Geert Uytterhoeven wrote:
 
-Remove the variables to kill the warnings.
+> On Mon, Mar 8, 2010 at 18:16, Joe Perches <joe@perches.com> wrote:
+>
+> > Thanks, I'll submit a patch to fix it by tomorrow or so.
+> 
+> It hasn't been fixed yet.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/char/serial167.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+Thanks for taking care of this, Geert.
 
-diff --git a/drivers/char/serial167.c b/drivers/char/serial167.c
-index 8dfd247..78a62eb 100644
---- a/drivers/char/serial167.c
-+++ b/drivers/char/serial167.c
-@@ -627,7 +627,6 @@ static irqreturn_t cd2401_rx_interrupt(int irq,
-void *dev_id)
- 	char data;
- 	int char_count;
- 	int save_cnt;
--	int len;
+> But here's a better solution. I do not have the hardware to test it, 
+> though. Finn, does it {look OK,work}?
 
- 	/* determine the channel and change to that context */
- 	channel = (u_short) (base_addr[CyLICR] >> 2);
-@@ -1528,7 +1527,6 @@ static int
- cy_ioctl(struct tty_struct *tty, struct file *file,
- 	 unsigned int cmd, unsigned long arg)
- {
--	unsigned long val;
- 	struct cyclades_port *info = tty->driver_data;
- 	int ret_val = 0;
- 	void __user *argp = (void __user *)arg;
--- 
-1.6.0.4
+It looks fine. I can't test it right now, but I will do so when I get the 
+opportunity.
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Finn
