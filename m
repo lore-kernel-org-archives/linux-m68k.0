@@ -1,81 +1,59 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] mac8390: fix pr_info() calls, was Re: another cleanup patch
- gone wrong
-Date: Fri, 16 Apr 2010 13:45:28 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1004161323340.271@localhost>
-References: <alpine.OSX.2.00.1004161214270.271@localhost> <20100415.200113.215578006.davem@davemloft.net>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] mac8390: fix pr_info() calls, was Re: another cleanup
+ patch gone wrong
+Date: Thu, 15 Apr 2010 20:54:40 -0700
+Message-ID: <1271390080.2298.25.camel@Joe-Laptop.home>
+References: <alpine.OSX.2.00.1004161214270.271@localhost>
+	 <20100415.200113.215578006.davem@davemloft.net>
+	 <alpine.OSX.2.00.1004161323340.271@localhost>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20100415.200113.215578006.davem@davemloft.net>
-Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.perches.com ([173.55.12.10]:1506 "EHLO mail.perches.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1757702Ab0DPDym (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 15 Apr 2010 23:54:42 -0400
+In-Reply-To: <alpine.OSX.2.00.1004161323340.271@localhost>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: David Miller <davem@davemloft.net>, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-
-On Thu, 15 Apr 2010, David Miller wrote:
-
-> >> -                       printk("Don't know how to access card memory!\n");
-> >> +                       pr_info("Don't know how to access card memory!\n");
-> > 
-> > No, this is pr_err. The driver sets dev->mem_start expecting it to work, 
-> > obviously.
+On Fri, 2010-04-16 at 13:45 +1000, Finn Thain wrote:
+> Here's a patch, both uncalled-for and untested.
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 > 
-> It was an unspecified printk() so Joe's conversion is equal
-> and that's a good way for him to have made these changes.
+> --- a/drivers/net/mac8390.c	2010-04-16 13:31:04.000000000 +1000
+> +++ b/drivers/net/mac8390.c	2010-04-16 13:35:06.000000000 +1000
+> @@ -643,8 +643,8 @@
+>  {
+>  	__ei_open(dev);
+>  	if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
+> -		pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
+> -		return -EAGAIN;
+> +		pr_err("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
+> +		return -EBUSY;
 
-Seems to me that the code went from unspecified to wrong. But I can see 
-your point of view.
+You should document this in the changelog.
 
-> If we want to mark this as KERN_ERR or whatever, that's entirely a 
-> seperate change.
->
-> I think your objections to Joe's changes are completely uncalled for and 
-> his changes were good ones.
+>  	}
+>  	return 0;
+>  }
+> @@ -660,7 +660,7 @@
+>  {
+>  	ei_status.txing = 0;
+>  	if (ei_debug > 1)
+> -		pr_info("reset not supported\n");
+> +		pr_debug("reset not supported\n");
 
-Here's a patch, both uncalled-for and untested.
+You'll need to add
+#define DEBUG
+for this to print.
 
+> -		pr_info("Need to reset the NS8390 t=%lu...", jiffies);
+> +		pr_debug("Need to reset the NS8390 t=%lu...", jiffies);
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+This also now doesn't print.
 
---- a/drivers/net/mac8390.c	2010-04-16 13:31:04.000000000 +1000
-+++ b/drivers/net/mac8390.c	2010-04-16 13:35:06.000000000 +1000
-@@ -554,7 +554,7 @@
- 	case MAC8390_APPLE:
- 		switch (mac8390_testio(dev->mem_start)) {
- 		case ACCESS_UNKNOWN:
--			pr_info("Don't know how to access card memory!\n");
-+			pr_err("Don't know how to access card memory!\n");
- 			return -ENODEV;
- 			break;
- 
-@@ -643,8 +643,8 @@
- {
- 	__ei_open(dev);
- 	if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
--		pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
--		return -EAGAIN;
-+		pr_err("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
-+		return -EBUSY;
- 	}
- 	return 0;
- }
-@@ -660,7 +660,7 @@
- {
- 	ei_status.txing = 0;
- 	if (ei_debug > 1)
--		pr_info("reset not supported\n");
-+		pr_debug("reset not supported\n");
- 	return;
- }
- 
-@@ -668,7 +668,7 @@
- {
- 	unsigned char *target = nubus_slot_addr(IRQ2SLOT(dev->irq));
- 	if (ei_debug > 1)
--		pr_info("Need to reset the NS8390 t=%lu...", jiffies);
-+		pr_debug("Need to reset the NS8390 t=%lu...", jiffies);
- 	ei_status.txing = 0;
- 	target[0xC0000] = 0;
- 	if (ei_debug > 1)
+cheers, Joe
