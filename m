@@ -1,37 +1,91 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] net: mac8390 - Sort out memory/MMIO accesses and casts
- (was: Re: drivers/net/mac8390.c: Remove useless memcpy casting)
-Date: Fri, 16 Apr 2010 12:14:02 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1004161206300.271@localhost>
-References: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
+Subject: another cleanup patch gone wrong
+Date: Fri, 16 Apr 2010 12:34:24 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1004161214270.271@localhost>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:36817 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:37016 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753516Ab0DPCWk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Apr 2010 22:22:40 -0400
-In-Reply-To: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
+	with ESMTP id S1751403Ab0DPCe3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Apr 2010 22:34:29 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <p_gortmaker@yahoo.com>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
 
-On Thu, 15 Apr 2010, Geert Uytterhoeven wrote:
+...but this one was already merged, unfortunately.
 
-> On Mon, Mar 8, 2010 at 18:16, Joe Perches <joe@perches.com> wrote:
->
-> > Thanks, I'll submit a patch to fix it by tomorrow or so.
+> Use printk_once
+> Add #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> Convert printks without KERN_<level> to pr_info and pr_cont
 > 
-> It hasn't been fixed yet.
+> Signed-off-by: Joe Perches <joe@perches.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> 
+> 
+> diff --git a/drivers/net/mac8390.c b/drivers/net/mac8390.c
+> index 517cee4..8bd09e2 100644 (file)
+> --- a/drivers/net/mac8390.c
+> +++ b/drivers/net/mac8390.c
+> @@ -17,6 +17,8 @@
+>  /* 2002-12-30: Try to support more cards, some clues from NetBSD driver */
+>  /* 2003-12-26: Make sure Asante cards always work. */
+>  
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
 
-Thanks for taking care of this, Geert.
+Why the macro? You only used it once.
 
-> But here's a better solution. I do not have the hardware to test it, 
-> though. Finn, does it {look OK,work}?
+The pr_xxx naming convention belongs to a kernel-wide include file. Is it 
+really a good idea to start repurposing it in .c files?
 
-It looks fine. I can't test it right now, but I will do so when I get the 
-opportunity.
+> @@ -545,7 +537,7 @@ static int __init mac8390_initdev(struct net_device * dev, struct nubus_dev * nd
+>         case MAC8390_APPLE:
+>                 switch (mac8390_testio(dev->mem_start)) {
+>                 case ACCESS_UNKNOWN:
+> -                       printk("Don't know how to access card memory!\n");
+> +                       pr_info("Don't know how to access card memory!\n");
+
+No, this is pr_err. The driver sets dev->mem_start expecting it to work, 
+obviously.
+
+>                         return -ENODEV;
+>                         break;
+>  
+
+> @@ -633,7 +626,7 @@ static int mac8390_open(struct net_device *dev)
+>  {
+>         __ei_open(dev);
+>         if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
+> -               printk ("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
+> +               pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
+>                 return -EAGAIN;
+
+Same here.
+
+>         }
+>         return 0;
+> @@ -650,7 +643,7 @@ static void mac8390_no_reset(struct net_device *dev)
+>  {
+>         ei_status.txing = 0;
+>         if (ei_debug > 1)
+> -               printk("reset not supported\n");
+> +               pr_info("reset not supported\n");
+
+I think you meant pr_debug().
+
+>         return;
+>  }
+>  
+> @@ -658,11 +651,11 @@ static void interlan_reset(struct net_device *dev)
+>  {
+>         unsigned char *target=nubus_slot_addr(IRQ2SLOT(dev->irq));
+>         if (ei_debug > 1)
+> -               printk("Need to reset the NS8390 t=%lu...", jiffies);
+> +               pr_info("Need to reset the NS8390 t=%lu...", jiffies);
+
+Same here.
 
 Finn
