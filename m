@@ -1,47 +1,42 @@
-From: David Miller <davem@davemloft.net>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [PATCH] mac8390: fix pr_info() calls and change return code
-Date: Thu, 15 Apr 2010 22:53:43 -0700 (PDT)
-Message-ID: <20100415.225343.266704449.davem@davemloft.net>
-References: <20100415.200113.215578006.davem@davemloft.net>
-	<alpine.OSX.2.00.1004161323340.271@localhost>
-	<alpine.OSX.2.00.1004161403160.271@localhost>
+Date: Fri, 16 Apr 2010 23:57:34 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1004162340370.271@localhost>
+References: <alpine.OSX.2.00.1004161214270.271@localhost>  <20100415.200113.215578006.davem@davemloft.net>  <alpine.OSX.2.00.1004161323340.271@localhost>  <alpine.OSX.2.00.1004161403160.271@localhost> <1271392454.2298.37.camel@Joe-Laptop.home>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:44126
-	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752455Ab0DPFxj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 16 Apr 2010 01:53:39 -0400
-In-Reply-To: <alpine.OSX.2.00.1004161403160.271@localhost>
+Received: from www.telegraphics.com.au ([204.15.192.19]:45362 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932157Ab0DPN5i (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Apr 2010 09:57:38 -0400
+In-Reply-To: <1271392454.2298.37.camel@Joe-Laptop.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: fthain@telegraphics.com.au
-Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: David Miller <davem@davemloft.net>, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
-Date: Fri, 16 Apr 2010 14:21:00 +1000 (EST)
 
->  
-> @@ -668,11 +668,11 @@
->  {
->  	unsigned char *target = nubus_slot_addr(IRQ2SLOT(dev->irq));
->  	if (ei_debug > 1)
-> -		pr_info("Need to reset the NS8390 t=%lu...", jiffies);
-> +		printk(KERN_DEBUG "Need to reset the NS8390 t=%lu...", jiffies);
->  	ei_status.txing = 0;
->  	target[0xC0000] = 0;
->  	if (ei_debug > 1)
-> -		pr_cont("reset complete\n");
-> +		printk(KERN_CONT "reset complete\n");
->  	return;
+On Thu, 15 Apr 2010, Joe Perches wrote:
 
-You're missing the whole point of using pr_info() et al.  in that it
-includes the bits we define for pr_fmt at the top of the file.
+> ...Why is it better to use -EBUSY?
 
-Also, you write absolutely no commit log message entry for your
-change explaining why you're doing the things you are doing.
+Nubus slots are geographically addressed and their irqs are equally 
+inflexible. -EAGAIN is misleading because retrying will not help fix 
+whatever bug caused the irq to unavailable.
 
-And finally you are doing two completely unrelated things at one
-(changing error return values and changing log message levels).
+> ...It'd be better to prefix this with the driver name
+> or use something like netdev_dbg with #define DEBUG
+> otherwise it's "huh? what device emits this message?"
+> when reading the logs.
+> 
+> Something like:
+> 	printk(KERN_DEBUG pr_fmt("reset not supported\n"));
+
+Thanks for the suggestion. I'll resend again.
+
+> ...unnecessary conversion.
+
+I guess some prefer consistency, some prefer symmetry.
+
+Finn
