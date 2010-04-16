@@ -1,91 +1,64 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: another cleanup patch gone wrong
-Date: Fri, 16 Apr 2010 12:34:24 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1004161214270.271@localhost>
+From: David Miller <davem@davemloft.net>
+Subject: Re: another cleanup patch gone wrong
+Date: Thu, 15 Apr 2010 20:01:13 -0700 (PDT)
+Message-ID: <20100415.200113.215578006.davem@davemloft.net>
+References: <alpine.OSX.2.00.1004161214270.271@localhost>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:37016 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751403Ab0DPCe3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Apr 2010 22:34:29 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.OSX.2.00.1004161214270.271@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <p_gortmaker@yahoo.com>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Fri, 16 Apr 2010 12:34:24 +1000 (EST)
 
-...but this one was already merged, unfortunately.
-
-> Use printk_once
-> Add #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> Convert printks without KERN_<level> to pr_info and pr_cont
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
+> ...but this one was already merged, unfortunately.
 > 
+>> Use printk_once
+>> Add #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> Convert printks without KERN_<level> to pr_info and pr_cont
+>> 
+>> Signed-off-by: Joe Perches <joe@perches.com>
+>> Signed-off-by: David S. Miller <davem@davemloft.net>
+>> 
+>> 
+>> diff --git a/drivers/net/mac8390.c b/drivers/net/mac8390.c
+>> index 517cee4..8bd09e2 100644 (file)
+>> --- a/drivers/net/mac8390.c
+>> +++ b/drivers/net/mac8390.c
+>> @@ -17,6 +17,8 @@
+>>  /* 2002-12-30: Try to support more cards, some clues from NetBSD driver */
+>>  /* 2003-12-26: Make sure Asante cards always work. */
+>>  
+>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> +
 > 
-> diff --git a/drivers/net/mac8390.c b/drivers/net/mac8390.c
-> index 517cee4..8bd09e2 100644 (file)
-> --- a/drivers/net/mac8390.c
-> +++ b/drivers/net/mac8390.c
-> @@ -17,6 +17,8 @@
->  /* 2002-12-30: Try to support more cards, some clues from NetBSD driver */
->  /* 2003-12-26: Make sure Asante cards always work. */
->  
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
+> Why the macro? You only used it once.
 
-Why the macro? You only used it once.
+It gets expanded internally into all of the pr_*() calls.
 
-The pr_xxx naming convention belongs to a kernel-wide include file. Is it 
-really a good idea to start repurposing it in .c files?
+> The pr_xxx naming convention belongs to a kernel-wide include file. Is it 
+> really a good idea to start repurposing it in .c files?
 
-> @@ -545,7 +537,7 @@ static int __init mac8390_initdev(struct net_device * dev, struct nubus_dev * nd
->         case MAC8390_APPLE:
->                 switch (mac8390_testio(dev->mem_start)) {
->                 case ACCESS_UNKNOWN:
-> -                       printk("Don't know how to access card memory!\n");
-> +                       pr_info("Don't know how to access card memory!\n");
+This is exactly how it can be used, and there is much
+precedent for this now.
 
-No, this is pr_err. The driver sets dev->mem_start expecting it to work, 
-obviously.
+>> -                       printk("Don't know how to access card memory!\n");
+>> +                       pr_info("Don't know how to access card memory!\n");
+> 
+> No, this is pr_err. The driver sets dev->mem_start expecting it to work, 
+> obviously.
 
->                         return -ENODEV;
->                         break;
->  
+It was an unspecified printk() so Joe's conversion is equal
+and that's a good way for him to have made these changes.
 
-> @@ -633,7 +626,7 @@ static int mac8390_open(struct net_device *dev)
->  {
->         __ei_open(dev);
->         if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
-> -               printk ("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
-> +               pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
->                 return -EAGAIN;
+If we want to mark this as KERN_ERR or whatever, that's entirely
+a seperate change.
 
-Same here.
-
->         }
->         return 0;
-> @@ -650,7 +643,7 @@ static void mac8390_no_reset(struct net_device *dev)
->  {
->         ei_status.txing = 0;
->         if (ei_debug > 1)
-> -               printk("reset not supported\n");
-> +               pr_info("reset not supported\n");
-
-I think you meant pr_debug().
-
->         return;
->  }
->  
-> @@ -658,11 +651,11 @@ static void interlan_reset(struct net_device *dev)
->  {
->         unsigned char *target=nubus_slot_addr(IRQ2SLOT(dev->irq));
->         if (ei_debug > 1)
-> -               printk("Need to reset the NS8390 t=%lu...", jiffies);
-> +               pr_info("Need to reset the NS8390 t=%lu...", jiffies);
-
-Same here.
-
-Finn
+I think your objections to Joe's changes are completely uncalled
+for and his changes were good ones.
