@@ -1,59 +1,42 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch bug fixes
-Date: Wed, 21 Apr 2010 15:22:17 +1000
-Message-ID: <201004210522.o3L5MHnC027492@goober.internal.moreton.com.au>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] mac8390: change an error return code and some cleanup,
+ take 3
+Date: Wed, 21 Apr 2010 16:30:41 -0700 (PDT)
+Message-ID: <20100421.163041.158540277.davem@davemloft.net>
+References: <alpine.OSX.2.00.1004161403160.271@localhost>
+	<alpine.OSX.2.00.1004162347390.271@localhost>
+	<alpine.OSX.2.00.1004171258330.358@localhost>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rex.securecomputing.com ([203.24.151.4]:50355 "EHLO
-	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1751983Ab0DUFQy (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Apr 2010 01:16:54 -0400
+Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:57397
+	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754835Ab0DUXag (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 21 Apr 2010 19:30:36 -0400
+In-Reply-To: <alpine.OSX.2.00.1004171258330.358@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Hi Linus,
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Sat, 17 Apr 2010 13:16:04 +1000 (EST)
 
-Please pull:
+> 
+> Change an error return code from -EAGAIN to -EBUSY since the former is 
+> misleading.
+> 
+> Nubus slots are geographically addressed and their irqs are equally 
+> inflexible. -EAGAIN is misleading because retrying will not help fix 
+> whatever bug it was that made the irq unavailable.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+request_irq() itself returns an appropriate error code, so the
+correct change is to do:
 
-to get a small collection of m68knommu arch bug fixes and one uclinux
-flat file error message improvement.
+	err = request_irq( ... );
+	if (err) {
+	...
 
-Thanks
-Greg
-
-
-
-The following changes since commit 05ce7bfe547c9fa967d9cab6c37867a9cb6fb3fa:
-  Linus Torvalds (1):
-        Merge branch 'for_linus' of git://git.kernel.org/.../jack/linux-fs-2.6
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (1):
-      m68knommu: remove a duplicate vector setting line for 68360
-
-Jun Sun (1):
-      uclinux: error message when FLAT reloc symbol is invalid, v2
-
-Maxim Kuvyrkov (1):
-      Fix m68k-uclinux's rt_sigreturn trampoline
-
-Philip Nye (1):
-      m68knommu: correct the CC flags for Coldfire M5272 targets
-
-Philippe De Muyter (2):
-      m68knommu: fix coldfire tcdrain
-      m68knommu: allow 4 coldfire serial ports
-
- arch/m68k/include/asm/mcfuart.h      |    5 +++++
- arch/m68knommu/Makefile              |    2 +-
- arch/m68knommu/kernel/entry.S        |    2 +-
- arch/m68knommu/platform/68360/ints.c |    1 -
- drivers/serial/mcf.c                 |    6 ++++--
- fs/binfmt_flat.c                     |    2 +-
- 6 files changed, 12 insertions(+), 6 deletions(-)
+and return 'err'.
