@@ -1,29 +1,59 @@
-From: "MR. EVANS GREEN" <evans@yahoo.co.uk>
-Subject: Urgent Responds Is Needed&#8207;
-Date: Mon, 19 Apr 2010 10:19:14 +0200 (CEST)
-Message-ID: <78.138.3.236.1271665154.wm@webmail.inode.at>
-Reply-To: evansgreen002@windowslive.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch bug fixes
+Date: Wed, 21 Apr 2010 15:22:17 +1000
+Message-ID: <201004210522.o3L5MHnC027492@goober.internal.moreton.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from rex.securecomputing.com ([203.24.151.4]:50355 "EHLO
+	cyberguard.com.au" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1751983Ab0DUFQy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Apr 2010 01:16:54 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Attn:  Sir/Madam,
+Hi Linus,
 
-Although you might be apprehensive about my email as we have not met
-before, I am Evans Green, I work with Bank Of England, There is the sum of
-$20,600,000.00 in my Bank, There were no beneficiaries stated concerning
-these funds which means no one would ever come forward to claim it.
+Please pull:
 
-That is why I ask that we work together so as to have the sum transfered
-out of my Bank into your Bank Account or any other account of your choice.
-I will be pleased to see if you can help me and also be a good and trusted
-person. Once the funds have been transferred to your Nominated Bank
-Account we shall then share in the ratio of 60% for me, 40% for you, do
-send me email as soon as possible for more details here is my email
-address: evansgreen002@windowslive.com
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-Regards,
-Mr.Evans Green
+to get a small collection of m68knommu arch bug fixes and one uclinux
+flat file error message improvement.
+
+Thanks
+Greg
+
+
+
+The following changes since commit 05ce7bfe547c9fa967d9cab6c37867a9cb6fb3fa:
+  Linus Torvalds (1):
+        Merge branch 'for_linus' of git://git.kernel.org/.../jack/linux-fs-2.6
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Greg Ungerer (1):
+      m68knommu: remove a duplicate vector setting line for 68360
+
+Jun Sun (1):
+      uclinux: error message when FLAT reloc symbol is invalid, v2
+
+Maxim Kuvyrkov (1):
+      Fix m68k-uclinux's rt_sigreturn trampoline
+
+Philip Nye (1):
+      m68knommu: correct the CC flags for Coldfire M5272 targets
+
+Philippe De Muyter (2):
+      m68knommu: fix coldfire tcdrain
+      m68knommu: allow 4 coldfire serial ports
+
+ arch/m68k/include/asm/mcfuart.h      |    5 +++++
+ arch/m68knommu/Makefile              |    2 +-
+ arch/m68knommu/kernel/entry.S        |    2 +-
+ arch/m68knommu/platform/68360/ints.c |    1 -
+ drivers/serial/mcf.c                 |    6 ++++--
+ fs/binfmt_flat.c                     |    2 +-
+ 6 files changed, 12 insertions(+), 6 deletions(-)
