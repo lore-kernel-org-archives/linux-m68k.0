@@ -1,46 +1,45 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] mac8390: change an error return code and some cleanup,
- take 3
-Date: Thu, 22 Apr 2010 11:13:21 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1004221108270.289@localhost>
-References: <alpine.OSX.2.00.1004161403160.271@localhost> <alpine.OSX.2.00.1004162347390.271@localhost> <alpine.OSX.2.00.1004171258330.358@localhost> <20100421.163041.158540277.davem@davemloft.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: npiggin@suse.de
+Subject: [patch 07/14] m68k: invoke oom-killer from page fault
+Date: Fri, 23 Apr 2010 02:06:20 +1000
+Message-ID: <20100422161223.796194683@suse.de>
+References: <20100422160613.723698029@suse.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:37403 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753028Ab0DVBN1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Apr 2010 21:13:27 -0400
-In-Reply-To: <20100421.163041.158540277.davem@davemloft.net>
+Content-Disposition: inline; filename=m68k-pagefault-use-oom.patch
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Cc: David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+As explained in commit 1c0fe6e3bd, we want to call the architecture independent
+oom killer when getting an unexplained OOM from handle_mm_fault, rather than
+simply killing current.
 
-On Wed, 21 Apr 2010, David Miller wrote:
-
-> From: Finn Thain <fthain@telegraphics.com.au>
-> Date: Sat, 17 Apr 2010 13:16:04 +1000 (EST)
-> 
-> > 
-> > Change an error return code from -EAGAIN to -EBUSY since the former is 
-> > misleading.
-> > 
-> > Nubus slots are geographically addressed and their irqs are equally 
-> > inflexible. -EAGAIN is misleading because retrying will not help fix 
-> > whatever bug it was that made the irq unavailable.
-> 
-> request_irq() itself returns an appropriate error code, so the
-> correct change is to do:
-> 
-> 	err = request_irq( ... );
-> 	if (err) {
-> 	...
-> 
-> and return 'err'.
-
-OK. I'll send a new patch once 2.6.34 is out and I have time to test this 
-and some other patches.
-
-Finn
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-arch@vger.kernel.org
+Signed-off-by: Nick Piggin <npiggin@suse.de>
+---
+Index: linux-2.6/arch/m68k/mm/fault.c
+===================================================================
+--- linux-2.6.orig/arch/m68k/mm/fault.c
++++ linux-2.6/arch/m68k/mm/fault.c
+@@ -180,15 +180,10 @@ good_area:
+  */
+ out_of_memory:
+ 	up_read(&mm->mmap_sem);
+-	if (is_global_init(current)) {
+-		yield();
+-		down_read(&mm->mmap_sem);
+-		goto survive;
+-	}
+-
+-	printk("VM: killing process %s\n", current->comm);
+-	if (user_mode(regs))
+-		do_group_exit(SIGKILL);
++	if (!user_mode(regs))
++		goto no_context;
++	pagefault_out_of_memory();
++	return;
+ 
+ no_context:
+ 	current->thread.signo = SIGBUS;
