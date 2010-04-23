@@ -1,148 +1,177 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 06/14] m68k: amiga - Floppy platform device conversion
-Date: Fri, 23 Apr 2010 10:00:27 +0200
-Message-ID: <1272009635-6504-7-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 12/14] m68k: amiga - Serial port platform device conversion
+Date: Fri, 23 Apr 2010 10:00:33 +0200
+Message-ID: <1272009635-6504-13-git-send-email-geert@linux-m68k.org>
 References: <1272009635-6504-1-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-2-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-3-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-4-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-5-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-6-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:38568 "EHLO
-	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756400Ab0DWIAk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 23 Apr 2010 04:00:40 -0400
-In-Reply-To: <1272009635-6504-6-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+ <1272009635-6504-7-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-8-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-9-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-10-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-11-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-12-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1272009635-6504-12-git-send-email-geert@linux-m68k.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+List-Id: linux-m68k@vger.kernel.org
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/platform.c |    5 ++++
- drivers/block/amiflop.c    |   47 +++++++++++++++++++------------------------
- 2 files changed, 26 insertions(+), 26 deletions(-)
+ arch/m68k/amiga/platform.c |    3 ++
+ drivers/char/amiserial.c   |   61 +++++++++++++++++++++++++------------------
+ 2 files changed, 38 insertions(+), 26 deletions(-)
 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index 2e308e7..38f18bf 100644
+index 269bafc..52aa62d 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -72,6 +72,11 @@ static int __init amiga_init_devices(void)
- 	if (AMIGAHW_PRESENT(AMI_AUDIO))
- 		platform_device_register_simple("amiga-audio", -1, NULL, 0);
+@@ -168,6 +168,9 @@ static int __init amiga_init_devices(void)
+ 	if (AMIGAHW_PRESENT(AMI_MOUSE))
+ 		platform_device_register_simple("amiga-mouse", -1, NULL, 0);
  
-+
-+	/* storage interfaces */
-+	if (AMIGAHW_PRESENT(AMI_FLOPPY))
-+		platform_device_register_simple("amiga-floppy", -1, NULL, 0);
++	if (AMIGAHW_PRESENT(AMI_SERIAL))
++		platform_device_register_simple("amiga-serial", -1, NULL, 0);
 +
  	return 0;
  }
  
-diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
-index 0182a22..832798a 100644
---- a/drivers/block/amiflop.c
-+++ b/drivers/block/amiflop.c
-@@ -66,6 +66,7 @@
- #include <linux/blkdev.h>
- #include <linux/elevator.h>
- #include <linux/interrupt.h>
+diff --git a/drivers/char/amiserial.c b/drivers/char/amiserial.c
+index 56b2767..4f8d60c 100644
+--- a/drivers/char/amiserial.c
++++ b/drivers/char/amiserial.c
+@@ -84,6 +84,7 @@ static char *serial_version = "4.30";
+ #include <linux/smp_lock.h>
+ #include <linux/init.h>
+ #include <linux/bitops.h>
 +#include <linux/platform_device.h>
  
  #include <asm/setup.h>
- #include <asm/uaccess.h>
-@@ -1696,34 +1697,18 @@ static struct kobject *floppy_find(dev_t dev, int *part, void *data)
- 	return get_disk(unit[drive].gendisk);
- }
  
--static int __init amiga_floppy_init(void)
-+static int __init amiga_floppy_probe(struct platform_device *pdev)
+@@ -1954,29 +1955,16 @@ static const struct tty_operations serial_ops = {
+ /*
+  * The serial driver boot-time initialization code!
+  */
+-static int __init rs_init(void)
++static int __init amiga_serial_probe(struct platform_device *pdev)
  {
- 	int i, ret;
+ 	unsigned long flags;
+ 	struct serial_state * state;
+ 	int error;
  
--	if (!MACH_IS_AMIGA)
+-	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_SERIAL))
 -		return -ENODEV;
 -
--	if (!AMIGAHW_PRESENT(AMI_FLOPPY))
--		return -ENODEV;
--
- 	if (register_blkdev(FLOPPY_MAJOR,"fd"))
- 		return -EBUSY;
+ 	serial_driver = alloc_tty_driver(1);
+ 	if (!serial_driver)
+ 		return -ENOMEM;
  
 -	/*
--	 *  We request DSKPTR, DSKLEN and DSKDATA only, because the other
--	 *  floppy registers are too spreaded over the custom register space
+-	 *  We request SERDAT and SERPER only, because the serial registers are
+-	 *  too spreaded over the custom register space
 -	 */
--	ret = -EBUSY;
--	if (!request_mem_region(CUSTOM_PHYSADDR+0x20, 8, "amiflop [Paula]")) {
--		printk("fd: cannot get floppy registers\n");
--		goto out_blkdev;
+-	if (!request_mem_region(CUSTOM_PHYSADDR+0x30, 4,
+-				"amiserial [Paula]")) {
+-		error = -EBUSY;
+-		goto fail_put_tty_driver;
 -	}
 -
- 	ret = -ENOMEM;
- 	if ((raw_buf = (char *)amiga_chip_alloc (RAW_BUF_SIZE, "Floppy")) ==
- 	    NULL) {
- 		printk("fd: cannot get chip mem buffer\n");
--		goto out_memregion;
-+		goto out_blkdev;
- 	}
+ 	IRQ_ports = NULL;
  
- 	ret = -EBUSY;
-@@ -1792,18 +1777,13 @@ out_irq2:
- 	free_irq(IRQ_AMIGA_DSKBLK, NULL);
- out_irq:
- 	amiga_chip_free(raw_buf);
--out_memregion:
--	release_mem_region(CUSTOM_PHYSADDR+0x20, 8);
- out_blkdev:
- 	unregister_blkdev(FLOPPY_MAJOR,"fd");
- 	return ret;
+ 	show_serial_version();
+@@ -1998,7 +1986,7 @@ static int __init rs_init(void)
+ 
+ 	error = tty_register_driver(serial_driver);
+ 	if (error)
+-		goto fail_release_mem_region;
++		goto fail_put_tty_driver;
+ 
+ 	state = rs_table;
+ 	state->magic = SSTATE_MAGIC;
+@@ -2050,23 +2038,24 @@ static int __init rs_init(void)
+ 	ciab.ddra |= (SER_DTR | SER_RTS);   /* outputs */
+ 	ciab.ddra &= ~(SER_DCD | SER_CTS | SER_DSR);  /* inputs */
+ 
++	platform_set_drvdata(pdev, state);
++
+ 	return 0;
+ 
+ fail_free_irq:
+ 	free_irq(IRQ_AMIGA_TBE, state);
+ fail_unregister:
+ 	tty_unregister_driver(serial_driver);
+-fail_release_mem_region:
+-	release_mem_region(CUSTOM_PHYSADDR+0x30, 4);
+ fail_put_tty_driver:
+ 	put_tty_driver(serial_driver);
+ 	return error;
  }
  
--module_init(amiga_floppy_init);
--#ifdef MODULE
--
- #if 0 /* not safe to unload */
--void cleanup_module(void)
-+static int __exit amiga_floppy_remove(struct platform_device *pdev)
+-static __exit void rs_exit(void) 
++static int __exit amiga_serial_remove(struct platform_device *pdev)
  {
- 	int i;
+ 	int error;
+-	struct async_struct *info = rs_table[0].info;
++	struct serial_state *state = platform_get_drvdata(pdev);
++	struct async_struct *info = state->info;
  
-@@ -1820,12 +1800,25 @@ void cleanup_module(void)
- 	custom.dmacon = DMAF_DISK; /* disable DMA */
- 	amiga_chip_free(raw_buf);
- 	blk_cleanup_queue(floppy_queue);
--	release_mem_region(CUSTOM_PHYSADDR+0x20, 8);
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
- }
- #endif
+ 	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
+ 	tasklet_kill(&info->tlet);
+@@ -2075,19 +2064,38 @@ static __exit void rs_exit(void)
+ 		       error);
+ 	put_tty_driver(serial_driver);
  
--#else
-+static struct platform_driver amiga_floppy_driver = {
+-	if (info) {
+-	  rs_table[0].info = NULL;
+-	  kfree(info);
+-	}
++	rs_table[0].info = NULL;
++	kfree(info);
+ 
+ 	free_irq(IRQ_AMIGA_TBE, rs_table);
+ 	free_irq(IRQ_AMIGA_RBF, rs_table);
+ 
+-	release_mem_region(CUSTOM_PHYSADDR+0x30, 4);
++	platform_set_drvdata(pdev, NULL);
++
++	return error;
++}
++
++static struct platform_driver amiga_serial_driver = {
++	.remove = __exit_p(amiga_serial_remove),
 +	.driver   = {
-+		.name	= "amiga-floppy",
++		.name	= "amiga-serial",
 +		.owner	= THIS_MODULE,
 +	},
 +};
 +
-+static int __init amiga_floppy_init(void)
++static int __init amiga_serial_init(void)
 +{
-+	return platform_driver_probe(&amiga_floppy_driver, amiga_floppy_probe);
++	return platform_driver_probe(&amiga_serial_driver, amiga_serial_probe);
 +}
 +
-+module_init(amiga_floppy_init);
++module_init(amiga_serial_init);
 +
-+#ifndef MODULE
- static int __init amiga_floppy_setup (char *str)
- {
- 	int n;
-@@ -1840,3 +1833,5 @@ static int __init amiga_floppy_setup (char *str)
++static void __exit amiga_serial_exit(void)
++{
++	platform_driver_unregister(&amiga_serial_driver);
+ }
  
- __setup("floppy=", amiga_floppy_setup);
- #endif
-+
-+MODULE_ALIAS("platform:amiga-floppy");
+-module_init(rs_init)
+-module_exit(rs_exit)
++module_exit(amiga_serial_exit);
+ 
+ 
+ #if defined(CONFIG_SERIAL_CONSOLE) && !defined(MODULE)
+@@ -2154,3 +2162,4 @@ console_initcall(amiserial_console_init);
+ #endif /* CONFIG_SERIAL_CONSOLE && !MODULE */
+ 
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:amiga-serial");
 -- 
 1.6.0.4
