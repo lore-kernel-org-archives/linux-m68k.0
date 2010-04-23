@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 08/14] m68k: amiga - A4000T SCSI platform device conversion
-Date: Fri, 23 Apr 2010 10:00:29 +0200
-Message-ID: <1272009635-6504-9-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 13/14] m68k: amiga - Parallel port platform device conversion
+Date: Fri, 23 Apr 2010 10:00:34 +0200
+Message-ID: <1272009635-6504-14-git-send-email-geert@linux-m68k.org>
 References: <1272009635-6504-1-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-2-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-3-git-send-email-geert@linux-m68k.org>
@@ -10,227 +10,161 @@ References: <1272009635-6504-1-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-6-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-7-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-8-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <1272009635-6504-8-git-send-email-geert@linux-m68k.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org
+ <1272009635-6504-9-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-10-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-11-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-12-git-send-email-geert@linux-m68k.org>
+ <1272009635-6504-13-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from gerard.telenet-ops.be ([195.130.132.48]:48712 "EHLO
+	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756527Ab0DWIFn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 23 Apr 2010 04:05:43 -0400
+In-Reply-To: <1272009635-6504-13-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-scsi@vger.kernel.org
 ---
- arch/m68k/amiga/platform.c |   11 +++++
- drivers/scsi/a4000t.c      |  101 ++++++++++++++++++++------------------------
- 2 files changed, 57 insertions(+), 55 deletions(-)
+ arch/m68k/amiga/platform.c      |    3 ++
+ drivers/parport/parport_amiga.c |   64 ++++++++++++++++++++++++--------------
+ 2 files changed, 43 insertions(+), 24 deletions(-)
 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index df1fae3..027e4ca 100644
+index 52aa62d..c985db0 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -65,6 +65,13 @@ static const struct resource a3000_scsi_resource __initconst = {
- };
+@@ -171,6 +171,9 @@ static int __init amiga_init_devices(void)
+ 	if (AMIGAHW_PRESENT(AMI_SERIAL))
+ 		platform_device_register_simple("amiga-serial", -1, NULL, 0);
  
- 
-+static const struct resource a4000t_scsi_resource __initconst = {
-+	.start	= 0xdd0000,
-+	.end	= 0xdd0fff,
-+	.flags	= IORESOURCE_MEM,
-+};
-+
-+
- static int __init amiga_init_devices(void)
- {
- 	if (!MACH_IS_AMIGA)
-@@ -88,6 +95,10 @@ static int __init amiga_init_devices(void)
- 		platform_device_register_simple("amiga-a3000-scsi", -1,
- 						&a3000_scsi_resource, 1);
- 
-+	if (AMIGAHW_PRESENT(A4000_SCSI))
-+		platform_device_register_simple("amiga-a4000t-scsi", -1,
-+						&a4000t_scsi_resource, 1);
++	if (AMIGAHW_PRESENT(AMI_PARALLEL))
++		platform_device_register_simple("amiga-parallel", -1, NULL, 0);
 +
  	return 0;
  }
  
-diff --git a/drivers/scsi/a4000t.c b/drivers/scsi/a4000t.c
-index 11ae6be..23c76f4 100644
---- a/drivers/scsi/a4000t.c
-+++ b/drivers/scsi/a4000t.c
-@@ -20,10 +20,6 @@
+diff --git a/drivers/parport/parport_amiga.c b/drivers/parport/parport_amiga.c
+index 1586e1c..8bef6d6 100644
+--- a/drivers/parport/parport_amiga.c
++++ b/drivers/parport/parport_amiga.c
+@@ -18,6 +18,8 @@
+ #include <linux/parport.h>
+ #include <linux/ioport.h>
+ #include <linux/interrupt.h>
++#include <linux/platform_device.h>
++
+ #include <asm/setup.h>
+ #include <asm/amigahw.h>
+ #include <asm/irq.h>
+@@ -31,7 +33,6 @@
+ #define DPRINTK(x...)	do { } while (0)
+ #endif
  
- #include "53c700.h"
+-static struct parport *this_port = NULL;
  
--MODULE_AUTHOR("Alan Hourihane <alanh@fairlite.demon.co.uk> / Kars de Jong <jongk@linux-m68k.org>");
--MODULE_DESCRIPTION("Amiga A4000T NCR53C710 driver");
--MODULE_LICENSE("GPL");
--
- 
- static struct scsi_host_template a4000t_scsi_driver_template = {
- 	.name		= "A4000T builtin SCSI",
-@@ -32,30 +28,35 @@ static struct scsi_host_template a4000t_scsi_driver_template = {
- 	.module		= THIS_MODULE,
- };
- 
--static struct platform_device *a4000t_scsi_device;
- 
--#define A4000T_SCSI_ADDR 0xdd0040
-+#define A4000T_SCSI_OFFSET	0x40
- 
--static int __devinit a4000t_probe(struct platform_device *dev)
-+static int __init amiga_a4000t_scsi_probe(struct platform_device *pdev)
+ static void amiga_write_data(struct parport *p, unsigned char data)
  {
--	struct Scsi_Host *host;
-+	struct resource *res;
-+	phys_addr_t scsi_addr;
- 	struct NCR_700_Host_Parameters *hostdata;
-+	struct Scsi_Host *host;
+@@ -227,18 +228,11 @@ static struct parport_operations pp_amiga_ops = {
  
--	if (!(MACH_IS_AMIGA && AMIGAHW_PRESENT(A4000_SCSI)))
--		goto out;
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENODEV;
+ /* ----------- Initialisation code --------------------------------- */
  
--	if (!request_mem_region(A4000T_SCSI_ADDR, 0x1000,
-+	if (!request_mem_region(res->start, resource_size(res),
- 				"A4000T builtin SCSI"))
--		goto out;
+-static int __init parport_amiga_init(void)
++static int __init amiga_parallel_probe(struct platform_device *pdev)
+ {
+ 	struct parport *p;
+ 	int err;
+ 
+-	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_PARALLEL))
+-		return -ENODEV;
+-
+-	err = -EBUSY;
+-	if (!request_mem_region(CIAA_PHYSADDR-1+0x100, 0x100, "parallel"))
+-		goto out_mem;
+-
+ 	ciaa.ddrb = 0xff;
+ 	ciab.ddra &= 0xf8;
+ 	mb();
+@@ -246,41 +240,63 @@ static int __init parport_amiga_init(void)
+ 	p = parport_register_port((unsigned long)&ciaa.prb, IRQ_AMIGA_CIAA_FLG,
+ 				   PARPORT_DMA_NONE, &pp_amiga_ops);
+ 	if (!p)
+-		goto out_port;
 +		return -EBUSY;
  
--	hostdata = kzalloc(sizeof(struct NCR_700_Host_Parameters), GFP_KERNEL);
-+	hostdata = kzalloc(sizeof(struct NCR_700_Host_Parameters),
-+			   GFP_KERNEL);
- 	if (!hostdata) {
--		printk(KERN_ERR "a4000t-scsi: Failed to allocate host data\n");
-+		dev_err(&pdev->dev, "Failed to allocate host data\n");
- 		goto out_release;
- 	}
+-	err = request_irq(IRQ_AMIGA_CIAA_FLG, parport_irq_handler, 0, p->name, p);
++	err = request_irq(IRQ_AMIGA_CIAA_FLG, parport_irq_handler, 0, p->name,
++			  p);
+ 	if (err)
+ 		goto out_irq;
  
-+	scsi_addr = res->start + A4000T_SCSI_OFFSET;
+-	this_port = p;
+ 	printk(KERN_INFO "%s: Amiga built-in port using irq\n", p->name);
+ 	/* XXX: set operating mode */
+ 	parport_announce_port(p);
+ 
++	platform_set_drvdata(pdev, p);
 +
- 	/* Fill in the required pieces of hostdata */
--	hostdata->base = (void __iomem *)ZTWO_VADDR(A4000T_SCSI_ADDR);
-+	hostdata->base = (void __iomem *)ZTWO_VADDR(scsi_addr);
- 	hostdata->clock = 50;
- 	hostdata->chip710 = 1;
- 	hostdata->dmode_extra = DMODE_FC2;
-@@ -63,26 +64,25 @@ static int __devinit a4000t_probe(struct platform_device *dev)
- 
- 	/* and register the chip */
- 	host = NCR_700_detect(&a4000t_scsi_driver_template, hostdata,
--			      &dev->dev);
-+			      &pdev->dev);
- 	if (!host) {
--		printk(KERN_ERR "a4000t-scsi: No host detected; "
--				"board configuration problem?\n");
-+		dev_err(&pdev->dev,
-+			"No host detected; board configuration problem?\n");
- 		goto out_free;
- 	}
- 
- 	host->this_id = 7;
--	host->base = A4000T_SCSI_ADDR;
-+	host->base = scsi_addr;
- 	host->irq = IRQ_AMIGA_PORTS;
- 
- 	if (request_irq(host->irq, NCR_700_intr, IRQF_SHARED, "a4000t-scsi",
- 			host)) {
--		printk(KERN_ERR "a4000t-scsi: request_irq failed\n");
-+		dev_err(&pdev->dev, "request_irq failed\n");
- 		goto out_put_host;
- 	}
- 
--	platform_set_drvdata(dev, host);
-+	platform_set_drvdata(pdev, host);
- 	scsi_scan_host(host);
--
  	return 0;
  
-  out_put_host:
-@@ -90,58 +90,49 @@ static int __devinit a4000t_probe(struct platform_device *dev)
-  out_free:
- 	kfree(hostdata);
-  out_release:
--	release_mem_region(A4000T_SCSI_ADDR, 0x1000);
-- out:
-+	release_mem_region(res->start, resource_size(res));
- 	return -ENODEV;
+ out_irq:
+ 	parport_put_port(p);
+-out_port:
+-	release_mem_region(CIAA_PHYSADDR-1+0x100, 0x100);
+-out_mem:
+ 	return err;
  }
  
--static __devexit int a4000t_device_remove(struct platform_device *dev)
-+static int __exit amiga_a4000t_scsi_remove(struct platform_device *pdev)
- {
--	struct Scsi_Host *host = platform_get_drvdata(dev);
-+	struct Scsi_Host *host = platform_get_drvdata(pdev);
- 	struct NCR_700_Host_Parameters *hostdata = shost_priv(host);
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	scsi_remove_host(host);
--
- 	NCR_700_release(host);
- 	kfree(hostdata);
- 	free_irq(host->irq, host);
--	release_mem_region(A4000T_SCSI_ADDR, 0x1000);
--
-+	release_mem_region(res->start, resource_size(res));
- 	return 0;
- }
- 
--static struct platform_driver a4000t_scsi_driver = {
--	.driver = {
--		.name           = "a4000t-scsi",
--		.owner          = THIS_MODULE,
-+static struct platform_driver amiga_a4000t_scsi_driver = {
-+	.remove = __exit_p(amiga_a4000t_scsi_remove),
+-static void __exit parport_amiga_exit(void)
++static int __exit amiga_parallel_remove(struct platform_device *pdev)
++{
++	struct parport *port = platform_get_drvdata(pdev);
++
++	parport_remove_port(port);
++	if (port->irq != PARPORT_IRQ_NONE)
++		free_irq(IRQ_AMIGA_CIAA_FLG, port);
++	parport_put_port(port);
++	platform_set_drvdata(pdev, NULL);
++	return 0;
++}
++
++static struct platform_driver amiga_parallel_driver = {
++	.remove = __exit_p(amiga_parallel_remove),
 +	.driver   = {
-+		.name	= "amiga-a4000t-scsi",
++		.name	= "amiga-parallel",
 +		.owner	= THIS_MODULE,
- 	},
--	.probe          = a4000t_probe,
--	.remove         = __devexit_p(a4000t_device_remove),
- };
- 
--static int __init a4000t_scsi_init(void)
-+static int __init amiga_a4000t_scsi_init(void)
++	},
++};
++
++static int __init amiga_parallel_init(void)
++{
++	return platform_driver_probe(&amiga_parallel_driver,
++				     amiga_parallel_probe);
++}
++
++module_init(amiga_parallel_init);
++
++static void __exit amiga_parallel_exit(void)
  {
--	int err;
--
--	err = platform_driver_register(&a4000t_scsi_driver);
--	if (err)
--		return err;
--
--	a4000t_scsi_device = platform_device_register_simple("a4000t-scsi",
--			-1, NULL, 0);
--	if (IS_ERR(a4000t_scsi_device)) {
--		platform_driver_unregister(&a4000t_scsi_driver);
--		return PTR_ERR(a4000t_scsi_device);
--	}
--
--	return err;
-+	return platform_driver_probe(&amiga_a4000t_scsi_driver,
-+				     amiga_a4000t_scsi_probe);
+-	parport_remove_port(this_port);
+-	if (this_port->irq != PARPORT_IRQ_NONE)
+-		free_irq(IRQ_AMIGA_CIAA_FLG, this_port);
+-	parport_put_port(this_port);
+-	release_mem_region(CIAA_PHYSADDR-1+0x100, 0x100);
++	platform_driver_unregister(&amiga_parallel_driver);
  }
  
--static void __exit a4000t_scsi_exit(void)
-+module_init(amiga_a4000t_scsi_init);
-+
-+static void __exit amiga_a4000t_scsi_exit(void)
- {
--	platform_device_unregister(a4000t_scsi_device);
--	platform_driver_unregister(&a4000t_scsi_driver);
-+	platform_driver_unregister(&amiga_a4000t_scsi_driver);
- }
++module_exit(amiga_parallel_exit);
  
--module_init(a4000t_scsi_init);
--module_exit(a4000t_scsi_exit);
-+module_exit(amiga_a4000t_scsi_exit);
-+
-+MODULE_AUTHOR("Alan Hourihane <alanh@fairlite.demon.co.uk> / "
-+	      "Kars de Jong <jongk@linux-m68k.org>");
-+MODULE_DESCRIPTION("Amiga A4000T NCR53C710 driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:amiga-a4000t-scsi");
+ MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
+ MODULE_DESCRIPTION("Parport Driver for Amiga builtin Port");
+ MODULE_SUPPORTED_DEVICE("Amiga builtin Parallel Port");
+ MODULE_LICENSE("GPL");
+-
+-module_init(parport_amiga_init)
+-module_exit(parport_amiga_exit)
++MODULE_ALIAS("platform:amiga-parallel");
 -- 
 1.6.0.4
-
