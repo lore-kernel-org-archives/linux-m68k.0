@@ -1,19 +1,13 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 10/14] m68k: amiga - Keyboard platform device conversion
-Date: Fri, 23 Apr 2010 10:00:31 +0200
-Message-ID: <1272009635-6504-11-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 04/14] m68k: amiga - Frame buffer platform device conversion
+Date: Fri, 23 Apr 2010 10:00:25 +0200
+Message-ID: <1272009635-6504-5-git-send-email-geert@linux-m68k.org>
 References: <1272009635-6504-1-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-2-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-3-git-send-email-geert@linux-m68k.org>
  <1272009635-6504-4-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-5-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-6-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-7-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-8-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-9-git-send-email-geert@linux-m68k.org>
- <1272009635-6504-10-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1272009635-6504-10-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1272009635-6504-4-git-send-email-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
@@ -21,184 +15,150 @@ List-Id: linux-m68k@vger.kernel.org
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/platform.c      |    5 ++
- drivers/input/keyboard/amikbd.c |   97 +++++++++++++++++++++++----------------
- 2 files changed, 63 insertions(+), 39 deletions(-)
+ arch/m68k/amiga/platform.c |   15 +++++++++++++
+ drivers/video/amifb.c      |   49 +++++++++++++++++++++++++++----------------
+ 2 files changed, 46 insertions(+), 18 deletions(-)
 
 diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index 907f6f5..d427de2 100644
+index 33a7669..7fa929c 100644
 --- a/arch/m68k/amiga/platform.c
 +++ b/arch/m68k/amiga/platform.c
-@@ -160,6 +160,11 @@ static int __init amiga_init_devices(void)
- 					 sizeof(a4000_ide_pdata));
- 	}
+@@ -56,3 +56,18 @@ static int __init amiga_init_bus(void)
+ subsys_initcall(amiga_init_bus);
  
+ #endif /* CONFIG_ZORRO */
 +
-+	/* other I/O hardware */
-+	if (AMIGAHW_PRESENT(AMI_KEYBOARD))
-+		platform_device_register_simple("amiga-keyboard", -1, NULL, 0);
 +
- 	return 0;
- }
- 
-diff --git a/drivers/input/keyboard/amikbd.c b/drivers/input/keyboard/amikbd.c
-index 35149ec..79172af 100644
---- a/drivers/input/keyboard/amikbd.c
-+++ b/drivers/input/keyboard/amikbd.c
-@@ -35,6 +35,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/keyboard.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/amigaints.h>
- #include <asm/amigahw.h>
-@@ -154,10 +155,9 @@ static const char *amikbd_messages[8] = {
- 	[7] = KERN_WARNING "amikbd: keyboard interrupt\n"
- };
- 
--static struct input_dev *amikbd_dev;
--
--static irqreturn_t amikbd_interrupt(int irq, void *dummy)
-+static irqreturn_t amikbd_interrupt(int irq, void *data)
- {
-+	struct input_dev *dev = data;
- 	unsigned char scancode, down;
- 
- 	scancode = ~ciaa.sdr;		/* get and invert scancode (keyboard is active low) */
-@@ -170,47 +170,42 @@ static irqreturn_t amikbd_interrupt(int irq, void *dummy)
- 
- 	if (scancode < 0x78) {		/* scancodes < 0x78 are keys */
- 		if (scancode == 98) {	/* CapsLock is a toggle switch key on Amiga */
--			input_report_key(amikbd_dev, scancode, 1);
--			input_report_key(amikbd_dev, scancode, 0);
-+			input_report_key(dev, scancode, 1);
-+			input_report_key(dev, scancode, 0);
- 		} else {
--			input_report_key(amikbd_dev, scancode, down);
-+			input_report_key(dev, scancode, down);
- 		}
- 
--		input_sync(amikbd_dev);
-+		input_sync(dev);
- 	} else				/* scancodes >= 0x78 are error codes */
- 		printk(amikbd_messages[scancode - 0x78]);
- 
- 	return IRQ_HANDLED;
- }
- 
--static int __init amikbd_init(void)
-+static int __init amikbd_probe(struct platform_device *pdev)
- {
-+	struct input_dev *dev;
- 	int i, j, err;
- 
--	if (!AMIGAHW_PRESENT(AMI_KEYBOARD))
--		return -ENODEV;
--
--	if (!request_mem_region(CIAA_PHYSADDR-1+0xb00, 0x100, "amikeyb"))
--		return -EBUSY;
--
--	amikbd_dev = input_allocate_device();
--	if (!amikbd_dev) {
--		printk(KERN_ERR "amikbd: not enough memory for input device\n");
--		err = -ENOMEM;
--		goto fail1;
-+	dev = input_allocate_device();
-+	if (!dev) {
-+		dev_err(&pdev->dev, "Not enough memory for input device\n");
-+		return -ENOMEM;
- 	}
- 
--	amikbd_dev->name = "Amiga Keyboard";
--	amikbd_dev->phys = "amikbd/input0";
--	amikbd_dev->id.bustype = BUS_AMIGA;
--	amikbd_dev->id.vendor = 0x0001;
--	amikbd_dev->id.product = 0x0001;
--	amikbd_dev->id.version = 0x0100;
-+	dev->name = pdev->name;
-+	dev->phys = "amikbd/input0";
-+	dev->id.bustype = BUS_AMIGA;
-+	dev->id.vendor = 0x0001;
-+	dev->id.product = 0x0001;
-+	dev->id.version = 0x0100;
-+	dev->dev.parent = &pdev->dev;
- 
--	amikbd_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REP);
-+	dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REP);
- 
- 	for (i = 0; i < 0x78; i++)
--		set_bit(i, amikbd_dev->keybit);
-+		set_bit(i, dev->keybit);
- 
- 	for (i = 0; i < MAX_NR_KEYMAPS; i++) {
- 		static u_short temp_map[NR_KEYS] __initdata;
-@@ -229,30 +224,54 @@ static int __init amikbd_init(void)
- 		memcpy(key_maps[i], temp_map, sizeof(temp_map));
- 	}
- 	ciaa.cra &= ~0x41;	 /* serial data in, turn off TA */
--	if (request_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt, 0, "amikbd",
--			amikbd_interrupt)) {
--		err = -EBUSY;
-+	err = request_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt, 0, "amikbd",
-+			  dev);
-+	if (err)
- 		goto fail2;
--	}
- 
--	err = input_register_device(amikbd_dev);
-+	err = input_register_device(dev);
- 	if (err)
- 		goto fail3;
- 
-+	platform_set_drvdata(pdev, dev);
-+
- 	return 0;
- 
-- fail3:	free_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt);
-- fail2:	input_free_device(amikbd_dev);
-- fail1:	release_mem_region(CIAA_PHYSADDR - 1 + 0xb00, 0x100);
-+ fail3:	free_irq(IRQ_AMIGA_CIAA_SP, dev);
-+ fail2:	input_free_device(dev);
- 	return err;
- }
- 
--static void __exit amikbd_exit(void)
-+static int __exit amikbd_remove(struct platform_device *pdev)
++static int __init amiga_init_devices(void)
 +{
-+	struct input_dev *dev = platform_get_drvdata(pdev);
++	if (!MACH_IS_AMIGA)
++		return -ENODEV;
 +
-+	platform_set_drvdata(pdev, NULL);
-+	free_irq(IRQ_AMIGA_CIAA_SP, dev);
-+	input_unregister_device(dev);
++	/* video hardware */
++	if (AMIGAHW_PRESENT(AMI_VIDEO))
++		platform_device_register_simple("amiga-video", -1, NULL, 0);
++
 +	return 0;
 +}
 +
-+static struct platform_driver amikbd_driver = {
-+	.remove = __exit_p(amikbd_remove),
++device_initcall(amiga_init_devices);
+diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
+index dca48df..e5d6b56 100644
+--- a/drivers/video/amifb.c
++++ b/drivers/video/amifb.c
+@@ -50,8 +50,9 @@
+ #include <linux/fb.h>
+ #include <linux/init.h>
+ #include <linux/ioport.h>
+-
++#include <linux/platform_device.h>
+ #include <linux/uaccess.h>
++
+ #include <asm/system.h>
+ #include <asm/irq.h>
+ #include <asm/amigahw.h>
+@@ -1135,7 +1136,7 @@ static int amifb_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg
+ 	 * Interface to the low level console driver
+ 	 */
+ 
+-static void amifb_deinit(void);
++static void amifb_deinit(struct platform_device *pdev);
+ 
+ 	/*
+ 	 * Internal routines
+@@ -2246,7 +2247,7 @@ static inline void chipfree(void)
+ 	 * Initialisation
+ 	 */
+ 
+-static int __init amifb_init(void)
++static int __init amifb_probe(struct platform_device *pdev)
+ {
+ 	int tag, i, err = 0;
+ 	u_long chipptr;
+@@ -2261,16 +2262,6 @@ static int __init amifb_init(void)
+ 	}
+ 	amifb_setup(option);
+ #endif
+-	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(AMI_VIDEO))
+-		return -ENODEV;
+-
+-	/*
+-	 * We request all registers starting from bplpt[0]
+-	 */
+-	if (!request_mem_region(CUSTOM_PHYSADDR+0xe0, 0x120,
+-				"amifb [Denise/Lisa]"))
+-		return -EBUSY;
+-
+ 	custom.dmacon = DMAF_ALL | DMAF_MASTER;
+ 
+ 	switch (amiga_chipset) {
+@@ -2377,6 +2368,7 @@ default_chipset:
+ 	fb_info.fbops = &amifb_ops;
+ 	fb_info.par = &currentpar;
+ 	fb_info.flags = FBINFO_DEFAULT;
++	fb_info.device = &pdev->dev;
+ 
+ 	if (!fb_find_mode(&fb_info.var, &fb_info, mode_option, ami_modedb,
+ 			  NUM_TOTAL_MODES, &ami_modedb[defmode], 4)) {
+@@ -2451,18 +2443,18 @@ default_chipset:
+ 	return 0;
+ 
+ amifb_error:
+-	amifb_deinit();
++	amifb_deinit(pdev);
+ 	return err;
+ }
+ 
+-static void amifb_deinit(void)
++static void amifb_deinit(struct platform_device *pdev)
+ {
+ 	if (fb_info.cmap.len)
+ 		fb_dealloc_cmap(&fb_info.cmap);
++	fb_dealloc_cmap(&fb_info.cmap);
+ 	chipfree();
+ 	if (videomemory)
+ 		iounmap((void*)videomemory);
+-	release_mem_region(CUSTOM_PHYSADDR+0xe0, 0x120);
+ 	custom.dmacon = DMAF_ALL | DMAF_MASTER;
+ }
+ 
+@@ -3794,14 +3786,35 @@ static void ami_rebuild_copper(void)
+ 	}
+ }
+ 
+-static void __exit amifb_exit(void)
++static int __exit amifb_remove(struct platform_device *pdev)
+ {
+ 	unregister_framebuffer(&fb_info);
+-	amifb_deinit();
++	amifb_deinit(pdev);
+ 	amifb_video_off();
++	return 0;
++}
++
++static struct platform_driver amifb_driver = {
++	.remove = __exit_p(amifb_remove),
 +	.driver   = {
-+		.name	= "amiga-keyboard",
++		.name	= "amiga-video",
 +		.owner	= THIS_MODULE,
 +	},
 +};
 +
-+static int __init amikbd_init(void)
- {
--	free_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt);
--	input_unregister_device(amikbd_dev);
--	release_mem_region(CIAA_PHYSADDR - 1 + 0xb00, 0x100);
-+	return platform_driver_probe(&amikbd_driver, amikbd_probe);
++static int __init amifb_init(void)
++{
++	return platform_driver_probe(&amifb_driver, amifb_probe);
  }
  
- module_init(amikbd_init);
+ module_init(amifb_init);
 +
-+static void __exit amikbd_exit(void)
++static void __exit amifb_exit(void)
 +{
-+	platform_driver_unregister(&amikbd_driver);
++	platform_driver_unregister(&amifb_driver);
 +}
 +
- module_exit(amikbd_exit);
-+
-+MODULE_ALIAS("platform:amiga-keyboard");
+ module_exit(amifb_exit);
+ 
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:amiga-video");
 -- 
 1.6.0.4
