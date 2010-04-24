@@ -1,86 +1,48 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH] SCSI: sgiwd93: remove use of legacy base field of host struct
-Date: Fri, 23 Apr 2010 11:15:40 +0100
-Message-ID: <20100423101540.GA27244@linux-mips.org>
-References: <1270371651-2584-7-git-send-email-geert@linux-m68k.org>
- <1270371651-2584-8-git-send-email-geert@linux-m68k.org>
- <1270371651-2584-9-git-send-email-geert@linux-m68k.org>
- <1270371651-2584-10-git-send-email-geert@linux-m68k.org>
- <1270371651-2584-11-git-send-email-geert@linux-m68k.org>
- <20100405062529.GA28950@infradead.org>
- <s2o10f740e81004051242r27951fcftefe2ca3d1425ff66@mail.gmail.com>
- <i2h10f740e81004230137oc7c5f464w164786cd7f13f589@mail.gmail.com>
- <n2o10f740e81004230138j67eb7e51k8920e49766fa4a4@mail.gmail.com>
- <s2z10f740e81004230140xd60ac9dbv8c904a3aa365edad@mail.gmail.com>
+From: ivy52028003@ovi.com
+Subject: =?utf-8?B?5LiN5oOz5YaN5omT5Y2h5LqGIeiHquW3seeVtuiAgemXhizmnIjlhaUyLTbokKwhIQ==?=
+Date: Sun, 25 Apr 2010 07:50:43 +0800
+Message-ID: <20100424235043.8FAEA1A6D6B@c-in3ws--02-02.sv2.lotusliveops.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from h5.dl5rb.org.uk ([81.2.74.5]:45703 "EHLO h5.dl5rb.org.uk"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755480Ab0DWLIj (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 23 Apr 2010 07:08:39 -0400
+Received: from outbound2.messaging.lotuslive.com ([8.12.152.119]:16033 "EHLO
+	outbound2.messaging.lotuslive.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754176Ab0DXX4E convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 24 Apr 2010 19:56:04 -0400
+Received: from outbound2.messaging.lotuslive.com (43.32.6.10.in-addr.arpa [10.6.32.43])
+	by c-in3ofal02-01.sv2.lotusliveops.com (Postfix) with ESMTP id DA2D8E20293
+	for <linux-m68k@vger.kernel.org>; Sat, 24 Apr 2010 23:51:57 +0000 (GMT)
 Content-Disposition: inline
-In-Reply-To: <s2z10f740e81004230140xd60ac9dbv8c904a3aa365edad@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@infradead.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
+To: abcabcabc895@yahoo.com.tw, axelance@ms67.url.com.tw, p1e@bbs.cs.nthu.edu.tw, bdg082@yahoo.com.tw, ev000@kmph.gov.tw, fafafa@futai.com.tw, en825@yahoo.com.tw, davidclass2000@yahoo.com.
 
----
-Build tested only - I don't have a test system at hand atm.
+=E6=82=A8=E6=98=AF"=E6=9C=88=E5=85=89=E6=97=8F"=E9=82=84=E6=98=AF=E6=AF=
+=8F=E6=9C=88"=E4=B8=8D=E6=BB=BF=E6=97=8F"?
+=E6=82=A8=E5=B7=B2=E5=8E=AD=E5=80=A6=E5=86=8D=E7=95=B6"=E4=BC=B8=E6=89=8B=
+=E7=89=8C"?
+=E6=82=A8=E4=B8=8D=E6=83=B3=E4=B8=8B=E7=8F=AD=E5=BE=8C=E5=8F=88=E8=B6=95=
+=E8=91=97=E5=8E=BB=E6=8E=A5=E5=B0=8F=E5=AD=A9=E7=9A=84=E7=94=9F=E6=B4=BB=
+?
+=E7=AB=8B=E5=8D=B3=E5=8A=A0=E5=85=A5WFS=E5=9C=A8=E5=AE=B6=E5=B7=A5=E4=BD=
+=9C=E7=B3=BB=E7=B5=B1
+WFS=E6=98=AF=E7=B6=93=E9=81=8E=E7=A7=91=E5=AD=B8=E8=A8=AD=E8=A8=88,
+=E7=AC=A6=E5=90=88=E7=8F=BE=E4=BB=A3=E5=8F=8A=E6=9C=AA=E4=BE=86=E7=9A=84=
+=E5=B7=A5=E4=BD=9C=E6=A8=A1=E5=BC=8F
+=E5=8F=AA=E8=A6=81=E8=B7=9F=E8=91=97=E6=88=91=E5=80=91=E4=B8=80=E8=B5=B7
+=E9=80=B2=E5=85=A5=E9=80=99=E5=80=8B=E7=B3=BB=E7=B5=B1=E6=8C=89=E9=83=A8=
+=E5=B0=B1=E7=8F=AD
+=E6=82=A8=E5=B0=87=E6=94=B9=E8=AE=8A=E7=9B=AE=E5=89=8D=E7=9A=84=E7=94=9F=
+=E6=B4=BB =E5=AF=A6=E7=8F=BE=E8=87=AA=E5=B7=B1=E7=9A=84=E5=A4=A2=E6=83=B3
 
- drivers/scsi/sgiwd93.c |   10 ++++------
- 1 files changed, 4 insertions(+), 6 deletions(-)
+=E5=BF=AB=E6=8C=89=E4=B8=8B=E5=88=97=E7=B6=B2=E5=9D=80=E6=94=B9=E8=AE=8A=
+=E6=82=A8=E7=9A=84=E7=94=9F=E6=B4=BB(=E9=99=90=E5=B9=B4=E6=BB=BF23=E6=AD=
+=B2)
+http://wfhome.3cc.cc
 
-diff --git a/drivers/scsi/sgiwd93.c b/drivers/scsi/sgiwd93.c
-index fef0e3c..1b24e8d 100644
---- a/drivers/scsi/sgiwd93.c
-+++ b/drivers/scsi/sgiwd93.c
-@@ -36,6 +36,7 @@ struct ip22_hostdata {
- 	dma_addr_t dma;
- 	void *cpu;
- 	struct device *dev;
-+	struct hpc3_scsiregs *hregs;
- };
- 
- #define host_to_hostdata(host) ((struct ip22_hostdata *)((host)->hostdata))
-@@ -103,8 +104,7 @@ void fill_hpc_entries(struct ip22_hostdata *hd, struct scsi_cmnd *cmd, int din)
- static int dma_setup(struct scsi_cmnd *cmd, int datainp)
- {
- 	struct ip22_hostdata *hdata = host_to_hostdata(cmd->device->host);
--	struct hpc3_scsiregs *hregs =
--		(struct hpc3_scsiregs *) cmd->device->host->base;
-+	struct hpc3_scsiregs *hregs = hdata->hregs;
- 
- 	pr_debug("dma_setup: datainp<%d> hcp<%p> ", datainp, hdata->cpu);
- 
-@@ -137,7 +137,7 @@ static void dma_stop(struct Scsi_Host *instance, struct scsi_cmnd *SCpnt,
- 		     int status)
- {
- 	struct ip22_hostdata *hdata = host_to_hostdata(instance);
--	struct hpc3_scsiregs *hregs;
-+	struct hpc3_scsiregs *hregs = hdata->hregs;
- 
- 	if (!SCpnt)
- 		return;
-@@ -145,8 +145,6 @@ static void dma_stop(struct Scsi_Host *instance, struct scsi_cmnd *SCpnt,
- 	if (SCpnt->SCp.ptr == NULL || SCpnt->SCp.this_residual == 0)
- 		return;
- 
--	hregs = (struct hpc3_scsiregs *) SCpnt->device->host->base;
--
- 	pr_debug("dma_stop: status<%d> ", status);
- 
- 	/* First stop the HPC and flush it's FIFO. */
-@@ -244,10 +242,10 @@ static int __devinit sgiwd93_probe(struct platform_device *pdev)
- 		goto out;
- 	}
- 
--	host->base = (unsigned long) hregs;
- 	host->irq = irq;
- 
- 	hdata = host_to_hostdata(host);
-+	hdata->hregs = hregs;
- 	hdata->dev = &pdev->dev;
- 	hdata->cpu = dma_alloc_noncoherent(&pdev->dev, HPC_DMA_SIZE,
- 					   &hdata->dma, GFP_KERNEL);
+
+--------------------------------------------------------------
+Ovi Mail: Being used in over 200 countries
+http://mail.ovi.com
