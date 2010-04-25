@@ -1,48 +1,81 @@
-From: ivy52028003@ovi.com
-Subject: =?utf-8?B?5LiN5oOz5YaN5omT5Y2h5LqGIeiHquW3seeVtuiAgemXhizmnIjlhaUyLTbokKwhIQ==?=
-Date: Sun, 25 Apr 2010 07:50:43 +0800
-Message-ID: <20100424235043.8FAEA1A6D6B@c-in3ws--02-02.sv2.lotusliveops.com>
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Subject: Re: [PATCH -mm 06/12] m68k: use asm-generic/scatterlist.h
+Date: Sun, 25 Apr 2010 22:46:35 +0900
+Message-ID: <20100425224726P.fujita.tomonori@lab.ntt.co.jp>
+References: <1270511567-18567-1-git-send-email-fujita.tomonori@lab.ntt.co.jp>
+	<1270511567-18567-7-git-send-email-fujita.tomonori@lab.ntt.co.jp>
+	<p2q10f740e81004230129rd5b07889m5ec7f453efd46403@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outbound2.messaging.lotuslive.com ([8.12.152.119]:16033 "EHLO
-	outbound2.messaging.lotuslive.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754176Ab0DXX4E convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 24 Apr 2010 19:56:04 -0400
-Received: from outbound2.messaging.lotuslive.com (43.32.6.10.in-addr.arpa [10.6.32.43])
-	by c-in3ofal02-01.sv2.lotusliveops.com (Postfix) with ESMTP id DA2D8E20293
-	for <linux-m68k@vger.kernel.org>; Sat, 24 Apr 2010 23:51:57 +0000 (GMT)
-Content-Disposition: inline
+Received: from sh.osrg.net ([192.16.179.4]:53274 "EHLO sh.osrg.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753712Ab0DYNq5 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 25 Apr 2010 09:46:57 -0400
+In-Reply-To: <p2q10f740e81004230129rd5b07889m5ec7f453efd46403@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: abcabcabc895@yahoo.com.tw, axelance@ms67.url.com.tw, p1e@bbs.cs.nthu.edu.tw, bdg082@yahoo.com.tw, ev000@kmph.gov.tw, fafafa@futai.com.tw, en825@yahoo.com.tw, davidclass2000@yahoo.com.
+To: geert@linux-m68k.org
+Cc: fujita.tomonori@lab.ntt.co.jp, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, zippel@linux-m68k.org, linux-m68k@vger.kernel.org
 
-=E6=82=A8=E6=98=AF"=E6=9C=88=E5=85=89=E6=97=8F"=E9=82=84=E6=98=AF=E6=AF=
-=8F=E6=9C=88"=E4=B8=8D=E6=BB=BF=E6=97=8F"?
-=E6=82=A8=E5=B7=B2=E5=8E=AD=E5=80=A6=E5=86=8D=E7=95=B6"=E4=BC=B8=E6=89=8B=
-=E7=89=8C"?
-=E6=82=A8=E4=B8=8D=E6=83=B3=E4=B8=8B=E7=8F=AD=E5=BE=8C=E5=8F=88=E8=B6=95=
-=E8=91=97=E5=8E=BB=E6=8E=A5=E5=B0=8F=E5=AD=A9=E7=9A=84=E7=94=9F=E6=B4=BB=
-?
-=E7=AB=8B=E5=8D=B3=E5=8A=A0=E5=85=A5WFS=E5=9C=A8=E5=AE=B6=E5=B7=A5=E4=BD=
-=9C=E7=B3=BB=E7=B5=B1
-WFS=E6=98=AF=E7=B6=93=E9=81=8E=E7=A7=91=E5=AD=B8=E8=A8=AD=E8=A8=88,
-=E7=AC=A6=E5=90=88=E7=8F=BE=E4=BB=A3=E5=8F=8A=E6=9C=AA=E4=BE=86=E7=9A=84=
-=E5=B7=A5=E4=BD=9C=E6=A8=A1=E5=BC=8F
-=E5=8F=AA=E8=A6=81=E8=B7=9F=E8=91=97=E6=88=91=E5=80=91=E4=B8=80=E8=B5=B7
-=E9=80=B2=E5=85=A5=E9=80=99=E5=80=8B=E7=B3=BB=E7=B5=B1=E6=8C=89=E9=83=A8=
-=E5=B0=B1=E7=8F=AD
-=E6=82=A8=E5=B0=87=E6=94=B9=E8=AE=8A=E7=9B=AE=E5=89=8D=E7=9A=84=E7=94=9F=
-=E6=B4=BB =E5=AF=A6=E7=8F=BE=E8=87=AA=E5=B7=B1=E7=9A=84=E5=A4=A2=E6=83=B3
+On Fri, 23 Apr 2010 10:29:04 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-=E5=BF=AB=E6=8C=89=E4=B8=8B=E5=88=97=E7=B6=B2=E5=9D=80=E6=94=B9=E8=AE=8A=
-=E6=82=A8=E7=9A=84=E7=94=9F=E6=B4=BB(=E9=99=90=E5=B9=B4=E6=BB=BF23=E6=AD=
-=B2)
-http://wfhome.3cc.cc
+> > +#include <asm-generic/scatterlist.h>
+> 
+> This include should be ...
+> 
+> > /* This is bogus and should go away. */
+> > #define ISA_DMA_THRESHOLD (0x00ffffff)
+
+asm-generic/scatterlist.h can't define ISA_DMA_THRESHOLD because of
+the way POWERPC uses ISA_DMA_THRESHOLD.
 
 
---------------------------------------------------------------
-Ovi Mail: Being used in over 200 countries
-http://mail.ovi.com
+> ... below this definition, else you get duplicate definition errors
+> (and the wrong definition).
+> 
+> > -#define sg_dma_address(sg) ((sg)->dma_address)
+> > -#define sg_dma_len(sg) ((sg)->length)
+
+This patch needs to be applied against -mm; including some changes to
+asm-generic/scatterlist.h.
+
+I've attached asm-generic/scatterlist.h in -mm.
+
+=
+#ifndef __ASM_GENERIC_SCATTERLIST_H
+#define __ASM_GENERIC_SCATTERLIST_H
+
+#include <linux/types.h>
+
+struct scatterlist {
+#ifdef CONFIG_DEBUG_SG
+	unsigned long	sg_magic;
+#endif
+	unsigned long	page_link;
+	unsigned int	offset;
+	unsigned int	length;
+	dma_addr_t	dma_address;
+#ifdef CONFIG_NEED_SG_DMA_LENGTH
+	unsigned int	dma_length;
+#endif
+};
+
+/*
+ * These macros should be used after a dma_map_sg call has been done
+ * to get bus addresses of each of the SG entries and their lengths.
+ * You should only work with the number of sg entries pci_map_sg
+ * returns, or alternatively stop on the first sg_dma_len(sg) which
+ * is 0.
+ */
+#define sg_dma_address(sg)	((sg)->dma_address)
+
+#ifdef CONFIG_NEED_SG_DMA_LENGTH
+#define sg_dma_len(sg)		((sg)->dma_length)
+#else
+#define sg_dma_len(sg)		((sg)->length)
+#endif
+
+#endif /* __ASM_GENERIC_SCATTERLIST_H */
