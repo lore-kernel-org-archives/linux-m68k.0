@@ -1,114 +1,67 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH -mm 06/12] m68k: use asm-generic/scatterlist.h
-Date: Sun, 25 Apr 2010 20:17:31 +0200
-Message-ID: <l2w10f740e81004251117g948160chad8e4d2bdd1f2779@mail.gmail.com>
-References: <1270511567-18567-1-git-send-email-fujita.tomonori@lab.ntt.co.jp>
-	 <1270511567-18567-7-git-send-email-fujita.tomonori@lab.ntt.co.jp>
-	 <p2q10f740e81004230129rd5b07889m5ec7f453efd46403@mail.gmail.com>
-	 <20100425224726P.fujita.tomonori@lab.ntt.co.jp>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: Re: [PATCH 10/21] m68k/scsi: a2091 - Kill ugly DMA() macro
+Date: Sun, 02 May 2010 16:05:49 -0400
+Message-ID: <1272830750.23834.43.camel@mulgrave.site>
+References: <1270371651-2584-2-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-5-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-6-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-7-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-8-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-9-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-10-git-send-email-geert@linux-m68k.org>
+	 <1270371651-2584-11-git-send-email-geert@linux-m68k.org>
+	 <20100405062529.GA28950@infradead.org>
+	 <s2o10f740e81004051242r27951fcftefe2ca3d1425ff66@mail.gmail.com>
+	 <i2h10f740e81004230137oc7c5f464w164786cd7f13f589@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f46.google.com ([74.125.82.46]:65081 "EHLO
-	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753675Ab0DYSRd convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Apr 2010 14:17:33 -0400
-In-Reply-To: <20100425224726P.fujita.tomonori@lab.ntt.co.jp>
+Received: from cantor2.suse.de ([195.135.220.15]:33198 "EHLO mx2.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1758105Ab0EBUGG (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 2 May 2010 16:06:06 -0400
+In-Reply-To: <i2h10f740e81004230137oc7c5f464w164786cd7f13f589@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, zippel@linux-m68k.org, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
 
-On Sun, Apr 25, 2010 at 15:46, FUJITA Tomonori
-<fujita.tomonori@lab.ntt.co.jp> wrote:
-> On Fri, 23 Apr 2010 10:29:04 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->> > +#include <asm-generic/scatterlist.h>
->>
->> This include should be ...
->>
->> > /* This is bogus and should go away. */
->> > #define ISA_DMA_THRESHOLD (0x00ffffff)
->
-> asm-generic/scatterlist.h can't define ISA_DMA_THRESHOLD because of
-> the way POWERPC uses ISA_DMA_THRESHOLD.
->
->
->> ... below this definition, else you get duplicate definition errors
->> (and the wrong definition).
->>
->> > -#define sg_dma_address(sg) ((sg)->dma_address)
->> > -#define sg_dma_len(sg) ((sg)->length)
->
-> This patch needs to be applied against -mm; including some changes to
-> asm-generic/scatterlist.h.
+On Fri, 2010-04-23 at 10:37 +0200, Geert Uytterhoeven wrote:
+> On Mon, Apr 5, 2010 at 21:42, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Mon, Apr 5, 2010 at 08:25, Christoph Hellwig <hch@infradead.org> wrote:
+> >> Instead of abusing the ScsiHost base field I'd prefer if you stick
+> >
+> > I wouldn't call it abuse: it's a (MM)IO base address anyway.
+> > But I see that field was indeed marked `legacy crap' in an otherwise
+> > innocent looking
+> > commit to split the SCSI include files... by you ;-)
+> >
+> >> a properly typed pointer into the device specific host data.
+> >
+> > You mean shost_priv()? That field already contains a pointer to the
+> > struct WD33C93_hostdata.
+> >
+> > But I'll create a new a2091_hostdata struct that contains both the
+> > WD33C93_hostdata and the a2091_scsiregs pointer (and do the same
+> > for gvp11.c and a3000.c). It's a bit similar to what sgiwd93.c does, albeit that
+> > one also uses the legacy base field.
+> 
+> As I want to avoid introducing bugs by respinning the complicated
+> parts (the zorro
+> driver and platform driver conversion patches), I made this change on
+> top of the 2
+> whole patch series.
+> 
+> A2091 part:
 
-Ah, sorry, I thought it was against mainline.
+I've applied up to 10/21 which should make it easier, but this patch
+refuses to apply:
 
-> I've attached asm-generic/scatterlist.h in -mm.
->
-> =3D
-> #ifndef __ASM_GENERIC_SCATTERLIST_H
-> #define __ASM_GENERIC_SCATTERLIST_H
->
-> #include <linux/types.h>
->
-> struct scatterlist {
-> #ifdef CONFIG_DEBUG_SG
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long =C2=A0 sg_magic;
-> #endif
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long =C2=A0 page_link;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0offset;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0length;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0dma_addr_t =C2=A0 =C2=A0 =C2=A0dma_address=
-;
-> #ifdef CONFIG_NEED_SG_DMA_LENGTH
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0dma_length;
-> #endif
-> };
->
-> /*
-> =C2=A0* These macros should be used after a dma_map_sg call has been =
-done
-> =C2=A0* to get bus addresses of each of the SG entries and their leng=
-ths.
-> =C2=A0* You should only work with the number of sg entries pci_map_sg
-> =C2=A0* returns, or alternatively stop on the first sg_dma_len(sg) wh=
-ich
-> =C2=A0* is 0.
-> =C2=A0*/
-> #define sg_dma_address(sg) =C2=A0 =C2=A0 =C2=A0((sg)->dma_address)
->
-> #ifdef CONFIG_NEED_SG_DMA_LENGTH
-> #define sg_dma_len(sg) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0((sg)->dma_l=
-ength)
-> #else
-> #define sg_dma_len(sg) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0((sg)->lengt=
-h)
-> #endif
->
-> #endif /* __ASM_GENERIC_SCATTERLIST_H */
+patch: **** malformed patch at line 230: struct scsi_cmnd *SCpnt,
 
-OK, I won't touch it.
+could you respin the remaining patches so they'll actually apply?
 
-Please consider it acked-by, so it can go in through Andrew, together w=
-ith
-the other patches.
+Thanks,
 
-Sorry for the confusion.
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+James
