@@ -1,47 +1,29 @@
-From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
-Subject: [PATCH] media/IR: Add missing include file to rc-map.c
-Date: Wed, 5 May 2010 17:20:21 +0200
-Message-ID: <201005051720.22617.PeterHuewe__42724.8281929225$1273072844$gmane$org@gmx.de>
+From: "Marcia A. Shobe" <mshobe@uark.edu>
+Subject: Your Webmail Quota Has Exceeded The Set Quota Please Upgrade
+Date: Wed, 5 May 2010 19:26:50 -0500
+Message-ID: <FDEC995D620AFA47A7A6593ADAF5D79A6A2F53B7FB__3388.11072656444$1273105966$gmane$org@EX-MBX2.uark.edu>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ex-cas3.uark.edu ([130.184.1.139]:38834 "EHLO exchange.uark.edu"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751349Ab0EFAcX convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 May 2010 20:32:23 -0400
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>, linuxppc-dev@ozlabs.org
-Cc: David =?iso-8859-1?q?H=E4rdeman?= <david@hardeman.nu>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@lists.linux-m68k.org
 
-From: Peter Huewe <peterhuewe@gmx.de>
 
-This patch adds a missing include linux/delay.h to prevent
-build failures[1-5]
 
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
----
-KernelVersion: linux-next-20100505
 
-References:
-[1] http://kisskb.ellerman.id.au/kisskb/buildresult/2571452/
-[2] http://kisskb.ellerman.id.au/kisskb/buildresult/2571188/
-[3] http://kisskb.ellerman.id.au/kisskb/buildresult/2571479/
-[4] http://kisskb.ellerman.id.au/kisskb/buildresult/2571429/
-[5] http://kisskb.ellerman.id.au/kisskb/buildresult/2571432/
+Your Webmail Quota Has Exceeded The Set Quota/Limit Which Is 20GB.
+You Are Currently Running On 23GB Due To Hidden Files And Folder On Your Mailbox.
+Please Click the Link Below To Validate Your Mailbox And Increase Your Quota.
 
-drivers/media/IR/rc-map.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+http://www.emailmeform.com/fid.php?formid=690283 
 
-diff --git a/drivers/media/IR/rc-map.c b/drivers/media/IR/rc-map.c
-index caf6a27..46a8f15 100644
---- a/drivers/media/IR/rc-map.c
-+++ b/drivers/media/IR/rc-map.c
-@@ -14,6 +14,7 @@
- 
- #include <media/ir-core.h>
- #include <linux/spinlock.h>
-+#include <linux/delay.h>
- 
- /* Used to handle IR raw handler extensions */
- static LIST_HEAD(rc_map_list);
--- 
-1.6.4.4
+Failure To Click This Link And Validate Your Quota May Result In Loss Of Important Information In Your Mailbox/Or Cause Limited Access To It.
+
+Thanks
+Help Desk
