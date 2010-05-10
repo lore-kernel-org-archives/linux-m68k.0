@@ -1,29 +1,46 @@
-From: "Ward worthington" <jim@mail.proseguros.com.ve>
-Subject: Physical Therapists mailing lists
-Date: Sat,  8 May 2010 13:12:19 -0430 (VET)
-Message-ID: <20100508174219.0CB9E1D7A3C@barracuda.proseguros.com.ve>
-Reply-To: jim@mail.proseguros.com.ve
+From: Western Union Department <cpeme@efn.uncor.edu>
+Subject: Call For Confirmation Tel: +(44) 702 4098910,
+Date: Mon, 10 May 2010 09:06:05 -0300
+Message-ID: <20100510090605.63321xpo4mx7zctc__4217.20260424099$1273496314$gmane$org@gtwing.efn.uncor.edu>
+Reply-To: westeruniondepartment@ws.tc
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=ISO-8859-1;
+ DelSp="Yes";
+ format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.proseguros.com.ve ([190.202.104.106]:52642 "EHLO
-	barracuda.proseguros.com.ve" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751249Ab0EHVFa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 8 May 2010 17:05:30 -0400
+Received: from host1.efn.uncor.edu ([200.16.19.1]:47637 "EHLO
+	gtwing.efn.uncor.edu" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+	with ESMTP id S1754068Ab0EJM6F (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 10 May 2010 08:58:05 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: 5000000721@isbag.com, linux-m68k@vger.kernel.org, oua1@alatavissta.com
-
-Here's a list package on sale this week only:
-
-Real Estate Agents - 1 million records with emails
-USA Lawyers Database - 269,787 records with 235,244 emails
-US New Business Database - 4.8 million records all with emails
-American Consumer Database - 1,300,000 records all with emails
-American Homeowners - 1 million Full Data Records all with emails
-
-All complete lists above: $389
-
-There are more list packages also available for consumer, healthcare, business and more. Contact me here for more info or to get samples: Marvin.Pendleton@data4marketers.co.cc
-  
 
 
-Forward email to disappear@data4marketers.co.cc to purge you from our records
+
+My associate has helped me to send your first payment of US$7,500 to you
+as instructed by Mr.James Gordon Brown the United Kingdom prime minister
+after the last G20 meeting that was held on April 2nd in United Kindom,
+making you one of the beneficaries. Here is the information below.
+
+MONEY TRANSFER CONTROL NUMBER: 8309124803
+SENDER NAME: Mr.Solomon Daniel.Q
+AMOUNT: US$7,500
+
+I told him to keep sending you US$7,500 twice a week until the FULL
+payment of (US $360,000.00 Dollars) is completed within 6 (six) Months.
+A certificate will be made to change the Reciever Name as stated by the
+British prime minister, send your Full Names and address via Email to:
+Mr Garry Moore
+
+The money will not reflect untill the clearance certificate is issue to
+you by the G20 commitee.
+
+E-mail: westeruniondepartment@ws.tc
+
+Tel: +(44) 702 4098910,
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
