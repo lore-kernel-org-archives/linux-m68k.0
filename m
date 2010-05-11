@@ -1,76 +1,28 @@
-From: MAGARETH WILLIAMS <amadeus1@base.be>
-Subject: I WILL SEND YOU FURTHER DETAILS
-Date: Tue, 11 May 2010 13:11:00 +0200
-Message-ID: <96318d2a361a605be0d176d3364c4dab__43700.2804865644$1273579343$gmane$org@base.be>
-Reply-To: <bc101707bc@yahoo.co.jp>
+From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
+Subject: Re: [PATCH] media/IR: Add missing include file to rc-map.c
+Date: Tue, 11 May 2010 20:42:14 +0200
+Message-ID: <201005112042.14889.PeterHuewe__16600.7248023108$1273603366$gmane$org@gmx.de>
+References: <201005051720.22617.PeterHuewe@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from postbode01.c.iops.be ([212.53.5.91]:42708 "EHLO
-	postbode01.versateladsl.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752671Ab0EKMCH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 11 May 2010 08:02:07 -0400
+In-Reply-To: <201005051720.22617.PeterHuewe@gmx.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@infradead.org>
+Cc: linuxppc-dev@ozlabs.org, David =?iso-8859-1?q?H=E4rdeman?= <david@hardeman.nu>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@lists.linux-m68k.org
 
+Am Mittwoch 05 Mai 2010 17:20:21 schrieb Peter H=FCwe:
+> From: Peter Huewe <peterhuewe@gmx.de>
+>=20
+> This patch adds a missing include linux/delay.h to prevent
+> build failures[1-5]
+>=20
+> Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
+> ---
+Any updates on this patch?
+Issue still exists with today's linux-next tree
 
-
-Dearest,
-
-I am Ms Magareth Williams,now undergoing medical treatment for cancer i=
-n
-Malaysia. Before I took ill, I was the, Principal Assurance manager of =
-BNP
-Paribas Private Bank.I am getting in touch with you regarding the estat=
-e of
-one Mr. Goudie  and an investment placed under my management 7 years ag=
-o.=20
-He instructed that we liquidate the principal sum (18,350,000.00 Millio=
-n
-United State Dollars) because he needed to make an urgent investment th=
-at
-requires cash payment in Europe. We got in touch with his nominated
-financial institution  in Europe, who agreed to receive this money for =
-a
-fee and make cash available to Mr. Goudie  for his business operations.
-
-To my surprise, the corresponding bank in Europe got in touch with us l=
-ast
-year that nobody has come forward to claim the money and it has reached=
- the
-threshold for the bank to declare it to the government as unclaimed
-deposit. On further enquiry, I found that, Mr. Goudie  was involved in =
-an
-accident in Mainland China and that he died intestate. Because he has n=
-o
-next of kin all his assets in Europe are about to go to the government.=
- I
-write you to makes you  to stand as his next of kin and surviving heir =
-to
-his assets and the beneficiary of the deposit valued 18,350,000.00 Mill=
-ion
-United State Dollars
-
-My condition has become hopeless, my Doctor recently told me that my
-cancer has spread and that I have a few months to live. Having known th=
-e
-hopelessness of my health condition, and the urgency to act, I am
-compelled to seek your assistance to get this money out by standing as =
-the
-beneficiary and using part of these funds to help the poor and sick peo=
-ple
-in society. I have exclusive access to Mr. Goudie=E2=80=99s file and al=
-l his
-investment record.  I hope you are somebody that can be trusted.
-
-If we can be of one accord, we should act swiftly on this. If you are
-interested in this deal, kindly get back to me quickly with your full
-details and I will proceed to give you full modalities on how this can =
-be
-acheived.
-
-I await your response
-
-Ms Magareth Williams
+Thanks,
+Peter
