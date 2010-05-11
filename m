@@ -1,46 +1,76 @@
-From: Western Union Department <cpeme@efn.uncor.edu>
-Subject: Call For Confirmation Tel: +(44) 702 4098910,
-Date: Mon, 10 May 2010 09:06:05 -0300
-Message-ID: <20100510090605.63321xpo4mx7zctc__4217.20260424099$1273496314$gmane$org@gtwing.efn.uncor.edu>
-Reply-To: westeruniondepartment@ws.tc
+From: MAGARETH WILLIAMS <amadeus1@base.be>
+Subject: I WILL SEND YOU FURTHER DETAILS
+Date: Tue, 11 May 2010 13:11:00 +0200
+Message-ID: <96318d2a361a605be0d176d3364c4dab__43700.2804865644$1273579343$gmane$org@base.be>
+Reply-To: <bc101707bc@yahoo.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from host1.efn.uncor.edu ([200.16.19.1]:47637 "EHLO
-	gtwing.efn.uncor.edu" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-	with ESMTP id S1754068Ab0EJM6F (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 10 May 2010 08:58:05 -0400
-Content-Disposition: inline
+Received: from postbode01.c.iops.be ([212.53.5.91]:42708 "EHLO
+	postbode01.versateladsl.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752671Ab0EKMCH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 11 May 2010 08:02:07 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
 
 
-My associate has helped me to send your first payment of US$7,500 to you
-as instructed by Mr.James Gordon Brown the United Kingdom prime minister
-after the last G20 meeting that was held on April 2nd in United Kindom,
-making you one of the beneficaries. Here is the information below.
+Dearest,
 
-MONEY TRANSFER CONTROL NUMBER: 8309124803
-SENDER NAME: Mr.Solomon Daniel.Q
-AMOUNT: US$7,500
+I am Ms Magareth Williams,now undergoing medical treatment for cancer i=
+n
+Malaysia. Before I took ill, I was the, Principal Assurance manager of =
+BNP
+Paribas Private Bank.I am getting in touch with you regarding the estat=
+e of
+one Mr. Goudie  and an investment placed under my management 7 years ag=
+o.=20
+He instructed that we liquidate the principal sum (18,350,000.00 Millio=
+n
+United State Dollars) because he needed to make an urgent investment th=
+at
+requires cash payment in Europe. We got in touch with his nominated
+financial institution  in Europe, who agreed to receive this money for =
+a
+fee and make cash available to Mr. Goudie  for his business operations.
 
-I told him to keep sending you US$7,500 twice a week until the FULL
-payment of (US $360,000.00 Dollars) is completed within 6 (six) Months.
-A certificate will be made to change the Reciever Name as stated by the
-British prime minister, send your Full Names and address via Email to:
-Mr Garry Moore
+To my surprise, the corresponding bank in Europe got in touch with us l=
+ast
+year that nobody has come forward to claim the money and it has reached=
+ the
+threshold for the bank to declare it to the government as unclaimed
+deposit. On further enquiry, I found that, Mr. Goudie  was involved in =
+an
+accident in Mainland China and that he died intestate. Because he has n=
+o
+next of kin all his assets in Europe are about to go to the government.=
+ I
+write you to makes you  to stand as his next of kin and surviving heir =
+to
+his assets and the beneficiary of the deposit valued 18,350,000.00 Mill=
+ion
+United State Dollars
 
-The money will not reflect untill the clearance certificate is issue to
-you by the G20 commitee.
+My condition has become hopeless, my Doctor recently told me that my
+cancer has spread and that I have a few months to live. Having known th=
+e
+hopelessness of my health condition, and the urgency to act, I am
+compelled to seek your assistance to get this money out by standing as =
+the
+beneficiary and using part of these funds to help the poor and sick peo=
+ple
+in society. I have exclusive access to Mr. Goudie=E2=80=99s file and al=
+l his
+investment record.  I hope you are somebody that can be trusted.
 
-E-mail: westeruniondepartment@ws.tc
+If we can be of one accord, we should act swiftly on this. If you are
+interested in this deal, kindly get back to me quickly with your full
+details and I will proceed to give you full modalities on how this can =
+be
+acheived.
 
-Tel: +(44) 702 4098910,
+I await your response
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+Ms Magareth Williams
