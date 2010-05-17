@@ -1,63 +1,99 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [PATCH] media/IR: Add missing include file to rc-map.c
-Date: Sat, 15 May 2010 22:54:40 -0300
-Message-ID: <4BEF5060.5050105__17742.9482726895$1273974911$gmane$org@infradead.org>
-References: <201005051720.22617.PeterHuewe@gmx.de> <201005112042.14889.PeterHuewe@gmx.de> <20100514060240.GD12002@linux-sh.org> <201005141326.52099.PeterHuewe@gmx.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 2.6.35
+Date: Mon, 17 May 2010 21:44:08 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1005172139470.30344__2932.23316916755$1274125759$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201005141326.52099.PeterHuewe@gmx.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?ISO-8859-1?Q?Peter_H=FCwe?= <PeterHuewe@gmx.de>
-Cc: linux-next@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, linuxppc-dev@ozlabs.org, David H?rdeman <david@hardeman.nu>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@lists.linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Peter H=FCwe wrote:
-> From: Peter Huewe <peterhuewe@gmx.de>
->=20
-> This patch adds a missing include linux/delay.h to prevent
-> build failures[1-5]
->=20
-> Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-> ---
-> Forwarded to linux-next mailing list -=20
-> breakage still exists in linux-next of 20100514 - please apply
->=20
-> KernelVersion: linux-next-20100505
+	Hi Linus,
 
-Sorry for not answer earlier. I was traveling. Anyway, this
-patch got applied on May, 12:
+Please pull to receive the first batch of m68k updates for 2.6.35.
+The platform patch has been acked by GregKH.
 
-http://git.kernel.org/?p=3Dlinux/kernel/git/mchehab/linux-next.git;a=3D=
-commitdiff;h=3D4ace7aa2998b2974948f1948a61a5d348ddae472
+I have a second batch ready, but it has to wait a bit since it depends on
+a big pile of SCSI patches.
 
->=20
-> References:
-> [1] http://kisskb.ellerman.id.au/kisskb/buildresult/2571452/
-> [2] http://kisskb.ellerman.id.au/kisskb/buildresult/2571188/
-> [3] http://kisskb.ellerman.id.au/kisskb/buildresult/2571479/
-> [4] http://kisskb.ellerman.id.au/kisskb/buildresult/2571429/
-> [5] http://kisskb.ellerman.id.au/kisskb/buildresult/2571432/
->=20
-> drivers/media/IR/rc-map.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
->=20
-> diff --git a/drivers/media/IR/rc-map.c b/drivers/media/IR/rc-map.c
-> index caf6a27..46a8f15 100644
-> --- a/drivers/media/IR/rc-map.c
-> +++ b/drivers/media/IR/rc-map.c
-> @@ -14,6 +14,7 @@
-> =20
->  #include <media/ir-core.h>
->  #include <linux/spinlock.h>
-> +#include <linux/delay.h>
-> =20
->  /* Used to handle IR raw handler extensions */
->  static LIST_HEAD(rc_map_list);
+Thanks for pulling!
 
+The following changes since commit e40152ee1e1c7a63f4777791863215e3faa37a86:
+  Linus Torvalds (1):
+        Linus 2.6.34
 
---=20
+are available in the git repository at:
 
-Cheers,
-Mauro
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+Andrea Gelmini (1):
+      m68k: hp300 - Checkpatch cleanup
+
+Frans Pop (1):
+      m68k: Remove trailing spaces in messages
+
+Geert Uytterhoeven (8):
+      m68k: Implement generic_find_next_{zero_,}le_bit()
+      serial167: Kill unused variables
+      platform: Make platform resource input parameters const
+      m68k: amiga - Zorro bus modalias support
+      m68k: amiga - Zorro host bridge platform device conversion
+      m68k: amiga - Frame buffer platform device conversion
+      m68k: amiga - Sound platform device conversion
+      m68k: amiga - Floppy platform device conversion
+
+Nick Piggin (1):
+      m68k: invoke oom-killer from page fault
+
+Robert P. J. Day (1):
+      m68k: Simplify param.h by using <asm-generic/param.h>
+
+Thomas Gleixner (1):
+      m68k: Remove BKL from rtc implementations
+
+ arch/m68k/amiga/Makefile            |    2 +-
+ arch/m68k/amiga/platform.c          |   83 ++++++++++++
+ arch/m68k/bvme6000/rtc.c            |   29 ++---
+ arch/m68k/hp300/time.h              |    4 +-
+ arch/m68k/include/asm/bitops_mm.h   |   14 +-
+ arch/m68k/include/asm/param.h       |   16 +--
+ arch/m68k/kernel/traps.c            |    2 +-
+ arch/m68k/mac/config.c              |   10 +-
+ arch/m68k/mm/fault.c                |   14 +--
+ arch/m68k/mvme16x/rtc.c             |   19 +--
+ arch/m68k/q40/config.c              |    2 +-
+ drivers/base/platform.c             |    4 +-
+ drivers/block/amiflop.c             |   47 +++----
+ drivers/char/serial167.c            |    2 -
+ drivers/net/a2065.c                 |    1 +
+ drivers/net/ariadne.c               |    1 +
+ drivers/net/hydra.c                 |    1 +
+ drivers/net/zorro8390.c             |    1 +
+ drivers/scsi/zorro7xx.c             |    1 +
+ drivers/video/amifb.c               |   49 +++++---
+ drivers/video/cirrusfb.c            |    1 +
+ drivers/video/fm2fb.c               |    1 +
+ drivers/zorro/proc.c                |    6 +-
+ drivers/zorro/zorro-driver.c        |   24 ++++
+ drivers/zorro/zorro-sysfs.c         |   11 ++
+ drivers/zorro/zorro.c               |  243 ++++++++++++++++++-----------------
+ include/linux/mod_devicetable.h     |    9 ++
+ include/linux/platform_device.h     |    6 +-
+ include/linux/zorro.h               |   22 +---
+ scripts/mod/file2alias.c            |   14 ++
+ sound/oss/dmasound/dmasound_paula.c |   51 +++++---
+ 31 files changed, 405 insertions(+), 285 deletions(-)
+ create mode 100644 arch/m68k/amiga/platform.c
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
