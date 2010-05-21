@@ -1,99 +1,60 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 2.6.35
-Date: Mon, 17 May 2010 21:44:08 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1005172139470.30344__2932.23316916755$1274125759$gmane$org@ayla.of.borg>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: bkl: Pushdowns for sound/oss ?
+Date: Fri, 21 May 2010 15:40:56 +0100
+Message-ID: <20100521144055.GB13174@linux-mips.org>
+References: <alpine.LFD.2.00.1005211536330.25348@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from h5.dl5rb.org.uk ([81.2.74.5]:57241 "EHLO h5.dl5rb.org.uk"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755882Ab0EUOmV (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 21 May 2010 10:42:21 -0400
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.1005211536330.25348@localhost.localdomain>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: John Kacur <jkacur@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arndbergmann@googlemail.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-	Hi Linus,
+On Fri, May 21, 2010 at 03:45:04PM +0200, John Kacur wrote:
 
-Please pull to receive the first batch of m68k updates for 2.6.35.
-The platform patch has been acked by GregKH.
+> particular in:
+> sound/oss/swarm_cs4297a.c
 
-I have a second batch ready, but it has to wait a bit since it depends on
-a big pile of SCSI patches.
+This one is specific to the Swarm, a MIPS-based platform indeed; I'll cc
+Maciej Rozycki who most likely is the only person on the planet knowing the
+technical details.  I don't even recall touching that file so my (C)
+header in there is a surprise :)
 
-Thanks for pulling!
+Stiching up the build problems in that file.
 
-The following changes since commit e40152ee1e1c7a63f4777791863215e3faa37a86:
-  Linus Torvalds (1):
-        Linus 2.6.34
+> sound/oss/msnd_pinnacle.c
 
-are available in the git repository at:
+Random weirdo ISA sound card.  Probably only ever tested on x86 and will
+have the chances
 
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+> sound/oss/sh_dac_audio.c
 
-Andrea Gelmini (1):
-      m68k: hp300 - Checkpatch cleanup
+SH3 specific.
 
-Frans Pop (1):
-      m68k: Remove trailing spaces in messages
+> sound/oss/vwsnd.c
 
-Geert Uytterhoeven (8):
-      m68k: Implement generic_find_next_{zero_,}le_bit()
-      serial167: Kill unused variables
-      platform: Make platform resource input parameters const
-      m68k: amiga - Zorro bus modalias support
-      m68k: amiga - Zorro host bridge platform device conversion
-      m68k: amiga - Frame buffer platform device conversion
-      m68k: amiga - Sound platform device conversion
-      m68k: amiga - Floppy platform device conversion
+Belongs to the x86-based first generation of SGI visual workstations.
 
-Nick Piggin (1):
-      m68k: invoke oom-killer from page fault
+> sound/oss/dmasound/dmasound_core.c
+> sound/oss/dmasound/dmasound_core.c
 
-Robert P. J. Day (1):
-      m68k: Simplify param.h by using <asm-generic/param.h>
+Motorola 68k-specific.  Adding 68k maintainers to cc list.
 
-Thomas Gleixner (1):
-      m68k: Remove BKL from rtc implementations
+> when I noticed they were including asm files from mips. I went so far as 
+> to compile my own mips tool chain, but I wasn't able to compile the above.
+> Being oss sound, I was wondering if these are still maintained or are 
+> marked for removal some time in the future.
+> 
+> If there is merely a problem with my toolchain, then that can be fixed, 
+> but there is no point in wasting time with these if no-one uses them.
 
- arch/m68k/amiga/Makefile            |    2 +-
- arch/m68k/amiga/platform.c          |   83 ++++++++++++
- arch/m68k/bvme6000/rtc.c            |   29 ++---
- arch/m68k/hp300/time.h              |    4 +-
- arch/m68k/include/asm/bitops_mm.h   |   14 +-
- arch/m68k/include/asm/param.h       |   16 +--
- arch/m68k/kernel/traps.c            |    2 +-
- arch/m68k/mac/config.c              |   10 +-
- arch/m68k/mm/fault.c                |   14 +--
- arch/m68k/mvme16x/rtc.c             |   19 +--
- arch/m68k/q40/config.c              |    2 +-
- drivers/base/platform.c             |    4 +-
- drivers/block/amiflop.c             |   47 +++----
- drivers/char/serial167.c            |    2 -
- drivers/net/a2065.c                 |    1 +
- drivers/net/ariadne.c               |    1 +
- drivers/net/hydra.c                 |    1 +
- drivers/net/zorro8390.c             |    1 +
- drivers/scsi/zorro7xx.c             |    1 +
- drivers/video/amifb.c               |   49 +++++---
- drivers/video/cirrusfb.c            |    1 +
- drivers/video/fm2fb.c               |    1 +
- drivers/zorro/proc.c                |    6 +-
- drivers/zorro/zorro-driver.c        |   24 ++++
- drivers/zorro/zorro-sysfs.c         |   11 ++
- drivers/zorro/zorro.c               |  243 ++++++++++++++++++-----------------
- include/linux/mod_devicetable.h     |    9 ++
- include/linux/platform_device.h     |    6 +-
- include/linux/zorro.h               |   22 +---
- scripts/mod/file2alias.c            |   14 ++
- sound/oss/dmasound/dmasound_paula.c |   51 +++++---
- 31 files changed, 405 insertions(+), 285 deletions(-)
- create mode 100644 arch/m68k/amiga/platform.c
+More a problem in not reading the research properly :)
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Ralf
