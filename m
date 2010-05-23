@@ -1,45 +1,39 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Enable atomic64_t
-Date: Sun, 23 May 2010 11:25:00 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1005231124380.1975__19712.1593905196$1274606759$gmane$org@ayla.of.borg>
+Subject: Re: [PATCH] net: mac8390 - Sort out memory/MMIO accesses and casts
+	(was: Re: drivers/net/mac8390.c: Remove useless memcpy casting)
+Date: Sun, 23 May 2010 15:15:16 +0200
+Message-ID: <AANLkTikexlmuunBQ-ydNaD8fkKcLmrsfJSEgvyMJdNqU@mail.gmail.com>
+References: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
+	 <alpine.OSX.2.00.1004161206300.271@localhost>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ww0-f46.google.com ([74.125.82.46]:46172 "EHLO
+	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754424Ab0EWNPS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 May 2010 09:15:18 -0400
+In-Reply-To: <alpine.OSX.2.00.1004161206300.271@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/Kconfig              |    1 +
- arch/m68k/include/asm/atomic.h |    2 ++
- 2 files changed, 3 insertions(+), 0 deletions(-)
+On Fri, Apr 16, 2010 at 04:14, Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Thu, 15 Apr 2010, Geert Uytterhoeven wrote:
+>> On Mon, Mar 8, 2010 at 18:16, Joe Perches <joe@perches.com> wrote:
+>> > Thanks, I'll submit a patch to fix it by tomorrow or so.
+>>
+>> It hasn't been fixed yet.
+>
+> Thanks for taking care of this, Geert.
+>
+>> But here's a better solution. I do not have the hardware to test it,
+>> though. Finn, does it {look OK,work}?
+>
+> It looks fine. I can't test it right now, but I will do so when I get the
+> opportunity.
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 2921c86..40c31fa 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -7,6 +7,7 @@ config M68K
- 	default y
- 	select HAVE_AOUT
- 	select HAVE_IDE
-+	select GENERIC_ATOMIC64
- 
- config MMU
- 	bool
-diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/atomic.h
-index 8d29145..eab36dc 100644
---- a/arch/m68k/include/asm/atomic.h
-+++ b/arch/m68k/include/asm/atomic.h
-@@ -3,3 +3,5 @@
- #else
- #include "atomic_mm.h"
- #endif
-+
-+#include <asm-generic/atomic64.h>
--- 
-1.7.0.4
+Any news from the test front?
 
 Gr{oetje,eeting}s,
 
