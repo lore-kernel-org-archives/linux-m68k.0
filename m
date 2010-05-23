@@ -1,48 +1,65 @@
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: bkl: Pushdowns for sound/oss ?
-Date: Sat, 22 May 2010 22:26:00 +0100 (BST)
-Message-ID: <alpine.LFD.2.00.1005222158340.4344@eddie.linux-mips.org>
-References: <alpine.LFD.2.00.1005211536330.25348@localhost.localdomain> <20100521144055.GB13174@linux-mips.org> <alpine.LFD.2.00.1005211613200.4344@eddie.linux-mips.org> <20100521154659.GA2346@linux-mips.org>
+Date: Sun, 23 May 2010 10:36:01 +0200
+Message-ID: <AANLkTik_ZNPYFlGpfvoKSipwYbhW9JRuHh7D0IYZUwdm@mail.gmail.com>
+References: <alpine.LFD.2.00.1005211536330.25348@localhost.localdomain>
+	 <20100521140613.GA15070@infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eddie.linux-mips.org ([78.24.191.182]:33805 "EHLO
-	eddie.linux-mips.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758716Ab0EVV0E (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 22 May 2010 17:26:04 -0400
-Received: from localhost.localdomain ([127.0.0.1]:36713 "EHLO
-        localhost.localdomain" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S1491829Ab0EVV0A (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org> + 2 others);
-        Sat, 22 May 2010 23:26:00 +0200
-In-Reply-To: <20100521154659.GA2346@linux-mips.org>
+Received: from mail-ww0-f46.google.com ([74.125.82.46]:57169 "EHLO
+	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750869Ab0EWIgE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 May 2010 04:36:04 -0400
+In-Reply-To: <20100521140613.GA15070@infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: John Kacur <jkacur@redhat.com>, linux-kernel@vger.kernel.org, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arndbergmann@googlemail.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, linux-mips@linux-mips.org, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Christoph Hellwig <hch@infradead.org>
+Cc: John Kacur <jkacur@redhat.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arndbergmann@googlemail.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Fri, 21 May 2010, Ralf Baechle wrote:
+On Fri, May 21, 2010 at 16:06, Christoph Hellwig <hch@infradead.org> wr=
+ote:
+> On Fri, May 21, 2010 at 03:45:04PM +0200, John Kacur wrote:
+>> I was looking at doing some of that last remaining ioctl bkl-pushdow=
+ns, in
+>> particular in:
+>> sound/oss/swarm_cs4297a.c
+>> sound/oss/msnd_pinnacle.c
+>> sound/oss/sh_dac_audio.c
+>> sound/oss/vwsnd.c
+>> sound/oss/dmasound/dmasound_core.c
+>> sound/oss/dmasound/dmasound_core.c
+>>
+>> when I noticed they were including asm files from mips. I went so fa=
+r as
+>> to compile my own mips tool chain, but I wasn't able to compile the =
+above.
+>> Being oss sound, I was wondering if these are still maintained or ar=
+e
+>> marked for removal some time in the future.
+>>
+>> If there is merely a problem with my toolchain, then that can be fix=
+ed,
+>> but there is no point in wasting time with these if no-one uses them=
+=2E
+>
+> Can we just drop OSS? =C2=A0It's beend deprecated and mostly dead for=
+ years.
 
-> I've patched up what there to build without warnings but that doesn't
-> make any less ugly or wrong.  I'm trying to motivate a few folks to
-> offload the work from you; until that has happened it might be nice if this
-> driver would stick around as some form of documentation.
+There are no ALSA equivalents for the m68k Amiga/Atari/Q40 dmasound dri=
+vers yet.
 
- The driver is of less use as an OSS module than it would be with ALSA.  
-It only offers one sample rate of 48kHz (that is the native frequency of 
-the codec) and my experience is 44.1kHz or its aliquots are what most 
-pieces of OSS client software expect (at least such that is not capable of 
-resampling itself).
+Gr{oetje,eeting}s,
 
- I'm not sure it makes a lot of sense to keep this piece around -- the 
-kernel repositories are not meant to lose their history IIUC, so the 
-driver will be available from an older revision for the foreseeable future 
-anyway.  This has happened to other drivers too, even those that were of 
-actual interest to people.
+						Geert
 
-> As for the grandchildren - is there something I haven't heared of yet?  :)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
- Me neither, but I've thought I could perhaps borrow some from a friend or 
-suchlike and consider the matter ticked off. ;)
-
-  Maciej
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
