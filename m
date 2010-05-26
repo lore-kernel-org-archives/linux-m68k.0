@@ -1,43 +1,39 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 04/11] m68k: Atari EtherNAT - fix unused flags warnings on UP systems
-Date: Wed, 26 May 2010 19:48:46 +0200
-Message-ID: <1274896133-19590-5-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 08/11] m68k: Atari EtherNAT - remove trailing space in messages
+Date: Wed, 26 May 2010 19:48:50 +0200
+Message-ID: <1274896133-19590-9-git-send-email-geert@linux-m68k.org>
 References: <1274896133-19590-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from juliette.telenet-ops.be ([195.130.137.74]:53283 "EHLO
-	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754822Ab0EZRtS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 26 May 2010 13:49:18 -0400
+Received: from jacques.telenet-ops.be ([195.130.132.50]:34022 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757420Ab0EZRtV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 26 May 2010 13:49:21 -0400
 In-Reply-To: <1274896133-19590-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Cfr. commit fd0775bfc9feb036e6efb669133d644ae29e12b8 ("smc91x: fix unused flags
-warnings on UP systems")
+Cfr. commit 84d57bd61866c06aee5658fabe43292a231a5992 ("net/smc91xx: remove
+trailing space in messages")
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/net/atari_91C111.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/atari_91C111.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/net/atari_91C111.c b/drivers/net/atari_91C111.c
-index 7cfb9d3..40b251c 100644
+index ac15c3f..ce8bd22 100644
 --- a/drivers/net/atari_91C111.c
 +++ b/drivers/net/atari_91C111.c
-@@ -586,9 +586,9 @@ static inline void  smc_rcv(struct net_device *dev)
- #define smc_special_lock(lock, flags)		spin_lock_irqsave(lock, flags)
- #define smc_special_unlock(lock, flags) 	spin_unlock_irqrestore(lock, flags)
- #else
--#define smc_special_trylock(lock, flags)	(1)
--#define smc_special_lock(lock, flags)   	do { } while (0)
--#define smc_special_unlock(lock, flags)	do { } while (0)
-+#define smc_special_trylock(lock, flags)	(flags == flags)
-+#define smc_special_lock(lock, flags)   	do { flags = 0; } while (0)
-+#define smc_special_unlock(lock, flags)	do { flags = 0; } while (0)
- #endif
+@@ -1342,7 +1342,7 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
+ 			smc_phy_interrupt(dev);
+ 		} else if (status & IM_ERCV_INT) {
+ 			SMC_ACK_INT(lp, IM_ERCV_INT);
+-			PRINTK("%s: UNSUPPORTED: ERCV INTERRUPT \n", dev->name);
++			PRINTK("%s: UNSUPPORTED: ERCV INTERRUPT\n", dev->name);
+ 		}
+ 	} while (--timeout);
  
- /*
 -- 
 1.7.0.4
