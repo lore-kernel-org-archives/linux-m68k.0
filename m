@@ -1,39 +1,79 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] mac68k: add color classic ii support
-Date: Sat, 29 May 2010 03:27:18 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1005290054270.4779@nippy.intranet>
+Subject: [PATCH] mac8390: change an error return code and some cleanup, take
+ 4
+Date: Sat, 29 May 2010 03:29:01 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1005290255580.691@localhost>
+References: <alpine.OSX.2.00.1004161403160.271@localhost> <alpine.OSX.2.00.1004162347390.271@localhost> <alpine.OSX.2.00.1004171258330.358@localhost> <20100421.163041.158540277.davem@davemloft.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:47939 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:47970 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753485Ab0E1R1W (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 28 May 2010 13:27:22 -0400
+	with ESMTP id S932381Ab0E1R3H (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 28 May 2010 13:29:07 -0400
+In-Reply-To: <20100421.163041.158540277.davem@davemloft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: David Miller <davem@davemloft.net>
+Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
+
+Propagate the request_irq() return code. Also promote the log level of the 
+failure message. Likewise some other KERN_INFO messages.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Index: linux-2.6.34/arch/m68k/mac/config.c
+Index: linux-2.6.34/drivers/net/mac8390.c
 ===================================================================
---- linux-2.6.34.orig/arch/m68k/mac/config.c	2010-05-28 00:26:53.000000000 +1000
-+++ linux-2.6.34/arch/m68k/mac/config.c	2010-05-28 00:27:22.000000000 +1000
-@@ -332,6 +332,15 @@ static struct mac_model mac_data_table[]
- 		.scc_type	= MAC_SCC_II,
- 		.nubus_type	= MAC_NUBUS,
- 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
-+	}, {
-+		.ident		= MAC_MODEL_CCLII,
-+		.name		= "Color Classic II",
-+		.adb_type	= MAC_ADB_CUDA,
-+		.via_type	= MAC_VIA_IIci,
-+		.scsi_type	= MAC_SCSI_OLD,
-+		.scc_type	= MAC_SCC_II,
-+		.nubus_type	= MAC_NUBUS,
-+		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
- 	},
+--- linux-2.6.34.orig/drivers/net/mac8390.c	2010-05-28 00:27:30.000000000 +1000
++++ linux-2.6.34/drivers/net/mac8390.c	2010-05-28 00:27:32.000000000 +1000
+@@ -556,7 +556,7 @@ static int __init mac8390_initdev(struct
+ 	case MAC8390_APPLE:
+ 		switch (mac8390_testio(dev->mem_start)) {
+ 		case ACCESS_UNKNOWN:
+-			pr_info("Don't know how to access card memory!\n");
++			pr_err("Don't know how to access card memory!\n");
+ 			return -ENODEV;
+ 			break;
  
- 	/*
+@@ -643,10 +643,13 @@ static int __init mac8390_initdev(struct
+ 
+ static int mac8390_open(struct net_device *dev)
+ {
++	int err;
++
+ 	__ei_open(dev);
+-	if (request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev)) {
+-		pr_info("%s: unable to get IRQ %d.\n", dev->name, dev->irq);
+-		return -EAGAIN;
++	err = request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev);
++	if (err) {
++		pr_err("%s: unable to get IRQ %d\n", dev->name, dev->irq);
++		return err;
+ 	}
+ 	return 0;
+ }
+@@ -662,7 +665,7 @@ static void mac8390_no_reset(struct net_
+ {
+ 	ei_status.txing = 0;
+ 	if (ei_debug > 1)
+-		pr_info("reset not supported\n");
++		printk(KERN_DEBUG pr_fmt("reset not supported\n"));
+ 	return;
+ }
+ 
+@@ -670,7 +673,7 @@ static void interlan_reset(struct net_de
+ {
+ 	unsigned char *target = nubus_slot_addr(IRQ2SLOT(dev->irq));
+ 	if (ei_debug > 1)
+-		pr_info("Need to reset the NS8390 t=%lu...", jiffies);
++		printk(KERN_DEBUG pr_fmt("Need to reset the NS8390 t=%lu..."), jiffies);
+ 	ei_status.txing = 0;
+ 	target[0xC0000] = 0;
+ 	if (ei_debug > 1)
+@@ -871,5 +874,3 @@ static void word_memcpy_fromcard(void *t
+ 	while (count--)
+ 		*to++ = *from++;
+ }
+-
+-
