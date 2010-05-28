@@ -1,93 +1,78 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [git pull] m68k updates for 2.6.35
-Date: Wed, 26 May 2010 19:59:07 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1005261956560.21517@ayla.of.borg>
-References: <alpine.DEB.2.00.1005172139470.30344@ayla.of.borg>
+From: =?koi8-r?Q?=E1=CC=C5=CB=D3=C1=CE=C4=D2_=ED=D5=D2=C1=DB=CF=D7?=
+	<alex_mur_spb@mail.ru>
+Subject: 0001-This-is-a-patch-to-the-gen-devlist.c-file-that-fixes.patch
+Date: Fri, 28 May 2010 18:13:39 +0400
+Message-ID: <E1OI0Jf-0003LU-00.alex_mur_spb-mail-ru@f10.mail.ru>
+Reply-To: =?koi8-r?Q?=E1=CC=C5=CB=D3=C1=CE=C4=D2_=ED=D5=D2=C1=DB=CF=D7?=
+	  <alex_mur_spb@mail.ru>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+	boundary="----o96dEpBi-hftgjQkk5vGFNJGs:1275056019"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1005172139470.30344@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Alexandr Murashov <alex_mur_spb@mail.ru>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-	Hi Linus,
 
-On Mon, 17 May 2010, Geert Uytterhoeven wrote:
-> Please pull to receive the first batch of m68k updates for 2.6.35.
-> The platform patch has been acked by GregKH.
-> 
-> I have a second batch ready, but it has to wait a bit since it depends on
-> a big pile of SCSI patches.
+------o96dEpBi-hftgjQkk5vGFNJGs:1275056019
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
 
-Here's the second batch. The SCSI changes have been ack'ed by James.
-Thanks for pulling!
 
-The following changes since commit 63a6440326e4cd01d6a663069208a0e68e9b833f:
-  Linus Torvalds (1):
-        Merge git://git.kernel.org/.../pkl/squashfs-linus
 
-are available in the git repository at:
+This is my first patch.Do not judge me harshly, I'm just learning.
 
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+------o96dEpBi-hftgjQkk5vGFNJGs:1275056019
+Content-Type: application/x-patch; name="0001-This-is-a-patch-to-the-gen-devlist.c-file-that-fixes.patch"
+Content-Disposition: attachment
+Content-Transfer-Encoding: base64
 
-FUJITA Tomonori (1):
-      m68k: set ARCH_KMALLOC_MINALIGN
+RnJvbSA2NGQ3ZDBjYjNmZTk1OGNjZGYyNzljNDVmNjgzMmYxZGY0MTIzOWM3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiA9P3V0Zi04P3E/PUQwPTlDPUQxPTgzPUQxPTgwPUQwPUIwPUQx
+PTg4PUQwPUJFPUQwPUIyPTIwPUQwPTkwPUQwPUJCPUQwPUI1PUQwPUJBPUQxPTgxPUQwPUIwPUQw
+PUJEPUQwPUI0PUQxPTgwPz0gPGFsZXhAYWxleC1kZXNrdG9wLihub25lKT4KRGF0ZTogRnJpLCAy
+OCBNYXkgMjAxMCAxNzowMjoxOSArMDQwMApTdWJqZWN0OiBbUEFUQ0hdIFRoaXMgaXMgYSBwYXRj
+aCB0byB0aGUgZ2VuLWRldmxpc3QuYyBmaWxlIHRoYXQgZml4ZXMgdXAgYSB3YXJuaW5ncyB3aXRo
+IHRoZSBsZW5ndGhzIG9mIGxpbmVzIGFuZCBlcnJvciB3aXRoIGludGVuZGVkIGxhYmVsIGZvdW5k
+IGJ5IHRoZSBjaGVja3BhdGNoLnBsCiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kciBNdXJhc2hvdiA8
+YWxleF9tdXJfc3BiQG1haWwucnU+CgotLS0KIGRyaXZlcnMvem9ycm8vZ2VuLWRldmxpc3QuYyB8
+ICAgMzAgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDE5
+IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvem9y
+cm8vZ2VuLWRldmxpc3QuYyBiL2RyaXZlcnMvem9ycm8vZ2VuLWRldmxpc3QuYwppbmRleCAxNmZl
+MjA2Li5kYjA4ODk1IDEwMDY0NAotLS0gYS9kcml2ZXJzL3pvcnJvL2dlbi1kZXZsaXN0LmMKKysr
+IGIvZHJpdmVycy96b3Jyby9nZW4tZGV2bGlzdC5jCkBAIC00Myw3ICs0Myw3IEBAIG1haW4odm9p
+ZCkKIAogCXdoaWxlIChmZ2V0cyhsaW5lLCBzaXplb2YobGluZSktMSwgc3RkaW4pKSB7CiAJCWxp
+bm8rKzsKLQkJaWYgKChjID0gc3RyY2hyKGxpbmUsICdcbicpKSkKKwkJaWYgYyA9IHN0cmNocihs
+aW5lLCAnXG4nKQogCQkJKmMgPSAwOwogCQlpZiAoIWxpbmVbMF0gfHwgbGluZVswXSA9PSAnIycp
+CiAJCQljb250aW51ZTsKQEAgLTU0LDIwICs1NCwyNiBAQCBtYWluKHZvaWQpCiAJCQkJCWMgPSBs
+aW5lICsgNTsKIAkJCQkJd2hpbGUgKCpjID09ICcgJykKIAkJCQkJCSpjKysgPSAwOwotCQkJCQlp
+ZiAobWFudWZfbGVuICsgc3RybGVuKGMpICsgMSA+IE1BWF9OQU1FX1NJWkUpIHsKLQkJCQkJCS8q
+IFRvbyBsb25nLCB0cnkgY3V0dGluZyBvZmYgbG9uZyBkZXNjcmlwdGlvbiAqLworCQkJCQlpZiAo
+bWFudWZfbGVuICsgc3RybGVuKGMpICsgMVwKKwkJCQkJCQkgPiBNQVhfTkFNRV9TSVpFKSB7CiAJ
+CQkJCQlicmEgPSBzdHJjaHIoYywgJ1snKTsKLQkJCQkJCWlmIChicmEgJiYgYnJhID4gYyAmJiBi
+cmFbLTFdID09ICcgJykKKwkJCQkJCWlmIChicmEgJiYgYnJhID4gYyAmJiBicmFbLTFdXAorCQkJ
+CQkJCQkJPT0gJyAnKQogCQkJCQkJCWJyYVstMV0gPSAwOwotCQkJCQkJaWYgKG1hbnVmX2xlbiAr
+IHN0cmxlbihjKSArIDEgPiBNQVhfTkFNRV9TSVpFKSB7Ci0JCQkJCQkJZnByaW50ZihzdGRlcnIs
+ICJMaW5lICVkOiBQcm9kdWN0IG5hbWUgdG9vIGxvbmdcbiIsIGxpbm8pOworCQkJCQkJaWYgKG1h
+bnVmX2xlbiArIHN0cmxlbihjKSArIDFcCisJCQkJCQkJPiBNQVhfTkFNRV9TSVpFKSB7CisJCQkJ
+CQkJZnByaW50ZihzdGRlcnIsIFwKKwkJCQkiTGluZSAlZDogUHJvZHVjdCBuYW1lIHRvbyBsb25n
+XG4iLCBsaW5vKTsKIAkJCQkJCQlyZXR1cm4gMTsKIAkJCQkJCX0KIAkJCQkJfQotCQkJCQlmcHJp
+bnRmKGRldmYsICJcdFBST0RVQ1QoJXMsJXMsXCIiLCBtYW51ZiwgbGluZSsxKTsKKwkJCQkJZnBy
+aW50ZihkZXZmLCAiXHRQUk9EVUNUKCVzLCVzLFwiIixcCisJCQkJCQkJCW1hbnVmLCBsaW5lKzEp
+OwogCQkJCQlwcShkZXZmLCBjKTsKIAkJCQkJZnB1dHMoIlwiKVxuIiwgZGV2Zik7Ci0JCQkJfSBl
+bHNlIGdvdG8gZXJyOworCQkJCX0gZWxzZSB7CisJCQkJCWdvdG8gZXJyOworCQkJCQl9CiAJCQkJ
+YnJlYWs7CiAJCQlkZWZhdWx0OgogCQkJCWdvdG8gZXJyOwpAQCAtODIsNyArODgsOCBAQCBtYWlu
+KHZvaWQpCiAJCQlzdHJjcHkobWFudWYsIGxpbmUpOwogCQkJbWFudWZfbGVuID0gc3RybGVuKGMp
+OwogCQkJaWYgKG1hbnVmX2xlbiArIDI0ID4gTUFYX05BTUVfU0laRSkgewotCQkJCWZwcmludGYo
+c3RkZXJyLCAiTGluZSAlZDogbWFudWZhY3R1cmVyIG5hbWUgdG9vIGxvbmdcbiIsIGxpbm8pOwor
+CQkJCWZwcmludGYoc3RkZXJyLCAiTGluZSAlZDogbWFudWZhY3R1cmVyCVwKKwkJCQluYW1lIHRv
+byBsb25nXG4iLCBsaW5vKTsKIAkJCQlyZXR1cm4gMTsKIAkJCX0KIAkJCWZwcmludGYoZGV2Ziwg
+Ik1BTlVGKCVzLFwiIiwgbWFudWYpOwpAQCAtOTAsOCArOTcsOSBAQCBtYWluKHZvaWQpCiAJCQlm
+cHV0cygiXCIpXG4iLCBkZXZmKTsKIAkJCW1vZGUgPSAxOwogCQl9IGVsc2UgewotCQllcnI6Ci0J
+CQlmcHJpbnRmKHN0ZGVyciwgIkxpbmUgJWQ6IFN5bnRheCBlcnJvciBpbiBtb2RlICVkOiAlc1xu
+IiwgbGlubywgbW9kZSwgbGluZSk7CitlcnI6CisJCQlmcHJpbnRmKHN0ZGVyciwgIkxpbmUgJWQ6
+IFN5bnRheCBlcnJvciBpbiBtb2RlIFwKKwkJCSVkOiAlc1xuIiwgbGlubywgbW9kZSwgbGluZSk7
+CiAJCQlyZXR1cm4gMTsKIAkJfQogCX0KLS0gCjEuNi4zLjMKCg==
 
-Geert Uytterhoeven (23):
-      m68k: Enable atomic64_t
-      m68k/scsi: gvp11 - Kill ugly DMA() macro
-      m68k/scsi: a3000 - Kill ugly DMA() macro
-      m68k/scsi: mvme147 - Kill static global mvme147_host
-      m68k/scsi: a3000 - Kill static global a3000_host
-      m68k/scsi: gvp11 - Extract check_wd33c93()
-      m68k/scsi: a2091 - Kill a2091_scsiregs typedef
-      m68k/scsi: gvp11 - Kill gvp11_scsiregs typedef
-      m68k/scsi: a3000 - Kill a3000_scsiregs typedef
-      m68k/scsi: mvme147 - Kill obsolete HOSTS_C logic
-      m68k: amiga - A2091/A590 SCSI zorro_driver conversion
-      m68k/scsi: a2091 - Do not use legacy Scsi_Host.base
-      m68k: amiga - GVP Series II SCSI zorro_driver conversion
-      m68k/scsi: gvp11 - Do not use legacy Scsi_Host.base
-      m68k: amiga - A3000 SCSI platform device conversion
-      m68k/scsi: a3000 - Do not use legacy Scsi_Host.base
-      m68k: amiga - A4000T SCSI platform device conversion
-      m68k: amiga - Amiga Gayle IDE platform device conversion
-      m68k: amiga - Keyboard platform device conversion
-      m68k: amiga - Mouse platform device conversion
-      m68k: amiga - Serial port platform device conversion
-      m68k: amiga - Parallel port platform device conversion
-      m68k: amiga - RTC platform device conversion
-
- arch/m68k/Kconfig                |    1 +
- arch/m68k/amiga/config.c         |  174 ------------
- arch/m68k/amiga/platform.c       |  116 ++++++++-
- arch/m68k/include/asm/amigayle.h |    6 +
- arch/m68k/include/asm/atomic.h   |    2 +
- arch/m68k/include/asm/cache.h    |    2 +
- drivers/char/amiserial.c         |   61 +++--
- drivers/ide/gayle.c              |  147 ++++++-----
- drivers/input/keyboard/amikbd.c  |   97 ++++---
- drivers/input/mouse/amimouse.c   |   98 +++++---
- drivers/parport/parport_amiga.c  |   64 +++--
- drivers/scsi/a2091.c             |  245 ++++++++++--------
- drivers/scsi/a2091.h             |    4 +-
- drivers/scsi/a3000.c             |  256 +++++++++++--------
- drivers/scsi/a3000.h             |    4 +-
- drivers/scsi/a4000t.c            |  101 ++++----
- drivers/scsi/gvp11.c             |  541 ++++++++++++++++++++------------------
- drivers/scsi/gvp11.h             |   11 +-
- drivers/scsi/mvme147.c           |   33 ++--
- 19 files changed, 1045 insertions(+), 918 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+------o96dEpBi-hftgjQkk5vGFNJGs:1275056019--
