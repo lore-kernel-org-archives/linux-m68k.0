@@ -1,39 +1,48 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] net: mac8390 - Sort out memory/MMIO accesses and casts
- (was: Re: drivers/net/mac8390.c: Remove useless memcpy casting)
-Date: Sat, 29 May 2010 03:21:35 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1005290312230.691@localhost>
-References: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>  <alpine.OSX.2.00.1004161206300.271@localhost> <AANLkTikexlmuunBQ-ydNaD8fkKcLmrsfJSEgvyMJdNqU@mail.gmail.com>
+Subject: [PATCH] mac68k: fix RTC on PMU machines
+Date: Sat, 29 May 2010 03:26:01 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1005290100430.4779@nippy.intranet>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:47843 "EHLO
+Received: from www.telegraphics.com.au ([204.15.192.19]:47908 "EHLO
 	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755474Ab0E1RVm (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 28 May 2010 13:21:42 -0400
-In-Reply-To: <AANLkTikexlmuunBQ-ydNaD8fkKcLmrsfJSEgvyMJdNqU@mail.gmail.com>
+	with ESMTP id S1758916Ab0E1R0E (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 28 May 2010 13:26:04 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Diego Cousinet <diego@pvco.net>
 
 
-On Sun, 23 May 2010, Geert Uytterhoeven wrote:
+Copy RTC response bytes correctly on powerbooks and duos. Thanks to Diego 
+Cousinet who debugged this and provided me with the fix. Tested on 
+PowerBook 190 and Duo 280c.
 
-> >> But here's a better solution. I do not have the hardware to test it, 
-> >> though. Finn, does it {look OK,work}?
-> >
-> > It looks fine. I can't test it right now, but I will do so when I get 
-> > the opportunity.
-> 
-> Any news from the test front?
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Reported-by: Diego Cousinet <diego@pvco.net>
 
-This is commit ba0f916ca7ac79356e2ed32a85c3aa8255b104e7, right?
-If so, it tests OK here.
-
-Finn
-
-> 
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
+Index: linux-2.6.34/arch/m68k/mac/misc.c
+===================================================================
+--- linux-2.6.34.orig/arch/m68k/mac/misc.c	2010-05-28 18:06:41.000000000 +1000
++++ linux-2.6.34/arch/m68k/mac/misc.c	2010-05-28 18:06:41.000000000 +1000
+@@ -91,7 +91,7 @@ static void cuda_write_pram(int offset, 
+ #define cuda_write_pram NULL
+ #endif
+ 
+-#if 0 /* def CONFIG_ADB_PMU68K */
++#ifdef CONFIG_ADB_PMU68K
+ static long pmu_read_time(void)
+ {
+ 	struct adb_request req;
+@@ -102,8 +102,8 @@ static long pmu_read_time(void)
+ 	while (!req.complete)
+ 		pmu_poll();
+ 
+-	time = (req.reply[0] << 24) | (req.reply[1] << 16)
+-		| (req.reply[2] << 8) | req.reply[3];
++	time = (req.reply[1] << 24) | (req.reply[2] << 16)
++		| (req.reply[3] << 8) | req.reply[4];
+ 	return time - RTC_OFFSET;
+ }
+ 
