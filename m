@@ -1,78 +1,27 @@
-From: =?koi8-r?Q?=E1=CC=C5=CB=D3=C1=CE=C4=D2_=ED=D5=D2=C1=DB=CF=D7?=
-	<alex_mur_spb@mail.ru>
-Subject: 0001-This-is-a-patch-to-the-gen-devlist.c-file-that-fixes.patch
-Date: Fri, 28 May 2010 18:13:39 +0400
-Message-ID: <E1OI0Jf-0003LU-00.alex_mur_spb-mail-ru@f10.mail.ru>
-Reply-To: =?koi8-r?Q?=E1=CC=C5=CB=D3=C1=CE=C4=D2_=ED=D5=D2=C1=DB=CF=D7?=
-	  <alex_mur_spb@mail.ru>
+From: Oliver Neukum <oneukum@suse.de>
+Subject: Re: 0001-This-is-a-patch-to-the-gen-devlist.c-file-that-fixes.patch
+Date: Fri, 28 May 2010 18:13:16 +0200
+Message-ID: <201005281813.16612.oneukum@suse.de>
+References: <E1OI0Jf-0003LU-00.alex_mur_spb-mail-ru@f10.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----o96dEpBi-hftgjQkk5vGFNJGs:1275056019"
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <E1OI0Jf-0003LU-00.alex_mur_spb-mail-ru@f10.mail.ru>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Alexandr Murashov <alex_mur_spb@mail.ru>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: =?utf-8?b?0JDQu9C10LrRgdCw0L3QtNGAINCc0YPRgNCw0YjQvtCy?= <alex_mur_spb@mail.ru>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
+Am Freitag, 28. Mai 2010 16:13:39 schrieb =D0=90=D0=BB=D0=B5=D0=BA=D1=81=
+=D0=B0=D0=BD=D0=B4=D1=80 =D0=9C=D1=83=D1=80=D0=B0=D1=88=D0=BE=D0=B2:
+>=20
+> This is my first patch.Do not judge me harshly, I'm just learning.
 
-------o96dEpBi-hftgjQkk5vGFNJGs:1275056019
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: 8bit
+I am afraid the first segment creates invalid C.
 
+In addition, even the rules of coding style have to be applied
+with some common sense.  Otherwise the result is basically unreadable.
 
-
-This is my first patch.Do not judge me harshly, I'm just learning.
-
-------o96dEpBi-hftgjQkk5vGFNJGs:1275056019
-Content-Type: application/x-patch; name="0001-This-is-a-patch-to-the-gen-devlist.c-file-that-fixes.patch"
-Content-Disposition: attachment
-Content-Transfer-Encoding: base64
-
-RnJvbSA2NGQ3ZDBjYjNmZTk1OGNjZGYyNzljNDVmNjgzMmYxZGY0MTIzOWM3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P3V0Zi04P3E/PUQwPTlDPUQxPTgzPUQxPTgwPUQwPUIwPUQx
-PTg4PUQwPUJFPUQwPUIyPTIwPUQwPTkwPUQwPUJCPUQwPUI1PUQwPUJBPUQxPTgxPUQwPUIwPUQw
-PUJEPUQwPUI0PUQxPTgwPz0gPGFsZXhAYWxleC1kZXNrdG9wLihub25lKT4KRGF0ZTogRnJpLCAy
-OCBNYXkgMjAxMCAxNzowMjoxOSArMDQwMApTdWJqZWN0OiBbUEFUQ0hdIFRoaXMgaXMgYSBwYXRj
-aCB0byB0aGUgZ2VuLWRldmxpc3QuYyBmaWxlIHRoYXQgZml4ZXMgdXAgYSB3YXJuaW5ncyB3aXRo
-IHRoZSBsZW5ndGhzIG9mIGxpbmVzIGFuZCBlcnJvciB3aXRoIGludGVuZGVkIGxhYmVsIGZvdW5k
-IGJ5IHRoZSBjaGVja3BhdGNoLnBsCiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kciBNdXJhc2hvdiA8
-YWxleF9tdXJfc3BiQG1haWwucnU+CgotLS0KIGRyaXZlcnMvem9ycm8vZ2VuLWRldmxpc3QuYyB8
-ICAgMzAgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDE5
-IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvem9y
-cm8vZ2VuLWRldmxpc3QuYyBiL2RyaXZlcnMvem9ycm8vZ2VuLWRldmxpc3QuYwppbmRleCAxNmZl
-MjA2Li5kYjA4ODk1IDEwMDY0NAotLS0gYS9kcml2ZXJzL3pvcnJvL2dlbi1kZXZsaXN0LmMKKysr
-IGIvZHJpdmVycy96b3Jyby9nZW4tZGV2bGlzdC5jCkBAIC00Myw3ICs0Myw3IEBAIG1haW4odm9p
-ZCkKIAogCXdoaWxlIChmZ2V0cyhsaW5lLCBzaXplb2YobGluZSktMSwgc3RkaW4pKSB7CiAJCWxp
-bm8rKzsKLQkJaWYgKChjID0gc3RyY2hyKGxpbmUsICdcbicpKSkKKwkJaWYgYyA9IHN0cmNocihs
-aW5lLCAnXG4nKQogCQkJKmMgPSAwOwogCQlpZiAoIWxpbmVbMF0gfHwgbGluZVswXSA9PSAnIycp
-CiAJCQljb250aW51ZTsKQEAgLTU0LDIwICs1NCwyNiBAQCBtYWluKHZvaWQpCiAJCQkJCWMgPSBs
-aW5lICsgNTsKIAkJCQkJd2hpbGUgKCpjID09ICcgJykKIAkJCQkJCSpjKysgPSAwOwotCQkJCQlp
-ZiAobWFudWZfbGVuICsgc3RybGVuKGMpICsgMSA+IE1BWF9OQU1FX1NJWkUpIHsKLQkJCQkJCS8q
-IFRvbyBsb25nLCB0cnkgY3V0dGluZyBvZmYgbG9uZyBkZXNjcmlwdGlvbiAqLworCQkJCQlpZiAo
-bWFudWZfbGVuICsgc3RybGVuKGMpICsgMVwKKwkJCQkJCQkgPiBNQVhfTkFNRV9TSVpFKSB7CiAJ
-CQkJCQlicmEgPSBzdHJjaHIoYywgJ1snKTsKLQkJCQkJCWlmIChicmEgJiYgYnJhID4gYyAmJiBi
-cmFbLTFdID09ICcgJykKKwkJCQkJCWlmIChicmEgJiYgYnJhID4gYyAmJiBicmFbLTFdXAorCQkJ
-CQkJCQkJPT0gJyAnKQogCQkJCQkJCWJyYVstMV0gPSAwOwotCQkJCQkJaWYgKG1hbnVmX2xlbiAr
-IHN0cmxlbihjKSArIDEgPiBNQVhfTkFNRV9TSVpFKSB7Ci0JCQkJCQkJZnByaW50ZihzdGRlcnIs
-ICJMaW5lICVkOiBQcm9kdWN0IG5hbWUgdG9vIGxvbmdcbiIsIGxpbm8pOworCQkJCQkJaWYgKG1h
-bnVmX2xlbiArIHN0cmxlbihjKSArIDFcCisJCQkJCQkJPiBNQVhfTkFNRV9TSVpFKSB7CisJCQkJ
-CQkJZnByaW50ZihzdGRlcnIsIFwKKwkJCQkiTGluZSAlZDogUHJvZHVjdCBuYW1lIHRvbyBsb25n
-XG4iLCBsaW5vKTsKIAkJCQkJCQlyZXR1cm4gMTsKIAkJCQkJCX0KIAkJCQkJfQotCQkJCQlmcHJp
-bnRmKGRldmYsICJcdFBST0RVQ1QoJXMsJXMsXCIiLCBtYW51ZiwgbGluZSsxKTsKKwkJCQkJZnBy
-aW50ZihkZXZmLCAiXHRQUk9EVUNUKCVzLCVzLFwiIixcCisJCQkJCQkJCW1hbnVmLCBsaW5lKzEp
-OwogCQkJCQlwcShkZXZmLCBjKTsKIAkJCQkJZnB1dHMoIlwiKVxuIiwgZGV2Zik7Ci0JCQkJfSBl
-bHNlIGdvdG8gZXJyOworCQkJCX0gZWxzZSB7CisJCQkJCWdvdG8gZXJyOworCQkJCQl9CiAJCQkJ
-YnJlYWs7CiAJCQlkZWZhdWx0OgogCQkJCWdvdG8gZXJyOwpAQCAtODIsNyArODgsOCBAQCBtYWlu
-KHZvaWQpCiAJCQlzdHJjcHkobWFudWYsIGxpbmUpOwogCQkJbWFudWZfbGVuID0gc3RybGVuKGMp
-OwogCQkJaWYgKG1hbnVmX2xlbiArIDI0ID4gTUFYX05BTUVfU0laRSkgewotCQkJCWZwcmludGYo
-c3RkZXJyLCAiTGluZSAlZDogbWFudWZhY3R1cmVyIG5hbWUgdG9vIGxvbmdcbiIsIGxpbm8pOwor
-CQkJCWZwcmludGYoc3RkZXJyLCAiTGluZSAlZDogbWFudWZhY3R1cmVyCVwKKwkJCQluYW1lIHRv
-byBsb25nXG4iLCBsaW5vKTsKIAkJCQlyZXR1cm4gMTsKIAkJCX0KIAkJCWZwcmludGYoZGV2Ziwg
-Ik1BTlVGKCVzLFwiIiwgbWFudWYpOwpAQCAtOTAsOCArOTcsOSBAQCBtYWluKHZvaWQpCiAJCQlm
-cHV0cygiXCIpXG4iLCBkZXZmKTsKIAkJCW1vZGUgPSAxOwogCQl9IGVsc2UgewotCQllcnI6Ci0J
-CQlmcHJpbnRmKHN0ZGVyciwgIkxpbmUgJWQ6IFN5bnRheCBlcnJvciBpbiBtb2RlICVkOiAlc1xu
-IiwgbGlubywgbW9kZSwgbGluZSk7CitlcnI6CisJCQlmcHJpbnRmKHN0ZGVyciwgIkxpbmUgJWQ6
-IFN5bnRheCBlcnJvciBpbiBtb2RlIFwKKwkJCSVkOiAlc1xuIiwgbGlubywgbW9kZSwgbGluZSk7
-CiAJCQlyZXR1cm4gMTsKIAkJfQogCX0KLS0gCjEuNi4zLjMKCg==
-
-------o96dEpBi-hftgjQkk5vGFNJGs:1275056019--
+	Regards
+		Oliver
