@@ -1,39 +1,58 @@
-From: David Miller <davem@davemloft.net>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [PATCH] mac8390: change an error return code and some cleanup,
  take 4
-Date: Mon, 31 May 2010 04:30:56 -0700 (PDT)
-Message-ID: <20100531.043056.258120791.davem@davemloft.net>
-References: <alpine.LNX.2.00.1005311905520.469@nippy.intranet>
-	<AANLkTilkooBglbk33yDHmk8c_ZdlamOW8FVvuvjQaNsF@mail.gmail.com>
-	<alpine.LNX.2.00.1005312011210.469@nippy.intranet>
+Date: Mon, 31 May 2010 22:55:23 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1005312244520.1490@localhost>
+References: <alpine.LNX.2.00.1005311905520.469@nippy.intranet> <AANLkTilkooBglbk33yDHmk8c_ZdlamOW8FVvuvjQaNsF@mail.gmail.com> <alpine.LNX.2.00.1005312011210.469@nippy.intranet> <20100531.043056.258120791.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:34743
-	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753059Ab0EaLar (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 31 May 2010 07:30:47 -0400
-In-Reply-To: <alpine.LNX.2.00.1005312011210.469@nippy.intranet>
+Received: from www.telegraphics.com.au ([204.15.192.19]:54376 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754032Ab0EaMzY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 May 2010 08:55:24 -0400
+In-Reply-To: <20100531.043056.258120791.davem@davemloft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: fthain@telegraphics.com.au
+To: David Miller <davem@davemloft.net>
 Cc: geert@linux-m68k.org, joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-From: fthain@telegraphics.com.au
-Date: Mon, 31 May 2010 21:07:09 +1000 (EST)
 
-> Apparently David now wants me to submit this again --
+On Mon, 31 May 2010, David Miller wrote:
+
+> From: fthain@telegraphics.com.au
+> Date: Mon, 31 May 2010 21:07:09 +1000 (EST)
 > 
-> if (ei_debug)
-> 	pr_debug(...)
+> > Apparently David now wants me to submit this again --
+> > 
+> > if (ei_debug)
+> > 	pr_debug(...)
+> > 
+> > David, if that code is acceptable, please let me know.
 > 
-> David, if that code is acceptable, please let me know.
+> The only thing I care about is at the moment that you don't do something 
+> that ends up dropping the pr_fmt prefix.
+> 
+> The pr_fmt define at the beginning of the driver is for nothing if we 
+> end up adding exceptions that end up eliding it for no good reason.  
+> And that's what your patch was doing.
+> 
 
-The only thing I care about is at the moment that you don't do
-something that ends up dropping the pr_fmt prefix.
+Since you have rejected my most recent patch submission, which uses pr_fmt 
+explicitly, I imagine that what you are trying to say here is that only 
+pr_debug or pr_info are acceptable.
 
-The pr_fmt define at the beginning of the driver is for nothing
-if we end up adding exceptions that end up eliding it for no
-good reason.  And that's what your patch was doing.
+Now, so that we don't have to go through pointless resubmission 
+iterations, can you tell me which of the following you prefer:
+
+if (ei_debug)
+	pr_debug(...)
+
+OR
+
+if (ei_debug)
+	pr_info(...)
+
+Thanks.
+
+Finn
