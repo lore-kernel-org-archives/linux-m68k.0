@@ -1,50 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] net: mac8390 - Sort out memory/MMIO accesses and casts
-	(was: Re: drivers/net/mac8390.c: Remove useless memcpy casting)
-Date: Sat, 29 May 2010 10:03:47 +0200
-Message-ID: <AANLkTilLXOSb2P_m4uUubmJar2VMFXizzpa_mQ1j8GPz@mail.gmail.com>
-References: <l2k10f740e81004151234t3004275az36e7873493067a8a@mail.gmail.com>
-	<alpine.OSX.2.00.1004161206300.271@localhost>
-	<AANLkTikexlmuunBQ-ydNaD8fkKcLmrsfJSEgvyMJdNqU@mail.gmail.com>
-	<alpine.OSX.2.00.1005290312230.691@localhost>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] mac8390: change an error return code and some cleanup,
+ take 4
+Date: Mon, 31 May 2010 00:19:47 -0700 (PDT)
+Message-ID: <20100531.001947.193703044.davem@davemloft.net>
+References: <alpine.OSX.2.00.1004171258330.358@localhost>
+	<20100421.163041.158540277.davem@davemloft.net>
+	<alpine.OSX.2.00.1005290255580.691@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f46.google.com ([74.125.82.46]:50772 "EHLO
-	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753818Ab0E2IDt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 29 May 2010 04:03:49 -0400
-In-Reply-To: <alpine.OSX.2.00.1005290312230.691@localhost>
+Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:36402
+	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755744Ab0EaHTi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 31 May 2010 03:19:38 -0400
+In-Reply-To: <alpine.OSX.2.00.1005290255580.691@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: fthain@telegraphics.com.au
+Cc: joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Fri, May 28, 2010 at 19:21, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sun, 23 May 2010, Geert Uytterhoeven wrote:
->> >> But here's a better solution. I do not have the hardware to test it,
->> >> though. Finn, does it {look OK,work}?
->> >
->> > It looks fine. I can't test it right now, but I will do so when I get
->> > the opportunity.
->>
->> Any news from the test front?
->
-> This is commit ba0f916ca7ac79356e2ed32a85c3aa8255b104e7, right?
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Sat, 29 May 2010 03:29:01 +1000 (EST)
 
-Yep.
+> @@ -662,7 +665,7 @@ static void mac8390_no_reset(struct net_
+>  {
+>  	ei_status.txing = 0;
+>  	if (ei_debug > 1)
+> -		pr_info("reset not supported\n");
+> +		printk(KERN_DEBUG pr_fmt("reset not supported\n"));
+>  	return;
 
-> If so, it tests OK here.
+Use pr_debug() or pr_devel().   Anything which explicitly codes
+out a "printk(KERN_*" is suspect, we have interfaces for this. The
+whole point of defining pr_fmt at the top of the driver is so
+that in the driver, we use pr_foo() which includes the pr_fmt
+string at the beginning.  If you bypass it you avoid the intended
+effect of that pr_fmt define.
 
-Thanks for testing!
+This is getting tiring Finn.
 
-Gr{oetje,eeting}s,
+So we're already past 4 iterations of this silly simple patch, and I
+want to remind you yet again what an incredibly hard time you gave Joe
+Perches for his changes to this file which in the end were entirely
+correct and well formed, and he got it right on his first attempt.
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+I advise you to think twice before snapping at another developer's
+work in the future.
