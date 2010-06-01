@@ -1,44 +1,22 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] mac8390: change an error return code and some cleanup,
- take 4
-Date: Tue, 1 Jun 2010 01:19:06 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1006010115030.1536@localhost>
-References: <alpine.LNX.2.00.1005311905520.469@nippy.intranet> <AANLkTilkooBglbk33yDHmk8c_ZdlamOW8FVvuvjQaNsF@mail.gmail.com> <1275318493.6503.206.camel@Joe-Laptop.home> <20100531.081412.27799681.davem@davemloft.net>
+From: "Paull & Williamson Solicitors" <info@yahoo.com>
+Subject: Please Read And Respond
+Date: Tue, 1 Jun 2010 08:34:40 -0000 (US/Arizona)
+Message-ID: <36662.83.138.172.72.1275381280.squirrel__1129.61625350199$1275389951$gmane$org@83.138.172.72>
+Reply-To: davidfreemanllp001@yahoo.com.hk
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:56179 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753840Ab0EaPTR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 May 2010 11:19:17 -0400
-In-Reply-To: <20100531.081412.27799681.davem@davemloft.net>
+Received: from mail.mrl.gov.ec ([190.152.220.10]:40293 "EHLO mail.mrl.gov.ec"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753801Ab0FAK6a (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 1 Jun 2010 06:58:30 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: joe@perches.com, geert@linux-m68k.org, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
+I am Mr. David S. Freeman, the Principal Partner of Paull & Williamsons Solicitors, Scotland.I will like
+to know if you can stand as Next Of Kin to the funds of my late client from being confiscated by the
+British Treasury.You will be entitled to 45% of the funds.If interested Please contact for more
+information via  paullwilliamsonfirm@gmail.com
 
-On Mon, 31 May 2010, David Miller wrote:
-
-> From: Joe Perches <joe@perches.com>
-> Date: Mon, 31 May 2010 08:08:13 -0700
-> 
-> > There are many uses of KERN_DEBUG that are reasonable to have always 
-> > enabled.
-> 
-> Doubtful.
-> 
-> pr_debug() makes a ton of sense as currently implemented. It's for 
-> messages that we want both compile time and run-time control over.
-> 
-> The case we have here in mac8390 seems like it should stay as pr_info().  
-> Because 1) it's already controlled by a run-time knob so controlling it 
-> even further is confusing and 2) the message is "informative", it lets 
-> the user know a feature cannot be enabled, thus pr_info().
-
-If that is true in general, then ei_debug itself becomes questionable.
-
-In the case of mac8390 at least, I'm certainly leaning toward changing the 
-pr_info (conditional on ei_debug) to pr_debug (unconditional).
-
-Finn
+David Freeman
