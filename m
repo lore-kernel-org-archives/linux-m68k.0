@@ -1,33 +1,25 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 1/2] mac8390: propagate error code from request_irq
-Date: Wed, 02 Jun 2010 05:17:07 -0700 (PDT)
-Message-ID: <20100602.051707.170100284.davem@davemloft.net>
+Subject: Re: [PATCH 2/2] mac8390: raise error logging priority
+Date: Wed, 02 Jun 2010 07:06:47 -0700 (PDT)
+Message-ID: <20100602.070647.106817718.davem@davemloft.net>
 References: <alpine.OSX.2.00.1005312244520.1490@localhost>
 	<20100531.060225.68146363.davem@davemloft.net>
-	<alpine.OSX.2.00.1006011738330.299@localhost>
+	<alpine.OSX.2.00.1006011739160.299@localhost>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 74-93-104-97-Washington.hfc.comcastbusiness.net ([74.93.104.97]:52585
-	"EHLO sunset.davemloft.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751708Ab0FBMQ5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Jun 2010 08:16:57 -0400
-In-Reply-To: <alpine.OSX.2.00.1006011738330.299@localhost>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <alpine.OSX.2.00.1006011739160.299@localhost>
+Sender: netdev-owner@vger.kernel.org
 To: fthain@telegraphics.com.au
 Cc: geert@linux-m68k.org, joe@perches.com, p_gortmaker@yahoo.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
 From: Finn Thain <fthain@telegraphics.com.au>
-Date: Tue, 1 Jun 2010 22:18:32 +1000 (EST)
+Date: Tue, 1 Jun 2010 22:18:56 +1000 (EST)
 
-> 
-> Use the request_irq() error code as the return value for mac8390_open(). 
-> EAGAIN doesn't make sense for Nubus slot IRQs. Only this driver can claim 
-> this IRQ (until the NIC is removed, which means everything is powered 
-> down).
+> Log error conditions using KERN_ERR priority.
 > 
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Applied.
+Applied, thank you.
