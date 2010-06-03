@@ -1,42 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] zorro: Fix reading of proc/bus/zorro/* in small chunks
-Date: Wed, 9 Jun 2010 11:31:31 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1006091129240.8858@ayla.of.borg>
+From: JAMES ROBERTS <jsrbs01@yahoo.co.uk>
+Subject: Attn
+Date: Thu, 03 Jun 2010 11:15:51 -0500
+Message-ID: <20100603111551.f0dg41kdck40s8kw__5071.88111446357$1276099748$gmane$org@174.121.227.54>
+Reply-To: jsrbs90@yahoo.com.hk
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from 15.db.79ae.static.theplanet.com ([174.121.219.21]:38200 "EHLO
+	web.webtapells.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+	with ESMTP id S1755567Ab0FIQIg (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2010 12:08:36 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: JAMES@ROBERTS.COM
 
-proc_bus_zorro_read() didn't take into account the current file position,
-hence it always read from the start of the ConfigDev.
+Attn
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
-index aaf8abb..108096f 100644
---- a/drivers/zorro/proc.c
-+++ b/drivers/zorro/proc.c
-@@ -73,7 +73,7 @@ proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *
- 	cd.cd_BoardAddr = (void *)zorro_resource_start(z);
- 	cd.cd_BoardSize = zorro_resource_len(z);
- 
--	if (copy_to_user(buf, &cd, nbytes))
-+	if (copy_to_user(buf, (void *)&cd + pos, nbytes))
- 		return -EFAULT;
- 	*ppos += nbytes;
- 
--- 
-1.7.0.4
+This message might meet you in utmost surprise; however, it is just my
+urgent need for partner that made me to contact you for this transaction.
 
-Gr{oetje,eeting}s,
+I am  the James Roberts.I need your urgent assistance in transferring the
+sum of(5.M MILLION Pounds.
 
-						Geert
+I will send you full details on how the business will be executed and also
+note that you will receive 30% of the above mentioned amount if you agree to
+help me execute this business reply me back for more clarification.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Best Regards
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+James Roberts
