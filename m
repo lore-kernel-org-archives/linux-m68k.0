@@ -1,38 +1,59 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] mac68k: another mac_defconfig update
-Date: Fri, 4 Jun 2010 07:52:12 +0200
-Message-ID: <AANLkTilswEeKMZSvos3mM5kxN7rpMwKxtpGxYeOV8GBd@mail.gmail.com>
-References: <alpine.OSX.2.00.1006041506550.278@localhost>
+Subject: [PATCH] zorro: BKL removal
+Date: Sat, 5 Jun 2010 21:23:01 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1006052121550.12934@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:37597 "EHLO
-	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751815Ab0FDFwO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Jun 2010 01:52:14 -0400
-Received: by wyi11 with SMTP id 11so585658wyi.19
-        for <linux-m68k@vger.kernel.org>; Thu, 03 Jun 2010 22:52:12 -0700 (PDT)
-In-Reply-To: <alpine.OSX.2.00.1006041506550.278@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Fri, Jun 4, 2010 at 07:11, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Another update for mac_defconfig (tested more thoroughly now): enable SWIM
-> driver, enable generic RTC, and disable more of the obscure and
-> experimental stuff.
->
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->
-> ---
->
-> Geert, if you would prefer I will fold this into the previous defconfig
-> patch and resubmit.
+Remove BKL use from proc_bus_zorro_lseek(), like was done for
+proc_bus_pci_lseek() a long time ago.
 
-No problem, I can fold it myself.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/zorro/proc.c |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
 
-Thx, I will apply this and your other recent patches!
+diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
+index 3c7046d..4f4ea88 100644
+--- a/drivers/zorro/proc.c
++++ b/drivers/zorro/proc.c
+@@ -22,8 +22,9 @@ static loff_t
+ proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
+ {
+ 	loff_t new = -1;
++	struct inode *inode = file->f_path.dentry->d_inode;
+ 
+-	lock_kernel();
++	mutex_lock(&inode->i_mutex);
+ 	switch (whence) {
+ 	case 0:
+ 		new = off;
+@@ -35,12 +36,12 @@ proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
+ 		new = sizeof(struct ConfigDev) + off;
+ 		break;
+ 	}
+-	if (new < 0 || new > sizeof(struct ConfigDev)) {
+-		unlock_kernel();
+-		return -EINVAL;
+-	}
+-	unlock_kernel();
+-	return (file->f_pos = new);
++	if (new < 0 || new > sizeof(struct ConfigDev))
++		new = -EINVAL;
++	else
++		file->f_pos = new;
++	mutex_unlock(&inode->i_mutex);
++	return new;
+ }
+ 
+ static ssize_t
+-- 
+1.7.0.4
 
 Gr{oetje,eeting}s,
 
