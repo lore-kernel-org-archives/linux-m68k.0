@@ -1,38 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: [PATCH 159/199] arch/m68k/hp300/hp300map.map: Checkpatch cleanup
-Date: Sun, 6 Jun 2010 13:08:44 +0200
-Message-ID: <AANLkTil7QgLDA-zZNPvdlwf_Ph4ivL1LkzFCbGq5qgtm@mail.gmail.com>
+Date: Sun, 06 Jun 2010 13:30:16 +0200
+Message-ID: <m2y6esqtyv.fsf@igel.home>
 References: <1274644930-26600-1-git-send-email-andrea.gelmini@gelma.net>
 	<1274644930-26600-11-git-send-email-andrea.gelmini@gelma.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f46.google.com ([74.125.82.46]:62238 "EHLO
-	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755311Ab0FFLIq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Jun 2010 07:08:46 -0400
-Received: by wwc33 with SMTP id 33so462742wwc.19
-        for <linux-m68k@vger.kernel.org>; Sun, 06 Jun 2010 04:08:44 -0700 (PDT)
+Received: from mail-out.m-online.net ([212.18.0.10]:60151 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755881Ab0FFLar (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Jun 2010 07:30:47 -0400
 In-Reply-To: <1274644930-26600-11-git-send-email-andrea.gelmini@gelma.net>
+	(Andrea Gelmini's message of "Sun, 23 May 2010 22:01:55 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Andrea Gelmini <andrea.gelmini@gelma.net>
-Cc: Philip Blundell <philb@gnu.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+Cc: Philip Blundell <philb@gnu.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-On Sun, May 23, 2010 at 22:01, Andrea Gelmini <andrea.gelmini@gelma.net> wrote:
-> arch/m68k/hp300/hp300map.map:185: ERROR: Invalid UTF-8, patch and commit message should be encoded in UTF-8
+Andrea Gelmini <andrea.gelmini@gelma.net> writes:
 
-Thx, applied!
+> diff --git a/arch/m68k/hp300/hp300map.map b/arch/m68k/hp300/hp300map.=
+map
+> index 6b45f0a..621c076 100644
+> --- a/arch/m68k/hp300/hp300map.map
+> +++ b/arch/m68k/hp300/hp300map.map
+> @@ -182,71 +182,71 @@ string Prior =3D "\033[5~"
+>  string Next =3D "\033[6~"
+>  string Macro =3D "\033[M"
+>  string Pause =3D "\033[P"
+> -compose '`' 'A' to '=C0'
+[...]
+> +compose '`' 'A' to '=C3=80'
 
-Redone using recode "ISO-8859-15..UTF-8" as git am fails to apply such patches.
+This is obviously wrong.  The composed character is supposed to be a
+single latin-1 character (namely '\300').
 
-Gr{oetje,eeting}s,
+A patch subject containing "checkpatch" should always ring the alarm
+bells.
 
-						Geert
+Andreas.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+--=20
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
+ED5
+"And now for something completely different."
