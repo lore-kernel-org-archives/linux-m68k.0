@@ -1,64 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 159/199] arch/m68k/hp300/hp300map.map: Checkpatch cleanup
-Date: Sun, 6 Jun 2010 13:48:59 +0200
-Message-ID: <AANLkTinO1TU-TRPUm00tehhjECCkyVV_0xEVJtyaU_ya@mail.gmail.com>
-References: <1274644930-26600-1-git-send-email-andrea.gelmini@gelma.net>
-	<1274644930-26600-11-git-send-email-andrea.gelmini@gelma.net>
-	<m2y6esqtyv.fsf@igel.home>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 0/11] m68k: Atari EtherNAT Updates
+Date: Mon, 07 Jun 2010 07:10:50 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1006070703040.17584@zirkon.biophys.uni-duesseldorf.de>
+References: <1274896133-19590-1-git-send-email-geert@linux-m68k.org>
+ <alpine.DEB.2.00.1006060547550.1329@zirkon.biophys.uni-duesseldorf.de>
+ <AANLkTinusfjUBq9fjzLuqv5ZXjdTO1ZC3Qu-eZ8Hsg1z@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f46.google.com ([74.125.82.46]:57997 "EHLO
-	mail-ww0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750991Ab0FFLtA convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Jun 2010 07:49:00 -0400
-Received: by wwc33 with SMTP id 33so473455wwc.19
-        for <linux-m68k@vger.kernel.org>; Sun, 06 Jun 2010 04:48:59 -0700 (PDT)
-In-Reply-To: <m2y6esqtyv.fsf@igel.home>
+Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:55565 "EHLO
+	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1751619Ab0FGFKx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jun 2010 01:10:53 -0400
+Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
+ mail.rz.uni-duesseldorf.de
+ (Sun Java(tm) System Messaging Server 6.3-11.01 (built Feb 12 2010; 32bit))
+ id <0L3M00D00P23IZ00@mail.rz.uni-duesseldorf.de> for
+ linux-m68k@vger.kernel.org; Mon, 07 Jun 2010 07:10:51 +0200 (MEST)
+In-reply-to: <AANLkTinusfjUBq9fjzLuqv5ZXjdTO1ZC3Qu-eZ8Hsg1z@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Philip Blundell <philb@gnu.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Sun, Jun 6, 2010 at 13:30, Andreas Schwab <schwab@linux-m68k.org> wr=
-ote:
-> Andrea Gelmini <andrea.gelmini@gelma.net> writes:
->
->> diff --git a/arch/m68k/hp300/hp300map.map b/arch/m68k/hp300/hp300map=
-=2Emap
->> index 6b45f0a..621c076 100644
->> --- a/arch/m68k/hp300/hp300map.map
->> +++ b/arch/m68k/hp300/hp300map.map
->> @@ -182,71 +182,71 @@ string Prior =3D "\033[5~"
->> =C2=A0string Next =3D "\033[6~"
->> =C2=A0string Macro =3D "\033[M"
->> =C2=A0string Pause =3D "\033[P"
->> -compose '`' 'A' to '=C3=80'
-> [...]
->> +compose '`' 'A' to '=C3=83=E2=82=AC'
->
-> This is obviously wrong. =C2=A0The composed character is supposed to =
-be a
-> single latin-1 character (namely '\300').
+Hi Geert,
 
-Sorry, you're right. Loadkeys is indeed not yet aware of UTF-8.
+> > Was my backwards compatibility patch to the kernel ld script ever applied?
+> 
+> No, at that time I didn't have time to look into it, and later you
+> said the (one) computer with that
+> toolchain had died (so you were going to use a newer one?).
 
-> A patch subject containing "checkpatch" should always ring the alarm
-> bells.
+I tried to build a newer one but got stuck (crosstool seems no longer 
+maintained, that's what I used last time). Then the disk with all the m68k stuff 
+on it died. I've found some info on Ubuntus bug pages on getting 4.4 to build as 
+cross compiler, I'll try again using that for starters. 
 
-;-)
+> > Lots of patches - much appreciated!
+> 
+> Eventually, the EtherNAT support should be merged with the standard
+> driver anyway,,,
 
-Gr{oetje,eeting}s,
+But for the polled interrupt kludge I agree. Last time I checked the interrupt 
+to use for the EtherNAT is beyond what we currently reserve in the Atari 
+interrupt map, so I'd have to change the max number of interrupts - what are the 
+repercussions for doing this? 
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+	Michael
