@@ -1,49 +1,47 @@
-From: "Western Union Office" <coplanea@rieder.net.py>
-Subject: Money Avalaible For Pick Up
-Date: Wed, 30 Jun 2010 18:44:27 -0400 (PYT)
-Message-ID: <56428.192.168.0.1.1277937867.squirrel@webmail.dominios.com.py>
-Reply-To: wetsern.union.worldwide@googlemail.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/6] block: push down BKL into .open and .release
+Date: Sun, 4 Jul 2010 22:27:11 +0200
+Message-ID: <AANLkTinduxuj8412d7eGK1qZGNHrIzCFOOrwXO5zBr5W@mail.gmail.com>
+References: <1278193640-24223-1-git-send-email-arnd@arndb.de>
+	<1278193640-24223-3-git-send-email-arnd@arndb.de>
+	<20100704080146.GA31828@merkur.ravnborg.org>
+	<20100704103310.368dee05@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.rieder.net.py ([200.108.130.5]:36070 "EHLO
-	mail.rieder.net.py" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757432Ab0F3W7h (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jun 2010 18:59:37 -0400
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:63010 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757974Ab0GDU1N (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Jul 2010 16:27:13 -0400
+In-Reply-To: <20100704103310.368dee05@infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Arjan van de Ven <arjan@infradead.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, linux-scsi@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-How Are You Today
+On Sun, Jul 4, 2010 at 19:33, Arjan van de Ven <arjan@infradead.org> wrote:
+> On Sun, 4 Jul 2010 10:01:46 +0200
+> Sam Ravnborg <sam@ravnborg.org> wrote:
+>> Lot's of other places could benefit from improved goto error handling.
+>> The driver maintainers should do this (if there is a maintainer).
+>> I stopped with the small replacement patches.
+>
+> it's the floppy driver for amigas
+> not sure if any of those are still alive at all running linux.....
 
-I write to inform you that we have already sent you 5000.00 USD through
-Western Union as we have been given the mandate to transfer your full
-compensation payment of  USD800, 000.00 via Western Union by the Nigerian
-Government as compensation to you for being defrauded by It's Citizens.
+Sure there are. Whether the floppy drives in them are still actively used is
+another question. SSH and NFS over Ethernet are much more convenient ;-)
 
-I have sent you three emails containing the information for pick up, in
-the space of two weeks and no response from you.
+Last time I tried (hmm, this or previous century?), my floppy drive had problems
+reading the floppy, probably my drive is dying. Oh well...
 
-This email contains the senders name and also the MTCN. Please get this
-information and locate any western union office closest to you for
-immediate pick up, so as to enable us expedite action in sending another
-5000.00 USD as you are aware that we will be sending you 5,000.00 USD until
-the entire amount is completed. Do call me once you pick up the funds.
+Gr{oetje,eeting}s,
 
-Manager: Mr. Daniel George
-Telephone: +234-803 957 0118
-Email: western.union.department@hotmail.com
+						Geert
 
-Call me immediately you confirm the payment.
-Here are the informations for pick up of the first $5000.00 USD
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Senders Name: Phina Paul
-Mtcn:522 231 7895
-Question: Purpose
-Answer: Compensation
-Amount: 5000.00 USD
-
-I am waiting for your call or email once you pick up the 5000.00 USD
-
-Thanks
-Mrs Helen Mark
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
