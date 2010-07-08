@@ -1,47 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/6] block: push down BKL into .open and .release
-Date: Sun, 4 Jul 2010 22:27:11 +0200
-Message-ID: <AANLkTinduxuj8412d7eGK1qZGNHrIzCFOOrwXO5zBr5W@mail.gmail.com>
-References: <1278193640-24223-1-git-send-email-arnd@arndb.de>
-	<1278193640-24223-3-git-send-email-arnd@arndb.de>
-	<20100704080146.GA31828@merkur.ravnborg.org>
-	<20100704103310.368dee05@infradead.org>
+From: "Lucky Robert" <mk4robert1@naseej.com>
+Subject: Good news for you
+Date: Thu, 8 Jul 2010 13:40:56 +0200
+Message-ID: <891cf44b69542e65e282f7a317ebb0ee.squirrel__4240.77406428314$1278609755$gmane$org@www.ensil.unilim.fr>
+Reply-To: mk4robert3@naseej.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:63010 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757974Ab0GDU1N (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Jul 2010 16:27:13 -0400
-In-Reply-To: <20100704103310.368dee05@infradead.org>
+Received: from mail-out.unilim.fr ([164.81.1.46]:59168 "EHLO smtp.unilim.fr"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1756241Ab0GHRWN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 8 Jul 2010 13:22:13 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arjan van de Ven <arjan@infradead.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, linux-scsi@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Jul 4, 2010 at 19:33, Arjan van de Ven <arjan@infradead.org> wrote:
-> On Sun, 4 Jul 2010 10:01:46 +0200
-> Sam Ravnborg <sam@ravnborg.org> wrote:
->> Lot's of other places could benefit from improved goto error handling.
->> The driver maintainers should do this (if there is a maintainer).
->> I stopped with the small replacement patches.
->
-> it's the floppy driver for amigas
-> not sure if any of those are still alive at all running linux.....
 
-Sure there are. Whether the floppy drives in them are still actively used is
-another question. SSH and NFS over Ethernet are much more convenient ;-)
 
-Last time I tried (hmm, this or previous century?), my floppy drive had problems
-reading the floppy, probably my drive is dying. Oh well...
 
-Gr{oetje,eeting}s,
+My Dear,
 
-						Geert
+COMPLIMENT OF THE SEASON.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+This is Lucky Robert. writing to you once again,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Thank you for the assistance rendered to me when i was really in need, it
+is a thing of joy to inform you that finally, I have succeeded in
+collecting the money at Long last.
+
+Hope this mail find you in an excellent condition of health. I'm happy to
+inform you about my success in getting those funds transferred under the
+co-operation of a new partner from London UK. Presently I'm in Europe for
+investment projects with my own share of the total sum.
+
+Meanwhile I didn't forget your past efforts and attempts to assist me in
+transferring those funds that later failed some how, I have compensated
+you with the sum of $2.5M, Two million five hundred thousand dollars. Now
+contact Barrister Nana Kwesi he is my lawyer in Ghana and his email
+address is: (kwesiasso@globomail.com) ask him to send the money to you the
+sum of $2.5, Two million five hundred thousand dollars which I kept for
+your compensation for all your past efforts and attempts to assist me in
+this matter. I appreciated your efforts at that time very much. So feel
+free and get in touch with him and instruct him where to send the amount
+to you.
+
+Please do let me know immediately if you receive it so that we can share
+the joy after all the sufferings at that time.
+
+Lucky Robert.
