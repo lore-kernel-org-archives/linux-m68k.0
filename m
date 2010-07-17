@@ -1,26 +1,15 @@
-From: "Grant Mayor" <grantfinancing@gmail.com>
-Subject: (unknown)
-Date: Sat, 17 Jul 2010 10:06:45 +0200 (CEST)
-Message-ID: <2148.41.138.190.28.1279354005.squirrel__36043.2794238024$1279354279$gmane$org@www.scalabrini.net>
-Reply-To: to.grantfinancing@gmail.com
+From: king <sarahking@jaybrooksnet.org>
+Subject: charity projects,
+Date: Sat, 17 Jul 2010 15:36:53 -0700
+Message-ID: <20100717153653.d2wjwelsbkgcsg4o@jaybrooksnet.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-FUNDING NOTIFICATION.............I am Mr Grant Mayor. i am a loan lender
-as well as an angel investor, I offer funds based on demands and i use the
-best possible interest rate so that it can make both paties smile. I allow
-my clients to decide the loan repayment duration. So i have my door for
-funding opened to all that is in need, If you have been turned down be
-many financial institutions, this is a great time for you to make things
-up. If you need a stress free funing, kindly get back to me with a mail of
-application for funding and you will get funded within 3 working days.
-Send all mails of application to: to.grantfinancing@gmail.com.
-
-I await your response.
-
-Grant Mayor.
