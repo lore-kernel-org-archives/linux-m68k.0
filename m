@@ -1,23 +1,64 @@
-From: "Sonia Porter" <sporter@jusd.k12.ca.us>
-Subject: Dear Webmail User
-Date: Mon, 19 Jul 2010 18:04:31 -0700
-Message-ID: <8A78544F83994B468EAC5A3D242C1E34C7903E__4523.08975295654$1279588788$gmane$org@exchsrv02.jusd.dom>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: FPU emulation incorrect for 68LC040?
+Date: Wed, 21 Jul 2010 22:32:33 +0200
+Message-ID: <AANLkTilKXTCUJIOEvQ-H5GjGfPwYV5_QufuD46twmNvS@mail.gmail.com>
+References: <08EC3395-75C3-4E81-B468-C9978DDCF85D@bredband.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+Received: from mail-ww0-f42.google.com ([74.125.82.42]:45910 "EHLO
+	mail-ww0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752123Ab0GUUcg convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Jul 2010 16:32:36 -0400
+Received: by wwf26 with SMTP id 26so3488074wwf.1
+        for <linux-m68k@vger.kernel.org>; Wed, 21 Jul 2010 13:32:34 -0700 (PDT)
+In-Reply-To: <08EC3395-75C3-4E81-B468-C9978DDCF85D@bredband.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: info@upgrade.com
+To: =?UTF-8?Q?Mattias_Engdeg=C3=A5rd?= <mattiase@bredband.net>
+Cc: linux-m68k@vger.kernel.org, zippel@linux-m68k.org
 
-This message was sent automatically by a program on Web mail which periodically checks the size of in boxes, where new messages are received.The program is run weekly to ensure no one's in box grows too large. If your in box becomes too large,you will be unable to receive new email. Just before this message was sent,you had 18 Mega bytes (MB) or more of messages stored in your in box on your Web mail. To help's re-set your SPACE on our database prior to maintain your IN BOX.
- 
-YOU MUST COPY AND PAST THE BELOW LINK TO INCREASE YOUR INBOX QUOTA AND UPGRADE YOUR WEBMAIL ACCOUNT
+On Wed, Jul 21, 2010 at 22:22, Mattias Engdeg=C3=A5rd <mattiase@bredban=
+d.net> wrote:
+> Does anyone know whether a 68LC040 alters the address register in
+> postincrement/predecrement modes when it calculates the effective add=
+ress
+> for an FP instruction? The FPU emulation in the kernel seems to assum=
+e that
+> it doesn't, but that doesn't really make sense.
+>
+> If the 'LC040 does increment a0 in fadd.d (a0)+,fp0, say, then the Li=
+nux FPU
+> emulation is quite broken, at least in 2.6.34. If not, then I have
+> misunderstood how the hardware works.
 
-http://www.eformit.com/eform.aspx?webmasterupgradesystem 
- 
- You will continue to receive this warning message periodically if your inbox size continues to be between 18 and 20 MB. If your in box size grows to 20MB,then a program on the Web mail will move your oldest email to a folder in your home directory to ensure that you will continue to be able to receive incoming email. You will be notified by email that this has taken place. If your in box grows to 25 MB, you will be unable to receive new email as it will be returned to the sender.After you read a message,it is best to REPLY and SAVE a copy.
- 
-Thanks.
-Web mail Help Desk
+As the 'LC040 doesn't implement FPU instructions, I'd expect it to
+just generate an
+exception when the "fadd.d (a0)+,fp0" is encountered. I.e. not do anyth=
+ing else,
+like postincrementing a0.
+
+> I'm writing a 68040/68LC040 simulator and unfortunately do not have a=
+ real
+> 'LC040 to do experiments on. If someone with actual hardware could he=
+lp me,
+> I'd be most grateful.
+
+Sorry, only a full '040 here.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
