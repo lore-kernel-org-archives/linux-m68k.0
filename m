@@ -1,7 +1,7 @@
 From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Subject: [PATCH 4/9] Removing dead CONFIG_RPX(LITE|CLASSIC)
-Date: Wed, 4 Aug 2010 14:41:51 +0200
-Message-ID: <e173704b7be0070b4adc976f185e89afca566aac.1280924671.git.qy03fugy__16898.1155068197$1280925815$gmane$org@stud.informatik.uni-erlangen.de>
+Subject: [PATCH 3/9] arch/m68k{,nommu}: Removing dead SMP config option
+Date: Wed, 4 Aug 2010 14:41:45 +0200
+Message-ID: <86fd3a30b5cce0a637243e822e96f5bc76269670.1280924671.git.qy03fugy__24224.4742265486$1280925817$gmane$org@stud.informatik.uni-erlangen.de>
 References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -10,255 +10,115 @@ Content-Disposition: inline
 In-Reply-To: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, David Woodhouse <dwmw2@infradead.org>, Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, John Stultz <johnstul@us.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@l>
 Cc: vamos-dev@i4.informatik.uni-erlangen.de
 
-CONFIG_RPX(LITE|CLASSIC) doesn't exist in Kconfig, therefore removing
-all references to it from the source. Because RPX(LITE|CLASSIC) can't
-be defined, MTD_RPXLITE can't be defined either. Therfore removing it to.
-
-They were be introduced in 14cf11af6cf608eb8c23e989ddb17a715ddce109 and 
-removed in df34403dcaacef541a67c955aebc37c51f53ca7c.
+CONFIG_SMP doesn't exist in Kconfig (for this architecure), therefore
+removing all references to it from the source.
 
 Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
 ---
- arch/m68k/include/asm/commproc.h |   17 --------
- drivers/mtd/maps/Kconfig         |   10 -----
- drivers/mtd/maps/Makefile        |    1 -
- drivers/mtd/maps/rpxlite.c       |   64 ------------------------------
- drivers/pcmcia/m8xx_pcmcia.c     |   81 --------------------------------------
- 5 files changed, 0 insertions(+), 173 deletions(-)
- delete mode 100644 drivers/mtd/maps/rpxlite.c
+ arch/m68k/include/asm/system_mm.h |    2 --
+ arch/m68k/include/asm/system_no.h |    9 ---------
+ arch/m68k/kernel/time.c           |    2 --
+ arch/m68k/sun3/sun3ints.c         |    8 +++-----
+ arch/m68knommu/kernel/time.c      |    3 +--
+ 5 files changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/commproc.h
-index b4f1d54..48f5466 100644
---- a/arch/m68k/include/asm/commproc.h
-+++ b/arch/m68k/include/asm/commproc.h
-@@ -480,23 +480,6 @@ typedef struct scc_enet {
- #define SICR_ENET_CLKRT	((uint)0x0000003d)
+diff --git a/arch/m68k/include/asm/system_mm.h b/arch/m68k/include/asm/system_mm.h
+index dbb6515..485daec 100644
+--- a/arch/m68k/include/asm/system_mm.h
++++ b/arch/m68k/include/asm/system_mm.h
+@@ -205,9 +205,7 @@ static inline unsigned long __cmpxchg(volatile void *p, unsigned long old,
+ 	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
+ 			(unsigned long)(n), sizeof(*(ptr))))
+ 
+-#ifndef CONFIG_SMP
+ #include <asm-generic/cmpxchg.h>
+-#endif
+ 
  #endif
  
--#ifdef CONFIG_RPXLITE
--/* This ENET stuff is for the MPC850 with ethernet on SCC2.  Some of
-- * this may be unique to the RPX-Lite configuration.
-- * Note TENA is on Port B.
-- */
--#define PA_ENET_RXD	((ushort)0x0004)
--#define PA_ENET_TXD	((ushort)0x0008)
--#define PA_ENET_TCLK	((ushort)0x0200)
--#define PA_ENET_RCLK	((ushort)0x0800)
--#define PB_ENET_TENA	((uint)0x00002000)
--#define PC_ENET_CLSN	((ushort)0x0040)
--#define PC_ENET_RENA	((ushort)0x0080)
--
--#define SICR_ENET_MASK	((uint)0x0000ff00)
--#define SICR_ENET_CLKRT	((uint)0x00003d00)
+diff --git a/arch/m68k/include/asm/system_no.h b/arch/m68k/include/asm/system_no.h
+index 3c0718d..08f31bd 100644
+--- a/arch/m68k/include/asm/system_no.h
++++ b/arch/m68k/include/asm/system_no.h
+@@ -106,17 +106,10 @@ asmlinkage void resume(void);
+ #define wmb()  asm volatile (""   : : :"memory")
+ #define set_mb(var, value)	({ (var) = (value); wmb(); })
+ 
+-#ifdef CONFIG_SMP
+-#define smp_mb()	mb()
+-#define smp_rmb()	rmb()
+-#define smp_wmb()	wmb()
+-#define smp_read_barrier_depends()	read_barrier_depends()
+-#else
+ #define smp_mb()	barrier()
+ #define smp_rmb()	barrier()
+ #define smp_wmb()	barrier()
+ #define smp_read_barrier_depends()	do { } while(0)
 -#endif
--
- /* SCC Event register as used by Ethernet.
- */
- #define SCCE_ENET_GRA	((ushort)0x0080)	/* Graceful stop complete */
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index f22bc9f..10261fc 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -286,16 +286,6 @@ config MTD_TQM8XXL
- 	  code to communicate with the chips on the TQM8xxL board. More at
- 	  <http://www.denx.de/embedded-ppc-en.html>.
  
--config MTD_RPXLITE
--	tristate "CFI Flash device mapped on RPX Lite or CLLF"
--	depends on MTD_CFI && (RPXCLASSIC || RPXLITE)
--	help
--	  The RPXLite PowerPC board has CFI-compliant chips mapped in
--	  a strange sparse mapping. This 'mapping' driver supports that
--	  arrangement, allowing the CFI probe and command set driver code
--	  to communicate with the chips on the RPXLite board. More at
--	  <http://www.embeddedplanet.com/>.
--
- config MTD_MBX860
- 	tristate "System flash on MBX860 board"
- 	depends on MTD_CFI && MBX
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index bb035cd..7821c71 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -27,7 +27,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
--obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
- obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
- obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
-diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
-deleted file mode 100644
-index 3e3ef53..0000000
---- a/drivers/mtd/maps/rpxlite.c
-+++ /dev/null
-@@ -1,64 +0,0 @@
--/*
-- * Handle mapping of the flash on the RPX Lite and CLLF boards
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--
--
--#define WINDOW_ADDR 0xfe000000
--#define WINDOW_SIZE 0x800000
--
--static struct mtd_info *mymtd;
--
--static struct map_info rpxlite_map = {
--	.name = "RPX",
--	.size = WINDOW_SIZE,
--	.bankwidth = 4,
--	.phys = WINDOW_ADDR,
--};
--
--static int __init init_rpxlite(void)
--{
--	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
--	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
--
--	if (!rpxlite_map.virt) {
--		printk("Failed to ioremap\n");
--		return -EIO;
--	}
--	simple_map_init(&rpxlite_map);
--	mymtd = do_map_probe("cfi_probe", &rpxlite_map);
--	if (mymtd) {
--		mymtd->owner = THIS_MODULE;
--		add_mtd_device(mymtd);
--		return 0;
--	}
--
--	iounmap((void *)rpxlite_map.virt);
--	return -ENXIO;
--}
--
--static void __exit cleanup_rpxlite(void)
--{
--	if (mymtd) {
--		del_mtd_device(mymtd);
--		map_destroy(mymtd);
--	}
--	if (rpxlite_map.virt) {
--		iounmap((void *)rpxlite_map.virt);
--		rpxlite_map.virt = 0;
--	}
--}
--
--module_init(init_rpxlite);
--module_exit(cleanup_rpxlite);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
--MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
-diff --git a/drivers/pcmcia/m8xx_pcmcia.c b/drivers/pcmcia/m8xx_pcmcia.c
-index 25e5e30..e56dd87 100644
---- a/drivers/pcmcia/m8xx_pcmcia.c
-+++ b/drivers/pcmcia/m8xx_pcmcia.c
-@@ -71,12 +71,6 @@ MODULE_LICENSE("Dual MPL/GPL");
+ #define read_barrier_depends()  ((void)0)
  
- #if !defined(CONFIG_PCMCIA_SLOT_A) && !defined(CONFIG_PCMCIA_SLOT_B)
+@@ -199,9 +192,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ 			(unsigned long)(n), sizeof(*(ptr))))
+ #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
  
--/* The RPX series use SLOT_B */
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--#define CONFIG_PCMCIA_SLOT_B
--#define CONFIG_BD_IS_MHZ
+-#ifndef CONFIG_SMP
+ #include <asm-generic/cmpxchg.h>
 -#endif
--
- /* The ADS board use SLOT_A */
- #ifdef CONFIG_ADS
- #define CONFIG_PCMCIA_SLOT_A
-@@ -256,81 +250,6 @@ static irqreturn_t m8xx_interrupt(int irq, void *dev);
  
- #define PCMCIA_BMT_LIMIT (15*4)	/* Bus Monitor Timeout value */
+ #define arch_align_stack(x) (x)
  
--/* ------------------------------------------------------------------------- */
--/* board specific stuff:                                                     */
--/* voltage_set(), hardware_enable() and hardware_disable()                   */
--/* ------------------------------------------------------------------------- */
--/* RPX Boards from Embedded Planet                                           */
--
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--
--/* The RPX boards seems to have it's bus monitor timeout set to 6*8 clocks.
-- * SYPCR is write once only, therefore must the slowest memory be faster
-- * than the bus monitor or we will get a machine check due to the bus timeout.
-- */
--
--#define PCMCIA_BOARD_MSG "RPX CLASSIC or RPX LITE"
--
--#undef PCMCIA_BMT_LIMIT
--#define PCMCIA_BMT_LIMIT (6*8)
--
--static int voltage_set(int slot, int vcc, int vpp)
--{
--	u32 reg = 0;
--
--	switch (vcc) {
--	case 0:
--		break;
--	case 33:
--		reg |= BCSR1_PCVCTL4;
--		break;
--	case 50:
--		reg |= BCSR1_PCVCTL5;
--		break;
--	default:
--		return 1;
--	}
--
--	switch (vpp) {
--	case 0:
--		break;
--	case 33:
--	case 50:
--		if (vcc == vpp)
--			reg |= BCSR1_PCVCTL6;
--		else
--			return 1;
--		break;
--	case 120:
--		reg |= BCSR1_PCVCTL7;
--	default:
--		return 1;
--	}
--
--	if (!((vcc == 50) || (vcc == 0)))
--		return 1;
--
--	/* first, turn off all power */
--
--	out_be32(((u32 *) RPX_CSR_ADDR),
--		 in_be32(((u32 *) RPX_CSR_ADDR)) & ~(BCSR1_PCVCTL4 |
--						     BCSR1_PCVCTL5 |
--						     BCSR1_PCVCTL6 |
--						     BCSR1_PCVCTL7));
--
--	/* enable new powersettings */
--
--	out_be32(((u32 *) RPX_CSR_ADDR), in_be32(((u32 *) RPX_CSR_ADDR)) | reg);
--
--	return 0;
--}
--
--#define socket_get(_slot_) PCMCIA_SOCKET_KEY_5V
--#define hardware_enable(_slot_)	/* No hardware to enable */
--#define hardware_disable(_slot_)	/* No hardware to disable */
--
--#endif				/* CONFIG_RPXCLASSIC */
--
- /* FADS Boards from Motorola                                               */
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index 4926b38..06438da 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -42,9 +42,7 @@ static inline int set_rtc_mmss(unsigned long nowtime)
+ static irqreturn_t timer_interrupt(int irq, void *dummy)
+ {
+ 	do_timer(1);
+-#ifndef CONFIG_SMP
+ 	update_process_times(user_mode(get_irq_regs()));
+-#endif
+ 	profile_tick(CPU_PROFILING);
  
- #if defined(CONFIG_FADS)
+ #ifdef CONFIG_HEARTBEAT
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index ad90393..606ff4d 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -66,12 +66,10 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
+ #endif
+-        do_timer(1);
+-#ifndef CONFIG_SMP
++    do_timer(1);
+ 	update_process_times(user_mode(get_irq_regs()));
+-#endif
+-        if (!(kstat_cpu(0).irqs[irq] % 20))
+-                sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 160) / 20]);
++    if (!(kstat_cpu(0).irqs[irq] % 20))
++        sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 160) / 20]);
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/m68knommu/kernel/time.c b/arch/m68knommu/kernel/time.c
+index a90acf5..7089dd9 100644
+--- a/arch/m68knommu/kernel/time.c
++++ b/arch/m68knommu/kernel/time.c
+@@ -50,9 +50,8 @@ irqreturn_t arch_timer_interrupt(int irq, void *dummy)
+ 
+ 	write_sequnlock(&xtime_lock);
+ 
+-#ifndef CONFIG_SMP
+ 	update_process_times(user_mode(get_irq_regs()));
+-#endif
++
+ 	return(IRQ_HANDLED);
+ }
+ #endif
 -- 
 1.7.0.4
