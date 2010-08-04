@@ -1,40 +1,27 @@
-From: =?ISO-8859-1?Q?Mattias_Engdeg=E5rd?= <mattiase@bredband.net>
-Subject: Re: FPU emulation incorrect for 68LC040?
-Date: Sat, 24 Jul 2010 20:33:16 +0200
-Message-ID: <95F9A48B-D971-4D99-95A1-7E7D10DC5448@bredband.net>
-References: <08EC3395-75C3-4E81-B468-C9978DDCF85D@bredband.net> <AANLkTilKXTCUJIOEvQ-H5GjGfPwYV5_QufuD46twmNvS@mail.gmail.com> <41EF646C-8866-4070-B772-94E39EF4620B@bredband.net> <alpine.OSX.2.00.1007221056390.354@localhost> <1CC1901B-7E56-4FAF-96A4-8F2F2F5C38A9@bredband.net> <alpine.OSX.2.00.1007231358580.393@localhost> <EF635C61-D531-4130-A94C-C3C6A0B1592B@bredband.net> <AANLkTikmRwtNdGKu-8ye4Yho1G7Cg7Sch2kMGQCQ2uaa@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
+From: info@ncc.se
+Subject: =?utf-8?B?5Y+z6IWm5ZyW5YOP5a2457+S5rOV5pWZ5a245Y+q6KaBMTYwMOWFgyEhIHRoaW5rIHlvdSBjYW4gYmUgaW50ZXJlc3RlZCBpbiBhIHBhZ2Ugb24gd3d3Lm5jYy5zZQ==?=
+Date: 4 Aug 2010 03:19:09 +0200
+Message-ID: <20100804011909.E1FD4183618A@mailrelay.episerverhotell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtprelay-h32.telenor.se ([213.150.131.5]:51311 "EHLO
-	smtprelay-h32.telenor.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754123Ab0GXSdU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 24 Jul 2010 14:33:20 -0400
-Received: from ipb2.telenor.se (ipb2.telenor.se [195.54.127.165])
-	by smtprelay-h32.telenor.se (Postfix) with ESMTP id 843B2E8FC2
-	for <linux-m68k@vger.kernel.org>; Sat, 24 Jul 2010 20:33:17 +0200 (CEST)
-In-Reply-To: <AANLkTikmRwtNdGKu-8ye4Yho1G7Cg7Sch2kMGQCQ2uaa@mail.gmail.com>
+Received: from relay.episerverhotell.net ([217.114.80.100]:37334 "EHLO
+	mailrelay.episerverhotell.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1758076Ab0HDBva (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Aug 2010 21:51:30 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, zippel@linux-m68k.org
+To: abcabcabc895@yahoo.com.tw, axelance@ms67.url.com.tw, p1e@bbs.cs.nthu.edu.tw, bdg082@yahoo.com.tw, ev000@kmph.gov.tw, fafafa@futai.com.tw, en825@yahoo.com.tw, davidclass2000@yahoo.com.
 
-> the way I understood post-increment to work was for this to happen
-> only after instruction execution. If the effective address had been
-> modified already, it would be more difficult for an emulator to
-> determine the correct address after the trap. Also, it seems more
-> efficient to first decode the instruction (and trap if needed) before
-> fully decoding the address.
-
-The 68LC040 calculates the effective address of unimplemented FP  
-instructions and puts it in the exception frame so that the emulator  
-should not have to - after all, the CPU already has the hardware to do  
-EA calculations the right way. On the other hand, an instruction that  
-traps will not, in general, alter any register.
-
-For example, move.l -(a0),-(a0) will decrement a0 twice, once before  
-the load and once again before the store. But if the either the load  
-or store traps, the exception handler will see an unchanged register.  
-At least this is my understanding after various experiments - the  
-official docs are not very explicit about it.
+5Y+z6IWm5ZyW5YOP5a2457+S5rOV5pWZ5a245Y+q6KaBMTYwMOWFgyEhIHRoaW5rIHRoYXQg
+eW91IG1pZ2h0IGJlIGludGVyZXN0ZWQgaW4gdGhpcyBwYWdlIG9uIGh0dHA6Ly93d3cubmNj
+LnNlOg0KUmFpbHdheXM6DQpodHRwOi8vd3d3Lm5jYy5zZS9lbi9JbmZyYXN0cnVjdHVyZS9S
+YWlsd2F5cy8NCg0KWW91ciBmcmllbmQgd3JpdGVzOg0K4pag5a2457+S5ZyW5YOP6KiY5oa2
+5rOVMTYwMOWFg+KWoA0K4pag5L+d6K2J5ZyL56uL5aSn5a245bir6LOH4pagDQrilqDkv53o
+rYnlrozmlbTlrbjnv5I554mHVkNE6YKE5pyJ5pWZ5p2Q4pagDQrilqDmg7Pkuobop6Pmm7Tl
+pJros4foqIrll44/4pagDQrilqDoq4vmjInkuIvpnaLntrLlnYDpgLLlhaXntrLnq5nilqAN
+Cmh0dHA6Ly9mbHkyLndzL0ktSFZZdnYNCg0KDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQ0KVGhpcyBtYWlsIGhhcyBiZWVuIHNlbmQgYnkgYSB2aXNpdG9yIG9uICBO
+Q0Muc2UNCiAgICAgICAgICA=
