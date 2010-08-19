@@ -1,44 +1,46 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch fixes
-Date: Wed, 18 Aug 2010 14:56:40 +1000
-Message-ID: <201008180456.o7I4uekp031013@goober.internal.moreton.com.au>
+From: "Mr. Vincent Cheng" <info@cheng.org>
+Subject: Transfer Of Funds..
+Date: Thu, 19 Aug 2010 12:03:59 +0300 (EAT)
+Message-ID: <34738.195.250.139.178.1282208639.squirrel@charmie.zarnet.ac.zw>
+Reply-To: mrchengvich45@yahoo.com.hk
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
 
-Hi Linus,
+Hello,
 
-Can you please pull the m68knommu git tree, for-linus branch.
-A couple of minor bug fixes here for the m68knommu arch.
+I am Mr. Vincent Cheng, and have a sensitive and confidential brief from
 
-Thanks
-Greg
+Hong Kong.
+
+I am asking for your partnership in re-profiling funds and will give the
+
+details.
+
+This is a legitimate transaction and you will be paid a handsome
+
+percentage for your "Management Fees". If interested you can kindly write
+
+and provide me with your confidential telephone number or fax number
+
+and I will provide further details with proper guidelines. I require absolute
+
+confidentiality as to any political problems.
+
+Finally, note that this must be concluded within two weeks. Kindly write
+
+back to this email  mrchengvich45@yahoo.com.hk, I look forward to hear
+from you.
+
+Regards,
+Vincent Cheng.
 
 
-
-The following changes since commit da5cabf80e2433131bf0ed8993abc0f7ea618c73:
-  Linus Torvalds (1):
-        Linux 2.6.36-rc1
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (1):
-      m68knommu: include sched.h in ColdFire/SPI driver
-
-Jate Sujjavanich (1):
-      m68knommu: arch/m68k/include/asm/ide.h fix for nommu
-
-Kulikov Vasiliy (1):
-      m68knommu: formatting of pointers in printk()
-
- arch/m68k/include/asm/ide.h     |   13 +++++++++++--
- arch/m68knommu/kernel/process.c |   10 +++++-----
- drivers/spi/coldfire_qspi.c     |    1 +
- 3 files changed, 17 insertions(+), 7 deletions(-)
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
