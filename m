@@ -1,46 +1,78 @@
-From: "Mr. Vincent Cheng" <info@cheng.org>
-Subject: Transfer Of Funds..
-Date: Thu, 19 Aug 2010 12:03:59 +0300 (EAT)
-Message-ID: <34738.195.250.139.178.1282208639.squirrel@charmie.zarnet.ac.zw>
-Reply-To: mrchengvich45@yahoo.com.hk
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k,m68knommu: Wire up fanotify_init, fanotify_mark, and
+ prlimit64
+Date: Thu, 19 Aug 2010 18:05:43 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1008191804480.16652__11496.0314044312$1282234257$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/unistd.h       |    5 ++++-
+ arch/m68k/kernel/entry.S             |    3 +++
+ arch/m68knommu/kernel/syscalltable.S |    3 +++
+ 3 files changed, 10 insertions(+), 1 deletions(-)
 
-Hello,
-
-I am Mr. Vincent Cheng, and have a sensitive and confidential brief from
-
-Hong Kong.
-
-I am asking for your partnership in re-profiling funds and will give the
-
-details.
-
-This is a legitimate transaction and you will be paid a handsome
-
-percentage for your "Management Fees". If interested you can kindly write
-
-and provide me with your confidential telephone number or fax number
-
-and I will provide further details with proper guidelines. I require absolute
-
-confidentiality as to any political problems.
-
-Finally, note that this must be concluded within two weeks. Kindly write
-
-back to this email  mrchengvich45@yahoo.com.hk, I look forward to hear
-from you.
-
-Regards,
-Vincent Cheng.
-
-
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index 60b15d0..b43b36b 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -340,10 +340,13 @@
+ #define __NR_set_thread_area	334
+ #define __NR_atomic_cmpxchg_32	335
+ #define __NR_atomic_barrier	336
++#define __NR_fanotify_init	337
++#define __NR_fanotify_mark	338
++#define __NR_prlimit64		339
+ 
+ #ifdef __KERNEL__
+ 
+-#define NR_syscalls		337
++#define NR_syscalls		340
+ 
+ #define __ARCH_WANT_IPC_PARSE_VERSION
+ #define __ARCH_WANT_OLD_READDIR
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 2391bdf..6360c43 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -765,4 +765,7 @@ sys_call_table:
+ 	.long sys_set_thread_area
+ 	.long sys_atomic_cmpxchg_32	/* 335 */
+ 	.long sys_atomic_barrier
++	.long sys_fanotify_init
++	.long sys_fanotify_mark
++	.long sys_prlimit64
+ 
+diff --git a/arch/m68knommu/kernel/syscalltable.S b/arch/m68knommu/kernel/syscalltable.S
+index b30b3eb..79b1ed1 100644
+--- a/arch/m68knommu/kernel/syscalltable.S
++++ b/arch/m68knommu/kernel/syscalltable.S
+@@ -355,6 +355,9 @@ ENTRY(sys_call_table)
+ 	.long sys_set_thread_area
+ 	.long sys_atomic_cmpxchg_32	/* 335 */
+ 	.long sys_atomic_barrier
++	.long sys_fanotify_init
++	.long sys_fanotify_mark
++	.long sys_prlimit64
+ 
+ 	.rept NR_syscalls-(.-sys_call_table)/4
+ 		.long sys_ni_syscall
 -- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+1.7.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
