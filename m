@@ -1,26 +1,40 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/m68k: Hydra Ethernet - print whole resource
- instead of start address
-Date: Mon, 30 Aug 2010 13:51:36 -0700 (PDT)
-Message-ID: <20100830.135136.98876124.davem@davemloft.net>
-References: <alpine.DEB.2.00.1008300942560.30729@ayla.of.borg>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: fix missing linker segments
+Date: Thu, 2 Sep 2010 14:24:26 +1000
+Message-ID: <201009020424.o824OQ16022641@goober.internal.moreton.com.au>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1008300942560.30729@ayla.of.borg>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:33914 "HELO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with SMTP id S1750842Ab0IBEYx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Sep 2010 00:24:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 30 Aug 2010 09:43:46 +0200 (CEST)
+Recent changes to linker segments that hold per-cpu data broke linking
+for m68knommu targets:
 
-> resource_size_t changed from `unsigned long' to `phys_addr_t`, which is either
-> `u32' or `u64'.
-> Print the whole resource to remove the cast and to make it future-proof.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  LD      vmlinux
+/usr/local/bin/m68k-uclinux-ld.real: error: no memory region specified for loadable section `.data..shared_aligned'
 
-Applied to net-next-2.6, thanks!
+Add missing segments into the m68knommu linker script.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+
+
+diff --git a/arch/m68knommu/kernel/vmlinux.lds.S b/arch/m68knommu/kernel/vmlinux.lds.S
+index a91b271..ef33213 100644
+--- a/arch/m68knommu/kernel/vmlinux.lds.S
++++ b/arch/m68knommu/kernel/vmlinux.lds.S
+@@ -150,6 +150,8 @@ SECTIONS {
+ 		_sdata = . ;
+ 		DATA_DATA
+ 		CACHELINE_ALIGNED_DATA(32)
++		PAGE_ALIGNED_DATA(PAGE_SIZE)
++		*(.data..shared_aligned)
+ 		INIT_TASK_DATA(THREAD_SIZE)
+ 		_edata = . ;
+ 	} > DATA
