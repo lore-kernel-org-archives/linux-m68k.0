@@ -1,40 +1,32 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: fix missing linker segments
-Date: Thu, 2 Sep 2010 14:24:26 +1000
-Message-ID: <201009020424.o824OQ16022641@goober.internal.moreton.com.au>
+From: Ms Dai Ying <hkdaiming59@yahoo.com.hk>
+Subject: Hello
+Date: Thu, 02 Sep 2010 19:57:34 +0800
+Message-ID: <20100902195734.1226255t2f0shrgk@mail.asli.com.my>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+ charset=ISO-8859-1;
+ DelSp="Yes";
+ format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:33914 "HELO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1750842Ab0IBEYx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Sep 2010 00:24:53 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: gerg@uclinux.org, linux-m68k@vger.kernel.org
-
-Recent changes to linker segments that hold per-cpu data broke linking
-for m68knommu targets:
-
-  LD      vmlinux
-/usr/local/bin/m68k-uclinux-ld.real: error: no memory region specified for loadable section `.data..shared_aligned'
-
-Add missing segments into the m68knommu linker script.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
 
-diff --git a/arch/m68knommu/kernel/vmlinux.lds.S b/arch/m68knommu/kernel/vmlinux.lds.S
-index a91b271..ef33213 100644
---- a/arch/m68knommu/kernel/vmlinux.lds.S
-+++ b/arch/m68knommu/kernel/vmlinux.lds.S
-@@ -150,6 +150,8 @@ SECTIONS {
- 		_sdata = . ;
- 		DATA_DATA
- 		CACHELINE_ALIGNED_DATA(32)
-+		PAGE_ALIGNED_DATA(PAGE_SIZE)
-+		*(.data..shared_aligned)
- 		INIT_TASK_DATA(THREAD_SIZE)
- 		_edata = . ;
- 	} > DATA
+
+Ms Dai Ying
+General Manager
+Global Markets Department
+Bank of China (Hong Kong) Limited
+
+I am the general manager, Global markets department of Bank of China. I
+have a business proposition for you concerning one of our clients.
+
+If you are interested get back to me for more details.
+
+I await your response.
+
+Sincerely,
+
+Dai Ying
