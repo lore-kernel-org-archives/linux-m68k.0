@@ -1,21 +1,21 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Fwd: [PATCH 37/91] arch/m68k/mac/via.c Update broken web addresses in
- the arch directory.
-Date: Fri, 3 Sep 2010 09:53:32 +0200
-Message-ID: <AANLkTinX+FWhH_gmVR1pT_k=DgkxXKnqDUQ5g3rxHd7Z@mail.gmail.com>
+Subject: Fwd: [PATCH 35/91] arch/m68k/q40/README Update broken web addresses
+ in the arch directory.
+Date: Fri, 3 Sep 2010 09:54:03 +0200
+Message-ID: <AANLkTimyRsVmeeM-mNwAm8uwhAEYZx4Wx56=ARy=tttO@mail.gmail.com>
 References: <1283461746-7905-1-git-send-email-justinmattock@gmail.com>
-	<1283461746-7905-7-git-send-email-justinmattock@gmail.com>
+	<1283461746-7905-5-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yx0-f174.google.com ([209.85.213.174]:37860 "EHLO
-	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753426Ab0ICHxc convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Sep 2010 03:53:32 -0400
-Received: by yxp4 with SMTP id 4so544185yxp.19
-        for <linux-m68k@vger.kernel.org>; Fri, 03 Sep 2010 00:53:32 -0700 (PDT)
-In-Reply-To: <1283461746-7905-7-git-send-email-justinmattock@gmail.com>
+Received: from mail-yw0-f46.google.com ([209.85.213.46]:56008 "EHLO
+	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753426Ab0ICHyF convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Sep 2010 03:54:05 -0400
+Received: by ywh1 with SMTP id 1so584198ywh.19
+        for <linux-m68k@vger.kernel.org>; Fri, 03 Sep 2010 00:54:04 -0700 (PDT)
+In-Reply-To: <1283461746-7905-5-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Linux/m68k <linux-m68k@vger.kernel.org>
@@ -24,8 +24,8 @@ Cc: "Justin P. Mattock" <justinmattock@gmail.com>
 ---------- Forwarded message ----------
 =46rom: Justin P. Mattock <justinmattock@gmail.com>
 Date: Thu, Sep 2, 2010 at 23:08
-Subject: [PATCH 37/91] arch/m68k/mac/via.c Update broken web addresses
-in the arch directory.
+Subject: [PATCH 35/91] arch/m68k/q40/README Update broken web
+addresses in the arch directory.
 To: trivial@kernel.org
 Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
 jkosina@suse.cz, "Justin P. Mattock" <justinmattock@gmail.com>
@@ -39,32 +39,28 @@ need to be changed, and I'll resend an updated patch).
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
-=C2=A0arch/m68k/mac/via.c | =C2=A0 =C2=A07 ++-----
-=C2=A01 files changed, 2 insertions(+), 5 deletions(-)
+=C2=A0arch/m68k/q40/README | =C2=A0 =C2=A08 ++++----
+=C2=A01 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index e71166d..0cfa2cf 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -6,11 +6,8 @@
-=C2=A0*
-=C2=A0* CSA: Motorola seems to have removed documentation on the 6522 f=
-rom
-=C2=A0* their web site; try
-- * =C2=A0 =C2=A0 http://nerini.drf.com/vectrex/other/text/chips/6522/
-- * =C2=A0 =C2=A0 http://www.zymurgy.net/classic/vic20/vicdet1.htm
-- * and
-- * =C2=A0 =C2=A0 http://193.23.168.87/mikro_laborversuche/via_iobauste=
-in/via6522_1.html
-- * for info. =C2=A0A full-text web search on 6522 AND VIA will probabl=
-y also
-+ * =C2=A0 =C2=A0 http://web.archive.org/web/*/http://www.zymurgy.net/c=
-lassic/vic20/vicdet1.htm
-+ * A full-text web search on 6522 AND VIA will probably also
-=C2=A0* net some usefulness. <cananian@alumni.princeton.edu> 20apr1999
-=C2=A0*
-=C2=A0* Additional data is here (the SY6522 was used in the Mac II etc)=
-:
+diff --git a/arch/m68k/q40/README b/arch/m68k/q40/README
+index 6bdbf48..0d26762 100644
+--- a/arch/m68k/q40/README
++++ b/arch/m68k/q40/README
+@@ -1,10 +1,10 @@
+=C2=A0Linux for the Q40
+=C2=A0=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+-You may try http://www.geocities.com/SiliconValley/Bay/2602/ for
+-some up to date information. Booter and other tools will be also
+-available from this place or ftp.uni-erlangen.de/linux/680x0/q40/
+-and mirrors.
++You may try http://web.archive.org/web/*/http://geocities.com/
++SiliconValley/Bay/2602/ for some up to date information. Booter
++and other tools will be also available from this place or
++http://www.linux-m68k.org/mail.html and mirrors.
+
+=C2=A0Hints to documentation usually refer to the linux source tree in
+=C2=A0/usr/src/linux/Documentation unless URL given.
 --
 1.7.2.1
 
