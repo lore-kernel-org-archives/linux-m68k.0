@@ -1,51 +1,62 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC 0/5] tty: move stuff around
-Date: Fri, 3 Sep 2010 14:01:39 +0200
-Message-ID: <201009031401.39224.arnd@arndb.de>
-References: <1283115995-4734-1-git-send-email-arnd@arndb.de> <201008311126.45190.arnd@arndb.de> <AANLkTinUjfWqEdOQoomR=TZnQEsiGj1wxvbv5c_MtZKp@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Fwd: [PATCH 36/91] arch/m68k/mac/macboing.c Update broken web
+ addresses in the arch directory.
+Date: Sat, 4 Sep 2010 14:59:28 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1009041451580.341@localhost>
+References: <1283461746-7905-1-git-send-email-justinmattock@gmail.com> <1283461746-7905-6-git-send-email-justinmattock@gmail.com> <AANLkTikTeznNoS0CMEpMe+mJKgrjpsGf-z798vA0chbB@mail.gmail.com> <4C80AE79.2040805@gmail.com> <alpine.OSX.2.00.1009031823590.344@localhost>
+ <AANLkTik3+3dWP-=4mnOrPDSBCKoyy=1Rs8Hq-htDC-Lw@mail.gmail.com> <alpine.OSX.2.00.1009032033570.344@localhost>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinUjfWqEdOQoomR=TZnQEsiGj1wxvbv5c_MtZKp@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Greg KH <gregkh@suse.de>, Jiri Slaby <jslaby@suse.cz>, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>, Roger Wolff <R.E.Wolff@bitwizard.nl>, "Michael H. Warfield" <mhw@wittsend.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from www.telegraphics.com.au ([204.15.192.19]:40879 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750838Ab0IDE7e (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 4 Sep 2010 00:59:34 -0400
+In-Reply-To: <alpine.OSX.2.00.1009032033570.344@localhost>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Justin P. Mattock" <justinmattock@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thursday 02 September 2010, Geert Uytterhoeven wrote:
-> On Tue, Aug 31, 2010 at 11:26, Arnd Bergmann <arnd@arndb.de> wrote:
->   - generic_serial-based:
+
+>From an email I recieved privately, from someone who knows DNS better than 
+I do (hi, Niels), I've learnt that what I wrote is not accurate. The CNAME 
+is actually sufficient, as long as vger continues to treat
+<linux-m68k@lists.linux-m68k.org>
+as an alias for 
+<linux-m68k@vger.kernel.org>
+
+Finn
+
+On Fri, 3 Sep 2010, I wrote:
+
 > 
->       o MVME147_SCC
->       o MVME162_SCC
->       o BVME6000_SCC
->       o A2232
+> On Fri, 3 Sep 2010, Geert Uytterhoeven wrote:
 > 
->     All of these were marked BROKEN lately due to generic_serial,
-> while there's even a
->     new ATARI_SCC under "active" development...
-
-Ok, so I'll keep the plan of moving generic_serial to staging.
- 
->   - plain drivers/char:
+> > On Fri, Sep 3, 2010 at 10:32, Finn Thain <fthain@telegraphics.com.au> 
+> > wrote:
+> > >
+> > > Indeed, the MAINTAINERS file says that the list for arch/m68k/mac/ is 
+> > > linux-m68k@lists.linux-m68k.org. Is this alias still working? Perhaps 
+> > > it should be changed to linux-m68k@vger.kernel.org?
+> > 
+> > The alias should work:
+> > 
+> > lists.linux-m68k.org.  86400 IN CNAME vger.kernel.org.
 > 
->       o SERIAL167
->       o AMIGA_BUILTIN_SERIAL
-
-Since these are the builtin ports for the Amiga and MVME16x
-platforms, I suppose we should keep them around as long as the
-platforms themselves are there and the code builds.
-
->   - drivers/serial:
+> It works not because of the CNAME record, but because of the MX record:
 > 
->       o SERIAL_PMACZILOG (Mac)
+> $ dig +short mx lists.linux-m68k.org
+> vger.kernel.org.
+> 10 vger.kernel.org.
+> 999 bl-ckh-le.kernel.org.
+> $ dig +short mx vger.kernel.org
+> 10 vger.kernel.org.
+> 999 bl-ckh-le.kernel.org.
 > 
->     Sun 3/3x support might be (re)added to SERIAL_SUNZILOG
-
-Same category I guess.
-
-Thanks for your feedback!
-
-	Arnd
+> The CNAME means that http://lists.linux-m68k.org/ takes you to vger, and 
+> this only works because the apache vhost on vger is willing to answer to 
+> "lists.linux-m68k.org" as well as "vger.kernel.org"...
+> 
+> Finn
+> 
