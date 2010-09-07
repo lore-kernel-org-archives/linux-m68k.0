@@ -1,142 +1,91 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: [PATCH] m68k: switch to using asm-generic/hardirq.h
-Date: Tue, 7 Sep 2010 15:00:47 +1000
-Message-ID: <201009070500.o8750l71006902@goober.internal.moreton.com.au>
+Subject: [PATCH] m68k/m68knommu: merge machdep.h files into a single file
+Date: Tue, 7 Sep 2010 15:48:43 +1000
+Message-ID: <201009070548.o875mhS1008026@goober.internal.moreton.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:43303 "HELO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:36508 "HELO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1751580Ab0IGFBZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 01:01:25 -0400
+	with SMTP id S1751083Ab0IGFsy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 01:48:54 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: gerg@uclinux.org
 
+m68k/m68knommu: merge machdep.h files into a single file
 
-Hi All,
-
-Is there any reason that the m68k arch cannot use the generic
-hardirq.h support?
-
-It looks to be the same, unless I am missing something.
-If it can then it is simple to merge the non-mmu and mmu
-versions of hardirq.h.
-
-Regards
-Greg
-
-
-
-
-m68k: switch to using asm-generic/hardirq.h
-
-M68k arch can use generic hardirq.h. This also means that we can
-simply switch to a single hardirq.h for both m68k and m68knommu.
+No need to have separate machdep.h files for each of the MMU and non-MMU
+cases. Merge them all into a single file.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/hardirq.h    |   11 +++++++----
- arch/m68k/include/asm/hardirq_mm.h |   16 ----------------
- arch/m68k/include/asm/hardirq_no.h |   19 -------------------
- arch/m68k/include/asm/irq.h        |   10 +++++-----
- 4 files changed, 12 insertions(+), 44 deletions(-)
- delete mode 100644 arch/m68k/include/asm/hardirq_mm.h
- delete mode 100644 arch/m68k/include/asm/hardirq_no.h
+ arch/m68k/include/asm/{machdep_mm.h => machdep.h} |    9 +++++++
+ arch/m68k/include/asm/machdep_no.h                |   26 ---------------------
+ 2 files changed, 9 insertions(+), 26 deletions(-)
+ rename arch/m68k/include/asm/{machdep_mm.h => machdep.h} (77%)
+ delete mode 100644 arch/m68k/include/asm/machdep_no.h
 
-diff --git a/arch/m68k/include/asm/hardirq.h b/arch/m68k/include/asm/hardirq.h
-index 56d0d5d..d0e9d06 100644
---- a/arch/m68k/include/asm/hardirq.h
-+++ b/arch/m68k/include/asm/hardirq.h
-@@ -1,5 +1,8 @@
--#ifdef __uClinux__
--#include "hardirq_no.h"
--#else
--#include "hardirq_mm.h"
-+#ifndef __M68K_HARDIRQ_H
-+#define __M68K_HARDIRQ_H
+diff --git a/arch/m68k/include/asm/machdep_mm.h b/arch/m68k/include/asm/machdep.h
+similarity index 77%
+rename from arch/m68k/include/asm/machdep_mm.h
+rename to arch/m68k/include/asm/machdep.h
+index 5637dce..71ad465 100644
+--- a/arch/m68k/include/asm/machdep_mm.h
++++ b/arch/m68k/include/asm/machdep.h
+@@ -22,6 +22,8 @@ extern unsigned int (*mach_get_ss)(void);
+ extern int (*mach_get_rtc_pll)(struct rtc_pll_info *);
+ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+ extern int (*mach_set_clock_mmss)(unsigned long);
++extern void (*mach_gettod)(int *year, int *mon, int *day, int *hour,
++			    int *min, int *sec);
+ extern void (*mach_reset)( void );
+ extern void (*mach_halt)( void );
+ extern void (*mach_power_off)( void );
+@@ -32,4 +34,11 @@ extern void (*mach_heartbeat) (int);
+ extern void (*mach_l2_flush) (int);
+ extern void (*mach_beep) (unsigned int, unsigned int);
+ 
++/* Hardware clock functions */
++extern void hw_timer_init(void);
++extern unsigned long hw_timer_offset(void);
++extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
 +
-+#include <asm-generic/hardirq.h>
++extern void config_BSP(char *command, int len);
 +
-+#define HARDIRQ_BITS	8
-+
- #endif
-diff --git a/arch/m68k/include/asm/hardirq_mm.h b/arch/m68k/include/asm/hardirq_mm.h
+ #endif /* _M68K_MACHDEP_H */
+diff --git a/arch/m68k/include/asm/machdep_no.h b/arch/m68k/include/asm/machdep_no.h
 deleted file mode 100644
-index 394ee94..0000000
---- a/arch/m68k/include/asm/hardirq_mm.h
+index de9f47a..0000000
+--- a/arch/m68k/include/asm/machdep_no.h
 +++ /dev/null
-@@ -1,16 +0,0 @@
--#ifndef __M68K_HARDIRQ_H
--#define __M68K_HARDIRQ_H
+@@ -1,26 +0,0 @@
+-#ifndef _M68KNOMMU_MACHDEP_H
+-#define _M68KNOMMU_MACHDEP_H
 -
--#include <linux/threads.h>
--#include <linux/cache.h>
+-#include <linux/interrupt.h>
 -
--/* entry.S is sensitive to the offsets of these fields */
--typedef struct {
--	unsigned int __softirq_pending;
--} ____cacheline_aligned irq_cpustat_t;
+-/* Hardware clock functions */
+-extern void hw_timer_init(void);
+-extern unsigned long hw_timer_offset(void);
 -
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+-extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
 -
--#define HARDIRQ_BITS	8
+-/* Machine dependent time handling */
+-extern void (*mach_gettod)(int *year, int *mon, int *day, int *hour,
+-			   int *min, int *sec);
+-extern int (*mach_set_clock_mmss)(unsigned long);
 -
--#endif
-diff --git a/arch/m68k/include/asm/hardirq_no.h b/arch/m68k/include/asm/hardirq_no.h
-deleted file mode 100644
-index b44b14b..0000000
---- a/arch/m68k/include/asm/hardirq_no.h
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#ifndef __M68K_HARDIRQ_H
--#define __M68K_HARDIRQ_H
+-/* machine dependent power off functions */
+-extern void (*mach_reset)( void );
+-extern void (*mach_halt)( void );
+-extern void (*mach_power_off)( void );
 -
--#include <asm/irq.h>
+-extern void config_BSP(char *command, int len);
 -
--#define HARDIRQ_BITS	8
+-extern void do_IRQ(int irq, struct pt_regs *fp);
 -
--/*
-- * The hardirq mask has to be large enough to have
-- * space for potentially all IRQ sources in the system
-- * nesting on a single CPU:
-- */
--#if (1 << HARDIRQ_BITS) < NR_IRQS
--# error HARDIRQ_BITS is too low!
--#endif
--
--#include <asm-generic/hardirq.h>
--
--#endif /* __M68K_HARDIRQ_H */
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index 907eff1..d2b04f1 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -25,12 +25,7 @@
- #define NR_IRQS	0
- #endif
- 
--#ifdef CONFIG_MMU
--
--#include <linux/linkage.h>
- #include <linux/hardirq.h>
--#include <linux/irqreturn.h>
--#include <linux/spinlock_types.h>
- 
- /*
-  * The hardirq mask has to be large enough to have
-@@ -41,6 +36,11 @@
- # error HARDIRQ_BITS is too low!
- #endif
- 
-+#ifdef CONFIG_MMU
-+#include <linux/linkage.h>
-+#include <linux/irqreturn.h>
-+#include <linux/spinlock_types.h>
-+
- /*
-  * Interrupt source definitions
-  * General interrupt sources are the level 1-7.
+-#endif /* _M68KNOMMU_MACHDEP_H */
 -- 
 1.6.3.3
