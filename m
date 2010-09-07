@@ -1,56 +1,52 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/m68knommu: merge MMU and non-MMU atomic.h
-Date: Tue, 7 Sep 2010 22:42:33 +0200
-Message-ID: <AANLkTikp0W54UDhrtxEiWMtUJ8adQMt1tMd3ckRrE=55@mail.gmail.com>
-References: <201009070549.o875nKHX008042@goober.internal.moreton.com.au>
+Subject: Re: [PATCH] m68k/m68knommu: merge MMU and non-MMU string.h
+Date: Tue, 7 Sep 2010 22:45:31 +0200
+Message-ID: <AANLkTik_kr7mnVDCrSjVFArB1G6gtRVKHQ74+-NPbir9@mail.gmail.com>
+References: <201009070452.o874qqmg006794@goober.internal.moreton.com.au>
+	<AANLkTim+jWjOKX_M52DWSKH2+oRWBXqc3TUFQp6esf3r@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:53086 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758128Ab0IGUme convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 16:42:34 -0400
-Received: by ywh1 with SMTP id 1so2099574ywh.19
-        for <linux-m68k@vger.kernel.org>; Tue, 07 Sep 2010 13:42:34 -0700 (PDT)
-In-Reply-To: <201009070549.o875nKHX008042@goober.internal.moreton.com.au>
+Received: from mail-iw0-f174.google.com ([209.85.214.174]:43896 "EHLO
+	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758298Ab0IGUpc convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 16:45:32 -0400
+Received: by iwn5 with SMTP id 5so5593291iwn.19
+        for <linux-m68k@vger.kernel.org>; Tue, 07 Sep 2010 13:45:31 -0700 (PDT)
+In-Reply-To: <AANLkTim+jWjOKX_M52DWSKH2+oRWBXqc3TUFQp6esf3r@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
 Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-On Tue, Sep 7, 2010 at 07:49, Greg Ungerer <gerg@snapgear.com> wrote:
-> m68k/m68knommu: merge MMU and non-MMU atomic.h
+On Tue, Sep 7, 2010 at 22:35, Geert Uytterhoeven <geert@linux-m68k.org>=
+ wrote:
+> I applied all patches (except the hardirq one) and am currently
+> building my test kernels.
+> Now I see:
 >
-> The only difference between the MMU and non-MMU versions of atomic.h
-> is in the extra support ColdFire family processors. So merge this int=
-o
-> the MMU version of atomic.h.
+> | arch/m68k/kernel/entry.S: Assembler messages:
+> | arch/m68k/kernel/entry.S:56: Error: can't resolve `0' {*ABS* sectio=
+n} - `THREAD_SIZE' {*UND* section}
+> | arch/m68k/kernel/entry.S:64: Error: can't resolve `0' {*UND* sectio=
+n} - `THREAD_SIZE' {*UND* section}
+> | arch/m68k/kernel/entry.S:119: Error: can't resolve `0' {*UND* secti=
+on} - `THREAD_SIZE' {*UND* section}
+> | arch/m68k/kernel/entry.S:203: Error: can't resolve `0' {*UND* secti=
+on} - `THREAD_SIZE' {*UND* section}
+> | arch/m68k/kernel/entry.S:236: Error: can't resolve `0' {*UND* secti=
+on} - `THREAD_SIZE' {*UND* section}
+> | arch/m68k/kernel/entry.S:257: Error: can't resolve `0' {*UND* secti=
+on} - `THREAD_SIZE' {*UND* section}
 >
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-> ---
-> =C2=A0arch/m68k/include/asm/{atomic_mm.h =3D> atomic.h} | =C2=A0 16 +=
-+-
-> =C2=A0arch/m68k/include/asm/atomic_no.h =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 | =C2=A0155 -----------------------
-> =C2=A02 files changed, 13 insertions(+), 158 deletions(-)
-> =C2=A0rename arch/m68k/include/asm/{atomic_mm.h =3D> atomic.h} (92%)
-> =C2=A0delete mode 100644 arch/m68k/include/asm/atomic_no.h
+> this is expanded from `GET_CURRENT'.
 >
-> diff --git a/arch/m68k/include/asm/atomic_mm.h b/arch/m68k/include/as=
-m/atomic.h
-> similarity index 92%
-> rename from arch/m68k/include/asm/atomic_mm.h
-> rename to arch/m68k/include/asm/atomic.h
-> index 6a223b3..3db3c93 100644
-> --- a/arch/m68k/include/asm/atomic_mm.h
-> +++ b/arch/m68k/include/asm/atomic.h
+> continuing...
 
-arch/m68k/include/asm/atomic.h had a line
-
-| #include <asm-generic/atomic64.h>
-
-before, which is now gone? This break lib/atomic64.c.
+Several of the *.S files now need to include <asm/thread_info.h>, I gue=
+ss.
+Will try to look more into it tomorrow, if no one beats me to it.
 
 Gr{oetje,eeting}s,
 
