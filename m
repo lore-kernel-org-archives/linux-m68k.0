@@ -1,236 +1,281 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: [PATCH] m68k/m68knommu: merge MMU and non-MMU atomic.h
-Date: Tue, 7 Sep 2010 15:49:20 +1000
-Message-ID: <201009070549.o875nKHX008042@goober.internal.moreton.com.au>
+Subject: m68k/m68knommu: merge MMU and non-MMU thread_info.h
+Date: Tue, 7 Sep 2010 15:49:27 +1000
+Message-ID: <201009070549.o875nRrI008047@goober.internal.moreton.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:36530 "HELO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:36536 "HELO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1752711Ab0IGFta (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 01:49:30 -0400
+	with SMTP id S1751320Ab0IGFte (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2010 01:49:34 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: gerg@uclinux.org
 
-m68k/m68knommu: merge MMU and non-MMU atomic.h
 
-The only difference between the MMU and non-MMU versions of atomic.h
-is in the extra support ColdFire family processors. So merge this into
-the MMU version of atomic.h.
+Hi All,
+
+The non-mmu and mmu versions of thread_info.h are quite similar.
+The merge required a little cleanup of the definitions of THREAD_SIZE
+and THREAD_SIZE_ORDER. I have tried to preserve the logic but simplified
+the code.
+
+Regards
+Greg
+
+
+
+m68k/m68knommu: merge MMU and non-MMU thread_info.h
+
+The MMU and non-MMU versions of thread_info.h and quite similar.
+Merge the two files.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/{atomic_mm.h => atomic.h} |   16 ++-
- arch/m68k/include/asm/atomic_no.h               |  155 -----------------------
- 2 files changed, 13 insertions(+), 158 deletions(-)
- rename arch/m68k/include/asm/{atomic_mm.h => atomic.h} (92%)
- delete mode 100644 arch/m68k/include/asm/atomic_no.h
+ .../asm/{thread_info_mm.h => thread_info.h}        |   60 +++++++++---
+ arch/m68k/include/asm/thread_info_no.h             |  102 --------------------
+ arch/m68knommu/platform/coldfire/entry.S           |    4 +-
+ 3 files changed, 47 insertions(+), 119 deletions(-)
+ rename arch/m68k/include/asm/{thread_info_mm.h => thread_info.h} (67%)
+ delete mode 100644 arch/m68k/include/asm/thread_info_no.h
 
-diff --git a/arch/m68k/include/asm/atomic_mm.h b/arch/m68k/include/asm/atomic.h
-similarity index 92%
-rename from arch/m68k/include/asm/atomic_mm.h
-rename to arch/m68k/include/asm/atomic.h
-index 6a223b3..3db3c93 100644
---- a/arch/m68k/include/asm/atomic_mm.h
-+++ b/arch/m68k/include/asm/atomic.h
-@@ -18,14 +18,24 @@
- #define atomic_read(v)		(*(volatile int *)&(v)->counter)
- #define atomic_set(v, i)	(((v)->counter) = i)
+diff --git a/arch/m68k/include/asm/thread_info_mm.h b/arch/m68k/include/asm/thread_info.h
+similarity index 67%
+rename from arch/m68k/include/asm/thread_info_mm.h
+rename to arch/m68k/include/asm/thread_info.h
+index d08046c..21171bf 100644
+--- a/arch/m68k/include/asm/thread_info_mm.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -1,21 +1,33 @@
+ #ifndef _ASM_M68K_THREAD_INFO_H
+ #define _ASM_M68K_THREAD_INFO_H
+ 
+-#ifndef ASM_OFFSETS_C
+-#include <asm/asm-offsets.h>
+-#endif
+ #include <asm/types.h>
+ #include <asm/page.h>
  
 +/*
-+ * The ColdFire parts cannot do some immediate to memory operations,
-+ * so for them we do not specify the "i" asm constraint.
++ * On machines with 4k pages we default to an 8k thread size, though we
++ * allow a 4k with config option. Any other machine page size then
++ * the thread size must match the page size (which is 8k and larger here).
 + */
-+#ifdef CONFIG_COLDFIRE
-+#define	DI	"d"
++#if PAGE_SHIFT < 13
++#ifdef CONFIG_4KSTACKS
++#define THREAD_SIZE	4096
 +#else
-+#define	DI	"di"
++#define THREAD_SIZE	8192
++#endif
++#else
++#define THREAD_SIZE	PAGE_SIZE
++#endif
++#define THREAD_SIZE_ORDER	((THREAD_SIZE / PAGE_SIZE) - 1)
++
+ #ifndef __ASSEMBLY__
+-#include <asm/current.h>
+ 
+ struct thread_info {
+ 	struct task_struct	*task;		/* main task structure */
+ 	unsigned long		flags;
+ 	struct exec_domain	*exec_domain;	/* execution domain */
+ 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
+-	__u32 cpu; /* should always be 0 on m68k */
++	__u32			cpu;		/* should always be 0 on m68k */
+ 	unsigned long		tp_value;	/* thread pointer */
+ 	struct restart_block    restart_block;
+ };
+@@ -33,23 +45,20 @@ struct thread_info {
+ 	},					\
+ }
+ 
+-/* THREAD_SIZE should be 8k, so handle differently for 4k and 8k machines */
+-#if PAGE_SHIFT < 13
+-#define THREAD_SIZE (8192)
+-#else
+-#define THREAD_SIZE PAGE_SIZE
+-#endif
+-#define THREAD_SIZE_ORDER (13 - PAGE_SHIFT)
+-
+-#define init_thread_info	(init_task.thread.info)
+ #define init_stack		(init_thread_union.stack)
+ 
++#ifdef CONFIG_MMU
++
++#include <asm/current.h>
++
+ #ifdef ASM_OFFSETS_C
+ #define task_thread_info(tsk)	((struct thread_info *) NULL)
+ #else
++#include <asm/asm-offsets.h>
+ #define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_TINFO))
+ #endif
+ 
++#define init_thread_info	(init_task.thread.info)
+ #define task_stack_page(tsk)	((tsk)->stack)
+ #define current_thread_info()	task_thread_info(current)
+ 
+@@ -60,7 +69,28 @@ struct thread_info {
+ 	task_thread_info(p)->task = (p);		\
+ })
+ 
+-#define end_of_stack(p) ((unsigned long *)(p)->stack + 1)
++#define end_of_stack(p)		((unsigned long *)(p)->stack + 1)
++
++#else /* !CONFIG_MMU */
++
++#ifndef __ASSEMBLY__
++/* how to get the thread information struct from C */
++static inline struct thread_info *current_thread_info(void)
++{
++	struct thread_info *ti;
++	__asm__(
++		"move.l %%sp, %0 \n\t"
++		"and.l  %1, %0"
++		: "=&d"(ti)
++		: "di" (~(THREAD_SIZE-1))
++		);
++	return ti;
++}
 +#endif
 +
- static inline void atomic_add(int i, atomic_t *v)
- {
--	__asm__ __volatile__("addl %1,%0" : "+m" (*v) : "id" (i));
-+	__asm__ __volatile__("addl %1,%0" : "+m" (*v) : DI (i));
- }
++#define init_thread_info	(init_thread_union.thread_info)
++
++#endif /* CONFIG_MMU */
  
- static inline void atomic_sub(int i, atomic_t *v)
- {
--	__asm__ __volatile__("subl %1,%0" : "+m" (*v) : "id" (i));
-+	__asm__ __volatile__("subl %1,%0" : "+m" (*v) : DI (i));
- }
- 
- static inline void atomic_inc(atomic_t *v)
-@@ -150,7 +160,7 @@ static inline int atomic_sub_and_test(int i, atomic_t *v)
- 	char c;
- 	__asm__ __volatile__("subl %2,%1; seq %0"
- 			     : "=d" (c), "+m" (*v)
--			     : "id" (i));
-+			     : DI (i));
- 	return c != 0;
- }
- 
-diff --git a/arch/m68k/include/asm/atomic_no.h b/arch/m68k/include/asm/atomic_no.h
+ /* entry.S relies on these definitions!
+  * bits 0-7 are tested at every exception exit
+diff --git a/arch/m68k/include/asm/thread_info_no.h b/arch/m68k/include/asm/thread_info_no.h
 deleted file mode 100644
-index 289310c..0000000
---- a/arch/m68k/include/asm/atomic_no.h
+index 51f354b..0000000
+--- a/arch/m68k/include/asm/thread_info_no.h
 +++ /dev/null
-@@ -1,155 +0,0 @@
--#ifndef __ARCH_M68KNOMMU_ATOMIC__
--#define __ARCH_M68KNOMMU_ATOMIC__
--
--#include <linux/types.h>
--#include <asm/system.h>
--
--/*
-- * Atomic operations that C can't guarantee us.  Useful for
-- * resource counting etc..
-- */
--
--/*
-- * We do not have SMP m68k systems, so we don't have to deal with that.
-- */
--
--#define ATOMIC_INIT(i)	{ (i) }
--
--#define atomic_read(v)		(*(volatile int *)&(v)->counter)
--#define atomic_set(v, i)	(((v)->counter) = i)
--
--static __inline__ void atomic_add(int i, atomic_t *v)
--{
--#ifdef CONFIG_COLDFIRE
--	__asm__ __volatile__("addl %1,%0" : "+m" (*v) : "d" (i));
--#else
--	__asm__ __volatile__("addl %1,%0" : "+m" (*v) : "di" (i));
--#endif
--}
--
--static __inline__ void atomic_sub(int i, atomic_t *v)
--{
--#ifdef CONFIG_COLDFIRE
--	__asm__ __volatile__("subl %1,%0" : "+m" (*v) : "d" (i));
--#else
--	__asm__ __volatile__("subl %1,%0" : "+m" (*v) : "di" (i));
--#endif
--}
--
--static __inline__ int atomic_sub_and_test(int i, atomic_t * v)
--{
--	char c;
--#ifdef CONFIG_COLDFIRE
--	__asm__ __volatile__("subl %2,%1; seq %0"
--			     : "=d" (c), "+m" (*v)
--			     : "d" (i));
--#else
--	__asm__ __volatile__("subl %2,%1; seq %0"
--			     : "=d" (c), "+m" (*v)
--			     : "di" (i));
--#endif
--	return c != 0;
--}
--
--static __inline__ void atomic_inc(volatile atomic_t *v)
--{
--	__asm__ __volatile__("addql #1,%0" : "+m" (*v));
--}
--
--/*
-- * atomic_inc_and_test - increment and test
-- * @v: pointer of type atomic_t
+@@ -1,102 +0,0 @@
+-/* thread_info.h: m68knommu low-level thread information
+- * adapted from the i386 and PPC versions by Greg Ungerer (gerg@snapgear.com)
 - *
-- * Atomically increments @v by 1
-- * and returns true if the result is zero, or false for all
-- * other cases.
+- * Copyright (C) 2002  David Howells (dhowells@redhat.com)
+- * - Incorporating suggestions made by Linus Torvalds and Dave Miller
 - */
 -
--static __inline__ int atomic_inc_and_test(volatile atomic_t *v)
--{
--	char c;
--	__asm__ __volatile__("addql #1,%1; seq %0" : "=d" (c), "+m" (*v));
--	return c != 0;
+-#ifndef _ASM_THREAD_INFO_H
+-#define _ASM_THREAD_INFO_H
+-
+-#include <asm/page.h>
+-
+-#ifdef __KERNEL__
+-
+-/*
+- * Size of kernel stack for each process. This must be a power of 2...
+- */
+-#ifdef CONFIG_4KSTACKS
+-#define THREAD_SIZE_ORDER (0)
+-#else
+-#define THREAD_SIZE_ORDER (1)
+-#endif
+-                                                                                
+-/*
+- * for asm files, THREAD_SIZE is now generated by asm-offsets.c
+- */
+-#define THREAD_SIZE (PAGE_SIZE<<THREAD_SIZE_ORDER)
+-
+-#ifndef __ASSEMBLY__
+-
+-/*
+- * low level task data.
+- */
+-struct thread_info {
+-	struct task_struct *task;		/* main task structure */
+-	struct exec_domain *exec_domain;	/* execution domain */
+-	unsigned long	   flags;		/* low level flags */
+-	int		   cpu;			/* cpu we're on */
+-	int		   preempt_count;	/* 0 => preemptable, <0 => BUG */
+-	unsigned long	   tp_value;		/* thread pointer */
+-	struct restart_block restart_block;
+-};
+-
+-/*
+- * macros/functions for gaining access to the thread information structure
+- */
+-#define INIT_THREAD_INFO(tsk)			\
+-{						\
+-	.task		= &tsk,			\
+-	.exec_domain	= &default_exec_domain,	\
+-	.flags		= 0,			\
+-	.cpu		= 0,			\
+-	.preempt_count	= INIT_PREEMPT_COUNT,	\
+-	.restart_block	= {			\
+-		.fn = do_no_restart_syscall,	\
+-	},					\
 -}
 -
--static __inline__ void atomic_dec(volatile atomic_t *v)
+-#define init_thread_info	(init_thread_union.thread_info)
+-#define init_stack		(init_thread_union.stack)
+-
+-
+-/* how to get the thread information struct from C */
+-static inline struct thread_info *current_thread_info(void)
 -{
--	__asm__ __volatile__("subql #1,%0" : "+m" (*v));
+-	struct thread_info *ti;
+-	__asm__(
+-		"move.l	%%sp, %0 \n\t"
+-		"and.l	%1, %0"
+-		: "=&d"(ti)
+-		: "di" (~(THREAD_SIZE-1))
+-		);
+-	return ti;
 -}
 -
--static __inline__ int atomic_dec_and_test(volatile atomic_t *v)
--{
--	char c;
--	__asm__ __volatile__("subql #1,%1; seq %0" : "=d" (c), "+m" (*v));
--	return c != 0;
--}
+-#endif /* __ASSEMBLY__ */
 -
--static __inline__ void atomic_clear_mask(unsigned long mask, unsigned long *v)
--{
--	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : "id" (~(mask)));
--}
+-#define	PREEMPT_ACTIVE	0x4000000
 -
--static __inline__ void atomic_set_mask(unsigned long mask, unsigned long *v)
--{
--	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : "id" (mask));
--}
+-/*
+- * thread information flag bit numbers
+- */
+-#define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+-#define TIF_SIGPENDING		1	/* signal pending */
+-#define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+-#define TIF_POLLING_NRFLAG	3	/* true if poll_idle() is polling
+-					   TIF_NEED_RESCHED */
+-#define TIF_MEMDIE		4	/* is terminating due to OOM killer */
+-#define TIF_FREEZE		16	/* is freezing for suspend */
 -
--/* Atomic operations are already serializing */
--#define smp_mb__before_atomic_dec()    barrier()
--#define smp_mb__after_atomic_dec() barrier()
--#define smp_mb__before_atomic_inc()    barrier()
--#define smp_mb__after_atomic_inc() barrier()
+-/* as above, but as bit values */
+-#define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+-#define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+-#define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+-#define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+-#define _TIF_FREEZE		(1<<TIF_FREEZE)
 -
--static inline int atomic_add_return(int i, atomic_t * v)
--{
--	unsigned long temp, flags;
+-#define _TIF_WORK_MASK		0x0000FFFE	/* work to do on interrupt/exception return */
 -
--	local_irq_save(flags);
--	temp = *(long *)v;
--	temp += i;
--	*(long *)v = temp;
--	local_irq_restore(flags);
+-#endif /* __KERNEL__ */
 -
--	return temp;
--}
--
--#define atomic_add_negative(a, v)	(atomic_add_return((a), (v)) < 0)
--
--static inline int atomic_sub_return(int i, atomic_t * v)
--{
--	unsigned long temp, flags;
--
--	local_irq_save(flags);
--	temp = *(long *)v;
--	temp -= i;
--	*(long *)v = temp;
--	local_irq_restore(flags);
--
--	return temp;
--}
--
--#define atomic_cmpxchg(v, o, n) ((int)cmpxchg(&((v)->counter), (o), (n)))
--#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
--
--static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
--{
--	int c, old;
--	c = atomic_read(v);
--	for (;;) {
--		if (unlikely(c == (u)))
--			break;
--		old = atomic_cmpxchg((v), c, c + (a));
--		if (likely(old == c))
--			break;
--		c = old;
--	}
--	return c != (u);
--}
--
--#define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
--
--#define atomic_dec_return(v) atomic_sub_return(1,(v))
--#define atomic_inc_return(v) atomic_add_return(1,(v))
--
--#include <asm-generic/atomic-long.h>
--#endif /* __ARCH_M68KNOMMU_ATOMIC __ */
+-#endif /* _ASM_THREAD_INFO_H */
+diff --git a/arch/m68knommu/platform/coldfire/entry.S b/arch/m68knommu/platform/coldfire/entry.S
+index dd7d591..cd79d7e 100644
+--- a/arch/m68knommu/platform/coldfire/entry.S
++++ b/arch/m68knommu/platform/coldfire/entry.S
+@@ -112,7 +112,7 @@ ret_from_exception:
+ 	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
+ 	movel	%d1,%a0
+ 	movel	%a0@(TI_FLAGS),%d1	/* get thread_info->flags */
+-	andl	#_TIF_NEED_RESCHED,%d1
++	andl	#(1<<TIF_NEED_RESCHED),%d1
+ 	jeq	Lkernel_return
+ 
+ 	movel	%a0@(TI_PREEMPTCOUNT),%d1
+@@ -136,7 +136,7 @@ Luser_return:
+ 	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
+ 	movel	%d1,%a0
+ 	movel	%a0@(TI_FLAGS),%d1	/* get thread_info->flags */
+-	andl	#_TIF_WORK_MASK,%d1
++	andl	#0xefff,%d1
+ 	jne	Lwork_to_do		/* still work to do */
+ 
+ Lreturn:
 -- 
 1.6.3.3
