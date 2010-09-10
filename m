@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k/m68knommu: merge MMU and non-MMU string.h
-Date: Fri, 10 Sep 2010 10:59:32 +0200
-Message-ID: <AANLkTin2-iZ0aCZA=AV7sN4bk6d6kFRoh+re2i5bCNp0@mail.gmail.com>
+Date: Fri, 10 Sep 2010 11:00:15 +0200
+Message-ID: <AANLkTim2pMkmVkwPUViXTuGN43x8Uo2pwMx-q_mfp2Df@mail.gmail.com>
 References: <201009070452.o874qqmg006794@goober.internal.moreton.com.au>
 	<AANLkTim+jWjOKX_M52DWSKH2+oRWBXqc3TUFQp6esf3r@mail.gmail.com>
 	<4C8776C5.9030205@snapgear.com>
@@ -11,24 +11,24 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:44317 "EHLO
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:35838 "EHLO
 	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754227Ab0IJI7d convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Sep 2010 04:59:33 -0400
-Received: by fxm16 with SMTP id 16so1552533fxm.19
-        for <linux-m68k@vger.kernel.org>; Fri, 10 Sep 2010 01:59:32 -0700 (PDT)
+	with ESMTP id S1754567Ab0IJJAR convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Sep 2010 05:00:17 -0400
+Received: by fxm16 with SMTP id 16so1552790fxm.19
+        for <linux-m68k@vger.kernel.org>; Fri, 10 Sep 2010 02:00:16 -0700 (PDT)
 In-Reply-To: <4C89B5E4.5030104@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
 Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
 
+Hi Greg,
+
 On Fri, Sep 10, 2010 at 06:36, Greg Ungerer <gerg@snapgear.com> wrote:
 > Geert Uytterhoeven wrote:
->>
 >> On Wed, Sep 8, 2010 at 13:43, Greg Ungerer <gerg@snapgear.com> wrote=
 :
->>>
 >>> On 08/09/10 06:35, Geert Uytterhoeven wrote:
 >>>>
 >>>> Now I see:
@@ -101,12 +101,9 @@ t.h:21:
 > If we just wrap the include of asm/current.h with its own "#ifndef
 > __ASSEMBLY__", instead of moving it from above struct thread_info,
 > is that better for you?
->
-> Regards
-> Greg
->
->
->
+
+Builds fine, too.
+
 >> diff --git a/arch/m68k/include/asm/entry_mm.h
 >> b/arch/m68k/include/asm/entry_mm.h
 >> index 6f70823..73b8c8f 100644
@@ -148,50 +145,7 @@ ask; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* main task structure */
 >> =C2=A0#define task_thread_info(tsk) =C2=A0((struct thread_info *) NU=
 LL)
 >> =C2=A0#else
->>
->> Gr{oetje,eeting}s,
->>
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0Geert
->>
->> --
->> Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
->> geert@linux-m68k.org
->>
->> In personal conversations with technical people, I call myself a hac=
-ker.
->> But
->> when I'm talking to journalists I just say "programmer" or something=
- like
->> that.
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0-- Linus Torvalds
->>
->
->
-> --
-> ---------------------------------------------------------------------=
----
-> Greg Ungerer =C2=A0-- =C2=A0Principal Engineer =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0EMAIL: =C2=A0 =C2=A0 gerg@snapgear.com
-> SnapGear Group, McAfee =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0PHONE: =C2=A0 =C2=A0 =C2=A0 +61 7 3435 2888
-> 8 Gardner Close =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 FAX: =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 +61 7 3217 5323
-> Milton, QLD, 4064, Australia =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0WEB: http://www.SnapGear.com
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
-ml
->
 
-
-
---=20
 Gr{oetje,eeting}s,
 
 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
