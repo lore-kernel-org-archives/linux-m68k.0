@@ -1,175 +1,379 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k/m68knommu: merge MMU and non-MMU string.h
-Date: Mon, 13 Sep 2010 13:22:08 +1000
-Message-ID: <4C8D98E0.2030201@snapgear.com>
-References: <201009070452.o874qqmg006794@goober.internal.moreton.com.au>	<AANLkTim+jWjOKX_M52DWSKH2+oRWBXqc3TUFQp6esf3r@mail.gmail.com>	<4C8776C5.9030205@snapgear.com>	<AANLkTikhxWgp6xLDqPSLMax6LS2zT71d+WLZnmo-WCyH@mail.gmail.com>	<4C89B5E4.5030104@snapgear.com> <AANLkTim2pMkmVkwPUViXTuGN43x8Uo2pwMx-q_mfp2Df@mail.gmail.com>
+Subject: [PATCH v2] m68k/m68knommu: merge MMU and non-MMU thread_info.h
+Date: Mon, 13 Sep 2010 14:10:45 +1000
+Message-ID: <201009130410.o8D4AjQb016367@goober.internal.moreton.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:40841 "HELO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:21938 "HELO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1754161Ab0IMDXd convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Sep 2010 23:23:33 -0400
-In-Reply-To: <AANLkTim2pMkmVkwPUViXTuGN43x8Uo2pwMx-q_mfp2Df@mail.gmail.com>
+	with SMTP id S1751140Ab0IMEMG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Sep 2010 00:12:06 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
+To: linux-m68k@vger.kernel.org
+Cc: gerg@uclinux.org
 
+>From f66d3039c5c50f28324d3aa8d82d118e6ee4263d Mon Sep 17 00:00:00 2001
+From: Greg Ungerer <gerg@uclinux.org>
+Date: Mon, 6 Sep 2010 16:20:54 +1000
+Subject: [PATCH 1/4] m68k/m68knommu: merge MMU and non-MMU thread_info.h
 
-Hi Geert,
+The MMU and non-MMU versions of thread_info.h and quite similar.
+Merge the two files.
 
-Geert Uytterhoeven wrote:
-> On Fri, Sep 10, 2010 at 06:36, Greg Ungerer <gerg@snapgear.com> wrote=
-:
->> Geert Uytterhoeven wrote:
->>> On Wed, Sep 8, 2010 at 13:43, Greg Ungerer <gerg@snapgear.com> wrot=
-e:
->>>> On 08/09/10 06:35, Geert Uytterhoeven wrote:
->>>>> Now I see:
->>>>>
->>>>> | arch/m68k/kernel/entry.S: Assembler messages:
->>>>> | arch/m68k/kernel/entry.S:56: Error: can't resolve `0' {*ABS* se=
-ction}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>> | arch/m68k/kernel/entry.S:64: Error: can't resolve `0' {*UND* se=
-ction}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>> | arch/m68k/kernel/entry.S:119: Error: can't resolve `0' {*UND* s=
-ection}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>> | arch/m68k/kernel/entry.S:203: Error: can't resolve `0' {*UND* s=
-ection}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>> | arch/m68k/kernel/entry.S:236: Error: can't resolve `0' {*UND* s=
-ection}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>> | arch/m68k/kernel/entry.S:257: Error: can't resolve `0' {*UND* s=
-ection}
->>>>> - `THREAD_SIZE' {*UND* section}
->>>>>
->>>>> this is expanded from `GET_CURRENT'.
->>>> Just a thought, is it enough to include thread_info.h inside entry=
-_mm.h?
->>> No, because <asm/thread_info.h> is no longer ASSEMBLY-clean, as it
->>> includes
->>> <asm/current.h>, which is C-only.
->>> The #include <asm/current.h> in there used to be protected by #ifnd=
-ef
->>> ASSEMBLY.
->>> If I move that include up just above the definition of struct threa=
-d_info,
->>> <asm/thread_info.h> is ASSEMBLY-clean again.
->>>
->>> However, just including <asm/thread_info.h> from <asm/entry_mm.h> c=
-auses
->>> other
->>> problems for the C part, as <asm/thread_info.h> needs the definitio=
-n of
->>> struct
->>> restart_block in <linux/thread_info.h>. And <linux/thread_info.h> i=
-s
->>> definitely
->>> not ASSEMBLY-clean.
->>>
->>> So I came up with the patch (white-space damaged due to the GMail w=
-eb
->>> interface)
->>> below. Note that this changes the behavior for m68knommu, which did=
-n't
->>> include
->>> <asm/current.h> from <asm/thread_info.h> before. I hope it doesn't =
-hurt...
->> Unfortunately that breaks the m68knommu build:
->>
->> /home/gerg/new-wave.2635/linux-2.6.x.git/arch/m68k/include/asm/curre=
-nt.h: In
->> function =E2=80=98get_current=E2=80=99:
->> /home/gerg/new-wave.2635/linux-2.6.x.git/arch/m68k/include/asm/curre=
-nt.h:21:
->> error: implicit declaration of function =E2=80=98current_thread_info=
-=E2=80=99
->> ...
->>
->> If we just wrap the include of asm/current.h with its own "#ifndef
->> __ASSEMBLY__", instead of moving it from above struct thread_info,
->> is that better for you?
->=20
-> Builds fine, too.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/entry_mm.h         |    3 +
+ arch/m68k/include/asm/thread_info.h      |  109 +++++++++++++++++++++++++++++-
+ arch/m68k/include/asm/thread_info_mm.h   |   76 ---------------------
+ arch/m68k/include/asm/thread_info_no.h   |  102 ----------------------------
+ arch/m68knommu/platform/coldfire/entry.S |    4 +-
+ 5 files changed, 111 insertions(+), 183 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/thread_info_mm.h
+ delete mode 100644 arch/m68k/include/asm/thread_info_no.h
 
-Ok, thanks. I'll generate a new patch based on this.
-
-Regards
-Greg
-
-
-
->>> diff --git a/arch/m68k/include/asm/entry_mm.h
->>> b/arch/m68k/include/asm/entry_mm.h
->>> index 6f70823..73b8c8f 100644
->>> --- a/arch/m68k/include/asm/entry_mm.h
->>> +++ b/arch/m68k/include/asm/entry_mm.h
->>> @@ -3,6 +3,9 @@
->>>
->>>  #include <asm/setup.h>
->>>  #include <asm/page.h>
->>> +#ifdef __ASSEMBLY__
->>> +#include <asm/thread_info.h>
->>> +#endif
->>>
->>>  /*
->>>  * Stack layout in 'ret_from_exception':
->>> diff --git a/arch/m68k/include/asm/thread_info.h
->>> b/arch/m68k/include/asm/thread_info.h
->>> index f28775e..aec5eff 100644
->>> --- a/arch/m68k/include/asm/thread_info.h
->>> +++ b/arch/m68k/include/asm/thread_info.h
->>> @@ -22,6 +22,8 @@
->>>
->>>  #ifndef __ASSEMBLY__
->>>
->>> +#include <asm/current.h>
->>> +
->>>  struct thread_info {
->>>        struct task_struct      *task;          /* main task structu=
-re */
->>>        unsigned long           flags;
->>> @@ -49,8 +51,6 @@ struct thread_info {
->>>
->>>  #ifdef CONFIG_MMU
->>>
->>> -#include <asm/current.h>
->>> -
->>>  #ifdef ASM_OFFSETS_C
->>>  #define task_thread_info(tsk)  ((struct thread_info *) NULL)
->>>  #else
->=20
-> Gr{oetje,eeting}s,
->=20
->                         Geert
->=20
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
-x-m68k.org
->=20
-> In personal conversations with technical people, I call myself a hack=
-er. But
-> when I'm talking to journalists I just say "programmer" or something =
-like that.
->                                 -- Linus Torvalds
->=20
-
-
---=20
------------------------------------------------------------------------=
+diff --git a/arch/m68k/include/asm/entry_mm.h b/arch/m68k/include/asm/entry_mm.h
+index 4741258..e41fea3 100644
+--- a/arch/m68k/include/asm/entry_mm.h
++++ b/arch/m68k/include/asm/entry_mm.h
+@@ -3,6 +3,9 @@
+ 
+ #include <asm/setup.h>
+ #include <asm/page.h>
++#ifdef __ASSEMBLY__
++#include <asm/thread_info.h>
++#endif
+ 
+ /*
+  * Stack layout in 'ret_from_exception':
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index f31a3f4..1da5d53 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -1,5 +1,108 @@
+-#ifdef __uClinux__
+-#include "thread_info_no.h"
++#ifndef _ASM_M68K_THREAD_INFO_H
++#define _ASM_M68K_THREAD_INFO_H
++
++#include <asm/types.h>
++#include <asm/page.h>
++
++/*
++ * On machines with 4k pages we default to an 8k thread size, though we
++ * allow a 4k with config option. Any other machine page size then
++ * the thread size must match the page size (which is 8k and larger here).
++ */
++#if PAGE_SHIFT < 13
++#ifdef CONFIG_4KSTACKS
++#define THREAD_SIZE	4096
+ #else
+-#include "thread_info_mm.h"
++#define THREAD_SIZE	8192
+ #endif
++#else
++#define THREAD_SIZE	PAGE_SIZE
++#endif
++#define THREAD_SIZE_ORDER	((THREAD_SIZE / PAGE_SIZE) - 1)
++
++#ifndef __ASSEMBLY__
++
++struct thread_info {
++	struct task_struct	*task;		/* main task structure */
++	unsigned long		flags;
++	struct exec_domain	*exec_domain;	/* execution domain */
++	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
++	__u32			cpu;		/* should always be 0 on m68k */
++	unsigned long		tp_value;	/* thread pointer */
++	struct restart_block    restart_block;
++};
++#endif /* __ASSEMBLY__ */
++
++#define PREEMPT_ACTIVE		0x4000000
++
++#define INIT_THREAD_INFO(tsk)			\
++{						\
++	.task		= &tsk,			\
++	.exec_domain	= &default_exec_domain,	\
++	.preempt_count	= INIT_PREEMPT_COUNT,	\
++	.restart_block = {			\
++		.fn = do_no_restart_syscall,	\
++	},					\
++}
++
++#define init_stack		(init_thread_union.stack)
++
++#ifdef CONFIG_MMU
++
++#ifndef __ASSEMBLY__
++#include <asm/current.h>
++#endif
++
++#ifdef ASM_OFFSETS_C
++#define task_thread_info(tsk)	((struct thread_info *) NULL)
++#else
++#include <asm/asm-offsets.h>
++#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_TINFO))
++#endif
++
++#define init_thread_info	(init_task.thread.info)
++#define task_stack_page(tsk)	((tsk)->stack)
++#define current_thread_info()	task_thread_info(current)
++
++#define __HAVE_THREAD_FUNCTIONS
++
++#define setup_thread_stack(p, org) ({			\
++	*(struct task_struct **)(p)->stack = (p);	\
++	task_thread_info(p)->task = (p);		\
++})
++
++#define end_of_stack(p)		((unsigned long *)(p)->stack + 1)
++
++#else /* !CONFIG_MMU */
++
++#ifndef __ASSEMBLY__
++/* how to get the thread information struct from C */
++static inline struct thread_info *current_thread_info(void)
++{
++	struct thread_info *ti;
++	__asm__(
++		"move.l %%sp, %0 \n\t"
++		"and.l  %1, %0"
++		: "=&d"(ti)
++		: "di" (~(THREAD_SIZE-1))
++		);
++	return ti;
++}
++#endif
++
++#define init_thread_info	(init_thread_union.thread_info)
++
++#endif /* CONFIG_MMU */
++
++/* entry.S relies on these definitions!
++ * bits 0-7 are tested at every exception exit
++ * bits 8-15 are also tested at syscall exit
++ */
++#define TIF_SIGPENDING		6	/* signal pending */
++#define TIF_NEED_RESCHED	7	/* rescheduling necessary */
++#define TIF_DELAYED_TRACE	14	/* single step a syscall */
++#define TIF_SYSCALL_TRACE	15	/* syscall trace active */
++#define TIF_MEMDIE		16	/* is terminating due to OOM killer */
++#define TIF_FREEZE		17	/* thread is freezing for suspend */
++
++#endif	/* _ASM_M68K_THREAD_INFO_H */
+diff --git a/arch/m68k/include/asm/thread_info_mm.h b/arch/m68k/include/asm/thread_info_mm.h
+deleted file mode 100644
+index d08046c..0000000
+--- a/arch/m68k/include/asm/thread_info_mm.h
++++ /dev/null
+@@ -1,76 +0,0 @@
+-#ifndef _ASM_M68K_THREAD_INFO_H
+-#define _ASM_M68K_THREAD_INFO_H
 -
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close                             FAX:         +61 7 3217 532=
-3
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+-#ifndef ASM_OFFSETS_C
+-#include <asm/asm-offsets.h>
+-#endif
+-#include <asm/types.h>
+-#include <asm/page.h>
+-
+-#ifndef __ASSEMBLY__
+-#include <asm/current.h>
+-
+-struct thread_info {
+-	struct task_struct	*task;		/* main task structure */
+-	unsigned long		flags;
+-	struct exec_domain	*exec_domain;	/* execution domain */
+-	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
+-	__u32 cpu; /* should always be 0 on m68k */
+-	unsigned long		tp_value;	/* thread pointer */
+-	struct restart_block    restart_block;
+-};
+-#endif /* __ASSEMBLY__ */
+-
+-#define PREEMPT_ACTIVE		0x4000000
+-
+-#define INIT_THREAD_INFO(tsk)			\
+-{						\
+-	.task		= &tsk,			\
+-	.exec_domain	= &default_exec_domain,	\
+-	.preempt_count	= INIT_PREEMPT_COUNT,	\
+-	.restart_block = {			\
+-		.fn = do_no_restart_syscall,	\
+-	},					\
+-}
+-
+-/* THREAD_SIZE should be 8k, so handle differently for 4k and 8k machines */
+-#if PAGE_SHIFT < 13
+-#define THREAD_SIZE (8192)
+-#else
+-#define THREAD_SIZE PAGE_SIZE
+-#endif
+-#define THREAD_SIZE_ORDER (13 - PAGE_SHIFT)
+-
+-#define init_thread_info	(init_task.thread.info)
+-#define init_stack		(init_thread_union.stack)
+-
+-#ifdef ASM_OFFSETS_C
+-#define task_thread_info(tsk)	((struct thread_info *) NULL)
+-#else
+-#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_TINFO))
+-#endif
+-
+-#define task_stack_page(tsk)	((tsk)->stack)
+-#define current_thread_info()	task_thread_info(current)
+-
+-#define __HAVE_THREAD_FUNCTIONS
+-
+-#define setup_thread_stack(p, org) ({			\
+-	*(struct task_struct **)(p)->stack = (p);	\
+-	task_thread_info(p)->task = (p);		\
+-})
+-
+-#define end_of_stack(p) ((unsigned long *)(p)->stack + 1)
+-
+-/* entry.S relies on these definitions!
+- * bits 0-7 are tested at every exception exit
+- * bits 8-15 are also tested at syscall exit
+- */
+-#define TIF_SIGPENDING		6	/* signal pending */
+-#define TIF_NEED_RESCHED	7	/* rescheduling necessary */
+-#define TIF_DELAYED_TRACE	14	/* single step a syscall */
+-#define TIF_SYSCALL_TRACE	15	/* syscall trace active */
+-#define TIF_MEMDIE		16	/* is terminating due to OOM killer */
+-#define TIF_FREEZE		17	/* thread is freezing for suspend */
+-
+-#endif	/* _ASM_M68K_THREAD_INFO_H */
+diff --git a/arch/m68k/include/asm/thread_info_no.h b/arch/m68k/include/asm/thread_info_no.h
+deleted file mode 100644
+index 51f354b..0000000
+--- a/arch/m68k/include/asm/thread_info_no.h
++++ /dev/null
+@@ -1,102 +0,0 @@
+-/* thread_info.h: m68knommu low-level thread information
+- * adapted from the i386 and PPC versions by Greg Ungerer (gerg@snapgear.com)
+- *
+- * Copyright (C) 2002  David Howells (dhowells@redhat.com)
+- * - Incorporating suggestions made by Linus Torvalds and Dave Miller
+- */
+-
+-#ifndef _ASM_THREAD_INFO_H
+-#define _ASM_THREAD_INFO_H
+-
+-#include <asm/page.h>
+-
+-#ifdef __KERNEL__
+-
+-/*
+- * Size of kernel stack for each process. This must be a power of 2...
+- */
+-#ifdef CONFIG_4KSTACKS
+-#define THREAD_SIZE_ORDER (0)
+-#else
+-#define THREAD_SIZE_ORDER (1)
+-#endif
+-                                                                                
+-/*
+- * for asm files, THREAD_SIZE is now generated by asm-offsets.c
+- */
+-#define THREAD_SIZE (PAGE_SIZE<<THREAD_SIZE_ORDER)
+-
+-#ifndef __ASSEMBLY__
+-
+-/*
+- * low level task data.
+- */
+-struct thread_info {
+-	struct task_struct *task;		/* main task structure */
+-	struct exec_domain *exec_domain;	/* execution domain */
+-	unsigned long	   flags;		/* low level flags */
+-	int		   cpu;			/* cpu we're on */
+-	int		   preempt_count;	/* 0 => preemptable, <0 => BUG */
+-	unsigned long	   tp_value;		/* thread pointer */
+-	struct restart_block restart_block;
+-};
+-
+-/*
+- * macros/functions for gaining access to the thread information structure
+- */
+-#define INIT_THREAD_INFO(tsk)			\
+-{						\
+-	.task		= &tsk,			\
+-	.exec_domain	= &default_exec_domain,	\
+-	.flags		= 0,			\
+-	.cpu		= 0,			\
+-	.preempt_count	= INIT_PREEMPT_COUNT,	\
+-	.restart_block	= {			\
+-		.fn = do_no_restart_syscall,	\
+-	},					\
+-}
+-
+-#define init_thread_info	(init_thread_union.thread_info)
+-#define init_stack		(init_thread_union.stack)
+-
+-
+-/* how to get the thread information struct from C */
+-static inline struct thread_info *current_thread_info(void)
+-{
+-	struct thread_info *ti;
+-	__asm__(
+-		"move.l	%%sp, %0 \n\t"
+-		"and.l	%1, %0"
+-		: "=&d"(ti)
+-		: "di" (~(THREAD_SIZE-1))
+-		);
+-	return ti;
+-}
+-
+-#endif /* __ASSEMBLY__ */
+-
+-#define	PREEMPT_ACTIVE	0x4000000
+-
+-/*
+- * thread information flag bit numbers
+- */
+-#define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+-#define TIF_SIGPENDING		1	/* signal pending */
+-#define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+-#define TIF_POLLING_NRFLAG	3	/* true if poll_idle() is polling
+-					   TIF_NEED_RESCHED */
+-#define TIF_MEMDIE		4	/* is terminating due to OOM killer */
+-#define TIF_FREEZE		16	/* is freezing for suspend */
+-
+-/* as above, but as bit values */
+-#define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+-#define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+-#define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+-#define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+-#define _TIF_FREEZE		(1<<TIF_FREEZE)
+-
+-#define _TIF_WORK_MASK		0x0000FFFE	/* work to do on interrupt/exception return */
+-
+-#endif /* __KERNEL__ */
+-
+-#endif /* _ASM_THREAD_INFO_H */
+diff --git a/arch/m68knommu/platform/coldfire/entry.S b/arch/m68knommu/platform/coldfire/entry.S
+index dd7d591..cd79d7e 100644
+--- a/arch/m68knommu/platform/coldfire/entry.S
++++ b/arch/m68knommu/platform/coldfire/entry.S
+@@ -112,7 +112,7 @@ ret_from_exception:
+ 	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
+ 	movel	%d1,%a0
+ 	movel	%a0@(TI_FLAGS),%d1	/* get thread_info->flags */
+-	andl	#_TIF_NEED_RESCHED,%d1
++	andl	#(1<<TIF_NEED_RESCHED),%d1
+ 	jeq	Lkernel_return
+ 
+ 	movel	%a0@(TI_PREEMPTCOUNT),%d1
+@@ -136,7 +136,7 @@ Luser_return:
+ 	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
+ 	movel	%d1,%a0
+ 	movel	%a0@(TI_FLAGS),%d1	/* get thread_info->flags */
+-	andl	#_TIF_WORK_MASK,%d1
++	andl	#0xefff,%d1
+ 	jne	Lwork_to_do		/* still work to do */
+ 
+ Lreturn:
+-- 
+1.6.3.3
