@@ -1,17 +1,17 @@
 From: "Western Union Money Transfer" <info@western.com>
 Subject: We have sent 9000.00 USD
-Date: Sun, 19 Sep 2010 11:27:32 -0200 (FNT)
-Message-ID: <54448.41.138.185.60.1284902852.squirrel__33094.6318259977$1284906240$gmane$org@41.138.185.60>
+Date: Sun, 19 Sep 2010 11:28:52 -0200 (FNT)
+Message-ID: <54455.41.138.185.60.1284902932.squirrel@41.138.185.60>
 Reply-To: payoutwesternu@w.cn
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.avellaneda-ba.gov.ar ([200.71.230.2]:43181 "EHLO
+Received: from mail.avellaneda-ba.gov.ar ([200.71.230.2]:43281 "EHLO
 	ns2.avellaneda-ba.gov.ar" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1753427Ab0ISOX3 (ORCPT
+	by vger.kernel.org with ESMTP id S1754271Ab0ISOXs (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 19 Sep 2010 10:23:29 -0400
+	Sun, 19 Sep 2010 10:23:48 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
