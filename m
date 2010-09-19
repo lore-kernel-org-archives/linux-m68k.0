@@ -1,61 +1,42 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 07/18] m68k: remove big kernel lock
-Date: Tue, 14 Sep 2010 21:34:58 +0200
-Message-ID: <1284492909-7147-8-git-send-email-arnd@arndb.de>
-References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
+From: Vasiliy Kulikov <segooon@gmail.com>
+Subject: [PATCH 14/14] zorro: fix device_register() error handling
+Date: Sun, 19 Sep 2010 16:55:21 +0400
+Message-ID: <1284900921-24814-1-git-send-email-segooon__33333.3463561305$1284901305$gmane$org@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1284492909-7147-1-git-send-email-arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: arnd@arndb.de
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: kernel-janitors@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-The cache flush code only locks against itself, so there
-is no excuse to use the BKL here. This replaces it with
-a local mutex in order to maintain serialization of flushes.
+If device_register() fails then call put_device().
+See comment to device_register.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
 ---
- arch/m68k/kernel/sys_m68k.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ I cannot compile this driver, so it is not tested at all.
 
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 2f431ec..f6aec52 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -12,7 +12,7 @@
- #include <linux/mm.h>
- #include <linux/fs.h>
- #include <linux/smp.h>
--#include <linux/smp_lock.h>
-+#include <linux/mutex.h>
- #include <linux/sem.h>
- #include <linux/msg.h>
- #include <linux/shm.h>
-@@ -374,10 +374,11 @@ cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
- asmlinkage int
- sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- {
-+	static DEFINE_MUTEX(cacheflush_mutex);
- 	struct vm_area_struct *vma;
- 	int ret = -EINVAL;
- 
--	lock_kernel();
-+	mutex_lock(&cacheflush_mutex);
- 	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
- 	    cache & ~FLUSH_CACHE_BOTH)
- 		goto out;
-@@ -446,7 +447,7 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- 	    }
+ drivers/zorro/zorro.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
+index 6455f3a..e0c2807 100644
+--- a/drivers/zorro/zorro.c
++++ b/drivers/zorro/zorro.c
+@@ -142,6 +142,7 @@ static int __init amiga_zorro_probe(struct platform_device *pdev)
+ 	error = device_register(&bus->dev);
+ 	if (error) {
+ 		pr_err("Zorro: Error registering zorro_bus\n");
++		put_device(&bus->dev);
+ 		kfree(bus);
+ 		return error;
  	}
- out:
--	unlock_kernel();
-+	mutex_unlock(&cacheflush_mutex);
- 	return ret;
- }
- 
+@@ -175,6 +176,7 @@ static int __init amiga_zorro_probe(struct platform_device *pdev)
+ 		if (error) {
+ 			dev_err(&bus->dev, "Error registering device %s\n",
+ 				z->name);
++			put_device(&z->dev);
+ 			continue;
+ 		}
+ 		error = zorro_create_sysfs_dev_files(z);
 -- 
-1.7.1
+1.7.0.4
