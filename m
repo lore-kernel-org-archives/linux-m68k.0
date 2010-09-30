@@ -1,48 +1,81 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: m68k, signals and single-stepping
-Date: Thu, 30 Sep 2010 17:50:41 +0100
-Message-ID: <20100930165041.GN19804@ZenIV.linux.org.uk>
-References: <20100930055823.GK19804@ZenIV.linux.org.uk>
- <AANLkTimigeCBQdh1CxsxojKNGXWcoLQg10weE8w1r5v5@mail.gmail.com>
- <m362xn63qc.fsf@hase.home>
- <20100930120504.GM19804@ZenIV.linux.org.uk>
- <m3lj6j4dh8.fsf@hase.home>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 14/14] zorro: fix device_register() error handling
+Date: Thu, 30 Sep 2010 21:41:43 +0200
+Message-ID: <AANLkTik9amOXStCu=MJdV7BsYWUbShFDUH1iM0DMT0M8@mail.gmail.com>
+References: <1284900921-24814-1-git-send-email-segooon@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from zeniv.linux.org.uk ([195.92.253.2]:36575 "EHLO
-	ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932236Ab0I3Qum (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Sep 2010 12:50:42 -0400
-Content-Disposition: inline
-In-Reply-To: <m3lj6j4dh8.fsf@hase.home>
+Received: from mail-iw0-f174.google.com ([209.85.214.174]:48610 "EHLO
+	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755291Ab0I3Tlo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Sep 2010 15:41:44 -0400
+In-Reply-To: <1284900921-24814-1-git-send-email-segooon@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Vasiliy Kulikov <segooon@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2010 at 02:34:11PM +0200, Andreas Schwab wrote:
+On Sun, Sep 19, 2010 at 14:55, Vasiliy Kulikov <segooon@gmail.com> wrot=
+e:
+> If device_register() fails then call put_device().
+> See comment to device_register.
+>
+> Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
 
-> > Um...  What's wrong with doing that from trap_c()?
-> 
-> IIRC that was the only way to make gdb work correctly wrt. single
-> stepping over system calls and into signal handlers.  If anyone wants to
-> test it with today's kernel on real hardware, please go ahead.
+Thanks, applied to m68k tree, queued for 2.6.37.
 
-Ouch...  Resurrecting that 840av box will be interesting - most likely
-a dead battery, but... ;-/  And yes, I certainly understand why qemu
-testing is not sufficient for that kind of stuff - subtle enough to
-make the odds of stepping on qemu bugs...
+> ---
+> =C2=A0I cannot compile this driver, so it is not tested at all.
+>
+> =C2=A0drivers/zorro/zorro.c | =C2=A0 =C2=A02 ++
+> =C2=A01 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
+> index 6455f3a..e0c2807 100644
+> --- a/drivers/zorro/zorro.c
+> +++ b/drivers/zorro/zorro.c
+> @@ -142,6 +142,7 @@ static int __init amiga_zorro_probe(struct platfo=
+rm_device *pdev)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0error =3D device_register(&bus->dev);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (error) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pr_err("Zorro:=
+ Error registering zorro_bus\n");
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 put_device(&bus->d=
+ev);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0kfree(bus);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return error;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> @@ -175,6 +176,7 @@ static int __init amiga_zorro_probe(struct platfo=
+rm_device *pdev)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (error) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0dev_err(&bus->dev, "Error registering device %s\n",
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0z->name);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 put_device(&z->dev);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0continue;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0error =3D zorr=
+o_create_sysfs_dev_files(z);
+> --
+> 1.7.0.4
 
-Oh, well.  Anyway, the obvious ones I've got are:
-	* setup_frame/setup_rt_frame should report failure, so that
-handle_signal() wouldn't block signals in that case (losing the original
-mask, since it's not stored anywhere in that case)
-	* notify_resume isn't handled at all
-	* sigsuspend would be better off with ERESTARTNOHAND scheme.
+Gr{oetje,eeting}s,
 
-FWIW, I wonder if it would be better to have handle_signal() call
-send_sig() and clear regs.SR.T1 and forget about checking return
-value of do_signal(); do_delayed_trace is still needed, since currently
-there are two places that can reach it, but it'd make the code around
-calling do_signal() simpler while preserving the current behaviour...
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
