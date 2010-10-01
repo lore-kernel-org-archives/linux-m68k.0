@@ -1,81 +1,43 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 14/14] zorro: fix device_register() error handling
-Date: Thu, 30 Sep 2010 21:41:43 +0200
-Message-ID: <AANLkTik9amOXStCu=MJdV7BsYWUbShFDUH1iM0DMT0M8@mail.gmail.com>
-References: <1284900921-24814-1-git-send-email-segooon@gmail.com>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+Subject: Aranym, more than 244MB FastRAM, garbled display
+Date: Fri, 1 Oct 2010 17:49:33 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iw0-f174.google.com ([209.85.214.174]:48610 "EHLO
-	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755291Ab0I3Tlo convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Sep 2010 15:41:44 -0400
-In-Reply-To: <1284900921-24814-1-git-send-email-segooon@gmail.com>
+Received: from ufisa.uninett.no ([158.38.152.126]:41766 "EHLO ufisa.uninett.no"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751044Ab0JAP43 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 1 Oct 2010 11:56:29 -0400
+Received: from uninett.no (halbrend.uninett.no [158.38.62.143])
+	by ufisa.uninett.no (Postfix) with ESMTPSA id C1C8580D3
+	for <linux-m68k@vger.kernel.org>; Fri,  1 Oct 2010 17:49:33 +0200 (CEST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Vasiliy Kulikov <segooon@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Sep 19, 2010 at 14:55, Vasiliy Kulikov <segooon@gmail.com> wrot=
-e:
-> If device_register() fails then call put_device().
-> See comment to device_register.
->
-> Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
 
-Thanks, applied to m68k tree, queued for 2.6.37.
+I have almost exclusevly been running Aranym "headless" with Linux/m68k on
+it (console=nfcon), but the last couple of days I've been preparing a "how
+to" for installing gentoo/m68k and so I need interactive console access,
+and since nfcon is read-only (will this ever change?), I've had to use the
+SDL window.
 
-> ---
-> =C2=A0I cannot compile this driver, so it is not tested at all.
->
-> =C2=A0drivers/zorro/zorro.c | =C2=A0 =C2=A02 ++
-> =C2=A01 files changed, 2 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
-> index 6455f3a..e0c2807 100644
-> --- a/drivers/zorro/zorro.c
-> +++ b/drivers/zorro/zorro.c
-> @@ -142,6 +142,7 @@ static int __init amiga_zorro_probe(struct platfo=
-rm_device *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0error =3D device_register(&bus->dev);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (error) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pr_err("Zorro:=
- Error registering zorro_bus\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 put_device(&bus->d=
-ev);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0kfree(bus);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return error;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
-> @@ -175,6 +176,7 @@ static int __init amiga_zorro_probe(struct platfo=
-rm_device *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (error) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0dev_err(&bus->dev, "Error registering device %s\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0z->name);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 put_device(&z->dev);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0continue;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0error =3D zorr=
-o_create_sysfs_dev_files(z);
-> --
-> 1.7.0.4
+One thing I have noticed is that if I set FastRAM in aranym config to
+something higher than 244 I get garbled display, kinda like frozen random
+noise - the kernel does boot in the background though. I tried with
+different kernels (only up to 2.6.34 though), and with different versions
+of aranym, but it didn't make much difference.
 
-Gr{oetje,eeting}s,
+I should perhaps give 2.6.35 or 2.6.36 a go before reporting a bug, but it
+does take a while to build so I thought I'd ask anyhow, if this is a known
+issue and if there perhaps are any workarounds. Aranym is set with default
+video settings, which should correspond to "video=atafb:vga16" as kernel
+option I think.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Screenshots:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+http://amiga.nvg.org/moro/aranym-244M.png
+http://amiga.nvg.org/moro/aranym-245M.png
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- kolla
