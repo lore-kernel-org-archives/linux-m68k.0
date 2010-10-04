@@ -1,91 +1,73 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: Aranym, more than 244MB FastRAM, garbled display
-Date: Mon, 4 Oct 2010 09:51:02 +0200
-Message-ID: <AANLkTimcB7h2Q9RxbHUPAVQ850NCJTkemLaOWHEno5eR@mail.gmail.com>
-References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
-	<m2tyl5u9hu.fsf@igel.home>
-	<AANLkTind9=+een0ttr85FYdY6X+GDbiFSzqMKXEZoadb@mail.gmail.com>
+Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for !CONFIG_ISA
+Date: Mon, 4 Oct 2010 09:57:38 +0200
+Message-ID: <AANLkTinJbQY_4jg4dWUA6QxE+zu9=Phcd4o7DDu=UfeR@mail.gmail.com>
+References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:58880 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753136Ab0JDHvE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 03:51:04 -0400
-Received: by wwj40 with SMTP id 40so3763924wwj.1
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 00:51:02 -0700 (PDT)
-In-Reply-To: <AANLkTind9=+een0ttr85FYdY6X+GDbiFSzqMKXEZoadb@mail.gmail.com>
+Received: from mail-wy0-f174.google.com ([74.125.82.174]:41646 "EHLO
+	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752580Ab0JDH5j convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 03:57:39 -0400
+Received: by wyb28 with SMTP id 28so4647020wyb.19
+        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 00:57:38 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, =?ISO-8859-1?Q?Kolbj=F8rn_Barmen?= <linux-m68k@kolla.no>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thorsten Glaser <tg@debian.org>
+Cc: linux-m68k@vger.kernel.org
 
 Hi,
 
->>> One thing I have noticed is that if I set FastRAM in aranym config =
-to
->>> something higher than 244 I get garbled display, kinda like frozen =
-random
->>> noise - the kernel does boot in the background though. I tried with
->>> different kernels (only up to 2.6.34 though), and with different ve=
-rsions
->>> of aranym, but it didn't make much difference.
->>
->> I have always been using FastRAM =3D 256 without problems.
->
-> Just checked, /me too!
->
-> I have `video=3Datafb:tthigh` but removing that doesn't change anythi=
-ng.
-> Ah yes, it emulates a Falcon, so the tthigh is bogus ;-)
+please take care not to disturb these macros for any other case than
+the default one (nothing related to ISA emulation configured at all).
 
-I've always used sthigh myself (force of habit, my Falcon wasn't too
-happy with faster pixel clocks). tthigh used to work (sort of) when
-the driver was ported to 2.6, but that's a few years back.
-
-If I recall this right, allocation of boot memory changed later in 2.6
-and drivers initializing after boit memory had been freed could not be
-guaranteed to receive enough low memory for things like DMA buffers or
-screen buffers.
-
-The kernel will reserve a chunk of ST-RAM early on during arch init,
-and I may have set that chunk size too small for high resolution. If
-the ST-RAM allocator cannot resort to the reserved chunk of low
-memory, it will allocate high memory for you. VIDEL then masks off the
-high byte of the framebuffer address, and the screen will show
-whatever the kernel happens to write to the 24 bit alias of the frame
-buffer address.
-
-=46astRAM should not be declared DMA-able so the allocator can properly
-distinguish between the memory kinds. Doing this triggered some
-problems in the memory management code that I could not disentangle,
-hence the 'reserve some amount of boot memory' hack.
-
-There might even be a kernel parameter like 'stram_reserve' to control
-this behaviour, check the ST-RAM allocator code (my home PC is
-unreachable, there's probably been a power outage again so I can't
-check my git repo right now).
+Are you certain the speakup driver has a chance to work, once you got
+it to compile?
 
 Cheers,
 
   Michael
 
+
+On Sun, Oct 3, 2010 at 8:48 PM, Thorsten Glaser <tg@debian.org> wrote:
+> On m68k, I/O macros like inb() outw() etc. are only defined to
+> something useful if CONFIG_ISA is set; dummies are in place if
+> not, but four macros were missing from the !CONFIG_ISA case.
+> Adding these makes some drivers, such as speakup, compile again.
+> The patch was made against Debian=92s linux-2.6_2.6.32-24, but
+> applies cleanly on linux-m68k master.
 >
-> Gr{oetje,eeting}s,
+> Signed-off-by: Thorsten Glaser <tg@debian.org>
+> ---
+> =A0arch/m68k/include/asm/io_mm.h | =A0 =A04 ++++
+> =A01 files changed, 4 insertions(+), 0 deletions(-)
 >
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+> diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io=
+_mm.h
+> index 56a6555..be9d7da 100644
+> --- a/arch/m68k/include/asm/io_mm.h
+> +++ b/arch/m68k/include/asm/io_mm.h
+> @@ -387,9 +387,13 @@ static inline void isa_delay(void)
+> =A0#define outb(val,port) =A0 =A0 ((void)0)
+> =A0#define outb_p(val,port) =A0 ((void)0)
+> =A0#define inw(port) =A0 =A0 =A0 =A0 =A00xffff
+> +#define inw_p(port) =A0 =A0 =A0 =A00xffff
+> =A0#define outw(val,port) =A0 =A0 ((void)0)
+> +#define outw_p(val,port) =A0 ((void)0)
+> =A0#define inl(port) =A0 =A0 =A0 =A0 =A00xffffffffUL
+> +#define inl_p(port) =A0 =A0 =A0 =A00xffffffffUL
+> =A0#define outl(val,port) =A0 =A0 ((void)0)
+> +#define outl_p(val,port) =A0 ((void)0)
 >
+> =A0#define insb(port,buf,nr) =A0((void)0)
+> =A0#define outsb(port,buf,nr) ((void)0)
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
-x-m68k.org
+> 1.6.0.4
 >
-> In personal conversations with technical people, I call myself a hack=
-er. But
-> when I'm talking to journalists I just say "programmer" or something =
-like that.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
-Linus Torvalds
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
  in
