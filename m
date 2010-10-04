@@ -1,62 +1,75 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
- !CONFIG_ISA
-Date: Mon, 4 Oct 2010 19:20:22 +0000
-Message-ID: <Pine.BSM.4.64L.1010041919220.3776@herc.mirbsd.org>
-References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
- <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
- <alpine.OSX.2.00.1010041149030.285@localhost> <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
- <alpine.OSX.2.00.1010041943530.285@localhost> <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>
- <alpine.OSX.2.00.1010042115260.285@localhost>
- <AANLkTi=TZBpWS1_ybct=fHeZ9N9AZE_+UoJnwM0HxanM@mail.gmail.com>
- <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
- <AANLkTim_gdMc5scQm-oAD6Jowv6q=W0bK=rkjZUmAgLd@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: arch_ptrace() question
+Date: Mon, 4 Oct 2010 21:35:05 +0200
+Message-ID: <AANLkTikZ8b9QNBkNQRCJj7ajy86hrxiPqdC-oHDe+748@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:50763 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S932398Ab0JDTUc convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 15:20:32 -0400
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1P2qaN-0006S6-7g
-	for linux-m68k@vger.kernel.org; Mon, 04 Oct 2010 21:20:31 +0200
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 21:20:31 +0200
-Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 21:20:31 +0200
-In-Reply-To: <AANLkTim_gdMc5scQm-oAD6Jowv6q=W0bK=rkjZUmAgLd@mail.gmail.com>
+Received: from mail-yx0-f174.google.com ([209.85.213.174]:51382 "EHLO
+	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932368Ab0JDTfG convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 15:35:06 -0400
+Received: by yxp4 with SMTP id 4so1758420yxp.19
+        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 12:35:05 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven dixit:
+arch/m68k/kernel/ptrace.c:arch_ptrace() has:
 
->I'm not questioning they're missing.
+|        case PTRACE_PEEKUSR:
+|               ...
+|               } else if (addr >=3D 21 && addr < 49) {
+|                        tmp =3D child->thread.fp[addr - 21];
+|               ...
+|         case PTRACE_POKEUSR:    /* write the word at location addr
+in the USER area */
+|               ...
+|                } else if (addr >=3D 21 && addr < 48) {
+|               ...
+|                        child->thread.fp[addr - 21] =3D data;
 
-There are other, non-staging, drivers using them as well.
+This allows to access the fp[] (index 21..44) and fpcntl[] (index
+45..47) fields in struct thread_struct:
 
-Anyway.
--rw-r--r-- 1 root root 17251 Oct  4 17:43 linux-2.6_2.6.32-24+m68k_m68k=
-=2Echanges
+struct thread_struct {
+        unsigned long  ksp;             /* kernel stack pointer */
+        unsigned long  usp;             /* user stack pointer */
+        unsigned short sr;              /* saved status register */
+        unsigned short fs;              /* saved fs (sfc, dfc) */
+        unsigned long  crp[2];          /* cpu root pointer */
+        unsigned long  esp0;            /* points to SR of stack frame =
+*/
+        unsigned long  faddr;           /* info about last fault */
+        int            signo, code;
+        unsigned long  fp[8*3];
+        unsigned long  fpcntl[3];       /* fp control regs */
+        unsigned char  fpstate[FPSTATESIZE];  /* floating point state *=
+/
+        struct thread_info info;
+};
 
-So, with that one patch, I can successfully build a kernel.
-Now, let=E2=80=99s see whether it boots=E2=80=A6 then, after you accept=
-ed that
-patch, I can submit that to the Debian kernel people.
+However, in the PTRACE_PEEKUSR case, the limit is 49, not 48, so it
+allows to access the
+first 4 bytes of fpstate[], too.
 
-bye,
-//mirabilos
---=20
-I believe no one can invent an algorithm. One just happens to hit upon =
-it
-when God enlightens him. Or only God invents algorithms, we merely copy=
- them.
-If you don't believe in God, just consider God as Nature if you won't d=
-eny
-existence.		-- Coywolf Qi Hunt
+Is this intentional (anyone remembers?), or Just A Bug(tm)?
+According to full-history-linux, it's been like that since this source
+file entered mainline (1.3.94).
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
