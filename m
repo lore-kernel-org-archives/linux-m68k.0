@@ -1,64 +1,94 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
- !CONFIG_ISA
-Date: Mon, 4 Oct 2010 07:40:18 +0000
-Message-ID: <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
-References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
- <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
- <alpine.OSX.2.00.1010041149030.285@localhost>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Aranym, more than 244MB FastRAM, garbled display
+Date: Mon, 4 Oct 2010 09:51:02 +0200
+Message-ID: <AANLkTimcB7h2Q9RxbHUPAVQ850NCJTkemLaOWHEno5eR@mail.gmail.com>
+References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
+	<m2tyl5u9hu.fsf@igel.home>
+	<AANLkTind9=+een0ttr85FYdY6X+GDbiFSzqMKXEZoadb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:49847 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753174Ab0JDHk3 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 03:40:29 -0400
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1P2feu-0006vp-Cw
-	for linux-m68k@vger.kernel.org; Mon, 04 Oct 2010 09:40:28 +0200
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 09:40:28 +0200
-Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 09:40:28 +0200
-In-Reply-To: <alpine.OSX.2.00.1010041149030.285@localhost>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:58880 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753136Ab0JDHvE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 03:51:04 -0400
+Received: by wwj40 with SMTP id 40so3763924wwj.1
+        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 00:51:02 -0700 (PDT)
+In-Reply-To: <AANLkTind9=+een0ttr85FYdY6X+GDbiFSzqMKXEZoadb@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, =?ISO-8859-1?Q?Kolbj=F8rn_Barmen?= <linux-m68k@kolla.no>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-=46inn Thain dixit:
+Hi,
 
->On Sun, 3 Oct 2010, Thorsten Glaser wrote:
-
->> Debian=E2=80=99s linux-2.6_2.6.32-24, but
+>>> One thing I have noticed is that if I set FastRAM in aranym config =
+to
+>>> something higher than 244 I get garbled display, kinda like frozen =
+random
+>>> noise - the kernel does boot in the background though. I tried with
+>>> different kernels (only up to 2.6.34 though), and with different ve=
+rsions
+>>> of aranym, but it didn't make much difference.
+>>
+>> I have always been using FastRAM =3D 256 without problems.
 >
->I was able to compile that source package. Can you please send the .co=
-nfig=20
->you used?
+> Just checked, /me too!
+>
+> I have `video=3Datafb:tthigh` but removing that doesn't change anythi=
+ng.
+> Ah yes, it emulates a Falcon, so the tthigh is bogus ;-)
 
-Erm, Debian=E2=80=99s? Otherwise I wouldn=E2=80=99t say =E2=80=9Ctrying=
- to build Debian=E2=80=99s
-package=E2=80=9D. (The atari variant, to be exact, in order to run ARAn=
-yM.)
-You might remember I=E2=80=99m sticking to stock unmodified Debian soru=
-ce,
-native compilation, etc. as much as possible and then some.
+I've always used sthigh myself (force of habit, my Falcon wasn't too
+happy with faster pixel clocks). tthigh used to work (sort of) when
+the driver was ported to 2.6, but that's a few years back.
 
-Thing is, the macros are defined correctly if CONFIG_ISA is defined,
-which appears to be the case for e.g. amiga but not atari.
+If I recall this right, allocation of boot memory changed later in 2.6
+and drivers initializing after boit memory had been freed could not be
+guaranteed to receive enough low memory for things like DMA buffers or
+screen buffers.
 
-bye,
-//mirabilos
---=20
-=46WIW, I'm quite impressed with mksh interactively. I thought it was m=
-uch
-*much* more bare bones. But it turns out it beats the living hell out o=
-f
-ksh93 in that respect. I'd even consider it for my daily use if I hadn'=
-t
-wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mks=
-h
+The kernel will reserve a chunk of ST-RAM early on during arch init,
+and I may have set that chunk size too small for high resolution. If
+the ST-RAM allocator cannot resort to the reserved chunk of low
+memory, it will allocate high memory for you. VIDEL then masks off the
+high byte of the framebuffer address, and the screen will show
+whatever the kernel happens to write to the 24 bit alias of the frame
+buffer address.
+
+=46astRAM should not be declared DMA-able so the allocator can properly
+distinguish between the memory kinds. Doing this triggered some
+problems in the memory management code that I could not disentangle,
+hence the 'reserve some amount of boot memory' hack.
+
+There might even be a kernel parameter like 'stram_reserve' to control
+this behaviour, check the ST-RAM allocator code (my home PC is
+unreachable, there's probably been a power outage again so I can't
+check my git repo right now).
+
+Cheers,
+
+  Michael
+
+>
+> Gr{oetje,eeting}s,
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
+x-m68k.org
+>
+> In personal conversations with technical people, I call myself a hack=
+er. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
+Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
