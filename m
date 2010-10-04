@@ -1,67 +1,60 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
  !CONFIG_ISA
-Date: Mon, 4 Oct 2010 21:51:21 +1100 (EST)
-Message-ID: <alpine.OSX.2.00.1010042123060.285@localhost>
-References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org> <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org> <AANLkTinJbQY_4jg4dWUA6QxE+zu9=Phcd4o7DDu=UfeR@mail.gmail.com> <Pine.BSM.4.64L.1010040809360.8491@herc.mirbsd.org> <alpine.OSX.2.00.1010041955060.285@localhost>
- <Pine.BSM.4.64L.1010041016060.29280@herc.mirbsd.org>
+Date: Mon, 4 Oct 2010 11:30:26 +0000
+Message-ID: <Pine.BSM.4.64L.1010041129410.4312@herc.mirbsd.org>
+References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
+ <alpine.OSX.2.00.1010041149030.285@localhost> <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
+ <alpine.OSX.2.00.1010041943530.285@localhost> <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>
+ <alpine.OSX.2.00.1010042115260.285@localhost>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1558580085-1286189481=:285"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.telegraphics.com.au ([204.15.192.19]:35648 "EHLO
-	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755112Ab0JDKvU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 06:51:20 -0400
-In-Reply-To: <Pine.BSM.4.64L.1010041016060.29280@herc.mirbsd.org>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@debian.org>
-Cc: linux-m68k@vger.kernel.org
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---0-1558580085-1286189481=:285
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from lo.gmane.org ([80.91.229.12]:42607 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1754253Ab0JDLag convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Oct 2010 07:30:36 -0400
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1P2jFb-00078u-Do
+	for linux-m68k@vger.kernel.org; Mon, 04 Oct 2010 13:30:35 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 13:30:35 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 13:30:35 +0200
+In-Reply-To: <alpine.OSX.2.00.1010042115260.285@localhost>
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
+=46inn Thain dixit:
 
-On Mon, 4 Oct 2010, Thorsten Glaser wrote:
+>It builds for me if I disable CONFIG_SPEAKUP.
 
-> Finn Thain dixit:
->=20
-> Besides, this seems like a simple fix or an accidental omission to me.=20
-> What is with all this bikeshedding?
+Yes, but I don=E2=80=99t do that because Debian enables it.
+(Also, other drivers use inw_p as well.)
 
-It isn't bikeshedding. Recall that I built these sources a few weeks ago=20
-when you mentioned the speakup issue in private correspondence. At the=20
-time, I built speakup in 2.6.32-23 to see if it would behave differently=20
-than the 2.6.3[45] sources that were giving you grief.
+>I suppose another alternative would be to omit or reverse the patch th=
+at=20
+>adds speakup in the first place, if that's more convenient.
 
-It built for me at the time, so I was suprised to find out it didn't build=
-=20
-for you, and naturally I wanted to know what I did wrong.
+Definitively not:
 
-It may be that speakup works on amiga and atari (I don't know). It doesn't=
-=20
-work on mac as there are no audio drivers. It has long frustrated me that=
-=20
-there is bloat in the debian kernel configs. So perhaps I am guilty of=20
-being unfairly obstructionist here, in the hope that the config file=20
-issues could be addressed. My apologies.
+>> So, no modifications to stock Debian. Well, except for #598893=E2=80=
+=A6
 
-> Some macros are not available on m68k if CONFIG_ISA is not set, but they=
-=20
-> are available =E2=80=9Calmost=E2=80=9D or even really everywhere else, so=
- drivers use=20
-> them, so m68k is buggy in not providing them. (Outsider=E2=80=99s PoV.)
-
-You may be right. I confess to being ignorant when it comes to ISA.
-
-Finn
-
->=20
-> bye,
-> //mirabilos
->=20
---0-1558580085-1286189481=:285--
+bye,
+//mirabilos
+--=20
+I believe no one can invent an algorithm. One just happens to hit upon =
+it
+when God enlightens him. Or only God invents algorithms, we merely copy=
+ them.
+If you don't believe in God, just consider God as Nature if you won't d=
+eny
+existence.		-- Coywolf Qi Hunt
