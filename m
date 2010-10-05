@@ -1,59 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Aranym, more than 244MB FastRAM, garbled display
-Date: Tue, 5 Oct 2010 08:47:25 +0200
-Message-ID: <AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
-References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
-	<m2tyl5u9hu.fsf@igel.home>
-	<alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
-	<Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
+From: "Stephen R. Marenka" <stephen@marenka.net>
+Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
+ !CONFIG_ISA
+Date: Tue, 5 Oct 2010 07:56:35 -0500
+Message-ID: <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
+References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
+    <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
+    <alpine.OSX.2.00.1010041149030.285@localhost>
+    <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
+    <alpine.OSX.2.00.1010041943530.285@localhost>
+    <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>
+    <alpine.OSX.2.00.1010042115260.285@localhost>
+    <AANLkTi=TZBpWS1_ybct=fHeZ9N9AZE_+UoJnwM0HxanM@mail.gmail.com>
+    <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iw0-f174.google.com ([209.85.214.174]:59866 "EHLO
-	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757493Ab0JEGr0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Oct 2010 02:47:26 -0400
-Received: by iwn5 with SMTP id 5so7925754iwn.19
-        for <linux-m68k@vger.kernel.org>; Mon, 04 Oct 2010 23:47:26 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
+Received: from naiad.marenka.net ([69.164.199.107]:44371 "EHLO
+	naiad.marenka.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751024Ab0JENDO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Oct 2010 09:03:14 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by naiad.marenka.net (Postfix) with ESMTP id B018EC034
+	for <linux-m68k@vger.kernel.org>; Tue,  5 Oct 2010 07:56:36 -0500 (CDT)
+Received: from naiad.marenka.net ([127.0.0.1])
+	by localhost (naiad.marenka.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id U+ia699q22cq for <linux-m68k@vger.kernel.org>;
+	Tue,  5 Oct 2010 07:56:35 -0500 (CDT)
+In-Reply-To: <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-On Mon, Oct 4, 2010 at 21:49, Thorsten Glaser <tg@mirbsd.de> wrote:
-> Kolbj=C3=B8rn Barmen dixit:
+
+On Mon, October 4, 2010 8:40 am, Thorsten Glaser wrote:
+> Geert Uytterhoeven dixit:
 >
->>Anything other than default in video settings or anything?
+>>I don't think it makes sense to build staging drivers on Debian/m68k.
 >
-> I=E2=80=99m now seeing this too, with the vmlinuz-2.6.32-5-atari
-> (Debian 2.6.32-24+m68k) just built.
+> Yes. Tell that to *them*, though.
 >
-> This WFM:
-> [GLOBAL]
-> FastRAM =3D 768
-> [LILO]
-> Kernel =3D vmlinuz-2.6.32-5-atari
-> # these Args for normal X operation
-> Args =3D root=3D/dev/hda1 console=3Dtty debug=3Dpar video=3Datafb:vga=
-2
+>>So can't you default to CONFIG_STAGING=3Dn?
+>
+> No *I* can=E2=80=99t.
 
-Confirmed with yesterday's 2.6.36-rc6.
-The problem starts happening as soon as FastRAM >=3D 512.
+But I can. Feel free to ask to join the debian-kernel team for m68k. Af=
+ter
+all, they let me have access. ;-)
 
-Gr{oetje,eeting}s,
+> Besides, this still looks like an obvious omission to me.
+> Look a few lines above, the macros are defined in the other
+> case (CONFIG_ISA defined).
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+I'll apply the patch too.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+I'll try to get it done in the next day or two when I can get to a
+computer with appropriate access.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Peace,
+
+Stephen
+
+--=20
+Stephen R. Marenka     If life's not fun, you're not doing it right!
+<stephen@marenka.net>
