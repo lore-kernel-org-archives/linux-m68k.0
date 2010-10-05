@@ -1,66 +1,96 @@
-From: "Stephen R. Marenka" <stephen@marenka.net>
-Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
- !CONFIG_ISA
-Date: Tue, 5 Oct 2010 07:56:35 -0500
-Message-ID: <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
-References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
-    <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010041149030.285@localhost>
-    <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010041943530.285@localhost>
-    <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010042115260.285@localhost>
-    <AANLkTi=TZBpWS1_ybct=fHeZ9N9AZE_+UoJnwM0HxanM@mail.gmail.com>
-    <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: debian kernel config, was Re: [PATCH 1/1] m68k: add missing I/O
+ macros {in,out}{w,l}_p() for !CONFIG_ISA
+Date: Wed, 6 Oct 2010 01:10:56 +1100 (EST)
+Message-ID: <alpine.OSX.2.00.1010060033590.289@localhost>
+References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>    <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>    <alpine.OSX.2.00.1010041149030.285@localhost>    <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>    <alpine.OSX.2.00.1010041943530.285@localhost>
+    <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>    <alpine.OSX.2.00.1010042115260.285@localhost>    <AANLkTi=TZBpWS1_ybct=fHeZ9N9AZE_+UoJnwM0HxanM@mail.gmail.com>    <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
+ <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from naiad.marenka.net ([69.164.199.107]:44371 "EHLO
-	naiad.marenka.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751024Ab0JENDO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Oct 2010 09:03:14 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by naiad.marenka.net (Postfix) with ESMTP id B018EC034
-	for <linux-m68k@vger.kernel.org>; Tue,  5 Oct 2010 07:56:36 -0500 (CDT)
-Received: from naiad.marenka.net ([127.0.0.1])
-	by localhost (naiad.marenka.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id U+ia699q22cq for <linux-m68k@vger.kernel.org>;
-	Tue,  5 Oct 2010 07:56:35 -0500 (CDT)
-In-Reply-To: <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
+Received: from www.telegraphics.com.au ([204.15.192.19]:58480 "EHLO
+	mail.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753450Ab0JEOKz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Oct 2010 10:10:55 -0400
+In-Reply-To: <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: "Stephen R. Marenka" <stephen@marenka.net>
+Cc: linux-m68k@vger.kernel.org
 
 
-On Mon, October 4, 2010 8:40 am, Thorsten Glaser wrote:
-> Geert Uytterhoeven dixit:
+On Tue, 5 Oct 2010, Stephen R. Marenka wrote:
+
+> On Mon, October 4, 2010 8:40 am, Thorsten Glaser wrote:
 >
->>I don't think it makes sense to build staging drivers on Debian/m68k.
->
-> Yes. Tell that to *them*, though.
->
->>So can't you default to CONFIG_STAGING=3Dn?
->
-> No *I* can=E2=80=99t.
+> > Geert Uytterhoeven dixit:
+> >
+> > > I don't think it makes sense to build staging drivers on Debian/m68k.
+> >
+> > Yes. Tell that to *them*, though.
+> >
+> > > So can't you default to CONFIG_STAGING=n?
+> >
+> > No *I* can't.
+> 
+> But I can.
 
-But I can. Feel free to ask to join the debian-kernel team for m68k. Af=
-ter
-all, they let me have access. ;-)
+I don't know whether this driver works or not, but the mac config should 
+probably add:
 
-> Besides, this still looks like an obvious omission to me.
-> Look a few lines above, the macros are defined in the other
-> case (CONFIG_ISA defined).
+CONFIG_BLK_DEV_SWIM=m
 
-I'll apply the patch too.
+And while we are on the subject of configs... ;-)
 
-I'll try to get it done in the next day or two when I can get to a
-computer with appropriate access.
+# CONFIG_CAN is not set
+# CONFIG_WIRELESS is not set
+# CONFIG_WIMAX is not set
+# CONFIG_RFKILL is not set
+# CONFIG_C2PORT is not set
+# CONFIG_EEPROM_93CX6 is not set
+# CONFIG_IDE_GD_ATAPI is not set
+# CONFIG_SCSI_FC_ATTRS is not set
+# CONFIG_SCSI_SAS_LIBSAS is not set
+# CONFIG_LIBFC is not set
+# CONFIG_MII is not set
+# CONFIG_ETHOC is not set
+# CONFIG_DNET is not set
+# CONFIG_KS8842 is not set
+# CONFIG_KS8851_MLL is not set
+# CONFIG_NETDEV_1000 is not set
+# CONFIG_NETDEV_10000 is not set
+# CONFIG_WLAN is not set
+# CONFIG_IEEE802154_DRIVERS is not set
+# CONFIG_INPUT_FF_MEMLESS is not set
+# CONFIG_KEYBOARD_OPENCORES is not set
+# CONFIG_KEYBOARD_STOWAWAY is not set
+# CONFIG_MOUSE_PS2 is not set
+# CONFIG_TCG_TPM is not set
+# CONFIG_SPI is not set
+# CONFIG_PPS is not set
+# CONFIG_HWMON is not set
+# CONFIG_SSB is not set
+# CONFIG_MFD_SM501 is not set
+# CONFIG_HTC_PASIC3 is not set
+# CONFIG_REGULATOR is not set
+# CONFIG_MEDIA_SUPPORT is not set
+# CONFIG_FIRMWARE_EDID is not set
+# CONFIG_FB_METRONOME is not set
+# CONFIG_FB_MB862XX is not set
+# CONFIG_BACKLIGHT_LCD_SUPPORT is not set
+# CONFIG_DISPLAY_SUPPORT is not set
+# CONFIG_HID_PID is not set
+# CONFIG_USB_SUPPORT is not set
+# CONFIG_MEMSTICK is not set
+# CONFIG_NEW_LEDS is not set
+# CONFIG_UIO is not set
 
-Peace,
+The mac config for 2.6.32-23 has all of the above enabled, but I think 
+none are applicable.
 
-Stephen
+OTOH, it might be less work for the Debian kernel team if instead we only 
+picked the low fruit from this list and then disable for all Debian/m68k 
+kernels what is inappropriate for all Debian/m68k kernels...
 
---=20
-Stephen R. Marenka     If life's not fun, you're not doing it right!
-<stephen@marenka.net>
+Finn
