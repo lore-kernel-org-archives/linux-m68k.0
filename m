@@ -1,72 +1,51 @@
-From: "Stephen R. Marenka" <stephen@marenka.net>
-Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for
- !CONFIG_ISA
-Date: Tue, 5 Oct 2010 19:57:33 -0500
-Message-ID: <71f02cadfb4f668a7b31cfe779237f4b.squirrel@naiad.marenka.org>
-References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
-    <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010041149030.285@localhost>
-    <Pine.BSM.4.64L.1010040738160.22274@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010041943530.285@localhost>
-    <Pine.BSM.4.64L.1010040906400.22591@herc.mirbsd.org>
-    <alpine.OSX.2.00.1010042115260.285@localhost>
-    <AANLkTi=TZBpWS1_ybct=fHeZ9N9AZE_+UoJnwM0HxanM@mail.gmail.com>
-    <Pine.BSM.4.64L.1010041338370.24518@herc.mirbsd.org>
-    <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Aranym, more than 244MB FastRAM, garbled display
+Date: Wed, 6 Oct 2010 09:22:11 +0000
+Message-ID: <Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
+References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
+ <m2tyl5u9hu.fsf@igel.home> <alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
+ <Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
+ <AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from naiad.marenka.net ([69.164.199.107]:52200 "EHLO
-	naiad.marenka.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754837Ab0JFA5f (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Oct 2010 20:57:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by naiad.marenka.net (Postfix) with ESMTP id 379CBC034
-	for <linux-m68k@vger.kernel.org>; Tue,  5 Oct 2010 19:57:35 -0500 (CDT)
-Received: from naiad.marenka.net ([127.0.0.1])
-	by localhost (naiad.marenka.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id A5zG4jI-Ynxc for <linux-m68k@vger.kernel.org>;
-	Tue,  5 Oct 2010 19:57:33 -0500 (CDT)
-In-Reply-To: <3e567f8e50ae806e7dc2b734cc2785f9.squirrel@naiad.marenka.org>
+Received: from lo.gmane.org ([80.91.229.12]:46490 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932375Ab0JFJW2 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 6 Oct 2010 05:22:28 -0400
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1P3QCd-0005XT-72
+	for linux-m68k@vger.kernel.org; Wed, 06 Oct 2010 11:22:23 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Wed, 06 Oct 2010 11:22:23 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Wed, 06 Oct 2010 11:22:23 +0200
+In-Reply-To: <AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 
+Geert Uytterhoeven dixit:
 
-On Tue, October 5, 2010 7:56 am, Stephen R. Marenka wrote:
->
-> On Mon, October 4, 2010 8:40 am, Thorsten Glaser wrote:
->> Geert Uytterhoeven dixit:
->>
->>>I don't think it makes sense to build staging drivers on Debian/m68k=
-=2E
->>
->> Yes. Tell that to *them*, though.
->>
->>>So can't you default to CONFIG_STAGING=3Dn?
->>
->> No *I* can=E2=80=99t.
->
-> But I can. Feel free to ask to join the debian-kernel team for m68k. =
-After
-> all, they let me have access. ;-)
->
->> Besides, this still looks like an obvious omission to me.
->> Look a few lines above, the macros are defined in the other
->> case (CONFIG_ISA defined).
->
-> I'll apply the patch too.
->
-> I'll try to get it done in the next day or two when I can get to a
-> computer with appropriate access.
+>On Mon, Oct 4, 2010 at 21:49, Thorsten Glaser <tg@mirbsd.de> wrote:
 
-Done in -25.
+>> This WFM:
 
-Peace,
+>> Args = root=/dev/hda1 console=tty debug=par video=atafb:vga2
 
-Stephen
+>The problem starts happening as soon as FastRAM >= 512.
 
---=20
-Stephen R. Marenka     If life's not fun, you're not doing it right!
-<stephen@marenka.net>
+I suspect atafb:vga2 reduces the amount of memory needed enough
+for it to work.
+
+bye,
+//mirabilos
+-- 
+I believe no one can invent an algorithm. One just happens to hit upon it
+when God enlightens him. Or only God invents algorithms, we merely copy them.
+If you don't believe in God, just consider God as Nature if you won't deny
+existence.		-- Coywolf Qi Hunt
