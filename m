@@ -1,7 +1,7 @@
 From: Al Viro <viro@ftp.linux.org.uk>
-Subject: [PATCH 4/6] m68k: don't lose state if sigframe setup fails
-Date: Thu, 07 Oct 2010 18:09:54 +0100
-Message-ID: <E1P3tyc-0007ig-Fv@ZenIV.linux.org.uk>
+Subject: [PATCH 3/6] m68k: simplify the singlestepping handling in signals
+Date: Thu, 07 Oct 2010 18:09:44 +0100
+Message-ID: <E1P3tyS-0007iC-FW@ZenIV.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -12,100 +12,83 @@ Cc: linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
 
-If we'd failed in setup_frame(), we've no place to store
-the original sigmask.  It's not an unrecoverable situation -
-we raise SIGSEGV, but that SIGSEGV might be successfully
-handled (e.g. on altstack).  In that case we really don't
-want sa_mask of original signal permanently slapped on
-the set of blocked signals.
+Instead of checking the return value of do_signal() we can just do
+the work (raise SIGTRAP and clear SR.T1) directly in handle_signal(),
+when setting the sigframe up.  Simplifies the assembler glue and is
+closer to the way we do it on other targets.
 
-Standard solution: have setup_frame()/setup_rt_frame()
-report failure and don't mess with the signal-related
-state if that has happened...
+Note that do_delayed_trace does *not* disappear; it's still needed
+to deal with single-stepping through syscall, since 68040 doesn't
+raise the trace exception at all if the trap exception is pending.
+We hit it after returning from sys_...() if TIF_DELAYED_TRACE is
+set; all that has changed is that we don't reuse it for "single-step
+into the handler" codepath.
+
+As the result, do_signal() doesn't need to return anything anymore.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/m68k/kernel/signal.c |   19 ++++++++++++-------
- 1 files changed, 12 insertions(+), 7 deletions(-)
+ arch/m68k/kernel/entry.S  |    6 +-----
+ arch/m68k/kernel/signal.c |   11 +++++++----
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 3a15a03..4e49f57 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -178,11 +178,7 @@ do_signal_return:
+ 	addql	#4,%sp
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+-	tstl	%d0
+-	jeq	resume_userspace
+-	| when single stepping into handler stop at the first insn
+-	btst	#6,%curptr@(TASK_INFO+TINFO_FLAGS+2)
+-	jeq	resume_userspace
++	jbra	resume_userspace
+ 
+ do_delayed_trace:
+ 	bclr	#7,%sp@(PT_OFF_SR)	| clear trace bit in SR
 diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index a18b251..a6dd614 100644
+index fa8200d..a18b251 100644
 --- a/arch/m68k/kernel/signal.c
 +++ b/arch/m68k/kernel/signal.c
-@@ -743,7 +743,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size)
- 	return (void __user *)((usp - frame_size) & -8UL);
- }
- 
--static void setup_frame (int sig, struct k_sigaction *ka,
-+static int setup_frame (int sig, struct k_sigaction *ka,
- 			 sigset_t *set, struct pt_regs *regs)
- {
- 	struct sigframe __user *frame;
-@@ -813,14 +813,14 @@ adjust_stack:
- 		tregs->pc = regs->pc;
- 		tregs->sr = regs->sr;
- 	}
--	return;
-+	return err;
- 
- give_sigsegv:
- 	force_sigsegv(sig, current);
- 	goto adjust_stack;
- }
- 
--static void setup_rt_frame (int sig, struct k_sigaction *ka, siginfo_t *info,
-+static int setup_rt_frame (int sig, struct k_sigaction *ka, siginfo_t *info,
- 			    sigset_t *set, struct pt_regs *regs)
- {
- 	struct rt_sigframe __user *frame;
-@@ -901,7 +901,7 @@ adjust_stack:
- 		tregs->pc = regs->pc;
- 		tregs->sr = regs->sr;
- 	}
--	return;
-+	return err;
- 
- give_sigsegv:
- 	force_sigsegv(sig, current);
-@@ -963,6 +963,7 @@ static void
- handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
- 	      sigset_t *oldset, struct pt_regs *regs)
- {
-+	int err;
- 	/* are we from a system call? */
- 	if (regs->orig_d0 >= 0)
- 		/* If so, check system call restarting.. */
-@@ -970,9 +971,12 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
- 
- 	/* set up the stack frame */
- 	if (ka->sa.sa_flags & SA_SIGINFO)
--		setup_rt_frame(sig, ka, info, oldset, regs);
-+		err = setup_rt_frame(sig, ka, info, oldset, regs);
- 	else
--		setup_frame(sig, ka, oldset, regs);
-+		err = setup_frame(sig, ka, oldset, regs);
-+
-+	if (err)
-+		return;
- 
- 	sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
+@@ -978,6 +978,11 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
  	if (!(ka->sa.sa_flags & SA_NODEFER))
-@@ -983,6 +987,8 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
- 		regs->sr &= ~0x8000;
- 		send_sig(SIGTRAP, current, 1);
- 	}
+ 		sigaddset(&current->blocked,sig);
+ 	recalc_sigpending();
 +
-+	clear_thread_flag(TIF_RESTORE_SIGMASK);
++	if (test_thread_flag(TIF_DELAYED_TRACE)) {
++		regs->sr &= ~0x8000;
++		send_sig(SIGTRAP, current, 1);
++	}
  }
  
  /*
-@@ -1008,7 +1014,6 @@ asmlinkage void do_signal(struct pt_regs *regs)
- 	if (signr > 0) {
+@@ -985,7 +990,7 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
+  * want to handle. Thus you cannot kill init even with a SIGKILL even by
+  * mistake.
+  */
+-asmlinkage int do_signal(struct pt_regs *regs)
++asmlinkage void do_signal(struct pt_regs *regs)
+ {
+ 	siginfo_t info;
+ 	struct k_sigaction ka;
+@@ -1004,7 +1009,7 @@ asmlinkage int do_signal(struct pt_regs *regs)
  		/* Whee!  Actually deliver the signal.  */
  		handle_signal(signr, &ka, &info, oldset, regs);
--		clear_thread_flag(TIF_RESTORE_SIGMASK);
- 		return;
+ 		clear_thread_flag(TIF_RESTORE_SIGMASK);
+-		return 1;
++		return;
  	}
  
+ 	/* Did we come from a system call? */
+@@ -1017,6 +1022,4 @@ asmlinkage int do_signal(struct pt_regs *regs)
+ 		clear_thread_flag(TIF_RESTORE_SIGMASK);
+ 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
+ 	}
+-
+-	return 0;
+ }
 -- 
 1.5.6.5
