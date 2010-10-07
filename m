@@ -1,51 +1,201 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
-Subject: Re: Aranym, more than 244MB FastRAM, garbled display
-Date: Thu, 07 Oct 2010 15:11:22 +0200
-Message-ID: <1286457082.1687.52.camel@joy-desktop>
-References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
-	 <m2tyl5u9hu.fsf@igel.home>
-	 <alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
-	 <Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
-	 <AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
-	 <Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
-	 <AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
+From: Al Viro <viro@ftp.linux.org.uk>
+Subject: [PATCH 2/6] m68k: switch to saner sigsuspend()
+Date: Thu, 07 Oct 2010 18:09:34 +0100
+Message-ID: <E1P3tyI-0007hW-FL@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mta.inext.cz ([212.111.0.11]:4318 "EHLO mta.inext.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750719Ab0JGQOq convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Oct 2010 12:14:46 -0400
-Received: from inext.inext.cz ([212.111.0.10]) by mta.inext.cz
-          (Netscape Mail Server v1.1) with SMTP id AAC229
-          for <linux-m68k@vger.kernel.org>; Thu, 7 Oct 2010 15:11:23 +0200
-Received: from mx.inext.cz ([212.111.0.12])
- by inext.inext.cz (SMSSMTP 4.1.0.19) with SMTP id M2010100715112317423
- for <linux-m68k@vger.kernel.org>; Thu, 07 Oct 2010 15:11:23 +0200
-In-Reply-To: <AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: linux-m68k@vger.kernel.org
 
-Michael Schmitz p=C3=AD=C5=A1e v Thu 07. 10. 2010 v 09:47 +0200:
-> >>> Args =3D root=3D/dev/hda1 console=3Dtty debug=3Dpar video=3Datafb=
-:vga2
-> >
-> >>The problem starts happening as soon as FastRAM >=3D 512.
-> >
-> > I suspect atafb:vga2 reduces the amount of memory needed enough
-> > for it to work.
->=20
-> Certainly - 640x480@1bit isn't much. Even less than sthigh IIRC.
 
-sthigh is 640x400@1bit, I believe, i.e. even less than vga2.
+and saner do_signal() arguments, while we are at it
 
-> I wonder why it does depend on FastRAM size, though. ST-RAM eaten up
-> by page tables?
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/m68k/include/asm/thread_info_mm.h |    1 +
+ arch/m68k/include/asm/unistd.h         |    1 +
+ arch/m68k/kernel/entry.S               |   19 +---------
+ arch/m68k/kernel/signal.c              |   64 ++++++++++---------------------
+ 4 files changed, 24 insertions(+), 61 deletions(-)
 
-why anything is stored in ST-RAM? Besides there's 14 MB of ST-RAM on
-ARAnyM, that should be plenty (compare with Falcon's 4 MB).
-
-Petr
+diff --git a/arch/m68k/include/asm/thread_info_mm.h b/arch/m68k/include/asm/thread_info_mm.h
+index 3bf31dc..b2ea8be 100644
+--- a/arch/m68k/include/asm/thread_info_mm.h
++++ b/arch/m68k/include/asm/thread_info_mm.h
+@@ -67,5 +67,6 @@ struct thread_info {
+ #define TIF_SYSCALL_TRACE	15	/* syscall trace active */
+ #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
+ #define TIF_FREEZE		17	/* thread is freezing for suspend */
++#define TIF_RESTORE_SIGMASK	18	/* restore signal mask in do_signal */
+ 
+ #endif	/* _ASM_M68K_THREAD_INFO_H */
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index b43b36b..26d851d 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -373,6 +373,7 @@
+ #define __ARCH_WANT_SYS_SIGPENDING
+ #define __ARCH_WANT_SYS_SIGPROCMASK
+ #define __ARCH_WANT_SYS_RT_SIGACTION
++#define __ARCH_WANT_SYS_RT_SIGSUSPEND
+ 
+ /*
+  * "Conditional" syscalls
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 6360c43..3a15a03 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -174,9 +174,8 @@ do_signal_return:
+ 	subql	#4,%sp			| dummy return address
+ 	SAVE_SWITCH_STACK
+ 	pea	%sp@(SWITCH_STACK_SIZE)
+-	clrl	%sp@-
+ 	bsrl	do_signal
+-	addql	#8,%sp
++	addql	#4,%sp
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+ 	tstl	%d0
+@@ -290,22 +289,6 @@ ENTRY(sys_vfork)
+ 	RESTORE_SWITCH_STACK
+ 	rts
+ 
+-ENTRY(sys_sigsuspend)
+-	SAVE_SWITCH_STACK
+-	pea	%sp@(SWITCH_STACK_SIZE)
+-	jbsr	do_sigsuspend
+-	addql	#4,%sp
+-	RESTORE_SWITCH_STACK
+-	rts
+-
+-ENTRY(sys_rt_sigsuspend)
+-	SAVE_SWITCH_STACK
+-	pea	%sp@(SWITCH_STACK_SIZE)
+-	jbsr	do_rt_sigsuspend
+-	addql	#4,%sp
+-	RESTORE_SWITCH_STACK
+-	rts
+-
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
+ 	jbsr	do_sigreturn
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index c776c81..fa8200d 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -51,8 +51,6 @@
+ 
+ #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
+ 
+-asmlinkage int do_signal(sigset_t *oldset, struct pt_regs *regs);
+-
+ const int frame_extra_sizes[16] = {
+   [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
+   [2]	= sizeof(((struct frame *)0)->un.fmt2),
+@@ -74,51 +72,21 @@ const int frame_extra_sizes[16] = {
+ /*
+  * Atomically swap in the new signal mask, and wait for a signal.
+  */
+-asmlinkage int do_sigsuspend(struct pt_regs *regs)
++asmlinkage int
++sys_sigsuspend(int unused0, int unused1, old_sigset_t mask)
+ {
+-	old_sigset_t mask = regs->d3;
+-	sigset_t saveset;
+-
+ 	mask &= _BLOCKABLE;
+-	saveset = current->blocked;
++	spin_lock_irq(&current->sighand->siglock);
++	current->saved_sigmask = current->blocked;
+ 	siginitset(&current->blocked, mask);
+ 	recalc_sigpending();
++	spin_unlock_irq(&current->sighand->siglock);
+ 
+-	regs->d0 = -EINTR;
+-	while (1) {
+-		current->state = TASK_INTERRUPTIBLE;
+-		schedule();
+-		if (do_signal(&saveset, regs))
+-			return -EINTR;
+-	}
+-}
+-
+-asmlinkage int
+-do_rt_sigsuspend(struct pt_regs *regs)
+-{
+-	sigset_t __user *unewset = (sigset_t __user *)regs->d1;
+-	size_t sigsetsize = (size_t)regs->d2;
+-	sigset_t saveset, newset;
+-
+-	/* XXX: Don't preclude handling different sized sigset_t's.  */
+-	if (sigsetsize != sizeof(sigset_t))
+-		return -EINVAL;
+-
+-	if (copy_from_user(&newset, unewset, sizeof(newset)))
+-		return -EFAULT;
+-	sigdelsetmask(&newset, ~_BLOCKABLE);
+-
+-	saveset = current->blocked;
+-	current->blocked = newset;
+-	recalc_sigpending();
++	current->state = TASK_INTERRUPTIBLE;
++	schedule();
++	set_restore_sigmask();
+ 
+-	regs->d0 = -EINTR;
+-	while (1) {
+-		current->state = TASK_INTERRUPTIBLE;
+-		schedule();
+-		if (do_signal(&saveset, regs))
+-			return -EINTR;
+-	}
++	return -ERESTARTNOHAND;
+ }
+ 
+ asmlinkage int
+@@ -1017,21 +985,25 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
+  * want to handle. Thus you cannot kill init even with a SIGKILL even by
+  * mistake.
+  */
+-asmlinkage int do_signal(sigset_t *oldset, struct pt_regs *regs)
++asmlinkage int do_signal(struct pt_regs *regs)
+ {
+ 	siginfo_t info;
+ 	struct k_sigaction ka;
+ 	int signr;
++	sigset_t *oldset;
+ 
+ 	current->thread.esp0 = (unsigned long) regs;
+ 
+-	if (!oldset)
++	if (test_thread_flag(TIF_RESTORE_SIGMASK))
++		oldset = &current->saved_sigmask;
++	else
+ 		oldset = &current->blocked;
+ 
+ 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+ 	if (signr > 0) {
+ 		/* Whee!  Actually deliver the signal.  */
+ 		handle_signal(signr, &ka, &info, oldset, regs);
++		clear_thread_flag(TIF_RESTORE_SIGMASK);
+ 		return 1;
+ 	}
+ 
+@@ -1040,5 +1012,11 @@ asmlinkage int do_signal(sigset_t *oldset, struct pt_regs *regs)
+ 		/* Restart the system call - no handlers present */
+ 		handle_restart(regs, NULL, 0);
+ 
++	/* If there's no signal to deliver, we just restore the saved mask.  */
++	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
++		clear_thread_flag(TIF_RESTORE_SIGMASK);
++		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
++	}
++
+ 	return 0;
+ }
+-- 
+1.5.6.5
