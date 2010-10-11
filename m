@@ -1,51 +1,46 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: aranym bug, manifests as "ida_remove called for id=13" on recent kernels
-Date: Sun, 10 Oct 2010 21:36:32 -0700
-Message-ID: <20101011043632.GA2566@cynthia.pants.nu>
-References: <20101007174948.GT19804@ZenIV.linux.org.uk> <AANLkTin4886D+-yo=zrf2Yj2R5NM9qdRkc3M9cG2rN_F@mail.gmail.com> <20101010144952.GF19804@ZenIV.linux.org.uk> <AANLkTinuA3AzMoJ82pvCuhmo59DZxL2F1j3xhXUkjj7z@mail.gmail.com> <20101010235256.GG19804@ZenIV.linux.org.uk> <20101011024103.GH19804@ZenIV.linux.org.uk>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Aranym, more than 244MB FastRAM, garbled display
+Date: Mon, 11 Oct 2010 10:00:58 +0200
+Message-ID: <AANLkTikumgbPW12gcsUML-JqyCUUaws2=r1gY7NT4fgJ@mail.gmail.com>
+References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
+	<m2tyl5u9hu.fsf@igel.home>
+	<alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
+	<Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
+	<AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
+	<Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
+	<AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
+	<AANLkTin+_c=Luvns2MYkVhBksB8vD3reDh8W6a8Bje2o@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cynthia.allandria.com ([76.245.85.235]:40967 "EHLO
-	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751340Ab0JKFYq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Oct 2010 01:24:46 -0400
-Content-Disposition: inline
-In-Reply-To: <20101011024103.GH19804@ZenIV.linux.org.uk>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:62666 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752648Ab0JKIKv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Oct 2010 04:10:51 -0400
+Received: by wwj40 with SMTP id 40so3457112wwj.1
+        for <linux-m68k@vger.kernel.org>; Mon, 11 Oct 2010 01:10:50 -0700 (PDT)
+In-Reply-To: <AANLkTin+_c=Luvns2MYkVhBksB8vD3reDh8W6a8Bje2o@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-On Mon, Oct 11, 2010 at 03:41:03AM +0100, Al Viro wrote:
-> Argh...  OK, going through aranym with debugger has exhonorated it.  My
-> apologies ;-/  It *is* gcc in sid.  Testcase:
-> 
-> extern int foo(int);
-> void *bar(int n)
-> {
->         return (void *)foo(n);
-> }
-> 
-> and gcc -S -O2 turns that into
-> bar:
->         link.w %fp,#0
->         unlk %fp
->         jra foo
-> 
+Hi Geert,
 
-I presume the bug is that foo put the return value in %d0 while bar
-should have its return value in %a0. This function isn't eligible
-for the optimization being used due to this need to move the result
-into a different register.
+>> BTW: browsing Geert's git tree online, I noticed that my old patch to
+>> reserve some of ST-RAM for use by atafb etc. has never made it into
+>
+> That's correct.
+>
+>> git. I'll clean that up and resubmit unless Geert has objections.
+>
+> I'm blocked on this follow-up you sent me afterwards (without CC to the list):
+>
+> | Plus there's still a bug in stram_free_block, let's see if you can spot it :-)
 
-> Spot the obvious bug...  BTW, why on the Earth does debian-ports m68k tree
-> use gcc-4.3 with Cthulhu-scaring 700Kb gzipped patch and does *not* have
-> gcc-4.4?
+Does not ring any bells ... I'll check my old mbox as soon as I have
+access again. I'll add a kernel parameter as well.
 
-I believe that gcc-4.4 for m68k is being held up by the TLS support patches.
-While I haven't been personally involved to any great degree, I got the
-impression that the work is pretty much done other than getting it included.
+Cheers,
 
-	Brad Boyer
-	flar@allandria.com
+  Michael
