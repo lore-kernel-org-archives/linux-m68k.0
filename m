@@ -1,60 +1,53 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: Aranym, more than 244MB FastRAM, garbled display
-Date: Mon, 11 Oct 2010 10:11:54 +0200
-Message-ID: <AANLkTi=krrZGDqySPsDDcjAcM4w_SDWvX_hHSThY3N_m@mail.gmail.com>
-References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
-	<m2tyl5u9hu.fsf@igel.home>
-	<alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
-	<Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
-	<AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
-	<Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
-	<AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
-	<1286457082.1687.52.camel@joy-desktop>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: aranym bug, manifests as "ida_remove called for id=13" on recent kernels
+Date: Mon, 11 Oct 2010 10:39:25 +0200
+Message-ID: <AANLkTinL7yVt7s+Ame_rK4sVWyRBjCQ2_7=5DZu2pWx4@mail.gmail.com>
+References: <20101007174948.GT19804@ZenIV.linux.org.uk>
+	<AANLkTin4886D+-yo=zrf2Yj2R5NM9qdRkc3M9cG2rN_F@mail.gmail.com>
+	<20101010144952.GF19804@ZenIV.linux.org.uk>
+	<AANLkTinuA3AzMoJ82pvCuhmo59DZxL2F1j3xhXUkjj7z@mail.gmail.com>
+	<20101010235256.GG19804@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:60890 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753136Ab0JKIL5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Oct 2010 04:11:57 -0400
-Received: by wwj40 with SMTP id 40so3458089wwj.1
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Oct 2010 01:11:56 -0700 (PDT)
-In-Reply-To: <1286457082.1687.52.camel@joy-desktop>
+Received: from mail-iw0-f174.google.com ([209.85.214.174]:38505 "EHLO
+	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753434Ab0JKIj2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Oct 2010 04:39:28 -0400
+In-Reply-To: <20101010235256.GG19804@ZenIV.linux.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
-Cc: linux-m68k@vger.kernel.org
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Petr,
-
->> Certainly - 640x480@1bit isn't much. Even less than sthigh IIRC.
+On Mon, Oct 11, 2010 at 01:52, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Sun, Oct 10, 2010 at 10:18:03PM +0200, Geert Uytterhoeven wrote:
+>> >> This is on aranym-0.9.9-1 from Ubuntu/amd64.
+>> >
+>> > stat -L /proc/2/exec, otherwise you'll hit lstat() instead of stat=
+().
+>> > And FWIW 0.9.10-1 squeeze/amd64 also triggers here...
+>>
+>> Still, just "stat: cannot stat `proc/2/exe': No such file or directo=
+ry" here...
 >
-> sthigh is 640x400@1bit, I believe, i.e. even less than vga2.
->
+> Interesting... =C2=A0Which gcc version is used?
 
-I stand corrected.
+Good old gcc version 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
 
->> I wonder why it does depend on FastRAM size, though. ST-RAM eaten up
->> by page tables?
->
-> why anything is stored in ST-RAM? Besides there's 14 MB of ST-RAM on
-> ARAnyM, that should be plenty (compare with Falcon's 4 MB).
+Gr{oetje,eeting}s,
 
-Due to some problem with memory management, the kernel treats all RAM
-as equal, and allocates from the bottom up apparently.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-The frame buffer is initialized rather late in the kernel init
-procedure, and both kernel, ramdisk image and ramdisk will go into
-ST-RAM. Maybe it's due to fragmentation of memory more than actual
-memory usage in the end.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-Ideally you would want to have the kernel, ramdisk etc. in FastRAM.
-This would require FastRAM to be placed as the first memory chunk in
-the bootinfo struct (for reasons of memory management setup that I've
-forgotten the details of - maybe it's time to revisit that ...).
-Anything I tried to remedy that has just failed to boot, so we seem
-stuck with kernel in ST-RAM.
-
-Cheers,
-
-  Michael
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
