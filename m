@@ -1,164 +1,48 @@
-From: Mikael Pettersson <mikpe@it.uu.se>
+From: Al Viro <viro@ZenIV.linux.org.uk>
 Subject: Re: aranym bug, manifests as "ida_remove called for id=13" on recent
  kernels
-Date: Mon, 11 Oct 2010 21:05:03 +0200
-Message-ID: <19635.24543.793716.40892@pilspetsen.it.uu.se>
-References: <20101007174948.GT19804@ZenIV.linux.org.uk>
-	<AANLkTin4886D+-yo=zrf2Yj2R5NM9qdRkc3M9cG2rN_F@mail.gmail.com>
-	<20101010144952.GF19804@ZenIV.linux.org.uk>
-	<AANLkTinuA3AzMoJ82pvCuhmo59DZxL2F1j3xhXUkjj7z@mail.gmail.com>
-	<20101010235256.GG19804@ZenIV.linux.org.uk>
-	<20101011024103.GH19804@ZenIV.linux.org.uk>
-	<20101011043632.GA2566@cynthia.pants.nu>
-	<20101011044808.GI19804@ZenIV.linux.org.uk>
-	<Pine.BSM.4.64L.1010111218040.23471@herc.mirbsd.org>
+Date: Mon, 11 Oct 2010 23:02:24 +0100
+Message-ID: <20101011220224.GM19804@ZenIV.linux.org.uk>
+References: <20101010144952.GF19804@ZenIV.linux.org.uk>
+ <AANLkTinuA3AzMoJ82pvCuhmo59DZxL2F1j3xhXUkjj7z@mail.gmail.com>
+ <20101010235256.GG19804@ZenIV.linux.org.uk>
+ <20101011024103.GH19804@ZenIV.linux.org.uk>
+ <20101011043632.GA2566@cynthia.pants.nu>
+ <20101011044808.GI19804@ZenIV.linux.org.uk>
+ <Pine.BSM.4.64L.1010111218040.23471@herc.mirbsd.org>
+ <20101011133545.GJ19804@ZenIV.linux.org.uk>
+ <m3wrpo24u0.fsf@hase.home>
+ <20101011142428.GK19804@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fanny.its.uu.se ([130.238.4.241]:58202 "EHLO fanny.its.uu.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754373Ab0JKTFH convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Oct 2010 15:05:07 -0400
-In-Reply-To: <Pine.BSM.4.64L.1010111218040.23471@herc.mirbsd.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20101011142428.GK19804@ZenIV.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Thorsten Glaser writes:
- > Mikael Pettersson dixit:
- >=20
- > >It's gcc PR41302 which was fixed for gcc trunk on November 4 2009
- > >in r153890.  The patch backports easily to gcc-4.4 and solves the
- > >test case there (manual inspection using a cross).  It also backpor=
-ts
- >=20
- > [x] send unidiff
- >=20
- > I=E2=80=99ll include that in my gcc build and then forward it to Deb=
-ian
- > once I got a working gcc, unless you want to push that to them
- > already.
+On Mon, Oct 11, 2010 at 03:24:28PM +0100, Al Viro wrote:
 
-This is what I have had in my repo since November last year,
-but it's only been minimally tested in a cross.  Please push
-if/once it passes bootstrap + regtest.
+> BTW, any comments on signal patchset?  Seems to work here, including the
+> stack expansion fixes, but that's on aranym.  I'll try to resurrect the
+> real hardware, but that may take a while.  If somebody could give it a beating
+> in the meanwhile...
 
-gcc/
+Oh, lovely...  One more signal bug (and a lot more on m68knommu): if we
+strace a process and signal is delivered during pagefault handling, you'll
+lose the second call of syscall_trace() on sigreturn().  If the signal
+is delivered during a syscall or during an interrupt, syscall_trace() is
+called twice on sigreturn() (as it does on all platforms).  Fortunately,
+that's easy to fix - same as on alpha (calling syscall_trace in ret_from_signal
+if we are getting traced, just before doing RESTORE_SWITCH_STACK).  Will test
+and post...
 
-2009-11-10  Mikael Pettersson  <mikpe@it.uu.se>
-
-	Backport from mainline:
-	2009-11-04  Maxim Kuvyrkov  <maxim@codesourcery.com>
-
-	PR target/41302
-	* config/m68k/m68k.c (m68k_reg_present_p): New static function.
-	(m68k_ok_for_sibcall_p): Handle different result return locations.
-
-gcc/testsuite/
-
-2009-11-10  Mikael Pettersson  <mikpe@it.uu.se>
-
-	Backport from mainline:
-	2009-11-04  Carlos O'Donell  <carlos@codesourcery.com>
-
-	PR target/41302
-	* gcc.target/m68k/pr41302.c: New test.
-
---- gcc-4.4.2/gcc/config/m68k/m68k.c.~1~	2008-11-19 17:24:10.000000000 =
-+0100
-+++ gcc-4.4.2/gcc/config/m68k/m68k.c	2009-11-10 00:10:06.000000000 +010=
-0
-@@ -1374,6 +1374,30 @@ flags_in_68881 (void)
-   return cc_status.flags & CC_IN_68881;
- }
-=20
-+/* Return true if PARALLEL contains register REGNO.  */
-+static bool
-+m68k_reg_present_p (const_rtx parallel, unsigned int regno)
-+{
-+  int i;
-+
-+  if (REG_P (parallel) && REGNO (parallel) =3D=3D regno)
-+    return true;
-+
-+  if (GET_CODE (parallel) !=3D PARALLEL)
-+    return false;
-+
-+  for (i =3D 0; i < XVECLEN (parallel, 0); ++i)
-+    {
-+      const_rtx x;
-+
-+      x =3D XEXP (XVECEXP (parallel, 0, i), 0);
-+      if (REG_P (x) && REGNO (x) =3D=3D regno)
-+	return true;
-+    }
-+
-+  return false;
-+}
-+
- /* Implement TARGET_FUNCTION_OK_FOR_SIBCALL_P.  */
-=20
- static bool
-@@ -1386,6 +1410,26 @@ m68k_ok_for_sibcall_p (tree decl, tree e
-   if (CALL_EXPR_STATIC_CHAIN (exp))
-     return false;
-=20
-+  if (!VOID_TYPE_P (TREE_TYPE (DECL_RESULT (cfun->decl))))
-+    {
-+      /* Check that the return value locations are the same.  For
-+	 example that we aren't returning a value from the sibling in
-+	 a D0 register but then need to transfer it to a A0 register.  */
-+      rtx cfun_value;
-+      rtx call_value;
-+
-+      cfun_value =3D FUNCTION_VALUE (TREE_TYPE (DECL_RESULT (cfun->dec=
-l)),
-+				   cfun->decl);
-+      call_value =3D FUNCTION_VALUE (TREE_TYPE (exp), decl);
-+
-+      /* Check that the values are equal or that the result the callee
-+	 function returns is superset of what the current function returns.  =
-*/
-+      if (!(rtx_equal_p (cfun_value, call_value)
-+	    || (REG_P (cfun_value)
-+		&& m68k_reg_present_p (call_value, REGNO (cfun_value)))))
-+	return false;
-+    }
-+
-   kind =3D m68k_get_function_kind (current_function_decl);
-   if (kind =3D=3D m68k_fk_normal_function)
-     /* We can always sibcall from a normal function, because it's
-@@ -4583,6 +4627,9 @@ m68k_libcall_value (enum machine_mode mo
-   return gen_rtx_REG (mode, D0_REG);
- }
-=20
-+/* Location in which function value is returned.
-+   NOTE: Due to differences in ABIs, don't call this function directly=
-,
-+   use FUNCTION_VALUE instead.  */
- rtx
- m68k_function_value (const_tree valtype, const_tree func ATTRIBUTE_UNU=
-SED)
- {
---- gcc-4.4.2/gcc/testsuite/gcc.target/m68k/pr41302.c.~1~	1970-01-01 01=
-:00:00.000000000 +0100
-+++ gcc-4.4.2/gcc/testsuite/gcc.target/m68k/pr41302.c	2009-11-04 13:09:=
-17.000000000 +0100
-@@ -0,0 +1,14 @@
-+/* { dg-do compile } */
-+/* { dg-options "-O2" } */
-+/* { dg-final { scan-assembler "move.l \%d0,\%a0" { target *linux* } }=
- } */
-+
-+struct pts {
-+  int c;
-+};
-+
-+unsigned int bar (struct pts *a, int b);
-+
-+struct pts * foo (struct pts *a, int b)
-+{
-+  return (struct pts *) bar (a, b);
-+}
+FWIW, on other targets we either have sys_{rt,}_sigreturn() done as normal
+functons (in which case the normal logics will take care of that), or
+have them return to place in (common) syscall exit path earlier than
+conditional call of syscall trace (mips, score), or check flags and do
+call ourselves (sparc, alpha since it had been fixed).  AFAICS, m68k and
+m68knommu are the only ones buggered that way.  On alpha we used to have
+it even worse - there we did only one call on sigreturn() unconditionally...
