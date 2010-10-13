@@ -1,44 +1,54 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH/RFC] input: hil_mlc - Fix hil_mlc_serio_id file2alias
- failure
-Date: Tue, 12 Oct 2010 23:56:02 -0700
-Message-ID: <20101013065602.GA7014__7627.58760615743$1286954783$gmane$org@core.coreip.homeip.net>
-References: <alpine.DEB.2.00.1010122111270.6491@ayla.of.borg>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: eglibc sysroot
+Date: Wed, 13 Oct 2010 16:59:25 +0000
+Message-ID: <Pine.BSM.4.64L.1010131656010.19763@herc.mirbsd.org>
+References: <alpine.LNX.2.00.1009221445130.7495@nippy.intranet>
+ <alpine.OSX.2.00.1010122347280.278@localhost> <Pine.BSM.4.64L.1010121755580.28735@herc.mirbsd.org>
+ <alpine.OSX.2.00.1010131102470.285@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1010122111270.6491@ayla.of.borg>
+Received: from lo.gmane.org ([80.91.229.12]:39613 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750919Ab0JMQ7q convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 13 Oct 2010 12:59:46 -0400
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1P64g3-0002uv-9F
+	for linux-m68k@vger.kernel.org; Wed, 13 Oct 2010 18:59:43 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Wed, 13 Oct 2010 18:59:43 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Wed, 13 Oct 2010 18:59:43 +0200
+In-Reply-To: <alpine.OSX.2.00.1010131102470.285@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Dzianis Kahanovich <mahatma@eu.by>, Helge Deller <deller@gmx.de>, linux-next@vger.kernel.org, linux-input@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-parisc@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: 598893@bugs.debian.org
 
-On Tue, Oct 12, 2010 at 09:17:49PM +0200, Geert Uytterhoeven wrote:
-> Commit e288bf7c346360ac9dafbc1b6d7b6b1a82b51616 ("Input: HIL keyboard and
-> serio - add missing MODULE_DEVICE_TABLE()") caused the following build
-> failure on m68k/allmodconfig:
-> 
-> FATAL: drivers/input/serio/hil_mlc: struct serio_device_id is not terminated with a NULL entry!
-> 
-> hil_mlc_serio_id is not an array, but a single struct serio_device_id entry.
-> Fix the build by converting it into an array, and adding a NULL entry.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Build failure in linux-next:
-> http://kisskb.ellerman.id.au/kisskb/buildresult/3385851/
-> 
-> I'm not sure this is the right fix, as hil_mlc_serio_id is a catch-all ID.
-> Perhaps the MODULE_DEVICE_TABLE() should just be removed again instead?
-> 
+=46inn Thain dixit:
 
-Gah, that original patch was incorrect, I should not have applied it at
-all... The serio_device_id in question is for serio port that is being
-created by the driver and thus of course should not be used in
-MODULE_DEVICE_TABLE().
+>I guess you patched your compilers as discussed on linux-m68k?
 
-I'll drop it from my 'next' queue.
+Interestingly enough, I was not hit by GCC PR/41302 because I built
+with CONFIG_ARCH_WANT_FRAME_POINTERS=3Dy and CONFIG_FRAME_POINTER=3Dy
+to work around GCC PR/37052 already which defines not only
+-fno-omit-frame-pointer but also -fno-optimize-sibling-calls =E2=98=BA
 
--- 
-Dmitry
+Trying again now, thanks to Stephen=E2=80=99s commit in the Debian Kern=
+el svn.
+
+bye,
+//mirabilos
+--=20
+I believe no one can invent an algorithm. One just happens to hit upon =
+it
+when God enlightens him. Or only God invents algorithms, we merely copy=
+ them.
+If you don't believe in God, just consider God as Nature if you won't d=
+eny
+existence.		-- Coywolf Qi Hunt
