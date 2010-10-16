@@ -1,56 +1,62 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 07/18] m68k: remove big kernel lock
-Date: Sat, 16 Oct 2010 19:35:26 +0200
-Message-ID: <AANLkTi=sRZggvUoKqZsv0PV6e7D+3_5Wq=54fn_93QGY@mail.gmail.com>
-References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
-	<1284492909-7147-8-git-send-email-arnd@arndb.de>
-	<m21v8mkhg7.fsf@igel.home>
-	<201009221304.45353.arnd@arndb.de>
+Subject: [PATCH] m68k: Remove big kernel lock in cache flush code
+Date: Sat, 16 Oct 2010 19:36:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010161936010.5904@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:47193 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753072Ab0JPRf2 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 16 Oct 2010 13:35:28 -0400
-Received: by fxm4 with SMTP id 4so1223681fxm.19
-        for <linux-m68k@vger.kernel.org>; Sat, 16 Oct 2010 10:35:27 -0700 (PDT)
-In-Reply-To: <201009221304.45353.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andreas Schwab <schwab@linux-m68k.org>
 
-On Wed, Sep 22, 2010 at 13:04, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Tuesday 21 September 2010, Andreas Schwab wrote:
->>
->> Arnd Bergmann <arnd@arndb.de> writes:
->>
->> > The cache flush code only locks against itself, so there
->> > is no excuse to use the BKL here. This replaces it with
->> > a local mutex in order to maintain serialization of flushes.
->>
->> I don't think this needs a lock at all.
->
-> Quite likely, I just took the most conservative approach.
-> If you want to queue a patch to drop the BKL from m68k, I'll
-> happily drop this one from my series.
+The cache flush code doesn't need a lock, so we can remove the use of the BKL.
 
-I'm dropping the locking completely. Patch will follow.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+ arch/m68k/kernel/sys_m68k.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 2f431ec..3db2e7f 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -12,7 +12,6 @@
+ #include <linux/mm.h>
+ #include <linux/fs.h>
+ #include <linux/smp.h>
+-#include <linux/smp_lock.h>
+ #include <linux/sem.h>
+ #include <linux/msg.h>
+ #include <linux/shm.h>
+@@ -377,7 +376,6 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 	struct vm_area_struct *vma;
+ 	int ret = -EINVAL;
+ 
+-	lock_kernel();
+ 	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
+ 	    cache & ~FLUSH_CACHE_BOTH)
+ 		goto out;
+@@ -446,7 +444,6 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 	    }
+ 	}
+ out:
+-	unlock_kernel();
+ 	return ret;
+ }
+ 
+-- 
+1.7.0.4
 
 Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
