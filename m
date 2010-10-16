@@ -1,120 +1,79 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH 06/22] m68knommu: introduce little endian bitops
-Date: Fri, 15 Oct 2010 18:46:05 +0900
-Message-ID: <1287135981-17604-7-git-send-email-akinobu.mita@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 22/22] bitops: remove minix bitops from asm/bitops.h
+Date: Sat, 16 Oct 2010 09:59:24 +0200
+Message-ID: <AANLkTi=cA=yf7NmPVKXaZdoTBYmwdmy_frk7b_feG-WG@mail.gmail.com>
 References: <1287135981-17604-1-git-send-email-akinobu.mita@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1287135981-17604-1-git-send-email-akinobu.mita@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+	<1287135981-17604-23-git-send-email-akinobu.mita@gmail.com>
+	<201010151253.15653.arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:55334 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753241Ab0JPH70 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 16 Oct 2010 03:59:26 -0400
+In-Reply-To: <201010151253.15653.arnd@arndb.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Introduce little endian bit operations by renaming native ext2 bit
-operations. The ext2 bit operations are kept by using little endian
-bit operations until the conversions are finished.
+On Fri, Oct 15, 2010 at 12:53, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Friday 15 October 2010, Akinobu Mita wrote:
+>> minix bit operations are only used by minix filesystem and useless
+>> by other modules.
+>
+> Right.
+>
+>> This provides new config option CONFIG_MINIX_FS_LITTLE_ENDIAN and
+>> CONFIG_MINIX_FS_NATIVE_ENDIAN that each architecture selects one of =
+which.
+>> Then we can remove minix bit operations from asm/bitops.h from all
+>> architectures by making them minix filesystem local macros.
+>
+> I would say that any architecture that defines minix bitops as
+> little-endian is broken and we should not even need the #define.
+>
+> You have defined these as "native endian":
+>
+> always LE:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0alpha, blackfin, ia64, score, tile, x86
+>
+> always BE:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0h8300, microblaze, s390, sparc
+>
+> configurable:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0m32r, mips, sh, xtensa
+>
+> The only ones among these that possibly ever cared about mounting min=
+ix
+> file systems on a big-endian kernel are really old sparc and mips sys=
+tems,
+> everyone else probably never noticed their mistake.
+>
+> I'd say let's define the minix bitops as always LE and be done with i=
+t.
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/include/asm/bitops_no.h |   40 +++++++++++++++++++++++++++++-------
- 1 files changed, 32 insertions(+), 8 deletions(-)
+=46unny, m68k uses the little endian minix file system?
 
-diff --git a/arch/m68k/include/asm/bitops_no.h b/arch/m68k/include/asm/bitops_no.h
-index 292e1ce..9f5eb02 100644
---- a/arch/m68k/include/asm/bitops_no.h
-+++ b/arch/m68k/include/asm/bitops_no.h
-@@ -196,7 +196,15 @@ static __inline__ int __test_bit(int nr, const volatile unsigned long * addr)
- #include <asm-generic/bitops/hweight.h>
- #include <asm-generic/bitops/lock.h>
- 
--static __inline__ int ext2_set_bit(int nr, volatile void * addr)
-+#define BITOP_LE_SWIZZLE	((BITS_PER_LONG-1) & ~0x7)
-+
-+#define __set_le_bit(nr, addr) \
-+	__set_bit((nr) ^ BITOP_LE_SWIZZLE, (addr))
-+
-+#define __clear_le_bit(nr, addr) \
-+	__clear_bit((nr) ^ BITOP_LE_SWIZZLE, (addr))
-+
-+static inline int __test_and_set_le_bit(int nr, volatile void *addr)
- {
- 	char retval;
- 
-@@ -215,7 +223,7 @@ static __inline__ int ext2_set_bit(int nr, volatile void * addr)
- 	return retval;
- }
- 
--static __inline__ int ext2_clear_bit(int nr, volatile void * addr)
-+static inline int __test_and_clear_le_bit(int nr, volatile void *addr)
- {
- 	char retval;
- 
-@@ -238,7 +246,7 @@ static __inline__ int ext2_clear_bit(int nr, volatile void * addr)
- 	({						\
- 		int ret;				\
- 		spin_lock(lock);			\
--		ret = ext2_set_bit((nr), (addr));	\
-+		ret = __test_and_set_le_bit((nr), (addr));	\
- 		spin_unlock(lock);			\
- 		ret;					\
- 	})
-@@ -247,12 +255,12 @@ static __inline__ int ext2_clear_bit(int nr, volatile void * addr)
- 	({						\
- 		int ret;				\
- 		spin_lock(lock);			\
--		ret = ext2_clear_bit((nr), (addr));	\
-+		ret = __test_and_clear_le_bit((nr), (addr));	\
- 		spin_unlock(lock);			\
- 		ret;					\
- 	})
- 
--static __inline__ int ext2_test_bit(int nr, const volatile void * addr)
-+static inline int test_le_bit(int nr, const volatile void *addr)
- {
- 	char retval;
- 
-@@ -271,10 +279,10 @@ static __inline__ int ext2_test_bit(int nr, const volatile void * addr)
- 	return retval;
- }
- 
--#define ext2_find_first_zero_bit(addr, size) \
--        ext2_find_next_zero_bit((addr), (size), 0)
-+#define find_first_zero_le_bit(addr, size)	\
-+	find_next_zero_le_bit((addr), (size), 0)
- 
--static __inline__ unsigned long ext2_find_next_zero_bit(void *addr, unsigned long size, unsigned long offset)
-+static inline unsigned long find_next_zero_le_bit(void *addr, unsigned long size, unsigned long offset)
- {
- 	unsigned long *p = ((unsigned long *) addr) + (offset >> 5);
- 	unsigned long result = offset & ~31UL;
-@@ -324,8 +332,24 @@ found_middle:
- 	return result + ffz(__swab32(tmp));
- }
- 
-+#define ext2_set_bit(nr, addr)	\
-+	__test_and_set_le_bit(nr, addr)
-+
-+#define ext2_clear_bit(nr, addr)	\
-+	test_and_clear_le_bit(nr, addr)
-+
-+#define ext2_test_bit(nr, addr)	\
-+	test_le_bit(nr, addr)
-+
-+#define ext2_find_first_zero_bit(addr, size) \
-+	find_first_zero_le_bit(addr, size)
-+
-+#define ext2_find_next_zero_bit(addr, size, offset)	\
-+	find_next_zero_le_bit(addr, size, offset)
-+
- #define ext2_find_next_bit(addr, size, off) \
- 	find_next_le_bit((unsigned long *)(addr), (size), (off))
-+
- #include <asm-generic/bitops/minix.h>
- 
- #endif /* __KERNEL__ */
--- 
-1.7.1.231.gd0b16
+Perhaps this was due to minix using the ext2 accessors? And ext2 being
+switched from big to little endian ext2 on m68k, without anyone
+noticing the impact
+on minix?
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
