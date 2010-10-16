@@ -1,55 +1,47 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH 22/22] bitops: remove minix bitops from asm/bitops.h
-Date: Sat, 16 Oct 2010 17:58:50 +0200
-Message-ID: <m2wrpinn7p.fsf@igel.home>
-References: <1287135981-17604-1-git-send-email-akinobu.mita@gmail.com>
-	<1287135981-17604-23-git-send-email-akinobu.mita@gmail.com>
-	<201010151253.15653.arnd@arndb.de>
-	<AANLkTi=cA=yf7NmPVKXaZdoTBYmwdmy_frk7b_feG-WG@mail.gmail.com>
-	<m262x24j2y.fsf@igel.home>
-	<AANLkTimHYYLZHOxgco3jotD7ikVhaPh8FVcSqeZwtrVc@mail.gmail.com>
-	<AANLkTimtyW8AbOj+w=mjPbpP1j0LB9JXdo7cb=nQAXQ8@mail.gmail.com>
-	<m2aamepa5s.fsf@igel.home>
-	<AANLkTimB77RRcJfNcX-w7E+mKiKmNzR661SrP8G09y7A@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/1] m68k: add missing I/O macros {in,out}{w,l}_p() for !CONFIG_ISA
+Date: Sat, 16 Oct 2010 19:12:21 +0200
+Message-ID: <AANLkTikRzgXSwT34AoGhpSHqMSUrS9-3SF8aufSfqzMv@mail.gmail.com>
+References: <Pine.BSM.4.64L.1010031832530.15165@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimB77RRcJfNcX-w7E+mKiKmNzR661SrP8G09y7A@mail.gmail.com>
-	(Akinobu Mita's message of "Sat, 16 Oct 2010 22:47:49 +0900")
-Sender: linux-arch-owner@vger.kernel.org
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:59328 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751768Ab0JPRMX convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 16 Oct 2010 13:12:23 -0400
+Received: by fxm4 with SMTP id 4so1216673fxm.19
+        for <linux-m68k@vger.kernel.org>; Sat, 16 Oct 2010 10:12:22 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1010031846060.15165@herc.mirbsd.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@debian.org>
+Cc: linux-m68k@vger.kernel.org
 
-Akinobu Mita <akinobu.mita@gmail.com> writes:
+On Sun, Oct 3, 2010 at 20:48, Thorsten Glaser <tg@debian.org> wrote:
+> On m68k, I/O macros like inb() outw() etc. are only defined to
+> something useful if CONFIG_ISA is set; dummies are in place if
+> not, but four macros were missing from the !CONFIG_ISA case.
+> Adding these makes some drivers, such as speakup, compile again.
+> The patch was made against Debian=E2=80=99s linux-2.6_2.6.32-24, but
+> applies cleanly on linux-m68k master.
 
-> 2010/10/16 Andreas Schwab <schwab@linux-m68k.org>:
->> Akinobu Mita <akinobu.mita@gmail.com> writes:
->>
->>> m68knommu is big-endian minixfs but m68k (mmu) is little-endian min=
-ixfs
->>> if I read arch/m68k/include/asm/bitops_{mm,no}.h correctly.
->>
->> Don't be confused by ^16, this is for the 16bit/32bit indexing
->> correction. =C2=A0The nommu version uses big-endian 32bit indexing w=
-hich yet
->> another format.
->
-> Oh, I see. I misunderstood.
->
-> So we need a special handling for it to keep compatibility.
+Thanks, applied!
 
-IMHO we only need two versions: big-endian filesystem with big-endian
-16bit indexed bitmaps and little-endian filesystem with little-endian
-bitmaps.  The rest is just the result of careless copying.  Note that
-the minix filesystem does no byte swapping, so native byte order is the
-only sensible mode.
+Gr{oetje,eeting}s,
 
-Andreas.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
---=20
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
-ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
