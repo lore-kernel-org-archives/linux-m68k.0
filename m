@@ -1,62 +1,33 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Remove big kernel lock in cache flush code
-Date: Sat, 16 Oct 2010 19:36:54 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010161936010.5904@ayla.of.borg>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH 21/22] m68k: convert minix bitops to use little endian bitops
+Date: Mon, 18 Oct 2010 10:58:24 +0200
+Message-ID: <m3r5fnyj0v.fsf@hase.home>
+References: <1287135981-17604-1-git-send-email-akinobu.mita@gmail.com>
+	<1287135981-17604-22-git-send-email-akinobu.mita@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-out.m-online.net ([212.18.0.10]:45881 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754446Ab0JRI6Z (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 18 Oct 2010 04:58:25 -0400
+In-Reply-To: <1287135981-17604-22-git-send-email-akinobu.mita@gmail.com>
+	(Akinobu Mita's message of "Fri, 15 Oct 2010 18:46:20 +0900")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andreas Schwab <schwab@linux-m68k.org>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-The cache flush code doesn't need a lock, so we can remove the use of the BKL.
+Akinobu Mita <akinobu.mita@gmail.com> writes:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Andreas Schwab <schwab@linux-m68k.org>
----
- arch/m68k/kernel/sys_m68k.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+> The inode and block bitmap for minix filesystem is little endian
+> byte order on m68k.
 
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 2f431ec..3db2e7f 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -12,7 +12,6 @@
- #include <linux/mm.h>
- #include <linux/fs.h>
- #include <linux/smp.h>
--#include <linux/smp_lock.h>
- #include <linux/sem.h>
- #include <linux/msg.h>
- #include <linux/shm.h>
-@@ -377,7 +376,6 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- 	struct vm_area_struct *vma;
- 	int ret = -EINVAL;
- 
--	lock_kernel();
- 	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
- 	    cache & ~FLUSH_CACHE_BOTH)
- 		goto out;
-@@ -446,7 +444,6 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- 	    }
- 	}
- out:
--	unlock_kernel();
- 	return ret;
- }
- 
+No, it isn't.
+
+Andreas.
+
 -- 
-1.7.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
