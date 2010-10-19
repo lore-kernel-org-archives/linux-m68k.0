@@ -1,33 +1,45 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH 21/22] m68k: convert minix bitops to use little endian bitops
-Date: Mon, 18 Oct 2010 10:58:24 +0200
-Message-ID: <m3r5fnyj0v.fsf@hase.home>
-References: <1287135981-17604-1-git-send-email-akinobu.mita@gmail.com>
-	<1287135981-17604-22-git-send-email-akinobu.mita@gmail.com>
+From: Greenbeard Labs <noreply@greenbeardlabs.com>
+Subject: Let Us Build Your Website!
+Date: Tue, 19 Oct 2010 09:13:13 -0500
+Message-ID: <251543c7089172cc6d94cf9a07a05a4f@relay.greenbeardlabs.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:45881 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754446Ab0JRI6Z (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 18 Oct 2010 04:58:25 -0400
-In-Reply-To: <1287135981-17604-22-git-send-email-akinobu.mita@gmail.com>
-	(Akinobu Mita's message of "Fri, 15 Oct 2010 18:46:20 +0900")
+Received: from relay.greenbeardlabs.com ([208.77.148.74]:28811 "EHLO
+	relay.greenbeardlabs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751219Ab0JSONo (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Oct 2010 10:13:44 -0400
+Received: from relay.greenbeardlabs.com (relay.greenbeard.com [127.0.0.1])
+	by relay.greenbeardlabs.com (8.13.8/8.13.8) with ESMTP id o9JEDDki029650
+	for <linux-m68k@vger.kernel.org>; Tue, 19 Oct 2010 09:13:13 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-Akinobu Mita <akinobu.mita@gmail.com> writes:
+We=E2=80=99ll build a custom website for you that you can easily manage
+yourself. Whether you want a blog, company website, online store, or
+something more unique, we can help. Our prices are as low as $100 per
+page.
 
-> The inode and block bitmap for minix filesystem is little endian
-> byte order on m68k.
+We can also help you generate more business by increasing your
+exposure on search engines, social media sites, and across the web.
 
-No, it isn't.
+Visit www.greenbeardlabs.com to learn more!
 
-Andreas.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+
+---
+If you would like to remove your email address from our mailing list, p=
+aste
+the following link into your browser:
+http://relay.greenbeardlabs.com/lists/?p=3Dunsubscribe&uid=3D7d0b02c290=
+e228f214949d291f16c6df.
+
+Greenbeard Labs is a unit of Greenbeard Inc. This message is produced a=
+nd
+distributed by Greenbeard Inc, 3016 Selma, Dallas, TX 75234.
+
+
+--
+Powered by PHPlist, www.phplist.com --
