@@ -1,60 +1,51 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH v2 21/22] m68k: remove inline asm from minix_find_first_zero_bit
-Date: Thu, 21 Oct 2010 23:41:16 +0900
-Message-ID: <1287672077-5797-22-git-send-email-akinobu.mita__23499.5117331438$1287672825$gmane$org@gmail.com>
-References: <1287672077-5797-1-git-send-email-akinobu.mita@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 02/22] bitops: rename generic little-endian bitops functions
+Date: Thu, 21 Oct 2010 17:07:16 +0200
+Message-ID: <201010211707.17049.arnd__11177.8577942916$1287673696$gmane$org@arndb.de>
+References: <1287672077-5797-1-git-send-email-akinobu.mita@gmail.com> <1287672077-5797-3-git-send-email-akinobu.mita@gmail.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1287672077-5797-1-git-send-email-akinobu.mita@gmail.com>
+In-Reply-To: <1287672077-5797-3-git-send-email-akinobu.mita@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Andy Grover <andy.grover@oracle.com>, rds-devel@oss.oracle.com, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Avi Kivity <avi@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org
 
-As a preparation for moving minix bit operations from asm/bitops.h
-to architecture independent code in minix file system, this removes
-inline asm from minix_find_first_zero_bit() for m68k.
+On Thursday 21 October 2010, Akinobu Mita wrote:
+> As a preparation for providing little-endian bitops for all architectures,
+> This removes generic_ prefix from little-endian bitops function names
+> in asm-generic/bitops/le.h.
+> 
+> s/generic_find_next_le_bit/find_next_le_bit/
+> s/generic_find_next_zero_le_bit/find_next_zero_le_bit/
+> s/generic_find_first_zero_le_bit/find_first_zero_le_bit/
+> s/generic___test_and_set_le_bit/__test_and_set_le_bit/
+> s/generic___test_and_clear_le_bit/__test_and_clear_le_bit/
+> s/generic_test_le_bit/test_le_bit/
+> s/generic___set_le_bit/__set_le_bit/
+> s/generic___clear_le_bit/__clear_le_bit/
+> s/generic_test_and_set_le_bit/test_and_set_le_bit/
+> s/generic_test_and_clear_le_bit/test_and_clear_le_bit/
+> 
+> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+> Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Roman Zippel <zippel@linux-m68k.org>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: Greg Ungerer <gerg@uclinux.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Andy Grover <andy.grover@oracle.com>
+> Cc: rds-devel@oss.oracle.com
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: netdev@vger.kernel.org
+> Cc: Avi Kivity <avi@redhat.com>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Cc: kvm@vger.kernel.org
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
-First submission
-
- arch/m68k/include/asm/bitops_mm.h |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/arch/m68k/include/asm/bitops_mm.h b/arch/m68k/include/asm/bitops_mm.h
-index 831d626..f31ed5a 100644
---- a/arch/m68k/include/asm/bitops_mm.h
-+++ b/arch/m68k/include/asm/bitops_mm.h
-@@ -330,23 +330,19 @@ static inline int __fls(int x)
- static inline int minix_find_first_zero_bit(const void *vaddr, unsigned size)
- {
- 	const unsigned short *p = vaddr, *addr = vaddr;
--	int res;
- 	unsigned short num;
- 
- 	if (!size)
- 		return 0;
- 
- 	size = (size >> 4) + ((size & 15) > 0);
--	while (*p++ == 0xffff)
--	{
-+	while (*p++ == 0xffff) {
- 		if (--size == 0)
- 			return (p - addr) << 4;
- 	}
- 
--	num = ~*--p;
--	__asm__ __volatile__ ("bfffo %1{#16,#16},%0"
--			      : "=d" (res) : "d" (num & -num));
--	return ((p - addr) << 4) + (res ^ 31);
-+	num = *--p;
-+	return ((p - addr) << 4) + ffz(num);
- }
- 
- #define minix_test_and_set_bit(nr, addr)	__test_and_set_bit((nr) ^ 16, (unsigned long *)(addr))
--- 
-1.7.1.231.gd0b16
+Acked-by: Arnd Bergmann <arnd@arndb.de>
