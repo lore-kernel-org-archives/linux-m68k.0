@@ -1,72 +1,47 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH v2 22/22] bitops: remove minix bitops from asm/bitops.h
-Date: Fri, 22 Oct 2010 16:55:10 +0900
-Message-ID: <AANLkTikgRWWH0RhR2S5cFE+jkJbW30Arwsjic4UANuVd__4939.90830514139$1287734150$gmane$org@mail.gmail.com>
-References: <1287672077-5797-1-git-send-email-akinobu.mita@gmail.com>
-	<1287672077-5797-23-git-send-email-akinobu.mita@gmail.com>
-	<4CC0CA8E.4050600@monstr.eu>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH] m68k atari: reserve some ST-RAM early on for device buffer use (was: Re: Aranym, more than 244MB FastRAM, garbled display)
+Date: Fri, 22 Oct 2010 11:05:13 +0200
+Message-ID: <m3hbged2d2.fsf@hase.home>
+References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
+	<m2tyl5u9hu.fsf@igel.home>
+	<alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
+	<Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
+	<AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
+	<Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
+	<AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
+	<AANLkTin+_c=Luvns2MYkVhBksB8vD3reDh8W6a8Bje2o@mail.gmail.com>
+	<AANLkTikumgbPW12gcsUML-JqyCUUaws2=r1gY7NT4fgJ@mail.gmail.com>
+	<4CC14067.8090903@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4CC0CA8E.4050600@monstr.eu>
+Received: from mail-out.m-online.net ([212.18.0.10]:40339 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752965Ab0JVJFR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 22 Oct 2010 05:05:17 -0400
+In-Reply-To: <4CC14067.8090903@gmail.com> (Michael Schmitz's message of "Fri,
+	22 Oct 2010 20:42:31 +1300")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: monstr@monstr.eu
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, linux-s390@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, microblaze-uclinux@itee.uq.edu.au, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Hirokazu Takata <takata@linux-m32r.org>, linux-m32r@ml.linux-m32r.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, Chris Zankel <chris@zankel.net>
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-2010/10/22 Michal Simek <monstr@monstr.eu>:
-> Akinobu Mita wrote:
->> minix bit operations are only used by minix filesystem and useless
->> by other modules. Because byte order of inode and block bitmaps is
->> defferent on each architecture like below:
->>
->> m68k:
->> =A0 =A0 =A0 big-endian 16bit indexed bitmaps
->>
->> h8300, microblaze, s390, sparc, m68knommu:
->> =A0 =A0 =A0 big-endian 32 or 64bit indexed bitmaps
->
-> Just one small fix microblaze little endian support is ready for merg=
-ing
-> to mainline which means that microblaze is
-> big-endian 32bit =A0and =A0little-endian 32bit
->
->>
->> m32r, mips, sh, xtensa:
->> =A0 =A0 =A0 big-endian 32 or 64bit indexed bitmaps for big-endian mo=
-de
->> =A0 =A0 =A0 little-endian bitmaps for little-endian mode
->>
->> Others:
->> =A0 =A0 =A0 little-endian bitmaps
->>
->> In order to move minix bit operations from asm/bitops.h to
->> architecture independent code in minix file system, this provides tw=
-o
->> config options.
->>
->> CONFIG_MINIX_FS_BIG_ENDIAN_16BIT_INDEXED is only selected by m68k.
->> CONFIG_MINIX_FS_NATIVE_ENDIAN is selected by the architectures which
->> use native byte order bitmaps (h8300, microblaze, s390, sparc,
->> m68knommu, m32r, mips, sh, xtensa).
->> The architectures which always use little-endian bitmaps do not sele=
-ct
->> these options.
->
-> I haven't created any Kconfig option for little/big endian microblaze
-> but there should be a little bit different handling for MINIX_FS_NATI=
-VE_ENDIAN
-> as you are describing above.
-> Anyway I think you don't need to reflect this in your patch because
-> we are not using that filesystem and I will write it to my to-do list=
- and
-> will fix it later.
+Michael Schmitz <schmitzmic@googlemail.com> writes:
 
-If upcomming microblade little-endian mode will use little-endian
-bitmaps for minixfs, microblade can continue to select
-CONFIG_MINIX_FS_NATIVE_ENDIAN and you don't need to change it.
+> +static int __init atari_stram_setup(char *arg)
+> +{
+> +        int rc=0;
+> +
+> +        if (!MACH_IS_ATARI)
+> +                return 0;
+> +
+> +        if (!(rc = sscanf(arg, "%d", &pool_size))) {
 
-But if it will use big-endian bitmaps, it may need some extra work
-to support it. Becuase there is no little-endian architecture
-which uses bit-endian bitmaps for minixfs.
+           pool_size = memparse(arg, NULL);
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
