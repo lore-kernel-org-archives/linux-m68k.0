@@ -1,47 +1,113 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k atari: reserve some ST-RAM early on for device buffer use (was: Re: Aranym, more than 244MB FastRAM, garbled display)
-Date: Fri, 22 Oct 2010 11:05:13 +0200
-Message-ID: <m3hbged2d2.fsf@hase.home>
-References: <alpine.LNX.2.00.1010011728270.4788@halbrend.uninett.no>
-	<m2tyl5u9hu.fsf@igel.home>
-	<alpine.LNX.2.00.1010011908550.4788@halbrend.uninett.no>
-	<Pine.BSM.4.64L.1010041947160.3776@herc.mirbsd.org>
-	<AANLkTinq7CXPpYVfAYhgH9ea1FQs_f+AhYsU1-+ZdUx+@mail.gmail.com>
-	<Pine.BSM.4.64L.1010060910520.21623@herc.mirbsd.org>
-	<AANLkTi=ZrDoFPxFNZ3OKurvcrBuN3fS0gTvAeYpLQqCi@mail.gmail.com>
-	<AANLkTin+_c=Luvns2MYkVhBksB8vD3reDh8W6a8Bje2o@mail.gmail.com>
-	<AANLkTikumgbPW12gcsUML-JqyCUUaws2=r1gY7NT4fgJ@mail.gmail.com>
-	<4CC14067.8090903@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 2.6.37
+Date: Fri, 22 Oct 2010 16:41:03 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010221057200.14783@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:40339 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752965Ab0JVJFR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 22 Oct 2010 05:05:17 -0400
-In-Reply-To: <4CC14067.8090903@gmail.com> (Michael Schmitz's message of "Fri,
-	22 Oct 2010 20:42:31 +1300")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Michael Schmitz <schmitzmic@googlemail.com> writes:
+	Hi Linus,
 
-> +static int __init atari_stram_setup(char *arg)
-> +{
-> +        int rc=0;
-> +
-> +        if (!MACH_IS_ATARI)
-> +                return 0;
-> +
-> +        if (!(rc = sscanf(arg, "%d", &pool_size))) {
+The following changes since commit f6f94e2ab1b33f0082ac22d71f66385a60d8157f:
+  Linus Torvalds (1):
+        Linux 2.6.36
 
-           pool_size = memparse(arg, NULL);
+are available in the git repository at:
 
-Andreas.
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Andrew Morton (1):
+      m68k: __pa(): cast arg to long
+
+Christian Dietrich (3):
+      m68k: Remove dead GG2 config option
+      m68k/m68knommu: Remove dead SMP config option
+      fbdev: atafb - Remove undead ifdef ATAFB_FALCON
+
+Geert Uytterhoeven (1):
+      m68k: Remove big kernel lock in cache flush code
+
+Greg Ungerer (7):
+      m68k: move definition of THREAD_SIZE into thread_info_mm.h
+      m68k/m68knommu: merge MMU and non-MMU string.h
+      m68k/m68knommu: merge machdep.h files into a single file
+      m68k/m68knommu: clean up page.h
+      m68k/m68knommu: merge MMU and non-MMU atomic.h
+      m68k/m68knommu: merge MMU and non-MMU thread_info.h
+      m68k/m68knommu: merge the MMU and non-MMU traps.h
+
+Henrik Kretzschmar (1):
+      fbdev/m68k: Fix section mismatches in q40fb.c
+
+Jeff Mahoney (1):
+      m68k: Use asm-generic/ioctls.h (enables termiox)
+
+Thorsten Glaser (1):
+      m68k: Add missing I/O macros {in,out}{w,l}_p() for !CONFIG_ISA
+
+Vasiliy Kulikov (1):
+      zorro: Fix device_register() error handling
+
+ arch/m68k/Kconfig                        |    4 +-
+ arch/m68k/include/asm/amigahw.h          |    1 -
+ arch/m68k/include/asm/atomic.h           |  210 ++++++++++++++++++++++-
+ arch/m68k/include/asm/atomic_mm.h        |  200 ----------------------
+ arch/m68k/include/asm/atomic_no.h        |  155 -----------------
+ arch/m68k/include/asm/entry_mm.h         |    3 +
+ arch/m68k/include/asm/io_mm.h            |   43 +----
+ arch/m68k/include/asm/ioctls.h           |   80 +---------
+ arch/m68k/include/asm/machdep.h          |   49 +++++-
+ arch/m68k/include/asm/machdep_mm.h       |   35 ----
+ arch/m68k/include/asm/machdep_no.h       |   26 ---
+ arch/m68k/include/asm/page.h             |   48 +++++-
+ arch/m68k/include/asm/page_mm.h          |   57 +------
+ arch/m68k/include/asm/page_no.h          |   51 +-----
+ arch/m68k/include/asm/string.h           |  134 ++++++++++++++-
+ arch/m68k/include/asm/string_mm.h        |  131 --------------
+ arch/m68k/include/asm/string_no.h        |  126 --------------
+ arch/m68k/include/asm/system_mm.h        |    2 -
+ arch/m68k/include/asm/system_no.h        |    9 -
+ arch/m68k/include/asm/thread_info.h      |  109 ++++++++++++-
+ arch/m68k/include/asm/thread_info_mm.h   |   71 --------
+ arch/m68k/include/asm/thread_info_no.h   |  102 -----------
+ arch/m68k/include/asm/traps.h            |  275 +++++++++++++++++++++++++++++-
+ arch/m68k/include/asm/traps_mm.h         |  272 -----------------------------
+ arch/m68k/include/asm/traps_no.h         |  154 -----------------
+ arch/m68k/kernel/setup.c                 |    6 -
+ arch/m68k/kernel/sys_m68k.c              |    3 -
+ arch/m68k/kernel/time.c                  |    2 -
+ arch/m68k/sun3/sun3ints.c                |    2 -
+ arch/m68knommu/kernel/time.c             |    3 +-
+ arch/m68knommu/platform/coldfire/entry.S |    4 +-
+ drivers/video/atafb.c                    |    2 -
+ drivers/video/q40fb.c                    |    4 +-
+ drivers/zorro/zorro.c                    |    2 +
+ 34 files changed, 833 insertions(+), 1542 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/atomic_mm.h
+ delete mode 100644 arch/m68k/include/asm/atomic_no.h
+ delete mode 100644 arch/m68k/include/asm/machdep_mm.h
+ delete mode 100644 arch/m68k/include/asm/machdep_no.h
+ delete mode 100644 arch/m68k/include/asm/string_mm.h
+ delete mode 100644 arch/m68k/include/asm/string_no.h
+ delete mode 100644 arch/m68k/include/asm/thread_info_mm.h
+ delete mode 100644 arch/m68k/include/asm/thread_info_no.h
+ delete mode 100644 arch/m68k/include/asm/traps_mm.h
+ delete mode 100644 arch/m68k/include/asm/traps_no.h
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
