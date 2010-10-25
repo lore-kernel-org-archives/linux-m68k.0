@@ -1,40 +1,125 @@
-From: "Stephen R. Marenka" <stephen@marenka.net>
-Subject: patches not upstream
-Date: Sun, 24 Oct 2010 17:33:47 -0500
-Message-ID: <251136a28833a299adc3df54c1e2bdf4.squirrel@naiad.marenka.org>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch updates
+Date: Mon, 25 Oct 2010 10:29:24 +1000
+Message-ID: <201010250029.o9P0TO2v003092@goober.internal.moreton.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from naiad.marenka.net ([69.164.199.107]:40307 "EHLO
-	naiad.marenka.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759138Ab0JXWdt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Oct 2010 18:33:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by naiad.marenka.net (Postfix) with ESMTP id 849B9C065
-	for <linux-m68k@vger.kernel.org>; Sun, 24 Oct 2010 17:33:48 -0500 (CDT)
-Received: from naiad.marenka.net ([127.0.0.1])
-	by localhost (naiad.marenka.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id o0Up0eETqg6O for <linux-m68k@vger.kernel.org>;
-	Sun, 24 Oct 2010 17:33:47 -0500 (CDT)
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:31881 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751407Ab0JYAa5 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Oct 2010 20:30:57 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
 
-So I'm looking at the patches that are needed in the debian kernel and I
-noticed quite a few haven't been sent upstream.
+Hi Linus,
 
-git format-patch -o ../tmp v2.6.36..m68k-v2.6.36 lists 85 patches.
+Can you please pull the m68knommu git tree, for-linus branch.
 
-Some of those are already marked for 2.6.37, but the atari/aranym patches
-seem to have been sitting around a while. Any chance they can go upstream?
-It would simplify debian kernel maintenance immensely.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-Thanks,
+Changes include support for the ColdFire 548x family, removal of
+__do_IRQ use, strace cleanups, some minor bug fixes, and quite a
+few cleanup patches (remove un-used symbols, whitespace formating,
+comments, etc).
 
-Stephen
+Thanks
+Greg
 
--- 
-Stephen R. Marenka     If life's not fun, you're not doing it right!
-<stephen@marenka.net>
+
+
+The following changes since commit f6f94e2ab1b33f0082ac22d71f66385a60d8157f:
+  Linus Torvalds (1):
+        Linux 2.6.36
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Christian Dietrich (5):
+      arch/m68knommu: Removing dead M68000 config option
+      arch/m68knommu: Removing dead RELOCATE config option
+      arch/m68knommu: Removing dead M68KFPU_EMU config option
+      arch/m68knommu: Removing dead RAM_{16,32}_MB config option
+      arch/m68knommu: Removing dead 68328_SERIAL_UART2 config option
+
+Greg Ungerer (5):
+      m68knommu: stop using __do_IRQ
+      m68knommu: mask of vector bits in exception word properly
+      m68knommu: support the external GPIO based interrupts of the 5272
+      m68knommu: some boards use fixed phy for FEC ethernet
+      m68knommu: convert to using tracehook_report_syscall_*
+
+Philippe De Muyter (10):
+      m68knommu: fix default starting date
+      m68knommu: fix strace support for 68328/68360
+      m68knommu: Document supported chips in intc-2.c and intc-simr.c.
+      m68knommu: whitespace cleanup in 68328/entry.S
+      m68k{nommu}: Remove unused DEFINE's from asm-offsets.c
+      m68knommu: add support for Coldfire 547x/548x interrupt controller
+      m68knommu: rename PT_OFF_VECTOR to PT_OFF_FORMATVEC.
+      m68knommu: .gitignore vmlinux.lds
+      m68knommu: add basic mmu-less m548x support
+      m68knommu: Fix MCFUART_TXFIFOSIZE for m548x.
+
+matt mooney (1):
+      m68knommu: change to new flag variables
+
+ arch/m68k/include/asm/cacheflush_no.h        |    2 +-
+ arch/m68k/include/asm/coldfire.h             |    4 +-
+ arch/m68k/include/asm/gpio.h                 |    7 +-
+ arch/m68k/include/asm/m548xgpt.h             |   88 ++++++++++++++++
+ arch/m68k/include/asm/m548xsim.h             |   55 ++++++++++
+ arch/m68k/include/asm/mcfcache.h             |    2 +-
+ arch/m68k/include/asm/mcfsim.h               |    2 +
+ arch/m68k/include/asm/mcfslt.h               |   44 ++++++++
+ arch/m68k/include/asm/mcfuart.h              |    9 ++-
+ arch/m68k/kernel/asm-offsets.c               |   12 --
+ arch/m68knommu/Kconfig                       |   11 ++-
+ arch/m68knommu/Makefile                      |    3 +
+ arch/m68knommu/kernel/.gitignore             |    1 +
+ arch/m68knommu/kernel/asm-offsets.c          |   11 +--
+ arch/m68knommu/kernel/ptrace.c               |   47 +++------
+ arch/m68knommu/kernel/setup.c                |    3 -
+ arch/m68knommu/kernel/time.c                 |   13 ++-
+ arch/m68knommu/kernel/traps.c                |   26 ++---
+ arch/m68knommu/platform/5206/Makefile        |    4 +-
+ arch/m68knommu/platform/5206e/Makefile       |    4 +-
+ arch/m68knommu/platform/520x/Makefile        |    4 +-
+ arch/m68knommu/platform/523x/Makefile        |    4 +-
+ arch/m68knommu/platform/5249/Makefile        |    4 +-
+ arch/m68knommu/platform/5272/Makefile        |    4 +-
+ arch/m68knommu/platform/5272/config.c        |   16 +++
+ arch/m68knommu/platform/5272/intc.c          |   60 +++++++++--
+ arch/m68knommu/platform/527x/Makefile        |    4 +-
+ arch/m68knommu/platform/528x/Makefile        |    4 +-
+ arch/m68knommu/platform/5307/Makefile        |    4 +-
+ arch/m68knommu/platform/532x/Makefile        |    4 +-
+ arch/m68knommu/platform/5407/Makefile        |    4 +-
+ arch/m68knommu/platform/548x/Makefile        |   18 +++
+ arch/m68knommu/platform/548x/config.c        |  115 ++++++++++++++++++++
+ arch/m68knommu/platform/68328/entry.S        |   36 +++---
+ arch/m68knommu/platform/68328/head-de2.S     |    6 -
+ arch/m68knommu/platform/68328/head-ram.S     |   27 -----
+ arch/m68knommu/platform/68328/ints.c         |    6 +-
+ arch/m68knommu/platform/68360/entry.S        |   13 ++-
+ arch/m68knommu/platform/68360/ints.c         |    6 +-
+ arch/m68knommu/platform/68VZ328/config.c     |    5 -
+ arch/m68knommu/platform/coldfire/Makefile    |    5 +-
+ arch/m68knommu/platform/coldfire/entry.S     |    4 +-
+ arch/m68knommu/platform/coldfire/intc-2.c    |   53 ++++++++--
+ arch/m68knommu/platform/coldfire/intc-simr.c |   10 +-
+ arch/m68knommu/platform/coldfire/intc.c      |    8 +-
+ arch/m68knommu/platform/coldfire/sltimers.c  |  145 ++++++++++++++++++++++++++
+ drivers/serial/68328serial.h                 |    5 -
+ 47 files changed, 707 insertions(+), 215 deletions(-)
+ create mode 100644 arch/m68k/include/asm/m548xgpt.h
+ create mode 100644 arch/m68k/include/asm/m548xsim.h
+ create mode 100644 arch/m68k/include/asm/mcfslt.h
+ create mode 100644 arch/m68knommu/kernel/.gitignore
+ create mode 100644 arch/m68knommu/platform/548x/Makefile
+ create mode 100644 arch/m68knommu/platform/548x/config.c
+ create mode 100644 arch/m68knommu/platform/coldfire/sltimers.c
