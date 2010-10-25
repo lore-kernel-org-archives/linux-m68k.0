@@ -1,125 +1,113 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates
-Date: Mon, 25 Oct 2010 10:29:24 +1000
-Message-ID: <201010250029.o9P0TO2v003092@goober.internal.moreton.com.au>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: patches not upstream
+Date: Mon, 25 Oct 2010 13:09:27 +0000
+Message-ID: <Pine.BSM.4.64L.1010251250280.10185@herc.mirbsd.org>
+References: <251136a28833a299adc3df54c1e2bdf4.squirrel@naiad.marenka.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:31881 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751407Ab0JYAa5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Oct 2010 20:30:57 -0400
+Received: from lo.gmane.org ([80.91.229.12]:40941 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750764Ab0JYNJq convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Oct 2010 09:09:46 -0400
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1PAMo1-0005kv-30
+	for linux-m68k@vger.kernel.org; Mon, 25 Oct 2010 15:09:41 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Mon, 25 Oct 2010 15:09:41 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Mon, 25 Oct 2010 15:09:41 +0200
+In-Reply-To: <251136a28833a299adc3df54c1e2bdf4.squirrel@naiad.marenka.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: debian-68k@lists.debian.org
 
+Stephen R. Marenka dixit:
 
-Hi Linus,
+>So I'm looking at the patches that are needed in the debian kernel and=
+ I
+>noticed quite a few haven't been sent upstream.
+>
+>git format-patch -o ../tmp v2.6.36..m68k-v2.6.36 lists 85 patches.
+>
+>Some of those are already marked for 2.6.37, but the atari/aranym patc=
+hes
+>seem to have been sitting around a while. Any chance they can go upstr=
+eam?
+>It would simplify debian kernel maintenance immensely.
 
-Can you please pull the m68knommu git tree, for-linus branch.
+Definitively. FWIW, I=E2=80=99m building all flavours of the following =
+=2Edsc at
+the moment (the m68k patches have no diff between the kernel I=E2=80=99=
+m running
+(linux-image-2.6.32-5+m68k.1-atari_2.6.32-24+m68k.1_m68k.deb) and that,
+only the rest is rebased on a proper Debian sid released kernel):
+https://www.freewrt.org/~tg/debs68k/notyet/linux-2.6_2.6.32-26+m68k.2.d=
+sc
+https://www.freewrt.org/~tg/debs68k/notyet/linux-2.6_2.6.32-26+m68k.2.d=
+iff.gz
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+Stephen: Please do an SVN commit to the Debian repo, removing
+bugfix/m68k/fp/0061-Keys-KEYCTL_SESSION_TO_PARENT-needs-TIF_NOTIFY_RESU=
+=2Epatch
+and taking over my 0026 and 0052 to make them apply again. As they=E2=80=
+=99re
+currently disabled, this should be okay with the other maintainers as
+it=E2=80=99s a nop. Please look at the debdiff too:
+https://www.freewrt.org/~tg/debs68k/notyet/linux-2.6_2.6.32-26+m68k.2.d=
+ebdiff
+Ignore 26-extra, it was just renamed; config/defines, which makes thing=
+s
+build for me and get rid of the gcc-4.3 dependency in the bootstrap rep=
+o
+I=E2=80=99m working on at the moment; config/i386/defines, which just m=
+ade the
+non-m68k part build faster (dpkg-buildpackage -A *still* does build the
+binary-arch, it only doesn=E2=80=99t package them). The only other rele=
+vant one
+besides the three bugfix/m68k/fp/ ones above is patches/series/26+m68k.=
+2
+which enables them. Once I finished building and can boot into that ker=
+-
+nel image, and Ingo can boot into the amiga flavour, we can probably as=
+k
+Ben/waldi to allow them in (although waldi said 2.6.32 is of no interes=
+t
+any longer).
 
-Changes include support for the ColdFire 548x family, removal of
-__do_IRQ use, strace cleanups, some minor bug fixes, and quite a
-few cleanup patches (remove un-used symbols, whitespace formating,
-comments, etc).
+I suppose this also means that the ones listed in patches/series/26+m68=
+k.2
+will have been tested by me (or rather, actually are, just in a Debian
+kernel, not a vanilla one).
 
-Thanks
-Greg
+=46WIW: I=E2=80=99ve built like three dozen packages in cowbuilder now,=
+ satisfying
+dependencies from debian-ports.org unstable+unreleased where needed, bu=
+t
+ordering them somewhat to get newer dependencies first, mostly. Another
+half dozen needed for python2.6 and perl, but they all run the testsuit=
+e
+(openssl takes a LOT), and things look good, minus the gcc problems I
+wrote about on the mailing list. debs68k/sources.txt if someone wants
+to peek, but this is like unstable, and I regularly move packages aroun=
+d
+(to denote where a .deb came from: old sid, old unreleased, hand-built,
+cowbuilder-built, or _all.deb copied from unstable), so apt-get update
+is required relatively often.
 
-
-
-The following changes since commit f6f94e2ab1b33f0082ac22d71f66385a60d8157f:
-  Linus Torvalds (1):
-        Linux 2.6.36
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Christian Dietrich (5):
-      arch/m68knommu: Removing dead M68000 config option
-      arch/m68knommu: Removing dead RELOCATE config option
-      arch/m68knommu: Removing dead M68KFPU_EMU config option
-      arch/m68knommu: Removing dead RAM_{16,32}_MB config option
-      arch/m68knommu: Removing dead 68328_SERIAL_UART2 config option
-
-Greg Ungerer (5):
-      m68knommu: stop using __do_IRQ
-      m68knommu: mask of vector bits in exception word properly
-      m68knommu: support the external GPIO based interrupts of the 5272
-      m68knommu: some boards use fixed phy for FEC ethernet
-      m68knommu: convert to using tracehook_report_syscall_*
-
-Philippe De Muyter (10):
-      m68knommu: fix default starting date
-      m68knommu: fix strace support for 68328/68360
-      m68knommu: Document supported chips in intc-2.c and intc-simr.c.
-      m68knommu: whitespace cleanup in 68328/entry.S
-      m68k{nommu}: Remove unused DEFINE's from asm-offsets.c
-      m68knommu: add support for Coldfire 547x/548x interrupt controller
-      m68knommu: rename PT_OFF_VECTOR to PT_OFF_FORMATVEC.
-      m68knommu: .gitignore vmlinux.lds
-      m68knommu: add basic mmu-less m548x support
-      m68knommu: Fix MCFUART_TXFIFOSIZE for m548x.
-
-matt mooney (1):
-      m68knommu: change to new flag variables
-
- arch/m68k/include/asm/cacheflush_no.h        |    2 +-
- arch/m68k/include/asm/coldfire.h             |    4 +-
- arch/m68k/include/asm/gpio.h                 |    7 +-
- arch/m68k/include/asm/m548xgpt.h             |   88 ++++++++++++++++
- arch/m68k/include/asm/m548xsim.h             |   55 ++++++++++
- arch/m68k/include/asm/mcfcache.h             |    2 +-
- arch/m68k/include/asm/mcfsim.h               |    2 +
- arch/m68k/include/asm/mcfslt.h               |   44 ++++++++
- arch/m68k/include/asm/mcfuart.h              |    9 ++-
- arch/m68k/kernel/asm-offsets.c               |   12 --
- arch/m68knommu/Kconfig                       |   11 ++-
- arch/m68knommu/Makefile                      |    3 +
- arch/m68knommu/kernel/.gitignore             |    1 +
- arch/m68knommu/kernel/asm-offsets.c          |   11 +--
- arch/m68knommu/kernel/ptrace.c               |   47 +++------
- arch/m68knommu/kernel/setup.c                |    3 -
- arch/m68knommu/kernel/time.c                 |   13 ++-
- arch/m68knommu/kernel/traps.c                |   26 ++---
- arch/m68knommu/platform/5206/Makefile        |    4 +-
- arch/m68knommu/platform/5206e/Makefile       |    4 +-
- arch/m68knommu/platform/520x/Makefile        |    4 +-
- arch/m68knommu/platform/523x/Makefile        |    4 +-
- arch/m68knommu/platform/5249/Makefile        |    4 +-
- arch/m68knommu/platform/5272/Makefile        |    4 +-
- arch/m68knommu/platform/5272/config.c        |   16 +++
- arch/m68knommu/platform/5272/intc.c          |   60 +++++++++--
- arch/m68knommu/platform/527x/Makefile        |    4 +-
- arch/m68knommu/platform/528x/Makefile        |    4 +-
- arch/m68knommu/platform/5307/Makefile        |    4 +-
- arch/m68knommu/platform/532x/Makefile        |    4 +-
- arch/m68knommu/platform/5407/Makefile        |    4 +-
- arch/m68knommu/platform/548x/Makefile        |   18 +++
- arch/m68knommu/platform/548x/config.c        |  115 ++++++++++++++++++++
- arch/m68knommu/platform/68328/entry.S        |   36 +++---
- arch/m68knommu/platform/68328/head-de2.S     |    6 -
- arch/m68knommu/platform/68328/head-ram.S     |   27 -----
- arch/m68knommu/platform/68328/ints.c         |    6 +-
- arch/m68knommu/platform/68360/entry.S        |   13 ++-
- arch/m68knommu/platform/68360/ints.c         |    6 +-
- arch/m68knommu/platform/68VZ328/config.c     |    5 -
- arch/m68knommu/platform/coldfire/Makefile    |    5 +-
- arch/m68knommu/platform/coldfire/entry.S     |    4 +-
- arch/m68knommu/platform/coldfire/intc-2.c    |   53 ++++++++--
- arch/m68knommu/platform/coldfire/intc-simr.c |   10 +-
- arch/m68knommu/platform/coldfire/intc.c      |    8 +-
- arch/m68knommu/platform/coldfire/sltimers.c  |  145 ++++++++++++++++++++++++++
- drivers/serial/68328serial.h                 |    5 -
- 47 files changed, 707 insertions(+), 215 deletions(-)
- create mode 100644 arch/m68k/include/asm/m548xgpt.h
- create mode 100644 arch/m68k/include/asm/m548xsim.h
- create mode 100644 arch/m68k/include/asm/mcfslt.h
- create mode 100644 arch/m68knommu/kernel/.gitignore
- create mode 100644 arch/m68knommu/platform/548x/Makefile
- create mode 100644 arch/m68knommu/platform/548x/config.c
- create mode 100644 arch/m68knommu/platform/coldfire/sltimers.c
+bye,
+//mirabilos
+--=20
+I believe no one can invent an algorithm. One just happens to hit upon =
+it
+when God enlightens him. Or only God invents algorithms, we merely copy=
+ them.
+If you don't believe in God, just consider God as Nature if you won't d=
+eny
+existence.		-- Coywolf Qi Hunt
