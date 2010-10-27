@@ -1,7 +1,7 @@
 From: "Dr. Robert William" <pascale.vial@noos.fr>
 Subject: Yours Faithfully
-Date: Wed, 27 Oct 2010 02:34:17 +0200 (CEST)
-Message-ID: <ea-mime-4cc77389-71b-20d7ee4b@webmail.numericable.fr>
+Date: Wed, 27 Oct 2010 02:58:28 +0200 (CEST)
+Message-ID: <ea-mime-4cc77934-12d8-6ac86778@webmail.numericable.fr>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="UTF-8"
