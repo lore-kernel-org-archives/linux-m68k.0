@@ -1,41 +1,55 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] amiserial: Remove unused variable icount
-Date: Thu, 28 Oct 2010 20:29:53 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010282027480.29737@ayla.of.borg>
+Subject: [PATCH] mac/m68k: adb-iop - flags should be unsigned long
+Date: Thu, 28 Oct 2010 20:30:51 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010282029540.29755@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-7
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@linux.intel.com>, Greg Kroah-Hartman <gregkh@suse.de>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-drivers/char/amiserial.c: In function =A1rs_ioctl=A2:
-drivers/char/amiserial.c:1302: warning: unused variable =A1icount=A2
-
-commit 0587102cf9f427c185bfdeb2cef41e13ee0264b1 ("tty: icount changeove=
-r for
-other main devices") removed the users, but not the actual variable.
+drivers/macintosh/adb-iop.c: In function =A1adb_iop_complete=A2:
+drivers/macintosh/adb-iop.c:85: warning: comparison of distinct pointer=
+ types lacks a cast
+drivers/macintosh/adb-iop.c:92: warning: comparison of distinct pointer=
+ types lacks a cast
+drivers/macintosh/adb-iop.c: In function =A1adb_iop_listen=A2:
+drivers/macintosh/adb-iop.c:111: warning: comparison of distinct pointe=
+r types lacks a cast
+drivers/macintosh/adb-iop.c:151: warning: comparison of distinct pointe=
+r types lacks a cast
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/char/amiserial.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ drivers/macintosh/adb-iop.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/char/amiserial.c b/drivers/char/amiserial.c
-index b0a7046..c0bd6f4 100644
---- a/drivers/char/amiserial.c
-+++ b/drivers/char/amiserial.c
-@@ -1299,7 +1299,6 @@ static int rs_ioctl(struct tty_struct *tty, struc=
-t file * file,
+diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
+index 4446966..f5f4da3 100644
+--- a/drivers/macintosh/adb-iop.c
++++ b/drivers/macintosh/adb-iop.c
+@@ -80,7 +80,7 @@ static void adb_iop_end_req(struct adb_request *req, =
+int state)
+ static void adb_iop_complete(struct iop_msg *msg)
  {
- 	struct async_struct * info =3D tty->driver_data;
- 	struct async_icount cprev, cnow;	/* kernel counter temps */
--	struct serial_icounter_struct icount;
- 	void __user *argp =3D (void __user *)arg;
- 	unsigned long flags;
+ 	struct adb_request *req;
+-	uint flags;
++	unsigned long flags;
 =20
+ 	local_irq_save(flags);
+=20
+@@ -103,7 +103,7 @@ static void adb_iop_listen(struct iop_msg *msg)
+ {
+ 	struct adb_iopmsg *amsg =3D (struct adb_iopmsg *) msg->message;
+ 	struct adb_request *req;
+-	uint flags;
++	unsigned long flags;
+ #ifdef DEBUG_ADB_IOP
+ 	int i;
+ #endif
 --=20
 1.7.0.4
 
