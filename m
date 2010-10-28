@@ -1,23 +1,75 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net: atarilance - flags should be unsigned long
-Date: Thu, 28 Oct 2010 11:35:06 -0700 (PDT)
-Message-ID: <20101028.113506.71100696.davem__42855.3935526454$1288290916$gmane$org@davemloft.net>
-References: <alpine.DEB.2.00.1010282030530.29788@ayla.of.borg>
+From: Vivek Goyal <vgoyal@redhat.com>
+Subject: [PATCH] fix amiga and atari floppy driver compile warning
+Date: Thu, 28 Oct 2010 14:42:24 -0400
+Message-ID: <20101028184223.GG30148@redhat.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-7
-Content-Transfer-Encoding: base64
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1010282030530.29788@ayla.of.borg>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jens Axboe <jaxboe@fusionio.com>, linux kernel mailing list <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, hch@lst.de
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: akpm@linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCkRhdGU6IFRo
-dSwgMjggT2N0IDIwMTAgMjA6MzE6NTMgKzAyMDAgKENFU1QpDQoNCj4gZHJpdmVycy9uZXQvYXRh
-cmlsYW5jZS5jOiBJbiBmdW5jdGlvbiChYWRkcl9hY2Nlc3NpYmxlojoNCj4gZHJpdmVycy9uZXQv
-YXRhcmlsYW5jZS5jOjQxMzogd2FybmluZzogY29tcGFyaXNvbiBvZiBkaXN0aW5jdCBwb2ludGVy
-IHR5cGVzIGxhY2tzIGEgY2FzdA0KPiBkcml2ZXJzL25ldC9hdGFyaWxhbmNlLmM6NDUwOiB3YXJu
-aW5nOiBjb21wYXJpc29uIG9mIGRpc3RpbmN0IHBvaW50ZXIgdHlwZXMgbGFja3MgYSBjYXN0DQo+
-IA0KPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsu
-b3JnPg0KDQpBcHBsaWVkLCB0aGFua3MuDQo=
+Geert, my crosstool don't produce warning below. I guess this has to do
+something with compiler version.
+
+- Geert noticed following warning during compilation.
+
+  drivers/block/amiflop.c:1344: warning: =E2=80=98rq=E2=80=99 may be us=
+ed uninitialized in
+  this function
+  drivers/block/ataflop.c:1402: warning: =E2=80=98rq=E2=80=99 may be us=
+ed uninitialized in
+  this function
+
+- Initialize rq to NULL to fix the warning. If we can't find a suitable=
+ request
+  to dispatch, this function should return NULL instead of a possibly g=
+arbage
+  pointer.
+
+- Cross compile tested only. Don't have hardware to test it.
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ drivers/block/amiflop.c |    2 +-
+ drivers/block/ataflop.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: linux-2.6/drivers/block/amiflop.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-2.6.orig/drivers/block/amiflop.c	2010-10-28 14:32:25.00000000=
+0 -0400
++++ linux-2.6/drivers/block/amiflop.c	2010-10-28 14:34:11.000000000 -04=
+00
+@@ -1341,7 +1341,7 @@ static struct request *set_next_request(
+ {
+ 	struct request_queue *q;
+ 	int cnt =3D FD_MAX_UNITS;
+-	struct request *rq;
++	struct request *rq =3D NULL;
+=20
+ 	/* Find next queue we can dispatch from */
+ 	fdc_queue =3D fdc_queue + 1;
+Index: linux-2.6/drivers/block/ataflop.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-2.6.orig/drivers/block/ataflop.c	2010-10-28 14:31:21.00000000=
+0 -0400
++++ linux-2.6/drivers/block/ataflop.c	2010-10-28 14:33:58.000000000 -04=
+00
+@@ -1399,7 +1399,7 @@ static struct request *set_next_request(
+ {
+ 	struct request_queue *q;
+ 	int old_pos =3D fdc_queue;
+-	struct request *rq;
++	struct request *rq =3D NULL;
+=20
+ 	do {
+ 		q =3D unit[fdc_queue].disk->queue;
