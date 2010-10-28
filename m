@@ -1,26 +1,29 @@
-From: "Dr. Robert William" <pascale.vial@noos.fr>
-Subject: Yours Faithfully
-Date: Wed, 27 Oct 2010 02:58:28 +0200 (CEST)
-Message-ID: <ea-mime-4cc77934-12d8-6ac86778@webmail.numericable.fr>
+From: "Kflrwb" <pfarr35086@yahoo.ca>
+Subject: Ukp Yoty
+Date: Thu, 28 Oct 2010 18:20:19 +0800
+Message-ID: <399235.27938.bm@smtp105.mail.gq1.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+	charset="GB2312"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: pascale.vial@noos.fr
+To: linux-m68k@lists.linux-m68k.org
 
-Good News My Dear Friend,
- 
-I'm happy to inform you about my success in getting those funds transferred under the co-operation of a new partner from Paraguay. Presently i'm in Paraguay for investment projects with my own share of the total sum. meanwhile,i didn't forget your past efforts and attempts to assist me in transferring those funds despite that it failed us some how.
-Now contact my secretary in Benin Republic
-
-His name is Mr. Timothy Adams
-Phone Number: +229 97373889
-Email:  timothyadams90@gmail.com
- 
-Please do let me know immediately you receive it so that we can share the joy after all the sufferings at that time. in the moment, I'm very busy here because of the investment projects which me and the new partner are having at hand, finally, remember that I had forwarded instruction to the secretary on your behalf to receive that money, so feel free to get in touch with Mr. Timothy Adams on timothyadams90@gmail.com, he will send the amount to you without any delay.
- 
-Yours Faithfully
-Dr Robert William
+qbCppKnQqaSp0KmkqdCppKnQqaSptA0KqabO0qmq18mpqtO1qaq496mqwaqppg0KqabLvqmq0a+p
+qtPQqarW1qmqz7Wppg0KqabNqKmqu+Gpqry4qarGsamqyMuppg0Kqaa5/amqzvGpqsquqaq+3amq
+o7qppg0Kqaa52Kmqt9GpqrzSqaq++amqwO6ppg0KqabPtamqoaKpqrPHqaq/yamqvq2ppg0Kqaa/
+yamqvaipqsrQqarJz6mqwO2ppg0KqabTxamq1v6pqrK7qarN+Kmqo7qppg0Kqaa73amq0rWpqs2s
+qaqy6amqo7Gppg0Kqaa0+qmqtcipqtDQqarRr6mqo7Oppg0Kqaa/qqmqxrGpqtK1qaq78qmqo7Kp
+pg0Kqaa496mqo6ypqrXEqaq1vamqo7appg0KqabA4KmqtrypqrrPqarLsKmqo7appg0Kqaa3/qmq
+v8mpqtf3qarO8amqo7Wppg0KqabO8amq1dKpqrmrqarR6amqo7appg0KqabStamqtb2pqsu+qarW
+pKmqo7Wppg0Kqaa8sKmqttSpqqGjqaq686mqo7Wppg0KqabJzKmqv9qpqqGhqaq4tqmqo7Wppg0K
+qabStamquaupqqGhqaq/7qmqo7ippg0Kqaa3oqmqy76pqqGhqaqjoamqoaGppg0KqabGsamqv6qp
+qqGhqaqhoamqoaGppg0KqaajrKmqo7upqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamq
+oaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0Kqaah
+oamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGh
+qaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGp
+pg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0Kqaahoamq
+oaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqhoamqoaGppg0KqaahoamqoaGpqqGhqaqh
+oamqoaGppg0KqbippKnYqaSp2KmkqdippKnYqaSpvA0K
