@@ -1,54 +1,23 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net: atarilance - flags should be unsigned long
-Date: Thu, 28 Oct 2010 20:31:53 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010282030530.29788@ayla.of.borg>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] net: atarilance - flags should be unsigned long
+Date: Thu, 28 Oct 2010 11:35:06 -0700 (PDT)
+Message-ID: <20101028.113506.71100696.davem__42855.3935526454$1288290916$gmane$org@davemloft.net>
+References: <alpine.DEB.2.00.1010282030530.29788@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-7
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1010282030530.29788@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>
-Cc: netdev@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: geert@linux-m68k.org
+Cc: akpm@linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-drivers/net/atarilance.c: In function =A1addr_accessible=A2:
-drivers/net/atarilance.c:413: warning: comparison of distinct pointer t=
-ypes lacks a cast
-drivers/net/atarilance.c:450: warning: comparison of distinct pointer t=
-ypes lacks a cast
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/atarilance.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/net/atarilance.c b/drivers/net/atarilance.c
-index 3134e53..8cb27cb 100644
---- a/drivers/net/atarilance.c
-+++ b/drivers/net/atarilance.c
-@@ -407,7 +407,7 @@ static noinline int __init addr_accessible(volatile=
- void *regp, int wordflag,
- 					   int writeflag)
- {
- 	int		ret;
--	long	flags;
-+	unsigned long	flags;
- 	long	*vbr, save_berr;
-=20
- 	local_irq_save(flags);
---=20
-1.7.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCkRhdGU6IFRo
+dSwgMjggT2N0IDIwMTAgMjA6MzE6NTMgKzAyMDAgKENFU1QpDQoNCj4gZHJpdmVycy9uZXQvYXRh
+cmlsYW5jZS5jOiBJbiBmdW5jdGlvbiChYWRkcl9hY2Nlc3NpYmxlojoNCj4gZHJpdmVycy9uZXQv
+YXRhcmlsYW5jZS5jOjQxMzogd2FybmluZzogY29tcGFyaXNvbiBvZiBkaXN0aW5jdCBwb2ludGVy
+IHR5cGVzIGxhY2tzIGEgY2FzdA0KPiBkcml2ZXJzL25ldC9hdGFyaWxhbmNlLmM6NDUwOiB3YXJu
+aW5nOiBjb21wYXJpc29uIG9mIGRpc3RpbmN0IHBvaW50ZXIgdHlwZXMgbGFja3MgYSBjYXN0DQo+
+IA0KPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsu
+b3JnPg0KDQpBcHBsaWVkLCB0aGFua3MuDQo=
