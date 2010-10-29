@@ -1,104 +1,88 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] fix amiga and atari floppy driver compile warning
-Date: Thu, 28 Oct 2010 20:46:18 +0200
-Message-ID: <AANLkTikOV04gMrjxwFfm0+hHft2uQ2wbTro-OrzrohnS@mail.gmail.com>
-References: <20101028184223.GG30148@redhat.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [PATCH][resend] m68k,m68knommu: Do not include linux/hardirq.h in
+ asm/irqflags.h
+Date: Sat, 30 Oct 2010 00:06:32 +1000
+Message-ID: <4CCAD4E8.8040801@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:44045 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755776Ab0J1SqT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Oct 2010 14:46:19 -0400
-In-Reply-To: <20101028184223.GG30148@redhat.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:13700 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757785Ab0J2OId convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Oct 2010 10:08:33 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Vivek Goyal <vgoyal@redhat.com>
-Cc: Jens Axboe <jaxboe@fusionio.com>, linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-m68k@vger.kernel.org, hch@lst.de
+To: linux-m68k@vger.kernel.org
+Cc: dhowells@redhat.com, gerg@uclinux.org, phdm@macqel.be
 
-On Thu, Oct 28, 2010 at 20:42, Vivek Goyal <vgoyal@redhat.com> wrote:
-> Geert, my crosstool don't produce warning below. I guess this has to =
-do
-> something with compiler version.
->
-> - Geert noticed following warning during compilation.
->
-> =C2=A0drivers/block/amiflop.c:1344: warning: =E2=80=98rq=E2=80=99 may=
- be used uninitialized in
-> =C2=A0this function
-> =C2=A0drivers/block/ataflop.c:1402: warning: =E2=80=98rq=E2=80=99 may=
- be used uninitialized in
-> =C2=A0this function
->
-> - Initialize rq to NULL to fix the warning. If we can't find a suitab=
-le request
-> =C2=A0to dispatch, this function should return NULL instead of a poss=
-ibly garbage
-> =C2=A0pointer.
 
-Thanks, gcc version 4.1.2 20061115 now no longer gives a warning.
+(Note: this bounced back to me from the m68k-linux list,
+not sure why... resending)
 
-> - Cross compile tested only. Don't have hardware to test it.
 
-=46loppy hardware in bad state here :-(
+Hi David, m68kers,
 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
-> =C2=A0drivers/block/amiflop.c | =C2=A0 =C2=A02 +-
-> =C2=A0drivers/block/ataflop.c | =C2=A0 =C2=A02 +-
-> =C2=A02 files changed, 2 insertions(+), 2 deletions(-)
->
-> Index: linux-2.6/drivers/block/amiflop.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/drivers/block/amiflop.c =C2=A0 =C2=A0 =C2=A02010-1=
-0-28 14:32:25.000000000 -0400
-> +++ linux-2.6/drivers/block/amiflop.c =C2=A0 2010-10-28 14:34:11.0000=
-00000 -0400
-> @@ -1341,7 +1341,7 @@ static struct request *set_next_request(
-> =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct request_queue *q;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int cnt =3D FD_MAX_UNITS;
-> - =C2=A0 =C2=A0 =C2=A0 struct request *rq;
-> + =C2=A0 =C2=A0 =C2=A0 struct request *rq =3D NULL;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Find next queue we can dispatch from */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0fdc_queue =3D fdc_queue + 1;
-> Index: linux-2.6/drivers/block/ataflop.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/drivers/block/ataflop.c =C2=A0 =C2=A0 =C2=A02010-1=
-0-28 14:31:21.000000000 -0400
-> +++ linux-2.6/drivers/block/ataflop.c =C2=A0 2010-10-28 14:33:58.0000=
-00000 -0400
-> @@ -1399,7 +1399,7 @@ static struct request *set_next_request(
-> =C2=A0{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct request_queue *q;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int old_pos =3D fdc_queue;
-> - =C2=A0 =C2=A0 =C2=A0 struct request *rq;
-> + =C2=A0 =C2=A0 =C2=A0 struct request *rq =3D NULL;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0do {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0q =3D unit[fdc=
-_queue].disk->queue;
->
+Philippe DeMuyter noticed this build failure with Linus' current git
+tree. I think it is m68k clean too. If all are ok with it I'll
+pass it directly to Linus.
 
-Gr{oetje,eeting}s,
+Regards
+Greg
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+---------------------------------------------------------------------
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+m68k,m68knommu: Do not include linux/hardirq.h in asm/irqflags.h
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Recent changes to header files made kernel compilation for m68k/m68knom=
+mu
+fail with :
+   CC      arch/m68knommu/kernel/asm-offsets.s
+In file included from /archives/linux/git/arch/m68k/include/asm/system.=
+h:2,
+                  from include/linux/wait.h:25,
+                  from include/linux/mmzone.h:9,
+                  from include/linux/gfp.h:4,
+                  from include/linux/irq.h:20,
+                  from include/asm-generic/hardirq.h:12,
+                  from=20
+/archives/linux/git/arch/m68k/include/asm/hardirq_no.h:17,
+                  from=20
+/archives/linux/git/arch/m68k/include/asm/hardirq.h:2,
+                  from include/linux/hardirq.h:10,
+                  from=20
+/archives/linux/git/arch/m68k/include/asm/irqflags.h:5,
+                  from include/linux/irqflags.h:15,
+                  from include/linux/spinlock.h:53,
+                  from include/linux/seqlock.h:29,
+                  from include/linux/time.h:8,
+                  from include/linux/timex.h:56,
+                  from include/linux/sched.h:56,
+                  from arch/m68knommu/kernel/asm-offsets.c:12:
+/archives/linux/git/arch/m68k/include/asm/system_no.h: In=20
+function =C3=A2=C2=80=C2=98__xchg=C3=A2=C2=80=C2=99:
+/archives/linux/git/arch/m68k/include/asm/system_no.h:79: error:=20
+implicit declaration of function =C3=A2=C2=80=C2=98local_irq_save=C3=A2=
+=C2=80=C2=99
+/archives/linux/git/arch/m68k/include/asm/system_no.h:101: error:=20
+implicit declaration of function =C3=A2=C2=80=C2=98local_irq_restore=C3=
+=A2=C2=80=C2=99
+
+=46ix that
+
+Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+
+---
+diff --git a/arch/m68k/include/asm/irqflags.h=20
+b/arch/m68k/include/asm/irqflags.h
+index 4a5b284..38b414d 100644
+--- a/arch/m68k/include/asm/irqflags.h
++++ b/arch/m68k/include/asm/irqflags.h
+@@ -2,7 +2,6 @@
+  #define _M68K_IRQFLAGS_H
+   #include <linux/types.h>
+-#include <linux/hardirq.h>
+  #include <linux/preempt.h>
+  #include <asm/thread_info.h>
+  #include <asm/entry.h>
