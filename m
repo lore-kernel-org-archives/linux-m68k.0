@@ -1,49 +1,58 @@
-From: "John Luguard" <info@time.net.my>
-Subject: Senate =?iso-8859-1?Q?House=AE?=
-Date: Sat, 30 Oct 2010 09:51:05 +0800 (MYT)
-Message-ID: <2339.82.128.88.155.1288403465.squirrel@webmail.time.net.my>
-Reply-To: fedexdeliverypost290@hotmail.com
+From: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [PATCH][resend] m68k,m68knommu: Do not include linux/hardirq.h
+	in asm/irqflags.h
+Date: Sat, 30 Oct 2010 07:08:08 +0200
+Message-ID: <20101030050808.GA26197@frolo.macqel>
+References: <4CCAD4E8.8040801@snapgear.com> <AANLkTin4v0=R0Q2etqi+WkLSJTV7T5J01rd+AbymutqG@mail.gmail.com> <4CCB434A.7010400@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp.time.net.my ([203.121.65.122]:24103 "EHLO
-	cuda4.time.net.my" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-	with ESMTP id S1751135Ab0J3CFe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Oct 2010 22:05:34 -0400
-Received: from carp.time.net.my (unknown [10.20.0.226])
-	by cuda4.time.net.my (Spam & Virus Firewall) with ESMTP id AAA1A432FE1E
-	for <linux-m68k@vger.kernel.org>; Sat, 30 Oct 2010 09:51:05 +0800 (MYT)
-Received: from carp.time.net.my ([10.20.0.226]) by cuda4.time.net.my with ESMTP id X6Y8yCWAlY97BVvf for <linux-m68k@vger.kernel.org>; Sat, 30 Oct 2010 09:51:05 +0800 (MYT)
+Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:38505 "EHLO
+	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750955Ab0J3FJC (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 30 Oct 2010 01:09:02 -0400
+Content-Disposition: inline
+In-Reply-To: <4CCB434A.7010400@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, dhowells@redhat.com, gerg@uclinux.org, linux-kernel@vger.kernel.org
 
+Greg, Geert,
 
+On Sat, Oct 30, 2010 at 07:57:30AM +1000, Greg Ungerer wrote:
+>
+> Hi Geert,
+>
+> On 30/10/10 02:31, Geert Uytterhoeven wrote:
+>> On Fri, Oct 29, 2010 at 16:06, Greg Ungerer<gerg@snapgear.com>  wrot=
+e:
+>>> Philippe DeMuyter noticed this build failure with Linus' current gi=
+t
+>>> tree. I think it is m68k clean too. If all are ok with it I'll
+>>> pass it directly to Linus.
+>>
+>> Sorry, I saw his patch before, but had no spare cycles left for test=
+ing.
+>>
+>> Unfortunately that breaks CONFIG_MMU=3Dy:
+>>
+>> arch/m68k/include/asm/irqflags.h: In function =E2=80=98arch_local_ir=
+q_enable=E2=80=99:
+>> arch/m68k/include/asm/irqflags.h:43: error: implicit declaration of
+>> function =E2=80=98hardirq_count=E2=80=99
 
+Oops.  I am sorry.
 
---=20
-Senate House=AE
----DEPUIS 1725---
-276xc Committee On foreign Payment,
-Resolution Panel On Contract Payment.
-Lagos State, Nigeria.
-Phone : +234- (West Africa Office)
+>>
+>> But if you protect the #include<linux/hardirq.h>  by #ifdef
+>> CONFIG_MMU, I'm happy with
+>> it.
+>
+> Thanks, I'll rework it with that.
 
-Accredited ATM card (231) awarded for contract payment of $6.8
-Million Usd with card number: 3478763199030014 has been allocated in
-favor of your email address which was gotten during a discreet search
-on the internet and emerged the winning mail after the raffle draws
-of our Yearly promo from the senate house of Nigeria. Provide my
-secretary Mr Richard ( fedexdeliverypost290@hotmail.com ) with the
-following information to facilitate your claims:
+Thanks to both of you
 
-=46ull Names:
-Complete Postal  Address:
-Direct Phone Number:
-
-Regards
-Mr. John Luguard
-CC;
-Senator David Mark
-(Senate President)
-Direct line +234-703853-7699
+Philippe
