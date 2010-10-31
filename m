@@ -1,58 +1,64 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH][resend] m68k,m68knommu: Do not include linux/hardirq.h
-	in asm/irqflags.h
-Date: Sat, 30 Oct 2010 07:08:08 +0200
-Message-ID: <20101030050808.GA26197@frolo.macqel>
-References: <4CCAD4E8.8040801@snapgear.com> <AANLkTin4v0=R0Q2etqi+WkLSJTV7T5J01rd+AbymutqG@mail.gmail.com> <4CCB434A.7010400@snapgear.com>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: Re: [PATCH v2 02/22] bitops: rename generic little-endian bitops
+ functions
+Date: Sun, 31 Oct 2010 15:02:44 +0100
+Message-ID: <20101031140244.GA2269@ssg-0.norway.atmel.com>
+References: <1287672077-5797-1-git-send-email-akinobu.mita@gmail.com>
+ <1287672077-5797-3-git-send-email-akinobu.mita@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179]:38505 "EHLO
-	mailrelay012.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750955Ab0J3FJC (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 30 Oct 2010 01:09:02 -0400
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kvm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4CCB434A.7010400@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+In-Reply-To: <1287672077-5797-3-git-send-email-akinobu.mita@gmail.com>
+Sender: kvm-owner@vger.kernel.org
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Andy Grover <andy.grover@oracle.com>, rds-devel@oss.oracle.com, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Avi Kivity <avi@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, dhowells@redhat.com, gerg@uclinux.org, linux-kernel@vger.kernel.org
 
-Greg, Geert,
+Around Thu 21 Oct 2010 23:40:57 +0900 or thereabout, Akinobu Mita wrote:
+> As a preparation for providing little-endian bitops for all architectures,
+> This removes generic_ prefix from little-endian bitops function names
+> in asm-generic/bitops/le.h.
+> 
+> s/generic_find_next_le_bit/find_next_le_bit/
+> s/generic_find_next_zero_le_bit/find_next_zero_le_bit/
+> s/generic_find_first_zero_le_bit/find_first_zero_le_bit/
+> s/generic___test_and_set_le_bit/__test_and_set_le_bit/
+> s/generic___test_and_clear_le_bit/__test_and_clear_le_bit/
+> s/generic_test_le_bit/test_le_bit/
+> s/generic___set_le_bit/__set_le_bit/
+> s/generic___clear_le_bit/__clear_le_bit/
+> s/generic_test_and_set_le_bit/test_and_set_le_bit/
+> s/generic_test_and_clear_le_bit/test_and_clear_le_bit/
+> 
+> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+> Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Roman Zippel <zippel@linux-m68k.org>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: Greg Ungerer <gerg@uclinux.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Andy Grover <andy.grover@oracle.com>
+> Cc: rds-devel@oss.oracle.com
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: netdev@vger.kernel.org
+> Cc: Avi Kivity <avi@redhat.com>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Cc: kvm@vger.kernel.org
+> ---
+> No change from previous submission
+> 
+>  arch/avr32/kernel/avr32_ksyms.c              |    4 ++--
+>  arch/avr32/lib/findbit.S                     |    4 ++--
 
-On Sat, Oct 30, 2010 at 07:57:30AM +1000, Greg Ungerer wrote:
->
-> Hi Geert,
->
-> On 30/10/10 02:31, Geert Uytterhoeven wrote:
->> On Fri, Oct 29, 2010 at 16:06, Greg Ungerer<gerg@snapgear.com>  wrot=
-e:
->>> Philippe DeMuyter noticed this build failure with Linus' current gi=
-t
->>> tree. I think it is m68k clean too. If all are ok with it I'll
->>> pass it directly to Linus.
->>
->> Sorry, I saw his patch before, but had no spare cycles left for test=
-ing.
->>
->> Unfortunately that breaks CONFIG_MMU=3Dy:
->>
->> arch/m68k/include/asm/irqflags.h: In function =E2=80=98arch_local_ir=
-q_enable=E2=80=99:
->> arch/m68k/include/asm/irqflags.h:43: error: implicit declaration of
->> function =E2=80=98hardirq_count=E2=80=99
+For the AVR32 changes.
 
-Oops.  I am sorry.
+Acked-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 
->>
->> But if you protect the #include<linux/hardirq.h>  by #ifdef
->> CONFIG_MMU, I'm happy with
->> it.
->
-> Thanks, I'll rework it with that.
+<snipp patch>
 
-Thanks to both of you
-
-Philippe
+-- 
+Best regards, Hans-Christian Egtvedt
