@@ -1,45 +1,18 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch fixes
-Date: Thu, 4 Nov 2010 15:22:00 +1000
-Message-ID: <201011040522.oA45M09r006758@goober.internal.moreton.com.au>
+From: "Gabriel kante" <gabkante1@gmail.com>
+Subject: hi
+Date: Sat, 6 Nov 2010 02:24:47 -0600
+Message-ID: <7a051d23232d18854e35b4ec6962b9e4.squirrel__14890.7617469833$1289035429$gmane$org@macmail.unitelsd.com>
+Reply-To: gabkante@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from filter3.e-filtering.net ([64.251.173.164]:36804 "EHLO
+	filter3.e-filtering.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754274Ab0KFJXm (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 6 Nov 2010 05:23:42 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-
-Hi Linus,
-
-Please pull from:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus-fixes
-
-to get fixes for some rc1 breakage. Two things in there for minor problems
-with some of the m68k/m68knommu merged headers.
-
-Thanks
-Greg
-
-
- 
----
-The following changes since commit d88c0922fa0e2c021a028b310a641126c6d4b7dc:
-  Michel Lespinasse (1):
-        Release page reference during page fault retry
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus-fixes
-
-Greg Ungerer (1):
-      m68knommu: add back in declaration of do_IRQ
-
-Philippe De Muyter (1):
-      m68k, m68knommu: Do not include linux/hardirq.h in asm/irqflags.h
-
- arch/m68k/include/asm/irqflags.h |    2 ++
- arch/m68k/include/asm/machdep.h  |    1 +
- 2 files changed, 3 insertions(+), 0 deletions(-)
+I write to seek your help in the retrieval sum funds from US Bank account
+belonging to my late Dad.
