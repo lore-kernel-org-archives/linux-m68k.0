@@ -1,56 +1,92 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: patches not upstream
-Date: Sun, 14 Nov 2010 17:33:13 +0000
-Message-ID: <Pine.BSM.4.64L.1011141731400.19951@herc.mirbsd.org>
-References: <251136a28833a299adc3df54c1e2bdf4.squirrel@naiad.marenka.org>
+From: Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH] fix amiga and atari floppy driver compile warning
+Date: Mon, 15 Nov 2010 10:27:09 -0500
+Message-ID: <20101115152709.GF30792@redhat.com>
+References: <20101028184223.GG30148@redhat.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:40636 "EHLO lo.gmane.org"
+Received: from mx1.redhat.com ([209.132.183.28]:61179 "EHLO mx1.redhat.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756487Ab0KNRd1 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Nov 2010 12:33:27 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1PHgSD-0008Tv-B3
-	for linux-m68k@vger.kernel.org; Sun, 14 Nov 2010 18:33:25 +0100
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 14 Nov 2010 18:33:25 +0100
-Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 14 Nov 2010 18:33:25 +0100
-In-Reply-To: <251136a28833a299adc3df54c1e2bdf4.squirrel@naiad.marenka.org>
+	id S1754577Ab0KOP1d (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 15 Nov 2010 10:27:33 -0500
+Content-Disposition: inline
+In-Reply-To: <20101028184223.GG30148@redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Jens Axboe <jaxboe@fusionio.com>, linux kernel mailing list <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, hch@lst.de
 
-Stephen R. Marenka dixit:
+On Thu, Oct 28, 2010 at 02:42:23PM -0400, Vivek Goyal wrote:
+> Geert, my crosstool don't produce warning below. I guess this has to =
+do
+> something with compiler version.
+>=20
+> - Geert noticed following warning during compilation.
+>=20
+>   drivers/block/amiflop.c:1344: warning: =E2=80=98rq=E2=80=99 may be =
+used uninitialized in
+>   this function
+>   drivers/block/ataflop.c:1402: warning: =E2=80=98rq=E2=80=99 may be =
+used uninitialized in
+>   this function
+>=20
+> - Initialize rq to NULL to fix the warning. If we can't find a suitab=
+le request
+>   to dispatch, this function should return NULL instead of a possibly=
+ garbage
+>   pointer.
+>=20
+> - Cross compile tested only. Don't have hardware to test it.
+>=20
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 
->Some of those are already marked for 2.6.37, but the atari/aranym patc=
-hes
->seem to have been sitting around a while. Any chance they can go upstr=
-eam?
+Hi Jens,
 
-Is it, maybe, possible to split between patches that touch m68k
-exclusively (like ARAnyM support) and those that don=E2=80=99t (like FA=
-T
-changes), and at least push the former?
+Do you have any concerns about this patch? If not, can you please apply
+it.
 
-=46rom what I=E2=80=99ve read, Debian doesn=E2=80=99t want to add any =E2=
-=80=9Cfeature=E2=80=9D
-patches post-squeeze any more, so the chances of keeping this
-in the Debian kernel package get slimmer, or so it seems.
+Thanks
+Vivek
 
-bye,
-//mirabilos
---=20
-I believe no one can invent an algorithm. One just happens to hit upon =
-it
-when God enlightens him. Or only God invents algorithms, we merely copy=
- them.
-If you don't believe in God, just consider God as Nature if you won't d=
-eny
-existence.		-- Coywolf Qi Hunt
+> ---
+>  drivers/block/amiflop.c |    2 +-
+>  drivers/block/ataflop.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> Index: linux-2.6/drivers/block/amiflop.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.orig/drivers/block/amiflop.c	2010-10-28 14:32:25.000000=
+000 -0400
+> +++ linux-2.6/drivers/block/amiflop.c	2010-10-28 14:34:11.000000000 -=
+0400
+> @@ -1341,7 +1341,7 @@ static struct request *set_next_request(
+>  {
+>  	struct request_queue *q;
+>  	int cnt =3D FD_MAX_UNITS;
+> -	struct request *rq;
+> +	struct request *rq =3D NULL;
+> =20
+>  	/* Find next queue we can dispatch from */
+>  	fdc_queue =3D fdc_queue + 1;
+> Index: linux-2.6/drivers/block/ataflop.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.orig/drivers/block/ataflop.c	2010-10-28 14:31:21.000000=
+000 -0400
+> +++ linux-2.6/drivers/block/ataflop.c	2010-10-28 14:33:58.000000000 -=
+0400
+> @@ -1399,7 +1399,7 @@ static struct request *set_next_request(
+>  {
+>  	struct request_queue *q;
+>  	int old_pos =3D fdc_queue;
+> -	struct request *rq;
+> +	struct request *rq =3D NULL;
+> =20
+>  	do {
+>  		q =3D unit[fdc_queue].disk->queue;
