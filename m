@@ -1,92 +1,55 @@
-From: Vivek Goyal <vgoyal@redhat.com>
+From: Jens Axboe <jaxboe@fusionio.com>
 Subject: Re: [PATCH] fix amiga and atari floppy driver compile warning
-Date: Mon, 15 Nov 2010 10:27:09 -0500
-Message-ID: <20101115152709.GF30792@redhat.com>
-References: <20101028184223.GG30148@redhat.com>
+Date: Mon, 15 Nov 2010 19:33:21 +0100
+Message-ID: <4CE17CF1.3010009@fusionio.com>
+References: <20101028184223.GG30148@redhat.com> <20101115152709.GF30792@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:61179 "EHLO mx1.redhat.com"
+Received: from mx2.fusionio.com ([64.244.102.31]:33597 "EHLO mx2.fusionio.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754577Ab0KOP1d (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 15 Nov 2010 10:27:33 -0500
-Content-Disposition: inline
-In-Reply-To: <20101028184223.GG30148@redhat.com>
+	id S1757108Ab0KOSd1 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 15 Nov 2010 13:33:27 -0500
+In-Reply-To: <20101115152709.GF30792@redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jens Axboe <jaxboe@fusionio.com>, linux kernel mailing list <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, hch@lst.de
+To: Vivek Goyal <vgoyal@redhat.com>
+Cc: linux kernel mailing list <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "hch@lst.de" <hch@lst.de>
 
-On Thu, Oct 28, 2010 at 02:42:23PM -0400, Vivek Goyal wrote:
-> Geert, my crosstool don't produce warning below. I guess this has to =
-do
-> something with compiler version.
+On 2010-11-15 16:27, Vivek Goyal wrote:
+> On Thu, Oct 28, 2010 at 02:42:23PM -0400, Vivek Goyal wrote:
+>> Geert, my crosstool don't produce warning below. I guess this has to=
+ do
+>> something with compiler version.
+>>
+>> - Geert noticed following warning during compilation.
+>>
+>>   drivers/block/amiflop.c:1344: warning: =E2=80=98rq=E2=80=99 may be=
+ used uninitialized in
+>>   this function
+>>   drivers/block/ataflop.c:1402: warning: =E2=80=98rq=E2=80=99 may be=
+ used uninitialized in
+>>   this function
+>>
+>> - Initialize rq to NULL to fix the warning. If we can't find a suita=
+ble request
+>>   to dispatch, this function should return NULL instead of a possibl=
+y garbage
+>>   pointer.
+>>
+>> - Cross compile tested only. Don't have hardware to test it.
+>>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 >=20
-> - Geert noticed following warning during compilation.
+> Hi Jens,
 >=20
->   drivers/block/amiflop.c:1344: warning: =E2=80=98rq=E2=80=99 may be =
-used uninitialized in
->   this function
->   drivers/block/ataflop.c:1402: warning: =E2=80=98rq=E2=80=99 may be =
-used uninitialized in
->   this function
->=20
-> - Initialize rq to NULL to fix the warning. If we can't find a suitab=
-le request
->   to dispatch, this function should return NULL instead of a possibly=
- garbage
->   pointer.
->=20
-> - Cross compile tested only. Don't have hardware to test it.
->=20
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> Do you have any concerns about this patch? If not, can you please app=
+ly
+> it.
 
-Hi Jens,
+No, it's straight forward just got missed in travel. Applied, thanks.
 
-Do you have any concerns about this patch? If not, can you please apply
-it.
-
-Thanks
-Vivek
-
-> ---
->  drivers/block/amiflop.c |    2 +-
->  drivers/block/ataflop.c |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> Index: linux-2.6/drivers/block/amiflop.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/drivers/block/amiflop.c	2010-10-28 14:32:25.000000=
-000 -0400
-> +++ linux-2.6/drivers/block/amiflop.c	2010-10-28 14:34:11.000000000 -=
-0400
-> @@ -1341,7 +1341,7 @@ static struct request *set_next_request(
->  {
->  	struct request_queue *q;
->  	int cnt =3D FD_MAX_UNITS;
-> -	struct request *rq;
-> +	struct request *rq =3D NULL;
-> =20
->  	/* Find next queue we can dispatch from */
->  	fdc_queue =3D fdc_queue + 1;
-> Index: linux-2.6/drivers/block/ataflop.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/drivers/block/ataflop.c	2010-10-28 14:31:21.000000=
-000 -0400
-> +++ linux-2.6/drivers/block/ataflop.c	2010-10-28 14:33:58.000000000 -=
-0400
-> @@ -1399,7 +1399,7 @@ static struct request *set_next_request(
->  {
->  	struct request_queue *q;
->  	int old_pos =3D fdc_queue;
-> -	struct request *rq;
-> +	struct request *rq =3D NULL;
-> =20
->  	do {
->  		q =3D unit[fdc_queue].disk->queue;
+--=20
+Jens Axboe
