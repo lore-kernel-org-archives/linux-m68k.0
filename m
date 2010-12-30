@@ -1,12 +1,11 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 04/15]drivers:staging:comedi:drivers:das800.c Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:07:53 -0800
-Message-ID: <1293750484-1161-4-git-send-email-justinmattock__32790.5959486545$1293750870$gmane$org@gmail.com>
+Subject: [PATCH 03/15]drivers:staging:rtl8187se:r8180_hw.h Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:07:52 -0800
+Message-ID: <1293750484-1161-3-git-send-email-justinmattock__5480.20789069614$1293750871$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
@@ -18,21 +17,21 @@ is correct or not.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/staging/comedi/drivers/das800.c |    2 +-
+ drivers/staging/rtl8187se/r8180_hw.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/staging/comedi/drivers/das800.c b/drivers/staging/comedi/drivers/das800.c
-index aecaedc..3ecae47 100644
---- a/drivers/staging/comedi/drivers/das800.c
-+++ b/drivers/staging/comedi/drivers/das800.c
-@@ -450,7 +450,7 @@ static irqreturn_t das800_interrupt(int irq, void *d)
- 		/* otherwise, stop taking data */
- 	} else {
- 		spin_unlock_irqrestore(&dev->spinlock, irq_flags);
--		disable_das800(dev);	/* diable hardware triggered conversions */
-+		disable_das800(dev);	/* disable hardware triggered conversions */
- 		async->events |= COMEDI_CB_EOA;
- 	}
- 	comedi_event(dev, s);
+diff --git a/drivers/staging/rtl8187se/r8180_hw.h b/drivers/staging/rtl8187se/r8180_hw.h
+index 3fca144..2911d40 100644
+--- a/drivers/staging/rtl8187se/r8180_hw.h
++++ b/drivers/staging/rtl8187se/r8180_hw.h
+@@ -554,7 +554,7 @@
+ /* by amy for power save		*/
+ /* by amy for antenna			*/
+ #define EEPROM_SW_REVD_OFFSET 0x3f
+-/*  BIT[8-9] is for SW Antenna Diversity. Only the value EEPROM_SW_AD_ENABLE means enable, other values are diable.					*/
++/*  BIT[8-9] is for SW Antenna Diversity. Only the value EEPROM_SW_AD_ENABLE means enable, other values are disabled.					*/
+ #define EEPROM_SW_AD_MASK			0x0300
+ #define EEPROM_SW_AD_ENABLE			0x0100
+ 
 -- 
 1.6.5.2.180.gc5b3e
