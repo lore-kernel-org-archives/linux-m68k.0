@@ -1,16 +1,15 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 08/15]drivers:scsi:lpfc:lpfc_init.c Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:07:57 -0800
-Message-ID: <1293750484-1161-8-git-send-email-justinmattock__26907.8774181709$1293751017$gmane$org@gmail.com>
+Subject: [PATCH 07/15]drivers:net:wireless:iwlwifi Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:07:56 -0800
+Message-ID: <1293750484-1161-7-git-send-email-justinmattock__27338.5331653573$1293751977$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-4-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-5-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-6-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-6-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
@@ -22,21 +21,58 @@ is correct or not.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/scsi/lpfc/lpfc_init.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/net/wireless/iwlwifi/iwl-agn-ict.c |    2 +-
+ drivers/net/wireless/iwlwifi/iwl-agn.c     |    4 ++--
+ drivers/net/wireless/iwlwifi/iwl-core.c    |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index b306579..a921f16 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -7661,7 +7661,7 @@ lpfc_pci_remove_one_s3(struct pci_dev *pdev)
- 	 * the HBA.
- 	 */
+diff --git a/drivers/net/wireless/iwlwifi/iwl-agn-ict.c b/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
+index a5dbfea..b5cb3be 100644
+--- a/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
++++ b/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
+@@ -197,7 +197,7 @@ static irqreturn_t iwl_isr(int irq, void *data)
  
--	/* HBA interrupt will be diabled after this call */
-+	/* HBA interrupt will be disabled after this call */
- 	lpfc_sli_hba_down(phba);
- 	/* Stop kthread signal shall trigger work_done one more time */
- 	kthread_stop(phba->worker_thread);
+  none:
+ 	/* re-enable interrupts here since we don't have anything to service. */
+-	/* only Re-enable if diabled by irq  and no schedules tasklet. */
++	/* only Re-enable if disabled by irq  and no schedules tasklet. */
+ 	if (test_bit(STATUS_INT_ENABLED, &priv->status) && !priv->_agn.inta)
+ 		iwl_enable_interrupts(priv);
+ 
+diff --git a/drivers/net/wireless/iwlwifi/iwl-agn.c b/drivers/net/wireless/iwlwifi/iwl-agn.c
+index c2636a7..9b912c0 100644
+--- a/drivers/net/wireless/iwlwifi/iwl-agn.c
++++ b/drivers/net/wireless/iwlwifi/iwl-agn.c
+@@ -1316,7 +1316,7 @@ static void iwl_irq_tasklet_legacy(struct iwl_priv *priv)
+ 	}
+ 
+ 	/* Re-enable all interrupts */
+-	/* only Re-enable if diabled by irq */
++	/* only Re-enable if disabled by irq */
+ 	if (test_bit(STATUS_INT_ENABLED, &priv->status))
+ 		iwl_enable_interrupts(priv);
+ 
+@@ -1530,7 +1530,7 @@ static void iwl_irq_tasklet(struct iwl_priv *priv)
+ 	}
+ 
+ 	/* Re-enable all interrupts */
+-	/* only Re-enable if diabled by irq */
++	/* only Re-enable if disabled by irq */
+ 	if (test_bit(STATUS_INT_ENABLED, &priv->status))
+ 		iwl_enable_interrupts(priv);
+ }
+diff --git a/drivers/net/wireless/iwlwifi/iwl-core.c b/drivers/net/wireless/iwlwifi/iwl-core.c
+index 25fb391..8700ab3 100644
+--- a/drivers/net/wireless/iwlwifi/iwl-core.c
++++ b/drivers/net/wireless/iwlwifi/iwl-core.c
+@@ -1304,7 +1304,7 @@ irqreturn_t iwl_isr_legacy(int irq, void *data)
+ 
+  none:
+ 	/* re-enable interrupts here since we don't have anything to service. */
+-	/* only Re-enable if diabled by irq */
++	/* only Re-enable if disabled by irq */
+ 	if (test_bit(STATUS_INT_ENABLED, &priv->status))
+ 		iwl_enable_interrupts(priv);
+ 	spin_unlock_irqrestore(&priv->lock, flags);
 -- 
 1.6.5.2.180.gc5b3e
