@@ -1,14 +1,19 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 06/15]drivers:staging:xgifb:vb_setmode.c Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:07:55 -0800
-Message-ID: <1293750484-1161-6-git-send-email-justinmattock__545.90596487305$1293750892$gmane$org@gmail.com>
+Subject: [PATCH 11/15]drivers:media:video:cx18:cx23418.h Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:08:00 -0800
+Message-ID: <1293750484-1161-11-git-send-email-justinmattock__37168.0867429406$1293750895$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-4-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-5-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-6-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-8-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-9-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-10-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-5-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-10-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
@@ -20,21 +25,21 @@ is correct or not.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/staging/xgifb/vb_setmode.c |    2 +-
+ drivers/media/video/cx18/cx23418.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/staging/xgifb/vb_setmode.c b/drivers/staging/xgifb/vb_setmode.c
-index 7016fdd..fb49641 100644
---- a/drivers/staging/xgifb/vb_setmode.c
-+++ b/drivers/staging/xgifb/vb_setmode.c
-@@ -1920,7 +1920,7 @@ void XGI_SetCRT1FIFO(unsigned short ModeNo,
+diff --git a/drivers/media/video/cx18/cx23418.h b/drivers/media/video/cx18/cx23418.h
+index 2c00980..7e40035 100644
+--- a/drivers/media/video/cx18/cx23418.h
++++ b/drivers/media/video/cx18/cx23418.h
+@@ -177,7 +177,7 @@
+    IN[0] - Task handle.
+    IN[1] - luma type: 0 = disable, 1 = 1D horizontal only, 2 = 1D vertical only,
+ 		      3 = 2D H/V separable, 4 = 2D symmetric non-separable
+-   IN[2] - chroma type: 0 - diable, 1 = 1D horizontal
++   IN[2] - chroma type: 0 - disable, 1 = 1D horizontal
+    ReturnCode - One of the ERR_CAPTURE_... */
+ #define CX18_CPU_SET_SPATIAL_FILTER_TYPE     	(CPU_CMD_MASK_CAPTURE | 0x000C)
  
- 	data = XGINew_GetReg1(pVBInfo->P3c4, 0x3D);
- 	data &= 0xfe;
--	XGINew_SetReg1(pVBInfo->P3c4, 0x3D, data); /* diable auto-threshold */
-+	XGINew_SetReg1(pVBInfo->P3c4, 0x3D, data); /* disable auto-threshold */
- 
- 	if (ModeNo > 0x13) {
- 		XGINew_SetReg1(pVBInfo->P3c4, 0x08, 0x34);
 -- 
 1.6.5.2.180.gc5b3e
