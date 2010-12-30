@@ -1,7 +1,7 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 11/15]drivers:media:video:cx18:cx23418.h Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:08:00 -0800
-Message-ID: <1293750484-1161-11-git-send-email-justinmattock__37168.0867429406$1293750895$gmane$org@gmail.com>
+Subject: [PATCH 14/15]include:media:davinci:vpss.h Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:08:03 -0800
+Message-ID: <1293750484-1161-14-git-send-email-justinmattock__44134.8482076593$1293750896$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
@@ -12,8 +12,11 @@ References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-8-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-9-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-10-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-11-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-12-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-13-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-10-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-13-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
@@ -25,21 +28,21 @@ is correct or not.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/media/video/cx18/cx23418.h |    2 +-
+ include/media/davinci/vpss.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/media/video/cx18/cx23418.h b/drivers/media/video/cx18/cx23418.h
-index 2c00980..7e40035 100644
---- a/drivers/media/video/cx18/cx23418.h
-+++ b/drivers/media/video/cx18/cx23418.h
-@@ -177,7 +177,7 @@
-    IN[0] - Task handle.
-    IN[1] - luma type: 0 = disable, 1 = 1D horizontal only, 2 = 1D vertical only,
- 		      3 = 2D H/V separable, 4 = 2D symmetric non-separable
--   IN[2] - chroma type: 0 - diable, 1 = 1D horizontal
-+   IN[2] - chroma type: 0 - disable, 1 = 1D horizontal
-    ReturnCode - One of the ERR_CAPTURE_... */
- #define CX18_CPU_SET_SPATIAL_FILTER_TYPE     	(CPU_CMD_MASK_CAPTURE | 0x000C)
+diff --git a/include/media/davinci/vpss.h b/include/media/davinci/vpss.h
+index c59cc02..b586495 100644
+--- a/include/media/davinci/vpss.h
++++ b/include/media/davinci/vpss.h
+@@ -44,7 +44,7 @@ struct vpss_pg_frame_size {
+ 	short pplen;
+ };
  
+-/* Used for enable/diable VPSS Clock */
++/* Used for enable/disable VPSS Clock */
+ enum vpss_clock_sel {
+ 	/* DM355/DM365 */
+ 	VPSS_CCDC_CLOCK,
 -- 
 1.6.5.2.180.gc5b3e
