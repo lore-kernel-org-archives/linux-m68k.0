@@ -1,7 +1,7 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 12/15]drivers:media:video:tvp7002.c Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:08:01 -0800
-Message-ID: <1293750484-1161-12-git-send-email-justinmattock__36473.6981959597$1293750932$gmane$org@gmail.com>
+Subject: [PATCH 09/15]drivers:usb:host Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:07:58 -0800
+Message-ID: <1293750484-1161-9-git-send-email-justinmattock__29867.32196664$1293750957$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
@@ -10,37 +10,57 @@ References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-6-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-8-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-9-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-10-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-11-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-11-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-8-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org, "Justin P. Mattock" <justinmattock@gmail.com>
 
-The below patch fixes a typo "diable" to "disable". Please let me know if this 
-is correct or not.
+The below patch fixes a typo "diable" to "disable" and also fixes another typo in a comment. 
+Please let me know if this is correct or not.
 
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/media/video/tvp7002.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/usb/host/fhci-hcd.c |    4 ++--
+ drivers/usb/host/fhci-tds.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/video/tvp7002.c b/drivers/media/video/tvp7002.c
-index e63b40f..c799e4e 100644
---- a/drivers/media/video/tvp7002.c
-+++ b/drivers/media/video/tvp7002.c
-@@ -789,7 +789,7 @@ static int tvp7002_query_dv_preset(struct v4l2_subdev *sd,
-  * Get the value of a TVP7002 decoder device register.
-  * Returns zero when successful, -EINVAL if register read fails or
-  * access to I2C client fails, -EPERM if the call is not allowed
-- * by diabled CAP_SYS_ADMIN.
-+ * by disabled CAP_SYS_ADMIN.
-  */
- static int tvp7002_g_register(struct v4l2_subdev *sd,
- 						struct v4l2_dbg_register *reg)
+diff --git a/drivers/usb/host/fhci-hcd.c b/drivers/usb/host/fhci-hcd.c
+index 20092a2..12fd184 100644
+--- a/drivers/usb/host/fhci-hcd.c
++++ b/drivers/usb/host/fhci-hcd.c
+@@ -98,13 +98,13 @@ void fhci_usb_enable_interrupt(struct fhci_usb *usb)
+ 	usb->intr_nesting_cnt--;
+ }
+ 
+-/* diable the usb interrupt */
++/* disable the usb interrupt */
+ void fhci_usb_disable_interrupt(struct fhci_usb *usb)
+ {
+ 	struct fhci_hcd *fhci = usb->fhci;
+ 
+ 	if (usb->intr_nesting_cnt == 0) {
+-		/* diable the timer interrupt */
++		/* disable the timer interrupt */
+ 		disable_irq_nosync(fhci->timer->irq);
+ 
+ 		/* disable the usb interrupt */
+diff --git a/drivers/usb/host/fhci-tds.c b/drivers/usb/host/fhci-tds.c
+index 7be548c..38fe058 100644
+--- a/drivers/usb/host/fhci-tds.c
++++ b/drivers/usb/host/fhci-tds.c
+@@ -271,8 +271,8 @@ void fhci_init_ep_registers(struct fhci_usb *usb, struct endpoint *ep,
+ 
+ /*
+  * Collect the submitted frames and inform the application about them
+- * It is also prepearing the TDs for new frames. If the Tx interrupts
+- * are diabled, the application should call that routine to get
++ * It is also preparing the TDs for new frames. If the Tx interrupts
++ * are disabled, the application should call that routine to get
+  * confirmation about the submitted frames. Otherwise, the routine is
+  * called frome the interrupt service routine during the Tx interrupt.
+  * In that case the application is informed by calling the application
 -- 
 1.6.5.2.180.gc5b3e
