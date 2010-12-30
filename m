@@ -1,34 +1,53 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 01/15]arch:m68k:ifpsp060:src:fpsp.S Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:07:50 -0800
-Message-ID: <1293750484-1161-1-git-send-email-justinmattock__47373.7578293823$1293750891$gmane$org@gmail.com>
+Subject: [PATCH 10/15]drivers:usb:gadget:langwell Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:07:59 -0800
+Message-ID: <1293750484-1161-10-git-send-email-justinmattock__45481.3351193026$1293750892$gmane$org@gmail.com>
+References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-4-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-5-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-6-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-8-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-9-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1293750484-1161-9-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org, "Justin P. Mattock" <justinmattock@gmail.com>
 
 The below patch fixes a typo "diable" to "disable". Please let me know if this 
-is correct or not.
+is correct or not. 
 
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- arch/m68k/ifpsp060/src/fpsp.S |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/usb/gadget/langwell_udc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/ifpsp060/src/fpsp.S b/arch/m68k/ifpsp060/src/fpsp.S
-index 73613b5..26e85e2 100644
---- a/arch/m68k/ifpsp060/src/fpsp.S
-+++ b/arch/m68k/ifpsp060/src/fpsp.S
-@@ -3881,7 +3881,7 @@ _fpsp_fline:
- # FP Unimplemented Instruction stack frame and jump to that entry
- # point.
- #
--# but, if the FPU is disabled, then we need to jump to the FPU diabled
-+# but, if the FPU is disabled, then we need to jump to the FPU disabled
- # entry point.
- 	movc		%pcr,%d0
- 	btst		&0x1,%d0
+diff --git a/drivers/usb/gadget/langwell_udc.c b/drivers/usb/gadget/langwell_udc.c
+index b8ec954..dad278f 100644
+--- a/drivers/usb/gadget/langwell_udc.c
++++ b/drivers/usb/gadget/langwell_udc.c
+@@ -3063,7 +3063,7 @@ static void langwell_udc_remove(struct pci_dev *pdev)
+ 
+ 	kfree(dev->ep);
+ 
+-	/* diable IRQ handler */
++	/* disable IRQ handler */
+ 	if (dev->got_irq)
+ 		free_irq(pdev->irq, dev);
+ 
+@@ -3383,7 +3383,7 @@ static int langwell_udc_suspend(struct pci_dev *pdev, pm_message_t state)
+ 	/* disable interrupt and set controller to stop state */
+ 	langwell_udc_stop(dev);
+ 
+-	/* diable IRQ handler */
++	/* disable IRQ handler */
+ 	if (dev->got_irq)
+ 		free_irq(pdev->irq, dev);
+ 	dev->got_irq = 0;
 -- 
 1.6.5.2.180.gc5b3e
