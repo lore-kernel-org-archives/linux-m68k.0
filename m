@@ -1,13 +1,12 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 05/15]drivers:staging:vt6655:rf.c Typo change diable to disable.
-Date: Thu, 30 Dec 2010 15:07:54 -0800
-Message-ID: <1293750484-1161-5-git-send-email-justinmattock__25229.1485936896$1293750830$gmane$org@gmail.com>
+Subject: [PATCH 04/15]drivers:staging:comedi:drivers:das800.c Typo change diable to disable.
+Date: Thu, 30 Dec 2010 15:07:53 -0800
+Message-ID: <1293750484-1161-4-git-send-email-justinmattock__32790.5959486545$1293750870$gmane$org@gmail.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
  <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-4-git-send-email-justinmattock@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-4-git-send-email-justinmattock@gmail.com>
+In-Reply-To: <1293750484-1161-3-git-send-email-justinmattock@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: trivial@kernel.org
@@ -19,27 +18,21 @@ is correct or not.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/staging/vt6655/rf.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/comedi/drivers/das800.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index b8ec783..cdd9165 100644
---- a/drivers/staging/vt6655/rf.c
-+++ b/drivers/staging/vt6655/rf.c
-@@ -496,11 +496,11 @@ bool s_bAL7230Init (unsigned long dwIoBase)
- 
-     //Calibration
-     MACvTimer0MicroSDelay(dwIoBase, 150);//150us
--    bResult &= IFRFbWriteEmbeded(dwIoBase, (0x9ABA8F00+(BY_AL7230_REG_LEN<<3)+IFREGCTL_REGW)); //TXDCOC:active, RCK:diable
-+    bResult &= IFRFbWriteEmbeded(dwIoBase, (0x9ABA8F00+(BY_AL7230_REG_LEN<<3)+IFREGCTL_REGW)); //TXDCOC:active, RCK:disable
-     MACvTimer0MicroSDelay(dwIoBase, 30);//30us
--    bResult &= IFRFbWriteEmbeded(dwIoBase, (0x3ABA8F00+(BY_AL7230_REG_LEN<<3)+IFREGCTL_REGW)); //TXDCOC:diable, RCK:active
-+    bResult &= IFRFbWriteEmbeded(dwIoBase, (0x3ABA8F00+(BY_AL7230_REG_LEN<<3)+IFREGCTL_REGW)); //TXDCOC:disable, RCK:active
-     MACvTimer0MicroSDelay(dwIoBase, 30);//30us
--    bResult &= IFRFbWriteEmbeded(dwIoBase, dwAL7230InitTable[CB_AL7230_INIT_SEQ-1]); //TXDCOC:diable, RCK:diable
-+    bResult &= IFRFbWriteEmbeded(dwIoBase, dwAL7230InitTable[CB_AL7230_INIT_SEQ-1]); //TXDCOC:diable, RCK:disable
- 
-     MACvWordRegBitsOn(dwIoBase, MAC_REG_SOFTPWRCTL, (SOFTPWRCTL_SWPE3    |
-                                                      SOFTPWRCTL_SWPE2    |
+diff --git a/drivers/staging/comedi/drivers/das800.c b/drivers/staging/comedi/drivers/das800.c
+index aecaedc..3ecae47 100644
+--- a/drivers/staging/comedi/drivers/das800.c
++++ b/drivers/staging/comedi/drivers/das800.c
+@@ -450,7 +450,7 @@ static irqreturn_t das800_interrupt(int irq, void *d)
+ 		/* otherwise, stop taking data */
+ 	} else {
+ 		spin_unlock_irqrestore(&dev->spinlock, irq_flags);
+-		disable_das800(dev);	/* diable hardware triggered conversions */
++		disable_das800(dev);	/* disable hardware triggered conversions */
+ 		async->events |= COMEDI_CB_EOA;
+ 	}
+ 	comedi_event(dev, s);
 -- 
 1.6.5.2.180.gc5b3e
