@@ -1,45 +1,59 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH 02/15]drivers:spi:dw_spi.c Typo change diable to
- disable.
-Date: Fri, 31 Dec 2010 12:11:36 +0300
-Message-ID: <20101231091136.GC1886@bicker>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [PATCH 12/15]drivers:media:video:tvp7002.c Typo change diable
+	to disable.
+Date: Fri, 31 Dec 2010 08:24:59 -0200
+Message-ID: <4D1DAF7B.4020504@redhat.com>
 References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
- <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
- <20101231064515.GC3733@angua.secretlab.ca>
- <4D1D7DAE.7060504@gmail.com>
+	<1293750484-1161-2-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-3-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-4-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-5-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-6-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-8-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-9-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-10-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-11-git-send-email-justinmattock@gmail.com>
+	<1293750484-1161-12-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D1D7DAE.7060504@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devel-bounces@linuxdriverproject.org>
+In-Reply-To: <1293750484-1161-12-git-send-email-justinmattock@gmail.com>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/devel>,
+	<mailto:devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/devel>
+List-Post: <mailto:devel@linuxdriverproject.org>
+List-Help: <mailto:devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/devel>,
+	<mailto:devel-request@linuxdriverproject.org?subject=subscribe>
+Sender: devel-bounces@linuxdriverproject.org
+Errors-To: devel-bounces@linuxdriverproject.org
 To: "Justin P. Mattock" <justinmattock@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, trivial@kernel.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-m68k@lists.linux-m68k.org, spi-devel-general@lists.sourceforge.net, linux-media@vger.kernel.org
+Cc: devel@driverdev.osuosl.org, linux-m68k@vger.kernel.org, trivial@kernel.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ivtv-devel@ivtvdriver.org, spi-devel-general@lists.sourceforge.net, linux-media@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-On Thu, Dec 30, 2010 at 10:52:30PM -0800, Justin P. Mattock wrote:
-> On 12/30/2010 10:45 PM, Grant Likely wrote:
-> >On Thu, Dec 30, 2010 at 03:07:51PM -0800, Justin P. Mattock wrote:
-> >>The below patch fixes a typo "diable" to "disable". Please let me know if this
-> >>is correct or not.
-> >>
-> >>Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
-> >
-> >applied, thanks.
-> >
-> >g.
+Em 30-12-2010 21:08, Justin P. Mattock escreveu:
+> The below patch fixes a typo "diable" to "disable". Please let me know if this 
+> is correct or not.
 > 
-> ahh.. thanks.. just cleared up the left out diabled that I had
-> thought I forgotten(ended up separating comments and code and
-> forgot)
-
-This is really just defensiveness and random grumbling and grumpiness on
-my part, but one reason I may have missed the first patch is because
-your subject lines are crap.
-
-Wrong:  [PATCH 02/15]drivers:spi:dw_spi.c Typo change diable to disable.
-
-Right:  [PATCH 02/15] spi/dw_spi: Typo change diable to disable
-
-regards,
-dan carpenter
+> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+Acked-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+> 
+> ---
+>  drivers/media/video/tvp7002.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/media/video/tvp7002.c b/drivers/media/video/tvp7002.c
+> index e63b40f..c799e4e 100644
+> --- a/drivers/media/video/tvp7002.c
+> +++ b/drivers/media/video/tvp7002.c
+> @@ -789,7 +789,7 @@ static int tvp7002_query_dv_preset(struct v4l2_subdev *sd,
+>   * Get the value of a TVP7002 decoder device register.
+>   * Returns zero when successful, -EINVAL if register read fails or
+>   * access to I2C client fails, -EPERM if the call is not allowed
+> - * by diabled CAP_SYS_ADMIN.
+> + * by disabled CAP_SYS_ADMIN.
+>   */
+>  static int tvp7002_g_register(struct v4l2_subdev *sd,
+>  						struct v4l2_dbg_register *reg)
