@@ -1,80 +1,48 @@
-From: Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH 07/15]drivers:net:wireless:iwlwifi Typo change diable
- to disable.
-Date: Fri, 31 Dec 2010 09:33:30 -0600
-Message-ID: <4D1DF7CA.8040504__41946.0604236976$1293809965$gmane$org@lwfinger.net>
-References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com> <1293750484-1161-2-git-send-email-justinmattock@gmail.com> <1293750484-1161-3-git-send-email-justinmattock@gmail.com> <1293750484-1161-4-git-send-email-justinmattock@gmail.com> <1293750484-1161-5-git-send-email-justinmattock@gmail.com> <1293750484-1161-6-git-send-email-justinmattock@gmail.com> <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH 02/15]drivers:spi:dw_spi.c Typo change diable to
+ disable.
+Date: Fri, 31 Dec 2010 20:41:00 +0300
+Message-ID: <20101231174100.GF1886__41930.3403272808$1293817781$gmane$org@bicker>
+References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
+ <1293750484-1161-2-git-send-email-justinmattock@gmail.com>
+ <20101231064515.GC3733@angua.secretlab.ca>
+ <4D1D7DAE.7060504@gmail.com>
+ <20101231091136.GC1886@bicker>
+ <4D1DE616.7010105@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-7-git-send-email-justinmattock@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <4D1DE616.7010105@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: "Justin P. Mattock" <justinmattock@gmail.com>
-Cc: trivial@kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Cc: Grant Likely <grant.likely@secretlab.ca>, trivial@kernel.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-m68k@lists.linux-m68k.org, spi-devel-general@lists.sourceforge.net, linux-media@vger.kernel.org
 
-On 12/30/2010 05:07 PM, Justin P. Mattock wrote:
-> The below patch fixes a typo "diable" to "disable". Please let me know if this 
-> is correct or not.
+On Fri, Dec 31, 2010 at 06:17:58AM -0800, Justin P. Mattock wrote:
+> >Wrong:  [PATCH 02/15]drivers:spi:dw_spi.c Typo change diable to disable.
+> >
+> >Right:  [PATCH 02/15] spi/dw_spi: Typo change diable to disable
+> >
+> >regards,
+> >dan carpenter
+> >
 > 
-> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
-> 
+> alright.. so having the backlash is alright for the subject
 
-ACKed-by: Larry Finger <Larry.Finger@lwfinger.net>
+Well really my point is not so much about backslashes vs colons, it's
+about getting the *one* correct prefix.  This stuff is probably
+scriptable most of the time, but you may still be required to think a
+little on the corner cases.
 
+Here is a script to get you started.
 
-> ---
->  drivers/net/wireless/iwlwifi/iwl-agn-ict.c |    2 +-
->  drivers/net/wireless/iwlwifi/iwl-agn.c     |    4 ++--
->  drivers/net/wireless/iwlwifi/iwl-core.c    |    2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/iwlwifi/iwl-agn-ict.c b/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
-> index a5dbfea..b5cb3be 100644
-> --- a/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
-> +++ b/drivers/net/wireless/iwlwifi/iwl-agn-ict.c
-> @@ -197,7 +197,7 @@ static irqreturn_t iwl_isr(int irq, void *data)
->  
->   none:
->  	/* re-enable interrupts here since we don't have anything to service. */
-> -	/* only Re-enable if diabled by irq  and no schedules tasklet. */
-> +	/* only Re-enable if disabled by irq  and no schedules tasklet. */
->  	if (test_bit(STATUS_INT_ENABLED, &priv->status) && !priv->_agn.inta)
->  		iwl_enable_interrupts(priv);
->  
-> diff --git a/drivers/net/wireless/iwlwifi/iwl-agn.c b/drivers/net/wireless/iwlwifi/iwl-agn.c
-> index c2636a7..9b912c0 100644
-> --- a/drivers/net/wireless/iwlwifi/iwl-agn.c
-> +++ b/drivers/net/wireless/iwlwifi/iwl-agn.c
-> @@ -1316,7 +1316,7 @@ static void iwl_irq_tasklet_legacy(struct iwl_priv *priv)
->  	}
->  
->  	/* Re-enable all interrupts */
-> -	/* only Re-enable if diabled by irq */
-> +	/* only Re-enable if disabled by irq */
->  	if (test_bit(STATUS_INT_ENABLED, &priv->status))
->  		iwl_enable_interrupts(priv);
->  
-> @@ -1530,7 +1530,7 @@ static void iwl_irq_tasklet(struct iwl_priv *priv)
->  	}
->  
->  	/* Re-enable all interrupts */
-> -	/* only Re-enable if diabled by irq */
-> +	/* only Re-enable if disabled by irq */
->  	if (test_bit(STATUS_INT_ENABLED, &priv->status))
->  		iwl_enable_interrupts(priv);
->  }
-> diff --git a/drivers/net/wireless/iwlwifi/iwl-core.c b/drivers/net/wireless/iwlwifi/iwl-core.c
-> index 25fb391..8700ab3 100644
-> --- a/drivers/net/wireless/iwlwifi/iwl-core.c
-> +++ b/drivers/net/wireless/iwlwifi/iwl-core.c
-> @@ -1304,7 +1304,7 @@ irqreturn_t iwl_isr_legacy(int irq, void *data)
->  
->   none:
->  	/* re-enable interrupts here since we don't have anything to service. */
-> -	/* only Re-enable if diabled by irq */
-> +	/* only Re-enable if disabled by irq */
->  	if (test_bit(STATUS_INT_ENABLED, &priv->status))
->  		iwl_enable_interrupts(priv);
->  	spin_unlock_irqrestore(&priv->lock, flags);
+git log --format="%s" drivers/spi/dw_spi.c | \
+	head -n 20 |                         \
+	perl -ne 's/(.*):.*/$1/; print' |    \
+	sort | uniq -c | sort -rn |          \
+	perl -ne 's/^\W+\d+ //; print' |     \
+	head -n 1
+
+regards,
+dan carpenter
