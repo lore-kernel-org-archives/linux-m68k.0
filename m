@@ -1,40 +1,69 @@
-From: Mauro Carvalho Chehab <maurochehab@gmail.com>
-Subject: Re: [PATCH 11/15]drivers:media:video:cx18:cx23418.h Typo change diable
- to disable.
-Date: Fri, 31 Dec 2010 08:23:41 -0200
-Message-ID: <4D1DAF2D.5070604__16298.7156342298$1293791346$gmane$org@gmail.com>
-References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com> <1293750484-1161-2-git-send-email-justinmattock@gmail.com> <1293750484-1161-3-git-send-email-justinmattock@gmail.com> <1293750484-1161-4-git-send-email-justinmattock@gmail.com> <1293750484-1161-5-git-send-email-justinmattock@gmail.com> <1293750484-1161-6-git-send-email-justinmattock@gmail.com> <1293750484-1161-7-git-send-email-justinmattock@gmail.com> <1293750484-1161-8-git-send-email-justinmattock@gmail.com> <1293750484-1161-9-git-send-email-justinmattock@gmail.com> <1293750484-1161-10-git-send-email-justinmattock@gmail.com> <1293750484-1161-11-git-send-email-justinmattock@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 01/15]arch:m68k:ifpsp060:src:fpsp.S Typo change diable to disable.
+Date: Fri, 31 Dec 2010 11:33:49 +0100
+Message-ID: <AANLkTins7rj1o4rEcEFmVSA2=1yXZSfLdO000gqQP7cg@mail.gmail.com>
+References: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1293750484-1161-11-git-send-email-justinmattock@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <1293750484-1161-1-git-send-email-justinmattock@gmail.com>
+Sender: linux-scsi-owner@vger.kernel.org
 To: "Justin P. Mattock" <justinmattock@gmail.com>
-Cc: trivial@kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Cc: trivial@kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, ivtv-devel@ivtvdriver.org, linux-media@vger.kernel.org, linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Em 30-12-2010 21:08, Justin P. Mattock escreveu:
-> The below patch fixes a typo "diable" to "disable". Please let me know if this 
+On Fri, Dec 31, 2010 at 00:07, Justin P. Mattock
+<justinmattock@gmail.com> wrote:
+> The below patch fixes a typo "diable" to "disable". Please let me kno=
+w if this
 > is correct or not.
-> 
+>
 > Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
-Acked-by: Mauro Carvalho Chehab <mchehab@redhat.com>
-> 
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
 > ---
->  drivers/media/video/cx18/cx23418.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/media/video/cx18/cx23418.h b/drivers/media/video/cx18/cx23418.h
-> index 2c00980..7e40035 100644
-> --- a/drivers/media/video/cx18/cx23418.h
-> +++ b/drivers/media/video/cx18/cx23418.h
-> @@ -177,7 +177,7 @@
->     IN[0] - Task handle.
->     IN[1] - luma type: 0 = disable, 1 = 1D horizontal only, 2 = 1D vertical only,
->  		      3 = 2D H/V separable, 4 = 2D symmetric non-separable
-> -   IN[2] - chroma type: 0 - diable, 1 = 1D horizontal
-> +   IN[2] - chroma type: 0 - disable, 1 = 1D horizontal
->     ReturnCode - One of the ERR_CAPTURE_... */
->  #define CX18_CPU_SET_SPATIAL_FILTER_TYPE     	(CPU_CMD_MASK_CAPTURE | 0x000C)
->  
+> =C2=A0arch/m68k/ifpsp060/src/fpsp.S | =C2=A0 =C2=A02 +-
+> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/m68k/ifpsp060/src/fpsp.S b/arch/m68k/ifpsp060/src/f=
+psp.S
+> index 73613b5..26e85e2 100644
+> --- a/arch/m68k/ifpsp060/src/fpsp.S
+> +++ b/arch/m68k/ifpsp060/src/fpsp.S
+> @@ -3881,7 +3881,7 @@ _fpsp_fline:
+> =C2=A0# FP Unimplemented Instruction stack frame and jump to that ent=
+ry
+> =C2=A0# point.
+> =C2=A0#
+> -# but, if the FPU is disabled, then we need to jump to the FPU diabl=
+ed
+> +# but, if the FPU is disabled, then we need to jump to the FPU disab=
+led
+> =C2=A0# entry point.
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0movc =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0%pcr,%d0
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0btst =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0&0x1,%d0
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
