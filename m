@@ -1,60 +1,124 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/3] m68k: Allow all kernel traps to be handled via exception fixups
-Date: Fri,  7 Jan 2011 17:22:05 +0100
-Message-ID: <1294417325-6109-4-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 1/3] m68k: Add helper function handle_kernel_fault()
+Date: Fri,  7 Jan 2011 17:22:03 +0100
+Message-ID: <1294417325-6109-2-git-send-email-geert@linux-m68k.org>
 References: <1294417325-6109-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1294417325-6109-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: Andreas Schwab <schwab@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Roman Zippel <zippel@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-From: Andreas Schwab <schwab@suse.de>
+From: Roman Zippel <zippel@linux-m68k.org>
 
-This will be needed by the ARAnyM Native Feature initialization code.
-Also document that the VEC_TRACE check is needed for 68020/30.
+Add helper function handle_kernel_fault() in signal.c, so frame_extra_sizes
+can become static, and to avoid future code duplication.
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
+Signed-off-by: Roman Zippel <zippel@linux-m68k.org>
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/traps.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+ arch/m68k/include/asm/processor.h |    2 ++
+ arch/m68k/kernel/signal.c         |   24 +++++++++++++++++++++++-
+ arch/m68k/mm/fault.c              |   16 +---------------
+ 3 files changed, 26 insertions(+), 16 deletions(-)
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index cd802d4..4022bbc 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -58,6 +58,7 @@ asm(".text\n"
- /*
-  * this must be called very early as the kernel might
-  * use some instruction that are emulated on the 060
-+ * and so we're prepared for early probe attempts (e.g. nf_init).
-  */
- void __init base_trap_init(void)
- {
-@@ -78,6 +79,7 @@ void __init base_trap_init(void)
- 	}
- 
- 	vectors[VEC_BUSERR] = buserr;
-+	vectors[VEC_ILLEGAL] = trap;
- 	vectors[VEC_SYS] = system_call;
+diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
+index 7a6a759..f83cf9f 100644
+--- a/arch/m68k/include/asm/processor.h
++++ b/arch/m68k/include/asm/processor.h
+@@ -110,6 +110,8 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
+ 	wrusp(usp);
  }
  
-@@ -1055,9 +1057,11 @@ asmlinkage void trap_c(struct frame *fp)
- 	siginfo_t info;
++extern int handle_kernel_fault(struct pt_regs *regs);
++
+ #else
  
- 	if (fp->ptregs.sr & PS_S) {
--		if ((fp->ptregs.vector >> 2) == VEC_TRACE) {
--			/* traced a trapping instruction */
--		} else
-+		if (fp->ptregs.vector == VEC_TRACE << 2) {
-+			/* traced a trapping instruction on a 68020/30,
-+			 * real exception will be executed afterwards.
-+			 */
-+		} else if (!handle_kernel_fault(&fp->ptregs))
- 			bad_super_trap(fp);
- 		return;
- 	}
+ /*
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index d12c3b0..a0afc23 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -42,6 +42,7 @@
+ #include <linux/personality.h>
+ #include <linux/tty.h>
+ #include <linux/binfmts.h>
++#include <linux/module.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/uaccess.h>
+@@ -51,7 +52,7 @@
+ 
+ #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
+ 
+-const int frame_extra_sizes[16] = {
++static const int frame_extra_sizes[16] = {
+   [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
+   [2]	= sizeof(((struct frame *)0)->un.fmt2),
+   [3]	= sizeof(((struct frame *)0)->un.fmt3),
+@@ -69,6 +70,27 @@ const int frame_extra_sizes[16] = {
+   [15]	= -1, /* sizeof(((struct frame *)0)->un.fmtf), */
+ };
+ 
++int handle_kernel_fault(struct pt_regs *regs)
++{
++	const struct exception_table_entry *fixup;
++	struct pt_regs *tregs;
++
++	/* Are we prepared to handle this kernel fault? */
++	fixup = search_exception_tables(regs->pc);
++	if (!fixup)
++		return 0;
++
++	/* Create a new four word stack frame, discarding the old one. */
++	regs->stkadj = frame_extra_sizes[regs->format];
++	tregs =	(struct pt_regs *)((long)regs + regs->stkadj);
++	tregs->vector = regs->vector;
++	tregs->format = 0;
++	tregs->pc = fixup->fixup;
++	tregs->sr = regs->sr;
++
++	return 1;
++}
++
+ /*
+  * Atomically swap in the new signal mask, and wait for a signal.
+  */
+diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+index a96394a..2db6099 100644
+--- a/arch/m68k/mm/fault.c
++++ b/arch/m68k/mm/fault.c
+@@ -18,7 +18,6 @@
+ #include <asm/pgalloc.h>
+ 
+ extern void die_if_kernel(char *, struct pt_regs *, long);
+-extern const int frame_extra_sizes[]; /* in m68k/kernel/signal.c */
+ 
+ int send_fault_sig(struct pt_regs *regs)
+ {
+@@ -35,21 +34,8 @@ int send_fault_sig(struct pt_regs *regs)
+ 		force_sig_info(siginfo.si_signo,
+ 			       &siginfo, current);
+ 	} else {
+-		const struct exception_table_entry *fixup;
+-
+-		/* Are we prepared to handle this kernel fault? */
+-		if ((fixup = search_exception_tables(regs->pc))) {
+-			struct pt_regs *tregs;
+-			/* Create a new four word stack frame, discarding the old
+-			   one.  */
+-			regs->stkadj = frame_extra_sizes[regs->format];
+-			tregs =	(struct pt_regs *)((ulong)regs + regs->stkadj);
+-			tregs->vector = regs->vector;
+-			tregs->format = 0;
+-			tregs->pc = fixup->fixup;
+-			tregs->sr = regs->sr;
++		if (handle_kernel_fault(regs))
+ 			return -1;
+-		}
+ 
+ 		//if (siginfo.si_signo == SIGBUS)
+ 		//	force_sig_info(siginfo.si_signo,
 -- 
 1.7.0.4
