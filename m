@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/3] m68k: Add helper function handle_kernel_fault()
-Date: Fri,  7 Jan 2011 17:22:03 +0100
-Message-ID: <1294417325-6109-2-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 2/3] m68k: Use base_trap_init() to initialize vectors
+Date: Fri,  7 Jan 2011 17:22:04 +0100
+Message-ID: <1294417325-6109-3-git-send-email-geert@linux-m68k.org>
 References: <1294417325-6109-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1294417325-6109-1-git-send-email-geert@linux-m68k.org>
@@ -12,113 +12,48 @@ Cc: Roman Zippel <zippel@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.o
 
 From: Roman Zippel <zippel@linux-m68k.org>
 
-Add helper function handle_kernel_fault() in signal.c, so frame_extra_sizes
-can become static, and to avoid future code duplication.
+So basic initialization is all in one place.
 
 Signed-off-by: Roman Zippel <zippel@linux-m68k.org>
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/processor.h |    2 ++
- arch/m68k/kernel/signal.c         |   24 +++++++++++++++++++++++-
- arch/m68k/mm/fault.c              |   16 +---------------
- 3 files changed, 26 insertions(+), 16 deletions(-)
+ arch/m68k/kernel/traps.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-index 7a6a759..f83cf9f 100644
---- a/arch/m68k/include/asm/processor.h
-+++ b/arch/m68k/include/asm/processor.h
-@@ -110,6 +110,8 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
- 	wrusp(usp);
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index ada4f4c..cd802d4 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -48,10 +48,7 @@ asmlinkage void nmihandler(void);
+ asmlinkage void fpu_emu(void);
+ #endif
+ 
+-e_vector vectors[256] = {
+-	[VEC_BUSERR]	= buserr,
+-	[VEC_SYS]	= system_call,
+-};
++e_vector vectors[256];
+ 
+ /* nmi handler for the Amiga */
+ asm(".text\n"
+@@ -64,7 +61,7 @@ asm(".text\n"
+  */
+ void __init base_trap_init(void)
+ {
+-	if(MACH_IS_SUN3X) {
++	if (MACH_IS_SUN3X) {
+ 		extern e_vector *sun3x_prom_vbr;
+ 
+ 		__asm__ volatile ("movec %%vbr, %0" : "=r" (sun3x_prom_vbr));
+@@ -79,6 +76,9 @@ void __init base_trap_init(void)
+ 
+ 		vectors[VEC_UNIMPII] = unimp_vec;
+ 	}
++
++	vectors[VEC_BUSERR] = buserr;
++	vectors[VEC_SYS] = system_call;
  }
  
-+extern int handle_kernel_fault(struct pt_regs *regs);
-+
- #else
- 
- /*
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index d12c3b0..a0afc23 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -42,6 +42,7 @@
- #include <linux/personality.h>
- #include <linux/tty.h>
- #include <linux/binfmts.h>
-+#include <linux/module.h>
- 
- #include <asm/setup.h>
- #include <asm/uaccess.h>
-@@ -51,7 +52,7 @@
- 
- #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
- 
--const int frame_extra_sizes[16] = {
-+static const int frame_extra_sizes[16] = {
-   [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
-   [2]	= sizeof(((struct frame *)0)->un.fmt2),
-   [3]	= sizeof(((struct frame *)0)->un.fmt3),
-@@ -69,6 +70,27 @@ const int frame_extra_sizes[16] = {
-   [15]	= -1, /* sizeof(((struct frame *)0)->un.fmtf), */
- };
- 
-+int handle_kernel_fault(struct pt_regs *regs)
-+{
-+	const struct exception_table_entry *fixup;
-+	struct pt_regs *tregs;
-+
-+	/* Are we prepared to handle this kernel fault? */
-+	fixup = search_exception_tables(regs->pc);
-+	if (!fixup)
-+		return 0;
-+
-+	/* Create a new four word stack frame, discarding the old one. */
-+	regs->stkadj = frame_extra_sizes[regs->format];
-+	tregs =	(struct pt_regs *)((long)regs + regs->stkadj);
-+	tregs->vector = regs->vector;
-+	tregs->format = 0;
-+	tregs->pc = fixup->fixup;
-+	tregs->sr = regs->sr;
-+
-+	return 1;
-+}
-+
- /*
-  * Atomically swap in the new signal mask, and wait for a signal.
-  */
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-index a96394a..2db6099 100644
---- a/arch/m68k/mm/fault.c
-+++ b/arch/m68k/mm/fault.c
-@@ -18,7 +18,6 @@
- #include <asm/pgalloc.h>
- 
- extern void die_if_kernel(char *, struct pt_regs *, long);
--extern const int frame_extra_sizes[]; /* in m68k/kernel/signal.c */
- 
- int send_fault_sig(struct pt_regs *regs)
- {
-@@ -35,21 +34,8 @@ int send_fault_sig(struct pt_regs *regs)
- 		force_sig_info(siginfo.si_signo,
- 			       &siginfo, current);
- 	} else {
--		const struct exception_table_entry *fixup;
--
--		/* Are we prepared to handle this kernel fault? */
--		if ((fixup = search_exception_tables(regs->pc))) {
--			struct pt_regs *tregs;
--			/* Create a new four word stack frame, discarding the old
--			   one.  */
--			regs->stkadj = frame_extra_sizes[regs->format];
--			tregs =	(struct pt_regs *)((ulong)regs + regs->stkadj);
--			tregs->vector = regs->vector;
--			tregs->format = 0;
--			tregs->pc = fixup->fixup;
--			tregs->sr = regs->sr;
-+		if (handle_kernel_fault(regs))
- 			return -1;
--		}
- 
- 		//if (siginfo.si_signo == SIGBUS)
- 		//	force_sig_info(siginfo.si_signo,
+ void __init trap_init (void)
 -- 
 1.7.0.4
