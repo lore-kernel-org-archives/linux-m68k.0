@@ -1,67 +1,61 @@
-From: "Nicholas A. Bellinger" <nab@linux-iscsi.org>
-Subject: Re: [PATCH/RFC] m68k: Uninline strchr()
-Date: Sun, 09 Jan 2011 12:52:56 -0800
-Message-ID: <1294606376.2895.176.camel__4561.36973011798$1294607297$gmane$org@haakon2.linux-iscsi.org>
-References: <alpine.DEB.2.00.1101091942230.26296@ayla.of.borg>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Signal patchset
+Date: Sun, 9 Jan 2011 22:14:53 +0000
+Message-ID: <Pine.BSM.4.64L.1101092212580.17509@herc.mirbsd.org>
+References: <AANLkTi=9B-8KN0oiXoiU+KqPt6B8Vs=d7yu9cui-7e1r@mail.gmail.com>
+ <20101215101027.GA31097@ZenIV.linux.org.uk> <Pine.BSM.4.64L.1101011938470.1114@herc.mirbsd.org>
+ <AANLkTinBix+uEhWrzcqXPsoJ5VPq6zH=uOBX4VKO_6wW@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1101091942230.26296@ayla.of.borg>
+Received: from lo.gmane.org ([80.91.229.12]:33880 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751884Ab1AIWPK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Jan 2011 17:15:10 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1Pc3XV-00033P-P6
+	for linux-m68k@vger.kernel.org; Sun, 09 Jan 2011 23:15:05 +0100
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sun, 09 Jan 2011 23:15:05 +0100
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sun, 09 Jan 2011 23:15:05 +0100
+In-Reply-To: <AANLkTinBix+uEhWrzcqXPsoJ5VPq6zH=uOBX4VKO_6wW@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-scsi <linux-scsi@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
 
-On Sun, 2011-01-09 at 19:42 +0100, Geert Uytterhoeven wrote:
-> Some versions of gcc replace calls to strstr() with single-character
-> "needle" string parameters by calls to strchr() behind our back.
-> 
-> If strchr() is defined as an inline function, this causes linking errors
-> like
-> 
-> 	ERROR: "strchr" [drivers/target/target_core_mod.ko] undefined!
-> 
-> As m68k is the only architecture that has an inline strchr() and this
-> inline version is not an optimized asm version, uninline strchr() and use
-> the standard out-of-line C version in lib/string.c instead.
-> 
-> This also decreases the defconfig/allmodconfig kernel image sizes by a few
-> hundred bytes.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Geert Uytterhoeven dixit:
 
-Hi Geert,
+>It's a bit tricky as threadinfo_*.h got merged, so I ended up editing =
+the
+>patch series manually.
 
-Thanks for taking the time to fix this up in m68k code.  As m68k is one
-of the last architectures that target code has yet to run on, I am
-excited to see this finally happen.  ;)
+Yes, same here.
 
-Best Regards,
+>Anyway, you want to either use `git am -3'
 
-Reviewed-by: Nicholas A. Bellinger <nab@linux-iscsi.org>
+Which didn=E2=80=99t work for me for some reason=E2=80=A6
 
-> 
-> diff --git a/arch/m68k/include/asm/string.h b/arch/m68k/include/asm/string.h
-> index 2936dda..65b1312 100644
-> --- a/arch/m68k/include/asm/string.h
-> +++ b/arch/m68k/include/asm/string.h
-> @@ -81,18 +81,6 @@ static inline char *strncpy(char *dest, const char *src, size_t n)
->  	strcpy(__d + strlen(__d), (s));		\
->  })
->  
-> -#define __HAVE_ARCH_STRCHR
-> -static inline char *strchr(const char *s, int c)
-> -{
-> -	char sc, ch = c;
-> -
-> -	for (; (sc = *s++) != ch; ) {
-> -		if (!sc)
-> -			return NULL;
-> -	}
-> -	return (char *)s - 1;
-> -}
-> -
->  #ifndef CONFIG_COLDFIRE
->  #define __HAVE_ARCH_STRCMP
->  static inline int strcmp(const char *cs, const char *ct)
+>or apply it to the original version it was made for
+
+Yes, except which one is that? ;-( git didn=E2=80=99t tell itself in
+the diff, and I had no idea either. Worked against 2.6.36,
+though.
+
+>In the end, I got the exact same result as you did, so it must be corr=
+ect ;-)
+
+Good to know ;-) As I=E2=80=99m only _just_ back home and need to
+catch up on work, I=E2=80=99ve not yet done anything with it tho.
+
+Groetjes,
+//mirabilos
+--=20
+  "Using Lynx is like wearing a really good pair of shades: cuts out
+   the glare and harmful UV (ultra-vanity), and you feel so-o-o COOL."
+                                         -- Henry Nelson, March 1999
