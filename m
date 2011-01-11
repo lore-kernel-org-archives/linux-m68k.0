@@ -1,70 +1,89 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 2.6.38
-Date: Mon, 10 Jan 2011 20:58:59 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101082222060.25612@ayla.of.borg>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: Signal patchset
+Date: Tue, 11 Jan 2011 10:13:55 +1000
+Message-ID: <4D2BA0C3.7090908@snapgear.com>
+References: <AANLkTi=9B-8KN0oiXoiU+KqPt6B8Vs=d7yu9cui-7e1r@mail.gmail.com>	<20101215101027.GA31097@ZenIV.linux.org.uk>	<4D0A12EA.6040605@snapgear.com>	<AANLkTi=iddsbRr+N5iLuGBizbFFQ2JN9sgBFC_Q3uA2K@mail.gmail.com> <AANLkTik-9r_ZPkzVGowW2xT8h+QtVJ57q3mE6iKsuuVa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:37441 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754136Ab1AKARY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 10 Jan 2011 19:17:24 -0500
+In-Reply-To: <AANLkTik-9r_ZPkzVGowW2xT8h+QtVJ57q3mE6iKsuuVa@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, Andreas Schwab <schwab@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-	Hi Linus,
+On 07/01/11 23:17, Geert Uytterhoeven wrote:
+> On Thu, Jan 6, 2011 at 21:42, Geert Uytterhoeven<geert@linux-m68k.org>  wrote:
+>> On Thu, Dec 16, 2010 at 14:23, Greg Ungerer<gerg@snapgear.com>  wrote:
+>>> On 15/12/10 20:10, Al Viro wrote:
+>>>> On Sun, Dec 05, 2010 at 12:15:10PM +0100, Geert Uytterhoeven wrote:
+>>>>
+>>>>> Unless someone objects, I'm inclined to apply Al's patchset, as it
+>>>>> improves the
+>>>>> situation anyway.
+>>>>>
+>>>>> OK?
+>>>>
+>>>> FWIW, there's an m68knommu counterpart (ACKed by gerg a while ago).  The
+>>>> entire bunch is on ftp.linux.org.uk/pub/people/viro/m68k-signals - both m68k
+>>>> and m68knommu sets.  I don't know how you guys would prefer it done, since
+>>
+>> Thx, good the know the nommu part is there, as I don't seem to have it
+>> in my mailbox.
+>>
+>>>> there's a trivial dependency between m68k and m68knommu parts of series -
+>>>> the former has
+>>>> +#ifndef __uClinux__
+>>>> +#define __ARCH_WANT_SYS_RT_SIGSUSPEND
+>>>> +#endif
+>>>> in unistd.h and the latter does
+>>>> -#ifndef __uClinux__
+>>>>   #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+>>>> -#endif
+>>>> Both parts switch to generic sys_rt_sigsuspend(), for mmu and nommu resp.,
+>>>> so they need __ARCH_WANT_SYS_RT_SIGSUSPEND defined as soon as conversion
+>>>> is done.  Other than that they are independent.
+>>>
+>>> I can make sure to send to Linus after Geert. Unless Geert you
+>>> want to take and send both the m68k and m68knommu changes?
+>>
+>> I can take the m68knommu changes with your ack, too.
+>> I'll try to take a look at it tomorrow...
+>
+> I applied the m68k part to master and for-2.6.38/for-linus.
+> In addition, I applied the m68knommu part with Greg's acks added to for-next.
+>
+> Greg, please let me know if this is OK, so I can send a pull request to Linus
+> after it's been cooking one night in linux-next.
 
-The following changes since commit 3c0eee3fe6a3a1c745379547c7e7c904aa64f6d5:
-  Linus Torvalds (1):
-        Linux 2.6.37
+Oh, yes, that is ok. (I see the pull request now :-)
+I have a bunch of things in linux-next for m68knommu, and we
+hit nothing there so I think it is all good.
 
-are available in the git repository at:
+Regards
+Greg
 
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-The m68knommu changes have been acked by Greg Ungerer.
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
+>
 
-Al Viro (16):
-      m68k: Resetting sa_handler in local copy of k_sigaction is pointless
-      m68k: Switch to saner sigsuspend()
-      m68k: Simplify the singlestepping handling in signals
-      m68k: Don't lose state if sigframe setup fails
-      m68k: If we fail to set sigframe up, just leave regs alone...
-      m68k: Fix stack mangling logics in sigreturn
-      m68k: Missing syscall_trace() on sigreturn
-      m68k: Check __get_user()/__put_user() return value
-      m68knommu: Don't bother with SA_ONESHOT
-      m68knommu: Switch to saner sigsuspend
-      m68knommu: Handle multiple pending signals
-      m68knommu: Don't lose state if sigframe setup fails
-      m68knommu: f_pcr has been gone since headers' merge
-      m68knommu: Equivalent of "m68k: handle new gcc's"
-      m68knommu: signal.c __user annotations
-      m68knommu: Need to check __get_user()/__put_user() result
 
-Geert Uytterhoeven (1):
-      m68k/sun3: Kill pte_unmap() warnings
-
- arch/m68k/include/asm/sun3_pgtable.h     |    5 +-
- arch/m68k/include/asm/thread_info.h      |    1 +
- arch/m68k/include/asm/unistd.h           |    1 +
- arch/m68k/kernel/entry.S                 |   30 +---
- arch/m68k/kernel/signal.c                |  314 +++++++++++++-----------------
- arch/m68knommu/kernel/entry.S            |   16 --
- arch/m68knommu/kernel/signal.c           |  188 ++++++++----------
- arch/m68knommu/platform/68328/entry.S    |    7 +-
- arch/m68knommu/platform/68360/entry.S    |    7 +-
- arch/m68knommu/platform/coldfire/entry.S |    5 +-
- 10 files changed, 231 insertions(+), 343 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
