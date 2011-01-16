@@ -1,59 +1,52 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: build warnings
-Date: Sun, 16 Jan 2011 13:54:59 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
- <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
- <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
- <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/amiga: Reclaim Chip RAM for PPC exception handlers
+Date: Sun, 16 Jan 2011 19:36:58 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101161931280.12726__36166.0729781308$1295203334$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:24632 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752218Ab1APOJw convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Jan 2011 09:09:52 -0500
-In-Reply-To: <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/PPC Development <linuxppc-dev@lists.ozlabs.org>
 
-Michael Schmitz dixit:
+On m68k, it doesn't make sense to reserve memory for the PPC exception
+handlers, and APUS support is dead.
 
->The reference to slab allocation in the above error message does ring
->a bell - a colleague has panics that look kinda similar (Intel
->hardware running virtual machines there). Does look like the kernel
->can get out of memory without the proper plugs being pulled (my gut
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Or does this impact Amigas with APUS boards running in m68k mode?
+As we don't (no longer) modify the start address, we were actually stealing the
+_last_ 4 pages.
 
-Oh, ouch.
+ arch/m68k/amiga/chipram.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
->feeling). I'll have to look into that some more. Maybe play with
->memory or ST-RAM pool size in ARAnyM.
+diff --git a/arch/m68k/amiga/chipram.c b/arch/m68k/amiga/chipram.c
+index 61df1d3..dd0447d 100644
+--- a/arch/m68k/amiga/chipram.c
++++ b/arch/m68k/amiga/chipram.c
+@@ -33,10 +33,6 @@ void __init amiga_chip_init(void)
+     if (!AMIGAHW_PRESENT(CHIP_RAM))
+ 	return;
+ 
+-    /*
+-     *  Remove the first 4 pages where PPC exception handlers will be located
+-     */
+-    amiga_chip_size -= 0x4000;
+     chipram_res.end = amiga_chip_size-1;
+     request_resource(&iomem_resource, &chipram_res);
+ 
+-- 
+1.7.0.4
 
-Well, I do have a large number of patches applied (all of Debian=E2=80=99=
-s
-and the entire m68k queue)=E2=80=A6
+Gr{oetje,eeting}s,
 
->Can you send me a copy of that kernel image so I can give it a try on
->my working ARAnyM config, Thorsten?
+						Geert
 
-Sure: https://pfau.mirbsd.org/~tg/pub/vmlinux.gz
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->(on the buildd chroot image test: had to discover the spare IDE disk I
->used for tests has died; need to get a new one finally)
-
-Ah okay. Good luck anyway=E2=80=A6
-
-bye,
-//mirabilos
---=20
-<ch> you introduced a merge commit        =E2=94=82<mika> % g rebase -i=
- HEAD^^
-<mika> sorry, no idea and rebasing just fscked =E2=94=82<mika> Segmenta=
-tion
-<ch> should have cloned into a clean repo      =E2=94=82  fault (core d=
-umped)
-<ch> if I rebase that now, it's really ugh     =E2=94=82<mika:#grml> wu=
-ahhhhhh
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
