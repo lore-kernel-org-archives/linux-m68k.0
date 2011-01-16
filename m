@@ -1,74 +1,60 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: build warnings
-Date: Mon, 17 Jan 2011 10:26:30 +1300
-Message-ID: <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
+Date: Sun, 16 Jan 2011 22:29:23 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
 References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
-	<alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
-	<AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
-	<AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
-	<Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
+ <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
+ <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
+ <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
+ <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
+ <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:49565 "EHLO
-	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753752Ab1APVbm convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Jan 2011 16:31:42 -0500
-Received: by wyb28 with SMTP id 28so4539200wyb.19
-        for <linux-m68k@vger.kernel.org>; Sun, 16 Jan 2011 13:31:36 -0800 (PST)
-In-Reply-To: <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:39374 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751469Ab1APWd6 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Jan 2011 17:33:58 -0500
+In-Reply-To: <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
+To: Michael Schmitz <schmitzmic@googlemail.com>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Thorsten,
+Michael Schmitz dixit:
 
->>The reference to slab allocation in the above error message does ring
->>a bell - a colleague has panics that look kinda similar (Intel
->>hardware running virtual machines there). Does look like the kernel
->>can get out of memory without the proper plugs being pulled (my gut
->
-> Oh, ouch.
+>Mmh - Geert's 2.6.37 does work just fine for me; I'll better get your
+>patches applied to a vanilla kernel and see how that differs from
+>2.6.37-m68k. vanilla plus the git branch m68k-queue _should_ just get
+>us to 2.6.37-m68k, right?
 
-Might well be something different - upon closer inspection, the errors
-look different at least.
+I applied all of m68k-queue and for-linus of that day (which is the
+signal patchset for both m68ks and the rest of the queue) but on top
+of a 2.6.37-1~experimental.1 Debian kernel.
 
->>feeling). I'll have to look into that some more. Maybe play with
->>memory or ST-RAM pool size in ARAnyM.
->
-> Well, I do have a large number of patches applied (all of Debian=92s
-> and the entire m68k queue)=85
+I posted a link to the source package earlier. I cancelled the build
+though due to this problem.
 
-Mmh - Geert's 2.6.37 does work just fine for me; I'll better get your
-patches applied to a vanilla kernel and see how that differs from
-2.6.37-m68k. vanilla plus the git branch m68k-queue _should_ just get
-us to 2.6.37-m68k, right?
+>sometime. Not something the consumer electronics shops in Auckland CBD
+>stock, for some reason.
 
->>Can you send me a copy of that kernel image so I can give it a try on
->>my working ARAnyM config, Thorsten?
->
-> Sure: https://pfau.mirbsd.org/~tg/pub/vmlinux.gz
+Heh well. I=E2=80=99ve had fun times buying an IDE drive with less than=
+ 1024
+cylinders, floppies, and printer paper (not loose pages like copier
+paper they use nowadays, no, real 21x30.48cm endless paper) too ;-)
+But they had new print ribbon for my Epson FX-80, so=E2=80=A6 =E2=98=BB=
+=E2=98=BA
 
-Thanks, I'll try that one. 2.6.37-m68k (built as a minimal config so
-it will fit on a floppy) does run OK on the Falcon right now, though I
-had a weird IDE kernel panic with 2.6.37-rc1-m68k the other day.
-=46loppy detection has been a bit shaky on that one, and SCSI must have
-had some weird issues as well - could not mount one of the SCSI
-partitions whatever I tried, it always reported the device busy.
-2.6.37-m68k would open the partition fine.
-
->>(on the buildd chroot image test: had to discover the spare IDE disk =
-I
->>used for tests has died; need to get a new one finally)
->
-> Ah okay. Good luck anyway=85
-
-Thanks - just a matter to drive out to a decent shop after work
-sometime. Not something the consumer electronics shops in Auckland CBD
-stock, for some reason.
-
-Cheers,
-
-  Michael
+bye,
+//mirabilos
+--=20
+=C2=ABMyISAM tables -will- get corrupted eventually. This is a fact of =
+life. =C2=BB
+=E2=80=9Cmysql is about as much database as ms access=E2=80=9D =E2=80=93=
+ =E2=80=9CMSSQL at least descends
+from a database=E2=80=9D =E2=80=9Cit's a rebranded SyBase=E2=80=9D =E2=80=
+=9CMySQL however was born from a
+flatfile and went downhill from there=E2=80=9D =E2=80=93 =E2=80=9Cat le=
+ast jetDB doesn=E2=80=99t claim to
+be a database=E2=80=9D	-- Tonnerre, psychoschlumpf and myself in #nosec
