@@ -1,81 +1,133 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: build warnings
-Date: Tue, 18 Jan 2011 14:18:15 +1300
-Message-ID: <AANLkTimWyj2HriMd3mpPgc1Mu9RWb8fyPiKrVWfs=4+t@mail.gmail.com>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
-	<alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
-	<AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
-	<AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
-	<Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
-	<AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
-	<Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
-	<AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
-	<AANLkTimnXi0g_F4TT7gv3JnebwBcJe2oH7NNo83JN2XZ@mail.gmail.com>
-	<AANLkTi=O2C5keqTm3Q4w8_T1Z=Dd68CAPSe-FaWt_h_x@mail.gmail.com>
-	<AANLkTinqCexLUjNxgSmkphx-oMVgz27b2GH1n2NVNU2n@mail.gmail.com>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: [git pull] m68knommu arch updates
+Date: Tue, 18 Jan 2011 20:35:48 +1000
+Message-ID: <4D356D04.9080202@westnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:45064 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751092Ab1ARBSR convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 17 Jan 2011 20:18:17 -0500
-Received: by wwa36 with SMTP id 36so5937587wwa.1
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Jan 2011 17:18:16 -0800 (PST)
-In-Reply-To: <AANLkTinqCexLUjNxgSmkphx-oMVgz27b2GH1n2NVNU2n@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@snapgear.com, Greg Ungerer <gerg@uclinux.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-Geert,
 
-On Tue, Jan 18, 2011 at 9:14 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Jan 17, 2011 at 20:50, Michael Schmitz
-> <schmitzmic@googlemail.com> wrote:
->> The only patch that has been missed, but may be relevant for Atari s=
-till:
->>
->> 16 bit FAT default for GEMDOS:
->>
->> --- linux-m68k-git/linux-m68k/fs/fat/inode.c =A0 =A02010-11-10
->> 19:40:40.131506952 +1300
->> +++ linux-2.6-2.6.37/debian/build/source_m68k_none/fs/fat/inode.c
->> =A02011-01-17 20:18:44.484006839 +1300
->> @@ -923,10 +923,10 @@
->> =A0 =A0 =A0 =A0{Opt_err_cont, "errors=3Dcontinue"},
->> =A0 =A0 =A0 =A0{Opt_err_panic, "errors=3Dpanic"},
->> =A0 =A0 =A0 =A0{Opt_err_ro, "errors=3Dremount-ro"},
->> + =A0 =A0 =A0 {Opt_discard, "discard"},
->> =A0 =A0 =A0 =A0{Opt_atari_yes, "atari=3Dyes"},
->> =A0 =A0 =A0 =A0{Opt_atari_yes, "atari"},
->> =A0 =A0 =A0 =A0{Opt_atari_no, "atari=3Dno"},
->> - =A0 =A0 =A0 {Opt_discard, "discard"},
->> =A0 =A0 =A0 =A0{Opt_obsolate, "conv=3Dbinary"},
->> =A0 =A0 =A0 =A0{Opt_obsolate, "conv=3Dtext"},
->> =A0 =A0 =A0 =A0{Opt_obsolate, "conv=3Dauto"},
->
-> The order of the options shouldn't matter. Due to historical reasons,
-> it's different
-> on master and m68k-queue.
+Hi Linus,
 
-I thought the 'discard' marks the start of no longer used options
-(i.e. option processing stops at discard). My bad.
+(I would normally send this from my gerg@snapgear.com email account,
+but the server and routers for that have been under water recently :-(
+Not sure when I will be able to get that back working again).
 
->
->> I'd suggest I first test that this option is still required - will
->> have to sacrifice a spare SCSI disk for that.
->
-> I think there was a half consensus or so that we still need it, but
-> not enough to
-> put some weight behind it ;-)
+Can you please pull the m68knommu git tree, for-linus branch.
 
-Given that I could not even remember what it was that I had to do to
-the FAT code to get it to what it does now, we best leave it at that.
-Schroedingers cat, and all that :-)
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git 
+for-linus
 
-Cheers,
+The most significant changes are:
 
-  Michael
+1. using separate user and supervisor stack pointers on ColdFire
+    parts that support it
+2. reworking the CPU cache support, it now supports all forms of
+    instruction and data cache on various ColdFire family members
+
+Quite a few other cleanups and some random fixes in there too. The 548x
+support has been made more generic and supports the 547x family as well.
+A bit of dead code removal as well.
+
+Thanks
+Greg
+
+
+
+The following changes since commit 3c0eee3fe6a3a1c745379547c7e7c904aa64f6d5:
+   Linus Torvalds (1):
+         Linux 2.6.37
+
+are available in the git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git 
+for-linus
+
+Greg Ungerer (21):
+       m68knommu: make Coldfire 548x support more generic
+       m68knommu: add support for the ColdFire 547x family of processors
+       m68knommu: move ColdFire CPU names into their headers
+       m68knommu: fix clock rate value reported for ColdFire 54xx parts
+       m68knommu: move UART addressing to part specific includes
+       m68knommu: remove fasthandler interrupt code
+       m68knommu: remove command line printing DEBUG
+       m68knommu: use user stack pointer hardware on some ColdFire cores
+       m68knommu: remove do_page_fault(), it is not used
+       m68knommu: remove kernel_map() code, it is not used
+       m68knommu: remove empty __iounmap() it is no used
+       m68knommu: create bit definitions for the version 2 ColdFire 
+cache controller
+       m68knommu: merge bit definitions for version 3 ColdFire cache 
+controller
+       m68knommu: move inclusion of ColdFire v4 cache registers
+       m68knommu: clean up ColdFire cache control code
+       m68knommu: make cache push code ColdFire generic
+       m68knommu: support version 2 ColdFire split cache
+       m68knommu: support ColdFire caches that do copyback and write-through
+       m68knommu: create optimal separate instruction and data cache for 
+ColdFire
+       m68knommu: switch to using -mcpu= flags for ColdFire targets
+       m68knommu: fix broken setting of irq_chip and handler
+
+Philippe De Muyter (4):
+       m68knommu: Create new m54xxacr.h from m5407sim.h subpart
+       m68knommu: Move __flush_cache_all definition for m54xx in m54xxacr.h
+       m68knommu: Use symbolic constants for cache operations on M54xx
+       m68knommu: arch/m68knommu/Kconfig whitespace cleanup
+
+  arch/m68k/include/asm/cacheflush_no.h            |   95 ++++++--------
+  arch/m68k/include/asm/coldfire.h                 |    2 +-
+  arch/m68k/include/asm/entry_no.h                 |   59 +++++----
+  arch/m68k/include/asm/gpio.h                     |    2 +-
+  arch/m68k/include/asm/io_no.h                    |    1 -
+  arch/m68k/include/asm/m5206sim.h                 |   14 ++-
+  arch/m68k/include/asm/m520xsim.h                 |   17 +++-
+  arch/m68k/include/asm/m523xsim.h                 |   11 ++
+  arch/m68k/include/asm/m5249sim.h                 |   10 ++
+  arch/m68k/include/asm/m5272sim.h                 |    8 +
+  arch/m68k/include/asm/m527xsim.h                 |   10 ++
+  arch/m68k/include/asm/m528xsim.h                 |   11 ++
+  arch/m68k/include/asm/m52xxacr.h                 |   94 ++++++++++++++
+  arch/m68k/include/asm/m5307sim.h                 |   43 +++----
+  arch/m68k/include/asm/m532xsim.h                 |   33 ++----
+  arch/m68k/include/asm/m53xxacr.h                 |  101 +++++++++++++++
+  arch/m68k/include/asm/m5407sim.h                 |   42 +-----
+  arch/m68k/include/asm/m54xxacr.h                 |   97 ++++++++++++++
+  arch/m68k/include/asm/{m548xgpt.h => m54xxgpt.h} |   10 +-
+  arch/m68k/include/asm/{m548xsim.h => m54xxsim.h} |   23 +++-
+  arch/m68k/include/asm/mcfcache.h                 |  150 
+----------------------
+  arch/m68k/include/asm/mcfsim.h                   |    4 +-
+  arch/m68k/include/asm/mcfuart.h                  |   45 +-------
+  arch/m68k/include/asm/processor.h                |   13 +-
+  arch/m68knommu/Kconfig                           |   98 +++++++++++++--
+  arch/m68knommu/Makefile                          |   14 +-
+  arch/m68knommu/kernel/setup.c                    |   72 +++--------
+  arch/m68knommu/mm/Makefile                       |    2 +-
+  arch/m68knommu/mm/fault.c                        |   57 --------
+  arch/m68knommu/mm/kmap.c                         |    9 --
+  arch/m68knommu/mm/memory.c                       |   33 -----
+  arch/m68knommu/platform/{548x => 54xx}/Makefile  |    0
+  arch/m68knommu/platform/{548x => 54xx}/config.c  |   32 +++---
+  arch/m68knommu/platform/68328/ints.c             |    4 +-
+  arch/m68knommu/platform/coldfire/Makefile        |    4 +-
+  arch/m68knommu/platform/coldfire/cache.c         |   48 +++++++
+  arch/m68knommu/platform/coldfire/entry.S         |   56 ++-------
+  arch/m68knommu/platform/coldfire/head.S          |   26 +++-
+  38 files changed, 727 insertions(+), 623 deletions(-)
+  create mode 100644 arch/m68k/include/asm/m52xxacr.h
+  create mode 100644 arch/m68k/include/asm/m53xxacr.h
+  create mode 100644 arch/m68k/include/asm/m54xxacr.h
+  rename arch/m68k/include/asm/{m548xgpt.h => m54xxgpt.h} (95%)
+  rename arch/m68k/include/asm/{m548xsim.h => m54xxsim.h} (73%)
+  delete mode 100644 arch/m68k/include/asm/mcfcache.h
+  delete mode 100644 arch/m68knommu/mm/fault.c
+  delete mode 100644 arch/m68knommu/mm/memory.c
+  rename arch/m68knommu/platform/{548x => 54xx}/Makefile (100%)
+  rename arch/m68knommu/platform/{548x => 54xx}/config.c (74%)
+  create mode 100644 arch/m68knommu/platform/coldfire/cache.c
