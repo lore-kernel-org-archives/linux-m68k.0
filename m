@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/4] m68k/atari: ARAnyM - Prepare nfblock for submission
-Date: Sun, 23 Jan 2011 17:31:32 +0100
-Message-ID: <1295800294-13216-2-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 3/4] m68k/atari: ARAnyM - Prepare nfcon for submission
+Date: Sun, 23 Jan 2011 17:31:33 +0100
+Message-ID: <1295800294-13216-3-git-send-email-geert@linux-m68k.org>
 References: <1295800294-13216-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1295800294-13216-1-git-send-email-geert@linux-m68k.org>
@@ -10,64 +10,80 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Petr Stehlik <pstehlik@sophics.cz>
 
+  - Break too long lines,
   - Make needlessly global functions static,
-  - Make struct block_device_operations const,
   - Use pr_*(),
-  - Propagate error code from register_blkdev().
+  - Extract nfputs(), to avoid code duplication in nfcon_write() and
+    nfcon_tty_write().
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Petr Stehlik <pstehlik@sophics.cz>
 ---
- arch/m68k/emu/nfblock.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+ arch/m68k/emu/nfcon.c |   30 ++++++++++++------------------
+ 1 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
-index fed2883..48e50f8 100644
---- a/arch/m68k/emu/nfblock.c
-+++ b/arch/m68k/emu/nfblock.c
-@@ -79,7 +79,7 @@ static int nfhd_make_request(struct request_queue *queue, struct bio *bio)
- 	return 0;
- }
+diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
+index f82af58..ab20dc0 100644
+--- a/arch/m68k/emu/nfcon.c
++++ b/arch/m68k/emu/nfcon.c
+@@ -21,7 +21,7 @@
+ static int stderr_id;
+ static struct tty_driver *nfcon_tty_driver;
  
--int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
-+static int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+-static void nfcon_write(struct console *con, const char *str, unsigned int count)
++static void nfputs(const char *str, unsigned int count)
  {
- 	struct nfhd_device *dev = bdev->bd_disk->private_data;
+ 	char buf[68];
  
-@@ -90,7 +90,7 @@ int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
- 	return 0;
+@@ -37,7 +37,13 @@ static void nfcon_write(struct console *con, const char *str, unsigned int count
+ 	nf_call(stderr_id, buf);
  }
  
--static struct block_device_operations nfhd_ops = {
-+static const struct block_device_operations nfhd_ops = {
- 	.owner	= THIS_MODULE,
- 	.getgeo	= nfhd_getgeo,
- };
-@@ -100,11 +100,11 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- 	struct nfhd_device *dev;
- 	int dev_id = id - NFHD_DEV_OFFSET;
+-struct tty_driver *nfcon_device(struct console *con, int *index)
++static void nfcon_write(struct console *con, const char *str,
++			unsigned int count)
++{
++	nfputs(str, count);
++}
++
++static struct tty_driver *nfcon_device(struct console *con, int *index)
+ {
+ 	*index = 0;
+ 	return (con->flags & CON_ENABLED) ? nfcon_tty_driver : NULL;
+@@ -61,22 +67,10 @@ static void nfcon_tty_close(struct tty_struct *tty, struct file *filp)
+ {
+ }
  
--	printk(KERN_INFO "nfhd%u: found device with %u blocks (%u bytes)\n",
--		dev_id, blocks, bsize);
-+	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
-+		blocks, bsize);
+-static int nfcon_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
++static int nfcon_tty_write(struct tty_struct *tty, const unsigned char *buf,
++			   int count)
+ {
+-	char temp[68];
+-	int i = count;
+-
+-	temp[64] = 0;
+-	while (i > 64) {
+-		memcpy(temp, buf, 64);
+-		nf_call(stderr_id, temp);
+-		buf += 64;
+-		i -= 64;
+-	}
+-	memcpy(temp, buf, i);
+-	temp[i] = 0;
+-	nf_call(stderr_id, temp);
+-
++	nfputs(buf, count);
+ 	return count;
+ }
  
- 	if (bsize < 512 || (bsize & (bsize - 1))) {
--		printk(KERN_WARNING "nfhd%u: invalid block size\n", dev_id);
-+		pr_warn("nfhd%u: invalid block size\n", dev_id);
- 		return -EINVAL;
+@@ -144,7 +138,7 @@ static int __init nfcon_init(void)
+ 	tty_set_operations(nfcon_tty_driver, &nfcon_tty_ops);
+ 	res = tty_register_driver(nfcon_tty_driver);
+ 	if (res) {
+-		printk(KERN_ERR "failed to register nfcon tty driver\n");
++		pr_err("failed to register nfcon tty driver\n");
+ 		put_tty_driver(nfcon_tty_driver);
+ 		return res;
  	}
- 
-@@ -162,8 +162,8 @@ static int __init nfhd_init(void)
- 
- 	major_num = register_blkdev(major_num, "nfhd");
- 	if (major_num <= 0) {
--		printk(KERN_WARNING "nfhd: unable to get major number\n");
--		return -ENODEV;
-+		pr_warn("nfhd: unable to get major number\n");
-+		return major_num;
- 	}
- 
- 	for (i = NFHD_DEV_OFFSET; i < 24; i++) {
 -- 
 1.7.0.4
