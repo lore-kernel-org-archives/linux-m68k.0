@@ -1,49 +1,31 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/block: amiflop - Remove superfluous amiga_chip_alloc()
- cast
-Date: Sun, 23 Jan 2011 10:06:26 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101231005430.3513@ayla.of.borg>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [PATCH 1/4] m68k/atari: ARAnyM - Remove bogus line from Kconfig help
+Date: Sun, 23 Jan 2011 17:31:31 +0100
+Message-ID: <1295800294-13216-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
-
-amiga_chip_alloc() returns a void *, so we don't need a cast.
-Also clean up coding style while we're at it.
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Petr Stehlik <pstehlik@sophics.cz>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Petr Stehlik <pstehlik@sophics.cz>
 ---
- drivers/block/amiflop.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
-index 7888501..363855c 100644
---- a/drivers/block/amiflop.c
-+++ b/drivers/block/amiflop.c
-@@ -1768,8 +1768,8 @@ static int __init amiga_floppy_probe(struct platform_device *pdev)
- 		return -EBUSY;
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 18b7465..3880154 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -255,7 +255,7 @@ config NATFEAT
+ 	depends on ATARI
+ 	help
+ 	  This option enables support for ARAnyM native features, such as
+-	  access to a disk image as /dev/hda. Useful with the ARANYM option.
++	  access to a disk image as /dev/hda.
  
- 	ret = -ENOMEM;
--	if ((raw_buf = (char *)amiga_chip_alloc (RAW_BUF_SIZE, "Floppy")) ==
--	    NULL) {
-+	raw_buf = amiga_chip_alloc(RAW_BUF_SIZE, "Floppy");
-+	if (!raw_buf) {
- 		printk("fd: cannot get chip mem buffer\n");
- 		goto out_blkdev;
- 	}
+ config NFETH
+ 	tristate "NatFeat Ethernet support"
 -- 
 1.7.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
