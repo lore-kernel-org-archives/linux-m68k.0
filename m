@@ -1,50 +1,46 @@
 From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: build warnings
-Date: Sun, 30 Jan 2011 13:53:49 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1101301353090.30539@herc.mirbsd.org>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
- <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
- <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
- <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
- <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
- <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
- <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
- <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
- <4D44F92C.2050707@gmail.com>
+Subject: Re: Atari console corruption
+Date: Sun, 30 Jan 2011 14:17:55 +0000
+Message-ID: <Pine.BSM.4.64L.1101301417070.30539@herc.mirbsd.org>
+References: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
+ <m2fww9dczv.fsf@igel.home>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:4616 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752129Ab1A3N6t convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 08:58:49 -0500
-In-Reply-To: <4D44F92C.2050707@gmail.com>
+Received: from lo.gmane.org ([80.91.229.12]:49858 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753834Ab1A3OST convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 09:18:19 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1PjY6Z-0004VL-4W
+	for linux-m68k@vger.kernel.org; Sun, 30 Jan 2011 15:18:15 +0100
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sun, 30 Jan 2011 15:18:15 +0100
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sun, 30 Jan 2011 15:18:15 +0100
+In-Reply-To: <m2fww9dczv.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-Michael Schmitz dixit:
+Andreas Schwab dixit:
 
-[ =E2=80=A6 ]
-> I've tried a few leads related to network stuff, but in the end repla=
-cing the
-> option CONFIG_SLUB=3Dy by CONFIG_SLAB=3Dy did fix it.
+>> become corrupted.
 >
-> Whatever the reason - the SLUB allocator either is buggy outright for=
- m68k, or
-> we run into memory pressure a lot sooner than other architectures and=
- the VM
-> subsystem needs optimizing for SLUB.
+>Minimal testcase:
+>
+>$ printf 'abcd\10\10\33[@\n'
 
-Oh, okay. Thanks a huge lot for taking the time to track this down.
+Doesn=E2=80=99t happen on the 2.6.32-5+m68k.5-atari I just built. Good =
+news
+too, video=3Datafb:vga2 is no longer needed either.
 
-> I'd just replace the Debian default for the m68k kernels....
-
-Sounds reasonable.
-
-Thanks,
+bye,
 //mirabilos
 --=20
 22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
