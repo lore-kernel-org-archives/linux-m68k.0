@@ -1,53 +1,57 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: build warnings
-Date: Sun, 30 Jan 2011 18:37:48 +1300
-Message-ID: <4D44F92C.2050707@gmail.com>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>	<alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>	<AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>	<AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>	<Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>	<AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>	<Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org> <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
+Date: Sun, 30 Jan 2011 13:53:49 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1101301353090.30539@herc.mirbsd.org>
+References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
+ <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
+ <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
+ <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
+ <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
+ <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
+ <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
+ <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
+ <4D44F92C.2050707@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-px0-f174.google.com ([209.85.212.174]:49517 "EHLO
-	mail-px0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750704Ab1A3FiD (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 00:38:03 -0500
-Received: by pxi15 with SMTP id 15so670180pxi.19
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Jan 2011 21:38:02 -0800 (PST)
-In-Reply-To: <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:4616 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752129Ab1A3N6t convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 08:58:49 -0500
+In-Reply-To: <4D44F92C.2050707@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Thorsten Glaser <tg@mirbsd.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Hi Thorsten,
+Michael Schmitz dixit:
 
->> I posted a link to the source package earlier. I cancelled the build
->> though due to this problem.
->>     
+[ =E2=80=A6 ]
+> I've tried a few leads related to network stuff, but in the end repla=
+cing the
+> option CONFIG_SLUB=3Dy by CONFIG_SLAB=3Dy did fix it.
 >
-> Right you are, I'll work from that one then.
->
->   
+> Whatever the reason - the SLUB allocator either is buggy outright for=
+ m68k, or
+> we run into memory pressure a lot sooner than other architectures and=
+ the VM
+> subsystem needs optimizing for SLUB.
 
-I've seen a similar panic as the one you posted when I had quite a bit 
-of memory pressure due to ext2fsck running. Otherwise, the kernel built 
-with my old binutils boots fine and eventually crashes the emulator with:
+Oh, okay. Thanks a huge lot for taking the time to track this down.
 
-terminate called after throwing an instance of 'm68k_exception'
+> I'd just replace the Debian default for the m68k kernels....
 
-after getting well into runlevel 2 and starting a few services.
+Sounds reasonable.
 
-Retesting your kernel - when I leave swap off I also get to runlevel 2, 
-and it starts to throw panic messages as soon as inetd is started.
-I've tried a few leads related to network stuff, but in the end 
-replacing the  option CONFIG_SLUB=y by CONFIG_SLAB=y did fix it.
-
-Whatever the reason - the SLUB allocator either is buggy outright for 
-m68k, or we run into memory pressure a lot sooner than other 
-architectures and the VM subsystem needs optimizing for SLUB.
-
-I'd just replace the Debian default for the m68k kernels....
-
-Cheers,
-
-  Michael
+Thanks,
+//mirabilos
+--=20
+22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
+ a master
+22:21=E2=8E=9C<asarch> And the distance between the craziness and genia=
+lity is
+only measured by the success                       22:21=E2=8E=9C<mksh>=
+ it=E2=80=99s a
+very thin line anyway=E2=80=A6 with some, you don=E2=80=99t know which =
+side they=E2=80=99re on
