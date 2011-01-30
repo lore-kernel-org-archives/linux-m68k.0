@@ -1,74 +1,45 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: build warnings
-Date: Sun, 30 Jan 2011 19:57:15 +0100
-Message-ID: <AANLkTimB1fpvMsSeTbRn5ZTU1NCpZpjrAXQ+xRShAsZN@mail.gmail.com>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
-	<alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
-	<AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
-	<AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
-	<Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
-	<AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
-	<Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
-	<AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
-	<4D44F92C.2050707@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Atari console corruption
+Date: Sun, 30 Jan 2011 19:15:20 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1101301913500.30539@herc.mirbsd.org>
+References: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
+ <m2fww9dczv.fsf@igel.home> <Pine.BSM.4.64L.1101301417070.30539@herc.mirbsd.org>
+ <AANLkTikQ26zuDvt6WsHAg_Mn4y3KY+eroSJiKwP8rSWE@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:47531 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751901Ab1A3S5R convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 13:57:17 -0500
-Received: by fxm20 with SMTP id 20so4932263fxm.19
-        for <linux-m68k@vger.kernel.org>; Sun, 30 Jan 2011 10:57:16 -0800 (PST)
-In-Reply-To: <4D44F92C.2050707@gmail.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:24547 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751343Ab1A3TW2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 14:22:28 -0500
+Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
+	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p0UJFNAJ020389
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Sun, 30 Jan 2011 19:15:27 GMT
+In-Reply-To: <AANLkTikQ26zuDvt6WsHAg_Mn4y3KY+eroSJiKwP8rSWE@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org
 
-On Sun, Jan 30, 2011 at 06:37, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
-> I've seen a similar panic as the one you posted when I had quite a bi=
-t of
-> memory pressure due to ext2fsck running. Otherwise, the kernel built =
-with my
-> old binutils boots fine and eventually crashes the emulator with:
->
-> terminate called after throwing an instance of 'm68k_exception'
->
-> after getting well into runlevel 2 and starting a few services.
->
-> Retesting your kernel - when I leave swap off I also get to runlevel =
-2, and
-> it starts to throw panic messages as soon as inetd is started.
-> I've tried a few leads related to network stuff, but in the end repla=
-cing
-> the =C2=A0option CONFIG_SLUB=3Dy by CONFIG_SLAB=3Dy did fix it.
->
-> Whatever the reason - the SLUB allocator either is buggy outright for=
- m68k,
-> or we run into memory pressure a lot sooner than other architectures =
-and the
-> VM subsystem needs optimizing for SLUB.
->
-> I'd just replace the Debian default for the m68k kernels....
+Geert Uytterhoeven dixit:
 
-If switching from SLUB to SLAB fixes the problem, please enable
-CONFIG_SLUB_DEBUG and bring it up on lkml/with the SLUB people.
+>You must use an Atari interleaved bitplanes mode to see it, though.
 
-Gr{oetje,eeting}s,
+That might have been the thing I didn=E2=80=99t, probably. I actually
+don=E2=80=99t know what video mode it uses, except the colours are
+reversed (I have linuxlogo in .profile just for fun, and the
+red Debian swirl is blue on the graphical console). No idea
+what =E2=80=9Coptimal=E2=80=9D settings to use in ARAnyM either=E2=80=A6
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+bye,
+//mirabilos
+--=20
+22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
+ a master
+22:21=E2=8E=9C<asarch> And the distance between the craziness and genia=
+lity is
+only measured by the success                       22:21=E2=8E=9C<mksh>=
+ it=E2=80=99s a
+very thin line anyway=E2=80=A6 with some, you don=E2=80=99t know which =
+side they=E2=80=99re on
