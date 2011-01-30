@@ -1,51 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] More m68k updates for 2.6.38
-Date: Tue, 25 Jan 2011 18:17:05 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101251814410.18530@ayla.of.borg>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: build warnings
+Date: Sun, 30 Jan 2011 18:37:48 +1300
+Message-ID: <4D44F92C.2050707@gmail.com>
+References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>	<alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>	<AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>	<AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>	<Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>	<AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>	<Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org> <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-px0-f174.google.com ([209.85.212.174]:49517 "EHLO
+	mail-px0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750704Ab1A3FiD (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Jan 2011 00:38:03 -0500
+Received: by pxi15 with SMTP id 15so670180pxi.19
+        for <linux-m68k@vger.kernel.org>; Sat, 29 Jan 2011 21:38:02 -0800 (PST)
+In-Reply-To: <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gregungerer@westnet.com.au>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Thorsten Glaser <tg@mirbsd.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-	Hi Linus,
+Hi Thorsten,
 
-The following changes since commit 1bae4ce27c9c90344f23c65ea6966c50ffeae2f5:
-  Linus Torvalds (1):
-        Linux 2.6.38-rc2
+>> I posted a link to the source package earlier. I cancelled the build
+>> though due to this problem.
+>>     
+>
+> Right you are, I'll work from that one then.
+>
+>   
 
-are available in the git repository at:
+I've seen a similar panic as the one you posted when I had quite a bit 
+of memory pressure due to ext2fsck running. Otherwise, the kernel built 
+with my old binutils boots fine and eventually crashes the emulator with:
 
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-Linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+terminate called after throwing an instance of 'm68k_exception'
 
-These are two fixes for build errors and one fix for a long-standing debug
-issue.
+after getting well into runlevel 2 and starting a few services.
 
-Thanks for pulling!
+Retesting your kernel - when I leave swap off I also get to runlevel 2, 
+and it starts to throw panic messages as soon as inetd is started.
+I've tried a few leads related to network stuff, but in the end 
+replacing the  option CONFIG_SLUB=y by CONFIG_SLAB=y did fix it.
 
-Geert Uytterhoeven (3):
-      m68k: Uninline strchr()
-      m68k/atari: Rename "scc" to "atari_scc"
-      m68k/amiga: Fix "debug=mem"
+Whatever the reason - the SLUB allocator either is buggy outright for 
+m68k, or we run into memory pressure a lot sooner than other 
+architectures and the VM subsystem needs optimizing for SLUB.
 
- arch/m68k/amiga/config.c        |   16 +++++++---------
- arch/m68k/atari/ataints.c       |    4 ++--
- arch/m68k/atari/config.c        |    2 +-
- arch/m68k/atari/debug.c         |   14 +++++++-------
- arch/m68k/include/asm/atarihw.h |    2 +-
- arch/m68k/include/asm/string.h  |   12 ------------
- 6 files changed, 18 insertions(+), 32 deletions(-)
+I'd just replace the Debian default for the m68k kernels....
 
-Gr{oetje,eeting}s,
+Cheers,
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Michael
