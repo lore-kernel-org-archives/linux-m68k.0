@@ -1,54 +1,67 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Atari console corruption
-Date: Mon, 31 Jan 2011 19:32:51 +0100
-Message-ID: <AANLkTimEeLfHJrcFhk+38og1GDP1KZLaiXVqYRhMfhbc@mail.gmail.com>
-References: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
-	<m2fww9dczv.fsf@igel.home>
-	<Pine.BSM.4.64L.1101301417070.30539@herc.mirbsd.org>
-	<AANLkTikQ26zuDvt6WsHAg_Mn4y3KY+eroSJiKwP8rSWE@mail.gmail.com>
-	<Pine.BSM.4.64L.1101301913500.30539@herc.mirbsd.org>
+Subject: [PATCH 1/2] input: atari - Propagate the return value of
+ atari_keyb_init()
+Date: Mon, 31 Jan 2011 20:19:40 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101312019050.14232@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:42355 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751663Ab1AaScz convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Jan 2011 13:32:55 -0500
-Received: by fxm20 with SMTP id 20so5905892fxm.19
-        for <linux-m68k@vger.kernel.org>; Mon, 31 Jan 2011 10:32:54 -0800 (PST)
-In-Reply-To: <Pine.BSM.4.64L.1101301913500.30539@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitz@debian.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Sun, Jan 30, 2011 at 20:15, Thorsten Glaser <tg@mirbsd.de> wrote:
-> Geert Uytterhoeven dixit:
->>You must use an Atari interleaved bitplanes mode to see it, though.
->
-> That might have been the thing I didn=E2=80=99t, probably. I actually
-> don=E2=80=99t know what video mode it uses, except the colours are
-> reversed (I have linuxlogo in .profile just for fun, and the
-> red Debian swirl is blue on the graphical console). No idea
-> what =E2=80=9Coptimal=E2=80=9D settings to use in ARAnyM either=E2=80=
-=A6
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be folded into commit 2af13478ec1672a3aa7ea05d11fc2a15d1a406aa ("m68k: Fix
+atarimouse init")
 
-I couldn't reproduce this color issue.
-What does `fbset -i' say?
+ drivers/input/keyboard/atakbd.c  |    5 +++--
+ drivers/input/mouse/atarimouse.c |    5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/input/keyboard/atakbd.c b/drivers/input/keyboard/atakbd.c
+index 1839194..10bcd4a 100644
+--- a/drivers/input/keyboard/atakbd.c
++++ b/drivers/input/keyboard/atakbd.c
+@@ -223,8 +223,9 @@ static int __init atakbd_init(void)
+ 		return -ENODEV;
+ 
+ 	// need to init core driver if not already done so
+-	if (atari_keyb_init())
+-		return -ENODEV;
++	error = atari_keyb_init();
++	if (error)
++		return error;
+ 
+ 	atakbd_dev = input_allocate_device();
+ 	if (!atakbd_dev)
+diff --git a/drivers/input/mouse/atarimouse.c b/drivers/input/mouse/atarimouse.c
+index 1b5f4dd..16a9d0f 100644
+--- a/drivers/input/mouse/atarimouse.c
++++ b/drivers/input/mouse/atarimouse.c
+@@ -118,8 +118,9 @@ static int __init atamouse_init(void)
+ 	if (!MACH_IS_ATARI || !ATARIHW_PRESENT(ST_MFP))
+ 		return -ENODEV;
+ 
+-	if (atari_keyb_init())
+-		return -ENODEV;
++	error = atari_keyb_init();
++	if (error)
++		return error;
+ 
+ 	atamouse_dev = input_allocate_device();
+ 	if (!atamouse_dev)
+-- 
+1.7.0.4
 
 Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
