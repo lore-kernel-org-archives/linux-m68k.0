@@ -1,73 +1,49 @@
 From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Atari console corruption
-Date: Mon, 31 Jan 2011 22:04:21 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1101312159540.30566@herc.mirbsd.org>
-References: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
- <m2fww9dczv.fsf@igel.home> <Pine.BSM.4.64L.1101301417070.30539@herc.mirbsd.org>
- <AANLkTikQ26zuDvt6WsHAg_Mn4y3KY+eroSJiKwP8rSWE@mail.gmail.com>
- <Pine.BSM.4.64L.1101301913500.30539@herc.mirbsd.org>
- <AANLkTimEeLfHJrcFhk+38og1GDP1KZLaiXVqYRhMfhbc@mail.gmail.com>
+Subject: Re: (fwd) Re: [klibc] Bug#334917: [PATCH] Re: klibc barfs on m68k
+ syscall interface
+Date: Mon, 31 Jan 2011 22:19:29 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1101312215490.30566@herc.mirbsd.org>
+References: <20110131105017.GC4655@stro.at>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:46828 "EHLO
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:43120 "EHLO
 	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754113Ab1AaWEm convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Jan 2011 17:04:42 -0500
-Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
-	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p0VM4PL9026294
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-m68k@vger.kernel.org>; Mon, 31 Jan 2011 22:04:29 GMT
-In-Reply-To: <AANLkTimEeLfHJrcFhk+38og1GDP1KZLaiXVqYRhMfhbc@mail.gmail.com>
+	with ESMTP id S1754113Ab1AaWXD convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Jan 2011 17:23:03 -0500
+In-Reply-To: <20110131105017.GC4655@stro.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org
+To: maximilian attems <max@stro.at>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, klibc@zytor.com
 
-Geert Uytterhoeven dixit:
+maximilian attems dixit:
 
->What does `fbset -i' say?
+>It be cool if belows patch could be reviewed by a m68k Maintainer.
 
-*installs fbset* (if it helps, the lightwhite text of linux_logo -uy
-is fine, but the normal shell lightgrey on black looks yellowish)
+I=E2=80=99ve patched mksh to work without job signals, depending on a f=
+lag;
+while this is not desirable generally, it allows me to run its test
+suite. The patch per se is correct, but may be incomplete (i.e. I
+still get some failures that pass on i386, where other syscalls or
+functions may be involved).
 
-mode "640x480-60"
-    # D: 25.176 MHz, H: 31.470 kHz, V: 59.943 Hz
-    geometry 640 480 640 960 4
-    timings 39720 42 18 31 11 100 3
-    rgba 4/0,4/0,4/0,0/0
-endmode
+I=E2=80=99ll probably debug and submit more of that later.
 
-=46rame buffer device informaion:
-    Name	: Atari Builtin
-    Address	: 0xb27000
-    Size	: 307200
-    Type	: INTERLEAVED PLANES (2 bytes interleave)
-    Visual	: PSEUDOCOLOR
-    XPanStep	: 1
-    YPanStep	: 1
-    YWrapStep	: 0
-    LineLength	: 320
-    Accelerator	: Atari Blitter
+>-	blt.l	1f
+>+	bcs.l	1f			/* jmp short if _not_ error */
 
-Hm, so it appears I *am* using an interleaved mode but do not
-have the corruption. Nice=E2=80=A6 (but then, this is an old kernel wit=
-h
-only a few of the modern patches=E2=80=A6 OTOH, I never saw it=E2=80=A6=
-)
+I think this is the one-liner (plus repeating in vfork.S, here by
+jumping to the common code) fixing the issue. The rest is=E2=80=A6 well=
+=E2=80=A6
+don=E2=80=99t hit me=E2=80=A6 me mentally converting the code of klibc =
+and eglibc
+both to i386 assembly, comparing, mixing, fixing, optimising, and
+converting back to m68k assembly =E2=80=93 stylistic flames welcome! (Y=
+es,
+I mean it. I=E2=80=99m learning this as I go.)
 
-ARAnyM config looks like:
-
-[VIDEO]
-=46ullScreen =3D No
-BootColorDepth =3D 8
-VidelRefresh =3D 1
-
-and
-Args =3D root=3D/dev/hda1 console=3Dtty debug=3Dpar
-(using video=3Datafb:vga2 is no longer needed thanks to the stram fix)
-
-bye,
 //mirabilos
 --=20
 22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
