@@ -1,8 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/2] input: atari - Propagate the return value of
- atari_keyb_init()
-Date: Mon, 31 Jan 2011 20:19:40 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101312019050.14232@ayla.of.borg>
+Subject: [PATCH 2/2] input: atari - Fix mouse movement and button mapping
+Date: Mon, 31 Jan 2011 20:20:34 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101312019410.14277@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
@@ -11,47 +10,40 @@ List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitz@debian.org>
 Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
+Up and down movements were reversed, left and right buttons were swapped.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-To be folded into commit 2af13478ec1672a3aa7ea05d11fc2a15d1a406aa ("m68k: Fix
-atarimouse init")
+Following up on the discussion from 2 years ago.
+This makes gpm work on ARAnyM. Does it work on real hardware?
 
- drivers/input/keyboard/atakbd.c  |    5 +++--
- drivers/input/mouse/atarimouse.c |    5 +++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/input/mouse/atarimouse.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/keyboard/atakbd.c b/drivers/input/keyboard/atakbd.c
-index 1839194..10bcd4a 100644
---- a/drivers/input/keyboard/atakbd.c
-+++ b/drivers/input/keyboard/atakbd.c
-@@ -223,8 +223,9 @@ static int __init atakbd_init(void)
- 		return -ENODEV;
- 
- 	// need to init core driver if not already done so
--	if (atari_keyb_init())
--		return -ENODEV;
-+	error = atari_keyb_init();
-+	if (error)
-+		return error;
- 
- 	atakbd_dev = input_allocate_device();
- 	if (!atakbd_dev)
 diff --git a/drivers/input/mouse/atarimouse.c b/drivers/input/mouse/atarimouse.c
-index 1b5f4dd..16a9d0f 100644
+index 16a9d0f..5c4a692 100644
 --- a/drivers/input/mouse/atarimouse.c
 +++ b/drivers/input/mouse/atarimouse.c
-@@ -118,8 +118,9 @@ static int __init atamouse_init(void)
- 	if (!MACH_IS_ATARI || !ATARIHW_PRESENT(ST_MFP))
- 		return -ENODEV;
+@@ -77,15 +77,15 @@ static void atamouse_interrupt(char *buf)
+ #endif
  
--	if (atari_keyb_init())
--		return -ENODEV;
-+	error = atari_keyb_init();
-+	if (error)
-+		return error;
+ 	/* only relative events get here */
+-	dx =  buf[1];
+-	dy = -buf[2];
++	dx = buf[1];
++	dy = buf[2];
  
- 	atamouse_dev = input_allocate_device();
- 	if (!atamouse_dev)
+ 	input_report_rel(atamouse_dev, REL_X, dx);
+ 	input_report_rel(atamouse_dev, REL_Y, dy);
+ 
+-	input_report_key(atamouse_dev, BTN_LEFT,   buttons & 0x1);
++	input_report_key(atamouse_dev, BTN_LEFT,   buttons & 0x4);
+ 	input_report_key(atamouse_dev, BTN_MIDDLE, buttons & 0x2);
+-	input_report_key(atamouse_dev, BTN_RIGHT,  buttons & 0x4);
++	input_report_key(atamouse_dev, BTN_RIGHT,  buttons & 0x1);
+ 
+ 	input_sync(atamouse_dev);
+ 
 -- 
 1.7.0.4
 
