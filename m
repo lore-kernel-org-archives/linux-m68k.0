@@ -1,56 +1,30 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: (fwd) Re: [klibc] Bug#334917: [PATCH] Re: klibc barfs on m68k
- syscall interface
-Date: Mon, 31 Jan 2011 22:19:29 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1101312215490.30566@herc.mirbsd.org>
-References: <20110131105017.GC4655@stro.at>
+From: <tyder13@cox.net>
+Subject: Lucky Winner!
+Date: Mon, 31 Jan 2011 17:42:37 -0800
+Message-ID: <20110131204237.17XWR.1067459.imail__2693.74815184182$1296524974$gmane$org@fed1rmwml34>
+Reply-To: enquiry_jommyjacob01@londonmail.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:43120 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754113Ab1AaWXD convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Jan 2011 17:23:03 -0500
-In-Reply-To: <20110131105017.GC4655@stro.at>
+Received: from fed1rmmtai113.cox.net ([68.230.241.47]:54321 "EHLO
+	fed1rmmtai113.cox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754062Ab1BABs7 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Jan 2011 20:48:59 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: maximilian attems <max@stro.at>
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, klibc@zytor.com
 
-maximilian attems dixit:
+You have been awarded =C3=82=C2=A3850,000 from the OXFAM GB - UK=20
+the cash/grant donation Promo for Global Economic Scheme.
+=46or claims, Contact Dr. Ben Andrew.=20
+via e-mail
 
->It be cool if belows patch could be reviewed by a m68k Maintainer.
+Name:
+Country:
+Age:
+Phone Number:
+Gender:
+Occupation:
+Your Qualification Number (OG/N231/E101/BDB)=20
 
-I=E2=80=99ve patched mksh to work without job signals, depending on a f=
-lag;
-while this is not desirable generally, it allows me to run its test
-suite. The patch per se is correct, but may be incomplete (i.e. I
-still get some failures that pass on i386, where other syscalls or
-functions may be involved).
-
-I=E2=80=99ll probably debug and submit more of that later.
-
->-	blt.l	1f
->+	bcs.l	1f			/* jmp short if _not_ error */
-
-I think this is the one-liner (plus repeating in vfork.S, here by
-jumping to the common code) fixing the issue. The rest is=E2=80=A6 well=
-=E2=80=A6
-don=E2=80=99t hit me=E2=80=A6 me mentally converting the code of klibc =
-and eglibc
-both to i386 assembly, comparing, mixing, fixing, optimising, and
-converting back to m68k assembly =E2=80=93 stylistic flames welcome! (Y=
-es,
-I mean it. I=E2=80=99m learning this as I go.)
-
-//mirabilos
---=20
-22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
- a master
-22:21=E2=8E=9C<asarch> And the distance between the craziness and genia=
-lity is
-only measured by the success                       22:21=E2=8E=9C<mksh>=
- it=E2=80=99s a
-very thin line anyway=E2=80=A6 with some, you don=E2=80=99t know which =
-side they=E2=80=99re on
+ (oxfam003@aol.com)
