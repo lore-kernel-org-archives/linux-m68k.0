@@ -1,40 +1,38 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: Early crash (was: Re: module: show version information for built-in modules in sysfs)
-Date: Thu, 03 Feb 2011 18:38:12 +0100
-Message-ID: <m2mxmdm323.fsf@igel.home>
-References: <AANLkTin4gOnEMruLDM=TkNYsNf5S370WqbcDVJzT7_Z4@mail.gmail.com>
-	<20110201210944.GA12348@dtor-ws.eng.vmware.com>
-	<AANLkTimv=KqtuR36dMNa+=OMi0mgd8JK4qsb_SpmKmhs@mail.gmail.com>
-	<20110201222637.GA17521@dtor-ws.eng.vmware.com>
-	<AANLkTikWVt8NEyHN+=yD4EWSXUQt0gt5nLJtKQDw397M@mail.gmail.com>
-	<20110202194227.GA13794@dtor-ws.eng.vmware.com>
-	<m2ipx2dp7v.fsf@igel.home>
-	<20110202235948.GA8676@dtor-ws.eng.vmware.com>
-	<m2bp2udllv.fsf@igel.home>
-	<20110203002459.GA26729@dtor-ws.eng.vmware.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 4/4] m68k/atari: ARAnyM - Prepare nfeth for submission
+Date: Sat, 5 Feb 2011 16:35:51 +0100
+Message-ID: <AANLkTimV=mMhZNhEREpRGgU1SSGqQPqqFJmu4Z6t3SjV@mail.gmail.com>
+References: <1295800294-13216-1-git-send-email-geert@linux-m68k.org>
+	<1295800294-13216-4-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20110203002459.GA26729@dtor-ws.eng.vmware.com> (Dmitry
-	Torokhov's message of "Wed, 2 Feb 2011 16:24:59 -0800")
-Sender: linux-arch-owner@vger.kernel.org
-To: Dmitry Torokhov <dtor@vmware.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Rusty Russell <rusty@rustcorp.com.au>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1295800294-13216-4-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Petr Stehlik <pstehlik@sophics.cz>
 
-Dmitry Torokhov <dtor@vmware.com> writes:
+On Sun, Jan 23, 2011 at 17:31, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> =C2=A0- Add missing MODULE_LICENSE.
 
-> Are pointers (along with ints/longs) on m68k naturally aligned on word
-> boundary even though they are 32 bit?
+Sorry, this one was bogus: there's already one hidden in the middle of =
+the file.
 
-On m68k, every object by default is at most aligned to a 2 byte
-boundary.  That's a heritage of the original Sun m68000 compiler, which
-served as the template for the gcc configuration for Linux/m68k when the
-porting started.
+Gr{oetje,eeting}s,
 
-Andreas.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
