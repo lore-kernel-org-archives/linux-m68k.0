@@ -1,214 +1,273 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/4] m68k/atari: Initial ARAnyM support
-Date: Sun,  6 Feb 2011 11:51:06 +0100
-Message-ID: <1296989469-7844-2-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 2/4] m68k/atari: ARAnyM - Add support for block access
+Date: Sun,  6 Feb 2011 11:51:07 +0100
+Message-ID: <1296989469-7844-3-git-send-email-geert@linux-m68k.org>
 References: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, cz-bobek-lists-aranym@lists.bobek.cz
-Cc: Michael Schmitz <schmitz@opal.biophys.uni-duesseldorf.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Petr Stehlik <pstehlik@sophics.cz>
+Cc: Roman Zippel <zippel@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Petr Stehlik <pstehlik@sophics.cz>
 List-Id: linux-m68k@vger.kernel.org
 
-From: Michael Schmitz <schmitz@opal.biophys.uni-duesseldorf.de>
+From: Roman Zippel <zippel@linux-m68k.org>
 
-Should be signed off by Petr, really.
-
+Signed-off-by: Roman Zippel <zippel@linux-m68k.org>
 [geert] Cleanups and updates
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Petr Stehlik <pstehlik@sophics.cz>
 
 ---
 Changelog:
-  - Export native feature API,
-  - Remove bogus line from Kconfig help.
+  - Wrap natfeat calls
+
+    Add wrappers with proper prototypes for the natfeat calls in nfblock.
+    This fixes the problem where sector_t was pushed on the stack as a 64-bit
+    value if CONFIG_LBDAF=y, while all parameters of the nf_call() varargs
+    function are 32-bit.
+
+  - Update for v2.6.31 block layer changes,
+  - nfblock needs <linux/slab.h>,
+  - Make needlessly global functions static,
+  - Make struct block_device_operations const,
+  - Use pr_*(),
+  - Propagate error code from register_blkdev().
 ---
- arch/m68k/Kconfig               |    7 +++
- arch/m68k/Makefile              |    1 +
- arch/m68k/emu/Makefile          |    5 ++
- arch/m68k/emu/natfeat.c         |   78 +++++++++++++++++++++++++++++++++++++++
- arch/m68k/include/asm/natfeat.h |   22 +++++++++++
- arch/m68k/kernel/setup.c        |    5 ++
- 6 files changed, 118 insertions(+), 0 deletions(-)
- create mode 100644 arch/m68k/emu/Makefile
- create mode 100644 arch/m68k/emu/natfeat.c
- create mode 100644 arch/m68k/include/asm/natfeat.h
+ arch/m68k/Kconfig       |    8 ++
+ arch/m68k/emu/Makefile  |    2 +
+ arch/m68k/emu/nfblock.c |  195 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 205 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/emu/nfblock.c
 
 diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index cbe8b18..f668a58 100644
+index f668a58..2c890b5 100644
 --- a/arch/m68k/Kconfig
 +++ b/arch/m68k/Kconfig
-@@ -240,6 +240,13 @@ config SUN3
+@@ -247,6 +247,14 @@ config NATFEAT
+ 	  This option enables support for ARAnyM native features, such as
+ 	  access to a disk image as /dev/hda.
  
- 	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
- 
-+config NATFEAT
-+	bool "ARAnyM emulator support"
-+	depends on ATARI
++config NFBLOCK
++	tristate "NatFeat block device support"
++	depends on BLOCK && NATFEAT
 +	help
-+	  This option enables support for ARAnyM native features, such as
-+	  access to a disk image as /dev/hda.
++	  Say Y to include support for the ARAnyM NatFeat block device
++	  which allows direct access to the hard drives without using
++	  the hardware emulation.
 +
  comment "Processor type"
  
  config M68020
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index b06a7e3..b793163 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -76,6 +76,7 @@ core-$(CONFIG_MVME16x)		+= arch/m68k/mvme16x/
- core-$(CONFIG_BVME6000)		+= arch/m68k/bvme6000/
- core-$(CONFIG_SUN3X)		+= arch/m68k/sun3x/	arch/m68k/sun3/
- core-$(CONFIG_SUN3)		+= arch/m68k/sun3/	arch/m68k/sun3/prom/
-+core-$(CONFIG_NATFEAT)		+= arch/m68k/emu/
- core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
- core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
- core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
 diff --git a/arch/m68k/emu/Makefile b/arch/m68k/emu/Makefile
-new file mode 100644
-index 0000000..34cfa34
---- /dev/null
+index 34cfa34..fc4f77a 100644
+--- a/arch/m68k/emu/Makefile
 +++ b/arch/m68k/emu/Makefile
-@@ -0,0 +1,5 @@
-+#
-+# Makefile for Linux arch/m68k/emu source directory
-+#
+@@ -3,3 +3,5 @@
+ #
+ 
+ obj-y			+= natfeat.o
 +
-+obj-y			+= natfeat.o
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
++obj-$(CONFIG_NFBLOCK)	+= nfblock.o
+diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
 new file mode 100644
-index 0000000..2291a7d
+index 0000000..48e50f8
 --- /dev/null
-+++ b/arch/m68k/emu/natfeat.c
-@@ -0,0 +1,78 @@
++++ b/arch/m68k/emu/nfblock.c
+@@ -0,0 +1,195 @@
 +/*
-+ * natfeat.c - ARAnyM hardware support via Native Features (natfeats)
++ * ARAnyM block device driver
 + *
-+ * Copyright (c) 2005 Petr Stehlik of ARAnyM dev team
-+ *
-+ * Reworked for Linux by Roman Zippel <zippel@linux-m68k.org>
-+ *
-+ * This software may be used and distributed according to the terms of
-+ * the GNU General Public License (GPL), incorporated herein by reference.
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
 + */
 +
-+#include <linux/types.h>
-+#include <linux/console.h>
-+#include <linux/string.h>
-+#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/io.h>
-+#include <asm/machdep.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/types.h>
++#include <linux/genhd.h>
++#include <linux/blkdev.h>
++#include <linux/hdreg.h>
++#include <linux/slab.h>
++
 +#include <asm/natfeat.h>
 +
-+asm("\n"
-+"	.global nf_get_id,nf_call\n"
-+"nf_get_id:\n"
-+"	.short	0x7300\n"
-+"	rts\n"
-+"nf_call:\n"
-+"	.short	0x7301\n"
-+"	rts\n"
-+"1:	moveq.l	#0,%d0\n"
-+"	rts\n"
-+"	.section __ex_table,\"a\"\n"
-+"	.long	nf_get_id,1b\n"
-+"	.long	nf_call,1b\n"
-+"	.previous");
-+EXPORT_SYMBOL_GPL(nf_get_id);
-+EXPORT_SYMBOL_GPL(nf_call);
++static long nfhd_id;
 +
-+void nfprint(const char *fmt, ...)
++enum {
++	/* emulation entry points */
++	NFHD_READ_WRITE = 10,
++	NFHD_GET_CAPACITY = 14,
++
++	/* skip ACSI devices */
++	NFHD_DEV_OFFSET = 8,
++};
++
++static inline s32 nfhd_read_write(u32 major, u32 minor, u32 rwflag, u32 recno,
++				  u32 count, u32 buf)
 +{
-+	static char buf[256];
-+	va_list ap;
-+	int n;
-+
-+	va_start(ap, fmt);
-+	n = vsnprintf(buf, 256, fmt, ap);
-+	nf_call(nf_get_id("NF_STDERR"), buf);
-+	va_end(ap);
++	return nf_call(nfhd_id + NFHD_READ_WRITE, major, minor, rwflag, recno,
++		       count, buf);
 +}
 +
-+static void nf_poweroff(void)
++static inline s32 nfhd_get_capacity(u32 major, u32 minor, u32 *blocks,
++				    u32 *blocksize)
 +{
-+	long id = nf_get_id("NF_SHUTDOWN");
-+
-+	if (id)
-+		nf_call(id);
++	return nf_call(nfhd_id + NFHD_GET_CAPACITY, major, minor, blocks,
++		       blocksize);
 +}
 +
-+void nf_init(void)
++static LIST_HEAD(nfhd_list);
++
++static int major_num;
++module_param(major_num, int, 0);
++
++struct nfhd_device {
++	struct list_head list;
++	int id;
++	u32 blocks, bsize;
++	int bshift;
++	struct request_queue *queue;
++	struct gendisk *disk;
++};
++
++static int nfhd_make_request(struct request_queue *queue, struct bio *bio)
 +{
-+	unsigned long id, version;
-+	char buf[256];
++	struct nfhd_device *dev = queue->queuedata;
++	struct bio_vec *bvec;
++	int i, dir, len, shift;
++	sector_t sec = bio->bi_sector;
 +
-+	id = nf_get_id("NF_VERSION");
-+	if (!id)
-+		return;
-+	version = nf_call(id);
-+
-+	id = nf_get_id("NF_NAME");
-+	if (!id)
-+		return;
-+	nf_call(id, buf, 256);
-+	buf[255] = 0;
-+
-+	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
-+		version & 0xffff);
-+
-+	mach_power_off = nf_poweroff;
++	dir = bio_data_dir(bio);
++	shift = dev->bshift;
++	bio_for_each_segment(bvec, bio, i) {
++		len = bvec->bv_len;
++		len >>= 9;
++		nfhd_read_write(dev->id, 0, dir, sec >> shift, len >> shift,
++				bvec_to_phys(bvec));
++		sec += len;
++	}
++	bio_endio(bio, 0);
++	return 0;
 +}
-diff --git a/arch/m68k/include/asm/natfeat.h b/arch/m68k/include/asm/natfeat.h
-new file mode 100644
-index 0000000..a3521b8
---- /dev/null
-+++ b/arch/m68k/include/asm/natfeat.h
-@@ -0,0 +1,22 @@
-+/*
-+ * ARAnyM hardware support via Native Features (natfeats)
-+ *
-+ * Copyright (c) 2005 Petr Stehlik of ARAnyM dev team
-+ *
-+ * This software may be used and distributed according to the terms of
-+ * the GNU General Public License (GPL), incorporated herein by reference.
-+ */
 +
-+#ifndef _NATFEAT_H
-+#define _NATFEAT_H
++static int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
++{
++	struct nfhd_device *dev = bdev->bd_disk->private_data;
 +
-+long nf_get_id(const char *feature_name);
-+long nf_call(long id, ...);
++	geo->cylinders = dev->blocks >> (6 - dev->bshift);
++	geo->heads = 4;
++	geo->sectors = 16;
 +
-+void nf_init(void);
-+void nf_shutdown(void);
++	return 0;
++}
 +
-+void nfprint(const char *fmt, ...)
-+	__attribute__ ((format (printf, 1, 2)));
++static const struct block_device_operations nfhd_ops = {
++	.owner	= THIS_MODULE,
++	.getgeo	= nfhd_getgeo,
++};
 +
-+# endif /* _NATFEAT_H */
-diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup.c
-index b3963ab..334d836 100644
---- a/arch/m68k/kernel/setup.c
-+++ b/arch/m68k/kernel/setup.c
-@@ -42,6 +42,7 @@
- #ifdef CONFIG_SUN3X
- #include <asm/dvma.h>
- #endif
-+#include <asm/natfeat.h>
- 
- #if !FPSTATESIZE || !NR_IRQS
- #warning No CPU/platform type selected, your kernel will not work!
-@@ -324,6 +325,10 @@ void __init setup_arch(char **cmdline_p)
- 		panic("No configuration setup");
- 	}
- 
-+#ifdef CONFIG_NATFEAT
-+	nf_init();
-+#endif
++static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
++{
++	struct nfhd_device *dev;
++	int dev_id = id - NFHD_DEV_OFFSET;
 +
- 	paging_init();
- 
- #ifndef CONFIG_SUN3
++	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
++		blocks, bsize);
++
++	if (bsize < 512 || (bsize & (bsize - 1))) {
++		pr_warn("nfhd%u: invalid block size\n", dev_id);
++		return -EINVAL;
++	}
++
++	dev = kmalloc(sizeof(struct nfhd_device), GFP_KERNEL);
++	if (!dev)
++		goto out;
++
++	dev->id = id;
++	dev->blocks = blocks;
++	dev->bsize = bsize;
++	dev->bshift = ffs(bsize) - 10;
++
++	dev->queue = blk_alloc_queue(GFP_KERNEL);
++	if (dev->queue == NULL)
++		goto free_dev;
++
++	dev->queue->queuedata = dev;
++	blk_queue_make_request(dev->queue, nfhd_make_request);
++	blk_queue_logical_block_size(dev->queue, bsize);
++
++	dev->disk = alloc_disk(16);
++	if (!dev->disk)
++		goto free_queue;
++
++	dev->disk->major = major_num;
++	dev->disk->first_minor = dev_id * 16;
++	dev->disk->fops = &nfhd_ops;
++	dev->disk->private_data = dev;
++	sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
++	set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
++	dev->disk->queue = dev->queue;
++
++	add_disk(dev->disk);
++
++	list_add_tail(&dev->list, &nfhd_list);
++
++	return 0;
++
++free_queue:
++	blk_cleanup_queue(dev->queue);
++free_dev:
++	kfree(dev);
++out:
++	return -ENOMEM;
++}
++
++static int __init nfhd_init(void)
++{
++	u32 blocks, bsize;
++	int i;
++
++	nfhd_id = nf_get_id("XHDI");
++	if (!nfhd_id)
++		return -ENODEV;
++
++	major_num = register_blkdev(major_num, "nfhd");
++	if (major_num <= 0) {
++		pr_warn("nfhd: unable to get major number\n");
++		return major_num;
++	}
++
++	for (i = NFHD_DEV_OFFSET; i < 24; i++) {
++		if (nfhd_get_capacity(i, 0, &blocks, &bsize))
++			continue;
++		nfhd_init_one(i, blocks, bsize);
++	}
++
++	return 0;
++}
++
++static void __exit nfhd_exit(void)
++{
++	struct nfhd_device *dev, *next;
++
++	list_for_each_entry_safe(dev, next, &nfhd_list, list) {
++		list_del(&dev->list);
++		del_gendisk(dev->disk);
++		put_disk(dev->disk);
++		blk_cleanup_queue(dev->queue);
++		kfree(dev);
++	}
++	unregister_blkdev(major_num, "nfhd");
++}
++
++module_init(nfhd_init);
++module_exit(nfhd_exit);
++
++MODULE_LICENSE("GPL");
 -- 
 1.7.0.4
