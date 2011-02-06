@@ -1,61 +1,54 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Early crash (was: Re: module: show version information for
- built-in modules in sysfs)
-Date: Sat, 5 Feb 2011 23:47:09 +0000
-Message-ID: <Pine.BSM.4.64L.1102052346060.22476@herc.mirbsd.org>
-References: <AANLkTin4gOnEMruLDM=TkNYsNf5S370WqbcDVJzT7_Z4@mail.gmail.com>
- <20110201210944.GA12348@dtor-ws.eng.vmware.com>
- <AANLkTimv=KqtuR36dMNa+=OMi0mgd8JK4qsb_SpmKmhs@mail.gmail.com>
- <20110201222637.GA17521@dtor-ws.eng.vmware.com>
- <AANLkTikWVt8NEyHN+=yD4EWSXUQt0gt5nLJtKQDw397M@mail.gmail.com>
- <20110202194227.GA13794@dtor-ws.eng.vmware.com> <m2ipx2dp7v.fsf@igel.home>
- <20110202235948.GA8676@dtor-ws.eng.vmware.com> <m2bp2udllv.fsf@igel.home>
- <20110203002459.GA26729@dtor-ws.eng.vmware.com> <m2mxmdm323.fsf@igel.home>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/4] m68k/atari: Add ARAnyM support
+Date: Sun,  6 Feb 2011 11:51:05 +0100
+Message-ID: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:40241 "EHLO lo.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751292Ab1BEXrW convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 5 Feb 2011 18:47:22 -0500
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1Plrqa-0006bK-TB
-	for linux-m68k@vger.kernel.org; Sun, 06 Feb 2011 00:47:20 +0100
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 06 Feb 2011 00:47:20 +0100
-Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 06 Feb 2011 00:47:20 +0100
-In-Reply-To: <m2mxmdm323.fsf@igel.home>
+Received: from jacques.telenet-ops.be ([195.130.132.50]:48123 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751975Ab1BFKvW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Feb 2011 05:51:22 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, cz-bobek-lists-aranym@lists.bobek.cz
 
-Andreas Schwab dixit:
+This patch series add improved support for running under the ARAnyM emulator
+(Atari Running on Any Machine - http://aranym.org/).
+Without these patches, you can run a Linux/m68k kernel with Atari support
+under ARAnyM (it emulates the IDE interface), but you can't have network and
+console access.
 
->On m68k, every object by default is at most aligned to a 2 byte
->boundary.  That's a heritage of the original Sun m68000 compiler, whic=
-h
->served as the template for the gcc configuration for Linux/m68k when t=
-he
->porting started.
+This support has been in active use for several years. In fact some Debian
+build daemons run under ARAnyM, as it's the fastest m68k platform around.
 
-Ah, from there. I think it might violate the SYSV ABI, funnily
-enough (which I've peeked into in order to port elfutils when
-bored again). Oh the history ;)
+  [1/4] m68k/atari: Initial ARAnyM support
+  [2/4] m68k/atari: ARAnyM - Add support for block access
+  [3/4] m68k/atari: ARAnyM - Add support for console access
+  [4/4] m68k/atari: ARAnyM - Add support for network access
 
-bye,
-//mirabilos
---=20
-22:20=E2=8E=9C<asarch> The crazy that persists in his craziness becomes=
- a master
-22:21=E2=8E=9C<asarch> And the distance between the craziness and genia=
-lity is
-only measured by the success                       22:21=E2=8E=9C<mksh>=
- it=E2=80=99s a
-very thin line anyway=E2=80=A6 with some, you don=E2=80=99t know which =
-side they=E2=80=99re on
+Questions:
+  - Who should be listed as author for patches 1 and 4?
+  - Can I please have Signed-off-by's from the ARAnyM people?
+
+ arch/m68k/Kconfig               |   31 +++++
+ arch/m68k/Makefile              |    1 +
+ arch/m68k/emu/Makefile          |    9 ++
+ arch/m68k/emu/natfeat.c         |   78 +++++++++++
+ arch/m68k/emu/nfblock.c         |  195 ++++++++++++++++++++++++++++
+ arch/m68k/emu/nfcon.c           |  162 +++++++++++++++++++++++
+ arch/m68k/emu/nfeth.c           |  272 +++++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/natfeat.h |   22 +++
+ arch/m68k/kernel/setup.c        |    5 +
+ 9 files changed, 775 insertions(+), 0 deletions(-)
+
+Thanks in advance!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
