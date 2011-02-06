@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/4] m68k/atari: ARAnyM - Add support for block access
-Date: Sun,  6 Feb 2011 11:51:07 +0100
-Message-ID: <1296989469-7844-3-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 3/4] m68k/atari: ARAnyM - Add support for console access
+Date: Sun,  6 Feb 2011 11:51:08 +0100
+Message-ID: <1296989469-7844-4-git-send-email-geert@linux-m68k.org>
 References: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
@@ -19,63 +19,55 @@ Cc: Petr Stehlik <pstehlik@sophics.cz>
 
 ---
 Changelog:
-  - Wrap natfeat calls
-
-    Add wrappers with proper prototypes for the natfeat calls in nfblock.
-    This fixes the problem where sector_t was pushed on the stack as a 64-bit
-    value if CONFIG_LBDAF=y, while all parameters of the nf_call() varargs
-    function are 32-bit.
-
-  - Update for v2.6.31 block layer changes,
-  - nfblock needs <linux/slab.h>,
+  - early_param() does not exist in the modular case,
+  - Break too long lines,
   - Make needlessly global functions static,
-  - Make struct block_device_operations const,
   - Use pr_*(),
-  - Propagate error code from register_blkdev().
+  - Extract nfputs(), to avoid code duplication in nfcon_write() and
+    nfcon_tty_write().
 ---
- arch/m68k/Kconfig       |    8 ++
- arch/m68k/emu/Makefile  |    2 +
- arch/m68k/emu/nfblock.c |  195 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 205 insertions(+), 0 deletions(-)
- create mode 100644 arch/m68k/emu/nfblock.c
+ arch/m68k/Kconfig      |    8 +++
+ arch/m68k/emu/Makefile |    1 +
+ arch/m68k/emu/nfcon.c  |  162 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 171 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/emu/nfcon.c
 
 diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index f668a58..2c890b5 100644
+index 2c890b5..6719c56 100644
 --- a/arch/m68k/Kconfig
 +++ b/arch/m68k/Kconfig
-@@ -247,6 +247,14 @@ config NATFEAT
- 	  This option enables support for ARAnyM native features, such as
- 	  access to a disk image as /dev/hda.
+@@ -255,6 +255,14 @@ config NFBLOCK
+ 	  which allows direct access to the hard drives without using
+ 	  the hardware emulation.
  
-+config NFBLOCK
-+	tristate "NatFeat block device support"
-+	depends on BLOCK && NATFEAT
++config NFCON
++	tristate "NatFeat console driver"
++	depends on NATFEAT
 +	help
-+	  Say Y to include support for the ARAnyM NatFeat block device
-+	  which allows direct access to the hard drives without using
-+	  the hardware emulation.
++	  Say Y to include support for the ARAnyM NatFeat console driver
++	  which allows the console output to be redirected to the stderr
++	  output of ARAnyM.
 +
  comment "Processor type"
  
  config M68020
 diff --git a/arch/m68k/emu/Makefile b/arch/m68k/emu/Makefile
-index 34cfa34..fc4f77a 100644
+index fc4f77a..a83ef1e 100644
 --- a/arch/m68k/emu/Makefile
 +++ b/arch/m68k/emu/Makefile
-@@ -3,3 +3,5 @@
- #
- 
+@@ -5,3 +5,4 @@
  obj-y			+= natfeat.o
-+
-+obj-$(CONFIG_NFBLOCK)	+= nfblock.o
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
+ 
+ obj-$(CONFIG_NFBLOCK)	+= nfblock.o
++obj-$(CONFIG_NFCON)	+= nfcon.o
+diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
 new file mode 100644
-index 0000000..48e50f8
+index 0000000..ab20dc0
 --- /dev/null
-+++ b/arch/m68k/emu/nfblock.c
-@@ -0,0 +1,195 @@
++++ b/arch/m68k/emu/nfcon.c
+@@ -0,0 +1,162 @@
 +/*
-+ * ARAnyM block device driver
++ * ARAnyM console driver
 + *
 + * This file is subject to the terms and conditions of the GNU General Public
 + * License.  See the file COPYING in the main directory of this archive
@@ -83,190 +75,157 @@ index 0000000..48e50f8
 + */
 +
 +#include <linux/module.h>
-+#include <linux/moduleparam.h>
 +#include <linux/init.h>
-+
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/types.h>
-+#include <linux/genhd.h>
-+#include <linux/blkdev.h>
-+#include <linux/hdreg.h>
++#include <linux/console.h>
++#include <linux/tty.h>
++#include <linux/tty_driver.h>
++#include <linux/tty_flip.h>
 +#include <linux/slab.h>
++#include <linux/err.h>
++#include <linux/uaccess.h>
 +
 +#include <asm/natfeat.h>
 +
-+static long nfhd_id;
++static int stderr_id;
++static struct tty_driver *nfcon_tty_driver;
 +
-+enum {
-+	/* emulation entry points */
-+	NFHD_READ_WRITE = 10,
-+	NFHD_GET_CAPACITY = 14,
-+
-+	/* skip ACSI devices */
-+	NFHD_DEV_OFFSET = 8,
-+};
-+
-+static inline s32 nfhd_read_write(u32 major, u32 minor, u32 rwflag, u32 recno,
-+				  u32 count, u32 buf)
++static void nfputs(const char *str, unsigned int count)
 +{
-+	return nf_call(nfhd_id + NFHD_READ_WRITE, major, minor, rwflag, recno,
-+		       count, buf);
-+}
++	char buf[68];
 +
-+static inline s32 nfhd_get_capacity(u32 major, u32 minor, u32 *blocks,
-+				    u32 *blocksize)
-+{
-+	return nf_call(nfhd_id + NFHD_GET_CAPACITY, major, minor, blocks,
-+		       blocksize);
-+}
-+
-+static LIST_HEAD(nfhd_list);
-+
-+static int major_num;
-+module_param(major_num, int, 0);
-+
-+struct nfhd_device {
-+	struct list_head list;
-+	int id;
-+	u32 blocks, bsize;
-+	int bshift;
-+	struct request_queue *queue;
-+	struct gendisk *disk;
-+};
-+
-+static int nfhd_make_request(struct request_queue *queue, struct bio *bio)
-+{
-+	struct nfhd_device *dev = queue->queuedata;
-+	struct bio_vec *bvec;
-+	int i, dir, len, shift;
-+	sector_t sec = bio->bi_sector;
-+
-+	dir = bio_data_dir(bio);
-+	shift = dev->bshift;
-+	bio_for_each_segment(bvec, bio, i) {
-+		len = bvec->bv_len;
-+		len >>= 9;
-+		nfhd_read_write(dev->id, 0, dir, sec >> shift, len >> shift,
-+				bvec_to_phys(bvec));
-+		sec += len;
++	buf[64] = 0;
++	while (count > 64) {
++		memcpy(buf, str, 64);
++		nf_call(stderr_id, buf);
++		str += 64;
++		count -= 64;
 +	}
-+	bio_endio(bio, 0);
-+	return 0;
++	memcpy(buf, str, count);
++	buf[count] = 0;
++	nf_call(stderr_id, buf);
 +}
 +
-+static int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
++static void nfcon_write(struct console *con, const char *str,
++			unsigned int count)
 +{
-+	struct nfhd_device *dev = bdev->bd_disk->private_data;
-+
-+	geo->cylinders = dev->blocks >> (6 - dev->bshift);
-+	geo->heads = 4;
-+	geo->sectors = 16;
-+
-+	return 0;
++	nfputs(str, count);
 +}
 +
-+static const struct block_device_operations nfhd_ops = {
-+	.owner	= THIS_MODULE,
-+	.getgeo	= nfhd_getgeo,
++static struct tty_driver *nfcon_device(struct console *con, int *index)
++{
++	*index = 0;
++	return (con->flags & CON_ENABLED) ? nfcon_tty_driver : NULL;
++}
++
++static struct console nf_console = {
++	.name	= "nfcon",
++	.write	= nfcon_write,
++	.device	= nfcon_device,
++	.flags	= CON_PRINTBUFFER,
++	.index	= -1,
 +};
 +
-+static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
++
++static int nfcon_tty_open(struct tty_struct *tty, struct file *filp)
 +{
-+	struct nfhd_device *dev;
-+	int dev_id = id - NFHD_DEV_OFFSET;
-+
-+	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
-+		blocks, bsize);
-+
-+	if (bsize < 512 || (bsize & (bsize - 1))) {
-+		pr_warn("nfhd%u: invalid block size\n", dev_id);
-+		return -EINVAL;
-+	}
-+
-+	dev = kmalloc(sizeof(struct nfhd_device), GFP_KERNEL);
-+	if (!dev)
-+		goto out;
-+
-+	dev->id = id;
-+	dev->blocks = blocks;
-+	dev->bsize = bsize;
-+	dev->bshift = ffs(bsize) - 10;
-+
-+	dev->queue = blk_alloc_queue(GFP_KERNEL);
-+	if (dev->queue == NULL)
-+		goto free_dev;
-+
-+	dev->queue->queuedata = dev;
-+	blk_queue_make_request(dev->queue, nfhd_make_request);
-+	blk_queue_logical_block_size(dev->queue, bsize);
-+
-+	dev->disk = alloc_disk(16);
-+	if (!dev->disk)
-+		goto free_queue;
-+
-+	dev->disk->major = major_num;
-+	dev->disk->first_minor = dev_id * 16;
-+	dev->disk->fops = &nfhd_ops;
-+	dev->disk->private_data = dev;
-+	sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
-+	set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
-+	dev->disk->queue = dev->queue;
-+
-+	add_disk(dev->disk);
-+
-+	list_add_tail(&dev->list, &nfhd_list);
-+
 +	return 0;
-+
-+free_queue:
-+	blk_cleanup_queue(dev->queue);
-+free_dev:
-+	kfree(dev);
-+out:
-+	return -ENOMEM;
 +}
 +
-+static int __init nfhd_init(void)
++static void nfcon_tty_close(struct tty_struct *tty, struct file *filp)
 +{
-+	u32 blocks, bsize;
-+	int i;
++}
 +
-+	nfhd_id = nf_get_id("XHDI");
-+	if (!nfhd_id)
++static int nfcon_tty_write(struct tty_struct *tty, const unsigned char *buf,
++			   int count)
++{
++	nfputs(buf, count);
++	return count;
++}
++
++static int nfcon_tty_put_char(struct tty_struct *tty, unsigned char ch)
++{
++	char temp[2] = { ch, 0 };
++
++	nf_call(stderr_id, temp);
++	return 1;
++}
++
++static int nfcon_tty_write_room(struct tty_struct *tty)
++{
++	return 64;
++}
++
++static const struct tty_operations nfcon_tty_ops = {
++	.open		= nfcon_tty_open,
++	.close		= nfcon_tty_close,
++	.write		= nfcon_tty_write,
++	.put_char	= nfcon_tty_put_char,
++	.write_room	= nfcon_tty_write_room,
++};
++
++#ifndef MODULE
++
++static int __init nf_debug_setup(char *arg)
++{
++	if (strcmp(arg, "nfcon"))
++		return 0;
++
++	stderr_id = nf_get_id("NF_STDERR");
++	if (stderr_id) {
++		nf_console.flags |= CON_ENABLED;
++		register_console(&nf_console);
++	}
++
++	return 0;
++}
++
++early_param("debug", nf_debug_setup);
++
++#endif /* !MODULE */
++
++static int __init nfcon_init(void)
++{
++	int res;
++
++	stderr_id = nf_get_id("NF_STDERR");
++	if (!stderr_id)
 +		return -ENODEV;
 +
-+	major_num = register_blkdev(major_num, "nfhd");
-+	if (major_num <= 0) {
-+		pr_warn("nfhd: unable to get major number\n");
-+		return major_num;
++	nfcon_tty_driver = alloc_tty_driver(1);
++	if (!nfcon_tty_driver)
++		return -ENOMEM;
++
++	nfcon_tty_driver->owner = THIS_MODULE;
++	nfcon_tty_driver->driver_name = "nfcon";
++	nfcon_tty_driver->name = "nfcon";
++	nfcon_tty_driver->type = TTY_DRIVER_TYPE_SYSTEM;
++	nfcon_tty_driver->subtype = SYSTEM_TYPE_TTY;
++	nfcon_tty_driver->init_termios = tty_std_termios;
++	nfcon_tty_driver->flags = TTY_DRIVER_REAL_RAW;
++
++	tty_set_operations(nfcon_tty_driver, &nfcon_tty_ops);
++	res = tty_register_driver(nfcon_tty_driver);
++	if (res) {
++		pr_err("failed to register nfcon tty driver\n");
++		put_tty_driver(nfcon_tty_driver);
++		return res;
 +	}
 +
-+	for (i = NFHD_DEV_OFFSET; i < 24; i++) {
-+		if (nfhd_get_capacity(i, 0, &blocks, &bsize))
-+			continue;
-+		nfhd_init_one(i, blocks, bsize);
-+	}
++	if (!(nf_console.flags & CON_ENABLED))
++		register_console(&nf_console);
 +
 +	return 0;
 +}
 +
-+static void __exit nfhd_exit(void)
++static void __exit nfcon_exit(void)
 +{
-+	struct nfhd_device *dev, *next;
-+
-+	list_for_each_entry_safe(dev, next, &nfhd_list, list) {
-+		list_del(&dev->list);
-+		del_gendisk(dev->disk);
-+		put_disk(dev->disk);
-+		blk_cleanup_queue(dev->queue);
-+		kfree(dev);
-+	}
-+	unregister_blkdev(major_num, "nfhd");
++	unregister_console(&nf_console);
++	tty_unregister_driver(nfcon_tty_driver);
++	put_tty_driver(nfcon_tty_driver);
 +}
 +
-+module_init(nfhd_init);
-+module_exit(nfhd_exit);
++module_init(nfcon_init);
++module_exit(nfcon_exit);
 +
 +MODULE_LICENSE("GPL");
 -- 
