@@ -1,52 +1,61 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: Early crash
-Date: Mon, 07 Feb 2011 00:50:10 -0800 (PST)
-Message-ID: <20110207.005010.28814928.davem@davemloft.net>
-References: <m2bp2udllv.fsf@igel.home>
-	<20110203002459.GA26729@dtor-ws.eng.vmware.com>
-	<20110207081933.GA11855@dtor-ws.eng.vmware.com>
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: find_next bitops on m68k may cause out of bounds memory access
+Date: Mon, 7 Feb 2011 21:37:37 +0900
+Message-ID: <AANLkTik00GTZDn=t6J65dHjJiU53M5vXzBqToiYWz33P@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110207081933.GA11855@dtor-ws.eng.vmware.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: dtor@vmware.com
-Cc: schwab@linux-m68k.org, geert@linux-m68k.org, rusty@rustcorp.com.au, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-From: Dmitry Torokhov <dtor@vmware.com>
-Date: Mon, 7 Feb 2011 00:19:33 -0800
+find_next bitops on m68k (find_next_zero_bit, find_next_bit, and
+ext2_find_next_bit) may cause out of bounds memory access
+when the bitmap size in bits % 32 != 0 and offset (the bitnumber
+to start searching at) is very close to the bitmap size.
 
-> So here is the patch that explicitly specifies alignment for struct
-> module_version_attribute. I tested it on i386 and x86_64 and I believe
-> it will fix the issue with m68k but I do not have access to such a box.
+For example,
 
-While this may or may not fix the m68k issue, this isn't really
-sufficient to make this thing work in all cases.  And the older
-tracepoint commits referenced in this thread are known to cause
-problems with platforms such as sparc64.
+	unsigned long bitmap[2] = { 0, 0};
+	find_next_bit(bitmap, 63, 62)
 
-You can't reliably put structures into independent objects, put them
-into a special section, and then expect array access over them (via
-the section boundaries) after linking the objects together to just
-"work".
+1. find_next_bit() tries to find any set bits in bitmap[1], but no bits set
 
-Your attribute specification is only a lower-bound.
+2. Then find_first_bit(bimap + 2, -1)
 
-GCC can and does use variable alignment choices in different situations,
-so the align directive in the various objects can all be different.  So
-the array iteration will assume the iterations should use one object
-size, but within the linked together section the alignments are all
-different so the inter-struct gap is different.
+3. Unfortunately find_fist_bit() takes unsigned int as the size argument.
 
-The only portable mechanism that will work in all cases, as we've
-found recently for tracepoints and similar, is to make an array of
-plain pointers to the objects in the special section.
+4. find_first_bit will access bitmap[3~] until it find any set bits.
 
-See:
+Here is find_next_bit() in arch/m68k/include/asm/bitops_mm.h:
 
-http://marc.info/?l=linux-kernel&m=129674396021733&w=2
-http://marc.info/?l=linux-kernel&m=129674399621795&w=2
-http://marc.info/?l=linux-kernel&m=129674396121739&w=2
-http://marc.info/?l=linux-kernel&m=129674396021735&w=2
+static inline int find_next_bit(const unsigned long *vaddr, int size,
+                                int offset)
+{
+        const unsigned long *p = vaddr + (offset >> 5);
+        int bit = offset & 31UL, res;
+
+        if (offset >= size)
+                return size;
+
+        if (bit) {
+                unsigned long num = *p++ & (~0UL << bit);
+                offset -= bit;
+
+                /* Look for one in first longword */
+                __asm__ __volatile__ ("bfffo %1{#0,#0},%0"
+                                      : "=d" (res) : "d" (num & -num));
+                if (res < 32)
+                        return offset + (res ^ 31);
+                offset += 32;
+        }
+        /* No one yet, search remaining full bytes for a one */
+        res = find_first_bit(p, size - ((long)p - (long)vaddr) * 8);
+        return offset + res;
+}
+
+find_next_zero_bit and ext2_find_next_bit also have same problem.
+Actually I found this while testing ext2_find_next_bit in user space.
+
+The easiest and reliable way to fix this is that switching to generic
+implementation of find bitops.
