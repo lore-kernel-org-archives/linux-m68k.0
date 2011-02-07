@@ -1,61 +1,59 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: find_next bitops on m68k may cause out of bounds memory access
-Date: Mon, 7 Feb 2011 21:37:37 +0900
-Message-ID: <AANLkTik00GTZDn=t6J65dHjJiU53M5vXzBqToiYWz33P@mail.gmail.com>
+From: Dmitry Torokhov <dtor@vmware.com>
+Subject: Re: Early crash
+Date: Mon, 7 Feb 2011 08:58:29 -0800
+Message-ID: <20110207165829.GA13101@dtor-ws.eng.vmware.com>
+References: <m2bp2udllv.fsf@igel.home>
+ <20110203002459.GA26729@dtor-ws.eng.vmware.com>
+ <20110207081933.GA11855@dtor-ws.eng.vmware.com>
+ <20110207.005010.28814928.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110207.005010.28814928.davem@davemloft.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: "schwab@linux-m68k.org" <schwab@linux-m68k.org>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "rusty@rustcorp.com.au" <rusty@rustcorp.com.au>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
 
-find_next bitops on m68k (find_next_zero_bit, find_next_bit, and
-ext2_find_next_bit) may cause out of bounds memory access
-when the bitmap size in bits % 32 != 0 and offset (the bitnumber
-to start searching at) is very close to the bitmap size.
+On Mon, Feb 07, 2011 at 12:50:10AM -0800, David Miller wrote:
+> From: Dmitry Torokhov <dtor@vmware.com>
+> Date: Mon, 7 Feb 2011 00:19:33 -0800
+> 
+> > So here is the patch that explicitly specifies alignment for struct
+> > module_version_attribute. I tested it on i386 and x86_64 and I believe
+> > it will fix the issue with m68k but I do not have access to such a box.
+> 
+> While this may or may not fix the m68k issue, this isn't really
+> sufficient to make this thing work in all cases.  And the older
+> tracepoint commits referenced in this thread are known to cause
+> problems with platforms such as sparc64.
+> 
+> You can't reliably put structures into independent objects, put them
+> into a special section, and then expect array access over them (via
+> the section boundaries) after linking the objects together to just
+> "work".
+> 
+> Your attribute specification is only a lower-bound.
 
-For example,
+Right.
 
-	unsigned long bitmap[2] = { 0, 0};
-	find_next_bit(bitmap, 63, 62)
+> 
+> GCC can and does use variable alignment choices in different situations,
+> so the align directive in the various objects can all be different.  So
+> the array iteration will assume the iterations should use one object
+> size, but within the linked together section the alignments are all
+> different so the inter-struct gap is different.
+> 
+> The only portable mechanism that will work in all cases, as we've
+> found recently for tracepoints and similar, is to make an array of
+> plain pointers to the objects in the special section.
 
-1. find_next_bit() tries to find any set bits in bitmap[1], but no bits set
+But, theoretically speaking, nothing stops GCC to align pointers with
+"gaps" as well? Let's say having everything (or some) aligned on
+quadword boundary even though arch is 32 bit?
 
-2. Then find_first_bit(bimap + 2, -1)
 
-3. Unfortunately find_fist_bit() takes unsigned int as the size argument.
+Thanks,
 
-4. find_first_bit will access bitmap[3~] until it find any set bits.
-
-Here is find_next_bit() in arch/m68k/include/asm/bitops_mm.h:
-
-static inline int find_next_bit(const unsigned long *vaddr, int size,
-                                int offset)
-{
-        const unsigned long *p = vaddr + (offset >> 5);
-        int bit = offset & 31UL, res;
-
-        if (offset >= size)
-                return size;
-
-        if (bit) {
-                unsigned long num = *p++ & (~0UL << bit);
-                offset -= bit;
-
-                /* Look for one in first longword */
-                __asm__ __volatile__ ("bfffo %1{#0,#0},%0"
-                                      : "=d" (res) : "d" (num & -num));
-                if (res < 32)
-                        return offset + (res ^ 31);
-                offset += 32;
-        }
-        /* No one yet, search remaining full bytes for a one */
-        res = find_first_bit(p, size - ((long)p - (long)vaddr) * 8);
-        return offset + res;
-}
-
-find_next_zero_bit and ext2_find_next_bit also have same problem.
-Actually I found this while testing ext2_find_next_bit in user space.
-
-The easiest and reliable way to fix this is that switching to generic
-implementation of find bitops.
+Dmitry
