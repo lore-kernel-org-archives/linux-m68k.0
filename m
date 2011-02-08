@@ -1,29 +1,87 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: find_next bitops on m68k may cause out of bounds memory access
-Date: Mon, 07 Feb 2011 23:33:28 +0100
-Message-ID: <m2bp2nfpaf.fsf@igel.home>
-References: <AANLkTik00GTZDn=t6J65dHjJiU53M5vXzBqToiYWz33P@mail.gmail.com>
-	<AANLkTi=LA1fmipUSycAEk48TwVXhzwbY5KMSfu=YMiCy@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=LA1fmipUSycAEk48TwVXhzwbY5KMSfu=YMiCy@mail.gmail.com>
-	(Michael Schmitz's message of "Tue, 8 Feb 2011 10:22:30 +1300")
-Sender: linux-m68k-owner@vger.kernel.org
+From: Dmitry Torokhov <dtor@vmware.com>
+Subject: [PATCH 1/3] module: deal with alignment issues in built-in module versions
+Date: Mon,  7 Feb 2011 16:02:25 -0800
+Message-ID: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+Return-path: <linux-arch-owner@vger.kernel.org>
+Sender: linux-arch-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Dmitry Torokhov <dtor@vmware.com>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, linux-m68k@lists.linux-m68k.org
 
-Michael Schmitz <schmitzmic@googlemail.com> writes:
+On m68k natural alignment is 2-byte boundary but we are trying to
+align structures in __modver section on sizeof(void *) boundary.
+This causes trouble when we try to access elements in this section
+in array-like fashion when create "version" attributes for built-in
+modules.
 
-> Thanks for spotting this - does anyone remember when this version of
-> find_next bitops was first introduced?
+Moreover, as DaveM said, we can't reliably put structures into
+independent objects, put them into a special section, and then expect
+array access over them (via the section boundaries) after linking the
+objects together to just "work" due to variable alignment choices in
+different situations. The only solution that seems to work reliably
+is to make an array of plain pointers to the objects in question and
+put those pointers in the special section.
 
-c82db5b in git.kernel.org:ralf/linux-m68k.git
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
+---
+ include/linux/module.h |   10 +++++-----
+ kernel/params.c        |    9 ++++++---
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
-Andreas.
-
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 9bdf27c..9b7081a 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -174,10 +174,7 @@ extern struct module __this_module;
+ #define MODULE_VERSION(_version)					\
+ 	extern ssize_t __modver_version_show(struct module_attribute *,	\
+ 					     struct module *, char *);	\
+-	static struct module_version_attribute __modver_version_attr	\
+-	__used								\
+-    __attribute__ ((__section__ ("__modver"),aligned(sizeof(void *)))) \
+-	= {								\
++	static struct module_version_attribute ___modver_attr = {	\
+ 		.mattr	= {						\
+ 			.attr	= {					\
+ 				.name	= "version",			\
+@@ -187,7 +184,10 @@ extern struct module __this_module;
+ 		},							\
+ 		.module_name	= KBUILD_MODNAME,			\
+ 		.version	= _version,				\
+-	}
++	};								\
++	static const struct module_version_attribute			\
++	__used __attribute__ ((__section__ ("__modver")))		\
++	* __moduleparam_const __modver_attr = &___modver_attr
+ #endif
+ 
+ /* Optional firmware file (or files) needed by the module
+diff --git a/kernel/params.c b/kernel/params.c
+index 0da1411..09a08cb 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -821,15 +821,18 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
+ 	return sprintf(buf, "%s\n", vattr->version);
+ }
+ 
+-extern struct module_version_attribute __start___modver[], __stop___modver[];
++extern const struct module_version_attribute *__start___modver[];
++extern const struct module_version_attribute *__stop___modver[];
+ 
+ static void __init version_sysfs_builtin(void)
+ {
+-	const struct module_version_attribute *vattr;
++	const struct module_version_attribute **p;
+ 	struct module_kobject *mk;
+ 	int err;
+ 
+-	for (vattr = __start___modver; vattr < __stop___modver; vattr++) {
++	for (p = __start___modver; p < __stop___modver; p++) {
++		const struct module_version_attribute *vattr = *p;
++
+ 		mk = locate_module_kobject(vattr->module_name);
+ 		if (mk) {
+ 			err = sysfs_create_file(&mk->kobj, &vattr->mattr.attr);
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+1.7.3.2
