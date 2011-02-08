@@ -1,50 +1,40 @@
-From: Dmitry Torokhov <dtor@vmware.com>
-Subject: [PATCH 3/3] module: do not hide __modver_version_show declaration behind ifdef
-Date: Mon,  7 Feb 2011 16:02:27 -0800
-Message-ID: <1297123347-2170-3-git-send-email-dtor@vmware.com>
-References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <1297123347-2170-1-git-send-email-dtor@vmware.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Dmitry Torokhov <dtor@vmware.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: find_next bitops on m68k may cause out of bounds memory access
+Date: Tue, 8 Feb 2011 13:55:47 +1300
+Message-ID: <AANLkTi=DE3k6WB-Ee0rq3XBWfUWsWFM9jXXiodmMy_Mr@mail.gmail.com>
+References: <AANLkTik00GTZDn=t6J65dHjJiU53M5vXzBqToiYWz33P@mail.gmail.com>
+	<AANLkTi=LA1fmipUSycAEk48TwVXhzwbY5KMSfu=YMiCy@mail.gmail.com>
+	<m2bp2nfpaf.fsf@igel.home>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <m2bp2nfpaf.fsf@igel.home>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, linux-m68k@lists.linux-m68k.org
 
-Doing so prevents the following warning from sparse:
+Thanks Andreas - there goes my theory I guess. Ralf's linux-m68k CVS
+conversion tree predates 2.6.32 by quite some time.
 
-  CHECK   kernel/params.c
-kernel/params.c:817:9: warning: symbol '__modver_version_show' was not
-declared. Should it be static?
+  Michael
 
-since kernel/params.c is never compiled with MODULE being set.
 
-Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
----
- include/linux/module.h |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 9b7081a..cb41837 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -64,6 +64,9 @@ struct module_version_attribute {
- 	const char *version;
- };
- 
-+extern ssize_t __modver_version_show(struct module_attribute *,
-+				     struct module *, char *);
-+
- struct module_kobject
- {
- 	struct kobject kobj;
-@@ -172,8 +175,6 @@ extern struct module __this_module;
- #define MODULE_VERSION(_version) MODULE_INFO(version, _version)
- #else
- #define MODULE_VERSION(_version)					\
--	extern ssize_t __modver_version_show(struct module_attribute *,	\
--					     struct module *, char *);	\
- 	static struct module_version_attribute ___modver_attr = {	\
- 		.mattr	= {						\
- 			.attr	= {					\
--- 
-1.7.3.2
+On Tue, Feb 8, 2011 at 11:33 AM, Andreas Schwab <schwab@linux-m68k.org>=
+ wrote:
+> Michael Schmitz <schmitzmic@googlemail.com> writes:
+>
+>> Thanks for spotting this - does anyone remember when this version of
+>> find_next bitops was first introduced?
+>
+> c82db5b in git.kernel.org:ralf/linux-m68k.git
+>
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756 =A001D3 44D5 214B 82=
+76 4ED5
+> "And now for something completely different."
+>
