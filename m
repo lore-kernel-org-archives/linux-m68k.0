@@ -1,278 +1,107 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH] m68k: fix find_next bitops
-Date: Tue,  8 Feb 2011 23:52:27 +0900
-Message-ID: <1297176747-1147-1-git-send-email-akinobu.mita@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in module versions
+Date: Tue, 8 Feb 2011 22:12:25 +0100
+Message-ID: <AANLkTi=pmWAvsp_3c4NgQYFw_ydfkOMgjDBDKgeFGf=E@mail.gmail.com>
+References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:47084 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751082Ab1BHVM1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Feb 2011 16:12:27 -0500
+In-Reply-To: <1297123347-2170-1-git-send-email-dtor@vmware.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Roman Zippel <zippel@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, Michael Schmitz <schmitzmic@googlemail.com>
+To: Dmitry Torokhov <dtor@vmware.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
-find_next bitops on m68k (find_next_zero_bit, find_next_bit, and
-ext2_find_next_bit) may cause out of bounds memory access
-when the bitmap size in bits % 32 != 0 and offset (the bitnumber
-to start searching at) is very close to the bitmap size.
-
-For example,
-
-       unsigned long bitmap[2] = { 0, 0 };
-       find_next_bit(bitmap, 63, 62)
-
-1. find_next_bit() tries to find any set bits in bitmap[1],
-   but no bits set.
-
-2. Then find_first_bit(bimap + 2, -1)
-
-3. Unfortunately find_fist_bit() takes unsigned int as the size argument.
-
-4. find_first_bit will access bitmap[2~] until it find any set bits.
-
-This switches find_next bitops to use generic implementation of
-find bitops to fix the problem.
-(Please feel free to suggest alternative way to fix)
-
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>
----
- arch/m68k/Kconfig                 |    4 +
- arch/m68k/include/asm/bitops_mm.h |  188 ++-----------------------------------
- 2 files changed, 13 insertions(+), 179 deletions(-)
-
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index bc9271b..c11e029 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -28,6 +28,10 @@ config GENERIC_HWEIGHT
- 	bool
- 	default y
- 
-+config GENERIC_FIND_NEXT_BIT
-+	bool
-+	default y
-+
- config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
-diff --git a/arch/m68k/include/asm/bitops_mm.h b/arch/m68k/include/asm/bitops_mm.h
-index b4ecdaa..c03f400 100644
---- a/arch/m68k/include/asm/bitops_mm.h
-+++ b/arch/m68k/include/asm/bitops_mm.h
-@@ -176,100 +176,7 @@ static inline int test_bit(int nr, const unsigned long *vaddr)
- 	return (vaddr[nr >> 5] & (1UL << (nr & 31))) != 0;
- }
- 
--static inline int find_first_zero_bit(const unsigned long *vaddr,
--				      unsigned size)
--{
--	const unsigned long *p = vaddr;
--	int res = 32;
--	unsigned long num;
--
--	if (!size)
--		return 0;
--
--	size = (size + 31) >> 5;
--	while (!(num = ~*p++)) {
--		if (!--size)
--			goto out;
--	}
--
--	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--			      : "=d" (res) : "d" (num & -num));
--	res ^= 31;
--out:
--	return ((long)p - (long)vaddr - 4) * 8 + res;
--}
--
--static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
--				     int offset)
--{
--	const unsigned long *p = vaddr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		unsigned long num = ~*p++ & (~0UL << bit);
--		offset -= bit;
--
--		/* Look for zero in first longword */
--		__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--				      : "=d" (res) : "d" (num & -num));
--		if (res < 32)
--			return offset + (res ^ 31);
--		offset += 32;
--	}
--	/* No zero yet, search remaining full bytes for a zero */
--	res = find_first_zero_bit(p, size - ((long)p - (long)vaddr) * 8);
--	return offset + res;
--}
--
--static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
--{
--	const unsigned long *p = vaddr;
--	int res = 32;
--	unsigned long num;
--
--	if (!size)
--		return 0;
--
--	size = (size + 31) >> 5;
--	while (!(num = *p++)) {
--		if (!--size)
--			goto out;
--	}
--
--	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--			      : "=d" (res) : "d" (num & -num));
--	res ^= 31;
--out:
--	return ((long)p - (long)vaddr - 4) * 8 + res;
--}
--
--static inline int find_next_bit(const unsigned long *vaddr, int size,
--				int offset)
--{
--	const unsigned long *p = vaddr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		unsigned long num = *p++ & (~0UL << bit);
--		offset -= bit;
--
--		/* Look for one in first longword */
--		__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--				      : "=d" (res) : "d" (num & -num));
--		if (res < 32)
--			return offset + (res ^ 31);
--		offset += 32;
--	}
--	/* No one yet, search remaining full bytes for a one */
--	res = find_first_bit(p, size - ((long)p - (long)vaddr) * 8);
--	return offset + res;
--}
-+#include <asm-generic/bitops/find.h>
- 
- /*
-  * ffz = Find First Zero in word. Undefined if no zero exists,
-@@ -365,10 +272,18 @@ static inline int minix_test_bit(int nr, const void *vaddr)
- #define ext2_set_bit_atomic(lock, nr, addr)	test_and_set_bit((nr) ^ 24, (unsigned long *)(addr))
- #define ext2_clear_bit(nr, addr)		__test_and_clear_bit((nr) ^ 24, (unsigned long *)(addr))
- #define ext2_clear_bit_atomic(lock, nr, addr)	test_and_clear_bit((nr) ^ 24, (unsigned long *)(addr))
-+
-+extern unsigned long generic_find_next_zero_le_bit(const unsigned long *addr,
-+		unsigned long size, unsigned long offset);
-+extern unsigned long generic_find_next_le_bit(const unsigned long *addr,
-+		unsigned long size, unsigned long offset);
-+
- #define ext2_find_next_zero_bit(addr, size, offset) \
- 	generic_find_next_zero_le_bit((unsigned long *)addr, size, offset)
- #define ext2_find_next_bit(addr, size, offset) \
- 	generic_find_next_le_bit((unsigned long *)addr, size, offset)
-+#define ext2_find_first_zero_bit(addr, size) \
-+	ext2_find_next_zero_bit(addr, size, 0)
- 
- static inline int ext2_test_bit(int nr, const void *vaddr)
- {
-@@ -376,91 +291,6 @@ static inline int ext2_test_bit(int nr, const void *vaddr)
- 	return (p[nr >> 3] & (1U << (nr & 7))) != 0;
- }
- 
--static inline int ext2_find_first_zero_bit(const void *vaddr, unsigned size)
--{
--	const unsigned long *p = vaddr, *addr = vaddr;
--	int res;
--
--	if (!size)
--		return 0;
--
--	size = (size >> 5) + ((size & 31) > 0);
--	while (*p++ == ~0UL)
--	{
--		if (--size == 0)
--			return (p - addr) << 5;
--	}
--
--	--p;
--	for (res = 0; res < 32; res++)
--		if (!ext2_test_bit (res, p))
--			break;
--	return (p - addr) * 32 + res;
--}
--
--static inline unsigned long generic_find_next_zero_le_bit(const unsigned long *addr,
--		unsigned long size, unsigned long offset)
--{
--	const unsigned long *p = addr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		/* Look for zero in first longword */
--		for (res = bit; res < 32; res++)
--			if (!ext2_test_bit (res, p))
--				return (p - addr) * 32 + res;
--		p++;
--	}
--	/* No zero yet, search remaining full bytes for a zero */
--	res = ext2_find_first_zero_bit (p, size - 32 * (p - addr));
--	return (p - addr) * 32 + res;
--}
--
--static inline int ext2_find_first_bit(const void *vaddr, unsigned size)
--{
--	const unsigned long *p = vaddr, *addr = vaddr;
--	int res;
--
--	if (!size)
--		return 0;
--
--	size = (size >> 5) + ((size & 31) > 0);
--	while (*p++ == 0UL) {
--		if (--size == 0)
--			return (p - addr) << 5;
--	}
--
--	--p;
--	for (res = 0; res < 32; res++)
--		if (ext2_test_bit(res, p))
--			break;
--	return (p - addr) * 32 + res;
--}
--
--static inline unsigned long generic_find_next_le_bit(const unsigned long *addr,
--		unsigned long size, unsigned long offset)
--{
--	const unsigned long *p = addr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		/* Look for one in first longword */
--		for (res = bit; res < 32; res++)
--			if (ext2_test_bit(res, p))
--				return (p - addr) * 32 + res;
--		p++;
--	}
--	/* No set bit yet, search remaining full bytes for a set bit */
--	res = ext2_find_first_bit(p, size - 32 * (p - addr));
--	return (p - addr) * 32 + res;
--}
--
- #endif /* __KERNEL__ */
- 
- #endif /* _M68K_BITOPS_H */
--- 
-1.7.4
+T24gVHVlLCBGZWIgOCwgMjAxMSBhdCAwMTowMiwgRG1pdHJ5IFRvcm9raG92IDxkdG9yQHZtd2Fy
+ZS5jb20+IHdyb3RlOgo+IE9uIG02OGsgbmF0dXJhbCBhbGlnbm1lbnQgaXMgMi1ieXRlIGJvdW5k
+YXJ5IGJ1dCB3ZSBhcmUgdHJ5aW5nIHRvCj4gYWxpZ24gc3RydWN0dXJlcyBpbiBfX21vZHZlciBz
+ZWN0aW9uIG9uIHNpemVvZih2b2lkICopIGJvdW5kYXJ5Lgo+IFRoaXMgY2F1c2VzIHRyb3VibGUg
+d2hlbiB3ZSB0cnkgdG8gYWNjZXNzIGVsZW1lbnRzIGluIHRoaXMgc2VjdGlvbgo+IGluIGFycmF5
+LWxpa2UgZmFzaGlvbiB3aGVuIGNyZWF0ZSAidmVyc2lvbiIgYXR0cmlidXRlcyBmb3IgYnVpbHQt
+aW4KPiBtb2R1bGVzLgo+Cj4gTW9yZW92ZXIsIGFzIERhdmVNIHNhaWQsIHdlIGNhbid0IHJlbGlh
+Ymx5IHB1dCBzdHJ1Y3R1cmVzIGludG8KPiBpbmRlcGVuZGVudCBvYmplY3RzLCBwdXQgdGhlbSBp
+bnRvIGEgc3BlY2lhbCBzZWN0aW9uLCBhbmQgdGhlbiBleHBlY3QKPiBhcnJheSBhY2Nlc3Mgb3Zl
+ciB0aGVtICh2aWEgdGhlIHNlY3Rpb24gYm91bmRhcmllcykgYWZ0ZXIgbGlua2luZyB0aGUKPiBv
+YmplY3RzIHRvZ2V0aGVyIHRvIGp1c3QgIndvcmsiIGR1ZSB0byB2YXJpYWJsZSBhbGlnbm1lbnQg
+Y2hvaWNlcyBpbgo+IGRpZmZlcmVudCBzaXR1YXRpb25zLiBUaGUgb25seSBzb2x1dGlvbiB0aGF0
+IHNlZW1zIHRvIHdvcmsgcmVsaWFibHkKPiBpcyB0byBtYWtlIGFuIGFycmF5IG9mIHBsYWluIHBv
+aW50ZXJzIHRvIHRoZSBvYmplY3RzIGluIHF1ZXN0aW9uIGFuZAo+IHB1dCB0aG9zZSBwb2ludGVy
+cyBpbiB0aGUgc3BlY2lhbCBzZWN0aW9uLgo+Cj4gUmVwb3J0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhv
+ZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+Cj4gU2lnbmVkLW9mZi1ieTogRG1pdHJ5IFRvcm9r
+aG92IDxkdG9yQHZtd2FyZS5jb20+CgpUaGFua3MhCgpUZXN0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhv
+ZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+Cgo+IC0tLQo+IMKgaW5jbHVkZS9saW51eC9tb2R1
+bGUuaCB8IMKgIDEwICsrKysrLS0tLS0KPiDCoGtlcm5lbC9wYXJhbXMuYyDCoCDCoCDCoCDCoHwg
+wqAgwqA5ICsrKysrKy0tLQo+IMKgMiBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA4
+IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW9kdWxlLmggYi9p
+bmNsdWRlL2xpbnV4L21vZHVsZS5oCj4gaW5kZXggOWJkZjI3Yy4uOWI3MDgxYSAxMDA2NDQKPiAt
+LS0gYS9pbmNsdWRlL2xpbnV4L21vZHVsZS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9tb2R1bGUu
+aAo+IEBAIC0xNzQsMTAgKzE3NCw3IEBAIGV4dGVybiBzdHJ1Y3QgbW9kdWxlIF9fdGhpc19tb2R1
+bGU7Cj4gwqAjZGVmaW5lIE1PRFVMRV9WRVJTSU9OKF92ZXJzaW9uKSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4gwqAgwqAgwqAgwqBl
+eHRlcm4gc3NpemVfdCBfX21vZHZlcl92ZXJzaW9uX3Nob3coc3RydWN0IG1vZHVsZV9hdHRyaWJ1
+dGUgKiwgXAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHN0cnVjdCBtb2R1bGUgKiwgY2hhciAqKTsgwqBcCj4gLSDCoCDC
+oCDCoCBzdGF0aWMgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSBfX21vZHZlcl92ZXJz
+aW9uX2F0dHIgwqAgwqBcCj4gLSDCoCDCoCDCoCBfX3VzZWQgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqBcCj4gLSDCoCDCoF9fYXR0cmlidXRlX18gKChfX3NlY3Rpb25fXyAoIl9fbW9kdmVy
+IiksYWxpZ25lZChzaXplb2Yodm9pZCAqKSkpKSBcCj4gLSDCoCDCoCDCoCA9IHsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+ICsgwqAgwqAgwqAgc3RhdGljIHN0cnVjdCBtb2R1
+bGVfdmVyc2lvbl9hdHRyaWJ1dGUgX19fbW9kdmVyX2F0dHIgPSB7IMKgIMKgIMKgIFwKPiDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoC5tYXR0ciDCoD0geyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAuYXR0ciDCoCA9IHsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm5hbWUgwqAgPSAidmVyc2lvbiIsIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgXAo+IEBAIC0xODcsNyArMTg0LDEwIEBAIGV4dGVybiBzdHJ1
+Y3QgbW9kdWxlIF9fdGhpc19tb2R1bGU7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9LCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoFwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC5tb2R1bGVfbmFt
+ZSDCoCDCoD0gS0JVSUxEX01PRE5BTUUsIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IFwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC52ZXJzaW9uIMKgIMKgIMKgIMKgPSBfdmVyc2lv
+biwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+IC0gwqAgwqAg
+wqAgfQo+ICsgwqAgwqAgwqAgfTsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBc
+Cj4gKyDCoCDCoCDCoCBzdGF0aWMgY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0
+ZSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFwKPiArIMKgIMKgIMKgIF9fdXNlZCBfX2F0
+dHJpYnV0ZV9fICgoX19zZWN0aW9uX18gKCJfX21vZHZlciIpKSkgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgXAo+ICsgwqAgwqAgwqAgKiBfX21vZHVsZXBhcmFtX2NvbnN0IF9fbW9kdmVyX2F0dHIgPSAm
+X19fbW9kdmVyX2F0dHIKPiDCoCNlbmRpZgo+Cj4gwqAvKiBPcHRpb25hbCBmaXJtd2FyZSBmaWxl
+IChvciBmaWxlcykgbmVlZGVkIGJ5IHRoZSBtb2R1bGUKPiBkaWZmIC0tZ2l0IGEva2VybmVsL3Bh
+cmFtcy5jIGIva2VybmVsL3BhcmFtcy5jCj4gaW5kZXggMGRhMTQxMS4uMDlhMDhjYiAxMDA2NDQK
+PiAtLS0gYS9rZXJuZWwvcGFyYW1zLmMKPiArKysgYi9rZXJuZWwvcGFyYW1zLmMKPiBAQCAtODIx
+LDE1ICs4MjEsMTggQEAgc3NpemVfdCBfX21vZHZlcl92ZXJzaW9uX3Nob3coc3RydWN0IG1vZHVs
+ZV9hdHRyaWJ1dGUgKm1hdHRyLAo+IMKgIMKgIMKgIMKgcmV0dXJuIHNwcmludGYoYnVmLCAiJXNc
+biIsIHZhdHRyLT52ZXJzaW9uKTsKPiDCoH0KPgo+IC1leHRlcm4gc3RydWN0IG1vZHVsZV92ZXJz
+aW9uX2F0dHJpYnV0ZSBfX3N0YXJ0X19fbW9kdmVyW10sIF9fc3RvcF9fX21vZHZlcltdOwo+ICtl
+eHRlcm4gY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSAqX19zdGFydF9fX21v
+ZHZlcltdOwo+ICtleHRlcm4gY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSAq
+X19zdG9wX19fbW9kdmVyW107Cj4KPiDCoHN0YXRpYyB2b2lkIF9faW5pdCB2ZXJzaW9uX3N5c2Zz
+X2J1aWx0aW4odm9pZCkKPiDCoHsKPiAtIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVy
+c2lvbl9hdHRyaWJ1dGUgKnZhdHRyOwo+ICsgwqAgwqAgwqAgY29uc3Qgc3RydWN0IG1vZHVsZV92
+ZXJzaW9uX2F0dHJpYnV0ZSAqKnA7Cj4gwqAgwqAgwqAgwqBzdHJ1Y3QgbW9kdWxlX2tvYmplY3Qg
+Km1rOwo+IMKgIMKgIMKgIMKgaW50IGVycjsKPgo+IC0gwqAgwqAgwqAgZm9yICh2YXR0ciA9IF9f
+c3RhcnRfX19tb2R2ZXI7IHZhdHRyIDwgX19zdG9wX19fbW9kdmVyOyB2YXR0cisrKSB7Cj4gKyDC
+oCDCoCDCoCBmb3IgKHAgPSBfX3N0YXJ0X19fbW9kdmVyOyBwIDwgX19zdG9wX19fbW9kdmVyOyBw
+KyspIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVyc2lv
+bl9hdHRyaWJ1dGUgKnZhdHRyID0gKnA7Cj4gKwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbWsg
+PSBsb2NhdGVfbW9kdWxlX2tvYmplY3QodmF0dHItPm1vZHVsZV9uYW1lKTsKPiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoGlmIChtaykgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgZXJyID0gc3lzZnNfY3JlYXRlX2ZpbGUoJm1rLT5rb2JqLCAmdmF0dHItPm1hdHRyLmF0dHIp
+Owo+IC0tCj4gMS43LjMuMgo+Cj4gLS0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDog
+c2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtYXJjaCIgaW4KPiB0aGUgYm9keSBvZiBh
+IG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+IE1vcmUgbWFqb3Jkb21vIGlu
+Zm8gYXQgwqBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPgoKCgot
+LSAKR3J7b2V0amUsZWV0aW5nfXMsCgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCBHZWVydAoKLS0KR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBi
+ZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwgY29udmVyc2F0
+aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIuIEJ1dAp3
+aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dyYW1tZXIiIG9y
+IHNvbWV0aGluZyBsaWtlIHRoYXQuCsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgwqAgwqDCoCAtLSBMaW51cyBUb3J2YWxkcwo=
