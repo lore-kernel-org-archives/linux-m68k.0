@@ -1,107 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in module versions
-Date: Tue, 8 Feb 2011 22:12:25 +0100
-Message-ID: <AANLkTi=pmWAvsp_3c4NgQYFw_ydfkOMgjDBDKgeFGf=E@mail.gmail.com>
-References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Early crash (was: Re: module: show version information for built-in modules in sysfs)
+Date: Tue, 08 Feb 2011 22:31:56 +0100
+Message-ID: <m2tygedxgz.fsf@igel.home>
+References: <AANLkTin4gOnEMruLDM=TkNYsNf5S370WqbcDVJzT7_Z4@mail.gmail.com>
+	<20110201210944.GA12348@dtor-ws.eng.vmware.com>
+	<AANLkTimv=KqtuR36dMNa+=OMi0mgd8JK4qsb_SpmKmhs@mail.gmail.com>
+	<20110201222637.GA17521@dtor-ws.eng.vmware.com>
+	<AANLkTikWVt8NEyHN+=yD4EWSXUQt0gt5nLJtKQDw397M@mail.gmail.com>
+	<20110202194227.GA13794@dtor-ws.eng.vmware.com>
+	<m2ipx2dp7v.fsf@igel.home>
+	<20110202235948.GA8676@dtor-ws.eng.vmware.com>
+	<m2bp2udllv.fsf@igel.home>
+	<20110203002459.GA26729@dtor-ws.eng.vmware.com>
+	<m2mxmdm323.fsf@igel.home>
+	<Pine.BSM.4.64L.1102052346060.22476@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:47084 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751082Ab1BHVM1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Feb 2011 16:12:27 -0500
-In-Reply-To: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+Received: from mail-out.m-online.net ([212.18.0.9]:58828 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752121Ab1BHVcA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Feb 2011 16:32:00 -0500
+In-Reply-To: <Pine.BSM.4.64L.1102052346060.22476@herc.mirbsd.org> (Thorsten
+	Glaser's message of "Sat, 5 Feb 2011 23:47:09 +0000")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dtor@vmware.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org
 
-T24gVHVlLCBGZWIgOCwgMjAxMSBhdCAwMTowMiwgRG1pdHJ5IFRvcm9raG92IDxkdG9yQHZtd2Fy
-ZS5jb20+IHdyb3RlOgo+IE9uIG02OGsgbmF0dXJhbCBhbGlnbm1lbnQgaXMgMi1ieXRlIGJvdW5k
-YXJ5IGJ1dCB3ZSBhcmUgdHJ5aW5nIHRvCj4gYWxpZ24gc3RydWN0dXJlcyBpbiBfX21vZHZlciBz
-ZWN0aW9uIG9uIHNpemVvZih2b2lkICopIGJvdW5kYXJ5Lgo+IFRoaXMgY2F1c2VzIHRyb3VibGUg
-d2hlbiB3ZSB0cnkgdG8gYWNjZXNzIGVsZW1lbnRzIGluIHRoaXMgc2VjdGlvbgo+IGluIGFycmF5
-LWxpa2UgZmFzaGlvbiB3aGVuIGNyZWF0ZSAidmVyc2lvbiIgYXR0cmlidXRlcyBmb3IgYnVpbHQt
-aW4KPiBtb2R1bGVzLgo+Cj4gTW9yZW92ZXIsIGFzIERhdmVNIHNhaWQsIHdlIGNhbid0IHJlbGlh
-Ymx5IHB1dCBzdHJ1Y3R1cmVzIGludG8KPiBpbmRlcGVuZGVudCBvYmplY3RzLCBwdXQgdGhlbSBp
-bnRvIGEgc3BlY2lhbCBzZWN0aW9uLCBhbmQgdGhlbiBleHBlY3QKPiBhcnJheSBhY2Nlc3Mgb3Zl
-ciB0aGVtICh2aWEgdGhlIHNlY3Rpb24gYm91bmRhcmllcykgYWZ0ZXIgbGlua2luZyB0aGUKPiBv
-YmplY3RzIHRvZ2V0aGVyIHRvIGp1c3QgIndvcmsiIGR1ZSB0byB2YXJpYWJsZSBhbGlnbm1lbnQg
-Y2hvaWNlcyBpbgo+IGRpZmZlcmVudCBzaXR1YXRpb25zLiBUaGUgb25seSBzb2x1dGlvbiB0aGF0
-IHNlZW1zIHRvIHdvcmsgcmVsaWFibHkKPiBpcyB0byBtYWtlIGFuIGFycmF5IG9mIHBsYWluIHBv
-aW50ZXJzIHRvIHRoZSBvYmplY3RzIGluIHF1ZXN0aW9uIGFuZAo+IHB1dCB0aG9zZSBwb2ludGVy
-cyBpbiB0aGUgc3BlY2lhbCBzZWN0aW9uLgo+Cj4gUmVwb3J0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhv
-ZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+Cj4gU2lnbmVkLW9mZi1ieTogRG1pdHJ5IFRvcm9r
-aG92IDxkdG9yQHZtd2FyZS5jb20+CgpUaGFua3MhCgpUZXN0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhv
-ZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+Cgo+IC0tLQo+IMKgaW5jbHVkZS9saW51eC9tb2R1
-bGUuaCB8IMKgIDEwICsrKysrLS0tLS0KPiDCoGtlcm5lbC9wYXJhbXMuYyDCoCDCoCDCoCDCoHwg
-wqAgwqA5ICsrKysrKy0tLQo+IMKgMiBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA4
-IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW9kdWxlLmggYi9p
-bmNsdWRlL2xpbnV4L21vZHVsZS5oCj4gaW5kZXggOWJkZjI3Yy4uOWI3MDgxYSAxMDA2NDQKPiAt
-LS0gYS9pbmNsdWRlL2xpbnV4L21vZHVsZS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9tb2R1bGUu
-aAo+IEBAIC0xNzQsMTAgKzE3NCw3IEBAIGV4dGVybiBzdHJ1Y3QgbW9kdWxlIF9fdGhpc19tb2R1
-bGU7Cj4gwqAjZGVmaW5lIE1PRFVMRV9WRVJTSU9OKF92ZXJzaW9uKSDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4gwqAgwqAgwqAgwqBl
-eHRlcm4gc3NpemVfdCBfX21vZHZlcl92ZXJzaW9uX3Nob3coc3RydWN0IG1vZHVsZV9hdHRyaWJ1
-dGUgKiwgXAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHN0cnVjdCBtb2R1bGUgKiwgY2hhciAqKTsgwqBcCj4gLSDCoCDC
-oCDCoCBzdGF0aWMgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSBfX21vZHZlcl92ZXJz
-aW9uX2F0dHIgwqAgwqBcCj4gLSDCoCDCoCDCoCBfX3VzZWQgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqBcCj4gLSDCoCDCoF9fYXR0cmlidXRlX18gKChfX3NlY3Rpb25fXyAoIl9fbW9kdmVy
-IiksYWxpZ25lZChzaXplb2Yodm9pZCAqKSkpKSBcCj4gLSDCoCDCoCDCoCA9IHsgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+ICsgwqAgwqAgwqAgc3RhdGljIHN0cnVjdCBtb2R1
-bGVfdmVyc2lvbl9hdHRyaWJ1dGUgX19fbW9kdmVyX2F0dHIgPSB7IMKgIMKgIMKgIFwKPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoC5tYXR0ciDCoD0geyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4gwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAuYXR0ciDCoCA9IHsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm5hbWUgwqAgPSAidmVyc2lvbiIsIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgXAo+IEBAIC0xODcsNyArMTg0LDEwIEBAIGV4dGVybiBzdHJ1
-Y3QgbW9kdWxlIF9fdGhpc19tb2R1bGU7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9LCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoFwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC5tb2R1bGVfbmFt
-ZSDCoCDCoD0gS0JVSUxEX01PRE5BTUUsIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IFwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC52ZXJzaW9uIMKgIMKgIMKgIMKgPSBfdmVyc2lv
-biwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgXAo+IC0gwqAgwqAg
-wqAgfQo+ICsgwqAgwqAgwqAgfTsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBc
-Cj4gKyDCoCDCoCDCoCBzdGF0aWMgY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0
-ZSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFwKPiArIMKgIMKgIMKgIF9fdXNlZCBfX2F0
-dHJpYnV0ZV9fICgoX19zZWN0aW9uX18gKCJfX21vZHZlciIpKSkgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgXAo+ICsgwqAgwqAgwqAgKiBfX21vZHVsZXBhcmFtX2NvbnN0IF9fbW9kdmVyX2F0dHIgPSAm
-X19fbW9kdmVyX2F0dHIKPiDCoCNlbmRpZgo+Cj4gwqAvKiBPcHRpb25hbCBmaXJtd2FyZSBmaWxl
-IChvciBmaWxlcykgbmVlZGVkIGJ5IHRoZSBtb2R1bGUKPiBkaWZmIC0tZ2l0IGEva2VybmVsL3Bh
-cmFtcy5jIGIva2VybmVsL3BhcmFtcy5jCj4gaW5kZXggMGRhMTQxMS4uMDlhMDhjYiAxMDA2NDQK
-PiAtLS0gYS9rZXJuZWwvcGFyYW1zLmMKPiArKysgYi9rZXJuZWwvcGFyYW1zLmMKPiBAQCAtODIx
-LDE1ICs4MjEsMTggQEAgc3NpemVfdCBfX21vZHZlcl92ZXJzaW9uX3Nob3coc3RydWN0IG1vZHVs
-ZV9hdHRyaWJ1dGUgKm1hdHRyLAo+IMKgIMKgIMKgIMKgcmV0dXJuIHNwcmludGYoYnVmLCAiJXNc
-biIsIHZhdHRyLT52ZXJzaW9uKTsKPiDCoH0KPgo+IC1leHRlcm4gc3RydWN0IG1vZHVsZV92ZXJz
-aW9uX2F0dHJpYnV0ZSBfX3N0YXJ0X19fbW9kdmVyW10sIF9fc3RvcF9fX21vZHZlcltdOwo+ICtl
-eHRlcm4gY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSAqX19zdGFydF9fX21v
-ZHZlcltdOwo+ICtleHRlcm4gY29uc3Qgc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSAq
-X19zdG9wX19fbW9kdmVyW107Cj4KPiDCoHN0YXRpYyB2b2lkIF9faW5pdCB2ZXJzaW9uX3N5c2Zz
-X2J1aWx0aW4odm9pZCkKPiDCoHsKPiAtIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVy
-c2lvbl9hdHRyaWJ1dGUgKnZhdHRyOwo+ICsgwqAgwqAgwqAgY29uc3Qgc3RydWN0IG1vZHVsZV92
-ZXJzaW9uX2F0dHJpYnV0ZSAqKnA7Cj4gwqAgwqAgwqAgwqBzdHJ1Y3QgbW9kdWxlX2tvYmplY3Qg
-Km1rOwo+IMKgIMKgIMKgIMKgaW50IGVycjsKPgo+IC0gwqAgwqAgwqAgZm9yICh2YXR0ciA9IF9f
-c3RhcnRfX19tb2R2ZXI7IHZhdHRyIDwgX19zdG9wX19fbW9kdmVyOyB2YXR0cisrKSB7Cj4gKyDC
-oCDCoCDCoCBmb3IgKHAgPSBfX3N0YXJ0X19fbW9kdmVyOyBwIDwgX19zdG9wX19fbW9kdmVyOyBw
-KyspIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVyc2lv
-bl9hdHRyaWJ1dGUgKnZhdHRyID0gKnA7Cj4gKwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbWsg
-PSBsb2NhdGVfbW9kdWxlX2tvYmplY3QodmF0dHItPm1vZHVsZV9uYW1lKTsKPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoGlmIChtaykgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgZXJyID0gc3lzZnNfY3JlYXRlX2ZpbGUoJm1rLT5rb2JqLCAmdmF0dHItPm1hdHRyLmF0dHIp
-Owo+IC0tCj4gMS43LjMuMgo+Cj4gLS0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDog
-c2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtYXJjaCIgaW4KPiB0aGUgYm9keSBvZiBh
-IG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+IE1vcmUgbWFqb3Jkb21vIGlu
-Zm8gYXQgwqBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPgoKCgot
-LSAKR3J7b2V0amUsZWV0aW5nfXMsCgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCBHZWVydAoKLS0KR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBi
-ZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwgY29udmVyc2F0
-aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIuIEJ1dAp3
-aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dyYW1tZXIiIG9y
-IHNvbWV0aGluZyBsaWtlIHRoYXQuCsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgwqAgwqDCoCAtLSBMaW51cyBUb3J2YWxkcwo=
+Thorsten Glaser <tg@mirbsd.de> writes:
+
+> Andreas Schwab dixit:
+>
+>>On m68k, every object by default is at most aligned to a 2 byte
+>>boundary.  That's a heritage of the original Sun m68000 compiler, which
+>>served as the template for the gcc configuration for Linux/m68k when the
+>>porting started.
+>
+> Ah, from there. I think it might violate the SYSV ABI, funnily
+> enough (which I've peeked into in order to port elfutils when
+> bored again). Oh the history ;)
+
+I looked into fixing that when I ported m68k from a.out to ELF.
+Unfortunately, that would have broken a big part of the syscall/ioctl
+ABI, so I had to scratch that.
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
