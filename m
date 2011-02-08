@@ -1,40 +1,40 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: find_next bitops on m68k may cause out of bounds memory access
-Date: Tue, 8 Feb 2011 13:55:47 +1300
-Message-ID: <AANLkTi=DE3k6WB-Ee0rq3XBWfUWsWFM9jXXiodmMy_Mr@mail.gmail.com>
-References: <AANLkTik00GTZDn=t6J65dHjJiU53M5vXzBqToiYWz33P@mail.gmail.com>
-	<AANLkTi=LA1fmipUSycAEk48TwVXhzwbY5KMSfu=YMiCy@mail.gmail.com>
-	<m2bp2nfpaf.fsf@igel.home>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: Early crash
+Date: Tue, 8 Feb 2011 13:42:48 +1030
+Message-ID: <201102081342.49243.rusty@rustcorp.com.au>
+References: <20110207081933.GA11855@dtor-ws.eng.vmware.com> <20110207165829.GA13101@dtor-ws.eng.vmware.com> <20110207.112708.193718501.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m2bp2nfpaf.fsf@igel.home>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20110207.112708.193718501.davem@davemloft.net>
+Sender: linux-arch-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: dtor@vmware.com, schwab@linux-m68k.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, linux-m68k@lists.linux-m68k.org
 
-Thanks Andreas - there goes my theory I guess. Ralf's linux-m68k CVS
-conversion tree predates 2.6.32 by quite some time.
+On Tue, 8 Feb 2011 05:57:08 am David Miller wrote:
+> From: Dmitry Torokhov <dtor@vmware.com>
+> Date: Mon, 7 Feb 2011 08:58:29 -0800
+> 
+> > But, theoretically speaking, nothing stops GCC to align pointers with
+> > "gaps" as well? Let's say having everything (or some) aligned on
+> > quadword boundary even though arch is 32 bit?
+> 
+> The alignment business only applies to aggregates (ie. structs and
+> unions).
+> 
+> This has been confirmed via several weeks of expermentation with
+> different GCC versions on different platforms as well.
 
-  Michael
+But OTOH, this is an old problem which was faced by module params since
+pre-git.  And we use the-align-to-void*-size method there; I vaguely recall
+inserting it.
 
+You've now got me wondering whether these platforms have broken builtin
+module parameters, but I think it would crash iterating if you had any
+boot parameters at all if that were the case.
 
-On Tue, Feb 8, 2011 at 11:33 AM, Andreas Schwab <schwab@linux-m68k.org>=
- wrote:
-> Michael Schmitz <schmitzmic@googlemail.com> writes:
->
->> Thanks for spotting this - does anyone remember when this version of
->> find_next bitops was first introduced?
->
-> c82db5b in git.kernel.org:ralf/linux-m68k.git
->
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756 =A001D3 44D5 214B 82=
-76 4ED5
-> "And now for something completely different."
->
+So do we fix that now too, or wait for it to break?
+Rusty.
