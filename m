@@ -1,23 +1,64 @@
-From: "Gbargun" <bloxomwnqp@yahoo.dk>
-Subject: Da Ract M%RAN_
-Date: Thu, 10 Feb 2011 10:32:11 +0800
-Message-ID: <232705.71589.bm@smtp110.mail.bf1.yahoo.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 4/4] m68k/atari: ARAnyM - Add support for network access
+Date: Thu, 10 Feb 2011 09:37:41 +0100
+Message-ID: <AANLkTi=j7X0LShJs6EVt0c_uE3vUvZ9EdGLwv7i43vx+@mail.gmail.com>
+References: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
+	<1296989469-7844-5-git-send-email-geert@linux-m68k.org>
+	<20110206.111705.183051866.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:39892 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752341Ab1BJIhn convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 10 Feb 2011 03:37:43 -0500
+In-Reply-To: <20110206.111705.183051866.davem@davemloft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: David Miller <davem@davemloft.net>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, aranym@lists.bobek.cz, schmitz@opal.biophys.uni-duesseldorf.de, pstehlik@sophics.cz, milan.jurik@xylab.cz, netdev@vger.kernel.org
 
-MrG+yczQ0Neo0rW5qdOmuPfA4L6rt8LP49HMoaOyydPD1K2zp9HMy7/F5NbGo6yw/New0+vV5sa3
-zt631rHwo6y/2rjQtL/V/aGjIL6tuf224MTqtcTK0LOhtLjBtqOssru2z7XE1srBv7jEvfijrLfC
-1ea2yLTvtb05MCXS1MnPoaPKx7OjxOrX1LPpoaLLzcDxoaK1yMrX0aGhow0KQbj3xrfFxs/j0cy8
-27jxo7rUqi/M9Si6rNPKt9EpICANCjjI7dbQu6qjpDI2MCAg07LW0Luqo6QyMzAgICDL1dHMo6Qy
-MjAgICAgu8a618KlMTkxNqOkNTAwICC67LrTtcCjpDU1MCAgvsXO5dau1/CjpDUwMCAgus3M7M/C
-o6Q0ODAgIL3w3L3I2KOkMTMwICAgwLbI7dy9yNijpDMwMCAgIMjt0/HPqqOkMTMwICANCsn6svrB
-tLXE16jStbuvo6y8vMr1tcS9+LK9o6zWysG/vfG3x870sciho9Pr1ebRzMTRt9ayrtbZoaPN6sir
-v8nS1MqkyM7I1bOjvbu8yqGjDQpjuPy24Ma3xcbAtLXn18nRr6O6MTM1IDkwNDQgMTg0NiAgUVE6
-MTU5Nzc5Mzg2OA0KwarPtcjLo7qzwrHzDQrIq7n6v+y13cj9zOzE2r/Jtb2ho7v1tb24tr/uoaPH
-67fF0MS5usLyo6FJ
+On Sun, Feb 6, 2011 at 20:17, David Miller <davem@davemloft.net> wrote:
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Date: Sun, =C2=A06 Feb 2011 11:51:09 +0100
+>
+>> + =C2=A0 =C2=A0 dev->trans_start =3D jiffies;
+>
+> Device drivers no longer make this operation, the generic code
+> does it (see net/core/dev.c:dev_hard_start_xmit() and how it
+> invokes txq_trans_update() on ->ndo_start_xmit() success).
+>
+> Therefore, please remove this line.
+
+Will do.
+
+(180 more to go in drivers/net/?)
+
+>> + =C2=A0 =C2=A0 pr_debug(DRV_NAME ": send %d bytes\n", len);
+>
+> For consistency with other network drivers, add an appropriate CPP
+> define for "pr_fmt" and use netdev_info(), netdev_debug(), etc.
+>
+> In situations where a netdev pointer is not available
+> (ie. pre-register_netdev()), use "dev_*()" instead.
+
+Will fix.
+
+Thanks for reviewing!
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
