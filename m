@@ -1,64 +1,99 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 4/4] m68k/atari: ARAnyM - Add support for network access
-Date: Thu, 10 Feb 2011 09:37:41 +0100
-Message-ID: <AANLkTi=j7X0LShJs6EVt0c_uE3vUvZ9EdGLwv7i43vx+@mail.gmail.com>
-References: <1296989469-7844-1-git-send-email-geert@linux-m68k.org>
-	<1296989469-7844-5-git-send-email-geert@linux-m68k.org>
-	<20110206.111705.183051866.davem@davemloft.net>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: remove arch specific non-optimized memcmp()
+Date: Fri, 11 Feb 2011 11:24:12 +1000
+Message-ID: <4D548FBC.2050902@snapgear.com>
+References: <201102070057.p170vUMO009007@goober.internal.moreton.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:39892 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752341Ab1BJIhn convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 10 Feb 2011 03:37:43 -0500
-In-Reply-To: <20110206.111705.183051866.davem@davemloft.net>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:64983 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757604Ab1BKBZF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 10 Feb 2011 20:25:05 -0500
+In-Reply-To: <201102070057.p170vUMO009007@goober.internal.moreton.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, aranym@lists.bobek.cz, schmitz@opal.biophys.uni-duesseldorf.de, pstehlik@sophics.cz, milan.jurik@xylab.cz, netdev@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: gerg@uclinux.org
 
-On Sun, Feb 6, 2011 at 20:17, David Miller <davem@davemloft.net> wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Date: Sun, =C2=A06 Feb 2011 11:51:09 +0100
+On 07/02/11 10:57, Greg Ungerer wrote:
+> m68k: remove arch specific non-optimized memcmp()
 >
->> + =C2=A0 =C2=A0 dev->trans_start =3D jiffies;
+> The m68k arch implements its own memcmp() function. It is not optimized
+> in any way (it is the most strait forward coding of memcmp you can get).
+> Remove it and use the kernels standard memcmp() implementation.
 >
-> Device drivers no longer make this operation, the generic code
-> does it (see net/core/dev.c:dev_hard_start_xmit() and how it
-> invokes txq_trans_update() on ->ndo_start_xmit() success).
+> This also goes part of the way to fixing a regression caused by commit
+> ea61bc461d09e8d331a307916530aaae808c72a2 ("m68k/m68knommu: merge MMU and
+> non-MMU string.h"), which breaks non-coldfire non-mmu builds (which is
+> the 68x328 and 68360 families). They currently have no memcmp() function
+> defined, since there is none in the m68knommu/lib functions.
 >
-> Therefore, please remove this line.
+> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
 
-Will do.
+Does anyone have any comments on this?
 
-(180 more to go in drivers/net/?)
+I would like to push to Linus very soon now (so in the current
+2.6.38-rc). It seems like a clean fix on its own, but in particular
+it helps me fix the problems caused by commit 
+ea61bc461d09e8d331a307916530aaae808c72a2
+("m68k/m68knommu: merge MMU and non-MMU string.h"
 
->> + =C2=A0 =C2=A0 pr_debug(DRV_NAME ": send %d bytes\n", len);
+I have compile and run tested on m68knommu targets, and compile
+tested on m68k targets.
+
+Regards
+Greg
+
+
+> ---
+>   arch/m68k/include/asm/string.h |    4 +---
+>   arch/m68k/lib/string.c         |   11 -----------
+>   2 files changed, 1 insertions(+), 14 deletions(-)
 >
-> For consistency with other network drivers, add an appropriate CPP
-> define for "pr_fmt" and use netdev_info(), netdev_debug(), etc.
+> diff --git a/arch/m68k/include/asm/string.h b/arch/m68k/include/asm/string.h
+> index 65b1312..ffc3c3f 100644
+> --- a/arch/m68k/include/asm/string.h
+> +++ b/arch/m68k/include/asm/string.h
+> @@ -102,11 +102,9 @@ static inline int strcmp(const char *cs, const char *ct)
 >
-> In situations where a netdev pointer is not available
-> (ie. pre-register_netdev()), use "dev_*()" instead.
+>   #define __HAVE_ARCH_MEMMOVE
+>   extern void *memmove(void *, const void *, __kernel_size_t);
+> +#endif /* CONFIG_COLDFIRE */
+>
+> -#define __HAVE_ARCH_MEMCMP
+> -extern int memcmp(const void *, const void *, __kernel_size_t);
+>   #define memcmp(d, s, n) __builtin_memcmp(d, s, n)
+> -#endif /* CONFIG_COLDFIRE */
+>
+>   #define __HAVE_ARCH_MEMSET
+>   extern void *memset(void *, int, __kernel_size_t);
+> diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
+> index 4253f87..d399c5f 100644
+> --- a/arch/m68k/lib/string.c
+> +++ b/arch/m68k/lib/string.c
+> @@ -243,14 +243,3 @@ void *memmove(void *dest, const void *src, size_t n)
+>   	return xdest;
+>   }
+>   EXPORT_SYMBOL(memmove);
+> -
+> -int memcmp(const void *cs, const void *ct, size_t count)
+> -{
+> -	const unsigned char *su1, *su2;
+> -
+> -	for (su1 = cs, su2 = ct; count>  0; ++su1, ++su2, count--)
+> -		if (*su1 != *su2)
+> -			return *su1<  *su2 ? -1 : +1;
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(memcmp);
+>
 
-Will fix.
 
-Thanks for reviewing!
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
