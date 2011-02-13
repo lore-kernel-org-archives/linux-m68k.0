@@ -1,294 +1,435 @@
-From: Dmitry Torokhov <dtor@vmware.com>
-Subject: [PATCH v2] module: deal with alignment issues in built-in module
- parameters
-Date: Fri, 11 Feb 2011 14:03:56 -0800
-Message-ID: <20110211220356.GA13504@dtor-ws.eng.vmware.com>
-References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: build warnings
+Date: Sun, 13 Feb 2011 17:34:24 +1300
+Message-ID: <4D575F50.1020601@gmail.com>
+References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de> <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de> <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com> <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com> <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org> <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com> <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org> <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com> <4D44F92C.2050707@gmail.com> <AANLkTimB1fpvMsSeTbRn5ZTU1NCpZpjrAXQ+xRShAsZN@mail.gmail.com> <4D461512.8080609@gmail.com> <alpine.LNX.2.00.1101311424100.6256@nippy.intranet> <Pine.BSM.4.64L.1102052339100.22476@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arch-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1297123347-2170-1-git-send-email-dtor@vmware.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Dmitry Torokhov <dtor@vmware.com>
+Content-Type: multipart/mixed;
+ boundary="------------040003020104020808080608"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pw0-f46.google.com ([209.85.160.46]:35036 "EHLO
+	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753686Ab1BMEeh (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Feb 2011 23:34:37 -0500
+Received: by pwj3 with SMTP id 3so771176pwj.19
+        for <linux-m68k@vger.kernel.org>; Sat, 12 Feb 2011 20:34:37 -0800 (PST)
+In-Reply-To: <Pine.BSM.4.64L.1102052339100.22476@herc.mirbsd.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org
 
->From 03f1332fc02af7af0d06ab409e3ec72107637845 Mon Sep 17 00:00:00 2001
-From: Dmitry Torokhov <dtor@vmware.com>
-Date: Mon, 7 Feb 2011 13:47:20 -0800
-Subject: [PATCH] module: deal with alignment issues in built-in module parameters
+This is a multi-part message in MIME format.
+--------------040003020104020808080608
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-As DaveM said, we can't reliably put structures into independent
-objects, put them into a special section, and then expect array
-access over them (via the section boundaries) after linking the
-objects together to just "work" due to variable alignment choices
-in different situations. The only solution that seems to work
-reliably is to make an array of plain pointers to the objects in
-question and put those pointers in the special section.
+Thorsten Glaser wrote:
+> Finn Thain dixit:
+>
+>   
+>> The introduction of the SLUB allocator was 2.6.22, but I can't help you 
+>> bisect because I don't recall that it worked ever (?)
+>>     
+>
+> It _appears_ to work well with 2.6.32 Debian though...
+>   
+It does indeed. slabinfo -v (run from an init=/bin/sh shell) does not 
+crash, nor does it report anything fishy. This kernel even survives 
+running e2fsck.
 
-Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
----
+Output of slabinfo -l and slabinfo -T attached for both, FWIW.
 
-This is v2 of the patch, hopefully fixing all the issues that were
-presented in the original submission, namely:
+I'll bisect this if I've got a bit of time, unless someone else beats me 
+to it.
 
-- fix for kparam_[un]block_sysfs_write() breakage;
-- convert non-built-in module parameter case to expect array of
-  pointers to struct kernel_param, not array of the structures
-  themselves.
+Cheers,
 
-Thanks,
+  Michael
+> [    0.000000] Initializing cgroup subsys cpuset
+> [    0.000000] Initializing cgroup subsys cpu
+> [    0.000000] Linux version 2.6.32-5+m68k.5-atari (Debian 2.6.32-30+m68k.5) (tg@mirbsd.de) (gcc version 4.4.5 (Debian 4.4.5-10) ) #1 Sun Jan 30 10:25:16 UTC 2011
+> [    0.000000] console [debug0] enabled
+> [    0.000000] Atari hardware found: VIDEL STDMA-SCSI ST_MFP YM2149 PCM CODEC DSP56K ANALOG_JOY BLITTER IDE TT_CLK FDC_SPEED
+> [    0.000000] NatFeats found (ARAnyM, 1.0)
+> [    0.000000] On node 0 totalpages: 3584
+> [    0.000000] free_area_init_node: node 0, pgdat 003100f4, node_mem_map 00440000
+> [    0.000000]   DMA zone: 32 pages used for memmap
+> [    0.000000]   DMA zone: 0 pages reserved
+> [    0.000000]   DMA zone: 3552 pages, LIFO batch:0
+> [    0.000000] On node 1 totalpages: 196608
+> [    0.000000] free_area_init_node: node 1, pgdat 00310aec, node_mem_map 00464090
+> [    0.000000]   DMA zone: 1728 pages used for memmap
+> [    0.000000]   DMA zone: 0 pages reserved
+> [    0.000000]   DMA zone: 194880 pages, LIFO batch:31
+> [    0.000000] Built 2 zonelists in Zone order, mobility grouping on.  Total pages: 198432
+> [    0.000000] Kernel command line: root=/dev/hda1 console=tty debug=par BOOT_IMAGE=vmlinux
+> [    0.000000] PID hash table entries: 4096 (order: 2, 16384 bytes)
+> [    0.000000] Dentry cache hash table entries: 131072 (order: 7, 524288 bytes)
+> [    0.000000] Inode-cache hash table entries: 65536 (order: 6, 262144 bytes)
+> [    0.000000] Memory: 787440k/787568k available (2376k kernel code, 10752k data, 96k init)
+> [    0.000000] SLUB: Genslabs=12, HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
+> [    0.000000] Hierarchical RCU implementation.
+> [    0.000000] Console: colour dummy device 80x25
+> [    0.000000] console [tty0] enabled
+> [    0.040000] Calibrating delay loop... 92.97 BogoMIPS (lpj=464896)
+> [    0.250000] Security Framework initialized
+> [    0.250000] SELinux:  Disabled at boot.
+> [    0.250000] Mount-cache hash table entries: 512
+> [    0.250000] Initializing cgroup subsys ns
+> [    0.250000] Initializing cgroup subsys cpuacct
+> [    0.250000] Initializing cgroup subsys devices
+> [    0.260000] Initializing cgroup subsys freezer
+> [    0.260000] devtmpfs: initialized
+> [    0.260000] regulator: core version 0.5
+> [    0.270000] NET: Registered protocol family 16
+> [    0.280000] bio: create slab <bio-0> at 0
+> [    0.280000] SCSI subsystem initialized
+> [    0.290000] NET: Registered protocol family 2
+> [    0.290000] IP route cache hash table entries: 32768 (order: 5, 131072 bytes)
+> [    0.300000] TCP established hash table entries: 131072 (order: 8, 1048576 bytes)
+> [    0.330000] TCP bind hash table entries: 65536 (order: 6, 262144 bytes)
+> [    0.340000] TCP: Hash tables configured (established 131072 bind 65536)
+> [    0.340000] TCP reno registered
+> [    0.340000] NET: Registered protocol family 1
+> [    0.350000] nfeth API 5
+> [    0.350000] eth0: nfeth addr:192.168.0.1 (192.168.0.2) HWaddr:52:54:00:22:00:02
+> [    0.350000] nfhd8: found device with 20971440 blocks (512 bytes)
+> [    0.360000]  nfhd8: AHDI p1 p2
+> [    0.360000] audit: initializing netlink socket (disabled)
+> [    0.360000] type=2000 audit(1293993493.360:1): initialized
+> [    0.420000] VFS: Disk quotas dquot_6.5.2
+> [    0.420000] Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+> [    0.430000] msgmni has been set to 1538
+> [    0.440000] alg: No test for stdrng (krng)
+> [    0.440000] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 252)
+> [    0.440000] io scheduler noop registered
+> [    0.440000] io scheduler anticipatory registered
+> [    0.440000] io scheduler deadline registered
+> [    0.450000] io scheduler cfq registered (default)
+> [    0.450000] atafb_init: start
+> [    0.450000] atafb_init: initializing Falcon hw
+> [    0.450000] atafb: screen_base 00b27000 real_screen_base 00b27000 screen_len 307200
+> [    0.450000] Determined 640x480, depth 4
+> [    0.450000]    virtual 640x960
+> [    0.470000] Console: switching to colour frame buffer device 80x30
+> [    0.480000] fb0: frame buffer device, using 300K of video memory
+> [    0.530000] Non-volatile memory driver v1.3
+> [    0.530000] Atari floppy driver: max. HD, track buffering
+> [    0.540000] Probing floppy drive(s):
+> [    0.540000] fd0
+> [    0.590000] brd: module loaded
+> [    0.610000] Uniform Multi-Platform E-IDE driver
+> [    0.630000] ide: Falcon IDE controller
+> [    0.650000] Probing IDE interface ide0...
+> [    0.970000] hda: Master, ATA DISK drive
+> [    2.060000] ide0 at 0xfff00000 on irq 15 (serialized)
+> [    2.080000] ide-gd driver 1.18
+> [    2.090000] hda: max request size: 128KiB
+> [    2.110000] hda: 20971440 sectors (10737 MB) w/256KiB Cache, CHS=20805/16/63
+> [    2.140000]  hda: AHDI hda1 hda2
+> [    2.170000] ide-cd driver 5.00
+> [    2.200000] scsi0: options CAN_QUEUE=8 CMD_PER_LUN=1 SCAT-GAT=0 TAGGED-QUEUING=no HOSTID=7 generic options AUTOSENSE REAL DMA SCSI-2 TAGGED QUEUING generic release=7
+> [    2.250000] scsi0 : Atari native SCSI
+> [    2.270000] mice: PS/2 mouse device common for all mice
+> [    2.540000] input: Atari Keyboard as /devices/virtual/input/input0
+> [    2.550000] blk_queue_max_hw_segments: set to minimum 1
+> [    2.820000] blk_queue_max_hw_segments: set to minimum 1
+> [    3.090000] blk_queue_max_hw_segments: set to minimum 1
+> [    3.110000] rtc-generic rtc-generic: rtc core: registered rtc-generic as rtc0
+> [    3.130000] TCP cubic registered
+> [    3.150000] NET: Registered protocol family 17
+> [    3.170000] NET: Registered protocol family 15
+> [    3.190000] registered taskstats version 1
+> [    3.200000] scsi: waiting for bus probes to complete ...
+> [    3.480000] blk_queue_max_hw_segments: set to minimum 1
+> [    3.740000] blk_queue_max_hw_segments: set to minimum 1
+> [    4.000000] blk_queue_max_hw_segments: set to minimum 1
+> [    4.260000] blk_queue_max_hw_segments: set to minimum 1
+> [    4.570000] rtc-generic rtc-generic: setting system clock to 2011-02-02 18:38:18 UTC (1296671898)
+> [    4.650000] kjournald starting.  Commit interval 5 seconds
+> [    4.670000] EXT3-fs: mounted filesystem with ordered data mode.
+> [    4.690000] VFS: Mounted root (ext3 filesystem) readonly on device 3:1.
+> [  195.310000] Adding 1989616k swap on /dev/hda2.  Priority:-1 extents:1 across:1989616k
+> [  196.240000] EXT3 FS on hda1, internal journal
+> [  214.350000] NET: Registered protocol family 10
+> [  214.390000] lo: Disabled Privacy Extensions
+> [  225.290000] eth0: no IPv6 routers present
+>
+> bye,
+> //mirabilos
+>
+> PS: I put up a new /var/cache/pbuilder/base.cow as ustar.xz on
+>     https://wiki.debian.org/M68k/Cowbuilder (and got creative),
+>     for those who want to toy with Debian.
+>   
 
-Dmitry
 
+--------------040003020104020808080608
+Content-Type: text/plain;
+ name="slabinfo-T-2.6.37"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="slabinfo-T-2.6.37"
 
- include/linux/module.h      |    2 +-
- include/linux/moduleparam.h |   24 ++++++++++++----------
- init/main.c                 |    2 +-
- kernel/module.c             |    2 +-
- kernel/params.c             |   45 +++++++++++++++++++++++-------------------
- 5 files changed, 41 insertions(+), 34 deletions(-)
+U2xhYmNhY2hlIFRvdGFscwotLS0tLS0tLS0tLS0tLS0tClNsYWJjYWNoZXMgOiAxMzMgICAg
+ICBBbGlhc2VzICA6ICAgMC0+MCAgIEFjdGl2ZTogIDY1Ck1lbW9yeSB1c2VkOiAgIDMuN00g
+ICAjIExvc3MgICA6IDkzMy41SyAgIE1SYXRpbzogICAgMzMlCiMgT2JqZWN0cyAgOiAgMTgu
+MEsgICAjIFBhcnRPYmo6ICAgIDMyNSAgIE9SYXRpbzogICAgIDElCgpQZXIgQ2FjaGUgICAg
+QXZlcmFnZSAgICAgICAgIE1pbiAgICAgICAgIE1heCAgICAgICBUb3RhbAotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KI09iamVj
+dHMgICAgICAgICAyNzggICAgICAgICAgIDMgICAgICAgIDYuMUsgICAgICAgMTguMEsKI1Ns
+YWJzICAgICAgICAgICAgIDkgICAgICAgICAgIDEgICAgICAgICAxMzUgICAgICAgICA2MzAK
+I1BhcnRTbGFiICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgICAgIDYgICAgICAgICAg
+MTkKJVBhcnRTbGFiICAgICAgICAgNSUgICAgICAgICAgMCUgICAgICAgICA2NiUgICAgICAg
+ICAgMyUKUGFydE9ianMgICAgICAgICAgIDEgICAgICAgICAgIDAgICAgICAgICAgNjUgICAg
+ICAgICAzMjUKJSBQYXJ0T2JqICAgICAgICAgNCUgICAgICAgICAgMCUgICAgICAgICA1MCUg
+ICAgICAgICAgMSUKTWVtb3J5ICAgICAgICAgNTcuM0sgICAgICAgIDQuMEsgICAgICAgIDEu
+ME0gICAgICAgIDMuN00KVXNlZCAgICAgICAgICAgNDIuOUsgICAgICAgIDEuMEsgICAgICA4
+NjIuMksgICAgICAgIDIuN00KTG9zcyAgICAgICAgICAgMTQuM0sgICAgICAgICAzNTIgICAg
+ICAyNjMuM0sgICAgICA5MzMuNUsKClBlciBPYmplY3QgICBBdmVyYWdlICAgICAgICAgTWlu
+ICAgICAgICAgTWF4Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpNZW1vcnkgICAgICAgICAgIDE5OCAgICAgICAgICA2MCAgICAgICAgOC4ySwpVc2Vy
+ICAgICAgICAgICAgIDE1NCAgICAgICAgICAxNiAgICAgICAgOC4xSwpMb3NzICAgICAgICAg
+ICAgICA0NCAgICAgICAgICA0MiAgICAgICAgICA1Ngo=
+--------------040003020104020808080608
+Content-Type: text/plain;
+ name="slabinfo-T-2.6.32"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="slabinfo-T-2.6.32"
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index cb41837..c256380 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -292,7 +292,7 @@ struct module
- 	unsigned int num_syms;
- 
- 	/* Kernel parameters. */
--	struct kernel_param *kp;
-+	const struct kernel_param **kp;
- 	unsigned int num_kp;
- 
- 	/* GPL-only exported symbols. */
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 07b4195..f9de240 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -147,15 +147,17 @@ struct kparam_array
- 	BUILD_BUG_ON_ZERO((perm) < 0 || (perm) > 0777 || ((perm) & 2))	\
- 	+ BUILD_BUG_ON_ZERO(sizeof(""prefix) > MAX_PARAM_PREFIX_LEN);	\
- 	static const char __param_str_##name[] = prefix #name;		\
--	static struct kernel_param __moduleparam_const __param_##name	\
--	__used								\
--    __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
--	= { __param_str_##name, ops, perm, isbool ? KPARAM_ISBOOL : 0,	\
--	    { arg } }
-+	static const struct kernel_param __param_##name = {		\
-+	    __param_str_##name, ops, perm, isbool ? KPARAM_ISBOOL : 0,	\
-+	    { arg }							\
-+	};								\
-+	static const struct kernel_param				\
-+	__used __attribute__ ((__section__ ("__param")))		\
-+	* __moduleparam_const ___param_##name = &__param_##name
- 
- /* Obsolete - use module_param_cb() */
- #define module_param_call(name, set, get, arg, perm)			\
--	static struct kernel_param_ops __param_ops_##name =		\
-+	static const struct kernel_param_ops __param_ops_##name =	\
- 		 { (void *)set, (void *)get };				\
- 	__module_param_call(MODULE_PARAM_PREFIX,			\
- 			    name, &__param_ops_##name, arg,		\
-@@ -265,15 +267,15 @@ static inline void __kernel_param_unlock(void)
- /* Called on module insert or kernel boot */
- extern int parse_args(const char *name,
- 		      char *args,
--		      const struct kernel_param *params,
-+		      const struct kernel_param **params,
- 		      unsigned num,
- 		      int (*unknown)(char *param, char *val));
- 
- /* Called by module remove. */
- #ifdef CONFIG_SYSFS
--extern void destroy_params(const struct kernel_param *params, unsigned num);
-+extern void destroy_params(const struct kernel_param **params, unsigned num);
- #else
--static inline void destroy_params(const struct kernel_param *params,
-+static inline void destroy_params(const struct kernel_param **params,
- 				  unsigned num)
- {
- }
-@@ -391,13 +393,13 @@ struct module;
- 
- #if defined(CONFIG_SYSFS) && defined(CONFIG_MODULES)
- extern int module_param_sysfs_setup(struct module *mod,
--				    const struct kernel_param *kparam,
-+				    const struct kernel_param **kparam,
- 				    unsigned int num_params);
- 
- extern void module_param_sysfs_remove(struct module *mod);
- #else
- static inline int module_param_sysfs_setup(struct module *mod,
--			     const struct kernel_param *kparam,
-+			     const struct kernel_param **kparam,
- 			     unsigned int num_params)
- {
- 	return 0;
-diff --git a/init/main.c b/init/main.c
-index 33c37c3..3601586 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -544,7 +544,7 @@ static void __init mm_init(void)
- asmlinkage void __init start_kernel(void)
- {
- 	char * command_line;
--	extern const struct kernel_param __start___param[], __stop___param[];
-+	extern const struct kernel_param *__start___param[], *__stop___param[];
- 
- 	smp_setup_processor_id();
- 
-diff --git a/kernel/module.c b/kernel/module.c
-index efa290e..7c6c3bf 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1470,7 +1470,7 @@ out:
- 
- static int mod_sysfs_setup(struct module *mod,
- 			   const struct load_info *info,
--			   struct kernel_param *kparam,
-+			   const struct kernel_param **kparam,
- 			   unsigned int num_params)
- {
- 	int err;
-diff --git a/kernel/params.c b/kernel/params.c
-index 09a08cb..4f2eb43 100644
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -83,9 +83,9 @@ static inline int parameq(const char *input, const char *paramname)
- 	return 0;
- }
- 
--static int parse_one(char *param,
-+static int parse_one(char *name,
- 		     char *val,
--		     const struct kernel_param *params,
-+		     const struct kernel_param **params,
- 		     unsigned num_params,
- 		     int (*handle_unknown)(char *param, char *val))
- {
-@@ -94,14 +94,16 @@ static int parse_one(char *param,
- 
- 	/* Find parameter */
- 	for (i = 0; i < num_params; i++) {
--		if (parameq(param, params[i].name)) {
-+		const struct kernel_param *param = params[i];
-+
-+		if (parameq(name, param->name)) {
- 			/* Noone handled NULL, so do it here. */
--			if (!val && params[i].ops->set != param_set_bool)
-+			if (!val && param->ops->set != param_set_bool)
- 				return -EINVAL;
- 			DEBUGP("They are equal!  Calling %p\n",
--			       params[i].ops->set);
-+			       param->ops->set);
- 			mutex_lock(&param_lock);
--			err = params[i].ops->set(val, &params[i]);
-+			err = param->ops->set(val, param);
- 			mutex_unlock(&param_lock);
- 			return err;
- 		}
-@@ -109,7 +111,7 @@ static int parse_one(char *param,
- 
- 	if (handle_unknown) {
- 		DEBUGP("Unknown argument: calling %p\n", handle_unknown);
--		return handle_unknown(param, val);
-+		return handle_unknown(name, val);
- 	}
- 
- 	DEBUGP("Unknown argument `%s'\n", param);
-@@ -171,7 +173,7 @@ static char *next_arg(char *args, char **param, char **val)
- /* Args looks like "foo=bar,bar2 baz=fuz wiz". */
- int parse_args(const char *name,
- 	       char *args,
--	       const struct kernel_param *params,
-+	       const struct kernel_param **params,
- 	       unsigned num,
- 	       int (*unknown)(char *param, char *val))
- {
-@@ -190,8 +192,9 @@ int parse_args(const char *name,
- 		irq_was_disabled = irqs_disabled();
- 		ret = parse_one(param, val, params, num, unknown);
- 		if (irq_was_disabled && !irqs_disabled()) {
--			printk(KERN_WARNING "parse_args(): option '%s' enabled "
--					"irq's!\n", param);
-+			printk(KERN_WARNING
-+				"parse_args(): option '%s' enabled irq's!\n",
-+				param);
- 		}
- 		switch (ret) {
- 		case -ENOENT:
-@@ -498,7 +501,8 @@ EXPORT_SYMBOL(param_ops_string);
- #define to_module_attr(n) container_of(n, struct module_attribute, attr)
- #define to_module_kobject(n) container_of(n, struct module_kobject, kobj)
- 
--extern struct kernel_param __start___param[], __stop___param[];
-+extern const struct kernel_param *__start___param[];
-+extern const struct kernel_param *__stop___param[];
- 
- struct param_attribute
- {
-@@ -667,16 +671,16 @@ static void free_module_param_attrs(struct module_kobject *mk)
-  * /sys/module/[mod->name]/parameters/
-  */
- int module_param_sysfs_setup(struct module *mod,
--			     const struct kernel_param *kparam,
-+			     const struct kernel_param **kparam,
- 			     unsigned int num_params)
- {
- 	int i, err;
- 	bool params = false;
- 
- 	for (i = 0; i < num_params; i++) {
--		if (kparam[i].perm == 0)
-+		if (kparam[i]->perm == 0)
- 			continue;
--		err = add_sysfs_param(&mod->mkobj, &kparam[i], kparam[i].name);
-+		err = add_sysfs_param(&mod->mkobj, kparam[i], kparam[i]->name);
- 		if (err)
- 			return err;
- 		params = true;
-@@ -710,13 +714,13 @@ void module_param_sysfs_remove(struct module *mod)
- }
- #endif
- 
--void destroy_params(const struct kernel_param *params, unsigned num)
-+void destroy_params(const struct kernel_param **params, unsigned num)
- {
- 	unsigned int i;
- 
- 	for (i = 0; i < num; i++)
--		if (params[i].ops->free)
--			params[i].ops->free(params[i].arg);
-+		if (params[i]->ops->free)
-+			params[i]->ops->free(params[i]->arg);
- }
- 
- static struct module_kobject * __init locate_module_kobject(const char *name)
-@@ -754,7 +758,7 @@ static struct module_kobject * __init locate_module_kobject(const char *name)
- }
- 
- static void __init kernel_add_sysfs_param(const char *name,
--					  struct kernel_param *kparam,
-+					  const struct kernel_param *kparam,
- 					  unsigned int name_skip)
- {
- 	struct module_kobject *mk;
-@@ -789,11 +793,12 @@ static void __init kernel_add_sysfs_param(const char *name,
-  */
- static void __init param_sysfs_builtin(void)
- {
--	struct kernel_param *kp;
-+	const struct kernel_param **p;
- 	unsigned int name_len;
- 	char modname[MODULE_NAME_LEN];
- 
--	for (kp = __start___param; kp < __stop___param; kp++) {
-+	for (p = __start___param; p < __stop___param; p++) {
-+		const struct kernel_param *kp = *p;
- 		char *dot;
- 
- 		if (kp->perm == 0)
--- 
-1.7.3.2
+U2xhYmNhY2hlIFRvdGFscwotLS0tLS0tLS0tLS0tLS0tClNsYWJjYWNoZXMgOiAxMTYgICAg
+ICBBbGlhc2VzICA6ICAgMC0+MCAgIEFjdGl2ZTogIDYxCk1lbW9yeSB1c2VkOiAgIDIuNE0g
+ICAjIExvc3MgICA6IDY3Ni4wSyAgIE1SYXRpbzogICAgMzklCiMgT2JqZWN0cyAgOiAgMTMu
+MEsgICAjIFBhcnRPYmo6ICAgIDI1OSAgIE9SYXRpbzogICAgIDElCgpQZXIgQ2FjaGUgICAg
+QXZlcmFnZSAgICAgICAgIE1pbiAgICAgICAgIE1heCAgICAgICBUb3RhbAotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KI09iamVj
+dHMgICAgICAgICAyMTQgICAgICAgICAgIDMgICAgICAgIDUuM0sgICAgICAgMTMuMEsKI1Ns
+YWJzICAgICAgICAgICAgIDggICAgICAgICAgIDEgICAgICAgICAxMzAgICAgICAgICA0OTAK
+I1BhcnRTbGFiICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgICAgIDIgICAgICAgICAg
+IDgKJVBhcnRTbGFiICAgICAgICAgNCUgICAgICAgICAgMCUgICAgICAgICA1MCUgICAgICAg
+ICAgMSUKUGFydE9ianMgICAgICAgICAgIDEgICAgICAgICAgIDAgICAgICAgICAgOTkgICAg
+ICAgICAyNTkKJSBQYXJ0T2JqICAgICAgICAgMyUgICAgICAgICAgMCUgICAgICAgICA0OSUg
+ICAgICAgICAgMSUKTWVtb3J5ICAgICAgICAgMzkuNEsgICAgICAgIDQuMEsgICAgICA1MzIu
+NEsgICAgICAgIDIuNE0KVXNlZCAgICAgICAgICAgMjguNEsgICAgICAgICA2MjQgICAgICA0
+NDIuN0sgICAgICAgIDEuN00KTG9zcyAgICAgICAgICAgMTEuMEsgICAgICAgICA1MTIgICAg
+ICAyMzIuOUsgICAgICA2NzYuMEsKClBlciBPYmplY3QgICBBdmVyYWdlICAgICAgICAgTWlu
+ICAgICAgICAgTWF4Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpNZW1vcnkgICAgICAgICAgIDE3NiAgICAgICAgICA1MiAgICAgICAgOC4ySwpVc2Vy
+ICAgICAgICAgICAgIDEzMiAgICAgICAgICAgOCAgICAgICAgOC4xSwpMb3NzICAgICAgICAg
+ICAgICA0NCAgICAgICAgICA0MiAgICAgICAgICA1Ngo=
+--------------040003020104020808080608
+Content-Type: text/plain;
+ name="slabinfo-l-2.6.37"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="slabinfo-l-2.6.37"
+
+TmFtZSAgICAgICAgICAgICAgICAgICBPYmplY3RzIE9ianNpemUgICAgU3BhY2UgU2xhYnMv
+UGFydC9DcHUgIE8vUyBPICVGciAlRWYgRmxnCmFub25fdm1hICAgICAgICAgICAgICAgICAg
+ICA2OCAgICAgIDE2ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgNjggMCAgIDAgIDI2IFBa
+RlUKYW5vbl92bWFfY2hhaW4gICAgICAgICAgICAgIDc0ICAgICAgMjQgICAgIDguMUsgICAg
+ICAgICAgMi8xLzAgICA2MCAwICA1MCAgMjEgUFpGVQpiZGV2X2NhY2hlICAgICAgICAgICAg
+ICAgICAgMTcgICAgIDQwOCAgICAgOC4xSyAgICAgICAgICAxLzAvMCAgIDE3IDEgICAwICA4
+NCBBUGFaRlUKYmlvLTAgICAgICAgICAgICAgICAgICAgICAgIDIzICAgICAxMjQgICAgIDQu
+MEsgICAgICAgICAgMS8wLzAgICAyMyAwICAgMCAgNjkgQVBaRlUKYmlvdmVjLTE2ICAgICAg
+ICAgICAgICAgICAgIDE3ICAgICAxOTIgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAxNyAw
+ICAgMCAgNzkgQVBaRlUKYmlvdmVjLTI1NiAgICAgICAgICAgICAgICAgIDEwICAgIDMwNzIg
+ICAgMzIuN0sgICAgICAgICAgMS8wLzAgICAxMCAzICAgMCAgOTMgQVBaRlUKYmlvdmVjLTY0
+ICAgICAgICAgICAgICAgICAgIDEwICAgICA3NjggICAgIDguMUsgICAgICAgICAgMS8wLzAg
+ICAxMCAxICAgMCAgOTMgQVBaRlUKYmlwLTI1NiAgICAgICAgICAgICAgICAgICAgIDEwICAg
+IDMxMTggICAgMzIuN0sgICAgICAgICAgMS8wLzAgICAxMCAzICAgMCAgOTUgQVBaRlUKYmxr
+ZGV2X2lvYyAgICAgICAgICAgICAgICAgIDQ4ICAgICAgNDIgICAgIDQuMEsgICAgICAgICAg
+MS8wLzAgICA0OCAwICAgMCAgNDkgUFpGVQpibGtkZXZfcXVldWUgICAgICAgICAgICAgICAg
+MjQgICAgIDk2MCAgICAyNC41SyAgICAgICAgICAzLzAvMCAgICA4IDEgICAwICA5MyBQWkZV
+CmJsa2Rldl9yZXF1ZXN0cyAgICAgICAgICAgICAzMCAgICAgMjIwICAgICA4LjFLICAgICAg
+ICAgIDIvMC8wICAgMTUgMCAgIDAgIDgwIFBaRlUKYnVmZmVyX2hlYWQgICAgICAgICAgICAg
+ICAgIDgwICAgICAgNTYgICAgIDguMUsgICAgICAgICAgMi8wLzAgICA0MCAwICAgMCAgNTQg
+UGFaRlUKY2ZxX2lvX2NvbnRleHQgICAgICAgICAgICAgIDM3ICAgICAgNjQgICAgIDQuMEsg
+ICAgICAgICAgMS8wLzAgICAzNyAwICAgMCAgNTcgUFpGVQpjZnFfcXVldWUgICAgICAgICAg
+ICAgICAgICAgMjAgICAgIDE1MiAgICAgNC4wSyAgICAgICAgICAxLzAvMCAgIDIwIDAgICAw
+ICA3NCBQWkZVCmNyZWRfamFyICAgICAgICAgICAgICAgICAgICA0OSAgICAgMTA2ICAgICA4
+LjFLICAgICAgICAgIDIvMS8wICAgMjUgMCAgNTAgIDYzIEFQWkZVCmRlbnRyeSAgICAgICAg
+ICAgICAgICAgICAgMzAzMiAgICAgMTI4ICAgNTUyLjlLICAgICAgICAxMzUvNi8wICAgMjMg
+MCAgIDQgIDcwIFBhWkZVCmV4dDJfaW5vZGVfY2FjaGUgICAgICAgICAgIDk1MCAgICAgNDI4
+ICAgNDU4LjdLICAgICAgICAgNTYvMi8wICAgMTcgMSAgIDMgIDg4IFBhWkZVCmZpbGVfbG9j
+a19jYWNoZSAgICAgICAgICAgICAzMCAgICAgIDk0ICAgICA0LjBLICAgICAgICAgIDEvMC8w
+ICAgMzAgMCAgIDAgIDY4IFBaRlUKZmlsZXNfY2FjaGUgICAgICAgICAgICAgICAgIDE4ICAg
+ICAxNzYgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAxOCAwICAgMCAgNzcgQVBaRlUKZmls
+cCAgICAgICAgICAgICAgICAgICAgICAgIDM4ICAgICAxMjAgICAgIDguMUsgICAgICAgICAg
+Mi8xLzAgICAyMyAwICA1MCAgNTUgQVBaRlUKZnNfY2FjaGUgICAgICAgICAgICAgICAgICAg
+IDUxICAgICAgMjggICAgIDQuMEsgICAgICAgICAgMS8wLzAgICA1MSAwICAgMCAgMzQgQVBa
+RlUKZnNub3RpZnlfZXZlbnQgICAgICAgICAgICAgIDM5ICAgICAgNjAgICAgIDQuMEsgICAg
+ICAgICAgMS8wLzAgICAzOSAwICAgMCAgNTcgUFpGVQppZHJfbGF5ZXJfY2FjaGUgICAgICAg
+ICAgICAxNDYgICAgIDE0OCAgICAyOC42SyAgICAgICAgICA3LzEvMCAgIDIxIDAgIDE0ICA3
+NSBQWkZVCmlub2RlX2NhY2hlICAgICAgICAgICAgICAgMjg3NCAgICAgMzAwICAgICAxLjBN
+ICAgICAgICAxMjUvMS8wICAgMjMgMSAgIDAgIDg0IFBhWkZVCmttYWxsb2MtMTAyNCAgICAg
+ICAgICAgICAgICAzMCAgICAxMDI0ICAgIDMyLjdLICAgICAgICAgIDIvMC8wICAgMTUgMiAg
+IDAgIDkzIFBaRlUKa21hbGxvYy0xMjggICAgICAgICAgICAgICAgIDY5ICAgICAxMjggICAg
+MTIuMksgICAgICAgICAgMy8wLzAgICAyMyAwICAgMCAgNzEgUFpGVQprbWFsbG9jLTE2ICAg
+ICAgICAgICAgICAgIDE3MjUgICAgICAxNiAgIDExMC41SyAgICAgICAgIDI3LzEvMCAgIDY0
+IDAgICAzICAyNCBQWkZVCmttYWxsb2MtMTkyICAgICAgICAgICAgICAgIDI3MiAgICAgMTky
+ICAgIDY1LjVLICAgICAgICAgMTYvMC8wICAgMTcgMCAgIDAgIDc5IFBaRlUKa21hbGxvYy0y
+MDQ4ICAgICAgICAgICAgICAgIDE1ICAgIDIwNDggICAgMzIuN0sgICAgICAgICAgMS8wLzAg
+ICAxNSAzICAgMCAgOTMgUFpGVQprbWFsbG9jLTI1NiAgICAgICAgICAgICAgICAgMzkgICAg
+IDI1NiAgICAxMi4ySyAgICAgICAgICAzLzAvMCAgIDEzIDAgICAwICA4MSBQWkZVCmttYWxs
+b2MtMzIgICAgICAgICAgICAgICAgIDI1NSAgICAgIDMyICAgIDIwLjRLICAgICAgICAgIDUv
+MC8wICAgNTEgMCAgIDAgIDM5IFBaRlUKa21hbGxvYy00MDk2ICAgICAgICAgICAgICAgICA3
+ICAgIDQwOTYgICAgMzIuN0sgICAgICAgICAgMS8wLzAgICAgNyAzICAgMCAgODcgUFpGVQpr
+bWFsbG9jLTUxMiAgICAgICAgICAgICAgICAgOTggICAgIDUxMiAgICA1Ny4zSyAgICAgICAg
+ICA3LzAvMCAgIDE0IDEgICAwICA4NyBQWkZVCmttYWxsb2MtNjQgICAgICAgICAgICAgICAg
+IDM5NiAgICAgIDY0ICAgIDQ1LjBLICAgICAgICAgMTEvMC8wICAgMzYgMCAgIDAgIDU2IFBa
+RlUKa21hbGxvYy04MTkyICAgICAgICAgICAgICAgICAzICAgIDgxOTIgICAgMzIuN0sgICAg
+ICAgICAgMS8wLzAgICAgMyAzICAgMCAgNzUgUFpGVQprbWFsbG9jLTk2ICAgICAgICAgICAg
+ICAgICAzNjQgICAgICA5NiAgICA1My4ySyAgICAgICAgIDEzLzAvMCAgIDI4IDAgICAwICA2
+NSBQWkZVCmttZW1fY2FjaGUgICAgICAgICAgICAgICAgICA0NiAgICAgMTM0ICAgICA4LjFL
+ICAgICAgICAgIDIvMC8wICAgMjMgMCAgIDAgIDc1ICpBUFpGVQprbWVtX2NhY2hlX25vZGUg
+ICAgICAgICAgICAxNTMgICAgICAyOCAgICAxMi4ySyAgICAgICAgICAzLzAvMCAgIDUxIDAg
+ICAwICAzNCAqQVBaRlUKbW1fc3RydWN0ICAgICAgICAgICAgICAgICAgICA5ICAgICAzNzYg
+ICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAgOSAwICAgMCAgODIgQVBaRlUKbW50X2NhY2hl
+ICAgICAgICAgICAgICAgICAgIDIzICAgICAxMzIgICAgIDQuMEsgICAgICAgICAgMS8wLzAg
+ICAyMyAwICAgMCAgNzQgQVBaRlUKbXF1ZXVlX2lub2RlX2NhY2hlICAgICAgICAgICA4ICAg
+ICA0NjggICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAgOCAwICAgMCAgOTEgQVBaRlUKbmFt
+ZXNfY2FjaGUgICAgICAgICAgICAgICAgICA3ICAgIDQwOTYgICAgMzIuN0sgICAgICAgICAg
+MS8wLzAgICAgNyAzICAgMCAgODcgQVBaRlUKcGlkICAgICAgICAgICAgICAgICAgICAgICAg
+IDQyICAgICAgNDQgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICA0MiAwICAgMCAgNDUgQVBa
+RlUKcHJvY19pbm9kZV9jYWNoZSAgICAgICAgICAgIDExICAgICAzMjQgICAgIDQuMEsgICAg
+ICAgICAgMS8wLzAgICAxMSAwICAgMCAgODcgUGFaRlUKcmFkaXhfdHJlZV9ub2RlICAgICAg
+ICAgICAgIDYwICAgICAyOTYgICAgMjAuNEsgICAgICAgICAgNS8wLzAgICAxMiAwICAgMCAg
+ODYgUGFaRlUKUkFXICAgICAgICAgICAgICAgICAgICAgICAgIDE1ICAgICA0OTYgICAgIDgu
+MUsgICAgICAgICAgMS8wLzAgICAxNSAxICAgMCAgOTAgQVBaRlUKc2NzaV9jbWRfY2FjaGUg
+ICAgICAgICAgICAgIDIxICAgICAxNDYgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAyMSAw
+ICAgMCAgNzQgQVBaRlUKc2NzaV9zZW5zZV9jYWNoZSAgICAgICAgICAgIDI4ICAgICAgOTYg
+ICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAyOCAwICAgMCAgNjUgQVBaRlUKc2RfZXh0X2Nk
+YiAgICAgICAgICAgICAgICAgIDUzICAgICAgMzIgICAgIDQuMEsgICAgICAgICAgMS8wLzAg
+ICA1MyAwICAgMCAgNDEgUFpGVQpzZ3Bvb2wtMTI4ICAgICAgICAgICAgICAgICAgMTUgICAg
+MjA0OCAgICAzMi43SyAgICAgICAgICAxLzAvMCAgIDE1IDMgICAwICA5MyBBUFpGVQpzZ3Bv
+b2wtMTYgICAgICAgICAgICAgICAgICAgMTMgICAgIDI1NiAgICAgNC4wSyAgICAgICAgICAx
+LzAvMCAgIDEzIDAgICAwICA4MSBBUFpGVQpzZ3Bvb2wtMzIgICAgICAgICAgICAgICAgICAg
+MTQgICAgIDUxMiAgICAgOC4xSyAgICAgICAgICAxLzAvMCAgIDE0IDEgICAwICA4NyBBUFpG
+VQpzZ3Bvb2wtNjQgICAgICAgICAgICAgICAgICAgMTUgICAgMTAyNCAgICAxNi4zSyAgICAg
+ICAgICAxLzAvMCAgIDE1IDIgICAwICA5MyBBUFpGVQpzZ3Bvb2wtOCAgICAgICAgICAgICAg
+ICAgICAgMjMgICAgIDEyOCAgICAgNC4wSyAgICAgICAgICAxLzAvMCAgIDIzIDAgICAwICA3
+MSBBUFpGVQpzaG1lbV9pbm9kZV9jYWNoZSAgICAgICAgICAxMzUgICAgIDM5MiAgICA2MS40
+SyAgICAgICAgIDE1LzAvMCAgICA5IDAgICAwICA4NiBQWkZVCnNpZ2hhbmRfY2FjaGUgICAg
+ICAgICAgICAgICAzNSAgICAxMjkyICAgIDQ5LjFLICAgICAgICAgIDMvMS8wICAgMTIgMiAg
+MzMgIDkyIEFQWkZVCnNpZ25hbF9jYWNoZSAgICAgICAgICAgICAgICAzNSAgICAgNTg4ICAg
+IDI0LjVLICAgICAgICAgIDMvMS8wICAgMTIgMSAgMzMgIDgzIEFQWkZVCnNpZ3F1ZXVlICAg
+ICAgICAgICAgICAgICAgICAyMSAgICAgMTQ0ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAg
+MjEgMCAgIDAgIDczIFBaRlUKc2tidWZmX2hlYWRfY2FjaGUgICAgICAgICAgIDE4ICAgICAx
+NzYgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAxOCAwICAgMCAgNzcgQVBaRlUKc29ja19p
+bm9kZV9jYWNoZSAgICAgICAgICAgIDIwICAgICAzMjggICAgIDguMUsgICAgICAgICAgMi8w
+LzAgICAxMCAwICAgMCAgODAgQVBhWkZVCnN5c2ZzX2Rpcl9jYWNoZSAgICAgICAgICAgNjEx
+OCAgICAgIDQ2ICAgNTQ0LjdLICAgICAgICAxMzMvMC8wICAgNDYgMCAgIDAgIDUxIFBaRlUK
+dGFza19kZWxheV9pbmZvICAgICAgICAgICAgIDM1ICAgICAgNzIgICAgIDQuMEsgICAgICAg
+ICAgMS8wLzAgICAzNSAwICAgMCAgNjEgUFpGVQp0YXNrX3N0cnVjdCAgICAgICAgICAgICAg
+ICAgNDkgICAgMTIyMCAgICA2NS41SyAgICAgICAgICAyLzEvMCAgIDI1IDMgIDUwICA5MSBQ
+WkZVClVOSVggICAgICAgICAgICAgICAgICAgICAgICAxNyAgICAgNDE4ICAgICA4LjFLICAg
+ICAgICAgIDEvMC8wICAgMTcgMSAgIDAgIDg2IEFQWkZVCnZtX2FyZWFfc3RydWN0ICAgICAg
+ICAgICAgICA2MSAgICAgIDg4ICAgICA4LjFLICAgICAgICAgIDIvMS8wICAgMzEgMCAgNTAg
+IDY1IFBaRlUK
+--------------040003020104020808080608
+Content-Type: text/plain;
+ name="slabinfo-l-2.6.32"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="slabinfo-l-2.6.32"
+
+TmFtZSAgICAgICAgICAgICAgICAgICBPYmplY3RzIE9ianNpemUgICAgU3BhY2UgU2xhYnMv
+UGFydC9DcHUgIE8vUyBPICVGciAlRWYgRmxnCmFub25fdm1hICAgICAgICAgICAgICAgICAg
+ICA3OCAgICAgICA4ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgNzggMCAgIDAgIDE1IFBa
+RlUKYmRldl9jYWNoZSAgICAgICAgICAgICAgICAgIDE3ICAgICA0MTYgICAgIDguMUsgICAg
+ICAgICAgMS8wLzAgICAxNyAxICAgMCAgODYgQVBhWkZVCmJpby0wICAgICAgICAgICAgICAg
+ICAgICAgICAyMyAgICAgMTI0ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgMjMgMCAgIDAg
+IDY5IEFQWkZVCmJpb3ZlYy0xNiAgICAgICAgICAgICAgICAgICAxNyAgICAgMTkyICAgICA0
+LjBLICAgICAgICAgIDEvMC8wICAgMTcgMCAgIDAgIDc5IEFQWkZVCmJpb3ZlYy0yNTYgICAg
+ICAgICAgICAgICAgICAxMCAgICAzMDcyICAgIDMyLjdLICAgICAgICAgIDEvMC8wICAgMTAg
+MyAgIDAgIDkzIEFQWkZVCmJpb3ZlYy02NCAgICAgICAgICAgICAgICAgICAxMCAgICAgNzY4
+ICAgICA4LjFLICAgICAgICAgIDEvMC8wICAgMTAgMSAgIDAgIDkzIEFQWkZVCmJpcC0yNTYg
+ICAgICAgICAgICAgICAgICAgICAxMCAgICAzMTE4ICAgIDMyLjdLICAgICAgICAgIDEvMC8w
+ICAgMTAgMyAgIDAgIDk1IEFQWkZVCmJsa2Rldl9pb2MgICAgICAgICAgICAgICAgICA0NiAg
+ICAgIDQ0ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgNDYgMCAgIDAgIDQ5IFBaRlUKYmxr
+ZGV2X3F1ZXVlICAgICAgICAgICAgICAgIDI0ICAgIDEyNDggICAgMzIuN0sgICAgICAgICAg
+Mi8wLzAgICAxMiAyICAgMCAgOTEgUFpGVQpibGtkZXZfcmVxdWVzdHMgICAgICAgICAgICAg
+MjggICAgIDIwMCAgICAgOC4xSyAgICAgICAgICAyLzEvMCAgIDE2IDAgIDUwICA2OCBQWkZV
+CmJ1ZmZlcl9oZWFkICAgICAgICAgICAgICAgICA4MCAgICAgIDU2ICAgICA4LjFLICAgICAg
+ICAgIDIvMC8wICAgNDAgMCAgIDAgIDU0IFBhWkZVCmNmcV9pb19jb250ZXh0ICAgICAgICAg
+ICAgICAyOSAgICAgIDk2ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgMjkgMCAgIDAgIDY3
+IFBaRlUKY2ZxX3F1ZXVlICAgICAgICAgICAgICAgICAgIDI2ICAgICAxMDggICAgIDQuMEsg
+ICAgICAgICAgMS8wLzAgICAyNiAwICAgMCAgNjggUFpGVQpjcmVkX2phciAgICAgICAgICAg
+ICAgICAgICAgNDcgICAgIDEwNiAgICAgOC4xSyAgICAgICAgICAyLzEvMCAgIDI1IDAgIDUw
+ICA2MCBBUFpGVQpkZW50cnkgICAgICAgICAgICAgICAgICAgIDI3MzcgICAgIDEyOCAgIDQ4
+Ny40SyAgICAgICAgMTE5LzAvMCAgIDIzIDAgICAwICA3MSBQYVpGVQpleHQyX2lub2RlX2Nh
+Y2hlICAgICAgICAgICAgODAgICAgIDQ0MCAgICA0MC45SyAgICAgICAgIDEwLzAvMCAgICA4
+IDAgICAwICA4NSBQYVpGVQpmaWxlX2xvY2tfY2FjaGUgICAgICAgICAgICAgMzAgICAgICA5
+NCAgICAgNC4wSyAgICAgICAgICAxLzAvMCAgIDMwIDAgICAwICA2OCBQWkZVCmZpbGVzX2Nh
+Y2hlICAgICAgICAgICAgICAgICAxOCAgICAgMTc2ICAgICA0LjBLICAgICAgICAgIDEvMC8w
+ICAgMTggMCAgIDAgIDc3IEFQWkZVCmZpbHAgICAgICAgICAgICAgICAgICAgICAgICAzMyAg
+ICAgMTIwICAgICA4LjFLICAgICAgICAgIDIvMS8wICAgMjMgMCAgNTAgIDQ4IEFQWkZVCmZz
+X2NhY2hlICAgICAgICAgICAgICAgICAgICA1MSAgICAgIDI4ICAgICA0LjBLICAgICAgICAg
+IDEvMC8wICAgNTEgMCAgIDAgIDM0IEFQWkZVCmlkcl9sYXllcl9jYWNoZSAgICAgICAgICAg
+ICA4NCAgICAgMTQ4ICAgIDE2LjNLICAgICAgICAgIDQvMC8wICAgMjEgMCAgIDAgIDc1IFBa
+RlUKaW5vZGVfY2FjaGUgICAgICAgICAgICAgICAyNTA4ICAgICAzMTIgICA5MzMuOEsgICAg
+ICAgIDIyOC8wLzAgICAxMSAwICAgMCAgODMgUGFaRlUKa21hbGxvYy0xMDI0ICAgICAgICAg
+ICAgICAgIDMwICAgIDEwMjQgICAgMzIuN0sgICAgICAgICAgMi8wLzAgICAxNSAyICAgMCAg
+OTMgUFpGVQprbWFsbG9jLTEyOCAgICAgICAgICAgICAgICAgNjkgICAgIDEyOCAgICAxMi4y
+SyAgICAgICAgICAzLzAvMCAgIDIzIDAgICAwICA3MSBQWkZVCmttYWxsb2MtMTYgICAgICAg
+ICAgICAgICAgMTU5NiAgICAgIDE2ICAgMTAyLjRLICAgICAgICAgMjUvMS8wICAgNjQgMCAg
+IDQgIDI0IFBaRlUKa21hbGxvYy0xOTIgICAgICAgICAgICAgICAgMjU1ICAgICAxOTIgICAg
+NjEuNEsgICAgICAgICAxNS8wLzAgICAxNyAwICAgMCAgNzkgUFpGVQprbWFsbG9jLTIwNDgg
+ICAgICAgICAgICAgICAgMTUgICAgMjA0OCAgICAzMi43SyAgICAgICAgICAxLzAvMCAgIDE1
+IDMgICAwICA5MyBQWkZVCmttYWxsb2MtMjU2ICAgICAgICAgICAgICAgICA1MiAgICAgMjU2
+ICAgIDE2LjNLICAgICAgICAgIDQvMC8wICAgMTMgMCAgIDAgIDgxIFBaRlUKa21hbGxvYy0z
+MiAgICAgICAgICAgICAgICAgMjUyICAgICAgMzIgICAgMjAuNEsgICAgICAgICAgNS8yLzAg
+ICA1MSAwICA0MCAgMzkgUFpGVQprbWFsbG9jLTQwOTYgICAgICAgICAgICAgICAgMTQgICAg
+NDA5NiAgICA2NS41SyAgICAgICAgICAyLzAvMCAgICA3IDMgICAwICA4NyBQWkZVCmttYWxs
+b2MtNTEyICAgICAgICAgICAgICAgICA4NCAgICAgNTEyICAgIDQ5LjFLICAgICAgICAgIDYv
+MC8wICAgMTQgMSAgIDAgIDg3IFBaRlUKa21hbGxvYy02NCAgICAgICAgICAgICAgICAgMzk2
+ICAgICAgNjQgICAgNDUuMEsgICAgICAgICAxMS8wLzAgICAzNiAwICAgMCAgNTYgUFpGVQpr
+bWFsbG9jLTgxOTIgICAgICAgICAgICAgICAgIDMgICAgODE5MiAgICAzMi43SyAgICAgICAg
+ICAxLzAvMCAgICAzIDMgICAwICA3NSBQWkZVCmttYWxsb2MtOTYgICAgICAgICAgICAgICAg
+IDMzNCAgICAgIDk2ICAgIDQ5LjFLICAgICAgICAgMTIvMS8wICAgMjggMCAgIDggIDY1IFBa
+RlUKbW1fc3RydWN0ICAgICAgICAgICAgICAgICAgIDE5ICAgICAzNjggICAgIDguMUsgICAg
+ICAgICAgMS8wLzAgICAxOSAxICAgMCAgODUgQVBaRlUKbW50X2NhY2hlICAgICAgICAgICAg
+ICAgICAgIDIzICAgICAxMjQgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAyMyAwICAgMCAg
+NjkgQVBaRlUKbXF1ZXVlX2lub2RlX2NhY2hlICAgICAgICAgIDE1ICAgICA0ODAgICAgIDgu
+MUsgICAgICAgICAgMS8wLzAgICAxNSAxICAgMCAgODcgQVBaRlUKbmFtZXNfY2FjaGUgICAg
+ICAgICAgICAgICAgICA3ICAgIDQwOTYgICAgMzIuN0sgICAgICAgICAgMS8wLzAgICAgNyAz
+ICAgMCAgODcgQVBaRlUKcGlkICAgICAgICAgICAgICAgICAgICAgICAgIDQyICAgICAgNDQg
+ICAgIDQuMEsgICAgICAgICAgMS8wLzAgICA0MiAwICAgMCAgNDUgQVBaRlUKcHJvY19pbm9k
+ZV9jYWNoZSAgICAgICAgICAgIDIxICAgICAzMzYgICAgIDguMUsgICAgICAgICAgMS8wLzAg
+ICAyMSAxICAgMCAgODYgUGFaRlUKcmFkaXhfdHJlZV9ub2RlICAgICAgICAgICAgIDgwICAg
+ICAyODggICAgMjguNksgICAgICAgICAgNy8xLzAgICAxMiAwICAxNCAgODAgUGFaRlUKUkFX
+ICAgICAgICAgICAgICAgICAgICAgICAgIDE1ICAgICA0ODAgICAgIDguMUsgICAgICAgICAg
+MS8wLzAgICAxNSAxICAgMCAgODcgQVBaRlUKc2NzaV9jbWRfY2FjaGUgICAgICAgICAgICAg
+IDIxICAgICAxNDYgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAyMSAwICAgMCAgNzQgQVBa
+RlUKc2NzaV9zZW5zZV9jYWNoZSAgICAgICAgICAgIDI4ICAgICAgOTYgICAgIDQuMEsgICAg
+ICAgICAgMS8wLzAgICAyOCAwICAgMCAgNjUgQVBaRlUKc2RfZXh0X2NkYiAgICAgICAgICAg
+ICAgICAgIDUzICAgICAgMzIgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICA1MyAwICAgMCAg
+NDEgUFpGVQpzZ3Bvb2wtMTI4ICAgICAgICAgICAgICAgICAgMTUgICAgMjA0OCAgICAzMi43
+SyAgICAgICAgICAxLzAvMCAgIDE1IDMgICAwICA5MyBBUFpGVQpzZ3Bvb2wtMTYgICAgICAg
+ICAgICAgICAgICAgMTMgICAgIDI1NiAgICAgNC4wSyAgICAgICAgICAxLzAvMCAgIDEzIDAg
+ICAwICA4MSBBUFpGVQpzZ3Bvb2wtMzIgICAgICAgICAgICAgICAgICAgMTQgICAgIDUxMiAg
+ICAgOC4xSyAgICAgICAgICAxLzAvMCAgIDE0IDEgICAwICA4NyBBUFpGVQpzZ3Bvb2wtNjQg
+ICAgICAgICAgICAgICAgICAgMTUgICAgMTAyNCAgICAxNi4zSyAgICAgICAgICAxLzAvMCAg
+IDE1IDIgICAwICA5MyBBUFpGVQpzZ3Bvb2wtOCAgICAgICAgICAgICAgICAgICAgMjMgICAg
+IDEyOCAgICAgNC4wSyAgICAgICAgICAxLzAvMCAgIDIzIDAgICAwICA3MSBBUFpGVQpzaG1l
+bV9pbm9kZV9jYWNoZSAgICAgICAgICAxMzUgICAgIDQwNCAgICA2MS40SyAgICAgICAgIDE1
+LzAvMCAgICA5IDAgICAwICA4OCBQWkZVCnNpZ2hhbmRfY2FjaGUgICAgICAgICAgICAgICAy
+NCAgICAxMjkyICAgIDMyLjdLICAgICAgICAgIDIvMC8wICAgMTIgMiAgIDAgIDk0IEFQWkZV
+CnNpZ25hbF9jYWNoZSAgICAgICAgICAgICAgICAyNiAgICAgNTY4ICAgIDE2LjNLICAgICAg
+ICAgIDIvMC8wICAgMTMgMSAgIDAgIDkwIEFQWkZVCnNpZ3F1ZXVlICAgICAgICAgICAgICAg
+ICAgICAyMSAgICAgMTQ0ICAgICA0LjBLICAgICAgICAgIDEvMC8wICAgMjEgMCAgIDAgIDcz
+IFBaRlUKc2tidWZmX2hlYWRfY2FjaGUgICAgICAgICAgIDE4ICAgICAxNzAgICAgIDQuMEsg
+ICAgICAgICAgMS8wLzAgICAxOCAwICAgMCAgNzQgQVBaRlUKc29ja19pbm9kZV9jYWNoZSAg
+ICAgICAgICAgIDIwICAgICAzNDggICAgIDguMUsgICAgICAgICAgMi8wLzAgICAxMCAwICAg
+MCAgODQgQVBhWkZVCnN5c2ZzX2Rpcl9jYWNoZSAgICAgICAgICAgNTM3NiAgICAgIDQyICAg
+NDU4LjdLICAgICAgICAxMTIvMC8wICAgNDggMCAgIDAgIDQ5IFBaRlUKdGFza19kZWxheV9p
+bmZvICAgICAgICAgICAgIDM1ICAgICAgNzIgICAgIDQuMEsgICAgICAgICAgMS8wLzAgICAz
+NSAwICAgMCAgNjEgUFpGVQp0YXNrX3N0cnVjdCAgICAgICAgICAgICAgICAgMjQgICAgMTI3
+NiAgICAzMi43SyAgICAgICAgICAyLzAvMCAgIDEyIDIgICAwICA5MyBQWkZVClVOSVggICAg
+ICAgICAgICAgICAgICAgICAgICAgOSAgICAgMzk4ICAgICA0LjBLICAgICAgICAgIDEvMC8w
+ICAgIDkgMCAgIDAgIDg3IEFQWkZVCnZtX2FyZWFfc3RydWN0ICAgICAgICAgICAgICA2MiAg
+ICAgIDg4ICAgIDEyLjJLICAgICAgICAgIDMvMi8wICAgMzEgMCAgNjYgIDQ0IFBaRlUK
+--------------040003020104020808080608--
