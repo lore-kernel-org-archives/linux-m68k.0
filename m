@@ -1,40 +1,152 @@
-From: Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: [PATCH v2] module: deal with alignment issues in built-in module parameters
-Date: Mon, 14 Feb 2011 09:34:17 +1030
-Message-ID: <201102140934.17671.rusty@rustcorp.com.au>
-References: <1297123347-2170-1-git-send-email-dtor@vmware.com> <20110211220356.GA13504@dtor-ws.eng.vmware.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: remove arch specific non-optimized memcmp()
+Date: Mon, 14 Feb 2011 17:39:53 +1000
+Message-ID: <4D58DC49.5060800@snapgear.com>
+References: <201102070057.p170vUMO009007@goober.internal.moreton.com.au> <4D548FBC.2050902@snapgear.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ozlabs.org ([203.10.76.45]:52451 "EHLO ozlabs.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755433Ab1BNDwh (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 13 Feb 2011 22:52:37 -0500
-In-Reply-To: <20110211220356.GA13504@dtor-ws.eng.vmware.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:59958 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750740Ab1BNHmy convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 14 Feb 2011 02:42:54 -0500
+In-Reply-To: <4D548FBC.2050902@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dtor@vmware.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sat, 12 Feb 2011 08:33:56 am Dmitry Torokhov wrote:
-> >From 03f1332fc02af7af0d06ab409e3ec72107637845 Mon Sep 17 00:00:00 2001
-> From: Dmitry Torokhov <dtor@vmware.com>
-> Date: Mon, 7 Feb 2011 13:47:20 -0800
-> Subject: [PATCH] module: deal with alignment issues in built-in module parameters
-> 
-> As DaveM said, we can't reliably put structures into independent
-> objects, put them into a special section, and then expect array
-> access over them (via the section boundaries) after linking the
-> objects together to just "work" due to variable alignment choices
-> in different situations. The only solution that seems to work
-> reliably is to make an array of plain pointers to the objects in
-> question and put those pointers in the special section.
+Hi Geert,
 
-I've applied this, but won't put it to linux-next.  I'll let it stew for
-a bit longer unless someone actually reports a problem with the current
-code.
+> On Fri, Feb 11, 2011 at 02:24, Greg Ungerer <gerg@snapgear.com> wrote=
+:
+>> On 07/02/11 10:57, Greg Ungerer wrote:
+>>>
+>>> m68k: remove arch specific non-optimized memcmp()
+>>>
+>>> The m68k arch implements its own memcmp() function. It is not optim=
+ized
+>>> in any way (it is the most strait forward coding of memcmp you can =
+get).
+>>> Remove it and use the kernels standard memcmp() implementation.
+>>>
+>>> This also goes part of the way to fixing a regression caused by com=
+mit
+>>> ea61bc461d09e8d331a307916530aaae808c72a2 ("m68k/m68knommu: merge MM=
+U and
+>>> non-MMU string.h"), which breaks non-coldfire non-mmu builds (which=
+ is
+>>> the 68x328 and 68360 families). They currently have no memcmp() fun=
+ction
+>>> defined, since there is none in the m68knommu/lib functions.
+>>>
+>>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>>
+>> Does anyone have any comments on this?
+>
+> Sorry, haven't tried it yet.
+>
+> Shouldn't you also remove the "#define memcmp(d, s, n)"?
 
-Thanks,
-Rusty.
+I considered doing that. But leaving that in and going through
+__builtin_memcmp() gives the compiler a chance to optimize
+some simple calls to memcmp to inline instructions. In practice
+it might not matter much, and I don't mind at all leaving it out
+if you prefer.
+
+
+>> I would like to push to Linus very soon now (so in the current
+>> 2.6.38-rc). It seems like a clean fix on its own, but in particular
+>> it helps me fix the problems caused by commit
+>> ea61bc461d09e8d331a307916530aaae808c72a2
+>> ("m68k/m68knommu: merge MMU and non-MMU string.h"
+>>
+>> I have compile and run tested on m68knommu targets, and compile
+>> tested on m68k targets.
+>
+> If it compiles, it's good; if it boots, it's perfect ;-)
+
+Unfortunately I don't have any true 68k machines to run
+this on. I do have a lot of ColdFire boards though :-)
+
+Regards
+Greg
+
+
+
+>>> ---
+>>> =C2 arch/m68k/include/asm/string.h | =C2  =C2 4 +---
+>>> =C2 arch/m68k/lib/string.c =C2  =C2  =C2  =C2  | =C2  11 ----------=
+-
+>>> =C2 2 files changed, 1 insertions(+), 14 deletions(-)
+>>>
+>>> diff --git a/arch/m68k/include/asm/string.h
+>>> b/arch/m68k/include/asm/string.h
+>>> index 65b1312..ffc3c3f 100644
+>>> --- a/arch/m68k/include/asm/string.h
+>>> +++ b/arch/m68k/include/asm/string.h
+>>> @@ -102,11 +102,9 @@ static inline int strcmp(const char *cs, const=
+ char
+>>> *ct)
+>>>
+>>> =C2 #define __HAVE_ARCH_MEMMOVE
+>>> =C2 extern void *memmove(void *, const void *, __kernel_size_t);
+>>> +#endif /* CONFIG_COLDFIRE */
+>>>
+>>> -#define __HAVE_ARCH_MEMCMP
+>>> -extern int memcmp(const void *, const void *, __kernel_size_t);
+>>> =C2 #define memcmp(d, s, n) __builtin_memcmp(d, s, n)
+>>> -#endif /* CONFIG_COLDFIRE */
+>>>
+>>> =C2 #define __HAVE_ARCH_MEMSET
+>>> =C2 extern void *memset(void *, int, __kernel_size_t);
+>>> diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
+>>> index 4253f87..d399c5f 100644
+>>> --- a/arch/m68k/lib/string.c
+>>> +++ b/arch/m68k/lib/string.c
+>>> @@ -243,14 +243,3 @@ void *memmove(void *dest, const void *src, siz=
+e_t n)
+>>> =C2  =C2  =C2  =C2 return xdest;
+>>> =C2 }
+>>> =C2 EXPORT_SYMBOL(memmove);
+>>> -
+>>> -int memcmp(const void *cs, const void *ct, size_t count)
+>>> -{
+>>> - =C2  =C2  =C2  const unsigned char *su1, *su2;
+>>> -
+>>> - =C2  =C2  =C2  for (su1 =3D cs, su2 =3D ct; count> =C2 0; ++su1, =
+++su2, count--)
+>>> - =C2  =C2  =C2  =C2  =C2  =C2  =C2  if (*su1 !=3D *su2)
+>>> - =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  return *su=
+1< =C2 *su2 ? -1 : +1;
+>>> - =C2  =C2  =C2  return 0;
+>>> -}
+>>> -EXPORT_SYMBOL(memcmp);
+>
+> Gr{oetje,eeting}s,
+>
+> =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
+x-m68k.org
+>
+> In personal conversations with technical people, I call myself a hack=
+er. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+> =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2  =C2 =
+=C2  =C2 =C2  -- Linus Torvalds
+
+-----------------------------------------------------------------------=
+-
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
+m
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
+8
+8 Gardner Close                             FAX:         +61 7 3217 532=
+3
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
+m
