@@ -1,189 +1,108 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: build warnings
-Date: Thu, 17 Feb 2011 20:22:13 +1300
-Message-ID: <4D5CCCA5.1000106@gmail.com>
-References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de> <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de> <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com> <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com> <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org> <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com> <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org> <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com> <4D44F92C.2050707@gmail.com> <AANLkTimB1fpvMsSeTbRn5ZTU1NCpZpjrAXQ+xRShAsZN@mail.gmail.com> <4D461512.8080609@gmail.com> <alpine.LNX.2.00.1101311424100.6256@nippy.intranet> <Pine.BSM.4.64L.1102052339100.22476@herc.mirbsd.org> <4D575F50.1020601@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in module versions
+Date: Thu, 17 Feb 2011 13:43:02 +0100
+Message-ID: <AANLkTi=cMwbb2Pyv5KhGdfSuR3OwG_mpkFKNd+WrLc-_@mail.gmail.com>
+References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
+	<AANLkTi=pmWAvsp_3c4NgQYFw_ydfkOMgjDBDKgeFGf=E@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:42869 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751160Ab1BQHWZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Feb 2011 02:22:25 -0500
-Received: by iyj8 with SMTP id 8so2066187iyj.19
-        for <linux-m68k@vger.kernel.org>; Wed, 16 Feb 2011 23:22:24 -0800 (PST)
-In-Reply-To: <4D575F50.1020601@gmail.com>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:36757 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755212Ab1BQMnE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Feb 2011 07:43:04 -0500
+In-Reply-To: <AANLkTi=pmWAvsp_3c4NgQYFw_ydfkOMgjDBDKgeFGf=E@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org
+To: Dmitry Torokhov <dtor@vmware.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
 
-Michael Schmitz wrote:
-> Thorsten Glaser wrote:
->> Finn Thain dixit:
->>
->>  
->>> The introduction of the SLUB allocator was 2.6.22, but I can't help 
->>> you bisect because I don't recall that it worked ever (?)
->>>     
->>
->> It _appears_ to work well with 2.6.32 Debian though...
->>   
-> It does indeed. slabinfo -v (run from an init=/bin/sh shell) does not 
-> crash, nor does it report anything fishy. This kernel even survives 
-> running e2fsck.
->
-> Output of slabinfo -l and slabinfo -T attached for both, FWIW.
->
-> I'll bisect this if I've got a bit of time, unless someone else beats 
-> me to it.
-Result:
- 
-7340cc84141d5236c5dd003359ee921513cd9b84 is the first bad commit
-commit 7340cc84141d5236c5dd003359ee921513cd9b84
-Author: Christoph Lameter <cl@linux.com>
-Date:   Tue Sep 28 08:10:26 2010 -0500
-
-    slub: reduce differences between SMP and NUMA
-   
-    Reduce the #ifdefs and simplify bootstrap by making SMP and NUMA as 
-much alike
-    as possible. This means that there will be an additional indirection 
-to get to
-    the kmem_cache_node field under SMP.
-   
-    Acked-by: David Rientjes <rientjes@google.com>
-    Signed-off-by: Christoph Lameter <cl@linux.com>
-    Signed-off-by: Pekka Enberg <penberg@kernel.org>
-
-:040000 040000 689fb80a8015b41b68c41cfee356fe1bf1dd4f7b 
-d7521accc03ea626f42b87a47830ea838085cad8 M    include
-:040000 040000 d28f8440eee90f257bd7b522d4e688874b4449ae 
-8eb57f33c45989c68e64d16be5523cdecb29899b M    mm
-
-Diff in question - can anyone guess at what the problem may be?:
-
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index b33c0f2..a6c43ec 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -96,8 +96,11 @@ struct kmem_cache {
-      * Defragmentation by allocating from a remote node.
-      */
-     int remote_node_defrag_ratio;
--#endif
-     struct kmem_cache_node *node[MAX_NUMNODES];
-+#else
-+    /* Avoid an extra cache line for UP */
-+    struct kmem_cache_node local_node;
-+#endif
- };
- 
- /*
-diff --git a/mm/slub.c b/mm/slub.c
-index 064bda2..7e1fe66 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -233,7 +233,11 @@ int slab_is_available(void)
- 
- static inline struct kmem_cache_node *get_node(struct kmem_cache *s, 
-int node)
- {
-+#ifdef CONFIG_NUMA
-     return s->node[node];
-+#else
-+    return &s->local_node;
-+#endif
- }
- 
- /* Verify that a pointer has an address that is valid within a slab page */
-@@ -867,7 +871,7 @@ static inline void inc_slabs_node(struct kmem_cache 
-*s, int node, int objects)
-      * dilemma by deferring the increment of the count during
-      * bootstrap (see early_kmem_cache_node_alloc).
-      */
--    if (n) {
-+    if (!NUMA_BUILD || n) {
-         atomic_long_inc(&n->nr_slabs);
-         atomic_long_add(objects, &n->total_objects);
-     }
-@@ -2108,6 +2112,7 @@ static inline int alloc_kmem_cache_cpus(struct 
-kmem_cache *s)
-     return s->cpu_slab != NULL;
- }
- 
-+#ifdef CONFIG_NUMA
- static struct kmem_cache *kmem_cache_node;
- 
- /*
-@@ -2197,6 +2202,17 @@ static int init_kmem_cache_nodes(struct 
-kmem_cache *s)
-     }
-     return 1;
- }
-+#else
-+static void free_kmem_cache_nodes(struct kmem_cache *s)
-+{
-+}
-+
-+static int init_kmem_cache_nodes(struct kmem_cache *s)
-+{
-+    init_kmem_cache_node(&s->local_node, s);
-+    return 1;
-+}
-+#endif
- 
- static void set_min_partial(struct kmem_cache *s, unsigned long min)
- {
-@@ -3007,6 +3023,8 @@ void __init kmem_cache_init(void)
-     int caches = 0;
-     struct kmem_cache *temp_kmem_cache;
-     int order;
-+
-+#ifdef CONFIG_NUMA
-     struct kmem_cache *temp_kmem_cache_node;
-     unsigned long kmalloc_size;
- 
-@@ -3030,6 +3048,12 @@ void __init kmem_cache_init(void)
-         0, SLAB_HWCACHE_ALIGN | SLAB_PANIC, NULL);
- 
-     hotplug_memory_notifier(slab_memory_callback, SLAB_CALLBACK_PRI);
-+#else
-+    /* Allocate a single kmem_cache from the page allocator */
-+    kmem_size = sizeof(struct kmem_cache);
-+    order = get_order(kmem_size);
-+    kmem_cache = (void *)__get_free_pages(GFP_NOWAIT, order);
-+#endif
- 
-     /* Able to allocate the per node structures */
-     slab_state = PARTIAL;
-@@ -3040,6 +3064,7 @@ void __init kmem_cache_init(void)
-     kmem_cache = kmem_cache_alloc(kmem_cache, GFP_NOWAIT);
-     memcpy(kmem_cache, temp_kmem_cache, kmem_size);
- 
-+#ifdef CONFIG_NUMA
-     /*
-      * Allocate kmem_cache_node properly from the kmem_cache slab.
-      * kmem_cache_node is separately allocated so no need to
-@@ -3053,6 +3078,18 @@ void __init kmem_cache_init(void)
-     kmem_cache_bootstrap_fixup(kmem_cache_node);
- 
-     caches++;
-+#else
-+    /*
-+     * kmem_cache has kmem_cache_node embedded and we moved it!
-+     * Update the list heads
-+     */
-+    INIT_LIST_HEAD(&kmem_cache->local_node.partial);
-+    list_splice(&temp_kmem_cache->local_node.partial, 
-&kmem_cache->local_node.partial);
-+#ifdef CONFIG_SLUB_DEBUG
-+    INIT_LIST_HEAD(&kmem_cache->local_node.full);
-+    list_splice(&temp_kmem_cache->local_node.full, 
-&kmem_cache->local_node.full);
-+#endif
-+#endif
-     kmem_cache_bootstrap_fixup(kmem_cache);
-     caches++;
-     /* Free temporary boot structure */
+T24gVHVlLCBGZWIgOCwgMjAxMSBhdCAyMjoxMiwgR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBs
+aW51eC1tNjhrLm9yZz4gd3JvdGU6Cj4gT24gVHVlLCBGZWIgOCwgMjAxMSBhdCAwMTowMiwgRG1p
+dHJ5IFRvcm9raG92IDxkdG9yQHZtd2FyZS5jb20+IHdyb3RlOgo+PiBPbiBtNjhrIG5hdHVyYWwg
+YWxpZ25tZW50IGlzIDItYnl0ZSBib3VuZGFyeSBidXQgd2UgYXJlIHRyeWluZyB0bwo+PiBhbGln
+biBzdHJ1Y3R1cmVzIGluIF9fbW9kdmVyIHNlY3Rpb24gb24gc2l6ZW9mKHZvaWQgKikgYm91bmRh
+cnkuCj4+IFRoaXMgY2F1c2VzIHRyb3VibGUgd2hlbiB3ZSB0cnkgdG8gYWNjZXNzIGVsZW1lbnRz
+IGluIHRoaXMgc2VjdGlvbgo+PiBpbiBhcnJheS1saWtlIGZhc2hpb24gd2hlbiBjcmVhdGUgInZl
+cnNpb24iIGF0dHJpYnV0ZXMgZm9yIGJ1aWx0LWluCj4+IG1vZHVsZXMuCj4+Cj4+IE1vcmVvdmVy
+LCBhcyBEYXZlTSBzYWlkLCB3ZSBjYW4ndCByZWxpYWJseSBwdXQgc3RydWN0dXJlcyBpbnRvCj4+
+IGluZGVwZW5kZW50IG9iamVjdHMsIHB1dCB0aGVtIGludG8gYSBzcGVjaWFsIHNlY3Rpb24sIGFu
+ZCB0aGVuIGV4cGVjdAo+PiBhcnJheSBhY2Nlc3Mgb3ZlciB0aGVtICh2aWEgdGhlIHNlY3Rpb24g
+Ym91bmRhcmllcykgYWZ0ZXIgbGlua2luZyB0aGUKPj4gb2JqZWN0cyB0b2dldGhlciB0byBqdXN0
+ICJ3b3JrIiBkdWUgdG8gdmFyaWFibGUgYWxpZ25tZW50IGNob2ljZXMgaW4KPj4gZGlmZmVyZW50
+IHNpdHVhdGlvbnMuIFRoZSBvbmx5IHNvbHV0aW9uIHRoYXQgc2VlbXMgdG8gd29yayByZWxpYWJs
+eQo+PiBpcyB0byBtYWtlIGFuIGFycmF5IG9mIHBsYWluIHBvaW50ZXJzIHRvIHRoZSBvYmplY3Rz
+IGluIHF1ZXN0aW9uIGFuZAo+PiBwdXQgdGhvc2UgcG9pbnRlcnMgaW4gdGhlIHNwZWNpYWwgc2Vj
+dGlvbi4KPj4KPj4gUmVwb3J0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgt
+bTY4ay5vcmc+Cj4+IFNpZ25lZC1vZmYtYnk6IERtaXRyeSBUb3Jva2hvdiA8ZHRvckB2bXdhcmUu
+Y29tPgo+Cj4gVGhhbmtzIQo+Cj4gVGVzdGVkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0
+QGxpbnV4LW02OGsub3JnPgoKQ2FuIHdlIHBsZWFzZSBnZXQgdGhpcyBpbj8gMi42LjM4LXJjNSBz
+dGlsbCBjcmFzaGVzIG9uIG02OGsuCgpUaHghCgo+PiAtLS0KPj4gwqBpbmNsdWRlL2xpbnV4L21v
+ZHVsZS5oIHwgwqAgMTAgKysrKystLS0tLQo+PiDCoGtlcm5lbC9wYXJhbXMuYyDCoCDCoCDCoCDC
+oHwgwqAgwqA5ICsrKysrKy0tLQo+PiDCoDIgZmlsZXMgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygr
+KSwgOCBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW9kdWxl
+LmggYi9pbmNsdWRlL2xpbnV4L21vZHVsZS5oCj4+IGluZGV4IDliZGYyN2MuLjliNzA4MWEgMTAw
+NjQ0Cj4+IC0tLSBhL2luY2x1ZGUvbGludXgvbW9kdWxlLmgKPj4gKysrIGIvaW5jbHVkZS9saW51
+eC9tb2R1bGUuaAo+PiBAQCAtMTc0LDEwICsxNzQsNyBAQCBleHRlcm4gc3RydWN0IG1vZHVsZSBf
+X3RoaXNfbW9kdWxlOwo+PiDCoCNkZWZpbmUgTU9EVUxFX1ZFUlNJT04oX3ZlcnNpb24pIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFwKPj4g
+wqAgwqAgwqAgwqBleHRlcm4gc3NpemVfdCBfX21vZHZlcl92ZXJzaW9uX3Nob3coc3RydWN0IG1v
+ZHVsZV9hdHRyaWJ1dGUgKiwgXAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3QgbW9kdWxlICosIGNoYXIgKik7
+IMKgXAo+PiAtIMKgIMKgIMKgIHN0YXRpYyBzdHJ1Y3QgbW9kdWxlX3ZlcnNpb25fYXR0cmlidXRl
+IF9fbW9kdmVyX3ZlcnNpb25fYXR0ciDCoCDCoFwKPj4gLSDCoCDCoCDCoCBfX3VzZWQgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBcCj4+IC0gwqAgwqBfX2F0dHJpYnV0ZV9fICgoX19zZWN0
+aW9uX18gKCJfX21vZHZlciIpLGFsaWduZWQoc2l6ZW9mKHZvaWQgKikpKSkgXAo+PiAtIMKgIMKg
+IMKgID0geyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4+ICsgwqAgwqAgwqAg
+c3RhdGljIHN0cnVjdCBtb2R1bGVfdmVyc2lvbl9hdHRyaWJ1dGUgX19fbW9kdmVyX2F0dHIgPSB7
+IMKgIMKgIMKgIFwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAubWF0dHIgwqA9IHsgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgXAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC5hdHRyIMKgID0geyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm5hbWUgwqAg
+PSAidmVyc2lvbiIsIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgXAo+PiBAQCAtMTg3LDcg
+KzE4NCwxMCBAQCBleHRlcm4gc3RydWN0IG1vZHVsZSBfX3RoaXNfbW9kdWxlOwo+PiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoH0sIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgXAo+PiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoC5tb2R1bGVfbmFtZSDCoCDCoD0gS0JVSUxEX01PRE5BTUUsIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAudmVy
+c2lvbiDCoCDCoCDCoCDCoD0gX3ZlcnNpb24sIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIFwKPj4gLSDCoCDCoCDCoCB9Cj4+ICsgwqAgwqAgwqAgfTsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBcCj4+ICsgwqAgwqAgwqAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBtb2R1bGVfdmVyc2lvbl9hdHRyaWJ1dGUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqBcCj4+ICsgwqAgwqAgwqAgX191c2VkIF9fYXR0cmlidXRlX18gKChfX3NlY3Rpb25fXyAoIl9f
+bW9kdmVyIikpKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCBcCj4+ICsgwqAgwqAgwqAgKiBfX21vZHVs
+ZXBhcmFtX2NvbnN0IF9fbW9kdmVyX2F0dHIgPSAmX19fbW9kdmVyX2F0dHIKPj4gwqAjZW5kaWYK
+Pj4KPj4gwqAvKiBPcHRpb25hbCBmaXJtd2FyZSBmaWxlIChvciBmaWxlcykgbmVlZGVkIGJ5IHRo
+ZSBtb2R1bGUKPj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9wYXJhbXMuYyBiL2tlcm5lbC9wYXJhbXMu
+Ywo+PiBpbmRleCAwZGExNDExLi4wOWEwOGNiIDEwMDY0NAo+PiAtLS0gYS9rZXJuZWwvcGFyYW1z
+LmMKPj4gKysrIGIva2VybmVsL3BhcmFtcy5jCj4+IEBAIC04MjEsMTUgKzgyMSwxOCBAQCBzc2l6
+ZV90IF9fbW9kdmVyX3ZlcnNpb25fc2hvdyhzdHJ1Y3QgbW9kdWxlX2F0dHJpYnV0ZSAqbWF0dHIs
+Cj4+IMKgIMKgIMKgIMKgcmV0dXJuIHNwcmludGYoYnVmLCAiJXNcbiIsIHZhdHRyLT52ZXJzaW9u
+KTsKPj4gwqB9Cj4+Cj4+IC1leHRlcm4gc3RydWN0IG1vZHVsZV92ZXJzaW9uX2F0dHJpYnV0ZSBf
+X3N0YXJ0X19fbW9kdmVyW10sIF9fc3RvcF9fX21vZHZlcltdOwo+PiArZXh0ZXJuIGNvbnN0IHN0
+cnVjdCBtb2R1bGVfdmVyc2lvbl9hdHRyaWJ1dGUgKl9fc3RhcnRfX19tb2R2ZXJbXTsKPj4gK2V4
+dGVybiBjb25zdCBzdHJ1Y3QgbW9kdWxlX3ZlcnNpb25fYXR0cmlidXRlICpfX3N0b3BfX19tb2R2
+ZXJbXTsKPj4KPj4gwqBzdGF0aWMgdm9pZCBfX2luaXQgdmVyc2lvbl9zeXNmc19idWlsdGluKHZv
+aWQpCj4+IMKgewo+PiAtIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVyc2lvbl9hdHRy
+aWJ1dGUgKnZhdHRyOwo+PiArIMKgIMKgIMKgIGNvbnN0IHN0cnVjdCBtb2R1bGVfdmVyc2lvbl9h
+dHRyaWJ1dGUgKipwOwo+PiDCoCDCoCDCoCDCoHN0cnVjdCBtb2R1bGVfa29iamVjdCAqbWs7Cj4+
+IMKgIMKgIMKgIMKgaW50IGVycjsKPj4KPj4gLSDCoCDCoCDCoCBmb3IgKHZhdHRyID0gX19zdGFy
+dF9fX21vZHZlcjsgdmF0dHIgPCBfX3N0b3BfX19tb2R2ZXI7IHZhdHRyKyspIHsKPj4gKyDCoCDC
+oCDCoCBmb3IgKHAgPSBfX3N0YXJ0X19fbW9kdmVyOyBwIDwgX19zdG9wX19fbW9kdmVyOyBwKysp
+IHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjb25zdCBzdHJ1Y3QgbW9kdWxlX3ZlcnNpb25f
+YXR0cmlidXRlICp2YXR0ciA9ICpwOwo+PiArCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgbWsg
+PSBsb2NhdGVfbW9kdWxlX2tvYmplY3QodmF0dHItPm1vZHVsZV9uYW1lKTsKPj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqBpZiAobWspIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqBlcnIgPSBzeXNmc19jcmVhdGVfZmlsZSgmbWstPmtvYmosICZ2YXR0ci0+bWF0dHIuYXR0
+cik7Cj4+IC0tCj4+IDEuNy4zLjIKCkdye29ldGplLGVldGluZ31zLAoKwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgR2VlcnQKCi0tCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVy
+ZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCklu
+IHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlz
+ZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qg
+c2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0LgrCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoMKgIMKgwqAgLS0gTGludXMgVG9ydmFsZHMK
