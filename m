@@ -1,46 +1,48 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in module versions
-Date: Thu, 17 Feb 2011 10:06:40 -0800
-Message-ID: <AANLkTi=bgmRwGXEE_wriYo-5gmyaB43pMUzHf7idiK0k@mail.gmail.com>
-References: <1297123347-2170-1-git-send-email-dtor@vmware.com>
- <AANLkTim_BL_Cw=X0iuatgw1F4n50CyXv0uqx9n=5=Bq+@mail.gmail.com>
- <20110217173136.GA28486@dtor-ws.eng.vmware.com> <AANLkTikGVS9EM=7uhwYfXrGHg9yzes7m0pxAinRxivPC@mail.gmail.com>
- <20110217180042.GA30530@dtor-ws.eng.vmware.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: build warnings
+Date: Thu, 17 Feb 2011 18:18:13 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1102171817230.3948@herc.mirbsd.org>
+References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de>
+ <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de>
+ <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com>
+ <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com>
+ <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org>
+ <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com>
+ <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org>
+ <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com>
+ <4D44F92C.2050707@gmail.com> <AANLkTimB1fpvMsSeTbRn5ZTU1NCpZpjrAXQ+xRShAsZN@mail.gmail.com>
+ <4D461512.8080609@gmail.com> <alpine.LNX.2.00.1101311424100.6256@nippy.intranet>
+ <Pine.BSM.4.64L.1102052339100.22476@herc.mirbsd.org> <4D575F50.1020601@gmail.com>
+ <4D5CCCA5.1000106@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp1.linux-foundation.org ([140.211.169.13]:48158 "EHLO
-	smtp1.linux-foundation.org" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757444Ab1BQSHb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 17 Feb 2011 13:07:31 -0500
-In-Reply-To: <20110217180042.GA30530@dtor-ws.eng.vmware.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:42208 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757449Ab1BQSVa convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Feb 2011 13:21:30 -0500
+Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
+	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p1HIIGJS012931
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Thu, 17 Feb 2011 18:18:19 GMT
+In-Reply-To: <4D5CCCA5.1000106@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dtor@vmware.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Rusty Russell <rusty@rustcorp.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Thu, Feb 17, 2011 at 10:00 AM, Dmitry Torokhov <dtor@vmware.com> wrote:
->
-> The problem is that on m68k size of the struct module_version_attribute
-> is not evenly divisible by sizeof(void *), thus when we lay out the
-> __modver section we align on 4 bytes but when we iterate we think that
-> the alignment is 2.
+Michael Schmitz dixit:
 
-So mark the struct properly.
+> Diff in question - can anyone guess at what the problem may be?:
 
-> I/Geert tried adding __attribute__ (aligned(sizeof(void *))) to the type
-> definition itself so we have matching alignment everywhere, but DaveM
-> said that this only guarantees minimum alignment and that using
-> structures like we do shown to break from time to time in kprobes and
-> that only pointers worked reliably.
+Is it reversed? Looks like that to me, from the commit msg.
+Not a clue about the problem, though (but I didn=E2=80=99t read the
+surrounding code either, just had a quick look at the diff
+while waiting for the coffee machine).
 
-That sounds totally bogus. Minimum alignment is all it needs, and we
-do that in other places too. I really don't see the reason to add some
-broken indirection for totally broken reasons. We don't do that with
-anything else.
-
-David, why are you saying that regular "just mark the structure
-alignment correctly" doesn't work?
-
-                                Linus
+bye,
+//mirabilos
+--=20
+13:47=E2=8E=9C<tobiasu> if i were omnipotent, i would divide by zero
+                all day long ;)
+(thinking about http://lobacevski.tumblr.com/post/3260866481 by waga)
