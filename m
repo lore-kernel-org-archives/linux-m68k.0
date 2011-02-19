@@ -1,54 +1,51 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Sat, 19 Feb 2011 08:12:11 +1000
-Message-ID: <4D5EEEBB.7050708@snapgear.com>
-References: <4D5DB83D.80205@snapgear.com>	<AANLkTin0X-ST=rZqwfCA0i5VGCh5ygYXyZFdndiDgR_2@mail.gmail.com> <AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in
+ module versions
+Date: Fri, 18 Feb 2011 18:14:15 -0600
+Message-ID: <1298074455.2460.85.camel@pasglop>
+References: <AANLkTi=nQ4c6fgk9_-974QOu=kQkJiGpdzpOa_U6ZZcs@mail.gmail.com>
+	 <20110217.140119.39175251.davem@davemloft.net>
+	 <20110217221957.GA11244@dtor-ws.eng.vmware.com>
+	 <20110217.142320.102554706.davem@davemloft.net>
+	 <AANLkTinMfTss+9K7fPQbxoMD7d-U_AyCc29_RRPRija3@mail.gmail.com>
+	 <AANLkTikd-OBhe6-wK7-Xvv-asNSeVKs+0-a0d3FF2KVu@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:60689 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753870Ab1BRWOP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Feb 2011 17:14:15 -0500
-In-Reply-To: <AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <AANLkTikd-OBhe6-wK7-Xvv-asNSeVKs+0-a0d3FF2KVu@mail.gmail.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Miller <davem@davemloft.net>, dtor@vmware.com, linux-kernel@vger.kernel.org, geert@linux-m68k.org, rusty@rustcorp.com.au, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
 
-Hi Geert,
+On Thu, 2011-02-17 at 15:08 -0800, Linus Torvalds wrote:
+> On Thu, Feb 17, 2011 at 2:48 PM, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Gaah, I didn't realize that we've never had to do anything like this
+> > before, and that the exception table is all arch-specific code. So we
+> > don't have any way to "output that damned pointer and stop whining
+> > about it" model at all.
+> 
+> Actually, I don't think the problem is about ".word" vs ".xword". We
+> should be able to just use ".long" everywhere.
+> 
+> But the symbol _name_ may have different prefixes, and when we use
+> "asm()" at the top level, we can't use the expressions to fix it up.
+> So a
+> 
+>   asm(".long %0":'i" (symbol))
+> 
+> doesn't work (ignore the lack of section naming, that's not
+> important), and neither can we just do something like
+> 
+>   #define output_asm_pointer(section, symbol) \
+>        asm(".long " #symbol)
+> 
+> portably, because some linker formats want to see prepended underscores etc.
 
-On 19/02/11 01:24, Geert Uytterhoeven wrote:
-> On Fri, Feb 18, 2011 at 12:27, Geert Uytterhoeven<geert@linux-m68k.org>  wrote:
->> On Fri, Feb 18, 2011 at 01:07, Greg Ungerer<gerg@snapgear.com>  wrote:
->>> I would like to put up for discussion a merge of the m68knommu and
->>> m68k arch branches.
->>>
->>> Attached is a script and patch that does a kind of brute force
->>> simplistic merge of the directories and files. (Thanks to Stephen King
->>> <sfking@fdwdc.com>  for the initial version of this script, and to
->>> Sam Ravnborg for the m68k includes merge script this was based on).
->>> Nothing outside of the arch/m68k and arch/m68knommu directories is
->>> touched, and in the end there is no more arch/m68knommu. To apply you
->>> simply run the script from the top of a current kernel git tree (I used
->>> 2.6.38-rc5 for testing) and then apply the patch.
->>
->> Building...
->
-> Builds fine (all test configs), runs on ARAnyM.
->
-> Let's go ahead?
+Except that .long is 32-bit on ppc64 :-( You need .llong for 64-bit.
 
-What sort of timing do you think makes sense?
-Is for 2.6.39 too soon?
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Cheers,
+Ben.
