@@ -1,97 +1,84 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Mon, 21 Feb 2011 08:41:24 +0100
-Message-ID: <AANLkTimtr0JbmM2PNtGRyAKE7kNr_FXd==ZC3bM82xsG@mail.gmail.com>
-References: <4D5DB83D.80205@snapgear.com>
-	<AANLkTin0X-ST=rZqwfCA0i5VGCh5ygYXyZFdndiDgR_2@mail.gmail.com>
-	<AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>
-	<4D5EEEBB.7050708@snapgear.com>
-	<AANLkTimmfUJASL47Cs80FJ2mkx3PPvAX57x43nF09tns@mail.gmail.com>
-	<4D61A986.3060308@snapgear.com>
+From: Dmitry Torokhov <dtor@vmware.com>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in
+ module versions
+Date: Sun, 20 Feb 2011 23:49:47 -0800
+Message-ID: <20110221074947.GA31152@dtor-ws.eng.vmware.com>
+References: <AANLkTi=nQ4c6fgk9_-974QOu=kQkJiGpdzpOa_U6ZZcs@mail.gmail.com>
+ <20110217.140119.39175251.davem@davemloft.net>
+ <20110217221957.GA11244@dtor-ws.eng.vmware.com>
+ <20110217.142320.102554706.davem@davemloft.net>
+ <AANLkTinMfTss+9K7fPQbxoMD7d-U_AyCc29_RRPRija3@mail.gmail.com>
+ <AANLkTikd-OBhe6-wK7-Xvv-asNSeVKs+0-a0d3FF2KVu@mail.gmail.com>
+ <1298074455.2460.85.camel@pasglop>
+ <87pqqmrq9q.fsf@rustcorp.com.au>
+ <AANLkTinFgma3F7ETwC8Mho7wdDK4V2b+Ao__npJNAW8j@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:41095 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751751Ab1BUHl0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Feb 2011 02:41:26 -0500
-In-Reply-To: <4D61A986.3060308@snapgear.com>
+Received: from smtp-outbound-2.vmware.com ([65.115.85.73]:59034 "EHLO
+	smtp-outbound-2.vmware.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751486Ab1BUHtr (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 21 Feb 2011 02:49:47 -0500
+Content-Disposition: inline
+In-Reply-To: <AANLkTinFgma3F7ETwC8Mho7wdDK4V2b+Ao__npJNAW8j@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Linus Torvalds <torvalds@linux-foundation.org>, David Miller <davem@davemloft.net>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Mon, Feb 21, 2011 at 00:53, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 19/02/11 18:39, Geert Uytterhoeven wrote:
->>
->> On Fri, Feb 18, 2011 at 23:12, Greg Ungerer<gerg@snapgear.com> =C2=A0=
+On Mon, Feb 21, 2011 at 08:38:46AM +0100, Geert Uytterhoeven wrote:
+> On Mon, Feb 21, 2011 at 05:00, Rusty Russell <rusty@rustcorp.com.au> =
 wrote:
->>>
->>> On 19/02/11 01:24, Geert Uytterhoeven wrote:
->>>>
->>>> On Fri, Feb 18, 2011 at 12:27, Geert Uytterhoeven<geert@linux-m68k=
-=2Eorg>
->>>> =C2=A0wrote:
->>>>>
->>>>> On Fri, Feb 18, 2011 at 01:07, Greg Ungerer<gerg@snapgear.com>
->>>>> =C2=A0wrote:
->>>>>>
->>>>>> I would like to put up for discussion a merge of the m68knommu a=
-nd
->>>>>> m68k arch branches.
->>>>>>
->>>>>> Attached is a script and patch that does a kind of brute force
->>>>>> simplistic merge of the directories and files. (Thanks to Stephe=
-n King
->>>>>> <sfking@fdwdc.com> =C2=A0 =C2=A0for the initial version of this =
-script, and to
->>>>>> Sam Ravnborg for the m68k includes merge script this was based o=
-n).
->>>>>> Nothing outside of the arch/m68k and arch/m68knommu directories =
-is
->>>>>> touched, and in the end there is no more arch/m68knommu. To appl=
-y you
->>>>>> simply run the script from the top of a current kernel git tree =
-(I
->>>>>> used
->>>>>> 2.6.38-rc5 for testing) and then apply the patch.
->>>>>
->>>>> Building...
->>>>
->>>> Builds fine (all test configs), runs on ARAnyM.
->>>>
->>>> Let's go ahead?
->>>
->>> What sort of timing do you think makes sense?
->>> Is for 2.6.39 too soon?
->>
->> Personally, I don't mind. 2.6.39 is OK for me. I guess the safest wa=
-y
->> is to let Linus
->> execute the script? Before or after the merge window?
->
-> Well I was going to construct the merge as a single git commit
-> (which is equivalent to running this script and applying the patch).
-> Linus would then just pull this.
->
-> The best timing for me is near the end of the merge window.
-> That way we can both get in any other changes first.
+> >> Except that .long is 32-bit on ppc64 :-( You need .llong for 64-bi=
+t.
+> >
+> > OK, all options suck. =A0Do we want the workaround or not?
+>=20
+> We can discuss about that until someone gets bitten by that.
+>=20
+> But please fix the "aligned(sizeof(void *))"-in-one-place-only issue.
+>=20
 
-Sounds like a plan, OK!
+How about this one then?
 
-Gr{oetje,eeting}s,
+Thanks.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+--=20
+Dmitry
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+=46rom f0e0e10b58b22047e36e21a022abf5e86b5819c2 Mon Sep 17 00:00:00 200=
+1
+=46rom: Dmitry Torokhov <dtor@vmware.com>
+Date: Fri, 4 Feb 2011 13:30:10 -0800
+Subject: [PATCH] module: explicitly align module_version_attribute stru=
+cture
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+We force particular alignment when we generate attribute structures
+when generation MODULE_VERSION() data and we need to make sure that
+this alignment is followed when we iterate over these structures,
+otherwise we may crash on platforms whose natural alignment is not
+sizeof(void *), such as m68k.
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
+---
+ include/linux/module.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/linux/module.h b/include/linux/module.h
+index e7c6385..de5cd21 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -62,7 +62,7 @@ struct module_version_attribute {
+ 	struct module_attribute mattr;
+ 	const char *module_name;
+ 	const char *version;
+-};
++} __attribute__ ((__aligned__(sizeof(void *))));
+=20
+ struct module_kobject
+ {
+--=20
+1.7.3.2
