@@ -1,84 +1,105 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Mon, 21 Feb 2011 09:53:42 +1000
-Message-ID: <4D61A986.3060308@snapgear.com>
-References: <4D5DB83D.80205@snapgear.com>	<AANLkTin0X-ST=rZqwfCA0i5VGCh5ygYXyZFdndiDgR_2@mail.gmail.com>	<AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>	<4D5EEEBB.7050708@snapgear.com>
-	<AANLkTimmfUJASL47Cs80FJ2mkx3PPvAX57x43nF09tns@mail.gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in module versions
+Date: Mon, 21 Feb 2011 14:30:01 +1030
+Message-ID: <87pqqmrq9q.fsf@rustcorp.com.au>
+References: <AANLkTi=nQ4c6fgk9_-974QOu=kQkJiGpdzpOa_U6ZZcs@mail.gmail.com> <20110217.140119.39175251.davem@davemloft.net> <20110217221957.GA11244@dtor-ws.eng.vmware.com> <20110217.142320.102554706.davem@davemloft.net> <AANLkTinMfTss+9K7fPQbxoMD7d-U_AyCc29_RRPRija3@mail.gmail.com> <AANLkTikd-OBhe6-wK7-Xvv-asNSeVKs+0-a0d3FF2KVu@mail.gmail.com> <1298074455.2460.85.camel@pasglop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <AANLkTimmfUJASL47Cs80FJ2mkx3PPvAX57x43nF09tns@mail.gmail.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gregungerer@westnet.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Steven King <sfking00@yahoo.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ozlabs.org ([203.10.76.45]:44934 "EHLO ozlabs.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751800Ab1BUGRN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 21 Feb 2011 01:17:13 -0500
+In-Reply-To: <1298074455.2460.85.camel@pasglop>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Miller <davem@davemloft.net>, dtor@vmware.com, linux-kernel@vger.kernel.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 
+> Except that .long is 32-bit on ppc64 :-( You need .llong for 64-bit.
 
-Hi Geert,
+OK, all options suck.  Do we want the workaround or not?
 
-On 19/02/11 18:39, Geert Uytterhoeven wrote:
-> On Fri, Feb 18, 2011 at 23:12, Greg Ungerer<gerg@snapgear.com>  wrote:
->> On 19/02/11 01:24, Geert Uytterhoeven wrote:
->>> On Fri, Feb 18, 2011 at 12:27, Geert Uytterhoeven<geert@linux-m68k.org>
->>>   wrote:
->>>>
->>>> On Fri, Feb 18, 2011 at 01:07, Greg Ungerer<gerg@snapgear.com>    wrote:
->>>>>
->>>>> I would like to put up for discussion a merge of the m68knommu and
->>>>> m68k arch branches.
->>>>>
->>>>> Attached is a script and patch that does a kind of brute force
->>>>> simplistic merge of the directories and files. (Thanks to Stephen King
->>>>> <sfking@fdwdc.com>    for the initial version of this script, and to
->>>>> Sam Ravnborg for the m68k includes merge script this was based on).
->>>>> Nothing outside of the arch/m68k and arch/m68knommu directories is
->>>>> touched, and in the end there is no more arch/m68knommu. To apply you
->>>>> simply run the script from the top of a current kernel git tree (I used
->>>>> 2.6.38-rc5 for testing) and then apply the patch.
->>>>
->>>> Building...
->>>
->>> Builds fine (all test configs), runs on ARAnyM.
->>>
->>> Let's go ahead?
->>
->> What sort of timing do you think makes sense?
->> Is for 2.6.39 too soon?
->
-> Personally, I don't mind. 2.6.39 is OK for me. I guess the safest way
-> is to let Linus
-> execute the script? Before or after the merge window?
+Cheers,
+Rusty.
 
-Well I was going to construct the merge as a single git commit
-(which is equivalent to running this script and applying the patch).
-Linus would then just pull this.
+Subject: module: deal with alignment issues in built-in module versions
+Date: Mon, 7 Feb 2011 16:02:25 -0800
+From: Dmitry Torokhov <dtor@vmware.com>
 
-The best timing for me is near the end of the merge window.
-That way we can both get in any other changes first.
+On m68k natural alignment is 2-byte boundary but we are trying to
+align structures in __modver section on sizeof(void *) boundary.
+This causes trouble when we try to access elements in this section
+in array-like fashion when create "version" attributes for built-in
+modules.
 
-Regards
-Greg
+Moreover, as DaveM said, we can't reliably put structures into
+independent objects, put them into a special section, and then expect
+array access over them (via the section boundaries) after linking the
+objects together to just "work" due to variable alignment choices in
+different situations. The only solution that seems to work reliably
+is to make an array of plain pointers to the objects in question and
+put those pointers in the special section.
 
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
+Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+---
+ include/linux/module.h |   10 +++++-----
+ kernel/params.c        |    9 ++++++---
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 9bdf27c..9b7081a 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -174,10 +174,7 @@ extern struct module __this_module;
+ #define MODULE_VERSION(_version)					\
+ 	extern ssize_t __modver_version_show(struct module_attribute *,	\
+ 					     struct module *, char *);	\
+-	static struct module_version_attribute __modver_version_attr	\
+-	__used								\
+-    __attribute__ ((__section__ ("__modver"),aligned(sizeof(void *)))) \
+-	= {								\
++	static struct module_version_attribute ___modver_attr = {	\
+ 		.mattr	= {						\
+ 			.attr	= {					\
+ 				.name	= "version",			\
+@@ -187,7 +184,10 @@ extern struct module __this_module;
+ 		},							\
+ 		.module_name	= KBUILD_MODNAME,			\
+ 		.version	= _version,				\
+-	}
++	};								\
++	static const struct module_version_attribute			\
++	__used __attribute__ ((__section__ ("__modver")))		\
++	* __moduleparam_const __modver_attr = &___modver_attr
+ #endif
+ 
+ /* Optional firmware file (or files) needed by the module
+diff --git a/kernel/params.c b/kernel/params.c
+index 0da1411..09a08cb 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -821,15 +821,18 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
+ 	return sprintf(buf, "%s\n", vattr->version);
+ }
+ 
+-extern struct module_version_attribute __start___modver[], __stop___modver[];
++extern const struct module_version_attribute *__start___modver[];
++extern const struct module_version_attribute *__stop___modver[];
+ 
+ static void __init version_sysfs_builtin(void)
+ {
+-	const struct module_version_attribute *vattr;
++	const struct module_version_attribute **p;
+ 	struct module_kobject *mk;
+ 	int err;
+ 
+-	for (vattr = __start___modver; vattr < __stop___modver; vattr++) {
++	for (p = __start___modver; p < __stop___modver; p++) {
++		const struct module_version_attribute *vattr = *p;
++
+ 		mk = locate_module_kobject(vattr->module_name);
+ 		if (mk) {
+ 			err = sysfs_create_file(&mk->kobj, &vattr->mattr.attr);
