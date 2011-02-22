@@ -1,53 +1,38 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Sam Ravnborg <sam@ravnborg.org>
 Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Tue, 22 Feb 2011 08:40:53 +0100
-Message-ID: <AANLkTi=o9hQM1DqbBOAsDpxBW9U1uHsUZ6q3Kw48OBb6@mail.gmail.com>
-References: <4D5DB83D.80205@snapgear.com>
-	<alpine.LFD.2.00.1102212216540.2701@localhost6.localdomain6>
-	<4D6319E0.9080907@snapgear.com>
-	<AANLkTi=QkXK7=DQ5H1PFttTk+iug_npCsz112RYXd7BR@mail.gmail.com>
-	<20110222072951.GA24953@merkur.ravnborg.org>
+Date: Tue, 22 Feb 2011 09:04:46 +0100
+Message-ID: <20110222080446.GA25012@merkur.ravnborg.org>
+References: <4D5DB83D.80205@snapgear.com> <alpine.LFD.2.00.1102212216540.2701@localhost6.localdomain6> <4D6319E0.9080907@snapgear.com> <AANLkTi=QkXK7=DQ5H1PFttTk+iug_npCsz112RYXd7BR@mail.gmail.com> <20110222072951.GA24953@merkur.ravnborg.org> <AANLkTi=o9hQM1DqbBOAsDpxBW9U1uHsUZ6q3Kw48OBb6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:62256 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753819Ab1BVHky convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Feb 2011 02:40:54 -0500
-In-Reply-To: <20110222072951.GA24953@merkur.ravnborg.org>
+Received: from pfepa.post.tele.dk ([195.41.46.235]:40049 "EHLO
+	pfepa.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751027Ab1BVIEs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Feb 2011 03:04:48 -0500
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=o9hQM1DqbBOAsDpxBW9U1uHsUZ6q3Kw48OBb6@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Ravnborg <sam@ravnborg.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Greg Ungerer <gerg@snapgear.com>, Thomas Gleixner <tglx@linutronix.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
 
-On Tue, Feb 22, 2011 at 08:29, Sam Ravnborg <sam@ravnborg.org> wrote:
->> >> Is there a plan to move m68k to the generic facilities as well ?
->>
->> Moving m68k to genirq is (the next thing?) on my list...
->
-> If I succeed migrating sparc32 to genirq I hope to be of a little hel=
-p here.
-> It looks like a bigger task to migrate m68k than it was/is to migrate=
- sparc32.
->
-> It would be _very_ nice to get the last two architectures migrated to=
- genirq.
+On Tue, Feb 22, 2011 at 08:40:53AM +0100, Geert Uytterhoeven wrote:
+> On Tue, Feb 22, 2011 at 08:29, Sam Ravnborg <sam@ravnborg.org> wrote:
+> >> >> Is there a plan to move m68k to the generic facilities as well ?
+> >>
+> >> Moving m68k to genirq is (the next thing?) on my list...
+> >
+> > If I succeed migrating sparc32 to genirq I hope to be of a little help here.
+> > It looks like a bigger task to migrate m68k than it was/is to migrate sparc32.
+> >
+> > It would be _very_ nice to get the last two architectures migrated to genirq.
+> 
+> Aren't your forgetting s390?
+Hmm, I had the understanding that m68k and sparc32 was the only two remaining :-(
+But I did not check.
 
-Aren't your forgetting s390?
+s390 sees more active maintenance so if they become the last non genirq user,
+then they may feel a bit of pressure :-)
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+	Sam
