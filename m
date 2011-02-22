@@ -1,43 +1,126 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Mon, 21 Feb 2011 22:57:19 +0100
-Message-ID: <20110221215719.GA24535@merkur.ravnborg.org>
-References: <4D5DB83D.80205@snapgear.com> <20110218074401.GA26836@merkur.ravnborg.org> <4D5E5FB1.1000404@snapgear.com> <201102212243.15867.arnd@arndb.de>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 1/3] module: deal with alignment issues in built-in
+ module versions
+Date: Tue, 22 Feb 2011 12:58:29 +1100
+Message-ID: <1298339909.8833.135.camel@pasglop>
+References: <AANLkTi=nQ4c6fgk9_-974QOu=kQkJiGpdzpOa_U6ZZcs@mail.gmail.com>
+	 <20110217.140119.39175251.davem@davemloft.net>
+	 <20110217221957.GA11244@dtor-ws.eng.vmware.com>
+	 <20110217.142320.102554706.davem@davemloft.net>
+	 <AANLkTinMfTss+9K7fPQbxoMD7d-U_AyCc29_RRPRija3@mail.gmail.com>
+	 <AANLkTikd-OBhe6-wK7-Xvv-asNSeVKs+0-a0d3FF2KVu@mail.gmail.com>
+	 <1298074455.2460.85.camel@pasglop>  <87pqqmrq9q.fsf@rustcorp.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from pfepa.post.tele.dk ([195.41.46.235]:37623 "EHLO
-	pfepa.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751095Ab1BUV5W (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Feb 2011 16:57:22 -0500
-Content-Disposition: inline
-In-Reply-To: <201102212243.15867.arnd@arndb.de>
+Received: from gate.crashing.org ([63.228.1.57]:59200 "EHLO gate.crashing.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751151Ab1BVB7Z (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 21 Feb 2011 20:59:25 -0500
+In-Reply-To: <87pqqmrq9q.fsf@rustcorp.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Ungerer <gerg@snapgear.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
+To: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, David Miller <davem@davemloft.net>, dtor@vmware.com, linux-kernel@vger.kernel.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Mon, Feb 21, 2011 at 10:43:15PM +0100, Arnd Bergmann wrote:
-> On Friday 18 February 2011 13:01:53 Greg Ungerer wrote:
-> > >> Attached is a script and patch that does a kind of brute force
-> > >> simplistic merge of the directories and files. (Thanks to Stephen King
-> > >> <sfking@fdwdc.com>  for the initial version of this script, and to
-> > >> Sam Ravnborg for the m68k includes merge script this was based on).
-> > >> Nothing outside of the arch/m68k and arch/m68knommu directories is
-> > >> touched, and in the end there is no more arch/m68knommu. To apply you
-> > >> simply run the script from the top of a current kernel git tree (I used
-> > >> 2.6.38-rc5 for testing) and then apply the patch.
-> > >
-> > > The initial version of said script was created by Arnd IIRC.
-> > 
-> > Apologies to Arnd then :-)
+On Mon, 2011-02-21 at 14:30 +1030, Rusty Russell wrote:
+> > Except that .long is 32-bit on ppc64 :-( You need .llong for 64-bit.
 > 
-> I had absolutely no memory of having done said script, but if Sam
-> says wrote it did, that's probably true.
+> OK, all options suck.  Do we want the workaround or not?
+
+The only sane thing I can see is make sure that such structures that
+we put into sections "arrays" like that are naturally aligned with
+padding.
+
+Cheers,
+Ben.
+
+> Cheers,
+> Rusty.
 > 
-> I was just about to say how much I like your script when I read
-> that it was my idea...
-
-See semi original version in: 49148020bcb6910ce71417bd990a5ce7017f9bd3
-
-	Sam
+> Subject: module: deal with alignment issues in built-in module versions
+> Date: Mon, 7 Feb 2011 16:02:25 -0800
+> From: Dmitry Torokhov <dtor@vmware.com>
+> 
+> On m68k natural alignment is 2-byte boundary but we are trying to
+> align structures in __modver section on sizeof(void *) boundary.
+> This causes trouble when we try to access elements in this section
+> in array-like fashion when create "version" attributes for built-in
+> modules.
+> 
+> Moreover, as DaveM said, we can't reliably put structures into
+> independent objects, put them into a special section, and then expect
+> array access over them (via the section boundaries) after linking the
+> objects together to just "work" due to variable alignment choices in
+> different situations. The only solution that seems to work reliably
+> is to make an array of plain pointers to the objects in question and
+> put those pointers in the special section.
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Dmitry Torokhov <dtor@vmware.com>
+> Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+> ---
+>  include/linux/module.h |   10 +++++-----
+>  kernel/params.c        |    9 ++++++---
+>  2 files changed, 11 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 9bdf27c..9b7081a 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -174,10 +174,7 @@ extern struct module __this_module;
+>  #define MODULE_VERSION(_version)					\
+>  	extern ssize_t __modver_version_show(struct module_attribute *,	\
+>  					     struct module *, char *);	\
+> -	static struct module_version_attribute __modver_version_attr	\
+> -	__used								\
+> -    __attribute__ ((__section__ ("__modver"),aligned(sizeof(void *)))) \
+> -	= {								\
+> +	static struct module_version_attribute ___modver_attr = {	\
+>  		.mattr	= {						\
+>  			.attr	= {					\
+>  				.name	= "version",			\
+> @@ -187,7 +184,10 @@ extern struct module __this_module;
+>  		},							\
+>  		.module_name	= KBUILD_MODNAME,			\
+>  		.version	= _version,				\
+> -	}
+> +	};								\
+> +	static const struct module_version_attribute			\
+> +	__used __attribute__ ((__section__ ("__modver")))		\
+> +	* __moduleparam_const __modver_attr = &___modver_attr
+>  #endif
+>  
+>  /* Optional firmware file (or files) needed by the module
+> diff --git a/kernel/params.c b/kernel/params.c
+> index 0da1411..09a08cb 100644
+> --- a/kernel/params.c
+> +++ b/kernel/params.c
+> @@ -821,15 +821,18 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
+>  	return sprintf(buf, "%s\n", vattr->version);
+>  }
+>  
+> -extern struct module_version_attribute __start___modver[], __stop___modver[];
+> +extern const struct module_version_attribute *__start___modver[];
+> +extern const struct module_version_attribute *__stop___modver[];
+>  
+>  static void __init version_sysfs_builtin(void)
+>  {
+> -	const struct module_version_attribute *vattr;
+> +	const struct module_version_attribute **p;
+>  	struct module_kobject *mk;
+>  	int err;
+>  
+> -	for (vattr = __start___modver; vattr < __stop___modver; vattr++) {
+> +	for (p = __start___modver; p < __stop___modver; p++) {
+> +		const struct module_version_attribute *vattr = *p;
+> +
+>  		mk = locate_module_kobject(vattr->module_name);
+>  		if (mk) {
+>  			err = sysfs_create_file(&mk->kobj, &vattr->mattr.attr);
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
