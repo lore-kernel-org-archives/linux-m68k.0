@@ -1,38 +1,55 @@
-From: Sam Ravnborg <sam@ravnborg.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Tue, 22 Feb 2011 09:04:46 +0100
-Message-ID: <20110222080446.GA25012@merkur.ravnborg.org>
-References: <4D5DB83D.80205@snapgear.com> <alpine.LFD.2.00.1102212216540.2701@localhost6.localdomain6> <4D6319E0.9080907@snapgear.com> <AANLkTi=QkXK7=DQ5H1PFttTk+iug_npCsz112RYXd7BR@mail.gmail.com> <20110222072951.GA24953@merkur.ravnborg.org> <AANLkTi=o9hQM1DqbBOAsDpxBW9U1uHsUZ6q3Kw48OBb6@mail.gmail.com>
+Date: Tue, 22 Feb 2011 10:16:13 +0100 (CET)
+Message-ID: <alpine.LFD.2.00.1102221014580.2701@localhost6.localdomain6>
+References: <4D5DB83D.80205@snapgear.com> <alpine.LFD.2.00.1102212216540.2701@localhost6.localdomain6> <4D6319E0.9080907@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from pfepa.post.tele.dk ([195.41.46.235]:40049 "EHLO
-	pfepa.post.tele.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751027Ab1BVIEs (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Feb 2011 03:04:48 -0500
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=o9hQM1DqbBOAsDpxBW9U1uHsUZ6q3Kw48OBb6@mail.gmail.com>
+Received: from www.tglx.de ([62.245.132.106]:60740 "EHLO www.tglx.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752890Ab1BVJRC (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 22 Feb 2011 04:17:02 -0500
+In-Reply-To: <4D6319E0.9080907@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@snapgear.com>, Thomas Gleixner <tglx@linutronix.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Steven King <sfking00@yahoo.com>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gregungerer@westnet.com.au>
 
-On Tue, Feb 22, 2011 at 08:40:53AM +0100, Geert Uytterhoeven wrote:
-> On Tue, Feb 22, 2011 at 08:29, Sam Ravnborg <sam@ravnborg.org> wrote:
-> >> >> Is there a plan to move m68k to the generic facilities as well ?
-> >>
-> >> Moving m68k to genirq is (the next thing?) on my list...
-> >
-> > If I succeed migrating sparc32 to genirq I hope to be of a little help here.
-> > It looks like a bigger task to migrate m68k than it was/is to migrate sparc32.
-> >
-> > It would be _very_ nice to get the last two architectures migrated to genirq.
+Greg,
+
+On Tue, 22 Feb 2011, Greg Ungerer wrote:
+> On 22/02/11 07:18, Thomas Gleixner wrote:
+> > On Fri, 18 Feb 2011, Greg Ungerer wrote:
+> > > Inside of the new arch/m68k is a little messy in the kernel and mm
+> > > directories. There is plenty of scope for cleanup and merge on the
+> > > files in here - but I want to leave that for follow up patches after
+> > > this initial directory merge. As a data point, when we merged the
+> > > m68k and m68knommu include files we had something like 70 or 80
+> > > duplicate but separate files, after some cleanups that is now down to
+> > > 10. Ongoing cleanup will merge some of these remaining ones as well.
+> > > 
+> > > Thoughts?
+> > 
+> > Hmm, how are you going to deal with the fact, that m68knommu uses
+> > genirq, m68k not? I guess there are some more points like this
+> > (clockevents, clocksource ...)
 > 
-> Aren't your forgetting s390?
-Hmm, I had the understanding that m68k and sparc32 was the only two remaining :-(
-But I did not check.
+> Initially it has no impact. This first step pretty much just
+> combines the 2 directories, it doesn't attempt to do a fine
+> grained merge of each file. (It does factor out identical
+> files - quite a few in arch/m68k/lib for example).
 
-s390 sees more active maintenance so if they become the last non genirq user,
-then they may feel a bit of pressure :-)
+Ah, ok. So you doing it similar to the plain move approach which we
+did with x86 back then.
+ 
+> > Is there a plan to move m68k to the generic facilities as well ?
+> 
+> I'll look at doing what I can as I work through merging all the
+> underlying pieces :-)
 
-	Sam
+Fair enough.
+
+Thanks,
+
+	tglx
