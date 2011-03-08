@@ -1,7 +1,7 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 09/12] m68knommu: move ColdFire DMA register addresses to per-cpu headers
-Date: Tue, 8 Mar 2011 23:04:06 +1000
-Message-ID: <1299589449-24974-10-git-send-email-gerg@uclinux.org>
+Subject: [PATCH 10/12] m68knommu: clean up use of MBAR for DRAM registers on ColdFire start
+Date: Tue, 8 Mar 2011 23:04:07 +1000
+Message-ID: <1299589449-24974-11-git-send-email-gerg@uclinux.org>
 References: <1299589449-24974-1-git-send-email-gerg@uclinux.org>
  <1299589449-24974-2-git-send-email-gerg@uclinux.org>
  <1299589449-24974-3-git-send-email-gerg@uclinux.org>
@@ -11,239 +11,235 @@ References: <1299589449-24974-1-git-send-email-gerg@uclinux.org>
  <1299589449-24974-7-git-send-email-gerg@uclinux.org>
  <1299589449-24974-8-git-send-email-gerg@uclinux.org>
  <1299589449-24974-9-git-send-email-gerg@uclinux.org>
+ <1299589449-24974-10-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:51500 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:51502 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753099Ab1CHNIx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Mar 2011 08:08:53 -0500
-In-Reply-To: <1299589449-24974-9-git-send-email-gerg@uclinux.org>
+	with ESMTP id S1753099Ab1CHNIz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Mar 2011 08:08:55 -0500
+In-Reply-To: <1299589449-24974-10-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 Cc: Greg Ungerer <gerg@uclinux.org>
 
-The base addresses of the ColdFire DMA unit registers belong with
-all the other address definitions in the per-cpu headers. The current
-definitions assume they are relative to an MBAR register. Not all
-ColdFire CPUs have an MBAR register. A clean address define can only
-be acheived in the per-cpu headers along with all the other chips
-peripheral base addresses.
+In some of the RAM size autodetection code on ColdFire CPU startup
+we reference DRAM registers relative to the MBAR register. Not all of
+the supported ColdFire CPUs have an MBAR, and currently this works
+because we fake an MBAR address on those registers. In an effort to
+clean this up, and eventually remove the fake MBAR setting make the
+DRAM register address definitions actually contain the MBAR (or IPSBAR
+as appropriate) value as required.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m5206sim.h       |    3 +++
- arch/m68k/include/asm/m523xsim.h       |    9 +++++++++
- arch/m68k/include/asm/m5249sim.h       |    8 ++++++++
- arch/m68k/include/asm/m5272sim.h       |    2 ++
- arch/m68k/include/asm/m527xsim.h       |    8 ++++++++
- arch/m68k/include/asm/m528xsim.h       |    8 ++++++++
- arch/m68k/include/asm/m5307sim.h       |    8 ++++++++
- arch/m68k/include/asm/m5407sim.h       |    8 ++++++++
- arch/m68k/include/asm/mcfdma.h         |   23 -----------------------
- arch/m68knommu/platform/coldfire/dma.c |    8 ++++----
- 10 files changed, 58 insertions(+), 27 deletions(-)
+ arch/m68k/include/asm/m5206sim.h        |   16 ++++++++--------
+ arch/m68k/include/asm/m523xsim.h        |   10 +++++-----
+ arch/m68k/include/asm/m5249sim.h        |   10 +++++-----
+ arch/m68k/include/asm/m527xsim.h        |   26 +++++++++++++-------------
+ arch/m68k/include/asm/m528xsim.h        |   10 +++++-----
+ arch/m68k/include/asm/m5307sim.h        |   10 +++++-----
+ arch/m68k/include/asm/m5407sim.h        |   10 +++++-----
+ arch/m68knommu/platform/coldfire/head.S |    6 +++---
+ 8 files changed, 49 insertions(+), 49 deletions(-)
 
 diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
-index 561b03b..6fb656f 100644
+index 6fb656f..b9cba58 100644
 --- a/arch/m68k/include/asm/m5206sim.h
 +++ b/arch/m68k/include/asm/m5206sim.h
-@@ -92,6 +92,9 @@
- #define	MCFSIM_PADDR		(MCF_MBAR + 0x1c5)	/* Parallel Direction (r/w) */
- #define	MCFSIM_PADAT		(MCF_MBAR + 0x1c9)	/* Parallel Port Value (r/w) */
+@@ -48,14 +48,14 @@
+ #define	MCFSIM_SWIVR		0x42		/* SW Watchdog intr reg (r/w) */
+ #define	MCFSIM_SWSR		0x43		/* SW Watchdog service (r/w) */
  
-+#define	MCFDMA_BASE0		(MCF_MBAR + 0x200)	/* Base address DMA 0 */
-+#define	MCFDMA_BASE1		(MCF_MBAR + 0x240)	/* Base address DMA 1 */
-+
- #if defined(CONFIG_NETtel)
- #define	MCFUART_BASE1		0x180		/* Base address of UART1 */
- #define	MCFUART_BASE2		0x140		/* Base address of UART2 */
+-#define	MCFSIM_DCRR		0x46		/* DRAM Refresh reg (r/w) */
+-#define	MCFSIM_DCTR		0x4a		/* DRAM Timing reg (r/w) */
+-#define	MCFSIM_DAR0		0x4c		/* DRAM 0 Address reg(r/w) */
+-#define	MCFSIM_DMR0		0x50		/* DRAM 0 Mask reg (r/w) */
+-#define	MCFSIM_DCR0		0x57		/* DRAM 0 Control reg (r/w) */
+-#define	MCFSIM_DAR1		0x58		/* DRAM 1 Address reg (r/w) */
+-#define	MCFSIM_DMR1		0x5c		/* DRAM 1 Mask reg (r/w) */
+-#define	MCFSIM_DCR1		0x63		/* DRAM 1 Control reg (r/w) */
++#define	MCFSIM_DCRR		(MCF_MBAR + 0x46) /* DRAM Refresh reg (r/w) */
++#define	MCFSIM_DCTR		(MCF_MBAR + 0x4a) /* DRAM Timing reg (r/w) */
++#define	MCFSIM_DAR0		(MCF_MBAR + 0x4c) /* DRAM 0 Address reg(r/w) */
++#define	MCFSIM_DMR0		(MCF_MBAR + 0x50) /* DRAM 0 Mask reg (r/w) */
++#define	MCFSIM_DCR0		(MCF_MBAR + 0x57) /* DRAM 0 Control reg (r/w) */
++#define	MCFSIM_DAR1		(MCF_MBAR + 0x58) /* DRAM 1 Address reg (r/w) */
++#define	MCFSIM_DMR1		(MCF_MBAR + 0x5c) /* DRAM 1 Mask reg (r/w) */
++#define	MCFSIM_DCR1		(MCF_MBAR + 0x63) /* DRAM 1 Control reg (r/w) */
+ 
+ #define	MCFSIM_CSAR0		0x64		/* CS 0 Address 0 reg (r/w) */
+ #define	MCFSIM_CSMR0		0x68		/* CS 0 Mask 0 reg (r/w) */
 diff --git a/arch/m68k/include/asm/m523xsim.h b/arch/m68k/include/asm/m523xsim.h
-index 6e5c17a..89067bd 100644
+index 89067bd..3f3dbf0 100644
 --- a/arch/m68k/include/asm/m523xsim.h
 +++ b/arch/m68k/include/asm/m523xsim.h
-@@ -160,5 +160,14 @@
- */
- #define	MCFGPIO_PAR_QSPI	(MCF_IPSBAR + 0x10004A)
- #define	MCFGPIO_PAR_TIMER	(MCF_IPSBAR + 0x10004C)
-+
-+/*
-+ * DMA unit base addresses.
-+ */
-+#define	MCFDMA_BASE0		(MCF_IPSBAR + 0x100)
-+#define	MCFDMA_BASE1		(MCF_IPSBAR + 0x140)
-+#define	MCFDMA_BASE2		(MCF_IPSBAR + 0x180)
-+#define	MCFDMA_BASE3		(MCF_IPSBAR + 0x1C0)
-+
- /****************************************************************************/
- #endif	/* m523xsim_h */
+@@ -40,11 +40,11 @@
+ /*
+  *	SDRAM configuration registers.
+  */
+-#define	MCFSIM_DCR		0x44		/* SDRAM control */
+-#define	MCFSIM_DACR0		0x48		/* SDRAM base address 0 */
+-#define	MCFSIM_DMR0		0x4c		/* SDRAM address mask 0 */
+-#define	MCFSIM_DACR1		0x50		/* SDRAM base address 1 */
+-#define	MCFSIM_DMR1		0x54		/* SDRAM address mask 1 */
++#define	MCFSIM_DCR		(MCF_IPSBAR + 0x44)	/* Control */
++#define	MCFSIM_DACR0		(MCF_IPSBAR + 0x48)	/* Base address 0 */
++#define	MCFSIM_DMR0		(MCF_IPSBAR + 0x4c)	/* Address mask 0 */
++#define	MCFSIM_DACR1		(MCF_IPSBAR + 0x50)	/* Base address 1 */
++#define	MCFSIM_DMR1		(MCF_IPSBAR + 0x54)	/* Address mask 1 */
+ 
+ /*
+  *  Reset Controll Unit (relative to IPSBAR).
 diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
-index 6698b05..aefb83e 100644
+index aefb83e..e84ac2a 100644
 --- a/arch/m68k/include/asm/m5249sim.h
 +++ b/arch/m68k/include/asm/m5249sim.h
-@@ -73,6 +73,14 @@
- #define MCFUART_BASE2		0x200           /* Base address of UART2 */
+@@ -60,11 +60,11 @@
+ #define MCFSIM_CSMR3		0xa8		/* CS 3 Mask reg (r/w) */
+ #define MCFSIM_CSCR3		0xae		/* CS 3 Control reg (r/w) */
+ 
+-#define MCFSIM_DCR		0x100		/* DRAM Control reg (r/w) */
+-#define MCFSIM_DACR0		0x108		/* DRAM 0 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR0		0x10c		/* DRAM 0 Mask reg (r/w) */
+-#define MCFSIM_DACR1		0x110		/* DRAM 1 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR1		0x114		/* DRAM 1 Mask reg (r/w) */
++#define MCFSIM_DCR		(MCF_MBAR + 0x100)	/* DRAM Control */
++#define MCFSIM_DACR0		(MCF_MBAR + 0x108)	/* DRAM 0 Addr/Ctrl */
++#define MCFSIM_DMR0		(MCF_MBAR + 0x10c)	/* DRAM 0 Mask */
++#define MCFSIM_DACR1		(MCF_MBAR + 0x110)	/* DRAM 1 Addr/Ctrl */
++#define MCFSIM_DMR1		(MCF_MBAR + 0x114)	/* DRAM 1 Mask */
  
  /*
-+ *	DMA unit base addresses.
-+ */
-+#define MCFDMA_BASE0		(MCF_MBAR + 0x300)	/* Base address DMA 0 */
-+#define MCFDMA_BASE1		(MCF_MBAR + 0x340)	/* Base address DMA 1 */
-+#define MCFDMA_BASE2		(MCF_MBAR + 0x380)	/* Base address DMA 2 */
-+#define MCFDMA_BASE3		(MCF_MBAR + 0x3C0)	/* Base address DMA 3 */
-+
-+/*
-  *	Some symbol defines for the above...
-  */
- #define	MCFSIM_SWDICR		MCFSIM_ICR0	/* Watchdog timer ICR */
-diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
-index b7cc50a..3b43fee 100644
---- a/arch/m68k/include/asm/m5272sim.h
-+++ b/arch/m68k/include/asm/m5272sim.h
-@@ -80,6 +80,8 @@
- #define	MCFSIM_PCDAT		(MCF_MBAR + 0x96) /* Port C Data (r/w) */
- #define	MCFSIM_PDCNT		(MCF_MBAR + 0x98) /* Port D Control (r/w) */
- 
-+#define	MCFDMA_BASE0		(MCF_MBAR + 0xe0) /* Base address DMA 0 */
-+
- /*
-  *	Define system peripheral IRQ usage.
-  */
+  *	UART module.
 diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
-index d299552..04b8c10 100644
+index 04b8c10..838fb2b 100644
 --- a/arch/m68k/include/asm/m527xsim.h
 +++ b/arch/m68k/include/asm/m527xsim.h
-@@ -61,6 +61,14 @@
+@@ -43,21 +43,21 @@
+  *	SDRAM configuration registers.
+  */
+ #ifdef CONFIG_M5271
+-#define	MCFSIM_DCR		0x40		/* SDRAM control */
+-#define	MCFSIM_DACR0		0x48		/* SDRAM base address 0 */
+-#define	MCFSIM_DMR0		0x4c		/* SDRAM address mask 0 */
+-#define	MCFSIM_DACR1		0x50		/* SDRAM base address 1 */
+-#define	MCFSIM_DMR1		0x54		/* SDRAM address mask 1 */
++#define	MCFSIM_DCR		(MCF_IPSBAR + 0x40)	/* Control */
++#define	MCFSIM_DACR0		(MCF_IPSBAR + 0x48)	/* Base address 0 */
++#define	MCFSIM_DMR0		(MCF_IPSBAR + 0x4c)	/* Address mask 0 */
++#define	MCFSIM_DACR1		(MCF_IPSBAR + 0x50)	/* Base address 1 */
++#define	MCFSIM_DMR1		(MCF_IPSBAR + 0x54)	/* Address mask 1 */
+ #endif
+ #ifdef CONFIG_M5275
+-#define	MCFSIM_DMR		0x40		/* SDRAM mode */
+-#define	MCFSIM_DCR		0x44		/* SDRAM control */
+-#define	MCFSIM_DCFG1		0x48		/* SDRAM configuration 1 */
+-#define	MCFSIM_DCFG2		0x4c		/* SDRAM configuration 2 */
+-#define	MCFSIM_DBAR0		0x50		/* SDRAM base address 0 */
+-#define	MCFSIM_DMR0		0x54		/* SDRAM address mask 0 */
+-#define	MCFSIM_DBAR1		0x58		/* SDRAM base address 1 */
+-#define	MCFSIM_DMR1		0x5c		/* SDRAM address mask 1 */
++#define	MCFSIM_DMR		(MCF_IPSBAR + 0x40)	/* Mode */
++#define	MCFSIM_DCR		(MCF_IPSBAR + 0x44)	/* Control */
++#define	MCFSIM_DCFG1		(MCF_IPSBAR + 0x48)	/* Configuration 1 */
++#define	MCFSIM_DCFG2		(MCF_IPSBAR + 0x4c)	/* Configuration 2 */
++#define	MCFSIM_DBAR0		(MCF_IPSBAR + 0x50)	/* Base address 0 */
++#define	MCFSIM_DMR0		(MCF_IPSBAR + 0x54)	/* Address mask 0 */
++#define	MCFSIM_DBAR1		(MCF_IPSBAR + 0x58)	/* Base address 1 */
++#define	MCFSIM_DMR1		(MCF_IPSBAR + 0x5c)	/* Address mask 1 */
  #endif
  
  /*
-+ *	DMA unit base addresses.
-+ */
-+#define	MCFDMA_BASE0		(MCF_IPSBAR + 0x100)
-+#define	MCFDMA_BASE1		(MCF_IPSBAR + 0x140)
-+#define	MCFDMA_BASE2		(MCF_IPSBAR + 0x180)
-+#define	MCFDMA_BASE3		(MCF_IPSBAR + 0x1C0)
-+
-+/*
-  *	UART module.
-  */
- #define MCFUART_BASE1		(MCF_IPSBAR + 0x200)
 diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
-index d7c9241..87c0cce 100644
+index 87c0cce..47324f2 100644
 --- a/arch/m68k/include/asm/m528xsim.h
 +++ b/arch/m68k/include/asm/m528xsim.h
-@@ -47,6 +47,14 @@
- #define	MCFSIM_DMR1		0x54		/* SDRAM address mask 1 */
+@@ -40,11 +40,11 @@
+ /*
+  *	SDRAM configuration registers.
+  */
+-#define	MCFSIM_DCR		0x44		/* SDRAM control */
+-#define	MCFSIM_DACR0		0x48		/* SDRAM base address 0 */
+-#define	MCFSIM_DMR0		0x4c		/* SDRAM address mask 0 */
+-#define	MCFSIM_DACR1		0x50		/* SDRAM base address 1 */
+-#define	MCFSIM_DMR1		0x54		/* SDRAM address mask 1 */
++#define	MCFSIM_DCR		(MCF_IPSBAR + 0x00000044) /* Control */
++#define	MCFSIM_DACR0		(MCF_IPSBAR + 0x00000048) /* Base address 0 */
++#define	MCFSIM_DMR0		(MCF_IPSBAR + 0x0000004c) /* Address mask 0 */
++#define	MCFSIM_DACR1		(MCF_IPSBAR + 0x00000050) /* Base address 1 */
++#define	MCFSIM_DMR1		(MCF_IPSBAR + 0x00000054) /* Address mask 1 */
  
  /*
-+ *	DMA unit base addresses.
-+ */
-+#define	MCFDMA_BASE0		(MCF_IPSBAR + 0x00000100)
-+#define	MCFDMA_BASE1		(MCF_IPSBAR + 0x00000140)
-+#define	MCFDMA_BASE2		(MCF_IPSBAR + 0x00000180)
-+#define	MCFDMA_BASE3		(MCF_IPSBAR + 0x000001C0)
-+
-+/*
-  *	UART module.
-  */
- #define	MCFUART_BASE1		(MCF_IPSBAR + 0x00000200)
+  *	DMA unit base addresses.
 diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
-index 0bf5739..3928576 100644
+index 3928576..a0e87cb 100644
 --- a/arch/m68k/include/asm/m5307sim.h
 +++ b/arch/m68k/include/asm/m5307sim.h
-@@ -99,6 +99,14 @@
- #define	MCFSIM_PADAT		(MCF_MBAR + 0x248)
+@@ -89,11 +89,11 @@
+ #define MCFSIM_CSCR7		0xde		/* CS 7 Control reg (r/w) */
+ #endif /* CONFIG_OLDMASK */
  
- /*
-+ *  DMA unit base addresses.
-+ */
-+#define MCFDMA_BASE0		(MCF_MBAR + 0x300)	/* Base address DMA 0 */
-+#define MCFDMA_BASE1		(MCF_MBAR + 0x340)	/* Base address DMA 1 */
-+#define MCFDMA_BASE2		(MCF_MBAR + 0x380)	/* Base address DMA 2 */
-+#define MCFDMA_BASE3		(MCF_MBAR + 0x3C0)	/* Base address DMA 3 */
-+
-+/*
-  *  UART module.
-  */
- #if defined(CONFIG_NETtel) || defined(CONFIG_SECUREEDGEMP3)
+-#define MCFSIM_DCR		0x100		/* DRAM Control reg (r/w) */
+-#define MCFSIM_DACR0		0x108		/* DRAM 0 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR0		0x10c		/* DRAM 0 Mask reg (r/w) */
+-#define MCFSIM_DACR1		0x110		/* DRAM 1 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR1		0x114		/* DRAM 1 Mask reg (r/w) */
++#define MCFSIM_DCR		(MCF_MBAR + 0x100)	/* DRAM Control */
++#define MCFSIM_DACR0		(MCF_MBAR + 0x108)	/* DRAM Addr/Ctrl 0 */
++#define MCFSIM_DMR0		(MCF_MBAR + 0x10c)	/* DRAM Mask 0 */
++#define MCFSIM_DACR1		(MCF_MBAR + 0x110)	/* DRAM Addr/Ctrl 1 */
++#define MCFSIM_DMR1		(MCF_MBAR + 0x114)	/* DRAM Mask 1 */
+ 
+ #define	MCFSIM_PADDR		(MCF_MBAR + 0x244)
+ #define	MCFSIM_PADAT		(MCF_MBAR + 0x248)
 diff --git a/arch/m68k/include/asm/m5407sim.h b/arch/m68k/include/asm/m5407sim.h
-index 75f5c28..7018172 100644
+index 7018172..ca9f55b 100644
 --- a/arch/m68k/include/asm/m5407sim.h
 +++ b/arch/m68k/include/asm/m5407sim.h
-@@ -85,6 +85,14 @@
- #define	MCFSIM_PADAT		(MCF_MBAR + 0x248)
+@@ -72,11 +72,11 @@
+ #define MCFSIM_CSMR7		0xd8		/* CS 7 Mask reg (r/w) */
+ #define MCFSIM_CSCR7		0xde		/* CS 7 Control reg (r/w) */
  
- /*
-+ *	DMA unit base addresses.
-+ */
-+#define MCFDMA_BASE0		(MCF_MBAR + 0x300)	/* Base address DMA 0 */
-+#define MCFDMA_BASE1		(MCF_MBAR + 0x340)	/* Base address DMA 1 */
-+#define MCFDMA_BASE2		(MCF_MBAR + 0x380)	/* Base address DMA 2 */
-+#define MCFDMA_BASE3		(MCF_MBAR + 0x3C0)	/* Base address DMA 3 */
-+
-+/*
-  * Generic GPIO support
+-#define MCFSIM_DCR		0x100		/* DRAM Control reg (r/w) */
+-#define MCFSIM_DACR0		0x108		/* DRAM 0 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR0		0x10c		/* DRAM 0 Mask reg (r/w) */
+-#define MCFSIM_DACR1		0x110		/* DRAM 1 Addr and Ctrl (r/w) */
+-#define MCFSIM_DMR1		0x114		/* DRAM 1 Mask reg (r/w) */
++#define MCFSIM_DCR		(MCF_MBAR + 0x100)	/* DRAM Control */
++#define MCFSIM_DACR0		(MCF_MBAR + 0x108)	/* DRAM 0 Addr/Ctrl */
++#define MCFSIM_DMR0		(MCF_MBAR + 0x10c)	/* DRAM 0 Mask */
++#define MCFSIM_DACR1		(MCF_MBAR + 0x110)	/* DRAM 1 Addr/Ctrl */
++#define MCFSIM_DMR1		(MCF_MBAR + 0x114)	/* DRAM 1 Mask */
+ 
+ #define MCFUART_BASE1		0x1c0           /* Base address of UART1 */
+ #define MCFUART_BASE2		0x200           /* Base address of UART2 */
+diff --git a/arch/m68knommu/platform/coldfire/head.S b/arch/m68knommu/platform/coldfire/head.S
+index 7967e8a..129bff4 100644
+--- a/arch/m68knommu/platform/coldfire/head.S
++++ b/arch/m68knommu/platform/coldfire/head.S
+@@ -41,17 +41,17 @@
+  *	DRAM controller is quite different.
   */
- #define MCFGPIO_PIN_MAX			16
-diff --git a/arch/m68k/include/asm/mcfdma.h b/arch/m68k/include/asm/mcfdma.h
-index 705c52c..10bc7e3 100644
---- a/arch/m68k/include/asm/mcfdma.h
-+++ b/arch/m68k/include/asm/mcfdma.h
-@@ -11,29 +11,6 @@
- #define	mcfdma_h
- /****************************************************************************/
- 
--
--/*
-- *	Get address specific defines for this Coldfire member.
-- */
--#if defined(CONFIG_M5206) || defined(CONFIG_M5206e)
--#define	MCFDMA_BASE0		0x200		/* Base address of DMA 0 */
--#define	MCFDMA_BASE1		0x240		/* Base address of DMA 1 */
--#elif defined(CONFIG_M5272)
--#define	MCFDMA_BASE0		0x0e0		/* Base address of DMA 0 */
--#elif defined(CONFIG_M523x) || defined(CONFIG_M527x) || defined(CONFIG_M528x)
--/* These are relative to the IPSBAR, not MBAR */
--#define	MCFDMA_BASE0		0x100		/* Base address of DMA 0 */
--#define	MCFDMA_BASE1		0x140		/* Base address of DMA 1 */
--#define	MCFDMA_BASE2		0x180		/* Base address of DMA 2 */
--#define	MCFDMA_BASE3		0x1C0		/* Base address of DMA 3 */
--#elif defined(CONFIG_M5249) || defined(CONFIG_M5307) || defined(CONFIG_M5407)
--#define	MCFDMA_BASE0		0x300		/* Base address of DMA 0 */
--#define	MCFDMA_BASE1		0x340		/* Base address of DMA 1 */
--#define	MCFDMA_BASE2		0x380		/* Base address of DMA 2 */
--#define	MCFDMA_BASE3		0x3C0		/* Base address of DMA 3 */
--#endif
--
--
- #if !defined(CONFIG_M5272)
- 
- /*
-diff --git a/arch/m68knommu/platform/coldfire/dma.c b/arch/m68knommu/platform/coldfire/dma.c
-index 2b30cf1..e88b95e 100644
---- a/arch/m68knommu/platform/coldfire/dma.c
-+++ b/arch/m68knommu/platform/coldfire/dma.c
-@@ -21,16 +21,16 @@
-  */
- unsigned int dma_base_addr[MAX_M68K_DMA_CHANNELS] = {
- #ifdef MCFDMA_BASE0
--	MCF_MBAR + MCFDMA_BASE0,
-+	MCFDMA_BASE0,
- #endif
- #ifdef MCFDMA_BASE1
--	MCF_MBAR + MCFDMA_BASE1,
-+	MCFDMA_BASE1,
- #endif
- #ifdef MCFDMA_BASE2
--	MCF_MBAR + MCFDMA_BASE2,
-+	MCFDMA_BASE2,
- #endif
- #ifdef MCFDMA_BASE3
--	MCF_MBAR + MCFDMA_BASE3,
-+	MCFDMA_BASE3,
- #endif
- };
- 
+ .macro GET_MEM_SIZE
+-	movel	MCF_MBAR+MCFSIM_DMR0,%d0 /* get mask for 1st bank */
++	movel	MCFSIM_DMR0,%d0		/* get mask for 1st bank */
+ 	btst	#0,%d0			/* check if region enabled */
+ 	beq	1f
+ 	andl	#0xfffc0000,%d0
+ 	beq	1f
+ 	addl	#0x00040000,%d0		/* convert mask to size */
+ 1:
+-	movel	MCF_MBAR+MCFSIM_DMR1,%d1 /* get mask for 2nd bank */
++	movel	MCFSIM_DMR1,%d1		/* get mask for 2nd bank */
+ 	btst	#0,%d1			/* check if region enabled */
+ 	beq	2f
+-	andl	#0xfffc0000, %d1
++	andl	#0xfffc0000,%d1
+ 	beq	2f
+ 	addl	#0x00040000,%d1
+ 	addl	%d1,%d0			/* total mem size in d0 */
 -- 
 1.7.0.4
