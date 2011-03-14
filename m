@@ -1,220 +1,160 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: remove ColdFire CLOCK_DIV config option
-Date: Mon, 14 Mar 2011 10:38:48 +1000
-Message-ID: <1300063128-3165-1-git-send-email-gerg@snapgear.com>
+From: Prasad Joshi <prasadjoshi124@gmail.com>
+Subject: [RFC][PATCH v2 08/23] (m68k) __vmalloc: add gfp flags variant of pte
+ and pmd allocation
+Date: Mon, 14 Mar 2011 17:42:04 +0000
+Message-ID: <AANLkTi=aZBzCXBwxYPYxs4SQ0L0gKO+tywPBcnAqfLpx@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:59895 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753312Ab1CNAix (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Mar 2011 20:38:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Prasad Joshi <prasadjoshi124@gmail.com>, Anand Mitra <mitra@kqinfotech.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-arch@v
 
-From: Greg Ungerer <gerg@uclinux.org>
+__vmalloc: propagating GFP allocation flag.
 
-The reality is that you do not need the abiltity to configure the
-clock divider for ColdFire CPUs. It is a fixed ratio on any given
-ColdFire family member. It is not the same for all ColdFire parts,
-but it is always the same in a model range. So hard define the divider
-for each supported ColdFire CPU type and remove the Kconfig option.
+- adds functions to allow caller to pass the GFP flag for memory allocation
+- helps in fixing the Bug 30702 (__vmalloc(GFP_NOFS) can callback
+		  file system evict_inode).
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Anand Mitra <mitra@kqinfotech.com>
+Signed-off-by: Prasad Joshi <prasadjoshi124@gmail.com>
 ---
- arch/m68k/include/asm/coldfire.h |    9 ++++-----
- arch/m68k/include/asm/m5206sim.h |    1 +
- arch/m68k/include/asm/m520xsim.h |    1 +
- arch/m68k/include/asm/m523xsim.h |    1 +
- arch/m68k/include/asm/m5249sim.h |    1 +
- arch/m68k/include/asm/m5272sim.h |    1 +
- arch/m68k/include/asm/m527xsim.h |    1 +
- arch/m68k/include/asm/m528xsim.h |    1 +
- arch/m68k/include/asm/m5307sim.h |    1 +
- arch/m68k/include/asm/m532xsim.h |    1 +
- arch/m68k/include/asm/m5407sim.h |    1 +
- arch/m68k/include/asm/m54xxsim.h |    1 +
- arch/m68knommu/Kconfig           |   11 -----------
- 13 files changed, 15 insertions(+), 16 deletions(-)
+Chnagelog:
+arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++++++++++---
+arch/m68k/include/asm/sun3_pgalloc.h     |   14 +++++++++++---
+arch/m68k/mm/memory.c                    |    9 +++++++--
+3 files changed, 35 insertions(+), 8 deletions(-)
+---
+diff --git a/arch/m68k/include/asm/motorola_pgalloc.h
+b/arch/m68k/include/asm/motorola_pgalloc.h
+index 2f02f26..0d345e6 100644
+--- a/arch/m68k/include/asm/motorola_pgalloc.h
++++ b/arch/m68k/include/asm/motorola_pgalloc.h
+@@ -5,13 +5,16 @@
+ #include <asm/tlbflush.h>
 
-diff --git a/arch/m68k/include/asm/coldfire.h b/arch/m68k/include/asm/coldfire.h
-index 98d1d25..c94557b 100644
---- a/arch/m68k/include/asm/coldfire.h
-+++ b/arch/m68k/include/asm/coldfire.h
-@@ -14,14 +14,13 @@
- 
- 
- /*
-- *	Define master clock frequency. This is essentially done at config
-- *	time now. No point enumerating dozens of possible clock options
-- *	here. Also the peripheral clock (bus clock) divide ratio is set
-- *	at config time too.
-+ *	Define master clock frequency. This is done at config time now.
-+ *	No point enumerating dozens of possible clock options here. And
-+ *	in any case new boards come along from time to time that have yet
-+ *	another different clocking frequency.
-  */
- #ifdef CONFIG_CLOCK_SET
- #define	MCF_CLK		CONFIG_CLOCK_FREQ
--#define	MCF_BUSCLK	(CONFIG_CLOCK_FREQ / CONFIG_CLOCK_DIV)
- #else
- #error "Don't know what your ColdFire CPU clock frequency is??"
- #endif
-diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
-index dfd6d3f..9015ead 100644
---- a/arch/m68k/include/asm/m5206sim.h
-+++ b/arch/m68k/include/asm/m5206sim.h
-@@ -14,6 +14,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m5206)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		MCF_CLK
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m520xsim.h b/arch/m68k/include/asm/m520xsim.h
-index 87f8ce7..ee89801 100644
---- a/arch/m68k/include/asm/m520xsim.h
-+++ b/arch/m68k/include/asm/m520xsim.h
-@@ -13,6 +13,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m520x)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m523xsim.h b/arch/m68k/include/asm/m523xsim.h
-index 3f3dbf0..3852f07 100644
---- a/arch/m68k/include/asm/m523xsim.h
-+++ b/arch/m68k/include/asm/m523xsim.h
-@@ -13,6 +13,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m523x)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
-index 33b0b4d..805714c 100644
---- a/arch/m68k/include/asm/m5249sim.h
-+++ b/arch/m68k/include/asm/m5249sim.h
-@@ -13,6 +13,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m5249)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
-index 57ca4de..759c2b0 100644
---- a/arch/m68k/include/asm/m5272sim.h
-+++ b/arch/m68k/include/asm/m5272sim.h
-@@ -14,6 +14,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m5272)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		MCF_CLK
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
-index 838fb2b..c23046e 100644
---- a/arch/m68k/include/asm/m527xsim.h
-+++ b/arch/m68k/include/asm/m527xsim.h
-@@ -13,6 +13,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m527x)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
-index 47324f2..d798bd5 100644
---- a/arch/m68k/include/asm/m528xsim.h
-+++ b/arch/m68k/include/asm/m528xsim.h
-@@ -13,6 +13,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m528x)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		MCF_CLK
- 
- #include <asm/m52xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
-index e4365f2..4c94c01 100644
---- a/arch/m68k/include/asm/m5307sim.h
-+++ b/arch/m68k/include/asm/m5307sim.h
-@@ -16,6 +16,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m5307)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m53xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m532xsim.h b/arch/m68k/include/asm/m532xsim.h
-index 0dea126..ba4cc78 100644
---- a/arch/m68k/include/asm/m532xsim.h
-+++ b/arch/m68k/include/asm/m532xsim.h
-@@ -11,6 +11,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m532x)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 3)
- 
- #include <asm/m53xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m5407sim.h b/arch/m68k/include/asm/m5407sim.h
-index c1eba01..762c58c 100644
---- a/arch/m68k/include/asm/m5407sim.h
-+++ b/arch/m68k/include/asm/m5407sim.h
-@@ -16,6 +16,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m5407)"
- #define	CPU_INSTR_PER_JIFFY	3
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m54xxacr.h>
- 
-diff --git a/arch/m68k/include/asm/m54xxsim.h b/arch/m68k/include/asm/m54xxsim.h
-index cc5d94d..daaae27 100644
---- a/arch/m68k/include/asm/m54xxsim.h
-+++ b/arch/m68k/include/asm/m54xxsim.h
-@@ -7,6 +7,7 @@
- 
- #define	CPU_NAME		"COLDFIRE(m54xx)"
- #define	CPU_INSTR_PER_JIFFY	2
-+#define	MCF_BUSCLK		(MCF_CLK / 2)
- 
- #include <asm/m54xxacr.h>
- 
-diff --git a/arch/m68knommu/Kconfig b/arch/m68knommu/Kconfig
-index 2e6fe63..b5424cf 100644
---- a/arch/m68knommu/Kconfig
-+++ b/arch/m68knommu/Kconfig
-@@ -260,17 +260,6 @@ config CLOCK_FREQ
- 	  if it is fitted (there are some exceptions). This value will be
- 	  specific to the exact CPU that you are using.
- 
--config CLOCK_DIV
--	int "Set the core/bus clock divide ratio"
--	default "1"
--	depends on CLOCK_SET
--	help
--	  On many SoC style CPUs the master CPU clock is also used to drive 
--	  on-chip peripherals. The clock that is distributed to these
--	  peripherals is sometimes a fixed ratio of the master clock
--	  frequency. If so then set this to the divider ratio of the
--	  master clock to the peripheral clock. If not sure then select 1.
--
- config OLDMASK
- 	bool "Old mask 5307 (1H55J) silicon"
- 	depends on M5307
--- 
-1.7.0.4
+ extern pmd_t *get_pointer_table(void);
++extern pmd_t *__get_pointer_table (gfp_t);
+ extern int free_pointer_table(pmd_t *);
+
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
+unsigned long address)
++static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address,
++	gfp_t gfp_mask)
+ {
+ 	pte_t *pte;
+
+-	pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO);
++	pte = (pte_t *)__get_free_page(gfp_mask | __GFP_ZERO);
+ 	if (pte) {
+ 		__flush_page_to_ram(pte);
+ 		flush_tlb_kernel_page(pte);
+@@ -21,6 +24,12 @@ static inline pte_t *pte_alloc_one_kernel(struct
+mm_struct *mm, unsigned long ad
+ 	return pte;
+ }
+
++static inline pte_t *
++pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address)
++{
++	return __pte_alloc_one_kernel(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ {
+ 	cache_page(pte);
+@@ -61,10 +70,15 @@ static inline void __pte_free_tlb(struct
+mmu_gather *tlb, pgtable_t page,
+ 	__free_page(page);
+ }
+
++static inline pmd_t *
++__pmd_alloc_one(struct mm_struct *mm, unsigned long address, gfp_t gfp_mask)
++{
++	return __get_pointer_table(gfp_mask);
++}
+
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	return get_pointer_table();
++	return __pmd_alloc_one(mm, address, GFP_KERNEL);
+ }
+
+ static inline int pmd_free(struct mm_struct *mm, pmd_t *pmd)
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h
+b/arch/m68k/include/asm/sun3_pgalloc.h
+index 48d80d5..29cddb6 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -18,6 +18,7 @@
+
+ extern const char bad_pmd_string[];
+
++#define __pmd_alloc_one(mm,address,mask)       ({ BUG(); ((pmd_t *)2); })
+ #define pmd_alloc_one(mm,address)       ({ BUG(); ((pmd_t *)2); })
+
+
+@@ -38,10 +39,11 @@ do {							\
+ 	tlb_remove_page((tlb), pte);			\
+ } while (0)
+
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
+-					  unsigned long address)
++static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address,
++		gfp_t gfp_mask)
+ {
+-	unsigned long page = __get_free_page(GFP_KERNEL|__GFP_REPEAT);
++	unsigned long page = __get_free_page(gfp_mask);
+
+ 	if (!page)
+ 		return NULL;
+@@ -50,6 +52,12 @@ static inline pte_t *pte_alloc_one_kernel(struct
+mm_struct *mm,
+ 	return (pte_t *) (page);
+ }
+
++static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
++					  unsigned long address)
++{
++	return __pte_alloc_one_kernel(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm,
+ 					unsigned long address)
+ {
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
+index 34c77ce..1b2da3c 100644
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -59,7 +59,7 @@ void __init init_pointer_table(unsigned long ptable)
+ 	return;
+ }
+
+-pmd_t *get_pointer_table (void)
++pmd_t *__get_pointer_table (gfp_t gfp_mask)
+ {
+ 	ptable_desc *dp = ptable_list.next;
+ 	unsigned char mask = PD_MARKBITS (dp);
+@@ -76,7 +76,7 @@ pmd_t *get_pointer_table (void)
+ 		void *page;
+ 		ptable_desc *new;
+
+-		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
++		if (!(page = (void *)get_zeroed_page(gfp_mask)))
+ 			return NULL;
+
+ 		flush_tlb_kernel_page(page);
+@@ -99,6 +99,11 @@ pmd_t *get_pointer_table (void)
+ 	return (pmd_t *) (page_address(PD_PAGE(dp)) + off);
+ }
+
++pmd_t *get_pointer_table (void)
++{
++	return __get_pointer_table(GFP_KERNEL);
++}
++
+ int free_pointer_table (pmd_t *ptable)
+ {
+ 	ptable_desc *dp;
