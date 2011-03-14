@@ -1,17 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 2/2] m68knommu: external interrupt support to ColdFire intc-simr controller
-Date: Mon, 14 Mar 2011 10:36:19 +1000
-Message-ID: <1300062979-3060-3-git-send-email-gerg@snapgear.com>
-References: <1300062979-3060-1-git-send-email-gerg@snapgear.com>
- <1300062979-3060-2-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68knommu: remove ColdFire CLOCK_DIV config option
+Date: Mon, 14 Mar 2011 10:38:48 +1000
+Message-ID: <1300063128-3165-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:59869 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:59895 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756321Ab1CNAhz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Mar 2011 20:37:55 -0400
-In-Reply-To: <1300062979-3060-2-git-send-email-gerg@snapgear.com>
+	with ESMTP id S1753312Ab1CNAix (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Mar 2011 20:38:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -19,193 +16,205 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The EDGE Port module of some ColdFire parts using the intc-simr interrupt
-controller provides support for 7 external interrupts. These interrupts
-go off-chip (that is they are not for internal peripherals). They need
-some special handling and have some extra setup registers. Add code to
-support them.
+The reality is that you do not need the abiltity to configure the
+clock divider for ColdFire CPUs. It is a fixed ratio on any given
+ColdFire family member. It is not the same for all ColdFire parts,
+but it is always the same in a model range. So hard define the divider
+for each supported ColdFire CPU type and remove the Kconfig option.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m520xsim.h             |    3 +
- arch/m68knommu/platform/coldfire/intc-simr.c |  114 +++++++++++++++++++++++++-
- 2 files changed, 113 insertions(+), 4 deletions(-)
+ arch/m68k/include/asm/coldfire.h |    9 ++++-----
+ arch/m68k/include/asm/m5206sim.h |    1 +
+ arch/m68k/include/asm/m520xsim.h |    1 +
+ arch/m68k/include/asm/m523xsim.h |    1 +
+ arch/m68k/include/asm/m5249sim.h |    1 +
+ arch/m68k/include/asm/m5272sim.h |    1 +
+ arch/m68k/include/asm/m527xsim.h |    1 +
+ arch/m68k/include/asm/m528xsim.h |    1 +
+ arch/m68k/include/asm/m5307sim.h |    1 +
+ arch/m68k/include/asm/m532xsim.h |    1 +
+ arch/m68k/include/asm/m5407sim.h |    1 +
+ arch/m68k/include/asm/m54xxsim.h |    1 +
+ arch/m68knommu/Kconfig           |   11 -----------
+ 13 files changed, 15 insertions(+), 16 deletions(-)
 
+diff --git a/arch/m68k/include/asm/coldfire.h b/arch/m68k/include/asm/coldfire.h
+index 98d1d25..c94557b 100644
+--- a/arch/m68k/include/asm/coldfire.h
++++ b/arch/m68k/include/asm/coldfire.h
+@@ -14,14 +14,13 @@
+ 
+ 
+ /*
+- *	Define master clock frequency. This is essentially done at config
+- *	time now. No point enumerating dozens of possible clock options
+- *	here. Also the peripheral clock (bus clock) divide ratio is set
+- *	at config time too.
++ *	Define master clock frequency. This is done at config time now.
++ *	No point enumerating dozens of possible clock options here. And
++ *	in any case new boards come along from time to time that have yet
++ *	another different clocking frequency.
+  */
+ #ifdef CONFIG_CLOCK_SET
+ #define	MCF_CLK		CONFIG_CLOCK_FREQ
+-#define	MCF_BUSCLK	(CONFIG_CLOCK_FREQ / CONFIG_CLOCK_DIV)
+ #else
+ #error "Don't know what your ColdFire CPU clock frequency is??"
+ #endif
+diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
+index dfd6d3f..9015ead 100644
+--- a/arch/m68k/include/asm/m5206sim.h
++++ b/arch/m68k/include/asm/m5206sim.h
+@@ -14,6 +14,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m5206)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		MCF_CLK
+ 
+ #include <asm/m52xxacr.h>
+ 
 diff --git a/arch/m68k/include/asm/m520xsim.h b/arch/m68k/include/asm/m520xsim.h
-index ee89801..55d5a4c 100644
+index 87f8ce7..ee89801 100644
 --- a/arch/m68k/include/asm/m520xsim.h
 +++ b/arch/m68k/include/asm/m520xsim.h
-@@ -63,9 +63,12 @@
- /*
-  * EPORT and GPIO registers.
-  */
-+#define MCFEPORT_EPPAR			0xFC088000
- #define MCFEPORT_EPDDR			0xFC088002
-+#define MCFEPORT_EPIER			0xFC088003
- #define MCFEPORT_EPDR			0xFC088004
- #define MCFEPORT_EPPDR			0xFC088005
-+#define MCFEPORT_EPFR			0xFC088006
+@@ -13,6 +13,7 @@
  
- #define MCFGPIO_PODR_BUSCTL		0xFC0A4000
- #define MCFGPIO_PODR_BE			0xFC0A4001
-diff --git a/arch/m68knommu/platform/coldfire/intc-simr.c b/arch/m68knommu/platform/coldfire/intc-simr.c
-index 8876f43..e642b24 100644
---- a/arch/m68knommu/platform/coldfire/intc-simr.c
-+++ b/arch/m68knommu/platform/coldfire/intc-simr.c
-@@ -3,7 +3,7 @@
-  *
-  * Interrupt controller code for the ColdFire 5208, 5207 & 532x parts.
-  *
-- * (C) Copyright 2009, Greg Ungerer <gerg@snapgear.com>
-+ * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
-  *
-  * This file is subject to the terms and conditions of the GNU General Public
-  * License.  See the file COPYING in the main directory of this archive
-@@ -21,6 +21,44 @@
- #include <asm/traps.h>
+ #define	CPU_NAME		"COLDFIRE(m520x)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
  
- /*
-+ *	The EDGE Port interrupts are the fixed 7 external interrupts.
-+ *	They need some special treatment, for example they need to be acked.
-+ */
-+#ifdef CONFIG_M520x
-+/*
-+ *	The 520x parts only support a limited range of these external
-+ *	interrupts, only 1, 4 and 7 (as interrupts 65, 66 and 67).
-+ */
-+#define	EINT0	64	/* Is not actually used, but spot reserved for it */
-+#define	EINT1	65	/* EDGE Port interrupt 1 */
-+#define	EINT4	66	/* EDGE Port interrupt 4 */
-+#define	EINT7	67	/* EDGE Port interrupt 7 */
-+
-+static unsigned int irqebitmap[] = { 0, 1, 4, 7 };
-+static unsigned int inline irq2ebit(unsigned int irq)
-+{
-+	return irqebitmap[irq - EINT0];
-+}
-+
-+#else
-+
-+/*
-+ *	Most of the ColdFire parts with the EDGE Port module just have
-+ *	a strait direct mapping of the 7 external interrupts. Although
-+ *	there is a bit reserved for 0, it is not used.
-+ */
-+#define	EINT0	64	/* Is not actually used, but spot reserved for it */
-+#define	EINT1	65	/* EDGE Port interrupt 1 */
-+#define	EINT7	71	/* EDGE Port interrupt 7 */
-+
-+static unsigned int inline irq2ebit(unsigned int irq)
-+{
-+	return irq - EINT0;
-+}
-+
-+#endif
-+
-+/*
-  *	There maybe one or two interrupt control units, each has 64
-  *	interrupts. If there is no second unit then MCFINTC1_* defines
-  *	will be 0 (and code for them optimized away).
-@@ -46,21 +84,86 @@ static void intc_irq_unmask(struct irq_data *d)
- 		__raw_writeb(irq, MCFINTC0_CIMR);
- }
+ #include <asm/m52xxacr.h>
  
--static int intc_irq_set_type(struct irq_data *d, unsigned int type)
-+static void intc_irq_ack(struct irq_data *d)
- {
--	unsigned int irq = d->irq - MCFINT_VECBASE;
-+	unsigned int ebit = irq2ebit(d->irq);
+diff --git a/arch/m68k/include/asm/m523xsim.h b/arch/m68k/include/asm/m523xsim.h
+index 3f3dbf0..3852f07 100644
+--- a/arch/m68k/include/asm/m523xsim.h
++++ b/arch/m68k/include/asm/m523xsim.h
+@@ -13,6 +13,7 @@
  
-+	__raw_writeb(0x1 << ebit, MCFEPORT_EPFR);
-+}
-+
-+static unsigned int intc_irq_startup(struct irq_data *d)
-+{
-+	unsigned int irq = d->irq;
-+
-+	if ((irq >= EINT1) && (irq <= EINT7)) {
-+		unsigned int ebit = irq2ebit(irq);
-+		u8 v;
-+
-+		/* Set EPORT line as input */
-+		v = __raw_readb(MCFEPORT_EPDDR);
-+		__raw_writeb(v & ~(0x1 << ebit), MCFEPORT_EPDDR);
-+
-+		/* Set EPORT line as interrupt source */
-+		v = __raw_readb(MCFEPORT_EPIER);
-+		__raw_writeb(v | (0x1 << ebit), MCFEPORT_EPIER);
-+	}
-+
-+	irq -= MCFINT_VECBASE;
- 	if (MCFINTC1_ICR0 && (irq > 64))
- 		__raw_writeb(5, MCFINTC1_ICR0 + irq - 64);
- 	else
- 		__raw_writeb(5, MCFINTC0_ICR0 + irq);
-+
-+
-+	intc_irq_unmask(d);
-+	return 0;
-+}
-+
-+static int intc_irq_set_type(struct irq_data *d, unsigned int type)
-+{
-+	unsigned int ebit, irq = d->irq;
-+	u16 pa, tb;
-+
-+	switch (type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+		tb = 0x1;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		tb = 0x2;
-+		break;
-+	case IRQ_TYPE_EDGE_BOTH:
-+		tb = 0x3;
-+		break;
-+	default:
-+		/* Level triggered */
-+		tb = 0;
-+		break;
-+	}
-+
-+	if (tb)
-+		set_irq_handler(irq, handle_edge_irq);
-+
-+	ebit = irq2ebit(irq) * 2;
-+	pa = __raw_readw(MCFEPORT_EPPAR);
-+	pa = (pa & ~(0x3 << ebit)) | (tb << ebit);
-+	__raw_writew(pa, MCFEPORT_EPPAR);
-+	
- 	return 0;
- }
+ #define	CPU_NAME		"COLDFIRE(m523x)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
  
- static struct irq_chip intc_irq_chip = {
- 	.name		= "CF-INTC",
-+	.irq_startup	= intc_irq_startup,
-+	.irq_mask	= intc_irq_mask,
-+	.irq_unmask	= intc_irq_unmask,
-+};
-+
-+static struct irq_chip intc_irq_chip_edge_port = {
-+	.name		= "CF-INTC-EP",
-+	.irq_startup	= intc_irq_startup,
- 	.irq_mask	= intc_irq_mask,
- 	.irq_unmask	= intc_irq_unmask,
-+	.irq_ack	= intc_irq_ack,
- 	.irq_set_type	= intc_irq_set_type,
- };
+ #include <asm/m52xxacr.h>
  
-@@ -77,7 +180,10 @@ void __init init_IRQ(void)
+diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
+index 33b0b4d..805714c 100644
+--- a/arch/m68k/include/asm/m5249sim.h
++++ b/arch/m68k/include/asm/m5249sim.h
+@@ -13,6 +13,7 @@
  
- 	eirq = MCFINT_VECBASE + 64 + (MCFINTC1_ICR0 ? 64 : 0);
- 	for (irq = MCFINT_VECBASE; (irq < eirq); irq++) {
--		set_irq_chip(irq, &intc_irq_chip);
-+		if ((irq >= EINT1) && (irq <= EINT7))
-+			set_irq_chip(irq, &intc_irq_chip_edge_port);
-+		else
-+			set_irq_chip(irq, &intc_irq_chip);
- 		set_irq_type(irq, IRQ_TYPE_LEVEL_HIGH);
- 		set_irq_handler(irq, handle_level_irq);
- 	}
+ #define	CPU_NAME		"COLDFIRE(m5249)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
+ 
+ #include <asm/m52xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
+index 57ca4de..759c2b0 100644
+--- a/arch/m68k/include/asm/m5272sim.h
++++ b/arch/m68k/include/asm/m5272sim.h
+@@ -14,6 +14,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m5272)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		MCF_CLK
+ 
+ #include <asm/m52xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
+index 838fb2b..c23046e 100644
+--- a/arch/m68k/include/asm/m527xsim.h
++++ b/arch/m68k/include/asm/m527xsim.h
+@@ -13,6 +13,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m527x)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
+ 
+ #include <asm/m52xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
+index 47324f2..d798bd5 100644
+--- a/arch/m68k/include/asm/m528xsim.h
++++ b/arch/m68k/include/asm/m528xsim.h
+@@ -13,6 +13,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m528x)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		MCF_CLK
+ 
+ #include <asm/m52xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
+index e4365f2..4c94c01 100644
+--- a/arch/m68k/include/asm/m5307sim.h
++++ b/arch/m68k/include/asm/m5307sim.h
+@@ -16,6 +16,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m5307)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
+ 
+ #include <asm/m53xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m532xsim.h b/arch/m68k/include/asm/m532xsim.h
+index 0dea126..ba4cc78 100644
+--- a/arch/m68k/include/asm/m532xsim.h
++++ b/arch/m68k/include/asm/m532xsim.h
+@@ -11,6 +11,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m532x)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 3)
+ 
+ #include <asm/m53xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m5407sim.h b/arch/m68k/include/asm/m5407sim.h
+index c1eba01..762c58c 100644
+--- a/arch/m68k/include/asm/m5407sim.h
++++ b/arch/m68k/include/asm/m5407sim.h
+@@ -16,6 +16,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m5407)"
+ #define	CPU_INSTR_PER_JIFFY	3
++#define	MCF_BUSCLK		(MCF_CLK / 2)
+ 
+ #include <asm/m54xxacr.h>
+ 
+diff --git a/arch/m68k/include/asm/m54xxsim.h b/arch/m68k/include/asm/m54xxsim.h
+index cc5d94d..daaae27 100644
+--- a/arch/m68k/include/asm/m54xxsim.h
++++ b/arch/m68k/include/asm/m54xxsim.h
+@@ -7,6 +7,7 @@
+ 
+ #define	CPU_NAME		"COLDFIRE(m54xx)"
+ #define	CPU_INSTR_PER_JIFFY	2
++#define	MCF_BUSCLK		(MCF_CLK / 2)
+ 
+ #include <asm/m54xxacr.h>
+ 
+diff --git a/arch/m68knommu/Kconfig b/arch/m68knommu/Kconfig
+index 2e6fe63..b5424cf 100644
+--- a/arch/m68knommu/Kconfig
++++ b/arch/m68knommu/Kconfig
+@@ -260,17 +260,6 @@ config CLOCK_FREQ
+ 	  if it is fitted (there are some exceptions). This value will be
+ 	  specific to the exact CPU that you are using.
+ 
+-config CLOCK_DIV
+-	int "Set the core/bus clock divide ratio"
+-	default "1"
+-	depends on CLOCK_SET
+-	help
+-	  On many SoC style CPUs the master CPU clock is also used to drive 
+-	  on-chip peripherals. The clock that is distributed to these
+-	  peripherals is sometimes a fixed ratio of the master clock
+-	  frequency. If so then set this to the divider ratio of the
+-	  master clock to the peripheral clock. If not sure then select 1.
+-
+ config OLDMASK
+ 	bool "Old mask 5307 (1H55J) silicon"
+ 	depends on M5307
 -- 
 1.7.0.4
