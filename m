@@ -1,61 +1,63 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: serial167 (was: Re: [RFC 0/5] tty: move stuff around)
-Date: Thu, 17 Mar 2011 10:59:59 +0100
-Message-ID: <AANLkTi=+ckqwFUH-4U3hyj=FDM7oNtBO9TOPTT3MAwDC@mail.gmail.com>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: serial167 (was: Re: [RFC 0/5] tty: move stuff around)
+Date: Thu, 17 Mar 2011 10:46:18 +0000
+Message-ID: <20110317104618.095f16ba@lxorguk.ukuu.org.uk>
+References: <AANLkTi=+ckqwFUH-4U3hyj=FDM7oNtBO9TOPTT3MAwDC@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:55381 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752659Ab1CQKAE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Mar 2011 06:00:04 -0400
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]:54532 "EHLO
+	www.etchedpixels.co.uk" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1753766Ab1CQKqJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Mar 2011 06:46:09 -0400
+In-Reply-To: <AANLkTi=+ckqwFUH-4U3hyj=FDM7oNtBO9TOPTT3MAwDC@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@suse.de>, Jiri Slaby <jslaby@suse.cz>, linux-kernel@vger.kernel.org, Rogier Wolff <R.E.Wolff@bitwizard.nl>, "Michael H. Warfield" <mhw@wittsend.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Fri, Sep 3, 2010 at 22:32, Alan Cox <alan@lxorguk.ukuu.org.uk> wrote=
-:
-> On Fri, 3 Sep 2010 22:08:38 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->> On Fri, Sep 3, 2010 at 17:29, Arnd Bergmann <arnd@arndb.de> wrote:
->> > amiserial,nozomi,synclink,
->> > rocket,ipwireless
->> > cyclades,moxa,mxser,
->> > isicom,bfin_jtag_comm =C2=A0 -> drivers/tty/
->> >
->> > stallion,istallion,
->> > epca,specialix,ip2,
->> > riscom,serial167 =C2=A0 =C2=A0 =C2=A0 =C2=A0-> drivers/staging/tty=
-/*
->>
->> I thought we wanted to keep serial167 alive as long as it builds?
->
-> Does it build ? Is it secure ? I was under the impression the answer =
-in
-> both cases was no.
+> As serial167 is now in staging in Linus tree...
+> 
+> It still builds in 2.6.38. What is unsecure about it? If nothing,
+> please move it back,
+> as the whole MVME167 platform is pretty useless without its console driver.
 
-As serial167 is now in staging in Linus tree...
+It has no reference counting and it doesn't use tty_port objects.
 
-It still builds in 2.6.38. What is unsecure about it? If nothing,
-please move it back,
-as the whole MVME167 platform is pretty useless without its console dri=
-ver.
+The former has been required for many releases otherwise your tty objects
+are going to vanish under you and stuff, the latter is now used by all
+'active' drivers and once we have total coverage will allow a lot of
+simplification as it will mean a lot of structures that belong to the
+physical port lifetime can be put there - like the tty input buffers.
 
-Gr{oetje,eeting}s,
+You have other problems too - eg startup and shutdown depend upon the big
+kernel lock - which is now gone from those areas.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+The tty_port helpers now in the kernel will do a lot of the work for you.
+They are designed to do all the locking and nastiness around
+open/close/hangup and provide you with serialized simple handling for
+startup/shutdown.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+At minimum you want to add tty refcounting and tty port objects. If you
+use the tty_port helpers for open/close/hangup and rip out all but the
+tiny core bits of startup/shutdown etc that should also sort out the main
+other problems.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Going via info->tty can be done via tty_port_tty_get() but in this driver
+you can probably prove it's safe to take a kref when you assign the
+port->tty field and drop it on shutdown at least for the IRQ paths, for
+some of the none IRQ paths it looks like tty should be passed down. I am
+not sure about user triggered vhangup() being ok to just keep the single
+ref. tty_port_tty_get() at the start of the IRQ handler, passing the
+tty reference around and putting the kref at the end would be a fraction
+heavier but should be bulletproof.
+
+Bringing it up to the 21st century might not be a bad idea either -
+consts, platform device, no hardcoded board specific hackery, not
+essential but if the rest of the driver is getting a much needed service
+perhaps it's worth treating as it was a new submission and giving it a
+full review and cleanup to modern spec ? We wouldn't accept the existing
+driver as a submission today.
+
+Alan
