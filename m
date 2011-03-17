@@ -1,53 +1,41 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: serial167 (was: Re: [RFC 0/5] tty: move stuff around)
-Date: Thu, 17 Mar 2011 11:52:12 +0100
-Message-ID: <AANLkTimek6P--jzpPHVe=V8UUo9Qmm9AYL3CF5fLaW9O@mail.gmail.com>
-References: <AANLkTi=+ckqwFUH-4U3hyj=FDM7oNtBO9TOPTT3MAwDC@mail.gmail.com>
-	<20110317104618.095f16ba@lxorguk.ukuu.org.uk>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: merge of m68knommu and m68k arch branches?
+Date: Fri, 18 Mar 2011 09:59:36 +1000
+Message-ID: <4D82A068.7020101@snapgear.com>
+References: <4D5DB83D.80205@snapgear.com>	<AANLkTin0X-ST=rZqwfCA0i5VGCh5ygYXyZFdndiDgR_2@mail.gmail.com>	<AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>	<4D5EEEBB.7050708@snapgear.com>	<AANLkTimmfUJASL47Cs80FJ2mkx3PPvAX57x43nF09tns@mail.gmail.com>	<4D61A986.3060308@snapgear.com> <AANLkTimtr0JbmM2PNtGRyAKE7kNr_FXd==ZC3bM82xsG@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:53677 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752881Ab1CQKwN convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Mar 2011 06:52:13 -0400
-In-Reply-To: <20110317104618.095f16ba@lxorguk.ukuu.org.uk>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:59717 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755343Ab1CRABq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Mar 2011 20:01:46 -0400
+In-Reply-To: <AANLkTimtr0JbmM2PNtGRyAKE7kNr_FXd==ZC3bM82xsG@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@suse.de>, Jiri Slaby <jslaby@suse.cz>, linux-kernel@vger.kernel.org, Rogier Wolff <R.E.Wolff@bitwizard.nl>, "Michael H. Warfield" <mhw@wittsend.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>
 
-Hi Alan,
 
-On Thu, Mar 17, 2011 at 11:46, Alan Cox <alan@lxorguk.ukuu.org.uk> wrot=
-e:
->> As serial167 is now in staging in Linus tree...
->>
->> It still builds in 2.6.38. What is unsecure about it? If nothing,
->> please move it back,
->> as the whole MVME167 platform is pretty useless without its console =
-driver.
->
-> It has no reference counting and it doesn't use tty_port objects.
+Hi Geert,
 
-[...]
+Looks like we both have our changes for m68k and m68knommu in Linus'
+git tree for this merge window. Do you plan to push anything else?
 
-Many thanks for your elaborate (and valid) explanation!
-I'll let the VME users sort it out...
+If you are done I will prepare a single git commit on the m68knommu
+git tree that merges the m68knommu and m68k arch branches. I will
+post here again for one last check over early next week, and if
+everyone is happy I will ask Linus to pull it later next week.
 
-Gr{oetje,eeting}s,
+How does that sound?
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Regards
+Greg
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
