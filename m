@@ -1,70 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: merge of m68knommu and m68k arch branches?
-Date: Fri, 18 Mar 2011 08:24:50 +0100
-Message-ID: <AANLkTikr=HVVKxuTqwh8U=LDmaMCMpOkdUxdo+pw_tz4@mail.gmail.com>
-References: <4D5DB83D.80205@snapgear.com>
-	<AANLkTin0X-ST=rZqwfCA0i5VGCh5ygYXyZFdndiDgR_2@mail.gmail.com>
-	<AANLkTim=kQOMyKqOEkw5iQjpGhDf0YGMe1ZTnJZkKfr7@mail.gmail.com>
-	<4D5EEEBB.7050708@snapgear.com>
-	<AANLkTimmfUJASL47Cs80FJ2mkx3PPvAX57x43nF09tns@mail.gmail.com>
-	<4D61A986.3060308@snapgear.com>
-	<AANLkTimtr0JbmM2PNtGRyAKE7kNr_FXd==ZC3bM82xsG@mail.gmail.com>
-	<4D82A068.7020101@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Prasad Joshi <prasadjoshi124@gmail.com>
+Subject: [RFC][PATCH v3 00/22] __vmalloc: Propagating GFP allocation flag
+ inside __vmalloc()
+Date: Fri, 18 Mar 2011 19:41:35 +0000
+Message-ID: <20110318194135.GA4746__40642.0998894193$1300477581$gmane$org@prasad-kvm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <4D82A068.7020101@snapgear.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: akpm@linux-foundation.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, prasadjoshi124@gmail.com, mitra@kqinfotech.com
+Cc: chris@zankel.net, x86@kernel.org, jdike@addtoit.com, tj@kernel.org, cmetcalf@tilera.com, linux-sh@vger.kernel.org, liqin.chen@sunplusct.com, lennox.wu@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, benh@kernel.crashing.org, paulus@samba.org, linuxppc-dev@lists.ozlabs.org, kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org, linux-parisc@vger.kernel.org, dhowells@redhat.com, yasutake.koichi@jp.panasonic.com, linux-am33-list@redhat.com, ralf@linux-mips.org, linux-mips@linux-mips.org, monstr@monstr.eu, microblaze-uclinux@itee.uq.edu.au, geert@linux-m68k.org, zippel@linux-m68k.org, sammy@sammy.net, linux-m68k@lists.linux-m68k.org, takata@linux-m32r.org, linux-m32r@ml.linux-m32r.org, tony.luck@intel.com, fenghua.yu@intel.com, linux-ia64@vger.kernel.org, starvik@axis.com, jesper.nilsson@axis.com, linux-cris-kernel@axis.com, hans-christ
 
-Hi Greg,
+A filesystem might run into a problem while calling __vmalloc(GFP_NOFS)
+inside a lock.
 
-On Fri, Mar 18, 2011 at 00:59, Greg Ungerer <gerg@snapgear.com> wrote:
-> Looks like we both have our changes for m68k and m68knommu in Linus'
-> git tree for this merge window. Do you plan to push anything else?
+It is expected than __vmalloc when called with GFP_NOFS should not
+callback the filesystem code even incase of the increased memory
+pressure. But the problem is that even if we pass this flag, __vmalloc
+itself allocates memory with GFP_KERNEL.
 
-Nothing planned for now.
+Using GFP_KERNEL allocations may go into the memory reclaim path and try
+to free memory by calling file system evict_inode function. Which might
+lead into deadlock.
 
-> If you are done I will prepare a single git commit on the m68knommu
-> git tree that merges the m68knommu and m68k arch branches. I will
-> post here again for one last check over early next week, and if
-> everyone is happy I will ask Linus to pull it later next week.
->
-> How does that sound?
+For further details
+http://marc.info/?l=linux-mm&m=128942194520631&w=4
+https://bugzilla.kernel.org/show_bug.cgi?id=30702
 
-Sounds great! Thx!
+The patch passes the gfp allocation flag all the way down to those
+allocating functions.
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+ arch/arm/include/asm/pgalloc.h           |   11 +++++-
+ arch/avr32/include/asm/pgalloc.h         |    8 ++++-
+ arch/cris/include/asm/pgalloc.h          |   10 ++++-
+ arch/frv/include/asm/pgalloc.h           |    3 ++
+ arch/frv/include/asm/pgtable.h           |    1 +
+ arch/frv/mm/pgalloc.c                    |    9 ++++-
+ arch/ia64/include/asm/pgalloc.h          |   24 +++++++++++--
+ arch/m32r/include/asm/pgalloc.h          |   11 ++++--
+ arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++--
+ arch/m68k/include/asm/sun3_pgalloc.h     |   14 ++++++--
+ arch/m68k/mm/memory.c                    |    9 ++++-
+ arch/microblaze/include/asm/pgalloc.h    |    3 ++
+ arch/microblaze/mm/pgtable.c             |   13 +++++--
+ arch/mips/include/asm/pgalloc.h          |   22 ++++++++----
+ arch/mn10300/include/asm/pgalloc.h       |    2 +
+ arch/mn10300/mm/pgtable.c                |   10 ++++-
+ arch/parisc/include/asm/pgalloc.h        |   21 ++++++++---
+ arch/powerpc/include/asm/pgalloc-32.h    |    2 +
+ arch/powerpc/include/asm/pgalloc-64.h    |   27 +++++++++++---
+ arch/powerpc/mm/pgtable_32.c             |   10 ++++-
+ arch/s390/include/asm/pgalloc.h          |   30 +++++++++++++---
+ arch/s390/mm/pgtable.c                   |   22 +++++++++---
+ arch/score/include/asm/pgalloc.h         |   13 ++++---
+ arch/sh/include/asm/pgalloc.h            |    8 ++++-
+ arch/sh/mm/pgtable.c                     |    8 ++++-
+ arch/sparc/include/asm/pgalloc_32.h      |    5 +++
+ arch/sparc/include/asm/pgalloc_64.h      |   17 ++++++++-
+ arch/tile/include/asm/pgalloc.h          |   13 ++++++-
+ arch/tile/mm/pgtable.c                   |   10 ++++-
+ arch/um/include/asm/pgalloc.h            |    1 +
+ arch/um/kernel/mem.c                     |   21 ++++++++---
+ arch/x86/include/asm/pgalloc.h           |   17 ++++++++-
+ arch/x86/mm/pgtable.c                    |    8 ++++-
+ arch/xtensa/include/asm/pgalloc.h        |    9 ++++-
+ arch/xtensa/mm/pgtable.c                 |   11 +++++-
+ include/asm-generic/4level-fixup.h       |    8 +++-
+ include/asm-generic/pgtable-nopmd.h      |    3 +-
+ include/asm-generic/pgtable-nopud.h      |    1 +
+ include/linux/mm.h                       |   40 ++++++++++++++++-----
+ mm/memory.c                              |   14 ++++---
+ mm/vmalloc.c                             |   57 ++++++++++++++++++++----------
+ 41 files changed, 427 insertions(+), 119 deletions(-)
