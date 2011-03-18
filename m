@@ -1,75 +1,193 @@
 From: Prasad Joshi <prasadjoshi124@gmail.com>
-Subject: [RFC][PATCH v3 00/22] __vmalloc: Propagating GFP allocation flag
- inside __vmalloc()
-Date: Fri, 18 Mar 2011 19:41:35 +0000
-Message-ID: <20110318194135.GA4746__40642.0998894193$1300477581$gmane$org@prasad-kvm>
+Subject: Re: [RFC][PATCH v3 15/22] mm, m68k: add gfp flags variant of pmd
+ and pte allocations
+Date: Fri, 18 Mar 2011 20:04:01 +0000
+Message-ID: <20110318200401.GP4746@prasad-kvm>
+References: <20110318195035.GF4746@prasad-kvm>
+ <20110318195141.GG4746@prasad-kvm>
+ <20110318195307.GH4746@prasad-kvm>
+ <20110318195507.GI4746@prasad-kvm>
+ <20110318195643.GJ4746@prasad-kvm>
+ <20110318195754.GK4746@prasad-kvm>
+ <20110318195926.GL4746@prasad-kvm>
+ <20110318200045.GM4746@prasad-kvm>
+ <20110318200150.GN4746@prasad-kvm>
+ <20110318200254.GO4746@prasad-kvm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <20110318200254.GO4746@prasad-kvm>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: akpm@linux-foundation.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, prasadjoshi124@gmail.com, mitra@kqinfotech.com
-Cc: chris@zankel.net, x86@kernel.org, jdike@addtoit.com, tj@kernel.org, cmetcalf@tilera.com, linux-sh@vger.kernel.org, liqin.chen@sunplusct.com, lennox.wu@gmail.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, benh@kernel.crashing.org, paulus@samba.org, linuxppc-dev@lists.ozlabs.org, kyle@mcmartin.ca, deller@gmx.de, jejb@parisc-linux.org, linux-parisc@vger.kernel.org, dhowells@redhat.com, yasutake.koichi@jp.panasonic.com, linux-am33-list@redhat.com, ralf@linux-mips.org, linux-mips@linux-mips.org, monstr@monstr.eu, microblaze-uclinux@itee.uq.edu.au, geert@linux-m68k.org, zippel@linux-m68k.org, sammy@sammy.net, linux-m68k@lists.linux-m68k.org, takata@linux-m32r.org, linux-m32r@ml.linux-m32r.org, tony.luck@intel.com, fenghua.yu@intel.com, linux-ia64@vger.kernel.org, starvik@axis.com, jesper.nilsson@axis.com, linux-cris-kernel@axis.com, hans-christ
+To: geert@linux-m68k.org, zippel@linux-m68k.org, sammy@sammy.net, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, prasadjoshi124@gmail.com, mitra@kqinfotech.com
 
-A filesystem might run into a problem while calling __vmalloc(GFP_NOFS)
-inside a lock.
 
-It is expected than __vmalloc when called with GFP_NOFS should not
-callback the filesystem code even incase of the increased memory
-pressure. But the problem is that even if we pass this flag, __vmalloc
-itself allocates memory with GFP_KERNEL.
+Changes for motorola (motorola_pgalloc.h)
+ - Added __pte_alloc_one_kernel to allocate zeroed page using given gfp_t flag
 
-Using GFP_KERNEL allocations may go into the memory reclaim path and try
-to free memory by calling file system evict_inode function. Which might
-lead into deadlock.
+- Changed pte_alloc_one_kernel() to call __pte_alloc_one_kernel() passing
+  correct allocation flag.
 
-For further details
-http://marc.info/?l=linux-mm&m=128942194520631&w=4
-https://bugzilla.kernel.org/show_bug.cgi?id=30702
+- Added __pmd_alloc_one() to accepts gfp_t flag and pass it to
+  __get_pointer_table()
 
-The patch passes the gfp allocation flag all the way down to those
-allocating functions.
+- Changed pmd_alloc_one() to call __pmd_alloc_one() passing GFP_KERNEL
+  allocation flag.
 
- arch/arm/include/asm/pgalloc.h           |   11 +++++-
- arch/avr32/include/asm/pgalloc.h         |    8 ++++-
- arch/cris/include/asm/pgalloc.h          |   10 ++++-
- arch/frv/include/asm/pgalloc.h           |    3 ++
- arch/frv/include/asm/pgtable.h           |    1 +
- arch/frv/mm/pgalloc.c                    |    9 ++++-
- arch/ia64/include/asm/pgalloc.h          |   24 +++++++++++--
- arch/m32r/include/asm/pgalloc.h          |   11 ++++--
- arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++--
- arch/m68k/include/asm/sun3_pgalloc.h     |   14 ++++++--
- arch/m68k/mm/memory.c                    |    9 ++++-
- arch/microblaze/include/asm/pgalloc.h    |    3 ++
- arch/microblaze/mm/pgtable.c             |   13 +++++--
- arch/mips/include/asm/pgalloc.h          |   22 ++++++++----
- arch/mn10300/include/asm/pgalloc.h       |    2 +
- arch/mn10300/mm/pgtable.c                |   10 ++++-
- arch/parisc/include/asm/pgalloc.h        |   21 ++++++++---
- arch/powerpc/include/asm/pgalloc-32.h    |    2 +
- arch/powerpc/include/asm/pgalloc-64.h    |   27 +++++++++++---
- arch/powerpc/mm/pgtable_32.c             |   10 ++++-
- arch/s390/include/asm/pgalloc.h          |   30 +++++++++++++---
- arch/s390/mm/pgtable.c                   |   22 +++++++++---
- arch/score/include/asm/pgalloc.h         |   13 ++++---
- arch/sh/include/asm/pgalloc.h            |    8 ++++-
- arch/sh/mm/pgtable.c                     |    8 ++++-
- arch/sparc/include/asm/pgalloc_32.h      |    5 +++
- arch/sparc/include/asm/pgalloc_64.h      |   17 ++++++++-
- arch/tile/include/asm/pgalloc.h          |   13 ++++++-
- arch/tile/mm/pgtable.c                   |   10 ++++-
- arch/um/include/asm/pgalloc.h            |    1 +
- arch/um/kernel/mem.c                     |   21 ++++++++---
- arch/x86/include/asm/pgalloc.h           |   17 ++++++++-
- arch/x86/mm/pgtable.c                    |    8 ++++-
- arch/xtensa/include/asm/pgalloc.h        |    9 ++++-
- arch/xtensa/mm/pgtable.c                 |   11 +++++-
- include/asm-generic/4level-fixup.h       |    8 +++-
- include/asm-generic/pgtable-nopmd.h      |    3 +-
- include/asm-generic/pgtable-nopud.h      |    1 +
- include/linux/mm.h                       |   40 ++++++++++++++++-----
- mm/memory.c                              |   14 ++++---
- mm/vmalloc.c                             |   57 ++++++++++++++++++++----------
- 41 files changed, 427 insertions(+), 119 deletions(-)
+Changes for sun3 (sun3_pgalloc.h)
+- Added function __pmd_alloc_one which is same as pmd_alloc_one, but accepts
+  an extra argument for gfp_t flag.
+
+- Added function __pte_alloc_one_kernel to allocated page using
+  allocation flag passed as an argument.
+
+- Changed pte_alloc_one_kernel to call __pte_alloc_one_kernel using
+  GFP_KERNEL allocation flag.
+
+Generic Changes (mm/memory.c)
+- Added __get_pointer_table() function which is same as get_pointer_table(),
+  but allows caller to pass the allocation flag.
+
+- Changed get_pointer_table() to call __get_pointer_table() passing
+  GFP_KERNEL allocation flag.
+
+- All these changes help in fixing the Bug 30702
+
+Signed-off-by: Prasad Joshi <prasadjoshi124@gmail.com>
+Signed-off-by: Anand Mitra <mitra@kqinfotech.com>
+---
+ arch/m68k/include/asm/motorola_pgalloc.h |   20 +++++++++++++++++---
+ arch/m68k/include/asm/sun3_pgalloc.h     |   14 +++++++++++---
+ arch/m68k/mm/memory.c                    |    9 +++++++--
+ 3 files changed, 35 insertions(+), 8 deletions(-)
+
+diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
+index 2f02f26..0d345e6 100644
+--- a/arch/m68k/include/asm/motorola_pgalloc.h
++++ b/arch/m68k/include/asm/motorola_pgalloc.h
+@@ -5,13 +5,16 @@
+ #include <asm/tlbflush.h>
+ 
+ extern pmd_t *get_pointer_table(void);
++extern pmd_t *__get_pointer_table (gfp_t);
+ extern int free_pointer_table(pmd_t *);
+ 
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address)
++static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address, 
++	gfp_t gfp_mask)
+ {
+ 	pte_t *pte;
+ 
+-	pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO);
++	pte = (pte_t *)__get_free_page(gfp_mask | __GFP_ZERO);
+ 	if (pte) {
+ 		__flush_page_to_ram(pte);
+ 		flush_tlb_kernel_page(pte);
+@@ -21,6 +24,12 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long ad
+ 	return pte;
+ }
+ 
++static inline pte_t *
++pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address)
++{
++	return __pte_alloc_one_kernel(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ {
+ 	cache_page(pte);
+@@ -61,10 +70,15 @@ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t page,
+ 	__free_page(page);
+ }
+ 
++static inline pmd_t *
++__pmd_alloc_one(struct mm_struct *mm, unsigned long address, gfp_t gfp_mask)
++{
++	return __get_pointer_table(gfp_mask);
++}
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	return get_pointer_table();
++	return __pmd_alloc_one(mm, address, GFP_KERNEL);
+ }
+ 
+ static inline int pmd_free(struct mm_struct *mm, pmd_t *pmd)
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+index 48d80d5..29cddb6 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -18,6 +18,7 @@
+ 
+ extern const char bad_pmd_string[];
+ 
++#define __pmd_alloc_one(mm,address,mask)       ({ BUG(); ((pmd_t *)2); })
+ #define pmd_alloc_one(mm,address)       ({ BUG(); ((pmd_t *)2); })
+ 
+ 
+@@ -38,10 +39,11 @@ do {							\
+ 	tlb_remove_page((tlb), pte);			\
+ } while (0)
+ 
+-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
+-					  unsigned long address)
++static inline pte_t *
++__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address, 
++		gfp_t gfp_mask)
+ {
+-	unsigned long page = __get_free_page(GFP_KERNEL|__GFP_REPEAT);
++	unsigned long page = __get_free_page(gfp_mask);
+ 
+ 	if (!page)
+ 		return NULL;
+@@ -50,6 +52,12 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
+ 	return (pte_t *) (page);
+ }
+ 
++static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
++					  unsigned long address)
++{
++	return __pte_alloc_one_kernel(mm, address, GFP_KERNEL | __GFP_REPEAT);
++}
++
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm,
+ 					unsigned long address)
+ {
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
+index 34c77ce..1b2da3c 100644
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -59,7 +59,7 @@ void __init init_pointer_table(unsigned long ptable)
+ 	return;
+ }
+ 
+-pmd_t *get_pointer_table (void)
++pmd_t *__get_pointer_table (gfp_t gfp_mask)
+ {
+ 	ptable_desc *dp = ptable_list.next;
+ 	unsigned char mask = PD_MARKBITS (dp);
+@@ -76,7 +76,7 @@ pmd_t *get_pointer_table (void)
+ 		void *page;
+ 		ptable_desc *new;
+ 
+-		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
++		if (!(page = (void *)get_zeroed_page(gfp_mask)))
+ 			return NULL;
+ 
+ 		flush_tlb_kernel_page(page);
+@@ -99,6 +99,11 @@ pmd_t *get_pointer_table (void)
+ 	return (pmd_t *) (page_address(PD_PAGE(dp)) + off);
+ }
+ 
++pmd_t *get_pointer_table (void)
++{
++	return __get_pointer_table(GFP_KERNEL);
++}
++
+ int free_pointer_table (pmd_t *ptable)
+ {
+ 	ptable_desc *dp;
+-- 
+1.7.0.4
