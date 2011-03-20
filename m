@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/atari: SCC - Move Atari serial driver to staging
-Date: Sun, 20 Mar 2011 10:11:09 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1103201010001.13805@ayla.of.borg>
+Subject: m68k/atari: SCC - Now phase out the ioctl file pointer for good
+Date: Sun, 20 Mar 2011 10:40:31 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1103201039330.15406@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
@@ -10,48 +10,40 @@ List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@googlemail.com>
 Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Cfr. commit 4c37705877e74c02c968735c2eee0f84914cf557 ("tty: move obsolete and
-broken generic_serial drivers to drivers/staging/generic_serial/")
+Cfr. commit 6caa76b7786891b42b66a0e61e2c2fff2c884620 ("tty: now phase out the
+ioctl file pointer for good")
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/char/Makefile                              |    1 -
- drivers/staging/generic_serial/Makefile            |    1 +
- .../{char => staging/generic_serial}/atari_scc.c   |    0
- drivers/{char => staging/generic_serial}/scc.h     |    0
- 4 files changed, 1 insertions(+), 1 deletions(-)
- rename drivers/{char => staging/generic_serial}/atari_scc.c (100%)
- rename drivers/{char => staging/generic_serial}/scc.h (100%)
+ drivers/staging/generic_serial/atari_scc.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-index e2b5ac5..057f654 100644
---- a/drivers/char/Makefile
-+++ b/drivers/char/Makefile
-@@ -5,7 +5,6 @@
- obj-y				+= mem.o random.o
- obj-$(CONFIG_TTY_PRINTK)	+= ttyprintk.o
- obj-y				+= misc.o
--obj-$(CONFIG_ATARI_SCC)		+= atari_scc.o generic_serial.o
- obj-$(CONFIG_ATARI_DSP56K)	+= dsp56k.o
- obj-$(CONFIG_VIRTIO_CONSOLE)	+= virtio_console.o
- obj-$(CONFIG_RAW_DRIVER)	+= raw.o
-diff --git a/drivers/staging/generic_serial/Makefile b/drivers/staging/generic_serial/Makefile
-index ffc90c8..c327828 100644
---- a/drivers/staging/generic_serial/Makefile
-+++ b/drivers/staging/generic_serial/Makefile
-@@ -4,3 +4,4 @@ obj-$(CONFIG_BVME6000_SCC)	+= generic_serial.o vme_scc.o
- obj-$(CONFIG_A2232)		+= ser_a2232.o generic_serial.o
- obj-$(CONFIG_SX)		+= sx.o generic_serial.o
- obj-$(CONFIG_RIO)		+= rio/ generic_serial.o
-+obj-$(CONFIG_ATARI_SCC)		+= atari_scc.o generic_serial.o
-diff --git a/drivers/char/atari_scc.c b/drivers/staging/generic_serial/atari_scc.c
-similarity index 100%
-rename from drivers/char/atari_scc.c
-rename to drivers/staging/generic_serial/atari_scc.c
-diff --git a/drivers/char/scc.h b/drivers/staging/generic_serial/scc.h
-similarity index 100%
-rename from drivers/char/scc.h
-rename to drivers/staging/generic_serial/scc.h
+diff --git a/drivers/staging/generic_serial/atari_scc.c b/drivers/staging/generic_serial/atari_scc.c
+index e442fb4..99cee16 100644
+--- a/drivers/staging/generic_serial/atari_scc.c
++++ b/drivers/staging/generic_serial/atari_scc.c
+@@ -81,8 +81,8 @@ static void scc_hungup(void *ptr);
+ static void scc_close(void *ptr);
+ static int scc_chars_in_buffer(void *ptr);
+ static int scc_open(struct tty_struct *tty, struct file *filp);
+-static int scc_ioctl(struct tty_struct *tty, struct file *filp,
+-		     unsigned int cmd, unsigned long arg);
++static int scc_ioctl(struct tty_struct *tty, unsigned int cmd,
++		     unsigned long arg);
+ static void scc_throttle(struct tty_struct *tty);
+ static void scc_unthrottle(struct tty_struct *tty);
+ static irqreturn_t scc_tx_int(int irq, void *data);
+@@ -1392,8 +1392,8 @@ static void scc_unthrottle(struct tty_struct *tty)
+ }
+ 
+ 
+-static int scc_ioctl(struct tty_struct *tty, struct file *file,
+-		     unsigned int cmd, unsigned long arg)
++static int scc_ioctl(struct tty_struct *tty, unsigned int cmd,
++		     unsigned long arg)
+ {
+ 	struct scc_port *port = tty->driver_data;
+ 	int retval;
 -- 
 1.7.0.4
 
