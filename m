@@ -1,36 +1,74 @@
-From: "Information Technology" <laura.miehlich@cilla.de>
-Subject: Update Your E-Mail Details Account
-Date: Tue, 22 Mar 2011 15:38:38 +0100
-Message-ID: <201103221438.p2MEceu2031319__35835.8928272084$1300805006$gmane$org@auth3.smtp.vt.edu>
-Reply-To: <financialcons729@aol.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k,m68knommu: Wire up syncfs
+Date: Wed, 23 Mar 2011 13:35:31 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1103231334450.21922__6567.08514220572$1300883757$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lennier.cc.vt.edu ([198.82.162.213]:45664 "EHLO
-	lennier.cc.vt.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751877Ab1CVOmn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Mar 2011 10:42:43 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Confirm Your E-Mail Details
-                                     
-Dear Email User
-This message is from Information Technology Services of This EMAIL to all our Staff. We are currently upgrading our database and e-mail center and this is our final notification to you.we have sent several messages to you without response.
-We are deleting all unused Mail account to create space for new accounts. In order not to be suspended, you will have to update your account by providing the information listed below:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be folded with the previous one.
 
-Confirm Your E-Mail Details..
-Email.......................
-User name: ..................
-Password:..............
-Re Confirm Password:.............
+ arch/m68k/include/asm/unistd.h       |    3 ++-
+ arch/m68k/kernel/entry.S             |    1 +
+ arch/m68knommu/kernel/syscalltable.S |    1 +
+ 3 files changed, 4 insertions(+), 1 deletions(-)
 
-If you fail to confirm your continuous usage of our services by confirming your email password now, your account will be disable and you will not be able to access your email.
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index f69f7ce..29e1790 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -346,10 +346,11 @@
+ #define __NR_name_to_handle_at	340
+ #define __NR_open_by_handle_at	341
+ #define __NR_clock_adjtime	342
++#define __NR_syncfs		343
+ 
+ #ifdef __KERNEL__
+ 
+-#define NR_syscalls		343
++#define NR_syscalls		344
+ 
+ #define __ARCH_WANT_IPC_PARSE_VERSION
+ #define __ARCH_WANT_OLD_READDIR
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 8f9524a..1359ee6 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -753,4 +753,5 @@ sys_call_table:
+ 	.long sys_name_to_handle_at	/* 340 */
+ 	.long sys_open_by_handle_at
+ 	.long sys_clock_adjtime
++	.long sys_syncfs
+ 
+diff --git a/arch/m68knommu/kernel/syscalltable.S b/arch/m68knommu/kernel/syscalltable.S
+index 605bbbe..9b8393d 100644
+--- a/arch/m68knommu/kernel/syscalltable.S
++++ b/arch/m68knommu/kernel/syscalltable.S
+@@ -361,6 +361,7 @@ ENTRY(sys_call_table)
+ 	.long sys_name_to_handle_at	/* 340 */
+ 	.long sys_open_by_handle_at
+ 	.long sys_clock_adjtime
++	.long sys_syncfs
+ 
+ 	.rept NR_syscalls-(.-sys_call_table)/4
+ 		.long sys_ni_syscall
+-- 
+1.7.0.4
 
-You should immediately reply this email:  upgrading2010@mail.md   and enter your password in the above password column.
-Thanks for your understanding.
 
-Regard,
-IT Services
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
