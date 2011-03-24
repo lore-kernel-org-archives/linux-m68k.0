@@ -1,108 +1,69 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/1] m68k: merge m68k and m68knommu arch directories
-Date: Thu, 24 Mar 2011 09:04:23 +0100
-Message-ID: <AANLkTi=O76yY1NtiX5EVCA7=kGB6Tj1UsuXigKwZdKUk@mail.gmail.com>
+Subject: Re: [PATCH 0/1] m68k: merge m68k and m68knommu arch
+	directories
+Date: Thu, 24 Mar 2011 09:06:08 +0100
+Message-ID: <AANLkTik37qYtMOWENPvRmhqqPkUCTL79_cqZ-0e_i2o7@mail.gmail.com>
 References: <1300768985-902-1-git-send-email-gerg@snapgear.com>
 	<AANLkTimHzPn2Xe1RVRQKjwdynDvc3iL2=8kJ1p8kRZQ4@mail.gmail.com>
-	<AANLkTi=ohXGdwfAtWmDJKCq+cJtFqJdTCmPCxFOg6dY6@mail.gmail.com>
-	<4D8A89E7.6060204@snapgear.com>
+	<4D8A7B7F.2050405@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:34207 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933179Ab1CXIEY convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Mar 2011 04:04:24 -0400
-In-Reply-To: <4D8A89E7.6060204@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <4D8A7B7F.2050405@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-On Thu, Mar 24, 2011 at 01:01, Greg Ungerer <gerg@snapgear.com> wrote:
-> Hi Geert,
+Hi Greg,
+
+On Thu, Mar 24, 2011 at 00:00, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 24/03/11 08:07, Geert Uytterhoeven wrote:
+>> On Tue, Mar 22, 2011 at 05:43,<gerg@snapgear.com> =C2=A0wrote:
+>>> slso on the for-next branch in that tree, so will get some testing
+>>> in the next tree for the next few days.
+>>
+>> defconfig is now a nommu-config, and it fails?
+>>
+>> http://kisskb.ellerman.id.au/kisskb/buildresult/4012794/
 >
-> On 24/03/11 08:14, Geert Uytterhoeven wrote:
->>
->> On Wed, Mar 23, 2011 at 23:07, Geert Uytterhoeven<geert@linux-m68k.o=
-rg>
->> =C2=A0wrote:
->>>
->>> On Tue, Mar 22, 2011 at 05:43, =C3=83=C2=A1<gerg@snapgear.com> =C2=A0=
-wrote:
->>>>
->>>> The following patch merges the m68k and m68knommu arch directories=
-=2E
->>>> This patch has been trimmed for review purposes - the automated fi=
-le
->>>> moving and mergeing carried out by the script contained in this em=
-ail
->>>> has been removed. Only the manually required changes after running=
- the
->>>> script are shown as the patch. (So to end up with the final requir=
-ed
->>>> change you need to run this script then apply the patch).
->>>>
->>>> This change is available as the only commit on the m68knommu git t=
-ree,
->>>> for-linux branch:
->>>>
->>>> The following changes since commit
->>>> a952baa034ae7c2e4a66932005cbc7ebbccfe28d:
->>>> =C3=83=C2=A1Linus Torvalds (1):
->>>> =C3=83=C2=A1 =C3=83=C2=A1 =C3=83=C2=A1 =C3=83=C2=A1Merge branch 'f=
-or-linus' of
->>>> git://git.kernel.org/.../dtor/input
->>>>
->>>> are available in the git repository at:
->>>>
->>>> =C3=83=C2=A1git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68=
-knommu.git
->>>> for-linus
->>>>
->>>> Greg Ungerer (1):
->>>> =C3=83=C2=A1 =C3=83=C2=A1 =C3=83=C2=A1m68k: merge m68k and m68knom=
-mu arch directories
->>>>
->>>>
->>>> It is also on the for-next branch in that tree, so will get some t=
-esting
->>>> in the next tree for the next few days.
->>>
->>> defconfig is now a nommu-config, and it fails?
->>
->> BTW, haven't tried it myself yet. I'm busy bisecting an issue with
->> initrds, which
->> got introduced between 2.6.37 and 2.6.38.
->>
->> Init fails with "init: cannot open inittab", followed by
->> "Kernel panic - not syncing: Attempted to kill init!".
->>
->> As I can't get ramdisks to work on ARAnyM, I need to use real hardwa=
-re,
->> which
->> suffers a lot from long reboot/copy kernel/test cycles...
+> Yep, that looks wrong. I'll move the define for KBUILD_DEFCONFIG
+> into arch/m68k/Makefile (and remove the existing defines in Makefile_mm
+> and Makefile_no). That will make the DEFCONFIG as it was before,
+> multi_defconfig.
 >
-> As one data point (though not sure how useful this is to you... :-)
-> I can compile for an Atari target with the merge tree and load it
-> and run it on ARAnyM - using a ramdisk for root fs. Seems to work
-> ok.
+>> arch/m68k/kernel/entry_no.S:47: Error: Unknown operator -- statement
+>> `save_all' ignored
+>
+> This is due to compiling for the non-mmu targets and not using
+> a m68k-uclinux- toolchain. Unfortunately the compiler must define
+> __uClinux__ to compile for non-mmu targets. This isn't new, we
 
-Strange. On ARAnyM I get:
+For userland...
 
-    Trying to unpack rootfs image as initramfs...
-    rootfs image is not initramfs (junk in compressed archive); looks
-like an initrd
-    Freeing initrd memory: 350k freed
+> have had this problem ever since the merge of the header files.
+> (The exported headers need some switch to use to base some
+> conditionals on, and kernel config options cannot be used in
+> exported headers).
 
-but later it fails with:
+For kernels, we can explicitly define this in arch/m68k/Makefile if !MMU, r=
+ight?
 
-    RAMDISK: Couldn't find valid RAM disk image starting at 0.
+> But with a fixed defconfig, you won't see this anymore :-)
+>
+> I'll fix up the git commit on m68knommu git tree.
 
-It "works" (i.e. mounts) on the Amiga, but later it fails with the
-inittab error.
-Will  bisect more tonight...
+Good, thx!
 
 Gr{oetje,eeting}s,
 
@@ -110,12 +71,19 @@ Gr{oetje,eeting}s,
 =A0 =C2=A0 Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
 =A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
