@@ -1,363 +1,60 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] merge m68k and m68knommu arch directories
-Date: Sat, 26 Mar 2011 08:44:59 +1000
-Message-ID: <201103252244.p2PMixCg002806@goober.internal.moreton.com.au>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: build warnings
+Date: Sat, 26 Mar 2011 14:26:29 +1300
+Message-ID: <4D8D40C5.9050308@gmail.com>
+References: <alpine.DEB.2.00.1101131539400.19098@tglase.bonn.tarent.de> <alpine.DEB.2.00.1101141023130.5300@tglase.bonn.tarent.de> <AANLkTi=2Cb+EHR9xAgNPa7wGsSWWydZ56_iAGRDN-hXU@mail.gmail.com> <AANLkTinN+0i9gZxvUn0cig1kp0aM9iJ+fph0=-R-ChKZ@mail.gmail.com> <Pine.BSM.4.64L.1101161347480.11797@herc.mirbsd.org> <AANLkTimcvXaCqRrn+uZ9eVjxg0UyncSF1YL=Xpz2FiNF@mail.gmail.com> <Pine.BSM.4.64L.1101162226120.11797@herc.mirbsd.org> <AANLkTi=QH7=6ddP=KoTywDpYrwnB21XGnmwhmFkZganD@mail.gmail.com> <4D44F92C.2050707@gmail.com> <AANLkTimB1fpvMsSeTbRn5ZTU1NCpZpjrAXQ+xRShAsZN@mail.gmail.com> <4D461512.8080609@gmail.com> <alpine.LNX.2.00.1101311424100.6256@nippy.intranet> <Pine.BSM.4.64L.1102052339100.22476@herc.mirbsd.org> <4D575F50.1020601@gmail.com> <4D5CCCA5.1000106@gmail.com> <Pine.BSM.4.64L.11021718172
+ 30.3948@herc.mirbsd.org> <AANLkTi=RUod3zBnOpCX5pvg5CTVU2t5xAKh8qNo+Z14i@mail.gmail.com> <Pine.BSM.4.64L.1103131036510.11986@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:36571 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751365Ab1CYWqM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Mar 2011 18:46:12 -0400
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:53778 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751512Ab1CZB0m (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Mar 2011 21:26:42 -0400
+Received: by pzk9 with SMTP id 9so227910pzk.19
+        for <linux-m68k@vger.kernel.org>; Fri, 25 Mar 2011 18:26:41 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1103131036510.11986@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+
+Hi Thorsten,
+> Michael Schmitz dixit:
+>
+>   
+>> the reversal seems to result from the way I ended the bisect. Applying
+>>     
+>
+> Ah okay.
+>
+>   
+>> the posted patch to the Debian 2.6.27 source you had used initially
+>> does indeed seem to fix the problem.  I still need to test that after
+>>     
+>
+> Good, then I can use that (for now).
+>   
+Finally had time to test it on my development ARAnyM system which has 
+slabinfo installed. Debian 2.6.37 with the offending patch reverted does 
+run fine there, and slabinfo -l or -T do not report any errors.
+
+The only difference that patch introduces is to use a static kmem cache 
+node in place of a dynamically allocated one. If the allocated one was 
+freed by accident that would affect other architectures I presume.
+
+Can you try Thorstens kernel and one with my patch on your Amiga, Geert? 
+The brk address space randomization regression was only introduced later 
+IIRC?
+
+Just trying to find out whether the Atari init code is to blame here ...
+
+Cheers,
+
+  Michael
 
 
-Hi Linus,
-
-Can you please pull the m68knommu git tree, for-linus branch:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-It contains only a single commit that merges the m68k and m68knommu
-arch directories. Once commited there is no longer an arch/m68knommu
-directory. This is a brute force merge, and there is still some more
-fine-grained merging of files needed to really complete it. But this
-is the first critical step we need to take to get this done.
-
-Thanks
-Greg
-
-
-
-The following changes since commit d39dd11c3e6a7af5c20bfac40594db36cf270f42:
-  Linus Torvalds (1):
-        Merge branch 'for-linus' of git://git.kernel.org/.../viro/vfs-2.6
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (1):
-      m68k: merge m68k and m68knommu arch directories
-
- arch/m68k/Kconfig                                  |  456 +-------
- arch/m68k/Kconfig.debug                            |   34 +
- arch/m68k/Kconfig.mmu                              |  417 +++++++
- arch/{m68knommu/Kconfig => m68k/Kconfig.nommu}     |   94 --
- arch/m68k/Makefile                                 |  122 +--
- arch/m68k/Makefile_mm                              |  121 ++
- arch/{m68knommu/Makefile => m68k/Makefile_no}      |   16 +-
- .../{m68knommu => m68k}/configs/m5208evb_defconfig |    2 +
- .../{m68knommu => m68k}/configs/m5249evb_defconfig |    2 +
- arch/{m68knommu => m68k}/configs/m5272c3_defconfig |    2 +
- .../{m68knommu => m68k}/configs/m5275evb_defconfig |    2 +
- arch/{m68knommu => m68k}/configs/m5307c3_defconfig |    2 +
- arch/{m68knommu => m68k}/configs/m5407c3_defconfig |    2 +
- arch/m68k/kernel/Makefile                          |   18 +-
- arch/m68k/kernel/Makefile_mm                       |   17 +
- .../kernel/Makefile => m68k/kernel/Makefile_no}    |    0
- arch/m68k/kernel/asm-offsets.c                     |  101 +--
- .../asm-offsets.c => m68k/kernel/asm-offsets_mm.c} |   66 +-
- .../asm-offsets.c => m68k/kernel/asm-offsets_no.c} |    0
- arch/m68k/kernel/dma.c                             |  135 +---
- arch/m68k/kernel/dma_mm.c                          |  130 +++
- .../kernel/dma.c => m68k/kernel/dma_no.c}          |    0
- arch/m68k/kernel/entry.S                           |  756 +------------
- arch/m68k/kernel/entry_mm.S                        |  753 ++++++++++++
- .../kernel/entry.S => m68k/kernel/entry_no.S}      |    0
- arch/{m68knommu => m68k}/kernel/init_task.c        |    0
- arch/{m68knommu => m68k}/kernel/irq.c              |    0
- arch/m68k/kernel/m68k_ksyms.c                      |   21 +-
- arch/m68k/kernel/m68k_ksyms_mm.c                   |   16 +
- .../m68k_ksyms.c => m68k/kernel/m68k_ksyms_no.c}   |    0
- arch/m68k/kernel/module.c                          |  156 +---
- .../kernel/module.c => m68k/kernel/module_mm.c}    |   31 +-
- .../kernel/module.c => m68k/kernel/module_no.c}    |    0
- arch/m68k/kernel/process.c                         |  355 +------
- .../kernel/process.c => m68k/kernel/process_mm.c}  |  262 ++---
- .../kernel/process.c => m68k/kernel/process_no.c}  |    0
- arch/m68k/kernel/ptrace.c                          |  282 +-----
- arch/m68k/kernel/ptrace_mm.c                       |  277 +++++
- .../kernel/ptrace.c => m68k/kernel/ptrace_no.c}    |    0
- arch/m68k/kernel/setup.c                           |  534 +---------
- arch/m68k/kernel/setup_mm.c                        |  533 +++++++++
- .../kernel/setup.c => m68k/kernel/setup_no.c}      |    0
- arch/m68k/kernel/signal.c                          | 1018 +----------------
- .../kernel/signal.c => m68k/kernel/signal_mm.c}    |  432 ++++++--
- .../kernel/signal.c => m68k/kernel/signal_no.c}    |    0
- arch/m68k/kernel/sys_m68k.c                        |  551 +---------
- arch/m68k/kernel/sys_m68k_mm.c                     |  546 +++++++++
- .../sys_m68k.c => m68k/kernel/sys_m68k_no.c}       |    0
- arch/{m68knommu => m68k}/kernel/syscalltable.S     |    0
- arch/m68k/kernel/time.c                            |  119 +--
- arch/m68k/kernel/time_mm.c                         |  114 ++
- .../kernel/time.c => m68k/kernel/time_no.c}        |    0
- arch/m68k/kernel/traps.c                           | 1208 +-------------------
- arch/m68k/kernel/traps_mm.c                        | 1207 +++++++++++++++++++
- .../kernel/traps.c => m68k/kernel/traps_no.c}      |    0
- arch/m68k/kernel/vmlinux.lds.S                     |   11 +-
- arch/m68k/kernel/vmlinux.lds_mm.S                  |   10 +
- .../vmlinux.lds.S => m68k/kernel/vmlinux.lds_no.S} |    0
- arch/m68k/lib/Makefile                             |   11 +-
- arch/m68k/lib/Makefile_mm                          |    6 +
- .../lib/Makefile => m68k/lib/Makefile_no}          |    0
- arch/m68k/lib/checksum.c                           |  430 +-------
- arch/m68k/lib/checksum_mm.c                        |  425 +++++++
- .../lib/checksum.c => m68k/lib/checksum_no.c}      |    0
- arch/{m68knommu => m68k}/lib/delay.c               |    0
- arch/{m68knommu => m68k}/lib/divsi3.S              |    0
- arch/{m68knommu => m68k}/lib/memcpy.c              |    0
- arch/{m68knommu => m68k}/lib/memmove.c             |    0
- arch/{m68knommu => m68k}/lib/memset.c              |    0
- arch/{m68knommu => m68k}/lib/modsi3.S              |    0
- arch/m68k/lib/muldi3.c                             |   68 +-
- .../lib/ashrdi3.c => m68k/lib/muldi3_mm.c}         |   48 +-
- .../lib/muldi3.c => m68k/lib/muldi3_no.c}          |    0
- arch/{m68knommu => m68k}/lib/mulsi3.S              |    0
- arch/{m68knommu => m68k}/lib/udivsi3.S             |    0
- arch/{m68knommu => m68k}/lib/umodsi3.S             |    0
- arch/m68k/mm/Makefile                              |   13 +-
- arch/m68k/mm/Makefile_mm                           |    8 +
- .../{m68knommu/mm/Makefile => m68k/mm/Makefile_no} |    0
- arch/m68k/mm/init.c                                |  153 +---
- arch/m68k/mm/init_mm.c                             |  150 +++
- arch/{m68knommu/mm/init.c => m68k/mm/init_no.c}    |    0
- arch/m68k/mm/kmap.c                                |  368 +------
- arch/m68k/mm/kmap_mm.c                             |  367 ++++++
- arch/{m68knommu/mm/kmap.c => m68k/mm/kmap_no.c}    |    0
- arch/{m68knommu => m68k}/platform/5206/Makefile    |    0
- arch/{m68knommu => m68k}/platform/5206/config.c    |    0
- arch/{m68knommu => m68k}/platform/5206/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5206e/Makefile   |    0
- arch/{m68knommu => m68k}/platform/5206e/config.c   |    0
- arch/{m68knommu => m68k}/platform/5206e/gpio.c     |    0
- arch/{m68knommu => m68k}/platform/520x/Makefile    |    0
- arch/{m68knommu => m68k}/platform/520x/config.c    |    0
- arch/{m68knommu => m68k}/platform/520x/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/523x/Makefile    |    0
- arch/{m68knommu => m68k}/platform/523x/config.c    |    0
- arch/{m68knommu => m68k}/platform/523x/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5249/Makefile    |    0
- arch/{m68knommu => m68k}/platform/5249/config.c    |    0
- arch/{m68knommu => m68k}/platform/5249/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5249/intc2.c     |    0
- arch/{m68knommu => m68k}/platform/5272/Makefile    |    0
- arch/{m68knommu => m68k}/platform/5272/config.c    |    0
- arch/{m68knommu => m68k}/platform/5272/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5272/intc.c      |    0
- arch/{m68knommu => m68k}/platform/527x/Makefile    |    0
- arch/{m68knommu => m68k}/platform/527x/config.c    |    0
- arch/{m68knommu => m68k}/platform/527x/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/528x/Makefile    |    0
- arch/{m68knommu => m68k}/platform/528x/config.c    |    0
- arch/{m68knommu => m68k}/platform/528x/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5307/Makefile    |    0
- arch/{m68knommu => m68k}/platform/5307/config.c    |    0
- arch/{m68knommu => m68k}/platform/5307/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5307/nettel.c    |    0
- arch/{m68knommu => m68k}/platform/532x/Makefile    |    0
- arch/{m68knommu => m68k}/platform/532x/config.c    |    0
- arch/{m68knommu => m68k}/platform/532x/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/5407/Makefile    |    0
- arch/{m68knommu => m68k}/platform/5407/config.c    |    0
- arch/{m68knommu => m68k}/platform/5407/gpio.c      |    0
- arch/{m68knommu => m68k}/platform/54xx/Makefile    |    0
- arch/{m68knommu => m68k}/platform/54xx/config.c    |    0
- arch/{m68knommu => m68k}/platform/54xx/firebee.c   |    0
- arch/{m68knommu => m68k}/platform/68328/Makefile   |    0
- arch/{m68knommu => m68k}/platform/68328/bootlogo.h |    0
- .../{m68knommu => m68k}/platform/68328/bootlogo.pl |    0
- arch/{m68knommu => m68k}/platform/68328/config.c   |    0
- arch/{m68knommu => m68k}/platform/68328/entry.S    |    0
- arch/{m68knommu => m68k}/platform/68328/head-de2.S |    0
- .../platform/68328/head-pilot.S                    |    0
- arch/{m68knommu => m68k}/platform/68328/head-ram.S |    0
- arch/{m68knommu => m68k}/platform/68328/head-rom.S |    0
- arch/{m68knommu => m68k}/platform/68328/ints.c     |    0
- arch/{m68knommu => m68k}/platform/68328/romvec.S   |    0
- arch/{m68knommu => m68k}/platform/68328/timers.c   |    0
- arch/{m68knommu => m68k}/platform/68360/Makefile   |    0
- arch/{m68knommu => m68k}/platform/68360/commproc.c |    0
- arch/{m68knommu => m68k}/platform/68360/config.c   |    0
- arch/{m68knommu => m68k}/platform/68360/entry.S    |    0
- arch/{m68knommu => m68k}/platform/68360/head-ram.S |    0
- arch/{m68knommu => m68k}/platform/68360/head-rom.S |    0
- arch/{m68knommu => m68k}/platform/68360/ints.c     |    0
- arch/{m68knommu => m68k}/platform/68EZ328/Makefile |    0
- .../platform/68EZ328/bootlogo.h                    |    0
- arch/{m68knommu => m68k}/platform/68EZ328/config.c |    0
- arch/{m68knommu => m68k}/platform/68VZ328/Makefile |    0
- arch/{m68knommu => m68k}/platform/68VZ328/config.c |    0
- arch/{m68knommu => m68k}/platform/Makefile         |    0
- .../{m68knommu => m68k}/platform/coldfire/Makefile |    0
- arch/{m68knommu => m68k}/platform/coldfire/cache.c |    0
- arch/{m68knommu => m68k}/platform/coldfire/clk.c   |    0
- arch/{m68knommu => m68k}/platform/coldfire/dma.c   |    0
- .../platform/coldfire/dma_timer.c                  |    0
- arch/{m68knommu => m68k}/platform/coldfire/entry.S |    0
- arch/{m68knommu => m68k}/platform/coldfire/gpio.c  |    0
- arch/{m68knommu => m68k}/platform/coldfire/head.S  |    0
- .../{m68knommu => m68k}/platform/coldfire/intc-2.c |    0
- .../platform/coldfire/intc-simr.c                  |    0
- arch/{m68knommu => m68k}/platform/coldfire/intc.c  |    0
- .../{m68knommu => m68k}/platform/coldfire/pinmux.c |    0
- arch/{m68knommu => m68k}/platform/coldfire/pit.c   |    0
- .../platform/coldfire/sltimers.c                   |    0
- .../{m68knommu => m68k}/platform/coldfire/timers.c |    0
- .../platform/coldfire/vectors.c                    |    0
- arch/m68knommu/Kconfig.debug                       |   35 -
- arch/m68knommu/defconfig                           |   74 --
- arch/m68knommu/kernel/.gitignore                   |    1 -
- arch/m68knommu/lib/ashldi3.c                       |   62 -
- arch/m68knommu/lib/lshrdi3.c                       |   62 -
- 170 files changed, 5813 insertions(+), 7399 deletions(-)
- create mode 100644 arch/m68k/Kconfig.mmu
- rename arch/{m68knommu/Kconfig => m68k/Kconfig.nommu} (93%)
- create mode 100644 arch/m68k/Makefile_mm
- rename arch/{m68knommu/Makefile => m68k/Makefile_no} (92%)
- rename arch/{m68knommu => m68k}/configs/m5208evb_defconfig (97%)
- rename arch/{m68knommu => m68k}/configs/m5249evb_defconfig (97%)
- rename arch/{m68knommu => m68k}/configs/m5272c3_defconfig (96%)
- rename arch/{m68knommu => m68k}/configs/m5275evb_defconfig (97%)
- rename arch/{m68knommu => m68k}/configs/m5307c3_defconfig (97%)
- rename arch/{m68knommu => m68k}/configs/m5407c3_defconfig (97%)
- create mode 100644 arch/m68k/kernel/Makefile_mm
- rename arch/{m68knommu/kernel/Makefile => m68k/kernel/Makefile_no} (100%)
- copy arch/{m68knommu/kernel/asm-offsets.c => m68k/kernel/asm-offsets_mm.c} (55%)
- rename arch/{m68knommu/kernel/asm-offsets.c => m68k/kernel/asm-offsets_no.c} (100%)
- create mode 100644 arch/m68k/kernel/dma_mm.c
- rename arch/{m68knommu/kernel/dma.c => m68k/kernel/dma_no.c} (100%)
- create mode 100644 arch/m68k/kernel/entry_mm.S
- rename arch/{m68knommu/kernel/entry.S => m68k/kernel/entry_no.S} (100%)
- rename arch/{m68knommu => m68k}/kernel/init_task.c (100%)
- rename arch/{m68knommu => m68k}/kernel/irq.c (100%)
- create mode 100644 arch/m68k/kernel/m68k_ksyms_mm.c
- rename arch/{m68knommu/kernel/m68k_ksyms.c => m68k/kernel/m68k_ksyms_no.c} (100%)
- copy arch/{m68knommu/kernel/module.c => m68k/kernel/module_mm.c} (81%)
- rename arch/{m68knommu/kernel/module.c => m68k/kernel/module_no.c} (100%)
- copy arch/{m68knommu/kernel/process.c => m68k/kernel/process_mm.c} (58%)
- rename arch/{m68knommu/kernel/process.c => m68k/kernel/process_no.c} (100%)
- create mode 100644 arch/m68k/kernel/ptrace_mm.c
- rename arch/{m68knommu/kernel/ptrace.c => m68k/kernel/ptrace_no.c} (100%)
- create mode 100644 arch/m68k/kernel/setup_mm.c
- rename arch/{m68knommu/kernel/setup.c => m68k/kernel/setup_no.c} (100%)
- copy arch/{m68knommu/kernel/signal.c => m68k/kernel/signal_mm.c} (63%)
- rename arch/{m68knommu/kernel/signal.c => m68k/kernel/signal_no.c} (100%)
- create mode 100644 arch/m68k/kernel/sys_m68k_mm.c
- rename arch/{m68knommu/kernel/sys_m68k.c => m68k/kernel/sys_m68k_no.c} (100%)
- rename arch/{m68knommu => m68k}/kernel/syscalltable.S (100%)
- create mode 100644 arch/m68k/kernel/time_mm.c
- rename arch/{m68knommu/kernel/time.c => m68k/kernel/time_no.c} (100%)
- create mode 100644 arch/m68k/kernel/traps_mm.c
- rename arch/{m68knommu/kernel/traps.c => m68k/kernel/traps_no.c} (100%)
- create mode 100644 arch/m68k/kernel/vmlinux.lds_mm.S
- rename arch/{m68knommu/kernel/vmlinux.lds.S => m68k/kernel/vmlinux.lds_no.S} (100%)
- create mode 100644 arch/m68k/lib/Makefile_mm
- rename arch/{m68knommu/lib/Makefile => m68k/lib/Makefile_no} (100%)
- create mode 100644 arch/m68k/lib/checksum_mm.c
- rename arch/{m68knommu/lib/checksum.c => m68k/lib/checksum_no.c} (100%)
- rename arch/{m68knommu => m68k}/lib/delay.c (100%)
- rename arch/{m68knommu => m68k}/lib/divsi3.S (100%)
- rename arch/{m68knommu => m68k}/lib/memcpy.c (100%)
- rename arch/{m68knommu => m68k}/lib/memmove.c (100%)
- rename arch/{m68knommu => m68k}/lib/memset.c (100%)
- rename arch/{m68knommu => m68k}/lib/modsi3.S (100%)
- rename arch/{m68knommu/lib/ashrdi3.c => m68k/lib/muldi3_mm.c} (60%)
- rename arch/{m68knommu/lib/muldi3.c => m68k/lib/muldi3_no.c} (100%)
- rename arch/{m68knommu => m68k}/lib/mulsi3.S (100%)
- rename arch/{m68knommu => m68k}/lib/udivsi3.S (100%)
- rename arch/{m68knommu => m68k}/lib/umodsi3.S (100%)
- create mode 100644 arch/m68k/mm/Makefile_mm
- rename arch/{m68knommu/mm/Makefile => m68k/mm/Makefile_no} (100%)
- create mode 100644 arch/m68k/mm/init_mm.c
- rename arch/{m68knommu/mm/init.c => m68k/mm/init_no.c} (100%)
- create mode 100644 arch/m68k/mm/kmap_mm.c
- rename arch/{m68knommu/mm/kmap.c => m68k/mm/kmap_no.c} (100%)
- rename arch/{m68knommu => m68k}/platform/5206/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5206/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5206/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5206e/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5206e/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5206e/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/520x/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/520x/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/520x/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/523x/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/523x/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/523x/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5249/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5249/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5249/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5249/intc2.c (100%)
- rename arch/{m68knommu => m68k}/platform/5272/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5272/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5272/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5272/intc.c (100%)
- rename arch/{m68knommu => m68k}/platform/527x/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/527x/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/527x/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/528x/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/528x/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/528x/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5307/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5307/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5307/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5307/nettel.c (100%)
- rename arch/{m68knommu => m68k}/platform/532x/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/532x/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/532x/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/5407/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/5407/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/5407/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/54xx/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/54xx/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/54xx/firebee.c (100%)
- rename arch/{m68knommu => m68k}/platform/68328/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/68328/bootlogo.h (100%)
- rename arch/{m68knommu => m68k}/platform/68328/bootlogo.pl (100%)
- rename arch/{m68knommu => m68k}/platform/68328/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/68328/entry.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/head-de2.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/head-pilot.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/head-ram.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/head-rom.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/ints.c (100%)
- rename arch/{m68knommu => m68k}/platform/68328/romvec.S (100%)
- rename arch/{m68knommu => m68k}/platform/68328/timers.c (100%)
- rename arch/{m68knommu => m68k}/platform/68360/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/68360/commproc.c (100%)
- rename arch/{m68knommu => m68k}/platform/68360/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/68360/entry.S (100%)
- rename arch/{m68knommu => m68k}/platform/68360/head-ram.S (100%)
- rename arch/{m68knommu => m68k}/platform/68360/head-rom.S (100%)
- rename arch/{m68knommu => m68k}/platform/68360/ints.c (100%)
- rename arch/{m68knommu => m68k}/platform/68EZ328/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/68EZ328/bootlogo.h (100%)
- rename arch/{m68knommu => m68k}/platform/68EZ328/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/68VZ328/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/68VZ328/config.c (100%)
- rename arch/{m68knommu => m68k}/platform/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/Makefile (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/cache.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/clk.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/dma.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/dma_timer.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/entry.S (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/gpio.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/head.S (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/intc-2.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/intc-simr.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/intc.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/pinmux.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/pit.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/sltimers.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/timers.c (100%)
- rename arch/{m68knommu => m68k}/platform/coldfire/vectors.c (100%)
- delete mode 100644 arch/m68knommu/Kconfig.debug
- delete mode 100644 arch/m68knommu/defconfig
- delete mode 100644 arch/m68knommu/kernel/.gitignore
- delete mode 100644 arch/m68knommu/lib/ashldi3.c
- delete mode 100644 arch/m68knommu/lib/lshrdi3.c
+> Many thanks!
+> //mirabilos
+>   
