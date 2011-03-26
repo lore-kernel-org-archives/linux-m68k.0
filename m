@@ -1,67 +1,168 @@
-From: Jens Axboe <jaxboe@fusionio.com>
-Subject: Re: [GIT PULL] Core block IO bits for 2.6.39
-Date: Sat, 26 Mar 2011 10:26:26 +0100
-Message-ID: <4D8DB142.5090004@fusionio.com>
-References: <4D8B4A89.80608@fusionio.com>	<AANLkTi=zJbUpcT+vbLARyxhA34F1se8pYq9No799Zqzh@mail.gmail.com>	<4D8D87B0.3080107@fusionio.com>	<AANLkTimy1QZiHtQGUrXLPMRGEy3iXNOB=34tFjgezhEu@mail.gmail.com>	<4D8DA2F5.1050008@fusionio.com> <AANLkTinu4Piaz5SAb4BmMi-Yd6OjRAKYyKpcEWmD0THU@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [regression v2.6.38] Re: [PATCH v2] brk: fix min_brk lower bound
+ computation for COMPAT_BRK
+Date: Sat, 26 Mar 2011 14:51:49 +0100
+Message-ID: <AANLkTi=g5z+GYkbOGbdLQcLaQkpY6yQ6tjGRjjk1H59R@mail.gmail.com>
+References: <alpine.LNX.2.00.1101030002390.26685@pobox.suse.cz>
+	<alpine.LNX.2.00.1101031237210.26685@pobox.suse.cz>
+	<alpine.LNX.2.00.1101031421470.26685@pobox.suse.cz>
+	<AANLkTinK-TYnY70Wst_FTbEtn7Dwm8wEQoWMewsYM8dh@mail.gmail.com>
+	<alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx2.fusionio.com ([64.244.102.31]:39782 "EHLO mx2.fusionio.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752583Ab1CZJ0b (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 26 Mar 2011 05:26:31 -0400
-In-Reply-To: <AANLkTinu4Piaz5SAb4BmMi-Yd6OjRAKYyKpcEWmD0THU@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiri Kosina <jkosina@suse.cz>
+Cc: Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chris Mason <chris.mason@oracle.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 2011-03-26 09:34, Geert Uytterhoeven wrote:
-> On Sat, Mar 26, 2011 at 09:25, Jens Axboe <jaxboe@fusionio.com> wrote:
->> On 2011-03-26 08:21, Geert Uytterhoeven wrote:
->>> On Sat, Mar 26, 2011 at 07:29, Jens Axboe <jaxboe@fusionio.com> wrote:
->>>> On 2011-03-25 22:35, Geert Uytterhoeven wrote:
->>>>> On Thu, Mar 24, 2011 at 14:43, Jens Axboe <jaxboe@fusionio.com> wrote:
->>>>>> Jens Axboe (20):
->>>>>>      block: remove per-queue plugging
->>>>>
->>>>> This one (commit 7eaceaccab5f40bbfda044629a6298616aeaed50) breaks IDE
->>>>> on Atari/m68k under ARAnyM. It hangs on:
->>>>>
->>>>> | ide: Falcon IDE controller
->>>>> | Probing IDE interface ide0...
->>>>> | hda: Sarge m68k, ATA DISK drive
->>>>> | ide0 at 0xfff00000 on irq 15 (serialized)
->>>>> | ide-gd driver 1.18
->>>>> | hda: max request size: 128KiB
->>>>> | hda: 2118816 sectors (1084 MB) w/256KiB Cache, CHS=2102/16/63
->>>>>
->>>>> The next expected line is the partition parsing:
->>>>>
->>>>> | hda: AHDI hda1 hda2
->>>>
->>>> Geert, does this work for you?
->>>
->>> Yep.Thanks!
->>
->> Great! I think we should place those blk_delay_queue() calls under the
->> if (rq), that should workd to and be more optimal. Can I ask you to
->> check that, too?
->>
->> So:
->>
->> if (rq) {
->>        blk_requeue_request(q, rq);
->>        blk_delay_queue(q, msecs_to_jiffies(3));
->> }
->>
->> in both locations.
-> 
-> Works, too.
+Hi Jiri,
 
-Great, thanks for testing! I'll queue this up and submit it so it makes
-2.6.39-rc1.
+On Fri, Mar 25, 2011 at 11:20, Jiri Kosina <jkosina@suse.cz> wrote:
+> On Thu, 24 Mar 2011, Geert Uytterhoeven wrote:
+>> > From: Jiri Kosina <jkosina@suse.cz>
+>> > Subject: [PATCH] brk: fix min_brk lower bound computation for COMP=
+AT_BRK
+>> >
+>> > Even if CONFIG_COMPAT_BRK is set in the kernel configuration, it c=
+an still
+>> > be overriden by randomize_va_space sysctl.
+>> >
+>> > If this is the case, the min_brk computation in sys_brk() implemen=
+tation
+>> > is wrong, as it solely takes into account COMPAT_BRK setting, assu=
+ming
+>> > that brk start is not randomized. But that might not be the case i=
+f
+>> > randomize_va_space sysctl has been set to '2' at the time the bina=
+ry has
+>> > been loaded from disk.
+>> >
+>> > In such case, the check has to be done in a same way as in
+>> > !CONFIG_COMPAT_BRK case.
+>> >
+>> > In addition to that, the check for the COMPAT_BRK case introduced =
+back in
+>> > a5b4592c ("brk: make sys_brk() honor COMPAT_BRK when computing low=
+er
+>> > bound") is slightly wrong -- the lower bound shouldn't be mm->end_=
+code,
+>> > but mm->end_data instead, as that's where the legacy applications =
+expect
+>> > brk section to start (i.e. immediately after last global variable)=
+=2E
+>> >
+>> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>> > ---
+>> > =C2=A0mm/mmap.c | =C2=A0 10 +++++++++-
+>> > =C2=A01 files changed, 9 insertions(+), 1 deletions(-)
+>> >
+>> > diff --git a/mm/mmap.c b/mm/mmap.c
+>> > index 50a4aa0..ca2f164 100644
+>> > --- a/mm/mmap.c
+>> > +++ b/mm/mmap.c
+>> > @@ -253,7 +253,15 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+>> > =C2=A0 =C2=A0 =C2=A0 =C2=A0down_write(&mm->mmap_sem);
+>> >
+>> > =C2=A0#ifdef CONFIG_COMPAT_BRK
+>> > - =C2=A0 =C2=A0 =C2=A0 min_brk =3D mm->end_code;
+>> > + =C2=A0 =C2=A0 =C2=A0 /*
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0* CONFIG_COMPAT_BRK can still be over=
+ridden by setting
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0* randomize_va_space to 2, which will=
+ still make mm->start_brk
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0* to be arbitrarily shifted
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0*/
+>> > + =C2=A0 =C2=A0 =C2=A0 if (mm->start_brk > PAGE_ALIGN(mm->end_data=
+))
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 min_brk =3D mm-=
+>start_brk;
+>> > + =C2=A0 =C2=A0 =C2=A0 else
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 min_brk =3D mm-=
+>end_data;
+>> > =C2=A0#else
+>> > =C2=A0 =C2=A0 =C2=A0 =C2=A0min_brk =3D mm->start_brk;
+>> > =C2=A0#endif
+>> > --
+>> > 1.7.3.1
+>>
+>> Sorry for chiming in this late, but I've just bisected a problem in
+>> 2.6.38 to commit
+>> 5520e89485252c759ee60d313e9422447659947b ("brk: fix min_brk lower bo=
+und
+>> computation for COMPAT_BRK").
+>>
+>> When booting my very old test ramdisk on Amiga/m68k, it fails like t=
+his:
+>>
+>> | RAMDISK: gzip image found at block 0
+>> | VFS: Mounted root (ext2 filesystem) readonly on device 1:0.
+>> | warning: process `update' used the obsolete bdflush system call
+>> | Fix your initscripts?
+>> | init: cannot open inittab
+>> | Kernel panic - not syncing: Attempted to kill init!
+>>
+>> Sorry for not noticing earlier, I usually boot full Debians under AR=
+AnyM,
+>> instead of booting old ramdisks with libc5-based binaries that once =
+were
+>> considered new.
+>
+> Oh well, one has to love the libc5-based binaries indeed.
 
--- 
-Jens Axboe
+Yeah, binaries from 1996 ;-)
+
+> Is the patch below fixing the issue you are seeing on your Amiga/m68k=
+?
+> Thanks.
+>
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 2ec8eb5..0a02531 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -262,7 +262,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (mm->start_brk > PAGE_ALIGN(mm->end_dat=
+a))
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0min_brk =3D mm=
+->start_brk;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0else
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 min_brk =3D mm->en=
+d_data;
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 min_brk =3D mm->en=
+d_code;
+> =C2=A0#else
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0min_brk =3D mm->start_brk;
+> =C2=A0#endif
+
+Unfortunately not...
+
+I added some printk()s:
+
+mm->start_brk =3D 0x8000a000, PAGE_ALIGN(mm->end_data =3D 0x8000a000)
+mm->start_brk =3D 0x8000a000, PAGE_ALIGN(mm->end_data =3D 0x8000a000)
+mm->start_brk =3D 0x8000a000, PAGE_ALIGN(mm->end_data =3D 0x8000a000)
+mm->start_brk =3D 0x8000a000, PAGE_ALIGN(mm->end_data =3D 0x8000a000)
+mm->start_brk =3D 0x80006000, PAGE_ALIGN(mm->end_data =3D 0x80004000)
+
+I.e. just before the failure, "mm->start_brk > PAGE_ALIGN(mm->end_data)=
+"
+became true.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
