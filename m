@@ -1,97 +1,42 @@
-From: Jens Axboe <jaxboe@fusionio.com>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [GIT PULL] Core block IO bits for 2.6.39
-Date: Sat, 26 Mar 2011 19:48:32 +0100
-Message-ID: <4D8E3500.6090208@fusionio.com>
-References: <4D8B4A89.80608@fusionio.com> <AANLkTi=zJbUpcT+vbLARyxhA34F1se8pYq9No799Zqzh@mail.gmail.com> <4D8D87B0.3080107@fusionio.com> <AANLkTi=jcm8pLQCTwYPK_Ey1SbMYSqQhYD4fJmCNz7sS@mail.gmail.com> <4D8E1A1A.8010300@fusionio.com>
+Date: Sun, 27 Mar 2011 14:21:35 +0100
+Message-ID: <20110327142135.376142dd@lxorguk.ukuu.org.uk>
+References: <4D8B4A89.80608@fusionio.com>
+	<AANLkTi=zJbUpcT+vbLARyxhA34F1se8pYq9No799Zqzh@mail.gmail.com>
+	<4D8D87B0.3080107@fusionio.com>
+	<AANLkTi=jcm8pLQCTwYPK_Ey1SbMYSqQhYD4fJmCNz7sS@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-14
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx1.fusionio.com ([64.244.102.30]:50528 "EHLO mx1.fusionio.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753703Ab1CZSsi (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 26 Mar 2011 14:48:38 -0400
-In-Reply-To: <4D8E1A1A.8010300@fusionio.com>
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]:49523 "EHLO
+	www.etchedpixels.co.uk" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+	with ESMTP id S1753324Ab1C0NVw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 27 Mar 2011 09:21:52 -0400
+In-Reply-To: <AANLkTi=jcm8pLQCTwYPK_Ey1SbMYSqQhYD4fJmCNz7sS@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chris Mason <chris.mason@oracle.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Jens Axboe <jaxboe@fusionio.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chris Mason <chris.mason@oracle.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 2011-03-26 17:53, Jens Axboe wrote:
-> On 2011-03-26 17:48, Linus Torvalds wrote:
->> On Fri, Mar 25, 2011 at 11:29 PM, Jens Axboe <jaxboe@fusionio.com> wrote:
->>> +
->>> +       /* Use 3ms as that was the old plug delay */
->>> +       blk_delay_queue(q, msecs_to_jiffies(3));
->>
->> That's bogus. blk_delay_queue() already takes msecs, not jiffies.
-> 
-> You are right, braino.
-> 
->> Also, do we really need to delay every unplug like this? It seems sad.
->> A 3ms delay is a long time these days - admittedly most people
->> hopefully use ATA these days if they have an SSD or something, but
->> still..
-> 
-> Depends on whether you want the 'call me back, I ran into busy this
-> time' or the 'recall me immediately'.
-> 
-> I'll take a look at the IDE case tonight and submit a real fix.
+On Sat, 26 Mar 2011 09:48:37 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-It's not completely clear cut what the delays should be in the various
-old replug cases. Only for the drive sleeping can I make an educated
-guess since we now the timeout period.
+> On Fri, Mar 25, 2011 at 11:29 PM, Jens Axboe <jaxboe@fusionio.com> wr=
+ote:
+> > +
+> > + =A0 =A0 =A0 /* Use 3ms as that was the old plug delay */
+> > + =A0 =A0 =A0 blk_delay_queue(q, msecs_to_jiffies(3));
+>=20
+> That's bogus. blk_delay_queue() already takes msecs, not jiffies.
+>=20
+> Also, do we really need to delay every unplug like this? It seems sad=
+=2E
+> A 3ms delay is a long time these days - admittedly most people
+> hopefully use ATA these days if they have an SSD or something, but
+> still..
 
-So something like this. Retains the same recall delay as we had before.
-Someone who cares is free to go and optimize this, if the queue rerun
-delay should be shorter in some cases.
-
-diff --git a/drivers/ide/ide-io.c b/drivers/ide/ide-io.c
-index f407784..0e406d73 100644
---- a/drivers/ide/ide-io.c
-+++ b/drivers/ide/ide-io.c
-@@ -440,6 +440,7 @@ void do_ide_request(struct request_queue *q)
- 	struct ide_host *host = hwif->host;
- 	struct request	*rq = NULL;
- 	ide_startstop_t	startstop;
-+	unsigned long queue_run_ms = 3; /* old plug delay */
- 
- 	spin_unlock_irq(q->queue_lock);
- 
-@@ -459,6 +460,9 @@ repeat:
- 		prev_port = hwif->host->cur_port;
- 		if (drive->dev_flags & IDE_DFLAG_SLEEPING &&
- 		    time_after(drive->sleep, jiffies)) {
-+			unsigned long left = jiffies - drive->sleep;
-+
-+			queue_run_ms = jiffies_to_msecs(left + 1);
- 			ide_unlock_port(hwif);
- 			goto plug_device;
- 		}
-@@ -547,8 +551,10 @@ plug_device:
- plug_device_2:
- 	spin_lock_irq(q->queue_lock);
- 
--	if (rq)
-+	if (rq) {
- 		blk_requeue_request(q, rq);
-+		blk_delay_queue(q, queue_run_ms);
-+	}
- }
- 
- void ide_requeue_and_plug(ide_drive_t *drive, struct request *rq)
-@@ -562,6 +568,10 @@ void ide_requeue_and_plug(ide_drive_t *drive, struct request *rq)
- 		blk_requeue_request(q, rq);
- 
- 	spin_unlock_irqrestore(q->queue_lock, flags);
-+
-+	/* Use 3ms as that was the old plug delay */
-+	if (rq)
-+		blk_delay_queue(q, 3);
- }
- 
- static int drive_is_ready(ide_drive_t *drive)
-
-
--- 
-Jens Axboe
+The ATA code contains several other bogus delays btw. So out of the box
+unless you are using AHCI you are continually running small pointless
+delays every command issued.
