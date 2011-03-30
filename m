@@ -1,165 +1,63 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 3/6] m68k: remove duplicate memmove() implementation
-Date: Wed, 30 Mar 2011 17:58:24 +1000
-Message-ID: <b24221773ed0264398c53d1fbd9b8a9b73ab41c1.1301471810.git.gerg@uclinux.org>
-References: <de032cfd09b94c8803091bf143890ce48e61304a.1301471809.git.gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: fix find_next bitops
+Date: Wed, 30 Mar 2011 20:02:50 +0200
+Message-ID: <AANLkTikKA2MY6nf+LLyJbNQffX=qYY3eZdpNmwVQc21u@mail.gmail.com>
+References: <1301050810-11329-1-git-send-email-akinobu.mita@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:57666 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754552Ab1C3IBL (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Mar 2011 04:01:11 -0400
-In-Reply-To: <de032cfd09b94c8803091bf143890ce48e61304a.1301471809.git.gerg@uclinux.org>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:64022 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754863Ab1C3SCv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Mar 2011 14:02:51 -0400
+In-Reply-To: <1301050810-11329-1-git-send-email-akinobu.mita@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Akinobu Mita <akinobu.mita@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@googlemail.com>
 
-Merging the mmu and non-mmu directories we ended up with duplicate
-(and identical) implementations of memmove(). Remove one of them.
+On Fri, Mar 25, 2011 at 12:00, Akinobu Mita <akinobu.mita@gmail.com> wr=
+ote:
+> find_next bitops on m68k (find_next_zero_bit, find_next_bit, and
+> find_next_bit_le) may cause out of bounds memory access
+> when the bitmap size in bits % 32 !=3D 0 and offset (the bitnumber
+> to start searching at) is very close to the bitmap size.
+>
+> For example,
+>
+> =C2=A0 =C2=A0 =C2=A0 unsigned long bitmap[2] =3D { 0, 0 };
+> =C2=A0 =C2=A0 =C2=A0 find_next_bit(bitmap, 63, 62);
+>
+> 1. find_next_bit() tries to find any set bits in bitmap[1],
+> =C2=A0 but no bits set.
+>
+> 2. Then find_first_bit(bimap + 2, -1)
+>
+> 3. Unfortunately find_fist_bit() takes unsigned int as the size argum=
+ent.
+>
+> 4. find_first_bit will access bitmap[2~] until it find any set bits.
+>
+> This switches find_next bitops to use generic implementation of
+> find bitops to fix the problem.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/lib/Makefile  |    4 +-
- arch/m68k/lib/memmove.c |    2 -
- arch/m68k/lib/string.c  |   95 -----------------------------------------------
- 3 files changed, 2 insertions(+), 99 deletions(-)
+Andreas, do you think it's worth keeping (and fixing) the m68k "optimiz=
+ed"
+versions?
 
-diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-index 3d85fb6..ec479a9 100644
---- a/arch/m68k/lib/Makefile
-+++ b/arch/m68k/lib/Makefile
-@@ -3,12 +3,12 @@
- # Makefile for m68k-specific library files..
- #
- 
--lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o checksum.o
-+lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o memmove.o checksum.o
- 
- ifdef CONFIG_MMU
- lib-y	+= string.o uaccess.o
- else
- lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o \
--	   memcpy.o memmove.o memset.o delay.o
-+	   memcpy.o memset.o delay.o
- endif
- 
-diff --git a/arch/m68k/lib/memmove.c b/arch/m68k/lib/memmove.c
-index b3dcfe9..6519f7f 100644
---- a/arch/m68k/lib/memmove.c
-+++ b/arch/m68k/lib/memmove.c
-@@ -4,8 +4,6 @@
-  * for more details.
-  */
- 
--#define __IN_STRING_C
--
- #include <linux/module.h>
- #include <linux/string.h>
- 
-diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
-index d399c5f..711fa74 100644
---- a/arch/m68k/lib/string.c
-+++ b/arch/m68k/lib/string.c
-@@ -148,98 +148,3 @@ void *memcpy(void *to, const void *from, size_t n)
- 	return xto;
- }
- EXPORT_SYMBOL(memcpy);
--
--void *memmove(void *dest, const void *src, size_t n)
--{
--	void *xdest = dest;
--	size_t temp;
--
--	if (!n)
--		return xdest;
--
--	if (dest < src) {
--		if ((long)dest & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*cdest++ = *csrc++;
--			dest = cdest;
--			src = csrc;
--			n--;
--		}
--		if (n > 2 && (long)dest & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*sdest++ = *ssrc++;
--			dest = sdest;
--			src = ssrc;
--			n -= 2;
--		}
--		temp = n >> 2;
--		if (temp) {
--			long *ldest = dest;
--			const long *lsrc = src;
--			temp--;
--			do
--				*ldest++ = *lsrc++;
--			while (temp--);
--			dest = ldest;
--			src = lsrc;
--		}
--		if (n & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*sdest++ = *ssrc++;
--			dest = sdest;
--			src = ssrc;
--		}
--		if (n & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*cdest = *csrc;
--		}
--	} else {
--		dest = (char *)dest + n;
--		src = (const char *)src + n;
--		if ((long)dest & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*--cdest = *--csrc;
--			dest = cdest;
--			src = csrc;
--			n--;
--		}
--		if (n > 2 && (long)dest & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*--sdest = *--ssrc;
--			dest = sdest;
--			src = ssrc;
--			n -= 2;
--		}
--		temp = n >> 2;
--		if (temp) {
--			long *ldest = dest;
--			const long *lsrc = src;
--			temp--;
--			do
--				*--ldest = *--lsrc;
--			while (temp--);
--			dest = ldest;
--			src = lsrc;
--		}
--		if (n & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*--sdest = *--ssrc;
--			dest = sdest;
--			src = ssrc;
--		}
--		if (n & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*--cdest = *--csrc;
--		}
--	}
--	return xdest;
--}
--EXPORT_SYMBOL(memmove);
--- 
-1.7.0.4
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
