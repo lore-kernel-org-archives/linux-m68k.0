@@ -1,14 +1,14 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 4/6] m68k: remove duplicate memset() implementation
-Date: Wed, 30 Mar 2011 17:58:25 +1000
-Message-ID: <01f6b34a8e32a148db83e3a693aa7b2797cc4182.1301471810.git.gerg@uclinux.org>
+Subject: [PATCH 3/6] m68k: remove duplicate memmove() implementation
+Date: Wed, 30 Mar 2011 17:58:24 +1000
+Message-ID: <b24221773ed0264398c53d1fbd9b8a9b73ab41c1.1301471810.git.gerg@uclinux.org>
 References: <de032cfd09b94c8803091bf143890ce48e61304a.1301471809.git.gerg@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:57667 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:57666 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754560Ab1C3IBL (ORCPT
+	with ESMTP id S1754552Ab1C3IBL (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Mar 2011 04:01:11 -0400
 In-Reply-To: <de032cfd09b94c8803091bf143890ce48e61304a.1301471809.git.gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -17,251 +17,149 @@ To: linux-m68k@vger.kernel.org
 Cc: Greg Ungerer <gerg@uclinux.org>
 
 Merging the mmu and non-mmu directories we ended up with duplicate
-implementations of memset(). One is a little more optimized for the
->68020 case, but that can easily be inserted into a single
-implementation of memset(). Clean up the exporting of this symbol
-too, otherwise we end up exporting it twice on a no-mmu build.
+(and identical) implementations of memmove(). Remove one of them.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/kernel/m68k_ksyms_no.c |    1 -
- arch/m68k/lib/Makefile           |    5 +-
- arch/m68k/lib/memset.c           |  122 +++++++++++++++++++++++---------------
- arch/m68k/lib/string.c           |   61 -------------------
- 4 files changed, 78 insertions(+), 111 deletions(-)
- rewrite arch/m68k/lib/memset.c (99%)
+ arch/m68k/lib/Makefile  |    4 +-
+ arch/m68k/lib/memmove.c |    2 -
+ arch/m68k/lib/string.c  |   95 -----------------------------------------------
+ 3 files changed, 2 insertions(+), 99 deletions(-)
 
-diff --git a/arch/m68k/kernel/m68k_ksyms_no.c b/arch/m68k/kernel/m68k_ksyms_no.c
-index 39fe0a7..346bce6 100644
---- a/arch/m68k/kernel/m68k_ksyms_no.c
-+++ b/arch/m68k/kernel/m68k_ksyms_no.c
-@@ -36,7 +36,6 @@ EXPORT_SYMBOL(csum_partial_copy_nocheck);
-    their interface isn't gonna change any time soon now, so
-    it's OK to leave it out of version control.  */
- EXPORT_SYMBOL(memcpy);
--EXPORT_SYMBOL(memset);
- 
- /*
-  * libgcc functions - functions that are used internally by the
 diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-index ec479a9..ac275d5 100644
+index 3d85fb6..ec479a9 100644
 --- a/arch/m68k/lib/Makefile
 +++ b/arch/m68k/lib/Makefile
-@@ -3,12 +3,13 @@
+@@ -3,12 +3,12 @@
  # Makefile for m68k-specific library files..
  #
  
--lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o memmove.o checksum.o
-+lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
-+	   memset.o memmove.o checksum.o
+-lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o checksum.o
++lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o memmove.o checksum.o
  
  ifdef CONFIG_MMU
  lib-y	+= string.o uaccess.o
  else
  lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o \
--	   memcpy.o memset.o delay.o
-+	   memcpy.o delay.o
+-	   memcpy.o memmove.o memset.o delay.o
++	   memcpy.o memset.o delay.o
  endif
  
-diff --git a/arch/m68k/lib/memset.c b/arch/m68k/lib/memset.c
-dissimilarity index 99%
-index 1389bf4..eea2834 100644
---- a/arch/m68k/lib/memset.c
-+++ b/arch/m68k/lib/memset.c
-@@ -1,47 +1,75 @@
--#include <linux/types.h>
+diff --git a/arch/m68k/lib/memmove.c b/arch/m68k/lib/memmove.c
+index b3dcfe9..6519f7f 100644
+--- a/arch/m68k/lib/memmove.c
++++ b/arch/m68k/lib/memmove.c
+@@ -4,8 +4,6 @@
+  * for more details.
+  */
+ 
+-#define __IN_STRING_C
 -
--void * memset(void * s, int c, size_t count)
--{
--  void *xs = s;
--  size_t temp;
--
--  if (!count)
--    return xs;
--  c &= 0xff;
--  c |= c << 8;
--  c |= c << 16;
--  if ((long) s & 1)
--    {
--      char *cs = s;
--      *cs++ = c;
--      s = cs;
--      count--;
--    }
--  if (count > 2 && (long) s & 2)
--    {
--      short *ss = s;
--      *ss++ = c;
--      s = ss;
--      count -= 2;
--    }
--  temp = count >> 2;
--  if (temp)
--    {
--      long *ls = s;
--      for (; temp; temp--)
--	*ls++ = c;
--      s = ls;
--    }
--  if (count & 2)
--    {
--      short *ss = s;
--      *ss++ = c;
--      s = ss;
--    }
--  if (count & 1)
--    {
--      char *cs = s;
--      *cs = c;
--    }
--  return xs;
--}
-+/*
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file COPYING in the main directory of this archive
-+ * for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/string.h>
-+
-+void *memset(void *s, int c, size_t count)
-+{
-+	void *xs = s;
-+	size_t temp;
-+
-+	if (!count)
-+		return xs;
-+	c &= 0xff;
-+	c |= c << 8;
-+	c |= c << 16;
-+	if ((long)s & 1) {
-+		char *cs = s;
-+		*cs++ = c;
-+		s = cs;
-+		count--;
-+	}
-+	if (count > 2 && (long)s & 2) {
-+		short *ss = s;
-+		*ss++ = c;
-+		s = ss;
-+		count -= 2;
-+	}
-+	temp = count >> 2;
-+	if (temp) {
-+		long *ls = s;
-+#if defined(__mc68020__) || defined(__mc68030__) || \
-+    defined(__mc68040__) || defined(__mc68060__)
-+		size_t temp1;
-+		asm volatile (
-+			"	movel %1,%2\n"
-+			"	andw  #7,%2\n"
-+			"	lsrl  #3,%1\n"
-+			"	negw  %2\n"
-+			"	jmp   %%pc@(2f,%2:w:2)\n"
-+			"1:	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"	movel %3,%0@+\n"
-+			"2:	dbra  %1,1b\n"
-+			"	clrw  %1\n"
-+			"	subql #1,%1\n"
-+			"	jpl   1b"
-+			: "=a" (ls), "=d" (temp), "=&d" (temp1)
-+			: "d" (c), "0" (ls), "1" (temp));
-+#else
-+		for (; temp; temp--)
-+			*ls++ = c;
-+#endif
-+		s = ls;
-+	}
-+	if (count & 2) {
-+		short *ss = s;
-+		*ss++ = c;
-+		s = ss;
-+	}
-+	if (count & 1) {
-+		char *cs = s;
-+		*cs = c;
-+	}
-+	return xs;
-+}
-+EXPORT_SYMBOL(memset);
+ #include <linux/module.h>
+ #include <linux/string.h>
+ 
 diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
-index 711fa74..6d24612 100644
+index d399c5f..711fa74 100644
 --- a/arch/m68k/lib/string.c
 +++ b/arch/m68k/lib/string.c
-@@ -21,67 +21,6 @@ char *strcat(char *dest, const char *src)
+@@ -148,98 +148,3 @@ void *memcpy(void *to, const void *from, size_t n)
+ 	return xto;
  }
- EXPORT_SYMBOL(strcat);
- 
--void *memset(void *s, int c, size_t count)
+ EXPORT_SYMBOL(memcpy);
+-
+-void *memmove(void *dest, const void *src, size_t n)
 -{
--	void *xs = s;
--	size_t temp, temp1;
+-	void *xdest = dest;
+-	size_t temp;
 -
--	if (!count)
--		return xs;
--	c &= 0xff;
--	c |= c << 8;
--	c |= c << 16;
--	if ((long)s & 1) {
--		char *cs = s;
--		*cs++ = c;
--		s = cs;
--		count--;
--	}
--	if (count > 2 && (long)s & 2) {
--		short *ss = s;
--		*ss++ = c;
--		s = ss;
--		count -= 2;
--	}
--	temp = count >> 2;
--	if (temp) {
--		long *ls = s;
+-	if (!n)
+-		return xdest;
 -
--		asm volatile (
--			"	movel %1,%2\n"
--			"	andw  #7,%2\n"
--			"	lsrl  #3,%1\n"
--			"	negw  %2\n"
--			"	jmp   %%pc@(2f,%2:w:2)\n"
--			"1:	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"	movel %3,%0@+\n"
--			"2:	dbra  %1,1b\n"
--			"	clrw  %1\n"
--			"	subql #1,%1\n"
--			"	jpl   1b"
--			: "=a" (ls), "=d" (temp), "=&d" (temp1)
--			: "d" (c), "0" (ls), "1" (temp));
--		s = ls;
+-	if (dest < src) {
+-		if ((long)dest & 1) {
+-			char *cdest = dest;
+-			const char *csrc = src;
+-			*cdest++ = *csrc++;
+-			dest = cdest;
+-			src = csrc;
+-			n--;
+-		}
+-		if (n > 2 && (long)dest & 2) {
+-			short *sdest = dest;
+-			const short *ssrc = src;
+-			*sdest++ = *ssrc++;
+-			dest = sdest;
+-			src = ssrc;
+-			n -= 2;
+-		}
+-		temp = n >> 2;
+-		if (temp) {
+-			long *ldest = dest;
+-			const long *lsrc = src;
+-			temp--;
+-			do
+-				*ldest++ = *lsrc++;
+-			while (temp--);
+-			dest = ldest;
+-			src = lsrc;
+-		}
+-		if (n & 2) {
+-			short *sdest = dest;
+-			const short *ssrc = src;
+-			*sdest++ = *ssrc++;
+-			dest = sdest;
+-			src = ssrc;
+-		}
+-		if (n & 1) {
+-			char *cdest = dest;
+-			const char *csrc = src;
+-			*cdest = *csrc;
+-		}
+-	} else {
+-		dest = (char *)dest + n;
+-		src = (const char *)src + n;
+-		if ((long)dest & 1) {
+-			char *cdest = dest;
+-			const char *csrc = src;
+-			*--cdest = *--csrc;
+-			dest = cdest;
+-			src = csrc;
+-			n--;
+-		}
+-		if (n > 2 && (long)dest & 2) {
+-			short *sdest = dest;
+-			const short *ssrc = src;
+-			*--sdest = *--ssrc;
+-			dest = sdest;
+-			src = ssrc;
+-			n -= 2;
+-		}
+-		temp = n >> 2;
+-		if (temp) {
+-			long *ldest = dest;
+-			const long *lsrc = src;
+-			temp--;
+-			do
+-				*--ldest = *--lsrc;
+-			while (temp--);
+-			dest = ldest;
+-			src = lsrc;
+-		}
+-		if (n & 2) {
+-			short *sdest = dest;
+-			const short *ssrc = src;
+-			*--sdest = *--ssrc;
+-			dest = sdest;
+-			src = ssrc;
+-		}
+-		if (n & 1) {
+-			char *cdest = dest;
+-			const char *csrc = src;
+-			*--cdest = *--csrc;
+-		}
 -	}
--	if (count & 2) {
--		short *ss = s;
--		*ss++ = c;
--		s = ss;
--	}
--	if (count & 1) {
--		char *cs = s;
--		*cs = c;
--	}
--	return xs;
+-	return xdest;
 -}
--EXPORT_SYMBOL(memset);
--
- void *memcpy(void *to, const void *from, size_t n)
- {
- 	void *xto = to;
+-EXPORT_SYMBOL(memmove);
 -- 
 1.7.0.4
