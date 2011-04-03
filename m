@@ -1,53 +1,50 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: fix find_next bitops
-Date: Thu, 31 Mar 2011 08:16:35 +0200
-Message-ID: <AANLkTi=kamiujNVhVgjPLjyPnEw0gSgNn=28QVmsP-5j@mail.gmail.com>
-References: <1301050810-11329-1-git-send-email-akinobu.mita@gmail.com>
-	<AANLkTikKA2MY6nf+LLyJbNQffX=qYY3eZdpNmwVQc21u@mail.gmail.com>
-	<m2sju4jrov.fsf@igel.home>
-	<AANLkTimuDf+Qo0e_sVuNX5DavOBSu+Gr-VryeD9aSw_9@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH 1/2] m68k: bitops - offset == ((long)p - (long)vaddr) * 8
+Date: Sun,  3 Apr 2011 15:11:16 +0200
+Message-ID: <1301836277-30185-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bw0-f46.google.com ([209.85.214.46]:56513 "EHLO
-	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752723Ab1CaGQg convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 31 Mar 2011 02:16:36 -0400
-In-Reply-To: <AANLkTimuDf+Qo0e_sVuNX5DavOBSu+Gr-VryeD9aSw_9@mail.gmail.com>
+Received: from jacques.telenet-ops.be ([195.130.132.50]:49775 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752396Ab1DCNL1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 3 Apr 2011 09:11:27 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@googlemail.com>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Akinobu Mita <akinobu.mita@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>
 
-On Thu, Mar 31, 2011 at 08:02, Akinobu Mita <akinobu.mita@gmail.com> wr=
-ote:
-> 2011/3/31 Andreas Schwab <schwab@linux-m68k.org>:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->>
->>> Andreas, do you think it's worth keeping (and fixing) the m68k "opt=
-imized"
->>> versions?
->>
->> Should be easy to add the required offset >=3D size checks.
->
-> OK, I'll try to fix the optimized version.
-> Or, could someone who can test on the real hardware fix this problem?
+Hence use "offset" in find_next_{,zero_}bit(), like is already done for
+find_next_{,zero_}bit_le()
 
-I'll have a look...
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>
+---
+ arch/m68k/include/asm/bitops_mm.h |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/bitops_mm.h b/arch/m68k/include/asm/bitops_mm.h
+index 9d69f6e..5bd3afa 100644
+--- a/arch/m68k/include/asm/bitops_mm.h
++++ b/arch/m68k/include/asm/bitops_mm.h
+@@ -220,8 +220,7 @@ static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
+ 		offset += 32;
+ 	}
+ 	/* No zero yet, search remaining full bytes for a zero */
+-	res = find_first_zero_bit(p, size - ((long)p - (long)vaddr) * 8);
+-	return offset + res;
++	return offset + find_first_zero_bit(p, size - offset);
+ }
+ 
+ static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
+@@ -267,8 +266,7 @@ static inline int find_next_bit(const unsigned long *vaddr, int size,
+ 		offset += 32;
+ 	}
+ 	/* No one yet, search remaining full bytes for a one */
+-	res = find_first_bit(p, size - ((long)p - (long)vaddr) * 8);
+-	return offset + res;
++	return offset + find_first_bit(p, size - offset);
+ }
+ 
+ /*
+-- 
+1.7.0.4
