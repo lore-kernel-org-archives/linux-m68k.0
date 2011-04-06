@@ -1,109 +1,149 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68knommu: Remove obsolete #include <linux/sys.h>
-Date: Wed, 6 Apr 2011 21:43:19 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1104062141370.28556__23673.5994382345$1302119042$gmane$org@ayla.of.borg>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [regression v2.6.38] Re: [PATCH v2] brk: fix min_brk lower bound
+ computation for COMPAT_BRK
+Date: Wed, 6 Apr 2011 13:08:28 -0700 (PDT)
+Message-ID: <alpine.LNX.2.00.1104061155530.5855@pobox.suse.cz>
+References: <alpine.LNX.2.00.1101030002390.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031237210.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031421470.26685@pobox.suse.cz> <AANLkTinK-TYnY70Wst_FTbEtn7Dwm8wEQoWMewsYM8dh@mail.gmail.com>
+ <alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz> <AANLkTi=g5z+GYkbOGbdLQcLaQkpY6yQ6tjGRjjk1H59R@mail.gmail.com> <alpine.LNX.2.00.1103281619320.26754@pobox.suse.cz> <AANLkTi=pNxVY8NZjRhT_aJMQNiTpfkmECqc-ZnTD7ynW@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from cantor2.suse.de ([195.135.220.15]:48078 "EHLO mx2.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755015Ab1DFUIb (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 6 Apr 2011 16:08:31 -0400
+In-Reply-To: <AANLkTi=pNxVY8NZjRhT_aJMQNiTpfkmECqc-ZnTD7ynW@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: uClinux list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Tue, 29 Mar 2011, Geert Uytterhoeven wrote:
+
+> I managed to reproduce it inside ARAnyM, by chrooting into the ramdisk image.
+> After adding strace, "strace /sbin/init" for the success case gives:
+> 
+> old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+> -1, 0) = 0xc0004000
+> old_mmap(NULL, 578, PROT_READ, MAP_SHARED, 3, 0) = 0xc0007000
+> old_mmap(NULL, 663552, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xc0008000
+> old_mmap(0xc0008000, 426908, PROT_READ|PROT_EXEC,
+> MAP_PRIVATE|MAP_FIXED, 3, 0) = 0xc0008000
+> old_mmap(0xc0072000, 24256, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED, 3, 0x68000) = 0xc0072000
+> old_mmap(0xc0078000, 204696, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xc0078000
+> brk(0x80005c8e)                         = 0x80005c8e
+> brk(0x80006000)                         = 0x80006000
+> old_mmap(NULL, 1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+> -1, 0) = 0xc0007000
+> 
+> For the failure case:
+> 
+> old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+> -1, 0) = 0xc0004000
+> old_mmap(NULL, 578, PROT_READ, MAP_SHARED, 3, 0) = 0xc0007000
+> old_mmap(NULL, 663552, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xc0008000
+> old_mmap(0xc0008000, 426908, PROT_READ|PROT_EXEC,
+> MAP_PRIVATE|MAP_FIXED, 3, 0) = 0xc0008000
+> old_mmap(0xc0072000, 24256, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED, 3, 0x68000) = 0xc0072000
+> old_mmap(0xc0078000, 204696, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xc0078000
+> brk(0x80005c8e)                         = 0x80006000
+> 
+> Major difference:
+> 
+> -brk(0x80005c8e)                         = 0x80005c8e
+> -brk(0x80006000)                         = 0x80006000
+> -open("/etc/inittab", O_RDONLY)          = 3
+> -fstat(3, {st_mode=S_IFREG|0644, st_size=140, ...}) = 0
+> -old_mmap(NULL, 1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,
+> -1, 0) = 0xc0007000
+> -read(3, "tty1:console:/sbin/getty 9600 tt"..., 1024) = 140
+> -read(3, "", 1024)                       = 0
+> +brk(0x80005c8e)                         = 0x80006000
+> +open("/dev/console", O_WRONLY)          = 3
+> +write(3, "init: ", 6)                   = 6
+> +write(3, "cannot open inittab\n", 20)   = 20
+>  close(3)                                = 0
+> 
+> Seems like the binary doesn't like brk() rounding up the requested
+> value to the next page...
+
+Could you please test with the patch below? Thanks.
+
+
+
+
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] brk: COMPAT_BRK needs more special handling of legacy applications
+
+5520e89 ("brk: fix min_brk lower bound computation for COMPAT_BRK")
+tried to get the whole logic of brk randomization for legacy (libc5-based)
+applications finally right.
+
+It turns out that the way to detect whether brk has actually been
+randomized or not introduced by that patch still doesn't work for those
+binaries, as reported by Geert.
+
+I don't like it, but currently see no better option than a bit flag in
+task_struct to catch the CONFIG_COMPAT_BRK && randomize_va_space == 2
+case.
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+NOT-YET-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 ---
-Janitors: "git grep linux/sys.h" shows many more.
+ fs/binfmt_elf.c       |    6 +++++-
+ include/linux/sched.h |    3 +++
+ mm/mmap.c             |    2 +-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
- arch/m68k/kernel/entry_no.S         |    1 -
- arch/m68k/kernel/syscalltable.S     |    1 -
- arch/m68k/platform/68328/entry.S    |    1 -
- arch/m68k/platform/68360/entry.S    |    1 -
- arch/m68k/platform/coldfire/entry.S |    1 -
- arch/m68k/platform/coldfire/head.S  |    1 -
- 6 files changed, 0 insertions(+), 6 deletions(-)
-
-diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
-index 2783f25..5f0f6b5 100644
---- a/arch/m68k/kernel/entry_no.S
-+++ b/arch/m68k/kernel/entry_no.S
-@@ -24,7 +24,6 @@
-  * linux 2.4 support David McCullough <davidm@snapgear.com>
-  */
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index f34078d..303983f 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -941,9 +941,13 @@ static int load_elf_binary(struct linux_binprm *bprm, struct pt_regs *regs)
+ 	current->mm->start_stack = bprm->p;
  
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <asm/errno.h>
- #include <asm/setup.h>
-diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index 79b1ed1..935e10a 100644
---- a/arch/m68k/kernel/syscalltable.S
-+++ b/arch/m68k/kernel/syscalltable.S
-@@ -11,7 +11,6 @@
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  */
+ #ifdef arch_randomize_brk
+-	if ((current->flags & PF_RANDOMIZE) && (randomize_va_space > 1))
++	if ((current->flags & PF_RANDOMIZE) && (randomize_va_space > 1)) {
+ 		current->mm->brk = current->mm->start_brk =
+ 			arch_randomize_brk(current->mm);
++#ifdef CONFIG_COMPAT_BRK
++		current->brk_randomized = 1;
++#endif
++	}
+ #endif
  
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <asm/unistd.h>
+ 	if (current->personality & MMAP_PAGE_ZERO) {
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 83bd2e2..239d2fe 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1254,6 +1254,9 @@ struct task_struct {
+ #endif
  
-diff --git a/arch/m68k/platform/68328/entry.S b/arch/m68k/platform/68328/entry.S
-index 676960c..0747318 100644
---- a/arch/m68k/platform/68328/entry.S
-+++ b/arch/m68k/platform/68328/entry.S
-@@ -10,7 +10,6 @@
-  * Linux/m68k support by Hamish Macdonald
-  */
- 
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <asm/thread_info.h>
- #include <asm/unistd.h>
-diff --git a/arch/m68k/platform/68360/entry.S b/arch/m68k/platform/68360/entry.S
-index 46c1b18..e1477f2 100644
---- a/arch/m68k/platform/68360/entry.S
-+++ b/arch/m68k/platform/68360/entry.S
-@@ -12,7 +12,6 @@
-  * M68360 Port by SED Systems, and Lineo.
-  */
- 
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <asm/thread_info.h>
- #include <asm/unistd.h>
-diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
-index 5837cf0..bc15bea 100644
---- a/arch/m68k/platform/coldfire/entry.S
-+++ b/arch/m68k/platform/coldfire/entry.S
-@@ -26,7 +26,6 @@
-  * Bug, speed and maintainability fixes by Philippe De Muyter <phdm@macqel.be>
-  */
- 
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <asm/unistd.h>
- #include <asm/thread_info.h>
-diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
-index 129bff4..da21180 100644
---- a/arch/m68k/platform/coldfire/head.S
-+++ b/arch/m68k/platform/coldfire/head.S
-@@ -8,7 +8,6 @@
- 
- /*****************************************************************************/
- 
--#include <linux/sys.h>
- #include <linux/linkage.h>
- #include <linux/init.h>
- #include <asm/asm-offsets.h>
+ 	struct mm_struct *mm, *active_mm;
++#ifdef CONFIG_COMPAT_BRK
++	unsigned brk_randomized:1;
++#endif
+ #if defined(SPLIT_RSS_COUNTING)
+ 	struct task_rss_stat	rss_stat;
+ #endif
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 2ec8eb5..318ed2d 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -259,7 +259,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ 	 * randomize_va_space to 2, which will still cause mm->start_brk
+ 	 * to be arbitrarily shifted
+ 	 */
+-	if (mm->start_brk > PAGE_ALIGN(mm->end_data))
++	if (current->brk_randomized)
+ 		min_brk = mm->start_brk;
+ 	else
+ 		min_brk = mm->end_data;
 -- 
-1.7.0.4
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+1.7.3.1
