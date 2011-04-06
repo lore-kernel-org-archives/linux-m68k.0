@@ -1,83 +1,63 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] brk: COMPAT_BRK: fix detection of randomized brk (was Re:
- [regression v2.6.38] Re: [PATCH v2] brk: fix min_brk lower bound computation forCOMPAT_BRK)
-Date: Wed, 6 Apr 2011 22:40:58 +0200
-Message-ID: <BANLkTinhTM3pntJauwpxSEd02MDAB+VS1w@mail.gmail.com>
-References: <alpine.LNX.2.00.1101030002390.26685@pobox.suse.cz>
-	<alpine.LNX.2.00.1101031237210.26685@pobox.suse.cz>
-	<alpine.LNX.2.00.1101031421470.26685@pobox.suse.cz>
-	<AANLkTinK-TYnY70Wst_FTbEtn7Dwm8wEQoWMewsYM8dh@mail.gmail.com>
-	<alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz>
-	<AANLkTi=g5z+GYkbOGbdLQcLaQkpY6yQ6tjGRjjk1H59R@mail.gmail.com>
-	<alpine.LNX.2.00.1103281619320.26754@pobox.suse.cz>
-	<AANLkTi=pNxVY8NZjRhT_aJMQNiTpfkmECqc-ZnTD7ynW@mail.gmail.com>
-	<alpine.LNX.2.00.1104061155530.5855@pobox.suse.cz>
-	<BANLkTinnvXX70OCrtyYy_2e-zJDqS9f2iw@mail.gmail.com>
-	<alpine.LNX.2.00.1104061336190.5855@pobox.suse.cz>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [PATCH] brk: COMPAT_BRK: fix detection of randomized brk (was
+ Re: [regression v2.6.38] Re: [PATCH v2] brk: fix min_brk lower bound
+ computation forCOMPAT_BRK)
+Date: Wed, 6 Apr 2011 13:42:44 -0700 (PDT)
+Message-ID: <alpine.LNX.2.00.1104061341550.5855@pobox.suse.cz>
+References: <alpine.LNX.2.00.1101030002390.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031237210.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031421470.26685@pobox.suse.cz> <AANLkTinK-TYnY70Wst_FTbEtn7Dwm8wEQoWMewsYM8dh@mail.gmail.com>
+ <alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz> <AANLkTi=g5z+GYkbOGbdLQcLaQkpY6yQ6tjGRjjk1H59R@mail.gmail.com> <alpine.LNX.2.00.1103281619320.26754@pobox.suse.cz> <AANLkTi=pNxVY8NZjRhT_aJMQNiTpfkmECqc-ZnTD7ynW@mail.gmail.com> <alpine.LNX.2.00.1104061155530.5855@pobox.suse.cz>
+ <BANLkTinnvXX70OCrtyYy_2e-zJDqS9f2iw@mail.gmail.com> <alpine.LNX.2.00.1104061336190.5855@pobox.suse.cz> <BANLkTinhTM3pntJauwpxSEd02MDAB+VS1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bw0-f46.google.com ([209.85.214.46]:42222 "EHLO
-	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932177Ab1DFUlA convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Apr 2011 16:41:00 -0400
-In-Reply-To: <alpine.LNX.2.00.1104061336190.5855@pobox.suse.cz>
+Received: from cantor.suse.de ([195.135.220.2]:37522 "EHLO mx1.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755629Ab1DFUmq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 6 Apr 2011 16:42:46 -0400
+In-Reply-To: <BANLkTinhTM3pntJauwpxSEd02MDAB+VS1w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jiri Kosina <jkosina@suse.cz>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, Apr 6, 2011 at 22:38, Jiri Kosina <jkosina@suse.cz> wrote:
-> From: Jiri Kosina <jkosina@suse.cz>
-> Subject: brk: COMPAT_BRK: fix detection of randomized brk
->
-> 5520e89 ("brk: fix min_brk lower bound computation for COMPAT_BRK")
-> tried to get the whole logic of brk randomization for legacy (libc5-b=
-ased)
-> applications finally right.
->
-> It turns out that the way to detect whether brk has actually been ran=
-domized in
-> the end or not introduced by that patch still doesn't work for those =
-binaries,
-> as reported by Geert.
->
-> I don't like it, but currently see no better option than a bit flag i=
-n
-> task_struct to catch the CONFIG_COMPAT_BRK && randomize_va_space =3D=3D=
- 2
-> case.
->
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->
-> I am not really happy about introducing the bit flag, but I currently
-> don't see another option. And it's only for the legacy CONFIG_COMPAT_=
-BRK
-> case anyway.
->
-> Andrew, Ingo, any opinions/objections?
->
-> If not -- Andrew, I guess this should go into current -rc still.
+On Wed, 6 Apr 2011, Geert Uytterhoeven wrote:
 
-And in 2.6.38-stable.
+> > From: Jiri Kosina <jkosina@suse.cz>
+> > Subject: brk: COMPAT_BRK: fix detection of randomized brk
+> >
+> > 5520e89 ("brk: fix min_brk lower bound computation for COMPAT_BRK")
+> > tried to get the whole logic of brk randomization for legacy (libc5-based)
+> > applications finally right.
+> >
+> > It turns out that the way to detect whether brk has actually been randomized in
+> > the end or not introduced by that patch still doesn't work for those binaries,
+> > as reported by Geert.
+> >
+> > I don't like it, but currently see no better option than a bit flag in
+> > task_struct to catch the CONFIG_COMPAT_BRK && randomize_va_space == 2
+> > case.
+> >
+> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+> > Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+> >
+> > I am not really happy about introducing the bit flag, but I currently
+> > don't see another option. And it's only for the legacy CONFIG_COMPAT_BRK
+> > case anyway.
+> >
+> > Andrew, Ingo, any opinions/objections?
+> >
+> > If not -- Andrew, I guess this should go into current -rc still.
+> 
+> And in 2.6.38-stable.
+> 
+> Does anyone still have libc5 binaries for i386?
 
-Does anyone still have libc5 binaries for i386?
+The first time we introduced brk randomization, Pavel Machek reported a 
+problem with some libc5-based binary on some ancient x86 system he had.
 
-Gr{oetje,eeting}s,
+So I am afraid there still might be sparse occurences out there.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
