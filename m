@@ -1,63 +1,37 @@
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH] brk: COMPAT_BRK: fix detection of randomized brk (was
- Re: [regression v2.6.38] Re: [PATCH v2] brk: fix min_brk lower bound
- computation forCOMPAT_BRK)
-Date: Wed, 6 Apr 2011 13:42:44 -0700 (PDT)
-Message-ID: <alpine.LNX.2.00.1104061341550.5855@pobox.suse.cz>
-References: <alpine.LNX.2.00.1101030002390.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031237210.26685@pobox.suse.cz> <alpine.LNX.2.00.1101031421470.26685@pobox.suse.cz> <AANLkTinK-TYnY70Wst_FTbEtn7Dwm8wEQoWMewsYM8dh@mail.gmail.com>
- <alpine.LNX.2.00.1103251119120.26754@pobox.suse.cz> <AANLkTi=g5z+GYkbOGbdLQcLaQkpY6yQ6tjGRjjk1H59R@mail.gmail.com> <alpine.LNX.2.00.1103281619320.26754@pobox.suse.cz> <AANLkTi=pNxVY8NZjRhT_aJMQNiTpfkmECqc-ZnTD7ynW@mail.gmail.com> <alpine.LNX.2.00.1104061155530.5855@pobox.suse.cz>
- <BANLkTinnvXX70OCrtyYy_2e-zJDqS9f2iw@mail.gmail.com> <alpine.LNX.2.00.1104061336190.5855@pobox.suse.cz> <BANLkTinhTM3pntJauwpxSEd02MDAB+VS1w@mail.gmail.com>
+From: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [uClinux-dev] [PATCH] m68k: Merge mmu and non-mmu versions of
+	sys_call_table
+Date: Thu, 7 Apr 2011 00:05:10 +0200
+Message-ID: <20110406220510.GA17350__13052.6097644635$1302127576$gmane$org@frolo.macqel>
+References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cantor.suse.de ([195.135.220.2]:37522 "EHLO mx1.suse.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755629Ab1DFUmq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 6 Apr 2011 16:42:46 -0400
-In-Reply-To: <BANLkTinhTM3pntJauwpxSEd02MDAB+VS1w@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: uClinux development list <uclinux-dev@uclinux.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Wed, 6 Apr 2011, Geert Uytterhoeven wrote:
+On Wed, Apr 06, 2011 at 10:33:07PM +0200, Geert Uytterhoeven wrote:
+> Impact for m68knommu:
+>   - The table is now stored in .data instead of .text,
 
-> > From: Jiri Kosina <jkosina@suse.cz>
-> > Subject: brk: COMPAT_BRK: fix detection of randomized brk
-> >
-> > 5520e89 ("brk: fix min_brk lower bound computation for COMPAT_BRK")
-> > tried to get the whole logic of brk randomization for legacy (libc5-based)
-> > applications finally right.
-> >
-> > It turns out that the way to detect whether brk has actually been randomized in
-> > the end or not introduced by that patch still doesn't work for those binaries,
-> > as reported by Geert.
-> >
-> > I don't like it, but currently see no better option than a bit flag in
-> > task_struct to catch the CONFIG_COMPAT_BRK && randomize_va_space == 2
-> > case.
-> >
-> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> > Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >
-> > I am not really happy about introducing the bit flag, but I currently
-> > don't see another option. And it's only for the legacy CONFIG_COMPAT_BRK
-> > case anyway.
-> >
-> > Andrew, Ingo, any opinions/objections?
-> >
-> > If not -- Andrew, I guess this should go into current -rc still.
+Do you mean .rodata ?
+
+>   - Removed unused padding at the end of the table.
 > 
-> And in 2.6.38-stable.
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Not tested on m68knommu
 > 
-> Does anyone still have libc5 binaries for i386?
+> Questions:
+>   - Why was it .text?
 
-The first time we introduced brk randomization, Pavel Machek reported a 
-problem with some libc5-based binary on some ancient x86 system he had.
+Probably because it is constanti (read-only).
 
-So I am afraid there still might be sparse occurences out there.
+Philippe
 
 -- 
-Jiri Kosina
-SUSE Labs, Novell Inc.
+Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
