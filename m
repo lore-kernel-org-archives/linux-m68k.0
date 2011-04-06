@@ -1,76 +1,109 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/6] m68k: merge and clean up files in m68k/lib
-Date: Wed, 6 Apr 2011 21:36:13 +0200
-Message-ID: <BANLkTin1z7CMVdApJWtCQLyhVv-ZKAtT8A@mail.gmail.com>
-References: <1301471907-10204-1-git-send-email-gerg@uclinux.org>
-	<AANLkTi=KoiaabjifdcB+YC1hiE9mb+CJz07Xfn588j7e@mail.gmail.com>
+Subject: [PATCH] m68knommu: Remove obsolete #include <linux/sys.h>
+Date: Wed, 6 Apr 2011 21:43:19 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1104062141370.28556__23673.5994382345$1302119042$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bw0-f46.google.com ([209.85.214.46]:64310 "EHLO
-	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753888Ab1DFTgP convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Apr 2011 15:36:15 -0400
-Received: by bwz15 with SMTP id 15so1437551bwz.19
-        for <linux-m68k@vger.kernel.org>; Wed, 06 Apr 2011 12:36:14 -0700 (PDT)
-In-Reply-To: <AANLkTi=KoiaabjifdcB+YC1hiE9mb+CJz07Xfn588j7e@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@vger.kernel.org
+Cc: uClinux list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 
-On Wed, Mar 30, 2011 at 20:41, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> Hi Greg,
->
-> On Wed, Mar 30, 2011 at 09:58, Greg Ungerer <gerg@uclinux.org> wrote:
->> The following set of patches cleans up and merges individual files i=
-n
->> the arch/m68k/lib directory. Mostly strait forward stuff,
->>
->> I have build and run tested on ARAnyM/Atari and ColdFire (non-mmu)
->> targets.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Janitors: "git grep linux/sys.h" shows many more.
 
-> Anyway, I did a thorough review, so consider it
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+ arch/m68k/kernel/entry_no.S         |    1 -
+ arch/m68k/kernel/syscalltable.S     |    1 -
+ arch/m68k/platform/68328/entry.S    |    1 -
+ arch/m68k/platform/68360/entry.S    |    1 -
+ arch/m68k/platform/coldfire/entry.S |    1 -
+ arch/m68k/platform/coldfire/head.S  |    1 -
+ 6 files changed, 0 insertions(+), 6 deletions(-)
 
-Upon actually trying it, I get:
-
-arch/m68k/kernel/setup_mm.c:488: undefined reference to `strcpy'
-arch/m68k/q40/config.c:149: undefined reference to `strcpy'
-arch/m68k/atari/config.c:582: undefined reference to `strcpy'
-arch/m68k/atari/config.c:588: undefined reference to `strcpy'
-arch/m68k/atari/config.c:604: undefined reference to `strcpy'
-arch/m68k/mac/built-in.o:arch/m68k/mac/config.c:916: more undefined
-references to `strcpy' follow
-
-Some of these are sprintf() or strcat() calls, "optimized" into strcpy(=
-) by gcc
-(4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)). Should have thought ab=
-out
-that, cfr. commit f9b07897c6288d7e5fc1fd004fccb0c5f1a0e570
-("m68k: Uninline strchr()").
-But not all of them: some are real strcpy() calls. Why are they the
-inline version?
-
-Reverting 7a2dc626ba38595bf04c663d834c394e7c0aa1f7 ("m68k: remove no
-longer used arch/m68k/lib/string.c") fixes this.
-
-So we need to keep at least the out-of-line strcpy().
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index 2783f25..5f0f6b5 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -24,7 +24,6 @@
+  * linux 2.4 support David McCullough <davidm@snapgear.com>
+  */
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <asm/errno.h>
+ #include <asm/setup.h>
+diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+index 79b1ed1..935e10a 100644
+--- a/arch/m68k/kernel/syscalltable.S
++++ b/arch/m68k/kernel/syscalltable.S
+@@ -11,7 +11,6 @@
+  *  Copyright (C) 1991, 1992  Linus Torvalds
+  */
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <asm/unistd.h>
+ 
+diff --git a/arch/m68k/platform/68328/entry.S b/arch/m68k/platform/68328/entry.S
+index 676960c..0747318 100644
+--- a/arch/m68k/platform/68328/entry.S
++++ b/arch/m68k/platform/68328/entry.S
+@@ -10,7 +10,6 @@
+  * Linux/m68k support by Hamish Macdonald
+  */
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <asm/thread_info.h>
+ #include <asm/unistd.h>
+diff --git a/arch/m68k/platform/68360/entry.S b/arch/m68k/platform/68360/entry.S
+index 46c1b18..e1477f2 100644
+--- a/arch/m68k/platform/68360/entry.S
++++ b/arch/m68k/platform/68360/entry.S
+@@ -12,7 +12,6 @@
+  * M68360 Port by SED Systems, and Lineo.
+  */
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <asm/thread_info.h>
+ #include <asm/unistd.h>
+diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+index 5837cf0..bc15bea 100644
+--- a/arch/m68k/platform/coldfire/entry.S
++++ b/arch/m68k/platform/coldfire/entry.S
+@@ -26,7 +26,6 @@
+  * Bug, speed and maintainability fixes by Philippe De Muyter <phdm@macqel.be>
+  */
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <asm/unistd.h>
+ #include <asm/thread_info.h>
+diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+index 129bff4..da21180 100644
+--- a/arch/m68k/platform/coldfire/head.S
++++ b/arch/m68k/platform/coldfire/head.S
+@@ -8,7 +8,6 @@
+ 
+ /*****************************************************************************/
+ 
+-#include <linux/sys.h>
+ #include <linux/linkage.h>
+ #include <linux/init.h>
+ #include <asm/asm-offsets.h>
+-- 
+1.7.0.4
 
 Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
