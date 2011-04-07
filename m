@@ -1,45 +1,84 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [uClinux-dev] [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Thu, 07 Apr 2011 10:39:33 +0200
-Message-ID: <m3vcyqbgl6.fsf@linux-m68k.org>
-References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
-	<20110406220510.GA17350@frolo.macqel> <4D9D0AF3.9070100@snapgear.com>
-	<000301cbf4c9$40339fc0$c09adf40$@com> <4D9D24BB.3060804@snapgear.com>
-	<000d01cbf4d1$d50e2f90$7f2a8eb0$@com> <4D9D3A28.9060104@snapgear.com>
-	<BANLkTi=ay0o=QH_cUffcC=HDm=2iLcFrog@mail.gmail.com>
-	<m3zko2bh19.fsf@linux-m68k.org> <20110407083519.GA10282@frolo.macqel>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 0/6] m68k: merge and clean up files in m68k/lib
+Date: Thu, 7 Apr 2011 21:26:39 +1000
+Message-ID: <4D9D9F6F.4000800@snapgear.com>
+References: <1301471907-10204-1-git-send-email-gerg@uclinux.org>	<AANLkTi=KoiaabjifdcB+YC1hiE9mb+CJz07Xfn588j7e@mail.gmail.com>	<BANLkTin1z7CMVdApJWtCQLyhVv-ZKAtT8A@mail.gmail.com>	<4D9D35AF.3000009@snapgear.com> <m34o6acvys.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20110407083519.GA10282@frolo.macqel> (Philippe De Muyter's
-	message of "Thu, 7 Apr 2011 10:35:19 +0200")
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:36490 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751633Ab1DGLem (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Apr 2011 07:34:42 -0400
+In-Reply-To: <m34o6acvys.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Philippe De Muyter <phdm@macqel.be>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@snapgear.com>, Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@vger.kernel.org
 
-Philippe De Muyter <phdm@macqel.be> writes:
+Hi Andreas,
 
-> On Thu, Apr 07, 2011 at 10:29:54AM +0200, Andreas Schwab wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> 
->> > Isn't there a reason it was read-write on m68k, like the table may be changed
->> > at runtime (to install rootkits :-)? Have to check what the other arches do...
->> 
->> Initially the syscall_table in Linux has always been writable, bb152f53
->> ("x86/x86_64: mark rodata section read-only: make some datastructures
->> const") made it read-only on x86.  Apparently nobody bothered to do the
->> equivalent change on m68k (I don't think anything makes the kernel text
->> segment write protected anyway).
+On 07/04/11 18:22, Andreas Schwab wrote:
+> Greg Ungerer<gerg@snapgear.com>  writes:
 >
-> Except, of course, ld config files who put text and rodata in ROM/FLASH for XIP
-> on embedded systems.
+>> That does seem odd. One way or another strcpy is defined in
+>> arch/m68k/include/asm/string.h. I would expect no real calls to
+>> strcpy() after that. (And for me on my hand built gcc-4.5.1 I
+>> don't end up with any).
+>
+> Did you compile with -Os?
 
-I'm only talking about m68k here, not m68knommu.
+No, -O2. Here is a typical gcc line:
 
-Andreas.
+m68k-linux-gcc -Wp,-MD,kernel/.printk.o.d  -nostdinc -isystem 
+/usr/local/lib/gcc/m68k-linux/4.5.1/include 
+-I/home/gerg/new-wave.merge/linux-2.6.x/arch/m68k/include -Iinclude 
+-include include/generated/autoconf.h -D__KERNEL__ -Wall -Wundef 
+-Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common 
+-Werror-implicit-function-declaration -Wno-format-security 
+-fno-delete-null-pointer-checks -O2 -pipe -fno-strength-reduce 
+-ffixed-a2 -Wframe-larger-than=1024 -fno-stack-protector 
+-fomit-frame-pointer -Wdeclaration-after-statement -Wno-pointer-sign 
+-fno-strict-overflow -fconserve-stack -DCC_HAVE_ASM_GOTO 
+-D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(printk)" 
+-D"KBUILD_MODNAME=KBUILD_STR(printk)" -c -o kernel/printk.o kernel/printk.c
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+This is vanilla 2.6.39-rc2...
+
+
+>> At a guess the section for __GNUC__>  4 must end up still trying
+>> to use a real strcpy (presumably the __builtom_strcpy call) on
+>> some versions of gcc.
+>>
+>> #if __GNUC__>= 4
+>> #define strcpy(d, s)    (__builtin_constant_p(s)&&      \
+>>                           __builtin_strlen(s)<= 32 ?    \
+>>                           __builtin_strcpy(d, s) :       \
+>>                           __kernel_strcpy(d, s))
+>> #else
+>> #define strcpy(d, s)    __kernel_strcpy(d, s)
+>> #endif
+>>
+>> Is there any reason we don't just drop the __GNUC__>= 4 bit
+>> and always just use __kernel_strcpy()?  After all kernel_strcpy
+>> is a pretty tight optimized loop for m68k anyway.
+>
+> The compiler can generate libcalls to strcpy any time while optimizing
+> any other standard C function, and those libcalls won't see the macros,
+> of course.  The only way to stop the compiler from doing that is to
+> disable all builtin functions (just -fno-builtin-strcpy is not enough),
+> but that would disable a lot of useful opimisations.
+
+Yes, ok. It is just that I hadn't seen gcc emit calls to strcpy
+on my m68knommu builds (at least not in recent years since we
+removed the local strcpy).
+
+Regards
+Greg
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
