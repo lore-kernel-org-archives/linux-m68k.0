@@ -1,66 +1,60 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uClinux-dev] [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Thu, 7 Apr 2011 09:04:10 +0200
-Message-ID: <BANLkTi=ay0o=QH_cUffcC=HDm=2iLcFrog@mail.gmail.com>
-References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
-	<20110406220510.GA17350@frolo.macqel>
-	<4D9D0AF3.9070100@snapgear.com>
-	<000301cbf4c9$40339fc0$c09adf40$@com>
-	<4D9D24BB.3060804@snapgear.com>
-	<000d01cbf4d1$d50e2f90$7f2a8eb0$@com>
-	<4D9D3A28.9060104@snapgear.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH 0/6] m68k: merge and clean up files in m68k/lib
+Date: Thu, 07 Apr 2011 10:22:03 +0200
+Message-ID: <m34o6acvys.fsf@linux-m68k.org>
+References: <1301471907-10204-1-git-send-email-gerg@uclinux.org>
+	<AANLkTi=KoiaabjifdcB+YC1hiE9mb+CJz07Xfn588j7e@mail.gmail.com>
+	<BANLkTin1z7CMVdApJWtCQLyhVv-ZKAtT8A@mail.gmail.com>
+	<4D9D35AF.3000009@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4D9D3A28.9060104@snapgear.com>
+Received: from mail-out.m-online.net ([212.18.0.9]:59429 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751992Ab1DGIWJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Apr 2011 04:22:09 -0400
+In-Reply-To: <4D9D35AF.3000009@snapgear.com> (Greg Ungerer's message of "Thu,
+	7 Apr 2011 13:55:27 +1000")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@vger.kernel.org
 
-On Thu, Apr 7, 2011 at 06:14, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 07/04/11 13:13, Gavin Lambert wrote:
->> Quoth Greg Ungerer:
->>>> Doesn't that have XIP consequences? =C2=A0.text (and presumably .r=
-odata)
->>>> can be stored and executed from ROM, since they can't be changed a=
-t
->>>> runtime. =C2=A0.data has to be in RAM, since it can be.
->>>
->>> Yes, but even in the kernel XIP case the very early startup code
->>> moves the kernels data to RAM. Well before the system call table
->>> will be needed.
->>
->> But presumably if the syscall table was previously in .text, it was =
-not
->> subject to this. =C2=A0And now it will be.
->>
->> I doubt this would actually break anything (as you've already confir=
-med),
->> since it's only a tiny RAM usage increase, but unless there's some r=
-eason
->> for the syscall table to be read-write it seems a bit odd.
+Greg Ungerer <gerg@snapgear.com> writes:
+
+> That does seem odd. One way or another strcpy is defined in
+> arch/m68k/include/asm/string.h. I would expect no real calls to
+> strcpy() after that. (And for me on my hand built gcc-4.5.1 I
+> don't end up with any).
+
+Did you compile with -Os?
+
+> At a guess the section for __GNUC__ > 4 must end up still trying
+> to use a real strcpy (presumably the __builtom_strcpy call) on
+> some versions of gcc.
 >
-> To be read-write yes, odd, but a data table being in the .text
+> #if __GNUC__ >= 4
+> #define strcpy(d, s)    (__builtin_constant_p(s) &&     \
+>                          __builtin_strlen(s) <= 32 ?    \
+>                          __builtin_strcpy(d, s) :       \
+>                          __kernel_strcpy(d, s))
+> #else
+> #define strcpy(d, s)    __kernel_strcpy(d, s)
+> #endif
+>
+> Is there any reason we don't just drop the __GNUC__ >= 4 bit
+> and always just use __kernel_strcpy()?  After all kernel_strcpy
+> is a pretty tight optimized loop for m68k anyway.
 
-Isn't there a reason it was read-write on m68k, like the table may be c=
-hanged
-at runtime (to install rootkits :-)? Have to check what the other arche=
-s do...
+The compiler can generate libcalls to strcpy any time while optimizing
+any other standard C function, and those libcalls won't see the macros,
+of course.  The only way to stop the compiler from doing that is to
+disable all builtin functions (just -fno-builtin-strcpy is not enough),
+but that would disable a lot of useful opimisations.
 
-Gr{oetje,eeting}s,
+Andreas.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
