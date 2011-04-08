@@ -1,58 +1,90 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 1/5] m68knommu: move EXPORT of dump_fpu to function definition
-Date: Fri, 8 Apr 2011 22:16:58 +1000
-Message-ID: <1302265022-6614-2-git-send-email-gerg@uclinux.org>
-References: <1302265022-6614-1-git-send-email-gerg@uclinux.org>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] [RESEND] brk: COMPAT_BRK: fix detection of randomized brk
+Date: Fri, 8 Apr 2011 09:57:11 -0700 (PDT)
+Message-ID: <alpine.LNX.2.00.1104080954350.6022@pobox.suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49490 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756133Ab1DHMju (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Apr 2011 08:39:50 -0400
-In-Reply-To: <1302265022-6614-1-git-send-email-gerg@uclinux.org>
+Received: from cantor2.suse.de ([195.135.220.15]:33177 "EHLO mx2.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753812Ab1DHQ5R (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 8 Apr 2011 12:57:17 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-The EXPORT_SYMBOL(dump_fpu) belongs at the definition of the function,
-not in some other random code file. So move it there.
+5520e89 ("brk: fix min_brk lower bound computation for COMPAT_BRK")
+tried to get the whole logic of brk randomization for legacy (libc5-based)
+applications finally right.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+It turns out that the way to detect whether brk has actually been randomized in
+the end or not introduced by that patch still doesn't work for those binaries,
+as reported by Geert.
+
+I don't like it, but currently see no better option than a bit flag in
+task_struct to catch the CONFIG_COMPAT_BRK && randomize_va_space == 2
+case.
+
+LKML-Reference: https://lkml.org/lkml/2011/3/24/577
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/m68k_ksyms_no.c |    4 ----
- arch/m68k/kernel/process_no.c    |    1 +
- 2 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/kernel/m68k_ksyms_no.c b/arch/m68k/kernel/m68k_ksyms_no.c
-index c26717b..ab747e4 100644
---- a/arch/m68k/kernel/m68k_ksyms_no.c
-+++ b/arch/m68k/kernel/m68k_ksyms_no.c
-@@ -16,12 +16,8 @@
- #include <asm/checksum.h>
- #include <asm/current.h>
+I am not really happy about introducing the bit flag, but I currently 
+don't see another option. And it's only for the legacy CONFIG_COMPAT_BRK 
+case anyway.
+
+ fs/binfmt_elf.c       |    6 +++++-
+ include/linux/sched.h |    3 +++
+ mm/mmap.c             |    2 +-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index f34078d..303983f 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -941,9 +941,13 @@ static int load_elf_binary(struct linux_binprm *bprm, struct pt_regs *regs)
+ 	current->mm->start_stack = bprm->p;
  
--extern int dump_fpu(struct pt_regs *, elf_fpregset_t *);
--
- /* platform dependent support */
- 
--EXPORT_SYMBOL(dump_fpu);
--
- EXPORT_SYMBOL(ip_fast_csum);
- 
- EXPORT_SYMBOL(kernel_thread);
-diff --git a/arch/m68k/kernel/process_no.c b/arch/m68k/kernel/process_no.c
-index e2a63af..eedadc2 100644
---- a/arch/m68k/kernel/process_no.c
-+++ b/arch/m68k/kernel/process_no.c
-@@ -283,6 +283,7 @@ int dump_fpu(struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+ #ifdef arch_randomize_brk
+-	if ((current->flags & PF_RANDOMIZE) && (randomize_va_space > 1))
++	if ((current->flags & PF_RANDOMIZE) && (randomize_va_space > 1)) {
+ 		current->mm->brk = current->mm->start_brk =
+ 			arch_randomize_brk(current->mm);
++#ifdef CONFIG_COMPAT_BRK
++		current->brk_randomized = 1;
++#endif
++	}
  #endif
- 	return 1;
- }
-+EXPORT_SYMBOL(dump_fpu);
  
- /*
-  *	Generic dumping code. Used for panic and debug.
+ 	if (current->personality & MMAP_PAGE_ZERO) {
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 83bd2e2..239d2fe 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1254,6 +1254,9 @@ struct task_struct {
+ #endif
+ 
+ 	struct mm_struct *mm, *active_mm;
++#ifdef CONFIG_COMPAT_BRK
++	unsigned brk_randomized:1;
++#endif
+ #if defined(SPLIT_RSS_COUNTING)
+ 	struct task_rss_stat	rss_stat;
+ #endif
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 2ec8eb5..318ed2d 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -259,7 +259,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ 	 * randomize_va_space to 2, which will still cause mm->start_brk
+ 	 * to be arbitrarily shifted
+ 	 */
+-	if (mm->start_brk > PAGE_ALIGN(mm->end_data))
++	if (current->brk_randomized)
+ 		min_brk = mm->start_brk;
+ 	else
+ 		min_brk = mm->end_data;
 -- 
-1.7.0.4
+1.7.3.1
