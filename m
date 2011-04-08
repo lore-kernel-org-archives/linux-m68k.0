@@ -1,24 +1,22 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 3/5] m68knommu: move EXPORT of kernel_thread to function definition
-Date: Fri, 8 Apr 2011 22:17:00 +1000
-Message-ID: <1302265022-6614-4-git-send-email-gerg@uclinux.org>
+Subject: [PATCH 1/5] m68knommu: move EXPORT of dump_fpu to function definition
+Date: Fri, 8 Apr 2011 22:16:58 +1000
+Message-ID: <1302265022-6614-2-git-send-email-gerg@uclinux.org>
 References: <1302265022-6614-1-git-send-email-gerg@uclinux.org>
- <1302265022-6614-2-git-send-email-gerg@uclinux.org>
- <1302265022-6614-3-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:54174 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49490 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756166Ab1DHM2D (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Apr 2011 08:28:03 -0400
-In-Reply-To: <1302265022-6614-3-git-send-email-gerg@uclinux.org>
+	with ESMTP id S1756133Ab1DHMju (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Apr 2011 08:39:50 -0400
+In-Reply-To: <1302265022-6614-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: Greg Ungerer <gerg@uclinux.org>
 
-The EXPORT_SYMBOL(kernel_thread) belongs at the definition of that function,
+The EXPORT_SYMBOL(dump_fpu) belongs at the definition of the function,
 not in some other random code file. So move it there.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
@@ -28,31 +26,33 @@ Signed-off-by: Greg Ungerer <gerg@uclinux.org>
  2 files changed, 1 insertions(+), 4 deletions(-)
 
 diff --git a/arch/m68k/kernel/m68k_ksyms_no.c b/arch/m68k/kernel/m68k_ksyms_no.c
-index daed932..11effaa 100644
+index c26717b..ab747e4 100644
 --- a/arch/m68k/kernel/m68k_ksyms_no.c
 +++ b/arch/m68k/kernel/m68k_ksyms_no.c
-@@ -16,10 +16,6 @@
+@@ -16,12 +16,8 @@
  #include <asm/checksum.h>
  #include <asm/current.h>
  
--/* platform dependent support */
+-extern int dump_fpu(struct pt_regs *, elf_fpregset_t *);
 -
--EXPORT_SYMBOL(kernel_thread);
+ /* platform dependent support */
+ 
+-EXPORT_SYMBOL(dump_fpu);
 -
- /*
-  * libgcc functions - functions that are used internally by the
-  * compiler...  (prototypes are not correct though, but that
+ EXPORT_SYMBOL(ip_fast_csum);
+ 
+ EXPORT_SYMBOL(kernel_thread);
 diff --git a/arch/m68k/kernel/process_no.c b/arch/m68k/kernel/process_no.c
-index eedadc2..9b86ad1 100644
+index e2a63af..eedadc2 100644
 --- a/arch/m68k/kernel/process_no.c
 +++ b/arch/m68k/kernel/process_no.c
-@@ -151,6 +151,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
- 	set_fs(fs);
- 	return retval;
+@@ -283,6 +283,7 @@ int dump_fpu(struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+ #endif
+ 	return 1;
  }
-+EXPORT_SYMBOL(kernel_thread);
++EXPORT_SYMBOL(dump_fpu);
  
- void flush_thread(void)
- {
+ /*
+  *	Generic dumping code. Used for panic and debug.
 -- 
 1.7.0.4
