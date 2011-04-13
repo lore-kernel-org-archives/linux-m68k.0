@@ -1,80 +1,64 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Writable sys_call_table (was: Re: [uClinux-dev] [PATCH] m68k: Merge
- mmu and non-mmu versions of sys_call_table)
-Date: Wed, 13 Apr 2011 20:05:25 +0200
-Message-ID: <BANLkTimbHgmUvisE7+TCkgthejNi_zdojQ__27663.3864421912$1302718375$gmane$org@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
+Date: Wed, 13 Apr 2011 20:16:15 +0200
+Message-ID: <BANLkTinc8x5ehq-H3RUU9+=X75FbVOpbVg@mail.gmail.com>
+References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Greg Ungerer <gerg@snapgear.com>, Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+To: Greg Ungerer <gerg@uclinux.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>
 
-On Thu, Apr 7, 2011 at 10:29, Andreas Schwab <schwab@linux-m68k.org> wr=
-ote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> Isn't there a reason it was read-write on m68k, like the table may b=
-e changed
->> at runtime (to install rootkits :-)? Have to check what the other ar=
-ches do...
->
-> Initially the syscall_table in Linux has always been writable, bb152f=
-53
-> ("x86/x86_64: mark rodata section read-only: make some datastructures
-> const") made it read-only on x86. =C2=A0Apparently nobody bothered to=
- do the
-> equivalent change on m68k (I don't think anything makes the kernel te=
-xt
-> segment write protected anyway).
+On Wed, Apr 6, 2011 at 22:33, Geert Uytterhoeven <geert@linux-m68k.org>=
+ wrote:
+> +#ifndef CONFIG_MMU
+> +#define sys_swapon =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_=
+syscall
+> +#define sys_swapoff =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
+syscall
+> +#define sys_mprotect =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_sysca=
+ll
+> +#define sys_msync =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
+s_ni_syscall
+> +#define sys_mlock =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
+s_ni_syscall
+> +#define sys_munlock =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
+syscall
+> +#define sys_mlockall =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_sysca=
+ll
+> +#define sys_munlockall =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_syscall
+> +#define sys_mremap =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_=
+syscall
+> +#define sys_nfsservctl =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_syscall
+> +#define sys_mincore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
+syscall
+> +#define sys_madvise =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
+syscall
+> +#define sys_remap_file_pages =C2=A0 sys_ni_syscall
+> +
+> +#define sys_mmap2 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
+s_mmap_pgoff
+> +#endif
 
-11 arches still store it in "data", including the 4 using the new
-asm-generic/unistd.h
-framework. 9 use "rodata" and 6 use "text".
-The constness of C "extern" declarations doesn't necessarily matches th=
-e
-actual sections.
+When comparing this to the MMU comments in include/asm-generic/unistd.h=
+,
+I noticed this:
 
-alpha:          .data
-arm:            presumably .text?
-avr32:          .section .rodata,"a",@progbits
-blackfin:       .section .l1.data / .data
-cris:           .section .rodata,"a"
-frv:            .section .rodata
-h8300:          .section .text
-ia64:           .rodata
-                extern unsigned long sys_call_table[NR_syscalls];
-m32r:           .section .rodata,"a"
-m68k:           .data (mmu), .text (nommu)
-m68knommu:      .text
-microblaze:     .section .rodata,"a"
-mips:           presumably .text?
-mn10300:        .data
-                extern const unsigned long sys_call_table[];
-parisc:         .section .rodata,"a"
-powerpc:        presumably .text?
-                extern unsigned long *sys_call_table;
-                static void *spu_syscall_table[] (SPU in CBEA)
-s390:           .section .rodata, "a"
-                extern const unsigned int sys_call_table[];
-score:          void *sys_call_table[__NR_syscalls[] =3D { ... }
-sh:             .data
-                extern const unsigned long sys_call_table[];
-sh64:           .section .data, "aw"
-sparc:          .data
-                extern const unsigned int sys_call_table[];
-sparc64:        .text
-tile:           void *sys_call_table[__NR_syscalls] =3D { ... }
-                void *compat_sys_call_table[__NR_syscalls] =3D { ... }
-um:             extern syscall_handler_t *sys_call_table[];
-unicore32:      void *sys_call_table[__NR_syscalls] =3D { ... }
-x86:            .section .rodata,"a"
-                extern const unsigned long sys_call_table[];
-                const sys_call_ptr_t
-sys_call_table[__NR_syscall_max+1] =3D { ...  }
-xtensa:         syscall_t sys_call_table[__NR_syscall_count] =3D { ... =
-}
+M68knommu does have:
+  - sys_mbind
+  - sys_get_mempolicy
+  - sys_set_mempolicy
+  - sys_migrate_pages
+  - sys_move_pages
+  - sys_fork, although it returns -EINVAL, not -ENOSYS
+
+M68knommu does not implement:
+  - sys_mremap
+  - sys_nfsservctl
 
 Gr{oetje,eeting}s,
 
