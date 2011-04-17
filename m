@@ -1,77 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Wed, 13 Apr 2011 20:16:15 +0200
-Message-ID: <BANLkTinc8x5ehq-H3RUU9+=X75FbVOpbVg@mail.gmail.com>
-References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 2/2] m68k: bitops - Never step beyond the end of the bitmap
+Date: Sun, 17 Apr 2011 22:50:35 +0900
+Message-ID: <BANLkTin8ok0bMBM3YrcU43FVEr1MuzegBQ@mail.gmail.com>
+References: <1301836277-30185-1-git-send-email-geert@linux-m68k.org>
+	<1301836277-30185-2-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg>
+Received: from mail-qw0-f46.google.com ([209.85.216.46]:44366 "EHLO
+	mail-qw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751085Ab1DQNug convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Apr 2011 09:50:36 -0400
+In-Reply-To: <1301836277-30185-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Schwab <schwab@linux-m68k.org>
 
-On Wed, Apr 6, 2011 at 22:33, Geert Uytterhoeven <geert@linux-m68k.org>=
- wrote:
-> +#ifndef CONFIG_MMU
-> +#define sys_swapon =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_=
-syscall
-> +#define sys_swapoff =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
-syscall
-> +#define sys_mprotect =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_sysca=
-ll
-> +#define sys_msync =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
-s_ni_syscall
-> +#define sys_mlock =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
-s_ni_syscall
-> +#define sys_munlock =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
-syscall
-> +#define sys_mlockall =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_sysca=
-ll
-> +#define sys_munlockall =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_syscall
-> +#define sys_mremap =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_=
-syscall
-> +#define sys_nfsservctl =C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_ni_syscall
-> +#define sys_mincore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
-syscall
-> +#define sys_madvise =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sys_ni_=
-syscall
-> +#define sys_remap_file_pages =C2=A0 sys_ni_syscall
-> +
-> +#define sys_mmap2 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0sy=
-s_mmap_pgoff
-> +#endif
+2011/4/3 Geert Uytterhoeven <geert@linux-m68k.org>:
+> find_next bitops on m68k (find_next_zero_bit, find_next_bit, and
+> find_next_bit_le) may cause out of bounds memory access
+> when the bitmap size in bits % 32 !=3D 0 and offset (the bitnumber
+> to start searching at) is very close to the bitmap size.
+>
+> For example,
+>
+> =A0 =A0 =A0 unsigned long bitmap[2] =3D { 0, 0 };
+> =A0 =A0 =A0 find_next_bit(bitmap, 63, 62);
+>
+> 1. find_next_bit() tries to find any set bits in bitmap[1],
+> =A0 but no bits set.
+>
+> 2. Then find_first_bit(bimap + 2, -1)
+>
+> 3. Unfortunately find_first_bit() takes unsigned int as the size argu=
+ment.
+>
+> 4. find_first_bit will access bitmap[2~] until it find any set bits.
+>
+> Add missing tests for stepping beyond the end of the bitmap to all
+> find_{first,next}_*() functions, and make sure they never return a va=
+lue
+> larger than the bitmap size.
+>
+> Reported-by: Akinobu Mita <akinobu.mita@gmail.com>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
 
-When comparing this to the MMU comments in include/asm-generic/unistd.h=
-,
-I noticed this:
+These patches look good.
 
-M68knommu does have:
-  - sys_mbind
-  - sys_get_mempolicy
-  - sys_set_mempolicy
-  - sys_migrate_pages
-  - sys_move_pages
-  - sys_fork, although it returns -EINVAL, not -ENOSYS
-
-M68knommu does not implement:
-  - sys_mremap
-  - sys_nfsservctl
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+I checked that find_next_zero_bit_le() and find_next_bit_le() work
+as I expect.
