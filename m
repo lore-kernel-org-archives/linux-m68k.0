@@ -1,33 +1,31 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Tue, 19 Apr 2011 10:52:24 +0200
-Message-ID: <201104191052.24878.arnd@arndb.de>
-References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg> <4DAD1062.2020309@snapgear.com> <201104191021.20293.arnd@arndb.de>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Writable sys_call_table (was: Re: [uClinux-dev] [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table)
+Date: Tue, 19 Apr 2011 13:54:25 +0200
+Message-ID: <m2k4eqfocu.fsf__22063.580613076$1303214082$gmane$org@igel.home>
+References: <BANLkTimbHgmUvisE7+TCkgthejNi_zdojQ@mail.gmail.com>
+	<201104181649.31492.arnd@arndb.de> <m2y637bkep.fsf@igel.home>
+	<201104190948.36517.arnd@arndb.de>
+	<alpine.OSX.2.00.1104191807210.373@ibook.intranet>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201104191021.20293.arnd@arndb.de>
+In-Reply-To: <alpine.OSX.2.00.1104191807210.373@ibook.intranet> (Finn Thain's
+	message of "Tue, 19 Apr 2011 18:12:41 +1000 (EST)")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@snapgear.com>, Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-arch@vger.kernel.org
 
-On Tuesday 19 April 2011, Arnd Bergmann wrote:
-> They are already sys_ni_syscall, by means of kernel/sys_ni.c.
-> I wouldn't bother changing them. The real question is whether
-> you should define the __NR_* macros for the syscalls that are
-> not provided. For a new architecture I think you should not,
-> but removing them might cause regressions. Then again, it's
-> probably very useful to match the unistd.h file with the system
-> call table.
+Finn Thain <fthain@telegraphics.com.au> writes:
 
-I've just looked at the diff between the m68k and m68knommu
-syscall tables, and it seems that you should be able to just
-use the m68k variant, with a slight adaptation for mmap2/mmap_pgoff.
+> Wouldn't that require const void * const sys_call_table[] ?
 
-You might want to use the same method as asm-generic, in order
-to provide a way to better synchronize unistd.h and syscalltable.
+No, the right signature would be void (*const sys_call_table[])(void)
+since this is an array of function pointers.
 
-	Arnd
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
