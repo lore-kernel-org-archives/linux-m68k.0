@@ -1,87 +1,102 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Tue, 19 Apr 2011 14:32:34 +1000
-Message-ID: <4DAD1062.2020309@snapgear.com>
-References: <alpine.DEB.2.00.1104062231190.11240@ayla.of.borg> <BANLkTinc8x5ehq-H3RUU9+=X75FbVOpbVg@mail.gmail.com> <201104172213.01258.arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Writable sys_call_table (was: Re: [uClinux-dev] [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table)
+Date: Tue, 19 Apr 2011 09:48:36 +0200
+Message-ID: <201104190948.36517.arnd@arndb.de>
+References: <BANLkTimbHgmUvisE7+TCkgthejNi_zdojQ@mail.gmail.com> <201104181649.31492.arnd@arndb.de> <m2y637bkep.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201104172213.01258.arnd@arndb.de>
+In-Reply-To: <m2y637bkep.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@snapgear.com>, Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-arch@vger.kernel.org
 
-On 18/04/11 06:13, Arnd Bergmann wrote:
-> On Wednesday 13 April 2011, Geert Uytterhoeven wrote:
->> When comparing this to the MMU comments in include/asm-generic/unistd.h,
->> I noticed this:
->>
->> M68knommu does have:
->>    - sys_mbind
->>    - sys_get_mempolicy
->>    - sys_set_mempolicy
->>    - sys_migrate_pages
->>    - sys_move_pages
->
-> scripts/checksyscalls.sh ignores these on NOMMU, so I did not list them.
-> Are there any NOMMU system with NUMA support?
+On Monday 18 April 2011, Andreas Schwab wrote:
+> >  
+> > -void *sys_call_table[__NR_syscalls] = {
+> > +const void *sys_call_table[__NR_syscalls] = {
+> 
+> That's not making it read-only.  You need to move the const to the other
+> side of the pointer.
 
-Certainly no m68k/ColdFire ones...
+D'oh!
 
+8<--------
+[PATCH] mark sys_call_table as const
 
-> If so, what are these
-> syscalls supposed to do in that case? I assume that they don't actually
-> change the physical location of a virtual address.
->
-> Since the unistd.h file is shared with m68k, I see nothing wrong here,
-> they should simply get stubbed out like the other NOMMU syscalls (swapon,
-> mprotect, msync, ...)
+There is no reason to have sys_call_table writable, and putting
+it into the rodata section can make it harder for malicious users
+to overwrite the entry points.
 
-I have no objection to changing these to be sys_ni_syscall for the
-CONFIG_MMU=n case of m68k. I am pretty sure they will never have
-been used in any way on m68knommu systems. (It does look like uClibc
-for example does support these even on no-mmu systems though. I just
-don't think they will have actually been used by anyone).
-
-
->>    - sys_fork, although it returns -EINVAL, not -ENOSYS
-
-I can't recall why it is that way :-)
-For one thing uClibc doesn't even generate a library symbol for it.
-So the only way someone would be able to get to it normally on an
-m68knommu system is to code the raw system call. And even then all
-they will ever get is a fail. I doubt the change in errno return
-type would be a problem.
-
-I have no problem with being consistent with asm-generic/unistd.h,
-and stubbing this to a sys_ni_syscall as well.
-
-
->> M68knommu does not implement:
->>    - sys_mremap
->>    - sys_nfsservct
->
-> Shouldn't you get a warning about these from scripts/checksyscalls.sh ?
-
-It doesn't complain.
-
-
-> mremap should really work, except for MREMAP_FIXED, as documented in mm/nommu.c.
-> nfsservctl is probably not needed, but I see no reason to leave it out either.
-
-They should work exactly the same as any other non-mmu arch.
-I just compile tested with those enabled (as per asm-generic/unistd.h)
-and it worked fine. So I would be happy to see those removed from the
-stub list for m68k/m68knommu.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/arch/score/kernel/sys_call_table.c b/arch/score/kernel/sys_call_table.c
+index 287369b..6d61120 100644
+--- a/arch/score/kernel/sys_call_table.c
++++ b/arch/score/kernel/sys_call_table.c
+@@ -7,6 +7,6 @@
+ #undef __SYSCALL
+ #define __SYSCALL(nr, call) [nr] = (call),
+ 
+-void *sys_call_table[__NR_syscalls] = {
++void *const sys_call_table[__NR_syscalls] = {
+ #include <asm/unistd.h>
+ };
+diff --git a/arch/tile/include/asm/syscalls.h b/arch/tile/include/asm/syscalls.h
+index 3b5507c..c0d6914 100644
+--- a/arch/tile/include/asm/syscalls.h
++++ b/arch/tile/include/asm/syscalls.h
+@@ -25,9 +25,9 @@
+ #include <linux/compat.h>
+ 
+ /* The array of function pointers for syscalls. */
+-extern void *sys_call_table[];
++extern void *const sys_call_table[];
+ #ifdef CONFIG_COMPAT
+-extern void *compat_sys_call_table[];
++extern void *const compat_sys_call_table[];
+ #endif
+ 
+ /*
+diff --git a/arch/tile/kernel/compat.c b/arch/tile/kernel/compat.c
+index dbc213a..aedf769 100644
+--- a/arch/tile/kernel/compat.c
++++ b/arch/tile/kernel/compat.c
+@@ -166,7 +166,7 @@ long tile_compat_sys_msgrcv(int msqid,
+  * Note that we can't include <linux/unistd.h> here since the header
+  * guard will defeat us; <asm/unistd.h> checks for __SYSCALL as well.
+  */
+-void *compat_sys_call_table[__NR_syscalls] = {
++void *const compat_sys_call_table[__NR_syscalls] = {
+ 	[0 ... __NR_syscalls-1] = sys_ni_syscall,
+ #include <asm/unistd.h>
+ };
+diff --git a/arch/tile/kernel/sys.c b/arch/tile/kernel/sys.c
+index e2187d2..1fb2480 100644
+--- a/arch/tile/kernel/sys.c
++++ b/arch/tile/kernel/sys.c
+@@ -122,7 +122,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+  * Note that we can't include <linux/unistd.h> here since the header
+  * guard will defeat us; <asm/unistd.h> checks for __SYSCALL as well.
+  */
+-void *sys_call_table[__NR_syscalls] = {
++void *const sys_call_table[__NR_syscalls] = {
+ 	[0 ... __NR_syscalls-1] = sys_ni_syscall,
+ #include <asm/unistd.h>
+ };
+diff --git a/arch/unicore32/kernel/sys.c b/arch/unicore32/kernel/sys.c
+index 3afe60a..00f3046 100644
+--- a/arch/unicore32/kernel/sys.c
++++ b/arch/unicore32/kernel/sys.c
+@@ -120,7 +120,7 @@ SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
+ #define __SYSCALL(nr, call)	[nr] = (call),
+ 
+ /* Note that we don't include <linux/unistd.h> but <asm/unistd.h> */
+-void *sys_call_table[__NR_syscalls] = {
++void *const sys_call_table[__NR_syscalls] = {
+ 	[0 ... __NR_syscalls-1] = sys_ni_syscall,
+ #include <asm/unistd.h>
+ };
