@@ -1,70 +1,49 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [uClinux-dev] [PATCH v2 1/6] m68k: merge mmu and non-mmu
-	versions of muldi3
-Date: Wed, 20 Apr 2011 13:23:12 +0200
-Message-ID: <20110420112312.GA30992@frolo.macqel>
-References: <1303278880-16153-2-git-send-email-gerg@snapgear.com> <1303278880-16153-3-git-send-email-gerg@snapgear.com> <20110420080609.GA24244@merkur.ravnborg.org> <BANLkTi=9ZNg+eh6S1NeyJaCs4e0tRjJELQ@mail.gmail.com> <20110420091216.GB3296@frolo.macqel> <4DAEA7F5.6080603@snapgear.com> <20110420095529.GC3296@frolo.macqel> <4DAEB2E1.6050404@snapgear.com> <20110420103802.GA26891@frolo.macqel> <4DAEBD13.7070605@snapgear.com>
+From: Christoph Lameter <cl@linux.com>
+Subject: Re: slub: fix panic with DISCONTIGMEM
+Date: Wed, 20 Apr 2011 08:54:23 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1104200853150.8634@router.home>
+References: <1303248576.11237.23.camel@mulgrave.site> <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailrelay002.isp.belgacom.be ([195.238.6.175]:23791 "EHLO
-	mailrelay002.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753620Ab1DTLXU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 20 Apr 2011 07:23:20 -0400
-Content-Disposition: inline
-In-Reply-To: <4DAEBD13.7070605@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811839-557332752-1303307665=:8634"
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, linux-arch@vger.kernel.org, linux-mm@vger.kernel.org, Parisc List <linux-parisc@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Michael Schmitz <schmitzmic@googlemail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Greg,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Wed, Apr 20, 2011 at 09:01:39PM +1000, Greg Ungerer wrote:
-> Hi Philippe,
+---1463811839-557332752-1303307665=:8634
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Wed, 20 Apr 2011, Geert Uytterhoeven wrote:
+
+> On Tue, Apr 19, 2011 at 23:29, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > Slub makes assumptions about page_to_nid() which are violated by
+> > DISCONTIGMEM and !NUMA. =C2=A0This violation results in a panic because
+> > page_to_nid() can be non-zero for pages in the discontiguous ranges and
+> > this leads to a null return by get_node(). =C2=A0The assertion by the
+> > maintainer is that DISCONTIGMEM should only be allowed when NUMA is als=
+o
+> > defined. =C2=A0However, at least six architectures: alpha, ia64, m32r, =
+m68k,
+> > mips, parisc violate this. =C2=A0The panic is a regression against slab=
+, so
+> > just mark slub broken in the problem configuration to prevent users
+> > reporting these panics.
 >
-> On 20/04/11 20:38, Philippe De Muyter wrote:
->> Hi Greg,
->>
->> On Wed, Apr 20, 2011 at 08:18:09PM +1000, Greg Ungerer wrote:
->>>>
->>>> The 68340 has it also. (And I have an old linux port for this processor)
->>>
->>> That is just a SoC that contains a 68020 though, so __mc68020__ would
->>> be defined for that.
->>
->> No, this is a cpu32 core, which is a subset of a 68020, so gcc does not
->> define __mc68020__, or at least should not (there are old bug reports
->> about that).
->
-> Modern gcc still does, from a gcc-4.5.1:
->
-> # m68k-linux-gcc -mcpu32 -dM -E - < /dev/null | grep mc68020
-> #define __mc68020__ 1
-> #define __mc68020 1
-> #define mc68020 1
->
->
->>>> I surmise the 68360 has it also.
->>>
->>> I believe that is a SoC with a 68040 cpu core, so I would expect that
->>> __mc68040__ would be correct for that.
->>
->> This is a cpu32+ core.
->>
->> Same here.
->>
->> Not that it is that important now :)
->
-> Does cpu32 always support the 64bit mul?
+> How does the problem manifest itself? We're having a problem on m68k, whi=
+ch
+> seems to go away when switching from SLUB to SLAB, or when reverting a co=
+mmit
+> in [2] (probably this was never reported upstream).
 
-Yes AFAIK.
+The NULL pointer dereference is typical. If SLUB breaks in this way then
+other things are also not functioning in the core.
 
-> If so we can just add __mcpu32__ to the conditional check list.
-
-That would be safer.
-
-Thanks
-
-Philippe
+Guess you are also using DISCONTIG in !NUMA?
+---1463811839-557332752-1303307665=:8634--
