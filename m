@@ -1,43 +1,82 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH v2 0/6] m68knommu: merge and clean up of arch/m68k/lib
- files
-Date: Wed, 20 Apr 2011 16:04:05 +1000
-Message-ID: <4DAE7755.6000408@snapgear.com>
-References: <1303278880-16153-1-git-send-email-gerg@snapgear.com> <1303278880-16153-2-git-send-email-gerg@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: slub: fix panic with DISCONTIGMEM
+Date: Wed, 20 Apr 2011 09:48:43 +0200
+Message-ID: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
+References: <1303248576.11237.23.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:24938 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752651Ab1DTGFT (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 02:05:19 -0400
-In-Reply-To: <1303278880-16153-2-git-send-email-gerg@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1303248576.11237.23.camel@mulgrave.site>
+Sender: linux-parisc-owner@vger.kernel.org
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: linux-arch@vger.kernel.org, linux-mm@vger.kernel.org, Parisc List <linux-parisc@vger.kernel.org>, Christoph Lameter <cl@linux.com>, Thorsten Glaser <tg@mirbsd.de>, Michael Schmitz <schmitzmic@googlemail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-On 20/04/11 15:54, gerg@snapgear.com wrote:
-> I have build and run tested on ARAnyM/Atari and ColdFire (non-mmu)
-> targets.
+On Tue, Apr 19, 2011 at 23:29, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> Slub makes assumptions about page_to_nid() which are violated by
+> DISCONTIGMEM and !NUMA. =C2=A0This violation results in a panic becau=
+se
+> page_to_nid() can be non-zero for pages in the discontiguous ranges a=
+nd
+> this leads to a null return by get_node(). =C2=A0The assertion by the
+> maintainer is that DISCONTIGMEM should only be allowed when NUMA is a=
+lso
+> defined. =C2=A0However, at least six architectures: alpha, ia64, m32r=
+, m68k,
+> mips, parisc violate this. =C2=A0The panic is a regression against sl=
+ab, so
+> just mark slub broken in the problem configuration to prevent users
+> reporting these panics.
 
-Sorry, top of that message got lost somewhere, should be:
+How does the problem manifest itself? We're having a problem on m68k, w=
+hich
+seems to go away when switching from SLUB to SLAB, or when reverting a =
+commit
+in [2] (probably this was never reported upstream).
 
+References:
+[1] http://www.mail-archive.com/linux-m68k@vger.kernel.org/msg02812.htm=
+l
+[2] http://www.spinics.net/lists/linux-m68k/msg03401.html
 
-The following set of patches is version 2 of clean ups and merges of
-individual files in the arch/m68k/lib directory. It is mostly the same
-as the first version, but drops the removal of string.c, and does a
-simple cleanup of checksum.c.
+> Cc: stable@kernel.org
+> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+>
+> ---
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 56240e7..a7ad8fb 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1226,6 +1226,7 @@ config SLAB
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0per cpu and per node queues.
+>
+> =C2=A0config SLUB
+> + =C2=A0 =C2=A0 =C2=A0 depends on BROKEN || NUMA || !DISCONTIGMEM
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0bool "SLUB (Unqueued Allocator)"
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0help
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 SLUB is a slab allocator that mini=
+mizes cache line usage
 
-I have build and run tested on ARAnyM/Atari and ColdFire (non-mmu)
-targets.
+Gr{oetje,eeting}s,
 
-Regards
-Greg
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-parisc"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
