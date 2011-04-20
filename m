@@ -1,45 +1,60 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2 1/6] m68k: merge mmu and non-mmu
-	versions of muldi3
-Date: Wed, 20 Apr 2011 10:06:09 +0200
-Message-ID: <20110420080609.GA24244@merkur.ravnborg.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [uClinux-dev] [PATCH v2 1/6] m68k: merge mmu and non-mmu versions
+ of muldi3
+Date: Wed, 20 Apr 2011 10:55:15 +0200
+Message-ID: <BANLkTi=9ZNg+eh6S1NeyJaCs4e0tRjJELQ@mail.gmail.com>
 References: <1303278880-16153-1-git-send-email-gerg@snapgear.com>
 	<1303278880-16153-2-git-send-email-gerg@snapgear.com>
 	<1303278880-16153-3-git-send-email-gerg@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+	<20110420080609.GA24244@merkur.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <uclinux-dev-bounces@uclinux.org>
-Content-Disposition: inline
-In-Reply-To: <1303278880-16153-3-git-send-email-gerg@snapgear.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: uClinux development list <uclinux-dev@uclinux.org>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:33770 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751867Ab1DTIzR convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 04:55:17 -0400
+Received: by bwz15 with SMTP id 15so444409bwz.19
+        for <linux-m68k@vger.kernel.org>; Wed, 20 Apr 2011 01:55:16 -0700 (PDT)
+In-Reply-To: <20110420080609.GA24244@merkur.ravnborg.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: uClinux development list <uclinux-dev@uclinux.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Greg.
+On Wed, Apr 20, 2011 at 10:06, Sam Ravnborg <sam@ravnborg.org> wrote:
+> Hi Greg.
+>
+>> +
+>> +#if defined(__mc68020__) || defined(__mc68030__) || \
+>> + =C2=A0 =C2=A0defined(__mc68040__) || defined(__mc68060__)
+>
+> Why use these to decide if this is MMU or not?
+> This code is not exposed to user-space so we can rely on CONFIG_* sym=
+bols.
+> IMO the CONIFG_* symbols is easier to read/maintain.
 
-> +
-> +#if defined(__mc68020__) || defined(__mc68030__) || \
-> +    defined(__mc68040__) || defined(__mc68060__)
+Because technically it doesn't depend on having a MMU or not, but on ha=
+ving
+the full 32-bit multiplication instruction or not.
 
-Why use these to decide if this is MMU or not?
-This code is not exposed to user-space so we can rely on CONFIG_* symbols.
-IMO the CONIFG_* symbols is easier to read/maintain.
+Does Coldfire-with-MMU (for which we haven't integrated the support
+yet) have that
+instruction?
 
-	Sam
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
