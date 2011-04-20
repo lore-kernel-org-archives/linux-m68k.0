@@ -1,19 +1,21 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH v2 3/6] m68k: remove duplicate memmove() implementation
-Date: Wed, 20 Apr 2011 15:54:37 +1000
-Message-ID: <1303278880-16153-5-git-send-email-gerg@snapgear.com>
+Subject: [PATCH v2 5/6] m68k: remove duplicate memcpy() implementation
+Date: Wed, 20 Apr 2011 15:54:39 +1000
+Message-ID: <1303278880-16153-7-git-send-email-gerg@snapgear.com>
 References: <1303278880-16153-1-git-send-email-gerg@snapgear.com>
  <1303278880-16153-2-git-send-email-gerg@snapgear.com>
  <1303278880-16153-3-git-send-email-gerg@snapgear.com>
  <1303278880-16153-4-git-send-email-gerg@snapgear.com>
+ <1303278880-16153-5-git-send-email-gerg@snapgear.com>
+ <1303278880-16153-6-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:44820 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:44874 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751626Ab1DTF46 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 01:56:58 -0400
-In-Reply-To: <1303278880-16153-4-git-send-email-gerg@snapgear.com>
+	with ESMTP id S1751922Ab1DTF5J (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 01:57:09 -0400
+In-Reply-To: <1303278880-16153-6-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -22,150 +24,270 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 From: Greg Ungerer <gerg@uclinux.org>
 
 Merging the mmu and non-mmu directories we ended up with duplicate
-(and identical) implementations of memmove(). Remove one of them.
+implementations of memcpy(). One is a little more optimized for the
+>68020 case, but that can easily be inserted into a single
+implementation of memcpy(). Clean up the exporting of this symbol
+too, otherwise we end up exporting it twice on a no-mmu build.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/lib/Makefile  |    4 +-
- arch/m68k/lib/memmove.c |    2 -
- arch/m68k/lib/string.c  |   95 -----------------------------------------------
- 3 files changed, 2 insertions(+), 99 deletions(-)
+ arch/m68k/kernel/m68k_ksyms_no.c |    6 --
+ arch/m68k/lib/Makefile           |    5 +-
+ arch/m68k/lib/memcpy.c           |  128 +++++++++++++++++++++----------------
+ arch/m68k/lib/string.c           |   67 --------------------
+ 4 files changed, 75 insertions(+), 131 deletions(-)
 
+diff --git a/arch/m68k/kernel/m68k_ksyms_no.c b/arch/m68k/kernel/m68k_ksyms_no.c
+index 346bce6..10af0af 100644
+--- a/arch/m68k/kernel/m68k_ksyms_no.c
++++ b/arch/m68k/kernel/m68k_ksyms_no.c
+@@ -31,12 +31,6 @@ EXPORT_SYMBOL(kernel_thread);
+ /* Networking helper routines. */
+ EXPORT_SYMBOL(csum_partial_copy_nocheck);
+ 
+-/* The following are special because they're not called
+-   explicitly (the C compiler generates them).  Fortunately,
+-   their interface isn't gonna change any time soon now, so
+-   it's OK to leave it out of version control.  */
+-EXPORT_SYMBOL(memcpy);
+-
+ /*
+  * libgcc functions - functions that are used internally by the
+  * compiler...  (prototypes are not correct though, but that
 diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-index 3d85fb6..ec479a9 100644
+index ac275d5..2438d02 100644
 --- a/arch/m68k/lib/Makefile
 +++ b/arch/m68k/lib/Makefile
-@@ -3,12 +3,12 @@
- # Makefile for m68k-specific library files..
+@@ -4,12 +4,11 @@
  #
  
--lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o checksum.o
-+lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o memmove.o checksum.o
+ lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
+-	   memset.o memmove.o checksum.o
++	   memcpy.o memset.o memmove.o checksum.o
  
  ifdef CONFIG_MMU
  lib-y	+= string.o uaccess.o
  else
- lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o \
--	   memcpy.o memmove.o memset.o delay.o
-+	   memcpy.o memset.o delay.o
+-lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o \
+-	   memcpy.o delay.o
++lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o delay.o
  endif
  
-diff --git a/arch/m68k/lib/memmove.c b/arch/m68k/lib/memmove.c
-index b3dcfe9..6519f7f 100644
---- a/arch/m68k/lib/memmove.c
-+++ b/arch/m68k/lib/memmove.c
-@@ -4,8 +4,6 @@
-  * for more details.
-  */
+diff --git a/arch/m68k/lib/memcpy.c b/arch/m68k/lib/memcpy.c
+index b50dbca..2592171 100644
+--- a/arch/m68k/lib/memcpy.c
++++ b/arch/m68k/lib/memcpy.c
+@@ -1,62 +1,80 @@
++/*
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
  
--#define __IN_STRING_C
--
- #include <linux/module.h>
- #include <linux/string.h>
+-#include <linux/types.h>
++#include <linux/module.h>
++#include <linux/string.h>
  
+-void * memcpy(void * to, const void * from, size_t n)
++void *memcpy(void *to, const void *from, size_t n)
+ {
+-#ifdef CONFIG_COLDFIRE
+-  void *xto = to;
+-  size_t temp;
++	void *xto = to;
++	size_t temp, temp1;
+ 
+-  if (!n)
+-    return xto;
+-  if ((long) to & 1)
+-    {
+-      char *cto = to;
+-      const char *cfrom = from;
+-      *cto++ = *cfrom++;
+-      to = cto;
+-      from = cfrom;
+-      n--;
+-    }
+-  if (n > 2 && (long) to & 2)
+-    {
+-      short *sto = to;
+-      const short *sfrom = from;
+-      *sto++ = *sfrom++;
+-      to = sto;
+-      from = sfrom;
+-      n -= 2;
+-    }
+-  temp = n >> 2;
+-  if (temp)
+-    {
+-      long *lto = to;
+-      const long *lfrom = from;
+-      for (; temp; temp--)
+-	*lto++ = *lfrom++;
+-      to = lto;
+-      from = lfrom;
+-    }
+-  if (n & 2)
+-    {
+-      short *sto = to;
+-      const short *sfrom = from;
+-      *sto++ = *sfrom++;
+-      to = sto;
+-      from = sfrom;
+-    }
+-  if (n & 1)
+-    {
+-      char *cto = to;
+-      const char *cfrom = from;
+-      *cto = *cfrom;
+-    }
+-  return xto;
++	if (!n)
++		return xto;
++	if ((long)to & 1) {
++		char *cto = to;
++		const char *cfrom = from;
++		*cto++ = *cfrom++;
++		to = cto;
++		from = cfrom;
++		n--;
++	}
++	if (n > 2 && (long)to & 2) {
++		short *sto = to;
++		const short *sfrom = from;
++		*sto++ = *sfrom++;
++		to = sto;
++		from = sfrom;
++		n -= 2;
++	}
++	temp = n >> 2;
++	if (temp) {
++		long *lto = to;
++		const long *lfrom = from;
++#if defined(__mc68020__) || defined(__mc68030__) || \
++    defined(__mc68040__) || defined(__mc68060__)
++		asm volatile (
++			"	movel %2,%3\n"
++			"	andw  #7,%3\n"
++			"	lsrl  #3,%2\n"
++			"	negw  %3\n"
++			"	jmp   %%pc@(1f,%3:w:2)\n"
++			"4:	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"	movel %0@+,%1@+\n"
++			"1:	dbra  %2,4b\n"
++			"	clrw  %2\n"
++			"	subql #1,%2\n"
++			"	jpl   4b"
++			: "=a" (lfrom), "=a" (lto), "=d" (temp), "=&d" (temp1)
++			: "0" (lfrom), "1" (lto), "2" (temp));
+ #else
+-  const char *c_from = from;
+-  char *c_to = to;
+-  while (n-- > 0)
+-    *c_to++ = *c_from++;
+-  return((void *) to);
++		for (; temp; temp--)
++			*lto++ = *lfrom++;
+ #endif
++		to = lto;
++		from = lfrom;
++	}
++	if (n & 2) {
++		short *sto = to;
++		const short *sfrom = from;
++		*sto++ = *sfrom++;
++		to = sto;
++		from = sfrom;
++	}
++	if (n & 1) {
++		char *cto = to;
++		const char *cfrom = from;
++		*cto = *cfrom;
++	}
++	return xto;
+ }
++EXPORT_SYMBOL(memcpy);
 diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
-index d399c5f..711fa74 100644
+index 6d24612..b9a57ab 100644
 --- a/arch/m68k/lib/string.c
 +++ b/arch/m68k/lib/string.c
-@@ -148,98 +148,3 @@ void *memcpy(void *to, const void *from, size_t n)
- 	return xto;
+@@ -20,70 +20,3 @@ char *strcat(char *dest, const char *src)
+ 	return __kernel_strcpy(dest + __kernel_strlen(dest), src);
  }
- EXPORT_SYMBOL(memcpy);
+ EXPORT_SYMBOL(strcat);
 -
--void *memmove(void *dest, const void *src, size_t n)
+-void *memcpy(void *to, const void *from, size_t n)
 -{
--	void *xdest = dest;
--	size_t temp;
+-	void *xto = to;
+-	size_t temp, temp1;
 -
 -	if (!n)
--		return xdest;
--
--	if (dest < src) {
--		if ((long)dest & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*cdest++ = *csrc++;
--			dest = cdest;
--			src = csrc;
--			n--;
--		}
--		if (n > 2 && (long)dest & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*sdest++ = *ssrc++;
--			dest = sdest;
--			src = ssrc;
--			n -= 2;
--		}
--		temp = n >> 2;
--		if (temp) {
--			long *ldest = dest;
--			const long *lsrc = src;
--			temp--;
--			do
--				*ldest++ = *lsrc++;
--			while (temp--);
--			dest = ldest;
--			src = lsrc;
--		}
--		if (n & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*sdest++ = *ssrc++;
--			dest = sdest;
--			src = ssrc;
--		}
--		if (n & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*cdest = *csrc;
--		}
--	} else {
--		dest = (char *)dest + n;
--		src = (const char *)src + n;
--		if ((long)dest & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*--cdest = *--csrc;
--			dest = cdest;
--			src = csrc;
--			n--;
--		}
--		if (n > 2 && (long)dest & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*--sdest = *--ssrc;
--			dest = sdest;
--			src = ssrc;
--			n -= 2;
--		}
--		temp = n >> 2;
--		if (temp) {
--			long *ldest = dest;
--			const long *lsrc = src;
--			temp--;
--			do
--				*--ldest = *--lsrc;
--			while (temp--);
--			dest = ldest;
--			src = lsrc;
--		}
--		if (n & 2) {
--			short *sdest = dest;
--			const short *ssrc = src;
--			*--sdest = *--ssrc;
--			dest = sdest;
--			src = ssrc;
--		}
--		if (n & 1) {
--			char *cdest = dest;
--			const char *csrc = src;
--			*--cdest = *--csrc;
--		}
+-		return xto;
+-	if ((long)to & 1) {
+-		char *cto = to;
+-		const char *cfrom = from;
+-		*cto++ = *cfrom++;
+-		to = cto;
+-		from = cfrom;
+-		n--;
 -	}
--	return xdest;
+-	if (n > 2 && (long)to & 2) {
+-		short *sto = to;
+-		const short *sfrom = from;
+-		*sto++ = *sfrom++;
+-		to = sto;
+-		from = sfrom;
+-		n -= 2;
+-	}
+-	temp = n >> 2;
+-	if (temp) {
+-		long *lto = to;
+-		const long *lfrom = from;
+-
+-		asm volatile (
+-			"	movel %2,%3\n"
+-			"	andw  #7,%3\n"
+-			"	lsrl  #3,%2\n"
+-			"	negw  %3\n"
+-			"	jmp   %%pc@(1f,%3:w:2)\n"
+-			"4:	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"	movel %0@+,%1@+\n"
+-			"1:	dbra  %2,4b\n"
+-			"	clrw  %2\n"
+-			"	subql #1,%2\n"
+-			"	jpl   4b"
+-			: "=a" (lfrom), "=a" (lto), "=d" (temp), "=&d" (temp1)
+-			: "0" (lfrom), "1" (lto), "2" (temp));
+-		to = lto;
+-		from = lfrom;
+-	}
+-	if (n & 2) {
+-		short *sto = to;
+-		const short *sfrom = from;
+-		*sto++ = *sfrom++;
+-		to = sto;
+-		from = sfrom;
+-	}
+-	if (n & 1) {
+-		char *cto = to;
+-		const char *cfrom = from;
+-		*cto = *cfrom;
+-	}
+-	return xto;
 -}
--EXPORT_SYMBOL(memmove);
+-EXPORT_SYMBOL(memcpy);
 -- 
 1.7.0.4
