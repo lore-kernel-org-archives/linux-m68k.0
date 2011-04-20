@@ -1,17 +1,20 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH v2 1/6] m68k: merge mmu and non-mmu versions of muldi3
-Date: Wed, 20 Apr 2011 15:54:35 +1000
-Message-ID: <1303278880-16153-3-git-send-email-gerg@snapgear.com>
+Subject: [PATCH v2 4/6] m68k: remove duplicate memset() implementation
+Date: Wed, 20 Apr 2011 15:54:38 +1000
+Message-ID: <1303278880-16153-6-git-send-email-gerg@snapgear.com>
 References: <1303278880-16153-1-git-send-email-gerg@snapgear.com>
  <1303278880-16153-2-git-send-email-gerg@snapgear.com>
+ <1303278880-16153-3-git-send-email-gerg@snapgear.com>
+ <1303278880-16153-4-git-send-email-gerg@snapgear.com>
+ <1303278880-16153-5-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:45037 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:45041 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751626Ab1DTF5h (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 01:57:37 -0400
-In-Reply-To: <1303278880-16153-2-git-send-email-gerg@snapgear.com>
+	with ESMTP id S1752148Ab1DTF5j (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 01:57:39 -0400
+In-Reply-To: <1303278880-16153-5-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -19,288 +22,247 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The implementation of gcc's muldi3 support function differs only in
-the use of the machine's 64 bit sized mul or not. (It isn't based
-on using an MMU or not). Merge the current mmu and non-mmu versions
-of arc/m68k/lib/muldi3 and use the appropriate pre-processor
-conditionals to get the right version for all m68k processor types.
+Merging the mmu and non-mmu directories we ended up with duplicate
+implementations of memset(). One is a little more optimized for the
+>68020 case, but that can easily be inserted into a single
+implementation of memset(). Clean up the exporting of this symbol
+too, otherwise we end up exporting it twice on a no-mmu build.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/lib/muldi3.c    |   99 +++++++++++++++++++++++++++++++++++++++++++-
- arch/m68k/lib/muldi3_mm.c |   63 ----------------------------
- arch/m68k/lib/muldi3_no.c |   86 ---------------------------------------
- 3 files changed, 96 insertions(+), 152 deletions(-)
- delete mode 100644 arch/m68k/lib/muldi3_mm.c
- delete mode 100644 arch/m68k/lib/muldi3_no.c
+ arch/m68k/kernel/m68k_ksyms_no.c |    1 -
+ arch/m68k/lib/Makefile           |    5 +-
+ arch/m68k/lib/memset.c           |  114 +++++++++++++++++++++++--------------
+ arch/m68k/lib/string.c           |   61 --------------------
+ 4 files changed, 74 insertions(+), 107 deletions(-)
 
-diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
-index 16e0eb3..43ac41b 100644
---- a/arch/m68k/lib/muldi3.c
-+++ b/arch/m68k/lib/muldi3.c
-@@ -1,5 +1,98 @@
--#ifdef CONFIG_MMU
--#include "muldi3_mm.c"
-+/* muldi3.c extracted from gcc-2.7.2.3/libgcc2.c and 
-+			   gcc-2.7.2.3/longlong.h which is: */
-+/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
+diff --git a/arch/m68k/kernel/m68k_ksyms_no.c b/arch/m68k/kernel/m68k_ksyms_no.c
+index 39fe0a7..346bce6 100644
+--- a/arch/m68k/kernel/m68k_ksyms_no.c
++++ b/arch/m68k/kernel/m68k_ksyms_no.c
+@@ -36,7 +36,6 @@ EXPORT_SYMBOL(csum_partial_copy_nocheck);
+    their interface isn't gonna change any time soon now, so
+    it's OK to leave it out of version control.  */
+ EXPORT_SYMBOL(memcpy);
+-EXPORT_SYMBOL(memset);
+ 
+ /*
+  * libgcc functions - functions that are used internally by the
+diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
+index ec479a9..ac275d5 100644
+--- a/arch/m68k/lib/Makefile
++++ b/arch/m68k/lib/Makefile
+@@ -3,12 +3,13 @@
+ # Makefile for m68k-specific library files..
+ #
+ 
+-lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o memmove.o checksum.o
++lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
++	   memset.o memmove.o checksum.o
+ 
+ ifdef CONFIG_MMU
+ lib-y	+= string.o uaccess.o
+ else
+ lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o \
+-	   memcpy.o memset.o delay.o
++	   memcpy.o delay.o
+ endif
+ 
+diff --git a/arch/m68k/lib/memset.c b/arch/m68k/lib/memset.c
+index 1389bf4..eea2834 100644
+--- a/arch/m68k/lib/memset.c
++++ b/arch/m68k/lib/memset.c
+@@ -1,47 +1,75 @@
+-#include <linux/types.h>
++/*
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
+ 
+-void * memset(void * s, int c, size_t count)
++#include <linux/module.h>
++#include <linux/string.h>
 +
-+This file is part of GNU CC.
-+
-+GNU CC is free software; you can redistribute it and/or modify
-+it under the terms of the GNU General Public License as published by
-+the Free Software Foundation; either version 2, or (at your option)
-+any later version.
-+
-+GNU CC is distributed in the hope that it will be useful,
-+but WITHOUT ANY WARRANTY; without even the implied warranty of
-+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+GNU General Public License for more details.
-+
-+You should have received a copy of the GNU General Public License
-+along with GNU CC; see the file COPYING.  If not, write to
-+the Free Software Foundation, 59 Temple Place - Suite 330,
-+Boston, MA 02111-1307, USA.  */
-+
++void *memset(void *s, int c, size_t count)
+ {
+-  void *xs = s;
+-  size_t temp;
++	void *xs = s;
++	size_t temp;
+ 
+-  if (!count)
+-    return xs;
+-  c &= 0xff;
+-  c |= c << 8;
+-  c |= c << 16;
+-  if ((long) s & 1)
+-    {
+-      char *cs = s;
+-      *cs++ = c;
+-      s = cs;
+-      count--;
+-    }
+-  if (count > 2 && (long) s & 2)
+-    {
+-      short *ss = s;
+-      *ss++ = c;
+-      s = ss;
+-      count -= 2;
+-    }
+-  temp = count >> 2;
+-  if (temp)
+-    {
+-      long *ls = s;
+-      for (; temp; temp--)
+-	*ls++ = c;
+-      s = ls;
+-    }
+-  if (count & 2)
+-    {
+-      short *ss = s;
+-      *ss++ = c;
+-      s = ss;
+-    }
+-  if (count & 1)
+-    {
+-      char *cs = s;
+-      *cs = c;
+-    }
+-  return xs;
++	if (!count)
++		return xs;
++	c &= 0xff;
++	c |= c << 8;
++	c |= c << 16;
++	if ((long)s & 1) {
++		char *cs = s;
++		*cs++ = c;
++		s = cs;
++		count--;
++	}
++	if (count > 2 && (long)s & 2) {
++		short *ss = s;
++		*ss++ = c;
++		s = ss;
++		count -= 2;
++	}
++	temp = count >> 2;
++	if (temp) {
++		long *ls = s;
 +#if defined(__mc68020__) || defined(__mc68030__) || \
 +    defined(__mc68040__) || defined(__mc68060__)
-+
-+#define umul_ppmm(w1, w0, u, v) \
-+  __asm__ ("mulu%.l %3,%1:%0"						\
-+           : "=d" ((USItype)(w0)),					\
-+             "=d" ((USItype)(w1))					\
-+           : "%0" ((USItype)(u)),					\
-+             "dmi" ((USItype)(v)))
-+
- #else
--#include "muldi3_no.c"
-+
-+#define SI_TYPE_SIZE 32
-+#define __BITS4 (SI_TYPE_SIZE / 4)
-+#define __ll_B (1L << (SI_TYPE_SIZE / 2))
-+#define __ll_lowpart(t) ((USItype) (t) % __ll_B)
-+#define __ll_highpart(t) ((USItype) (t) / __ll_B)
-+
-+#define umul_ppmm(w1, w0, u, v)						\
-+  do {									\
-+    USItype __x0, __x1, __x2, __x3;					\
-+    USItype __ul, __vl, __uh, __vh;					\
-+									\
-+    __ul = __ll_lowpart (u);						\
-+    __uh = __ll_highpart (u);						\
-+    __vl = __ll_lowpart (v);						\
-+    __vh = __ll_highpart (v);						\
-+									\
-+    __x0 = (USItype) __ul * __vl;					\
-+    __x1 = (USItype) __ul * __vh;					\
-+    __x2 = (USItype) __uh * __vl;					\
-+    __x3 = (USItype) __uh * __vh;					\
-+									\
-+    __x1 += __ll_highpart (__x0);/* this can't give carry */		\
-+    __x1 += __x2;		/* but this indeed can */		\
-+    if (__x1 < __x2)		/* did we get it? */			\
-+      __x3 += __ll_B;		/* yes, add it in the proper pos. */	\
-+									\
-+    (w1) = __x3 + __ll_highpart (__x1);					\
-+    (w0) = __ll_lowpart (__x1) * __ll_B + __ll_lowpart (__x0);		\
-+  } while (0)
-+
- #endif
-+
-+#define __umulsidi3(u, v) \
-+  ({DIunion __w;							\
-+    umul_ppmm (__w.s.high, __w.s.low, u, v);				\
-+    __w.ll; })
-+
-+typedef 	 int SItype	__attribute__ ((mode (SI)));
-+typedef unsigned int USItype	__attribute__ ((mode (SI)));
-+typedef		 int DItype	__attribute__ ((mode (DI)));
-+typedef int word_type __attribute__ ((mode (__word__)));
-+
-+struct DIstruct {SItype high, low;};
-+
-+typedef union
-+{
-+  struct DIstruct s;
-+  DItype ll;
-+} DIunion;
-+
-+DItype
-+__muldi3 (DItype u, DItype v)
-+{
-+  DIunion w;
-+  DIunion uu, vv;
-+
-+  uu.ll = u,
-+  vv.ll = v;
-+
-+  w.ll = __umulsidi3 (uu.s.low, vv.s.low);
-+  w.s.high += ((USItype) uu.s.low * (USItype) vv.s.high
-+	       + (USItype) uu.s.high * (USItype) vv.s.low);
-+
-+  return w.ll;
-+}
-diff --git a/arch/m68k/lib/muldi3_mm.c b/arch/m68k/lib/muldi3_mm.c
-deleted file mode 100644
-index be4f275..0000000
---- a/arch/m68k/lib/muldi3_mm.c
-+++ /dev/null
-@@ -1,63 +0,0 @@
--/* muldi3.c extracted from gcc-2.7.2.3/libgcc2.c and
--			   gcc-2.7.2.3/longlong.h which is: */
--/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
--
--This file is part of GNU CC.
--
--GNU CC is free software; you can redistribute it and/or modify
--it under the terms of the GNU General Public License as published by
--the Free Software Foundation; either version 2, or (at your option)
--any later version.
--
--GNU CC is distributed in the hope that it will be useful,
--but WITHOUT ANY WARRANTY; without even the implied warranty of
--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--GNU General Public License for more details.
--
--You should have received a copy of the GNU General Public License
--along with GNU CC; see the file COPYING.  If not, write to
--the Free Software Foundation, 59 Temple Place - Suite 330,
--Boston, MA 02111-1307, USA.  */
--
--#define BITS_PER_UNIT 8
--
--#define umul_ppmm(w1, w0, u, v) \
--  __asm__ ("mulu%.l %3,%1:%0"						\
--           : "=d" ((USItype)(w0)),					\
--             "=d" ((USItype)(w1))					\
--           : "%0" ((USItype)(u)),					\
--             "dmi" ((USItype)(v)))
--
--#define __umulsidi3(u, v) \
--  ({DIunion __w;							\
--    umul_ppmm (__w.s.high, __w.s.low, u, v);				\
--    __w.ll; })
--
--typedef		 int SItype	__attribute__ ((mode (SI)));
--typedef unsigned int USItype	__attribute__ ((mode (SI)));
--typedef		 int DItype	__attribute__ ((mode (DI)));
--typedef int word_type __attribute__ ((mode (__word__)));
--
--struct DIstruct {SItype high, low;};
--
--typedef union
++		size_t temp1;
++		asm volatile (
++			"	movel %1,%2\n"
++			"	andw  #7,%2\n"
++			"	lsrl  #3,%1\n"
++			"	negw  %2\n"
++			"	jmp   %%pc@(2f,%2:w:2)\n"
++			"1:	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"	movel %3,%0@+\n"
++			"2:	dbra  %1,1b\n"
++			"	clrw  %1\n"
++			"	subql #1,%1\n"
++			"	jpl   1b"
++			: "=a" (ls), "=d" (temp), "=&d" (temp1)
++			: "d" (c), "0" (ls), "1" (temp));
++#else
++		for (; temp; temp--)
++			*ls++ = c;
++#endif
++		s = ls;
++	}
++	if (count & 2) {
++		short *ss = s;
++		*ss++ = c;
++		s = ss;
++	}
++	if (count & 1) {
++		char *cs = s;
++		*cs = c;
++	}
++	return xs;
+ }
++EXPORT_SYMBOL(memset);
+diff --git a/arch/m68k/lib/string.c b/arch/m68k/lib/string.c
+index 711fa74..6d24612 100644
+--- a/arch/m68k/lib/string.c
++++ b/arch/m68k/lib/string.c
+@@ -21,67 +21,6 @@ char *strcat(char *dest, const char *src)
+ }
+ EXPORT_SYMBOL(strcat);
+ 
+-void *memset(void *s, int c, size_t count)
 -{
--  struct DIstruct s;
--  DItype ll;
--} DIunion;
+-	void *xs = s;
+-	size_t temp, temp1;
 -
--DItype
--__muldi3 (DItype u, DItype v)
--{
--  DIunion w;
--  DIunion uu, vv;
+-	if (!count)
+-		return xs;
+-	c &= 0xff;
+-	c |= c << 8;
+-	c |= c << 16;
+-	if ((long)s & 1) {
+-		char *cs = s;
+-		*cs++ = c;
+-		s = cs;
+-		count--;
+-	}
+-	if (count > 2 && (long)s & 2) {
+-		short *ss = s;
+-		*ss++ = c;
+-		s = ss;
+-		count -= 2;
+-	}
+-	temp = count >> 2;
+-	if (temp) {
+-		long *ls = s;
 -
--  uu.ll = u,
--  vv.ll = v;
--
--  w.ll = __umulsidi3 (uu.s.low, vv.s.low);
--  w.s.high += ((USItype) uu.s.low * (USItype) vv.s.high
--	       + (USItype) uu.s.high * (USItype) vv.s.low);
--
--  return w.ll;
+-		asm volatile (
+-			"	movel %1,%2\n"
+-			"	andw  #7,%2\n"
+-			"	lsrl  #3,%1\n"
+-			"	negw  %2\n"
+-			"	jmp   %%pc@(2f,%2:w:2)\n"
+-			"1:	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"	movel %3,%0@+\n"
+-			"2:	dbra  %1,1b\n"
+-			"	clrw  %1\n"
+-			"	subql #1,%1\n"
+-			"	jpl   1b"
+-			: "=a" (ls), "=d" (temp), "=&d" (temp1)
+-			: "d" (c), "0" (ls), "1" (temp));
+-		s = ls;
+-	}
+-	if (count & 2) {
+-		short *ss = s;
+-		*ss++ = c;
+-		s = ss;
+-	}
+-	if (count & 1) {
+-		char *cs = s;
+-		*cs = c;
+-	}
+-	return xs;
 -}
-diff --git a/arch/m68k/lib/muldi3_no.c b/arch/m68k/lib/muldi3_no.c
-deleted file mode 100644
-index 34af72c..0000000
---- a/arch/m68k/lib/muldi3_no.c
-+++ /dev/null
-@@ -1,86 +0,0 @@
--/* muldi3.c extracted from gcc-2.7.2.3/libgcc2.c and 
--			   gcc-2.7.2.3/longlong.h which is: */
--/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
+-EXPORT_SYMBOL(memset);
 -
--This file is part of GNU CC.
--
--GNU CC is free software; you can redistribute it and/or modify
--it under the terms of the GNU General Public License as published by
--the Free Software Foundation; either version 2, or (at your option)
--any later version.
--
--GNU CC is distributed in the hope that it will be useful,
--but WITHOUT ANY WARRANTY; without even the implied warranty of
--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--GNU General Public License for more details.
--
--You should have received a copy of the GNU General Public License
--along with GNU CC; see the file COPYING.  If not, write to
--the Free Software Foundation, 59 Temple Place - Suite 330,
--Boston, MA 02111-1307, USA.  */
--
--#define BITS_PER_UNIT 8
--#define SI_TYPE_SIZE 32
--
--#define __BITS4 (SI_TYPE_SIZE / 4)
--#define __ll_B (1L << (SI_TYPE_SIZE / 2))
--#define __ll_lowpart(t) ((USItype) (t) % __ll_B)
--#define __ll_highpart(t) ((USItype) (t) / __ll_B)
--
--#define umul_ppmm(w1, w0, u, v)						\
--  do {									\
--    USItype __x0, __x1, __x2, __x3;					\
--    USItype __ul, __vl, __uh, __vh;					\
--									\
--    __ul = __ll_lowpart (u);						\
--    __uh = __ll_highpart (u);						\
--    __vl = __ll_lowpart (v);						\
--    __vh = __ll_highpart (v);						\
--									\
--    __x0 = (USItype) __ul * __vl;					\
--    __x1 = (USItype) __ul * __vh;					\
--    __x2 = (USItype) __uh * __vl;					\
--    __x3 = (USItype) __uh * __vh;					\
--									\
--    __x1 += __ll_highpart (__x0);/* this can't give carry */		\
--    __x1 += __x2;		/* but this indeed can */		\
--    if (__x1 < __x2)		/* did we get it? */			\
--      __x3 += __ll_B;		/* yes, add it in the proper pos. */	\
--									\
--    (w1) = __x3 + __ll_highpart (__x1);					\
--    (w0) = __ll_lowpart (__x1) * __ll_B + __ll_lowpart (__x0);		\
--  } while (0)
--
--#define __umulsidi3(u, v) \
--  ({DIunion __w;							\
--    umul_ppmm (__w.s.high, __w.s.low, u, v);				\
--    __w.ll; })
--
--typedef 	 int SItype	__attribute__ ((mode (SI)));
--typedef unsigned int USItype	__attribute__ ((mode (SI)));
--typedef		 int DItype	__attribute__ ((mode (DI)));
--typedef int word_type __attribute__ ((mode (__word__)));
--
--struct DIstruct {SItype high, low;};
--
--typedef union
--{
--  struct DIstruct s;
--  DItype ll;
--} DIunion;
--
--DItype
--__muldi3 (DItype u, DItype v)
--{
--  DIunion w;
--  DIunion uu, vv;
--
--  uu.ll = u,
--  vv.ll = v;
--
--  w.ll = __umulsidi3 (uu.s.low, vv.s.low);
--  w.s.high += ((USItype) uu.s.low * (USItype) vv.s.high
--	       + (USItype) uu.s.high * (USItype) vv.s.low);
--
--  return w.ll;
--}
+ void *memcpy(void *to, const void *from, size_t n)
+ {
+ 	void *xto = to;
 -- 
 1.7.0.4
