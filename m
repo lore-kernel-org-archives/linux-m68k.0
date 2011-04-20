@@ -1,35 +1,23 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: Writable sys_call_table (was: Re: [uClinux-dev] [PATCH] m68k:
- Merge mmu and non-mmu versions of sys_call_table)
-Date: Wed, 20 Apr 2011 01:31:19 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1104200055310.441__11070.9644192413$1303227084$gmane$org@ibook.intranet>
-References: <BANLkTimbHgmUvisE7+TCkgthejNi_zdojQ@mail.gmail.com> <201104181649.31492.arnd@arndb.de> <m2y637bkep.fsf@igel.home> <201104190948.36517.arnd@arndb.de> <alpine.OSX.2.00.1104191807210.373@ibook.intranet> <m2k4eqfocu.fsf@igel.home>
+From: <gerg@snapgear.com>
+Subject: [PATCH v2 0/6] m68knommu: merge and clean up of arch/m68k/lib files
+Date: Wed, 20 Apr 2011 15:54:33 +1000
+Message-ID: <1303278880-16153-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m2k4eqfocu.fsf@igel.home>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:44775 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751626Ab1DTF4u (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 01:56:50 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@snapgear.com>, Gavin Lambert <gavinl@compacsort.com>, uClinux development list <uclinux-dev@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-arch@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
 
-On Tue, 19 Apr 2011, Andreas Schwab wrote:
+The following set of patches is version 2 of clean ups and merges of
+individual files in the arch/m68k/lib directory. It is mostly the same
+as the first version, but drops the removal of string.c, and does a
+simple cleanup of checksum.c.
 
-> Finn Thain <fthain@telegraphics.com.au> writes:
-> 
-> > Wouldn't that require const void * const sys_call_table[] ?
-> 
-> No, the right signature would be void (*const sys_call_table[])(void)
-> since this is an array of function pointers.
-
-Right. I mis-parsed the definition as a pointer to an array... Sorry about 
-the noise.
-
-Finn
-
-
-> 
-> Andreas.
-> 
-> 
+I have build and run tested on ARAnyM/Atari and ColdFire (non-mmu)
+targets.
