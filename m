@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH] m68k: merge the non-mmu and mmu versions of module.c
-Date: Thu, 21 Apr 2011 11:02:17 +1000
-Message-ID: <1303347737-28615-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68k: merge the mmu and non-mmu versions of sys_m68k.c
+Date: Thu, 21 Apr 2011 12:55:04 +1000
+Message-ID: <1303354504-30085-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:22980 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:13101 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754371Ab1DUBCZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 21:02:25 -0400
+	with ESMTP id S1752857Ab1DUCzd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2011 22:55:33 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -16,541 +16,1263 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The non-mmu and mmu versions of the module loader module.c are
-nearly identical. Merge them back to a single module.c. There is
-a little bit of re-ordering of the struct and enum definitions in
-module.h to keep the ifdefery to a minimum.
+There is a lot of common code in the sys_m68k.c files. The mmu and non-mmu
+versions can easily be merged into a single file.
+
+There is really only 2 functions that differ in the 2 cases. A single
+ifdef on CONFIG_MMU can take care of this. Alternatively we could break
+those 2 functions out and maintain sys_m68k_no.c and sys_m68k_mm.c with
+just this code in it (Makefile could then just build the right one).
+Does anyone have strong feelings on which way they want this done?
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/module.h |   31 ++++-----
- arch/m68k/kernel/module.c      |  157 +++++++++++++++++++++++++++++++++++++++-
- arch/m68k/kernel/module_mm.c   |  155 ---------------------------------------
- arch/m68k/kernel/module_no.c   |  126 --------------------------------
- 4 files changed, 167 insertions(+), 302 deletions(-)
- delete mode 100644 arch/m68k/kernel/module_mm.c
- delete mode 100644 arch/m68k/kernel/module_no.c
+ arch/m68k/kernel/sys_m68k.c    |  581 +++++++++++++++++++++++++++++++++++++++-
+ arch/m68k/kernel/sys_m68k_mm.c |  546 -------------------------------------
+ arch/m68k/kernel/sys_m68k_no.c |   94 -------
+ 3 files changed, 578 insertions(+), 643 deletions(-)
+ delete mode 100644 arch/m68k/kernel/sys_m68k_mm.c
+ delete mode 100644 arch/m68k/kernel/sys_m68k_no.c
 
-diff --git a/arch/m68k/include/asm/module.h b/arch/m68k/include/asm/module.h
-index 5f21e11..edffe66 100644
---- a/arch/m68k/include/asm/module.h
-+++ b/arch/m68k/include/asm/module.h
-@@ -1,46 +1,41 @@
- #ifndef _ASM_M68K_MODULE_H
- #define _ASM_M68K_MODULE_H
- 
--#ifdef CONFIG_MMU
-+enum m68k_fixup_type {
-+	m68k_fixup_memoffset,
-+	m68k_fixup_vnode_shift,
-+};
-+
-+struct m68k_fixup_info {
-+	enum m68k_fixup_type type;
-+	void *addr;
-+};
- 
- struct mod_arch_specific {
- 	struct m68k_fixup_info *fixup_start, *fixup_end;
- };
- 
-+#ifdef CONFIG_MMU
-+
- #define MODULE_ARCH_INIT {				\
- 	.fixup_start		= __start_fixup,	\
- 	.fixup_end		= __stop_fixup,		\
- }
- 
- 
--enum m68k_fixup_type {
--	m68k_fixup_memoffset,
--	m68k_fixup_vnode_shift,
--};
--
--struct m68k_fixup_info {
--	enum m68k_fixup_type type;
--	void *addr;
--};
--
- #define m68k_fixup(type, addr)			\
- 	"	.section \".m68k_fixup\",\"aw\"\n"	\
- 	"	.long " #type "," #addr "\n"	\
- 	"	.previous\n"
- 
-+#endif /* CONFIG_MMU */
-+
- extern struct m68k_fixup_info __start_fixup[], __stop_fixup[];
- 
- struct module;
- extern void module_fixup(struct module *mod, struct m68k_fixup_info *start,
- 			 struct m68k_fixup_info *end);
- 
--#else
--
--struct mod_arch_specific {
--};
--
--#endif /* CONFIG_MMU */
--
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
-diff --git a/arch/m68k/kernel/module.c b/arch/m68k/kernel/module.c
-index 7ea203c..146d646 100644
---- a/arch/m68k/kernel/module.c
-+++ b/arch/m68k/kernel/module.c
-@@ -1,5 +1,156 @@
--#ifdef CONFIG_MMU
--#include "module_mm.c"
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 63013df..8623f8d 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -1,5 +1,580 @@
 +/*
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file COPYING in the main directory of this archive
-+ * for more details.
++ * linux/arch/m68k/kernel/sys_m68k.c
++ *
++ * This file contains various random system calls that
++ * have a non-standard calling sequence on the Linux/m68k
++ * platform.
 + */
 +
-+#include <linux/moduleloader.h>
-+#include <linux/elf.h>
-+#include <linux/vmalloc.h>
++#include <linux/capability.h>
++#include <linux/errno.h>
++#include <linux/sched.h>
++#include <linux/mm.h>
 +#include <linux/fs.h>
-+#include <linux/string.h>
-+#include <linux/kernel.h>
++#include <linux/smp.h>
++#include <linux/sem.h>
++#include <linux/msg.h>
++#include <linux/shm.h>
++#include <linux/stat.h>
++#include <linux/syscalls.h>
++#include <linux/mman.h>
++#include <linux/file.h>
++#include <linux/ipc.h>
 +
-+#if 0
-+#define DEBUGP printk
++#include <asm/setup.h>
++#include <asm/uaccess.h>
++#include <asm/cachectl.h>
++#include <asm/traps.h>
++#include <asm/page.h>
++#include <asm/unistd.h>
++#include <asm/cacheflush.h>
++
+ #ifdef CONFIG_MMU
+-#include "sys_m68k_mm.c"
++
++#include <asm/tlb.h>
++
++asmlinkage int do_page_fault(struct pt_regs *regs, unsigned long address,
++			     unsigned long error_code);
++
++asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
++	unsigned long prot, unsigned long flags,
++	unsigned long fd, unsigned long pgoff)
++{
++	/*
++	 * This is wrong for sun3 - there PAGE_SIZE is 8Kb,
++	 * so we need to shift the argument down by 1; m68k mmap64(3)
++	 * (in libc) expects the last argument of mmap2 in 4Kb units.
++	 */
++	return sys_mmap_pgoff(addr, len, prot, flags, fd, pgoff);
++}
++
++/* Convert virtual (user) address VADDR to physical address PADDR */
++#define virt_to_phys_040(vaddr)						\
++({									\
++  unsigned long _mmusr, _paddr;						\
++									\
++  __asm__ __volatile__ (".chip 68040\n\t"				\
++			"ptestr (%1)\n\t"				\
++			"movec %%mmusr,%0\n\t"				\
++			".chip 68k"					\
++			: "=r" (_mmusr)					\
++			: "a" (vaddr));					\
++  _paddr = (_mmusr & MMU_R_040) ? (_mmusr & PAGE_MASK) : 0;		\
++  _paddr;								\
++})
++
++static inline int
++cache_flush_040 (unsigned long addr, int scope, int cache, unsigned long len)
++{
++  unsigned long paddr, i;
++
++  switch (scope)
++    {
++    case FLUSH_SCOPE_ALL:
++      switch (cache)
++	{
++	case FLUSH_CACHE_DATA:
++	  /* This nop is needed for some broken versions of the 68040.  */
++	  __asm__ __volatile__ ("nop\n\t"
++				".chip 68040\n\t"
++				"cpusha %dc\n\t"
++				".chip 68k");
++	  break;
++	case FLUSH_CACHE_INSN:
++	  __asm__ __volatile__ ("nop\n\t"
++				".chip 68040\n\t"
++				"cpusha %ic\n\t"
++				".chip 68k");
++	  break;
++	default:
++	case FLUSH_CACHE_BOTH:
++	  __asm__ __volatile__ ("nop\n\t"
++				".chip 68040\n\t"
++				"cpusha %bc\n\t"
++				".chip 68k");
++	  break;
++	}
++      break;
++
++    case FLUSH_SCOPE_LINE:
++      /* Find the physical address of the first mapped page in the
++	 address range.  */
++      if ((paddr = virt_to_phys_040(addr))) {
++        paddr += addr & ~(PAGE_MASK | 15);
++        len = (len + (addr & 15) + 15) >> 4;
++      } else {
++	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
++
++	if (len <= tmp)
++	  return 0;
++	addr += tmp;
++	len -= tmp;
++	tmp = PAGE_SIZE;
++	for (;;)
++	  {
++	    if ((paddr = virt_to_phys_040(addr)))
++	      break;
++	    if (len <= tmp)
++	      return 0;
++	    addr += tmp;
++	    len -= tmp;
++	  }
++	len = (len + 15) >> 4;
++      }
++      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
++      while (len--)
++	{
++	  switch (cache)
++	    {
++	    case FLUSH_CACHE_DATA:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushl %%dc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    case FLUSH_CACHE_INSN:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushl %%ic,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    default:
++	    case FLUSH_CACHE_BOTH:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushl %%bc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    }
++	  if (!--i && len)
++	    {
++	      /*
++	       * No need to page align here since it is done by
++	       * virt_to_phys_040().
++	       */
++	      addr += PAGE_SIZE;
++	      i = PAGE_SIZE / 16;
++	      /* Recompute physical address when crossing a page
++	         boundary. */
++	      for (;;)
++		{
++		  if ((paddr = virt_to_phys_040(addr)))
++		    break;
++		  if (len <= i)
++		    return 0;
++		  len -= i;
++		  addr += PAGE_SIZE;
++		}
++	    }
++	  else
++	    paddr += 16;
++	}
++      break;
++
++    default:
++    case FLUSH_SCOPE_PAGE:
++      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
++      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
++	{
++	  if (!(paddr = virt_to_phys_040(addr)))
++	    continue;
++	  switch (cache)
++	    {
++	    case FLUSH_CACHE_DATA:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushp %%dc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    case FLUSH_CACHE_INSN:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushp %%ic,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    default:
++	    case FLUSH_CACHE_BOTH:
++	      __asm__ __volatile__ ("nop\n\t"
++				    ".chip 68040\n\t"
++				    "cpushp %%bc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    }
++	}
++      break;
++    }
++  return 0;
++}
++
++#define virt_to_phys_060(vaddr)				\
++({							\
++  unsigned long paddr;					\
++  __asm__ __volatile__ (".chip 68060\n\t"		\
++			"plpar (%0)\n\t"		\
++			".chip 68k"			\
++			: "=a" (paddr)			\
++			: "0" (vaddr));			\
++  (paddr); /* XXX */					\
++})
++
++static inline int
++cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
++{
++  unsigned long paddr, i;
++
++  /*
++   * 68060 manual says:
++   *  cpush %dc : flush DC, remains valid (with our %cacr setup)
++   *  cpush %ic : invalidate IC
++   *  cpush %bc : flush DC + invalidate IC
++   */
++  switch (scope)
++    {
++    case FLUSH_SCOPE_ALL:
++      switch (cache)
++	{
++	case FLUSH_CACHE_DATA:
++	  __asm__ __volatile__ (".chip 68060\n\t"
++				"cpusha %dc\n\t"
++				".chip 68k");
++	  break;
++	case FLUSH_CACHE_INSN:
++	  __asm__ __volatile__ (".chip 68060\n\t"
++				"cpusha %ic\n\t"
++				".chip 68k");
++	  break;
++	default:
++	case FLUSH_CACHE_BOTH:
++	  __asm__ __volatile__ (".chip 68060\n\t"
++				"cpusha %bc\n\t"
++				".chip 68k");
++	  break;
++	}
++      break;
++
++    case FLUSH_SCOPE_LINE:
++      /* Find the physical address of the first mapped page in the
++	 address range.  */
++      len += addr & 15;
++      addr &= -16;
++      if (!(paddr = virt_to_phys_060(addr))) {
++	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
++
++	if (len <= tmp)
++	  return 0;
++	addr += tmp;
++	len -= tmp;
++	tmp = PAGE_SIZE;
++	for (;;)
++	  {
++	    if ((paddr = virt_to_phys_060(addr)))
++	      break;
++	    if (len <= tmp)
++	      return 0;
++	    addr += tmp;
++	    len -= tmp;
++	  }
++      }
++      len = (len + 15) >> 4;
++      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
++      while (len--)
++	{
++	  switch (cache)
++	    {
++	    case FLUSH_CACHE_DATA:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushl %%dc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    case FLUSH_CACHE_INSN:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushl %%ic,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    default:
++	    case FLUSH_CACHE_BOTH:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushl %%bc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    }
++	  if (!--i && len)
++	    {
++
++	      /*
++	       * We just want to jump to the first cache line
++	       * in the next page.
++	       */
++	      addr += PAGE_SIZE;
++	      addr &= PAGE_MASK;
++
++	      i = PAGE_SIZE / 16;
++	      /* Recompute physical address when crossing a page
++	         boundary. */
++	      for (;;)
++	        {
++	          if ((paddr = virt_to_phys_060(addr)))
++	            break;
++	          if (len <= i)
++	            return 0;
++	          len -= i;
++	          addr += PAGE_SIZE;
++	        }
++	    }
++	  else
++	    paddr += 16;
++	}
++      break;
++
++    default:
++    case FLUSH_SCOPE_PAGE:
++      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
++      addr &= PAGE_MASK;	/* Workaround for bug in some
++				   revisions of the 68060 */
++      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
++	{
++	  if (!(paddr = virt_to_phys_060(addr)))
++	    continue;
++	  switch (cache)
++	    {
++	    case FLUSH_CACHE_DATA:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushp %%dc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    case FLUSH_CACHE_INSN:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushp %%ic,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    default:
++	    case FLUSH_CACHE_BOTH:
++	      __asm__ __volatile__ (".chip 68060\n\t"
++				    "cpushp %%bc,(%0)\n\t"
++				    ".chip 68k"
++				    : : "a" (paddr));
++	      break;
++	    }
++	}
++      break;
++    }
++  return 0;
++}
++
++/* sys_cacheflush -- flush (part of) the processor cache.  */
++asmlinkage int
++sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
++{
++	struct vm_area_struct *vma;
++	int ret = -EINVAL;
++
++	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
++	    cache & ~FLUSH_CACHE_BOTH)
++		goto out;
++
++	if (scope == FLUSH_SCOPE_ALL) {
++		/* Only the superuser may explicitly flush the whole cache. */
++		ret = -EPERM;
++		if (!capable(CAP_SYS_ADMIN))
++			goto out;
++	} else {
++		/*
++		 * Verify that the specified address region actually belongs
++		 * to this process.
++		 */
++		vma = find_vma (current->mm, addr);
++		ret = -EINVAL;
++		/* Check for overflow.  */
++		if (addr + len < addr)
++			goto out;
++		if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
++			goto out;
++	}
++
++	if (CPU_IS_020_OR_030) {
++		if (scope == FLUSH_SCOPE_LINE && len < 256) {
++			unsigned long cacr;
++			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
++			if (cache & FLUSH_CACHE_INSN)
++				cacr |= 4;
++			if (cache & FLUSH_CACHE_DATA)
++				cacr |= 0x400;
++			len >>= 2;
++			while (len--) {
++				__asm__ __volatile__ ("movec %1, %%caar\n\t"
++						      "movec %0, %%cacr"
++						      : /* no outputs */
++						      : "r" (cacr), "r" (addr));
++				addr += 4;
++			}
++		} else {
++			/* Flush the whole cache, even if page granularity requested. */
++			unsigned long cacr;
++			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
++			if (cache & FLUSH_CACHE_INSN)
++				cacr |= 8;
++			if (cache & FLUSH_CACHE_DATA)
++				cacr |= 0x800;
++			__asm__ __volatile__ ("movec %0, %%cacr" : : "r" (cacr));
++		}
++		ret = 0;
++		goto out;
++	} else {
++	    /*
++	     * 040 or 060: don't blindly trust 'scope', someone could
++	     * try to flush a few megs of memory.
++	     */
++
++	    if (len>=3*PAGE_SIZE && scope<FLUSH_SCOPE_PAGE)
++	        scope=FLUSH_SCOPE_PAGE;
++	    if (len>=10*PAGE_SIZE && scope<FLUSH_SCOPE_ALL)
++	        scope=FLUSH_SCOPE_ALL;
++	    if (CPU_IS_040) {
++		ret = cache_flush_040 (addr, scope, cache, len);
++	    } else if (CPU_IS_060) {
++		ret = cache_flush_060 (addr, scope, cache, len);
++	    }
++	}
++out:
++	return ret;
++}
++
++/* This syscall gets its arguments in A0 (mem), D2 (oldval) and
++   D1 (newval).  */
++asmlinkage int
++sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
++		      unsigned long __user * mem)
++{
++	/* This was borrowed from ARM's implementation.  */
++	for (;;) {
++		struct mm_struct *mm = current->mm;
++		pgd_t *pgd;
++		pmd_t *pmd;
++		pte_t *pte;
++		spinlock_t *ptl;
++		unsigned long mem_value;
++
++		down_read(&mm->mmap_sem);
++		pgd = pgd_offset(mm, (unsigned long)mem);
++		if (!pgd_present(*pgd))
++			goto bad_access;
++		pmd = pmd_offset(pgd, (unsigned long)mem);
++		if (!pmd_present(*pmd))
++			goto bad_access;
++		pte = pte_offset_map_lock(mm, pmd, (unsigned long)mem, &ptl);
++		if (!pte_present(*pte) || !pte_dirty(*pte)
++		    || !pte_write(*pte)) {
++			pte_unmap_unlock(pte, ptl);
++			goto bad_access;
++		}
++
++		mem_value = *mem;
++		if (mem_value == oldval)
++			*mem = newval;
++
++		pte_unmap_unlock(pte, ptl);
++		up_read(&mm->mmap_sem);
++		return mem_value;
++
++	      bad_access:
++		up_read(&mm->mmap_sem);
++		/* This is not necessarily a bad access, we can get here if
++		   a memory we're trying to write to should be copied-on-write.
++		   Make the kernel do the necessary page stuff, then re-iterate.
++		   Simulate a write access fault to do that.  */
++		{
++			/* The first argument of the function corresponds to
++			   D1, which is the first field of struct pt_regs.  */
++			struct pt_regs *fp = (struct pt_regs *)&newval;
++
++			/* '3' is an RMW flag.  */
++			if (do_page_fault(fp, (unsigned long)mem, 3))
++				/* If the do_page_fault() failed, we don't
++				   have anything meaningful to return.
++				   There should be a SIGSEGV pending for
++				   the process.  */
++				return 0xdeadbeef;
++		}
++	}
++}
++
  #else
--#include "module_no.c"
-+#define DEBUGP(fmt...)
-+#endif
+-#include "sys_m68k_no.c"
+-#endif
 +
-+#ifdef CONFIG_MODULES
-+
-+void *module_alloc(unsigned long size)
++/* sys_cacheflush -- flush (part of) the processor cache.  */
++asmlinkage int
++sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
 +{
-+	if (size == 0)
-+		return NULL;
-+	return vmalloc(size);
-+}
-+
-+
-+/* Free memory returned from module_alloc */
-+void module_free(struct module *mod, void *module_region)
-+{
-+	vfree(module_region);
-+}
-+
-+/* We don't need anything special. */
-+int module_frob_arch_sections(Elf_Ehdr *hdr,
-+			      Elf_Shdr *sechdrs,
-+			      char *secstrings,
-+			      struct module *mod)
-+{
++	flush_cache_all();
 +	return 0;
 +}
 +
-+int apply_relocate(Elf32_Shdr *sechdrs,
-+		   const char *strtab,
-+		   unsigned int symindex,
-+		   unsigned int relsec,
-+		   struct module *me)
++/* This syscall gets its arguments in A0 (mem), D2 (oldval) and
++   D1 (newval).  */
++asmlinkage int
++sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
++		      unsigned long __user * mem)
 +{
-+	unsigned int i;
-+	Elf32_Rel *rel = (void *)sechdrs[relsec].sh_addr;
-+	Elf32_Sym *sym;
-+	uint32_t *location;
++	struct mm_struct *mm = current->mm;
++	unsigned long mem_value;
 +
-+	DEBUGP("Applying relocate section %u to %u\n", relsec,
-+	       sechdrs[relsec].sh_info);
-+	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-+		/* This is where to make the change */
-+		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
-+			+ rel[i].r_offset;
-+		/* This is the symbol it is referring to.  Note that all
-+		   undefined symbols have been resolved.  */
-+		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
-+			+ ELF32_R_SYM(rel[i].r_info);
++	down_read(&mm->mmap_sem);
 +
-+		switch (ELF32_R_TYPE(rel[i].r_info)) {
-+		case R_68K_32:
-+			/* We add the value into the location given */
-+			*location += sym->st_value;
-+			break;
-+		case R_68K_PC32:
-+			/* Add the value, subtract its postition */
-+			*location += sym->st_value - (uint32_t)location;
-+			break;
-+		default:
-+			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
-+			       me->name, ELF32_R_TYPE(rel[i].r_info));
-+			return -ENOEXEC;
-+		}
-+	}
++	mem_value = *mem;
++	if (mem_value == oldval)
++		*mem = newval;
++
++	up_read(&mm->mmap_sem);
++	return mem_value;
++}
++
++#endif /* CONFIG_MMU */
++
++asmlinkage int sys_getpagesize(void)
++{
++	return PAGE_SIZE;
++}
++
++/*
++ * Do a system call from kernel instead of calling sys_execve so we
++ * end up with proper pt_regs.
++ */
++int kernel_execve(const char *filename,
++		  const char *const argv[],
++		  const char *const envp[])
++{
++	register long __res asm ("%d0") = __NR_execve;
++	register long __a asm ("%d1") = (long)(filename);
++	register long __b asm ("%d2") = (long)(argv);
++	register long __c asm ("%d3") = (long)(envp);
++	asm volatile ("trap  #0" : "+d" (__res)
++			: "d" (__a), "d" (__b), "d" (__c));
++	return __res;
++}
++
++asmlinkage unsigned long sys_get_thread_area(void)
++{
++	return current_thread_info()->tp_value;
++}
++
++asmlinkage int sys_set_thread_area(unsigned long tp)
++{
++	current_thread_info()->tp_value = tp;
 +	return 0;
 +}
 +
-+int apply_relocate_add(Elf32_Shdr *sechdrs,
-+		       const char *strtab,
-+		       unsigned int symindex,
-+		       unsigned int relsec,
-+		       struct module *me)
++asmlinkage int sys_atomic_barrier(void)
 +{
-+	unsigned int i;
-+	Elf32_Rela *rel = (void *)sechdrs[relsec].sh_addr;
-+	Elf32_Sym *sym;
-+	uint32_t *location;
-+
-+	DEBUGP("Applying relocate_add section %u to %u\n", relsec,
-+	       sechdrs[relsec].sh_info);
-+	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-+		/* This is where to make the change */
-+		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
-+			+ rel[i].r_offset;
-+		/* This is the symbol it is referring to.  Note that all
-+		   undefined symbols have been resolved.  */
-+		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
-+			+ ELF32_R_SYM(rel[i].r_info);
-+
-+		switch (ELF32_R_TYPE(rel[i].r_info)) {
-+		case R_68K_32:
-+			/* We add the value into the location given */
-+			*location = rel[i].r_addend + sym->st_value;
-+			break;
-+		case R_68K_PC32:
-+			/* Add the value, subtract its postition */
-+			*location = rel[i].r_addend + sym->st_value - (uint32_t)location;
-+			break;
-+		default:
-+			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
-+			       me->name, ELF32_R_TYPE(rel[i].r_info));
-+			return -ENOEXEC;
-+		}
-+	}
++	/* no code needed for uniprocs */
 +	return 0;
 +}
-+
-+int module_finalize(const Elf_Ehdr *hdr,
-+		    const Elf_Shdr *sechdrs,
-+		    struct module *mod)
-+{
-+	module_fixup(mod, mod->arch.fixup_start, mod->arch.fixup_end);
-+	return 0;
-+}
-+
-+void module_arch_cleanup(struct module *mod)
-+{
-+}
-+
-+#endif /* CONFIG_MODULES */
-+
-+void module_fixup(struct module *mod, struct m68k_fixup_info *start,
-+		  struct m68k_fixup_info *end)
-+{
-+#ifdef CONFIG_MMU
-+	struct m68k_fixup_info *fixup;
-+
-+	for (fixup = start; fixup < end; fixup++) {
-+		switch (fixup->type) {
-+		case m68k_fixup_memoffset:
-+			*(u32 *)fixup->addr = m68k_memoffset;
-+			break;
-+		case m68k_fixup_vnode_shift:
-+			*(u16 *)fixup->addr += m68k_virt_to_node_shift;
-+			break;
-+		}
-+	}
- #endif
-+}
-diff --git a/arch/m68k/kernel/module_mm.c b/arch/m68k/kernel/module_mm.c
+diff --git a/arch/m68k/kernel/sys_m68k_mm.c b/arch/m68k/kernel/sys_m68k_mm.c
 deleted file mode 100644
-index cd6bcb1..0000000
---- a/arch/m68k/kernel/module_mm.c
+index 3db2e7f..0000000
+--- a/arch/m68k/kernel/sys_m68k_mm.c
 +++ /dev/null
-@@ -1,155 +0,0 @@
+@@ -1,546 +0,0 @@
 -/*
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file COPYING in the main directory of this archive
-- * for more details.
+- * linux/arch/m68k/kernel/sys_m68k.c
+- *
+- * This file contains various random system calls that
+- * have a non-standard calling sequence on the Linux/m68k
+- * platform.
 - */
 -
--#include <linux/moduleloader.h>
--#include <linux/elf.h>
--#include <linux/vmalloc.h>
+-#include <linux/capability.h>
+-#include <linux/errno.h>
+-#include <linux/sched.h>
+-#include <linux/mm.h>
 -#include <linux/fs.h>
--#include <linux/string.h>
--#include <linux/kernel.h>
+-#include <linux/smp.h>
+-#include <linux/sem.h>
+-#include <linux/msg.h>
+-#include <linux/shm.h>
+-#include <linux/stat.h>
+-#include <linux/syscalls.h>
+-#include <linux/mman.h>
+-#include <linux/file.h>
+-#include <linux/ipc.h>
 -
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(fmt...)
--#endif
+-#include <asm/setup.h>
+-#include <asm/uaccess.h>
+-#include <asm/cachectl.h>
+-#include <asm/traps.h>
+-#include <asm/page.h>
+-#include <asm/unistd.h>
+-#include <linux/elf.h>
+-#include <asm/tlb.h>
 -
--#ifdef CONFIG_MODULES
+-asmlinkage int do_page_fault(struct pt_regs *regs, unsigned long address,
+-			     unsigned long error_code);
 -
--void *module_alloc(unsigned long size)
+-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
+-	unsigned long prot, unsigned long flags,
+-	unsigned long fd, unsigned long pgoff)
 -{
--	if (size == 0)
--		return NULL;
--	return vmalloc(size);
+-	/*
+-	 * This is wrong for sun3 - there PAGE_SIZE is 8Kb,
+-	 * so we need to shift the argument down by 1; m68k mmap64(3)
+-	 * (in libc) expects the last argument of mmap2 in 4Kb units.
+-	 */
+-	return sys_mmap_pgoff(addr, len, prot, flags, fd, pgoff);
 -}
 -
+-/* Convert virtual (user) address VADDR to physical address PADDR */
+-#define virt_to_phys_040(vaddr)						\
+-({									\
+-  unsigned long _mmusr, _paddr;						\
+-									\
+-  __asm__ __volatile__ (".chip 68040\n\t"				\
+-			"ptestr (%1)\n\t"				\
+-			"movec %%mmusr,%0\n\t"				\
+-			".chip 68k"					\
+-			: "=r" (_mmusr)					\
+-			: "a" (vaddr));					\
+-  _paddr = (_mmusr & MMU_R_040) ? (_mmusr & PAGE_MASK) : 0;		\
+-  _paddr;								\
+-})
 -
--/* Free memory returned from module_alloc */
--void module_free(struct module *mod, void *module_region)
+-static inline int
+-cache_flush_040 (unsigned long addr, int scope, int cache, unsigned long len)
 -{
--	vfree(module_region);
+-  unsigned long paddr, i;
+-
+-  switch (scope)
+-    {
+-    case FLUSH_SCOPE_ALL:
+-      switch (cache)
+-	{
+-	case FLUSH_CACHE_DATA:
+-	  /* This nop is needed for some broken versions of the 68040.  */
+-	  __asm__ __volatile__ ("nop\n\t"
+-				".chip 68040\n\t"
+-				"cpusha %dc\n\t"
+-				".chip 68k");
+-	  break;
+-	case FLUSH_CACHE_INSN:
+-	  __asm__ __volatile__ ("nop\n\t"
+-				".chip 68040\n\t"
+-				"cpusha %ic\n\t"
+-				".chip 68k");
+-	  break;
+-	default:
+-	case FLUSH_CACHE_BOTH:
+-	  __asm__ __volatile__ ("nop\n\t"
+-				".chip 68040\n\t"
+-				"cpusha %bc\n\t"
+-				".chip 68k");
+-	  break;
+-	}
+-      break;
+-
+-    case FLUSH_SCOPE_LINE:
+-      /* Find the physical address of the first mapped page in the
+-	 address range.  */
+-      if ((paddr = virt_to_phys_040(addr))) {
+-        paddr += addr & ~(PAGE_MASK | 15);
+-        len = (len + (addr & 15) + 15) >> 4;
+-      } else {
+-	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
+-
+-	if (len <= tmp)
+-	  return 0;
+-	addr += tmp;
+-	len -= tmp;
+-	tmp = PAGE_SIZE;
+-	for (;;)
+-	  {
+-	    if ((paddr = virt_to_phys_040(addr)))
+-	      break;
+-	    if (len <= tmp)
+-	      return 0;
+-	    addr += tmp;
+-	    len -= tmp;
+-	  }
+-	len = (len + 15) >> 4;
+-      }
+-      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
+-      while (len--)
+-	{
+-	  switch (cache)
+-	    {
+-	    case FLUSH_CACHE_DATA:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushl %%dc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    case FLUSH_CACHE_INSN:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushl %%ic,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    default:
+-	    case FLUSH_CACHE_BOTH:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushl %%bc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    }
+-	  if (!--i && len)
+-	    {
+-	      /*
+-	       * No need to page align here since it is done by
+-	       * virt_to_phys_040().
+-	       */
+-	      addr += PAGE_SIZE;
+-	      i = PAGE_SIZE / 16;
+-	      /* Recompute physical address when crossing a page
+-	         boundary. */
+-	      for (;;)
+-		{
+-		  if ((paddr = virt_to_phys_040(addr)))
+-		    break;
+-		  if (len <= i)
+-		    return 0;
+-		  len -= i;
+-		  addr += PAGE_SIZE;
+-		}
+-	    }
+-	  else
+-	    paddr += 16;
+-	}
+-      break;
+-
+-    default:
+-    case FLUSH_SCOPE_PAGE:
+-      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
+-      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
+-	{
+-	  if (!(paddr = virt_to_phys_040(addr)))
+-	    continue;
+-	  switch (cache)
+-	    {
+-	    case FLUSH_CACHE_DATA:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushp %%dc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    case FLUSH_CACHE_INSN:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushp %%ic,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    default:
+-	    case FLUSH_CACHE_BOTH:
+-	      __asm__ __volatile__ ("nop\n\t"
+-				    ".chip 68040\n\t"
+-				    "cpushp %%bc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    }
+-	}
+-      break;
+-    }
+-  return 0;
 -}
 -
--/* We don't need anything special. */
--int module_frob_arch_sections(Elf_Ehdr *hdr,
--			      Elf_Shdr *sechdrs,
--			      char *secstrings,
--			      struct module *mod)
+-#define virt_to_phys_060(vaddr)				\
+-({							\
+-  unsigned long paddr;					\
+-  __asm__ __volatile__ (".chip 68060\n\t"		\
+-			"plpar (%0)\n\t"		\
+-			".chip 68k"			\
+-			: "=a" (paddr)			\
+-			: "0" (vaddr));			\
+-  (paddr); /* XXX */					\
+-})
+-
+-static inline int
+-cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
 -{
+-  unsigned long paddr, i;
+-
+-  /*
+-   * 68060 manual says:
+-   *  cpush %dc : flush DC, remains valid (with our %cacr setup)
+-   *  cpush %ic : invalidate IC
+-   *  cpush %bc : flush DC + invalidate IC
+-   */
+-  switch (scope)
+-    {
+-    case FLUSH_SCOPE_ALL:
+-      switch (cache)
+-	{
+-	case FLUSH_CACHE_DATA:
+-	  __asm__ __volatile__ (".chip 68060\n\t"
+-				"cpusha %dc\n\t"
+-				".chip 68k");
+-	  break;
+-	case FLUSH_CACHE_INSN:
+-	  __asm__ __volatile__ (".chip 68060\n\t"
+-				"cpusha %ic\n\t"
+-				".chip 68k");
+-	  break;
+-	default:
+-	case FLUSH_CACHE_BOTH:
+-	  __asm__ __volatile__ (".chip 68060\n\t"
+-				"cpusha %bc\n\t"
+-				".chip 68k");
+-	  break;
+-	}
+-      break;
+-
+-    case FLUSH_SCOPE_LINE:
+-      /* Find the physical address of the first mapped page in the
+-	 address range.  */
+-      len += addr & 15;
+-      addr &= -16;
+-      if (!(paddr = virt_to_phys_060(addr))) {
+-	unsigned long tmp = PAGE_SIZE - (addr & ~PAGE_MASK);
+-
+-	if (len <= tmp)
+-	  return 0;
+-	addr += tmp;
+-	len -= tmp;
+-	tmp = PAGE_SIZE;
+-	for (;;)
+-	  {
+-	    if ((paddr = virt_to_phys_060(addr)))
+-	      break;
+-	    if (len <= tmp)
+-	      return 0;
+-	    addr += tmp;
+-	    len -= tmp;
+-	  }
+-      }
+-      len = (len + 15) >> 4;
+-      i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
+-      while (len--)
+-	{
+-	  switch (cache)
+-	    {
+-	    case FLUSH_CACHE_DATA:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushl %%dc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    case FLUSH_CACHE_INSN:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushl %%ic,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    default:
+-	    case FLUSH_CACHE_BOTH:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushl %%bc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    }
+-	  if (!--i && len)
+-	    {
+-
+-	      /*
+-	       * We just want to jump to the first cache line
+-	       * in the next page.
+-	       */
+-	      addr += PAGE_SIZE;
+-	      addr &= PAGE_MASK;
+-
+-	      i = PAGE_SIZE / 16;
+-	      /* Recompute physical address when crossing a page
+-	         boundary. */
+-	      for (;;)
+-	        {
+-	          if ((paddr = virt_to_phys_060(addr)))
+-	            break;
+-	          if (len <= i)
+-	            return 0;
+-	          len -= i;
+-	          addr += PAGE_SIZE;
+-	        }
+-	    }
+-	  else
+-	    paddr += 16;
+-	}
+-      break;
+-
+-    default:
+-    case FLUSH_SCOPE_PAGE:
+-      len += (addr & ~PAGE_MASK) + (PAGE_SIZE - 1);
+-      addr &= PAGE_MASK;	/* Workaround for bug in some
+-				   revisions of the 68060 */
+-      for (len >>= PAGE_SHIFT; len--; addr += PAGE_SIZE)
+-	{
+-	  if (!(paddr = virt_to_phys_060(addr)))
+-	    continue;
+-	  switch (cache)
+-	    {
+-	    case FLUSH_CACHE_DATA:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushp %%dc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    case FLUSH_CACHE_INSN:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushp %%ic,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    default:
+-	    case FLUSH_CACHE_BOTH:
+-	      __asm__ __volatile__ (".chip 68060\n\t"
+-				    "cpushp %%bc,(%0)\n\t"
+-				    ".chip 68k"
+-				    : : "a" (paddr));
+-	      break;
+-	    }
+-	}
+-      break;
+-    }
+-  return 0;
+-}
+-
+-/* sys_cacheflush -- flush (part of) the processor cache.  */
+-asmlinkage int
+-sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+-{
+-	struct vm_area_struct *vma;
+-	int ret = -EINVAL;
+-
+-	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
+-	    cache & ~FLUSH_CACHE_BOTH)
+-		goto out;
+-
+-	if (scope == FLUSH_SCOPE_ALL) {
+-		/* Only the superuser may explicitly flush the whole cache. */
+-		ret = -EPERM;
+-		if (!capable(CAP_SYS_ADMIN))
+-			goto out;
+-	} else {
+-		/*
+-		 * Verify that the specified address region actually belongs
+-		 * to this process.
+-		 */
+-		vma = find_vma (current->mm, addr);
+-		ret = -EINVAL;
+-		/* Check for overflow.  */
+-		if (addr + len < addr)
+-			goto out;
+-		if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
+-			goto out;
+-	}
+-
+-	if (CPU_IS_020_OR_030) {
+-		if (scope == FLUSH_SCOPE_LINE && len < 256) {
+-			unsigned long cacr;
+-			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
+-			if (cache & FLUSH_CACHE_INSN)
+-				cacr |= 4;
+-			if (cache & FLUSH_CACHE_DATA)
+-				cacr |= 0x400;
+-			len >>= 2;
+-			while (len--) {
+-				__asm__ __volatile__ ("movec %1, %%caar\n\t"
+-						      "movec %0, %%cacr"
+-						      : /* no outputs */
+-						      : "r" (cacr), "r" (addr));
+-				addr += 4;
+-			}
+-		} else {
+-			/* Flush the whole cache, even if page granularity requested. */
+-			unsigned long cacr;
+-			__asm__ ("movec %%cacr, %0" : "=r" (cacr));
+-			if (cache & FLUSH_CACHE_INSN)
+-				cacr |= 8;
+-			if (cache & FLUSH_CACHE_DATA)
+-				cacr |= 0x800;
+-			__asm__ __volatile__ ("movec %0, %%cacr" : : "r" (cacr));
+-		}
+-		ret = 0;
+-		goto out;
+-	} else {
+-	    /*
+-	     * 040 or 060: don't blindly trust 'scope', someone could
+-	     * try to flush a few megs of memory.
+-	     */
+-
+-	    if (len>=3*PAGE_SIZE && scope<FLUSH_SCOPE_PAGE)
+-	        scope=FLUSH_SCOPE_PAGE;
+-	    if (len>=10*PAGE_SIZE && scope<FLUSH_SCOPE_ALL)
+-	        scope=FLUSH_SCOPE_ALL;
+-	    if (CPU_IS_040) {
+-		ret = cache_flush_040 (addr, scope, cache, len);
+-	    } else if (CPU_IS_060) {
+-		ret = cache_flush_060 (addr, scope, cache, len);
+-	    }
+-	}
+-out:
+-	return ret;
+-}
+-
+-asmlinkage int sys_getpagesize(void)
+-{
+-	return PAGE_SIZE;
+-}
+-
+-/*
+- * Do a system call from kernel instead of calling sys_execve so we
+- * end up with proper pt_regs.
+- */
+-int kernel_execve(const char *filename,
+-		  const char *const argv[],
+-		  const char *const envp[])
+-{
+-	register long __res asm ("%d0") = __NR_execve;
+-	register long __a asm ("%d1") = (long)(filename);
+-	register long __b asm ("%d2") = (long)(argv);
+-	register long __c asm ("%d3") = (long)(envp);
+-	asm volatile ("trap  #0" : "+d" (__res)
+-			: "d" (__a), "d" (__b), "d" (__c));
+-	return __res;
+-}
+-
+-asmlinkage unsigned long sys_get_thread_area(void)
+-{
+-	return current_thread_info()->tp_value;
+-}
+-
+-asmlinkage int sys_set_thread_area(unsigned long tp)
+-{
+-	current_thread_info()->tp_value = tp;
 -	return 0;
 -}
 -
--int apply_relocate(Elf32_Shdr *sechdrs,
--		   const char *strtab,
--		   unsigned int symindex,
--		   unsigned int relsec,
--		   struct module *me)
+-/* This syscall gets its arguments in A0 (mem), D2 (oldval) and
+-   D1 (newval).  */
+-asmlinkage int
+-sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
+-		      unsigned long __user * mem)
 -{
--	unsigned int i;
--	Elf32_Rel *rel = (void *)sechdrs[relsec].sh_addr;
--	Elf32_Sym *sym;
--	uint32_t *location;
+-	/* This was borrowed from ARM's implementation.  */
+-	for (;;) {
+-		struct mm_struct *mm = current->mm;
+-		pgd_t *pgd;
+-		pmd_t *pmd;
+-		pte_t *pte;
+-		spinlock_t *ptl;
+-		unsigned long mem_value;
 -
--	DEBUGP("Applying relocate section %u to %u\n", relsec,
--	       sechdrs[relsec].sh_info);
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
--		/* This is where to make the change */
--		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
--			+ rel[i].r_offset;
--		/* This is the symbol it is referring to.  Note that all
--		   undefined symbols have been resolved.  */
--		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
--			+ ELF32_R_SYM(rel[i].r_info);
+-		down_read(&mm->mmap_sem);
+-		pgd = pgd_offset(mm, (unsigned long)mem);
+-		if (!pgd_present(*pgd))
+-			goto bad_access;
+-		pmd = pmd_offset(pgd, (unsigned long)mem);
+-		if (!pmd_present(*pmd))
+-			goto bad_access;
+-		pte = pte_offset_map_lock(mm, pmd, (unsigned long)mem, &ptl);
+-		if (!pte_present(*pte) || !pte_dirty(*pte)
+-		    || !pte_write(*pte)) {
+-			pte_unmap_unlock(pte, ptl);
+-			goto bad_access;
+-		}
 -
--		switch (ELF32_R_TYPE(rel[i].r_info)) {
--		case R_68K_32:
--			/* We add the value into the location given */
--			*location += sym->st_value;
--			break;
--		case R_68K_PC32:
--			/* Add the value, subtract its postition */
--			*location += sym->st_value - (uint32_t)location;
--			break;
--		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
--			return -ENOEXEC;
+-		mem_value = *mem;
+-		if (mem_value == oldval)
+-			*mem = newval;
+-
+-		pte_unmap_unlock(pte, ptl);
+-		up_read(&mm->mmap_sem);
+-		return mem_value;
+-
+-	      bad_access:
+-		up_read(&mm->mmap_sem);
+-		/* This is not necessarily a bad access, we can get here if
+-		   a memory we're trying to write to should be copied-on-write.
+-		   Make the kernel do the necessary page stuff, then re-iterate.
+-		   Simulate a write access fault to do that.  */
+-		{
+-			/* The first argument of the function corresponds to
+-			   D1, which is the first field of struct pt_regs.  */
+-			struct pt_regs *fp = (struct pt_regs *)&newval;
+-
+-			/* '3' is an RMW flag.  */
+-			if (do_page_fault(fp, (unsigned long)mem, 3))
+-				/* If the do_page_fault() failed, we don't
+-				   have anything meaningful to return.
+-				   There should be a SIGSEGV pending for
+-				   the process.  */
+-				return 0xdeadbeef;
 -		}
 -	}
+-}
+-
+-asmlinkage int sys_atomic_barrier(void)
+-{
+-	/* no code needed for uniprocs */
 -	return 0;
 -}
--
--int apply_relocate_add(Elf32_Shdr *sechdrs,
--		       const char *strtab,
--		       unsigned int symindex,
--		       unsigned int relsec,
--		       struct module *me)
--{
--	unsigned int i;
--	Elf32_Rela *rel = (void *)sechdrs[relsec].sh_addr;
--	Elf32_Sym *sym;
--	uint32_t *location;
--
--	DEBUGP("Applying relocate_add section %u to %u\n", relsec,
--	       sechdrs[relsec].sh_info);
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
--		/* This is where to make the change */
--		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
--			+ rel[i].r_offset;
--		/* This is the symbol it is referring to.  Note that all
--		   undefined symbols have been resolved.  */
--		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
--			+ ELF32_R_SYM(rel[i].r_info);
--
--		switch (ELF32_R_TYPE(rel[i].r_info)) {
--		case R_68K_32:
--			/* We add the value into the location given */
--			*location = rel[i].r_addend + sym->st_value;
--			break;
--		case R_68K_PC32:
--			/* Add the value, subtract its postition */
--			*location = rel[i].r_addend + sym->st_value - (uint32_t)location;
--			break;
--		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
--			return -ENOEXEC;
--		}
--	}
--	return 0;
--}
--
--int module_finalize(const Elf_Ehdr *hdr,
--		    const Elf_Shdr *sechdrs,
--		    struct module *mod)
--{
--	module_fixup(mod, mod->arch.fixup_start, mod->arch.fixup_end);
--
--	return 0;
--}
--
--void module_arch_cleanup(struct module *mod)
--{
--}
--
--#endif /* CONFIG_MODULES */
--
--void module_fixup(struct module *mod, struct m68k_fixup_info *start,
--		  struct m68k_fixup_info *end)
--{
--	struct m68k_fixup_info *fixup;
--
--	for (fixup = start; fixup < end; fixup++) {
--		switch (fixup->type) {
--		case m68k_fixup_memoffset:
--			*(u32 *)fixup->addr = m68k_memoffset;
--			break;
--		case m68k_fixup_vnode_shift:
--			*(u16 *)fixup->addr += m68k_virt_to_node_shift;
--			break;
--		}
--	}
--}
-diff --git a/arch/m68k/kernel/module_no.c b/arch/m68k/kernel/module_no.c
+diff --git a/arch/m68k/kernel/sys_m68k_no.c b/arch/m68k/kernel/sys_m68k_no.c
 deleted file mode 100644
-index d11ffae..0000000
---- a/arch/m68k/kernel/module_no.c
+index 68488ae..0000000
+--- a/arch/m68k/kernel/sys_m68k_no.c
 +++ /dev/null
-@@ -1,126 +0,0 @@
--#include <linux/moduleloader.h>
--#include <linux/elf.h>
--#include <linux/vmalloc.h>
+@@ -1,94 +0,0 @@
+-/*
+- * linux/arch/m68knommu/kernel/sys_m68k.c
+- *
+- * This file contains various random system calls that
+- * have a non-standard calling sequence on the Linux/m68k
+- * platform.
+- */
+-
+-#include <linux/errno.h>
+-#include <linux/sched.h>
+-#include <linux/mm.h>
+-#include <linux/smp.h>
+-#include <linux/sem.h>
+-#include <linux/msg.h>
+-#include <linux/shm.h>
+-#include <linux/stat.h>
+-#include <linux/syscalls.h>
+-#include <linux/mman.h>
+-#include <linux/file.h>
+-#include <linux/ipc.h>
 -#include <linux/fs.h>
--#include <linux/string.h>
--#include <linux/kernel.h>
 -
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(fmt...)
--#endif
+-#include <asm/setup.h>
+-#include <asm/uaccess.h>
+-#include <asm/cachectl.h>
+-#include <asm/traps.h>
+-#include <asm/cacheflush.h>
+-#include <asm/unistd.h>
 -
--void *module_alloc(unsigned long size)
+-/* sys_cacheflush -- flush (part of) the processor cache.  */
+-asmlinkage int
+-sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
 -{
--	if (size == 0)
--		return NULL;
--	return vmalloc(size);
+-	flush_cache_all();
+-	return(0);
 -}
 -
--
--/* Free memory returned from module_alloc */
--void module_free(struct module *mod, void *module_region)
+-asmlinkage int sys_getpagesize(void)
 -{
--	vfree(module_region);
+-	return PAGE_SIZE;
 -}
 -
--/* We don't need anything special. */
--int module_frob_arch_sections(Elf_Ehdr *hdr,
--			      Elf_Shdr *sechdrs,
--			      char *secstrings,
--			      struct module *mod)
+-/*
+- * Do a system call from kernel instead of calling sys_execve so we
+- * end up with proper pt_regs.
+- */
+-int kernel_execve(const char *filename,
+-		  const char *const argv[],
+-		  const char *const envp[])
 -{
+-	register long __res asm ("%d0") = __NR_execve;
+-	register long __a asm ("%d1") = (long)(filename);
+-	register long __b asm ("%d2") = (long)(argv);
+-	register long __c asm ("%d3") = (long)(envp);
+-	asm volatile ("trap  #0" : "+d" (__res)
+-			: "d" (__a), "d" (__b), "d" (__c));
+-	return __res;
+-}
+-
+-asmlinkage unsigned long sys_get_thread_area(void)
+-{
+-	return current_thread_info()->tp_value;
+-}
+-
+-asmlinkage int sys_set_thread_area(unsigned long tp)
+-{
+-	current_thread_info()->tp_value = tp;
 -	return 0;
 -}
 -
--int apply_relocate(Elf32_Shdr *sechdrs,
--		   const char *strtab,
--		   unsigned int symindex,
--		   unsigned int relsec,
--		   struct module *me)
+-/* This syscall gets its arguments in A0 (mem), D2 (oldval) and
+-   D1 (newval).  */
+-asmlinkage int
+-sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
+-		      unsigned long __user * mem)
 -{
--	unsigned int i;
--	Elf32_Rel *rel = (void *)sechdrs[relsec].sh_addr;
--	Elf32_Sym *sym;
--	uint32_t *location;
+-	struct mm_struct *mm = current->mm;
+-	unsigned long mem_value;
 -
--	DEBUGP("Applying relocate section %u to %u\n", relsec,
--	       sechdrs[relsec].sh_info);
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
--		/* This is where to make the change */
--		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
--			+ rel[i].r_offset;
--		/* This is the symbol it is referring to.  Note that all
--		   undefined symbols have been resolved.  */
--		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
--			+ ELF32_R_SYM(rel[i].r_info);
+-	down_read(&mm->mmap_sem);
 -
--		switch (ELF32_R_TYPE(rel[i].r_info)) {
--		case R_68K_32:
--			/* We add the value into the location given */
--			*location += sym->st_value;
--			break;
--		case R_68K_PC32:
--			/* Add the value, subtract its postition */
--			*location += sym->st_value - (uint32_t)location;
--			break;
--		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
--			return -ENOEXEC;
--		}
--	}
--	return 0;
+-	mem_value = *mem;
+-	if (mem_value == oldval)
+-		*mem = newval;
+-
+-	up_read(&mm->mmap_sem);
+-	return mem_value;
 -}
 -
--int apply_relocate_add(Elf32_Shdr *sechdrs,
--		       const char *strtab,
--		       unsigned int symindex,
--		       unsigned int relsec,
--		       struct module *me)
+-asmlinkage int sys_atomic_barrier(void)
 -{
--	unsigned int i;
--	Elf32_Rela *rel = (void *)sechdrs[relsec].sh_addr;
--	Elf32_Sym *sym;
--	uint32_t *location;
--
--	DEBUGP("Applying relocate_add section %u to %u\n", relsec,
--	       sechdrs[relsec].sh_info);
--	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
--		/* This is where to make the change */
--		location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
--			+ rel[i].r_offset;
--		/* This is the symbol it is referring to.  Note that all
--		   undefined symbols have been resolved.  */
--		sym = (Elf32_Sym *)sechdrs[symindex].sh_addr
--			+ ELF32_R_SYM(rel[i].r_info);
--
--		switch (ELF32_R_TYPE(rel[i].r_info)) {
--		case R_68K_32:
--			/* We add the value into the location given */
--			*location = rel[i].r_addend + sym->st_value;
--			break;
--		case R_68K_PC32:
--			/* Add the value, subtract its postition */
--			*location = rel[i].r_addend + sym->st_value - (uint32_t)location;
--			break;
--		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
--			return -ENOEXEC;
--		}
--	}
+-	/* no code needed for uniprocs */
 -	return 0;
--}
--
--int module_finalize(const Elf_Ehdr *hdr,
--		    const Elf_Shdr *sechdrs,
--		    struct module *me)
--{
--	return 0;
--}
--
--void module_arch_cleanup(struct module *mod)
--{
 -}
 -- 
 1.7.0.4
