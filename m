@@ -1,59 +1,99 @@
-From: "Urbanski M." <urbas@iol.pl>
-Subject: re
-Date: Fri, 22 Apr 2011 00:40:19 +0200
-Message-ID: <20110422004019.15185qdcsgedu0cz@students.webmail.uni-mannheim.de>
-Reply-To: urb12am@aim.com
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: slub: fix panic with DISCONTIGMEM
+Date: Sat, 23 Apr 2011 13:27:56 +1200
+Message-ID: <BANLkTimw1LNmz7DA1zn=Re-gLJ8_i0znZw@mail.gmail.com>
+References: <1303248576.11237.23.camel@mulgrave.site>
+	<BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp.mail.uni-mannheim.de ([134.155.96.80]:44172 "EHLO
-	smtp.mail.uni-mannheim.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755546Ab1DUWv6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Apr 2011 18:51:58 -0400
-Content-Disposition: inline
+Received: from mail-vx0-f174.google.com ([209.85.220.174]:38464 "EHLO
+	mail-vx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757143Ab1DWB15 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 22 Apr 2011 21:27:57 -0400
+In-Reply-To: <BANLkTinyvO78OnKZGW3jB_N6uao0tppnAw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, linux-arch@vger.kernel.org, linux-mm@vger.kernel.org, Parisc List <linux-parisc@vger.kernel.org>, Christoph Lameter <cl@linux.com>, Thorsten Glaser <tg@mirbsd.de>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Dear friend,
+The problem was indeed never reported upstream but it does in fact
+manifest as a null pointer dereference, and happens in a discontiguous
+memory context on m68k. I'm uncertain as to whether I had tracked the
+exact source of the null pointer, I need to check my notes on this.
 
-I am sorry for this unsolicited email. Please take time to read my  
-letter carefully; I am sure you will understand the necessity for my  
-actions. I have a profiling sum in excess of ?30M (Thirty Million  
-Euros)which I seek your partnership in accommodating for me.
+Reverting the commit in question makes SLUB behave as though NUMA was
+defined, so this all checks out.
 
-INTRODUCTION OF MYSELF:
-I am Mr.Urbanski Marek, I was the Personal Assistance to Late  
-Mr.Andrzej Kremer, former Poland Deputy Foreign Minister who just died  
-in a plane crash that involved the Poland President, his Wife and  
-other top government functionaries including my Boss (Andrzej Kremer,  
-Deputy Foreign Minister). Below are sites from BBC and other  
-international reporters as regards my story;
+Apologies for not escalating this beyond m68k, and thanks to Geert for
+spotting the connection.
 
-http://news.bbc.co.uk/1/hi/uk/8613884.stm
-http://www.economist.com/blogs/charlemagne/2010/04/polands_plane_crash
-http://www.timesonline.co.uk/tol/comment/article7094224.ece
+Cheers,
 
-SOURCE OF FUNDS:
-My boss handed over the documents of the above quoted sum to me before
-he left for that very last trip. Meanwhile, the funds have already  
-been deposited with a financial institution somewhere in the United  
-Kingdom (undisclosed for now).
+  Michael
 
-YOUR ROLE:
-All I want from you is to stand as the beneficiary of the above quoted
-sum. I will arrange for the documents which will enable legal and  
-hitchfree transfer of the sum to you. If interested, please reply
-immediately. In my next email to you, I will send you more details and
-sites to ascertain my claims. Note that this transaction is not  
-supposed to take more than 10 working days, 100% legal and risk free.
 
-Thank you very much for your time. I look forward to hearing from you
-soonest.
-
-Regards,
-
-Mr. Urbanski Marek
+On Wed, Apr 20, 2011 at 7:48 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Tue, Apr 19, 2011 at 23:29, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+>> Slub makes assumptions about page_to_nid() which are violated by
+>> DISCONTIGMEM and !NUMA. =A0This violation results in a panic because
+>> page_to_nid() can be non-zero for pages in the discontiguous ranges =
+and
+>> this leads to a null return by get_node(). =A0The assertion by the
+>> maintainer is that DISCONTIGMEM should only be allowed when NUMA is =
+also
+>> defined. =A0However, at least six architectures: alpha, ia64, m32r, =
+m68k,
+>> mips, parisc violate this. =A0The panic is a regression against slab=
+, so
+>> just mark slub broken in the problem configuration to prevent users
+>> reporting these panics.
+>
+> How does the problem manifest itself? We're having a problem on m68k,=
+ which
+> seems to go away when switching from SLUB to SLAB, or when reverting =
+a commit
+> in [2] (probably this was never reported upstream).
+>
+> References:
+> [1] http://www.mail-archive.com/linux-m68k@vger.kernel.org/msg02812.h=
+tml
+> [2] http://www.spinics.net/lists/linux-m68k/msg03401.html
+>
+>> Cc: stable@kernel.org
+>> Signed-off-by: James Bottomley <James.Bottomley@suse.de>
+>>
+>> ---
+>>
+>> diff --git a/init/Kconfig b/init/Kconfig
+>> index 56240e7..a7ad8fb 100644
+>> --- a/init/Kconfig
+>> +++ b/init/Kconfig
+>> @@ -1226,6 +1226,7 @@ config SLAB
+>> =A0 =A0 =A0 =A0 =A0per cpu and per node queues.
+>>
+>> =A0config SLUB
+>> + =A0 =A0 =A0 depends on BROKEN || NUMA || !DISCONTIGMEM
+>> =A0 =A0 =A0 =A0bool "SLUB (Unqueued Allocator)"
+>> =A0 =A0 =A0 =A0help
+>> =A0 =A0 =A0 =A0 =A0 SLUB is a slab allocator that minimizes cache li=
+ne usage
+>
+> Gr{oetje,eeting}s,
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
+x-m68k.org
+>
+> In personal conversations with technical people, I call myself a hack=
+er. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
+Linus Torvalds
+>
