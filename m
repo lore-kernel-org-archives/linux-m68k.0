@@ -1,96 +1,89 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Debian kernel v2.6.38
-Date: Sun, 24 Apr 2011 10:18:17 +0200
-Message-ID: <BANLkTinPijbiOCN_uTokGwT79ua0YyhOEw@mail.gmail.com>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
-	<Pine.BSM.4.64L.1104231809290.3979@herc.mirbsd.org>
-	<BANLkTimNekxddcHFFV1cAAyiCWsz2EY11g@mail.gmail.com>
-	<4DB34EE6.6010004@gmail.com>
+Subject: Re: Fix for SLUB?
+Date: Sun, 24 Apr 2011 10:26:18 +0200
+Message-ID: <BANLkTi=Q2mYPqsEV+Fz61M7_g7PGF9L2xg@mail.gmail.com>
+References: <BANLkTi=6T8SxqnsXTY5ceyikg2NTKLVSKw@mail.gmail.com>
+	<BANLkTimN4vbAPJVKgH8iTZy7B5Fr8B+ibA@mail.gmail.com>
+	<BANLkTikSRStQO6cyE+L2vHHe0TnkoBe8=A@mail.gmail.com>
+	<BANLkTim_A-r4Khdx20tLKFU8ybtB+=wcyg@mail.gmail.com>
+	<BANLkTin4=QFyQUT95d7eoXXrdkNJc=T9Tw@mail.gmail.com>
+	<Pine.BSM.4.64L.1104231534340.3979@herc.mirbsd.org>
+	<20110423185725.GA16947@chumley.earth.sol>
+	<4DB38598.5000607@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:50943 "EHLO
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:59682 "EHLO
 	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755240Ab1DXIST convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Apr 2011 04:18:19 -0400
-Received: by fxm17 with SMTP id 17so886837fxm.19
-        for <linux-m68k@vger.kernel.org>; Sun, 24 Apr 2011 01:18:17 -0700 (PDT)
-In-Reply-To: <4DB34EE6.6010004@gmail.com>
+	with ESMTP id S1755186Ab1DXI0T convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Apr 2011 04:26:19 -0400
+Received: by fxm17 with SMTP id 17so887950fxm.19
+        for <linux-m68k@vger.kernel.org>; Sun, 24 Apr 2011 01:26:18 -0700 (PDT)
+In-Reply-To: <4DB38598.5000607@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@googlemail.com>
 Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-Hi Michael,
-
-On Sun, Apr 24, 2011 at 00:12, Michael Schmitz
+On Sun, Apr 24, 2011 at 04:06, Michael Schmitz
 <schmitzmic@googlemail.com> wrote:
->> On Sat, Apr 23, 2011 at 20:13, Thorsten Glaser <tg@mirbsd.de> wrote:
->>> =E2=80=A2 Reserve ST RAM early
+> Christian T. Steigies wrote:
+>>>
+>>> I???m trying now (using a cross compiler, to speed up testing).
+>>> Sorry for not doing anything for a while, the ???air has left
+>>> me??? (generally and due to lack of progress with m68k as one
+>>> can only be the only fighter for ever so long).
+>>>
 >>
->> Yeah, that's a valid one,
->> My (and probably lkml's) main issue there is that it introduces yet
->> another custom
->> allocator. Can we avoid that?
+>> I can understand this, but I am very impressed by all the work you h=
+ave
+>> done
+>> for m68k recently! Please don't give up.
+>>
 >
-> Ideally it would not be an issue if we could properly flag ST-RAM onl=
-y as
-> DMA memory. I've tried in the past but setting the max. DMA address t=
-o the
-> 0x00ffffff did have unintended side effects elsewhere in the m68k mm =
-code.
+> I'll second this sentiment wholeheartedly. It's been good to see a fr=
+esh
+> face injecting a lot of life into the project.
+>>
+>>
+>>>
+>>> But I was just told by a member of the Debian Kernel Team on
+>>> IRC that the patches from m68k-v2.6.38 will (probably) not be
+>>> accepted, unless they go in via Linus??? tree. How are chances
+>>> of that happening? (He says they had told that years ago al-
+>>> ready.) I???ll need at least the ARAnyM/NatFeat support and some
+>>> of the bugfixes. Otherwise I fear this keeps getting obsolete
+>>> very fast. ???
+>>>
+>>
+>> As Geert wrote, almost all patches will make it into the official ke=
+rnel
+>> tree, only m68k usually needs them a little sooner. Is there no m68k=
+ DD
+>> left
+>> who works on the kernel? When I was still submitting patches, there =
+never
+>> was a problem, but I made sure that m68k patches only got applied to=
+ the
+>> m68k tree. Of course, the smaller the patches, the better, and Geert=
+ was
+>> very good with sending m68k patches upstream. In case you can not ge=
+t
+>> those
+>> small patches in, I can give it a try (when I have a properly workin=
+g DSL
+>> again, and more time, so I can also set up crest and kullervo...).
+>>
 >
-> If there is a generic lowmem allocator, we might be able to use that
-> instead. It does not need to be available early on, but we need to be=
- able
-> to reserve some lowmem early.
+> At the very least, the Debian kernel maintainers ought to take a smal=
+l patch
+> to disable SLUB for m68k for as long as it takes to get this fix incl=
+uded
+> via upstream and possibly backporting.
 
-Reserving the pool using alloc_bootmem_low() is fine.
-But the allocator for memory inside the pool could be changed to use e.=
-g.
-allocate_resource(), cfr. arch/m68k/amiga/chipram.c.
-If I'm not mistaken, the main difference between Chip RAM on Amiga and =
-ST-RAM
-on Atari is that ST-RAM can be used as system memory, while Chip RAM ca=
-nnot
-(due to the lack of RMW bus support)?
-
-> Another possible hack would be to allocate lowmem early on for each
-> compiled-in user and store that in a platform device struct for use b=
-y the
-> driver once it initializes. Is there such a thing like early initcall=
-s for
-> this specific purpose (do a minimum early setup such as allocate reso=
-urces,
-> silence IRQs and the like)?.
-
-That's a bit like we do on the ps3, cfr. arch/powerpc/platforms/ps3/set=
-up.c.
-The main disadvantage is that it's less flexible, esp. for modules.
-
-> If all that is not an option (and for the sake of modules needing ST-=
-RAM), I
-> don't see another way to do it. Some parts of the hardware just need =
-memory
-> below 0x00ffffff.
-
-If you would just reserve 1 MiB (or a better tuned amount) of ST-RAM po=
-ol and
-always use allocate_resource() to allocate ST-RAM, most of stram.c (e.g=
-=2E
-manageing the list of free blocks) can go?
-As a bonus, you get freeing of memory from the pool.
-
-I had a quick look into the ST-RAM users:
-  - ataflop, atari_scsi, and atafb allocate ST-RAM only at driver
-initialization,
-  - dmasound_atari allocates/deallocates ST-RAM on sq_open()/close(),
-so this will
-    definitely break after a while if the ST-RAM pool doesn't support
-freeing ST-RAM.
-
-What do you think?
+Not only for m68k. The parisc people are already making more noise abou=
+t it ;-)
 
 Gr{oetje,eeting}s,
 
