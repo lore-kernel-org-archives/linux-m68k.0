@@ -1,109 +1,93 @@
-From: KOSAKI Motohiro <kosaki.motohiro@gmail.com>
-Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
-Date: Sun, 24 Apr 2011 12:14:43 +0900
-Message-ID: <BANLkTi=vm-qs48-JySCpv+YHyC+9sO9U0A@mail.gmail.com>
-References: <1303317178.2587.30.camel@mulgrave.site> <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
- <20110421220351.9180.A69D9226@jp.fujitsu.com> <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
- <alpine.DEB.2.00.1104211500170.5741@router.home> <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
- <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com> <4DB3840F.3060503@gmail.com>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: Debian/m68k kernel (preview)
+Date: Sun, 24 Apr 2011 05:00:02 +0100
+Message-ID: <1303617602.3032.86.camel@localhost>
+References: <BANLkTi=6T8SxqnsXTY5ceyikg2NTKLVSKw@mail.gmail.com>
+	 <BANLkTimN4vbAPJVKgH8iTZy7B5Fr8B+ibA@mail.gmail.com>
+	 <BANLkTikSRStQO6cyE+L2vHHe0TnkoBe8=A@mail.gmail.com>
+	 <BANLkTim_A-r4Khdx20tLKFU8ybtB+=wcyg@mail.gmail.com>
+	 <BANLkTin4=QFyQUT95d7eoXXrdkNJc=T9Tw@mail.gmail.com>
+	 <Pine.BSM.4.64L.1104231534340.3979@herc.mirbsd.org>
+	 <20110423185725.GA16947@chumley.earth.sol>
+	 <Pine.BSM.4.64L.1104232054070.3979@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="=-DSrUb9Ek6fS2LyZeeQ7O"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wy0-f174.google.com ([74.125.82.174]:62496 "EHLO
-	mail-wy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757394Ab1DXDPF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 23 Apr 2011 23:15:05 -0400
-In-Reply-To: <4DB3840F.3060503@gmail.com>
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:57314 "EHLO
+	shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750716Ab1DXEAK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 24 Apr 2011 00:00:10 -0400
+In-Reply-To: <Pine.BSM.4.64L.1104232054070.3979@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: David Rientjes <rientjes@google.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, schwab@linux-m68k.org, "tg@mirbsd.de >> Thorsten Glaser" <tg@mirbsd.de>
-
-2011/4/24 Michael Schmitz <schmitzmic@googlemail.com>:
-> David Rientjes wrote:
->>
->> For m68k, N_NORMAL_MEMORY represents all nodes that have present mem=
-ory
->> since it does not support HIGHMEM. =A0This patch sets the bit at the=
- time the
->> node is brought online.
->>
->> If N_NORMAL_MEMORY is not accurate, slub may encounter errors since =
-it
->> uses this nodemask to setup per-cache kmem_cache_node data structure=
-s.
->>
->> Signed-off-by: David Rientjes <rientjes@google.com>
->> ---
->> =A0arch/m68k/mm/init_mm.c | =A0 =A02 ++
->> =A01 files changed, 2 insertions(+), 0 deletions(-)
->>
->> diff --git a/arch/m68k/mm/init_mm.c b/arch/m68k/mm/init_mm.c
->> --- a/arch/m68k/mm/init_mm.c
->> +++ b/arch/m68k/mm/init_mm.c
->> @@ -59,6 +59,8 @@ void __init m68k_setup_node(int node)
->> =A0 =A0 =A0 =A0}
->> =A0#endif
->> =A0 =A0 =A0 =A0pg_data_map[node].bdata =3D bootmem_node_data + node;
->> + =A0 =A0 =A0 if (node_present_pages(node))
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 node_set_state(node, N_NORMAL_MEMORY);
->> =A0 =A0 =A0 =A0node_set_online(node);
->> =A0}
->>
->
-> As Andreas pointed out, node_present_pages is set in free_area_init_n=
-ode
-> which only gets called at the very end of m68k mm paging_init.
->
-> The correct patch would be something like this - the need for the
-> conditional is perhaps debatable, seeing as we set the pages present =
-just
-> before node_set_state.
->
-> Tested on my ARAnyM test setup so far. I'd like to wait for an indepe=
-ndent
-> kernel image built by Thorsten before I test on the actual hardware. =
-Sorry
-> but you'll have to restart your build Thorsten :-)
->
-> Signed-off-by: Michael Schmitz <schmitz@debian.org>
-> --
-> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-> index 02b7a03..b806c19 100644
-> --- a/arch/m68k/mm/motorola.c
-> +++ b/arch/m68k/mm/motorola.c
-> @@ -300,6 +300,8 @@ void __init paging_init(void)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 zones_size[ZONE_DMA] =3D m68k_memory[i].s=
-ize >> PAGE_SHIFT;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 free_area_init_node(i, zones_size,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 m=
-68k_memory[i].addr >> PAGE_SHIFT, NULL);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (node_present_pages(i))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0node_set_state(i, N_=
-NORMAL_MEMORY);
-> =A0 =A0 =A0 }
-> }
-
-I think you are right. however I doubt m68k need to care memoryless nod=
-e check.
-probably following patch just work.
-
-------------------------------------
- diff --git a/arch/m68k/mm/init_mm.c b/arch/m68k/mm/init_mm.c
- --- a/arch/m68k/mm/init_mm.c
- +++ b/arch/m68k/mm/init_mm.c
- @@ -59,6 +59,8 @@ void __init m68k_setup_node(int node)
- =A0 =A0 =A0 =A0}
- =A0#endif
- =A0 =A0 =A0 =A0pg_data_map[node].bdata =3D bootmem_node_data + node;
- =A0 =A0 =A0 =A0node_set_online(node);
-+=A0 =A0 =A0 node_set_state(node, N_NORMAL_MEMORY);
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Debian Kernel Team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
 
 
-Maybe, the correct solution is to use CONFIG_ARCH_POPULATES_NODE_MAP fe=
-ature.
-the usage is simple, adding add_active_range() and replacing
-free_area_init_node() with free_area_init_nodes().
+--=-DSrUb9Ek6fS2LyZeeQ7O
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Sat, 2011-04-23 at 21:00 +0000, Thorsten Glaser wrote:
+> Christian T. Steigies dixit:
+>=20
+> >As Geert wrote, almost all patches will make it into the official kernel
+> >tree, only m68k usually needs them a little sooner.
+>=20
+> OK, I=E2=80=99ve tracked down the patches that were indeed submitted,
+> added the SLUB workaround, and prepared another source package.
+> It=E2=80=99s currently building (cross, for speed of testing), but if
+> you like, you can review the patch I=E2=80=99d ask the Debian Kernel
+> Team to include later (if this works). My patch is based on
+> linux-2.6_2.6.38-3 since that=E2=80=99s what was in main when I began,
+> but should work against the scheduled -4, too. I=E2=80=99ve reduced
+> the number of patches to what I think is the minimum needed.
+
+You don't need to unset ECONET or X25 in debian/config/m68k/config; they
+are explicitly unset in the top-level config.
+
+> Some of the changes to debian/config/m68k/* were already in
+> sid/2.6.32 in Debian but not in what was trunk back then, so
+> I=E2=80=99ve re-added them. I think they come from Stephen Marenka.
+>=20
+> I don=E2=80=99t know how the ABI files are generated, there=E2=80=99s non=
+e for
+> m68k yet. Please tell me if I have to do something.
+[...]
+
+They are based on the Module.symvers files generated during a build and
+included in the linux-headers-* packages.  They are added to the *next*
+version of the source package if we are intending to maintain the ABI,
+using debian/bin/abiupdate.py.  If there has not been a successful build
+of kernel version '2.6.38-2' for m68k then there is no need to add them.
+
+Ben.
+
+--=20
+Ben Hutchings
+Once a job is fouled up, anything done to improve it makes it worse.
+
+--=-DSrUb9Ek6fS2LyZeeQ7O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIVAwUATbOgQee/yOyVhhEJAQrUNQ/+NUG/tzjB5MH4VO399smF0yXrDm5/oye8
+RpfwMNVT/9jcL8mFZp3nwrvnb50NKo77tJuQbBopgpCoSHV//L1sTWvnQ3WJzhJP
+chtvA8ZbTbBd2AXQeiPyHCA914h+vNT21l9OwmUWqk2GjhC6VQH+dEN9Y4Q9qZyZ
+tStey/8nx+6cZfX+xQAlfIE/YlPus0y+jx7BD552srnjCMyQb2sqd0f7sxdON1Av
+TImcGXd1ozXRJcflgiXY1wTFCWSEXxiQyb0WX1YkPxBRF1CI8CrHoRSHPMg837VW
+Gfb3XCfqTd1hlfblQJIgI3ItNBHZk99neh0QNhywR95SgNQNJIglIEBY/1aSBIxW
+2UU7XKgfYFf0javkncO2BDQeusmhWhzVDfGRDI7UYuNxi3OfSwmAn56/IHYE/k8v
+zhLwiY6h31w9lz7WXdWrTOQueT2Vj9MOdPaKB2DaT7Z3rPd6p+kvnFYnHAr9JQZu
+l+zfwy6VkmhH6t/1zUs7ITf+H4nZWWo2OOI3Ap/5hO7DyBFaQunbQVW0aV00bvWG
+ERjc+yWLAcl8UOkDB+9n7PXrnydlsBs7WvgAZh8EU3KNfEFhlyTHV1Mcx5DM1ndP
+ur1TeJdviOLTRwy6Gb5CYzvdZbav2GfH1o5tFmIsa6jD4fSxsoS/Eme5elULDjC7
+AoGsvlqSVC4=
+=Hzrz
+-----END PGP SIGNATURE-----
+
+--=-DSrUb9Ek6fS2LyZeeQ7O--
