@@ -1,59 +1,50 @@
 From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Debian kernel v2.6.38
-Date: Sun, 24 Apr 2011 11:37:55 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1104241134030.8787@herc.mirbsd.org>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
- <Pine.BSM.4.64L.1104231809290.3979@herc.mirbsd.org>
- <BANLkTimNekxddcHFFV1cAAyiCWsz2EY11g@mail.gmail.com> <4DB34EE6.6010004@gmail.com>
- <BANLkTinPijbiOCN_uTokGwT79ua0YyhOEw@mail.gmail.com>
+Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
+Date: Sun, 24 Apr 2011 11:32:47 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1104241131460.8787@herc.mirbsd.org>
+References: <1303317178.2587.30.camel@mulgrave.site>
+ <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
+ <20110421220351.9180.A69D9226@jp.fujitsu.com>
+ <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
+ <alpine.DEB.2.00.1104211500170.5741@router.home>
+ <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
+ <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
+ <4DB3840F.3060503@gmail.com> <BANLkTi=vm-qs48-JySCpv+YHyC+9sO9U0A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:32342 "EHLO
 	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751439Ab1DXLj0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Apr 2011 07:39:26 -0400
-Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
-	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p3OBbvcs009838
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-m68k@vger.kernel.org>; Sun, 24 Apr 2011 11:38:01 GMT
-In-Reply-To: <BANLkTinPijbiOCN_uTokGwT79ua0YyhOEw@mail.gmail.com>
+	with ESMTP id S1751439Ab1DXLj1 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Apr 2011 07:39:27 -0400
+In-Reply-To: <BANLkTi=vm-qs48-JySCpv+YHyC+9sO9U0A@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@googlemail.com>, KOSAKI Motohiro <kosaki.motohiro@gmail.com>
+Cc: David Rientjes <rientjes@google.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, schwab@linux-m68k.org
 
-Geert Uytterhoeven dixit:
+Michael Schmitz dixit:
 
->On Sun, Apr 24, 2011 at 00:12, Michael Schmitz
-><schmitzmic@googlemail.com> wrote:
+> Tested on my ARAnyM test setup so far. I'd like to wait for an indepe=
+ndent
+> kernel image built by Thorsten before I test on the actual hardware. =
+Sorry but
+> you'll have to restart your build Thorsten :-)
 
->> If there is a generic lowmem allocator
+Heh okay, if you want. But only cross-compiling :D
 
-There=E2=80=99s bound to be one. For example, on i386 you have two kind=
-s
-of lowmem to take care of: ISA DMA (first 16 MiB), and DMA and/or
-BIOS call space within the first 640 KiB (both preferably not
-crossing a 64 KiB boundary). But then, I=E2=80=99m not a kernel program=
-mer
-(either BSD or Linux), so I don=E2=80=99t know how things are handled t=
-hese
-days.
 
->  - ataflop, atari_scsi, and atafb allocate ST-RAM only at driver
->initialization,
+KOSAKI Motohiro dixit:
 
-Speaking of atafb, with the trimmed-down patch I get garbled video
-with BootColorDepth 1, 4 or 8, and no option or video=3Datafb:vga2
-both; using video=3Datafb:vga4 (with BCD=3D4) has no output at all.
+>I think you are right. however I doubt m68k need to care memoryless no=
+de check.
+>probably following patch just work.
 
-This is no biggie for me, since the boxen work, but e.g. when
-there=E2=80=99s an =E2=80=9Cmounted n times=E2=80=9D fsck, the machine =
-takes ages longer
-to get up, and people will think it has frozen, so I=E2=80=99d very muc=
-h
-like to get _some_ kind of fix into at least the second version
-of the Debian kernel, once we get past the initial hurdle=E2=80=A6
+That=E2=80=99s what we have now. Compiles, boots, works fine.
+
+
+So, which of these do you guys want?
 
 bye,
 //mirabilos
