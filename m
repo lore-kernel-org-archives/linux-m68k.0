@@ -1,264 +1,63 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH 1/6] arch: add #define for each of optimized find bitops
-Date: Sun, 24 Apr 2011 18:51:12 +0900
-Message-ID: <1303638677-11211-2-git-send-email-akinobu.mita__21386.6026992493$1303644711$gmane$org@gmail.com>
-References: <1303638677-11211-1-git-send-email-akinobu.mita@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Debian kernel v2.6.38
+Date: Sun, 24 Apr 2011 11:37:55 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1104241134030.8787@herc.mirbsd.org>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
+ <Pine.BSM.4.64L.1104231809290.3979@herc.mirbsd.org>
+ <BANLkTimNekxddcHFFV1cAAyiCWsz2EY11g@mail.gmail.com> <4DB34EE6.6010004@gmail.com>
+ <BANLkTinPijbiOCN_uTokGwT79ua0YyhOEw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1303638677-11211-1-git-send-email-akinobu.mita@gmail.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:32342 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751439Ab1DXLj0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Apr 2011 07:39:26 -0400
+Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
+	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p3OBbvcs009838
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Sun, 24 Apr 2011 11:38:01 GMT
+In-Reply-To: <BANLkTinPijbiOCN_uTokGwT79ua0YyhOEw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, akpm@linux-foundation.org, arnd@arndb.de
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, linux-s390@vger.kernel.org, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-m68k@vger.kernel.org
 
-The style that we normally use in asm-generic is to test the macro itself
-for existence, so in asm-generic, do:
+Geert Uytterhoeven dixit:
 
-	#ifndef find_next_zero_bit_le
-	extern unsigned long find_next_zero_bit_le(const void *addr,
-		unsigned long size, unsigned long offset);
-	#endif
+>On Sun, Apr 24, 2011 at 00:12, Michael Schmitz
+><schmitzmic@googlemail.com> wrote:
 
-and in the architectures, write
+>> If there is a generic lowmem allocator
 
-	static inline unsigned long find_next_zero_bit_le(const void *addr,
-		unsigned long size, unsigned long offset)
-	#define find_next_zero_bit_le find_next_zero_bit_le
+There=E2=80=99s bound to be one. For example, on i386 you have two kind=
+s
+of lowmem to take care of: ISA DMA (first 16 MiB), and DMA and/or
+BIOS call space within the first 640 KiB (both preferably not
+crossing a 64 KiB boundary). But then, I=E2=80=99m not a kernel program=
+mer
+(either BSD or Linux), so I don=E2=80=99t know how things are handled t=
+hese
+days.
 
-This adds the #define for each of the optimized find bitops in the
-architectures.
+>  - ataflop, atari_scsi, and atafb allocate ST-RAM only at driver
+>initialization,
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: linux390@de.ibm.com
-Cc: linux-s390@vger.kernel.org
-Cc: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Greg Ungerer <gerg@uclinux.org>
----
- arch/arm/include/asm/bitops.h     |    3 +++
- arch/avr32/include/asm/bitops.h   |   15 +++++++++++++++
- arch/m68k/include/asm/bitops_mm.h |    8 ++++++++
- arch/m68k/include/asm/bitops_no.h |    1 +
- arch/s390/include/asm/bitops.h    |    8 ++++++++
- 5 files changed, 35 insertions(+), 0 deletions(-)
+Speaking of atafb, with the trimmed-down patch I get garbled video
+with BootColorDepth 1, 4 or 8, and no option or video=3Datafb:vga2
+both; using video=3Datafb:vga4 (with BCD=3D4) has no output at all.
 
-diff --git a/arch/arm/include/asm/bitops.h b/arch/arm/include/asm/bitops.h
-index ec2e0d4..73ee73e 100644
---- a/arch/arm/include/asm/bitops.h
-+++ b/arch/arm/include/asm/bitops.h
-@@ -326,16 +326,19 @@ static inline int find_first_zero_bit_le(const void *p, unsigned size)
- {
- 	return _find_first_zero_bit_le(p, size);
- }
-+#define find_first_zero_bit_le find_first_zero_bit_le
- 
- static inline int find_next_zero_bit_le(const void *p, int size, int offset)
- {
- 	return _find_next_zero_bit_le(p, size, offset);
- }
-+#define find_next_zero_bit_le find_next_zero_bit_le
- 
- static inline int find_next_bit_le(const void *p, int size, int offset)
- {
- 	return _find_next_bit_le(p, size, offset);
- }
-+#define find_next_bit_le find_next_bit_le
- 
- /*
-  * Ext2 is defined to use little-endian byte ordering.
-diff --git a/arch/avr32/include/asm/bitops.h b/arch/avr32/include/asm/bitops.h
-index 72444d9..b70c19b 100644
---- a/arch/avr32/include/asm/bitops.h
-+++ b/arch/avr32/include/asm/bitops.h
-@@ -270,14 +270,21 @@ static inline int __fls(unsigned long word)
- 
- unsigned long find_first_zero_bit(const unsigned long *addr,
- 				  unsigned long size);
-+#define find_first_zero_bit find_first_zero_bit
-+
- unsigned long find_next_zero_bit(const unsigned long *addr,
- 				 unsigned long size,
- 				 unsigned long offset);
-+#define find_next_zero_bit find_next_zero_bit
-+
- unsigned long find_first_bit(const unsigned long *addr,
- 			     unsigned long size);
-+#define find_first_bit find_first_bit
-+
- unsigned long find_next_bit(const unsigned long *addr,
- 				 unsigned long size,
- 				 unsigned long offset);
-+#define find_next_bit find_next_bit
- 
- /*
-  * ffs: find first bit set. This is defined the same way as
-@@ -299,6 +306,14 @@ static inline int ffs(unsigned long word)
- #include <asm-generic/bitops/hweight.h>
- #include <asm-generic/bitops/lock.h>
- 
-+extern unsigned long find_next_zero_bit_le(const void *addr,
-+		unsigned long size, unsigned long offset);
-+#define find_next_zero_bit_le find_next_zero_bit_le
-+
-+extern unsigned long find_next_bit_le(const void *addr,
-+		unsigned long size, unsigned long offset);
-+#define find_next_bit_le find_next_bit_le
-+
- #include <asm-generic/bitops/le.h>
- #include <asm-generic/bitops/ext2-atomic.h>
- 
-diff --git a/arch/m68k/include/asm/bitops_mm.h b/arch/m68k/include/asm/bitops_mm.h
-index 27d5d67..4909a90 100644
---- a/arch/m68k/include/asm/bitops_mm.h
-+++ b/arch/m68k/include/asm/bitops_mm.h
-@@ -200,6 +200,7 @@ out:
- 	res += ((long)p - (long)vaddr - 4) * 8;
- 	return res < size ? res : size;
- }
-+#define find_first_zero_bit find_first_zero_bit
- 
- static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
- 				     int offset)
-@@ -229,6 +230,7 @@ static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
- 	/* No zero yet, search remaining full bytes for a zero */
- 	return offset + find_first_zero_bit(p, size - offset);
- }
-+#define find_next_zero_bit find_next_zero_bit
- 
- static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
- {
-@@ -253,6 +255,7 @@ out:
- 	res += ((long)p - (long)vaddr - 4) * 8;
- 	return res < size ? res : size;
- }
-+#define find_first_bit find_first_bit
- 
- static inline int find_next_bit(const unsigned long *vaddr, int size,
- 				int offset)
-@@ -282,6 +285,7 @@ static inline int find_next_bit(const unsigned long *vaddr, int size,
- 	/* No one yet, search remaining full bytes for a one */
- 	return offset + find_first_bit(p, size - offset);
- }
-+#define find_next_bit find_next_bit
- 
- /*
-  * ffz = Find First Zero in word. Undefined if no zero exists,
-@@ -398,6 +402,7 @@ out:
- 	res += (p - addr) * 32;
- 	return res < size ? res : size;
- }
-+#define find_first_zero_bit_le find_first_zero_bit_le
- 
- static inline unsigned long find_next_zero_bit_le(const void *addr,
- 		unsigned long size, unsigned long offset)
-@@ -427,6 +432,7 @@ static inline unsigned long find_next_zero_bit_le(const void *addr,
- 	/* No zero yet, search remaining full bytes for a zero */
- 	return offset + find_first_zero_bit_le(p, size - offset);
- }
-+#define find_next_zero_bit_le find_next_zero_bit_le
- 
- static inline int find_first_bit_le(const void *vaddr, unsigned size)
- {
-@@ -451,6 +457,7 @@ out:
- 	res += (p - addr) * 32;
- 	return res < size ? res : size;
- }
-+#define find_first_bit_le find_first_bit_le
- 
- static inline unsigned long find_next_bit_le(const void *addr,
- 		unsigned long size, unsigned long offset)
-@@ -480,6 +487,7 @@ static inline unsigned long find_next_bit_le(const void *addr,
- 	/* No set bit yet, search remaining full bytes for a set bit */
- 	return offset + find_first_bit_le(p, size - offset);
- }
-+#define find_next_bit_le find_next_bit_le
- 
- /* Bitmap functions for the ext2 filesystem. */
- 
-diff --git a/arch/m68k/include/asm/bitops_no.h b/arch/m68k/include/asm/bitops_no.h
-index 1ab40f2..e98d42c 100644
---- a/arch/m68k/include/asm/bitops_no.h
-+++ b/arch/m68k/include/asm/bitops_no.h
-@@ -324,6 +324,7 @@ found_first:
- found_middle:
- 	return result + ffz(__swab32(tmp));
- }
-+#define find_next_zero_bit_le find_next_zero_bit_le
- 
- #endif /* __KERNEL__ */
- 
-diff --git a/arch/s390/include/asm/bitops.h b/arch/s390/include/asm/bitops.h
-index 38fab08..fc298b2 100644
---- a/arch/s390/include/asm/bitops.h
-+++ b/arch/s390/include/asm/bitops.h
-@@ -621,6 +621,7 @@ static inline unsigned long find_first_zero_bit(const unsigned long *addr,
- 	bits = __ffz_word(bytes*8, __load_ulong_be(addr, bytes));
- 	return (bits < size) ? bits : size;
- }
-+#define find_first_zero_bit find_first_zero_bit
- 
- /**
-  * find_first_bit - find the first set bit in a memory region
-@@ -641,6 +642,7 @@ static inline unsigned long find_first_bit(const unsigned long * addr,
- 	bits = __ffs_word(bytes*8, __load_ulong_be(addr, bytes));
- 	return (bits < size) ? bits : size;
- }
-+#define find_first_bit find_first_bit
- 
- /**
-  * find_next_zero_bit - find the first zero bit in a memory region
-@@ -677,6 +679,7 @@ static inline int find_next_zero_bit (const unsigned long * addr,
- 	}
- 	return offset + find_first_zero_bit(p, size);
- }
-+#define find_next_zero_bit find_next_zero_bit
- 
- /**
-  * find_next_bit - find the first set bit in a memory region
-@@ -713,6 +716,7 @@ static inline int find_next_bit (const unsigned long * addr,
- 	}
- 	return offset + find_first_bit(p, size);
- }
-+#define find_next_bit find_next_bit
- 
- /*
-  * Every architecture must define this function. It's the fastest
-@@ -787,6 +791,7 @@ static inline int find_first_zero_bit_le(void *vaddr, unsigned int size)
- 	bits = __ffz_word(bytes*8, __load_ulong_le(vaddr, bytes));
- 	return (bits < size) ? bits : size;
- }
-+#define find_first_zero_bit_le find_first_zero_bit_le
- 
- static inline int find_next_zero_bit_le(void *vaddr, unsigned long size,
- 					  unsigned long offset)
-@@ -816,6 +821,7 @@ static inline int find_next_zero_bit_le(void *vaddr, unsigned long size,
-         }
- 	return offset + find_first_zero_bit_le(p, size);
- }
-+#define find_next_zero_bit_le find_next_zero_bit_le
- 
- static inline unsigned long find_first_bit_le(void *vaddr, unsigned long size)
- {
-@@ -827,6 +833,7 @@ static inline unsigned long find_first_bit_le(void *vaddr, unsigned long size)
- 	bits = __ffs_word(bytes*8, __load_ulong_le(vaddr, bytes));
- 	return (bits < size) ? bits : size;
- }
-+#define find_first_bit_le find_first_bit_le
- 
- static inline int find_next_bit_le(void *vaddr, unsigned long size,
- 				     unsigned long offset)
-@@ -856,6 +863,7 @@ static inline int find_next_bit_le(void *vaddr, unsigned long size,
- 	}
- 	return offset + find_first_bit_le(p, size);
- }
-+#define find_next_bit_le find_next_bit_le
- 
- #include <asm-generic/bitops/ext2-atomic-test.h>
- 
--- 
-1.7.4.4
+This is no biggie for me, since the boxen work, but e.g. when
+there=E2=80=99s an =E2=80=9Cmounted n times=E2=80=9D fsck, the machine =
+takes ages longer
+to get up, and people will think it has frozen, so I=E2=80=99d very muc=
+h
+like to get _some_ kind of fix into at least the second version
+of the Debian kernel, once we get past the initial hurdle=E2=80=A6
+
+bye,
+//mirabilos
+--=20
+13:47=E2=8E=9C<tobiasu> if i were omnipotent, i would divide by zero
+                all day long ;)
+(thinking about http://lobacevski.tumblr.com/post/3260866481 by waga)
