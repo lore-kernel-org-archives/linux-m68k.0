@@ -1,90 +1,71 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: Debian kernel v2.6.38
-Date: Sun, 24 Apr 2011 10:12:54 +1200
-Message-ID: <4DB34EE6.6010004@gmail.com>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>	<Pine.BSM.4.64L.1104231809290.3979@herc.mirbsd.org> <BANLkTimNekxddcHFFV1cAAyiCWsz2EY11g@mail.gmail.com>
+Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
+Date: Sun, 24 Apr 2011 13:59:43 +1200
+Message-ID: <4DB3840F.3060503@gmail.com>
+References: <1303317178.2587.30.camel@mulgrave.site> <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com> <20110421220351.9180.A69D9226@jp.fujitsu.com> <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com> <alpine.DEB.2.00.1104211500170.5741@router.home> <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com> <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pv0-f174.google.com ([74.125.83.174]:41335 "EHLO
-	mail-pv0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757268Ab1DWWNG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 23 Apr 2011 18:13:06 -0400
-Received: by pvg12 with SMTP id 12so740648pvg.19
-        for <linux-m68k@vger.kernel.org>; Sat, 23 Apr 2011 15:13:05 -0700 (PDT)
-In-Reply-To: <BANLkTimNekxddcHFFV1cAAyiCWsz2EY11g@mail.gmail.com>
+Received: from mail-pw0-f46.google.com ([209.85.160.46]:40615 "EHLO
+	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757426Ab1DXB7s (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 23 Apr 2011 21:59:48 -0400
+In-Reply-To: <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+To: David Rientjes <rientjes@google.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, schwab@linux-m68k.org, "tg@mirbsd.de >> Thorsten Glaser" <tg@mirbsd.de>
 
-Hi Geert,
-> On Sat, Apr 23, 2011 at 20:13, Thorsten Glaser <tg@mirbsd.de> wrote:
->  =20
->> =E2=80=A2 Reserve ST RAM early
->>    =20
+David Rientjes wrote:
+> For m68k, N_NORMAL_MEMORY represents all nodes that have present memory 
+> since it does not support HIGHMEM.  This patch sets the bit at the time 
+> the node is brought online.
 >
-> Yeah, that's a valid one,
-> My (and probably lkml's) main issue there is that it introduces yet
-> another custom
-> allocator. Can we avoid that?
->  =20
-Ideally it would not be an issue if we could properly flag ST-RAM only=20
-as DMA memory. I've tried in the past but setting the max. DMA address=20
-to the 0x00ffffff did have unintended side effects elsewhere in the m68=
-k=20
-mm code.
+> If N_NORMAL_MEMORY is not accurate, slub may encounter errors since it 
+> uses this nodemask to setup per-cache kmem_cache_node data structures.
+>
+> Signed-off-by: David Rientjes <rientjes@google.com>
+> ---
+>  arch/m68k/mm/init_mm.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/m68k/mm/init_mm.c b/arch/m68k/mm/init_mm.c
+> --- a/arch/m68k/mm/init_mm.c
+> +++ b/arch/m68k/mm/init_mm.c
+> @@ -59,6 +59,8 @@ void __init m68k_setup_node(int node)
+>  	}
+>  #endif
+>  	pg_data_map[node].bdata = bootmem_node_data + node;
+> +	if (node_present_pages(node))
+> +		node_set_state(node, N_NORMAL_MEMORY);
+>  	node_set_online(node);
+>  }
+>  
+>   
+As Andreas pointed out, node_present_pages is set in free_area_init_node 
+which only gets called at the very end of m68k mm paging_init.
 
-If there is a generic lowmem allocator, we might be able to use that=20
-instead. It does not need to be available early on, but we need to be=20
-able to reserve some lowmem early.
+The correct patch would be something like this - the need for the 
+conditional is perhaps debatable, seeing as we set the pages present 
+just before node_set_state.
 
-Another possible hack would be to allocate lowmem early on for each=20
-compiled-in user and store that in a platform device struct for use by=20
-the driver once it initializes. Is there such a thing like early=20
-initcalls for this specific purpose (do a minimum early setup such as=20
-allocate resources, silence IRQs and the like)?.
+Tested on my ARAnyM test setup so far. I'd like to wait for an 
+independent kernel image built by Thorsten before I test on the actual 
+hardware. Sorry but you'll have to restart your build Thorsten :-)
 
-If all that is not an option (and for the sake of modules needing=20
-ST-RAM), I don't see another way to do it. Some parts of the hardware=20
-just need memory below 0x00ffffff.
-
-Cheers,
-
-  Michael
-
->  =20
->> I=E2=80=99m Bcc=E2=80=99ing the Debian Kernel person I was talking t=
-o, so we may
->> get an agreement. I=E2=80=99ll revisit your gitweb later then, to se=
-e
->> which patches you actually schedule for Linus, and try to get
->> them into Debian.
->>    =20
->
-> As for-2.6.39 got rebased in the mean time, you have to compare
-> m68k-v2.6.38 with m68k-queue to see what's (not yet) upstream.
->
-> And to back up Christian: keep up the good work!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
-x-m68k.org
->
-> In personal conversations with technical people, I call myself a hack=
-er. But
-> when I'm talking to journalists I just say "programmer" or something =
-like that.
->                                 -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->  =20
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+--
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 02b7a03..b806c19 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -300,6 +300,8 @@ void __init paging_init(void)
+                zones_size[ZONE_DMA] = m68k_memory[i].size >> PAGE_SHIFT;
+                free_area_init_node(i, zones_size,
+                                    m68k_memory[i].addr >> PAGE_SHIFT, 
+NULL);
++                if (node_present_pages(i))
++                        node_set_state(i, N_NORMAL_MEMORY);
+        }
+ }
