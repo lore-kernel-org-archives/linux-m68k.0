@@ -1,41 +1,162 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Number of interrupts on Sun3?
-Date: Wed, 27 Apr 2011 16:53:55 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1104271646190.30970@ayla.of.borg>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
+Date: Wed, 27 Apr 2011 15:11:33 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1104271509560.29189@herc.mirbsd.org>
+References: <1303317178.2587.30.camel@mulgrave.site>
+ <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
+ <20110421220351.9180.A69D9226@jp.fujitsu.com>
+ <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
+ <alpine.DEB.2.00.1104211500170.5741@router.home>
+ <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
+ <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
+ <4DB3840F.3060503@gmail.com> <alpine.DEB.2.00.1104251355410.31884@chino.kir.corp.google.com>
+ <4DB63349.3070808@gmail.com> <Pine.BSM.4.64L.1104261049350.4851@herc.mirbsd.org>
+ <BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-797555175-1303917117=:29189"
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:1229 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756545Ab1D0PPy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Apr 2011 11:15:54 -0400
+In-Reply-To: <BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Creasey <sammy@sammy.net>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Debian Kernel Team <debian-kernel@lists.debian.org>
+Cc: linux-m68k@vger.kernel.org
 
-	Hi Sammy,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Do you know why NR_IRQS is defined to 200 in arch/m68k/include/asm/irq.h,
-while arch/m68k/sun3/sun3ints.c:sun3_init_IRQ() sets up only 128 user
-interrupts?
+--0-797555175-1303917117=:29189
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-I would expect either NR_IRQS to be 132 (8 auto + 128 user), or
-sun3_init_IRQ() to set up all 192 user interrupts.
+Geert Uytterhoeven dixit:
 
-Ah, commit 35bdd52d7401b1208552523d6fa28d4a37dbc74d ("m68k: Correct number of
-interrupts for Sun3") changed it from 192 to 128.
-I guess it forgot to reduce NR_IRQS?
+>Fixed those up, applied, and will send to Linus for 2.6.39-final.
 
-Still, why is user interrupt 127 (IRQ_USER+127) called "vec255"?
-That should be either interrupt 191, or "vec191"?
+Attached patch
+=E2=80=A2 synchronises the 0009-* patch against what will be in 2.6.39
+  (no changes in the patch area, only in the patch metadata)
+=E2=80=A2 adds the series/5 file which seemingly was forgotten
 
-Is that a misconversion in commit ebba61d5b05ecfda388dd4c156bafdb78d398055
-("[PATCH] m68k: convert sun3 irq code")?
+I think you=E2=80=99ll still need the following patch for 2.6.39:
+0008-m68k-atari-Reserve-some-ST-RAM-early-on-for-device-b.patch
+We=E2=80=99re working on getting that functionality in 2.6.40 though.
 
-Gr{oetje,eeting}s,
+bye,
+//mirabilos
+--=20
+I believe no one can invent an algorithm. One just happens to hit upon it
+when God enlightens him. Or only God invents algorithms, we merely copy the=
+m.
+If you don't believe in God, just consider God as Nature if you won't deny
+existence.=09=09-- Coywolf Qi Hunt
+--0-797555175-1303917117=:29189
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name=x
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.BSM.4.64L.1104271511330.29189@herc.mirbsd.org>
+Content-Description: 
+Content-Disposition: attachment; filename=x
 
-						Geert
+SW5kZXg6IGRpc3RzL3NpZC9saW51eC0yLjYvZGViaWFuL3BhdGNoZXMvYnVn
+Zml4L202OGsvMDAwOS1tNjhrLW1tLXNldC1hbGwtb25saW5lLW5vZGVzLWlu
+LU5fTk9STUFMX01FTU9SWS5wYXRjaA0KPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQ0KLS0tIGRpc3RzL3NpZC9saW51eC0yLjYvZGViaWFuL3BhdGNoZXMvYnVn
+Zml4L202OGsvMDAwOS1tNjhrLW1tLXNldC1hbGwtb25saW5lLW5vZGVzLWlu
+LU5fTk9STUFMX01FTU9SWS5wYXRjaAkocmV2aXNpb24gMTcyNjEpDQorKysg
+ZGlzdHMvc2lkL2xpbnV4LTIuNi9kZWJpYW4vcGF0Y2hlcy9idWdmaXgvbTY4
+ay8wMDA5LW02OGstbW0tc2V0LWFsbC1vbmxpbmUtbm9kZXMtaW4tTl9OT1JN
+QUxfTUVNT1JZLnBhdGNoCSh3b3JraW5nIGNvcHkpDQpAQCAtMSw0NyArMSwy
+NSBAQA0KLUZyb20gNjc4Y2YwNWNiODAzMWM3NjI2NDRhMzkzYjdjOTQzZTdh
+OWQyYzI4OCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCitGcm9tIGZiNWY0
+NGI0ZmQxMmJmZDE2MDE5OTU2ZDBkMDc5NTI3OGEyZjU2MWIgTW9uIFNlcCAx
+NyAwMDowMDowMCAyMDAxDQogRnJvbTogTWljaGFlbCBTY2htaXR6IDxzY2ht
+aXR6bWljQGdvb2dsZW1haWwuY29tPg0KLURhdGU6IFN1biwgMjQgQXByIDIw
+MTEgMTM6NTk6NDMgKzEyMDANCi1TdWJqZWN0OiBbUEFUQ0ggOS85XSBtNjhr
+LCBtbTogc2V0IGFsbCBvbmxpbmUgbm9kZXMgaW4gTl9OT1JNQUxfTUVNT1JZ
+DQorRGF0ZTogVHVlLCAyNiBBcHIgMjAxMSAxNDo1MTo1MyArMTIwMA0KK1N1
+YmplY3Q6IFtQQVRDSF0gbTY4ay9tbTogU2V0IGFsbCBvbmxpbmUgbm9kZXMg
+aW4gTl9OT1JNQUxfTUVNT1JZDQogDQotRGF2aWQgUmllbnRqZXMgd3JvdGU6
+DQotPiBGb3IgbTY4aywgTl9OT1JNQUxfTUVNT1JZIHJlcHJlc2VudHMgYWxs
+IG5vZGVzIHRoYXQgaGF2ZSBwcmVzZW50IG1lbW9yeQ0KLT4gc2luY2UgaXQg
+ZG9lcyBub3Qgc3VwcG9ydCBISUdITUVNLiAgVGhpcyBwYXRjaCBzZXRzIHRo
+ZSBiaXQgYXQgdGhlIHRpbWUNCi0+IHRoZSBub2RlIGlzIGJyb3VnaHQgb25s
+aW5lLg0KLT4NCi0+IElmIE5fTk9STUFMX01FTU9SWSBpcyBub3QgYWNjdXJh
+dGUsIHNsdWIgbWF5IGVuY291bnRlciBlcnJvcnMgc2luY2UgaXQNCi0+IHVz
+ZXMgdGhpcyBub2RlbWFzayB0byBzZXR1cCBwZXItY2FjaGUga21lbV9jYWNo
+ZV9ub2RlIGRhdGEgc3RydWN0dXJlcy4NCi0+DQotPiBTaWduZWQtb2ZmLWJ5
+OiBEYXZpZCBSaWVudGplcyA8cmllbnRqZXNAZ29vZ2xlLmNvbT4NCi0+IC0t
+LQ0KLT4gIGFyY2gvbTY4ay9tbS9pbml0X21tLmMgfCAgICAyICsrDQotPiAg
+MSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25z
+KC0pDQotPg0KLT4gZGlmZiAtLWdpdCBhL2FyY2gvbTY4ay9tbS9pbml0X21t
+LmMgYi9hcmNoL202OGsvbW0vaW5pdF9tbS5jDQotPiAtLS0gYS9hcmNoL202
+OGsvbW0vaW5pdF9tbS5jDQotPiArKysgYi9hcmNoL202OGsvbW0vaW5pdF9t
+bS5jDQotPiBAQCAtNTksNiArNTksOCBAQCB2b2lkIF9faW5pdCBtNjhrX3Nl
+dHVwX25vZGUoaW50IG5vZGUpDQotPiAgCX0NCi0+ICAjZW5kaWYNCi0+ICAJ
+cGdfZGF0YV9tYXBbbm9kZV0uYmRhdGEgPSBib290bWVtX25vZGVfZGF0YSAr
+IG5vZGU7DQotPiArCWlmIChub2RlX3ByZXNlbnRfcGFnZXMobm9kZSkpDQot
+PiArCQlub2RlX3NldF9zdGF0ZShub2RlLCBOX05PUk1BTF9NRU1PUlkpOw0K
+LT4gIAlub2RlX3NldF9vbmxpbmUobm9kZSk7DQotPiAgfQ0KLT4NCi0+DQot
+QXMgQW5kcmVhcyBwb2ludGVkIG91dCwgbm9kZV9wcmVzZW50X3BhZ2VzIGlz
+IHNldCBpbiBmcmVlX2FyZWFfaW5pdF9ub2RlDQotd2hpY2ggb25seSBnZXRz
+IGNhbGxlZCBhdCB0aGUgdmVyeSBlbmQgb2YgbTY4ayBtbSBwYWdpbmdfaW5p
+dC4NCitGb3IgbTY4aywgTl9OT1JNQUxfTUVNT1JZIHJlcHJlc2VudHMgYWxs
+IG5vZGVzIHRoYXQgaGF2ZSBwcmVzZW50IG1lbW9yeQ0KK3NpbmNlIGl0IGRv
+ZXMgbm90IHN1cHBvcnQgSElHSE1FTS4gIFRoaXMgcGF0Y2ggc2V0cyB0aGUg
+Yml0IGF0IHRoZSB0aW1lDQorbm9kZV9wcmVzZW50X3BhZ2VzIGhhcyBiZWVu
+IHNldCBieSBmcmVlX2FyZWFfaW5pdF9ub2RlLg0KK0F0IHRoZSB0aW1lIHRo
+ZSBub2RlIGlzIGJyb3VnaHQgb25saW5lLCB0aGUgbm9kZSBzdGF0ZSB3b3Vs
+ZCBoYXZlIHRvIGJlDQorZG9uZSB1bmNvbmRpdGlvbmFsbHkgc2luY2UgaW5m
+b3JtYXRpb24gYWJvdXQgcHJlc2VudCBtZW1vcnkgaGFzIG5vdCB5ZXQNCiti
+ZWVuIHJlY29yZGVkLg0KIA0KLVRoZSBjb3JyZWN0IHBhdGNoIHdvdWxkIGJl
+IHNvbWV0aGluZyBsaWtlIHRoaXMgLSB0aGUgbmVlZCBmb3IgdGhlDQotY29u
+ZGl0aW9uYWwgaXMgcGVyaGFwcyBkZWJhdGFibGUsIHNlZWluZyBhcyB3ZSBz
+ZXQgdGhlIHBhZ2VzIHByZXNlbnQNCi1qdXN0IGJlZm9yZSBub2RlX3NldF9z
+dGF0ZS4NCitJZiBOX05PUk1BTF9NRU1PUlkgaXMgbm90IGFjY3VyYXRlLCBz
+bHViIG1heSBlbmNvdW50ZXIgZXJyb3JzIHNpbmNlIGl0DQordXNlcyB0aGlz
+IG5vZGVtYXNrIHRvIHNldHVwIHBlci1jYWNoZSBrbWVtX2NhY2hlX25vZGUg
+ZGF0YSBzdHJ1Y3R1cmVzLg0KIA0KLVRlc3RlZCBvbiBteSBBUkFueU0gdGVz
+dCBzZXR1cCBzbyBmYXIuIEknZCBsaWtlIHRvIHdhaXQgZm9yIGFuDQotaW5k
+ZXBlbmRlbnQga2VybmVsIGltYWdlIGJ1aWx0IGJ5IFRob3JzdGVuIGJlZm9y
+ZSBJIHRlc3Qgb24gdGhlIGFjdHVhbA0KLWhhcmR3YXJlLiBTb3JyeSBidXQg
+eW91J2xsIGhhdmUgdG8gcmVzdGFydCB5b3VyIGJ1aWxkIFRob3JzdGVuIDot
+KQ0KK1RoaXMgcGFjaCBpcyBhbiBhbHRlcm5hdGl2ZSB0byB0aGUgb25lIHBy
+b3Bvc2VkIGJ5IERhdmlkIFJpZW50amVzDQorPHJpZW50amVzQGdvb2dsZS5j
+b20+IGF0dGVtcHRpbmcgdG8gc2V0IG5vZGUgc3RhdGUgaW1tZWRpYXRlbHkg
+d2hlbg0KK2JyaW5naW5nIHRoZSBub2RlIG9ubGluZS4NCiANCiBTaWduZWQt
+b2ZmLWJ5OiBNaWNoYWVsIFNjaG1pdHogPHNjaG1pdHpAZGViaWFuLm9yZz4N
+Ci1UZXN0ZWQtYnk6IFRob3JzdGVuIEdsYXNlciA8dGdAZGViaWFuLm9yZz4N
+CitTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxp
+bnV4LW02OGsub3JnPg0KK0NDOiBzdGFibGVAa2VybmVsLm9yZw0KIC0tLQ0K
+ICBhcmNoL202OGsvbW0vbW90b3JvbGEuYyB8ICAgIDIgKysNCiAgMSBmaWxl
+cyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pDQpA
+QCAtNjAsNSArMzgsNSBAQA0KICB9DQogIA0KIC0tIA0KLTEuNy40LjQNCisx
+LjcuNQ0KIA0KSW5kZXg6IGRpc3RzL3NpZC9saW51eC0yLjYvZGViaWFuL3Bh
+dGNoZXMvc2VyaWVzLzUNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCi0tLSBk
+aXN0cy9zaWQvbGludXgtMi42L2RlYmlhbi9wYXRjaGVzL3Nlcmllcy81CShy
+ZXZpc2lvbiAwKQ0KKysrIGRpc3RzL3NpZC9saW51eC0yLjYvZGViaWFuL3Bh
+dGNoZXMvc2VyaWVzLzUJKHJldmlzaW9uIDApDQpAQCAtMCwwICsxLDEyIEBA
+DQorIyB3aWxsIGJlIGluIDIuNi4zOSAocHVsbGVkIGZyb20gbGludXMgdHJl
+ZSkNCisrIGJ1Z2ZpeC9tNjhrLzAwMDEtbTY4ay1BZGQtaGVscGVyLWZ1bmN0
+aW9uLWhhbmRsZV9rZXJuZWxfZmF1bHQucGF0Y2gNCisrIGJ1Z2ZpeC9tNjhr
+LzAwMDItbTY4ay1Vc2UtYmFzZV90cmFwX2luaXQtdG8taW5pdGlhbGl6ZS12
+ZWN0b3JzLnBhdGNoDQorKyBidWdmaXgvbTY4ay8wMDAzLW02OGstQWxsb3ct
+YWxsLWtlcm5lbC10cmFwcy10by1iZS1oYW5kbGVkLXZpYS1leGNlcHQucGF0
+Y2gNCisrIGJ1Z2ZpeC9tNjhrLzAwMDQtbTY4ay1hdGFyaS1Jbml0aWFsLUFS
+QW55TS1zdXBwb3J0LnBhdGNoDQorKyBidWdmaXgvbTY4ay8wMDA1LW02OGst
+YXRhcmktQVJBbnlNLUFkZC1zdXBwb3J0LWZvci1ibG9jay1hY2Nlc3MucGF0
+Y2gNCisrIGJ1Z2ZpeC9tNjhrLzAwMDYtbTY4ay1hdGFyaS1BUkFueU0tQWRk
+LXN1cHBvcnQtZm9yLWNvbnNvbGUtYWNjZXNzLnBhdGNoDQorKyBidWdmaXgv
+bTY4ay8wMDA3LW02OGstYXRhcmktQVJBbnlNLUFkZC1zdXBwb3J0LWZvci1u
+ZXR3b3JrLWFjY2Vzcy5wYXRjaA0KKyMgYWNjZXB0ZWQgYnkgbTY4ayBzdWJz
+eXN0ZW0gbWFpbnRhaW5lcjsgcHJvYmFibHkgaW4gMi42LjQwDQorKyBidWdm
+aXgvbTY4ay8wMDA4LW02OGstYXRhcmktUmVzZXJ2ZS1zb21lLVNULVJBTS1l
+YXJseS1vbi1mb3ItZGV2aWNlLWIucGF0Y2gNCisjIHdpbGwgYmUgaW4gMi42
+LjM5DQorKyBidWdmaXgvbTY4ay8wMDA5LW02OGstbW0tc2V0LWFsbC1vbmxp
+bmUtbm9kZXMtaW4tTl9OT1JNQUxfTUVNT1JZLnBhdGNoDQo=
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+--0-797555175-1303917117=:29189--
