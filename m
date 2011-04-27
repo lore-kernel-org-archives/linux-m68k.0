@@ -1,55 +1,48 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
-Date: Wed, 27 Apr 2011 15:09:23 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1104271508340.29189@herc.mirbsd.org>
-References: <1303317178.2587.30.camel@mulgrave.site>
- <alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
- <20110421220351.9180.A69D9226@jp.fujitsu.com>
- <alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
- <alpine.DEB.2.00.1104211500170.5741@router.home>
- <alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
- <alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
- <4DB3840F.3060503@gmail.com> <alpine.DEB.2.00.1104251355410.31884@chino.kir.corp.google.com>
- <4DB63349.3070808@gmail.com> <Pine.BSM.4.64L.1104261049350.4851@herc.mirbsd.org>
- <BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
+From: Sam Creasey <sammy@sammy.net>
+Subject: Re: Number of interrupts on Sun3?
+Date: Wed, 27 Apr 2011 11:51:52 -0400
+Message-ID: <20110427155152.GA17943@anhedonia>
+References: <alpine.DEB.2.00.1104271646190.30970@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:1229 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756557Ab1D0PQB convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Apr 2011 11:16:01 -0400
-In-Reply-To: <BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1104271646190.30970@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, schwab@linux-m68k.org
+Cc: Sam Creasey <sammy@sammy.net>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Geert Uytterhoeven dixit:
 
->Fixed those up, applied, and will send to Linus for 2.6.39-final.
+On Wed, Apr 27, 2011 at 04:53:55PM +0200, Geert Uytterhoeven wrote:
+>       Hi Sammy,
+> 
+> Do you know why NR_IRQS is defined to 200 in
+> arch/m68k/include/asm/irq.h,
+> while arch/m68k/sun3/sun3ints.c:sun3_init_IRQ() sets up only 128
+> user
+> interrupts?
+> 
+> I would expect either NR_IRQS to be 132 (8 auto + 128 user), or
+> sun3_init_IRQ() to set up all 192 user interrupts.
+> 
+> Ah, commit 35bdd52d7401b1208552523d6fa28d4a37dbc74d ("m68k: Correct
+> number of
+> interrupts for Sun3") changed it from 192 to 128.
+> I guess it forgot to reduce NR_IRQS?
 
-Tested-by: Thorsten Glaser <tg@debian.org>
+That's my guess (forgetting to reduce NR_IRQS).   I don't remember why
+(if there was a good reason) I changed the argument to
+m68k_setup_user_interrupt() down to 128...  I feel like we should be
+setting up all of the user interrupts.
 
->BTW, if I enable CONFIG_SLUB on my ARAnyM setup, I don't get a crash, =
-but it
->hangs after:
+> Still, why is user interrupt 127 (IRQ_USER+127) called "vec255"?
+> That should be either interrupt 191, or "vec191"?
+> 
+> Is that a misconversion in commit
+> ebba61d5b05ecfda388dd4c156bafdb78d398055
+> ("[PATCH] m68k: convert sun3 irq code")?
 
-I think that=E2=80=99s toolchain, environment, etc. dependent=E2=80=A6
+Yeah, I think it should have been renamed in that commit.
 
->With Michael's patch, it continues fine.
-
-Yeah, same here.
-
-bye,
-//mirabilos
---=20
-=46WIW, I'm quite impressed with mksh interactively. I thought it was m=
-uch
-*much* more bare bones. But it turns out it beats the living hell out o=
-f
-ksh93 in that respect. I'd even consider it for my daily use if I hadn'=
-t
-wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mks=
-h
+-- Sam
