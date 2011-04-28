@@ -1,53 +1,42 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [patch] m68k, mm: set all online nodes in N_NORMAL_MEMORY
-Date: Thu, 28 Apr 2011 15:05:12 +1200
-Message-ID: <BANLkTimZbC=jFGtA7X_O55yvneekH2oWzQ@mail.gmail.com>
-References: <1303317178.2587.30.camel@mulgrave.site>
-	<alpine.DEB.2.00.1104201410350.31768@chino.kir.corp.google.com>
-	<20110421220351.9180.A69D9226@jp.fujitsu.com>
-	<alpine.DEB.2.00.1104211237250.5829@chino.kir.corp.google.com>
-	<alpine.DEB.2.00.1104211500170.5741@router.home>
-	<alpine.DEB.2.00.1104211411540.20201@chino.kir.corp.google.com>
-	<alpine.DEB.2.00.1104211501470.20201@chino.kir.corp.google.com>
-	<4DB3840F.3060503@gmail.com>
-	<alpine.DEB.2.00.1104251355410.31884@chino.kir.corp.google.com>
-	<4DB63349.3070808@gmail.com>
-	<Pine.BSM.4.64L.1104261049350.4851@herc.mirbsd.org>
-	<BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k SLUB fix for 2.6.39
+Date: Thu, 28 Apr 2011 20:02:27 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vw0-f46.google.com ([209.85.212.46]:61811 "EHLO
-	mail-vw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754070Ab1D1DFN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Apr 2011 23:05:13 -0400
-In-Reply-To: <BANLkTin3BmJpuzUyBWV1B38oVMDbXe=fbw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, Roman Zippel <zippel@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, schwab@linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org, David Rientjes <rientjes@google.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hi Geert,
+	Hi Linus,
 
->> No, this has whitespace problems (tabs are expanded to spaces).
->
-> Fixed those up, applied, and will send to Linus for 2.6.39-final.
+This is the SLUB fix for m68k, which also applies to stable.
 
-Thanks, I have no idea how that happened.
->
-> BTW, if I enable CONFIG_SLUB on my ARAnyM setup, I don't get a crash, but it
-> hangs after:
->
-> | INIT: version 2.86 booting
->
-> With Michael's patch, it continues fine.
+The following changes since commit 8e10cd74342c7f5ce259cceca36f6eba084f5d58:
+  Linus Torvalds (1):
+        Linux 2.6.39-rc5
 
-It may just need a long time to crash - forcing e2fsck is a good way
-to speed up the crash usually.
+are available in the git repository at:
 
-May depend on how much RAM you give to ARAnyM, on the kernel size and
-any number of other parameters.
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-2.6.39
 
-Cheers,
+Michael Schmitz (1):
+      m68k/mm: Set all online nodes in N_NORMAL_MEMORY
 
-  Michael
+ arch/m68k/mm/motorola.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
