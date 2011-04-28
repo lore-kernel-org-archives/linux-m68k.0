@@ -1,42 +1,27 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k SLUB fix for 2.6.39
-Date: Thu, 28 Apr 2011 20:02:27 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>
+From: Lanre Williams <versal1@ihug.co.uk>
+Subject: Please Read. 27/4/2011
+Date: Fri, 29 Apr 2011 06:07:32 +1200
+Message-ID: <90547a70ff4f6f33803b39f1a8adebc9@vodafone.co.nz>
+Reply-To: williamlanre20@yahoo.cn
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mailfilter1.ihug.co.nz ([203.109.136.1]:29258 "EHLO
+	mailfilter1.ihug.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753950Ab1D1SVC (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Apr 2011 14:21:02 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org, David Rientjes <rientjes@google.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-	Hi Linus,
 
-This is the SLUB fix for m68k, which also applies to stable.
 
-The following changes since commit 8e10cd74342c7f5ce259cceca36f6eba084f5d58:
-  Linus Torvalds (1):
-        Linux 2.6.39-rc5
+-- 
+Dear Friend,
 
-are available in the git repository at:
-
-  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-2.6.39
-
-Michael Schmitz (1):
-      m68k/mm: Set all online nodes in N_NORMAL_MEMORY
-
- arch/m68k/mm/motorola.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+My name is Lanre Williams, i have an information for you on Mr Philips lob,
+an expatriate, who was a consultant with the Corporation,was found to have
+died in a plane crash.I need you to become the next of kin. reply via
+lanrewilliams111@aol.com.
+Best Regards, 
+Mr. Lanre Williams.
