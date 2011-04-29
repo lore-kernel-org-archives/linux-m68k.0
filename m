@@ -1,110 +1,76 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [git pull] m68k SLUB fix for 2.6.39
-Date: Sat, 30 Apr 2011 11:35:49 +1200
-Message-ID: <4DBB4B55.7000904@gmail.com>
-References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>	<alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com>	<1304026464.2598.36.camel@mulgrave.site>	<alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com> <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com>
+Subject: Re: Debian kernel v2.6.38
+Date: Sat, 30 Apr 2011 11:44:12 +1200
+Message-ID: <4DBB4D4C.6070100@gmail.com>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com> <Pine.BSM.4.64L.1104231809290.3979@herc.mirbsd.org> <alpine.OSX.2.00.1104250119030.307@ibook.intranet> <4DB4E109.3090809@gmail.com> <alpine.OSX.2.00.1104251301580.196@ibook.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:57882 "EHLO
-	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756731Ab1D2Xgb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Apr 2011 19:36:31 -0400
-In-Reply-To: <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com>
+Received: from mail-px0-f173.google.com ([209.85.212.173]:64220 "EHLO
+	mail-px0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757835Ab1D2XoR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Apr 2011 19:44:17 -0400
+Received: by pxi16 with SMTP id 16so1086977pxi.4
+        for <linux-m68k@vger.kernel.org>; Fri, 29 Apr 2011 16:44:17 -0700 (PDT)
+In-Reply-To: <alpine.OSX.2.00.1104251301580.196@ibook.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Rientjes <rientjes@google.com>, James Bottomley <James.Bottomley@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, Christoph Lameter <cl@linux.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, Thorsten Glaser <tg@mirbsd.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven wrote:
-> On Thu, Apr 28, 2011 at 23:41, David Rientjes <rientjes@google.com> wrote:
->   
->> On Thu, 28 Apr 2011, James Bottomley wrote:
->>
->>     
->>
->>> I think what the N_NORMAL_MEMORY patch did is just make it take a whiile
->>> before you start allocating from that range.  Try executing a memory
->>> balloon on the platform; that was how we first demonstrated the problem
->>> on parisc.
->>>
->>>       
->> With parisc, you encountered an oops in add_partial() because the
->> kmem_cache_node structure for the memory range returned by page_to_nid()
->> was not allocated.  init_kmem_cache_nodes() takes care of this for all
->> memory ranges set in N_NORMAL_MEMORY.
->>
->> Adding Christoph and Pekka to the cc if there is additional concerns about
->> slub on this architecture.
+Hi Finn,
+>> Incidentially - did you work on the Mac 5380 SCSI code recently? Does it 
+>> work with full error handling capability in its current state?
 >>     
 >
-> My ARAnyM instance has
->
-> System Memory:	276480K
-> 	 14 MB at 0x00000000 (ST-RAM)
-> 	256 MB at 0x01000000 (alternate RAM)
->
-> and 137800KIB of swap, and survived the following program just fine:
->
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
->
-> int main(int argc, char *argv[])
-> {
->     size_t size = 1048576;
->     size_t total = 0;
->     void *p;
->
->     while (size) {
-> 	p = malloc(size);
-> 	if (!p) {
-> 	    printf("Failed to allocate %zu bytes\n", size);
-> 	    size /= 2;
-> 	}
-> 	memset(p, 0xaa, size);
-> 	total += size;
-> 	printf("Using %zu / 0x%zx bytes of memory\n", total, total);
->     }
->
->     printf("Finished!\n");
->     return 0;
-> }
->
-> i.e. the OOM-killer just killed the program after it consumed all
-> available virtual
-> memory:
->
-> Out of memory: Kill process 1727 (malloctest) score 854 or sacrifice child
-> Killed process 1727 (malloctest) total-vm:361160kB, anon-rss:224164kB,
-> file-rss:0kB
-> malloctest: page allocation failure. order:0, mode:0x84d0
->
-> So SLUB really seems to work now.
+> I got as far as confirming the reports of working mac_scsi on the IIfx. It 
+> fails on every other model. I didn't really investigate error handling.
 >   
-Forgot to mention what I did for tests, on all kernels that I could 
-actually boot: I ran slabinfo -l and slabinfo -T (saved the output in 
-case anyone wants to analyze that), any kernel that survived this was 
-considered good in the original bisect. The current fix was also tested 
-on the actual hardware.
+OK so it works in principle but error handling may still be in need of 
+updating.
+> The explanation was that PDMA isn't relevant to the IIfx so the driver 
+> runs in PIO mode (should be DMA but that has not yet been implemented 
+> successfully).
+>   
+Gives me something to fall back to, at least...
+>> I begin to feel the only way to make the Falcon SCSI code work again is 
+>> a clean restart ...
+>>     
+>
+> That was also my feeling when we discussed this some years ago*.
+>   
+I do well remember we talked about that - since mac_scsi uses mainline 
+NCR5380.c I think you are in better shape already. No other driver uses 
+anything close to PDMA but I cannot see what should be wrong there.
+> I'm told that mac_scsi PDMA worked for either mac68k or mainline 2.2 
+> kernels and so I tend to think that a rewrite would likely suffer from the 
+> same PDMA bug. I really need to investigate that bug.
+>   
+> There are still good reasons for a rewrite but I don't have the necessary 
+> understanding of the SCSI subsystem nor the time to tackle those issues.
+>   
+The Falcon driver worked in 2.2 and 2.4 and even as recent as 2.6.18 but 
+broke in later 2.6 releases. Error handling changes, running the 
+coroutine as delayed task instead of immediate soft interrupt and 
+replacement of the big kernel lock by subsystem locking have all changed 
+since. Some of that has been taken care of in NCR5380.c from what I've 
+seen. atari_NCR5380.c still uses global locking, manually delays the 
+task queue and fiddles with the queue pointers explicitly. I'll have to 
+go over the whole file manually and make it as close to NCR5380.c as I 
+can while still keeping the Falcon specific bits in.
+> But if someone else were to rewrite the core 5380 driver as was done with 
+> esp_scsi.c then I would be willing to tackle the mac portion (the 
+> equivalent of mac_esp.c)...
+>   
+I lack an understanding of how the current SCSI error handling code is 
+supposed to work - that part still needs to be done for NCR5380.c but 
+I'm at a loss to find a good example of a current SCSI driver to look at.
 
-There were quite a few kernels that initially booted but died on the 
-first slabinfo invocation. They invariably died at the e2fsck stage when 
-rebooted after that.
+All I manage so far is get the kernel to lock up solid once a request 
+times out, but I've pretty much started from scratch so there will be 
+bits missing to be patched.
 
-Using your test, ARAnyM, 14MB/128MB RAM and 134MB swap:
+Cheers,
 
-Out of memory: Kill process 1376 (malloctest) score 944 or sacrifice child
-Killed process 1376 (malloctest) total-vm:272756kB, anon-rss:135232kB, 
-file-rss:0kB
-
-Falcon CT60, 14MB/512MB no swap:
-
-Out of memory: Kill process 8644 (malloctest) score 967 or sacrifice child
-Killed process 8644 (malloctest) total-vm:512244kB, anon-rss:510088kB, 
-file-rss:284kB
-
-HTH,
-
-  Michael
+    Michael
