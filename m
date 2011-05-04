@@ -1,34 +1,55 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Wed, 4 May 2011 04:33:24 -0400
-Message-ID: <BANLkTimctgbto3dsnJ3d3r7NggS0KF9_Sw__17292.6609324806$1304498345$gmane$org@mail.gmail.com>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org> <AE90C24D6B3A694183C094C60CF0A2F6D8AD0D@saturn3.aculab.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
+Date: Wed, 4 May 2011 11:33:27 +0200
+Message-ID: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <AE90C24D6B3A694183C094C60CF0A2F6D8AD0D@saturn3.aculab.com>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:60854 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752636Ab1EDJd2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 May 2011 05:33:28 -0400
+Received: by bwz15 with SMTP id 15so811973bwz.19
+        for <linux-m68k@vger.kernel.org>; Wed, 04 May 2011 02:33:27 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Laight <David.Laight@aculab.com>
-Cc: Sven Eckelmann <sven@narfation.org>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, May 4, 2011 at 04:05, David Laight wrote:
->> Introduce an *_dec_not_zero operation. =C2=A0Make this a special cas=
-e of
->> *_add_unless because batman-adv uses atomic_dec_not_zero in differen=
-t
->> places like re-broadcast queue or aggregation queue management. Ther=
-e
->> are other non-final patches which may also want to use this macro.
+Hi Michael,
+
+On Sat, Apr 30, 2011 at 01:35, Michael Schmitz
+<schmitzmic@googlemail.com> wrote:
+> Falcon CT60, 14MB/512MB no swap:
 >
-> Isn't there a place where a default definition of this can be
-> defined? Instead of adding it separately to every architecture.
+> Out of memory: Kill process 8644 (malloctest) score 967 or sacrifice =
+child
+> Killed process 8644 (malloctest) total-vm:512244kB, anon-rss:510088kB=
+,
+> file-rss:284kB
 
-that's what asm-generic is for.  if the arch isnt using it, it's
-either because the arch needs to convert to it, or they're using SMP
-and asm-generic doesnt yet support that for atomic.h.
+Ah, real hardware ;-)
 
-for example, the Blackfin port only needed updating for the SMP case.
-in the non-SMP case, we're getting the def from asm-generic/atomic.h.
--mike
+Any chance you can try the mouse (e.g. with gpm), and check if
+http://permalink.gmane.org/gmane.linux.ports.m68k/1867 is needed, so we=
+ know
+if this is an ARAnyM issue or not?
+
+Thx!
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
