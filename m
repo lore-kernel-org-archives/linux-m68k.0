@@ -1,58 +1,44 @@
-From: James Bottomley <James.Bottomley@suse.de>
-Subject: Re: [git pull] m68k SLUB fix for 2.6.39
-Date: Wed, 04 May 2011 10:02:35 -0500
-Message-ID: <1304521355.2810.21.camel@mulgrave.site>
-References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>
-	 <alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com>
-	 <1304026464.2598.36.camel@mulgrave.site>
-	 <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Wed, 04 May 2011 10:04:04 -0500
+Message-ID: <1304521444.2810.23.camel__6244.19371965832$1304521497$gmane$org@mulgrave.site>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+	 <BANLkTiminpyJ_opxhqG0E0gBOrF490b+tQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Rientjes <rientjes@google.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, Christoph Lameter <cl@linux.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <BANLkTiminpyJ_opxhqG0E0gBOrF490b+tQ@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Mike Frysinger <vapier.adi@gmail.com>
+Cc: Sven Eckelmann <sven@narfation.org>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, Chris Metcalf <cmetcalf@tilera.com>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Thu, 2011-04-28 at 14:41 -0700, David Rientjes wrote:
-> On Thu, 28 Apr 2011, James Bottomley wrote:
+On Wed, 2011-05-04 at 00:44 -0400, Mike Frysinger wrote:
+> On Tue, May 3, 2011 at 17:30, Sven Eckelmann wrote:
+> > Introduce an *_dec_not_zero operation.  Make this a special case of
+> > *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> > places like re-broadcast queue or aggregation queue management. There
+> > are other non-final patches which may also want to use this macro.
+> >
+> > Cc: uclinux-dist-devel@blackfin.uclinux.org
+> >
+> > --- a/arch/blackfin/include/asm/atomic.h
+> > +++ b/arch/blackfin/include/asm/atomic.h
+> > @@ -103,6 +103,7 @@ static inline int atomic_test_mask(int mask, atomic_t *v)
+> >        c != (u);                                               \
+> >  })
+> >  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> > +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+> >
+> >  /*
+> >  * atomic_inc_and_test - increment and test
 > 
-> > > Since 4a5fa3590f09 ([PARISC] slub: fix panic with DISCONTIGMEM) from 
-> > > 2.6.39-rc4, you can't actually select slub on m68k without CONFIG_ADVANCED 
-> > > and CONFIG_SINGLE_MEMORY_CHUNK because it otherwises defaults to 
-> > > discontigmem.
-> > > 
-> > > James tested hppa64 with my N_NORMAL_MEMORY fix and found that it turned 
-> > > an SMP box into UP.  If you've tested slub on m68k without regressions, 
-> > > then perhaps you'd like to add a "|| M68K" to CONFIG_SLUB?
-> > 
-> > To be honest, I really don't see that fixing it.  As soon as you
-> > allocate memory beyond range zero, you move onto a non-zero node as far
-> > as slub is concerned, and that will oops.
-> > 
-> 
-> Possible nodes are represented in slub with N_NORMAL_MEMORY, so the 
-> kmem_cache_node structures are allocated and initialized based on this 
-> nodemask.  As long as the memory ranges map to nodes set in the nodemask, 
-> this should be fine.
-> 
-> > I think what the N_NORMAL_MEMORY patch did is just make it take a whiile
-> > before you start allocating from that range.  Try executing a memory
-> > balloon on the platform; that was how we first demonstrated the problem
-> > on parisc.
-> > 
-> 
-> With parisc, you encountered an oops in add_partial() because the 
-> kmem_cache_node structure for the memory range returned by page_to_nid() 
-> was not allocated.  init_kmem_cache_nodes() takes care of this for all 
-> memory ranges set in N_NORMAL_MEMORY.
+> no opinion on the actual idea, but for the Blackfin pieces:
+> Acked-by: Mike Frysinger <vapier@gentoo.org>
 
-Yes, but I also encountered it after I applied you patch, which is why I
-still pushed the Kconfig patch.  It's possible, since there were a huge
-number of patches flying around that the kernel base was contaminated,
-so I'll strip down to just linus HEAD + parisc coherence patches,
-reverting the Kconfig one and try again.
+This goes for parisc as well.
+
+Acked-by: James Bottomley <James.Bottomley@HansenPartnership.com>
 
 James
