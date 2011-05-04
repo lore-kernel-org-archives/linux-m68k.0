@@ -1,42 +1,43 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Wed, 4 May 2011 14:17:51 +0200
-Message-ID: <BANLkTi=kRLxKS417xhaWDpF4h8+VTcUQQA__39815.8917706043$1304511486$gmane$org@mail.gmail.com>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+From: Christoph Lameter <cl@linux.com>
+Subject: Re: [git pull] m68k SLUB fix for 2.6.39
+Date: Wed, 4 May 2011 08:59:28 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1105040851090.5495@router.home>
+References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg> <alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com> <1304026464.2598.36.camel@mulgrave.site> <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
+ <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com> <alpine.DEB.2.00.1105031538470.27795@chino.kir.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
+Received: from smtp110.prem.mail.ac4.yahoo.com ([76.13.13.93]:43770 "HELO
+	smtp110.prem.mail.ac4.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1752961Ab1EDN7c (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 May 2011 09:59:32 -0400
+In-Reply-To: <alpine.DEB.2.00.1105031538470.27795@chino.kir.corp.google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, Chris Metcalf <cmetcalf@tilera.com>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+To: David Rientjes <rientjes@google.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, James Bottomley <James.Bottomley@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, May 3, 2011 at 23:30, Sven Eckelmann <sven@narfation.org> wrote=
-:
-> Introduce an *_dec_not_zero operation. =C2=A0Make this a special case=
- of
-> *_add_unless because batman-adv uses atomic_dec_not_zero in different
-> places like re-broadcast queue or aggregation queue management. There
-> are other non-final patches which may also want to use this macro.
+On Tue, 3 May 2011, David Rientjes wrote:
 
-> =C2=A0arch/m68k/include/asm/atomic.h =C2=A0 =C2=A0 | =C2=A0 =C2=A01 +
+> So we're in the unfortunate position where slub works fine for some
+> architectures with DISCONTIGMEM and not with others.  It seems like the
+> problems originating on James' hppa aren't related to slab allocation at
+> all, though, so I'm wondering if we should rethink disallowing SLUB as it
+> sits in Linus' tree right now for everything that uses DISCONTINGMEM
+> without NUMA and not force them to enable CONFIG_BROKEN?
+>
+> Perhaps change the kconfig entry to only block slub for parisc instead?
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+As i have explained multiple times before: This is a generic issue with a
+kernel configuration that has DISCONTIGMEM on and NUMA configured off.
+Core code in various subsystems makes various assumptions in the !NUMA
+case. F.e. page_to_nid(page) == 0. Slub is one of them.
 
-Gr{oetje,eeting}s,
+DISCONTIGMEM works fine on !NUMA if it just has a single node which is 0.
+But in James' hppa we have multiple nodes and thus a fundamental problem
+with node 1 existing in a non NUMA environment. We then have a strange
+mixture of NUMA nodes existing in DISCONTIGMEM code and the core code
+assuming there are none. This can lead to numerous weird problems.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+IMHO A config broken for DISCONTIG and !NUMA for arches that can actually
+use multiple DISCONTIG nodes would be the proper thing.
