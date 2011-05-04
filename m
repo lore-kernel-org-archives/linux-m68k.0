@@ -1,43 +1,88 @@
-From: Christoph Lameter <cl@linux.com>
-Subject: Re: [git pull] m68k SLUB fix for 2.6.39
-Date: Wed, 4 May 2011 08:59:28 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.1105040851090.5495@router.home>
-References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg> <alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com> <1304026464.2598.36.camel@mulgrave.site> <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
- <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com> <alpine.DEB.2.00.1105031538470.27795@chino.kir.corp.google.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/atari: Do not use "/" in interrupt names
+Date: Wed, 4 May 2011 16:30:03 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp110.prem.mail.ac4.yahoo.com ([76.13.13.93]:43770 "HELO
-	smtp110.prem.mail.ac4.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1752961Ab1EDN7c (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 May 2011 09:59:32 -0400
-In-Reply-To: <alpine.DEB.2.00.1105031538470.27795@chino.kir.corp.google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Rientjes <rientjes@google.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, James Bottomley <James.Bottomley@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Tue, 3 May 2011, David Rientjes wrote:
+It may trigger a warning in fs/proc/generic.c:__xlate_proc_name() when
+trying to add an entry for the interrupt handler to sysfs.
 
-> So we're in the unfortunate position where slub works fine for some
-> architectures with DISCONTIGMEM and not with others.  It seems like the
-> problems originating on James' hppa aren't related to slab allocation at
-> all, though, so I'm wondering if we should rethink disallowing SLUB as it
-> sits in Linus' tree right now for everything that uses DISCONTINGMEM
-> without NUMA and not force them to enable CONFIG_BROKEN?
->
-> Perhaps change the kconfig entry to only block slub for parisc instead?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/atari/atakeyb.c |    2 +-
+ arch/m68k/atari/stdma.c   |    2 +-
+ drivers/net/atarilance.c  |    2 +-
+ drivers/video/atafb.c     |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-As i have explained multiple times before: This is a generic issue with a
-kernel configuration that has DISCONTIGMEM on and NUMA configured off.
-Core code in various subsystems makes various assumptions in the !NUMA
-case. F.e. page_to_nid(page) == 0. Slub is one of them.
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index e1ada31..779efdc 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -572,7 +572,7 @@ int atari_keyb_init(void)
+ 	kb_state.len = 0;
+ 
+ 	error = request_irq(IRQ_MFP_ACIA, atari_keyboard_interrupt,
+-			    IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
++			    IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
+ 			    atari_keyboard_interrupt);
+ 	if (error)
+ 		return error;
+diff --git a/arch/m68k/atari/stdma.c b/arch/m68k/atari/stdma.c
+index 604329f..ad68fe9 100644
+--- a/arch/m68k/atari/stdma.c
++++ b/arch/m68k/atari/stdma.c
+@@ -180,7 +180,7 @@ void __init stdma_init(void)
+ {
+ 	stdma_isr = NULL;
+ 	if (request_irq(IRQ_MFP_FDC, stdma_int, IRQ_TYPE_SLOW | IRQF_SHARED,
+-			"ST-DMA: floppy/ACSI/IDE/Falcon-SCSI", stdma_int))
++			"ST-DMA floppy:ACSI:IDE:Falcon-SCSI", stdma_int))
+ 		pr_err("Couldn't register ST-DMA interrupt\n");
+ }
+ 
+diff --git a/drivers/net/atarilance.c b/drivers/net/atarilance.c
+index ce0091e..1833b12 100644
+--- a/drivers/net/atarilance.c
++++ b/drivers/net/atarilance.c
+@@ -554,7 +554,7 @@ static unsigned long __init lance_probe1( struct net_device *dev,
+ 		memaddr == (unsigned short *)0xffe00000) {
+ 		/* PAMs card and Riebl on ST use level 5 autovector */
+ 		if (request_irq(IRQ_AUTO_5, lance_interrupt, IRQ_TYPE_PRIO,
+-		            "PAM/Riebl-ST Ethernet", dev)) {
++		            "PAM:Riebl-ST Ethernet", dev)) {
+ 			printk( "Lance: request for irq %d failed\n", IRQ_AUTO_5 );
+ 			return 0;
+ 		}
+diff --git a/drivers/video/atafb.c b/drivers/video/atafb.c
+index 5b2b5ef..64e41f5 100644
+--- a/drivers/video/atafb.c
++++ b/drivers/video/atafb.c
+@@ -3117,7 +3117,7 @@ int __init atafb_init(void)
+ 			atafb_ops.fb_setcolreg = &falcon_setcolreg;
+ 			error = request_irq(IRQ_AUTO_4, falcon_vbl_switcher,
+ 					    IRQ_TYPE_PRIO,
+-					    "framebuffer/modeswitch",
++					    "framebuffer:modeswitch",
+ 					    falcon_vbl_switcher);
+ 			if (error)
+ 				return error;
+-- 
+1.7.0.4
 
-DISCONTIGMEM works fine on !NUMA if it just has a single node which is 0.
-But in James' hppa we have multiple nodes and thus a fundamental problem
-with node 1 existing in a non NUMA environment. We then have a strange
-mixture of NUMA nodes existing in DISCONTIGMEM code and the core code
-assuming there are none. This can lead to numerous weird problems.
+Gr{oetje,eeting}s,
 
-IMHO A config broken for DISCONTIG and !NUMA for arches that can actually
-use multiple DISCONTIG nodes would be the proper thing.
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
