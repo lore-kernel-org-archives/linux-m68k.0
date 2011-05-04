@@ -1,70 +1,39 @@
-From: David Rientjes <rientjes@google.com>
-Subject: Re: [git pull] m68k SLUB fix for 2.6.39
-Date: Tue, 3 May 2011 15:40:47 -0700 (PDT)
-Message-ID: <alpine.DEB.2.00.1105031538470.27795@chino.kir.corp.google.com>
-References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg> <alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com> <1304026464.2598.36.camel@mulgrave.site> <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
- <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Wed, 4 May 2011 00:44:46 -0400
+Message-ID: <BANLkTiminpyJ_opxhqG0E0gBOrF490b+tQ__27128.4861177721$1304487805$gmane$org@mail.gmail.com>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <BANLkTimT4899xDF99Fj37u_CgnkeBzoFzQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: James Bottomley <James.Bottomley@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, Christoph Lameter <cl@linux.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Sven Eckelmann <sven@narfation.org>
+Cc: linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, Chris Metcalf <cmetcalf@tilera.com>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Fri, 29 Apr 2011, Geert Uytterhoeven wrote:
+On Tue, May 3, 2011 at 17:30, Sven Eckelmann wrote:
+> Introduce an *_dec_not_zero operation. =C2=A0Make this a special case=
+ of
+> *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> places like re-broadcast queue or aggregation queue management. There
+> are other non-final patches which may also want to use this macro.
+>
+> Cc: uclinux-dist-devel@blackfin.uclinux.org
+>
+> --- a/arch/blackfin/include/asm/atomic.h
+> +++ b/arch/blackfin/include/asm/atomic.h
+> @@ -103,6 +103,7 @@ static inline int atomic_test_mask(int mask, atom=
+ic_t *v)
+>        c !=3D (u);                                               \
+>  })
+>  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+>
+>  /*
+>  * atomic_inc_and_test - increment and test
 
-> My ARAnyM instance has
-> 
-> System Memory:	276480K
-> 	 14 MB at 0x00000000 (ST-RAM)
-> 	256 MB at 0x01000000 (alternate RAM)
-> 
-> and 137800KIB of swap, and survived the following program just fine:
-> 
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> 
-> int main(int argc, char *argv[])
-> {
->     size_t size = 1048576;
->     size_t total = 0;
->     void *p;
-> 
->     while (size) {
-> 	p = malloc(size);
-> 	if (!p) {
-> 	    printf("Failed to allocate %zu bytes\n", size);
-> 	    size /= 2;
-> 	}
-> 	memset(p, 0xaa, size);
-> 	total += size;
-> 	printf("Using %zu / 0x%zx bytes of memory\n", total, total);
->     }
-> 
->     printf("Finished!\n");
->     return 0;
-> }
-> 
-> i.e. the OOM-killer just killed the program after it consumed all
-> available virtual
-> memory:
-> 
-> Out of memory: Kill process 1727 (malloctest) score 854 or sacrifice child
-> Killed process 1727 (malloctest) total-vm:361160kB, anon-rss:224164kB,
-> file-rss:0kB
-> malloctest: page allocation failure. order:0, mode:0x84d0
-> 
-> So SLUB really seems to work now.
-> 
-
-So we're in the unfortunate position where slub works fine for some 
-architectures with DISCONTIGMEM and not with others.  It seems like the 
-problems originating on James' hppa aren't related to slab allocation at 
-all, though, so I'm wondering if we should rethink disallowing SLUB as it 
-sits in Linus' tree right now for everything that uses DISCONTINGMEM 
-without NUMA and not force them to enable CONFIG_BROKEN?
-
-Perhaps change the kconfig entry to only block slub for parisc instead?
+no opinion on the actual idea, but for the Blackfin pieces:
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
