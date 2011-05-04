@@ -1,28 +1,56 @@
-From: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Wed, 04 May 2011 18:27:36 +0100
-Message-ID: <1304530056.2296.1.camel@craptop>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
+Date: Wed, 4 May 2011 19:45:37 +0200
+Message-ID: <BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw__25045.2682878406$1304531159$gmane$org@mail.gmail.com>
+References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
+	<m3d3jybjf3.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sven Eckelmann <sven@narfation.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@vger.kernel.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <m3d3jybjf3.fsf@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Tue, 2011-05-03 at 22:30 +0100, Sven Eckelmann wrote:
-> Introduce an *_dec_not_zero operation.  Make this a special case of
-> *_add_unless because batman-adv uses atomic_dec_not_zero in different
-> places like re-broadcast queue or aggregation queue management. There
-> are other non-final patches which may also want to use this macro.
-> 
-For the ARM changes:
+On Wed, May 4, 2011 at 17:00, Andreas Schwab <schwab@linux-m68k.org> wr=
+ote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+>> index e1ada31..779efdc 100644
+>> --- a/arch/m68k/atari/atakeyb.c
+>> +++ b/arch/m68k/atari/atakeyb.c
+>> @@ -572,7 +572,7 @@ int atari_keyb_init(void)
+>> =C2=A0 =C2=A0 =C2=A0 kb_state.len =3D 0;
+>>
+>> =C2=A0 =C2=A0 =C2=A0 error =3D request_irq(IRQ_MFP_ACIA, atari_keybo=
+ard_interrupt,
+>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
+>
+> The name is not a path, but an enumeration, so the slash should proba=
+bly
+> be changed to a comma instead.
 
-Acked-by: Will Deacon <will.deacon@arm.com>
+I thought about that, but comma (albeit followed by a space) is also us=
+ed to
+separate multiple interrupt handlers for shared interrupts.
 
-Cheers,
+Gr{oetje,eeting}s,
 
-Will
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
