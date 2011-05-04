@@ -1,63 +1,58 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
-Date: Wed, 04 May 2011 17:00:00 +0200
-Message-ID: <m3d3jybjf3.fsf@linux-m68k.org>
-References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
+From: James Bottomley <James.Bottomley@suse.de>
+Subject: Re: [git pull] m68k SLUB fix for 2.6.39
+Date: Wed, 04 May 2011 10:02:35 -0500
+Message-ID: <1304521355.2810.21.camel@mulgrave.site>
+References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>
+	 <alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com>
+	 <1304026464.2598.36.camel@mulgrave.site>
+	 <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg> (Geert
-	Uytterhoeven's message of "Wed, 4 May 2011 16:30:03 +0200 (CEST)")
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Rientjes <rientjes@google.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Pekka Enberg <penberg@cs.helsinki.fi>, Christoph Lameter <cl@linux.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Thu, 2011-04-28 at 14:41 -0700, David Rientjes wrote:
+> On Thu, 28 Apr 2011, James Bottomley wrote:
+> 
+> > > Since 4a5fa3590f09 ([PARISC] slub: fix panic with DISCONTIGMEM) from 
+> > > 2.6.39-rc4, you can't actually select slub on m68k without CONFIG_ADVANCED 
+> > > and CONFIG_SINGLE_MEMORY_CHUNK because it otherwises defaults to 
+> > > discontigmem.
+> > > 
+> > > James tested hppa64 with my N_NORMAL_MEMORY fix and found that it turned 
+> > > an SMP box into UP.  If you've tested slub on m68k without regressions, 
+> > > then perhaps you'd like to add a "|| M68K" to CONFIG_SLUB?
+> > 
+> > To be honest, I really don't see that fixing it.  As soon as you
+> > allocate memory beyond range zero, you move onto a non-zero node as far
+> > as slub is concerned, and that will oops.
+> > 
+> 
+> Possible nodes are represented in slub with N_NORMAL_MEMORY, so the 
+> kmem_cache_node structures are allocated and initialized based on this 
+> nodemask.  As long as the memory ranges map to nodes set in the nodemask, 
+> this should be fine.
+> 
+> > I think what the N_NORMAL_MEMORY patch did is just make it take a whiile
+> > before you start allocating from that range.  Try executing a memory
+> > balloon on the platform; that was how we first demonstrated the problem
+> > on parisc.
+> > 
+> 
+> With parisc, you encountered an oops in add_partial() because the 
+> kmem_cache_node structure for the memory range returned by page_to_nid() 
+> was not allocated.  init_kmem_cache_nodes() takes care of this for all 
+> memory ranges set in N_NORMAL_MEMORY.
 
-> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-> index e1ada31..779efdc 100644
-> --- a/arch/m68k/atari/atakeyb.c
-> +++ b/arch/m68k/atari/atakeyb.c
-> @@ -572,7 +572,7 @@ int atari_keyb_init(void)
->  	kb_state.len = 0;
->  
->  	error = request_irq(IRQ_MFP_ACIA, atari_keyboard_interrupt,
-> -			    IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
-> +			    IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
+Yes, but I also encountered it after I applied you patch, which is why I
+still pushed the Kconfig patch.  It's possible, since there were a huge
+number of patches flying around that the kernel base was contaminated,
+so I'll strip down to just linus HEAD + parisc coherence patches,
+reverting the Kconfig one and try again.
 
-The name is not a path, but an enumeration, so the slash should probably
-be changed to a comma instead.
-
-> diff --git a/arch/m68k/atari/stdma.c b/arch/m68k/atari/stdma.c
-> index 604329f..ad68fe9 100644
-> --- a/arch/m68k/atari/stdma.c
-> +++ b/arch/m68k/atari/stdma.c
-> @@ -180,7 +180,7 @@ void __init stdma_init(void)
->  {
->  	stdma_isr = NULL;
->  	if (request_irq(IRQ_MFP_FDC, stdma_int, IRQ_TYPE_SLOW | IRQF_SHARED,
-> -			"ST-DMA: floppy/ACSI/IDE/Falcon-SCSI", stdma_int))
-> +			"ST-DMA floppy:ACSI:IDE:Falcon-SCSI", stdma_int))
-
-Likewise.
-
-> diff --git a/drivers/net/atarilance.c b/drivers/net/atarilance.c
-> index ce0091e..1833b12 100644
-> --- a/drivers/net/atarilance.c
-> +++ b/drivers/net/atarilance.c
-> @@ -554,7 +554,7 @@ static unsigned long __init lance_probe1( struct net_device *dev,
->  		memaddr == (unsigned short *)0xffe00000) {
->  		/* PAMs card and Riebl on ST use level 5 autovector */
->  		if (request_irq(IRQ_AUTO_5, lance_interrupt, IRQ_TYPE_PRIO,
-> -		            "PAM/Riebl-ST Ethernet", dev)) {
-> +		            "PAM:Riebl-ST Ethernet", dev)) {
-
-Likewise.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+James
