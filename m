@@ -1,56 +1,59 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
-Date: Wed, 4 May 2011 19:45:37 +0200
-Message-ID: <BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw__25045.2682878406$1304531159$gmane$org@mail.gmail.com>
-References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
-	<m3d3jybjf3.fsf@linux-m68k.org>
+From: Matt Turner <mattst88@gmail.com>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Wed, 4 May 2011 14:13:29 -0400
+Message-ID: <BANLkTinWa9E1_iLWyqAF+G8Qag=YK2T98A__3421.86103011972$1304533183$gmane$org@mail.gmail.com>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m3d3jybjf3.fsf@linux-m68k.org>
+In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Sven Eckelmann <sven@narfation.org>
+Cc: linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, Chris Metcalf <cmetcalf@tilera.com>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Wed, May 4, 2011 at 17:00, Andreas Schwab <schwab@linux-m68k.org> wr=
-ote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
->> index e1ada31..779efdc 100644
->> --- a/arch/m68k/atari/atakeyb.c
->> +++ b/arch/m68k/atari/atakeyb.c
->> @@ -572,7 +572,7 @@ int atari_keyb_init(void)
->> =C2=A0 =C2=A0 =C2=A0 kb_state.len =3D 0;
->>
->> =C2=A0 =C2=A0 =C2=A0 error =3D request_irq(IRQ_MFP_ACIA, atari_keybo=
-ard_interrupt,
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
+On Tue, May 3, 2011 at 5:30 PM, Sven Eckelmann <sven@narfation.org> wro=
+te:
+> diff --git a/arch/alpha/include/asm/atomic.h b/arch/alpha/include/asm=
+/atomic.h
+> index e756d04..7e9434e 100644
+> --- a/arch/alpha/include/asm/atomic.h
+> +++ b/arch/alpha/include/asm/atomic.h
+> @@ -200,6 +200,7 @@ static __inline__ int atomic_add_unless(atomic_t =
+*v, int a, int u)
+> =A0}
 >
-> The name is not a path, but an enumeration, so the slash should proba=
-bly
-> be changed to a comma instead.
+> =A0#define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+>
+> =A0/**
+> =A0* atomic64_add_unless - add unless the number is a given value
+> @@ -226,6 +227,7 @@ static __inline__ int atomic64_add_unless(atomic6=
+4_t *v, long a, long u)
+> =A0}
+>
+> =A0#define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
+> +#define atomic64_dec_not_zero(v) atomic64_add_unless((v), -1, 0)
+>
+> =A0#define atomic_add_negative(a, v) (atomic_add_return((a), (v)) < 0=
+)
+> =A0#define atomic64_add_negative(a, v) (atomic64_add_return((a), (v))=
+ < 0)
+> diff --git a/arch/alpha/include/asm/local.h b/arch/alpha/include/asm/=
+local.h
+> index b9e3e33..09fb327 100644
+> --- a/arch/alpha/include/asm/local.h
+> +++ b/arch/alpha/include/asm/local.h
+> @@ -79,6 +79,7 @@ static __inline__ long local_sub_return(long i, loc=
+al_t * l)
+> =A0 =A0 =A0 =A0c !=3D (u); =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
+> =A0})
+> =A0#define local_inc_not_zero(l) local_add_unless((l), 1, 0)
+> +#define local_dec_not_zero(l) local_add_unless((l), -1, 0)
+>
+> =A0#define local_add_negative(a, l) (local_add_return((a), (l)) < 0)
+>
 
-I thought about that, but comma (albeit followed by a space) is also us=
-ed to
-separate multiple interrupt handlers for shared interrupts.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Acked-by: Matt Turner <mattst88@gmail.com> [alpha]
