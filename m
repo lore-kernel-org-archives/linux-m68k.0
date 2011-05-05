@@ -1,41 +1,41 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
-Date: Thu, 5 May 2011 16:21:57 +1200
-Message-ID: <BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
-References: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
+Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
+Date: Thu, 5 May 2011 16:33:34 +1200
+Message-ID: <BANLkTi=PKV23PqLMudno-kMRMr1_OgqaDQ@mail.gmail.com>
+References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
+	<m3d3jybjf3.fsf@linux-m68k.org>
+	<BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:33635 "EHLO
-	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750803Ab1EEEV5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 May 2011 00:21:57 -0400
-Received: by pzk9 with SMTP id 9so798452pzk.19
-        for <linux-m68k@vger.kernel.org>; Wed, 04 May 2011 21:21:57 -0700 (PDT)
-In-Reply-To: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
+In-Reply-To: <BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Geert,
+Hi,
 
->> Falcon CT60, 14MB/512MB no swap:
+>>> =A0 =A0 =A0 error =3D request_irq(IRQ_MFP_ACIA, atari_keyboard_inte=
+rrupt,
+>>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 IRQ_TYPE_SLOW, "k=
+eyboard/mouse/MIDI",
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 IRQ_TYPE_SLOW, "k=
+eyboard:mouse:MIDI",
 >>
->> Out of memory: Kill process 8644 (malloctest) score 967 or sacrifice child
->> Killed process 8644 (malloctest) total-vm:512244kB, anon-rss:510088kB,
->> file-rss:284kB
+>> The name is not a path, but an enumeration, so the slash should prob=
+ably
+>> be changed to a comma instead.
 >
-> Ah, real hardware ;-)
+> I thought about that, but comma (albeit followed by a space) is also =
+used to
+> separate multiple interrupt handlers for shared interrupts.
 
-Slow but still works :-)
+What about '//', '|' or ':'?
 
-> Any chance you can try the mouse (e.g. with gpm), and check if
-> http://permalink.gmane.org/gmane.linux.ports.m68k/1867 is needed, so we know
-> if this is an ARAnyM issue or not?
-
-If I can find a version of gpm that works, sure! Due to my ongoing
-battle with the SCSI driver the 2.6 test system is really minimal ...
+Except for the atarilance one, these are sort of shared interrupt
+handlers so maybe the comma won't hurt after all.
 
 Cheers,
 
