@@ -1,65 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Fri, 6 May 2011 07:11:42 +0200
-Message-ID: <BANLkTinqouGVWH8CmfM038TKFvhpJEczUQ__36622.971625957$1304658725$gmane$org@mail.gmail.com>
+Date: Fri, 06 May 2011 10:24:04 +0200
+Message-ID: <m38vuk9qzf.fsf@linux-m68k.org>
 References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
 	<201105050824.34056.arnd@arndb.de>
 	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
 	<201105052237.11656.arnd@arndb.de>
+	<BANLkTinqouGVWH8CmfM038TKFvhpJEczUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201105052237.11656.arnd@arndb.de>
+In-Reply-To: <BANLkTinqouGVWH8CmfM038TKFvhpJEczUQ@mail.gmail.com> (Geert
+	Uytterhoeven's message of "Fri, 6 May 2011 07:11:42 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
 
-On Thu, May 5, 2011 at 22:37, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thursday 05 May 2011 20:44:20 Geert Uytterhoeven wrote:
->> recvmmsg is a false positive, as we set __ARCH_WANT_SYS_SOCKETCALL.
->
-> This looks really strange. The commit that introduced recvmmsg (a2e27=
-255)
-> added it to both socketcall and as a separate syscall in a number of
-> architectures, without a good reason for it. I guess it's too late
-> to change that now, but we should at least fix the script so we
-> don't report it missing when socketcall is set.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Some architectures don't use socketcall, so they use a separate syscall=
-=2E
-IIRC, powerpc is migrating away from socketcall (commit
-86250b9d12caa1a3dee12a7cf638b7dd70eaadb6, "powerpc: Wire up direct
-socket system calls"), hence they added a separate call for it.
+> BTW, we have a hole at 218/219. I don't remember why, but it may have been
+> a placeholder for pselect6 and ppoll when that implementation was still in flux.
+> Couldn't find anything about it in git/cvs archives, so I'll check
+> have to check my
+> old mailing list archives...
 
-> However, if your unistd.h has defined __NR_recvmmsg before, you shoul=
-d
-> probably add it to the syscall table, just in case that someone built
-> a binary with that number.
+Probably it originated from the time when it was still deemed useful to
+keep the numbers in sync with the x86 ones.  The hole is filled with
+mincore and madvice there (pselect6 and ppoll came much later).
 
-We never had it.
+Andreas.
 
-BTW, we have a hole at 218/219. I don't remember why, but it may have b=
-een
-a placeholder for pselect6 and ppoll when that implementation was still=
- in flux.
-Couldn't find anything about it in git/cvs archives, so I'll check
-have to check my
-old mailing list archives...
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
