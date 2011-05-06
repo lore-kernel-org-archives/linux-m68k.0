@@ -1,37 +1,40 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Fri, 06 May 2011 10:24:04 +0200
-Message-ID: <m38vuk9qzf.fsf@linux-m68k.org>
-References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
-	<201105050824.34056.arnd@arndb.de>
-	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
-	<201105052237.11656.arnd@arndb.de>
-	<BANLkTinqouGVWH8CmfM038TKFvhpJEczUQ@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
+Date: Fri, 6 May 2011 20:27:25 +1200
+Message-ID: <BANLkTikrv3HpX47sGbLH462-WKO0bTqMXg@mail.gmail.com>
+References: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
+	<BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinqouGVWH8CmfM038TKFvhpJEczUQ@mail.gmail.com> (Geert
-	Uytterhoeven's message of "Fri, 6 May 2011 07:11:42 +0200")
+Received: from mail-pw0-f46.google.com ([209.85.160.46]:47655 "EHLO
+	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753761Ab1EFI1Z (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 May 2011 04:27:25 -0400
+Received: by pwi15 with SMTP id 15so1336107pwi.19
+        for <linux-m68k@vger.kernel.org>; Fri, 06 May 2011 01:27:25 -0700 (PDT)
+In-Reply-To: <BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Hi Geert,
 
-> BTW, we have a hole at 218/219. I don't remember why, but it may have been
-> a placeholder for pselect6 and ppoll when that implementation was still in flux.
-> Couldn't find anything about it in git/cvs archives, so I'll check
-> have to check my
-> old mailing list archives...
+>> Ah, real hardware ;-)
+>
+> Slow but still works :-)
+>
+>> Any chance you can try the mouse (e.g. with gpm), and check if
+>> http://permalink.gmane.org/gmane.linux.ports.m68k/1867 is needed, so we know
+>> if this is an ARAnyM issue or not?
+>
+> If I can find a version of gpm that works, sure! Due to my ongoing
+> battle with the SCSI driver the 2.6 test system is really minimal ...
 
-Probably it originated from the time when it was still deemed useful to
-keep the numbers in sync with the x86 ones.  The hole is filled with
-mincore and madvice there (pselect6 and ppoll came much later).
+I've installed gpm but all I ever get when I move the mouse is
+keyboard overruns. Does that ring a bell, anyone?
 
-Andreas.
+Cheers,
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+  Michael
