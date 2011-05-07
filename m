@@ -1,48 +1,51 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
-Date: Sat, 7 May 2011 20:39:12 +1200
-Message-ID: <BANLkTim06Pjxz0b-4Zp=NFq-=DAQkop+5Q@mail.gmail.com>
-References: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
-	<BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
-	<BANLkTikrv3HpX47sGbLH462-WKO0bTqMXg@mail.gmail.com>
-	<BANLkTi=NcU7Z5qg-tZHkPaiYKTRXO-B-qg@mail.gmail.com>
-	<alpine.OSX.2.00.1105062051380.193@ibook.intranet>
+From: Mikael Pettersson <mikpe@it.uu.se>
+Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
+Date: Sat, 7 May 2011 15:16:40 +0200
+Message-ID: <19909.17976.119505.890308@pilspetsen.it.uu.se>
+References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
+	<201105050824.34056.arnd@arndb.de>
+	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
+	<19907.2804.330120.193924@pilspetsen.it.uu.se>
+	<BANLkTinssNTc_+=F4CA1Znb3bdv=c30OPw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-px0-f173.google.com ([209.85.212.173]:33117 "EHLO
-	mail-px0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751923Ab1EGIjM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 7 May 2011 04:39:12 -0400
-Received: by pxi16 with SMTP id 16so2710766pxi.4
-        for <linux-m68k@vger.kernel.org>; Sat, 07 May 2011 01:39:12 -0700 (PDT)
-In-Reply-To: <alpine.OSX.2.00.1105062051380.193@ibook.intranet>
+Received: from fanny.its.uu.se ([130.238.4.241]:10928 "EHLO fanny.its.uu.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751967Ab1EGNQn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 7 May 2011 09:16:43 -0400
+In-Reply-To: <BANLkTinssNTc_+=F4CA1Znb3bdv=c30OPw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mikael Pettersson <mikpe@it.uu.se>, Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
 
-Hi Finn,
+On Sat, 7 May 2011 10:34:25 +0200, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, May 5, 2011 at 22:39, Mikael Pettersson <mikpe@it.uu.se> wrote:
+> > Geert Uytterhoeven writes:
+> > =C2=A0> On Thu, 5 May 2011, Arnd Bergmann wrote:
+> > =C2=A0> > Did you check the macros in unistd to see if they match the
+> > =C2=A0> > actual table? I guess it would be a good time to comment out
+> > =C2=A0> > the ones that are not implemented in either of the two ABIs.
+> > =C2=A0>
+> > =C2=A0> Like this?
+> > =C2=A0>
+> > =C2=A0> warning: #warning syscall pselect6 not implemented
+> > =C2=A0> warning: #warning syscall ppoll not implemented
+> > =C2=A0> warning: #warning syscall recvmmsg not implemented
+> > =C2=A0>
+> > =C2=A0> Do we need pselect6 and ppoll? I have vague memories not requirin=
+> g it.
+> >
+> > They close user-space race conditions, so you want them.
+> 
+> So do you recommend to backport the wiring up of pselect6/ppoll to -stable?
+> We always had their _NR_* defines, so I guess glibc was always compiled
+> with pselect6/ppoll support, and will use it if it's present.
 
->> I'll have to put the actual input interface call in a tasklet perhaps,
->> to shorten the time spent in the mouse interrupt handler.
->
-> The input interface overhead is cheap enough with ADB so I don't think
-> that's the problem. The printk(KERN_DEBUG "Keyboard overrun\n") in the
-> interrupt handler would be costly though. The comments in atakeyb.c could
-> be taken to mean that overruns are expected from fast mouse movements...
+Any kernel with working TIF_RESTORE_SIGMASK should ideally also
+wire up pselect6/ppoll.  But their omission is not a regression
+so backporting to 2.6.38 is probably sufficient.
 
-That's always been the case but it's not been quite as bad in old kernels.
-
-Moving input syncing  and even reporting of mouse movement into a
-software interrupt does not appear to help much. Not generating the
-keyboard overun message does help a bit but there's a lot of
-'unhandled scancode 7d' messages still happening. These can be
-suppressed in the atakbd.c driver.
-
-I'll give the various options a bit more testing - not sure the added
-complexity of using a work queue is worth the effort.
-
-Cheers,
-
-  Michael
+/Mikael
