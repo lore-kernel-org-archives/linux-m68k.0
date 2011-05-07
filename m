@@ -1,72 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of
-	sys_call_table
-Date: Sat, 7 May 2011 10:34:25 +0200
-Message-ID: <BANLkTinssNTc_+=F4CA1Znb3bdv=c30OPw@mail.gmail.com>
-References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
-	<201105050824.34056.arnd@arndb.de>
-	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
-	<19907.2804.330120.193924@pilspetsen.it.uu.se>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
+Date: Sat, 7 May 2011 20:39:12 +1200
+Message-ID: <BANLkTim06Pjxz0b-4Zp=NFq-=DAQkop+5Q@mail.gmail.com>
+References: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
+	<BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
+	<BANLkTikrv3HpX47sGbLH462-WKO0bTqMXg@mail.gmail.com>
+	<BANLkTi=NcU7Z5qg-tZHkPaiYKTRXO-B-qg@mail.gmail.com>
+	<alpine.OSX.2.00.1105062051380.193@ibook.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <19907.2804.330120.193924@pilspetsen.it.uu.se>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Mikael Pettersson <mikpe@it.uu.se>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@uclinux.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-px0-f173.google.com ([209.85.212.173]:33117 "EHLO
+	mail-px0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751923Ab1EGIjM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 7 May 2011 04:39:12 -0400
+Received: by pxi16 with SMTP id 16so2710766pxi.4
+        for <linux-m68k@vger.kernel.org>; Sat, 07 May 2011 01:39:12 -0700 (PDT)
+In-Reply-To: <alpine.OSX.2.00.1105062051380.193@ibook.intranet>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, May 5, 2011 at 22:39, Mikael Pettersson <mikpe@it.uu.se> wrote:
-> Geert Uytterhoeven writes:
-> =C2=A0> On Thu, 5 May 2011, Arnd Bergmann wrote:
-> =C2=A0> > Did you check the macros in unistd to see if they match the
-> =C2=A0> > actual table? I guess it would be a good time to comment out
-> =C2=A0> > the ones that are not implemented in either of the two ABIs.
-> =C2=A0>
-> =C2=A0> Like this?
-> =C2=A0>
-> =C2=A0> warning: #warning syscall pselect6 not implemented
-> =C2=A0> warning: #warning syscall ppoll not implemented
-> =C2=A0> warning: #warning syscall recvmmsg not implemented
-> =C2=A0>
-> =C2=A0> Do we need pselect6 and ppoll? I have vague memories not requirin=
-g it.
+Hi Finn,
+
+>> I'll have to put the actual input interface call in a tasklet perhaps,
+>> to shorten the time spent in the mouse interrupt handler.
 >
-> They close user-space race conditions, so you want them.
+> The input interface overhead is cheap enough with ADB so I don't think
+> that's the problem. The printk(KERN_DEBUG "Keyboard overrun\n") in the
+> interrupt handler would be costly though. The comments in atakeyb.c could
+> be taken to mean that overruns are expected from fast mouse movements...
 
-So do you recommend to backport the wiring up of pselect6/ppoll to -stable?
-We always had their _NR_* defines, so I guess glibc was always compiled
-with pselect6/ppoll support, and will use it if it's present.
+That's always been the case but it's not been quite as bad in old kernels.
 
-Gr{oetje,eeting}s,
+Moving input syncing  and even reporting of mouse movement into a
+software interrupt does not appear to help much. Not generating the
+keyboard overun message does help a bit but there's a lot of
+'unhandled scancode 7d' messages still happening. These can be
+suppressed in the atakbd.c driver.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+I'll give the various options a bit more testing - not sure the added
+complexity of using a work queue is worth the effort.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Cheers,
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+  Michael
