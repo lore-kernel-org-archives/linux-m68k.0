@@ -1,70 +1,70 @@
-From: "Christian T. Steigies" <cts@debian.org>
-Subject: Re: Debian kernel 2.6.38-5
-Date: Sun, 8 May 2011 23:45:46 +0200
-Message-ID: <20110508214546.GC16281@chumley.earth.sol>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
- <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org>
- <20110508165909.GA16281@chumley.earth.sol>
- <Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org>
- <20110508200802.GB16281@chumley.earth.sol>
- <BANLkTin7E_Aedv8RAeaAfR_+me3YZgsbjw@mail.gmail.com>
+From: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Mon, 09 May 2011 08:15:39 +1000
+Message-ID: <1304892939.2513.503.camel@pasglop>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-in-03.arcor-online.net ([151.189.21.43]:42909 "EHLO
-	mail-in-03.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753655Ab1EHVo2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 May 2011 17:44:28 -0400
-Content-Disposition: inline
-In-Reply-To: <BANLkTin7E_Aedv8RAeaAfR_+me3YZgsbjw@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1304458235-28473-1-git-send-email-sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Sven Eckelmann <sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
+Cc: linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chris Metcalf <cmetcalf-kv+TWInifGbQT0dZR+AlfA@public.gmane.org>, David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-am33-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-On Mon, May 09, 2011 at 08:58:00AM +1200, Michael Schmitz wrote:
-> Christian,
->=20
-> > Yes, but I am not trying to build a debian package, I try to build =
-directly
-> > from linux-m68k. This has worked, only the Amiga complained a missi=
-ng
-> > modules.dep (but I built in the network driver):
->=20
-> Run depmod -a after the Amiga has booted.
+On Tue, 2011-05-03 at 23:30 +0200, Sven Eckelmann wrote:
+> Introduce an *_dec_not_zero operation.  Make this a special case of
+> *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> places like re-broadcast queue or aggregation queue management. There
+> are other non-final patches which may also want to use this macro.
 
-I guess I did not have the modules on the linux partition yet...
-=20
-> > make ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu-
-> > make ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu- INSTALL_MOD_PATH=3D=
-/data/m68k modules_install
-> >
-> > The kernel boots, it configures the network (static). When I try to=
- ping a
-> > host on my network, I get this oops(?). =A0A few seconds later I al=
-so get the
-> > mismatch message I reported earlier (does not show up in dmesg?).
->=20
-> It should show up - if it's being printed to the console it has to be
-> in the kernel log buffer for klogd to pick up.
+For arch/powerpc:
 
-You are right, I did not wait long enough. In 2.6.32 I see it in dmesg,=
- same
-error as before :-(
-In addition the network module (and I thought it was built in...) did n=
-ot
-get loaded on boot. After insmoding it (modprobe did not work), the err=
-ors
-came back. In addition sshd was blocking the kernel, so the system was
-fairly unresponsive.
+Acked-by: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
 
-2.6.30 with TLS patch does not boot, I guess I did something wrong (do =
-I
-need to activate a kernel option?).
+(Sorry for catching up late)
 
-enough for today... but since Geert has found the problem, I hope a pat=
-ch is
-not far away :-)
+Cheers,
+Ben.
 
-Christian
+> diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
+> index b8f152e..906f49a 100644
+> --- a/arch/powerpc/include/asm/atomic.h
+> +++ b/arch/powerpc/include/asm/atomic.h
+> @@ -213,6 +213,7 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+>  }
+>  
+>  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+>  
+>  #define atomic_sub_and_test(a, v)	(atomic_sub_return((a), (v)) == 0)
+>  #define atomic_dec_and_test(v)		(atomic_dec_return((v)) == 0)
+> @@ -469,6 +470,7 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+>  }
+>  
+>  #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
+> +#define atomic64_dec_not_zero(v) atomic64_add_unless((v), -1, 0)
+>  
+>  #else  /* __powerpc64__ */
+>  #include <asm-generic/atomic64.h>
+> diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/asm/local.h
+> index c2410af..3d4c58a 100644
+> --- a/arch/powerpc/include/asm/local.h
+> +++ b/arch/powerpc/include/asm/local.h
+> @@ -134,6 +134,7 @@ static __inline__ int local_add_unless(local_t *l, long a, long u)
+>  }
+>  
+>  #define local_inc_not_zero(l) local_add_unless((l), 1, 0)
+> +#define local_dec_not_zero(l) local_add_unless((l), -1, 0)
+>  
+>  #define local_sub_and_test(a, l)	(local_sub_return((a), (l)) == 0)
+>  #define local_dec_and_test(l)		(local_dec_return((l)) == 0)
