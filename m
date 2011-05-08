@@ -1,85 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/3] input/atari: Use the correct mouse interrupt hook
-Date: Sun,  8 May 2011 11:17:25 +0200
-Message-ID: <1304846247-12401-2-git-send-email-geert__30332.6002009728$1304846290$gmane$org@linux-m68k.org>
-References: <1304846247-12401-1-git-send-email-geert@linux-m68k.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Sun, 8 May 2011 10:24:03 +0100
+Message-ID: <20110508092403.GB27807__25819.8778065436$1304846753$gmane$org@n2100.arm.linux.org.uk>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1304846247-12401-1-git-send-email-geert@linux-m68k.org>
+Content-Disposition: inline
+In-Reply-To: <1304458235-28473-1-git-send-email-sven@narfation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Michael Schmitz <schmitz@debian.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Sven Eckelmann <sven@narfation.org>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+On Tue, May 03, 2011 at 11:30:35PM +0200, Sven Eckelmann wrote:
+> Introduce an *_dec_not_zero operation.  Make this a special case of
+> *_add_unless because batman-adv uses atomic_dec_not_zero in different
+> places like re-broadcast queue or aggregation queue management. There
+> are other non-final patches which may also want to use this macro.
+...
+> diff --git a/arch/arm/include/asm/atomic.h b/arch/arm/include/asm/atomic.h
+> index 7e79503..a005265 100644
+> --- a/arch/arm/include/asm/atomic.h
+> +++ b/arch/arm/include/asm/atomic.h
+> @@ -218,6 +218,7 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
+>  	return c != u;
+>  }
+>  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
+> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
+>  
+>  #define atomic_inc(v)		atomic_add(1, v)
+>  #define atomic_dec(v)		atomic_sub(1, v)
+> @@ -459,6 +460,7 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
+>  #define atomic64_dec_return(v)		atomic64_sub_return(1LL, (v))
+>  #define atomic64_dec_and_test(v)	(atomic64_dec_return((v)) == 0)
+>  #define atomic64_inc_not_zero(v)	atomic64_add_unless((v), 1LL, 0LL)
+> +#define atomic64_dec_not_zero(v)	atomic64_add_unless((v), -1LL, 0LL)
+>  
+>  #else /* !CONFIG_GENERIC_ATOMIC64 */
+>  #include <asm-generic/atomic64.h>
 
-The Atari keyboard driver calls atari_mouse_interrupt_hook if it's set, not
-atari_input_mouse_interrupt_hook. Fix below.
-
-[geert] Killed off atari_mouse_interrupt_hook completely, after fixing another
-incorrect assignment in atarimouse.c.
-
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/atari/atakeyb.c        |    7 ++-----
- arch/m68k/include/asm/atarikb.h  |    2 --
- drivers/input/mouse/atarimouse.c |    2 +-
- 3 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-index db26f0e..95022b0 100644
---- a/arch/m68k/atari/atakeyb.c
-+++ b/arch/m68k/atari/atakeyb.c
-@@ -36,13 +36,10 @@
- 
- /* Hook for MIDI serial driver */
- void (*atari_MIDI_interrupt_hook) (void);
--/* Hook for mouse driver */
--void (*atari_mouse_interrupt_hook) (char *);
- /* Hook for keyboard inputdev  driver */
- void (*atari_input_keyboard_interrupt_hook) (unsigned char, char);
- /* Hook for mouse inputdev  driver */
- void (*atari_input_mouse_interrupt_hook) (char *);
--EXPORT_SYMBOL(atari_mouse_interrupt_hook);
- EXPORT_SYMBOL(atari_input_keyboard_interrupt_hook);
- EXPORT_SYMBOL(atari_input_mouse_interrupt_hook);
- 
-@@ -263,8 +260,8 @@ repeat:
- 			kb_state.buf[kb_state.len++] = scancode;
- 			if (kb_state.len == 3) {
- 				kb_state.state = KEYBOARD;
--				if (atari_mouse_interrupt_hook)
--					atari_mouse_interrupt_hook(kb_state.buf);
-+				if (atari_input_mouse_interrupt_hook)
-+					atari_input_mouse_interrupt_hook(kb_state.buf);
- 			}
- 			break;
- 
-diff --git a/arch/m68k/include/asm/atarikb.h b/arch/m68k/include/asm/atarikb.h
-index 546e7da..68f3622 100644
---- a/arch/m68k/include/asm/atarikb.h
-+++ b/arch/m68k/include/asm/atarikb.h
-@@ -34,8 +34,6 @@ void ikbd_joystick_disable(void);
- 
- /* Hook for MIDI serial driver */
- extern void (*atari_MIDI_interrupt_hook) (void);
--/* Hook for mouse driver */
--extern void (*atari_mouse_interrupt_hook) (char *);
- /* Hook for keyboard inputdev  driver */
- extern void (*atari_input_keyboard_interrupt_hook) (unsigned char, char);
- /* Hook for mouse inputdev  driver */
-diff --git a/drivers/input/mouse/atarimouse.c b/drivers/input/mouse/atarimouse.c
-index adf45b3..a57143c 100644
---- a/drivers/input/mouse/atarimouse.c
-+++ b/drivers/input/mouse/atarimouse.c
-@@ -108,7 +108,7 @@ static int atamouse_open(struct input_dev *dev)
- static void atamouse_close(struct input_dev *dev)
- {
- 	ikbd_mouse_disable();
--	atari_mouse_interrupt_hook = NULL;
-+	atari_input_mouse_interrupt_hook = NULL;
- }
- 
- static int __init atamouse_init(void)
--- 
-1.7.0.4
+Do we need atomic_dec_not_zero() et.al. in every arch header - is there no
+generic header which it could be added to?
