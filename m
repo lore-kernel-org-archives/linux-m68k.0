@@ -1,68 +1,61 @@
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Sun, 8 May 2011 11:33:48 +0200
-Message-ID: <201105081133.50824.sven__9165.68008619851$1304847272$gmane$org@narfation.org>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org> <20110508092403.GB27807@n2100.arm.linux.org.uk>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Debian kernel 2.6.38-5
+Date: Sun, 8 May 2011 12:58:10 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1677856.Ey88dTAy4V";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha512
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20110508092403.GB27807@n2100.arm.linux.org.uk>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:34168 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752746Ab1EHNGO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 May 2011 09:06:14 -0400
+Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
+	by herc.mirbsd.org (8.14.5.Beta0/8.14.5.Beta0) with ESMTP id p48CwCOg021725
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Sun, 8 May 2011 12:58:16 GMT
+In-Reply-To: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: linux-m68k@vger.kernel.org
 
---nextPart1677856.Ey88dTAy4V
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Geert Uytterhoeven dixit:
 
-Russell King - ARM Linux wrote:
-[...]
-> Do we need atomic_dec_not_zero() et.al. in every arch header - is there no
-> generic header which it could be added to?
+>  1. The critical bugfixes will go in via v2.6.38-stable anyway,
+>  2. The ARAnyM/NatFeat support will be in v2.6.39, which may be a
+>sufficiently convincing argument for the Debian Kernel Team to accept
+>it in Debian's v2.6.38,
 
-Mike Frysinger already tried to answer it in=20
-<BANLkTimctgbto3dsnJ3d3r7NggS0KF9_Sw@mail.gmail.com>:
-> that's what asm-generic is for.  if the arch isnt using it, it's
-> either because the arch needs to convert to it, or they're using SMP
-> and asm-generic doesnt yet support that for atomic.h.
+Good news: one of my ARAnyMs will be compiling kernels for the next
+full week or so, I think (CPU power provided by Thomas Goirand this
+time, the other VMs run on boxen at tarent GmbH, if someone is in-
+terested):
+
+=E2=80=A2 Accepted linux-2.6 2.6.38-5 (source all i386) Ben Hutchings
+http://lists.debian.org/debian-devel-changes/2011/05/msg00736.html
+
+>  3. If there's anything left that you really need, please tell us, so
+>"we" can get it in a good shape for v2.6.40.
+
+Bad news: Christian T. Steigies has problems on real Amiga hardware:
+
+> However, the current (TLS) kernels have problems with the ariadne2 ne=
+twork
+> card, which, I think all Amigas here but crest have (ariadne1 in cres=
+t).
+> I get error messages like this with 2.6.32 and 2.6.38
 >
-> for example, the Blackfin port only needed updating for the SMP case.
-> in the non-SMP case, we're getting the def from asm-generic/atomic.h.
-> -mike
+>  eth0: mismatched read page pointers 4f vs 4c.
 
-=46eel free to change that but I just followed the style used by all other=
-=20
-macros and will not redesign the complete atomic*.h idea.
+Does that ring a bell anywhere? That=E2=80=99s running 2.6.38-4 plus
+my patches, I think, so I expect 2.6.38-5 won=E2=80=99t change this.
 
-thanks,
-	Sven
-
---nextPart1677856.Ey88dTAy4V
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAABCgAGBQJNxmN9AAoJEF2HCgfBJntGmosP/0BjDtvk4ZKsL9hhonb8gZ4t
-/2/hY6jeQ3Mg30Z1v6+PIZDun17qML5ODBcTB72oJs1LujHyEgNKKtfQ9stYgAm3
-79B2UAH5LYVzZzd2j5nMWemGYChUXl5v5N/hOFOp04ImC7DU27fwadcuO+q47vnS
-kKvrnccIFc0qUpnGwZ+1rqHIp9Rs3AQHjvyxaUDIuMs8ZWurYkS+e5SMini7qUpe
-QvsTQVZhyuNtemvZUzrWUcftMVPNXxTHwwV5aALBswX4SPreBJWX33b8j+NIHeFU
-hmwZ7/RzuDCyIzUFmeeXj/f0RCbWv5XkhQmNaCGFBdatgLRd2fnDOXzkuOeUPtBi
-SX2jkxoXSMGwEtl2mzOW8JhvcGrG1+oMw9j/BqdQyaQe0rRnuFg962eRUs1RvibI
-bej/DRfMexoXhlw7EIN9JGoniuMAW88Ws4RB79HuPURy6Ax1cr87ELH/Oj5ZvlOc
-+whWNM9JuDFamC9E4zaenxqf0jd3mlvCAMaljh66J7qECJF9xWd5eJyet7CE7/hp
-kE6iUT6Zf93Na9NImeTTeGK16LW1KqLkP8QyI+HUGO7A5wj/QvubGPBO0deHsp8G
-YkQBcQwZMSft69hsW2Ke1btpJv/ScGxeVuplmMNrlDa1hAqjm+aHo6+xxTS5Mp72
-p5S21fQTeEf4fOJsQubR
-=ICmm
------END PGP SIGNATURE-----
-
---nextPart1677856.Ey88dTAy4V--
+bye,
+//mirabilos
+--=20
+If Harry Potter gets a splitting headache in his scar
+when he=E2=80=99s near Tom Riddle (aka Voldemort),
+does Tom get pain in the arse when Harry is near him?
+	-- me, wondering why it=E2=80=99s not Jerry Potter=E2=80=A6=E2=80=A6=E2=
+=80=A6
