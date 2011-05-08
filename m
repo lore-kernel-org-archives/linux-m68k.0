@@ -1,56 +1,39 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Really wire up sys_pselect6 and sys_ppoll
-Date: Mon, 9 May 2011 08:45:50 +1000
-Message-ID: <4DC71D1E.5030407@snapgear.com>
-References: <alpine.DEB.2.00.1105062107290.23969@ayla.of.borg>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Debian kernel 2.6.38-5
+Date: Mon, 9 May 2011 09:14:35 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1105090909080.194@ibook.intranet>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com> <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org> <20110508165909.GA16281@chumley.earth.sol> <Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org> <20110508200802.GB16281@chumley.earth.sol>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105062107290.23969@ayla.of.borg>
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:37928 "EHLO
+	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753173Ab1EHXNw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 May 2011 19:13:52 -0400
+In-Reply-To: <20110508200802.GB16281@chumley.earth.sol>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
-
-On 07/05/11 05:08, Geert Uytterhoeven wrote:
-> We reserved the numbers a long time ago, but never wired them up in the
-> syscall table as they need TIF_RESTORE_SIGMASK, which we only got last year
-> in commit cb6831d5d3099e772a510eb3e1ed0760ccffb45e ("m68k: Switch to saner
-> sigsuspend()")
->
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+To: "Christian T. Steigies" <cts@debian.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
 
-> ---
-> I'll move this before "m68k: unistd - Comment out definitions for unimplemented
-> syscalls", and will update the latter.
->
->   arch/m68k/kernel/syscalltable.S |    4 ++--
->   1 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-> index cb3bc1b..6f7b091 100644
-> --- a/arch/m68k/kernel/syscalltable.S
-> +++ b/arch/m68k/kernel/syscalltable.S
-> @@ -321,8 +321,8 @@ ENTRY(sys_call_table)
->   	.long sys_readlinkat
->   	.long sys_fchmodat
->   	.long sys_faccessat		/* 300 */
-> -	.long sys_ni_syscall		/* Reserved for pselect6 */
-> -	.long sys_ni_syscall		/* Reserved for ppoll */
-> +	.long sys_pselect6
-> +	.long sys_ppoll
->   	.long sys_unshare
->   	.long sys_set_robust_list
->   	.long sys_get_robust_list	/* 305 */
+On Sun, 8 May 2011, Christian T. Steigies wrote:
+
+> 
+> PS 2.6.28 did not boot: kernel too old. When was TLS introduced? I'll try to
+> apply the patch you mentioned in your other message.
+
+I sometimes test network cards with busybox. It can be built without 
+linking in glibc and doesn't need TLS.
 
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> [  130.870000] eth0: trigger_send() called with the transmitter busy.
+> [  132.240000] ------------[ cut here ]------------
+> [  132.240000] WARNING: at net/sched/sch_generic.c:256 dev_watchdog+0x1ac/0x1cc()
+> [  132.250000] NETDEV WATCHDOG: eth0 (): transmit queue 0 timed out
+
+Looks a lot like this problem:
+
+http://patchwork.ozlabs.org/patch/27774/
+
+Finn
