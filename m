@@ -1,51 +1,57 @@
-From: Mikael Pettersson <mikpe@it.uu.se>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Sat, 7 May 2011 15:16:40 +0200
-Message-ID: <19909.17976.119505.890308@pilspetsen.it.uu.se>
-References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
-	<201105050824.34056.arnd@arndb.de>
-	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
-	<19907.2804.330120.193924@pilspetsen.it.uu.se>
-	<BANLkTinssNTc_+=F4CA1Znb3bdv=c30OPw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
+Date: Sun, 8 May 2011 10:41:12 +0200
+Message-ID: <BANLkTi=8hoPR-yR0dOa9AXaNWwbWFm-M6g@mail.gmail.com>
+References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
+	<m3d3jybjf3.fsf@linux-m68k.org>
+	<BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw@mail.gmail.com>
+	<BANLkTi=PKV23PqLMudno-kMRMr1_OgqaDQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fanny.its.uu.se ([130.238.4.241]:10928 "EHLO fanny.its.uu.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751967Ab1EGNQn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 7 May 2011 09:16:43 -0400
-In-Reply-To: <BANLkTinssNTc_+=F4CA1Znb3bdv=c30OPw@mail.gmail.com>
+In-Reply-To: <BANLkTi=PKV23PqLMudno-kMRMr1_OgqaDQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mikael Pettersson <mikpe@it.uu.se>, Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Sat, 7 May 2011 10:34:25 +0200, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, May 5, 2011 at 22:39, Mikael Pettersson <mikpe@it.uu.se> wrote:
-> > Geert Uytterhoeven writes:
-> > =C2=A0> On Thu, 5 May 2011, Arnd Bergmann wrote:
-> > =C2=A0> > Did you check the macros in unistd to see if they match the
-> > =C2=A0> > actual table? I guess it would be a good time to comment out
-> > =C2=A0> > the ones that are not implemented in either of the two ABIs.
-> > =C2=A0>
-> > =C2=A0> Like this?
-> > =C2=A0>
-> > =C2=A0> warning: #warning syscall pselect6 not implemented
-> > =C2=A0> warning: #warning syscall ppoll not implemented
-> > =C2=A0> warning: #warning syscall recvmmsg not implemented
-> > =C2=A0>
-> > =C2=A0> Do we need pselect6 and ppoll? I have vague memories not requirin=
-> g it.
-> >
-> > They close user-space race conditions, so you want them.
-> 
-> So do you recommend to backport the wiring up of pselect6/ppoll to -stable?
-> We always had their _NR_* defines, so I guess glibc was always compiled
-> with pselect6/ppoll support, and will use it if it's present.
+On Thu, May 5, 2011 at 06:33, Michael Schmitz <schmitzmic@googlemail.co=
+m> wrote:
+>>>> =C2=A0 =C2=A0 =C2=A0 error =3D request_irq(IRQ_MFP_ACIA, atari_key=
+board_interrupt,
+>>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
+>>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
+>>>
+>>> The name is not a path, but an enumeration, so the slash should pro=
+bably
+>>> be changed to a comma instead.
+>>
+>> I thought about that, but comma (albeit followed by a space) is also=
+ used to
+>> separate multiple interrupt handlers for shared interrupts.
+>
+> What about '//', '|' or ':'?
+>
+> Except for the atarilance one, these are sort of shared interrupt
+> handlers so maybe the comma won't hurt after all.
 
-Any kernel with working TIF_RESTORE_SIGMASK should ideally also
-wire up pselect6/ppoll.  But their omission is not a regression
-so backporting to 2.6.38 is probably sufficient.
+OK, I'll go for the comma.
 
-/Mikael
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
