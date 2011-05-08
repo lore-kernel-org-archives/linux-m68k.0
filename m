@@ -1,70 +1,56 @@
-From: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
-Subject: Re: [PATCH] atomic: add *_dec_not_zero
-Date: Mon, 09 May 2011 08:15:39 +1000
-Message-ID: <1304892939.2513.503.camel@pasglop>
-References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: Really wire up sys_pselect6 and sys_ppoll
+Date: Mon, 9 May 2011 08:45:50 +1000
+Message-ID: <4DC71D1E.5030407@snapgear.com>
+References: <alpine.DEB.2.00.1105062107290.23969@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-In-Reply-To: <1304458235-28473-1-git-send-email-sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
-List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
-List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-To: Sven Eckelmann <sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
-Cc: linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chris Metcalf <cmetcalf-kv+TWInifGbQT0dZR+AlfA@public.gmane.org>, David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-am33-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-alpha-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1105062107290.23969@ayla.of.borg>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, uClinux list <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Tue, 2011-05-03 at 23:30 +0200, Sven Eckelmann wrote:
-> Introduce an *_dec_not_zero operation.  Make this a special case of
-> *_add_unless because batman-adv uses atomic_dec_not_zero in different
-> places like re-broadcast queue or aggregation queue management. There
-> are other non-final patches which may also want to use this macro.
+On 07/05/11 05:08, Geert Uytterhoeven wrote:
+> We reserved the numbers a long time ago, but never wired them up in the
+> syscall table as they need TIF_RESTORE_SIGMASK, which we only got last year
+> in commit cb6831d5d3099e772a510eb3e1ed0760ccffb45e ("m68k: Switch to saner
+> sigsuspend()")
+>
+> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
 
-For arch/powerpc:
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
-Acked-by: Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>
 
-(Sorry for catching up late)
+> ---
+> I'll move this before "m68k: unistd - Comment out definitions for unimplemented
+> syscalls", and will update the latter.
+>
+>   arch/m68k/kernel/syscalltable.S |    4 ++--
+>   1 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+> index cb3bc1b..6f7b091 100644
+> --- a/arch/m68k/kernel/syscalltable.S
+> +++ b/arch/m68k/kernel/syscalltable.S
+> @@ -321,8 +321,8 @@ ENTRY(sys_call_table)
+>   	.long sys_readlinkat
+>   	.long sys_fchmodat
+>   	.long sys_faccessat		/* 300 */
+> -	.long sys_ni_syscall		/* Reserved for pselect6 */
+> -	.long sys_ni_syscall		/* Reserved for ppoll */
+> +	.long sys_pselect6
+> +	.long sys_ppoll
+>   	.long sys_unshare
+>   	.long sys_set_robust_list
+>   	.long sys_get_robust_list	/* 305 */
 
-Cheers,
-Ben.
 
-> diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-> index b8f152e..906f49a 100644
-> --- a/arch/powerpc/include/asm/atomic.h
-> +++ b/arch/powerpc/include/asm/atomic.h
-> @@ -213,6 +213,7 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
->  }
->  
->  #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
-> +#define atomic_dec_not_zero(v) atomic_add_unless((v), -1, 0)
->  
->  #define atomic_sub_and_test(a, v)	(atomic_sub_return((a), (v)) == 0)
->  #define atomic_dec_and_test(v)		(atomic_dec_return((v)) == 0)
-> @@ -469,6 +470,7 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
->  }
->  
->  #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
-> +#define atomic64_dec_not_zero(v) atomic64_add_unless((v), -1, 0)
->  
->  #else  /* __powerpc64__ */
->  #include <asm-generic/atomic64.h>
-> diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/asm/local.h
-> index c2410af..3d4c58a 100644
-> --- a/arch/powerpc/include/asm/local.h
-> +++ b/arch/powerpc/include/asm/local.h
-> @@ -134,6 +134,7 @@ static __inline__ int local_add_unless(local_t *l, long a, long u)
->  }
->  
->  #define local_inc_not_zero(l) local_add_unless((l), 1, 0)
-> +#define local_dec_not_zero(l) local_add_unless((l), -1, 0)
->  
->  #define local_sub_and_test(a, l)	(local_sub_return((a), (l)) == 0)
->  #define local_dec_and_test(l)		(local_dec_return((l)) == 0)
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
