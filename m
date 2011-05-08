@@ -1,44 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: Do not use "/" in interrupt names
-Date: Sun, 8 May 2011 10:41:12 +0200
-Message-ID: <BANLkTi=8hoPR-yR0dOa9AXaNWwbWFm-M6g@mail.gmail.com>
-References: <alpine.DEB.2.00.1105041629390.2629@ayla.of.borg>
-	<m3d3jybjf3.fsf@linux-m68k.org>
-	<BANLkTind9TLfuyVmRnRZJotFPgOebwf-dw@mail.gmail.com>
-	<BANLkTi=PKV23PqLMudno-kMRMr1_OgqaDQ@mail.gmail.com>
+Subject: Re: atarimouse (was: Re: [git pull] m68k SLUB fix for 2.6.39)
+Date: Sun, 8 May 2011 10:44:31 +0200
+Message-ID: <BANLkTi=uba-DyJQ9dXD6B2LoSZcZDfzs1w@mail.gmail.com>
+References: <BANLkTinjTOGR3-ONZTxqCQFJdq7_TsKOAA@mail.gmail.com>
+	<BANLkTimLx0PkUUhL+HY1vDoL=SB5QZPweQ@mail.gmail.com>
+	<BANLkTikrv3HpX47sGbLH462-WKO0bTqMXg@mail.gmail.com>
+	<BANLkTi=NcU7Z5qg-tZHkPaiYKTRXO-B-qg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTi=PKV23PqLMudno-kMRMr1_OgqaDQ@mail.gmail.com>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:64776 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751361Ab1EHIof convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 May 2011 04:44:35 -0400
+Received: by bwz15 with SMTP id 15so3351705bwz.19
+        for <linux-m68k@vger.kernel.org>; Sun, 08 May 2011 01:44:34 -0700 (PDT)
+In-Reply-To: <BANLkTi=NcU7Z5qg-tZHkPaiYKTRXO-B-qg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, May 5, 2011 at 06:33, Michael Schmitz <schmitzmic@googlemail.co=
+On Fri, May 6, 2011 at 10:42, Michael Schmitz <schmitzmic@googlemail.co=
 m> wrote:
->>>> =C2=A0 =C2=A0 =C2=A0 error =3D request_irq(IRQ_MFP_ACIA, atari_key=
-board_interrupt,
->>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard/mouse/MIDI",
->>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 IRQ_TYPE_SLOW, "keyboard:mouse:MIDI",
->>>
->>> The name is not a path, but an enumeration, so the slash should pro=
-bably
->>> be changed to a comma instead.
->>
->> I thought about that, but comma (albeit followed by a space) is also=
- used to
->> separate multiple interrupt handlers for shared interrupts.
+>> I've installed gpm but all I ever get when I move the mouse is
+>> keyboard overruns. Does that ring a bell, anyone?
 >
-> What about '//', '|' or ':'?
+> Looks like I need to move the mouse real slow - it appears the patch
+> is still needed. Moving the mouse down moves the cursor up. The
+> buttons are reversed as well.
 >
-> Except for the atarilance one, these are sort of shared interrupt
-> handlers so maybe the comma won't hurt after all.
+> I'll have to put the actual input interface call in a tasklet perhaps=
+,
+> to shorten the time spent in the mouse interrupt handler.
 
-OK, I'll go for the comma.
+Thanks, will apply and queue for 2.6.40.
 
 Gr{oetje,eeting}s,
 
