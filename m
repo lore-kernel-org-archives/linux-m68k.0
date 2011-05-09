@@ -1,41 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/3] Atari input patches
-Date: Mon, 9 May 2011 09:10:17 +0200
-Message-ID: <BANLkTi=CMAJrkAsKP4_QEaDVSw8Cz_RJfQ__42154.6786943965$1304925050$gmane$org@mail.gmail.com>
-References: <1304846247-12401-1-git-send-email-geert@linux-m68k.org>
-	<20110509060048.GA27577@core.coreip.homeip.net>
+Subject: Re: Debian kernel 2.6.38-5
+Date: Mon, 9 May 2011 09:16:16 +0200
+Message-ID: <BANLkTim6_gHr_re0bv0eTWCQ7=5AG1HzwQ@mail.gmail.com>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
+	<Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org>
+	<20110508165909.GA16281@chumley.earth.sol>
+	<Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org>
+	<20110508200802.GB16281@chumley.earth.sol>
+	<alpine.OSX.2.00.1105090909080.194@ibook.intranet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20110509060048.GA27577@core.coreip.homeip.net>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:36975 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752422Ab1EIHQl convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 May 2011 03:16:41 -0400
+Received: by bwz15 with SMTP id 15so3752193bwz.19
+        for <linux-m68k@vger.kernel.org>; Mon, 09 May 2011 00:16:40 -0700 (PDT)
+In-Reply-To: <alpine.OSX.2.00.1105090909080.194@ibook.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "Christian T. Steigies" <cts@debian.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-Hi Dmitry,
-
-On Mon, May 9, 2011 at 08:00, Dmitry Torokhov <dmitry.torokhov@gmail.co=
-m> wrote:
-> On Sun, May 08, 2011 at 11:17:24AM +0200, Geert Uytterhoeven wrote:
->> Here are 3 patches to fix keyboard and mouse on Atari, after convers=
-ion to
->> the "new" (several years old) input framework.
->>
->> =C2=A0 [1/3] input/atari: Use the correct mouse interrupt hook
->> =C2=A0 [2/3] input/atari: Fix atarimouse init
->> =C2=A0 [3/3] input/atari: Fix mouse movement and button mapping
->>
->> Will you take them for 2.6.40, or can I get them in through my m68k =
-tree?
+On Mon, May 9, 2011 at 01:14, Finn Thain <fthain@telegraphics.com.au> w=
+rote:
+> On Sun, 8 May 2011, Christian T. Steigies wrote:
+>> PS 2.6.28 did not boot: kernel too old. When was TLS introduced? I'l=
+l try to
+>> apply the patch you mentioned in your other message.
 >
-> I can either take them or you can push them. I do not really have a
-> preference. There is nothing in my tree that would conflict with thes=
-e
-> as far as I know.
+> I sometimes test network cards with busybox. It can be built without
+> linking in glibc and doesn't need TLS.
+>
+>
+>> [ =C2=A0130.870000] eth0: trigger_send() called with the transmitter=
+ busy.
+>> [ =C2=A0132.240000] ------------[ cut here ]------------
+>> [ =C2=A0132.240000] WARNING: at net/sched/sch_generic.c:256 dev_watc=
+hdog+0x1ac/0x1cc()
+>> [ =C2=A0132.250000] NETDEV WATCHDOG: eth0 (): transmit queue 0 timed=
+ out
+>
+> Looks a lot like this problem:
+>
+> http://patchwork.ozlabs.org/patch/27774/
 
-In that case I'll push them myself. Thx again!
+Yeah, that's a very likely culprit. Thx!
 
 Gr{oetje,eeting}s,
 
