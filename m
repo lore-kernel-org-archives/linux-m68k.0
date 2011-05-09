@@ -1,108 +1,118 @@
-From: "Christian T. Steigies" <cts@debian.org>
-Subject: Re: Debian kernel 2.6.38-5
-Date: Mon, 9 May 2011 22:25:59 +0200
-Message-ID: <20110509202559.GA27320@chumley.earth.sol>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
- <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org>
- <20110508165909.GA16281@chumley.earth.sol>
- <Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org>
- <20110508200802.GB16281@chumley.earth.sol>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: zorro8390 (was: Re: Debian kernel 2.6.38-5)
+Date: Mon, 9 May 2011 22:28:23 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105092225170.14902@ayla.of.borg>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com> <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org> <20110508165909.GA16281@chumley.earth.sol> <Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org> <20110508200802.GB16281@chumley.earth.sol>
  <alpine.OSX.2.00.1105090909080.194@ibook.intranet>
- <BANLkTim6_gHr_re0bv0eTWCQ7=5AG1HzwQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-in-12.arcor-online.net ([151.189.21.52]:34028 "EHLO
-	mail-in-12.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754519Ab1EIUYi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 May 2011 16:24:38 -0400
-Content-Disposition: inline
-In-Reply-To: <BANLkTim6_gHr_re0bv0eTWCQ7=5AG1HzwQ@mail.gmail.com>
+Received: from gerard.telenet-ops.be ([195.130.132.48]:41829 "EHLO
+	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754460Ab1EIU20 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 May 2011 16:28:26 -0400
+In-Reply-To: <alpine.OSX.2.00.1105090909080.194@ibook.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+To: "Christian T. Steigies" <cts@debian.org>, Finn Thain <fthain@telegraphics.com.au>
+Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-On Mon, May 09, 2011 at 09:16:16AM +0200, Geert Uytterhoeven wrote:
-> On Mon, May 9, 2011 at 01:14, Finn Thain <fthain@telegraphics.com.au>=
- wrote:
-> > On Sun, 8 May 2011, Christian T. Steigies wrote:
-> >> PS 2.6.28 did not boot: kernel too old. When was TLS introduced? I=
-'ll try to
-> >> apply the patch you mentioned in your other message.
-> >
-> > I sometimes test network cards with busybox. It can be built withou=
-t
-> > linking in glibc and doesn't need TLS.
-> >
-> >
-> >> [ =A0130.870000] eth0: trigger_send() called with the transmitter =
-busy.
-> >> [ =A0132.240000] ------------[ cut here ]------------
-> >> [ =A0132.240000] WARNING: at net/sched/sch_generic.c:256 dev_watch=
-dog+0x1ac/0x1cc()
-> >> [ =A0132.250000] NETDEV WATCHDOG: eth0 (): transmit queue 0 timed =
-out
-> >
-> > Looks a lot like this problem:
-> >
-> > http://patchwork.ozlabs.org/patch/27774/
->=20
-> Yeah, that's a very likely culprit. Thx!
+On Mon, 9 May 2011, Finn Thain wrote:
+> On Sun, 8 May 2011, Christian T. Steigies wrote:
+> > [  130.870000] eth0: trigger_send() called with the transmitter busy.
+> > [  132.240000] ------------[ cut here ]------------
+> > [  132.240000] WARNING: at net/sched/sch_generic.c:256 dev_watchdog+0x1ac/0x1cc()
+> > [  132.250000] NETDEV WATCHDOG: eth0 (): transmit queue 0 timed out
+> 
+> Looks a lot like this problem:
+> 
+> http://patchwork.ozlabs.org/patch/27774/
 
-I applied the following patch and it works! apt-get update that is, the=
-re is
-no sshd on this freshly installed system yet...
+Does the patch below fix it?
+If yes, hydra and ne-h8300 are probably affected, too, as they include
+lib8390.c theirselves and are linked with 8390.o.
 
-I also changed this line to have 4 underscores at the beginning:
+>From 7e1d9c48bda247d77e7d478d43fc0b9dd1d6c515 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 9 May 2011 22:19:31 +0200
+Subject: [PATCH] zorro8390: Fix regression caused during net_device_ops conversion
 
-	{ 0xec940559, "____alloc_ei_netdev" },
+Changeset b6114794a1c394534659f4a17420e48cf23aa922 ("zorro8390: convert to
+net_device_ops") broke zorro8390 by adding 8390.o to the link. That
+meant that lib8390.c was included twice, once in zorro8390.c and once in
+8390.c, subject to different macros. This patch reverts that by
+avoiding the wrappers in 8390.c.
 
-it does not show up in git diff, so I am not sure if this is a leftover=
- from
-a previous checkout, or if it is also needed. And if it is needed, if i=
-t
-should be two underscores or four or none, and if so why or why not...
-Looking at the other drivers, there does not seem to be a lot of consis=
-tency?
+Fix based on commit 217cbfa856dc1cbc2890781626c4032d9e3ec59f ("mac8390: fix
+regression caused during net_device_ops conversion) and
+4e0168fa4842e27795a75b205a510f25b62181d9 ("mac8390: fix build with
+NET_POLL_CONTROLLER").
 
-thanks Finn!
-Christian
+Reported-by: Christian T. Steigies <cts@debian.org>
+Suggested-by: Finn Thain <fthain@telegraphics.com.au>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/Makefile    |    2 +-
+ drivers/net/zorro8390.c |   12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index 9ba2838..501fe36 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -219,7 +219,7 @@ obj-$(CONFIG_SC92031) += sc92031.o
+ obj-$(CONFIG_LP486E) += lp486e.o
+ 
+ obj-$(CONFIG_ETH16I) += eth16i.o
+-obj-$(CONFIG_ZORRO8390) += zorro8390.o 8390.o
++obj-$(CONFIG_ZORRO8390) += zorro8390.o
+ obj-$(CONFIG_HPLANCE) += hplance.o 7990.o
+ obj-$(CONFIG_MVME147_NET) += mvme147.o 7990.o
+ obj-$(CONFIG_EQUALIZER) += eql.o
 diff --git a/drivers/net/zorro8390.c b/drivers/net/zorro8390.c
-index b78a38d9..8c7c522 100644
+index b78a38d..8c7c522 100644
 --- a/drivers/net/zorro8390.c
 +++ b/drivers/net/zorro8390.c
-@@ -126,7 +126,7 @@ static int __devinit zorro8390_init_one(struct zorr=
-o_dev *z,
-=20
-     board =3D z->resource.start;
-     ioaddr =3D board+cards[i].offset;
--    dev =3D alloc_ei_netdev();
-+    dev =3D ____alloc_ei_netdev(0);
+@@ -126,7 +126,7 @@ static int __devinit zorro8390_init_one(struct zorro_dev *z,
+ 
+     board = z->resource.start;
+     ioaddr = board+cards[i].offset;
+-    dev = alloc_ei_netdev();
++    dev = ____alloc_ei_netdev(0);
      if (!dev)
  	return -ENOMEM;
      if (!request_mem_region(ioaddr, NE_IO_EXTENT*2, DRV_NAME)) {
-@@ -146,15 +146,15 @@ static int __devinit zorro8390_init_one(struct zo=
-rro_dev *z,
- static const struct net_device_ops zorro8390_netdev_ops =3D {
- 	.ndo_open		=3D zorro8390_open,
- 	.ndo_stop		=3D zorro8390_close,
--	.ndo_start_xmit		=3D ei_start_xmit,
--	.ndo_tx_timeout		=3D ei_tx_timeout,
--	.ndo_get_stats		=3D ei_get_stats,
--	.ndo_set_multicast_list =3D ei_set_multicast_list,
-+	.ndo_start_xmit		=3D __ei_start_xmit,
-+	.ndo_tx_timeout		=3D __ei_tx_timeout,
-+	.ndo_get_stats		=3D __ei_get_stats,
-+	.ndo_set_multicast_list =3D __ei_set_multicast_list,
- 	.ndo_validate_addr	=3D eth_validate_addr,
- 	.ndo_set_mac_address 	=3D eth_mac_addr,
- 	.ndo_change_mtu		=3D eth_change_mtu,
+@@ -146,15 +146,15 @@ static int __devinit zorro8390_init_one(struct zorro_dev *z,
+ static const struct net_device_ops zorro8390_netdev_ops = {
+ 	.ndo_open		= zorro8390_open,
+ 	.ndo_stop		= zorro8390_close,
+-	.ndo_start_xmit		= ei_start_xmit,
+-	.ndo_tx_timeout		= ei_tx_timeout,
+-	.ndo_get_stats		= ei_get_stats,
+-	.ndo_set_multicast_list = ei_set_multicast_list,
++	.ndo_start_xmit		= __ei_start_xmit,
++	.ndo_tx_timeout		= __ei_tx_timeout,
++	.ndo_get_stats		= __ei_get_stats,
++	.ndo_set_multicast_list = __ei_set_multicast_list,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ 	.ndo_set_mac_address 	= eth_mac_addr,
+ 	.ndo_change_mtu		= eth_change_mtu,
  #ifdef CONFIG_NET_POLL_CONTROLLER
--	.ndo_poll_controller	=3D ei_poll,
-+	.ndo_poll_controller	=3D __ei_poll,
+-	.ndo_poll_controller	= ei_poll,
++	.ndo_poll_controller	= __ei_poll,
  #endif
  };
-=20
+ 
+-- 
+1.7.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
