@@ -1,39 +1,42 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: Debian kernel 2.6.38-5
-Date: Mon, 9 May 2011 09:14:35 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1105090909080.194@ibook.intranet>
-References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com> <Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org> <20110508165909.GA16281@chumley.earth.sol> <Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org> <20110508200802.GB16281@chumley.earth.sol>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH] atomic: add *_dec_not_zero
+Date: Sun, 8 May 2011 22:38:43 -0400
+Message-ID: <BANLkTim+z0mv7oXZHr0YnoxtfnoDZTEr9Q__16691.8793613606$1304909164$gmane$org@mail.gmail.com>
+References: <1304458235-28473-1-git-send-email-sven@narfation.org>
+ <20110508092403.GB27807@n2100.arm.linux.org.uk> <201105081133.50824.sven@narfation.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:37928 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753173Ab1EHXNw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 May 2011 19:13:52 -0400
-In-Reply-To: <20110508200802.GB16281@chumley.earth.sol>
+In-Reply-To: <201105081133.50824.sven@narfation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Christian T. Steigies" <cts@debian.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+To: Sven Eckelmann <sven@narfation.org>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m32r@ml.linux-m32r.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Chris Metcalf <cmetcalf@tilera.com>, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
+On Sun, May 8, 2011 at 05:33, Sven Eckelmann wrote:
+> Russell King - ARM Linux wrote:
+> [...]
+>> Do we need atomic_dec_not_zero() et.al. in every arch header - is th=
+ere no
+>> generic header which it could be added to?
+>
+> Mike Frysinger already tried to answer it in
+> <BANLkTimctgbto3dsnJ3d3r7NggS0KF9_Sw@mail.gmail.com>:
+>> that's what asm-generic is for. =C2=A0if the arch isnt using it, it'=
+s
+>> either because the arch needs to convert to it, or they're using SMP
+>> and asm-generic doesnt yet support that for atomic.h.
+>>
+>> for example, the Blackfin port only needed updating for the SMP case=
+=2E
+>> in the non-SMP case, we're getting the def from asm-generic/atomic.h=
+=2E
+>
+> Feel free to change that but I just followed the style used by all ot=
+her
+> macros and will not redesign the complete atomic*.h idea.
 
-On Sun, 8 May 2011, Christian T. Steigies wrote:
-
-> 
-> PS 2.6.28 did not boot: kernel too old. When was TLS introduced? I'll try to
-> apply the patch you mentioned in your other message.
-
-I sometimes test network cards with busybox. It can be built without 
-linking in glibc and doesn't need TLS.
-
-
-> [  130.870000] eth0: trigger_send() called with the transmitter busy.
-> [  132.240000] ------------[ cut here ]------------
-> [  132.240000] WARNING: at net/sched/sch_generic.c:256 dev_watchdog+0x1ac/0x1cc()
-> [  132.250000] NETDEV WATCHDOG: eth0 (): transmit queue 0 timed out
-
-Looks a lot like this problem:
-
-http://patchwork.ozlabs.org/patch/27774/
-
-Finn
+what you're doing is currently correct.  i think merging SMP support
+into asm-generic for atomic* will take a bit of pondering first.
+-mike
