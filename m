@@ -1,44 +1,86 @@
-From: "Christian T. Steigies" <cts@debian.org>
-Subject: Re: 8390 drivers (was: Re: Debian kernel 2.6.38-5)
-Date: Tue, 10 May 2011 09:29:28 +0200
-Message-ID: <20110510072928.GA32679@chumley.earth.sol>
-References: <BANLkTimG+3jqLiLaA_NVEpGg3LFtvK4bQQ@mail.gmail.com>
- <20110509213213.GA28675@chumley.earth.sol>
- <BANLkTik27HjWOF0s5HRqgva5zYzQRis27Q@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Debian kernel 2.6.38-5
+Date: Tue, 10 May 2011 19:38:48 +1200
+Message-ID: <BANLkTikcH8GH2cy+N=XV+-ZwE9yJ3ty=yQ@mail.gmail.com>
+References: <BANLkTimCKhPbp3wOCpVusHu1JmoyhwKX0w@mail.gmail.com>
+	<Pine.BSM.4.64L.1105081254100.28983@herc.mirbsd.org>
+	<20110508165909.GA16281@chumley.earth.sol>
+	<Pine.BSM.4.64L.1105081834101.28983@herc.mirbsd.org>
+	<20110508200802.GB16281@chumley.earth.sol>
+	<alpine.OSX.2.00.1105090909080.194@ibook.intranet>
+	<BANLkTim6_gHr_re0bv0eTWCQ7=5AG1HzwQ@mail.gmail.com>
+	<20110509202559.GA27320@chumley.earth.sol>
+	<BANLkTinP_U1c+X_zVrT1zXdzVh_p=STP0Q@mail.gmail.com>
+	<20110510070002.GA32329@chumley.earth.sol>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-in-03.arcor-online.net ([151.189.21.43]:34304 "EHLO
-	mail-in-03.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752439Ab1EJH2D (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 10 May 2011 03:28:03 -0400
-Content-Disposition: inline
-In-Reply-To: <BANLkTik27HjWOF0s5HRqgva5zYzQRis27Q@mail.gmail.com>
+Received: from mail-pv0-f174.google.com ([74.125.83.174]:57161 "EHLO
+	mail-pv0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754941Ab1EJHit convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 10 May 2011 03:38:49 -0400
+Received: by pvg12 with SMTP id 12so2707749pvg.19
+        for <linux-m68k@vger.kernel.org>; Tue, 10 May 2011 00:38:48 -0700 (PDT)
+In-Reply-To: <20110510070002.GA32329@chumley.earth.sol>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org, Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+To: Michael Schmitz <schmitzmic@googlemail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-On Tue, May 10, 2011 at 08:52:48AM +0200, Geert Uytterhoeven wrote:
-> >
-> > zorro8390.mod.c
-> 
-> That's a generated file, so you can ignore it.
+Hi Christian,
 
-ok
+>> > I also changed this line to have 4 underscores at the beginning:
+>> >
+>> > =A0 =A0 =A0 =A0{ 0xec940559, "____alloc_ei_netdev" },
+>>
+>> Where does that appear? Can't find it in drivers/net anywhere.
+>
+> It's in zorro8390.mod.c, but *.mod.c is listed in .gitignore, so it m=
+ust be
+> a remnant of my experiments with git and older branches. I wonder why=
+ it has
+> been compiled, though, I did not change any of the Makefiles.
 
-> Yeah, speed depends on CPU type and motherboard/CPU interface.
+This is being compiled whenever zorro8390.c is compiled as module - do
+not change it.
 
-well, it was much faster for a while. Now, after downloading and during
-installing packages (and switching to dependency based booting, etc), I get:
+>> The only symbol exported by zorro8390.c should be __alloc_ei_netdev =
+-
+>> if your above change was done in some symbol exports file it should
+>> probably have been left at __alloc_ei_netdev.
+>
+> I did none of that, but to be sure, I should build another kernel wit=
+h
+> Geert's patch on a clean checkout.
 
-eth0: mismatched read page pointer:  1 vs ff.
-and
-eth0: mismatched read page pointer:  1 vs f0. (I think, maybe fe or  0)
+Should not change anything - the .mod.c should be rebuilt when any
+dependent file is changed.
 
-A lot of them. So many that I can not stop the output or do anything on the
-machine :-(
-There is a different message as well, but it is not readable.
+> I installed a few packages, rebooted to check if the network is set u=
+p
+> automatically (it is!), and installed more packages. Now I am upgradi=
+ng
+> some more and I see reasonable download speeds: 140kB/s. However, I a=
+lso saw
+> this flying by:
+>
+> eth0: Interrupted while interrupts are masked! isr=3D0x0 imr=3D0x0.
 
-Christian
+Looks like you're not getting packets off the card fast enough on
+receive. I'd have to look at the source to know what the status and
+mask register values mean though.
+
+> Three times in about one minute. The whole system is a bit more respo=
+nsive
+> now (I an log in on a second console without a long delay). I could n=
+ot log
+> in with ssh yet, though I get a little bit further than yesterday, th=
+ere is
+> some response already from the remote system.
+
+ssh login should work if sshd is up and running, and the network
+appears to be working as you describe.
+
+Cheers,
+
+  MIchael
