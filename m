@@ -1,80 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch] slub: Revert "[PARISC] slub: fix panic with
-	DISCONTIGMEM"
-Date: Wed, 11 May 2011 09:27:14 +0200
-Message-ID: <BANLkTikf9Qtp1nq8E9sDjEgoYUO-25vsWQ@mail.gmail.com>
-References: <alpine.DEB.2.00.1104282000200.1563@ayla.of.borg>
-	<alpine.DEB.2.00.1104281420140.21665@chino.kir.corp.google.com>
-	<1304026464.2598.36.camel@mulgrave.site>
-	<alpine.DEB.2.00.1104281437010.21665@chino.kir.corp.google.com>
-	<1304521355.2810.21.camel@mulgrave.site>
-	<alpine.DEB.2.00.1105041203250.22426@chino.kir.corp.google.com>
-	<1304979845.4865.58.camel@mulgrave.site>
-	<alpine.DEB.2.00.1105101656310.15037@chino.kir.corp.google.com>
+From: Lanre Willaims <colinrutherforddd@ihug.co.nz>
+Subject: Please Read. 10/9/2011
+Date: Fri, 13 May 2011 01:40:45 +1200
+Message-ID: <ee85039e433cc1bf7d455560038187d7@vodafone.co.nz>
+Reply-To: williamlanre20@yahoo.cn
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <stable-bounces@linux.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105101656310.15037@chino.kir.corp.google.com>
-List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
-List-Archive: <http://linux.kernel.org/mailman/private/stable/>
-List-Post: <mailto:stable@linux.kernel.org>
-List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
-List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=subscribe>
-Sender: stable-bounces@linux.kernel.org
-Errors-To: stable-bounces@linux.kernel.org
-To: David Rientjes <rientjes@google.com>
-Cc: linux-m68k@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, stable@kernel.org, Pekka Enberg <penberg@cs.helsinki.fi>, James Bottomley <James.Bottomley@suse.de>, Christoph Lameter <cl@linux.com>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mailfilter10.ihug.co.nz ([203.109.136.10]:54043 "EHLO
+	mailfilter10.ihug.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757258Ab1ELNu2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 12 May 2011 09:50:28 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-T24gV2VkLCBNYXkgMTEsIDIwMTEgYXQgMDI6MDgsIERhdmlkIFJpZW50amVzIDxyaWVudGplc0Bn
-b29nbGUuY29tPiB3cm90ZToKPiBPbiBNb24sIDkgTWF5IDIwMTEsIEphbWVzIEJvdHRvbWxleSB3
-cm90ZToKPj4gPiBHcmVhdCwgYW5kIGlmIHRoYXQgd29ya3Mgb3V0IHN1Y2Nlc3NmdWxseSB0aGlz
-IHRpbWUgYXJvdW5kIEkgdGhpbmsgd2UnbGwKPj4gPiBlaXRoZXIgbmVlZCB0byBmaXggZWFjaCBp
-bmRpdmlkdWFsIGFyY2ggS2NvbmZpZyB0aGF0IHdlIGtub3cgZG9lc24ndCB3b3JrCj4+ID4gd2Vs
-bCAoYXQgbGVhc3QgcGFyaXNjIGJlY2F1c2Ugb2YgdGhlIHNjaGVkdWxpbmcgaXNzdWUpIHNvIHRo
-YXQgaXQgYXQgbGVhc3QKPj4gPiBlbmFibGVzIENPTkZJR19OVU1BIGltcGxpY2l0bHkgZm9yIGRp
-c2NvbnRpZ21lbSB1bmxlc3MgQ09ORklHX0JST0tFTiBpcwo+PiA+IHNldC4KPj4KPj4gT0ssIEkg
-Y29uZmlybSB0aGF0IHRoZSBOX05PUk1BTF9NRU1PUlkgcGF0Y2ggb24gaXRzIG93biBmaXhlcyBz
-bHViIGZvcgo+PiB1cy4gwqBXZSBjYW4gcmV2ZXJ0IHRoZSBtYXJrIHNsdWIgQlJPS0VOIGluIERJ
-U0NPTlRJR01FTSAmJiAhTlVNQSBwYXRjaC4KPj4KPgo+IE9rLCBzbyB3ZSBuZWVkIHRvIHJldmVy
-dCA0YTVmYTM1OTBmMDkgKFtQQVJJU0NdIHNsdWI6IGZpeCBwYW5pYyB3aXRoCj4gRElTQ09OVElH
-TUVNKSB0aGF0IGRpZCBub3QgYWxsb3cgQ09ORklHX1NMVUIgdG8gYmUgc2V0IGZvciBhcmNoaXRl
-Y3R1cmVzCj4gdGhhdCB1c2UgRElTQ09OVElHTUVNIHdpdGhvdXQgTlVNQSBzdXBwb3J0IHVubGVz
-cyB0aGV5IGhhdmUgQ09ORklHX0JST0tFTgo+IHNldCBmcm9tIExpbnVzJyB0cmVlIF9hbmRfIGZy
-b20gdGhlIHN0YWJsZSB0cmVlcy4KPgo+Cj4KPiBzbHViOiBSZXZlcnQgIltQQVJJU0NdIHNsdWI6
-IGZpeCBwYW5pYyB3aXRoIERJU0NPTlRJR01FTSIKPgo+IDRhNWZhMzU5MGYwOSAoW1BBUklTQ10g
-c2x1YjogZml4IHBhbmljIHdpdGggRElTQ09OVElHTUVNKSBkaWQgbm90IGFsbG93Cj4gU0xVQiB0
-byBiZSB1c2VkIG9uIGFyY2hpdGVjdHVyZXMgdGhhdCB1c2UgRElTQ09OVElHTUVNIHdpdGhvdXQg
-Y29tcGlsaW5nCj4gTlVNQSBzdXBwb3J0IHdpdGhvdXQgQ09ORklHX0JST0tFTiBhbHNvIHNldC4K
-Pgo+IFRoZSBzbHViIHBhbmljIHRoYXQgaXQgd2FzIGludGVuZGVkIHRvIHByZXZlbnQgaXMgYWRk
-cmVzc2VkIGJ5Cj4gZDliNDFlMGI1NGZkIChbUEFSSVNDXSBzZXQgbWVtb3J5IHJhbmdlcyBpbiBO
-X05PUk1BTF9NRU1PUlkgd2hlbiBvbmxpbmVkKQo+IG9uIHBhcmlzYyBzbyB0aGVyZSBpcyBubyBm
-dXJ0aGVyIHNsdWIgaXNzdWVzIHdpdGggc3VjaCBhIGNvbmZpZ3VyYXRpb24uCgpQbGVhc2UgYWxz
-byByZWZlciB0byB0aGUgTl9OT1JNQUxfTUVNT1JZIGZpeGVzIGZvciB0aGUgb3RoZXIgYXJjaGVz
-LAplc3AuIGZvciBzdGFibGUuCgo+IFRoaXMgcmV2ZXJ0cyB0aGUgZm9ybWVyIGNvbW1pdCBzbyB0
-aGF0IFNMVUIgbWF5IG5vdyBiZSB1c2VkIG9uIHN1Y2gKPiBhcmNoaXRlY3R1cmVzIHNpbmNlIHRo
-ZXJlIGhhdmVuJ3QgYmVlbiBhbnkgcmVwb3J0cyBvZiBhZGRpdGlvbmFsIGVycm9ycy4KPgo+IENj
-OiBKYW1lcyBCb3R0b21sZXkgPEphbWVzLkJvdHRvbWxleUBzdXNlLmRlPgo+IFNpZ25lZC1vZmYt
-Ynk6IERhdmlkIFJpZW50amVzIDxyaWVudGplc0Bnb29nbGUuY29tPgoKQWNrZWQtYnk6IEdlZXJ0
-IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+CkNjOiBzdGFibGVAa2VybmVsLm9y
-ZwoKPiAtLS0KPiDCoGluaXQvS2NvbmZpZyB8IMKgIMKgMSAtCj4gwqAxIGZpbGVzIGNoYW5nZWQs
-IDAgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9pbml0L0tj
-b25maWcgYi9pbml0L0tjb25maWcKPiAtLS0gYS9pbml0L0tjb25maWcKPiArKysgYi9pbml0L0tj
-b25maWcKPiBAQCAtMTIyNiw3ICsxMjI2LDYgQEAgY29uZmlnIFNMQUIKPiDCoCDCoCDCoCDCoCDC
-oHBlciBjcHUgYW5kIHBlciBub2RlIHF1ZXVlcy4KPgo+IMKgY29uZmlnIFNMVUIKPiAtIMKgIMKg
-IMKgIGRlcGVuZHMgb24gQlJPS0VOIHx8IE5VTUEgfHwgIURJU0NPTlRJR01FTQo+IMKgIMKgIMKg
-IMKgYm9vbCAiU0xVQiAoVW5xdWV1ZWQgQWxsb2NhdG9yKSIKPiDCoCDCoCDCoCDCoGhlbHAKPiDC
-oCDCoCDCoCDCoCDCoCBTTFVCIGlzIGEgc2xhYiBhbGxvY2F0b3IgdGhhdCBtaW5pbWl6ZXMgY2Fj
-aGUgbGluZSB1c2FnZQoKR3J7b2V0amUsZWV0aW5nfXMsCgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCBHZWVydAoKLS0KR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90
-cyBvZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29u
-YWwgY29udmVyc2F0aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBo
-YWNrZXIuIEJ1dAp3aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInBy
-b2dyYW1tZXIiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgwqAgwqDCoCAtLSBMaW51cyBUb3J2YWxkcwoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18Kc3RhYmxlIG1haWxpbmcgbGlzdApz
-dGFibGVAbGludXgua2VybmVsLm9yZwpodHRwOi8vbGludXgua2VybmVsLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL3N0YWJsZQo=
+
+
+-- 
+Hello,
+
+An Estate has been bequeathed to you by Late Philips lob. Please reply with
+your name, address and phone number to claim the said Estate. 
+
+Hope to hear from you soon. 
+
+Regards,
+Lanre.
+reply via lanrewilliams111@aol.com.
