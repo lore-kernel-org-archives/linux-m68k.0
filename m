@@ -1,41 +1,66 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [uClinux-dev] [PATCH] m68k: merge mmu and non-mmu bitops.h
-Date: Thu, 19 May 2011 22:05:48 +1000
-Message-ID: <4DD5079C.1060103@snapgear.com>
-References: <1305696747-29641-1-git-send-email-gerg@snapgear.com> <20110519085232.GA27058@frolo.macqel>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 2.6.40
+Date: Thu, 19 May 2011 19:06:58 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105191904450.26486@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outbound-mail03.westnet.com.au ([203.10.1.244]:36475 "EHLO
-	outbound-mail03.westnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752739Ab1ESMFx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 19 May 2011 08:05:53 -0400
-In-Reply-To: <20110519085232.GA27058@frolo.macqel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Philippe De Muyter <phdm@macqel.be>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On 19/05/11 18:52, Philippe De Muyter wrote:
-> On Wed, May 18, 2011 at 03:32:27PM +1000, gerg@snapgear.com wrote:
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> The following patch merges the mmu and non-mmu versions of the m68k
->> bitops.h files. Now there is a good deal of difference between the two
->> files, but none of it is actually an mmu specific difference. It is
->> all about the specific m68k/coldfire varient we are targeting. So it
->> makes an awful lot of sense to merge these into a single bitops.h.
->
-> Thanks for taking care of that.  Fork was easy (but ugly), but merge
-> is a tedious job.
+	Hi Linus,
 
-Sure is :-)
+The following changes since commit 61c4f2c81c61f73549928dfd9f3e8f26aa36a8cf:
+  Linus Torvalds (1):
+        Linux 2.6.39
 
+are available in the git repository at:
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+Geert Uytterhoeven (8):
+      m68k: bitops - offset == ((long)p - (long)vaddr) * 8
+      m68k: bitops - Never step beyond the end of the bitmap
+      MAINTAINERS: Roman Zippel has been MIA for several years.
+      m68k: Merge mmu and non-mmu versions of sys_call_table
+      m68k: Really wire up sys_pselect6 and sys_ppoll
+      m68k: unistd - Comment out definitions for unimplemented syscalls
+      m68k/atari: Do not use "/" in interrupt names
+      input/atari: Fix mouse movement and button mapping
+
+Michael Schmitz (2):
+      input/atari: Use the correct mouse interrupt hook
+      input/atari: Fix atarimouse init
+
+ MAINTAINERS                       |    9 +-
+ arch/m68k/atari/atakeyb.c         |    9 +-
+ arch/m68k/atari/stdma.c           |    2 +-
+ arch/m68k/include/asm/atarikb.h   |    2 -
+ arch/m68k/include/asm/bitops_mm.h |   87 ++++++----
+ arch/m68k/include/asm/unistd.h    |   46 +++---
+ arch/m68k/kernel/Makefile_mm      |    2 +-
+ arch/m68k/kernel/entry_mm.S       |  348 -------------------------------------
+ arch/m68k/kernel/syscalltable.S   |  195 ++++++++++-----------
+ drivers/input/keyboard/atakbd.c   |    5 +-
+ drivers/input/mouse/atarimouse.c  |   15 +-
+ drivers/net/atarilance.c          |    2 +-
+ drivers/video/atafb.c             |    2 +-
+ 13 files changed, 200 insertions(+), 524 deletions(-)
+
+It was OK for Dmitry to let the input changes go in through the m68k tree.
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
