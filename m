@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/4] sparc: _sparc_find_resource() should check for exact matches
-Date: Sat, 21 May 2011 21:39:13 +0200
-Message-ID: <1306006756-32009-2-git-send-email-geert__43061.1650379889$1306006822$gmane$org@linux-m68k.org>
+Subject: [PATCH 3/4] m68k/amiga: Chip RAM - Use lookup_resource()
+Date: Sat, 21 May 2011 21:39:15 +0200
+Message-ID: <1306006756-32009-4-git-send-email-geert__1346.95062083683$1306006835$gmane$org@linux-m68k.org>
 References: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
@@ -10,40 +10,50 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-The address that's passed to _sparc_find_resource() should always be the
-start address of a resource:
-  - iounmap() passes a page-aligned virtual address, while the original
-    address was created by adding the in-page offset to the resource's
-    start address,
-  - sbus_free_coherent() and pci32_free_coherent() should be passed an
-    address obtained from sbus_alloc_coherent() resp. pci32_alloc_coherent(),
-    which is always a resource's start address.
-
-Hence replace the range check by a check for an exact match.
+Replace a custom implementation (which doesn't lock the resource tree) by a
+call to lookup_resource()
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/sparc/kernel/ioport.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/amiga/chipram.c |   22 +++++++++++-----------
+ 1 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/sparc/kernel/ioport.c b/arch/sparc/kernel/ioport.c
-index c6ce9a6..91e8c76 100644
---- a/arch/sparc/kernel/ioport.c
-+++ b/arch/sparc/kernel/ioport.c
-@@ -733,12 +733,12 @@ static const struct file_operations sparc_io_proc_fops = {
-  * This probably warrants some sort of hashing.
-  */
- static struct resource *_sparc_find_resource(struct resource *root,
--					     unsigned long hit)
-+					     unsigned long start)
+diff --git a/arch/m68k/amiga/chipram.c b/arch/m68k/amiga/chipram.c
+index cfd3b7a..9d53417 100644
+--- a/arch/m68k/amiga/chipram.c
++++ b/arch/m68k/amiga/chipram.c
+@@ -93,21 +93,21 @@ void *amiga_chip_alloc_res(unsigned long size, struct resource *res)
+ void amiga_chip_free(void *ptr)
  {
- 	struct resource *tmp;
+ 	unsigned long start = ZTWO_PADDR(ptr);
+-	struct resource **p, *res;
++	struct resource *res;
+ 	unsigned long size;
  
- 	for (tmp = root->child; tmp != 0; tmp = tmp->sibling) {
--		if (tmp->start <= hit && tmp->end >= hit)
-+		if (tmp->start == start)
- 			return tmp;
+-	for (p = &chipram_res.child; (res = *p); p = &res->sibling) {
+-		if (res->start != start)
+-			continue;
+-		*p = res->sibling;
+-		size = resource_size(res);
+-		pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
+-		atomic_add(size, &chipavail);
+-		kfree(res);
++	res = lookup_resource(&chipram_res, start);
++	if (!res) {
++		pr_err("amiga_chip_free: trying to free nonexistent region at "
++		       "%p\n", ptr);
+ 		return;
  	}
- 	return NULL;
+-	pr_err("amiga_chip_free: trying to free nonexistent region at %p\n",
+-	       ptr);
++
++	size = resource_size(res);
++	pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
++	atomic_add(size, &chipavail);
++	release_resource(res);
++	kfree(res);
+ }
+ EXPORT_SYMBOL(amiga_chip_free);
+ 
 -- 
 1.7.0.4
