@@ -1,59 +1,57 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/4] m68k/amiga: Chip RAM - Use lookup_resource()
-Date: Sat, 21 May 2011 21:39:15 +0200
-Message-ID: <1306006756-32009-4-git-send-email-geert__1346.95062083683$1306006835$gmane$org@linux-m68k.org>
-References: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 3/3] fbdev/amifb: Remove superfluous alignment of frame buffer memory
+Date: Sat, 21 May 2011 21:42:56 +0200
+Message-ID: <1306006976-32117-3-git-send-email-geert@linux-m68k.org>
+References: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Paul Mundt <lethal@linux-sh.org>
+Cc: linux-fbdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Replace a custom implementation (which doesn't lock the resource tree) by a
-call to lookup_resource()
+amiga_chip_alloc() already aligns to the PAGE_SIZE
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/chipram.c |   22 +++++++++++-----------
- 1 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/video/amifb.c |   15 +++++++--------
+ 1 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/amiga/chipram.c b/arch/m68k/amiga/chipram.c
-index cfd3b7a..9d53417 100644
---- a/arch/m68k/amiga/chipram.c
-+++ b/arch/m68k/amiga/chipram.c
-@@ -93,21 +93,21 @@ void *amiga_chip_alloc_res(unsigned long size, struct resource *res)
- void amiga_chip_free(void *ptr)
- {
- 	unsigned long start = ZTWO_PADDR(ptr);
--	struct resource **p, *res;
-+	struct resource *res;
- 	unsigned long size;
+diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
+index 1b0185c..5ea6596 100644
+--- a/drivers/video/amifb.c
++++ b/drivers/video/amifb.c
+@@ -2224,24 +2224,23 @@ static int amifb_ioctl(struct fb_info *info,
+ 	 * Allocate, Clear and Align a Block of Chip Memory
+ 	 */
  
--	for (p = &chipram_res.child; (res = *p); p = &res->sibling) {
--		if (res->start != start)
--			continue;
--		*p = res->sibling;
--		size = resource_size(res);
--		pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
--		atomic_add(size, &chipavail);
--		kfree(res);
-+	res = lookup_resource(&chipram_res, start);
-+	if (!res) {
-+		pr_err("amiga_chip_free: trying to free nonexistent region at "
-+		       "%p\n", ptr);
- 		return;
+-static u_long unaligned_chipptr = 0;
++static void *aligned_chipptr;
+ 
+ static inline u_long __init chipalloc(u_long size)
+ {
+-	size += PAGE_SIZE-1;
+-	if (!(unaligned_chipptr = (u_long)amiga_chip_alloc(size,
+-							   "amifb [RAM]"))) {
++	aligned_chipptr = amiga_chip_alloc(size, "amifb [RAM]");
++	if (!aligned_chipptr) {
+ 		pr_err("amifb: No Chip RAM for frame buffer");
+ 		return 0;
  	}
--	pr_err("amiga_chip_free: trying to free nonexistent region at %p\n",
--	       ptr);
-+
-+	size = resource_size(res);
-+	pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
-+	atomic_add(size, &chipavail);
-+	release_resource(res);
-+	kfree(res);
+-	memset((void *)unaligned_chipptr, 0, size);
+-	return PAGE_ALIGN(unaligned_chipptr);
++	memset(aligned_chipptr, 0, size);
++	return (u_long)aligned_chipptr;
  }
- EXPORT_SYMBOL(amiga_chip_free);
+ 
+ static inline void chipfree(void)
+ {
+-	if (unaligned_chipptr)
+-		amiga_chip_free((void *)unaligned_chipptr);
++	if (aligned_chipptr)
++		amiga_chip_free(aligned_chipptr);
+ }
+ 
  
 -- 
 1.7.0.4
