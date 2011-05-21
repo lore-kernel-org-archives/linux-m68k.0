@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/5] m68k/amiga: Chip RAM - Convert from printk() to pr_*()
-Date: Sat, 21 May 2011 21:18:17 +0200
-Message-ID: <1306005500-29259-2-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 4/5] m68k/amiga: Chip RAM - Change chipavail to an atomic_t
+Date: Sat, 21 May 2011 21:18:19 +0200
+Message-ID: <1306005500-29259-4-git-send-email-geert@linux-m68k.org>
 References: <1306005500-29259-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1306005500-29259-1-git-send-email-geert@linux-m68k.org>
@@ -10,92 +10,74 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-and fix a few formattings:
-  - resource sizes are now resource_size_t, use %pR to make it future proof,
-  - use %lu for unsigned long.
+While the core resource handling code is safe, our global counter must
+still be protected against concurrent modifications.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/chipram.c |   28 ++++++++--------------------
- 1 files changed, 8 insertions(+), 20 deletions(-)
+ arch/m68k/amiga/chipram.c |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
 
 diff --git a/arch/m68k/amiga/chipram.c b/arch/m68k/amiga/chipram.c
-index e757fff..9005fa0 100644
+index e5a8dbc..c3fe451 100644
 --- a/arch/m68k/amiga/chipram.c
 +++ b/arch/m68k/amiga/chipram.c
-@@ -47,9 +47,7 @@ void *amiga_chip_alloc(unsigned long size, const char *name)
- 	/* round up */
- 	size = PAGE_ALIGN(size);
+@@ -16,6 +16,7 @@
+ #include <linux/string.h>
+ #include <linux/module.h>
  
--#ifdef DEBUG
--	printk("amiga_chip_alloc: allocate %ld bytes\n", size);
--#endif
-+	pr_debug("amiga_chip_alloc: allocate %lu bytes\n", size);
- 	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
- 	if (!res)
- 		return NULL;
-@@ -61,9 +59,7 @@ void *amiga_chip_alloc(unsigned long size, const char *name)
- 		return NULL;
- 	}
- 	chipavail -= size;
--#ifdef DEBUG
--	printk("amiga_chip_alloc: returning %lx\n", res->start);
--#endif
-+	pr_debug("amiga_chip_alloc: returning %pR\n", res);
- 	return (void *)ZTWO_VADDR(res->start);
- }
- EXPORT_SYMBOL(amiga_chip_alloc);
-@@ -85,20 +81,16 @@ void * __init amiga_chip_alloc_res(unsigned long size, struct resource *res)
- 	/* dmesg into chipmem prefers memory at the safe end */
- 	start = CHIP_PHYSADDR + chipavail - size;
++#include <asm/atomic.h>
+ #include <asm/page.h>
+ #include <asm/amigahw.h>
  
--#ifdef DEBUG
--	printk("amiga_chip_alloc_res: allocate %ld bytes\n", size);
--#endif
-+	pr_debug("amiga_chip_alloc_res: allocate %lu bytes\n", size);
- 	if (allocate_resource(&chipram_res, res, size, start, UINT_MAX,
- 			      PAGE_SIZE, NULL, NULL) < 0) {
--		printk("amiga_chip_alloc_res: first alloc failed!\n");
-+		pr_err("amiga_chip_alloc_res: first alloc failed!\n");
- 		if (allocate_resource(&chipram_res, res, size, 0, UINT_MAX,
- 				      PAGE_SIZE, NULL, NULL) < 0)
- 			return NULL;
- 	}
- 	chipavail -= size;
--#ifdef DEBUG
--	printk("amiga_chip_alloc_res: returning %lx\n", res->start);
--#endif
-+	pr_debug("amiga_chip_alloc_res: returning %pR\n", res);
- 	return (void *)ZTWO_VADDR(res->start);
+@@ -25,7 +26,7 @@ EXPORT_SYMBOL(amiga_chip_size);
+ static struct resource chipram_res = {
+ 	.name = "Chip RAM", .start = CHIP_PHYSADDR
+ };
+-static unsigned long chipavail;
++static atomic_t chipavail;
+ 
+ 
+ void __init amiga_chip_init(void)
+@@ -36,7 +37,7 @@ void __init amiga_chip_init(void)
+ 	chipram_res.end = amiga_chip_size-1;
+ 	request_resource(&iomem_resource, &chipram_res);
+ 
+-	chipavail = amiga_chip_size;
++	atomic_set(&chipavail, amiga_chip_size);
  }
  
-@@ -113,14 +105,12 @@ void amiga_chip_free(void *ptr)
- 			continue;
+ 
+@@ -84,7 +85,7 @@ void *amiga_chip_alloc_res(unsigned long size, struct resource *res)
+ 		return NULL;
+ 	}
+ 
+-	chipavail -= size;
++	atomic_sub(size, &chipavail);
+ 	pr_debug("amiga_chip_alloc_res: returning %pR\n", res);
+ 	return (void *)ZTWO_VADDR(res->start);
+ }
+@@ -101,7 +102,7 @@ void amiga_chip_free(void *ptr)
  		*p = res->sibling;
  		size = res->end-start;
--#ifdef DEBUG
--		printk("amiga_chip_free: free %ld bytes at %p\n", size, ptr);
--#endif
-+		pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
- 		chipavail += size;
+ 		pr_debug("amiga_chip_free: free %lu bytes at %p\n", size, ptr);
+-		chipavail += size;
++		atomic_add(size, &chipavail);
  		kfree(res);
  		return;
  	}
--	printk("amiga_chip_free: trying to free nonexistent region at %p\n",
-+	pr_err("amiga_chip_free: trying to free nonexistent region at %p\n",
- 	       ptr);
- }
- EXPORT_SYMBOL(amiga_chip_free);
-@@ -128,9 +118,7 @@ EXPORT_SYMBOL(amiga_chip_free);
+@@ -113,8 +114,10 @@ EXPORT_SYMBOL(amiga_chip_free);
  
  unsigned long amiga_chip_avail(void)
  {
--#ifdef DEBUG
--	printk("amiga_chip_avail : %ld bytes\n", chipavail);
--#endif
-+	pr_debug("amiga_chip_avail : %lu bytes\n", chipavail);
- 	return chipavail;
+-	pr_debug("amiga_chip_avail : %lu bytes\n", chipavail);
+-	return chipavail;
++	unsigned long n = atomic_read(&chipavail);
++
++	pr_debug("amiga_chip_avail : %lu bytes\n", n);
++	return n;
  }
  EXPORT_SYMBOL(amiga_chip_avail);
+ 
 -- 
 1.7.0.4
