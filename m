@@ -1,40 +1,68 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/4] resources: Add lookup_resource()
-Date: Sat, 21 May 2011 21:39:12 +0200
-Message-ID: <1306006756-32009-1-git-send-email-geert__12332.7678804801$1306006786$gmane$org@linux-m68k.org>
+Subject: [PATCH 2/4] resources: Add lookup_resource()
+Date: Sat, 21 May 2011 21:39:14 +0200
+Message-ID: <1306006756-32009-3-git-send-email-geert@linux-m68k.org>
+References: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1306006756-32009-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-The resource system is a nice existing subsystem to implement simple allocators
-on top of.
-Unfortunately, there's no official method to find an existing resource by a
-resource start address, which is needed for a freeing function that just takes
-the start address of the region to free.
-        
-Currently there are 3 users of the resource subsystem that implement this by
-traversing the resource tree theirselves:
-  - The Amiga Chip RAM allocator on m68k,
-  - iomap()/iounmap() on sparc,
-  - DMA allocation API on sparc.
-They all lack locking of the resource tree, as resource_lock is static in
-kernel/resource.c.
+Add a function to find an existing resource by a resource start address.
+This allows to implement simple allocators (with a malloc/free-alike API)
+on top of the resource system.
 
-Hence this patchset adds lookup_resource() and converts the above users to it.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ include/linux/ioport.h |    1 +
+ kernel/resource.c      |   21 +++++++++++++++++++++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
 
-  [1/4] sparc: _sparc_find_resource() should check for exact matches
-  [2/4] resources: Add lookup_resource()
-  [3/4] m68k/amiga: Chip RAM - Use lookup_resource()
-  [4/4] sparc: iounmap() and *_free_coherent() - Use lookup_resource()
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index e9bb22c..63eb429 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -132,6 +132,7 @@ extern int allocate_resource(struct resource *root, struct resource *new,
+ 						       resource_size_t,
+ 						       resource_size_t),
+ 			     void *alignf_data);
++struct resource *lookup_resource(struct resource *root, resource_size_t start);
+ int adjust_resource(struct resource *res, resource_size_t start,
+ 		    resource_size_t size);
+ resource_size_t resource_alignment(struct resource *res);
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 798e2fa..8d0b479 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -473,6 +473,27 @@ int allocate_resource(struct resource *root, struct resource *new,
+ 
+ EXPORT_SYMBOL(allocate_resource);
+ 
++/**
++ * lookup_resource - find an existing resource by a resource start address
++ * @root: root resource descriptor
++ * @start: resource start address
++ *
++ * Returns a pointer to the resource if found, NULL otherwise
++ */
++struct resource *lookup_resource(struct resource *root, resource_size_t start)
++{
++	struct resource *res;
++
++	read_lock(&resource_lock);
++	for (res = root->child; res; res = res->sibling) {
++		if (res->start == start)
++			break;
++	}
++	read_unlock(&resource_lock);
++
++	return res;
++}
++
+ /*
+  * Insert a resource into the resource tree. If successful, return NULL,
+  * otherwise return the conflicting resource (compare to __request_resource())
+-- 
+1.7.0.4
