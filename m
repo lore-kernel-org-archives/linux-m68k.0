@@ -1,57 +1,42 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/3] fbdev/amifb: Remove superfluous alignment of frame buffer memory
-Date: Sat, 21 May 2011 21:42:56 +0200
-Message-ID: <1306006976-32117-3-git-send-email-geert@linux-m68k.org>
-References: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 1/3] fbdev/amifb: Correct check for video memory size
+Date: Sat, 21 May 2011 21:42:54 +0200
+Message-ID: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Paul Mundt <lethal@linux-sh.org>
 Cc: linux-fbdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-amiga_chip_alloc() already aligns to the PAGE_SIZE
+The check should compare the available memory size with the highest allocation
+value (VIDEOMEMSIZE_*_2M), not with the lowest value (VIDEOMEMSIZE_*_1M).
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/video/amifb.c |   15 +++++++--------
- 1 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/video/amifb.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
-index 1b0185c..5ea6596 100644
+index e5d6b56..603f84f 100644
 --- a/drivers/video/amifb.c
 +++ b/drivers/video/amifb.c
-@@ -2224,24 +2224,23 @@ static int amifb_ioctl(struct fb_info *info,
- 	 * Allocate, Clear and Align a Block of Chip Memory
- 	 */
- 
--static u_long unaligned_chipptr = 0;
-+static void *aligned_chipptr;
- 
- static inline u_long __init chipalloc(u_long size)
- {
--	size += PAGE_SIZE-1;
--	if (!(unaligned_chipptr = (u_long)amiga_chip_alloc(size,
--							   "amifb [RAM]"))) {
-+	aligned_chipptr = amiga_chip_alloc(size, "amifb [RAM]");
-+	if (!aligned_chipptr) {
- 		pr_err("amifb: No Chip RAM for frame buffer");
- 		return 0;
- 	}
--	memset((void *)unaligned_chipptr, 0, size);
--	return PAGE_ALIGN(unaligned_chipptr);
-+	memset(aligned_chipptr, 0, size);
-+	return (u_long)aligned_chipptr;
- }
- 
- static inline void chipfree(void)
- {
--	if (unaligned_chipptr)
--		amiga_chip_free((void *)unaligned_chipptr);
-+	if (aligned_chipptr)
-+		amiga_chip_free(aligned_chipptr);
- }
- 
- 
+@@ -2295,7 +2295,7 @@ default_chipset:
+ 			    defmode = amiga_vblank == 50 ? DEFMODE_PAL
+ 							 : DEFMODE_NTSC;
+ 			if (amiga_chip_avail()-CHIPRAM_SAFETY_LIMIT >
+-			    VIDEOMEMSIZE_ECS_1M)
++			    VIDEOMEMSIZE_ECS_2M)
+ 				fb_info.fix.smem_len = VIDEOMEMSIZE_ECS_2M;
+ 			else
+ 				fb_info.fix.smem_len = VIDEOMEMSIZE_ECS_1M;
+@@ -2312,7 +2312,7 @@ default_chipset:
+ 			maxfmode = TAG_FMODE_4;
+ 			defmode = DEFMODE_AGA;
+ 			if (amiga_chip_avail()-CHIPRAM_SAFETY_LIMIT >
+-			    VIDEOMEMSIZE_AGA_1M)
++			    VIDEOMEMSIZE_AGA_2M)
+ 				fb_info.fix.smem_len = VIDEOMEMSIZE_AGA_2M;
+ 			else
+ 				fb_info.fix.smem_len = VIDEOMEMSIZE_AGA_1M;
 -- 
 1.7.0.4
