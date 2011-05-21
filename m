@@ -1,42 +1,49 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/3] fbdev/amifb: Correct check for video memory size
-Date: Sat, 21 May 2011 21:42:54 +0200
-Message-ID: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 2/3] fbdev/amifb: Do not call panic() if there's not enough Chip RAM
+Date: Sat, 21 May 2011 21:42:55 +0200
+Message-ID: <1306006976-32117-2-git-send-email-geert@linux-m68k.org>
+References: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1306006976-32117-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Paul Mundt <lethal@linux-sh.org>
 Cc: linux-fbdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-The check should compare the available memory size with the highest allocation
-value (VIDEOMEMSIZE_*_2M), not with the lowest value (VIDEOMEMSIZE_*_1M).
+Fail gracefully instead.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/video/amifb.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/amifb.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
-index e5d6b56..603f84f 100644
+index 603f84f..1b0185c 100644
 --- a/drivers/video/amifb.c
 +++ b/drivers/video/amifb.c
-@@ -2295,7 +2295,7 @@ default_chipset:
- 			    defmode = amiga_vblank == 50 ? DEFMODE_PAL
- 							 : DEFMODE_NTSC;
- 			if (amiga_chip_avail()-CHIPRAM_SAFETY_LIMIT >
--			    VIDEOMEMSIZE_ECS_1M)
-+			    VIDEOMEMSIZE_ECS_2M)
- 				fb_info.fix.smem_len = VIDEOMEMSIZE_ECS_2M;
- 			else
- 				fb_info.fix.smem_len = VIDEOMEMSIZE_ECS_1M;
-@@ -2312,7 +2312,7 @@ default_chipset:
- 			maxfmode = TAG_FMODE_4;
- 			defmode = DEFMODE_AGA;
- 			if (amiga_chip_avail()-CHIPRAM_SAFETY_LIMIT >
--			    VIDEOMEMSIZE_AGA_1M)
-+			    VIDEOMEMSIZE_AGA_2M)
- 				fb_info.fix.smem_len = VIDEOMEMSIZE_AGA_2M;
- 			else
- 				fb_info.fix.smem_len = VIDEOMEMSIZE_AGA_1M;
+@@ -2230,8 +2230,10 @@ static inline u_long __init chipalloc(u_long size)
+ {
+ 	size += PAGE_SIZE-1;
+ 	if (!(unaligned_chipptr = (u_long)amiga_chip_alloc(size,
+-							   "amifb [RAM]")))
+-		panic("No Chip RAM for frame buffer");
++							   "amifb [RAM]"))) {
++		pr_err("amifb: No Chip RAM for frame buffer");
++		return 0;
++	}
+ 	memset((void *)unaligned_chipptr, 0, size);
+ 	return PAGE_ALIGN(unaligned_chipptr);
+ }
+@@ -2385,6 +2387,10 @@ default_chipset:
+ 	                    DUMMYSPRITEMEMSIZE+
+ 	                    COPINITSIZE+
+ 	                    4*COPLISTSIZE);
++	if (!chipptr) {
++		err = -ENOMEM;
++		goto amifb_error;
++	}
+ 
+ 	assignchunk(videomemory, u_long, chipptr, fb_info.fix.smem_len);
+ 	assignchunk(spritememory, u_long, chipptr, SPRITEMEMSIZE);
 -- 
 1.7.0.4
