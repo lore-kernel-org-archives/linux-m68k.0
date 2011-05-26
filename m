@@ -1,51 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: linux-2.6_2.6.39-1_amd64.changes ACCEPTED into unstable
-Date: Tue, 24 May 2011 14:22:20 +0200
-Message-ID: <BANLkTimfZ4oHhT7chf=7-gHH_DVMQqHH+g@mail.gmail.com>
-References: <E1QNV5z-0006jD-Ej@franck.debian.org>
-	<20110521122605.GA16345@chumley.earth.sol>
-	<Pine.BSM.4.64L.1105211232060.14234@herc.mirbsd.org>
-	<Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH v3 5/6] m68k: remove duplicate memcpy() implementation
+Date: Thu, 26 May 2011 16:23:53 +1000
+Message-ID: <4DDDF1F9.8050902@snapgear.com>
+References: <1303345491-27888-1-git-send-email-gerg@snapgear.com>	<1303345491-27888-2-git-send-email-gerg@snapgear.com>	<1303345491-27888-3-git-send-email-gerg@snapgear.com>	<1303345491-27888-4-git-send-email-gerg@snapgear.com>	<1303345491-27888-5-git-send-email-gerg@snapgear.com>	<1303345491-27888-6-git-send-email-gerg@snapgear.com>	<BANLkTi=3K=J_UrG5f-sRZDG2oiWcjejkKg@mail.gmail.com>	<m2sjs542hh.fsf@igel.home>	<BANLkTinjZMVF5q11dORUMUDPkuYPPO=qJQ@mail.gmail.com> <m3wrhgwmid.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bw0-f46.google.com ([209.85.214.46]:49855 "EHLO
-	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753934Ab1EXMWW convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 May 2011 08:22:22 -0400
-Received: by bwz15 with SMTP id 15so5570756bwz.19
-        for <linux-m68k@vger.kernel.org>; Tue, 24 May 2011 05:22:20 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:47084 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751037Ab1EZG0c (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 26 May 2011 02:26:32 -0400
+In-Reply-To: <m3wrhgwmid.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-On Sat, May 21, 2011 at 15:28, Thorsten Glaser <tg@mirbsd.de> wrote:
->>main archive in a few days, then. Just saw there was a new upload.
+Hi Andreas, Geert,
+
+On 24/05/11 18:06, Andreas Schwab wrote:
+> Geert Uytterhoeven<geert@linux-m68k.org>  writes:
 >
-> Hm, well. It doesn=E2=80=99t include the =E2=80=9CReserve ST-RAM earl=
-y=E2=80=9D patch =E2=98=B9
-> but we know how to work around the problem, for now, I think.
-> Let=E2=80=99s just hope it=E2=80=99ll end up in 2.6.40 upstream.
+>> What exactly do you mean by "does not support anything less"? It seems it does
+>> restrict instruction generation to 68000 if you ask for it.
+>
+> The point is that Linux/m68k requires 68020+, so compiling for 68000
+> does not make sense (at least back when the gcc configuration was
+> created).
 
-I'm sorry, it won't make 2.6.40, unless someone does the rewrite before=
- Sunday
-(Linus flying to Japan, end-of-merge-window).
+Yeah, used to be true :-)
+This seems very much to me to be a "broken compiler" issue.
 
-Gr{oetje,eeting}s,
+Is it worth putting some form of compiler version limits to protect
+compilation in the m68000 case?  (Probably no need to limit it for
+the existing 68020+ case).
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Are there any other gcc defines that we could use instead?
+We need to check with your old compiler Geert :-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+I really don't want to use CONFIG_MMU here (or in bitops.h either).
+When I work in the ColdFire MMU code this won't be right.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Regards
+Greg
+
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
