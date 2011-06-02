@@ -1,14 +1,22 @@
 From: Matthias Reis <matthias.reis@physik.tu-berlin.de>
 Subject: Support for MMU-less Atari ST
-Date: Thu, 2 Jun 2011 21:16:01 +0200
-Message-ID: <20110602191601.GA2037@matze-K8NF4G-SATA2>
+Date: Thu, 2 Jun 2011 21:25:53 +0200
+Message-ID: <20110602192553.GA2071@matze-K8NF4G-SATA2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.tu-berlin.de ([130.149.7.33]:57254 "EHLO mail.tu-berlin.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752576Ab1FBTqE (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 2 Jun 2011 15:46:04 -0400
+Received: from pd951a75c.dip.t-dialin.net ([217.81.167.92] helo=localhost)
+	by mail.tu-berlin.de (exim-4.75/mailfrontend-2) with esmtpsa [TLSv1:AES128-SHA:128]
+	for <linux-m68k@vger.kernel.org>
+	id 1QSDWk-0001XU-I2; Thu, 02 Jun 2011 21:25:54 +0200
 Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: linux-m68k@vger.kernel.org
 
 Hi all,
 
