@@ -1,95 +1,82 @@
-From: Greg Ungerer <gerg@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH v3 5/6] m68k: remove duplicate memcpy() implementation
-Date: Thu, 2 Jun 2011 15:18:53 +1000
-Message-ID: <4DE71D3D.1080203@snapgear.com>
-References: <1303345491-27888-1-git-send-email-gerg@snapgear.com>	<1303345491-27888-2-git-send-email-gerg@snapgear.com>	<1303345491-27888-3-git-send-email-gerg@snapgear.com>	<1303345491-27888-4-git-send-email-gerg@snapgear.com>	<1303345491-27888-5-git-send-email-gerg@snapgear.com>	<1303345491-27888-6-git-send-email-gerg@snapgear.com>	<BANLkTi=3K=J_UrG5f-sRZDG2oiWcjejkKg@mail.gmail.com>	<m2sjs542hh.fsf@igel.home>	<BANLkTinjZMVF5q11dORUMUDPkuYPPO=qJQ@mail.gmail.com>	<m3wrhgwmid.fsf@linux-m68k.org>	<4DDDF1F9.8050902@snapgear.com> <BANLkTinAJPBc=Dzy8vZOhcGME55vNc49qg@mail.gmail.com>
+Date: Thu, 2 Jun 2011 09:43:09 +0200
+Message-ID: <BANLkTima37d7L_GLEf3iwe3i_o3cSSiUfA@mail.gmail.com>
+References: <1303345491-27888-1-git-send-email-gerg@snapgear.com>
+	<1303345491-27888-2-git-send-email-gerg@snapgear.com>
+	<1303345491-27888-3-git-send-email-gerg@snapgear.com>
+	<1303345491-27888-4-git-send-email-gerg@snapgear.com>
+	<1303345491-27888-5-git-send-email-gerg@snapgear.com>
+	<1303345491-27888-6-git-send-email-gerg@snapgear.com>
+	<BANLkTi=3K=J_UrG5f-sRZDG2oiWcjejkKg@mail.gmail.com>
+	<m2sjs542hh.fsf@igel.home>
+	<BANLkTinjZMVF5q11dORUMUDPkuYPPO=qJQ@mail.gmail.com>
+	<m3wrhgwmid.fsf@linux-m68k.org>
+	<4DDDF1F9.8050902@snapgear.com>
+	<BANLkTinAJPBc=Dzy8vZOhcGME55vNc49qg@mail.gmail.com>
+	<4DE71D3D.1080203@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49000 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755527Ab1FBFTH convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jun 2011 01:19:07 -0400
-In-Reply-To: <BANLkTinAJPBc=Dzy8vZOhcGME55vNc49qg@mail.gmail.com>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:51961 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754284Ab1FBHnK convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jun 2011 03:43:10 -0400
+Received: by bwz15 with SMTP id 15so710536bwz.19
+        for <linux-m68k@vger.kernel.org>; Thu, 02 Jun 2011 00:43:09 -0700 (PDT)
+In-Reply-To: <4DE71D3D.1080203@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@snapgear.com>
 Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-
-Hi Geert,
-
-On 26/05/11 16:38, Geert Uytterhoeven wrote:
-> On Thu, May 26, 2011 at 08:23, Greg Ungerer<gerg@snapgear.com>  wrote=
-:
->> On 24/05/11 18:06, Andreas Schwab wrote:
->>> Geert Uytterhoeven<geert@linux-m68k.org>  =C3=A1writes:
->>>
->>>> What exactly do you mean by "does not support anything less"? It s=
-eems it
->>>> does
->>>> restrict instruction generation to 68000 if you ask for it.
->>>
->>> The point is that Linux/m68k requires 68020+, so compiling for 6800=
-0
->>> does not make sense (at least back when the gcc configuration was
->>> created).
->>
->> Yeah, used to be true :-)
->> This seems very much to me to be a "broken compiler" issue.
->>
->> Is it worth putting some form of compiler version limits to protect
->> compilation in the m68000 case? =C3=A1(Probably no need to limit it =
-for
->> the existing 68020+ case).
->>
->> Are there any other gcc defines that we could use instead?
->> We need to check with your old compiler Geert :-)
->>
->> I really don't want to use CONFIG_MMU here (or in bitops.h either).
->> When I work in the ColdFire MMU code this won't be right.
+On Thu, Jun 2, 2011 at 07:18, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 26/05/11 16:38, Geert Uytterhoeven wrote:
+>> I was more thinking along the lines of !CONFIG_M68000&& =C2=A0!CONFI=
+G_M68010
+>> && =C2=A0!CONFIG_<whatever Coldfire that doesn't support it>.
 >
-> I was more thinking along the lines of !CONFIG_M68000&&  !CONFIG_M680=
-10
-> &&  !CONFIG_<whatever Coldfire that doesn't support it>.
+> Or in this case (and probably most cases) we could just switch
+> to using the same positive logic. So what I had as:
+>
+> #if defined(__mc68020__) || defined(__mc68030__) || \
+> =C2=A0 =C2=A0defined(__mc68040__) || defined(__mc68060__) || defined(=
+__mcpu32__)
+>
+> becomes
+>
+> #if defined(CONFIG_M68020) || defined(CONFIG_M68030) || \
+> =C2=A0 =C2=A0defined(CONFIG_M68040) || defined(CONFIG_M68060) || \
+> =C2=A0 =C2=A0defined(CONFIG_MCPU32)
+>
+> There currently isn't a CONFIG_MCPU32, but I could easily add
+> that (we only have one CPU in that class currently supported,
+> the 68360).
+>
+> The compiler setting won't matter, only what we configured.
+> Sam will probably like this better, he suggested using the
+> kernel configs initially, in
+> http://www.spinics.net/lists/linux-m68k/msg03609.html
 
-Or in this case (and probably most cases) we could just switch
-to using the same positive logic. So what I had as:
+Pure positive logic won't work in the (currently stil pathological) cas=
+e you're
+building a multi-platform kernel, and have both CONFIG_M68020 and a les=
+ser
+one that doesn't support cpu32 instructions selected.
 
-#if defined(__mc68020__) || defined(__mc68030__) || \
-     defined(__mc68040__) || defined(__mc68060__) || defined(__mcpu32__=
-)
+Gr{oetje,eeting}s,
 
-becomes
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-#if defined(CONFIG_M68020) || defined(CONFIG_M68030) || \
-     defined(CONFIG_M68040) || defined(CONFIG_M68060) || \
-     defined(CONFIG_MCPU32)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-There currently isn't a CONFIG_MCPU32, but I could easily add
-that (we only have one CPU in that class currently supported,
-the 68360).
-
-The compiler setting won't matter, only what we configured.
-Sam will probably like this better, he suggested using the
-kernel configs initially, in
-http://www.spinics.net/lists/linux-m68k/msg03609.html
-
-I will prepare some patches that do this and see how they look.
-
-Regards
-Greg
-
-
------------------------------------------------------------------------=
--
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close                             FAX:         +61 7 3217 532=
-3
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
