@@ -1,51 +1,95 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: m68k: Convert to genirq (WIP)
-Date: Tue, 31 May 2011 22:10:57 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1105312208030.3078@ionos>
-References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg> <BANLkTinsMhQZSeO_ujtYEJuOcAa=FRh-6g@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH v3 5/6] m68k: remove duplicate memcpy() implementation
+Date: Thu, 2 Jun 2011 15:18:53 +1000
+Message-ID: <4DE71D3D.1080203@snapgear.com>
+References: <1303345491-27888-1-git-send-email-gerg@snapgear.com>	<1303345491-27888-2-git-send-email-gerg@snapgear.com>	<1303345491-27888-3-git-send-email-gerg@snapgear.com>	<1303345491-27888-4-git-send-email-gerg@snapgear.com>	<1303345491-27888-5-git-send-email-gerg@snapgear.com>	<1303345491-27888-6-git-send-email-gerg@snapgear.com>	<BANLkTi=3K=J_UrG5f-sRZDG2oiWcjejkKg@mail.gmail.com>	<m2sjs542hh.fsf@igel.home>	<BANLkTinjZMVF5q11dORUMUDPkuYPPO=qJQ@mail.gmail.com>	<m3wrhgwmid.fsf@linux-m68k.org>	<4DDDF1F9.8050902@snapgear.com> <BANLkTinAJPBc=Dzy8vZOhcGME55vNc49qg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinsMhQZSeO_ujtYEJuOcAa=FRh-6g@mail.gmail.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49000 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755527Ab1FBFTH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jun 2011 01:19:07 -0400
+In-Reply-To: <BANLkTinAJPBc=Dzy8vZOhcGME55vNc49qg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Geert,
 
-On Tue, 31 May 2011, Geert Uytterhoeven wrote:
-> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Next on my list is Amiga, which will cover autovectored and chained interrupts.
-> 
-> Plain chained interrupts should be handled by calling irq_set_chained_handler()
-> to register an irq_flow_handler_t, and let the handler call
-> generic_handle_irq() for
-> each successive interrupt, right?
-> 
-> However, on Amiga we have interrupts (IRQ_AMIGA_PORTS and
-> IRQ_AMIGA_EXTER) that are a combination of chained (for the CIA interrupt
-> controllers) and shared level interrupts (for motherboard hardware and
-> Zorro expansion
-> boards).
-> But irq_set_chained_handler() sets IRQ_NOREQUEST, i.e. the interrupt cannot
-> be requested anymore via request_irq(), so this rules out using it with shared
-> level interrupts.
-> 
-> What's the preferred way to handle this? Is there are standard way, or should I
-> write my own specialized irq_flow_handler_t that handles both?
-> 
-> In the old scheme, we just registered the chain handlers with
-> request_irq(), so they
-> worked nicely together with the shared level interrupts (cfr.
-> arch/m68k/amiga/cia.c)
+Hi Geert,
 
-You still can setup all those handlers setup via request_irq() and
-handle the demux part by calling generic_handle_irq() from the handler
-which deals with that demux hardware. irq_set_chained_handler() is
-merily an optimization which does not apply to potentially shared
-primary interrupts.
+On 26/05/11 16:38, Geert Uytterhoeven wrote:
+> On Thu, May 26, 2011 at 08:23, Greg Ungerer<gerg@snapgear.com>  wrote=
+:
+>> On 24/05/11 18:06, Andreas Schwab wrote:
+>>> Geert Uytterhoeven<geert@linux-m68k.org>  =C3=A1writes:
+>>>
+>>>> What exactly do you mean by "does not support anything less"? It s=
+eems it
+>>>> does
+>>>> restrict instruction generation to 68000 if you ask for it.
+>>>
+>>> The point is that Linux/m68k requires 68020+, so compiling for 6800=
+0
+>>> does not make sense (at least back when the gcc configuration was
+>>> created).
+>>
+>> Yeah, used to be true :-)
+>> This seems very much to me to be a "broken compiler" issue.
+>>
+>> Is it worth putting some form of compiler version limits to protect
+>> compilation in the m68000 case? =C3=A1(Probably no need to limit it =
+for
+>> the existing 68020+ case).
+>>
+>> Are there any other gcc defines that we could use instead?
+>> We need to check with your old compiler Geert :-)
+>>
+>> I really don't want to use CONFIG_MMU here (or in bitops.h either).
+>> When I work in the ColdFire MMU code this won't be right.
+>
+> I was more thinking along the lines of !CONFIG_M68000&&  !CONFIG_M680=
+10
+> &&  !CONFIG_<whatever Coldfire that doesn't support it>.
 
-Thanks,
+Or in this case (and probably most cases) we could just switch
+to using the same positive logic. So what I had as:
 
-	tglx
+#if defined(__mc68020__) || defined(__mc68030__) || \
+     defined(__mc68040__) || defined(__mc68060__) || defined(__mcpu32__=
+)
+
+becomes
+
+#if defined(CONFIG_M68020) || defined(CONFIG_M68030) || \
+     defined(CONFIG_M68040) || defined(CONFIG_M68060) || \
+     defined(CONFIG_MCPU32)
+
+There currently isn't a CONFIG_MCPU32, but I could easily add
+that (we only have one CPU in that class currently supported,
+the 68360).
+
+The compiler setting won't matter, only what we configured.
+Sam will probably like this better, he suggested using the
+kernel configs initially, in
+http://www.spinics.net/lists/linux-m68k/msg03609.html
+
+I will prepare some patches that do this and see how they look.
+
+Regards
+Greg
+
+
+-----------------------------------------------------------------------=
+-
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
+m
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
+8
+8 Gardner Close                             FAX:         +61 7 3217 532=
+3
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
+m
