@@ -1,29 +1,61 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: Support for MMU-less Atari ST
-Date: Fri, 3 Jun 2011 20:54:25 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1106032052150.193@ibook.intranet>
-References: <20110602192553.GA2071@matze-K8NF4G-SATA2> <4DE88763.4030705@snapgear.com>
+Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
+Date: Fri, 3 Jun 2011 21:02:51 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1106032050380.193@ibook.intranet>
+References: <1307083883-10786-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:35170 "EHLO
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:48679 "EHLO
 	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751834Ab1FCKyW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 06:54:22 -0400
-In-Reply-To: <4DE88763.4030705@snapgear.com>
+	with ESMTP id S1751803Ab1FCLCn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 07:02:43 -0400
+In-Reply-To: <1307083883-10786-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Matthias Reis <matthias.reis@physik.tu-berlin.de>, linux-m68k@vger.kernel.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
 
-On Fri, 3 Jun 2011, Greg Ungerer wrote:
+> 
+> +#if defined(CONFIG_M68000) || defined(CONFIG_MCPU32) || defined(CONFIG_COLDFIRE)
+> +
+> +/*
+> + *     The newer ColdFire family members support a "bitrev" instruction
+> + *     and we can use that to implement a fast ffs. Older Coldfire parts,
+> + *     and normal 68000 parts don't have anything special, so we use the
+> + *     generic functions for those.
+> + */
+> +#if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
+> +    !defined(CONFIG_M68000) && !defined(CONFIG_MCPU32)
 
-> I haven't looked in arch/m68k/kernel/head.S yet, but if that can
-> be made to work without enabling the MMU then that seems like a
-> reasonable start.
-
-I believe that Laurent Vivier was able to accomplish something similar 
-with his Macintosh SE port.
+Aren't the !defined(CONFIG_M68000) && !defined(CONFIG_MCPU32) terms 
+redundant?
 
 Finn
+
+> +static inline int __ffs(int x)
+> +{
+> +        __asm__ __volatile__ ("bitrev %0; ff1 %0"
+> +               : "=d" (x)
+> +               : "0" (x));
+> +        return x;
+> +}
+> +
+> +static inline int ffs(int x)
+> +{
+> +        if (!x)
+> +                return 0;
+> +       return __ffs(x) + 1;
+> +}
+> +
+> +#else
+> +#include <asm-generic/bitops/ffs.h>
+> +#include <asm-generic/bitops/__ffs.h>
+> +#endif
+> +
+> +#include <asm-generic/bitops/fls.h>
+> +#include <asm-generic/bitops/__fls.h>
+> +
+>  #else
+> 
