@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 1/2] m68knommu: create config options for CPU classes
-Date: Fri, 3 Jun 2011 16:43:16 +1000
-Message-ID: <1307083397-9994-3-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 2/2] m68k: use kernel processor defines for conditional optimizations
+Date: Fri, 3 Jun 2011 16:43:17 +1000
+Message-ID: <1307083397-9994-4-git-send-email-gerg@snapgear.com>
 References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:10980 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:11032 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751565Ab1FCGm4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 02:42:56 -0400
+	with ESMTP id S1751862Ab1FCGoN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 02:44:13 -0400
 In-Reply-To: <1307083397-9994-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,208 +18,133 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-There are 3 families of CPU core types that we support in the m68knommu
-architecture branch. They are
+Older m68k-linux compilers will include pre-defined symbols that
+confuse what processor it is being targeted for. For example gcc-4.1.2
+will pre-define __mc68020__ even if you specify the target processor
+as -m68000 on the gcc command line. Newer versions of gcc have this
+corrected.
 
-. traditional 68000
-. CPU32 (which is a 68020 core derivitive without MMU)
-. ColdFire
+In a few places the m68k code uses defined(__mc68020__) for optimizations
+that include instructions that are specific to the CPU 68020 and above.
+When compiling with older compilers this will be true even when we have
+selected to compile for the older 68000 processors.
 
-It will be useful going forward to have a CONFIG_ option defined for
-each type. We already have one for ColdFire (CONFIG_COLDFIRE), so add
-for the other 2 families, CONFIG_M68000 and CONFIG_MCPU32.
+Switch to using the kernel processor defines, CONFIG_M68020 and friends.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/Kconfig.nommu |   52 ++++++++++++++++++++++++++++++++++++++++------
- 1 files changed, 45 insertions(+), 7 deletions(-)
+ arch/m68k/kernel/m68k_ksyms.c |    3 +--
+ arch/m68k/lib/memcpy.c        |    9 ++++-----
+ arch/m68k/lib/memset.c        |    9 ++++-----
+ arch/m68k/lib/muldi3.c        |   21 ++++++++++-----------
+ 4 files changed, 19 insertions(+), 23 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.nommu b/arch/m68k/Kconfig.nommu
-index fc98f9b..b004dc1 100644
---- a/arch/m68k/Kconfig.nommu
-+++ b/arch/m68k/Kconfig.nommu
-@@ -14,6 +14,33 @@ config GENERIC_CLOCKEVENTS
- 	bool
- 	default n
+diff --git a/arch/m68k/kernel/m68k_ksyms.c b/arch/m68k/kernel/m68k_ksyms.c
+index 33f8276..1b7a14d 100644
+--- a/arch/m68k/kernel/m68k_ksyms.c
++++ b/arch/m68k/kernel/m68k_ksyms.c
+@@ -14,8 +14,7 @@ EXPORT_SYMBOL(__ashrdi3);
+ EXPORT_SYMBOL(__lshrdi3);
+ EXPORT_SYMBOL(__muldi3);
  
-+config M68000
-+	bool
-+	help
-+	  The Freescale (was Motorola) 68000 CPU is the first generation of
-+	  the well known M68K family of processors. The CPU core as well as
-+	  being available as a stand alone CPU was also used in many
-+	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
-+	  a paging MMU.
-+
-+config MCPU32
-+	bool
-+	help
-+	  The Freescale (was then Motorola) CPU32 is a CPU core that is
-+	  based on the 68020 processor. For the most part it is used in
-+	  System-On-Chip parts, and does not contain a paging MMU.
-+
-+config COLDFIRE
-+	bool
-+	select GENERIC_GPIO
-+	select ARCH_REQUIRE_GPIOLIB
-+	help
-+	  The Freescale ColdFire family of processors is a modern derivitive
-+	  of the 68000 processor family. They are mainly targeted at embedded
-+	  applications, and are all System-On-Chip (SOC) devices, as opposed
-+	  to stand alone CPUs. They implement a subset of the original 68000
-+	  processor instruction set.
-+
- config COLDFIRE_SW_A7
- 	bool
- 	default n
-@@ -36,26 +63,31 @@ choice
+-#if !defined(__mc68020__) && !defined(__mc68030__) && \
+-    !defined(__mc68040__) && !defined(__mc68060__) && !defined(__mcpu32__)
++#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+ /*
+  * Simpler 68k and ColdFire parts also need a few other gcc functions.
+  */
+diff --git a/arch/m68k/lib/memcpy.c b/arch/m68k/lib/memcpy.c
+index 62182c8..0648893 100644
+--- a/arch/m68k/lib/memcpy.c
++++ b/arch/m68k/lib/memcpy.c
+@@ -34,8 +34,10 @@ void *memcpy(void *to, const void *from, size_t n)
+ 	if (temp) {
+ 		long *lto = to;
+ 		const long *lfrom = from;
+-#if defined(__mc68020__) || defined(__mc68030__) || \
+-    defined(__mc68040__) || defined(__mc68060__) || defined(__mcpu32__)
++#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++		for (; temp; temp--)
++			*lto++ = *lfrom++;
++#else
+ 		asm volatile (
+ 			"	movel %2,%3\n"
+ 			"	andw  #7,%3\n"
+@@ -56,9 +58,6 @@ void *memcpy(void *to, const void *from, size_t n)
+ 			"	jpl   4b"
+ 			: "=a" (lfrom), "=a" (lto), "=d" (temp), "=&d" (temp1)
+ 			: "0" (lfrom), "1" (lto), "2" (temp));
+-#else
+-		for (; temp; temp--)
+-			*lto++ = *lfrom++;
+ #endif
+ 		to = lto;
+ 		from = lfrom;
+diff --git a/arch/m68k/lib/memset.c b/arch/m68k/lib/memset.c
+index f649e6a..8a7639f 100644
+--- a/arch/m68k/lib/memset.c
++++ b/arch/m68k/lib/memset.c
+@@ -32,8 +32,10 @@ void *memset(void *s, int c, size_t count)
+ 	temp = count >> 2;
+ 	if (temp) {
+ 		long *ls = s;
+-#if defined(__mc68020__) || defined(__mc68030__) || \
+-    defined(__mc68040__) || defined(__mc68060__) || defined(__mcpu32__)
++#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++		for (; temp; temp--)
++			*ls++ = c;
++#else
+ 		size_t temp1;
+ 		asm volatile (
+ 			"	movel %1,%2\n"
+@@ -55,9 +57,6 @@ void *memset(void *s, int c, size_t count)
+ 			"	jpl   1b"
+ 			: "=a" (ls), "=d" (temp), "=&d" (temp1)
+ 			: "d" (c), "0" (ls), "1" (temp));
+-#else
+-		for (; temp; temp--)
+-			*ls++ = c;
+ #endif
+ 		s = ls;
+ 	}
+diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
+index 079bafc..79e928a 100644
+--- a/arch/m68k/lib/muldi3.c
++++ b/arch/m68k/lib/muldi3.c
+@@ -19,17 +19,7 @@ along with GNU CC; see the file COPYING.  If not, write to
+ the Free Software Foundation, 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.  */
  
- config M68328
- 	bool "MC68328"
-+	select M68000
- 	help
- 	  Motorola 68328 processor support.
- 
- config M68EZ328
- 	bool "MC68EZ328"
-+	select M68000
- 	help
- 	  Motorola 68EX328 processor support.
- 
- config M68VZ328
- 	bool "MC68VZ328"
-+	select M68000
- 	help
- 	  Motorola 68VZ328 processor support.
- 
- config M68360
- 	bool "MC68360"
-+	select MCPU32
- 	help
- 	  Motorola 68360 processor support.
- 
- config M5206
- 	bool "MCF5206"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_MBAR
- 	help
-@@ -63,6 +95,7 @@ config M5206
- 
- config M5206e
- 	bool "MCF5206e"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_MBAR
- 	help
-@@ -70,6 +103,7 @@ config M5206e
- 
- config M520x
- 	bool "MCF520x"
-+	select COLDFIRE
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_CACHE_SPLIT
- 	help
-@@ -77,6 +111,7 @@ config M520x
- 
- config M523x
- 	bool "MCF523x"
-+	select COLDFIRE
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
-@@ -85,6 +120,7 @@ config M523x
- 
- config M5249
- 	bool "MCF5249"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_MBAR
- 	help
-@@ -92,6 +128,7 @@ config M5249
- 
- config M5271
- 	bool "MCF5271"
-+	select COLDFIRE
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
- 	help
-@@ -99,6 +136,7 @@ config M5271
- 
- config M5272
- 	bool "MCF5272"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_MBAR
- 	help
-@@ -106,6 +144,7 @@ config M5272
- 
- config M5275
- 	bool "MCF5275"
-+	select COLDFIRE
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
- 	help
-@@ -113,6 +152,7 @@ config M5275
- 
- config M528x
- 	bool "MCF528x"
-+	select COLDFIRE
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_CACHE_SPLIT
- 	select HAVE_IPSBAR
-@@ -121,6 +161,7 @@ config M528x
- 
- config M5307
- 	bool "MCF5307"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
-@@ -129,12 +170,14 @@ config M5307
- 
- config M532x
- 	bool "MCF532x"
-+	select COLDFIRE
- 	select HAVE_CACHE_CB
- 	help
- 	  Freescale (Motorola) ColdFire 532x processor support.
- 
- config M5407
- 	bool "MCF5407"
-+	select COLDFIRE
- 	select COLDFIRE_SW_A7
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
-@@ -143,6 +186,7 @@ config M5407
- 
- config M547x
- 	bool "MCF547x"
-+	select COLDFIRE
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
- 	help
-@@ -150,6 +194,7 @@ config M547x
- 
- config M548x
- 	bool "MCF548x"
-+	select COLDFIRE
- 	select HAVE_CACHE_CB
- 	select HAVE_MBAR
- 	help
-@@ -168,13 +213,6 @@ config M54xx
- 	depends on (M548x || M547x)
- 	default y
- 
--config COLDFIRE
--	bool
--	depends on (M5206 || M5206e || M520x || M523x || M5249 || M527x || M5272 || M528x || M5307 || M532x || M5407 || M54xx)
--	select GENERIC_GPIO
--	select ARCH_REQUIRE_GPIOLIB
--	default y
+-#if defined(__mc68020__) || defined(__mc68030__) || \
+-    defined(__mc68040__) || defined(__mc68060__) || defined(__mcpu32__)
 -
- config CLOCK_SET
- 	bool "Enable setting the CPU clock frequency"
- 	default n
+-#define umul_ppmm(w1, w0, u, v) \
+-  __asm__ ("mulu%.l %3,%1:%0"						\
+-           : "=d" ((USItype)(w0)),					\
+-             "=d" ((USItype)(w1))					\
+-           : "%0" ((USItype)(u)),					\
+-             "dmi" ((USItype)(v)))
+-
+-#else
++#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+ 
+ #define SI_TYPE_SIZE 32
+ #define __BITS4 (SI_TYPE_SIZE / 4)
+@@ -61,6 +51,15 @@ Boston, MA 02111-1307, USA.  */
+     (w0) = __ll_lowpart (__x1) * __ll_B + __ll_lowpart (__x0);		\
+   } while (0)
+ 
++#else
++
++#define umul_ppmm(w1, w0, u, v) \
++  __asm__ ("mulu%.l %3,%1:%0"						\
++           : "=d" ((USItype)(w0)),					\
++             "=d" ((USItype)(w1))					\
++           : "%0" ((USItype)(u)),					\
++             "dmi" ((USItype)(v)))
++
+ #endif
+ 
+ #define __umulsidi3(u, v) \
 -- 
 1.7.0.4
