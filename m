@@ -1,79 +1,103 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
-Date: Fri, 3 Jun 2011 21:10:56 +1000
-Message-ID: <4DE8C140.4010007@snapgear.com>
-References: <1307083883-10786-1-git-send-email-gerg@snapgear.com> <alpine.OSX.2.00.1106032050380.193@ibook.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] m68knommu: create config options for CPU classes
+Date: Fri, 3 Jun 2011 13:15:02 +0200
+Message-ID: <BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
+References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>
+	<1307083397-9994-3-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:60842 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751834Ab1FCLLK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 07:11:10 -0400
-In-Reply-To: <alpine.OSX.2.00.1106032050380.193@ibook.intranet>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:62604 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751619Ab1FCLPE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2011 07:15:04 -0400
+Received: by fxm17 with SMTP id 17so1232339fxm.19
+        for <linux-m68k@vger.kernel.org>; Fri, 03 Jun 2011 04:15:02 -0700 (PDT)
+In-Reply-To: <1307083397-9994-3-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
+To: gerg@snapgear.com
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-
-Hi Finn,
-
-On 03/06/11 21:02, Finn Thain wrote:
->> +#if defined(CONFIG_M68000) || defined(CONFIG_MCPU32) || defined(CONFIG_COLDFIRE)
->> +
->> +/*
->> + *     The newer ColdFire family members support a "bitrev" instruction
->> + *     and we can use that to implement a fast ffs. Older Coldfire parts,
->> + *     and normal 68000 parts don't have anything special, so we use the
->> + *     generic functions for those.
->> + */
->> +#if (defined(__mcfisaaplus__) || defined(__mcfisac__))&&  \
->> +    !defined(CONFIG_M68000)&&  !defined(CONFIG_MCPU32)
+On Fri, Jun 3, 2011 at 08:43,  <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
 >
-> Aren't the !defined(CONFIG_M68000)&&  !defined(CONFIG_MCPU32) terms
-> redundant?
-
-No, not in this case.
-
-If we were compiling an image that could be run on any of ColdFire
-or 68000 or CPU32 then we cannot compile in these specific ColdFire
-optimized ffs and __ffs. The bitrev instruction only exists on ColdFire
-and those that implement the ISA A+ and above instruction sets.
-So to use them we must be only compiling for CONFIG_COLDFIRE.
-
-Regards
-Greg
-
-
-> Finn
+> There are 3 families of CPU core types that we support in the m68knom=
+mu
+> architecture branch. They are
 >
->> +static inline int __ffs(int x)
->> +{
->> +        __asm__ __volatile__ ("bitrev %0; ff1 %0"
->> +               : "=d" (x)
->> +               : "0" (x));
->> +        return x;
->> +}
->> +
->> +static inline int ffs(int x)
->> +{
->> +        if (!x)
->> +                return 0;
->> +       return __ffs(x) + 1;
->> +}
->> +
->> +#else
->> +#include<asm-generic/bitops/ffs.h>
->> +#include<asm-generic/bitops/__ffs.h>
->> +#endif
->> +
->> +#include<asm-generic/bitops/fls.h>
->> +#include<asm-generic/bitops/__fls.h>
->> +
->>   #else
->>
+> . traditional 68000
+> . CPU32 (which is a 68020 core derivitive without MMU)
+
+derivative ... and without bitfield instructions.
+
+> . ColdFire
+
+> It will be useful going forward to have a CONFIG_ option defined for
+> each type. We already have one for ColdFire (CONFIG_COLDFIRE), so add
+> for the other 2 families, CONFIG_M68000 and CONFIG_MCPU32.
+
+I'm wondering whether it would help to have Kconfig symbols for the
+instruction capabilities as well.
+Then you have to document these capabilities in the kconfig definition =
+only,
+and can use single (e.g.) #ifdef CONFIG_CPU_HAS_BITFIELDS tests everywh=
+ere
+else, instead of duplicating the logic at every #ifdef.
+
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+> ---
+> =C2=A0arch/m68k/Kconfig.nommu | =C2=A0 52 +++++++++++++++++++++++++++=
++++++++++++++------
+> =C2=A01 files changed, 45 insertions(+), 7 deletions(-)
 >
+> diff --git a/arch/m68k/Kconfig.nommu b/arch/m68k/Kconfig.nommu
+> index fc98f9b..b004dc1 100644
+> --- a/arch/m68k/Kconfig.nommu
+> +++ b/arch/m68k/Kconfig.nommu
+> @@ -14,6 +14,33 @@ config GENERIC_CLOCKEVENTS
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0bool
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0default n
 >
->
+> +config M68000
+> + =C2=A0 =C2=A0 =C2=A0 bool
+> + =C2=A0 =C2=A0 =C2=A0 help
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 The Freescale (was Motorola) 68000 CPU =
+is the first generation of
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 the well known M68K family of processor=
+s. The CPU core as well as
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 being available as a stand alone CPU wa=
+s also used in many
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 System-On-Chip devices (eg 68328, 68302=
+, etc). It does not contain
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 a paging MMU.
+> +
+> +config MCPU32
+> + =C2=A0 =C2=A0 =C2=A0 bool
+> + =C2=A0 =C2=A0 =C2=A0 help
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 The Freescale (was then Motorola) CPU32=
+ is a CPU core that is
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 based on the 68020 processor. For the m=
+ost part it is used in
+
+without bitfield instructions.
+
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 System-On-Chip parts, and does not cont=
+ain a paging MMU.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
