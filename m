@@ -1,182 +1,69 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] scsi/sun3: Split NEXT() for lvalues/rvalues
-Date: Mon,  6 Jun 2011 22:52:56 +0200
-Message-ID: <1307393576-1318-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH/RFC] m68k/bitops: Make bitmap data pointer of atomic ops volatile
+Date: Tue, 7 Jun 2011 09:09:45 +0200
+Message-ID: <BANLkTin8XNA+ocdjUhtzVOQNxOGFsYa1mA__29334.4536134557$1307430597$gmane$org@mail.gmail.com>
+References: <1307390873-29687-1-git-send-email-geert@linux-m68k.org>
+	<201106062211.15247.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-scsi-owner@vger.kernel.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: "James E.J. Bottomley" <JBottomley@parallels.com>
-Cc: Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <201106062211.15247.arnd@arndb.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-m68k@lists.linux-m68k.org, Akinobu Mita <akinobu.mita@gmail.com>, linux-kernel@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>, linux-ide@vger.kernel.org, dri-devel@lists.freedesktop.org
 
-Using the current NEXT() macro for both lvalues and rvalues gives:
+On Mon, Jun 6, 2011 at 22:11, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Monday 06 June 2011 22:07:53 Geert Uytterhoeven wrote:
+>>
+>> This fixes a.o.
+>>
+>> drivers/ide/ide-io.c: In function =E2=80=98ide_lock_host=E2=80=99:
+>> drivers/ide/ide-io.c:415: warning: passing argument 2 of =E2=80=98__=
+constant_test_and_set_bit=E2=80=99 discards qualifiers from pointer tar=
+get type
+>> drivers/ide/ide-io.c:415: warning: passing argument 2 of =E2=80=98__=
+generic_test_and_set_bit=E2=80=99 discards qualifiers from pointer targ=
+et type
+>>
+>> Suggested-by: Ben Hutchings <ben@decadent.org.uk>
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> I think the correct fix would be to mark the variable not volatile, a=
+s it
+> clearly has no business be marked as such. That doesn't mean your pat=
+ch
 
-In file included from drivers/scsi/sun3_scsi.c:623:
-drivers/scsi/sun3_NCR5380.c: In function =E2=80=98NCR5380_queue_command=
-_lck=E2=80=99:
-drivers/scsi/sun3_NCR5380.c:993: warning: assignment discards qualifier=
-s from pointer target type
-drivers/scsi/sun3_NCR5380.c: In function =E2=80=98NCR5380_main=E2=80=99=
-:
-drivers/scsi/sun3_NCR5380.c:1147: warning: assignment discards qualifie=
-rs from pointer target type
-drivers/scsi/sun3_NCR5380.c: In function =E2=80=98NCR5380_information_t=
-ransfer=E2=80=99:
-drivers/scsi/sun3_NCR5380.c:2277: warning: assignment discards qualifie=
-rs from pointer target type
-drivers/scsi/sun3_NCR5380.c:2333: warning: assignment discards qualifie=
-rs from pointer target type
+You mean the host_busy variable in the IDE code?
+That would also apply to context_flag in the DRM code:
 
-Change NEXT() to operate on rvalues only(), and introduce SET_NEXT() to
-operate on lvalues, as is done in drivers/scsi/atari_NCR5380.c.
+drivers/gpu/drm/drm_context.c:233: warning: passing argument 2 of
+=E2=80=98__constant_test_and_set_bit=E2=80=99 discards qualifiers from =
+pointer target
+type
+drivers/gpu/drm/drm_context.c:233: warning: passing argument 2 of
+=E2=80=98__generic_test_and_set_bit=E2=80=99 discards qualifiers from p=
+ointer target
+type
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/scsi/sun3_NCR5380.c |   31 ++++++++++++++++---------------
- 1 files changed, 16 insertions(+), 15 deletions(-)
+> is wrong, though. It probably doesn't hurt to do both.
 
-diff --git a/drivers/scsi/sun3_NCR5380.c b/drivers/scsi/sun3_NCR5380.c
-index 07eaef1..29c8246 100644
---- a/drivers/scsi/sun3_NCR5380.c
-+++ b/drivers/scsi/sun3_NCR5380.c
-@@ -266,8 +266,9 @@ static struct scsi_host_template *the_template =3D =
-NULL;
- 	(struct NCR5380_hostdata *)(in)->hostdata
- #define	HOSTDATA(in) ((struct NCR5380_hostdata *)(in)->hostdata)
-=20
--#define	NEXT(cmd)	(*(struct scsi_cmnd **)&((cmd)->host_scribble))
--#define	NEXTADDR(cmd)	((struct scsi_cmnd **)&((cmd)->host_scribble))
-+#define	NEXT(cmd)		((struct scsi_cmnd *)(cmd)->host_scribble)
-+#define	SET_NEXT(cmd, next)	((cmd)->host_scribble =3D (void *)(next))
-+#define	NEXTADDR(cmd)		((struct scsi_cmnd **)&((cmd)->host_scribble))
-=20
- #define	HOSTNO		instance->host_no
- #define	H_NO(cmd)	(cmd)->device->host->host_no
-@@ -962,7 +963,7 @@ static int NCR5380_queue_command_lck(struct scsi_cm=
-nd *cmd,
-      * in a queue=20
-      */
-=20
--    NEXT(cmd) =3D NULL;
-+    SET_NEXT(cmd, NULL);
-     cmd->scsi_done =3D done;
-=20
-     cmd->result =3D 0;
-@@ -990,14 +991,14 @@ static int NCR5380_queue_command_lck(struct scsi_=
-cmnd *cmd,
-      */
-     if (!(hostdata->issue_queue) || (cmd->cmnd[0] =3D=3D REQUEST_SENSE=
-)) {
- 	LIST(cmd, hostdata->issue_queue);
--	NEXT(cmd) =3D hostdata->issue_queue;
-+	SET_NEXT(cmd, hostdata->issue_queue);
- 	hostdata->issue_queue =3D cmd;
-     } else {
- 	for (tmp =3D (struct scsi_cmnd *)hostdata->issue_queue;
- 	     NEXT(tmp); tmp =3D NEXT(tmp))
- 	    ;
- 	LIST(cmd, tmp);
--	NEXT(tmp) =3D cmd;
-+	SET_NEXT(tmp, cmd);
-     }
-=20
-     local_irq_restore(flags);
-@@ -1105,12 +1106,12 @@ static void NCR5380_main (struct work_struct *b=
-l)
- 		    local_irq_disable();
- 		    if (prev) {
- 		        REMOVE(prev, NEXT(prev), tmp, NEXT(tmp));
--			NEXT(prev) =3D NEXT(tmp);
-+			SET_NEXT(prev, NEXT(tmp));
- 		    } else {
- 		        REMOVE(-1, hostdata->issue_queue, tmp, NEXT(tmp));
- 			hostdata->issue_queue =3D NEXT(tmp);
- 		    }
--		    NEXT(tmp) =3D NULL;
-+		    SET_NEXT(tmp, NULL);
- 		   =20
- 		    /* reenable interrupts after finding one */
- 		    local_irq_restore(flags);
-@@ -1144,7 +1145,7 @@ static void NCR5380_main (struct work_struct *bl)
- 		    } else {
- 			local_irq_disable();
- 			LIST(tmp, hostdata->issue_queue);
--			NEXT(tmp) =3D hostdata->issue_queue;
-+			SET_NEXT(tmp, hostdata->issue_queue);
- 			hostdata->issue_queue =3D tmp;
- #ifdef SUPPORT_TAGS
- 			cmd_free_tag( tmp );
-@@ -2274,7 +2275,7 @@ static void NCR5380_information_transfer (struct =
-Scsi_Host *instance)
-=20
- 			local_irq_save(flags);
- 			LIST(cmd,hostdata->issue_queue);
--			NEXT(cmd) =3D hostdata->issue_queue;
-+			SET_NEXT(cmd, hostdata->issue_queue);
- 		        hostdata->issue_queue =3D (struct scsi_cmnd *) cmd;
- 		        local_irq_restore(flags);
- 			QU_PRINTK("scsi%d: REQUEST SENSE added to head of "
-@@ -2330,7 +2331,7 @@ static void NCR5380_information_transfer (struct =
-Scsi_Host *instance)
- 		    local_irq_save(flags);
- 		    cmd->device->disconnect =3D 1;
- 		    LIST(cmd,hostdata->disconnected_queue);
--		    NEXT(cmd) =3D hostdata->disconnected_queue;
-+		    SET_NEXT(cmd, hostdata->disconnected_queue);
- 		    hostdata->connected =3D NULL;
- 		    hostdata->disconnected_queue =3D cmd;
- 		    local_irq_restore(flags);
-@@ -2589,12 +2590,12 @@ static void NCR5380_reselect (struct Scsi_Host =
-*instance)
- 	    ) {
- 	    if (prev) {
- 		REMOVE(prev, NEXT(prev), tmp, NEXT(tmp));
--		NEXT(prev) =3D NEXT(tmp);
-+		SET_NEXT(prev, NEXT(tmp));
- 	    } else {
- 		REMOVE(-1, hostdata->disconnected_queue, tmp, NEXT(tmp));
- 		hostdata->disconnected_queue =3D NEXT(tmp);
- 	    }
--	    NEXT(tmp) =3D NULL;
-+	    SET_NEXT(tmp, NULL);
- 	    break;
- 	}
-     }
-@@ -2762,7 +2763,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
- 	if (cmd =3D=3D tmp) {
- 	    REMOVE(5, *prev, tmp, NEXT(tmp));
- 	    (*prev) =3D NEXT(tmp);
--	    NEXT(tmp) =3D NULL;
-+	    SET_NEXT(tmp, NULL);
- 	    tmp->result =3D DID_ABORT << 16;
- 	    local_irq_restore(flags);
- 	    ABRT_PRINTK("scsi%d: abort removed command from issue queue.\n",
-@@ -2835,7 +2836,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
- 		    if (cmd =3D=3D tmp) {
- 		    REMOVE(5, *prev, tmp, NEXT(tmp));
- 		    *prev =3D NEXT(tmp);
--		    NEXT(tmp) =3D NULL;
-+		    SET_NEXT(tmp, NULL);
- 		    tmp->result =3D DID_ABORT << 16;
- 		    /* We must unlock the tag/LUN immediately here, since the
- 		     * target goes to BUS FREE and doesn't send us another
-@@ -2943,7 +2944,7 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cm=
-d)
-=20
-     for (i =3D 0; (cmd =3D disconnected_queue); ++i) {
- 	disconnected_queue =3D NEXT(cmd);
--	NEXT(cmd) =3D NULL;
-+	SET_NEXT(cmd, NULL);
- 	cmd->result =3D (cmd->result & 0xffff) | (DID_RESET << 16);
- 	cmd->scsi_done( cmd );
-     }
---=20
-1.7.0.4
+asm-generic/bitops/atomic.h has the volatiles everywhere. That's why
+I'm wondering.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
 --
-To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
