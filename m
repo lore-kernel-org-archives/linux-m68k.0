@@ -1,35 +1,97 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH/RFC] m68k/bitops: Make bitmap data pointer of atomic ops volatile
-Date: Tue, 7 Jun 2011 15:56:58 +0200
-Message-ID: <201106071556.58381.arnd__30659.6006885686$1307455034$gmane$org@arndb.de>
-References: <1307390873-29687-1-git-send-email-geert@linux-m68k.org> <201106071322.29884.arnd@arndb.de> <20110607133500.GX29924@decadent.org.uk>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: fix linker script exported name sections
+Date: Wed, 8 Jun 2011 14:14:28 +1000
+Message-ID: <1307506468-18189-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20110607133500.GX29924@decadent.org.uk>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:29643 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750759Ab1FHEUS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Jun 2011 00:20:18 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Akinobu Mita <akinobu.mita@gmail.com>, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, dri-devel@lists.freedesktop.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Tuesday 07 June 2011, Ben Hutchings wrote:
-> On Tue, Jun 07, 2011 at 01:22:29PM +0200, Arnd Bergmann wrote:
+From: Greg Ungerer <gerg@uclinux.org>
 
-> > I guess what happened is that some variables are traditionally marked
-> > as volatile although they shouldn't be, and most architectures have
-> > adapted their bitops to make the warnings go away. If you see more
-> > warnings of that kind, it's probably fine to just do the same on m68k.
-> > The volatile modifier doesn't really hurt in this case.
->  
-> These operations are required to be atomic and therefore they
-> must be suitable for use with volatile-qualified variables.
+The recent commit titled "module: Sort exported symbols" (f02e8a65)
+changed the exported symbol name sections. Bring the m68knommu linker
+script into line with those changes - including the sorting of the
+symbol names.
 
-As I said, it's not wrong for them to have a volatile qualifier in the
-argument list. However, there should also not be the need for the
-qualifier in any of the callers, because the bitops only work if
-all accesses to the data are done through bitops functions, and that
-means that the qualifier on the variable is completely meaningless.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/vmlinux.lds_no.S |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
 
-	Arnd
+diff --git a/arch/m68k/kernel/vmlinux.lds_no.S b/arch/m68k/kernel/vmlinux.lds_no.S
+index f4d715c..7dc4087 100644
+--- a/arch/m68k/kernel/vmlinux.lds_no.S
++++ b/arch/m68k/kernel/vmlinux.lds_no.S
+@@ -84,52 +84,52 @@ SECTIONS {
+ 		/* Kernel symbol table: Normal symbols */
+ 		. = ALIGN(4);
+ 		__start___ksymtab = .;
+-		*(__ksymtab)
++		*(SORT(___ksymtab+*))
+ 		__stop___ksymtab = .;
+ 
+ 		/* Kernel symbol table: GPL-only symbols */
+ 		__start___ksymtab_gpl = .;
+-		*(__ksymtab_gpl)
++		*(SORT(___ksymtab_gpl+*))
+ 		__stop___ksymtab_gpl = .;
+ 
+ 		/* Kernel symbol table: Normal unused symbols */
+ 		__start___ksymtab_unused = .;
+-		*(__ksymtab_unused)
++		*(SORT(___ksymtab_unused+*))
+ 		__stop___ksymtab_unused = .;
+ 
+ 		/* Kernel symbol table: GPL-only unused symbols */
+ 		__start___ksymtab_unused_gpl = .;
+-		*(__ksymtab_unused_gpl)
++		*(SORT(___ksymtab_unused_gpl+*))
+ 		__stop___ksymtab_unused_gpl = .;
+ 
+ 		/* Kernel symbol table: GPL-future symbols */
+ 		__start___ksymtab_gpl_future = .;
+-		*(__ksymtab_gpl_future)
++		*(SORT(___ksymtab_gpl_future+*))
+ 		__stop___ksymtab_gpl_future = .;
+ 
+ 		/* Kernel symbol table: Normal symbols */
+ 		__start___kcrctab = .;
+-		*(__kcrctab)
++		*(SORT(___kcrctab+*))
+ 		__stop___kcrctab = .;
+ 
+ 		/* Kernel symbol table: GPL-only symbols */
+ 		__start___kcrctab_gpl = .;
+-		*(__kcrctab_gpl)
++		*(SORT(___kcrctab_gpl+*))
+ 		__stop___kcrctab_gpl = .;
+ 
+ 		/* Kernel symbol table: Normal unused symbols */
+ 		__start___kcrctab_unused = .;
+-		*(__kcrctab_unused)
++		*(SORT(___kcrctab_unused+*))
+ 		__stop___kcrctab_unused = .;
+ 
+ 		/* Kernel symbol table: GPL-only unused symbols */
+ 		__start___kcrctab_unused_gpl = .;
+-		*(__kcrctab_unused_gpl)
++		*(SORT(___kcrctab_unused_gpl+*))
+ 		__stop___kcrctab_unused_gpl = .;
+ 
+ 		/* Kernel symbol table: GPL-future symbols */
+ 		__start___kcrctab_gpl_future = .;
+-		*(__kcrctab_gpl_future)
++		*(SORT(___kcrctab_gpl_future+*))
+ 		__stop___kcrctab_gpl_future = .;
+ 
+ 		/* Kernel symbol table: strings */
+-- 
+1.7.0.4
