@@ -1,97 +1,69 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: fix linker script exported name sections
-Date: Wed, 8 Jun 2011 14:14:28 +1000
-Message-ID: <1307506468-18189-1-git-send-email-gerg@snapgear.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/2] m68knommu: create config options for CPU classes
+Date: Fri, 10 Jun 2011 13:56:13 +1000
+Message-ID: <4DF195DD.7000105@snapgear.com>
+References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>	<1307083397-9994-3-git-send-email-gerg@snapgear.com> <BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:29643 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:43256 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750759Ab1FHEUS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Jun 2011 00:20:18 -0400
+	with ESMTP id S1751690Ab1FJD4N (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Jun 2011 23:56:13 -0400
+In-Reply-To: <BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-The recent commit titled "module: Sort exported symbols" (f02e8a65)
-changed the exported symbol name sections. Bring the m68knommu linker
-script into line with those changes - including the sorting of the
-symbol names.
+Hi Geert,
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/kernel/vmlinux.lds_no.S |   20 ++++++++++----------
- 1 files changed, 10 insertions(+), 10 deletions(-)
+Are you happy enough with these patches the way they are?
 
-diff --git a/arch/m68k/kernel/vmlinux.lds_no.S b/arch/m68k/kernel/vmlinux.lds_no.S
-index f4d715c..7dc4087 100644
---- a/arch/m68k/kernel/vmlinux.lds_no.S
-+++ b/arch/m68k/kernel/vmlinux.lds_no.S
-@@ -84,52 +84,52 @@ SECTIONS {
- 		/* Kernel symbol table: Normal symbols */
- 		. = ALIGN(4);
- 		__start___ksymtab = .;
--		*(__ksymtab)
-+		*(SORT(___ksymtab+*))
- 		__stop___ksymtab = .;
- 
- 		/* Kernel symbol table: GPL-only symbols */
- 		__start___ksymtab_gpl = .;
--		*(__ksymtab_gpl)
-+		*(SORT(___ksymtab_gpl+*))
- 		__stop___ksymtab_gpl = .;
- 
- 		/* Kernel symbol table: Normal unused symbols */
- 		__start___ksymtab_unused = .;
--		*(__ksymtab_unused)
-+		*(SORT(___ksymtab_unused+*))
- 		__stop___ksymtab_unused = .;
- 
- 		/* Kernel symbol table: GPL-only unused symbols */
- 		__start___ksymtab_unused_gpl = .;
--		*(__ksymtab_unused_gpl)
-+		*(SORT(___ksymtab_unused_gpl+*))
- 		__stop___ksymtab_unused_gpl = .;
- 
- 		/* Kernel symbol table: GPL-future symbols */
- 		__start___ksymtab_gpl_future = .;
--		*(__ksymtab_gpl_future)
-+		*(SORT(___ksymtab_gpl_future+*))
- 		__stop___ksymtab_gpl_future = .;
- 
- 		/* Kernel symbol table: Normal symbols */
- 		__start___kcrctab = .;
--		*(__kcrctab)
-+		*(SORT(___kcrctab+*))
- 		__stop___kcrctab = .;
- 
- 		/* Kernel symbol table: GPL-only symbols */
- 		__start___kcrctab_gpl = .;
--		*(__kcrctab_gpl)
-+		*(SORT(___kcrctab_gpl+*))
- 		__stop___kcrctab_gpl = .;
- 
- 		/* Kernel symbol table: Normal unused symbols */
- 		__start___kcrctab_unused = .;
--		*(__kcrctab_unused)
-+		*(SORT(___kcrctab_unused+*))
- 		__stop___kcrctab_unused = .;
- 
- 		/* Kernel symbol table: GPL-only unused symbols */
- 		__start___kcrctab_unused_gpl = .;
--		*(__kcrctab_unused_gpl)
-+		*(SORT(___kcrctab_unused_gpl+*))
- 		__stop___kcrctab_unused_gpl = .;
- 
- 		/* Kernel symbol table: GPL-future symbols */
- 		__start___kcrctab_gpl_future = .;
--		*(__kcrctab_gpl_future)
-+		*(SORT(___kcrctab_gpl_future+*))
- 		__stop___kcrctab_gpl_future = .;
- 
- 		/* Kernel symbol table: strings */
--- 
-1.7.0.4
+The 3 files they directly touch (arch/m68k/lib/memset.c,
+memcpy.c and muldi3.c) are not changes based on presence of
+bitfield instructions. They should resolve the problem of
+building with older compilers.
+
+I have these 2 and the vmlinux.lds_no.S fix to send to
+Linus real soon, for 3.0.0.
+
+Regards
+Greg
+
+
+
+On 03/06/11 21:15, Geert Uytterhoeven wrote:
+> On Fri, Jun 3, 2011 at 08:43,<gerg@snapgear.com>  wrote:
+>> From: Greg Ungerer<gerg@uclinux.org>
+>>
+>> There are 3 families of CPU core types that we support in the m68knommu
+>> architecture branch. They are
+>>
+>> . traditional 68000
+>> . CPU32 (which is a 68020 core derivitive without MMU)
+>
+> derivative ... and without bitfield instructions.
+>
+>> . ColdFire
+>
+>> It will be useful going forward to have a CONFIG_ option defined for
+>> each type. We already have one for ColdFire (CONFIG_COLDFIRE), so add
+>> for the other 2 families, CONFIG_M68000 and CONFIG_MCPU32.
+>
+> I'm wondering whether it would help to have Kconfig symbols for the
+> instruction capabilities as well.
+> Then you have to document these capabilities in the kconfig definition only,
+> and can use single (e.g.) #ifdef CONFIG_CPU_HAS_BITFIELDS tests everywhere
+> else, instead of duplicating the logic at every #ifdef.
+>
+>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>> ---
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
