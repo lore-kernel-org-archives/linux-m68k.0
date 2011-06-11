@@ -1,78 +1,170 @@
-From: Mathias Krause <minipli@googlemail.com>
-Subject: [PATCH] m68k, exec: remove redundant set_fs(USER_DS)
-Date: Fri, 10 Jun 2011 15:09:54 +0200
-Message-ID: <1307711394-7827-1-git-send-email-minipli__3108.07348364524$1307711717$gmane$org@googlemail.com>
-References: <BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
+From: Jonathan Elchison <JElchison@Gmail.com>
+Subject: [PATCH] m68k: Patch for broken lsl64() "old code" with incorrect shift
+Date: Fri, 10 Jun 2011 23:50:05 -0400
+Message-ID: <BANLkTimUSvQi9CPgO+cCUrEdQq-+ohbzFg__26175.7695967846$1307764731$gmane$org@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
-References: <BANLkTiknCeAxe30MJdVTxDom+ko8+EDQ4A@mail.gmail.com> <1307642718-22257-1-git-send-email-minipli@googlemail.com> <20110609155630.0f734351.akpm@linux-foundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Mathias Krause <minipli@googlemail.com>, Greg Ungerer <gerg@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Jiri Kosina <trivial@kernel.org>
+Cc: linux-kernel@vger.kernel.org
 
-The address limit is already set in flush_old_exec() so those calls to
-set_fs(USER_DS) are redundant.
+[1.] One line summary of the problem:
 
-Signed-off-by: Mathias Krause <minipli@googlemail.com>
-Cc: Greg Ungerer <gerg@uclinux.org>
----
+[PATCH] m68k: Patch for broken lsl64() "old code" with incorrect shift
 
-Note: I'm not sure about the assignment to current->thread.fs in
-flush_thread() -- shouldn't this be done in set_fs() itself?
 
- arch/m68k/include/asm/processor.h |    4 ----
- arch/m68k/kernel/process_mm.c     |    2 +-
- arch/m68k/kernel/process_no.c     |    2 +-
- 3 files changed, 2 insertions(+), 6 deletions(-)
+[2.] Full description of the problem/report:
 
-diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-index f111b02..d8ef53a 100644
---- a/arch/m68k/include/asm/processor.h
-+++ b/arch/m68k/include/asm/processor.h
-@@ -105,9 +105,6 @@ struct thread_struct {
- static inline void start_thread(struct pt_regs * regs, unsigned long pc,
- 				unsigned long usp)
+In arch/m68k/math-emu/multi_arith.h, lsl64() doesn't calculate a
+correct HI_WORD(*dest) when count < 32, due to an incorrect shift
+operation.  This line:
+
+    HI_WORD(*dest) = (HI_WORD(*dest) << count) | (LO_WORD(*dest) >> count);
+
+...should be...
+
+    HI_WORD(*dest) = (HI_WORD(*dest) << count) | (LO_WORD(*dest) >>
+(32 - count));
+
+This function is ifdef'd out, marked as "old code".  However, I fell
+into the same trap into which I suspect others have fallen (or will
+fall):  On rare occasion when I need to implement my own library
+functions, I depend on the Linux kernel to provide solid code.  This
+bug, albeit in old code, led me astray.
+
+I'm asking that this old code (lsl64) be corrected or removed.
+
+
+[3.] Keywords (i.e., modules, networking, kernel):
+
+kernel, arch, m68k, math-emu, multi_arith.h, lsl64
+
+
+[4.] Kernel information
+
+2.6.39.1
+
+
+[5.] Most recent kernel version which did not have the bug:
+
+Unknown
+
+
+[6.] Output of Oops.. message (if applicable) with symbolic
+information resolved (see Documentation/oops-tracing.txt)
+
+N/A
+
+
+[7.] A small shell script or example program which triggers the
+problem (if possible)
+
+-----------------------------------------------------------------
+#include <stdio.h>
+
+#define LO_WORD(ll) (((unsigned int *) &ll)[1])
+#define HI_WORD(ll) (((unsigned int *) &ll)[0])
+
+static inline void lsl64_broken(int count, unsigned long long *dest)
+{
+	if (count < 32) {
+		HI_WORD(*dest) = (HI_WORD(*dest) << count)
+		    | (LO_WORD(*dest) >> count);
+		LO_WORD(*dest) <<= count;
+		return;
+	}
+	count -= 32;
+	HI_WORD(*dest) = LO_WORD(*dest) << count;
+	LO_WORD(*dest) = 0;
+}
+
+static inline void lsl64_fixed(int count, unsigned long long *dest)
+{
+	if (count < 32) {
+		HI_WORD(*dest) = (HI_WORD(*dest) << count)
+		    | (LO_WORD(*dest) >> (32 - count));
+		LO_WORD(*dest) <<= count;
+		return;
+	}
+	count -= 32;
+	HI_WORD(*dest) = LO_WORD(*dest) << count;
+	LO_WORD(*dest) = 0;
+}
+
+static inline void lsr64(int count, unsigned long long *dest)
+{
+	if (count < 32) {
+		LO_WORD(*dest) = (LO_WORD(*dest) >> count)
+		    | (HI_WORD(*dest) << (32 - count));
+		HI_WORD(*dest) >>= count;
+		return;
+	}
+	count -= 32;
+	LO_WORD(*dest) = HI_WORD(*dest) >> count;
+	HI_WORD(*dest) = 0;
+}
+
+int main( void )
+{
+	long long testVal = 0x0000100000001000L;
+	long long testVal_broken = testVal;
+	long long testVal_fixed = testVal;
+	
+	printf( "begin testVal_broken =\t\t0x%016llx\n", testVal_broken );
+	lsr64( 1, &testVal_broken );
+	printf( "intermediate testVal_broken =\t0x%016llx\n", testVal_broken );
+	lsl64_broken( 1, &testVal_broken );
+	printf( "final testVal_broken =\t\t0x%016llx\n", testVal_broken );
+	printf( "final matches begin?\t\t%s\n", testVal_broken == testVal ?
+"TRUE" : "FALSE" );
+
+	printf( "\nbegin testVal_fixed =\t\t0x%016llx\n", testVal_fixed );
+	lsr64( 1, &testVal_fixed );
+	printf( "intermediate testVal_fixed =\t0x%016llx\n", testVal_fixed );
+	lsl64_fixed( 1, &testVal_fixed );
+	printf( "final testVal_fixed =\t\t0x%016llx\n", testVal_fixed );
+	printf( "final matches begin?\t\t%s\n", testVal_fixed == testVal ?
+"TRUE" : "FALSE" );
+
+	return 0;
+}
+-----------------------------------------------------------------
+
+
+[8.] Environment
+
+Found via code inspection
+
+
+[9.] Patch
+
+Signed-off-by: Jonathan Elchison <jelchison@gmail.com>
+
+-----------------------------------------------------------------
+diff -up linux-2.6/arch/m68k/math-emu/multi_arith.h
+linux-2.6_orig/arch/m68k/math-emu/multi_arith.h
+--- linux-2.6/arch/m68k/math-emu/multi_arith.h	2011-06-10
+22:50:32.538711320 -0400
++++ linux-2.6_orig/arch/m68k/math-emu/multi_arith.h	2011-06-10
+22:47:43.407285452 -0400
+@@ -236,7 +236,7 @@ static inline void lsl64(int count, unsi
  {
--	/* reads from user space */
--	set_fs(USER_DS);
--
- 	regs->pc = pc;
- 	regs->sr &= ~0x2000;
- 	wrusp(usp);
-@@ -129,7 +126,6 @@ extern int handle_kernel_fault(struct pt_regs *regs);
- 
- #define start_thread(_regs, _pc, _usp)                  \
- do {                                                    \
--	set_fs(USER_DS); /* reads from user space */    \
- 	(_regs)->pc = (_pc);                            \
- 	((struct switch_stack *)(_regs))[-1].a6 = 0;    \
- 	reformat(_regs);                                \
-diff --git a/arch/m68k/kernel/process_mm.c b/arch/m68k/kernel/process_mm.c
-index c2a1fc2..1bc223a 100644
---- a/arch/m68k/kernel/process_mm.c
-+++ b/arch/m68k/kernel/process_mm.c
-@@ -185,7 +185,7 @@ EXPORT_SYMBOL(kernel_thread);
- void flush_thread(void)
- {
- 	unsigned long zero = 0;
--	set_fs(USER_DS);
-+
- 	current->thread.fs = __USER_DS;
- 	if (!FPU_IS_EMU)
- 		asm volatile (".chip 68k/68881\n\t"
-diff --git a/arch/m68k/kernel/process_no.c b/arch/m68k/kernel/process_no.c
-index 9b86ad1..69c1803 100644
---- a/arch/m68k/kernel/process_no.c
-+++ b/arch/m68k/kernel/process_no.c
-@@ -158,7 +158,7 @@ void flush_thread(void)
- #ifdef CONFIG_FPU
- 	unsigned long zero = 0;
- #endif
--	set_fs(USER_DS);
-+
- 	current->thread.fs = __USER_DS;
- #ifdef CONFIG_FPU
- 	if (!FPU_IS_EMU)
--- 
-1.5.6.5
+ 	if (count < 32) {
+ 		HI_WORD(*dest) = (HI_WORD(*dest) << count)
+-		    | (LO_WORD(*dest) >> (32 - count));
++		    | (LO_WORD(*dest) >> count);
+ 		LO_WORD(*dest) <<= count;
+ 		return;
+ 	}
+-----------------------------------------------------------------
+
+
+[10.] Responses
+
+Please personally CC me on responses to this post.
+
+--
+Jonathan Elchison
+jelchison@gmail.com
