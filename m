@@ -1,52 +1,48 @@
-From: Jonathan Elchison <JElchison@Gmail.com>
-Subject: Re: [PATCH] m68k: Patch for broken lsl64() "old code" with incorrect shift
-Date: Sat, 11 Jun 2011 08:34:18 -0400
-Message-ID: <BANLkTikk2v8m1wNYoTW6anRhJgy8AS9DfA@mail.gmail.com>
-References: <BANLkTimUSvQi9CPgO+cCUrEdQq-+ohbzFg@mail.gmail.com> <BANLkTimz90oWNDYYNnpX5aDhJ192LhDkXA@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] m68knommu: create config options for CPU classes
+Date: Sun, 12 Jun 2011 11:36:02 +0200
+Message-ID: <BANLkTinN5L9Skioepj1Au95Ckw4M5U1EwQ@mail.gmail.com>
+References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>
+	<1307083397-9994-3-git-send-email-gerg@snapgear.com>
+	<BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
+	<4DF195DD.7000105@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTimz90oWNDYYNnpX5aDhJ192LhDkXA@mail.gmail.com>
+Received: from mail-bw0-f46.google.com ([209.85.214.46]:54360 "EHLO
+	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752512Ab1FLJgE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jun 2011 05:36:04 -0400
+Received: by bwz15 with SMTP id 15so3083980bwz.19
+        for <linux-m68k@vger.kernel.org>; Sun, 12 Jun 2011 02:36:03 -0700 (PDT)
+In-Reply-To: <4DF195DD.7000105@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org, David Huggins-Daines <dhd@debian.org>
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-On Sat, Jun 11, 2011 at 8:01 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> I think it's better to just remove all #ifdefed out parts in the code.
+Hi Greg.
 
-I'm good either way, as long as the broken "old code" is no longer present.
+On Fri, Jun 10, 2011 at 05:56, Greg Ungerer <gerg@snapgear.com> wrote:
+> Are you happy enough with these patches the way they are?
 
-> The patch is reversed?
+Yep.
 
-My apologies, you're correct.  In case anyone is interested in the
-correct patch:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Jonathan Elchison <jelchison@gmail.com>
+Gr{oetje,eeting}s,
 
------------------------------------------------------------------
-diff -up linux-2.6_orig/arch/m68k/math-emu/multi_arith.h
-linux-2.6/arch/m68k/math-emu/multi_arith.h
---- linux-2.6_orig/arch/m68k/math-emu/multi_arith.h	2011-06-10
-22:47:43.407285452 -0400
-+++ linux-2.6/arch/m68k/math-emu/multi_arith.h	2011-06-10
-22:50:32.538711320 -0400
-@@ -236,7 +236,7 @@ static inline void lsl64(int count, unsi
- {
- 	if (count < 32) {
- 		HI_WORD(*dest) = (HI_WORD(*dest) << count)
--		    | (LO_WORD(*dest) >> count);
-+		    | (LO_WORD(*dest) >> (32 - count));
- 		LO_WORD(*dest) <<= count;
- 		return;
- 	}
------------------------------------------------------------------
-
-Please personally CC me on responses to this post.
-
-v/r,
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
 --
-Jonathan Elchison
-jelchison@gmail.com
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
