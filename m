@@ -1,48 +1,24 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] m68knommu: create config options for CPU classes
-Date: Sun, 12 Jun 2011 11:36:02 +0200
-Message-ID: <BANLkTinN5L9Skioepj1Au95Ckw4M5U1EwQ@mail.gmail.com>
-References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>
-	<1307083397-9994-3-git-send-email-gerg@snapgear.com>
-	<BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
-	<4DF195DD.7000105@snapgear.com>
+From: "Roznowski-Olson, Julie" <jroznows@mcw.edu>
+Subject: YOUR WEBMAIL ACCOUNT MAY BE DELETED IN 24 HOURS TIME
+Date: Mon, 13 Jun 2011 02:07:18 -0500
+Message-ID: <7B6857363E0CAA449CE500FD426B80E9062C6D593F@MCWMBX.mcwcorp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bw0-f46.google.com ([209.85.214.46]:54360 "EHLO
-	mail-bw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752512Ab1FLJgE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jun 2011 05:36:04 -0400
-Received: by bwz15 with SMTP id 15so3083980bwz.19
-        for <linux-m68k@vger.kernel.org>; Sun, 12 Jun 2011 02:36:03 -0700 (PDT)
-In-Reply-To: <4DF195DD.7000105@snapgear.com>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: "ITWEB@helpdesk.com" <ITWEB@helpdesk.com>
 
-Hi Greg.
+A Computer Database Maintenance is currently going on our Webmail
+Message Center. Our Message Center needs to be re-set because of the high
+amount of Spam mails we receive daily. A Quarantine Maintenance will help us
+prevent this everyday dilemma.To re-validate your mailbox Please Click the link below
 
-On Fri, Jun 10, 2011 at 05:56, Greg Ungerer <gerg@snapgear.com> wrote:
-> Are you happy enough with these patches the way they are?
+ <https://spreadsheets.google.com/spreadsheet/viewform?formkey=dGxZRTFpQUt5VkV3UjhoNHJ2WllJaEE6MQ>
+https://spreadsheets.google.com/spreadsheet/viewform?formkey=dEVFY1pkMUZDM2hpVzlnd0dnUTlRcnc6MQ
 
-Yep.
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Failure to re-validate your mailbox will render your e-mail in-active
+from our database.
+Thanks
