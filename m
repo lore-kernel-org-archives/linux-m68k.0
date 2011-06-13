@@ -1,24 +1,43 @@
-From: "Roznowski-Olson, Julie" <jroznows@mcw.edu>
-Subject: YOUR WEBMAIL ACCOUNT MAY BE DELETED IN 24 HOURS TIME
-Date: Mon, 13 Jun 2011 02:07:18 -0500
-Message-ID: <7B6857363E0CAA449CE500FD426B80E9062C6D593F@MCWMBX.mcwcorp.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/atari: Prefix GPIO_{IN,OUT} with CODEC_
+Date: Mon, 13 Jun 2011 20:07:58 +0200
+Message-ID: <1307988478-21476-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Language: en-US
+Received: from georges.telenet-ops.be ([195.130.137.68]:40275 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754265Ab1FMSIG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jun 2011 14:08:06 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "ITWEB@helpdesk.com" <ITWEB@helpdesk.com>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-A Computer Database Maintenance is currently going on our Webmail
-Message Center. Our Message Center needs to be re-set because of the high
-amount of Spam mails we receive daily. A Quarantine Maintenance will help us
-prevent this everyday dilemma.To re-validate your mailbox Please Click the link below
+These defines are way to generic, and cause conflicts:
 
- <https://spreadsheets.google.com/spreadsheet/viewform?formkey=dGxZRTFpQUt5VkV3UjhoNHJ2WllJaEE6MQ>
-https://spreadsheets.google.com/spreadsheet/viewform?formkey=dEVFY1pkMUZDM2hpVzlnd0dnUTlRcnc6MQ
+drivers/net/wireless/rtlwifi/rtl8192c/../rtl8192ce/reg.h:369:1: warning: "GPIO_IN" redefined
+drivers/net/wireless/rtlwifi/rtl8192c/../rtl8192ce/reg.h:370:1: warning: "GPIO_OUT" redefined
+drivers/net/wireless/rtlwifi/rtl8192se/reg.h:252:1: warning: "GPIO_IN" redefined
+drivers/net/wireless/rtlwifi/rtl8192se/reg.h:253:1: warning: "GPIO_OUT" redefined
 
-Failure to re-validate your mailbox will render your e-mail in-active
-from our database.
-Thanks
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/atarihw.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/include/asm/atarihw.h b/arch/m68k/include/asm/atarihw.h
+index 9c5ab1c..83552ad 100644
+--- a/arch/m68k/include/asm/atarihw.h
++++ b/arch/m68k/include/asm/atarihw.h
+@@ -402,8 +402,8 @@ struct CODEC
+ #define CODEC_OVERFLOW_LEFT     2
+   u_char unused2, unused3, unused4, unused5;
+   u_char gpio_directions;
+-#define GPIO_IN                 0
+-#define GPIO_OUT                1
++#define CODEC_GPIO_IN           0
++#define CODEC_GPIO_OUT          1
+   u_char unused6;
+   u_char gpio_data;
+ };
+-- 
+1.7.0.4
