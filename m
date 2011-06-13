@@ -1,39 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net/hplance: hplance_init() should be __devinit
-Date: Mon, 13 Jun 2011 20:17:36 +0200
-Message-ID: <1307989056-21814-1-git-send-email-geert@linux-m68k.org>
+Subject: M68k SCSI compile warning fixes
+Date: Mon, 13 Jun 2011 20:39:14 +0200
+Message-ID: <1307990362-22768-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:48573 "EHLO
-	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751381Ab1FMSRl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jun 2011 14:17:41 -0400
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:35128 "EHLO
+	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752610Ab1FMSja (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jun 2011 14:39:30 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: "James E.J. Bottomley" <JBottomley@parallels.com>
+Cc: linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-WARNING: vmlinux.o(.devinit.text+0x253e): Section mismatch in reference from the function hplance_init_one() to the function .init.text:hplance_init()
+	Hi James,
 
-The forward declaration had the correct attribute, but the actual function
-definition hadn't.
+These patches fix several compile warnings on m68k.
+As I don't have the hardware, I couldn't run test them, though.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/hplance.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ b/drivers/scsi/atari_NCR5380.c |    5 +++
+ b/drivers/scsi/atari_scsi.c    |    1 
+ b/drivers/scsi/mac_scsi.c      |    2 -
+ b/drivers/scsi/sun3_NCR5380.c  |    2 -
+ b/drivers/scsi/sun3_scsi.c     |    2 -
+ b/drivers/scsi/sun3_scsi_vme.c |    2 -
+ drivers/scsi/mac_scsi.c        |   12 -------
+ drivers/scsi/sun3_NCR5380.c    |   65 +++--------------------------------------
+ drivers/scsi/sun3_scsi.c       |    9 ++++-
+ drivers/scsi/sun3_scsi_vme.c   |    9 ++++-
+ 10 files changed, 31 insertions(+), 78 deletions(-)
 
-diff --git a/drivers/net/hplance.c b/drivers/net/hplance.c
-index b6060f7..a900d5b 100644
---- a/drivers/net/hplance.c
-+++ b/drivers/net/hplance.c
-@@ -135,7 +135,7 @@ static void __devexit hplance_remove_one(struct dio_dev *d)
- }
- 
- /* Initialise a single lance board at the given DIO device */
--static void __init hplance_init(struct net_device *dev, struct dio_dev *d)
-+static void __devinit hplance_init(struct net_device *dev, struct dio_dev *d)
- {
-         unsigned long va = (d->resource.start + DIO_VIRADDRBASE);
-         struct hplance_private *lp;
--- 
-1.7.0.4
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
