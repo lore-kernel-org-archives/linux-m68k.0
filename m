@@ -1,44 +1,65 @@
-From: Mathias Krause <minipli@googlemail.com>
-Subject: Re: [PATCH] m68k, exec: remove redundant set_fs(USER_DS)
-Date: Wed, 15 Jun 2011 17:49:39 +0200
-Message-ID: <BANLkTikdD8rwUhEXzkgj5qEN7a3E=BoDgQ__37448.3881205835$1308153334$gmane$org@mail.gmail.com>
-References: <BANLkTiknCeAxe30MJdVTxDom+ko8+EDQ4A@mail.gmail.com>
-	<1307642718-22257-1-git-send-email-minipli@googlemail.com>
-	<20110609155630.0f734351.akpm@linux-foundation.org>
-	<BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
-	<1307711394-7827-1-git-send-email-minipli@googlemail.com>
-	<BANLkTin214-RYxJUQ-uM6iYz1NQLBKRH2Q@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: m68k: Convert to genirq (WIP)
+Date: Wed, 15 Jun 2011 21:44:58 +0200
+Message-ID: <BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ__30441.9366679669$1308167149$gmane$org@mail.gmail.com>
+References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
+	<BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTin214-RYxJUQ-uM6iYz1NQLBKRH2Q@mail.gmail.com>
+In-Reply-To: <BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Wed, Jun 15, 2011 at 4:40 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Fri, Jun 10, 2011 at 15:09, Mathias Krause <minipli@googlemail.com> wrote:
->> The address limit is already set in flush_old_exec() so those calls to
->> set_fs(USER_DS) are redundant.
+On Sat, Jun 4, 2011 at 19:56, Geert Uytterhoeven <geert@linux-m68k.org>=
+ wrote:
+> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m68k.o=
+rg> wrote:
+>> Now sparc32 has beaten me, I pushed out my work in progress of conve=
+rting m68k
+>> to use the generic hardirq framework:
 >>
->> Signed-off-by: Mathias Krause <minipli@googlemail.com>
->> Cc: Greg Ungerer <gerg@uclinux.org>
->> ---
->>
->> Note: I'm not sure about the assignment to current->thread.fs in
->> flush_thread() -- shouldn't this be done in set_fs() itself?
+>> git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git =
+m68k-genirq
+>> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3D=
+shortlog;h=3Drefs/heads/m68k-genirq
 >
-> set_fs() is used to temporary set the address space to be used from the
-> kernel.
-> current->thread.fs is the address space that will be used when the
-> thread returns
-> to userspace.
-> So I think it's correct.
+>> Next on my list is Amiga, which will cover autovectored and chained =
+interrupts.
 >
-> For nommu, thread.fs is set, but not really used.
+> I rebased to 3.0-rc1 and added (not in that order):
+> =C2=A0[10] m68k/irq: Add m68k_setup_irq_controller()
+> =C2=A0[11] m68k/irq: Adding missing "irq" offset in m68k_setup_irq_co=
+ntroller()
+> =C2=A0[12] m68k/irq: Fix auto and user chips and handlers
+> =C2=A0[13] m68k/amiga: Refactor amiints.c
+> =C2=A0[14] m68k/amiga: Convert Amiga to genirq
+> =C2=A0[15] m68k/amiga: Optimize interrupts using chain handlers
+>
+> It works on Amiga now, too. It can still use some optimizations in th=
+e
+> irq_{enable,disable,ack,mask,mask_ack,unmask} area, as my BogoMIPS
+> rating dropped by ca 2.5% and is now under 16, for a 25 MHz 68040.
 
-Thanks for the explanation. So only the set_fs() is redundant.
+Seems like everything (Atari/ARAnyM and Amiga) still works when using
+handle_simple_irq instead of handle_level_irq.
+As a bonus, BogoMIPS is above 16 again.
 
-Mathias
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
