@@ -1,48 +1,126 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [RFC,PATCH] Cleanup PC parallel port Kconfig
-Date: Wed, 15 Jun 2011 13:24:24 +0200
-Message-ID: <BANLkTimMLDb6LL0HZv8XtHt=zvyE7eybyg@mail.gmail.com>
-References: <20110614190850.GA13526@linux-mips.org>
-	<201106142333.16203.arnd@arndb.de> <4DF83577.6040903@zytor.com>
-	<201106151146.13320.arnd@arndb.de>
+Subject: Re: [PATCH] m68k, exec: remove redundant set_fs(USER_DS)
+Date: Wed, 15 Jun 2011 16:40:28 +0200
+Message-ID: <BANLkTin214-RYxJUQ-uM6iYz1NQLBKRH2Q@mail.gmail.com>
+References: <BANLkTiknCeAxe30MJdVTxDom+ko8+EDQ4A@mail.gmail.com>
+	<1307642718-22257-1-git-send-email-minipli@googlemail.com>
+	<20110609155630.0f734351.akpm@linux-foundation.org>
+	<BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
+	<1307711394-7827-1-git-send-email-minipli@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <201106151146.13320.arnd@arndb.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, linux-arch@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>, Russell King <linux@arm.linux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, microblaze-uclinux@itee.uq.edu.au, Chris Metcalf <cmetcalf@tilera.com>, Mikael Starvik <starvik@axis.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infrade
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1307711394-7827-1-git-send-email-minipli@googlemail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Mathias Krause <minipli@googlemail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-T24gV2VkLCBKdW4gMTUsIDIwMTEgYXQgMTE6NDYsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
-ZGU+IHdyb3RlOgo+ICogSW4gY2FzZSBvZiBmbG9wcGllcywgdGhlICJzb2x1dGlvbiIgd2FzIHRv
-IHdyaXRlIGEgZHJpdmVyIGZvciBldmVyeSBwbGF0Zm9ybSB0aGF0Cj4gwqBkb2Vzbid0IGhhdmUg
-UElPLCBzaW5jZSB0aGV5IHRlbmQgdG8gaGF2ZSBvdGhlciBkaWZmZXJlbmNlcy4gVGhlIGFtaWZs
-b3AgYW5kCj4gwqBhdGFmbG9wIGRyaXZlcnMgYXJlIG5vdCBldmVuIHVzZSByZWFkYigpLCB0aGV5
-IGp1c3QgZGVyZWZlbmNlIHZvbGF0aWxlIHBvaW50ZXJzCj4gwqB0byBkbyBNTUlPLiBJIGRvdWJ0
-IHdlIGNhbiBmaW5kIHZvbHVudGVlcnMgdG8gY2xlYW4gdGhhdCB1cC4KCkFtaWZsb3AgZHJpdmVz
-IHRoZSBBbWlnYSBmbG9wcHkgY29udHJvbGxlciwgd2hpY2ggaXMgY29tcGxldGVseQpkaWZmZXJl
-bnQgZnJvbSB0aGUKUEMtc3R5bGUgZmxvcHB5IGNvbnRyb2xsZXIuCkF0YWZsb3AgZHJpdmVzIHRo
-ZSBBdGFyaSBmbG9wcHkgY29udHJvbGxlciwgd2hpY2ggc2VlbXMgdG8gYmUgYSBXRDE3NzIgYW5k
-IG5vdApyZWxhdGVkIHRvIFBDLXN0eWxlIGZsb3BweSBjb250cm9sbGVycyBuZWl0aGVyLgoKU28g
-bm9uZSBvZiB0aGVtIGRyaXZlIFBDLXN0eWxlIGhhcmR3YXJlLCBhbmQgYm90aCBwcmVkYXRlIHRo
-ZSBnZW5lcmljIHJlYWRiKCkKaW5mcmFzdHJ1Y3R1cmUuCgpHcntvZXRqZSxlZXRpbmd9cywKCsKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIEdlZXJ0CgotLQpHZWVydCBVeXR0ZXJo
-b2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4
-LW02OGsub3JnCgpJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3Bs
-ZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5h
-bGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqDCoCDCoMKgIC0tIExpbnVzIFRv
-cnZhbGRzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwps
-aW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1hcm0ta2VybmVsCg==
+On Fri, Jun 10, 2011 at 15:09, Mathias Krause <minipli@googlemail.com> =
+wrote:
+> The address limit is already set in flush_old_exec() so those calls t=
+o
+> set_fs(USER_DS) are redundant.
+>
+> Signed-off-by: Mathias Krause <minipli@googlemail.com>
+> Cc: Greg Ungerer <gerg@uclinux.org>
+> ---
+>
+> Note: I'm not sure about the assignment to current->thread.fs in
+> flush_thread() -- shouldn't this be done in set_fs() itself?
+
+set_fs() is used to temporary set the address space to be used from the
+kernel.
+current->thread.fs is the address space that will be used when the
+thread returns
+to userspace.
+So I think it's correct.
+
+=46or nommu, thread.fs is set, but not really used.
+
+> =C2=A0arch/m68k/include/asm/processor.h | =C2=A0 =C2=A04 ----
+> =C2=A0arch/m68k/kernel/process_mm.c =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A0arch/m68k/kernel/process_no.c =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A03 files changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/as=
+m/processor.h
+> index f111b02..d8ef53a 100644
+> --- a/arch/m68k/include/asm/processor.h
+> +++ b/arch/m68k/include/asm/processor.h
+> @@ -105,9 +105,6 @@ struct thread_struct {
+> =C2=A0static inline void start_thread(struct pt_regs * regs, unsigned=
+ long pc,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long usp)
+> =C2=A0{
+> - =C2=A0 =C2=A0 =C2=A0 /* reads from user space */
+> - =C2=A0 =C2=A0 =C2=A0 set_fs(USER_DS);
+> -
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0regs->pc =3D pc;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0regs->sr &=3D ~0x2000;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0wrusp(usp);
+> @@ -129,7 +126,6 @@ extern int handle_kernel_fault(struct pt_regs *re=
+gs);
+>
+> =C2=A0#define start_thread(_regs, _pc, _usp) =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> =C2=A0do { =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+> - =C2=A0 =C2=A0 =C2=A0 set_fs(USER_DS); /* reads from user space */ =C2=
+=A0 =C2=A0\
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0(_regs)->pc =3D (_pc); =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0\
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0((struct switch_stack *)(_regs))[-1].a6 =3D=
+ 0; =C2=A0 =C2=A0\
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0reformat(_regs); =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0\
+> diff --git a/arch/m68k/kernel/process_mm.c b/arch/m68k/kernel/process=
+_mm.c
+> index c2a1fc2..1bc223a 100644
+> --- a/arch/m68k/kernel/process_mm.c
+> +++ b/arch/m68k/kernel/process_mm.c
+> @@ -185,7 +185,7 @@ EXPORT_SYMBOL(kernel_thread);
+> =C2=A0void flush_thread(void)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long zero =3D 0;
+> - =C2=A0 =C2=A0 =C2=A0 set_fs(USER_DS);
+> +
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0current->thread.fs =3D __USER_DS;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!FPU_IS_EMU)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0asm volatile (=
+".chip 68k/68881\n\t"
+> diff --git a/arch/m68k/kernel/process_no.c b/arch/m68k/kernel/process=
+_no.c
+> index 9b86ad1..69c1803 100644
+> --- a/arch/m68k/kernel/process_no.c
+> +++ b/arch/m68k/kernel/process_no.c
+> @@ -158,7 +158,7 @@ void flush_thread(void)
+> =C2=A0#ifdef CONFIG_FPU
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long zero =3D 0;
+> =C2=A0#endif
+> - =C2=A0 =C2=A0 =C2=A0 set_fs(USER_DS);
+> +
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0current->thread.fs =3D __USER_DS;
+> =C2=A0#ifdef CONFIG_FPU
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!FPU_IS_EMU)
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
