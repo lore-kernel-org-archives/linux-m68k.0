@@ -1,60 +1,44 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC,PATCH] Cleanup PC parallel port Kconfig
-Date: Wed, 15 Jun 2011 16:21:44 +0100
-Message-ID: <20110615152144.GE28989@n2100.arm.linux.org.uk>
-References: <20110614190850.GA13526@linux-mips.org>
-	<4DF7C3CA.9050902@zytor.com> <201106142333.16203.arnd@arndb.de>
-	<4DF83577.6040903@zytor.com>
-	<20110615074749.GB28989@n2100.arm.linux.org.uk>
-	<4DF8CAD5.1090902@zytor.com>
+From: Mathias Krause <minipli@googlemail.com>
+Subject: Re: [PATCH] m68k, exec: remove redundant set_fs(USER_DS)
+Date: Wed, 15 Jun 2011 17:49:39 +0200
+Message-ID: <BANLkTikdD8rwUhEXzkgj5qEN7a3E=BoDgQ__37448.3881205835$1308153334$gmane$org@mail.gmail.com>
+References: <BANLkTiknCeAxe30MJdVTxDom+ko8+EDQ4A@mail.gmail.com>
+	<1307642718-22257-1-git-send-email-minipli@googlemail.com>
+	<20110609155630.0f734351.akpm@linux-foundation.org>
+	<BANLkTinv1teZEHMK0qymaVdcxPOErpqSyg@mail.gmail.com>
+	<1307711394-7827-1-git-send-email-minipli@googlemail.com>
+	<BANLkTin214-RYxJUQ-uM6iYz1NQLBKRH2Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <4DF8CAD5.1090902@zytor.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, linux-arch@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>, microblaze-uclinux@itee.uq.edu.au, Chris Metcalf <cmetcalf@tilera.com>, Mikael Starvik <starvik@axis.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Thomas
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <BANLkTin214-RYxJUQ-uM6iYz1NQLBKRH2Q@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-On Wed, Jun 15, 2011 at 08:08:05AM -0700, H. Peter Anvin wrote:
-> On 06/15/2011 12:47 AM, Russell King - ARM Linux wrote:
-> >>
-> >> OK, serial-8250 is clearly just plain wrong, since the 8250 series UARTs
-> >> are ubiquitous across just about every platform.
-> >>
-> >> Floppy is special (in the short bus sense), since it is closely tied to
-> >> ISA DMA.  Conditionalizing this on ISA DMA makes total sense.
-> > 
-> > No it doesn't.  It depends on the ISA DMA API, not that the machine has
-> > ISA DMA.
-> > 
-> > I have a platform which has no ISA DMA but uses the floppy driver.  Please
-> > don't break it.
-> 
-> OK, even more case in point, then.
+On Wed, Jun 15, 2011 at 4:40 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Fri, Jun 10, 2011 at 15:09, Mathias Krause <minipli@googlemail.com> wrote:
+>> The address limit is already set in flush_old_exec() so those calls to
+>> set_fs(USER_DS) are redundant.
+>>
+>> Signed-off-by: Mathias Krause <minipli@googlemail.com>
+>> Cc: Greg Ungerer <gerg@uclinux.org>
+>> ---
+>>
+>> Note: I'm not sure about the assignment to current->thread.fs in
+>> flush_thread() -- shouldn't this be done in set_fs() itself?
+>
+> set_fs() is used to temporary set the address space to be used from the
+> kernel.
+> current->thread.fs is the address space that will be used when the
+> thread returns
+> to userspace.
+> So I think it's correct.
+>
+> For nommu, thread.fs is set, but not really used.
 
-It's already been solved - ARCH_MAY_HAVE_PC_FDC is supposed to be
-defined to y in the cases where architectures have support for it.
+Thanks for the explanation. So only the set_fs() is redundant.
 
-What we do on ARM for example is:
-
-config ARCH_MAY_HAVE_PC_FDC
-        bool
-
-and then select that symbol for our platforms which can have the
-floppy driver.
-
-And in any case we already have definitions for the presence of the
-ISA DMA API vs the common ISA DMA helpers in kernel/.  The presence
-of the ISA DMA API is given by CONFIG_ISA_DMA_API, while the
-ISA DMA helper CONFIG_GENERIC_ISA_DMA.
+Mathias
