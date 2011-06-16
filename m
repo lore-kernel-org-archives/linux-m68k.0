@@ -1,65 +1,36 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: m68k: Convert to genirq (WIP)
-Date: Wed, 15 Jun 2011 21:44:58 +0200
-Message-ID: <BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ__30441.9366679669$1308167149$gmane$org@mail.gmail.com>
-References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
-	<BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Greg Dietsche <Gregory.Dietsche@cuw.edu>
+Subject: [PATCH] m68k: remove unnecessary code
+Date: Thu, 16 Jun 2011 11:42:07 -0500
+Message-ID: <1308242527-28971-1-git-send-email-Gregory.Dietsche@cuw.edu>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, kernel-janitors@vger.kernel.org, Greg Dietsche <Gregory.Dietsche@cuw.edu>
 
-On Sat, Jun 4, 2011 at 19:56, Geert Uytterhoeven <geert@linux-m68k.org>=
- wrote:
-> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m68k.o=
-rg> wrote:
->> Now sparc32 has beaten me, I pushed out my work in progress of conve=
-rting m68k
->> to use the generic hardirq framework:
->>
->> git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git =
-m68k-genirq
->> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3D=
-shortlog;h=3Drefs/heads/m68k-genirq
->
->> Next on my list is Amiga, which will cover autovectored and chained =
-interrupts.
->
-> I rebased to 3.0-rc1 and added (not in that order):
-> =C2=A0[10] m68k/irq: Add m68k_setup_irq_controller()
-> =C2=A0[11] m68k/irq: Adding missing "irq" offset in m68k_setup_irq_co=
-ntroller()
-> =C2=A0[12] m68k/irq: Fix auto and user chips and handlers
-> =C2=A0[13] m68k/amiga: Refactor amiints.c
-> =C2=A0[14] m68k/amiga: Convert Amiga to genirq
-> =C2=A0[15] m68k/amiga: Optimize interrupts using chain handlers
->
-> It works on Amiga now, too. It can still use some optimizations in th=
-e
-> irq_{enable,disable,ack,mask,mask_ack,unmask} area, as my BogoMIPS
-> rating dropped by ca 2.5% and is now under 16, for a 25 MHz 68040.
+remove unnecessary code that matches this coccinelle pattern
+	if (...)
+		return ret;
+	return ret;
 
-Seems like everything (Atari/ARAnyM and Amiga) still works when using
-handle_simple_irq instead of handle_level_irq.
-As a bonus, BogoMIPS is above 16 again.
+Signed-off-by: Greg Dietsche <Gregory.Dietsche@cuw.edu>
+---
+ arch/m68k/math-emu/fp_log.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/math-emu/fp_log.c b/arch/m68k/math-emu/fp_log.c
+index 367ecee..3384a52 100644
+--- a/arch/m68k/math-emu/fp_log.c
++++ b/arch/m68k/math-emu/fp_log.c
+@@ -105,9 +105,6 @@ fp_fetoxm1(struct fp_ext *dest, struct fp_ext *src)
+ 
+ 	fp_monadic_check(dest, src);
+ 
+-	if (IS_ZERO(dest))
+-		return dest;
+-
+ 	return dest;
+ }
+ 
+-- 
+1.7.2.5
