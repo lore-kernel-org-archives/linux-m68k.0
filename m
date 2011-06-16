@@ -1,32 +1,83 @@
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Michael Schmitz <schmitzmic@googlemail.com>
 Subject: Re: m68k: Convert to genirq (WIP)
-Date: Thu, 16 Jun 2011 22:03:29 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1106162201390.11814@ionos>
-References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg> <BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com> <BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ@mail.gmail.com> <BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
+Date: Fri, 17 Jun 2011 09:10:08 +1200
+Message-ID: <BANLkTi=3L3+3UzAwcybqvNxQXSKf7DERYQ__37159.1441602961$1308260197$gmane$org@mail.gmail.com>
+References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
+	<BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
+In-Reply-To: <BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Thu, 16 Jun 2011, Geert Uytterhoeven wrote:
-> > Seems like everything (Atari/ARAnyM and Amiga) still works when using
-> > handle_simple_irq instead of handle_level_irq.
-> > As a bonus, BogoMIPS is above 16 again.
-> 
-> With handle_simple_irq(), we no longer need to define irq_{,un}mask() methods
-> in our irq_chips. Hence the "old" m68k platform interrupt code seems to be much
-> closer to genirq than I thought...
-> 
-> Does this make sense?
+On Fri, Jun 17, 2011 at 7:45 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+Hi Geert,
 
-It makes sense, when your interrupt chips do not require any action
-when an interrupt is handled. In that case you can avoid the hardware
-access.
+> This is the WARN_ONCE(!irqs_disabled()) check.
+>
+> static inline bool arch_irqs_disabled_flags(unsigned long flags)
+> {
+> =A0 =A0 =A0 =A0return (flags & ~ALLOWINT) !=3D 0;
+> }
+>
+> with flags =3D 0x2300. Due to the "special" value of ALLOWINT on Atar=
+i:
+>
+> #if defined(MACH_ATARI_ONLY)
+> =A0 =A0 =A0 =A0/* block out HSYNC on the atari */
+> #define ALLOWINT =A0 =A0 =A0 =A0(~0x400)
+> #define MAX_NOINT_IPL =A0 3
+> #else
+> =A0 =A0 =A0 =A0/* portable version */
+> #define ALLOWINT =A0 =A0 =A0 =A0(~0x700)
+> #define MAX_NOINT_IPL =A0 0
+> #endif /* machine compilation types */
+>
+> the test fails.
+>
+> Would it harm to always use the "portable" version?
+> That one is used on multi-platform kernels anyway?
+> Or would it cause too many HBLANK interrupts?
 
-Thanks,
+I'd say it would cause too many unnecessary interrupts. At least with
+the original Falcon hardware that was a problem (haven't ever tried
+this on the CT60). Not sure I tried multi platform kernels in a long
+time, either. For these, it would probably required to male ALLOWINT a
+runtime optiion in order to avoid this problem (I seem to recall we
+used the corresponding hbl interrrupt handler for this originally
+since it only was a problem on Falcon, not on TT. Does the TT use IPL
+1 and 2, Andreas?).
 
-	tglx
+MAX_NOINT_IPL may not needed any longer because all interrupt and
+signal return is now done from assembler code in entry.S, I guess.
+
+Probably best to ignore the two lowest IRQ bits on Atari for the
+purpose of this test since these are always going to be disabled.
+
+Cheers,
+
+  Michael
+
+
+> BTW, MAX_NOINT_IPL is no longer used.
+>
+> Gr{oetje,eeting}s,
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
+x-m68k.org
+>
+> In personal conversations with technical people, I call myself a hack=
+er. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
+Linus Torvalds
+>
