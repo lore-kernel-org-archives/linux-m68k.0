@@ -1,83 +1,67 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: m68k: Convert to genirq (WIP)
-Date: Fri, 17 Jun 2011 09:10:08 +1200
-Message-ID: <BANLkTi=3L3+3UzAwcybqvNxQXSKf7DERYQ__37159.1441602961$1308260197$gmane$org@mail.gmail.com>
-References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
-	<BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com>
+Date: Fri, 17 Jun 2011 13:45:24 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1106171337170.191__10484.0189138942$1308282332$gmane$org@ibook.intranet>
+References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg> <BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com> <BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ@mail.gmail.com> <BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-915750856-1308282324=:191"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com>
+In-Reply-To: <BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Fri, Jun 17, 2011 at 7:45 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-Hi Geert,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> This is the WARN_ONCE(!irqs_disabled()) check.
->
-> static inline bool arch_irqs_disabled_flags(unsigned long flags)
-> {
-> =A0 =A0 =A0 =A0return (flags & ~ALLOWINT) !=3D 0;
-> }
->
-> with flags =3D 0x2300. Due to the "special" value of ALLOWINT on Atar=
-i:
->
-> #if defined(MACH_ATARI_ONLY)
-> =A0 =A0 =A0 =A0/* block out HSYNC on the atari */
-> #define ALLOWINT =A0 =A0 =A0 =A0(~0x400)
-> #define MAX_NOINT_IPL =A0 3
-> #else
-> =A0 =A0 =A0 =A0/* portable version */
-> #define ALLOWINT =A0 =A0 =A0 =A0(~0x700)
-> #define MAX_NOINT_IPL =A0 0
-> #endif /* machine compilation types */
->
-> the test fails.
->
-> Would it harm to always use the "portable" version?
-> That one is used on multi-platform kernels anyway?
-> Or would it cause too many HBLANK interrupts?
-
-I'd say it would cause too many unnecessary interrupts. At least with
-the original Falcon hardware that was a problem (haven't ever tried
-this on the CT60). Not sure I tried multi platform kernels in a long
-time, either. For these, it would probably required to male ALLOWINT a
-runtime optiion in order to avoid this problem (I seem to recall we
-used the corresponding hbl interrrupt handler for this originally
-since it only was a problem on Falcon, not on TT. Does the TT use IPL
-1 and 2, Andreas?).
-
-MAX_NOINT_IPL may not needed any longer because all interrupt and
-signal return is now done from assembler code in entry.S, I guess.
-
-Probably best to ignore the two lowest IRQ bits on Atari for the
-purpose of this test since these are always going to be disabled.
-
-Cheers,
-
-  Michael
+--0-915750856-1308282324=:191
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 
-> BTW, MAX_NOINT_IPL is no longer used.
->
+On Thu, 16 Jun 2011, Geert Uytterhoeven wrote:
+
+> On Wed, Jun 15, 2011 at 21:44, Geert Uytterhoeven <geert@linux-m68k.org> =
+wrote:
+> > On Sat, Jun 4, 2011 at 19:56, Geert Uytterhoeven <geert@linux-m68k.org>=
+ wrote:
+> >> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m68k.or=
+g> wrote:
+> >>
+> >> It works on Amiga now, too. It can still use some optimizations in=20
+> >> the irq_{enable,disable,ack,mask,mask_ack,unmask} area, as my=20
+> >> BogoMIPS rating dropped by ca 2.5% and is now under 16, for a 25 MHz=
+=20
+> >> 68040.
+> >
+> > Seems like everything (Atari/ARAnyM and Amiga) still works when using=
+=20
+> > handle_simple_irq instead of handle_level_irq. As a bonus, BogoMIPS is=
+=20
+> > above 16 again.
+
+Your bogomips benchmark would be the best-case penalty, right?
+
+Have you tried say, sending a ping flood to measure throughput and=20
+latency?
+
+>=20
+> With handle_simple_irq(), we no longer need to define irq_{,un}mask()=20
+> methods in our irq_chips. Hence the "old" m68k platform interrupt code=20
+> seems to be much closer to genirq than I thought...
+>=20
+> Does this make sense?
+
+If the simple irq model gets us closer to the goal and doesn't kill=20
+performance then it makes sense to me.
+
+Finn
+
+>=20
 > Gr{oetje,eeting}s,
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linu=
-x-m68k.org
->
-> In personal conversations with technical people, I call myself a hack=
-er. But
-> when I'm talking to journalists I just say "programmer" or something =
-like that.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=A0 =A0=A0 -- =
-Linus Torvalds
->
+>=20
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+>=20
+--0-915750856-1308282324=:191--
