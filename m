@@ -1,64 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: m68k: Convert to genirq (WIP)
-Date: Fri, 17 Jun 2011 07:01:30 +0200
-Message-ID: <BANLkTi=8eC3aiUL8fhGfQHW0xBrLF2TBCA@mail.gmail.com>
+Date: Fri, 17 Jun 2011 19:22:35 +0200
+Message-ID: <m2sjr8gyp0.fsf__28741.3156162531$1308331388$gmane$org@igel.home>
 References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
-	<BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
-	<BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ@mail.gmail.com>
-	<BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
-	<alpine.OSX.2.00.1106171337170.191@ibook.intranet>
+	<BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.OSX.2.00.1106171337170.191@ibook.intranet>
+In-Reply-To: <BANLkTinDvLqHChPUpG9v1AXp0E=iRLteDg@mail.gmail.com> (Geert
+	Uytterhoeven's message of "Thu, 16 Jun 2011 21:45:11 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Fri, Jun 17, 2011 at 05:45, Finn Thain <fthain@telegraphics.com.au> =
-wrote:
-> On Thu, 16 Jun 2011, Geert Uytterhoeven wrote:
->> On Wed, Jun 15, 2011 at 21:44, Geert Uytterhoeven <geert@linux-m68k.=
-org> wrote:
->> > On Sat, Jun 4, 2011 at 19:56, Geert Uytterhoeven <geert@linux-m68k=
-=2Eorg> wrote:
->> >> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m6=
-8k.org> wrote:
->> >>
->> >> It works on Amiga now, too. It can still use some optimizations i=
-n
->> >> the irq_{enable,disable,ack,mask,mask_ack,unmask} area, as my
->> >> BogoMIPS rating dropped by ca 2.5% and is now under 16, for a 25 =
-MHz
->> >> 68040.
->> >
->> > Seems like everything (Atari/ARAnyM and Amiga) still works when us=
-ing
->> > handle_simple_irq instead of handle_level_irq. As a bonus, BogoMIP=
-S is
->> > above 16 again.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+> This is the WARN_ONCE(!irqs_disabled()) check.
 >
-> Your bogomips benchmark would be the best-case penalty, right?
->
-> Have you tried say, sending a ping flood to measure throughput and
-> latency?
+> static inline bool arch_irqs_disabled_flags(unsigned long flags)
+> {
+>         return (flags & ~ALLOWINT) != 0;
 
-No, I haven't compared network performance.
+That should be
 
-Gr{oetje,eeting}s,
+          return (flags & 0x700) == 0x700;
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+It doesn't make sense to use ALLOWINT here, since arch_local_irq_disable
+doesn't use it either.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Andreas.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
