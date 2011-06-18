@@ -1,16 +1,16 @@
 From: "IT Webmail HelpDesk" <webitservicezaq@live.com>
 Subject: YOUR WEBMAIL ACCOUNT MAY BE DELETED IN 24HOURS
-Date: Sat, 18 Jun 2011 07:15:58 -0600 (CST)
-Message-ID: <1032.195.182.143.166.1308402958.squirrel@webmail.cfia.or.cr>
+Date: Sat, 18 Jun 2011 07:16:04 -0600 (CST)
+Message-ID: <1161.195.182.143.166.1308402964.squirrel@webmail.cfia.or.cr>
 Reply-To: webitservicezaq@live.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.cfia.or.cr ([196.40.74.29]:41025 "EHLO cfia.or.cr"
+Received: from mail.cfia.or.cr ([196.40.74.29]:41051 "EHLO cfia.or.cr"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751292Ab1FRNWl (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 18 Jun 2011 09:22:41 -0400
+	id S1751292Ab1FRNWr (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 18 Jun 2011 09:22:47 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
