@@ -1,33 +1,62 @@
-From: "IT Webmail HelpDesk" <webitservicezaq@live.com>
-Subject: YOUR EMAIL HAS EXCEED HIS STORAGE LIMIT
-Date: Sun, 19 Jun 2011 15:52:57 -0600 (CST)
-Message-ID: <53426.68.71.51.33.1308520377.squirrel@webmail.cfia.or.cr>
-Reply-To: webitservicezaq@live.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-next: manual merge of the m68knommu tree with the m68k tree
+Date: Wed, 22 Jun 2011 10:29:41 +0200
+Message-ID: <BANLkTinswxRuM52vW7acZrsKgpMrSxMuWA@mail.gmail.com>
+References: <20110622111256.3857df1e.sfr@canb.auug.org.au>
+	<4E018CE3.7070101@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.cfia.or.cr ([196.40.74.29]:42661 "EHLO cfia.or.cr"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754814Ab1FSVxv (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 19 Jun 2011 17:53:51 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <4E018CE3.7070101@snapgear.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Technical Service
+Hi Greg, Stephen,
 
-Your mailbox has exceeded the storage limit set by your administrator. You
-may not be  able to send or receive new mail until your mailbox size is
-increased by your system  administrator. You are required to contact your
-system administrator clicking the link below
+On Wed, Jun 22, 2011 at 08:34, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 22/06/11 11:12, Stephen Rothwell wrote:
+>> Today's linux-next merge of the m68knommu tree got a conflict in
+>> arch/m68k/include/asm/bitops_mm.h between commit 17c74432b88e
+>> ("m68k/bitops: Make bitmap data pointer of atomic ops volatile") fro=
+m the
+>> m68k tree and commit 2cb0d89e66b1 ("m68k: merge mmu and non-mmu
+>> bitops.h") from the m68knommu tree.
+>>
+>> The latter effectively deletes in the file and in doing the merge,
+>> removes the funtions that were modified by the former commit. =C2=A0=
+So I just
+>> removed the file.
+>
+> That would be right. The changes that Geert's patch makes are in
+> my merge patch.
 
-https://spreadsheets.google.com/spreadsheet/viewform?formkey=dE43ODRjMnViZG9jUmNOZ1FoWW9MVnc6MQ
+Sorry, I forgot that Greg was merging them, which also fixes the issue =
+we
+had on m68k.
 
+[mental note to self: check for merge conflicts with m68knommu before u=
+pdating
+ for-next]
 
-This email is intended only for the use of the individual or entity to
-which it is addressed  and contains information that is privileged and
-confidential.
+> Geert: do you want me to hold of on merging the bitops.h files?
 
-Failure to re-validate your mailbox will render your e-mail in-active
-from our database.
-Thanks
+No, it looks fine to me. Feel free to add my Acked-by.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
