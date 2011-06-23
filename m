@@ -1,61 +1,32 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/2] m68knommu: create config options for CPU classes
-Date: Thu, 23 Jun 2011 11:35:50 +1000
-Message-ID: <4E029876.6040507@snapgear.com>
-References: <1307083397-9994-1-git-send-email-gerg@snapgear.com>	<1307083397-9994-3-git-send-email-gerg@snapgear.com> <BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
+From: "IT Webmail HelpDesk" <webitservicezaq@live.com>
+Subject: YOUR EMAIL HAS EXCEED HIS STORAGE LIMIT
+Date: Wed, 22 Jun 2011 19:50:12 -0600 (CST)
+Message-ID: <62559.74.115.160.156.1308793812.squirrel@webmail.cfia.or.cr>
+Reply-To: webitservicezaq@live.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:23669 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758537Ab1FWBgN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Jun 2011 21:36:13 -0400
-In-Reply-To: <BANLkTikuR5tNe=CQS9qCOJHGkKUWKmO-rw@mail.gmail.com>
+Received: from mail.cfia.or.cr ([196.40.74.29]:35530 "EHLO cfia.or.cr"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S932464Ab1FWBwU (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 22 Jun 2011 21:52:20 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Geert,
+Technical Service
 
-On 03/06/11 21:15, Geert Uytterhoeven wrote:
-> On Fri, Jun 3, 2011 at 08:43,<gerg@snapgear.com>  wrote:
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> There are 3 families of CPU core types that we support in the m68knommu
->> architecture branch. They are
->>
->> . traditional 68000
->> . CPU32 (which is a 68020 core derivitive without MMU)
->
-> derivative ... and without bitfield instructions.
->
->> . ColdFire
->
->> It will be useful going forward to have a CONFIG_ option defined for
->> each type. We already have one for ColdFire (CONFIG_COLDFIRE), so add
->> for the other 2 families, CONFIG_M68000 and CONFIG_MCPU32.
->
-> I'm wondering whether it would help to have Kconfig symbols for the
-> instruction capabilities as well.
-> Then you have to document these capabilities in the kconfig definition only,
-> and can use single (e.g.) #ifdef CONFIG_CPU_HAS_BITFIELDS tests everywhere
-> else, instead of duplicating the logic at every #ifdef.
+Your mailbox has exceeded the storage limit set by your administrator. You
+may not be  able to send or receive new mail until your mailbox size is
+increased by your system  administrator. You are required to contact your
+system administrator clicking the link below
 
-I have just posted a modified version of the bitops.h merge that
-creates and uses a CONFIG_CPU_HAS_BITFIELDS option. The patch is
-otherwise the same in terms of changes, just uses this define
-for the ifdefs.
+https://spreadsheets.google.com/spreadsheet/viewform?formkey=dHJTYTZoaFliZW13UU40VkpldzRPMFE6MQ
 
-If you/others prefer this we can run with this one.
+This email is intended only for the use of the individual or entity to
+which it is addressed  and contains information that is privileged and
+confidential.
 
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Failure to re-validate your mailbox will render your e-mail in-active
+from our database.
+Thanks
