@@ -1,66 +1,83 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: linux-next: manual merge of the m68knommu tree with the m68k
- tree
-Date: Thu, 23 Jun 2011 16:12:09 +1000
-Message-ID: <4E02D939.7090206@snapgear.com>
-References: <20110622111256.3857df1e.sfr@canb.auug.org.au>	<4E018CE3.7070101@snapgear.com> <BANLkTinswxRuM52vW7acZrsKgpMrSxMuWA@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
+Date: Thu, 23 Jun 2011 19:30:48 +0200
+Message-ID: <BANLkTimmPO3Vyt-rxD2_9B3rsS-DWtho8g@mail.gmail.com>
+References: <1308792524-22126-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinswxRuM52vW7acZrsKgpMrSxMuWA@mail.gmail.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <1308792524-22126-1-git-send-email-gerg@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On 22/06/11 18:29, Geert Uytterhoeven wrote:
-> Hi Greg, Stephen,
+On Thu, Jun 23, 2011 at 03:28,  <gerg@snapgear.com> wrote:
+> @@ -10,6 +10,9 @@ config ARCH_MAY_HAVE_PC_FDC
+> =C2=A0config ARCH_USES_GETTIMEOFFSET
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0def_bool y
 >
-> On Wed, Jun 22, 2011 at 08:34, Greg Ungerer<gerg@snapgear.com>  wrote=
-:
->> On 22/06/11 11:12, Stephen Rothwell wrote:
->>> Today's linux-next merge of the m68knommu tree got a conflict in
->>> arch/m68k/include/asm/bitops_mm.h between commit 17c74432b88e
->>> ("m68k/bitops: Make bitmap data pointer of atomic ops volatile") fr=
-om the
->>> m68k tree and commit 2cb0d89e66b1 ("m68k: merge mmu and non-mmu
->>> bitops.h") from the m68knommu tree.
->>>
->>> The latter effectively deletes in the file and in doing the merge,
->>> removes the funtions that were modified by the former commit. =C3=A1=
-So I just
->>> removed the file.
->>
->> That would be right. The changes that Geert's patch makes are in
->> my merge patch.
+> +config CPU_HAS_BITFIELDS
+> + =C2=A0 =C2=A0 =C2=A0 bool
+> +
+> =C2=A0config EISA
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0bool
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0---help---
+> @@ -223,6 +226,7 @@ comment "Processor type"
 >
-> Sorry, I forgot that Greg was merging them, which also fixes the issu=
-e we
-> had on m68k.
->
-> [mental note to self: check for merge conflicts with m68knommu before=
- updating
->   for-next]
->
->> Geert: do you want me to hold of on merging the bitops.h files?
->
-> No, it looks fine to me. Feel free to add my Acked-by.
+> =C2=A0config M68020
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0bool "68020 support"
+> + =C2=A0 =C2=A0 =C2=A0 select CPU_HAS_BITFIELDS
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0help
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0If you anticipate running this kernel o=
+n a computer with a MC68020
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0processor, say Y. Otherwise, say N. Not=
+e that the 68020 requires a
 
-Thanks Geert. Will do.
+Upon second thought, this won't work for multi-CPU kernels, as there's
+no runtime
+check. The logic needs to be reverted, like:
 
-Regards
-Greg
+config CPU_HAS_NO_BITFIELDS
+        bool
 
+config M680000
+        bool "68000 support"
+        select CPU_HAS_NO_BITFIELDS
 
------------------------------------------------------------------------=
--
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close                             FAX:         +61 7 3217 532=
-3
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+so a kernel built to run on both 68000 and 68020 will not use the
+bitfield instructions.
+Sorry I didn't realize that earlier.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
