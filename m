@@ -1,83 +1,71 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
-Date: Sun, 26 Jun 2011 14:21:13 +0200
-Message-ID: <BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
-References: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: linux-2.6_2.6.39-1_amd64.changes ACCEPTED into unstable
+Date: Mon, 27 Jun 2011 11:49:51 +1200
+Message-ID: <BANLkTikDZN3Z-Lc067f2fCaUBon5ugqCqw@mail.gmail.com>
+References: <E1QNV5z-0006jD-Ej@franck.debian.org>
+	<20110521122605.GA16345@chumley.earth.sol>
+	<Pine.BSM.4.64L.1105211232060.14234@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
+	<BANLkTimfZ4oHhT7chf=7-gHH_DVMQqHH+g@mail.gmail.com>
+	<BANLkTikQSZev=QHYFR2kxsUY2xND37Dr8g@mail.gmail.com>
+	<BANLkTinJJn0wvZrdQKgL-1GvVt7mT7DNyQ@mail.gmail.com>
+	<BANLkTinhBpxEqRb_Xi-HCejqLPSG3wJGsw@mail.gmail.com>
+	<BANLkTikepyD1GjzOpYm6uuHj88TpVkowZA@mail.gmail.com>
+	<BANLkTikSZQXM3vQt0CCgmb8+rW8CEMKLqQ@mail.gmail.com>
+	<m27h8itgp9.fsf@linux-m68k.org>
+	<BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pw0-f46.google.com ([209.85.160.46]:42561 "EHLO
+	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755833Ab1FZXtw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 26 Jun 2011 19:49:52 -0400
+Received: by pwj7 with SMTP id 7so2647975pwj.19
+        for <linux-m68k@vger.kernel.org>; Sun, 26 Jun 2011 16:49:51 -0700 (PDT)
+In-Reply-To: <BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
 
-On Fri, Jun 24, 2011 at 07:45,  <gerg@snapgear.com> wrote:
-> From: Greg Ungerer <gerg@uclinux.org>
+Hi All,
+
+after making sure I had a good patch file, the patch applied sort of
+cleanly (I had used DEBUG in the stram pool code) and the resulting
+kernel runs fine on my Falcon. Geert's resource allocator appears to
+do the right thing and provides ST-RAM where needed so the old ST-RAM
+allcocator can go.
+
+Thanks a lot, Geert!
+
+Cheers,
+
+  Michael
+
+
+On Mon, Jun 20, 2011 at 8:08 AM, Michael Schmitz
+<schmitzmic@googlemail.com> wrote:
+> Andreas,
 >
-> The following patch merges the mmu and non-mmu versions of the m68k
-> bitops.h files. Now there is a good deal of difference between the two
-> files, but none of it is actually an mmu specific difference. It is
-> all about the specific m68k/coldfire varient we are targeting. So it
-> makes an awful lot of sense to merge these into a single bitops.h.
+> On Sun, Jun 19, 2011 at 7:37 PM, Andreas Schwab <schwab@linux-m68k.or=
+g> wrote:
+>> Michael Schmitz <schmitzmic@googlemail.com> writes:
+>>
+>>> http://lkml.org/lkml/2011/6/5/46 appears malformed (patch ending in
+>>> the middle of the line),
+>>
+>> Your browser appears to be broken. =A0Try wget or
+>> <http://marc.info/?l=3Dlinux-kernel&m=3D130726658112067&q=3Draw> ins=
+tead.
 >
-> There is a number of ways I can see to factor this code. The approach
-> I have taken here is to keep the various versions of each macro/function
-> type together. This means that there is some ifdefery with each to handle
-> each CPU type. I have introduced a new config option so that processors
-> that support the more advanced bit field instructions can select that.
-> It keeps the ifdefs a little cleaner at least.
+> Silly me - for not thinking of wget. Haven't had trouble with that
+> browser (whatever Ubuntu 10.04 uses) before though.
 >
-> I have added some comments in a couple of appropriate places to try
-> and make it clear what the differences we are dealing with are.
-> Specifically the instruction and addressing mode differences we have
-> to deal with.
+> Thanks, will retry that!
 >
-> The merged form keeps the same underlying optimizations for each CPU
-> type for all the general bit clear/set/change and find bit operations.
-> It does switch to using the generic le operations though, instead of
-> any local varients.
+> Cheers,
 >
-> Build tested on ColdFire, 68328, 68360 (which is cpu32) and 68020+.
-> Run tested on ColdFire and ARAnyM.
+> =A0Michael
 >
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-
-Thanks!
-
-If you fix the indentation and spacing problems reported by checkpatch, you
-can add my
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
