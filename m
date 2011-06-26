@@ -1,70 +1,83 @@
-From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: Re: [RFC 54/72] au1000_eth/mipsnet/tc35815: Move the MIPS drivers
-Date: Sat, 25 Jun 2011 11:11:21 -0700
-Message-ID: <1309025482.2454.90.camel@jtkirshe-mobl>
-References: <1309010363-22750-1-git-send-email-jeffrey.t.kirsher@intel.com>
-	 <1309010363-22750-55-git-send-email-jeffrey.t.kirsher@intel.com>
-	 <20110625161353.GA20976@linux-mips.org>
-Reply-To: jeffrey.t.kirsher@intel.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
+Date: Sun, 26 Jun 2011 14:21:13 +0200
+Message-ID: <BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
+References: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-BqP0rTRzPe22vc5yVcBs"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mga11.intel.com ([192.55.52.93]:17498 "EHLO mga11.intel.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751678Ab1FYSLX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 25 Jun 2011 14:11:23 -0400
-In-Reply-To: <20110625161353.GA20976@linux-mips.org>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "davem@davemloft.net" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Matt Porter <mporter@kernel.crashing.org>, Herbert Valerio Riedel <hvr@gnu.org>, MontaVista Software <source@mvista.com>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Sam Creasey <sammy@sammy.net>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-
-
---=-BqP0rTRzPe22vc5yVcBs
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+List-Id: linux-m68k@vger.kernel.org
 
-On Sat, 2011-06-25 at 09:13 -0700, Ralf Baechle wrote:
-> On Sat, Jun 25, 2011 at 06:59:05AM -0700, Jeff Kirsher wrote:
->=20
-> > Move the MIPS drivers into drivers/net/ethernet/mips/ and
-> > make the necessary Kconfig and Makefile changes.
->=20
-> NAck.
->=20
-> sni_82596.c is a driver for the same chip but used in particular
-> Siemens-
-> Nixdorf systems.  Lasi_82596 is an Intel NIC being used in PARISC
-> systems.
-> Not a good reason th throw PA-RISC drivers into the same directory
-> after
-> all PA-RISC has no relation to MIPS at all.  So maybe they should go
-> into
-> drivers/net/ethernet/i82596 or drivers/net/ethernet/intel.  And
-> wherever
-> they go, both drivers #include lib82596.c which your patch did not
-> move
-> around.=20
+On Fri, Jun 24, 2011 at 07:45,  <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
+>
+> The following patch merges the mmu and non-mmu versions of the m68k
+> bitops.h files. Now there is a good deal of difference between the two
+> files, but none of it is actually an mmu specific difference. It is
+> all about the specific m68k/coldfire varient we are targeting. So it
+> makes an awful lot of sense to merge these into a single bitops.h.
+>
+> There is a number of ways I can see to factor this code. The approach
+> I have taken here is to keep the various versions of each macro/function
+> type together. This means that there is some ifdefery with each to handle
+> each CPU type. I have introduced a new config option so that processors
+> that support the more advanced bit field instructions can select that.
+> It keeps the ifdefs a little cleaner at least.
+>
+> I have added some comments in a couple of appropriate places to try
+> and make it clear what the differences we are dealing with are.
+> Specifically the instruction and addressing mode differences we have
+> to deal with.
+>
+> The merged form keeps the same underlying optimizations for each CPU
+> type for all the general bit clear/set/change and find bit operations.
+> It does switch to using the generic le operations though, instead of
+> any local varients.
+>
+> Build tested on ColdFire, 68328, 68360 (which is cpu32) and 68020+.
+> Run tested on ColdFire and ARAnyM.
+>
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-My bad, I had grouped these drivers because they both used lib82596.c
-and had thought I had moved that file as well.
+Thanks!
 
---=-BqP0rTRzPe22vc5yVcBs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+If you fix the indentation and spacing problems reported by checkpatch, you
+can add my
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Gr{oetje,eeting}s,
 
-iQEcBAABAgAGBQJOBiTJAAoJECTsCADr/EWUUicH/iWVNtJdmOkrW7NNOdzV83ao
-xowwQBCpvdAk9TrM5JbJRYHQftSHry4viHyMfO+RDC0VT8d1LGlgqHCJ3Y+1oQob
-ibIG8uUGdSX1XdF3/LWdDXkLNSfsboV5wEnlYMW5zY0Wp3ETXdO4SN5Vp5O37EVl
-YnUfkUR64dEot+8t5tKqAdjfXLcDZIex02lzfjtpDub5TAqoEGBNjAY1vTSakDBt
-9ZlEluDAKJ1HU6+a9DcpW1r/BBCaFsQVOcRqOxi/mStbsCkvIajlj4qIbJP0U7ng
-741GoMqR31oZkR5nqcqvGcJm8/WZEATj8y4Zk/+CTzamkTSN5i/hUsR2TuTaTe0=
-=+nyO
------END PGP SIGNATURE-----
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
---=-BqP0rTRzPe22vc5yVcBs--
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
