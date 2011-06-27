@@ -1,8 +1,7 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: merge ColdFire 5206 and 5206e
-	platform code
-Date: Mon, 27 Jun 2011 12:01:29 +1000
-Message-ID: <1309140089-20168-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68knommu: correctly use trap_init
+Date: Mon, 27 Jun 2011 12:03:49 +1000
+Message-ID: <1309140229-20253-1-git-send-email-gerg@snapgear.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -22,264 +21,184 @@ List-Id: linux-m68k@vger.kernel.org
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire 5206 and 5206e CPU families are almost identical, we can
-easily merge the platform support code for them. All the differences
-are dealt with in the current include/asm/5206sim.h.
+Currently trap_init() is an empty function for m68knommu. Instead
+the vectors are being setup as part of the IRQ initialization.
+This is inconsistent with m68k and other architectures.
+
+Change the local init_vectors() to be trap_init(), and init the
+vectors at the correct time during startup. This will help merge of
+m68k and m68knommu trap code in the furture.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/Makefile_no             |    2 +-
- arch/m68k/platform/5206/config.c  |    6 ++
- arch/m68k/platform/5206e/Makefile |   18 -----
- arch/m68k/platform/5206e/config.c |  127 -------------------------------------
- arch/m68k/platform/5206e/gpio.c   |   49 --------------
- 5 files changed, 7 insertions(+), 195 deletions(-)
- delete mode 100644 arch/m68k/platform/5206e/Makefile
- delete mode 100644 arch/m68k/platform/5206e/config.c
- delete mode 100644 arch/m68k/platform/5206e/gpio.c
+ arch/m68k/include/asm/traps.h           |    1 -
+ arch/m68k/kernel/traps_no.c             |    4 ----
+ arch/m68k/platform/5272/intc.c          |    2 --
+ arch/m68k/platform/68328/ints.c         |    7 ++++++-
+ arch/m68k/platform/68360/ints.c         |    8 ++++++--
+ arch/m68k/platform/coldfire/intc-2.c    |    2 --
+ arch/m68k/platform/coldfire/intc-simr.c |    2 --
+ arch/m68k/platform/coldfire/intc.c      |    1 -
+ arch/m68k/platform/coldfire/vectors.c   |   10 +---------
+ 9 files changed, 13 insertions(+), 24 deletions(-)
 
-diff --git a/arch/m68k/Makefile_no b/arch/m68k/Makefile_no
-index 81652ab..844d3f1 100644
---- a/arch/m68k/Makefile_no
-+++ b/arch/m68k/Makefile_no
-@@ -13,7 +13,7 @@ platform-$(CONFIG_M68EZ328)	:= 68EZ328
- platform-$(CONFIG_M68VZ328)	:= 68VZ328
- platform-$(CONFIG_M68360)	:= 68360
- platform-$(CONFIG_M5206)	:= 5206
--platform-$(CONFIG_M5206e)	:= 5206e
-+platform-$(CONFIG_M5206e)	:= 5206
- platform-$(CONFIG_M520x)	:= 520x
- platform-$(CONFIG_M523x)	:= 523x
- platform-$(CONFIG_M5249)	:= 5249
-diff --git a/arch/m68k/platform/5206/config.c b/arch/m68k/platform/5206/config.c
-index 9c33546..6fa3f80 100644
---- a/arch/m68k/platform/5206/config.c
-+++ b/arch/m68k/platform/5206/config.c
-@@ -98,6 +98,12 @@ void m5206_cpu_reset(void)
+diff --git a/arch/m68k/include/asm/traps.h b/arch/m68k/include/asm/traps.h
+index 0bffb17..151068f 100644
+--- a/arch/m68k/include/asm/traps.h
++++ b/arch/m68k/include/asm/traps.h
+@@ -22,7 +22,6 @@ extern e_vector vectors[];
+ asmlinkage void auto_inthandler(void);
+ asmlinkage void user_inthandler(void);
+ asmlinkage void bad_inthandler(void);
+-extern void init_vectors(void);
  
- void __init config_BSP(char *commandp, int size)
+ #endif
+ 
+diff --git a/arch/m68k/kernel/traps_no.c b/arch/m68k/kernel/traps_no.c
+index a768008..e67b8c8 100644
+--- a/arch/m68k/kernel/traps_no.c
++++ b/arch/m68k/kernel/traps_no.c
+@@ -60,10 +60,6 @@ static char const * const vec_names[] = {
+ 	"MMU CONFIGURATION ERROR"
+ };
+ 
+-void __init trap_init(void)
+-{
+-}
+-
+ void die_if_kernel(char *str, struct pt_regs *fp, int nr)
  {
-+#if defined(CONFIG_NETtel)
-+	/* Copy command line from FLASH to local buffer... */
-+	memcpy(commandp, (char *) 0xf0004000, size);
-+	commandp[size-1] = 0;
-+#endif /* CONFIG_NETtel */
+ 	if (!(fp->sr & PS_S))
+diff --git a/arch/m68k/platform/5272/intc.c b/arch/m68k/platform/5272/intc.c
+index 7e715df..7160e61 100644
+--- a/arch/m68k/platform/5272/intc.c
++++ b/arch/m68k/platform/5272/intc.c
+@@ -162,8 +162,6 @@ void __init init_IRQ(void)
+ {
+ 	int irq, edge;
+ 
+-	init_vectors();
+-
+ 	/* Mask all interrupt sources */
+ 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR1);
+ 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR2);
+diff --git a/arch/m68k/platform/68328/ints.c b/arch/m68k/platform/68328/ints.c
+index a90288c..22acb60 100644
+--- a/arch/m68k/platform/68328/ints.c
++++ b/arch/m68k/platform/68328/ints.c
+@@ -155,7 +155,7 @@ static struct irq_chip intc_irq_chip = {
+  * This function should be called during kernel startup to initialize
+  * the machine vector table.
+  */
+-void __init init_IRQ(void)
++void __init trap_init(void)
+ {
+ 	int i;
+ 
+@@ -172,6 +172,11 @@ void __init init_IRQ(void)
+ 	_ramvec[69] = (e_vector) inthandler5;
+ 	_ramvec[70] = (e_vector) inthandler6;
+ 	_ramvec[71] = (e_vector) inthandler7;
++}
 +
- 	mach_reset = m5206_cpu_reset;
- 	m5206_timers_init();
- 	m5206_uarts_init();
-diff --git a/arch/m68k/platform/5206e/Makefile b/arch/m68k/platform/5206e/Makefile
-deleted file mode 100644
-index b5db056..0000000
---- a/arch/m68k/platform/5206e/Makefile
-+++ /dev/null
-@@ -1,18 +0,0 @@
--#
--# Makefile for the m68knommu linux kernel.
--#
++void __init init_IRQ(void)
++{
++	int i;
+ 
+ 	IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
+ 
+diff --git a/arch/m68k/platform/68360/ints.c b/arch/m68k/platform/68360/ints.c
+index 4af0f4e..4444382 100644
+--- a/arch/m68k/platform/68360/ints.c
++++ b/arch/m68k/platform/68360/ints.c
+@@ -63,9 +63,8 @@ static struct irq_chip intc_irq_chip = {
+  * This function should be called during kernel startup to initialize
+  * the vector table.
+  */
+-void init_IRQ(void)
++void __init trap_init(void)
+ {
+-	int i;
+ 	int vba = (CPM_VECTOR_BASE<<4);
+ 
+ 	/* set up the vectors */
+@@ -130,6 +129,11 @@ void init_IRQ(void)
+ 
+ 	/* turn off all CPM interrupts */
+ 	pquicc->intr_cimr = 0x00000000;
++}
++
++void init_IRQ(void)
++{
++	int i;
+ 
+ 	for (i = 0; (i < NR_IRQS); i++) {
+ 		irq_set_chip(i, &intc_irq_chip);
+diff --git a/arch/m68k/platform/coldfire/intc-2.c b/arch/m68k/platform/coldfire/intc-2.c
+index 74b55cf..9950933 100644
+--- a/arch/m68k/platform/coldfire/intc-2.c
++++ b/arch/m68k/platform/coldfire/intc-2.c
+@@ -194,8 +194,6 @@ void __init init_IRQ(void)
+ {
+ 	int irq;
+ 
+-	init_vectors();
 -
--#
--# If you want to play with the HW breakpoints then you will
--# need to add define this,  which will give you a stack backtrace
--# on the console port whenever a DBG interrupt occurs.  You have to
--# set up you HW breakpoints to trigger a DBG interrupt:
--#
--# ccflags-y := -DTRAP_DBG_INTERRUPT
--# asflags-y := -DTRAP_DBG_INTERRUPT
--#
+ 	/* Mask all interrupt sources */
+ 	__raw_writel(0x1, MCFICM_INTC0 + MCFINTC_IMRL);
+ #ifdef MCFICM_INTC1
+diff --git a/arch/m68k/platform/coldfire/intc-simr.c b/arch/m68k/platform/coldfire/intc-simr.c
+index d6a4d9d..650d52e 100644
+--- a/arch/m68k/platform/coldfire/intc-simr.c
++++ b/arch/m68k/platform/coldfire/intc-simr.c
+@@ -171,8 +171,6 @@ void __init init_IRQ(void)
+ {
+ 	int irq, eirq;
+ 
+-	init_vectors();
 -
--asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
--
--obj-y := config.o gpio.o
--
-diff --git a/arch/m68k/platform/5206e/config.c b/arch/m68k/platform/5206e/config.c
-deleted file mode 100644
-index 9423979..0000000
---- a/arch/m68k/platform/5206e/config.c
-+++ /dev/null
-@@ -1,127 +0,0 @@
--/***************************************************************************/
--
--/*
-- *	linux/arch/m68knommu/platform/5206e/config.c
-- *
-- *	Copyright (C) 1999-2002, Greg Ungerer (gerg@snapgear.com)
-- */
--
--/***************************************************************************/
--
--#include <linux/kernel.h>
--#include <linux/param.h>
--#include <linux/init.h>
--#include <linux/io.h>
--#include <asm/machdep.h>
--#include <asm/coldfire.h>
--#include <asm/mcfsim.h>
--#include <asm/mcfuart.h>
--#include <asm/mcfdma.h>
--
--/***************************************************************************/
--
--static struct mcf_platform_uart m5206e_uart_platform[] = {
--	{
--		.mapbase	= MCF_MBAR + MCFUART_BASE1,
--		.irq		= 73,
--	},
--	{
--		.mapbase 	= MCF_MBAR + MCFUART_BASE2,
--		.irq		= 74,
--	},
--	{ },
--};
--
--static struct platform_device m5206e_uart = {
--	.name			= "mcfuart",
--	.id			= 0,
--	.dev.platform_data	= m5206e_uart_platform,
--};
--
--static struct platform_device *m5206e_devices[] __initdata = {
--	&m5206e_uart,
--};
--
--/***************************************************************************/
--
--static void __init m5206e_uart_init_line(int line, int irq)
+ 	/* Mask all interrupt sources */
+ 	__raw_writeb(0xff, MCFINTC0_SIMR);
+ 	if (MCFINTC1_SIMR)
+diff --git a/arch/m68k/platform/coldfire/intc.c b/arch/m68k/platform/coldfire/intc.c
+index 0bbb414..5c0c150 100644
+--- a/arch/m68k/platform/coldfire/intc.c
++++ b/arch/m68k/platform/coldfire/intc.c
+@@ -139,7 +139,6 @@ void __init init_IRQ(void)
+ {
+ 	int irq;
+ 
+-	init_vectors();
+ 	mcf_maskimr(0xffffffff);
+ 
+ 	for (irq = 0; (irq < NR_IRQS); irq++) {
+diff --git a/arch/m68k/platform/coldfire/vectors.c b/arch/m68k/platform/coldfire/vectors.c
+index a21d3f8..3a7cc52 100644
+--- a/arch/m68k/platform/coldfire/vectors.c
++++ b/arch/m68k/platform/coldfire/vectors.c
+@@ -35,21 +35,13 @@ asmlinkage void dbginterrupt_c(struct frame *fp)
+ 
+ extern e_vector	*_ramvec;
+ 
+-void set_evector(int vecnum, void (*handler)(void))
 -{
--	if (line == 0) {
--		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
--		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
--		mcf_mapirq2imr(irq, MCFINTC_UART0);
--	} else if (line == 1) {
--		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
--		writeb(irq, MCFUART_BASE2 + MCFUART_UIVR);
--		mcf_mapirq2imr(irq, MCFINTC_UART1);
--	}
--}
--
--static void __init m5206e_uarts_init(void)
--{
--	const int nrlines = ARRAY_SIZE(m5206e_uart_platform);
--	int line;
--
--	for (line = 0; (line < nrlines); line++)
--		m5206e_uart_init_line(line, m5206e_uart_platform[line].irq);
+-	if (vecnum >= 0 && vecnum <= 255)
+-		_ramvec[vecnum] = handler;
 -}
 -
 -/***************************************************************************/
 -
--static void __init m5206e_timers_init(void)
--{
--	/* Timer1 is always used as system timer */
--	writeb(MCFSIM_ICR_AUTOVEC | MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI3,
--		MCF_MBAR + MCFSIM_TIMER1ICR);
--	mcf_mapirq2imr(MCF_IRQ_TIMER, MCFINTC_TIMER1);
--
--#ifdef CONFIG_HIGHPROFILE
--	/* Timer2 is to be used as a high speed profile timer  */
--	writeb(MCFSIM_ICR_AUTOVEC | MCFSIM_ICR_LEVEL7 | MCFSIM_ICR_PRI3,
--		MCF_MBAR + MCFSIM_TIMER2ICR);
--	mcf_mapirq2imr(MCF_IRQ_PROFILER, MCFINTC_TIMER2);
--#endif
--}
--
--/***************************************************************************/
--
--void m5206e_cpu_reset(void)
--{
--	local_irq_disable();
--	/* Set watchdog to soft reset, and enabled */
--	__raw_writeb(0xc0, MCF_MBAR + MCFSIM_SYPCR);
--	for (;;)
--		/* wait for watchdog to timeout */;
--}
--
--/***************************************************************************/
--
--void __init config_BSP(char *commandp, int size)
--{
--#if defined(CONFIG_NETtel)
--	/* Copy command line from FLASH to local buffer... */
--	memcpy(commandp, (char *) 0xf0004000, size);
--	commandp[size-1] = 0;
--#endif /* CONFIG_NETtel */
--
--	mach_reset = m5206e_cpu_reset;
--	m5206e_timers_init();
--	m5206e_uarts_init();
--
--	/* Only support the external interrupts on their primary level */
--	mcf_mapirq2imr(25, MCFINTC_EINT1);
--	mcf_mapirq2imr(28, MCFINTC_EINT4);
--	mcf_mapirq2imr(31, MCFINTC_EINT7);
--}
--
--/***************************************************************************/
--
--static int __init init_BSP(void)
--{
--	platform_add_devices(m5206e_devices, ARRAY_SIZE(m5206e_devices));
--	return 0;
--}
--
--arch_initcall(init_BSP);
--
--/***************************************************************************/
-diff --git a/arch/m68k/platform/5206e/gpio.c b/arch/m68k/platform/5206e/gpio.c
-deleted file mode 100644
-index b9ab4a1..0000000
---- a/arch/m68k/platform/5206e/gpio.c
-+++ /dev/null
-@@ -1,49 +0,0 @@
--/*
-- * Coldfire generic GPIO support
-- *
-- * (C) Copyright 2009, Steven King <sfking@fdwdc.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; version 2 of the License.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
--*/
--
--#include <linux/kernel.h>
--#include <linux/init.h>
--
--#include <asm/coldfire.h>
--#include <asm/mcfsim.h>
--#include <asm/mcfgpio.h>
--
--static struct mcf_gpio_chip mcf_gpio_chips[] = {
--	{
--		.gpio_chip			= {
--			.label			= "PP",
--			.request		= mcf_gpio_request,
--			.free			= mcf_gpio_free,
--			.direction_input	= mcf_gpio_direction_input,
--			.direction_output	= mcf_gpio_direction_output,
--			.get			= mcf_gpio_get_value,
--			.set			= mcf_gpio_set_value,
--			.ngpio			= 8,
--		},
--		.pddr				= (void __iomem *) MCFSIM_PADDR,
--		.podr				= (void __iomem *) MCFSIM_PADAT,
--		.ppdr				= (void __iomem *) MCFSIM_PADAT,
--	},
--};
--
--static int __init mcf_gpio_init(void)
--{
--	unsigned i = 0;
--	while (i < ARRAY_SIZE(mcf_gpio_chips))
--		(void)gpiochip_add((struct gpio_chip *)&mcf_gpio_chips[i++]);
--	return 0;
--}
--
--core_initcall(mcf_gpio_init);
+ /* Assembler routines */
+ asmlinkage void buserr(void);
+ asmlinkage void trap(void);
+ asmlinkage void system_call(void);
+ asmlinkage void inthandler(void);
+ 
+-void __init init_vectors(void)
++void __init trap_init(void)
+ {
+ 	int i;
+ 
 -- 
 1.7.0.4
 
