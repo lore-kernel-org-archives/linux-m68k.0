@@ -1,71 +1,292 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: linux-2.6_2.6.39-1_amd64.changes ACCEPTED into unstable
-Date: Mon, 27 Jun 2011 11:49:51 +1200
-Message-ID: <BANLkTikDZN3Z-Lc067f2fCaUBon5ugqCqw@mail.gmail.com>
-References: <E1QNV5z-0006jD-Ej@franck.debian.org>
-	<20110521122605.GA16345@chumley.earth.sol>
-	<Pine.BSM.4.64L.1105211232060.14234@herc.mirbsd.org>
-	<Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
-	<BANLkTimfZ4oHhT7chf=7-gHH_DVMQqHH+g@mail.gmail.com>
-	<BANLkTikQSZev=QHYFR2kxsUY2xND37Dr8g@mail.gmail.com>
-	<BANLkTinJJn0wvZrdQKgL-1GvVt7mT7DNyQ@mail.gmail.com>
-	<BANLkTinhBpxEqRb_Xi-HCejqLPSG3wJGsw@mail.gmail.com>
-	<BANLkTikepyD1GjzOpYm6uuHj88TpVkowZA@mail.gmail.com>
-	<BANLkTikSZQXM3vQt0CCgmb8+rW8CEMKLqQ@mail.gmail.com>
-	<m27h8itgp9.fsf@linux-m68k.org>
-	<BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: merge ColdFire 5206 and 5206e
+	platform code
+Date: Mon, 27 Jun 2011 12:01:29 +1000
+Message-ID: <1309140089-20168-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pw0-f46.google.com ([209.85.160.46]:42561 "EHLO
-	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755833Ab1FZXtw convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 26 Jun 2011 19:49:52 -0400
-Received: by pwj7 with SMTP id 7so2647975pwj.19
-        for <linux-m68k@vger.kernel.org>; Sun, 26 Jun 2011 16:49:51 -0700 (PDT)
-In-Reply-To: <BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain
+Return-path: <uclinux-dev-bounces@uclinux.org>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
 
-Hi All,
+From: Greg Ungerer <gerg@uclinux.org>
 
-after making sure I had a good patch file, the patch applied sort of
-cleanly (I had used DEBUG in the stram pool code) and the resulting
-kernel runs fine on my Falcon. Geert's resource allocator appears to
-do the right thing and provides ST-RAM where needed so the old ST-RAM
-allcocator can go.
+The ColdFire 5206 and 5206e CPU families are almost identical, we can
+easily merge the platform support code for them. All the differences
+are dealt with in the current include/asm/5206sim.h.
 
-Thanks a lot, Geert!
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/Makefile_no             |    2 +-
+ arch/m68k/platform/5206/config.c  |    6 ++
+ arch/m68k/platform/5206e/Makefile |   18 -----
+ arch/m68k/platform/5206e/config.c |  127 -------------------------------------
+ arch/m68k/platform/5206e/gpio.c   |   49 --------------
+ 5 files changed, 7 insertions(+), 195 deletions(-)
+ delete mode 100644 arch/m68k/platform/5206e/Makefile
+ delete mode 100644 arch/m68k/platform/5206e/config.c
+ delete mode 100644 arch/m68k/platform/5206e/gpio.c
 
-Cheers,
+diff --git a/arch/m68k/Makefile_no b/arch/m68k/Makefile_no
+index 81652ab..844d3f1 100644
+--- a/arch/m68k/Makefile_no
++++ b/arch/m68k/Makefile_no
+@@ -13,7 +13,7 @@ platform-$(CONFIG_M68EZ328)	:= 68EZ328
+ platform-$(CONFIG_M68VZ328)	:= 68VZ328
+ platform-$(CONFIG_M68360)	:= 68360
+ platform-$(CONFIG_M5206)	:= 5206
+-platform-$(CONFIG_M5206e)	:= 5206e
++platform-$(CONFIG_M5206e)	:= 5206
+ platform-$(CONFIG_M520x)	:= 520x
+ platform-$(CONFIG_M523x)	:= 523x
+ platform-$(CONFIG_M5249)	:= 5249
+diff --git a/arch/m68k/platform/5206/config.c b/arch/m68k/platform/5206/config.c
+index 9c33546..6fa3f80 100644
+--- a/arch/m68k/platform/5206/config.c
++++ b/arch/m68k/platform/5206/config.c
+@@ -98,6 +98,12 @@ void m5206_cpu_reset(void)
+ 
+ void __init config_BSP(char *commandp, int size)
+ {
++#if defined(CONFIG_NETtel)
++	/* Copy command line from FLASH to local buffer... */
++	memcpy(commandp, (char *) 0xf0004000, size);
++	commandp[size-1] = 0;
++#endif /* CONFIG_NETtel */
++
+ 	mach_reset = m5206_cpu_reset;
+ 	m5206_timers_init();
+ 	m5206_uarts_init();
+diff --git a/arch/m68k/platform/5206e/Makefile b/arch/m68k/platform/5206e/Makefile
+deleted file mode 100644
+index b5db056..0000000
+--- a/arch/m68k/platform/5206e/Makefile
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#
+-# Makefile for the m68knommu linux kernel.
+-#
+-
+-#
+-# If you want to play with the HW breakpoints then you will
+-# need to add define this,  which will give you a stack backtrace
+-# on the console port whenever a DBG interrupt occurs.  You have to
+-# set up you HW breakpoints to trigger a DBG interrupt:
+-#
+-# ccflags-y := -DTRAP_DBG_INTERRUPT
+-# asflags-y := -DTRAP_DBG_INTERRUPT
+-#
+-
+-asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
+-
+-obj-y := config.o gpio.o
+-
+diff --git a/arch/m68k/platform/5206e/config.c b/arch/m68k/platform/5206e/config.c
+deleted file mode 100644
+index 9423979..0000000
+--- a/arch/m68k/platform/5206e/config.c
++++ /dev/null
+@@ -1,127 +0,0 @@
+-/***************************************************************************/
+-
+-/*
+- *	linux/arch/m68knommu/platform/5206e/config.c
+- *
+- *	Copyright (C) 1999-2002, Greg Ungerer (gerg@snapgear.com)
+- */
+-
+-/***************************************************************************/
+-
+-#include <linux/kernel.h>
+-#include <linux/param.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <asm/machdep.h>
+-#include <asm/coldfire.h>
+-#include <asm/mcfsim.h>
+-#include <asm/mcfuart.h>
+-#include <asm/mcfdma.h>
+-
+-/***************************************************************************/
+-
+-static struct mcf_platform_uart m5206e_uart_platform[] = {
+-	{
+-		.mapbase	= MCF_MBAR + MCFUART_BASE1,
+-		.irq		= 73,
+-	},
+-	{
+-		.mapbase 	= MCF_MBAR + MCFUART_BASE2,
+-		.irq		= 74,
+-	},
+-	{ },
+-};
+-
+-static struct platform_device m5206e_uart = {
+-	.name			= "mcfuart",
+-	.id			= 0,
+-	.dev.platform_data	= m5206e_uart_platform,
+-};
+-
+-static struct platform_device *m5206e_devices[] __initdata = {
+-	&m5206e_uart,
+-};
+-
+-/***************************************************************************/
+-
+-static void __init m5206e_uart_init_line(int line, int irq)
+-{
+-	if (line == 0) {
+-		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
+-		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
+-		mcf_mapirq2imr(irq, MCFINTC_UART0);
+-	} else if (line == 1) {
+-		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
+-		writeb(irq, MCFUART_BASE2 + MCFUART_UIVR);
+-		mcf_mapirq2imr(irq, MCFINTC_UART1);
+-	}
+-}
+-
+-static void __init m5206e_uarts_init(void)
+-{
+-	const int nrlines = ARRAY_SIZE(m5206e_uart_platform);
+-	int line;
+-
+-	for (line = 0; (line < nrlines); line++)
+-		m5206e_uart_init_line(line, m5206e_uart_platform[line].irq);
+-}
+-
+-/***************************************************************************/
+-
+-static void __init m5206e_timers_init(void)
+-{
+-	/* Timer1 is always used as system timer */
+-	writeb(MCFSIM_ICR_AUTOVEC | MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI3,
+-		MCF_MBAR + MCFSIM_TIMER1ICR);
+-	mcf_mapirq2imr(MCF_IRQ_TIMER, MCFINTC_TIMER1);
+-
+-#ifdef CONFIG_HIGHPROFILE
+-	/* Timer2 is to be used as a high speed profile timer  */
+-	writeb(MCFSIM_ICR_AUTOVEC | MCFSIM_ICR_LEVEL7 | MCFSIM_ICR_PRI3,
+-		MCF_MBAR + MCFSIM_TIMER2ICR);
+-	mcf_mapirq2imr(MCF_IRQ_PROFILER, MCFINTC_TIMER2);
+-#endif
+-}
+-
+-/***************************************************************************/
+-
+-void m5206e_cpu_reset(void)
+-{
+-	local_irq_disable();
+-	/* Set watchdog to soft reset, and enabled */
+-	__raw_writeb(0xc0, MCF_MBAR + MCFSIM_SYPCR);
+-	for (;;)
+-		/* wait for watchdog to timeout */;
+-}
+-
+-/***************************************************************************/
+-
+-void __init config_BSP(char *commandp, int size)
+-{
+-#if defined(CONFIG_NETtel)
+-	/* Copy command line from FLASH to local buffer... */
+-	memcpy(commandp, (char *) 0xf0004000, size);
+-	commandp[size-1] = 0;
+-#endif /* CONFIG_NETtel */
+-
+-	mach_reset = m5206e_cpu_reset;
+-	m5206e_timers_init();
+-	m5206e_uarts_init();
+-
+-	/* Only support the external interrupts on their primary level */
+-	mcf_mapirq2imr(25, MCFINTC_EINT1);
+-	mcf_mapirq2imr(28, MCFINTC_EINT4);
+-	mcf_mapirq2imr(31, MCFINTC_EINT7);
+-}
+-
+-/***************************************************************************/
+-
+-static int __init init_BSP(void)
+-{
+-	platform_add_devices(m5206e_devices, ARRAY_SIZE(m5206e_devices));
+-	return 0;
+-}
+-
+-arch_initcall(init_BSP);
+-
+-/***************************************************************************/
+diff --git a/arch/m68k/platform/5206e/gpio.c b/arch/m68k/platform/5206e/gpio.c
+deleted file mode 100644
+index b9ab4a1..0000000
+--- a/arch/m68k/platform/5206e/gpio.c
++++ /dev/null
+@@ -1,49 +0,0 @@
+-/*
+- * Coldfire generic GPIO support
+- *
+- * (C) Copyright 2009, Steven King <sfking@fdwdc.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; version 2 of the License.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+-*/
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-
+-#include <asm/coldfire.h>
+-#include <asm/mcfsim.h>
+-#include <asm/mcfgpio.h>
+-
+-static struct mcf_gpio_chip mcf_gpio_chips[] = {
+-	{
+-		.gpio_chip			= {
+-			.label			= "PP",
+-			.request		= mcf_gpio_request,
+-			.free			= mcf_gpio_free,
+-			.direction_input	= mcf_gpio_direction_input,
+-			.direction_output	= mcf_gpio_direction_output,
+-			.get			= mcf_gpio_get_value,
+-			.set			= mcf_gpio_set_value,
+-			.ngpio			= 8,
+-		},
+-		.pddr				= (void __iomem *) MCFSIM_PADDR,
+-		.podr				= (void __iomem *) MCFSIM_PADAT,
+-		.ppdr				= (void __iomem *) MCFSIM_PADAT,
+-	},
+-};
+-
+-static int __init mcf_gpio_init(void)
+-{
+-	unsigned i = 0;
+-	while (i < ARRAY_SIZE(mcf_gpio_chips))
+-		(void)gpiochip_add((struct gpio_chip *)&mcf_gpio_chips[i++]);
+-	return 0;
+-}
+-
+-core_initcall(mcf_gpio_init);
+-- 
+1.7.0.4
 
-  Michael
-
-
-On Mon, Jun 20, 2011 at 8:08 AM, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
-> Andreas,
->
-> On Sun, Jun 19, 2011 at 7:37 PM, Andreas Schwab <schwab@linux-m68k.or=
-g> wrote:
->> Michael Schmitz <schmitzmic@googlemail.com> writes:
->>
->>> http://lkml.org/lkml/2011/6/5/46 appears malformed (patch ending in
->>> the middle of the line),
->>
->> Your browser appears to be broken. =A0Try wget or
->> <http://marc.info/?l=3Dlinux-kernel&m=3D130726658112067&q=3Draw> ins=
-tead.
->
-> Silly me - for not thinking of wget. Haven't had trouble with that
-> browser (whatever Ubuntu 10.04 uses) before though.
->
-> Thanks, will retry that!
->
-> Cheers,
->
-> =A0Michael
->
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
