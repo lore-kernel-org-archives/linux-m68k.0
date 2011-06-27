@@ -1,11 +1,15 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: correctly use trap_init
-Date: Mon, 27 Jun 2011 12:03:49 +1000
-Message-ID: <1309140229-20253-1-git-send-email-gerg@snapgear.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
+Date: Mon, 27 Jun 2011 12:10:40 +1000
+Message-ID: <4E07E6A0.1060106@snapgear.com>
+References: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
+	<BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
 	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -15,193 +19,62 @@ List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
 	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
 Sender: uclinux-dev-bounces@uclinux.org
 Errors-To: uclinux-dev-bounces@uclinux.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+Hi Geert,
 
-Currently trap_init() is an empty function for m68knommu. Instead
-the vectors are being setup as part of the IRQ initialization.
-This is inconsistent with m68k and other architectures.
+On 26/06/11 22:21, Geert Uytterhoeven wrote:
+> On Fri, Jun 24, 2011 at 07:45,<gerg@snapgear.com>  wrote:
+>> From: Greg Ungerer<gerg@uclinux.org>
+>>
+>> The following patch merges the mmu and non-mmu versions of the m68k
+>> bitops.h files. Now there is a good deal of difference between the two
+>> files, but none of it is actually an mmu specific difference. It is
+>> all about the specific m68k/coldfire varient we are targeting. So it
+>> makes an awful lot of sense to merge these into a single bitops.h.
+>>
+>> There is a number of ways I can see to factor this code. The approach
+>> I have taken here is to keep the various versions of each macro/function
+>> type together. This means that there is some ifdefery with each to handle
+>> each CPU type. I have introduced a new config option so that processors
+>> that support the more advanced bit field instructions can select that.
+>> It keeps the ifdefs a little cleaner at least.
+>>
+>> I have added some comments in a couple of appropriate places to try
+>> and make it clear what the differences we are dealing with are.
+>> Specifically the instruction and addressing mode differences we have
+>> to deal with.
+>>
+>> The merged form keeps the same underlying optimizations for each CPU
+>> type for all the general bit clear/set/change and find bit operations.
+>> It does switch to using the generic le operations though, instead of
+>> any local varients.
+>>
+>> Build tested on ColdFire, 68328, 68360 (which is cpu32) and 68020+.
+>> Run tested on ColdFire and ARAnyM.
+>>
+>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>
+> Thanks!
+>
+> If you fix the indentation and spacing problems reported by checkpatch, you
+> can add my
+> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
 
-Change the local init_vectors() to be trap_init(), and init the
-vectors at the correct time during startup. This will help merge of
-m68k and m68knommu trap code in the furture.
+Oh, yeah, look at all that cruft that came through from the old files!
+Cleaned up now. Thanks for the Acked-by.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/include/asm/traps.h           |    1 -
- arch/m68k/kernel/traps_no.c             |    4 ----
- arch/m68k/platform/5272/intc.c          |    2 --
- arch/m68k/platform/68328/ints.c         |    7 ++++++-
- arch/m68k/platform/68360/ints.c         |    8 ++++++--
- arch/m68k/platform/coldfire/intc-2.c    |    2 --
- arch/m68k/platform/coldfire/intc-simr.c |    2 --
- arch/m68k/platform/coldfire/intc.c      |    1 -
- arch/m68k/platform/coldfire/vectors.c   |   10 +---------
- 9 files changed, 13 insertions(+), 24 deletions(-)
+Regards
+Greg
 
-diff --git a/arch/m68k/include/asm/traps.h b/arch/m68k/include/asm/traps.h
-index 0bffb17..151068f 100644
---- a/arch/m68k/include/asm/traps.h
-+++ b/arch/m68k/include/asm/traps.h
-@@ -22,7 +22,6 @@ extern e_vector vectors[];
- asmlinkage void auto_inthandler(void);
- asmlinkage void user_inthandler(void);
- asmlinkage void bad_inthandler(void);
--extern void init_vectors(void);
- 
- #endif
- 
-diff --git a/arch/m68k/kernel/traps_no.c b/arch/m68k/kernel/traps_no.c
-index a768008..e67b8c8 100644
---- a/arch/m68k/kernel/traps_no.c
-+++ b/arch/m68k/kernel/traps_no.c
-@@ -60,10 +60,6 @@ static char const * const vec_names[] = {
- 	"MMU CONFIGURATION ERROR"
- };
- 
--void __init trap_init(void)
--{
--}
--
- void die_if_kernel(char *str, struct pt_regs *fp, int nr)
- {
- 	if (!(fp->sr & PS_S))
-diff --git a/arch/m68k/platform/5272/intc.c b/arch/m68k/platform/5272/intc.c
-index 7e715df..7160e61 100644
---- a/arch/m68k/platform/5272/intc.c
-+++ b/arch/m68k/platform/5272/intc.c
-@@ -162,8 +162,6 @@ void __init init_IRQ(void)
- {
- 	int irq, edge;
- 
--	init_vectors();
--
- 	/* Mask all interrupt sources */
- 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR1);
- 	writel(0x88888888, MCF_MBAR + MCFSIM_ICR2);
-diff --git a/arch/m68k/platform/68328/ints.c b/arch/m68k/platform/68328/ints.c
-index a90288c..22acb60 100644
---- a/arch/m68k/platform/68328/ints.c
-+++ b/arch/m68k/platform/68328/ints.c
-@@ -155,7 +155,7 @@ static struct irq_chip intc_irq_chip = {
-  * This function should be called during kernel startup to initialize
-  * the machine vector table.
-  */
--void __init init_IRQ(void)
-+void __init trap_init(void)
- {
- 	int i;
- 
-@@ -172,6 +172,11 @@ void __init init_IRQ(void)
- 	_ramvec[69] = (e_vector) inthandler5;
- 	_ramvec[70] = (e_vector) inthandler6;
- 	_ramvec[71] = (e_vector) inthandler7;
-+}
-+
-+void __init init_IRQ(void)
-+{
-+	int i;
- 
- 	IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
- 
-diff --git a/arch/m68k/platform/68360/ints.c b/arch/m68k/platform/68360/ints.c
-index 4af0f4e..4444382 100644
---- a/arch/m68k/platform/68360/ints.c
-+++ b/arch/m68k/platform/68360/ints.c
-@@ -63,9 +63,8 @@ static struct irq_chip intc_irq_chip = {
-  * This function should be called during kernel startup to initialize
-  * the vector table.
-  */
--void init_IRQ(void)
-+void __init trap_init(void)
- {
--	int i;
- 	int vba = (CPM_VECTOR_BASE<<4);
- 
- 	/* set up the vectors */
-@@ -130,6 +129,11 @@ void init_IRQ(void)
- 
- 	/* turn off all CPM interrupts */
- 	pquicc->intr_cimr = 0x00000000;
-+}
-+
-+void init_IRQ(void)
-+{
-+	int i;
- 
- 	for (i = 0; (i < NR_IRQS); i++) {
- 		irq_set_chip(i, &intc_irq_chip);
-diff --git a/arch/m68k/platform/coldfire/intc-2.c b/arch/m68k/platform/coldfire/intc-2.c
-index 74b55cf..9950933 100644
---- a/arch/m68k/platform/coldfire/intc-2.c
-+++ b/arch/m68k/platform/coldfire/intc-2.c
-@@ -194,8 +194,6 @@ void __init init_IRQ(void)
- {
- 	int irq;
- 
--	init_vectors();
--
- 	/* Mask all interrupt sources */
- 	__raw_writel(0x1, MCFICM_INTC0 + MCFINTC_IMRL);
- #ifdef MCFICM_INTC1
-diff --git a/arch/m68k/platform/coldfire/intc-simr.c b/arch/m68k/platform/coldfire/intc-simr.c
-index d6a4d9d..650d52e 100644
---- a/arch/m68k/platform/coldfire/intc-simr.c
-+++ b/arch/m68k/platform/coldfire/intc-simr.c
-@@ -171,8 +171,6 @@ void __init init_IRQ(void)
- {
- 	int irq, eirq;
- 
--	init_vectors();
--
- 	/* Mask all interrupt sources */
- 	__raw_writeb(0xff, MCFINTC0_SIMR);
- 	if (MCFINTC1_SIMR)
-diff --git a/arch/m68k/platform/coldfire/intc.c b/arch/m68k/platform/coldfire/intc.c
-index 0bbb414..5c0c150 100644
---- a/arch/m68k/platform/coldfire/intc.c
-+++ b/arch/m68k/platform/coldfire/intc.c
-@@ -139,7 +139,6 @@ void __init init_IRQ(void)
- {
- 	int irq;
- 
--	init_vectors();
- 	mcf_maskimr(0xffffffff);
- 
- 	for (irq = 0; (irq < NR_IRQS); irq++) {
-diff --git a/arch/m68k/platform/coldfire/vectors.c b/arch/m68k/platform/coldfire/vectors.c
-index a21d3f8..3a7cc52 100644
---- a/arch/m68k/platform/coldfire/vectors.c
-+++ b/arch/m68k/platform/coldfire/vectors.c
-@@ -35,21 +35,13 @@ asmlinkage void dbginterrupt_c(struct frame *fp)
- 
- extern e_vector	*_ramvec;
- 
--void set_evector(int vecnum, void (*handler)(void))
--{
--	if (vecnum >= 0 && vecnum <= 255)
--		_ramvec[vecnum] = handler;
--}
--
--/***************************************************************************/
--
- /* Assembler routines */
- asmlinkage void buserr(void);
- asmlinkage void trap(void);
- asmlinkage void system_call(void);
- asmlinkage void inthandler(void);
- 
--void __init init_vectors(void)
-+void __init trap_init(void)
- {
- 	int i;
- 
--- 
-1.7.0.4
 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
 _______________________________________________
 uClinux-dev mailing list
 uClinux-dev@uclinux.org
