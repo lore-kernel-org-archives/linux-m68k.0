@@ -1,84 +1,58 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: merge mmu and non-mmu bitops.h
-Date: Mon, 27 Jun 2011 12:10:40 +1000
-Message-ID: <4E07E6A0.1060106@snapgear.com>
-References: <1308894337-11421-1-git-send-email-gerg@snapgear.com>
-	<BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-2.6_2.6.39-1_amd64.changes ACCEPTED into unstable
+Date: Mon, 27 Jun 2011 08:56:23 +0200
+Message-ID: <BANLkTinH6+cyubYpo+cfOuLiKqTjKdmZvg@mail.gmail.com>
+References: <E1QNV5z-0006jD-Ej@franck.debian.org>
+	<20110521122605.GA16345@chumley.earth.sol>
+	<Pine.BSM.4.64L.1105211232060.14234@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
+	<BANLkTimfZ4oHhT7chf=7-gHH_DVMQqHH+g@mail.gmail.com>
+	<BANLkTikQSZev=QHYFR2kxsUY2xND37Dr8g@mail.gmail.com>
+	<BANLkTinJJn0wvZrdQKgL-1GvVt7mT7DNyQ@mail.gmail.com>
+	<BANLkTinhBpxEqRb_Xi-HCejqLPSG3wJGsw@mail.gmail.com>
+	<BANLkTikepyD1GjzOpYm6uuHj88TpVkowZA@mail.gmail.com>
+	<BANLkTikSZQXM3vQt0CCgmb8+rW8CEMKLqQ@mail.gmail.com>
+	<m27h8itgp9.fsf@linux-m68k.org>
+	<BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
+	<BANLkTikDZN3Z-Lc067f2fCaUBon5ugqCqw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <BANLkTinrcVBmcu6v7er5ZZ4GgMJ1TabM_w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-iw0-f174.google.com ([209.85.214.174]:43839 "EHLO
+	mail-iw0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756328Ab1F0G4Z convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Jun 2011 02:56:25 -0400
+Received: by iwn6 with SMTP id 6so3866193iwn.19
+        for <linux-m68k@vger.kernel.org>; Sun, 26 Jun 2011 23:56:24 -0700 (PDT)
+In-Reply-To: <BANLkTikDZN3Z-Lc067f2fCaUBon5ugqCqw@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
 
-Hi Geert,
+On Mon, Jun 27, 2011 at 01:49, Michael Schmitz
+<schmitzmic@googlemail.com> wrote:
+> after making sure I had a good patch file, the patch applied sort of
+> cleanly (I had used DEBUG in the stram pool code) and the resulting
+> kernel runs fine on my Falcon. Geert's resource allocator appears to
+> do the right thing and provides ST-RAM where needed so the old ST-RAM
+> allcocator can go.
 
-On 26/06/11 22:21, Geert Uytterhoeven wrote:
-> On Fri, Jun 24, 2011 at 07:45,<gerg@snapgear.com>  wrote:
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> The following patch merges the mmu and non-mmu versions of the m68k
->> bitops.h files. Now there is a good deal of difference between the two
->> files, but none of it is actually an mmu specific difference. It is
->> all about the specific m68k/coldfire varient we are targeting. So it
->> makes an awful lot of sense to merge these into a single bitops.h.
->>
->> There is a number of ways I can see to factor this code. The approach
->> I have taken here is to keep the various versions of each macro/function
->> type together. This means that there is some ifdefery with each to handle
->> each CPU type. I have introduced a new config option so that processors
->> that support the more advanced bit field instructions can select that.
->> It keeps the ifdefs a little cleaner at least.
->>
->> I have added some comments in a couple of appropriate places to try
->> and make it clear what the differences we are dealing with are.
->> Specifically the instruction and addressing mode differences we have
->> to deal with.
->>
->> The merged form keeps the same underlying optimizations for each CPU
->> type for all the general bit clear/set/change and find bit operations.
->> It does switch to using the generic le operations though, instead of
->> any local varients.
->>
->> Build tested on ColdFire, 68328, 68360 (which is cpu32) and 68020+.
->> Run tested on ColdFire and ARAnyM.
->>
->> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
->
-> Thanks!
->
-> If you fix the indentation and spacing problems reported by checkpatch, you
-> can add my
-> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
+Good. Will queue for 3.1.
 
-Oh, yeah, look at all that cruft that came through from the old files!
-Cleaned up now. Thanks for the Acked-by.
+Gr{oetje,eeting}s,
 
-Regards
-Greg
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
