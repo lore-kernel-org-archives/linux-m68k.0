@@ -1,57 +1,64 @@
-From: CoffBeta <coffbeta@gmail.com>
-Subject: CoffBeta wants to chat
-Date: Tue, 28 Jun 2011 18:39:38 -0700
-Message-ID: <BANLkTi=REeisjyxK1feBDxS=Nwo_FsO7aA@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-2.6_2.6.39-1_amd64.changes ACCEPTED into unstable
+Date: Wed, 29 Jun 2011 13:19:57 +0200
+Message-ID: <BANLkTik6-eEhu23Vzjs6TS6dC_912ZCafQ@mail.gmail.com>
+References: <E1QNV5z-0006jD-Ej@franck.debian.org>
+	<20110521122605.GA16345@chumley.earth.sol>
+	<Pine.BSM.4.64L.1105211232060.14234@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1105211327140.14234@herc.mirbsd.org>
+	<BANLkTimfZ4oHhT7chf=7-gHH_DVMQqHH+g@mail.gmail.com>
+	<BANLkTikQSZev=QHYFR2kxsUY2xND37Dr8g@mail.gmail.com>
+	<BANLkTinJJn0wvZrdQKgL-1GvVt7mT7DNyQ@mail.gmail.com>
+	<BANLkTinhBpxEqRb_Xi-HCejqLPSG3wJGsw@mail.gmail.com>
+	<BANLkTikepyD1GjzOpYm6uuHj88TpVkowZA@mail.gmail.com>
+	<BANLkTikSZQXM3vQt0CCgmb8+rW8CEMKLqQ@mail.gmail.com>
+	<m27h8itgp9.fsf@linux-m68k.org>
+	<BANLkTimmQCEB+qTtEfhmi1zr-GdMBHQQBw@mail.gmail.com>
+	<BANLkTikDZN3Z-Lc067f2fCaUBon5ugqCqw@mail.gmail.com>
+	<BANLkTinH6+cyubYpo+cfOuLiKqTjKdmZvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:60785 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755046Ab1F2LT6 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 29 Jun 2011 07:19:58 -0400
+Received: by iyb12 with SMTP id 12so925895iyb.19
+        for <linux-m68k@vger.kernel.org>; Wed, 29 Jun 2011 04:19:58 -0700 (PDT)
+In-Reply-To: <BANLkTinH6+cyubYpo+cfOuLiKqTjKdmZvg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
 
------------------------------------------------------------------------
+On Mon, Jun 27, 2011 at 08:56, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> On Mon, Jun 27, 2011 at 01:49, Michael Schmitz
+> <schmitzmic@googlemail.com> wrote:
+>> after making sure I had a good patch file, the patch applied sort of
+>> cleanly (I had used DEBUG in the stram pool code) and the resulting
+>> kernel runs fine on my Falcon. Geert's resource allocator appears to
+>> do the right thing and provides ST-RAM where needed so the old ST-RA=
+M
+>> allcocator can go.
+>
+> Good. Will queue for 3.1.
 
-CoffBeta wants to stay in better touch using some of Google's coolest new
-products.
+I folded it into your previous patch and pushed it out for 3.1.
 
-If you already have Gmail or Google Talk, visit:
-http://mail.google.com/mail/b-acafee4cb8-f1ea0f7067-iSuKXJC7pmc-KyRLhSvfgAmtEDo
-You'll need to click this link to be able to chat with CoffBeta.
+Gr{oetje,eeting}s,
 
-To get Gmail - a free email account from Google with over 2,800 megabytes of
-storage - and chat with CoffBeta, visit:
-http://mail.google.com/mail/a-acafee4cb8-f1ea0f7067-iSuKXJC7pmc-KyRLhSvfgAmtEDo
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-Gmail offers:
-- Instant messaging right inside Gmail
-- Powerful spam protection
-- Built-in search for finding your messages and a helpful way of organizing
-  emails into "conversations"
-- No pop-up ads or untargeted banners - just text ads and related information
-  that are relevant to the content of your messages
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-All this, and its yours for free. But wait, there's more! By opening a Gmail
-account, you also get access to Google Talk, Google's instant messaging
-service:
-
-http://www.google.com/talk/
-
-Google Talk offers:
-- Web-based chat that you can use anywhere, without a download
-- A contact list that's synchronized with your Gmail account
-- Free, high quality PC-to-PC voice calls when you download the Google Talk
-  client
-
-We're working hard to add new features and make improvements, so we might also
-ask for your comments and suggestions periodically. We appreciate your help in
-making our products even better!
-
-Thanks,
-The Google Team
-
-To learn more about Gmail and Google Talk, visit:
-http://mail.google.com/mail/help/about.html
-http://www.google.com/talk/about.html
-
-(If clicking the URLs in this message does not work, copy and paste them into
-the address bar of your browser).
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
