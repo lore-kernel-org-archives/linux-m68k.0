@@ -1,32 +1,58 @@
-From: "Webmail HelpDesk Support" <webitservicezaq@live.com>
-Subject: YOUR EMAIL HAS EXCEED HIS STORAGE LIMIT MAY BE DISABLE
-Date: Fri, 1 Jul 2011 22:55:54 -0600 (CST)
-Message-ID: <54123.207.7.149.31.1309582554.squirrel@webmail.cfia.or.cr>
-Reply-To: webitservicezaq@live.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68knommu: Move forward declaration of do_IRQ() from machdep.h
+ to irq.h
+Date: Sun, 3 Jul 2011 10:55:50 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1107031054470.5931@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.cfia.or.cr ([196.40.74.29]:60703 "EHLO cfia.or.cr"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750780Ab1GBE5i (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 2 Jul 2011 00:57:38 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: uClinux list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Dear  Webmail User
+It is not machine-specific, but common irq infrastructure.
 
-Your mailbox has exceeded the storage limit set by your administrator. You
-may not be  able to send or receive new mail until your mailbox size is
-increased by your system  administrator. You are required to contact your
-system administrator clicking the link below
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+I will need this for m68k genirq soon.
 
-https://spreadsheets.google.com/spreadsheet/viewform?formkey=dDBKN2s5QTZ0bDFLdXFrWkV4LWMyT1E6MQ
+ arch/m68k/include/asm/irq.h     |    2 ++
+ arch/m68k/include/asm/machdep.h |    1 -
+ 2 files changed, 2 insertions(+), 1 deletions(-)
 
-This email is intended only for the use of the individual or entity to
-which it is addressed  and contains information that is privileged and
-confidential.
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index ddc5958..8c615d7 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -160,4 +160,6 @@ extern unsigned int irq_canonicalize(unsigned int irq);
+ #define irq_canonicalize(irq)  (irq)
+ #endif /* CONFIG_MMU */
+ 
++extern void do_IRQ(int irq, struct pt_regs *fp);
++
+ #endif /* _M68K_IRQ_H_ */
+diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
+index 415d548..789f3b2 100644
+--- a/arch/m68k/include/asm/machdep.h
++++ b/arch/m68k/include/asm/machdep.h
+@@ -40,6 +40,5 @@ extern unsigned long hw_timer_offset(void);
+ extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
+ 
+ extern void config_BSP(char *command, int len);
+-extern void do_IRQ(int irq, struct pt_regs *fp);
+ 
+ #endif /* _M68K_MACHDEP_H */
+-- 
+1.7.0.4
 
-Failure to re-validate your mailbox will render your e-mail in-active
-from our database.
-Thanks
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
