@@ -1,63 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68knommu: Move forward declaration of do_IRQ() from
- machdep.h to irq.h
-Date: Mon, 4 Jul 2011 21:55:07 +0200
-Message-ID: <CAMuHMdV2ktVAwWLECnu0DrQ1kW6883Djkzs9=Fu3Koj1aQqnXw__7760.8531727039$1309809777$gmane$org@mail.gmail.com>
-References: <alpine.DEB.2.00.1107031054470.5931@ayla.of.borg>
-	<alpine.DEB.2.00.1107031108390.6100@ayla.of.borg>
-	<4E11089B.5070001@snapgear.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68k: fix some atomic operation asm address modes for ColdFire
+Date: Tue, 5 Jul 2011 10:48:15 +1000
+Message-ID: <1309826895-7951-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4E11089B.5070001@snapgear.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:23329 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750895Ab1GEAsY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Jul 2011 20:48:24 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Greg Ungerer <gerg@uclinux.org>, uClinux list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Greg,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On Mon, Jul 4, 2011 at 02:26, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 03/07/11 19:09, Geert Uytterhoeven wrote:
->> Oops, there's also an asmlinkage missing. Corrected patch below.
->>
->> from 63dab1c663875083f095819431bbc6560c2a8dfb Mon Sep 17 00:00:00 20=
-01
->> From: Geert Uytterhoeven<geert@linux-m68k.org>
->> Date: Sun, 3 Jul 2011 10:49:58 +0200
->> Subject: [PATCH] m68knommu: Move forward declaration of do_IRQ() fro=
-m
->> machdep.h to irq.h
->>
->> It is not machine-specific, but common irq infrastructure.
->> Also add the missing asmlinkage, to match its definition.
->>
->> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
->
-> Acked-by: Greg Ungerer <gerg@uclinux.org>
+The ColdFire processors have a much more limited set of addressing modes
+that can be used for most instructions. A number of the atomic operations
+have already been fixed to limit the addressing modes used with add and
+sub instructions when building for ColdFire. But we missed a few.
+Fix the remaining atomic operations to be clean for ColdFire processors.
 
-Thanks!
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/atomic.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-> Looks good. Are you going to push this one, or do you want
-> me too?
-
-I'll add it to my genirq WIP branch when needed. But I don't mind if it=
- enters
-Linus' tree via yours.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/atomic.h
+index 03ae3d1..307a573 100644
+--- a/arch/m68k/include/asm/atomic.h
++++ b/arch/m68k/include/asm/atomic.h
+@@ -169,18 +169,18 @@ static inline int atomic_add_negative(int i, atomic_t *v)
+ 	char c;
+ 	__asm__ __volatile__("addl %2,%1; smi %0"
+ 			     : "=d" (c), "+m" (*v)
+-			     : "id" (i));
++			     : ASM_DI (i));
+ 	return c != 0;
+ }
+ 
+ static inline void atomic_clear_mask(unsigned long mask, unsigned long *v)
+ {
+-	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : "id" (~(mask)));
++	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : ASM_DI (~(mask)));
+ }
+ 
+ static inline void atomic_set_mask(unsigned long mask, unsigned long *v)
+ {
+-	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : "id" (mask));
++	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : ASM_DI (mask));
+ }
+ 
+ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+-- 
+1.7.0.4
