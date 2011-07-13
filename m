@@ -1,57 +1,116 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68k: fix some atomic operation asm address modes for ColdFire
-Date: Tue, 5 Jul 2011 10:48:15 +1000
-Message-ID: <1309826895-7951-1-git-send-email-gerg@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Revive reporting of spurious interrupts
+Date: Wed, 13 Jul 2011 20:29:24 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1107132028080.31317@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:23329 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750895Ab1GEAsY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Jul 2011 20:48:24 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: uClinux list <uclinux-dev@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
+commit 2502b667ea835ee16685c74b2a0d89ba8afe117a ("Change the m68knommu irq
+handling to use the generic irq framework.") removed the reporting of spurious
+interrupts on nommu (68328 and 68360).
 
-The ColdFire processors have a much more limited set of addressing modes
-that can be used for most instructions. A number of the atomic operations
-have already been fixed to limit the addressing modes used with add and
-sub instructions when building for ColdFire. But we missed a few.
-Fix the remaining atomic operations to be clean for ColdFire processors.
+Bring it back in a generic way, using "atomic_t irq_err_count", as that's what
+most of the other architectures are using.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/atomic.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Will build on top of this for m68k genirq.
 
-diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/atomic.h
-index 03ae3d1..307a573 100644
---- a/arch/m68k/include/asm/atomic.h
-+++ b/arch/m68k/include/asm/atomic.h
-@@ -169,18 +169,18 @@ static inline int atomic_add_negative(int i, atomic_t *v)
- 	char c;
- 	__asm__ __volatile__("addl %2,%1; smi %0"
- 			     : "=d" (c), "+m" (*v)
--			     : "id" (i));
-+			     : ASM_DI (i));
- 	return c != 0;
- }
+ arch/m68k/kernel/irq.c           |   10 ++++++++++
+ arch/m68k/platform/68328/entry.S |    2 +-
+ arch/m68k/platform/68328/ints.c  |    3 ---
+ arch/m68k/platform/68360/entry.S |    2 +-
+ arch/m68k/platform/68360/ints.c  |    3 ---
+ 5 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/arch/m68k/kernel/irq.c b/arch/m68k/kernel/irq.c
+index 544b871..c73988c 100644
+--- a/arch/m68k/kernel/irq.c
++++ b/arch/m68k/kernel/irq.c
+@@ -28,3 +28,13 @@ asmlinkage void do_IRQ(int irq, struct pt_regs *regs)
  
- static inline void atomic_clear_mask(unsigned long mask, unsigned long *v)
+ 	set_irq_regs(oldregs);
+ }
++
++
++/* The number of spurious interrupts */
++atomic_t irq_err_count;
++
++int arch_show_interrupts(struct seq_file *p, int prec)
++{
++	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
++	return 0;
++}
+diff --git a/arch/m68k/platform/68328/entry.S b/arch/m68k/platform/68328/entry.S
+index f68dce7..a6aa7b7 100644
+--- a/arch/m68k/platform/68328/entry.S
++++ b/arch/m68k/platform/68328/entry.S
+@@ -236,7 +236,7 @@ ret_from_interrupt:
+  * Handler for uninitialized and spurious interrupts.
+  */
+ ENTRY(bad_interrupt)
+-	addql	#1,num_spurious
++	addql	#1,irq_err_count
+ 	rte
+ 
+ /*
+diff --git a/arch/m68k/platform/68328/ints.c b/arch/m68k/platform/68328/ints.c
+index a90288c..41753a2 100644
+--- a/arch/m68k/platform/68328/ints.c
++++ b/arch/m68k/platform/68328/ints.c
+@@ -70,9 +70,6 @@ asmlinkage irqreturn_t inthandler7(void);
+ 
+ extern e_vector *_ramvec;
+ 
+-/* The number of spurious interrupts */
+-volatile unsigned int num_spurious;
+-
+ /* The 68k family did not have a good way to determine the source
+  * of interrupts until later in the family.  The EC000 core does
+  * not provide the vector number on the stack, we vector everything
+diff --git a/arch/m68k/platform/68360/entry.S b/arch/m68k/platform/68360/entry.S
+index a07b14f..53b6027 100644
+--- a/arch/m68k/platform/68360/entry.S
++++ b/arch/m68k/platform/68360/entry.S
+@@ -157,7 +157,7 @@ ret_from_interrupt:
+  * Handler for uninitialized and spurious interrupts.
+  */
+ bad_interrupt:
+-	addql	#1,num_spurious
++	addql	#1,irq_err_count
+ 	rte
+ 
+ /*
+diff --git a/arch/m68k/platform/68360/ints.c b/arch/m68k/platform/68360/ints.c
+index 4af0f4e..2cd5462 100644
+--- a/arch/m68k/platform/68360/ints.c
++++ b/arch/m68k/platform/68360/ints.c
+@@ -34,9 +34,6 @@ asmlinkage void inthandler(void);
+ 
+ extern void *_ramvec[];
+ 
+-/* The number of spurious interrupts */
+-volatile unsigned int num_spurious;
+-
+ static void intc_irq_unmask(struct irq_data *d)
  {
--	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : "id" (~(mask)));
-+	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : ASM_DI (~(mask)));
- }
- 
- static inline void atomic_set_mask(unsigned long mask, unsigned long *v)
- {
--	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : "id" (mask));
-+	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : ASM_DI (mask));
- }
- 
- static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
+ 	pquicc->intr_cimr |= (1 << d->irq);
 -- 
 1.7.0.4
+
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
