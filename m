@@ -1,28 +1,25 @@
-From: BUSINESS <info-0016@cox.net>
-Subject: REPLY ASAP
-Date: Fri, 22 Jul 2011 13:35:56 -0400
-Message-ID: <20110722133556.TJVPR.440403.imail__35572.4679575816$1311357702$gmane$org@eastrmwml45>
-Reply-To: emlchmbr2@aol.com
+From: "mong hoi" <hoimong111@hotmail.com.hk>
+Subject: CODE NO:AM-001
+Date: Fri, 22 Jul 2011 17:40:17 -0230
+Message-ID: <20110722194939.M68853__679.597564931278$1311367427$gmane$org@hotmail.com.hk>
+Reply-To: mongkh111@live.hk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=windows-1250
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from susan.uniplac.net ([200.135.4.9]:62840 "EHLO uniplac.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S932074Ab1GVUnP (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 22 Jul 2011 16:43:15 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-REPLY ASAP
+Good Day,
 
-I  request that you keep the contents of this mail 
-confidential and respect the integrityof the 
-information you  come by as a result of this mail. I
-contacted  you independently of our investigation 
-and no one is informed of this communication. I would 
-like to intimate you with certain facts that I believe 
-would be of interest to you. In 2004, the subject matter; 
-ref: bb/rbs/bank/0012 came to our bank to engage in 
-business discussions with our Private Banking Services 
-Department. Write me back so that i can give you the full  
-details ofthe transaction which I know will be beneficial to us. 
+I am Mr. Mong Hoi, Director of Operations of the Hang Seng Bank Ltd.Hong Kong.I have an obscured business proposal for 
+you.
 
-Regards,  
-John.
+Please reach me promptly if interested.Email: hoimong111@hotmail.com.hk
+
+Kind Regards,
+Mr.Mong Hoi.
