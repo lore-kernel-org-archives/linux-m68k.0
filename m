@@ -1,128 +1,87 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates
-Date: Tue, 26 Jul 2011 12:19:03 +1000
-Message-ID: <4E2E2417.9060407@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: memcpy on 68000
+Date: Thu, 28 Jul 2011 17:49:02 +1000
+Message-ID: <4E31146E.3060007@snapgear.com>
+References: <caf33f7e8bf8202bde374315ce6c0961.squirrel@www.physik.tu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
-	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Sender: uclinux-dev-bounces@uclinux.org
-Errors-To: uclinux-dev-bounces@uclinux.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:62482 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754880Ab1G1HtW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Jul 2011 03:49:22 -0400
+In-Reply-To: <caf33f7e8bf8202bde374315ce6c0961.squirrel@www.physik.tu-berlin.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Matthias Reis <matthias.reis@physik.tu-berlin.de>
+Cc: linux-m68k@vger.kernel.org
+
+Hi Matthias,
+
+On 07/24/2011 11:50 PM, Matthias Reis wrote:
+> I recently did some work to compile a kernel for MMU less Atari STs.
+> However, I 'm having a problem with the memcpy code as it is compiled by
+> gcc. When copying from odd addresses, gcc produces memcpy code that tries
+> to access odd addresses with move.w, which is not possible on the 68000
+> and therefore produces address error exceptions. Below you can find the
+> debug output from the hatari emulator and the memcpy version I'm using (I
+> hope it's the most recent one). Any help would be appreciated.
+
+That looks to be the memcpy.c from linux-3.0, yes?
+
+Looking at the memcpy.c code for m68knommu before merging
+and cleanup I can see that it used to do this:
+
+   const char *c_from = from;
+   char *c_to = to;
+   while (n-- > 0)
+     *c_to++ = *c_from++;
+   return((void *) to);
+
+for the the M68000 case. (Actually it did that for all
+non-ColdFire cases). Which obviously would always work,
+but is not particularly efficient.
+
+So, yes, the current code is broken for M68000. It doesn't
+check alignment of the source ("from") address.
+
+Heres a first attempt at a fix for this. This is only compile
+tested, not run tested... Basically we check that if after
+16bit aligning the destination if the source is unaligned
+then we resort to a byte wise copy.
+
+Need to check if CPU32 needs this or not too. ColdFire doesn't.
 
 
-Hi Linus,
+diff --git a/arch/m68k/lib/memcpy.c b/arch/m68k/lib/memcpy.c
+index 0648893..10ca051 100644
+--- a/arch/m68k/lib/memcpy.c
++++ b/arch/m68k/lib/memcpy.c
+@@ -22,6 +22,15 @@ void *memcpy(void *to, const void *from, size_t n)
+                 from = cfrom;
+                 n--;
+         }
++#if defined(CONFIG_M68000)
++       if ((long)from & 1) {
++               char *cto = to;
++               const char *cfrom = from;
++               for (; n; n--)
++                       *cto++ = *cfrom++;
++               return xto;
++       }
++#endif
+         if (n > 2 && (long)to & 2) {
+                 short *sto = to;
+                 const short *sfrom = from;
 
-Can you please pull the m68knommu git tree, for-linus branch:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Mostly this is more m68k/m68knommu merge and cleanup work. Still more
-of that to come too. A couple of minor fixes as well.
-
-Thanks
+Regards
 Greg
 
 
-
-The following changes since commit b6844e8f64920cdee620157252169ba63afb0c89:
-   Linus Torvalds (1):
-         Merge branch 'for-linus' of master.kernel.org:/home/rmk/linux-2.6-arm
-
-are available in the git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Geert Uytterhoeven (4):
-       m68knommu: Make empty_zero_page "void *", like on m68k
-       m68knommu: Fix printk() format in free_initrd_mem()
-       m68knommu: Move forward declaration of do_IRQ() from machdep.h to irq.h
-       m68k: Revive reporting of spurious interrupts
-
-Greg Ungerer (9):
-       m68k: merge the non-mmu and mmu versions of module.c
-       m68k: merge MMU and non-MMU versions of asm/hardirq.h
-       m68k: merge MMU and non MMU versions of system.h
-       m68k: merge mmu and non-mmu bitops.h
-       m68knommu: merge ColdFire 5206 and 5206e platform code
-       m68knommu: correctly use trap_init
-       m68k: merge and clean up delay.h files
-       m68k: use CPU_HAS_NO_BITFIELDS for signal functions
-       m68k: fix some atomic operation asm address modes for ColdFire
-
-  arch/m68k/Kconfig                       |    4 +
-  arch/m68k/Kconfig.nommu                 |    3 +
-  arch/m68k/Makefile_no                   |    2 +-
-  arch/m68k/include/asm/atomic.h          |    6 +-
-  arch/m68k/include/asm/bitops.h          |  531 ++++++++++++++++++++++++++++++-
-  arch/m68k/include/asm/bitops_mm.h       |  501 -----------------------------
-  arch/m68k/include/asm/bitops_no.h       |  333 -------------------
-  arch/m68k/include/asm/delay.h           |   97 ++++++-
-  arch/m68k/include/asm/delay_mm.h        |   57 ----
-  arch/m68k/include/asm/delay_no.h        |   76 -----
-  arch/m68k/include/asm/entry_no.h        |   12 +-
-  arch/m68k/include/asm/hardirq.h         |   35 ++-
-  arch/m68k/include/asm/hardirq_mm.h      |   16 -
-  arch/m68k/include/asm/hardirq_no.h      |   19 --
-  arch/m68k/include/asm/irq.h             |   11 +-
-  arch/m68k/include/asm/machdep.h         |    1 -
-  arch/m68k/include/asm/module.h          |   31 +-
-  arch/m68k/include/asm/signal.h          |   15 +-
-  arch/m68k/include/asm/system.h          |  194 +++++++++++-
-  arch/m68k/include/asm/system_mm.h       |  193 -----------
-  arch/m68k/include/asm/system_no.h       |  153 ---------
-  arch/m68k/include/asm/traps.h           |    1 -
-  arch/m68k/kernel/irq.c                  |   10 +
-  arch/m68k/kernel/module.c               |  130 ++++++++-
-  arch/m68k/kernel/module_mm.c            |  128 --------
-  arch/m68k/kernel/module_no.c            |   92 ------
-  arch/m68k/kernel/traps_no.c             |    4 -
-  arch/m68k/lib/Makefile                  |    2 +-
-  arch/m68k/lib/delay.c                   |   21 --
-  arch/m68k/mm/init_no.c                  |   11 +-
-  arch/m68k/platform/5206/config.c        |    6 +
-  arch/m68k/platform/5206e/Makefile       |   18 -
-  arch/m68k/platform/5206e/config.c       |  127 --------
-  arch/m68k/platform/5206e/gpio.c         |   49 ---
-  arch/m68k/platform/5272/intc.c          |    2 -
-  arch/m68k/platform/68328/entry.S        |   15 +-
-  arch/m68k/platform/68328/ints.c         |   10 +-
-  arch/m68k/platform/68360/entry.S        |   15 +-
-  arch/m68k/platform/68360/ints.c         |   11 +-
-  arch/m68k/platform/coldfire/entry.S     |   24 +-
-  arch/m68k/platform/coldfire/intc-2.c    |    2 -
-  arch/m68k/platform/coldfire/intc-simr.c |    2 -
-  arch/m68k/platform/coldfire/intc.c      |    1 -
-  arch/m68k/platform/coldfire/vectors.c   |   10 +-
-  44 files changed, 1074 insertions(+), 1907 deletions(-)
-  delete mode 100644 arch/m68k/include/asm/bitops_mm.h
-  delete mode 100644 arch/m68k/include/asm/bitops_no.h
-  delete mode 100644 arch/m68k/include/asm/delay_mm.h
-  delete mode 100644 arch/m68k/include/asm/delay_no.h
-  delete mode 100644 arch/m68k/include/asm/hardirq_mm.h
-  delete mode 100644 arch/m68k/include/asm/hardirq_no.h
-  delete mode 100644 arch/m68k/include/asm/system_mm.h
-  delete mode 100644 arch/m68k/include/asm/system_no.h
-  delete mode 100644 arch/m68k/kernel/module_mm.c
-  delete mode 100644 arch/m68k/kernel/module_no.c
-  delete mode 100644 arch/m68k/lib/delay.c
-  delete mode 100644 arch/m68k/platform/5206e/Makefile
-  delete mode 100644 arch/m68k/platform/5206e/config.c
-  delete mode 100644 arch/m68k/platform/5206e/gpio.c
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
