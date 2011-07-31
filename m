@@ -1,53 +1,72 @@
-From: "Matthias Reis" <matthias.reis@physik.tu-berlin.de>
-Subject: Re: memcpy on 68000
-Date: Fri, 29 Jul 2011 16:01:47 +0200
-Message-ID: <cdc56050e936eb87808c0e183b6cf1c3.squirrel@www.physik.tu-berlin.de>
-References: <caf33f7e8bf8202bde374315ce6c0961.squirrel@www.physik.tu-berlin.de>
-    <4E31146E.3060007@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.1
+Date: Sun, 31 Jul 2011 23:11:17 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1107312306130.605__19020.7911110067$1312146706$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.tu-berlin.de ([130.149.7.33]:36849 "EHLO mail.tu-berlin.de"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753774Ab1G2OB4 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 29 Jul 2011 10:01:56 -0400
-In-Reply-To: <4E31146E.3060007@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Matthias Reis <matthias.reis@physik.tu-berlin.de>, linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hi Greg,
+	Hi Linus,
 
-thanks for the fix. I'll test this as soon as I get my own PC back... I
-use Geert's master tree as code basis.
+The following changes since commit 02f8c6aee8df3cdc935e9bdd4f2d020306035dbe:
+  Linus Torvalds (1):
+        Linux 3.0
 
-Best regards,
-Matthias
+are available in the git repository at:
 
+  master.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-> That looks to be the memcpy.c from linux-3.0, yes?
->
-> Looking at the memcpy.c code for m68knommu before merging
-> and cleanup I can see that it used to do this:
->
->    const char *c_from = from;
->    char *c_to = to;
->    while (n-- > 0)
->      *c_to++ = *c_from++;
->    return((void *) to);
->
-> for the the M68000 case. (Actually it did that for all
-> non-ColdFire cases). Which obviously would always work,
-> but is not particularly efficient.
->
-> So, yes, the current code is broken for M68000. It doesn't
-> check alignment of the source ("from") address.
->
-> Heres a first attempt at a fix for this. This is only compile
-> tested, not run tested... Basically we check that if after
-> 16bit aligning the destination if the source is unaligned
-> then we resort to a byte wise copy.
->
-> Need to check if CPU32 needs this or not too. ColdFire doesn't.
+Geert Uytterhoeven (13):
+      m68k/amiga: Chip RAM - Use tabs for indentation
+      m68k/amiga: Chip RAM - Convert from printk() to pr_*()
+      m68k/amiga: Chip RAM - Always allocate from the start of memory
+      m68k/amiga: Chip RAM - Change chipavail to an atomic_t
+      m68k/amiga: Chip RAM - Use resource_size() to fix off-by-one error
+      m68k/amiga: Chip RAM - Offset resource end by CHIP_PHYSADDR
+      sparc: _sparc_find_resource() should check for exact matches
+      resources: Add lookup_resource()
+      m68k/amiga: Chip RAM - Use lookup_resource()
+      sparc: iounmap() and *_free_coherent() - Use lookup_resource()
+      m68k/atari: Prefix GPIO_{IN,OUT} with CODEC_
+      m68k: Kill warning in setup_arch() when compiling for Sun3
+      m68k/math-emu: Remove commented out old code
+
+Greg Dietsche (1):
+      m68k/math-emu: Remove unnecessary code
+
+Michael Schmitz (1):
+      m68k/atari: Reserve some ST-RAM early on for device buffer use
+
+ arch/m68k/Kconfig.mmu               |    6 -
+ arch/m68k/amiga/chipram.c           |  136 ++++-----
+ arch/m68k/atari/stram.c             |  354 +++++-------------------
+ arch/m68k/include/asm/atari_stram.h |    3 +-
+ arch/m68k/include/asm/atarihw.h     |    4 +-
+ arch/m68k/kernel/setup_mm.c         |    2 +
+ arch/m68k/math-emu/fp_log.c         |    3 -
+ arch/m68k/math-emu/multi_arith.h    |  530 -----------------------------------
+ arch/m68k/mm/init_mm.c              |    5 -
+ arch/sparc/kernel/ioport.c          |   32 +--
+ include/linux/ioport.h              |    1 +
+ kernel/resource.c                   |   21 ++
+ 12 files changed, 166 insertions(+), 931 deletions(-)
+
+The changes to the sparc-code have been acked by David Miller.
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
