@@ -1,42 +1,51 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: Re: watchdog (?) on linux 3.0.0 and 2.6.39.3
-Date: Mon, 8 Aug 2011 13:52:28 +0300
-Message-ID: <4E3FBFEC.5070404@aalto.fi>
-References: <4E369834.9070707@aalto.fi>	<alpine.OSX.2.00.1108021532260.256@ibook.intranet>	<4E3ACFE5.7020901@aalto.fi>	<CAOmrzkL1ZaWBtYG6uyotwgGzoZLEdafrUCh6qfq-_siNZ9vvdQ@mail.gmail.com>	<4E3BD9C1.6020209@aalto.fi>	<4E3C6F8D.7030902@gmail.com>	<CAMuHMdXeFH-uTw5XWB4_arvj2DfbXrb4q_9BKKhDhxNxwFvmBw@mail.gmail.com>	<CAOmrzkKRP+mD8zESBHrJYxzVvj1NE4rEA+ATaaD6u4BJOQyV6Q@mail.gmail.com>	<20110807220744.GA5199@chumley.earth.sol> <CAOmrzkK=3e724KQPCWFckxSzm3eYL86f0VnY4vv-AVKRYPevmQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: 3.1-rc1 on m68k
+Date: Mon, 8 Aug 2011 14:36:46 +0200
+Message-ID: <CAMuHMdUyr1as3_qd_tgSw9EoGG=Vq4SGaCQnG1nZ+KRDbO+-Bw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAOmrzkK=3e724KQPCWFckxSzm3eYL86f0VnY4vv-AVKRYPevmQ@mail.gmail.com>
+Received: from mail-iy0-f170.google.com ([209.85.210.170]:46268 "EHLO
+	mail-iy0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751140Ab1HHMgr convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Aug 2011 08:36:47 -0400
+Received: by iye16 with SMTP id 16so8958055iye.1
+        for <linux-m68k@vger.kernel.org>; Mon, 08 Aug 2011 05:36:46 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 08/08/2011 03:23 AM, Michael Schmitz wrote:
-> Hi Christian,
->
->>> Christian - can you remember which 2.6 kernel that last had ethernet
->>> working for you?
->> I haven't been testing kernels a lot recently... from the logfiles it would
->> seem the last kernel that was running on kullervo was this one:
->>
->> Linux version 2.6.24-1-amiga (Debian 2.6.24-4) (waldi@debian.org) (gcc version 3.3.6) #1 Tue Feb 12 10:05:37 CET 2008
->>
->> I think the kernel from Stephens d-i image was working also, but I have not
->> tested that intensively, only for installing from scratch. In May I wrote
->> this was:
->>
->> Linux kullervo 2.6.26-1-amiga #1 Thu Oct 16 08:59:25 CDT 2008 m68k GNU/Linux
-> Thanks, I'll look up the likely commit to start from using 2.6.24
-> then. I have the .config Tuomas used for his kernel - do you need any
-> modules built as well, Tuomas?
->
->
-I believe that with the .config I provided none of the modules are 
-obligatory, but the IDE and floppy modules would be nice, since, as you 
-pointed out, the watchdog barks once they are probed.
-You could also go for amiga_defconfig with built-in apne and nfsroot.
+Hi all,
 
-Regards,
-Tuomas
+I pushed out 3.1-rc1 for m68k to the master branch of
+http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git
+
+Notable thing is the upstream deletion of the generic serial drivers
+from the staging
+area, cfr. http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux.g=
+it;a=3Dcommitdiff;h=3Dbb2a97e9ccd525dd9c3326988e8c676d15d3e12a.
+This means we lost the A2232 serial drivers and various VME SCC drivers=
+=2E
+
+=46or now I kept the source code for the Atari SCC driver itself, but I
+will probably
+delete it when 3.1 is released. It will still be preserved in the
+m68k-v3.0 branch,
+though.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
