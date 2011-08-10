@@ -1,104 +1,95 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: m68k: Convert to genirq (WIP)
-Date: Mon, 8 Aug 2011 15:08:40 +0200
-Message-ID: <CAMuHMdWcB2JmfxPz=bs3TM2eTPYWnzjFeXw0PRXTTcPeHBQPPQ__40037.7898164608$1312808956$gmane$org@mail.gmail.com>
+Date: Wed, 10 Aug 2011 11:59:08 +0200
+Message-ID: <CAMuHMdXVt5+nCaCSH3+z0fsL+vhOOTgbKsOAses8OudT-1OZGQ__15580.7151961655$1312970392$gmane$org@mail.gmail.com>
 References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
-	<BANLkTimebx56-Wb5JPWxYVnND9gG8OVdsQ@mail.gmail.com>
-	<BANLkTin+gp2Cnxj8kHbHRmuoEgyDR8YeaQ@mail.gmail.com>
-	<BANLkTik5-H1fc2rk3QrwvQiF=7fELmE2CA@mail.gmail.com>
-	<alpine.OSX.2.00.1106171337170.191@ibook.intranet>
+	<alpine.OSX.2.00.1106011300550.199@ibook.intranet>
+	<20110605062702.GA2034@cynthia.pants.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.OSX.2.00.1106171337170.191@ibook.intranet>
+In-Reply-To: <20110605062702.GA2034@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Brad Boyer <flar@allandria.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Fri, Jun 17, 2011 at 05:45, Finn Thain <fthain@telegraphics.com.au> =
-wrote:
-> On Thu, 16 Jun 2011, Geert Uytterhoeven wrote:
->> On Wed, Jun 15, 2011 at 21:44, Geert Uytterhoeven <geert@linux-m68k.=
-org> wrote:
->> > On Sat, Jun 4, 2011 at 19:56, Geert Uytterhoeven <geert@linux-m68k=
-=2Eorg> wrote:
->> >> On Sat, May 28, 2011 at 20:32, Geert Uytterhoeven <geert@linux-m6=
-8k.org> wrote:
->> >>
->> >> It works on Amiga now, too. It can still use some optimizations i=
-n
->> >> the irq_{enable,disable,ack,mask,mask_ack,unmask} area, as my
->> >> BogoMIPS rating dropped by ca 2.5% and is now under 16, for a 25 =
-MHz
->> >> 68040.
->> >
->> > Seems like everything (Atari/ARAnyM and Amiga) still works when us=
-ing
->> > handle_simple_irq instead of handle_level_irq. As a bonus, BogoMIP=
-S is
->> > above 16 again.
->
-> Your bogomips benchmark would be the best-case penalty, right?
->
-> Have you tried say, sending a ping flood to measure throughput and
-> latency?
+On Sun, Jun 5, 2011 at 08:27, Brad Boyer <flar@allandria.com> wrote:
+> If we could really map all the interrupt controllers, we could probab=
+ly
+> cut down on the largest interrupt number. Most Macs really only have
+> 20 or 30 actual interrupt sources. The problem is the two or three
+> layers of cascaded mess. None of them have just a single layer. Just
+> getting rid of the fixed global mapping could take us down to 64 sinc=
+e
+> nothing has both Baboon and PSC, but we have unique numbers for them.
+> We have 3 whole blocks of 8 just for PSC, even though that's just in
+> two models. We don't even know what most of those do, if anything.
 
-Results on Amiga 4000/040 (25 MHz 68040, 12 MiB Fast RAM) with Ariadne =
-Ethernet,
-running 3.0-rc7.
+While looking into optimizing interrupts using chain handlers (which ca=
+nnot
+be shared), I noticed several of these cascades are hung on the same in=
+terrupt.
+Hence we cannot use the optimization of chain handlers for them.
 
-                              legacy m68k               genirq
+Knowing which are mutually exclusive helps a lot, but my Mac knowledge =
+is
+very limited.
 
-bogomips:                     16.17 (lpj=3D80896)         16.02 (lpj=3D=
-80128)
+I derived from the code this list of cascade handlers and the
+interrupts they use:
 
-10x ping fast machine:        9034 ms                   9025 ms
-  rtt min/avg/max/mdev (ms)   1.815/2.556/8.580/2.008   1.903/2.142/3.2=
-75/0.388
+baboon_irq
+    IRQ_NUBUS_C
 
-100x flood ping fast machine: 4654 ms                   3960 ms
-  rtt min/avg/max/mdev (ms)   1.831/2.113/3.285/0.361   1.887/2.068/2.9=
-58/0.242
-  pipe, ipg/ewma (ms)         10, 47.013/2.111          6, 40.005/1.989
+oss_irq
+    OSS_IRQLEV_SCSI =3D IRQ_AUTO_2                conflict: via2_irq
+    OSS_IRQLEV_SOUND =3D IRQ_AUTO_5               conflict: psc_irq
 
-wget 16 MiB image              86.99 KB/s               112.08 KB/s
-                              104.31 KB/s               115.95 KB/s
-                              109.56 KB/s               116.22 KB/s
+oss_nubus_irq
+    OSS_IRQLEV_NUBUS =3D IRQ_AUTO_3               conflict: psc_irq
 
+psc_irq
+    IRQ_AUTO_3                                  conflict: oss_nubus_irq
+    IRQ_AUTO_4
+    IRQ_AUTO_5                                  conflict: oss_irq
+    IRQ_AUTO_6                                  conflict: via1_irq
 
-/proc/interrupts (legacy m68k):
+via1_irq
+    OSS_IRQLEV_VIA1 =3D IRQ_AUTO_6 (on oss)       conflict: psc_irq
 
-auto       1:          0 int1
-auto       2:     152824 CIAA, ide0, eth0
-auto       3:     133649 int3
-auto       4:          0 int4
-auto       5:          0 int5
-auto       6:     193334 CIAB
-amiga      8:          0 serial TX
-amiga     12:     133649 fb vertb handler
-amiga     19:          0 serial RX
-cia       25:        240 amikbd
-cia       27:     193334 timer
+    IRQ_AUTO_1                                  conflict: iop_ism_irq
+    IRQ_AUTO_6 (if via_alt_mapping)             conflict: psc_irq
 
+via2_irq
+    IRQ_AUTO_2                                  conflict: oss_irq
 
-/proc/interrupts (genirq):
+via_nubus_irq
+    IRQ_MAC_NUBUS =3D IRQ_VIA2_1
 
-           CPU0
-  2:      29503      auto  CIAA, ide0, eth0
-  6:      93738      auto  CIAB
-  8:          0     amiga  serial TX
- 12:      64657     amiga  fb vertb handler
- 13:          3     amiga
- 19:          0     amiga  serial RX
- 25:        788       cia  amikbd
- 27:      93738       cia  timer
-ERR:          0
+These are other interrupts using in the Mac core code, which may use th=
+e same
+interrupts as some of the cascades above:
 
-I did some more refactoring which made the Mac conversion trivial (but
-still untested).
-I'll prepare it for publishing when the kids leave me alone ;-)
+iop_ism_irq
+    OSS_IRQLEV_IOPISM =3D 1 =3D IRQ_AUTO_1 (on oss) conflict: via1_irq
+    IRQ_VIA2_0 (on !oss)
+
+mac_nmi_handler
+    IRQ_AUTO_7
+
+timer handler
+    IRQ_MAC_TIMER_1 =3D IRQ_VIA1_6
+
+So baboon and PSC are mutually exclusive? But they don't conflict w.r.t=
+=2E to
+interrupt lines anyway, so they're not an issue.
+
+=46rom the code, OSS and VIA are also mutually exclusive (except for vi=
+a1_irq)?
+
+But PSC can coexist with OSS? That's where most of the conflicts are.
 
 Gr{oetje,eeting}s,
 
