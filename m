@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH] m68k: merge mmu and non-mmu include/asm/entry.h files
-Date: Thu, 11 Aug 2011 15:02:23 +1000
-Message-ID: <1313038943-25960-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68k: reorganize Kconfig options to improve mmu/non-mmu selections
+Date: Thu, 11 Aug 2011 15:10:21 +1000
+Message-ID: <1313039421-26075-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:33597 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751845Ab1HKE67 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Aug 2011 00:58:59 -0400
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:13533 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751512Ab1HKFG6 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Aug 2011 01:06:58 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -16,785 +16,2857 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-[This is a resend of this patch. If no-one has any objections then I
-want to push this into linux-next, for eventual inclusion in the 3.2
-merge window. checkpatch complains loudly about the asm formatting, but
-I have chosen to make it consistent we what the previous entry files
-used.]
+[This is a resend of this patch. Would like to hear what others think of
+this change. It makes the top level configuration consistent for all m68k
+type processors, and makes it much easier to allow MMU enabled or disabled
+across all types. If no-one has any objections then I want to push this into
+linux-next, for eventual inclusion in the 3.2 merge window.]
 
-The changes in the mmu version of entry.h (entry_mm.h) and the non-mmu
-version (entry_no.h) are not about the presence or use of an MMU at all.
-The main changes are to support the ColdFire processors. The code for
-trap entry and exit for all types of 68k processor outside coldfire is
-the same.
+The current mmu and non-mmu Kconfig files can be merged to form
+a more general selection of options. The current break up of options
+is due to the simple brute force merge from the m68k and m68knommu
+arch directories.
 
-So merge the files back to a single entry.h and share the common 68k
-entry/exit code. Some changes are required for the non-mmu entry
-handlers to adopt the differing macros for system call and interrupt
-entry, but this is quite strait forward. The changes for the ColdFire
-remove a couple of instructions for the separate a7 register case, and
-are no worse for the older single a7 register case.
+Many of the options are not at all specific to having the MMU enabled
+or not. They are actually associated with a particular CPU type or
+platform type.
 
-Compile tested on ColdFire, non-mmu 68328, and 68020 (ARAnyM).
-Run tested on ColdFire targets and in ARAnyM.
+Ultimately as we support all processors with the MMU disabled we need
+many of these options to be selectable without the MMU option enabled.
+And likewise some of the ColdFire processors, which currently are only
+supported with the MMU disabled, do have MMU hardware, and will need
+to have options selected on CPU type, not MMU disabled.
+
+This patch removes the old mmu and non-mmu Kconfigs and instead breaks
+up the configuration into four areas: cpu, machine, bus, devices.
+
+The Kconfig.cpu lists all the options associated with selecting a CPU,
+and includes options specific to each CPU type as well.
+
+Kconfig.machine lists all options associated with selecting a machine
+type. Almost always the machines selectable is restricted by the chosen
+CPU.
+
+Kconfig.bus contains options associated with selecting bus types on the
+various machine types. That includes PCI bus, PCMCIA bus, etc.
+
+Kconfig.devices contains options for drivers and driver associated
+options.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/entry.h       |  255 ++++++++++++++++++++++++++++++++++-
- arch/m68k/include/asm/entry_mm.h    |  128 ------------------
- arch/m68k/include/asm/entry_no.h    |  181 -------------------------
- arch/m68k/kernel/entry_no.S         |    6 +-
- arch/m68k/platform/68328/entry.S    |   18 ++--
- arch/m68k/platform/68360/entry.S    |    4 +-
- arch/m68k/platform/coldfire/entry.S |    6 +-
- 7 files changed, 268 insertions(+), 330 deletions(-)
- delete mode 100644 arch/m68k/include/asm/entry_mm.h
- delete mode 100644 arch/m68k/include/asm/entry_no.h
+ arch/m68k/Kconfig         |  195 +++---------
+ arch/m68k/Kconfig.bus     |   98 ++++++
+ arch/m68k/Kconfig.cpu     |  429 ++++++++++++++++++++++++
+ arch/m68k/Kconfig.devices |  171 ++++++++++
+ arch/m68k/Kconfig.machine |  626 +++++++++++++++++++++++++++++++++++
+ arch/m68k/Kconfig.mmu     |  411 -----------------------
+ arch/m68k/Kconfig.nommu   |  787 ---------------------------------------------
+ 7 files changed, 1366 insertions(+), 1351 deletions(-)
+ create mode 100644 arch/m68k/Kconfig.bus
+ create mode 100644 arch/m68k/Kconfig.cpu
+ create mode 100644 arch/m68k/Kconfig.devices
+ create mode 100644 arch/m68k/Kconfig.machine
+ delete mode 100644 arch/m68k/Kconfig.mmu
+ delete mode 100644 arch/m68k/Kconfig.nommu
 
-diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
-index 876eec6..c3c5a86 100644
---- a/arch/m68k/include/asm/entry.h
-+++ b/arch/m68k/include/asm/entry.h
-@@ -1,5 +1,254 @@
--#ifdef __uClinux__
--#include "entry_no.h"
-+#ifndef __M68K_ENTRY_H
-+#define __M68K_ENTRY_H
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 9e8ee9d..6c28582 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -21,6 +21,15 @@ config ARCH_HAS_ILOG2_U32
+ config ARCH_HAS_ILOG2_U64
+ 	bool
+ 
++config GENERIC_CLOCKEVENTS
++	bool
 +
-+#include <asm/setup.h>
-+#include <asm/page.h>
-+#ifdef __ASSEMBLY__
-+#include <asm/thread_info.h>
-+#endif
++config GENERIC_CMOS_UPDATE
++	def_bool !MMU
 +
-+/*
-+ * Stack layout in 'ret_from_exception':
-+ *
-+ *	This allows access to the syscall arguments in registers d1-d5
-+ *
-+ *	 0(sp) - d1
-+ *	 4(sp) - d2
-+ *	 8(sp) - d3
-+ *	 C(sp) - d4
-+ *	10(sp) - d5
-+ *	14(sp) - a0
-+ *	18(sp) - a1
-+ *	1C(sp) - a2
-+ *	20(sp) - d0
-+ *	24(sp) - orig_d0
-+ *	28(sp) - stack adjustment
-+ *	2C(sp) - [ sr              ] [ format & vector ]
-+ *	2E(sp) - [ pc-hiword       ] [ sr              ]
-+ *	30(sp) - [ pc-loword       ] [ pc-hiword       ]
-+ *	32(sp) - [ format & vector ] [ pc-loword       ]
-+ *		  ^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^
-+ *			M68K		  COLDFIRE
-+ */
++config GENERIC_GPIO
++	bool
 +
-+/* the following macro is used when enabling interrupts */
-+#if defined(MACH_ATARI_ONLY)
-+	/* block out HSYNC on the atari */
-+#define ALLOWINT	(~0x400)
-+#define	MAX_NOINT_IPL	3
- #else
--#include "entry_mm.h"
-+	/* portable version */
-+#define ALLOWINT	(~0x700)
-+#define	MAX_NOINT_IPL	0
-+#endif /* machine compilation types */
+ config GENERIC_HWEIGHT
+ 	bool
+ 	default y
+@@ -29,10 +38,16 @@ config GENERIC_CALIBRATE_DELAY
+ 	bool
+ 	default y
+ 
++config GENERIC_IOMAP
++	def_bool MMU
 +
-+#ifdef __ASSEMBLY__
-+/*
-+ * This defines the normal kernel pt-regs layout.
-+ *
-+ * regs a3-a6 and d6-d7 are preserved by C code
-+ * the kernel doesn't mess with usp unless it needs to
-+ */
-+#define SWITCH_STACK_SIZE	(6*4+4)	/* includes return address */
+ config TIME_LOW_RES
+ 	bool
+ 	default y
+ 
++config ARCH_USES_GETTIMEOFFSET
++	def_bool MMU
 +
-+#ifdef CONFIG_COLDFIRE
-+#ifdef CONFIG_COLDFIRE_SW_A7
-+/*
-+ * This is made a little more tricky on older ColdFires. There is no
-+ * separate supervisor and user stack pointers. Need to artificially
-+ * construct a usp in software... When doing this we need to disable
-+ * interrupts, otherwise bad things will happen.
-+ */
-+.globl sw_usp
-+.globl sw_ksp
+ config NO_IOPORT
+ 	def_bool y
+ 
+@@ -62,13 +77,31 @@ config MMU
+ 	  Select if you want MMU-based virtualised addressing space
+ 	  support by paged memory management. If unsure, say 'Y'.
+ 
+-menu "Platform dependent setup"
++config MMU_MOTOROLA
++	bool
 +
-+.macro SAVE_ALL_SYS
-+	move	#0x2700,%sr		/* disable intrs */
-+	btst	#5,%sp@(2)		/* from user? */
-+	bnes	6f			/* no, skip */
-+	movel	%sp,sw_usp		/* save user sp */
-+	addql	#8,sw_usp		/* remove exception */
-+	movel	sw_ksp,%sp		/* kernel sp */
-+	subql	#8,%sp			/* room for exception */
-+	clrl	%sp@-			/* stkadj */
-+	movel	%d0,%sp@-		/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	lea	%sp@(-32),%sp		/* space for 8 regs */
-+	moveml	%d1-%d5/%a0-%a2,%sp@
-+	movel	sw_usp,%a0		/* get usp */
-+	movel	%a0@-,%sp@(PT_OFF_PC)	/* copy exception program counter */
-+	movel	%a0@-,%sp@(PT_OFF_FORMATVEC)/*copy exception format/vector/sr */
-+	bra	7f
-+	6:
-+	clrl	%sp@-			/* stkadj */
-+	movel	%d0,%sp@-		/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	lea	%sp@(-32),%sp		/* space for 8 regs */
-+	moveml	%d1-%d5/%a0-%a2,%sp@
-+	7:
-+.endm
++config MMU_SUN3
++	bool
++	depends on MMU && !MMU_MOTOROLA
 +
-+.macro SAVE_ALL_INT
-+	SAVE_ALL_SYS
-+	moveq	#-1,%d0			/* not system call entry */
-+	movel	%d0,%sp@(PT_OFF_ORIG_D0)
-+.endm
++menu "Platform setup"
 +
-+.macro RESTORE_USER
-+	move	#0x2700,%sr		/* disable intrs */
-+	movel	sw_usp,%a0		/* get usp */
-+	movel	%sp@(PT_OFF_PC),%a0@-	/* copy exception program counter */
-+	movel	%sp@(PT_OFF_FORMATVEC),%a0@-/*copy exception format/vector/sr */
-+	moveml	%sp@,%d1-%d5/%a0-%a2
-+	lea	%sp@(32),%sp		/* space for 8 regs */
-+	movel	%sp@+,%d0
-+	addql	#4,%sp			/* orig d0 */
-+	addl	%sp@+,%sp		/* stkadj */
-+	addql	#8,%sp			/* remove exception */
-+	movel	%sp,sw_ksp		/* save ksp */
-+	subql	#8,sw_usp		/* set exception */
-+	movel	sw_usp,%sp		/* restore usp */
-+	rte
-+.endm
++source arch/m68k/Kconfig.cpu
 +
-+.macro RDUSP
-+	movel	sw_usp,%a3
-+.endm
++source arch/m68k/Kconfig.machine
 +
-+.macro WRUSP
-+	movel	%a3,sw_usp
-+.endm
++source arch/m68k/Kconfig.bus
 +
-+#else /* !CONFIG_COLDFIRE_SW_A7 */
-+/*
-+ * Modern ColdFire parts have separate supervisor and user stack
-+ * pointers. Simple load and restore macros for this case.
-+ */
-+.macro SAVE_ALL_SYS
-+	move	#0x2700,%sr		/* disable intrs */
-+	clrl	%sp@-			/* stkadj */
-+	movel	%d0,%sp@-		/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	lea	%sp@(-32),%sp		/* space for 8 regs */
-+	moveml	%d1-%d5/%a0-%a2,%sp@
-+.endm
++endmenu
 +
-+.macro SAVE_ALL_INT
-+	move	#0x2700,%sr		/* disable intrs */
-+	clrl	%sp@-			/* stkadj */
-+	pea	-1:w			/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	lea	%sp@(-32),%sp		/* space for 8 regs */
-+	moveml	%d1-%d5/%a0-%a2,%sp@
-+.endm
++menu "Kernel Features"
+ 
+-if MMU
+-source arch/m68k/Kconfig.mmu
++if COLDFIRE
++source "kernel/Kconfig.preempt"
+ endif
+-if !MMU
+-source arch/m68k/Kconfig.nommu
 +
-+.macro RESTORE_USER
-+	moveml	%sp@,%d1-%d5/%a0-%a2
-+	lea	%sp@(32),%sp		/* space for 8 regs */
-+	movel	%sp@+,%d0
-+	addql	#4,%sp			/* orig d0 */
-+	addl	%sp@+,%sp		/* stkadj */
-+	rte
-+.endm
++if !MMU || COLDFIRE
++source "kernel/time/Kconfig"
+ endif
+ 
+ source "mm/Kconfig"
+@@ -85,9 +118,9 @@ if !MMU
+ menu "Power management options"
+ 
+ config PM
+-        bool "Power Management support"
+-        help
+-          Support processor power management modes
++	bool "Power Management support"
++	help
++	  Support processor power management modes
+ 
+ endmenu
+ endif
+@@ -96,151 +129,7 @@ source "net/Kconfig"
+ 
+ source "drivers/Kconfig"
+ 
+-if MMU
+-
+-menu "Character devices"
+-
+-config ATARI_MFPSER
+-	tristate "Atari MFP serial support"
+-	depends on ATARI
+-	---help---
+-	  If you like to use the MFP serial ports ("Modem1", "Serial1") under
+-	  Linux, say Y. The driver equally supports all kinds of MFP serial
+-	  ports and automatically detects whether Serial1 is available.
+-
+-	  To compile this driver as a module, choose M here.
+-
+-	  Note for Falcon users: You also have an MFP port, it's just not
+-	  wired to the outside... But you could use the port under Linux.
+-
+-config ATARI_MIDI
+-	tristate "Atari MIDI serial support"
+-	depends on ATARI
+-	help
+-	  If you want to use your Atari's MIDI port in Linux, say Y.
+-
+-	  To compile this driver as a module, choose M here.
+-
+-config ATARI_DSP56K
+-	tristate "Atari DSP56k support (EXPERIMENTAL)"
+-	depends on ATARI && EXPERIMENTAL
+-	help
+-	  If you want to be able to use the DSP56001 in Falcons, say Y. This
+-	  driver is still experimental, and if you don't know what it is, or
+-	  if you don't have this processor, just say N.
+-
+-	  To compile this driver as a module, choose M here.
+-
+-config AMIGA_BUILTIN_SERIAL
+-	tristate "Amiga builtin serial support"
+-	depends on AMIGA
+-	help
+-	  If you want to use your Amiga's built-in serial port in Linux,
+-	  answer Y.
+-
+-	  To compile this driver as a module, choose M here.
+-
+-config MULTIFACE_III_TTY
+-	tristate "Multiface Card III serial support"
+-	depends on AMIGA
+-	help
+-	  If you want to use a Multiface III card's serial port in Linux,
+-	  answer Y.
+-
+-	  To compile this driver as a module, choose M here.
+-
+-config GVPIOEXT
+-	tristate "GVP IO-Extender support"
+-	depends on PARPORT=n && ZORRO
+-	help
+-	  If you want to use a GVP IO-Extender serial card in Linux, say Y.
+-	  Otherwise, say N.
+-
+-config GVPIOEXT_LP
+-	tristate "GVP IO-Extender parallel printer support"
+-	depends on GVPIOEXT
+-	help
+-	  Say Y to enable driving a printer from the parallel port on your
+-	  GVP IO-Extender card, N otherwise.
+-
+-config GVPIOEXT_PLIP
+-	tristate "GVP IO-Extender PLIP support"
+-	depends on GVPIOEXT
+-	help
+-	  Say Y to enable doing IP over the parallel port on your GVP
+-	  IO-Extender card, N otherwise.
+-
+-config MAC_HID
+-	bool
+-	depends on INPUT_ADBHID
+-	default y
+-
+-config HPDCA
+-	tristate "HP DCA serial support"
+-	depends on DIO && SERIAL_8250
+-	help
+-	  If you want to use the internal "DCA" serial ports on an HP300
+-	  machine, say Y here.
+-
+-config HPAPCI
+-	tristate "HP APCI serial support"
+-	depends on HP300 && SERIAL_8250 && EXPERIMENTAL
+-	help
+-	  If you want to use the internal "APCI" serial ports on an HP400
+-	  machine, say Y here.
+-
+-config MVME147_SCC
+-	bool "SCC support for MVME147 serial ports"
+-	depends on MVME147 && BROKEN
+-	help
+-	  This is the driver for the serial ports on the Motorola MVME147
+-	  boards.  Everyone using one of these boards should say Y here.
+-
+-config MVME162_SCC
+-	bool "SCC support for MVME162 serial ports"
+-	depends on MVME16x && BROKEN
+-	help
+-	  This is the driver for the serial ports on the Motorola MVME162 and
+-	  172 boards.  Everyone using one of these boards should say Y here.
+-
+-config BVME6000_SCC
+-	bool "SCC support for BVME6000 serial ports"
+-	depends on BVME6000 && BROKEN
+-	help
+-	  This is the driver for the serial ports on the BVME4000 and BVME6000
+-	  boards from BVM Ltd.  Everyone using one of these boards should say
+-	  Y here.
+-
+-config DN_SERIAL
+-	bool "Support for DN serial port (dummy)"
+-	depends on APOLLO
+-
+-config SERIAL_CONSOLE
+-	bool "Support for serial port console"
+-	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || GVPIOEXT=y || MULTIFACE_III_TTY=y || SERIAL=y || MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
+-	---help---
+-	  If you say Y here, it will be possible to use a serial port as the
+-	  system console (the system console is the device which receives all
+-	  kernel messages and warnings and which allows logins in single user
+-	  mode). This could be useful if some terminal or printer is connected
+-	  to that serial port.
+-
+-	  Even if you say Y here, the currently visible virtual console
+-	  (/dev/tty0) will still be used as the system console by default, but
+-	  you can alter that using a kernel command line option such as
+-	  "console=ttyS1". (Try "man bootparam" or see the documentation of
+-	  your boot loader (lilo or loadlin) about how to pass options to the
+-	  kernel at boot time.)
+-
+-	  If you don't have a VGA card installed and you say Y here, the
+-	  kernel will automatically use the first serial line, /dev/ttyS0, as
+-	  system console.
+-
+-	  If unsure, say N.
+-
+-endmenu
+-
+-endif
++source "arch/m68k/Kconfig.devices"
+ 
+ source "fs/Kconfig"
+ 
+diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
+new file mode 100644
+index 0000000..83263ec
+--- /dev/null
++++ b/arch/m68k/Kconfig.bus
+@@ -0,0 +1,98 @@
++if MMU
 +
-+.macro RDUSP
-+	/*move	%usp,%a3*/
-+	.word	0x4e6b
-+.endm
++comment "Bus Support"
 +
-+.macro WRUSP
-+	/*move	%a3,%usp*/
-+	.word	0x4e63
-+.endm
++config EISA
++	bool
++	help
++	  The Extended Industry Standard Architecture (EISA) bus was
++	  developed as an open alternative to the IBM MicroChannel bus.
 +
-+#endif /* !CONFIG_COLDFIRE_SW_A7 */
++	  The EISA bus provided some of the features of the IBM MicroChannel
++	  bus while maintaining backward compatibility with cards made for
++	  the older ISA bus.  The EISA bus saw limited use between 1988 and
++	  1995 when it was made obsolete by the PCI bus.
 +
-+.macro SAVE_SWITCH_STACK
-+	lea	%sp@(-24),%sp		/* 6 regs */
-+	moveml	%a3-%a6/%d6-%d7,%sp@
-+.endm
++	  Say Y here if you are building a kernel for an EISA-based machine.
 +
-+.macro RESTORE_SWITCH_STACK
-+	moveml	%sp@,%a3-%a6/%d6-%d7
-+	lea	%sp@(24),%sp		/* 6 regs */
-+.endm
++	  Otherwise, say N.
 +
-+#else /* !CONFIG_COLDFIRE */
++config MCA
++	bool
++	help
++	  MicroChannel Architecture is found in some IBM PS/2 machines and
++	  laptops.  It is a bus system similar to PCI or ISA. See
++	  <file:Documentation/mca.txt> (and especially the web page given
++	  there) before attempting to build an MCA bus kernel.
 +
-+/*
-+ * All other types of m68k parts (68000, 680x0, CPU32) have the same
-+ * entry and exit code.
-+ */
++config PCMCIA
++	tristate
++	help
++	  Say Y here if you want to attach PCMCIA- or PC-cards to your Linux
++	  computer.  These are credit-card size devices such as network cards,
++	  modems or hard drives often used with laptops computers.  There are
++	  actually two varieties of these cards: the older 16 bit PCMCIA cards
++	  and the newer 32 bit CardBus cards.  If you want to use CardBus
++	  cards, you need to say Y here and also to "CardBus support" below.
 +
-+/*
-+ * a -1 in the orig_d0 field signifies
-+ * that the stack frame is NOT for syscall
-+ */
-+.macro SAVE_ALL_INT
-+	clrl	%sp@-			/* stk_adj */
-+	pea	-1:w			/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	moveml	%d1-%d5/%a0-%a2,%sp@-
-+.endm
++	  To use your PC-cards, you will need supporting software from David
++	  Hinds' pcmcia-cs package (see the file <file:Documentation/Changes>
++	  for location).  Please also read the PCMCIA-HOWTO, available from
++	  <http://www.tldp.org/docs.html#howto>.
 +
-+.macro SAVE_ALL_SYS
-+	clrl	%sp@-			/* stk_adj */
-+	movel	%d0,%sp@-		/* orig d0 */
-+	movel	%d0,%sp@-		/* d0 */
-+	moveml	%d1-%d5/%a0-%a2,%sp@-
-+.endm
++	  To compile this driver as modules, choose M here: the
++	  modules will be called pcmcia_core and ds.
 +
-+.macro RESTORE_ALL
-+	moveml	%sp@+,%a0-%a2/%d1-%d5
-+	movel	%sp@+,%d0
-+	addql	#4,%sp			/* orig d0 */
-+	addl	%sp@+,%sp		/* stk adj */
-+	rte
-+.endm
++config NUBUS
++	bool
++	depends on MAC
++	default y
++
++config ZORRO
++	bool "Amiga Zorro (AutoConfig) bus support"
++	depends on AMIGA
++	help
++	  This enables support for the Zorro bus in the Amiga. If you have
++	  expansion cards in your Amiga that conform to the Amiga
++	  AutoConfig(tm) specification, say Y, otherwise N. Note that even
++	  expansion cards that do not fit in the Zorro slots but fit in e.g.
++	  the CPU slot may fall in this category, so you have to say Y to let
++	  Linux use these.
++
++config AMIGA_PCMCIA
++	bool "Amiga 1200/600 PCMCIA support (EXPERIMENTAL)"
++	depends on AMIGA && EXPERIMENTAL
++	help
++	  Include support in the kernel for pcmcia on Amiga 1200 and Amiga
++	  600. If you intend to use pcmcia cards say Y; otherwise say N.
++
++config ISA
++	bool
++	depends on Q40 || AMIGA_PCMCIA
++	default y
++	help
++	  Find out whether you have ISA slots on your motherboard.  ISA is the
++	  name of a bus system, i.e. the way the CPU talks to the other stuff
++	  inside your box.  Other bus systems are PCI, EISA, MicroChannel
++	  (MCA) or VESA.  ISA is an older system, now being displaced by PCI;
++	  newer boards don't support it.  If you have ISA, say Y, otherwise N.
++
++config GENERIC_ISA_DMA
++	bool
++	depends on Q40 || AMIGA_PCMCIA
++	default y
++
++source "drivers/pci/Kconfig"
++
++source "drivers/zorro/Kconfig"
++
++endif
++
++if !MMU
++
++config ISA_DMA_API
++        def_bool !M5272
++
++source "drivers/pcmcia/Kconfig"
++
++endif
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+new file mode 100644
+index 0000000..e632b2d
+--- /dev/null
++++ b/arch/m68k/Kconfig.cpu
+@@ -0,0 +1,429 @@
++comment "Processor Type"
++
++config M68000
++	bool
++	select CPU_HAS_NO_BITFIELDS
++	help
++	  The Freescale (was Motorola) 68000 CPU is the first generation of
++	  the well known M68K family of processors. The CPU core as well as
++	  being available as a stand alone CPU was also used in many
++	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
++	  a paging MMU.
++
++config MCPU32
++	bool
++	select CPU_HAS_NO_BITFIELDS
++	help
++	  The Freescale (was then Motorola) CPU32 is a CPU core that is
++	  based on the 68020 processor. For the most part it is used in
++	  System-On-Chip parts, and does not contain a paging MMU.
++
++config COLDFIRE
++	bool
++	select GENERIC_GPIO
++	select ARCH_REQUIRE_GPIOLIB
++	select CPU_HAS_NO_BITFIELDS
++	help
++	  The Freescale ColdFire family of processors is a modern derivitive
++	  of the 68000 processor family. They are mainly targeted at embedded
++	  applications, and are all System-On-Chip (SOC) devices, as opposed
++	  to stand alone CPUs. They implement a subset of the original 68000
++	  processor instruction set.
++
++config M68020
++	bool "68020 support"
++	depends on MMU
++	help
++	  If you anticipate running this kernel on a computer with a MC68020
++	  processor, say Y. Otherwise, say N. Note that the 68020 requires a
++	  68851 MMU (Memory Management Unit) to run Linux/m68k, except on the
++	  Sun 3, which provides its own version.
++
++config M68030
++	bool "68030 support"
++	depends on MMU && !MMU_SUN3
++	help
++	  If you anticipate running this kernel on a computer with a MC68030
++	  processor, say Y. Otherwise, say N. Note that a MC68EC030 will not
++	  work, as it does not include an MMU (Memory Management Unit).
++
++config M68040
++	bool "68040 support"
++	depends on MMU && !MMU_SUN3
++	help
++	  If you anticipate running this kernel on a computer with a MC68LC040
++	  or MC68040 processor, say Y. Otherwise, say N. Note that an
++	  MC68EC040 will not work, as it does not include an MMU (Memory
++	  Management Unit).
++
++config M68060
++	bool "68060 support"
++	depends on MMU && !MMU_SUN3
++	help
++	  If you anticipate running this kernel on a computer with a MC68060
++	  processor, say Y. Otherwise, say N.
++
++config M68328
++	bool "MC68328"
++	depends on !MMU
++	select M68000
++	help
++	  Motorola 68328 processor support.
++
++config M68EZ328
++	bool "MC68EZ328"
++	depends on !MMU
++	select M68000
++	help
++	  Motorola 68EX328 processor support.
++
++config M68VZ328
++	bool "MC68VZ328"
++	depends on !MMU
++	select M68000
++	help
++	  Motorola 68VZ328 processor support.
++
++config M68360
++	bool "MC68360"
++	depends on !MMU
++	select MCPU32
++	help
++	  Motorola 68360 processor support.
++
++config M5206
++	bool "MCF5206"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5206 processor support.
++
++config M5206e
++	bool "MCF5206e"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5206e processor support.
++
++config M520x
++	bool "MCF520x"
++	depends on !MMU
++	select COLDFIRE
++	select GENERIC_CLOCKEVENTS
++	select HAVE_CACHE_SPLIT
++	help
++	   Freescale Coldfire 5207/5208 processor support.
++
++config M523x
++	bool "MCF523x"
++	depends on !MMU
++	select COLDFIRE
++	select GENERIC_CLOCKEVENTS
++	select HAVE_CACHE_SPLIT
++	select HAVE_IPSBAR
++	help
++	  Freescale Coldfire 5230/1/2/4/5 processor support
++
++config M5249
++	bool "MCF5249"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5249 processor support.
++
++config M527x
++	bool
++
++config M5271
++	bool "MCF5271"
++	depends on !MMU
++	select COLDFIRE
++	select M527x
++	select HAVE_CACHE_SPLIT
++	select HAVE_IPSBAR
++	select GENERIC_CLOCKEVENTS
++	help
++	  Freescale (Motorola) ColdFire 5270/5271 processor support.
++
++config M5272
++	bool "MCF5272"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5272 processor support.
++
++config M5275
++	bool "MCF5275"
++	depends on !MMU
++	select COLDFIRE
++	select M527x
++	select HAVE_CACHE_SPLIT
++	select HAVE_IPSBAR
++	select GENERIC_CLOCKEVENTS
++	help
++	  Freescale (Motorola) ColdFire 5274/5275 processor support.
++
++config M528x
++	bool "MCF528x"
++	depends on !MMU
++	select COLDFIRE
++	select GENERIC_CLOCKEVENTS
++	select HAVE_CACHE_SPLIT
++	select HAVE_IPSBAR
++	help
++	  Motorola ColdFire 5280/5282 processor support.
++
++config M5307
++	bool "MCF5307"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_CACHE_CB
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5307 processor support.
++
++config M532x
++	bool "MCF532x"
++	depends on !MMU
++	select COLDFIRE
++	select HAVE_CACHE_CB
++	help
++	  Freescale (Motorola) ColdFire 532x processor support.
++
++config M5407
++	bool "MCF5407"
++	depends on !MMU
++	select COLDFIRE
++	select COLDFIRE_SW_A7
++	select HAVE_CACHE_CB
++	select HAVE_MBAR
++	help
++	  Motorola ColdFire 5407 processor support.
++
++config M54xx
++	bool
++
++config M547x
++	bool "MCF547x"
++	depends on !MMU
++	select COLDFIRE
++	select M54xx
++	select HAVE_CACHE_CB
++	select HAVE_MBAR
++	help
++	  Freescale ColdFire 5470/5471/5472/5473/5474/5475 processor support.
++
++config M548x
++	bool "MCF548x"
++	depends on !MMU
++	select COLDFIRE
++	select M54xx
++	select HAVE_CACHE_CB
++	select HAVE_MBAR
++	help
++	  Freescale ColdFire 5480/5481/5482/5483/5484/5485 processor support.
 +
 +
-+.macro SAVE_SWITCH_STACK
-+	moveml	%a3-%a6/%d6-%d7,%sp@-
-+.endm
++comment "Processor Specific Options"
 +
-+.macro RESTORE_SWITCH_STACK
-+	moveml	%sp@+,%a3-%a6/%d6-%d7
-+.endm
++config M68KFPU_EMU
++	bool "Math emulation support (EXPERIMENTAL)"
++	depends on MMU
++	depends on EXPERIMENTAL
++	help
++	  At some point in the future, this will cause floating-point math
++	  instructions to be emulated by the kernel on machines that lack a
++	  floating-point math coprocessor.  Thrill-seekers and chronically
++	  sleep-deprived psychotic hacker types can say Y now, everyone else
++	  should probably wait a while.
 +
-+#endif /* !CONFIG_COLDFIRE */
++config M68KFPU_EMU_EXTRAPREC
++	bool "Math emulation extra precision"
++	depends on M68KFPU_EMU
++	help
++	  The fpu uses normally a few bit more during calculations for
++	  correct rounding, the emulator can (often) do the same but this
++	  extra calculation can cost quite some time, so you can disable
++	  it here. The emulator will then "only" calculate with a 64 bit
++	  mantissa and round slightly incorrect, what is more than enough
++	  for normal usage.
 +
-+/*
-+ * Register %a2 is reserved and set to current task on MMU enabled systems.
-+ * Non-MMU systems do not reserve %a2 in this way, and this definition is
-+ * not used for them.
-+ */
-+#define curptr a2
++config M68KFPU_EMU_ONLY
++	bool "Math emulation only kernel"
++	depends on M68KFPU_EMU
++	help
++	  This option prevents any floating-point instructions from being
++	  compiled into the kernel, thereby the kernel doesn't save any
++	  floating point context anymore during task switches, so this
++	  kernel will only be usable on machines without a floating-point
++	  math coprocessor. This makes the kernel a bit faster as no tests
++	  needs to be executed whether a floating-point instruction in the
++	  kernel should be executed or not.
 +
-+#define GET_CURRENT(tmp) get_current tmp
-+.macro get_current reg=%d0
-+	movel	%sp,\reg
-+	andw	#-THREAD_SIZE,\reg
-+	movel	\reg,%curptr
-+	movel	%curptr@,%curptr
-+.endm
++config ADVANCED
++	bool "Advanced configuration options"
++	depends on MMU
++	---help---
++	  This gives you access to some advanced options for the CPU. The
++	  defaults should be fine for most users, but these options may make
++	  it possible for you to improve performance somewhat if you know what
++	  you are doing.
 +
-+#else /* C source */
++	  Note that the answer to this question won't directly affect the
++	  kernel: saying N will just cause the configurator to skip all
++	  the questions about these options.
 +
-+#define STR(X) STR1(X)
-+#define STR1(X) #X
++	  Most users should say N to this question.
 +
-+#define SAVE_ALL_INT				\
-+	"clrl	%%sp@-;"    /* stk_adj */	\
-+	"pea	-1:w;"	    /* orig d0 = -1 */	\
-+	"movel	%%d0,%%sp@-;" /* d0 */		\
-+	"moveml	%%d1-%%d5/%%a0-%%a2,%%sp@-"
++config RMW_INSNS
++	bool "Use read-modify-write instructions"
++	depends on ADVANCED
++	---help---
++	  This allows to use certain instructions that work with indivisible
++	  read-modify-write bus cycles. While this is faster than the
++	  workaround of disabling interrupts, it can conflict with DMA
++	  ( = direct memory access) on many Amiga systems, and it is also said
++	  to destabilize other machines. It is very likely that this will
++	  cause serious problems on any Amiga or Atari Medusa if set. The only
++	  configuration where it should work are 68030-based Ataris, where it
++	  apparently improves performance. But you've been warned! Unless you
++	  really know what you are doing, say N. Try Y only if you're quite
++	  adventurous.
 +
-+#define GET_CURRENT(tmp) \
-+	"movel	%%sp,"#tmp"\n\t" \
-+	"andw	#-"STR(THREAD_SIZE)","#tmp"\n\t" \
-+	"movel	"#tmp",%%a2\n\t" \
-+	"movel	%%a2@,%%a2"
++config SINGLE_MEMORY_CHUNK
++	bool "Use one physical chunk of memory only" if ADVANCED && !SUN3
++	depends on MMU
++	default y if SUN3
++	select NEED_MULTIPLE_NODES
++	help
++	  Ignore all but the first contiguous chunk of physical memory for VM
++	  purposes.  This will save a few bytes kernel size and may speed up
++	  some operations.  Say N if not sure.
 +
- #endif
++config ARCH_DISCONTIGMEM_ENABLE
++	def_bool MMU && !SINGLE_MEMORY_CHUNK
 +
-+#endif /* __M68K_ENTRY_H */
-diff --git a/arch/m68k/include/asm/entry_mm.h b/arch/m68k/include/asm/entry_mm.h
++config 060_WRITETHROUGH
++	bool "Use write-through caching for 68060 supervisor accesses"
++	depends on ADVANCED && M68060
++	---help---
++	  The 68060 generally uses copyback caching of recently accessed data.
++	  Copyback caching means that memory writes will be held in an on-chip
++	  cache and only written back to memory some time later.  Saying Y
++	  here will force supervisor (kernel) accesses to use writethrough
++	  caching.  Writethrough caching means that data is written to memory
++	  straight away, so that cache and memory data always agree.
++	  Writethrough caching is less efficient, but is needed for some
++	  drivers on 68060 based systems where the 68060 bus snooping signal
++	  is hardwired on.  The 53c710 SCSI driver is known to suffer from
++	  this problem.
++
++config M68K_L2_CACHE
++	bool
++	depends on MAC
++	default y
++
++config NODES_SHIFT
++	int
++	default "3"
++	depends on !SINGLE_MEMORY_CHUNK
++
++config FPU
++	bool
++
++config COLDFIRE_SW_A7
++	bool
++
++config HAVE_CACHE_SPLIT
++	bool
++
++config HAVE_CACHE_CB
++	bool
++
++config HAVE_MBAR
++	bool
++
++config HAVE_IPSBAR
++	bool
++
++config CLOCK_SET
++	bool "Enable setting the CPU clock frequency"
++	depends on COLDFIRE
++	default n
++	help
++	  On some CPU's you do not need to know what the core CPU clock
++	  frequency is. On these you can disable clock setting. On some
++	  traditional 68K parts, and on all ColdFire parts you need to set
++	  the appropriate CPU clock frequency. On these devices many of the
++	  onboard peripherals derive their timing from the master CPU clock
++	  frequency.
++
++config CLOCK_FREQ
++	int "Set the core clock frequency"
++	default "66666666"
++	depends on CLOCK_SET
++	help
++	  Define the CPU clock frequency in use. This is the core clock
++	  frequency, it may or may not be the same as the external clock
++	  crystal fitted to your board. Some processors have an internal
++	  PLL and can have their frequency programmed at run time, others
++	  use internal dividers. In general the kernel won't setup a PLL
++	  if it is fitted (there are some exceptions). This value will be
++	  specific to the exact CPU that you are using.
++
++config OLDMASK
++	bool "Old mask 5307 (1H55J) silicon"
++	depends on M5307
++	help
++	  Build support for the older revision ColdFire 5307 silicon.
++	  Specifically this is the 1H55J mask revision.
++
++if HAVE_CACHE_SPLIT
++choice
++	prompt "Split Cache Configuration"
++	default CACHE_I
++
++config CACHE_I
++	bool "Instruction"
++	help
++	  Use all of the ColdFire CPU cache memory as an instruction cache.
++
++config CACHE_D
++	bool "Data"
++	help
++	  Use all of the ColdFire CPU cache memory as a data cache.
++
++config CACHE_BOTH
++	bool "Both"
++	help
++	  Split the ColdFire CPU cache, and use half as an instruction cache
++	  and half as a data cache.
++endchoice
++endif
++
++if HAVE_CACHE_CB
++choice
++	prompt "Data cache mode"
++	default CACHE_WRITETHRU
++
++config CACHE_WRITETHRU
++	bool "Write-through"
++	help
++	  The ColdFire CPU cache is set into Write-through mode.
++
++config CACHE_COPYBACK
++	bool "Copy-back"
++	help
++	  The ColdFire CPU cache is set into Copy-back mode.
++endchoice
++endif
++
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+new file mode 100644
+index 0000000..d964dc4
+--- /dev/null
++++ b/arch/m68k/Kconfig.devices
+@@ -0,0 +1,171 @@
++if MMU
++
++config ARCH_MAY_HAVE_PC_FDC
++	bool
++	depends on BROKEN && (Q40 || SUN3X)
++	default y
++
++menu "Platform devices"
++
++config HEARTBEAT
++	bool "Use power LED as a heartbeat" if AMIGA || APOLLO || ATARI || MAC ||Q40
++	default y if !AMIGA && !APOLLO && !ATARI && !MAC && !Q40 && HP300
++	help
++	  Use the power-on LED on your machine as a load meter.  The exact
++	  behavior is platform-dependent, but normally the flash frequency is
++	  a hyperbolic function of the 5-minute load average.
++
++# We have a dedicated heartbeat LED. :-)
++config PROC_HARDWARE
++	bool "/proc/hardware support"
++	help
++	  Say Y here to support the /proc/hardware file, which gives you
++	  access to information about the machine you're running on,
++	  including the model, CPU, MMU, clock speed, BogoMIPS rating,
++	  and memory size.
++
++endmenu
++
++menu "Character devices"
++
++config ATARI_MFPSER
++	tristate "Atari MFP serial support"
++	depends on ATARI
++	---help---
++	  If you like to use the MFP serial ports ("Modem1", "Serial1") under
++	  Linux, say Y. The driver equally supports all kinds of MFP serial
++	  ports and automatically detects whether Serial1 is available.
++
++	  To compile this driver as a module, choose M here.
++
++	  Note for Falcon users: You also have an MFP port, it's just not
++	  wired to the outside... But you could use the port under Linux.
++
++config ATARI_MIDI
++	tristate "Atari MIDI serial support"
++	depends on ATARI
++	help
++	  If you want to use your Atari's MIDI port in Linux, say Y.
++
++	  To compile this driver as a module, choose M here.
++
++config ATARI_DSP56K
++	tristate "Atari DSP56k support (EXPERIMENTAL)"
++	depends on ATARI && EXPERIMENTAL
++	help
++	  If you want to be able to use the DSP56001 in Falcons, say Y. This
++	  driver is still experimental, and if you don't know what it is, or
++	  if you don't have this processor, just say N.
++
++	  To compile this driver as a module, choose M here.
++
++config AMIGA_BUILTIN_SERIAL
++	tristate "Amiga builtin serial support"
++	depends on AMIGA
++	help
++	  If you want to use your Amiga's built-in serial port in Linux,
++	  answer Y.
++
++	  To compile this driver as a module, choose M here.
++
++config MULTIFACE_III_TTY
++	tristate "Multiface Card III serial support"
++	depends on AMIGA
++	help
++	  If you want to use a Multiface III card's serial port in Linux,
++	  answer Y.
++
++	  To compile this driver as a module, choose M here.
++
++config GVPIOEXT
++	tristate "GVP IO-Extender support"
++	depends on PARPORT=n && ZORRO
++	help
++	  If you want to use a GVP IO-Extender serial card in Linux, say Y.
++	  Otherwise, say N.
++
++config GVPIOEXT_LP
++	tristate "GVP IO-Extender parallel printer support"
++	depends on GVPIOEXT
++	help
++	  Say Y to enable driving a printer from the parallel port on your
++	  GVP IO-Extender card, N otherwise.
++
++config GVPIOEXT_PLIP
++	tristate "GVP IO-Extender PLIP support"
++	depends on GVPIOEXT
++	help
++	  Say Y to enable doing IP over the parallel port on your GVP
++	  IO-Extender card, N otherwise.
++
++config MAC_HID
++	bool
++	depends on INPUT_ADBHID
++	default y
++
++config HPDCA
++	tristate "HP DCA serial support"
++	depends on DIO && SERIAL_8250
++	help
++	  If you want to use the internal "DCA" serial ports on an HP300
++	  machine, say Y here.
++
++config HPAPCI
++	tristate "HP APCI serial support"
++	depends on HP300 && SERIAL_8250 && EXPERIMENTAL
++	help
++	  If you want to use the internal "APCI" serial ports on an HP400
++	  machine, say Y here.
++
++config MVME147_SCC
++	bool "SCC support for MVME147 serial ports"
++	depends on MVME147 && BROKEN
++	help
++	  This is the driver for the serial ports on the Motorola MVME147
++	  boards.  Everyone using one of these boards should say Y here.
++
++config MVME162_SCC
++	bool "SCC support for MVME162 serial ports"
++	depends on MVME16x && BROKEN
++	help
++	  This is the driver for the serial ports on the Motorola MVME162 and
++	  172 boards.  Everyone using one of these boards should say Y here.
++
++config BVME6000_SCC
++	bool "SCC support for BVME6000 serial ports"
++	depends on BVME6000 && BROKEN
++	help
++	  This is the driver for the serial ports on the BVME4000 and BVME6000
++	  boards from BVM Ltd.  Everyone using one of these boards should say
++	  Y here.
++
++config DN_SERIAL
++	bool "Support for DN serial port (dummy)"
++	depends on APOLLO
++
++config SERIAL_CONSOLE
++	bool "Support for serial port console"
++	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || GVPIOEXT=y || MULTIFACE_III_TTY=y || SERIAL=y || MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
++	---help---
++	  If you say Y here, it will be possible to use a serial port as the
++	  system console (the system console is the device which receives all
++	  kernel messages and warnings and which allows logins in single user
++	  mode). This could be useful if some terminal or printer is connected
++	  to that serial port.
++
++	  Even if you say Y here, the currently visible virtual console
++	  (/dev/tty0) will still be used as the system console by default, but
++	  you can alter that using a kernel command line option such as
++	  "console=ttyS1". (Try "man bootparam" or see the documentation of
++	  your boot loader (lilo or loadlin) about how to pass options to the
++	  kernel at boot time.)
++
++	  If you don't have a VGA card installed and you say Y here, the
++	  kernel will automatically use the first serial line, /dev/ttyS0, as
++	  system console.
++
++	  If unsure, say N.
++
++endmenu
++
++endif
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+new file mode 100644
+index 0000000..7d5c20b
+--- /dev/null
++++ b/arch/m68k/Kconfig.machine
+@@ -0,0 +1,626 @@
++comment "Machine Types"
++
++config AMIGA
++	bool "Amiga support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  This option enables support for the Amiga series of computers. If
++	  you plan to use this kernel on an Amiga, say Y here and browse the
++	  material available in <file:Documentation/m68k>; otherwise say N.
++
++config ATARI
++	bool "Atari support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  This option enables support for the 68000-based Atari series of
++	  computers (including the TT, Falcon and Medusa). If you plan to use
++	  this kernel on an Atari, say Y here and browse the material
++	  available in <file:Documentation/m68k>; otherwise say N.
++
++config MAC
++	bool "Macintosh support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  This option enables support for the Apple Macintosh series of
++	  computers (yes, there is experimental support now, at least for part
++	  of the series).
++
++	  Say N unless you're willing to code the remaining necessary support.
++	  ;)
++
++config APOLLO
++	bool "Apollo support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  Say Y here if you want to run Linux on an MC680x0-based Apollo
++	  Domain workstation such as the DN3500.
++
++config VME
++	bool "VME (Motorola and BVM) support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  Say Y here if you want to build a kernel for a 680x0 based VME
++	  board.  Boards currently supported include Motorola boards MVME147,
++	  MVME162, MVME166, MVME167, MVME172, and MVME177.  BVME4000 and
++	  BVME6000 boards from BVM Ltd are also supported.
++
++config MVME147
++	bool "MVME147 support"
++	depends on MMU
++	depends on VME
++	help
++	  Say Y to include support for early Motorola VME boards.  This will
++	  build a kernel which can run on MVME147 single-board computers.  If
++	  you select this option you will have to select the appropriate
++	  drivers for SCSI, Ethernet and serial ports later on.
++
++config MVME16x
++	bool "MVME162, 166 and 167 support"
++	depends on MMU
++	depends on VME
++	help
++	  Say Y to include support for Motorola VME boards.  This will build a
++	  kernel which can run on MVME162, MVME166, MVME167, MVME172, and
++	  MVME177 boards.  If you select this option you will have to select
++	  the appropriate drivers for SCSI, Ethernet and serial ports later
++	  on.
++
++config BVME6000
++	bool "BVME4000 and BVME6000 support"
++	depends on MMU
++	depends on VME
++	help
++	  Say Y to include support for VME boards from BVM Ltd.  This will
++	  build a kernel which can run on BVME4000 and BVME6000 boards.  If
++	  you select this option you will have to select the appropriate
++	  drivers for SCSI, Ethernet and serial ports later on.
++
++config HP300
++	bool "HP9000/300 and HP9000/400 support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  This option enables support for the HP9000/300 and HP9000/400 series
++	  of workstations. Support for these machines is still somewhat
++	  experimental. If you plan to try to use the kernel on such a machine
++	  say Y here.
++	  Everybody else says N.
++
++config SUN3X
++	bool "Sun3x support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	select M68030
++	help
++	  This option enables support for the Sun 3x series of workstations.
++	  Be warned that this support is very experimental.
++	  Note that Sun 3x kernels are not compatible with Sun 3 hardware.
++	  General Linux information on the Sun 3x series (now discontinued)
++	  is at <http://www.angelfire.com/ca2/tech68k/sun3.html>.
++
++	  If you don't want to compile a kernel for a Sun 3x, say N.
++
++config Q40
++	bool "Q40/Q60 support"
++	depends on MMU
++	select MMU_MOTOROLA if MMU
++	help
++	  The Q40 is a Motorola 68040-based successor to the Sinclair QL
++	  manufactured in Germany.  There is an official Q40 home page at
++	  <http://www.q40.de/>.  This option enables support for the Q40 and
++	  Q60. Select your CPU below.  For 68LC060 don't forget to enable FPU
++	  emulation.
++
++config SUN3
++	bool "Sun3 support"
++	depends on MMU
++	depends on !MMU_MOTOROLA
++	select MMU_SUN3 if MMU
++	select M68020
++	help
++	  This option enables support for the Sun 3 series of workstations
++	  (3/50, 3/60, 3/1xx, 3/2xx systems). Enabling this option requires
++	  that all other hardware types must be disabled, as Sun 3 kernels
++	  are incompatible with all other m68k targets (including Sun 3x!).
++
++	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
++
++config PILOT
++	bool
++
++config PILOT3
++	bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
++	depends on M68328
++	select PILOT
++	help
++	  Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
++
++config XCOPILOT_BUGS
++	bool "(X)Copilot support"
++	depends on PILOT3
++	help
++	  Support the bugs of Xcopilot.
++
++config UC5272
++	bool "Arcturus Networks uC5272 dimm board support"
++	depends on M5272
++	help
++	  Support for the Arcturus Networks uC5272 dimm board.
++
++config UC5282
++	bool "Arcturus Networks uC5282 board support"
++	depends on M528x
++	help
++	  Support for the Arcturus Networks uC5282 dimm board.
++
++config UCSIMM
++	bool "uCsimm module support"
++	depends on M68EZ328
++	help
++	  Support for the Arcturus Networks uCsimm module.
++
++config UCDIMM
++	bool "uDsimm module support"
++	depends on M68VZ328
++	help
++	  Support for the Arcturus Networks uDsimm module.
++
++config DRAGEN2
++	bool "DragenEngine II board support"
++	depends on M68VZ328
++	help
++	  Support for the DragenEngine II board.
++
++config DIRECT_IO_ACCESS
++	bool "Allow user to access IO directly"
++	depends on (UCSIMM || UCDIMM || DRAGEN2)
++	help
++	  Disable the CPU internal registers protection in user mode,
++	  to allow a user application to read/write them.
++
++config INIT_LCD
++	bool "Initialize LCD"
++	depends on (UCSIMM || UCDIMM || DRAGEN2)
++	help
++	  Initialize the LCD controller of the 68x328 processor.
++
++config MEMORY_RESERVE
++	int "Memory reservation (MiB)"
++	depends on (UCSIMM || UCDIMM)
++	help
++	  Reserve certain memory regions on 68x328 based boards.
++
++config UCQUICC
++	bool "Lineo uCquicc board support"
++	depends on M68360
++	help
++	  Support for the Lineo uCquicc board.
++
++config ARNEWSH
++	bool
++
++config ARN5206
++	bool "Arnewsh 5206 board support"
++	depends on M5206
++	select ARNEWSH
++	help
++	  Support for the Arnewsh 5206 board.
++
++config FREESCALE
++	bool
++
++config M5206eC3
++	bool "Motorola M5206eC3 board support"
++	depends on M5206e
++	select FREESCALE
++	help
++	  Support for the Motorola M5206eC3 board.
++
++config ELITE
++	bool "Motorola M5206eLITE board support"
++	depends on M5206e
++	help
++	  Support for the Motorola M5206eLITE board.
++
++config M5208EVB
++	bool "Freescale M5208EVB board support"
++	depends on M520x
++	select FREESCALE
++	help
++	  Support for the Freescale Coldfire M5208EVB.
++
++config M5235EVB
++	bool "Freescale M5235EVB support"
++	depends on M523x
++	select FREESCALE
++	help
++	  Support for the Freescale M5235EVB board.
++
++config M5249C3
++	bool "Motorola M5249C3 board support"
++	depends on M5249
++	select FREESCALE
++	help
++	  Support for the Motorola M5249C3 board.
++
++config M5271EVB
++	bool "Freescale (Motorola) M5271EVB board support"
++	depends on M5271
++	select FREESCALE
++	help
++	  Support for the Freescale (Motorola) M5271EVB board.
++
++config M5275EVB
++	bool "Freescale (Motorola) M5275EVB board support"
++	depends on M5275
++	select FREESCALE
++	help
++	  Support for the Freescale (Motorola) M5275EVB board.
++
++config M5272C3
++	bool "Motorola M5272C3 board support"
++	depends on M5272
++	select FREESCALE
++	help
++	  Support for the Motorola M5272C3 board.
++
++config senTec
++	bool
++
++config COBRA5272
++	bool "senTec COBRA5272 board support"
++	depends on M5272
++	select senTec
++	help
++	  Support for the senTec COBRA5272 board.
++
++config AVNET
++	bool
++
++config AVNET5282
++	bool "Avnet 5282 board support"
++	depends on M528x
++	select AVNET
++	help
++	  Support for the Avnet 5282 board.
++
++config M5282EVB
++	bool "Motorola M5282EVB board support"
++	depends on M528x
++	select FREESCALE
++	help
++	  Support for the Motorola M5282EVB board.
++
++config COBRA5282
++	bool "senTec COBRA5282 board support"
++	depends on M528x
++	select senTec
++	help
++	  Support for the senTec COBRA5282 board.
++
++config EMAC_INC
++	bool
++
++config SOM5282EM
++	bool "EMAC.Inc SOM5282EM board support"
++	depends on M528x
++	select EMAC_INC
++	help
++	  Support for the EMAC.Inc SOM5282EM module.
++
++config WILDFIRE
++	bool "Intec Automation Inc. WildFire board support"
++	depends on M528x
++	help
++	  Support for the Intec Automation Inc. WildFire.
++
++config WILDFIREMOD
++	bool "Intec Automation Inc. WildFire module support"
++	depends on M528x
++	help
++	  Support for the Intec Automation Inc. WildFire module.
++
++config ARN5307
++	bool "Arnewsh 5307 board support"
++	depends on M5307
++	select ARNEWSH
++	help
++	  Support for the Arnewsh 5307 board.
++
++config M5307C3
++	bool "Motorola M5307C3 board support"
++	depends on M5307
++	select FREESCALE
++	help
++	  Support for the Motorola M5307C3 board.
++
++config SECUREEDGEMP3
++	bool "SnapGear SecureEdge/MP3 platform support"
++	depends on M5307
++	help
++	  Support for the SnapGear SecureEdge/MP3 platform.
++
++config M5329EVB
++	bool "Freescale (Motorola) M5329EVB board support"
++	depends on M532x
++	select FREESCALE
++	help
++	  Support for the Freescale (Motorola) M5329EVB board.
++
++config COBRA5329
++	bool "senTec COBRA5329 board support"
++	depends on M532x
++	help
++	  Support for the senTec COBRA5329 board.
++
++config M5407C3
++	bool "Motorola M5407C3 board support"
++	depends on M5407
++	select FREESCALE
++	help
++	  Support for the Motorola M5407C3 board.
++
++config FIREBEE
++	bool "FireBee board support"
++	depends on M547x
++	help
++	  Support for the FireBee ColdFire 5475 based board.
++
++config HW_FEITH
++	bool
++
++config CLEOPATRA
++	bool "Feith CLEOPATRA board support"
++	depends on (M5307 || M5407)
++	select HW_FEITH
++	help
++	  Support for the Feith Cleopatra boards.
++
++config CANCam
++	bool "Feith CANCam board support"
++	depends on M5272
++	select HW_FEITH
++	help
++	  Support for the Feith CANCam board.
++
++config SCALES
++	bool "Feith SCALES board support"
++	depends on M5272
++	select HW_FEITH
++	help
++	  Support for the Feith SCALES board.
++
++config NETtel
++	bool "SecureEdge/NETtel board support"
++	depends on (M5206e || M5272 || M5307)
++	help
++	  Support for the SnapGear NETtel/SecureEdge/SnapGear boards.
++
++config SNAPGEAR
++	bool "SnapGear router board support"
++	depends on NETtel
++	help
++	  Special additional support for SnapGear router boards.
++
++config SNEHA
++	bool
++
++config CPU16B
++	bool "Sneha Technologies S.L. Sarasvati board support"
++	depends on M5272
++	select SNEHA
++	help
++	  Support for the SNEHA CPU16B board.
++
++config MOD5272
++	bool "Netburner MOD-5272 board support"
++	depends on M5272
++	help
++	  Support for the Netburner MOD-5272 board.
++
++config SAVANT
++	bool
++
++config SAVANTrosie1
++	bool "Savant Rosie1 board support"
++	depends on M523x
++	select SAVANT
++	help
++	  Support for the Savant Rosie1 board.
++
++
++if !MMU || COLDFIRE
++
++comment "Machine Options"
++
++config ROMFS_FROM_ROM
++	bool "ROMFS image not RAM resident"
++	depends on (NETtel || SNAPGEAR)
++	help
++	  The ROMfs filesystem will stay resident in the FLASH/ROM, not be
++	  moved into RAM.
++
++config UBOOT
++	bool "Support for U-Boot command line parameters"
++	help
++	  If you say Y here kernel will try to collect command
++	  line parameters from the initial u-boot stack.
++	default n
++
++config 4KSTACKS
++	bool "Use 4Kb for kernel stacks instead of 8Kb"
++	default y
++	help
++	  If you say Y here the kernel will use a 4Kb stacksize for the
++	  kernel stack attached to each process/thread. This facilitates
++	  running more threads on a system and also reduces the pressure
++	  on the VM subsystem for higher order allocations.
++
++comment "RAM configuration"
++
++config RAMBASE
++	hex "Address of the base of RAM"
++	default "0"
++	help
++	  Define the address that RAM starts at. On many platforms this is
++	  0, the base of the address space. And this is the default. Some
++	  platforms choose to setup their RAM at other addresses within the
++	  processor address space.
++
++config RAMSIZE
++	hex "Size of RAM (in bytes), or 0 for automatic"
++	default "0x400000"
++	help
++	  Define the size of the system RAM. If you select 0 then the
++	  kernel will try to probe the RAM size at runtime. This is not
++	  supported on all CPU types.
++
++config VECTORBASE
++	hex "Address of the base of system vectors"
++	default "0"
++	help
++	  Define the address of the system vectors. Commonly this is
++	  put at the start of RAM, but it doesn't have to be. On ColdFire
++	  platforms this address is programmed into the VBR register, thus
++	  actually setting the address to use.
++
++config MBAR
++	hex "Address of the MBAR (internal peripherals)"
++	default "0x10000000"
++	depends on HAVE_MBAR
++	help
++	  Define the address of the internal system peripherals. This value
++	  is set in the processors MBAR register. This is generally setup by
++	  the boot loader, and will not be written by the kernel. By far most
++	  ColdFire boards use the default 0x10000000 value, so if unsure then
++	  use this.
++
++config IPSBAR
++	hex "Address of the IPSBAR (internal peripherals)"
++	default "0x40000000"
++	depends on HAVE_IPSBAR
++	help
++	  Define the address of the internal system peripherals. This value
++	  is set in the processors IPSBAR register. This is generally setup by
++	  the boot loader, and will not be written by the kernel. By far most
++	  ColdFire boards use the default 0x40000000 value, so if unsure then
++	  use this.
++
++config KERNELBASE
++	hex "Address of the base of kernel code"
++	default "0x400"
++	help
++	  Typically on m68k systems the kernel will not start at the base
++	  of RAM, but usually some small offset from it. Define the start
++	  address of the kernel here. The most common setup will have the
++	  processor vectors at the base of RAM and then the start of the
++	  kernel. On some platforms some RAM is reserved for boot loaders
++	  and the kernel starts after that. The 0x400 default was based on
++	  a system with the RAM based at address 0, and leaving enough room
++	  for the theoretical maximum number of 256 vectors.
++
++choice
++	prompt "RAM bus width"
++	default RAMAUTOBIT
++
++config RAMAUTOBIT
++	bool "AUTO"
++	help
++	  Select the physical RAM data bus size. Not needed on most platforms,
++	  so you can generally choose AUTO.
++
++config RAM8BIT
++	bool "8bit"
++	help
++	  Configure RAM bus to be 8 bits wide.
++
++config RAM16BIT
++	bool "16bit"
++	help
++	  Configure RAM bus to be 16 bits wide.
++
++config RAM32BIT
++	bool "32bit"
++	help
++	  Configure RAM bus to be 32 bits wide.
++
++endchoice
++
++comment "ROM configuration"
++
++config ROM
++	bool "Specify ROM linker regions"
++	default n
++	help
++	  Define a ROM region for the linker script. This creates a kernel
++	  that can be stored in flash, with possibly the text, and data
++	  regions being copied out to RAM at startup.
++
++config ROMBASE
++	hex "Address of the base of ROM device"
++	default "0"
++	depends on ROM
++	help
++	  Define the address that the ROM region starts at. Some platforms
++	  use this to set their chip select region accordingly for the boot
++	  device.
++
++config ROMVEC
++	hex "Address of the base of the ROM vectors"
++	default "0"
++	depends on ROM
++	help
++	  This is almost always the same as the base of the ROM. Since on all
++	  68000 type variants the vectors are at the base of the boot device
++	  on system startup.
++
++config ROMVECSIZE
++	hex "Size of ROM vector region (in bytes)"
++	default "0x400"
++	depends on ROM
++	help
++	  Define the size of the vector region in ROM. For most 68000
++	  variants this would be 0x400 bytes in size. Set to 0 if you do
++	  not want a vector region at the start of the ROM.
++
++config ROMSTART
++	hex "Address of the base of system image in ROM"
++	default "0x400"
++	depends on ROM
++	help
++	  Define the start address of the system image in ROM. Commonly this
++	  is strait after the ROM vectors.
++
++config ROMSIZE
++	hex "Size of the ROM device"
++	default "0x100000"
++	depends on ROM
++	help
++	  Size of the ROM device. On some platforms this is used to setup
++	  the chip select that controls the boot ROM device.
++
++choice
++	prompt "Kernel executes from"
++	---help---
++	  Choose the memory type that the kernel will be running in.
++
++config RAMKERNEL
++	bool "RAM"
++	help
++	  The kernel will be resident in RAM when running.
++
++config ROMKERNEL
++	bool "ROM"
++	help
++	  The kernel will be resident in FLASH/ROM when running. This is
++	  often referred to as Execute-in-Place (XIP), since the kernel
++	  code executes from the position it is stored in the FLASH/ROM.
++
++endchoice
++
++endif
+diff --git a/arch/m68k/Kconfig.mmu b/arch/m68k/Kconfig.mmu
 deleted file mode 100644
-index 73b8c8f..0000000
---- a/arch/m68k/include/asm/entry_mm.h
+index 13e20bb..0000000
+--- a/arch/m68k/Kconfig.mmu
 +++ /dev/null
-@@ -1,128 +0,0 @@
--#ifndef __M68K_ENTRY_H
--#define __M68K_ENTRY_H
+@@ -1,411 +0,0 @@
+-config GENERIC_IOMAP
+-	bool
+-	default y
 -
--#include <asm/setup.h>
--#include <asm/page.h>
--#ifdef __ASSEMBLY__
--#include <asm/thread_info.h>
--#endif
+-config ARCH_MAY_HAVE_PC_FDC
+-	bool
+-	depends on BROKEN && (Q40 || SUN3X)
+-	default y
 -
--/*
-- * Stack layout in 'ret_from_exception':
-- *
-- *	This allows access to the syscall arguments in registers d1-d5
-- *
-- *	 0(sp) - d1
-- *	 4(sp) - d2
-- *	 8(sp) - d3
-- *	 C(sp) - d4
-- *	10(sp) - d5
-- *	14(sp) - a0
-- *	18(sp) - a1
-- *	1C(sp) - a2
-- *	20(sp) - d0
-- *	24(sp) - orig_d0
-- *	28(sp) - stack adjustment
-- *	2C(sp) - sr
-- *	2E(sp) - pc
-- *	32(sp) - format & vector
-- */
+-config ARCH_USES_GETTIMEOFFSET
+-	def_bool y
 -
--/*
-- * 97/05/14 Andreas: Register %a2 is now set to the current task throughout
-- *		     the whole kernel.
-- */
+-config EISA
+-	bool
+-	---help---
+-	  The Extended Industry Standard Architecture (EISA) bus was
+-	  developed as an open alternative to the IBM MicroChannel bus.
 -
--/* the following macro is used when enabling interrupts */
--#if defined(MACH_ATARI_ONLY)
--	/* block out HSYNC on the atari */
--#define ALLOWINT	(~0x400)
--#define	MAX_NOINT_IPL	3
--#else
--	/* portable version */
--#define ALLOWINT	(~0x700)
--#define	MAX_NOINT_IPL	0
--#endif /* machine compilation types */
+-	  The EISA bus provided some of the features of the IBM MicroChannel
+-	  bus while maintaining backward compatibility with cards made for
+-	  the older ISA bus.  The EISA bus saw limited use between 1988 and
+-	  1995 when it was made obsolete by the PCI bus.
 -
--#ifdef __ASSEMBLY__
+-	  Say Y here if you are building a kernel for an EISA-based machine.
 -
--#define curptr a2
+-	  Otherwise, say N.
 -
--LFLUSH_I_AND_D = 0x00000808
+-config MCA
+-	bool
+-	help
+-	  MicroChannel Architecture is found in some IBM PS/2 machines and
+-	  laptops.  It is a bus system similar to PCI or ISA. See
+-	  <file:Documentation/mca.txt> (and especially the web page given
+-	  there) before attempting to build an MCA bus kernel.
 -
--#define SAVE_ALL_INT save_all_int
--#define SAVE_ALL_SYS save_all_sys
--#define RESTORE_ALL restore_all
--/*
-- * This defines the normal kernel pt-regs layout.
-- *
-- * regs a3-a6 and d6-d7 are preserved by C code
-- * the kernel doesn't mess with usp unless it needs to
-- */
+-config PCMCIA
+-	tristate
+-	---help---
+-	  Say Y here if you want to attach PCMCIA- or PC-cards to your Linux
+-	  computer.  These are credit-card size devices such as network cards,
+-	  modems or hard drives often used with laptops computers.  There are
+-	  actually two varieties of these cards: the older 16 bit PCMCIA cards
+-	  and the newer 32 bit CardBus cards.  If you want to use CardBus
+-	  cards, you need to say Y here and also to "CardBus support" below.
 -
--/*
-- * a -1 in the orig_d0 field signifies
-- * that the stack frame is NOT for syscall
-- */
--.macro	save_all_int
--	clrl	%sp@-		| stk_adj
--	pea	-1:w		| orig d0
--	movel	%d0,%sp@-	| d0
--	moveml	%d1-%d5/%a0-%a1/%curptr,%sp@-
--.endm
+-	  To use your PC-cards, you will need supporting software from David
+-	  Hinds' pcmcia-cs package (see the file <file:Documentation/Changes>
+-	  for location).  Please also read the PCMCIA-HOWTO, available from
+-	  <http://www.tldp.org/docs.html#howto>.
 -
--.macro	save_all_sys
--	clrl	%sp@-		| stk_adj
--	movel	%d0,%sp@-	| orig d0
--	movel	%d0,%sp@-	| d0
--	moveml	%d1-%d5/%a0-%a1/%curptr,%sp@-
--.endm
+-	  To compile this driver as modules, choose M here: the
+-	  modules will be called pcmcia_core and ds.
 -
--.macro	restore_all
--	moveml	%sp@+,%a0-%a1/%curptr/%d1-%d5
--	movel	%sp@+,%d0
--	addql	#4,%sp		| orig d0
--	addl	%sp@+,%sp	| stk adj
--	rte
--.endm
+-config AMIGA
+-	bool "Amiga support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  This option enables support for the Amiga series of computers. If
+-	  you plan to use this kernel on an Amiga, say Y here and browse the
+-	  material available in <file:Documentation/m68k>; otherwise say N.
 -
--#define SWITCH_STACK_SIZE (6*4+4)	/* includes return address */
+-config ATARI
+-	bool "Atari support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  This option enables support for the 68000-based Atari series of
+-	  computers (including the TT, Falcon and Medusa). If you plan to use
+-	  this kernel on an Atari, say Y here and browse the material
+-	  available in <file:Documentation/m68k>; otherwise say N.
 -
--#define SAVE_SWITCH_STACK save_switch_stack
--#define RESTORE_SWITCH_STACK restore_switch_stack
--#define GET_CURRENT(tmp) get_current tmp
+-config MAC
+-	bool "Macintosh support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  This option enables support for the Apple Macintosh series of
+-	  computers (yes, there is experimental support now, at least for part
+-	  of the series).
 -
--.macro	save_switch_stack
--	moveml	%a3-%a6/%d6-%d7,%sp@-
--.endm
+-	  Say N unless you're willing to code the remaining necessary support.
+-	  ;)
 -
--.macro	restore_switch_stack
--	moveml	%sp@+,%a3-%a6/%d6-%d7
--.endm
+-config NUBUS
+-	bool
+-	depends on MAC
+-	default y
 -
--.macro	get_current reg=%d0
--	movel	%sp,\reg
--	andw	#-THREAD_SIZE,\reg
--	movel	\reg,%curptr
--	movel	%curptr@,%curptr
--.endm
+-config M68K_L2_CACHE
+-	bool
+-	depends on MAC
+-	default y
 -
--#else /* C source */
+-config APOLLO
+-	bool "Apollo support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  Say Y here if you want to run Linux on an MC680x0-based Apollo
+-	  Domain workstation such as the DN3500.
 -
--#define STR(X) STR1(X)
--#define STR1(X) #X
+-config VME
+-	bool "VME (Motorola and BVM) support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  Say Y here if you want to build a kernel for a 680x0 based VME
+-	  board.  Boards currently supported include Motorola boards MVME147,
+-	  MVME162, MVME166, MVME167, MVME172, and MVME177.  BVME4000 and
+-	  BVME6000 boards from BVM Ltd are also supported.
 -
--#define SAVE_ALL_INT				\
--	"clrl	%%sp@-;"    /* stk_adj */	\
--	"pea	-1:w;"	    /* orig d0 = -1 */	\
--	"movel	%%d0,%%sp@-;" /* d0 */		\
--	"moveml	%%d1-%%d5/%%a0-%%a2,%%sp@-"
--#define GET_CURRENT(tmp) \
--	"movel	%%sp,"#tmp"\n\t" \
--	"andw	#-"STR(THREAD_SIZE)","#tmp"\n\t" \
--	"movel	"#tmp",%%a2\n\t" \
--	"movel	%%a2@,%%a2"
+-config MVME147
+-	bool "MVME147 support"
+-	depends on VME
+-	help
+-	  Say Y to include support for early Motorola VME boards.  This will
+-	  build a kernel which can run on MVME147 single-board computers.  If
+-	  you select this option you will have to select the appropriate
+-	  drivers for SCSI, Ethernet and serial ports later on.
 -
--#endif
+-config MVME16x
+-	bool "MVME162, 166 and 167 support"
+-	depends on VME
+-	help
+-	  Say Y to include support for Motorola VME boards.  This will build a
+-	  kernel which can run on MVME162, MVME166, MVME167, MVME172, and
+-	  MVME177 boards.  If you select this option you will have to select
+-	  the appropriate drivers for SCSI, Ethernet and serial ports later
+-	  on.
 -
--#endif /* __M68K_ENTRY_H */
-diff --git a/arch/m68k/include/asm/entry_no.h b/arch/m68k/include/asm/entry_no.h
+-config BVME6000
+-	bool "BVME4000 and BVME6000 support"
+-	depends on VME
+-	help
+-	  Say Y to include support for VME boards from BVM Ltd.  This will
+-	  build a kernel which can run on BVME4000 and BVME6000 boards.  If
+-	  you select this option you will have to select the appropriate
+-	  drivers for SCSI, Ethernet and serial ports later on.
+-
+-config HP300
+-	bool "HP9000/300 and HP9000/400 support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  This option enables support for the HP9000/300 and HP9000/400 series
+-	  of workstations. Support for these machines is still somewhat
+-	  experimental. If you plan to try to use the kernel on such a machine
+-	  say Y here.
+-	  Everybody else says N.
+-
+-config DIO
+-	bool "DIO bus support"
+-	depends on HP300
+-	default y
+-	help
+-	  Say Y here to enable support for the "DIO" expansion bus used in
+-	  HP300 machines. If you are using such a system you almost certainly
+-	  want this.
+-
+-config SUN3X
+-	bool "Sun3x support"
+-	select MMU_MOTOROLA if MMU
+-	select M68030
+-	help
+-	  This option enables support for the Sun 3x series of workstations.
+-	  Be warned that this support is very experimental.
+-	  Note that Sun 3x kernels are not compatible with Sun 3 hardware.
+-	  General Linux information on the Sun 3x series (now discontinued)
+-	  is at <http://www.angelfire.com/ca2/tech68k/sun3.html>.
+-
+-	  If you don't want to compile a kernel for a Sun 3x, say N.
+-
+-config Q40
+-	bool "Q40/Q60 support"
+-	select MMU_MOTOROLA if MMU
+-	help
+-	  The Q40 is a Motorola 68040-based successor to the Sinclair QL
+-	  manufactured in Germany.  There is an official Q40 home page at
+-	  <http://www.q40.de/>.  This option enables support for the Q40 and
+-	  Q60. Select your CPU below.  For 68LC060 don't forget to enable FPU
+-	  emulation.
+-
+-config SUN3
+-	bool "Sun3 support"
+-	depends on !MMU_MOTOROLA
+-	select MMU_SUN3 if MMU
+-	select M68020
+-	help
+-	  This option enables support for the Sun 3 series of workstations
+-	  (3/50, 3/60, 3/1xx, 3/2xx systems). Enabling this option requires
+-	  that all other hardware types must be disabled, as Sun 3 kernels
+-	  are incompatible with all other m68k targets (including Sun 3x!).
+-
+-	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
+-
+-config NATFEAT
+-	bool "ARAnyM emulator support"
+-	depends on ATARI
+-	help
+-	  This option enables support for ARAnyM native features, such as
+-	  access to a disk image as /dev/hda.
+-
+-config NFBLOCK
+-	tristate "NatFeat block device support"
+-	depends on BLOCK && NATFEAT
+-	help
+-	  Say Y to include support for the ARAnyM NatFeat block device
+-	  which allows direct access to the hard drives without using
+-	  the hardware emulation.
+-
+-config NFCON
+-	tristate "NatFeat console driver"
+-	depends on NATFEAT
+-	help
+-	  Say Y to include support for the ARAnyM NatFeat console driver
+-	  which allows the console output to be redirected to the stderr
+-	  output of ARAnyM.
+-
+-config NFETH
+-	tristate "NatFeat Ethernet support"
+-	depends on NET_ETHERNET && NATFEAT
+-	help
+-	  Say Y to include support for the ARAnyM NatFeat network device
+-	  which will emulate a regular ethernet device while presenting an
+-	  ethertap device to the host system.
+-
+-comment "Processor type"
+-
+-config M68020
+-	bool "68020 support"
+-	help
+-	  If you anticipate running this kernel on a computer with a MC68020
+-	  processor, say Y. Otherwise, say N. Note that the 68020 requires a
+-	  68851 MMU (Memory Management Unit) to run Linux/m68k, except on the
+-	  Sun 3, which provides its own version.
+-
+-config M68030
+-	bool "68030 support"
+-	depends on !MMU_SUN3
+-	help
+-	  If you anticipate running this kernel on a computer with a MC68030
+-	  processor, say Y. Otherwise, say N. Note that a MC68EC030 will not
+-	  work, as it does not include an MMU (Memory Management Unit).
+-
+-config M68040
+-	bool "68040 support"
+-	depends on !MMU_SUN3
+-	help
+-	  If you anticipate running this kernel on a computer with a MC68LC040
+-	  or MC68040 processor, say Y. Otherwise, say N. Note that an
+-	  MC68EC040 will not work, as it does not include an MMU (Memory
+-	  Management Unit).
+-
+-config M68060
+-	bool "68060 support"
+-	depends on !MMU_SUN3
+-	help
+-	  If you anticipate running this kernel on a computer with a MC68060
+-	  processor, say Y. Otherwise, say N.
+-
+-config MMU_MOTOROLA
+-	bool
+-
+-config MMU_SUN3
+-	bool
+-	depends on MMU && !MMU_MOTOROLA
+-
+-config M68KFPU_EMU
+-	bool "Math emulation support (EXPERIMENTAL)"
+-	depends on EXPERIMENTAL
+-	help
+-	  At some point in the future, this will cause floating-point math
+-	  instructions to be emulated by the kernel on machines that lack a
+-	  floating-point math coprocessor.  Thrill-seekers and chronically
+-	  sleep-deprived psychotic hacker types can say Y now, everyone else
+-	  should probably wait a while.
+-
+-config M68KFPU_EMU_EXTRAPREC
+-	bool "Math emulation extra precision"
+-	depends on M68KFPU_EMU
+-	help
+-	  The fpu uses normally a few bit more during calculations for
+-	  correct rounding, the emulator can (often) do the same but this
+-	  extra calculation can cost quite some time, so you can disable
+-	  it here. The emulator will then "only" calculate with a 64 bit
+-	  mantissa and round slightly incorrect, what is more than enough
+-	  for normal usage.
+-
+-config M68KFPU_EMU_ONLY
+-	bool "Math emulation only kernel"
+-	depends on M68KFPU_EMU
+-	help
+-	  This option prevents any floating-point instructions from being
+-	  compiled into the kernel, thereby the kernel doesn't save any
+-	  floating point context anymore during task switches, so this
+-	  kernel will only be usable on machines without a floating-point
+-	  math coprocessor. This makes the kernel a bit faster as no tests
+-	  needs to be executed whether a floating-point instruction in the
+-	  kernel should be executed or not.
+-
+-config ADVANCED
+-	bool "Advanced configuration options"
+-	---help---
+-	  This gives you access to some advanced options for the CPU. The
+-	  defaults should be fine for most users, but these options may make
+-	  it possible for you to improve performance somewhat if you know what
+-	  you are doing.
+-
+-	  Note that the answer to this question won't directly affect the
+-	  kernel: saying N will just cause the configurator to skip all
+-	  the questions about these options.
+-
+-	  Most users should say N to this question.
+-
+-config RMW_INSNS
+-	bool "Use read-modify-write instructions"
+-	depends on ADVANCED
+-	---help---
+-	  This allows to use certain instructions that work with indivisible
+-	  read-modify-write bus cycles. While this is faster than the
+-	  workaround of disabling interrupts, it can conflict with DMA
+-	  ( = direct memory access) on many Amiga systems, and it is also said
+-	  to destabilize other machines. It is very likely that this will
+-	  cause serious problems on any Amiga or Atari Medusa if set. The only
+-	  configuration where it should work are 68030-based Ataris, where it
+-	  apparently improves performance. But you've been warned! Unless you
+-	  really know what you are doing, say N. Try Y only if you're quite
+-	  adventurous.
+-
+-config SINGLE_MEMORY_CHUNK
+-	bool "Use one physical chunk of memory only" if ADVANCED && !SUN3
+-	default y if SUN3
+-	select NEED_MULTIPLE_NODES
+-	help
+-	  Ignore all but the first contiguous chunk of physical memory for VM
+-	  purposes.  This will save a few bytes kernel size and may speed up
+-	  some operations.  Say N if not sure.
+-
+-config 060_WRITETHROUGH
+-	bool "Use write-through caching for 68060 supervisor accesses"
+-	depends on ADVANCED && M68060
+-	---help---
+-	  The 68060 generally uses copyback caching of recently accessed data.
+-	  Copyback caching means that memory writes will be held in an on-chip
+-	  cache and only written back to memory some time later.  Saying Y
+-	  here will force supervisor (kernel) accesses to use writethrough
+-	  caching.  Writethrough caching means that data is written to memory
+-	  straight away, so that cache and memory data always agree.
+-	  Writethrough caching is less efficient, but is needed for some
+-	  drivers on 68060 based systems where the 68060 bus snooping signal
+-	  is hardwired on.  The 53c710 SCSI driver is known to suffer from
+-	  this problem.
+-
+-config ARCH_DISCONTIGMEM_ENABLE
+-	def_bool !SINGLE_MEMORY_CHUNK
+-
+-config NODES_SHIFT
+-	int
+-	default "3"
+-	depends on !SINGLE_MEMORY_CHUNK
+-
+-config ZORRO
+-	bool "Amiga Zorro (AutoConfig) bus support"
+-	depends on AMIGA
+-	help
+-	  This enables support for the Zorro bus in the Amiga. If you have
+-	  expansion cards in your Amiga that conform to the Amiga
+-	  AutoConfig(tm) specification, say Y, otherwise N. Note that even
+-	  expansion cards that do not fit in the Zorro slots but fit in e.g.
+-	  the CPU slot may fall in this category, so you have to say Y to let
+-	  Linux use these.
+-
+-config AMIGA_PCMCIA
+-	bool "Amiga 1200/600 PCMCIA support (EXPERIMENTAL)"
+-	depends on AMIGA && EXPERIMENTAL
+-	help
+-	  Include support in the kernel for pcmcia on Amiga 1200 and Amiga
+-	  600. If you intend to use pcmcia cards say Y; otherwise say N.
+-
+-config HEARTBEAT
+-	bool "Use power LED as a heartbeat" if AMIGA || APOLLO || ATARI || MAC ||Q40
+-	default y if !AMIGA && !APOLLO && !ATARI && !MAC && !Q40 && HP300
+-	help
+-	  Use the power-on LED on your machine as a load meter.  The exact
+-	  behavior is platform-dependent, but normally the flash frequency is
+-	  a hyperbolic function of the 5-minute load average.
+-
+-# We have a dedicated heartbeat LED. :-)
+-config PROC_HARDWARE
+-	bool "/proc/hardware support"
+-	help
+-	  Say Y here to support the /proc/hardware file, which gives you
+-	  access to information about the machine you're running on,
+-	  including the model, CPU, MMU, clock speed, BogoMIPS rating,
+-	  and memory size.
+-
+-config ISA
+-	bool
+-	depends on Q40 || AMIGA_PCMCIA
+-	default y
+-	help
+-	  Find out whether you have ISA slots on your motherboard.  ISA is the
+-	  name of a bus system, i.e. the way the CPU talks to the other stuff
+-	  inside your box.  Other bus systems are PCI, EISA, MicroChannel
+-	  (MCA) or VESA.  ISA is an older system, now being displaced by PCI;
+-	  newer boards don't support it.  If you have ISA, say Y, otherwise N.
+-
+-config GENERIC_ISA_DMA
+-	bool
+-	depends on Q40 || AMIGA_PCMCIA
+-	default y
+-
+-source "drivers/pci/Kconfig"
+-
+-source "drivers/zorro/Kconfig"
+-
+diff --git a/arch/m68k/Kconfig.nommu b/arch/m68k/Kconfig.nommu
 deleted file mode 100644
-index 68611e3..0000000
---- a/arch/m68k/include/asm/entry_no.h
+index ff46383..0000000
+--- a/arch/m68k/Kconfig.nommu
 +++ /dev/null
-@@ -1,181 +0,0 @@
--#ifndef __M68KNOMMU_ENTRY_H
--#define __M68KNOMMU_ENTRY_H
+@@ -1,787 +0,0 @@
+-config FPU
+-	bool
+-	default n
 -
--#include <asm/setup.h>
--#include <asm/page.h>
+-config GENERIC_GPIO
+-	bool
+-	default n
 -
--/*
-- * Stack layout in 'ret_from_exception':
-- *
-- * This allows access to the syscall arguments in registers d1-d5
-- *
-- *	 0(sp) - d1
-- *	 4(sp) - d2
-- *	 8(sp) - d3
-- *	 C(sp) - d4
-- *	10(sp) - d5
-- *	14(sp) - a0
-- *	18(sp) - a1
-- *	1C(sp) - a2
-- *	20(sp) - d0
-- *	24(sp) - orig_d0
-- *	28(sp) - stack adjustment
-- *	2C(sp) - [ sr              ] [ format & vector ]
-- *	2E(sp) - [ pc-hiword       ] [ sr              ]
-- *	30(sp) - [ pc-loword       ] [ pc-hiword       ]
-- *	32(sp) - [ format & vector ] [ pc-loword       ]
-- *		  ^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^
-- *			M68K		  COLDFIRE
-- */
+-config GENERIC_CMOS_UPDATE
+-	bool
+-	default y
 -
--#define ALLOWINT (~0x700)
+-config GENERIC_CLOCKEVENTS
+-	bool
+-	default n
 -
--#ifdef __ASSEMBLY__
+-config M68000
+-	bool
+-	select CPU_HAS_NO_BITFIELDS
+-	help
+-	  The Freescale (was Motorola) 68000 CPU is the first generation of
+-	  the well known M68K family of processors. The CPU core as well as
+-	  being available as a stand alone CPU was also used in many
+-	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
+-	  a paging MMU.
 -
--#define SWITCH_STACK_SIZE (6*4+4)	/* Includes return address */
+-config MCPU32
+-	bool
+-	select CPU_HAS_NO_BITFIELDS
+-	help
+-	  The Freescale (was then Motorola) CPU32 is a CPU core that is
+-	  based on the 68020 processor. For the most part it is used in
+-	  System-On-Chip parts, and does not contain a paging MMU.
 -
--/*
-- * This defines the normal kernel pt-regs layout.
-- *
-- * regs are a2-a6 and d6-d7 preserved by C code
-- * the kernel doesn't mess with usp unless it needs to
-- */
+-config COLDFIRE
+-	bool
+-	select GENERIC_GPIO
+-	select ARCH_REQUIRE_GPIOLIB
+-	select CPU_HAS_NO_BITFIELDS
+-	help
+-	  The Freescale ColdFire family of processors is a modern derivitive
+-	  of the 68000 processor family. They are mainly targeted at embedded
+-	  applications, and are all System-On-Chip (SOC) devices, as opposed
+-	  to stand alone CPUs. They implement a subset of the original 68000
+-	  processor instruction set.
 -
--#ifdef CONFIG_COLDFIRE
--#ifdef CONFIG_COLDFIRE_SW_A7
--/*
-- * This is made a little more tricky on older ColdFires. There is no
-- * separate supervisor and user stack pointers. Need to artificially
-- * construct a usp in software... When doing this we need to disable
-- * interrupts, otherwise bad things will happen.
-- */
--.globl sw_usp
--.globl sw_ksp
+-config COLDFIRE_SW_A7
+-	bool
+-	default n
 -
--.macro SAVE_ALL
--	move	#0x2700,%sr		/* disable intrs */
--	btst	#5,%sp@(2)		/* from user? */
--	bnes	6f			/* no, skip */
--	movel	%sp,sw_usp		/* save user sp */
--	addql	#8,sw_usp		/* remove exception */
--	movel	sw_ksp,%sp		/* kernel sp */
--	subql	#8,%sp			/* room for exception */
--	clrl	%sp@-			/* stkadj */
--	movel	%d0,%sp@-		/* orig d0 */
--	movel	%d0,%sp@-		/* d0 */
--	lea	%sp@(-32),%sp		/* space for 8 regs */
--	moveml	%d1-%d5/%a0-%a2,%sp@
--	movel	sw_usp,%a0		/* get usp */
--	movel	%a0@-,%sp@(PT_OFF_PC)	/* copy exception program counter */
--	movel	%a0@-,%sp@(PT_OFF_FORMATVEC)/*copy exception format/vector/sr */
--	bra	7f
--	6:
--	clrl	%sp@-			/* stkadj */
--	movel	%d0,%sp@-		/* orig d0 */
--	movel	%d0,%sp@-		/* d0 */
--	lea	%sp@(-32),%sp		/* space for 8 regs */
--	moveml	%d1-%d5/%a0-%a2,%sp@
--	7:
--.endm
+-config HAVE_CACHE_SPLIT
+-	bool
 -
--.macro RESTORE_USER
--	move	#0x2700,%sr		/* disable intrs */
--	movel	sw_usp,%a0		/* get usp */
--	movel	%sp@(PT_OFF_PC),%a0@-	/* copy exception program counter */
--	movel	%sp@(PT_OFF_FORMATVEC),%a0@-/*copy exception format/vector/sr */
--	moveml	%sp@,%d1-%d5/%a0-%a2
--	lea	%sp@(32),%sp		/* space for 8 regs */
--	movel	%sp@+,%d0
--	addql	#4,%sp			/* orig d0 */
--	addl	%sp@+,%sp		/* stkadj */
--	addql	#8,%sp			/* remove exception */
--	movel	%sp,sw_ksp		/* save ksp */
--	subql	#8,sw_usp		/* set exception */
--	movel	sw_usp,%sp		/* restore usp */
--	rte
--.endm
+-config HAVE_CACHE_CB
+-	bool
 -
--.macro RDUSP
--	movel	sw_usp,%a3
--.endm
+-config HAVE_MBAR
+-	bool
 -
--.macro WRUSP
--	movel	%a3,sw_usp
--.endm
+-config HAVE_IPSBAR
+-	bool
 -
--#else /* !CONFIG_COLDFIRE_SW_A7 */
--/*
-- * Modern ColdFire parts have separate supervisor and user stack
-- * pointers. Simple load and restore macros for this case.
-- */
--.macro SAVE_ALL
--	move	#0x2700,%sr		/* disable intrs */
--	clrl	%sp@-			/* stkadj */
--	movel	%d0,%sp@-		/* orig d0 */
--	movel	%d0,%sp@-		/* d0 */
--	lea	%sp@(-32),%sp		/* space for 8 regs */
--	moveml	%d1-%d5/%a0-%a2,%sp@
--.endm
+-choice
+-	prompt "CPU"
+-	default M68EZ328
 -
--.macro RESTORE_USER
--	moveml	%sp@,%d1-%d5/%a0-%a2
--	lea	%sp@(32),%sp		/* space for 8 regs */
--	movel	%sp@+,%d0
--	addql	#4,%sp			/* orig d0 */
--	addl	%sp@+,%sp		/* stkadj */
--	rte
--.endm
+-config M68328
+-	bool "MC68328"
+-	select M68000
+-	help
+-	  Motorola 68328 processor support.
 -
--.macro RDUSP
--	/*move	%usp,%a3*/
--	.word	0x4e6b
--.endm
+-config M68EZ328
+-	bool "MC68EZ328"
+-	select M68000
+-	help
+-	  Motorola 68EX328 processor support.
 -
--.macro WRUSP
--	/*move	%a3,%usp*/
--	.word	0x4e63
--.endm
+-config M68VZ328
+-	bool "MC68VZ328"
+-	select M68000
+-	help
+-	  Motorola 68VZ328 processor support.
 -
--#endif /* !CONFIG_COLDFIRE_SW_A7 */
+-config M68360
+-	bool "MC68360"
+-	select MCPU32
+-	help
+-	  Motorola 68360 processor support.
 -
--.macro SAVE_SWITCH_STACK
--	lea	%sp@(-24),%sp		/* 6 regs */
--	moveml	%a3-%a6/%d6-%d7,%sp@
--.endm
+-config M5206
+-	bool "MCF5206"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5206 processor support.
 -
--.macro RESTORE_SWITCH_STACK
--	moveml	%sp@,%a3-%a6/%d6-%d7
--	lea	%sp@(24),%sp		/* 6 regs */
--.endm
+-config M5206e
+-	bool "MCF5206e"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5206e processor support.
 -
--#else /* !CONFIG_COLDFIRE */
+-config M520x
+-	bool "MCF520x"
+-	select COLDFIRE
+-	select GENERIC_CLOCKEVENTS
+-	select HAVE_CACHE_SPLIT
+-	help
+-	   Freescale Coldfire 5207/5208 processor support.
 -
--/*
-- * Standard 68k interrupt entry and exit macros.
-- */
--.macro SAVE_ALL
--	clrl	%sp@-			/* stkadj */
--	movel	%d0,%sp@-		/* orig d0 */
--	movel	%d0,%sp@-		/* d0 */
--	moveml	%d1-%d5/%a0-%a2,%sp@-
--.endm
+-config M523x
+-	bool "MCF523x"
+-	select COLDFIRE
+-	select GENERIC_CLOCKEVENTS
+-	select HAVE_CACHE_SPLIT
+-	select HAVE_IPSBAR
+-	help
+-	  Freescale Coldfire 5230/1/2/4/5 processor support
 -
--.macro RESTORE_ALL
--	moveml	%sp@+,%a0-%a2/%d1-%d5
--	movel	%sp@+,%d0
--	addql	#4,%sp			/* orig d0 */
--	addl	%sp@+,%sp		/* stkadj */
--	rte
--.endm
+-config M5249
+-	bool "MCF5249"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5249 processor support.
 -
--.macro SAVE_SWITCH_STACK
--	moveml	%a3-%a6/%d6-%d7,%sp@-
--.endm
+-config M5271
+-	bool "MCF5271"
+-	select COLDFIRE
+-	select HAVE_CACHE_SPLIT
+-	select HAVE_IPSBAR
+-	help
+-	  Freescale (Motorola) ColdFire 5270/5271 processor support.
 -
--.macro RESTORE_SWITCH_STACK
--	moveml	%sp@+,%a3-%a6/%d6-%d7
--.endm
+-config M5272
+-	bool "MCF5272"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5272 processor support.
 -
--#endif /* !COLDFIRE_SW_A7 */
--#endif /* __ASSEMBLY__ */
--#endif /* __M68KNOMMU_ENTRY_H */
-diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
-index 5f0f6b5..1b42890 100644
---- a/arch/m68k/kernel/entry_no.S
-+++ b/arch/m68k/kernel/entry_no.S
-@@ -43,7 +43,7 @@
- .globl sys_vfork
- 
- ENTRY(buserr)
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	moveq	#-1,%d0
- 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
-@@ -52,7 +52,7 @@ ENTRY(buserr)
- 	jra	ret_from_exception
- 
- ENTRY(trap)
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	moveq	#-1,%d0
- 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
-@@ -64,7 +64,7 @@ ENTRY(trap)
- 
- .globl dbginterrupt
- ENTRY(dbginterrupt)
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	moveq	#-1,%d0
- 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
-diff --git a/arch/m68k/platform/68328/entry.S b/arch/m68k/platform/68328/entry.S
-index 293e1eb..5c39b80 100644
---- a/arch/m68k/platform/68328/entry.S
-+++ b/arch/m68k/platform/68328/entry.S
-@@ -67,7 +67,7 @@ ret_from_signal:
- 	jra	ret_from_exception
- 
- ENTRY(system_call)
--	SAVE_ALL
-+	SAVE_ALL_SYS
- 
- 	/* save top of frame*/
- 	pea	%sp@
-@@ -129,7 +129,7 @@ Lsignal_return:
-  * This is the main interrupt handler, responsible for calling process_int()
-  */
- inthandler1:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -140,7 +140,7 @@ inthandler1:
- 	bra	ret_from_interrupt
- 
- inthandler2:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -151,7 +151,7 @@ inthandler2:
- 	bra	ret_from_interrupt
- 
- inthandler3:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -162,7 +162,7 @@ inthandler3:
- 	bra	ret_from_interrupt
- 
- inthandler4:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -173,7 +173,7 @@ inthandler4:
- 	bra	ret_from_interrupt
- 
- inthandler5:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -184,7 +184,7 @@ inthandler5:
- 	bra	ret_from_interrupt
- 
- inthandler6:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -195,7 +195,7 @@ inthandler6:
- 	bra	ret_from_interrupt
- 
- inthandler7:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-@@ -206,7 +206,7 @@ inthandler7:
- 	bra	ret_from_interrupt
- 
- inthandler:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
-diff --git a/arch/m68k/platform/68360/entry.S b/arch/m68k/platform/68360/entry.S
-index abbb896..aa47d1d 100644
---- a/arch/m68k/platform/68360/entry.S
-+++ b/arch/m68k/platform/68360/entry.S
-@@ -63,7 +63,7 @@ ret_from_signal:
- 	jra	ret_from_exception
- 
- ENTRY(system_call)
--	SAVE_ALL
-+	SAVE_ALL_SYS
- 
- 	/* save top of frame*/
- 	pea	%sp@
-@@ -125,7 +125,7 @@ Lsignal_return:
-  * This is the main interrupt handler, responsible for calling do_IRQ()
-  */
- inthandler:
--	SAVE_ALL
-+	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and.l	#0x3ff, %d0
- 	lsr.l   #0x02,  %d0
-diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
-index bd27242..3157461 100644
---- a/arch/m68k/platform/coldfire/entry.S
-+++ b/arch/m68k/platform/coldfire/entry.S
-@@ -61,7 +61,7 @@ enosys:
- 	bra	1f
- 
- ENTRY(system_call)
--	SAVE_ALL
-+	SAVE_ALL_SYS
- 	move	#0x2000,%sr		/* enable intrs again */
- 
- 	cmpl	#NR_syscalls,%d0
-@@ -165,9 +165,7 @@ Lsignal_return:
-  * sources). Calls up to high level code to do all the work.
-  */
- ENTRY(inthandler)
--	SAVE_ALL
--	moveq	#-1,%d0
--	movel	%d0,%sp@(PT_OFF_ORIG_D0)
-+	SAVE_ALL_INT
- 
- 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
- 	andl	#0x03fc,%d0		/* mask out vector only */
+-config M5275
+-	bool "MCF5275"
+-	select COLDFIRE
+-	select HAVE_CACHE_SPLIT
+-	select HAVE_IPSBAR
+-	help
+-	  Freescale (Motorola) ColdFire 5274/5275 processor support.
+-
+-config M528x
+-	bool "MCF528x"
+-	select COLDFIRE
+-	select GENERIC_CLOCKEVENTS
+-	select HAVE_CACHE_SPLIT
+-	select HAVE_IPSBAR
+-	help
+-	  Motorola ColdFire 5280/5282 processor support.
+-
+-config M5307
+-	bool "MCF5307"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_CACHE_CB
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5307 processor support.
+-
+-config M532x
+-	bool "MCF532x"
+-	select COLDFIRE
+-	select HAVE_CACHE_CB
+-	help
+-	  Freescale (Motorola) ColdFire 532x processor support.
+-
+-config M5407
+-	bool "MCF5407"
+-	select COLDFIRE
+-	select COLDFIRE_SW_A7
+-	select HAVE_CACHE_CB
+-	select HAVE_MBAR
+-	help
+-	  Motorola ColdFire 5407 processor support.
+-
+-config M547x
+-	bool "MCF547x"
+-	select COLDFIRE
+-	select HAVE_CACHE_CB
+-	select HAVE_MBAR
+-	help
+-	  Freescale ColdFire 5470/5471/5472/5473/5474/5475 processor support.
+-
+-config M548x
+-	bool "MCF548x"
+-	select COLDFIRE
+-	select HAVE_CACHE_CB
+-	select HAVE_MBAR
+-	help
+-	  Freescale ColdFire 5480/5481/5482/5483/5484/5485 processor support.
+-
+-endchoice
+-
+-config M527x
+-	bool
+-	depends on (M5271 || M5275)
+-	select GENERIC_CLOCKEVENTS
+-	default y
+-
+-config M54xx
+-	bool
+-	depends on (M548x || M547x)
+-	default y
+-
+-config CLOCK_SET
+-	bool "Enable setting the CPU clock frequency"
+-	default n
+-	help
+-	  On some CPU's you do not need to know what the core CPU clock
+-	  frequency is. On these you can disable clock setting. On some
+-	  traditional 68K parts, and on all ColdFire parts you need to set
+-	  the appropriate CPU clock frequency. On these devices many of the
+-	  onboard peripherals derive their timing from the master CPU clock
+-	  frequency.
+-
+-config CLOCK_FREQ
+-	int "Set the core clock frequency"
+-	default "66666666"
+-	depends on CLOCK_SET
+-	help
+-	  Define the CPU clock frequency in use. This is the core clock
+-	  frequency, it may or may not be the same as the external clock
+-	  crystal fitted to your board. Some processors have an internal
+-	  PLL and can have their frequency programmed at run time, others
+-	  use internal dividers. In general the kernel won't setup a PLL
+-	  if it is fitted (there are some exceptions). This value will be
+-	  specific to the exact CPU that you are using.
+-
+-config OLDMASK
+-	bool "Old mask 5307 (1H55J) silicon"
+-	depends on M5307
+-	help
+-	  Build support for the older revision ColdFire 5307 silicon.
+-	  Specifically this is the 1H55J mask revision.
+-
+-if HAVE_CACHE_SPLIT
+-choice
+-	prompt "Split Cache Configuration"
+-	default CACHE_I
+-
+-config CACHE_I
+-	bool "Instruction"
+-	help
+-	  Use all of the ColdFire CPU cache memory as an instruction cache.
+-
+-config CACHE_D
+-	bool "Data"
+-	help
+-	  Use all of the ColdFire CPU cache memory as a data cache.
+-
+-config CACHE_BOTH
+-	bool "Both"
+-	help
+-	  Split the ColdFire CPU cache, and use half as an instruction cache
+-	  and half as a data cache.
+-endchoice
+-endif
+-
+-if HAVE_CACHE_CB
+-choice
+-	prompt "Data cache mode"
+-	default CACHE_WRITETHRU
+-
+-config CACHE_WRITETHRU
+-	bool "Write-through"
+-	help
+-	  The ColdFire CPU cache is set into Write-through mode.
+-
+-config CACHE_COPYBACK
+-	bool "Copy-back"
+-	help
+-	  The ColdFire CPU cache is set into Copy-back mode.
+-endchoice
+-endif
+-
+-comment "Platform"
+-
+-config PILOT3
+-	bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
+-	depends on M68328
+-	help
+-	  Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
+-
+-config XCOPILOT_BUGS
+-	bool "(X)Copilot support"
+-	depends on PILOT3
+-	help
+-	  Support the bugs of Xcopilot.
+-
+-config UC5272
+-	bool 'Arcturus Networks uC5272 dimm board support'
+-	depends on M5272
+-	help
+-	  Support for the Arcturus Networks uC5272 dimm board.
+-
+-config UC5282
+-	bool "Arcturus Networks uC5282 board support"
+-	depends on M528x
+-	help
+-	  Support for the Arcturus Networks uC5282 dimm board.
+-
+-config UCSIMM
+-	bool "uCsimm module support"
+-	depends on M68EZ328
+-	help
+-	  Support for the Arcturus Networks uCsimm module.
+-
+-config UCDIMM
+-	bool "uDsimm module support"
+-	depends on M68VZ328
+-	help
+-	  Support for the Arcturus Networks uDsimm module.
+-
+-config DRAGEN2
+-	bool "DragenEngine II board support"
+-	depends on M68VZ328
+-	help
+-	  Support for the DragenEngine II board.
+-
+-config DIRECT_IO_ACCESS
+-	bool "Allow user to access IO directly"
+-	depends on (UCSIMM || UCDIMM || DRAGEN2)
+-	help
+-	  Disable the CPU internal registers protection in user mode,
+-	  to allow a user application to read/write them.
+-
+-config INIT_LCD
+-	bool "Initialize LCD"
+-	depends on (UCSIMM || UCDIMM || DRAGEN2)
+-	help
+-	  Initialize the LCD controller of the 68x328 processor.
+-
+-config MEMORY_RESERVE
+-	int "Memory reservation (MiB)"
+-	depends on (UCSIMM || UCDIMM)
+-	help
+-	  Reserve certain memory regions on 68x328 based boards.
+-
+-config UCQUICC
+-	bool "Lineo uCquicc board support"
+-	depends on M68360
+-	help
+-	  Support for the Lineo uCquicc board.
+-
+-config ARN5206
+-	bool "Arnewsh 5206 board support"
+-	depends on M5206
+-	help
+-	  Support for the Arnewsh 5206 board.
+-
+-config M5206eC3
+-	bool "Motorola M5206eC3 board support"
+-	depends on M5206e
+-	help
+-	  Support for the Motorola M5206eC3 board.
+-
+-config ELITE
+-	bool "Motorola M5206eLITE board support"
+-	depends on M5206e
+-	help
+-	  Support for the Motorola M5206eLITE board.
+-
+-config M5208EVB
+-	bool "Freescale M5208EVB board support"
+-	depends on M520x
+-	help
+-	  Support for the Freescale Coldfire M5208EVB.
+-
+-config M5235EVB
+-	bool "Freescale M5235EVB support"
+-	depends on M523x
+-	help
+-	  Support for the Freescale M5235EVB board.
+-
+-config M5249C3
+-	bool "Motorola M5249C3 board support"
+-	depends on M5249
+-	help
+-	  Support for the Motorola M5249C3 board.
+-
+-config M5271EVB
+-	bool "Freescale (Motorola) M5271EVB board support"
+-	depends on M5271
+-	help
+-	  Support for the Freescale (Motorola) M5271EVB board.
+-
+-config M5275EVB
+-	bool "Freescale (Motorola) M5275EVB board support"
+-	depends on M5275
+-	help
+-	  Support for the Freescale (Motorola) M5275EVB board.
+-
+-config M5272C3
+-	bool "Motorola M5272C3 board support"
+-	depends on M5272
+-	help
+-	  Support for the Motorola M5272C3 board.
+-
+-config COBRA5272
+-	bool "senTec COBRA5272 board support"
+-	depends on M5272
+-	help
+-	  Support for the senTec COBRA5272 board.
+-
+-config AVNET5282
+-	bool "Avnet 5282 board support"
+-	depends on M528x
+-	help
+-	  Support for the Avnet 5282 board.  
+-	  
+-config M5282EVB
+-	bool "Motorola M5282EVB board support"
+-	depends on M528x
+-	help
+-	  Support for the Motorola M5282EVB board.
+-
+-config COBRA5282
+-	bool "senTec COBRA5282 board support"
+-	depends on M528x
+-	help
+-	  Support for the senTec COBRA5282 board.
+-	  
+-config SOM5282EM
+-	bool "EMAC.Inc SOM5282EM board support"
+-	depends on M528x
+-	help
+-	  Support for the EMAC.Inc SOM5282EM module.  
+-	  
+-config WILDFIRE
+-	bool "Intec Automation Inc. WildFire board support"
+-	depends on M528x
+-	help
+-	  Support for the Intec Automation Inc. WildFire.
+-	  
+-config WILDFIREMOD
+-	bool "Intec Automation Inc. WildFire module support"
+-	depends on M528x
+-	help
+-	  Support for the Intec Automation Inc. WildFire module.
+-
+-config ARN5307
+-	bool "Arnewsh 5307 board support"
+-	depends on M5307
+-	help
+-	  Support for the Arnewsh 5307 board.
+-
+-config M5307C3
+-	bool "Motorola M5307C3 board support"
+-	depends on M5307
+-	help
+-	  Support for the Motorola M5307C3 board.
+-
+-config SECUREEDGEMP3
+-	bool "SnapGear SecureEdge/MP3 platform support"
+-	depends on M5307
+-	help
+-	  Support for the SnapGear SecureEdge/MP3 platform.
+-
+-config M5329EVB
+-	bool "Freescale (Motorola) M5329EVB board support"
+-	depends on M532x
+-	help
+-	  Support for the Freescale (Motorola) M5329EVB board.
+-
+-config COBRA5329
+-	bool "senTec COBRA5329 board support"
+-	depends on M532x
+-	help
+-	  Support for the senTec COBRA5329 board.
+-
+-config M5407C3
+-	bool "Motorola M5407C3 board support"
+-	depends on M5407
+-	help
+-	  Support for the Motorola M5407C3 board.
+-
+-config FIREBEE
+-	bool "FireBee board support"
+-	depends on M547x
+-	help
+-	  Support for the FireBee ColdFire 5475 based board.
+-
+-config CLEOPATRA
+-	bool "Feith CLEOPATRA board support"
+-	depends on (M5307 || M5407)
+-	help
+-	  Support for the Feith Cleopatra boards.
+-
+-config CANCam
+-	bool "Feith CANCam board support"
+-	depends on M5272
+-	help
+-	  Support for the Feith CANCam board.
+-
+-config SCALES
+-	bool "Feith SCALES board support"
+-	depends on M5272
+-	help
+-	  Support for the Feith SCALES board.
+-
+-config NETtel
+-	bool "SecureEdge/NETtel board support"
+-	depends on (M5206e || M5272 || M5307)
+-	help
+-	  Support for the SnapGear NETtel/SecureEdge/SnapGear boards.
+-
+-config SNAPGEAR
+-	bool "SnapGear router board support"
+-	depends on NETtel
+-	help
+-	  Special additional support for SnapGear router boards.
+-
+-config CPU16B
+-	bool "Sneha Technologies S.L. Sarasvati board support"
+-	depends on M5272
+-	help
+-	  Support for the SNEHA CPU16B board.
+-
+-config MOD5272
+-	bool "Netburner MOD-5272 board support"
+-	depends on M5272
+-	help
+-	  Support for the Netburner MOD-5272 board.
+-
+-config SAVANTrosie1
+-	bool "Savant Rosie1 board support"
+-	depends on M523x
+-	help
+-	  Support for the Savant Rosie1 board.
+-
+-config ROMFS_FROM_ROM
+-	bool "ROMFS image not RAM resident"
+-	depends on (NETtel || SNAPGEAR)
+-	help
+-	  The ROMfs filesystem will stay resident in the FLASH/ROM, not be
+-	  moved into RAM.
+-
+-config PILOT
+-	bool
+-	default y
+-	depends on (PILOT3 || PILOT5)
+-
+-config ARNEWSH
+-	bool
+-	default y
+-	depends on (ARN5206 || ARN5307)
+-
+-config FREESCALE
+-	bool
+-	default y
+-	depends on (M5206eC3 || M5208EVB || M5235EVB || M5249C3 || M5271EVB || M5272C3 || M5275EVB || M5282EVB || M5307C3 || M5329EVB || M5407C3)
+-
+-config HW_FEITH
+-	bool
+-	default y
+-	depends on (CLEOPATRA || CANCam || SCALES)
+-
+-config senTec
+-	bool
+-	default y
+-	depends on (COBRA5272 || COBRA5282)
+-	
+-config EMAC_INC
+-	bool
+-	default y
+-	depends on (SOM5282EM)
+-
+-config SNEHA
+-	bool
+-	default y
+-	depends on CPU16B
+-
+-config SAVANT
+-	bool
+-	default y
+-	depends on SAVANTrosie1
+-
+-config AVNET
+-	bool
+-	default y
+-	depends on (AVNET5282)
+-
+-config UBOOT
+-	bool "Support for U-Boot command line parameters"
+-	help
+-	  If you say Y here kernel will try to collect command
+-	  line parameters from the initial u-boot stack.
+-	default n
+-
+-config 4KSTACKS
+-	bool "Use 4Kb for kernel stacks instead of 8Kb"
+-	default y
+-	help
+-	  If you say Y here the kernel will use a 4Kb stacksize for the
+-	  kernel stack attached to each process/thread. This facilitates
+-	  running more threads on a system and also reduces the pressure
+-	  on the VM subsystem for higher order allocations.
+-
+-comment "RAM configuration"
+-
+-config RAMBASE
+-	hex "Address of the base of RAM"
+-	default "0"
+-	help
+-	  Define the address that RAM starts at. On many platforms this is
+-	  0, the base of the address space. And this is the default. Some
+-	  platforms choose to setup their RAM at other addresses within the
+-	  processor address space.
+-
+-config RAMSIZE
+-	hex "Size of RAM (in bytes), or 0 for automatic"
+-	default "0x400000"
+-	help
+-	  Define the size of the system RAM. If you select 0 then the
+-	  kernel will try to probe the RAM size at runtime. This is not
+-	  supported on all CPU types.
+-
+-config VECTORBASE
+-	hex "Address of the base of system vectors"
+-	default "0"
+-	help
+-	  Define the address of the system vectors. Commonly this is
+-	  put at the start of RAM, but it doesn't have to be. On ColdFire
+-	  platforms this address is programmed into the VBR register, thus
+-	  actually setting the address to use.
+-
+-config MBAR
+-	hex "Address of the MBAR (internal peripherals)"
+-	default "0x10000000"
+-	depends on HAVE_MBAR
+-	help
+-	  Define the address of the internal system peripherals. This value
+-	  is set in the processors MBAR register. This is generally setup by
+-	  the boot loader, and will not be written by the kernel. By far most
+-	  ColdFire boards use the default 0x10000000 value, so if unsure then
+-	  use this.
+-
+-config IPSBAR
+-	hex "Address of the IPSBAR (internal peripherals)"
+-	default "0x40000000"
+-	depends on HAVE_IPSBAR
+-	help
+-	  Define the address of the internal system peripherals. This value
+-	  is set in the processors IPSBAR register. This is generally setup by
+-	  the boot loader, and will not be written by the kernel. By far most
+-	  ColdFire boards use the default 0x40000000 value, so if unsure then
+-	  use this.
+-
+-config KERNELBASE
+-	hex "Address of the base of kernel code"
+-	default "0x400"
+-	help
+-	  Typically on m68k systems the kernel will not start at the base
+-	  of RAM, but usually some small offset from it. Define the start
+-	  address of the kernel here. The most common setup will have the
+-	  processor vectors at the base of RAM and then the start of the
+-	  kernel. On some platforms some RAM is reserved for boot loaders
+-	  and the kernel starts after that. The 0x400 default was based on
+-	  a system with the RAM based at address 0, and leaving enough room
+-	  for the theoretical maximum number of 256 vectors.
+-
+-choice
+-	prompt "RAM bus width"
+-	default RAMAUTOBIT
+-
+-config RAMAUTOBIT
+-	bool "AUTO"
+-	help
+-	  Select the physical RAM data bus size. Not needed on most platforms,
+-	  so you can generally choose AUTO.
+-
+-config RAM8BIT
+-	bool "8bit"
+-	help
+-	  Configure RAM bus to be 8 bits wide.
+-
+-config RAM16BIT
+-	bool "16bit"
+-	help
+-	  Configure RAM bus to be 16 bits wide.
+-
+-config RAM32BIT
+-	bool "32bit"
+-	help
+-	  Configure RAM bus to be 32 bits wide.
+-
+-endchoice
+-
+-comment "ROM configuration"
+-
+-config ROM
+-	bool "Specify ROM linker regions"
+-	default n
+-	help
+-	  Define a ROM region for the linker script. This creates a kernel
+-	  that can be stored in flash, with possibly the text, and data
+-	  regions being copied out to RAM at startup.
+-
+-config ROMBASE
+-	hex "Address of the base of ROM device"
+-	default "0"
+-	depends on ROM
+-	help
+-	  Define the address that the ROM region starts at. Some platforms
+-	  use this to set their chip select region accordingly for the boot
+-	  device.
+-
+-config ROMVEC
+-	hex "Address of the base of the ROM vectors"
+-	default "0"
+-	depends on ROM
+-	help
+-	  This is almost always the same as the base of the ROM. Since on all
+-	  68000 type variants the vectors are at the base of the boot device
+-	  on system startup.
+-
+-config ROMVECSIZE
+-	hex "Size of ROM vector region (in bytes)"
+-	default "0x400"
+-	depends on ROM
+-	help
+-	  Define the size of the vector region in ROM. For most 68000
+-	  variants this would be 0x400 bytes in size. Set to 0 if you do
+-	  not want a vector region at the start of the ROM.
+-
+-config ROMSTART
+-	hex "Address of the base of system image in ROM"
+-	default "0x400"
+-	depends on ROM
+-	help
+-	  Define the start address of the system image in ROM. Commonly this
+-	  is strait after the ROM vectors.
+-
+-config ROMSIZE
+-	hex "Size of the ROM device"
+-	default "0x100000"
+-	depends on ROM
+-	help
+-	  Size of the ROM device. On some platforms this is used to setup
+-	  the chip select that controls the boot ROM device.
+-
+-choice
+-	prompt "Kernel executes from"
+-	---help---
+-	  Choose the memory type that the kernel will be running in.
+-
+-config RAMKERNEL
+-	bool "RAM"
+-	help
+-	  The kernel will be resident in RAM when running.
+-
+-config ROMKERNEL
+-	bool "ROM"
+-	help
+-	  The kernel will be resident in FLASH/ROM when running. This is
+-	  often referred to as Execute-in-Place (XIP), since the kernel
+-	  code executes from the position it is stored in the FLASH/ROM.
+-
+-endchoice
+-
+-if COLDFIRE
+-source "kernel/Kconfig.preempt"
+-endif
+-
+-source "kernel/time/Kconfig"
+-
+-config ISA_DMA_API
+-	bool
+-	depends on !M5272
+-	default y
+-
+-source "drivers/pcmcia/Kconfig"
+-
 -- 
 1.7.0.4
