@@ -1,31 +1,48 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: merge the mmu and non-mmu kernel/Makefiles
-Date: Sat, 13 Aug 2011 18:44:06 +0200
-Message-ID: <m28vqxdzxl.fsf@igel.home>
-References: <1313038044-25522-1-git-send-email-gerg@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] mac68k: fix compiler warning
+Date: Sat, 13 Aug 2011 19:56:40 +0200
+Message-ID: <CAMuHMdW7R7KQT5DyGhoTs8H37RgT05-ni9yMZFQxYfO_Wcbefw@mail.gmail.com>
+References: <alpine.OSX.2.00.1107172341070.191@ibook.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:53011 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751385Ab1HMQoM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Aug 2011 12:44:12 -0400
-In-Reply-To: <1313038044-25522-1-git-send-email-gerg@snapgear.com>
-	(gerg@snapgear.com's message of "Thu, 11 Aug 2011 14:47:24 +1000")
+Received: from mail-iy0-f170.google.com ([209.85.210.170]:54941 "EHLO
+	mail-iy0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751208Ab1HMR4k convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Aug 2011 13:56:40 -0400
+Received: by iye16 with SMTP id 16so4016369iye.1
+        for <linux-m68k@vger.kernel.org>; Sat, 13 Aug 2011 10:56:40 -0700 (PDT)
+In-Reply-To: <alpine.OSX.2.00.1107172341070.191@ibook.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org
 
-<gerg@snapgear.com> writes:
+On Sun, Jul 17, 2011 at 16:06, Finn Thain <fthain@telegraphics.com.au> =
+wrote:
+> The algorithm described in the comment compares two reads from the RT=
+C but
+> the code actually reads once and compares the result to an uninitiali=
+zed
+> value. This causes the compiler to warn, "last_result maybe used
+> uninitialized". Make the code match the comment, fix the warning and
+> perhaps improve reliability. Tested on a Quadra 700.
 
-> +obj-y$(CONFIG_MMU_SUN3) += dma.o	# no, it's not a typo
+Thanks, applied. Will queue for 3.2.
 
-I'd rather put ifndef CONFIG_MMU_SUN3 around it.
+Gr{oetje,eeting}s,
 
-Andreas.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
