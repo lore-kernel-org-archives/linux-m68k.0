@@ -1,92 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Driver framework: binding a driver to two devices?
-Date: Sun, 14 Aug 2011 21:32:01 +0200
-Message-ID: <CAMuHMdUdJvqm+U7EY-p+vmkKyBd7urcRYEfV_6BWU8zqo+b_tA@mail.gmail.com>
-References: <CAMuHMdVr9iAyqQJUgHq4gcLg+gp7GxF=sH+SBKBuqVWYymXs8Q@mail.gmail.com>
-	<20110814173816.GA10062@kroah.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: watchdog (?) on linux 3.0.0 and 2.6.39.3
+Date: Mon, 15 Aug 2011 08:40:12 +1200
+Message-ID: <CAOmrzkKa+veNPYXx+_69=unfo-mZNsv2CP992KBv3ZYhrxxGKw@mail.gmail.com>
+References: <4E369834.9070707@aalto.fi>
+	<alpine.OSX.2.00.1108021532260.256@ibook.intranet>
+	<4E3ACFE5.7020901@aalto.fi>
+	<CAOmrzkL1ZaWBtYG6uyotwgGzoZLEdafrUCh6qfq-_siNZ9vvdQ@mail.gmail.com>
+	<4E3BD9C1.6020209@aalto.fi>
+	<4E3C6F8D.7030902@gmail.com>
+	<CAMuHMdXeFH-uTw5XWB4_arvj2DfbXrb4q_9BKKhDhxNxwFvmBw@mail.gmail.com>
+	<CAOmrzkKRP+mD8zESBHrJYxzVvj1NE4rEA+ATaaD6u4BJOQyV6Q@mail.gmail.com>
+	<20110807220744.GA5199@chumley.earth.sol>
+	<4E474E7D.2000405@gmail.com>
+	<CAMuHMdWf4wnto0Y5u01XDPpSfJeHDPCRV06w1ZWejNHpFs2sAQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f170.google.com ([209.85.210.170]:64461 "EHLO
-	mail-iy0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754770Ab1HNTcD convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Aug 2011 15:32:03 -0400
-In-Reply-To: <20110814173816.GA10062@kroah.com>
+In-Reply-To: <CAMuHMdWf4wnto0Y5u01XDPpSfJeHDPCRV06w1ZWejNHpFs2sAQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg KH <greg@kroah.com>
-Cc: linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Christian T. Steigies" <cts@debian.org>, Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Sun, Aug 14, 2011 at 19:38, Greg KH <greg@kroah.com> wrote:
-> On Sat, Aug 13, 2011 at 10:44:42PM +0200, Geert Uytterhoeven wrote:
->> As Amiga Zorro expansion boards have only one BAR (unlike PCI, which=
- has
->> multiple BARs), several Amiga graphics cards show up as two Zorro de=
-vices:
->> one for the graphics memory and one for the graphics controller's re=
-gisters.
+Hi Geert,
+
+
+>> =A0CC [M] =A0drivers/ide/ide-lib.o
+>> drivers/ide/ide-lib.c: In function `ide_dump_atapi_status':
+>> drivers/ide/ide-lib.c:601: internal compiler error: in
+>> verify_local_live_at_start, at flow.c:600
+>> Please submit a full bug report,
+>> with preprocessed source if appropriate.
+>> See <URL:http://gcc.gnu.org/bugs.html> for instructions.
 >>
->> Traditionally, a driver for such a device used
->>
->> =C2=A0 =C2=A0 dev1 =3D zorro_find_device(id1, ...)
->> =C2=A0 =C2=A0 dev2 =3D zorro_find_device(id2, ...)
->>
->> to find the two devices and match them.
->>
->> With the "new" driver framework, the matching with device id1 is now
->> done using a
->> struct zorro_driver with a table of IDs, while the matching with dev=
-ice id2 is
->> still done by calling zorro_find_device(id2, ...).
->>
->> Recently (with cirrusfb) it turned out that the call to
->> zorro_find_device(id2, ...)
->> may fail to find the second device. I suspect this happens due to th=
-e second
->> device haven't been probed for at the time the zorro_driver for the
->> first device is
->> initialized.
->>
->> I expect this can be fixed by delaying all calls to device_register(=
-) in
->> amiga_zorro_probe() until all devices have been detected and added t=
-o the array
->> used by zorro_find_device(). But I was wondering whether there's a m=
-ore generic
->> way in the driver framework to bind a driver to two devices?
+>> I'm sure we've seen that before and it did eventually get fixed.
 >
-> What you really want is the same "driver instance" bound to two devic=
-es,
-> right? =C2=A0That way the device would operate "knowing" about both p=
-hysical
-> devices so as to properly control the thing.
+> You can probably work around that by building with "make V=3D1" to sh=
+ow
+> the compile command,
+> and manually executing it with a lower optimization level.
 
-Yes, that's what I want.
+I actually had to add -O0 to the EXTRA_CFLAGS in drivers/ide/Makefile
+- otherwise I'd manually compile it OK once, and the subsequent make
+command would attempt to compile it again (with -Os).
 
-> Right now, no, there's not a simple way to do this with the driver
-> model. =C2=A0USB does this on its own for some devices that need to h=
-ave
-> multiple "interfaces" (the USB equalivant for a "device") controlled =
-at
-> the same time, so you might want to look at how that happens (in the
-> indivdual drivers, not in the USB core.)
+Thanks,
 
-Thanks, I'll have a look at the USB drivers.
-Do you know which examples to look at?
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+  Michael
