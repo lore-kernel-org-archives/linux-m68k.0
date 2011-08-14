@@ -1,7 +1,7 @@
 From: "MICROSOFT DONATION" <info@microsoft.com>
 Subject: For Claims Contact: Mrs.Hope Spencer
-Date: Sun, 14 Aug 2011 20:52:18 +0300 (EAT)
-Message-ID: <56589.41.203.64.253.1313344338.squirrel@www.hit.ac.zw>
+Date: Sun, 14 Aug 2011 20:52:19 +0300 (EAT)
+Message-ID: <56588.41.203.64.253.1313344339.squirrel@www.hit.ac.zw>
 Reply-To: mrshopespencer@kimo.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
