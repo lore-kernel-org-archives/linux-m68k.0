@@ -1,79 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: watchdog (?) on linux 3.0.0 and 2.6.39.3
-Date: Sun, 14 Aug 2011 10:29:42 +0200
-Message-ID: <CAMuHMdWf4wnto0Y5u01XDPpSfJeHDPCRV06w1ZWejNHpFs2sAQ@mail.gmail.com>
-References: <4E369834.9070707@aalto.fi>
-	<alpine.OSX.2.00.1108021532260.256@ibook.intranet>
-	<4E3ACFE5.7020901@aalto.fi>
-	<CAOmrzkL1ZaWBtYG6uyotwgGzoZLEdafrUCh6qfq-_siNZ9vvdQ@mail.gmail.com>
-	<4E3BD9C1.6020209@aalto.fi>
-	<4E3C6F8D.7030902@gmail.com>
-	<CAMuHMdXeFH-uTw5XWB4_arvj2DfbXrb4q_9BKKhDhxNxwFvmBw@mail.gmail.com>
-	<CAOmrzkKRP+mD8zESBHrJYxzVvj1NE4rEA+ATaaD6u4BJOQyV6Q@mail.gmail.com>
-	<20110807220744.GA5199@chumley.earth.sol>
-	<4E474E7D.2000405@gmail.com>
+From: Greg KH <greg@kroah.com>
+Subject: Re: Driver framework: binding a driver to two devices?
+Date: Sun, 14 Aug 2011 10:38:16 -0700
+Message-ID: <20110814173816.GA10062@kroah.com>
+References: <CAMuHMdVr9iAyqQJUgHq4gcLg+gp7GxF=sH+SBKBuqVWYymXs8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4E474E7D.2000405@gmail.com>
+Received: from out4.smtp.messagingengine.com ([66.111.4.28]:55525 "EHLO
+	out4.smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752705Ab1HNRim (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 14 Aug 2011 13:38:42 -0400
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVr9iAyqQJUgHq4gcLg+gp7GxF=sH+SBKBuqVWYymXs8Q@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: "Christian T. Steigies" <cts@debian.org>, Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Aug 14, 2011 at 06:26, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
->>> Christian - can you remember which 2.6 kernel that last had etherne=
-t
->>> working for you?
->>>
->>
->> I haven't been testing kernels a lot recently... from the logfiles i=
-t
->> would
->> seem the last kernel that was running on kullervo was this one:
->>
->> Linux version 2.6.24-1-amiga (Debian 2.6.24-4) (waldi@debian.org) (g=
-cc
->> version 3.3.6) #1 Tue Feb 12 10:05:37 CET 2008
->>
->
-> Plain 2.6.24 from Geert's tree does show TX timeouts again - no watch=
-dog
-> firing this time because IDE wasn't even built as module (something c=
-ause
-> make oldconfig to drop all IDE stuff when starting from Tuomas' .conf=
-ig).
->
-> Speaking of which - I cannot even build IDE at all in that release:
->
-> =C2=A0CC [M] =C2=A0drivers/ide/ide-lib.o
-> drivers/ide/ide-lib.c: In function `ide_dump_atapi_status':
-> drivers/ide/ide-lib.c:601: internal compiler error: in
-> verify_local_live_at_start, at flow.c:600
-> Please submit a full bug report,
-> with preprocessed source if appropriate.
-> See <URL:http://gcc.gnu.org/bugs.html> for instructions.
->
-> I'm sure we've seen that before and it did eventually get fixed.
+On Sat, Aug 13, 2011 at 10:44:42PM +0200, Geert Uytterhoeven wrote:
+> As Amiga Zorro expansion boards have only one BAR (unlike PCI, which has
+> multiple BARs), several Amiga graphics cards show up as two Zorro devices:
+> one for the graphics memory and one for the graphics controller's registers.
+> 
+> Traditionally, a driver for such a device used
+> 
+>     dev1 = zorro_find_device(id1, ...)
+>     dev2 = zorro_find_device(id2, ...)
+> 
+> to find the two devices and match them.
+> 
+> With the "new" driver framework, the matching with device id1 is now
+> done using a
+> struct zorro_driver with a table of IDs, while the matching with device id2 is
+> still done by calling zorro_find_device(id2, ...).
+> 
+> Recently (with cirrusfb) it turned out that the call to
+> zorro_find_device(id2, ...)
+> may fail to find the second device. I suspect this happens due to the second
+> device haven't been probed for at the time the zorro_driver for the
+> first device is
+> initialized.
+> 
+> I expect this can be fixed by delaying all calls to device_register() in
+> amiga_zorro_probe() until all devices have been detected and added to the array
+> used by zorro_find_device(). But I was wondering whether there's a more generic
+> way in the driver framework to bind a driver to two devices?
 
-You can probably work around that by building with "make V=3D1" to show
-the compile command,
-and manually executing it with a lower optimization level.
+What you really want is the same "driver instance" bound to two devices,
+right?  That way the device would operate "knowing" about both physical
+devices so as to properly control the thing.
 
-Gr{oetje,eeting}s,
+Right now, no, there's not a simple way to do this with the driver
+model.  USB does this on its own for some devices that need to have
+multiple "interfaces" (the USB equalivant for a "device") controlled at
+the same time, so you might want to look at how that happens (in the
+indivdual drivers, not in the USB core.)
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Sorry,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+greg k-h
