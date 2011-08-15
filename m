@@ -1,50 +1,51 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: watchdog (?) on linux 3.0.0 and 2.6.39.3
-Date: Mon, 15 Aug 2011 08:40:12 +1200
-Message-ID: <CAOmrzkKa+veNPYXx+_69=unfo-mZNsv2CP992KBv3ZYhrxxGKw@mail.gmail.com>
-References: <4E369834.9070707@aalto.fi>
-	<alpine.OSX.2.00.1108021532260.256@ibook.intranet>
-	<4E3ACFE5.7020901@aalto.fi>
-	<CAOmrzkL1ZaWBtYG6uyotwgGzoZLEdafrUCh6qfq-_siNZ9vvdQ@mail.gmail.com>
-	<4E3BD9C1.6020209@aalto.fi>
-	<4E3C6F8D.7030902@gmail.com>
-	<CAMuHMdXeFH-uTw5XWB4_arvj2DfbXrb4q_9BKKhDhxNxwFvmBw@mail.gmail.com>
-	<CAOmrzkKRP+mD8zESBHrJYxzVvj1NE4rEA+ATaaD6u4BJOQyV6Q@mail.gmail.com>
-	<20110807220744.GA5199@chumley.earth.sol>
-	<4E474E7D.2000405@gmail.com>
-	<CAMuHMdWf4wnto0Y5u01XDPpSfJeHDPCRV06w1ZWejNHpFs2sAQ@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [uClinux-dev] [PATCH] m68k: reorganize Kconfig options to improve
+ mmu/non-mmu selections
+Date: Mon, 15 Aug 2011 10:53:35 +1000
+Message-ID: <4E486E0F.3080601@snapgear.com>
+References: <1313039421-26075-1-git-send-email-gerg@snapgear.com> <20110811061522.GC21757@merkur.ravnborg.org> <4E437A0B.3030201@snapgear.com> <20110812043022.GB4940@cynthia.pants.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWf4wnto0Y5u01XDPpSfJeHDPCRV06w1ZWejNHpFs2sAQ@mail.gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:10969 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751066Ab1HOAuL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Aug 2011 20:50:11 -0400
+In-Reply-To: <20110812043022.GB4940@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Christian T. Steigies" <cts@debian.org>, Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Brad Boyer <flar@allandria.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>, uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Geert,
+Hi Brad,
 
-
->> =A0CC [M] =A0drivers/ide/ide-lib.o
->> drivers/ide/ide-lib.c: In function `ide_dump_atapi_status':
->> drivers/ide/ide-lib.c:601: internal compiler error: in
->> verify_local_live_at_start, at flow.c:600
->> Please submit a full bug report,
->> with preprocessed source if appropriate.
->> See <URL:http://gcc.gnu.org/bugs.html> for instructions.
+On 12/08/11 14:30, Brad Boyer wrote:
+> On Thu, Aug 11, 2011 at 04:43:23PM +1000, Greg Ungerer wrote:
+>>> Do you really need EISA, MCA and PCMIA? They have no promt thus cannot be selected by the user.
 >>
->> I'm sure we've seen that before and it did eventually get fixed.
+>> Yes, your right, they don't look like than can be selected at all.
+>> None of the default configs seem to reference them either.
+>> Geert: do you know why these options might still be around?
+>>
 >
-> You can probably work around that by building with "make V=3D1" to sh=
-ow
-> the compile command,
-> and manually executing it with a lower optimization level.
+> It still hasn't been cleaned up enough to go in, but somebody posted
+> a trex driver which would need PCMCIA. It was a driver for the card
+> slots in the Macintosh PowerBook 190.
+>
+> In theory some other m68k systems have PCMCIA slots that could be
+> supported as well. I'm sure they're almost as broken and non-standards
+> compliant as what Apple did.
 
-I actually had to add -O0 to the EXTRA_CFLAGS in drivers/ide/Makefile
-- otherwise I'd manually compile it OK once, and the subsequent make
-command would attempt to compile it again (with -Os).
+Even if we remove these options now they can always be re-introduced
+if and when a driver that needs them is ready for mainline.
 
-Thanks,
+Regards
+Greg
 
-  Michael
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
