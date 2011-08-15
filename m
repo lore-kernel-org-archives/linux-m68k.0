@@ -1,35 +1,46 @@
-From: Arnaud Lacombe <lacombar@gmail.com>
-Subject: Re: [PATCH 01/11] arch/m68k: do not use EXTRA_{A,C,LD}FLAGS
-Date: Mon, 15 Aug 2011 10:45:08 -0400
-Message-ID: <CACqU3MXUp2hWaGNDmnBm2dO=27p4FBFNjRV8heA7p04Yf-nkwQ__5860.1722507321$1313419826$gmane$org@mail.gmail.com>
-References: <1313384834-24433-1-git-send-email-lacombar@gmail.com>
-	<1313384834-24433-2-git-send-email-lacombar@gmail.com>
-	<alpine.OSX.2.00.1108151724491.211@ibook.local>
+From: lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
+Subject: Re: [PATCH] m68k: reorganize Kconfig options to
+	improve mmu/non-mmu selections
+Date: Mon, 15 Aug 2011 11:49:42 -0400
+Message-ID: <20110815154942.GA15310@caffeine.csclub.uwaterloo.ca>
+References: <1313039421-26075-1-git-send-email-gerg@snapgear.com>
+	<20110811061522.GC21757@merkur.ravnborg.org>
+	<4E437A0B.3030201@snapgear.com>
+	<20110812043022.GB4940@cynthia.pants.nu>
+	<4E486E0F.3080601@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.OSX.2.00.1108151724491.211@ibook.local>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <uclinux-dev-bounces@uclinux.org>
+Content-Disposition: inline
+In-Reply-To: <4E486E0F.3080601@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+	<mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Sender: uclinux-dev-bounces@uclinux.org
+Errors-To: uclinux-dev-bounces@uclinux.org
+To: uClinux development list <uclinux-dev@uclinux.org>
+Cc: Brad Boyer <flar@allandria.com>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>, linux-m68k@lists.linux-m68k.org
 
-Hi,
+On Mon, Aug 15, 2011 at 10:53:35AM +1000, Greg Ungerer wrote:
+> Even if we remove these options now they can always be re-introduced
+> if and when a driver that needs them is ready for mainline.
 
-On Mon, Aug 15, 2011 at 3:26 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> On Mon, 15 Aug 2011, Arnaud Lacombe wrote:
->
->> -# EXTRA_CFLAGS += -DTRAP_DBG_INTERRUPT
->> -# EXTRA_AFLAGS += -DTRAP_DBG_INTERRUPT
->> +# ccflags-y += -DTRAP_DBG_INTERRUPT
->> +# ccflags-y += -DTRAP_DBG_INTERRUPT
->
-> asflags-y?
->
-yes, indeed. I'll resend later on.
+Didn't the Amiga 600 and 1200 have PCMCIA slots?  I have no idea if
+those are supported.  I certainly don't have either of those (only some
+500s and a 2000).
 
- - Arnaud
-
-> Finn
->
+-- 
+Len Sorensen
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
