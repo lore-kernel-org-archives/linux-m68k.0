@@ -1,97 +1,94 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: Driver framework: binding a driver to two devices?
-Date: Sun, 14 Aug 2011 19:20:15 -0700
-Message-ID: <20110815022015.GA4886@kroah.com>
-References: <CAMuHMdVr9iAyqQJUgHq4gcLg+gp7GxF=sH+SBKBuqVWYymXs8Q@mail.gmail.com>
- <20110814173816.GA10062@kroah.com>
- <CAMuHMdUdJvqm+U7EY-p+vmkKyBd7urcRYEfV_6BWU8zqo+b_tA@mail.gmail.com>
+From: Arnaud Lacombe <lacombar@gmail.com>
+Subject: Re: [PATCH 01/11] arch/m68k: do not use EXTRA_{A,C,LD}FLAGS
+Date: Mon, 15 Aug 2011 01:11:52 -0400
+Message-ID: <CACqU3MUXhMGgVwgRYfwkC1N6cHj=U6zS+G8mSnZc5i6cn1PTug__21210.0280834877$1313385519$gmane$org@mail.gmail.com>
+References: <1313384834-24433-1-git-send-email-lacombar@gmail.com>
+	<1313384834-24433-2-git-send-email-lacombar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from out4.smtp.messagingengine.com ([66.111.4.28]:47205 "EHLO
-	out4.smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751289Ab1HOCU0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 14 Aug 2011 22:20:26 -0400
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUdJvqm+U7EY-p+vmkKyBd7urcRYEfV_6BWU8zqo+b_tA@mail.gmail.com>
+In-Reply-To: <1313384834-24433-2-git-send-email-lacombar@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Arnaud Lacombe <lacombar@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, linux-m68k@lists.linux-m68k.org
 
-On Sun, Aug 14, 2011 at 09:32:01PM +0200, Geert Uytterhoeven wrote:
-> On Sun, Aug 14, 2011 at 19:38, Greg KH <greg@kroah.com> wrote:
-> > On Sat, Aug 13, 2011 at 10:44:42PM +0200, Geert Uytterhoeven wrote:
-> >> As Amiga Zorro expansion boards have only one BAR (unlike PCI, whi=
-ch has
-> >> multiple BARs), several Amiga graphics cards show up as two Zorro =
-devices:
-> >> one for the graphics memory and one for the graphics controller's =
-registers.
-> >>
-> >> Traditionally, a driver for such a device used
-> >>
-> >> =A0 =A0 dev1 =3D zorro_find_device(id1, ...)
-> >> =A0 =A0 dev2 =3D zorro_find_device(id2, ...)
-> >>
-> >> to find the two devices and match them.
-> >>
-> >> With the "new" driver framework, the matching with device id1 is n=
-ow
-> >> done using a
-> >> struct zorro_driver with a table of IDs, while the matching with d=
-evice id2 is
-> >> still done by calling zorro_find_device(id2, ...).
-> >>
-> >> Recently (with cirrusfb) it turned out that the call to
-> >> zorro_find_device(id2, ...)
-> >> may fail to find the second device. I suspect this happens due to =
-the second
-> >> device haven't been probed for at the time the zorro_driver for th=
+Hi,
+
+On Mon, Aug 15, 2011 at 1:07 AM, Arnaud Lacombe <lacombar@gmail.com> wr=
+ote:
+> Usage of these flags has been deprecated for nearly 4 years by:
+>
+> =A0 =A0commit f77bf01425b11947eeb3b5b54685212c302741b8
+> =A0 =A0Author: Sam Ravnborg <sam@neptun.(none)>
+> =A0 =A0Date: =A0 Mon Oct 15 22:25:06 2007 +0200
+>
+> =A0 =A0 =A0 =A0kbuild: introduce ccflags-y, asflags-y and ldflags-y
+>
+> Moreover, these flags (at least EXTRA_CFLAGS) have been documented fo=
+r command
+> line use. By default, gmake(1) do not override command line setting, =
+so this is
+> likely to result in build failure or unexpected behavior.
+>
+> Replace their usage by Kbuild's `{as,cc,ld}flags-y'.
+>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Arnaud Lacombe <lacombar@gmail.com>
+
+ - Arnaud
+
+> ---
+> =A0arch/m68k/fpsp040/Makefile =A0 =A0 =A0 | =A0 =A02 +-
+> =A0arch/m68k/ifpsp060/Makefile =A0 =A0 =A0| =A0 =A02 +-
+> =A0arch/m68k/platform/54xx/Makefile | =A0 =A04 ++--
+> =A03 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/m68k/fpsp040/Makefile b/arch/m68k/fpsp040/Makefile
+> index 9506d88..628a351 100644
+> --- a/arch/m68k/fpsp040/Makefile
+> +++ b/arch/m68k/fpsp040/Makefile
+> @@ -10,6 +10,6 @@ obj-y =A0 =A0:=3D bindec.o binstr.o decbin.o do_fun=
+c.o gen_except.o get_op.o \
+> =A0 =A0 =A0 =A0 =A0 =A0x_bsun.o x_fline.o x_operr.o x_ovfl.o x_snan.o=
+ x_store.o \
+> =A0 =A0 =A0 =A0 =A0 =A0x_unfl.o x_unimp.o x_unsupp.o bugfix.o skeleto=
+n.o
+>
+> -EXTRA_LDFLAGS :=3D -x
+> +ldflags-y :=3D -x
+>
+> =A0$(OS_OBJS): fpsp.h
+> diff --git a/arch/m68k/ifpsp060/Makefile b/arch/m68k/ifpsp060/Makefil=
 e
-> >> first device is
-> >> initialized.
-> >>
-> >> I expect this can be fixed by delaying all calls to device_registe=
-r() in
-> >> amiga_zorro_probe() until all devices have been detected and added=
- to the array
-> >> used by zorro_find_device(). But I was wondering whether there's a=
- more generic
-> >> way in the driver framework to bind a driver to two devices?
-> >
-> > What you really want is the same "driver instance" bound to two dev=
-ices,
-> > right? =A0That way the device would operate "knowing" about both ph=
-ysical
-> > devices so as to properly control the thing.
->=20
-> Yes, that's what I want.
->=20
-> > Right now, no, there's not a simple way to do this with the driver
-> > model. =A0USB does this on its own for some devices that need to ha=
-ve
-> > multiple "interfaces" (the USB equalivant for a "device") controlle=
-d at
-> > the same time, so you might want to look at how that happens (in th=
-e
-> > indivdual drivers, not in the USB core.)
->=20
-> Thanks, I'll have a look at the USB drivers.
-> Do you know which examples to look at?
-
-The drivers/usb/class/cdc-acm.c driver, in the acm_probe() function,
-grabs the "control" and "data" interfaces.  The logic is messy, due to
-the wide variety of broken devices out there, but you should get the
-general idea.
-
-What's needed is for your bus to be able to provide you a pointer to an=
-y
-device you want to find.  PCI provides this, so you should be fine, and
-should not have any problems.
-
-Hope this helps,
-
-greg k-h
+> index 43b4350..5ba2d1e 100644
+> --- a/arch/m68k/ifpsp060/Makefile
+> +++ b/arch/m68k/ifpsp060/Makefile
+> @@ -6,4 +6,4 @@
+>
+> =A0obj-y :=3D fskeleton.o iskeleton.o os.o
+>
+> -EXTRA_LDFLAGS :=3D -x
+> +ldflags-y :=3D -x
+> diff --git a/arch/m68k/platform/54xx/Makefile b/arch/m68k/platform/54=
+xx/Makefile
+> index 6cfd090..967b51d 100644
+> --- a/arch/m68k/platform/54xx/Makefile
+> +++ b/arch/m68k/platform/54xx/Makefile
+> @@ -8,8 +8,8 @@
+> =A0# on the console port whenever a DBG interrupt occurs. You have to
+> =A0# set up you HW breakpoints to trigger a DBG interrupt:
+> =A0#
+> -# EXTRA_CFLAGS +=3D -DTRAP_DBG_INTERRUPT
+> -# EXTRA_AFLAGS +=3D -DTRAP_DBG_INTERRUPT
+> +# ccflags-y +=3D -DTRAP_DBG_INTERRUPT
+> +# ccflags-y +=3D -DTRAP_DBG_INTERRUPT
+> =A0#
+>
+> =A0asflags-$(CONFIG_FULLDEBUG) :=3D -DDEBUGGER_COMPATIBLE_CACHE=3D1
+> --
+> 1.7.6.153.g78432
+>
+>
