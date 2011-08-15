@@ -1,72 +1,97 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: merge the mmu and non-mmu kernel/Makefiles
-Date: Mon, 15 Aug 2011 12:07:50 +1000
-Message-ID: <4E487F76.9060909@snapgear.com>
-References: <1313038044-25522-1-git-send-email-gerg@snapgear.com> <CAMuHMdWKBP5waPOrOaHN2pbsUyrur07Ok2dHFiuZi2xzPmD2AQ@mail.gmail.com>
+From: Greg KH <greg@kroah.com>
+Subject: Re: Driver framework: binding a driver to two devices?
+Date: Sun, 14 Aug 2011 19:20:15 -0700
+Message-ID: <20110815022015.GA4886@kroah.com>
+References: <CAMuHMdVr9iAyqQJUgHq4gcLg+gp7GxF=sH+SBKBuqVWYymXs8Q@mail.gmail.com>
+ <20110814173816.GA10062@kroah.com>
+ <CAMuHMdUdJvqm+U7EY-p+vmkKyBd7urcRYEfV_6BWU8zqo+b_tA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:60548 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750869Ab1HOCEQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Aug 2011 22:04:16 -0400
-In-Reply-To: <CAMuHMdWKBP5waPOrOaHN2pbsUyrur07Ok2dHFiuZi2xzPmD2AQ@mail.gmail.com>
+Received: from out4.smtp.messagingengine.com ([66.111.4.28]:47205 "EHLO
+	out4.smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751289Ab1HOCU0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 14 Aug 2011 22:20:26 -0400
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUdJvqm+U7EY-p+vmkKyBd7urcRYEfV_6BWU8zqo+b_tA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Geert,
+On Sun, Aug 14, 2011 at 09:32:01PM +0200, Geert Uytterhoeven wrote:
+> On Sun, Aug 14, 2011 at 19:38, Greg KH <greg@kroah.com> wrote:
+> > On Sat, Aug 13, 2011 at 10:44:42PM +0200, Geert Uytterhoeven wrote:
+> >> As Amiga Zorro expansion boards have only one BAR (unlike PCI, whi=
+ch has
+> >> multiple BARs), several Amiga graphics cards show up as two Zorro =
+devices:
+> >> one for the graphics memory and one for the graphics controller's =
+registers.
+> >>
+> >> Traditionally, a driver for such a device used
+> >>
+> >> =A0 =A0 dev1 =3D zorro_find_device(id1, ...)
+> >> =A0 =A0 dev2 =3D zorro_find_device(id2, ...)
+> >>
+> >> to find the two devices and match them.
+> >>
+> >> With the "new" driver framework, the matching with device id1 is n=
+ow
+> >> done using a
+> >> struct zorro_driver with a table of IDs, while the matching with d=
+evice id2 is
+> >> still done by calling zorro_find_device(id2, ...).
+> >>
+> >> Recently (with cirrusfb) it turned out that the call to
+> >> zorro_find_device(id2, ...)
+> >> may fail to find the second device. I suspect this happens due to =
+the second
+> >> device haven't been probed for at the time the zorro_driver for th=
+e
+> >> first device is
+> >> initialized.
+> >>
+> >> I expect this can be fixed by delaying all calls to device_registe=
+r() in
+> >> amiga_zorro_probe() until all devices have been detected and added=
+ to the array
+> >> used by zorro_find_device(). But I was wondering whether there's a=
+ more generic
+> >> way in the driver framework to bind a driver to two devices?
+> >
+> > What you really want is the same "driver instance" bound to two dev=
+ices,
+> > right? =A0That way the device would operate "knowing" about both ph=
+ysical
+> > devices so as to properly control the thing.
+>=20
+> Yes, that's what I want.
+>=20
+> > Right now, no, there's not a simple way to do this with the driver
+> > model. =A0USB does this on its own for some devices that need to ha=
+ve
+> > multiple "interfaces" (the USB equalivant for a "device") controlle=
+d at
+> > the same time, so you might want to look at how that happens (in th=
+e
+> > indivdual drivers, not in the USB core.)
+>=20
+> Thanks, I'll have a look at the USB drivers.
+> Do you know which examples to look at?
 
-On 14/08/11 00:27, Geert Uytterhoeven wrote:
-> On Thu, Aug 11, 2011 at 06:47,<gerg@snapgear.com>  wrote:
->> --- a/arch/m68k/kernel/Makefile
->> +++ b/arch/m68k/kernel/Makefile
->> @@ -1,5 +1,20 @@
->> -ifdef CONFIG_MMU
->> -include arch/m68k/kernel/Makefile_mm
->> -else
->> -include arch/m68k/kernel/Makefile_no
->> +#
->> +# Makefile for the linux kernel.
->> +#
->> +
->> +extra-$(CONFIG_MMU) := head.o
->> +extra-$(CONFIG_SUN3) := sun3-head.o
->> +extra-y += vmlinux.lds
->> +
->> +obj-y := entry.o m68k_ksyms.o process.o ptrace.o setup.o signal.o \
->> + sys_m68k.o syscalltable.o time.o traps.o
->> +
->> +obj-y$(CONFIG_MMU_SUN3) += dma.o  # no, it's not a typo
->> +obj-$(CONFIG_MMU) += ints.o module.o devres.o
->
-> On MMU, we unconditionally build module.c.
->
->> +devres-$(CONFIG_MMU)  = ../../../kernel/irq/devres.o
->> +
->> +ifndef CONFIG_MMU
->> +obj-y += init_task.o irq.o
->> +obj-$(CONFIG_MODULES) += module.o
->
-> On nommu, it depends on CONFIG_MODULES.
->
-> However, most inside module.c is already protected by #ifdef CONFIG_MODULES.
-> Except for module_fixup(), which is empty for nommu. After moving the whole
-> module_fixup() inside #ifdef CONFIG_MMU, you can consolidate the module.o
-> entry in the Makefile.
+The drivers/usb/class/cdc-acm.c driver, in the acm_probe() function,
+grabs the "control" and "data" interfaces.  The logic is messy, due to
+the wide variety of broken devices out there, but you should get the
+general idea.
 
-Actually you don't even need to modify module.c to always build
-at the moment. I can move to always building module.o, it costs
-an extra 2 bytes in the final non-MMU/no-modules case :-)
+What's needed is for your bus to be able to provide you a pointer to an=
+y
+device you want to find.  PCI provides this, so you should be fine, and
+should not have any problems.
 
-Regards
-Greg
+Hope this helps,
 
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+greg k-h
