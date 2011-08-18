@@ -1,49 +1,47 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: [uClinux-dev] [PATCH] m68k: reorganize Kconfig options to
- improve mmu/non-mmu selections
-Date: Mon, 15 Aug 2011 15:17:05 -0700
-Message-ID: <20110815221705.GA31022@cynthia.pants.nu>
-References: <1313039421-26075-1-git-send-email-gerg@snapgear.com>
- <20110811061522.GC21757@merkur.ravnborg.org>
- <4E437A0B.3030201@snapgear.com>
- <20110812043022.GB4940@cynthia.pants.nu>
- <4E486E0F.3080601@snapgear.com>
- <20110815154942.GA15310@caffeine.csclub.uwaterloo.ca>
+From: Ian Campbell <ian.campbell@citrix.com>
+Subject: [PATCH] m68k: fix __page_to_pfn for a const struct page argument
+Date: Thu, 18 Aug 2011 09:37:02 +0100
+Message-ID: <1313656622-25975-1-git-send-email-ian.campbell@citrix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cynthia.allandria.com ([76.245.85.235]:48366 "EHLO
-	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753251Ab1HOWRO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Aug 2011 18:17:14 -0400
-Content-Disposition: inline
-In-Reply-To: <20110815154942.GA15310@caffeine.csclub.uwaterloo.ca>
+Received: from smtp02.citrix.com ([66.165.176.63]:65068 "EHLO
+	SMTP02.CITRIX.COM" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752826Ab1HRIhH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Aug 2011 04:37:07 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-m68k@vger.kernel.org
+Cc: Ian Campbell <ian.campbell@citrix.com>, Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Mon, Aug 15, 2011 at 11:49:42AM -0400, Lennart Sorensen wrote:
-> On Mon, Aug 15, 2011 at 10:53:35AM +1000, Greg Ungerer wrote:
-> > Even if we remove these options now they can always be re-introduced
-> > if and when a driver that needs them is ready for mainline.
-> 
-> Didn't the Amiga 600 and 1200 have PCMCIA slots?  I have no idea if
-> those are supported.  I certainly don't have either of those (only some
-> 500s and a 2000).
+Fixes fallout due to the removal of the cast in
+mm-fix-__page_to_pfn-for-a-const-struct-page-argument.patch
 
-If I've read the code correctly, the apne driver supports an 8390 based
-(normally used with pcnet_cs) PCMCIA card in the slots in those models.
-However, it's not written to use the common PCMCIA framework. This is
-why you have to use a specific list of supported cards rather than
-anything normally supported by Linux. I remember someone complaining
-that all they had was a 3Com Etherlink card which had worked in AmigaOS
-but didn't work in Linux.
+(akpm: this should probably be folded into that patch. I glanced over the other
+       architectures which appear not to use include/asm-generic/memory_model.h
+       and they appear to follow the other pattern (using ptr arithmetic) and
+       hence I think aren't susceptible to this issue).
 
-I get the impression that the Amiga slots are about as bad as what Apple
-did in their first Macintosh PCMCIA implementation in terms of being
-hard to support generically, but perhaps an Amiga slot driver could
-eventually be written that would use the common PCMCIA framework.
+Signed-off-by: Ian Campbell <ian.campbell@citrix.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/include/asm/page_mm.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-	Brad Boyer
-	flar@allandria.com
+diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
+index 31d5570..89f2014 100644
+--- a/arch/m68k/include/asm/page_mm.h
++++ b/arch/m68k/include/asm/page_mm.h
+@@ -162,7 +162,7 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
+ 	pgdat->node_mem_map + (__pfn - pgdat->node_start_pfn);		\
+ })
+ #define page_to_pfn(_page) ({						\
+-	struct page *__p = (_page);					\
++	const struct page *__p = (_page);				\
+ 	struct pglist_data *pgdat;					\
+ 	pgdat = &pg_data_map[page_to_nid(__p)];				\
+ 	((__p) - pgdat->node_mem_map) + pgdat->node_start_pfn;		\
+-- 
+1.7.2.5
