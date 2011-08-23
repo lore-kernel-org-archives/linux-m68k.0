@@ -1,72 +1,70 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Q40 interrupts (and genirq)
-Date: Tue, 23 Aug 2011 11:16:40 +0200
-Message-ID: <CAMuHMdV1bpFDkLyDsdkzgvQg6_C1Jf=hwR=VOVBObB19mhH6yA@mail.gmail.com>
+Subject: m68k: [v4] Convert to genirq (WIP)
+Date: Tue, 23 Aug 2011 11:34:15 +0200
+Message-ID: <CAMuHMdUEOUGbNOv2dhzf43=Q9BQZ5s4CXJ=MctUmWoe-ZozoCA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f170.google.com ([209.85.210.170]:63528 "EHLO
+Received: from mail-iy0-f170.google.com ([209.85.210.170]:42958 "EHLO
 	mail-iy0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754957Ab1HWJQl convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2011 05:16:41 -0400
+	with ESMTP id S1754463Ab1HWJeQ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2011 05:34:16 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Richard Zidlicky <rz@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 
-Hi Richard,
+I rebased and updated my m68k-genirq branch at
 
-I'm a bit puzzled by the Q40 interrupt architecture.
+git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git m68=
+k-genirq
+http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3Dsh=
+ortlog;h=3Drefs/heads/m68k-genirq
 
-arch/m68k/q40/q40ints.c says:
+[PATCH 01/22] ide-{cd,floppy,tape}, keyboard: Do not include <linux/irq=
+=2E>
+[PATCH 02/22] m68k/irq: Rename irq_controller to irq_chip
+[PATCH 03/22] m68k/irq: Kill irq_node_t typedef, always use struct irq_=
+node
+[PATCH 04/22] m68k/irq: Rename irq_node to irq_data
+[PATCH 05/22] m68k/irq: Switch irq_chip methods to "struct irq_data *da=
+ta"
+[PATCH 06/22] m68k/irq: Rename setup_irq() to m68k_setup_irq() and
+make it static
+[PATCH 07/22] m68k/irq: Extract irq_set_chip()
+[PATCH 08/22] m68k/irq: Add m68k_setup_irq_controller()
+[PATCH 09/22] m68k/irq: Rename {,__}m68k_handle_int()
+[PATCH 10/22] m68k/irq: Remove obsolete IRQ_FLG_* definitions and users
+[PATCH 11/22] m68k/irq: Add genirq support
+[PATCH 12/22] m68k/atari: Convert Atari to genirq
+[PATCH 13/22] m68k/atari: Remove code and comments about different irq =
+types
+[PATCH 14/22] m68k/amiga: Refactor amiints.c
+[PATCH 15/22] m68k/amiga: Convert Amiga to genirq
+[PATCH 16/22] m68k/amiga: Optimize interrupts using chain handlers
+[PATCH 17/22] m68k/mac: Convert Mac to genirq
+[PATCH 18/22] m68k/hp300: Convert HP9000/300 and HP9000/400 to genirq
+[PATCH 19/22] m68k/vme: Convert VME to genirq
+[PATCH 20/22] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+[PATCH 21/22] m68k/apollo: Convert Apollo to genirq
+[PATCH 22/22] m68k/sun3: Convert Sun3/3x to genirq
 
- * Q40 IRQs are defined as follows:
- *            3,4,5,6,7,10,11,14,15 : ISA dev IRQs
+Changes:
+  - Added cleanup in patch 13
+  - Conversion of Apollo and Sun3/3x
 
-Yep, that's _9_ interrupts.
+Todo:
+  - Q40 conversion (see separate email with issues),
+  - Chain handler optimizations for Mac,
+  - Removal of legacy code inside #ifndef CONFIG_GENERIC_HARDIRQ,
+  - Proper patch submission emails,
+  - Get it merged (For 3.3? Or even 3.2?).
 
- *            16-31: reserved
- *            32   : keyboard int
- *            33   : frame int (50/200 Hz periodic timer)
- *            34   : sample int (10/20 KHz periodic timer)
+Oh, I almost forgot: testing ;-)! So far I tested it on Atari (ARAnyM)
+and Amiga only.
 
-According to the Q40_IRQ*_MASK definitions (8 bits in the mask) and the=
- code
-(e.g. q40_irq_startup()), ISA IRQ 11 is not implemented.
-
-In the "new" interrupt code, by Roman Zippel, all interrupts sources ar=
-e handled
-through q40_irq_handler().
-Only autovector IRQs IRQ_AUTO_2 and IRQ_AUTO_4 are enabled.
-
-In the old (pre-2006) interrupt code, only internal (master) and ISA in=
-terrupts
-go through q40_irq2_handler on IRQ_AUTO_2.
-Q40_IRQ_SAMPLE goes via both IRQ_AUTO_4 and IRQ_AUTO_6.
-
-Why doesn't the new code use IRQ_AUTO_6? Does the new code work?
-
-=46or the genirq conversion, I was first thinking about using a custom
-chain-alike flow handler.
-But it looks like this is not possible, as the Q40 handler remaps
-autovector interrupts to
-conflicting numbers (it handles IRQ_AUTO_4 =3D 4, but ISA interrupt 4 i=
-s also 4).
-So if the custom flow handler would call generic_handle_irq(4) for ISA
-interrupt 4,
-it would recurse into the flow handler set up for autovector IRQ 4 :-(
-Changing the numbers is not trivial, as ISA assumes interrupts 1-15 eve=
-rywhere.
-
-So I'm afraid we're stuck with the current m68k_setup_auto_interrupt() =
-hack,
-which overwrites the lowest-level asm interrupt code, and keep the curr=
-ent
-q40_irq_handler() (This is similar to process_int() for 68328 on nommu)=
-=2E
-
-Thanks for your clarifications and suggestions!
+Thanks for testing and feedback!
 
 Gr{oetje,eeting}s,
 
