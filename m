@@ -1,82 +1,72 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: fix __page_to_pfn for a const struct page argument
-Date: Tue, 23 Aug 2011 09:56:09 +0200
-Message-ID: <CAMuHMdXB+mUu6LfFVynM_VRgb6YErtSQLrZyAt5ke7SgRRhDog@mail.gmail.com>
-References: <1313656622-25975-1-git-send-email-ian.campbell@citrix.com>
+Subject: Q40 interrupts (and genirq)
+Date: Tue, 23 Aug 2011 11:16:40 +0200
+Message-ID: <CAMuHMdV1bpFDkLyDsdkzgvQg6_C1Jf=hwR=VOVBObB19mhH6yA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f170.google.com ([209.85.210.170]:44597 "EHLO
+Received: from mail-iy0-f170.google.com ([209.85.210.170]:63528 "EHLO
 	mail-iy0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754104Ab1HWH4K convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2011 03:56:10 -0400
-Received: by iye16 with SMTP id 16so11680966iye.1
-        for <linux-m68k@vger.kernel.org>; Tue, 23 Aug 2011 00:56:09 -0700 (PDT)
-In-Reply-To: <1313656622-25975-1-git-send-email-ian.campbell@citrix.com>
+	with ESMTP id S1754957Ab1HWJQl convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2011 05:16:41 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ian Campbell <ian.campbell@citrix.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-m68k@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+To: Richard Zidlicky <rz@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 
-On Thu, Aug 18, 2011 at 10:37, Ian Campbell <ian.campbell@citrix.com> w=
-rote:
-> Fixes fallout due to the removal of the cast in
-> mm-fix-__page_to_pfn-for-a-const-struct-page-argument.patch
->
-> (akpm: this should probably be folded into that patch. I glanced over=
- the other
-> =C2=A0 =C2=A0 =C2=A0 architectures which appear not to use include/as=
-m-generic/memory_model.h
-> =C2=A0 =C2=A0 =C2=A0 and they appear to follow the other pattern (usi=
-ng ptr arithmetic) and
-> =C2=A0 =C2=A0 =C2=A0 hence I think aren't susceptible to this issue).
->
-> Signed-off-by: Ian Campbell <ian.campbell@citrix.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Richard,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I'm a bit puzzled by the Q40 interrupt architecture.
 
-The original patch claimed to fix the callers of __page_to_pfn(),
-while it actually changed (and thus broke) the caller of page_to_pfn().=
-=2E.
-Please put this on the fast track.
+arch/m68k/q40/q40ints.c says:
 
-> Cc: linux-m68k@lists.linux-m68k.org
-> ---
-> =C2=A0arch/m68k/include/asm/page_mm.h | =C2=A0 =C2=A02 +-
-> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/=
-page_mm.h
-> index 31d5570..89f2014 100644
-> --- a/arch/m68k/include/asm/page_mm.h
-> +++ b/arch/m68k/include/asm/page_mm.h
-> @@ -162,7 +162,7 @@ static inline __attribute_const__ int __virt_to_n=
-ode_shift(void)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0pgdat->node_mem_map + (__pfn - pgdat->node=
-_start_pfn); =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
-> =C2=A0})
-> =C2=A0#define page_to_pfn(_page) ({ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
-> - =C2=A0 =C2=A0 =C2=A0 struct page *__p =3D (_page); =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
-> + =C2=A0 =C2=A0 =C2=A0 const struct page *__p =3D (_page); =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 \
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct pglist_data *pgdat; =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0pgdat =3D &pg_data_map[page_to_nid(__p)]; =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 \
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0((__p) - pgdat->node_mem_map) + pgdat->nod=
-e_start_pfn; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
-> --
-> 1.7.2.5
+ * Q40 IRQs are defined as follows:
+ *            3,4,5,6,7,10,11,14,15 : ISA dev IRQs
+
+Yep, that's _9_ interrupts.
+
+ *            16-31: reserved
+ *            32   : keyboard int
+ *            33   : frame int (50/200 Hz periodic timer)
+ *            34   : sample int (10/20 KHz periodic timer)
+
+According to the Q40_IRQ*_MASK definitions (8 bits in the mask) and the=
+ code
+(e.g. q40_irq_startup()), ISA IRQ 11 is not implemented.
+
+In the "new" interrupt code, by Roman Zippel, all interrupts sources ar=
+e handled
+through q40_irq_handler().
+Only autovector IRQs IRQ_AUTO_2 and IRQ_AUTO_4 are enabled.
+
+In the old (pre-2006) interrupt code, only internal (master) and ISA in=
+terrupts
+go through q40_irq2_handler on IRQ_AUTO_2.
+Q40_IRQ_SAMPLE goes via both IRQ_AUTO_4 and IRQ_AUTO_6.
+
+Why doesn't the new code use IRQ_AUTO_6? Does the new code work?
+
+=46or the genirq conversion, I was first thinking about using a custom
+chain-alike flow handler.
+But it looks like this is not possible, as the Q40 handler remaps
+autovector interrupts to
+conflicting numbers (it handles IRQ_AUTO_4 =3D 4, but ISA interrupt 4 i=
+s also 4).
+So if the custom flow handler would call generic_handle_irq(4) for ISA
+interrupt 4,
+it would recurse into the flow handler set up for autovector IRQ 4 :-(
+Changing the numbers is not trivial, as ISA assumes interrupts 1-15 eve=
+rywhere.
+
+So I'm afraid we're stuck with the current m68k_setup_auto_interrupt() =
+hack,
+which overwrites the lowest-level asm interrupt code, and keep the curr=
+ent
+q40_irq_handler() (This is similar to process_int() for 68328 on nommu)=
+=2E
+
+Thanks for your clarifications and suggestions!
 
 Gr{oetje,eeting}s,
 
