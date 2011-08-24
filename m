@@ -1,43 +1,62 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68knommu: remove extern definitions of memory_start/memory_end
- from mm/init
-Date: Wed, 24 Aug 2011 11:23:57 +1000
-Message-ID: <4E5452AD.6080106@snapgear.com>
-References: <1314079503-26758-1-git-send-email-gerg@snapgear.com> <m2mxf0p1wj.fsf@igel.home>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: patch "TTY: remove tty_locked" added to tty tree
+Date: Wed, 24 Aug 2011 16:35:13 +0200
+Message-ID: <201108241635.13502.arnd__31302.4693205536$1314196594$gmane$org@arndb.de>
+References: <13141210141189@kroah.org> <201108241320.47635.arnd@arndb.de> <4E54E4D9.6070802@suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:18020 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753515Ab1HXBZK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2011 21:25:10 -0400
-In-Reply-To: <m2mxf0p1wj.fsf@igel.home>
+In-Reply-To: <4E54E4D9.6070802@suse.cz>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: gregkh@suse.de, alan@linux.intel.com, Linux kernel mailing list <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Andreas,
+On Wednesday 24 August 2011, Jiri Slaby wrote:
+> On 08/24/2011 01:20 PM, Arnd Bergmann wrote:
+> > It's not clear to me what state->mutex protects in the serial_core, but
+> > it has been around forever (used to be called state->sem)
+> 
+> It was actually moved in uart_close back in 2003. Formerly (when there
+> was only a coarse grained port_sem) it was right before uart_shutdown.
+> But there were some flags to handle some races. I'm not sure whether the
+> flags protected any race here though.
 
-On 24/08/11 01:45, Andreas Schwab wrote:
-> <gerg@snapgear.com>  writes:
->
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> We do not need to have local extern definitions of memory_start and
->> memory_end in mm/init_no.c. There are definitions already in asm/page_no.h.
->
-> s/definitions/declarations/
+ok
 
-Yep, I'll change that. Thanks.
+> > and is held in
+> > all uart functions, which is at least consistent. IIRC what Alan's plan
+> > for this was, uart_close should eventually get changed to use
+> > tty_port_close_start or even tty_port_close. Maybe the time for that has
+> > come now, lacking better alternatives?
+> 
+> Yes, I have such a patch in my queue. But it's not easy to get there.
+> You may take a look at:
+> http://decibel.fi.muni.cz/gitweb/?p=linux.git;a=shortlog;h=refs/heads/devel
+> 
+> But it's still far from ready. And yet, in the queue, I still have
+> port->mutex locked before tty_port_close_start like it is now.
 
-Regards
-Greg
+Ah, right. I still don't see why the port->mutex is or is not needed there,
+and I think that's the main issue.
 
+By comparison, getting *_wait_until_sent to be called without BTM seems
+easy -- we know that all callers from ->close() hold it, while the ones
+from ->ioctl() don't. We could have a helper like
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+void tty_wait_until_sent_from_close(struct tty_struct *tty, long timeout)
+{
+	tty_unlock(); /* tty->ops->close holds the BTM, drop it while waiting */
+	tty_wait_until_sent(tty, timeout);
+	tty_lock();
+}
+
+to deal with that, if only we can sort the lock ordering with port->mutex.
+
+BTW, I saw that the three m68k serial port drivers (amiserial, 68328, 68360)
+all call *_wait_until_sent with interrupts disabled, which is even more
+broken.
+
+	Arnd
