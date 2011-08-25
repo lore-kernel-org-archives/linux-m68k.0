@@ -1,113 +1,88 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Q40 interrupts (and genirq)
-Date: Thu, 25 Aug 2011 12:13:22 +0200
-Message-ID: <CAMuHMdW3SfQO9uYgPH12gr_WsAGFAD71fym-k20BafSkv735jw@mail.gmail.com>
-References: <CAMuHMdV1bpFDkLyDsdkzgvQg6_C1Jf=hwR=VOVBObB19mhH6yA@mail.gmail.com>
-	<20110823221631.GA6827@rz>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: Autovector exceptions on Atari ST
+Date: Thu, 25 Aug 2011 21:38:11 +1000
+Message-ID: <4E563423.8090003@snapgear.com>
+References: <20110602192553.GA2071@matze-K8NF4G-SATA2>	<4DE88763.4030705@snapgear.com>	<BANLkTikVUh4rRsWLRrcAj2R6pu7GQUm-ag@mail.gmail.com>	<BANLkTi=Uob6LavtHkbhgL=c=n=6m46x-+g@mail.gmail.com>	<9cfdc3da684fa1f7960cd286766f5832.squirrel@www.physik.tu-berlin.de>	<20110807205739.GA4527@matze-K8NF4G-SATA2>	<CAMuHMdWx+JPgVy+QCFVvM8GCnAVq2AhznE+MG2XD1VDJikmzHw@mail.gmail.com>	<CAMuHMdXMd0iuE7FnhSRjFiO7A0TUVRfp-FdJ==RktU+9HspEJQ@mail.gmail.com>	<7aefed5bdc7af1311db846ae00fb1359.squirrel@www.physik.tu-berlin.de>	<48FE2225-A299-45D5-AC6B-07F0102CAAFD@gmail.com> <CAMuHMdWOD_CC7RC5ByJB9k9qGueMS+c2CQZn-Tr+nPsrM+-+-w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-fx0-f46.google.com ([209.85.161.46]:37445 "EHLO
-	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751378Ab1HYKNY convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Aug 2011 06:13:24 -0400
-In-Reply-To: <20110823221631.GA6827@rz>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:32570 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753342Ab1HYLip convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Aug 2011 07:38:45 -0400
+In-Reply-To: <CAMuHMdWOD_CC7RC5ByJB9k9qGueMS+c2CQZn-Tr+nPsrM+-+-w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Richard <rz@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Juran <jjuran@gmail.com>, Matthias Reis <matthias.reis@physik.tu-berlin.de>, linux-m68k@vger.kernel.org
 
-Hi Richard,
-
-On Wed, Aug 24, 2011 at 00:16, Richard <rz@linux-m68k.org> wrote:
->> I'm a bit puzzled by the Q40 interrupt architecture.
+On 25/08/11 18:13, Geert Uytterhoeven wrote:
+> On Thu, Aug 25, 2011 at 03:51, Joshua Juran<jjuran@gmail.com>  wrote:
+>> On Aug 24, 2011, at 12:47 PM, Matthias Reis wrote:
 >>
->> arch/m68k/q40/q40ints.c says:
+>>>> On Sun, Aug 7, 2011 at 23:09, Geert Uytterhoeven<geert@linux-m68k.=
+org>
+>>>> wrote:
+>>>>
+>>>> MFP interrupts are not autovector interrupts, but user vector inte=
+rrupts.
+>>>>
+>>>> Sorry, I forgot about this: it may be a stack frame format issue,
+>>>> which causes the kernel to
+>>>> incorrectly identify the interrupt number.
+>>>>
+>>>> user_inthandler() in arch/m68k/kernel/entry_mm.S looks at the
+>>>> PT_OFF_FORMATVEC
+>>>> field in the stack frame to identify the interrupt source. I don't
+>>>> know from memory
+>>>> if the plain 68000 stores it there. For autovector interrupts, it
+>>>> doesn't, that's why
+>>>> I created inidividual auto*_inthandler() functions that put an har=
+dcoded
+>>>> number
+>>>> on the stack instead of looking at the stack frame.
+>>>
+>>> thanks for your kind reply. As far as I understand the 68000 manual
+>>> (http://www.freescale.com/files/archives/doc/ref_manual/M68000PRM.p=
+df,
+>>> section b.2), the CPU does not store the vector number on the excep=
+tion
+>>> stack. This is also what I've seen in the debugger: some seemingly =
+bogus
+>>> irq number is passed to m68k_handle_int. Any suggestions how to sol=
+ve
+>>> this? I guess it is not a good idea to write an individual
+>>> user*_inthandler for each of the 255-64=3D191 possible user interru=
+pts.
 >>
->> =C2=A0* Q40 IRQs are defined as follows:
->> =C2=A0* =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A03,4,5,6,7,10,11,14,=
-15 : ISA dev IRQs
->>
->> Yep, that's _9_ interrupts.
+>> It's not out of the question. =C3=A1Although you wouldn't write 192 =
+little
+>> functions by hand -- just have stubs that push the vector number or =
+offset
+>> onto the stack and branch to another function, and generate the stub=
+ code at
+>> runtime.
 >
-> 11 conflicts with q40_irq_startup() but I am not quite sure at the mo=
-ment which
-> one is right. Iirc some of the irqs are shared/indistinguishable as s=
-ources but were
-> still defined both separately just in case the number is needed.
->
->> In the "new" interrupt code, by Roman Zippel, all interrupts sources=
- are handled
->> through q40_irq_handler().
->> Only autovector IRQs IRQ_AUTO_2 and IRQ_AUTO_4 are enabled.
->>
->> In the old (pre-2006) interrupt code, only internal (master) and ISA=
- interrupts
->> go through q40_irq2_handler on IRQ_AUTO_2.
->> Q40_IRQ_SAMPLE goes via both IRQ_AUTO_4 and IRQ_AUTO_6.
->>
->> Why doesn't the new code use IRQ_AUTO_6? Does the new code work?
->
-> iirc IRQ_AUTO_6 was needed for some very early versions of the master=
- chip,
-> should work without.
->
-> I will need to verify this points but don't have the HW manual right =
-here.
->
->> For the genirq conversion, I was first thinking about using a custom
->> chain-alike flow handler.
->> But it looks like this is not possible, as the Q40 handler remaps
->> autovector interrupts to
->> conflicting numbers (it handles IRQ_AUTO_4 =3D 4, but ISA interrupt =
-4 is also 4).
->> So if the custom flow handler would call generic_handle_irq(4) for I=
-SA
->> interrupt 4,
->> it would recurse into the flow handler set up for autovector IRQ 4 :=
--(
->
-> The numbers are equal but they mean different things at different sta=
-ges
-> of abstraction/translation/mapping which is normally no concern as lo=
-ng as
-> it is clear at which stage it is.
->
-> Perhaps the new algorithm would need an extra flag to keep track of w=
-hat it
-> is dealing with.
-> What are the problems you are trying to solve with the new handler?
+> And you only have to do it for the user interrupts you actually need/=
+use.
 
-I'm solving the problem that m68k still doesn't use genirq (and is the =
-single
-architecture still doing so, except for s390, which is "different" anyw=
-ay).
+That is pretty much what the code for the 68328 does.
 
-> For the Q40, IRQ_AUTO_4 should be translated to "34 =C2=A0 : sample i=
-nt (10/20 KHz periodic timer)"
-> IRQ_AUTO_2 needs further decoding before it can be decided what shoul=
-d be handled.
-> It can be any of the ISA irqs or one of 32,33.
->
-> So as long as ISA drivers can use the numbers 1-15 and the Q40 specif=
-ic
-> drivers 32-34 nothing there should not be a problem
+   arch/m68k/platform/68328/entry.S
 
-Thanks! This confirms my findings.
+It has 8 handlers for the 8 real interrupts it can handle.
 
-Gr{oetje,eeting}s,
+Regards
+Greg
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+> I.e. m68k_setup_user_interrupt() could allocate the needed memory and=
+ fill
+> it with the generated interrupt handlers.
+> For Atari that's doable, for VME it would still generate all 192 of t=
+hem.
+> Alternatively, let m68k_irq_startup() handle it when it's called the
+> first time for
+> that specific interrupt.
