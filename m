@@ -1,68 +1,68 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: m68k: Convert to genirq (WIP)
-Date: Fri, 26 Aug 2011 09:09:06 -0700
-Message-ID: <20110826160905.GA17550@cynthia.pants.nu>
-References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
- <alpine.OSX.2.00.1106011300550.199@ibook.intranet>
- <20110605062702.GA2034@cynthia.pants.nu>
- <CAMuHMdXVt5+nCaCSH3+z0fsL+vhOOTgbKsOAses8OudT-1OZGQ@mail.gmail.com>
- <alpine.OSX.2.00.1108102007430.203@ibook.local>
- <CAMuHMdXgeHtOB_3u6G6N9E4vaq=sJY-9NtF68XAnxhspMgRyGg@mail.gmail.com>
- <alpine.OSX.2.00.1108262117070.267@ibook.local>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: m68k: [v5] Convert to genirq (WIP)
+Date: Fri, 26 Aug 2011 22:34:18 +0200
+Message-ID: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.OSX.2.00.1108262117070.267@ibook.local>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Fri, Aug 26, 2011 at 09:21:05PM +1000, Finn Thain wrote:
-> 
-> On Fri, 26 Aug 2011, Geert Uytterhoeven wrote:
-> 
-> > According to via_register_interrupts(), it requests both:
-> > 
-> >         if (via_alt_mapping) {
-> >                 if (request_irq(IRQ_AUTO_1, via1_irq, 0, "software",
-> >                                 (void *)via1))
-> >                         pr_err("Couldn't register %s interrupt\n", "software");
-> >                 if (request_irq(IRQ_AUTO_6, via1_irq, 0, "via1", (void *)via1))
-> >                         pr_err("Couldn't register %s interrupt\n", "via1");
-> >         } else {
-> >                 if (request_irq(IRQ_AUTO_1, via1_irq, 0, "via1", (void *)via1))
-> >                         pr_err("Couldn't register %s interrupt\n", "via1");
-> >         }
-> > 
-> > Hence IRQ_AUTO_1 must be shared and we cannot use an optimized chain
-> > handler for via1_irq()
-> 
-> I'm pretty sure that the "software" request_irq can be removed. It has 
-> come up before --
-> http://marc.info/?l=linux-mac68k&m=110973724208746&w=2
-> 
-> Maybe Brad can shed some light on this (?)
+I rebased and updated my m68k-genirq branch at
 
-Sorry, not really. We don't have any good documentation on how the
-alternate mapping really works on those systems. Anything that has
-it internally is using custom chips instead of a real VIA6522, so
-it's hard to say exactly how it behaves.
+git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-genirq
+http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=shortlog;h=refs/heads/m68k-genirq
 
-The real key of the alternate mapping is to move the timer interrupt
-higher than all the other hardware. This and the ADB are about all
-we really need from VIA1. It's possible one of the other interrupts
-we don't use is still on IRQ1. It's hard to say without trying.
+[PATCH 01/24] ide-{cd,floppy,tape}, keyboard: Do not include <linux/irq.>
+[PATCH 02/24] m68k/irq: Rename irq_controller to irq_chip
+[PATCH 03/24] m68k/irq: Kill irq_node_t typedef, always use struct irq_node
+[PATCH 04/24] m68k/irq: Rename irq_node to irq_data
+[PATCH 05/24] m68k/irq: Switch irq_chip methods to "struct irq_data *data"
+[PATCH 06/24] m68k/irq: Rename setup_irq() to m68k_setup_irq() and
+make it static
+[PATCH 07/24] m68k/irq: Extract irq_set_chip()
+[PATCH 08/24] m68k/irq: Add m68k_setup_irq_controller()
+[PATCH 09/24] m68k/irq: Rename {,__}m68k_handle_int()
+[PATCH 10/24] m68k/irq: Remove obsolete IRQ_FLG_* definitions and users
+[PATCH 11/24] m68k/irq: Add genirq support
+[PATCH 12/24] m68k/atari: Convert Atari to genirq
+[PATCH 13/24] m68k/atari: Remove code and comments about different irq types
+[PATCH 14/24] m68k/amiga: Refactor amiints.c
+[PATCH 15/24] m68k/amiga: Convert Amiga to genirq
+[PATCH 16/24] m68k/amiga: Optimize interrupts using chain handlers
+[PATCH 17/24] m68k/mac: Convert Mac to genirq
+[PATCH 18/24] m68k/mac: Optimize interrupts using chain handlers
+[PATCH 19/24] m68k/hp300: Convert HP9000/300 and HP9000/400 to genirq
+[PATCH 20/24] m68k/vme: Convert VME to genirq
+[PATCH 21/24] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+[PATCH 22/24] m68k/apollo: Convert Apollo to genirq
+[PATCH 23/24] m68k/sun3: Convert Sun3/3x to genirq
+[PATCH 24/24] m68k/q40: Convert Q40/Q60 to genirq
 
-I think I have a couple systems that have this hardware, but they
-are ones I haven't used much. If I can find some time I'll get the
-Q950 I acquired recently up and running since it should have the
-alternate mapping capability.
+Changes:
+  - [PATCH 11/24]: Keep m68k_setup_auto_interrupt(), it's still needed for Q40
+  - [PATCH 18/24]: m68k/mac: Optimize interrupts using chain handlers (NEW)
+  - [PATCH 24/24]: m68k/q40: Convert Q40/Q60 to genirq (NEW)
 
-One potential option is to just take it out and see if anything
-breaks with the change. We could add it back later if we find a
-use for it.
+Todo:
+ - Removal of legacy code inside #ifndef CONFIG_GENERIC_HARDIRQ,
+ - Proper patch submission emails,
+ - Get it merged (For 3.3? Or even 3.2?).
 
-	Brad Boyer
-	flar@allandria.com
+Oh, I almost forgot: testing ;-)! So far I tested it on Atari (ARAnyM)
+and Amiga only.
+
+Thanks for testing and feedback!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
