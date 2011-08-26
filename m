@@ -1,88 +1,73 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: Autovector exceptions on Atari ST
-Date: Thu, 25 Aug 2011 21:38:11 +1000
-Message-ID: <4E563423.8090003@snapgear.com>
-References: <20110602192553.GA2071@matze-K8NF4G-SATA2>	<4DE88763.4030705@snapgear.com>	<BANLkTikVUh4rRsWLRrcAj2R6pu7GQUm-ag@mail.gmail.com>	<BANLkTi=Uob6LavtHkbhgL=c=n=6m46x-+g@mail.gmail.com>	<9cfdc3da684fa1f7960cd286766f5832.squirrel@www.physik.tu-berlin.de>	<20110807205739.GA4527@matze-K8NF4G-SATA2>	<CAMuHMdWx+JPgVy+QCFVvM8GCnAVq2AhznE+MG2XD1VDJikmzHw@mail.gmail.com>	<CAMuHMdXMd0iuE7FnhSRjFiO7A0TUVRfp-FdJ==RktU+9HspEJQ@mail.gmail.com>	<7aefed5bdc7af1311db846ae00fb1359.squirrel@www.physik.tu-berlin.de>	<48FE2225-A299-45D5-AC6B-07F0102CAAFD@gmail.com> <CAMuHMdWOD_CC7RC5ByJB9k9qGueMS+c2CQZn-Tr+nPsrM+-+-w@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: m68k: Convert to genirq (WIP)
+Date: Fri, 26 Aug 2011 11:52:21 +0200
+Message-ID: <CAMuHMdXgeHtOB_3u6G6N9E4vaq=sJY-9NtF68XAnxhspMgRyGg@mail.gmail.com>
+References: <alpine.DEB.2.00.1105282010370.16617@ayla.of.borg>
+	<alpine.OSX.2.00.1106011300550.199@ibook.intranet>
+	<20110605062702.GA2034@cynthia.pants.nu>
+	<CAMuHMdXVt5+nCaCSH3+z0fsL+vhOOTgbKsOAses8OudT-1OZGQ@mail.gmail.com>
+	<alpine.OSX.2.00.1108102007430.203@ibook.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:32570 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753342Ab1HYLip convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Aug 2011 07:38:45 -0400
-In-Reply-To: <CAMuHMdWOD_CC7RC5ByJB9k9qGueMS+c2CQZn-Tr+nPsrM+-+-w@mail.gmail.com>
+In-Reply-To: <alpine.OSX.2.00.1108102007430.203@ibook.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Juran <jjuran@gmail.com>, Matthias Reis <matthias.reis@physik.tu-berlin.de>, linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Brad Boyer <flar@allandria.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On 25/08/11 18:13, Geert Uytterhoeven wrote:
-> On Thu, Aug 25, 2011 at 03:51, Joshua Juran<jjuran@gmail.com>  wrote:
->> On Aug 24, 2011, at 12:47 PM, Matthias Reis wrote:
+On Wed, Aug 10, 2011 at 12:53, Finn Thain <fthain@telegraphics.com.au> =
+wrote:
+>> via1_irq
+>> =C2=A0 =C2=A0 OSS_IRQLEV_VIA1 =3D IRQ_AUTO_6 (on oss) =C2=A0 =C2=A0 =
+=C2=A0 conflict: psc_irq
 >>
->>>> On Sun, Aug 7, 2011 at 23:09, Geert Uytterhoeven<geert@linux-m68k.=
-org>
->>>> wrote:
->>>>
->>>> MFP interrupts are not autovector interrupts, but user vector inte=
-rrupts.
->>>>
->>>> Sorry, I forgot about this: it may be a stack frame format issue,
->>>> which causes the kernel to
->>>> incorrectly identify the interrupt number.
->>>>
->>>> user_inthandler() in arch/m68k/kernel/entry_mm.S looks at the
->>>> PT_OFF_FORMATVEC
->>>> field in the stack frame to identify the interrupt source. I don't
->>>> know from memory
->>>> if the plain 68000 stores it there. For autovector interrupts, it
->>>> doesn't, that's why
->>>> I created inidividual auto*_inthandler() functions that put an har=
-dcoded
->>>> number
->>>> on the stack instead of looking at the stack frame.
->>>
->>> thanks for your kind reply. As far as I understand the 68000 manual
->>> (http://www.freescale.com/files/archives/doc/ref_manual/M68000PRM.p=
-df,
->>> section b.2), the CPU does not store the vector number on the excep=
-tion
->>> stack. This is also what I've seen in the debugger: some seemingly =
-bogus
->>> irq number is passed to m68k_handle_int. Any suggestions how to sol=
-ve
->>> this? I guess it is not a good idea to write an individual
->>> user*_inthandler for each of the 255-64=3D191 possible user interru=
-pts.
->>
->> It's not out of the question. =C3=A1Although you wouldn't write 192 =
-little
->> functions by hand -- just have stubs that push the vector number or =
-offset
->> onto the stack and branch to another function, and generate the stub=
- code at
->> runtime.
+>> =C2=A0 =C2=A0 IRQ_AUTO_1 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+conflict: iop_ism_irq
+
+>> iop_ism_irq
+>> =C2=A0 =C2=A0 OSS_IRQLEV_IOPISM =3D 1 =3D IRQ_AUTO_1 (on oss) confli=
+ct: via1_irq
 >
-> And you only have to do it for the user interrupts you actually need/=
-use.
+> via1_irq is remapped to IRQ_AUTO_6 on OSS.
 
-That is pretty much what the code for the 68328 does.
+According to via_register_interrupts(), it requests both:
 
-   arch/m68k/platform/68328/entry.S
+        if (via_alt_mapping) {
+                if (request_irq(IRQ_AUTO_1, via1_irq, 0, "software",
+                                (void *)via1))
+                        pr_err("Couldn't register %s interrupt\n", "sof=
+tware");
+                if (request_irq(IRQ_AUTO_6, via1_irq, 0, "via1", (void =
+*)via1))
+                        pr_err("Couldn't register %s interrupt\n", "via=
+1");
+        } else {
+                if (request_irq(IRQ_AUTO_1, via1_irq, 0, "via1", (void =
+*)via1))
+                        pr_err("Couldn't register %s interrupt\n", "via=
+1");
+        }
 
-It has 8 handlers for the 8 real interrupts it can handle.
+Hence IRQ_AUTO_1 must be shared, and we cannot use an optimized chain
+handler for via1_irq() nor iop_ism_irq(). This is the only remaining co=
+nflict
+I see.
 
-Regards
-Greg
+Gr{oetje,eeting}s,
 
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-> I.e. m68k_setup_user_interrupt() could allocate the needed memory and=
- fill
-> it with the generated interrupt handlers.
-> For Atari that's doable, for VME it would still generate all 192 of t=
-hem.
-> Alternatively, let m68k_irq_startup() handle it when it's called the
-> first time for
-> that specific interrupt.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
