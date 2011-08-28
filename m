@@ -1,68 +1,78 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: m68k: [v5] Convert to genirq (WIP)
-Date: Fri, 26 Aug 2011 22:34:18 +0200
-Message-ID: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: m68k: [v5] Convert to genirq (WIP)
+Date: Sun, 28 Aug 2011 12:08:11 +1000 (EST)
+Message-ID: <alpine.OSX.2.00.1108271506320.190@ibook.local>
+References: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: linux-m68k@vger.kernel.org
 
-I rebased and updated my m68k-genirq branch at
 
-git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-genirq
-http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=shortlog;h=refs/heads/m68k-genirq
+On Fri, 26 Aug 2011, Geert Uytterhoeven wrote:
 
-[PATCH 01/24] ide-{cd,floppy,tape}, keyboard: Do not include <linux/irq.>
-[PATCH 02/24] m68k/irq: Rename irq_controller to irq_chip
-[PATCH 03/24] m68k/irq: Kill irq_node_t typedef, always use struct irq_node
-[PATCH 04/24] m68k/irq: Rename irq_node to irq_data
-[PATCH 05/24] m68k/irq: Switch irq_chip methods to "struct irq_data *data"
-[PATCH 06/24] m68k/irq: Rename setup_irq() to m68k_setup_irq() and
-make it static
-[PATCH 07/24] m68k/irq: Extract irq_set_chip()
-[PATCH 08/24] m68k/irq: Add m68k_setup_irq_controller()
-[PATCH 09/24] m68k/irq: Rename {,__}m68k_handle_int()
-[PATCH 10/24] m68k/irq: Remove obsolete IRQ_FLG_* definitions and users
-[PATCH 11/24] m68k/irq: Add genirq support
-[PATCH 12/24] m68k/atari: Convert Atari to genirq
-[PATCH 13/24] m68k/atari: Remove code and comments about different irq types
-[PATCH 14/24] m68k/amiga: Refactor amiints.c
-[PATCH 15/24] m68k/amiga: Convert Amiga to genirq
-[PATCH 16/24] m68k/amiga: Optimize interrupts using chain handlers
-[PATCH 17/24] m68k/mac: Convert Mac to genirq
-[PATCH 18/24] m68k/mac: Optimize interrupts using chain handlers
-[PATCH 19/24] m68k/hp300: Convert HP9000/300 and HP9000/400 to genirq
-[PATCH 20/24] m68k/vme: Convert VME to genirq
-[PATCH 21/24] m68k/sun3: Use the kstat_irqs_cpu() wrapper
-[PATCH 22/24] m68k/apollo: Convert Apollo to genirq
-[PATCH 23/24] m68k/sun3: Convert Sun3/3x to genirq
-[PATCH 24/24] m68k/q40: Convert Q40/Q60 to genirq
+> - [PATCH 18/24]: m68k/mac: Optimize interrupts using chain handlers (NEW)
 
-Changes:
-  - [PATCH 11/24]: Keep m68k_setup_auto_interrupt(), it's still needed for Q40
-  - [PATCH 18/24]: m68k/mac: Optimize interrupts using chain handlers (NEW)
-  - [PATCH 24/24]: m68k/q40: Convert Q40/Q60 to genirq (NEW)
+That patch has a mistake --
 
-Todo:
- - Removal of legacy code inside #ifndef CONFIG_GENERIC_HARDIRQ,
- - Proper patch submission emails,
- - Get it merged (For 3.3? Or even 3.2?).
+	irq_set_chained_handler(IRQ_AUTO_4, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_3, (void *)0x40);
+	irq_set_chained_handler(IRQ_AUTO_5, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_3, (void *)0x50);
+	irq_set_chained_handler(IRQ_AUTO_6, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_3, (void *)0x60);
 
-Oh, I almost forgot: testing ;-)! So far I tested it on Atari (ARAnyM)
-and Amiga only.
+should be
 
-Thanks for testing and feedback!
+	irq_set_chained_handler(IRQ_AUTO_4, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_4, (void *)0x40);
+	irq_set_chained_handler(IRQ_AUTO_5, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_5, (void *)0x50);
+	irq_set_chained_handler(IRQ_AUTO_6, psc_irq);
+	irq_set_handler_data(IRQ_AUTO_6, (void *)0x60);
 
-Gr{oetje,eeting}s,
+I also found that the mac_esp driver probe (when in PIO mode) locks up the 
+machine. I worked around this by changing the 
+disable_irq(IRQ_VIA2_3)/enable_irq(IRQ_VIA2_3) calls to 
+local_irq_save/local_irq_restore, but this is not a good solution.
 
-                        Geert
+Apparently genirq doesn't permit nested disable_irq/enable_irq calls. But 
+I haven't found any outer disable_irq/enable_irq pair yet, so I'm only 
+guessing as to the cause of the problem. I'll keep looking.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+On one VIA-based machine that I tested, !CONFIG_USE_GENERIC_HARDIRQS 
+gives:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+# cat /proc/interrupts
+auto       1:       2299 via1
+auto       2:       3876 via2
+auto       4:        562 SCC
+auto       7:          0 NMI
+mac       10:        590 pmu-shift
+mac       12:         90 pmu-clock
+mac       14:       1635 timer
+mac       17:       3876 nubus
+mac       56:       3879 sonic
+
+whereas, CONFIG_USE_GENERIC_HARDIRQS=y gives:
+
+# cat /proc/interrupts
+           CPU0       
+  4:       5303      auto  SCC
+  7:          0      auto  NMI
+ 10:       2136       mac  pmu-shift
+ 12:        607       mac  pmu-clock
+ 14:      41858       mac  timer
+ 56:      66876       mac  sonic
+ERR:          0
+
+Are there no counters for chained IRQs?
+
+Other than these issues everything looks OK. I will test OSS and Baboon 
+when I get the relevant hardware set up.
+
+Finn
