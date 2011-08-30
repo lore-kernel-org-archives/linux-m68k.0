@@ -1,81 +1,86 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: m68k: [v5] Convert to genirq (WIP)
-Date: Mon, 29 Aug 2011 09:36:32 +0200
-Message-ID: <CAMuHMdVG+GM5c0Wmpa-sAYL+pY1Oz7SynEqmpE1vJWY6j4rXvg@mail.gmail.com>
-References: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
-	<alpine.OSX.2.00.1108271506320.190@ibook.local>
-	<CAMuHMdXk6_1CO8mvfNtbjf3V0Awh=zFYOcrpbUe2-pZkL5knxQ@mail.gmail.com>
+Subject: [PATCH] bitops: Move find_next_bit.o from lib-y to obj-y
+Date: Tue, 30 Aug 2011 15:17:03 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1108301427170.10125__16356.4314753332$1314710254$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-gw0-f46.google.com ([74.125.83.46]:64102 "EHLO
-	mail-gw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752741Ab1H2Hgd convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Aug 2011 03:36:33 -0400
-In-Reply-To: <CAMuHMdXk6_1CO8mvfNtbjf3V0Awh=zFYOcrpbUe2-pZkL5knxQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Greg Ungerer <gerg@uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-On Sun, Aug 28, 2011 at 09:53, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> On Sun, Aug 28, 2011 at 04:08, Finn Thain <fthain@telegraphics.com.au=
-> wrote:
->> On one VIA-based machine that I tested, !CONFIG_USE_GENERIC_HARDIRQS
->> gives:
->>
->> # cat /proc/interrupts
->> auto =C2=A0 =C2=A0 =C2=A0 1: =C2=A0 =C2=A0 =C2=A0 2299 via1
->> auto =C2=A0 =C2=A0 =C2=A0 2: =C2=A0 =C2=A0 =C2=A0 3876 via2
->> auto =C2=A0 =C2=A0 =C2=A0 4: =C2=A0 =C2=A0 =C2=A0 =C2=A0562 SCC
->> auto =C2=A0 =C2=A0 =C2=A0 7: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00 NMI
->> mac =C2=A0 =C2=A0 =C2=A0 10: =C2=A0 =C2=A0 =C2=A0 =C2=A0590 pmu-shif=
-t
->> mac =C2=A0 =C2=A0 =C2=A0 12: =C2=A0 =C2=A0 =C2=A0 =C2=A0 90 pmu-cloc=
-k
->> mac =C2=A0 =C2=A0 =C2=A0 14: =C2=A0 =C2=A0 =C2=A0 1635 timer
->> mac =C2=A0 =C2=A0 =C2=A0 17: =C2=A0 =C2=A0 =C2=A0 3876 nubus
->> mac =C2=A0 =C2=A0 =C2=A0 56: =C2=A0 =C2=A0 =C2=A0 3879 sonic
->>
->> whereas, CONFIG_USE_GENERIC_HARDIRQS=3Dy gives:
->>
->> # cat /proc/interrupts
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 CPU0
->> =C2=A04: =C2=A0 =C2=A0 =C2=A0 5303 =C2=A0 =C2=A0 =C2=A0auto =C2=A0SC=
-C
->> =C2=A07: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00 =C2=A0 =C2=A0 =C2=A0aut=
-o =C2=A0NMI
->> =C2=A010: =C2=A0 =C2=A0 =C2=A0 2136 =C2=A0 =C2=A0 =C2=A0 mac =C2=A0p=
-mu-shift
->> =C2=A012: =C2=A0 =C2=A0 =C2=A0 =C2=A0607 =C2=A0 =C2=A0 =C2=A0 mac =C2=
-=A0pmu-clock
->> =C2=A014: =C2=A0 =C2=A0 =C2=A041858 =C2=A0 =C2=A0 =C2=A0 mac =C2=A0t=
-imer
->> =C2=A056: =C2=A0 =C2=A0 =C2=A066876 =C2=A0 =C2=A0 =C2=A0 mac =C2=A0s=
-onic
->> ERR: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
->>
->> Are there no counters for chained IRQs?
->
-> I noticed the same for Amiga.
+If there are no builtin users of find_next_bit_le() and
+find_next_zero_bit_le(), these functions are not present in the kernel
+image, causing m68k allmodconfig to fail with:
 
-Thomas, is it intentional that chain handlers don't show counters?
-What if we get unexpected interrupts the chain handler can't handle?
+ERROR: "find_next_zero_bit_le" [fs/ufs/ufs.ko] undefined!
+ERROR: "find_next_bit_le" [fs/udf/udf.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/reiserfs/reiserfs.ko] undefined!
+ERROR: "find_next_bit_le" [fs/ocfs2/ocfs2.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/ocfs2/ocfs2.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/nilfs2/nilfs2.ko] undefined!
+ERROR: "find_next_bit_le" [fs/ext4/ext4.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/ext4/ext4.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/ext3/ext3.ko] undefined!
+ERROR: "find_next_zero_bit_le" [fs/ext2/ext2.ko] undefined!
+ERROR: "find_next_zero_bit_le" [drivers/media/rc/ite-cir.ko] undefined!
+ERROR: "find_next_bit_le" [drivers/media/rc/ite-cir.ko] undefined!
+ERROR: "find_next_zero_bit_le" [drivers/md/dm-log.ko] undefined!
+ERROR: "find_next_bit_le" [drivers/block/drbd/drbd.ko] undefined!
+ERROR: "find_next_zero_bit_le" [drivers/block/drbd/drbd.ko] undefined!
+
+This started to happen after commit 171d809df1896c1022f9778cd2788be6c255a7dc
+("m68k: merge mmu and non-mmu bitops.h"), as m68k had its own inline
+versions before.
+
+commit 63e424c84429903c92a0f1e9654c31ccaf6694d0 ("arch: remove
+CONFIG_GENERIC_FIND_{NEXT_BIT,BIT_LE,LAST_BIT}") added find_last_bit.o to
+obj-y (so it's always included), but find_next_bit.o to lib-y (so it gets
+removed by the linker if there are no builtin users).
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Sorry, I didn't notice it before, as m68k allmodconfig has been suffering
+from too many build breakages (for which patches are available) lately.
+
+Does it happen elsewhere, too?
+
+ lib/Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Makefile b/lib/Makefile
+index d5d175c..3f5bc6d 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -12,7 +12,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 idr.o int_sqrt.o extable.o prio_tree.o \
+ 	 sha1.o md5.o irq_regs.o reciprocal_div.o argv_split.o \
+ 	 proportions.o prio_heap.o ratelimit.o show_mem.o \
+-	 is_single_threaded.o plist.o decompress.o find_next_bit.o
++	 is_single_threaded.o plist.o decompress.o
+ 
+ lib-$(CONFIG_MMU) += ioremap.o
+ lib-$(CONFIG_SMP) += cpumask.o
+@@ -22,7 +22,7 @@ lib-y	+= kobject.o kref.o klist.o
+ obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
+ 	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
+ 	 string_helpers.o gcd.o lcm.o list_sort.o uuid.o flex_array.o \
+-	 bsearch.o find_last_bit.o
++	 bsearch.o find_last_bit.o find_next_bit.o
+ obj-y += kstrtox.o
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+ 
+-- 
+1.7.0.4
 
 Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
