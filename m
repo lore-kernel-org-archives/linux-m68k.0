@@ -1,97 +1,107 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] bitops: Move find_next_bit.o from lib-y to obj-y
-Date: Wed, 31 Aug 2011 09:52:46 +1000
-Message-ID: <4E5D77CE.7080904__13219.1218938262$1314749047$gmane$org@snapgear.com>
-References: <alpine.DEB.2.00.1108301427170.10125@ayla.of.borg>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 2/4] TTY: serial, remove dead code from 68328
+Date: Wed, 31 Aug 2011 21:24:57 +0200
+Message-ID: <1314818699-10873-2-git-send-email-jslaby@suse.cz>
+References: <1314818699-10873-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1108301427170.10125@ayla.of.borg>
+In-Reply-To: <1314818699-10873-1-git-send-email-jslaby@suse.cz>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Greg Ungerer <gerg@uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: gregkh@suse.de
+Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, Alan Cox <alan@linux.intel.com>, linux-m68k@lists.linux-m68k.org
 
-Hi Geert,
+The code is dead at least since 2002. So remove it to not distort git
+grep output (about port.tty usage).
 
-On 30/08/11 23:17, Geert Uytterhoeven wrote:
-> If there are no builtin users of find_next_bit_le() and
-> find_next_zero_bit_le(), these functions are not present in the kernel
-> image, causing m68k allmodconfig to fail with:
->
-> ERROR: "find_next_zero_bit_le" [fs/ufs/ufs.ko] undefined!
-> ERROR: "find_next_bit_le" [fs/udf/udf.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/reiserfs/reiserfs.ko] undefined!
-> ERROR: "find_next_bit_le" [fs/ocfs2/ocfs2.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/ocfs2/ocfs2.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/nilfs2/nilfs2.ko] undefined!
-> ERROR: "find_next_bit_le" [fs/ext4/ext4.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/ext4/ext4.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/ext3/ext3.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [fs/ext2/ext2.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [drivers/media/rc/ite-cir.ko] undefined!
-> ERROR: "find_next_bit_le" [drivers/media/rc/ite-cir.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [drivers/md/dm-log.ko] undefined!
-> ERROR: "find_next_bit_le" [drivers/block/drbd/drbd.ko] undefined!
-> ERROR: "find_next_zero_bit_le" [drivers/block/drbd/drbd.ko] undefined!
->
-> This started to happen after commit 171d809df1896c1022f9778cd2788be6c255a7dc
-> ("m68k: merge mmu and non-mmu bitops.h"), as m68k had its own inline
-> versions before.
->
-> commit 63e424c84429903c92a0f1e9654c31ccaf6694d0 ("arch: remove
-> CONFIG_GENERIC_FIND_{NEXT_BIT,BIT_LE,LAST_BIT}") added find_last_bit.o to
-> obj-y (so it's always included), but find_next_bit.o to lib-y (so it gets
-> removed by the linker if there are no builtin users).
->
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
+Remove the whole do_softirq tasklet as it's noop now.
 
-Yep, looks good to me.
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Alan Cox <alan@linux.intel.com>
+---
+Cc: linux-m68k@lists.linux-m68k.org
+ drivers/tty/serial/68328serial.c |   35 -----------------------------------
+ drivers/tty/serial/68328serial.h |    1 -
+ 2 files changed, 0 insertions(+), 36 deletions(-)
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-Regards
-Greg
-
-
-
-> ---
-> Sorry, I didn't notice it before, as m68k allmodconfig has been suffering
-> from too many build breakages (for which patches are available) lately.
->
-> Does it happen elsewhere, too?
->
->   lib/Makefile |    4 ++--
->   1 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/Makefile b/lib/Makefile
-> index d5d175c..3f5bc6d 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -12,7 +12,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
->   	 idr.o int_sqrt.o extable.o prio_tree.o \
->   	 sha1.o md5.o irq_regs.o reciprocal_div.o argv_split.o \
->   	 proportions.o prio_heap.o ratelimit.o show_mem.o \
-> -	 is_single_threaded.o plist.o decompress.o find_next_bit.o
-> +	 is_single_threaded.o plist.o decompress.o
->
->   lib-$(CONFIG_MMU) += ioremap.o
->   lib-$(CONFIG_SMP) += cpumask.o
-> @@ -22,7 +22,7 @@ lib-y	+= kobject.o kref.o klist.o
->   obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
->   	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
->   	 string_helpers.o gcd.o lcm.o list_sort.o uuid.o flex_array.o \
-> -	 bsearch.o find_last_bit.o
-> +	 bsearch.o find_last_bit.o find_next_bit.o
->   obj-y += kstrtox.o
->   obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
->
-
-
+diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
+index e0a7754..f549231 100644
+--- a/drivers/tty/serial/68328serial.c
++++ b/drivers/tty/serial/68328serial.c
+@@ -235,22 +235,6 @@ static void batten_down_hatches(void)
+ 
+ static void status_handle(struct m68k_serial *info, unsigned short status)
+ {
+-#if 0
+-	if(status & DCD) {
+-		if((info->port.tty->termios->c_cflag & CRTSCTS) &&
+-		   ((info->curregs[3] & AUTO_ENAB)==0)) {
+-			info->curregs[3] |= AUTO_ENAB;
+-			info->pendregs[3] |= AUTO_ENAB;
+-			write_zsreg(info->m68k_channel, 3, info->curregs[3]);
+-		}
+-	} else {
+-		if((info->curregs[3] & AUTO_ENAB)) {
+-			info->curregs[3] &= ~AUTO_ENAB;
+-			info->pendregs[3] &= ~AUTO_ENAB;
+-			write_zsreg(info->m68k_channel, 3, info->curregs[3]);
+-		}
+-	}
+-#endif
+ 	/* If this is console input and this is a
+ 	 * 'break asserted' status change interrupt
+ 	 * see if we can drop into the debugger
+@@ -340,9 +324,6 @@ static void transmit_chars(struct m68k_serial *info)
+ 	info->xmit_tail = info->xmit_tail & (SERIAL_XMIT_SIZE-1);
+ 	info->xmit_cnt--;
+ 
+-	if (info->xmit_cnt < WAKEUP_CHARS)
+-		schedule_work(&info->tqueue);
+-
+ 	if(info->xmit_cnt <= 0) {
+ 		/* All done for now... TX ints off */
+ 		uart->ustcnt &= ~USTCNT_TX_INTR_MASK;
+@@ -378,21 +359,6 @@ irqreturn_t rs_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void do_softint(struct work_struct *work)
+-{
+-	struct m68k_serial	*info = container_of(work, struct m68k_serial, tqueue);
+-	struct tty_struct	*tty;
+-	
+-	tty = info->tty;
+-	if (!tty)
+-		return;
+-#if 0
+-	if (clear_bit(RS_EVENT_WRITE_WAKEUP, &info->event)) {
+-		tty_wakeup(tty);
+-	}
+-#endif   
+-}
+-
+ static int startup(struct m68k_serial * info)
+ {
+ 	m68328_uart *uart = &uart_addr[info->line];
+@@ -1324,7 +1290,6 @@ rs68328_init(void)
+ 	    info->event = 0;
+ 	    info->count = 0;
+ 	    info->blocked_open = 0;
+-	    INIT_WORK(&info->tqueue, do_softint);
+ 	    init_waitqueue_head(&info->open_wait);
+ 	    init_waitqueue_head(&info->close_wait);
+ 	    info->line = i;
+diff --git a/drivers/tty/serial/68328serial.h b/drivers/tty/serial/68328serial.h
+index 8c9c3c0..3d2faab 100644
+--- a/drivers/tty/serial/68328serial.h
++++ b/drivers/tty/serial/68328serial.h
+@@ -158,7 +158,6 @@ struct m68k_serial {
+ 	int			xmit_head;
+ 	int			xmit_tail;
+ 	int			xmit_cnt;
+-	struct work_struct	tqueue;
+ 	wait_queue_head_t	open_wait;
+ 	wait_queue_head_t	close_wait;
+ };
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+1.7.6.1
