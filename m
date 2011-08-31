@@ -1,107 +1,52 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 2/4] TTY: serial, remove dead code from 68328
-Date: Wed, 31 Aug 2011 21:24:57 +0200
-Message-ID: <1314818699-10873-2-git-send-email-jslaby@suse.cz>
+From: Sasha Levin <levinsasha928@gmail.com>
+Subject: Re: [PATCH 4/4] TTY: serial, move 68360 driver to staging
+Date: Wed, 31 Aug 2011 22:31:26 +0300
+Message-ID: <1314819086.30506.3.camel__8427.80961324952$1314819504$gmane$org@lappy>
 References: <1314818699-10873-1-git-send-email-jslaby@suse.cz>
+	 <1314818699-10873-4-git-send-email-jslaby@suse.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1314818699-10873-1-git-send-email-jslaby@suse.cz>
+In-Reply-To: <1314818699-10873-4-git-send-email-jslaby@suse.cz>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gregkh@suse.de
-Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, Alan Cox <alan@linux.intel.com>, linux-m68k@lists.linux-m68k.org
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: gregkh@suse.de, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, Alan Cox <alan@linux.intel.com>, linux-m68k@lists.linux-m68k.org
 
-The code is dead at least since 2002. So remove it to not distort git
-grep output (about port.tty usage).
+On Wed, 2011-08-31 at 21:24 +0200, Jiri Slaby wrote:
+> This driver has been broken at least since 2008. At that time,
+> a88487c79b (Fix compile errors in SGI console drivers) broke this
+> driver completely.
+> 
+> And since nobody noticed for the past 3 years, move it into staging. I
+> think this will rot there and we will throw it away completely after
+> some time. Or maybe someone will volunteer to fix it ;).
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Alan Cox <alan@linux.intel.com>
+> ---
+> Cc: linux-m68k@lists.linux-m68k.org
+>  drivers/staging/Kconfig              |    2 +
+>  drivers/staging/Makefile             |    1 +
+>  drivers/staging/serial/68360serial.c | 2979 ++++++++++++++++++++++++++++++++++
+>  drivers/staging/serial/Kconfig       |   16 +
+>  drivers/staging/serial/Makefile      |    1 +
+>  drivers/staging/serial/TODO          |    6 +
+>  drivers/tty/serial/68360serial.c     | 2979 ----------------------------------
+>  drivers/tty/serial/Kconfig           |   17 -
+>  drivers/tty/serial/Makefile          |    1 -
+>  9 files changed, 3005 insertions(+), 2997 deletions(-)
+>  create mode 100644 drivers/staging/serial/68360serial.c
+>  create mode 100644 drivers/staging/serial/Kconfig
+>  create mode 100644 drivers/staging/serial/Makefile
+>  create mode 100644 drivers/staging/serial/TODO
+>  delete mode 100644 drivers/tty/serial/68360serial.c
 
-Remove the whole do_softirq tasklet as it's noop now.
+'git mv' and 'git format-patch --find-renames' would make this patch so
+much nicer.
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Alan Cox <alan@linux.intel.com>
----
-Cc: linux-m68k@lists.linux-m68k.org
- drivers/tty/serial/68328serial.c |   35 -----------------------------------
- drivers/tty/serial/68328serial.h |    1 -
- 2 files changed, 0 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
-index e0a7754..f549231 100644
---- a/drivers/tty/serial/68328serial.c
-+++ b/drivers/tty/serial/68328serial.c
-@@ -235,22 +235,6 @@ static void batten_down_hatches(void)
- 
- static void status_handle(struct m68k_serial *info, unsigned short status)
- {
--#if 0
--	if(status & DCD) {
--		if((info->port.tty->termios->c_cflag & CRTSCTS) &&
--		   ((info->curregs[3] & AUTO_ENAB)==0)) {
--			info->curregs[3] |= AUTO_ENAB;
--			info->pendregs[3] |= AUTO_ENAB;
--			write_zsreg(info->m68k_channel, 3, info->curregs[3]);
--		}
--	} else {
--		if((info->curregs[3] & AUTO_ENAB)) {
--			info->curregs[3] &= ~AUTO_ENAB;
--			info->pendregs[3] &= ~AUTO_ENAB;
--			write_zsreg(info->m68k_channel, 3, info->curregs[3]);
--		}
--	}
--#endif
- 	/* If this is console input and this is a
- 	 * 'break asserted' status change interrupt
- 	 * see if we can drop into the debugger
-@@ -340,9 +324,6 @@ static void transmit_chars(struct m68k_serial *info)
- 	info->xmit_tail = info->xmit_tail & (SERIAL_XMIT_SIZE-1);
- 	info->xmit_cnt--;
- 
--	if (info->xmit_cnt < WAKEUP_CHARS)
--		schedule_work(&info->tqueue);
--
- 	if(info->xmit_cnt <= 0) {
- 		/* All done for now... TX ints off */
- 		uart->ustcnt &= ~USTCNT_TX_INTR_MASK;
-@@ -378,21 +359,6 @@ irqreturn_t rs_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static void do_softint(struct work_struct *work)
--{
--	struct m68k_serial	*info = container_of(work, struct m68k_serial, tqueue);
--	struct tty_struct	*tty;
--	
--	tty = info->tty;
--	if (!tty)
--		return;
--#if 0
--	if (clear_bit(RS_EVENT_WRITE_WAKEUP, &info->event)) {
--		tty_wakeup(tty);
--	}
--#endif   
--}
--
- static int startup(struct m68k_serial * info)
- {
- 	m68328_uart *uart = &uart_addr[info->line];
-@@ -1324,7 +1290,6 @@ rs68328_init(void)
- 	    info->event = 0;
- 	    info->count = 0;
- 	    info->blocked_open = 0;
--	    INIT_WORK(&info->tqueue, do_softint);
- 	    init_waitqueue_head(&info->open_wait);
- 	    init_waitqueue_head(&info->close_wait);
- 	    info->line = i;
-diff --git a/drivers/tty/serial/68328serial.h b/drivers/tty/serial/68328serial.h
-index 8c9c3c0..3d2faab 100644
---- a/drivers/tty/serial/68328serial.h
-+++ b/drivers/tty/serial/68328serial.h
-@@ -158,7 +158,6 @@ struct m68k_serial {
- 	int			xmit_head;
- 	int			xmit_tail;
- 	int			xmit_cnt;
--	struct work_struct	tqueue;
- 	wait_queue_head_t	open_wait;
- 	wait_queue_head_t	close_wait;
- };
 -- 
-1.7.6.1
+
+Sasha.
