@@ -1,90 +1,63 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: m68k: [v5] Convert to genirq (WIP)
-Date: Fri, 2 Sep 2011 22:14:15 +1000 (EST)
-Message-ID: <alpine.OSX.2.00.1108300148040.435@ibook.local>
-References: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com> <alpine.OSX.2.00.1108271506320.190@ibook.local>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: remove dead definition from thread-info.h
+Date: Fri, 2 Sep 2011 22:48:45 +1000
+Message-ID: <4E60D0AD.905@snapgear.com>
+References: <1314941497-32136-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.OSX.2.00.1108271506320.190@ibook.local>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:31916 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751845Ab1IBMxt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Sep 2011 08:53:49 -0400
+In-Reply-To: <1314941497-32136-1-git-send-email-gerg@snapgear.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-
-On Sun, 28 Aug 2011, I wrote:
-
+On 09/02/2011 03:31 PM, gerg@snapgear.com wrote:
+> From: Greg Ungerer<gerg@uclinux.org>
 >
-> I also found that the mac_esp driver probe (when in PIO mode) locks up 
-> the machine. I worked around this by changing the 
-> disable_irq(IRQ_VIA2_3)/enable_irq(IRQ_VIA2_3) calls to 
-> local_irq_save/local_irq_restore, but this is not a good solution.
+> The conditional definition of the task_thread_info() macro based on
+> ASM_OFFSETS_C being defined is not used. Remove it.
 
-This seems to be a bug in my mac_esp code. m68k's disable_irq() is 
-actually equivalent to genirq's disable_irq_nosync(). Changing mac_esp to 
-use disable_irq_nosync() fixes the issue under genirq.
+No, scratch this. From a clean build you need this
+in place, before asm-offsets.h has been generated.
 
-I think these disable_irq/enable_irq calls are probably redundant. They 
-don't seem to make any difference in practice. I'll send a patch when I've 
-studied the code some more.
-
-However, I found another problem. pmac_zilog oopses when its TTY is closed 
-(see below). And macsonic does the same when the NIC is closed. The trace 
-says that irq_shutdown() died trying to call the chip irq_mask routine, 
-when desc->irq_data.chip (in a0) was NULL. Any ideas?
-
-Finn
+Regards
+Greg
 
 
-Unable to handle kernel NULL pointer dereference at virtual address   (null)
-Oops: 00000000
-Modules linked in:
-PC: [<00000000>]   (null)
-SR: 2700  SP: 02019d84  a2: 02017960
-d0: 00000004    d1: 00000007    d2: 0031cadc    d3: 00000004
-d4: 00002000    d5: 01c00710    a0: 00000000    a1: 00000000
-Process init (pid: 1, task=02017960)
-Frame format=7 eff addr=02019e10 ssw=05e6 faddr=00000000
-wb 1 stat/addr/data: 0005 02109460 01c13e88
-wb 2 stat/addr/data: 0000 0007b474 000771ac
-wb 3 stat/addr/data: 0005 01c10b64 00000000
-push data: 01c13e88 0201ac80 00000024 00000000
-Stack from 02019dec:
-        0004ce34 002f7fdc 0210edd0 0004c870 002f7fdc 00000004 0031cadc 00000bb
-        002f7fdc 0031cadc 0004c8c6 00000004 0031cadc 00002000 00168b1c 0031cadc
-        0017c296 00000004 0031cadc 00302000 00002000 020ca800 0017986e 0031cadc
-        020ca820 00000001 00000001 00000000 00002008 020ca800 020f5000 0017a61a
-        020f5000 020ca800 0210a7b0 00000000 00000002 01c00710 00000000 00000000
-        020f5000 00000000 02109820 02019f34 01c00710 00000000 00164002 ffffffff
-Call Trace: [<0004ce34>] irq_shutdown+0x48/0x54
- [<0004c870>] __free_irq+0x128/0x14e
- [<0004c8c6>] free_irq+0x30/0x80
- [<00002000>] _start+0x0/0x8
- [<00168b1c>] tty_chars_in_buffer+0x0/0x1a
- [<0017c296>] pmz_shutdown+0x28/0xe8
- [<00002000>] _start+0x0/0x8
- [<0017986e>] uart_shutdown+0x7e/0xb4
- [<00002008>] do_one_initcall+0x0/0x1c0
- [<0017a61a>] uart_close+0xe0/0x2a0
- [<00164002>] tty_release+0x58/0x472
- [<001640a4>] tty_release+0xfa/0x472
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<0008dace>] alloc_fd+0x82/0x162
- [<00079b94>] fput+0x1aa/0x23a
- [<00079a6e>] fput+0x84/0x23a [<00076bca>] filp_close+0x4a/0x70
- [<00076c50>] sys_close+0x60/0x88
- [<0000269c>] syscall+0x8/0xc
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<0000c012>] res_func+0x48e/0x141a
- [<000021e4>] run_init_process+0x1c/0x22
- [<00002228>] init_post+0x3e/0xce
- [<000862aa>] sys_dup+0x0/0x58
- [<00327ad6>] kernel_init+0xe0/0xe8
- [<003279f6>] kernel_init+0x0/0xe8
- [<00002000>] _start+0x0/0x8
- [<00002960>] kernel_thread+0x3a/0x4e
+> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+> ---
+>   arch/m68k/include/asm/thread_info.h |    6 +-----
+>   1 files changed, 1 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+> index e4e2159..6140b48 100644
+> --- a/arch/m68k/include/asm/thread_info.h
+> +++ b/arch/m68k/include/asm/thread_info.h
+> @@ -53,13 +53,9 @@ struct thread_info {
+>   #include<asm/current.h>
+>   #endif
+>
+> -#ifdef ASM_OFFSETS_C
+> -#define task_thread_info(tsk)	((struct thread_info *) NULL)
+> -#else
+>   #include<asm/asm-offsets.h>
+> -#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_INFO))
+> -#endif
+>
+> +#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_INFO))
+>   #define init_thread_info	(init_task.thread.info)
+>   #define task_stack_page(tsk)	((tsk)->stack)
+>   #define current_thread_info()	task_thread_info(current)
 
-Code: 0000 0000 0000 0000 0000 0000 0000 0000 Bad PC value.
-Disabling lock debugging due to kernel taint
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
