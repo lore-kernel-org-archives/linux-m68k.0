@@ -1,63 +1,90 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: remove dead definition from thread-info.h
-Date: Fri, 2 Sep 2011 22:48:45 +1000
-Message-ID: <4E60D0AD.905@snapgear.com>
-References: <1314941497-32136-1-git-send-email-gerg@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: m68k: [v5] Convert to genirq (WIP)
+Date: Fri, 2 Sep 2011 19:24:34 +0200
+Message-ID: <CAMuHMdVmNAOSK+M9z-ySOR-oA4LwuS_N0SZ8XxzQ9_pYqM_vdQ@mail.gmail.com>
+References: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
+	<alpine.OSX.2.00.1108271506320.190@ibook.local>
+	<alpine.OSX.2.00.1108300148040.435@ibook.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:31916 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751845Ab1IBMxt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Sep 2011 08:53:49 -0400
-In-Reply-To: <1314941497-32136-1-git-send-email-gerg@snapgear.com>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:43611 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753584Ab1IBRYq convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Sep 2011 13:24:46 -0400
+In-Reply-To: <alpine.OSX.2.00.1108300148040.435@ibook.local>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: Finn Thain <fthain@telegraphics.com.au>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
 
-On 09/02/2011 03:31 PM, gerg@snapgear.com wrote:
-> From: Greg Ungerer<gerg@uclinux.org>
->
-> The conditional definition of the task_thread_info() macro based on
-> ASM_OFFSETS_C being defined is not used. Remove it.
+On Fri, Sep 2, 2011 at 14:14, Finn Thain <fthain@telegraphics.com.au> w=
+rote:
+> On Sun, 28 Aug 2011, I wrote:
+> However, I found another problem. pmac_zilog oopses when its TTY is c=
+losed
+> (see below). And macsonic does the same when the NIC is closed. The t=
+race
+> says that irq_shutdown() died trying to call the chip irq_mask routin=
+e,
+> when desc->irq_data.chip (in a0) was NULL. Any ideas?
 
-No, scratch this. From a clean build you need this
-in place, before asm-offsets.h has been generated.
+> Unable to handle kernel NULL pointer dereference at virtual address =C2=
+=A0 (null)
+> Oops: 00000000
+> Modules linked in:
+> PC: [<00000000>] =C2=A0 (null)
 
-Regards
-Greg
+No, it calls a function pointer that's NULL.
 
+void irq_shutdown(struct irq_desc *desc)
+{
+        irq_state_set_disabled(desc);
+        desc->depth =3D 1;
+        if (desc->irq_data.chip->irq_shutdown)
+                desc->irq_data.chip->irq_shutdown(&desc->irq_data);
+        if (desc->irq_data.chip->irq_disable)
+                desc->irq_data.chip->irq_disable(&desc->irq_data);
+        else
+                desc->irq_data.chip->irq_mask(&desc->irq_data);
+        irq_state_set_masked(desc);
+}
 
-> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
-> ---
->   arch/m68k/include/asm/thread_info.h |    6 +-----
->   1 files changed, 1 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-> index e4e2159..6140b48 100644
-> --- a/arch/m68k/include/asm/thread_info.h
-> +++ b/arch/m68k/include/asm/thread_info.h
-> @@ -53,13 +53,9 @@ struct thread_info {
->   #include<asm/current.h>
->   #endif
->
-> -#ifdef ASM_OFFSETS_C
-> -#define task_thread_info(tsk)	((struct thread_info *) NULL)
-> -#else
->   #include<asm/asm-offsets.h>
-> -#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_INFO))
-> -#endif
->
-> +#define task_thread_info(tsk)	((struct thread_info *)((char *)tsk+TASK_INFO))
->   #define init_thread_info	(init_task.thread.info)
->   #define task_stack_page(tsk)	((tsk)->stack)
->   #define current_thread_info()	task_thread_info(current)
+Oops, seems I misread the code and assumed the second "if" was an "else=
+ if",
+as I wrote down in my notes that it calls only one of the 3 functions :=
+-(
+But it does need either .irq_disable() or .irq_mask().
 
+The following irq_chip structs have both .irq_disable() and .irq_mask()=
+ NULL:
+  - arch/m68k/apollo/dn_ints.c:apollo_irq_chip
+  - arch/m68k/kernel/ints.c:auto_irq_chip
+  - arch/m68k/kernel/ints.c:user_irq_chip
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Since this is on Mac and mac_irq_chip is OK, I guess this is a non-PSC =
+Mac,
+i.e. the IRQ number is IRQ_MAC_SCC =3D=3D IRQ_AUTO_4?
+
+Thomas: As we cannot disable or mask autovector interrupts at the
+autovector level,
+IMHO it doesn't make much sense do add a dummy .irq_mask() function.
+Can we add an extra check in irq_shutdown() to not call .irq_mask() if
+it's NULL?
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
