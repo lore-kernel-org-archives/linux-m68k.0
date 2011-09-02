@@ -1,168 +1,106 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/4] TTY: serial, remove dead code from 68328
-Date: Wed, 31 Aug 2011 21:51:52 +0200
-Message-ID: <CAMuHMdXQCXj_y+JzP-opYq+EioR6mp1bPF903GWOAtEjYqr4Dw__20837.9535506994$1314820323$gmane$org@mail.gmail.com>
-References: <1314818699-10873-1-git-send-email-jslaby@suse.cz>
-	<1314818699-10873-2-git-send-email-jslaby@suse.cz>
-	<CAMuHMdUBYarp4V_k_8Skr8T-Ow2fc69EpJGi3wm-M_UZNxDLeA@mail.gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68k: merge the init_task code for mmu and non-mmu targets
+Date: Fri, 2 Sep 2011 15:20:09 +1000
+Message-ID: <1314940809-31873-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUBYarp4V_k_8Skr8T-Ow2fc69EpJGi3wm-M_UZNxDLeA@mail.gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:51087 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750904Ab1IBFTd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Sep 2011 01:19:33 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jiri Slaby <jslaby@suse.cz>
-Cc: gregkh@suse.de, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Alan Cox <alan@linux.intel.com>, linux-m68k@lists.linux-m68k.org, uClinux development list <uclinux-dev@uclinux.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Wed, Aug 31, 2011 at 21:51, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> On Wed, Aug 31, 2011 at 21:24, Jiri Slaby <jslaby@suse.cz> wrote:
->> The code is dead at least since 2002. So remove it to not distort gi=
-t
->> grep output (about port.tty usage).
->>
->> Remove the whole do_softirq tasklet as it's noop now.
->>
->> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Cc: Alan Cox <alan@linux.intel.com>
->> ---
->> Cc: linux-m68k@lists.linux-m68k.org
->
-> This is a uClinux driver.
+From: Greg Ungerer <gerg@uclinux.org>
 
-So I really wanted to cc the uClinux list...
+The init_task code can be the same for both mmu and non-mmu targets.
+None of the alignment carried out in the the current init_task code
+is necessary. The linker script takes care of aligning the init_thread
+structure to a THREAD SIZE boundary, and that is all we need.
 
->> =C2=A0drivers/tty/serial/68328serial.c | =C2=A0 35 -----------------=
-------------------
->> =C2=A0drivers/tty/serial/68328serial.h | =C2=A0 =C2=A01 -
->> =C2=A02 files changed, 0 insertions(+), 36 deletions(-)
->>
->> diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/6=
-8328serial.c
->> index e0a7754..f549231 100644
->> --- a/drivers/tty/serial/68328serial.c
->> +++ b/drivers/tty/serial/68328serial.c
->> @@ -235,22 +235,6 @@ static void batten_down_hatches(void)
->>
->> =C2=A0static void status_handle(struct m68k_serial *info, unsigned s=
-hort status)
->> =C2=A0{
->> -#if 0
->> - =C2=A0 =C2=A0 =C2=A0 if(status & DCD) {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if((info->port.tt=
-y->termios->c_cflag & CRTSCTS) &&
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0((in=
-fo->curregs[3] & AUTO_ENAB)=3D=3D0)) {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 info->curregs[3] |=3D AUTO_ENAB;
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 info->pendregs[3] |=3D AUTO_ENAB;
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 write_zsreg(info->m68k_channel, 3, info->curregs[3]);
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
->> - =C2=A0 =C2=A0 =C2=A0 } else {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if((info->curregs=
-[3] & AUTO_ENAB)) {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 info->curregs[3] &=3D ~AUTO_ENAB;
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 info->pendregs[3] &=3D ~AUTO_ENAB;
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 write_zsreg(info->m68k_channel, 3, info->curregs[3]);
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
->> - =C2=A0 =C2=A0 =C2=A0 }
->> -#endif
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* If this is console input and this is a
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 * 'break asserted' status change interru=
-pt
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 * see if we can drop into the debugger
->> @@ -340,9 +324,6 @@ static void transmit_chars(struct m68k_serial *i=
-nfo)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->xmit_tail =3D info->xmit_tail & (SE=
-RIAL_XMIT_SIZE-1);
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->xmit_cnt--;
->>
->> - =C2=A0 =C2=A0 =C2=A0 if (info->xmit_cnt < WAKEUP_CHARS)
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 schedule_work(&in=
-fo->tqueue);
->> -
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0if(info->xmit_cnt <=3D 0) {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* All done f=
-or now... TX ints off */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0uart->ustcnt =
-&=3D ~USTCNT_TX_INTR_MASK;
->> @@ -378,21 +359,6 @@ irqreturn_t rs_interrupt(int irq, void *dev_id)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0return IRQ_HANDLED;
->> =C2=A0}
->>
->> -static void do_softint(struct work_struct *work)
->> -{
->> - =C2=A0 =C2=A0 =C2=A0 struct m68k_serial =C2=A0 =C2=A0 =C2=A0*info =
-=3D container_of(work, struct m68k_serial, tqueue);
->> - =C2=A0 =C2=A0 =C2=A0 struct tty_struct =C2=A0 =C2=A0 =C2=A0 *tty;
->> -
->> - =C2=A0 =C2=A0 =C2=A0 tty =3D info->tty;
->> - =C2=A0 =C2=A0 =C2=A0 if (!tty)
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;
->> -#if 0
->> - =C2=A0 =C2=A0 =C2=A0 if (clear_bit(RS_EVENT_WRITE_WAKEUP, &info->e=
-vent)) {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tty_wakeup(tty);
->> - =C2=A0 =C2=A0 =C2=A0 }
->> -#endif
->> -}
->> -
->> =C2=A0static int startup(struct m68k_serial * info)
->> =C2=A0{
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0m68328_uart *uart =3D &uart_addr[info->li=
-ne];
->> @@ -1324,7 +1290,6 @@ rs68328_init(void)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->event =3D 0;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->count =3D 0;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->blocked_open =3D 0;
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 INIT_WORK(&info->tqueue, do_sof=
-tint);
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0init_waitqueue_head(&info->=
-open_wait);
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0init_waitqueue_head(&info->=
-close_wait);
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->line =3D i;
->> diff --git a/drivers/tty/serial/68328serial.h b/drivers/tty/serial/6=
-8328serial.h
->> index 8c9c3c0..3d2faab 100644
->> --- a/drivers/tty/serial/68328serial.h
->> +++ b/drivers/tty/serial/68328serial.h
->> @@ -158,7 +158,6 @@ struct m68k_serial {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 xmit_head;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 xmit_tail;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 xmit_cnt;
->> - =C2=A0 =C2=A0 =C2=A0 struct work_struct =C2=A0 =C2=A0 =C2=A0tqueue=
-;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0wait_queue_head_t =C2=A0 =C2=A0 =C2=A0 op=
-en_wait;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0wait_queue_head_t =C2=A0 =C2=A0 =C2=A0 cl=
-ose_wait;
->> =C2=A0};
->> --
->> 1.7.6.1
+So use the init_task.c code for all target types, that makes m68k
+code consistent with what most other architectures do.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/Makefile     |    6 +++---
+ arch/m68k/kernel/init_task.c  |    3 +--
+ arch/m68k/kernel/process_mm.c |   16 ----------------
+ 3 files changed, 4 insertions(+), 21 deletions(-)
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
+index e7f0f2e..01ae30e 100644
+--- a/arch/m68k/kernel/Makefile
++++ b/arch/m68k/kernel/Makefile
+@@ -6,8 +6,8 @@ extra-$(CONFIG_MMU)	:= head.o
+ extra-$(CONFIG_SUN3)	:= sun3-head.o
+ extra-y			+= vmlinux.lds
+ 
+-obj-y	:= entry.o m68k_ksyms.o module.o process.o ptrace.o setup.o signal.o \
+-	   sys_m68k.o syscalltable.o time.o traps.o
++obj-y	:= entry.o init_task.o m68k_ksyms.o module.o process.o ptrace.o
++obj-y	+= setup.o signal.o sys_m68k.o syscalltable.o time.o traps.o
+ 
+ obj-$(CONFIG_MMU)	+= ints.o devres.o vectors.o
+ devres-$(CONFIG_MMU)	= ../../../kernel/irq/devres.o
+@@ -16,6 +16,6 @@ ifndef CONFIG_MMU_SUN3
+ obj-y			+= dma.o
+ endif
+ ifndef CONFIG_MMU
+-obj-y			+= init_task.o irq.o
++obj-y			+= irq.o
+ endif
+ 
+diff --git a/arch/m68k/kernel/init_task.c b/arch/m68k/kernel/init_task.c
+index cbf9dc3..c744cfc 100644
+--- a/arch/m68k/kernel/init_task.c
++++ b/arch/m68k/kernel/init_task.c
+@@ -19,7 +19,6 @@ static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
+  *
+  * All other task structs will be allocated on slabs in fork.c
+  */
+-__asm__(".align 4");
+ struct task_struct init_task = INIT_TASK(init_task);
+ 
+ EXPORT_SYMBOL(init_task);
+@@ -27,7 +26,7 @@ EXPORT_SYMBOL(init_task);
+ /*
+  * Initial thread structure.
+  *
+- * We need to make sure that this is 8192-byte aligned due to the
++ * We need to make sure that this is THREAD size aligned due to the
+  * way process stacks are handled. This is done by having a special
+  * "init_task" linker map entry..
+  */
+diff --git a/arch/m68k/kernel/process_mm.c b/arch/m68k/kernel/process_mm.c
+index 1bc223a..58a3253 100644
+--- a/arch/m68k/kernel/process_mm.c
++++ b/arch/m68k/kernel/process_mm.c
+@@ -33,22 +33,6 @@
+ #include <asm/setup.h>
+ #include <asm/pgtable.h>
+ 
+-/*
+- * Initial task/thread structure. Make this a per-architecture thing,
+- * because different architectures tend to have different
+- * alignment requirements and potentially different initial
+- * setup.
+- */
+-static struct signal_struct init_signals = INIT_SIGNALS(init_signals);
+-static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
+-union thread_union init_thread_union __init_task_data
+-	__attribute__((aligned(THREAD_SIZE))) =
+-		{ INIT_THREAD_INFO(init_task) };
+-
+-/* initial task structure */
+-struct task_struct init_task = INIT_TASK(init_task);
+-
+-EXPORT_SYMBOL(init_task);
+ 
+ asmlinkage void ret_from_fork(void);
+ 
+-- 
+1.7.0.4
