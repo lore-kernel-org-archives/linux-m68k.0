@@ -1,20 +1,56 @@
-From: cindy patrick <cindyogwo@indiatimes.com>
-Subject: Hello my dear
-Date: Sun, 4 Sep 2011 00:23:19 +0530 (IST)
-Message-ID: <1892770882.3196841315075999431.JavaMail.root@tilmb13.indiatimes.com>
-Reply-To: cindy <cindy.ogwo@yahoo.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH]Finally remove letfover markers section
+Date: Sun, 4 Sep 2011 11:33:01 +0200
+Message-ID: <CAMuHMdUz4vwti4YtE_sSTQ1XWDZcXes4CGk7A9B7DgV75NLNqQ@mail.gmail.com>
+References: <1315091917.8552.16.camel@hp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:45793 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752689Ab1IDJdC (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Sep 2011 05:33:02 -0400
+In-Reply-To: <1315091917.8552.16.camel@hp>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Kirill Tkhai <tkhai@yandex.ru>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-
-Hello my dear,
-how are you doing today, how is your health and your family i hope they are fine. well my name is Cindy and i am a very nice, good looking, honest, loving, sincere, understanding and above all God fearing.
-I saw your email today when i was browsing in the internet today, so i decided to drop a few note with you to be my sincere and honest friend, well there is first time for every thing in life.
-Here is my direct email address (cindy.ogwo@yahoo.com) so that we can share picture and know more about my self's.
-Waiting for your responds with joy.
-from your dearest friend
-Cindy.
+T24gU3VuLCBTZXAgNCwgMjAxMSBhdCAwMToxOCwgS2lyaWxsIFRraGFpIDx0a2hhaUB5YW5kZXgu
+cnU+IHdyb3RlOgo+IE1hcmtlcnMgaGF2ZSByZW1vdmVkIGFscmVhZHkgdHdpY2U6Cj4KPiAxOiBm
+YzUzNzc2NjhjM2Q4MDhlMWQ1M2M0YWVlMTUyYzgzNmY1NWMzNDkwCj4gMjogZWI4NzhiM2JjMDM0
+OTM0NGRiZjcwYzUxYmYwMWZjNzM0ZDVjZjJkMwo+Cj4gQnV0IGEgbGl0dGxlIGJpdCBpcyBzdGls
+bCBoZXJlLgo+Cj4gU2lnbmVkLW9mZi1ieTogVGtoYWkgS2lyaWxsIDx0a2hhaUB5YW5kZXgucnU+
+CgpUaGFua3MsIGFwcGxpZWQsIGFuZCB3aWxsIHF1ZXVlIGZvciAzLjIuCgo+IGRpZmYgLS1naXQg
+YS9hcmNoL202OGsva2VybmVsL3ZtbGludXgubGRzX25vLlMKPiBiL2FyY2gvbTY4ay9rZXJuZWwv
+dm1saW51eC5sZHNfbm8uUwo+IGluZGV4IDdkYzQwODcuLjRlMjM4OTMgMTAwNjQ0Cj4gLS0tIGEv
+YXJjaC9tNjhrL2tlcm5lbC92bWxpbnV4Lmxkc19uby5TCj4gKysrIGIvYXJjaC9tNjhrL2tlcm5l
+bC92bWxpbnV4Lmxkc19uby5TCj4gQEAgLTc3LDcgKzc3LDYgQEAgU0VDVElPTlMgewo+Cj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAqKC5yb2RhdGEpICooLnJvZGF0YS4qKQo+IMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgKihfX3Zlcm1hZ2ljKSDCoCDCoCDCoCDCoCDCoCAvKiBLZXJuZWwgdmVyc2lv
+biBtYWdpYyAqLwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgKihfX21hcmtlcnNfc3RyaW5ncykK
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCooLnJvZGF0YTEpCj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAqKC5yb2RhdGEuc3RyMS4xKQo+Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvYXNtLWdlbmVy
+aWMvdm1saW51eC5sZHMuaAo+IGIvaW5jbHVkZS9hc20tZ2VuZXJpYy92bWxpbnV4Lmxkcy5oCj4g
+aW5kZXggZGIyMmQxMy4uYjVlMmU0YyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2FzbS1nZW5lcmlj
+L3ZtbGludXgubGRzLmgKPiArKysgYi9pbmNsdWRlL2FzbS1nZW5lcmljL3ZtbGludXgubGRzLmgK
+PiBAQCAtMjIyLDcgKzIyMiw2IEBACj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBWTUxJTlVYX1NZ
+TUJPTChfX3N0YXJ0X19fdHJhY2Vwb2ludHNfcHRycykgPSAuOyDCoCDCoCDCoCDCoCBcCj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAqKF9fdHJhY2Vwb2ludHNfcHRycykgwqAgLyogVHJhY2Vwb2lu
+dHM6IHBvaW50ZXIgYXJyYXkgKi9cCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBWTUxJTlVYX1NZ
+TUJPTChfX3N0b3BfX190cmFjZXBvaW50c19wdHJzKSA9IC47IMKgIMKgIMKgIMKgIMKgXAo+IC0g
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgKihfX21hcmtlcnNfc3RyaW5ncykgwqAgwqAvKiBNYXJrZXJz
+OiBzdHJpbmdzICovIMKgIMKgIMKgIMKgIMKgXAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKihf
+X3RyYWNlcG9pbnRzX3N0cmluZ3MpLyogVHJhY2Vwb2ludHM6IHN0cmluZ3MgKi8gwqAgwqAgwqBc
+Cj4gwqAgwqAgwqAgwqB9IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFwKPiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFwKCkdye29l
+dGplLGVldGluZ31zLAoKwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgR2VlcnQK
+Ci0tCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlh
+MzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0
+aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20g
+dGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhp
+bmcgbGlrZSB0aGF0LgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoMKg
+IMKgwqAgLS0gTGludXMgVG9ydmFsZHMK
