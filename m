@@ -1,152 +1,152 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: m68k: [v5] Convert to genirq (WIP)
-Date: Tue, 6 Sep 2011 08:18:01 +1200
-Message-ID: <CAOmrzkLBgv8fFVb8BQcEbs4Pvux1FE9MMz3J6ityc-NaowbZng@mail.gmail.com>
-References: <CAMuHMdUZe0Y55ZPee+umJdEsmY5X-EB-KoC-w-SGEtbPMAcf3g@mail.gmail.com>
-	<alpine.OSX.2.00.1108271506320.190@ibook.local>
-	<alpine.OSX.2.00.1108300148040.435@ibook.local>
-	<CAMuHMdVmNAOSK+M9z-ySOR-oA4LwuS_N0SZ8XxzQ9_pYqM_vdQ@mail.gmail.com>
-	<CAMuHMdXj-YDFPcsQFdaWzMU8w=2VQkpBpJGmjxsXT1Y+55W43g@mail.gmail.com>
-	<4E63291D.5050801@gmail.com>
-	<CAMuHMdXB5nBRVvUmqake-kV1mbWq+k8vOGHPOSL+2ix6PJW80w@mail.gmail.com>
-	<CAOmrzkKCGhL2GfDTC_gqKtKfU2vKeqDh1CMZ+BdUCtLEufQhqw@mail.gmail.com>
-	<4E647F80.8050903@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: [PATCH 12/62] m64k: irq: Remove IRQF_DISABLED
+Date: Wed,  7 Sep 2011 16:10:09 +0800
+Message-ID: <1315383059-3673-13-git-send-email-yong.zhang0@gmail.com>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vw0-f46.google.com ([209.85.212.46]:48173 "EHLO
-	mail-vw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753780Ab1IEUSD (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 5 Sep 2011 16:18:03 -0400
-Received: by vws1 with SMTP id 1so4213240vws.19
-        for <linux-m68k@vger.kernel.org>; Mon, 05 Sep 2011 13:18:01 -0700 (PDT)
-In-Reply-To: <4E647F80.8050903@gmail.com>
+In-Reply-To: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, mingo@elte.hu, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Yong Zhang <yong.zhang0@gmail.com>, Greg Ungerer <gerg@uclinux.org>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, linux-m68k@lists.linux-m68k.org
 
-Hi Geert,
+This flag is a NOOP and can be removed now.
 
-> Works a treat - and gives about 1.5 to 2 fold higher throughput on scp than
-> the 3.0 I used before.
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+---
+ arch/m68k/include/asm/floppy.h         |    2 +-
+ arch/m68k/include/asm/irq.h            |    4 ++--
+ arch/m68k/include/asm/sun3xflop.h      |    2 +-
+ arch/m68k/platform/68328/timers.c      |    2 +-
+ arch/m68k/platform/68360/config.c      |    2 +-
+ arch/m68k/platform/coldfire/pit.c      |    2 +-
+ arch/m68k/platform/coldfire/sltimers.c |    4 ++--
+ arch/m68k/platform/coldfire/timers.c   |    4 ++--
+ 8 files changed, 11 insertions(+), 11 deletions(-)
 
-Well, not quite:I have seen the following messages after a while of uptime
-
-irq 12: nobody cared (try booting with the "irqpoll" option)
-Call Trace: [<0004dc86>] __report_bad_irq+0xa2/0xae
- [<0004dc18>] __report_bad_irq+0x34/0xae
- [<0004dd64>] note_interrupt+0xaa/0x13c
- [<2102401c>] atari_ei_interrupt+0x1c/0x24 [atari_ethernec]
- [<0004cb32>] handle_irq_event_percpu+0x7e/0x110
- [<000a6cdc>] load_script+0xb4/0x1d8
- [<0009ae0c>] __blkdev_get+0x244/0x34a
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<000c6668>] ext3_link+0x48/0x124
- [<0004cbe4>] handle_irq_event+0x20/0x2c
- [<0004e258>] handle_simple_irq+0x3a/0x4c
- [<0004c5be>] generic_handle_irq+0x20/0x28
- [<00005e9c>] do_IRQ+0x20/0x30
- [<00237970>] schedule+0x0/0x2b6
- [<0000275e>] user_irqhandler_fixup+0x4/0x1a
- [<000028d0>] default_idle+0x0/0x14
- [<00002904>] cpu_idle+0x20/0x30
- [<000029f2>] kernel_thread+0x0/0x50
- [<00236928>] rest_init+0x68/0x6c
- [<000279f4>] printk+0x0/0x18
- [<0031407e>] start_kernel+0x29e/0x2a8
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<0031331e>] _sinittext+0x31e/0x9c0
-
-handlers:
-[<21024000>] atari_ei_interrupt
-Disabling IRQ #12
-
-Network dead after this; trying to ping out from the Falcon gives:
-
-------------[ cut here ]------------
-WARNING: at net/sched/sch_generic.c:255 dev_watchdog+0x194/0x1c6()
-NETDEV WATCHDOG: eth0 (): transmit queue 0 timed out
-Modules linked in: ipv6 atari_ethernec 8390 genrtc [last unloaded: atari_91C111]
-Call Trace: [<000271fa>] warn_slowpath_common+0x4c/0x64
- [<0002723c>] warn_slowpath_fmt+0x2a/0x32
- [<001ccc98>] dev_watchdog+0x194/0x1c6
- [<0002ff10>] call_timer_fn+0x0/0x70
- [<001ccc98>] dev_watchdog+0x194/0x1c6
- [<001ccb04>] dev_watchdog+0x0/0x1c6
- [<0004cb32>] handle_irq_event_percpu+0x7e/0x110
- [<0002ff22>] call_timer_fn+0x12/0x70
- [<001ccb04>] dev_watchdog+0x0/0x1c6
- [<00030082>] run_timer_softirq+0xc0/0x16e
- [<001ccb04>] dev_watchdog+0x0/0x1c6
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<000c6668>] ext3_link+0x48/0x124
- [<0004c5be>] generic_handle_irq+0x20/0x28
- [<0002b24a>] __do_softirq+0x78/0xc6
- [<00237970>] schedule+0x0/0x2b6
- [<0002b2be>] do_softirq+0x26/0x2c
- [<00002664>] ret_from_exception+0x0/0xc
- [<000028d0>] default_idle+0x0/0x14
- [<00002904>] cpu_idle+0x20/0x30
- [<000029f2>] kernel_thread+0x0/0x50
- [<00236928>] rest_init+0x68/0x6c
- [<000279f4>] printk+0x0/0x18
- [<0031407e>] start_kernel+0x29e/0x2a8
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<0031331e>] _sinittext+0x31e/0x9c0
-
----[ end trace a81b161261829977 ]---
-
-Unloading / reloading the module makes it work again:
-
-ne.c:v1.10 9/23/94 Donald Becker (becker@scyld.com)
-<6>atari_ethernec.c 11/10/06 Michael Schmitz (schmitz@debian.org)
- failed to detect IRQ line. Assuming irq 12
- 00 00 e8 5d 58 cd
-eth%d: RTL8019 found at 0x300, using IRQ 12.
-eth0: no IPv6 routers present
-
-Until the interrupt is disabled again:
-
-irq 12: nobody cared (try booting with the "irqpoll" option)
-Call Trace: [<0004dc86>] __report_bad_irq+0xa2/0xae
- [<0004dc18>] __report_bad_irq+0x34/0xae
- [<0004dd64>] note_interrupt+0xaa/0x13c
- [<2102401c>] atari_ei_interrupt+0x1c/0x24 [atari_ethernec]
- [<0004cb32>] handle_irq_event_percpu+0x7e/0x110
- [<000a6cdc>] load_script+0xb4/0x1d8
- [<0009ae0c>] __blkdev_get+0x244/0x34a
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<000c6668>] ext3_link+0x48/0x124
- [<0004cbe4>] handle_irq_event+0x20/0x2c
- [<0004e258>] handle_simple_irq+0x3a/0x4c
- [<0004c5be>] generic_handle_irq+0x20/0x28
- [<00005e9c>] do_IRQ+0x20/0x30
- [<00237970>] schedule+0x0/0x2b6
- [<0000275e>] user_irqhandler_fixup+0x4/0x1a
- [<000028d0>] default_idle+0x0/0x14
- [<00002904>] cpu_idle+0x20/0x30
- [<000029f2>] kernel_thread+0x0/0x50
- [<00236928>] rest_init+0x68/0x6c
- [<000279f4>] printk+0x0/0x18
- [<0031407e>] start_kernel+0x29e/0x2a8
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<0031331e>] _sinittext+0x31e/0x9c0
-
-handlers:
-[<21024000>] atari_ei_interrupt
-Disabling IRQ #12
-
-What will the irqpoll option do in this context?
-
-Are these in the interrupt path, or another (disk) interrupt
-preempting the timer D interrupt?
-
- [<000a6cdc>] load_script+0xb4/0x1d8
- [<0009ae0c>] __blkdev_get+0x244/0x34a
- [<00001000>] kernel_pg_dir+0x0/0x1000
- [<000c6668>] ext3_link+0x48/0x124
-
-Cheers,
-
-  Michael
+diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
+index 697d503..47365b1 100644
+--- a/arch/m68k/include/asm/floppy.h
++++ b/arch/m68k/include/asm/floppy.h
+@@ -85,7 +85,7 @@ static int fd_request_irq(void)
+ {
+ 	if(MACH_IS_Q40)
+ 		return request_irq(FLOPPY_IRQ, floppy_hardint,
+-				   IRQF_DISABLED, "floppy", floppy_hardint);
++				   0, "floppy", floppy_hardint);
+ 	else if(MACH_IS_SUN3X)
+ 		return sun3xflop_request_irq();
+ 	return -ENXIO;
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index 69ed0d74..35de598 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -60,8 +60,8 @@ struct pt_regs;
+ 
+ /*
+  * various flags for request_irq() - the Amiga now uses the standard
+- * mechanism like all other architectures - IRQF_DISABLED and
+- * IRQF_SHARED are your friends.
++ * mechanism like all other architectures - IRQF_SHARED etc.
++ * are your friends.
+  */
+ #ifndef MACH_AMIGA_ONLY
+ #define IRQ_FLG_LOCK	(0x0001)	/* handler is not replaceable	*/
+diff --git a/arch/m68k/include/asm/sun3xflop.h b/arch/m68k/include/asm/sun3xflop.h
+index 32c45f8..80f8f9f 100644
+--- a/arch/m68k/include/asm/sun3xflop.h
++++ b/arch/m68k/include/asm/sun3xflop.h
+@@ -208,7 +208,7 @@ static int sun3xflop_request_irq(void)
+ 	if(!once) {
+ 		once = 1;
+ 		error = request_irq(FLOPPY_IRQ, sun3xflop_hardint,
+-				    IRQF_DISABLED, "floppy", NULL);
++				    0, "floppy", NULL);
+ 		return ((error == 0) ? 0 : -1);
+ 	} else return 0;
+ }
+diff --git a/arch/m68k/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
+index 309f725..d135b26 100644
+--- a/arch/m68k/platform/68328/timers.c
++++ b/arch/m68k/platform/68328/timers.c
+@@ -69,7 +69,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 
+ static struct irqaction m68328_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = hw_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
+index 9dd5bca..c67f1c3 100644
+--- a/arch/m68k/platform/68360/config.c
++++ b/arch/m68k/platform/68360/config.c
+@@ -58,7 +58,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 
+ static struct irqaction m68360_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = hw_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
+index c2b9809..c69b71a 100644
+--- a/arch/m68k/platform/coldfire/pit.c
++++ b/arch/m68k/platform/coldfire/pit.c
+@@ -118,7 +118,7 @@ static irqreturn_t pit_tick(int irq, void *dummy)
+ 
+ static struct irqaction pit_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = pit_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/sltimers.c b/arch/m68k/platform/coldfire/sltimers.c
+index 6a85daf..2168dda 100644
+--- a/arch/m68k/platform/coldfire/sltimers.c
++++ b/arch/m68k/platform/coldfire/sltimers.c
+@@ -51,7 +51,7 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcfslt_profile_irq = {
+ 	.name	 = "profile timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcfslt_profile_tick,
+ };
+ 
+@@ -91,7 +91,7 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcfslt_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcfslt_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
+index 60242f6..687a38f 100644
+--- a/arch/m68k/platform/coldfire/timers.c
++++ b/arch/m68k/platform/coldfire/timers.c
+@@ -62,7 +62,7 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcftmr_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcftmr_tick,
+ };
+ 
+@@ -150,7 +150,7 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
+ 
+ static struct irqaction coldfire_profile_irq = {
+ 	.name	 = "profile timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = coldfire_profile_tick,
+ };
+ 
+-- 
+1.7.4.1
