@@ -1,57 +1,72 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: [PATCH 12/62] m64k: irq: Remove IRQF_DISABLED
-Date: Sat, 10 Sep 2011 10:01:10 +0800
-Message-ID: <20110910020110.GA8696__2653.53628569773$1315621546$gmane$org@zhy>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
- <1315383059-3673-13-git-send-email-yong.zhang0@gmail.com>
- <4E683413.6010009@snapgear.com>
- <CAMuHMdVopb8wkUa5rn48_Zp4y33HaXUr0-BGE6N-6p2PAt=hag@mail.gmail.com>
-Reply-To: Yong Zhang <yong.zhang0@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] mac_esp: remove redundant mutual exclusion
+Date: Sun, 11 Sep 2011 01:01:34 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1109110038500.5327@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVopb8wkUa5rn48_Zp4y33HaXUr0-BGE6N-6p2PAt=hag@mail.gmail.com>
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:55550 "EHLO
+	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933301Ab1IJPBm (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 10 Sep 2011 11:01:42 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@snapgear.com>, linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@elte.hu, Sam Creasey <sammy@sammy.net>, Greg Ungerer <gerg@uclinux.org>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, linux-m68k@lists.linux-m68k.org
+To: David Miller <davem@davemloft.net>
+Cc: linux-m68k@vger.kernel.org, netdev@vger.kernel.org
 
-On Fri, Sep 09, 2011 at 05:05:15PM +0200, Geert Uytterhoeven wrote:
-> On Thu, Sep 8, 2011 at 05:18, Greg Ungerer <gerg@snapgear.com> wrote:
-> > On 07/09/11 18:10, Yong Zhang wrote:
-> >>
-> >> This flag is a NOOP and can be removed now.
-> >>
-> >> Signed-off-by: Yong Zhang<yong.zhang0@gmail.com>
-> >
-> > Looks ok to me:
-> >
-> > Acked-by: Greg Ungerer <gerg@uclinux.org>
-> 
-> Except for the subject, it's m68k, not m64k ;-)
+Mutual exclusion is redundant here because all the paths in the call graph 
+leading to esp_driver_ops.send_dma_cmd() happen under spin_lock_irqsave/ 
+spin_lock_irqrestore. Remove it.
 
-Sorry for the typo.
+Tested on a Mac Quadra 660av and a Mac LC 630.
 
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Sorry, I missed the introductary email [0/62].
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-I sent it out, but seems it didn't reach LKML due to the compromise
-of kernel.org.
+---
 
-> But do you expect the individual
-> maintainers to take these patches, or are you just collecting Acks?
+Part of this patch relates to Geert's m68k generic hard irq conversion 
+work. Under genirq, the disable_irq() in mac_esp leads to deadlock. It 
+wasn't a problem before because the m68k disable_irq() implementation is 
+equivalent to genirq's disable_irq_nosync().
 
-Quoted from Thomas's reply to Ralf (MIPS):
-[ We can hold off the "remove the define" patch until 3.2-rc1 and push
-it along with everything which hasn't been merged until then.
-
-Alternatively I can pick the whole MIPS bunch as well. I let Ralf
-decide. ]
-
-So the same rule here, you can decide it :)
-
-Thanks,
-Yong
+Index: linux-m68k/drivers/scsi/mac_esp.c
+===================================================================
+--- linux-m68k.orig/drivers/scsi/mac_esp.c	2011-08-28 00:33:13.000000000 +1000
++++ linux-m68k/drivers/scsi/mac_esp.c	2011-08-28 00:35:48.000000000 +1000
+@@ -230,9 +230,6 @@ static void mac_esp_send_pdma_cmd(struct
+ 				  u32 dma_count, int write, u8 cmd)
+ {
+ 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+ 
+ 	mep->error = 0;
+ 
+@@ -270,8 +267,6 @@ static void mac_esp_send_pdma_cmd(struct
+ 			esp_count = n;
+ 		}
+ 	} while (esp_count);
+-
+-	local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -353,8 +348,6 @@ static void mac_esp_send_pio_cmd(struct
+ 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
+ 	u8 *fifo = esp->regs + ESP_FDATA * 16;
+ 
+-	disable_irq(esp->host->irq);
+-
+ 	cmd &= ~ESP_CMD_DMA;
+ 	mep->error = 0;
+ 
+@@ -431,8 +424,6 @@ static void mac_esp_send_pio_cmd(struct
+ 			scsi_esp_cmd(esp, ESP_CMD_TI);
+ 		}
+ 	}
+-
+-	enable_irq(esp->host->irq);
+ }
+ 
+ static int mac_esp_irq_pending(struct esp *esp)
