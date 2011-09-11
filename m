@@ -1,84 +1,99 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 26/28] m68k/q40: Convert Q40/Q60 to genirq
-Date: Sun, 11 Sep 2011 13:59:52 +0200
-Message-ID: <1315742394-16036-27-git-send-email-geert__27686.1173952513$1315742568$gmane$org@linux-m68k.org>
+Subject: [PATCH 23/28] m68k/apollo: Convert Apollo to genirq
+Date: Sun, 11 Sep 2011 13:59:49 +0200
+Message-ID: <1315742394-16036-24-git-send-email-geert__12224.193433258$1315742568$gmane$org@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Zidlicky <rz@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Peter De Schrijver <p2@debian.org>
 
-q40_irq_handler() must be kept to translate ISA IRQs to the range 1-15.
-q40_probe_irq_o{ff,n}() become unused.
+Replace the custom user vector interrupt handler that calls do_IRQ() and
+does an EOI by handle_fasteoi_irq().
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Zidlicky <rz@linux-m68k.org>
+Cc: Peter De Schrijver <p2@debian.org>
 ---
-v5: Added this changeset
+v4: Added this changeset
 ---
- arch/m68k/Kconfig.mmu           |    1 -
- arch/m68k/include/asm/q40ints.h |    2 ++
- arch/m68k/q40/q40ints.c         |    8 +++++++-
- 3 files changed, 9 insertions(+), 2 deletions(-)
+ arch/m68k/Kconfig.mmu      |    1 -
+ arch/m68k/apollo/dn_ints.c |   25 +++++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
 diff --git a/arch/m68k/Kconfig.mmu b/arch/m68k/Kconfig.mmu
-index fa98287..39da911 100644
+index 258d92b..b5e331f 100644
 --- a/arch/m68k/Kconfig.mmu
 +++ b/arch/m68k/Kconfig.mmu
 @@ -200,7 +200,6 @@ config SUN3
  
  config USE_GENERIC_HARDIRQS
  	bool "Use genirq"
--	depends on !Q40
- 	select HAVE_GENERIC_HARDIRQS
- 	select GENERIC_IRQ_SHOW
- 
-diff --git a/arch/m68k/include/asm/q40ints.h b/arch/m68k/include/asm/q40ints.h
-index 3d970af..01cdbb4 100644
---- a/arch/m68k/include/asm/q40ints.h
-+++ b/arch/m68k/include/asm/q40ints.h
-@@ -25,5 +25,7 @@
- #define Q40_IRQ14_MASK       (1<<6)
- #define Q40_IRQ15_MASK       (1<<7)
- 
-+#ifndef CONFIG_GENERIC_HARDIRQS
- extern unsigned long q40_probe_irq_on (void);
- extern int q40_probe_irq_off (unsigned long irqs);
-+#endif
-diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index afe600c..f1e5288 100644
---- a/arch/m68k/q40/q40ints.c
-+++ b/arch/m68k/q40/q40ints.c
-@@ -15,10 +15,14 @@
- #include <linux/kernel.h>
- #include <linux/errno.h>
+-	depends on !APOLLO
+ 	depends on !SUN3X
+ 	depends on !Q40
+ 	depends on !SUN3
+diff --git a/arch/m68k/apollo/dn_ints.c b/arch/m68k/apollo/dn_ints.c
+index 4b76431..fc190b3 100644
+--- a/arch/m68k/apollo/dn_ints.c
++++ b/arch/m68k/apollo/dn_ints.c
+@@ -1,9 +1,14 @@
  #include <linux/interrupt.h>
+-
 +#ifdef CONFIG_GENERIC_HARDIRQS
 +#include <linux/irq.h>
 +#else
-+#include <asm/irq.h>
+ #include <asm/irq.h>
 +#endif
- 
- #include <asm/ptrace.h>
- #include <asm/system.h>
--#include <asm/irq.h>
++
  #include <asm/traps.h>
- 
- #include <asm/q40_master.h>
-@@ -326,6 +330,7 @@ void q40_irq_disable(struct irq_data *data)
- 	}
- }
+ #include <asm/apollohw.h>
  
 +#ifndef CONFIG_GENERIC_HARDIRQS
- unsigned long q40_probe_irq_on(void)
+ void dn_process_int(unsigned int irq, struct pt_regs *fp)
  {
- 	printk("irq probing not working - reconfigure the driver to avoid this\n");
-@@ -335,3 +340,4 @@ int q40_probe_irq_off(unsigned long irqs)
- {
- 	return -1;
+ 	do_IRQ(irq, fp);
+@@ -11,6 +16,7 @@ void dn_process_int(unsigned int irq, struct pt_regs *fp)
+ 	*(volatile unsigned char *)(pica)=0x20;
+ 	*(volatile unsigned char *)(picb)=0x20;
  }
 +#endif
+ 
+ unsigned int apollo_irq_startup(struct irq_data *data)
+ {
+@@ -33,16 +39,31 @@ void apollo_irq_shutdown(struct irq_data *data)
+ 		*(volatile unsigned char *)(picb+1) |= (1 << (irq - 8));
+ }
+ 
++#ifdef CONFIG_GENERIC_HARDIRQS
++void apollo_irq_eoi(struct irq_data *data)
++{
++	*(volatile unsigned char *)(pica) = 0x20;
++	*(volatile unsigned char *)(picb) = 0x20;
++}
++#endif
++
+ static struct irq_chip apollo_irq_chip = {
+ 	.name           = "apollo",
+ 	.irq_startup    = apollo_irq_startup,
+ 	.irq_shutdown   = apollo_irq_shutdown,
++#ifdef CONFIG_GENERIC_HARDIRQS
++	.irq_eoi	= apollo_irq_eoi,
++#endif
+ };
+ 
+ 
+ void __init dn_init_IRQ(void)
+ {
++#ifdef CONFIG_GENERIC_HARDIRQS
++	m68k_setup_user_interrupt(VEC_USER + 96, 16, NULL);
++#else
+ 	m68k_setup_user_interrupt(VEC_USER + 96, 16, dn_process_int);
+-	m68k_setup_irq_controller(&apollo_irq_chip, handle_simple_irq,
++#endif
++	m68k_setup_irq_controller(&apollo_irq_chip, handle_fasteoi_irq,
+ 				  IRQ_APOLLO, 16);
+ }
 -- 
 1.7.0.4
