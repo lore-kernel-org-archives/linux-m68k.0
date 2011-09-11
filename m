@@ -1,36 +1,84 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 22/28] m68k/vme: Convert VME to genirq
-Date: Sun, 11 Sep 2011 13:59:48 +0200
-Message-ID: <1315742394-16036-23-git-send-email-geert__24512.8607763492$1315742567$gmane$org@linux-m68k.org>
+Subject: [PATCH 26/28] m68k/q40: Convert Q40/Q60 to genirq
+Date: Sun, 11 Sep 2011 13:59:52 +0200
+Message-ID: <1315742394-16036-27-git-send-email-geert__27686.1173952513$1315742568$gmane$org@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Hirst <rhirst@parisc-linux.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Zidlicky <rz@linux-m68k.org>
+
+q40_irq_handler() must be kept to translate ISA IRQs to the range 1-15.
+q40_probe_irq_o{ff,n}() become unused.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Hirst <rhirst@parisc-linux.org>
+Cc: Richard Zidlicky <rz@linux-m68k.org>
 ---
-v3: Added this changeset
+v5: Added this changeset
 ---
- arch/m68k/Kconfig.mmu |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ arch/m68k/Kconfig.mmu           |    1 -
+ arch/m68k/include/asm/q40ints.h |    2 ++
+ arch/m68k/q40/q40ints.c         |    8 +++++++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/arch/m68k/Kconfig.mmu b/arch/m68k/Kconfig.mmu
-index 9707db5..258d92b 100644
+index fa98287..39da911 100644
 --- a/arch/m68k/Kconfig.mmu
 +++ b/arch/m68k/Kconfig.mmu
-@@ -201,9 +201,6 @@ config SUN3
+@@ -200,7 +200,6 @@ config SUN3
+ 
  config USE_GENERIC_HARDIRQS
  	bool "Use genirq"
- 	depends on !APOLLO
--	depends on !MVME147
--	depends on !MVME16x
--	depends on !BVME6000
- 	depends on !SUN3X
- 	depends on !Q40
- 	depends on !SUN3
+-	depends on !Q40
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_IRQ_SHOW
+ 
+diff --git a/arch/m68k/include/asm/q40ints.h b/arch/m68k/include/asm/q40ints.h
+index 3d970af..01cdbb4 100644
+--- a/arch/m68k/include/asm/q40ints.h
++++ b/arch/m68k/include/asm/q40ints.h
+@@ -25,5 +25,7 @@
+ #define Q40_IRQ14_MASK       (1<<6)
+ #define Q40_IRQ15_MASK       (1<<7)
+ 
++#ifndef CONFIG_GENERIC_HARDIRQS
+ extern unsigned long q40_probe_irq_on (void);
+ extern int q40_probe_irq_off (unsigned long irqs);
++#endif
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index afe600c..f1e5288 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -15,10 +15,14 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
++#ifdef CONFIG_GENERIC_HARDIRQS
++#include <linux/irq.h>
++#else
++#include <asm/irq.h>
++#endif
+ 
+ #include <asm/ptrace.h>
+ #include <asm/system.h>
+-#include <asm/irq.h>
+ #include <asm/traps.h>
+ 
+ #include <asm/q40_master.h>
+@@ -326,6 +330,7 @@ void q40_irq_disable(struct irq_data *data)
+ 	}
+ }
+ 
++#ifndef CONFIG_GENERIC_HARDIRQS
+ unsigned long q40_probe_irq_on(void)
+ {
+ 	printk("irq probing not working - reconfigure the driver to avoid this\n");
+@@ -335,3 +340,4 @@ int q40_probe_irq_off(unsigned long irqs)
+ {
+ 	return -1;
+ }
++#endif
 -- 
 1.7.0.4
