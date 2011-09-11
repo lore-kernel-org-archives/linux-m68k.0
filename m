@@ -1,76 +1,44 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] mac_esp: remove redundant mutual exclusion
-Date: Sun, 11 Sep 2011 19:57:51 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1109111950410.2745@nippy.intranet>
+Subject: Re: [PATCH] macmace: disable only the dma interrupt
+Date: Sun, 11 Sep 2011 20:02:17 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1109111958310.2745@nippy.intranet>
+References: <alpine.LNX.2.00.1109110042210.5327@nippy.intranet> <20110910.143046.520109083086760748.davem@davemloft.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:53094 "EHLO
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:51879 "EHLO
 	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753123Ab1IKJ56 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Sep 2011 05:57:58 -0400
+	with ESMTP id S1753123Ab1IKKCX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Sep 2011 06:02:23 -0400
+In-Reply-To: <20110910.143046.520109083086760748.davem@davemloft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: David Miller <davem@davemloft.net>
-Cc: linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, netdev@vger.kernel.org
 
 
-Mutual exclusion is redundant here because all the paths in the call graph 
-leading to esp_driver_ops.send_dma_cmd() happen under spin_lock_irqsave/ 
-spin_lock_irqrestore. Remove it.
+On Sat, 10 Sep 2011, David Miller wrote:
 
-Tested on a Mac Quadra 660av and a Mac LC 630.
+> From: Finn Thain <fthain@telegraphics.com.au>
+> Date: Sun, 11 Sep 2011 01:02:16 +1000 (EST)
+> 
+> > Don't disable all interrupts, just disable the relevant one.
+> > 
+> > Also move a couple of printk calls outside of local_irq_save/restore.
+> > 
+> > Tested on a Quadra 660av.
+> > 
+> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> 
+> Using disable_irq() is very expensive, and when done from an interrupt 
+> handler can deadlock especially on SMP (which I understand might not be 
+> relevant here).
+> 
+> I really can't see why you'd do things this way, especially since 
+> interrupt handlers under Linux now unconditionally always run with cpu 
+> interrupts disabled.
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+I wasn't aware of this (I was under the impression that a higher priority 
+interrupt could be serviced). Please disregard this patch.
 
----
-
-Part of this patch relates to Geert's m68k generic hard irq conversion 
-work. Under genirq, the disable_irq() in mac_esp leads to deadlock. It 
-wasn't a problem before because the m68k disable_irq() implementation is 
-equivalent to genirq's disable_irq_nosync().
-
-I initially sent this to the wrong list by mistake... this is the same 
-patch.
-
-Index: linux-m68k/drivers/scsi/mac_esp.c
-===================================================================
---- linux-m68k.orig/drivers/scsi/mac_esp.c	2011-08-28 00:33:13.000000000 +1000
-+++ linux-m68k/drivers/scsi/mac_esp.c	2011-08-28 00:35:48.000000000 +1000
-@@ -230,9 +230,6 @@ static void mac_esp_send_pdma_cmd(struct
- 				  u32 dma_count, int write, u8 cmd)
- {
- 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
--	unsigned long flags;
--
--	local_irq_save(flags);
- 
- 	mep->error = 0;
- 
-@@ -270,8 +267,6 @@ static void mac_esp_send_pdma_cmd(struct
- 			esp_count = n;
- 		}
- 	} while (esp_count);
--
--	local_irq_restore(flags);
- }
- 
- /*
-@@ -353,8 +348,6 @@ static void mac_esp_send_pio_cmd(struct
- 	struct mac_esp_priv *mep = MAC_ESP_GET_PRIV(esp);
- 	u8 *fifo = esp->regs + ESP_FDATA * 16;
- 
--	disable_irq(esp->host->irq);
--
- 	cmd &= ~ESP_CMD_DMA;
- 	mep->error = 0;
- 
-@@ -431,8 +424,6 @@ static void mac_esp_send_pio_cmd(struct
- 			scsi_esp_cmd(esp, ESP_CMD_TI);
- 		}
- 	}
--
--	enable_irq(esp->host->irq);
- }
- 
- static int mac_esp_irq_pending(struct esp *esp)
+Finn
