@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 02/28] ide-{cd,floppy,tape}: Do not include <linux/irq.>
-Date: Sun, 11 Sep 2011 13:59:28 +0200
-Message-ID: <1315742394-16036-3-git-send-email-geert__11266.1373372704$1315742754$gmane$org@linux-m68k.org>
+Subject: [PATCH 03/28] keyboard: Do not include <linux/irq.>
+Date: Sun, 11 Sep 2011 13:59:29 +0200
+Message-ID: <1315742394-16036-4-git-send-email-geert@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -11,7 +11,7 @@ In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@suse.de>
 
 The top of <linux/irq.h> has this comment:
 
@@ -30,50 +30,41 @@ ata=E2=80=99
 | include/linux/irq.h:286: error: redefinition of =E2=80=98struct irq_c=
 hip=E2=80=99
 
+drivers/tty/vt/keyboard.c needs to include <asm/irq_regs.h> for get_irq=
+_regs():
+
+| drivers/tty/vt/keyboard.c:497: error: implicit declaration of functio=
+n =E2=80=98get_irq_regs=E2=80=99
+| drivers/tty/vt/keyboard.c:497: warning: initialization makes pointer =
+from integer without a cast
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-ide@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@suse.de>
 ---
- drivers/ide/ide-cd.c     |    1 -
- drivers/ide/ide-floppy.c |    1 -
- drivers/ide/ide-tape.c   |    1 -
- 3 files changed, 0 insertions(+), 3 deletions(-)
+ drivers/tty/vt/keyboard.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/ide/ide-cd.c b/drivers/ide/ide-cd.c
-index 04b0956..8126824 100644
---- a/drivers/ide/ide-cd.c
-+++ b/drivers/ide/ide-cd.c
-@@ -43,7 +43,6 @@
- /* For SCSI -> ATAPI command conversion */
- #include <scsi/scsi.h>
-=20
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 3761ccf..a605549 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -33,7 +33,6 @@
+ #include <linux/string.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
 -#include <linux/irq.h>
- #include <linux/io.h>
- #include <asm/byteorder.h>
- #include <linux/uaccess.h>
-diff --git a/drivers/ide/ide-floppy.c b/drivers/ide/ide-floppy.c
-index 61fdf54..3d42043 100644
---- a/drivers/ide/ide-floppy.c
-+++ b/drivers/ide/ide-floppy.c
-@@ -35,7 +35,6 @@
- #include <scsi/scsi_ioctl.h>
 =20
- #include <asm/byteorder.h>
--#include <linux/irq.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <asm/unaligned.h>
-diff --git a/drivers/ide/ide-tape.c b/drivers/ide/ide-tape.c
-index 7ecb1ad..ce8237d 100644
---- a/drivers/ide/ide-tape.c
-+++ b/drivers/ide/ide-tape.c
-@@ -41,7 +41,6 @@
- #include <scsi/scsi.h>
+ #include <linux/kbd_kern.h>
+ #include <linux/kbd_diacr.h>
+@@ -43,6 +42,8 @@
+ #include <linux/notifier.h>
+ #include <linux/jiffies.h>
 =20
- #include <asm/byteorder.h>
--#include <linux/irq.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <asm/unaligned.h>
++#include <asm/irq_regs.h>
++
+ extern void ctrl_alt_del(void);
+=20
+ /*
 --=20
 1.7.0.4
