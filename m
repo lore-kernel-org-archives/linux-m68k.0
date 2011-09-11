@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 15/28] m68k/atari: Remove code and comments about different irq types
-Date: Sun, 11 Sep 2011 13:59:41 +0200
-Message-ID: <1315742394-16036-16-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 20/28] m68k/mac: Optimize interrupts using chain handlers
+Date: Sun, 11 Sep 2011 13:59:46 +0200
+Message-ID: <1315742394-16036-21-git-send-email-geert__24679.2169906714$1315742520$gmane$org@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
@@ -10,263 +10,527 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-This code was obsoleted during the irq restructuring in 2006.
-
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-v4: Added this changeset
----
- arch/m68k/atari/ataints.c |  236 ---------------------------------------------
- 1 files changed, 0 insertions(+), 236 deletions(-)
+v6: Correct irq args of irq_set_handler_data() calls, as reported by Finn
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index ab3ac13..908bcfc 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -60,244 +60,8 @@
-  * <asm/atariints.h>): Autovector interrupts are 1..7, then follow ST-MFP,
-  * TT-MFP, SCC, and finally VME interrupts. Vector numbers for the latter can
-  * be allocated by atari_register_vme_int().
-- *
-- * Each interrupt can be of three types:
-- *
-- *  - SLOW: The handler runs with all interrupts enabled, except the one it
-- *    was called by (to avoid reentering). This should be the usual method.
-- *    But it is currently possible only for MFP ints, since only the MFP
-- *    offers an easy way to mask interrupts.
-- *
-- *  - FAST: The handler runs with all interrupts disabled. This should be used
-- *    only for really fast handlers, that just do actions immediately
-- *    necessary, and let the rest do a bottom half or task queue.
-- *
-- *  - PRIORITIZED: The handler can be interrupted by higher-level ints
-- *    (greater IPL, no MFP priorities!). This is the method of choice for ints
-- *    which should be slow, but are not from a MFP.
-- *
-- * The feature of more than one handler for one int source is still there, but
-- * only applicable if all handers are of the same type. To not slow down
-- * processing of ints with only one handler by the chaining feature, the list
-- * calling function atari_call_irq_list() is only plugged in at the time the
-- * second handler is registered.
-- *
-- * Implementation notes: For fast-as-possible int handling, there are separate
-- * entry points for each type (slow/fast/prio). The assembler handler calls
-- * the irq directly in the usual case, no C wrapper is involved. In case of
-- * multiple handlers, atari_call_irq_list() is registered as handler and calls
-- * in turn the real irq's. To ease access from assembler level to the irq
-- * function pointer and accompanying data, these two are stored in a separate
-- * array, irq_handler[]. The rest of data (type, name) are put into a second
-- * array, irq_param, that is accessed from C only. For each slow interrupt (32
-- * in all) there are separate handler functions, which makes it possible to
-- * hard-code the MFP register address and value, are necessary to mask the
-- * int. If there'd be only one generic function, lots of calculations would be
-- * needed to determine MFP register and int mask from the vector number :-(
-- *
-- * Furthermore, slow ints may not lower the IPL below its previous value
-- * (before the int happened). This is needed so that an int of class PRIO, on
-- * that this int may be stacked, cannot be reentered. This feature is
-- * implemented as follows: If the stack frame format is 1 (throwaway), the int
-- * is not stacked, and the IPL is anded with 0xfbff, resulting in a new level
-- * 2, which still blocks the HSYNC, but no interrupts of interest. If the
-- * frame format is 0, the int is nested, and the old IPL value can be found in
-- * the sr copy in the frame.
+v5: Added this changeset
+---
+ arch/m68k/mac/baboon.c |   38 +++++++++++++
+ arch/m68k/mac/oss.c    |  106 +++++++++++++++++++++++++++++-------
+ arch/m68k/mac/psc.c    |   74 +++++++++++++++++++------
+ arch/m68k/mac/via.c    |  143 +++++++++++++++++++++++++++++++++++++++---------
+ 4 files changed, 298 insertions(+), 63 deletions(-)
+
+diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
+index ff11746..425144c 100644
+--- a/arch/m68k/mac/baboon.c
++++ b/arch/m68k/mac/baboon.c
+@@ -56,6 +56,39 @@ void __init baboon_init(void)
+  * Baboon interrupt handler. This works a lot like a VIA.
   */
  
--#if 0
++#ifdef CONFIG_GENERIC_HARDIRQS
++static void baboon_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int irq_bit, irq_num;
++	unsigned char events;
++
++#ifdef DEBUG_IRQS
++	printk("baboon_irq: mb_control %02X mb_ifr %02X mb_status %02X\n",
++		(uint) baboon->mb_control, (uint) baboon->mb_ifr,
++		(uint) baboon->mb_status);
++#endif
++
++	events = baboon->mb_ifr & 0x07;
++	if (!events)
++		return;
++
++	irq_num = IRQ_BABOON_0;
++	irq_bit = 1;
++	do {
++	        if (events & irq_bit) {
++			baboon->mb_ifr &= ~irq_bit;
++			generic_handle_irq(irq_num);
++		}
++		irq_bit <<= 1;
++		irq_num++;
++	} while(events >= irq_bit);
++#if 0
++	if (baboon->mb_ifr & 0x02) macide_ack_intr(NULL);
++	/* for now we need to smash all interrupts */
++	baboon->mb_ifr &= ~events;
++#endif
++}
++#else
+ static irqreturn_t baboon_irq(int irq, void *dev_id)
+ {
+ 	int irq_bit, irq_num;
+@@ -87,6 +120,7 @@ static irqreturn_t baboon_irq(int irq, void *dev_id)
+ #endif
+ 	return IRQ_HANDLED;
+ }
++#endif
+ 
+ /*
+  * Register the Baboon interrupt dispatcher on nubus slot $C.
+@@ -95,8 +129,12 @@ static irqreturn_t baboon_irq(int irq, void *dev_id)
+ void __init baboon_register_interrupts(void)
+ {
+ 	baboon_disabled = 0;
++#ifdef CONFIG_GENERIC_HARDIRQS
++	irq_set_chained_handler(IRQ_NUBUS_C, baboon_irq);
++#else
+ 	if (request_irq(IRQ_NUBUS_C, baboon_irq, 0, "baboon", (void *)baboon))
+ 		pr_err("Couldn't register baboon interrupt\n");
++#endif
+ }
+ 
+ /*
+diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
+index ed95270..cc784c2 100644
+--- a/arch/m68k/mac/oss.c
++++ b/arch/m68k/mac/oss.c
+@@ -32,10 +32,11 @@
+ int oss_present;
+ volatile struct mac_oss *oss;
+ 
+-static irqreturn_t oss_irq(int, void *);
+-static irqreturn_t oss_nubus_irq(int, void *);
 -
--#define	NUM_INT_SOURCES	(8 + NUM_ATARI_SOURCES)
--
--typedef void (*asm_irq_handler)(void);
--
--struct irqhandler {
--	irqreturn_t (*handler)(int, void *, struct pt_regs *);
--	void	*dev_id;
--};
--
--struct irqparam {
--	unsigned long	flags;
--	const char	*devname;
--};
--
--/*
-- * Array with irq's and their parameter data. This array is accessed from low
-- * level assembler code, so an element size of 8 allows usage of index scaling
-- * addressing mode.
++#ifdef CONFIG_GENERIC_HARDIRQS
++extern void via1_irq(unsigned int irq, struct irq_desc *desc);
++#else
+ extern irqreturn_t via1_irq(int, void *);
++#endif
+ 
+ /*
+  * Initialize the OSS
+@@ -63,23 +64,6 @@ void __init oss_init(void)
+ }
+ 
+ /*
+- * Register the OSS and NuBus interrupt dispatchers.
 - */
--static struct irqhandler irq_handler[NUM_INT_SOURCES];
 -
--/*
-- * This array hold the rest of parameters of int handlers: type
-- * (slow,fast,prio) and the name of the handler. These values are only
-- * accessed from C
-- */
--static struct irqparam irq_param[NUM_INT_SOURCES];
--
--/* check for valid int number (complex, sigh...) */
--#define	IS_VALID_INTNO(n)											\
--	((n) > 0 &&														\
--	 /* autovec and ST-MFP ok anyway */								\
--	 (((n) < TTMFP_SOURCE_BASE) ||									\
--	  /* TT-MFP ok if present */									\
--	  ((n) >= TTMFP_SOURCE_BASE && (n) < SCC_SOURCE_BASE &&			\
--	   ATARIHW_PRESENT(TT_MFP)) ||									\
--	  /* SCC ok if present and number even */						\
--	  ((n) >= SCC_SOURCE_BASE && (n) < VME_SOURCE_BASE &&			\
--	   !((n) & 1) && ATARIHW_PRESENT(SCC)) ||						\
--	  /* greater numbers ok if they are registered VME vectors */		\
--	  ((n) >= VME_SOURCE_BASE && (n) < VME_SOURCE_BASE + VME_MAX_SOURCES && \
--		  free_vme_vec_bitmap & (1 << ((n) - VME_SOURCE_BASE)))))
--
--
--/*
-- * Here start the assembler entry points for interrupts
-- */
--
--#define IRQ_NAME(nr) atari_slow_irq_##nr##_handler(void)
--
--#define	BUILD_SLOW_IRQ(n)						   \
--asmlinkage void IRQ_NAME(n);						   \
--/* Dummy function to allow asm with operands.  */			   \
--void atari_slow_irq_##n##_dummy (void) {				   \
--__asm__ (__ALIGN_STR "\n"						   \
--"atari_slow_irq_" #n "_handler:\t"					   \
--"	addl	%6,%5\n"	/* preempt_count() += HARDIRQ_OFFSET */	   \
--	SAVE_ALL_INT "\n"						   \
--	GET_CURRENT(%%d0) "\n"						   \
--"	andb	#~(1<<(%c3&7)),%a4:w\n"	/* mask this interrupt */	   \
--	/* get old IPL from stack frame */				   \
--"	bfextu	%%sp@(%c2){#5,#3},%%d0\n"				   \
--"	movew	%%sr,%%d1\n"						   \
--"	bfins	%%d0,%%d1{#21,#3}\n"					   \
--"	movew	%%d1,%%sr\n"		/* set IPL = previous value */	   \
--"	addql	#1,%a0\n"						   \
--"	lea	%a1,%%a0\n"						   \
--"	pea	%%sp@\n"		/* push addr of frame */	   \
--"	movel	%%a0@(4),%%sp@-\n"	/* push handler data */		   \
--"	pea	(%c3+8)\n"		/* push int number */		   \
--"	movel	%%a0@,%%a0\n"						   \
--"	jbsr	%%a0@\n"		/* call the handler */		   \
--"	addql	#8,%%sp\n"						   \
--"	addql	#4,%%sp\n"						   \
--"	orw	#0x0600,%%sr\n"						   \
--"	andw	#0xfeff,%%sr\n"		/* set IPL = 6 again */		   \
--"	orb	#(1<<(%c3&7)),%a4:w\n"	/* now unmask the int again */	   \
--"	jbra	ret_from_interrupt\n"					   \
--	 : : "i" (&kstat_cpu(0).irqs[n+8]), "i" (&irq_handler[n+8]),	   \
--	     "n" (PT_OFF_SR), "n" (n),					   \
--	     "i" (n & 8 ? (n & 16 ? &tt_mfp.int_mk_a : &st_mfp.int_mk_a)   \
--		        : (n & 16 ? &tt_mfp.int_mk_b : &st_mfp.int_mk_b)), \
--	     "m" (preempt_count()), "di" (HARDIRQ_OFFSET)		   \
--);									   \
--	for (;;);			/* fake noreturn */		   \
+-void __init oss_register_interrupts(void)
+-{
+-	if (request_irq(OSS_IRQLEV_SCSI, oss_irq, 0, "scsi", (void *)oss))
+-		pr_err("Couldn't register %s interrupt\n", "scsi");
+-	if (request_irq(OSS_IRQLEV_NUBUS, oss_nubus_irq, 0, "nubus",
+-			(void *)oss))
+-		pr_err("Couldn't register %s interrupt\n", "nubus");
+-	if (request_irq(OSS_IRQLEV_SOUND, oss_irq, 0, "sound", (void *)oss))
+-		pr_err("Couldn't register %s interrupt\n", "sound");
+-	if (request_irq(OSS_IRQLEV_VIA1, via1_irq, 0, "via1", (void *)via1))
+-		pr_err("Couldn't register %s interrupt\n", "via1");
 -}
 -
--BUILD_SLOW_IRQ(0);
--BUILD_SLOW_IRQ(1);
--BUILD_SLOW_IRQ(2);
--BUILD_SLOW_IRQ(3);
--BUILD_SLOW_IRQ(4);
--BUILD_SLOW_IRQ(5);
--BUILD_SLOW_IRQ(6);
--BUILD_SLOW_IRQ(7);
--BUILD_SLOW_IRQ(8);
--BUILD_SLOW_IRQ(9);
--BUILD_SLOW_IRQ(10);
--BUILD_SLOW_IRQ(11);
--BUILD_SLOW_IRQ(12);
--BUILD_SLOW_IRQ(13);
--BUILD_SLOW_IRQ(14);
--BUILD_SLOW_IRQ(15);
--BUILD_SLOW_IRQ(16);
--BUILD_SLOW_IRQ(17);
--BUILD_SLOW_IRQ(18);
--BUILD_SLOW_IRQ(19);
--BUILD_SLOW_IRQ(20);
--BUILD_SLOW_IRQ(21);
--BUILD_SLOW_IRQ(22);
--BUILD_SLOW_IRQ(23);
--BUILD_SLOW_IRQ(24);
--BUILD_SLOW_IRQ(25);
--BUILD_SLOW_IRQ(26);
--BUILD_SLOW_IRQ(27);
--BUILD_SLOW_IRQ(28);
--BUILD_SLOW_IRQ(29);
--BUILD_SLOW_IRQ(30);
--BUILD_SLOW_IRQ(31);
--
--asm_irq_handler slow_handlers[32] = {
--	[0]	= atari_slow_irq_0_handler,
--	[1]	= atari_slow_irq_1_handler,
--	[2]	= atari_slow_irq_2_handler,
--	[3]	= atari_slow_irq_3_handler,
--	[4]	= atari_slow_irq_4_handler,
--	[5]	= atari_slow_irq_5_handler,
--	[6]	= atari_slow_irq_6_handler,
--	[7]	= atari_slow_irq_7_handler,
--	[8]	= atari_slow_irq_8_handler,
--	[9]	= atari_slow_irq_9_handler,
--	[10]	= atari_slow_irq_10_handler,
--	[11]	= atari_slow_irq_11_handler,
--	[12]	= atari_slow_irq_12_handler,
--	[13]	= atari_slow_irq_13_handler,
--	[14]	= atari_slow_irq_14_handler,
--	[15]	= atari_slow_irq_15_handler,
--	[16]	= atari_slow_irq_16_handler,
--	[17]	= atari_slow_irq_17_handler,
--	[18]	= atari_slow_irq_18_handler,
--	[19]	= atari_slow_irq_19_handler,
--	[20]	= atari_slow_irq_20_handler,
--	[21]	= atari_slow_irq_21_handler,
--	[22]	= atari_slow_irq_22_handler,
--	[23]	= atari_slow_irq_23_handler,
--	[24]	= atari_slow_irq_24_handler,
--	[25]	= atari_slow_irq_25_handler,
--	[26]	= atari_slow_irq_26_handler,
--	[27]	= atari_slow_irq_27_handler,
--	[28]	= atari_slow_irq_28_handler,
--	[29]	= atari_slow_irq_29_handler,
--	[30]	= atari_slow_irq_30_handler,
--	[31]	= atari_slow_irq_31_handler
--};
--
--asmlinkage void atari_fast_irq_handler( void );
--asmlinkage void atari_prio_irq_handler( void );
--
--/* Dummy function to allow asm with operands.  */
--void atari_fast_prio_irq_dummy (void) {
--__asm__ (__ALIGN_STR "\n"
--"atari_fast_irq_handler:\n\t"
--	"orw	#0x700,%%sr\n"		/* disable all interrupts */
--"atari_prio_irq_handler:\n\t"
--	"addl	%3,%2\n\t"		/* preempt_count() += HARDIRQ_OFFSET */
--	SAVE_ALL_INT "\n\t"
--	GET_CURRENT(%%d0) "\n\t"
--	/* get vector number from stack frame and convert to source */
--	"bfextu	%%sp@(%c1){#4,#10},%%d0\n\t"
--	"subw	#(0x40-8),%%d0\n\t"
--	"jpl	1f\n\t"
--	"addw	#(0x40-8-0x18),%%d0\n"
--    "1:\tlea	%a0,%%a0\n\t"
--	"addql	#1,%%a0@(%%d0:l:4)\n\t"
--	"lea	irq_handler,%%a0\n\t"
--	"lea	%%a0@(%%d0:l:8),%%a0\n\t"
--	"pea	%%sp@\n\t"		/* push frame address */
--	"movel	%%a0@(4),%%sp@-\n\t"	/* push handler data */
--	"movel	%%d0,%%sp@-\n\t"	/* push int number */
--	"movel	%%a0@,%%a0\n\t"
--	"jsr	%%a0@\n\t"		/* and call the handler */
--	"addql	#8,%%sp\n\t"
--	"addql	#4,%%sp\n\t"
--	"jbra	ret_from_interrupt"
--	 : : "i" (&kstat_cpu(0).irqs), "n" (PT_OFF_FORMATVEC),
--	     "m" (preempt_count()), "di" (HARDIRQ_OFFSET)
--);
--	for (;;);
--}
--#endif
+-/*
+  * Initialize OSS for Nubus access
+  */
+ 
+@@ -92,6 +76,34 @@ void __init oss_nubus_init(void)
+  * and SCSI; everything else is routed to its own autovector IRQ.
+  */
+ 
++#ifdef CONFIG_GENERIC_HARDIRQS
++static void oss_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int events;
++
++	events = oss->irq_pending & (OSS_IP_SOUND|OSS_IP_SCSI);
++	if (!events)
++		return;
++
++#ifdef DEBUG_IRQS
++	if ((console_loglevel == 10) && !(events & OSS_IP_SCSI)) {
++		printk("oss_irq: irq %u events = 0x%04X\n", irq,
++			(int) oss->irq_pending);
++	}
++#endif
++	/* FIXME: how do you clear a pending IRQ?    */
++
++	if (events & OSS_IP_SOUND) {
++		oss->irq_pending &= ~OSS_IP_SOUND;
++		/* FIXME: call sound handler */
++	} else if (events & OSS_IP_SCSI) {
++		oss->irq_pending &= ~OSS_IP_SCSI;
++		generic_handle_irq(IRQ_MAC_SCSI);
++	} else {
++		/* FIXME: error check here? */
++	}
++}
++#else
+ static irqreturn_t oss_irq(int irq, void *dev_id)
+ {
+ 	int events;
+@@ -119,6 +131,7 @@ static irqreturn_t oss_irq(int irq, void *dev_id)
+ 	}
+ 	return IRQ_HANDLED;
+ }
++#endif
+ 
+ /*
+  * Nubus IRQ handler, OSS style
+@@ -126,6 +139,34 @@ static irqreturn_t oss_irq(int irq, void *dev_id)
+  * Unlike the VIA/RBV this is on its own autovector interrupt level.
+  */
+ 
++#ifdef CONFIG_GENERIC_HARDIRQS
++static void oss_nubus_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int events, irq_bit, i;
++
++	events = oss->irq_pending & OSS_IP_NUBUS;
++	if (!events)
++		return;
++
++#ifdef DEBUG_NUBUS_INT
++	if (console_loglevel > 7) {
++		printk("oss_nubus_irq: events = 0x%04X\n", events);
++	}
++#endif
++	/* There are only six slots on the OSS, not seven */
++
++	i = 6;
++	irq_bit = 0x40;
++	do {
++		--i;
++		irq_bit >>= 1;
++		if (events & irq_bit) {
++			oss->irq_pending &= ~irq_bit;
++			generic_handle_irq(NUBUS_SOURCE_BASE + i);
++		}
++	} while(events & (irq_bit - 1));
++}
++#else
+ static irqreturn_t oss_nubus_irq(int irq, void *dev_id)
+ {
+ 	int events, irq_bit, i;
+@@ -153,6 +194,31 @@ static irqreturn_t oss_nubus_irq(int irq, void *dev_id)
+ 	} while(events & (irq_bit - 1));
+ 	return IRQ_HANDLED;
+ }
++#endif
++
++/*
++ * Register the OSS and NuBus interrupt dispatchers.
++ */
++
++void __init oss_register_interrupts(void)
++{
++#ifdef CONFIG_GENERIC_HARDIRQS
++	irq_set_chained_handler(OSS_IRQLEV_SCSI, oss_irq);
++	irq_set_chained_handler(OSS_IRQLEV_NUBUS, oss_nubus_irq);
++	irq_set_chained_handler(OSS_IRQLEV_SOUND, oss_irq);
++	irq_set_chained_handler(OSS_IRQLEV_VIA1, via1_irq);
++#else /* !CONFIG_GENERIC_HARDIRQS */
++	if (request_irq(OSS_IRQLEV_SCSI, oss_irq, 0, "scsi", (void *)oss))
++		pr_err("Couldn't register %s interrupt\n", "scsi");
++	if (request_irq(OSS_IRQLEV_NUBUS, oss_nubus_irq, 0, "nubus",
++			(void *)oss))
++		pr_err("Couldn't register %s interrupt\n", "nubus");
++	if (request_irq(OSS_IRQLEV_SOUND, oss_irq, 0, "sound", (void *)oss))
++		pr_err("Couldn't register %s interrupt\n", "sound");
++	if (request_irq(OSS_IRQLEV_VIA1, via1_irq, 0, "via1", (void *)via1))
++		pr_err("Couldn't register %s interrupt\n", "via1");
++#endif /* !CONFIG_GENERIC_HARDIRQS */
++}
+ 
+ /*
+  * Enable an OSS interrupt
+diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
+index 0a34b7a..52840b8 100644
+--- a/arch/m68k/mac/psc.c
++++ b/arch/m68k/mac/psc.c
+@@ -33,8 +33,6 @@
+ int psc_present;
+ volatile __u8 *psc;
+ 
+-irqreturn_t psc_irq(int, void *);
 -
  /*
-  * Bitmap for free interrupt vector numbers
-  * (new vectors starting from 0x70 can be allocated by
+  * Debugging dump, used in various places to see what's going on.
+  */
+@@ -115,26 +113,40 @@ void __init psc_init(void)
+ }
+ 
+ /*
+- * Register the PSC interrupt dispatchers for autovector interrupts 3-6.
++ * PSC interrupt handler. It's a lot like the VIA interrupt handler.
+  */
+ 
+-void __init psc_register_interrupts(void)
++#ifdef CONFIG_GENERIC_HARDIRQS
++static void psc_irq(unsigned int irq, struct irq_desc *desc)
+ {
+-	if (request_irq(IRQ_AUTO_3, psc_irq, 0, "psc3", (void *) 0x30))
+-		pr_err("Couldn't register psc%d interrupt\n", 3);
+-	if (request_irq(IRQ_AUTO_4, psc_irq, 0, "psc4", (void *) 0x40))
+-		pr_err("Couldn't register psc%d interrupt\n", 4);
+-	if (request_irq(IRQ_AUTO_5, psc_irq, 0, "psc5", (void *) 0x50))
+-		pr_err("Couldn't register psc%d interrupt\n", 5);
+-	if (request_irq(IRQ_AUTO_6, psc_irq, 0, "psc6", (void *) 0x60))
+-		pr_err("Couldn't register psc%d interrupt\n", 6);
+-}
++	unsigned int offset = (unsigned int)irq_desc_get_handler_data(desc);
++	int pIFR	= pIFRbase + offset;
++	int pIER	= pIERbase + offset;
++	int irq_num;
++	unsigned char irq_bit, events;
+ 
+-/*
+- * PSC interrupt handler. It's a lot like the VIA interrupt handler.
+- */
++#ifdef DEBUG_IRQS
++	printk("psc_irq: irq %u pIFR = 0x%02X pIER = 0x%02X\n",
++		irq, (int) psc_read_byte(pIFR), (int) psc_read_byte(pIER));
++#endif
+ 
+-irqreturn_t psc_irq(int irq, void *dev_id)
++	events = psc_read_byte(pIFR) & psc_read_byte(pIER) & 0xF;
++	if (!events)
++		return;
++
++	irq_num = irq << 3;
++	irq_bit = 1;
++	do {
++		if (events & irq_bit) {
++			psc_write_byte(pIFR, irq_bit);
++			generic_handle_irq(irq_num);
++		}
++		irq_num++;
++		irq_bit <<= 1;
++	} while (events >= irq_bit);
++}
++#else
++static irqreturn_t psc_irq(int irq, void *dev_id)
+ {
+ 	int pIFR	= pIFRbase + ((int) dev_id);
+ 	int pIER	= pIERbase + ((int) dev_id);
+@@ -162,6 +174,34 @@ irqreturn_t psc_irq(int irq, void *dev_id)
+ 	} while (events >= irq_bit);
+ 	return IRQ_HANDLED;
+ }
++#endif
++
++/*
++ * Register the PSC interrupt dispatchers for autovector interrupts 3-6.
++ */
++
++void __init psc_register_interrupts(void)
++{
++#ifdef CONFIG_GENERIC_HARDIRQS
++	irq_set_chained_handler(IRQ_AUTO_3, psc_irq);
++	irq_set_handler_data(IRQ_AUTO_3, (void *)0x30);
++	irq_set_chained_handler(IRQ_AUTO_4, psc_irq);
++	irq_set_handler_data(IRQ_AUTO_4, (void *)0x40);
++	irq_set_chained_handler(IRQ_AUTO_5, psc_irq);
++	irq_set_handler_data(IRQ_AUTO_5, (void *)0x50);
++	irq_set_chained_handler(IRQ_AUTO_6, psc_irq);
++	irq_set_handler_data(IRQ_AUTO_6, (void *)0x60);
++#else /* !CONFIG_GENERIC_HARDIRQS */
++	if (request_irq(IRQ_AUTO_3, psc_irq, 0, "psc3", (void *) 0x30))
++		pr_err("Couldn't register psc%d interrupt\n", 3);
++	if (request_irq(IRQ_AUTO_4, psc_irq, 0, "psc4", (void *) 0x40))
++		pr_err("Couldn't register psc%d interrupt\n", 4);
++	if (request_irq(IRQ_AUTO_5, psc_irq, 0, "psc5", (void *) 0x50))
++		pr_err("Couldn't register psc%d interrupt\n", 5);
++	if (request_irq(IRQ_AUTO_6, psc_irq, 0, "psc6", (void *) 0x60))
++		pr_err("Couldn't register psc%d interrupt\n", 6);
++#endif /* !CONFIG_GENERIC_HARDIRQS */
++}
+ 
+ void psc_irq_enable(int irq) {
+ 	int irq_src	= IRQ_SRC(irq);
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index bde156c..b8156ac 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -80,9 +80,6 @@ static int gIER,gIFR,gBufA,gBufB;
+ static u8 nubus_disabled;
+ 
+ void via_debug_dump(void);
+-irqreturn_t via1_irq(int, void *);
+-irqreturn_t via2_irq(int, void *);
+-irqreturn_t via_nubus_irq(int, void *);
+ void via_irq_enable(int irq);
+ void via_irq_disable(int irq);
+ void via_irq_clear(int irq);
+@@ -289,29 +286,6 @@ void __init via_init_clock(irq_handler_t func)
+ }
+ 
+ /*
+- * Register the interrupt dispatchers for VIA or RBV machines only.
+- */
+-
+-void __init via_register_interrupts(void)
+-{
+-	if (via_alt_mapping) {
+-		if (request_irq(IRQ_AUTO_1, via1_irq, 0, "software",
+-				(void *)via1))
+-			pr_err("Couldn't register %s interrupt\n", "software");
+-		if (request_irq(IRQ_AUTO_6, via1_irq, 0, "via1", (void *)via1))
+-			pr_err("Couldn't register %s interrupt\n", "via1");
+-	} else {
+-		if (request_irq(IRQ_AUTO_1, via1_irq, 0, "via1", (void *)via1))
+-			pr_err("Couldn't register %s interrupt\n", "via1");
+-	}
+-	if (request_irq(IRQ_AUTO_2, via2_irq, 0, "via2", (void *)via2))
+-		pr_err("Couldn't register %s interrupt\n", "via2");
+-	if (request_irq(IRQ_MAC_NUBUS, via_nubus_irq, 0, "nubus",
+-			(void *)via2))
+-		pr_err("Couldn't register %s interrupt\n", "nubus");
+-}
+-
+-/*
+  * Debugging dump, used in various places to see what's going on.
+  */
+ 
+@@ -443,6 +417,49 @@ void __init via_nubus_init(void)
+  * via6522.c :-), disable/pending masks added.
+  */
+ 
++#ifdef CONFIG_GENERIC_HARDIRQS
++void via1_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int irq_num;
++	unsigned char irq_bit, events;
++
++	events = via1[vIFR] & via1[vIER] & 0x7F;
++	if (!events)
++		return;
++
++	irq_num = VIA1_SOURCE_BASE;
++	irq_bit = 1;
++	do {
++		if (events & irq_bit) {
++			via1[vIFR] = irq_bit;
++			generic_handle_irq(irq_num);
++		}
++		++irq_num;
++		irq_bit <<= 1;
++	} while (events >= irq_bit);
++}
++
++static void via2_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int irq_num;
++	unsigned char irq_bit, events;
++
++	events = via2[gIFR] & via2[gIER] & 0x7F;
++	if (!events)
++		return;
++
++	irq_num = VIA2_SOURCE_BASE;
++	irq_bit = 1;
++	do {
++		if (events & irq_bit) {
++			via2[gIFR] = irq_bit | rbv_clear;
++			generic_handle_irq(irq_num);
++		}
++		++irq_num;
++		irq_bit <<= 1;
++	} while (events >= irq_bit);
++}
++#else
+ irqreturn_t via1_irq(int irq, void *dev_id)
+ {
+ 	int irq_num;
+@@ -486,12 +503,49 @@ irqreturn_t via2_irq(int irq, void *dev_id)
+ 	} while (events >= irq_bit);
+ 	return IRQ_HANDLED;
+ }
++#endif
+ 
+ /*
+  * Dispatch Nubus interrupts. We are called as a secondary dispatch by the
+  * VIA2 dispatcher as a fast interrupt handler.
+  */
+ 
++#ifdef CONFIG_GENERIC_HARDIRQS
++void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
++{
++	int slot_irq;
++	unsigned char slot_bit, events;
++
++	events = ~via2[gBufA] & 0x7F;
++	if (rbv_present)
++		events &= via2[rSIER];
++	else
++		events &= ~via2[vDirA];
++	if (!events)
++		return;
++
++	do {
++		slot_irq = IRQ_NUBUS_F;
++		slot_bit = 0x40;
++		do {
++			if (events & slot_bit) {
++				events &= ~slot_bit;
++				generic_handle_irq(slot_irq);
++			}
++			--slot_irq;
++			slot_bit >>= 1;
++		} while (events);
++
++ 		/* clear the CA1 interrupt and make certain there's no more. */
++		via2[gIFR] = 0x02 | rbv_clear;
++		events = ~via2[gBufA] & 0x7F;
++		if (rbv_present)
++			events &= via2[rSIER];
++		else
++			events &= ~via2[vDirA];
++	} while (events);
++}
++#else
+ irqreturn_t via_nubus_irq(int irq, void *dev_id)
+ {
+ 	int slot_irq;
+@@ -527,6 +581,43 @@ irqreturn_t via_nubus_irq(int irq, void *dev_id)
+ 	} while (events);
+ 	return IRQ_HANDLED;
+ }
++#endif
++
++/*
++ * Register the interrupt dispatchers for VIA or RBV machines only.
++ */
++
++void __init via_register_interrupts(void)
++{
++#ifdef CONFIG_GENERIC_HARDIRQS
++	if (via_alt_mapping) {
++		/* software interrupt */
++		irq_set_chained_handler(IRQ_AUTO_1, via1_irq);
++		/* via1 interrupt */
++		irq_set_chained_handler(IRQ_AUTO_6, via1_irq);
++	} else {
++		irq_set_chained_handler(IRQ_AUTO_1, via1_irq);
++	}
++	irq_set_chained_handler(IRQ_AUTO_2, via2_irq);
++	irq_set_chained_handler(IRQ_MAC_NUBUS, via_nubus_irq);
++#else
++	if (via_alt_mapping) {
++		if (request_irq(IRQ_AUTO_1, via1_irq, 0, "software",
++				(void *)via1))
++			pr_err("Couldn't register %s interrupt\n", "software");
++		if (request_irq(IRQ_AUTO_6, via1_irq, 0, "via1", (void *)via1))
++			pr_err("Couldn't register %s interrupt\n", "via1");
++	} else {
++		if (request_irq(IRQ_AUTO_1, via1_irq, 0, "via1", (void *)via1))
++			pr_err("Couldn't register %s interrupt\n", "via1");
++	}
++	if (request_irq(IRQ_AUTO_2, via2_irq, 0, "via2", (void *)via2))
++		pr_err("Couldn't register %s interrupt\n", "via2");
++	if (request_irq(IRQ_MAC_NUBUS, via_nubus_irq, 0, "nubus",
++			(void *)via2))
++		pr_err("Couldn't register %s interrupt\n", "nubus");
++#endif
++}
+ 
+ void via_irq_enable(int irq) {
+ 	int irq_src	= IRQ_SRC(irq);
 -- 
 1.7.0.4
