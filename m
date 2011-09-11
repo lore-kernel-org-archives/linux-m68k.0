@@ -1,70 +1,64 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 03/28] keyboard: Do not include <linux/irq.>
-Date: Sun, 11 Sep 2011 13:59:29 +0200
-Message-ID: <1315742394-16036-4-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 09/28] m68k/irq: Extract irq_set_chip()
+Date: Sun, 11 Sep 2011 13:59:35 +0200
+Message-ID: <1315742394-16036-10-git-send-email-geert__27418.874592013$1315742793$gmane$org@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@suse.de>
-
-The top of <linux/irq.h> has this comment:
-
- * Please do not include this file in generic code.  There is currently
- * no requirement for any architecture to implement anything held
- * within this file.
- *
- * Thanks. --rmk
-
-Remove inclusion of <linux/irq.>, to prevent the following compile erro=
-r
-from happening soon:
-
-| include/linux/irq.h:132: error: redefinition of =E2=80=98struct irq_d=
-ata=E2=80=99
-| include/linux/irq.h:286: error: redefinition of =E2=80=98struct irq_c=
-hip=E2=80=99
-
-drivers/tty/vt/keyboard.c needs to include <asm/irq_regs.h> for get_irq=
-_regs():
-
-| drivers/tty/vt/keyboard.c:497: error: implicit declaration of functio=
-n =E2=80=98get_irq_regs=E2=80=99
-| drivers/tty/vt/keyboard.c:497: warning: initialization makes pointer =
-from integer without a cast
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
 ---
- drivers/tty/vt/keyboard.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ arch/m68k/kernel/ints.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index 3761ccf..a605549 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -33,7 +33,6 @@
- #include <linux/string.h>
- #include <linux/init.h>
- #include <linux/slab.h>
--#include <linux/irq.h>
-=20
- #include <linux/kbd_kern.h>
- #include <linux/kbd_diacr.h>
-@@ -43,6 +42,8 @@
- #include <linux/notifier.h>
- #include <linux/jiffies.h>
-=20
-+#include <asm/irq_regs.h>
+diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
+index e68a3bd..4f9868e 100644
+--- a/arch/m68k/kernel/ints.c
++++ b/arch/m68k/kernel/ints.c
+@@ -55,6 +55,12 @@ static struct irq_data *irq_list[NR_IRQS];
+ static struct irq_chip *irq_chip[NR_IRQS];
+ static int irq_depth[NR_IRQS];
+ 
++static inline int irq_set_chip(unsigned int irq, struct irq_chip *chip)
++{
++	irq_chip[irq] = chip;
++	return 0;
++}
 +
- extern void ctrl_alt_del(void);
-=20
- /*
---=20
+ static int m68k_first_user_vec;
+ 
+ static struct irq_chip auto_irq_chip = {
+@@ -94,7 +100,7 @@ void __init init_IRQ(void)
+ 	}
+ 
+ 	for (i = IRQ_AUTO_1; i <= IRQ_AUTO_7; i++)
+-		irq_chip[i] = &auto_irq_chip;
++		irq_set_chip(i, &auto_irq_chip);
+ 
+ 	mach_init_IRQ();
+ }
+@@ -134,7 +140,7 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
+ 	BUG_ON(IRQ_USER + cnt > NR_IRQS);
+ 	m68k_first_user_vec = vec;
+ 	for (i = 0; i < cnt; i++)
+-		irq_chip[IRQ_USER + i] = &user_irq_chip;
++		irq_set_chip(IRQ_USER + i, &user_irq_chip);
+ 	*user_irqvec_fixup = vec - IRQ_USER;
+ 	if (handler)
+ 		*user_irqhandler_fixup = (u32)handler;
+@@ -157,7 +163,7 @@ void m68k_setup_irq_chip(struct irq_chip *contr, unsigned int irq,
+ 	int i;
+ 
+ 	for (i = 0; i < cnt; i++)
+-		irq_chip[irq + i] = contr;
++		irq_set_chip(irq + i, contr);
+ }
+ 
+ struct irq_data *new_irq_node(void)
+-- 
 1.7.0.4
