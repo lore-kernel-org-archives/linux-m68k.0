@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 11/28] m68k/irq: Rename {,__}m68k_handle_int()
-Date: Sun, 11 Sep 2011 13:59:37 +0200
-Message-ID: <1315742394-16036-12-git-send-email-geert__43380.3590400659$1315742662$gmane$org@linux-m68k.org>
+Subject: [PATCH 07/28] m68k/irq: Switch irq_chip methods to "struct irq_data *data"
+Date: Sun, 11 Sep 2011 13:59:33 +0200
+Message-ID: <1315742394-16036-8-git-send-email-geert__24288.9415509582$1315742704$gmane$org@linux-m68k.org>
 References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
@@ -10,359 +10,468 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Rename m68k_handle_int() to generic_handle_irq(), and drop the unneeded
-    asmlinkage,
-  - Rename __m68k_handle_int() to do_IRQ().
-
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-v3: Added this changeset
----
- arch/m68k/amiga/amiints.c   |   24 ++++++++++++------------
- arch/m68k/amiga/cia.c       |    2 +-
- arch/m68k/apollo/dn_ints.c  |    2 +-
- arch/m68k/include/asm/irq.h |    4 ++--
- arch/m68k/kernel/entry_mm.S |    4 ++--
- arch/m68k/kernel/ints.c     |   10 +++++-----
- arch/m68k/mac/baboon.c      |    2 +-
- arch/m68k/mac/oss.c         |    4 ++--
- arch/m68k/mac/psc.c         |    2 +-
- arch/m68k/mac/via.c         |    6 +++---
- arch/m68k/q40/q40ints.c     |    8 ++++----
- arch/m68k/sun3/sun3ints.c   |    2 +-
- 12 files changed, 35 insertions(+), 35 deletions(-)
+ arch/m68k/amiga/amiints.c   |   16 ++++++++--------
+ arch/m68k/amiga/cia.c       |   25 ++++++++++++++-----------
+ arch/m68k/apollo/dn_ints.c  |    8 ++++++--
+ arch/m68k/atari/ataints.c   |   30 ++++++++++++++++++++++--------
+ arch/m68k/include/asm/irq.h |   13 +++++++------
+ arch/m68k/kernel/ints.c     |   23 +++++++++++++++--------
+ arch/m68k/mac/macints.c     |   14 ++++++++++++--
+ arch/m68k/q40/q40ints.c     |   28 +++++++++++++++++-----------
+ arch/m68k/sun3/sun3ints.c   |   14 ++++++++++++--
+ 9 files changed, 113 insertions(+), 58 deletions(-)
 
 diff --git a/arch/m68k/amiga/amiints.c b/arch/m68k/amiga/amiints.c
-index 8af5ea3..0daa7fc 100644
+index 320c5d0..09a695b 100644
 --- a/arch/m68k/amiga/amiints.c
 +++ b/arch/m68k/amiga/amiints.c
-@@ -124,19 +124,19 @@ static irqreturn_t ami_int1(int irq, void *dev_id)
- 	/* if serial transmit buffer empty, interrupt */
- 	if (ints & IF_TBE) {
- 		amiga_custom.intreq = IF_TBE;
--		m68k_handle_int(IRQ_AMIGA_TBE);
-+		generic_handle_irq(IRQ_AMIGA_TBE);
- 	}
+@@ -45,8 +45,8 @@
+ #include <asm/amigaints.h>
+ #include <asm/amipcmcia.h>
  
- 	/* if floppy disk transfer complete, interrupt */
- 	if (ints & IF_DSKBLK) {
- 		amiga_custom.intreq = IF_DSKBLK;
--		m68k_handle_int(IRQ_AMIGA_DSKBLK);
-+		generic_handle_irq(IRQ_AMIGA_DSKBLK);
- 	}
+-static void amiga_enable_irq(unsigned int irq);
+-static void amiga_disable_irq(unsigned int irq);
++static void amiga_irq_enable(struct irq_data *data);
++static void amiga_irq_disable(struct irq_data *data);
+ static irqreturn_t ami_int1(int irq, void *dev_id);
+ static irqreturn_t ami_int3(int irq, void *dev_id);
+ static irqreturn_t ami_int4(int irq, void *dev_id);
+@@ -54,8 +54,8 @@ static irqreturn_t ami_int5(int irq, void *dev_id);
  
- 	/* if software interrupt set, interrupt */
- 	if (ints & IF_SOFT) {
- 		amiga_custom.intreq = IF_SOFT;
--		m68k_handle_int(IRQ_AMIGA_SOFT);
-+		generic_handle_irq(IRQ_AMIGA_SOFT);
- 	}
- 	return IRQ_HANDLED;
+ static struct irq_chip amiga_irq_chip = {
+ 	.name		= "amiga",
+-	.irq_enable	= amiga_enable_irq,
+-	.irq_disable	= amiga_disable_irq,
++	.irq_enable	= amiga_irq_enable,
++	.irq_disable	= amiga_irq_disable,
+ };
+ 
+ /*
+@@ -102,14 +102,14 @@ void __init amiga_init_IRQ(void)
+  * internal data, that may not be changed by the interrupt at the same time.
+  */
+ 
+-static void amiga_enable_irq(unsigned int irq)
++static void amiga_irq_enable(struct irq_data *data)
+ {
+-	amiga_custom.intena = IF_SETCLR | (1 << (irq - IRQ_USER));
++	amiga_custom.intena = IF_SETCLR | (1 << (data->irq - IRQ_USER));
  }
-@@ -148,19 +148,19 @@ static irqreturn_t ami_int3(int irq, void *dev_id)
- 	/* if a blitter interrupt */
- 	if (ints & IF_BLIT) {
- 		amiga_custom.intreq = IF_BLIT;
--		m68k_handle_int(IRQ_AMIGA_BLIT);
-+		generic_handle_irq(IRQ_AMIGA_BLIT);
- 	}
  
- 	/* if a copper interrupt */
- 	if (ints & IF_COPER) {
- 		amiga_custom.intreq = IF_COPER;
--		m68k_handle_int(IRQ_AMIGA_COPPER);
-+		generic_handle_irq(IRQ_AMIGA_COPPER);
- 	}
- 
- 	/* if a vertical blank interrupt */
- 	if (ints & IF_VERTB) {
- 		amiga_custom.intreq = IF_VERTB;
--		m68k_handle_int(IRQ_AMIGA_VERTB);
-+		generic_handle_irq(IRQ_AMIGA_VERTB);
- 	}
- 	return IRQ_HANDLED;
+-static void amiga_disable_irq(unsigned int irq)
++static void amiga_irq_disable(struct irq_data *data)
+ {
+-	amiga_custom.intena = 1 << (irq - IRQ_USER);
++	amiga_custom.intena = 1 << (data->irq - IRQ_USER);
  }
-@@ -172,25 +172,25 @@ static irqreturn_t ami_int4(int irq, void *dev_id)
- 	/* if audio 0 interrupt */
- 	if (ints & IF_AUD0) {
- 		amiga_custom.intreq = IF_AUD0;
--		m68k_handle_int(IRQ_AMIGA_AUD0);
-+		generic_handle_irq(IRQ_AMIGA_AUD0);
- 	}
  
- 	/* if audio 1 interrupt */
- 	if (ints & IF_AUD1) {
- 		amiga_custom.intreq = IF_AUD1;
--		m68k_handle_int(IRQ_AMIGA_AUD1);
-+		generic_handle_irq(IRQ_AMIGA_AUD1);
- 	}
- 
- 	/* if audio 2 interrupt */
- 	if (ints & IF_AUD2) {
- 		amiga_custom.intreq = IF_AUD2;
--		m68k_handle_int(IRQ_AMIGA_AUD2);
-+		generic_handle_irq(IRQ_AMIGA_AUD2);
- 	}
- 
- 	/* if audio 3 interrupt */
- 	if (ints & IF_AUD3) {
- 		amiga_custom.intreq = IF_AUD3;
--		m68k_handle_int(IRQ_AMIGA_AUD3);
-+		generic_handle_irq(IRQ_AMIGA_AUD3);
- 	}
- 	return IRQ_HANDLED;
- }
-@@ -202,13 +202,13 @@ static irqreturn_t ami_int5(int irq, void *dev_id)
- 	/* if serial receive buffer full interrupt */
- 	if (ints & IF_RBF) {
- 		/* acknowledge of IF_RBF must be done by the serial interrupt */
--		m68k_handle_int(IRQ_AMIGA_RBF);
-+		generic_handle_irq(IRQ_AMIGA_RBF);
- 	}
- 
- 	/* if a disk sync interrupt */
- 	if (ints & IF_DSKSYN) {
- 		amiga_custom.intreq = IF_DSKSYN;
--		m68k_handle_int(IRQ_AMIGA_DSKSYN);
-+		generic_handle_irq(IRQ_AMIGA_DSKSYN);
- 	}
- 	return IRQ_HANDLED;
- }
+ /*
 diff --git a/arch/m68k/amiga/cia.c b/arch/m68k/amiga/cia.c
-index 84663ae..18c0e29 100644
+index 637ef53..b04b453 100644
 --- a/arch/m68k/amiga/cia.c
 +++ b/arch/m68k/amiga/cia.c
-@@ -93,7 +93,7 @@ static irqreturn_t cia_handler(int irq, void *dev_id)
- 	amiga_custom.intreq = base->int_mask;
- 	for (; ints; mach_irq++, ints >>= 1) {
- 		if (ints & 1)
--			m68k_handle_int(mach_irq);
-+			generic_handle_irq(mach_irq);
- 	}
+@@ -98,8 +98,9 @@ static irqreturn_t cia_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
+ 
+-static void cia_enable_irq(unsigned int irq)
++static void cia_irq_enable(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
+ 	unsigned char mask;
+ 
+ 	if (irq >= IRQ_AMIGA_CIAB) {
+@@ -113,8 +114,10 @@ static void cia_enable_irq(unsigned int irq)
+ 	}
+ }
+ 
+-static void cia_disable_irq(unsigned int irq)
++static void cia_irq_disable(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	if (irq >= IRQ_AMIGA_CIAB)
+ 		cia_able_irq(&ciab_base, 1 << (irq - IRQ_AMIGA_CIAB));
+ 	else
+@@ -123,8 +126,8 @@ static void cia_disable_irq(unsigned int irq)
+ 
+ static struct irq_chip cia_irq_chip = {
+ 	.name		= "cia",
+-	.irq_enable	= cia_enable_irq,
+-	.irq_disable	= cia_disable_irq,
++	.irq_enable	= cia_irq_enable,
++	.irq_disable	= cia_irq_disable,
+ };
+ 
+ /*
+@@ -133,9 +136,9 @@ static struct irq_chip cia_irq_chip = {
+  * into this chain.
+  */
+ 
+-static void auto_enable_irq(unsigned int irq)
++static void auto_irq_enable(struct irq_data *data)
+ {
+-	switch (irq) {
++	switch (data->irq) {
+ 	case IRQ_AUTO_2:
+ 		amiga_custom.intena = IF_SETCLR | IF_PORTS;
+ 		break;
+@@ -145,9 +148,9 @@ static void auto_enable_irq(unsigned int irq)
+ 	}
+ }
+ 
+-static void auto_disable_irq(unsigned int irq)
++static void auto_irq_disable(struct irq_data *data)
+ {
+-	switch (irq) {
++	switch (data->irq) {
+ 	case IRQ_AUTO_2:
+ 		amiga_custom.intena = IF_PORTS;
+ 		break;
+@@ -159,8 +162,8 @@ static void auto_disable_irq(unsigned int irq)
+ 
+ static struct irq_chip auto_irq_chip = {
+ 	.name		= "auto",
+-	.irq_enable	= auto_enable_irq,
+-	.irq_disable	= auto_disable_irq,
++	.irq_enable	= auto_irq_enable,
++	.irq_disable	= auto_irq_disable,
+ };
+ 
+ void __init cia_init_IRQ(struct ciabase *base)
+@@ -173,7 +176,7 @@ void __init cia_init_IRQ(struct ciabase *base)
+ 
+ 	/* override auto int and install CIA handler */
+ 	m68k_setup_irq_chip(&auto_irq_chip, base->handler_irq, 1);
+-	m68k_irq_startup(base->handler_irq);
++	m68k_irq_startup_irq(base->handler_irq);
+ 	if (request_irq(base->handler_irq, cia_handler, IRQF_SHARED,
+ 			base->name, base))
+ 		pr_err("Couldn't register %s interrupt\n", base->name);
 diff --git a/arch/m68k/apollo/dn_ints.c b/arch/m68k/apollo/dn_ints.c
-index bdc4428..4b76431 100644
+index d6e8f33..2bdab49 100644
 --- a/arch/m68k/apollo/dn_ints.c
 +++ b/arch/m68k/apollo/dn_ints.c
-@@ -6,7 +6,7 @@
- 
- void dn_process_int(unsigned int irq, struct pt_regs *fp)
- {
--	__m68k_handle_int(irq, fp);
-+	do_IRQ(irq, fp);
- 
- 	*(volatile unsigned char *)(pica)=0x20;
+@@ -12,8 +12,10 @@ void dn_process_int(unsigned int irq, struct pt_regs *fp)
  	*(volatile unsigned char *)(picb)=0x20;
+ }
+ 
+-unsigned int apollo_irq_startup(unsigned int irq)
++unsigned int apollo_irq_startup(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	if (irq < 8)
+ 		*(volatile unsigned char *)(pica+1) &= ~(1 << irq);
+ 	else
+@@ -21,8 +23,10 @@ unsigned int apollo_irq_startup(unsigned int irq)
+ 	return 0;
+ }
+ 
+-void apollo_irq_shutdown(unsigned int irq)
++void apollo_irq_shutdown(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	if (irq < 8)
+ 		*(volatile unsigned char *)(pica+1) |= (1 << irq);
+ 	else
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 3e1be40..de0cb42 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -318,30 +318,44 @@ __ALIGN_STR "\n\t"
+ 
+ extern void atari_microwire_cmd(int cmd);
+ 
+-static unsigned int atari_startup_irq(unsigned int irq)
++static unsigned int atari_irq_startup(struct irq_data *data)
+ {
+-	m68k_irq_startup(irq);
++	unsigned int irq = data->irq;
++
++	m68k_irq_startup(data);
+ 	atari_turnon_irq(irq);
+ 	atari_enable_irq(irq);
+ 	return 0;
+ }
+ 
+-static void atari_shutdown_irq(unsigned int irq)
++static void atari_irq_shutdown(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	atari_disable_irq(irq);
+ 	atari_turnoff_irq(irq);
+-	m68k_irq_shutdown(irq);
++	m68k_irq_shutdown(data);
+ 
+ 	if (irq == IRQ_AUTO_4)
+ 	    vectors[VEC_INT4] = falcon_hblhandler;
+ }
+ 
++static void atari_irq_enable(struct irq_data *data)
++{
++	atari_enable_irq(data->irq);
++}
++
++static void atari_irq_disable(struct irq_data *data)
++{
++	atari_disable_irq(data->irq);
++}
++
+ static struct irq_chip atari_irq_chip = {
+ 	.name		= "atari",
+-	.irq_startup	= atari_startup_irq,
+-	.irq_shutdown	= atari_shutdown_irq,
+-	.irq_enable	= atari_enable_irq,
+-	.irq_disable	= atari_disable_irq,
++	.irq_startup	= atari_irq_startup,
++	.irq_shutdown	= atari_irq_shutdown,
++	.irq_enable	= atari_irq_enable,
++	.irq_disable	= atari_irq_disable,
+ };
+ 
+ /*
 diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index d0b7efd..9a2bae8 100644
+index 3cb037c..423f064 100644
 --- a/arch/m68k/include/asm/irq.h
 +++ b/arch/m68k/include/asm/irq.h
-@@ -118,8 +118,8 @@ extern void m68k_setup_irq_chip(struct irq_chip *, unsigned int, unsigned int);
- #define m68k_setup_irq_controller(chip, dummy, irq, cnt) \
- 	m68k_setup_irq_chip((chip), (irq), (cnt))
+@@ -96,14 +96,15 @@ struct irq_handler {
  
--asmlinkage void m68k_handle_int(unsigned int);
--asmlinkage void __m68k_handle_int(unsigned int, struct pt_regs *);
-+extern void generic_handle_irq(unsigned int);
-+asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+ struct irq_chip {
+ 	const char *name;
+-	unsigned int (*irq_startup)(unsigned int irq);
+-	void (*irq_shutdown)(unsigned int irq);
+-	void (*irq_enable)(unsigned int irq);
+-	void (*irq_disable)(unsigned int irq);
++	unsigned int (*irq_startup)(struct irq_data *data);
++	void (*irq_shutdown)(struct irq_data *data);
++	void (*irq_enable)(struct irq_data *data);
++	void (*irq_disable)(struct irq_data *data);
+ };
  
- #else
- #define irq_canonicalize(irq)  (irq)
-diff --git a/arch/m68k/kernel/entry_mm.S b/arch/m68k/kernel/entry_mm.S
-index bd0ec05..f5927d0 100644
---- a/arch/m68k/kernel/entry_mm.S
-+++ b/arch/m68k/kernel/entry_mm.S
-@@ -207,7 +207,7 @@ ENTRY(auto_inthandler)
- 	movel	%sp,%sp@-
- 	movel	%d0,%sp@-		|  put vector # on stack
- auto_irqhandler_fixup = . + 2
--	jsr	__m68k_handle_int	|  process the IRQ
-+	jsr	do_IRQ			|  process the IRQ
- 	addql	#8,%sp			|  pop parameters off stack
+-extern unsigned int m68k_irq_startup(unsigned int);
+-extern void m68k_irq_shutdown(unsigned int);
++extern unsigned int m68k_irq_startup(struct irq_data *data);
++extern unsigned int m68k_irq_startup_irq(unsigned int irq);
++extern void m68k_irq_shutdown(struct irq_data *data);
  
- ret_from_interrupt:
-@@ -241,7 +241,7 @@ user_irqvec_fixup = . + 2
- 	movel	%sp,%sp@-
- 	movel	%d0,%sp@-		|  put vector # on stack
- user_irqhandler_fixup = . + 2
--	jsr	__m68k_handle_int	|  process the IRQ
-+	jsr	do_IRQ			|  process the IRQ
- 	addql	#8,%sp			|  pop parameters off stack
- 
- 	subqb	#1,%curptr@(TASK_INFO+TINFO_PREEMPT+1)
+ /*
+  * This function returns a new struct irq_data
 diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
-index 4f9868e..15dbbe2 100644
+index 8877932..404d832 100644
 --- a/arch/m68k/kernel/ints.c
 +++ b/arch/m68k/kernel/ints.c
-@@ -110,7 +110,7 @@ void __init init_IRQ(void)
-  * @handler: called from auto vector interrupts
-  *
-  * setup the handler to be called from auto vector interrupts instead of the
-- * standard __m68k_handle_int(), it will be called with irq numbers in the range
-+ * standard do_IRQ(), it will be called with irq numbers in the range
-  * from IRQ_AUTO_1 - IRQ_AUTO_7.
-  */
- void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_regs *))
-@@ -129,7 +129,7 @@ void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_re
-  * setup user vector interrupts, this includes activating the specified range
-  * of interrupts, only then these interrupts can be requested (note: this is
-  * different from auto vector interrupts). An optional handler can be installed
-- * to be called instead of the default __m68k_handle_int(), it will be called
-+ * to be called instead of the default do_IRQ(), it will be called
-  * with irq numbers starting from IRQ_USER.
-  */
- void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
-@@ -398,7 +398,7 @@ unsigned int irq_canonicalize(unsigned int irq)
+@@ -203,9 +203,9 @@ int setup_irq(unsigned int irq, struct irq_data *node)
  
- EXPORT_SYMBOL(irq_canonicalize);
- 
--asmlinkage void m68k_handle_int(unsigned int irq)
-+void generic_handle_irq(unsigned int irq)
- {
- 	struct irq_data *node;
- 	kstat_cpu(0).irqs[irq]++;
-@@ -409,11 +409,11 @@ asmlinkage void m68k_handle_int(unsigned int irq)
- 	} while (node);
- }
- 
--asmlinkage void __m68k_handle_int(unsigned int irq, struct pt_regs *regs)
-+asmlinkage void do_IRQ(int irq, struct pt_regs *regs)
- {
- 	struct pt_regs *old_regs;
- 	old_regs = set_irq_regs(regs);
--	m68k_handle_int(irq);
-+	generic_handle_irq(irq);
- 	set_irq_regs(old_regs);
- }
- 
-diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-index 2a96beb..f264791 100644
---- a/arch/m68k/mac/baboon.c
-+++ b/arch/m68k/mac/baboon.c
-@@ -72,7 +72,7 @@ static irqreturn_t baboon_irq(int irq, void *dev_id)
- 	do {
- 	        if (events & irq_bit) {
- 			baboon->mb_ifr &= ~irq_bit;
--			m68k_handle_int(irq_num);
-+			generic_handle_irq(irq_num);
- 		}
- 		irq_bit <<= 1;
- 		irq_num++;
-diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index a9c0f5a..ad51241 100644
---- a/arch/m68k/mac/oss.c
-+++ b/arch/m68k/mac/oss.c
-@@ -113,7 +113,7 @@ static irqreturn_t oss_irq(int irq, void *dev_id)
- 		/* FIXME: call sound handler */
- 	} else if (events & OSS_IP_SCSI) {
- 		oss->irq_pending &= ~OSS_IP_SCSI;
--		m68k_handle_int(IRQ_MAC_SCSI);
-+		generic_handle_irq(IRQ_MAC_SCSI);
- 	} else {
- 		/* FIXME: error check here? */
+ 	if (!irq_list[irq]) {
+ 		if (contr->irq_startup)
+-			contr->irq_startup(irq);
++			contr->irq_startup(node);
+ 		else
+-			contr->irq_enable(irq);
++			contr->irq_enable(node);
  	}
-@@ -148,7 +148,7 @@ static irqreturn_t oss_nubus_irq(int irq, void *dev_id)
- 		irq_bit >>= 1;
- 		if (events & irq_bit) {
- 			oss->irq_pending &= ~irq_bit;
--			m68k_handle_int(NUBUS_SOURCE_BASE + i);
-+			generic_handle_irq(NUBUS_SOURCE_BASE + i);
+ 	node->next = NULL;
+ 	*prev = node;
+@@ -270,9 +270,9 @@ void free_irq(unsigned int irq, void *dev_id)
+ 
+ 	if (!irq_list[irq]) {
+ 		if (contr->irq_shutdown)
+-			contr->irq_shutdown(irq);
++			contr->irq_shutdown(node);
+ 		else
+-			contr->irq_disable(irq);
++			contr->irq_disable(node);
+ 	}
+ 
+ 	local_irq_restore(flags);
+@@ -295,7 +295,7 @@ void enable_irq(unsigned int irq)
+ 	if (irq_depth[irq]) {
+ 		if (!--irq_depth[irq]) {
+ 			if (contr->irq_enable)
+-				contr->irq_enable(irq);
++				contr->irq_enable(irq_list[irq]);
  		}
- 	} while(events & (irq_bit - 1));
- 	return IRQ_HANDLED;
-diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-index a4c3eb6..26c2b65 100644
---- a/arch/m68k/mac/psc.c
-+++ b/arch/m68k/mac/psc.c
-@@ -152,7 +152,7 @@ irqreturn_t psc_irq(int irq, void *dev_id)
- 	do {
- 		if (events & irq_bit) {
- 			psc_write_byte(pIFR, irq_bit);
--			m68k_handle_int(irq_num);
-+			generic_handle_irq(irq_num);
- 		}
- 		irq_num++;
- 		irq_bit <<= 1;
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index e71166d..0678570 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -460,7 +460,7 @@ irqreturn_t via1_irq(int irq, void *dev_id)
- 	do {
- 		if (events & irq_bit) {
- 			via1[vIFR] = irq_bit;
--			m68k_handle_int(irq_num);
-+			generic_handle_irq(irq_num);
- 		}
- 		++irq_num;
- 		irq_bit <<= 1;
-@@ -482,7 +482,7 @@ irqreturn_t via2_irq(int irq, void *dev_id)
- 	do {
- 		if (events & irq_bit) {
- 			via2[gIFR] = irq_bit | rbv_clear;
--			m68k_handle_int(irq_num);
-+			generic_handle_irq(irq_num);
- 		}
- 		++irq_num;
- 		irq_bit <<= 1;
-@@ -514,7 +514,7 @@ irqreturn_t via_nubus_irq(int irq, void *dev_id)
- 		do {
- 			if (events & slot_bit) {
- 				events &= ~slot_bit;
--				m68k_handle_int(slot_irq);
-+				generic_handle_irq(slot_irq);
- 			}
- 			--slot_irq;
- 			slot_bit >>= 1;
+ 	} else
+ 		WARN_ON(1);
+@@ -318,7 +318,7 @@ void disable_irq(unsigned int irq)
+ 	local_irq_save(flags);
+ 	if (!irq_depth[irq]++) {
+ 		if (contr->irq_disable)
+-			contr->irq_disable(irq);
++			contr->irq_disable(irq_list[irq]);
+ 	}
+ 	local_irq_restore(flags);
+ }
+@@ -329,7 +329,7 @@ void disable_irq_nosync(unsigned int irq) __attribute__((alias("disable_irq")));
+ 
+ EXPORT_SYMBOL(disable_irq_nosync);
+ 
+-unsigned int m68k_irq_startup(unsigned int irq)
++unsigned int m68k_irq_startup_irq(unsigned int irq)
+ {
+ 	if (irq <= IRQ_AUTO_7)
+ 		vectors[VEC_SPUR + irq] = auto_inthandler;
+@@ -338,8 +338,15 @@ unsigned int m68k_irq_startup(unsigned int irq)
+ 	return 0;
+ }
+ 
+-void m68k_irq_shutdown(unsigned int irq)
++unsigned int m68k_irq_startup(struct irq_data *data)
+ {
++	return m68k_irq_startup_irq(data->irq);
++}
++
++void m68k_irq_shutdown(struct irq_data *data)
++{
++	unsigned int irq = data->irq;
++
+ 	if (irq <= IRQ_AUTO_7)
+ 		vectors[VEC_SPUR + irq] = bad_inthandler;
+ 	else
+diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
+index ffa1b3f..3cee6d2 100644
+--- a/arch/m68k/mac/macints.c
++++ b/arch/m68k/mac/macints.c
+@@ -193,10 +193,20 @@ irqreturn_t mac_debug_handler(int, void *);
+ void mac_enable_irq(unsigned int irq);
+ void mac_disable_irq(unsigned int irq);
+ 
++static void mac_irq_enable(struct irq_data *data)
++{
++	mac_enable_irq(data->irq);
++}
++
++static void mac_irq_disable(struct irq_data *data)
++{
++	mac_disable_irq(data->irq);
++}
++
+ static struct irq_chip mac_irq_chip = {
+ 	.name		= "mac",
+-	.irq_enable	= mac_enable_irq,
+-	.irq_disable	= mac_disable_irq,
++	.irq_enable	= mac_irq_enable,
++	.irq_disable	= mac_irq_disable,
+ };
+ 
+ void __init mac_init_IRQ(void)
 diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index a8a5ce8..afe600c 100644
+index fa05a03..cb245f9 100644
 --- a/arch/m68k/q40/q40ints.c
 +++ b/arch/m68k/q40/q40ints.c
-@@ -220,11 +220,11 @@ static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
+@@ -35,14 +35,16 @@
+ */
+ 
+ static void q40_irq_handler(unsigned int, struct pt_regs *fp);
+-static void q40_enable_irq(unsigned int);
+-static void q40_disable_irq(unsigned int);
++static void q40_irq_enable(struct irq_data *data);
++static void q40_irq_disable(struct irq_data *data);
+ 
+ unsigned short q40_ablecount[35];
+ unsigned short q40_state[35];
+ 
+-static unsigned int q40_irq_startup(unsigned int irq)
++static unsigned int q40_irq_startup(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	/* test for ISA ints not implemented by HW */
  	switch (irq) {
- 	case 4:
- 	case 6:
--		__m68k_handle_int(Q40_IRQ_SAMPLE, fp);
-+		do_IRQ(Q40_IRQ_SAMPLE, fp);
- 		return;
- 	}
- 	if (mir & Q40_IRQ_FRAME_MASK) {
--		__m68k_handle_int(Q40_IRQ_FRAME, fp);
-+		do_IRQ(Q40_IRQ_FRAME, fp);
- 		master_outb(-1, FRAME_CLEAR_REG);
- 	}
- 	if ((mir & Q40_IRQ_SER_MASK) || (mir & Q40_IRQ_EXT_MASK)) {
-@@ -259,7 +259,7 @@ static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
- 					goto iirq;
- 				}
- 				q40_state[irq] |= IRQ_INPROGRESS;
--				__m68k_handle_int(irq, fp);
-+				do_IRQ(irq, fp);
- 				q40_state[irq] &= ~IRQ_INPROGRESS;
+ 	case 1: case 2: case 8: case 9:
+@@ -53,7 +55,7 @@ static unsigned int q40_irq_startup(unsigned int irq)
+ 	return 0;
+ }
  
- 				/* naively enable everything, if that fails than    */
-@@ -290,7 +290,7 @@ static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
- 	mir = master_inb(IIRQ_REG);
- 	/* should test whether keyboard irq is really enabled, doing it in defhand */
- 	if (mir & Q40_IRQ_KEYB_MASK)
--		__m68k_handle_int(Q40_IRQ_KEYBOARD, fp);
-+		do_IRQ(Q40_IRQ_KEYBOARD, fp);
+-static void q40_irq_shutdown(unsigned int irq)
++static void q40_irq_shutdown(struct irq_data *data)
+ {
+ }
  
+@@ -61,8 +63,8 @@ static struct irq_chip q40_irq_chip = {
+ 	.name		= "q40",
+ 	.irq_startup	= q40_irq_startup,
+ 	.irq_shutdown	= q40_irq_shutdown,
+-	.irq_enable	= q40_enable_irq,
+-	.irq_disable	= q40_disable_irq,
++	.irq_enable	= q40_irq_enable,
++	.irq_disable	= q40_irq_disable,
+ };
+ 
+ /*
+@@ -85,8 +87,8 @@ void __init q40_init_IRQ(void)
+ 	/* setup handler for ISA ints */
+ 	m68k_setup_auto_interrupt(q40_irq_handler);
+ 
+-	m68k_irq_startup(IRQ_AUTO_2);
+-	m68k_irq_startup(IRQ_AUTO_4);
++	m68k_irq_startup_irq(IRQ_AUTO_2);
++	m68k_irq_startup_irq(IRQ_AUTO_4);
+ 
+ 	/* now enable some ints.. */
+ 	master_outb(1, EXT_ENABLE_REG);  /* ISA IRQ 5-15 */
+@@ -292,20 +294,24 @@ static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
  	return;
  }
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index 2046127..20ffee7 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -83,7 +83,7 @@ static void sun3_inthandle(unsigned int irq, struct pt_regs *fp)
- {
-         *sun3_intreg &= ~(1 << irq);
  
--	__m68k_handle_int(irq, fp);
-+	do_IRQ(irq, fp);
+-void q40_enable_irq(unsigned int irq)
++void q40_irq_enable(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	if (irq >= 5 && irq <= 15) {
+ 		mext_disabled--;
+ 		if (mext_disabled > 0)
+-			printk("q40_enable_irq : nested disable/enable\n");
++			printk("q40_irq_enable : nested disable/enable\n");
+ 		if (mext_disabled == 0)
+ 			master_outb(1, EXT_ENABLE_REG);
+ 	}
  }
  
- static void sun3_irq_enable(struct irq_data *data)
+ 
+-void q40_disable_irq(unsigned int irq)
++void q40_irq_disable(struct irq_data *data)
+ {
++	unsigned int irq = data->irq;
++
+ 	/* disable ISA iqs : only do something if the driver has been
+ 	 * verified to be Q40 "compatible" - right now IDE, NE2K
+ 	 * Any driver should not attempt to sleep across disable_irq !!
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 97fa9ed..5d45e00 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -86,12 +86,22 @@ static void sun3_inthandle(unsigned int irq, struct pt_regs *fp)
+ 	__m68k_handle_int(irq, fp);
+ }
+ 
++static void sun3_irq_enable(struct irq_data *data)
++{
++    sun3_enable_irq(data->irq);
++};
++
++static void sun3_irq_disable(struct irq_data *data)
++{
++    sun3_disable_irq(data->irq);
++};
++
+ static struct irq_chip sun3_irq_chip = {
+ 	.name		= "sun3",
+ 	.irq_startup	= m68k_irq_startup,
+ 	.irq_shutdown	= m68k_irq_shutdown,
+-	.irq_enable	= sun3_enable_irq,
+-	.irq_disable	= sun3_disable_irq,
++	.irq_enable	= sun3_irq_enable,
++	.irq_disable	= sun3_irq_disable,
+ };
+ 
+ void __init sun3_init_IRQ(void)
 -- 
 1.7.0.4
