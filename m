@@ -1,49 +1,55 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: 68000 patches (Atari ST platform)
-Date: Mon, 12 Sep 2011 11:26:32 +1200
-Message-ID: <CAOmrzk+sqAzh48zXOKQ06iRhceJMTZvPJiDDTASgmT1Qv1B-7Q@mail.gmail.com>
-References: <20110911230920.GA1541@matze-K8NF4G-SATA2>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 07/28] m68k/irq: Switch irq_chip methods to "struct
+ irq_data *data"
+Date: Mon, 12 Sep 2011 12:48:30 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1109121204040.2525@nippy.intranet>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-8-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.00.1109112327500.2286@nippy.intranet> <CAMuHMdWri-LyhDN+z-WpJUkERekAwkD_F88VOtB9kEm_u=QzrA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463806400-566375710-1315793904=:2525"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f42.google.com ([209.85.210.42]:46301 "EHLO
-	mail-pz0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753570Ab1IKX0d convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Sep 2011 19:26:33 -0400
-Received: by pzk37 with SMTP id 37so5905022pzk.1
-        for <linux-m68k@vger.kernel.org>; Sun, 11 Sep 2011 16:26:33 -0700 (PDT)
-In-Reply-To: <20110911230920.GA1541@matze-K8NF4G-SATA2>
+In-Reply-To: <CAMuHMdWri-LyhDN+z-WpJUkERekAwkD_F88VOtB9kEm_u=QzrA@mail.gmail.com>
+Content-ID: <alpine.LNX.2.00.1109121244090.2525@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Matthias Reis <matthias.reis@physik.tu-berlin.de>
-Cc: linux-m68k@vger.kernel.org, "Christian T. Steigies" <cts@debian.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Matthias,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Mon, Sep 12, 2011 at 11:09 AM, Matthias Reis
-<matthias.reis@physik.tu-berlin.de> wrote:
-> Hi all,
->
-> today I finally got my hands on the user interrupts for plain 68000 CPUs and it was quite straightforward, just as you have suggested: I implemented user*_inthandlers in entry_mm.S that push the vectornumber onto the stack. My kernel still doesn't boot completely, but it runs now correctly calibrate delay loop (0.59 BogoMIPS, isn't it great? ;) since the timer interrupt is working.
+---1463806400-566375710-1315793904=:2525
+Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <alpine.LNX.2.00.1109121244091.2525@nippy.intranet>
 
-0.6 BogoMIPS sounds about right :-)
 
-> According to the "release early, release often"-mantra, I want now to send some patches to the list. Do you want to have the Atari bootstrap patches in this mailinglist? I'm asking because bootstrap is not (anymore) part of the kernel sources... The next question would be whether you want to have a single head.S version for the Atari ST-nommu platform or a merge with the current arch/m68k/kernel/head.S. The head.S I use does not use much code from the "classic" head.S and is for sure easier to read due to its small size.
+On Sun, 11 Sep 2011, Geert Uytterhoeven wrote:
 
-Regarding the bootstrap patches - do send them to the list, please.
-Whoever does build ataboot binaries occasionally these days can then
-pick up your patches.
+>=20
+> > @@ -152,7 +149,7 @@ void baboon_irq_enable(int irq)
+> >
+> > =A0 =A0 =A0 =A0baboon_disabled &=3D ~(1 << irq_idx);
+> > =A0 =A0 =A0 =A0if (!baboon_disabled)
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 mac_enable_irq(IRQ_NUBUS_C);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mac_irq_enable(irq_get_irq_data(IRQ_NUBUS=
+_C));
+>=20
+> irq_get_irq_data() is not available in the non-genirq case, so this=20
+> cleanup cannot be folded in patch 7, and has to wait until after patch=20
+> 27.
 
-ataboot used to be part of the m68k CVS on kullervo.debian.net but we
-have had to take kullervo offline half a year ago. Christian has
-rebuilt the system but we're still having trouble with the ethernet
-driver in 3.1 (sort of working on this). I'm sure we can clone the
-m68k CVS off kullervo and set it up somewhere else.
+Right, I forgot about that.
 
-My preference would be to have a separate head.S if they cannot be
-trivially merged. Your call, or Geert's really though.
+>=20
+> I'll add it at the end of the series, OK?
 
-Cheers,
+That's fine. Please go ahead and add my signed-off-by tag (or I can=20
+resubmit if you would prefer).
 
-  Michael
+Finn
+
+>=20
+> Gr{oetje,eeting}s,
+>=20
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Geert
+---1463806400-566375710-1315793904=:2525--
