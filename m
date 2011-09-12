@@ -1,40 +1,46 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 01/28] genirq: Add missing "else" in irq_shutdown()
-Date: Mon, 12 Sep 2011 09:53:56 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1109120953190.2723@ionos>
-References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-2-git-send-email-geert@linux-m68k.org>
+From: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: Re: [PATCH 02/28] ide-{cd,floppy,tape}: Do not include <linux/irq.>
+Date: Mon, 12 Sep 2011 13:59:50 +0400
+Message-ID: <4E6DD816.7040809__36196.4280171835$1315822128$gmane$org@ru.mvista.com>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-3-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1315742394-16036-2-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1315742394-16036-3-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org
 
-On Sun, 11 Sep 2011, Geert Uytterhoeven wrote:
+Hello.
 
-> If an irq_chip provides .irq_shutdown(), but neither of .irq_disable() or
-> .irq_mask(), free_irq() crashes when jumping to NULL.
-> Fix this by only trying .irq_disable() and .irq_mask() if there's no
-> .irq_shutdown() provided.
-> 
-> This revives the symmetry with irq_startup(), which tries .irq_startup(),
-> .irq_enable(), and irq_unmask(), and makes it consistent with the comment for
-> irq_chip.irq_shutdown() in <linux/irq.h>, which says:
-> 
->  * @irq_shutdown:	shut down the interrupt (defaults to ->disable if NULL)
-> 
-> This is also how __free_irq() behaved before the big overhaul, cfr. e.g.
-> 3b56f0585fd4c02d047dc406668cb40159b2d340 ("genirq: Remove bogus conditional"),
-> where the core interrupt code always overrode .irq_shutdown() to
-> .irq_disable() if .irq_shutdown() was NULL.
-> 
+On 11-09-2011 15:59, Geert Uytterhoeven wrote:
+
+> The top of <linux/irq.h> has this comment:
+
+>   * Please do not include this file in generic code.  There is curren=
+tly
+>   * no requirement for any architecture to implement anything held
+>   * within this file.
+>   *
+>   * Thanks. --rmk
+
+> Remove inclusion of <linux/irq.>, to prevent the following compile er=
+ror
+
+    <linux/irq.h>? You've also typoed in the subject.
+
+> from happening soon:
+
+> | include/linux/irq.h:132: error: redefinition of =E2=80=98struct irq=
+_data=E2=80=99
+> | include/linux/irq.h:286: error: redefinition of =E2=80=98struct irq=
+_chip=E2=80=99
+
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Acked-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: linux-ide@vger.kernel.org
 
-Applied into irq/urgent with a note to stable@...
-
-Thanks,
-
-	tglx
+WBR, Sergei
