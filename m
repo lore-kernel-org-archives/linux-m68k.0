@@ -1,30 +1,40 @@
-From: "Mr. Daniel Tsai" <danieltsai0@aol.com>
-Subject: Business transaction.
-Date: Sun, 11 Sep 2011 17:07:14 +0200
-Message-ID: <20110911150716.9AEDF4276B8_E6CCEA4F@radon.cen.brad.ac.uk>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 01/28] genirq: Add missing "else" in irq_shutdown()
+Date: Mon, 12 Sep 2011 09:53:56 +0200 (CEST)
+Message-ID: <alpine.LFD.2.02.1109120953190.2723@ionos>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-2-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1315742394-16036-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: danieltsai0@aol.com
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hello my friend. My name is Daniel Tsai and
+On Sun, 11 Sep 2011, Geert Uytterhoeven wrote:
 
-I live in Hong Kong. I want you to be my
+> If an irq_chip provides .irq_shutdown(), but neither of .irq_disable() or
+> .irq_mask(), free_irq() crashes when jumping to NULL.
+> Fix this by only trying .irq_disable() and .irq_mask() if there's no
+> .irq_shutdown() provided.
+> 
+> This revives the symmetry with irq_startup(), which tries .irq_startup(),
+> .irq_enable(), and irq_unmask(), and makes it consistent with the comment for
+> irq_chip.irq_shutdown() in <linux/irq.h>, which says:
+> 
+>  * @irq_shutdown:	shut down the interrupt (defaults to ->disable if NULL)
+> 
+> This is also how __free_irq() behaved before the big overhaul, cfr. e.g.
+> 3b56f0585fd4c02d047dc406668cb40159b2d340 ("genirq: Remove bogus conditional"),
+> where the core interrupt code always overrode .irq_shutdown() to
+> .irq_disable() if .irq_shutdown() was NULL.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 
-partner in a business transaction of 44.5Million USD.
+Applied into irq/urgent with a note to stable@...
 
-If you are interested for more details,
+Thanks,
 
-you MUST reply me to my private email address:
-
-danieltsai11@yahoo.com.hk or danieltsai95@aol.com
-
-when I get your message, I will tell you what
-
-to do next. Thank you.
-
-Mr. Daniel Tsai
+	tglx
