@@ -1,46 +1,64 @@
-From: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH 02/28] ide-{cd,floppy,tape}: Do not include <linux/irq.>
-Date: Mon, 12 Sep 2011 13:59:50 +0400
-Message-ID: <4E6DD816.7040809__36196.4280171835$1315822128$gmane$org@ru.mvista.com>
-References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-3-git-send-email-geert@linux-m68k.org>
+From: Sam Creasey <sammy@sammy.net>
+Subject: Re: [PATCH 24/28] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+Date: Mon, 12 Sep 2011 13:38:44 -0400
+Message-ID: <20110912173843.GK32271@anhedonia>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-25-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1315742394-16036-3-git-send-email-geert@linux-m68k.org>
+Content-Disposition: inline
+In-Reply-To: <1315742394-16036-25-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Sam Creasey <sammy@sammy.net>
 
-Hello.
+Signed-off-by: Sam Creasey <sammy@sammy.net>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>
+---
+v4: Added this changeset
+---
+ arch/m68k/sun3/sun3ints.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
 
-On 11-09-2011 15:59, Geert Uytterhoeven wrote:
-
-> The top of <linux/irq.h> has this comment:
-
->   * Please do not include this file in generic code.  There is curren=
-tly
->   * no requirement for any architecture to implement anything held
->   * within this file.
->   *
->   * Thanks. --rmk
-
-> Remove inclusion of <linux/irq.>, to prevent the following compile er=
-ror
-
-    <linux/irq.h>? You've also typoed in the subject.
-
-> from happening soon:
-
-> | include/linux/irq.h:132: error: redefinition of =E2=80=98struct irq=
-_data=E2=80=99
-> | include/linux/irq.h:286: error: redefinition of =E2=80=98struct irq=
-_chip=E2=80=99
-
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-ide@vger.kernel.org
-
-WBR, Sergei
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 20ffee7..1273eb8 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -51,14 +51,19 @@ void sun3_disable_irq(unsigned int irq)
+ 
+ static irqreturn_t sun3_int7(int irq, void *dev_id)
+ {
++	unsigned int cnt;
++
+ 	*sun3_intreg |=  (1 << irq);
+-	if (!(kstat_cpu(0).irqs[irq] % 2000))
+-		sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 16000) / 2000]);
++	cnt = kstat_irqs_cpu(irq, 0);
++	if (!(cnt % 2000))
++		sun3_leds(led_pattern[cnt % 16000 / 2000]);
+ 	return IRQ_HANDLED;
+ }
+ 
+ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ {
++	unsigned int cnt;
++
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
+ #endif
+@@ -68,8 +73,9 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ #endif
+ 	xtime_update(1);
+ 	update_process_times(user_mode(get_irq_regs()));
+-        if (!(kstat_cpu(0).irqs[irq] % 20))
+-                sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 160) / 20]);
++	cnt = kstat_irqs_cpu(irq, 0);
++	if (!(cnt % 20))
++		sun3_leds(led_pattern[cnt % 160 / 20]);
+ 	return IRQ_HANDLED;
+ }
+ 
+-- 
+1.7.0.4
