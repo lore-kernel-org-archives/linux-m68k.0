@@ -1,64 +1,46 @@
-From: Sam Creasey <sammy@sammy.net>
-Subject: Re: [PATCH 24/28] m68k/sun3: Use the kstat_irqs_cpu() wrapper
-Date: Mon, 12 Sep 2011 13:38:44 -0400
-Message-ID: <20110912173843.GK32271@anhedonia>
-References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <1315742394-16036-25-git-send-email-geert@linux-m68k.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
+Date: Tue, 13 Sep 2011 21:11:44 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1109132030020.14483@nippy.intranet>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1315742394-16036-25-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Sam Creasey <sammy@sammy.net>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Signed-off-by: Sam Creasey <sammy@sammy.net>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Sam Creasey <sammy@sammy.net>
----
-v4: Added this changeset
----
- arch/m68k/sun3/sun3ints.c |   14 ++++++++++----
- 1 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index 20ffee7..1273eb8 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -51,14 +51,19 @@ void sun3_disable_irq(unsigned int irq)
- 
- static irqreturn_t sun3_int7(int irq, void *dev_id)
- {
-+	unsigned int cnt;
-+
- 	*sun3_intreg |=  (1 << irq);
--	if (!(kstat_cpu(0).irqs[irq] % 2000))
--		sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 16000) / 2000]);
-+	cnt = kstat_irqs_cpu(irq, 0);
-+	if (!(cnt % 2000))
-+		sun3_leds(led_pattern[cnt % 16000 / 2000]);
- 	return IRQ_HANDLED;
- }
- 
- static irqreturn_t sun3_int5(int irq, void *dev_id)
- {
-+	unsigned int cnt;
-+
- #ifdef CONFIG_SUN3
- 	intersil_clear();
- #endif
-@@ -68,8 +73,9 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
- #endif
- 	xtime_update(1);
- 	update_process_times(user_mode(get_irq_regs()));
--        if (!(kstat_cpu(0).irqs[irq] % 20))
--                sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 160) / 20]);
-+	cnt = kstat_irqs_cpu(irq, 0);
-+	if (!(cnt % 20))
-+		sun3_leds(led_pattern[cnt % 160 / 20]);
- 	return IRQ_HANDLED;
- }
- 
--- 
-1.7.0.4
+Hi Geert,
+
+When I was testing your v5 patch series, I had to patch macmace.c to 
+resolve some compiler errors --
+
+--- linux-m68k.orig/drivers/net/macmace.c	2011-09-13 18:33:55.000000000 +1000
++++ linux-m68k/drivers/net/macmace.c	2011-09-13 18:34:05.000000000 +1000
+@@ -31,8 +31,8 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/platform_device.h>
+ #include <linux/gfp.h>
++#include <linux/interrupt.h>
+ #include <asm/io.h>
+-#include <asm/irq.h>
+ #include <asm/macints.h>
+ #include <asm/mac_psc.h>
+ #include <asm/page.h>
+
+Would you please check whether this is still needed after the v6 series? 
+(I'd check myself, but I don't have the source tree on which your emailed 
+patches were based...)
+
+BTW, you'll probably want to patch this comment in 
+include/linux/interrupt.h --
+
+/*
+ * Special function to avoid ifdeffery in kernel/irq/devres.c which
+ * gets magically built by GENERIC_HARDIRQS=n architectures (sparc,
+ * m68k).
+
+Finn
