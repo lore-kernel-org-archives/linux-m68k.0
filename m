@@ -1,160 +1,111 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: [PATCH 10/55] m68k: irq: Remove IRQF_DISABLED
-Date: Thu, 22 Sep 2011 16:58:37 +0800
-Message-ID: <1316681962-8217-11-git-send-email-yong.zhang0__46903.0015323826$1316682124$gmane$org@gmail.com>
-References: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] zorro: Defer device_register() until all devices have been
+ identified
+Date: Thu, 22 Sep 2011 21:47:38 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1109222140510.8856@ayla.of.borg>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: tglx@linutronix.de, yong.zhang0@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Greg Ungerer <gerg@uclinux.org>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, linux-m68k@lists.linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, =?ISO-8859-15?Q?Ingo_J=FCrgensmann?= <ij@2011.bluespice.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
-We run all interrupt handlers with interrupts disabled
-and we even check and yell when an interrupt handler
-returns with interrupts enabled (see commit [b738a50a:
-genirq: Warn when handler enables interrupts]).
+As the Amiga Zorro II address space is limited to 8.5 MiB and Zorro dev=
+ices
+can contain only one BAR, several Amiga Zorro II expansion boards (main=
+ly
+graphics cards) contain multiple Zorro devices: a small one for the con=
+trol
+registers and one (or more) for the graphics memory.
 
-So now this flag is a NOOP and can be removed.
+The conversion of cirrusfb to the new driver framework introduced a
+regression: the driver contains a zorro_driver for the first Zorro devi=
+ce,
+and uses the (old) zorro_find_device() call to find the second Zorro
+device.
+However, as the Zorro core calls device_register() as soon as a Zorro
+device is identified, it may not have identified the second Zorro devic=
+e
+belonging to the same physical Zorro expansion card. Hence cirrusfb cou=
+ld
+no longer find the second part of the Picasso II graphics card, causing=
+ a
+NULL pointer dereference.
 
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Defer the registration of Zorro devices with the driver framework until
+all Zorro devices have been identified to fix this.
+
+Note that the alternative solution (modifying cirrusfb to register a
+zorro_driver for all Zorro devices belonging to a graphics card, instea=
+d
+of only for the first one, and adding a synchronization mechanism to de=
+fer
+initialization until all have been found), is not an option, as on some
+cards one device may be optional (e.g. the second bank of 2 MiB of
+graphics memory on the Picasso IV in Zorro II mode).
+
+Reported-by: Ingo J=FCrgensmann <ij@2011.bluespice.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: stable@kernel.org
 ---
- arch/m68k/include/asm/floppy.h         |    2 +-
- arch/m68k/include/asm/irq.h            |    4 ++--
- arch/m68k/include/asm/sun3xflop.h      |    2 +-
- arch/m68k/platform/68328/timers.c      |    2 +-
- arch/m68k/platform/68360/config.c      |    2 +-
- arch/m68k/platform/coldfire/pit.c      |    2 +-
- arch/m68k/platform/coldfire/sltimers.c |    4 ++--
- arch/m68k/platform/coldfire/timers.c   |    4 ++--
- 8 files changed, 11 insertions(+), 11 deletions(-)
+    Hi Linus,
 
-diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
-index 697d503..47365b1 100644
---- a/arch/m68k/include/asm/floppy.h
-+++ b/arch/m68k/include/asm/floppy.h
-@@ -85,7 +85,7 @@ static int fd_request_irq(void)
- {
- 	if(MACH_IS_Q40)
- 		return request_irq(FLOPPY_IRQ, floppy_hardint,
--				   IRQF_DISABLED, "floppy", floppy_hardint);
-+				   0, "floppy", floppy_hardint);
- 	else if(MACH_IS_SUN3X)
- 		return sun3xflop_request_irq();
- 	return -ENXIO;
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index 69ed0d74..35de598 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -60,8 +60,8 @@ struct pt_regs;
- 
- /*
-  * various flags for request_irq() - the Amiga now uses the standard
-- * mechanism like all other architectures - IRQF_DISABLED and
-- * IRQF_SHARED are your friends.
-+ * mechanism like all other architectures - IRQF_SHARED etc.
-+ * are your friends.
-  */
- #ifndef MACH_AMIGA_ONLY
- #define IRQ_FLG_LOCK	(0x0001)	/* handler is not replaceable	*/
-diff --git a/arch/m68k/include/asm/sun3xflop.h b/arch/m68k/include/asm/sun3xflop.h
-index 32c45f8..80f8f9f 100644
---- a/arch/m68k/include/asm/sun3xflop.h
-+++ b/arch/m68k/include/asm/sun3xflop.h
-@@ -208,7 +208,7 @@ static int sun3xflop_request_irq(void)
- 	if(!once) {
- 		once = 1;
- 		error = request_irq(FLOPPY_IRQ, sun3xflop_hardint,
--				    IRQF_DISABLED, "floppy", NULL);
-+				    0, "floppy", NULL);
- 		return ((error == 0) ? 0 : -1);
- 	} else return 0;
- }
-diff --git a/arch/m68k/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
-index 309f725..d135b26 100644
---- a/arch/m68k/platform/68328/timers.c
-+++ b/arch/m68k/platform/68328/timers.c
-@@ -69,7 +69,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 
- static struct irqaction m68328_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = hw_tick,
- };
- 
-diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
-index 9dd5bca..c67f1c3 100644
---- a/arch/m68k/platform/68360/config.c
-+++ b/arch/m68k/platform/68360/config.c
-@@ -58,7 +58,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 
- static struct irqaction m68360_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = hw_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
-index c2b9809..c69b71a 100644
---- a/arch/m68k/platform/coldfire/pit.c
-+++ b/arch/m68k/platform/coldfire/pit.c
-@@ -118,7 +118,7 @@ static irqreturn_t pit_tick(int irq, void *dummy)
- 
- static struct irqaction pit_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = pit_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/sltimers.c b/arch/m68k/platform/coldfire/sltimers.c
-index 6a85daf..2168dda 100644
---- a/arch/m68k/platform/coldfire/sltimers.c
-+++ b/arch/m68k/platform/coldfire/sltimers.c
-@@ -51,7 +51,7 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
- 
- static struct irqaction mcfslt_profile_irq = {
- 	.name	 = "profile timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcfslt_profile_tick,
- };
- 
-@@ -91,7 +91,7 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
- 
- static struct irqaction mcfslt_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcfslt_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
-index 60242f6..687a38f 100644
---- a/arch/m68k/platform/coldfire/timers.c
-+++ b/arch/m68k/platform/coldfire/timers.c
-@@ -62,7 +62,7 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
- 
- static struct irqaction mcftmr_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcftmr_tick,
- };
- 
-@@ -150,7 +150,7 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
- 
- static struct irqaction coldfire_profile_irq = {
- 	.name	 = "profile timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = coldfire_profile_tick,
- };
- 
--- 
-1.7.4.1
+Since kernel.org is still down and I have only one remaining patch for =
+3.1,
+I'm sending it by email.
+
+Please apply. Thanks a lot!
+
+Authorization code F68KAMYRULEZ.
+
+ drivers/zorro/zorro.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
+index e0c2807..181fa81 100644
+--- a/drivers/zorro/zorro.c
++++ b/drivers/zorro/zorro.c
+@@ -148,10 +148,10 @@ static int __init amiga_zorro_probe(struct platfo=
+rm_device *pdev)
+ 	}
+ 	platform_set_drvdata(pdev, bus);
+=20
+-	/* Register all devices */
+ 	pr_info("Zorro: Probing AutoConfig expansion devices: %u device%s\n",
+ 		 zorro_num_autocon, zorro_num_autocon =3D=3D 1 ? "" : "s");
+=20
++	/* First identify all devices ... */
+ 	for (i =3D 0; i < zorro_num_autocon; i++) {
+ 		z =3D &zorro_autocon[i];
+ 		z->id =3D (z->rom.er_Manufacturer<<16) | (z->rom.er_Product<<8);
+@@ -172,6 +172,11 @@ static int __init amiga_zorro_probe(struct platfor=
+m_device *pdev)
+ 		dev_set_name(&z->dev, "%02x", i);
+ 		z->dev.parent =3D &bus->dev;
+ 		z->dev.bus =3D &zorro_bus_type;
++	}
++
++	/* ... then register them */
++	for (i =3D 0; i < zorro_num_autocon; i++) {
++		z =3D &zorro_autocon[i];
+ 		error =3D device_register(&z->dev);
+ 		if (error) {
+ 			dev_err(&bus->dev, "Error registering device %s\n",
+--=20
+1.7.0.4
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+							    -- Linus Torvalds
