@@ -1,47 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] zorro: Defer device_register() until all devices have
- been identified
-Date: Fri, 23 Sep 2011 06:58:17 +0200
-Message-ID: <CAMuHMdUnVr+mYr4hgbfSi9n5iMmHGxTK-_E8y-sKn=HOiEAkMw@mail.gmail.com>
-References: <alpine.DEB.2.00.1109222140510.8856@ayla.of.borg>
-	<CA+55aFxm86xohU4nSuDWe_Ru9SU79x1sLHNdm4nFHyJNH4=mBQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Greg KH <gregkh@suse.de>
+Subject: [117/244] genirq: Make irq_shutdown() symmetric vs. irq_startup again
+Date: Wed, 28 Sep 2011 15:01:21 -0700
+Message-ID: <20110928220137.657830411__39307.7565859587$1317251817$gmane$org@clark.kroah.org>
+References: <20110928220225.GA27128@kroah.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFxm86xohU4nSuDWe_Ru9SU79x1sLHNdm4nFHyJNH4=mBQ@mail.gmail.com>
+In-Reply-To: <20110928220225.GA27128@kroah.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2011.bluespice.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org, stable@kernel.org
+Cc: stable-review@kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Thomas Gleixner <tglx@linutronix.de>
 
-On Thu, Sep 22, 2011 at 22:01, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Thu, Sep 22, 2011 at 12:47 PM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->>
->> Authorization code F68KAMYRULEZ.
->
-> EUNAUTHORIZED.
+3.0-stable review patch.  If anyone has any objections, please let us know.
 
-I thought we used negative error codes? ;-)
+------------------
 
-> But applied anyway,
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks!
+commit ed585a651681e822089087b426e6ebfb6d3d9873 upstream.
 
-Gr{oetje,eeting}s,
+If an irq_chip provides .irq_shutdown(), but neither of .irq_disable() or
+.irq_mask(), free_irq() crashes when jumping to NULL.
+Fix this by only trying .irq_disable() and .irq_mask() if there's no
+.irq_shutdown() provided.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+This revives the symmetry with irq_startup(), which tries .irq_startup(),
+.irq_enable(), and irq_unmask(), and makes it consistent with the comment for
+irq_chip.irq_shutdown() in <linux/irq.h>, which says:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+ * @irq_shutdown:	shut down the interrupt (defaults to ->disable if NULL)
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+This is also how __free_irq() behaved before the big overhaul, cfr. e.g.
+3b56f0585fd4c02d047dc406668cb40159b2d340 ("genirq: Remove bogus conditional"),
+where the core interrupt code always overrode .irq_shutdown() to
+.irq_disable() if .irq_shutdown() was NULL.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Link: http://lkml.kernel.org/r/1315742394-16036-2-git-send-email-geert@linux-m68k.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+
+---
+ kernel/irq/chip.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -178,7 +178,7 @@ void irq_shutdown(struct irq_desc *desc)
+ 	desc->depth = 1;
+ 	if (desc->irq_data.chip->irq_shutdown)
+ 		desc->irq_data.chip->irq_shutdown(&desc->irq_data);
+-	if (desc->irq_data.chip->irq_disable)
++	else if (desc->irq_data.chip->irq_disable)
+ 		desc->irq_data.chip->irq_disable(&desc->irq_data);
+ 	else
+ 		desc->irq_data.chip->irq_mask(&desc->irq_data);
