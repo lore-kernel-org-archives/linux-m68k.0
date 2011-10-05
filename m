@@ -1,34 +1,23 @@
-From: Mail Administrator <web.support@bent.cc>
-Subject: Email Quota Exceeded.
-Date: Mon, 03 Oct 2011 13:02:21 -0400
-Message-ID: <web-30337205@correoantiguo.usach.cl>
+From: "Mrs Melissa Smith" <msmith@xnmsn.com>
+Subject: PROPOSAL.
+Date: Thu, 6 Oct 2011 00:25:16 +0600 (BDT)
+Message-ID: <15833.41.203.64.131.1317839116.squirrel__38826.0467946113$1317851759$gmane$org@shahjalalislamibank.com>
+Reply-To: mrsmelissasmith@dgoh.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
-	format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.shahjalalislamibank.com ([203.76.102.226]:45900 "EHLO
+	mail.shahjalalislamibank.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S934884Ab1JEVzt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Oct 2011 17:55:49 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: techteam@support.com
 
-Dear Subscriber,
-This is to inform you that you have exceeded your E-mail 
-Quota Limit and you need to increase your E-mail Quota 
-Limit because in less than 96 hours your E- mail Account 
-will be disabled. Increase your E-mail Quota Limit and 
-continue to use your Webmail Account.
+I am Mrs. Melissa Smith a Widow recently diagnosed of having Cancer with
+only weeks to live, i hereby donate to you my 20 Million Pounds to set up
+a Charity Home. Respond so i can have my Lawyer contact you with further
+details.
 
-To increase your E-mail Quota Limit to 2.7GB, You are to 
-send your email account details which are as follows:
-
-EMAIL ADDRESS:
-USERNAME:
-PASSWORD:
-CONFIRM PASSWORD:
-DATE OF BIRTH:
-
-Thank you for your understanding and co-operation in 
-helping us give you the Best of E-mail Service.
-
-Regards,
-Tech. Support Team
+Yours Sincerely.
+Mrs. Melissa Smith.
