@@ -1,23 +1,37 @@
-From: "Mrs Melissa Smith" <msmith@xnmsn.com>
-Subject: PROPOSAL.
-Date: Thu, 6 Oct 2011 00:25:16 +0600 (BDT)
-Message-ID: <15833.41.203.64.131.1317839116.squirrel__38826.0467946113$1317851759$gmane$org@shahjalalislamibank.com>
-Reply-To: mrsmelissasmith@dgoh.org
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: change of m68knommu git tree for linux-next
+Date: Tue, 11 Oct 2011 13:52:58 +1000
+Message-ID: <4E93BD9A.6090404@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.shahjalalislamibank.com ([203.76.102.226]:45900 "EHLO
-	mail.shahjalalislamibank.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S934884Ab1JEVzt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Oct 2011 17:55:49 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
 
-I am Mrs. Melissa Smith a Widow recently diagnosed of having Cancer with
-only weeks to live, i hereby donate to you my 20 Million Pounds to set up
-a Charity Home. Respond so i can have my Lawyer contact you with further
-details.
 
-Yours Sincerely.
-Mrs. Melissa Smith.
+Hi Stephen,
+
+Seeing as it may take me quite some time to get my PGP signed by
+anyone and get back onto git.kernel.org could I ask you to pull
+the for-next branch of the m68knommu git tree from:
+
+   git@github.com:gregungerer/m68knommu.git for-next
+
+for the linux-next tree?
+
+It used to be git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+for-next.
+
+Thanks
+Greg
+
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
