@@ -1,68 +1,51 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: change of m68knommu git tree for linux-next
-Date: Wed, 12 Oct 2011 02:37:56 +1100
-Message-ID: <20111012023756.9729b0b3f12ee9b6c7d07ba8@canb.auug.org.au>
-References: <4E93BD9A.6090404@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: linux-m68k.git is back
+Date: Thu, 13 Oct 2011 09:22:13 +0200
+Message-ID: <CAMuHMdV4BEVPKBG7=-vvZ9fjEsaFjq+8Aw11XstqxpSfR8_1NA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Wed__12_Oct_2011_02_37_56_+1100_YoIKY1g/h9vV=Qfb"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from calzone.tip.net.au ([203.10.76.15]:43815 "EHLO
-	calzone.tip.net.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754803Ab1JKPiI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 11 Oct 2011 11:38:08 -0400
-In-Reply-To: <4E93BD9A.6090404@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-next-owner@vger.kernel.org>
+Sender: linux-next-owner@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux-Next <linux-next@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
 
---Signature=_Wed__12_Oct_2011_02_37_56_+1100_YoIKY1g/h9vV=Qfb
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-Hi Greg,
+linux-m68k.git is back, in the usual place:
 
-On Tue, 11 Oct 2011 13:52:58 +1000 Greg Ungerer <gerg@snapgear.com> wrote:
->
-> Seeing as it may take me quite some time to get my PGP signed by
-> anyone and get back onto git.kernel.org could I ask you to pull
-> the for-next branch of the m68knommu git tree from:
->=20
->    git@github.com:gregungerer/m68knommu.git for-next
->=20
-> for the linux-next tree?
+http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git
 
-I actually used git://github.com/gregungerer/m68knommu.git for-next
+Interesting branches:
+  - master: main development, containing accepted changesets,
+  - m68k-queue: (almost) identical to master, but nice changesets
+rebased on top of
+    the latest v* tag (incl. release candidates) from Linus (I don't
+follow stable),
+  - for-linus: What I will ask Linus to pull in this merge window,
+  - for-next: What's destined for the next merge window,
+  - for-*: What's destined for a specific merge window. The latest over=
+lap with
+    for-linus/for-next,
+  - m68k-v*: State of m68k-queue when v* was current.
 
-I will swicth from tomorrow.
+master and m68k-v* are never rebased. m68k-queue and for-* are rebased =
+when a
+new v* comes out.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+Gr{oetje,eeting}s,
 
---Signature=_Wed__12_Oct_2011_02_37_56_+1100_YoIKY1g/h9vV=Qfb
-Content-Type: application/pgp-signature
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-iQIcBAEBCAAGBQJOlGLUAAoJEECxmPOUX5FEFjwP/18v/wm9tuR8rcAqGCRo+qkJ
-HV+cGyeH88BV57jDUXeALjjH9ZbtM1KRiIW0n6flmdRej4qwI7UIcqQTxpaJljqt
-IAfGfeaijXuMg6XBhwgtfo9HfE65FPZAcQpGVUtYY/4i0FZNVMIkrP7ze3jm57v/
-Q4jHs8PzsEmQCdACi+oxvWo7Jg2IUYHPfkTOI6sYUPTQk7dWGkqSEfflsSbaKgc5
-lnoaG8r76wfSFjjEzA+nh6EFPS8KQuGMJeKADB157sLtBN9TdbZ0A8is/k0GKs0/
-rHiU47MItSWzFJKm48bMHVmr0KLG0tiWNlg57HNIYzyudfxF9gKceZBp67dep51K
-qvKxQQFWxjmZ47+AQSn7eizkZ61mzM2Cm943KK3FvYt267vN7UnJusiljO3kLyTu
-+bYRhcF6j2LaEmXF99aaTdUKn8PtNOIsuZ2lj7BqU8ksUkuF3QSAPHAJZmAWJG47
-YHKeIIQNJtW8RRAE5hv5cYUm1ccawLgLHvyxES4APTNsenOSV1Ds4WwLhHwaLUVt
-Q2YnrtDatoP9Nhs1DOKnB/IujdlbSI8ajFcajJiOOichvX6fKRIXnysIBIowhR9M
-fb+aUdrq+lAC96jr1Odxr7Y52O6ZbDmIcGjWjBzSXo2i4uI1+07kxX1ARNPvrd4d
-wBUiTC7OB+p9AP/qyDVr
-=5WWm
------END PGP SIGNATURE-----
-
---Signature=_Wed__12_Oct_2011_02_37_56_+1100_YoIKY1g/h9vV=Qfb--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
