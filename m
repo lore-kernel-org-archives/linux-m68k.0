@@ -1,64 +1,36 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] m68k: drop unused Kconfig symbols
-Date: Thu, 20 Oct 2011 13:23:56 +0200
-Message-ID: <1319109836.8405.30.camel@x61.thuisdomein>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/4] zorro: Rename Picasso IV Z2 "MEM" to "RAM" for consistency
+Date: Thu, 20 Oct 2011 13:42:22 +0200
+Message-ID: <1319110945-25684-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from gerard.telenet-ops.be ([195.130.132.48]:44851 "EHLO
+	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754893Ab1JTLme (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Oct 2011 07:42:34 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, "Christian T. Steigies" <cts@debian.org>
+Cc: linux-kernel@vger.kernel.org, =?UTF-8?q?Ingo=20J=C3=BCrgensmann?= <ij@2011.bluespice.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-"git grep" tested only.
+ include/linux/zorro_ids.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
- arch/m68k/Kconfig |   24 +-----------------------
- 1 files changed, 1 insertions(+), 23 deletions(-)
-
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 58c6496..3e673ac 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -163,35 +163,13 @@ config HPAPCI
- 	  If you want to use the internal "APCI" serial ports on an HP400
- 	  machine, say Y here.
- 
--config MVME147_SCC
--	bool "SCC support for MVME147 serial ports"
--	depends on MVME147 && BROKEN
--	help
--	  This is the driver for the serial ports on the Motorola MVME147
--	  boards.  Everyone using one of these boards should say Y here.
--
--config MVME162_SCC
--	bool "SCC support for MVME162 serial ports"
--	depends on MVME16x && BROKEN
--	help
--	  This is the driver for the serial ports on the Motorola MVME162 and
--	  172 boards.  Everyone using one of these boards should say Y here.
--
--config BVME6000_SCC
--	bool "SCC support for BVME6000 serial ports"
--	depends on BVME6000 && BROKEN
--	help
--	  This is the driver for the serial ports on the BVME4000 and BVME6000
--	  boards from BVM Ltd.  Everyone using one of these boards should say
--	  Y here.
--
- config DN_SERIAL
- 	bool "Support for DN serial port (dummy)"
- 	depends on APOLLO
- 
- config SERIAL_CONSOLE
- 	bool "Support for serial port console"
--	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
-+	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || SERIAL167 || DN_SERIAL)
- 	---help---
- 	  If you say Y here, it will be possible to use a serial port as the
- 	  system console (the system console is the device which receives all
+diff --git a/include/linux/zorro_ids.h b/include/linux/zorro_ids.h
+index 7e74908..74bc53b 100644
+--- a/include/linux/zorro_ids.h
++++ b/include/linux/zorro_ids.h
+@@ -360,8 +360,8 @@
+ #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_RAM	ZORRO_ID(VILLAGE_TRONIC, 0x0B, 0)
+ #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_REG	ZORRO_ID(VILLAGE_TRONIC, 0x0C, 0)
+ #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_SEGMENTED_MODE	ZORRO_ID(VILLAGE_TRONIC, 0x0D, 0)
+-#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
+-#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
++#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
++#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
+ #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG		ZORRO_ID(VILLAGE_TRONIC, 0x17, 0)
+ #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3		ZORRO_ID(VILLAGE_TRONIC, 0x18, 0)
+ #define  ZORRO_PROD_VILLAGE_TRONIC_ARIADNE			ZORRO_ID(VILLAGE_TRONIC, 0xC9, 0)
 -- 
-1.7.4.4
+1.7.0.4
