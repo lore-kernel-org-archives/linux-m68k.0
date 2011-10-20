@@ -1,28 +1,52 @@
-From: Jeff Garzik <jeff@garzik.org>
-Subject: Re: [PATCH 4/4] fbdev/cirrusfb: Add support for "64 MiB" version
- of Picasso IV
-Date: Thu, 20 Oct 2011 13:03:40 -0400
-Message-ID: <4EA0546C.6060303@garzik.org>
-References: <1319110945-25684-1-git-send-email-geert@linux-m68k.org> <1319110945-25684-4-git-send-email-geert@linux-m68k.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
+Date: Fri, 21 Oct 2011 10:30:58 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1110211026230.2344@nippy.intranet>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com> <alpine.LNX.2.00.1110202347320.2696@nippy.intranet> <CAMuHMdVMp65XzV2zu7V8sgwsniCAxD7NDDnHSvp5gO-8g1ovHg@mail.gmail.com>
+ <CAMuHMdW7x1_6P6UiaiHf-ynvsGjX76eZtw4PU2SvberKGD69hg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1319110945-25684-4-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, "Christian T. Steigies" <cts@debian.org>, linux-kernel@vger.kernel.org, =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2011.bluespice.org>
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463806400-1436577219-1319153458=:2344"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdW7x1_6P6UiaiHf-ynvsGjX76eZtw4PU2SvberKGD69hg@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On 10/20/2011 07:42 AM, Geert Uytterhoeven wrote:
-> Some Village Tronic Picasso IV graphics cards identify as a 64 MiB Zorro
-> device in Zorro III mode.
->
-> While the total graphics memory size is the same on such cards, the offset
-> of the graphics memory differs. Add a quirk to handle this.
->
-> Based on src/sys/arch/amiga/dev/grf_cl.c from NetBSD.
->
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Acked-by: Jeff Garzik <jgarzik@redhat.com>
+---1463806400-1436577219-1319153458=:2344
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+
+On Thu, 20 Oct 2011, Geert Uytterhoeven wrote:
+
+> On Thu, Oct 20, 2011 at 17:02, Geert Uytterhoeven <geert@linux-m68k.org> =
+wrote:
+> > On Thu, Oct 20, 2011 at 15:40, Finn Thain <fthain@telegraphics.com.au> =
+wrote:
+> >> Sounds good. The mac_esp fix I sent is already in linux-next.
+> >
+> > Thanks for reminding me I still have to apply that one :-)
+>=20
+> That's e544d704f9bea6892808e453e219aa305bc0269a
+> ("[SCSI] mac_esp: remove redundant mutual exclusion")?
+
+Yes.
+
+> And it should be applied (at least to m68k/master)_before_ the genirq
+> conversion, right?
+
+For bisection purposes, yes.
+
+Finn
+
+>=20
+> Gr{oetje,eeting}s,
+>=20
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+>=20
+---1463806400-1436577219-1319153458=:2344--
