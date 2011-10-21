@@ -1,52 +1,79 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
-Date: Fri, 21 Oct 2011 10:30:58 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1110211026230.2344@nippy.intranet>
-References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org> <CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com> <alpine.LNX.2.00.1110202347320.2696@nippy.intranet> <CAMuHMdVMp65XzV2zu7V8sgwsniCAxD7NDDnHSvp5gO-8g1ovHg@mail.gmail.com>
- <CAMuHMdW7x1_6P6UiaiHf-ynvsGjX76eZtw4PU2SvberKGD69hg@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68k: drop unused Kconfig symbols
+Date: Fri, 21 Oct 2011 15:19:38 +1000
+Message-ID: <4EA100EA.9030503@snapgear.com>
+References: <1319109836.8405.30.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463806400-1436577219-1319153458=:2344"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW7x1_6P6UiaiHf-ynvsGjX76eZtw4PU2SvberKGD69hg@mail.gmail.com>
+In-Reply-To: <1319109836.8405.30.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Thanks Paul, applied.
 
----1463806400-1436577219-1319153458=:2344
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Regards
+Greg
 
 
-On Thu, 20 Oct 2011, Geert Uytterhoeven wrote:
+On 20/10/11 21:23, Paul Bolle wrote:
+> Reported-by: Geert Uytterhoeven<geert@linux-m68k.org>
+> Signed-off-by: Paul Bolle<pebolle@tiscali.nl>
+> ---
+> "git grep" tested only.
+>
+>   arch/m68k/Kconfig |   24 +-----------------------
+>   1 files changed, 1 insertions(+), 23 deletions(-)
+>
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index 58c6496..3e673ac 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -163,35 +163,13 @@ config HPAPCI
+>   	  If you want to use the internal "APCI" serial ports on an HP400
+>   	  machine, say Y here.
+>
+> -config MVME147_SCC
+> -	bool "SCC support for MVME147 serial ports"
+> -	depends on MVME147&&  BROKEN
+> -	help
+> -	  This is the driver for the serial ports on the Motorola MVME147
+> -	  boards.  Everyone using one of these boards should say Y here.
+> -
+> -config MVME162_SCC
+> -	bool "SCC support for MVME162 serial ports"
+> -	depends on MVME16x&&  BROKEN
+> -	help
+> -	  This is the driver for the serial ports on the Motorola MVME162 and
+> -	  172 boards.  Everyone using one of these boards should say Y here.
+> -
+> -config BVME6000_SCC
+> -	bool "SCC support for BVME6000 serial ports"
+> -	depends on BVME6000&&  BROKEN
+> -	help
+> -	  This is the driver for the serial ports on the BVME4000 and BVME6000
+> -	  boards from BVM Ltd.  Everyone using one of these boards should say
+> -	  Y here.
+> -
+>   config DN_SERIAL
+>   	bool "Support for DN serial port (dummy)"
+>   	depends on APOLLO
+>
+>   config SERIAL_CONSOLE
+>   	bool "Support for serial port console"
+> -	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO)&&  (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || MVME147_SCC || SERIAL167 || MVME162_SCC || BVME6000_SCC || DN_SERIAL)
+> +	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO)&&  (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || SERIAL167 || DN_SERIAL)
+>   	---help---
+>   	  If you say Y here, it will be possible to use a serial port as the
+>   	  system console (the system console is the device which receives all
 
-> On Thu, Oct 20, 2011 at 17:02, Geert Uytterhoeven <geert@linux-m68k.org> =
-wrote:
-> > On Thu, Oct 20, 2011 at 15:40, Finn Thain <fthain@telegraphics.com.au> =
-wrote:
-> >> Sounds good. The mac_esp fix I sent is already in linux-next.
-> >
-> > Thanks for reminding me I still have to apply that one :-)
->=20
-> That's e544d704f9bea6892808e453e219aa305bc0269a
-> ("[SCSI] mac_esp: remove redundant mutual exclusion")?
 
-Yes.
-
-> And it should be applied (at least to m68k/master)_before_ the genirq
-> conversion, right?
-
-For bisection purposes, yes.
-
-Finn
-
->=20
-> Gr{oetje,eeting}s,
->=20
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
->=20
----1463806400-1436577219-1319153458=:2344--
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
