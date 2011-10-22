@@ -1,71 +1,160 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: selection of GENERIC_IRQ_SHOW is not MMU specific
-Date: Sat, 22 Oct 2011 07:38:45 +1000
-Message-ID: <4EA1E665.9040205@snapgear.com>
-References: <1319180663-11010-1-git-send-email-gerg@snapgear.com> <CAMuHMdVj5_vueByF9qostZ7TJFUG8nV+55aggZvhCBeHZnQhhQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: [PATCH 10/49] m68k: irq: Remove IRQF_DISABLED
+Date: Sat, 22 Oct 2011 17:56:22 +0800
+Message-ID: <1319277421-9203-11-git-send-email-yong.zhang0__9474.31594036079$1319278218$gmane$org@gmail.com>
+References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:14255 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752770Ab1JUVkG convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 21 Oct 2011 17:40:06 -0400
-In-Reply-To: <CAMuHMdVj5_vueByF9qostZ7TJFUG8nV+55aggZvhCBeHZnQhhQ@mail.gmail.com>
+In-Reply-To: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
 
-Hi Geert,
+Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
-On 10/22/2011 01:01 AM, Geert Uytterhoeven wrote:
-> On Fri, Oct 21, 2011 at 09:04,<gerg@snapgear.com>  wrote:
->> The selection of the CONFIG_GENERIC_IRQ_SHOW option is not specific
->> to the MMU being present and enabled. It is dependant on what CPU we=
- are
->> compiling for. The non-MMU 68000 and ColdFire family CPUs use generi=
-c
->> interrupts, and can use the generic irq show code.
->>
->> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
->> ---
->> =C3=A1arch/m68k/Kconfig =C3=A1 =C3=A1 | =C3=A1 =C3=A11 -
->> =C3=A1arch/m68k/Kconfig.cpu | =C3=A1 =C3=A13 +++
->> =C3=A12 files changed, 3 insertions(+), 1 deletions(-)
->>
->> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
->> index 9829235..663d1f4 100644
->> --- a/arch/m68k/Kconfig
->> +++ b/arch/m68k/Kconfig
->> @@ -3,7 +3,6 @@ config M68K
->> =C3=A1 =C3=A1 =C3=A1 =C3=A1default y
->> =C3=A1 =C3=A1 =C3=A1 =C3=A1select HAVE_IDE
->> =C3=A1 =C3=A1 =C3=A1 =C3=A1select HAVE_AOUT if MMU
->> - =C3=A1 =C3=A1 =C3=A1 select GENERIC_IRQ_SHOW if !MMU
->> =C3=A1 =C3=A1 =C3=A1 =C3=A1select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_=
-INSNS
->
-> This will be fixed Really Soon Now (TM).
+So now this flag is a NOOP and can be removed.
 
-Yep, I expected I would be able to drop this very soon :-)
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/floppy.h         |    2 +-
+ arch/m68k/include/asm/irq.h            |    4 ++--
+ arch/m68k/include/asm/sun3xflop.h      |    2 +-
+ arch/m68k/platform/68328/timers.c      |    2 +-
+ arch/m68k/platform/68360/config.c      |    2 +-
+ arch/m68k/platform/coldfire/pit.c      |    2 +-
+ arch/m68k/platform/coldfire/sltimers.c |    4 ++--
+ arch/m68k/platform/coldfire/timers.c   |    4 ++--
+ 8 files changed, 11 insertions(+), 11 deletions(-)
 
-It is really from completeness. I will be posting a patch set
-next week that codes support for running MMU enabled ColdFire.
-And I needed these few little cleanups to make that work.
-
-Thanks
-Greg
-
-
------------------------------------------------------------------------=
--
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close,                            FAX:         +61 7 3891 363=
-0
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
+index 697d503..47365b1 100644
+--- a/arch/m68k/include/asm/floppy.h
++++ b/arch/m68k/include/asm/floppy.h
+@@ -85,7 +85,7 @@ static int fd_request_irq(void)
+ {
+ 	if(MACH_IS_Q40)
+ 		return request_irq(FLOPPY_IRQ, floppy_hardint,
+-				   IRQF_DISABLED, "floppy", floppy_hardint);
++				   0, "floppy", floppy_hardint);
+ 	else if(MACH_IS_SUN3X)
+ 		return sun3xflop_request_irq();
+ 	return -ENXIO;
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index 69ed0d7..35de598 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -60,8 +60,8 @@ struct pt_regs;
+ 
+ /*
+  * various flags for request_irq() - the Amiga now uses the standard
+- * mechanism like all other architectures - IRQF_DISABLED and
+- * IRQF_SHARED are your friends.
++ * mechanism like all other architectures - IRQF_SHARED etc.
++ * are your friends.
+  */
+ #ifndef MACH_AMIGA_ONLY
+ #define IRQ_FLG_LOCK	(0x0001)	/* handler is not replaceable	*/
+diff --git a/arch/m68k/include/asm/sun3xflop.h b/arch/m68k/include/asm/sun3xflop.h
+index 32c45f8..80f8f9f 100644
+--- a/arch/m68k/include/asm/sun3xflop.h
++++ b/arch/m68k/include/asm/sun3xflop.h
+@@ -208,7 +208,7 @@ static int sun3xflop_request_irq(void)
+ 	if(!once) {
+ 		once = 1;
+ 		error = request_irq(FLOPPY_IRQ, sun3xflop_hardint,
+-				    IRQF_DISABLED, "floppy", NULL);
++				    0, "floppy", NULL);
+ 		return ((error == 0) ? 0 : -1);
+ 	} else return 0;
+ }
+diff --git a/arch/m68k/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
+index 309f725..d135b26 100644
+--- a/arch/m68k/platform/68328/timers.c
++++ b/arch/m68k/platform/68328/timers.c
+@@ -69,7 +69,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 
+ static struct irqaction m68328_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = hw_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
+index 9dd5bca..c67f1c3 100644
+--- a/arch/m68k/platform/68360/config.c
++++ b/arch/m68k/platform/68360/config.c
+@@ -58,7 +58,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 
+ static struct irqaction m68360_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = hw_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
+index c2b9809..c69b71a 100644
+--- a/arch/m68k/platform/coldfire/pit.c
++++ b/arch/m68k/platform/coldfire/pit.c
+@@ -118,7 +118,7 @@ static irqreturn_t pit_tick(int irq, void *dummy)
+ 
+ static struct irqaction pit_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = pit_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/sltimers.c b/arch/m68k/platform/coldfire/sltimers.c
+index 6a85daf..2168dda 100644
+--- a/arch/m68k/platform/coldfire/sltimers.c
++++ b/arch/m68k/platform/coldfire/sltimers.c
+@@ -51,7 +51,7 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcfslt_profile_irq = {
+ 	.name	 = "profile timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcfslt_profile_tick,
+ };
+ 
+@@ -91,7 +91,7 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcfslt_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcfslt_tick,
+ };
+ 
+diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
+index 60242f6..687a38f 100644
+--- a/arch/m68k/platform/coldfire/timers.c
++++ b/arch/m68k/platform/coldfire/timers.c
+@@ -62,7 +62,7 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+ 
+ static struct irqaction mcftmr_timer_irq = {
+ 	.name	 = "timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = mcftmr_tick,
+ };
+ 
+@@ -150,7 +150,7 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
+ 
+ static struct irqaction coldfire_profile_irq = {
+ 	.name	 = "profile timer",
+-	.flags	 = IRQF_DISABLED | IRQF_TIMER,
++	.flags	 = IRQF_TIMER,
+ 	.handler = coldfire_profile_tick,
+ };
+ 
+-- 
+1.7.1
