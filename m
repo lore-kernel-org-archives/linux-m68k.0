@@ -1,288 +1,120 @@
-From: Jonas Bonn <jonas@southpole.se>
-Subject: [PATCH RFC 6/8] m68k: implement syscall restart generically
-Date: Sun, 23 Oct 2011 12:20:00 +0200
-Message-ID: <0162c73f2f917141d2210452188f8ed420730a53.1319364492.git.jonas__17812.2308491313$1319365311$gmane$org@southpole.se>
-References: <cover.1319364492.git.jonas@southpole.se>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
+Date: Sun, 23 Oct 2011 21:29:10 +1000
+Message-ID: <4EA3FA86.7000905@snapgear.com>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>	<CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com> <CAMuHMdX7C5NU5_MO5GdO=Pf2X59B3vFo4Y9B5wg-NQzwVbbLZA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <cover.1319364492.git.jonas@southpole.se>
-In-Reply-To: <cover.1319364492.git.jonas@southpole.se>
-References: <cover.1319364492.git.jonas@southpole.se>
+In-Reply-To: <CAMuHMdX7C5NU5_MO5GdO=Pf2X59B3vFo4Y9B5wg-NQzwVbbLZA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: Jonas Bonn <jonas@southpole.se>, linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+
+Hi Geert,
+
+On 10/23/2011 07:49 PM, Geert Uytterhoeven wrote:
+> On Thu, Oct 20, 2011 at 14:18, Geert Uytterhoeven<geert@linux-m68k.or=
+g>  wrote:
+>> On Sun, Sep 11, 2011 at 13:59, Geert Uytterhoeven<geert@linux-m68k.o=
+rg>  wrote:
+>>> This patch series converts the m68k/mmu (nommu was converted before=
+)
+>>> architecture to the generic hardirq framework.
+>>>
+>>> =C3=A1- [01/28] genirq: Add missing "else" in irq_shutdown()
+>>> =C3=A1- [02/28] ide-{cd,floppy,tape}: Do not include<linux/irq.>
+>>> =C3=A1- [03/28] keyboard: Do not include<linux/irq.>
+>>> =C3=A1- [04/28] m68k/irq: Rename irq_controller to irq_chip
+>>> =C3=A1- [05/28] m68k/irq: Kill irq_node_t typedef, always use struc=
+t irq_node
+>>> =C3=A1- [06/28] m68k/irq: Rename irq_node to irq_data
+>>> =C3=A1- [07/28] m68k/irq: Switch irq_chip methods to "struct irq_da=
+ta *data"
+>>> =C3=A1- [08/28] m68k/irq: Rename setup_irq() to m68k_setup_irq() an=
+d make it static
+>>> =C3=A1- [09/28] m68k/irq: Extract irq_set_chip()
+>>> =C3=A1- [10/28] m68k/irq: Add m68k_setup_irq_controller()
+>>> =C3=A1- [11/28] m68k/irq: Rename {,__}m68k_handle_int()
+>>> =C3=A1- [12/28] m68k/irq: Remove obsolete IRQ_FLG_* definitions and=
+ users
+>>> =C3=A1- [13/28] m68k/irq: Add genirq support
+>>> =C3=A1- [14/28] m68k/atari: Convert Atari to genirq
+>>> =C3=A1- [15/28] m68k/atari: Remove code and comments about differen=
+t irq types
+>>> =C3=A1- [16/28] m68k/amiga: Refactor amiints.c
+>>> =C3=A1- [17/28] m68k/amiga: Convert Amiga to genirq
+>>> =C3=A1- [18/28] m68k/amiga: Optimize interrupts using chain handler=
+s
+>>> =C3=A1- [19/28] m68k/mac: Convert Mac to genirq
+>>> =C3=A1- [20/28] m68k/mac: Optimize interrupts using chain handlers
+>>> =C3=A1- [21/28] m68k/hp300: Convert HP9000/300 and HP9000/400 to ge=
+nirq
+>>> =C3=A1- [22/28] m68k/vme: Convert VME to genirq
+>>> =C3=A1- [23/28] m68k/apollo: Convert Apollo to genirq
+>>> =C3=A1- [24/28] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+>>> =C3=A1- [25/28] m68k/sun3: Convert Sun3/3x to genirq
+>>> =C3=A1- [26/28] m68k/q40: Convert Q40/Q60 to genirq
+>>> =C3=A1- [27/28] m68k/irq: Remove obsolete m68k irq framework
+>>> =C3=A1- [28/28] m68k/irq: Remove obsolete support for user vector i=
+nterrupt fixups
+>>>
+>>> Overview:
+>>> =C3=A1- [01] is a fix for the core genirq code,
+>>
+>> This went into v3.1-rc6.
+>>
+>>> =C3=A1- [02-03] are fixes to avoid compile problems later in the co=
+nversion
+>>> =C3=A1 =C3=A1process,
+>>
+>> The keyboard path went into the tty -next tree.
+>> The IDE one is still pending (I've just resent it).
+>
+> The IDE one got acked in the mean time.
+>
+>>> I will update my m68k-genirq branch as soon as master.kernel.org is=
+ available
+>>> again.
+>>
+>> Updated, on top of m68k master (which is at v3.1-rc10 now).
+>> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3D=
+shortlog;h=3Drefs/heads/m68k-genirq
+>>
+>> If noone objects, I'd like to add this to the m68k master and for-3.=
+2 branches.
+>
+> I added it to m68k master.
+>
+> As there were several merge conflicts with current -next
+> (arch/m68k/kernel/Makefile_mm
+> due to the mmu/nommu merge, and drivers/net/macsonic.c in [12/28] due
+> to the network
+> driver reshuffling dance), I did not add it to for-3.2 and for-next,
+> but to for-3.3.
+>
+> Depending on Stephen's return during or after the merge window, and
+> the merge timing
+> of the m68knommu and netdev trees, I may stil try to sneak it in 3.2,=
+ though.
+
+I can ask Linus to pull the m68knommu tree early in the merge window,
+if that will help.
+
+Regards
+Greg
 
 
-Manipulating task state to effect re-execution of an interrupted syscall
-used to be purely architecture specific code.  However, as most arch's
-were essentially just making minor adjustments to almost identical logic,
-this code could be moved to a common implementation.
-
-The generic variant introduces the function handle_syscall_restart() to be
-called after get_signal_to_deliver().  The architecture specific register
-manipulations required to effect the actual restart are now implemented
-in the generic syscall interface found in asm/syscall.h
-
-This patch transitions this architecture's signal handling code over to
-using the generic syscall restart code by:
-
-i)  Implementing the register manipulations in asm/syscall.h
-ii) Replacing the restart logic with a call to handle_syscall_restart
-
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Jonas Bonn <jonas@southpole.se>
----
- arch/m68k/include/asm/syscall.h |   87 +++++++++++++++++++++++++++++++++++++++
- arch/m68k/kernel/signal_mm.c    |   45 +-------------------
- arch/m68k/kernel/signal_no.c    |   46 +-------------------
- 3 files changed, 93 insertions(+), 85 deletions(-)
- create mode 100644 arch/m68k/include/asm/syscall.h
-
-diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
-new file mode 100644
-index 0000000..a482b7b
---- /dev/null
-+++ b/arch/m68k/include/asm/syscall.h
-@@ -0,0 +1,87 @@
-+/*
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * Copyright (C) 2011 Jonas Bonn <jonas@southpole.se>
-+ */
-+
-+#ifndef _M68K_SYSCALL_H
-+#define _M68K_SYSCALL_H
-+
-+#include <linux/err.h>
-+#include <linux/sched.h>
-+#include <asm/unistd.h>
-+
-+static inline int
-+syscall_get_nr(struct task_struct *task, struct pt_regs *regs)
-+{
-+	if (regs->orig_d0 >= 0)
-+		return regs->orig_d0;
-+	else
-+		return -1;
-+}
-+
-+static inline void
-+syscall_rollback(struct task_struct *task, struct pt_regs *regs)
-+{
-+	regs->d0 = regs->orig_d0;
-+}
-+
-+static inline void
-+syscall_clear(struct task_struct *task, struct pt_regs *regs)
-+{
-+	regs->orig_d0 = -1;
-+}
-+
-+static inline void
-+syscall_restart(struct task_struct *task, struct pt_regs *regs)
-+{
-+	syscall_rollback(task, regs);
-+	regs->pc -= 2;
-+}
-+
-+static inline void
-+syscall_do_restartblock(struct task_struct *task, struct pt_regs *regs)
-+{
-+	regs->d0 = __NR_restart_syscall;
-+	regs->pc -= 2;
-+}
-+
-+static inline long
-+syscall_get_error(struct task_struct *task, struct pt_regs *regs)
-+{
-+	return IS_ERR_VALUE(regs->d0) ? regs->d0 : 0;
-+}
-+
-+static inline long
-+syscall_get_return_value(struct task_struct *task, struct pt_regs *regs)
-+{
-+	return regs->d0;
-+}
-+
-+static inline void
-+syscall_set_return_value(struct task_struct *task, struct pt_regs *regs,
-+			 int error, long val)
-+{
-+	regs->d0 = (long) error ?: val;
-+}
-+
-+#if 0
-+static inline void
-+syscall_get_arguments(struct task_struct *task, struct pt_regs *regs,
-+		      unsigned int i, unsigned int n, unsigned long *args)
-+{
-+	/* TODO */
-+}
-+
-+static inline void
-+syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
-+		      unsigned int i, unsigned int n, const unsigned long *args)
-+{
-+	/* TODO */
-+}
-+#endif
-+
-+#endif
-diff --git a/arch/m68k/kernel/signal_mm.c b/arch/m68k/kernel/signal_mm.c
-index a0afc23..a8fa041 100644
---- a/arch/m68k/kernel/signal_mm.c
-+++ b/arch/m68k/kernel/signal_mm.c
-@@ -895,39 +895,6 @@ give_sigsegv:
- 	return err;
- }
- 
--static inline void
--handle_restart(struct pt_regs *regs, struct k_sigaction *ka, int has_handler)
--{
--	switch (regs->d0) {
--	case -ERESTARTNOHAND:
--		if (!has_handler)
--			goto do_restart;
--		regs->d0 = -EINTR;
--		break;
+-----------------------------------------------------------------------=
 -
--	case -ERESTART_RESTARTBLOCK:
--		if (!has_handler) {
--			regs->d0 = __NR_restart_syscall;
--			regs->pc -= 2;
--			break;
--		}
--		regs->d0 = -EINTR;
--		break;
--
--	case -ERESTARTSYS:
--		if (has_handler && !(ka->sa.sa_flags & SA_RESTART)) {
--			regs->d0 = -EINTR;
--			break;
--		}
--	/* fallthrough */
--	case -ERESTARTNOINTR:
--	do_restart:
--		regs->d0 = regs->orig_d0;
--		regs->pc -= 2;
--		break;
--	}
--}
--
- void ptrace_signal_deliver(struct pt_regs *regs, void *cookie)
- {
- 	if (regs->orig_d0 < 0)
-@@ -951,10 +918,6 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
- 	      sigset_t *oldset, struct pt_regs *regs)
- {
- 	int err;
--	/* are we from a system call? */
--	if (regs->orig_d0 >= 0)
--		/* If so, check system call restarting.. */
--		handle_restart(regs, ka, 1);
- 
- 	/* set up the stack frame */
- 	if (ka->sa.sa_flags & SA_SIGINFO)
-@@ -998,17 +961,15 @@ asmlinkage void do_signal(struct pt_regs *regs)
- 		oldset = &current->blocked;
- 
- 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
-+
-+	handle_syscall_restart(regs, &ka, (signr > 0));
-+
- 	if (signr > 0) {
- 		/* Whee!  Actually deliver the signal.  */
- 		handle_signal(signr, &ka, &info, oldset, regs);
- 		return;
- 	}
- 
--	/* Did we come from a system call? */
--	if (regs->orig_d0 >= 0)
--		/* Restart the system call - no handlers present */
--		handle_restart(regs, NULL, 0);
--
- 	/* If there's no signal to deliver, we just restore the saved mask.  */
- 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
- 		clear_thread_flag(TIF_RESTORE_SIGMASK);
-diff --git a/arch/m68k/kernel/signal_no.c b/arch/m68k/kernel/signal_no.c
-index 36a81bb..2fad7c7 100644
---- a/arch/m68k/kernel/signal_no.c
-+++ b/arch/m68k/kernel/signal_no.c
-@@ -653,39 +653,6 @@ give_sigsegv:
- 	goto adjust_stack;
- }
- 
--static inline void
--handle_restart(struct pt_regs *regs, struct k_sigaction *ka, int has_handler)
--{
--	switch (regs->d0) {
--	case -ERESTARTNOHAND:
--		if (!has_handler)
--			goto do_restart;
--		regs->d0 = -EINTR;
--		break;
--
--	case -ERESTART_RESTARTBLOCK:
--		if (!has_handler) {
--			regs->d0 = __NR_restart_syscall;
--			regs->pc -= 2;
--			break;
--		}
--		regs->d0 = -EINTR;
--		break;
--
--	case -ERESTARTSYS:
--		if (has_handler && !(ka->sa.sa_flags & SA_RESTART)) {
--			regs->d0 = -EINTR;
--			break;
--		}
--	/* fallthrough */
--	case -ERESTARTNOINTR:
--	do_restart:
--		regs->d0 = regs->orig_d0;
--		regs->pc -= 2;
--		break;
--	}
--}
--
- /*
-  * OK, we're invoking a handler
-  */
-@@ -694,10 +661,6 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
- 	      sigset_t *oldset, struct pt_regs *regs)
- {
- 	int err;
--	/* are we from a system call? */
--	if (regs->orig_d0 >= 0)
--		/* If so, check system call restarting.. */
--		handle_restart(regs, ka, 1);
- 
- 	/* set up the stack frame */
- 	if (ka->sa.sa_flags & SA_SIGINFO)
-@@ -745,18 +708,15 @@ asmlinkage void do_signal(struct pt_regs *regs)
- 		oldset = &current->blocked;
- 
- 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
-+
-+	handle_syscall_restart(regs, &ka, (signr > 0));
-+
- 	if (signr > 0) {
- 		/* Whee!  Actually deliver the signal.  */
- 		handle_signal(signr, &ka, &info, oldset, regs);
- 		return;
- 	}
- 
--	/* Did we come from a system call? */
--	if (regs->orig_d0 >= 0) {
--		/* Restart the system call - no handlers present */
--		handle_restart(regs, NULL, 0);
--	}
--
- 	/* If there's no signal to deliver, we just restore the saved mask.  */
- 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
- 		clear_thread_flag(TIF_RESTORE_SIGMASK);
--- 
-1.7.5.4
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
+m
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
+8
+8 Gardner Close,                            FAX:         +61 7 3891 363=
+0
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
+m
