@@ -1,41 +1,113 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 00/16] more mac68k fixes and cleanup
-Date: Mon, 24 Oct 2011 01:11:08 +1100
-Message-ID: <20111023141108.856998818@telegraphics.com.au>
+Subject: [PATCH 01/16] pmac_zilog: fix unexpected irq
+Date: Mon, 24 Oct 2011 01:11:09 +1100
+Message-ID: <20111023141115.208699274@telegraphics.com.au>
+References: <20111023141108.856998818@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:45958 "EHLO
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:45976 "EHLO
 	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755560Ab1JWOLP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:15 -0400
+	with ESMTP id S1755560Ab1JWOLT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:19 -0400
+Content-Disposition: inline; filename=pmac-zilog-unexpected-irq
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org
 
-Hi Geert,
+On most 68k Macs the SCC IRQ is an autovector interrupt and cannot be masked. This can be a problem when pmac_zilog starts up.
 
-It would be good if this whole series passes through the m68k tree.
+For example, the serial debugging code in arch/m68k/kernel/head.S may be used beforehand. It disables the SCC interrupts at the chip but doesn't ack them. Then when a pmac_zilog port is opened and SCC chip interrupts become enabled, the machine locks up with "unexpected interrupt" because request_irq() hasn't happened yet.
 
-I based this patch series on linux-3.1-rc5 + linux-m68k +
-genirq conversion v6 + three patches* already sent.
+Fix this by setting the SCC master interrupt enable bit only after the handler is installed. This is achieved by extracting that operation out of __pmz_startup() and placing it into a seperate routine.
 
-The resulting build was tested on the following hardware.
+A similar problem arises when the irq is freed. Fix this by resetting the chip first (on m68k mac).
 
-PowerBook 520, 190, 180 and 150
-Quadra 700, 660av, 650
-LC 630, LC III
-Mac IIfx
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-That covers VIA, RBV, OSS, PSC, Baboon, PMU V1 and PMU V2 code.
-The workload exercised all drivers simultaneously and showed no regression.
+---
 
-I suppose that after all of the renaming recently this series will need
-to be rebased (?)
-I am sending it for review anyway.
+This patch has been tested on a variety of m68k Macs but no PowerMacs.
 
-Finn
-
-*
-http://git.kernel.org/?p=linux/kernel/git/next/linux-next.git;a=commitdiff;h=e544d704f9bea6892808e453e219aa305bc0269a
-http://git.kernel.org/?p=linux/kernel/git/next/linux-next.git;a=commitdiff;h=ce43aa6c142d69820a267431ea342d1bd9f6d3ce
-http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=commitdiff;h=5679086ffdb93ec8168b8934d8197849d26f8fb6
+Index: linux-m68k/drivers/tty/serial/pmac_zilog.c
+===================================================================
+--- linux-m68k.orig/drivers/tty/serial/pmac_zilog.c	2011-10-22 23:02:22.000000000 +1100
++++ linux-m68k/drivers/tty/serial/pmac_zilog.c	2011-10-22 23:02:38.000000000 +1100
+@@ -910,8 +910,8 @@ static int __pmz_startup(struct uart_pma
+ 	/* Clear handshaking, enable BREAK interrupts */
+ 	uap->curregs[R15] = BRKIE;
+ 
+-	/* Master interrupt enable */
+-	uap->curregs[R9] |= NV | MIE;
++	/* No vector */
++	uap->curregs[R9] |= NV;
+ 
+ 	pmz_load_zsregs(uap, uap->curregs);
+ 
+@@ -925,6 +925,17 @@ static int __pmz_startup(struct uart_pma
+ 	return pwr_delay;
+ }
+ 
++static void pmz_master_int_control(struct uart_pmac_port *uap, int enable)
++{
++	if (enable) {
++		uap->curregs[R9] |= MIE; /* Master interrupt enable */
++		write_zsreg(uap, R9, uap->curregs[R9]);
++	} else {
++		uap->curregs[R9] &= ~MIE;
++		write_zsreg(uap, 9, FHWRES);
++	}
++}
++
+ static void pmz_irda_reset(struct uart_pmac_port *uap)
+ {
+ 	uap->curregs[R5] |= DTR;
+@@ -976,6 +987,19 @@ static int pmz_startup(struct uart_port
+ 		return -ENXIO;
+ 	}
+ 
++	/*
++	 * Most 68k Mac models cannot mask the SCC IRQ so they must enable
++	 * interrupts after the handler is installed and not before.
++	 */
++#ifndef CONFIG_MAC
++	if (!ZS_IS_CONS(uap))
++#endif
++	{
++		spin_lock_irqsave(&port->lock, flags);
++		pmz_master_int_control(uap, 1);
++		spin_unlock_irqrestore(&port->lock, flags);
++	}
++
+ 	mutex_unlock(&pmz_irq_mutex);
+ 
+ 	/* Right now, we deal with delay by blocking here, I'll be
+@@ -1015,6 +1039,11 @@ static void pmz_shutdown(struct uart_por
+ 
+ 	mutex_lock(&pmz_irq_mutex);
+ 
++#ifdef CONFIG_MAC
++	if (!ZS_IS_OPEN(uap->mate))
++		pmz_master_int_control(uap, 0);
++#endif
++
+ 	/* Release interrupt handler */
+ 	free_irq(uap->port.irq, uap);
+ 
+@@ -1734,6 +1763,7 @@ static int pmz_resume(struct macio_dev *
+ 		goto bail;
+ 	}
+ 	pwr_delay = __pmz_startup(uap);
++	pmz_master_int_control(uap, 1);
+ 
+ 	/* Take care of config that may have changed while asleep */
+ 	__pmz_set_termios(&uap->port, &uap->termios_cache, NULL);
+@@ -2178,6 +2208,9 @@ static int __init pmz_console_setup(stru
+ 	 * Enable the hardware
+ 	 */
+ 	pwr_delay = __pmz_startup(uap);
++#ifndef CONFIG_MAC
++	pmz_master_int_control(uap, 1);
++#endif
+ 	if (pwr_delay)
+ 		mdelay(pwr_delay);
+ 	
