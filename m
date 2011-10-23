@@ -1,50 +1,44 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/5] m68k/serial: Remove obsolete IRQ_FLG_* users
-Date: Sun, 23 Oct 2011 23:18:04 +0200
-Message-ID: <1319404686-10800-3-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 5/5] m68k/irq: Remove obsolete IRQ_FLG_* definitions
+Date: Sun, 23 Oct 2011 23:18:06 +0200
+Message-ID: <1319404686-10800-5-git-send-email-geert@linux-m68k.org>
 References: <1319404686-10800-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devel-bounces@linuxdriverproject.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1319404686-10800-1-git-send-email-geert@linux-m68k.org>
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/devel>,
-	<mailto:devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/devel>
-List-Post: <mailto:devel@linuxdriverproject.org>
-List-Help: <mailto:devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/devel>,
-	<mailto:devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: devel-bounces@linuxdriverproject.org
-Sender: devel-bounces@linuxdriverproject.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: devel@driverdev.osuosl.org, Greg Kroah-Hartman <gregkh@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
 The m68k core irq code stopped honoring these flags during the irq
 restructuring in 2006.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
-Cc: devel@driverdev.osuosl.org
 ---
 This is a split-up of "m68k/irq: Remove obsolete IRQ_FLG_* definitions and
-users", to reduce conflicts and dependencies.
+users", to reduce conflicts and remove dependencies.
 
-diff --git a/drivers/tty/serial/68360serial.c b/drivers/tty/serial/68360serial.c
-index 0a3e878..daf0b1d 100644
---- a/drivers/staging/serial/68360serial.c
-+++ b/drivers/staging/serial/68360serial.c
-@@ -2771,8 +2771,8 @@ static int __init rs_360_init(void)
- 			*/
- 			/* cpm_install_handler(IRQ_MACHSPEC | state->irq, rs_360_interrupt, info);  */
- 			/*request_irq(IRQ_MACHSPEC | state->irq, rs_360_interrupt, */
--			request_irq(state->irq, rs_360_interrupt,
--						IRQ_FLG_LOCK, "ttyS", (void *)info);
-+			request_irq(state->irq, rs_360_interrupt, 0, "ttyS",
-+				    (void *)info);
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index 9a2bae8..fe625e2 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -59,19 +59,6 @@ extern unsigned int irq_canonicalize(unsigned int irq);
+ struct pt_regs;
  
- 			/* Set up the baud rate generator.
- 			*/
--- 
-1.7.0.4
+ /*
+- * various flags for request_irq() - the Amiga now uses the standard
+- * mechanism like all other architectures - IRQF_DISABLED and
+- * IRQF_SHARED are your friends.
+- */
+-#ifndef MACH_AMIGA_ONLY
+-#define IRQ_FLG_LOCK	(0x0001)	/* handler is not replaceable	*/
+-#define IRQ_FLG_REPLACE	(0x0002)	/* replace existing handler	*/
+-#define IRQ_FLG_FAST	(0x0004)
+-#define IRQ_FLG_SLOW	(0x0008)
+-#define IRQ_FLG_STD	(0x8000)	/* internally used		*/
+-#endif
+-
+-/*
+  * This structure is used to chain together the ISRs for a particular
+  * interrupt source (if it supports chaining).
+  */
