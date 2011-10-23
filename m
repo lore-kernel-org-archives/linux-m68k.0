@@ -1,128 +1,46 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
-Date: Sun, 23 Oct 2011 14:12:26 +0200
-Message-ID: <CAMuHMdVxXYd1aWfXhAmTsqttqugXQCmNXLZT9zaan+uaAHdiOw__35369.6215119728$1319371978$gmane$org@mail.gmail.com>
-References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
-	<CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com>
-	<CAMuHMdX7C5NU5_MO5GdO=Pf2X59B3vFo4Y9B5wg-NQzwVbbLZA@mail.gmail.com>
-	<4EA3FA86.7000905@snapgear.com>
+Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
+Date: Sun, 23 Oct 2011 14:20:27 +0200
+Message-ID: <CAMuHMdVWAcNFeWauj-DoB3btWY9UTOBDNMzRyTvYmYaYb15N4A@mail.gmail.com>
+References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
+	<201105050824.34056.arnd@arndb.de>
+	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
+	<m2ty70ghk9.fsf@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4EA3FA86.7000905@snapgear.com>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:44746 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755491Ab1JWMU2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 08:20:28 -0400
+In-Reply-To: <m2ty70ghk9.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@lists.linux-m68k.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
 
-On Sun, Oct 23, 2011 at 13:29, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 10/23/2011 07:49 PM, Geert Uytterhoeven wrote:
->> On Thu, Oct 20, 2011 at 14:18, Geert Uytterhoeven<geert@linux-m68k.o=
-rg>
->> =C2=A0wrote:
->>> On Sun, Sep 11, 2011 at 13:59, Geert Uytterhoeven<geert@linux-m68k.=
-org>
->>> =C2=A0wrote:
->>>> This patch series converts the m68k/mmu (nommu was converted befor=
-e)
->>>> architecture to the generic hardirq framework.
->>>>
->>>> =C3=83=C2=A1- [01/28] genirq: Add missing "else" in irq_shutdown()
->>>> =C3=83=C2=A1- [02/28] ide-{cd,floppy,tape}: Do not include<linux/i=
-rq.>
->>>> =C3=83=C2=A1- [03/28] keyboard: Do not include<linux/irq.>
->>>> =C3=83=C2=A1- [04/28] m68k/irq: Rename irq_controller to irq_chip
->>>> =C3=83=C2=A1- [05/28] m68k/irq: Kill irq_node_t typedef, always us=
-e struct
->>>> irq_node
->>>> =C3=83=C2=A1- [06/28] m68k/irq: Rename irq_node to irq_data
->>>> =C3=83=C2=A1- [07/28] m68k/irq: Switch irq_chip methods to "struct=
- irq_data *data"
->>>> =C3=83=C2=A1- [08/28] m68k/irq: Rename setup_irq() to m68k_setup_i=
-rq() and make it
->>>> static
->>>> =C3=83=C2=A1- [09/28] m68k/irq: Extract irq_set_chip()
->>>> =C3=83=C2=A1- [10/28] m68k/irq: Add m68k_setup_irq_controller()
->>>> =C3=83=C2=A1- [11/28] m68k/irq: Rename {,__}m68k_handle_int()
->>>> =C3=83=C2=A1- [12/28] m68k/irq: Remove obsolete IRQ_FLG_* definiti=
-ons and users
->>>> =C3=83=C2=A1- [13/28] m68k/irq: Add genirq support
->>>> =C3=83=C2=A1- [14/28] m68k/atari: Convert Atari to genirq
->>>> =C3=83=C2=A1- [15/28] m68k/atari: Remove code and comments about d=
-ifferent irq
->>>> types
->>>> =C3=83=C2=A1- [16/28] m68k/amiga: Refactor amiints.c
->>>> =C3=83=C2=A1- [17/28] m68k/amiga: Convert Amiga to genirq
->>>> =C3=83=C2=A1- [18/28] m68k/amiga: Optimize interrupts using chain =
-handlers
->>>> =C3=83=C2=A1- [19/28] m68k/mac: Convert Mac to genirq
->>>> =C3=83=C2=A1- [20/28] m68k/mac: Optimize interrupts using chain ha=
-ndlers
->>>> =C3=83=C2=A1- [21/28] m68k/hp300: Convert HP9000/300 and HP9000/40=
-0 to genirq
->>>> =C3=83=C2=A1- [22/28] m68k/vme: Convert VME to genirq
->>>> =C3=83=C2=A1- [23/28] m68k/apollo: Convert Apollo to genirq
->>>> =C3=83=C2=A1- [24/28] m68k/sun3: Use the kstat_irqs_cpu() wrapper
->>>> =C3=83=C2=A1- [25/28] m68k/sun3: Convert Sun3/3x to genirq
->>>> =C3=83=C2=A1- [26/28] m68k/q40: Convert Q40/Q60 to genirq
->>>> =C3=83=C2=A1- [27/28] m68k/irq: Remove obsolete m68k irq framework
->>>> =C3=83=C2=A1- [28/28] m68k/irq: Remove obsolete support for user v=
-ector interrupt
->>>> fixups
->>>>
->>>> Overview:
->>>> =C3=83=C2=A1- [01] is a fix for the core genirq code,
->>>
->>> This went into v3.1-rc6.
->>>
->>>> =C3=83=C2=A1- [02-03] are fixes to avoid compile problems later in=
- the conversion
->>>> =C3=83=C2=A1 =C3=83=C2=A1process,
->>>
->>> The keyboard path went into the tty -next tree.
->>> The IDE one is still pending (I've just resent it).
->>
->> The IDE one got acked in the mean time.
->>
->>>> I will update my m68k-genirq branch as soon as master.kernel.org i=
-s
->>>> available
->>>> again.
->>>
->>> Updated, on top of m68k master (which is at v3.1-rc10 now).
->>>
->>> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3D=
-shortlog;h=3Drefs/heads/m68k-genirq
->>>
->>> If noone objects, I'd like to add this to the m68k master and for-3=
-=2E2
->>> branches.
->>
->> I added it to m68k master.
->>
->> As there were several merge conflicts with current -next
->> (arch/m68k/kernel/Makefile_mm
->> due to the mmu/nommu merge, and drivers/net/macsonic.c in [12/28] du=
-e
->> to the network
->> driver reshuffling dance), I did not add it to for-3.2 and for-next,
->> but to for-3.3.
->>
->> Depending on Stephen's return during or after the merge window, and
->> the merge timing
->> of the m68knommu and netdev trees, I may stil try to sneak it in 3.2=
-,
->> though.
+On Sun, Oct 23, 2011 at 11:53, Andreas Schwab <schwab@linux-m68k.org> w=
+rote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
 >
-> I can ask Linus to pull the m68knommu tree early in the merge window,
-> if that will help.
+>> From 5739b340b334de21c6da4f65d5194957662a6dd0 Mon Sep 17 00:00:00 20=
+01
+>> From: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Date: Thu, 5 May 2011 20:33:02 +0200
+>> Subject: [PATCH] m68k: unistd - Comment out definitions for unimplem=
+ented syscalls
+>
+> This is not a good idea at least for the syscalls referenced by glibc=
+=2E
+> It means that a glibc compiled against this <asm/unistd.h> will lose =
+the
+> ability to call those syscalls even if the running kernel happens to
+> implement them.
 
-Thanks, that will help. Then I can rebase on top of that.
-
-And I'll split "[12/28] m68k/irq: Remove obsolete IRQ_FLG_*
-definitions and users",
-so the net/scsi/tty parts can hit the repective trees separately.
+But is any of them likely to be ever implemented on m68k?
+Perhaps AFS, vserver and {get,put}pmsg()?
+All others seem to be old, obsolete, or i386-only.
 
 Gr{oetje,eeting}s,
 
