@@ -1,221 +1,341 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 03/16] mac_sonic: add irq resources and cleanup
-Date: Mon, 24 Oct 2011 01:11:11 +1100
-Message-ID: <20111023141124.538715283@telegraphics.com.au>
+Subject: [PATCH 04/16] m68k/mac: early console
+Date: Mon, 24 Oct 2011 01:11:12 +1100
+Message-ID: <20111023141129.239234190@telegraphics.com.au>
 References: <20111023141108.856998818@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:45995 "EHLO
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:46000 "EHLO
 	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755573Ab1JWOL3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:29 -0400
-Content-Disposition: inline; filename=macsonic-platform-irq-rsrc
+	with ESMTP id S1755602Ab1JWOLe (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:34 -0400
+Content-Disposition: inline; filename=mac-early-console
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, David Miller <davem@davemloft.net>, netdev@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org
 
-Make better use of the SONIC platform device by adding irq resources. This moves the via_type logic out of the NIC device driver which improves modularity.
+Revive the old mac_serial_print() routine as mac_early_print(). mac_serial_print() did not function because it did not use the right offsets for its stack arguments. Fix this and make compilation conditional on CONFIG_EARLY_PRINTK instead of the obscure MAC_SERIAL_DEBUG macro.
 
-Since interrupt handlers now run with CPU interrupts disabled, we don't need the macsonic_interrupt() wrapper. Remove it.
+Give mac_early_print() a new string length parameter to fit the early console API.
 
-For consistency, rename retval as err.
+Send output to the framebuffer as well as serial ports.
+
+Change the line rate to 38400 baud to match the default for the real (pmac_zilog) serial console.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Index: linux-m68k/arch/m68k/mac/config.c
+Index: linux-m68k/arch/m68k/Kconfig.debug
 ===================================================================
---- linux-m68k.orig/arch/m68k/mac/config.c	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/config.c	2011-10-23 00:51:11.000000000 +1100
-@@ -936,9 +936,16 @@ static struct platform_device esp_1_pdev
- 	.id		= 1,
- };
+--- linux-m68k.orig/arch/m68k/Kconfig.debug	2011-10-22 23:02:22.000000000 +1100
++++ linux-m68k/arch/m68k/Kconfig.debug	2011-10-22 23:02:38.000000000 +1100
+@@ -4,7 +4,7 @@ source "lib/Kconfig.debug"
  
-+static struct resource sonic_rsrcs[] = {
-+	{ .flags = IORESOURCE_IRQ },
-+	{ .flags = IORESOURCE_IRQ },
-+};
-+
- static struct platform_device sonic_pdev = {
- 	.name		= "macsonic",
- 	.id		= -1,
-+	.num_resources  = ARRAY_SIZE(sonic_rsrcs),
-+	.resource       = sonic_rsrcs,
- };
- 
- static struct platform_device mace_pdev = {
-@@ -1002,6 +1009,10 @@ int __init mac_platform_init(void)
- 
- 	switch (macintosh_config->ether_type) {
- 	case MAC_ETHER_SONIC:
-+		sonic_rsrcs[0].start = sonic_rsrcs[0].end = IRQ_NUBUS_9;
-+		if (via_alt_mapping)
-+			sonic_rsrcs[1].start = sonic_rsrcs[1].end = IRQ_AUTO_3;
-+
- 		platform_device_register(&sonic_pdev);
- 		break;
- 	case MAC_ETHER_MACE:
-Index: linux-m68k/drivers/net/macsonic.c
+ config EARLY_PRINTK
+ 	bool "Early printk" if EMBEDDED
+-	depends on MVME16x
++	depends on MVME16x || MAC
+ 	default y
+ 	help
+           Write kernel log output directly to a serial port.
+Index: linux-m68k/arch/m68k/kernel/head.S
 ===================================================================
---- linux-m68k.orig/drivers/net/macsonic.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/drivers/net/macsonic.c	2011-10-22 23:02:38.000000000 +1100
-@@ -60,7 +60,6 @@
- #include <asm/dma.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
--#include <asm/mac_via.h>
+--- linux-m68k.orig/arch/m68k/kernel/head.S	2011-10-22 23:02:22.000000000 +1100
++++ linux-m68k/arch/m68k/kernel/head.S	2011-10-22 23:02:38.000000000 +1100
+@@ -250,9 +250,8 @@
+  * USE_MFP:	Use the ST-MFP port (Modem1) for serial debug.
+  *
+  * Macintosh constants:
+- * MAC_SERIAL_DEBUG:	Turns on serial debug output for the Macintosh.
+- * MAC_USE_SCC_A:	Use the SCC port A (modem) for serial debug.
+- * MAC_USE_SCC_B:	Use the SCC port B (printer) for serial debug (default).
++ * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug and early console.
++ * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug and early console.
+  */
  
- static char mac_sonic_string[] = "macsonic";
+ #include <linux/linkage.h>
+@@ -268,33 +267,25 @@
  
-@@ -127,61 +126,49 @@ static inline void bit_reverse_addr(unsi
- 		addr[i] = bitrev8(addr[i]);
- }
+ #include <asm/machw.h>
  
--static irqreturn_t macsonic_interrupt(int irq, void *dev_id)
--{
--	irqreturn_t result;
--	unsigned long flags;
+-/*
+- * Macintosh console support
+- */
 -
--	local_irq_save(flags);
--	result = sonic_interrupt(irq, dev_id);
--	local_irq_restore(flags);
--	return result;
--}
--
- static int macsonic_open(struct net_device* dev)
- {
--	int retval;
-+	struct sonic_local *lp = netdev_priv(dev);
-+	int err;
+ #ifdef CONFIG_FRAMEBUFFER_CONSOLE
+ #define CONSOLE
+ #define CONSOLE_PENGUIN
+ #endif
  
--	retval = request_irq(dev->irq, sonic_interrupt, 0, "sonic", dev);
--	if (retval) {
--		printk(KERN_ERR "%s: unable to get IRQ %d.\n",
--				dev->name, dev->irq);
--		goto err;
--	}
--	/* Under the A/UX interrupt scheme, the onboard SONIC interrupt comes
--	 * in at priority level 3. However, we sometimes get the level 2 inter-
--	 * rupt as well, which must prevent re-entrance of the sonic handler.
--	 */
--	if (dev->irq == IRQ_AUTO_3) {
--		retval = request_irq(IRQ_NUBUS_9, macsonic_interrupt, 0,
--				     "sonic", dev);
--		if (retval) {
--			printk(KERN_ERR "%s: unable to get IRQ %d.\n",
--					dev->name, IRQ_NUBUS_9);
--			goto err_irq;
-+	err = request_irq(dev->irq, sonic_interrupt, 0, "SONIC", dev);
-+	if (err) {
-+		pr_err("%s: unable to get IRQ %d\n", dev->name, dev->irq);
-+		goto out;
-+	}
-+	if (lp->irq1) {
-+		err = request_irq(lp->irq1, sonic_interrupt, 0, "SONIC", dev);
-+		if (err) {
-+			pr_err("%s: unable to get IRQ %d\n",
-+			       dev->name, lp->irq1);
-+			goto out_irq;
- 		}
- 	}
--	retval = sonic_open(dev);
--	if (retval)
--		goto err_irq_nubus;
-+	err = sonic_open(dev);
-+	if (err)
-+		goto out_irq1;
-+
- 	return 0;
- 
--err_irq_nubus:
--	if (dev->irq == IRQ_AUTO_3)
--		free_irq(IRQ_NUBUS_9, dev);
--err_irq:
-+out_irq1:
-+	if (lp->irq1)
-+		free_irq(lp->irq1, dev);
-+out_irq:
- 	free_irq(dev->irq, dev);
--err:
--	return retval;
-+out:
-+	return err;
- }
- 
- static int macsonic_close(struct net_device* dev)
- {
-+	struct sonic_local *lp = netdev_priv(dev);
- 	int err;
-+
- 	err = sonic_close(dev);
-+
-+	if (lp->irq1)
-+		free_irq(lp->irq1, dev);
- 	free_irq(dev->irq, dev);
--	if (dev->irq == IRQ_AUTO_3)
--		free_irq(IRQ_NUBUS_9, dev);
- 	return err;
- }
- 
-@@ -310,8 +297,9 @@ static void __devinit mac_onboard_sonic_
- 	random_ether_addr(dev->dev_addr);
- }
- 
--static int __devinit mac_onboard_sonic_probe(struct net_device *dev)
-+static int __devinit mac_onboard_sonic_probe(struct platform_device *pdev)
- {
-+	struct net_device *dev = platform_get_drvdata(pdev);
- 	struct sonic_local* lp = netdev_priv(dev);
- 	int sr;
- 	int commslot = 0;
-@@ -348,10 +336,12 @@ static int __devinit mac_onboard_sonic_p
- 	/* Danger!  My arms are flailing wildly!  You *must* set lp->reg_offset
- 	 * and dev->base_addr before using SONIC_READ() or SONIC_WRITE() */
- 	dev->base_addr = ONBOARD_SONIC_REGISTERS;
--	if (via_alt_mapping)
--		dev->irq = IRQ_AUTO_3;
--	else
--		dev->irq = IRQ_NUBUS_9;
-+
-+	dev->irq = platform_get_irq(pdev, 0);
-+	lp->irq1 = platform_get_irq(pdev, 1);
-+
-+	if (!dev->irq)
-+		return -ENODEV;
- 
- 	if (!sonic_version_printed) {
- 		printk(KERN_INFO "%s", version);
-@@ -590,7 +580,7 @@ static int __devinit mac_sonic_probe(str
- 	platform_set_drvdata(pdev, dev);
- 
- 	/* This will catch fatal stuff like -ENOMEM as well as success */
--	err = mac_onboard_sonic_probe(dev);
-+	err = mac_onboard_sonic_probe(pdev);
- 	if (err == 0)
- 		goto found;
- 	if (err != -ENODEV)
-Index: linux-m68k/drivers/net/sonic.h
-===================================================================
---- linux-m68k.orig/drivers/net/sonic.h	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/drivers/net/sonic.h	2011-10-22 23:02:38.000000000 +1100
-@@ -318,6 +318,9 @@ struct sonic_local {
- 	unsigned int eol_rx;
- 	unsigned int eol_tx;           /* last unacked transmit packet */
- 	unsigned int next_tx;          /* next free TD */
-+#ifdef CONFIG_MAC
-+	int irq1;                      /* Second IRQ for Mac Quadras */
+-/*
+- * Macintosh serial debug support; outputs boot info to the printer
+- *   and/or modem serial ports
+- */
+-#undef MAC_SERIAL_DEBUG
++#ifdef CONFIG_EARLY_PRINTK
++#define SERIAL_DEBUG
++#else
++#undef SERIAL_DEBUG
 +#endif
- 	struct device *device;         /* generic device */
- 	struct net_device_stats stats;
- };
-Index: linux-m68k/arch/m68k/mac/via.c
-===================================================================
---- linux-m68k.orig/arch/m68k/mac/via.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/via.c	2011-10-23 00:51:10.000000000 +1100
-@@ -40,7 +40,6 @@
- volatile __u8 *via1, *via2;
- int rbv_present;
- int via_alt_mapping;
--EXPORT_SYMBOL(via_alt_mapping);
- static __u8 rbv_clear;
+ 
+-/*
+- * Macintosh serial debug port selection; define one or both;
+- *   requires MAC_SERIAL_DEBUG to be defined
+- */
+-#define MAC_USE_SCC_A		/* Macintosh modem serial port */
+-#define MAC_USE_SCC_B		/* Macintosh printer serial port */
++#else /* !CONFIG_MAC */
+ 
+-#endif	/* CONFIG_MAC */
++#define SERIAL_DEBUG
++
++#endif /* !CONFIG_MAC */
+ 
+ #undef MMU_PRINT
+ #undef MMU_NOCACHE_KERNEL
+-#define SERIAL_DEBUG
+ #undef DEBUG
  
  /*
+@@ -655,11 +646,11 @@ ENTRY(__start)
+ 	lea	%pc@(L(mac_rowbytes)),%a1
+ 	movel	%a0@,%a1@
+ 
+-#ifdef MAC_SERIAL_DEBUG
++#ifdef SERIAL_DEBUG
+ 	get_bi_record	BI_MAC_SCCBASE
+ 	lea	%pc@(L(mac_sccbase)),%a1
+ 	movel	%a0@,%a1@
+-#endif /* MAC_SERIAL_DEBUG */
++#endif
+ 
+ #if 0
+ 	/*
+@@ -1427,7 +1418,7 @@ L(mmu_fixup_done):
+ 	subl	%d0,L(console_font)
+ 	subl	%d0,L(console_font_data)
+ #endif
+-#ifdef MAC_SERIAL_DEBUG
++#ifdef SERIAL_DEBUG
+ 	orl	#0x50000000,L(mac_sccbase)
+ #endif
+ 1:
+@@ -1917,7 +1908,7 @@ mmu_030_print:
+ 	jbne	30b
+ 
+ mmu_print_done:
+-	puts	"\n\n"
++	puts	"\n"
+ 
+ func_return	mmu_print
+ 
+@@ -2768,7 +2759,7 @@ L(scc_initable_mac):
+ 	.byte	9,0		/* no interrupts */
+ 	.byte	10,0		/* NRZ */
+ 	.byte	11,0x50		/* use baud rate generator */
+-	.byte	12,10,13,0	/* 9600 baud */
++	.byte	12,1,13,0	/* 38400 baud */
+ 	.byte	14,1		/* Baud rate generator enable */
+ 	.byte	3,0xc1		/* enable receiver */
+ 	.byte	5,0xea		/* enable transmitter */
+@@ -2906,10 +2897,12 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+ #endif
+ #ifdef CONFIG_MAC
+ 	is_not_mac(L(serial_init_not_mac))
+-#ifdef MAC_SERIAL_DEBUG
+-#if !defined(MAC_USE_SCC_A) && !defined(MAC_USE_SCC_B)
+-#define MAC_USE_SCC_B
+-#endif
++
++#ifdef SERIAL_DEBUG
++/* You may define either or both of these. */
++#define MAC_USE_SCC_A /* Modem port */
++#define MAC_USE_SCC_B /* Printer port */
++
+ #define mac_scc_cha_b_ctrl_offset	0x0
+ #define mac_scc_cha_a_ctrl_offset	0x2
+ #define mac_scc_cha_b_data_offset	0x4
+@@ -2940,7 +2933,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+ 	jra	7b
+ 8:
+ #endif	/* MAC_USE_SCC_B */
+-#endif	/* MAC_SERIAL_DEBUG */
++#endif	/* SERIAL_DEBUG */
+ 
+ 	jra	L(serial_init_done)
+ L(serial_init_not_mac):
+@@ -3011,7 +3004,7 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
+ #ifdef CONFIG_MAC
+ 	is_not_mac(5f)
+ 
+-#ifdef MAC_SERIAL_DEBUG
++#ifdef SERIAL_DEBUG
+ 
+ #ifdef MAC_USE_SCC_A
+ 	movel	%pc@(L(mac_sccbase)),%a1
+@@ -3029,7 +3022,7 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
+ 	moveb	%d0,%a1@(mac_scc_cha_b_data_offset)
+ #endif	/* MAC_USE_SCC_B */
+ 
+-#endif	/* MAC_SERIAL_DEBUG */
++#endif	/* SERIAL_DEBUG */
+ 
+ 	jra	L(serial_putc_done)
+ 5:
+@@ -3248,33 +3241,39 @@ func_return	putn
+ 
+ #ifdef CONFIG_MAC
+ /*
+- *	mac_serial_print
++ *	mac_early_print
+  *
+  *	This routine takes its parameters on the stack.  It then
+- *	turns around and calls the internal routine.  This routine
+- *	is used until the Linux console driver initializes itself.
++ *	turns around and calls the internal routines.  This routine
++ *	is used by the boot console.
+  *
+  *	The calling parameters are:
+- *		void mac_serial_print(const char *str);
++ *		void mac_early_print(const char *str, unsigned length);
+  *
+  *	This routine does NOT understand variable arguments only
+  *	simple strings!
+  */
+-ENTRY(mac_serial_print)
+-	moveml	%d0/%a0,%sp@-
+-#if 1
+-	move	%sr,%sp@-
++ENTRY(mac_early_print)
++	moveml	%d0/%d1/%a0,%sp@-
++	movew	%sr,%sp@-
+ 	ori	#0x0700,%sr
+-#endif
+-	movel	%sp@(10),%a0		/* fetch parameter */
++	movel	%sp@(18),%a0		/* fetch parameter */
++	movel	%sp@(22),%d1		/* fetch parameter */
+ 	jra	2f
+-1:	serial_putc	%d0
+-2:	moveb	%a0@+,%d0
+-	jne	1b
+-#if 1
+-	move	%sp@+,%sr
++1:
++#ifdef CONSOLE
++	console_putc	%d0
+ #endif
+-	moveml	%sp@+,%d0/%a0
++#ifdef SERIAL_DEBUG
++	serial_putc	%d0
++#endif
++	subq	#1,%d1
++2:	jeq	3f
++	moveb	%a0@+,%d0
++	jne	1b
++3:
++	movew	%sp@+,%sr
++	moveml	%sp@+,%d0/%d1/%a0
+ 	rts
+ #endif /* CONFIG_MAC */
+ 
+@@ -3409,10 +3408,10 @@ func_start	console_put_stats,%a0/%d7
+ 	 *		a0 = pointer to boot_info
+ 	 *		d7 = value of boot_info fields
+ 	 */
+-	puts	"\nMacLinux\n\n"
++	puts	"\nMacLinux\n"
+ 
+ #ifdef SERIAL_DEBUG
+-	puts	" vidaddr:"
++	puts	"\n vidaddr:"
+ 	putn	%pc@(L(mac_videobase))		/* video addr. */
+ 
+ 	puts	"\n  _stext:"
+@@ -3423,19 +3422,21 @@ func_start	console_put_stats,%a0/%d7
+ 	lea	%pc@(_end),%a0
+ 	putn	%a0
+ 
+-	puts	"\ncpuid:"
++	puts	"\n   cpuid:"
+ 	putn	%pc@(L(cputype))
+-	putc	'\n'
+ 
+-#ifdef MAC_SERIAL_DEBUG
++#  ifdef CONFIG_MAC
++	puts	"\n sccbase:"
+ 	putn	%pc@(L(mac_sccbase))
++#  endif
++#  ifdef MMU_PRINT
+ 	putc	'\n'
+-#endif
+-#  if defined(MMU_PRINT)
+ 	jbsr	mmu_print_machine_cpu_types
+-#  endif /* MMU_PRINT */
++#  endif
+ #endif /* SERIAL_DEBUG */
+ 
++	putc	'\n'
++
+ func_return	console_put_stats
+ 
+ #ifdef CONSOLE_PENGUIN
+@@ -3896,11 +3897,11 @@ L(mac_dimensions):
+ 	.long	0
+ L(mac_rowbytes):
+ 	.long	0
+-#ifdef MAC_SERIAL_DEBUG
++#ifdef SERIAL_DEBUG
+ L(mac_sccbase):
+ 	.long	0
+-#endif /* MAC_SERIAL_DEBUG */
+ #endif
++#endif /* CONFIG_MAC */
+ 
+ #if defined (CONFIG_APOLLO)
+ LSRB0        = 0x10412
+Index: linux-m68k/arch/m68k/mac/config.c
+===================================================================
+--- linux-m68k.orig/arch/m68k/mac/config.c	2011-10-22 23:02:38.000000000 +1100
++++ linux-m68k/arch/m68k/mac/config.c	2011-10-23 00:51:07.000000000 +1100
+@@ -71,6 +71,31 @@ static void mac_get_model(char *str);
+ static void mac_identify(void);
+ static void mac_report_hardware(void);
+ 
++#ifdef CONFIG_EARLY_PRINTK
++asmlinkage void __init mac_early_print(const char *s, unsigned n);
++
++static void __init mac_early_cons_write(struct console *con,
++                                 const char *s, unsigned n)
++{
++	mac_early_print(s, n);
++}
++
++static struct console __initdata mac_early_cons = {
++	.name  = "early",
++	.write = mac_early_cons_write,
++	.flags = CON_PRINTBUFFER | CON_BOOT,
++	.index = -1
++};
++
++int __init mac_unregister_early_cons(void)
++{
++	/* mac_early_print can't be used after init sections are discarded */
++	return unregister_console(&mac_early_cons);
++}
++
++late_initcall(mac_unregister_early_cons);
++#endif
++
+ static void __init mac_sched_init(irq_handler_t vector)
+ {
+ 	via_init_clock(vector);
+@@ -164,6 +189,10 @@ void __init config_mac(void)
+ 	mach_beep = mac_mksound;
+ #endif
+ 
++#ifdef CONFIG_EARLY_PRINTK
++	register_console(&mac_early_cons);
++#endif
++
+ 	/*
+ 	 * Determine hardware present
+ 	 */
