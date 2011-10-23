@@ -1,160 +1,113 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: [PATCH 10/49] m68k: irq: Remove IRQF_DISABLED
-Date: Sat, 22 Oct 2011 17:56:22 +0800
-Message-ID: <1319277421-9203-11-git-send-email-yong.zhang0__9474.31594036079$1319278218$gmane$org@gmail.com>
-References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/28 v6] m68k: Convert to genirq
+Date: Sun, 23 Oct 2011 11:49:55 +0200
+Message-ID: <CAMuHMdX7C5NU5_MO5GdO=Pf2X59B3vFo4Y9B5wg-NQzwVbbLZA__27407.0386462428$1319363430$gmane$org@mail.gmail.com>
+References: <1315742394-16036-1-git-send-email-geert@linux-m68k.org>
+	<CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <CAMuHMdWOhKcoDoyTnKJzruZ=gpV5uKNFpXnGCkrac7oEkCihJw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: tglx@linutronix.de, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
+To: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@snapgear.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
-We run all interrupt handlers with interrupts disabled
-and we even check and yell when an interrupt handler
-returns with interrupts enabled (see commit [b738a50a:
-genirq: Warn when handler enables interrupts]).
+On Thu, Oct 20, 2011 at 14:18, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> On Sun, Sep 11, 2011 at 13:59, Geert Uytterhoeven <geert@linux-m68k.o=
+rg> wrote:
+>> This patch series converts the m68k/mmu (nommu was converted before)
+>> architecture to the generic hardirq framework.
+>>
+>> =C2=A0- [01/28] genirq: Add missing "else" in irq_shutdown()
+>> =C2=A0- [02/28] ide-{cd,floppy,tape}: Do not include <linux/irq.>
+>> =C2=A0- [03/28] keyboard: Do not include <linux/irq.>
+>> =C2=A0- [04/28] m68k/irq: Rename irq_controller to irq_chip
+>> =C2=A0- [05/28] m68k/irq: Kill irq_node_t typedef, always use struct=
+ irq_node
+>> =C2=A0- [06/28] m68k/irq: Rename irq_node to irq_data
+>> =C2=A0- [07/28] m68k/irq: Switch irq_chip methods to "struct irq_dat=
+a *data"
+>> =C2=A0- [08/28] m68k/irq: Rename setup_irq() to m68k_setup_irq() and=
+ make it static
+>> =C2=A0- [09/28] m68k/irq: Extract irq_set_chip()
+>> =C2=A0- [10/28] m68k/irq: Add m68k_setup_irq_controller()
+>> =C2=A0- [11/28] m68k/irq: Rename {,__}m68k_handle_int()
+>> =C2=A0- [12/28] m68k/irq: Remove obsolete IRQ_FLG_* definitions and =
+users
+>> =C2=A0- [13/28] m68k/irq: Add genirq support
+>> =C2=A0- [14/28] m68k/atari: Convert Atari to genirq
+>> =C2=A0- [15/28] m68k/atari: Remove code and comments about different=
+ irq types
+>> =C2=A0- [16/28] m68k/amiga: Refactor amiints.c
+>> =C2=A0- [17/28] m68k/amiga: Convert Amiga to genirq
+>> =C2=A0- [18/28] m68k/amiga: Optimize interrupts using chain handlers
+>> =C2=A0- [19/28] m68k/mac: Convert Mac to genirq
+>> =C2=A0- [20/28] m68k/mac: Optimize interrupts using chain handlers
+>> =C2=A0- [21/28] m68k/hp300: Convert HP9000/300 and HP9000/400 to gen=
+irq
+>> =C2=A0- [22/28] m68k/vme: Convert VME to genirq
+>> =C2=A0- [23/28] m68k/apollo: Convert Apollo to genirq
+>> =C2=A0- [24/28] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+>> =C2=A0- [25/28] m68k/sun3: Convert Sun3/3x to genirq
+>> =C2=A0- [26/28] m68k/q40: Convert Q40/Q60 to genirq
+>> =C2=A0- [27/28] m68k/irq: Remove obsolete m68k irq framework
+>> =C2=A0- [28/28] m68k/irq: Remove obsolete support for user vector in=
+terrupt fixups
+>>
+>> Overview:
+>> =C2=A0- [01] is a fix for the core genirq code,
+>
+> This went into v3.1-rc6.
+>
+>> =C2=A0- [02-03] are fixes to avoid compile problems later in the con=
+version
+>> =C2=A0 =C2=A0process,
+>
+> The keyboard path went into the tty -next tree.
+> The IDE one is still pending (I've just resent it).
 
-So now this flag is a NOOP and can be removed.
+The IDE one got acked in the mean time.
 
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/floppy.h         |    2 +-
- arch/m68k/include/asm/irq.h            |    4 ++--
- arch/m68k/include/asm/sun3xflop.h      |    2 +-
- arch/m68k/platform/68328/timers.c      |    2 +-
- arch/m68k/platform/68360/config.c      |    2 +-
- arch/m68k/platform/coldfire/pit.c      |    2 +-
- arch/m68k/platform/coldfire/sltimers.c |    4 ++--
- arch/m68k/platform/coldfire/timers.c   |    4 ++--
- 8 files changed, 11 insertions(+), 11 deletions(-)
+>> I will update my m68k-genirq branch as soon as master.kernel.org is =
+available
+>> again.
+>
+> Updated, on top of m68k master (which is at v3.1-rc10 now).
+> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git;a=3D=
+shortlog;h=3Drefs/heads/m68k-genirq
+>
+> If noone objects, I'd like to add this to the m68k master and for-3.2=
+ branches.
 
-diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
-index 697d503..47365b1 100644
---- a/arch/m68k/include/asm/floppy.h
-+++ b/arch/m68k/include/asm/floppy.h
-@@ -85,7 +85,7 @@ static int fd_request_irq(void)
- {
- 	if(MACH_IS_Q40)
- 		return request_irq(FLOPPY_IRQ, floppy_hardint,
--				   IRQF_DISABLED, "floppy", floppy_hardint);
-+				   0, "floppy", floppy_hardint);
- 	else if(MACH_IS_SUN3X)
- 		return sun3xflop_request_irq();
- 	return -ENXIO;
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index 69ed0d7..35de598 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -60,8 +60,8 @@ struct pt_regs;
- 
- /*
-  * various flags for request_irq() - the Amiga now uses the standard
-- * mechanism like all other architectures - IRQF_DISABLED and
-- * IRQF_SHARED are your friends.
-+ * mechanism like all other architectures - IRQF_SHARED etc.
-+ * are your friends.
-  */
- #ifndef MACH_AMIGA_ONLY
- #define IRQ_FLG_LOCK	(0x0001)	/* handler is not replaceable	*/
-diff --git a/arch/m68k/include/asm/sun3xflop.h b/arch/m68k/include/asm/sun3xflop.h
-index 32c45f8..80f8f9f 100644
---- a/arch/m68k/include/asm/sun3xflop.h
-+++ b/arch/m68k/include/asm/sun3xflop.h
-@@ -208,7 +208,7 @@ static int sun3xflop_request_irq(void)
- 	if(!once) {
- 		once = 1;
- 		error = request_irq(FLOPPY_IRQ, sun3xflop_hardint,
--				    IRQF_DISABLED, "floppy", NULL);
-+				    0, "floppy", NULL);
- 		return ((error == 0) ? 0 : -1);
- 	} else return 0;
- }
-diff --git a/arch/m68k/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
-index 309f725..d135b26 100644
---- a/arch/m68k/platform/68328/timers.c
-+++ b/arch/m68k/platform/68328/timers.c
-@@ -69,7 +69,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 
- static struct irqaction m68328_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = hw_tick,
- };
- 
-diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
-index 9dd5bca..c67f1c3 100644
---- a/arch/m68k/platform/68360/config.c
-+++ b/arch/m68k/platform/68360/config.c
-@@ -58,7 +58,7 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 
- static struct irqaction m68360_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = hw_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
-index c2b9809..c69b71a 100644
---- a/arch/m68k/platform/coldfire/pit.c
-+++ b/arch/m68k/platform/coldfire/pit.c
-@@ -118,7 +118,7 @@ static irqreturn_t pit_tick(int irq, void *dummy)
- 
- static struct irqaction pit_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = pit_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/sltimers.c b/arch/m68k/platform/coldfire/sltimers.c
-index 6a85daf..2168dda 100644
---- a/arch/m68k/platform/coldfire/sltimers.c
-+++ b/arch/m68k/platform/coldfire/sltimers.c
-@@ -51,7 +51,7 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
- 
- static struct irqaction mcfslt_profile_irq = {
- 	.name	 = "profile timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcfslt_profile_tick,
- };
- 
-@@ -91,7 +91,7 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
- 
- static struct irqaction mcfslt_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcfslt_tick,
- };
- 
-diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
-index 60242f6..687a38f 100644
---- a/arch/m68k/platform/coldfire/timers.c
-+++ b/arch/m68k/platform/coldfire/timers.c
-@@ -62,7 +62,7 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
- 
- static struct irqaction mcftmr_timer_irq = {
- 	.name	 = "timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = mcftmr_tick,
- };
- 
-@@ -150,7 +150,7 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
- 
- static struct irqaction coldfire_profile_irq = {
- 	.name	 = "profile timer",
--	.flags	 = IRQF_DISABLED | IRQF_TIMER,
-+	.flags	 = IRQF_TIMER,
- 	.handler = coldfire_profile_tick,
- };
- 
--- 
-1.7.1
+I added it to m68k master.
+
+As there were several merge conflicts with current -next
+(arch/m68k/kernel/Makefile_mm
+due to the mmu/nommu merge, and drivers/net/macsonic.c in [12/28] due
+to the network
+driver reshuffling dance), I did not add it to for-3.2 and for-next,
+but to for-3.3.
+
+Depending on Stephen's return during or after the merge window, and
+the merge timing
+of the m68knommu and netdev trees, I may stil try to sneak it in 3.2, t=
+hough.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
