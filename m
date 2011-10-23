@@ -1,34 +1,35 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 16/16] mac_esp: rename irq
-Date: Mon, 24 Oct 2011 01:11:24 +1100
-Message-ID: <20111023141223.838768930@telegraphics.com.au>
-References: <20111023141108.856998818@telegraphics.com.au>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
+Date: Sun, 23 Oct 2011 16:59:07 +0200
+Message-ID: <m2y5wb7o04.fsf@igel.home>
+References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
+	<201105050824.34056.arnd@arndb.de>
+	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
+	<m2ty70ghk9.fsf@linux-m68k.org>
+	<CAMuHMdVWAcNFeWauj-DoB3btWY9UTOBDNMzRyTvYmYaYb15N4A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:46087 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755634Ab1JWOM2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:12:28 -0400
-Content-Disposition: inline; filename=mac-esp-irq-name
+Received: from mail-out.m-online.net ([212.18.0.10]:48407 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755289Ab1JWO7M (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:59:12 -0400
+In-Reply-To: <CAMuHMdVWAcNFeWauj-DoB3btWY9UTOBDNMzRyTvYmYaYb15N4A@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Sun, 23 Oct 2011 14:20:27 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
 
-Rename the "Mac ESP" irq as "ESP" to be consistent with all the other Mac drivers and ESP drivers.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> All others seem to be old, obsolete, or i386-only.
 
-Index: linux-m68k/drivers/scsi/mac_esp.c
-===================================================================
---- linux-m68k.orig/drivers/scsi/mac_esp.c	2011-10-23 18:18:46.000000000 +1100
-+++ linux-m68k/drivers/scsi/mac_esp.c	2011-10-23 18:19:30.000000000 +1100
-@@ -565,8 +565,7 @@ static int __devinit esp_mac_probe(struc
- 	esp_chips[dev->id] = esp;
- 	mb();
- 	if (esp_chips[!dev->id] == NULL) {
--		err = request_irq(host->irq, mac_scsi_esp_intr, 0,
--		                  "Mac ESP", NULL);
-+		err = request_irq(host->irq, mac_scsi_esp_intr, 0, "ESP", NULL);
- 		if (err < 0) {
- 			esp_chips[dev->id] = NULL;
- 			goto fail_free_priv;
+Those are not referenced by glibc anyway.
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
