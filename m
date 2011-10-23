@@ -1,250 +1,114 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 07/16] m68k/mac: cleanup forward declarations
-Date: Mon, 24 Oct 2011 01:11:15 +1100
-Message-ID: <20111023141143.048746772@telegraphics.com.au>
+Subject: [PATCH 08/16] m68k/mac: enable via_alt_mapping on performa 580
+Date: Mon, 24 Oct 2011 01:11:16 +1100
+Message-ID: <20111023141147.908762775@telegraphics.com.au>
 References: <20111023141108.856998818@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:46030 "EHLO
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:46049 "EHLO
 	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755598Ab1JWOLr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:47 -0400
-Content-Disposition: inline; filename=cleanup-headers
+	with ESMTP id S1755582Ab1JWOLw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:11:52 -0400
+Content-Disposition: inline; filename=via_alt_mapping
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
-Move some forward declarations into header files and adjust includes.
+Enable via_alt_mapping on the Performa 588 and tidy up related documentation.
+
+I'm betting that remapped IRQs work just fine on the Performa 580 series since it works on the LC 630 and the logic board part numbers are reputedly the same.
+
+And the consensus seems to be that the Mac TV is essentially a Performa 550, not dissimilar to the Performa 520, so set the via_type accordingly.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Index: linux-m68k/arch/m68k/include/asm/macintosh.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/macintosh.h	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/macintosh.h	2011-10-23 00:51:01.000000000 +1100
-@@ -16,12 +16,6 @@ extern void mac_irq_enable(struct irq_da
- extern void mac_irq_disable(struct irq_data *data);
- 
- /*
-- *	Floppy driver magic hook - probably shouldn't be here
-- */
--
--extern void via1_set_head(int);
--
--/*
-  *	Macintosh Table
-  */
- 
-Index: linux-m68k/drivers/block/swim.c
-===================================================================
---- linux-m68k.orig/drivers/block/swim.c	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/drivers/block/swim.c	2011-10-22 23:02:38.000000000 +1100
-@@ -26,7 +26,6 @@
- #include <linux/delay.h>
- #include <linux/platform_device.h>
- 
--#include <asm/macintosh.h>
- #include <asm/mac_via.h>
- 
- #define CARDNAME "swim"
-Index: linux-m68k/arch/m68k/include/asm/mac_baboon.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/mac_baboon.h	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/mac_baboon.h	2011-10-22 23:02:38.000000000 +1100
-@@ -29,4 +29,10 @@ struct baboon {
- 				 */
- };
- 
-+extern int baboon_present;
-+
-+extern void baboon_register_interrupts(void);
-+extern void baboon_irq_enable(int);
-+extern void baboon_irq_disable(int);
-+
- #endif /* __ASSEMBLY **/
-Index: linux-m68k/arch/m68k/include/asm/mac_iop.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/mac_iop.h	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/mac_iop.h	2011-10-22 23:02:38.000000000 +1100
-@@ -159,4 +159,6 @@ extern void iop_upload_code(uint, __u8 *
- extern void iop_download_code(uint, __u8 *, uint, __u16);
- extern __u8 *iop_compare_code(uint, __u8 *, uint, __u16);
- 
-+extern void iop_register_interrupts(void);
-+
- #endif /* __ASSEMBLY__ */
-Index: linux-m68k/arch/m68k/include/asm/mac_oss.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/mac_oss.h	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/mac_oss.h	2011-10-23 00:51:05.000000000 +1100
-@@ -91,4 +91,8 @@ struct mac_oss {
- extern volatile struct mac_oss *oss;
- extern int oss_present;
- 
-+extern void oss_register_interrupts(void);
-+extern void oss_irq_enable(int);
-+extern void oss_irq_disable(int);
-+
- #endif /* __ASSEMBLY__ */
-Index: linux-m68k/arch/m68k/include/asm/mac_psc.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/mac_psc.h	2011-10-22 23:02:22.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/mac_psc.h	2011-10-22 23:02:38.000000000 +1100
-@@ -211,6 +211,10 @@
- extern volatile __u8 *psc;
- extern int psc_present;
- 
-+extern void psc_register_interrupts(void);
-+extern void psc_irq_enable(int);
-+extern void psc_irq_disable(int);
-+
- /*
-  *	Access functions
-  */
-Index: linux-m68k/arch/m68k/include/asm/mac_via.h
-===================================================================
---- linux-m68k.orig/arch/m68k/include/asm/mac_via.h	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/include/asm/mac_via.h	2011-10-23 00:51:06.000000000 +1100
-@@ -254,6 +254,11 @@
- extern volatile __u8 *via1,*via2;
- extern int rbv_present,via_alt_mapping;
- 
-+extern void via_register_interrupts(void);
-+extern void via_irq_enable(int);
-+extern void via_irq_disable(int);
-+extern void via1_irq(unsigned int irq, struct irq_desc *desc);
-+extern void via1_set_head(int);
- extern int via2_scsi_drq_pending(void);
- 
- static inline int rbv_set_video_bpp(int bpp)
 Index: linux-m68k/arch/m68k/mac/macints.c
 ===================================================================
 --- linux-m68k.orig/arch/m68k/mac/macints.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/macints.c	2011-10-23 00:51:07.000000000 +1100
-@@ -110,75 +110,27 @@
++++ linux-m68k/arch/m68k/mac/macints.c	2011-10-23 00:51:06.000000000 +1100
+@@ -42,6 +42,18 @@
   *
-  */
- 
--#include <linux/module.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/sched.h>
--#include <linux/kernel_stat.h>
--#include <linux/interrupt.h> /* for intr_count */
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
- #include <linux/delay.h>
--#include <linux/seq_file.h>
- 
--#include <asm/system.h>
- #include <asm/irq.h>
--#include <asm/traps.h>
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
-+#include <asm/macints.h>
- #include <asm/mac_via.h>
- #include <asm/mac_psc.h>
-+#include <asm/mac_oss.h>
-+#include <asm/mac_iop.h>
-+#include <asm/mac_baboon.h>
- #include <asm/hwtest.h>
--#include <asm/errno.h>
--#include <asm/macints.h>
- #include <asm/irq_regs.h>
--#include <asm/mac_oss.h>
- 
- #define SHUTUP_SONIC
- 
- /*
-- * VIA/RBV hooks
-- */
--
--extern void via_register_interrupts(void);
--extern void via_irq_enable(int);
--extern void via_irq_disable(int);
--extern void via_irq_clear(int);
--
--/*
-- * OSS hooks
-- */
--
--extern void oss_register_interrupts(void);
--extern void oss_irq_enable(int);
--extern void oss_irq_disable(int);
--extern void oss_irq_clear(int);
--
--/*
-- * PSC hooks
-- */
--
--extern void psc_register_interrupts(void);
--extern void psc_irq_enable(int);
--extern void psc_irq_disable(int);
--extern void psc_irq_clear(int);
--
--/*
-- * IOP hooks
-- */
--
--extern void iop_register_interrupts(void);
--
--/*
-- * Baboon hooks
-- */
--
--extern int baboon_present;
--
--extern void baboon_register_interrupts(void);
--extern void baboon_irq_enable(int);
--extern void baboon_irq_disable(int);
--extern void baboon_irq_clear(int);
--
--/*
-  * console_loglevel determines NMI handler function
-  */
- 
-Index: linux-m68k/arch/m68k/mac/oss.c
+  *	6	- off switch (?)
+  *
++ * Machines with Quadra-like VIA hardware, except PSC and PMU machines, support
++ * an alternate interrupt mapping, as used by A/UX. It spreads ethernet and
++ * sound out to their own autovector IRQs and gives VIA1 a higher priority:
++ *
++ *	1	- unused (?)
++ *
++ *	3	- on-board SONIC
++ *
++ *	5	- Apple Sound Chip (ASC)
++ *
++ *	6	- VIA1
++ *
+  * For OSS Macintoshes (IIfx only at this point):
+  *
+  *	3	- Nubus interrupt
+Index: linux-m68k/arch/m68k/mac/config.c
 ===================================================================
---- linux-m68k.orig/arch/m68k/mac/oss.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/oss.c	2011-10-23 00:51:05.000000000 +1100
-@@ -30,8 +30,6 @@
- int oss_present;
- volatile struct mac_oss *oss;
- 
--extern void via1_irq(unsigned int irq, struct irq_desc *desc);
--
- /*
-  * Initialize the OSS
-  *
+--- linux-m68k.orig/arch/m68k/mac/config.c	2011-10-22 23:02:38.000000000 +1100
++++ linux-m68k/arch/m68k/mac/config.c	2011-10-23 00:51:05.000000000 +1100
+@@ -594,7 +594,7 @@ static struct mac_model mac_data_table[]
+ 		.ident		= MAC_MODEL_TV,
+ 		.name		= "TV",
+ 		.adb_type	= MAC_ADB_CUDA,
+-		.via_type	= MAC_VIA_QUADRA,
++		.via_type	= MAC_VIA_IIci,
+ 		.scsi_type	= MAC_SCSI_OLD,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
 Index: linux-m68k/arch/m68k/mac/via.c
 ===================================================================
 --- linux-m68k.orig/arch/m68k/mac/via.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/via.c	2011-10-23 00:51:07.000000000 +1100
-@@ -77,9 +77,6 @@ static int gIER,gIFR,gBufA,gBufB;
- static u8 nubus_disabled;
++++ linux-m68k/arch/m68k/mac/via.c	2011-10-23 00:51:06.000000000 +1100
+@@ -193,38 +193,17 @@ void __init via_init(void)
+ 	if (oss_present)
+ 		return;
  
- void via_debug_dump(void);
--void via_irq_enable(int irq);
--void via_irq_disable(int irq);
--void via_irq_clear(int irq);
+-	/* Some machines support an alternate IRQ mapping that spreads  */
+-	/* Ethernet and Sound out to their own autolevel IRQs and moves */
+-	/* VIA1 to level 6. A/UX uses this mapping and we do too.  Note */
+-	/* that the IIfx emulates this alternate mapping using the OSS. */
+-
+-	via_alt_mapping = 0;
+-	if (macintosh_config->via_type == MAC_VIA_QUADRA)
+-		switch (macintosh_config->ident) {
+-		case MAC_MODEL_C660:
+-		case MAC_MODEL_Q840:
+-			/* not applicable */
+-			break;
+-		case MAC_MODEL_P588:
+-		case MAC_MODEL_TV:
+-		case MAC_MODEL_PB140:
+-		case MAC_MODEL_PB145:
+-		case MAC_MODEL_PB160:
+-		case MAC_MODEL_PB165:
+-		case MAC_MODEL_PB165C:
+-		case MAC_MODEL_PB170:
+-		case MAC_MODEL_PB180:
+-		case MAC_MODEL_PB180C:
+-		case MAC_MODEL_PB190:
+-		case MAC_MODEL_PB520:
+-			/* not yet tested */
+-			break;
+-		default:
+-			via_alt_mapping = 1;
+-			via1[vDirB] |= 0x40;
+-			via1[vBufB] &= ~0x40;
+-			break;
+-		}
++	if ((macintosh_config->via_type == MAC_VIA_QUADRA) &&
++	    (macintosh_config->adb_type != MAC_ADB_PB1) &&
++	    (macintosh_config->adb_type != MAC_ADB_PB2) &&
++	    (macintosh_config->ident    != MAC_MODEL_C660) &&
++	    (macintosh_config->ident    != MAC_MODEL_Q840)) {
++		via_alt_mapping = 1;
++		via1[vDirB] |= 0x40;
++		via1[vBufB] &= ~0x40;
++	} else {
++		via_alt_mapping = 0;
++	}
  
- /*
-  * Initialize the VIAs
-Index: linux-m68k/arch/m68k/mac/baboon.c
-===================================================================
---- linux-m68k.orig/arch/m68k/mac/baboon.c	2011-10-22 23:02:38.000000000 +1100
-+++ linux-m68k/arch/m68k/mac/baboon.c	2011-10-23 00:51:04.000000000 +1100
-@@ -8,13 +8,8 @@
- 
- #include <linux/types.h>
- #include <linux/kernel.h>
--#include <linux/mm.h>
--#include <linux/delay.h>
--#include <linux/init.h>
- #include <linux/irq.h>
- 
--#include <asm/traps.h>
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_baboon.h>
+ 	/*
+ 	 * Now initialize VIA2. For RBV we just kill all interrupts;
