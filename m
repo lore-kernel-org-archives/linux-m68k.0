@@ -1,35 +1,49 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Merge mmu and non-mmu versions of sys_call_table
-Date: Sun, 23 Oct 2011 16:59:07 +0200
-Message-ID: <m2y5wb7o04.fsf@igel.home>
-References: <alpine.DEB.2.00.1105042033190.9040@ayla.of.borg>
-	<201105050824.34056.arnd@arndb.de>
-	<alpine.DEB.2.00.1105052042590.17077@ayla.of.borg>
-	<m2ty70ghk9.fsf@linux-m68k.org>
-	<CAMuHMdVWAcNFeWauj-DoB3btWY9UTOBDNMzRyTvYmYaYb15N4A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/5] m68k/net: Remove obsolete IRQ_FLG_* users
+Date: Sun, 23 Oct 2011 23:18:02 +0200
+Message-ID: <1319404686-10800-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:48407 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755289Ab1JWO7M (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 10:59:12 -0400
-In-Reply-To: <CAMuHMdVWAcNFeWauj-DoB3btWY9UTOBDNMzRyTvYmYaYb15N4A@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Sun, 23 Oct 2011 14:20:27 +0200")
+Received: from georges.telenet-ops.be ([195.130.137.68]:40801 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752026Ab1JWVSS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Oct 2011 17:18:18 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux list <uclinux-dev@uclinux.org>
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+The m68k core irq code stopped honoring these flags during the irq
+restructuring in 2006.
 
-> All others seem to be old, obsolete, or i386-only.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+---
+This is a split-up of "m68k/irq: Remove obsolete IRQ_FLG_* definitions and
+users", to reduce conflicts and dependencies.
 
-Those are not referenced by glibc anyway.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
+index c93679e..aae4cfc 100644
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -142,8 +142,7 @@ static int macsonic_open(struct net_device* dev)
+ {
+ 	int retval;
+ 
+-	retval = request_irq(dev->irq, sonic_interrupt, IRQ_FLG_FAST,
+-				"sonic", dev);
++	retval = request_irq(dev->irq, sonic_interrupt, 0, "sonic", dev);
+ 	if (retval) {
+ 		printk(KERN_ERR "%s: unable to get IRQ %d.\n",
+ 				dev->name, dev->irq);
+@@ -154,8 +153,8 @@ static int macsonic_open(struct net_device* dev)
+ 	 * rupt as well, which must prevent re-entrance of the sonic handler.
+ 	 */
+ 	if (dev->irq == IRQ_AUTO_3) {
+-		retval = request_irq(IRQ_NUBUS_9, macsonic_interrupt,
+-					IRQ_FLG_FAST, "sonic", dev);
++		retval = request_irq(IRQ_NUBUS_9, macsonic_interrupt, 0,
++				     "sonic", dev);
+ 		if (retval) {
+ 			printk(KERN_ERR "%s: unable to get IRQ %d.\n",
+ 					dev->name, IRQ_NUBUS_9);
