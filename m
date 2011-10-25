@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 01/36] m68k: add machine and CPU definitions for ColdFire cores
-Date: Tue, 25 Oct 2011 17:18:53 +1000
-Message-ID: <1319527168-11166-2-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 08/36] m68k: init the MMU hardware for the 54xx ColdFire
+Date: Tue, 25 Oct 2011 17:19:00 +1000
+Message-ID: <1319527168-11166-9-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25102 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25111 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752852Ab1JYHTT (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:19 -0400
+	with ESMTP id S1753406Ab1JYHTW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:22 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,86 +18,91 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Create machine and CPU definitions to support the ColdFire CPU family
-members that have a virtual memory management unit.
-
-The ColdFire V4e core contains an MMU, and it is quite different to
-any other 68k family members.
+If we want to run with the MMU enabled on the 54xx ColdFire CPUs then
+we need to initialize it at startup. We also need to reserve some space
+for the kernel's page table directory.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/setup.h |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ arch/m68k/platform/coldfire/head.S |   38 +++++++++++++++++++++++++++++++++++-
+ 1 files changed, 37 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/include/asm/setup.h b/arch/m68k/include/asm/setup.h
-index 4dfb395..00c2c53 100644
---- a/arch/m68k/include/asm/setup.h
-+++ b/arch/m68k/include/asm/setup.h
-@@ -40,6 +40,7 @@
- #define MACH_HP300    9
- #define MACH_Q40     10
- #define MACH_SUN3X   11
-+#define MACH_M54XX   12
+diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+index c334838..00ba371 100644
+--- a/arch/m68k/platform/coldfire/head.S
++++ b/arch/m68k/platform/coldfire/head.S
+@@ -3,7 +3,7 @@
+ /*
+  *	head.S -- common startup code for ColdFire CPUs.
+  *
+- *	(C) Copyright 1999-2010, Greg Ungerer <gerg@snapgear.com>.
++ *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
+  */
  
- #define COMMAND_LINE_SIZE 256
+ /*****************************************************************************/
+@@ -13,6 +13,7 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/coldfire.h>
+ #include <asm/mcfsim.h>
++#include <asm/mcfmmu.h>
+ #include <asm/thread_info.h>
  
-@@ -211,23 +212,27 @@ extern unsigned long m68k_machtype;
- #define CPUB_68030     1
- #define CPUB_68040     2
- #define CPUB_68060     3
-+#define CPUB_COLDFIRE  4
+ /*****************************************************************************/
+@@ -135,6 +136,14 @@ _init_sp:
  
- #define CPU_68020      (1<<CPUB_68020)
- #define CPU_68030      (1<<CPUB_68030)
- #define CPU_68040      (1<<CPUB_68040)
- #define CPU_68060      (1<<CPUB_68060)
-+#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
+ __HEAD
  
- #define FPUB_68881     0
- #define FPUB_68882     1
- #define FPUB_68040     2                       /* Internal FPU */
- #define FPUB_68060     3                       /* Internal FPU */
- #define FPUB_SUNFPA    4                       /* Sun-3 FPA */
-+#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
- 
- #define FPU_68881      (1<<FPUB_68881)
- #define FPU_68882      (1<<FPUB_68882)
- #define FPU_68040      (1<<FPUB_68040)
- #define FPU_68060      (1<<FPUB_68060)
- #define FPU_SUNFPA     (1<<FPUB_SUNFPA)
-+#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
- 
- #define MMUB_68851     0
- #define MMUB_68030     1                       /* Internal MMU */
-@@ -235,6 +240,7 @@ extern unsigned long m68k_machtype;
- #define MMUB_68060     3                       /* Internal MMU */
- #define MMUB_APOLLO    4                       /* Custom Apollo */
- #define MMUB_SUN3      5                       /* Custom Sun-3 */
-+#define MMUB_COLDFIRE  6                       /* Internal MMU */
- 
- #define MMU_68851      (1<<MMUB_68851)
- #define MMU_68030      (1<<MMUB_68030)
-@@ -242,6 +248,7 @@ extern unsigned long m68k_machtype;
- #define MMU_68060      (1<<MMUB_68060)
- #define MMU_SUN3       (1<<MMUB_SUN3)
- #define MMU_APOLLO     (1<<MMUB_APOLLO)
-+#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
- 
- #ifdef __KERNEL__
- 
-@@ -341,6 +348,13 @@ extern int m68k_is040or060;
- #  endif
- #endif
- 
-+#if !defined(CONFIG_COLDFIRE)
-+#  define CPU_IS_COLDFIRE (0)
-+#else
-+#  define CPU_IS_COLDFIRE (1)
-+#  define MMU_IS_COLDFIRE (1)
++#ifdef CONFIG_MMU
++_start0:
++	jmp	_start
++.global kernel_pg_dir
++.equ	kernel_pg_dir,_start0
++.equ	.,_start0+0x1000
 +#endif
 +
- #define CPU_TYPE (m68k_cputype)
+ /*
+  *	This is the codes first entry point. This is where it all
+  *	begins...
+@@ -193,6 +202,26 @@ _start:
+ 	movec	%d0,%CACR
+ 	nop
  
- #ifdef CONFIG_M68KFPU_EMU
++#ifdef CONFIG_MMU
++	/*
++	 *	Identity mapping for the kernel region.
++	 */
++	movel	#(MMUBASE+1),%d0		/* enable MMUBAR registers */
++	movec	%d0,%MMUBAR
++	movel	#MMUOR_CA,%d0			/* clear TLB entries */
++	movel	%d0,MMUOR
++	movel	#0,%d0				/* set ASID to 0 */
++	movec	%d0,%asid
++
++	movel	#MMUCR_EN,%d0			/* Enable the identity map */
++	movel	%d0,MMUCR
++	nop					/* sync i-pipeline */
++
++	movel	#_vstart,%a0			/* jump to "virtual" space */
++	jmp	%a0@
++_vstart:
++#endif /* CONFIG_MMU */
++
+ #ifdef CONFIG_ROMFS_FS
+ 	/*
+ 	 *	Move ROM filesystem above bss :-)
+@@ -238,6 +267,13 @@ _clear_bss:
+ 	lea	init_thread_union,%a0
+ 	lea	THREAD_SIZE(%a0),%sp
+ 
++#ifdef CONFIG_MMU
++.global m68k_machtype
++	movel	#MACH_M54XX,%d0
++	movel	%d0,m68k_machtype		/* Mark us as a ColdFire */
++	lea	init_task,%a2			/* Set "current" init task */
++#endif
++
+ 	/*
+ 	 *	Assember start up done, start code proper.
+ 	 */
 -- 
 1.7.0.4
