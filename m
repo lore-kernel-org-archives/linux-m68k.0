@@ -1,86 +1,42 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Revive lost ARAnyM config options
-Date: Wed, 26 Oct 2011 10:22:48 +1000
-Message-ID: <4EA752D8.3040603@snapgear.com>
-References: <1319573128-21127-1-git-send-email-geert@linux-m68k.org>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] gpiolib/arches: Centralise bolierplate asm/gpio.h
+Date: Tue, 25 Oct 2011 19:44:14 -0400
+Message-ID: <CAJaTeTp2w85UHnmH-PPMZsQGQMNa-93kw-tjmDxA_wjJXkYQcQ__29593.5136652135$1319590230$gmane$org@mail.gmail.com>
+References: <1319528012-19006-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1319573128-21127-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1319528012-19006-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Grant Likely <grant.likely@secretlab.ca>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
 
-Hi Geert,
+On Tue, Oct 25, 2011 at 03:33, Mark Brown wrote:
+> Rather than requiring architectures that use gpiolib but don't have any
+> need to define anything custom to copy an asm/gpio.h provide a Kconfig
+> symbol which architectures must select in order to include gpio.h and
+> for other architectures just provide the trivial implementation directly.
 
-On 26/10/11 06:05, Geert Uytterhoeven wrote:
-> commit 0e152d80507b75c00aac60f2ffc586360687cd52 ("m68k: reorganize Kconfig
-> options to improve mmu/non-mmu selections") accidentally dropped the ARAnyM
-> config options. Re-add them to the "Platform devices" section.
+i don't think this is generally how asm-generic is handled.  instead, how about:
+ - move the duplicate code to asm-generic/gpio.h
+ - have the arches which merely need asm-generic/gpio.h add "generic-y
++= gpio.h" to their include/asm/Kbuild
+ - for arches which need to override these common funcs in some way,
+add #ifdef protection to the asm-generic/gpio.h
 
-Sorry, my fault.
+and it seems like with slightly more work, this path allow you to
+merge most of arch/sh/include/asm/gpio.h.  and it has the advantage of
+not needing new Kconfig symbols.
 
+for example, with asm-generic/atomic.h, it does:
+#ifndef atomic_sub_return
+static inline int atomic_sub_return(int i, atomic_t *v)
+{ ... common implementation ... }
+#endif
 
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-Regards
-Greg
-
-
->   arch/m68k/Kconfig.devices |   31 +++++++++++++++++++++++++++++++
->   1 files changed, 31 insertions(+), 0 deletions(-)
->
-> diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-> index 82ddb93..5cf1c54 100644
-> --- a/arch/m68k/Kconfig.devices
-> +++ b/arch/m68k/Kconfig.devices
-> @@ -24,6 +24,37 @@ config PROC_HARDWARE
->   	  including the model, CPU, MMU, clock speed, BogoMIPS rating,
->   	  and memory size.
->
-> +config NATFEAT
-> +	bool "ARAnyM emulator support"
-> +	depends on ATARI
-> +	help
-> +	  This option enables support for ARAnyM native features, such as
-> +	  access to a disk image as /dev/hda.
-> +
-> +config NFBLOCK
-> +	tristate "NatFeat block device support"
-> +	depends on BLOCK&&  NATFEAT
-> +	help
-> +	  Say Y to include support for the ARAnyM NatFeat block device
-> +	  which allows direct access to the hard drives without using
-> +	  the hardware emulation.
-> +
-> +config NFCON
-> +	tristate "NatFeat console driver"
-> +	depends on NATFEAT
-> +	help
-> +	  Say Y to include support for the ARAnyM NatFeat console driver
-> +	  which allows the console output to be redirected to the stderr
-> +	  output of ARAnyM.
-> +
-> +config NFETH
-> +	tristate "NatFeat Ethernet support"
-> +	depends on ETHERNET&&  NATFEAT
-> +	help
-> +	  Say Y to include support for the ARAnyM NatFeat network device
-> +	  which will emulate a regular ethernet device while presenting an
-> +	  ethertap device to the host system.
-> +
->   endmenu
->
->   menu "Character devices"
-
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+and then any arch that wants to override it does:
+#define atomic_sub_return atomic_sub_return
+static inline int atomic_sub_return(int i, atomic_t *v) { weirdness }
+#include <asm-generic/atomic.h>
+-mike
