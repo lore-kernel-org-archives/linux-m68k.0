@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 23/36] m68k: ColdFire V4e MMU paginit init code and miss handler
-Date: Tue, 25 Oct 2011 17:19:15 +1000
-Message-ID: <1319527168-11166-24-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 25/36] m68k: create ColdFire MMU pgalloc code
+Date: Tue, 25 Oct 2011 17:19:17 +1000
+Message-ID: <1319527168-11166-26-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25133 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25138 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754100Ab1JYHTh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:37 -0400
+	with ESMTP id S1754321Ab1JYHTj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:39 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,293 +18,138 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The quite different ColdFire V4e MMU requires its own dedicated pageing
-init code, and a TLB miss handler for its software driven TLB.
+Add code to support the ColdFire V4e MMU pgalloc functions.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/mcfmmu.h |   10 +-
- arch/m68k/mm/mcfmmu.c          |  240 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 246 insertions(+), 4 deletions(-)
- create mode 100644 arch/m68k/mm/mcfmmu.c
+ arch/m68k/include/asm/mcf_pgalloc.h |  103 +++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/pgalloc.h     |    4 +-
+ 2 files changed, 106 insertions(+), 1 deletions(-)
+ create mode 100644 arch/m68k/include/asm/mcf_pgalloc.h
 
-diff --git a/arch/m68k/include/asm/mcfmmu.h b/arch/m68k/include/asm/mcfmmu.h
-index 84b4c28..34c4240 100644
---- a/arch/m68k/include/asm/mcfmmu.h
-+++ b/arch/m68k/include/asm/mcfmmu.h
-@@ -92,14 +92,14 @@
- #define	MMUDR_PAN	10			/* Physical address */
- #define	MMUDR_PAMASK	0xfffffc00		/* PA mask */
- 
--/*
-- *	Simple access functions for the MMU registers. Nothing fancy
-- *	currently required, just simple 32bit access.
-- */
- #ifndef __ASSEMBLY__
- 
- #define	CF_PAGE_PGNUM_MASK	(PAGE_MASK)
- 
-+/*
-+ *	Simple access functions for the MMU registers. Nothing fancy
-+ *	currently required, just simple 32bit access.
-+ */
- static inline u32 mmu_read(u32 a)
- {
- 	return *((volatile u32 *) a);
-@@ -111,6 +111,8 @@ static inline void mmu_write(u32 a, u32 v)
- 	__asm__ __volatile__ ("nop");
- }
- 
-+int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word);
-+
- #endif
- 
- /****************************************************************************/
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
 new file mode 100644
-index 0000000..6af93de
+index 0000000..92a87d9
 --- /dev/null
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -0,0 +1,240 @@
-+/*
-+ * Based upon linux/arch/m68k/mm/sun3mmu.c
-+ * Based upon linux/arch/ppc/mm/mmu_context.c
-+ *
-+ * Implementations of mm routines specific to the Coldfire MMU.
-+ *
-+ * Copyright (c) 2008 Freescale Semiconductor, Inc.
-+ */
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -0,0 +1,103 @@
++#ifndef M68K_MCF_PGALLOC_H
++#define M68K_MCF_PGALLOC_H
 +
-+#include <linux/signal.h>
-+#include <linux/sched.h>
-+#include <linux/mm.h>
-+#include <linux/swap.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+#include <linux/init.h>
-+#ifdef CONFIG_BLK_DEV_RAM
-+#include <linux/blkdev.h>
-+#endif
-+#include <linux/bootmem.h>
-+
-+#include <asm/setup.h>
-+#include <asm/uaccess.h>
-+#include <asm/page.h>
-+#include <asm/pgtable.h>
-+#include <asm/system.h>
-+#include <asm/machdep.h>
-+#include <asm/io.h>
-+#include <asm/mmu_context.h>
-+#include <asm/mcf_pgalloc.h>
 +#include <asm/coldfire.h>
++#include <asm/page.h>
 +#include <asm/tlbflush.h>
 +
-+#define KMAPAREA(x)	((x >= VMALLOC_START) && (x < KMAP_END))
-+
-+#undef DEBUG
-+
-+mm_context_t next_mmu_context;
-+unsigned long context_map[LAST_CONTEXT / BITS_PER_LONG + 1];
-+
-+atomic_t nr_free_contexts;
-+struct mm_struct *context_mm[LAST_CONTEXT+1];
-+void steal_context(void);
-+
-+
-+const char bad_pmd_string[] = "Bad pmd in pte_alloc: %08lx\n";
-+
-+extern unsigned long empty_bad_page_table;
-+extern unsigned long empty_bad_page;
-+extern unsigned long num_pages;
-+
-+extern char __init_begin, __init_end;
-+
-+void free_initmem(void)
++extern inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
 +{
++	free_page((unsigned long) pte);
 +}
 +
-+/*
-+ * ColdFire paging_init derived from sun3.
-+ */
-+void __init paging_init(void)
++extern const char bad_pmd_string[];
++
++extern inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
++	unsigned long address)
 +{
-+	pgd_t *pg_dir;
-+	pte_t *pg_table;
-+	unsigned long address;
-+	unsigned long next_pgtable;
-+	unsigned long bootmem_end;
-+	unsigned long zones_size[MAX_NR_ZONES];
-+	unsigned long size;
-+	enum zone_type zone;
-+	int i;
++	unsigned long page = __get_free_page(GFP_DMA|__GFP_REPEAT);
 +
-+	empty_zero_page = (void *)alloc_bootmem_pages(PAGE_SIZE);
-+	memset((void *)empty_zero_page, 0, PAGE_SIZE);
++	if (!page)
++		return NULL;
 +
-+	pg_dir = swapper_pg_dir;
-+	memset(swapper_pg_dir, 0, sizeof(swapper_pg_dir));
-+
-+	size = num_pages * sizeof(pte_t);
-+	size = (size + PAGE_SIZE) & ~(PAGE_SIZE-1);
-+	next_pgtable = (unsigned long)alloc_bootmem_pages(size);
-+
-+	bootmem_end = (next_pgtable + size + PAGE_SIZE) & PAGE_MASK;
-+	pg_dir += PAGE_OFFSET >> PGDIR_SHIFT;
-+
-+	address = PAGE_OFFSET;
-+	while (address < (unsigned long)high_memory) {
-+		pg_table = (pte_t *)next_pgtable;
-+		next_pgtable += PTRS_PER_PTE * sizeof(pte_t);
-+		pgd_val(*pg_dir) = (unsigned long) pg_table;
-+		pg_dir++;
-+
-+		/* now change pg_table to kernel virtual addresses */
-+		for (i = 0; i < PTRS_PER_PTE; ++i, ++pg_table) {
-+			pte_t pte = pfn_pte(virt_to_pfn(address), PAGE_INIT);
-+			if (address >= (unsigned long)high_memory)
-+				pte_val(pte) = 0;
-+
-+			set_pte(pg_table, pte);
-+			address += PAGE_SIZE;
-+		}
-+	}
-+
-+	current->mm = NULL;
-+
-+	/* clear zones */
-+	for (zone = 0; zone < MAX_NR_ZONES; zone++)
-+		zones_size[zone] = 0x0;
-+
-+	zones_size[ZONE_DMA] = (32*1024*1024) >> PAGE_SHIFT;
-+
-+	/* allocate the rest to NORMAL - head.S marks them CACHE */
-+	zones_size[ZONE_NORMAL] =
-+		(((unsigned long)high_memory - PAGE_OFFSET) >> PAGE_SHIFT) -
-+		zones_size[0];
-+
-+	free_area_init(zones_size);
++	memset((void *)page, 0, PAGE_SIZE);
++	return (pte_t *) (page);
 +}
 +
-+int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
++extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
 +{
-+	unsigned long flags;
-+	unsigned long mmuar;
-+	struct mm_struct *mm;
-+	pgd_t *pgd;
-+	pmd_t *pmd;
++	return (pmd_t *) pgd;
++}
++
++#define pmd_alloc_one_fast(mm, address) ({ BUG(); ((pmd_t *)1); })
++#define pmd_alloc_one(mm, address)      ({ BUG(); ((pmd_t *)2); })
++
++#define pte_alloc_one_fast(mm, addr) pte_alloc_one(mm, addr)
++
++#define pmd_populate(mm, pmd, page) (pmd_val(*pmd) = \
++	(unsigned long)(page_address(page)))
++
++#define pmd_populate_kernel(mm, pmd, pte) (pmd_val(*pmd) = (unsigned long)(pte))
++
++#define pmd_pgtable(pmd) pmd_page(pmd)
++
++static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t page,
++				  unsigned long address)
++{
++	__free_page(page);
++}
++
++#define __pmd_free_tlb(tlb, pmd, address) do { } while (0)
++
++static inline struct page *pte_alloc_one(struct mm_struct *mm,
++	unsigned long address)
++{
++	struct page *page = alloc_pages(GFP_DMA|__GFP_REPEAT, 0);
 +	pte_t *pte;
-+	int asid;
 +
-+	local_irq_save(flags);
++	if (!page)
++		return NULL;
 +
-+	mmuar = (dtlb) ? mmu_read(MMUAR) :
-+		regs->pc + (extension_word * sizeof(long));
-+
-+	mm = (!user_mode(regs) && KMAPAREA(mmuar)) ? &init_mm : current->mm;
-+#if 1
-+	if (mm == NULL)
-+		mm = &init_mm;
-+#endif
-+
-+	if (!mm) {
-+		local_irq_restore(flags);
-+		return -1;
++	pte = kmap(page);
++	if (pte) {
++		clear_page(pte);
++		__flush_page_to_ram(pte);
++		flush_tlb_kernel_page(pte);
++		nocache_page(pte);
 +	}
++	kunmap(page);
 +
-+	pgd = pgd_offset(mm, mmuar);
-+	if (pgd_none(*pgd))  {
-+		local_irq_restore(flags);
-+		return -1;
-+	}
-+
-+	pmd = pmd_offset(pgd, mmuar);
-+	if (pmd_none(*pmd)) {
-+		local_irq_restore(flags);
-+		return -1;
-+	}
-+
-+	pte = (KMAPAREA(mmuar)) ? pte_offset_kernel(pmd, mmuar)
-+				: pte_offset_map(pmd, mmuar);
-+	if (pte_none(*pte) || !pte_present(*pte)) {
-+		local_irq_restore(flags);
-+		return -1;
-+	}
-+
-+	if (write) {
-+		if (!pte_write(*pte)) {
-+			local_irq_restore(flags);
-+			return -1;
-+		}
-+		set_pte(pte, pte_mkdirty(*pte));
-+	}
-+
-+	set_pte(pte, pte_mkyoung(*pte));
-+	asid = mm->context & 0xff;
-+	if (!pte_dirty(*pte) && !KMAPAREA(mmuar))
-+		set_pte(pte, pte_wrprotect(*pte));
-+
-+	mmu_write(MMUTR, (mmuar & PAGE_MASK) | (asid << CF_ASID_MMU_SHIFT) |
-+		(((int)(pte->pte) & (int)CF_PAGE_MMUTR_MASK)
-+		>> CF_PAGE_MMUTR_SHIFT) | MMUTR_V);
-+
-+	mmu_write(MMUDR, (pte_val(*pte) & PAGE_MASK) |
-+		((pte->pte) & CF_PAGE_MMUDR_MASK) | MMUDR_SZ_8KB | MMUDR_X);
-+
-+	if (dtlb)
-+		mmu_write(MMUOR, MMUOR_ACC | MMUOR_UAA);
-+	else
-+		mmu_write(MMUOR, MMUOR_ITLB | MMUOR_ACC | MMUOR_UAA);
-+
-+#ifdef DEBUG
-+	pr_debug("cf_tlb_miss: va=%lx, pa=%lx\n", (mmuar & PAGE_MASK),
-+		(pte_val(*pte) & PAGE_MASK));
-+#endif
-+	local_irq_restore(flags);
-+	return 0;
++	return page;
 +}
 +
-+
-+/*
-+ * Initialize the context management stuff.
-+ * The following was taken from arch/ppc/mmu_context.c
-+ */
-+void __init mmu_context_init(void)
++extern inline void pte_free(struct mm_struct *mm, struct page *page)
 +{
-+	/*
-+	 * Some processors have too few contexts to reserve one for
-+	 * init_mm, and require using context 0 for a normal task.
-+	 * Other processors reserve the use of context zero for the kernel.
-+	 * This code assumes FIRST_CONTEXT < 32.
-+	 */
-+	context_map[0] = (1 << FIRST_CONTEXT) - 1;
-+	next_mmu_context = FIRST_CONTEXT;
-+	atomic_set(&nr_free_contexts, LAST_CONTEXT - FIRST_CONTEXT + 1);
++	__free_page(page);
 +}
 +
 +/*
-+ * Steal a context from a task that has one at the moment.
-+ * This is only used on 8xx and 4xx and we presently assume that
-+ * they don't do SMP.  If they do then thicfpgalloc.hs will have to check
-+ * whether the MM we steal is in use.
-+ * We also assume that this is only used on systems that don't
-+ * use an MMU hash table - this is true for 8xx and 4xx.
-+ * This isn't an LRU system, it just frees up each context in
-+ * turn (sort-of pseudo-random replacement :).  This would be the
-+ * place to implement an LRU scheme if anyone was motivated to do it.
-+ *  -- paulus
++ * In our implementation, each pgd entry contains 1 pmd that is never allocated
++ * or freed.  pgd_present is always 1, so this should never be called. -NL
 + */
-+void steal_context(void)
++#define pmd_free(mm, pmd) BUG()
++
++static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
 +{
-+	struct mm_struct *mm;
-+	/* free up context `next_mmu_context' */
-+	/* if we shouldn't free context 0, don't... */
-+	if (next_mmu_context < FIRST_CONTEXT)
-+		next_mmu_context = FIRST_CONTEXT;
-+	mm = context_mm[next_mmu_context];
-+	flush_tlb_mm(mm);
-+	destroy_context(mm);
++	free_page((unsigned long) pgd);
 +}
 +
++static inline pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	pgd_t *new_pgd;
++
++	new_pgd = (pgd_t *)__get_free_page(GFP_DMA | __GFP_NOWARN);
++	if (!new_pgd)
++		return NULL;
++	memcpy(new_pgd, swapper_pg_dir, PAGE_SIZE);
++	memset(new_pgd, 0, PAGE_OFFSET >> PGDIR_SHIFT);
++	return new_pgd;
++}
++
++#define pgd_populate(mm, pmd, pte) BUG()
++
++#endif /* M68K_MCF_PGALLOC_H */
+diff --git a/arch/m68k/include/asm/pgalloc.h b/arch/m68k/include/asm/pgalloc.h
+index c294aad..37bee7e 100644
+--- a/arch/m68k/include/asm/pgalloc.h
++++ b/arch/m68k/include/asm/pgalloc.h
+@@ -7,7 +7,9 @@
+ 
+ #ifdef CONFIG_MMU
+ #include <asm/virtconvert.h>
+-#ifdef CONFIG_SUN3
++#if defined(CONFIG_COLDFIRE)
++#include <asm/mcf_pgalloc.h>
++#elif defined(CONFIG_SUN3)
+ #include <asm/sun3_pgalloc.h>
+ #else
+ #include <asm/motorola_pgalloc.h>
 -- 
 1.7.0.4
