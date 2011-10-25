@@ -1,190 +1,70 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [git pull] m68knommu arch updates for 3.2
-Date: Tue, 25 Oct 2011 09:42:02 +0200
-Message-ID: <CA+55aFzLBaLpBWA8tspNbCyzMYeruK-waRCpRwVnZEOGw9FhRQ@mail.gmail.com>
-References: <201110250229.p9P2Tvth015729@goober.corp.nai.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [git pull] m68k updates for 3.2
+Date: Tue, 25 Oct 2011 10:36:25 +0200
+Message-ID: <CAMuHMdURW7QT+2tEfZDeH_z-OJEksx_j2gRg2BN-NfoXFTdOdA__10266.738307155$1319531818$gmane$org@mail.gmail.com>
+References: <alpine.DEB.2.00.1110242118500.9114@ayla.of.borg>
+	<CA+55aFxK-OJXDNsJ37wSN+MGhGp-j50BX-52eEjBHVSepTTm9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:59031 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752604Ab1JYHmY convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:42:24 -0400
-In-Reply-To: <201110250229.p9P2Tvth015729@goober.corp.nai.org>
+In-Reply-To: <CA+55aFxK-OJXDNsJ37wSN+MGhGp-j50BX-52eEjBHVSepTTm9w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gerg@snapgear.com>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-[ Another cut-and-paste reply, please replace "p9" with "m68knommu".
-Also note that signed emails aren't convenient (the tools that
-actually verify signed emails are unusuable in all other respects), so
-an extra signed tag that actually specifies both the top commit and
-the repository I'm supposed to pull is likely the best approach if you
-don't have access to a trusted host ]
+Hi Linus,
 
-So for the merge window, I *really* want the development trees I pull
-from explicitly verified some way.
+On Tue, Oct 25, 2011 at 09:38, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Mon, Oct 24, 2011 at 9:26 PM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+>>
+>> =C2=A0git://git.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68=
+k.git for-linus
+>
+> Please fix your pull script. There's an extraneous ":" there. Spot it=
+?
 
-Now, the p9 patches seem to be small enough, and not core enough, for
-me to care deeply, but I really *really* want to not see unsigned
-github things.
+Sorry, I should _start_ scripting it.
 
-Putting a signed tag on there somewhere that actually signs the top
-commit *and* mentions the repository and branch it is on (ie github)
-is not wonderfully convenient, but it's at least relatively
-straightforward (do I have a gpg key I can trust?).
+> Also, while I see these commits in linux-next, I also see that they
+> have been rebased in the last day, which means that looking for them
+> in linux-next is actually much harder than they need to be.
+>
+> In other words - WHY DID YOU REBASE? It just generates more work for
+> me, and adds absolutely zero value.
 
-Or using a host that I can trust is being maintained by you guys (or
-some trusted third party like kernel.org).
+I always rebase m68k-queue (of which the for-{linus,next,x.y} are subse=
+ts)
+to the latest tagged release, as this allows to:
+  - check that m68k-queue and master are (almost) identical, to detect
+    mismerges on master, and misrebases on m68k-queue,
+  - clearly see which commits in m68k-queue have bubbled up to the for-=
+*
+    queues.
 
-(Also, I'm only seeing about half the patches mentioned in linux-next. =
-Hmm?)
+If you really hate this, I'll break these rules for for-linus, and
+make sure it's
+identical to yesterday's for-next.
 
-Please? Not pulled.
+> I pulled it, but some of the silly details annoyed me.
 
-                  Linus
+Thanks!
 
-On Tue, Oct 25, 2011 at 4:29 AM, Greg Ungerer <gerg@snapgear.com> wrote=
-:
->
-> Hi Linus,
->
-> Can you please pull the m68knommu git tree, for-linus branch:
->
-> =A0git@github.com:gregungerer/m68knommu.git for-linus
->
-> There is a big cleanup and reworking of the Kconfig files. They are n=
-o
-> longer splilt on the somewhat arbitary basis of MMU and non-MMU targe=
-ts.
-> Also some other merging and cleaning up of arch Makefiles, and the tr=
-ap
-> handling code. Of course a couple of bug fixes in there too.
->
-> Thanks
-> Greg
->
->
->
->
-> The following changes since commit 899e3ee404961a90b828ad527573aaaac3=
-9f0ab1:
-> =A0Linus Torvalds (1):
-> =A0 =A0 =A0 =A0Linux 3.1-rc10
->
-> are available in the git repository at:
->
-> =A0git@github.com:gregungerer/m68knommu.git for-linus
->
-> Greg Ungerer (11):
-> =A0 =A0 =A0m68k: fix memcpy to unmatched/unaligned source and dest on=
- 68000
-> =A0 =A0 =A0m68k: reorganize Kconfig options to improve mmu/non-mmu se=
-lections
-> =A0 =A0 =A0m68k: merge mmu and non-mmu arch Makefiles
-> =A0 =A0 =A0m68k: merge the mmu and non-mmu kernel/Makefiles
-> =A0 =A0 =A0m68k: merge mmu and non-mmu include/asm/entry.h files
-> =A0 =A0 =A0m68k: move hardware vector setting from traps.c to its own=
- file
-> =A0 =A0 =A0m68k: merge the mmu and non-mmu traps.c files
-> =A0 =A0 =A0m68knommu: use generic section names in setup code
-> =A0 =A0 =A0m68knommu: use generic section names in mm/init code
-> =A0 =A0 =A0m68knommu: remove extern declarations of memory_start/memo=
-ry_end from mm/init
-> =A0 =A0 =A0m68knommu: create common externs for _ram* vars
->
-> Paul Bolle (2):
-> =A0 =A0 =A0m68k: drop unused Kconfig symbols
-> =A0 =A0 =A0m68k: drop unused Kconfig symbols
->
-> Peter Turczak (1):
-> =A0 =A0 =A0m68knommu: fix problems with SPI/GPIO on ColdFire 520x
->
-> =A0arch/m68k/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0| =A0195 +----
-> =A0arch/m68k/Kconfig.bus =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0 55 ++
-> =A0arch/m68k/Kconfig.cpu =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0429 +++++++++
-> =A0arch/m68k/Kconfig.devices =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|=
- =A0123 +++
-> =A0arch/m68k/{Kconfig.nommu =3D> Kconfig.machine} | =A0562 ++++------=
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
 --
-> =A0arch/m68k/Kconfig.mmu =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0411 ---------
-> =A0arch/m68k/Makefile =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 | =A0168 ++++-
-> =A0arch/m68k/Makefile_mm =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0121 ---
-> =A0arch/m68k/Makefile_no =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0124 ---
-> =A0arch/m68k/include/asm/entry.h =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
-255 ++++++-
-> =A0arch/m68k/include/asm/entry_mm.h =A0 =A0 =A0 =A0 =A0 =A0 | =A0128 =
----
-> =A0arch/m68k/include/asm/entry_no.h =A0 =A0 =A0 =A0 =A0 =A0 | =A0181 =
-----
-> =A0arch/m68k/include/asm/m520xsim.h =A0 =A0 =A0 =A0 =A0 =A0 | =A0 26 =
-+-
-> =A0arch/m68k/include/asm/mcfqspi.h =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-8 +-
-> =A0arch/m68k/include/asm/page_no.h =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-3 +
-> =A0arch/m68k/include/asm/processor.h =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-6 +
-> =A0arch/m68k/include/asm/sections.h =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
-2 +
-> =A0arch/m68k/kernel/Makefile =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|=
- =A0 24 +-
-> =A0arch/m68k/kernel/Makefile_mm =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
- 17 -
-> =A0arch/m68k/kernel/Makefile_no =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
- 10 -
-> =A0arch/m68k/kernel/entry_no.S =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
- =A06 +-
-> =A0arch/m68k/kernel/setup_no.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
- =A04 +-
-> =A0arch/m68k/kernel/traps.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 |=
- 1108 +++++++++++++++++++++++-
-> =A0arch/m68k/kernel/traps_mm.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| 1=
-207 --------------------------
-> =A0arch/m68k/kernel/traps_no.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0=
-361 --------
-> =A0arch/m68k/kernel/vectors.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
-145 +++
-> =A0arch/m68k/lib/memcpy.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- | =A0 =A09 +
-> =A0arch/m68k/mm/init_no.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- | =A0 21 +-
-> =A0arch/m68k/platform/520x/config.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
-6 +-
-> =A0arch/m68k/platform/520x/gpio.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 5=
-0 +-
-> =A0arch/m68k/platform/68328/Makefile =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-5 +-
-> =A0arch/m68k/platform/68328/entry.S =A0 =A0 =A0 =A0 =A0 =A0 | =A0 18 =
-+-
-> =A0arch/m68k/platform/68360/Makefile =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-6 +-
-> =A0arch/m68k/platform/68360/entry.S =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
-4 +-
-> =A0arch/m68k/platform/coldfire/entry.S =A0 =A0 =A0 =A0 =A0| =A0 =A06 =
-+-
-> =A035 files changed, 2596 insertions(+), 3208 deletions(-)
-> =A0create mode 100644 arch/m68k/Kconfig.bus
-> =A0create mode 100644 arch/m68k/Kconfig.cpu
-> =A0create mode 100644 arch/m68k/Kconfig.devices
-> =A0rename arch/m68k/{Kconfig.nommu =3D> Kconfig.machine} (58%)
-> =A0delete mode 100644 arch/m68k/Kconfig.mmu
-> =A0delete mode 100644 arch/m68k/Makefile_mm
-> =A0delete mode 100644 arch/m68k/Makefile_no
-> =A0delete mode 100644 arch/m68k/include/asm/entry_mm.h
-> =A0delete mode 100644 arch/m68k/include/asm/entry_no.h
-> =A0delete mode 100644 arch/m68k/kernel/Makefile_mm
-> =A0delete mode 100644 arch/m68k/kernel/Makefile_no
-> =A0delete mode 100644 arch/m68k/kernel/traps_mm.c
-> =A0delete mode 100644 arch/m68k/kernel/traps_no.c
-> =A0create mode 100644 arch/m68k/kernel/vectors.c
->
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
