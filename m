@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 07/36] m68k: add ColdFire 54xx CPU MMU memory init code
-Date: Tue, 25 Oct 2011 17:18:59 +1000
-Message-ID: <1319527168-11166-8-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 11/36] m68k: add page table size definitions for ColdFire V4e MMU
+Date: Tue, 25 Oct 2011 17:19:03 +1000
+Message-ID: <1319527168-11166-12-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25202 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25208 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754559Ab1JYHVF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:05 -0400
+	with ESMTP id S1754559Ab1JYHVG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:06 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,90 +18,101 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Add code to the 54xx ColdFire CPU init to setup memory ready for the
-m68k paged memory start up.
+Define the page table size and attributes for the ColdFire V4e MMU.
+Also setup the vmalloc and kmap regions we will use.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/platform/54xx/config.c |   52 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 52 insertions(+), 0 deletions(-)
+ arch/m68k/include/asm/pgtable_mm.h |   30 ++++++++++++++++++++++++------
+ 1 files changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/platform/54xx/config.c b/arch/m68k/platform/54xx/config.c
-index 7813098..bc85b98 100644
---- a/arch/m68k/platform/54xx/config.c
-+++ b/arch/m68k/platform/54xx/config.c
-@@ -13,11 +13,17 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/mm.h>
-+#include <linux/bootmem.h>
-+#include <asm/pgalloc.h>
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
- #include <asm/m54xxsim.h>
- #include <asm/mcfuart.h>
- #include <asm/m54xxgpt.h>
-+#ifdef CONFIG_MMU
-+#include <asm/mmu_context.h>
+diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
+index 87174c9..98f5983 100644
+--- a/arch/m68k/include/asm/pgtable_mm.h
++++ b/arch/m68k/include/asm/pgtable_mm.h
+@@ -40,6 +40,8 @@
+ /* PGDIR_SHIFT determines what a third-level page table entry can map */
+ #ifdef CONFIG_SUN3
+ #define PGDIR_SHIFT     17
++#elif defined(CONFIG_COLDFIRE)
++#define PGDIR_SHIFT     22
+ #else
+ #define PGDIR_SHIFT	25
+ #endif
+@@ -54,6 +56,10 @@
+ #define PTRS_PER_PTE   16
+ #define PTRS_PER_PMD   1
+ #define PTRS_PER_PGD   2048
++#elif defined(CONFIG_COLDFIRE)
++#define PTRS_PER_PTE	512
++#define PTRS_PER_PMD	1
++#define PTRS_PER_PGD	1024
+ #else
+ #define PTRS_PER_PTE	1024
+ #define PTRS_PER_PMD	8
+@@ -66,12 +72,22 @@
+ #ifdef CONFIG_SUN3
+ #define KMAP_START     0x0DC00000
+ #define KMAP_END       0x0E000000
++#elif defined(CONFIG_COLDFIRE)
++#define KMAP_START	0xd0000000
++#define KMAP_END	0xe0000000
+ #else
+ #define	KMAP_START	0xd0000000
+ #define	KMAP_END	0xf0000000
+ #endif
+ 
+-#ifndef CONFIG_SUN3
++#ifdef CONFIG_SUN3
++extern unsigned long m68k_vmalloc_end;
++#define VMALLOC_START 0x0f800000
++#define VMALLOC_END m68k_vmalloc_end
++#elif defined(CONFIG_COLDFIRE)
++#define VMALLOC_START	0xc0000000
++#define VMALLOC_END	0xcfffffff
++#else
+ /* Just any arbitrary offset to the start of the vmalloc VM area: the
+  * current 8MB value just means that there will be a 8MB "hole" after the
+  * physical memory until the kernel virtual memory starts.  That means that
+@@ -82,11 +98,7 @@
+ #define VMALLOC_OFFSET	(8*1024*1024)
+ #define VMALLOC_START (((unsigned long) high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
+ #define VMALLOC_END KMAP_START
+-#else
+-extern unsigned long m68k_vmalloc_end;
+-#define VMALLOC_START 0x0f800000
+-#define VMALLOC_END m68k_vmalloc_end
+-#endif /* CONFIG_SUN3 */
 +#endif
  
- /***************************************************************************/
+ /* zero page used for uninitialized stuff */
+ extern void *empty_zero_page;
+@@ -130,6 +142,8 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
  
-@@ -95,8 +101,54 @@ static void mcf54xx_reset(void)
+ #ifdef CONFIG_SUN3
+ #include <asm/sun3_pgtable.h>
++#elif defined(CONFIG_COLDFIRE)
++#include <asm/mcf_pgtable.h>
+ #else
+ #include <asm/motorola_pgtable.h>
+ #endif
+@@ -138,6 +152,9 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+ /*
+  * Macro to mark a page protection value as "uncacheable".
+  */
++#ifdef CONFIG_COLDFIRE
++# define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
++#else
+ #ifdef SUN3_PAGE_NOCACHE
+ # define __SUN3_PAGE_NOCACHE	SUN3_PAGE_NOCACHE
+ #else
+@@ -152,6 +169,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+ 	    ? (__pgprot((pgprot_val(prot) & _CACHEMASK040) | _PAGE_NOCACHE_S))	\
+ 	    : (prot)))
  
- /***************************************************************************/
++#endif /* CONFIG_COLDFIRE */
+ #include <asm-generic/pgtable.h>
+ #endif /* !__ASSEMBLY__ */
  
-+#ifdef CONFIG_MMU
-+
-+unsigned long num_pages;
-+
-+static void __init mcf54xx_bootmem_alloc(void)
-+{
-+	extern unsigned int _rambase, _ramstart, _ramend;
-+	unsigned long start_pfn;
-+	unsigned long memstart;
-+
-+	/* _rambase and _ramend will be natureally page aligned */
-+	m68k_memory[0].addr = _rambase;
-+	m68k_memory[0].size = _ramend - _rambase;
-+
-+	/* compute total pages in system */
-+	num_pages = (_ramend - _rambase) >> PAGE_SHIFT;
-+
-+	/* page numbers */
-+	memstart = PAGE_ALIGN(_ramstart);
-+	min_low_pfn = _rambase >> PAGE_SHIFT;
-+	start_pfn = memstart >> PAGE_SHIFT;
-+	max_low_pfn = _ramend >> PAGE_SHIFT;
-+	high_memory = (void *)_ramend;
-+
-+	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
-+	module_fixup(NULL, __start_fixup, __stop_fixup);
-+
-+	/* setup bootmem data */
-+	m68k_setup_node(0);
-+	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
-+		min_low_pfn, max_low_pfn);
-+	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
-+}
-+
-+#endif /* CONFIG_MMU */
-+
-+/***************************************************************************/
-+
- void __init config_BSP(char *commandp, int size)
- {
-+#ifdef CONFIG_MMU
-+	m68k_cputype = CPU_COLDFIRE;
-+	m68k_fputype = FPU_COLDFIRE;
-+	m68k_mmutype = MMU_COLDFIRE;
-+	m68k_machtype = MACH_M54XX;
-+	mcf54xx_bootmem_alloc();
-+	mmu_context_init();
-+#endif
- 	mach_reset = mcf54xx_reset;
- 	m54xx_uarts_init();
- }
 -- 
 1.7.0.4
