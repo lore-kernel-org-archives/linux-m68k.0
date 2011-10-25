@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 24/36] m68k: compile appropriate mm arch files for ColdFire V4e MMU support
-Date: Tue, 25 Oct 2011 17:19:16 +1000
-Message-ID: <1319527168-11166-25-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 26/36] m68k: use non-MMU entry.S code when compiling for ColdFire CPU
+Date: Tue, 25 Oct 2011 17:19:18 +1000
+Message-ID: <1319527168-11166-27-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25223 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25224 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754817Ab1JYHVP (ORCPT
+	with ESMTP id S1754832Ab1JYHVP (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:15 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -18,31 +18,23 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Compile the mcfmmu.c code when the ColdFire V4e MMU is enabled.
-And don't compile the unnecessary hwtest.c code for it.
+No matter whether we are configured for non-MMU or MMU enabled if we are
+compiling for ColdFire CPU we always use the entry_no.S code.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/mm/Makefile |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ arch/m68k/kernel/entry.S |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/mm/Makefile b/arch/m68k/mm/Makefile
-index 09cadf1..1732e31 100644
---- a/arch/m68k/mm/Makefile
-+++ b/arch/m68k/mm/Makefile
-@@ -4,6 +4,12 @@
- 
- obj-y	:= init.o
- 
--obj-$(CONFIG_MMU)		+= cache.o fault.o hwtest.o
-+obj-$(CONFIG_MMU)		+= cache.o fault.o
- obj-$(CONFIG_MMU_MOTOROLA)	+= kmap.o memory.o motorola.o
- obj-$(CONFIG_MMU_SUN3)		+= sun3kmap.o sun3mmu.o
-+
-+ifdef CONFIG_COLDFIRE
-+obj-$(CONFIG_MMU)		+= kmap.o memory.o mcfmmu.o
-+else
-+obj-$(CONFIG_MMU)		+= hwtest.o
-+endif
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 081cf96..b8daf64 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -1,4 +1,4 @@
+-#ifdef CONFIG_MMU
++#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
+ #include "entry_mm.S"
+ #else
+ #include "entry_no.S"
 -- 
 1.7.0.4
