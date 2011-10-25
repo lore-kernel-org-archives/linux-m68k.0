@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 11/36] m68k: add page table size definitions for ColdFire V4e MMU
-Date: Tue, 25 Oct 2011 17:19:03 +1000
-Message-ID: <1319527168-11166-12-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 09/36] m68k: set register a2 to current if MMU enabled on ColdFire
+Date: Tue, 25 Oct 2011 17:19:01 +1000
+Message-ID: <1319527168-11166-10-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25208 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25204 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754559Ab1JYHVG (ORCPT
+	with ESMTP id S1754762Ab1JYHVG (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:06 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -18,101 +18,107 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Define the page table size and attributes for the ColdFire V4e MMU.
-Also setup the vmalloc and kmap regions we will use.
+Virtual memory m68k systems build with register a2 dedicated to being the
+current proc pointer. Add code to the ColdFire interrupt and exception
+processing to set this on entry, and also at context switch time.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/pgtable_mm.h |   30 ++++++++++++++++++++++++------
- 1 files changed, 24 insertions(+), 6 deletions(-)
+ arch/m68k/kernel/entry_no.S         |   24 ++++++++++++++++++------
+ arch/m68k/platform/coldfire/entry.S |   18 +++++++++++++++++-
+ 2 files changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
-index 87174c9..98f5983 100644
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -40,6 +40,8 @@
- /* PGDIR_SHIFT determines what a third-level page table entry can map */
- #ifdef CONFIG_SUN3
- #define PGDIR_SHIFT     17
-+#elif defined(CONFIG_COLDFIRE)
-+#define PGDIR_SHIFT     22
- #else
- #define PGDIR_SHIFT	25
- #endif
-@@ -54,6 +56,10 @@
- #define PTRS_PER_PTE   16
- #define PTRS_PER_PMD   1
- #define PTRS_PER_PGD   2048
-+#elif defined(CONFIG_COLDFIRE)
-+#define PTRS_PER_PTE	512
-+#define PTRS_PER_PMD	1
-+#define PTRS_PER_PGD	1024
- #else
- #define PTRS_PER_PTE	1024
- #define PTRS_PER_PMD	8
-@@ -66,12 +72,22 @@
- #ifdef CONFIG_SUN3
- #define KMAP_START     0x0DC00000
- #define KMAP_END       0x0E000000
-+#elif defined(CONFIG_COLDFIRE)
-+#define KMAP_START	0xd0000000
-+#define KMAP_END	0xe0000000
- #else
- #define	KMAP_START	0xd0000000
- #define	KMAP_END	0xf0000000
- #endif
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index 1b42890..050d7ea 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -44,8 +44,12 @@
  
--#ifndef CONFIG_SUN3
-+#ifdef CONFIG_SUN3
-+extern unsigned long m68k_vmalloc_end;
-+#define VMALLOC_START 0x0f800000
-+#define VMALLOC_END m68k_vmalloc_end
-+#elif defined(CONFIG_COLDFIRE)
-+#define VMALLOC_START	0xc0000000
-+#define VMALLOC_END	0xcfffffff
-+#else
- /* Just any arbitrary offset to the start of the vmalloc VM area: the
-  * current 8MB value just means that there will be a 8MB "hole" after the
-  * physical memory until the kernel virtual memory starts.  That means that
-@@ -82,11 +98,7 @@
- #define VMALLOC_OFFSET	(8*1024*1024)
- #define VMALLOC_START (((unsigned long) high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
- #define VMALLOC_END KMAP_START
--#else
--extern unsigned long m68k_vmalloc_end;
--#define VMALLOC_START 0x0f800000
--#define VMALLOC_END m68k_vmalloc_end
--#endif /* CONFIG_SUN3 */
+ ENTRY(buserr)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
++#ifdef CONFIG_MMU
++	movel	%sp,%d0			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d0	/* at start of kernel stack */
++	movel	%d0,%a2
++	movel	%a2@,%a2		/* current pointer into a2 */
 +#endif
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	buserr_c
+ 	addql	#4,%sp
+@@ -53,8 +57,12 @@ ENTRY(buserr)
  
- /* zero page used for uninitialized stuff */
- extern void *empty_zero_page;
-@@ -130,6 +142,8 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+ ENTRY(trap)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
++#ifdef CONFIG_MMU
++	movel	%sp,%d0			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d0	/* at start of kernel stack */
++	movel	%d0,%a2
++	movel	%a2@,%a2		/* current pointer into a2 */
++#endif
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	trap_c
+ 	addql	#4,%sp
+@@ -65,8 +73,12 @@ ENTRY(trap)
+ .globl dbginterrupt
+ ENTRY(dbginterrupt)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
++#ifdef CONFIG_MMU
++	movel	%sp,%d0			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d0	/* at start of kernel stack */
++	movel	%d0,%a2
++	movel	%a2@,%a2		/* current pointer into a2 */
++#endif
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	dbginterrupt_c
+ 	addql	#4,%sp
+diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+index f567a16..5fc1f40 100644
+--- a/arch/m68k/platform/coldfire/entry.S
++++ b/arch/m68k/platform/coldfire/entry.S
+@@ -63,6 +63,13 @@ ENTRY(system_call)
+ 	SAVE_ALL_SYS
+ 	move	#0x2000,%sr		/* enable intrs again */
  
- #ifdef CONFIG_SUN3
- #include <asm/sun3_pgtable.h>
-+#elif defined(CONFIG_COLDFIRE)
-+#include <asm/mcf_pgtable.h>
- #else
- #include <asm/motorola_pgtable.h>
- #endif
-@@ -138,6 +152,9 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
- /*
-  * Macro to mark a page protection value as "uncacheable".
-  */
-+#ifdef CONFIG_COLDFIRE
-+# define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
-+#else
- #ifdef SUN3_PAGE_NOCACHE
- # define __SUN3_PAGE_NOCACHE	SUN3_PAGE_NOCACHE
- #else
-@@ -152,6 +169,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
- 	    ? (__pgprot((pgprot_val(prot) & _CACHEMASK040) | _PAGE_NOCACHE_S))	\
- 	    : (prot)))
++#ifdef CONFIG_MMU
++	movel	%sp,%d2			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d2	/* at start of kernel stack */
++	movel	%d2,%a2
++	movel	%a2@,%a2		/* current pointer into a2 */
++#endif
++
+ 	cmpl	#NR_syscalls,%d0
+ 	jcc	enosys
+ 	lea	sys_call_table,%a0
+@@ -166,6 +173,13 @@ Lsignal_return:
+ ENTRY(inthandler)
+ 	SAVE_ALL_INT
  
-+#endif /* CONFIG_COLDFIRE */
- #include <asm-generic/pgtable.h>
- #endif /* !__ASSEMBLY__ */
++#ifdef CONFIG_MMU
++	movel	%sp,%d2			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d2	/* at start of kernel stack */
++	movel	%d2,%a2
++	movel	%a2@,%a2		/* current pointer into a2 */
++#endif
++
+ 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
+ 	andl	#0x03fc,%d0		/* mask out vector only */
  
+@@ -190,7 +204,9 @@ ENTRY(resume)
+ 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack pointer */
+ 	RDUSP					 /* movel %usp,%a3 */
+ 	movel	%a3,%a0@(TASK_THREAD+THREAD_USP) /* save thread user stack */
+-
++#ifdef CONFIG_MMU
++	movel	%a1,%a2				 /* set new current */
++#endif
+ 	movel	%a1@(TASK_THREAD+THREAD_USP),%a3 /* restore thread user stack */
+ 	WRUSP					 /* movel %a3,%usp */
+ 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new kernel stack */
 -- 
 1.7.0.4
