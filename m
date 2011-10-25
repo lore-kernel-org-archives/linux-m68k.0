@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 06/36] m68k: modify user space access functions to support ColdFire CPUs
-Date: Tue, 25 Oct 2011 17:18:58 +1000
-Message-ID: <1319527168-11166-7-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 01/36] m68k: add machine and CPU definitions for ColdFire cores
+Date: Tue, 25 Oct 2011 17:18:53 +1000
+Message-ID: <1319527168-11166-2-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25108 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25102 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753226Ab1JYHTV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:21 -0400
+	with ESMTP id S1752852Ab1JYHTT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:19:19 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,214 +18,86 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Modify the user space access functions to support the ColdFire V4e cores
-running with MMU enabled.
+Create machine and CPU definitions to support the ColdFire CPU family
+members that have a virtual memory management unit.
 
-The ColdFire processors do not support the "moves" instruction used by
-the traditional 680x0 processors for moving data into and out of another
-address space. They only support the notion of a single address space,
-and you use the usual "move" instruction to access that.
-
-I am interrested in what others think if this approach. It is a little
-ugly, but it does mean that the same code is used, not a complete
-duplicate that is almost the same except for the "moves" instructions.
-It does also mean in this form that it is an either/or compile. It
-can't support both ColdFire and 680x0 in the same binary as it is.
+The ColdFire V4e core contains an MMU, and it is quite different to
+any other 68k family members.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/uaccess_mm.h |   42 ++++++++++++++++++++++++-----------
- arch/m68k/lib/uaccess.c            |   22 +++++++++---------
- 2 files changed, 40 insertions(+), 24 deletions(-)
+ arch/m68k/include/asm/setup.h |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
-index 7107f3f..34e0a30 100644
---- a/arch/m68k/include/asm/uaccess_mm.h
-+++ b/arch/m68k/include/asm/uaccess_mm.h
-@@ -20,6 +20,22 @@ static inline int access_ok(int type, const void __user *addr,
- 	return 1;
- }
+diff --git a/arch/m68k/include/asm/setup.h b/arch/m68k/include/asm/setup.h
+index 4dfb395..00c2c53 100644
+--- a/arch/m68k/include/asm/setup.h
++++ b/arch/m68k/include/asm/setup.h
+@@ -40,6 +40,7 @@
+ #define MACH_HP300    9
+ #define MACH_Q40     10
+ #define MACH_SUN3X   11
++#define MACH_M54XX   12
  
-+#ifdef CONFIG_COLDFIRE
-+/*
-+ * The ColdFire processors do not support the moves instruction used by
-+ * the traditional 680x0 processors for moving data into and out of
-+ * another address space. They only support the notion of a single address
-+ * space, and you use the usual move instruction to access that.
-+ *
-+ * All the user space access functions are otherwise the same on ColdFire
-+ * as the other 680x0 processors. So lets keep the code simple and just
-+ * define in what we need to use.
-+ */
-+#define	MOVES	"move"
+ #define COMMAND_LINE_SIZE 256
+ 
+@@ -211,23 +212,27 @@ extern unsigned long m68k_machtype;
+ #define CPUB_68030     1
+ #define CPUB_68040     2
+ #define CPUB_68060     3
++#define CPUB_COLDFIRE  4
+ 
+ #define CPU_68020      (1<<CPUB_68020)
+ #define CPU_68030      (1<<CPUB_68030)
+ #define CPU_68040      (1<<CPUB_68040)
+ #define CPU_68060      (1<<CPUB_68060)
++#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
+ 
+ #define FPUB_68881     0
+ #define FPUB_68882     1
+ #define FPUB_68040     2                       /* Internal FPU */
+ #define FPUB_68060     3                       /* Internal FPU */
+ #define FPUB_SUNFPA    4                       /* Sun-3 FPA */
++#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
+ 
+ #define FPU_68881      (1<<FPUB_68881)
+ #define FPU_68882      (1<<FPUB_68882)
+ #define FPU_68040      (1<<FPUB_68040)
+ #define FPU_68060      (1<<FPUB_68060)
+ #define FPU_SUNFPA     (1<<FPUB_SUNFPA)
++#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
+ 
+ #define MMUB_68851     0
+ #define MMUB_68030     1                       /* Internal MMU */
+@@ -235,6 +240,7 @@ extern unsigned long m68k_machtype;
+ #define MMUB_68060     3                       /* Internal MMU */
+ #define MMUB_APOLLO    4                       /* Custom Apollo */
+ #define MMUB_SUN3      5                       /* Custom Sun-3 */
++#define MMUB_COLDFIRE  6                       /* Internal MMU */
+ 
+ #define MMU_68851      (1<<MMUB_68851)
+ #define MMU_68030      (1<<MMUB_68030)
+@@ -242,6 +248,7 @@ extern unsigned long m68k_machtype;
+ #define MMU_68060      (1<<MMUB_68060)
+ #define MMU_SUN3       (1<<MMUB_SUN3)
+ #define MMU_APOLLO     (1<<MMUB_APOLLO)
++#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
+ 
+ #ifdef __KERNEL__
+ 
+@@ -341,6 +348,13 @@ extern int m68k_is040or060;
+ #  endif
+ #endif
+ 
++#if !defined(CONFIG_COLDFIRE)
++#  define CPU_IS_COLDFIRE (0)
 +#else
-+#define	MOVES	"moves"
-+#endif /* CONFIG_COLDFIRE */
++#  define CPU_IS_COLDFIRE (1)
++#  define MMU_IS_COLDFIRE (1)
++#endif
 +
- /*
-  * The exception table consists of pairs of addresses: the first is the
-  * address of an instruction that is allowed to fault, and the second is
-@@ -43,7 +59,7 @@ extern int __get_user_bad(void);
+ #define CPU_TYPE (m68k_cputype)
  
- #define __put_user_asm(res, x, ptr, bwl, reg, err)	\
- asm volatile ("\n"					\
--	"1:	moves."#bwl"	%2,%1\n"		\
-+	"1:	"MOVES"."#bwl"	%2,%1\n"		\
- 	"2:\n"						\
- 	"	.section .fixup,\"ax\"\n"		\
- 	"	.even\n"				\
-@@ -83,8 +99,8 @@ asm volatile ("\n"					\
-  	    {								\
-  		const void __user *__pu_ptr = (ptr);			\
- 		asm volatile ("\n"					\
--			"1:	moves.l	%2,(%1)+\n"			\
--			"2:	moves.l	%R2,(%1)\n"			\
-+			"1:	"MOVES".l	%2,(%1)+\n"		\
-+			"2:	"MOVES".l	%R2,(%1)\n"		\
- 			"3:\n"						\
- 			"	.section .fixup,\"ax\"\n"		\
- 			"	.even\n"				\
-@@ -115,12 +131,12 @@ asm volatile ("\n"					\
- #define __get_user_asm(res, x, ptr, type, bwl, reg, err) ({	\
- 	type __gu_val;						\
- 	asm volatile ("\n"					\
--		"1:	moves."#bwl"	%2,%1\n"		\
-+		"1:	"MOVES"."#bwl"	%2,%1\n"		\
- 		"2:\n"						\
- 		"	.section .fixup,\"ax\"\n"		\
- 		"	.even\n"				\
- 		"10:	move.l	%3,%0\n"			\
--		"	sub."#bwl"	%1,%1\n"		\
-+		"	sub.l	%1,%1\n"			\
- 		"	jra	2b\n"				\
- 		"	.previous\n"				\
- 		"\n"						\
-@@ -152,8 +168,8 @@ asm volatile ("\n"					\
-  		const void *__gu_ptr = (ptr);				\
-  		u64 __gu_val;						\
- 		asm volatile ("\n"					\
--			"1:	moves.l	(%2)+,%1\n"			\
--			"2:	moves.l	(%2),%R1\n"			\
-+			"1:	"MOVES".l	(%2)+,%1\n"		\
-+			"2:	"MOVES".l	(%2),%R1\n"		\
- 			"3:\n"						\
- 			"	.section .fixup,\"ax\"\n"		\
- 			"	.even\n"				\
-@@ -188,12 +204,12 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from, unsigned
- 
- #define __constant_copy_from_user_asm(res, to, from, tmp, n, s1, s2, s3)\
- 	asm volatile ("\n"						\
--		"1:	moves."#s1"	(%2)+,%3\n"			\
-+		"1:	"MOVES"."#s1"	(%2)+,%3\n"			\
- 		"	move."#s1"	%3,(%1)+\n"			\
--		"2:	moves."#s2"	(%2)+,%3\n"			\
-+		"2:	"MOVES"."#s2"	(%2)+,%3\n"			\
- 		"	move."#s2"	%3,(%1)+\n"			\
- 		"	.ifnc	\""#s3"\",\"\"\n"			\
--		"3:	moves."#s3"	(%2)+,%3\n"			\
-+		"3:	"MOVES"."#s3"	(%2)+,%3\n"			\
- 		"	move."#s3"	%3,(%1)+\n"			\
- 		"	.endif\n"					\
- 		"4:\n"							\
-@@ -269,13 +285,13 @@ __constant_copy_from_user(void *to, const void __user *from, unsigned long n)
- #define __constant_copy_to_user_asm(res, to, from, tmp, n, s1, s2, s3)	\
- 	asm volatile ("\n"						\
- 		"	move."#s1"	(%2)+,%3\n"			\
--		"11:	moves."#s1"	%3,(%1)+\n"			\
-+		"11:	"MOVES"."#s1"	%3,(%1)+\n"			\
- 		"12:	move."#s2"	(%2)+,%3\n"			\
--		"21:	moves."#s2"	%3,(%1)+\n"			\
-+		"21:	"MOVES"."#s2"	%3,(%1)+\n"			\
- 		"22:\n"							\
- 		"	.ifnc	\""#s3"\",\"\"\n"			\
- 		"	move."#s3"	(%2)+,%3\n"			\
--		"31:	moves."#s3"	%3,(%1)+\n"			\
-+		"31:	"MOVES"."#s3"	%3,(%1)+\n"			\
- 		"32:\n"							\
- 		"	.endif\n"					\
- 		"4:\n"							\
-diff --git a/arch/m68k/lib/uaccess.c b/arch/m68k/lib/uaccess.c
-index 13854ed..5664386 100644
---- a/arch/m68k/lib/uaccess.c
-+++ b/arch/m68k/lib/uaccess.c
-@@ -15,17 +15,17 @@ unsigned long __generic_copy_from_user(void *to, const void __user *from,
- 	asm volatile ("\n"
- 		"	tst.l	%0\n"
- 		"	jeq	2f\n"
--		"1:	moves.l	(%1)+,%3\n"
-+		"1:	"MOVES".l	(%1)+,%3\n"
- 		"	move.l	%3,(%2)+\n"
- 		"	subq.l	#1,%0\n"
- 		"	jne	1b\n"
- 		"2:	btst	#1,%5\n"
- 		"	jeq	4f\n"
--		"3:	moves.w	(%1)+,%3\n"
-+		"3:	"MOVES".w	(%1)+,%3\n"
- 		"	move.w	%3,(%2)+\n"
- 		"4:	btst	#0,%5\n"
- 		"	jeq	6f\n"
--		"5:	moves.b	(%1)+,%3\n"
-+		"5:	"MOVES".b	(%1)+,%3\n"
- 		"	move.b  %3,(%2)+\n"
- 		"6:\n"
- 		"	.section .fixup,\"ax\"\n"
-@@ -68,17 +68,17 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
- 		"	tst.l	%0\n"
- 		"	jeq	4f\n"
- 		"1:	move.l	(%1)+,%3\n"
--		"2:	moves.l	%3,(%2)+\n"
-+		"2:	"MOVES".l	%3,(%2)+\n"
- 		"3:	subq.l	#1,%0\n"
- 		"	jne	1b\n"
- 		"4:	btst	#1,%5\n"
- 		"	jeq	6f\n"
- 		"	move.w	(%1)+,%3\n"
--		"5:	moves.w	%3,(%2)+\n"
-+		"5:	"MOVES".w	%3,(%2)+\n"
- 		"6:	btst	#0,%5\n"
- 		"	jeq	8f\n"
- 		"	move.b	(%1)+,%3\n"
--		"7:	moves.b  %3,(%2)+\n"
-+		"7:	"MOVES".b  %3,(%2)+\n"
- 		"8:\n"
- 		"	.section .fixup,\"ax\"\n"
- 		"	.even\n"
-@@ -115,7 +115,7 @@ long strncpy_from_user(char *dst, const char __user *src, long count)
- 		return count;
- 
- 	asm volatile ("\n"
--		"1:	moves.b	(%2)+,%4\n"
-+		"1:	"MOVES".b	(%2)+,%4\n"
- 		"	move.b	%4,(%1)+\n"
- 		"	jeq	2f\n"
- 		"	subq.l	#1,%3\n"
-@@ -152,7 +152,7 @@ long strnlen_user(const char __user *src, long n)
- 	asm volatile ("\n"
- 		"1:	subq.l	#1,%1\n"
- 		"	jmi	3f\n"
--		"2:	moves.b	(%0)+,%2\n"
-+		"2:	"MOVES".b	(%0)+,%2\n"
- 		"	tst.b	%2\n"
- 		"	jne	1b\n"
- 		"	jra	4f\n"
-@@ -188,15 +188,15 @@ unsigned long __clear_user(void __user *to, unsigned long n)
- 	asm volatile ("\n"
- 		"	tst.l	%0\n"
- 		"	jeq	3f\n"
--		"1:	moves.l	%2,(%1)+\n"
-+		"1:	"MOVES".l	%2,(%1)+\n"
- 		"2:	subq.l	#1,%0\n"
- 		"	jne	1b\n"
- 		"3:	btst	#1,%4\n"
- 		"	jeq	5f\n"
--		"4:	moves.w	%2,(%1)+\n"
-+		"4:	"MOVES".w	%2,(%1)+\n"
- 		"5:	btst	#0,%4\n"
- 		"	jeq	7f\n"
--		"6:	moves.b	%2,(%1)\n"
-+		"6:	"MOVES".b	%2,(%1)\n"
- 		"7:\n"
- 		"	.section .fixup,\"ax\"\n"
- 		"	.even\n"
+ #ifdef CONFIG_M68KFPU_EMU
 -- 
 1.7.0.4
