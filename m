@@ -1,133 +1,37 @@
-From: Greg Ungerer <gerg@snapgear.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [git pull] m68knommu arch updates for 3.2
-Date: Wed, 26 Oct 2011 00:15:36 +1000
-Message-ID: <4EA6C488.1030606@snapgear.com>
-References: <201110250229.p9P2Tvth015729@goober.corp.nai.org> <CA+55aFzLBaLpBWA8tspNbCyzMYeruK-waRCpRwVnZEOGw9FhRQ@mail.gmail.com>
+Date: Tue, 25 Oct 2011 16:27:07 +0200
+Message-ID: <CA+55aFxondM5y9c2vLTnO87bTQeS4RB2LcH06YSozNZr+joZxQ@mail.gmail.com>
+References: <201110250229.p9P2Tvth015729@goober.corp.nai.org>
+ <CA+55aFzLBaLpBWA8tspNbCyzMYeruK-waRCpRwVnZEOGw9FhRQ@mail.gmail.com> <4EA6C488.1030606@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+55aFzLBaLpBWA8tspNbCyzMYeruK-waRCpRwVnZEOGw9FhRQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:51141 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932115Ab1JYO12 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 10:27:28 -0400
+In-Reply-To: <4EA6C488.1030606@snapgear.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Hi Linus,
+On Tue, Oct 25, 2011 at 4:15 PM, Greg Ungerer <gerg@snapgear.com> wrote:
+>
+> I don't think I will get back onto kernel.org anytime soon, I am in
+> the "geographically-isolated developers" group :-(
+>
+> But I have put a signed tag on the top commit now, with the top
+> commit and repository info. Is this what you are looking for?
 
-On 10/25/2011 05:42 PM, Linus Torvalds wrote:
-> [ Another cut-and-paste reply, please replace "p9" with "m68knommu".
-> Also note that signed emails aren't convenient (the tools that
-> actually verify signed emails are unusuable in all other respects), so
-> an extra signed tag that actually specifies both the top commit and
-> the repository I'm supposed to pull is likely the best approach if you
-> don't have access to a trusted host ]
+That works for me, except that the gpg key is just not signed by
+anybody, so it doesn't really add any real trust. The fact that you
+reply sanely to and react to your email address is what makes me trust
+you are you, and it's not like I really worry about the m68k
+architecture as a security issue ;)
 
-I don't think I will get back onto kernel.org anytime soon, I am in
-the "geographically-isolated developers" group :-(
+So let's hope you can get your gpg key signed, but apart from that
+detail you did things right and everything looks fine. So pulled,
 
-But I have put a signed tag on the top commit now, with the top
-commit and repository info. Is this what you are looking for?
-
-So it was:
-
-    git://github.com/gregungerer/m68knommu for-linus
-
-with new for-linus top tag:
-
-    m68knommu-for-linus-3.2-merge-window
-
-and pull comments:
-
-There is a big cleanup and reworking of the Kconfig files. They are no
-longer splilt on the somewhat arbitary basis of MMU and non-MMU targets.
-Also some other merging and cleaning up of arch Makefiles, and the trap
-handling code. Of course a couple of bug fixes in there too.
-
-Thanks
-Greg
-
-
-
-
-The following changes since commit 899e3ee404961a90b828ad527573aaaac39f0ab1:
-   Linus Torvalds (1):
-         Linux 3.1-rc10
-
-are available in the git repository at:
-
-   git://github.com/gregungerer/m68knommu for-linus
-
-Greg Ungerer (11):
-       m68k: fix memcpy to unmatched/unaligned source and dest on 68000
-       m68k: reorganize Kconfig options to improve mmu/non-mmu selections
-       m68k: merge mmu and non-mmu arch Makefiles
-       m68k: merge the mmu and non-mmu kernel/Makefiles
-       m68k: merge mmu and non-mmu include/asm/entry.h files
-       m68k: move hardware vector setting from traps.c to its own file
-       m68k: merge the mmu and non-mmu traps.c files
-       m68knommu: use generic section names in setup code
-       m68knommu: use generic section names in mm/init code
-       m68knommu: remove extern declarations of memory_start/memory_end 
-from mm/init
-       m68knommu: create common externs for _ram* vars
-
-Paul Bolle (2):
-       m68k: drop unused Kconfig symbols
-       m68k: drop unused Kconfig symbols
-
-Peter Turczak (1):
-       m68knommu: fix problems with SPI/GPIO on ColdFire 520x
-
-  arch/m68k/Kconfig                            |  195 +----
-  arch/m68k/Kconfig.bus                        |   55 ++
-  arch/m68k/Kconfig.cpu                        |  429 +++++++++
-  arch/m68k/Kconfig.devices                    |  123 +++
-  arch/m68k/{Kconfig.nommu => Kconfig.machine} |  562 ++++--------
-  arch/m68k/Kconfig.mmu                        |  411 ---------
-  arch/m68k/Makefile                           |  168 ++++-
-  arch/m68k/Makefile_mm                        |  121 ---
-  arch/m68k/Makefile_no                        |  124 ---
-  arch/m68k/include/asm/entry.h                |  255 ++++++-
-  arch/m68k/include/asm/entry_mm.h             |  128 ---
-  arch/m68k/include/asm/entry_no.h             |  181 ----
-  arch/m68k/include/asm/m520xsim.h             |   26 +-
-  arch/m68k/include/asm/mcfqspi.h              |    8 +-
-  arch/m68k/include/asm/page_no.h              |    3 +
-  arch/m68k/include/asm/processor.h            |    6 +
-  arch/m68k/include/asm/sections.h             |    2 +
-  arch/m68k/kernel/Makefile                    |   24 +-
-  arch/m68k/kernel/Makefile_mm                 |   17 -
-  arch/m68k/kernel/Makefile_no                 |   10 -
-  arch/m68k/kernel/entry_no.S                  |    6 +-
-  arch/m68k/kernel/setup_no.c                  |    4 +-
-  arch/m68k/kernel/traps.c                     | 1108 
-+++++++++++++++++++++++-
-  arch/m68k/kernel/traps_mm.c                  | 1207 
---------------------------
-  arch/m68k/kernel/traps_no.c                  |  361 --------
-  arch/m68k/kernel/vectors.c                   |  145 +++
-  arch/m68k/lib/memcpy.c                       |    9 +
-  arch/m68k/mm/init_no.c                       |   21 +-
-  arch/m68k/platform/520x/config.c             |    6 +-
-  arch/m68k/platform/520x/gpio.c               |   50 +-
-  arch/m68k/platform/68328/Makefile            |    5 +-
-  arch/m68k/platform/68328/entry.S             |   18 +-
-  arch/m68k/platform/68360/Makefile            |    6 +-
-  arch/m68k/platform/68360/entry.S             |    4 +-
-  arch/m68k/platform/coldfire/entry.S          |    6 +-
-  35 files changed, 2596 insertions(+), 3208 deletions(-)
-  create mode 100644 arch/m68k/Kconfig.bus
-  create mode 100644 arch/m68k/Kconfig.cpu
-  create mode 100644 arch/m68k/Kconfig.devices
-  rename arch/m68k/{Kconfig.nommu => Kconfig.machine} (58%)
-  delete mode 100644 arch/m68k/Kconfig.mmu
-  delete mode 100644 arch/m68k/Makefile_mm
-  delete mode 100644 arch/m68k/Makefile_no
-  delete mode 100644 arch/m68k/include/asm/entry_mm.h
-  delete mode 100644 arch/m68k/include/asm/entry_no.h
-  delete mode 100644 arch/m68k/kernel/Makefile_mm
-  delete mode 100644 arch/m68k/kernel/Makefile_no
-  delete mode 100644 arch/m68k/kernel/traps_mm.c
-  delete mode 100644 arch/m68k/kernel/traps_no.c
-  create mode 100644 arch/m68k/kernel/vectors.c
+               Linus
