@@ -1,37 +1,63 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [git pull] m68knommu arch updates for 3.2
-Date: Tue, 25 Oct 2011 16:27:07 +0200
-Message-ID: <CA+55aFxondM5y9c2vLTnO87bTQeS4RB2LcH06YSozNZr+joZxQ@mail.gmail.com>
-References: <201110250229.p9P2Tvth015729@goober.corp.nai.org>
- <CA+55aFzLBaLpBWA8tspNbCyzMYeruK-waRCpRwVnZEOGw9FhRQ@mail.gmail.com> <4EA6C488.1030606@snapgear.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Revive lost ARAnyM config options
+Date: Tue, 25 Oct 2011 22:05:28 +0200
+Message-ID: <1319573128-21127-1-git-send-email-geert__19483.4533882842$1319573163$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:51141 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932115Ab1JYO12 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 10:27:28 -0400
-In-Reply-To: <4EA6C488.1030606@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@snapgear.com>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Tue, Oct 25, 2011 at 4:15 PM, Greg Ungerer <gerg@snapgear.com> wrote:
->
-> I don't think I will get back onto kernel.org anytime soon, I am in
-> the "geographically-isolated developers" group :-(
->
-> But I have put a signed tag on the top commit now, with the top
-> commit and repository info. Is this what you are looking for?
+commit 0e152d80507b75c00aac60f2ffc586360687cd52 ("m68k: reorganize Kconfig
+options to improve mmu/non-mmu selections") accidentally dropped the ARAnyM
+config options. Re-add them to the "Platform devices" section.
 
-That works for me, except that the gpg key is just not signed by
-anybody, so it doesn't really add any real trust. The fact that you
-reply sanely to and react to your email address is what makes me trust
-you are you, and it's not like I really worry about the m68k
-architecture as a security issue ;)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/Kconfig.devices |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
 
-So let's hope you can get your gpg key signed, but apart from that
-detail you did things right and everything looks fine. So pulled,
-
-               Linus
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+index 82ddb93..5cf1c54 100644
+--- a/arch/m68k/Kconfig.devices
++++ b/arch/m68k/Kconfig.devices
+@@ -24,6 +24,37 @@ config PROC_HARDWARE
+ 	  including the model, CPU, MMU, clock speed, BogoMIPS rating,
+ 	  and memory size.
+ 
++config NATFEAT
++	bool "ARAnyM emulator support"
++	depends on ATARI
++	help
++	  This option enables support for ARAnyM native features, such as
++	  access to a disk image as /dev/hda.
++
++config NFBLOCK
++	tristate "NatFeat block device support"
++	depends on BLOCK && NATFEAT
++	help
++	  Say Y to include support for the ARAnyM NatFeat block device
++	  which allows direct access to the hard drives without using
++	  the hardware emulation.
++
++config NFCON
++	tristate "NatFeat console driver"
++	depends on NATFEAT
++	help
++	  Say Y to include support for the ARAnyM NatFeat console driver
++	  which allows the console output to be redirected to the stderr
++	  output of ARAnyM.
++
++config NFETH
++	tristate "NatFeat Ethernet support"
++	depends on ETHERNET && NATFEAT
++	help
++	  Say Y to include support for the ARAnyM NatFeat network device
++	  which will emulate a regular ethernet device while presenting an
++	  ethertap device to the host system.
++
+ endmenu
+ 
+ menu "Character devices"
+-- 
+1.7.0.4
