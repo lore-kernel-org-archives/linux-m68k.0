@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 29/36] m68k: use non-MMU linker script for ColdFire MMU builds
-Date: Tue, 25 Oct 2011 17:19:21 +1000
-Message-ID: <1319527168-11166-30-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 20/36] m68k: ColdFire with MMU needs simpler lib checksum code
+Date: Tue, 25 Oct 2011 17:19:12 +1000
+Message-ID: <1319527168-11166-21-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25225 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25213 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754817Ab1JYHVQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:16 -0400
+	with ESMTP id S1754762Ab1JYHVM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:12 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,52 +18,42 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Use the non-MMU linker script for ColdFire builds when we are building
-for MMU enabled. The image layout is correct for loading on existing
-ColdFire dev boards. The only addition required to the current non-MMU
-linker script is to add support for the fixup section.
+We have 2 implementations of the IP checksuming code for m68k. One uses
+the more advanced instructions available in 68020 and above processors,
+the other uses the simpler instructions available on the original 68000
+processors and the modern ColdFire processors.
+
+The code choice shouldn't be made based on whether we have an MMU enabled
+or not. It is a processor specific choice. The newer advanced ColdFire
+CPU family members with MMU still only support the simpler instructions.
+
+So choose the checksumming code based on CONFIG_CPU_HAS_NO_BITFIELDS.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/kernel/vmlinux.lds.S    |    2 +-
- arch/m68k/kernel/vmlinux.lds_no.S |    8 ++++++++
- 2 files changed, 9 insertions(+), 1 deletions(-)
+ arch/m68k/lib/Makefile |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/kernel/vmlinux.lds.S b/arch/m68k/kernel/vmlinux.lds.S
-index 030dabf..8405c58 100644
---- a/arch/m68k/kernel/vmlinux.lds.S
-+++ b/arch/m68k/kernel/vmlinux.lds.S
-@@ -1,4 +1,4 @@
--#ifdef CONFIG_MMU
-+#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
- #include "vmlinux.lds_mm.S"
- #else
- #include "vmlinux.lds_no.S"
-diff --git a/arch/m68k/kernel/vmlinux.lds_no.S b/arch/m68k/kernel/vmlinux.lds_no.S
-index 7dc4087..345261e 100644
---- a/arch/m68k/kernel/vmlinux.lds_no.S
-+++ b/arch/m68k/kernel/vmlinux.lds_no.S
-@@ -69,6 +69,7 @@ SECTIONS {
- 		SCHED_TEXT
- 		LOCK_TEXT
- 		*(.text..lock)
-+		*(.fixup)
+diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
+index 1a1bd90..3161158 100644
+--- a/arch/m68k/lib/Makefile
++++ b/arch/m68k/lib/Makefile
+@@ -7,8 +7,14 @@ lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
+ 	   memcpy.o memset.o memmove.o
  
- 		. = ALIGN(16);          /* Exception table              */
- 		__start___ex_table = .;
-@@ -162,6 +163,13 @@ SECTIONS {
- 		_edata = . ;
- 	} > DATA
- 
-+	.m68k_fixup : {
-+		__start_fixup = .;
-+		*(.m68k_fixup)
-+		__stop_fixup = .;
-+	} > DATA
-+	NOTES > DATA
+ ifdef CONFIG_MMU
+-lib-y	+= string.o uaccess.o checksum_mm.o
++lib-y	+= string.o uaccess.o
+ else
+-lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o checksum_no.o
++lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o
++endif
 +
- 	.init.text : {
- 		. = ALIGN(PAGE_SIZE);
- 		__init_begin = .;
++ifdef CONFIG_CPU_HAS_NO_BITFIELDS
++lib-y	+= checksum_no.o
++else
++lib-y	+= checksum_mm.o
+ endif
+ 
 -- 
 1.7.0.4
