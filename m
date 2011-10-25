@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 35/36] m68k: config option adjustments for configuring ColdFire with MMU
-Date: Tue, 25 Oct 2011 17:19:27 +1000
-Message-ID: <1319527168-11166-36-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 29/36] m68k: use non-MMU linker script for ColdFire MMU builds
+Date: Tue, 25 Oct 2011 17:19:21 +1000
+Message-ID: <1319527168-11166-30-git-send-email-gerg@snapgear.com>
 References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25228 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25225 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754723Ab1JYHVR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:17 -0400
+	with ESMTP id S1754817Ab1JYHVQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Oct 2011 03:21:16 -0400
 In-Reply-To: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,36 +18,52 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-We want to reuse as much of the exitsing ColdFire code as we can for
-running it with the MMU enabled. So we need to disable CONFIG_GENERIC_IOMAP
-and CONFIG_ARCH_USES_GETTIMEOFFSET for the case where we are building for
-ColdFire CPU with MMU enabled.
+Use the non-MMU linker script for ColdFire builds when we are building
+for MMU enabled. The image layout is correct for loading on existing
+ColdFire dev boards. The only addition required to the current non-MMU
+linker script is to add support for the fixup section.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/Kconfig |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/kernel/vmlinux.lds.S    |    2 +-
+ arch/m68k/kernel/vmlinux.lds_no.S |    8 ++++++++
+ 2 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 663d1f4..5e7145f 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -36,14 +36,14 @@ config GENERIC_CALIBRATE_DELAY
- 	default y
+diff --git a/arch/m68k/kernel/vmlinux.lds.S b/arch/m68k/kernel/vmlinux.lds.S
+index 030dabf..8405c58 100644
+--- a/arch/m68k/kernel/vmlinux.lds.S
++++ b/arch/m68k/kernel/vmlinux.lds.S
+@@ -1,4 +1,4 @@
+-#ifdef CONFIG_MMU
++#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
+ #include "vmlinux.lds_mm.S"
+ #else
+ #include "vmlinux.lds_no.S"
+diff --git a/arch/m68k/kernel/vmlinux.lds_no.S b/arch/m68k/kernel/vmlinux.lds_no.S
+index 7dc4087..345261e 100644
+--- a/arch/m68k/kernel/vmlinux.lds_no.S
++++ b/arch/m68k/kernel/vmlinux.lds_no.S
+@@ -69,6 +69,7 @@ SECTIONS {
+ 		SCHED_TEXT
+ 		LOCK_TEXT
+ 		*(.text..lock)
++		*(.fixup)
  
- config GENERIC_IOMAP
--	def_bool MMU
-+	def_bool MMU && !COLDFIRE
+ 		. = ALIGN(16);          /* Exception table              */
+ 		__start___ex_table = .;
+@@ -162,6 +163,13 @@ SECTIONS {
+ 		_edata = . ;
+ 	} > DATA
  
- config TIME_LOW_RES
- 	bool
- 	default y
- 
- config ARCH_USES_GETTIMEOFFSET
--	def_bool MMU
-+	def_bool MMU && !COLDFIRE
- 
- config NO_IOPORT
- 	def_bool y
++	.m68k_fixup : {
++		__start_fixup = .;
++		*(.m68k_fixup)
++		__stop_fixup = .;
++	} > DATA
++	NOTES > DATA
++
+ 	.init.text : {
+ 		. = ALIGN(PAGE_SIZE);
+ 		__init_begin = .;
 -- 
 1.7.0.4
