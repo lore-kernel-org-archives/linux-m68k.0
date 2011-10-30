@@ -1,187 +1,130 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 26/27] m68k/irq: Remove obsolete support for user vector interrupt fixups
-Date: Sun, 30 Oct 2011 13:48:34 +0100
-Message-ID: <1319978915-10933-27-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 27/27] m68k/mac: Remove mac_irq_{en,dis}able() wrappers
+Date: Sun, 30 Oct 2011 13:48:35 +0100
+Message-ID: <1319978915-10933-28-git-send-email-geert@linux-m68k.org>
 References: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from juliette.telenet-ops.be ([195.130.137.74]:56041 "EHLO
-	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934020Ab1J3Msu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:50 -0400
+Received: from georges.telenet-ops.be ([195.130.137.68]:43237 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934025Ab1J3Mst (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:49 -0400
 In-Reply-To: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-It was used on Apollo only, before its conversion to genirq.
+From: Finn Thain <fthain@telegraphics.com.au>
 
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/apollo/dn_ints.c  |    2 +-
- arch/m68k/atari/ataints.c   |    2 +-
- arch/m68k/bvme6000/config.c |    2 +-
- arch/m68k/include/asm/irq.h |    4 +---
- arch/m68k/kernel/entry_mm.S |    3 +--
- arch/m68k/kernel/ints.c     |   11 ++---------
- arch/m68k/mvme147/config.c  |    2 +-
- arch/m68k/mvme16x/config.c  |    2 +-
- arch/m68k/sun3/sun3ints.c   |    2 +-
- 9 files changed, 10 insertions(+), 20 deletions(-)
+ arch/m68k/include/asm/macintosh.h |    2 ++
+ arch/m68k/mac/baboon.c            |    7 ++-----
+ arch/m68k/mac/macints.c           |   25 +++++++------------------
+ 3 files changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/arch/m68k/apollo/dn_ints.c b/arch/m68k/apollo/dn_ints.c
-index b7d0aa3..17be1e7 100644
---- a/arch/m68k/apollo/dn_ints.c
-+++ b/arch/m68k/apollo/dn_ints.c
-@@ -41,7 +41,7 @@ static struct irq_chip apollo_irq_chip = {
+diff --git a/arch/m68k/include/asm/macintosh.h b/arch/m68k/include/asm/macintosh.h
+index c2a1c5e..12ebe43 100644
+--- a/arch/m68k/include/asm/macintosh.h
++++ b/arch/m68k/include/asm/macintosh.h
+@@ -12,6 +12,8 @@ extern void mac_reset(void);
+ extern void mac_poweroff(void);
+ extern void mac_init_IRQ(void);
+ extern int mac_irq_pending(unsigned int);
++extern void mac_irq_enable(struct irq_data *data);
++extern void mac_irq_disable(struct irq_data *data);
  
- void __init dn_init_IRQ(void)
- {
--	m68k_setup_user_interrupt(VEC_USER + 96, 16, NULL);
-+	m68k_setup_user_interrupt(VEC_USER + 96, 16);
- 	m68k_setup_irq_controller(&apollo_irq_chip, handle_fasteoi_irq,
- 				  IRQ_APOLLO, 16);
- }
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index af54455..6d196da 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -137,7 +137,7 @@ static struct irq_chip atari_irq_chip = {
+ /*
+  *	Floppy driver magic hook - probably shouldn't be here
+diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
+index b55ead2..b403924 100644
+--- a/arch/m68k/mac/baboon.c
++++ b/arch/m68k/mac/baboon.c
+@@ -21,9 +21,6 @@
  
- void __init atari_init_IRQ(void)
- {
--	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER, NULL);
-+	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER);
- 	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq, 1,
- 				  NUM_ATARI_SOURCES - 1);
+ /* #define DEBUG_IRQS */
  
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index 1edd950..8128647 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -86,7 +86,7 @@ static void bvme6000_get_model(char *model)
-  */
- static void __init bvme6000_init_IRQ(void)
- {
--	m68k_setup_user_interrupt(VEC_USER, 192, NULL);
-+	m68k_setup_user_interrupt(VEC_USER, 192);
+-extern void mac_enable_irq(unsigned int);
+-extern void mac_disable_irq(unsigned int);
+-
+ int baboon_present;
+ static volatile struct baboon *baboon;
+ static unsigned char baboon_disabled;
+@@ -111,7 +108,7 @@ void baboon_irq_enable(int irq)
+ 
+ 	baboon_disabled &= ~(1 << irq_idx);
+ 	if (!baboon_disabled)
+-		mac_enable_irq(IRQ_NUBUS_C);
++		mac_irq_enable(irq_get_irq_data(IRQ_NUBUS_C));
  }
  
- void __init config_bvme6000(void)
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index 94349a5..6198df5 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -70,9 +70,7 @@ extern unsigned int m68k_irq_startup_irq(unsigned int irq);
- extern void m68k_irq_shutdown(struct irq_data *data);
- extern void m68k_setup_auto_interrupt(void (*handler)(unsigned int,
- 						      struct pt_regs *));
--extern void m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
--				      void (*handler)(unsigned int,
--						      struct pt_regs *));
-+extern void m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt);
- extern void m68k_setup_irq_controller(struct irq_chip *,
- 				      void (*handle)(unsigned int irq,
- 						     struct irq_desc *desc),
-diff --git a/arch/m68k/kernel/entry_mm.S b/arch/m68k/kernel/entry_mm.S
-index f5927d0..c713f51 100644
---- a/arch/m68k/kernel/entry_mm.S
-+++ b/arch/m68k/kernel/entry_mm.S
-@@ -48,7 +48,7 @@
- .globl sys_fork, sys_clone, sys_vfork
- .globl ret_from_interrupt, bad_interrupt
- .globl auto_irqhandler_fixup
--.globl user_irqvec_fixup, user_irqhandler_fixup
-+.globl user_irqvec_fixup
+ void baboon_irq_disable(int irq)
+@@ -124,7 +121,7 @@ void baboon_irq_disable(int irq)
  
- .text
- ENTRY(buserr)
-@@ -240,7 +240,6 @@ user_irqvec_fixup = . + 2
+ 	baboon_disabled |= 1 << irq_idx;
+ 	if (baboon_disabled)
+-		mac_disable_irq(IRQ_NUBUS_C);
++		mac_irq_disable(irq_get_irq_data(IRQ_NUBUS_C));
+ }
  
- 	movel	%sp,%sp@-
- 	movel	%d0,%sp@-		|  put vector # on stack
--user_irqhandler_fixup = . + 2
- 	jsr	do_IRQ			|  process the IRQ
- 	addql	#8,%sp			|  pop parameters off stack
+ void baboon_irq_clear(int irq)
+diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
+index 98497d2..ba220b7 100644
+--- a/arch/m68k/mac/macints.c
++++ b/arch/m68k/mac/macints.c
+@@ -190,19 +190,6 @@ irqreturn_t mac_debug_handler(int, void *);
  
-diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
-index e2b056b..74fefac 100644
---- a/arch/m68k/kernel/ints.c
-+++ b/arch/m68k/kernel/ints.c
-@@ -28,7 +28,6 @@
- #endif
+ /* #define DEBUG_MACINTS */
  
- extern u32 auto_irqhandler_fixup[];
--extern u32 user_irqhandler_fixup[];
- extern u16 user_irqvec_fixup[];
+-void mac_enable_irq(unsigned int irq);
+-void mac_disable_irq(unsigned int irq);
+-
+-static void mac_irq_enable(struct irq_data *data)
+-{
+-	mac_enable_irq(data->irq);
+-}
+-
+-static void mac_irq_disable(struct irq_data *data)
+-{
+-	mac_disable_irq(data->irq);
+-}
+-
+ static struct irq_chip mac_irq_chip = {
+ 	.name		= "mac",
+ 	.irq_enable	= mac_irq_enable,
+@@ -250,16 +237,17 @@ void __init mac_init_IRQ(void)
+ }
  
- static int m68k_first_user_vec;
-@@ -91,16 +90,12 @@ void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_re
-  * m68k_setup_user_interrupt
-  * @vec: first user vector interrupt to handle
-  * @cnt: number of active user vector interrupts
-- * @handler: called from user vector interrupts
+ /*
+- *  mac_enable_irq - enable an interrupt source
+- * mac_disable_irq - disable an interrupt source
++ *  mac_irq_enable - enable an interrupt source
++ * mac_irq_disable - disable an interrupt source
+  *   mac_clear_irq - clears a pending interrupt
+- * mac_pending_irq - Returns the pending status of an IRQ (nonzero = pending)
++ * mac_irq_pending - returns the pending status of an IRQ (nonzero = pending)
   *
-  * setup user vector interrupts, this includes activating the specified range
-  * of interrupts, only then these interrupts can be requested (note: this is
-- * different from auto vector interrupts). An optional handler can be installed
-- * to be called instead of the default do_IRQ(), it will be called
-- * with irq numbers starting from IRQ_USER.
-+ * different from auto vector interrupts).
+  * These routines are just dispatchers to the VIA/OSS/PSC routines.
   */
--void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
--				      void (*handler)(unsigned int, struct pt_regs *))
-+void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt)
- {
- 	int i;
  
-@@ -109,8 +104,6 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
- 	for (i = 0; i < cnt; i++)
- 		irq_set_chip(IRQ_USER + i, &user_irq_chip);
- 	*user_irqvec_fixup = vec - IRQ_USER;
--	if (handler)
--		*user_irqhandler_fixup = (u32)handler;
- 	flush_icache();
+-void mac_enable_irq(unsigned int irq)
++void mac_irq_enable(struct irq_data *data)
+ {
++	int irq = data->irq;
+ 	int irq_src = IRQ_SRC(irq);
+ 
+ 	switch(irq_src) {
+@@ -292,8 +280,9 @@ void mac_enable_irq(unsigned int irq)
+ 	}
  }
  
-diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
-index 01f2adf..5de924e 100644
---- a/arch/m68k/mvme147/config.c
-+++ b/arch/m68k/mvme147/config.c
-@@ -81,7 +81,7 @@ static void mvme147_get_model(char *model)
- 
- void __init mvme147_init_IRQ(void)
+-void mac_disable_irq(unsigned int irq)
++void mac_irq_disable(struct irq_data *data)
  {
--	m68k_setup_user_interrupt(VEC_USER, 192, NULL);
-+	m68k_setup_user_interrupt(VEC_USER, 192);
- }
++	int irq = data->irq;
+ 	int irq_src = IRQ_SRC(irq);
  
- void __init config_mvme147(void)
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 0b28e26..31a66d9 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -117,7 +117,7 @@ static void mvme16x_get_hardware_list(struct seq_file *m)
- 
- static void __init mvme16x_init_IRQ (void)
- {
--	m68k_setup_user_interrupt(VEC_USER, 192, NULL);
-+	m68k_setup_user_interrupt(VEC_USER, 192);
- }
- 
- #define pcc2chip	((volatile u_char *)0xfff42000)
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index 7eb3781..78b60f5 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -109,7 +109,7 @@ void __init sun3_init_IRQ(void)
- 
- 	m68k_setup_irq_controller(&sun3_irq_chip, handle_level_irq, IRQ_AUTO_1,
- 				  7);
--	m68k_setup_user_interrupt(VEC_USER, 128, NULL);
-+	m68k_setup_user_interrupt(VEC_USER, 128);
- 
- 	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL))
- 		pr_err("Couldn't register %s interrupt\n", "int5");
+ 	switch(irq_src) {
 -- 
 1.7.0.4
