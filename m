@@ -1,12 +1,12 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 03/27] m68k/irq: Kill irq_node_t typedef, always use struct irq_node
-Date: Sun, 30 Oct 2011 13:48:11 +0100
-Message-ID: <1319978915-10933-4-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 17/27] m68k/mac: Convert Mac to genirq
+Date: Sun, 30 Oct 2011 13:48:25 +0100
+Message-ID: <1319978915-10933-18-git-send-email-geert@linux-m68k.org>
 References: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:37489 "EHLO
-	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934005Ab1J3Mst (ORCPT
+Received: from georges.telenet-ops.be ([195.130.137.68]:43201 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934014Ab1J3Mst (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:49 -0400
 In-Reply-To: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -15,68 +15,81 @@ To: linux-m68k@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/m68k/include/asm/irq.h |    8 ++++----
- arch/m68k/kernel/ints.c     |    6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/m68k/Kconfig      |    1 -
+ arch/m68k/mac/baboon.c |    3 +++
+ arch/m68k/mac/oss.c    |    3 +++
+ arch/m68k/mac/psc.c    |    3 +++
+ arch/m68k/mac/via.c    |    3 +++
+ 5 files changed, 12 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index d8c6f68..bfc521f 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -75,13 +75,13 @@ struct pt_regs;
-  * This structure is used to chain together the ISRs for a particular
-  * interrupt source (if it supports chaining).
-  */
--typedef struct irq_node {
-+struct irq_node {
- 	irqreturn_t	(*handler)(int, void *);
- 	void		*dev_id;
- 	struct irq_node *next;
- 	unsigned long	flags;
- 	const char	*devname;
--} irq_node_t;
-+};
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 9000921..9ba1a89 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -87,7 +87,6 @@ config MMU_SUN3
+ config USE_GENERIC_HARDIRQS
+ 	bool "Use genirq"
+ 	depends on MMU
+-	depends on !MAC
+ 	depends on !APOLLO
+ 	depends on !MVME147
+ 	depends on !MVME16x
+diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
+index f264791..ff11746 100644
+--- a/arch/m68k/mac/baboon.c
++++ b/arch/m68k/mac/baboon.c
+@@ -11,6 +11,9 @@
+ #include <linux/mm.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
++#ifdef CONFIG_GENERIC_HARDIRQS
++#include <linux/irq.h>
++#endif
  
- /*
-  * This structure has only 4 elements for speed reasons
-@@ -105,9 +105,9 @@ extern unsigned int m68k_irq_startup(unsigned int);
- extern void m68k_irq_shutdown(unsigned int);
+ #include <asm/traps.h>
+ #include <asm/bootinfo.h>
+diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
+index 1eb60f0..ed95270 100644
+--- a/arch/m68k/mac/oss.c
++++ b/arch/m68k/mac/oss.c
+@@ -19,6 +19,9 @@
+ #include <linux/mm.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
++#ifdef CONFIG_GENERIC_HARDIRQS
++#include <linux/irq.h>
++#endif
  
- /*
-- * This function returns a new irq_node_t
-+ * This function returns a new struct irq_node
-  */
--extern irq_node_t *new_irq_node(void);
-+extern struct irq_node *new_irq_node(void);
+ #include <asm/bootinfo.h>
+ #include <asm/macintosh.h>
+diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
+index 26c2b65..0a34b7a 100644
+--- a/arch/m68k/mac/psc.c
++++ b/arch/m68k/mac/psc.c
+@@ -18,6 +18,9 @@
+ #include <linux/mm.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
++#ifdef CONFIG_GENERIC_HARDIRQS
++#include <linux/irq.h>
++#endif
  
- extern void m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_regs *));
- extern void m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
-diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
-index f43ad7b..9de8eb4 100644
---- a/arch/m68k/kernel/ints.c
-+++ b/arch/m68k/kernel/ints.c
-@@ -70,7 +70,7 @@ static struct irq_chip user_irq_chip = {
- };
+ #include <asm/traps.h>
+ #include <asm/bootinfo.h>
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index af9ed33..bde156c 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -28,6 +28,9 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
++#ifdef CONFIG_GENERIC_HARDIRQS
++#include <linux/irq.h>
++#endif
  
- #define NUM_IRQ_NODES 100
--static irq_node_t nodes[NUM_IRQ_NODES];
-+static struct irq_node nodes[NUM_IRQ_NODES];
- 
- /*
-  * void init_IRQ(void)
-@@ -160,9 +160,9 @@ void m68k_setup_irq_chip(struct irq_chip *contr, unsigned int irq,
- 		irq_chip[irq + i] = contr;
- }
- 
--irq_node_t *new_irq_node(void)
-+struct irq_node *new_irq_node(void)
- {
--	irq_node_t *node;
-+	struct irq_node *node;
- 	short i;
- 
- 	for (node = nodes, i = NUM_IRQ_NODES-1; i >= 0; node++, i--) {
+ #include <asm/bootinfo.h>
+ #include <asm/macintosh.h>
 -- 
 1.7.0.4
