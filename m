@@ -1,159 +1,274 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 16/27] m68k/amiga: Optimize interrupts using chain handlers
-Date: Sun, 30 Oct 2011 13:48:24 +0100
-Message-ID: <1319978915-10933-17-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 13/27] m68k/atari: Remove code and comments about different irq types
+Date: Sun, 30 Oct 2011 13:48:21 +0100
+Message-ID: <1319978915-10933-14-git-send-email-geert@linux-m68k.org>
 References: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from gerard.telenet-ops.be ([195.130.132.48]:36224 "EHLO
-	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755642Ab1J3Mst (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:49 -0400
+Received: from jacques.telenet-ops.be ([195.130.132.50]:37505 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755636Ab1J3Mss (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:48 -0400
 In-Reply-To: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
+This code was obsoleted during the irq restructuring in 2006.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/amiints.c |  104 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 104 insertions(+), 0 deletions(-)
+ arch/m68k/atari/ataints.c |  236 ---------------------------------------------
+ 1 files changed, 0 insertions(+), 236 deletions(-)
 
-diff --git a/arch/m68k/amiga/amiints.c b/arch/m68k/amiga/amiints.c
-index c3da534..a8da471 100644
---- a/arch/m68k/amiga/amiints.c
-+++ b/arch/m68k/amiga/amiints.c
-@@ -48,6 +48,99 @@ static struct irq_chip amiga_irq_chip = {
-  * The builtin Amiga hardware interrupt handlers.
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 6149ff9..af54455 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -60,244 +60,8 @@
+  * <asm/atariints.h>): Autovector interrupts are 1..7, then follow ST-MFP,
+  * TT-MFP, SCC, and finally VME interrupts. Vector numbers for the latter can
+  * be allocated by atari_register_vme_int().
+- *
+- * Each interrupt can be of three types:
+- *
+- *  - SLOW: The handler runs with all interrupts enabled, except the one it
+- *    was called by (to avoid reentering). This should be the usual method.
+- *    But it is currently possible only for MFP ints, since only the MFP
+- *    offers an easy way to mask interrupts.
+- *
+- *  - FAST: The handler runs with all interrupts disabled. This should be used
+- *    only for really fast handlers, that just do actions immediately
+- *    necessary, and let the rest do a bottom half or task queue.
+- *
+- *  - PRIORITIZED: The handler can be interrupted by higher-level ints
+- *    (greater IPL, no MFP priorities!). This is the method of choice for ints
+- *    which should be slow, but are not from a MFP.
+- *
+- * The feature of more than one handler for one int source is still there, but
+- * only applicable if all handers are of the same type. To not slow down
+- * processing of ints with only one handler by the chaining feature, the list
+- * calling function atari_call_irq_list() is only plugged in at the time the
+- * second handler is registered.
+- *
+- * Implementation notes: For fast-as-possible int handling, there are separate
+- * entry points for each type (slow/fast/prio). The assembler handler calls
+- * the irq directly in the usual case, no C wrapper is involved. In case of
+- * multiple handlers, atari_call_irq_list() is registered as handler and calls
+- * in turn the real irq's. To ease access from assembler level to the irq
+- * function pointer and accompanying data, these two are stored in a separate
+- * array, irq_handler[]. The rest of data (type, name) are put into a second
+- * array, irq_param, that is accessed from C only. For each slow interrupt (32
+- * in all) there are separate handler functions, which makes it possible to
+- * hard-code the MFP register address and value, are necessary to mask the
+- * int. If there'd be only one generic function, lots of calculations would be
+- * needed to determine MFP register and int mask from the vector number :-(
+- *
+- * Furthermore, slow ints may not lower the IPL below its previous value
+- * (before the int happened). This is needed so that an int of class PRIO, on
+- * that this int may be stacked, cannot be reentered. This feature is
+- * implemented as follows: If the stack frame format is 1 (throwaway), the int
+- * is not stacked, and the IPL is anded with 0xfbff, resulting in a new level
+- * 2, which still blocks the HSYNC, but no interrupts of interest. If the
+- * frame format is 0, the int is nested, and the old IPL value can be found in
+- * the sr copy in the frame.
   */
  
-+#ifdef CONFIG_GENERIC_HARDIRQS
-+static void ami_int1(unsigned int irq, struct irq_desc *desc)
-+{
-+	unsigned short ints = amiga_custom.intreqr & amiga_custom.intenar;
-+
-+	/* if serial transmit buffer empty, interrupt */
-+	if (ints & IF_TBE) {
-+		amiga_custom.intreq = IF_TBE;
-+		generic_handle_irq(IRQ_AMIGA_TBE);
-+	}
-+
-+	/* if floppy disk transfer complete, interrupt */
-+	if (ints & IF_DSKBLK) {
-+		amiga_custom.intreq = IF_DSKBLK;
-+		generic_handle_irq(IRQ_AMIGA_DSKBLK);
-+	}
-+
-+	/* if software interrupt set, interrupt */
-+	if (ints & IF_SOFT) {
-+		amiga_custom.intreq = IF_SOFT;
-+		generic_handle_irq(IRQ_AMIGA_SOFT);
-+	}
-+}
-+
-+static void ami_int3(unsigned int irq, struct irq_desc *desc)
-+{
-+	unsigned short ints = amiga_custom.intreqr & amiga_custom.intenar;
-+
-+	/* if a blitter interrupt */
-+	if (ints & IF_BLIT) {
-+		amiga_custom.intreq = IF_BLIT;
-+		generic_handle_irq(IRQ_AMIGA_BLIT);
-+	}
-+
-+	/* if a copper interrupt */
-+	if (ints & IF_COPER) {
-+		amiga_custom.intreq = IF_COPER;
-+		generic_handle_irq(IRQ_AMIGA_COPPER);
-+	}
-+
-+	/* if a vertical blank interrupt */
-+	if (ints & IF_VERTB) {
-+		amiga_custom.intreq = IF_VERTB;
-+		generic_handle_irq(IRQ_AMIGA_VERTB);
-+	}
-+}
-+
-+static void ami_int4(unsigned int irq, struct irq_desc *desc)
-+{
-+	unsigned short ints = amiga_custom.intreqr & amiga_custom.intenar;
-+
-+	/* if audio 0 interrupt */
-+	if (ints & IF_AUD0) {
-+		amiga_custom.intreq = IF_AUD0;
-+		generic_handle_irq(IRQ_AMIGA_AUD0);
-+	}
-+
-+	/* if audio 1 interrupt */
-+	if (ints & IF_AUD1) {
-+		amiga_custom.intreq = IF_AUD1;
-+		generic_handle_irq(IRQ_AMIGA_AUD1);
-+	}
-+
-+	/* if audio 2 interrupt */
-+	if (ints & IF_AUD2) {
-+		amiga_custom.intreq = IF_AUD2;
-+		generic_handle_irq(IRQ_AMIGA_AUD2);
-+	}
-+
-+	/* if audio 3 interrupt */
-+	if (ints & IF_AUD3) {
-+		amiga_custom.intreq = IF_AUD3;
-+		generic_handle_irq(IRQ_AMIGA_AUD3);
-+	}
-+}
-+
-+static void ami_int5(unsigned int irq, struct irq_desc *desc)
-+{
-+	unsigned short ints = amiga_custom.intreqr & amiga_custom.intenar;
-+
-+	/* if serial receive buffer full interrupt */
-+	if (ints & IF_RBF) {
-+		/* acknowledge of IF_RBF must be done by the serial interrupt */
-+		generic_handle_irq(IRQ_AMIGA_RBF);
-+	}
-+
-+	/* if a disk sync interrupt */
-+	if (ints & IF_DSKSYN) {
-+		amiga_custom.intreq = IF_DSKSYN;
-+		generic_handle_irq(IRQ_AMIGA_DSKSYN);
-+	}
-+}
-+#else /* !CONFIG_GENERIC_HARDIRQS */
- static irqreturn_t ami_int1(int irq, void *dev_id)
- {
- 	unsigned short ints = amiga_custom.intreqr & amiga_custom.intenar;
-@@ -143,6 +236,7 @@ static irqreturn_t ami_int5(int irq, void *dev_id)
- 	}
- 	return IRQ_HANDLED;
- }
-+#endif /* !CONFIG_GENERIC_HARDIRQS */
- 
- 
+-#if 0
+-
+-#define	NUM_INT_SOURCES	(8 + NUM_ATARI_SOURCES)
+-
+-typedef void (*asm_irq_handler)(void);
+-
+-struct irqhandler {
+-	irqreturn_t (*handler)(int, void *, struct pt_regs *);
+-	void	*dev_id;
+-};
+-
+-struct irqparam {
+-	unsigned long	flags;
+-	const char	*devname;
+-};
+-
+-/*
+- * Array with irq's and their parameter data. This array is accessed from low
+- * level assembler code, so an element size of 8 allows usage of index scaling
+- * addressing mode.
+- */
+-static struct irqhandler irq_handler[NUM_INT_SOURCES];
+-
+-/*
+- * This array hold the rest of parameters of int handlers: type
+- * (slow,fast,prio) and the name of the handler. These values are only
+- * accessed from C
+- */
+-static struct irqparam irq_param[NUM_INT_SOURCES];
+-
+-/* check for valid int number (complex, sigh...) */
+-#define	IS_VALID_INTNO(n)											\
+-	((n) > 0 &&														\
+-	 /* autovec and ST-MFP ok anyway */								\
+-	 (((n) < TTMFP_SOURCE_BASE) ||									\
+-	  /* TT-MFP ok if present */									\
+-	  ((n) >= TTMFP_SOURCE_BASE && (n) < SCC_SOURCE_BASE &&			\
+-	   ATARIHW_PRESENT(TT_MFP)) ||									\
+-	  /* SCC ok if present and number even */						\
+-	  ((n) >= SCC_SOURCE_BASE && (n) < VME_SOURCE_BASE &&			\
+-	   !((n) & 1) && ATARIHW_PRESENT(SCC)) ||						\
+-	  /* greater numbers ok if they are registered VME vectors */		\
+-	  ((n) >= VME_SOURCE_BASE && (n) < VME_SOURCE_BASE + VME_MAX_SOURCES && \
+-		  free_vme_vec_bitmap & (1 << ((n) - VME_SOURCE_BASE)))))
+-
+-
+-/*
+- * Here start the assembler entry points for interrupts
+- */
+-
+-#define IRQ_NAME(nr) atari_slow_irq_##nr##_handler(void)
+-
+-#define	BUILD_SLOW_IRQ(n)						   \
+-asmlinkage void IRQ_NAME(n);						   \
+-/* Dummy function to allow asm with operands.  */			   \
+-void atari_slow_irq_##n##_dummy (void) {				   \
+-__asm__ (__ALIGN_STR "\n"						   \
+-"atari_slow_irq_" #n "_handler:\t"					   \
+-"	addl	%6,%5\n"	/* preempt_count() += HARDIRQ_OFFSET */	   \
+-	SAVE_ALL_INT "\n"						   \
+-	GET_CURRENT(%%d0) "\n"						   \
+-"	andb	#~(1<<(%c3&7)),%a4:w\n"	/* mask this interrupt */	   \
+-	/* get old IPL from stack frame */				   \
+-"	bfextu	%%sp@(%c2){#5,#3},%%d0\n"				   \
+-"	movew	%%sr,%%d1\n"						   \
+-"	bfins	%%d0,%%d1{#21,#3}\n"					   \
+-"	movew	%%d1,%%sr\n"		/* set IPL = previous value */	   \
+-"	addql	#1,%a0\n"						   \
+-"	lea	%a1,%%a0\n"						   \
+-"	pea	%%sp@\n"		/* push addr of frame */	   \
+-"	movel	%%a0@(4),%%sp@-\n"	/* push handler data */		   \
+-"	pea	(%c3+8)\n"		/* push int number */		   \
+-"	movel	%%a0@,%%a0\n"						   \
+-"	jbsr	%%a0@\n"		/* call the handler */		   \
+-"	addql	#8,%%sp\n"						   \
+-"	addql	#4,%%sp\n"						   \
+-"	orw	#0x0600,%%sr\n"						   \
+-"	andw	#0xfeff,%%sr\n"		/* set IPL = 6 again */		   \
+-"	orb	#(1<<(%c3&7)),%a4:w\n"	/* now unmask the int again */	   \
+-"	jbra	ret_from_interrupt\n"					   \
+-	 : : "i" (&kstat_cpu(0).irqs[n+8]), "i" (&irq_handler[n+8]),	   \
+-	     "n" (PT_OFF_SR), "n" (n),					   \
+-	     "i" (n & 8 ? (n & 16 ? &tt_mfp.int_mk_a : &st_mfp.int_mk_a)   \
+-		        : (n & 16 ? &tt_mfp.int_mk_b : &st_mfp.int_mk_b)), \
+-	     "m" (preempt_count()), "di" (HARDIRQ_OFFSET)		   \
+-);									   \
+-	for (;;);			/* fake noreturn */		   \
+-}
+-
+-BUILD_SLOW_IRQ(0);
+-BUILD_SLOW_IRQ(1);
+-BUILD_SLOW_IRQ(2);
+-BUILD_SLOW_IRQ(3);
+-BUILD_SLOW_IRQ(4);
+-BUILD_SLOW_IRQ(5);
+-BUILD_SLOW_IRQ(6);
+-BUILD_SLOW_IRQ(7);
+-BUILD_SLOW_IRQ(8);
+-BUILD_SLOW_IRQ(9);
+-BUILD_SLOW_IRQ(10);
+-BUILD_SLOW_IRQ(11);
+-BUILD_SLOW_IRQ(12);
+-BUILD_SLOW_IRQ(13);
+-BUILD_SLOW_IRQ(14);
+-BUILD_SLOW_IRQ(15);
+-BUILD_SLOW_IRQ(16);
+-BUILD_SLOW_IRQ(17);
+-BUILD_SLOW_IRQ(18);
+-BUILD_SLOW_IRQ(19);
+-BUILD_SLOW_IRQ(20);
+-BUILD_SLOW_IRQ(21);
+-BUILD_SLOW_IRQ(22);
+-BUILD_SLOW_IRQ(23);
+-BUILD_SLOW_IRQ(24);
+-BUILD_SLOW_IRQ(25);
+-BUILD_SLOW_IRQ(26);
+-BUILD_SLOW_IRQ(27);
+-BUILD_SLOW_IRQ(28);
+-BUILD_SLOW_IRQ(29);
+-BUILD_SLOW_IRQ(30);
+-BUILD_SLOW_IRQ(31);
+-
+-asm_irq_handler slow_handlers[32] = {
+-	[0]	= atari_slow_irq_0_handler,
+-	[1]	= atari_slow_irq_1_handler,
+-	[2]	= atari_slow_irq_2_handler,
+-	[3]	= atari_slow_irq_3_handler,
+-	[4]	= atari_slow_irq_4_handler,
+-	[5]	= atari_slow_irq_5_handler,
+-	[6]	= atari_slow_irq_6_handler,
+-	[7]	= atari_slow_irq_7_handler,
+-	[8]	= atari_slow_irq_8_handler,
+-	[9]	= atari_slow_irq_9_handler,
+-	[10]	= atari_slow_irq_10_handler,
+-	[11]	= atari_slow_irq_11_handler,
+-	[12]	= atari_slow_irq_12_handler,
+-	[13]	= atari_slow_irq_13_handler,
+-	[14]	= atari_slow_irq_14_handler,
+-	[15]	= atari_slow_irq_15_handler,
+-	[16]	= atari_slow_irq_16_handler,
+-	[17]	= atari_slow_irq_17_handler,
+-	[18]	= atari_slow_irq_18_handler,
+-	[19]	= atari_slow_irq_19_handler,
+-	[20]	= atari_slow_irq_20_handler,
+-	[21]	= atari_slow_irq_21_handler,
+-	[22]	= atari_slow_irq_22_handler,
+-	[23]	= atari_slow_irq_23_handler,
+-	[24]	= atari_slow_irq_24_handler,
+-	[25]	= atari_slow_irq_25_handler,
+-	[26]	= atari_slow_irq_26_handler,
+-	[27]	= atari_slow_irq_27_handler,
+-	[28]	= atari_slow_irq_28_handler,
+-	[29]	= atari_slow_irq_29_handler,
+-	[30]	= atari_slow_irq_30_handler,
+-	[31]	= atari_slow_irq_31_handler
+-};
+-
+-asmlinkage void atari_fast_irq_handler( void );
+-asmlinkage void atari_prio_irq_handler( void );
+-
+-/* Dummy function to allow asm with operands.  */
+-void atari_fast_prio_irq_dummy (void) {
+-__asm__ (__ALIGN_STR "\n"
+-"atari_fast_irq_handler:\n\t"
+-	"orw	#0x700,%%sr\n"		/* disable all interrupts */
+-"atari_prio_irq_handler:\n\t"
+-	"addl	%3,%2\n\t"		/* preempt_count() += HARDIRQ_OFFSET */
+-	SAVE_ALL_INT "\n\t"
+-	GET_CURRENT(%%d0) "\n\t"
+-	/* get vector number from stack frame and convert to source */
+-	"bfextu	%%sp@(%c1){#4,#10},%%d0\n\t"
+-	"subw	#(0x40-8),%%d0\n\t"
+-	"jpl	1f\n\t"
+-	"addw	#(0x40-8-0x18),%%d0\n"
+-    "1:\tlea	%a0,%%a0\n\t"
+-	"addql	#1,%%a0@(%%d0:l:4)\n\t"
+-	"lea	irq_handler,%%a0\n\t"
+-	"lea	%%a0@(%%d0:l:8),%%a0\n\t"
+-	"pea	%%sp@\n\t"		/* push frame address */
+-	"movel	%%a0@(4),%%sp@-\n\t"	/* push handler data */
+-	"movel	%%d0,%%sp@-\n\t"	/* push int number */
+-	"movel	%%a0@,%%a0\n\t"
+-	"jsr	%%a0@\n\t"		/* and call the handler */
+-	"addql	#8,%%sp\n\t"
+-	"addql	#4,%%sp\n\t"
+-	"jbra	ret_from_interrupt"
+-	 : : "i" (&kstat_cpu(0).irqs), "n" (PT_OFF_FORMATVEC),
+-	     "m" (preempt_count()), "di" (HARDIRQ_OFFSET)
+-);
+-	for (;;);
+-}
+-#endif
+-
  /*
-@@ -158,6 +252,15 @@ static irqreturn_t ami_int5(int irq, void *dev_id)
- 
- void __init amiga_init_IRQ(void)
- {
-+#ifdef CONFIG_GENERIC_HARDIRQS
-+	m68k_setup_irq_controller(&amiga_irq_chip, handle_simple_irq, IRQ_USER,
-+				  AMI_STD_IRQS);
-+
-+	irq_set_chained_handler(IRQ_AUTO_1, ami_int1);
-+	irq_set_chained_handler(IRQ_AUTO_3, ami_int3);
-+	irq_set_chained_handler(IRQ_AUTO_4, ami_int4);
-+	irq_set_chained_handler(IRQ_AUTO_5, ami_int5);
-+#else /* !CONFIG_GENERIC_HARDIRQS */
- 	if (request_irq(IRQ_AUTO_1, ami_int1, 0, "int1", NULL))
- 		pr_err("Couldn't register int%d\n", 1);
- 	if (request_irq(IRQ_AUTO_3, ami_int3, 0, "int3", NULL))
-@@ -169,6 +272,7 @@ void __init amiga_init_IRQ(void)
- 
- 	m68k_setup_irq_controller(&amiga_irq_chip, handle_simple_irq, IRQ_USER,
- 				  AMI_STD_IRQS);
-+#endif /* !CONFIG_GENERIC_HARDIRQS */
- 
- 	/* turn off PCMCIA interrupts */
- 	if (AMIGAHW_PRESENT(PCMCIA))
+  * Bitmap for free interrupt vector numbers
+  * (new vectors starting from 0x70 can be allocated by
 -- 
 1.7.0.4
