@@ -1,34 +1,64 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 20/27] m68k/vme: Convert VME to genirq
-Date: Sun, 30 Oct 2011 13:48:28 +0100
-Message-ID: <1319978915-10933-21-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 07/27] m68k/irq: Extract irq_set_chip()
+Date: Sun, 30 Oct 2011 13:48:15 +0100
+Message-ID: <1319978915-10933-8-git-send-email-geert@linux-m68k.org>
 References: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Hirst <rhirst@parisc-linux.org>
+Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Hirst <rhirst@parisc-linux.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/m68k/Kconfig |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ arch/m68k/kernel/ints.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index e4bd0c9..8ae37a8 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -88,9 +88,6 @@ config USE_GENERIC_HARDIRQS
- 	bool "Use genirq"
- 	depends on MMU
- 	depends on !APOLLO
--	depends on !MVME147
--	depends on !MVME16x
--	depends on !BVME6000
- 	depends on !SUN3X
- 	depends on !Q40
- 	depends on !SUN3
+diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
+index e68a3bd..4f9868e 100644
+--- a/arch/m68k/kernel/ints.c
++++ b/arch/m68k/kernel/ints.c
+@@ -55,6 +55,12 @@ static struct irq_data *irq_list[NR_IRQS];
+ static struct irq_chip *irq_chip[NR_IRQS];
+ static int irq_depth[NR_IRQS];
+ 
++static inline int irq_set_chip(unsigned int irq, struct irq_chip *chip)
++{
++	irq_chip[irq] = chip;
++	return 0;
++}
++
+ static int m68k_first_user_vec;
+ 
+ static struct irq_chip auto_irq_chip = {
+@@ -94,7 +100,7 @@ void __init init_IRQ(void)
+ 	}
+ 
+ 	for (i = IRQ_AUTO_1; i <= IRQ_AUTO_7; i++)
+-		irq_chip[i] = &auto_irq_chip;
++		irq_set_chip(i, &auto_irq_chip);
+ 
+ 	mach_init_IRQ();
+ }
+@@ -134,7 +140,7 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
+ 	BUG_ON(IRQ_USER + cnt > NR_IRQS);
+ 	m68k_first_user_vec = vec;
+ 	for (i = 0; i < cnt; i++)
+-		irq_chip[IRQ_USER + i] = &user_irq_chip;
++		irq_set_chip(IRQ_USER + i, &user_irq_chip);
+ 	*user_irqvec_fixup = vec - IRQ_USER;
+ 	if (handler)
+ 		*user_irqhandler_fixup = (u32)handler;
+@@ -157,7 +163,7 @@ void m68k_setup_irq_chip(struct irq_chip *contr, unsigned int irq,
+ 	int i;
+ 
+ 	for (i = 0; i < cnt; i++)
+-		irq_chip[irq + i] = contr;
++		irq_set_chip(irq + i, contr);
+ }
+ 
+ struct irq_data *new_irq_node(void)
 -- 
 1.7.0.4
