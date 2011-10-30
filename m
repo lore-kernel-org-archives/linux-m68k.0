@@ -1,111 +1,74 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net/ethernet: Move mac89x0.c from apple to cirrus
-Date: Sat, 29 Oct 2011 20:09:01 +0200
-Message-ID: <1319911741-9977-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 00/27 v7] m68k: Convert to genirq
+Date: Sun, 30 Oct 2011 13:48:08 +0100
+Message-ID: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from georges.telenet-ops.be ([195.130.137.68]:35126 "EHLO
-	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933724Ab1J2SJJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Oct 2011 14:09:09 -0400
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:47634 "EHLO
+	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752095Ab1J3Mso (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 08:48:44 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-Macintosh CS89x0 based ethernet cards use a Crystal Semiconductor (Now
-Cirrus Logic) CS89x0 chip, so the mac89x0 driver should be in
-drivers/net/ethernet/cirrus instead of drivers/net/ethernet/apple.
+This patch series converts the m68k/mmu (nommu was converted before)
+architecture to the generic hardirq framework.
 
-This also fixes a build problem, as the driver needs a header file from the
-cirrus directory:
+  - [01/27] ide-{cd,floppy,tape}: Do not include <linux/irq.h>
+  - [02/27] m68k/irq: Rename irq_controller to irq_chip
+  - [03/27] m68k/irq: Kill irq_node_t typedef, always use struct irq_node
+  - [04/27] m68k/irq: Rename irq_node to irq_data
+  - [05/27] m68k/irq: Switch irq_chip methods to "struct irq_data *data"
+  - [06/27] m68k/irq: Rename setup_irq() to m68k_setup_irq() and make it static
+  - [07/27] m68k/irq: Extract irq_set_chip()
+  - [08/27] m68k/irq: Add m68k_setup_irq_controller()
+  - [09/27] m68k/irq: Rename {,__}m68k_handle_int()
+  - [10/27] m68k/irq: Remove obsolete IRQ_FLG_* users
+  - [11/27] m68k/irq: Add genirq support
+  - [12/27] m68k/atari: Convert Atari to genirq
+  - [13/27] m68k/atari: Remove code and comments about different irq types
+  - [14/27] m68k/amiga: Refactor amiints.c
+  - [15/27] m68k/amiga: Convert Amiga to genirq
+  - [16/27] m68k/amiga: Optimize interrupts using chain handlers
+  - [17/27] m68k/mac: Convert Mac to genirq
+  - [18/27] m68k/mac: Optimize interrupts using chain handlers
+  - [19/27] m68k/hp300: Convert HP9000/300 and HP9000/400 to genirq
+  - [20/27] m68k/vme: Convert VME to genirq
+  - [21/27] m68k/apollo: Convert Apollo to genirq
+  - [22/27] m68k/sun3: Use the kstat_irqs_cpu() wrapper
+  - [23/27] m68k/sun3: Convert Sun3/3x to genirq
+  - [24/27] m68k/q40: Convert Q40/Q60 to genirq
+  - [25/27] m68k/irq: Remove obsolete m68k irq framework
+  - [26/27] m68k/irq: Remove obsolete support for user vector interrupt fixups
+  - [27/27] m68k/mac: Remove mac_irq_{en,dis}able() wrappers
 
-drivers/net/ethernet/apple/mac89x0.c:107:20: error: cs89x0.h: No such file or directory
+Changes in v7:
+  - Rebased after arch/m68k/Kconfig restructuring:
+      - The temporary USE_GENERIC_HARDIRQS is now in arch/m68k/Kconfig,
+        depending on MMU,
+  - Rebased after arch/m68k/kernel/Makefile merge,
+  - Split off IRQ_FLG_* removal in separate commits:
+      - Postpone removals in drivers that should go through the respective
+        driver trees (net/scsi/staging/serial),
+      - Postpone final removal to v3.3,
+  - Dropped (went in via another tree):
+      - genirq: Add missing "else" in irq_shutdown(),
+      - keyboard: Do not include <linux/irq.>,
+  - Added Patch 27 ("m68k/mac: Remove mac_irq_{en,dis}able() wrappers")
+  
+I added this to the m68k for-next and for-3.2 branches.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/ethernet/apple/Kconfig               |   12 ------------
- drivers/net/ethernet/apple/Makefile              |    1 -
- drivers/net/ethernet/cirrus/Kconfig              |   14 +++++++++++++-
- drivers/net/ethernet/cirrus/Makefile             |    1 +
- drivers/net/ethernet/{apple => cirrus}/mac89x0.c |    0
- 5 files changed, 14 insertions(+), 14 deletions(-)
- rename drivers/net/ethernet/{apple => cirrus}/mac89x0.c (100%)
+I'll rebase it once more on top of v3.2-rc1 once that comes out (currently
+it's based on a random base point).
 
-diff --git a/drivers/net/ethernet/apple/Kconfig b/drivers/net/ethernet/apple/Kconfig
-index a759d54..1375e2d 100644
---- a/drivers/net/ethernet/apple/Kconfig
-+++ b/drivers/net/ethernet/apple/Kconfig
-@@ -52,18 +52,6 @@ config BMAC
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called bmac.
- 
--config MAC89x0
--	tristate "Macintosh CS89x0 based ethernet cards"
--	depends on MAC
--	---help---
--	  Support for CS89x0 chipset based Ethernet cards.  If you have a
--	  Nubus or LC-PDS network (Ethernet) card of this type, say Y and
--	  read the Ethernet-HOWTO, available from
--	  <http://www.tldp.org/docs.html#howto>.
--
--	  To compile this driver as a module, choose M here. This module will
--	  be called mac89x0.
--
- config MACMACE
- 	bool "Macintosh (AV) onboard MACE ethernet"
- 	depends on MAC
-diff --git a/drivers/net/ethernet/apple/Makefile b/drivers/net/ethernet/apple/Makefile
-index 0d3a591..86eaa17 100644
---- a/drivers/net/ethernet/apple/Makefile
-+++ b/drivers/net/ethernet/apple/Makefile
-@@ -4,5 +4,4 @@
- 
- obj-$(CONFIG_MACE) += mace.o
- obj-$(CONFIG_BMAC) += bmac.o
--obj-$(CONFIG_MAC89x0) += mac89x0.o
- obj-$(CONFIG_MACMACE) += macmace.o
-diff --git a/drivers/net/ethernet/cirrus/Kconfig b/drivers/net/ethernet/cirrus/Kconfig
-index 6cbb81c..1f8648f 100644
---- a/drivers/net/ethernet/cirrus/Kconfig
-+++ b/drivers/net/ethernet/cirrus/Kconfig
-@@ -6,7 +6,7 @@ config NET_VENDOR_CIRRUS
- 	bool "Cirrus devices"
- 	default y
- 	depends on ISA || EISA || MACH_IXDP2351 || ARCH_IXDP2X01 \
--		|| MACH_MX31ADS || MACH_QQ2440 || (ARM && ARCH_EP93XX)
-+		|| MACH_MX31ADS || MACH_QQ2440 || (ARM && ARCH_EP93XX) || MAC
- 	---help---
- 	  If you have a network (Ethernet) card belonging to this class, say Y
- 	  and read the Ethernet-HOWTO, available from
-@@ -47,4 +47,16 @@ config EP93XX_ETH
- 	  This is a driver for the ethernet hardware included in EP93xx CPUs.
- 	  Say Y if you are building a kernel for EP93xx based devices.
- 
-+config MAC89x0
-+	tristate "Macintosh CS89x0 based ethernet cards"
-+	depends on MAC
-+	---help---
-+	  Support for CS89x0 chipset based Ethernet cards.  If you have a
-+	  Nubus or LC-PDS network (Ethernet) card of this type, say Y and
-+	  read the Ethernet-HOWTO, available from
-+	  <http://www.tldp.org/docs.html#howto>.
-+
-+	  To compile this driver as a module, choose M here. This module will
-+	  be called mac89x0.
-+
- endif # NET_VENDOR_CIRRUS
-diff --git a/drivers/net/ethernet/cirrus/Makefile b/drivers/net/ethernet/cirrus/Makefile
-index 14bd77e..ca245e2 100644
---- a/drivers/net/ethernet/cirrus/Makefile
-+++ b/drivers/net/ethernet/cirrus/Makefile
-@@ -4,3 +4,4 @@
- 
- obj-$(CONFIG_CS89x0) += cs89x0.o
- obj-$(CONFIG_EP93XX_ETH) += ep93xx_eth.o
-+obj-$(CONFIG_MAC89x0) += mac89x0.o
-diff --git a/drivers/net/ethernet/apple/mac89x0.c b/drivers/net/ethernet/cirrus/mac89x0.c
-similarity index 100%
-rename from drivers/net/ethernet/apple/mac89x0.c
-rename to drivers/net/ethernet/cirrus/mac89x0.c
--- 
-1.7.0.4
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
