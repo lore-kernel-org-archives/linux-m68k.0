@@ -1,80 +1,91 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 01/27] ide-{cd,floppy,tape}: Do not include <linux/irq.h>
-Date: Sun, 30 Oct 2011 13:48:09 +0100
-Message-ID: <1319978915-10933-2-git-send-email-geert@linux-m68k.org>
-References: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH 06/36] m68k: modify user space access functions to support
+ ColdFire CPUs
+Date: Sun, 30 Oct 2011 14:02:53 +0100
+Message-ID: <CAMuHMdVRvncpVWNa+2EUybv3+v+3PzQ4R_7-sqV71pVqQ67qoQ@mail.gmail.com>
+References: <1319527168-11166-1-git-send-email-gerg@snapgear.com>
+	<1319527168-11166-7-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1319978915-10933-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:37755 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754519Ab1J3NCy convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Oct 2011 09:02:54 -0400
+Received: by iaby12 with SMTP id y12so6084314iab.19
+        for <linux-m68k@vger.kernel.org>; Sun, 30 Oct 2011 06:02:54 -0700 (PDT)
+In-Reply-To: <1319527168-11166-7-git-send-email-gerg@snapgear.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-The top of <linux/irq.h> has this comment:
+On Tue, Oct 25, 2011 at 09:18,  <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
+>
+> Modify the user space access functions to support the ColdFire V4e co=
+res
+> running with MMU enabled.
+>
+> The ColdFire processors do not support the "moves" instruction used b=
+y
+> the traditional 680x0 processors for moving data into and out of anot=
+her
+> address space. They only support the notion of a single address space=
+,
+> and you use the usual "move" instruction to access that.
+>
+> I am interrested in what others think if this approach. It is a littl=
+e
+> ugly, but it does mean that the same code is used, not a complete
+> duplicate that is almost the same except for the "moves" instructions=
+=2E
+> It does also mean in this form that it is an either/or compile. It
+> can't support both ColdFire and 680x0 in the same binary as it is.
+>
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
- * Please do not include this file in generic code.  There is currently
- * no requirement for any architecture to implement anything held
- * within this file.
- *
- * Thanks. --rmk
+> +#ifdef CONFIG_COLDFIRE
+> +/*
+> + * The ColdFire processors do not support the moves instruction used=
+ by
+> + * the traditional 680x0 processors for moving data into and out of
+> + * another address space. They only support the notion of a single a=
+ddress
+> + * space, and you use the usual move instruction to access that.
+> + *
+> + * All the user space access functions are otherwise the same on Col=
+dFire
+> + * as the other 680x0 processors. So lets keep the code simple and j=
+ust
+> + * define in what we need to use.
+> + */
+> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0MOVES =C2=A0 "move"
+> +#else
+> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0MOVES =C2=A0 "moves"
+> +#endif /* CONFIG_COLDFIRE */
 
-Remove inclusion of <linux/irq.h>, to prevent the following compile err=
-or
-from happening soon:
+I did the same thing originally when trying to get uClinux running on
+MMU-less Amigas, so it's fine for me.
 
-| include/linux/irq.h:132: error: redefinition of =E2=80=98struct irq_d=
-ata=E2=80=99
-| include/linux/irq.h:286: error: redefinition of =E2=80=98struct irq_c=
-hip=E2=80=99
+If I'm not mistaken, this will also make it easier to merge uaccess.h a=
+gain in
+the long run, as the version with "move" should work on all MMU-less
+platforms, right?
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Borislav Petkov <bp@alien8.de>
-Cc: linux-ide@vger.kernel.org
----
- drivers/ide/ide-cd.c     |    1 -
- drivers/ide/ide-floppy.c |    1 -
- drivers/ide/ide-tape.c   |    1 -
- 3 files changed, 0 insertions(+), 3 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/ide/ide-cd.c b/drivers/ide/ide-cd.c
-index 04b0956..8126824 100644
---- a/drivers/ide/ide-cd.c
-+++ b/drivers/ide/ide-cd.c
-@@ -43,7 +43,6 @@
- /* For SCSI -> ATAPI command conversion */
- #include <scsi/scsi.h>
-=20
--#include <linux/irq.h>
- #include <linux/io.h>
- #include <asm/byteorder.h>
- #include <linux/uaccess.h>
-diff --git a/drivers/ide/ide-floppy.c b/drivers/ide/ide-floppy.c
-index 61fdf54..3d42043 100644
---- a/drivers/ide/ide-floppy.c
-+++ b/drivers/ide/ide-floppy.c
-@@ -35,7 +35,6 @@
- #include <scsi/scsi_ioctl.h>
-=20
- #include <asm/byteorder.h>
--#include <linux/irq.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <asm/unaligned.h>
-diff --git a/drivers/ide/ide-tape.c b/drivers/ide/ide-tape.c
-index 7ecb1ad..ce8237d 100644
---- a/drivers/ide/ide-tape.c
-+++ b/drivers/ide/ide-tape.c
-@@ -41,7 +41,6 @@
- #include <scsi/scsi.h>
-=20
- #include <asm/byteorder.h>
--#include <linux/irq.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <asm/unaligned.h>
---=20
-1.7.0.4
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
