@@ -1,32 +1,35 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: SCC - Move Atari serial driver to staging
-Date: Mon, 31 Oct 2011 19:58:11 +0100
-Message-ID: <CAMuHMdWVchre0g6dE1j_s-+Wc3n17uifQLH6kRfJ9Q2DKfqBLQ@mail.gmail.com>
-References: <alpine.DEB.2.00.1103201010001.13805@ayla.of.borg>
+Subject: Re: [PATCH 00/16] more mac68k fixes and cleanup
+Date: Mon, 31 Oct 2011 20:16:45 +0100
+Message-ID: <CAMuHMdX1-GOo7BgyzwYHxZaBghDMvvKn88snykWtEjpuy31QbQ@mail.gmail.com>
+References: <20111023141108.856998818@telegraphics.com.au>
+	<CAMuHMdUGjity+yvTyShmTLF3qtw0b=DqB5cjtDgec3p_vJG=fA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1103201010001.13805@ayla.of.borg>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:54116 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933236Ab1JaTQp convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Oct 2011 15:16:45 -0400
+Received: by iaby12 with SMTP id y12so7487975iab.19
+        for <linux-m68k@vger.kernel.org>; Mon, 31 Oct 2011 12:16:45 -0700 (PDT)
+In-Reply-To: <CAMuHMdUGjity+yvTyShmTLF3qtw0b=DqB5cjtDgec3p_vJG=fA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org
 
-On Sun, Mar 20, 2011 at 10:11, Geert Uytterhoeven <geert@linux-m68k.org=
+On Mon, Oct 31, 2011 at 19:35, Geert Uytterhoeven <geert@linux-m68k.org=
 > wrote:
-> Cfr. commit 4c37705877e74c02c968735c2eee0f84914cf557 ("tty: move obso=
-lete and
-> broken generic_serial drivers to drivers/staging/generic_serial/")
+>> I suppose that after all of the renaming recently this series will n=
+eed
+>> to be rebased (?)
+>
+> "git am" is smart enough to detect that drivers/net/ got restructured=
+=2E
 
-As generic serial is gone too, cfr. commit
-bb2a97e9ccd525dd9c3326988e8c676d15d3e12a ("Staging: delete generic_seri=
-al
-drivers"), I'll remove the atari_scc driver. It has to be resurrected a=
-s a new
-preferred-type-of-serial-driver-of-the-day driver anyway.
-
-You can still get its core logic from the eternal git history, though.
+Doh, s/am/rebase/
 
 Gr{oetje,eeting}s,
 
