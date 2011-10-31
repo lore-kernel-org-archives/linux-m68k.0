@@ -1,44 +1,55 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 00/36] m68k: ColdFire MMU support
-Date: Mon, 31 Oct 2011 15:46:32 +1000
-Message-ID: <4EAE3638.60604@snapgear.com>
-References: <1319527168-11166-1-git-send-email-gerg@snapgear.com> <CAMuHMdX_W5_nW=KYmT4UC-gd7d=J0=2_ZcyZVZkH7nnXgy-Kxg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: Revive lost DIO bus config option
+Date: Mon, 31 Oct 2011 18:08:13 +0100
+Message-ID: <CAMuHMdXSMcbb3AOtwj2pErSsGQpUDXq98ziyZLvumFgRSDqDaw@mail.gmail.com>
+References: <1319835295-19519-1-git-send-email-geert@linux-m68k.org>
+	<4EAE1B3A.7010303@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:20340 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752646Ab1JaFp7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Oct 2011 01:45:59 -0400
-In-Reply-To: <CAMuHMdX_W5_nW=KYmT4UC-gd7d=J0=2_ZcyZVZkH7nnXgy-Kxg@mail.gmail.com>
+In-Reply-To: <4EAE1B3A.7010303@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Greg,
 
-On 30/10/11 23:47, Geert Uytterhoeven wrote:
-> On Tue, Oct 25, 2011 at 09:18,<gerg@snapgear.com>  wrote:
->> The following patch set adds support for running the V4e ColdFire cores
->> with their MMU enabled. This is very much a request for comments. I expect
->> a lot more cleanup is required here. But this is a start.
+On Mon, Oct 31, 2011 at 04:51, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 29/10/11 06:54, Geert Uytterhoeven wrote:
+>> commit 0e152d80507b75c00aac60f2ffc586360687cd52 ("m68k: reorganize K=
+config
+>> options to improve mmu/non-mmu selections") accidentally dropped the=
+ DIO
+>> bus config option. Re-add it to the "Bus support" section.
+>>
+>> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
 >
-> I replied a few comments to the individual patches, but in general it looks
-> OK, so you can add my Acked-by.
+> Oops, another one.
 
-Thats great, thanks, I really appreciate the review.
+That's the last one. I double checked all config changes in my test tre=
+es.
 
-I will probably send a v2 after you have pushed the IRQ changes.
-No doubt a couple of changes can be dropped from this patch set then.
+> Acked-by: Greg Ungerer <gerg@uclinux.org>
+>
+> Are you going to push these to Linus, or do you want me to
+> collect these fixes and push?
 
-Regards
-Greg
+I've added these to my for-3.2 branch, to push out after v3.2-rc1.
 
+Gr{oetje,eeting}s,
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
