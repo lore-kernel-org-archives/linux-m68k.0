@@ -1,34 +1,74 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/ethernet: Move mac89x0.c from apple to cirrus
-Date: Tue, 01 Nov 2011 19:33:05 -0400 (EDT)
-Message-ID: <20111101.193305.2191680732467562808.davem@davemloft.net>
-References: <1319911741-9977-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/atari: SCC - Move Atari serial driver to staging
+Date: Wed, 2 Nov 2011 21:30:10 +0100
+Message-ID: <CAMuHMdWCb-As2U1rxtaa9QWznc_yD_MWG3-5AMy5LDvp1jJUXw__23384.991932153$1320266177$gmane$org@mail.gmail.com>
+References: <alpine.DEB.2.00.1103201010001.13805@ayla.of.borg>
+	<CAMuHMdWVchre0g6dE1j_s-+Wc3n17uifQLH6kRfJ9Q2DKfqBLQ@mail.gmail.com>
+	<CAOmrzkJGhoBfqeTGROWdDXeL4HVJq2XaPJEtn0CzuNTOyCab9A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([198.137.202.13]:38397 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755986Ab1KAXeO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Nov 2011 19:34:14 -0400
-In-Reply-To: <1319911741-9977-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <CAOmrzkJGhoBfqeTGROWdDXeL4HVJq2XaPJEtn0CzuNTOyCab9A@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: jeffrey.t.kirsher@intel.com, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Michael Schmitz <schmitzmic@googlemail.com>, Alan Cox <alan@linux.intel.com>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 29 Oct 2011 20:09:01 +0200
+On Tue, Nov 1, 2011 at 21:03, Michael Schmitz <schmitzmic@googlemail.co=
+m> wrote:
+> On Tue, Nov 1, 2011 at 7:58 AM, Geert Uytterhoeven <geert@linux-m68k.=
+org> wrote:
+>> On Sun, Mar 20, 2011 at 10:11, Geert Uytterhoeven <geert@linux-m68k.=
+org> wrote:
+>>> Cfr. commit 4c37705877e74c02c968735c2eee0f84914cf557 ("tty: move ob=
+solete and
+>>> broken generic_serial drivers to drivers/staging/generic_serial/")
+>>
+>> As generic serial is gone too, cfr. commit
+>> bb2a97e9ccd525dd9c3326988e8c676d15d3e12a ("Staging: delete generic_s=
+erial
+>> drivers"), I'll remove the atari_scc driver. It has to be resurrecte=
+d as a new
+>> preferred-type-of-serial-driver-of-the-day driver anyway.
+>
+> Guess I've seen that coming... I had looked at other existing SCC
+> drivers in the tree and Sun, SGI and Mac all had variants of it with
+> different quirks. Enough to base a clean restart on. What is today's
+> preferred-type-of-serial-driver-of-the-day driver framework, if I may
+> ask?
 
-> Macintosh CS89x0 based ethernet cards use a Crystal Semiconductor (Now
-> Cirrus Logic) CS89x0 chip, so the mac89x0 driver should be in
-> drivers/net/ethernet/cirrus instead of drivers/net/ethernet/apple.
-> 
-> This also fixes a build problem, as the driver needs a header file from the
-> cirrus directory:
-> 
-> drivers/net/ethernet/apple/mac89x0.c:107:20: error: cs89x0.h: No such file or directory
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Good question! Last year it was _not_ drivers/serial...
 
-Applied, thanks.
+On Thu, Sep 2, 2010 at 22:12, Geert Uytterhoeven <geert@linux-m68k.org>=
+ wrote:
+> On Mon, Aug 30, 2010 at 15:00, Alan Cox <alan@lxorguk.ukuu.org.uk> wr=
+ote:
+>> Please don't convert stuff to serial_core - it's got some horrible
+>> problems with adapting to the new locking model, its buffering model
+>> pre-dates kfifo and all in all serial_core needs a rewrite not more =
+users.
+>
+> Funny... so "fortunately" we never found time to move the m68k serial=
+ drivers
+> to driver/serial/? Long live procrastination ;-)
+
+So let's ask the experts: what will be the preferred serial driver fram=
+ework
+in 2012?
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
