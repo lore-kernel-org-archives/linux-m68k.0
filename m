@@ -1,45 +1,57 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: add ColdFire FPU support for the V4e ColdFire CPU's
-Date: Thu, 3 Nov 2011 17:01:39 +1000
-Message-ID: <4EB23C53.8040709@snapgear.com>
-References: <1320299645-9105-1-git-send-email-gerg@snapgear.com> <1320299645-9105-2-git-send-email-gerg@snapgear.com> <alpine.LNX.2.00.1111031735050.2899@nippy.intranet> <alpine.LNX.2.00.1111031752060.2899@nippy.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: make fp register stores consistent for m68k and ColdFire
+Date: Thu, 3 Nov 2011 09:23:05 +0100
+Message-ID: <CAMuHMdVdwKG7jyTTi7Xbx11Avj=kLQL7wVV0gXwuZ71FQG5KPg@mail.gmail.com>
+References: <1320299907-11410-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:38363 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753400Ab1KCHEJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 3 Nov 2011 03:04:09 -0400
-In-Reply-To: <alpine.LNX.2.00.1111031752060.2899@nippy.intranet>
+Received: from mail-fx0-f46.google.com ([209.85.161.46]:50627 "EHLO
+	mail-fx0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752238Ab1KCIXG convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 3 Nov 2011 04:23:06 -0400
+Received: by faao14 with SMTP id o14so1245335faa.19
+        for <linux-m68k@vger.kernel.org>; Thu, 03 Nov 2011 01:23:05 -0700 (PDT)
+In-Reply-To: <1320299907-11410-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Finn,
-
-On 03/11/11 16:53, Finn Thain wrote:
-> On Thu, 3 Nov 2011, I wrote:
+On Thu, Nov 3, 2011 at 06:58,  <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
 >
->> Is it actually possible to run the same kernel binary on CF and 680x0? If
->> not, shouldn't these run-time tests be compile-time #ifdefs?
+> There is no reason we can't make the saved fp registers the same for =
+all
+> m68k types and ColdFire. There is a little wasted space, but the code
+> consistentcy and cleanliness is a big win.
+
+consistency
+
+> sigcontext.h is an exported header, but currently there is no in-main=
+line
+> users of the !__uClinux__ and __mcoldfire__ case that this change eff=
+ects.
+> Even better this change actually makes this structure consistent with
+> the out-of-mainline ColdFire/MMU code.
 >
-> Oops, I forgot about the compiler's optimiser...
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-Yeah, thats right. Most of the code here is optimized out currently.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-It may be possible to have a single image boot on both m68k and
-ColdFire. And where ever possible I am leaving the option open
-in the code. But we have quite a few hurdles to jump over before
-the code will actually be able to do it.
+Gr{oetje,eeting}s,
 
-Regards
-Greg
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
