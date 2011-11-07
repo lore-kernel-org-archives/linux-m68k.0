@@ -1,47 +1,68 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] [TRIVIAL] 8250_hp300: Fix warning typo 'CONFIG_8250'
-Date: Mon, 07 Nov 2011 14:44:36 +0100
-Message-ID: <1320673476.14409.367.camel@x61.thuisdomein>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/hp300: Export hp300_ledstate
+Date: Mon,  7 Nov 2011 21:27:00 +0100
+Message-ID: <1320697620-16385-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Philip Blundell <philb@gnu.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+The accidental loss of CONFIG_DIO in commit
+0e152d80507b75c00aac60f2ffc586360687cd52 ("m68k: reorganize Kconfig options
+to improve mmu/non-mmu selections") exposed a missing symbol export in
+m68k allmodconfig.  If CONFIG_HP300=y but CONFIG_HPLANCE (which is bool,
+and depends on CONFIG_DIO) is not set, and CONFIG_MVME147=y and
+CONFIG_MVME147_NET=m, 7990.c is compiled as a module, giving:
+
+ERROR: "ledstate" [drivers/net/ethernet/amd/7990.ko] undefined!
+
+Add the missing export, and rename ledstate to hp300_ledstate while we're
+at it, as it's a too generic name.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-0) This patch is untested: I have neither the hardware nor the toolchain
-needed. It should be correct (though it makes an already too long line
-even longer). Nevertheless I think a proper solution is a patch that
-drops this warning entirely. I've CC'd the m68k people for further
-feedback.
+ arch/m68k/hp300/config.c        |    3 ++-
+ arch/m68k/include/asm/blinken.h |    8 ++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-1) If SERIAL_8250_HP300 is set but neither HPDCA nor HPAPCI are set we
-end up with an elaborate nop, don't we? Initialization should always
-fail in that case. So effectively SERIAL_8250_HP300 depends on HPDCA
-and/or HPAPCI. Was there perhaps some problem in translating that
-dependency into a Kconfig dependency?
-
-2) Related question: is it useful to have both HPDCA and HPAPCI set?
-
- drivers/tty/serial/8250_hp300.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/tty/serial/8250_hp300.c b/drivers/tty/serial/8250_hp300.c
-index c13438c..dc41fbb 100644
---- a/drivers/tty/serial/8250_hp300.c
-+++ b/drivers/tty/serial/8250_hp300.c
-@@ -21,7 +21,7 @@
- #include "8250.h"
+diff --git a/arch/m68k/hp300/config.c b/arch/m68k/hp300/config.c
+index 1c05a62..bf16af1 100644
+--- a/arch/m68k/hp300/config.c
++++ b/arch/m68k/hp300/config.c
+@@ -24,7 +24,8 @@
  
- #if !defined(CONFIG_HPDCA) && !defined(CONFIG_HPAPCI)
--#warning CONFIG_8250 defined but neither CONFIG_HPDCA nor CONFIG_HPAPCI defined, are you sure?
-+#warning CONFIG_SERIAL_8250 defined but neither CONFIG_HPDCA nor CONFIG_HPAPCI defined, are you sure?
- #endif
+ unsigned long hp300_model;
+ unsigned long hp300_uart_scode = -1;
+-unsigned char ledstate;
++unsigned char hp300_ledstate;
++EXPORT_SYMBOL(hp300_ledstate);
  
- #ifdef CONFIG_HPAPCI
+ static char s_hp330[] __initdata = "330";
+ static char s_hp340[] __initdata = "340";
+diff --git a/arch/m68k/include/asm/blinken.h b/arch/m68k/include/asm/blinken.h
+index 1a749cf..0626582 100644
+--- a/arch/m68k/include/asm/blinken.h
++++ b/arch/m68k/include/asm/blinken.h
+@@ -17,15 +17,15 @@
+ 
+ #define HP300_LEDS		0xf001ffff
+ 
+-extern unsigned char ledstate;
++extern unsigned char hp300_ledstate;
+ 
+ static __inline__ void blinken_leds(int on, int off)
+ {
+ 	if (MACH_IS_HP300)
+ 	{
+-		ledstate |= on;
+-		ledstate &= ~off;
+-		out_8(HP300_LEDS, ~ledstate);
++		hp300_ledstate |= on;
++		hp300_ledstate &= ~off;
++		out_8(HP300_LEDS, ~hp300_ledstate);
+ 	}
+ }
+ 
 -- 
-1.7.4.4
+1.7.0.4
