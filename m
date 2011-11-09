@@ -1,128 +1,101 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.2
-Date: Wed, 9 Nov 2011 20:37:37 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1111092029470.11859@ayla.of.borg>
+Subject: Re: [PATCH] [TRIVIAL] 8250_hp300: Fix warning typo 'CONFIG_8250'
+Date: Wed, 9 Nov 2011 20:52:35 +0100
+Message-ID: <CAMuHMdVMkLgqjwb7yvFR-tLR2pHcckxkTLDkjNSNjAat9NZ1Mg__31913.1343778738$1320868377$gmane$org@mail.gmail.com>
+References: <1320673476.14409.367.camel@x61.thuisdomein>
+	<alpine.LNX.2.00.1111081025470.1964@pobox.suse.cz>
+	<1320744887.14409.379.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1320744887.14409.379.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Alan Cox <alan@linux.intel.com>, Greg Kroah-Hartman <gregkh@suse.de>, Philip Blundell <philb@gnu.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi Paul,
 
-	Hi Linus,
+On Tue, Nov 8, 2011 at 10:34, Paul Bolle <pebolle@tiscali.nl> wrote:
+> On Tue, 2011-11-08 at 10:26 +0100, Jiri Kosina wrote:
+>> On Mon, 7 Nov 2011, Paul Bolle wrote:
+>> > 1) If SERIAL_8250_HP300 is set but neither HPDCA nor HPAPCI are se=
+t we
+>> > end up with an elaborate nop, don't we? Initialization should alwa=
+ys
+>> > fail in that case. So effectively SERIAL_8250_HP300 depends on HPD=
+CA
+>> > and/or HPAPCI. Was there perhaps some problem in translating that
+>> > dependency into a Kconfig dependency?
+>
+> [...]
+>
+>> > --- a/drivers/tty/serial/8250_hp300.c
+>> > +++ b/drivers/tty/serial/8250_hp300.c
+>> > @@ -21,7 +21,7 @@
+>> > =C2=A0#include "8250.h"
+>> >
+>> > =C2=A0#if !defined(CONFIG_HPDCA) && !defined(CONFIG_HPAPCI)
+>> > -#warning CONFIG_8250 defined but neither CONFIG_HPDCA nor CONFIG_=
+HPAPCI defined, are you sure?
+>> > +#warning CONFIG_SERIAL_8250 defined but neither CONFIG_HPDCA nor =
+CONFIG_HPAPCI defined, are you sure?
+>> > =C2=A0#endif
+>>
+>> What is the point of this warning anyway? Shouldn't everything neces=
+sary
+>> be taken care of by Kconfig rules?
+>
+> That's exactly what I'm trying to find out with my questions (aimed a=
+t
+> the m68k people, see 1) above).
 
-As promised, here's the second pull request for the m68k changes for 3.2:
-  - The biggest chunk is the long-overdue conversion of m68k to the generic
-    hardirq framework.
-    (the IDE change was acked by Thomas Gleixner and Borislav Petkov)
-  - Two commits fix the loss of two sets of config options during the
-    m68k/m68knommu Kconfig merge.
+I have this reminder in my local tree:
 
-Thanks for pulling!
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+index 6033f5d..354ce91 100644
+--- a/arch/m68k/Kconfig.devices
++++ b/arch/m68k/Kconfig.devices
+@@ -109,6 +109,7 @@ config MULTIFACE_III_TTY
+          To compile this driver as a module, choose M here.
 
-The following changes since commit 1ea6b8f48918282bdca0b32a34095504ee65bab5:
-  Linus Torvalds (1):
-        Linux 3.2-rc1
+ config HPDCA
++       # FIXME Should be bool and select SERIAL_8250_HP300?
+        tristate "HP DCA serial support"
+        depends on DIO && SERIAL_8250
+        help
+@@ -116,6 +117,7 @@ config HPDCA
+          machine, say Y here.
 
-are available in the git repository at:
+ config HPAPCI
++       # FIXME Should be bool and select SERIAL_8250_HP300?
+        tristate "HP APCI serial support"
+        depends on HP300 && SERIAL_8250 && EXPERIMENTAL
+        help
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+However, if these two options are bool, SERIAL_8250_HP300 can never
+be m anymore.
 
-Finn Thain (1):
-      m68k/mac: Remove mac_irq_{en,dis}able() wrappers
+Ah, if we just kill SERIAL_8250_HP300, we can put in the Makefile:
 
-Geert Uytterhoeven (28):
-      m68k: Revive lost ARAnyM config options
-      m68k: Revive lost DIO bus config option
-      ide-{cd,floppy,tape}: Do not include <linux/irq.h>
-      m68k/irq: Rename irq_controller to irq_chip
-      m68k/irq: Kill irq_node_t typedef, always use struct irq_node
-      m68k/irq: Rename irq_node to irq_data
-      m68k/irq: Switch irq_chip methods to "struct irq_data *data"
-      m68k/irq: Rename setup_irq() to m68k_setup_irq() and make it static
-      m68k/irq: Extract irq_set_chip()
-      m68k/irq: Add m68k_setup_irq_controller()
-      m68k/irq: Rename {,__}m68k_handle_int()
-      m68k/irq: Remove obsolete IRQ_FLG_* users
-      m68k/irq: Add genirq support
-      m68k/atari: Convert Atari to genirq
-      m68k/atari: Remove code and comments about different irq types
-      m68k/amiga: Refactor amiints.c
-      m68k/amiga: Convert Amiga to genirq
-      m68k/amiga: Optimize interrupts using chain handlers
-      m68k/mac: Convert Mac to genirq
-      m68k/mac: Optimize interrupts using chain handlers
-      m68k/hp300: Convert HP9000/300 and HP9000/400 to genirq
-      m68k/vme: Convert VME to genirq
-      m68k/apollo: Convert Apollo to genirq
-      m68k/sun3: Use the kstat_irqs_cpu() wrapper
-      m68k/sun3: Convert Sun3/3x to genirq
-      m68k/q40: Convert Q40/Q60 to genirq
-      m68k/irq: Remove obsolete m68k irq framework
-      m68k/irq: Remove obsolete support for user vector interrupt fixups
+obj-$(CONFIG_HPDCA) +=3D 8250_hp300.o
+obj-$(CONFIG_HPAPCI) +=3D 8250_hp300.o
 
- arch/m68k/Kconfig                 |    4 +-
- arch/m68k/Kconfig.bus             |    9 +
- arch/m68k/Kconfig.devices         |   31 ++++
- arch/m68k/amiga/amiints.c         |  168 ++++++++------------
- arch/m68k/amiga/cia.c             |   39 +++--
- arch/m68k/apollo/dn_ints.c        |   35 +++--
- arch/m68k/atari/ataints.c         |  274 +++----------------------------
- arch/m68k/bvme6000/config.c       |    2 +-
- arch/m68k/hp300/time.c            |    2 +-
- arch/m68k/include/asm/hardirq.h   |    5 +
- arch/m68k/include/asm/irq.h       |   69 ++------
- arch/m68k/include/asm/macintosh.h |    2 +
- arch/m68k/include/asm/q40ints.h   |    3 -
- arch/m68k/kernel/Makefile         |    9 +-
- arch/m68k/kernel/entry_mm.S       |    7 +-
- arch/m68k/kernel/ints.c           |  323 ++++---------------------------------
- arch/m68k/mac/baboon.c            |   21 +--
- arch/m68k/mac/iop.c               |   10 +-
- arch/m68k/mac/macints.c           |   24 ++--
- arch/m68k/mac/oss.c               |   54 +++----
- arch/m68k/mac/psc.c               |   49 +++---
- arch/m68k/mac/via.c               |   74 ++++-----
- arch/m68k/mvme147/config.c        |    5 +-
- arch/m68k/mvme16x/config.c        |    2 +-
- arch/m68k/q40/q40ints.c           |   60 ++++----
- arch/m68k/sun3/sun3ints.c         |   46 +++---
- drivers/ide/ide-cd.c              |    1 -
- drivers/ide/ide-floppy.c          |    1 -
- drivers/ide/ide-tape.c            |    1 -
- drivers/macintosh/via-macii.c     |    2 +-
- drivers/macintosh/via-maciisi.c   |    4 +-
- 31 files changed, 393 insertions(+), 943 deletions(-)
+Does that make sense?
 
 Gr{oetje,eeting}s,
 
-						Geert
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-- --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJOutQiAAoJEEgEtLw/Ve77oMAQAIbEvC/Cij8N17TTBKiRZUnQ
-mWVNI/upH6TlSd1b9V/sPX29/mHkrcp05Kv5tzH7iEl1BimPRhIxuQEcGAHOLpVm
-tlKB1Kr78BndiWgjf0+BLrDmQ0eklFfeTlH9cZkIm4pYr9NlbKNbPYMBDMjcq0dA
-mo4EVzYpbTkGyVp4IYwI3zySkUK1BrgVr317spjMu0Tm1rqcOylaIdNf9RMtWp37
-ChhLhRBHwy1kV4ZVRongh86a6C5BFC/Olpu5MBn6VPAN72J1h1/lNyyvRN+x4huL
-OVNpCiKZs2iHP8j5YMEWbUcxE1yLCYsUvGZ+5b/aZFFfPSu0etlMUZJ8aUAokTN9
-YgykAtjAuN5OGbEx/8Pz3zOZMTtSE+x9/XYv9QVi3+9JTXgtncZHPc0SoTnuVqw2
-NLIc6JdV/b/6KpNdGt4GlZ+yWWebXNm8/7+4INww1J+OEtiDa2OrWROPyWOImAav
-K0KeFEog6Nkp4wcj5upP6kjeuHfDEn8UIpjfLp8hAzTd9QA+XCYKbxDk5uM+OyVe
-WbsKlCd9xtxekke8sDcpO0n+9EEcQMwJLdKuyVy2hel3y9eHOQRR3OA0B6GqYbRm
-uvlZrJPu5/tcLDcNZBPEWAN23mivasY+5PUpXVl9L+k2oGIpTjhH+Us61PFzXpg5
-+wQ8Nza5WaUypNWhEOuR
-=WSLh
------END PGP SIGNATURE-----
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
