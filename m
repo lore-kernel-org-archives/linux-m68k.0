@@ -1,161 +1,61 @@
-From: Enver Haase <enver.haase@infraleap.com>
-Subject: Trouble compiling stock Linux-3.0.8 for m68k using gcc-4.2.4
-Date: Fri, 11 Nov 2011 20:25:43 +0100
-Message-ID: <4EBD76B7.4010505@infraleap.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Trouble compiling stock Linux-3.0.8 for m68k using gcc-4.2.4
+Date: Fri, 11 Nov 2011 19:54:38 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1111111948210.3282@herc.mirbsd.org>
+References: <4EBD76B7.4010505@infraleap.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <4EBD76B7.4010505@infraleap.com>
+Resent-Message-ID: <-MhiWmhFJhH.A.qn.s2XvOB@liszt>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Enver Haase <enver.haase@mauerkinder.co.uk>
+Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org, debian-68k@lists.debian.org
 
+Enver Haase dixit:
 
+>so I got a cross tool-chain set up on an x86_64 host.
 
-Geert wrote:
->Yes, I'm still the maintainer of the Linux/m68k kernel.
->I wasn't aware there's an issue with gcc-4.2. Can you please post the
->problem on the Debian/m68k or Linux/m68k mailing list?
+I build only natively, regular proper Debian packages, but
+from what I=E2=80=99ve seen, this was no error source.
 
+On the other hand, a patched gcc-4.4 really helps; 4.3 and
+below had more issues.
 
+>Are there any patches for m68k somewhere?
 
-Okay,
+Yes, we have some in Debian.
 
-so I got a cross tool-chain set up on an x86_64 host.
+http://patch-tracker.debian.org/package/linux-2.6/3.0.0-6
 
+linux-2.6 (3.0.0-6) is a Linux 3.0.8 in upstream versioning.
 
-Trying to compile a stock 3.0.8 kernel for the m68k architecture gives me:
-  [...]
-  CC [M]  lib/crc-ccitt.o
-  CC [M]  lib/crc-itu-t.o
-  CC [M]  lib/crc7.o
-  CC [M]  lib/libcrc32c.o
-  CC [M]  lib/bch.o
-  CC [M]  lib/ts_kmp.o
-  CC [M]  lib/ts_bm.o
-  CC [M]  lib/ts_fsm.o
-  CC [M]  lib/lru_cache.o
-  LD      arch/m68k/lib/built-in.o
-  CC      arch/m68k/lib/ashldi3.o
-  CC      arch/m68k/lib/ashrdi3.o
-  CC      arch/m68k/lib/checksum_mm.o
-  CC      arch/m68k/lib/lshrdi3.o
-  CC      arch/m68k/lib/memcpy.o
-  CC      arch/m68k/lib/memmove.o
-  CC      arch/m68k/lib/memset.o
-  CC      arch/m68k/lib/muldi3.o
-  CC      arch/m68k/lib/string.o
-  CC      arch/m68k/lib/uaccess.o
-  AR      arch/m68k/lib/lib.a
-  LD      vmlinux.o
-  MODPOST vmlinux.o
-  GEN     .version
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  LD      init/built-in.o
-  LD      .tmp_vmlinux1
-init/built-in.o: In function `init_post':
-/home/ehaase/linux-3.0.8/init/main.c:746: undefined reference to
-`free_initmem'
-arch/m68k/kernel/built-in.o: In function `dma_sync_single_for_device':
-/home/ehaase/linux-3.0.8/arch/m68k/kernel/dma_mm.c:78: undefined
-reference to `cache_clear'
-/home/ehaase/linux-3.0.8/arch/m68k/kernel/dma_mm.c:75: undefined
-reference to `cache_push'
-arch/m68k/mm/built-in.o: In function `mem_init':
-/home/ehaase/linux-3.0.8/arch/m68k/mm/init_mm.c:116: undefined reference
-to `init_pointer_table'
-/home/ehaase/linux-3.0.8/arch/m68k/mm/init_mm.c:123: undefined reference
-to `zero_pgtable'
-/home/ehaase/linux-3.0.8/arch/m68k/mm/init_mm.c:116: undefined reference
-to `init_pointer_table'
-kernel/built-in.o: In function `pgd_alloc':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:89:
-undefined reference to `get_pointer_table'
-kernel/built-in.o: In function `pmd_free':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:72:
-undefined reference to `free_pointer_table'
-kernel/built-in.o: In function `relay_alloc_buf':
-/home/ehaase/linux-3.0.8/kernel/relay.c:144: undefined reference to
-`mm_cachebits'
-mm/built-in.o: In function `pmd_alloc_one':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:67:
-undefined reference to `get_pointer_table'
-mm/built-in.o: In function `pmd_free':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:72:
-undefined reference to `free_pointer_table'
-mm/built-in.o: In function `__pmd_free_tlb':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:78:
-undefined reference to `free_pointer_table'
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/motorola_pgalloc.h:78:
-undefined reference to `free_pointer_table'
-mm/built-in.o: In function `__vmalloc_area_node':
-/home/ehaase/linux-3.0.8/mm/vmalloc.c:1549: undefined reference to
-`mm_cachebits'
-mm/built-in.o: In function `vmalloc_32_user':
-/home/ehaase/linux-3.0.8/mm/vmalloc.c:1820: undefined reference to
-`mm_cachebits'
-mm/built-in.o: In function `vmalloc_32':
-/home/ehaase/linux-3.0.8/mm/vmalloc.c:1803: undefined reference to
-`mm_cachebits'
-mm/built-in.o: In function `vmalloc_exec':
-/home/ehaase/linux-3.0.8/mm/vmalloc.c:1782: undefined reference to
-`mm_cachebits'
-mm/built-in.o: In function `vmalloc_node':
-/home/ehaase/linux-3.0.8/mm/vmalloc.c:1740: undefined reference to
-`mm_cachebits'
-mm/built-in.o:/home/ehaase/linux-3.0.8/mm/vmalloc.c:1716: more undefined
-references to `mm_cachebits' follow
-lib/built-in.o: In function `pci_iounmap':
-/home/ehaase/linux-3.0.8/lib/iomap.c:279: undefined reference to `iounmap'
-lib/built-in.o: In function `ioremap_nocache':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:289: undefined
-reference to `__ioremap'
-lib/built-in.o: In function `devm_ioremap_release':
-/home/ehaase/linux-3.0.8/lib/devres.c:8: undefined reference to `iounmap'
-lib/built-in.o: In function `devm_iounmap':
-/home/ehaase/linux-3.0.8/lib/devres.c:82: undefined reference to `iounmap'
-lib/built-in.o: In function `ioremap_nocache':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:289: undefined
-reference to `__ioremap'
-lib/built-in.o: In function `ioremap':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:285: undefined
-reference to `__ioremap'
-drivers/built-in.o: In function `ioremap_nocache':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:289: undefined
-reference to `__ioremap'
-drivers/built-in.o: In function `serial8250_release_std_resource':
-/home/ehaase/linux-3.0.8/drivers/tty/serial/8250.c:2617: undefined
-reference to `iounmap'
-drivers/built-in.o: In function `firmware_loading_store':
-/home/ehaase/linux-3.0.8/drivers/base/firmware_class.c:251: undefined
-reference to `mm_cachebits'
-drivers/built-in.o: In function `ioremap_nocache':
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:289: undefined
-reference to `__ioremap'
-/home/ehaase/linux-3.0.8/arch/m68k/include/asm/io_mm.h:289: undefined
-reference to `__ioremap'
-make: *** [.tmp_vmlinux1] Error 1
-ehaase@precious-lnx:~/linux-3.0.8$ m68k-unknown-linux-gnu-gcc --version
-m68k-unknown-linux-gnu-gcc (GCC) 4.2.4
-Copyright (C) 2007 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+They=E2=80=99re not really needed to build =E2=80=9Ca=E2=80=9D kernel, thou=
+gh;
+in the current version we seem to only have the ST-RAM
+patch (which is in 3.1 anyway). So this might be a config
+issue. I suggest you have a look at the configs in the
+Debian packages (just download a linux-image-*.deb and
+look inside it, they have the generated Config there).
 
-ehaase@precious-lnx:~/linux-3.0.8$ m68k-unknown-linux-gnu-ld -V
-GNU ld (GNU Binutils) 2.21.1
-  Supported emulations:
-   m68kelf
-   m68klinux
-ehaase@precious-lnx:~/linux-3.0.8$
+On the Debian side, ever since 3.0, there have been no
+technical problems any more.
 
+Maybe this helps, too:
+deb https://www.freewrt.org/~tg/debs68k/ cross main
 
-Are there any patches for m68k somewhere?  I would certainly search more
-thoroughly on the web, but since Geert didn't know there was an issue, I
-just post the error here - hoping somebody nudges me in the right
-direction. Please? :)
+That=E2=80=99s a cross toolchain from Debian sid/amd64 to
+Debian sid/m68k. I haven=E2=80=99t used it in a while, though=E2=80=A6
+Index: https://www.freewrt.org/~tg/debs68k/debidx.htm
 
-
-Regards,
-Enver
+bye,
+//mirabilos
+--=20
+  =E2=80=9CHaving a smoking section in a restaurant is like having
+          a peeing section in a swimming pool.=E2=80=9D
+=09=09=09=09=09=09-- Edward Burr
