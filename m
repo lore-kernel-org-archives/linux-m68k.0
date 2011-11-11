@@ -1,115 +1,38 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: don't comment out syscalls used by glibc
-Date: Thu, 10 Nov 2011 21:28:13 +0100
-Message-ID: <CAMuHMdVkmZs60OrQRYVGbjX8Wh86Op1kRb2gcvphUDGA5s-7Cg@mail.gmail.com>
-References: <m2d3dbd1kg.fsf@igel.home>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH 4/5] treewide: Convert uses of ATTRIB_NORETURN to __noreturn
+Date: Fri, 11 Nov 2011 11:02:20 +0900
+Message-ID: <20111111020220.GA29807@linux-sh.org>
+References: <cover.1320917551.git.joe@perches.com> <abb1d8b542872ef3bfd695e85d3b8a0fd70645b9.1320917558.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:41437 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751700Ab1KJU2O convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 10 Nov 2011 15:28:14 -0500
-Received: by iage36 with SMTP id e36so3355960iag.19
-        for <linux-m68k@vger.kernel.org>; Thu, 10 Nov 2011 12:28:13 -0800 (PST)
-In-Reply-To: <m2d3dbd1kg.fsf@igel.home>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+In-Reply-To: <abb1d8b542872ef3bfd695e85d3b8a0fd70645b9.1320917558.git.joe@perches.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Joe Perches <joe@perches.com>
+Cc: Andrew Morton <akpm@google.com>, linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Chris Metcalf <cmetcalf@tilera.com>, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 
-Hi Andreas,
-
-On Tue, Nov 1, 2011 at 21:34, Andreas Schwab <schwab@linux-m68k.org> wr=
-ote:
-> Define again the syscalls that are used by glibc so that it is possib=
-le to
-> compile a feature-complete glibc with the newest kernel headers.
-
-I'm a bit puzzled by this. What exactly is your objective? To build a g=
-libc that
-runs on any possible kernel version ever released?
-
-> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+On Thu, Nov 10, 2011 at 01:41:45AM -0800, Joe Perches wrote:
+> Use the more commonly used __noreturn instead of ATTRIB_NORETURN.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 > ---
-> =C2=A0arch/m68k/include/asm/unistd.h | =C2=A0 10 +++++-----
-> =C2=A01 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/u=
-nistd.h
-> index 43f984e..d97234b 100644
-> --- a/arch/m68k/include/asm/unistd.h
-> +++ b/arch/m68k/include/asm/unistd.h
-> @@ -132,10 +132,10 @@
-> =C2=A0#define __NR_adjtimex =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0124
-> =C2=A0#define __NR_mprotect =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0125
-> =C2=A0#define __NR_sigprocmask =C2=A0 =C2=A0 =C2=A0 126
-> -/*#define __NR_create_module =C2=A0 127*/
-> +#define __NR_create_module =C2=A0 =C2=A0 127
-> =C2=A0#define __NR_init_module =C2=A0 =C2=A0 =C2=A0 128
-> =C2=A0#define __NR_delete_module =C2=A0 =C2=A0 129
-> -/*#define __NR_get_kernel_syms 130*/
-> +#define __NR_get_kernel_syms =C2=A0 130
-> =C2=A0#define __NR_quotactl =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0131
-> =C2=A0#define __NR_getpgid =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 132
-> =C2=A0#define __NR_fchdir =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A013=
-3
-> @@ -172,7 +172,7 @@
-> =C2=A0#define __NR_setresuid =C2=A0 =C2=A0 =C2=A0 =C2=A0 164
-> =C2=A0#define __NR_getresuid =C2=A0 =C2=A0 =C2=A0 =C2=A0 165
-> =C2=A0#define __NR_getpagesize =C2=A0 =C2=A0 =C2=A0 166
-> -/*#define __NR_query_module =C2=A0 =C2=A0167*/
-> +#define __NR_query_module =C2=A0 =C2=A0 =C2=A0167
+>  arch/ia64/kernel/machine_kexec.c       |    2 +-
+>  arch/m68k/amiga/config.c               |    2 +-
+>  arch/mips/include/asm/ptrace.h         |    2 +-
+>  arch/mips/kernel/traps.c               |    2 +-
+>  arch/mn10300/include/asm/exceptions.h  |    2 +-
+>  arch/powerpc/kernel/machine_kexec_32.c |    2 +-
+>  arch/powerpc/kernel/machine_kexec_64.c |    2 +-
+>  arch/s390/include/asm/processor.h      |    2 +-
+>  arch/sh/kernel/process_32.c            |    2 +-
+>  arch/sh/kernel/process_64.c            |    2 +-
+>  arch/tile/kernel/machine_kexec.c       |    2 +-
+>  include/linux/kernel.h                 |    6 +++---
+>  12 files changed, 14 insertions(+), 14 deletions(-)
+> 
+For the SH bits:
 
-Support for the three syscalls above got removed day to day 10 years
-ago, when adding support for Rusty's "In-kernel Module Loader" for
-2.5.48. So I guess you need them for 2.4? I can understand that.
-
-> =C2=A0#define __NR_poll =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0168
-> =C2=A0#define __NR_nfsservctl =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0169
-> =C2=A0#define __NR_setresgid =C2=A0 =C2=A0 =C2=A0 =C2=A0 170
-> @@ -193,8 +193,8 @@
-> =C2=A0#define __NR_capset =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A018=
-5
-> =C2=A0#define __NR_sigaltstack =C2=A0 =C2=A0 =C2=A0 186
-> =C2=A0#define __NR_sendfile =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0187
-> -/*#define __NR_getpmsg =C2=A0 =C2=A0 =C2=A0 =C2=A0 188*/ =C2=A0 /* s=
-ome people actually want streams */
-> -/*#define __NR_putpmsg =C2=A0 =C2=A0 =C2=A0 =C2=A0 189*/ =C2=A0 /* s=
-ome people actually want streams */
-> +#define __NR_getpmsg =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 188 =C2=A0 =C2=
-=A0 /* some people actually want streams */
-> +#define __NR_putpmsg =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 189 =C2=A0 =C2=
-=A0 /* some people actually want streams */
-> =C2=A0#define __NR_vfork =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 19=
-0
-> =C2=A0#define __NR_ugetrlimit =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0191
-> =C2=A0#define __NR_mmap2 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 19=
-2
-
-AFAIK, the upstream kernel never had an implementation for sys_{get,put=
-}msg().
-I did find "[Linux-streams] [PATCH] Linux-streams registration 2.5.46"
-(http://www.mail-archive.com/linux-streams@gsyc.escet.urjc.es/msg00639.=
-html)
-
-2.1.115pre1 added placeholders on i386, and we just followed suit.
-Why do you need these?
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+Signed-off-by: Paul Mundt <lethal@linux-sh.org>
