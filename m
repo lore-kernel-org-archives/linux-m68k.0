@@ -1,61 +1,47 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Trouble compiling stock Linux-3.0.8 for m68k using gcc-4.2.4
-Date: Fri, 11 Nov 2011 19:54:38 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1111111948210.3282@herc.mirbsd.org>
-References: <4EBD76B7.4010505@infraleap.com>
+From: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
+Subject: Re: [PATCH 1/4] zorro: Rename Picasso IV Z2 "MEM" to "RAM" for consistency
+Date: Sat, 12 Nov 2011 00:20:23 +0000
+Message-ID: <4EBDBBC7.1010207@gmx.de>
+References: <1319110945-25684-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <4EBD76B7.4010505@infraleap.com>
-Resent-Message-ID: <-MhiWmhFJhH.A.qn.s2XvOB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Enver Haase <enver.haase@mauerkinder.co.uk>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mailout-de.gmx.net ([213.165.64.22]:52449 "HELO
+	mailout-de.gmx.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with SMTP id S1751554Ab1KLAUO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Nov 2011 19:20:14 -0500
+In-Reply-To: <1319110945-25684-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, "Christian T. Steigies" <cts@debian.org>, linux-kernel@vger.kernel.org, =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2011.bluespice.org>
 
-Enver Haase dixit:
+Applied all four patches.
 
->so I got a cross tool-chain set up on an x86_64 host.
 
-I build only natively, regular proper Debian packages, but
-from what I=E2=80=99ve seen, this was no error source.
+Thanks,
 
-On the other hand, a patched gcc-4.4 really helps; 4.3 and
-below had more issues.
+Florian Tobias Schandinat
 
->Are there any patches for m68k somewhere?
-
-Yes, we have some in Debian.
-
-http://patch-tracker.debian.org/package/linux-2.6/3.0.0-6
-
-linux-2.6 (3.0.0-6) is a Linux 3.0.8 in upstream versioning.
-
-They=E2=80=99re not really needed to build =E2=80=9Ca=E2=80=9D kernel, thou=
-gh;
-in the current version we seem to only have the ST-RAM
-patch (which is in 3.1 anyway). So this might be a config
-issue. I suggest you have a look at the configs in the
-Debian packages (just download a linux-image-*.deb and
-look inside it, they have the generated Config there).
-
-On the Debian side, ever since 3.0, there have been no
-technical problems any more.
-
-Maybe this helps, too:
-deb https://www.freewrt.org/~tg/debs68k/ cross main
-
-That=E2=80=99s a cross toolchain from Debian sid/amd64 to
-Debian sid/m68k. I haven=E2=80=99t used it in a while, though=E2=80=A6
-Index: https://www.freewrt.org/~tg/debs68k/debidx.htm
-
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-=09=09=09=09=09=09-- Edward Burr
+On 10/20/2011 11:42 AM, Geert Uytterhoeven wrote:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  include/linux/zorro_ids.h |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/zorro_ids.h b/include/linux/zorro_ids.h
+> index 7e74908..74bc53b 100644
+> --- a/include/linux/zorro_ids.h
+> +++ b/include/linux/zorro_ids.h
+> @@ -360,8 +360,8 @@
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_RAM	ZORRO_ID(VILLAGE_TRONIC, 0x0B, 0)
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_REG	ZORRO_ID(VILLAGE_TRONIC, 0x0C, 0)
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_SEGMENTED_MODE	ZORRO_ID(VILLAGE_TRONIC, 0x0D, 0)
+> -#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
+> -#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
+> +#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
+> +#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG		ZORRO_ID(VILLAGE_TRONIC, 0x17, 0)
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3		ZORRO_ID(VILLAGE_TRONIC, 0x18, 0)
+>  #define  ZORRO_PROD_VILLAGE_TRONIC_ARIADNE			ZORRO_ID(VILLAGE_TRONIC, 0xC9, 0)
