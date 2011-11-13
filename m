@@ -1,64 +1,75 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Remove references to obsolete CONFIG_SERIAL167
-Date: Sun, 13 Nov 2011 11:31:36 +0100
-Message-ID: <1321180296-22543-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: linux-m68k.git is back
+Date: Sun, 13 Nov 2011 11:44:56 +0100
+Message-ID: <CAMuHMdWJPOvrU62GuN4-3+61V5kvaPZ40g5LkqzMp5dGnK+_+w@mail.gmail.com>
+References: <CAMuHMdV4BEVPKBG7=-vvZ9fjEsaFjq+8Aw11XstqxpSfR8_1NA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from brigitte.telenet-ops.be ([195.130.137.66]:58081 "EHLO
-	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751220Ab1KMKbk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Nov 2011 05:31:40 -0500
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:36942 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751174Ab1KMKo5 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Nov 2011 05:44:57 -0500
+In-Reply-To: <CAMuHMdV4BEVPKBG7=-vvZ9fjEsaFjq+8Aw11XstqxpSfR8_1NA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org
 
-commit 51c9d654c2def97827395a7fbfd0c6f865c26544 ("Staging: delete tty
-drivers") removed the MVME167 serial driver, but forgot to remove these
-references.
+On Thu, Oct 13, 2011 at 09:22, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> linux-m68k.git is back, in the usual place:
+>
+> http://git.kernel.org/?p=3Dlinux/kernel/git/geert/linux-m68k.git
+>
+> Interesting branches:
+> =C2=A0- master: main development, containing accepted changesets,
+> =C2=A0- m68k-queue: (almost) identical to master, but nice changesets=
+ rebased on top of
+> =C2=A0 =C2=A0the latest v* tag (incl. release candidates) from Linus =
+(I don't follow stable),
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/Kconfig.devices           |    2 +-
- arch/m68k/configs/multi_defconfig   |    1 -
- arch/m68k/configs/mvme16x_defconfig |    1 -
- 3 files changed, 1 insertions(+), 3 deletions(-)
+I added the following cleanups to master:
 
-diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-index 6033f5d..e01eeb2 100644
---- a/arch/m68k/Kconfig.devices
-+++ b/arch/m68k/Kconfig.devices
-@@ -128,7 +128,7 @@ config DN_SERIAL
- 
- config SERIAL_CONSOLE
- 	bool "Support for serial port console"
--	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || SERIAL167 || DN_SERIAL)
-+	depends on (AMIGA || ATARI || SUN3 || SUN3X || VME || APOLLO) && (ATARI_MFPSER=y || ATARI_MIDI=y || AMIGA_BUILTIN_SERIAL=y || MULTIFACE_III_TTY=y || SERIAL=y || DN_SERIAL)
- 	---help---
- 	  If you say Y here, it will be possible to use a serial port as the
- 	  system console (the system console is the device which receives all
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 88fb437..116e2ec 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -330,7 +330,6 @@ CONFIG_ATARI_MIDI=y
- CONFIG_ATARI_DSP56K=m
- CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_MULTIFACE_III_TTY=m
--CONFIG_SERIAL167=y
- CONFIG_DN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
- CONFIG_EXT2_FS=y
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index c45aaf3..6dd12e6 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -218,7 +218,6 @@ CONFIG_GEN_RTC_X=y
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- # CONFIG_USB_SUPPORT is not set
--CONFIG_SERIAL167=y
- CONFIG_SERIAL_CONSOLE=y
- CONFIG_EXT2_FS=y
- CONFIG_EXT3_FS=y
--- 
-1.7.0.4
+      m68k: Remove unused platform.c skeleton files
+      m68k: Remove unused GVP IO-Extender files and config symbols
+      m68k: Remove unused mc68681.h header file for MultiFace III seria=
+l
+      fs/fat: Reorder options to match the m68k-queue branch
+      m68k/atari: Remove Atari SCC serial driver
+      Revert "CONFIG_SWAP=3Dn: include/linux/swap.h needs <linux/pagema=
+p.h>"
+      m68k/atari: Remove superfluous comment in debug code
+
+and now it's identical to m68k-queue. I'll keep it that way.
+
+> =C2=A0- for-*: What's destined for a specific merge window. The lates=
+t overlap with
+> =C2=A0 =C2=A0for-linus/for-next,
+
+Sometimes they may be a few commits ahead of for-linus/for-next, e.g. i=
+f
+those commits have to go in through another maintainer's tree.
+
+> master and m68k-v* are never rebased. m68k-queue and for-* are rebase=
+d when a
+> new v* comes out.
+
+and they may be reshuffled when commits are added.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
