@@ -1,47 +1,61 @@
-From: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
-Subject: Re: [PATCH 1/4] zorro: Rename Picasso IV Z2 "MEM" to "RAM" for consistency
-Date: Sat, 12 Nov 2011 00:20:23 +0000
-Message-ID: <4EBDBBC7.1010207@gmx.de>
-References: <1319110945-25684-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/atari: Move declaration of atari_SCC_reset_done to header file
+Date: Sun, 13 Nov 2011 11:24:19 +0100
+Message-ID: <1321179859-22385-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-de.gmx.net ([213.165.64.22]:52449 "HELO
-	mailout-de.gmx.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with SMTP id S1751554Ab1KLAUO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Nov 2011 19:20:14 -0500
-In-Reply-To: <1319110945-25684-1-git-send-email-geert@linux-m68k.org>
+Received: from juliette.telenet-ops.be ([195.130.137.74]:56960 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751778Ab1KMKYZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Nov 2011 05:24:25 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, "Christian T. Steigies" <cts@debian.org>, linux-kernel@vger.kernel.org, =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2011.bluespice.org>
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Applied all four patches.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/atari/ataints.c       |    2 --
+ arch/m68k/atari/debug.c         |    1 -
+ arch/m68k/include/asm/atarihw.h |    2 ++
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-
-Thanks,
-
-Florian Tobias Schandinat
-
-On 10/20/2011 11:42 AM, Geert Uytterhoeven wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  include/linux/zorro_ids.h |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/zorro_ids.h b/include/linux/zorro_ids.h
-> index 7e74908..74bc53b 100644
-> --- a/include/linux/zorro_ids.h
-> +++ b/include/linux/zorro_ids.h
-> @@ -360,8 +360,8 @@
->  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_RAM	ZORRO_ID(VILLAGE_TRONIC, 0x0B, 0)
->  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_REG	ZORRO_ID(VILLAGE_TRONIC, 0x0C, 0)
->  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_II_II_PLUS_SEGMENTED_MODE	ZORRO_ID(VILLAGE_TRONIC, 0x0D, 0)
-> -#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
-> -#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_MEM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
-> +#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM1		ZORRO_ID(VILLAGE_TRONIC, 0x15, 0)
-> +#define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_RAM2		ZORRO_ID(VILLAGE_TRONIC, 0x16, 0)
->  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z2_REG		ZORRO_ID(VILLAGE_TRONIC, 0x17, 0)
->  #define  ZORRO_PROD_VILLAGE_TRONIC_PICASSO_IV_Z3		ZORRO_ID(VILLAGE_TRONIC, 0x18, 0)
->  #define  ZORRO_PROD_VILLAGE_TRONIC_ARIADNE			ZORRO_ID(VILLAGE_TRONIC, 0xC9, 0)
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 6d196da..8048e1b 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -82,8 +82,6 @@ __ALIGN_STR "\n\t"
+ 
+ extern void atari_microwire_cmd(int cmd);
+ 
+-extern int atari_SCC_reset_done;
+-
+ static unsigned int atari_irq_startup(struct irq_data *data)
+ {
+ 	unsigned int irq = data->irq;
+diff --git a/arch/m68k/atari/debug.c b/arch/m68k/atari/debug.c
+index 5a48424..a547ba9 100644
+--- a/arch/m68k/atari/debug.c
++++ b/arch/m68k/atari/debug.c
+@@ -202,7 +202,6 @@ static void __init atari_init_mfp_port(int cflag)
+ 
+ static void __init atari_init_scc_port(int cflag)
+ {
+-	extern int atari_SCC_reset_done;
+ 	static int clksrc_table[9] =
+ 		/* reg 11: 0x50 = BRG, 0x00 = RTxC, 0x28 = TRxC */
+ 		{ 0x50, 0x50, 0x50, 0x50, 0x50, 0x50, 0x50, 0x00, 0x00 };
+diff --git a/arch/m68k/include/asm/atarihw.h b/arch/m68k/include/asm/atarihw.h
+index 0392b28..c0cb363 100644
+--- a/arch/m68k/include/asm/atarihw.h
++++ b/arch/m68k/include/asm/atarihw.h
+@@ -30,6 +30,8 @@ extern u_long atari_switches;
+ extern int atari_rtc_year_offset;
+ extern int atari_dont_touch_floppy_select;
+ 
++extern int atari_SCC_reset_done;
++
+ /* convenience macros for testing machine type */
+ #define MACH_IS_ST	((atari_mch_cookie >> 16) == ATARI_MCH_ST)
+ #define MACH_IS_STE	((atari_mch_cookie >> 16) == ATARI_MCH_STE && \
+-- 
+1.7.0.4
