@@ -1,50 +1,50 @@
-From: Paul Bolle <pebolle@tiscali.nl>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k: Remove references to obsolete CONFIG_SERIAL167
-Date: Thu, 17 Nov 2011 20:53:56 +0100
-Message-ID: <1321559636.20271.287.camel@x61.thuisdomein>
+Date: Thu, 17 Nov 2011 22:05:41 +0100
+Message-ID: <CAMuHMdW73Nf+bP2u6NRZFMW5c0-PnqYCDtEbZ+weGLs_mzZ1_g@mail.gmail.com>
 References: <1321180296-22543-1-git-send-email-geert@linux-m68k.org>
-	 <1321182176.20271.43.camel@x61.thuisdomein>
-	 <CAMuHMdXsHgUd_oggpKoS2t6Tm8MnEjLnWmi4Hswz_nQjSWsozA@mail.gmail.com>
+	<1321182176.20271.43.camel@x61.thuisdomein>
+	<CAMuHMdXsHgUd_oggpKoS2t6Tm8MnEjLnWmi4Hswz_nQjSWsozA@mail.gmail.com>
+	<1321559636.20271.287.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp-out0.tiscali.nl ([195.241.79.175]:49518 "EHLO
-	smtp-out0.tiscali.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753381Ab1KQTyF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Nov 2011 14:54:05 -0500
-In-Reply-To: <CAMuHMdXsHgUd_oggpKoS2t6Tm8MnEjLnWmi4Hswz_nQjSWsozA@mail.gmail.com>
+Received: from mail-yx0-f174.google.com ([209.85.213.174]:54069 "EHLO
+	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751322Ab1KQVFm convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Nov 2011 16:05:42 -0500
+In-Reply-To: <1321559636.20271.287.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Paul Bolle <pebolle@tiscali.nl>
 Cc: linux-m68k@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, Jiri Kosina <trivial@kernel.org>
 
-On Thu, 2011-11-17 at 20:33 +0100, Geert Uytterhoeven wrote:
-> On Sun, Nov 13, 2011 at 12:02, Paul Bolle <pebolle@tiscali.nl> wrote:
-> > 1) I've been looking at this impressive dependency list a few days back.
-> > My impression was that it can be reduced to only AMIGA_BUILTIN_SERIAL=y.
-> > (After that this Kconfig symbol might better be renamed to
-> > AMIGA_BUILTIN_SERIAL_CONSOLE.)
-> >
-> > I might have a draft patch to drop the dependencies somewhere. I need to
-> > have another look at that (draft) patch before I can submit it.
-> 
-> You are right: all drivers (except for AMIGA_BUILTIN_SERIAL) got lost due to
-> bitrot, or never made it to mainline. Will fix.
+On Thu, Nov 17, 2011 at 20:53, Paul Bolle <pebolle@tiscali.nl> wrote:
+> > But please keep SERIAL_CONSOLE.
+>
+> Why do you care about SERIAL_CONSOLE? If it's only really used by
+> AMIGA_BUILTIN_SERIAL why shouldn't we rename it to
+> AMIGA_BUILTIN_SERIAL_CONSOLE?
 
-Nice.
+Because SERIAL_CONSOLE is a universal platform-independent symbol.
+Other arches have it as well (but less than in the past).
 
-> But please keep SERIAL_CONSOLE.
+As soon as m68k gets a new serial driver, it will be used by 2 drivers =
+again.
 
-Why do you care about SERIAL_CONSOLE? If it's only really used by
-AMIGA_BUILTIN_SERIAL why shouldn't we rename it to
-AMIGA_BUILTIN_SERIAL_CONSOLE?
+Gr{oetje,eeting}s,
 
-> BTW, updating the m68k defconfigs is also on my list.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-Nice too. Jiri Kosina already claimed to be able to handle any problems
-caused by my cleaning efforts (which I haven't made public, since I'm
-still pondering on a way to publish a 400K+ patch).
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-
-Paul Bolle
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
