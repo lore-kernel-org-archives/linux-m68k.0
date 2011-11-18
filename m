@@ -1,31 +1,62 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH] m68k: Remove references to obsolete CONFIG_SERIAL167
-Date: Thu, 17 Nov 2011 22:40:55 +0100
-Message-ID: <1321566055.20271.313.camel@x61.thuisdomein>
-References: <1321180296-22543-1-git-send-email-geert@linux-m68k.org>
-	 <1321182176.20271.43.camel@x61.thuisdomein>
-	 <CAMuHMdXsHgUd_oggpKoS2t6Tm8MnEjLnWmi4Hswz_nQjSWsozA@mail.gmail.com>
-	 <1321559636.20271.287.camel@x61.thuisdomein>
-	 <CAMuHMdW73Nf+bP2u6NRZFMW5c0-PnqYCDtEbZ+weGLs_mzZ1_g@mail.gmail.com>
-	 <1321565687.20271.309.camel@x61.thuisdomein>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: no need to set register marker on traps
+Date: Fri, 18 Nov 2011 16:19:16 +1000
+Message-ID: <1321597156-23570-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1321565687.20271.309.camel@x61.thuisdomein>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, Jiri Kosina <trivial@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:16563 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754869Ab1KRGTK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Nov 2011 01:19:10 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Thu, 2011-11-17 at 22:34 +0100, Paul Bolle wrote:
-> I see nothing universal about it: two independent usages, one in
-> */iss/console.c and one in */amiserial.c. So I'd say these can be
-> renamed to (say) ISS_SERIAL_CONSOLE and AMIGA_BUILTIN_SERIAL_CONSOLE.
+From: Greg Ungerer <gerg@uclinux.org>
 
-And, looking at it again, in */iss/console.c it can just as well be
-dropped, as SERIAL_CONSOLE will always be set for that platform. So the
-only actual usage I see is in */amiserial.c.
+Commit 61619b12078dc8b85a3d4cbfa16f650daa341bd1 ("m68k: merge mmu and
+non-mmu include/asm/entry.h files") made the trap entry code basically
+the same for mmu and non-mmu builds. This means we no longer need code
+to mark the stack frame as "system-call" type or other in the non-mmu
+trap handling entry points. This is done in the SAVE_ALL_INT macro now.
 
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/entry_no.S |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
-Paul Bolle
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index 1b42890..ac86a9f 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -44,8 +44,6 @@
+ 
+ ENTRY(buserr)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	buserr_c
+ 	addql	#4,%sp
+@@ -53,8 +51,6 @@ ENTRY(buserr)
+ 
+ ENTRY(trap)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	trap_c
+ 	addql	#4,%sp
+@@ -65,8 +61,6 @@ ENTRY(trap)
+ .globl dbginterrupt
+ ENTRY(dbginterrupt)
+ 	SAVE_ALL_INT
+-	moveq	#-1,%d0
+-	movel	%d0,%sp@(PT_OFF_ORIG_D0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	dbginterrupt_c
+ 	addql	#4,%sp
+-- 
+1.7.0.4
