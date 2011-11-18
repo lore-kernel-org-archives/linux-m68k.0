@@ -1,62 +1,53 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: no need to set register marker on traps
-Date: Fri, 18 Nov 2011 16:19:16 +1000
-Message-ID: <1321597156-23570-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68knommu: disable cache early in startup for ColdFire
+Date: Fri, 18 Nov 2011 16:32:12 +1000
+Message-ID: <1321597932-23734-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:16563 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754869Ab1KRGTK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Nov 2011 01:19:10 -0500
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:31289 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756701Ab1KRGaJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Nov 2011 01:30:09 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Alexander Stein <alexander.stein@systec-electronic.com>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Commit 61619b12078dc8b85a3d4cbfa16f650daa341bd1 ("m68k: merge mmu and
-non-mmu include/asm/entry.h files") made the trap entry code basically
-the same for mmu and non-mmu builds. This means we no longer need code
-to mark the stack frame as "system-call" type or other in the non-mmu
-trap handling entry points. This is done in the SAVE_ALL_INT macro now.
+Disbale the CPU cache really early in the ColdFire startup code. We set
+up some variables for RAM sizing and we want to make they stick in RAM.
 
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/kernel/entry_no.S |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+ arch/m68k/platform/coldfire/head.S |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
-index 1b42890..ac86a9f 100644
---- a/arch/m68k/kernel/entry_no.S
-+++ b/arch/m68k/kernel/entry_no.S
-@@ -44,8 +44,6 @@
- 
- ENTRY(buserr)
- 	SAVE_ALL_INT
--	moveq	#-1,%d0
--	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	buserr_c
- 	addql	#4,%sp
-@@ -53,8 +51,6 @@ ENTRY(buserr)
- 
- ENTRY(trap)
- 	SAVE_ALL_INT
--	moveq	#-1,%d0
--	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	trap_c
- 	addql	#4,%sp
-@@ -65,8 +61,6 @@ ENTRY(trap)
- .globl dbginterrupt
- ENTRY(dbginterrupt)
- 	SAVE_ALL_INT
--	moveq	#-1,%d0
--	movel	%d0,%sp@(PT_OFF_ORIG_D0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	dbginterrupt_c
- 	addql	#4,%sp
+diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+index c334838..49666b4 100644
+--- a/arch/m68k/platform/coldfire/head.S
++++ b/arch/m68k/platform/coldfire/head.S
+@@ -143,6 +143,9 @@ __HEAD
+ _start:
+ 	nop					/* filler */
+ 	movew	#0x2700, %sr			/* no interrupts */
++	movel	#CACHE_INIT,%d0			/* disable cache */
++	movec	%d0,%CACR
++	nop
+ #if defined(CONFIG_UBOOT)
+ 	movel	%sp,_init_sp			/* save initial stack pointer */
+ #endif
+@@ -176,9 +179,6 @@ _start:
+ 	 *	it is very similar. Define the exact settings in the headers
+ 	 *	then the code here is the same for all.
+ 	 */
+-	movel	#CACHE_INIT,%d0			/* invalidate whole cache */
+-	movec	%d0,%CACR
+-	nop
+ 	movel	#ACR0_MODE,%d0			/* set RAM region for caching */
+ 	movec	%d0,%ACR0
+ 	movel	#ACR1_MODE,%d0			/* anything else to cache? */
 -- 
 1.7.0.4
