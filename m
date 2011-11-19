@@ -1,51 +1,59 @@
-From: "IT Service Desk" <tech.team@tech-center.com>
-Subject: Scheduled Maintenance & Upgrade
-Date: Fri, 18 Nov 2011 15:16:39 -0500
-Message-ID: <20111118151639.876569h0ne374yzr__39431.2783763327$1321647827$gmane$org@184.173.117.72>
-Reply-To: itservicecenter@tech-center.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: handle presence of 64bit mul/div instructions cleanly
+Date: Sat, 19 Nov 2011 22:19:43 +0100
+Message-ID: <CAMuHMdVyTiGBBHvKNqdHKL+nUBbwhc5mE6GJ=QATiDN_Y8i2nA@mail.gmail.com>
+References: <1321597960-23782-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
-	DelSp=Yes	format=flowed
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailcloud5.ourmailservers.net ([184.173.67.243]:42360 "EHLO
-	mailcloud5.ourmailservers.net" rhost-flags-OK-FAIL-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751607Ab1KRUXX convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 18 Nov 2011 15:23:23 -0500
-Content-Disposition: inline
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:33849 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752640Ab1KSVTo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 19 Nov 2011 16:19:44 -0500
+Received: by iage36 with SMTP id e36so5282986iag.19
+        for <linux-m68k@vger.kernel.org>; Sat, 19 Nov 2011 13:19:44 -0800 (PST)
+In-Reply-To: <1321597960-23782-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
+On Fri, Nov 18, 2011 at 07:32,  <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
+>
+> The traditional 68000 processors and the newer reduced instruction se=
+t
+> ColdFire processors do not support the 32*32->64 multiply or the 64/3=
+2->32
+> divide instructions. This is not a difference based on the presence o=
+f
+> a hardware MMU or not.
+>
+> Create a new config symbol to mark that a CPU type doesn't support th=
+e
+> longer multiply/divide instructions. Use this then as a basis for usi=
+ng
+> the fast 64bit based divide (in div64.h) and for linking in the extra
+> libgcc functions that may be required (mulsi3, divsi3, etc).
+>
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-IT Service Desk
+Looks fine.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Attn account User,
+Gr{oetje,eeting}s,
 
-Scheduled Maintenance & Upgrade
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-Your account is in the process of being upgraded to a newset of  
-Windows-based servers and an enhanced online email interface inline  
-with internet infrastructure Maintenance. The new servers will provide  
-better anti-spam and anti-virus functions, along withh IMAP Support  
-for mobile devices that Support IMAP to enhance your usage.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-To ensure that your account is not intermittently disrupted but active  
-during and after this upgrade, you are required to kindly confirm your  
-account by stating the details below:
-
-* User name:
-* Password:
-
-This will prompt the upgarde of your account.
-
-Failure to acknowledge receipt of this notification, might result to a  
-temporal deactivation of your account from IT Service Desk database.
-
-Your account shall remain active upon your confirmation of your login details.
-
-IT Service Desk apologize for any inconvenience caused.
-
-IT Service Desk
-
-Copyright 2011, All Rights Reserved.
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
