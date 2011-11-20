@@ -1,75 +1,51 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Cross Memory Attach v3
-Date: Sun, 20 Nov 2011 11:16:17 +0100
-Message-ID: <CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
-References: <20110719003537.16b189ae@lilo>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20110719003537.16b189ae@lilo>
-Sender: linux-arch-owner@vger.kernel.org
-To: Christopher Yeoh <cyeoh@au1.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-man@vger.kernel.org, linux-arch@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+Subject: [PATCH] m68k: Wire up process_vm_{read,write}v
+Date: Sun, 20 Nov 2011 22:10:20 +0100
+Message-ID: <1321823420-14893-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from brigitte.telenet-ops.be ([195.130.137.66]:60297 "EHLO
+	brigitte.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753852Ab1KTVKY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Nov 2011 16:10:24 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Christopher,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/unistd.h  |    4 +++-
+ arch/m68k/kernel/syscalltable.S |    2 ++
+ 2 files changed, 5 insertions(+), 1 deletions(-)
 
-On Mon, Jul 18, 2011 at 17:05, Christopher Yeoh <cyeoh@au1.ibm.com> wro=
-te:
-> For arch maintainers there are some simple tests to be able to quickl=
-y
-> verify that the syscalls are working correctly here:
-
-I'm wiring up these new syscalls on m68k.
-
-> http://ozlabs.org/~cyeoh/cma/cma-test-20110718.tgz
-
-The included README talks about:
-
-    setup_process_readv_simple
-    setup_process_readv_iovec
-   setup_process_writev
-
-while the actual test executables are called:
-
-    setup_process_vm_readv_simple
-    setup_process_vm_readv_iovec
-    setup_process_vm_writev
-
-On m68k (ARAnyM), the first and third test succeed. The second one
-fails, though:
-
-# Setting up target with num iovecs 10, test buffer size 100000
-Target process is setup
-Run the following to test:
-=2E/t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
-0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
-0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
-
-and in the other window:
-
-# ./t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
-0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
-0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
-copy_from_process failed: Invalid argument
-error code: 29
-#
-
-Any suggestions?
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index d97234b..ea0b502 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -350,10 +350,12 @@
+ #define __NR_clock_adjtime	342
+ #define __NR_syncfs		343
+ #define __NR_setns		344
++#define __NR_process_vm_readv	345
++#define __NR_process_vm_writev	346
+ 
+ #ifdef __KERNEL__
+ 
+-#define NR_syscalls		345
++#define NR_syscalls		347
+ 
+ #define __ARCH_WANT_IPC_PARSE_VERSION
+ #define __ARCH_WANT_OLD_READDIR
+diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+index c468f2e..ce827b3 100644
+--- a/arch/m68k/kernel/syscalltable.S
++++ b/arch/m68k/kernel/syscalltable.S
+@@ -365,4 +365,6 @@ ENTRY(sys_call_table)
+ 	.long sys_clock_adjtime
+ 	.long sys_syncfs
+ 	.long sys_setns
++	.long sys_process_vm_readv	/* 345 */
++	.long sys_process_vm_writev
+ 
+-- 
+1.7.0.4
