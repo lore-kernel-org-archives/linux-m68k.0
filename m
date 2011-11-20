@@ -1,43 +1,62 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: don't comment out syscalls used by glibc
-Date: Sun, 20 Nov 2011 10:47:34 +0100
-Message-ID: <CAMuHMdU3U2aGExbmC=aYg7p1raUSYv+nCEQC3y5iTmV0Rj-MuA@mail.gmail.com>
-References: <m2d3dbd1kg.fsf@igel.home>
-	<CAMuHMdVkmZs60OrQRYVGbjX8Wh86Op1kRb2gcvphUDGA5s-7Cg@mail.gmail.com>
-	<m3ehxfavyp.fsf@hase.home>
-	<CAMuHMdW-6W3+nZsLb2xgNX3aJczo8TpvK3Qh01Q2BwBggcNgwg@mail.gmail.com>
-	<m362irav4x.fsf@hase.home>
+Subject: Re: Cross Memory Attach v3
+Date: Sun, 20 Nov 2011 11:16:17 +0100
+Message-ID: <CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
+References: <20110719003537.16b189ae@lilo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:63689 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752315Ab1KTJrf convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Nov 2011 04:47:35 -0500
-Received: by iage36 with SMTP id e36so5853689iag.19
-        for <linux-m68k@vger.kernel.org>; Sun, 20 Nov 2011 01:47:34 -0800 (PST)
-In-Reply-To: <m362irav4x.fsf@hase.home>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20110719003537.16b189ae@lilo>
+Sender: linux-arch-owner@vger.kernel.org
+To: Christopher Yeoh <cyeoh@au1.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-man@vger.kernel.org, linux-arch@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 
-Hi Andreas,
+Hi Christopher,
 
-On Fri, Nov 11, 2011 at 10:03, Andreas Schwab <schwab@linux-m68k.org> w=
-rote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->
->> What's the user experience advantage of glibc knowing about the sysc=
-all
->> numbers for (never implemented) streams?
->
-> It will try to use them, instead of denying their existence.
->
-> There is no advantage in removing these definitions.
+On Mon, Jul 18, 2011 at 17:05, Christopher Yeoh <cyeoh@au1.ibm.com> wro=
+te:
+> For arch maintainers there are some simple tests to be able to quickl=
+y
+> verify that the syscalls are working correctly here:
 
-You convinced me. Queued for 3.3.
+I'm wiring up these new syscalls on m68k.
+
+> http://ozlabs.org/~cyeoh/cma/cma-test-20110718.tgz
+
+The included README talks about:
+
+    setup_process_readv_simple
+    setup_process_readv_iovec
+   setup_process_writev
+
+while the actual test executables are called:
+
+    setup_process_vm_readv_simple
+    setup_process_vm_readv_iovec
+    setup_process_vm_writev
+
+On m68k (ARAnyM), the first and third test succeed. The second one
+fails, though:
+
+# Setting up target with num iovecs 10, test buffer size 100000
+Target process is setup
+Run the following to test:
+=2E/t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
+0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
+0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
+
+and in the other window:
+
+# ./t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
+0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
+0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
+copy_from_process failed: Invalid argument
+error code: 29
+#
+
+Any suggestions?
 
 Gr{oetje,eeting}s,
 
