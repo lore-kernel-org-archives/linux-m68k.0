@@ -1,99 +1,76 @@
-From: Christopher Yeoh <cyeoh@au1.ibm.com>
-Subject: Re: Cross Memory Attach v3
-Date: Mon, 21 Nov 2011 10:43:13 +1030
-Message-ID: <20111121104313.63c7f796@cyeoh-System-Product-Name>
-References: <20110719003537.16b189ae@lilo>
-	<CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
-Sender: owner-linux-mm@kvack.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-man@vger.kernel.org, linux-arch@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 6/8] fbdev/amifb: Store monitor limits in separate __initdata variables
+Date: Mon, 21 Nov 2011 21:53:57 +0100
+Message-ID: <1321908839-11419-6-git-send-email-geert@linux-m68k.org>
+References: <1321908839-11419-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from juliette.telenet-ops.be ([195.130.137.74]:42181 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753430Ab1KUUyH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Nov 2011 15:54:07 -0500
+In-Reply-To: <1321908839-11419-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, linux-fbdev@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Geert,
+The static fb_info will go away soon.
 
-On Sun, 20 Nov 2011 11:16:17 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Jul 18, 2011 at 17:05, Christopher Yeoh <cyeoh@au1.ibm.com>
-> wrote:
-> > For arch maintainers there are some simple tests to be able to
-> > quickly verify that the syscalls are working correctly here:
-> 
-> I'm wiring up these new syscalls on m68k.
-> 
-> > http://ozlabs.org/~cyeoh/cma/cma-test-20110718.tgz
-> 
-> The included README talks about:
-> 
->     setup_process_readv_simple
->     setup_process_readv_iovec
->    setup_process_writev
-> 
-> while the actual test executables are called:
-> 
->     setup_process_vm_readv_simple
->     setup_process_vm_readv_iovec
->     setup_process_vm_writev
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/video/amifb.c |   26 ++++++++++++++++++--------
+ 1 files changed, 18 insertions(+), 8 deletions(-)
 
-Oops. Have fixed this and uploaded a new version
-
- http://ozlabs.org/~cyeoh/cma/cma-test-20111121.tgz
-
-It also includes another minor change (see below)
-
-> On m68k (ARAnyM), the first and third test succeed. The second one
-> fails, though:
-> 
-> # Setting up target with num iovecs 10, test buffer size 100000
-> Target process is setup
-> Run the following to test:
-> ./t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
-> 0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
-> 0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
-> 
-> and in the other window:
-> 
-> # ./t_process_vm_readv_iovec 1574 10 0x800030b0 89 0x80003110 38302
-> 0x8000c6b8 22423 0x80011e58 18864 0x80016810 583 0x80016a60 8054
-> 0x800189e0 3417 0x80019740 368 0x800198b8 897 0x80019c40 7003
-> copy_from_process failed: Invalid argument
-
-That should say process_vm_readv instead of copy_from_process. The
-error message is fixed in the just updated test.
-
-> error code: 29
-> #
-> 
-> Any suggestions?
-> 
-
-Given that the first and third tests succeed, I think the problem is
-with the iovec parameters. The -EINVAL is most likely coming from
-rw_copy_check_uvector. Any chance that something bad is
-happening to lvec/liovcnt or rvec/riovcnt in the wireup? 
-
-The iovecs are checked in process_vm_rw before the core of the
-process_vm_readv/writev code is called so should be easy to confirm if
-this is the problem.
-
-The other couple of places where it could possibly come from is that
-for some reason the flags parameter ends up being non zero or when
-looking up the task the mm is NULL. But given that the first and second
-tests succeed I think its unlikely that either of these is the cause.
-
-Regards,
-
-Chris
+diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
+index 421c1f9..13e7a17 100644
+--- a/drivers/video/amifb.c
++++ b/drivers/video/amifb.c
+@@ -961,6 +961,11 @@ static int round_down_bpp = 1;	/* for mode probing */
+ static int amifb_ilbm = 0;	/* interleaved or normal bitplanes */
+ static int amifb_inverse = 0;
+ 
++static u32 amifb_hfmin __initdata;	/* monitor hfreq lower limit (Hz) */
++static u32 amifb_hfmax __initdata;	/* monitor hfreq upper limit (Hz) */
++static u16 amifb_vfmin __initdata;	/* monitor vfreq lower limit (Hz) */
++static u16 amifb_vfmax __initdata;	/* monitor vfreq upper limit (Hz) */
++
+ 
+ 	/*
+ 	 * Macros for the conversion from real world values to hardware register
+@@ -2357,10 +2362,10 @@ static void __init amifb_setup_mcap(char *spec)
+ 	if (hmax <= 0 || hmax <= hmin)
+ 		return;
+ 
+-	fb_info.monspecs.vfmin = vmin;
+-	fb_info.monspecs.vfmax = vmax;
+-	fb_info.monspecs.hfmin = hmin;
+-	fb_info.monspecs.hfmax = hmax;
++	amifb_hfmin = hmin;
++	amifb_hfmax = hmax;
++	amifb_vfmin = vmin;
++	amifb_vfmax = vmax;
+ }
+ 
+ static int __init amifb_setup(char *options)
+@@ -3666,10 +3671,15 @@ default_chipset:
+ 		}
+ 	}
+ 
+-	/*
+-	 *  These monitor specs are for a typical Amiga monitor (e.g. A1960)
+-	 */
+-	if (fb_info.monspecs.hfmin == 0) {
++	if (amifb_hfmin) {
++		fb_info.monspecs.hfmin = amifb_hfmin;
++		fb_info.monspecs.hfmax = amifb_hfmax;
++		fb_info.monspecs.vfmin = amifb_vfmin;
++		fb_info.monspecs.vfmax = amifb_vfmax;
++	} else {
++		/*
++		 *  These are for a typical Amiga monitor (e.g. A1960)
++		 */
+ 		fb_info.monspecs.hfmin = 15000;
+ 		fb_info.monspecs.hfmax = 38000;
+ 		fb_info.monspecs.vfmin = 49;
 -- 
-cyeoh@au.ibm.com
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+1.7.0.4
