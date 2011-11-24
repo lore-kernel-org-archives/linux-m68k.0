@@ -1,123 +1,48 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH-RFC 10/10] sparc: switch to GENERIC_PCI_IOMAP
-Date: Thu, 24 Nov 2011 22:21:27 +0200
-Message-ID: <63292221aef2eb299e7dba860b3ee38c2ed05eb8.1322163031.git.mst@redhat.com>
-References: <cover.1322163031.git.mst@redhat.com>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 01/16] pmac_zilog: fix unexpected irq
+Date: Fri, 25 Nov 2011 07:41:48 +1100
+Message-ID: <1322167308.32635.6.camel@pasglop>
+References: <20111023141108.856998818@telegraphics.com.au>
+	 <20111023141115.208699274@telegraphics.com.au>
+	 <alpine.LNX.2.00.1111250133321.6314@nippy.intranet>
+	 <20111124145624.24438832@lxorguk.ukuu.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-mips-bounce@linux-mips.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1322163031.git.mst@redhat.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from gate.crashing.org ([63.228.1.57]:45050 "EHLO gate.crashing.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752281Ab1KXUmM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 24 Nov 2011 15:42:12 -0500
+In-Reply-To: <20111124145624.24438832@lxorguk.ukuu.org.uk>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Finn Thain <fthain@telegraphics.com.au>, linux-serial@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-sparc copied pci_iomap from generic code, probably to avoid
-pulling the rest of iomap.c in.  Since that's in
-a separate file now, we can reuse the common implementation.
+On Thu, 2011-11-24 at 14:56 +0000, Alan Cox wrote:
+> > This patch has been tested on a variety of m68k Macs but no
+> PowerMacs.
+> > 
+> > I am re-sending this patch Cc linux-serial. It still needs a
+> suitable ack 
+> > so that Geert can push it through his tree.
+> 
+> Given the change should work for all hardware do we really need the
+> ifdefs. Far better I would have thought to just change it so we don't
+> have to maintain what is effectively two versions of the code between
+> now
+> and 2038.
+> 
+> So no ack from me yet - I'd like to understand the ifdef decision
+> first.
+> Otherwise it looks sensible.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/sparc/Kconfig             |    1 +
- arch/sparc/include/asm/io_32.h |    5 ++++-
- arch/sparc/include/asm/io_64.h |    5 ++++-
- arch/sparc/lib/iomap.c         |   23 -----------------------
- 4 files changed, 9 insertions(+), 25 deletions(-)
+Yes, agreed. Sorry, that one was one my to-do list for a while, I meant
+to look into more details and test on a ppc or two here see if it breaks
+anything, and never got to do it.
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index f92602e..a4644f5 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -28,6 +28,7 @@ config SPARC
- 	select HAVE_GENERIC_HARDIRQS
- 	select GENERIC_IRQ_SHOW
- 	select USE_GENERIC_SMP_HELPERS if SMP
-+	select GENERIC_PCI_IOMAP
- 
- config SPARC32
- 	def_bool !64BIT
-diff --git a/arch/sparc/include/asm/io_32.h b/arch/sparc/include/asm/io_32.h
-index c2ced21..9be8778 100644
---- a/arch/sparc/include/asm/io_32.h
-+++ b/arch/sparc/include/asm/io_32.h
-@@ -8,6 +8,10 @@
- #include <asm/page.h>      /* IO address mapping routines need this */
- #include <asm/system.h>
- 
-+#ifdef __KERNEL__
-+#include <asm-generic/pci_iomap.h>
-+#endif
-+
- #define page_to_phys(page)	(page_to_pfn(page) << PAGE_SHIFT)
- 
- static inline u32 flip_dword (u32 l)
-@@ -324,7 +328,6 @@ extern void ioport_unmap(void __iomem *);
- 
- /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
- struct pci_dev;
--extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
- extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
- 
- /*
-diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-index 9c89654..19cd51d 100644
---- a/arch/sparc/include/asm/io_64.h
-+++ b/arch/sparc/include/asm/io_64.h
-@@ -9,6 +9,10 @@
- #include <asm/system.h>
- #include <asm/asi.h>
- 
-+#ifdef __KERNEL__
-+#include <asm-generic/pci_iomap.h>
-+#endif
-+
- /* PC crapola... */
- #define __SLOW_DOWN_IO	do { } while (0)
- #define SLOW_DOWN_IO	do { } while (0)
-@@ -514,7 +518,6 @@ extern void ioport_unmap(void __iomem *);
- 
- /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
- struct pci_dev;
--extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
- extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
- 
- static inline int sbus_can_dma_64bit(void)
-diff --git a/arch/sparc/lib/iomap.c b/arch/sparc/lib/iomap.c
-index 9ef37e1..c4d42a5 100644
---- a/arch/sparc/lib/iomap.c
-+++ b/arch/sparc/lib/iomap.c
-@@ -18,31 +18,8 @@ void ioport_unmap(void __iomem *addr)
- EXPORT_SYMBOL(ioport_map);
- EXPORT_SYMBOL(ioport_unmap);
- 
--/* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
--void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
--{
--	resource_size_t start = pci_resource_start(dev, bar);
--	resource_size_t len = pci_resource_len(dev, bar);
--	unsigned long flags = pci_resource_flags(dev, bar);
--
--	if (!len || !start)
--		return NULL;
--	if (maxlen && len > maxlen)
--		len = maxlen;
--	if (flags & IORESOURCE_IO)
--		return ioport_map(start, len);
--	if (flags & IORESOURCE_MEM) {
--		if (flags & IORESOURCE_CACHEABLE)
--			return ioremap(start, len);
--		return ioremap_nocache(start, len);
--	}
--	/* What? */
--	return NULL;
--}
--
- void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
- {
- 	/* nothing to do */
- }
--EXPORT_SYMBOL(pci_iomap);
- EXPORT_SYMBOL(pci_iounmap);
--- 
-1.7.5.53.gc233e
+I'll try to give it a go before hell freezes over.
+
+Cheers,
+Ben.
