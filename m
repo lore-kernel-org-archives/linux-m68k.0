@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 16/35] m68k: add TLB flush support for the ColdFire V4e MMU hardware
-Date: Fri, 25 Nov 2011 13:41:01 +1000
-Message-ID: <1322192480-22822-17-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 18/35] m68k: set ColdFire MMU page size
+Date: Fri, 25 Nov 2011 13:41:03 +1000
+Message-ID: <1322192480-22822-19-git-send-email-gerg@snapgear.com>
 References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53442 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:53445 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751458Ab1KYDjW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:22 -0500
+	with ESMTP id S1752262Ab1KYDj0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:26 -0500
 In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,80 +18,32 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire V4e MMU is unlike any of the other m68k MMU hardware.
-It needs its own TLB flush support code.
+We use the ColdFire V4e MMU page size of 8KiB. Define PAGE_SHIFT
+appropriately.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/tlbflush.h |   23 +++++++++++++++++------
- 1 files changed, 17 insertions(+), 6 deletions(-)
+ arch/m68k/include/asm/page.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
-index a6b4ed4..965ea35 100644
---- a/arch/m68k/include/asm/tlbflush.h
-+++ b/arch/m68k/include/asm/tlbflush.h
-@@ -5,10 +5,13 @@
- #ifndef CONFIG_SUN3
+diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
+index dfebb7c..e8aef81 100644
+--- a/arch/m68k/include/asm/page.h
++++ b/arch/m68k/include/asm/page.h
+@@ -6,10 +6,10 @@
+ #include <asm/page_offset.h>
  
- #include <asm/current.h>
-+#include <asm/mcfmmu.h>
- 
- static inline void flush_tlb_kernel_page(void *addr)
- {
--	if (CPU_IS_040_OR_060) {
-+	if (CPU_IS_COLDFIRE) {
-+		mmu_write(MMUOR, MMUOR_CNL);
-+	} else if (CPU_IS_040_OR_060) {
- 		mm_segment_t old_fs = get_fs();
- 		set_fs(KERNEL_DS);
- 		__asm__ __volatile__(".chip 68040\n\t"
-@@ -25,12 +28,15 @@ static inline void flush_tlb_kernel_page(void *addr)
-  */
- static inline void __flush_tlb(void)
- {
--	if (CPU_IS_040_OR_060)
-+	if (CPU_IS_COLDFIRE) {
-+		mmu_write(MMUOR, MMUOR_CNL);
-+	} else if (CPU_IS_040_OR_060) {
- 		__asm__ __volatile__(".chip 68040\n\t"
- 				     "pflushan\n\t"
- 				     ".chip 68k");
--	else if (CPU_IS_020_OR_030)
-+	} else if (CPU_IS_020_OR_030) {
- 		__asm__ __volatile__("pflush #0,#4");
-+	}
- }
- 
- static inline void __flush_tlb040_one(unsigned long addr)
-@@ -43,7 +49,9 @@ static inline void __flush_tlb040_one(unsigned long addr)
- 
- static inline void __flush_tlb_one(unsigned long addr)
- {
--	if (CPU_IS_040_OR_060)
-+	if (CPU_IS_COLDFIRE)
-+		mmu_write(MMUOR, MMUOR_CNL);
-+	else if (CPU_IS_040_OR_060)
- 		__flush_tlb040_one(addr);
- 	else if (CPU_IS_020_OR_030)
- 		__asm__ __volatile__("pflush #0,#4,(%0)" : : "a" (addr));
-@@ -56,12 +64,15 @@ static inline void __flush_tlb_one(unsigned long addr)
-  */
- static inline void flush_tlb_all(void)
- {
--	if (CPU_IS_040_OR_060)
-+	if (CPU_IS_COLDFIRE) {
-+		mmu_write(MMUOR, MMUOR_CNL);
-+	} else if (CPU_IS_040_OR_060) {
- 		__asm__ __volatile__(".chip 68040\n\t"
- 				     "pflusha\n\t"
- 				     ".chip 68k");
--	else if (CPU_IS_020_OR_030)
-+	} else if (CPU_IS_020_OR_030) {
- 		__asm__ __volatile__("pflusha");
-+	}
- }
- 
- static inline void flush_tlb_mm(struct mm_struct *mm)
+ /* PAGE_SHIFT determines the page size */
+-#ifndef CONFIG_SUN3
+-#define PAGE_SHIFT	(12)
++#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
++#define PAGE_SHIFT	13
+ #else
+-#define PAGE_SHIFT	(13)
++#define PAGE_SHIFT	12
+ #endif
+ #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
+ #define PAGE_MASK	(~(PAGE_SIZE-1))
 -- 
 1.7.0.4
