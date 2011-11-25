@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 18/35] m68k: set ColdFire MMU page size
-Date: Fri, 25 Nov 2011 13:41:03 +1000
-Message-ID: <1322192480-22822-19-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 08/35] m68k: init the MMU hardware for the 54xx ColdFire
+Date: Fri, 25 Nov 2011 13:40:53 +1000
+Message-ID: <1322192480-22822-9-git-send-email-gerg@snapgear.com>
 References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53445 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:53447 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752262Ab1KYDj0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:26 -0500
+	with ESMTP id S1751241Ab1KYDj2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:28 -0500
 In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,32 +18,103 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-We use the ColdFire V4e MMU page size of 8KiB. Define PAGE_SHIFT
-appropriately.
+The 54xx ColdFire CPU family has an internal MMU. Up to now though we
+have only supported running on them with the MMU disabled.
+
+Add code to the 54xx ColdFire init sequence to initialize the bootmem
+used by the usual MMU m68k code for paging init.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/page.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ arch/m68k/platform/coldfire/head.S |   47 +++++++++++++++++++++++++++++++++++-
+ 1 files changed, 46 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
-index dfebb7c..e8aef81 100644
---- a/arch/m68k/include/asm/page.h
-+++ b/arch/m68k/include/asm/page.h
-@@ -6,10 +6,10 @@
- #include <asm/page_offset.h>
+diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+index 0ed41ed..c3db70e 100644
+--- a/arch/m68k/platform/coldfire/head.S
++++ b/arch/m68k/platform/coldfire/head.S
+@@ -3,7 +3,7 @@
+ /*
+  *	head.S -- common startup code for ColdFire CPUs.
+  *
+- *	(C) Copyright 1999-2010, Greg Ungerer <gerg@snapgear.com>.
++ *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
+  */
  
- /* PAGE_SHIFT determines the page size */
--#ifndef CONFIG_SUN3
--#define PAGE_SHIFT	(12)
-+#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
-+#define PAGE_SHIFT	13
- #else
--#define PAGE_SHIFT	(13)
-+#define PAGE_SHIFT	12
- #endif
- #define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
- #define PAGE_MASK	(~(PAGE_SIZE-1))
+ /*****************************************************************************/
+@@ -13,6 +13,7 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/coldfire.h>
+ #include <asm/mcfsim.h>
++#include <asm/mcfmmu.h>
+ #include <asm/thread_info.h>
+ 
+ /*****************************************************************************/
+@@ -135,6 +136,14 @@ _init_sp:
+ 
+ __HEAD
+ 
++#ifdef CONFIG_MMU
++_start0:
++	jmp	_start
++.global kernel_pg_dir
++.equ	kernel_pg_dir,_start0
++.equ	.,_start0+0x1000
++#endif
++
+ /*
+  *	This is the codes first entry point. This is where it all
+  *	begins...
+@@ -197,6 +206,26 @@ _start:
+ 	movec	%d0,%CACR
+ 	nop
+ 
++#ifdef CONFIG_MMU
++	/*
++	 *	Identity mapping for the kernel region.
++	 */
++	movel	#(MMUBASE+1),%d0		/* enable MMUBAR registers */
++	movec	%d0,%MMUBAR
++	movel	#MMUOR_CA,%d0			/* clear TLB entries */
++	movel	%d0,MMUOR
++	movel	#0,%d0				/* set ASID to 0 */
++	movec	%d0,%asid
++
++	movel	#MMUCR_EN,%d0			/* Enable the identity map */
++	movel	%d0,MMUCR
++	nop					/* sync i-pipeline */
++
++	movel	#_vstart,%a0			/* jump to "virtual" space */
++	jmp	%a0@
++_vstart:
++#endif /* CONFIG_MMU */
++
+ #ifdef CONFIG_ROMFS_FS
+ 	/*
+ 	 *	Move ROM filesystem above bss :-)
+@@ -242,6 +271,22 @@ _clear_bss:
+ 	lea	init_thread_union,%a0
+ 	lea	THREAD_SIZE(%a0),%sp
+ 
++#ifdef CONFIG_MMU
++.global m68k_cputype
++.global m68k_mmutype
++.global m68k_fputype
++.global m68k_machtype
++	movel	#CPU_COLDFIRE,%d0
++	movel	%d0,m68k_cputype		/* Mark us as a ColdFire */
++	movel	#MMU_COLDFIRE,%d0
++	movel	%d0,m68k_mmutype
++	movel	#FPU_COLDFIRE,%d0
++	movel	%d0,m68k_fputype
++	movel	#MACH_M54XX,%d0
++	movel	%d0,m68k_machtype		/* Mark us as a 54xx machine */
++	lea	init_task,%a2			/* Set "current" init task */
++#endif
++
+ 	/*
+ 	 *	Assember start up done, start code proper.
+ 	 */
 -- 
 1.7.0.4
