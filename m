@@ -1,46 +1,57 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: hard set the ColdFire MBAR register on startup
-Date: Fri, 25 Nov 2011 11:36:46 +1000
-Message-ID: <1322185006-21546-1-git-send-email-gerg@snapgear.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 01/16] pmac_zilog: fix unexpected irq
+Date: Fri, 25 Nov 2011 14:15:10 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1111250207040.6314@nippy.intranet>
+References: <20111023141108.856998818@telegraphics.com.au> <20111023141115.208699274@telegraphics.com.au> <alpine.LNX.2.00.1111250133321.6314@nippy.intranet> <20111124145624.24438832@lxorguk.ukuu.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:53519 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755163Ab1KYBeZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 20:34:25 -0500
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:38417 "EHLO
+	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752140Ab1KYDPR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:15:17 -0500
+In-Reply-To: <20111124145624.24438832@lxorguk.ukuu.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-serial@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire MBAR register that holds the mapping of the peripheral region
-on some ColdFire CPUs is configurable. It can be configured at some address
-different to that of the bootloader that loaded the kernel. So hard set
-the MBAR register mapping at kernel startup time.
+On Thu, 24 Nov 2011, Alan Cox wrote:
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/platform/coldfire/head.S |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+> Given the change should work for all hardware do we really need the 
+> ifdefs. Far better I would have thought to just change it so we don't 
+> have to maintain what is effectively two versions of the code between 
+> now and 2038.
 
-diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
-index 49666b4..0ed41ed 100644
---- a/arch/m68k/platform/coldfire/head.S
-+++ b/arch/m68k/platform/coldfire/head.S
-@@ -149,6 +149,10 @@ _start:
- #if defined(CONFIG_UBOOT)
- 	movel	%sp,_init_sp			/* save initial stack pointer */
- #endif
-+#ifdef CONFIG_MBAR
-+	movel	#CONFIG_MBAR+1,%d0		/* configured MBAR address */
-+	movec	%d0,%MBAR			/* set it */
-+#endif
- 
- 	/*
- 	 *	Do any platform or board specific setup now. Most boards
--- 
-1.7.0.4
+I agree.
+
+> 
+> So no ack from me yet - I'd like to understand the ifdef decision first.
+
+Removing ifdefs makes the changes more invasive and the suspend/resume 
+code then has to be addressed, which I've avoided.
+
+The suspend/resume code path can't be tested on m68k macs and the common 
+code paths I can't easily test on a powermac.
+
+This patch should not be needed because the chip reset shouldn't leave the 
+tx and rx interrupts enabled. Those interrupts are explicitly enabled only 
+after request_irq(), so patching the master interrupt enable behaviour 
+should be redundant. But that's not the case in practice.
+
+The chip reset code is already messy. I was inclined towards ifdefs and 
+reluctant to share more code after practical experience suggested possible 
+differences in the SCC/ESCC devices.
+
+I guess I was hoping that the powermac maintainers might prefer ifdefs to 
+increased risk of destabilising the driver on powermacs...
+
+But a more invasive patch would make for better code. I will see if I can 
+borrow a suitable PCI PowerMac.
+
+Finn
+
+> Otherwise it looks sensible.
+> 
+> Alan
