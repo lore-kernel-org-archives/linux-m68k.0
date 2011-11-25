@@ -1,1210 +1,238 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: simpler m68k and ColdFire CPU's can use generic
- csum code
-Date: Fri, 25 Nov 2011 09:36:38 +1000
-Message-ID: <4ECED506.6030201@snapgear.com>
-References: <1321597970-23806-1-git-send-email-gerg@snapgear.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH-RFC 02/10] lib: add GENERIC_PCI_IOMAP
+Date: Fri, 25 Nov 2011 11:54:55 +1100
+Message-ID: <20111125115455.9d5e18da6e683586d84ed9c8@canb.auug.org.au>
+References: <cover.1322163031.git.mst@redhat.com>
+ <b5a1327dd8bb38f87cba7ae10b308ec3b63de66a.1322163031.git.mst@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:39334 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753075Ab1KXXef (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 18:34:35 -0500
-In-Reply-To: <1321597970-23806-1-git-send-email-gerg@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6132578827858740304=="
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <b5a1327dd8bb38f87cba7ae10b308ec3b63de66a.1322163031.git.mst@redhat.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-pci@vger.kernel.org, linux@openrisc.net, Jesse Barnes <jbarnes@virtuousgeek.org>, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, Jonas Bonn <jonas@southpole.se>, Jesper Nilsson <jesper.nilsson@axis.com>, Russell King <linux@arm.linux.org.uk>, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Arend van Spriel <arend@broadcom.com>, Matt Turner <mattst88@gmail.com>, linux-arch@vger.k
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-Hi Geert,
+--===============6132578827858740304==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA256";
+ boundary="Signature=_Fri__25_Nov_2011_11_54_55_+1100_Ear09Vzvz+xx6qEm"
 
-On 18/11/11 16:32, gerg@snapgear.com wrote:
-> From: Greg Ungerer<gerg@uclinux.org>
+--Signature=_Fri__25_Nov_2011_11_54_55_+1100_Ear09Vzvz+xx6qEm
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Michael,
+
+On Thu, 24 Nov 2011 22:17:02 +0200 "Michael S. Tsirkin" <mst@redhat.com> wr=
+ote:
 >
-> We have two implementations of the IP checksuming code for the m68k arch.
-> One uses the more advanced instructions available in 68020 and above
-> processors, the other uses the simpler instructions available on the
-> original 68000 processors and the modern ColdFire processors.
->
-> This simpler code is pretty much the same as the generic lib implementation
-> of the IP csum functions. So lets just switch over to using that. That
-> means we can completely remove the checksum_no.c file, and only have the
-> local fast code used for the more complex 68k CPU family members.
->
-> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
-> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
-
-This is a reworked version of the original patch
-(http://www.spinics.net/lists/linux-m68k/msg04271.html), so I probably
-should have removed your "Acked-by" here, since you haven't really
-acked this version of it at all :-)  Sorry about that.
-
-This version goes a bit further than the original, and actually
-switches to use the generic csum for the non-mmu and ColdFire cases.
-
-Regards
-Greg
-
-
-
-> ---
->   arch/m68k/Kconfig                |    3 +
->   arch/m68k/Kconfig.cpu            |    2 +
->   arch/m68k/include/asm/checksum.h |   31 +---
->   arch/m68k/lib/Makefile           |    8 +-
->   arch/m68k/lib/checksum.c         |  425 ++++++++++++++++++++++++++++++++++++++
->   arch/m68k/lib/checksum_mm.c      |  425 --------------------------------------
->   arch/m68k/lib/checksum_no.c      |  156 --------------
->   7 files changed, 441 insertions(+), 609 deletions(-)
->   create mode 100644 arch/m68k/lib/checksum.c
->   delete mode 100644 arch/m68k/lib/checksum_mm.c
->   delete mode 100644 arch/m68k/lib/checksum_no.c
->
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index 2914b03..2fe2d63 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -40,6 +40,9 @@ config GENERIC_CALIBRATE_DELAY
->   config GENERIC_IOMAP
->   	def_bool MMU
->
-> +config GENERIC_CSUM
-> +	bool
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index 9120887..c8a67345 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -19,6 +19,8 @@
+>  #include <asm-generic/iomap.h>
+>  #endif
+> =20
+> +#include <asm-generic/pci_iomap.h>
 > +
->   config TIME_LOW_RES
->   	bool
->   	default y
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 9af9e68..17d37ed 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -3,6 +3,7 @@ comment "Processor Type"
->   config M68000
->   	bool
->   	select CPU_HAS_NO_BITFIELDS
-> +	select GENERIC_CSUM
->   	help
->   	  The Freescale (was Motorola) 68000 CPU is the first generation of
->   	  the well known M68K family of processors. The CPU core as well as
-> @@ -23,6 +24,7 @@ config COLDFIRE
->   	select GENERIC_GPIO
->   	select ARCH_REQUIRE_GPIOLIB
->   	select CPU_HAS_NO_BITFIELDS
-> +	select GENERIC_CSUM
->   	help
->   	  The Freescale ColdFire family of processors is a modern derivitive
->   	  of the 68000 processor family. They are mainly targeted at embedded
-> diff --git a/arch/m68k/include/asm/checksum.h b/arch/m68k/include/asm/checksum.h
-> index ec51448..2f88d86 100644
-> --- a/arch/m68k/include/asm/checksum.h
-> +++ b/arch/m68k/include/asm/checksum.h
-> @@ -3,6 +3,10 @@
->
->   #include<linux/in6.h>
->
-> +#ifdef CONFIG_GENERIC_CSUM
-> +#include<asm-generic/checksum.h>
-> +#else
-> +
->   /*
->    * computes the checksum of a memory block at buff, length len,
->    * and adds in "sum" (32-bit)
-> @@ -34,30 +38,6 @@ extern __wsum csum_partial_copy_nocheck(const void *src,
->   					      void *dst, int len,
->   					      __wsum sum);
->
-> -
-> -#ifdef CONFIG_COLDFIRE
-> -
-> -/*
-> - *	The ColdFire cores don't support all the 68k instructions used
-> - *	in the optimized checksum code below. So it reverts back to using
-> - *	more standard C coded checksums. The fast checksum code is
-> - *	significantly larger than the optimized version, so it is not
-> - *	inlined here.
-> - */
-> -__sum16 ip_fast_csum(const void *iph, unsigned int ihl);
-> -
-> -static inline __sum16 csum_fold(__wsum sum)
-> -{
-> -	unsigned int tmp = (__force u32)sum;
-> -
-> -	tmp = (tmp&  0xffff) + (tmp>>  16);
-> -	tmp = (tmp&  0xffff) + (tmp>>  16);
-> -
-> -	return (__force __sum16)~tmp;
-> -}
-> -
-> -#else
-> -
->   /*
->    *	This is a version of ip_fast_csum() optimized for IP headers,
->    *	which always checksum on 4 octet boundaries.
-> @@ -97,8 +77,6 @@ static inline __sum16 csum_fold(__wsum sum)
->   	return (__force __sum16)~sum;
->   }
->
-> -#endif /* CONFIG_COLDFIRE */
-> -
->   static inline __wsum
->   csum_tcpudp_nofold(__be32 saddr, __be32 daddr, unsigned short len,
->   		  unsigned short proto, __wsum sum)
-> @@ -167,4 +145,5 @@ csum_ipv6_magic(const struct in6_addr *saddr, const struct in6_addr *daddr,
->   	return csum_fold(sum);
->   }
->
-> +#endif /* CONFIG_GENERIC_CSUM */
->   #endif /* _M68K_CHECKSUM_H */
-> diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-> index 1a1bd90..b3b40e4 100644
-> --- a/arch/m68k/lib/Makefile
-> +++ b/arch/m68k/lib/Makefile
-> @@ -7,8 +7,12 @@ lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
->   	   memcpy.o memset.o memmove.o
->
->   ifdef CONFIG_MMU
-> -lib-y	+= string.o uaccess.o checksum_mm.o
-> +lib-y	+= string.o uaccess.o
->   else
-> -lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o checksum_no.o
-> +lib-y	+= mulsi3.o divsi3.o udivsi3.o modsi3.o umodsi3.o
-> +endif
-> +
-> +ifndef CONFIG_GENERIC_CSUM
-> +lib-y	+= checksum.o
->   endif
->
-> diff --git a/arch/m68k/lib/checksum.c b/arch/m68k/lib/checksum.c
+>  #ifndef mmiowb
+>  #define mmiowb() do {} while (0)
+>  #endif
+> @@ -283,9 +285,6 @@ static inline void writesb(const void __iomem *addr, =
+const void *buf, int len)
+>  #define __io_virt(x) ((void __force *) (x))
+> =20
+>  #ifndef CONFIG_GENERIC_IOMAP
+> -/* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
+> -struct pci_dev;
+> -extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned lo=
+ng max);
+>  static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+>  {
+>  }
+
+Just wondering why you move pci_iomap but not pic_iounmap.  And also if
+pci_iounmap is meant to stay here, then the "struct pci_dev" should
+probably stay as well.
+
+> diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
+> index 98dcd76..fdcddcb 100644
+> --- a/include/asm-generic/iomap.h
+> +++ b/include/asm-generic/iomap.h
+> @@ -69,16 +69,13 @@ extern void ioport_unmap(void __iomem *);
+>  #ifdef CONFIG_PCI
+>  /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
+>  struct pci_dev;
+> -extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned lo=
+ng max);
+>  extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
+
+Ditto with pci_iounmap.  Also the comment above really belongs with pci_iom=
+ap.
+
+> diff --git a/include/asm-generic/pci_iomap.h b/include/asm-generic/pci_io=
+map.h
 > new file mode 100644
-> index 0000000..6216f12
+> index 0000000..e08b3bd
 > --- /dev/null
-> +++ b/arch/m68k/lib/checksum.c
-> @@ -0,0 +1,425 @@
-> +/*
-> + * INET		An implementation of the TCP/IP protocol suite for the LINUX
-> + *		operating system.  INET is implemented using the  BSD Socket
-> + *		interface as the means of communication with the user level.
+> +++ b/include/asm-generic/pci_iomap.h
+> @@ -0,0 +1,26 @@
+> +/* Generic I/O port emulation, based on MN10300 code
 > + *
-> + *		IP/TCP/UDP checksumming routines
+> + * Copyright (C) 2007 Red Hat, Inc. All Rights Reserved.
+> + * Written by David Howells (dhowells@redhat.com)
 > + *
-> + * Authors:	Jorge Cwik,<jorge@laser.satlink.net>
-> + *		Arnt Gulbrandsen,<agulbra@nvg.unit.no>
-> + *		Tom May,<ftom@netcom.com>
-> + *		Andreas Schwab,<schwab@issan.informatik.uni-dortmund.de>
-> + *		Lots of code moved from tcp.c and ip.c; see those files
-> + *		for more names.
-> + *
-> + * 03/02/96	Jes Sorensen, Andreas Schwab, Roman Hodek:
-> + *		Fixed some nasty bugs, causing some horrible crashes.
-> + *		A: At some points, the sum (%0) was used as
-> + *		length-counter instead of the length counter
-> + *		(%1). Thanks to Roman Hodek for pointing this out.
-> + *		B: GCC seems to mess up if one uses too many
-> + *		data-registers to hold input values and one tries to
-> + *		specify d0 and d1 as scratch registers. Letting gcc
-> + *		choose these registers itself solves the problem.
-> + *
-> + *		This program is free software; you can redistribute it and/or
-> + *		modify it under the terms of the GNU General Public License
-> + *		as published by the Free Software Foundation; either version
-> + *		2 of the License, or (at your option) any later version.
-> + *
-> + * 1998/8/31	Andreas Schwab:
-> + *		Zero out rest of buffer on exception in
-> + *		csum_partial_copy_from_user.
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public Licence
+> + * as published by the Free Software Foundation; either version
+> + * 2 of the Licence, or (at your option) any later version.
 > + */
+> +#ifndef __ASM_GENERIC_PCI_IOMAP_H
+> +#define __ASM_GENERIC_PCI_IOMAP_H
 > +
-> +#include<linux/module.h>
-> +#include<net/checksum.h>
-> +
-> +/*
-> + * computes a partial checksum, e.g. for TCP/UDP fragments
-> + */
-> +
-> +__wsum csum_partial(const void *buff, int len, __wsum sum)
-> +{
-> +	unsigned long tmp1, tmp2;
-> +	  /*
-> +	   * Experiments with ethernet and slip connections show that buff
-> +	   * is aligned on either a 2-byte or 4-byte boundary.
-> +	   */
-> +	__asm__("movel %2,%3\n\t"
-> +		"btst #1,%3\n\t"	/* Check alignment */
-> +		"jeq 2f\n\t"
-> +		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> +		"jgt 1f\n\t"
-> +		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> +		"jra 4f\n"
-> +	     "1:\t"
-> +		"addw %2@+,%0\n\t"	/* add first word to sum */
-> +		"clrl %3\n\t"
-> +		"addxl %3,%0\n"		/* add X bit */
-> +	     "2:\t"
-> +		/* unrolled loop for the main part: do 8 longs at once */
-> +		"movel %1,%3\n\t"	/* save len in tmp1 */
-> +		"lsrl #5,%1\n\t"	/* len/32 */
-> +		"jeq 2f\n\t"		/* not enough... */
-> +		"subql #1,%1\n"
-> +	     "1:\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"dbra %1,1b\n\t"
-> +		"clrl %4\n\t"
-> +		"addxl %4,%0\n\t"	/* add X bit */
-> +		"clrw %1\n\t"
-> +		"subql #1,%1\n\t"
-> +		"jcc 1b\n"
-> +	     "2:\t"
-> +		"movel %3,%1\n\t"	/* restore len from tmp1 */
-> +		"andw #0x1c,%3\n\t"	/* number of rest longs */
-> +		"jeq 4f\n\t"
-> +		"lsrw #2,%3\n\t"
-> +		"subqw #1,%3\n"
-> +	     "3:\t"
-> +		/* loop for rest longs */
-> +		"movel %2@+,%4\n\t"
-> +		"addxl %4,%0\n\t"
-> +		"dbra %3,3b\n\t"
-> +		"clrl %4\n\t"
-> +		"addxl %4,%0\n"		/* add X bit */
-> +	     "4:\t"
-> +		/* now check for rest bytes that do not fit into longs */
-> +		"andw #3,%1\n\t"
-> +		"jeq 7f\n\t"
-> +		"clrl %4\n\t"		/* clear tmp2 for rest bytes */
-> +		"subqw #2,%1\n\t"
-> +		"jlt 5f\n\t"
-> +		"movew %2@+,%4\n\t"	/* have rest>= 2: get word */
-> +		"swap %4\n\t"		/* into bits 16..31 */
-> +		"tstw %1\n\t"		/* another byte? */
-> +		"jeq 6f\n"
-> +	     "5:\t"
-> +		"moveb %2@,%4\n\t"	/* have odd rest: get byte */
-> +		"lslw #8,%4\n\t"	/* into bits 8..15; 16..31 untouched */
-> +	     "6:\t"
-> +		"addl %4,%0\n\t"	/* now add rest long to sum */
-> +		"clrl %4\n\t"
-> +		"addxl %4,%0\n"		/* add X bit */
-> +	     "7:\t"
-> +		: "=d" (sum), "=d" (len), "=a" (buff),
-> +		  "=&d" (tmp1), "=&d" (tmp2)
-> +		: "0" (sum), "1" (len), "2" (buff)
-> +	    );
-> +	return(sum);
-> +}
-> +
-> +EXPORT_SYMBOL(csum_partial);
-> +
-> +
-> +/*
-> + * copy from user space while checksumming, with exception handling.
-> + */
-> +
-> +__wsum
-> +csum_partial_copy_from_user(const void __user *src, void *dst,
-> +			    int len, __wsum sum, int *csum_err)
-> +{
-> +	/*
-> +	 * GCC doesn't like more than 10 operands for the asm
-> +	 * statements so we have to use tmp2 for the error
-> +	 * code.
-> +	 */
-> +	unsigned long tmp1, tmp2;
-> +
-> +	__asm__("movel %2,%4\n\t"
-> +		"btst #1,%4\n\t"	/* Check alignment */
-> +		"jeq 2f\n\t"
-> +		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> +		"jgt 1f\n\t"
-> +		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> +		"jra 4f\n"
-> +	     "1:\n"
-> +	     "10:\t"
-> +		"movesw %2@+,%4\n\t"	/* add first word to sum */
-> +		"addw %4,%0\n\t"
-> +		"movew %4,%3@+\n\t"
-> +		"clrl %4\n\t"
-> +		"addxl %4,%0\n"		/* add X bit */
-> +	     "2:\t"
-> +		/* unrolled loop for the main part: do 8 longs at once */
-> +		"movel %1,%4\n\t"	/* save len in tmp1 */
-> +		"lsrl #5,%1\n\t"	/* len/32 */
-> +		"jeq 2f\n\t"		/* not enough... */
-> +		"subql #1,%1\n"
-> +	     "1:\n"
-> +	     "11:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "12:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "13:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "14:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "15:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "16:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "17:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +	     "18:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"dbra %1,1b\n\t"
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n\t"	/* add X bit */
-> +		"clrw %1\n\t"
-> +		"subql #1,%1\n\t"
-> +		"jcc 1b\n"
-> +	     "2:\t"
-> +		"movel %4,%1\n\t"	/* restore len from tmp1 */
-> +		"andw #0x1c,%4\n\t"	/* number of rest longs */
-> +		"jeq 4f\n\t"
-> +		"lsrw #2,%4\n\t"
-> +		"subqw #1,%4\n"
-> +	     "3:\n"
-> +		/* loop for rest longs */
-> +	     "19:\t"
-> +		"movesl %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"dbra %4,3b\n\t"
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n"		/* add X bit */
-> +	     "4:\t"
-> +		/* now check for rest bytes that do not fit into longs */
-> +		"andw #3,%1\n\t"
-> +		"jeq 7f\n\t"
-> +		"clrl %5\n\t"		/* clear tmp2 for rest bytes */
-> +		"subqw #2,%1\n\t"
-> +		"jlt 5f\n\t"
-> +	     "20:\t"
-> +		"movesw %2@+,%5\n\t"	/* have rest>= 2: get word */
-> +		"movew %5,%3@+\n\t"
-> +		"swap %5\n\t"		/* into bits 16..31 */
-> +		"tstw %1\n\t"		/* another byte? */
-> +		"jeq 6f\n"
-> +	     "5:\n"
-> +	     "21:\t"
-> +		"movesb %2@,%5\n\t"	/* have odd rest: get byte */
-> +		"moveb %5,%3@+\n\t"
-> +		"lslw #8,%5\n\t"	/* into bits 8..15; 16..31 untouched */
-> +	     "6:\t"
-> +		"addl %5,%0\n\t"	/* now add rest long to sum */
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n\t"	/* add X bit */
-> +	     "7:\t"
-> +		"clrl %5\n"		/* no error - clear return value */
-> +	     "8:\n"
-> +		".section .fixup,\"ax\"\n"
-> +		".even\n"
-> +		/* If any exception occurs zero out the rest.
-> +		   Similarities with the code above are intentional :-) */
-> +	     "90:\t"
-> +		"clrw %3@+\n\t"
-> +		"movel %1,%4\n\t"
-> +		"lsrl #5,%1\n\t"
-> +		"jeq 1f\n\t"
-> +		"subql #1,%1\n"
-> +	     "91:\t"
-> +		"clrl %3@+\n"
-> +	     "92:\t"
-> +		"clrl %3@+\n"
-> +	     "93:\t"
-> +		"clrl %3@+\n"
-> +	     "94:\t"
-> +		"clrl %3@+\n"
-> +	     "95:\t"
-> +		"clrl %3@+\n"
-> +	     "96:\t"
-> +		"clrl %3@+\n"
-> +	     "97:\t"
-> +		"clrl %3@+\n"
-> +	     "98:\t"
-> +		"clrl %3@+\n\t"
-> +		"dbra %1,91b\n\t"
-> +		"clrw %1\n\t"
-> +		"subql #1,%1\n\t"
-> +		"jcc 91b\n"
-> +	     "1:\t"
-> +		"movel %4,%1\n\t"
-> +		"andw #0x1c,%4\n\t"
-> +		"jeq 1f\n\t"
-> +		"lsrw #2,%4\n\t"
-> +		"subqw #1,%4\n"
-> +	     "99:\t"
-> +		"clrl %3@+\n\t"
-> +		"dbra %4,99b\n\t"
-> +	     "1:\t"
-> +		"andw #3,%1\n\t"
-> +		"jeq 9f\n"
-> +	     "100:\t"
-> +		"clrw %3@+\n\t"
-> +		"tstw %1\n\t"
-> +		"jeq 9f\n"
-> +	     "101:\t"
-> +		"clrb %3@+\n"
-> +	     "9:\t"
-> +#define STR(X) STR1(X)
-> +#define STR1(X) #X
-> +		"moveq #-" STR(EFAULT) ",%5\n\t"
-> +		"jra 8b\n"
-> +		".previous\n"
-> +		".section __ex_table,\"a\"\n"
-> +		".long 10b,90b\n"
-> +		".long 11b,91b\n"
-> +		".long 12b,92b\n"
-> +		".long 13b,93b\n"
-> +		".long 14b,94b\n"
-> +		".long 15b,95b\n"
-> +		".long 16b,96b\n"
-> +		".long 17b,97b\n"
-> +		".long 18b,98b\n"
-> +		".long 19b,99b\n"
-> +		".long 20b,100b\n"
-> +		".long 21b,101b\n"
-> +		".previous"
-> +		: "=d" (sum), "=d" (len), "=a" (src), "=a" (dst),
-> +		  "=&d" (tmp1), "=d" (tmp2)
-> +		: "0" (sum), "1" (len), "2" (src), "3" (dst)
-> +	    );
-> +
-> +	*csum_err = tmp2;
-> +
-> +	return(sum);
-> +}
-> +
-> +EXPORT_SYMBOL(csum_partial_copy_from_user);
-> +
-> +
-> +/*
-> + * copy from kernel space while checksumming, otherwise like csum_partial
-> + */
-> +
-> +__wsum
-> +csum_partial_copy_nocheck(const void *src, void *dst, int len, __wsum sum)
-> +{
-> +	unsigned long tmp1, tmp2;
-> +	__asm__("movel %2,%4\n\t"
-> +		"btst #1,%4\n\t"	/* Check alignment */
-> +		"jeq 2f\n\t"
-> +		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> +		"jgt 1f\n\t"
-> +		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> +		"jra 4f\n"
-> +	     "1:\t"
-> +		"movew %2@+,%4\n\t"	/* add first word to sum */
-> +		"addw %4,%0\n\t"
-> +		"movew %4,%3@+\n\t"
-> +		"clrl %4\n\t"
-> +		"addxl %4,%0\n"		/* add X bit */
-> +	     "2:\t"
-> +		/* unrolled loop for the main part: do 8 longs at once */
-> +		"movel %1,%4\n\t"	/* save len in tmp1 */
-> +		"lsrl #5,%1\n\t"	/* len/32 */
-> +		"jeq 2f\n\t"		/* not enough... */
-> +		"subql #1,%1\n"
-> +	     "1:\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"dbra %1,1b\n\t"
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n\t"	/* add X bit */
-> +		"clrw %1\n\t"
-> +		"subql #1,%1\n\t"
-> +		"jcc 1b\n"
-> +	     "2:\t"
-> +		"movel %4,%1\n\t"	/* restore len from tmp1 */
-> +		"andw #0x1c,%4\n\t"	/* number of rest longs */
-> +		"jeq 4f\n\t"
-> +		"lsrw #2,%4\n\t"
-> +		"subqw #1,%4\n"
-> +	     "3:\t"
-> +		/* loop for rest longs */
-> +		"movel %2@+,%5\n\t"
-> +		"addxl %5,%0\n\t"
-> +		"movel %5,%3@+\n\t"
-> +		"dbra %4,3b\n\t"
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n"		/* add X bit */
-> +	     "4:\t"
-> +		/* now check for rest bytes that do not fit into longs */
-> +		"andw #3,%1\n\t"
-> +		"jeq 7f\n\t"
-> +		"clrl %5\n\t"		/* clear tmp2 for rest bytes */
-> +		"subqw #2,%1\n\t"
-> +		"jlt 5f\n\t"
-> +		"movew %2@+,%5\n\t"	/* have rest>= 2: get word */
-> +		"movew %5,%3@+\n\t"
-> +		"swap %5\n\t"		/* into bits 16..31 */
-> +		"tstw %1\n\t"		/* another byte? */
-> +		"jeq 6f\n"
-> +	     "5:\t"
-> +		"moveb %2@,%5\n\t"	/* have odd rest: get byte */
-> +		"moveb %5,%3@+\n\t"
-> +		"lslw #8,%5\n"		/* into bits 8..15; 16..31 untouched */
-> +	     "6:\t"
-> +		"addl %5,%0\n\t"	/* now add rest long to sum */
-> +		"clrl %5\n\t"
-> +		"addxl %5,%0\n"		/* add X bit */
-> +	     "7:\t"
-> +		: "=d" (sum), "=d" (len), "=a" (src), "=a" (dst),
-> +		  "=&d" (tmp1), "=&d" (tmp2)
-> +		: "0" (sum), "1" (len), "2" (src), "3" (dst)
-> +	    );
-> +    return(sum);
-> +}
-> +EXPORT_SYMBOL(csum_partial_copy_nocheck);
-> diff --git a/arch/m68k/lib/checksum_mm.c b/arch/m68k/lib/checksum_mm.c
-> deleted file mode 100644
-> index 6216f12..0000000
-> --- a/arch/m68k/lib/checksum_mm.c
-> +++ /dev/null
-> @@ -1,425 +0,0 @@
-> -/*
-> - * INET		An implementation of the TCP/IP protocol suite for the LINUX
-> - *		operating system.  INET is implemented using the  BSD Socket
-> - *		interface as the means of communication with the user level.
-> - *
-> - *		IP/TCP/UDP checksumming routines
-> - *
-> - * Authors:	Jorge Cwik,<jorge@laser.satlink.net>
-> - *		Arnt Gulbrandsen,<agulbra@nvg.unit.no>
-> - *		Tom May,<ftom@netcom.com>
-> - *		Andreas Schwab,<schwab@issan.informatik.uni-dortmund.de>
-> - *		Lots of code moved from tcp.c and ip.c; see those files
-> - *		for more names.
-> - *
-> - * 03/02/96	Jes Sorensen, Andreas Schwab, Roman Hodek:
-> - *		Fixed some nasty bugs, causing some horrible crashes.
-> - *		A: At some points, the sum (%0) was used as
-> - *		length-counter instead of the length counter
-> - *		(%1). Thanks to Roman Hodek for pointing this out.
-> - *		B: GCC seems to mess up if one uses too many
-> - *		data-registers to hold input values and one tries to
-> - *		specify d0 and d1 as scratch registers. Letting gcc
-> - *		choose these registers itself solves the problem.
-> - *
-> - *		This program is free software; you can redistribute it and/or
-> - *		modify it under the terms of the GNU General Public License
-> - *		as published by the Free Software Foundation; either version
-> - *		2 of the License, or (at your option) any later version.
-> - *
-> - * 1998/8/31	Andreas Schwab:
-> - *		Zero out rest of buffer on exception in
-> - *		csum_partial_copy_from_user.
-> - */
-> -
-> -#include<linux/module.h>
-> -#include<net/checksum.h>
-> -
-> -/*
-> - * computes a partial checksum, e.g. for TCP/UDP fragments
-> - */
-> -
-> -__wsum csum_partial(const void *buff, int len, __wsum sum)
-> -{
-> -	unsigned long tmp1, tmp2;
-> -	  /*
-> -	   * Experiments with ethernet and slip connections show that buff
-> -	   * is aligned on either a 2-byte or 4-byte boundary.
-> -	   */
-> -	__asm__("movel %2,%3\n\t"
-> -		"btst #1,%3\n\t"	/* Check alignment */
-> -		"jeq 2f\n\t"
-> -		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> -		"jgt 1f\n\t"
-> -		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> -		"jra 4f\n"
-> -	     "1:\t"
-> -		"addw %2@+,%0\n\t"	/* add first word to sum */
-> -		"clrl %3\n\t"
-> -		"addxl %3,%0\n"		/* add X bit */
-> -	     "2:\t"
-> -		/* unrolled loop for the main part: do 8 longs at once */
-> -		"movel %1,%3\n\t"	/* save len in tmp1 */
-> -		"lsrl #5,%1\n\t"	/* len/32 */
-> -		"jeq 2f\n\t"		/* not enough... */
-> -		"subql #1,%1\n"
-> -	     "1:\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"dbra %1,1b\n\t"
-> -		"clrl %4\n\t"
-> -		"addxl %4,%0\n\t"	/* add X bit */
-> -		"clrw %1\n\t"
-> -		"subql #1,%1\n\t"
-> -		"jcc 1b\n"
-> -	     "2:\t"
-> -		"movel %3,%1\n\t"	/* restore len from tmp1 */
-> -		"andw #0x1c,%3\n\t"	/* number of rest longs */
-> -		"jeq 4f\n\t"
-> -		"lsrw #2,%3\n\t"
-> -		"subqw #1,%3\n"
-> -	     "3:\t"
-> -		/* loop for rest longs */
-> -		"movel %2@+,%4\n\t"
-> -		"addxl %4,%0\n\t"
-> -		"dbra %3,3b\n\t"
-> -		"clrl %4\n\t"
-> -		"addxl %4,%0\n"		/* add X bit */
-> -	     "4:\t"
-> -		/* now check for rest bytes that do not fit into longs */
-> -		"andw #3,%1\n\t"
-> -		"jeq 7f\n\t"
-> -		"clrl %4\n\t"		/* clear tmp2 for rest bytes */
-> -		"subqw #2,%1\n\t"
-> -		"jlt 5f\n\t"
-> -		"movew %2@+,%4\n\t"	/* have rest>= 2: get word */
-> -		"swap %4\n\t"		/* into bits 16..31 */
-> -		"tstw %1\n\t"		/* another byte? */
-> -		"jeq 6f\n"
-> -	     "5:\t"
-> -		"moveb %2@,%4\n\t"	/* have odd rest: get byte */
-> -		"lslw #8,%4\n\t"	/* into bits 8..15; 16..31 untouched */
-> -	     "6:\t"
-> -		"addl %4,%0\n\t"	/* now add rest long to sum */
-> -		"clrl %4\n\t"
-> -		"addxl %4,%0\n"		/* add X bit */
-> -	     "7:\t"
-> -		: "=d" (sum), "=d" (len), "=a" (buff),
-> -		  "=&d" (tmp1), "=&d" (tmp2)
-> -		: "0" (sum), "1" (len), "2" (buff)
-> -	    );
-> -	return(sum);
-> -}
-> -
-> -EXPORT_SYMBOL(csum_partial);
-> -
-> -
-> -/*
-> - * copy from user space while checksumming, with exception handling.
-> - */
-> -
-> -__wsum
-> -csum_partial_copy_from_user(const void __user *src, void *dst,
-> -			    int len, __wsum sum, int *csum_err)
-> -{
-> -	/*
-> -	 * GCC doesn't like more than 10 operands for the asm
-> -	 * statements so we have to use tmp2 for the error
-> -	 * code.
-> -	 */
-> -	unsigned long tmp1, tmp2;
-> -
-> -	__asm__("movel %2,%4\n\t"
-> -		"btst #1,%4\n\t"	/* Check alignment */
-> -		"jeq 2f\n\t"
-> -		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> -		"jgt 1f\n\t"
-> -		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> -		"jra 4f\n"
-> -	     "1:\n"
-> -	     "10:\t"
-> -		"movesw %2@+,%4\n\t"	/* add first word to sum */
-> -		"addw %4,%0\n\t"
-> -		"movew %4,%3@+\n\t"
-> -		"clrl %4\n\t"
-> -		"addxl %4,%0\n"		/* add X bit */
-> -	     "2:\t"
-> -		/* unrolled loop for the main part: do 8 longs at once */
-> -		"movel %1,%4\n\t"	/* save len in tmp1 */
-> -		"lsrl #5,%1\n\t"	/* len/32 */
-> -		"jeq 2f\n\t"		/* not enough... */
-> -		"subql #1,%1\n"
-> -	     "1:\n"
-> -	     "11:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "12:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "13:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "14:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "15:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "16:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "17:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -	     "18:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"dbra %1,1b\n\t"
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n\t"	/* add X bit */
-> -		"clrw %1\n\t"
-> -		"subql #1,%1\n\t"
-> -		"jcc 1b\n"
-> -	     "2:\t"
-> -		"movel %4,%1\n\t"	/* restore len from tmp1 */
-> -		"andw #0x1c,%4\n\t"	/* number of rest longs */
-> -		"jeq 4f\n\t"
-> -		"lsrw #2,%4\n\t"
-> -		"subqw #1,%4\n"
-> -	     "3:\n"
-> -		/* loop for rest longs */
-> -	     "19:\t"
-> -		"movesl %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"dbra %4,3b\n\t"
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n"		/* add X bit */
-> -	     "4:\t"
-> -		/* now check for rest bytes that do not fit into longs */
-> -		"andw #3,%1\n\t"
-> -		"jeq 7f\n\t"
-> -		"clrl %5\n\t"		/* clear tmp2 for rest bytes */
-> -		"subqw #2,%1\n\t"
-> -		"jlt 5f\n\t"
-> -	     "20:\t"
-> -		"movesw %2@+,%5\n\t"	/* have rest>= 2: get word */
-> -		"movew %5,%3@+\n\t"
-> -		"swap %5\n\t"		/* into bits 16..31 */
-> -		"tstw %1\n\t"		/* another byte? */
-> -		"jeq 6f\n"
-> -	     "5:\n"
-> -	     "21:\t"
-> -		"movesb %2@,%5\n\t"	/* have odd rest: get byte */
-> -		"moveb %5,%3@+\n\t"
-> -		"lslw #8,%5\n\t"	/* into bits 8..15; 16..31 untouched */
-> -	     "6:\t"
-> -		"addl %5,%0\n\t"	/* now add rest long to sum */
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n\t"	/* add X bit */
-> -	     "7:\t"
-> -		"clrl %5\n"		/* no error - clear return value */
-> -	     "8:\n"
-> -		".section .fixup,\"ax\"\n"
-> -		".even\n"
-> -		/* If any exception occurs zero out the rest.
-> -		   Similarities with the code above are intentional :-) */
-> -	     "90:\t"
-> -		"clrw %3@+\n\t"
-> -		"movel %1,%4\n\t"
-> -		"lsrl #5,%1\n\t"
-> -		"jeq 1f\n\t"
-> -		"subql #1,%1\n"
-> -	     "91:\t"
-> -		"clrl %3@+\n"
-> -	     "92:\t"
-> -		"clrl %3@+\n"
-> -	     "93:\t"
-> -		"clrl %3@+\n"
-> -	     "94:\t"
-> -		"clrl %3@+\n"
-> -	     "95:\t"
-> -		"clrl %3@+\n"
-> -	     "96:\t"
-> -		"clrl %3@+\n"
-> -	     "97:\t"
-> -		"clrl %3@+\n"
-> -	     "98:\t"
-> -		"clrl %3@+\n\t"
-> -		"dbra %1,91b\n\t"
-> -		"clrw %1\n\t"
-> -		"subql #1,%1\n\t"
-> -		"jcc 91b\n"
-> -	     "1:\t"
-> -		"movel %4,%1\n\t"
-> -		"andw #0x1c,%4\n\t"
-> -		"jeq 1f\n\t"
-> -		"lsrw #2,%4\n\t"
-> -		"subqw #1,%4\n"
-> -	     "99:\t"
-> -		"clrl %3@+\n\t"
-> -		"dbra %4,99b\n\t"
-> -	     "1:\t"
-> -		"andw #3,%1\n\t"
-> -		"jeq 9f\n"
-> -	     "100:\t"
-> -		"clrw %3@+\n\t"
-> -		"tstw %1\n\t"
-> -		"jeq 9f\n"
-> -	     "101:\t"
-> -		"clrb %3@+\n"
-> -	     "9:\t"
-> -#define STR(X) STR1(X)
-> -#define STR1(X) #X
-> -		"moveq #-" STR(EFAULT) ",%5\n\t"
-> -		"jra 8b\n"
-> -		".previous\n"
-> -		".section __ex_table,\"a\"\n"
-> -		".long 10b,90b\n"
-> -		".long 11b,91b\n"
-> -		".long 12b,92b\n"
-> -		".long 13b,93b\n"
-> -		".long 14b,94b\n"
-> -		".long 15b,95b\n"
-> -		".long 16b,96b\n"
-> -		".long 17b,97b\n"
-> -		".long 18b,98b\n"
-> -		".long 19b,99b\n"
-> -		".long 20b,100b\n"
-> -		".long 21b,101b\n"
-> -		".previous"
-> -		: "=d" (sum), "=d" (len), "=a" (src), "=a" (dst),
-> -		  "=&d" (tmp1), "=d" (tmp2)
-> -		: "0" (sum), "1" (len), "2" (src), "3" (dst)
-> -	    );
-> -
-> -	*csum_err = tmp2;
-> -
-> -	return(sum);
-> -}
-> -
-> -EXPORT_SYMBOL(csum_partial_copy_from_user);
-> -
-> -
-> -/*
-> - * copy from kernel space while checksumming, otherwise like csum_partial
-> - */
-> -
-> -__wsum
-> -csum_partial_copy_nocheck(const void *src, void *dst, int len, __wsum sum)
-> -{
-> -	unsigned long tmp1, tmp2;
-> -	__asm__("movel %2,%4\n\t"
-> -		"btst #1,%4\n\t"	/* Check alignment */
-> -		"jeq 2f\n\t"
-> -		"subql #2,%1\n\t"	/* buff%4==2: treat first word */
-> -		"jgt 1f\n\t"
-> -		"addql #2,%1\n\t"	/* len was == 2, treat only rest */
-> -		"jra 4f\n"
-> -	     "1:\t"
-> -		"movew %2@+,%4\n\t"	/* add first word to sum */
-> -		"addw %4,%0\n\t"
-> -		"movew %4,%3@+\n\t"
-> -		"clrl %4\n\t"
-> -		"addxl %4,%0\n"		/* add X bit */
-> -	     "2:\t"
-> -		/* unrolled loop for the main part: do 8 longs at once */
-> -		"movel %1,%4\n\t"	/* save len in tmp1 */
-> -		"lsrl #5,%1\n\t"	/* len/32 */
-> -		"jeq 2f\n\t"		/* not enough... */
-> -		"subql #1,%1\n"
-> -	     "1:\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"dbra %1,1b\n\t"
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n\t"	/* add X bit */
-> -		"clrw %1\n\t"
-> -		"subql #1,%1\n\t"
-> -		"jcc 1b\n"
-> -	     "2:\t"
-> -		"movel %4,%1\n\t"	/* restore len from tmp1 */
-> -		"andw #0x1c,%4\n\t"	/* number of rest longs */
-> -		"jeq 4f\n\t"
-> -		"lsrw #2,%4\n\t"
-> -		"subqw #1,%4\n"
-> -	     "3:\t"
-> -		/* loop for rest longs */
-> -		"movel %2@+,%5\n\t"
-> -		"addxl %5,%0\n\t"
-> -		"movel %5,%3@+\n\t"
-> -		"dbra %4,3b\n\t"
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n"		/* add X bit */
-> -	     "4:\t"
-> -		/* now check for rest bytes that do not fit into longs */
-> -		"andw #3,%1\n\t"
-> -		"jeq 7f\n\t"
-> -		"clrl %5\n\t"		/* clear tmp2 for rest bytes */
-> -		"subqw #2,%1\n\t"
-> -		"jlt 5f\n\t"
-> -		"movew %2@+,%5\n\t"	/* have rest>= 2: get word */
-> -		"movew %5,%3@+\n\t"
-> -		"swap %5\n\t"		/* into bits 16..31 */
-> -		"tstw %1\n\t"		/* another byte? */
-> -		"jeq 6f\n"
-> -	     "5:\t"
-> -		"moveb %2@,%5\n\t"	/* have odd rest: get byte */
-> -		"moveb %5,%3@+\n\t"
-> -		"lslw #8,%5\n"		/* into bits 8..15; 16..31 untouched */
-> -	     "6:\t"
-> -		"addl %5,%0\n\t"	/* now add rest long to sum */
-> -		"clrl %5\n\t"
-> -		"addxl %5,%0\n"		/* add X bit */
-> -	     "7:\t"
-> -		: "=d" (sum), "=d" (len), "=a" (src), "=a" (dst),
-> -		  "=&d" (tmp1), "=&d" (tmp2)
-> -		: "0" (sum), "1" (len), "2" (src), "3" (dst)
-> -	    );
-> -    return(sum);
-> -}
-> -EXPORT_SYMBOL(csum_partial_copy_nocheck);
-> diff --git a/arch/m68k/lib/checksum_no.c b/arch/m68k/lib/checksum_no.c
-> deleted file mode 100644
-> index e4c6354..0000000
-> --- a/arch/m68k/lib/checksum_no.c
-> +++ /dev/null
-> @@ -1,156 +0,0 @@
-> -/*
-> - * INET		An implementation of the TCP/IP protocol suite for the LINUX
-> - *		operating system.  INET is implemented using the  BSD Socket
-> - *		interface as the means of communication with the user level.
-> - *
-> - *		IP/TCP/UDP checksumming routines
-> - *
-> - * Authors:	Jorge Cwik,<jorge@laser.satlink.net>
-> - *		Arnt Gulbrandsen,<agulbra@nvg.unit.no>
-> - *		Tom May,<ftom@netcom.com>
-> - *		Andreas Schwab,<schwab@issan.informatik.uni-dortmund.de>
-> - *		Lots of code moved from tcp.c and ip.c; see those files
-> - *		for more names.
-> - *
-> - * 03/02/96	Jes Sorensen, Andreas Schwab, Roman Hodek:
-> - *		Fixed some nasty bugs, causing some horrible crashes.
-> - *		A: At some points, the sum (%0) was used as
-> - *		length-counter instead of the length counter
-> - *		(%1). Thanks to Roman Hodek for pointing this out.
-> - *		B: GCC seems to mess up if one uses too many
-> - *		data-registers to hold input values and one tries to
-> - *		specify d0 and d1 as scratch registers. Letting gcc choose these
-> - *      registers itself solves the problem.
-> - *
-> - *		This program is free software; you can redistribute it and/or
-> - *		modify it under the terms of the GNU General Public License
-> - *		as published by the Free Software Foundation; either version
-> - *		2 of the License, or (at your option) any later version.
-> - */
-> -
-> -/* Revised by Kenneth Albanowski for m68knommu. Basic problem: unaligned access kills, so most
-> -   of the assembly has to go. */
-> -
-> -#include<linux/module.h>
-> -#include<net/checksum.h>
-> -
-> -static inline unsigned short from32to16(unsigned long x)
-> -{
-> -	/* add up 16-bit and 16-bit for 16+c bit */
-> -	x = (x&  0xffff) + (x>>  16);
-> -	/* add up carry.. */
-> -	x = (x&  0xffff) + (x>>  16);
-> -	return x;
-> -}
-> -
-> -static unsigned long do_csum(const unsigned char * buff, int len)
-> -{
-> -	int odd, count;
-> -	unsigned long result = 0;
-> -
-> -	if (len<= 0)
-> -		goto out;
-> -	odd = 1&  (unsigned long) buff;
-> -	if (odd) {
-> -		result = *buff;
-> -		len--;
-> -		buff++;
-> -	}
-> -	count = len>>  1;		/* nr of 16-bit words.. */
-> -	if (count) {
-> -		if (2&  (unsigned long) buff) {
-> -			result += *(unsigned short *) buff;
-> -			count--;
-> -			len -= 2;
-> -			buff += 2;
-> -		}
-> -		count>>= 1;		/* nr of 32-bit words.. */
-> -		if (count) {
-> -		        unsigned long carry = 0;
-> -			do {
-> -				unsigned long w = *(unsigned long *) buff;
-> -				count--;
-> -				buff += 4;
-> -				result += carry;
-> -				result += w;
-> -				carry = (w>  result);
-> -			} while (count);
-> -			result += carry;
-> -			result = (result&  0xffff) + (result>>  16);
-> -		}
-> -		if (len&  2) {
-> -			result += *(unsigned short *) buff;
-> -			buff += 2;
-> -		}
-> -	}
-> -	if (len&  1)
-> -		result += (*buff<<  8);
-> -	result = from32to16(result);
-> -	if (odd)
-> -		result = ((result>>  8)&  0xff) | ((result&  0xff)<<  8);
-> -out:
-> -	return result;
-> -}
-> -
-> -#ifdef CONFIG_COLDFIRE
-> -/*
-> - *	This is a version of ip_compute_csum() optimized for IP headers,
-> - *	which always checksum on 4 octet boundaries.
-> - */
-> -__sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> -{
-> -	return (__force __sum16)~do_csum(iph,ihl*4);
-> -}
-> -EXPORT_SYMBOL(ip_fast_csum);
-> -#endif
-> -
-> -/*
-> - * computes the checksum of a memory block at buff, length len,
-> - * and adds in "sum" (32-bit)
-> - *
-> - * returns a 32-bit number suitable for feeding into itself
-> - * or csum_tcpudp_magic
-> - *
-> - * this function must be called with even lengths, except
-> - * for the last fragment, which may be odd
-> - *
-> - * it's best to have buff aligned on a 32-bit boundary
-> - */
-> -__wsum csum_partial(const void *buff, int len, __wsum sum)
-> -{
-> -	unsigned int result = do_csum(buff, len);
-> -
-> -	/* add in old sum, and carry.. */
-> -	result += (__force u32)sum;
-> -	if ((__force u32)sum>  result)
-> -		result += 1;
-> -	return (__force __wsum)result;
-> -}
-> -
-> -EXPORT_SYMBOL(csum_partial);
-> -
-> -/*
-> - * copy from fs while checksumming, otherwise like csum_partial
-> - */
-> -
-> -__wsum
-> -csum_partial_copy_from_user(const void __user *src, void *dst,
-> -			    int len, __wsum sum, int *csum_err)
-> -{
-> -	if (csum_err) *csum_err = 0;
-> -	memcpy(dst, (__force const void *)src, len);
-> -	return csum_partial(dst, len, sum);
-> -}
-> -EXPORT_SYMBOL(csum_partial_copy_from_user);
-> -
-> -/*
-> - * copy from ds while checksumming, otherwise like csum_partial
-> - */
-> -
-> -__wsum
-> -csum_partial_copy_nocheck(const void *src, void *dst, int len, __wsum sum)
-> -{
-> -	memcpy(dst, src, len);
-> -	return csum_partial(dst, len, sum);
-> -}
-> -EXPORT_SYMBOL(csum_partial_copy_nocheck);
+> +#ifdef CONFIG_PCI
+> +/* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
+> +struct pci_dev;
 
+You could move this struct declaration above the ifdef and remove the
+duplicate below.
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> +extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned lo=
+ng max);
+> +#else
+> +struct pci_dev;
+> +static inline void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsi=
+gned long max)
+> +{
+> +	return NULL;
+> +}
+> +#endif
+> +
+> +#endif /* __ASM_GENERIC_IO_H */
+> diff --git a/lib/iomap.c b/lib/iomap.c
+> index 5dbcb4b..ada922a 100644
+> --- a/lib/iomap.c
+> +++ b/lib/iomap.c
+> @@ -242,45 +242,11 @@ EXPORT_SYMBOL(ioport_unmap);
+>  #endif /* CONFIG_HAS_IOPORT */
+> =20
+>  #ifdef CONFIG_PCI
+> -/**
+> - * pci_iomap - create a virtual mapping cookie for a PCI BAR
+> - * @dev: PCI device that owns the BAR
+> - * @bar: BAR number
+> - * @maxlen: length of the memory to map
+> - *
+> - * Using this function you will get a __iomem address to your device BAR.
+> - * You can access it using ioread*() and iowrite*(). These functions hide
+> - * the details if this is a MMIO or PIO address space and will just do w=
+hat
+> - * you expect from them in the correct way.
+> - *
+> - * @maxlen specifies the maximum length to map. If you want to get acces=
+s to
+> - * the complete BAR without checking for its length first, pass %0 here.
+> - * */
+> -void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxl=
+en)
+> -{
+> -	resource_size_t start =3D pci_resource_start(dev, bar);
+> -	resource_size_t len =3D pci_resource_len(dev, bar);
+> -	unsigned long flags =3D pci_resource_flags(dev, bar);
+> -
+> -	if (!len || !start)
+> -		return NULL;
+> -	if (maxlen && len > maxlen)
+> -		len =3D maxlen;
+> -	if (flags & IORESOURCE_IO)
+> -		return ioport_map(start, len);
+> -	if (flags & IORESOURCE_MEM) {
+> -		if (flags & IORESOURCE_CACHEABLE)
+> -			return ioremap(start, len);
+> -		return ioremap_nocache(start, len);
+> -	}
+> -	/* What? */
+> -	return NULL;
+> -}
+> -
+> +/* Hide the details if this is a MMIO or PIO address space and just do w=
+hat
+> + * you expect in the correct way. */
+>  void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+>  {
+>  	IO_COND(addr, /* nothing */, iounmap(addr));
+>  }
+> -EXPORT_SYMBOL(pci_iomap);
+>  EXPORT_SYMBOL(pci_iounmap);
+
+Ditto with pci_iounmap
+
+> diff --git a/lib/pci_iomap.c b/lib/pci_iomap.c
+> new file mode 100644
+> index 0000000..40b26cb
+> --- /dev/null
+> +++ b/lib/pci_iomap.c
+> @@ -0,0 +1,48 @@
+> +/*
+> + * Implement the default iomap interfaces
+> + *
+> + * (C) Copyright 2004 Linus Torvalds
+> + */
+> +#include <linux/pci.h>
+> +#include <linux/io.h>
+> +
+> +#include <linux/module.h>
+
+If this is relative to (at least) v3.2-rc1, then you should use export.h
+instead of module.h
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Fri__25_Nov_2011_11_54_55_+1100_Ear09Vzvz+xx6qEm
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJOzudfAAoJEECxmPOUX5FE1/UP/0l4JcZxOiuNYsRtnb07C7hk
+Ue3iusoFy8ai5W839MsxANElduJ7bF/IEHXmpFbpTovxkxiHivHJ1JFxs7lyAeWL
+U7clx8Es4oRnSiWr6EbHSUXroLNw1zdHusF/XuM+xQvMXwZfUduE8KE866+XSV0h
+1kBawlJm/+4xUY/jpPdxKy4Ci4lCJ7oniqE22hWq4AGHMneU7/WbSBRL3r3oQcBp
+2f6IHg0BWjVUavic5bBD9EFDFLxnGZpZZhBh0ndbhqAmchrKAHeKqaLNp/uaYjtt
+5YZifhE6xLLZfoHYbZgcbT0ogWPKwKJsg433k3MdlTbpfMzeLXk4R3MbPo1ZsnR4
+Kx6lo+jTIMbugmWrU9z/BgA2NCLemrC/GKplPhhh+/G0jFfxfkYURO6PGP/hHkIx
+OksYjLKTf3PGs2hAn4Oyw2DsX1qHecCH2Ge7mTWf4q8ysb5reYZuwRhs6ykh4wEZ
+NMQonnmZ/OXuzXeRz5I+SwD4zn/k7zBz45y8zE6kKFee9JtentG/CA2YWPoj2fnw
+iDxc2gImfyd6r00YkldbmNMFeTsF0Ou2CaV+oNd2/ocDvnIhbz64mWWNPKQnoKEv
+wpja4BYLqwHXcv2yDQtlWsXIFeCtpEHHHd8Wi/OBLqZ8+TcTpB3eLHEtW5wWwihC
+Hhqalk75Y0o2tyHL4X1M
+=dkd1
+-----END PGP SIGNATURE-----
+
+--Signature=_Fri__25_Nov_2011_11_54_55_+1100_Ear09Vzvz+xx6qEm--
+
+--===============6132578827858740304==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
+--===============6132578827858740304==--
