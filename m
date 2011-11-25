@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 14/35] m68k: add cache support for V4e ColdFire cores running with MMU enabled
-Date: Fri, 25 Nov 2011 13:40:59 +1000
-Message-ID: <1322192480-22822-15-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 12/35] m68k: add page table size definitions for ColdFire V4e MMU
+Date: Fri, 25 Nov 2011 13:40:57 +1000
+Message-ID: <1322192480-22822-13-git-send-email-gerg@snapgear.com>
 References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53451 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:53450 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752430Ab1KYDja (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:30 -0500
+	with ESMTP id S1752487Ab1KYDj3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:29 -0500
 In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,193 +18,102 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Add code to deal with instruction, data and branch caches of the V4e
-ColdFire cores when they are running with the MMU enabled.
-
-This code is loosely based on Freescales changes for the caches of the
-V4e ColdFire in the 2.6.25 kernel BSP. That code is listed as being by
-Kurt Mahan <kmahan@freescale.com>.
+Define the page table size and attributes for the ColdFire V4e MMU.
+Also setup the vmalloc and kmap regions we will use.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/cacheflush_mm.h |   88 +++++++++++++++++++++++++++++++--
- arch/m68k/mm/cache.c                  |   24 ++++++++-
- 2 files changed, 104 insertions(+), 8 deletions(-)
+ arch/m68k/include/asm/pgtable_mm.h |   30 ++++++++++++++++++++++++------
+ 1 files changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
-index 73de7c8..8104bd8 100644
---- a/arch/m68k/include/asm/cacheflush_mm.h
-+++ b/arch/m68k/include/asm/cacheflush_mm.h
-@@ -2,23 +2,89 @@
- #define _M68K_CACHEFLUSH_H
+diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
+index 87174c9..d76d596 100644
+--- a/arch/m68k/include/asm/pgtable_mm.h
++++ b/arch/m68k/include/asm/pgtable_mm.h
+@@ -40,6 +40,8 @@
+ /* PGDIR_SHIFT determines what a third-level page table entry can map */
+ #ifdef CONFIG_SUN3
+ #define PGDIR_SHIFT     17
++#elif defined(CONFIG_COLDFIRE)
++#define PGDIR_SHIFT     22
+ #else
+ #define PGDIR_SHIFT	25
+ #endif
+@@ -54,6 +56,10 @@
+ #define PTRS_PER_PTE   16
+ #define PTRS_PER_PMD   1
+ #define PTRS_PER_PGD   2048
++#elif defined(CONFIG_COLDFIRE)
++#define PTRS_PER_PTE	512
++#define PTRS_PER_PMD	1
++#define PTRS_PER_PGD	1024
+ #else
+ #define PTRS_PER_PTE	1024
+ #define PTRS_PER_PMD	8
+@@ -66,12 +72,22 @@
+ #ifdef CONFIG_SUN3
+ #define KMAP_START     0x0DC00000
+ #define KMAP_END       0x0E000000
++#elif defined(CONFIG_COLDFIRE)
++#define KMAP_START	0xd8000000
++#define KMAP_END	0xe0000000
+ #else
+ #define	KMAP_START	0xd0000000
+ #define	KMAP_END	0xf0000000
+ #endif
  
- #include <linux/mm.h>
-+#ifdef CONFIG_COLDFIRE
-+#include <asm/mcfsim.h>
+-#ifndef CONFIG_SUN3
++#ifdef CONFIG_SUN3
++extern unsigned long m68k_vmalloc_end;
++#define VMALLOC_START 0x0f800000
++#define VMALLOC_END m68k_vmalloc_end
++#elif defined(CONFIG_COLDFIRE)
++#define VMALLOC_START	0xd0000000
++#define VMALLOC_END	0xd8000000
++#else
+ /* Just any arbitrary offset to the start of the vmalloc VM area: the
+  * current 8MB value just means that there will be a 8MB "hole" after the
+  * physical memory until the kernel virtual memory starts.  That means that
+@@ -82,11 +98,7 @@
+ #define VMALLOC_OFFSET	(8*1024*1024)
+ #define VMALLOC_START (((unsigned long) high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
+ #define VMALLOC_END KMAP_START
+-#else
+-extern unsigned long m68k_vmalloc_end;
+-#define VMALLOC_START 0x0f800000
+-#define VMALLOC_END m68k_vmalloc_end
+-#endif /* CONFIG_SUN3 */
 +#endif
  
- /* cache code */
- #define FLUSH_I_AND_D	(0x00000808)
- #define FLUSH_I		(0x00000008)
+ /* zero page used for uninitialized stuff */
+ extern void *empty_zero_page;
+@@ -130,6 +142,8 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
  
-+#ifndef ICACHE_MAX_ADDR
-+#define ICACHE_MAX_ADDR	0
-+#define ICACHE_SET_MASK	0
-+#define DCACHE_MAX_ADDR	0
-+#define DCACHE_SETMASK	0
-+#endif
-+
-+static inline void flush_cf_icache(unsigned long start, unsigned long end)
-+{
-+	unsigned long set;
-+
-+	for (set = start; set <= end; set += (0x10 - 3)) {
-+		__asm__ __volatile__ (
-+			"cpushl %%ic,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%ic,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%ic,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%ic,(%0)"
-+			: "=a" (set)
-+			: "a" (set));
-+	}
-+}
-+
-+static inline void flush_cf_dcache(unsigned long start, unsigned long end)
-+{
-+	unsigned long set;
-+
-+	for (set = start; set <= end; set += (0x10 - 3)) {
-+		__asm__ __volatile__ (
-+			"cpushl %%dc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%dc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%dc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%dc,(%0)"
-+			: "=a" (set)
-+			: "a" (set));
-+	}
-+}
-+
-+static inline void flush_cf_bcache(unsigned long start, unsigned long end)
-+{
-+	unsigned long set;
-+
-+	for (set = start; set <= end; set += (0x10 - 3)) {
-+		__asm__ __volatile__ (
-+			"cpushl %%bc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%bc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%bc,(%0)\n\t"
-+			"addq%.l #1,%0\n\t"
-+			"cpushl %%bc,(%0)"
-+			: "=a" (set)
-+			: "a" (set));
-+	}
-+}
-+
+ #ifdef CONFIG_SUN3
+ #include <asm/sun3_pgtable.h>
++#elif defined(CONFIG_COLDFIRE)
++#include <asm/mcf_pgtable.h>
+ #else
+ #include <asm/motorola_pgtable.h>
+ #endif
+@@ -138,6 +152,9 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
  /*
-  * Cache handling functions
+  * Macro to mark a page protection value as "uncacheable".
   */
++#ifdef CONFIG_COLDFIRE
++# define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
++#else
+ #ifdef SUN3_PAGE_NOCACHE
+ # define __SUN3_PAGE_NOCACHE	SUN3_PAGE_NOCACHE
+ #else
+@@ -152,6 +169,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+ 	    ? (__pgprot((pgprot_val(prot) & _CACHEMASK040) | _PAGE_NOCACHE_S))	\
+ 	    : (prot)))
  
- static inline void flush_icache(void)
- {
--	if (CPU_IS_040_OR_060)
-+	if (CPU_IS_COLDFIRE) {
-+		flush_cf_icache(0, ICACHE_MAX_ADDR);
-+	} else if (CPU_IS_040_OR_060) {
- 		asm volatile (	"nop\n"
- 			"	.chip	68040\n"
- 			"	cpusha	%bc\n"
- 			"	.chip	68k");
--	else {
-+	} else {
- 		unsigned long tmp;
- 		asm volatile (	"movec	%%cacr,%0\n"
- 			"	or.w	%1,%0\n"
-@@ -51,12 +117,14 @@ extern void cache_push_v(unsigned long vaddr, int len);
-    process changes.  */
- #define __flush_cache_all()					\
- ({								\
--	if (CPU_IS_040_OR_060)					\
-+	if (CPU_IS_COLDFIRE) {					\
-+		flush_cf_dcache(0, DCACHE_MAX_ADDR);		\
-+	} else if (CPU_IS_040_OR_060) {				\
- 		__asm__ __volatile__("nop\n\t"			\
- 				     ".chip 68040\n\t"		\
- 				     "cpusha %dc\n\t"		\
- 				     ".chip 68k");		\
--	else {							\
-+	} else {						\
- 		unsigned long _tmp;				\
- 		__asm__ __volatile__("movec %%cacr,%0\n\t"	\
- 				     "orw %1,%0\n\t"		\
-@@ -112,7 +180,17 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
- /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
- static inline void __flush_page_to_ram(void *vaddr)
- {
--	if (CPU_IS_040_OR_060) {
-+	if (CPU_IS_COLDFIRE) {
-+		unsigned long addr, start, end;
-+		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
-+		start = addr & ICACHE_SET_MASK;
-+		end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
-+		if (start > end) {
-+			flush_cf_bcache(0, end);
-+			end = ICACHE_MAX_ADDR;
-+		}
-+		flush_cf_bcache(start, end);
-+	} else if (CPU_IS_040_OR_060) {
- 		__asm__ __volatile__("nop\n\t"
- 				     ".chip 68040\n\t"
- 				     "cpushp %%bc,(%0)\n\t"
-diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
-index 5437fff..95d0bf6 100644
---- a/arch/m68k/mm/cache.c
-+++ b/arch/m68k/mm/cache.c
-@@ -74,8 +74,16 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
- /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
- void flush_icache_range(unsigned long address, unsigned long endaddr)
- {
--
--	if (CPU_IS_040_OR_060) {
-+	if (CPU_IS_COLDFIRE) {
-+		unsigned long start, end;
-+		start = address & ICACHE_SET_MASK;
-+		end = endaddr & ICACHE_SET_MASK;
-+		if (start > end) {
-+			flush_cf_icache(0, end);
-+			end = ICACHE_MAX_ADDR;
-+		}
-+		flush_cf_icache(start, end);
-+	} else if (CPU_IS_040_OR_060) {
- 		address &= PAGE_MASK;
++#endif /* CONFIG_COLDFIRE */
+ #include <asm-generic/pgtable.h>
+ #endif /* !__ASSEMBLY__ */
  
- 		do {
-@@ -100,7 +108,17 @@ EXPORT_SYMBOL(flush_icache_range);
- void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
- 			     unsigned long addr, int len)
- {
--	if (CPU_IS_040_OR_060) {
-+	if (CPU_IS_COLDFIRE) {
-+		unsigned long start, end;
-+		start = addr & ICACHE_SET_MASK;
-+		end = (addr + len) & ICACHE_SET_MASK;
-+		if (start > end) {
-+			flush_cf_icache(0, end);
-+			end = ICACHE_MAX_ADDR;
-+		}
-+		flush_cf_icache(start, end);
-+
-+	} else if (CPU_IS_040_OR_060) {
- 		asm volatile ("nop\n\t"
- 			      ".chip 68040\n\t"
- 			      "cpushp %%bc,(%0)\n\t"
 -- 
 1.7.0.4
