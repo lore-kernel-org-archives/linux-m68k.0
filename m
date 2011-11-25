@@ -1,82 +1,46 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH-RFC 02/10] lib: add GENERIC_PCI_IOMAP
-Date: Fri, 25 Nov 2011 11:59:21 +1100
-Message-ID: <20111125115921.a3e642f06b24526dce6a96e8@canb.auug.org.au>
-References: <cover.1322163031.git.mst@redhat.com>
- <b5a1327dd8bb38f87cba7ae10b308ec3b63de66a.1322163031.git.mst@redhat.com>
- <20111125115455.9d5e18da6e683586d84ed9c8@canb.auug.org.au>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: hard set the ColdFire MBAR register on startup
+Date: Fri, 25 Nov 2011 11:36:46 +1000
+Message-ID: <1322185006-21546-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8991018945488313963=="
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20111125115455.9d5e18da6e683586d84ed9c8@canb.auug.org.au>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-pci@vger.kernel.org, linux@openrisc.net, Jesse Barnes <jbarnes@virtuousgeek.org>, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, Jonas Bonn <jonas@southpole.se>, Jesper Nilsson <jesper.nilsson@axis.com>, Russell King <linux@arm.linux.org.uk>, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Arend van Spriel <arend@broadcom.com>, Matt Turner <mattst88@gmail.com>, linux-arch@vger.k
+Content-Type: text/plain
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:53519 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755163Ab1KYBeZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 20:34:25 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>, Alexander Stein <alexander.stein@systec-electronic.com>
 
---===============8991018945488313963==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Fri__25_Nov_2011_11_59_21_+1100_q4XOooN5uoDKv_dZ"
+From: Greg Ungerer <gerg@uclinux.org>
 
---Signature=_Fri__25_Nov_2011_11_59_21_+1100_q4XOooN5uoDKv_dZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The ColdFire MBAR register that holds the mapping of the peripheral region
+on some ColdFire CPUs is configurable. It can be configured at some address
+different to that of the bootloader that loaded the kernel. So hard set
+the MBAR register mapping at kernel startup time.
 
-Hi Michael,
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/platform/coldfire/head.S |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-On Fri, 25 Nov 2011 11:54:55 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Just wondering why you move pci_iomap but not pic_iounmap.
-
-I figured this out.  Arches have their own.
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Fri__25_Nov_2011_11_59_21_+1100_q4XOooN5uoDKv_dZ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJOzuhpAAoJEECxmPOUX5FESFYP/3CbBas7b+W+5nG4fSYO/XAY
-YsVPpQ7wIGYtWbIpHt5fproH7C6zyXeXuhqhJWwYk7A2vM4WCIxHJKnPIP3E9AoK
-EVaead1df7krZ29KJTLw0hEzhB2sftq8kotUfY7hhI0tIZ3vwPOCuTxbgaRIPAE8
-rm+q0xrJVHZSZ0eM14kDP2GuHPch3WgHvNWrQUeIX94g3v3bfYOZsg4PjUnamVVg
-ai5ulT6kqXdn5F1Q2G3Ftu8Cs/8CMw7wMSzYUvIr/F84t/4LZrbU6LHXAiGyEkXa
-4UR8xTXMpUWpyXU7JjVqgPgS1/85DYemZrW6WBkaiHozciV6lDpgIvJ+JBhlzAY/
-QUnzFjlKO6YeN0YzXF2VHaWJmtG/wnqouNHMbDvmt8RX6C4SpwiWP0w2tZhcSKmG
-uYq9YyQBq6CqvzDg66xoZWigPShS6CXHZWmd2YH4tx90CwNIVZdMkisFgPTbwVsp
-klTxE8gYst6ni0PoMI3xYqvVY034SaedFHRVx768gOuhNp1WaFGeWRveuRBYJiMw
-noFu4kywDxJJ/s4sCQiCwzvX3JYpRMWbgtEckEW0msSquMDrPTjlBZFGwkf4/OGC
-g83fXQr/YwgIJKMFyUqKabIAPX3uNfNUjzDcINzRK9mux4zrlWBzndLelIsti3FO
-6V/pN4Jg3NPFIEylidUW
-=sifz
------END PGP SIGNATURE-----
-
---Signature=_Fri__25_Nov_2011_11_59_21_+1100_q4XOooN5uoDKv_dZ--
-
---===============8991018945488313963==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@lists.ozlabs.org
-https://lists.ozlabs.org/listinfo/linuxppc-dev
---===============8991018945488313963==--
+diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
+index 49666b4..0ed41ed 100644
+--- a/arch/m68k/platform/coldfire/head.S
++++ b/arch/m68k/platform/coldfire/head.S
+@@ -149,6 +149,10 @@ _start:
+ #if defined(CONFIG_UBOOT)
+ 	movel	%sp,_init_sp			/* save initial stack pointer */
+ #endif
++#ifdef CONFIG_MBAR
++	movel	#CONFIG_MBAR+1,%d0		/* configured MBAR address */
++	movec	%d0,%MBAR			/* set it */
++#endif
+ 
+ 	/*
+ 	 *	Do any platform or board specific setup now. Most boards
+-- 
+1.7.0.4
