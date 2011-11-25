@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 08/35] m68k: init the MMU hardware for the 54xx ColdFire
-Date: Fri, 25 Nov 2011 13:40:53 +1000
-Message-ID: <1322192480-22822-9-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 10/35] m68k: set register a2 to current if MMU enabled on ColdFire
+Date: Fri, 25 Nov 2011 13:40:55 +1000
+Message-ID: <1322192480-22822-11-git-send-email-gerg@snapgear.com>
 References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53447 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:53448 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751241Ab1KYDj2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:28 -0500
+	with ESMTP id S1751241Ab1KYDj3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:29 -0500
 In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,103 +18,107 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The 54xx ColdFire CPU family has an internal MMU. Up to now though we
-have only supported running on them with the MMU disabled.
-
-Add code to the 54xx ColdFire init sequence to initialize the bootmem
-used by the usual MMU m68k code for paging init.
+Virtual memory m68k systems build with register a2 dedicated to being the
+current proc pointer (non-MMU don't do this). Add code to the ColdFire
+interrupt and exception processing to set this on entry, and at context
+switch time. We use the same GET_CURRENT() macro that MMU enabled code
+uses - modifying it so that the assembler is ColdFire clean.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/platform/coldfire/head.S |   47 +++++++++++++++++++++++++++++++++++-
- 1 files changed, 46 insertions(+), 1 deletions(-)
+ arch/m68k/include/asm/entry.h       |   10 +++++++++-
+ arch/m68k/kernel/entry_no.S         |    3 +++
+ arch/m68k/platform/coldfire/entry.S |    6 +++++-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
-index 0ed41ed..c3db70e 100644
---- a/arch/m68k/platform/coldfire/head.S
-+++ b/arch/m68k/platform/coldfire/head.S
-@@ -3,7 +3,7 @@
- /*
-  *	head.S -- common startup code for ColdFire CPUs.
-  *
-- *	(C) Copyright 1999-2010, Greg Ungerer <gerg@snapgear.com>.
-+ *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
+diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
+index c3c5a86..c717f57 100644
+--- a/arch/m68k/include/asm/entry.h
++++ b/arch/m68k/include/asm/entry.h
+@@ -222,16 +222,24 @@
+  * Non-MMU systems do not reserve %a2 in this way, and this definition is
+  * not used for them.
   */
- 
- /*****************************************************************************/
-@@ -13,6 +13,7 @@
- #include <asm/asm-offsets.h>
- #include <asm/coldfire.h>
- #include <asm/mcfsim.h>
-+#include <asm/mcfmmu.h>
- #include <asm/thread_info.h>
- 
- /*****************************************************************************/
-@@ -135,6 +136,14 @@ _init_sp:
- 
- __HEAD
- 
 +#ifdef CONFIG_MMU
-+_start0:
-+	jmp	_start
-+.global kernel_pg_dir
-+.equ	kernel_pg_dir,_start0
-+.equ	.,_start0+0x1000
-+#endif
 +
- /*
-  *	This is the codes first entry point. This is where it all
-  *	begins...
-@@ -197,6 +206,26 @@ _start:
- 	movec	%d0,%CACR
- 	nop
+ #define curptr a2
  
-+#ifdef CONFIG_MMU
-+	/*
-+	 *	Identity mapping for the kernel region.
-+	 */
-+	movel	#(MMUBASE+1),%d0		/* enable MMUBAR registers */
-+	movec	%d0,%MMUBAR
-+	movel	#MMUOR_CA,%d0			/* clear TLB entries */
-+	movel	%d0,MMUOR
-+	movel	#0,%d0				/* set ASID to 0 */
-+	movec	%d0,%asid
+ #define GET_CURRENT(tmp) get_current tmp
+ .macro get_current reg=%d0
+ 	movel	%sp,\reg
+-	andw	#-THREAD_SIZE,\reg
++	andl	#-THREAD_SIZE,\reg
+ 	movel	\reg,%curptr
+ 	movel	%curptr@,%curptr
+ .endm
+ 
++#else
 +
-+	movel	#MMUCR_EN,%d0			/* Enable the identity map */
-+	movel	%d0,MMUCR
-+	nop					/* sync i-pipeline */
++#define	GET_CURRENT(tmp)
 +
-+	movel	#_vstart,%a0			/* jump to "virtual" space */
-+	jmp	%a0@
-+_vstart:
 +#endif /* CONFIG_MMU */
 +
- #ifdef CONFIG_ROMFS_FS
- 	/*
- 	 *	Move ROM filesystem above bss :-)
-@@ -242,6 +271,22 @@ _clear_bss:
- 	lea	init_thread_union,%a0
- 	lea	THREAD_SIZE(%a0),%sp
+ #else /* C source */
  
+ #define STR(X) STR1(X)
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index ac86a9f..d80cba4 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -44,6 +44,7 @@
+ 
+ ENTRY(buserr)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	buserr_c
+ 	addql	#4,%sp
+@@ -51,6 +52,7 @@ ENTRY(buserr)
+ 
+ ENTRY(trap)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	trap_c
+ 	addql	#4,%sp
+@@ -61,6 +63,7 @@ ENTRY(trap)
+ .globl dbginterrupt
+ ENTRY(dbginterrupt)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	dbginterrupt_c
+ 	addql	#4,%sp
+diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+index f567a16..863889f 100644
+--- a/arch/m68k/platform/coldfire/entry.S
++++ b/arch/m68k/platform/coldfire/entry.S
+@@ -62,6 +62,7 @@ enosys:
+ ENTRY(system_call)
+ 	SAVE_ALL_SYS
+ 	move	#0x2000,%sr		/* enable intrs again */
++	GET_CURRENT(%d2)
+ 
+ 	cmpl	#NR_syscalls,%d0
+ 	jcc	enosys
+@@ -165,6 +166,7 @@ Lsignal_return:
+  */
+ ENTRY(inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d2)
+ 
+ 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
+ 	andl	#0x03fc,%d0		/* mask out vector only */
+@@ -190,7 +192,9 @@ ENTRY(resume)
+ 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack pointer */
+ 	RDUSP					 /* movel %usp,%a3 */
+ 	movel	%a3,%a0@(TASK_THREAD+THREAD_USP) /* save thread user stack */
+-
 +#ifdef CONFIG_MMU
-+.global m68k_cputype
-+.global m68k_mmutype
-+.global m68k_fputype
-+.global m68k_machtype
-+	movel	#CPU_COLDFIRE,%d0
-+	movel	%d0,m68k_cputype		/* Mark us as a ColdFire */
-+	movel	#MMU_COLDFIRE,%d0
-+	movel	%d0,m68k_mmutype
-+	movel	#FPU_COLDFIRE,%d0
-+	movel	%d0,m68k_fputype
-+	movel	#MACH_M54XX,%d0
-+	movel	%d0,m68k_machtype		/* Mark us as a 54xx machine */
-+	lea	init_task,%a2			/* Set "current" init task */
++	movel	%a1,%a2				 /* set new current */
 +#endif
-+
- 	/*
- 	 *	Assember start up done, start code proper.
- 	 */
+ 	movel	%a1@(TASK_THREAD+THREAD_USP),%a3 /* restore thread user stack */
+ 	WRUSP					 /* movel %a3,%usp */
+ 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new kernel stack */
 -- 
 1.7.0.4
