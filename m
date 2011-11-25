@@ -1,99 +1,104 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 00/35 v2] m68k: ColdFire MMU support
-Date: Fri, 25 Nov 2011 13:40:45 +1000
-Message-ID: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 01/35] m68k: add machine and CPU definitions for ColdFire cores
+Date: Fri, 25 Nov 2011 13:40:46 +1000
+Message-ID: <1322192480-22822-2-git-send-email-gerg@snapgear.com>
+References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:16476 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:16477 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750830Ab1KYDi6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:38:58 -0500
+	with ESMTP id S1750830Ab1KYDjA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:00 -0500
+In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
+From: Greg Ungerer <gerg@uclinux.org>
 
-Hi All,
+Create machine and CPU definitions to support the ColdFire CPU family
+members that have a virtual memory management unit.
 
-This is version 2 of a patch set that adds support for running the V4e
-ColdFire cores with their MMU enabled. A bit of cleanup and some fixes over
-the first version. In particular the following changes:
+The ColdFire V4e core contains an MMU, and it is quite different to
+any other 68k family members.
 
-. rebased onto 3.2-rc3
-. fixed FPU support
-. fixed running with shared libraries
-. fixed running at non-0 based RAM (thanks to Alexander Stein)
-. many random small cleanups
-. spelling and comment fixes
-
-This patch set is based on 3.2-rc3 with all the recent patches I have sent
-here applied first. It is available as a git tree for easier testing, just
-pull this tree, with the cfmmu branch:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cfmmu
-
-Some of the code in this set is taken from Freescales 2.6.25 kernel support
-of MMU ColdFire.
-
-Specifically I am testing this on a ColdFire 5475 (on a FireBee board).
-I have test compiled and run this patch set on ARAnyM as well, I didn't have
-any problems there. Also test compiled and run on MMU-less ColdFire.
-
-Geert, any patches that changed in any significant way I dropped your
-"Acked-by".
-
-Regards
-Greg
-
-
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig                     |   10 +-
- arch/m68k/Kconfig.cpu                 |    8 +-
- arch/m68k/include/asm/atomic.h        |   10 +
- arch/m68k/include/asm/cacheflush_mm.h |   88 +++++++-
- arch/m68k/include/asm/elf.h           |    6 +-
- arch/m68k/include/asm/entry.h         |   10 +-
- arch/m68k/include/asm/fpu.h           |    2 +
- arch/m68k/include/asm/irq.h           |    5 +-
- arch/m68k/include/asm/m54xxacr.h      |   32 +++-
- arch/m68k/include/asm/mcf_pgalloc.h   |  102 ++++++++
- arch/m68k/include/asm/mcf_pgtable.h   |  422 +++++++++++++++++++++++++++++++++
- arch/m68k/include/asm/mcfmmu.h        |  119 +++++++++
- arch/m68k/include/asm/mmu_context.h   |  250 ++++++++++++++++----
- arch/m68k/include/asm/page.h          |    6 +-
- arch/m68k/include/asm/page_offset.h   |    8 +-
- arch/m68k/include/asm/pgalloc.h       |    4 +-
- arch/m68k/include/asm/pgtable_mm.h    |   30 ++-
- arch/m68k/include/asm/processor.h     |   16 +-
- arch/m68k/include/asm/segment.h       |   30 ++-
- arch/m68k/include/asm/setup.h         |   14 +
- arch/m68k/include/asm/thread_info.h   |    3 +
- arch/m68k/include/asm/tlbflush.h      |   23 ++-
- arch/m68k/include/asm/uaccess_mm.h    |   42 +++-
- arch/m68k/kernel/Makefile             |    4 +-
- arch/m68k/kernel/entry.S              |    2 +-
- arch/m68k/kernel/entry_no.S           |    3 +
- arch/m68k/kernel/process_mm.c         |   59 ++++-
- arch/m68k/kernel/ptrace_mm.c          |   18 ++
- arch/m68k/kernel/setup_mm.c           |   18 ++-
- arch/m68k/kernel/signal_mm.c          |  173 ++++++++++----
- arch/m68k/kernel/time.c               |    2 +-
- arch/m68k/kernel/traps.c              |  104 ++++++++
- arch/m68k/kernel/vmlinux.lds.S        |    2 +-
- arch/m68k/kernel/vmlinux.lds_no.S     |    8 +
- arch/m68k/lib/uaccess.c               |   22 +-
- arch/m68k/mm/Makefile                 |    8 +-
- arch/m68k/mm/cache.c                  |   24 ++-
- arch/m68k/mm/init_mm.c                |    2 +-
- arch/m68k/mm/kmap.c                   |    4 +
- arch/m68k/mm/mcfmmu.c                 |  219 +++++++++++++++++
- arch/m68k/mm/memory.c                 |    8 +-
- arch/m68k/platform/54xx/config.c      |   48 ++++
- arch/m68k/platform/coldfire/entry.S   |    6 +-
- arch/m68k/platform/coldfire/head.S    |   47 ++++-
- 44 files changed, 1808 insertions(+), 213 deletions(-)
- create mode 100644 arch/m68k/include/asm/mcf_pgalloc.h
- create mode 100644 arch/m68k/include/asm/mcf_pgtable.h
- create mode 100644 arch/m68k/include/asm/mcfmmu.h
- create mode 100644 arch/m68k/mm/mcfmmu.c
+ arch/m68k/include/asm/setup.h |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+diff --git a/arch/m68k/include/asm/setup.h b/arch/m68k/include/asm/setup.h
+index 4dfb395..00c2c53 100644
+--- a/arch/m68k/include/asm/setup.h
++++ b/arch/m68k/include/asm/setup.h
+@@ -40,6 +40,7 @@
+ #define MACH_HP300    9
+ #define MACH_Q40     10
+ #define MACH_SUN3X   11
++#define MACH_M54XX   12
+ 
+ #define COMMAND_LINE_SIZE 256
+ 
+@@ -211,23 +212,27 @@ extern unsigned long m68k_machtype;
+ #define CPUB_68030     1
+ #define CPUB_68040     2
+ #define CPUB_68060     3
++#define CPUB_COLDFIRE  4
+ 
+ #define CPU_68020      (1<<CPUB_68020)
+ #define CPU_68030      (1<<CPUB_68030)
+ #define CPU_68040      (1<<CPUB_68040)
+ #define CPU_68060      (1<<CPUB_68060)
++#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
+ 
+ #define FPUB_68881     0
+ #define FPUB_68882     1
+ #define FPUB_68040     2                       /* Internal FPU */
+ #define FPUB_68060     3                       /* Internal FPU */
+ #define FPUB_SUNFPA    4                       /* Sun-3 FPA */
++#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
+ 
+ #define FPU_68881      (1<<FPUB_68881)
+ #define FPU_68882      (1<<FPUB_68882)
+ #define FPU_68040      (1<<FPUB_68040)
+ #define FPU_68060      (1<<FPUB_68060)
+ #define FPU_SUNFPA     (1<<FPUB_SUNFPA)
++#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
+ 
+ #define MMUB_68851     0
+ #define MMUB_68030     1                       /* Internal MMU */
+@@ -235,6 +240,7 @@ extern unsigned long m68k_machtype;
+ #define MMUB_68060     3                       /* Internal MMU */
+ #define MMUB_APOLLO    4                       /* Custom Apollo */
+ #define MMUB_SUN3      5                       /* Custom Sun-3 */
++#define MMUB_COLDFIRE  6                       /* Internal MMU */
+ 
+ #define MMU_68851      (1<<MMUB_68851)
+ #define MMU_68030      (1<<MMUB_68030)
+@@ -242,6 +248,7 @@ extern unsigned long m68k_machtype;
+ #define MMU_68060      (1<<MMUB_68060)
+ #define MMU_SUN3       (1<<MMUB_SUN3)
+ #define MMU_APOLLO     (1<<MMUB_APOLLO)
++#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
+ 
+ #ifdef __KERNEL__
+ 
+@@ -341,6 +348,13 @@ extern int m68k_is040or060;
+ #  endif
+ #endif
+ 
++#if !defined(CONFIG_COLDFIRE)
++#  define CPU_IS_COLDFIRE (0)
++#else
++#  define CPU_IS_COLDFIRE (1)
++#  define MMU_IS_COLDFIRE (1)
++#endif
++
+ #define CPU_TYPE (m68k_cputype)
+ 
+ #ifdef CONFIG_M68KFPU_EMU
+-- 
+1.7.0.4
