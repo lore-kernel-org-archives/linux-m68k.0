@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 12/35] m68k: add page table size definitions for ColdFire V4e MMU
-Date: Fri, 25 Nov 2011 13:40:57 +1000
-Message-ID: <1322192480-22822-13-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 15/35] m68k: modify ColdFire 54xx cache support for MMU enabled
+Date: Fri, 25 Nov 2011 13:41:00 +1000
+Message-ID: <1322192480-22822-16-git-send-email-gerg@snapgear.com>
 References: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53450 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:53458 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752487Ab1KYDj3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:29 -0500
+	with ESMTP id S1752510Ab1KYDjc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:39:32 -0500
 In-Reply-To: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,102 +18,89 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Define the page table size and attributes for the ColdFire V4e MMU.
-Also setup the vmalloc and kmap regions we will use.
+Modify the cache setup for the ColdFire 54xx parts when running with
+the MMU enabled.
+
+We want to map the peripheral register space (MBAR region) as non
+cacheable. And create an identity mapping for all of RAM for the
+kernel.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/pgtable_mm.h |   30 ++++++++++++++++++++++++------
- 1 files changed, 24 insertions(+), 6 deletions(-)
+ arch/m68k/include/asm/m54xxacr.h |   32 +++++++++++++++++++++++++++++++-
+ 1 files changed, 31 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
-index 87174c9..d76d596 100644
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -40,6 +40,8 @@
- /* PGDIR_SHIFT determines what a third-level page table entry can map */
- #ifdef CONFIG_SUN3
- #define PGDIR_SHIFT     17
-+#elif defined(CONFIG_COLDFIRE)
-+#define PGDIR_SHIFT     22
- #else
- #define PGDIR_SHIFT	25
- #endif
-@@ -54,6 +56,10 @@
- #define PTRS_PER_PTE   16
- #define PTRS_PER_PMD   1
- #define PTRS_PER_PGD   2048
-+#elif defined(CONFIG_COLDFIRE)
-+#define PTRS_PER_PTE	512
-+#define PTRS_PER_PMD	1
-+#define PTRS_PER_PGD	1024
- #else
- #define PTRS_PER_PTE	1024
- #define PTRS_PER_PMD	8
-@@ -66,12 +72,22 @@
- #ifdef CONFIG_SUN3
- #define KMAP_START     0x0DC00000
- #define KMAP_END       0x0E000000
-+#elif defined(CONFIG_COLDFIRE)
-+#define KMAP_START	0xd8000000
-+#define KMAP_END	0xe0000000
- #else
- #define	KMAP_START	0xd0000000
- #define	KMAP_END	0xf0000000
- #endif
+diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
+index 16a1835..47906aa 100644
+--- a/arch/m68k/include/asm/m54xxacr.h
++++ b/arch/m68k/include/asm/m54xxacr.h
+@@ -39,8 +39,12 @@
+ #define ACR_CM_OFF_PRE	0x00000040	/* No cache, precise */
+ #define ACR_CM_OFF_IMP	0x00000060	/* No cache, imprecise */
+ #define ACR_CM		0x00000060	/* Cache mode mask */
++#define ACR_SP		0x00000008	/* Supervisor protect */
+ #define ACR_WPROTECT	0x00000004	/* Write protect */
  
--#ifndef CONFIG_SUN3
-+#ifdef CONFIG_SUN3
-+extern unsigned long m68k_vmalloc_end;
-+#define VMALLOC_START 0x0f800000
-+#define VMALLOC_END m68k_vmalloc_end
-+#elif defined(CONFIG_COLDFIRE)
-+#define VMALLOC_START	0xd0000000
-+#define VMALLOC_END	0xd8000000
-+#else
- /* Just any arbitrary offset to the start of the vmalloc VM area: the
-  * current 8MB value just means that there will be a 8MB "hole" after the
-  * physical memory until the kernel virtual memory starts.  That means that
-@@ -82,11 +98,7 @@
- #define VMALLOC_OFFSET	(8*1024*1024)
- #define VMALLOC_START (((unsigned long) high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
- #define VMALLOC_END KMAP_START
--#else
--extern unsigned long m68k_vmalloc_end;
--#define VMALLOC_START 0x0f800000
--#define VMALLOC_END m68k_vmalloc_end
--#endif /* CONFIG_SUN3 */
-+#endif
++#define ACR_BA(x)	((x) & 0xff000000)
++#define ACR_ADMSK(x)	((((x) - 1) & 0xff000000) >> 8)
++
+ #if defined(CONFIG_M5407)
  
- /* zero page used for uninitialized stuff */
- extern void *empty_zero_page;
-@@ -130,6 +142,8 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+ #define ICACHE_SIZE 0x4000	/* instruction - 16k */
+@@ -56,6 +60,11 @@
+ #define CACHE_LINE_SIZE 0x0010	/* 16 bytes */
+ #define CACHE_WAYS 4		/* 4 ways */
  
- #ifdef CONFIG_SUN3
- #include <asm/sun3_pgtable.h>
-+#elif defined(CONFIG_COLDFIRE)
-+#include <asm/mcf_pgtable.h>
- #else
- #include <asm/motorola_pgtable.h>
- #endif
-@@ -138,6 +152,9 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
++#define ICACHE_SET_MASK	((ICACHE_SIZE / 64 - 1) << CACHE_WAYS)
++#define DCACHE_SET_MASK	((DCACHE_SIZE / 64 - 1) << CACHE_WAYS)
++#define ICACHE_MAX_ADDR	ICACHE_SET_MASK
++#define DCACHE_MAX_ADDR	DCACHE_SET_MASK
++
  /*
-  * Macro to mark a page protection value as "uncacheable".
-  */
-+#ifdef CONFIG_COLDFIRE
-+# define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
-+#else
- #ifdef SUN3_PAGE_NOCACHE
- # define __SUN3_PAGE_NOCACHE	SUN3_PAGE_NOCACHE
+  *	Version 4 cores have a true harvard style separate instruction
+  *	and data cache. Enable data and instruction caches, also enable write
+@@ -73,6 +82,27 @@
  #else
-@@ -152,6 +169,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
- 	    ? (__pgprot((pgprot_val(prot) & _CACHEMASK040) | _PAGE_NOCACHE_S))	\
- 	    : (prot)))
+ #define CACHE_MODE (CACR_DEC+CACR_DESB+CACR_DDCM_P+CACR_BEC+CACR_IEC+CACR_EUSP)
+ #endif
++#define CACHE_INIT (CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
++
++#if defined(CONFIG_MMU)
++/*
++ *	If running with the MMU enabled then we need to map the internal
++ *	register region as non-cacheable. And then we map all our RAM as
++ *	cacheable and supervisor access only.
++ */
++#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
++			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
++#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
++			 ACR_ENABLE+ACR_SUPER+ACR_SP)
++#define ACR2_MODE	0
++#define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
++			 ACR_ENABLE+ACR_SUPER+ACR_SP)
++
++#else
++
++/*
++ *	For the non-MMU enabled case we map all of RAM as cacheable.
++ */
+ #if defined(CONFIG_CACHE_COPYBACK)
+ #define DATA_CACHE_MODE (ACR_ENABLE+ACR_ANY+ACR_CM_CP)
+ #else
+@@ -80,7 +110,6 @@
+ #endif
+ #define INSN_CACHE_MODE (ACR_ENABLE+ACR_ANY)
  
-+#endif /* CONFIG_COLDFIRE */
- #include <asm-generic/pgtable.h>
- #endif /* !__ASSEMBLY__ */
+-#define CACHE_INIT	(CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
+ #define CACHE_INVALIDATE  (CACHE_MODE+CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
+ #define CACHE_INVALIDATEI (CACHE_MODE+CACR_BCINVA+CACR_ICINVA)
+ #define CACHE_INVALIDATED (CACHE_MODE+CACR_DCINVA)
+@@ -94,4 +123,5 @@
+ #define	CACHE_PUSH
+ #endif
  
++#endif /* CONFIG_MMU */
+ #endif	/* m54xxacr_h */
 -- 
 1.7.0.4
