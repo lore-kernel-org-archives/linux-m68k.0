@@ -1,57 +1,99 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 01/16] pmac_zilog: fix unexpected irq
-Date: Fri, 25 Nov 2011 14:15:10 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1111250207040.6314@nippy.intranet>
-References: <20111023141108.856998818@telegraphics.com.au> <20111023141115.208699274@telegraphics.com.au> <alpine.LNX.2.00.1111250133321.6314@nippy.intranet> <20111124145624.24438832@lxorguk.ukuu.org.uk>
+From: <gerg@snapgear.com>
+Subject: [PATCH 00/35 v2] m68k: ColdFire MMU support
+Date: Fri, 25 Nov 2011 13:40:45 +1000
+Message-ID: <1322192480-22822-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:38417 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752140Ab1KYDPR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:15:17 -0500
-In-Reply-To: <20111124145624.24438832@lxorguk.ukuu.org.uk>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:16476 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750830Ab1KYDi6 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Nov 2011 22:38:58 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-serial@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
 
-On Thu, 24 Nov 2011, Alan Cox wrote:
+Hi All,
 
-> Given the change should work for all hardware do we really need the 
-> ifdefs. Far better I would have thought to just change it so we don't 
-> have to maintain what is effectively two versions of the code between 
-> now and 2038.
+This is version 2 of a patch set that adds support for running the V4e
+ColdFire cores with their MMU enabled. A bit of cleanup and some fixes over
+the first version. In particular the following changes:
 
-I agree.
+. rebased onto 3.2-rc3
+. fixed FPU support
+. fixed running with shared libraries
+. fixed running at non-0 based RAM (thanks to Alexander Stein)
+. many random small cleanups
+. spelling and comment fixes
 
-> 
-> So no ack from me yet - I'd like to understand the ifdef decision first.
+This patch set is based on 3.2-rc3 with all the recent patches I have sent
+here applied first. It is available as a git tree for easier testing, just
+pull this tree, with the cfmmu branch:
 
-Removing ifdefs makes the changes more invasive and the suspend/resume 
-code then has to be addressed, which I've avoided.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cfmmu
 
-The suspend/resume code path can't be tested on m68k macs and the common 
-code paths I can't easily test on a powermac.
+Some of the code in this set is taken from Freescales 2.6.25 kernel support
+of MMU ColdFire.
 
-This patch should not be needed because the chip reset shouldn't leave the 
-tx and rx interrupts enabled. Those interrupts are explicitly enabled only 
-after request_irq(), so patching the master interrupt enable behaviour 
-should be redundant. But that's not the case in practice.
+Specifically I am testing this on a ColdFire 5475 (on a FireBee board).
+I have test compiled and run this patch set on ARAnyM as well, I didn't have
+any problems there. Also test compiled and run on MMU-less ColdFire.
 
-The chip reset code is already messy. I was inclined towards ifdefs and 
-reluctant to share more code after practical experience suggested possible 
-differences in the SCC/ESCC devices.
+Geert, any patches that changed in any significant way I dropped your
+"Acked-by".
 
-I guess I was hoping that the powermac maintainers might prefer ifdefs to 
-increased risk of destabilising the driver on powermacs...
+Regards
+Greg
 
-But a more invasive patch would make for better code. I will see if I can 
-borrow a suitable PCI PowerMac.
 
-Finn
-
-> Otherwise it looks sensible.
-> 
-> Alan
+---
+ arch/m68k/Kconfig                     |   10 +-
+ arch/m68k/Kconfig.cpu                 |    8 +-
+ arch/m68k/include/asm/atomic.h        |   10 +
+ arch/m68k/include/asm/cacheflush_mm.h |   88 +++++++-
+ arch/m68k/include/asm/elf.h           |    6 +-
+ arch/m68k/include/asm/entry.h         |   10 +-
+ arch/m68k/include/asm/fpu.h           |    2 +
+ arch/m68k/include/asm/irq.h           |    5 +-
+ arch/m68k/include/asm/m54xxacr.h      |   32 +++-
+ arch/m68k/include/asm/mcf_pgalloc.h   |  102 ++++++++
+ arch/m68k/include/asm/mcf_pgtable.h   |  422 +++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/mcfmmu.h        |  119 +++++++++
+ arch/m68k/include/asm/mmu_context.h   |  250 ++++++++++++++++----
+ arch/m68k/include/asm/page.h          |    6 +-
+ arch/m68k/include/asm/page_offset.h   |    8 +-
+ arch/m68k/include/asm/pgalloc.h       |    4 +-
+ arch/m68k/include/asm/pgtable_mm.h    |   30 ++-
+ arch/m68k/include/asm/processor.h     |   16 +-
+ arch/m68k/include/asm/segment.h       |   30 ++-
+ arch/m68k/include/asm/setup.h         |   14 +
+ arch/m68k/include/asm/thread_info.h   |    3 +
+ arch/m68k/include/asm/tlbflush.h      |   23 ++-
+ arch/m68k/include/asm/uaccess_mm.h    |   42 +++-
+ arch/m68k/kernel/Makefile             |    4 +-
+ arch/m68k/kernel/entry.S              |    2 +-
+ arch/m68k/kernel/entry_no.S           |    3 +
+ arch/m68k/kernel/process_mm.c         |   59 ++++-
+ arch/m68k/kernel/ptrace_mm.c          |   18 ++
+ arch/m68k/kernel/setup_mm.c           |   18 ++-
+ arch/m68k/kernel/signal_mm.c          |  173 ++++++++++----
+ arch/m68k/kernel/time.c               |    2 +-
+ arch/m68k/kernel/traps.c              |  104 ++++++++
+ arch/m68k/kernel/vmlinux.lds.S        |    2 +-
+ arch/m68k/kernel/vmlinux.lds_no.S     |    8 +
+ arch/m68k/lib/uaccess.c               |   22 +-
+ arch/m68k/mm/Makefile                 |    8 +-
+ arch/m68k/mm/cache.c                  |   24 ++-
+ arch/m68k/mm/init_mm.c                |    2 +-
+ arch/m68k/mm/kmap.c                   |    4 +
+ arch/m68k/mm/mcfmmu.c                 |  219 +++++++++++++++++
+ arch/m68k/mm/memory.c                 |    8 +-
+ arch/m68k/platform/54xx/config.c      |   48 ++++
+ arch/m68k/platform/coldfire/entry.S   |    6 +-
+ arch/m68k/platform/coldfire/head.S    |   47 ++++-
+ 44 files changed, 1808 insertions(+), 213 deletions(-)
+ create mode 100644 arch/m68k/include/asm/mcf_pgalloc.h
+ create mode 100644 arch/m68k/include/asm/mcf_pgtable.h
+ create mode 100644 arch/m68k/include/asm/mcfmmu.h
+ create mode 100644 arch/m68k/mm/mcfmmu.c
