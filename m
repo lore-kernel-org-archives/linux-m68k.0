@@ -1,47 +1,32 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 01/16] pmac_zilog: fix unexpected irq
-Date: Mon, 28 Nov 2011 11:30:06 +1100
-Message-ID: <1322440206.23348.35.camel@pasglop>
-References: <20111023141108.856998818@telegraphics.com.au>
-	 <20111023141115.208699274@telegraphics.com.au>
-	 <alpine.LNX.2.00.1111250133321.6314@nippy.intranet>
-	 <20111124145624.24438832@lxorguk.ukuu.org.uk>
-	 <alpine.LNX.2.00.1111250207040.6314@nippy.intranet>
+From: Richard Kuo <rkuo@codeaurora.org>
+Subject: Re: [PATCH-RFC 01/10] lib: move GENERIC_IOMAP to lib/Kconfig
+Date: Mon, 28 Nov 2011 14:12:26 -0600
+Message-ID: <20111128201226.GA4296@codeaurora.org>
+References: <cover.1322163031.git.mst@redhat.com>
+ <5aed7b7e1dbc8a50ebd6986245df8054fd05b7cd.1322163031.git.mst@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-serial-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1111250207040.6314@nippy.intranet>
-Sender: linux-serial-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-serial@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+In-Reply-To: <5aed7b7e1dbc8a50ebd6986245df8054fd05b7cd.1322163031.git.mst@redhat.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, Paul Mundt <lethal@linux-sh.org>
 List-Id: linux-m68k@vger.kernel.org
 
+On Thu, Nov 24, 2011 at 10:15:42PM +0200, Michael S. Tsirkin wrote:
+> define GENERIC_IOMAP in a central location
+> instead of all architectures. This will be helpful
+> for the follow-up patch which makes it select
+> other configs. Code is also a bit shorter this way.
 
-> Removing ifdefs makes the changes more invasive and the suspend/resume 
-> code then has to be addressed, which I've avoided.
-> 
-> The suspend/resume code path can't be tested on m68k macs and the common 
-> code paths I can't easily test on a powermac.
-> 
-> This patch should not be needed because the chip reset shouldn't leave the 
-> tx and rx interrupts enabled. Those interrupts are explicitly enabled only 
-> after request_irq(), so patching the master interrupt enable behaviour 
-> should be redundant. But that's not the case in practice.
-> 
-> The chip reset code is already messy. I was inclined towards ifdefs and 
-> reluctant to share more code after practical experience suggested possible 
-> differences in the SCC/ESCC devices.
-> 
-> I guess I was hoping that the powermac maintainers might prefer ifdefs to 
-> increased risk of destabilising the driver on powermacs...
-> 
-> But a more invasive patch would make for better code. I will see if I can 
-> borrow a suitable PCI PowerMac.
+For the Hexagon config,
 
-Please do the more invasive patch, I'll beat it up on powermacs.
-
-Cheers,
-Ben.
+Acked-by: Richard Kuo <rkuo@codeaurora.org>
 
 
+-- 
+
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
