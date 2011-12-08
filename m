@@ -1,45 +1,53 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 01/16 v3] pmac_zilog: fix unexpected irq
-Date: Thu, 08 Dec 2011 15:30:38 +1100
-Message-ID: <1323318638.12793.23.camel@pasglop>
-References: <20111023141108.856998818@telegraphics.com.au>
-	 <20111023141115.208699274@telegraphics.com.au>
-	 <alpine.LNX.2.00.1112070203310.14968@nippy.intranet>
-	 <alpine.LNX.2.00.1112071427280.28552@nippy.intranet>
-	 <1323318004.12793.21.camel@pasglop>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 05/35] m68k: add TASK definitions for ColdFires running
+ with MMU
+Date: Thu, 8 Dec 2011 15:27:44 +1000
+Message-ID: <4EE04AD0.9000809@snapgear.com>
+References: <1322192480-22822-1-git-send-email-gerg@snapgear.com> <1322192480-22822-6-git-send-email-gerg@snapgear.com> <BE72CBA69B1D6F44B0680DF984332A32313660@039-SN1MPN1-004.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from gate.crashing.org ([63.228.1.57]:41625 "EHLO gate.crashing.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750761Ab1LHEau (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 7 Dec 2011 23:30:50 -0500
-In-Reply-To: <1323318004.12793.21.camel@pasglop>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49501 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750925Ab1LHF1j (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Dec 2011 00:27:39 -0500
+In-Reply-To: <BE72CBA69B1D6F44B0680DF984332A32313660@039-SN1MPN1-004.039d.mgd.msft.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org
+To: Jin Zhengxiong-R64188 <R64188@freescale.com>
+Cc: "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "uclinux-dev@uclinux.org" <uclinux-dev@uclinux.org>, Greg Ungerer <gerg@uclinux.org>
 
-On Thu, 2011-12-08 at 15:20 +1100, Benjamin Herrenschmidt wrote:
+Hi Jason,
 
-> So basic operations seem to work, I've applied the patch to
-> powerpc-next.
-> 
-> However, the internal modem on my Pismo powerbook doesn't appear to
-> survive suspend/resume. I'll dig into that and merge a fixup patch asap.
+On 08/12/11 12:05, Jin Zhengxiong-R64188 wrote:
+>
+>> @@ -66,10 +68,12 @@ static inline void wrusp(unsigned long usp)
+>>    * space during mmap's.
+>>    */
+>>   #ifdef CONFIG_MMU
+>> -#ifndef CONFIG_SUN3
+>> -#define TASK_UNMAPPED_BASE	0xC0000000UL
+>> -#else
+>> +#if defined(CONFIG_COLDFIRE)
+>> +#define TASK_UNMAPPED_BASE	0x80000000UL
+>
+> [Jin Zhengxiong-R64188] Need to set TASK_UNMAPPED_BASE somewhere below 0x80000000
+> to not break runtime linker.  When ld.so is invoked explicitly
+> (i.e., /lib/ld.so.1 ./myprog), it needs to be loaded below 0x80000000,
+> otherwise it will overwrite itself with the program it tries to load.
+>
+> The comments come from codesourcery and we have set it to 0x60000000
+> in the latest BSP.
 
-BTW. I applied anyway because suspend/resume was already broken (you
-spotted that we don't clear the suspended flag for example).
+Ok, thanks. I will change that in the patches to 0x60000000 then.
 
-Fixing the flag alone helps a bit. We can't use the modem if we
-suspend/resume with the open port, but closing and re-opening works.
+Regards
+Greg
 
-Lockdep also picked-up a A->B B->A between the port mutex and the pmz
-irq mutex on suspend.
 
-I'll try to fix all these, and will let you know (I may not have time
-today).
-
-Cheers,
-Ben.
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
