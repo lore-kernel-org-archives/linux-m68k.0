@@ -1,77 +1,72 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68k: consolidate the vmlinux.lds linker scripts
-Date: Thu, 8 Dec 2011 16:34:01 +1000
-Message-ID: <1323326041-16077-1-git-send-email-gerg@snapgear.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 01/16 v3] pmac_zilog: fix unexpected irq
+Date: Thu, 8 Dec 2011 22:26:46 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1112082128330.2357@nippy.intranet>
+References: <20111023141108.856998818@telegraphics.com.au>  <20111023141115.208699274@telegraphics.com.au>  <alpine.LNX.2.00.1112070203310.14968@nippy.intranet>  <alpine.LNX.2.00.1112071427280.28552@nippy.intranet>  <1323318004.12793.21.camel@pasglop>
+ <1323318638.12793.23.camel@pasglop>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25048 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751278Ab1LHGeB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Dec 2011 01:34:01 -0500
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:55570 "EHLO
+	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750715Ab1LHL05 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Dec 2011 06:26:57 -0500
+In-Reply-To: <1323318638.12793.23.camel@pasglop>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-The merge of m68knommu left the linker scripts a little disorganized.
-Some consistent naming and squashing two of scripts that just include
-others can simplify things a lot.
+On Thu, 8 Dec 2011, Benjamin Herrenschmidt wrote:
 
-So merge the two simple including scripts, and rename the nommu script
-to be consistent with the existing m68k linker scripts.
+> On Thu, 2011-12-08 at 15:20 +1100, Benjamin Herrenschmidt wrote:
+> 
+> > So basic operations seem to work, I've applied the patch to 
+> > powerpc-next.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- .../kernel/{vmlinux.lds_no.S => vmlinux-nommu.lds} |    0
- arch/m68k/kernel/vmlinux.lds.S                     |   13 +++++++++++--
- arch/m68k/kernel/vmlinux.lds_mm.S                  |   10 ----------
- 3 files changed, 11 insertions(+), 12 deletions(-)
- rename arch/m68k/kernel/{vmlinux.lds_no.S => vmlinux-nommu.lds} (100%)
- delete mode 100644 arch/m68k/kernel/vmlinux.lds_mm.S
+Then I guess Geert should not push this for 3.3 -- or does it make no 
+difference?
 
-diff --git a/arch/m68k/kernel/vmlinux.lds_no.S b/arch/m68k/kernel/vmlinux-nommu.lds
-similarity index 100%
-rename from arch/m68k/kernel/vmlinux.lds_no.S
-rename to arch/m68k/kernel/vmlinux-nommu.lds
-diff --git a/arch/m68k/kernel/vmlinux.lds.S b/arch/m68k/kernel/vmlinux.lds.S
-index 030dabf..3d99a04 100644
---- a/arch/m68k/kernel/vmlinux.lds.S
-+++ b/arch/m68k/kernel/vmlinux.lds.S
-@@ -1,5 +1,14 @@
- #ifdef CONFIG_MMU
--#include "vmlinux.lds_mm.S"
-+PHDRS
-+{
-+  text PT_LOAD FILEHDR PHDRS FLAGS (7);
-+  data PT_LOAD FLAGS (7);
-+}
-+#ifdef CONFIG_SUN3
-+#include "vmlinux-sun3.lds"
- #else
--#include "vmlinux.lds_no.S"
-+#include "vmlinux-std.lds"
-+#endif
-+#else
-+#include "vmlinux-nommu.lds"
- #endif
-diff --git a/arch/m68k/kernel/vmlinux.lds_mm.S b/arch/m68k/kernel/vmlinux.lds_mm.S
-deleted file mode 100644
-index 99ba315..0000000
---- a/arch/m68k/kernel/vmlinux.lds_mm.S
-+++ /dev/null
-@@ -1,10 +0,0 @@
--PHDRS
--{
--  text PT_LOAD FILEHDR PHDRS FLAGS (7);
--  data PT_LOAD FLAGS (7);
--}
--#ifdef CONFIG_SUN3
--#include "vmlinux-sun3.lds"
--#else
--#include "vmlinux-std.lds"
--#endif
--- 
-1.7.0.4
+> > However, the internal modem on my Pismo powerbook doesn't appear to 
+> > survive suspend/resume. I'll dig into that and merge a fixup patch 
+> > asap.
+> 
+> BTW. I applied anyway because suspend/resume was already broken (you 
+> spotted that we don't clear the suspended flag for example).
+> 
+> Fixing the flag alone helps a bit. We can't use the modem if we 
+> suspend/resume with the open port,
+
+If the SCC IRQ counters change across suspend/resume, perhaps the modem 
+itself is not powering up...
+
+> but closing and re-opening works.
+
+Maybe the modem wants a transition on DTR or similar, but it hasn't had 
+time to initialise when that happens during SCC resumption.
+
+If so, calling pmz_shutdown() then pmz_startup() from the tail of 
+pmz_resume() without delay should probably fail to revive it...
+
+> 
+> Lockdep also picked-up a A->B B->A between the port mutex and the pmz 
+> irq mutex on suspend.
+> 
+> I'll try to fix all these, and will let you know (I may not have time 
+> today).
+
+Thanks.
+
+Finn
+
+> 
+> Cheers,
+> Ben.
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
