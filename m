@@ -1,42 +1,50 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 16/16] mac_esp: rename irq
-Date: Sat, 10 Dec 2011 16:24:57 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1112101606570.13274@nippy.intranet>
-References: <20111023141108.856998818@telegraphics.com.au> <20111023141223.838768930@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:57881 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751328Ab1LJFZB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 10 Dec 2011 00:25:01 -0500
-In-Reply-To: <20111023141223.838768930@telegraphics.com.au>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/resend] m68k/net: Remove obsolete IRQ_FLG_* users
+Date: Sun, 11 Dec 2011 10:04:05 +0100
+Message-ID: <1323594245-25269-1-git-send-email-geert@linux-m68k.org>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: linux-m68k@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>
 List-Id: linux-m68k@vger.kernel.org
-To: "James E.J. Bottomley" <JBottomley@parallels.com>
-Cc: linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Rename the "Mac ESP" irq as "ESP" to be consistent with all the other 
-Mac drivers and ESP drivers.
+The m68k core irq code stopped honoring these flags during the irq
+restructuring in 2006.
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
 ---
+Please take or ack, so I can remove the definition for IRQ_FLG_FAST in
+the m68k code
 
-Re-sending unchanged. Still needs the right ack.
+ drivers/net/ethernet/natsemi/macsonic.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-
-Index: linux-m68k/drivers/scsi/mac_esp.c
-===================================================================
---- linux-m68k.orig/drivers/scsi/mac_esp.c	2011-10-23 18:18:46.000000000 +1100
-+++ linux-m68k/drivers/scsi/mac_esp.c	2011-10-23 18:19:30.000000000 +1100
-@@ -565,8 +565,7 @@ static int __devinit esp_mac_probe(struc
- 	esp_chips[dev->id] = esp;
- 	mb();
- 	if (esp_chips[!dev->id] == NULL) {
--		err = request_irq(host->irq, mac_scsi_esp_intr, 0,
--		                  "Mac ESP", NULL);
-+		err = request_irq(host->irq, mac_scsi_esp_intr, 0, "ESP", NULL);
- 		if (err < 0) {
- 			esp_chips[dev->id] = NULL;
- 			goto fail_free_priv;
+diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
+index a2eacbf..5987d17 100644
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -142,8 +142,7 @@ static int macsonic_open(struct net_device* dev)
+ {
+ 	int retval;
+ 
+-	retval = request_irq(dev->irq, sonic_interrupt, IRQ_FLG_FAST,
+-				"sonic", dev);
++	retval = request_irq(dev->irq, sonic_interrupt, 0, "sonic", dev);
+ 	if (retval) {
+ 		printk(KERN_ERR "%s: unable to get IRQ %d.\n",
+ 				dev->name, dev->irq);
+@@ -154,8 +153,8 @@ static int macsonic_open(struct net_device* dev)
+ 	 * rupt as well, which must prevent re-entrance of the sonic handler.
+ 	 */
+ 	if (dev->irq == IRQ_AUTO_3) {
+-		retval = request_irq(IRQ_NUBUS_9, macsonic_interrupt,
+-					IRQ_FLG_FAST, "sonic", dev);
++		retval = request_irq(IRQ_NUBUS_9, macsonic_interrupt, 0,
++				     "sonic", dev);
+ 		if (retval) {
+ 			printk(KERN_ERR "%s: unable to get IRQ %d.\n",
+ 					dev->name, IRQ_NUBUS_9);
+-- 
+1.7.0.4
