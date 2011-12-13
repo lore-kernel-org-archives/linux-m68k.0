@@ -1,61 +1,99 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
-Subject: Re: Cross Memory Attach v3
-Date: Tue, 13 Dec 2011 11:59:16 +0100
-Message-ID: <20111213105916.GA9956@hall.aurel32.net>
-References: <20110719003537.16b189ae@lilo>
- <CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
- <20111121104313.63c7f796@cyeoh-System-Product-Name>
- <CAMuHMdXfWoHx4GA3L8T6-6PFw9fdCVbooayR3La2Woe-0V2koA@mail.gmail.com>
- <Pine.BSM.4.64L.1112041436510.16947@herc.mirbsd.org>
- <m2iplwuqwr.fsf@igel.home>
- <Pine.BSM.4.64L.1112112209570.6937@herc.mirbsd.org>
+From: "J. Zakia" <downsyl4@aol.com>
+Subject: Confirmation from Libyan embassy
+Date: Tue, 13 Dec 2011 07:47:13 -0800
+Message-ID: <201112131549.pBDFn25F007115@imr-da03.mx.aol.com>
+Reply-To: <jimmyzakky30@yahoo.com.hk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.BSM.4.64L.1112112209570.6937@herc.mirbsd.org>
-Sender: Aurelien Jarno <aurelien@aurel32.net>
-Resent-Message-ID: <7n0AeMHcU5J.A.ojE.4Az5OB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Christopher Yeoh <cyeoh@au1.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, GNU Libc Maintainers <debian-glibc@lists.debian.org>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0117_01C2A75B.27CB505A"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Sun, Dec 11, 2011 at 10:11:03PM +0000, Thorsten Glaser wrote:
-> Andreas Schwab dixit:
-> 
-> >Thorsten Glaser <tg@mirbsd.de> writes:
-> >
-> >> Index: eglibc-2.13/ports/sysdeps/unix/sysv/linux/m68k/syscall.S
-> >> ===================================================================
-> >> --- eglibc-2.13.orig/ports/sysdeps/unix/sysv/linux/m68k/syscall.S	2011-12-04 14:36:16.000000000 +0000
-> >> +++ eglibc-2.13/ports/sysdeps/unix/sysv/linux/m68k/syscall.S	2011-12-04 14:36:26.000000000 +0000
-> >> @@ -24,9 +24,9 @@
-> >>  	.text
-> >>  ENTRY (syscall)
-> >>  	move.l 4(%sp), %d0	/* Load syscall number.  */
-> >> -	_DOARGS_5 (24)		/* Frob arguments.  */
-> >> +	_DOARGS_6 (28)		/* Frob arguments.  */
-> >>  	trap &0			/* Do the system call.  */
-> >> -	UNDOARGS_5		/* Unfrob arguments.  */
-> >> +	UNDOARGS_6		/* Unfrob arguments.  */
-> >>  	cmp.l &-4095, %d0	/* Check %d0 for error.  */
-> >>  	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
-> >>  	rts			/* Return to caller.  */
-> >
-> >Thanks, installed.
-> 
-> (Where?) So, should $someone submit that to eglibc-ports and
-> Debisn src:eglibc? Did it indeed do the trick?
-> 
+This is a multi-part message in MIME format.
 
-This patch should be reported to libc-ports@sourceware.org. If it also 
-needs to be applied to the Debian package quickly, please open a bug 
-report in the Debian BTS.
+------=_NextPart_000_0117_01C2A75B.27CB505A
+Content-Type: text/plain;
+	charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 
--- 
-Aurelien Jarno	                        GPG: 1024D/F1BCDB73
-aurelien@aurel32.net                 http://www.aurel32.net
+In a brief introduction, I am an embassy attaché with the Libyan Government in the Hague, Netherlands.
+Please kindly see the attachment for more details and respond immediately
+
+------=_NextPart_000_0117_01C2A75B.27CB505A
+Content-Type: application/octet-stream;
+	name="attachment.rtf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="attachment.rtf"
+
+e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzN7XGZv
+bnR0Ymx7XGYwXGZzd2lzc1xmY2hhcnNldDAgQXJpYWw7fX0NCntcKlxnZW5l
+cmF0b3IgTXNmdGVkaXQgNS40MS4yMS4yNTAwO31cdmlld2tpbmQ0XHVjMVxw
+YXJkXGYwXGZzMjAgSmltbXkgWmFraWEgU2FobGlccGFyDQpFbWJhc3N5IG9m
+IExpYnlhXHBhcg0KUGFya3dlZyAxNSwgMjU4NUpIXHBhcg0KVGhlIEhhZ3Vl
+LCBUaGUgTmV0aGVybGFuZHMgIFxwYXINClxwYXINCjEzdGggRGVjLiAyMDEx
+XHBhcg0KIFxwYXINCkVtYmFzc3kgb2YgTGlieWEsIFRoZSBIYWd1ZSwgTmV0
+aGVybGFuZHM7IEZ1bmQgVHJhbnNmZXIgQXNzaXN0YW5jZVxwYXINCiBccGFy
+DQpEZWFyIFNpcixccGFyDQogXHBhcg0KSSBoYXZlIGRlY2lkZWQgdG8gY29u
+dGFjdCB5b3UgdG8gYXNzaXN0IHVzIHRyYW5zZmVyIGFuZCBkZXBvc2l0IHRo
+aXMgc3VtIG9mIG1vbmV5IG1lbnRpb25lZCBiZWxvdyBpbnRvIHlvdXIgcGVy
+c29uYWwgYWNjb3VudCBvciBhbnkgb3RoZXIgYWNjb3VudCB5b3UgZGVjaWRl
+IHNhZmUuXHBhcg0KIFxwYXINCkluIGEgYnJpZWYgaW50cm9kdWN0aW9uLCBJ
+IGFtIGFuIGVtYmFzc3kgYXR0YWNoXCdlOSB3aXRoIHRoZSBMaWJ5YW4gR292
+ZXJubWVudCBpbiBUaGUgSGFndWUsIE5ldGhlcmxhbmRzLiBXZSBhcmUgY3Vy
+cmVudGx5IGF1ZGl0aW5nIGFuZCByZWN0aWZ5aW5nIHRoZSBhY2NvdW50IG9m
+IG91ciBGb3JlaWduIE1pc3Npb25zIGFuZCBFbWJhc3NpZXMgYWJyb2FkIGFu
+ZCBpbiBwYXJ0aWN1bGFyIGluIEV1cm9wZS4gVGhpcyBleGNpc2UgaXMgbmVj
+ZXNzaXRhdGVkIGJ5IHRoZSBvbi1nb2luZyBwb2xpdGljYWwgY2hhbmdlIGlu
+IG15IGNvdW50cnkgdW5kZXIgdGhlIE5hdGlvbmFsIFRyYW5zaXRpb25hbCBD
+b3VuY2lsIChOVEMpLiBJdCBpcyBleHBlY3RlZCB0aGF0IHRoZXJlIHdpbGwg
+YmUgbmV3IEFtYmFzc2Fkb3JpYWwgcG9zdGluZyBpbiB0aGUgY29taW5nIG1v
+bnRocyB3aGljaCB3aWxsIGRlZmluaXRlbHkgYWZmZWN0IHRoZSBwcmVzZW50
+IEFtYmFzc2Fkb3IgYW5kIGFsbCBzdGFmZiBvZiBMaWJ5YSBFbWJhc3N5IGlu
+IFRoZSBOZXRoZXJsYW5kcy5ccGFyDQogXHBhcg0KSG93ZXZlciwgaW4gdGhl
+IGNvdXJzZSBvZiBvdXIgYXVkaXRpbmcsIHdlIGhhdmUgaHVnZSBzdW0gb2Yg
+ZXhjZXNzIG1vbmV5IGluIHRoZSB0dW5lIG9mIFVTJDgsNTAwLDAwMC4wMCAo
+RWlnaHQgTWlsbGlvbiwgRml2ZSBIdW5kcmVkIFRob3VzYW5kIFUuUyBEb2xs
+YXJzKSB3aGljaCBpcyBseWluZyBsb29zZSBhbmQgdW5jbGFpbWVkIGluIG9u
+ZSBvZiB0aGUgbG9jYWwgYmFua3MgaGVyZSBpbiBUaGUgTmV0aGVybGFuZHMu
+IFdlIGhhdmUgcXVpY2tseSBhbmQgc21hcnRseSBpbiBjb2xsYWJvcmF0aW9u
+IHdpdGggdGhlIEFtYmFzc2Fkb3IgYW5kIHNvbWUgYXV0aG9yaXRpZXMgaW4g
+dGhlIE5hdGlvbmFsIFRyYW5zaXRpb25hbCBDb3VuY2lsIChOVEMpIGRlY2lk
+ZWQgdG8ga2VlcCB0aGlzIG1vbmV5IHRvIG91cnNlbHZlcy4gV2UgYXJlIHRh
+a2luZyBhZHZhbnRhZ2Ugb2Ygb3VyIHBvc2l0aW9uIGFuZCB0aGF0IG9mIHRo
+ZSBwb2xpdGljYWwgaW5zdGFiaWxpdHkgaW4gbXkgY291bnRyeSB0byBkbyB0
+aGlzIGtub3dpbmcgdGhhdCBub2JvZHkgd2lsbCBmaW5kIG91dC4gSG93ZXZl
+ciwgd2Ugd291bGQgbGlrZSB0byBtb3ZlIHRoaXMgbW9uZXkgZnVydGhlciB0
+byBhbm90aGVyIGZvcmVpZ24gYWNjb3VudCwgcHJlZmVyYWJseSBvdXRzaWRl
+IFRoZSBOZXRoZXJsYW5kcy5ccGFyDQogXHBhcg0KVG8gdGhpcyBlZmZlY3Qs
+IGFuZCBmb3IgcmVhc29uIG9mIGFub255bWl0eSwgd2UgaGF2ZSBjaG9zZW4g
+eW91IHRocm91Z2ggdGhlIGludGVybmF0aW9uYWwgc2VhcmNoIGRpcmVjdG9y
+eSB0byBhc3Npc3QgdXMgaW4gdHJhbnNmZXJyaW5nIGFuZCBkZXBvc2l0aW5n
+IHRoaXMgbW9uZXkgaW4geW91ciBwZXJzb25hbCBiYW5rIGFjY291bnQgb3Ig
+YW55IG90aGVyIGFjY291bnQgeW91IGRlZW1lZCBzYWZlci4gVGhpcyByZWNv
+bW1lbmRhdGlvbiBpcyBiYXNlZCBvbiB0aGUgZmFjdCB0aGF0IHlvdSB3aWxs
+IG5vdCBiZXRyYXkgdGhlIHRydXN0IGFuZCBjb25maWRlbmNlIHdlIGFyZSBy
+ZXBvc2luZyBvbiB5b3UuIFdlIGhhdmUgZGVjaWRlZCB0aGVyZWFmdGVyLCB0
+byBnaXZlIHlvdSAzMCUgb2YgdGhlIFVTJDgsNTAwLDAwMC4wMCBmb3IgeW91
+ciBhc3Npc3RhbmNlIGFuZCBjb3Jyb2JvcmF0aW9uIHdoaWxlIHRoZSByZXN0
+IDcwJSB3aWxsIGJlIHNhZmVseSBrZXB0IGZvciB1cy5ccGFyDQogXHBhcg0K
+UGxlYXNlIGtpbmRseSBpbmRpY2F0ZSB5b3VyIGludGVyZXN0IHRvIGFzc2lz
+dCB1cyBrZWVwIHRoaXMgbW9uZXkgaW4geW91ciBhY2NvdW50IGFzIHNvb24g
+YXMgcG9zc2libGUuIEl0IGlzIGFsc28gbXkgcGxlYXN1cmUgdG8gaW5mb3Jt
+IHlvdSB0aGF0IGV2ZXJ5IGFycmFuZ2VtZW50IHRvIHJlbGVhc2UgdGhlIG1v
+bmV5IGZyb20gdGhlIGJhbmsgaGVyZSBoYXMgYmVlbiBjb25jbHVkZWQuIFRo
+aXMgYnVzaW5lc3MgaXMgdG90YWxseSByaXNrIGZyZWUuXHBhcg0KIFxwYXIN
+CkZpbmFsbHksIHdlIGV4cGVjdCB5b3UgaW4gY29uZmlkZW5jZSBhbmQgdHJ1
+c3QgdG8ga2VlcCBldmVyeSBhc3BlY3Qgb2YgdGhpcyB0cmFuc2FjdGlvbiBz
+ZWNyZXQgYW5kIGNvbmZpZGVudGlhbCBhcyBhbnkgbWlzdGFrZSB3aWxsIHB1
+dCBteSBmdXR1cmUgY2FyZWVyIGluIGplb3BhcmR5LiBJIG1heSBpbnZpdGUg
+eW91IG9yIHZpc2l0IHlvdSBmb3Igb25lIG9uIG9uZSBkaXNjdXNzaW9uIGFu
+ZCBwZXJmZWN0aW9uIG9mIHRoZSBkZWFsIGFzIHNvb24gSSBjb25maXJtIHRo
+YXQgeW91IGNhbiBoYW5kbGUgdGhlIHRyYW5zYWN0aW9uLlxwYXINCiBccGFy
+DQpUaGFua3MgZm9yIHlvdXIgYW50aWNpcGF0ZWQgY28tb3BlcmF0aW9uLCB3
+aGlsZSB3YWl0aW5nIGZvciB5b3VyIGFjY2VwdGFuY2UgdG8gYXNzaXN0IHVz
+LiBccGFyDQogXHBhcg0KWW91cnMgc2luY2VyZWx5LFxwYXINCiAgXHBhcg0K
+SmltbXkgWmFraWEgU2FobGlccGFyDQp9DQoA
+
+------=_NextPart_000_0117_01C2A75B.27CB505A--
