@@ -1,88 +1,61 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 01/16 v3] pmac_zilog: fix unexpected irq
-Date: Tue, 13 Dec 2011 12:24:40 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1112131224330.2562@nippy.intranet>
-References: <20111023141108.856998818@telegraphics.com.au>  <20111023141115.208699274@telegraphics.com.au>  <alpine.LNX.2.00.1112070203310.14968@nippy.intranet>  <alpine.LNX.2.00.1112071427280.28552@nippy.intranet>  <1323318004.12793.21.camel@pasglop>
- <1323318638.12793.23.camel@pasglop>  <alpine.LNX.2.00.1112082128330.2357@nippy.intranet>  <1323647315.19891.10.camel@pasglop>  <alpine.LNX.2.00.1112130020000.2550@nippy.intranet> <1323720383.19891.21.camel@pasglop>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: Cross Memory Attach v3
+Date: Tue, 13 Dec 2011 11:59:16 +0100
+Message-ID: <20111213105916.GA9956@hall.aurel32.net>
+References: <20110719003537.16b189ae@lilo>
+ <CAMuHMdWAhn7M8o0qY4pz3W1tyyKEcNY_YQL_6JuAPCcjL5vS1A@mail.gmail.com>
+ <20111121104313.63c7f796@cyeoh-System-Product-Name>
+ <CAMuHMdXfWoHx4GA3L8T6-6PFw9fdCVbooayR3La2Woe-0V2koA@mail.gmail.com>
+ <Pine.BSM.4.64L.1112041436510.16947@herc.mirbsd.org>
+ <m2iplwuqwr.fsf@igel.home>
+ <Pine.BSM.4.64L.1112112209570.6937@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:38608 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753904Ab1LMBYq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Dec 2011 20:24:46 -0500
-In-Reply-To: <1323720383.19891.21.camel@pasglop>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-15
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.BSM.4.64L.1112112209570.6937@herc.mirbsd.org>
+Sender: Aurelien Jarno <aurelien@aurel32.net>
+Resent-Message-ID: <7n0AeMHcU5J.A.ojE.4Az5OB@liszt>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Christopher Yeoh <cyeoh@au1.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, GNU Libc Maintainers <debian-glibc@lists.debian.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-serial@vger.kernel.org
 
-
-On Tue, 13 Dec 2011, Benjamin Herrenschmidt wrote:
-
-> On Tue, 2011-12-13 at 00:34 +1100, Finn Thain wrote:
-> > On Mon, 12 Dec 2011, Benjamin Herrenschmidt wrote:
-> > 
-> > > Any chance you can test this patch ? I would not be surprised if it 
-> > > broke m68k since I had to do some of the changes in there "blind", 
-> > > so let me know... with this, I can again suspend/resume properly on 
-> > > a Pismo while using the internal modem among other things.
-> > 
-> > The patch works on a PowerBook 520 given a few changes (below). This 
-> > PowerBook only has one serial port that I can test (the internal modem 
-> > is not supported on 68k Macs).
+On Sun, Dec 11, 2011 at 10:11:03PM +0000, Thorsten Glaser wrote:
+> Andreas Schwab dixit:
 > 
-> Interesting. The modem is a soft-modem "geoport" or a hw serial modem ? 
-
-It's the latter.
-
-> In the later case it's probably just a matter of finding the right GPIO 
-> bit in Apple ASIC to turn the power on :-)
-
-Surely feasible, but not high on the list of missing hardware support.
-
+> >Thorsten Glaser <tg@mirbsd.de> writes:
+> >
+> >> Index: eglibc-2.13/ports/sysdeps/unix/sysv/linux/m68k/syscall.S
+> >> ===================================================================
+> >> --- eglibc-2.13.orig/ports/sysdeps/unix/sysv/linux/m68k/syscall.S	2011-12-04 14:36:16.000000000 +0000
+> >> +++ eglibc-2.13/ports/sysdeps/unix/sysv/linux/m68k/syscall.S	2011-12-04 14:36:26.000000000 +0000
+> >> @@ -24,9 +24,9 @@
+> >>  	.text
+> >>  ENTRY (syscall)
+> >>  	move.l 4(%sp), %d0	/* Load syscall number.  */
+> >> -	_DOARGS_5 (24)		/* Frob arguments.  */
+> >> +	_DOARGS_6 (28)		/* Frob arguments.  */
+> >>  	trap &0			/* Do the system call.  */
+> >> -	UNDOARGS_5		/* Unfrob arguments.  */
+> >> +	UNDOARGS_6		/* Unfrob arguments.  */
+> >>  	cmp.l &-4095, %d0	/* Check %d0 for error.  */
+> >>  	jcc SYSCALL_ERROR_LABEL	/* Jump to error handler if negative.  */
+> >>  	rts			/* Return to caller.  */
+> >
+> >Thanks, installed.
 > 
-> >  Can you test a machine with two ports? The rest of my Mac hardware is 
-> > in storage since I moved house last week.
+> (Where?) So, should $someone submit that to eglibc-ports and
+> Debisn src:eglibc? Did it indeed do the trick?
 > 
-> I tried on 2 port powermacs, but I only have one adapter, so I've 
-> basically been running with one serial port open and shooting irda frame 
-> on the other (with nothing to check wether I got the frames on the other 
-> hand), oh well ...
-> 
-> I'll apply your patch and commit via my tree.
 
-I forgot to include this fix for your logging change.
+This patch should be reported to libc-ports@sourceware.org. If it also 
+needs to be applied to the Debian package quickly, please open a bug 
+report in the Debian BTS.
 
-Finn
-
-Index: linux-git/drivers/tty/serial/pmac_zilog.c
-===================================================================
---- linux-git.orig/drivers/tty/serial/pmac_zilog.c	2011-12-13 12:12:05.000000000 +1100
-+++ linux-git/drivers/tty/serial/pmac_zilog.c	2011-12-13 12:13:29.000000000 +1100
-@@ -99,6 +99,10 @@ MODULE_LICENSE("GPL");
- #define PMACZILOG_NAME		"ttyPZ"
- #endif
- 
-+#define pmz_debug(fmt, arg...)	pr_debug(PMACZILOG_NAME "%d: " fmt, uap->port.line, ## arg)
-+#define pmz_error(fmt, arg...)	pr_err(PMACZILOG_NAME "%d: " fmt, uap->port.line, ## arg)
-+#define pmz_info(fmt, arg...)	pr_info(PMACZILOG_NAME "%d: " fmt, uap->port.line, ## arg)
-+
- 
- /*
-  * For the sake of early serial console, we can do a pre-probe
-Index: linux-git/drivers/tty/serial/pmac_zilog.h
-===================================================================
---- linux-git.orig/drivers/tty/serial/pmac_zilog.h	2011-12-13 12:12:05.000000000 +1100
-+++ linux-git/drivers/tty/serial/pmac_zilog.h	2011-12-13 12:12:28.000000000 +1100
-@@ -1,10 +1,6 @@
- #ifndef __PMAC_ZILOG_H__
- #define __PMAC_ZILOG_H__
- 
--#define pmz_debug(fmt, arg...)	pr_debug("ttyPZ%d: " fmt, uap->port.line, ## arg)
--#define pmz_error(fmt, arg...)	pr_err("ttyPZ%d: " fmt, uap->port.line, ## arg)
--#define pmz_info(fmt, arg...)	pr_info("ttyPZ%d: " fmt, uap->port.line, ## arg)
--
- /*
-  * At most 2 ESCCs with 2 ports each
-  */
+-- 
+Aurelien Jarno	                        GPG: 1024D/F1BCDB73
+aurelien@aurel32.net                 http://www.aurel32.net
