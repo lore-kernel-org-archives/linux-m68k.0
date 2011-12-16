@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 02/35] m68k: show ColdFire CPU/FPU/MMU type
-Date: Fri, 16 Dec 2011 22:35:59 +1000
-Message-ID: <1324038992-31222-3-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 03/35] m68k: definitions for the ColdFire V4e MMU hardware
+Date: Fri, 16 Dec 2011 22:36:00 +1000
+Message-ID: <1324038992-31222-4-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49351 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49352 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759098Ab1LPMge (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:34 -0500
+	with ESMTP id S1759110Ab1LPMgf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:35 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,55 +18,133 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Update the show_cpuinfo() code to display info about ColdFire cores.
+Basic register level definitions to support the internal MMU of the
+V4e ColdFire cores.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/kernel/setup_mm.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+ arch/m68k/include/asm/mcfmmu.h |  110 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 110 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/include/asm/mcfmmu.h
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 55f8f50..52e17d1 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -388,6 +388,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- #define LOOP_CYCLES_68030	(8)
- #define LOOP_CYCLES_68040	(3)
- #define LOOP_CYCLES_68060	(1)
-+#define LOOP_CYCLES_COLDFIRE	(2)
- 
- 	if (CPU_IS_020) {
- 		cpu = "68020";
-@@ -401,6 +402,9 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	} else if (CPU_IS_060) {
- 		cpu = "68060";
- 		clockfactor = LOOP_CYCLES_68060;
-+	} else if (CPU_IS_COLDFIRE) {
-+		cpu = "ColdFire";
-+		clockfactor = LOOP_CYCLES_COLDFIRE;
- 	} else {
- 		cpu = "680x0";
- 		clockfactor = 0;
-@@ -419,6 +423,8 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 		fpu = "68060";
- 	else if (m68k_fputype & FPU_SUNFPA)
- 		fpu = "Sun FPA";
-+	else if (m68k_fputype & FPU_COLDFIRE)
-+		fpu = "ColdFire";
- 	else
- 		fpu = "none";
- #endif
-@@ -435,6 +441,8 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 		mmu = "Sun-3";
- 	else if (m68k_mmutype & MMU_APOLLO)
- 		mmu = "Apollo";
-+	else if (m68k_mmutype & MMU_COLDFIRE)
-+		mmu = "ColdFire";
- 	else
- 		mmu = "unknown";
- 
+diff --git a/arch/m68k/include/asm/mcfmmu.h b/arch/m68k/include/asm/mcfmmu.h
+new file mode 100644
+index 0000000..8fdcfed
+--- /dev/null
++++ b/arch/m68k/include/asm/mcfmmu.h
+@@ -0,0 +1,110 @@
++/*
++ *	mcfmmu.h -- definitions for the ColdFire v4e MMU
++ *
++ *	(C) Copyright 2011,  Greg Ungerer <gerg@uclinux.org>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++
++#ifndef	MCFMMU_H
++#define	MCFMMU_H
++
++/*
++ *	The MMU support registers are mapped into the address space using
++ *	the processor MMUBASE register. We used a fixed address for mapping,
++ *	there doesn't seem any need to make this configurable yet.
++ */
++#define	MMUBASE		0xfe000000
++
++/*
++ *	The support registers of the MMU. Names are the sames as those
++ *	used in the Freescale v4e documentation.
++ */
++#define	MMUCR		(MMUBASE + 0x00)	/* Control register */
++#define	MMUOR		(MMUBASE + 0x04)	/* Operation register */
++#define	MMUSR		(MMUBASE + 0x08)	/* Status register */
++#define	MMUAR		(MMUBASE + 0x10)	/* TLB Address register */
++#define	MMUTR		(MMUBASE + 0x14)	/* TLB Tag register */
++#define	MMUDR		(MMUBASE + 0x18)	/* TLB Data register */
++
++/*
++ *	MMU Control register bit flags
++ */
++#define	MMUCR_EN	0x00000001		/* Virtual mode enable */
++#define	MMUCR_ASM	0x00000002		/* Address space mode */
++
++/*
++ *	MMU Operation register.
++ */
++#define	MMUOR_UAA	0x00000001		/* Update allocatiom address */
++#define	MMUOR_ACC	0x00000002		/* TLB access */
++#define	MMUOR_RD	0x00000004		/* TLB access read */
++#define	MMUOR_WR	0x00000000		/* TLB access write */
++#define	MMUOR_ADR	0x00000008		/* TLB address select */
++#define	MMUOR_ITLB	0x00000010		/* ITLB operation */
++#define	MMUOR_CAS	0x00000020		/* Clear non-locked ASID TLBs */
++#define	MMUOR_CNL	0x00000040		/* Clear non-locked TLBs */
++#define	MMUOR_CA	0x00000080		/* Clear all TLBs */
++#define	MMUOR_STLB	0x00000100		/* Search TLBs */
++#define	MMUOR_AAN	16			/* TLB allocation address */
++#define	MMUOR_AAMASK	0xffff0000		/* AA mask */
++
++/*
++ *	MMU Status register.
++ */
++#define	MMUSR_HIT	0x00000002		/* Search TLB hit */
++#define	MMUSR_WF	0x00000008		/* Write access fault */
++#define	MMUSR_RF	0x00000010		/* Read access fault */
++#define	MMUSR_SPF	0x00000020		/* Supervisor protect fault */
++
++/*
++ *	MMU Read/Write Tag register.
++ */
++#define	MMUTR_V		0x00000001		/* Valid */
++#define	MMUTR_SG	0x00000002		/* Shared global */
++#define	MMUTR_IDN	2			/* Address Space ID */
++#define	MMUTR_IDMASK	0x000003fc		/* ASID mask */
++#define	MMUTR_VAN	10			/* Virtual Address */
++#define	MMUTR_VAMASK	0xfffffc00		/* VA mask */
++
++/*
++ *	MMU Read/Write Data register.
++ */
++#define	MMUDR_LK	0x00000002		/* Lock entry */
++#define	MMUDR_X		0x00000004		/* Execute access enable */
++#define	MMUDR_W		0x00000008		/* Write access enable */
++#define	MMUDR_R		0x00000010		/* Read access enable */
++#define	MMUDR_SP	0x00000020		/* Supervisor access enable */
++#define	MMUDR_CM_CWT	0x00000000		/* Cachable write thru */
++#define	MMUDR_CM_CCB	0x00000040		/* Cachable copy back */
++#define	MMUDR_CM_NCP	0x00000080		/* Non-cachable precise */
++#define	MMUDR_CM_NCI	0x000000c0		/* Non-cachable imprecise */
++#define	MMUDR_SZ_1MB	0x00000000		/* 1MB page size */
++#define	MMUDR_SZ_4KB	0x00000100		/* 4kB page size */
++#define	MMUDR_SZ_8KB	0x00000200		/* 8kB page size */
++#define	MMUDR_SZ_1KB	0x00000300		/* 1kB page size */
++#define	MMUDR_PAN	10			/* Physical address */
++#define	MMUDR_PAMASK	0xfffffc00		/* PA mask */
++
++#ifndef __ASSEMBLY__
++
++/*
++ *	Simple access functions for the MMU registers. Nothing fancy
++ *	currently required, just simple 32bit access.
++ */
++static inline u32 mmu_read(u32 a)
++{
++	return *((volatile u32 *) a);
++}
++
++static inline void mmu_write(u32 a, u32 v)
++{
++	*((volatile u32 *) a) = v;
++	__asm__ __volatile__ ("nop");
++}
++
++#endif
++
++#endif	/* MCFMMU_H */
 -- 
 1.7.0.4
