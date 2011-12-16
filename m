@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 27/35] m68k: use non-MMU entry.S code when compiling for ColdFire CPU
-Date: Fri, 16 Dec 2011 22:36:24 +1000
-Message-ID: <1324038992-31222-28-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 25/35] m68k: compile appropriate mm arch files for ColdFire MMU support
+Date: Fri, 16 Dec 2011 22:36:22 +1000
+Message-ID: <1324038992-31222-26-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49422 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49418 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759369Ab1LPMhH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:37:07 -0500
+	with ESMTP id S1759367Ab1LPMhE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:37:04 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,26 +18,51 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-No matter whether we are configured for non-MMU or MMU enabled if we are
-compiling for ColdFire CPU we always use the entry_no.S code.
+Create a config symbol to enable when using a ColdFire MMU. We then
+use that to only compile the necessary arch mm files.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/kernel/entry.S |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/m68k/Kconfig     |    5 ++++-
+ arch/m68k/mm/Makefile |    8 +++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 081cf96..b8daf64 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -1,4 +1,4 @@
--#ifdef CONFIG_MMU
-+#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
- #include "entry_mm.S"
- #else
- #include "entry_no.S"
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 5f860cf..330eb88 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -88,9 +88,12 @@ config MMU
+ config MMU_MOTOROLA
+ 	bool
+ 
++config MMU_COLDFIRE
++	bool
++
+ config MMU_SUN3
+ 	bool
+-	depends on MMU && !MMU_MOTOROLA
++	depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
+ 
+ menu "Platform setup"
+ 
+diff --git a/arch/m68k/mm/Makefile b/arch/m68k/mm/Makefile
+index 09cadf1..cfbf320 100644
+--- a/arch/m68k/mm/Makefile
++++ b/arch/m68k/mm/Makefile
+@@ -4,6 +4,8 @@
+ 
+ obj-y	:= init.o
+ 
+-obj-$(CONFIG_MMU)		+= cache.o fault.o hwtest.o
+-obj-$(CONFIG_MMU_MOTOROLA)	+= kmap.o memory.o motorola.o
+-obj-$(CONFIG_MMU_SUN3)		+= sun3kmap.o sun3mmu.o
++obj-$(CONFIG_MMU)		+= cache.o fault.o
++obj-$(CONFIG_MMU_MOTOROLA)	+= kmap.o memory.o motorola.o hwtest.o
++obj-$(CONFIG_MMU_SUN3)		+= sun3kmap.o sun3mmu.o hwtest.o
++obj-$(CONFIG_MMU_COLDFIRE)	+= kmap.o memory.o mcfmmu.o
++
 -- 
 1.7.0.4
