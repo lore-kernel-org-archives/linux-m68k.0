@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 19/35] m68k: MMU enabled ColdFire needs 8k ELF alignment
-Date: Fri, 16 Dec 2011 22:36:16 +1000
-Message-ID: <1324038992-31222-20-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 16/35] m68k: add TLB flush support for the ColdFire V4e MMU hardware
+Date: Fri, 16 Dec 2011 22:36:13 +1000
+Message-ID: <1324038992-31222-17-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49396 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49395 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756946Ab1LPMg5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:57 -0500
+	with ESMTP id S1756594Ab1LPMgz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:55 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,35 +18,82 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Like the SUN3 hardware MMU the ColdFire MMU uses 8k pages. So we want
-our ELF page size alingment to also be 8k. Modify the ELF alignment
-setting.
+The ColdFire V4e MMU is unlike any of the other m68k MMU hardware.
+It needs its own TLB flush support code.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/elf.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ arch/m68k/include/asm/tlbflush.h |   23 +++++++++++++++++------
+ 1 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/include/asm/elf.h b/arch/m68k/include/asm/elf.h
-index 01c193d..e9b7cda 100644
---- a/arch/m68k/include/asm/elf.h
-+++ b/arch/m68k/include/asm/elf.h
-@@ -59,10 +59,10 @@ typedef struct user_m68kfp_struct elf_fpregset_t;
-    is actually used on ASV.  */
- #define ELF_PLAT_INIT(_r, load_addr)	_r->a1 = 0
+diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
+index a6b4ed4..965ea35 100644
+--- a/arch/m68k/include/asm/tlbflush.h
++++ b/arch/m68k/include/asm/tlbflush.h
+@@ -5,10 +5,13 @@
+ #ifndef CONFIG_SUN3
  
--#ifndef CONFIG_SUN3
--#define ELF_EXEC_PAGESIZE	4096
--#else
-+#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
- #define ELF_EXEC_PAGESIZE	8192
-+#else
-+#define ELF_EXEC_PAGESIZE	4096
- #endif
+ #include <asm/current.h>
++#include <asm/mcfmmu.h>
  
- /* This is the location that an ET_DYN program is loaded if exec'ed.  Typical
+ static inline void flush_tlb_kernel_page(void *addr)
+ {
+-	if (CPU_IS_040_OR_060) {
++	if (CPU_IS_COLDFIRE) {
++		mmu_write(MMUOR, MMUOR_CNL);
++	} else if (CPU_IS_040_OR_060) {
+ 		mm_segment_t old_fs = get_fs();
+ 		set_fs(KERNEL_DS);
+ 		__asm__ __volatile__(".chip 68040\n\t"
+@@ -25,12 +28,15 @@ static inline void flush_tlb_kernel_page(void *addr)
+  */
+ static inline void __flush_tlb(void)
+ {
+-	if (CPU_IS_040_OR_060)
++	if (CPU_IS_COLDFIRE) {
++		mmu_write(MMUOR, MMUOR_CNL);
++	} else if (CPU_IS_040_OR_060) {
+ 		__asm__ __volatile__(".chip 68040\n\t"
+ 				     "pflushan\n\t"
+ 				     ".chip 68k");
+-	else if (CPU_IS_020_OR_030)
++	} else if (CPU_IS_020_OR_030) {
+ 		__asm__ __volatile__("pflush #0,#4");
++	}
+ }
+ 
+ static inline void __flush_tlb040_one(unsigned long addr)
+@@ -43,7 +49,9 @@ static inline void __flush_tlb040_one(unsigned long addr)
+ 
+ static inline void __flush_tlb_one(unsigned long addr)
+ {
+-	if (CPU_IS_040_OR_060)
++	if (CPU_IS_COLDFIRE)
++		mmu_write(MMUOR, MMUOR_CNL);
++	else if (CPU_IS_040_OR_060)
+ 		__flush_tlb040_one(addr);
+ 	else if (CPU_IS_020_OR_030)
+ 		__asm__ __volatile__("pflush #0,#4,(%0)" : : "a" (addr));
+@@ -56,12 +64,15 @@ static inline void __flush_tlb_one(unsigned long addr)
+  */
+ static inline void flush_tlb_all(void)
+ {
+-	if (CPU_IS_040_OR_060)
++	if (CPU_IS_COLDFIRE) {
++		mmu_write(MMUOR, MMUOR_CNL);
++	} else if (CPU_IS_040_OR_060) {
+ 		__asm__ __volatile__(".chip 68040\n\t"
+ 				     "pflusha\n\t"
+ 				     ".chip 68k");
+-	else if (CPU_IS_020_OR_030)
++	} else if (CPU_IS_020_OR_030) {
+ 		__asm__ __volatile__("pflusha");
++	}
+ }
+ 
+ static inline void flush_tlb_mm(struct mm_struct *mm)
 -- 
 1.7.0.4
