@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 25/35] m68k: compile appropriate mm arch files for ColdFire MMU support
-Date: Fri, 16 Dec 2011 22:36:22 +1000
-Message-ID: <1324038992-31222-26-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 22/35] m68k: modify cache push and clear code for ColdFire with MMU enable
+Date: Fri, 16 Dec 2011 22:36:19 +1000
+Message-ID: <1324038992-31222-23-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49418 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49406 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759367Ab1LPMhE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:37:04 -0500
+	with ESMTP id S1756946Ab1LPMhA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:37:00 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,51 +18,42 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Create a config symbol to enable when using a ColdFire MMU. We then
-use that to only compile the necessary arch mm files.
+The cache push and clear code only need to flush the branch cache on
+the write-through cache setup of the ColdFire V4e with MMU enabled.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/Kconfig     |    5 ++++-
- arch/m68k/mm/Makefile |    8 +++++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ arch/m68k/mm/memory.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 5f860cf..330eb88 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -88,9 +88,12 @@ config MMU
- config MMU_MOTOROLA
- 	bool
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
+index 34c77ce..a5dbb74 100644
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -203,7 +203,9 @@ static inline void pushcl040(unsigned long paddr)
  
-+config MMU_COLDFIRE
-+	bool
-+
- config MMU_SUN3
- 	bool
--	depends on MMU && !MMU_MOTOROLA
-+	depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
+ void cache_clear (unsigned long paddr, int len)
+ {
+-    if (CPU_IS_040_OR_060) {
++    if (CPU_IS_COLDFIRE) {
++	flush_cf_bcache(0, DCACHE_MAX_ADDR);
++    } else if (CPU_IS_040_OR_060) {
+ 	int tmp;
  
- menu "Platform setup"
+ 	/*
+@@ -250,7 +252,9 @@ EXPORT_SYMBOL(cache_clear);
  
-diff --git a/arch/m68k/mm/Makefile b/arch/m68k/mm/Makefile
-index 09cadf1..cfbf320 100644
---- a/arch/m68k/mm/Makefile
-+++ b/arch/m68k/mm/Makefile
-@@ -4,6 +4,8 @@
+ void cache_push (unsigned long paddr, int len)
+ {
+-    if (CPU_IS_040_OR_060) {
++    if (CPU_IS_COLDFIRE) {
++	flush_cf_bcache(0, DCACHE_MAX_ADDR);
++    } else if (CPU_IS_040_OR_060) {
+ 	int tmp = PAGE_SIZE;
  
- obj-y	:= init.o
- 
--obj-$(CONFIG_MMU)		+= cache.o fault.o hwtest.o
--obj-$(CONFIG_MMU_MOTOROLA)	+= kmap.o memory.o motorola.o
--obj-$(CONFIG_MMU_SUN3)		+= sun3kmap.o sun3mmu.o
-+obj-$(CONFIG_MMU)		+= cache.o fault.o
-+obj-$(CONFIG_MMU_MOTOROLA)	+= kmap.o memory.o motorola.o hwtest.o
-+obj-$(CONFIG_MMU_SUN3)		+= sun3kmap.o sun3mmu.o hwtest.o
-+obj-$(CONFIG_MMU_COLDFIRE)	+= kmap.o memory.o mcfmmu.o
-+
+ 	/*
 -- 
 1.7.0.4
