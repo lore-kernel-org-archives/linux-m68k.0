@@ -1,46 +1,78 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 34/35] m68k: add ColdFire with MMU enabled support to the m68k mem init code
-Date: Fri, 16 Dec 2011 22:36:31 +1000
-Message-ID: <1324038992-31222-35-git-send-email-gerg@snapgear.com>
-References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
+From: Thorsten Glaser <tg@debian.org>
+Subject: aufs vs. m68k conflict, please advice
+Date: Fri, 16 Dec 2011 14:42:03 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1112161437090.856@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49444 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759098Ab1LPMhQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:37:16 -0500
-In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:35428 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754119Ab1LPOmd convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 09:42:33 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: linux-m68k@vger.kernel.org, Debian Kernel Team <debian-kernel@lists.debian.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
+Hi,
 
-The ColdFire has similar setup requirements to the SUN3 code, so we
-use that.
+a build of linux-2.6 (3.2~rc4-1~experimental.1) with gcc-4.6 (to
+check whether we can switch to it for the kernel, too) fails:
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Matt Waddel <mwaddel@yahoo.com>
-Acked-by: Kurt Mahan <kmahan@xmission.com>
----
- arch/m68k/mm/init_mm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+[=E2=80=A6]
+  LD [M]  fs/affs/affs.o
+  LD      fs/aufs/built-in.o
+  CC [M]  fs/aufs/module.o
+In file included from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/hardirq.h:7:0,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/arch/m68k/include/asm/irqflags.h:6,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/irqflags.h:15,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/spinlock.h:53,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/seqlock.h:29,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/time.h:8,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/stat.h:60,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/include/linux/module.h:10,
+                 from /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source=
+_m68k_none/fs/aufs/module.c:23:
+/tmp/buildd/linux-2.6-3.2~rc4/debian/build/source_m68k_none/arch/m68k/i=
+nclude/asm/hardirq.h: In function 'ack_bad_irq':
+/tmp/buildd/linux-2.6-3.2~rc4/debian/build/source_m68k_none/arch/m68k/i=
+nclude/asm/hardirq.h:23:2: error: expected ')' before 'AUFS_NAME'
+make[7]: *** [fs/aufs/module.o] Error 1
+[=E2=80=A6]
 
-diff --git a/arch/m68k/mm/init_mm.c b/arch/m68k/mm/init_mm.c
-index 85c5f0e..89f3b20 100644
---- a/arch/m68k/mm/init_mm.c
-+++ b/arch/m68k/mm/init_mm.c
-@@ -139,7 +139,7 @@ void __init mem_init(void)
- 		}
- 	}
- 
--#ifndef CONFIG_SUN3
-+#if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	/* insert pointer tables allocated so far into the tablelist */
- 	init_pointer_table((unsigned long)kernel_pg_dir);
- 	for (i = 0; i < PTRS_PER_PGD; i++) {
--- 
-1.7.0.4
+The cause isn=E2=80=99t hard to figure out:
+
+    I /tmp/buildd/linux-2.6-3.2~rc4/debian/build/source_m68k_none/arch/=
+m68k R21  <40   C1  384 |180 115|73 14:39
+   21 static inline void ack_bad_irq(unsigned int irq)
+   22 {
+   23         pr_crit("unexpected IRQ trap at vector %02x\n", irq);
+   24 }
+
+(pbuild26252)root@ara5:/ # fgrep AUFS_NAME /tmp/buildd/linux-2.6-3.2~rc=
+4/debian/build/source_m68k_none/fs/aufs/*
+/tmp/buildd/linux-2.6-3.2~rc4/debian/build/source_m68k_none/fs/aufs/Mak=
+efile:ccflags-y +=3D -D'pr_fmt(fmt)=3DAUFS_NAME"\040%s:%d:%s[%d]:\040"f=
+mt,__func__,__LINE__,current->comm,current->pid'
+
+This, to me, looks like cpp abuse in aufs, but I=E2=80=99m not a kernel
+programmer (Linux or otherwise).
+
+bye,
+//mirabilos
+--=20
+Support mksh as /bin/sh and RoQA dash NOW!
+=E2=80=A3 src:bash (240 (258) bugs: 0 RC, 167 (181) I&N, 73 (77) M&W, 0=
+ F&P)
+=E2=80=A3 src:dash (72 (82) bugs: 3 RC, 27 (30) I&N, 42 (49) M&W, 0 F&P=
+)
+=E2=80=A3 src:mksh (1 bug: 0 RC, 0 I&N, 1 M&W, 0 F&P)
+http://qa.debian.org/data/bts/graphs/d/dash.png is pretty red, innit?
