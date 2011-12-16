@@ -1,124 +1,126 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 07/35] m68k: use addr_limit checking for m68k CPUs that do no support address spaces
-Date: Fri, 16 Dec 2011 22:36:04 +1000
-Message-ID: <1324038992-31222-8-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 10/35] m68k: set register a2 to current if MMU enabled on ColdFire
+Date: Fri, 16 Dec 2011 22:36:07 +1000
+Message-ID: <1324038992-31222-11-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49361 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49367 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759110Ab1LPMgl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:41 -0500
+	with ESMTP id S1759110Ab1LPMgp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:45 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>, Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire CPU family, and the original 68000, do not support separate
-address spaces like the other 680x0 CPU types. Modify the set_fs()/get_fs()
-functions and macros to use a thread_info addr_limit for address space
-checking. This is pretty much what all other architectures that do not
-support separate setable address spaces do.
+Virtual memory m68k systems build with register a2 dedicated to being the
+current proc pointer (non-MMU don't do this). Add code to the ColdFire
+interrupt and exception processing to set this on entry, and at context
+switch time. We use the same GET_CURRENT() macro that MMU enabled code
+uses - modifying it so that the assembler is ColdFire clean.
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/segment.h     |   30 ++++++++++++++++--------------
- arch/m68k/include/asm/thread_info.h |    3 +++
- 2 files changed, 19 insertions(+), 14 deletions(-)
+ arch/m68k/include/asm/entry.h       |   10 +++++++++-
+ arch/m68k/kernel/entry_no.S         |    3 +++
+ arch/m68k/platform/coldfire/entry.S |    6 +++++-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/include/asm/segment.h b/arch/m68k/include/asm/segment.h
-index 1a142e9..0fa80e9 100644
---- a/arch/m68k/include/asm/segment.h
-+++ b/arch/m68k/include/asm/segment.h
-@@ -22,23 +22,26 @@ typedef struct {
- } mm_segment_t;
- 
- #define MAKE_MM_SEG(s)	((mm_segment_t) { (s) })
--#define USER_DS		MAKE_MM_SEG(__USER_DS)
--#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
- 
-+#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
- /*
-  * Get/set the SFC/DFC registers for MOVES instructions
+diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
+index c3c5a86..622138d 100644
+--- a/arch/m68k/include/asm/entry.h
++++ b/arch/m68k/include/asm/entry.h
+@@ -222,16 +222,24 @@
+  * Non-MMU systems do not reserve %a2 in this way, and this definition is
+  * not used for them.
   */
-+#define USER_DS		MAKE_MM_SEG(__USER_DS)
-+#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
- 
- static inline mm_segment_t get_fs(void)
- {
--#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
- 	mm_segment_t _v;
- 	__asm__ ("movec %/dfc,%0":"=r" (_v.seg):);
--
- 	return _v;
--#else
--	return USER_DS;
--#endif
-+}
++#ifdef CONFIG_MMU
 +
-+static inline void set_fs(mm_segment_t val)
-+{
-+	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
-+			      "movec %0,%/dfc\n\t"
-+			      : /* no outputs */ : "r" (val.seg) : "memory");
- }
+ #define curptr a2
  
- static inline mm_segment_t get_ds(void)
-@@ -47,14 +50,13 @@ static inline mm_segment_t get_ds(void)
-     return KERNEL_DS;
- }
+ #define GET_CURRENT(tmp) get_current tmp
+ .macro get_current reg=%d0
+ 	movel	%sp,\reg
+-	andw	#-THREAD_SIZE,\reg
++	andl	#-THREAD_SIZE,\reg
+ 	movel	\reg,%curptr
+ 	movel	%curptr@,%curptr
+ .endm
  
--static inline void set_fs(mm_segment_t val)
--{
--#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
--	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
--			      "movec %0,%/dfc\n\t"
--			      : /* no outputs */ : "r" (val.seg) : "memory");
 +#else
-+#define USER_DS		MAKE_MM_SEG(TASK_SIZE)
-+#define KERNEL_DS	MAKE_MM_SEG(0xFFFFFFFF)
-+#define get_ds()	(KERNEL_DS)
-+#define get_fs()	(current_thread_info()->addr_limit)
-+#define set_fs(x)	(current_thread_info()->addr_limit = (x))
- #endif
--}
++
++#define GET_CURRENT(tmp)
++
++#endif /* CONFIG_MMU */
++
+ #else /* C source */
  
- #define segment_eq(a,b)	((a).seg == (b).seg)
+ #define STR(X) STR1(X)
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index ac86a9f..d80cba4 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -44,6 +44,7 @@
  
-diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-index 01cef3c..29fa6da 100644
---- a/arch/m68k/include/asm/thread_info.h
-+++ b/arch/m68k/include/asm/thread_info.h
-@@ -3,6 +3,7 @@
+ ENTRY(buserr)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	buserr_c
+ 	addql	#4,%sp
+@@ -51,6 +52,7 @@ ENTRY(buserr)
  
- #include <asm/types.h>
- #include <asm/page.h>
-+#include <asm/segment.h>
+ ENTRY(trap)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	trap_c
+ 	addql	#4,%sp
+@@ -61,6 +63,7 @@ ENTRY(trap)
+ .globl dbginterrupt
+ ENTRY(dbginterrupt)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	dbginterrupt_c
+ 	addql	#4,%sp
+diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+index f567a16..863889f 100644
+--- a/arch/m68k/platform/coldfire/entry.S
++++ b/arch/m68k/platform/coldfire/entry.S
+@@ -62,6 +62,7 @@ enosys:
+ ENTRY(system_call)
+ 	SAVE_ALL_SYS
+ 	move	#0x2000,%sr		/* enable intrs again */
++	GET_CURRENT(%d2)
  
- /*
-  * On machines with 4k pages we default to an 8k thread size, though we
-@@ -26,6 +27,7 @@ struct thread_info {
- 	struct task_struct	*task;		/* main task structure */
- 	unsigned long		flags;
- 	struct exec_domain	*exec_domain;	/* execution domain */
-+	mm_segment_t		addr_limit;	/* thread address space */
- 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
- 	__u32			cpu;		/* should always be 0 on m68k */
- 	unsigned long		tp_value;	/* thread pointer */
-@@ -39,6 +41,7 @@ struct thread_info {
- {						\
- 	.task		= &tsk,			\
- 	.exec_domain	= &default_exec_domain,	\
-+	.addr_limit	= KERNEL_DS,		\
- 	.preempt_count	= INIT_PREEMPT_COUNT,	\
- 	.restart_block = {			\
- 		.fn = do_no_restart_syscall,	\
+ 	cmpl	#NR_syscalls,%d0
+ 	jcc	enosys
+@@ -165,6 +166,7 @@ Lsignal_return:
+  */
+ ENTRY(inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d2)
+ 
+ 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
+ 	andl	#0x03fc,%d0		/* mask out vector only */
+@@ -190,7 +192,9 @@ ENTRY(resume)
+ 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack pointer */
+ 	RDUSP					 /* movel %usp,%a3 */
+ 	movel	%a3,%a0@(TASK_THREAD+THREAD_USP) /* save thread user stack */
+-
++#ifdef CONFIG_MMU
++	movel	%a1,%a2				 /* set new current */
++#endif
+ 	movel	%a1@(TASK_THREAD+THREAD_USP),%a3 /* restore thread user stack */
+ 	WRUSP					 /* movel %a3,%usp */
+ 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new kernel stack */
 -- 
 1.7.0.4
