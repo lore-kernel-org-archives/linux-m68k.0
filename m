@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 15/35] m68k: modify ColdFire 54xx cache support for MMU enabled
-Date: Fri, 16 Dec 2011 22:36:12 +1000
-Message-ID: <1324038992-31222-16-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 11/35] m68k: page table support definitions and code for ColdFire MMU
+Date: Fri, 16 Dec 2011 22:36:08 +1000
+Message-ID: <1324038992-31222-12-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49377 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49390 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759271Ab1LPMgv (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:51 -0500
+	with ESMTP id S1759252Ab1LPMgx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:53 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,91 +18,452 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Modify the cache setup for the ColdFire 54xx parts when running with
-the MMU enabled.
+The ColdFire V4e MMU is nothing like any of the other m68k MMU's.
+So we need to create a set of definitions and support routines
+for the kernels paging functions.
 
-We want to map the peripheral register space (MBAR region) as non
-cacheable. And create an identity mapping for all of RAM for the
-kernel.
+This is largely taken from Freescales BSP code for this (though it
+was a 2.6.25 kernel). I have cleaned it up alot from the original.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/m54xxacr.h |   32 +++++++++++++++++++++++++++++++-
- 1 files changed, 31 insertions(+), 1 deletions(-)
+ arch/m68k/include/asm/mcf_pgtable.h |  425 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 425 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/include/asm/mcf_pgtable.h
 
-diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
-index 16a1835..47906aa 100644
---- a/arch/m68k/include/asm/m54xxacr.h
-+++ b/arch/m68k/include/asm/m54xxacr.h
-@@ -39,8 +39,12 @@
- #define ACR_CM_OFF_PRE	0x00000040	/* No cache, precise */
- #define ACR_CM_OFF_IMP	0x00000060	/* No cache, imprecise */
- #define ACR_CM		0x00000060	/* Cache mode mask */
-+#define ACR_SP		0x00000008	/* Supervisor protect */
- #define ACR_WPROTECT	0x00000004	/* Write protect */
- 
-+#define ACR_BA(x)	((x) & 0xff000000)
-+#define ACR_ADMSK(x)	((((x) - 1) & 0xff000000) >> 8)
+diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+new file mode 100644
+index 0000000..756bde4
+--- /dev/null
++++ b/arch/m68k/include/asm/mcf_pgtable.h
+@@ -0,0 +1,425 @@
++#ifndef _MCF_PGTABLE_H
++#define _MCF_PGTABLE_H
 +
- #if defined(CONFIG_M5407)
- 
- #define ICACHE_SIZE 0x4000	/* instruction - 16k */
-@@ -56,6 +60,11 @@
- #define CACHE_LINE_SIZE 0x0010	/* 16 bytes */
- #define CACHE_WAYS 4		/* 4 ways */
- 
-+#define ICACHE_SET_MASK	((ICACHE_SIZE / 64 - 1) << CACHE_WAYS)
-+#define DCACHE_SET_MASK	((DCACHE_SIZE / 64 - 1) << CACHE_WAYS)
-+#define ICACHE_MAX_ADDR	ICACHE_SET_MASK
-+#define DCACHE_MAX_ADDR	DCACHE_SET_MASK
-+
- /*
-  *	Version 4 cores have a true harvard style separate instruction
-  *	and data cache. Enable data and instruction caches, also enable write
-@@ -73,6 +82,27 @@
- #else
- #define CACHE_MODE (CACR_DEC+CACR_DESB+CACR_DDCM_P+CACR_BEC+CACR_IEC+CACR_EUSP)
- #endif
-+#define CACHE_INIT (CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
-+
-+#if defined(CONFIG_MMU)
-+/*
-+ *	If running with the MMU enabled then we need to map the internal
-+ *	register region as non-cacheable. And then we map all our RAM as
-+ *	cacheable and supervisor access only.
-+ */
-+#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
-+#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-+#define ACR2_MODE	0
-+#define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-+
-+#else
++#include <asm/mcfmmu.h>
++#include <asm/page.h>
 +
 +/*
-+ *	For the non-MMU enabled case we map all of RAM as cacheable.
++ * MMUDR bits, in proper place. We write these directly into the MMUDR
++ * after masking from the pte.
 + */
- #if defined(CONFIG_CACHE_COPYBACK)
- #define DATA_CACHE_MODE (ACR_ENABLE+ACR_ANY+ACR_CM_CP)
- #else
-@@ -80,7 +110,6 @@
- #endif
- #define INSN_CACHE_MODE (ACR_ENABLE+ACR_ANY)
- 
--#define CACHE_INIT	(CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATE  (CACHE_MODE+CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATEI (CACHE_MODE+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATED (CACHE_MODE+CACR_DCINVA)
-@@ -94,4 +123,5 @@
- #define	CACHE_PUSH
- #endif
- 
-+#endif /* CONFIG_MMU */
- #endif	/* m54xxacr_h */
++#define CF_PAGE_LOCKED		MMUDR_LK	/* 0x00000002 */
++#define CF_PAGE_EXEC		MMUDR_X		/* 0x00000004 */
++#define CF_PAGE_WRITABLE	MMUDR_W		/* 0x00000008 */
++#define CF_PAGE_READABLE	MMUDR_R		/* 0x00000010 */
++#define CF_PAGE_SYSTEM		MMUDR_SP	/* 0x00000020 */
++#define CF_PAGE_COPYBACK	MMUDR_CM_CCB	/* 0x00000040 */
++#define CF_PAGE_NOCACHE		MMUDR_CM_NCP	/* 0x00000080 */
++
++#define CF_CACHEMASK		(~MMUDR_CM_CCB)
++#define CF_PAGE_MMUDR_MASK	0x000000fe
++
++#define _PAGE_NOCACHE030	CF_PAGE_NOCACHE
++
++/*
++ * MMUTR bits, need shifting down.
++ */
++#define CF_PAGE_MMUTR_MASK	0x00000c00
++#define CF_PAGE_MMUTR_SHIFT	10
++
++#define CF_PAGE_VALID		(MMUTR_V << CF_PAGE_MMUTR_SHIFT)
++#define CF_PAGE_SHARED		(MMUTR_SG << CF_PAGE_MMUTR_SHIFT)
++
++/*
++ * Fake bits, not implemented in CF, will get masked out before
++ * hitting hardware.
++ */
++#define CF_PAGE_DIRTY		0x00000001
++#define CF_PAGE_FILE		0x00000200
++#define CF_PAGE_ACCESSED	0x00001000
++
++#define _PAGE_CACHE040		0x020   /* 68040 cache mode, cachable, copyback */
++#define _PAGE_NOCACHE_S		0x040   /* 68040 no-cache mode, serialized */
++#define _PAGE_NOCACHE		0x060   /* 68040 cache mode, non-serialized */
++#define _PAGE_CACHE040W		0x000   /* 68040 cache mode, cachable, write-through */
++#define _DESCTYPE_MASK		0x003
++#define _CACHEMASK040		(~0x060)
++#define _PAGE_GLOBAL040		0x400   /* 68040 global bit, used for kva descs */
++
++/*
++ * Externally used page protection values.
++ */
++#define _PAGE_PRESENT	(CF_PAGE_VALID)
++#define _PAGE_ACCESSED	(CF_PAGE_ACCESSED)
++#define _PAGE_DIRTY	(CF_PAGE_DIRTY)
++#define _PAGE_READWRITE (CF_PAGE_READABLE \
++				| CF_PAGE_WRITABLE \
++				| CF_PAGE_SYSTEM \
++				| CF_PAGE_SHARED)
++
++/*
++ * Compound page protection values.
++ */
++#define PAGE_NONE	__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED)
++
++#define PAGE_SHARED     __pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_SHARED)
++
++#define PAGE_INIT	__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_WRITABLE \
++				 | CF_PAGE_EXEC \
++				 | CF_PAGE_SYSTEM)
++
++#define PAGE_KERNEL	__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_WRITABLE \
++				 | CF_PAGE_EXEC \
++				 | CF_PAGE_SYSTEM)
++
++#define PAGE_COPY	__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_DIRTY)
++
++/*
++ * Page protections for initialising protection_map. See mm/mmap.c
++ * for use. In general, the bit positions are xwr, and P-items are
++ * private, the S-items are shared.
++ */
++#define __P000		PAGE_NONE
++#define __P001		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE)
++#define __P010		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_WRITABLE)
++#define __P011		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_WRITABLE)
++#define __P100		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_EXEC)
++#define __P101		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_EXEC)
++#define __P110		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_WRITABLE \
++				 | CF_PAGE_EXEC)
++#define __P111		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_WRITABLE \
++				 | CF_PAGE_EXEC)
++
++#define __S000		PAGE_NONE
++#define __S001		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE)
++#define __S010		PAGE_SHARED
++#define __S011		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_SHARED \
++				 | CF_PAGE_READABLE)
++#define __S100		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_EXEC)
++#define __S101		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_EXEC)
++#define __S110		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_SHARED \
++				 | CF_PAGE_EXEC)
++#define __S111		__pgprot(CF_PAGE_VALID \
++				 | CF_PAGE_ACCESSED \
++				 | CF_PAGE_SHARED \
++				 | CF_PAGE_READABLE \
++				 | CF_PAGE_EXEC)
++
++#define PTE_MASK	PAGE_MASK
++#define CF_PAGE_CHG_MASK (PTE_MASK | CF_PAGE_ACCESSED | CF_PAGE_DIRTY)
++
++#ifndef __ASSEMBLY__
++
++/*
++ * Conversion functions: convert a page and protection to a page entry,
++ * and a page entry and page directory to the page they refer to.
++ */
++#define mk_pte(page, pgprot) pfn_pte(page_to_pfn(page), (pgprot))
++
++static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
++{
++	pte_val(pte) = (pte_val(pte) & CF_PAGE_CHG_MASK) | pgprot_val(newprot);
++	return pte;
++}
++
++#define pmd_set(pmdp, ptep) do {} while (0)
++
++static inline void pgd_set(pgd_t *pgdp, pmd_t *pmdp)
++{
++	pgd_val(*pgdp) = virt_to_phys(pmdp);
++}
++
++#define __pte_page(pte)	((unsigned long) (pte_val(pte) & PAGE_MASK))
++#define __pmd_page(pmd)	((unsigned long) (pmd_val(pmd)))
++
++static inline int pte_none(pte_t pte)
++{
++	return !pte_val(pte);
++}
++
++static inline int pte_present(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_VALID;
++}
++
++static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
++	pte_t *ptep)
++{
++	pte_val(*ptep) = 0;
++}
++
++#define pte_pagenr(pte)	((__pte_page(pte) - PAGE_OFFSET) >> PAGE_SHIFT)
++#define pte_page(pte)	virt_to_page(__pte_page(pte))
++
++static inline int pmd_none2(pmd_t *pmd) { return !pmd_val(*pmd); }
++#define pmd_none(pmd) pmd_none2(&(pmd))
++static inline int pmd_bad2(pmd_t *pmd) { return 0; }
++#define pmd_bad(pmd) pmd_bad2(&(pmd))
++#define pmd_present(pmd) (!pmd_none2(&(pmd)))
++static inline void pmd_clear(pmd_t *pmdp) { pmd_val(*pmdp) = 0; }
++
++static inline int pgd_none(pgd_t pgd) { return 0; }
++static inline int pgd_bad(pgd_t pgd) { return 0; }
++static inline int pgd_present(pgd_t pgd) { return 1; }
++static inline void pgd_clear(pgd_t *pgdp) {}
++
++#define pte_ERROR(e) \
++	printk(KERN_ERR "%s:%d: bad pte %08lx.\n",	\
++	__FILE__, __LINE__, pte_val(e))
++#define pmd_ERROR(e) \
++	printk(KERN_ERR "%s:%d: bad pmd %08lx.\n",	\
++	__FILE__, __LINE__, pmd_val(e))
++#define pgd_ERROR(e) \
++	printk(KERN_ERR "%s:%d: bad pgd %08lx.\n",	\
++	__FILE__, __LINE__, pgd_val(e))
++
++/*
++ * The following only work if pte_present() is true.
++ * Undefined behaviour if not...
++ * [we have the full set here even if they don't change from m68k]
++ */
++static inline int pte_read(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_READABLE;
++}
++
++static inline int pte_write(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_WRITABLE;
++}
++
++static inline int pte_exec(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_EXEC;
++}
++
++static inline int pte_dirty(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_DIRTY;
++}
++
++static inline int pte_young(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_ACCESSED;
++}
++
++static inline int pte_file(pte_t pte)
++{
++	return pte_val(pte) & CF_PAGE_FILE;
++}
++
++static inline int pte_special(pte_t pte)
++{
++	return 0;
++}
++
++static inline pte_t pte_wrprotect(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_WRITABLE;
++	return pte;
++}
++
++static inline pte_t pte_rdprotect(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_READABLE;
++	return pte;
++}
++
++static inline pte_t pte_exprotect(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_EXEC;
++	return pte;
++}
++
++static inline pte_t pte_mkclean(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_DIRTY;
++	return pte;
++}
++
++static inline pte_t pte_mkold(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_ACCESSED;
++	return pte;
++}
++
++static inline pte_t pte_mkwrite(pte_t pte)
++{
++	pte_val(pte) |= CF_PAGE_WRITABLE;
++	return pte;
++}
++
++static inline pte_t pte_mkread(pte_t pte)
++{
++	pte_val(pte) |= CF_PAGE_READABLE;
++	return pte;
++}
++
++static inline pte_t pte_mkexec(pte_t pte)
++{
++	pte_val(pte) |= CF_PAGE_EXEC;
++	return pte;
++}
++
++static inline pte_t pte_mkdirty(pte_t pte)
++{
++	pte_val(pte) |= CF_PAGE_DIRTY;
++	return pte;
++}
++
++static inline pte_t pte_mkyoung(pte_t pte)
++{
++	pte_val(pte) |= CF_PAGE_ACCESSED;
++	return pte;
++}
++
++static inline pte_t pte_mknocache(pte_t pte)
++{
++	pte_val(pte) |= 0x80 | (pte_val(pte) & ~0x40);
++	return pte;
++}
++
++static inline pte_t pte_mkcache(pte_t pte)
++{
++	pte_val(pte) &= ~CF_PAGE_NOCACHE;
++	return pte;
++}
++
++static inline pte_t pte_mkspecial(pte_t pte)
++{
++	return pte;
++}
++
++#define swapper_pg_dir kernel_pg_dir
++extern pgd_t kernel_pg_dir[PTRS_PER_PGD];
++
++/*
++ * Find an entry in a pagetable directory.
++ */
++#define pgd_index(address)	((address) >> PGDIR_SHIFT)
++#define pgd_offset(mm, address)	((mm)->pgd + pgd_index(address))
++
++/*
++ * Find an entry in a kernel pagetable directory.
++ */
++#define pgd_offset_k(address)	pgd_offset(&init_mm, address)
++
++/*
++ * Find an entry in the second-level pagetable.
++ */
++static inline pmd_t *pmd_offset(pgd_t *pgd, unsigned long address)
++{
++	return (pmd_t *) pgd;
++}
++
++/*
++ * Find an entry in the third-level pagetable.
++ */
++#define __pte_offset(address)	((address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
++#define pte_offset_kernel(dir, address) \
++	((pte_t *) __pmd_page(*(dir)) + __pte_offset(address))
++
++/*
++ * Disable caching for page at given kernel virtual address.
++ */
++static inline void nocache_page(void *vaddr)
++{
++	pgd_t *dir;
++	pmd_t *pmdp;
++	pte_t *ptep;
++	unsigned long addr = (unsigned long) vaddr;
++
++	dir = pgd_offset_k(addr);
++	pmdp = pmd_offset(dir, addr);
++	ptep = pte_offset_kernel(pmdp, addr);
++	*ptep = pte_mknocache(*ptep);
++}
++
++/*
++ * Enable caching for page at given kernel virtual address.
++ */
++static inline void cache_page(void *vaddr)
++{
++	pgd_t *dir;
++	pmd_t *pmdp;
++	pte_t *ptep;
++	unsigned long addr = (unsigned long) vaddr;
++
++	dir = pgd_offset_k(addr);
++	pmdp = pmd_offset(dir, addr);
++	ptep = pte_offset_kernel(pmdp, addr);
++	*ptep = pte_mkcache(*ptep);
++}
++
++#define PTE_FILE_MAX_BITS	21
++#define PTE_FILE_SHIFT		11
++
++static inline unsigned long pte_to_pgoff(pte_t pte)
++{
++	return pte_val(pte) >> PTE_FILE_SHIFT;
++}
++
++static inline pte_t pgoff_to_pte(unsigned pgoff)
++{
++	return __pte((pgoff << PTE_FILE_SHIFT) + CF_PAGE_FILE);
++}
++
++/*
++ * Encode and de-code a swap entry (must be !pte_none(e) && !pte_present(e))
++ */
++#define __swp_type(x)		((x).val & 0xFF)
++#define __swp_offset(x)		((x).val >> PTE_FILE_SHIFT)
++#define __swp_entry(typ, off)	((swp_entry_t) { (typ) | \
++					(off << PTE_FILE_SHIFT) })
++#define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
++#define __swp_entry_to_pte(x)	(__pte((x).val))
++
++#define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> PAGE_SHIFT))
++
++#define pte_offset_map(pmdp, addr) ((pte_t *)__pmd_page(*pmdp) + \
++				       __pte_offset(addr))
++#define pte_unmap(pte)		((void) 0)
++#define pfn_pte(pfn, prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
++#define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
++
++#endif	/* !__ASSEMBLY__ */
++#endif	/* _MCF_PGTABLE_H */
 -- 
 1.7.0.4
