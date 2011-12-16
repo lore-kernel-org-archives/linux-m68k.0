@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 13/35] m68k: add ColdFire paging exception handling code
-Date: Fri, 16 Dec 2011 22:36:10 +1000
-Message-ID: <1324038992-31222-14-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 17/35] m68k: define PAGE_OFFSET_RAW for ColdFire CPU with MMU enabled
+Date: Fri, 16 Dec 2011 22:36:14 +1000
+Message-ID: <1324038992-31222-18-git-send-email-gerg@snapgear.com>
 References: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49391 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:49394 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759271Ab1LPMgx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:53 -0500
+	with ESMTP id S1759252Ab1LPMgy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2011 07:36:54 -0500
 In-Reply-To: <1324038992-31222-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,139 +18,40 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Add code to traps.c to handle MMU exceptions for the ColdFire.
-Most of this code is from the 2.6.25 kernel BSP code released by
-Freescale.
+The ColdFire CPU configurations need PAGE_OFFSET_RAW set to the base of
+their RAM. It doesn't matter if they are running with the MMU enabled or
+disabled, it is always set to the base of RAM.
 
+We can keep the choices simple here and key of CONFIG_RAMBASE. If it is
+defined we are on a plaftorm (ColdFire or other non-MMU systems) which
+have a configurable RAM base, just use it.
+
+Reported-by: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/kernel/traps.c |  104 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 104 insertions(+), 0 deletions(-)
+ arch/m68k/include/asm/page_offset.h |    8 +++-----
+ 1 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 89362f2..a76452c 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -706,6 +706,88 @@ create_atc_entry:
- #endif /* CPU_M68020_OR_M68030 */
- #endif /* !CONFIG_SUN3 */
+diff --git a/arch/m68k/include/asm/page_offset.h b/arch/m68k/include/asm/page_offset.h
+index 1780152..a53d7f1 100644
+--- a/arch/m68k/include/asm/page_offset.h
++++ b/arch/m68k/include/asm/page_offset.h
+@@ -1,11 +1,9 @@
+ /* This handles the memory map.. */
  
-+#if defined(CONFIG_COLDFIRE) && defined(CONFIG_MMU)
-+#include <asm/mcfmmu.h>
-+
-+/*
-+ *	The following table converts the FS encoding of a ColdFire
-+ *	exception stack frame into the error_code value needed by
-+ *	do_fault.
-+*/
-+static const unsigned char fs_err_code[] = {
-+	0,  /* 0000 */
-+	0,  /* 0001 */
-+	0,  /* 0010 */
-+	0,  /* 0011 */
-+	1,  /* 0100 */
-+	0,  /* 0101 */
-+	0,  /* 0110 */
-+	0,  /* 0111 */
-+	2,  /* 1000 */
-+	3,  /* 1001 */
-+	2,  /* 1010 */
-+	0,  /* 1011 */
-+	1,  /* 1100 */
-+	1,  /* 1101 */
-+	0,  /* 1110 */
-+	0   /* 1111 */
-+};
-+
-+static inline void access_errorcf(unsigned int fs, struct frame *fp)
-+{
-+	unsigned long mmusr, addr;
-+	unsigned int err_code;
-+	int need_page_fault;
-+
-+	mmusr = mmu_read(MMUSR);
-+	addr = mmu_read(MMUAR);
-+
-+	/*
-+	 * error_code:
-+	 *	bit 0 == 0 means no page found, 1 means protection fault
-+	 *	bit 1 == 0 means read, 1 means write
-+	 */
-+	switch (fs) {
-+	case  5:  /* 0101 TLB opword X miss */
-+		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 0, 0);
-+		addr = fp->ptregs.pc;
-+		break;
-+	case  6:  /* 0110 TLB extension word X miss */
-+		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 0, 1);
-+		addr = fp->ptregs.pc + sizeof(long);
-+		break;
-+	case 10:  /* 1010 TLB W miss */
-+		need_page_fault = cf_tlb_miss(&fp->ptregs, 1, 1, 0);
-+		break;
-+	case 14: /* 1110 TLB R miss */
-+		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 1, 0);
-+		break;
-+	default:
-+		/* 0000 Normal  */
-+		/* 0001 Reserved */
-+		/* 0010 Interrupt during debug service routine */
-+		/* 0011 Reserved */
-+		/* 0100 X Protection */
-+		/* 0111 IFP in emulator mode */
-+		/* 1000 W Protection*/
-+		/* 1001 Write error*/
-+		/* 1011 Reserved*/
-+		/* 1100 R Protection*/
-+		/* 1101 R Protection*/
-+		/* 1111 OEP in emulator mode*/
-+		need_page_fault = 1;
-+		break;
-+	}
-+
-+	if (need_page_fault) {
-+		err_code = fs_err_code[fs];
-+		if ((fs == 13) && (mmusr & MMUSR_WF)) /* rd-mod-wr access */
-+			err_code |= 2; /* bit1 - write, bit0 - protection */
-+		do_page_fault(&fp->ptregs, addr, err_code);
-+	}
-+}
-+#endif /* CONFIG_COLDFIRE CONFIG_MMU */
-+
- asmlinkage void buserr_c(struct frame *fp)
- {
- 	/* Only set esp0 if coming from user mode */
-@@ -716,6 +798,28 @@ asmlinkage void buserr_c(struct frame *fp)
- 	printk ("*** Bus Error *** Format is %x\n", fp->ptregs.format);
+-#ifdef CONFIG_MMU
+-#ifndef CONFIG_SUN3
++#if defined(CONFIG_RAMBASE)
++#define PAGE_OFFSET_RAW		CONFIG_RAMBASE
++#elif !defined(CONFIG_SUN3)
+ #define PAGE_OFFSET_RAW		0x00000000
+ #else
+ #define PAGE_OFFSET_RAW		0x0E000000
  #endif
- 
-+#if defined(CONFIG_COLDFIRE) && defined(CONFIG_MMU)
-+	if (CPU_IS_COLDFIRE) {
-+		unsigned int fs;
-+		fs = (fp->ptregs.vector & 0x3) |
-+			((fp->ptregs.vector & 0xc00) >> 8);
-+		switch (fs) {
-+		case 0x5:
-+		case 0x6:
-+		case 0x7:
-+		case 0x9:
-+		case 0xa:
-+		case 0xd:
-+		case 0xe:
-+		case 0xf:
-+			access_errorcf(fs, fp);
-+			return;
-+		default:
-+			break;
-+		}
-+	}
-+#endif /* CONFIG_COLDFIRE && CONFIG_MMU */
-+
- 	switch (fp->ptregs.format) {
- #if defined (CONFIG_M68060)
- 	case 4:				/* 68060 access error */
+-#else
+-#define	PAGE_OFFSET_RAW		CONFIG_RAMBASE
+-#endif
 -- 
 1.7.0.4
