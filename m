@@ -1,56 +1,41 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] m68k/irq: don't use pr_crit in an header
-Date: Sun, 18 Dec 2011 09:06:47 -0800
-Message-ID: <1324228007.14500.4.camel@joe2Laptop>
-References: <Pine.BSM.4.64L.1112161437090.856@herc.mirbsd.org>
-	 <1324152592-1718-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	 <CAMuHMdXyf_ofM+y6yKrzftyKTOyrSKzW7fUVAJyY6XTV_FVhNA@mail.gmail.com>
-	 <20111218104248.GS24496@pengutronix.de>
+From: Daniel Palmer <me@danielpalmer.co.uk>
+Subject: Re: Porting m68k/nommu to a new board.
+Date: Sun, 18 Dec 2011 18:24:56 -0800
+Message-ID: <201112181824.56271.me@danielpalmer.co.uk>
+References: <201112152137.29195.me@danielpalmer.co.uk> <CAMuHMdU+VCVxnawb8DHmZp1EfBGW6T5D0WyXRXpo8bj1bJZ+pg@mail.gmail.com> <4EEB23FD.9090904@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from perches-mx.perches.com ([206.117.179.246]:57902 "EHLO
-	labridge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751781Ab1LRRGu (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 18 Dec 2011 12:06:50 -0500
-In-Reply-To: <20111218104248.GS24496@pengutronix.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4EEB23FD.9090904@snapgear.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, debian-kernel@lists.debian.org, linux-m68k@vger.kernel.org, Thorsten Glaser <tg@debian.org>, linux-kernel@vger.kernel.org
 
-On Sun, 2011-12-18 at 11:42 +0100, Uwe Kleine-K=C3=B6nig wrote:
-> On Sun, Dec 18, 2011 at 11:32:21AM +0100, Geert Uytterhoeven wrote:
-> > 2011/12/17 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>:
-> > > Using pr_crit in an header results in funny messages. Consider
-> > >        #define pr_fmt(fmt) "mydriver: " fmt
-> > >        #include <linux/hardirq.h>
-> > > which makes the message from ack_bad_irq
-> > >        mydriver: unexpected IRQ trap...
-> > > so better use plain printk with KERN_CRIT directly.
+Hi Greg,
 
-Why or when is that inappropriate?
+Sorry for not replying sooner. Too much work :(
 
-> I only wondered if it is also desirable to
-> have messages in headers modified depending on the module the header =
-is
-> included in.
-[]
-> > Nack. Nowadays pr_crit(...) is recommended over "printk(KERN_CRIT .=
-=2E.)".
-> I know that, I just wonder if the proponents of this recommendation a=
-re
-> aware of the issue when using pr_* in headers. Joe?
+> I run on ColdFire parts all the time. Right up to 3.2-rc5 :-)
+> It works great. But I don't have or regularly use any original m68k
+> core hardware. I occasionally compile for the 68328 target, so it
+> will compile, can't be sure if it still runs though.
 
-I believe it to be a feature rather than a defect.
+I did a bit of poking around, I couldn't get the 68328 target to build.. I was 
+going to have a play with it in xcopilot. It complains about some linker 
+section missing .. but I started hacking it up anyway.. at the moment m68328 
+depends on m68000 which in turn causes the 68328 platform stuff to build.
+So I worked that a little so that 68000 is its own target that builds with 
+some minimal startup code (so I can dump the resulting image into my emulator 
+and see how far it gets.. I have a gdbserver in my emulator so I can fully see 
+whats happening). I haven't managed to get an image out of it yet.. but I will 
+have another go at the weekend.
 
-=46or instance:  commit 256ee435b9a9ee9cca69602fe8046b27ca99fbee
+I'm going to get an old palm pilot off of ebay and see if I can get the 68328 
+target running too.
 
-    netdevice: Convert printk to pr_info in netif_tx_stop_queue
-   =20
-    This allows any caller to be prefaced by any specific
-    pr_fmt to better identify which device driver is using
-    this function inappropriately.=20
+Thanks,
 
-cheers, Joe
+Daniel
