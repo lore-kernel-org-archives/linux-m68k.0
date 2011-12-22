@@ -1,62 +1,48 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: Porting m68k/nommu to a new board.
-Date: Wed, 21 Dec 2011 21:49:03 +1000
-Message-ID: <4EF1C7AF.8040801@snapgear.com>
-References: <201112152137.29195.me@danielpalmer.co.uk> <CAMuHMdU+VCVxnawb8DHmZp1EfBGW6T5D0WyXRXpo8bj1bJZ+pg@mail.gmail.com> <4EEB23FD.9090904@snapgear.com> <201112181824.56271.me@danielpalmer.co.uk>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: add missing make rule for Palm/Pilot bitmap boot logo
+Date: Thu, 22 Dec 2011 17:03:03 +1000
+Message-ID: <1324537383-16741-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:24492 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:35434 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753641Ab1LULte (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Dec 2011 06:49:34 -0500
-In-Reply-To: <201112181824.56271.me@danielpalmer.co.uk>
+	with ESMTP id S1752639Ab1LVHCq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 02:02:46 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Daniel Palmer <me@danielpalmer.co.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Daniel,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On 12/19/2011 12:24 PM, Daniel Palmer wrote:
-> Sorry for not replying sooner. Too much work :(
+Compiling for the m68knommu/68328 Palm/Pilot target you get:
 
-No problem :-)
+  AS      arch/m68k/platform/68328/head-pilot.o
+arch/m68k/platform/68328/head-pilot.S:37:23: fatal error: bootlogo.rh: No such file or directory
 
+The Makefile contains rules to make the bootlogo.rh file from the C source
+bootlogo.h. But it is missing a dependency that compiling head-pilot.S needs
+bootlogo.rh.
 
->> I run on ColdFire parts all the time. Right up to 3.2-rc5 :-)
->> It works great. But I don't have or regularly use any original m68k
->> core hardware. I occasionally compile for the 68328 target, so it
->> will compile, can't be sure if it still runs though.
->
-> I did a bit of poking around, I couldn't get the 68328 target to build.. I was
-> going to have a play with it in xcopilot. It complains about some linker
-> section missing .. but I started hacking it up anyway.. at the moment m68328
-> depends on m68000 which in turn causes the 68328 platform stuff to build.
-> So I worked that a little so that 68000 is its own target that builds with
-> some minimal startup code (so I can dump the resulting image into my emulator
-> and see how far it gets.. I have a gdbserver in my emulator so I can fully see
-> whats happening). I haven't managed to get an image out of it yet.. but I will
-> have another go at the weekend.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/platform/68328/Makefile |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Sounds good. Keep us posted on how you go.
-
-
-> I'm going to get an old palm pilot off of ebay and see if I can get the 68328
-> target running too.
-
-Yeah, would be really nice to know what state the 68328 code is in.
-
-I will compile it again too, and see if anything is obviously broken at
-the moment.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+diff --git a/arch/m68k/platform/68328/Makefile b/arch/m68k/platform/68328/Makefile
+index e4dfd8f..704e36d 100644
+--- a/arch/m68k/platform/68328/Makefile
++++ b/arch/m68k/platform/68328/Makefile
+@@ -16,6 +16,9 @@ obj-$(CONFIG_ROM)	+= romvec.o
+ extra-y			:= head.o
+ extra-$(CONFIG_M68328)	+= bootlogo.rh head.o
+ 
++$(obj)/head-pilot.o: $(obj)/bootlogo.rh
++$(obj)/head-rom.o: $(obj)/bootlogo.rh
++
+ $(obj)/bootlogo.rh: $(src)/bootlogo.h
+ 	perl $(src)/bootlogo.pl < $(src)/bootlogo.h > $(obj)/bootlogo.rh
+ 
+-- 
+1.7.0.4
