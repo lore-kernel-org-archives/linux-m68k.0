@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 10/35] m68k: set register a2 to current if MMU enabled on ColdFire
-Date: Fri, 23 Dec 2011 13:15:23 +1000
-Message-ID: <1324610148-20666-11-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 09/35] m68k: add ColdFire 54xx CPU MMU memory init code
+Date: Fri, 23 Dec 2011 13:15:22 +1000
+Message-ID: <1324610148-20666-10-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39250 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39249 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756286Ab1LWDOw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:52 -0500
+	with ESMTP id S1754168Ab1LWDOv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:51 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,109 +18,122 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Virtual memory m68k systems build with register a2 dedicated to being the
-current proc pointer (non-MMU don't do this). Add code to the ColdFire
-interrupt and exception processing to set this on entry, and at context
-switch time. We use the same GET_CURRENT() macro that MMU enabled code
-uses - modifying it so that the assembler is ColdFire clean.
+Add code to the 54xx ColdFire CPU init to setup memory ready for the m68k
+paged memory start up.
+
+Some of the RAM variables that were specific to the non-mmu code paths
+now need to be used during this setup, so when CONFIG_MMU is enabled.
+Move these out of page_no.h and into page.h.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/entry.h       |   10 +++++++++-
- arch/m68k/kernel/entry_no.S         |    3 +++
- arch/m68k/platform/coldfire/entry.S |    6 +++++-
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ arch/m68k/include/asm/page.h     |    4 +++
+ arch/m68k/include/asm/page_no.h  |    3 --
+ arch/m68k/platform/54xx/config.c |   47 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
-index c3c5a86..622138d 100644
---- a/arch/m68k/include/asm/entry.h
-+++ b/arch/m68k/include/asm/entry.h
-@@ -222,16 +222,24 @@
-  * Non-MMU systems do not reserve %a2 in this way, and this definition is
-  * not used for them.
-  */
+diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
+index dfebb7c..ba6c91d 100644
+--- a/arch/m68k/include/asm/page.h
++++ b/arch/m68k/include/asm/page.h
+@@ -36,6 +36,10 @@ typedef struct page *pgtable_t;
+ #define __pgd(x)	((pgd_t) { (x) } )
+ #define __pgprot(x)	((pgprot_t) { (x) } )
+ 
++extern unsigned long _rambase;
++extern unsigned long _ramstart;
++extern unsigned long _ramend;
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ #ifdef CONFIG_MMU
+diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+index a8d1c60..9059572 100644
+--- a/arch/m68k/include/asm/page_no.h
++++ b/arch/m68k/include/asm/page_no.h
+@@ -5,9 +5,6 @@
+  
+ extern unsigned long memory_start;
+ extern unsigned long memory_end;
+-extern unsigned long _rambase;
+-extern unsigned long _ramstart;
+-extern unsigned long _ramend;
+ 
+ #define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+ #define free_user_page(page, addr)	free_page(addr)
+diff --git a/arch/m68k/platform/54xx/config.c b/arch/m68k/platform/54xx/config.c
+index 7813098..ee04354 100644
+--- a/arch/m68k/platform/54xx/config.c
++++ b/arch/m68k/platform/54xx/config.c
+@@ -13,11 +13,17 @@
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/mm.h>
++#include <linux/bootmem.h>
++#include <asm/pgalloc.h>
+ #include <asm/machdep.h>
+ #include <asm/coldfire.h>
+ #include <asm/m54xxsim.h>
+ #include <asm/mcfuart.h>
+ #include <asm/m54xxgpt.h>
++#ifdef CONFIG_MMU
++#include <asm/mmu_context.h>
++#endif
+ 
+ /***************************************************************************/
+ 
+@@ -95,8 +101,49 @@ static void mcf54xx_reset(void)
+ 
+ /***************************************************************************/
+ 
 +#ifdef CONFIG_MMU
 +
- #define curptr a2
- 
- #define GET_CURRENT(tmp) get_current tmp
- .macro get_current reg=%d0
- 	movel	%sp,\reg
--	andw	#-THREAD_SIZE,\reg
-+	andl	#-THREAD_SIZE,\reg
- 	movel	\reg,%curptr
- 	movel	%curptr@,%curptr
- .endm
- 
-+#else
++unsigned long num_pages;
 +
-+#define GET_CURRENT(tmp)
++static void __init mcf54xx_bootmem_alloc(void)
++{
++	unsigned long start_pfn;
++	unsigned long memstart;
++
++	/* _rambase and _ramend will be naturally page aligned */
++	m68k_memory[0].addr = _rambase;
++	m68k_memory[0].size = _ramend - _rambase;
++
++	/* compute total pages in system */
++	num_pages = (_ramend - _rambase) >> PAGE_SHIFT;
++
++	/* page numbers */
++	memstart = PAGE_ALIGN(_ramstart);
++	min_low_pfn = _rambase >> PAGE_SHIFT;
++	start_pfn = memstart >> PAGE_SHIFT;
++	max_low_pfn = _ramend >> PAGE_SHIFT;
++	high_memory = (void *)_ramend;
++
++	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
++	module_fixup(NULL, __start_fixup, __stop_fixup);
++
++	/* setup bootmem data */
++	m68k_setup_node(0);
++	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
++		min_low_pfn, max_low_pfn);
++	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
++}
 +
 +#endif /* CONFIG_MMU */
 +
- #else /* C source */
- 
- #define STR(X) STR1(X)
-diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
-index ac86a9f..d80cba4 100644
---- a/arch/m68k/kernel/entry_no.S
-+++ b/arch/m68k/kernel/entry_no.S
-@@ -44,6 +44,7 @@
- 
- ENTRY(buserr)
- 	SAVE_ALL_INT
-+	GET_CURRENT(%d0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	buserr_c
- 	addql	#4,%sp
-@@ -51,6 +52,7 @@ ENTRY(buserr)
- 
- ENTRY(trap)
- 	SAVE_ALL_INT
-+	GET_CURRENT(%d0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	trap_c
- 	addql	#4,%sp
-@@ -61,6 +63,7 @@ ENTRY(trap)
- .globl dbginterrupt
- ENTRY(dbginterrupt)
- 	SAVE_ALL_INT
-+	GET_CURRENT(%d0)
- 	movel	%sp,%sp@- 		/* stack frame pointer argument */
- 	jsr	dbginterrupt_c
- 	addql	#4,%sp
-diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
-index f567a16..863889f 100644
---- a/arch/m68k/platform/coldfire/entry.S
-+++ b/arch/m68k/platform/coldfire/entry.S
-@@ -62,6 +62,7 @@ enosys:
- ENTRY(system_call)
- 	SAVE_ALL_SYS
- 	move	#0x2000,%sr		/* enable intrs again */
-+	GET_CURRENT(%d2)
- 
- 	cmpl	#NR_syscalls,%d0
- 	jcc	enosys
-@@ -165,6 +166,7 @@ Lsignal_return:
-  */
- ENTRY(inthandler)
- 	SAVE_ALL_INT
-+	GET_CURRENT(%d2)
- 
- 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
- 	andl	#0x03fc,%d0		/* mask out vector only */
-@@ -190,7 +192,9 @@ ENTRY(resume)
- 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack pointer */
- 	RDUSP					 /* movel %usp,%a3 */
- 	movel	%a3,%a0@(TASK_THREAD+THREAD_USP) /* save thread user stack */
--
++/***************************************************************************/
++
+ void __init config_BSP(char *commandp, int size)
+ {
 +#ifdef CONFIG_MMU
-+	movel	%a1,%a2				 /* set new current */
++	mcf54xx_bootmem_alloc();
++	mmu_context_init();
 +#endif
- 	movel	%a1@(TASK_THREAD+THREAD_USP),%a3 /* restore thread user stack */
- 	WRUSP					 /* movel %a3,%usp */
- 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new kernel stack */
+ 	mach_reset = mcf54xx_reset;
+ 	m54xx_uarts_init();
+ }
 -- 
 1.7.0.4
