@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 28/35] m68k: add code to setup a ColdFire 54xx platform when MMU enabled
-Date: Fri, 23 Dec 2011 13:15:41 +1000
-Message-ID: <1324610148-20666-29-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 30/35] m68k: use non-MMU linker script for ColdFire MMU builds
+Date: Fri, 23 Dec 2011 13:15:43 +1000
+Message-ID: <1324610148-20666-31-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39287 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39288 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756389Ab1LWDPI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:15:08 -0500
+	with ESMTP id S1756396Ab1LWDPJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:15:09 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,44 +18,55 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-We use the same setup code for ColdFire MMU enabled platforms as
-standard m68k. So add support for it to setup our 54xx ColdFire
-platforms. They do not support the same bootinfo parsing as other
-m68k platforms.
+Use the non-MMU linker script for ColdFire builds when we are building
+for MMU enabled. The image layout is correct for loading on existing
+ColdFire dev boards. The only addition required to the current non-MMU
+linker script is to add support for the fixup section.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/kernel/setup_mm.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ arch/m68k/kernel/vmlinux-nommu.lds |    8 ++++++++
+ arch/m68k/kernel/vmlinux.lds.S     |    2 +-
+ 2 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 52e17d1..b3938ad 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -221,7 +221,8 @@ void __init setup_arch(char **cmdline_p)
- #endif
+diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
+index 4e23893..8e66ccb 100644
+--- a/arch/m68k/kernel/vmlinux-nommu.lds
++++ b/arch/m68k/kernel/vmlinux-nommu.lds
+@@ -69,6 +69,7 @@ SECTIONS {
+ 		SCHED_TEXT
+ 		LOCK_TEXT
+ 		*(.text..lock)
++		*(.fixup)
  
- 	/* The bootinfo is located right after the kernel bss */
--	m68k_parse_bootinfo((const struct bi_record *)_end);
-+	if (!CPU_IS_COLDFIRE)
-+		m68k_parse_bootinfo((const struct bi_record *)_end);
+ 		. = ALIGN(16);          /* Exception table              */
+ 		__start___ex_table = .;
+@@ -161,6 +162,13 @@ SECTIONS {
+ 		_edata = . ;
+ 	} > DATA
  
- 	if (CPU_IS_040)
- 		m68k_is040or060 = 4;
-@@ -327,6 +328,11 @@ void __init setup_arch(char **cmdline_p)
- 		config_sun3x();
- 		break;
- #endif
-+#ifdef CONFIG_COLDFIRE
-+	case MACH_M54XX:
-+		config_BSP(NULL, 0);
-+		break;
-+#endif
- 	default:
- 		panic("No configuration setup");
- 	}
++	.m68k_fixup : {
++		__start_fixup = .;
++		*(.m68k_fixup)
++		__stop_fixup = .;
++	} > DATA
++	NOTES > DATA
++
+ 	.init.text : {
+ 		. = ALIGN(PAGE_SIZE);
+ 		__init_begin = .;
+diff --git a/arch/m68k/kernel/vmlinux.lds.S b/arch/m68k/kernel/vmlinux.lds.S
+index 3d99a04..69ec796 100644
+--- a/arch/m68k/kernel/vmlinux.lds.S
++++ b/arch/m68k/kernel/vmlinux.lds.S
+@@ -1,4 +1,4 @@
+-#ifdef CONFIG_MMU
++#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
+ PHDRS
+ {
+   text PT_LOAD FILEHDR PHDRS FLAGS (7);
 -- 
 1.7.0.4
