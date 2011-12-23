@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 22/35] m68k: modify cache push and clear code for ColdFire with MMU enable
-Date: Fri, 23 Dec 2011 13:15:35 +1000
-Message-ID: <1324610148-20666-23-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 24/35] m68k: ColdFire V4e MMU paging init code and miss handler
+Date: Fri, 23 Dec 2011 13:15:37 +1000
+Message-ID: <1324610148-20666-25-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39290 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39294 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756399Ab1LWDPN (ORCPT
+	with ESMTP id S1756288Ab1LWDPN (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:15:13 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -18,42 +18,235 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The cache push and clear code only need to flush the branch cache on
-the write-through cache setup of the ColdFire V4e with MMU enabled.
+The different ColdFire V4e MMU requires its own dedicated paging init
+code, and a TLB miss handler for its software driven TLB.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/mm/memory.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ arch/m68k/include/asm/mcfmmu.h |    2 +
+ arch/m68k/mm/mcfmmu.c          |  198 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 200 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/mm/mcfmmu.c
 
-diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
-index 34c77ce..a5dbb74 100644
---- a/arch/m68k/mm/memory.c
-+++ b/arch/m68k/mm/memory.c
-@@ -203,7 +203,9 @@ static inline void pushcl040(unsigned long paddr)
+diff --git a/arch/m68k/include/asm/mcfmmu.h b/arch/m68k/include/asm/mcfmmu.h
+index 8fdcfed..26cc3d5 100644
+--- a/arch/m68k/include/asm/mcfmmu.h
++++ b/arch/m68k/include/asm/mcfmmu.h
+@@ -105,6 +105,8 @@ static inline void mmu_write(u32 a, u32 v)
+ 	__asm__ __volatile__ ("nop");
+ }
  
- void cache_clear (unsigned long paddr, int len)
- {
--    if (CPU_IS_040_OR_060) {
-+    if (CPU_IS_COLDFIRE) {
-+	flush_cf_bcache(0, DCACHE_MAX_ADDR);
-+    } else if (CPU_IS_040_OR_060) {
- 	int tmp;
++int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word);
++
+ #endif
  
- 	/*
-@@ -250,7 +252,9 @@ EXPORT_SYMBOL(cache_clear);
- 
- void cache_push (unsigned long paddr, int len)
- {
--    if (CPU_IS_040_OR_060) {
-+    if (CPU_IS_COLDFIRE) {
-+	flush_cf_bcache(0, DCACHE_MAX_ADDR);
-+    } else if (CPU_IS_040_OR_060) {
- 	int tmp = PAGE_SIZE;
- 
- 	/*
+ #endif	/* MCFMMU_H */
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+new file mode 100644
+index 0000000..babd5a9
+--- /dev/null
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -0,0 +1,198 @@
++/*
++ * Based upon linux/arch/m68k/mm/sun3mmu.c
++ * Based upon linux/arch/ppc/mm/mmu_context.c
++ *
++ * Implementations of mm routines specific to the Coldfire MMU.
++ *
++ * Copyright (c) 2008 Freescale Semiconductor, Inc.
++ */
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/mm.h>
++#include <linux/init.h>
++#include <linux/string.h>
++#include <linux/bootmem.h>
++
++#include <asm/setup.h>
++#include <asm/page.h>
++#include <asm/pgtable.h>
++#include <asm/mmu_context.h>
++#include <asm/mcf_pgalloc.h>
++#include <asm/tlbflush.h>
++
++#define KMAPAREA(x)	((x >= VMALLOC_START) && (x < KMAP_END))
++
++mm_context_t next_mmu_context;
++unsigned long context_map[LAST_CONTEXT / BITS_PER_LONG + 1];
++atomic_t nr_free_contexts;
++struct mm_struct *context_mm[LAST_CONTEXT+1];
++extern unsigned long num_pages;
++
++void free_initmem(void)
++{
++}
++
++/*
++ * ColdFire paging_init derived from sun3.
++ */
++void __init paging_init(void)
++{
++	pgd_t *pg_dir;
++	pte_t *pg_table;
++	unsigned long address, size;
++	unsigned long next_pgtable, bootmem_end;
++	unsigned long zones_size[MAX_NR_ZONES];
++	enum zone_type zone;
++	int i;
++
++	empty_zero_page = (void *) alloc_bootmem_pages(PAGE_SIZE);
++	memset((void *) empty_zero_page, 0, PAGE_SIZE);
++
++	pg_dir = swapper_pg_dir;
++	memset(swapper_pg_dir, 0, sizeof(swapper_pg_dir));
++
++	size = num_pages * sizeof(pte_t);
++	size = (size + PAGE_SIZE) & ~(PAGE_SIZE-1);
++	next_pgtable = (unsigned long) alloc_bootmem_pages(size);
++
++	bootmem_end = (next_pgtable + size + PAGE_SIZE) & PAGE_MASK;
++	pg_dir += PAGE_OFFSET >> PGDIR_SHIFT;
++
++	address = PAGE_OFFSET;
++	while (address < (unsigned long)high_memory) {
++		pg_table = (pte_t *) next_pgtable;
++		next_pgtable += PTRS_PER_PTE * sizeof(pte_t);
++		pgd_val(*pg_dir) = (unsigned long) pg_table;
++		pg_dir++;
++
++		/* now change pg_table to kernel virtual addresses */
++		for (i = 0; i < PTRS_PER_PTE; ++i, ++pg_table) {
++			pte_t pte = pfn_pte(virt_to_pfn(address), PAGE_INIT);
++			if (address >= (unsigned long) high_memory)
++				pte_val(pte) = 0;
++
++			set_pte(pg_table, pte);
++			address += PAGE_SIZE;
++		}
++	}
++
++	current->mm = NULL;
++
++	for (zone = 0; zone < MAX_NR_ZONES; zone++)
++		zones_size[zone] = 0x0;
++	zones_size[ZONE_DMA] = num_pages;
++	free_area_init(zones_size);
++}
++
++int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
++{
++	unsigned long flags, mmuar;
++	struct mm_struct *mm;
++	pgd_t *pgd;
++	pmd_t *pmd;
++	pte_t *pte;
++	int asid;
++
++	local_irq_save(flags);
++
++	mmuar = (dtlb) ? mmu_read(MMUAR) :
++		regs->pc + (extension_word * sizeof(long));
++
++	mm = (!user_mode(regs) && KMAPAREA(mmuar)) ? &init_mm : current->mm;
++	if (!mm) {
++		local_irq_restore(flags);
++		return -1;
++	}
++
++	pgd = pgd_offset(mm, mmuar);
++	if (pgd_none(*pgd))  {
++		local_irq_restore(flags);
++		return -1;
++	}
++
++	pmd = pmd_offset(pgd, mmuar);
++	if (pmd_none(*pmd)) {
++		local_irq_restore(flags);
++		return -1;
++	}
++
++	pte = (KMAPAREA(mmuar)) ? pte_offset_kernel(pmd, mmuar)
++				: pte_offset_map(pmd, mmuar);
++	if (pte_none(*pte) || !pte_present(*pte)) {
++		local_irq_restore(flags);
++		return -1;
++	}
++
++	if (write) {
++		if (!pte_write(*pte)) {
++			local_irq_restore(flags);
++			return -1;
++		}
++		set_pte(pte, pte_mkdirty(*pte));
++	}
++
++	set_pte(pte, pte_mkyoung(*pte));
++	asid = mm->context & 0xff;
++	if (!pte_dirty(*pte) && !KMAPAREA(mmuar))
++		set_pte(pte, pte_wrprotect(*pte));
++
++	mmu_write(MMUTR, (mmuar & PAGE_MASK) | (asid << MMUTR_IDN) |
++		(((int)(pte->pte) & (int)CF_PAGE_MMUTR_MASK)
++		>> CF_PAGE_MMUTR_SHIFT) | MMUTR_V);
++
++	mmu_write(MMUDR, (pte_val(*pte) & PAGE_MASK) |
++		((pte->pte) & CF_PAGE_MMUDR_MASK) | MMUDR_SZ_8KB | MMUDR_X);
++
++	if (dtlb)
++		mmu_write(MMUOR, MMUOR_ACC | MMUOR_UAA);
++	else
++		mmu_write(MMUOR, MMUOR_ITLB | MMUOR_ACC | MMUOR_UAA);
++
++	local_irq_restore(flags);
++	return 0;
++}
++
++/*
++ * Initialize the context management stuff.
++ * The following was taken from arch/ppc/mmu_context.c
++ */
++void __init mmu_context_init(void)
++{
++	/*
++	 * Some processors have too few contexts to reserve one for
++	 * init_mm, and require using context 0 for a normal task.
++	 * Other processors reserve the use of context zero for the kernel.
++	 * This code assumes FIRST_CONTEXT < 32.
++	 */
++	context_map[0] = (1 << FIRST_CONTEXT) - 1;
++	next_mmu_context = FIRST_CONTEXT;
++	atomic_set(&nr_free_contexts, LAST_CONTEXT - FIRST_CONTEXT + 1);
++}
++
++/*
++ * Steal a context from a task that has one at the moment.
++ * This is only used on 8xx and 4xx and we presently assume that
++ * they don't do SMP.  If they do then thicfpgalloc.hs will have to check
++ * whether the MM we steal is in use.
++ * We also assume that this is only used on systems that don't
++ * use an MMU hash table - this is true for 8xx and 4xx.
++ * This isn't an LRU system, it just frees up each context in
++ * turn (sort-of pseudo-random replacement :).  This would be the
++ * place to implement an LRU scheme if anyone was motivated to do it.
++ *  -- paulus
++ */
++void steal_context(void)
++{
++	struct mm_struct *mm;
++	/*
++	 * free up context `next_mmu_context'
++	 * if we shouldn't free context 0, don't...
++	 */
++	if (next_mmu_context < FIRST_CONTEXT)
++		next_mmu_context = FIRST_CONTEXT;
++	mm = context_mm[next_mmu_context];
++	flush_tlb_mm(mm);
++	destroy_context(mm);
++}
++
 -- 
 1.7.0.4
