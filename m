@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 21/35] m68k: use tracehook_report_syscall_entry/exit for ColdFire MMU ptrace path
-Date: Fri, 23 Dec 2011 13:15:34 +1000
-Message-ID: <1324610148-20666-22-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 14/35] m68k: add cache support for V4e ColdFire cores running with MMU enabled
+Date: Fri, 23 Dec 2011 13:15:27 +1000
+Message-ID: <1324610148-20666-15-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39269 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39253 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756375Ab1LWDO5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:57 -0500
+	with ESMTP id S1756361Ab1LWDOx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:53 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,51 +18,195 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The existing ColdFire code (which is all non-mmu) for system call entry
-and exit uses the more modern tracehook_report_syscall_entry()/exit()
-into the ptrace code. Now that we are supporting ColdFire with MMU we
-need the same hooks for these.
+Add code to deal with instruction, data and branch caches of the V4e
+ColdFire cores when they are running with the MMU enabled.
+
+This code is loosely based on Freescales changes for the caches of the
+V4e ColdFire in the 2.6.25 kernel BSP. That code was originally by
+Kurt Mahan <kmahan@freescale.com> (now <kmahan@xmission.com>).
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/kernel/ptrace_mm.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
+ arch/m68k/include/asm/cacheflush_mm.h |   88 +++++++++++++++++++++++++++++++--
+ arch/m68k/mm/cache.c                  |   24 ++++++++-
+ 2 files changed, 104 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/kernel/ptrace_mm.c b/arch/m68k/kernel/ptrace_mm.c
-index 0b25268..7bc999b 100644
---- a/arch/m68k/kernel/ptrace_mm.c
-+++ b/arch/m68k/kernel/ptrace_mm.c
-@@ -18,6 +18,7 @@
- #include <linux/ptrace.h>
- #include <linux/user.h>
- #include <linux/signal.h>
-+#include <linux/tracehook.h>
+diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+index 73de7c8..8104bd8 100644
+--- a/arch/m68k/include/asm/cacheflush_mm.h
++++ b/arch/m68k/include/asm/cacheflush_mm.h
+@@ -2,23 +2,89 @@
+ #define _M68K_CACHEFLUSH_H
  
- #include <asm/uaccess.h>
- #include <asm/page.h>
-@@ -275,3 +276,20 @@ asmlinkage void syscall_trace(void)
- 		current->exit_code = 0;
- 	}
- }
-+
+ #include <linux/mm.h>
 +#ifdef CONFIG_COLDFIRE
-+asmlinkage int syscall_trace_enter(void)
-+{
-+	int ret = 0;
++#include <asm/mcfsim.h>
++#endif
+ 
+ /* cache code */
+ #define FLUSH_I_AND_D	(0x00000808)
+ #define FLUSH_I		(0x00000008)
+ 
++#ifndef ICACHE_MAX_ADDR
++#define ICACHE_MAX_ADDR	0
++#define ICACHE_SET_MASK	0
++#define DCACHE_MAX_ADDR	0
++#define DCACHE_SETMASK	0
++#endif
 +
-+	if (test_thread_flag(TIF_SYSCALL_TRACE))
-+		ret = tracehook_report_syscall_entry(task_pt_regs(current));
-+	return ret;
++static inline void flush_cf_icache(unsigned long start, unsigned long end)
++{
++	unsigned long set;
++
++	for (set = start; set <= end; set += (0x10 - 3)) {
++		__asm__ __volatile__ (
++			"cpushl %%ic,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%ic,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%ic,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%ic,(%0)"
++			: "=a" (set)
++			: "a" (set));
++	}
 +}
 +
-+asmlinkage void syscall_trace_leave(void)
++static inline void flush_cf_dcache(unsigned long start, unsigned long end)
 +{
-+	if (test_thread_flag(TIF_SYSCALL_TRACE))
-+		tracehook_report_syscall_exit(task_pt_regs(current), 0);
++	unsigned long set;
++
++	for (set = start; set <= end; set += (0x10 - 3)) {
++		__asm__ __volatile__ (
++			"cpushl %%dc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%dc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%dc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%dc,(%0)"
++			: "=a" (set)
++			: "a" (set));
++	}
 +}
-+#endif /* CONFIG_COLDFIRE */
++
++static inline void flush_cf_bcache(unsigned long start, unsigned long end)
++{
++	unsigned long set;
++
++	for (set = start; set <= end; set += (0x10 - 3)) {
++		__asm__ __volatile__ (
++			"cpushl %%bc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%bc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%bc,(%0)\n\t"
++			"addq%.l #1,%0\n\t"
++			"cpushl %%bc,(%0)"
++			: "=a" (set)
++			: "a" (set));
++	}
++}
++
+ /*
+  * Cache handling functions
+  */
+ 
+ static inline void flush_icache(void)
+ {
+-	if (CPU_IS_040_OR_060)
++	if (CPU_IS_COLDFIRE) {
++		flush_cf_icache(0, ICACHE_MAX_ADDR);
++	} else if (CPU_IS_040_OR_060) {
+ 		asm volatile (	"nop\n"
+ 			"	.chip	68040\n"
+ 			"	cpusha	%bc\n"
+ 			"	.chip	68k");
+-	else {
++	} else {
+ 		unsigned long tmp;
+ 		asm volatile (	"movec	%%cacr,%0\n"
+ 			"	or.w	%1,%0\n"
+@@ -51,12 +117,14 @@ extern void cache_push_v(unsigned long vaddr, int len);
+    process changes.  */
+ #define __flush_cache_all()					\
+ ({								\
+-	if (CPU_IS_040_OR_060)					\
++	if (CPU_IS_COLDFIRE) {					\
++		flush_cf_dcache(0, DCACHE_MAX_ADDR);		\
++	} else if (CPU_IS_040_OR_060) {				\
+ 		__asm__ __volatile__("nop\n\t"			\
+ 				     ".chip 68040\n\t"		\
+ 				     "cpusha %dc\n\t"		\
+ 				     ".chip 68k");		\
+-	else {							\
++	} else {						\
+ 		unsigned long _tmp;				\
+ 		__asm__ __volatile__("movec %%cacr,%0\n\t"	\
+ 				     "orw %1,%0\n\t"		\
+@@ -112,7 +180,17 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
+ /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+ static inline void __flush_page_to_ram(void *vaddr)
+ {
+-	if (CPU_IS_040_OR_060) {
++	if (CPU_IS_COLDFIRE) {
++		unsigned long addr, start, end;
++		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
++		start = addr & ICACHE_SET_MASK;
++		end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
++		if (start > end) {
++			flush_cf_bcache(0, end);
++			end = ICACHE_MAX_ADDR;
++		}
++		flush_cf_bcache(start, end);
++	} else if (CPU_IS_040_OR_060) {
+ 		__asm__ __volatile__("nop\n\t"
+ 				     ".chip 68040\n\t"
+ 				     "cpushp %%bc,(%0)\n\t"
+diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
+index 5437fff..95d0bf6 100644
+--- a/arch/m68k/mm/cache.c
++++ b/arch/m68k/mm/cache.c
+@@ -74,8 +74,16 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
+ /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+ void flush_icache_range(unsigned long address, unsigned long endaddr)
+ {
+-
+-	if (CPU_IS_040_OR_060) {
++	if (CPU_IS_COLDFIRE) {
++		unsigned long start, end;
++		start = address & ICACHE_SET_MASK;
++		end = endaddr & ICACHE_SET_MASK;
++		if (start > end) {
++			flush_cf_icache(0, end);
++			end = ICACHE_MAX_ADDR;
++		}
++		flush_cf_icache(start, end);
++	} else if (CPU_IS_040_OR_060) {
+ 		address &= PAGE_MASK;
+ 
+ 		do {
+@@ -100,7 +108,17 @@ EXPORT_SYMBOL(flush_icache_range);
+ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
+ 			     unsigned long addr, int len)
+ {
+-	if (CPU_IS_040_OR_060) {
++	if (CPU_IS_COLDFIRE) {
++		unsigned long start, end;
++		start = addr & ICACHE_SET_MASK;
++		end = (addr + len) & ICACHE_SET_MASK;
++		if (start > end) {
++			flush_cf_icache(0, end);
++			end = ICACHE_MAX_ADDR;
++		}
++		flush_cf_icache(start, end);
++
++	} else if (CPU_IS_040_OR_060) {
+ 		asm volatile ("nop\n\t"
+ 			      ".chip 68040\n\t"
+ 			      "cpushp %%bc,(%0)\n\t"
 -- 
 1.7.0.4
