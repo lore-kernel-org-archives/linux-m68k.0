@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 15/35] m68k: modify ColdFire 54xx cache support for MMU enabled
-Date: Fri, 23 Dec 2011 13:15:28 +1000
-Message-ID: <1324610148-20666-16-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 10/35] m68k: set register a2 to current if MMU enabled on ColdFire
+Date: Fri, 23 Dec 2011 13:15:23 +1000
+Message-ID: <1324610148-20666-11-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39248 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39250 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756345Ab1LWDOu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:50 -0500
+	with ESMTP id S1756286Ab1LWDOw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:52 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,91 +18,109 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Modify the cache setup for the ColdFire 54xx parts when running with
-the MMU enabled.
-
-We want to map the peripheral register space (MBAR region) as non
-cacheable. And create an identity mapping for all of RAM for the
-kernel.
+Virtual memory m68k systems build with register a2 dedicated to being the
+current proc pointer (non-MMU don't do this). Add code to the ColdFire
+interrupt and exception processing to set this on entry, and at context
+switch time. We use the same GET_CURRENT() macro that MMU enabled code
+uses - modifying it so that the assembler is ColdFire clean.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/m54xxacr.h |   32 +++++++++++++++++++++++++++++++-
- 1 files changed, 31 insertions(+), 1 deletions(-)
+ arch/m68k/include/asm/entry.h       |   10 +++++++++-
+ arch/m68k/kernel/entry_no.S         |    3 +++
+ arch/m68k/platform/coldfire/entry.S |    6 +++++-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
-index 16a1835..47906aa 100644
---- a/arch/m68k/include/asm/m54xxacr.h
-+++ b/arch/m68k/include/asm/m54xxacr.h
-@@ -39,8 +39,12 @@
- #define ACR_CM_OFF_PRE	0x00000040	/* No cache, precise */
- #define ACR_CM_OFF_IMP	0x00000060	/* No cache, imprecise */
- #define ACR_CM		0x00000060	/* Cache mode mask */
-+#define ACR_SP		0x00000008	/* Supervisor protect */
- #define ACR_WPROTECT	0x00000004	/* Write protect */
+diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
+index c3c5a86..622138d 100644
+--- a/arch/m68k/include/asm/entry.h
++++ b/arch/m68k/include/asm/entry.h
+@@ -222,16 +222,24 @@
+  * Non-MMU systems do not reserve %a2 in this way, and this definition is
+  * not used for them.
+  */
++#ifdef CONFIG_MMU
++
+ #define curptr a2
  
-+#define ACR_BA(x)	((x) & 0xff000000)
-+#define ACR_ADMSK(x)	((((x) - 1) & 0xff000000) >> 8)
-+
- #if defined(CONFIG_M5407)
+ #define GET_CURRENT(tmp) get_current tmp
+ .macro get_current reg=%d0
+ 	movel	%sp,\reg
+-	andw	#-THREAD_SIZE,\reg
++	andl	#-THREAD_SIZE,\reg
+ 	movel	\reg,%curptr
+ 	movel	%curptr@,%curptr
+ .endm
  
- #define ICACHE_SIZE 0x4000	/* instruction - 16k */
-@@ -56,6 +60,11 @@
- #define CACHE_LINE_SIZE 0x0010	/* 16 bytes */
- #define CACHE_WAYS 4		/* 4 ways */
- 
-+#define ICACHE_SET_MASK	((ICACHE_SIZE / 64 - 1) << CACHE_WAYS)
-+#define DCACHE_SET_MASK	((DCACHE_SIZE / 64 - 1) << CACHE_WAYS)
-+#define ICACHE_MAX_ADDR	ICACHE_SET_MASK
-+#define DCACHE_MAX_ADDR	DCACHE_SET_MASK
-+
- /*
-  *	Version 4 cores have a true harvard style separate instruction
-  *	and data cache. Enable data and instruction caches, also enable write
-@@ -73,6 +82,27 @@
- #else
- #define CACHE_MODE (CACR_DEC+CACR_DESB+CACR_DDCM_P+CACR_BEC+CACR_IEC+CACR_EUSP)
- #endif
-+#define CACHE_INIT (CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
-+
-+#if defined(CONFIG_MMU)
-+/*
-+ *	If running with the MMU enabled then we need to map the internal
-+ *	register region as non-cacheable. And then we map all our RAM as
-+ *	cacheable and supervisor access only.
-+ */
-+#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
-+#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-+#define ACR2_MODE	0
-+#define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-+			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-+
 +#else
 +
-+/*
-+ *	For the non-MMU enabled case we map all of RAM as cacheable.
-+ */
- #if defined(CONFIG_CACHE_COPYBACK)
- #define DATA_CACHE_MODE (ACR_ENABLE+ACR_ANY+ACR_CM_CP)
- #else
-@@ -80,7 +110,6 @@
- #endif
- #define INSN_CACHE_MODE (ACR_ENABLE+ACR_ANY)
- 
--#define CACHE_INIT	(CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATE  (CACHE_MODE+CACR_DCINVA+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATEI (CACHE_MODE+CACR_BCINVA+CACR_ICINVA)
- #define CACHE_INVALIDATED (CACHE_MODE+CACR_DCINVA)
-@@ -94,4 +123,5 @@
- #define	CACHE_PUSH
- #endif
- 
++#define GET_CURRENT(tmp)
++
 +#endif /* CONFIG_MMU */
- #endif	/* m54xxacr_h */
++
+ #else /* C source */
+ 
+ #define STR(X) STR1(X)
+diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
+index ac86a9f..d80cba4 100644
+--- a/arch/m68k/kernel/entry_no.S
++++ b/arch/m68k/kernel/entry_no.S
+@@ -44,6 +44,7 @@
+ 
+ ENTRY(buserr)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	buserr_c
+ 	addql	#4,%sp
+@@ -51,6 +52,7 @@ ENTRY(buserr)
+ 
+ ENTRY(trap)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	trap_c
+ 	addql	#4,%sp
+@@ -61,6 +63,7 @@ ENTRY(trap)
+ .globl dbginterrupt
+ ENTRY(dbginterrupt)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@- 		/* stack frame pointer argument */
+ 	jsr	dbginterrupt_c
+ 	addql	#4,%sp
+diff --git a/arch/m68k/platform/coldfire/entry.S b/arch/m68k/platform/coldfire/entry.S
+index f567a16..863889f 100644
+--- a/arch/m68k/platform/coldfire/entry.S
++++ b/arch/m68k/platform/coldfire/entry.S
+@@ -62,6 +62,7 @@ enosys:
+ ENTRY(system_call)
+ 	SAVE_ALL_SYS
+ 	move	#0x2000,%sr		/* enable intrs again */
++	GET_CURRENT(%d2)
+ 
+ 	cmpl	#NR_syscalls,%d0
+ 	jcc	enosys
+@@ -165,6 +166,7 @@ Lsignal_return:
+  */
+ ENTRY(inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d2)
+ 
+ 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
+ 	andl	#0x03fc,%d0		/* mask out vector only */
+@@ -190,7 +192,9 @@ ENTRY(resume)
+ 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack pointer */
+ 	RDUSP					 /* movel %usp,%a3 */
+ 	movel	%a3,%a0@(TASK_THREAD+THREAD_USP) /* save thread user stack */
+-
++#ifdef CONFIG_MMU
++	movel	%a1,%a2				 /* set new current */
++#endif
+ 	movel	%a1@(TASK_THREAD+THREAD_USP),%a3 /* restore thread user stack */
+ 	WRUSP					 /* movel %a3,%usp */
+ 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new kernel stack */
 -- 
 1.7.0.4
