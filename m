@@ -1,124 +1,156 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 07/35] m68k: use addr_limit checking for m68k CPUs that do no support address spaces
-Date: Fri, 23 Dec 2011 13:15:20 +1000
-Message-ID: <1324610148-20666-8-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 13/35] m68k: add ColdFire paging exception handling code
+Date: Fri, 23 Dec 2011 13:15:26 +1000
+Message-ID: <1324610148-20666-14-git-send-email-gerg@snapgear.com>
 References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:39231 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39246 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756322Ab1LWDOk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:40 -0500
+	with ESMTP id S1754205Ab1LWDOr (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Dec 2011 22:14:47 -0500
 In-Reply-To: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>, Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire CPU family, and the original 68000, do not support separate
-address spaces like the other 680x0 CPU types. Modify the set_fs()/get_fs()
-functions and macros to use a thread_info addr_limit for address space
-checking. This is pretty much what all other architectures that do not
-support separate setable address spaces do.
+Add code to traps.c to handle MMU exceptions for the ColdFire.
+Most of this code is from the 2.6.25 kernel BSP code released by
+Freescale.
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Matt Waddel <mwaddel@yahoo.com>
 Acked-by: Kurt Mahan <kmahan@xmission.com>
 ---
- arch/m68k/include/asm/segment.h     |   30 ++++++++++++++++--------------
- arch/m68k/include/asm/thread_info.h |    3 +++
- 2 files changed, 19 insertions(+), 14 deletions(-)
+ arch/m68k/kernel/traps.c |  104 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 104 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/include/asm/segment.h b/arch/m68k/include/asm/segment.h
-index 1a142e9..0fa80e9 100644
---- a/arch/m68k/include/asm/segment.h
-+++ b/arch/m68k/include/asm/segment.h
-@@ -22,23 +22,26 @@ typedef struct {
- } mm_segment_t;
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 89362f2..a76452c 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -706,6 +706,88 @@ create_atc_entry:
+ #endif /* CPU_M68020_OR_M68030 */
+ #endif /* !CONFIG_SUN3 */
  
- #define MAKE_MM_SEG(s)	((mm_segment_t) { (s) })
--#define USER_DS		MAKE_MM_SEG(__USER_DS)
--#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
- 
-+#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
- /*
-  * Get/set the SFC/DFC registers for MOVES instructions
-  */
-+#define USER_DS		MAKE_MM_SEG(__USER_DS)
-+#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
- 
- static inline mm_segment_t get_fs(void)
- {
--#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
- 	mm_segment_t _v;
- 	__asm__ ("movec %/dfc,%0":"=r" (_v.seg):);
--
- 	return _v;
--#else
--	return USER_DS;
--#endif
-+}
++#if defined(CONFIG_COLDFIRE) && defined(CONFIG_MMU)
++#include <asm/mcfmmu.h>
 +
-+static inline void set_fs(mm_segment_t val)
++/*
++ *	The following table converts the FS encoding of a ColdFire
++ *	exception stack frame into the error_code value needed by
++ *	do_fault.
++*/
++static const unsigned char fs_err_code[] = {
++	0,  /* 0000 */
++	0,  /* 0001 */
++	0,  /* 0010 */
++	0,  /* 0011 */
++	1,  /* 0100 */
++	0,  /* 0101 */
++	0,  /* 0110 */
++	0,  /* 0111 */
++	2,  /* 1000 */
++	3,  /* 1001 */
++	2,  /* 1010 */
++	0,  /* 1011 */
++	1,  /* 1100 */
++	1,  /* 1101 */
++	0,  /* 1110 */
++	0   /* 1111 */
++};
++
++static inline void access_errorcf(unsigned int fs, struct frame *fp)
 +{
-+	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
-+			      "movec %0,%/dfc\n\t"
-+			      : /* no outputs */ : "r" (val.seg) : "memory");
- }
- 
- static inline mm_segment_t get_ds(void)
-@@ -47,14 +50,13 @@ static inline mm_segment_t get_ds(void)
-     return KERNEL_DS;
- }
- 
--static inline void set_fs(mm_segment_t val)
--{
--#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
--	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
--			      "movec %0,%/dfc\n\t"
--			      : /* no outputs */ : "r" (val.seg) : "memory");
-+#else
-+#define USER_DS		MAKE_MM_SEG(TASK_SIZE)
-+#define KERNEL_DS	MAKE_MM_SEG(0xFFFFFFFF)
-+#define get_ds()	(KERNEL_DS)
-+#define get_fs()	(current_thread_info()->addr_limit)
-+#define set_fs(x)	(current_thread_info()->addr_limit = (x))
++	unsigned long mmusr, addr;
++	unsigned int err_code;
++	int need_page_fault;
++
++	mmusr = mmu_read(MMUSR);
++	addr = mmu_read(MMUAR);
++
++	/*
++	 * error_code:
++	 *	bit 0 == 0 means no page found, 1 means protection fault
++	 *	bit 1 == 0 means read, 1 means write
++	 */
++	switch (fs) {
++	case  5:  /* 0101 TLB opword X miss */
++		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 0, 0);
++		addr = fp->ptregs.pc;
++		break;
++	case  6:  /* 0110 TLB extension word X miss */
++		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 0, 1);
++		addr = fp->ptregs.pc + sizeof(long);
++		break;
++	case 10:  /* 1010 TLB W miss */
++		need_page_fault = cf_tlb_miss(&fp->ptregs, 1, 1, 0);
++		break;
++	case 14: /* 1110 TLB R miss */
++		need_page_fault = cf_tlb_miss(&fp->ptregs, 0, 1, 0);
++		break;
++	default:
++		/* 0000 Normal  */
++		/* 0001 Reserved */
++		/* 0010 Interrupt during debug service routine */
++		/* 0011 Reserved */
++		/* 0100 X Protection */
++		/* 0111 IFP in emulator mode */
++		/* 1000 W Protection*/
++		/* 1001 Write error*/
++		/* 1011 Reserved*/
++		/* 1100 R Protection*/
++		/* 1101 R Protection*/
++		/* 1111 OEP in emulator mode*/
++		need_page_fault = 1;
++		break;
++	}
++
++	if (need_page_fault) {
++		err_code = fs_err_code[fs];
++		if ((fs == 13) && (mmusr & MMUSR_WF)) /* rd-mod-wr access */
++			err_code |= 2; /* bit1 - write, bit0 - protection */
++		do_page_fault(&fp->ptregs, addr, err_code);
++	}
++}
++#endif /* CONFIG_COLDFIRE CONFIG_MMU */
++
+ asmlinkage void buserr_c(struct frame *fp)
+ {
+ 	/* Only set esp0 if coming from user mode */
+@@ -716,6 +798,28 @@ asmlinkage void buserr_c(struct frame *fp)
+ 	printk ("*** Bus Error *** Format is %x\n", fp->ptregs.format);
  #endif
--}
  
- #define segment_eq(a,b)	((a).seg == (b).seg)
- 
-diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-index 01cef3c..29fa6da 100644
---- a/arch/m68k/include/asm/thread_info.h
-+++ b/arch/m68k/include/asm/thread_info.h
-@@ -3,6 +3,7 @@
- 
- #include <asm/types.h>
- #include <asm/page.h>
-+#include <asm/segment.h>
- 
- /*
-  * On machines with 4k pages we default to an 8k thread size, though we
-@@ -26,6 +27,7 @@ struct thread_info {
- 	struct task_struct	*task;		/* main task structure */
- 	unsigned long		flags;
- 	struct exec_domain	*exec_domain;	/* execution domain */
-+	mm_segment_t		addr_limit;	/* thread address space */
- 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
- 	__u32			cpu;		/* should always be 0 on m68k */
- 	unsigned long		tp_value;	/* thread pointer */
-@@ -39,6 +41,7 @@ struct thread_info {
- {						\
- 	.task		= &tsk,			\
- 	.exec_domain	= &default_exec_domain,	\
-+	.addr_limit	= KERNEL_DS,		\
- 	.preempt_count	= INIT_PREEMPT_COUNT,	\
- 	.restart_block = {			\
- 		.fn = do_no_restart_syscall,	\
++#if defined(CONFIG_COLDFIRE) && defined(CONFIG_MMU)
++	if (CPU_IS_COLDFIRE) {
++		unsigned int fs;
++		fs = (fp->ptregs.vector & 0x3) |
++			((fp->ptregs.vector & 0xc00) >> 8);
++		switch (fs) {
++		case 0x5:
++		case 0x6:
++		case 0x7:
++		case 0x9:
++		case 0xa:
++		case 0xd:
++		case 0xe:
++		case 0xf:
++			access_errorcf(fs, fp);
++			return;
++		default:
++			break;
++		}
++	}
++#endif /* CONFIG_COLDFIRE && CONFIG_MMU */
++
+ 	switch (fp->ptregs.format) {
+ #if defined (CONFIG_M68060)
+ 	case 4:				/* 68060 access error */
 -- 
 1.7.0.4
