@@ -1,138 +1,78 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 35/35] m68k: allow ColdFire 547x and 548x CPUs to be
- built with MMU enabled
-Date: Mon, 26 Dec 2011 20:33:36 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1112262032100.4517@ayla.of.borg>
-References: <1324610148-20666-1-git-send-email-gerg@snapgear.com> <1324610148-20666-36-git-send-email-gerg@snapgear.com> <alpine.DEB.2.00.1112261011590.4517@ayla.of.borg>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 17/35] m68k: define PAGE_OFFSET_RAW for ColdFire CPU with
+ MMU enabled
+Date: Tue, 27 Dec 2011 22:08:58 +1000
+Message-ID: <4EF9B55A.7000106@snapgear.com>
+References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>	<1324610148-20666-18-git-send-email-gerg@snapgear.com> <CAMuHMdUUAsHRWHh4PukFJBM187UB_xj-R5rrs1+WuhtJmEO7tQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from gerard.telenet-ops.be ([195.130.132.48]:42528 "EHLO
-	gerard.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752116Ab1LZTdh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 Dec 2011 14:33:37 -0500
-In-Reply-To: <alpine.DEB.2.00.1112261011590.4517@ayla.of.borg>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:21987 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753241Ab1L0MJU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 27 Dec 2011 07:09:20 -0500
+In-Reply-To: <CAMuHMdUUAsHRWHh4PukFJBM187UB_xj-R5rrs1+WuhtJmEO7tQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-On Mon, 26 Dec 2011, Geert Uytterhoeven wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Date: Mon, 26 Dec 2011 19:57:33 +0100
-> Subject: [PATCH] m68k/Kconfig: Separate classic m68k and coldfire early
-> 
-> While you can build multiplatform kernels for machines with classic
-> m68k processors, you cannot mix support for classic m68k and coldfire
-> processors. To avoid such hybrid kernels, introduce CONFIG_M68KCLASSIC
-> as an antipole for CONFIG_COLDFIRE, and make all specific processor
-> support depend on one of them.
-> All classic m68k machine support also needs to depend on this.
-> 
-> The defaults (CONFIG_M68KCLASSIC if MMU, CONFIG_COLDFIRE if !MMU) are
-> chosen such to make most of the existing configs build and work.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  arch/m68k/Kconfig.cpu     |   63 +++++++++++++++++++++++++--------------------
->  arch/m68k/Kconfig.machine |    4 +++
->  2 files changed, 39 insertions(+), 28 deletions(-)
-> 
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index a4c75ad..58d4b52 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -1,5 +1,34 @@
->  comment "Processor Type"
->  
-> +config M68KCLASSIC
-> +	bool "Classic M68K CPU family support"
-> +	default y if MMU
-> +	help
-> +	  The Freescale (was Motorola) M68K family of processors implements
-> +	  the full 68000 processor instruction set.
-> +	  If you anticipate running this kernel on a computer with a classic
-> +	  MC68xxx processor, say Y. Otherwise, say N.
-> +
-> +config COLDFIRE
-> +	bool "Coldfire CPU family support"
-> +	depends on !M68KCLASSIC
+Hi Geert,
 
-A choice may be a better choice:
+On 12/26/2011 06:15 AM, Geert Uytterhoeven wrote:
+> On Fri, Dec 23, 2011 at 04:15,<gerg@snapgear.com>  wrote:
+>> From: Greg Ungerer<gerg@uclinux.org>
+>>
+>> The ColdFire CPU configurations need PAGE_OFFSET_RAW set to the base of
+>> their RAM. It doesn't matter if they are running with the MMU enabled or
+>> disabled, it is always set to the base of RAM.
+>>
+>> We can keep the choices simple here and key of CONFIG_RAMBASE. If it is
+>> defined we are on a plaftorm (ColdFire or other non-MMU systems) which
+>> have a configurable RAM base, just use it.
+>>
+>> Reported-by: Alexander Stein<alexander.stein@systec-electronic.com>
+>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>> Acked-by: Matt Waddel<mwaddel@yahoo.com>
+>> Acked-by: Kurt Mahan<kmahan@xmission.com>
+>
+> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
+>
+> but see below ...
+>
+>> -#ifdef CONFIG_MMU
+>> -#ifndef CONFIG_SUN3
+>> +#if defined(CONFIG_RAMBASE)
+>> +#define PAGE_OFFSET_RAW	CONFIG_RAMBASE
+>> +#elif !defined(CONFIG_SUN3)
+>>  #define PAGE_OFFSET_RAW	0x00000000
+>>  #else
+>>  #define PAGE_OFFSET_RAW	0x0E000000
+>>  #endif
+>> -#else
+>> -#define PAGE_OFFSET_RAW	CONFIG_RAMBASE
+>> -#endif
+>
+> To avoid alternating between defined and !defined, I'd suggest writing
+> it instead like:
+>
+> #if defined(CONFIG_RAMBASE)
+> #define PAGE_OFFSET_RAW         CONFIG_RAMBASE
+> #elif defined(CONFIG_SUN3)
+> #define PAGE_OFFSET_RAW         0x0E000000
+> #else
+> #define PAGE_OFFSET_RAW         0x00000000
+> #endif
 
->From c9a9a0b9402b2f09da33a963cadff7a6c507a70b Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Dec 2011 20:22:40 +0100
-Subject: [PATCH] m68k/Kconfig: Make CONFIG_M68KCLASSIC/CONFIG_COLDFIRE a choice
+Yep, absolutely, that is nicer. I'll change it to this.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/Kconfig.cpu |   30 +++++++++++++++++-------------
- 1 files changed, 17 insertions(+), 13 deletions(-)
+Thanks
+Greg
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 58d4b52..a022e54 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -1,31 +1,35 @@
- comment "Processor Type"
- 
--config M68KCLASSIC
--	bool "Classic M68K CPU family support"
--	default y if MMU
-+choice
-+	prompt "CPU family support"
-+	default M68KCLASSIC if MMU
-+	default COLDFIRE if !MMU
- 	help
- 	  The Freescale (was Motorola) M68K family of processors implements
- 	  the full 68000 processor instruction set.
-+	  The Freescale ColdFire family of processors is a modern derivitive
-+	  of the 68000 processor family. They are mainly targeted at embedded
-+	  applications, and are all System-On-Chip (SOC) devices, as opposed
-+	  to stand alone CPUs. They implement a subset of the original 68000
-+	  processor instruction set.
- 	  If you anticipate running this kernel on a computer with a classic
--	  MC68xxx processor, say Y. Otherwise, say N.
-+	  MC68xxx processor, select M68KCLASSIC.
-+	  If you anticipate running this kernel on a computer with a ColdFire
-+	  processor, select COLDFIRE.
-+
-+config M68KCLASSIC
-+	bool "Classic M68K CPU family support"
- 
- config COLDFIRE
- 	bool "Coldfire CPU family support"
--	depends on !M68KCLASSIC
- 	select GENERIC_GPIO
- 	select ARCH_REQUIRE_GPIOLIB
- 	select CPU_HAS_NO_BITFIELDS
- 	select CPU_HAS_NO_MULDIV64
- 	select GENERIC_CSUM
--	default y if !MMU
- 	help
--	  The Freescale ColdFire family of processors is a modern derivitive
--	  of the 68000 processor family. They are mainly targeted at embedded
--	  applications, and are all System-On-Chip (SOC) devices, as opposed
--	  to stand alone CPUs. They implement a subset of the original 68000
--	  processor instruction set.
--	  If you anticipate running this kernel on a computer with a ColdFire
--	  processor, say Y. Otherwise, say N.
-+
-+endchoice
- 
- if M68KCLASSIC
- 
--- 
-1.7.0.4
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
