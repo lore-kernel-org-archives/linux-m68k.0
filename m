@@ -1,44 +1,59 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH 32/35] m68k: add ColdFire FPU support for the V4e ColdFire CPU's
-Date: Wed, 28 Dec 2011 13:47:54 +0100
-Message-ID: <m21uroeubp.fsf@igel.home>
-References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>
-	<1324610148-20666-33-git-send-email-gerg@snapgear.com>
-	<CAMuHMdVBGR9p1f_dnk8abYwosvBm9n7j1foaGd+gMESKXm8+Vw@mail.gmail.com>
-	<4EFAAEF3.6010709@snapgear.com>
-	<CAMuHMdWaQstd2PUjuTspcp4vQTTMnQ78yQ8b_x-Yqwch+OfFug@mail.gmail.com>
-	<4EFB0C43.20605@snapgear.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 32/35] m68k: add ColdFire FPU support for the V4e ColdFire
+ CPU's
+Date: Wed, 28 Dec 2011 22:57:00 +1000
+Message-ID: <4EFB121C.9010005@snapgear.com>
+References: <1324610148-20666-1-git-send-email-gerg@snapgear.com>	<1324610148-20666-33-git-send-email-gerg@snapgear.com> <CAMuHMdVBGR9p1f_dnk8abYwosvBm9n7j1foaGd+gMESKXm8+Vw@mail.gmail.com> <4EFAAEF3.6010709@snapgear.com> <11354AB9-D311-41E8-9009-CF2DC3F9FA7A@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:50511 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751356Ab1L1Mr7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 28 Dec 2011 07:47:59 -0500
-In-Reply-To: <4EFB0C43.20605@snapgear.com> (Greg Ungerer's message of "Wed, 28
-	Dec 2011 22:32:03 +1000")
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:28789 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752437Ab1L1M6h (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 28 Dec 2011 07:58:37 -0500
+In-Reply-To: <11354AB9-D311-41E8-9009-CF2DC3F9FA7A@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
+To: Joshua Juran <jjuran@gmail.com>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Greg Ungerer <gerg@snapgear.com> writes:
+Hi Joshua,
 
-> But even still, compiling with -m68040 causes gcc to generate
-> different code than compiling without it (so effectively with m68020).
-> In cases I looked at the instructions used where still fine to run
-> on either, so nothing specific to the 68040 was generated. But if
-> anything ever was then again the ".chip 68k" would cause an error
-> out. I guess there isn't much extra in the 68040... move16, anything
-> else?  I guess gcc will never generate that in practice, so it is
-> not a problem.
+On 12/28/2011 09:17 PM, Joshua Juran wrote:
+> On Dec 27, 2011, at 9:53 PM, Greg Ungerer wrote:
+>
+>>          if (CPU_IS_COLDFIRE) {
+>>                  __asm__ volatile ("fsave %0"
+>>                                    : : "m" (*sc->sc_fpstate) :
+>> "memory");
+>>          } else {
+>>                  __asm__ volatile (".chip 68k/68881\n\t"
+>>                                    "fsave %0\n\t"
+>>                                    ".chip 68k"
+>>                                    : : "m" (*sc->sc_fpstate) :
+>> "memory");
+>>          }
+>>
+>> I am still concerned about the use of ".chip 68k" in general though.
+>> Just not sure how we can avoid it. I guess there is no way to jus
+>> t revert to the original CPU choice?
+>
+> #define CPU "68040"
+>
+> _asm__ volatile (".chip 68k/68881\n\t"
+>                    "fsave %0\n\t"
+>                    ".chip " CPU
+>                    : : "m" (*sc->sc_fpstate) : "memory");
 
-The only 040 specific insn that gcc would generate are the fpu insns,
-but the kernel does not use any floating point.
+Possibly.
 
-Andreas.
+Regards
+Greg
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
