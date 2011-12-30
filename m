@@ -1,153 +1,90 @@
-From: Andrei Fateev <ogaego@yahoo.com>
-Subject: Please see attached letter
-Date: Thu, 29 Dec 2011 11:58:46 -0800 (PST)
-Message-ID: <1325188726.29189.YahooMailClassic@web160905.mail.bf1.yahoo.com>
-Reply-To: fateev.andrei86@yahoo.co.uk
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] m68knommu: add missing make rule for Palm/Pilot bitmap
+ boot logo
+Date: Fri, 30 Dec 2011 10:30:44 +1000
+Message-ID: <4EFD0634.4000102@snapgear.com>
+References: <1324537383-16741-1-git-send-email-gerg@snapgear.com> <CAMuHMdVjEn2cNvPCYegp3gweNp_98XjPvoBEf20J5jQ++UNLkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1879531-883438299-1325188726=:29189"
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:21065 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754910Ab1L3AbZ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 29 Dec 2011 19:31:25 -0500
+In-Reply-To: <CAMuHMdVjEn2cNvPCYegp3gweNp_98XjPvoBEf20J5jQ++UNLkA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
----1879531-883438299-1325188726=:29189
-Content-Type: text/plain; charset=us-ascii
+Hi Geert,
+
+On 22/12/11 17:18, Geert Uytterhoeven wrote:
+> On Thu, Dec 22, 2011 at 08:03,<gerg@snapgear.com>  wrote:
+>> From: Greg Ungerer<gerg@uclinux.org>
+>>
+>> Compiling for the m68knommu/68328 Palm/Pilot target you get:
+>>
+>> arch/m68k/platform/68328/head-pilot.o
+>> arch/m68k/platform/68328/head-pilot.S:37:23: fatal error: bootlogo.r=
+h: No such file or directory
+>>
+>> The Makefile contains rules to make the bootlogo.rh file from the C =
+source
+>> bootlogo.h. But it is missing a dependency that compiling head-pilot=
+=2ES needs
+>> bootlogo.rh.
+>>
+>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>> ---
+>> arch/m68k/platform/68328/Makefile | =C3=A1 =C3=A13 +++
+>> 1 files changed, 3 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/arch/m68k/platform/68328/Makefile b/arch/m68k/platform/=
+68328/Makefile
+>> index e4dfd8f..704e36d 100644
+>> --- a/arch/m68k/platform/68328/Makefile
+>> +++ b/arch/m68k/platform/68328/Makefile
+>> @@ -16,6 +16,9 @@ obj-$(CONFIG_ROM) +=3D romvec.o
+>>  extra-y		   :=3D head.o
+>>  extra-$(CONFIG_M68328) +=3D bootlogo.rh head.o
+>>
+>> +$(obj)/head-pilot.o: $(obj)/bootlogo.rh
+>> +$(obj)/head-rom.o: $(obj)/bootlogo.rh
+>> +
+>>  $(obj)/bootlogo.rh: $(src)/bootlogo.h
+>>  	perl $(src)/bootlogo.pl<  $(src)/bootlogo.h>  $(obj)/bootlogo.rh
+>
+> Nothing serious, you just made me wondering:
+>   1. Any chance bootlogo.h can be generated from a more edit-friendly=
+ format,
+>      cfr. drivers/video/logo/?
+
+Looking at this I think you are right. This could be in the same way
+with all the others in drivers/video/logo.
 
 
----1879531-883438299-1325188726=:29189
-Content-Type: application/msword; name="MY BUSINESS PROPOSITION.rtf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="MY BUSINESS PROPOSITION.rtf"
+>   2. Why do you include the *.rh file from an assembler source file, =
+instead of
+>      including the *.h file from a C source file?
 
-e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcdWMxXGRlZmYwXHN0c2hmZGJjaDBc
-c3RzaGZsb2NoMFxzdHNoZmhpY2gwXHN0c2hmYmkwXGRlZmxhbmcxMDMzXGRl
-ZmxhbmdmZTEwMzN7XGZvbnR0Ymx7XGYwXGZyb21hblxmY2hhcnNldDBcZnBy
-cTJ7XCpccGFub3NlIDAyMDIwNjAzMDUwNDA1MDIwMzA0fVRpbWVzIE5ldyBS
-b21hbjt9e1xmMzZcZnJvbWFuXGZjaGFyc2V0MjM4XGZwcnEyIFRpbWVzIE5l
-dyBSb21hbiBDRTt9DQp7XGYzN1xmcm9tYW5cZmNoYXJzZXQyMDRcZnBycTIg
-VGltZXMgTmV3IFJvbWFuIEN5cjt9e1xmMzlcZnJvbWFuXGZjaGFyc2V0MTYx
-XGZwcnEyIFRpbWVzIE5ldyBSb21hbiBHcmVlazt9e1xmNDBcZnJvbWFuXGZj
-aGFyc2V0MTYyXGZwcnEyIFRpbWVzIE5ldyBSb21hbiBUdXI7fXtcZjQxXGZy
-b21hblxmY2hhcnNldDE3N1xmcHJxMiBUaW1lcyBOZXcgUm9tYW4gKEhlYnJl
-dyk7fQ0Ke1xmNDJcZnJvbWFuXGZjaGFyc2V0MTc4XGZwcnEyIFRpbWVzIE5l
-dyBSb21hbiAoQXJhYmljKTt9e1xmNDNcZnJvbWFuXGZjaGFyc2V0MTg2XGZw
-cnEyIFRpbWVzIE5ldyBSb21hbiBCYWx0aWM7fXtcZjQ0XGZyb21hblxmY2hh
-cnNldDE2M1xmcHJxMiBUaW1lcyBOZXcgUm9tYW4gKFZpZXRuYW1lc2UpO319
-e1xjb2xvcnRibDtccmVkMFxncmVlbjBcYmx1ZTA7XHJlZDBcZ3JlZW4wXGJs
-dWUyNTU7XHJlZDBcZ3JlZW4yNTVcYmx1ZTI1NTsNClxyZWQwXGdyZWVuMjU1
-XGJsdWUwO1xyZWQyNTVcZ3JlZW4wXGJsdWUyNTU7XHJlZDI1NVxncmVlbjBc
-Ymx1ZTA7XHJlZDI1NVxncmVlbjI1NVxibHVlMDtccmVkMjU1XGdyZWVuMjU1
-XGJsdWUyNTU7XHJlZDBcZ3JlZW4wXGJsdWUxMjg7XHJlZDBcZ3JlZW4xMjhc
-Ymx1ZTEyODtccmVkMFxncmVlbjEyOFxibHVlMDtccmVkMTI4XGdyZWVuMFxi
-bHVlMTI4O1xyZWQxMjhcZ3JlZW4wXGJsdWUwO1xyZWQxMjhcZ3JlZW4xMjhc
-Ymx1ZTA7DQpccmVkMTI4XGdyZWVuMTI4XGJsdWUxMjg7XHJlZDE5MlxncmVl
-bjE5MlxibHVlMTkyO317XHN0eWxlc2hlZXR7XHFsIFxsaTBccmkwXHdpZGN0
-bHBhclxhc3BhbHBoYVxhc3BudW1cZmFhdXRvXGFkanVzdHJpZ2h0XHJpbjBc
-bGluMFxpdGFwMCBcZnMyNFxsYW5nMTAzM1xsYW5nZmUxMDMzXGNncmlkXGxh
-bmducDEwMzNcbGFuZ2ZlbnAxMDMzIFxzbmV4dDAgXHN0eXJzaWQ4NDYwNTE2
-IE5vcm1hbDt9e1wqXGNzMTAgXGFkZGl0aXZlIA0KXHNzZW1paGlkZGVuIERl
-ZmF1bHQgUGFyYWdyYXBoIEZvbnQ7fXtcKlx0czExXHRzcm93ZFx0cmZ0c1dp
-ZHRoQjNcdHJwYWRkbDEwOFx0cnBhZGRyMTA4XHRycGFkZGZsM1x0cnBhZGRm
-dDNcdHJwYWRkZmIzXHRycGFkZGZyM1x0cmNicGF0MVx0cmNmcGF0MVx0c2Nl
-bGx3aWR0aGZ0czBcdHN2ZXJ0YWx0XHRzYnJkcnRcdHNicmRybFx0c2JyZHJi
-XHRzYnJkcnJcdHNicmRyZGdsXHRzYnJkcmRnclx0c2JyZHJoXHRzYnJkcnYg
-DQpccWwgXGxpMFxyaTBcd2lkY3RscGFyXGFzcGFscGhhXGFzcG51bVxmYWF1
-dG9cYWRqdXN0cmlnaHRccmluMFxsaW4wXGl0YXAwIFxmczIwXGxhbmcxMDI0
-XGxhbmdmZTEwMjRcY2dyaWRcbGFuZ25wMTAyNFxsYW5nZmVucDEwMjQgXHNu
-ZXh0MTEgXHNzZW1paGlkZGVuIE5vcm1hbCBUYWJsZTt9fXtcKlxsYXRlbnRz
-dHlsZXNcbHNkc3RpbWF4MTU2XGxzZGxvY2tlZGRlZjB9e1wqXHJzaWR0Ymwg
-XHJzaWQ0MDczNTFccnNpZDY2MDMyOA0KXHJzaWQ3MzcxOTlccnNpZDE4NjE4
-NTZccnNpZDM2MTc0MDVccnNpZDM2ODkzMDNccnNpZDY1NjAzMzRccnNpZDcy
-ODU4NThccnNpZDc0MDY5NzZccnNpZDc3Mzk4MzRccnNpZDc4OTYzNzZccnNp
-ZDgyMjA5NDhccnNpZDgzMjM2ODlccnNpZDg0NjA1MTZccnNpZDEwNzY5ODky
-XHJzaWQxMDk2MDEwN1xyc2lkMTE2OTM0MjlccnNpZDEyMTI1MjY5XHJzaWQx
-MjQ2NjQxMFxyc2lkMTI2ODA3OTJccnNpZDEzMjYxODc3XHJzaWQxNDgzMDMw
-Mw0KXHJzaWQxNDg4MzQxNlxyc2lkMTUzMzg3ODJ9e1wqXGdlbmVyYXRvciBN
-aWNyb3NvZnQgV29yZCAxMS4wLjU2MDQ7fXtcaW5mb3tcYXV0aG9yIEVLRU5F
-fXtcb3BlcmF0b3IgRUtFTkV9e1xjcmVhdGltXHlyMjAxMVxtbzlcZHk0XGhy
-MTRcbWluMTJ9e1xyZXZ0aW1ceXIyMDExXG1vMTFcZHkyOFxocjVcbWluNTh9
-e1x2ZXJzaW9uNDd9e1xlZG1pbnMxMjV9e1xub2ZwYWdlczF9e1xub2Z3b3Jk
-czI3N317XG5vZmNoYXJzMTU4NH0NCntcbm9mY2hhcnN3czE4NTh9e1x2ZXJu
-MjQ2ODl9fVx3aWRvd2N0cmxcZnRuYmpcYWVuZGRvY1xub3hsYXR0b3llblxl
-eHBzaHJ0blxub3VsdHJsc3BjXGRudGJsbnNiZGJcbm9zcGFjZWZvcnVsXGh5
-cGhjYXBzMFxob3J6ZG9jXGRnaHNwYWNlMTIwXGRndnNwYWNlMTIwXGRnaG9y
-aWdpbjE3MDFcZGd2b3JpZ2luMTk4NFxkZ2hzaG93MFxkZ3ZzaG93Mw0KXGpj
-b21wcmVzc1x2aWV3a2luZDRcdmlld3NjYWxlMTAwXG5vbG5odGFkanRibFxy
-c2lkcm9vdDgyMjA5NDggXGZldDBcc2VjdGQgXGxpbmV4MFxzZWN0ZGVmYXVs
-dGNsXHNmdG5iaiB7XCpccG5zZWNsdmwxXHBudWNybVxwbnN0YXJ0MVxwbmlu
-ZGVudDcyMFxwbmhhbmcge1xwbnR4dGEgLn19e1wqXHBuc2VjbHZsMlxwbnVj
-bHRyXHBuc3RhcnQxXHBuaW5kZW50NzIwXHBuaGFuZyB7XHBudHh0YSAufX17
-XCpccG5zZWNsdmwzDQpccG5kZWNccG5zdGFydDFccG5pbmRlbnQ3MjBccG5o
-YW5nIHtccG50eHRhIC59fXtcKlxwbnNlY2x2bDRccG5sY2x0clxwbnN0YXJ0
-MVxwbmluZGVudDcyMFxwbmhhbmcge1xwbnR4dGEgKX19e1wqXHBuc2VjbHZs
-NVxwbmRlY1xwbnN0YXJ0MVxwbmluZGVudDcyMFxwbmhhbmcge1xwbnR4dGIg
-KH17XHBudHh0YSApfX17XCpccG5zZWNsdmw2XHBubGNsdHJccG5zdGFydDFc
-cG5pbmRlbnQ3MjBccG5oYW5nIHtccG50eHRiICh9e1xwbnR4dGEgKX19DQp7
-XCpccG5zZWNsdmw3XHBubGNybVxwbnN0YXJ0MVxwbmluZGVudDcyMFxwbmhh
-bmcge1xwbnR4dGIgKH17XHBudHh0YSApfX17XCpccG5zZWNsdmw4XHBubGNs
-dHJccG5zdGFydDFccG5pbmRlbnQ3MjBccG5oYW5nIHtccG50eHRiICh9e1xw
-bnR4dGEgKX19e1wqXHBuc2VjbHZsOVxwbmxjcm1ccG5zdGFydDFccG5pbmRl
-bnQ3MjBccG5oYW5nIHtccG50eHRiICh9e1xwbnR4dGEgKX19XHBhcmRccGxh
-aW4gDQpccWwgXGxpMFxyaTBcd2lkY3RscGFyXGFzcGFscGhhXGFzcG51bVxm
-YWF1dG9cYWRqdXN0cmlnaHRccmluMFxsaW4wXGl0YXAwXHBhcmFyc2lkNzcz
-OTgzNCBcZnMyNFxsYW5nMTAzM1xsYW5nZmUxMDMzXGNncmlkXGxhbmducDEw
-MzNcbGFuZ2ZlbnAxMDMzIHtcaW5zcnNpZDc3Mzk4MzQgICAgICAgICAgICAg
-ICAgICAgICAgICAgIENPTkZJREVOVElBTCBMRVRURVIhIA0KXHBhciANClxw
-YXIgRlJPTTogTXIuIH17XGluc3JzaWQxMjY4MDc5MiBBbmRyZWkgRmF0ZWV2
-Ln17XGluc3JzaWQ3NzM5ODM0IA0KXHBhciANClxwYXIgQVRURU5USU9OOiAg
-DQpccGFyIA0KXHBhciBJIGFtIGNvbnZpbmNlZCBvbiB0aGUgZmFjdCB0aGF0
-IHRoaXMgbGV0dGVyIHdpbGwgY29tZSB0byB5b3UgYXMgYSBzdXJwcmlzZWQs
-IHRob3VnaCBJIGFtIHdyaXRpbmcgeW91IGJhc2VkIG9uIHRoZSBwcml2aWxl
-Z2UgaW5mb3JtYXRpb24gSSBnYXRoZXJlZCBhYm91dCB5b3VyIGNvbXBhbnlc
-cnF1b3RlIA0KcyBwcm9maWxlIGZyb20gdGhlIGJ1c2luZXNzIGRpcmVjdG9y
-eSBhcyB3ZWxsIGFzIG15IHBlcnNvbmFsIGNvbnZpY3Rpb24gb2YgdHJ1c3Qg
-YW5kIGNvbmZpZGVuY2UgdGhhdCB3ZSBjYW4gY28tb3BlcmF0ZSB3aXRoIGVh
-Y2ggb3RoZXIgYW5kIGRvIGEgdmVyeSBsdWNyYXRpdmUgYnVzaW5lc3MgZm9y
-IG91ciBtdXR1YWwgYmVuZWZpdC4gDQpccGFyIA0KXHBhciBNeSBuYW1lIGlz
-IH17XGluc3JzaWQxMjY4MDc5MiBNci4gQW5kcmVpIEZhdGVldn17XGluc3Jz
-aWQ3NzM5ODM0ICwgfXtcaW5zcnNpZDE1MzM4NzgyIGF9e1xpbnNyc2lkMTI2
-ODA3OTIgbiBBdXN0cmFsaWFufXtcaW5zcnNpZDc3Mzk4MzQgDQogY2l0aXpl
-biBhbmQgd29yayBhcyBhbiBBdWRpdG9yIGluIHRoZSBEZXBhcnRtZW50IG9m
-IEZvcmVpZ24gT3BlcmF0aW9ucyBvZiBBbHBoYSBCYW5rIExvbmRvbiwgVW5p
-dGVkIEtpbmdkb20uIEkgaGF2ZSBhIGNvbmZpZGVudGlhbCBidXN9e1xpbnNy
-c2lkMTQ4ODM0MTYgaX17XGluc3JzaWQ3NDA2OTc2IG5lc3MgcHJvcG9zYWwg
-aW4gdGhlIHR1bmUgb2YgXCdhMzV9e1xpbnNyc2lkMTQ4ODM0MTYgLDgwMCww
-MDAuMDAgKH17DQpcaW5zcnNpZDc0MDY5NzYgRml2ZX17XGluc3JzaWQ3NzM5
-ODM0ICBNaWxsaW9uLCBFaWdodCBIdW5kcmVkIFRob3VzYW5kIEJyaXRpc2gg
-UG91bmRzIFN0ZXJsaW5nIE9ubHkpIG9mDQogd2hpY2ggSSBhbSBwcmVwYXJl
-ZCB0byBsZWdpdGltYXRlbHkgdHJhbnNmZXIgdW5kZXIgeW91ciBuYW1lIHVw
-b24geW91ciBhY2NlcHRhbmNlIHRvIGFzc2lzdCBtZSBpbiBjbGFpbWluZyB0
-aGlzIGh1Z2UgYW1vdW50IG9mIG1vbmV5IG91dCBvZiBteSBiYW5rIHRvIGFu
-eSBvZiB5b3VyIG5vbWluYXRlZCBiYW5rIGFjY291bnQgdGhyb3VnaCBhIGxl
-Z2l0aW1hdGUgZnVuZHMgdHJhbnNmZXIgcHJvY2VkdXJlcyBpbiBhY2NvcmRh
-bmNlIHdpdGggdGgNCmUgQnJpdGlzaCBMZWdhbCBTeXN0ZW0sIG90aGVyd2lz
-ZSBJIHdpbGwgbG9zZSB0aGVzZSBlbnRpcmUgbW9uZXkgaW4gdGhlIGhhbmRz
-IG9mIGNlcnRhaW4gZ3JvdXAgb2YgY29ycnVwdHMsIGRlc3BlcmF0ZSBhbmQg
-c2VsZi1zZXJ2aW5nIEJyaXRpc2ggb2ZmaWNpYWxzIHdpdGhpbiB0aGUgcHJl
-c2VudCBnb3Zlcm5tZW50IG9mIEJyaXRpc2ggUHJpbWUgTWluaXN0ZXIgRGF2
-aWQgQ2FtZXJvbi4NClxwYXIgDQpccGFyIH1ccGFyZCBccWwgXGxpMFxyaTBc
-d2lkY3RscGFyXGFzcGFscGhhXGFzcG51bVxmYWF1dG9cYWRqdXN0cmlnaHRc
-cmluMFxsaW4wXGl0YXAwXHBhcmFyc2lkNzQwNjk3NiB7XGluc3JzaWQ3NDA2
-OTc2IEtpbmRseSBzaWduaWZ5IHlvdXIgd2lsbGluZ25lc3MgdG8gaGVscCBt
-ZSBmb3IgdGhlIGxlZ2l0aW1hdGUgdHJhbnNmZXIgb2YgDQp0aGVzZSBmdW5k
-cyBieSBzZW5kaW5nIG1lIHlvdXIgcmVzcG9uc2Ugd2l0aCB0aGUgZm9sbG93
-aW5nIGluZm9ybWF0aW9uLg0KXHBhciB9XHBhcmQgXHFsIFxsaTBccmkwXHdp
-ZGN0bHBhclxhc3BhbHBoYVxhc3BudW1cZmFhdXRvXGFkanVzdHJpZ2h0XHJp
-bjBcbGluMFxpdGFwMFxwYXJhcnNpZDc3Mzk4MzQge1xpbnNyc2lkNzczOTgz
-NCANClxwYXIgMS5cdGFiIFlvdXIgY29tcGxldGUgbmFtZSBhbmQgY29udGFj
-dCBhZGRyZXNzDQpccGFyIDIuXHRhYiBZb3VyIHBlcnNvbmFsIHRlbGVwaG9u
-ZSBudW1iZXIgYW5kIHlvdXIgb2NjdXBhdGlvbg0KXHBhciANClxwYXIgQXMg
-c29vbiBhcyBJIHJlY2VpdmUgeW91ciByZXNwb25zZSB3aXRoIHRoZSBhYm92
-ZSByZXF1ZXN0ZWQgaW5mb3JtYXRpb24sIHRoZW4gSSB3aWxsIGJlIGNvbnZp
-bmNlZCB0byBlbnRydXN0IHlvdSB3aXRoIG1vcmUgZGV0YWlsIGluZm9ybWF0
-aW9uIG9uIGhvdyB3ZSBzaGFsbCBpbW1lZGlhdGVseSBwcm9jZWVkIGFuZCBj
-bGFpbSB0aGlzIG1vbmV5IGZvciB1cyB0byBzaGFyZSBpbiB0aGUgcmF0aW8g
-b2YgMzAlIGZvciB5bw0KdSBhbmQgNzAlIGZvciBtZS4NClxwYXIgSSBsb29r
-IGZvcndhcmQgdG8gcmVjZWl2aW5nIHlvdXIgcHJvbXB0IHJlc3BvbnNlLCBp
-ZiB5b3UgYXJlIGludGVyZXN0ZWQgaW4gZ29pbmcgaW50byBwYXJ0bmVyc2hp
-cCB3aXRoIG1lLg0KXHBhciANClxwYXIgVGhhbmsgeW91LA0KXHBhciB9XHBh
-cmQgXHFsIFxsaTBccmkwXHdpZGN0bHBhclxhc3BhbHBoYVxhc3BudW1cZmFh
-dXRvXGFkanVzdHJpZ2h0XHJpbjBcbGluMFxpdGFwMFxwYXJhcnNpZDE1MzM4
-NzgyIHtcaW5zcnNpZDEyNjgwNzkyIE1yLiBBbmRyZWkgRmF0ZWV2Ln17XGlu
-c3JzaWQxMjY4MDc5MlxjaGFycnNpZDgyMjA5NDggDQpccGFyIH19
+Although the fix involves more change to do it in C code, at least
+it improves this code a little :-)  So I have a different patch to fix
+this that does it this way. Sending patch after this.
 
----1879531-883438299-1325188726=:29189--
+Regards
+Greg
+
+
+-----------------------------------------------------------------------=
+-
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
+m
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
+8
+8 Gardner Close                             FAX:         +61 7 3217 532=
+3
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
+m
