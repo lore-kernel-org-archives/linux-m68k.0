@@ -1,270 +1,159 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH] Input: q40kbd - convert driver to the split model
-Date: Fri, 30 Dec 2011 17:11:11 -0800
-Message-ID: <20111231010814.7392.52389.stgit__28618.3079857894$1325294223$gmane$org@hammer.corenet.prv>
+From: sfjro@users.sourceforge.net
+Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
+Date: Sat, 31 Dec 2011 13:46:57 +0900
+Message-ID: <9569.1325306817@jrobl>
+References: <1325264773.13595.133.camel@deadeye>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <aufs-users-bounces@lists.sourceforge.net>
+In-Reply-To: <1325264773.13595.133.camel@deadeye>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/aufs-users>,
+	<mailto:aufs-users-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=aufs-users>
+List-Post: <mailto:aufs-users@lists.sourceforge.net>
+List-Help: <mailto:aufs-users-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/aufs-users>,
+	<mailto:aufs-users-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: aufs-users-bounces@lists.sourceforge.net
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: aufs-users@lists.sourceforge.net, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org, Debian kernel team <debian-kernel@lists.debian.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-input@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Convert the driver to standard spilt model arch-specific code registers
-platform device to which driver code can bind later.
 
-Also request IRQ immediately upon binding to the device instead of doing
-this when serio port is being opened.
+Hello Ben,
 
-Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
----
+Ben Hutchings:
+> AUFS_NAME is only defined in aufs_type.h but pr_fmt may be used in
+> headers included before aufs_type.h.
 
-Not tested as I don't have the hardware...
+Thanx for bug reporting and a patch.
 
- arch/m68k/q40/config.c       |   12 ++++
- drivers/input/serio/q40kbd.c |  134 ++++++++++++++++++++++++------------------
- 2 files changed, 87 insertions(+), 59 deletions(-)
+I don't think the "current" macro will be a problem, but I want you to
+test this patch since I don't have m68k environment.
+It introduces a new separated file include/linux/aufs_name.h.
+If you (any of you) think this new file is not a good idea, please let
+me know.
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index ad10fec..27d3f76 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -24,6 +24,7 @@
- #include <linux/rtc.h>
- #include <linux/vt_kern.h>
- #include <linux/bcd.h>
-+#include <linux/platform_device.h>
+
+J. R. Okajima
+
+diff --git a/Documentation/filesystems/aufs/README b/Documentation/filesystems/aufs/README
+index 420faeb..058f95e 100644
+--- a/Documentation/filesystems/aufs/README
++++ b/Documentation/filesystems/aufs/README
+@@ -213,7 +213,7 @@ If you don't like aufs2-standalone.patch, then try aufs2-2.6 tree.
+   path on the branch fs.
+ - apply ./aufs2-standalone.patch too, if you have a plan to set
+   CONFIG_AUFS_FS=m. otherwise you don't need ./aufs2-standalone.patch.
+-- copy ./{Documentation,fs,include/linux/aufs_type.h} files to your
++- copy ./{Documentation,fs,include/linux/*.h} files to your
+   kernel source tree. Never copy ./include/linux/Kbuild.
+ - enable CONFIG_EXPERIMENTAL and CONFIG_AUFS_FS, you can select either
+   =m or =y.
+@@ -240,12 +240,12 @@ If you don't like aufs2-standalone.patch, then try aufs2-2.6 tree.
+   + run "make install" to install the aufs module, or copy the built
+     ./aufs.ko to /lib/modules/... and run depmod -a (or reboot simply).
+   + run "make headers_install" to install the aufs header file (you can
+-    specify DESTDIR), or copty ./usr/include/linux/aufs_type.h to
++    specify DESTDIR), or copty ./usr/include/linux/*.h to
+     /usr/include/linux or wherever you like.
+ - no need to apply aufs2-kbuild.patch, nor copying source files to your
+   kernel source tree.
  
- #include <asm/io.h>
- #include <asm/rtc.h>
-@@ -329,3 +330,14 @@ static int q40_set_rtc_pll(struct rtc_pll_info *pll)
- 	} else
- 		return -EINVAL;
- }
+-Note: The haeder file aufs_type.h is necessary to build aufs2-util
++Note: The aufs haeder files under include/linux are necessary to build aufs2-util
+       as well as "make headers_install" in the kernel source tree.
+       headers_install is subject to be forgotten, but it is essentially
+       necessary, not only for building aufs2-util.
+@@ -255,7 +255,7 @@ Note: The haeder file aufs_type.h is necessary to build aufs2-util
+ And then,
+ - read README in aufs2-util, build and install it.
+ - note that your distribution may contain an obsoleted version of
+-  aufs_type.h in /usr/include/linux or something. When you build aufs
++  aufs header files in /usr/include/linux or something. When you build aufs
+   utilities, make sure that your compiler refers the correct aufs header
+   file which is built by "make headers_install."
+ - if you want to use readdir(3) in userspace or pathconf(3) wrapper,
+diff --git a/fs/aufs/Makefile b/fs/aufs/Makefile
+index 0a757f4..b63f12a 100644
+--- a/fs/aufs/Makefile
++++ b/fs/aufs/Makefile
+@@ -9,6 +9,7 @@ endif
+ # enable pr_debug
+ ccflags-y += -DDEBUG
+ # sparse doesn't allow spaces
++ccflags-y += -imacros linux/aufs_name.h
+ ccflags-y += -D'pr_fmt(fmt)=AUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__func__,__LINE__,current->comm,current->pid'
+ 
+ obj-$(CONFIG_AUFS_FS) += aufs.o
+diff --git a/include/linux/Kbuild b/include/linux/Kbuild
+index 4268c75..60bd38d 100644
+--- a/include/linux/Kbuild
++++ b/include/linux/Kbuild
+@@ -34,6 +34,7 @@ header-y += atmppp.h
+ header-y += atmsap.h
+ header-y += atmsvc.h
+ header-y += atm_zatm.h
++header-y += aufs_name.h
+ header-y += aufs_type.h
+ header-y += auto_fs4.h
+ header-y += ax25.h
+diff --git a/include/linux/aufs_name.h b/include/linux/aufs_name.h
+new file mode 100644
+index 0000000..838cc43
+--- /dev/null
++++ b/include/linux/aufs_name.h
+@@ -0,0 +1,25 @@
++/*
++ * Copyright (C) 2011 Junjiro R. Okajima
++ *
++ * This program, aufs is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
 +
-+static struct platform_device q40_kbd_pdev = {
-+	.name	= "q40kbd",
-+	.id	= -1,
-+};
++#ifndef __AUFS_NAME_H__
++#define __AUFS_NAME_H__
 +
-+static __init int q40_add_kbd_device(void)
-+{
-+	return platform_device_register(&q40_kbd_pdev);
-+}
-+arch_initcall(q40_add_kbd_device);
-diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40kbd.c
-index 5eb84b3..1e61dd4 100644
---- a/drivers/input/serio/q40kbd.c
-+++ b/drivers/input/serio/q40kbd.c
-@@ -44,26 +44,31 @@
- #include <asm/irq.h>
- #include <asm/q40ints.h>
- 
-+#define DRV_NAME	"q40kbd"
++/* fs/aufs/Makefile refers this macro */
++#define AUFS_NAME		"aufs"
 +
- MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
- MODULE_DESCRIPTION("Q40 PS/2 keyboard controller driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
++#endif /* __AUFS_NAME_H__ */
+diff --git a/include/linux/aufs_type.h b/include/linux/aufs_type.h
+index ca4a6be..6f23223 100644
+--- a/include/linux/aufs_type.h
++++ b/include/linux/aufs_type.h
+@@ -28,6 +28,7 @@
+ #include <stdint.h>
+ #include <sys/types.h>
+ #endif
++#include <linux/aufs_name.h>
  
--static DEFINE_SPINLOCK(q40kbd_lock);
--static struct serio *q40kbd_port;
--static struct platform_device *q40kbd_device;
-+struct q40kbd {
-+	struct serio *port;
-+	spinlock_t lock;
-+};
+ #define AUFS_VERSION	"2.2-stdalone-35-lktr-YyyyMmDd"
  
- static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
- {
-+	struct q40kbd *q40kbd = dev_id;
- 	unsigned long flags;
+@@ -58,7 +59,6 @@ typedef int16_t aufs_bindex_t;
  
--	spin_lock_irqsave(&q40kbd_lock, flags);
-+	spin_lock_irqsave(&q40kbd->lock, flags);
+ /* ---------------------------------------------------------------------- */
  
- 	if (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG))
--		serio_interrupt(q40kbd_port, master_inb(KEYCODE_REG), 0);
-+		serio_interrupt(q40kbd->port, master_inb(KEYCODE_REG), 0);
+-#define AUFS_NAME		"aufs"
+ #define AUFS_FSTYPE		AUFS_NAME
  
- 	master_outb(-1, KEYBOARD_UNLOCK_REG);
- 
--	spin_unlock_irqrestore(&q40kbd_lock, flags);
-+	spin_unlock_irqrestore(&q40kbd->lock, flags);
- 
- 	return IRQ_HANDLED;
- }
-@@ -72,17 +77,23 @@ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
-  * q40kbd_flush() flushes all data that may be in the keyboard buffers
-  */
- 
--static void q40kbd_flush(void)
-+static void q40kbd_flush(struct q40kbd *q40kbd)
- {
- 	int maxread = 100;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&q40kbd_lock, flags);
-+	spin_lock_irqsave(&q40kbd->lock, flags);
- 
- 	while (maxread-- && (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG)))
- 		master_inb(KEYCODE_REG);
- 
--	spin_unlock_irqrestore(&q40kbd_lock, flags);
-+	spin_unlock_irqrestore(&q40kbd->lock, flags);
-+}
-+
-+static void q40kbd_stop(struct q40kbd *q40kbd)
-+{
-+	master_outb(0, KEY_IRQ_ENABLE_REG);
-+	master_outb(-1, KEYBOARD_UNLOCK_REG);
- }
- 
- /*
-@@ -92,12 +103,9 @@ static void q40kbd_flush(void)
- 
- static int q40kbd_open(struct serio *port)
- {
--	q40kbd_flush();
-+	struct q40kbd *q40kbd = port->port_data;
- 
--	if (request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0, "q40kbd", NULL)) {
--		printk(KERN_ERR "q40kbd.c: Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
--		return -EBUSY;
--	}
-+	q40kbd_flush(q40kbd);
- 
- 	/* off we go */
- 	master_outb(-1, KEYBOARD_UNLOCK_REG);
-@@ -108,35 +116,68 @@ static int q40kbd_open(struct serio *port)
- 
- static void q40kbd_close(struct serio *port)
- {
--	master_outb(0, KEY_IRQ_ENABLE_REG);
--	master_outb(-1, KEYBOARD_UNLOCK_REG);
--	free_irq(Q40_IRQ_KEYBOARD, NULL);
-+	struct q40kbd *q40kbd = port->port_data;
- 
--	q40kbd_flush();
-+	q40kbd_stop(q40kbd);
-+	q40kbd_flush(q40kbd);
- }
- 
--static int __devinit q40kbd_probe(struct platform_device *dev)
-+static int __devinit q40kbd_probe(struct platform_device *pdev)
- {
--	q40kbd_port = kzalloc(sizeof(struct serio), GFP_KERNEL);
--	if (!q40kbd_port)
--		return -ENOMEM;
--
--	q40kbd_port->id.type	= SERIO_8042;
--	q40kbd_port->open	= q40kbd_open;
--	q40kbd_port->close	= q40kbd_close;
--	q40kbd_port->dev.parent	= &dev->dev;
--	strlcpy(q40kbd_port->name, "Q40 Kbd Port", sizeof(q40kbd_port->name));
--	strlcpy(q40kbd_port->phys, "Q40", sizeof(q40kbd_port->phys));
--
--	serio_register_port(q40kbd_port);
-+	struct q40kbd *q40kbd;
-+	struct serio *port;
-+	int error;
-+
-+	q40kbd = kzalloc(sizeof(struct q40kbd), GFP_KERNEL);
-+	port = kzalloc(sizeof(struct serio), GFP_KERNEL);
-+	if (!q40kbd || !port) {
-+		error = -ENOMEM;
-+		goto err_free_mem;
-+	}
-+
-+	q40kbd->port = port;
-+	spin_lock_init(&q40kbd->lock);
-+
-+	port->id.type = SERIO_8042;
-+	port->open = q40kbd_open;
-+	port->close = q40kbd_close;
-+	port->port_data = q40kbd;
-+	port->dev.parent = &pdev->dev;
-+	strlcpy(port->name, "Q40 Kbd Port", sizeof(port->name));
-+	strlcpy(port->phys, "Q40", sizeof(port->phys));
-+
-+	q40kbd_stop(q40kbd);
-+
-+	error = request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0,
-+			    DRV_NAME, q40kbd);
-+	if (error) {
-+		dev_err(&pdev->dev, "Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
-+		goto err_free_mem;
-+	}
-+
-+	serio_register_port(q40kbd->port);
-+
-+	platform_set_drvdata(pdev, q40kbd);
- 	printk(KERN_INFO "serio: Q40 kbd registered\n");
- 
- 	return 0;
-+
-+err_free_mem:
-+	kfree(port);
-+	kfree(q40kbd);
-+	return error;
- }
- 
--static int __devexit q40kbd_remove(struct platform_device *dev)
-+static int __devexit q40kbd_remove(struct platform_device *pdev)
- {
--	serio_unregister_port(q40kbd_port);
-+	struct q40kbd *q40kbd = platform_get_drvdata(pdev);
-+
-+	free_irq(Q40_IRQ_KEYBOARD, q40kbd);
-+
-+	serio_unregister_port(q40kbd->port);
-+	kfree(q40kbd);
-+
-+	platform_set_drvdata(pdev, NULL);
- 
- 	return 0;
- }
-@@ -146,41 +187,16 @@ static struct platform_driver q40kbd_driver = {
- 		.name	= "q40kbd",
- 		.owner	= THIS_MODULE,
- 	},
--	.probe		= q40kbd_probe,
- 	.remove		= __devexit_p(q40kbd_remove),
- };
- 
- static int __init q40kbd_init(void)
- {
--	int error;
--
--	if (!MACH_IS_Q40)
--		return -ENODEV;
--
--	error = platform_driver_register(&q40kbd_driver);
--	if (error)
--		return error;
--
--	q40kbd_device = platform_device_alloc("q40kbd", -1);
--	if (!q40kbd_device)
--		goto err_unregister_driver;
--
--	error = platform_device_add(q40kbd_device);
--	if (error)
--		goto err_free_device;
--
--	return 0;
--
-- err_free_device:
--	platform_device_put(q40kbd_device);
-- err_unregister_driver:
--	platform_driver_unregister(&q40kbd_driver);
--	return error;
-+	return platform_driver_probe(&q40kbd_driver, q40kbd_probe);
- }
- 
- static void __exit q40kbd_exit(void)
- {
--	platform_device_unregister(q40kbd_device);
- 	platform_driver_unregister(&q40kbd_driver);
- }
- 
+ #define AUFS_ROOT_INO		2
+
+------------------------------------------------------------------------------
+Ridiculously easy VDI. With Citrix VDI-in-a-Box, you don't need a complex
+infrastructure or vast IT resources to deliver seamless, secure access to
+virtual desktops. With this all-in-one solution, easily deploy virtual 
+desktops for less than the cost of PCs and save 60% on VDI infrastructure 
+costs. Try it free! http://p.sf.net/sfu/Citrix-VDIinabox
