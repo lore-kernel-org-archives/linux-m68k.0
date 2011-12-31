@@ -1,82 +1,270 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Fri, 30 Dec 2011 18:06:13 +0100
-Message-ID: <1325264773.13595.133.camel@deadeye>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH] Input: q40kbd - convert driver to the split model
+Date: Fri, 30 Dec 2011 17:11:11 -0800
+Message-ID: <20111231010814.7392.52389.stgit__28618.3079857894$1325294223$gmane$org@hammer.corenet.prv>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-P3uJrSCEqYGaucbRNutn"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:50582 "EHLO
-	shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750877Ab1L3RGi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 30 Dec 2011 12:06:38 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: sfjro@users.sourceforge.net
-Cc: aufs-users@lists.sourceforge.net, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
+To: linux-input@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+Convert the driver to standard spilt model arch-specific code registers
+platform device to which driver code can bind later.
 
---=-P3uJrSCEqYGaucbRNutn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Also request IRQ immediately upon binding to the device instead of doing
+this when serio port is being opened.
 
-AUFS_NAME is only defined in aufs_type.h but pr_fmt may be used in
-headers included before aufs_type.h.
-
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
 ---
-This should fix the build failure reported in
-<http://lists.debian.org/debian-kernel/2011/12/msg00460.html>.
 
-An alternative change was proposed in
-<http://lists.debian.org/debian-kernel/2011/12/msg00482.html>.
+Not tested as I don't have the hardware...
 
-Ben.
+ arch/m68k/q40/config.c       |   12 ++++
+ drivers/input/serio/q40kbd.c |  134 ++++++++++++++++++++++++------------------
+ 2 files changed, 87 insertions(+), 59 deletions(-)
 
- fs/aufs/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/fs/aufs/Makefile b/fs/aufs/Makefile
-index 58ad988..9594b8a 100644
---- a/fs/aufs/Makefile
-+++ b/fs/aufs/Makefile
-@@ -5,7 +5,7 @@ include ${srctree}/${src}/magic.mk
- # enable pr_debug
- ccflags-y +=3D -DDEBUG
- # sparse doesn't allow spaces
--ccflags-y +=3D -D'pr_fmt(fmt)=3DAUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__func=
-__,__LINE__,current->comm,current->pid'
-+ccflags-y +=3D -D'pr_fmt(fmt)=3D"aufs\040%s:%d:%s[%d]:\040"fmt,__func__,__=
-LINE__,current->comm,current->pid'
-=20
- obj-$(CONFIG_AUFS_FS) +=3D aufs.o
- aufs-y :=3D module.o sbinfo.o super.o branch.o xino.o sysaufs.o opts.o \
---=20
-1.7.7.3
-
-
-
---=-P3uJrSCEqYGaucbRNutn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIVAwUATv3vhue/yOyVhhEJAQqEhw//R1nicBJLWAnV/uUxEGQAQHKBqhMJY6LJ
-T0l+9QIEB9JBd2XKpzP6MNuu6vnx7rRA7fhVv3scP0ppmq0QW5VPEuXeEXwhLFBh
-u2upAKCPH9pOIqNoVnRKms3UWk6/0eSMQntSwPvJYFU7vkAoJ65ZpkpI1U9BSFHg
-ORa1Y0JoJmnHIezQUBBlcPy04EJFntpgNPScPjX9qiPB3M7re5TL6MeJ3dbEE6mD
-RNl8bLcXJFwy2kiiqStQfhUi5GOKafC1rGC7eqq6kNwmTJTFh9SSsLAuK8PDtcSH
-Yj+Cgk6/4LKGYs+N7xoCbtTQo115OqOj2r+diFYSYcrDGCW/1vCqZ2zdzzkTsC9m
-WoDd55o2+bADwciozagAewbMlQrJK13+aFUOCTWSl2ETcImubTDOJZn/DbVuWuYP
-IddrZVAP/4PfwQ3H3vABBQSyzUCPtcthiy+Tc5o6+nCU/35HP46PQRb/J1UgIi3d
-xaO4CCs07viILBsktxRIt3uRBkr+uC/F3dOycFnKey5+S0D+O+9xpbtFxvIqwZ1R
-Yt7qoMlAG8Kwou7+CbYfMIlcJCBN5GKysYGaB8yzVl16kJRijk3pJmhfTznSlS05
-UBMWSS+A/alCEwT+ukaFy6RoUhKCKVBEhQKSVjJn9Lfh6RyjhOF//f1WTYjRK/wu
-FAalrT5S2ms=
-=zF9P
------END PGP SIGNATURE-----
-
---=-P3uJrSCEqYGaucbRNutn--
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index ad10fec..27d3f76 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -24,6 +24,7 @@
+ #include <linux/rtc.h>
+ #include <linux/vt_kern.h>
+ #include <linux/bcd.h>
++#include <linux/platform_device.h>
+ 
+ #include <asm/io.h>
+ #include <asm/rtc.h>
+@@ -329,3 +330,14 @@ static int q40_set_rtc_pll(struct rtc_pll_info *pll)
+ 	} else
+ 		return -EINVAL;
+ }
++
++static struct platform_device q40_kbd_pdev = {
++	.name	= "q40kbd",
++	.id	= -1,
++};
++
++static __init int q40_add_kbd_device(void)
++{
++	return platform_device_register(&q40_kbd_pdev);
++}
++arch_initcall(q40_add_kbd_device);
+diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40kbd.c
+index 5eb84b3..1e61dd4 100644
+--- a/drivers/input/serio/q40kbd.c
++++ b/drivers/input/serio/q40kbd.c
+@@ -44,26 +44,31 @@
+ #include <asm/irq.h>
+ #include <asm/q40ints.h>
+ 
++#define DRV_NAME	"q40kbd"
++
+ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
+ MODULE_DESCRIPTION("Q40 PS/2 keyboard controller driver");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:" DRV_NAME);
+ 
+-static DEFINE_SPINLOCK(q40kbd_lock);
+-static struct serio *q40kbd_port;
+-static struct platform_device *q40kbd_device;
++struct q40kbd {
++	struct serio *port;
++	spinlock_t lock;
++};
+ 
+ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
+ {
++	struct q40kbd *q40kbd = dev_id;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&q40kbd_lock, flags);
++	spin_lock_irqsave(&q40kbd->lock, flags);
+ 
+ 	if (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG))
+-		serio_interrupt(q40kbd_port, master_inb(KEYCODE_REG), 0);
++		serio_interrupt(q40kbd->port, master_inb(KEYCODE_REG), 0);
+ 
+ 	master_outb(-1, KEYBOARD_UNLOCK_REG);
+ 
+-	spin_unlock_irqrestore(&q40kbd_lock, flags);
++	spin_unlock_irqrestore(&q40kbd->lock, flags);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -72,17 +77,23 @@ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
+  * q40kbd_flush() flushes all data that may be in the keyboard buffers
+  */
+ 
+-static void q40kbd_flush(void)
++static void q40kbd_flush(struct q40kbd *q40kbd)
+ {
+ 	int maxread = 100;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&q40kbd_lock, flags);
++	spin_lock_irqsave(&q40kbd->lock, flags);
+ 
+ 	while (maxread-- && (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG)))
+ 		master_inb(KEYCODE_REG);
+ 
+-	spin_unlock_irqrestore(&q40kbd_lock, flags);
++	spin_unlock_irqrestore(&q40kbd->lock, flags);
++}
++
++static void q40kbd_stop(struct q40kbd *q40kbd)
++{
++	master_outb(0, KEY_IRQ_ENABLE_REG);
++	master_outb(-1, KEYBOARD_UNLOCK_REG);
+ }
+ 
+ /*
+@@ -92,12 +103,9 @@ static void q40kbd_flush(void)
+ 
+ static int q40kbd_open(struct serio *port)
+ {
+-	q40kbd_flush();
++	struct q40kbd *q40kbd = port->port_data;
+ 
+-	if (request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0, "q40kbd", NULL)) {
+-		printk(KERN_ERR "q40kbd.c: Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
+-		return -EBUSY;
+-	}
++	q40kbd_flush(q40kbd);
+ 
+ 	/* off we go */
+ 	master_outb(-1, KEYBOARD_UNLOCK_REG);
+@@ -108,35 +116,68 @@ static int q40kbd_open(struct serio *port)
+ 
+ static void q40kbd_close(struct serio *port)
+ {
+-	master_outb(0, KEY_IRQ_ENABLE_REG);
+-	master_outb(-1, KEYBOARD_UNLOCK_REG);
+-	free_irq(Q40_IRQ_KEYBOARD, NULL);
++	struct q40kbd *q40kbd = port->port_data;
+ 
+-	q40kbd_flush();
++	q40kbd_stop(q40kbd);
++	q40kbd_flush(q40kbd);
+ }
+ 
+-static int __devinit q40kbd_probe(struct platform_device *dev)
++static int __devinit q40kbd_probe(struct platform_device *pdev)
+ {
+-	q40kbd_port = kzalloc(sizeof(struct serio), GFP_KERNEL);
+-	if (!q40kbd_port)
+-		return -ENOMEM;
+-
+-	q40kbd_port->id.type	= SERIO_8042;
+-	q40kbd_port->open	= q40kbd_open;
+-	q40kbd_port->close	= q40kbd_close;
+-	q40kbd_port->dev.parent	= &dev->dev;
+-	strlcpy(q40kbd_port->name, "Q40 Kbd Port", sizeof(q40kbd_port->name));
+-	strlcpy(q40kbd_port->phys, "Q40", sizeof(q40kbd_port->phys));
+-
+-	serio_register_port(q40kbd_port);
++	struct q40kbd *q40kbd;
++	struct serio *port;
++	int error;
++
++	q40kbd = kzalloc(sizeof(struct q40kbd), GFP_KERNEL);
++	port = kzalloc(sizeof(struct serio), GFP_KERNEL);
++	if (!q40kbd || !port) {
++		error = -ENOMEM;
++		goto err_free_mem;
++	}
++
++	q40kbd->port = port;
++	spin_lock_init(&q40kbd->lock);
++
++	port->id.type = SERIO_8042;
++	port->open = q40kbd_open;
++	port->close = q40kbd_close;
++	port->port_data = q40kbd;
++	port->dev.parent = &pdev->dev;
++	strlcpy(port->name, "Q40 Kbd Port", sizeof(port->name));
++	strlcpy(port->phys, "Q40", sizeof(port->phys));
++
++	q40kbd_stop(q40kbd);
++
++	error = request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0,
++			    DRV_NAME, q40kbd);
++	if (error) {
++		dev_err(&pdev->dev, "Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
++		goto err_free_mem;
++	}
++
++	serio_register_port(q40kbd->port);
++
++	platform_set_drvdata(pdev, q40kbd);
+ 	printk(KERN_INFO "serio: Q40 kbd registered\n");
+ 
+ 	return 0;
++
++err_free_mem:
++	kfree(port);
++	kfree(q40kbd);
++	return error;
+ }
+ 
+-static int __devexit q40kbd_remove(struct platform_device *dev)
++static int __devexit q40kbd_remove(struct platform_device *pdev)
+ {
+-	serio_unregister_port(q40kbd_port);
++	struct q40kbd *q40kbd = platform_get_drvdata(pdev);
++
++	free_irq(Q40_IRQ_KEYBOARD, q40kbd);
++
++	serio_unregister_port(q40kbd->port);
++	kfree(q40kbd);
++
++	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
+@@ -146,41 +187,16 @@ static struct platform_driver q40kbd_driver = {
+ 		.name	= "q40kbd",
+ 		.owner	= THIS_MODULE,
+ 	},
+-	.probe		= q40kbd_probe,
+ 	.remove		= __devexit_p(q40kbd_remove),
+ };
+ 
+ static int __init q40kbd_init(void)
+ {
+-	int error;
+-
+-	if (!MACH_IS_Q40)
+-		return -ENODEV;
+-
+-	error = platform_driver_register(&q40kbd_driver);
+-	if (error)
+-		return error;
+-
+-	q40kbd_device = platform_device_alloc("q40kbd", -1);
+-	if (!q40kbd_device)
+-		goto err_unregister_driver;
+-
+-	error = platform_device_add(q40kbd_device);
+-	if (error)
+-		goto err_free_device;
+-
+-	return 0;
+-
+- err_free_device:
+-	platform_device_put(q40kbd_device);
+- err_unregister_driver:
+-	platform_driver_unregister(&q40kbd_driver);
+-	return error;
++	return platform_driver_probe(&q40kbd_driver, q40kbd_probe);
+ }
+ 
+ static void __exit q40kbd_exit(void)
+ {
+-	platform_device_unregister(q40kbd_device);
+ 	platform_driver_unregister(&q40kbd_driver);
+ }
+ 
