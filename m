@@ -1,94 +1,137 @@
 From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Sat, 31 Dec 2011 22:18:17 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
-References: <1325264773.13595.133.camel@deadeye>
+Date: Sat, 31 Dec 2011 22:31:32 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
+References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-160095868-1325370716=:14351"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:25562 "EHLO
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:9699 "EHLO
 	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753251Ab1LaWU0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2011 17:20:26 -0500
-In-Reply-To: <1325264773.13595.133.camel@deadeye>
+	with ESMTP id S1753251Ab1LaWcx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2011 17:32:53 -0500
+In-Reply-To: <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: sfjro@users.sourceforge.net, aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
+To: sfjro@users.sourceforge.net
+Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
 
-Ben Hutchings dixit:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
->-ccflags-y +=3D -D'pr_fmt(fmt)=3DAUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,_=
-_func__,__LINE__,current->comm,current->pid'
->+ccflags-y +=3D -D'pr_fmt(fmt)=3D"aufs\040%s:%d:%s[%d]:\040"fmt,__func=
-__,__LINE__,current->comm,current->pid'
+--0-160095868-1325370716=:14351
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Sadly, this doesn=E2=80=99t work either:
+Dixi quod=E2=80=A6
 
-  CC [M]  fs/aufs/module.o
-In file included from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/hardirq.h:7:0,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/arch/m68k/include/asm/irqflags.h:6,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/irqflags.h:15,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/spinlock.h:53,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/seqlock.h:29,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/time.h:8,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/stat.h:60,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/include/linux/module.h:10,
-                 from /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source=
-_m68k_none/fs/aufs/module.c:23:
-/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/arch/m68k/i=
-nclude/asm/hardirq.h: In function 'ack_bad_irq':
-/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/arch/m68k/i=
-nclude/asm/hardirq.h:23:2: error: dereferencing pointer to incomplete t=
-ype
-/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/arch/m68k/i=
-nclude/asm/hardirq.h:23:2: error: dereferencing pointer to incomplete t=
-ype
-make[7]: *** [fs/aufs/module.o] Error 1
+>go on. I can try a patch based on yours, but probably the best fix
 
-This one does work:
-http://lists.debian.org/debian-kernel/2011/12/msg00474.html
+What do you think of this (untested)? I omitted the Documentation/**
+patch as that part it not present in the Debian Linux kernel.
 
-The difference between a static inline function and a pr=C3=A6processor
-macro makes the difference. I know, now, why I never used the former
-myself =E2=98=BA I guess =E2=80=9Ccurrent=E2=80=9D is not defined there=
-=2E
-
-
-sfjro@users.sourceforge.net dixit:
-
->I don't think the "current" macro will be a problem, but I want you to
-
-It does. Also, read this:
-http://people.netfilter.org/rusty/unreliable-guides/kernel-hacking/rout=
-ines-current.html
-=E2=80=9CThis global variable (really a macro) contains a pointer to th=
-e
-current task structure, so is only valid in user context. For example,
-when a process makes a system call, this will point to the task
-structure of the calling process. It is not NULL in interrupt context.=E2=
-=80=9D
-
-So I don=E2=80=99t know how safe it is to dereference 'current' in the =
-inline
-function ack_bad_irq (probably, not at all). On the other hand, the
-ack_bad_irq function is probably not expanded in aufs3=E2=80=A6 so we c=
-ould
-go on. I can try a patch based on yours, but probably the best fix
-would be to not use a static inline function in m68k.
+Please do not commit this anywhere until I say I have tested it.
 
 bye,
 //mirabilos
 --=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-						-- Edward Burr
+I believe no one can invent an algorithm. One just happens to hit upon it
+when God enlightens him. Or only God invents algorithms, we merely copy the=
+m.
+If you don't believe in God, just consider God as Nature if you won't deny
+existence.=09=09-- Coywolf Qi Hunt
+--0-160095868-1325370716=:14351
+Content-Type: TEXT/PLAIN; charset=utf-8; name=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.BSM.4.64L.1112312231320.14351@herc.mirbsd.org>
+Content-Description: 
+Content-Disposition: attachment; filename=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
+
+RnJvbSA3NDMxZTFmZmFkNmFhZmEzNmZhOGRkMDQ1OWMwNjZmYWRhMjVlMWQ2
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogVGhvcnN0ZW4gR2xh
+c2VyIDx0Z0BtaXJic2Qub3JnPg0KRGF0ZTogU2F0LCAzMSBEZWMgMjAxMSAy
+MjoyNzoxNSArMDAwMA0KU3ViamVjdDogW1BBVENIXSA9P1VURi04P3E/bW92
+ZT0yMEFVRlM9NUZOQU1FPTIwYW5kPTIwYXVmcz1FMj04MD05OT0yMHByPTVG
+Zj89DQogPT9VVEYtOD9xP210PTIwaW50bz0yMHRoZWlyPTIwb3duPTIwaGVh
+ZGVyPz0NCk1JTUUtVmVyc2lvbjogMS4wDQpDb250ZW50LVR5cGU6IHRleHQv
+cGxhaW47IGNoYXJzZXQ9VVRGLTgNCkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
+bmc6IDhiaXQNCg0KYmFzZWQgb24gYSBwYXRjaCBmcm9tIHNmanJvQHVzZXJz
+LnNvdXJjZWZvcmdlLm5ldA0KaW4gPDk1NjkuMTMyNTMwNjgxN0Bqcm9ibD4g
+YnV0IGNoYW5nZWQgdG8gYWxzbyBtb3ZlDQp0aGUgcHJfZm10IGRlZmluaXRp
+b24gb2ZmIHRoZSBNYWtlZmlsZSBhbmQgaW50byB0aGUNCmhlYWRlciwgYW5k
+IGluY2x1ZGUgdGhlIGRlZmluaXRpb24gb2YgY3VycmVudCBhbmQNCnRoZSBo
+ZWFkZXIgd2hpY2ggZGV0YWlscyBpdHMgc3RydWN0dXJlIHNvIGl0IGNhbiBi
+ZQ0KZGVyZWZlcmVuY2VkLCB3aGljaCBtYXkgb3IgbWF5IG5vdCBiZSBzYWZl
+IHRob3VnaOKApg0Kc2VlIDxQaW5lLkJTTS40LjY0TC4xMTEyMzEyMjAyMTIw
+LjE0MzUxQGhlcmMubWlyYnNkLm9yZz4NCg0KU2lnbmVkLW9mZi1ieTogVGhv
+cnN0ZW4gR2xhc2VyIDx0Z0BtaXJic2Qub3JnPg0KLS0tDQogZnMvYXVmcy9N
+YWtlZmlsZSAgICAgICAgICB8ICAgIDMgKy0tDQogaW5jbHVkZS9saW51eC9L
+YnVpbGQgICAgICB8ICAgIDEgKw0KIGluY2x1ZGUvbGludXgvYXVmc19uYW1l
+LmggfCAgIDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQogaW5j
+bHVkZS9saW51eC9hdWZzX3R5cGUuaCB8ICAgIDIgKy0NCiA0IGZpbGVzIGNo
+YW5nZWQsIDMyIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQogY3Jl
+YXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvYXVmc19uYW1lLmgNCg0K
+ZGlmZiAtLWdpdCBhL2ZzL2F1ZnMvTWFrZWZpbGUgYi9mcy9hdWZzL01ha2Vm
+aWxlDQppbmRleCA0NjYxNWZlLi42M2I4YTcyIDEwMDY0NA0KLS0tIGEvZnMv
+YXVmcy9NYWtlZmlsZQ0KKysrIGIvZnMvYXVmcy9NYWtlZmlsZQ0KQEAgLTgs
+OCArOCw3IEBAIGVuZGlmDQogIyBjZi4gaW5jbHVkZS9saW51eC9rZXJuZWwu
+aA0KICMgZW5hYmxlIHByX2RlYnVnDQogY2NmbGFncy15ICs9IC1EREVCVUcN
+Ci0jIHNwYXJzZSBkb2Vzbid0IGFsbG93IHNwYWNlcw0KLWNjZmxhZ3MteSAr
+PSAtRCdwcl9mbXQoZm10KT1BVUZTX05BTUUiXDA0MCVzOiVkOiVzWyVkXTpc
+MDQwImZtdCxfX2Z1bmNfXyxfX0xJTkVfXyxjdXJyZW50LT5jb21tLGN1cnJl
+bnQtPnBpZCcNCitjY2ZsYWdzLXkgKz0gLWluY2x1ZGUgbGludXgvYXVmc19u
+YW1lLmgNCiANCiBvYmotJChDT05GSUdfQVVGU19GUykgKz0gYXVmcy5vDQog
+YXVmcy15IDo9IG1vZHVsZS5vIHNiaW5mby5vIHN1cGVyLm8gYnJhbmNoLm8g
+eGluby5vIHN5c2F1ZnMubyBvcHRzLm8gXA0KZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvS2J1aWxkIGIvaW5jbHVkZS9saW51eC9LYnVpbGQNCmluZGV4
+IDI5ZjM4NmIuLmZjNmQyZDIgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4
+L0tidWlsZA0KKysrIGIvaW5jbHVkZS9saW51eC9LYnVpbGQNCkBAIC02NSw2
+ICs2NSw3IEBAIGhlYWRlci15ICs9IGF0bXBwcC5oDQogaGVhZGVyLXkgKz0g
+YXRtc2FwLmgNCiBoZWFkZXIteSArPSBhdG1zdmMuaA0KIGhlYWRlci15ICs9
+IGF1ZGl0LmgNCitoZWFkZXIteSArPSBhdWZzX25hbWUuaA0KIGhlYWRlci15
+ICs9IGF1ZnNfdHlwZS5oDQogaGVhZGVyLXkgKz0gYXV0b19mcy5oDQogaGVh
+ZGVyLXkgKz0gYXV0b19mczQuaA0KZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlu
+dXgvYXVmc19uYW1lLmggYi9pbmNsdWRlL2xpbnV4L2F1ZnNfbmFtZS5oDQpu
+ZXcgZmlsZSBtb2RlIDEwMDY0NA0KaW5kZXggMDAwMDAwMC4uZmRhN2Y1Yw0K
+LS0tIC9kZXYvbnVsbA0KKysrIGIvaW5jbHVkZS9saW51eC9hdWZzX25hbWUu
+aA0KQEAgLTAsMCArMSwyOSBAQA0KKy8qDQorICogQ29weXJpZ2h0IChDKSAy
+MDExIEp1bmppcm8gUi4gT2thamltYQ0KKyAqIENvcHlyaWdodCAoYykgMjAx
+MSBUaG9yc3RlbiBHbGFzZXINCisgKg0KKyAqIFRoaXMgcHJvZ3JhbSwgYXVm
+cyBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh
+bmQvb3IgbW9kaWZ5DQorICogaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBH
+TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkNCisg
+KiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lv
+biAyIG9mIHRoZSBMaWNlbnNlLCBvcg0KKyAqIChhdCB5b3VyIG9wdGlvbikg
+YW55IGxhdGVyIHZlcnNpb24uDQorICoNCisgKiBUaGlzIHByb2dyYW0gaXMg
+ZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1
+bCwNCisgKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZl
+biB0aGUgaW1wbGllZCB3YXJyYW50eSBvZg0KKyAqIE1FUkNIQU5UQUJJTElU
+WSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0
+aGUNCisgKiBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
+ZXRhaWxzLg0KKyAqDQorICogWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEg
+Y29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UNCisgKiBh
+bG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0byB0aGUg
+RnJlZSBTb2Z0d2FyZQ0KKyAqIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5r
+bGluIFN0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAgMDIxMTAtMTMwMSAg
+VVNBDQorICovDQorDQorI2lmbmRlZiBfX0FVRlNfTkFNRV9IX18NCisjZGVm
+aW5lIF9fQVVGU19OQU1FX0hfXw0KKw0KKy8qIGluY2x1ZGVzIDxhc20vY3Vy
+cmVudC5oPiBhbmQgZGVmaW5lcyBzdHJ1Y3QgdGFza19zdHJ1Y3QgKi8NCisj
+aW5jbHVkZSA8bGludXgvc2NoZWQuaD4NCisNCisjZGVmaW5lIEFVRlNfTkFN
+RQkJImF1ZnMiDQorI2RlZmluZSBwcl9mbXQoZm10KQkJQVVGU19OQU1FIlww
+NDAlczolZDolc1slZF06XDA0MCJmbXQsX19mdW5jX18sX19MSU5FX18sY3Vy
+cmVudC0+Y29tbSxjdXJyZW50LT5waWQNCisNCisjZW5kaWYgLyogX19BVUZT
+X05BTUVfSF9fICovDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9hdWZz
+X3R5cGUuaCBiL2luY2x1ZGUvbGludXgvYXVmc190eXBlLmgNCmluZGV4IDk0
+NDM5MDYuLjE2YjBiZjggMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L2F1
+ZnNfdHlwZS5oDQorKysgYi9pbmNsdWRlL2xpbnV4L2F1ZnNfdHlwZS5oDQpA
+QCAtMjgsNiArMjgsNyBAQA0KICNpbmNsdWRlIDxzdGRpbnQuaD4NCiAjaW5j
+bHVkZSA8c3lzL3R5cGVzLmg+DQogI2VuZGlmDQorI2luY2x1ZGUgPGxpbnV4
+L2F1ZnNfbmFtZS5oPg0KIA0KICNkZWZpbmUgQVVGU19WRVJTSU9OCSIzLngt
+cmNOLTIwMTExMTE0Ig0KIA0KQEAgLTU4LDcgKzU5LDYgQEAgdHlwZWRlZiBp
+bnQxNl90IGF1ZnNfYmluZGV4X3Q7DQogDQogLyogLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLSAqLw0KIA0KLSNkZWZpbmUgQVVGU19OQU1FCQkiYXVmcyIN
+CiAjZGVmaW5lIEFVRlNfRlNUWVBFCQlBVUZTX05BTUUNCiANCiAjZGVmaW5l
+IEFVRlNfUk9PVF9JTk8JCTINCi0tIA0KMS43LjcuMw0KDQo=
+
+--0-160095868-1325370716=:14351--
