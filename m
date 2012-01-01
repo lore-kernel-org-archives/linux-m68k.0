@@ -1,87 +1,148 @@
 From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Sat, 31 Dec 2011 22:55:55 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
+Date: Sun, 1 Jan 2012 01:15:56 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201010113350.14351@herc.mirbsd.org>
 References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-444052347-1325372179=:14351"
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-365856199-1325380580=:14351"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:46740 "EHLO
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:25085 "EHLO
 	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753251Ab1LaW4m (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2011 17:56:42 -0500
-In-Reply-To: <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
+	with ESMTP id S1750773Ab2AABYx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2011 20:24:53 -0500
+In-Reply-To: <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: sfjro@users.sourceforge.net, aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>
+To: sfjro@users.sourceforge.net
+Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
 
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---0-444052347-1325372179=:14351
+--0-365856199-1325380580=:14351
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 Dixi quod=E2=80=A6
 
->This one does work:
->http://lists.debian.org/debian-kernel/2011/12/msg00474.html
+>What do you think of this (untested)?
 
-Geert, would you please apply the attached patch, independent of
-whether we are able to find a solution in aufs, as it avoids an
-entire problem class?
+well, it compiles (with warnings, see below). I=E2=80=99ll know if it links
+and loads tomorrow, I guess (unless the other problems are still
+there).
 
-Groeten uit Duitsland,
+/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/a=
+ufs_name.h:27:0: warning: "pr_fmt" redefined [enabled by default]
+/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/p=
+rintk.h:152:0: note: this is the location of the previous definition
+
+Version 2 of this patch (attached) fixes this by #undef pr_fmt
+before defining it. Please decide whether you want to fix it
+like this. Independent of this, I=E2=80=99ve asked the m68k maintainer
+to change away from static inline to a cpp macro, to avoid this
+issue fully. This should not influence your decision, though.
+
+bye,
 //mirabilos
 --=20
-[...] if maybe ext3fs wasn't a better pick, or jfs, or maybe reiserfs, oh b=
-ut
-what about xfs, and if only i had waited until reiser4 was ready... in the =
-be-
-ginning, there was ffs, and in the middle, there was ffs, and at the end, t=
-here
-was still ffs, and the sys admins knew it was good. :)  -- Ted Unangst =C3=
-=BCber *fs
---0-444052347-1325372179=:14351
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=0001-replace-inline-ack_bad_irq-with-a-block-macro-to-avo.patch
+FWIW, I'm quite impressed with mksh interactively. I thought it was much
+*much* more bare bones. But it turns out it beats the living hell out of
+ksh93 in that respect. I'd even consider it for my daily use if I hadn't
+wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mksh
+--0-365856199-1325380580=:14351
+Content-Type: TEXT/PLAIN; charset=utf-8; name=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
 Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.BSM.4.64L.1112312255550.14351@herc.mirbsd.org>
-Content-Description: 
-Content-Disposition: attachment; filename=0001-replace-inline-ack_bad_irq-with-a-block-macro-to-avo.patch
+Content-ID: <Pine.BSM.4.64L.1201010115560.14351@herc.mirbsd.org>
+Content-Description: patch V2
+Content-Disposition: attachment; filename=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
 
-RnJvbSBmZGEyNTI5MzcxZjhjYzg4Nzk4NzdjYTNmM2ViOWRmYmFhZmI5NzU1
+RnJvbSBkZWJkYWQyODIzMmE5Yzg0ZjEzNWZhMWI3YWE5ZDEzN2I3MmFiNGQ4
 IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogVGhvcnN0ZW4gR2xh
 c2VyIDx0Z0BtaXJic2Qub3JnPg0KRGF0ZTogU2F0LCAzMSBEZWMgMjAxMSAy
-Mjo0ODo1MiArMDAwMA0KU3ViamVjdDogW1BBVENIXSByZXBsYWNlIGlubGlu
-ZSBhY2tfYmFkX2lycSB3aXRoIGEgYmxvY2sgbWFjcm8gdG8gYXZvaWQgZXJy
-b3INCiBwcm9wYWdhdGlvbg0KDQpJZiBhbnkgZmlsZSBpbmNsdWRpbmcgKGRp
-cmVjdGx5IG9yIGluZGlyZWN0bHkpIGhhcmRpcnEuaCByZWRlZmluZXMNCnBy
-X2ZtdCB0byBzb21ldGhpbmcgY29udGFpbmluZyBzb21lIHZhbHVlIG5vdCBh
-dmFpbGFibGUgYXQgaGFyZGlycQ0KaW5jbHVzaW9uIHRpbWUsIGRlZmluaW5n
-IGEgc3RhdGljIGlubGluZSBmdW5jdGlvbiBmYWlscywgd2hlcmVhcyBhDQpt
-YWNybyBjYW4gYWx3YXlzIGJlIGRlZmluZWQgKGFuZCBuZWVkIG5vdCBldmVu
-IGJlIGV4cGFuZGVkIG9uY2UgaW4NCnRoZSB0cmFuc2xhdGlvbiB1bml0IHdp
-dGggcHJfZm10IHJlZGVmaW5lZCB3aGlsZSBhbGwgc3RhdGljIGlubGluZQ0K
-ZnVuY3Rpb25zIHdpbGwgYWx3YXlzIGJlIGV4cGFuZGVkKS4NCg0KRml4ZXM6
-IGh0dHA6Ly9saXN0cy5kZWJpYW4ub3JnL2RlYmlhbi1rZXJuZWwvMjAxMS8x
-Mi9tc2cwMDQ3NC5odG1sDQoNClNpZ25lZC1vZmYtYnk6IFRob3JzdGVuIEds
-YXNlciA8dGdAbWlyYnNkLm9yZz4NCi0tLQ0KIGFyY2gvbTY4ay9pbmNsdWRl
-L2FzbS9oYXJkaXJxLmggfCAgICA4ICsrKystLS0tDQogMSBmaWxlcyBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQoNCmRpZmYg
-LS1naXQgYS9hcmNoL202OGsvaW5jbHVkZS9hc20vaGFyZGlycS5oIGIvYXJj
-aC9tNjhrL2luY2x1ZGUvYXNtL2hhcmRpcnEuaA0KaW5kZXggZGIzMGVkMi4u
-YTJlMDBlNyAxMDA2NDQNCi0tLSBhL2FyY2gvbTY4ay9pbmNsdWRlL2FzbS9o
-YXJkaXJxLmgNCisrKyBiL2FyY2gvbTY4ay9pbmNsdWRlL2FzbS9oYXJkaXJx
-LmgNCkBAIC0xOCwxMCArMTgsMTAgQEANCiANCiAjaWZkZWYgQ09ORklHX01N
-VQ0KIA0KLXN0YXRpYyBpbmxpbmUgdm9pZCBhY2tfYmFkX2lycSh1bnNpZ25l
-ZCBpbnQgaXJxKQ0KLXsNCi0JcHJfY3JpdCgidW5leHBlY3RlZCBJUlEgdHJh
-cCBhdCB2ZWN0b3IgJTAyeFxuIiwgaXJxKTsNCi19DQorI2RlZmluZSBhY2tf
-YmFkX2lycShpcnEpIGRvIHsJCQkJCVwNCisJcHJfY3JpdCgidW5leHBlY3Rl
-ZCBJUlEgdHJhcCBhdCB2ZWN0b3IgJTAyeFxuIiwJCVwNCisJICAgICh1bnNp
-Z25lZCBpbnQpKGlycSkpOwkJCQlcDQorfSB3aGlsZSAoLyogQ09OU1RDT05E
-ICovIDApDQogDQogLyogZW50cnkuUyBpcyBzZW5zaXRpdmUgdG8gdGhlIG9m
-ZnNldHMgb2YgdGhlc2UgZmllbGRzICovDQogdHlwZWRlZiBzdHJ1Y3Qgew0K
-LS0gDQoxLjcuNy4zDQoNCg==
+MjoyNzoxNSArMDAwMA0KU3ViamVjdDogW1BBVENIXSA9P1VURi04P3E/bW92
+ZT0yMEFVRlM9NUZOQU1FPTIwYW5kPTIwYXVmcz1FMj04MD05OT0yMHByPTVG
+Zj89DQogPT9VVEYtOD9xP210PTIwaW50bz0yMHRoZWlyPTIwb3duPTIwaGVh
+ZGVyPz0NCk1JTUUtVmVyc2lvbjogMS4wDQpDb250ZW50LVR5cGU6IHRleHQv
+cGxhaW47IGNoYXJzZXQ9VVRGLTgNCkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
+bmc6IDhiaXQNCg0KYmFzZWQgb24gYSBwYXRjaCBmcm9tIHNmanJvQHVzZXJz
+LnNvdXJjZWZvcmdlLm5ldA0KaW4gPDk1NjkuMTMyNTMwNjgxN0Bqcm9ibD4g
+YnV0IGNoYW5nZWQgdG8gYWxzbyBtb3ZlDQp0aGUgcHJfZm10IGRlZmluaXRp
+b24gb2ZmIHRoZSBNYWtlZmlsZSBhbmQgaW50byB0aGUNCmhlYWRlciwgYW5k
+IGluY2x1ZGUgdGhlIGRlZmluaXRpb24gb2YgY3VycmVudCBhbmQNCnRoZSBo
+ZWFkZXIgd2hpY2ggZGV0YWlscyBpdHMgc3RydWN0dXJlIHNvIGl0IGNhbiBi
+ZQ0KZGVyZWZlcmVuY2VkLCB3aGljaCBtYXkgb3IgbWF5IG5vdCBiZSBzYWZl
+IHRob3VnaOKApg0Kc2VlIDxQaW5lLkJTTS40LjY0TC4xMTEyMzEyMjAyMTIw
+LjE0MzUxQGhlcmMubWlyYnNkLm9yZz4NCg0KU2lnbmVkLW9mZi1ieTogVGhv
+cnN0ZW4gR2xhc2VyIDx0Z0BtaXJic2Qub3JnPg0KLS0tDQogZnMvYXVmcy9N
+YWtlZmlsZSAgICAgICAgICB8ICAgIDMgKy0tDQogaW5jbHVkZS9saW51eC9L
+YnVpbGQgICAgICB8ICAgIDEgKw0KIGluY2x1ZGUvbGludXgvYXVmc19uYW1l
+LmggfCAgIDMxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiBp
+bmNsdWRlL2xpbnV4L2F1ZnNfdHlwZS5oIHwgICAgMiArLQ0KIDQgZmlsZXMg
+Y2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9hdWZzX25hbWUuaA0K
+DQpkaWZmIC0tZ2l0IGEvZnMvYXVmcy9NYWtlZmlsZSBiL2ZzL2F1ZnMvTWFr
+ZWZpbGUNCmluZGV4IDQ2NjE1ZmUuLjYzYjhhNzIgMTAwNjQ0DQotLS0gYS9m
+cy9hdWZzL01ha2VmaWxlDQorKysgYi9mcy9hdWZzL01ha2VmaWxlDQpAQCAt
+OCw4ICs4LDcgQEAgZW5kaWYNCiAjIGNmLiBpbmNsdWRlL2xpbnV4L2tlcm5l
+bC5oDQogIyBlbmFibGUgcHJfZGVidWcNCiBjY2ZsYWdzLXkgKz0gLURERUJV
+Rw0KLSMgc3BhcnNlIGRvZXNuJ3QgYWxsb3cgc3BhY2VzDQotY2NmbGFncy15
+ICs9IC1EJ3ByX2ZtdChmbXQpPUFVRlNfTkFNRSJcMDQwJXM6JWQ6JXNbJWRd
+OlwwNDAiZm10LF9fZnVuY19fLF9fTElORV9fLGN1cnJlbnQtPmNvbW0sY3Vy
+cmVudC0+cGlkJw0KK2NjZmxhZ3MteSArPSAtaW5jbHVkZSBsaW51eC9hdWZz
+X25hbWUuaA0KIA0KIG9iai0kKENPTkZJR19BVUZTX0ZTKSArPSBhdWZzLm8N
+CiBhdWZzLXkgOj0gbW9kdWxlLm8gc2JpbmZvLm8gc3VwZXIubyBicmFuY2gu
+byB4aW5vLm8gc3lzYXVmcy5vIG9wdHMubyBcDQpkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS9saW51eC9LYnVpbGQgYi9pbmNsdWRlL2xpbnV4L0tidWlsZA0KaW5k
+ZXggMjlmMzg2Yi4uZmM2ZDJkMiAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGlu
+dXgvS2J1aWxkDQorKysgYi9pbmNsdWRlL2xpbnV4L0tidWlsZA0KQEAgLTY1
+LDYgKzY1LDcgQEAgaGVhZGVyLXkgKz0gYXRtcHBwLmgNCiBoZWFkZXIteSAr
+PSBhdG1zYXAuaA0KIGhlYWRlci15ICs9IGF0bXN2Yy5oDQogaGVhZGVyLXkg
+Kz0gYXVkaXQuaA0KK2hlYWRlci15ICs9IGF1ZnNfbmFtZS5oDQogaGVhZGVy
+LXkgKz0gYXVmc190eXBlLmgNCiBoZWFkZXIteSArPSBhdXRvX2ZzLmgNCiBo
+ZWFkZXIteSArPSBhdXRvX2ZzNC5oDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
+aW51eC9hdWZzX25hbWUuaCBiL2luY2x1ZGUvbGludXgvYXVmc19uYW1lLmgN
+Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwLi44YzJjNDk0
+DQotLS0gL2Rldi9udWxsDQorKysgYi9pbmNsdWRlL2xpbnV4L2F1ZnNfbmFt
+ZS5oDQpAQCAtMCwwICsxLDMxIEBADQorLyoNCisgKiBDb3B5cmlnaHQgKEMp
+IDIwMTEgSnVuamlybyBSLiBPa2FqaW1hDQorICogQ29weXJpZ2h0IChjKSAy
+MDExIFRob3JzdGVuIEdsYXNlcg0KKyAqDQorICogVGhpcyBwcm9ncmFtLCBh
+dWZzIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0
+IGFuZC9vciBtb2RpZnkNCisgKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhl
+IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQ0K
+KyAqIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJz
+aW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yDQorICogKGF0IHlvdXIgb3B0aW9u
+KSBhbnkgbGF0ZXIgdmVyc2lvbi4NCisgKg0KKyAqIFRoaXMgcHJvZ3JhbSBp
+cyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
+ZnVsLA0KKyAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBl
+dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mDQorICogTUVSQ0hBTlRBQklM
+SVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2Vl
+IHRoZQ0KKyAqIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3Jl
+IGRldGFpbHMuDQorICoNCisgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQg
+YSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQ0KKyAq
+IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRo
+ZSBGcmVlIFNvZnR3YXJlDQorICogRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJh
+bmtsaW4gU3QsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0xMzAx
+ICBVU0ENCisgKi8NCisNCisjaWZuZGVmIF9fQVVGU19OQU1FX0hfXw0KKyNk
+ZWZpbmUgX19BVUZTX05BTUVfSF9fDQorDQorLyogaW5jbHVkZXMgPGFzbS9j
+dXJyZW50Lmg+IGFuZCBkZWZpbmVzIHN0cnVjdCB0YXNrX3N0cnVjdCAqLw0K
+KyNpbmNsdWRlIDxsaW51eC9zY2hlZC5oPg0KKw0KKyNkZWZpbmUgQVVGU19O
+QU1FCQkiYXVmcyINCisNCisjdW5kZWYgcHJfZm10DQorI2RlZmluZSBwcl9m
+bXQoZm10KQkJQVVGU19OQU1FIlwwNDAlczolZDolc1slZF06XDA0MCJmbXQs
+X19mdW5jX18sX19MSU5FX18sY3VycmVudC0+Y29tbSxjdXJyZW50LT5waWQN
+CisNCisjZW5kaWYgLyogX19BVUZTX05BTUVfSF9fICovDQpkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9saW51eC9hdWZzX3R5cGUuaCBiL2luY2x1ZGUvbGludXgv
+YXVmc190eXBlLmgNCmluZGV4IDk0NDM5MDYuLjE2YjBiZjggMTAwNjQ0DQot
+LS0gYS9pbmNsdWRlL2xpbnV4L2F1ZnNfdHlwZS5oDQorKysgYi9pbmNsdWRl
+L2xpbnV4L2F1ZnNfdHlwZS5oDQpAQCAtMjgsNiArMjgsNyBAQA0KICNpbmNs
+dWRlIDxzdGRpbnQuaD4NCiAjaW5jbHVkZSA8c3lzL3R5cGVzLmg+DQogI2Vu
+ZGlmDQorI2luY2x1ZGUgPGxpbnV4L2F1ZnNfbmFtZS5oPg0KIA0KICNkZWZp
+bmUgQVVGU19WRVJTSU9OCSIzLngtcmNOLTIwMTExMTE0Ig0KIA0KQEAgLTU4
+LDcgKzU5LDYgQEAgdHlwZWRlZiBpbnQxNl90IGF1ZnNfYmluZGV4X3Q7DQog
+DQogLyogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLw0KIA0KLSNkZWZp
+bmUgQVVGU19OQU1FCQkiYXVmcyINCiAjZGVmaW5lIEFVRlNfRlNUWVBFCQlB
+VUZTX05BTUUNCiANCiAjZGVmaW5lIEFVRlNfUk9PVF9JTk8JCTINCi0tIA0K
+MS43LjcuMw0KDQo=
 
---0-444052347-1325372179=:14351--
+--0-365856199-1325380580=:14351--
