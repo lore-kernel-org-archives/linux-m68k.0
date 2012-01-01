@@ -1,148 +1,56 @@
-From: Thorsten Glaser <tg@mirbsd.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Sun, 1 Jan 2012 01:15:56 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201010113350.14351@herc.mirbsd.org>
-References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
- <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
+Date: Sun, 1 Jan 2012 09:47:15 +0100
+Message-ID: <CAMuHMdWoJYkRJ8NnS8xLnmBF9+tyNYew+O9+0O=v6tD0MZzi8A@mail.gmail.com>
+References: <1325264773.13595.133.camel@deadeye>
+	<Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-365856199-1325380580=:14351"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:25085 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750773Ab2AABYx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2011 20:24:53 -0500
-In-Reply-To: <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:51935 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751360Ab2AAIrR convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jan 2012 03:47:17 -0500
+Received: by wgbdr13 with SMTP id dr13so25688860wgb.1
+        for <linux-m68k@vger.kernel.org>; Sun, 01 Jan 2012 00:47:15 -0800 (PST)
+In-Reply-To: <Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: sfjro@users.sourceforge.net
-Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org, sfjro@users.sourceforge.net, aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Thorsten,
 
---0-365856199-1325380580=:14351
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Sat, Dec 31, 2011 at 23:55, Thorsten Glaser <tg@mirbsd.de> wrote:
+> Dixi quod=E2=80=A6
+>
+>>This one does work:
+>>http://lists.debian.org/debian-kernel/2011/12/msg00474.html
+>
+> Geert, would you please apply the attached patch, independent of
+> whether we are able to find a solution in aufs, as it avoids an
+> entire problem class?
 
-Dixi quod=E2=80=A6
+Sorry, static inline functions are preferred over macros, unless there'=
+s
+a really good reason. Out-of-tree kernel code doing stupid things doesn=
+'t
+count.
 
->What do you think of this (untested)?
+Gr{oetje,eeting}s,
 
-well, it compiles (with warnings, see below). I=E2=80=99ll know if it links
-and loads tomorrow, I guess (unless the other problems are still
-there).
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/a=
-ufs_name.h:27:0: warning: "pr_fmt" redefined [enabled by default]
-/tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/p=
-rintk.h:152:0: note: this is the location of the previous definition
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-Version 2 of this patch (attached) fixes this by #undef pr_fmt
-before defining it. Please decide whether you want to fix it
-like this. Independent of this, I=E2=80=99ve asked the m68k maintainer
-to change away from static inline to a cpp macro, to avoid this
-issue fully. This should not influence your decision, though.
-
-bye,
-//mirabilos
---=20
-FWIW, I'm quite impressed with mksh interactively. I thought it was much
-*much* more bare bones. But it turns out it beats the living hell out of
-ksh93 in that respect. I'd even consider it for my daily use if I hadn't
-wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mksh
---0-365856199-1325380580=:14351
-Content-Type: TEXT/PLAIN; charset=utf-8; name=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.BSM.4.64L.1201010115560.14351@herc.mirbsd.org>
-Content-Description: patch V2
-Content-Disposition: attachment; filename=0001-move-AUFS_NAME-and-aufs-pr_fmt-into-their-own-header.patch
-
-RnJvbSBkZWJkYWQyODIzMmE5Yzg0ZjEzNWZhMWI3YWE5ZDEzN2I3MmFiNGQ4
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogVGhvcnN0ZW4gR2xh
-c2VyIDx0Z0BtaXJic2Qub3JnPg0KRGF0ZTogU2F0LCAzMSBEZWMgMjAxMSAy
-MjoyNzoxNSArMDAwMA0KU3ViamVjdDogW1BBVENIXSA9P1VURi04P3E/bW92
-ZT0yMEFVRlM9NUZOQU1FPTIwYW5kPTIwYXVmcz1FMj04MD05OT0yMHByPTVG
-Zj89DQogPT9VVEYtOD9xP210PTIwaW50bz0yMHRoZWlyPTIwb3duPTIwaGVh
-ZGVyPz0NCk1JTUUtVmVyc2lvbjogMS4wDQpDb250ZW50LVR5cGU6IHRleHQv
-cGxhaW47IGNoYXJzZXQ9VVRGLTgNCkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
-bmc6IDhiaXQNCg0KYmFzZWQgb24gYSBwYXRjaCBmcm9tIHNmanJvQHVzZXJz
-LnNvdXJjZWZvcmdlLm5ldA0KaW4gPDk1NjkuMTMyNTMwNjgxN0Bqcm9ibD4g
-YnV0IGNoYW5nZWQgdG8gYWxzbyBtb3ZlDQp0aGUgcHJfZm10IGRlZmluaXRp
-b24gb2ZmIHRoZSBNYWtlZmlsZSBhbmQgaW50byB0aGUNCmhlYWRlciwgYW5k
-IGluY2x1ZGUgdGhlIGRlZmluaXRpb24gb2YgY3VycmVudCBhbmQNCnRoZSBo
-ZWFkZXIgd2hpY2ggZGV0YWlscyBpdHMgc3RydWN0dXJlIHNvIGl0IGNhbiBi
-ZQ0KZGVyZWZlcmVuY2VkLCB3aGljaCBtYXkgb3IgbWF5IG5vdCBiZSBzYWZl
-IHRob3VnaOKApg0Kc2VlIDxQaW5lLkJTTS40LjY0TC4xMTEyMzEyMjAyMTIw
-LjE0MzUxQGhlcmMubWlyYnNkLm9yZz4NCg0KU2lnbmVkLW9mZi1ieTogVGhv
-cnN0ZW4gR2xhc2VyIDx0Z0BtaXJic2Qub3JnPg0KLS0tDQogZnMvYXVmcy9N
-YWtlZmlsZSAgICAgICAgICB8ICAgIDMgKy0tDQogaW5jbHVkZS9saW51eC9L
-YnVpbGQgICAgICB8ICAgIDEgKw0KIGluY2x1ZGUvbGludXgvYXVmc19uYW1l
-LmggfCAgIDMxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiBp
-bmNsdWRlL2xpbnV4L2F1ZnNfdHlwZS5oIHwgICAgMiArLQ0KIDQgZmlsZXMg
-Y2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCiBj
-cmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9hdWZzX25hbWUuaA0K
-DQpkaWZmIC0tZ2l0IGEvZnMvYXVmcy9NYWtlZmlsZSBiL2ZzL2F1ZnMvTWFr
-ZWZpbGUNCmluZGV4IDQ2NjE1ZmUuLjYzYjhhNzIgMTAwNjQ0DQotLS0gYS9m
-cy9hdWZzL01ha2VmaWxlDQorKysgYi9mcy9hdWZzL01ha2VmaWxlDQpAQCAt
-OCw4ICs4LDcgQEAgZW5kaWYNCiAjIGNmLiBpbmNsdWRlL2xpbnV4L2tlcm5l
-bC5oDQogIyBlbmFibGUgcHJfZGVidWcNCiBjY2ZsYWdzLXkgKz0gLURERUJV
-Rw0KLSMgc3BhcnNlIGRvZXNuJ3QgYWxsb3cgc3BhY2VzDQotY2NmbGFncy15
-ICs9IC1EJ3ByX2ZtdChmbXQpPUFVRlNfTkFNRSJcMDQwJXM6JWQ6JXNbJWRd
-OlwwNDAiZm10LF9fZnVuY19fLF9fTElORV9fLGN1cnJlbnQtPmNvbW0sY3Vy
-cmVudC0+cGlkJw0KK2NjZmxhZ3MteSArPSAtaW5jbHVkZSBsaW51eC9hdWZz
-X25hbWUuaA0KIA0KIG9iai0kKENPTkZJR19BVUZTX0ZTKSArPSBhdWZzLm8N
-CiBhdWZzLXkgOj0gbW9kdWxlLm8gc2JpbmZvLm8gc3VwZXIubyBicmFuY2gu
-byB4aW5vLm8gc3lzYXVmcy5vIG9wdHMubyBcDQpkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS9saW51eC9LYnVpbGQgYi9pbmNsdWRlL2xpbnV4L0tidWlsZA0KaW5k
-ZXggMjlmMzg2Yi4uZmM2ZDJkMiAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGlu
-dXgvS2J1aWxkDQorKysgYi9pbmNsdWRlL2xpbnV4L0tidWlsZA0KQEAgLTY1
-LDYgKzY1LDcgQEAgaGVhZGVyLXkgKz0gYXRtcHBwLmgNCiBoZWFkZXIteSAr
-PSBhdG1zYXAuaA0KIGhlYWRlci15ICs9IGF0bXN2Yy5oDQogaGVhZGVyLXkg
-Kz0gYXVkaXQuaA0KK2hlYWRlci15ICs9IGF1ZnNfbmFtZS5oDQogaGVhZGVy
-LXkgKz0gYXVmc190eXBlLmgNCiBoZWFkZXIteSArPSBhdXRvX2ZzLmgNCiBo
-ZWFkZXIteSArPSBhdXRvX2ZzNC5oDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC9hdWZzX25hbWUuaCBiL2luY2x1ZGUvbGludXgvYXVmc19uYW1lLmgN
-Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwLi44YzJjNDk0
-DQotLS0gL2Rldi9udWxsDQorKysgYi9pbmNsdWRlL2xpbnV4L2F1ZnNfbmFt
-ZS5oDQpAQCAtMCwwICsxLDMxIEBADQorLyoNCisgKiBDb3B5cmlnaHQgKEMp
-IDIwMTEgSnVuamlybyBSLiBPa2FqaW1hDQorICogQ29weXJpZ2h0IChjKSAy
-MDExIFRob3JzdGVuIEdsYXNlcg0KKyAqDQorICogVGhpcyBwcm9ncmFtLCBh
-dWZzIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0
-IGFuZC9vciBtb2RpZnkNCisgKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhl
-IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQ0K
-KyAqIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJz
-aW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yDQorICogKGF0IHlvdXIgb3B0aW9u
-KSBhbnkgbGF0ZXIgdmVyc2lvbi4NCisgKg0KKyAqIFRoaXMgcHJvZ3JhbSBp
-cyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
-ZnVsLA0KKyAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBl
-dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mDQorICogTUVSQ0hBTlRBQklM
-SVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2Vl
-IHRoZQ0KKyAqIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3Jl
-IGRldGFpbHMuDQorICoNCisgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQg
-YSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQ0KKyAq
-IGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRo
-ZSBGcmVlIFNvZnR3YXJlDQorICogRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJh
-bmtsaW4gU3QsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0xMzAx
-ICBVU0ENCisgKi8NCisNCisjaWZuZGVmIF9fQVVGU19OQU1FX0hfXw0KKyNk
-ZWZpbmUgX19BVUZTX05BTUVfSF9fDQorDQorLyogaW5jbHVkZXMgPGFzbS9j
-dXJyZW50Lmg+IGFuZCBkZWZpbmVzIHN0cnVjdCB0YXNrX3N0cnVjdCAqLw0K
-KyNpbmNsdWRlIDxsaW51eC9zY2hlZC5oPg0KKw0KKyNkZWZpbmUgQVVGU19O
-QU1FCQkiYXVmcyINCisNCisjdW5kZWYgcHJfZm10DQorI2RlZmluZSBwcl9m
-bXQoZm10KQkJQVVGU19OQU1FIlwwNDAlczolZDolc1slZF06XDA0MCJmbXQs
-X19mdW5jX18sX19MSU5FX18sY3VycmVudC0+Y29tbSxjdXJyZW50LT5waWQN
-CisNCisjZW5kaWYgLyogX19BVUZTX05BTUVfSF9fICovDQpkaWZmIC0tZ2l0
-IGEvaW5jbHVkZS9saW51eC9hdWZzX3R5cGUuaCBiL2luY2x1ZGUvbGludXgv
-YXVmc190eXBlLmgNCmluZGV4IDk0NDM5MDYuLjE2YjBiZjggMTAwNjQ0DQot
-LS0gYS9pbmNsdWRlL2xpbnV4L2F1ZnNfdHlwZS5oDQorKysgYi9pbmNsdWRl
-L2xpbnV4L2F1ZnNfdHlwZS5oDQpAQCAtMjgsNiArMjgsNyBAQA0KICNpbmNs
-dWRlIDxzdGRpbnQuaD4NCiAjaW5jbHVkZSA8c3lzL3R5cGVzLmg+DQogI2Vu
-ZGlmDQorI2luY2x1ZGUgPGxpbnV4L2F1ZnNfbmFtZS5oPg0KIA0KICNkZWZp
-bmUgQVVGU19WRVJTSU9OCSIzLngtcmNOLTIwMTExMTE0Ig0KIA0KQEAgLTU4
-LDcgKzU5LDYgQEAgdHlwZWRlZiBpbnQxNl90IGF1ZnNfYmluZGV4X3Q7DQog
-DQogLyogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLw0KIA0KLSNkZWZp
-bmUgQVVGU19OQU1FCQkiYXVmcyINCiAjZGVmaW5lIEFVRlNfRlNUWVBFCQlB
-VUZTX05BTUUNCiANCiAjZGVmaW5lIEFVRlNfUk9PVF9JTk8JCTINCi0tIA0K
-MS43LjcuMw0KDQo=
-
---0-365856199-1325380580=:14351--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
