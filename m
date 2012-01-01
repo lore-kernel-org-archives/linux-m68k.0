@@ -1,56 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Sun, 1 Jan 2012 09:47:15 +0100
-Message-ID: <CAMuHMdWoJYkRJ8NnS8xLnmBF9+tyNYew+O9+0O=v6tD0MZzi8A@mail.gmail.com>
-References: <1325264773.13595.133.camel@deadeye>
-	<Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
-	<Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
+Date: Sun, 1 Jan 2012 14:48:50 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201011442550.20109@herc.mirbsd.org>
+References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
+ <CAMuHMdWoJYkRJ8NnS8xLnmBF9+tyNYew+O9+0O=v6tD0MZzi8A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:51935 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751360Ab2AAIrR convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jan 2012 03:47:17 -0500
-Received: by wgbdr13 with SMTP id dr13so25688860wgb.1
-        for <linux-m68k@vger.kernel.org>; Sun, 01 Jan 2012 00:47:15 -0800 (PST)
-In-Reply-To: <Pine.BSM.4.64L.1112312254400.14351@herc.mirbsd.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:21367 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752588Ab2AAPBG convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jan 2012 10:01:06 -0500
+In-Reply-To: <CAMuHMdWoJYkRJ8NnS8xLnmBF9+tyNYew+O9+0O=v6tD0MZzi8A@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, sfjro@users.sourceforge.net, aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>
 
-Hi Thorsten,
+Geert Uytterhoeven dixit:
 
-On Sat, Dec 31, 2011 at 23:55, Thorsten Glaser <tg@mirbsd.de> wrote:
-> Dixi quod=E2=80=A6
->
->>This one does work:
->>http://lists.debian.org/debian-kernel/2011/12/msg00474.html
->
-> Geert, would you please apply the attached patch, independent of
-> whether we are able to find a solution in aufs, as it avoids an
-> entire problem class?
+>Sorry, static inline functions are preferred over macros, unless there=
+'s
 
-Sorry, static inline functions are preferred over macros, unless there'=
-s
-a really good reason. Out-of-tree kernel code doing stupid things doesn=
-'t
-count.
+Can I have reasons? (Also out of curiosity.)
 
-Gr{oetje,eeting}s,
+>a really good reason. Out-of-tree kernel code doing stupid things does=
+n't
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+I see it like this:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+EVERY file that, directly or indirectly, includes hardirq.h has the
+overhead of having GCC compile that static inline function, even if
+it=E2=80=99s never used (and thus never emitted into the object file). =
+Also,
+redefining pr_fmt appears to be a desired thing, not a stupid thing;
+if a static inline function uses pr_fmt in the timeframe between it
+being redefined and the redefined one=E2=80=99s prerequisites being ava=
+ilab-
+le, it would necessarily fail.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In contrast to that, a cpp macro is only evaluated when it=E2=80=99s ac=
+tual-
+ly needed, and by then, the prerequisites would probably be availab-
+le. It also has less compile-time overhead (in this case, since the
+hardirq.h file is probably included in more files than it is needed,
+whereas macros slow down when you use them more than once in all fi-
+les they=E2=80=99re defined in.
+
+bye,
+//mirabilos
+--=20
+Sometimes they [people] care too much: pretty printers [and syntax high=
+ligh-
+ting, d.A.] mechanically produce pretty output that accentuates irrelev=
+ant
+detail in the program, which is as sensible as putting all the preposit=
+ions
+in English text in bold font.	-- Rob Pike in "Notes on Programming in C=
+"
