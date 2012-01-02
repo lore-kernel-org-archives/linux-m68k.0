@@ -1,38 +1,33 @@
-From: Thorsten Glaser <tg@mirbsd.de>
+From: sfjro@users.sourceforge.net
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Mon, 2 Jan 2012 13:30:20 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201021328500.13674@herc.mirbsd.org>
-References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
- <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
- <Pine.BSM.4.64L.1201010113350.14351@herc.mirbsd.org> <9798.1325486722@jrobl>
- <Pine.BSM.4.64L.1201021027220.671@herc.mirbsd.org> <5487.1325510133@jrobl>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Date: Mon, 02 Jan 2012 22:53:56 +0900
+Message-ID: <6600.1325512436@jrobl>
+References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org> <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org> <Pine.BSM.4.64L.1201010113350.14351@herc.mirbsd.org> <9798.1325486722@jrobl> <Pine.BSM.4.64L.1201021027220.671@herc.mirbsd.org> <5487.1325510133@jrobl> <Pine.BSM.4.64L.1201021328500.13674@herc.mirbsd.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:15473 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751084Ab2ABNg7 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jan 2012 08:36:59 -0500
-In-Reply-To: <5487.1325510133@jrobl>
+Received: from mail05-md.ns.itscom.net ([175.177.155.115]:50648 "EHLO
+	mail05-md.ns.itscom.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752485Ab2ABNyA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jan 2012 08:54:00 -0500
+Received: from scan03-mds.s.noc.itscom.net (scan03-md.ns.itscom.net [175.177.155.124])
+	by mail05-md-outgoing.ns.itscom.net (Postfix) with ESMTP id 31FCD65845F
+	for <linux-m68k@vger.kernel.org>; Mon,  2 Jan 2012 22:53:57 +0900 (JST)
+In-Reply-To: <Pine.BSM.4.64L.1201021328500.13674@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: sfjro@users.sourceforge.net
+To: Thorsten Glaser <tg@mirbsd.de>
 Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
 
-sfjro@users.sourceforge.net dixit:
 
->> You include aufs_name.h twice now, once in the Makefile,
->> once in the header. Shouldn=3DE2=3D80=3D99t one be enough?
->
->No, because aufs_type.h is exported to userspace.
+Thorsten Glaser:
+> Then, why include it in the Makefile at all?
+> (Or, why include aufs_name.h from aufs_type.h?)
 
-Then, why include it in the Makefile at all?
-(Or, why include aufs_name.h from aufs_type.h?)
+- AUFS_NAME is necessary for both of kernel-space and user-space.
+- from userspace, users include aufs_type.h. to keep the consistency,
+  aufs_type.h should include aufs_name.h.
+- for kernelspace, to put aufs_name.h _before_ all other headers.
 
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-						-- Edward Burr
+Do I make myself clear with my poor English?
+
+
+J. R. Okajima
