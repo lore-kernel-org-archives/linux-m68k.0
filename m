@@ -1,125 +1,97 @@
-From: sfjro@users.sourceforge.net
+From: Ben Hutchings <ben@decadent.org.uk>
 Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Mon, 02 Jan 2012 11:58:13 +0900
-Message-ID: <5968.1325473093@jrobl>
-References: <1325264773.13595.133.camel@deadeye> <9569.1325306817@jrobl> <CAMuHMdXFrFqxjEBr5iG4s7naBRom6FzM6wPGi1f9HYVsv_c8dg@mail.gmail.com> <Pine.BSM.4.64L.1112311628570.14351@herc.mirbsd.org>
+Date: Mon, 02 Jan 2012 03:40:00 +0000
+Message-ID: <1325475600.13595.208.camel@deadeye>
+References: <1325264773.13595.133.camel@deadeye> <9569.1325306817@jrobl>
+	 <CAMuHMdXFrFqxjEBr5iG4s7naBRom6FzM6wPGi1f9HYVsv_c8dg@mail.gmail.com>
+	 <Pine.BSM.4.64L.1112311628570.14351@herc.mirbsd.org>
+	 <5968.1325473093@jrobl>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-yZo2Ji58pan2SzC381Rf"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail03-md.ns.itscom.net ([175.177.155.113]:55335 "EHLO
-	mail03-md.ns.itscom.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751446Ab2ABC6Q (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jan 2012 21:58:16 -0500
-Received: from scan01-mds.s.noc.itscom.net (scan01-md.ns.itscom.net [175.177.155.122])
-	by mail03-md-outgoing.ns.itscom.net (Postfix) with ESMTP id E71CAFF0053
-	for <linux-m68k@vger.kernel.org>; Mon,  2 Jan 2012 11:58:13 +0900 (JST)
-In-Reply-To: <Pine.BSM.4.64L.1112311628570.14351@herc.mirbsd.org>
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:44765 "EHLO
+	shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751441Ab2ABDkZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jan 2012 22:40:25 -0500
+In-Reply-To: <5968.1325473093@jrobl>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
+To: sfjro@users.sourceforge.net
+Cc: Thorsten Glaser <tg@mirbsd.de>, aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
 
 
-Thorsten Glaser:
-> >It introduces a new separated file include/linux/aufs_name.h.
->
-> Isn=E2=80=99t that a bit overkill?
+--=-yZo2Ji58pan2SzC381Rf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, I may have to agree with that.
-Honestly speaking, I don't like this approach.
-But embedding (expanding) AUFS_NAME is worse for me.
+On Mon, 2012-01-02 at 11:58 +0900, sfjro@users.sourceforge.net wrote:
+> Thorsten Glaser:
+> > >It introduces a new separated file include/linux/aufs_name.h.
+> >
+> > Isn=3DE2=3D80=3D99t that a bit overkill?
+>=20
+> Hmm, I may have to agree with that.
+> Honestly speaking, I don't like this approach.
+> But embedding (expanding) AUFS_NAME is worse for me.
 
+Why, how often do you expect to change AUFS_NAME?
 
-> >If the Makefile refers to the macro, perhaps the Makefile should
-> >define it, and pass it with -D?
->
-> Indeed. I like Ben=E2=80=99s patch better. But if it must be a separate
-> file, please move the pr_fmt definition out of the Makefile and
-> into that file, too. Code doesn=E2=80=99t belong into a Makefile IMHO.
+[...]
+> So I still think it is better to define it in Makefile.
+> If I remove refering the "current" macro in the definition, then the
+> life will be easier, but it is still useful and I want to keep
+> it. Additonally it is not a essential problem I think.
+> Finally I'd like to add sched.h between aufs_name and pr_fmt (see the
+> attached patch).
+> How do you think?
 
-You guys don't see "-imacros linux/aufs_name.h" in Makefile?
-Or do I totaly miunderstand -imacros?
+I think it would be much better to put this in fs/aufs/aufs.h and make
+each of fs/aufs/*.c include that first.
 
-----------------------------------------------------------------------
-> Ben Hutchings dixit:
->
-> >-ccflags-y +=3D -D'pr_fmt(fmt)=3DAUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__fun=
-> c__,__LINE__,current->comm,current->pid'
-> >+ccflags-y +=3D -D'pr_fmt(fmt)=3D"aufs\040%s:%d:%s[%d]:\040"fmt,__func__,_=
-> _LINE__,current->comm,current->pid'
->
-> Sadly, this doesn=E2=80=99t work either:
-	:::
-> /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/arch/m68k/inclu=
-> de/asm/hardirq.h:23:2: error: dereferencing pointer to incomplete type
-	:::
-> The difference between a static inline function and a pr=C3=A6processor
-> macro makes the difference. I know, now, why I never used the former
-> myself =E2=98=BA I guess =E2=80=9Ccurrent=E2=80=9D is not defined there.
+> J. R. Okajima
+>=20
+> --- a/fs/aufs/Makefile
+> +++ b/fs/aufs/Makefile
+> @@ -10,6 +10,7 @@ endif
+>  ccflags-y +=3D -DDEBUG
+>  # sparse doesn't allow spaces
+>  ccflags-y +=3D -imacros linux/aufs_name.h
+> +ccflags-y +=3D -include linux/sched.h
+>  ccflags-y +=3D -D'pr_fmt(fmt)=3DAUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__fu=
+nc__,__LINE__,current->comm,current->pid'
+> =20
+>  obj-$(CONFIG_AUFS_FS) +=3D aufs.o
 
-That must be an error around the "current" macro which I was afraid.
+The comment about sparse belongs immediately before the definition of
+pr_fmt.
 
-----------------------------------------------------------------------
+Ben.
 
-> What do you think of this (untested)? I omitted the Documentation/**
-> patch as that part it not present in the Debian Linux kernel.
-	:::
-+#define AUFS_NAME		"aufs"
-+#define pr_fmt(fmt)		AUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__func__,__LINE__,current->comm,current->pid
+--=20
+Ben Hutchings
+All the simple programs have been written, and all the good names taken.
 
-Here are the comments from me.
-- aufs_name.h is used both in kernel-space and user-space, so we need
-  "#ifdef __KERNEL__"
-- the macro may already be defined, so we need "#ifndef pr_fmt"
-  now we should decide which we force (choose), the pr_fmt macro we
-  define in aufs or the one previously defined somewhere else.
-And I chose "defined aufs aufs".
-These are also reasons to put it in Makefile.
+--=-yZo2Ji58pan2SzC381Rf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-----------------------------------------------------------------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-> well, it compiles (with warnings, see below). I=E2=80=99ll know if it links
-> and loads tomorrow, I guess (unless the other problems are still
-> there).
->
-> /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/a=
-> ufs_name.h:27:0: warning: "pr_fmt" redefined [enabled by default]
-> /tmp/buildd/linux-2.6-3.2~rc7/debian/build/source_m68k_none/include/linux/p=
-> rintk.h:152:0: note: this is the location of the previous definition
->
-> Version 2 of this patch (attached) fixes this by #undef pr_fmt
-> before defining it. Please decide whether you want to fix it
+iQIVAwUATwEnEee/yOyVhhEJAQpRbg//Xk3jmsqSxFFewpksWgb7GAUHgIszUlYV
+pTPxpQxSuoL2gODVZ9VNUTZs4DTHEFXF755IYcxq9zFWGpYpa9OCVBHog1YuPb5Z
+o2sjaCUhKgzaVQHCj+oNS6KSXOcBFP2EuFj76Cy9TzBKQN1WlzmIP0eUvb24QTsO
+nc+b5UJvSJUquMulOdFvWuW1JAVKYu8khCqX42Wc6E1WjEgyIFIXaThpOo8H3vAu
+MOB1WdO66QqYMXBVhLB2xVH55swXhnbnd0I62g7y33MUsU3Mpsx3GT292x+cA6to
+De3sVLSQ+Ndf081WXuOsyDQtfYOjr0DNq8AQE2Nz2vvoHpK+Hra6HJ0AdpCHtvxh
+OVz6jMe4ZjdP9tJUZyQbbgEt+yz7lVnnPqESZ5vQPt+fbmX1bl+wsRnZdQVuqCgv
+BA2lLZecuLy9jwdVcBJFnZNhDhHiywp5zUkh7o0cmw354Rlz40v5aSk61KV7hkg8
+ZWGQei3Mixv/jZqUKYmy9TjjTJ8bXZ0t2jbSMm04Zvz1YVS7Q1EKLRIf762uAani
+L4o5Fn0OCPoCYh6Fg3zXHLcA8fs7+R0z+khsAsAEn2BhCPuDg9bjU6qd3Zg6SLSJ
+mpP0doCG/+MDZjHIE18X89nxLAvUUS2frVp3BgD0KKa7aYRfGvjwn7Svin9WZwvM
+oVLt4o6JtIw=
+=TJqS
+-----END PGP SIGNATURE-----
 
-Yes, undefining will be necessary if we move the macro difinition into
-the header file. Or we may add a condition "#ifndef pr_fmt" when we
-define the macro in the header. In other words,
-- adding a condition means giving precedence to the difinition in
-  somewhere else.
-- undefining means forcing the definition in aufs.
-But this "forcing" is not enough since the macro can be defined _before_
-including the header. I know you put "-include linux/aufs_name.h" in
-Makefile, but it is not enough either since the macro _may_ be defined
-in sched.h or somewhere else which will be included before aufs_name.h.
-Also I understand it is not a big problem. But I hope you would agree
-that unconditionally or blindly defined macro is effective (or less
-subject to bug) in a single module.
-
-So I still think it is better to define it in Makefile.
-If I remove refering the "current" macro in the definition, then the
-life will be easier, but it is still useful and I want to keep
-it. Additonally it is not a essential problem I think.
-Finally I'd like to add sched.h between aufs_name and pr_fmt (see the
-attached patch).
-How do you think?
-
-
-J. R. Okajima
-
---- a/fs/aufs/Makefile
-+++ b/fs/aufs/Makefile
-@@ -10,6 +10,7 @@ endif
- ccflags-y += -DDEBUG
- # sparse doesn't allow spaces
- ccflags-y += -imacros linux/aufs_name.h
-+ccflags-y += -include linux/sched.h
- ccflags-y += -D'pr_fmt(fmt)=AUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__func__,__LINE__,current->comm,current->pid'
- 
- obj-$(CONFIG_AUFS_FS) += aufs.o
+--=-yZo2Ji58pan2SzC381Rf--
