@@ -1,8 +1,8 @@
-From: Jonathan Nieder <jrnieder@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [m68k] in modpost: "strlen" [iscsi_target_mod.ko] undefined!
  (and others)
-Date: Sun, 1 Jan 2012 18:10:14 -0600
-Message-ID: <20120102001014.GD25837@elie.hsd1.il.comcast.net>
+Date: Mon, 2 Jan 2012 00:19:44 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201020016440.20109@herc.mirbsd.org>
 References: <20111116181424.14920.7730.reportbug@ara5.mirbsd.org>
  <Pine.BSM.4.64L.1111301751500.12725@herc.mirbsd.org>
  <CAMuHMdW8t8Q7OqxJM602iLG4aSv1KMTY-fhiGS7hyy8xBReh1A@mail.gmail.com>
@@ -11,73 +11,44 @@ References: <20111116181424.14920.7730.reportbug@ara5.mirbsd.org>
  <Pine.BSM.4.64L.1201012310590.20109@herc.mirbsd.org>
  <20120101233931.GA25837@elie.hsd1.il.comcast.net>
  <Pine.BSM.4.64L.1201012342490.20109@herc.mirbsd.org>
+ <20120102001014.GD25837@elie.hsd1.il.comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <target-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.BSM.4.64L.1201012342490.20109@herc.mirbsd.org>
+In-Reply-To: <20120102001014.GD25837@elie.hsd1.il.comcast.net>
 Sender: target-devel-owner@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
+To: Jonathan Nieder <jrnieder@gmail.com>
 Cc: Nicholas Bellinger <nab@linux-iscsi.org>, Greg Ungerer <gerg@uclinux.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, target-devel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Thorsten Glaser wrote:
+Jonathan Nieder dixit:
 
-> I=E2=80=99d rather know why upstream doesn=E2=80=99t use -ffreestandi=
-ng on
-> _all_ architectures. A kernel is _not_ a hosted environment,
-> and GCC is right to bring in problems like this.
+>Makefile instead of arch/m68k/Makefile.  If others agree, some patches
+>for the x86 string functions to get the optimizations back could
+>follow, leaving everyone happy.
+[=E2=80=A6]
+>    Even with -ffreestanding, it's still possilble to explicitely use =
+a gcc
+>    builtin if desired.
 
-It's to make optimizations that use the builtin functions (e.g.,
-memcpy) work with less fuss.  If the kernel implements all the
-relevant library functions, then it can be considered hosted as far as
-GCC cares.
+Just call them, like this:
 
-[...]
->                                (Nobody prevents GCC from using
-> a memcpy builtin that uses, say, SSE instructions
+tg@zigo:~/Xl/linux-2.6-3.2~rc7 $ fgrep -A 3 "define strcpy" arch/m68k/i=
+nclude/asm/string.h
+#define strcpy(d, s)    (__builtin_constant_p(s) &&     \
+                         __builtin_strlen(s) <=3D 32 ?    \
+                         __builtin_strcpy(d, s) :       \
+                         __kernel_strcpy(d, s))
 
-Doesn't -mno-sse take care of that?
+Of course, the parameters when to call which may differ.
+(The choice about being a hosted environment is not just
+about having libc-like functions available.)
 
-However, if you (this is the general "you", not just Thorsten) find
-the following reasoning[1] compelling, feel free to propose a patch to
-Makefile instead of arch/m68k/Makefile.  If others agree, some patches
-for the x86 string functions to get the optimizations back could
-follow, leaving everyone happy.
-
-Ciao,
-Jonathan
-
-[1]
-commit d6326c18
-Author: Adrian Bunk <bunk@stusta.de>
-Date:   Tue Jan 4 05:29:33 2005 -0800
-
-    [PATCH] compile with -ffreestanding
-
-    For the kernel, it would be logical to use -ffreestanding.  The ker=
-nel is
-    not a hosted environment with a standard C library.
-
-    The gcc option -ffreestanding is supported by both gcc 2.95 and 3.4=
-, which
-    covers the whole range of currently supported compilers.
-
-    Regarding changes caused by this patch:
-
-    Andi Kleen reported:
-      Newer gcc rewrites sprintf(buf,"%s",str) to strcpy(buf,str) trans=
-parently.
-
-    This is only true with unit-at-a-time (disabled on i386 but enabled=
- on
-    x86_64).  The Linux kernel doesn't offer a standard C library, and =
-such
-    transparent replacements of kernel functions with builtins are quit=
-e
-    fragile.
-
-    Even with -ffreestanding, it's still possilble to explicitely use a=
- gcc
-    builtin if desired.
+bye,
+//mirabilos
+--=20
+Solange man keine schmutzigen Tricks macht, und ich meine *wirklich*
+schmutzige Tricks, wie bei einer doppelt verketteten Liste beide
+Pointer XORen und in nur einem Word speichern, funktioniert Boehm ganz
+hervorragend.		-- Andreas Bogk =C3=BCber boehm-gc in d.a.s.r
