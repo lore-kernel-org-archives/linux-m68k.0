@@ -1,17 +1,19 @@
 From: sfjro@users.sourceforge.net
-Subject: [PATCH 0/2] aufs: headers (Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt)
-Date: Tue,  3 Jan 2012 14:21:20 +0900
-Message-ID: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
-References: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
+Subject: [PATCH 1/2] aufs: headers 1/2, bugfix, where the pr_fmt macro definition
+Date: Tue,  3 Jan 2012 14:21:21 +0900
+Message-ID: <1325568082-25540-2-git-send-email-sfjro@users.sourceforge.net>
+References: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail03-md.ns.itscom.net ([175.177.155.113]:50965 "EHLO
-	mail03-md.ns.itscom.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750743Ab2ACFVZ (ORCPT
+Received: from mail04-md.ns.itscom.net ([175.177.155.114]:35459 "EHLO
+	mail04-md.ns.itscom.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750795Ab2ACFVZ (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Jan 2012 00:21:25 -0500
-Received: from scan06-mds.s.noc.itscom.net (scan06-md.ns.itscom.net [175.177.155.101])
-	by mail03-md-outgoing.ns.itscom.net (Postfix) with ESMTP id CBEE2FF047E
+Received: from scan01-mds.s.noc.itscom.net (scan01-md.ns.itscom.net [175.177.155.122])
+	by mail04-md-outgoing.ns.itscom.net (Postfix) with ESMTP id C98AF620471
 	for <linux-m68k@vger.kernel.org>; Tue,  3 Jan 2012 14:21:22 +0900 (JST)
+In-Reply-To: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
 In-Reply-To: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
+References: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: tg@mirbsd.de
@@ -19,65 +21,75 @@ Cc: aufs-users@lists.sourceforge.net, debian-kernel@lists.debian.org, linux-m68k
 
 From: J. R. Okajima <hooanon05@yahoo.co.jp>
 
-Thorsten Glaser:
-> Please send patches that _should_ apply against what=E2=80=99s in Debian.
-> I don=E2=80=99t have time to play the merge game at the moment.
+The pr_fmt macro is defined in fs/aufs/Makefile and it refers to the
+AUFS_NAME macro, which caused a compilation error in m68k architecture.
+Also it refers to the "current" macro which will be a problem too.
 
-Which version of debian?
-As you might know, the aufs module in the debian stable squeeze is out
-of my control.
-Anyway, this patch series is against the aufs2.2-35 branch in
-aufs2-standalone.git.
-
-
-J. R. Okajima (2):
-  aufs: headers 1/2, bugfix, where the pr_fmt macro definition
-  aufs: headers 2/2, simply refined
-
+See-also: http://sourceforge.net/mailarchive/message.php?msg_id=28608043
+Reported-by: Ben Hutchings <ben@decadent.org.uk>
+Suggested-by: Thorsten Glaser <tg@mirbsd.de>
+Signed-off-by: J. R. Okajima <hooanon05@yahoo.co.jp>
+---
  fs/aufs/Makefile          |    4 ++--
- fs/aufs/branch.c          |    1 -
- fs/aufs/branch.h          |    2 --
- fs/aufs/cpup.c            |    2 --
- fs/aufs/cpup.h            |    4 ----
- fs/aufs/dbgaufs.h         |    3 ---
- fs/aufs/dcsub.h           |    1 -
- fs/aufs/debug.c           |    1 -
- fs/aufs/debug.h           |    8 --------
- fs/aufs/dentry.h          |    1 -
- fs/aufs/dir.c             |    1 -
- fs/aufs/dir.h             |    1 -
- fs/aufs/dynop.h           |    4 ----
- fs/aufs/export.c          |    1 -
- fs/aufs/f_op.c            |    2 --
- fs/aufs/f_op_sp.c         |    1 -
- fs/aufs/file.c            |    3 ---
- fs/aufs/file.h            |    1 -
- fs/aufs/finfo.c           |    1 -
- fs/aufs/fstype.h          |    1 -
- fs/aufs/hfsplus.c         |    1 -
- fs/aufs/i_op.c            |    2 --
- fs/aufs/inode.h           |    2 --
- fs/aufs/ioctl.c           |    1 -
- fs/aufs/opts.c            |    2 --
- fs/aufs/opts.h            |    3 ---
- fs/aufs/rdu.c             |    2 --
- fs/aufs/rwsem.h           |    1 -
- fs/aufs/sbinfo.c          |    1 -
- fs/aufs/spl.h             |    4 ----
- fs/aufs/super.c           |    3 +--
- fs/aufs/super.h           |    1 -
- fs/aufs/sysaufs.c         |    2 --
- fs/aufs/sysaufs.h         |    2 --
- fs/aufs/sysfs.c           |    3 ---
- fs/aufs/sysrq.c           |    3 ---
- fs/aufs/vdir.c            |    1 -
- fs/aufs/vfsub.c           |    2 --
- fs/aufs/whout.c           |    1 -
- fs/aufs/whout.h           |    1 -
- fs/aufs/wkq.h             |    4 ----
- fs/aufs/xino.c            |    2 --
  include/linux/aufs_type.h |   20 ++++++++++++++------
- 43 files changed, 17 insertions(+), 90 deletions(-)
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
+diff --git a/fs/aufs/Makefile b/fs/aufs/Makefile
+index 0aadd21..dc8fd36 100644
+--- a/fs/aufs/Makefile
++++ b/fs/aufs/Makefile
+@@ -4,8 +4,8 @@ include ${srctree}/${src}/magic.mk
+ # cf. include/linux/kernel.h
+ # enable pr_debug
+ ccflags-y += -DDEBUG
+-# sparse doesn't allow spaces
+-ccflags-y += -D'pr_fmt(fmt)=AUFS_NAME"\040%s:%d:%s[%d]:\040"fmt,__func__,__LINE__,current->comm,current->pid'
++# sparse requires the full pathname
++ccflags-y += -include ${srctree}/include/linux/aufs_type.h
+ 
+ obj-$(CONFIG_AUFS_FS) += aufs.o
+ aufs-y := module.o sbinfo.o super.o branch.o xino.o sysaufs.o opts.o \
+diff --git a/include/linux/aufs_type.h b/include/linux/aufs_type.h
+index 60b52b0..25cdc06 100644
+--- a/include/linux/aufs_type.h
++++ b/include/linux/aufs_type.h
+@@ -19,15 +19,24 @@
+ #ifndef __AUFS_TYPE_H__
+ #define __AUFS_TYPE_H__
+ 
+-#include <linux/ioctl.h>
+-#include <linux/kernel.h>
+-#include <linux/limits.h>
++#define AUFS_NAME	"aufs"
++
+ #ifdef __KERNEL__
+-#include <linux/types.h>
++/*
++ * define it before including all other headers.
++ * sched.h may use pr_* macros before defining "current", so define the
++ * no-current version first, and re-define later.
++ */
++#define pr_fmt(fmt)	AUFS_NAME " %s:%d: " fmt, __func__, __LINE__
++#include <linux/sched.h>
++#undef pr_fmt
++#define pr_fmt(fmt)	AUFS_NAME " %s:%d:%s[%d]: " fmt, \
++		__func__, __LINE__, current->comm, current->pid
+ #else
++#include <linux/limits.h>
+ #include <stdint.h>
+ #include <sys/types.h>
+-#endif
++#endif /* __KERNEL__ */
+ 
+ #define AUFS_VERSION	"2.2-35"
+ 
+@@ -58,7 +67,6 @@ typedef int16_t aufs_bindex_t;
+ 
+ /* ---------------------------------------------------------------------- */
+ 
+-#define AUFS_NAME		"aufs"
+ #define AUFS_FSTYPE		AUFS_NAME
+ 
+ #define AUFS_ROOT_INO		2
 -- 
 1.7.2.5
