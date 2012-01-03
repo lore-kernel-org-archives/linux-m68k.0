@@ -1,55 +1,83 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt
-Date: Mon, 2 Jan 2012 17:36:32 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
-References: <1325264773.13595.133.camel@deadeye> <Pine.BSM.4.64L.1112312202120.14351@herc.mirbsd.org>
- <Pine.BSM.4.64L.1112312229530.14351@herc.mirbsd.org>
- <Pine.BSM.4.64L.1201010113350.14351@herc.mirbsd.org> <9798.1325486722@jrobl>
- <Pine.BSM.4.64L.1201021027220.671@herc.mirbsd.org> <5487.1325510133@jrobl>
- <Pine.BSM.4.64L.1201021328500.13674@herc.mirbsd.org> <6600.1325512436@jrobl>
- <Pine.BSM.4.64L.1201021613370.29291@herc.mirbsd.org> <17563.1325523211@jrobl>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: sfjro@users.sourceforge.net
+Subject: [PATCH 0/2] aufs: headers (Re: [PATCH] aufs: Do not refer to AUFS_NAME in pr_fmt)
+Date: Tue,  3 Jan 2012 14:21:20 +0900
+Message-ID: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
+References: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:3494 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752654Ab2ABRtH convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jan 2012 12:49:07 -0500
-In-Reply-To: <17563.1325523211@jrobl>
+Received: from mail03-md.ns.itscom.net ([175.177.155.113]:50965 "EHLO
+	mail03-md.ns.itscom.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750743Ab2ACFVZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Jan 2012 00:21:25 -0500
+Received: from scan06-mds.s.noc.itscom.net (scan06-md.ns.itscom.net [175.177.155.101])
+	by mail03-md-outgoing.ns.itscom.net (Postfix) with ESMTP id CBEE2FF047E
+	for <linux-m68k@vger.kernel.org>; Tue,  3 Jan 2012 14:21:22 +0900 (JST)
+In-Reply-To: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: sfjro@users.sourceforge.net
-Cc: aufs-users@lists.sourceforge.net, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org
+To: tg@mirbsd.de
+Cc: aufs-users@lists.sourceforge.net, debian-kernel@lists.debian.org, linux-m68k@vger.kernel.org
 
-sfjro@users.sourceforge.net dixit:
+From: J. R. Okajima <hooanon05@yahoo.co.jp>
 
->Hold it please.
+Thorsten Glaser:
+> Please send patches that _should_ apply against what=E2=80=99s in Debian.
+> I don=E2=80=99t have time to play the merge game at the moment.
 
-OK.
+Which version of debian?
+As you might know, the aufs module in the debian stable squeeze is out
+of my control.
+Anyway, this patch series is against the aufs2.2-35 branch in
+aufs2-standalone.git.
 
->I am going to make more changes. So it is better to git-pull and test
->the aufs GIT repository.
 
-Please send patches that _should_ apply against what=E2=80=99s in Debia=
-n.
-I don=E2=80=99t have time to play the merge game at the moment.
+J. R. Okajima (2):
+  aufs: headers 1/2, bugfix, where the pr_fmt macro definition
+  aufs: headers 2/2, simply refined
 
->> I have the same problem ;-) it=3DE2=3D80=3D99s only my third natural=
- language.
->
->I wonder your first or second language is my mother tangue. :-)
+ fs/aufs/Makefile          |    4 ++--
+ fs/aufs/branch.c          |    1 -
+ fs/aufs/branch.h          |    2 --
+ fs/aufs/cpup.c            |    2 --
+ fs/aufs/cpup.h            |    4 ----
+ fs/aufs/dbgaufs.h         |    3 ---
+ fs/aufs/dcsub.h           |    1 -
+ fs/aufs/debug.c           |    1 -
+ fs/aufs/debug.h           |    8 --------
+ fs/aufs/dentry.h          |    1 -
+ fs/aufs/dir.c             |    1 -
+ fs/aufs/dir.h             |    1 -
+ fs/aufs/dynop.h           |    4 ----
+ fs/aufs/export.c          |    1 -
+ fs/aufs/f_op.c            |    2 --
+ fs/aufs/f_op_sp.c         |    1 -
+ fs/aufs/file.c            |    3 ---
+ fs/aufs/file.h            |    1 -
+ fs/aufs/finfo.c           |    1 -
+ fs/aufs/fstype.h          |    1 -
+ fs/aufs/hfsplus.c         |    1 -
+ fs/aufs/i_op.c            |    2 --
+ fs/aufs/inode.h           |    2 --
+ fs/aufs/ioctl.c           |    1 -
+ fs/aufs/opts.c            |    2 --
+ fs/aufs/opts.h            |    3 ---
+ fs/aufs/rdu.c             |    2 --
+ fs/aufs/rwsem.h           |    1 -
+ fs/aufs/sbinfo.c          |    1 -
+ fs/aufs/spl.h             |    4 ----
+ fs/aufs/super.c           |    3 +--
+ fs/aufs/super.h           |    1 -
+ fs/aufs/sysaufs.c         |    2 --
+ fs/aufs/sysaufs.h         |    2 --
+ fs/aufs/sysfs.c           |    3 ---
+ fs/aufs/sysrq.c           |    3 ---
+ fs/aufs/vdir.c            |    1 -
+ fs/aufs/vfsub.c           |    2 --
+ fs/aufs/whout.c           |    1 -
+ fs/aufs/whout.h           |    1 -
+ fs/aufs/wkq.h             |    4 ----
+ fs/aufs/xino.c            |    2 --
+ include/linux/aufs_type.h |   20 ++++++++++++++------
+ 43 files changed, 17 insertions(+), 90 deletions(-)
 
-Probably not (German and Latin).
-
-bye,
-//mirabilos
---=20
-17:57 < jtsn> Der 25C3 ist lustig. Deutsche Vortragende brechen sich vo=
-r
-deutschen Zuh=C3=B6rern auf Englisch einen ab. ;-)  18:01 < jtsn> Adolf=
-s Werk
-war sehr nachhaltig. ;-)    18:01 < jtsn> Das gab's nichtmal in der DDR=
-,
-das Deutsche mit Deutschen auf Russisch reden. ;-)          (10x cnuke@=
-)
+-- 
+1.7.2.5
