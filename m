@@ -1,637 +1,264 @@
-From: sfjro@users.sourceforge.net
-Subject: [PATCH 2/2] aufs: headers 2/2, simply refined
-Date: Tue,  3 Jan 2012 14:21:22 +0900
-Message-ID: <1325568082-25540-3-git-send-email-sfjro@users.sourceforge.net>
-References: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [RFC] m68k: Update defconfigs
+Date: Wed, 4 Jan 2012 23:05:22 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <aufs-users-bounces@lists.sourceforge.net>
-In-Reply-To: <1325568082-25540-1-git-send-email-sfjro@users.sourceforge.net>
-In-Reply-To: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
-References: <Pine.BSM.4.64L.1201021735430.29291@herc.mirbsd.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/aufs-users>,
-	<mailto:aufs-users-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=aufs-users>
-List-Post: <mailto:aufs-users@lists.sourceforge.net>
-List-Help: <mailto:aufs-users-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/aufs-users>,
-	<mailto:aufs-users-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: aufs-users-bounces@lists.sourceforge.net
-To: tg@mirbsd.de
-Cc: aufs-users@lists.sourceforge.net, linux-m68k@vger.kernel.org, debian-kernel@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Debian GNU/Linux m68k <debian-68k@lists.debian.org>
 
-From: J. R. Okajima <hooanon05@yahoo.co.jp>
+	Hi all,
 
-By the previous commit,
-8dc5387 2012-01-03 aufs: bugfix, headers 1/2, where the pr_fmt macro definition
-several header file inclusion in other files became unnecessary.
+I've updated the defconfigs in a new "defconfig" branch (soon at
+http://git.kernel.org/?p=linux/kernel/git/geert/linux-m68k.git;a=commitdiff;h=defconfig).
+Several of these are based on Finn's updates for mac_defconfig.
 
-Signed-off-by: J. R. Okajima <hooanon05@yahoo.co.jp>
----
- fs/aufs/branch.c  |    1 -
- fs/aufs/branch.h  |    2 --
- fs/aufs/cpup.c    |    2 --
- fs/aufs/cpup.h    |    4 ----
- fs/aufs/dbgaufs.h |    3 ---
- fs/aufs/dcsub.h   |    1 -
- fs/aufs/debug.c   |    1 -
- fs/aufs/debug.h   |    8 --------
- fs/aufs/dentry.h  |    1 -
- fs/aufs/dir.c     |    1 -
- fs/aufs/dir.h     |    1 -
- fs/aufs/dynop.h   |    4 ----
- fs/aufs/export.c  |    1 -
- fs/aufs/f_op.c    |    2 --
- fs/aufs/f_op_sp.c |    1 -
- fs/aufs/file.c    |    3 ---
- fs/aufs/file.h    |    1 -
- fs/aufs/finfo.c   |    1 -
- fs/aufs/fstype.h  |    1 -
- fs/aufs/hfsplus.c |    1 -
- fs/aufs/i_op.c    |    2 --
- fs/aufs/inode.h   |    2 --
- fs/aufs/ioctl.c   |    1 -
- fs/aufs/opts.c    |    2 --
- fs/aufs/opts.h    |    3 ---
- fs/aufs/rdu.c     |    2 --
- fs/aufs/rwsem.h   |    1 -
- fs/aufs/sbinfo.c  |    1 -
- fs/aufs/spl.h     |    4 ----
- fs/aufs/super.c   |    3 +--
- fs/aufs/super.h   |    1 -
- fs/aufs/sysaufs.c |    2 --
- fs/aufs/sysaufs.h |    2 --
- fs/aufs/sysfs.c   |    3 ---
- fs/aufs/sysrq.c   |    3 ---
- fs/aufs/vdir.c    |    1 -
- fs/aufs/vfsub.c   |    2 --
- fs/aufs/whout.c   |    1 -
- fs/aufs/whout.h   |    1 -
- fs/aufs/wkq.h     |    4 ----
- fs/aufs/xino.c    |    2 --
- 41 files changed, 1 insertions(+), 82 deletions(-)
+I try to keep the defconfigs for the different platforms as similar as
+possible. multi_defconfig is the union of all others (except for Sun-3).
 
-diff --git a/fs/aufs/branch.c b/fs/aufs/branch.c
-index 49b32de..a8bb316 100644
---- a/fs/aufs/branch.c
-+++ b/fs/aufs/branch.c
-@@ -21,7 +21,6 @@
-  */
- 
- #include <linux/compat.h>
--#include <linux/file.h>
- #include <linux/statfs.h>
- #include "aufs.h"
- 
-diff --git a/fs/aufs/branch.h b/fs/aufs/branch.h
-index 1f39ad6..80b5084 100644
---- a/fs/aufs/branch.h
-+++ b/fs/aufs/branch.h
-@@ -25,9 +25,7 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/fs.h>
- #include <linux/mount.h>
--#include <linux/aufs_type.h>
- #include "dynop.h"
- #include "rwsem.h"
- #include "super.h"
-diff --git a/fs/aufs/cpup.c b/fs/aufs/cpup.c
-index 05cb4e0..70116ba 100644
---- a/fs/aufs/cpup.c
-+++ b/fs/aufs/cpup.c
-@@ -20,10 +20,8 @@
-  * copy-up functions, see wbr_policy.c for copy-down
-  */
- 
--#include <linux/file.h>
- #include <linux/fs_stack.h>
- #include <linux/mm.h>
--#include <linux/uaccess.h>
- #include "aufs.h"
- 
- void au_cpup_attr_flags(struct inode *dst, struct inode *src)
-diff --git a/fs/aufs/cpup.h b/fs/aufs/cpup.h
-index 8e0aa59..8493770 100644
---- a/fs/aufs/cpup.h
-+++ b/fs/aufs/cpup.h
-@@ -25,10 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/path.h>
--#include <linux/time.h>
--#include <linux/aufs_type.h>
--
- struct inode;
- struct file;
- 
-diff --git a/fs/aufs/dbgaufs.h b/fs/aufs/dbgaufs.h
-index 2eaa3f0..a4065d1 100644
---- a/fs/aufs/dbgaufs.h
-+++ b/fs/aufs/dbgaufs.h
-@@ -25,9 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/init.h>
--#include <linux/aufs_type.h>
--
- struct super_block;
- struct au_sbinfo;
- 
-diff --git a/fs/aufs/dcsub.h b/fs/aufs/dcsub.h
-index 1211304..439459c 100644
---- a/fs/aufs/dcsub.h
-+++ b/fs/aufs/dcsub.h
-@@ -27,7 +27,6 @@
- 
- #include <linux/dcache.h>
- #include <linux/fs.h>
--#include <linux/types.h>
- 
- struct dentry;
- 
-diff --git a/fs/aufs/debug.c b/fs/aufs/debug.c
-index 9fad1c3..83e7c57 100644
---- a/fs/aufs/debug.c
-+++ b/fs/aufs/debug.c
-@@ -20,7 +20,6 @@
-  * debug print functions
-  */
- 
--#include <linux/module.h>
- #include <linux/vt_kern.h>
- #include "aufs.h"
- 
-diff --git a/fs/aufs/debug.h b/fs/aufs/debug.h
-index 7140934..1bcc88c 100644
---- a/fs/aufs/debug.h
-+++ b/fs/aufs/debug.h
-@@ -26,17 +26,9 @@
- #ifdef __KERNEL__
- 
- #include <asm/system.h>
--#include <linux/bug.h>
--/* #include <linux/err.h> */
--#include <linux/init.h>
- #include <linux/module.h>
- #include <linux/kallsyms.h>
--/* #include <linux/kernel.h> */
--#include <linux/delay.h>
--/* #include <linux/kd.h> */
--#include <linux/vt_kern.h>
- #include <linux/sysrq.h>
--#include <linux/aufs_type.h>
- 
- #ifdef CONFIG_AUFS_DEBUG
- #define AuDebugOn(a)		BUG_ON(a)
-diff --git a/fs/aufs/dentry.h b/fs/aufs/dentry.h
-index 4f08275..802635f 100644
---- a/fs/aufs/dentry.h
-+++ b/fs/aufs/dentry.h
-@@ -26,7 +26,6 @@
- #ifdef __KERNEL__
- 
- #include <linux/dcache.h>
--#include <linux/aufs_type.h>
- #include "rwsem.h"
- 
- struct au_hdentry {
-diff --git a/fs/aufs/dir.c b/fs/aufs/dir.c
-index 6c45d1a..1e0a771 100644
---- a/fs/aufs/dir.c
-+++ b/fs/aufs/dir.c
-@@ -20,7 +20,6 @@
-  * directory operations
-  */
- 
--#include <linux/file.h>
- #include <linux/fs_stack.h>
- #include "aufs.h"
- 
-diff --git a/fs/aufs/dir.h b/fs/aufs/dir.h
-index 2d0d8d2..99e973a 100644
---- a/fs/aufs/dir.h
-+++ b/fs/aufs/dir.h
-@@ -26,7 +26,6 @@
- #ifdef __KERNEL__
- 
- #include <linux/fs.h>
--#include <linux/aufs_type.h>
- 
- /* ---------------------------------------------------------------------- */
- 
-diff --git a/fs/aufs/dynop.h b/fs/aufs/dynop.h
-index c3217d4..3ddebe7 100644
---- a/fs/aufs/dynop.h
-+++ b/fs/aufs/dynop.h
-@@ -25,10 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/fs.h>
--#include <linux/mm.h>
--#include <linux/rcupdate.h>
--#include <linux/aufs_type.h>
- #include "inode.h"
- 
- enum {AuDy_AOP, AuDyLast};
-diff --git a/fs/aufs/export.c b/fs/aufs/export.c
-index 992a799..2f29e1f 100644
---- a/fs/aufs/export.c
-+++ b/fs/aufs/export.c
-@@ -21,7 +21,6 @@
-  */
- 
- #include <linux/exportfs.h>
--#include <linux/file.h>
- #include <linux/mnt_namespace.h>
- #include <linux/namei.h>
- #include <linux/nsproxy.h>
-diff --git a/fs/aufs/f_op.c b/fs/aufs/f_op.c
-index eb6b909..372308d 100644
---- a/fs/aufs/f_op.c
-+++ b/fs/aufs/f_op.c
-@@ -20,10 +20,8 @@
-  * file and vm operations
-  */
- 
--#include <linux/file.h>
- #include <linux/fs_stack.h>
- #include <linux/mman.h>
--#include <linux/mm.h>
- #include <linux/security.h>
- #include "aufs.h"
- 
-diff --git a/fs/aufs/f_op_sp.c b/fs/aufs/f_op_sp.c
-index 4f5cde8..0068ff2 100644
---- a/fs/aufs/f_op_sp.c
-+++ b/fs/aufs/f_op_sp.c
-@@ -22,7 +22,6 @@
-  * their file I/O is handled out of aufs.
-  */
- 
--#include <linux/fs_stack.h>
- #include "aufs.h"
- 
- static ssize_t aufs_aio_read_sp(struct kiocb *kio, const struct iovec *iov,
-diff --git a/fs/aufs/file.c b/fs/aufs/file.c
-index 5dc3d0e..257cc2b 100644
---- a/fs/aufs/file.c
-+++ b/fs/aufs/file.c
-@@ -20,9 +20,6 @@
-  * handling file/dir, and address_space operation
-  */
- 
--#include <linux/file.h>
--#include <linux/fsnotify.h>
--#include <linux/namei.h>
- #include <linux/pagemap.h>
- #include "aufs.h"
- 
-diff --git a/fs/aufs/file.h b/fs/aufs/file.h
-index 831dc5d..d2468de 100644
---- a/fs/aufs/file.h
-+++ b/fs/aufs/file.h
-@@ -28,7 +28,6 @@
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/poll.h>
--#include <linux/aufs_type.h>
- #include "rwsem.h"
- 
- struct au_branch;
-diff --git a/fs/aufs/finfo.c b/fs/aufs/finfo.c
-index c1d71ba..8995db9 100644
---- a/fs/aufs/finfo.c
-+++ b/fs/aufs/finfo.c
-@@ -20,7 +20,6 @@
-  * file private data
-  */
- 
--#include <linux/file.h>
- #include "aufs.h"
- 
- void au_hfput(struct au_hfile *hf, struct file *file)
-diff --git a/fs/aufs/fstype.h b/fs/aufs/fstype.h
-index 3bdbd14..8ed557d 100644
---- a/fs/aufs/fstype.h
-+++ b/fs/aufs/fstype.h
-@@ -28,7 +28,6 @@
- #include <linux/fs.h>
- #include <linux/magic.h>
- #include <linux/romfs_fs.h>
--#include <linux/aufs_type.h>
- 
- static inline int au_test_aufs(struct super_block *sb)
- {
-diff --git a/fs/aufs/hfsplus.c b/fs/aufs/hfsplus.c
-index 678b69c..6fa5ed8 100644
---- a/fs/aufs/hfsplus.c
-+++ b/fs/aufs/hfsplus.c
-@@ -26,7 +26,6 @@
-  * and au_h_open_post() after releasing it.
-  */
- 
--#include <linux/file.h>
- #include "aufs.h"
- 
- struct file *au_h_open_pre(struct dentry *dentry, aufs_bindex_t bindex)
-diff --git a/fs/aufs/i_op.c b/fs/aufs/i_op.c
-index 065bb76..7141158 100644
---- a/fs/aufs/i_op.c
-+++ b/fs/aufs/i_op.c
-@@ -22,10 +22,8 @@
- 
- #include <linux/device_cgroup.h>
- #include <linux/fs_stack.h>
--#include <linux/mm.h>
- #include <linux/namei.h>
- #include <linux/security.h>
--#include <linux/uaccess.h>
- #include "aufs.h"
- 
- static int h_permission(struct inode *h_inode, int mask,
-diff --git a/fs/aufs/inode.h b/fs/aufs/inode.h
-index d0bd9c6..dffceae 100644
---- a/fs/aufs/inode.h
-+++ b/fs/aufs/inode.h
-@@ -25,9 +25,7 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/fs.h>
- #include <linux/fsnotify.h>
--#include <linux/aufs_type.h>
- #include "rwsem.h"
- 
- struct vfsmount;
-diff --git a/fs/aufs/ioctl.c b/fs/aufs/ioctl.c
-index 93151b3..2ca49c0 100644
---- a/fs/aufs/ioctl.c
-+++ b/fs/aufs/ioctl.c
-@@ -22,7 +22,6 @@
-  * assist the pathconf(3) wrapper library.
-  */
- 
--#include <linux/file.h>
- #include "aufs.h"
- 
- static int au_wbr_fd(struct path *path, struct aufs_wbr_fd __user *arg)
-diff --git a/fs/aufs/opts.c b/fs/aufs/opts.c
-index 82a9697..84a1bc4 100644
---- a/fs/aufs/opts.c
-+++ b/fs/aufs/opts.c
-@@ -20,8 +20,6 @@
-  * mount options/flags
-  */
- 
--#include <linux/file.h>
--#include <linux/jiffies.h>
- #include <linux/namei.h>
- #include <linux/types.h> /* a distribution requires */
- #include <linux/parser.h>
-diff --git a/fs/aufs/opts.h b/fs/aufs/opts.h
-index 1ef3710..76b3119 100644
---- a/fs/aufs/opts.h
-+++ b/fs/aufs/opts.h
-@@ -25,9 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/path.h>
--#include <linux/aufs_type.h>
--
- struct file;
- struct super_block;
- 
-diff --git a/fs/aufs/rdu.c b/fs/aufs/rdu.c
-index 4e0756d..e77b6ff 100644
---- a/fs/aufs/rdu.c
-+++ b/fs/aufs/rdu.c
-@@ -23,8 +23,6 @@
- #include <linux/compat.h>
- #include <linux/fs_stack.h>
- #include <linux/security.h>
--#include <linux/uaccess.h>
--#include <linux/aufs_type.h>
- #include "aufs.h"
- 
- /* bits for struct aufs_rdu.flags */
-diff --git a/fs/aufs/rwsem.h b/fs/aufs/rwsem.h
-index dcd1def..3c9e7c3 100644
---- a/fs/aufs/rwsem.h
-+++ b/fs/aufs/rwsem.h
-@@ -25,7 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/rwsem.h>
- #include "debug.h"
- 
- struct au_rwsem {
-diff --git a/fs/aufs/sbinfo.c b/fs/aufs/sbinfo.c
-index d9141f8..0509d05 100644
---- a/fs/aufs/sbinfo.c
-+++ b/fs/aufs/sbinfo.c
-@@ -20,7 +20,6 @@
-  * superblock private data
-  */
- 
--#include <linux/jiffies.h>
- #include "aufs.h"
- 
- /*
-diff --git a/fs/aufs/spl.h b/fs/aufs/spl.h
-index 37a0329..47a28d5 100644
---- a/fs/aufs/spl.h
-+++ b/fs/aufs/spl.h
-@@ -25,10 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/spinlock.h>
--#include <linux/list.h>
--#include <linux/rculist.h>
--
- struct au_splhead {
- 	spinlock_t		spin;
- 	struct list_head	head;
-diff --git a/fs/aufs/super.c b/fs/aufs/super.c
-index 0ee7ceb..735cff3 100644
---- a/fs/aufs/super.c
-+++ b/fs/aufs/super.c
-@@ -20,8 +20,7 @@
-  * mount and super_block operations
-  */
- 
--#include <linux/buffer_head.h>
--#include <linux/jiffies.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/seq_file.h>
- #include <linux/statfs.h>
-diff --git a/fs/aufs/super.h b/fs/aufs/super.h
-index f490b4a..e810699 100644
---- a/fs/aufs/super.h
-+++ b/fs/aufs/super.h
-@@ -26,7 +26,6 @@
- #ifdef __KERNEL__
- 
- #include <linux/fs.h>
--#include <linux/aufs_type.h>
- #include "rwsem.h"
- #include "spl.h"
- #include "wkq.h"
-diff --git a/fs/aufs/sysaufs.c b/fs/aufs/sysaufs.c
-index ab4036e..01c6fbd 100644
---- a/fs/aufs/sysaufs.c
-+++ b/fs/aufs/sysaufs.c
-@@ -21,9 +21,7 @@
-  * they are necessary regardless sysfs is disabled.
-  */
- 
--#include <linux/fs.h>
- #include <linux/random.h>
--#include <linux/sysfs.h>
- #include "aufs.h"
- 
- unsigned long sysaufs_si_mask;
-diff --git a/fs/aufs/sysaufs.h b/fs/aufs/sysaufs.h
-index 5b6b8d0..66b0fee 100644
---- a/fs/aufs/sysaufs.h
-+++ b/fs/aufs/sysaufs.h
-@@ -25,8 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/sysfs.h>
--#include <linux/aufs_type.h>
- #include "module.h"
- 
- struct super_block;
-diff --git a/fs/aufs/sysfs.c b/fs/aufs/sysfs.c
-index 8afb350..a3a1f65 100644
---- a/fs/aufs/sysfs.c
-+++ b/fs/aufs/sysfs.c
-@@ -20,10 +20,7 @@
-  * sysfs interface
-  */
- 
--#include <linux/fs.h>
--#include <linux/module.h>
- #include <linux/seq_file.h>
--#include <linux/sysfs.h>
- #include "aufs.h"
- 
- static struct attribute *au_attr[] = {
-diff --git a/fs/aufs/sysrq.c b/fs/aufs/sysrq.c
-index e10f555..072e5d9 100644
---- a/fs/aufs/sysrq.c
-+++ b/fs/aufs/sysrq.c
-@@ -20,9 +20,6 @@
-  * magic sysrq hanlder
-  */
- 
--#include <linux/fs.h>
--#include <linux/module.h>
--#include <linux/moduleparam.h>
- /* #include <linux/sysrq.h> */
- #include <linux/writeback.h>
- #include "aufs.h"
-diff --git a/fs/aufs/vdir.c b/fs/aufs/vdir.c
-index 5e42376..db8c800 100644
---- a/fs/aufs/vdir.c
-+++ b/fs/aufs/vdir.c
-@@ -20,7 +20,6 @@
-  * virtual or vertical directory
-  */
- 
--#include <linux/hash.h>
- #include "aufs.h"
- 
- static unsigned int calc_size(int nlen)
-diff --git a/fs/aufs/vfsub.c b/fs/aufs/vfsub.c
-index dda4547..28219c9 100644
---- a/fs/aufs/vfsub.c
-+++ b/fs/aufs/vfsub.c
-@@ -20,12 +20,10 @@
-  * sub-routines for VFS
-  */
- 
--#include <linux/file.h>
- #include <linux/ima.h>
- #include <linux/namei.h>
- #include <linux/security.h>
- #include <linux/splice.h>
--#include <linux/uaccess.h>
- #include "aufs.h"
- 
- int vfsub_update_h_iattr(struct path *h_path, int *did)
-diff --git a/fs/aufs/whout.c b/fs/aufs/whout.c
-index 61545ea..5d5ba13 100644
---- a/fs/aufs/whout.c
-+++ b/fs/aufs/whout.c
-@@ -20,7 +20,6 @@
-  * whiteout for logical deletion and opaque directory
-  */
- 
--#include <linux/fs.h>
- #include "aufs.h"
- 
- #define WH_MASK			S_IRUGO
-diff --git a/fs/aufs/whout.h b/fs/aufs/whout.h
-index 11137f4..3a82828 100644
---- a/fs/aufs/whout.h
-+++ b/fs/aufs/whout.h
-@@ -25,7 +25,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/aufs_type.h>
- #include "dir.h"
- 
- /* whout.c */
-diff --git a/fs/aufs/wkq.h b/fs/aufs/wkq.h
-index 23a6d30..8b06193 100644
---- a/fs/aufs/wkq.h
-+++ b/fs/aufs/wkq.h
-@@ -26,10 +26,6 @@
- 
- #ifdef __KERNEL__
- 
--#include <linux/sched.h>
--#include <linux/wait.h>
--#include <linux/aufs_type.h>
--
- struct super_block;
- 
- /* ---------------------------------------------------------------------- */
-diff --git a/fs/aufs/xino.c b/fs/aufs/xino.c
-index 5a44272..20fc652 100644
---- a/fs/aufs/xino.c
-+++ b/fs/aufs/xino.c
-@@ -20,9 +20,7 @@
-  * external inode number translation table and bitmap
-  */
- 
--#include <linux/file.h>
- #include <linux/seq_file.h>
--#include <linux/uaccess.h>
- #include "aufs.h"
- 
- /* todo: unnecessary to support mmap_sem since kernel-space? */
--- 
-1.7.2.5
+Findings:
+  - CONFIG_BLK_DEV_SWIM is m, while CONFIG_AMIGA_FLOPPY and
+    CONFIG_ATARI_FLOPPY are y.
+  - Amiga and Atari use CONFIG_RTC_CLASS, the others don't.
+    Should we switch everything to CONFIG_RTC_CLASS (and thus drop
+    CONFIG_GEN_RTC)? We do have CONFIG_RTC_DRV_GENERIC now.
+  - The minimal defconfigs are still much larger than I'd prefer.
 
+Here is the list of relevant differenes in all expanded defconfigs
+(unselectable options are considered the same as unselected options):
 
-------------------------------------------------------------------------------
-Write once. Port to many.
-Get the SDK and tools to simplify cross-platform app development. Create 
-new or port existing apps to sell to consumers worldwide. Explore the 
-Intel AppUpSM program developer opportunity. appdeveloper.intel.com/join
-http://p.sf.net/sfu/intel-appdev
+    multi_defconfig/.config -------------------------------------+
+    sun3x_defconfig/.config -----------------------------------+ |
+    sun3_defconfig/.config ----------------------------------+ | |
+    q40_defconfig/.config ---------------------------------+ | | |
+    mvme16x_defconfig/.config ---------------------------+ | | | |
+    mvme147_defconfig/.config -------------------------+ | | | | |
+    mac_defconfig/.config ---------------------------+ | | | | | |
+    hp300_defconfig/.config -----------------------+ | | | | | | |
+    bvme6000_defconfig/.config ------------------+ | | | | | | | |
+    atari_defconfig/.config -------------------+ | | | | | | | | |
+    apollo_defconfig/.config ----------------+ | | | | | | | | | |
+    amiga_defconfig/.config ---------------+ | | | | | | | | | | |
+					   | | | | | | | | | | | |
+    CONFIG_53C700_BE_BUS                 : y . . y . . . y . . . y
+    CONFIG_A2065                         : y . . . . . . . . . . y
+    CONFIG_A2091_SCSI                    : y . . . . . . . . . . y
+    CONFIG_A3000_SCSI                    : y . . . . . . . . . . y
+    CONFIG_ADB                           : . . . . . y . . . . . y
+    CONFIG_ADB_CUDA                      : . . . . . y . . . . . y
+    CONFIG_ADB_IOP                       : . . . . . y . . . . . y
+    CONFIG_ADB_MACII                     : . . . . . y . . . . . y
+    CONFIG_ADB_MACIISI                   : . . . . . y . . . . . y
+    CONFIG_ADB_PMU68K                    : . . . . . y . . . . . y
+    CONFIG_AMIGA                         : y n n n n n n n n n n y
+    CONFIG_AMIGA_BUILTIN_SERIAL          : y . . . . . . . . . . y
+    CONFIG_AMIGA_FLOPPY                  : y . . . . . . . . . . y
+    CONFIG_AMIGA_PCMCIA                  : y . . . . . . . . . . y
+    CONFIG_AMIGA_Z2RAM                   : y . . . . . . . . . . y
+    CONFIG_APNE                          : y . . . . . . . . . . y
+    CONFIG_APOLLO                        : n y n n n n n n n n n y
+    CONFIG_ARCH_DISCONTIGMEM_ENABLE      : y y y y y y y y y n y y
+    CONFIG_ARIADNE                       : y . . . . . . . . . . y
+    CONFIG_ATARI                         : n n y n n n n n n n n y
+    CONFIG_ATARILANCE                    : . . y . . . . . . . . y
+    CONFIG_ATARI_DSP56K                  : . . m . . . . . . . . m
+    CONFIG_ATARI_ETHERNAT                : . . m . . . . . . . . m
+    CONFIG_ATARI_ETHERNEC                : . . y . . . . . . . . y
+    CONFIG_ATARI_FLOPPY                  : . . y . . . . . . . . y
+    CONFIG_ATARI_KBD_CORE                : . . y . . . . . . . . y
+    CONFIG_ATARI_ROM_ISA                 : . . y . . . . . . . . y
+    CONFIG_ATARI_SCSI                    : . . y . . . . . . . . y
+    CONFIG_BCMA_POSSIBLE                 : y y y y y y y y y . y y
+    CONFIG_BLK_DEV_BUDDHA                : y . . . . . . . . . . y
+    CONFIG_BLK_DEV_FALCON_IDE            : . . y . . . . . . . . y
+    CONFIG_BLK_DEV_GAYLE                 : y . . . . . . . . . . y
+    CONFIG_BLK_DEV_IDECD                 : y . y . . y . . y . . y
+    CONFIG_BLK_DEV_IDECD_VERBOSE_ERRORS  : y . y . . y . . y . . y
+    CONFIG_BLK_DEV_MAC_IDE               : . . . . . y . . . . . y
+    CONFIG_BLK_DEV_Q40IDE                : . . . . . . . . y . . y
+    CONFIG_BLK_DEV_SWIM                  : . . . . . m . . . . . m
+    CONFIG_BVME6000                      : . . . y . . n n . . . y
+    CONFIG_BVME6000_NET                  : . . . y . . . . . . . y
+    CONFIG_BVME6000_SCSI                 : . . . y . . . . . . . y
+    CONFIG_DEV_APPLETALK                 : n n n n n m n n n n n m
+    CONFIG_DIO                           : . . . . y . . . . . . y
+    CONFIG_DISCONTIGMEM                  : y y y y y y y y y . y y
+    CONFIG_DISCONTIGMEM_MANUAL           : y y y y y y y y y . y y
+    CONFIG_DMASOUND                      : m . m . . . . . m . . m
+    CONFIG_DMASOUND_ATARI                : . . m . . . . . . . . m
+    CONFIG_DMASOUND_PAULA                : m . . . . . . . . . . m
+    CONFIG_DMASOUND_Q40                  : . . . . . . . . m . . m
+    CONFIG_EARLY_PRINTK                  : . . . . . y . y . . . y
+    CONFIG_FB                            : y y y n y y n n y y y y
+    CONFIG_FB_AMIGA                      : y . . . . . . . . . . y
+    CONFIG_FB_AMIGA_AGA                  : y . . . . . . . . . . y
+    CONFIG_FB_AMIGA_ECS                  : y . . . . . . . . . . y
+    CONFIG_FB_AMIGA_OCS                  : y . . . . . . . . . . y
+    CONFIG_FB_APOLLO                     : . y . . . . . . . . . y
+    CONFIG_FB_ATARI                      : . . y . . . . . . . . y
+    CONFIG_FB_CFB_COPYAREA               : y n y . n y . . y n n y
+    CONFIG_FB_CFB_FILLRECT               : y y y . n y . . y n n y
+    CONFIG_FB_CFB_IMAGEBLIT              : y y y . y y . . y n n y
+    CONFIG_FB_CIRRUS                     : y . . . . . . . . . . y
+    CONFIG_FB_FM2                        : y . . . . . . . . . . y
+    CONFIG_FB_HP300                      : . . . . y . . . . . . y
+    CONFIG_FB_MAC                        : . . . . . y . . . . . y
+    CONFIG_FB_MACMODES                   : n n n . n y . . n n n y
+    CONFIG_FB_Q40                        : . . . . . . . . y . . y
+    CONFIG_FB_VALKYRIE                   : . . . . . y . . . . . y
+    CONFIG_FLATMEM                       : . . . . . . . . . y . .
+    CONFIG_FLATMEM_MANUAL                : . . . . . . . . . y . .
+    CONFIG_FONT_6x11                     : . . . . . y . . . . . y
+    CONFIG_FONT_8x16                     : y y y . y y . . y y y y
+    CONFIG_FONT_8x8                      : y y y . y y . . y y y y
+    CONFIG_FONT_PEARL_8x8                : y . . . . . . . . . . y
+    CONFIG_FRAMEBUFFER_CONSOLE           : y y y . y y . . y y y y
+    CONFIG_GENERIC_ISA_DMA               : y n n n n n n n y n n y
+    CONFIG_GEN_RTC                       : . m . m m m m m m m m .
+    CONFIG_GEN_RTC_X                     : . y . y y y y y y y y .
+    CONFIG_GVP11_SCSI                    : y . . . . . . . . . . y
+    CONFIG_HAS_DMA                       : y y y y y y y y y . y y
+    CONFIG_HEARTBEAT                     : y y y . y . . . y . . y
+    CONFIG_HIL_MLC                       : . . . . y . . . . . . y
+    CONFIG_HP300                         : n n n n y n n n n n n y
+    CONFIG_HPLANCE                       : . . . . y . . . . . . y
+    CONFIG_HP_SDC                        : . . . . y . . . . . . y
+    CONFIG_HP_SDC_RTC                    : . . . . m . . . . . . m
+    CONFIG_HYDRA                         : y . . . . . . . . . . y
+    CONFIG_IDE                           : y n y n n y n n y n n y
+    CONFIG_IDE_ATAPI                     : y . y . . y . . y . . y
+    CONFIG_IDE_GD                        : y . y . . y . . y . . y
+    CONFIG_IDE_GD_ATA                    : y . y . . y . . y . . y
+    CONFIG_IDE_GD_ATAPI                  : y . y . . y . . y . . y
+    CONFIG_IDE_PROC_FS                   : y . y . . y . . y . . y
+    CONFIG_INPUT_ADBHID                  : . . . . . y . . . . . y
+    CONFIG_INPUT_JOYSTICK                : y n n n n n n n n n n y
+    CONFIG_INPUT_M68K_BEEP               : m . m . n m . . m . . m
+    CONFIG_INPUT_MISC                    : y n y n y y n n y n n y
+    CONFIG_IPDDP                         : . . . . . m . . . . . m
+    CONFIG_IPDDP_DECAP                   : . . . . . y . . . . . y
+    CONFIG_IPDDP_ENCAP                   : . . . . . y . . . . . y
+    CONFIG_ISA                           : y . . . . . . . y . . y
+    CONFIG_JOYSTICK_AMIGA                : m . . . . . . . . . . m
+    CONFIG_KEYBOARD_AMIGA                : y . . . . . . . . . . y
+    CONFIG_KEYBOARD_ATARI                : . . y . . . . . . . . y
+    CONFIG_KEYBOARD_HIL                  : . . . . y . . . . . . y
+    CONFIG_KEYBOARD_HIL_OLD              : . . . . y . . . . . . y
+    CONFIG_KEYBOARD_SUNKBD               : n n n n n n n n n y y y
+    CONFIG_LOCALVERSION                  : "-amiga" "-apollo" "-atari" "-bvme6000" "-hp300" "-mac" "-mvme147" "-mvme16x" "-q40" "-sun3" "-sun3x" "-multi"
+    CONFIG_LOGO                          : y y y . y y . . y y y y
+    CONFIG_LOGO_LINUX_CLUT224            : y n y . y y . . y y y y
+    CONFIG_LOGO_LINUX_MONO               : y y y . n y . . y y y y
+    CONFIG_LOGO_LINUX_VGA16              : y n y . n y . . y y y y
+    CONFIG_LOGO_MAC_CLUT224              : . . . . . y . . . . . y
+    CONFIG_M68020                        : y y y n y y n n n y n y
+    CONFIG_M68030                        : y y y n y y y n n . y y
+    CONFIG_M68040                        : y y y y y y n y y . n y
+    CONFIG_M68060                        : y y y y y n n y y . n y
+    CONFIG_M68KFPU_EMU                   : n n n n n y n n n n n y
+    CONFIG_M68K_L2_CACHE                 : . . . . . y . . . . . y
+    CONFIG_MAC                           : n n n n n y n n n n n y
+    CONFIG_MAC8390                       : . . . . . y . . . . . y
+    CONFIG_MAC89x0                       : . . . . . y . . . . . y
+    CONFIG_MACINTOSH_DRIVERS             : . . . . . y . . . . . y
+    CONFIG_MACMACE                       : . . . . . y . . . . . y
+    CONFIG_MACSONIC                      : . . . . . y . . . . . y
+    CONFIG_MAC_EMUMOUSEBTN               : . . . . . y . . . . . y
+    CONFIG_MAC_SCSI                      : . . . . . y . . . . . y
+    CONFIG_MII                           : n n m n n n n n n n n m
+    CONFIG_MMU_MOTOROLA                  : y y y y y y y y y . y y
+    CONFIG_MMU_SUN3                      : . . . . . . . . . y . .
+    CONFIG_MOUSE_AMIGA                   : m . . . . . . . . . . m
+    CONFIG_MOUSE_ATARI                   : . . m . . . . . . . . m
+    CONFIG_MOUSE_SERIAL                  : n m n m m m m m m m m m
+    CONFIG_MVME147                       : . . . n . . y n . . . y
+    CONFIG_MVME147_NET                   : . . . . . . y . . . . y
+    CONFIG_MVME147_SCSI                  : . . . . . . y . . . . y
+    CONFIG_MVME16x                       : . . . n . . n y . . . y
+    CONFIG_MVME16x_NET                   : . . . . . . . y . . . y
+    CONFIG_MVME16x_SCSI                  : . . . . . . . y . . . y
+    CONFIG_NATFEAT                       : . . y . . . . . . . . y
+    CONFIG_NE2000                        : n . . . . . . . m . . m
+    CONFIG_NET_VENDOR_8390               : y . y . . y . . y . . y
+    CONFIG_NET_VENDOR_AMD                : y . y . y . y . n y y y
+    CONFIG_NET_VENDOR_APPLE              : . . . . . y . . . . . y
+    CONFIG_NET_VENDOR_CIRRUS             : n . . . . y . . n . . y
+    CONFIG_NET_VENDOR_I825XX             : . . . y . . . y . y . y
+    CONFIG_NET_VENDOR_INTEL              : n n n y n n n y n y n y
+    CONFIG_NET_VENDOR_NATSEMI            : y n y n n y n n y n n y
+    CONFIG_NET_VENDOR_SMSC               : n . y . . n . . n . . y
+    CONFIG_NFBLOCK                       : . . y . . . . . . . . y
+    CONFIG_NFCON                         : . . y . . . . . . . . y
+    CONFIG_NFETH                         : . . y . . . . . . . . y
+    CONFIG_NODES_SHIFT                   : 3 3 3 3 3 3 3 3 3 . 3 3
+    CONFIG_NO_DMA                        : n n n n n n n n n y n n
+    CONFIG_NUBUS                         : . . . . . y . . . . . y
+    CONFIG_NVRAM                         : . . y . . . . . . . . y
+    CONFIG_PARPORT                       : m n m n n n n n n n n m
+    CONFIG_PARPORT_1284                  : y . y . . . . . . . . y
+    CONFIG_PARPORT_AMIGA                 : m . . . . . . . . . . m
+    CONFIG_PARPORT_ATARI                 : . . m . . . . . . . . m
+    CONFIG_PARPORT_MFC3                  : m . . . . . . . . . . m
+    CONFIG_PARPORT_NOT_PC                : y . y . . . . . . . . y
+    CONFIG_PPS_CLIENT_PARPORT            : m . m . . . . . . . . m
+    CONFIG_PRINTER                       : m . m . . . . . . . . m
+    CONFIG_Q40                           : n n n n n n n n y n n y
+    CONFIG_RTC_CLASS                     : y n y n n n n n n n n y
+    CONFIG_RTC_DRV_CMOS                  : . . n . . . . . . . . m
+    CONFIG_RTC_DRV_GENERIC               : n . y . . . . . . . . m
+    CONFIG_RTC_DRV_MSM6242               : m . n . . . . . . . . m
+    CONFIG_RTC_DRV_RP5C01                : m . n . . . . . . . . m
+    CONFIG_RTC_HCTOSYS                   : y . y . . . . . . . . y
+    CONFIG_RTC_HCTOSYS_DEVICE            : "rtc0" . "rtc0" . . . . . . . . "rtc0"
+    CONFIG_RTC_INTF_DEV                  : y . y . . . . . . . . y
+    CONFIG_RTC_INTF_PROC                 : y . y . . . . . . . . y
+    CONFIG_RTC_INTF_SYSFS                : y . y . . . . . . . . y
+    CONFIG_RTC_LIB                       : y . y . . . . . . . . y
+    CONFIG_SCSI_A4000T                   : y . . . . . . . . . . y
+    CONFIG_SCSI_DMA                      : y y y y y y y y y n y y
+    CONFIG_SCSI_MAC_ESP                  : . . . . . y . . . . . y
+    CONFIG_SCSI_SPI_ATTRS                : y n y y n y y y n y y y
+    CONFIG_SCSI_ZORRO7XX                 : y . . . . . . . . . . y
+    CONFIG_SERIAL_CONSOLE                : y . . . . . . . . . . y
+    CONFIG_SERIAL_CORE                   : . . . . . y . . . . . y
+    CONFIG_SERIAL_CORE_CONSOLE           : . . . . . y . . . . . y
+    CONFIG_SERIAL_PMACZILOG              : . . . . . y . . . . . y
+    CONFIG_SERIAL_PMACZILOG_CONSOLE      : . . . . . y . . . . . y
+    CONFIG_SERIAL_PMACZILOG_TTYS         : . . . . . y . . . . . y
+    CONFIG_SERIO                         : n m n m y m m m y y y y
+    CONFIG_SERIO_Q40KBD                  : . . . . . . . . y . . y
+    CONFIG_SINGLE_MEMORY_CHUNK           : . . . . . . . . . y . .
+    CONFIG_SOUND                         : m n m n n n n n m n n m
+    CONFIG_SOUND_OSS_CORE                : y . y . . . . . y . . y
+    CONFIG_SOUND_OSS_CORE_PRECLAIM       : y . y . . . . . y . . y
+    CONFIG_SSB_POSSIBLE                  : y y y y y y y y y . y y
+    CONFIG_SUN3                          : . . . . . . . . . y . .
+    CONFIG_SUN3LANCE                     : . . . . . . . . . y y y
+    CONFIG_SUN3X                         : n n n n n n n n n n y y
+    CONFIG_SUN3X_ESP                     : . . . . . . . . . . y y
+    CONFIG_SUN3_82586                    : . . . . . . . . . y . .
+    CONFIG_SUN3_SCSI                     : . . . . . . . . . y . .
+    CONFIG_VME                           : n n n y n n y y n n n y
+    CONFIG_ZORRO                         : y . . . . . . . . . . y
+    CONFIG_ZORRO8390                     : y . . . . . . . . . . y
+    CONFIG_ZORRO_NAMES                   : y . . . . . . . . . . y
+
+Since this is the first update since the introduction of minimal configs
+("make savedefconfig") more than a year ago, the changes are big.
+I'll try to do a better job in the future, with more frequent updates.
+
+Thanks for your feedback!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
