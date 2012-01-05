@@ -1,104 +1,52 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.3
-Date: Thu, 5 Jan 2012 16:12:03 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201051608180.5699@ayla.of.borg>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Atari TT
+Date: Thu, 05 Jan 2012 16:49:47 +0100
+Message-ID: <m2vcoqgndw.fsf@igel.home>
+References: <4F0488A9.5030100@fairlite.co.uk>
+	<Pine.BSM.4.64L.1201041911580.19192@herc.mirbsd.org>
+	<alpine.LNX.2.00.1201052128060.6601@nippy.intranet>
+	<4F059460.5040305@fairlite.co.uk>
+	<CAMuHMdUxQq_29g7yeaS2Ktz193CcHNX5FaP8PR9ijU0htnKbZg@mail.gmail.com>
+	<4F059AE1.6070707@fairlite.co.uk> <4F059DB9.1050209@fairlite.co.uk>
+	<CAMuHMdUK=2tkFtxQjua6LLGDJuEkrbK0W+mMVQ6PLBB9MfqPSw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-out.m-online.net ([212.18.0.1]:36083 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932591Ab2AEQBb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 11:01:31 -0500
+In-Reply-To: <CAMuHMdUK=2tkFtxQjua6LLGDJuEkrbK0W+mMVQ6PLBB9MfqPSw@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Thu, 5 Jan 2012 15:42:35 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gerg@snapgear.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Alan Hourihane <alanh@fairlite.co.uk>, Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-	Hi Linus,
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-The following changes since commit 805a6af8dba5dfdd35ec35dc52ec0122400b2610:
-  Linus Torvalds (1):
-        Linux 3.2
+> On Thu, Jan 5, 2012 at 13:55, Alan Hourihane <alanh@fairlite.co.uk> wrote:
+>> Linux version 3.1.0-atari-00246-gbff0dc7 (root@server) (gcc version
+>
+> bff0dc7 = m68k-v3.1. That kernel still has the SCC driver, but it depends on
+> BROKEN, so you cannot select it.
+> If you revert 173808aa9203cf752518acd80fde3c9c910ddd0f ("m68k/atari: SCC
+> - Mark Atari serial driver BROKEN") you can select CONFIG_ATARI_SCC again,
+> and get a real serial console.
+>
+> But first the interrupt storm must be fixed.
+>
+>> unexpected interrupt from 112
+>
+> That's the vector number, so the actual IRQ number is 112 / 4 = 28, which is
+> IRQ_TT_MFP_TIMD. Sorry, no clues.
 
-are available in the git repository at:
+This irq is used for the timer that generates the clock for the MFP
+serial port.  It should really stay disabled.
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+Andreas.
 
-The drivers/net change has been acked by David S. Miller.
-
-Thanks for pulling!
-
-Andi Kleen (1):
-      m68k: Initconst section fixes
-
-Andreas Schwab (1):
-      m68k: Don't comment out syscalls used by glibc
-
-Finn Thain (11):
-      m68k/mac: early console
-      m68k/mac: cleanup mac_clear_irq
-      m68k/mac: cleanup mac_irq_pending
-      m68k/mac: cleanup forward declarations
-      m68k/mac: enable via_alt_mapping on performa 580
-      m68k/mac: fix nubus slot irq disable and shutdown
-      m68k/mac: oss irq fixes
-      m68k/mac: fix baboon irq disable and shutdown
-      m68k/mac: fix powerbook 150 adb_type
-      mac_scsi: fix mac_scsi on some powerbooks
-      m68k/mac: cleanup macro case
-
-Geert Uytterhoeven (6):
-      m68k/hp300: Export hp300_ledstate
-      m68k/serial: Remove references to obsolete CONFIG_SERIAL167
-      m68k/atari: Move declaration of atari_SCC_reset_done to header file
-      m68k/net: Remove obsolete IRQ_FLG_* users
-      m68k/serial: Remove references to obsolete serial config options
-      m68k/mac: Make CONFIG_HEARTBEAT unavailable on Mac
-
-Kars de Jong (2):
-      m68k/serial: SERIAL_PORT_DFNS only if CONFIG_ISA
-      m68k/mvme16x: Add support for EARLY_PRINTK
-
- arch/m68k/Kconfig.debug                 |   11 ++
- arch/m68k/Kconfig.devices               |   46 +-----
- arch/m68k/atari/ataints.c               |    2 -
- arch/m68k/atari/debug.c                 |    1 -
- arch/m68k/configs/amiga_defconfig       |    1 -
- arch/m68k/configs/apollo_defconfig      |    2 -
- arch/m68k/configs/atari_defconfig       |    3 -
- arch/m68k/configs/multi_defconfig       |    5 -
- arch/m68k/configs/mvme16x_defconfig     |    2 -
- arch/m68k/emu/nfeth.c                   |    2 +-
- arch/m68k/hp300/config.c                |    3 +-
- arch/m68k/include/asm/atarihw.h         |    2 +
- arch/m68k/include/asm/blinken.h         |    8 +-
- arch/m68k/include/asm/mac_baboon.h      |    6 +
- arch/m68k/include/asm/mac_iop.h         |    2 +
- arch/m68k/include/asm/mac_oss.h         |   23 +---
- arch/m68k/include/asm/mac_psc.h         |    4 +
- arch/m68k/include/asm/mac_via.h         |    9 +
- arch/m68k/include/asm/macintosh.h       |   10 +-
- arch/m68k/include/asm/macints.h         |    6 +-
- arch/m68k/include/asm/serial.h          |    2 +
- arch/m68k/include/asm/unistd.h          |   10 +-
- arch/m68k/kernel/head.S                 |  117 +++++++-------
- arch/m68k/mac/baboon.c                  |   41 +----
- arch/m68k/mac/config.c                  |   93 ++++++++----
- arch/m68k/mac/iop.c                     |    8 +-
- arch/m68k/mac/macints.c                 |  197 ++++++------------------
- arch/m68k/mac/oss.c                     |  157 +++++++-------------
- arch/m68k/mac/psc.c                     |   17 --
- arch/m68k/mac/via.c                     |  255 +++++++++++++++----------------
- arch/m68k/mvme16x/config.c              |  160 +++++++++++++++++++
- drivers/block/swim.c                    |    1 -
- drivers/net/ethernet/natsemi/macsonic.c |    7 +-
- drivers/scsi/mac_esp.c                  |    3 +-
- 34 files changed, 582 insertions(+), 634 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
