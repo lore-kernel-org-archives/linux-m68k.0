@@ -1,77 +1,104 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Atari TT
-Date: Thu, 5 Jan 2012 15:42:35 +0100
-Message-ID: <CAMuHMdUK=2tkFtxQjua6LLGDJuEkrbK0W+mMVQ6PLBB9MfqPSw@mail.gmail.com>
-References: <4F0488A9.5030100@fairlite.co.uk>
-	<Pine.BSM.4.64L.1201041911580.19192@herc.mirbsd.org>
-	<alpine.LNX.2.00.1201052128060.6601@nippy.intranet>
-	<4F059460.5040305@fairlite.co.uk>
-	<CAMuHMdUxQq_29g7yeaS2Ktz193CcHNX5FaP8PR9ijU0htnKbZg@mail.gmail.com>
-	<4F059AE1.6070707@fairlite.co.uk>
-	<4F059DB9.1050209@fairlite.co.uk>
+Subject: [git pull] m68k updates for 3.3
+Date: Thu, 5 Jan 2012 16:12:03 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1201051608180.5699@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:52052 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932476Ab2AEOmh convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 09:42:37 -0500
-Received: by wgbdr13 with SMTP id dr13so700909wgb.1
-        for <linux-m68k@vger.kernel.org>; Thu, 05 Jan 2012 06:42:36 -0800 (PST)
-In-Reply-To: <4F059DB9.1050209@fairlite.co.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alan Hourihane <alanh@fairlite.co.uk>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gerg@snapgear.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Thu, Jan 5, 2012 at 13:55, Alan Hourihane <alanh@fairlite.co.uk> wro=
-te:
-> Linux version 3.1.0-atari-00246-gbff0dc7 (root@server) (gcc version
+	Hi Linus,
 
-bff0dc7 =3D m68k-v3.1. That kernel still has the SCC driver, but it dep=
-ends on
-BROKEN, so you cannot select it.
-If you revert 173808aa9203cf752518acd80fde3c9c910ddd0f ("m68k/atari: SC=
-C
-- Mark Atari serial driver BROKEN") you can select CONFIG_ATARI_SCC aga=
-in,
-and get a real serial console.
+The following changes since commit 805a6af8dba5dfdd35ec35dc52ec0122400b2610:
+  Linus Torvalds (1):
+        Linux 3.2
 
-But first the interrupt storm must be fixed.
+are available in the git repository at:
 
-> unexpected interrupt from 112
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-That's the vector number, so the actual IRQ number is 112 / 4 =3D 28, w=
-hich is
-IRQ_TT_MFP_TIMD. Sorry, no clues.
+The drivers/net change has been acked by David S. Miller.
 
-Can you please try a pristine v3.1? The only relevant differences are t=
-he
-conversion to the genirq framework and the Atari SCC driver.
+Thanks for pulling!
 
-If that works, I guess it's a regression introduced by the genirq conve=
-rsion.
-Then you can bisect between v3.1 and m68k-v3.1.
+Andi Kleen (1):
+      m68k: Initconst section fixes
 
-BTW, in between 9fa434585e5f6cfeae685505b4cd8465dbab1dff ("m68k/irq:
-Add genirq support") and 971ae31663e817a5e5b673d30c7652d9160145f0
-("m68k/irq: Remove obsolete m68k irq framework"), genirq support is a c=
-onfig
-option that can be turned on or off.
+Andreas Schwab (1):
+      m68k: Don't comment out syscalls used by glibc
+
+Finn Thain (11):
+      m68k/mac: early console
+      m68k/mac: cleanup mac_clear_irq
+      m68k/mac: cleanup mac_irq_pending
+      m68k/mac: cleanup forward declarations
+      m68k/mac: enable via_alt_mapping on performa 580
+      m68k/mac: fix nubus slot irq disable and shutdown
+      m68k/mac: oss irq fixes
+      m68k/mac: fix baboon irq disable and shutdown
+      m68k/mac: fix powerbook 150 adb_type
+      mac_scsi: fix mac_scsi on some powerbooks
+      m68k/mac: cleanup macro case
+
+Geert Uytterhoeven (6):
+      m68k/hp300: Export hp300_ledstate
+      m68k/serial: Remove references to obsolete CONFIG_SERIAL167
+      m68k/atari: Move declaration of atari_SCC_reset_done to header file
+      m68k/net: Remove obsolete IRQ_FLG_* users
+      m68k/serial: Remove references to obsolete serial config options
+      m68k/mac: Make CONFIG_HEARTBEAT unavailable on Mac
+
+Kars de Jong (2):
+      m68k/serial: SERIAL_PORT_DFNS only if CONFIG_ISA
+      m68k/mvme16x: Add support for EARLY_PRINTK
+
+ arch/m68k/Kconfig.debug                 |   11 ++
+ arch/m68k/Kconfig.devices               |   46 +-----
+ arch/m68k/atari/ataints.c               |    2 -
+ arch/m68k/atari/debug.c                 |    1 -
+ arch/m68k/configs/amiga_defconfig       |    1 -
+ arch/m68k/configs/apollo_defconfig      |    2 -
+ arch/m68k/configs/atari_defconfig       |    3 -
+ arch/m68k/configs/multi_defconfig       |    5 -
+ arch/m68k/configs/mvme16x_defconfig     |    2 -
+ arch/m68k/emu/nfeth.c                   |    2 +-
+ arch/m68k/hp300/config.c                |    3 +-
+ arch/m68k/include/asm/atarihw.h         |    2 +
+ arch/m68k/include/asm/blinken.h         |    8 +-
+ arch/m68k/include/asm/mac_baboon.h      |    6 +
+ arch/m68k/include/asm/mac_iop.h         |    2 +
+ arch/m68k/include/asm/mac_oss.h         |   23 +---
+ arch/m68k/include/asm/mac_psc.h         |    4 +
+ arch/m68k/include/asm/mac_via.h         |    9 +
+ arch/m68k/include/asm/macintosh.h       |   10 +-
+ arch/m68k/include/asm/macints.h         |    6 +-
+ arch/m68k/include/asm/serial.h          |    2 +
+ arch/m68k/include/asm/unistd.h          |   10 +-
+ arch/m68k/kernel/head.S                 |  117 +++++++-------
+ arch/m68k/mac/baboon.c                  |   41 +----
+ arch/m68k/mac/config.c                  |   93 ++++++++----
+ arch/m68k/mac/iop.c                     |    8 +-
+ arch/m68k/mac/macints.c                 |  197 ++++++------------------
+ arch/m68k/mac/oss.c                     |  157 +++++++-------------
+ arch/m68k/mac/psc.c                     |   17 --
+ arch/m68k/mac/via.c                     |  255 +++++++++++++++----------------
+ arch/m68k/mvme16x/config.c              |  160 +++++++++++++++++++
+ drivers/block/swim.c                    |    1 -
+ drivers/net/ethernet/natsemi/macsonic.c |    7 +-
+ drivers/scsi/mac_esp.c                  |    3 +-
+ 34 files changed, 582 insertions(+), 634 deletions(-)
 
 Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
