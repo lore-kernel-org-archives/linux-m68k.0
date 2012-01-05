@@ -1,32 +1,38 @@
 From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [RFC] m68k: Update defconfigs
-Date: Thu, 5 Jan 2012 22:11:35 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1201052201200.6601@nippy.intranet>
-References: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg> <Pine.BSM.4.64L.1201042220180.16408@herc.mirbsd.org> <CAMuHMdVN470=RBQMHZ9PQ_rNCVbS4gD0+5P654YdxrBR3aqotA@mail.gmail.com>
+Date: Thu, 5 Jan 2012 22:42:54 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1201052212470.6601@nippy.intranet>
+References: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:52526 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754898Ab2AELLj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 06:11:39 -0500
-In-Reply-To: <CAMuHMdVN470=RBQMHZ9PQ_rNCVbS4gD0+5P654YdxrBR3aqotA@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Debian GNU/Linux m68k <debian-68k@lists.debian.org>
 
 
-On Thu, 5 Jan 2012, Geert Uytterhoeven wrote:
+On Wed, 4 Jan 2012, Geert Uytterhoeven wrote:
 
-> Finn, Michael: as pmaczilog uses platform devices, it can be made to 
-> work on Atari, too?
+> Findings:
+>   - CONFIG_BLK_DEV_SWIM is m, while CONFIG_AMIGA_FLOPPY and
+>     CONFIG_ATARI_FLOPPY are y.
 
-I would think so. I don't recall anything peculiar about the platform 
-device variant though the overlapping MMIO address ranges in the platform 
-resources for the mac are a bit strange. You may need to add suitable 
-delays to the register access routines. If you do any work on this driver, 
-you should probably base it on Ben's tree as the recent changes are fairly 
-significant.
+My defconfig patch used "m" because (if I recall correctly) the SWIM 
+driver is experimental code that couldn't be safely loaded on all 
+machines.
+
+>   - Amiga and Atari use CONFIG_RTC_CLASS, the others don't.
+>     Should we switch everything to CONFIG_RTC_CLASS (and thus drop
+>     CONFIG_GEN_RTC)? We do have CONFIG_RTC_DRV_GENERIC now.
+
+This would alter the device major/minor numbers and devtmpfs path, right?
+
+Also I wonder about CONFIG_RTC_HCTOSYS on Macs without a working RTC 
+driver. Would enabling CONFIG_RTC_HCTOSYS change present behaviour?
+
+I suppose it might need some testing. Otherwise, I think harmonising this 
+across defconfigs (and distro configs) is a good idea.
 
 Finn
