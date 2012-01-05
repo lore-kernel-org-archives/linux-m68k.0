@@ -1,30 +1,32 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [RFC] m68k: Update defconfigs
-Date: Thu, 05 Jan 2012 11:11:42 +0100
-Message-ID: <1325758302.19430.10.camel@petr>
-References: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg>
-	 <Pine.BSM.4.64L.1201042220180.16408@herc.mirbsd.org>
+Date: Thu, 5 Jan 2012 22:11:35 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1201052201200.6601@nippy.intranet>
+References: <alpine.DEB.2.00.1201042252450.15625@ayla.of.borg> <Pine.BSM.4.64L.1201042220180.16408@herc.mirbsd.org> <CAMuHMdVN470=RBQMHZ9PQ_rNCVbS4gD0+5P654YdxrBR3aqotA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <Pine.BSM.4.64L.1201042220180.16408@herc.mirbsd.org>
-Resent-Message-ID: <ljnZF5pP_IK.A.l4.eeXBPB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from vm4.telegraphics.com.au ([98.124.60.149]:52526 "EHLO
+	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754898Ab2AELLj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 06:11:39 -0500
+In-Reply-To: <CAMuHMdVN470=RBQMHZ9PQ_rNCVbS4gD0+5P654YdxrBR3aqotA@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 
-Thorsten Glaser p=C3=AD=C5=A1e v St 04. 01. 2012 v 22:22 +0000:
-> This is something I'd like to see, if it is possible from
-> the hardware: ARAnym=E2=80=99s emulated parallel port for debugging
-> is unidirectional (printing only), so, in headless mode,
-> you get no console at all
 
-I'll gladly add bidirectional capability to ARAnyM's emulated parallel
-port. Any patches?
+On Thu, 5 Jan 2012, Geert Uytterhoeven wrote:
 
-Petr
+> Finn, Michael: as pmaczilog uses platform devices, it can be made to 
+> work on Atari, too?
+
+I would think so. I don't recall anything peculiar about the platform 
+device variant though the overlapping MMIO address ranges in the platform 
+resources for the mac are a bit strange. You may need to add suitable 
+delays to the register access routines. If you do any work on this driver, 
+you should probably base it on Ben's tree as the recent changes are fairly 
+significant.
+
+Finn
