@@ -1,196 +1,281 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates for 3.3
-Date: Fri, 6 Jan 2012 11:32:49 +1000
-Message-ID: <201201060132.q061WnGO030499@goober.corp.nai.org>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: clean up linker script
+Date: Fri, 6 Jan 2012 14:49:27 +1000
+Message-ID: <1325825367-23758-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:49217 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751582Ab2AFBfX (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 20:35:23 -0500
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:57991 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752008Ab2AFEv1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Jan 2012 23:51:27 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
+From: Greg Ungerer <gerg@uclinux.org>
 
-Hi Linus,
+There is a lot of years of collected cruft in the m68knommu linker script.
+Clean it all up and use the well defined linker script support macros.
 
-Can you please pull the m68knommu git tree, for-next branch:
+Support is maintained for building both ROM/FLASH based and RAM based setups.
+No major changes to section layouts, though the rodata section is now lumped
+in with the read/write data section.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/vmlinux-nommu.lds |  200 +++++++++---------------------------
+ 1 files changed, 49 insertions(+), 151 deletions(-)
 
-The biggest change is the addition of MMU support for some of the ColdFire
-CPU types. The older ColdFire CPUs had no MMU hardware, but some of the
-newer v4 variants do. There is also quite a few clean up, dead code removal
-and merge patches to gradually get the classic m68k and the m68knommu code
-better integrated.
-
-Regards
-Greg
-
-
-
-
-The following changes since commit 5f0a6e2d503896062f641639dacfe5055c2f593b:
-  Linus Torvalds (1):
-        Linux 3.2-rc7
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-Geert Uytterhoeven (1):
-      m68k/Kconfig: Separate classic m68k and coldfire early
-
-Greg Ungerer (53):
-      m68knommu: remove unused fasthandler declaration
-      m68k: merge the init_task code for mmu and non-mmu targets
-      m68k: remove duplicate asm offset for task thread.info
-      m68k: remove thread_info struct from thread struct
-      m68k: selection of GENERIC_ATOMIC64 is not MMU specific
-      m68knommu: move definition of mach_gettod to where it is used
-      m68k: print memory layout info in boot log
-      m68k: support configure time command line for MMU m68k
-      m68knommu: no need to set register marker on traps
-      m68k: make fp register stores consistent for m68k and ColdFire
-      m68k: simpler m68k and ColdFire CPU's can use generic csum code
-      m68k: handle presence of 64bit mul/div instructions cleanly
-      m68knommu: disable cache early in startup for ColdFire
-      m68knommu: fix broken ColdFire slice timer read_clk() code
-      m68knommu: remove unused anchor.h include file
-      m68k: consolidate the vmlinux.lds linker scripts
-      m68knommu: fix broken boot logo inclusion
-      m68knommu: remove no longer used rom_length from Palm/Pilot start up code
-      m68k: add machine and CPU definitions for ColdFire cores
-      m68k: show ColdFire CPU/FPU/MMU type
-      m68k: definitions for the ColdFire V4e MMU hardware
-      m68k: make interrupt definitions conditional on correct CPU types
-      m68k: add TASK definitions for ColdFires running with MMU
-      m68k: modify user space access functions to support ColdFire CPUs
-      m68k: use addr_limit checking for m68k CPUs that do no support address spaces
-      m68k: init the MMU hardware for the 54xx ColdFire
-      m68k: add ColdFire 54xx CPU MMU memory init code
-      m68k: set register a2 to current if MMU enabled on ColdFire
-      m68k: page table support definitions and code for ColdFire MMU
-      m68k: add page table size definitions for ColdFire V4e MMU
-      m68k: add ColdFire paging exception handling code
-      m68k: add cache support for V4e ColdFire cores running with MMU enabled
-      m68k: modify ColdFire 54xx cache support for MMU enabled
-      m68k: add TLB flush support for the ColdFire V4e MMU hardware
-      m68k: define PAGE_OFFSET_RAW for ColdFire CPU with MMU enabled
-      m68k: set ColdFire MMU page size
-      m68k: MMU enabled ColdFire needs 8k ELF alignment
-      m68k: ColdFire V4e MMU context support code
-      m68k: use tracehook_report_syscall_entry/exit for ColdFire MMU ptrace path
-      m68k: modify cache push and clear code for ColdFire with MMU enable
-      m68k: use ColdFire MMU read/write bit flags when ioremapping
-      m68k: ColdFire V4e MMU paging init code and miss handler
-      m68k: compile appropriate mm arch files for ColdFire MMU support
-      m68k: create ColdFire MMU pgalloc code
-      m68k: use non-MMU entry.S code when compiling for ColdFire CPU
-      m68k: add code to setup a ColdFire 54xx platform when MMU enabled
-      m68k: ColdFire with MMU enabled uses same clocking code as non-MMU
-      m68k: use non-MMU linker script for ColdFire MMU builds
-      m68k: adjustments to stack frame for ColdFire with MMU enabled
-      m68k: add ColdFire FPU support for the V4e ColdFire CPUs
-      m68k: do not use m68k startup or interrupt code for ColdFire CPUs
-      m68k: add ColdFire with MMU enabled support to the m68k mem init code
-      m68k: allow ColdFire 547x and 548x CPUs to be built with MMU enabled
-
-John Stultz (1):
-      clocksource: m86k: Convert to clocksource_register_hz/khz
-
-Mark Brown (1):
-      m68k: Fall back to __gpio_to_irq() for non-arch GPIOs
-
- arch/m68k/Kconfig                                  |   17 +-
- arch/m68k/Kconfig.cpu                              |   78 +++--
- arch/m68k/Kconfig.debug                            |   16 +-
- arch/m68k/Kconfig.machine                          |    4 +
- arch/m68k/include/asm/anchor.h                     |  112 -----
- arch/m68k/include/asm/atomic.h                     |   10 +
- arch/m68k/include/asm/cacheflush_mm.h              |   88 ++++-
- arch/m68k/include/asm/checksum.h                   |   31 +--
- arch/m68k/include/asm/div64.h                      |    8 +-
- arch/m68k/include/asm/elf.h                        |    6 +-
- arch/m68k/include/asm/entry.h                      |   10 +-
- arch/m68k/include/asm/fpu.h                        |    2 +
- arch/m68k/include/asm/gpio.h                       |    3 +-
- arch/m68k/include/asm/irq.h                        |    5 +-
- arch/m68k/include/asm/m54xxacr.h                   |   32 ++-
- arch/m68k/include/asm/mcf_pgalloc.h                |  102 +++++
- arch/m68k/include/asm/mcf_pgtable.h                |  425 ++++++++++++++++++++
- arch/m68k/include/asm/mcfmmu.h                     |  112 +++++
- arch/m68k/include/asm/mmu_context.h                |  250 +++++++++---
- arch/m68k/include/asm/motorola_pgtable.h           |    1 +
- arch/m68k/include/asm/page.h                       |   10 +-
- arch/m68k/include/asm/page_no.h                    |    3 -
- arch/m68k/include/asm/page_offset.h                |   10 +-
- arch/m68k/include/asm/pgalloc.h                    |    4 +-
- arch/m68k/include/asm/pgtable_mm.h                 |   30 ++-
- arch/m68k/include/asm/processor.h                  |   18 +-
- arch/m68k/include/asm/segment.h                    |   30 +-
- arch/m68k/include/asm/setup.h                      |   14 +
- arch/m68k/include/asm/sigcontext.h                 |    4 -
- arch/m68k/include/asm/thread_info.h                |   33 +--
- arch/m68k/include/asm/tlbflush.h                   |   23 +-
- arch/m68k/include/asm/traps.h                      |    1 +
- arch/m68k/include/asm/uaccess_mm.h                 |   42 ++-
- arch/m68k/include/asm/ucontext.h                   |    4 -
- arch/m68k/kernel/Makefile                          |   21 +-
- arch/m68k/kernel/asm-offsets.c                     |    3 +-
- arch/m68k/kernel/entry.S                           |    2 +-
- arch/m68k/kernel/entry_mm.S                        |   31 +-
- arch/m68k/kernel/entry_no.S                        |    9 +-
- arch/m68k/kernel/init_task.c                       |    3 +-
- arch/m68k/kernel/m68k_ksyms.c                      |    2 +-
- arch/m68k/kernel/process_mm.c                      |   75 ++--
- arch/m68k/kernel/ptrace_mm.c                       |   18 +
- arch/m68k/kernel/setup_mm.c                        |   22 +-
- arch/m68k/kernel/setup_no.c                        |    1 -
- arch/m68k/kernel/signal_mm.c                       |  204 +++++++---
- arch/m68k/kernel/time.c                            |    2 +-
- arch/m68k/kernel/time_no.c                         |    3 +
- arch/m68k/kernel/traps.c                           |  104 +++++
- .../kernel/{vmlinux.lds_no.S => vmlinux-nommu.lds} |    8 +
- arch/m68k/kernel/vmlinux-std.lds                   |    2 +
- arch/m68k/kernel/vmlinux-sun3.lds                  |    2 +
- arch/m68k/kernel/vmlinux.lds.S                     |   15 +-
- arch/m68k/kernel/vmlinux.lds_mm.S                  |   10 -
- arch/m68k/lib/Makefile                             |   10 +-
- arch/m68k/lib/{checksum_mm.c => checksum.c}        |    0
- arch/m68k/lib/checksum_no.c                        |  156 -------
- arch/m68k/lib/uaccess.c                            |   22 +-
- arch/m68k/mm/Makefile                              |    8 +-
- arch/m68k/mm/cache.c                               |   24 +-
- arch/m68k/mm/init_mm.c                             |   36 ++-
- arch/m68k/mm/kmap.c                                |    3 +-
- arch/m68k/mm/mcfmmu.c                              |  198 +++++++++
- arch/m68k/mm/memory.c                              |    8 +-
- arch/m68k/platform/54xx/config.c                   |   47 +++
- arch/m68k/platform/68328/Makefile                  |    6 +-
- arch/m68k/platform/68328/bootlogo.h                |    2 +-
- arch/m68k/platform/68328/bootlogo.pl               |   10 -
- arch/m68k/platform/68328/config.c                  |    3 +
- arch/m68k/platform/68328/head-pilot.S              |   19 +-
- arch/m68k/platform/68328/head-rom.S                |    9 +-
- arch/m68k/platform/68328/timers.c                  |    4 +-
- arch/m68k/platform/coldfire/dma_timer.c            |    5 +-
- arch/m68k/platform/coldfire/entry.S                |    7 +-
- arch/m68k/platform/coldfire/head.S                 |   53 +++-
- arch/m68k/platform/coldfire/pit.c                  |    4 +-
- arch/m68k/platform/coldfire/sltimers.c             |   13 +-
- arch/m68k/platform/coldfire/timers.c               |    4 +-
- 78 files changed, 2009 insertions(+), 717 deletions(-)
- delete mode 100644 arch/m68k/include/asm/anchor.h
- create mode 100644 arch/m68k/include/asm/mcf_pgalloc.h
- create mode 100644 arch/m68k/include/asm/mcf_pgtable.h
- create mode 100644 arch/m68k/include/asm/mcfmmu.h
- rename arch/m68k/kernel/{vmlinux.lds_no.S => vmlinux-nommu.lds} (97%)
- delete mode 100644 arch/m68k/kernel/vmlinux.lds_mm.S
- rename arch/m68k/lib/{checksum_mm.c => checksum.c} (100%)
- delete mode 100644 arch/m68k/lib/checksum_no.c
- create mode 100644 arch/m68k/mm/mcfmmu.c
- delete mode 100644 arch/m68k/platform/68328/bootlogo.pl
+diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
+index 8e66ccb..40e02d9 100644
+--- a/arch/m68k/kernel/vmlinux-nommu.lds
++++ b/arch/m68k/kernel/vmlinux-nommu.lds
+@@ -1,195 +1,93 @@
+ /*
+  *	vmlinux.lds.S -- master linker script for m68knommu arch
+  *
+- *	(C) Copyright 2002-2006, Greg Ungerer <gerg@snapgear.com>
++ *	(C) Copyright 2002-2012, Greg Ungerer <gerg@snapgear.com>
+  *
+  *	This linker script is equipped to build either ROM loaded or RAM
+  *	run kernels.
+  */
+ 
+-#include <asm-generic/vmlinux.lds.h>
+-#include <asm/page.h>
+-#include <asm/thread_info.h>
+-
+ #if defined(CONFIG_RAMKERNEL)
+-#define	RAM_START	CONFIG_KERNELBASE
+-#define	RAM_LENGTH	(CONFIG_RAMBASE + CONFIG_RAMSIZE - CONFIG_KERNELBASE)
+-#define	TEXT		ram
+-#define	DATA		ram
+-#define	INIT		ram
+-#define	BSSS		ram
+-#endif
+-#if defined(CONFIG_ROMKERNEL) || defined(CONFIG_HIMEMKERNEL)
+-#define	RAM_START	CONFIG_RAMBASE
+-#define	RAM_LENGTH	CONFIG_RAMSIZE
+-#define	ROMVEC_START	CONFIG_ROMVEC
+-#define	ROMVEC_LENGTH	CONFIG_ROMVECSIZE
+-#define	ROM_START	CONFIG_ROMSTART
+-#define	ROM_LENGTH	CONFIG_ROMSIZE
+-#define	TEXT		rom
+-#define	DATA		ram
+-#define	INIT		ram
+-#define	BSSS		ram
++#define	KTEXT_ADDR	CONFIG_KERNELBASE
+ #endif
+-
+-#ifndef DATA_ADDR
+-#define	DATA_ADDR
++#if defined(CONFIG_ROMKERNEL)
++#define	KTEXT_ADDR	CONFIG_ROMSTART
++#define	KDATA_ADDR	CONFIG_KERNELBASE
++#define	LOAD_OFFSET	KDATA_ADDR + (ADDR(.text) + SIZEOF(.text))
+ #endif
+ 
++#include <asm/page.h>
++#include <asm/thread_info.h>
++#include <asm-generic/vmlinux.lds.h>
+ 
+ OUTPUT_ARCH(m68k)
+ ENTRY(_start)
+ 
+-MEMORY {
+-	ram	: ORIGIN = RAM_START, LENGTH = RAM_LENGTH
+-#ifdef ROM_START
+-	romvec	: ORIGIN = ROMVEC_START, LENGTH = ROMVEC_LENGTH
+-	rom	: ORIGIN = ROM_START, LENGTH = ROM_LENGTH
+-#endif
+-}
+-
+ jiffies = jiffies_64 + 4;
+ 
+ SECTIONS {
+ 
+-#ifdef ROMVEC_START
+-	. = ROMVEC_START ;
++#ifdef CONFIG_ROMVEC
++	. = CONFIG_ROMVEC;
+ 	.romvec : {
+-		__rom_start = . ;
++		__rom_start = .;
+ 		_romvec = .;
++		*(.romvec)
+ 		*(.data..initvect)
+-	} > romvec
++	}
+ #endif
+ 
++	. = KTEXT_ADDR;
++
++	_text = .;
++	_stext = .;
+ 	.text : {
+-		_text = .;
+-		_stext = . ;
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+ 		LOCK_TEXT
+-		*(.text..lock)
+ 		*(.fixup)
++		. = ALIGN(16);
++	}
++	_etext = .;
++
++#ifdef KDATA_ADDR
++	. = KDATA_ADDR;
++#endif
++
++	_sdata = .;
++	RO_DATA_SECTION(PAGE_SIZE)
++	RW_DATA_SECTION(16, PAGE_SIZE, THREAD_SIZE)
++	_edata = .;
+ 
+-		. = ALIGN(16);          /* Exception table              */
+-		__start___ex_table = .;
+-		*(__ex_table)
+-		__stop___ex_table = .;
+-
+-		*(.rodata) *(.rodata.*)
+-		*(__vermagic)		/* Kernel version magic */
+-		*(.rodata1)
+-		*(.rodata.str1.1)
+-
+-		/* Kernel symbol table: Normal symbols */
+-		. = ALIGN(4);
+-		__start___ksymtab = .;
+-		*(SORT(___ksymtab+*))
+-		__stop___ksymtab = .;
+-
+-		/* Kernel symbol table: GPL-only symbols */
+-		__start___ksymtab_gpl = .;
+-		*(SORT(___ksymtab_gpl+*))
+-		__stop___ksymtab_gpl = .;
+-
+-		/* Kernel symbol table: Normal unused symbols */
+-		__start___ksymtab_unused = .;
+-		*(SORT(___ksymtab_unused+*))
+-		__stop___ksymtab_unused = .;
+-
+-		/* Kernel symbol table: GPL-only unused symbols */
+-		__start___ksymtab_unused_gpl = .;
+-		*(SORT(___ksymtab_unused_gpl+*))
+-		__stop___ksymtab_unused_gpl = .;
+-
+-		/* Kernel symbol table: GPL-future symbols */
+-		__start___ksymtab_gpl_future = .;
+-		*(SORT(___ksymtab_gpl_future+*))
+-		__stop___ksymtab_gpl_future = .;
+-
+-		/* Kernel symbol table: Normal symbols */
+-		__start___kcrctab = .;
+-		*(SORT(___kcrctab+*))
+-		__stop___kcrctab = .;
+-
+-		/* Kernel symbol table: GPL-only symbols */
+-		__start___kcrctab_gpl = .;
+-		*(SORT(___kcrctab_gpl+*))
+-		__stop___kcrctab_gpl = .;
+-
+-		/* Kernel symbol table: Normal unused symbols */
+-		__start___kcrctab_unused = .;
+-		*(SORT(___kcrctab_unused+*))
+-		__stop___kcrctab_unused = .;
+-
+-		/* Kernel symbol table: GPL-only unused symbols */
+-		__start___kcrctab_unused_gpl = .;
+-		*(SORT(___kcrctab_unused_gpl+*))
+-		__stop___kcrctab_unused_gpl = .;
+-
+-		/* Kernel symbol table: GPL-future symbols */
+-		__start___kcrctab_gpl_future = .;
+-		*(SORT(___kcrctab_gpl_future+*))
+-		__stop___kcrctab_gpl_future = .;
+-
+-		/* Kernel symbol table: strings */
+-		*(__ksymtab_strings)
+-
+-		/* Built-in module parameters */
+-		. = ALIGN(4) ;
+-		__start___param = .;
+-		*(__param)
+-		__stop___param = .;
+-
+-		/* Built-in module versions */
+-		. = ALIGN(4) ;
+-		__start___modver = .;
+-		*(__modver)
+-		__stop___modver = .;
+-
+-		. = ALIGN(4) ;
+-		_etext = . ;
+-	} > TEXT
+-
+-	.data DATA_ADDR : {
+-		. = ALIGN(4);
+-		_sdata = . ;
+-		DATA_DATA
+-		CACHELINE_ALIGNED_DATA(32)
+-		PAGE_ALIGNED_DATA(PAGE_SIZE)
+-		*(.data..shared_aligned)
+-		INIT_TASK_DATA(THREAD_SIZE)
+-		_edata = . ;
+-	} > DATA
++	EXCEPTION_TABLE(16)
++	NOTES
+ 
++	. = ALIGN(PAGE_SIZE);
++	__init_begin = .;
++	INIT_TEXT_SECTION(PAGE_SIZE)
++	INIT_DATA_SECTION(16)
++	PERCPU_SECTION(16)
+ 	.m68k_fixup : {
+ 		__start_fixup = .;
+ 		*(.m68k_fixup)
+ 		__stop_fixup = .;
+-	} > DATA
+-	NOTES > DATA
+-
+-	.init.text : {
+-		. = ALIGN(PAGE_SIZE);
+-		__init_begin = .;
+-	} > INIT
+-	INIT_TEXT_SECTION(PAGE_SIZE) > INIT
+-	INIT_DATA_SECTION(16) > INIT
++	}
+ 	.init.data : {
+ 		. = ALIGN(PAGE_SIZE);
+ 		__init_end = .;
+-	} > INIT
+-
+-	.bss : {
+-		. = ALIGN(4);
+-		_sbss = . ;
+-		*(.bss)
+-		*(COMMON)
+-		. = ALIGN(4) ;
+-		_ebss = . ;
+-	 	_end = . ;
+-	} > BSSS
++	}
++
++	_sbss = .;
++	BSS_SECTION(0, 0, 0)
++	_ebss = .;
++
++	_end = .;
++
++	STABS_DEBUG
++	.comment 0 : { *(.comment) }
+ 
++	/* Sections to be discarded */
+ 	DISCARDS
+ }
+ 
+-- 
+1.7.0.4
