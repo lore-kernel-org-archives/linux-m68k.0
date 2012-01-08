@@ -1,16 +1,16 @@
 From: Alan Hourihane <alanh@fairlite.co.uk>
 Subject: Re: Atari TT (next)
-Date: Sat, 07 Jan 2012 16:59:11 +0000
-Message-ID: <4F0879DF.60501@fairlite.co.uk>
+Date: Sun, 08 Jan 2012 00:46:00 +0000
+Message-ID: <4F08E748.4020305@fairlite.co.uk>
 References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fairlite.demon.co.uk ([80.176.228.186]:47448 "EHLO
+Received: from fairlite.demon.co.uk ([80.176.228.186]:49493 "EHLO
 	fairlite.demon.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751548Ab2AGQ7O (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 7 Jan 2012 11:59:14 -0500
+	with ESMTP id S1752242Ab2AHAqF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 7 Jan 2012 19:46:05 -0500
 In-Reply-To: <4F07EA66.6020603@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -40,6 +40,7 @@ being sent by the bootloader with it's start (0) and size. ST-RAM always
 starts at 0. So it's perfectly detectable, so why the need for an option
 to specify the ST-RAM pool size ?
 
+
 >> But there's also this further up the boot log.
 >>
 >> Ignoring memory chunk at 0x0:0x400000 before the first chunk
@@ -54,11 +55,14 @@ to specify the ST-RAM pool size ?
 No, because I don't use "-s" on the bootloader. That means it loads the
 kernel in TTRAM.
 
+
+
 > I've tried to play around with the MM init code to circumvent this in
 > the past, to no avail. I think  memory chunks have to be listed in
 > strict order for MM init to work. I don't think reordering the memory
 > chunk list once the kernel has started will work, so implementing the
 > memfile option in ataboot may be necessary.
+>
 
 I think anyone with ARanyM should be able to see this problem, by
 setting their STRAM to 4MB and removing the "-s" flag from the
