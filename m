@@ -1,99 +1,52 @@
-From: Richard Weinberger <richard@nod.at>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 1/2] topology: Check for missing CPU devices
-Date: Mon, 09 Jan 2012 15:19:43 +0100
-Message-ID: <4F0AF77F.6010508@nod.at>
-References: <1326055714.13595.309.camel@deadeye>  <CA+55aFwwnJPpVY++Vgr6p3s47YjdYWV3sgLZzvCtiJp6DEu78Q@mail.gmail.com>  <CAFLxGvwJWrSRSNxHE620XZkc4w0ayzeqqxZOR1efkh1V+VBO1w@mail.gmail.com>  <CA+55aFwVnLE-DLRzS8G=8NxQZjF5M_O4kgrPoX+AOOEH-OZgog@mail.gmail.com> <1326077566.4097.7.camel@deadeye>
+Date: Mon, 9 Jan 2012 21:13:01 +0100
+Message-ID: <CAMuHMdV614Hb9dFykFNbkwf-6hqx36qg_W=66tNqsexEHQ8d0A@mail.gmail.com>
+References: <1326055714.13595.309.camel@deadeye>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig5D607656C9556ACAF6264795"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from a.ns.miles-group.at ([95.130.255.143]:47836 "EHLO radon.swed.at"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755116Ab2AIOT4 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 9 Jan 2012 09:19:56 -0500
-In-Reply-To: <1326077566.4097.7.camel@deadeye>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:49932 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933292Ab2AIUNE convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Jan 2012 15:13:04 -0500
+In-Reply-To: <1326055714.13595.309.camel@deadeye>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, richard -rw- weinberger <richard.weinberger@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Cc: Greg Kroah-Hartman <gregkh@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig5D607656C9556ACAF6264795
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Am 09.01.2012 03:52, schrieb Ben Hutchings:
-> On Sun, 2012-01-08 at 17:29 -0800, Linus Torvalds wrote:
->> On Sun, Jan 8, 2012 at 5:06 PM, richard -rw- weinberger
->> <richard.weinberger@gmail.com> wrote:
->>> On Mon, Jan 9, 2012 at 1:18 AM, Linus Torvalds
->>> <torvalds@linux-foundation.org> wrote:
->>>> Ok, both of the patches look sane to me, but it would really be nice=
-
->>>> to hear from somebody with the actual affected architectures, and ge=
+On Sun, Jan 8, 2012 at 21:48, Ben Hutchings <ben@decadent.org.uk> wrote=
+:
+> Commit ccbc60d3e19a1b6ae66ca0d89b3da02dde62088b ('topology: Provide
+> CPU topology in sysfs in !SMP configurations') causes a crash at boot
+> on a several architectures. =C2=A0The topology sysfs code assumes tha=
 t
->>>> a tested-by.
->>>
->>> UML is affected:
->>> https://lkml.org/lkml/2012/1/8/186
->>>
->>> I wasted an hour finding out why it is crashing.
->>> Instead of testing kernels I really should read more LKML. ;-)
->>
->> Hmm.
->>
->> Ben - how about that
->>
->>   static DEFINE_PER_CPU(struct cpu, cpu_devices);
->>
->> approach that Richard uses in his patch, instead of the kcalloc?
->=20
-> That seems perfectly good.
->=20
->> And
->> clearly UM should also do that CONFIG_GENERIC_CPU_DEVICES thing with
->> your patch.
->>
->> Richard - does Ben's patch work for  you too if you just add "select
->> GENERIC_CPU_DEVICES" in the UM Kconfig too (Kconfig.common, probably)?=
+> there is a CPU device for each online CPU whereas some architectures
+> that do not support SMP or cpufreq do not register any CPU devices.
+> Check for this before trying to use a device.
+>
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 
->=20
+Thanks!
+Works on its own or combined with "[PATCH 2/2] cpu: Register a generic
+CPU device on architectures that currently do not".
 
-Yeah, Ben's patch solves the problem too. :-)
-Ben, please add the attached patch snippet to your patch.
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
 --
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index a923483..b37ae70 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -8,6 +8,7 @@ config UML
- 	default y
- 	select HAVE_GENERIC_HARDIRQS
- 	select GENERIC_IRQ_SHOW
-+	select GENERIC_CPU_DEVICES
-
- config MMU
- 	bool
-
-
---------------enig5D607656C9556ACAF6264795
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPCveDAAoJEN9758yqZn9ep3IIALdDqxHIXDb6auvLEnOIMmJI
-Mk77iGatNiWl/OxISQE2WDTWF9ZG7LTVyFXvW3pvsC+imc9g0+Soz8g4MMUVEVhJ
-7idIYSui+S6Evcs3FL8C174+CxGyQykZ/nxp50GY8vFeHVCnNa6VFvV2Yf/gd3YN
-qSEG58aeYA26bm/vRqWZOqemrqcNKoVVsuetnXe6FOtEFh6wVab48Ilf9KFryVPw
-YXZbLNSkCsbPdWvW4BX688OpBDQRHYjjPG8A2dqMCaSYhW0wPlRpdGRjGraP5mn4
-5MxNkXat5RD7JO9fEfmkhBHCjWT9obnP15b0T3SJjIGvw4StUTgSH6B/LCALWR4=
-=yL8o
------END PGP SIGNATURE-----
-
---------------enig5D607656C9556ACAF6264795--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
