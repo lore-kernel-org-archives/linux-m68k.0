@@ -1,84 +1,60 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH 1/2] topology: Check for missing CPU devices
-Date: Mon, 09 Jan 2012 02:56:56 +0000
-Message-ID: <1326077816.4097.8.camel@deadeye>
-References: <1326055714.13595.309.camel@deadeye>
-	 <CA+55aFwwnJPpVY++Vgr6p3s47YjdYWV3sgLZzvCtiJp6DEu78Q@mail.gmail.com>
-	 <1326077272.4097.3.camel@deadeye>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Atari TT (next)
+Date: Mon, 9 Jan 2012 16:16:22 +1300
+Message-ID: <CAOmrzkL-wrOumzdBAWsCd3qWTkan2m_-g+ovGQetO8CNjs80hg@mail.gmail.com>
+References: <4F079F6B.8080502@fairlite.co.uk>
+	<4F07EA66.6020603@gmail.com>
+	<4F08E748.4020305@fairlite.co.uk>
+	<4F0917E9.9090600@gmail.com>
+	<4F0964EC.2080505@fairlite.co.uk>
+	<CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+	<4F0A2DD0.4000707@fairlite.co.uk>
+	<CAOmrzk+P3mPXu_Q_KxgEk_jx-JNhXY4ydrKoGM+43LpD5icTHw@mail.gmail.com>
+	<4F0A3CDE.7070308@fairlite.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-+EUPP7btfq7dAMkEb70R"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:53163 "EHLO
-	shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751615Ab2AIC5H (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jan 2012 21:57:07 -0500
-In-Reply-To: <1326077272.4097.3.camel@deadeye>
+Received: from mail-pw0-f46.google.com ([209.85.160.46]:60782 "EHLO
+	mail-pw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755164Ab2AIDQX convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jan 2012 22:16:23 -0500
+Received: by pbdu13 with SMTP id u13so1962894pbd.19
+        for <linux-m68k@vger.kernel.org>; Sun, 08 Jan 2012 19:16:22 -0800 (PST)
+In-Reply-To: <4F0A3CDE.7070308@fairlite.co.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+To: Alan Hourihane <alanh@fairlite.co.uk>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
+Hi Alan,
 
---=-+EUPP7btfq7dAMkEb70R
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>
+> Next problem is the SCSI controller.
 
-On Mon, 2012-01-09 at 02:47 +0000, Ben Hutchings wrote:
-> On Sun, 2012-01-08 at 16:18 -0800, Linus Torvalds wrote:
-> > Ok, both of the patches look sane to me, but it would really be nice
-> > to hear from somebody with the actual affected architectures, and get
-> > a tested-by.
-> >=20
-> > Testing it on hacked-up x86 sounds fine, but doesn't quite have the
-> > same kind of "yes, this fixes the actual problem" feel to it.
->=20
-> Indeed.
->=20
-> > Also, can you clarify: does the second patch make the first patch just
-> > an "irrelevant safety net", or are there possible callers of
-> > topology_add_dev() that could cause problems? I'm just wondering
-> > whether maybe the safety net ends up then possibly hiding some future
-> > bug where we (once more) don't register a cpu and then never really
-> > notice?
-> [...]
->=20
-> driver_init() doesn't check that cpu_dev_init() - or any of the other
-> functions it calls - is successful.  So in theory at least we could boot
-> and still have no CPU devices after the first patch.
+My absolute favourite.
 
-I mean to say that we could have no CPU devices after the *second*
-patch.  So the first patch is an extra defence against that.  (Though we
-could just as well panic if register_cpu() fails at boot time.)
+> NCR5380 core release=3D7.
+> NCR5380: coroutine isn't running.
+> scsi0: no currently connected command
+> scsi0: issue_queue
+> scsi0: disconnected_queue
+> scsi0: destination target 0, lun 0
+> =A0 =A0 =A0 =A0command =3D 18 (0x12) 00 00 00 24 00
+>
+> scsi 0:0:0:0: Device offlined - not ready after error recovery
+>
+> I'll start poking at this.
 
-Ben.
+If you can get the error recovery sorted, I'd be happy to start poking
+at Falcon SCSI again.
 
---=20
-Ben Hutchings
-Life is what happens to you while you're busy making other plans.
-                                                               - John Lenno=
-n
+(Yes, I know a cold boot sorted it for now - just in case you can get
+it to get stuck again)
 
---=-+EUPP7btfq7dAMkEb70R
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Congrats to getting this far at least - I have no idea on the initrd th=
+ough.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+Cheers,
 
-iQIVAwUATwpXeOe/yOyVhhEJAQqv4hAAmxz39WA7VeE51w9F4/nGB63uYn4aZHMc
-GwMczr/JTSE8gL4mmedOY4My7bUEN+l3u+DW6jYqK3FJnNOlSFw7NTHQOkcz/AYW
-75sLGGkjRZvwTu/kvOUsuCVRPmyvXkBoLA+r0GYAg3sreauiMOTo+GqygocODi+l
-szS/VgMpXyPZIsd8JNXsXKIFUtl+MbF1s/h8YInQmGif9yJ95dBdH7VLawoPjzPE
-FH+94hLBPlw9gu0GsmjI5nv+oxqs9qFtK3KPXrqa7DXORK/pMmfg6RfN/Sd59e8S
-XcPOr4XS/1+w8Vqo6bEklcH030HnrDl9LyKYDjdL4sGirQMzWgrkB1cWMt/xe8jR
-3RnRJA9DKJDz7Q5Bw/nnZwev/fwYHlubmwrfnroQ4Is0ggxpqzXggQPY8WLlsYaa
-+36CXjdJN89qGBXej3dm6b3G9QHjIgJUL5bp3n5ZD0iiW/7LiZKUqoIWL7vGgg3U
-852yhTojZFPGG0RxJ+cX7ifhz2Gdsymv8hRJXiGRiapWT5tgWcwGbEB/7T2uDu1I
-V7jaP8WXGMLO7M6dMmkJ8QrIkqIpKsLpSfF0M6NQ6/vzIqYuqTiX7rBT4heH7/k7
-HoY8OMDLZ6wMKlq162d02sWtOY4fEGLM+3SD9hHVAVRsf+H9K3plfKuBA6q/H63H
-TBWwomoaQ48=
-=olQq
------END PGP SIGNATURE-----
-
---=-+EUPP7btfq7dAMkEb70R--
+  Michael
