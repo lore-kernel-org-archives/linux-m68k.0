@@ -1,84 +1,43 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] topology: Check for missing CPU devices
-Date: Sun, 8 Jan 2012 16:18:41 -0800
-Message-ID: <CA+55aFwwnJPpVY++Vgr6p3s47YjdYWV3sgLZzvCtiJp6DEu78Q@mail.gmail.com>
-References: <1326055714.13595.309.camel@deadeye>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Atari TT (next)
+Date: Mon, 09 Jan 2012 01:23:22 +0100
+Message-ID: <m262gllo5h.fsf@igel.home>
+References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com>
+	<4F08E748.4020305@fairlite.co.uk> <4F0917E9.9090600@gmail.com>
+	<4F0964EC.2080505@fairlite.co.uk>
+	<CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+	<4F0A2DD0.4000707@fairlite.co.uk>
+	<CAOmrzk+P3mPXu_Q_KxgEk_jx-JNhXY4ydrKoGM+43LpD5icTHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:37241 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754738Ab2AIATD convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jan 2012 19:19:03 -0500
-In-Reply-To: <1326055714.13595.309.camel@deadeye>
+Received: from mail-out.m-online.net ([212.18.0.9]:41313 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754762Ab2AIAX0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jan 2012 19:23:26 -0500
+In-Reply-To: <CAOmrzk+P3mPXu_Q_KxgEk_jx-JNhXY4ydrKoGM+43LpD5icTHw@mail.gmail.com>
+	(Michael Schmitz's message of "Mon, 9 Jan 2012 13:05:38 +1300")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Alan Hourihane <alanh@fairlite.co.uk>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Ok, both of the patches look sane to me, but it would really be nice
-to hear from somebody with the actual affected architectures, and get
-a tested-by.
+Michael Schmitz <schmitzmic@googlemail.com> writes:
 
-Testing it on hacked-up x86 sounds fine, but doesn't quite have the
-same kind of "yes, this fixes the actual problem" feel to it.
+> Hi Alan,
+>
+>> I understand, but the STRAM allocator is broken. It gives out TT-RAM. It
+>> should never do that on a TT.
+>
+> The ST-RAM allocator is used by a number of drivers, some of those
+> could actually use TT-RAM fine.
 
-Also, can you clarify: does the second patch make the first patch just
-an "irrelevant safety net", or are there possible callers of
-topology_add_dev() that could cause problems? I'm just wondering
-whether maybe the safety net ends up then possibly hiding some future
-bug where we (once more) don't register a cpu and then never really
-notice?
+There is no point in calling atari_stram_alloc if you don't need ST-RAM.
+Of course, all uses are because they *can't* use TT-RAM.
 
-Or am I just being difficult?
+Andreas.
 
-                     Linus
-
-On Sun, Jan 8, 2012 at 12:48 PM, Ben Hutchings <ben@decadent.org.uk> wr=
-ote:
-> Commit ccbc60d3e19a1b6ae66ca0d89b3da02dde62088b ('topology: Provide
-> CPU topology in sysfs in !SMP configurations') causes a crash at boot
-> on a several architectures. =A0The topology sysfs code assumes that
-> there is a CPU device for each online CPU whereas some architectures
-> that do not support SMP or cpufreq do not register any CPU devices.
-> Check for this before trying to use a device.
->
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> ---
-> =A0drivers/base/topology.c | =A0 =A05 ++++-
-> =A01 files changed, 4 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/base/topology.c b/drivers/base/topology.c
-> index ae989c5..4467c85 100644
-> --- a/drivers/base/topology.c
-> +++ b/drivers/base/topology.c
-> @@ -147,6 +147,8 @@ static int __cpuinit topology_add_dev(unsigned in=
-t cpu)
-> =A0{
-> =A0 =A0 =A0 =A0struct device *dev =3D get_cpu_device(cpu);
->
-> + =A0 =A0 =A0 if (!dev)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENODEV;
-> =A0 =A0 =A0 =A0return sysfs_create_group(&dev->kobj, &topology_attr_g=
-roup);
-> =A0}
->
-> @@ -154,7 +156,8 @@ static void __cpuinit topology_remove_dev(unsigne=
-d int cpu)
-> =A0{
-> =A0 =A0 =A0 =A0struct device *dev =3D get_cpu_device(cpu);
->
-> - =A0 =A0 =A0 sysfs_remove_group(&dev->kobj, &topology_attr_group);
-> + =A0 =A0 =A0 if (dev)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sysfs_remove_group(&dev->kobj, &topolog=
-y_attr_group);
-> =A0}
->
-> =A0static int __cpuinit topology_cpu_callback(struct notifier_block *=
-nfb,
-> --
-> 1.7.8.2
->
->
->
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
