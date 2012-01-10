@@ -1,36 +1,76 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] topology: Check for missing CPU devices
-Date: Mon, 9 Jan 2012 12:23:04 -0800
-Message-ID: <CA+55aFzz3FUsKRQ33NiDghkA3ugV65sBrc+N-h8NLuDRUSBAHQ@mail.gmail.com>
-References: <1326055714.13595.309.camel@deadeye> <CA+55aFwwnJPpVY++Vgr6p3s47YjdYWV3sgLZzvCtiJp6DEu78Q@mail.gmail.com>
- <1326077272.4097.3.camel@deadeye> <1326077816.4097.8.camel@deadeye>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCHv2 1/2] cpu: Do not return errors from cpu_dev_init() which
+ will be ignored
+Date: Tue, 10 Jan 2012 02:59:49 +0000
+Message-ID: <1326164389.3432.29.camel@deadeye>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:48208 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933370Ab2AIUX1 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Jan 2012 15:23:27 -0500
-In-Reply-To: <1326077816.4097.8.camel@deadeye>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-arch-owner@vger.kernel.org>
+Sender: linux-arch-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org, Richard Weinberger <richard@nod.at>
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 
-On Sun, Jan 8, 2012 at 6:56 PM, Ben Hutchings <ben@decadent.org.uk> wro=
-te:
->
-> I mean to say that we could have no CPU devices after the *second*
-> patch. =A0So the first patch is an extra defence against that. =A0(Th=
-ough we
-> could just as well panic if register_cpu() fails at boot time.)
+cpu_dev_init() is only called from driver_init(), which does not check
+its return value.  Therefore make cpu_dev_init() return void.
 
-I think I'd rather just panic - if you have allocation issues during
-early boot, the machine is hosed anyway - and then get rid of the
-first patch?
+We must register the CPU subsystem, so panic if this fails.
 
-Willing to send out a new patch along those lines (and with UML added)?
+If sched_create_sysfs_power_savings_entries() fails, the damage is
+contained, so ignore this (as before).
 
-Thanks,
-                  Linus
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+ drivers/base/base.h |    2 +-
+ drivers/base/cpu.c  |   13 +++++--------
+ 2 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index 7a6ae42..b858dfd 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -94,7 +94,7 @@ extern int hypervisor_init(void);
+ static inline int hypervisor_init(void) { return 0; }
+ #endif
+ extern int platform_bus_init(void);
+-extern int cpu_dev_init(void);
++extern void cpu_dev_init(void);
+ 
+ extern int bus_add_device(struct device *dev);
+ extern void bus_probe_device(struct device *dev);
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 9a5578e..bba70d0 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -2,6 +2,7 @@
+  * CPU subsystem support
+  */
+ 
++#include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/sched.h>
+@@ -274,16 +275,12 @@ bool cpu_is_hotpluggable(unsigned cpu)
+ }
+ EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
+ 
+-int __init cpu_dev_init(void)
++void __init cpu_dev_init(void)
+ {
+-	int err;
+-
+-	err = subsys_system_register(&cpu_subsys, cpu_root_attr_groups);
+-	if (err)
+-		return err;
++	if (subsys_system_register(&cpu_subsys, cpu_root_attr_groups))
++		panic("Failed to register CPU subsystem");
+ 
+ #if defined(CONFIG_SCHED_MC) || defined(CONFIG_SCHED_SMT)
+-	err = sched_create_sysfs_power_savings_entries(cpu_subsys.dev_root);
++	sched_create_sysfs_power_savings_entries(cpu_subsys.dev_root);
+ #endif
+-	return err;
+ }
+-- 
+1.7.8.2
