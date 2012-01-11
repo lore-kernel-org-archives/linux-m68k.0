@@ -1,282 +1,126 @@
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Subject: Re: [PATCH] Input: q40kbd - convert driver to the split model
-Date: Tue, 10 Jan 2012 23:37:05 -0800
-Message-ID: <20120111073705.GA18668__2117.12320237911$1326267441$gmane$org@core.coreip.homeip.net>
+Date: Wed, 11 Jan 2012 00:11:18 -0800
+Message-ID: <20120111081118.GC18668__40490.3773953722$1326269502$gmane$org@core.coreip.homeip.net>
 References: <20111231010814.7392.52389.stgit@hammer.corenet.prv>
+ <CAMuHMdV+FFPG8TVA7NwfpCvA3+FrVixE4bfdOu8a_1=xTaKiRg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20111231010814.7392.52389.stgit@hammer.corenet.prv>
+In-Reply-To: <CAMuHMdV+FFPG8TVA7NwfpCvA3+FrVixE4bfdOu8a_1=xTaKiRg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-input@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-On Fri, Dec 30, 2011 at 05:11:11PM -0800, Dmitry Torokhov wrote:
-> Convert the driver to standard spilt model arch-specific code registers
-> platform device to which driver code can bind later.
-> 
-> Also request IRQ immediately upon binding to the device instead of doing
-> this when serio port is being opened.
-> 
-> Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
-> ---
-> 
-> Not tested as I don't have the hardware...
+On Wed, Jan 11, 2012 at 08:55:54AM +0100, Geert Uytterhoeven wrote:
+> Hi Dmitry,
+>=20
+> On Sat, Dec 31, 2011 at 02:11, Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> > Convert the driver to standard spilt model arch-specific code regis=
+ters
+> > platform device to which driver code can bind later.
+> >
+> > Also request IRQ immediately upon binding to the device instead of =
+doing
+> > this when serio port is being opened.
+> >
+> > Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
+> > ---
+> >
+> > Not tested as I don't have the hardware...
+>=20
+> Unfortunately I also don't have the hardware.
+> But it compiles. A few comments below.
+>=20
+> > diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+> > index ad10fec..27d3f76 100644
+> > --- a/arch/m68k/q40/config.c
+> > +++ b/arch/m68k/q40/config.c
+>=20
+> > +static struct platform_device q40_kbd_pdev =3D {
+> > + =A0 =A0 =A0 .name =A0 =3D "q40kbd",
+> > + =A0 =A0 =A0 .id =A0 =A0 =3D -1,
+> > +};
+> > +
+> > +static __init int q40_add_kbd_device(void)
+> > +{
+> > + =A0 =A0 =A0 return platform_device_register(&q40_kbd_pdev);
+>=20
+> If you would use platform_device_register_simple(), you don't need th=
+e
+> q40_kbd_pdev above, reducing memory consumption on non-Q40 platforms.
 
-If anyone could give this patch a spin it would be most appreciated.
+Isn't this file only compiled on q40 platforms?
 
-Thanks!
+>=20
+> > +}
+> > +arch_initcall(q40_add_kbd_device);
+>=20
+> For the Amiga platform drivers, I used device_initcall().
 
-> 
->  arch/m68k/q40/config.c       |   12 ++++
->  drivers/input/serio/q40kbd.c |  134 ++++++++++++++++++++++++------------------
->  2 files changed, 87 insertions(+), 59 deletions(-)
-> 
-> diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-> index ad10fec..27d3f76 100644
-> --- a/arch/m68k/q40/config.c
-> +++ b/arch/m68k/q40/config.c
-> @@ -24,6 +24,7 @@
->  #include <linux/rtc.h>
->  #include <linux/vt_kern.h>
->  #include <linux/bcd.h>
-> +#include <linux/platform_device.h>
->  
->  #include <asm/io.h>
->  #include <asm/rtc.h>
-> @@ -329,3 +330,14 @@ static int q40_set_rtc_pll(struct rtc_pll_info *pll)
->  	} else
->  		return -EINVAL;
->  }
-> +
-> +static struct platform_device q40_kbd_pdev = {
-> +	.name	= "q40kbd",
-> +	.id	= -1,
-> +};
-> +
-> +static __init int q40_add_kbd_device(void)
-> +{
-> +	return platform_device_register(&q40_kbd_pdev);
-> +}
-> +arch_initcall(q40_add_kbd_device);
-> diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40kbd.c
-> index 5eb84b3..1e61dd4 100644
-> --- a/drivers/input/serio/q40kbd.c
-> +++ b/drivers/input/serio/q40kbd.c
-> @@ -44,26 +44,31 @@
->  #include <asm/irq.h>
->  #include <asm/q40ints.h>
->  
-> +#define DRV_NAME	"q40kbd"
-> +
->  MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
->  MODULE_DESCRIPTION("Q40 PS/2 keyboard controller driver");
->  MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:" DRV_NAME);
->  
-> -static DEFINE_SPINLOCK(q40kbd_lock);
-> -static struct serio *q40kbd_port;
-> -static struct platform_device *q40kbd_device;
-> +struct q40kbd {
-> +	struct serio *port;
-> +	spinlock_t lock;
-> +};
->  
->  static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
->  {
-> +	struct q40kbd *q40kbd = dev_id;
->  	unsigned long flags;
->  
-> -	spin_lock_irqsave(&q40kbd_lock, flags);
-> +	spin_lock_irqsave(&q40kbd->lock, flags);
->  
->  	if (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG))
-> -		serio_interrupt(q40kbd_port, master_inb(KEYCODE_REG), 0);
-> +		serio_interrupt(q40kbd->port, master_inb(KEYCODE_REG), 0);
->  
->  	master_outb(-1, KEYBOARD_UNLOCK_REG);
->  
-> -	spin_unlock_irqrestore(&q40kbd_lock, flags);
-> +	spin_unlock_irqrestore(&q40kbd->lock, flags);
->  
->  	return IRQ_HANDLED;
->  }
-> @@ -72,17 +77,23 @@ static irqreturn_t q40kbd_interrupt(int irq, void *dev_id)
->   * q40kbd_flush() flushes all data that may be in the keyboard buffers
->   */
->  
-> -static void q40kbd_flush(void)
-> +static void q40kbd_flush(struct q40kbd *q40kbd)
->  {
->  	int maxread = 100;
->  	unsigned long flags;
->  
-> -	spin_lock_irqsave(&q40kbd_lock, flags);
-> +	spin_lock_irqsave(&q40kbd->lock, flags);
->  
->  	while (maxread-- && (Q40_IRQ_KEYB_MASK & master_inb(INTERRUPT_REG)))
->  		master_inb(KEYCODE_REG);
->  
-> -	spin_unlock_irqrestore(&q40kbd_lock, flags);
-> +	spin_unlock_irqrestore(&q40kbd->lock, flags);
-> +}
-> +
-> +static void q40kbd_stop(struct q40kbd *q40kbd)
-> +{
-> +	master_outb(0, KEY_IRQ_ENABLE_REG);
-> +	master_outb(-1, KEYBOARD_UNLOCK_REG);
->  }
->  
->  /*
-> @@ -92,12 +103,9 @@ static void q40kbd_flush(void)
->  
->  static int q40kbd_open(struct serio *port)
->  {
-> -	q40kbd_flush();
-> +	struct q40kbd *q40kbd = port->port_data;
->  
-> -	if (request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0, "q40kbd", NULL)) {
-> -		printk(KERN_ERR "q40kbd.c: Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
-> -		return -EBUSY;
-> -	}
-> +	q40kbd_flush(q40kbd);
->  
->  	/* off we go */
->  	master_outb(-1, KEYBOARD_UNLOCK_REG);
-> @@ -108,35 +116,68 @@ static int q40kbd_open(struct serio *port)
->  
->  static void q40kbd_close(struct serio *port)
->  {
-> -	master_outb(0, KEY_IRQ_ENABLE_REG);
-> -	master_outb(-1, KEYBOARD_UNLOCK_REG);
-> -	free_irq(Q40_IRQ_KEYBOARD, NULL);
-> +	struct q40kbd *q40kbd = port->port_data;
->  
-> -	q40kbd_flush();
-> +	q40kbd_stop(q40kbd);
-> +	q40kbd_flush(q40kbd);
->  }
->  
-> -static int __devinit q40kbd_probe(struct platform_device *dev)
-> +static int __devinit q40kbd_probe(struct platform_device *pdev)
->  {
-> -	q40kbd_port = kzalloc(sizeof(struct serio), GFP_KERNEL);
-> -	if (!q40kbd_port)
-> -		return -ENOMEM;
-> -
-> -	q40kbd_port->id.type	= SERIO_8042;
-> -	q40kbd_port->open	= q40kbd_open;
-> -	q40kbd_port->close	= q40kbd_close;
-> -	q40kbd_port->dev.parent	= &dev->dev;
-> -	strlcpy(q40kbd_port->name, "Q40 Kbd Port", sizeof(q40kbd_port->name));
-> -	strlcpy(q40kbd_port->phys, "Q40", sizeof(q40kbd_port->phys));
-> -
-> -	serio_register_port(q40kbd_port);
-> +	struct q40kbd *q40kbd;
-> +	struct serio *port;
-> +	int error;
-> +
-> +	q40kbd = kzalloc(sizeof(struct q40kbd), GFP_KERNEL);
-> +	port = kzalloc(sizeof(struct serio), GFP_KERNEL);
-> +	if (!q40kbd || !port) {
-> +		error = -ENOMEM;
-> +		goto err_free_mem;
-> +	}
-> +
-> +	q40kbd->port = port;
-> +	spin_lock_init(&q40kbd->lock);
-> +
-> +	port->id.type = SERIO_8042;
-> +	port->open = q40kbd_open;
-> +	port->close = q40kbd_close;
-> +	port->port_data = q40kbd;
-> +	port->dev.parent = &pdev->dev;
-> +	strlcpy(port->name, "Q40 Kbd Port", sizeof(port->name));
-> +	strlcpy(port->phys, "Q40", sizeof(port->phys));
-> +
-> +	q40kbd_stop(q40kbd);
-> +
-> +	error = request_irq(Q40_IRQ_KEYBOARD, q40kbd_interrupt, 0,
-> +			    DRV_NAME, q40kbd);
-> +	if (error) {
-> +		dev_err(&pdev->dev, "Can't get irq %d.\n", Q40_IRQ_KEYBOARD);
-> +		goto err_free_mem;
-> +	}
-> +
-> +	serio_register_port(q40kbd->port);
-> +
-> +	platform_set_drvdata(pdev, q40kbd);
->  	printk(KERN_INFO "serio: Q40 kbd registered\n");
->  
->  	return 0;
-> +
-> +err_free_mem:
-> +	kfree(port);
-> +	kfree(q40kbd);
-> +	return error;
->  }
->  
-> -static int __devexit q40kbd_remove(struct platform_device *dev)
-> +static int __devexit q40kbd_remove(struct platform_device *pdev)
->  {
-> -	serio_unregister_port(q40kbd_port);
-> +	struct q40kbd *q40kbd = platform_get_drvdata(pdev);
-> +
-> +	free_irq(Q40_IRQ_KEYBOARD, q40kbd);
-> +
-> +	serio_unregister_port(q40kbd->port);
-> +	kfree(q40kbd);
-> +
-> +	platform_set_drvdata(pdev, NULL);
->  
->  	return 0;
->  }
-> @@ -146,41 +187,16 @@ static struct platform_driver q40kbd_driver = {
->  		.name	= "q40kbd",
->  		.owner	= THIS_MODULE,
->  	},
-> -	.probe		= q40kbd_probe,
->  	.remove		= __devexit_p(q40kbd_remove),
->  };
->  
->  static int __init q40kbd_init(void)
->  {
-> -	int error;
-> -
-> -	if (!MACH_IS_Q40)
-> -		return -ENODEV;
-> -
-> -	error = platform_driver_register(&q40kbd_driver);
-> -	if (error)
-> -		return error;
-> -
-> -	q40kbd_device = platform_device_alloc("q40kbd", -1);
-> -	if (!q40kbd_device)
-> -		goto err_unregister_driver;
-> -
-> -	error = platform_device_add(q40kbd_device);
-> -	if (error)
-> -		goto err_free_device;
-> -
-> -	return 0;
-> -
-> - err_free_device:
-> -	platform_device_put(q40kbd_device);
-> - err_unregister_driver:
-> -	platform_driver_unregister(&q40kbd_driver);
-> -	return error;
-> +	return platform_driver_probe(&q40kbd_driver, q40kbd_probe);
->  }
->  
->  static void __exit q40kbd_exit(void)
->  {
-> -	platform_device_unregister(q40kbd_device);
->  	platform_driver_unregister(&q40kbd_driver);
->  }
->  
-> 
+Won't it potentially race with initialization of q40kbd? It looks like
+module_initcall is the same as device_initcall() when module is compile=
+d
+in. Given that q40kbd uses platform_dveice_probe() losing race might be
+fatal.
 
--- 
+>=20
+> > diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40=
+kbd.c
+> > index 5eb84b3..1e61dd4 100644
+> > --- a/drivers/input/serio/q40kbd.c
+> > +++ b/drivers/input/serio/q40kbd.c
+> >
+> > +static void q40kbd_stop(struct q40kbd *q40kbd)
+> > +{
+>=20
+> The q40kbd parameters is unused and can be removed.
+>=20
+> > -static int __devinit q40kbd_probe(struct platform_device *dev)
+> > +static int __devinit q40kbd_probe(struct platform_device *pdev)
+>=20
+> > + =A0 =A0 =A0 serio_register_port(q40kbd->port);
+>=20
+> This cannot fail?
+> I see it returns void, but serio_queue_event() inside can fail and th=
+us
+> won't propagate its error condition and code.
+
+Yes, this is current limitation of serio.
+
+>=20
+> > -static int __devexit q40kbd_remove(struct platform_device *dev)
+> > +static int __devexit q40kbd_remove(struct platform_device *pdev)
+> > =A0{
+> > - =A0 =A0 =A0 serio_unregister_port(q40kbd_port);
+> > + =A0 =A0 =A0 struct q40kbd *q40kbd =3D platform_get_drvdata(pdev);
+> > +
+> > + =A0 =A0 =A0 free_irq(Q40_IRQ_KEYBOARD, q40kbd);
+> > +
+> > + =A0 =A0 =A0 serio_unregister_port(q40kbd->port);
+>=20
+> Should the unregister be done before freeing the IRQ, i.e. reverse
+> order compared to probe?
+
+Unregister will most likely cause memory being freed; you don't want to
+chance IRQ firing here.
+
+>=20
+> > + =A0 =A0 =A0 kfree(q40kbd);
+> > +
+> > + =A0 =A0 =A0 platform_set_drvdata(pdev, NULL);
+> >
+> > =A0 =A0 =A0 =A0return 0;
+> > =A0}
+>=20
+> Thanks, it's a nice cleanup!
+>=20
+
+Thanks for lookign this over.
+
+--=20
 Dmitry
