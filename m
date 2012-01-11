@@ -1,116 +1,103 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] Input: q40kbd - convert driver to the split model
-Date: Wed, 11 Jan 2012 08:55:54 +0100
-Message-ID: <CAMuHMdV+FFPG8TVA7NwfpCvA3+FrVixE4bfdOu8a_1=xTaKiRg__11319.1244229258$1326270236$gmane$org@mail.gmail.com>
-References: <20111231010814.7392.52389.stgit@hammer.corenet.prv>
+From: Alan Hourihane <alanh@fairlite.co.uk>
+Subject: Atari TT (next 2)
+Date: Wed, 11 Jan 2012 08:47:26 +0000
+Message-ID: <4F0D4C9E.6080009@fairlite.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20111231010814.7392.52389.stgit@hammer.corenet.prv>
+Received: from anchor-post-2.mail.demon.net ([195.173.77.133]:48795 "EHLO
+	anchor-post-2.mail.demon.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754749Ab2AKIr3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 11 Jan 2012 03:47:29 -0500
+Received: from fairlite.demon.co.uk ([80.176.228.186])
+	by anchor-post-2.mail.demon.net with esmtp (Exim 4.69)
+	id 1RktqC-0007A6-lJ
+	for linux-m68k@vger.kernel.org; Wed, 11 Jan 2012 08:47:28 +0000
+Received: from localhost (unknown [127.0.0.1])
+	by fairlite.demon.co.uk (Postfix) with ESMTP id 1E5F2222354
+	for <linux-m68k@vger.kernel.org>; Wed, 11 Jan 2012 08:47:28 +0000 (UTC)
+Received: from fairlite.demon.co.uk ([127.0.0.1])
+	by localhost (server.demon.co.uk [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id qKdGYJYZAUVg for <linux-m68k@vger.kernel.org>;
+	Wed, 11 Jan 2012 08:47:27 +0000 (GMT)
+Received: from [192.168.0.50] (jetpack.demon.co.uk [192.168.0.50])
+	by fairlite.demon.co.uk (Postfix) with ESMTP id F3ECB22212C
+	for <linux-m68k@vger.kernel.org>; Wed, 11 Jan 2012 08:47:26 +0000 (GMT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Dmitry,
+O.k. I just upgraded the TT-RAM from 128MB to 256MB and now the kernel
+crashes with this.
 
-On Sat, Dec 31, 2011 at 02:11, Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
-> Convert the driver to standard spilt model arch-specific code registe=
-rs
-> platform device to which driver code can bind later.
->
-> Also request IRQ immediately upon binding to the device instead of do=
-ing
-> this when serio port is being opened.
->
-> Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
-> ---
->
-> Not tested as I don't have the hardware...
+Notice that node_mem_map is 00000000 for the TT-RAM now.
 
-Unfortunately I also don't have the hardware.
-But it compiles. A few comments below.
+Any ideas ?
 
-> diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-> index ad10fec..27d3f76 100644
-> --- a/arch/m68k/q40/config.c
-> +++ b/arch/m68k/q40/config.c
+Alan.
 
-> +static struct platform_device q40_kbd_pdev =3D {
-> + =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =3D "q40kbd",
-> + =C2=A0 =C2=A0 =C2=A0 .id =C2=A0 =C2=A0 =3D -1,
-> +};
-> +
-> +static __init int q40_add_kbd_device(void)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 return platform_device_register(&q40_kbd_pdev)=
-;
-
-If you would use platform_device_register_simple(), you don't need the
-q40_kbd_pdev above, reducing memory consumption on non-Q40 platforms.
-
-> +}
-> +arch_initcall(q40_add_kbd_device);
-
-=46or the Amiga platform drivers, I used device_initcall().
-
-> diff --git a/drivers/input/serio/q40kbd.c b/drivers/input/serio/q40kb=
-d.c
-> index 5eb84b3..1e61dd4 100644
-> --- a/drivers/input/serio/q40kbd.c
-> +++ b/drivers/input/serio/q40kbd.c
->
-> +static void q40kbd_stop(struct q40kbd *q40kbd)
-> +{
-
-The q40kbd parameters is unused and can be removed.
-
-> -static int __devinit q40kbd_probe(struct platform_device *dev)
-> +static int __devinit q40kbd_probe(struct platform_device *pdev)
-
-> + =C2=A0 =C2=A0 =C2=A0 serio_register_port(q40kbd->port);
-
-This cannot fail?
-I see it returns void, but serio_queue_event() inside can fail and thus
-won't propagate its error condition and code.
-
-> -static int __devexit q40kbd_remove(struct platform_device *dev)
-> +static int __devexit q40kbd_remove(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 serio_unregister_port(q40kbd_port);
-> + =C2=A0 =C2=A0 =C2=A0 struct q40kbd *q40kbd =3D platform_get_drvdata=
-(pdev);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 free_irq(Q40_IRQ_KEYBOARD, q40kbd);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 serio_unregister_port(q40kbd->port);
-
-Should the unregister be done before freeing the IRQ, i.e. reverse
-order compared to probe?
-
-> + =C2=A0 =C2=A0 =C2=A0 kfree(q40kbd);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, NULL);
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return 0;
-> =C2=A0}
-
-Thanks, it's a nice cleanup!
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Linux version 3.2.0-atari-12913-g35c175f-dirty (root@server) (gc
+c version 4.5.3 (Gentoo 4.5.3-r1 p1.0, pie-0.4.5) ) #43 Tue Jan 10
+12:31:31 GMT
+2012
+console [debug0] enabled
+Atari hardware found: TT_SHIFTER ST_MFP TT_MFP TT_SCSI_DMA TT_SCSI
+YM2149 PCM SC
+C_DMA SCC VME SCU MICROWIRE TT_CLK FDC_SPEED ACSI
+On node 0 totalpages: 1024
+free_area_init_node: node 0, pgdat 00211380, node_mem_map 00241000
+  DMA zone: 9 pages used for memmap
+  DMA zone: 0 pages reserved
+  DMA zone: 1015 pages, LIFO batch:0
+On node 1 totalpages: 65536
+free_area_init_node: node 1, pgdat 00211d10, node_mem_map 00000000
+  DMA zone: 576 pages used for memmap
+  DMA zone: 0 pages reserved
+  DMA zone: 64960 pages, LIFO batch:15
+Data read fault at 0x00000000 in Super Data (pc=0x237828)
+BAD KERNEL BUSERR
+Oops: 00000000
+Modules linked in:
+PC: [<00237828>] memmap_init_zone+0x94/0x11a
+SR: 2704  SP: 001ffe74  a2: 002002e0
+d0: 00000000    d1: 00000000    d2: 00001000    d3: 00000000
+d4: 00000000    d5: 00000001    a0: 00211d10    a1: 00211f40
+Process swapper (pid: 0, task=002002e0)
+Frame format=B ssw=074d isc=0281 isb=07ff daddr=00000000 dobuf=00000000
+baddr=0023782c dibuf=00000022 ver=f
+Stack from 001ffefc:
+        00000000 00010000 00001000 00000000 00211f18 00000230 00211d10
+00000000
+        0018aba4 00000000 0022b720 00010000 00000001 00000000 00001000
+00000000
+        00000001 001fffa4 00001000 11000000 00091af8 00085c28 00210d10
+00212680
+        0022b414 001fffb0 00211d10 0000000c 001fffa8 00000001 00228dc4
+00000001
+        001fffa4 00001000 00000000 00228f8c 000e07a2 00000000 00000000
+0023c0ac
+        0018aba4 00210d04 00010000 00000000 00000000 001fffd0 00228156
+0023b0ae
+Call Trace: [<00010000>] tblpre+0x10c/0x780
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<0018aba4>] printk+0x0/0x1c
+ [<0022b720>] free_area_init_node+0x30c/0x328
+ [<00010000>] tblpre+0x10c/0x780
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<00091af8>] __blockdev_direct_IO+0x1d62/0x25b0
+ [<00085c28>] wb_writeback+0x72/0x170
+ [<0022b414>] free_area_init_node+0x0/0x328
+ [<00228dc4>] paging_init+0x2ac/0x2dc
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<00228f8c>] atari_parse_bootinfo+0x0/0x2e
+ [<000e07a2>] strlcpy+0x0/0x46
+ [<0018aba4>] printk+0x0/0x1c
+ [<00010000>] tblpre+0x10c/0x780
+ [<00228156>] setup_arch+0x1a0/0x268
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<00225d4c>] start_kernel+0x6a/0x36e
+ [<00001000>] kernel_pg_dir+0x0/0x1000
+ [<0022531e>] _sinittext+0x31e/0x9c0
