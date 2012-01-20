@@ -1,52 +1,43 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: coldfire v4e
-Date: Fri, 20 Jan 2012 14:59:36 +0100
-Message-ID: <CAMuHMdX8zeFHmkXvUuK1V5iBPWs5tnB2bD8bkTQvCn=wwhpk0A@mail.gmail.com>
-References: <4E469720BAB3C44DA563C197C2E672CF010E5B@DHREUSVXM02.danaher.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH] m68k/atari: EtherNEC - Convert ETHER_ADDR_LEN uses to ETH_ALEN
+Date: Fri, 20 Jan 2012 19:57:23 +0100
+Message-ID: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4E469720BAB3C44DA563C197C2E672CF010E5B@DHREUSVXM02.danaher.org>
+Received: from jacques.telenet-ops.be ([195.130.132.50]:33212 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753476Ab2ATS50 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 20 Jan 2012 13:57:26 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Jensen, Bjarne" <bkj@doms.dk>
-Cc: "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+To: Michael Schmitz <schmitz@debian.org>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Bjarne,
+Cfr. commit 104bf3fb963cbc39c6675b23d46d2c9ab3f311d8 ("ethernet: Convert
+ETHER_ADDR_LEN uses to ETH_ALEN")
 
-On Fri, Jan 20, 2012 at 14:47, Jensen, Bjarne <bkj@doms.dk> wrote:
-> We are developing an application on a board with a Coldfire v4e proce=
-ssor (m54418) and are wondering if it will be possible to make the kern=
-el preemptive and how much effort it will take. Has anyone tried it wit=
-h this processor?
->
-> I have noticed that when I enable the "MMU-based Paged Memory Managem=
-ent Support" option, the "Preemption Model" option disappears no matter=
- which "Processor type" I choose. Is it simply because it is not implem=
-ented or is it just not possible on this type of processors?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/8390/atari_ethernec.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Generic preempt support relies on the spinlocks that were introduced wh=
-en
-adding SMP support. So far we never had SMP support for m68k, hence we
-didn't do a proper conversion from disable_irq()/enable_irq() to spinlo=
-cks,
-and kept on using the simpler local_irq_*() ops in arch/m68k and in sev=
-eral
-drivers. These have to be fixed first.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/drivers/net/ethernet/8390/atari_ethernec.c b/drivers/net/ethernet/8390/atari_ethernec.c
+index 4fb22ce..086d968 100644
+--- a/drivers/net/ethernet/8390/atari_ethernec.c
++++ b/drivers/net/ethernet/8390/atari_ethernec.c
+@@ -645,12 +645,12 @@ static int __init ne_probe1(struct net_device *dev, int ioaddr)
+ #ifdef CONFIG_PLAT_MAPPI
+ 	outb_p(E8390_NODMA + E8390_PAGE1 + E8390_STOP,
+ 		ioaddr + E8390_CMD); /* 0x61 */
+-	for (i = 0; i < ETHER_ADDR_LEN; i++) {
++	for (i = 0; i < ETH_ALEN; i++) {
+ 		dev->dev_addr[i] = SA_prom[i] = inb_p(ioaddr + EN1_PHYS_SHIFT(i));
+ 		printk(" %2.2x", SA_prom[i]);
+ 	}
+ #else
+-	for (i = 0; i < ETHER_ADDR_LEN; i++) {
++	for (i = 0; i < ETH_ALEN; i++) {
+ 		printk(" %2.2x", SA_prom[i]);
+ 		dev->dev_addr[i] = SA_prom[i];
+ 	}
+-- 
+1.7.0.4
