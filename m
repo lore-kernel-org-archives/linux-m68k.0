@@ -1,43 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/atari: EtherNEC - Convert ETHER_ADDR_LEN uses to ETH_ALEN
-Date: Fri, 20 Jan 2012 19:57:23 +0100
-Message-ID: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
+From: Lars Michael <lh_post@yahoo.com>
+Subject: coldfire v4e and CONFIG_PREEMPT support
+Date: Sat, 21 Jan 2012 21:51:12 -0800 (PST)
+Message-ID: <1327211472.37668.YahooMailClassic@web160605.mail.bf1.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:33212 "EHLO
-	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753476Ab2ATS50 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 20 Jan 2012 13:57:26 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@debian.org>
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
 
-Cfr. commit 104bf3fb963cbc39c6675b23d46d2c9ab3f311d8 ("ethernet: Convert
-ETHER_ADDR_LEN uses to ETH_ALEN")
+Hi Geert,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/ethernet/8390/atari_ethernec.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+On Fri, Jan 20, 2012 at 14:59, Geert <geert@xxxxxxxxxxxxxx> wrote:
+>>On Fri, Jan 20, 2012 at 14:47, Jensen, Bjarne <bkj@xxxxxxx> wrote:
+>>We are developing an application on a board with a Coldfire v4e processor >>(m54418) and are wondering if it will be possible to make the kernel 
+>>preemptive and how much effort it will take. Has anyone tried it with this >>processor?
 
-diff --git a/drivers/net/ethernet/8390/atari_ethernec.c b/drivers/net/ethernet/8390/atari_ethernec.c
-index 4fb22ce..086d968 100644
---- a/drivers/net/ethernet/8390/atari_ethernec.c
-+++ b/drivers/net/ethernet/8390/atari_ethernec.c
-@@ -645,12 +645,12 @@ static int __init ne_probe1(struct net_device *dev, int ioaddr)
- #ifdef CONFIG_PLAT_MAPPI
- 	outb_p(E8390_NODMA + E8390_PAGE1 + E8390_STOP,
- 		ioaddr + E8390_CMD); /* 0x61 */
--	for (i = 0; i < ETHER_ADDR_LEN; i++) {
-+	for (i = 0; i < ETH_ALEN; i++) {
- 		dev->dev_addr[i] = SA_prom[i] = inb_p(ioaddr + EN1_PHYS_SHIFT(i));
- 		printk(" %2.2x", SA_prom[i]);
- 	}
- #else
--	for (i = 0; i < ETHER_ADDR_LEN; i++) {
-+	for (i = 0; i < ETH_ALEN; i++) {
- 		printk(" %2.2x", SA_prom[i]);
- 		dev->dev_addr[i] = SA_prom[i];
- 	}
--- 
-1.7.0.4
+>Generic preempt support relies on the spinlocks that were introduced when
+>adding SMP support. So far we never had SMP support for m68k, hence we
+>didn't do a proper conversion from disable_irq()/enable_irq() to spinlocks,
+>and kept on using the simpler local_irq_*() ops in arch/m68k and in several
+>drivers. These have to be fixed first.
+
+Bjarne and I work together, our embedded system (mcf54418, kernel 2.6.29) runs a real-time critical app. and we have found that we are not being scheduled for longer periods of time when the kernel is busy. We believe the preempt option is the solution. Are there any current projects or plans to support preempt for m68k? This is a very high priority for us and we can do some coding, and certainly testing, but we need some expert guidance. Would you be interested in helping and seeing preempt supported on this arch?
+
+Thanks and regards
+Lars
