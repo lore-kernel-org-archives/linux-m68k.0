@@ -1,102 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] Input: q40kbd - convert driver to the split model
-Date: Sun, 22 Jan 2012 12:16:40 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201221214160.28391@ayla.of.borg>
-References: <20111231010814.7392.52389.stgit@hammer.corenet.prv> <CAMuHMdV+FFPG8TVA7NwfpCvA3+FrVixE4bfdOu8a_1=xTaKiRg@mail.gmail.com> <20120111081118.GC18668@core.coreip.homeip.net> <CAMuHMdXfs2ru7KG-xFRoKPso5Y+UuAnOOUie8HoOZHYyoVeyaA@mail.gmail.com>
- <20120111173051.GB21047@core.coreip.homeip.net> <20120118092548.GD32285@core.coreip.homeip.net>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH] m68k: fix assembler constraint to prevent overeager gcc optimisation
+Date: Sun, 22 Jan 2012 13:42:21 +0100
+Message-ID: <m21uqrdi36.fsf@igel.home>
+References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com>
+	<4F08E748.4020305@fairlite.co.uk> <4F0917E9.9090600@gmail.com>
+	<4F0964EC.2080505@fairlite.co.uk>
+	<CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+	<4F0A2DD0.4000707@fairlite.co.uk>
+	<CAOmrzk+P3mPXu_Q_KxgEk_jx-JNhXY4ydrKoGM+43LpD5icTHw@mail.gmail.com>
+	<4F0A3CDE.7070308@fairlite.co.uk> <4F0A421C.9000600@fairlite.co.uk>
+	<m2wr91yxa4.fsf@igel.home>
+	<CAMuHMdXjWyEEOS4fJEaY1dg_cZWLyTps85jaQzsvbO_44-UhqA@mail.gmail.com>
+	<m2obudynjs.fsf_-_@igel.home>
+	<CAMuHMdVd7opSitKs82Q6N5Yi6eGBvhOsE9USVFiE81dXmGAHTg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-7
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20120118092548.GD32285@core.coreip.homeip.net>
+Received: from mail-out.m-online.net ([212.18.0.9]:41577 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751605Ab2AVMm2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2012 07:42:28 -0500
+In-Reply-To: <CAMuHMdVd7opSitKs82Q6N5Yi6eGBvhOsE9USVFiE81dXmGAHTg@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Sun, 22 Jan 2012 11:15:57 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Alan Hourihane <alanh@fairlite.co.uk>, Michael Schmitz <schmitzmic@googlemail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@snapgear.com>
 
-On Wed, 18 Jan 2012, Dmitry Torokhov wrote:
-> Input: q40kbd - convert driver to the split model
->=20
-> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
->=20
-> Convert the driver to standard spilt model arch-specific code registe=
-rs
-> platform device to which driver code can bind later.
->=20
-> Also request IRQ immediately upon binding to the device instead of do=
-ing
-> this when serio port is being opened.
->=20
-> Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
-> ---
->=20
->  arch/m68k/q40/config.c       |    7 ++
->  drivers/input/serio/q40kbd.c |  139 ++++++++++++++++++++++++--------=
-----------
->  2 files changed, 86 insertions(+), 60 deletions(-)
->=20
->=20
-> diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-> index ad10fec..c72a3ed 100644
-> --- a/arch/m68k/q40/config.c
-> +++ b/arch/m68k/q40/config.c
-> @@ -24,6 +24,7 @@
->  #include <linux/rtc.h>
->  #include <linux/vt_kern.h>
->  #include <linux/bcd.h>
-> +#include <linux/platform_device.h>
-> =20
->  #include <asm/io.h>
->  #include <asm/rtc.h>
-> @@ -329,3 +330,9 @@ static int q40_set_rtc_pll(struct rtc_pll_info *p=
-ll)
->  	} else
->  		return -EINVAL;
->  }
-> +
-> +static __init int q40_add_kbd_device(void)
-> +{
-> +	return platform_device_register_simple("q40kbd", -1, NULL, 0);
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-arch/m68k/q40/config.c: In function =A1q40_add_kbd_device=A2:
-arch/m68k/q40/config.c:336: warning: return makes integer from pointer =
-without a cast
+> I take it (but I prefer to ask, asm constraints always make me nervous)
+> the "memory" is no longer needed with your fix?
 
-Either ignore the error and always return 0, or:
+No, it isn't.
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index c72a3ed..be93648 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -333,6 +333,12 @@ static int q40_set_rtc_pll(struct rtc_pll_info *pl=
-l)
-=20
- static __init int q40_add_kbd_device(void)
- {
--	return platform_device_register_simple("q40kbd", -1, NULL, 0);
-+	struct platform_device *pdev;
-+
-+	pdev =3D platform_device_register_simple("q40kbd", -1, NULL, 0);
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
-+	return 0;
- }
- arch_initcall(q40_add_kbd_device);
+Andreas.
 
-The rest is
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
