@@ -1,65 +1,174 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
-Date: Tue, 24 Jan 2012 09:41:43 +0100
-Message-ID: <CAMuHMdX_ng8uQ2OYwceb3uTsGSRSRKp0C1C9xpTyi7cN6L__Ow@mail.gmail.com>
-References: <4F1C577D.3040908@sigon.net>
-	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
-	<CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
+From: Patrick Bottelberger <patrick.bottelberger@sigon.net>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible
+ patch)
+Date: Tue, 24 Jan 2012 18:35:43 +0100
+Message-ID: <4F1EEBEF.4000400@sigon.net>
+References: <4F1C577D.3040908@sigon.net> <CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+ boundary="------------020801010601050007040809"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:59194 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754750Ab2AXIlo convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Jan 2012 03:41:44 -0500
-Received: by wgbed3 with SMTP id ed3so3725833wgb.1
-        for <linux-m68k@vger.kernel.org>; Tue, 24 Jan 2012 00:41:43 -0800 (PST)
-In-Reply-To: <CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
+Received: from s15429932.onlinehome-server.info ([87.106.248.152]:41343 "EHLO
+	ws1.rootfuchs.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756179Ab2AXRfu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Jan 2012 12:35:50 -0500
+In-Reply-To: <CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Patrick Bottelberger <patrick.bottelberger@sigon.net>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Tue, Jan 24, 2012 at 00:04, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
->>> the debian system and mknod'ing all needed device-files everything =
-seems
->>> to be running fine, with the exception of the RTC (i think that's m=
-y
->>> fault, something i missed while configuring my kernel, is there
->>> something needed besides of genrtc to get the A600/A603-clock worki=
-ng?)
->>
->> Do you know what clock chip is used on the A603? I had a quick look =
-on the
->> net, but couldn't find it (I did see a picture of an A604 with a par=
-tially
->> covered chip that said M6242). If you can't find it, I can ask Jens.
+This is a multi-part message in MIME format.
+--------------020801010601050007040809
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hi Geert,
+
+Geert Uytterhoeven schrieb:
+> What did Amiboot detect without the `-p` option (you may want ti try `-d')?
+> Does it assume a 68882 FPU?
+>   
+Without supplying the '-p' parameter amiboot didn't output anything at
+all, it just froze the amiga directly after entering the command.
+> Have you tried `debug=mem', and running the AmigaOS dmesg afterwards?
+>   
+I didn't know about the AmigaOS dmesg, thanks for telling me! I attached
+the dmesg output of it.
+> I'd expected this to be the topology issue, but that change doesn't seem
+> to be in 3.1.4. I'll see whether I can reproduce this.
+>   
+Call Trace: [<0000ffff>] mm_release+0xa1/0xa4
+ [<002b84fa>] topology_sysfs_init+0x0/0x1e
+
+Seems to prove that, do you think
+http://www.spinics.net/lists/linux-m68k/msg04709.html would solve the issue?
+> Do you know what clock chip is used on the A603? I had a quick look on the
+> net, but couldn't find it (I did see a picture of an A604 with a partially
+> covered chip that said M6242). If you can't find it, I can ask Jens.
 >
-> Might be the wrong /dev/rtc device - it should be major 254 minor 0
-> not major 10 minor 135 (or whatever).
+> Currently, Linux assumes an A2000 clock chip, which is an Oki MSM6242.
+> If it's a Ricoh RP5C01, you have to modify arch/m68k/amiga/config.c to
+> select an A3000 clock chip on A600.
+>   
+The kernel outputs: "Amiga hardware found: (...) A2000_CLK (...)", can i
+rely on that message, or should i get the A603 out of the case and check
+the chip to be sure?
+>> and the PCMCIA network card (some card with NE2000-chip, it works
+>> flawlessly under AmigaOS with cnet.device and NetBSD, when inserting the
+>> apne module i get "ethernet PCMCIA card inserted", followed by "device
+>> not found". Maybe i'm missing a device file here?).
+>>     
+>
+> Sorry, cannot help you there.
+>   
+OK, i will keep you informed if i find a solution for the PCMCIA-card.
+> Thanks for your report!
+>   
+Thanks for helping me! :-)
 
-That can also be the problem. Note that the 254/0 is a dynamic number,
-so it may be different for you.
 
-You can check under /sys/class/devices whether your rtc was found.
-I think there's also a virtual file there to show the current time with=
-out
-having to use hwclock.
+Regards
+Patrick
 
-Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+--------------020801010601050007040809
+Content-Type: text/plain;
+ name="dmesg_a600.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="dmesg_a600.txt"
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+U2VhcmNoaW5nIGZvciBTQVZFS01TRyBtYWdpYy4uLgpGb3VuZCA0ODU4IGJ5dGVzIGF0IDB4
+MDAxZTAwMTAKPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4KTGludXggdmVyc2lvbiAzLjEuNC1hbWln
+YSAoMy4xLjQpIChyb290QHZpcnR1ZGVwcCkgKGdjYyB2ZXJzaW9uIDQuNC42IChEZWJpYW4g
+NC40LjYtNikgKSAjMSBTYXQgSmFuIDE0IDE3OjQ4OjEyIENFVCAyMDEyCmNvbnNvbGUgW2Rl
+YnVnMF0gZW5hYmxlZApBbWlnYSBoYXJkd2FyZSBmb3VuZDogW0E2MDBdIFZJREVPIEJMSVRU
+RVIgQVVESU8gRkxPUFBZIEExMjAwX0lERSBLRVlCT0FSRCBNT1VTRSBTRVJJQUwgUEFSQUxM
+RUwgQTIwMDBfQ0xLIENISVBfUkFNIFBBVUxBIERFTklTRV9IUiBBR05VU19IUl9QQUwgUENN
+Q0lBIFpPUlJPIApPbiBub2RlIDAgdG90YWxwYWdlczogNzkzNgpmcmVlX2FyZWFfaW5pdF9u
+b2RlOiBub2RlIDAsIHBnZGF0IDAwMjhmZWY0LCBub2RlX21lbV9tYXAgMDAyYzcwMDAKICBE
+TUEgem9uZTogNzAgcGFnZXMgdXNlZCBmb3IgbWVtbWFwCiAgRE1BIHpvbmU6IDAgcGFnZXMg
+cmVzZXJ2ZWQKICBETUEgem9uZTogNzg2NiBwYWdlcywgTElGTyBiYXRjaDowCnBjcHUtYWxs
+b2M6IHMwIHIwIGQzMjc2OCB1MzI3NjggYWxsb2M9MSozMjc2OApwY3B1LWFsbG9jOiBbMF0g
+MCAKQnVpbHQgMSB6b25lbGlzdHMgaW4gWm9uZSBvcmRlciwgbW9iaWxpdHkgZ3JvdXBpbmcg
+b24uICBUb3RhbCBwYWdlczogNzg2NgpLZXJuZWwgY29tbWFuZCBsaW5lOiByb290PS9kZXYv
+aGRhNSBkZWJ1Zz1tZW0gQk9PVF9JTUFHRT12bWxpbnV4LXB1dHQKUElEIGhhc2ggdGFibGUg
+ZW50cmllczogMTI4IChvcmRlcjogLTMsIDUxMiBieXRlcykKRGVudHJ5IGNhY2hlIGhhc2gg
+dGFibGUgZW50cmllczogNDA5NiAob3JkZXI6IDIsIDE2Mzg0IGJ5dGVzKQpJbm9kZS1jYWNo
+ZSBoYXNoIHRhYmxlIGVudHJpZXM6IDIwNDggKG9yZGVyOiAxLCA4MTkyIGJ5dGVzKQpNZW1v
+cnk6IDI4NTQ4ay8yODU0OGsgYXZhaWxhYmxlICgyMDQ0ayBrZXJuZWwgY29kZSwgMTAyOGsg
+ZGF0YSwgMTI0ayBpbml0KQpDb25zb2xlOiBjb2xvdXIgZHVtbXkgZGV2aWNlIDgweDI1CmNv
+bnNvbGUgW3R0eTBdIGVuYWJsZWQKQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcC4uLiA2LjAxIEJv
+Z29NSVBTIChscGo9MzAwODApCnBpZF9tYXg6IGRlZmF1bHQ6IDMyNzY4IG1pbmltdW06IDMw
+MQpNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDUxMgpORVQ6IFJlZ2lzdGVyZWQg
+cHJvdG9jb2wgZmFtaWx5IDE2CmJpbzogY3JlYXRlIHNsYWIgPGJpby0wPiBhdCAwClNDU0kg
+c3Vic3lzdGVtIGluaXRpYWxpemVkCk5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkg
+MgpJUCByb3V0ZSBjYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEwMjQgKG9yZGVyOiAwLCA0
+MDk2IGJ5dGVzKQpUQ1AgZXN0YWJsaXNoZWQgaGFzaCB0YWJsZSBlbnRyaWVzOiAxMDI0IChv
+cmRlcjogMSwgODE5MiBieXRlcykKVENQIGJpbmQgaGFzaCB0YWJsZSBlbnRyaWVzOiAxMDI0
+IChvcmRlcjogMCwgNDA5NiBieXRlcykKVENQOiBIYXNoIHRhYmxlcyBjb25maWd1cmVkIChl
+c3RhYmxpc2hlZCAxMDI0IGJpbmQgMTAyNCkKVENQIHJlbm8gcmVnaXN0ZXJlZApVRFAgaGFz
+aCB0YWJsZSBlbnRyaWVzOiAyNTYgKG9yZGVyOiAwLCA0MDk2IGJ5dGVzKQpVRFAtTGl0ZSBo
+YXNoIHRhYmxlIGVudHJpZXM6IDI1NiAob3JkZXI6IDAsIDQwOTYgYnl0ZXMpCk5FVDogUmVn
+aXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMQpWRlM6IERpc2sgcXVvdGFzIGRxdW90XzYuNS4y
+CkRxdW90LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXIgMCwgNDA5NiBi
+eXRlcykKbXNnbW5pIGhhcyBiZWVuIHNldCB0byA1NQpCbG9jayBsYXllciBTQ1NJIGdlbmVy
+aWMgKGJzZykgZHJpdmVyIHZlcnNpb24gMC40IGxvYWRlZCAobWFqb3IgMjU0KQppbyBzY2hl
+ZHVsZXIgbm9vcCByZWdpc3RlcmVkCmlvIHNjaGVkdWxlciBkZWFkbGluZSByZWdpc3RlcmVk
+CmlvIHNjaGVkdWxlciBjZnEgcmVnaXN0ZXJlZCAoZGVmYXVsdCkKQ29uc29sZTogc3dpdGNo
+aW5nIHRvIGNvbG91ciBmcmFtZSBidWZmZXIgZGV2aWNlIDgweDMyCmZiMDogQW1pZ2EgRUNT
+IGZyYW1lIGJ1ZmZlciBkZXZpY2UsIHVzaW5nIDY0MEsgb2YgdmlkZW8gbWVtb3J5CkFtaWdh
+LWJ1aWx0aW4gc2VyaWFsIGRyaXZlciB2ZXJzaW9uIDQuMzAKdHR5UzAgaXMgdGhlIGFtaWdh
+IGJ1aWx0aW4gc2VyaWFsIHBvcnQKRGF0YSByZWFkIGZhdWx0IGF0IDB4MDAwMDAwMjAgaW4g
+U3VwZXIgRGF0YSAocGM9MHhiN2UwOCkKQkFEIEtFUk5FTCBCVVNFUlIKT29wczogMDAwMDAw
+MDAKTW9kdWxlcyBsaW5rZWQgaW46ClBDOiBbPDAwMGI3ZTA4Pl0gaW50ZXJuYWxfY3JlYXRl
+X2dyb3VwKzB4MTZlLzB4MWI4ClNSOiAyMDA0ICBTUDogMDE4MTllZTggIGEyOiAwMTgxNjg3
+MApkMDogMDAwMDAwMDAgICAgZDE6IDAwMDAwMDE2ICAgIGQyOiAwMDAwMDAwMCAgICBkMzog
+MDAwMDAwMDAKZDQ6IDAwMDAwMDAwICAgIGQ1OiAwMDAwMDAwMCAgICBhMDogMDAwMDAwMDgg
+ICAgYTE6IDAwMDAwMTg2ClByb2Nlc3Mgc3dhcHBlciAocGlkOiAxLCB0YXNrPTAxODE2ODcw
+KQpGcmFtZSBmb3JtYXQ9QiBzc3c9MDc0ZCBpc2M9NjYwMCBpc2I9ZmViNiBkYWRkcj0wMDAw
+MDAyMCBkb2J1Zj0wMDAwMDAwMApiYWRkcj0wMDBiN2UwZSBkaWJ1Zj0wMDAwMDAwMCB2ZXI9
+ZgpTdGFjayBmcm9tIDAxODE5ZjcwOgogICAgICAgIDAwMDAwMDAwIDAwMDAwMDAwIDQwMmQ5
+NDA4IDAwMDAwMDAwIDQwMmRkMGQ4IDAwMDBmZmZmIDAwMmI4NGZhIDAwMDAyMDA4CiAgICAg
+ICAgNDAyMjMwMDQgMDAwMDAwMDAgMDAyN2ZmZjggMDAwYjdlNzYgMDAwMDAwMDggMDAwMDAw
+MDAgMDAyODk4ZjQgMDAyYjg1MTIKICAgICAgICAwMDAwMDAwOCAwMDI4OThmNCAwMDAwMDAw
+MCAwMDAwMjAyMiAwMDAwMDAwMCAwMDAwMDBlNiA0MDJkOTQwOCAwMDAwMDAwMAogICAgICAg
+IDQwMmRkMGQ4IDAwMmMyYWE0IDAwMDAyMDA4IDQwMjIzMDA0IDAwMDAyMDA4IDAwMmIzZTE0
+IDAwMmE1YjM0IDAwMmI4NGZhCiAgICAgICAgMDAyYTVhYzggNDAwMDEwMDAgMDAwMDI5MGMg
+MDAwMDAwMDAKQ2FsbCBUcmFjZTogWzwwMDAwZmZmZj5dIG1tX3JlbGVhc2UrMHhhMS8weGE0
+CiBbPDAwMmI4NGZhPl0gdG9wb2xvZ3lfc3lzZnNfaW5pdCsweDAvMHgxZQogWzwwMDAwMjAw
+OD5dIGRvX29uZV9pbml0Y2FsbCsweDAvMHgxYzAKIFs8MDAwYjdlNzY+XSBzeXNmc19jcmVh
+dGVfZ3JvdXArMHhlLzB4MTQKIFs8MDAyYjg1MTI+XSB0b3BvbG9neV9zeXNmc19pbml0KzB4
+MTgvMHgxZQogWzwwMDAwMjAyMj5dIGRvX29uZV9pbml0Y2FsbCsweDFhLzB4MWMwCiBbPDAw
+MDAyMDA4Pl0gZG9fb25lX2luaXRjYWxsKzB4MC8weDFjMAogWzwwMDAwMjAwOD5dIGRvX29u
+ZV9pbml0Y2FsbCsweDAvMHgxYzAKIFs8MDAyYjNlMTQ+XSBjcHVfZGV2X2luaXQrMHhjLzB4
+MTAKIFs8MDAyYTViMzQ+XSBrZXJuZWxfaW5pdCsweDZjLzB4ZWUKIFs8MDAyYjg0ZmE+XSB0
+b3BvbG9neV9zeXNmc19pbml0KzB4MC8weDFlCiBbPDAwMmE1YWM4Pl0ga2VybmVsX2luaXQr
+MHgwLzB4ZWUKIFs8MDAwMDI5MGM+XSBrZXJuZWxfdGhyZWFkKzB4M2EvMHg0ZQoKQ29kZTog
+NGE4OCA2NmQ0IDYwMDAgZmY3MiAyODZlIGZmZmMgNjA4MCAyMDQ3IDw0YWE4PiAwMDE4IDY2
+MDAgZmViNiA0ODc4IDAwNDEgNDg3OSAwMDI0IGJlZmUgNDg3OSAwMDI0IDBjZDYgNGViOSAw
+MDFmIGM2ZTQgNGU0NwpEaXNhYmxpbmcgbG9jayBkZWJ1Z2dpbmcgZHVlIHRvIGtlcm5lbCB0
+YWludApLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXR0ZW1wdGVkIHRvIGtpbGwgaW5p
+dCEKQ2FsbCBUcmFjZTogWzwwMDFmYzVhND5dIHBhbmljKzB4NTQvMHgxOTQKIFs8MDAwMTRi
+ODQ+XSBkb19leGl0KzB4NWVhLzB4NmNhCiBbPDAwMWZjNmU0Pl0gcHJpbnRrKzB4MC8weDFj
+CiBbPDAwMDAzMjU0Pl0gYmFkX3N1cGVyX3RyYXArMHgwLzB4MThlCiBbPDAwMDAzOWZlPl0g
+YnVzZXJyX2MrMHgyZDgvMHgzYTIKIFs8MDAyYjg0ZmE+XSB0b3BvbG9neV9zeXNmc19pbml0
+KzB4MC8weDFlCiBbPDAwMDAyMDA4Pl0gZG9fb25lX2luaXRjYWxsKzB4MC8weDFjMAogWzww
+MDAwMjVjNj5dIGJ1c2VycisweDFlLzB4MjQKIFs8MDAwYjdlMTA+XSBpbnRlcm5hbF9jcmVh
+dGVfZ3JvdXArMHgxNzYvMHgxYjgKIFs8MDAwYjdlMGU+XSBpbnRlcm5hbF9jcmVhdGVfZ3Jv
+dXArMHgxNzQvMHgxYjgKIFs8MDAwYjdlMGM+XSBpbnRlcm5hbF9jcmVhdGVfZ3JvdXArMHgx
+NzIvMHgxYjgKIFs8MDAxOGZmMGQ+XSBza2JfZ3NvX3NlZ21lbnQrMHgxOTMvMHgyYmEKIFs8
+MDAwZmY2ZWM+XSBibGtfcnFfbWFwX2tlcm4rMHg5ZS8weDEyYwogWzwwMDAwM2YxYz5dIHJl
+cXVlc3RfaXJxKzB4ZS8weDQyCiBbPDAwMDAzZjFjPl0gcmVxdWVzdF9pcnErMHhlLzB4NDIK
+IFs8MDAwMGZmZmY+XSBtbV9yZWxlYXNlKzB4YTEvMHhhNAogWzwwMDJiODRmYT5dIHRvcG9s
+b2d5X3N5c2ZzX2luaXQrMHgwLzB4MWUKIFs8MDAwMDIwMDg+XSBkb19vbmVfaW5pdGNhbGwr
+MHgwLzB4MWMwCiBbPDAwMGI3ZTc2Pl0gc3lzZnNfY3JlYXRlX2dyb3VwKzB4ZS8weDE0CiBb
+PDAwMmI4NTEyPl0gdG9wb2xvZ3lfc3lzZnNfaW5pdCsweDE4LzB4MWUKIFs8MDAwMDIwMjI+
+XSBkb19vbmVfaW5pdGNhbGwrMHgxYS8weDFjMAogWzwwMDAwMjAwOD5dIGRvX29uZV9pbml0
+Y2FsbCsweDAvMHgxYzAKIFs8MDAwMDIwMDg+XSBkb19vbmVfaW5pdGNhbGwrMHgwLzB4MWMw
+CiBbPDAwMmIzZTE0Pl0gY3B1X2Rldl9pbml0KzB4Yy8weDEwCiBbPDAwMmE1YjM0Pl0ga2Vy
+bmVsX2luaXQrMHg2Yy8weGVlCiBbPDAwMmI4NGZhPl0gdG9wb2xvZ3lfc3lzZnNfaW5pdCsw
+eDAvMHgxZQogWzwwMDJhNWFjOD5dIGtlcm5lbF9pbml0KzB4MC8weGVlCiBbPDAwMDAyOTBj
+Pl0ga2VybmVsX3RocmVhZCsweDNhLzB4NGUKCjw8PDw8PDw8PDw8PDw8PDw8PDw8Cg==
+--------------020801010601050007040809--
