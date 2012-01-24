@@ -1,44 +1,47 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
-Date: Tue, 24 Jan 2012 22:19:11 +0100
-Message-ID: <CAMuHMdWRT2WdwzMdD3Ts2EyuKgCKGwS9+710HYB7BQvVr8K1pQ@mail.gmail.com>
+Date: Tue, 24 Jan 2012 22:49:10 +0100
+Message-ID: <CAMuHMdXU1z9GfbT9seMHEv-p76zyZ66zTZnGdShroaEkqidn6A@mail.gmail.com>
 References: <4F1C577D.3040908@sigon.net>
 	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
-	<CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
-	<4F1EF0CE.9050300@sigon.net>
+	<4F1EEBEF.4000400@sigon.net>
+	<CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:63575 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755844Ab2AXVTN convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Jan 2012 16:19:13 -0500
-Received: by werb13 with SMTP id b13so3315941wer.19
-        for <linux-m68k@vger.kernel.org>; Tue, 24 Jan 2012 13:19:12 -0800 (PST)
-In-Reply-To: <4F1EF0CE.9050300@sigon.net>
+Received: from mail-wi0-f174.google.com ([209.85.212.174]:62647 "EHLO
+	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751040Ab2AXVtL convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Jan 2012 16:49:11 -0500
+Received: by wics10 with SMTP id s10so3328747wic.19
+        for <linux-m68k@vger.kernel.org>; Tue, 24 Jan 2012 13:49:10 -0800 (PST)
+In-Reply-To: <CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Patrick Bottelberger <patrick.bottelberger@sigon.net>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org
 
-Hi Patrick,
+On Tue, Jan 24, 2012 at 22:17, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+>>> Currently, Linux assumes an A2000 clock chip, which is an Oki MSM62=
+42.
+>>> If it's a Ricoh RP5C01, you have to modify arch/m68k/amiga/config.c=
+ to
+>>> select an A3000 clock chip on A600.
+>>>
+>> The kernel outputs: "Amiga hardware found: (...) A2000_CLK (...)", c=
+an i
+>> rely on that message, or should i get the A603 out of the case and c=
+heck
+>> the chip to be sure?
+>
+> You cannot rely on that message. It just assumes A2000/A500/A600 etc.
+> have an A2000-style clock chip. But on all but A2000 the RTC is optio=
+nal.
+> BTW, I also asked Jens Sch=C3=B6nfeld.
 
-On Tue, Jan 24, 2012 at 18:56, Patrick Bottelberger
-<patrick.bottelberger@sigon.net> wrote:
-> Michael Schmitz schrieb:
->> Might be the wrong /dev/rtc device - it should be major 254 minor 0
->> not major 10 minor 135 (or whatever).
->>
-> I tried major 254 with minor 1 to 10, none of the nodes seems to be
-> connected. I thought 254/x was used by CONFIG_RTC_CLASS and 10/135 by
-> CONFIG_GEN_RTC? I'll compile the kernel with CONFIG_RTC_CLASS and try=
- again.
-
-These days you need CONFIG_RTC_CLASS and CONFIG_RTC_DRV_MSM6242.
-CONFIG_GEN_RTC only works with old-style RTC drivers, which we no longe=
-r
-use on Amiga.
+Jens confirmed it has an MSM6242.
 
 Gr{oetje,eeting}s,
 
