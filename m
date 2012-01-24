@@ -1,48 +1,65 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: coldfire v4e and CONFIG_PREEMPT support
-Date: Tue, 24 Jan 2012 15:32:13 +1000
-Message-ID: <4F1E425D.7090000@snapgear.com>
-References: <1327211472.37668.YahooMailClassic@web160605.mail.bf1.yahoo.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
+Date: Tue, 24 Jan 2012 09:41:43 +0100
+Message-ID: <CAMuHMdX_ng8uQ2OYwceb3uTsGSRSRKp0C1C9xpTyi7cN6L__Ow@mail.gmail.com>
+References: <4F1C577D.3040908@sigon.net>
+	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
+	<CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1327211472.37668.YahooMailClassic@web160605.mail.bf1.yahoo.com>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:59194 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754750Ab2AXIlo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Jan 2012 03:41:44 -0500
+Received: by wgbed3 with SMTP id ed3so3725833wgb.1
+        for <linux-m68k@vger.kernel.org>; Tue, 24 Jan 2012 00:41:43 -0800 (PST)
+In-Reply-To: <CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lars Michael <lh_post@yahoo.com>
-Cc: linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Patrick Bottelberger <patrick.bottelberger@sigon.net>, linux-m68k@vger.kernel.org
 
-Hi Lars,
-
-On 22/01/12 15:51, Lars Michael wrote:
-> Hi Geert,
+On Tue, Jan 24, 2012 at 00:04, Michael Schmitz
+<schmitzmic@googlemail.com> wrote:
+>>> the debian system and mknod'ing all needed device-files everything =
+seems
+>>> to be running fine, with the exception of the RTC (i think that's m=
+y
+>>> fault, something i missed while configuring my kernel, is there
+>>> something needed besides of genrtc to get the A600/A603-clock worki=
+ng?)
+>>
+>> Do you know what clock chip is used on the A603? I had a quick look =
+on the
+>> net, but couldn't find it (I did see a picture of an A604 with a par=
+tially
+>> covered chip that said M6242). If you can't find it, I can ask Jens.
 >
-> On Fri, Jan 20, 2012 at 14:59, Geert<geert@xxxxxxxxxxxxxx>  wrote:
->>> On Fri, Jan 20, 2012 at 14:47, Jensen, Bjarne<bkj@xxxxxxx>  wrote:
->>> We are developing an application on a board with a Coldfire v4e processor>>(m54418) and are wondering if it will be possible to make the kernel
->>> preemptive and how much effort it will take. Has anyone tried it with this>>processor?
->
->> Generic preempt support relies on the spinlocks that were introduced when
->> adding SMP support. So far we never had SMP support for m68k, hence we
->> didn't do a proper conversion from disable_irq()/enable_irq() to spinlocks,
->> and kept on using the simpler local_irq_*() ops in arch/m68k and in several
->> drivers. These have to be fixed first.
->
-> Bjarne and I work together, our embedded system (mcf54418, kernel 2.6.29) runs a real-time critical app. and we have found that we are not being scheduled for longer periods of time when the kernel is busy. We believe the preempt option is the solution. Are there any current projects or plans to support preempt for m68k? This is a very high priority for us and we can do some coding, and certainly testing, but we need some expert guidance. Would you be interested in helping and seeing preempt supported on this arch?
+> Might be the wrong /dev/rtc device - it should be major 254 minor 0
+> not major 10 minor 135 (or whatever).
 
-A few years back someone contributed PREEMPT code for ColdFire. I can't
-recall who it was right now, but it is in mainline. grep under
-arch/m68k for PREEMPT and you will see the few bits added.
+That can also be the problem. Note that the 254/0 is a dynamic number,
+so it may be different for you.
 
-Worth having a look at first.
+You can check under /sys/class/devices whether your rtc was found.
+I think there's also a virtual file there to show the current time with=
+out
+having to use hwclock.
 
-Regards
-Greg
+Gr{oetje,eeting}s,
 
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
