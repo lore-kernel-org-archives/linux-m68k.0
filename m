@@ -1,65 +1,77 @@
-From: Patrick Bottelberger <tjelfe@sigon.net>
-Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
-Date: Thu, 26 Jan 2012 18:05:53 +0100
-Message-ID: <97e6cf2ca60c81874f6ea82e8b4af158@localhost>
-References: <4F1C577D.3040908@sigon.net>	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>	<4F1EEBEF.4000400@sigon.net> <CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com> <4F2053C9.3090201@sigon.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.3
+Date: Thu, 26 Jan 2012 18:39:29 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1201261828070.19382@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from s15429932.onlinehome-server.info ([87.106.248.152]:54527 "EHLO
-	ws1.rootfuchs.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751410Ab2AZRQO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 26 Jan 2012 12:16:14 -0500
-In-Reply-To: <4F2053C9.3090201@sigon.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gerg@snapgear.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
+	Hi Linus,
 
-Hi Geert,
+The following changes since commit 3bd9e50b4297b0d85bb86a8f2ade941c0f9c21fd:
+  Geert Uytterhoeven (1):
+        m68k/mac: Make CONFIG_HEARTBEAT unavailable on Mac
 
-On Wed, 25 Jan 2012 20:11:05 +0100, Patrick Bottelberger
-<patrick.bottelberger@sigon.net> wrote:
-> After activating CONFIG_RTC_CLASS and CONFIG_RTC_DRV_MSM6242 in the
-> kernel and finally being able to get the device nodes created
-> automatically by udev, the RTC now works... somewhat. 8 out of 10 reads
-> from the RTC (via hctosys inside the kernel at startup, hwclock from
-> userspace or cat one of the special files inside /sys/class/rtc) return
-> successfully, but the other 2 return an ioctl()-error. I forgot which
-> exactly, i'll go upstairs to the Amiga later and write it down.
-> 
+are available in the git repository at:
 
-The error reported by hwclock is:
-RTC_RD_TIME: Illegal Argument
-ioctl() to /dev/rtc0 to read the time failed.
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-If reading /sys/class/rtc/rtc0/time with cat, the error is:
-cat: /sys/class/rtc/rtc0/time: Invalid Argument
+  - The changeset from Andreas is a critical bugfix (also meant for stable)
+    that caused crashes on boot in the wild.
+    As it wasn't rebased, it will cause a merge conflict. The correct
+    resolution is:
 
-Additional to that, the date seems to be correct every time i read it (for
-example with "cat /sys/class/rtc/rtc0/date"), but the time seems to be a
-bit strange. Even if the time can be read, i get different times from the
-clock. 3 cat's in a row returned:
-02:04:16
-12:04:18
-22:04:19
+-<<<<<<< HEAD
+-               asm volatile ("frestore %0@" : : "a" (&zero) : "memory");
+-=======
+-               asm volatile (".chip 68k/68881\n\t"
+-                             "frestore %0\n\t"
+-                             ".chip 68k" : : "m" (zero));
+->>>>>>> m68k/for-next = for-linus
++               asm volatile ("frestore %0" : : "m" (zero)
 
-That seems a bit... odd. Any ideas?
+  - The changesets from Finn are fixes for Mac that got silently ignored by
+    the respective subsystem maintainers, despite resends.
 
-> The PCMCIA-network still doesn't work, i'll recompile the kernel with
-> CONFIG_APNE=y (instead of m), maybe that will work.
-> 
+  - The changeset from me is a postponed cleanup that depended on some
+    subsystem trees.
 
-Still doesn't work, but i don't see anything PCMCIA-related in
-/sys/{bus,bus/platform} either. I think that may be the problem, do i need
-anything else besides of CONFIG_AMIGA_PCMCIA and CONFIG_APNE?
+Thanks for pulling!
 
-Maybe it's the debian patches that get everything out of order, i'll try
-3.1.10 vanilla, maybe that'll work.
+Andreas Schwab (1):
+      m68k: Fix assembler constraint to prevent overeager gcc optimisation
 
+Finn Thain (3):
+      macfb: fix black and white modes
+      mac_scsi: dont enable mac_scsi irq before requesting it
+      mac_esp: rename irq
 
-Regards,
-Patrick
+Geert Uytterhoeven (1):
+      m68k/irq: Remove obsolete IRQ_FLG_* definitions
+
+ arch/m68k/atari/config.c      |    8 +++---
+ arch/m68k/include/asm/irq.h   |   13 ---------
+ arch/m68k/kernel/process_mm.c |    4 +-
+ arch/m68k/kernel/process_no.c |    4 +-
+ arch/m68k/kernel/traps.c      |   36 +++++++++++-------------
+ arch/m68k/mm/cache.c          |    6 ++--
+ drivers/scsi/mac_esp.c        |    3 +-
+ drivers/scsi/mac_scsi.c       |    6 ----
+ drivers/video/macfb.c         |   60 +++++++++++++++++++----------------------
+ 9 files changed, 57 insertions(+), 83 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
