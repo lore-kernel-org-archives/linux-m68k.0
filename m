@@ -1,77 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.3
-Date: Thu, 26 Jan 2012 18:39:29 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201261828070.19382@ayla.of.borg>
+From: Thorsten Glaser <tg@debian.org>
+Subject: Re: [PATCHv2 1/2] cpu: Do not return errors from cpu_dev_init()
+ which will be ignored; [PATCHv2 2/2] cpu: Register a generic CPU device on
+ architectures that currently do not
+Date: Fri, 27 Jan 2012 16:34:24 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201271632120.25139@herc.mirbsd.org>
+References: <1326164389.3432.29.camel@deadeye> <1326164672.3432.34.camel@deadeye>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:35552 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752710Ab2A0Qj0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Jan 2012 11:39:26 -0500
+In-Reply-To: <1326164672.3432.34.camel@deadeye>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Greg Ungerer <gerg@snapgear.com>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Linux-Arch <linux-arch@vger.kernel.org>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org, Richard Weinberger <richard@nod.at>
 
-	Hi Linus,
+Ben Hutchings dixit:
 
-The following changes since commit 3bd9e50b4297b0d85bb86a8f2ade941c0f9c21fd:
-  Geert Uytterhoeven (1):
-        m68k/mac: Make CONFIG_HEARTBEAT unavailable on Mac
+>cpu_dev_init() is only called from driver_init(), which does not check
+[=E2=80=A6]
 
-are available in the git repository at:
+=3D and =3D
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+>frv, h8300, m68k, microblaze, openrisc, score, um and xtensa currently
+>do not register a CPU device.  Add the config option
+>GENERIC_CPU_DEVICES which causes a generic CPU device to be registered
+[=E2=80=A6]
 
-  - The changeset from Andreas is a critical bugfix (also meant for stable)
-    that caused crashes on boot in the wild.
-    As it wasn't rebased, it will cause a merge conflict. The correct
-    resolution is:
+Now that these are in the Debian Linux kernel package and a build has
+been done, I can confirm the result boots on ARAnyM (m68k).
 
--<<<<<<< HEAD
--               asm volatile ("frestore %0@" : : "a" (&zero) : "memory");
--=======
--               asm volatile (".chip 68k/68881\n\t"
--                             "frestore %0\n\t"
--                             ".chip 68k" : : "m" (zero));
-->>>>>>> m68k/for-next = for-linus
-+               asm volatile ("frestore %0" : : "m" (zero)
+Tested-by: Thorsten Glaser <tg@debian.org>
 
-  - The changesets from Finn are fixes for Mac that got silently ignored by
-    the respective subsystem maintainers, despite resends.
-
-  - The changeset from me is a postponed cleanup that depended on some
-    subsystem trees.
-
-Thanks for pulling!
-
-Andreas Schwab (1):
-      m68k: Fix assembler constraint to prevent overeager gcc optimisation
-
-Finn Thain (3):
-      macfb: fix black and white modes
-      mac_scsi: dont enable mac_scsi irq before requesting it
-      mac_esp: rename irq
-
-Geert Uytterhoeven (1):
-      m68k/irq: Remove obsolete IRQ_FLG_* definitions
-
- arch/m68k/atari/config.c      |    8 +++---
- arch/m68k/include/asm/irq.h   |   13 ---------
- arch/m68k/kernel/process_mm.c |    4 +-
- arch/m68k/kernel/process_no.c |    4 +-
- arch/m68k/kernel/traps.c      |   36 +++++++++++-------------
- arch/m68k/mm/cache.c          |    6 ++--
- drivers/scsi/mac_esp.c        |    3 +-
- drivers/scsi/mac_scsi.c       |    6 ----
- drivers/video/macfb.c         |   60 +++++++++++++++++++----------------------
- 9 files changed, 57 insertions(+), 83 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+bye,
+//mirabilos
+--=20
+I believe no one can invent an algorithm. One just happens to hit upon =
+it
+when God enlightens him. Or only God invents algorithms, we merely copy=
+ them.
+If you don't believe in God, just consider God as Nature if you won't d=
+eny
+existence.		-- Coywolf Qi Hunt
