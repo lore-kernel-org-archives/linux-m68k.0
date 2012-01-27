@@ -1,64 +1,51 @@
 From: Thorsten Glaser <tg@debian.org>
-Subject: Re: Atari TT (next)
-Date: Fri, 27 Jan 2012 17:01:56 +0000 (UTC)
-Message-ID: <loom.20120127T175834-143@post.gmane.org>
-References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com> <4F08E748.4020305@fairlite.co.uk> <4F0917E9.9090600@gmail.com> <4F0964EC.2080505@fairlite.co.uk> <CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
+Date: Fri, 27 Jan 2012 17:44:01 +0000 (UTC)
+Message-ID: <loom.20120127T184202-114@post.gmane.org>
+References: <4F1C577D.3040908@sigon.net> <CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com> <CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lo.gmane.org ([80.91.229.12]:33327 "EHLO lo.gmane.org"
+Received: from lo.gmane.org ([80.91.229.12]:46428 "EHLO lo.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751840Ab2A0RCL (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 27 Jan 2012 12:02:11 -0500
+	id S1751923Ab2A0RoQ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 27 Jan 2012 12:44:16 -0500
 Received: from list by lo.gmane.org with local (Exim 4.69)
 	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1RqpBh-0003hn-Um
-	for linux-m68k@vger.kernel.org; Fri, 27 Jan 2012 18:02:09 +0100
+	id 1RqpqR-0007ue-SH
+	for linux-m68k@vger.kernel.org; Fri, 27 Jan 2012 18:44:15 +0100
 Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
         by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:02:09 +0100
+        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:44:15 +0100
 Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
         id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:02:09 +0100
+        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:44:15 +0100
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 
 Michael Schmitz <schmitzmic <at> googlemail.com> writes:
 
-> >> Can you try to have the kernel placed in ST-RAM?
-> >
-> > No, the kernel is too big. I've only got 4MB ST-RAM. And getting mo=
-re on
+> Might be the wrong /dev/rtc device - it should be major 254 minor 0
 
-The guys at the Atari booth at OpenRheinRuhr had the same problem,
-they also had a 4/4 MiB split.
+Actually, it should be /dev/rtc0 (according to my Debian system)
+and you can find out the correct major number like this:
 
-> You may have to pare the kernel down to the bare minimum (i.e.
-> modularize about everything you don't need to boot to initrd). Not
-> sure where the limit for this is these days.
+root@ara5:~ # ll /dev/rtc*
+crw------- 1 root root 254, 0 Dec 26 16:48 /dev/rtc0
+root@ara5:~ # fgrep rtc /proc/devices
+254 rtc
 
-Note that the Debian kernel does not use initrd to boot (to the
-finally installed system), especially as those tools are built
-with klibc, which is currently still broken on m68k, and thus
-contains everything needed to get into an ext3fs / from disc,
-and then some. I don=E2=80=99t think you should be using a distro kerne=
-l
-made under such constraints (nor should the distro kernel be
-stripped more down considering the problems; I think there may
-even be flavours that don=E2=80=99t _support_ initrd, outside the image
-that is) but compile a stripped-down one yourself.
+This is auto-created from devtmpfs (no udev here), FWIW.
+My ARAnyM command line contains devtmpfs.mount=1 coupled
+with a few lines in /etc/rc.local:
 
-> >> You're right, this should be possible to test with ARAnyM - the
-> >> behavior is not new though. Loading the kernel in TT-RAM has been
-> >> problematic on the Falcon for a long time now.
-
-I don=E2=80=99t know about that; ARanyM has a built-in LILO, so I never
-saw any TOS (except when using AfrOS, but that=E2=80=99s a whole differ=
-ent
-beast)=E2=80=A6
+(test -e /dev/fd || ln -s /proc/self/fd /dev/fd || :)
+(test -e /dev/stdin || ln -s /proc/self/fd/0 /dev/stdin || :)
+(test -e /dev/stdout || ln -s /proc/self/fd/1 /dev/stdout || :)
+(test -e /dev/stderr || ln -s /proc/self/fd/2 /dev/stderr || :)
 
 bye,
 //mirabilos
