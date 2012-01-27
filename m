@@ -1,48 +1,64 @@
 From: Thorsten Glaser <tg@debian.org>
-Subject: Re: [PATCHv2 1/2] cpu: Do not return errors from cpu_dev_init()
- which will be ignored; [PATCHv2 2/2] cpu: Register a generic CPU device on
- architectures that currently do not
-Date: Fri, 27 Jan 2012 16:34:24 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201271632120.25139@herc.mirbsd.org>
-References: <1326164389.3432.29.camel@deadeye> <1326164672.3432.34.camel@deadeye>
+Subject: Re: Atari TT (next)
+Date: Fri, 27 Jan 2012 17:01:56 +0000 (UTC)
+Message-ID: <loom.20120127T175834-143@post.gmane.org>
+References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com> <4F08E748.4020305@fairlite.co.uk> <4F0917E9.9090600@gmail.com> <4F0964EC.2080505@fairlite.co.uk> <CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:35552 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752710Ab2A0Qj0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Jan 2012 11:39:26 -0500
-In-Reply-To: <1326164672.3432.34.camel@deadeye>
+Received: from lo.gmane.org ([80.91.229.12]:33327 "EHLO lo.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751840Ab2A0RCL (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 27 Jan 2012 12:02:11 -0500
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1RqpBh-0003hn-Um
+	for linux-m68k@vger.kernel.org; Fri, 27 Jan 2012 18:02:09 +0100
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:02:09 +0100
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Fri, 27 Jan 2012 18:02:09 +0100
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Linux-Arch <linux-arch@vger.kernel.org>, Debian kernel team <debian-kernel@lists.debian.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org, Richard Weinberger <richard@nod.at>
+To: linux-m68k@vger.kernel.org
 
-Ben Hutchings dixit:
+Michael Schmitz <schmitzmic <at> googlemail.com> writes:
 
->cpu_dev_init() is only called from driver_init(), which does not check
-[=E2=80=A6]
+> >> Can you try to have the kernel placed in ST-RAM?
+> >
+> > No, the kernel is too big. I've only got 4MB ST-RAM. And getting mo=
+re on
 
-=3D and =3D
+The guys at the Atari booth at OpenRheinRuhr had the same problem,
+they also had a 4/4 MiB split.
 
->frv, h8300, m68k, microblaze, openrisc, score, um and xtensa currently
->do not register a CPU device.  Add the config option
->GENERIC_CPU_DEVICES which causes a generic CPU device to be registered
-[=E2=80=A6]
+> You may have to pare the kernel down to the bare minimum (i.e.
+> modularize about everything you don't need to boot to initrd). Not
+> sure where the limit for this is these days.
 
-Now that these are in the Debian Linux kernel package and a build has
-been done, I can confirm the result boots on ARAnyM (m68k).
+Note that the Debian kernel does not use initrd to boot (to the
+finally installed system), especially as those tools are built
+with klibc, which is currently still broken on m68k, and thus
+contains everything needed to get into an ext3fs / from disc,
+and then some. I don=E2=80=99t think you should be using a distro kerne=
+l
+made under such constraints (nor should the distro kernel be
+stripped more down considering the problems; I think there may
+even be flavours that don=E2=80=99t _support_ initrd, outside the image
+that is) but compile a stripped-down one yourself.
 
-Tested-by: Thorsten Glaser <tg@debian.org>
+> >> You're right, this should be possible to test with ARAnyM - the
+> >> behavior is not new though. Loading the kernel in TT-RAM has been
+> >> problematic on the Falcon for a long time now.
+
+I don=E2=80=99t know about that; ARanyM has a built-in LILO, so I never
+saw any TOS (except when using AfrOS, but that=E2=80=99s a whole differ=
+ent
+beast)=E2=80=A6
 
 bye,
 //mirabilos
---=20
-I believe no one can invent an algorithm. One just happens to hit upon =
-it
-when God enlightens him. Or only God invents algorithms, we merely copy=
- them.
-If you don't believe in God, just consider God as Nature if you won't d=
-eny
-existence.		-- Coywolf Qi Hunt
