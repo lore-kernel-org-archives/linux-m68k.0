@@ -1,46 +1,69 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Linux on Amiga A600, a success story (in progress, with possible
- patch)
-Date: Sat, 28 Jan 2012 21:01:24 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201282100540.31292@herc.mirbsd.org>
-References: <4F1C577D.3040908@sigon.net> <CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
- <CAOmrzkJO8hiMJhN5eanXpjjGnaLYrCDAbekX2=FY394+Vt1UHw@mail.gmail.com>
- <loom.20120127T184202-114@post.gmane.org> <4F245963.9070605@gmail.com>
- <Pine.BSM.4.64L.1201282041180.31292@herc.mirbsd.org>
- <CAMuHMdUiykMQ5RLat=fOakQ155oboCOcwKYyDeaAE2baBN7gKA@mail.gmail.com>
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
+Date: Sat, 28 Jan 2012 14:38:10 -0800
+Message-ID: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
+References: <cover.1322163031.git.mst@redhat.com>
+        <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:31399 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752766Ab2A1VLI convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Jan 2012 16:11:08 -0500
-In-Reply-To: <CAMuHMdUiykMQ5RLat=fOakQ155oboCOcwKYyDeaAE2baBN7gKA@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Ralf Baechle <ralf@linux-mips.org>, "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Jonas Bonn <jonas@southpole.se>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, Paul Mundt <lethal@linux-sh.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven dixit:
+On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> w=
+rote:
+> mips copied pci_iomap from generic code, probably to avoid
+> pulling the rest of iomap.c in. =C2=A0Since that's in
+> a separate file now, we can reuse the common implementation.
 
->> (What=E2=80=99s SYS_333, and why does strace not know it?)
->
->#define __NR_get_thread_area    333
->
->Thread Local Storage.
+[snip]
 
-Ah.
+> - =C2=A0 =C2=A0 =C2=A0 if (flags & IORESOURCE_IO)
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ioport_map_=
+pci(dev, start, len);
 
->-ESTRACE_TOO_OLD?
->-ESTRACE_NEVER_UPDATED?
+While investigating a new warning on the 3.3-rc1 MIPS build (unused
+static function ioport_map_pci()), I noticed that this patch has shown
+up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
 
-Probably the latter=E2=80=A6 it=E2=80=99s been rebuilt after TLS was
-introduced, and was updated in Debian too.
+I am not completely clear on the implications it has on mapping PCI I/O=
+ regions:
 
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-						-- Edward Burr
+Prior to this change, the MIPS version of pci_iomap() called a
+MIPS-specific function, ioport_map_pci(), which tried to use the PCI
+controller's io_map_base field to determine the base address of the
+PCI I/O space.  It also had a fallback mechanism to deal with the case
+where io_map_base is unset.
+
+Now, in 3.3-rc1, the generic version of pci_iomap() is used instead.
+This code just calls arch/mips/lib/iomap.c:ioport_map() on these
+regions.  ioport_map() falls through to ioport_map_legacy(), which
+always uses mips_io_port_base (not the PCI controller's io_map_base)
+as the base address.  But on MIPS, it is still permissible to use
+different I/O port bases for PCI devices and for legacy (ISA?)
+devices.
+
+Is this new behavior desirable, or are there any supported platforms
+on which adverse effects might be seen?
+
+As for my part, I don't use PCI I/O regions at all - just memory
+regions.  I'm more worried about making sure my tree builds with 0
+warnings.
+
+If we do want to move ahead with the switch to GENERIC_PCI_IOMAP now,
+I have patches to scrap iomap-pci.c entirely and squash the unused
+function warning.
+
+If we still want to support the case where io_map_base !=3D
+mips_io_port_base, maybe it would be better to revert commit eab90291
+for 3.3.
+
+Might also want to take a look at SH since it also appears to have an
+orphaned ioport_map_pci() function.
+
+What are your thoughts?
