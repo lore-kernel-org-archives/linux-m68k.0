@@ -1,58 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Atari TT (next)
-Date: Sun, 29 Jan 2012 22:56:13 +0100
-Message-ID: <CAMuHMdXp+_t6262MUbk7o8fxi1Y015=eovhMNT0h_xc0COgVFQ@mail.gmail.com>
-References: <4F079F6B.8080502@fairlite.co.uk>
-	<4F07EA66.6020603@gmail.com>
-	<4F08E748.4020305@fairlite.co.uk>
-	<4F0917E9.9090600@gmail.com>
-	<4F0964EC.2080505@fairlite.co.uk>
-	<CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
-	<loom.20120127T175834-143@post.gmane.org>
-	<4F245B91.60101@gmail.com>
-	<loom.20120129T015428-587@post.gmane.org>
-	<CAMuHMdV9s6Ff1yz9jVLqKNU+ejVHvTyyqnDTvRK9i3_CmUj=qw@mail.gmail.com>
-	<Pine.BSM.4.64L.1201291954020.4290@herc.mirbsd.org>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
+Date: Sun, 29 Jan 2012 22:59:05 +0100
+Message-ID: <CAMuHMdWv-On4mEwhs0wEAgM8TBxscJNBX=AvHW3HcoX-LnMrzA@mail.gmail.com>
+References: <4F1C577D.3040908@sigon.net>
+	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
+	<4F1EEBEF.4000400@sigon.net>
+	<CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com>
+	<4F2053C9.3090201@sigon.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:43929 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750979Ab2A2V4O convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 16:56:14 -0500
-Received: by werb13 with SMTP id b13so2940131wer.19
-        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 13:56:13 -0800 (PST)
-In-Reply-To: <Pine.BSM.4.64L.1201291954020.4290@herc.mirbsd.org>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:53286 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753837Ab2A2V7H convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 16:59:07 -0500
+Received: by wgbed3 with SMTP id ed3so3882379wgb.1
+        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 13:59:05 -0800 (PST)
+In-Reply-To: <4F2053C9.3090201@sigon.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
+To: Patrick Bottelberger <patrick.bottelberger@sigon.net>
 Cc: linux-m68k@vger.kernel.org
 
-On Sun, Jan 29, 2012 at 20:55, Thorsten Glaser <tg@mirbsd.de> wrote:
-> Geert Uytterhoeven dixit:
->>Don't tell me. My Amiga also has only 12 MiB of Fast RAM. Where are
->>the days my Amiga was mailserver for 70 people, many of them logging
->>in remotely to read their email with pine? Debian is getted too bloat=
-ed,
->
-> ;-)
->
-> It=E2=80=99s not just that. XFree86 4, for example, is a memory hog c=
-ompared
-> to XF86 3, and Unicode support eats up lots and lots of RAM.
+On Wed, Jan 25, 2012 at 20:11, Patrick Bottelberger
+<patrick.bottelberger@sigon.net> wrote:
+>>> Without supplying the '-p' parameter amiboot didn't output anything=
+ at
+>>> all, it just froze the amiga directly after entering the command.
+>>
+>> Even with '-d'?
+>>
+> Yes, even with "-d", no output is printed, after entering the command
+> ("amiboot -d root=3D/dev/hda5" for example) and pressing "enter" the
+> system freezes immediately.
 
-xserver-xfbdev based on kdrive still exists, right?
-But AFAIK it lacks Amiga and Atari frame buffer device support. Fixing
-that has been on my list for a looooong time...
-
->>I have less packages (incl.daemons) installed than 12 years ago, but =
-the
->>system is still much slower.
->
-> Hm, slower too?
-
-Yep. No free RAM, so everything causes swapping.
+Hmm, must be a bug in common/amiga/linuxboot.c:ckfpu(), or ckcpu346().
 
 Gr{oetje,eeting}s,
 
