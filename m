@@ -1,54 +1,58 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
-Date: Sun, 29 Jan 2012 22:59:05 +0100
-Message-ID: <CAMuHMdWv-On4mEwhs0wEAgM8TBxscJNBX=AvHW3HcoX-LnMrzA@mail.gmail.com>
-References: <4F1C577D.3040908@sigon.net>
-	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
-	<4F1EEBEF.4000400@sigon.net>
-	<CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com>
-	<4F2053C9.3090201@sigon.net>
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
+Date: Mon, 30 Jan 2012 00:45:07 +0200
+Message-ID: <20120129223339.GA22666@redhat.com>
+References: <cover.1322163031.git.mst@redhat.com>
+	<66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
+	<CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:53286 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753837Ab2A2V7H convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 16:59:07 -0500
-Received: by wgbed3 with SMTP id ed3so3882379wgb.1
-        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 13:59:05 -0800 (PST)
-In-Reply-To: <4F2053C9.3090201@sigon.net>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-bounces@lists.openrisc.net>
+Content-Disposition: inline
+In-Reply-To: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
+List-Unsubscribe: <http://lists.openrisc.net/options/linux>,
+	<mailto:linux-request@lists.openrisc.net?subject=unsubscribe>
+List-Archive: <http://lists.openrisc.net/pipermail/linux>
+List-Post: <mailto:linux@lists.openrisc.net>
+List-Help: <mailto:linux-request@lists.openrisc.net?subject=help>
+List-Subscribe: <http://lists.openrisc.net/listinfo/linux>,
+	<mailto:linux-request@lists.openrisc.net?subject=subscribe>
+Sender: linux-bounces@lists.openrisc.net
+Errors-To: linux-bounces@lists.openrisc.net
+To: Kevin Cernekee <cernekee@gmail.com>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux@openrisc.net, linux-pci@vger.kernel.org, Jesse Barnes <jbarnes@virtuousgeek.org>, Kumar Gala <galak@kernel.crashing.org>, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Russell King <linux@arm.linux.org.uk>, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arch@vger.kernel.org, Arend van Spriel <arend@broadcom.com>
 List-Id: linux-m68k@vger.kernel.org
-To: Patrick Bottelberger <patrick.bottelberger@sigon.net>
-Cc: linux-m68k@vger.kernel.org
 
-On Wed, Jan 25, 2012 at 20:11, Patrick Bottelberger
-<patrick.bottelberger@sigon.net> wrote:
->>> Without supplying the '-p' parameter amiboot didn't output anything=
- at
->>> all, it just froze the amiga directly after entering the command.
->>
->> Even with '-d'?
->>
-> Yes, even with "-d", no output is printed, after entering the command
-> ("amiboot -d root=3D/dev/hda5" for example) and pressing "enter" the
-> system freezes immediately.
+On Sat, Jan 28, 2012 at 02:38:10PM -0800, Kevin Cernekee wrote:
+> On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> wro=
+te:
+> > mips copied pci_iomap from generic code, probably to avoid
+> > pulling the rest of iomap.c in. =A0Since that's in
+> > a separate file now, we can reuse the common implementation.
+> =
 
-Hmm, must be a bug in common/amiga/linuxboot.c:ckfpu(), or ckcpu346().
+> [snip]
+> =
 
-Gr{oetje,eeting}s,
+> > - =A0 =A0 =A0 if (flags & IORESOURCE_IO)
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ioport_map_pci(dev, start, len);
+> =
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+> While investigating a new warning on the 3.3-rc1 MIPS build (unused
+> static function ioport_map_pci()), I noticed that this patch has shown
+> up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
+> =
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+> I am not completely clear on the implications it has on mapping PCI I/O r=
+egions:
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Yes, my bad, I missed the difference between ioport_map_pci
+and ioport_map for both MIPS and SH.
+I'll post a patch to fix this, which is probably preferable
+to reintroducing the code duplication where it might
+trip us up again.
+
+-- =
+
+MST
