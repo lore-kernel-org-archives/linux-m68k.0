@@ -1,69 +1,49 @@
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
-Date: Sat, 28 Jan 2012 14:38:10 -0800
-Message-ID: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
-References: <cover.1322163031.git.mst@redhat.com>
-        <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: [PATCH 0/2 v3] mkstemp() and m68k support
+Date: Sun, 29 Jan 2012 00:48:48 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201290042440.31292@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>, "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Jonas Bonn <jonas@southpole.se>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, Paul Mundt <lethal@linux-sh.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:21911 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752024Ab2A2AuU convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Jan 2012 19:50:20 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: klibc@zytor.com
+Cc: linux-m68k@vger.kernel.org
 
-On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> w=
-rote:
-> mips copied pci_iomap from generic code, probably to avoid
-> pulling the rest of iomap.c in. =C2=A0Since that's in
-> a separate file now, we can reuse the common implementation.
+Hi,
 
-[snip]
+after a year, I decided to hack on klibc again. I=E2=80=99ve reworked
+both the patch to add mkstemp(), discussing to use AT_RANDOM
+as cheap entropy source on IRC (if there will ever be another
+entropy consumer, I can quickly write a minimal arc4random()
+seeded from it, as it has only 16 octets), capable of making
+a working mksh (static and shared) on amd64/xen, and the m68k
+support code, leading to (also, static and shared) mksh on it
+iff compiled with -g (let=E2=80=99s say, GCC is the culprit).
 
-> - =C2=A0 =C2=A0 =C2=A0 if (flags & IORESOURCE_IO)
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ioport_map_=
-pci(dev, start, len);
+The two patches _should_ follow (still not 100% sure how to
+feed them to sendmail and ensure they end up with the right
+recipients) and are independent from each other (but for an
+mksh on m68k, you obviously need both).
 
-While investigating a new warning on the 3.3-rc1 MIPS build (unused
-static function ioport_map_pci()), I noticed that this patch has shown
-up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
+Cc the Linux/m68k arch list for the m68k patch, to review.
 
-I am not completely clear on the implications it has on mapping PCI I/O=
- regions:
+(When this works I=E2=80=99m probably going to build mksh-static on
+dietlibc-less Debian architectures against klibc, pending
+testing on those platforms of course; the eglibc one is huge.)
 
-Prior to this change, the MIPS version of pci_iomap() called a
-MIPS-specific function, ioport_map_pci(), which tried to use the PCI
-controller's io_map_base field to determine the base address of the
-PCI I/O space.  It also had a fallback mechanism to deal with the case
-where io_map_base is unset.
-
-Now, in 3.3-rc1, the generic version of pci_iomap() is used instead.
-This code just calls arch/mips/lib/iomap.c:ioport_map() on these
-regions.  ioport_map() falls through to ioport_map_legacy(), which
-always uses mips_io_port_base (not the PCI controller's io_map_base)
-as the base address.  But on MIPS, it is still permissible to use
-different I/O port bases for PCI devices and for legacy (ISA?)
-devices.
-
-Is this new behavior desirable, or are there any supported platforms
-on which adverse effects might be seen?
-
-As for my part, I don't use PCI I/O regions at all - just memory
-regions.  I'm more worried about making sure my tree builds with 0
-warnings.
-
-If we do want to move ahead with the switch to GENERIC_PCI_IOMAP now,
-I have patches to scrap iomap-pci.c entirely and squash the unused
-function warning.
-
-If we still want to support the case where io_map_base !=3D
-mips_io_port_base, maybe it would be better to revert commit eab90291
-for 3.3.
-
-Might also want to take a look at SH since it also appears to have an
-orphaned ioport_map_pci() function.
-
-What are your thoughts?
+bye,
+//mirabilos
+--=20
+Support mksh as /bin/sh and RoQA dash NOW!
+=E2=80=A3 src:bash (242 (261) bugs: 0 RC, 169 (183) I&N, 73 (78) M&W, 0=
+ F&P)
+=E2=80=A3 src:dash (73 (84) bugs: 3 RC, 27 (30) I&N, 43 (51) M&W, 0 F&P=
+)
+=E2=80=A3 src:mksh (1 bug: 0 RC, 0 I&N, 1 M&W, 0 F&P)
+http://qa.debian.org/data/bts/graphs/d/dash.png is pretty red, innit?
