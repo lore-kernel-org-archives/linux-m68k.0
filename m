@@ -1,53 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2 v3] mkstemp() and m68k support
-Date: Sun, 29 Jan 2012 10:44:15 +0100
-Message-ID: <CAMuHMdX5Bg1Zu-PGh+8ofM3RH=CJdkr_fVMH5GZ3LdUf9F6j7Q@mail.gmail.com>
-References: <Pine.BSM.4.64L.1201290042440.31292@herc.mirbsd.org>
-	<4F24B8CA.1070300@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Atari TT (next)
+Date: Sun, 29 Jan 2012 19:55:35 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1201291954020.4290@herc.mirbsd.org>
+References: <4F079F6B.8080502@fairlite.co.uk> <4F07EA66.6020603@gmail.com>
+ <4F08E748.4020305@fairlite.co.uk> <4F0917E9.9090600@gmail.com>
+ <4F0964EC.2080505@fairlite.co.uk> <CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+ <loom.20120127T175834-143@post.gmane.org> <4F245B91.60101@gmail.com>
+ <loom.20120129T015428-587@post.gmane.org>
+ <CAMuHMdV9s6Ff1yz9jVLqKNU+ejVHvTyyqnDTvRK9i3_CmUj=qw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:37057 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751847Ab2A2JoR convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 04:44:17 -0500
-Received: by wgbed3 with SMTP id ed3so3510809wgb.1
-        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 01:44:16 -0800 (PST)
-In-Reply-To: <4F24B8CA.1070300@gmail.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:37985 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752098Ab2A2T7L convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 14:59:11 -0500
+In-Reply-To: <CAMuHMdV9s6Ff1yz9jVLqKNU+ejVHvTyyqnDTvRK9i3_CmUj=qw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Thorsten Glaser <tg@mirbsd.de>, klibc@zytor.com, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Sun, Jan 29, 2012 at 04:11, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
->> The two patches _should_ follow (still not 100% sure how to
->> feed them to sendmail and ensure they end up with the right
->
-> You appear to have failed. Care to post it to your p.d.o page?
->
-> (I've never tried talking to sendmail directly except for low level t=
-esting
-> - you'll have to manually prepare a valid mail message with the attac=
-hments
-> embedded for that to work I guess. That's what mutt and friends are f=
-or)
+Geert Uytterhoeven dixit:
 
-git send-email [--to xxx] [--cc xxx] ... <file>
+>Don't tell me. My Amiga also has only 12 MiB of Fast RAM. Where are
+>the days my Amiga was mailserver for 70 people, many of them logging
+>in remotely to read their email with pine? Debian is getted too bloate=
+d,
 
-Gr{oetje,eeting}s,
+;-)
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+It=E2=80=99s not just that. XFree86 4, for example, is a memory hog com=
+pared
+to XF86 3, and Unicode support eats up lots and lots of RAM.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+>I have less packages (incl.daemons) installed than 12 years ago, but t=
+he
+>system is still much slower.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Hm, slower too?
+
+On the other hand, in the time since I started with m68k, I think
+it got faster (except compiling gcc itself, but that was to be
+expected) and, even more important, more responsible.
+
+>I really need more time to work on an OpenWRT-based solution ;-)
+
+Or FreeWRT, or OpenADK, or=E2=80=A6 ;-)
+
+bye,
+//mirabilos
+--=20
+  =E2=80=9CHaving a smoking section in a restaurant is like having
+          a peeing section in a swimming pool.=E2=80=9D
+						-- Edward Burr
