@@ -1,45 +1,71 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH 0/2 v3] mkstemp() and m68k support
-Date: Sun, 29 Jan 2012 19:52:48 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1201291951450.4290@herc.mirbsd.org>
-References: <Pine.BSM.4.64L.1201290042440.31292@herc.mirbsd.org>
- <4F24B8CA.1070300@gmail.com> <CAMuHMdX5Bg1Zu-PGh+8ofM3RH=CJdkr_fVMH5GZ3LdUf9F6j7Q@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Atari TT (next)
+Date: Sun, 29 Jan 2012 22:56:13 +0100
+Message-ID: <CAMuHMdXp+_t6262MUbk7o8fxi1Y015=eovhMNT0h_xc0COgVFQ@mail.gmail.com>
+References: <4F079F6B.8080502@fairlite.co.uk>
+	<4F07EA66.6020603@gmail.com>
+	<4F08E748.4020305@fairlite.co.uk>
+	<4F0917E9.9090600@gmail.com>
+	<4F0964EC.2080505@fairlite.co.uk>
+	<CAOmrzkLH18VCY0dzJPM14dn5ccWmSBkiPzq8EFqnCDHiM3bECQ@mail.gmail.com>
+	<loom.20120127T175834-143@post.gmane.org>
+	<4F245B91.60101@gmail.com>
+	<loom.20120129T015428-587@post.gmane.org>
+	<CAMuHMdV9s6Ff1yz9jVLqKNU+ejVHvTyyqnDTvRK9i3_CmUj=qw@mail.gmail.com>
+	<Pine.BSM.4.64L.1201291954020.4290@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:37985 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752949Ab2A2T7d convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 14:59:33 -0500
-In-Reply-To: <CAMuHMdX5Bg1Zu-PGh+8ofM3RH=CJdkr_fVMH5GZ3LdUf9F6j7Q@mail.gmail.com>
+Received: from mail-we0-f174.google.com ([74.125.82.174]:43929 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750979Ab2A2V4O convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 16:56:14 -0500
+Received: by werb13 with SMTP id b13so2940131wer.19
+        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 13:56:13 -0800 (PST)
+In-Reply-To: <Pine.BSM.4.64L.1201291954020.4290@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, klibc@zytor.com, linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven dixit:
+On Sun, Jan 29, 2012 at 20:55, Thorsten Glaser <tg@mirbsd.de> wrote:
+> Geert Uytterhoeven dixit:
+>>Don't tell me. My Amiga also has only 12 MiB of Fast RAM. Where are
+>>the days my Amiga was mailserver for 70 people, many of them logging
+>>in remotely to read their email with pine? Debian is getted too bloat=
+ed,
+>
+> ;-)
+>
+> It=E2=80=99s not just that. XFree86 4, for example, is a memory hog c=
+ompared
+> to XF86 3, and Unicode support eats up lots and lots of RAM.
 
->On Sun, Jan 29, 2012 at 04:11, Michael Schmitz
-><schmitzmic@googlemail.com> wrote:
+xserver-xfbdev based on kdrive still exists, right?
+But AFAIK it lacks Amiga and Atari frame buffer device support. Fixing
+that has been on my list for a looooong time...
 
->>> The two patches _should_ follow (still not 100% sure how to
->>> feed them to sendmail and ensure they end up with the right
->>
->> You appear to have failed. Care to post it to your p.d.o page?
+>>I have less packages (incl.daemons) installed than 12 years ago, but =
+the
+>>system is still much slower.
+>
+> Hm, slower too?
 
-Huh? I see them in the archives of the klibc list, and the one
-for linux-m68k on GMane.
+Yep. No free RAM, so everything causes swapping.
 
->git send-email [--to xxx] [--cc xxx] ... <file>
+Gr{oetje,eeting}s,
 
-That=E2=80=99s assuming the box I send mail from is capable of
-running git=E2=80=A6 (and doesn=E2=80=99t take care of In-Reply-To and
-References headers, either).
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-						-- Edward Burr
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
