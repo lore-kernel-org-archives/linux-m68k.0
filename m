@@ -1,58 +1,31 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH-RFC 06/10] mips: switch to GENERIC_PCI_IOMAP
-Date: Mon, 30 Jan 2012 00:45:07 +0200
-Message-ID: <20120129223339.GA22666@redhat.com>
-References: <cover.1322163031.git.mst@redhat.com>
-	<66457f7750d7d14229fcf8d0b011aba63185a75d.1322163031.git.mst@redhat.com>
-	<CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 0/2 v3] mkstemp() and m68k support
+Date: Mon, 30 Jan 2012 14:19:05 +1300
+Message-ID: <4F25F009.6000905@gmail.com>
+References: <Pine.BSM.4.64L.1201290042440.31292@herc.mirbsd.org> <4F24B8CA.1070300@gmail.com> <CAMuHMdX5Bg1Zu-PGh+8ofM3RH=CJdkr_fVMH5GZ3LdUf9F6j7Q@mail.gmail.com> <Pine.BSM.4.64L.1201291951450.4290@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-bounces@lists.openrisc.net>
-Content-Disposition: inline
-In-Reply-To: <CAJiQ=7BPzhWWzU3_nDv3j=ZB4f=iOzeyLyd2L0_3UFaMiLujpw@mail.gmail.com>
-List-Unsubscribe: <http://lists.openrisc.net/options/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=unsubscribe>
-List-Archive: <http://lists.openrisc.net/pipermail/linux>
-List-Post: <mailto:linux@lists.openrisc.net>
-List-Help: <mailto:linux-request@lists.openrisc.net?subject=help>
-List-Subscribe: <http://lists.openrisc.net/listinfo/linux>,
-	<mailto:linux-request@lists.openrisc.net?subject=subscribe>
-Sender: linux-bounces@lists.openrisc.net
-Errors-To: linux-bounces@lists.openrisc.net
-To: Kevin Cernekee <cernekee@gmail.com>
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux@openrisc.net, linux-pci@vger.kernel.org, Jesse Barnes <jbarnes@virtuousgeek.org>, Kumar Gala <galak@kernel.crashing.org>, Chen Liqin <liqin.chen@sunplusct.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Lennox Wu <lennox.wu@gmail.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Russell King <linux@arm.linux.org.uk>, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arch@vger.kernel.org, Arend van Spriel <arend@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-gy0-f174.google.com ([209.85.160.174]:44571 "EHLO
+	mail-gy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752368Ab2A3BTN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jan 2012 20:19:13 -0500
+Received: by ghrr11 with SMTP id r11so1537244ghr.19
+        for <linux-m68k@vger.kernel.org>; Sun, 29 Jan 2012 17:19:12 -0800 (PST)
+In-Reply-To: <Pine.BSM.4.64L.1201291951450.4290@herc.mirbsd.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@googlemail.com>, klibc@zytor.com, linux-m68k@vger.kernel.org
 
-On Sat, Jan 28, 2012 at 02:38:10PM -0800, Kevin Cernekee wrote:
-> On Thu, Nov 24, 2011 at 12:18 PM, Michael S. Tsirkin <mst@redhat.com> wro=
-te:
-> > mips copied pci_iomap from generic code, probably to avoid
-> > pulling the rest of iomap.c in. =A0Since that's in
-> > a separate file now, we can reuse the common implementation.
-> =
+Hi Thorsten,
+>>> You appear to have failed. Care to post it to your p.d.o page?
+> Huh? I see them in the archives of the klibc list, and the one
+> for linux-m68k on GMane.
+There were no attachments in my copy received via vger. If the patch is 
+in the list archives somewhere, that's fine.
 
-> [snip]
-> =
+Cheers,
 
-> > - =A0 =A0 =A0 if (flags & IORESOURCE_IO)
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ioport_map_pci(dev, start, len);
-> =
-
-> While investigating a new warning on the 3.3-rc1 MIPS build (unused
-> static function ioport_map_pci()), I noticed that this patch has shown
-> up in Linus' tree as commit eab90291d35438bcebf7c3dc85be66d0f24e3002.
-> =
-
-> I am not completely clear on the implications it has on mapping PCI I/O r=
-egions:
-
-Yes, my bad, I missed the difference between ioport_map_pci
-and ioport_map for both MIPS and SH.
-I'll post a patch to fix this, which is probably preferable
-to reintroducing the code duplication where it might
-trip us up again.
-
--- =
-
-MST
+   Michael
