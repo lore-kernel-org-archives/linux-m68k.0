@@ -1,16 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 2/3] m68knommu: modify timer init code to make it consistent with m68k code
-Date: Tue, 7 Feb 2012 13:09:49 +1000
-Message-ID: <1328584190-30827-2-git-send-email-gerg@snapgear.com>
-References: <1328584190-30827-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 1/3] m68knommu: make persistent clock code consistent with m68k
+Date: Tue, 7 Feb 2012 13:09:48 +1000
+Message-ID: <1328584190-30827-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:64158 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:64172 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755782Ab2BGDLH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 6 Feb 2012 22:11:07 -0500
-In-Reply-To: <1328584190-30827-1-git-send-email-gerg@snapgear.com>
+	with ESMTP id S1755782Ab2BGDLR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 6 Feb 2012 22:11:17 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -18,320 +16,269 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-With a few small changes we can make the m68knommu timer init code the
-same as the m68k code. By using the mach_sched_init function pointer
-and reworking the current timer initializers to keep track of the common
-m68k timer_interrupt() handler we end up with almost identical code for
-m68knommu.
+The read_persistent_clock() code is different on m68knommu, for really no
+reason. With a few changes to support function names and some code
+re-organization the code can be made the same.
 
-This will allow us to more easily merge the mmu and non-mmu m68k time.c
-in future patches.
+This will make it easier to merge the arch/m68k/kernel/time.c for m68k and
+m68knommu in a future patch.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/machdep.h        |    3 +--
- arch/m68k/kernel/setup_no.c            |    1 +
- arch/m68k/kernel/time_no.c             |    8 +++-----
- arch/m68k/platform/5206/config.c       |    1 +
- arch/m68k/platform/520x/config.c       |    1 +
- arch/m68k/platform/523x/config.c       |    1 +
- arch/m68k/platform/5249/config.c       |    1 +
- arch/m68k/platform/5272/config.c       |    1 +
- arch/m68k/platform/527x/config.c       |    1 +
- arch/m68k/platform/528x/config.c       |    1 +
- arch/m68k/platform/5307/config.c       |    1 +
- arch/m68k/platform/532x/config.c       |    2 ++
- arch/m68k/platform/5407/config.c       |    1 +
- arch/m68k/platform/54xx/config.c       |    1 +
- arch/m68k/platform/coldfire/pit.c      |    2 +-
- arch/m68k/platform/coldfire/sltimers.c |    7 +++++--
- arch/m68k/platform/coldfire/timers.c   |    7 +++++--
- 17 files changed, 28 insertions(+), 12 deletions(-)
+ arch/m68k/include/asm/machdep.h     |    2 -
+ arch/m68k/kernel/setup_no.c         |    2 +
+ arch/m68k/kernel/time_no.c          |   36 +++++++++++-----------------------
+ arch/m68k/platform/68328/config.c   |    5 ++-
+ arch/m68k/platform/68328/timers.c   |   18 ++++++++++------
+ arch/m68k/platform/68360/config.c   |    8 +------
+ arch/m68k/platform/68EZ328/config.c |    5 ++-
+ arch/m68k/platform/68VZ328/config.c |    5 ++-
+ 8 files changed, 35 insertions(+), 46 deletions(-)
 
 diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 3bfa7df..825c1c8 100644
+index 789f3b2..3bfa7df 100644
 --- a/arch/m68k/include/asm/machdep.h
 +++ b/arch/m68k/include/asm/machdep.h
-@@ -33,9 +33,8 @@ extern void (*mach_l2_flush) (int);
- extern void (*mach_beep) (unsigned int, unsigned int);
- 
- /* Hardware clock functions */
--extern void hw_timer_init(void);
-+extern void hw_timer_init(irq_handler_t handler);
- extern unsigned long hw_timer_offset(void);
--extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
- 
- extern void config_BSP(char *command, int len);
- 
+@@ -22,8 +22,6 @@ extern unsigned int (*mach_get_ss)(void);
+ extern int (*mach_get_rtc_pll)(struct rtc_pll_info *);
+ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+ extern int (*mach_set_clock_mmss)(unsigned long);
+-extern void (*mach_gettod)(int *year, int *mon, int *day, int *hour,
+-			    int *min, int *sec);
+ extern void (*mach_reset)( void );
+ extern void (*mach_halt)( void );
+ extern void (*mach_power_off)( void );
 diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 8394b56..7dc186b 100644
+index ca3df0d..8394b56 100644
 --- a/arch/m68k/kernel/setup_no.c
 +++ b/arch/m68k/kernel/setup_no.c
-@@ -48,6 +48,7 @@ EXPORT_SYMBOL(memory_end);
- char __initdata command_line[COMMAND_LINE_SIZE];
+@@ -31,6 +31,7 @@
+ #include <linux/init.h>
+ #include <linux/initrd.h>
+ #include <linux/root_dev.h>
++#include <linux/rtc.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/irq.h>
+@@ -48,6 +49,7 @@ char __initdata command_line[COMMAND_LINE_SIZE];
  
  /* machine dependent timer functions */
-+void (*mach_sched_init)(irq_handler_t handler) __initdata = NULL;
  int (*mach_set_clock_mmss)(unsigned long);
- int (*mach_hwclk) (int, struct rtc_time*);
++int (*mach_hwclk) (int, struct rtc_time*);
  
+ /* machine dependent reboot functions */
+ void (*mach_reset)(void);
 diff --git a/arch/m68k/kernel/time_no.c b/arch/m68k/kernel/time_no.c
-index ca3b3b4..5fa42f1 100644
+index 3ef0f77..ca3b3b4 100644
 --- a/arch/m68k/kernel/time_no.c
 +++ b/arch/m68k/kernel/time_no.c
-@@ -32,12 +32,11 @@ static inline int set_rtc_mmss(unsigned long nowtime)
- 	return -1;
- }
+@@ -20,15 +20,11 @@
+ #include <linux/profile.h>
+ #include <linux/time.h>
+ #include <linux/timex.h>
++#include <linux/rtc.h>
  
--#ifndef CONFIG_GENERIC_CLOCKEVENTS
- /*
-  * timer_interrupt() needs to keep up the real-time clock,
-  * as well as call the "xtime_update()" routine every clocktick
-  */
--irqreturn_t arch_timer_interrupt(int irq, void *dummy)
-+static irqreturn_t timer_interrupt(int irq, void *dummy)
+ #include <asm/machdep.h>
+ #include <asm/irq_regs.h>
+ 
+-#define	TICK_SIZE (tick_nsec / 1000)
+-
+-/* machine dependent timer functions */
+-void (*mach_gettod)(int*, int*, int*, int*, int*, int*);
+-
+ static inline int set_rtc_mmss(unsigned long nowtime)
  {
- 
- 	if (current->pid)
-@@ -49,7 +48,6 @@ irqreturn_t arch_timer_interrupt(int irq, void *dummy)
- 
- 	return(IRQ_HANDLED);
+ 	if (mach_set_clock_mmss)
+@@ -55,28 +51,20 @@ irqreturn_t arch_timer_interrupt(int irq, void *dummy)
  }
--#endif
+ #endif
  
+-static unsigned long read_rtc_mmss(void)
+-{
+-	unsigned int year, mon, day, hour, min, sec;
+-
+-	if (mach_gettod) {
+-		mach_gettod(&year, &mon, &day, &hour, &min, &sec);
+-		if ((year += 1900) < 1970)
+-			year += 100;
+-	} else {
+-		year = 1970;
+-		mon = day = 1;
+-		hour = min = sec = 0;
+-	}
+-
+-
+-	return  mktime(year, mon, day, hour, min, sec);
+-}
+-
  void read_persistent_clock(struct timespec *ts)
  {
-@@ -72,7 +70,7 @@ int update_persistent_clock(struct timespec now)
- 	return set_rtc_mmss(now.tv_sec);
- }
- 
--void time_init(void)
-+void __init time_init(void)
- {
--	hw_timer_init();
-+	mach_sched_init(timer_interrupt);
- }
-diff --git a/arch/m68k/platform/5206/config.c b/arch/m68k/platform/5206/config.c
-index 6fa3f80..7826b70 100644
---- a/arch/m68k/platform/5206/config.c
-+++ b/arch/m68k/platform/5206/config.c
-@@ -105,6 +105,7 @@ void __init config_BSP(char *commandp, int size)
- #endif /* CONFIG_NETtel */
- 
- 	mach_reset = m5206_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m5206_timers_init();
- 	m5206_uarts_init();
- 
-diff --git a/arch/m68k/platform/520x/config.c b/arch/m68k/platform/520x/config.c
-index 8a98683..61c2515 100644
---- a/arch/m68k/platform/520x/config.c
-+++ b/arch/m68k/platform/520x/config.c
-@@ -291,6 +291,7 @@ static void m520x_cpu_reset(void)
- void __init config_BSP(char *commandp, int size)
- {
- 	mach_reset = m520x_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m520x_uarts_init();
- 	m520x_fec_init();
- #if defined(CONFIG_SPI_COLDFIRE_QSPI) || defined(CONFIG_SPI_COLDFIRE_QSPI_MODULE)
-diff --git a/arch/m68k/platform/523x/config.c b/arch/m68k/platform/523x/config.c
-index 71f4436..aa28392 100644
---- a/arch/m68k/platform/523x/config.c
-+++ b/arch/m68k/platform/523x/config.c
-@@ -274,6 +274,7 @@ static void m523x_cpu_reset(void)
- void __init config_BSP(char *commandp, int size)
- {
- 	mach_reset = m523x_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- }
- 
- /***************************************************************************/
-diff --git a/arch/m68k/platform/5249/config.c b/arch/m68k/platform/5249/config.c
-index ceb31e5..50e2d8f 100644
---- a/arch/m68k/platform/5249/config.c
-+++ b/arch/m68k/platform/5249/config.c
-@@ -307,6 +307,7 @@ void m5249_cpu_reset(void)
- void __init config_BSP(char *commandp, int size)
- {
- 	mach_reset = m5249_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m5249_timers_init();
- 	m5249_uarts_init();
- #ifdef CONFIG_M5249C3
-diff --git a/arch/m68k/platform/5272/config.c b/arch/m68k/platform/5272/config.c
-index 65bb582..426e66c 100644
---- a/arch/m68k/platform/5272/config.c
-+++ b/arch/m68k/platform/5272/config.c
-@@ -146,6 +146,7 @@ void __init config_BSP(char *commandp, int size)
- #endif
- 
- 	mach_reset = m5272_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- }
- 
- /***************************************************************************/
-diff --git a/arch/m68k/platform/527x/config.c b/arch/m68k/platform/527x/config.c
-index 3ebc769..c948a16 100644
---- a/arch/m68k/platform/527x/config.c
-+++ b/arch/m68k/platform/527x/config.c
-@@ -364,6 +364,7 @@ static void m527x_cpu_reset(void)
- void __init config_BSP(char *commandp, int size)
- {
- 	mach_reset = m527x_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m527x_uarts_init();
- 	m527x_fec_init();
- #if defined(CONFIG_SPI_COLDFIRE_QSPI) || defined(CONFIG_SPI_COLDFIRE_QSPI_MODULE)
-diff --git a/arch/m68k/platform/528x/config.c b/arch/m68k/platform/528x/config.c
-index 7abe77a..08f397a 100644
---- a/arch/m68k/platform/528x/config.c
-+++ b/arch/m68k/platform/528x/config.c
-@@ -306,6 +306,7 @@ void __init config_BSP(char *commandp, int size)
- static int __init init_BSP(void)
- {
- 	mach_reset = m528x_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m528x_uarts_init();
- 	m528x_fec_init();
- #if defined(CONFIG_SPI_COLDFIRE_QSPI) || defined(CONFIG_SPI_COLDFIRE_QSPI_MODULE)
-diff --git a/arch/m68k/platform/5307/config.c b/arch/m68k/platform/5307/config.c
-index 00900ac..6bf7c1c 100644
---- a/arch/m68k/platform/5307/config.c
-+++ b/arch/m68k/platform/5307/config.c
-@@ -115,6 +115,7 @@ void __init config_BSP(char *commandp, int size)
- #endif
- 
- 	mach_reset = m5307_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m5307_timers_init();
- 	m5307_uarts_init();
- 
-diff --git a/arch/m68k/platform/532x/config.c b/arch/m68k/platform/532x/config.c
-index ca51323..3558a62 100644
---- a/arch/m68k/platform/532x/config.c
-+++ b/arch/m68k/platform/532x/config.c
-@@ -263,6 +263,8 @@ void __init config_BSP(char *commandp, int size)
- 	}
- #endif
- 
-+	mach_sched_init = hw_timer_init;
+-	ts->tv_sec = read_rtc_mmss();
++	struct rtc_time time;
++	ts->tv_sec = 0;
+ 	ts->tv_nsec = 0;
 +
- #ifdef CONFIG_BDM_DISABLE
- 	/*
- 	 * Disable the BDM clocking.  This also turns off most of the rest of
-diff --git a/arch/m68k/platform/5407/config.c b/arch/m68k/platform/5407/config.c
-index 70ea789..4861be6 100644
---- a/arch/m68k/platform/5407/config.c
-+++ b/arch/m68k/platform/5407/config.c
-@@ -99,6 +99,7 @@ void m5407_cpu_reset(void)
- void __init config_BSP(char *commandp, int size)
- {
- 	mach_reset = m5407_cpu_reset;
-+	mach_sched_init = hw_timer_init;
- 	m5407_timers_init();
- 	m5407_uarts_init();
++	if (mach_hwclk) {
++		mach_hwclk(0, &time);
++
++		if ((time.tm_year += 1900) < 1970)
++			time.tm_year += 100;
++		ts->tv_sec = mktime(time.tm_year, time.tm_mon, time.tm_mday,
++			time.tm_hour, time.tm_min, time.tm_sec);
++	}
+ }
  
-diff --git a/arch/m68k/platform/54xx/config.c b/arch/m68k/platform/54xx/config.c
-index ee04354..8282ef1 100644
---- a/arch/m68k/platform/54xx/config.c
-+++ b/arch/m68k/platform/54xx/config.c
-@@ -145,6 +145,7 @@ void __init config_BSP(char *commandp, int size)
- 	mmu_context_init();
+ int update_persistent_clock(struct timespec now)
+diff --git a/arch/m68k/platform/68328/config.c b/arch/m68k/platform/68328/config.c
+index d70bf26..44b8665 100644
+--- a/arch/m68k/platform/68328/config.c
++++ b/arch/m68k/platform/68328/config.c
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/kernel.h>
++#include <linux/rtc.h>
+ #include <asm/system.h>
+ #include <asm/machdep.h>
+ #include <asm/MC68328.h>
+@@ -26,7 +27,7 @@
+ 
+ /***************************************************************************/
+ 
+-void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec);
++int m68328_hwclk(int set, struct rtc_time *t);
+ 
+ /***************************************************************************/
+ 
+@@ -48,7 +49,7 @@ void config_BSP(char *command, int len)
+   printk(KERN_INFO "68328 support Kenneth Albanowski <kjahds@kjshds.com>\n");
+   printk(KERN_INFO "68328/Pilot support Bernhard Kuhn <kuhn@lpr.e-technik.tu-muenchen.de>\n");
+ 
+-  mach_gettod = m68328_timer_gettod;
++  mach_hwclk = m68328_hwclk;
+   mach_reset = m68328_reset;
+ }
+ 
+diff --git a/arch/m68k/platform/68328/timers.c b/arch/m68k/platform/68328/timers.c
+index f267886..b15ddef 100644
+--- a/arch/m68k/platform/68328/timers.c
++++ b/arch/m68k/platform/68328/timers.c
+@@ -20,6 +20,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/clocksource.h>
++#include <linux/rtc.h>
+ #include <asm/setup.h>
+ #include <asm/system.h>
+ #include <asm/pgtable.h>
+@@ -119,14 +120,17 @@ void hw_timer_init(void)
+ 
+ /***************************************************************************/
+ 
+-void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec)
++int m68328_hwclk(int set, struct rtc_time *t)
+ {
+-	long now = RTCTIME;
+-
+-	*year = *mon = *day = 1;
+-	*hour = (now >> 24) % 24;
+-	*min = (now >> 16) % 60;
+-	*sec = now % 60;
++	if (!set) {
++		long now = RTCTIME;
++		t->tm_year = t->tm_mon = t->tm_mday = 1;
++		t->tm_hour = (now >> 24) % 24;
++		t->tm_min = (now >> 16) % 60;
++		t->tm_sec = now % 60;
++	}
++
++	return 0;
+ }
+ 
+ /***************************************************************************/
+diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
+index 9dd5bca..599a594 100644
+--- a/arch/m68k/platform/68360/config.c
++++ b/arch/m68k/platform/68360/config.c
+@@ -103,11 +103,6 @@ void hw_timer_init(void)
+   pquicc->timer_tgcr  = tgcr_save;
+ }
+ 
+-void BSP_gettod (int *yearp, int *monp, int *dayp,
+-		   int *hourp, int *minp, int *secp)
+-{
+-}
+-
+ int BSP_set_clock_mmss(unsigned long nowtime)
+ {
+ #if 0
+@@ -181,6 +176,5 @@ void config_BSP(char *command, int len)
+   scc1_hwaddr = "\00\01\02\03\04\05";
  #endif
- 	mach_reset = mcf54xx_reset;
-+	mach_sched_init = hw_timer_init;
- 	m54xx_uarts_init();
+  
+-  mach_gettod          = BSP_gettod;
+-  mach_reset           = BSP_reset;
++  mach_reset = BSP_reset;
+ }
+diff --git a/arch/m68k/platform/68EZ328/config.c b/arch/m68k/platform/68EZ328/config.c
+index 1be1a16..dd2c535 100644
+--- a/arch/m68k/platform/68EZ328/config.c
++++ b/arch/m68k/platform/68EZ328/config.c
+@@ -15,6 +15,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/kernel.h>
++#include <linux/rtc.h>
+ #include <asm/system.h>
+ #include <asm/pgtable.h>
+ #include <asm/machdep.h>
+@@ -25,7 +26,7 @@
+ 
+ /***************************************************************************/
+ 
+-void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec);
++int m68328_hwclk(int set, struct rtc_time *t);
+ 
+ /***************************************************************************/
+ 
+@@ -69,7 +70,7 @@ void config_BSP(char *command, int len)
+   else command[0] = 0;
+ #endif
+  
+-  mach_gettod = m68328_timer_gettod;
++  mach_hwclk = m68328_hwclk;
+   mach_reset = m68ez328_reset;
  }
  
-diff --git a/arch/m68k/platform/coldfire/pit.c b/arch/m68k/platform/coldfire/pit.c
-index 02663d2..e62dbbc 100644
---- a/arch/m68k/platform/coldfire/pit.c
-+++ b/arch/m68k/platform/coldfire/pit.c
-@@ -149,7 +149,7 @@ static struct clocksource pit_clk = {
+diff --git a/arch/m68k/platform/68VZ328/config.c b/arch/m68k/platform/68VZ328/config.c
+index eabaabe..25ec673 100644
+--- a/arch/m68k/platform/68VZ328/config.c
++++ b/arch/m68k/platform/68VZ328/config.c
+@@ -20,6 +20,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
++#include <linux/rtc.h>
+ 
+ #include <asm/system.h>
+ #include <asm/pgtable.h>
+@@ -33,7 +34,7 @@
  
  /***************************************************************************/
  
--void hw_timer_init(void)
-+void hw_timer_init(irq_handler_t handler)
- {
- 	cf_pit_clockevent.cpumask = cpumask_of(smp_processor_id());
- 	cf_pit_clockevent.mult = div_sc(FREQ, NSEC_PER_SEC, 32);
-diff --git a/arch/m68k/platform/coldfire/sltimers.c b/arch/m68k/platform/coldfire/sltimers.c
-index 54e1452..2027fc2 100644
---- a/arch/m68k/platform/coldfire/sltimers.c
-+++ b/arch/m68k/platform/coldfire/sltimers.c
-@@ -81,12 +81,14 @@ void mcfslt_profile_init(void)
- static u32 mcfslt_cycles_per_jiffy;
- static u32 mcfslt_cnt;
+-void m68328_timer_gettod(int *year, int *mon, int *day, int *hour, int *min, int *sec);
++int m68328_hwclk(int set, struct rtc_time *t);
  
-+static irq_handler_t timer_interrupt;
-+
- static irqreturn_t mcfslt_tick(int irq, void *dummy)
- {
- 	/* Reset Slice Timer 0 */
- 	__raw_writel(MCFSLT_SSR_BE | MCFSLT_SSR_TE, TA(MCFSLT_SSR));
- 	mcfslt_cnt += mcfslt_cycles_per_jiffy;
--	return arch_timer_interrupt(irq, dummy);
-+	return timer_interrupt(irq, dummy);
+ /***************************************************************************/
+ /*                        Init Drangon Engine hardware                     */
+@@ -181,7 +182,7 @@ void config_BSP(char *command, int size)
+ 
+ 	init_hardware(command, size);
+ 
+-	mach_gettod = m68328_timer_gettod;
++	mach_hwclk = m68328_hwclk;
+ 	mach_reset = m68vz328_reset;
  }
  
- static struct irqaction mcfslt_timer_irq = {
-@@ -121,7 +123,7 @@ static struct clocksource mcfslt_clk = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
- };
- 
--void hw_timer_init(void)
-+void hw_timer_init(irq_handler_t handler)
- {
- 	mcfslt_cycles_per_jiffy = MCF_BUSCLK / HZ;
- 	/*
-@@ -136,6 +138,7 @@ void hw_timer_init(void)
- 	/* initialize mcfslt_cnt knowing that slice timers count down */
- 	mcfslt_cnt = mcfslt_cycles_per_jiffy;
- 
-+	timer_interrupt = handler;
- 	setup_irq(MCF_IRQ_TIMER, &mcfslt_timer_irq);
- 
- 	clocksource_register_hz(&mcfslt_clk, MCF_BUSCLK);
-diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
-index 0d90da3..d0b4e97 100644
---- a/arch/m68k/platform/coldfire/timers.c
-+++ b/arch/m68k/platform/coldfire/timers.c
-@@ -47,6 +47,8 @@ void coldfire_profile_init(void);
- static u32 mcftmr_cycles_per_jiffy;
- static u32 mcftmr_cnt;
- 
-+static irq_handler_t timer_interrupt;
-+
- /***************************************************************************/
- 
- static irqreturn_t mcftmr_tick(int irq, void *dummy)
-@@ -55,7 +57,7 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
- 	__raw_writeb(MCFTIMER_TER_CAP | MCFTIMER_TER_REF, TA(MCFTIMER_TER));
- 
- 	mcftmr_cnt += mcftmr_cycles_per_jiffy;
--	return arch_timer_interrupt(irq, dummy);
-+	return timer_interrupt(irq, dummy);
- }
- 
- /***************************************************************************/
-@@ -94,7 +96,7 @@ static struct clocksource mcftmr_clk = {
- 
- /***************************************************************************/
- 
--void hw_timer_init(void)
-+void hw_timer_init(irq_handler_t handler)
- {
- 	__raw_writew(MCFTIMER_TMR_DISABLE, TA(MCFTIMER_TMR));
- 	mcftmr_cycles_per_jiffy = FREQ / HZ;
-@@ -110,6 +112,7 @@ void hw_timer_init(void)
- 
- 	clocksource_register_hz(&mcftmr_clk, FREQ);
- 
-+	timer_interrupt = handler;
- 	setup_irq(MCF_IRQ_TIMER, &mcftmr_timer_irq);
- 
- #ifdef CONFIG_HIGHPROFILE
 -- 
 1.7.0.4
