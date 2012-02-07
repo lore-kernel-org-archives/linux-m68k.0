@@ -1,16 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 3/3] m68k: merge mmu and non-mmu versions of time.c
-Date: Tue, 7 Feb 2012 13:09:50 +1000
-Message-ID: <1328584190-30827-3-git-send-email-gerg@snapgear.com>
-References: <1328584190-30827-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH] m68k: merge the mmu and non-mmu versions of ptrace.c
+Date: Tue, 7 Feb 2012 13:25:32 +1000
+Message-ID: <1328585132-31029-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:64178 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755782Ab2BGDLU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 6 Feb 2012 22:11:20 -0500
-In-Reply-To: <1328584190-30827-1-git-send-email-gerg@snapgear.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:26773 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755938Ab2BGD0r (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 6 Feb 2012 22:26:47 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
@@ -18,352 +16,326 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-There is only trivial differences between the mmu time_mm.c and non-mmu
-time_no.c files. Merge them back into a single time.c.
+Most of the code in the non-mmu ptrace_no.c file is the same as the mmu
+version ptrace_mm.c. So merge them back into a single file.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/kernel/time.c    |  128 ++++++++++++++++++++++++++++++++++++++++++--
- arch/m68k/kernel/time_mm.c |  114 ---------------------------------------
- arch/m68k/kernel/time_no.c |   76 --------------------------
- 3 files changed, 123 insertions(+), 195 deletions(-)
- delete mode 100644 arch/m68k/kernel/time_mm.c
- delete mode 100644 arch/m68k/kernel/time_no.c
+ arch/m68k/kernel/{ptrace_mm.c => ptrace.c} |   12 +-
+ arch/m68k/kernel/ptrace_no.c               |  255 ----------------------------
+ 2 files changed, 10 insertions(+), 257 deletions(-)
+ rename arch/m68k/kernel/{ptrace_mm.c => ptrace.c} (96%)
+ delete mode 100644 arch/m68k/kernel/ptrace_no.c
 
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index 75ab79b..1bb9ddf 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -1,5 +1,123 @@
--#if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
--#include "time_mm.c"
--#else
--#include "time_no.c"
--#endif
-+/*
-+ *  linux/arch/m68k/kernel/time.c
-+ *
-+ *  Copyright (C) 1991, 1992, 1995  Linus Torvalds
-+ *
-+ * This file contains the m68k-specific time handling details.
-+ * Most of the stuff is located in the machine specific files.
-+ *
-+ * 1997-09-10	Updated NTP code according to technical memorandum Jan '96
-+ *		"A Kernel Model for Precision Timekeeping" by Dave Mills
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/module.h>
-+#include <linux/sched.h>
-+#include <linux/kernel.h>
-+#include <linux/param.h>
-+#include <linux/string.h>
-+#include <linux/mm.h>
-+#include <linux/rtc.h>
-+#include <linux/platform_device.h>
-+
-+#include <asm/machdep.h>
-+#include <asm/io.h>
-+#include <asm/irq_regs.h>
-+
-+#include <linux/time.h>
-+#include <linux/timex.h>
-+#include <linux/profile.h>
-+
-+static inline int set_rtc_mmss(unsigned long nowtime)
-+{
-+  if (mach_set_clock_mmss)
-+    return mach_set_clock_mmss (nowtime);
-+  return -1;
-+}
-+
-+/*
-+ * timer_interrupt() needs to keep up the real-time clock,
-+ * as well as call the "xtime_update()" routine every clocktick
-+ */
-+static irqreturn_t timer_interrupt(int irq, void *dummy)
-+{
-+	xtime_update(1);
-+	update_process_times(user_mode(get_irq_regs()));
-+	profile_tick(CPU_PROFILING);
-+
-+#ifdef CONFIG_HEARTBEAT
-+	/* use power LED as a heartbeat instead -- much more useful
-+	   for debugging -- based on the version for PReP by Cort */
-+	/* acts like an actual heart beat -- ie thump-thump-pause... */
-+	if (mach_heartbeat) {
-+	    static unsigned cnt = 0, period = 0, dist = 0;
-+
-+	    if (cnt == 0 || cnt == dist)
-+		mach_heartbeat( 1 );
-+	    else if (cnt == 7 || cnt == dist+7)
-+		mach_heartbeat( 0 );
-+
-+	    if (++cnt > period) {
-+		cnt = 0;
-+		/* The hyperbolic function below modifies the heartbeat period
-+		 * length in dependency of the current (5min) load. It goes
-+		 * through the points f(0)=126, f(1)=86, f(5)=51,
-+		 * f(inf)->30. */
-+		period = ((672<<FSHIFT)/(5*avenrun[0]+(7<<FSHIFT))) + 30;
-+		dist = period / 4;
-+	    }
-+	}
-+#endif /* CONFIG_HEARTBEAT */
-+	return IRQ_HANDLED;
-+}
-+
-+void read_persistent_clock(struct timespec *ts)
-+{
-+	struct rtc_time time;
-+	ts->tv_sec = 0;
-+	ts->tv_nsec = 0;
-+
-+	if (mach_hwclk) {
-+		mach_hwclk(0, &time);
-+
-+		if ((time.tm_year += 1900) < 1970)
-+			time.tm_year += 100;
-+		ts->tv_sec = mktime(time.tm_year, time.tm_mon, time.tm_mday,
-+				      time.tm_hour, time.tm_min, time.tm_sec);
-+	}
-+}
-+
-+int update_persistent_clock(struct timespec now)
-+{
-+	return set_rtc_mmss(now.tv_sec);
-+}
-+
-+void __init time_init(void)
-+{
-+	mach_sched_init(timer_interrupt);
-+}
-+
-+#ifdef CONFIG_M68KCLASSIC
-+
-+u32 arch_gettimeoffset(void)
-+{
-+	return mach_gettimeoffset() * 1000;
-+}
-+
-+static int __init rtc_init(void)
-+{
-+	struct platform_device *pdev;
-+
-+	if (!mach_hwclk)
-+		return -ENODEV;
-+
-+	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
-+	return 0;
-+}
-+
-+module_init(rtc_init);
-+
-+#endif /* CONFIG_M68KCLASSIC */
-diff --git a/arch/m68k/kernel/time_mm.c b/arch/m68k/kernel/time_mm.c
+diff --git a/arch/m68k/kernel/ptrace_mm.c b/arch/m68k/kernel/ptrace.c
+similarity index 96%
+rename from arch/m68k/kernel/ptrace_mm.c
+rename to arch/m68k/kernel/ptrace.c
+index 7bc999b..8cf89ed 100644
+--- a/arch/m68k/kernel/ptrace_mm.c
++++ b/arch/m68k/kernel/ptrace.c
+@@ -146,11 +146,13 @@ void user_enable_single_step(struct task_struct *child)
+ 	set_tsk_thread_flag(child, TIF_DELAYED_TRACE);
+ }
+ 
++#ifdef CONFIG_MMU
+ void user_enable_block_step(struct task_struct *child)
+ {
+ 	unsigned long tmp = get_reg(child, PT_SR) & ~TRACE_BITS;
+ 	put_reg(child, PT_SR, tmp | T0_BIT);
+ }
++#endif
+ 
+ void user_disable_single_step(struct task_struct *child)
+ {
+@@ -181,6 +183,14 @@ long arch_ptrace(struct task_struct *child, long request,
+ 			if (FPU_IS_EMU && (regno < 45) && !(regno % 3))
+ 				tmp = ((tmp & 0xffff0000) << 15) |
+ 				      ((tmp & 0x0000ffff) << 16);
++#ifndef CONFIG_MMU
++		} else if (regno == 49) {
++			tmp = child->mm->start_code;
++		} else if (regno == 50) {
++			tmp = child->mm->start_data;
++		} else if (regno == 51) {
++			tmp = child->mm->end_code;
++#endif
+ 		} else
+ 			goto out_eio;
+ 		ret = put_user(tmp, datap);
+@@ -277,7 +287,6 @@ asmlinkage void syscall_trace(void)
+ 	}
+ }
+ 
+-#ifdef CONFIG_COLDFIRE
+ asmlinkage int syscall_trace_enter(void)
+ {
+ 	int ret = 0;
+@@ -292,4 +301,3 @@ asmlinkage void syscall_trace_leave(void)
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE))
+ 		tracehook_report_syscall_exit(task_pt_regs(current), 0);
+ }
+-#endif /* CONFIG_COLDFIRE */
+diff --git a/arch/m68k/kernel/ptrace_no.c b/arch/m68k/kernel/ptrace_no.c
 deleted file mode 100644
-index 18b34ee..0000000
---- a/arch/m68k/kernel/time_mm.c
+index 6709fb7..0000000
+--- a/arch/m68k/kernel/ptrace_no.c
 +++ /dev/null
-@@ -1,114 +0,0 @@
+@@ -1,255 +0,0 @@
 -/*
-- *  linux/arch/m68k/kernel/time.c
+- *  linux/arch/m68knommu/kernel/ptrace.c
 - *
-- *  Copyright (C) 1991, 1992, 1995  Linus Torvalds
+- *  Copyright (C) 1994 by Hamish Macdonald
+- *  Taken from linux/kernel/ptrace.c and modified for M680x0.
+- *  linux/kernel/ptrace.c is by Ross Biro 1/23/92, edited by Linus Torvalds
 - *
-- * This file contains the m68k-specific time handling details.
-- * Most of the stuff is located in the machine specific files.
-- *
-- * 1997-09-10	Updated NTP code according to technical memorandum Jan '96
-- *		"A Kernel Model for Precision Timekeeping" by Dave Mills
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License.  See the file COPYING in the main directory of
+- * this archive for more details.
 - */
 -
--#include <linux/errno.h>
--#include <linux/module.h>
--#include <linux/sched.h>
 -#include <linux/kernel.h>
--#include <linux/param.h>
--#include <linux/string.h>
+-#include <linux/sched.h>
 -#include <linux/mm.h>
--#include <linux/rtc.h>
--#include <linux/platform_device.h>
+-#include <linux/smp.h>
+-#include <linux/errno.h>
+-#include <linux/ptrace.h>
+-#include <linux/user.h>
+-#include <linux/signal.h>
+-#include <linux/tracehook.h>
 -
--#include <asm/machdep.h>
--#include <asm/io.h>
--#include <asm/irq_regs.h>
+-#include <asm/uaccess.h>
+-#include <asm/page.h>
+-#include <asm/pgtable.h>
+-#include <asm/system.h>
+-#include <asm/processor.h>
 -
--#include <linux/time.h>
--#include <linux/timex.h>
--#include <linux/profile.h>
+-/*
+- * does not yet catch signals sent when the child dies.
+- * in exit.c or in signal.c.
+- */
 -
--static inline int set_rtc_mmss(unsigned long nowtime)
+-/* determines which bits in the SR the user has access to. */
+-/* 1 = access 0 = no access */
+-#define SR_MASK 0x001f
+-
+-/* sets the trace bits. */
+-#define TRACE_BITS 0x8000
+-
+-/* Find the stack offset for a register, relative to thread.esp0. */
+-#define PT_REG(reg)	((long)&((struct pt_regs *)0)->reg)
+-#define SW_REG(reg)	((long)&((struct switch_stack *)0)->reg \
+-			 - sizeof(struct switch_stack))
+-/* Mapping from PT_xxx to the stack offset at which the register is
+-   saved.  Notice that usp has no stack-slot and needs to be treated
+-   specially (see get_reg/put_reg below). */
+-static int regoff[] = {
+-	PT_REG(d1), PT_REG(d2), PT_REG(d3), PT_REG(d4),
+-	PT_REG(d5), SW_REG(d6), SW_REG(d7), PT_REG(a0),
+-	PT_REG(a1), PT_REG(a2), SW_REG(a3), SW_REG(a4),
+-	SW_REG(a5), SW_REG(a6), PT_REG(d0), -1,
+-	PT_REG(orig_d0), PT_REG(sr), PT_REG(pc),
+-};
+-
+-/*
+- * Get contents of register REGNO in task TASK.
+- */
+-static inline long get_reg(struct task_struct *task, int regno)
 -{
--  if (mach_set_clock_mmss)
--    return mach_set_clock_mmss (nowtime);
--  return -1;
+-	unsigned long *addr;
+-
+-	if (regno == PT_USP)
+-		addr = &task->thread.usp;
+-	else if (regno < ARRAY_SIZE(regoff))
+-		addr = (unsigned long *)(task->thread.esp0 + regoff[regno]);
+-	else
+-		return 0;
+-	return *addr;
 -}
 -
 -/*
-- * timer_interrupt() needs to keep up the real-time clock,
-- * as well as call the "xtime_update()" routine every clocktick
+- * Write contents of register REGNO in task TASK.
 - */
--static irqreturn_t timer_interrupt(int irq, void *dummy)
+-static inline int put_reg(struct task_struct *task, int regno,
+-			  unsigned long data)
 -{
--	xtime_update(1);
--	update_process_times(user_mode(get_irq_regs()));
--	profile_tick(CPU_PROFILING);
+-	unsigned long *addr;
 -
--#ifdef CONFIG_HEARTBEAT
--	/* use power LED as a heartbeat instead -- much more useful
--	   for debugging -- based on the version for PReP by Cort */
--	/* acts like an actual heart beat -- ie thump-thump-pause... */
--	if (mach_heartbeat) {
--	    static unsigned cnt = 0, period = 0, dist = 0;
--
--	    if (cnt == 0 || cnt == dist)
--		mach_heartbeat( 1 );
--	    else if (cnt == 7 || cnt == dist+7)
--		mach_heartbeat( 0 );
--
--	    if (++cnt > period) {
--		cnt = 0;
--		/* The hyperbolic function below modifies the heartbeat period
--		 * length in dependency of the current (5min) load. It goes
--		 * through the points f(0)=126, f(1)=86, f(5)=51,
--		 * f(inf)->30. */
--		period = ((672<<FSHIFT)/(5*avenrun[0]+(7<<FSHIFT))) + 30;
--		dist = period / 4;
--	    }
--	}
--#endif /* CONFIG_HEARTBEAT */
--	return IRQ_HANDLED;
--}
--
--void read_persistent_clock(struct timespec *ts)
--{
--	struct rtc_time time;
--	ts->tv_sec = 0;
--	ts->tv_nsec = 0;
--
--	if (mach_hwclk) {
--		mach_hwclk(0, &time);
--
--		if ((time.tm_year += 1900) < 1970)
--			time.tm_year += 100;
--		ts->tv_sec = mktime(time.tm_year, time.tm_mon, time.tm_mday,
--				      time.tm_hour, time.tm_min, time.tm_sec);
--	}
--}
--
--void __init time_init(void)
--{
--	mach_sched_init(timer_interrupt);
--}
--
--u32 arch_gettimeoffset(void)
--{
--	return mach_gettimeoffset() * 1000;
--}
--
--static int __init rtc_init(void)
--{
--	struct platform_device *pdev;
--
--	if (!mach_hwclk)
--		return -ENODEV;
--
--	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
--	if (IS_ERR(pdev))
--		return PTR_ERR(pdev);
--
+-	if (regno == PT_USP)
+-		addr = &task->thread.usp;
+-	else if (regno < ARRAY_SIZE(regoff))
+-		addr = (unsigned long *) (task->thread.esp0 + regoff[regno]);
+-	else
+-		return -1;
+-	*addr = data;
 -	return 0;
 -}
 -
--module_init(rtc_init);
-diff --git a/arch/m68k/kernel/time_no.c b/arch/m68k/kernel/time_no.c
-deleted file mode 100644
-index 5fa42f1..0000000
---- a/arch/m68k/kernel/time_no.c
-+++ /dev/null
-@@ -1,76 +0,0 @@
--/*
-- *  linux/arch/m68knommu/kernel/time.c
-- *
-- *  Copyright (C) 1991, 1992, 1995  Linus Torvalds
-- *
-- * This file contains the m68k-specific time handling details.
-- * Most of the stuff is located in the machine specific files.
-- *
-- * 1997-09-10	Updated NTP code according to technical memorandum Jan '96
-- *		"A Kernel Model for Precision Timekeeping" by Dave Mills
-- */
--
--#include <linux/errno.h>
--#include <linux/module.h>
--#include <linux/sched.h>
--#include <linux/kernel.h>
--#include <linux/param.h>
--#include <linux/string.h>
--#include <linux/mm.h>
--#include <linux/profile.h>
--#include <linux/time.h>
--#include <linux/timex.h>
--#include <linux/rtc.h>
--
--#include <asm/machdep.h>
--#include <asm/irq_regs.h>
--
--static inline int set_rtc_mmss(unsigned long nowtime)
+-void user_enable_single_step(struct task_struct *task)
 -{
--	if (mach_set_clock_mmss)
--		return mach_set_clock_mmss (nowtime);
--	return -1;
+-	unsigned long srflags;
+-	srflags = get_reg(task, PT_SR) | (TRACE_BITS << 16);
+-	put_reg(task, PT_SR, srflags);
+-}
+-
+-void user_disable_single_step(struct task_struct *task)
+-{
+-	unsigned long srflags;
+-	srflags = get_reg(task, PT_SR) & ~(TRACE_BITS << 16);
+-	put_reg(task, PT_SR, srflags);
 -}
 -
 -/*
-- * timer_interrupt() needs to keep up the real-time clock,
-- * as well as call the "xtime_update()" routine every clocktick
+- * Called by kernel/ptrace.c when detaching..
+- *
+- * Make sure the single step bit is not set.
 - */
--static irqreturn_t timer_interrupt(int irq, void *dummy)
+-void ptrace_disable(struct task_struct *child)
 -{
--
--	if (current->pid)
--		profile_tick(CPU_PROFILING);
--
--	xtime_update(1);
--
--	update_process_times(user_mode(get_irq_regs()));
--
--	return(IRQ_HANDLED);
+-	/* make sure the single step bit is not set. */
+-	user_disable_single_step(child);
 -}
 -
--void read_persistent_clock(struct timespec *ts)
+-long arch_ptrace(struct task_struct *child, long request,
+-		 unsigned long addr, unsigned long data)
 -{
--	struct rtc_time time;
--	ts->tv_sec = 0;
--	ts->tv_nsec = 0;
+-	int ret;
+-	int regno = addr >> 2;
+-	unsigned long __user *datap = (unsigned long __user *) data;
 -
--	if (mach_hwclk) {
--		mach_hwclk(0, &time);
+-	switch (request) {
+-		/* read the word at location addr in the USER area. */
+-		case PTRACE_PEEKUSR: {
+-			unsigned long tmp;
+-			
+-			ret = -EIO;
+-			if ((addr & 3) || addr > sizeof(struct user) - 3)
+-				break;
+-			
+-			tmp = 0;  /* Default return condition */
+-			ret = -EIO;
+-			if (regno < 19) {
+-				tmp = get_reg(child, regno);
+-				if (regno == PT_SR)
+-					tmp >>= 16;
+-			} else if (regno >= 21 && regno < 49) {
+-				tmp = child->thread.fp[regno - 21];
+-			} else if (regno == 49) {
+-				tmp = child->mm->start_code;
+-			} else if (regno == 50) {
+-				tmp = child->mm->start_data;
+-			} else if (regno == 51) {
+-				tmp = child->mm->end_code;
+-			} else
+-				break;
+-			ret = put_user(tmp, datap);
+-			break;
+-		}
 -
--		if ((time.tm_year += 1900) < 1970)
--			time.tm_year += 100;
--		ts->tv_sec = mktime(time.tm_year, time.tm_mon, time.tm_mday,
--			time.tm_hour, time.tm_min, time.tm_sec);
+-		case PTRACE_POKEUSR: /* write the word at location addr in the USER area */
+-			ret = -EIO;
+-			if ((addr & 3) || addr > sizeof(struct user) - 3)
+-				break;
+-
+-			if (regno == PT_SR) {
+-				data &= SR_MASK;
+-				data <<= 16;
+-				data |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
+-			}
+-			if (regno < 19) {
+-				if (put_reg(child, regno, data))
+-					break;
+-				ret = 0;
+-				break;
+-			}
+-			if (regno >= 21 && regno < 48)
+-			{
+-				child->thread.fp[regno - 21] = data;
+-				ret = 0;
+-			}
+-			break;
+-
+-		case PTRACE_GETREGS: { /* Get all gp regs from the child. */
+-		  	int i;
+-			unsigned long tmp;
+-			for (i = 0; i < 19; i++) {
+-			    tmp = get_reg(child, i);
+-			    if (i == PT_SR)
+-				tmp >>= 16;
+-			    if (put_user(tmp, datap)) {
+-				ret = -EFAULT;
+-				break;
+-			    }
+-			    datap++;
+-			}
+-			ret = 0;
+-			break;
+-		}
+-
+-		case PTRACE_SETREGS: { /* Set all gp regs in the child. */
+-			int i;
+-			unsigned long tmp;
+-			for (i = 0; i < 19; i++) {
+-			    if (get_user(tmp, datap)) {
+-				ret = -EFAULT;
+-				break;
+-			    }
+-			    if (i == PT_SR) {
+-				tmp &= SR_MASK;
+-				tmp <<= 16;
+-				tmp |= get_reg(child, PT_SR) & ~(SR_MASK << 16);
+-			    }
+-			    put_reg(child, i, tmp);
+-			    datap++;
+-			}
+-			ret = 0;
+-			break;
+-		}
+-
+-#ifdef PTRACE_GETFPREGS
+-		case PTRACE_GETFPREGS: { /* Get the child FPU state. */
+-			ret = 0;
+-			if (copy_to_user(datap, &child->thread.fp,
+-					 sizeof(struct user_m68kfp_struct)))
+-				ret = -EFAULT;
+-			break;
+-		}
+-#endif
+-
+-#ifdef PTRACE_SETFPREGS
+-		case PTRACE_SETFPREGS: { /* Set the child FPU state. */
+-			ret = 0;
+-			if (copy_from_user(&child->thread.fp, datap,
+-					   sizeof(struct user_m68kfp_struct)))
+-				ret = -EFAULT;
+-			break;
+-		}
+-#endif
+-
+-	case PTRACE_GET_THREAD_AREA:
+-		ret = put_user(task_thread_info(child)->tp_value, datap);
+-		break;
+-
+-		default:
+-			ret = ptrace_request(child, request, addr, data);
+-			break;
 -	}
+-	return ret;
 -}
 -
--int update_persistent_clock(struct timespec now)
+-asmlinkage int syscall_trace_enter(void)
 -{
--	return set_rtc_mmss(now.tv_sec);
+-	int ret = 0;
+-
+-	if (test_thread_flag(TIF_SYSCALL_TRACE))
+-		ret = tracehook_report_syscall_entry(task_pt_regs(current));
+-	return ret;
 -}
 -
--void __init time_init(void)
+-asmlinkage void syscall_trace_leave(void)
 -{
--	mach_sched_init(timer_interrupt);
+-	if (test_thread_flag(TIF_SYSCALL_TRACE))
+-		tracehook_report_syscall_exit(task_pt_regs(current), 0);
 -}
 -- 
 1.7.0.4
