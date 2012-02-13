@@ -1,46 +1,41 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 5/5 v2] m68k: remove dead timer code
-Date: Wed, 22 Feb 2012 11:05:49 +0100
-Message-ID: <CAMuHMdVX0vKufhB=Y=hWshTF=W9HdCdiaTOYPB5ZTWTCwmD=fQ@mail.gmail.com>
-References: <1329883136-9837-1-git-send-email-gerg@snapgear.com>
-	<1329883136-9837-5-git-send-email-gerg@snapgear.com>
+From: John Erick <johnmyerick@yahoo.com>
+Subject: ORDER INQUIRY
+Date: Mon, 13 Feb 2012 07:35:34 -0300
+Message-ID: <E1RwtFu-0007Lq-T7@incom1.incomvision.com>
+Reply-To: johnmyerick@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-we0-f174.google.com ([74.125.82.174]:54982 "EHLO
-	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751746Ab2BVKFv convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 05:05:51 -0500
-Received: by werb13 with SMTP id b13so4374785wer.19
-        for <linux-m68k@vger.kernel.org>; Wed, 22 Feb 2012 02:05:50 -0800 (PST)
-In-Reply-To: <1329883136-9837-5-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-m68k@lists.linux-m68k.org
 
-On Wed, Feb 22, 2012 at 04:58,  <gerg@snapgear.com> wrote:
-> The set_rtc_mmss() function is defined "static inline" but is never u=
-sed
-> in this file. Remove it.
->
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Hello,we need some Solar equipment to buy,i will like to know if you can 
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+supply us with any of this.example below:
 
-Gr{oetje,eeting}s,
+Solar panel from 50 to 250watt.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Solar Charge Controller.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Sealed Lead Acid Battery 12v,80 to 200ah...for solar backup
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Or any of this Solar pumps below:
+
+Lorentz pump ps1800 c-sj5-12
+
+Shurflo Pumps (Model# 9325-043-101) 9300 Series DC Submersible Pump
+
+Grundfos SQFlex 11 SQF-2 submersible pumps
+
+Please reply back soon,to let us know if you have any of it in stock,if 
+
+yes,please advise unit cost for each.
+
+And will like to know if you accept credit card payment.
+johnmyerick@yahoo.com
+
+Regards
+
+John Erick
