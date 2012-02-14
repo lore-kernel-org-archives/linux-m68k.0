@@ -1,525 +1,155 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 2/2] m68k: merge the MMU and non-MMU versions of process.c
-Date: Fri, 10 Feb 2012 16:14:17 +1000
-Message-ID: <1328854457-24859-2-git-send-email-gerg@snapgear.com>
-References: <1328854457-24859-1-git-send-email-gerg@snapgear.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Matt Fleming <matt@console-pimps.org>
+Subject: [PATCH 14/40] m68k: Use set_current_blocked() and block_sigmask()
+Date: Tue, 14 Feb 2012 11:40:47 +0000
+Message-ID: <1329219673-28711-15-git-send-email-matt__11221.0042811514$1329220152$gmane$org@console-pimps.org>
+References: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:50550 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751452Ab2BJGPm (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Feb 2012 01:15:42 -0500
-In-Reply-To: <1328854457-24859-1-git-send-email-gerg@snapgear.com>
+In-Reply-To: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: linux-arch@vger.kernel.org
+Cc: Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Matt Fleming <matt.fleming@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+From: Matt Fleming <matt.fleming@intel.com>
 
-The MMU and non-MMU varients of the m68k arch process.c code are pretty
-much the same. Only a few minor details differ between the two. The
-majority of the difference is to deal with having or wanting hardware FPU
-support. So merge them back into a single process.c file.
+As described in e6fa16ab ("signal: sigprocmask() should do
+retarget_shared_pending()") the modification of current->blocked is
+incorrect as we need to check whether the signal we're about to block
+is pending in the shared queue.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Also, use the new helper function introduced in commit 5e6292c0f28f
+("signal: add block_sigmask() for adding sigmask to current->blocked")
+which centralises the code for updating current->blocked after
+successfully delivering a signal and reduces the amount of duplicate
+code across architectures. In the past some architectures got this
+code wrong, so using this helper function should stop that from
+happening again.
+
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+CC: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 ---
- arch/m68k/kernel/{process_mm.c => process.c} |   19 +-
- arch/m68k/kernel/process_no.c                |  406 --------------------------
- 2 files changed, 15 insertions(+), 410 deletions(-)
- rename arch/m68k/kernel/{process_mm.c => process.c} (97%)
- delete mode 100644 arch/m68k/kernel/process_no.c
+ arch/m68k/kernel/signal_mm.c |   22 +++++++++-------------
+ arch/m68k/kernel/signal_no.c |   28 +++++++++-------------------
+ 2 files changed, 18 insertions(+), 32 deletions(-)
 
-diff --git a/arch/m68k/kernel/process_mm.c b/arch/m68k/kernel/process.c
-similarity index 97%
-rename from arch/m68k/kernel/process_mm.c
-rename to arch/m68k/kernel/process.c
-index 099283e..f053e24 100644
---- a/arch/m68k/kernel/process_mm.c
-+++ b/arch/m68k/kernel/process.c
-@@ -144,8 +144,10 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
- 	   "trap #0\n\t"		/* Linux/m68k system call */
- 	   "tstl %0\n\t"		/* child or parent */
- 	   "jne 1f\n\t"			/* parent - jump */
-+#ifdef CONFIG_MMU
- 	   "lea %%sp@(%c7),%6\n\t"	/* reload current */
- 	   "movel %6@,%6\n\t"
-+#endif
- 	   "movel %3,%%sp@-\n\t"	/* push argument */
- 	   "jsr %4@\n\t"		/* call fn */
- 	   "movel %0,%%d1\n\t"		/* pass exit value */
-@@ -168,11 +170,13 @@ EXPORT_SYMBOL(kernel_thread);
- 
- void flush_thread(void)
+diff --git a/arch/m68k/kernel/signal_mm.c b/arch/m68k/kernel/signal_mm.c
+index cb856f9..93208b8 100644
+--- a/arch/m68k/kernel/signal_mm.c
++++ b/arch/m68k/kernel/signal_mm.c
+@@ -105,12 +105,13 @@ int handle_kernel_fault(struct pt_regs *regs)
+ asmlinkage int
+ sys_sigsuspend(int unused0, int unused1, old_sigset_t mask)
  {
--	unsigned long zero = 0;
--
- 	current->thread.fs = __USER_DS;
--	if (!FPU_IS_EMU)
-+#ifdef CONFIG_FPU
-+	if (!FPU_IS_EMU) {
-+		unsigned long zero = 0;
- 		asm volatile("frestore %0": :"m" (zero));
-+	}
-+#endif
- }
+-	mask &= _BLOCKABLE;
+-	spin_lock_irq(&current->sighand->siglock);
++	sigset_t blocked;
++
+ 	current->saved_sigmask = current->blocked;
+-	siginitset(&current->blocked, mask);
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++
++	mask &= _BLOCKABLE;
++	siginitset(&blocked, mask);
++	set_current_blocked(&blocked);
  
- /*
-@@ -184,7 +188,11 @@ void flush_thread(void)
+ 	current->state = TASK_INTERRUPTIBLE;
+ 	schedule();
+@@ -528,8 +529,7 @@ asmlinkage int do_sigreturn(unsigned long __unused)
+ 		goto badframe;
  
- asmlinkage int m68k_fork(struct pt_regs *regs)
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+-	current->blocked = set;
+-	recalc_sigpending();
++	set_current_blocked(&set);
+ 
+ 	if (restore_sigcontext(regs, &frame->sc, frame + 1))
+ 		goto badframe;
+@@ -554,8 +554,7 @@ asmlinkage int do_rt_sigreturn(unsigned long __unused)
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+-	current->blocked = set;
+-	recalc_sigpending();
++	set_current_blocked(&set);
+ 
+ 	if (rt_restore_ucontext(regs, sw, &frame->uc))
+ 		goto badframe;
+@@ -1063,10 +1062,7 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 	if (err)
+ 		return;
+ 
+-	sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
+-	if (!(ka->sa.sa_flags & SA_NODEFER))
+-		sigaddset(&current->blocked,sig);
+-	recalc_sigpending();
++	block_sigmask(ka, sig);
+ 
+ 	if (test_thread_flag(TIF_DELAYED_TRACE)) {
+ 		regs->sr &= ~0x8000;
+diff --git a/arch/m68k/kernel/signal_no.c b/arch/m68k/kernel/signal_no.c
+index 36a81bb..33e8bf5 100644
+--- a/arch/m68k/kernel/signal_no.c
++++ b/arch/m68k/kernel/signal_no.c
+@@ -60,12 +60,13 @@ void ret_from_user_rt_signal(void);
+ asmlinkage int
+ sys_sigsuspend(int unused0, int unused1, old_sigset_t mask)
  {
-+#ifdef CONFIG_MMU
- 	return do_fork(SIGCHLD, rdusp(), regs, 0, NULL, NULL);
-+#else
-+	return -EINVAL;
-+#endif
+-	mask &= _BLOCKABLE;
+-	spin_lock_irq(&current->sighand->siglock);
++	sigset_t blocked;
++
+ 	current->saved_sigmask = current->blocked;
+-	siginitset(&current->blocked, mask);
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++
++	mask &= _BLOCKABLE;
++	siginitset(&blocked, mask);
++	set_current_blocked(&blocked);
+ 
+ 	current->state = TASK_INTERRUPTIBLE;
+ 	schedule();
+@@ -343,10 +344,7 @@ asmlinkage int do_sigreturn(unsigned long __unused)
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+-	spin_lock_irq(&current->sighand->siglock);
+-	current->blocked = set;
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++	set_current_blocked(&set);
+ 	
+ 	if (restore_sigcontext(regs, &frame->sc, frame + 1, &d0))
+ 		goto badframe;
+@@ -372,10 +370,7 @@ asmlinkage int do_rt_sigreturn(unsigned long __unused)
+ 		goto badframe;
+ 
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+-	spin_lock_irq(&current->sighand->siglock);
+-	current->blocked = set;
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++	set_current_blocked(&set);
+ 	
+ 	if (rt_restore_ucontext(regs, sw, &frame->uc, &d0))
+ 		goto badframe;
+@@ -708,12 +703,7 @@ handle_signal(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 	if (err)
+ 		return;
+ 
+-	spin_lock_irq(&current->sighand->siglock);
+-	sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
+-	if (!(ka->sa.sa_flags & SA_NODEFER))
+-		sigaddset(&current->blocked,sig);
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++	block_sigmask(ka, sig);
+ 
+ 	clear_thread_flag(TIF_RESTORE_SIGMASK);
  }
- 
- asmlinkage int m68k_vfork(struct pt_regs *regs)
-@@ -242,6 +250,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- 	 */
- 	p->thread.fs = get_fs().seg;
- 
-+#ifdef CONFIG_FPU
- 	if (!FPU_IS_EMU) {
- 		/* Copy the current fpu state */
- 		asm volatile ("fsave %0" : : "m" (p->thread.fpstate[0]) : "memory");
-@@ -271,12 +280,13 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- 		/* Restore the state in case the fpu was busy */
- 		asm volatile ("frestore %0" : : "m" (p->thread.fpstate[0]));
- 	}
-+#endif /* CONFIG_FPU */
- 
- 	return 0;
- }
- 
- /* Fill in the fpu structure for a core dump.  */
--
-+#ifdef CONFIG_FPU
- int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- {
- 	char fpustate[216];
-@@ -325,6 +335,7 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- 	return 1;
- }
- EXPORT_SYMBOL(dump_fpu);
-+#endif /* CONFIG_FPU */
- 
- /*
-  * sys_execve() executes a new program.
-diff --git a/arch/m68k/kernel/process_no.c b/arch/m68k/kernel/process_no.c
-deleted file mode 100644
-index 5e1078c..0000000
---- a/arch/m68k/kernel/process_no.c
-+++ /dev/null
-@@ -1,406 +0,0 @@
--/*
-- *  linux/arch/m68knommu/kernel/process.c
-- *
-- *  Copyright (C) 1995  Hamish Macdonald
-- *
-- *  68060 fixes by Jesper Skov
-- *
-- *  uClinux changes
-- *  Copyright (C) 2000-2002, David McCullough <davidm@snapgear.com>
-- */
--
--/*
-- * This file handles the architecture-dependent parts of process handling..
-- */
--
--#include <linux/module.h>
--#include <linux/errno.h>
--#include <linux/sched.h>
--#include <linux/kernel.h>
--#include <linux/mm.h>
--#include <linux/smp.h>
--#include <linux/stddef.h>
--#include <linux/unistd.h>
--#include <linux/ptrace.h>
--#include <linux/user.h>
--#include <linux/interrupt.h>
--#include <linux/reboot.h>
--#include <linux/fs.h>
--#include <linux/slab.h>
--
--#include <asm/uaccess.h>
--#include <asm/system.h>
--#include <asm/traps.h>
--#include <asm/machdep.h>
--#include <asm/setup.h>
--#include <asm/pgtable.h>
--
--asmlinkage void ret_from_fork(void);
--
--/*
-- * The following aren't currently used.
-- */
--void (*pm_idle)(void);
--EXPORT_SYMBOL(pm_idle);
--
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
--
--/*
-- * The idle loop on an m68knommu..
-- */
--static void default_idle(void)
--{
--	local_irq_disable();
-- 	while (!need_resched()) {
--		/* This stop will re-enable interrupts */
-- 		__asm__("stop #0x2000" : : : "cc");
--		local_irq_disable();
--	}
--	local_irq_enable();
--}
--
--void (*idle)(void) = default_idle;
--
--/*
-- * The idle thread. There's no useful work to be
-- * done, so just try to conserve power and have a
-- * low exit latency (ie sit in a loop waiting for
-- * somebody to say that they'd like to reschedule)
-- */
--void cpu_idle(void)
--{
--	/* endless idle loop with no priority at all */
--	while (1) {
--		idle();
--		preempt_enable_no_resched();
--		schedule();
--		preempt_disable();
--	}
--}
--
--void machine_restart(char * __unused)
--{
--	if (mach_reset)
--		mach_reset();
--	for (;;);
--}
--
--void machine_halt(void)
--{
--	if (mach_halt)
--		mach_halt();
--	for (;;);
--}
--
--void machine_power_off(void)
--{
--	if (mach_power_off)
--		mach_power_off();
--	for (;;);
--}
--
--void show_regs(struct pt_regs * regs)
--{
--	printk(KERN_NOTICE "\n");
--	printk(KERN_NOTICE "Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
--	       regs->format, regs->vector, regs->pc, regs->sr, print_tainted());
--	printk(KERN_NOTICE "ORIG_D0: %08lx  D0: %08lx  A2: %08lx  A1: %08lx\n",
--	       regs->orig_d0, regs->d0, regs->a2, regs->a1);
--	printk(KERN_NOTICE "A0: %08lx  D5: %08lx  D4: %08lx\n",
--	       regs->a0, regs->d5, regs->d4);
--	printk(KERN_NOTICE "D3: %08lx  D2: %08lx  D1: %08lx\n",
--	       regs->d3, regs->d2, regs->d1);
--	if (!(regs->sr & PS_S))
--		printk(KERN_NOTICE "USP: %08lx\n", rdusp());
--}
--
--/*
-- * Create a kernel thread
-- */
--int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
--{
--	int retval;
--	long clone_arg = flags | CLONE_VM;
--	mm_segment_t fs;
--
--	fs = get_fs();
--	set_fs(KERNEL_DS);
--
--	__asm__ __volatile__ (
--			"movel	%%sp, %%d2\n\t"
--			"movel	%5, %%d1\n\t"
--			"movel	%1, %%d0\n\t"
--			"trap	#0\n\t"
--			"cmpl	%%sp, %%d2\n\t"
--			"jeq	1f\n\t"
--			"movel	%3, %%sp@-\n\t"
--			"jsr	%4@\n\t"
--			"movel	%2, %%d0\n\t"
--			"trap	#0\n"
--			"1:\n\t"
--			"movel	%%d0, %0\n"
--		: "=d" (retval)
--		: "i" (__NR_clone),
--		  "i" (__NR_exit),
--		  "a" (arg),
--		  "a" (fn),
--		  "a" (clone_arg)
--		: "cc", "%d0", "%d1", "%d2");
--
--	set_fs(fs);
--	return retval;
--}
--EXPORT_SYMBOL(kernel_thread);
--
--void flush_thread(void)
--{
--#ifdef CONFIG_FPU
--	unsigned long zero = 0;
--#endif
--
--	current->thread.fs = __USER_DS;
--#ifdef CONFIG_FPU
--	if (!FPU_IS_EMU)
--		asm volatile (".chip 68k/68881\n\t"
--			      "frestore %0\n\t"
--			      ".chip 68k" : : "m" (zero));
--#endif
--}
--
--/*
-- * "m68k_fork()".. By the time we get here, the
-- * non-volatile registers have also been saved on the
-- * stack. We do some ugly pointer stuff here.. (see
-- * also copy_thread)
-- */
--
--asmlinkage int m68k_fork(struct pt_regs *regs)
--{
--	/* fork almost works, enough to trick you into looking elsewhere :-( */
--	return(-EINVAL);
--}
--
--asmlinkage int m68k_vfork(struct pt_regs *regs)
--{
--	return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, rdusp(), regs, 0, NULL, NULL);
--}
--
--asmlinkage int m68k_clone(struct pt_regs *regs)
--{
--	unsigned long clone_flags;
--	unsigned long newsp;
--
--	/* syscall2 puts clone_flags in d1 and usp in d2 */
--	clone_flags = regs->d1;
--	newsp = regs->d2;
--	if (!newsp)
--		newsp = rdusp();
--        return do_fork(clone_flags, newsp, regs, 0, NULL, NULL);
--}
--
--int copy_thread(unsigned long clone_flags,
--		unsigned long usp, unsigned long topstk,
--		struct task_struct * p, struct pt_regs * regs)
--{
--	struct pt_regs * childregs;
--	struct switch_stack * childstack, *stack;
--	unsigned long *retp;
--
--	childregs = (struct pt_regs *) (task_stack_page(p) + THREAD_SIZE) - 1;
--
--	*childregs = *regs;
--	childregs->d0 = 0;
--
--	retp = ((unsigned long *) regs);
--	stack = ((struct switch_stack *) retp) - 1;
--
--	childstack = ((struct switch_stack *) childregs) - 1;
--	*childstack = *stack;
--	childstack->retpc = (unsigned long)ret_from_fork;
--
--	p->thread.usp = usp;
--	p->thread.ksp = (unsigned long)childstack;
--
--	if (clone_flags & CLONE_SETTLS)
--		task_thread_info(p)->tp_value = regs->d5;
--
--	/*
--	 * Must save the current SFC/DFC value, NOT the value when
--	 * the parent was last descheduled - RGH  10-08-96
--	 */
--	p->thread.fs = get_fs().seg;
--
--#ifdef CONFIG_FPU
--	if (!FPU_IS_EMU) {
--		/* Copy the current fpu state */
--		asm volatile ("fsave %0" : : "m" (p->thread.fpstate[0]) : "memory");
--
--		if (p->thread.fpstate[0])
--		  asm volatile ("fmovemx %/fp0-%/fp7,%0\n\t"
--				"fmoveml %/fpiar/%/fpcr/%/fpsr,%1"
--				: : "m" (p->thread.fp[0]), "m" (p->thread.fpcntl[0])
--				: "memory");
--		/* Restore the state in case the fpu was busy */
--		asm volatile ("frestore %0" : : "m" (p->thread.fpstate[0]));
--	}
--#endif
--
--	return 0;
--}
--
--/* Fill in the fpu structure for a core dump.  */
--
--int dump_fpu(struct pt_regs *regs, struct user_m68kfp_struct *fpu)
--{
--#ifdef CONFIG_FPU
--	char fpustate[216];
--
--	if (FPU_IS_EMU) {
--		int i;
--
--		memcpy(fpu->fpcntl, current->thread.fpcntl, 12);
--		memcpy(fpu->fpregs, current->thread.fp, 96);
--		/* Convert internal fpu reg representation
--		 * into long double format
--		 */
--		for (i = 0; i < 24; i += 3)
--			fpu->fpregs[i] = ((fpu->fpregs[i] & 0xffff0000) << 15) |
--			                 ((fpu->fpregs[i] & 0x0000ffff) << 16);
--		return 1;
--	}
--
--	/* First dump the fpu context to avoid protocol violation.  */
--	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
--	if (!fpustate[0])
--		return 0;
--
--	asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
--		:: "m" (fpu->fpcntl[0])
--		: "memory");
--	asm volatile ("fmovemx %/fp0-%/fp7,%0"
--		:: "m" (fpu->fpregs[0])
--		: "memory");
--#endif
--	return 1;
--}
--EXPORT_SYMBOL(dump_fpu);
--
--/*
-- *	Generic dumping code. Used for panic and debug.
-- */
--void dump(struct pt_regs *fp)
--{
--	unsigned long	*sp;
--	unsigned char	*tp;
--	int		i;
--
--	printk(KERN_EMERG "\nCURRENT PROCESS:\n\n");
--	printk(KERN_EMERG "COMM=%s PID=%d\n", current->comm, current->pid);
--
--	if (current->mm) {
--		printk(KERN_EMERG "TEXT=%08x-%08x DATA=%08x-%08x BSS=%08x-%08x\n",
--			(int) current->mm->start_code,
--			(int) current->mm->end_code,
--			(int) current->mm->start_data,
--			(int) current->mm->end_data,
--			(int) current->mm->end_data,
--			(int) current->mm->brk);
--		printk(KERN_EMERG "USER-STACK=%08x KERNEL-STACK=%08x\n\n",
--			(int) current->mm->start_stack,
--			(int)(((unsigned long) current) + THREAD_SIZE));
--	}
--
--	printk(KERN_EMERG "PC: %08lx\n", fp->pc);
--	printk(KERN_EMERG "SR: %08lx    SP: %08lx\n", (long) fp->sr, (long) fp);
--	printk(KERN_EMERG "d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
--		fp->d0, fp->d1, fp->d2, fp->d3);
--	printk(KERN_EMERG "d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
--		fp->d4, fp->d5, fp->a0, fp->a1);
--	printk(KERN_EMERG "\nUSP: %08x   TRAPFRAME: %p\n",
--		(unsigned int) rdusp(), fp);
--
--	printk(KERN_EMERG "\nCODE:");
--	tp = ((unsigned char *) fp->pc) - 0x20;
--	for (sp = (unsigned long *) tp, i = 0; (i < 0x40);  i += 4) {
--		if ((i % 0x10) == 0)
--			printk(KERN_EMERG "%p: ", tp + i);
--		printk("%08x ", (int) *sp++);
--	}
--	printk(KERN_EMERG "\n");
--
--	printk(KERN_EMERG "KERNEL STACK:");
--	tp = ((unsigned char *) fp) - 0x40;
--	for (sp = (unsigned long *) tp, i = 0; (i < 0xc0); i += 4) {
--		if ((i % 0x10) == 0)
--			printk(KERN_EMERG "%p: ", tp + i);
--		printk("%08x ", (int) *sp++);
--	}
--	printk(KERN_EMERG "\n");
--
--	printk(KERN_EMERG "USER STACK:");
--	tp = (unsigned char *) (rdusp() - 0x10);
--	for (sp = (unsigned long *) tp, i = 0; (i < 0x80); i += 4) {
--		if ((i % 0x10) == 0)
--			printk(KERN_EMERG "%p: ", tp + i);
--		printk("%08x ", (int) *sp++);
--	}
--	printk(KERN_EMERG "\n");
--}
--
--/*
-- * sys_execve() executes a new program.
-- */
--asmlinkage int sys_execve(const char *name,
--			  const char *const *argv,
--			  const char *const *envp)
--{
--	int error;
--	char * filename;
--	struct pt_regs *regs = (struct pt_regs *) &name;
--
--	filename = getname(name);
--	error = PTR_ERR(filename);
--	if (IS_ERR(filename))
--		return error;
--	error = do_execve(filename, argv, envp, regs);
--	putname(filename);
--	return error;
--}
--
--unsigned long get_wchan(struct task_struct *p)
--{
--	unsigned long fp, pc;
--	unsigned long stack_page;
--	int count = 0;
--	if (!p || p == current || p->state == TASK_RUNNING)
--		return 0;
--
--	stack_page = (unsigned long)p;
--	fp = ((struct switch_stack *)p->thread.ksp)->a6;
--	do {
--		if (fp < stack_page+sizeof(struct thread_info) ||
--		    fp >= THREAD_SIZE-8+stack_page)
--			return 0;
--		pc = ((unsigned long *)fp)[1];
--		if (!in_sched_functions(pc))
--			return pc;
--		fp = *(unsigned long *) fp;
--	} while (count++ < 16);
--	return 0;
--}
--
--/*
-- * Return saved PC of a blocked thread.
-- */
--unsigned long thread_saved_pc(struct task_struct *tsk)
--{
--	struct switch_stack *sw = (struct switch_stack *)tsk->thread.ksp;
--
--	/* Check whether the thread is blocked in resume() */
--	if (in_sched_functions(sw->retpc))
--		return ((unsigned long *)sw->a6)[1];
--	else
--		return sw->retpc;
--}
--
 -- 
-1.7.0.4
+1.7.4.4
