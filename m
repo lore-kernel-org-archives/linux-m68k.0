@@ -1,49 +1,85 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] m68k: merge the MMU and non-MMU versions of process.c
-Date: Sun, 19 Feb 2012 11:18:18 +0100
-Message-ID: <CAMuHMdXMYRUsbNxfWSusoMaKSkankXOD9aUfXpN7DSE03ihjgw@mail.gmail.com>
-References: <1328854457-24859-1-git-send-email-gerg@snapgear.com>
-	<1328854457-24859-2-git-send-email-gerg@snapgear.com>
+From: Patrick Bottelberger <patrick.bottelberger@sigon.net>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible
+ patch)
+Date: Mon, 20 Feb 2012 22:38:06 +0100
+Message-ID: <4F42BD3E.3060901@sigon.net>
+References: <4F1C577D.3040908@sigon.net>	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>	<4F1EEBEF.4000400@sigon.net> <CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com> <4F2053C9.3090201@sigon.net> <97e6cf2ca60c81874f6ea82e8b4af158@localhost> <4F3181C6.8080805@sigon.net> <loom.20120207T231019-351@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wi0-f174.google.com ([209.85.212.174]:53214 "EHLO
-	mail-wi0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753277Ab2BSKST convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Feb 2012 05:18:19 -0500
-Received: by wics10 with SMTP id s10so2350595wic.19
-        for <linux-m68k@vger.kernel.org>; Sun, 19 Feb 2012 02:18:18 -0800 (PST)
-In-Reply-To: <1328854457-24859-2-git-send-email-gerg@snapgear.com>
+Received: from s15429932.onlinehome-server.info ([87.106.248.152]:50588 "EHLO
+	ws1.rootfuchs.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753313Ab2BTViL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 20 Feb 2012 16:38:11 -0500
+In-Reply-To: <loom.20120207T231019-351@post.gmane.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: Thorsten Glaser <tg@debian.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Fri, Feb 10, 2012 at 07:14,  <gerg@snapgear.com> wrote:
-> The MMU and non-MMU varients of the m68k arch process.c code are pret=
-ty
-> much the same. Only a few minor details differ between the two. The
-> majority of the difference is to deal with having or wanting hardware=
- FPU
-> support. So merge them back into a single process.c file.
+Hi Thorsten,
+
+using your kernel, i got the same errors as with my own (flaky RTC and
+non-working PCMCIA), but no other errors, especially no illegal
+instruction errors. So, you're right, it wasn't the Debian patches afte=
+r
+all, sorry for accusing you  :-)  Maybe my toolchain is doing something
+wicked, i don't know :-/
+
+Back to my current problems, i don't think the read errors for the RTC
+may be connected to the fact, that i don't have a battery on my A603
+board, or could it?
+=46or using the apne driver, am i maybe missing something to get the
+PCMCIA bus up and running?
+
+Is there any A1200 user around here that could tell me which files
+relating to PCMCIA should be visible in /sys{,/bus,/class} at system
+start, if any? Maybe it's the id's of my card that don't get recognised
+by the apne driver, but how can i read the id without having access to
+the bus itself? pccardctl doesn't find anything, and the corresponding
+init-script complains about no existing bridge module, because it can't
+find /sys/class/pcmcia_socket
+
+I'm a bit lost at the moment :-/
+
+
+Regards,
+Tjelfe
+
+
+Thorsten Glaser schrieb:
+> Patrick Bottelberger <patrick.bottelberger <at> sigon.net> writes:
 >
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+>  =20
+>> Patrick Bottelberger schrieb:
+>>    =20
+>>> Maybe it's the debian patches that get everything out of order, i'l=
+l try
+>>> 3.1.10 vanilla, maybe that'll work.
+>>>  =20
+>>>      =20
+>> I compiled a vanilla 3.2.2 kernel tree without Debian patches and
+>> without adding -msoft-float and it runs. It seems one of the
+>> Debian-patches adds some floating-point-operations.
+>>    =20
+>
+> I don=E2=80=99t think so. 3.2.2 from Debian is looking good (3.2.4 bu=
+ilding),
+> but you MUST compile with -ffreestanding.
+>
+> Can you try the 3.2.2 image from debian-ports or my repo
+> https://www.freewrt.org/~tg/debs68k/dists/sid/main/Upload/unstable/li=
+nux-2.6/
+> and check whether that=E2=80=99s more buggy than vanilla? If so,
+> you=E2=80=99ve got bugs to report =E2=98=BA
+>
+> Thanks,
+> //mirabilos
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>  =20
