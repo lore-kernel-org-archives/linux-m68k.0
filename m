@@ -1,53 +1,72 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 3/3] m68k: merge mmu and non-mmu versions of time.c
-Date: Tue, 21 Feb 2012 16:37:09 +1000
-Message-ID: <4F433B95.6020604@snapgear.com>
-References: <1328584190-30827-1-git-send-email-gerg@snapgear.com>	<1328584190-30827-3-git-send-email-gerg@snapgear.com> <CAMuHMdU5vcfBc=DSgv=2w-xiFVwoP7_4jG+F04v-J_jE3O31WQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: merge the mmu and non-mmu versions of ptrace.c
+Date: Tue, 21 Feb 2012 11:12:17 +0100
+Message-ID: <CAMuHMdU5i3tCZX+vsZt3UET3mFdVwZKFtiXE6GFsykwjawVmTQ@mail.gmail.com>
+References: <1328585132-31029-1-git-send-email-gerg@snapgear.com>
+	<CAMuHMdXE1fHSUpn5neu7VTGZs30q=O-WdC2F-qrt1QKy9TL9Mg@mail.gmail.com>
+	<4F433A3F.7010804@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:59155 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750804Ab2BUGmQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 01:42:16 -0500
-In-Reply-To: <CAMuHMdU5vcfBc=DSgv=2w-xiFVwoP7_4jG+F04v-J_jE3O31WQ@mail.gmail.com>
+Received: from mail-ww0-f44.google.com ([74.125.82.44]:64126 "EHLO
+	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752603Ab2BUKMT convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 05:12:19 -0500
+Received: by wgbdt10 with SMTP id dt10so5532872wgb.1
+        for <linux-m68k@vger.kernel.org>; Tue, 21 Feb 2012 02:12:17 -0800 (PST)
+In-Reply-To: <4F433A3F.7010804@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@snapgear.com>
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Geert,
+Hi Greg,
 
-On 19/02/12 20:10, Geert Uytterhoeven wrote:
-> On Tue, Feb 7, 2012 at 04:09,<gerg@snapgear.com>  wrote:
->> +int update_persistent_clock(struct timespec now)
->> +{
->> +	return set_rtc_mmss(now.tv_sec);
->> +}
+On Tue, Feb 21, 2012 at 07:31, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 19/02/12 20:12, Geert Uytterhoeven wrote:
+>> On Tue, Feb 7, 2012 at 04:25,<gerg@snapgear.com> =C2=A0wrote:
+>>> --- a/arch/m68k/kernel/ptrace_mm.c
+>>> +++ b/arch/m68k/kernel/ptrace.c
+>>> @@ -277,7 +287,6 @@ asmlinkage void syscall_trace(void)
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+>>> }
+>>>
+>>> -#ifdef CONFIG_COLDFIRE
+>>> asmlinkage int syscall_trace_enter(void)
+>>> {
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0int ret =3D 0;
+>>> @@ -292,4 +301,3 @@ asmlinkage void syscall_trace_leave(void)
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (test_thread_flag(TIF_SYSCALL_TRACE))
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tracehook_re=
+port_syscall_exit(task_pt_regs(current), 0);
+>>> }
+>>> -#endif /* CONFIG_COLDFIRE */
+>>
+>>
+>> Why have you dropped the #ifdef?
 >
-> This adds update_persistent_clock() for MMU, which was not present before.
-> It's only called if CONFIG_GENERIC_CMOS_UPDATE is set, but
-> arch/m68k/Kconfig has:
->
-> config GENERIC_CMOS_UPDATE
->          def_bool !MMU
+> Purely to have less "#ifdef"s in the code.
 
-Yep. Again I was trying to just have fewer #ifdefs.
+IC.
 
-But looking at this further, I don't think there is any point having
-CONFIG_GENERIC_CMOS_UPDATE defined for the non-MMU case. The code for
-update_persistent_clock() calls set_rtc_mmss() which relies on the
-sub-arch code having set mach_set_clock_mmss to do the real work. But
-that is not set for any non-MMU code paths. Seems like we can remove it
-for everyone m68k type. Or did I miss something :-)
+> Does bloat the code a little, would you prefer I leave the #ifdef the=
+re?
 
-Regards
-Greg
+Yes, it serves as a reminder to add syscall trace support.
 
+Gr{oetje,eeting}s,
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
