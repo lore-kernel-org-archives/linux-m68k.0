@@ -1,72 +1,46 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: merge the mmu and non-mmu versions of ptrace.c
-Date: Tue, 21 Feb 2012 11:12:17 +0100
-Message-ID: <CAMuHMdU5i3tCZX+vsZt3UET3mFdVwZKFtiXE6GFsykwjawVmTQ@mail.gmail.com>
-References: <1328585132-31029-1-git-send-email-gerg@snapgear.com>
-	<CAMuHMdXE1fHSUpn5neu7VTGZs30q=O-WdC2F-qrt1QKy9TL9Mg@mail.gmail.com>
-	<4F433A3F.7010804@snapgear.com>
+From: Patrick Bottelberger <tjelfe@sigon.net>
+Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
+Date: Tue, 21 Feb 2012 11:55:38 +0100
+Message-ID: <b761065a4748c565e1c31ea71cb21c16@localhost>
+References: <4F1C577D.3040908@sigon.net> <CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com> <4F1EEBEF.4000400@sigon.net> <CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com> <4F2053C9.3090201@sigon.net> <97e6cf2ca60c81874f6ea82e8b4af158@localhost> <4F3181C6.8080805@sigon.net> <loom.20120207T231019-351@post.gmane.org> <4F42BD3E.3060901@sigon.net> <m2obstgnsu.fsf@igel.home> <4F42CD74.5010409@sigon.net> <m2fwe5glc7.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ww0-f44.google.com ([74.125.82.44]:64126 "EHLO
-	mail-ww0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752603Ab2BUKMT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 05:12:19 -0500
-Received: by wgbdt10 with SMTP id dt10so5532872wgb.1
-        for <linux-m68k@vger.kernel.org>; Tue, 21 Feb 2012 02:12:17 -0800 (PST)
-In-Reply-To: <4F433A3F.7010804@snapgear.com>
+Received: from s15429932.onlinehome-server.info ([87.106.248.152]:55058 "EHLO
+	ws1.rootfuchs.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754623Ab2BUKzn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 05:55:43 -0500
+In-Reply-To: <m2fwe5glc7.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Patrick Bottelberger <patrick.bottelberger@sigon.net>, Thorsten Glaser <tg@debian.org>, linux-m68k@vger.kernel.org
 
-Hi Greg,
 
-On Tue, Feb 21, 2012 at 07:31, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 19/02/12 20:12, Geert Uytterhoeven wrote:
->> On Tue, Feb 7, 2012 at 04:25,<gerg@snapgear.com> =C2=A0wrote:
->>> --- a/arch/m68k/kernel/ptrace_mm.c
->>> +++ b/arch/m68k/kernel/ptrace.c
->>> @@ -277,7 +287,6 @@ asmlinkage void syscall_trace(void)
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->>> }
->>>
->>> -#ifdef CONFIG_COLDFIRE
->>> asmlinkage int syscall_trace_enter(void)
->>> {
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0int ret =3D 0;
->>> @@ -292,4 +301,3 @@ asmlinkage void syscall_trace_leave(void)
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (test_thread_flag(TIF_SYSCALL_TRACE))
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tracehook_re=
-port_syscall_exit(task_pt_regs(current), 0);
->>> }
->>> -#endif /* CONFIG_COLDFIRE */
->>
->>
->> Why have you dropped the #ifdef?
->
-> Purely to have less "#ifdef"s in the code.
+Hi Andreas,
 
-IC.
+On Tue, 21 Feb 2012 00:02:16 +0100, Andreas Schwab <schwab@linux-m68k.org>
+wrote:
+> Patrick Bottelberger <patrick.bottelberger@sigon.net> writes:
+> 
+>> (e.g. jumping between 02:20, 12:20 and 22:20 in a few seconds)
+> 
+> That looks like a real hardware problem.
+> 
 
-> Does bloat the code a little, would you prefer I leave the #ifdef the=
-re?
+I am absolutely sure that it's not a hardware problem, as netbsd has no
+problems reading the hardware clock.
 
-Yes, it serves as a reminder to add syscall trace support.
+>> But i don't think the kernel relies on floating point registers for
+>> getting the time from the rtc, or is it?
+> 
+> The kernel does not use floating point at all.
+> 
 
-Gr{oetje,eeting}s,
+Ok, thanks for clarifying.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Regards,
+Patrick
