@@ -1,17 +1,17 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/2] m68k: make support for FPU hardware configurable
-Date: Tue, 21 Feb 2012 15:56:30 +1000
-Message-ID: <4F43320E.4000900@snapgear.com>
-References: <1328854457-24859-1-git-send-email-gerg@snapgear.com> <CAMuHMdVnOsxKCvUtCbwb_RqKp8L7HLfb4jEO8_Hnewvry+33nQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: merge the mmu and non-mmu versions of ptrace.c
+Date: Tue, 21 Feb 2012 16:31:27 +1000
+Message-ID: <4F433A3F.7010804@snapgear.com>
+References: <1328585132-31029-1-git-send-email-gerg@snapgear.com> <CAMuHMdXE1fHSUpn5neu7VTGZs30q=O-WdC2F-qrt1QKy9TL9Mg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:27020 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751058Ab2BUGAb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 01:00:31 -0500
-In-Reply-To: <CAMuHMdVnOsxKCvUtCbwb_RqKp8L7HLfb4jEO8_Hnewvry+33nQ@mail.gmail.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:59289 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751593Ab2BUGcU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 01:32:20 -0500
+In-Reply-To: <CAMuHMdXE1fHSUpn5neu7VTGZs30q=O-WdC2F-qrt1QKy9TL9Mg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -19,23 +19,28 @@ Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@ucli
 
 Hi Geert,
 
-On 19/02/12 20:17, Geert Uytterhoeven wrote:
-> On Fri, Feb 10, 2012 at 07:14,<gerg@snapgear.com>  wrote:
->> The classic m68k code has always supported an FPU (although it may have
->> been a software emulated one). The non-MMU m68k code has never supported FPU
->> hardware. To help in merging common code create a configation setting that
->> signifies if we are builing in FPU support or not.
+On 19/02/12 20:12, Geert Uytterhoeven wrote:
+> On Tue, Feb 7, 2012 at 04:25,<gerg@snapgear.com>  wrote:
+>> --- a/arch/m68k/kernel/ptrace_mm.c
+>> +++ b/arch/m68k/kernel/ptrace.c
+>> @@ -277,7 +287,6 @@ asmlinkage void syscall_trace(void)
+>> 	}
+>> }
 >>
->> This switch, CONFIG_FPU, is set as per the current use cases. So it is
->> always enabled if CONFIG_MMU is set, and disabled otherwise. With a little
->> extra code it will be possible to disable it on the classic m68k platforms
->> as well, and to enable it on non-MMU platforms that do have hardware FPU.
->>
->> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>> -#ifdef CONFIG_COLDFIRE
+>> asmlinkage int syscall_trace_enter(void)
+>> {
+>> 	int ret = 0;
+>> @@ -292,4 +301,3 @@ asmlinkage void syscall_trace_leave(void)
+>> 	if (test_thread_flag(TIF_SYSCALL_TRACE))
+>> 		tracehook_report_syscall_exit(task_pt_regs(current), 0);
+>> }
+>> -#endif /* CONFIG_COLDFIRE */
 >
-> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
+> Why have you dropped the #ifdef?
 
-Thanks!
+Purely to have less "#ifdef"s in the code.
+Does bloat the code a little, would you prefer I leave the #ifdef there?
 
 Regards
 Greg
