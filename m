@@ -1,44 +1,48 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: Linux on Amiga A600, a success story (in progress, with possible patch)
-Date: Tue, 21 Feb 2012 00:02:16 +0100
-Message-ID: <m2fwe5glc7.fsf@igel.home>
-References: <4F1C577D.3040908@sigon.net>
-	<CAMuHMdWFR-BQtwkh9=hgQEp4L+XZnDy4scm03TvmGbwrk=Jd5w@mail.gmail.com>
-	<4F1EEBEF.4000400@sigon.net>
-	<CAMuHMdWbQau3kS2-svDS705_PS4-0adCCvLvT=Af6VKKZfr+gA@mail.gmail.com>
-	<4F2053C9.3090201@sigon.net>
-	<97e6cf2ca60c81874f6ea82e8b4af158@localhost>
-	<4F3181C6.8080805@sigon.net> <loom.20120207T231019-351@post.gmane.org>
-	<4F42BD3E.3060901@sigon.net> <m2obstgnsu.fsf@igel.home>
-	<4F42CD74.5010409@sigon.net>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/2] m68k: make support for FPU hardware configurable
+Date: Tue, 21 Feb 2012 15:56:30 +1000
+Message-ID: <4F43320E.4000900@snapgear.com>
+References: <1328854457-24859-1-git-send-email-gerg@snapgear.com> <CAMuHMdVnOsxKCvUtCbwb_RqKp8L7HLfb4jEO8_Hnewvry+33nQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:60411 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752193Ab2BTXCS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 20 Feb 2012 18:02:18 -0500
-In-Reply-To: <4F42CD74.5010409@sigon.net> (Patrick Bottelberger's message of
-	"Mon, 20 Feb 2012 23:47:16 +0100")
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:27020 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751058Ab2BUGAb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Feb 2012 01:00:31 -0500
+In-Reply-To: <CAMuHMdVnOsxKCvUtCbwb_RqKp8L7HLfb4jEO8_Hnewvry+33nQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Patrick Bottelberger <patrick.bottelberger@sigon.net>
-Cc: Thorsten Glaser <tg@debian.org>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Patrick Bottelberger <patrick.bottelberger@sigon.net> writes:
+Hi Geert,
 
-> (e.g. jumping between 02:20, 12:20 and 22:20 in a few seconds)
+On 19/02/12 20:17, Geert Uytterhoeven wrote:
+> On Fri, Feb 10, 2012 at 07:14,<gerg@snapgear.com>  wrote:
+>> The classic m68k code has always supported an FPU (although it may have
+>> been a software emulated one). The non-MMU m68k code has never supported FPU
+>> hardware. To help in merging common code create a configation setting that
+>> signifies if we are builing in FPU support or not.
+>>
+>> This switch, CONFIG_FPU, is set as per the current use cases. So it is
+>> always enabled if CONFIG_MMU is set, and disabled otherwise. With a little
+>> extra code it will be possible to disable it on the classic m68k platforms
+>> as well, and to enable it on non-MMU platforms that do have hardware FPU.
+>>
+>> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
+>
+> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
 
-That looks like a real hardware problem.
+Thanks!
 
-> But i don't think the kernel relies on floating point registers for
-> getting the time from the rtc, or is it?
+Regards
+Greg
 
-The kernel does not use floating point at all.
 
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
