@@ -1,41 +1,51 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH v2] m68k: merge the mmu and non-mmu versions of ptrace.c
-Date: Wed, 22 Feb 2012 21:37:47 +1000
-Message-ID: <4F44D38B.6060303@snapgear.com>
-References: <1329880414-8301-1-git-send-email-gerg@snapgear.com> <CAMuHMdVD-QuZ+HEEuJFXp2=H=XZum+QVqw36LWKu_6jboCMKMA@mail.gmail.com>
+Subject: [git pull] m68k: coldfire machine fixes for 3.3
+Date: Wed, 22 Feb 2012 22:01:31 +1000
+Message-ID: <201202221201.q1MC1VKc010940@goober.corp.nai.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:53980 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754535Ab2BVLnM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 06:43:12 -0500
-In-Reply-To: <CAMuHMdVD-QuZ+HEEuJFXp2=H=XZum+QVqw36LWKu_6jboCMKMA@mail.gmail.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:56430 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751408Ab2BVMFx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 07:05:53 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Hi Geert,
+Hi Linus,
 
-On 02/22/2012 07:41 PM, Geert Uytterhoeven wrote:
-> On Wed, Feb 22, 2012 at 04:13,<gerg@snapgear.com>  wrote:
->> Most of the code in the non-mmu ptrace_no.c file is the same as the mmu
->> version ptrace_mm.c. So merge them back into a single file.
->>
->> Signed-off-by: Greg Ungerer<gerg@uclinux.org>
->
-> Acked-by: Geert Uytterhoeven<geert@linux-m68k.org>
+Can you please pull from the m68knommu git tree, for-linus branch:
 
-Thanks!
+git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-Regards
+It contains 3 important fixes for ColdFire based machines:
+. fix processes getting stuck when running from strace
+. fix kernel vmalloced pages not being visible in all kernel contexts
+. fix shared user pages sometimes being visible in another process context
+
+Thanks
 Greg
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+
+The following changes since commit 62aa2b537c6f5957afd98e29f96897419ed5ebab:
+  Linus Torvalds (1):
+        Linux 3.3-rc2
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Alexander Stein (2):
+      m68k: Add shared bit to Coldfire kernel page entries
+      m68k: Do not set global share for non-kernel shared pages
+
+Greg Ungerer (1):
+      m68knommu: fix syscall tracing stuck process
+
+ arch/m68k/include/asm/mcf_pgtable.h |    3 ++-
+ arch/m68k/mm/mcfmmu.c               |    9 +++++----
+ arch/m68k/platform/coldfire/entry.S |    4 +---
+ 3 files changed, 8 insertions(+), 8 deletions(-)
