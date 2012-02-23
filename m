@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 07/23] m68knommu: make 5307 UART platform addressing consistent
-Date: Thu, 23 Feb 2012 14:34:39 +1000
-Message-ID: <1329971695-2203-8-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 05/23] m68knommu: make 5272 UART platform addressing consistent
+Date: Thu, 23 Feb 2012 14:34:37 +1000
+Message-ID: <1329971695-2203-6-git-send-email-gerg@snapgear.com>
 References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:17788 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:17786 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753496Ab2BWEe2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:34:28 -0500
+	with ESMTP id S1753400Ab2BWEe0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:34:26 -0500
 In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -22,81 +22,63 @@ If we make all UART addressing consistent across all ColdFire family members
 then we will be able to remove the duplicated plaform data and use a single
 setup for all.
 
-So modify the ColdFire 5307 UART addressing so that:
+So modify the ColdFire 5272 UART addressing so that:
 
 . UARTs are numbered from 0 up
 . base addresses are absolute (not relative to MBAR peripheral register)
-. use a common name for IRQs used
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m5307sim.h |   10 ++++++----
- arch/m68k/platform/5307/config.c |   12 ++++++------
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ arch/m68k/include/asm/m5272sim.h |    8 ++++----
+ arch/m68k/platform/5272/config.c |    8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
-index 8f8609f..3bc3ada 100644
---- a/arch/m68k/include/asm/m5307sim.h
-+++ b/arch/m68k/include/asm/m5307sim.h
-@@ -117,11 +117,11 @@
-  *  UART module.
-  */
- #if defined(CONFIG_NETtel) || defined(CONFIG_SECUREEDGEMP3)
--#define MCFUART_BASE1		0x200           /* Base address of UART1 */
--#define MCFUART_BASE2		0x1c0           /* Base address of UART2 */
-+#define MCFUART_BASE0		(MCF_MBAR + 0x200)	/* Base address UART0 */
-+#define MCFUART_BASE1		(MCF_MBAR + 0x1c0)	/* Base address UART1 */
- #else
--#define MCFUART_BASE1		0x1c0           /* Base address of UART1 */
--#define MCFUART_BASE2		0x200           /* Base address of UART2 */
-+#define MCFUART_BASE0		(MCF_MBAR + 0x1c0)	/* Base address UART0 */
-+#define MCFUART_BASE1		(MCF_MBAR + 0x200)	/* Base address UART1 */
- #endif
+diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
+index 759c2b0..5c71bd4 100644
+--- a/arch/m68k/include/asm/m5272sim.h
++++ b/arch/m68k/include/asm/m5272sim.h
+@@ -68,8 +68,8 @@
+ #define	MCFSIM_DCMR1		0x5c		/* DRAM 1 Mask reg (r/w) */
+ #define	MCFSIM_DCCR1		0x63		/* DRAM 1 Control reg (r/w) */
  
- /*
-@@ -176,6 +176,8 @@
-  */
- #define	MCF_IRQ_TIMER		30		/* Timer0, Level 6 */
- #define	MCF_IRQ_PROFILER	31		/* Timer1, Level 7 */
-+#define	MCF_IRQ_UART0		73		/* UART0 */
-+#define	MCF_IRQ_UART1		74		/* UART1 */
+-#define	MCFUART_BASE1		0x100		/* Base address of UART1 */
+-#define	MCFUART_BASE2		0x140		/* Base address of UART2 */
++#define	MCFUART_BASE0		(MCF_MBAR + 0x100) /* Base address UART0 */
++#define	MCFUART_BASE1		(MCF_MBAR + 0x140) /* Base address UART1 */
  
- /****************************************************************************/
- #endif	/* m5307sim_h */
-diff --git a/arch/m68k/platform/5307/config.c b/arch/m68k/platform/5307/config.c
-index 00900ac..6f89c31 100644
---- a/arch/m68k/platform/5307/config.c
-+++ b/arch/m68k/platform/5307/config.c
-@@ -31,12 +31,12 @@ unsigned char ledbank = 0xff;
+ #define	MCFSIM_PACNT		(MCF_MBAR + 0x80) /* Port A Control (r/w) */
+ #define	MCFSIM_PADDR		(MCF_MBAR + 0x84) /* Port A Direction (r/w) */
+@@ -101,8 +101,8 @@
+ #define	MCF_IRQ_TIMER2		70		/* Timer 2 */
+ #define	MCF_IRQ_TIMER3		71		/* Timer 3 */
+ #define	MCF_IRQ_TIMER4		72		/* Timer 4 */
+-#define	MCF_IRQ_UART1		73		/* UART 1 */
+-#define	MCF_IRQ_UART2		74		/* UART 2 */
++#define	MCF_IRQ_UART0		73		/* UART 0 */
++#define	MCF_IRQ_UART1		74		/* UART 1 */
+ #define	MCF_IRQ_PLIP		75		/* PLIC 2Khz Periodic */
+ #define	MCF_IRQ_PLIA		76		/* PLIC Asynchronous */
+ #define	MCF_IRQ_USB0		77		/* USB Endpoint 0 */
+diff --git a/arch/m68k/platform/5272/config.c b/arch/m68k/platform/5272/config.c
+index 65bb582..99b499e 100644
+--- a/arch/m68k/platform/5272/config.c
++++ b/arch/m68k/platform/5272/config.c
+@@ -32,12 +32,12 @@ unsigned char ledbank = 0xff;
  
- static struct mcf_platform_uart m5307_uart_platform[] = {
+ static struct mcf_platform_uart m5272_uart_platform[] = {
  	{
 -		.mapbase	= MCF_MBAR + MCFUART_BASE1,
--		.irq		= 73,
+-		.irq		= MCF_IRQ_UART1,
 +		.mapbase	= MCFUART_BASE0,
 +		.irq		= MCF_IRQ_UART0,
  	},
  	{
 -		.mapbase 	= MCF_MBAR + MCFUART_BASE2,
--		.irq		= 74,
+-		.irq		= MCF_IRQ_UART2,
 +		.mapbase 	= MCFUART_BASE1,
 +		.irq		= MCF_IRQ_UART1,
  	},
  	{ },
  };
-@@ -57,11 +57,11 @@ static void __init m5307_uart_init_line(int line, int irq)
- {
- 	if (line == 0) {
- 		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
--		writeb(irq, MCF_MBAR + MCFUART_BASE1 + MCFUART_UIVR);
-+		writeb(irq, MCFUART_BASE0 + MCFUART_UIVR);
- 		mcf_mapirq2imr(irq, MCFINTC_UART0);
- 	} else if (line == 1) {
- 		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
--		writeb(irq, MCF_MBAR + MCFUART_BASE2 + MCFUART_UIVR);
-+		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
- 		mcf_mapirq2imr(irq, MCFINTC_UART1);
- 	}
- }
 -- 
 1.7.0.4
