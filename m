@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 12/23] m68knommu: simplify the 5206 UART setup code
-Date: Thu, 23 Feb 2012 14:34:44 +1000
-Message-ID: <1329971695-2203-13-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 16/23] m68knommu: simplify the 527x UART setup code
+Date: Thu, 23 Feb 2012 14:34:48 +1000
+Message-ID: <1329971695-2203-17-git-send-email-gerg@snapgear.com>
 References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:53741 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:53745 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754026Ab2BWEgA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:36:00 -0500
+	with ESMTP id S1754026Ab2BWEgC (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:36:02 -0500
 In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -25,48 +25,50 @@ of platform data for ColdFire UARTs.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/platform/5206/config.c |   27 +++++++++------------------
- 1 files changed, 9 insertions(+), 18 deletions(-)
+ arch/m68k/platform/527x/config.c |   21 ++-------------------
+ 1 files changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/arch/m68k/platform/5206/config.c b/arch/m68k/platform/5206/config.c
-index e21608c..5ac8e7b 100644
---- a/arch/m68k/platform/5206/config.c
-+++ b/arch/m68k/platform/5206/config.c
-@@ -44,26 +44,17 @@ static struct platform_device *m5206_devices[] __initdata = {
+diff --git a/arch/m68k/platform/527x/config.c b/arch/m68k/platform/527x/config.c
+index 1f2df30..2a8e6b8 100644
+--- a/arch/m68k/platform/527x/config.c
++++ b/arch/m68k/platform/527x/config.c
+@@ -295,35 +295,18 @@ static struct platform_device *m527x_devices[] __initdata = {
  
  /***************************************************************************/
  
--static void __init m5206_uart_init_line(int line, int irq)
--{
--	if (line == 0) {
--		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
--		writeb(irq, MCFUART_BASE0 + MCFUART_UIVR);
--		mcf_mapirq2imr(irq, MCFINTC_UART0);
--	} else if (line == 1) {
--		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
--		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
--		mcf_mapirq2imr(irq, MCFINTC_UART1);
--	}
--}
--
- static void __init m5206_uarts_init(void)
+-static void __init m527x_uart_init_line(int line, int irq)
++static void __init m527x_uarts_init(void)
  {
--	const int nrlines = ARRAY_SIZE(m5206_uart_platform);
+ 	u16 sepmask;
+ 
+-	if ((line < 0) || (line > 2))
+-		return;
+-
+ 	/*
+ 	 * External Pin Mask Setting & Enable External Pin for Interface
+ 	 */
+ 	sepmask = readw(MCF_IPSBAR + MCF_GPIO_PAR_UART);
+-	if (line == 0)
+-		sepmask |= UART0_ENABLE_MASK;
+-	else if (line == 1)
+-		sepmask |= UART1_ENABLE_MASK;
+-	else if (line == 2)
+-		sepmask |= UART2_ENABLE_MASK;
++	sepmask |= UART0_ENABLE_MASK | UART1_ENABLE_MASK | UART2_ENABLE_MASK;
+ 	writew(sepmask, MCF_IPSBAR + MCF_GPIO_PAR_UART);
+ }
+ 
+-static void __init m527x_uarts_init(void)
+-{
+-	const int nrlines = ARRAY_SIZE(m527x_uart_platform);
 -	int line;
 -
 -	for (line = 0; (line < nrlines); line++)
--		m5206_uart_init_line(line, m5206_uart_platform[line].irq);
-+	/* UART0 interrupt setup */
-+	writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
-+	writeb(MCF_IRQ_UART0, MCFUART_BASE0 + MCFUART_UIVR);
-+	mcf_mapirq2imr(MCF_IRQ_UART0, MCFINTC_UART0);
-+
-+	/* UART1 interrupt setup */
-+	writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
-+	writeb(MCF_IRQ_UART1, MCFUART_BASE1 + MCFUART_UIVR);
-+	mcf_mapirq2imr(MCF_IRQ_UART1, MCFINTC_UART1);
- }
- 
+-		m527x_uart_init_line(line, m527x_uart_platform[line].irq);
+-}
+-
  /***************************************************************************/
+ 
+ static void __init m527x_fec_init(void)
 -- 
 1.7.0.4
