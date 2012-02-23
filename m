@@ -1,62 +1,92 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 00/23] m68knommu: clean up and merge common ColdFire UART code
-Date: Thu, 23 Feb 2012 14:34:32 +1000
-Message-ID: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 02/23] m68knommu: make 520x UART platform addressing consistent
+Date: Thu, 23 Feb 2012 14:34:34 +1000
+Message-ID: <1329971695-2203-3-git-send-email-gerg@snapgear.com>
+References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:53721 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:53723 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753940Ab2BWEfv (ORCPT
+	with ESMTP id S1754012Ab2BWEfv (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:35:51 -0500
+In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
+From: Greg Ungerer <gerg@uclinux.org>
 
-The code to init and platform setup the ColdFire UART devices is duplicated
-throughout the CPU specific config.c files. It is all common, these are the
-same UARTs, just with different base addresses and IRQ numbers used.
+If we make all UART addressing consistent across all ColdFire family members
+then we will be able to remove the duplicated plaform data and use a single
+setup for all.
 
-Cleanup and merge the common UART code. Ends up saving quite a few hundred
-lines of code.
+So modify the ColdFire 520x UART addressing so that:
 
+. UARTs are numbered from 0 up
+. use a common name for IRQs used
 
- arch/m68k/platform/5206/config.c       |   78 +++------------------------------
- arch/m68k/platform/520x/config.c       |   65 +++++----------------------
- arch/m68k/platform/523x/config.c       |   23 ---------
- arch/m68k/platform/5249/config.c       |   63 +++-----------------------
- arch/m68k/platform/5272/config.c       |   46 +++----------------
- arch/m68k/platform/527x/config.c       |   44 ------------------
- arch/m68k/platform/528x/config.c       |   45 +------------------
- arch/m68k/platform/5307/config.c       |   78 +++------------------------------
- arch/m68k/platform/532x/config.c       |   42 +----------------
- arch/m68k/platform/5407/config.c       |   78 +++------------------------------
- arch/m68k/platform/54xx/config.c       |   76 +++-----------------------------
- arch/m68k/platform/coldfire/device.c   |   20 ++++++++
- b/arch/m68k/include/asm/m5206sim.h     |   10 ++--
- b/arch/m68k/include/asm/m520xsim.h     |   10 ++--
- b/arch/m68k/include/asm/m523xsim.h     |   12 +++--
- b/arch/m68k/include/asm/m5249sim.h     |    7 ++
- b/arch/m68k/include/asm/m5272sim.h     |    8 +--
- b/arch/m68k/include/asm/m527xsim.h     |   10 ++--
- b/arch/m68k/include/asm/m528xsim.h     |   12 +++--
- b/arch/m68k/include/asm/m5307sim.h     |   10 ++--
- b/arch/m68k/include/asm/m532xsim.h     |   10 ++--
- b/arch/m68k/include/asm/m5407sim.h     |    6 +-
- b/arch/m68k/include/asm/m54xxsim.h     |   16 ++++--
- b/arch/m68k/include/asm/mcfuart.h      |    5 +-
- b/arch/m68k/platform/5206/config.c     |   12 ++---
- b/arch/m68k/platform/520x/config.c     |   12 ++---
- b/arch/m68k/platform/523x/config.c     |   12 ++---
- b/arch/m68k/platform/5249/config.c     |   12 ++---
- b/arch/m68k/platform/5272/config.c     |    8 +--
- b/arch/m68k/platform/527x/config.c     |   12 ++---
- b/arch/m68k/platform/528x/config.c     |   12 ++---
- b/arch/m68k/platform/5307/config.c     |   12 ++---
- b/arch/m68k/platform/532x/config.c     |   12 ++---
- b/arch/m68k/platform/5407/config.c     |   12 ++---
- b/arch/m68k/platform/54xx/config.c     |   16 +++---
- b/arch/m68k/platform/coldfire/Makefile |    2 
- b/arch/m68k/platform/coldfire/device.c |   60 +++++++++++++++++++++++++
- 37 files changed, 299 insertions(+), 669 deletions(-)
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/m520xsim.h |   10 +++++++---
+ arch/m68k/platform/520x/config.c |   12 ++++++------
+ 2 files changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/arch/m68k/include/asm/m520xsim.h b/arch/m68k/include/asm/m520xsim.h
+index eda62de..41ed4dc 100644
+--- a/arch/m68k/include/asm/m520xsim.h
++++ b/arch/m68k/include/asm/m520xsim.h
+@@ -50,6 +50,10 @@
+ #define MCFINT_QSPI         31          /* Interrupt number for QSPI */
+ #define MCFINT_PIT1         4           /* Interrupt number for PIT1 (PIT0 in processor) */
+ 
++#define MCF_IRQ_UART0	    (MCFINT_VECBASE + MCFINT_UART0)
++#define MCF_IRQ_UART1	    (MCFINT_VECBASE + MCFINT_UART1)
++#define MCF_IRQ_UART2	    (MCFINT_VECBASE + MCFINT_UART2)
++
+ /*
+  *  SDRAM configuration registers.
+  */
+@@ -144,9 +148,9 @@
+ /*
+  *  UART module.
+  */
+-#define MCFUART_BASE1		0xFC060000	/* Base address of UART1 */
+-#define MCFUART_BASE2		0xFC064000	/* Base address of UART2 */
+-#define MCFUART_BASE3		0xFC068000	/* Base address of UART2 */
++#define MCFUART_BASE0		0xFC060000	/* Base address of UART0 */
++#define MCFUART_BASE1		0xFC064000	/* Base address of UART1 */
++#define MCFUART_BASE2		0xFC068000	/* Base address of UART2 */
+ 
+ /*
+  *  FEC module.
+diff --git a/arch/m68k/platform/520x/config.c b/arch/m68k/platform/520x/config.c
+index 8a98683..9dc4870 100644
+--- a/arch/m68k/platform/520x/config.c
++++ b/arch/m68k/platform/520x/config.c
+@@ -27,16 +27,16 @@
+ 
+ static struct mcf_platform_uart m520x_uart_platform[] = {
+ 	{
+-		.mapbase	= MCFUART_BASE1,
+-		.irq		= MCFINT_VECBASE + MCFINT_UART0,
++		.mapbase	= MCFUART_BASE0,
++		.irq		= MCF_IRQ_UART0,
+ 	},
+ 	{
+-		.mapbase 	= MCFUART_BASE2,
+-		.irq		= MCFINT_VECBASE + MCFINT_UART1,
++		.mapbase 	= MCFUART_BASE1,
++		.irq		= MCF_IRQ_UART1,
+ 	},
+ 	{
+-		.mapbase 	= MCFUART_BASE3,
+-		.irq		= MCFINT_VECBASE + MCFINT_UART2,
++		.mapbase 	= MCFUART_BASE2,
++		.irq		= MCF_IRQ_UART2,
+ 	},
+ 	{ },
+ };
+-- 
+1.7.0.4
