@@ -1,51 +1,102 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68k: coldfire machine fixes for 3.3
-Date: Wed, 22 Feb 2012 22:01:31 +1000
-Message-ID: <201202221201.q1MC1VKc010940@goober.corp.nai.org>
+From: <gerg@snapgear.com>
+Subject: [PATCH 01/23] m68knommu: make 5206 UART platform addressing consistent
+Date: Thu, 23 Feb 2012 14:34:33 +1000
+Message-ID: <1329971695-2203-2-git-send-email-gerg@snapgear.com>
+References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:56430 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:17776 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751408Ab2BVMFx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 07:05:53 -0500
+	with ESMTP id S1753138Ab2BWEeV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:34:21 -0500
+In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Linus,
+From: Greg Ungerer <gerg@uclinux.org>
 
-Can you please pull from the m68knommu git tree, for-linus branch:
+If we make all UART addressing consistent across all ColdFire family members
+then we will be able to remove the duplicated plaform data and use a single
+setup for all.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+So modify the ColdFire 5206 UART addressing so that:
 
-It contains 3 important fixes for ColdFire based machines:
-. fix processes getting stuck when running from strace
-. fix kernel vmalloced pages not being visible in all kernel contexts
-. fix shared user pages sometimes being visible in another process context
+. UARTs are numbered from 0 up
+. base addresses are absolute (not relative to MBAR peripheral register)
+. use a common name for IRQs used
 
-Thanks
-Greg
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/m5206sim.h |   10 ++++++----
+ arch/m68k/platform/5206/config.c |   12 ++++++------
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-
-
-The following changes since commit 62aa2b537c6f5957afd98e29f96897419ed5ebab:
-  Linus Torvalds (1):
-        Linux 3.3-rc2
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Alexander Stein (2):
-      m68k: Add shared bit to Coldfire kernel page entries
-      m68k: Do not set global share for non-kernel shared pages
-
-Greg Ungerer (1):
-      m68knommu: fix syscall tracing stuck process
-
- arch/m68k/include/asm/mcf_pgtable.h |    3 ++-
- arch/m68k/mm/mcfmmu.c               |    9 +++++----
- arch/m68k/platform/coldfire/entry.S |    4 +---
- 3 files changed, 8 insertions(+), 8 deletions(-)
+diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
+index 9015ead..6972236 100644
+--- a/arch/m68k/include/asm/m5206sim.h
++++ b/arch/m68k/include/asm/m5206sim.h
+@@ -100,11 +100,11 @@
+ #define	MCFDMA_BASE1		(MCF_MBAR + 0x240)	/* Base address DMA 1 */
+ 
+ #if defined(CONFIG_NETtel)
+-#define	MCFUART_BASE1		0x180		/* Base address of UART1 */
+-#define	MCFUART_BASE2		0x140		/* Base address of UART2 */
++#define	MCFUART_BASE0		(MCF_MBAR + 0x180)	/* Base address UART0 */
++#define	MCFUART_BASE1		(MCF_MBAR + 0x140)	/* Base address UART1 */
+ #else
+-#define	MCFUART_BASE1		0x140		/* Base address of UART1 */
+-#define	MCFUART_BASE2		0x180		/* Base address of UART2 */
++#define	MCFUART_BASE0		(MCF_MBAR + 0x140)	/* Base address UART0 */
++#define	MCFUART_BASE1		(MCF_MBAR + 0x180)	/* Base address UART1 */
+ #endif
+ 
+ /*
+@@ -112,6 +112,8 @@
+  */
+ #define	MCF_IRQ_TIMER		30		/* Timer0, Level 6 */
+ #define	MCF_IRQ_PROFILER	31		/* Timer1, Level 7 */
++#define	MCF_IRQ_UART0		73		/* UART0 */
++#define	MCF_IRQ_UART1		74		/* UART1 */
+ 
+ /*
+  *	Generic GPIO
+diff --git a/arch/m68k/platform/5206/config.c b/arch/m68k/platform/5206/config.c
+index 6fa3f80..e21608c 100644
+--- a/arch/m68k/platform/5206/config.c
++++ b/arch/m68k/platform/5206/config.c
+@@ -22,12 +22,12 @@
+ 
+ static struct mcf_platform_uart m5206_uart_platform[] = {
+ 	{
+-		.mapbase	= MCF_MBAR + MCFUART_BASE1,
+-		.irq		= 73,
++		.mapbase	= MCFUART_BASE0,
++		.irq		= MCF_IRQ_UART0,
+ 	},
+ 	{
+-		.mapbase 	= MCF_MBAR + MCFUART_BASE2,
+-		.irq		= 74,
++		.mapbase 	= MCFUART_BASE1,
++		.irq		= MCF_IRQ_UART1,
+ 	},
+ 	{ },
+ };
+@@ -48,11 +48,11 @@ static void __init m5206_uart_init_line(int line, int irq)
+ {
+ 	if (line == 0) {
+ 		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
+-		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
++		writeb(irq, MCFUART_BASE0 + MCFUART_UIVR);
+ 		mcf_mapirq2imr(irq, MCFINTC_UART0);
+ 	} else if (line == 1) {
+ 		writel(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
+-		writeb(irq, MCFUART_BASE2 + MCFUART_UIVR);
++		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
+ 		mcf_mapirq2imr(irq, MCFINTC_UART1);
+ 	}
+ }
+-- 
+1.7.0.4
