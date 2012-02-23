@@ -1,98 +1,62 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 04/23] m68knommu: make 5249 UART platform addressing consistent
-Date: Thu, 23 Feb 2012 14:34:36 +1000
-Message-ID: <1329971695-2203-5-git-send-email-gerg@snapgear.com>
-References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 00/23] m68knommu: clean up and merge common ColdFire UART code
+Date: Thu, 23 Feb 2012 14:34:32 +1000
+Message-ID: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:53724 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:53721 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753940Ab2BWEfw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:35:52 -0500
-In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
+	with ESMTP id S1753940Ab2BWEfv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:35:51 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-If we make all UART addressing consistent across all ColdFire family members
-then we will be able to remove the duplicated plaform data and use a single
-setup for all.
+The code to init and platform setup the ColdFire UART devices is duplicated
+throughout the CPU specific config.c files. It is all common, these are the
+same UARTs, just with different base addresses and IRQ numbers used.
 
-So modify the ColdFire 5249 UART addressing so that:
+Cleanup and merge the common UART code. Ends up saving quite a few hundred
+lines of code.
 
-. UARTs are numbered from 0 up
-. base addresses are absolute (not relative to MBAR peripheral register)
-. use a common name for IRQs used
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/include/asm/m5249sim.h |    7 +++++--
- arch/m68k/platform/5249/config.c |   12 ++++++------
- 2 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
-index 805714c..3e31508 100644
---- a/arch/m68k/include/asm/m5249sim.h
-+++ b/arch/m68k/include/asm/m5249sim.h
-@@ -76,8 +76,8 @@
- /*
-  *	UART module.
-  */
--#define MCFUART_BASE1		0x1c0           /* Base address of UART1 */
--#define MCFUART_BASE2		0x200           /* Base address of UART2 */
-+#define MCFUART_BASE0		(MCF_MBAR + 0x1c0)	/* Base address UART0 */
-+#define MCFUART_BASE1		(MCF_MBAR + 0x200)	/* Base address UART1 */
- 
- /*
-  *	DMA unit base addresses.
-@@ -108,6 +108,9 @@
- #define	MCF_IRQ_TIMER		30		/* Timer0, Level 6 */
- #define	MCF_IRQ_PROFILER	31		/* Timer1, Level 7 */
- 
-+#define	MCF_IRQ_UART0		73		/* UART0 */
-+#define	MCF_IRQ_UART1		74		/* UART1 */
-+
- /*
-  *	General purpose IO registers (in MBAR2).
-  */
-diff --git a/arch/m68k/platform/5249/config.c b/arch/m68k/platform/5249/config.c
-index ceb31e5..6d779a9 100644
---- a/arch/m68k/platform/5249/config.c
-+++ b/arch/m68k/platform/5249/config.c
-@@ -24,12 +24,12 @@
- 
- static struct mcf_platform_uart m5249_uart_platform[] = {
- 	{
--		.mapbase	= MCF_MBAR + MCFUART_BASE1,
--		.irq		= 73,
-+		.mapbase	= MCFUART_BASE0,
-+		.irq		= MCF_IRQ_UART0,
- 	},
- 	{
--		.mapbase 	= MCF_MBAR + MCFUART_BASE2,
--		.irq		= 74,
-+		.mapbase 	= MCFUART_BASE1,
-+		.irq		= MCF_IRQ_UART1,
- 	},
- 	{ },
- };
-@@ -238,11 +238,11 @@ static void __init m5249_uart_init_line(int line, int irq)
- {
- 	if (line == 0) {
- 		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
--		writeb(irq, MCF_MBAR + MCFUART_BASE1 + MCFUART_UIVR);
-+		writeb(irq, MCFUART_BASE0 + MCFUART_UIVR);
- 		mcf_mapirq2imr(irq, MCFINTC_UART0);
- 	} else if (line == 1) {
- 		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
--		writeb(irq, MCF_MBAR + MCFUART_BASE2 + MCFUART_UIVR);
-+		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
- 		mcf_mapirq2imr(irq, MCFINTC_UART1);
- 	}
- }
--- 
-1.7.0.4
+ arch/m68k/platform/5206/config.c       |   78 +++------------------------------
+ arch/m68k/platform/520x/config.c       |   65 +++++----------------------
+ arch/m68k/platform/523x/config.c       |   23 ---------
+ arch/m68k/platform/5249/config.c       |   63 +++-----------------------
+ arch/m68k/platform/5272/config.c       |   46 +++----------------
+ arch/m68k/platform/527x/config.c       |   44 ------------------
+ arch/m68k/platform/528x/config.c       |   45 +------------------
+ arch/m68k/platform/5307/config.c       |   78 +++------------------------------
+ arch/m68k/platform/532x/config.c       |   42 +----------------
+ arch/m68k/platform/5407/config.c       |   78 +++------------------------------
+ arch/m68k/platform/54xx/config.c       |   76 +++-----------------------------
+ arch/m68k/platform/coldfire/device.c   |   20 ++++++++
+ b/arch/m68k/include/asm/m5206sim.h     |   10 ++--
+ b/arch/m68k/include/asm/m520xsim.h     |   10 ++--
+ b/arch/m68k/include/asm/m523xsim.h     |   12 +++--
+ b/arch/m68k/include/asm/m5249sim.h     |    7 ++
+ b/arch/m68k/include/asm/m5272sim.h     |    8 +--
+ b/arch/m68k/include/asm/m527xsim.h     |   10 ++--
+ b/arch/m68k/include/asm/m528xsim.h     |   12 +++--
+ b/arch/m68k/include/asm/m5307sim.h     |   10 ++--
+ b/arch/m68k/include/asm/m532xsim.h     |   10 ++--
+ b/arch/m68k/include/asm/m5407sim.h     |    6 +-
+ b/arch/m68k/include/asm/m54xxsim.h     |   16 ++++--
+ b/arch/m68k/include/asm/mcfuart.h      |    5 +-
+ b/arch/m68k/platform/5206/config.c     |   12 ++---
+ b/arch/m68k/platform/520x/config.c     |   12 ++---
+ b/arch/m68k/platform/523x/config.c     |   12 ++---
+ b/arch/m68k/platform/5249/config.c     |   12 ++---
+ b/arch/m68k/platform/5272/config.c     |    8 +--
+ b/arch/m68k/platform/527x/config.c     |   12 ++---
+ b/arch/m68k/platform/528x/config.c     |   12 ++---
+ b/arch/m68k/platform/5307/config.c     |   12 ++---
+ b/arch/m68k/platform/532x/config.c     |   12 ++---
+ b/arch/m68k/platform/5407/config.c     |   12 ++---
+ b/arch/m68k/platform/54xx/config.c     |   16 +++---
+ b/arch/m68k/platform/coldfire/Makefile |    2 
+ b/arch/m68k/platform/coldfire/device.c |   60 +++++++++++++++++++++++++
+ 37 files changed, 299 insertions(+), 669 deletions(-)
