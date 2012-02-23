@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 08/23] m68knommu: make 528x UART platform addressing consistent
-Date: Thu, 23 Feb 2012 14:34:40 +1000
-Message-ID: <1329971695-2203-9-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 14/23] m68knommu: simplify the 5249 UART setup code
+Date: Thu, 23 Feb 2012 14:34:46 +1000
+Message-ID: <1329971695-2203-15-git-send-email-gerg@snapgear.com>
 References: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:53738 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:53743 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753940Ab2BWEf7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:35:59 -0500
+	with ESMTP id S1754031Ab2BWEgA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Feb 2012 23:36:00 -0500
 In-Reply-To: <1329971695-2203-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,80 +18,55 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-If we make all UART addressing consistent across all ColdFire family members
-then we will be able to remove the duplicated plaform data and use a single
-setup for all.
-
-So modify the ColdFire 528x UART addressing so that:
-
-. UARTs are numbered from 0 up
-. use a common name for IRQs used
+Simplify the UART setup code so that it no longer loops for each UART
+present. Just make it do all the work it needs in a single function.
+This will make the code easier to share when we move to a single set
+of platform data for ColdFire UARTs.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m528xsim.h |   12 +++++++++---
- arch/m68k/platform/528x/config.c |   12 ++++++------
- 2 files changed, 15 insertions(+), 9 deletions(-)
+ arch/m68k/platform/5249/config.c |   27 +++++++++------------------
+ 1 files changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
-index d798bd5..a5f0c14 100644
---- a/arch/m68k/include/asm/m528xsim.h
-+++ b/arch/m68k/include/asm/m528xsim.h
-@@ -35,9 +35,15 @@
+diff --git a/arch/m68k/platform/5249/config.c b/arch/m68k/platform/5249/config.c
+index 6d779a9..3b30c7f 100644
+--- a/arch/m68k/platform/5249/config.c
++++ b/arch/m68k/platform/5249/config.c
+@@ -234,26 +234,17 @@ static struct platform_device *m5249_devices[] __initdata = {
  
- #define	MCFINT_VECBASE		64		/* Vector base number */
- #define	MCFINT_UART0		13		/* Interrupt number for UART0 */
-+#define	MCFINT_UART1		14		/* Interrupt number for UART1 */
-+#define	MCFINT_UART2		15		/* Interrupt number for UART2 */
- #define	MCFINT_QSPI		18		/* Interrupt number for QSPI */
- #define	MCFINT_PIT1		55		/* Interrupt number for PIT1 */
+ /***************************************************************************/
  
-+#define	MCF_IRQ_UART0	        (MCFINT_VECBASE + MCFINT_UART0)
-+#define	MCF_IRQ_UART1	        (MCFINT_VECBASE + MCFINT_UART1)
-+#define	MCF_IRQ_UART2	        (MCFINT_VECBASE + MCFINT_UART2)
+-static void __init m5249_uart_init_line(int line, int irq)
+-{
+-	if (line == 0) {
+-		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
+-		writeb(irq, MCFUART_BASE0 + MCFUART_UIVR);
+-		mcf_mapirq2imr(irq, MCFINTC_UART0);
+-	} else if (line == 1) {
+-		writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
+-		writeb(irq, MCFUART_BASE1 + MCFUART_UIVR);
+-		mcf_mapirq2imr(irq, MCFINTC_UART1);
+-	}
+-}
+-
+ static void __init m5249_uarts_init(void)
+ {
+-	const int nrlines = ARRAY_SIZE(m5249_uart_platform);
+-	int line;
+-
+-	for (line = 0; (line < nrlines); line++)
+-		m5249_uart_init_line(line, m5249_uart_platform[line].irq);
++	/* UART0 interrupt setup */
++	writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI1, MCF_MBAR + MCFSIM_UART1ICR);
++	writeb(MCF_IRQ_UART0, MCFUART_BASE0 + MCFUART_UIVR);
++	mcf_mapirq2imr(MCF_IRQ_UART0, MCFINTC_UART0);
 +
- /*
-  *	SDRAM configuration registers.
-  */
-@@ -58,9 +64,9 @@
- /*
-  *	UART module.
-  */
--#define	MCFUART_BASE1		(MCF_IPSBAR + 0x00000200)
--#define	MCFUART_BASE2		(MCF_IPSBAR + 0x00000240)
--#define	MCFUART_BASE3		(MCF_IPSBAR + 0x00000280)
-+#define	MCFUART_BASE0		(MCF_IPSBAR + 0x00000200)
-+#define	MCFUART_BASE1		(MCF_IPSBAR + 0x00000240)
-+#define	MCFUART_BASE2		(MCF_IPSBAR + 0x00000280)
++	/* UART1 interrupt setup */
++	writeb(MCFSIM_ICR_LEVEL6 | MCFSIM_ICR_PRI2, MCF_MBAR + MCFSIM_UART2ICR);
++	writeb(MCF_IRQ_UART1, MCFUART_BASE1 + MCFUART_UIVR);
++	mcf_mapirq2imr(MCF_IRQ_UART1, MCFINTC_UART1);
+ }
  
- /*
-  *	FEC ethernet module.
-diff --git a/arch/m68k/platform/528x/config.c b/arch/m68k/platform/528x/config.c
-index 7abe77a..8746fb3 100644
---- a/arch/m68k/platform/528x/config.c
-+++ b/arch/m68k/platform/528x/config.c
-@@ -29,16 +29,16 @@
- 
- static struct mcf_platform_uart m528x_uart_platform[] = {
- 	{
--		.mapbase	= MCFUART_BASE1,
--		.irq		= MCFINT_VECBASE + MCFINT_UART0,
-+		.mapbase	= MCFUART_BASE0,
-+		.irq		= MCF_IRQ_UART0,
- 	},
- 	{
--		.mapbase 	= MCFUART_BASE2,
--		.irq		= MCFINT_VECBASE + MCFINT_UART0 + 1,
-+		.mapbase 	= MCFUART_BASE1,
-+		.irq		= MCF_IRQ_UART1,
- 	},
- 	{
--		.mapbase 	= MCFUART_BASE3,
--		.irq		= MCFINT_VECBASE + MCFINT_UART0 + 2,
-+		.mapbase 	= MCFUART_BASE2,
-+		.irq		= MCF_IRQ_UART2,
- 	},
- 	{ },
- };
+ /***************************************************************************/
 -- 
 1.7.0.4
