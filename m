@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 5/7] m68knommu: make 528x FEC platform addressing consistent
-Date: Fri, 24 Feb 2012 14:24:09 +1000
-Message-ID: <1330057451-28481-6-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 2/7] m68knommu: make 523x FEC platform addressing consistent
+Date: Fri, 24 Feb 2012 14:24:06 +1000
+Message-ID: <1330057451-28481-3-git-send-email-gerg@snapgear.com>
 References: <1330057451-28481-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:44632 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:44619 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755680Ab2BXEXY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Feb 2012 23:23:24 -0500
+	with ESMTP id S1755674Ab2BXEXU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Feb 2012 23:23:20 -0500
 In-Reply-To: <1330057451-28481-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -22,7 +22,7 @@ If we make all FEC (ethernet) addressing consistent across all ColdFire
 family members then we will be able to remove the duplicated plaform data
 and use a single setup for all.
 
-So modify the ColdFire 528x FEC addressing so that:
+So modify the ColdFire 523x FEC addressing so that:
 
 . FECs are numbered from 0 up
 . base addresses are absolute (not relative to MBAR peripheral register)
@@ -30,22 +30,24 @@ So modify the ColdFire 528x FEC addressing so that:
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m528xsim.h |   11 +++++++++--
- arch/m68k/platform/528x/config.c |   16 ++++++++--------
- 2 files changed, 17 insertions(+), 10 deletions(-)
+ arch/m68k/include/asm/m523xsim.h |   13 ++++++++++---
+ arch/m68k/platform/523x/config.c |   16 ++++++++--------
+ 2 files changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
-index a5f0c14..a363c64 100644
---- a/arch/m68k/include/asm/m528xsim.h
-+++ b/arch/m68k/include/asm/m528xsim.h
-@@ -38,12 +38,19 @@
+diff --git a/arch/m68k/include/asm/m523xsim.h b/arch/m68k/include/asm/m523xsim.h
+index 919d115..e1988dd 100644
+--- a/arch/m68k/include/asm/m523xsim.h
++++ b/arch/m68k/include/asm/m523xsim.h
+@@ -37,13 +37,20 @@
+ #define	MCFINT_UART0		13		/* Interrupt number for UART0 */
  #define	MCFINT_UART1		14		/* Interrupt number for UART1 */
  #define	MCFINT_UART2		15		/* Interrupt number for UART2 */
- #define	MCFINT_QSPI		18		/* Interrupt number for QSPI */
+-#define	MCFINT_PIT1		36		/* Interrupt number for PIT1 */
+ #define MCFINT_QSPI		18		/* Interrupt number for QSPI */
 +#define	MCFINT_FECRX0		23		/* Interrupt number for FEC */
 +#define	MCFINT_FECTX0		27		/* Interrupt number for FEC */
 +#define	MCFINT_FECENTC0		29		/* Interrupt number for FEC */
- #define	MCFINT_PIT1		55		/* Interrupt number for PIT1 */
++#define	MCFINT_PIT1		36		/* Interrupt number for PIT1 */
  
  #define	MCF_IRQ_UART0	        (MCFINT_VECBASE + MCFINT_UART0)
  #define	MCF_IRQ_UART1	        (MCFINT_VECBASE + MCFINT_UART1)
@@ -58,24 +60,24 @@ index a5f0c14..a363c64 100644
  /*
   *	SDRAM configuration registers.
   */
-@@ -71,8 +78,8 @@
+@@ -72,8 +79,8 @@
  /*
-  *	FEC ethernet module.
+  *  FEC ethernet module.
   */
--#define	MCFFEC_BASE		(MCF_IPSBAR + 0x00001000)
+-#define	MCFFEC_BASE		(MCF_IPSBAR + 0x1000)
 -#define	MCFFEC_SIZE		0x800
-+#define	MCFFEC_BASE0		(MCF_IPSBAR + 0x00001000)
++#define	MCFFEC_BASE0		(MCF_IPSBAR + 0x1000)
 +#define	MCFFEC_SIZE0		0x800
  
  /*
-  * 	GPIO registers
-diff --git a/arch/m68k/platform/528x/config.c b/arch/m68k/platform/528x/config.c
-index 8ed0f69..a391978 100644
---- a/arch/m68k/platform/528x/config.c
-+++ b/arch/m68k/platform/528x/config.c
-@@ -29,23 +29,23 @@
+  *  GPIO module.
+diff --git a/arch/m68k/platform/523x/config.c b/arch/m68k/platform/523x/config.c
+index 308aed1..5433c76 100644
+--- a/arch/m68k/platform/523x/config.c
++++ b/arch/m68k/platform/523x/config.c
+@@ -28,23 +28,23 @@
  
- static struct resource m528x_fec_resources[] = {
+ static struct resource m523x_fec_resources[] = {
  	{
 -		.start		= MCFFEC_BASE,
 -		.end		= MCFFEC_BASE + MCFFEC_SIZE - 1,
