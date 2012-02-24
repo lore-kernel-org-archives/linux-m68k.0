@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 6/7] m68knommu: make 532x FEC platform addressing consistent
-Date: Fri, 24 Feb 2012 14:24:10 +1000
-Message-ID: <1330057451-28481-7-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 3/7] m68knommu: make 5272 FEC platform addressing consistent
+Date: Fri, 24 Feb 2012 14:24:07 +1000
+Message-ID: <1330057451-28481-4-git-send-email-gerg@snapgear.com>
 References: <1330057451-28481-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:44635 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:44622 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755905Ab2BXEXZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Feb 2012 23:23:25 -0500
+	with ESMTP id S1755680Ab2BXEXV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Feb 2012 23:23:21 -0500
 In-Reply-To: <1330057451-28481-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -22,7 +22,7 @@ If we make all FEC (ethernet) addressing consistent across all ColdFire
 family members then we will be able to remove the duplicated plaform data
 and use a single setup for all.
 
-So modify the ColdFire 532x FEC addressing so that:
+So modify the ColdFire 5272 FEC addressing so that:
 
 . FECs are numbered from 0 up
 . base addresses are absolute (not relative to MBAR peripheral register)
@@ -30,77 +30,68 @@ So modify the ColdFire 532x FEC addressing so that:
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m532xsim.h |   13 +++++++++++++
- arch/m68k/platform/532x/config.c |   16 ++++++++--------
- 2 files changed, 21 insertions(+), 8 deletions(-)
+ arch/m68k/include/asm/m5272sim.h |    9 ++++++---
+ arch/m68k/platform/5272/config.c |   16 ++++++++--------
+ 2 files changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m532xsim.h b/arch/m68k/include/asm/m532xsim.h
-index f963d64..f1c4fa8 100644
---- a/arch/m68k/include/asm/m532xsim.h
-+++ b/arch/m68k/include/asm/m532xsim.h
-@@ -24,11 +24,18 @@
- #define MCFINT_UART1        27          /* Interrupt number for UART1 */
- #define MCFINT_UART2        28          /* Interrupt number for UART2 */
- #define MCFINT_QSPI         31          /* Interrupt number for QSPI */
-+#define MCFINT_FECRX0	    36		/* Interrupt number for FEC */
-+#define MCFINT_FECTX0	    40		/* Interrupt number for FEC */
-+#define MCFINT_FECENTC0	    42		/* Interrupt number for FEC */
+diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
+index 5c71bd4..a58f176 100644
+--- a/arch/m68k/include/asm/m5272sim.h
++++ b/arch/m68k/include/asm/m5272sim.h
+@@ -88,6 +88,9 @@
+ #define	MCFTIMER_BASE3		(MCF_MBAR + 0x240) /* Base address TIMER4 */
+ #define	MCFTIMER_BASE4		(MCF_MBAR + 0x260) /* Base address TIMER3 */
  
- #define MCF_IRQ_UART0       (MCFINT_VECBASE + MCFINT_UART0)
- #define MCF_IRQ_UART1       (MCFINT_VECBASE + MCFINT_UART1)
- #define MCF_IRQ_UART2       (MCFINT_VECBASE + MCFINT_UART2)
- 
-+#define MCF_IRQ_FECRX0	    (MCFINT_VECBASE + MCFINT_FECRX0)
-+#define MCF_IRQ_FECTX0	    (MCFINT_VECBASE + MCFINT_FECTX0)
-+#define MCF_IRQ_FECENTC0    (MCFINT_VECBASE + MCFINT_FECENTC0)
++#define	MCFFEC_BASE0		(MCF_MBAR + 0x840) /* Base FEC ethernet */
++#define	MCFFEC_SIZE0		0x1d0
 +
- #define MCF_WTM_WCR	MCF_REG16(0xFC098000)
- 
  /*
-@@ -91,6 +98,12 @@
- #define MCFUART_BASE2		0xFC068000	/* Base address of UART3 */
- 
- /*
-+ *  FEC module.
-+ */
-+#define	MCFFEC_BASE0		0xFC030000	/* Base address of FEC0 */
-+#define	MCFFEC_SIZE0		0x800		/* Size of FEC0 region */
-+
-+/*
-  *  Timer module.
+  *	Define system peripheral IRQ usage.
   */
- #define MCFTIMER_BASE1		0xFC070000	/* Base address of TIMER1 */
-diff --git a/arch/m68k/platform/532x/config.c b/arch/m68k/platform/532x/config.c
-index 32f8b82..69e2bc0 100644
---- a/arch/m68k/platform/532x/config.c
-+++ b/arch/m68k/platform/532x/config.c
-@@ -35,23 +35,23 @@
+@@ -114,9 +117,9 @@
+ #define	MCF_IRQ_USB6		83		/* USB Endpoint 6 */
+ #define	MCF_IRQ_USB7		84		/* USB Endpoint 7 */
+ #define	MCF_IRQ_DMA		85		/* DMA Controller */
+-#define	MCF_IRQ_ERX		86		/* Ethernet Receiver */
+-#define	MCF_IRQ_ETX		87		/* Ethernet Transmitter */
+-#define	MCF_IRQ_ENTC		88		/* Ethernet Non-Time Critical */
++#define	MCF_IRQ_FECRX0		86		/* Ethernet Receiver */
++#define	MCF_IRQ_FECTX0		87		/* Ethernet Transmitter */
++#define	MCF_IRQ_FECENTC0	88		/* Ethernet Non-Time Critical */
+ #define	MCF_IRQ_QSPI		89		/* Queued Serial Interface */
+ #define	MCF_IRQ_EINT5		90		/* External Interrupt 5 */
+ #define	MCF_IRQ_EINT6		91		/* External Interrupt 6 */
+diff --git a/arch/m68k/platform/5272/config.c b/arch/m68k/platform/5272/config.c
+index 2199c00..8c77fee 100644
+--- a/arch/m68k/platform/5272/config.c
++++ b/arch/m68k/platform/5272/config.c
+@@ -32,23 +32,23 @@ unsigned char ledbank = 0xff;
  
- static struct resource m532x_fec_resources[] = {
+ static struct resource m5272_fec_resources[] = {
  	{
--		.start		= 0xfc030000,
--		.end		= 0xfc0307ff,
+-		.start		= MCF_MBAR + 0x840,
+-		.end		= MCF_MBAR + 0x840 + 0x1cf,
 +		.start		= MCFFEC_BASE0,
 +		.end		= MCFFEC_BASE0 + MCFFEC_SIZE0 - 1,
  		.flags		= IORESOURCE_MEM,
  	},
  	{
--		.start		= 64 + 36,
--		.end		= 64 + 36,
+-		.start		= MCF_IRQ_ERX,
+-		.end		= MCF_IRQ_ERX,
 +		.start		= MCF_IRQ_FECRX0,
 +		.end		= MCF_IRQ_FECRX0,
  		.flags		= IORESOURCE_IRQ,
  	},
  	{
--		.start		= 64 + 40,
--		.end		= 64 + 40,
+-		.start		= MCF_IRQ_ETX,
+-		.end		= MCF_IRQ_ETX,
 +		.start		= MCF_IRQ_FECTX0,
 +		.end		= MCF_IRQ_FECTX0,
  		.flags		= IORESOURCE_IRQ,
  	},
  	{
--		.start		= 64 + 42,
--		.end		= 64 + 42,
+-		.start		= MCF_IRQ_ENTC,
+-		.end		= MCF_IRQ_ENTC,
 +		.start		= MCF_IRQ_FECENTC0,
 +		.end		= MCF_IRQ_FECENTC0,
  		.flags		= IORESOURCE_IRQ,
