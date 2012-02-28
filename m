@@ -1,14 +1,14 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 3/5] m68knommu: make 527x CPU reset register addressing consistent
-Date: Tue, 28 Feb 2012 13:58:20 +1000
-Message-ID: <1330401502-26250-3-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 4/5] m68knommu: make 528x CPU reset register addressing consistent
+Date: Tue, 28 Feb 2012 13:58:21 +1000
+Message-ID: <1330401502-26250-4-git-send-email-gerg@snapgear.com>
 References: <1330401502-26250-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:41212 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:41213 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754519Ab2B1D4W (ORCPT
+	with ESMTP id S1754398Ab2B1D4W (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2012 22:56:22 -0500
 In-Reply-To: <1330401502-26250-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
@@ -24,15 +24,15 @@ duplicated copies of the code that use it.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/include/asm/m527xsim.h |    4 ++--
- arch/m68k/platform/527x/config.c |    2 +-
+ arch/m68k/include/asm/m528xsim.h |    4 ++--
+ arch/m68k/platform/528x/config.c |    2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
-index f1c5b2c..83db810 100644
---- a/arch/m68k/include/asm/m527xsim.h
-+++ b/arch/m68k/include/asm/m527xsim.h
-@@ -328,8 +328,8 @@
+diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
+index e4581a4..569476f 100644
+--- a/arch/m68k/include/asm/m528xsim.h
++++ b/arch/m68k/include/asm/m528xsim.h
+@@ -272,8 +272,8 @@
  /*
   *  Reset Control Unit (relative to IPSBAR).
   */
@@ -43,12 +43,12 @@ index f1c5b2c..83db810 100644
  
  #define	MCF_RCR_SWRESET		0x80		/* Software reset bit */
  #define	MCF_RCR_FRCSTOUT	0x40		/* Force external reset */
-diff --git a/arch/m68k/platform/527x/config.c b/arch/m68k/platform/527x/config.c
-index 00f77ba..51a3095 100644
---- a/arch/m68k/platform/527x/config.c
-+++ b/arch/m68k/platform/527x/config.c
-@@ -90,7 +90,7 @@ static void __init m527x_fec_init(void)
- static void m527x_cpu_reset(void)
+diff --git a/arch/m68k/platform/528x/config.c b/arch/m68k/platform/528x/config.c
+index 038d13f..957b5c0 100644
+--- a/arch/m68k/platform/528x/config.c
++++ b/arch/m68k/platform/528x/config.c
+@@ -63,7 +63,7 @@ static void __init m528x_fec_init(void)
+ static void m528x_cpu_reset(void)
  {
  	local_irq_disable();
 -	__raw_writeb(MCF_RCR_SWRESET, MCF_IPSBAR + MCF_RCR);
