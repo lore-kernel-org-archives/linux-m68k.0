@@ -1,78 +1,57 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k/atari: EtherNEC - rewrite to use mainstream ne.c
-Date: Fri, 09 Mar 2012 17:58:36 +1300
-Message-ID: <4F598DFC.70507@gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com> <CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>
+Date: Fri, 9 Mar 2012 07:35:12 +0100
+Message-ID: <CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>
+References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
+	<4F4B2BB6.900@gmail.com>
+	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yx0-f174.google.com ([209.85.213.174]:39593 "EHLO
-	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754283Ab2CIE63 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Mar 2012 23:58:29 -0500
+Received: from mail-we0-f174.google.com ([74.125.82.174]:37962 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752230Ab2CIGnC convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Mar 2012 01:43:02 -0500
 In-Reply-To: <CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
 
-Paul Gortmaker wrote:
->
->> diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
+On Fri, Mar 9, 2012 at 04:11, Paul Gortmaker
+<paul.gortmaker@windriver.com> wrote:
+>> diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8=
+390/ne.c
 >> index f92ea2a..28b8781 100644
 >> --- a/drivers/net/ethernet/8390/ne.c
 >> +++ b/drivers/net/ethernet/8390/ne.c
->> @@ -55,6 +55,9 @@ static const char version2[] =
+>> @@ -55,6 +55,9 @@ static const char version2[] =3D
 >>
->>  #include <asm/system.h>
->>  #include <asm/io.h>
+>> =C2=A0#include <asm/system.h>
+>> =C2=A0#include <asm/io.h>
 >> +#if IS_ENABLED(CONFIG_ATARI_ETHERNEC)
 >> +#include <asm/atariints.h>
 >> +#endif
->>     
 >
-> Do you really need the #if here?  Should be avoidable.
->
->   
-Looks like that one's unneeded.
->>  #include "8390.h"
->>
->> @@ -165,7 +168,8 @@ bad_clone_list[] __initdata = {
->>  #if defined(CONFIG_PLAT_MAPPI)
->>  #  define DCR_VAL 0x4b
->>  #elif defined(CONFIG_PLAT_OAKS32R)  || \
->> -   defined(CONFIG_MACH_TX49XX)
->> +   defined(CONFIG_MACH_TX49XX) || \
->> +   IS_ENABLED(CONFIG_ATARI_ETHERNEC)
->>  #  define DCR_VAL 0x48        /* 8-bit mode */
->>  #else
->>  #  define DCR_VAL 0x49
->> @@ -492,7 +496,16 @@ static int __init ne_probe1(struct net_device *dev,
->> unsigned long ioaddr)
->>
->>     /* Snarf the interrupt now.  There's no point in waiting since we cannot
->>        share and the board will usually be enabled. */
->> -    ret = request_irq(dev->irq, eip_interrupt, 0, name, dev);
->> +#if IS_ENABLED(CONFIG_ATARI_ETHERNEC)
->> +    if (MACH_IS_ATARI) {
->> +        /* Atari EtherNEC emulates the card interrupt via a timer -
->> +           this needs to be shared with the smc91C111 driver and with
->> +           a dummy handler to catch unhandled interrupts ! */
->> +        ret = request_irq(dev->irq, eip_interrupt, IRQF_SHARED, name, dev);
->> +    } else
->> +#endif
->> +        ret = request_irq(dev->irq, eip_interrupt, 0, name, dev);
->> +
->>     
->
-> There has to be a cleaner way than this.  Something as simple as creating
-> a platform specific 8380_IRQ_FLAGS would get rid of this ifdef'ery in
-> the driver and that is with only 20s of thought invested.
->   
-That would have been the alternative - would you prefer to have this 
-added in 8390.h or ne.c?
+> Do you really need the #if here? =C2=A0Should be avoidable.
 
-Thanks,
+<asm/atariints.h> exists on m68k only, and is not included by any heade=
+r in
+arch/m68k/include/.
 
-  Michael
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
