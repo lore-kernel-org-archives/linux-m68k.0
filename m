@@ -1,55 +1,89 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH] m68k/atari: EtherNEC - rewrite to use mainstream ne.c
-Date: Sun, 11 Mar 2012 19:31:28 +1300
-Message-ID: <4F5C46C0.3040003@gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com>	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com> <CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com> <4F5A0679.1020604@windriver.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2.2 2/7] crypto: GnuPG based MPI lib - header files
+ (part 2)
+Date: Sun, 11 Mar 2012 10:55:28 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1203111046110.4778__15303.7365679213$1331459761$gmane$org@ayla.of.borg>
+References: <cover.1319025009.git.dmitry.kasatkin@intel.com> <af9b876508ebc83431312aef67b3ae920780bd5c.1319025009.git.dmitry.kasatkin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:54568 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750874Ab2CKGbV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Mar 2012 01:31:21 -0500
-In-Reply-To: <4F5A0679.1020604@windriver.com>
+In-Reply-To: <af9b876508ebc83431312aef67b3ae920780bd5c.1319025009.git.dmitry.kasatkin@intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
+To: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
+Cc: linux-security-module@vger.kernel.org, linux-crypto@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, zohar@linux.vnet.ibm.com, dhowells@redhat.com, herbert@gondor.apana.org.au, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Paul Gortmaker wrote:
->> <asm/atariints.h> exists on m68k only, and is not included by any header in
->> arch/m68k/include/.
->>     
->
-> This kind of arch specific stuff still shouldn't need to
-> bubble right up to the driver level  I'd think a driver
-> should be able to include <asm/irq.h> and have whatever
-> arch specific goo like this be present.
->
-> So maybe this kind of magic should be in arch/m68k/include/asm/irq*
-> instead of here?
->   
-I've double checked - that hunk should not actually have been in the 
-patch at all. My bad ...
-With all arch-specific interrupt tweaks (aside from the  interrupt 
-flags) now removed from the driver, the definition wasn't actually used 
-any longer in the main driver file.
+On Wed, 19 Oct 2011, Dmitry Kasatkin wrote:
+> Adds the multi-precision-integer maths library which was originally taken
+> from GnuPG and ported to the kernel by (among others) David Howells.
+> This version is taken from Fedora kernel 2.6.32-71.14.1.el6.
+> The difference is that checkpatch reported errors and warnings have been fixed.
+> 
+> This library is used to implemenet RSA digital signature verification
+> used in IMA/EVM integrity protection subsystem.
 
-The non-standard interrupt flag will still be required for those users 
-that decide to wire up the card interrupt line to, for example, the 
-modem serial port's ring input.
-> And on re-reading the comments in the other part of the patch, i.e.
-> "...emulates the card interrupt via a timer"  --perhaps the driver
-> should be just fixed to support generic netpoll, instead of adding
-> an arch specific thing that amounts to netpoll.  Then anyone can
-> attempt to limp along and use one of these ancient relics w/o IRQ.
->   
-I had in fact implemented that as a fallback option earlier, and it 
-turned out to be quite a bit slower that way.
-If that's the preferred option, I'll add netpoll to the 8390 driver and 
-resubmit.
+> --- /dev/null
+> +++ b/lib/mpi/longlong.h
 
-Thanks,
+> +	/* If udiv_qrnnd was not defined for this processor, use __udiv_qrnnd_c.  */
+> +#if !defined(udiv_qrnnd)
+> +#define UDIV_NEEDS_NORMALIZATION 1
+> +#define udiv_qrnnd __udiv_qrnnd_c
+> +#endif
+> +
+> +#undef count_leading_zeros
 
-  Michael
+Why is this #undef here? It's not present in mpi/longlong.h from Ubuntu's
+gnupg-1.4.10, and causing ...
+
+> +#if !defined(count_leading_zeros)
+> +	extern
+> +#ifdef __STDC__
+> +			const
+> +#endif
+> +			unsigned char __clz_tab[];
+> +#define count_leading_zeros(count, x) \
+> +do { \
+> +	UWtype __xr = (x); \
+> +	UWtype __a; \
+> +	\
+> +	if (W_TYPE_SIZE <= 32) { \
+> +		__a = __xr < ((UWtype) 1 << 2*__BITS4) \
+> +		? (__xr < ((UWtype) 1 << __BITS4) ? 0 : __BITS4) \
+> +		: (__xr < ((UWtype) 1 << 3*__BITS4) ?  2*__BITS4 : 3*__BITS4); \
+> +	} \
+> +	else { \
+> +		for (__a = W_TYPE_SIZE - 8; __a > 0; __a -= 8) \
+> +			if (((__xr >> __a) & 0xff) != 0) \
+> +				break; \
+> +	} \
+> +	\
+> +	(count) = W_TYPE_SIZE - (__clz_tab[__xr >> __a] + __a); \
+> +} while (0)
+> +	/* This version gives a well-defined value for zero. */
+> +#define COUNT_LEADING_ZEROS_0 W_TYPE_SIZE
+
+lib/mpi/longlong.h:1483:1: warning: "COUNT_LEADING_ZEROS_0" redefined
+lib/mpi/longlong.h:610:1: warning: this is the location of the previous definition
+
+on m68k/allmodconfig.
+
+I'm also wondering why this warning is not seen on other arches, e.g. PPC
+#defines COUNT_LEADING_ZEROS_0 to 32, just like m68k.
+
+> +#endif
+
+I suppose the plan is to clean up this header file, as lots of its
+functionality is already present in the kernel sources in some other way
+(e.g. arch/m68k/lib/muldi3.c)?
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
