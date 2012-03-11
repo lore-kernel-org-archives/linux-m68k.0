@@ -1,67 +1,55 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
 Subject: Re: [PATCH] m68k/atari: EtherNEC - rewrite to use mainstream ne.c
-Date: Fri, 9 Mar 2012 08:32:41 -0500
-Message-ID: <4F5A0679.1020604@windriver.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com>	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com> <CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>
+Date: Sun, 11 Mar 2012 19:31:28 +1300
+Message-ID: <4F5C46C0.3040003@gmail.com>
+References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com>	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com> <CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com> <4F5A0679.1020604@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail1.windriver.com ([147.11.146.13]:52927 "EHLO
-	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756148Ab2CINcu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Mar 2012 08:32:50 -0500
-In-Reply-To: <CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:54568 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750874Ab2CKGbV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Mar 2012 01:31:21 -0500
+In-Reply-To: <4F5A0679.1020604@windriver.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
 
-On 12-03-09 01:35 AM, Geert Uytterhoeven wrote:
-> On Fri, Mar 9, 2012 at 04:11, Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
->>> diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
->>> index f92ea2a..28b8781 100644
->>> --- a/drivers/net/ethernet/8390/ne.c
->>> +++ b/drivers/net/ethernet/8390/ne.c
->>> @@ -55,6 +55,9 @@ static const char version2[] =
->>>
->>>  #include <asm/system.h>
->>>  #include <asm/io.h>
->>> +#if IS_ENABLED(CONFIG_ATARI_ETHERNEC)
->>> +#include <asm/atariints.h>
->>> +#endif
->>
->> Do you really need the #if here?  Should be avoidable.
-> 
-> <asm/atariints.h> exists on m68k only, and is not included by any header in
-> arch/m68k/include/.
+Paul Gortmaker wrote:
+>> <asm/atariints.h> exists on m68k only, and is not included by any header in
+>> arch/m68k/include/.
+>>     
+>
+> This kind of arch specific stuff still shouldn't need to
+> bubble right up to the driver level  I'd think a driver
+> should be able to include <asm/irq.h> and have whatever
+> arch specific goo like this be present.
+>
+> So maybe this kind of magic should be in arch/m68k/include/asm/irq*
+> instead of here?
+>   
+I've double checked - that hunk should not actually have been in the 
+patch at all. My bad ...
+With all arch-specific interrupt tweaks (aside from the  interrupt 
+flags) now removed from the driver, the definition wasn't actually used 
+any longer in the main driver file.
 
-This kind of arch specific stuff still shouldn't need to
-bubble right up to the driver level  I'd think a driver
-should be able to include <asm/irq.h> and have whatever
-arch specific goo like this be present.
+The non-standard interrupt flag will still be required for those users 
+that decide to wire up the card interrupt line to, for example, the 
+modem serial port's ring input.
+> And on re-reading the comments in the other part of the patch, i.e.
+> "...emulates the card interrupt via a timer"  --perhaps the driver
+> should be just fixed to support generic netpoll, instead of adding
+> an arch specific thing that amounts to netpoll.  Then anyone can
+> attempt to limp along and use one of these ancient relics w/o IRQ.
+>   
+I had in fact implemented that as a fallback option earlier, and it 
+turned out to be quite a bit slower that way.
+If that's the preferred option, I'll add netpoll to the 8390 driver and 
+resubmit.
 
-So maybe this kind of magic should be in arch/m68k/include/asm/irq*
-instead of here?
+Thanks,
 
-And on re-reading the comments in the other part of the patch, i.e.
-"...emulates the card interrupt via a timer"  --perhaps the driver
-should be just fixed to support generic netpoll, instead of adding
-an arch specific thing that amounts to netpoll.  Then anyone can
-attempt to limp along and use one of these ancient relics w/o IRQ.
-
-Paul.
---
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+  Michael
