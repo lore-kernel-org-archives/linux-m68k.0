@@ -1,67 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: NULL pointer dereference in 3.3-rc6
-Date: Mon, 19 Mar 2012 12:51:45 +0100
-Message-ID: <CAMuHMdVSYAFqVsK040yJ_SwVOSvVR6m9ZTJ-t4bAU4fk-tV=aQ@mail.gmail.com>
-References: <alpine.DEB.2.00.1203181231530.5031@ayla.of.borg>
-	<m2zkbejckk.fsf@igel.home>
-	<CAMuHMdW20E9k6MUUQQyUxHLLzQLEOQKA6CR3vMTc3FLD58fnQQ@mail.gmail.com>
-	<4F66AD79.2060000@snapgear.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 13/35] Disintegrate asm/system.h for M68K [ver #2]
+Date: Mon, 19 Mar 2012 21:48:22 +1000
+Message-ID: <4F671D06.2010700@snapgear.com>
+References: <4F6698C1.3070105@snapgear.com> <4F608A15.9030609@snapgear.com> <20120312233602.13888.27659.stgit@warthog.procyon.org.uk> <20120312233816.13888.142.stgit@warthog.procyon.org.uk> <17434.1331905343@redhat.com> <4774.1332154141@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4F66AD79.2060000@snapgear.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:60164 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752762Ab2CSLy0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Mar 2012 07:54:26 -0400
+In-Reply-To: <4774.1332154141@redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: David Howells <dhowells@redhat.com>
+Cc: paul.gortmaker@windriver.com, hpa@zytor.com, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, arnd@arndb.de, linux-m68k@vger.kernel.org
 
-Hi Greg,
+Hi David,
 
-On Mon, Mar 19, 2012 at 04:52, Greg Ungerer <gerg@snapgear.com> wrote:
-> On 19/03/12 06:03, Geert Uytterhoeven wrote:
->> Given that a1 is zero, and d1 is 64, it looks like it's the movesl a=
-t
->> 5e14 that caused the problem:
->>
->>>> =C2=A0 5e14: =C2=A0 =C2=A0 =C2=A0 0e91 2800 =C2=A0 =C2=A0 =C2=A0 m=
-ovesl %d2,%a1@
->>>> =C2=A0 5e18: =C2=A0 =C2=A0 =C2=A0 2400 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0movel %d0,%d2
->>>> =C2=A0 5e1a: =C2=A0 =C2=A0 =C2=A0 608c =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0bras 5da8<berr_040cleanup+0x144>
->>
->>
->> This corresponds to
->>
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 case BA_SIZE_LONG:
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 res =3D put_=
-user(wbd, (int __user *)wba);
->>
->> in do_040writeback1(). So wba is zero. Oops...
+On 03/19/2012 08:49 PM, David Howells wrote:
+> Greg Ungerer<gerg@snapgear.com>  wrote:
 >
-> Did this work properly in 3.2?
+>>> How about if I insert the attached patch prior?
+>>
+>> Yep, that fixes it. Builds on its own, and with the asm/system.h
+>> disintegration patch applied (and rejects fixed) as well.
+>
+> Can I add your Acked-by to them?
 
-Actually I had booted the same kernel image just after I compiled it 2 =
-weeks
-ago, and at that time I didn't get the oops.
+Yep, absolutely.
 
-> If so can you git bisect it to find a problem patch?
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
-Will retry to see whether it's (sort-of) reproducible...
+Regards
+Greg
 
-Gr{oetje,eeting}s,
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
