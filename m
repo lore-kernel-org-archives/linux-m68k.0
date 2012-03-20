@@ -1,103 +1,36 @@
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Subject: [PATCH 08/20 v2] m68k/mm/fault.c: Port OOM changes to do_page_fault
-Date: Tue, 20 Mar 2012 12:05:46 -0400
-Message-ID: <1332259546-2037-1-git-send-email-consul.kautuk__10641.0182816491$1332259587$gmane$org@gmail.com>
+From: Petr Stehlik <pstehlik@sophics.cz>
+Subject: new ARAnyM with better FPU
+Date: Tue, 20 Mar 2012 23:24:02 +0100
+Message-ID: <1332282242.3352.7.camel@aspire>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx.zln.cz ([188.246.101.4]:59560 "EHLO mx.zln.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1759266Ab2CTW6D (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 20 Mar 2012 18:58:03 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Kautuk Consul <consul.kautuk@gmail.com>
+To: debian-68k@lists.debian.org
+Cc: linux-m68k@vger.kernel.org
 
-Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
-(mm: retry page fault when blocking on disk transfer) and
-commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
-(x86,mm: make pagefault killable)
+Hello there,
 
-The above commits introduced changes into the x86 pagefault handler
-for making the page fault handler retryable as well as killable.
+I think you might be interested in the new ARAnyM release. The version
+0.9.12 comes with a brand new FPU emulation core that should be precise
+because it's using the libmpfr, thanks to Andreas.
 
-These changes reduce the mmap_sem hold time, which is crucial
-during OOM killer invocation.
+Andreas also fixed CAS and CAS2 instructions that were behaving
+incorrectly in some cases.
 
-Port these changes to m68k.
+Both these fixes could help running the Linux-m68k kernel and the
+Debian-68k system more stable on the ARAnyM.
 
-Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
----
- arch/m68k/mm/fault.c |   31 ++++++++++++++++++++++++++-----
- 1 files changed, 26 insertions(+), 5 deletions(-)
+I have prepared some binary packages (available for download now) and
+ARAnyM Debian maintainer is working on updating the package in Debian
+sid as well.
 
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-index 2db6099..27879bd 100644
---- a/arch/m68k/mm/fault.c
-+++ b/arch/m68k/mm/fault.c
-@@ -74,6 +74,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct * vma;
- 	int write, fault;
-+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
- 
- #ifdef DEBUG
- 	printk ("do page fault:\nregs->sr=%#x, regs->pc=%#lx, address=%#lx, %ld, %p\n",
-@@ -88,6 +89,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 	if (in_atomic() || !mm)
- 		goto no_context;
- 
-+retry:
- 	down_read(&mm->mmap_sem);
- 
- 	vma = find_vma(mm, address);
-@@ -126,6 +128,7 @@ good_area:
- 			if (!(vma->vm_flags & VM_WRITE))
- 				goto acc_err;
- 			write++;
-+			flags |= FAULT_FLAG_WRITE;
- 			break;
- 		case 1:		/* read, present */
- 			goto acc_err;
-@@ -140,10 +143,14 @@ good_area:
- 	 * the fault.
- 	 */
- 
--	fault = handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0);
-+	fault = handle_mm_fault(mm, vma, address, flags);
- #ifdef DEBUG
- 	printk("handle_mm_fault returns %d\n",fault);
- #endif
-+
-+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
-+		return 0;
-+
- 	if (unlikely(fault & VM_FAULT_ERROR)) {
- 		if (fault & VM_FAULT_OOM)
- 			goto out_of_memory;
-@@ -151,10 +158,24 @@ good_area:
- 			goto bus_err;
- 		BUG();
- 	}
--	if (fault & VM_FAULT_MAJOR)
--		current->maj_flt++;
--	else
--		current->min_flt++;
-+
-+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
-+		if (fault & VM_FAULT_MAJOR)
-+			current->maj_flt++;
-+		else
-+			current->min_flt++;
-+		if (fault & VM_FAULT_RETRY) {
-+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
-+
-+			/*
-+			 * No need to up_read(&mm->mmap_sem) as we would
-+			 * have already released it in __lock_page_or_retry
-+			 * in mm/filemap.c.
-+			 */
-+
-+			goto retry;
-+		}
-+	}
- 
- 	up_read(&mm->mmap_sem);
- 	return 0;
--- 
-1.7.5.4
+Enjoy,
+
+Petr
