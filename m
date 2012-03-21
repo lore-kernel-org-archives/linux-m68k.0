@@ -1,91 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 11/11] scsi/atari: Make more functions static
-Date: Wed, 21 Mar 2012 10:51:55 +0100
-Message-ID: <1332323515-7314-11-git-send-email-geert__29035.4917561219$1332323582$gmane$org@linux-m68k.org>
+Subject: [PATCH 09/11] net/ariadne: Improve debug prints
+Date: Wed, 21 Mar 2012 10:51:53 +0100
+Message-ID: <1332323515-7314-9-git-send-email-geert__35777.7663776234$1332323612$gmane$org@linux-m68k.org>
 References: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@googlemail.com>, "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+
+Remove casts and use proper printf()-style format specifiers instead.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: James E.J. Bottomley <JBottomley@parallels.com>
-Cc: linux-scsi@vger.kernel.org
+Cc: David S. Miller <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
 ---
- drivers/scsi/atari_scsi.c |   13 +++++++------
- drivers/scsi/atari_scsi.h |    5 -----
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/amd/ariadne.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index 3102ce5..df740cb 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -572,7 +572,7 @@ static void falcon_get_lock(void)
- }
+diff --git a/drivers/net/ethernet/amd/ariadne.c b/drivers/net/ethernet/amd/ariadne.c
+index eb18e1f..2e7a1c5 100644
+--- a/drivers/net/ethernet/amd/ariadne.c
++++ b/drivers/net/ethernet/amd/ariadne.c
+@@ -213,10 +213,10 @@ static int ariadne_rx(struct net_device *dev)
+ 						(const void *)priv->rx_buff[entry],
+ 						pkt_len);
+ 			skb->protocol = eth_type_trans(skb, dev);
+-			netdev_dbg(dev, "RX pkt type 0x%04x from %pM to %pM data 0x%08x len %d\n",
++			netdev_dbg(dev, "RX pkt type 0x%04x from %pM to %pM data %p len %u\n",
+ 				   ((u_short *)skb->data)[6],
+ 				   skb->data + 6, skb->data,
+-				   (int)skb->data, (int)skb->len);
++				   skb->data, skb->len);
  
+ 			netif_rx(skb);
+ 			dev->stats.rx_packets++;
+@@ -566,10 +566,10 @@ static netdev_tx_t ariadne_start_xmit(struct sk_buff *skb,
  
--int __init atari_scsi_detect(struct scsi_host_template *host)
-+static int __init atari_scsi_detect(struct scsi_host_template *host)
- {
- 	static int called = 0;
- 	struct Scsi_Host *instance;
-@@ -724,7 +724,7 @@ int __init atari_scsi_detect(struct scsi_host_template *host)
- 	return 1;
- }
+ 	/* Fill in a Tx ring entry */
  
--int atari_scsi_release(struct Scsi_Host *sh)
-+static int atari_scsi_release(struct Scsi_Host *sh)
- {
- 	if (IS_A_TT())
- 		free_irq(IRQ_TT_MFP_SCSI, sh);
-@@ -788,7 +788,7 @@ static int __init atari_scsi_setup(char *str)
- __setup("atascsi=", atari_scsi_setup);
- #endif /* !MODULE */
+-	netdev_dbg(dev, "TX pkt type 0x%04x from %pM to %pM data 0x%08x len %d\n",
++	netdev_dbg(dev, "TX pkt type 0x%04x from %pM to %pM data %p len %u\n",
+ 		   ((u_short *)skb->data)[6],
+ 		   skb->data + 6, skb->data,
+-		   (int)skb->data, (int)skb->len);
++		   skb->data, skb->len);
  
--int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
-+static int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
- {
- 	int rv;
- 	struct NCR5380_hostdata *hostdata =
-@@ -861,7 +861,7 @@ static void __init atari_scsi_reset_boot(void)
- #endif
- 
- 
--const char *atari_scsi_info(struct Scsi_Host *host)
-+static const char *atari_scsi_info(struct Scsi_Host *host)
- {
- 	/* atari_scsi_detect() is verbose enough... */
- 	static const char string[] = "Atari native SCSI";
-@@ -871,8 +871,9 @@ const char *atari_scsi_info(struct Scsi_Host *host)
- 
- #if defined(REAL_DMA)
- 
--unsigned long atari_scsi_dma_setup(struct Scsi_Host *instance, void *data,
--				   unsigned long count, int dir)
-+static unsigned long atari_scsi_dma_setup(struct Scsi_Host *instance,
-+					  void *data, unsigned long count,
-+					  int dir)
- {
- 	unsigned long addr = virt_to_phys(data);
- 
-diff --git a/drivers/scsi/atari_scsi.h b/drivers/scsi/atari_scsi.h
-index efadb8d..bd52df7 100644
---- a/drivers/scsi/atari_scsi.h
-+++ b/drivers/scsi/atari_scsi.h
-@@ -18,11 +18,6 @@
- /* (I_HAVE_OVERRUNS stuff removed) */
- 
- #ifndef ASM
--int atari_scsi_detect (struct scsi_host_template *);
--const char *atari_scsi_info (struct Scsi_Host *);
--int atari_scsi_reset (Scsi_Cmnd *, unsigned int);
--int atari_scsi_release (struct Scsi_Host *);
--
- /* The values for CMD_PER_LUN and CAN_QUEUE are somehow arbitrary. Higher
-  * values should work, too; try it! (but cmd_per_lun costs memory!) */
+ 	local_irq_save(flags);
  
 -- 
 1.7.0.4
