@@ -1,203 +1,72 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 03/11] m68k/amiga: Add error checks when registering platform devices
-Date: Wed, 21 Mar 2012 10:51:47 +0100
-Message-ID: <1332323515-7314-3-git-send-email-geert__4377.1862322048$1332323755$gmane$org@linux-m68k.org>
-References: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: new ARAnyM with better FPU
+Date: Wed, 21 Mar 2012 11:08:16 +0100
+Message-ID: <CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
+References: <1332282242.3352.7.camel@aspire>
+	<Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
+	<1332322473.10247.56.camel@petr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-we0-f174.google.com ([74.125.82.174]:41433 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S965130Ab2CUKIS convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Mar 2012 06:08:18 -0400
+Received: by wejx9 with SMTP id x9so783182wej.19
+        for <linux-m68k@vger.kernel.org>; Wed, 21 Mar 2012 03:08:16 -0700 (PDT)
+In-Reply-To: <1332322473.10247.56.camel@petr>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Petr Stehlik <pstehlik@sophics.cz>
+Cc: Thorsten Glaser <tg@mirbsd.de>, debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/amiga/platform.c |  122 ++++++++++++++++++++++++++++++++------------
- 1 files changed, 90 insertions(+), 32 deletions(-)
+Hi Petr,
 
-diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-index 1b8db5c..2872891 100644
---- a/arch/m68k/amiga/platform.c
-+++ b/arch/m68k/amiga/platform.c
-@@ -6,6 +6,7 @@
-  * for more details.
-  */
- 
-+#include <linux/err.h>
- #include <linux/init.h>
- #include <linux/platform_device.h>
- #include <linux/zorro.h>
-@@ -46,11 +47,18 @@ static const struct resource zorro_resources[] __initconst = {
- 
- static int __init amiga_init_bus(void)
- {
-+	struct platform_device *pdev;
-+	unsigned int n;
-+
- 	if (!MACH_IS_AMIGA || !AMIGAHW_PRESENT(ZORRO))
- 		return -ENODEV;
- 
--	platform_device_register_simple("amiga-zorro", -1, zorro_resources,
--					AMIGAHW_PRESENT(ZORRO3) ? 4 : 2);
-+	n = AMIGAHW_PRESENT(ZORRO3) ? 4 : 2;
-+	pdev = platform_device_register_simple("amiga-zorro", -1,
-+					       zorro_resources, n);
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
- 	return 0;
- }
- 
-@@ -126,70 +134,120 @@ static const struct resource amiga_rtc_resource __initconst = {
- static int __init amiga_init_devices(void)
- {
- 	struct platform_device *pdev;
-+	int error;
- 
- 	if (!MACH_IS_AMIGA)
- 		return -ENODEV;
- 
- 	/* video hardware */
--	if (AMIGAHW_PRESENT(AMI_VIDEO))
--		platform_device_register_simple("amiga-video", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_VIDEO)) {
-+		pdev = platform_device_register_simple("amiga-video", -1, NULL,
-+						       0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
- 
- 	/* sound hardware */
--	if (AMIGAHW_PRESENT(AMI_AUDIO))
--		platform_device_register_simple("amiga-audio", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_AUDIO)) {
-+		pdev = platform_device_register_simple("amiga-audio", -1, NULL,
-+						       0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
- 
- 	/* storage interfaces */
--	if (AMIGAHW_PRESENT(AMI_FLOPPY))
--		platform_device_register_simple("amiga-floppy", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_FLOPPY)) {
-+		pdev = platform_device_register_simple("amiga-floppy", -1,
-+						       NULL, 0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(A3000_SCSI))
--		platform_device_register_simple("amiga-a3000-scsi", -1,
--						&a3000_scsi_resource, 1);
-+	if (AMIGAHW_PRESENT(A3000_SCSI)) {
-+		pdev = platform_device_register_simple("amiga-a3000-scsi", -1,
-+						       &a3000_scsi_resource, 1);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(A4000_SCSI))
--		platform_device_register_simple("amiga-a4000t-scsi", -1,
--						&a4000t_scsi_resource, 1);
-+	if (AMIGAHW_PRESENT(A4000_SCSI)) {
-+		pdev = platform_device_register_simple("amiga-a4000t-scsi", -1,
-+						       &a4000t_scsi_resource,
-+						       1);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
- 	if (AMIGAHW_PRESENT(A1200_IDE) ||
- 	    z_dev_present(ZORRO_PROD_MTEC_VIPER_MK_V_E_MATRIX_530_SCSI_IDE)) {
- 		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
- 						       &a1200_ide_resource, 1);
--		platform_device_add_data(pdev, &a1200_ide_pdata,
--					 sizeof(a1200_ide_pdata));
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+		error = platform_device_add_data(pdev, &a1200_ide_pdata,
-+						 sizeof(a1200_ide_pdata));
-+		if (error)
-+			return error;
- 	}
- 
- 	if (AMIGAHW_PRESENT(A4000_IDE)) {
- 		pdev = platform_device_register_simple("amiga-gayle-ide", -1,
- 						       &a4000_ide_resource, 1);
--		platform_device_add_data(pdev, &a4000_ide_pdata,
--					 sizeof(a4000_ide_pdata));
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+		error = platform_device_add_data(pdev, &a4000_ide_pdata,
-+						 sizeof(a4000_ide_pdata));
-+		if (error)
-+			return error;
- 	}
- 
- 
- 	/* other I/O hardware */
--	if (AMIGAHW_PRESENT(AMI_KEYBOARD))
--		platform_device_register_simple("amiga-keyboard", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_KEYBOARD)) {
-+		pdev = platform_device_register_simple("amiga-keyboard", -1,
-+						       NULL, 0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(AMI_MOUSE))
--		platform_device_register_simple("amiga-mouse", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_MOUSE)) {
-+		pdev = platform_device_register_simple("amiga-mouse", -1, NULL,
-+						       0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(AMI_SERIAL))
--		platform_device_register_simple("amiga-serial", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_SERIAL)) {
-+		pdev = platform_device_register_simple("amiga-serial", -1,
-+						       NULL, 0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(AMI_PARALLEL))
--		platform_device_register_simple("amiga-parallel", -1, NULL, 0);
-+	if (AMIGAHW_PRESENT(AMI_PARALLEL)) {
-+		pdev = platform_device_register_simple("amiga-parallel", -1,
-+						       NULL, 0);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
- 
- 	/* real time clocks */
--	if (AMIGAHW_PRESENT(A2000_CLK))
--		platform_device_register_simple("rtc-msm6242", -1,
--						&amiga_rtc_resource, 1);
-+	if (AMIGAHW_PRESENT(A2000_CLK)) {
-+		pdev = platform_device_register_simple("rtc-msm6242", -1,
-+						       &amiga_rtc_resource, 1);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
--	if (AMIGAHW_PRESENT(A3000_CLK))
--		platform_device_register_simple("rtc-rp5c01", -1,
--						&amiga_rtc_resource, 1);
-+	if (AMIGAHW_PRESENT(A3000_CLK)) {
-+		pdev = platform_device_register_simple("rtc-rp5c01", -1,
-+						       &amiga_rtc_resource, 1);
-+		if (IS_ERR(pdev))
-+			return PTR_ERR(pdev);
-+	}
- 
- 	return 0;
- }
--- 
-1.7.0.4
+On Wed, Mar 21, 2012 at 10:34, Petr Stehlik <pstehlik@sophics.cz> wrote=
+:
+> Thorsten Glaser p=C3=AD=C5=A1e v St 21. 03. 2012 v 09:07 +0000:
+>> >ARAnyM Debian maintainer is working on updating the package in Debi=
+an
+>> >sid as well.
+>>
+>> OK, great. I=E2=80=99ll wait for that, upgrade the box with sid on
+>> it and will backport to *shudder* hardy
+>
+> Well, beware: Ubuntu < 10.10 (including the 10.04 LTS Lucid Lynx) doe=
+s
+> not have the necessary libmpfr3+. That also means that the Ubuntu Luc=
+id
+> packages I have prepared at
+>
+> http://sourceforge.net/projects/aranym/files/aranym/0.9.12/
+>
+> do NOT contain the new MPFR based FPU core made by Andreas.
+>
+> So if you really want to try out the new ARAnyM FPU on your Hardy mak=
+e
+> sure you'll backport libmpfr3+ there first.
+
+Thanks!
+
+I've just installed the binary for Lucid, and now cp/mv/du from coreuti=
+ls
+work again (they failed with out-of-memory errors under Ubuntu's 0.9.9)=
+=2E
+I guess that was due to the CAS/CAS2 bugs?
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
