@@ -1,118 +1,40 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2.2 2/7] crypto: GnuPG based MPI lib - header files (part 2)
-Date: Wed, 21 Mar 2012 09:39:32 +0100
-Message-ID: <CAMuHMdWLixmQ-iSiShRjFHgxPp9MZxUQDA=oYasdZd3WwmqGYg__42420.8917924718$1332319700$gmane$org@mail.gmail.com>
-References: <cover.1319025009.git.dmitry.kasatkin@intel.com>
-	<af9b876508ebc83431312aef67b3ae920780bd5c.1319025009.git.dmitry.kasatkin@intel.com>
-	<alpine.DEB.2.00.1203111046110.4778@ayla.of.borg>
+From: Petr Stehlik <pstehlik@sophics.cz>
+Subject: Re: new ARAnyM with better FPU
+Date: Wed, 21 Mar 2012 10:34:33 +0100
+Message-ID: <1332322473.10247.56.camel@petr>
+References: <1332282242.3352.7.camel@aspire>
+	 <Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1203111046110.4778@ayla.of.borg>
+Received: from www.sophics.cz ([188.246.101.24]:47721 "EHLO www.sophics.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750969Ab2CUJer convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Mar 2012 05:34:47 -0400
+In-Reply-To: <Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
-Cc: linux-security-module@vger.kernel.org, linux-crypto@vger.kernel.org, Linux Kernel Development <linux-kernel@vger.kernel.org>, zohar@linux.vnet.ibm.com, dhowells@redhat.com, herbert@gondor.apana.org.au, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Ping?
-
-On Sun, Mar 11, 2012 at 10:55, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> On Wed, 19 Oct 2011, Dmitry Kasatkin wrote:
->> Adds the multi-precision-integer maths library which was originally =
-taken
->> from GnuPG and ported to the kernel by (among others) David Howells.
->> This version is taken from Fedora kernel 2.6.32-71.14.1.el6.
->> The difference is that checkpatch reported errors and warnings have =
-been fixed.
->>
->> This library is used to implemenet RSA digital signature verificatio=
+Thorsten Glaser p=C3=AD=C5=A1e v St 21. 03. 2012 v 09:07 +0000:
+> >ARAnyM Debian maintainer is working on updating the package in Debia=
 n
->> used in IMA/EVM integrity protection subsystem.
->
->> --- /dev/null
->> +++ b/lib/mpi/longlong.h
->
->> + =C2=A0 =C2=A0 /* If udiv_qrnnd was not defined for this processor,=
- use __udiv_qrnnd_c. =C2=A0*/
->> +#if !defined(udiv_qrnnd)
->> +#define UDIV_NEEDS_NORMALIZATION 1
->> +#define udiv_qrnnd __udiv_qrnnd_c
->> +#endif
->> +
->> +#undef count_leading_zeros
->
-> Why is this #undef here? It's not present in mpi/longlong.h from Ubun=
-tu's
-> gnupg-1.4.10, and causing ...
->
->> +#if !defined(count_leading_zeros)
->> + =C2=A0 =C2=A0 extern
->> +#ifdef __STDC__
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 const
->> +#endif
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 unsigned char __clz_tab[];
->> +#define count_leading_zeros(count, x) \
->> +do { \
->> + =C2=A0 =C2=A0 UWtype __xr =3D (x); \
->> + =C2=A0 =C2=A0 UWtype __a; \
->> + =C2=A0 =C2=A0 \
->> + =C2=A0 =C2=A0 if (W_TYPE_SIZE <=3D 32) { \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 __a =3D __xr < ((UWtype)=
- 1 << 2*__BITS4) \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ? (__xr < ((UWtype) 1 <<=
- __BITS4) ? 0 : __BITS4) \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : (__xr < ((UWtype) 1 <<=
- 3*__BITS4) ? =C2=A02*__BITS4 : 3*__BITS4); \
->> + =C2=A0 =C2=A0 } \
->> + =C2=A0 =C2=A0 else { \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 for (__a =3D W_TYPE_SIZE=
- - 8; __a > 0; __a -=3D 8) \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 if (((__xr >> __a) & 0xff) !=3D 0) \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 break; \
->> + =C2=A0 =C2=A0 } \
->> + =C2=A0 =C2=A0 \
->> + =C2=A0 =C2=A0 (count) =3D W_TYPE_SIZE - (__clz_tab[__xr >> __a] + =
-__a); \
->> +} while (0)
->> + =C2=A0 =C2=A0 /* This version gives a well-defined value for zero.=
- */
->> +#define COUNT_LEADING_ZEROS_0 W_TYPE_SIZE
->
-> lib/mpi/longlong.h:1483:1: warning: "COUNT_LEADING_ZEROS_0" redefined
-> lib/mpi/longlong.h:610:1: warning: this is the location of the previo=
-us definition
->
-> on m68k/allmodconfig.
->
-> I'm also wondering why this warning is not seen on other arches, e.g.=
- PPC
-> #defines COUNT_LEADING_ZEROS_0 to 32, just like m68k.
->
->> +#endif
->
-> I suppose the plan is to clean up this header file, as lots of its
-> functionality is already present in the kernel sources in some other =
-way
-> (e.g. arch/m68k/lib/muldi3.c)?
+> >sid as well.
+>=20
+> OK, great. I=E2=80=99ll wait for that, upgrade the box with sid on
+> it and will backport to *shudder* hardy
 
-Gr{oetje,eeting}s,
+Well, beware: Ubuntu < 10.10 (including the 10.04 LTS Lucid Lynx) does
+not have the necessary libmpfr3+. That also means that the Ubuntu Lucid
+packages I have prepared at=20
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+http://sourceforge.net/projects/aranym/files/aranym/0.9.12/
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+do NOT contain the new MPFR based FPU core made by Andreas.
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+So if you really want to try out the new ARAnyM FPU on your Hardy make
+sure you'll backport libmpfr3+ there first.
+
+Petr
