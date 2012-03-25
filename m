@@ -1,110 +1,130 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 05/11] m68k/atari: Add missing platform check before
- registering platform devices
-Date: Sun, 25 Mar 2012 10:01:33 +0200
-Message-ID: <CAMuHMdXcJCdt+X53zrSUbpvFxL2WzuQH6MWByFvQ5E0UT2LHYg@mail.gmail.com>
-References: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
-	<1332323515-7314-5-git-send-email-geert@linux-m68k.org>
-	<4F6E950E.30809@gmail.com>
+From: Kautuk Consul <consul.kautuk@gmail.com>
+Subject: Re: [PATCH 08/20 v2] m68k/mm/fault.c: Port OOM changes to do_page_fault
+Date: Sun, 25 Mar 2012 04:44:25 -0400
+Message-ID: <CAFPAmTTWtZGprAxfAd_k17Bip-cwpamLjAaQWRGfxgv+dwzK8w@mail.gmail.com>
+References: <1332259546-2037-1-git-send-email-consul.kautuk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4F6E950E.30809@gmail.com>
+In-Reply-To: <1332259546-2037-1-git-send-email-consul.kautuk@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 
-Hi Michael,
+Hi Geert,
 
-On Sun, Mar 25, 2012 at 05:46, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
->> On multi-platform kernels, the Atari platform devices should be regi=
-stered
->> when running on Atari only. Else it may crash later.
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> ---
->> =C2=A0arch/m68k/atari/config.c | =C2=A0 =C2=A03 +++
->> =C2=A01 files changed, 3 insertions(+), 0 deletions(-)
->>
->> diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
->> index af78731..35fb81d 100644
->> --- a/arch/m68k/atari/config.c
->> +++ b/arch/m68k/atari/config.c
->> @@ -693,6 +693,9 @@ static struct platform_device
->> *atari_platform_devices[] __initdata =3D {
->> =C2=A0int __init atari_platform_init(void)
->> =C2=A0{
->> + =C2=A0 =C2=A0 =C2=A0 if (!MACH_IS_ATARI)
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
->> +
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0return platform_add_devices(atari_platfor=
-m_devices,
->> ARRAY_SIZE(atari_platform_devices));
->> =C2=A0}
->>
+did you get a chance to review this patch ?
+
+can I improve this patch in any way ?
+
+On Tue, Mar 20, 2012 at 12:05 PM, Kautuk Consul <consul.kautuk@gmail.co=
+m> wrote:
+> Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
+> (mm: retry page fault when blocking on disk transfer) and
+> commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
+> (x86,mm: make pagefault killable)
 >
+> The above commits introduced changes into the x86 pagefault handler
+> for making the page fault handler retryable as well as killable.
 >
-> How about this instead - probe for the EtherNAT config register, and
-> register devices only if found?
-
-That's even better, but logically, it's an extra change on top, so I'd =
-like
-to keep it separate.
-
-> (may apply with a bit of fuzz)
+> These changes reduce the mmap_sem hold time, which is crucial
+> during OOM killer invocation.
 >
-> Otherwise, Acked-by: Michael Schmitz <schmitz@debian.org>.
+> Port these changes to m68k.
 >
-> --- arch/m68k/atari/config.c.org =C2=A0 =C2=A02012-03-25 16:02:12.000=
-000000 +1300
-> +++ arch/m68k/atari/config.c =C2=A0 =C2=A02012-03-25 13:37:21.0000000=
-00 +1300
-> @@ -753,7 +753,19 @@
+> Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
+> ---
+> =A0arch/m68k/mm/fault.c | =A0 31 ++++++++++++++++++++++++++-----
+> =A01 files changed, 26 insertions(+), 5 deletions(-)
 >
-> int __init atari_platform_init(void)
-> {
-> - =C2=A0 =C2=A0return platform_add_devices(atari_platform_devices,
-> ARRAY_SIZE(atari_platform_devices));
-> + =C2=A0 =C2=A0if (MACH_IS_ATARI) {
-
-I prefer the "if (!MACH_IS_ATARI) return -ENODEV;" at the top, as it
-  - means less code to change if more platform devices are added,
-  - means less source code to keep on your mental stack when reading th=
-e code,
-  - decreases indentation for the rest of the function.
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0u8 ethernat_cr;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long enatc_phys =3D 0x80000023;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned char *enatc_virt;
-> + =C2=A0 =C2=A0 =C2=A0 + =C2=A0 =C2=A0 =C2=A0 =C2=A0enatc_virt =3D (u=
-nsigned char *)ioremap(enatc_phys, 0xf);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0if (hwreg_present(enatc_virt)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0iounmap(enatc_virt);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return platform_add_device=
-s(atari_platform_devices,
-> ARRAY_SIZE(atari_platform_devices));
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0}
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0iounmap(enatc_virt);
-> + =C2=A0 =C2=A0}
-> + =C2=A0 =C2=A0return -ENODEV; =C2=A0 }
+> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+> index 2db6099..27879bd 100644
+> --- a/arch/m68k/mm/fault.c
+> +++ b/arch/m68k/mm/fault.c
+> @@ -74,6 +74,7 @@ int do_page_fault(struct pt_regs *regs, unsigned lo=
+ng address,
+> =A0 =A0 =A0 =A0struct mm_struct *mm =3D current->mm;
+> =A0 =A0 =A0 =A0struct vm_area_struct * vma;
+> =A0 =A0 =A0 =A0int write, fault;
+> + =A0 =A0 =A0 unsigned int flags =3D FAULT_FLAG_ALLOW_RETRY | FAULT_F=
+LAG_KILLABLE;
 >
-> arch_initcall(atari_platform_init);
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+> =A0#ifdef DEBUG
+> =A0 =A0 =A0 =A0printk ("do page fault:\nregs->sr=3D%#x, regs->pc=3D%#=
+lx, address=3D%#lx, %ld, %p\n",
+> @@ -88,6 +89,7 @@ int do_page_fault(struct pt_regs *regs, unsigned lo=
+ng address,
+> =A0 =A0 =A0 =A0if (in_atomic() || !mm)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto no_context;
+>
+> +retry:
+> =A0 =A0 =A0 =A0down_read(&mm->mmap_sem);
+>
+> =A0 =A0 =A0 =A0vma =3D find_vma(mm, address);
+> @@ -126,6 +128,7 @@ good_area:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!(vma->vm_flags & =
+VM_WRITE))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto a=
+cc_err;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0write++;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 flags |=3D FAULT_FLAG_W=
+RITE;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0case 1: =A0 =A0 =A0 =A0 /* read, prese=
+nt */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto acc_err;
+> @@ -140,10 +143,14 @@ good_area:
+> =A0 =A0 =A0 =A0 * the fault.
+> =A0 =A0 =A0 =A0 */
+>
+> - =A0 =A0 =A0 fault =3D handle_mm_fault(mm, vma, address, write ? FAU=
+LT_FLAG_WRITE : 0);
+> + =A0 =A0 =A0 fault =3D handle_mm_fault(mm, vma, address, flags);
+> =A0#ifdef DEBUG
+> =A0 =A0 =A0 =A0printk("handle_mm_fault returns %d\n",fault);
+> =A0#endif
+> +
+> + =A0 =A0 =A0 if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(cu=
+rrent))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> +
+> =A0 =A0 =A0 =A0if (unlikely(fault & VM_FAULT_ERROR)) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (fault & VM_FAULT_OOM)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto out_of_memory;
+> @@ -151,10 +158,24 @@ good_area:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto bus_err;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0BUG();
+> =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 if (fault & VM_FAULT_MAJOR)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->maj_flt++;
+> - =A0 =A0 =A0 else
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->min_flt++;
+> +
+> + =A0 =A0 =A0 if (flags & FAULT_FLAG_ALLOW_RETRY) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (fault & VM_FAULT_MAJOR)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->maj_flt++;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 current->min_flt++;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (fault & VM_FAULT_RETRY) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 flags &=3D ~FAULT_FLAG_=
+ALLOW_RETRY;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* No need to up_read=
+(&mm->mmap_sem) as we would
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* have already relea=
+sed it in __lock_page_or_retry
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* in mm/filemap.c.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto retry;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 }
+>
+> =A0 =A0 =A0 =A0up_read(&mm->mmap_sem);
+> =A0 =A0 =A0 =A0return 0;
+> --
+> 1.7.5.4
+>
