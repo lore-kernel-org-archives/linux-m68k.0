@@ -1,120 +1,46 @@
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Subject: [PATCH 08/20 v3] m68k/mm/fault.c: Port OOM changes to do_page_fault
-Date: Sun, 25 Mar 2012 06:37:48 -0400
-Message-ID: <1332671868-2739-1-git-send-email-consul.kautuk__16538.2806714208$1332671934$gmane$org@gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 05/11] m68k/atari: Add missing platform check before
+ registering platform devices
+Date: Mon, 26 Mar 2012 07:53:50 +1300
+Message-ID: <CAOmrzk+m2+GKOu+1nOJ2E1Aogx3Lj7vbUDHG5azK+A492MkDOw@mail.gmail.com>
+References: <1332323515-7314-1-git-send-email-geert@linux-m68k.org>
+	<1332323515-7314-5-git-send-email-geert@linux-m68k.org>
+	<4F6E950E.30809@gmail.com>
+	<CAMuHMdXcJCdt+X53zrSUbpvFxL2WzuQH6MWByFvQ5E0UT2LHYg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdXcJCdt+X53zrSUbpvFxL2WzuQH6MWByFvQ5E0UT2LHYg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Kautuk Consul <consul.kautuk@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
-(mm: retry page fault when blocking on disk transfer) and
-commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
-(x86,mm: make pagefault killable)
+Hi Geert,
 
-The above commits introduced changes into the x86 pagefault handler
-for making the page fault handler retryable as well as killable.
 
-These changes reduce the mmap_sem hold time, which is crucial
-during OOM killer invocation.
+>> How about this instead - probe for the EtherNAT config register, and
+>> register devices only if found?
+>
+> That's even better, but logically, it's an extra change on top, so I'=
+d like
+> to keep it separate.
 
-Port these changes to m68k.
+OK, I'll resend as soon as I've pulled your latest changes.
 
-Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
----
- arch/m68k/mm/fault.c |   42 ++++++++++++++++++++++++++++++++++--------
- 1 files changed, 34 insertions(+), 8 deletions(-)
+>> + =A0 =A0if (MACH_IS_ATARI) {
+>
+> I prefer the "if (!MACH_IS_ATARI) return -ENODEV;" at the top, as it
+> =A0- means less code to change if more platform devices are added,
+> =A0- means less source code to keep on your mental stack when reading=
+ the code,
+> =A0- decreases indentation for the rest of the function.
 
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-index 2db6099..fc5b8c9 100644
---- a/arch/m68k/mm/fault.c
-+++ b/arch/m68k/mm/fault.c
-@@ -73,7 +73,8 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct * vma;
--	int write, fault;
-+	int fault;
-+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
- 
- #ifdef DEBUG
- 	printk ("do page fault:\nregs->sr=%#x, regs->pc=%#lx, address=%#lx, %ld, %p\n",
-@@ -88,6 +89,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 	if (in_atomic() || !mm)
- 		goto no_context;
- 
-+retry:
- 	down_read(&mm->mmap_sem);
- 
- 	vma = find_vma(mm, address);
-@@ -118,14 +120,13 @@ good_area:
- #ifdef DEBUG
- 	printk("do_page_fault: good_area\n");
- #endif
--	write = 0;
- 	switch (error_code & 3) {
- 		default:	/* 3: write, present */
- 			/* fall through */
- 		case 2:		/* write, not present */
- 			if (!(vma->vm_flags & VM_WRITE))
- 				goto acc_err;
--			write++;
-+			flags |= FAULT_FLAG_WRITE;
- 			break;
- 		case 1:		/* read, present */
- 			goto acc_err;
-@@ -140,10 +141,14 @@ good_area:
- 	 * the fault.
- 	 */
- 
--	fault = handle_mm_fault(mm, vma, address, write ? FAULT_FLAG_WRITE : 0);
-+	fault = handle_mm_fault(mm, vma, address, flags);
- #ifdef DEBUG
- 	printk("handle_mm_fault returns %d\n",fault);
- #endif
-+
-+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
-+		return 0;
-+
- 	if (unlikely(fault & VM_FAULT_ERROR)) {
- 		if (fault & VM_FAULT_OOM)
- 			goto out_of_memory;
-@@ -151,10 +156,31 @@ good_area:
- 			goto bus_err;
- 		BUG();
- 	}
--	if (fault & VM_FAULT_MAJOR)
--		current->maj_flt++;
--	else
--		current->min_flt++;
-+
-+	/*
-+	 * Major/minor page fault accounting is only done on the
-+	 * initial attempt. If we go through a retry, it is extremely
-+	 * likely that the page will be found in page cache at that point.
-+	 */
-+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
-+		if (fault & VM_FAULT_MAJOR)
-+			current->maj_flt++;
-+		else
-+			current->min_flt++;
-+		if (fault & VM_FAULT_RETRY) {
-+			/* Clear FAULT_FLAG_ALLOW_RETRY to avoid any risk
-+			 * of starvation. */
-+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
-+
-+			/*
-+			 * No need to up_read(&mm->mmap_sem) as we would
-+			 * have already released it in __lock_page_or_retry
-+			 * in mm/filemap.c.
-+			 */
-+
-+			goto retry;
-+		}
-+	}
- 
- 	up_read(&mm->mmap_sem);
- 	return 0;
--- 
-1.7.5.4
+OK; do you want the tests and platform calls conditional on config
+options (we only need to have the platform data available if there's a
+driver or module built to use it)?
+
+Cheers,
+
+  Michael
