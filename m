@@ -1,61 +1,56 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: ARAnyM 0.9.13 with MPFR even for Lucid
-Date: Sun, 25 Mar 2012 11:55:03 +0200
-Message-ID: <CAMuHMdXCiX=11xZcKn8b9JB1vvGpkozp_hAbZ4jKqpEpwsbroQ@mail.gmail.com>
-References: <1332282242.3352.7.camel@aspire>
-	<Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
-	<1332322473.10247.56.camel@petr>
-	<CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
-	<1332337279.5083.3.camel@aspire>
-	<CAMuHMdXLUEYpiGrHrtDw=MjSZn3yZ1Of8TLf4wPmiDr9grpreg@mail.gmail.com>
-	<1332505616.22403.27.camel@petr>
+From: Kautuk Consul <consul.kautuk@gmail.com>
+Subject: Re: [PATCH 08/20 v2] m68k/mm/fault.c: Port OOM changes to do_page_fault
+Date: Sun, 25 Mar 2012 06:15:43 -0400
+Message-ID: <CAFPAmTTYTfBB-PZ7t0fUNp-56bFa0AZyLpSx=KwdyaQ6hUx9BA@mail.gmail.com>
+References: <1332259546-2037-1-git-send-email-consul.kautuk@gmail.com>
+	<CAFPAmTTWtZGprAxfAd_k17Bip-cwpamLjAaQWRGfxgv+dwzK8w@mail.gmail.com>
+	<CAMuHMdVdhKANw2T0wQd_BXpWXWyUt-ozKoEP5GPH1zaQi6Y-dg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wi0-f178.google.com ([209.85.212.178]:52327 "EHLO
-	mail-wi0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755286Ab2CYJzE convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Mar 2012 05:55:04 -0400
-Received: by wibhq7 with SMTP id hq7so3415597wib.1
-        for <linux-m68k@vger.kernel.org>; Sun, 25 Mar 2012 02:55:03 -0700 (PDT)
-In-Reply-To: <1332505616.22403.27.camel@petr>
+In-Reply-To: <CAMuHMdVdhKANw2T0wQd_BXpWXWyUt-ozKoEP5GPH1zaQi6Y-dg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org
 
-Hi Petr,
-
-On Fri, Mar 23, 2012 at 13:26, Petr Stehlik <pstehlik@sophics.cz> wrote=
-:
-> I couldn't stand the feeling that Geert cannot enjoy new Andreas' MPF=
-R
-> FPU emulation in ARAnyM so I have backported the libmpfr4 for Lucid:
+On Sun, Mar 25, 2012 at 5:13 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Hi Kautuk,
 >
-> http://sourceforge.net/projects/aranym/files/aranym/0.9.13/lucid_mpfr=
-4/
+> On Sun, Mar 25, 2012 at 10:44, Kautuk Consul <consul.kautuk@gmail.com=
+> wrote:
+>> did you get a chance to review this patch ?
 >
-> And I have also released a new version of ARAnyM that includes anothe=
-r
-> fix that Andreas made two days ago:
+> Yes, I've just did. Sorry it took that long.
+
+No problem.
+
+> Looks good, so
+> Acked-by: <Geert Uytterhoeven <geert@linux-m68k.org>
 >
-> http://sourceforge.net/projects/aranym/files/aranym/0.9.13/
+> BTW, what's the plan with this series? Will you take care of it, or s=
+hould
+> all arch maintainers take their parts?
+>
 
-Thanks! You're too kind ;-)
+Uh .. I didn't really think much about that as I'm quite new to this.  =
+    :)
+It would be nice if everyone(including you) could just include their
+respective patches in their trees/branches.
 
-Gr{oetje,eeting}s,
+>> can I improve this patch in any way ?
+>
+> There are a few more or less minor things:
+> =A0- You can remove "write" completely, as it's now superseded by
+> =A0 =A0FAULT_FLAG_WRITE in "flags",
+> =A0- Please also port the comments that were added to x86. They make
+> =A0 =A0life easier for the casual reader.
+>
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+should I send another patch for this ?
+or do you want me to make a v2 of this patch and send it you today ?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+> Thanks!
+>
