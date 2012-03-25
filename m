@@ -1,51 +1,73 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: ARAnyM 0.9.13 with MPFR even for Lucid
-Date: Fri, 23 Mar 2012 14:54:27 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1203231451400.8840@herc.mirbsd.org>
-References: <1332282242.3352.7.camel@aspire>  <Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
-  <1332322473.10247.56.camel@petr>  <CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
-  <1332337279.5083.3.camel@aspire>  <CAMuHMdXLUEYpiGrHrtDw=MjSZn3yZ1Of8TLf4wPmiDr9grpreg@mail.gmail.com>
- <1332505616.22403.27.camel@petr>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 05/11] m68k/atari: Add missing platform check before registering
+ platform devices
+Date: Sun, 25 Mar 2012 16:46:22 +1300
+Message-ID: <4F6E950E.30809__49208.1553362825$1332647650$gmane$org@gmail.com>
+References: <1332323515-7314-1-git-send-email-geert@linux-m68k.org> <1332323515-7314-5-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <1332505616.22403.27.camel@petr>
-Resent-Message-ID: <bGPUTXBrLtO.A.MMG.E9IbPB@liszt>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Petr Stehlik <pstehlik@sophics.cz>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>, Antonin Kral <A.Kral@sh.cvut.cz>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1332323515-7314-5-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Petr Stehlik dixit:
-
->I couldn't stand the feeling that Geert cannot enjoy new Andreas' MPFR
->FPU emulation in ARAnyM so I have backported the libmpfr4 for Lucid:
-
-I=E2=80=99ve built mpfr4 for hardy and am now fighting with the PPA.
-Should be there soon. I renamed the -dev package into libmpfr4-dev
-to have this not be picked up by ANYTHING else in the system.
-
->And I have also released a new version of ARAnyM that includes another
->fix that Andreas made two days ago:
+Geert,
+> On multi-platform kernels, the Atari platform devices should be registered
+> when running on Atari only. Else it may crash later.
 >
->http://sourceforge.net/projects/aranym/files/aranym/0.9.13/
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  arch/m68k/atari/config.c |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+> index af78731..35fb81d 100644
+> --- a/arch/m68k/atari/config.c
+> +++ b/arch/m68k/atari/config.c
+> @@ -693,6 +693,9 @@ static struct platform_device *atari_platform_devices[] __initdata = {
+>  
+>  int __init atari_platform_init(void)
+>  {
+> +	if (!MACH_IS_ATARI)
+> +		return -ENODEV;
+> +
+>  	return platform_add_devices(atari_platform_devices, ARRAY_SIZE(atari_platform_devices));
+>  }
+>  
+>   
 
-Mh. I=E2=80=99ll backport the src:aranym from sid once its maintainer (Cc=
-=E2=80=99d)
-has made the upload. Will post here then. (In the hope it doesn=E2=80=99t
-use too many =E2=80=9Cnew Debian=E2=80=9D features=E2=80=A6)
+How about this instead - probe for the EtherNAT config register, and 
+register devices only if found?
 
-My other hosts use lenny (let=E2=80=99s just keep that alone, or maybe
-I take my hardy source packages) and sid (so no issue once
-Antonin has uploaded).
+(may apply with a bit of fuzz)
 
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-=09=09=09=09=09=09-- Edward Burr
+Otherwise, Acked-by: Michael Schmitz <schmitz@debian.org>.
+
+--- arch/m68k/atari/config.c.org    2012-03-25 16:02:12.000000000 +1300
++++ arch/m68k/atari/config.c    2012-03-25 13:37:21.000000000 +1300
+@@ -753,7 +753,19 @@
+ 
+ int __init atari_platform_init(void)
+ {
+-    return platform_add_devices(atari_platform_devices, 
+ARRAY_SIZE(atari_platform_devices));
++    if (MACH_IS_ATARI) {
++        u8 ethernat_cr;
++        unsigned long enatc_phys = 0x80000023;
++        unsigned char *enatc_virt;
++       
++        enatc_virt = (unsigned char *)ioremap(enatc_phys, 0xf);
++        if (hwreg_present(enatc_virt)) {
++            iounmap(enatc_virt);
++            return platform_add_devices(atari_platform_devices, 
+ARRAY_SIZE(atari_platform_devices));
++        }
++        iounmap(enatc_virt);
++    }
++    return -ENODEV;   
+ }
+ 
+ arch_initcall(atari_platform_init);
