@@ -1,37 +1,60 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/q40: Add missing platform check before registering platform devices
-Date: Mon, 26 Mar 2012 22:13:13 +0200
-Message-ID: <1332792793-31174-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: new ARAnyM with better FPU
+Date: Mon, 26 Mar 2012 22:41:13 +0200
+Message-ID: <CAMuHMdVegR=pb_JPYH_PBWjYCZzt0Ga4jgFdTcFjEuyxhm_DJQ@mail.gmail.com>
+References: <1332282242.3352.7.camel@aspire>
+	<Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
+	<1332322473.10247.56.camel@petr>
+	<CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
+	<1332337279.5083.3.camel@aspire>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-we0-f174.google.com ([74.125.82.174]:34949 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751759Ab2CZUlP convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 Mar 2012 16:41:15 -0400
+Received: by wejx9 with SMTP id x9so4474218wej.19
+        for <linux-m68k@vger.kernel.org>; Mon, 26 Mar 2012 13:41:13 -0700 (PDT)
+In-Reply-To: <1332337279.5083.3.camel@aspire>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Petr Stehlik <pstehlik@sophics.cz>
+Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On multi-platform kernels, the Q40/Q60 platform devices should be
-registered when running on Q40/Q60 only. Else it may crash later.
+Hi Petr,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-As this weas introduced after v3.3, I'll queue this up together with the
-other critical MACH_IS_* patches after v3.4-rc1 is released.
+On Wed, Mar 21, 2012 at 14:41, Petr Stehlik <pstehlik@sophics.cz> wrote=
+:
+> Geert Uytterhoeven p=C3=AD=C5=A1e v Wed 21. 03. 2012 v 11:08 +0100:
+>> I've just installed the binary for Lucid, and now cp/mv/du from core=
+utils
+>> work again (they failed with out-of-memory errors under Ubuntu's 0.9=
+=2E9).
+>> I guess that was due to the CAS/CAS2 bugs?
+>
+> Most probably.
 
- arch/m68k/q40/config.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Bad news:
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index be93648..ba5452f 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -335,6 +335,9 @@ static __init int q40_add_kbd_device(void)
- {
- 	struct platform_device *pdev;
- 
-+	if (!MACH_IS_Q40)
-+		return -ENODEV;
-+
- 	pdev = platform_device_register_simple("q40kbd", -1, NULL, 0);
- 	if (IS_ERR(pdev))
- 		return PTR_ERR(pdev);
--- 
-1.7.0.4
+aranym_0.9.12-1.lucid_amd64.deb: du works
+aranym_0.9.13-1.lucid.mpfr4_amd64.deb: du fails with "memory exhausted"=
+,
+just like in 0.9.9.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
