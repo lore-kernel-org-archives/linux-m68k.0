@@ -1,39 +1,59 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
-Subject: Re: new ARAnyM with better FPU
-Date: Thu, 29 Mar 2012 12:49:42 +0200
-Message-ID: <1333018182.3813.21.camel@petr>
-References: <1332282242.3352.7.camel@aspire>
-	 <Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
-	 <1332322473.10247.56.camel@petr>
-	 <CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
-	 <1332337279.5083.3.camel@aspire>
-	 <CAMuHMdVegR=pb_JPYH_PBWjYCZzt0Ga4jgFdTcFjEuyxhm_DJQ@mail.gmail.com>
-	 <m2y5qmnk26.fsf@igel.home>
+From: <gerg@uclinux.org>
+Subject: [PATCH] m68k: include asm/cmpxchg.h in our m68k atomic.h
+Date: Fri, 30 Mar 2012 15:52:09 +1000
+Message-ID: <1333086729-14263-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.sophics.cz ([188.246.101.24]:35045 "EHLO www.sophics.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1758654Ab2C2Ktq convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 29 Mar 2012 06:49:46 -0400
-In-Reply-To: <m2y5qmnk26.fsf@igel.home>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:14787 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752014Ab2C3GA0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 30 Mar 2012 02:00:26 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: dhowells@redhat.com
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-Andreas Schwab p=C3=AD=C5=A1e v =C3=9At 27. 03. 2012 v 17:24 +0200:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->=20
-> > aranym_0.9.13-1.lucid.mpfr4_amd64.deb: du fails with "memory exhaus=
-ted",
-> > just like in 0.9.9.
->=20
-> Stupid portability bug, fixed now.
+=46rom: Greg Ungerer <gerg@uclinux.org>
 
-The fix is in aranym_0.9.13-1.1 packages (Debian and Ubuntu):
+After commit 9ffc93f203c18a70623f21950f1dd473c9ec48cd ("Remove all
 
-http://sourceforge.net/projects/aranym/files/aranym/0.9.13/
+  CC      init/main.o
+In file included from include/linux/mm.h:15:0,
+                 from include/linux/ring_buffer.h:5,
+                 from include/linux/ftrace_event.h:4,
+                 from include/trace/syscall.h:6,
+                 from include/linux/syscalls.h:78,
+                 from init/main.c:16:
+include/linux/debug_locks.h: In function =E2=80=98__debug_locks_off=E2=80=
+=99:
+include/linux/debug_locks.h:16:2: error: implicit declaration of functi=
+on =E2=80=98xchg=E2=80=99
 
-Petr
+There is no indirect inclusions of the new asm/cmpxchg.h for m68k here.
+Looking at most other architectures they include asm/cmpxchg.h in their
+asm/atomic.h. M68k currently does not do this. Including this in atomic=
+=2Eh
+fixes all m68k build problems.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/atomic.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/ato=
+mic.h
+index 336e617..f4e32de 100644
+--- a/arch/m68k/include/asm/atomic.h
++++ b/arch/m68k/include/asm/atomic.h
+@@ -3,6 +3,7 @@
+=20
+ #include <linux/types.h>
+ #include <linux/irqflags.h>
++#include <asm/cmpxchg.h>
+=20
+ /*
+  * Atomic operations that C can't guarantee us.  Useful for
+--=20
+1.7.0.4
