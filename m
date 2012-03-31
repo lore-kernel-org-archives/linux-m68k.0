@@ -1,90 +1,48 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCH RFC] Simplify the Linux kernel by reducing its state space
-Date: Sat, 31 Mar 2012 09:54:01 -0700
-Message-ID: <20120331165401.GD2450__30211.9214823053$1333212926$gmane$org@linux.vnet.ibm.com>
-References: <20120331163321.GA15809@linux.vnet.ibm.com>
- <CAMuHMdWTB+_AtqM6JixY=Oo_zmzX_dNxnivpARBYSbPJzp4t6A@mail.gmail.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] m68k: include asm/cmpxchg.h in our m68k atomic.h
+Date: Sat, 31 Mar 2012 20:28:19 +0100
+Message-ID: <31523.1333222099@redhat.com>
+References: <1333086729-14263-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWTB+_AtqM6JixY=Oo_zmzX_dNxnivpARBYSbPJzp4t6A@mail.gmail.com>
+Received: from mx1.redhat.com ([209.132.183.28]:15291 "EHLO mx1.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752249Ab2CaT2b convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Mar 2012 15:28:31 -0400
+In-Reply-To: <1333086729-14263-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, tglx@linutronix.de, linux@arm.linux.org.uk, dhowells@redhat.com, jejb@parisc-linux.org, linux390@de.ibm.com, x86@kernel.org, cmetcalf@tilera.com, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: gerg@uclinux.org
+Cc: dhowells@redhat.com, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Sat, Mar 31, 2012 at 06:40:30PM +0200, Geert Uytterhoeven wrote:
-> Hi Paul,
+<gerg@uclinux.org> wrote:
+
+> From: Greg Ungerer <gerg@uclinux.org>
 >=20
-> On Sat, Mar 31, 2012 at 18:33, Paul E. McKenney
-> <paulmck@linux.vnet.ibm.com> wrote:
-> > Although there have been numerous complaints about the complexity o=
-f
-> > parallel programming (especially over the past 5-10 years), the pla=
-in
-> > truth is that the incremental complexity of parallel programming ov=
-er
-> > that of sequential programming is not as large as is commonly belie=
-ved.
-> > Despite that you might have heard, the mind-numbing complexity of m=
-odern
-> > computer systems is not due so much to there being multiple CPUs, b=
-ut
-> > rather to there being any CPUs at all. =A0In short, for the ultimat=
-e in
-> > computer-system simplicity, the optimal choice is NR_CPUS=3D0.
-> >
-> > This commit therefore limits kernel builds to zero CPUs. =A0This ch=
-ange
-> > has the beneficial side effect of rendering all kernel bugs harmles=
-s.
-> > Furthermore, this commit enables additional beneficial changes, for
-> > example, the removal of those parts of the kernel that are not need=
-ed
-> > when there are zero CPUs.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >
-> > =A0alpha/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 11 +=
-+++++-----
-> > =A0arm/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
-6 +++---
-> > =A0blackfin/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A03 +=
-+-
-> > =A0hexagon/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A09 +=
-++++----
-> > =A0ia64/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-9 +++++----
-> > =A0m32r/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 10=
- ++++++----
-> > =A0mips/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 21=
- +++++++++++----------
-> > =A0mn10300/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A03 +=
-+-
-> > =A0parisc/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A06=
- +++---
-> > =A0powerpc/platforms/Kconfig.cputype | =A0 =A08 ++++----
-> > =A0s390/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 12=
- +++++++-----
-> > =A0sh/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =
-11 ++++++-----
-> > =A0sparc/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A08=
- ++++----
-> > =A0tile/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0=
-9 +++++----
-> > =A0x86/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 16=
- +++++++++-------
-> > =A015 files changed, 78 insertions(+), 64 deletions(-)
+> After commit 9ffc93f203c18a70623f21950f1dd473c9ec48cd ("Remove all
 >=20
-> You forgot to fix half of the architectures, a.o. m68k?
+>   CC      init/main.o
+> In file included from include/linux/mm.h:15:0,
+>                  from include/linux/ring_buffer.h:5,
+>                  from include/linux/ftrace_event.h:4,
+>                  from include/trace/syscall.h:6,
+>                  from include/linux/syscalls.h:78,
+>                  from init/main.c:16:
+> include/linux/debug_locks.h: In function =E2=80=98__debug_locks_off=E2=
+=80=99:
+> include/linux/debug_locks.h:16:2: error: implicit declaration of func=
+tion =E2=80=98xchg=E2=80=99
+>=20
+> There is no indirect inclusions of the new asm/cmpxchg.h for m68k her=
+e.
+> Looking at most other architectures they include asm/cmpxchg.h in the=
+ir
+> asm/atomic.h. M68k currently does not do this. Including this in atom=
+ic.h
+> fixes all m68k build problems.
+>=20
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-I must confess that I fixed only the SMP-capable architectures.
-
-I of course would welcome additions for UP-only architectures.
-
-							Thanx, Paul
+Acked-by: David Howells <dhowells@redhat.com>
