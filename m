@@ -1,36 +1,28 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/atari: EtherNEC - Remove #inclusion of asm/system.h
-Date: Sun,  1 Apr 2012 22:52:03 +0200
-Message-ID: <1333313523-17707-1-git-send-email-geert@linux-m68k.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH 1/5] m68k/atari: EtherNAT - change number of Atari interrupts to make room for EtherNAT interrupts
+Date: Sun, 01 Apr 2012 23:00:24 +0200
+Message-ID: <m2mx6v417b.fsf@igel.home>
+References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
+	<4F4B2BB6.900@gmail.com> <4F77C245.5090002@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from georges.telenet-ops.be ([195.130.137.68]:58265 "EHLO
-	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752599Ab2DAUwK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Apr 2012 16:52:10 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:54245 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752603Ab2DAVA1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Apr 2012 17:00:27 -0400
+In-Reply-To: <4F77C245.5090002@gmail.com> (Michael Schmitz's message of "Sun,
+	01 Apr 2012 14:49:41 +1200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@debian.org>
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 
-Cfr. commit 9ffc93f203c18a70623f21950f1dd473c9ec48cd ("Remove all
- #inclusions of asm/system.h")
+Never send patches with format=flowed.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/ethernet/8390/atari_ethernec.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+Andreas.
 
-diff --git a/drivers/net/ethernet/8390/atari_ethernec.c b/drivers/net/ethernet/8390/atari_ethernec.c
-index 086d968..4b1b953 100644
---- a/drivers/net/ethernet/8390/atari_ethernec.c
-+++ b/drivers/net/ethernet/8390/atari_ethernec.c
-@@ -98,7 +98,6 @@ static const char version2[] =
- #include <linux/jiffies.h>
- #include <linux/workqueue.h>
- 
--#include <asm/system.h>
- #include <asm/atarihw.h>
- #include <asm/atariints.h>
- #include <asm/io.h>
 -- 
-1.7.0.4
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
