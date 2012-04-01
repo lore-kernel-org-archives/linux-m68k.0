@@ -1,50 +1,36 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/5] m68k/atari: EtherNAT - change number of Atari
- interrupts to make room for EtherNAT interrupts
-Date: Sun, 1 Apr 2012 22:39:48 +0200
-Message-ID: <CAMuHMdUm8Mot6ioYemQVacCZxgYKBGBDGUz2X4Xh_zJf_ZPgKQ@mail.gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
-	<4F4B2BB6.900@gmail.com>
-	<4F77C245.5090002@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH] m68k/atari: EtherNEC - Remove #inclusion of asm/system.h
+Date: Sun,  1 Apr 2012 22:52:03 +0200
+Message-ID: <1333313523-17707-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:52330 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753124Ab2DAUjs convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Apr 2012 16:39:48 -0400
-Received: by iagz16 with SMTP id z16so3261402iag.19
-        for <linux-m68k@vger.kernel.org>; Sun, 01 Apr 2012 13:39:48 -0700 (PDT)
-In-Reply-To: <4F77C245.5090002@gmail.com>
+Received: from georges.telenet-ops.be ([195.130.137.68]:58265 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752599Ab2DAUwK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Apr 2012 16:52:10 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+To: Michael Schmitz <schmitz@debian.org>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Michael,
+Cfr. commit 9ffc93f203c18a70623f21950f1dd473c9ec48cd ("Remove all
+ #inclusions of asm/system.h")
 
-On Sun, Apr 1, 2012 at 04:49, Michael Schmitz <schmitzmic@googlemail.co=
-m> wrote:
-> Part 1 (this): make room for the EtherNAT interrupts - they appear at
-> vectors 0xc3 (USB ISP1160) and 0xc4 (SMC91C111)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/8390/atari_ethernec.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Is there any specific reason you cannot use atari_register_vme_int(), l=
-ike
-drivers/net/ethernet/amd/atarilance.c, to avoid increasing NR_IRQS?
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/drivers/net/ethernet/8390/atari_ethernec.c b/drivers/net/ethernet/8390/atari_ethernec.c
+index 086d968..4b1b953 100644
+--- a/drivers/net/ethernet/8390/atari_ethernec.c
++++ b/drivers/net/ethernet/8390/atari_ethernec.c
+@@ -98,7 +98,6 @@ static const char version2[] =
+ #include <linux/jiffies.h>
+ #include <linux/workqueue.h>
+ 
+-#include <asm/system.h>
+ #include <asm/atarihw.h>
+ #include <asm/atariints.h>
+ #include <asm/io.h>
+-- 
+1.7.0.4
