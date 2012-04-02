@@ -1,79 +1,114 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/5] m68k/atari: EtherNAT - change number of Atari
- interrupts to make room for EtherNAT interrupts
-Date: Mon, 2 Apr 2012 09:35:53 +0200
-Message-ID: <CAMuHMdXnVU2ZuCVLWA27RaCm2COi_AdDE9F2hj=qBGQLB6KxuA@mail.gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
-	<4F4B2BB6.900@gmail.com>
-	<4F77C245.5090002@gmail.com>
-	<CAMuHMdUm8Mot6ioYemQVacCZxgYKBGBDGUz2X4Xh_zJf_ZPgKQ@mail.gmail.com>
-	<CAOmrzkJqkLC=dhsY0AUduv3Mm7PVmbtHrsjgS6v=V14eXuuA8g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 58/69] TTY: 68328serial, use close_delay/closing_wait from tty_port
+Date: Mon,  2 Apr 2012 13:54:42 +0200
+Message-ID: <1333367693-3244-59-git-send-email-jslaby@suse.cz>
+References: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:56039 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751040Ab2DBHfx convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Apr 2012 03:35:53 -0400
-Received: by mail-iy0-f174.google.com with SMTP id z16so3755962iag.19
-        for <linux-m68k@vger.kernel.org>; Mon, 02 Apr 2012 00:35:53 -0700 (PDT)
-In-Reply-To: <CAOmrzkJqkLC=dhsY0AUduv3Mm7PVmbtHrsjgS6v=V14eXuuA8g@mail.gmail.com>
+In-Reply-To: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+To: gregkh@linuxfoundation.org
+Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Hi Michael,
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ drivers/tty/serial/68328serial.c |   26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-On Mon, Apr 2, 2012 at 00:44, Michael Schmitz <schmitzmic@googlemail.co=
-m> wrote:
->> Part 1 (this): make room for the EtherNAT interrupts - they appear a=
-t
->>> vectors 0xc3 (USB ISP1160) and 0xc4 (SMC91C111)
->>
->> Is there any specific reason you cannot use atari_register_vme_int()=
-, like
->> drivers/net/ethernet/amd/atarilance.c, to avoid increasing NR_IRQS?
->
-> From what I read in atari_register_vme_int(), it returns the next fre=
-e
-> VME interrupt starting at VME_SOURCE_BASE. This required the vector
-> number to be programmable in the correspomding VME device.
->
-> To the best of my knowledge, vector numbers are fixed (0xc3 and 0xc4)
-> for the EtherNAT.
-
-OK. If they are fixed, there's nothing we can do about that.
-
-> I definitely need to increase NR_IRQS - it might be better to leave
-> VME_MAX_SOURCES unchanged and change the NUM_ATARI_SOURCES definition
-> above instead.
->
-> I'm uncertain whether the complicated definition of NUM_ATARI_SOURCES
-> is needed anymore - are the IRQ_VECTOR_TO_SOURCE and
-> IRQ_SOURCE_TO_VECTOR macros still used anywhere?
-
-Only the latter:
-
-drivers/net/ethernet/amd/atarilance.c:          IO->ivec =3D
-IRQ_SOURCE_TO_VECTOR(dev->irq);
-drivers/net/ethernet/amd/atarilance.c:          *RIEBL_IVEC_ADDR =3D
-IRQ_SOURCE_TO_VECTOR(dev->irq);
-
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
+index 0c50f2e..e9fd13e 100644
+--- a/drivers/tty/serial/68328serial.c
++++ b/drivers/tty/serial/68328serial.c
+@@ -120,8 +120,6 @@ struct m68k_serial {
+ 	struct tty_struct	*tty;
+ 	int			custom_divisor;
+ 	int			x_char;		/* xon/xoff character */
+-	int			close_delay;
+-	unsigned short		closing_wait;
+ 	int			line;
+ 	unsigned char		*xmit_buf;
+ 	int			xmit_head;
+@@ -828,8 +826,8 @@ static int get_serial_info(struct m68k_serial * info,
+ 	tmp.irq = info->irq;
+ 	tmp.flags = info->flags;
+ 	tmp.baud_base = info->baud_base;
+-	tmp.close_delay = info->close_delay;
+-	tmp.closing_wait = info->closing_wait;
++	tmp.close_delay = info->tport.close_delay;
++	tmp.closing_wait = info->tport.closing_wait;
+ 	tmp.custom_divisor = info->custom_divisor;
+ 	if (copy_to_user(retinfo, &tmp, sizeof(*retinfo)))
+ 		return -EFAULT;
+@@ -840,6 +838,7 @@ static int get_serial_info(struct m68k_serial * info,
+ static int set_serial_info(struct m68k_serial * info,
+ 			   struct serial_struct * new_info)
+ {
++	struct tty_port *port = &info->tport;
+ 	struct serial_struct new_serial;
+ 	struct m68k_serial old_info;
+ 	int 			retval = 0;
+@@ -853,7 +852,7 @@ static int set_serial_info(struct m68k_serial * info,
+ 	if (!capable(CAP_SYS_ADMIN)) {
+ 		if ((new_serial.baud_base != info->baud_base) ||
+ 		    (new_serial.type != info->type) ||
+-		    (new_serial.close_delay != info->close_delay) ||
++		    (new_serial.close_delay != port->close_delay) ||
+ 		    ((new_serial.flags & ~ASYNC_USR_MASK) !=
+ 		     (info->flags & ~ASYNC_USR_MASK)))
+ 			return -EPERM;
+@@ -863,7 +862,7 @@ static int set_serial_info(struct m68k_serial * info,
+ 		goto check_and_exit;
+ 	}
+ 
+-	if (info->tport.count > 1)
++	if (port->count > 1)
+ 		return -EBUSY;
+ 
+ 	/*
+@@ -875,8 +874,8 @@ static int set_serial_info(struct m68k_serial * info,
+ 	info->flags = ((info->flags & ~ASYNC_FLAGS) |
+ 			(new_serial.flags & ASYNC_FLAGS));
+ 	info->type = new_serial.type;
+-	info->close_delay = new_serial.close_delay;
+-	info->closing_wait = new_serial.closing_wait;
++	port->close_delay = new_serial.close_delay;
++	port->closing_wait = new_serial.closing_wait;
+ 
+ check_and_exit:
+ 	retval = startup(info);
+@@ -1048,8 +1047,8 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
+ 	 * the line discipline to only process XON/XOFF characters.
+ 	 */
+ 	tty->closing = 1;
+-	if (info->closing_wait != ASYNC_CLOSING_WAIT_NONE)
+-		tty_wait_until_sent(tty, info->closing_wait);
++	if (port->closing_wait != ASYNC_CLOSING_WAIT_NONE)
++		tty_wait_until_sent(tty, port->closing_wait);
+ 	/*
+ 	 * At this point we stop accepting input.  To do this, we
+ 	 * disable the receive line status interrupts, and tell the
+@@ -1078,9 +1077,8 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
+ 	}
+ #endif	
+ 	if (port->blocked_open) {
+-		if (info->close_delay) {
+-			msleep_interruptible(jiffies_to_msecs(info->close_delay));
+-		}
++		if (port->close_delay)
++			msleep_interruptible(jiffies_to_msecs(port->close_delay));
+ 		wake_up_interruptible(&port->open_wait);
+ 	}
+ 	info->flags &= ~(ASYNC_NORMAL_ACTIVE|ASYNC_CLOSING);
+@@ -1296,8 +1294,6 @@ rs68328_init(void)
+ 	    info->tty = NULL;
+ 	    info->irq = uart_irqs[i];
+ 	    info->custom_divisor = 16;
+-	    info->close_delay = 50;
+-	    info->closing_wait = 3000;
+ 	    info->x_char = 0;
+ 	    info->line = i;
+ 	    info->is_cons = 1; /* Means shortcuts work */
+-- 
+1.7.9.2
