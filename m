@@ -1,7 +1,7 @@
 From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 62/69] TTY: 68328serial, use tty_port_block_til_ready
-Date: Mon,  2 Apr 2012 13:54:46 +0200
-Message-ID: <1333367693-3244-63-git-send-email-jslaby__20408.7250902832$1333368455$gmane$org@suse.cz>
+Subject: [PATCH 61/69] TTY: 68328serial, use tty from tty_port
+Date: Mon,  2 Apr 2012 13:54:45 +0200
+Message-ID: <1333367693-3244-62-git-send-email-jslaby__16542.4939165407$1333368455$gmane$org@suse.cz>
 References: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
@@ -10,148 +10,79 @@ List-Id: linux-m68k@vger.kernel.org
 To: gregkh@linuxfoundation.org
 Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Since the code is identical, use the tty_port_block_til_ready helper
-instead of re-implemented variant.
-
-The code does not perform rtsdts handling, hence we do not need to
-provide tty port hooks for them. The default ones will be used
-instead. The only necessary thing is to provide tty_port_operations.
-It is empty, but has to be there...
+And refcount that properly.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/tty/serial/68328serial.c |   96 ++------------------------------------
- 1 file changed, 5 insertions(+), 91 deletions(-)
+ drivers/tty/serial/68328serial.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
-index 77e10bb..3ed20e4 100644
+index fde573b..77e10bb 100644
 --- a/drivers/tty/serial/68328serial.c
 +++ b/drivers/tty/serial/68328serial.c
-@@ -1104,96 +1104,6 @@ void rs_hangup(struct tty_struct *tty)
- }
- 
- /*
-- * ------------------------------------------------------------
-- * rs_open() and friends
-- * ------------------------------------------------------------
-- */
--static int block_til_ready(struct tty_struct *tty, struct file * filp,
--			   struct m68k_serial *info)
--{
--	struct tty_port *port = &info->tport;
--	DECLARE_WAITQUEUE(wait, current);
--	int		retval;
--	int		do_clocal = 0;
--
--	/*
--	 * If the device is in the middle of being closed, then block
--	 * until it's done, and then try again.
--	 */
--	if (port->flags & ASYNC_CLOSING) {
--		interruptible_sleep_on(&port->close_wait);
--#ifdef SERIAL_DO_RESTART
--		if (port->flags & ASYNC_HUP_NOTIFY)
--			return -EAGAIN;
--		else
--			return -ERESTARTSYS;
--#else
--		return -EAGAIN;
--#endif
--	}
--	
--	/*
--	 * If non-blocking mode is set, or the port is not enabled,
--	 * then make the check up front and then exit.
--	 */
--	if ((filp->f_flags & O_NONBLOCK) ||
--	    (tty->flags & (1 << TTY_IO_ERROR))) {
--		port->flags |= ASYNC_NORMAL_ACTIVE;
--		return 0;
--	}
--
--	if (tty->termios->c_cflag & CLOCAL)
--		do_clocal = 1;
--
--	/*
--	 * Block waiting for the carrier detect and the line to become
--	 * free (i.e., not in use by the callout).  While we are in
--	 * this loop, port->count is dropped by one, so that
--	 * rs_close() knows when to free things.  We restore it upon
--	 * exit, either normal or abnormal.
--	 */
--	retval = 0;
--	add_wait_queue(&port->open_wait, &wait);
--
--	port->count--;
--	port->blocked_open++;
--	while (1) {
--		current->state = TASK_INTERRUPTIBLE;
--		if (tty_hung_up_p(filp) ||
--		    !(port->flags & ASYNC_INITIALIZED)) {
--#ifdef SERIAL_DO_RESTART
--			if (port->flags & ASYNC_HUP_NOTIFY)
--				retval = -EAGAIN;
--			else
--				retval = -ERESTARTSYS;	
--#else
--			retval = -EAGAIN;
--#endif
--			break;
--		}
--		if (!(port->flags & ASYNC_CLOSING) && do_clocal)
--			break;
--                if (signal_pending(current)) {
--			retval = -ERESTARTSYS;
--			break;
--		}
--		tty_unlock();
--		schedule();
--		tty_lock();
--	}
--	current->state = TASK_RUNNING;
--	remove_wait_queue(&port->open_wait, &wait);
--	if (!tty_hung_up_p(filp))
--		port->count++;
--	port->blocked_open--;
--
--	if (retval)
--		return retval;
--	port->flags |= ASYNC_NORMAL_ACTIVE;
--	return 0;
--}	
--
--/*
-  * This routine is called whenever a serial port is opened.  It
-  * enables interrupts for a serial port, linking in its S structure into
-  * the IRQ chain.   It also performs the serial-specific
-@@ -1220,7 +1130,7 @@ int rs_open(struct tty_struct *tty, struct file * filp)
- 	if (retval)
- 		return retval;
- 
--	return block_til_ready(tty, filp, info);
-+	return tty_port_block_til_ready(&info->tport, tty, filp);
- }
- 
- /* Finally, routines used to initialize the serial driver. */
-@@ -1248,6 +1158,9 @@ static const struct tty_operations rs_ops = {
- 	.set_ldisc = rs_set_ldisc,
- };
- 
-+static const struct tty_port_operations rs_port_ops = {
-+};
+@@ -114,7 +114,6 @@ struct m68k_serial {
+ 	int			port;
+ 	int			irq;
+ 	int			type;		/* UART type */
+-	struct tty_struct	*tty;
+ 	int			custom_divisor;
+ 	int			x_char;		/* xon/xoff character */
+ 	int			line;
+@@ -356,7 +355,7 @@ clear_and_return:
+ irqreturn_t rs_interrupt(int irq, void *dev_id)
+ {
+ 	struct m68k_serial *info = dev_id;
+-	struct tty_struct *tty = info->tty;
++	struct tty_struct *tty = tty_port_tty_get(&info->tport);
+ 	m68328_uart *uart;
+ 	unsigned short rx;
+ 	unsigned short tx;
+@@ -374,6 +373,8 @@ irqreturn_t rs_interrupt(int irq, void *dev_id)
+ #else
+ 	receive_chars(info, tty, rx);
+ #endif
++	tty_kref_put(tty);
 +
- /* rs_init inits the driver */
- static int __init
- rs68328_init(void)
-@@ -1288,6 +1201,7 @@ rs68328_init(void)
+ 	return IRQ_HANDLED;
+ }
  
- 	    info = &m68k_soft[i];
+@@ -1062,7 +1063,7 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
+ 		
+ 	tty_ldisc_flush(tty);
+ 	tty->closing = 0;
+-	info->tty = NULL;
++	tty_port_tty_set(&info->tport, NULL);
+ #warning "This is not and has never been valid so fix it"	
+ #if 0
+ 	if (tty->ldisc.num != ldiscs[N_TTY].num) {
+@@ -1098,7 +1099,7 @@ void rs_hangup(struct tty_struct *tty)
+ 	shutdown(info, tty);
+ 	info->tport.count = 0;
+ 	info->tport.flags &= ~ASYNC_NORMAL_ACTIVE;
+-	info->tty = NULL;
++	tty_port_tty_set(&info->tport, NULL);
+ 	wake_up_interruptible(&info->tport.open_wait);
+ }
+ 
+@@ -1210,7 +1211,7 @@ int rs_open(struct tty_struct *tty, struct file * filp)
+ 
+ 	info->tport.count++;
+ 	tty->driver_data = info;
+-	info->tty = tty;
++	tty_port_tty_set(&info->tport, tty);
+ 
+ 	/*
+ 	 * Start up serial port
+@@ -1289,7 +1290,6 @@ rs68328_init(void)
  	    tty_port_init(&info->tport);
-+	    info->tport.ops = &rs_port_ops;
  	    info->magic = SERIAL_MAGIC;
  	    info->port = (int) &uart_addr[i];
+-	    info->tty = NULL;
  	    info->irq = uart_irqs[i];
+ 	    info->custom_divisor = 16;
+ 	    info->x_char = 0;
 -- 
 1.7.9.2
