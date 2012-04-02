@@ -1,7 +1,7 @@
 From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 55/69] TTY: 68328serial, remove 68328serial.h
-Date: Mon,  2 Apr 2012 13:54:39 +0200
-Message-ID: <1333367693-3244-56-git-send-email-jslaby__17759.6439178616$1333368402$gmane$org@suse.cz>
+Subject: [PATCH 52/69] TTY: 68328serial, remove unused stuff from m68k_serial
+Date: Mon,  2 Apr 2012 13:54:36 +0200
+Message-ID: <1333367693-3244-53-git-send-email-jslaby__18958.5489024923$1333368411$gmane$org@suse.cz>
 References: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1333367693-3244-1-git-send-email-jslaby@suse.cz>
@@ -10,215 +10,158 @@ List-Id: linux-m68k@vger.kernel.org
 To: gregkh@linuxfoundation.org
 Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-All the needed stuff is moved to 68328serial.c now.
+Not everything from struct m68k_serial is really used. So remove
+unused or only-set members of that structure. Next step is to move it
+to 68328serial.c and remove 68328serial.h completely.
+
+This change also takes status_handle and batten_down_hatches away
+since they use break_abort but do nothing.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/tty/serial/68328serial.c |   79 ++++++++++++++++++++++++++++++--
- drivers/tty/serial/68328serial.h |   94 --------------------------------------
- 2 files changed, 76 insertions(+), 97 deletions(-)
- delete mode 100644 drivers/tty/serial/68328serial.h
+ drivers/tty/serial/68328serial.c |   36 ++++--------------------------------
+ drivers/tty/serial/68328serial.h |   16 ----------------
+ 2 files changed, 4 insertions(+), 48 deletions(-)
 
 diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
-index f0d5039..116d932 100644
+index bf5f811..c1cd214 100644
 --- a/drivers/tty/serial/68328serial.c
 +++ b/drivers/tty/serial/68328serial.c
-@@ -57,8 +57,6 @@
- #endif /* CONFIG_M68VZ328 */
- #endif /* CONFIG_M68EZ328 */
+@@ -213,25 +213,6 @@ static void rs_start(struct tty_struct *tty)
+ 	local_irq_restore(flags);
+ }
  
--#include "68328serial.h"
+-/* Drop into either the boot monitor or kadb upon receiving a break
+- * from keyboard/console input.
+- */
+-static void batten_down_hatches(void)
+-{
+-	/* Drop into the debugger */
+-}
 -
- /* Turn off usage of real serial interrupt code, to "support" Copilot */
- #ifdef CONFIG_XCOPILOT_BUGS
- #undef USE_INTS
-@@ -66,9 +64,84 @@
- #define USE_INTS
- #endif
+-static void status_handle(struct m68k_serial *info, unsigned short status)
+-{
+-	/* If this is console input and this is a
+-	 * 'break asserted' status change interrupt
+-	 * see if we can drop into the debugger
+-	 */
+-	if((status & URX_BREAK) && info->break_abort)
+-		batten_down_hatches();
+-	return;
+-}
+-
+ static void receive_chars(struct m68k_serial *info, unsigned short rx)
+ {
+ 	struct tty_struct *tty = info->tty;
+@@ -248,7 +229,6 @@ static void receive_chars(struct m68k_serial *info, unsigned short rx)
+ 	
+ 		if(info->is_cons) {
+ 			if(URX_BREAK & rx) { /* whee, break received */
+-				status_handle(info, rx);
+ 				return;
+ #ifdef CONFIG_MAGIC_SYSRQ
+ 			} else if (ch == 0x10) { /* ^P */
+@@ -269,16 +249,13 @@ static void receive_chars(struct m68k_serial *info, unsigned short rx)
+ 		
+ 		flag = TTY_NORMAL;
  
-+/*
-+ * I believe this is the optimal setting that reduces the number of interrupts.
-+ * At high speeds the output might become a little "bursted" (use USTCNT_TXHE
-+ * if that bothers you), but in most cases it will not, since we try to
-+ * transmit characters every time rs_interrupt is called. Thus, quite often
-+ * you'll see that a receive interrupt occures before the transmit one.
-+ *                                  -- Vladimir Gurevich
-+ */
-+#define USTCNT_TX_INTR_MASK (USTCNT_TXEE)
+-		if(rx & URX_PARITY_ERROR) {
++		if (rx & URX_PARITY_ERROR)
+ 			flag = TTY_PARITY;
+-			status_handle(info, rx);
+-		} else if(rx & URX_OVRUN) {
++		else if (rx & URX_OVRUN)
+ 			flag = TTY_OVERRUN;
+-			status_handle(info, rx);
+-		} else if(rx & URX_FRAME_ERROR) {
++		else if (rx & URX_FRAME_ERROR)
+ 			flag = TTY_FRAME;
+-			status_handle(info, rx);
+-		}
 +
-+/*
-+ * 68328 and 68EZ328 UARTS are a little bit different. EZ328 has special
-+ * "Old data interrupt" which occures whenever the data stay in the FIFO
-+ * longer than 30 bits time. This allows us to use FIFO without compromising
-+ * latency. '328 does not have this feature and without the real  328-based
-+ * board I would assume that RXRE is the safest setting.
-+ *
-+ * For EZ328 I use RXHE (Half empty) interrupt to reduce the number of
-+ * interrupts. RXFE (receive queue full) causes the system to lose data
-+ * at least at 115200 baud
-+ *
-+ * If your board is busy doing other stuff, you might consider to use
-+ * RXRE (data ready intrrupt) instead.
-+ *
-+ * The other option is to make these INTR masks run-time configurable, so
-+ * that people can dynamically adapt them according to the current usage.
-+ *                                  -- Vladimir Gurevich
-+ */
-+
-+/* (es) */
-+#if defined(CONFIG_M68EZ328) || defined(CONFIG_M68VZ328)
-+#define USTCNT_RX_INTR_MASK (USTCNT_RXHE | USTCNT_ODEN)
-+#elif defined(CONFIG_M68328)
-+#define USTCNT_RX_INTR_MASK (USTCNT_RXRE)
-+#else
-+#error Please, define the Rx interrupt events for your CPU
-+#endif
-+/* (/es) */
-+
-+/*
-+ * This is our internal structure for each serial port's state.
-+ *
-+ * For definitions of the flags field, see serial.h
-+ */
-+struct m68k_serial {
-+	char			is_cons;	/* Is this our console. */
-+	int			magic;
-+	int			baud_base;
-+	int			port;
-+	int			irq;
-+	int			flags;		/* defined in tty.h */
-+	int			type;		/* UART type */
-+	struct tty_struct	*tty;
-+	int			custom_divisor;
-+	int			x_char;		/* xon/xoff character */
-+	int			close_delay;
-+	unsigned short		closing_wait;
-+	int			line;
-+	int			count;		/* # of fd on device */
-+	int			blocked_open;	/* # of blocked opens */
-+	unsigned char		*xmit_buf;
-+	int			xmit_head;
-+	int			xmit_tail;
-+	int			xmit_cnt;
-+	wait_queue_head_t	open_wait;
-+	wait_queue_head_t	close_wait;
-+};
-+
-+#define SERIAL_MAGIC 0x5301
-+
-+/*
-+ * Define the number of ports supported and their irqs.
-+ */
-+#define NR_PORTS 1
-+
- static struct m68k_serial m68k_soft[NR_PORTS];
+ 		tty_insert_flip_char(tty, ch, flag);
+ #ifndef CONFIG_XCOPILOT_BUGS
+ 	} while((rx = uart->urx.w) & URX_DATA_READY);
+@@ -369,7 +346,6 @@ static int startup(struct m68k_serial * info)
+ 	 */
  
--static unsigned int uart_irqs[NR_PORTS] = UART_IRQ_DEFNS;
-+static unsigned int uart_irqs[NR_PORTS] = { UART_IRQ_NUM };
+ 	uart->ustcnt = USTCNT_UEN;
+-	info->xmit_fifo_size = 1;
+ 	uart->ustcnt = USTCNT_UEN | USTCNT_RXEN | USTCNT_TXEN;
+ 	(void)uart->urx.w;
  
- /* multiple ports are contiguous in memory */
- m68328_uart *uart_addr = (m68328_uart *)USTCNT_ADDR;
+@@ -499,7 +475,6 @@ static void change_speed(struct m68k_serial *info)
+                 i = (i & ~CBAUDEX) + B38400;
+         }
+ 
+-	info->baud = baud_table[i];
+ 	uart->ubaud = PUT_FIELD(UBAUD_DIVIDE,    hw_baud_table[i].divisor) | 
+ 		PUT_FIELD(UBAUD_PRESCALER, hw_baud_table[i].prescale);
+ 
+@@ -1034,7 +1009,6 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
+ 		
+ 	tty_ldisc_flush(tty);
+ 	tty->closing = 0;
+-	info->event = 0;
+ 	info->tty = NULL;
+ #warning "This is not and has never been valid so fix it"	
+ #if 0
+@@ -1070,7 +1044,6 @@ void rs_hangup(struct tty_struct *tty)
+ 	
+ 	rs_flush_buffer(tty);
+ 	shutdown(info);
+-	info->event = 0;
+ 	info->count = 0;
+ 	info->flags &= ~ASYNC_NORMAL_ACTIVE;
+ 	info->tty = NULL;
+@@ -1270,7 +1243,6 @@ rs68328_init(void)
+ 	    info->close_delay = 50;
+ 	    info->closing_wait = 3000;
+ 	    info->x_char = 0;
+-	    info->event = 0;
+ 	    info->count = 0;
+ 	    info->blocked_open = 0;
+ 	    init_waitqueue_head(&info->open_wait);
 diff --git a/drivers/tty/serial/68328serial.h b/drivers/tty/serial/68328serial.h
-deleted file mode 100644
-index 971ead5..0000000
+index a804ea5..971ead5 100644
 --- a/drivers/tty/serial/68328serial.h
-+++ /dev/null
-@@ -1,94 +0,0 @@
--/* 68328serial.h: Definitions for the mc68328 serial driver.
-- *
-- * Copyright (C) 1995       David S. Miller    <davem@caip.rutgers.edu>
-- * Copyright (C) 1998       Kenneth Albanowski <kjahds@kjahds.com>
-- * Copyright (C) 1998, 1999 D. Jeff Dionne     <jeff@uclinux.org>
-- * Copyright (C) 1999       Vladimir Gurevich  <vgurevic@cisco.com>
-- *
-- * VZ Support/Fixes             Evan Stawnyczy <e@lineo.ca>
-- */
++++ b/drivers/tty/serial/68328serial.h
+@@ -60,16 +60,7 @@
+  */
+ 
+ struct m68k_serial {
+-	char soft_carrier;  /* Use soft carrier on this channel */
+-	char break_abort;   /* Is serial console in, so process brk/abrt */
+ 	char is_cons;       /* Is this our console. */
 -
--#ifndef _MC683XX_SERIAL_H
--#define _MC683XX_SERIAL_H
--
--/*
-- * I believe this is the optimal setting that reduces the number of interrupts.
-- * At high speeds the output might become a little "bursted" (use USTCNT_TXHE
-- * if that bothers you), but in most cases it will not, since we try to 
-- * transmit characters every time rs_interrupt is called. Thus, quite often
-- * you'll see that a receive interrupt occures before the transmit one.
-- *                                  -- Vladimir Gurevich
-- */
--#define USTCNT_TX_INTR_MASK (USTCNT_TXEE)
--
--/*
-- * 68328 and 68EZ328 UARTS are a little bit different. EZ328 has special
-- * "Old data interrupt" which occures whenever the data stay in the FIFO
-- * longer than 30 bits time. This allows us to use FIFO without compromising
-- * latency. '328 does not have this feature and without the real  328-based
-- * board I would assume that RXRE is the safest setting.
-- *
-- * For EZ328 I use RXHE (Half empty) interrupt to reduce the number of
-- * interrupts. RXFE (receive queue full) causes the system to lose data
-- * at least at 115200 baud
-- *
-- * If your board is busy doing other stuff, you might consider to use
-- * RXRE (data ready intrrupt) instead.
-- *
-- * The other option is to make these INTR masks run-time configurable, so
-- * that people can dynamically adapt them according to the current usage.
-- *                                  -- Vladimir Gurevich
-- */
--
--/* (es) */
--#if defined(CONFIG_M68EZ328) || defined(CONFIG_M68VZ328)
--#define USTCNT_RX_INTR_MASK (USTCNT_RXHE | USTCNT_ODEN)
--#elif defined(CONFIG_M68328)
--#define USTCNT_RX_INTR_MASK (USTCNT_RXRE)
--#else
--#error Please, define the Rx interrupt events for your CPU
--#endif
--/* (/es) */
--
--/*
-- * This is our internal structure for each serial port's state.
-- * 
-- * Many fields are paralleled by the structure used by the serial_struct
-- * structure.
-- *
-- * For definitions of the flags field, see tty.h
-- */
--
--struct m68k_serial {
--	char is_cons;       /* Is this our console. */
--	int			magic;
--	int			baud_base;
--	int			port;
--	int			irq;
--	int			flags; 		/* defined in tty.h */
--	int			type; 		/* UART type */
--	struct tty_struct 	*tty;
--	int			custom_divisor;
--	int			x_char;	/* xon/xoff character */
--	int			close_delay;
--	unsigned short		closing_wait;
--	int			line;
--	int			count;	    /* # of fd on device */
--	int			blocked_open; /* # of blocked opens */
--	unsigned char 		*xmit_buf;
--	int			xmit_head;
--	int			xmit_tail;
--	int			xmit_cnt;
--	wait_queue_head_t	open_wait;
--	wait_queue_head_t	close_wait;
--};
--
--#define SERIAL_MAGIC 0x5301
--
--/* 
-- * Define the number of ports supported and their irqs.
-- */
--#define NR_PORTS 1
--#define UART_IRQ_DEFNS {UART_IRQ_NUM}
--
--#endif /* !(_MC683XX_SERIAL_H) */
+-	/* We need to know the current clock divisor
+-	 * to read the bps rate the chip has currently
+-	 * loaded.
+-	 */
+-	unsigned char clk_divisor;  /* May be 1, 16, 32, or 64 */
+-	int baud;
+ 	int			magic;
+ 	int			baud_base;
+ 	int			port;
+@@ -77,17 +68,10 @@ struct m68k_serial {
+ 	int			flags; 		/* defined in tty.h */
+ 	int			type; 		/* UART type */
+ 	struct tty_struct 	*tty;
+-	int			read_status_mask;
+-	int			ignore_status_mask;
+-	int			timeout;
+-	int			xmit_fifo_size;
+ 	int			custom_divisor;
+ 	int			x_char;	/* xon/xoff character */
+ 	int			close_delay;
+ 	unsigned short		closing_wait;
+-	unsigned short		closing_wait2;
+-	unsigned long		event;
+-	unsigned long		last_active;
+ 	int			line;
+ 	int			count;	    /* # of fd on device */
+ 	int			blocked_open; /* # of blocked opens */
 -- 
 1.7.9.2
