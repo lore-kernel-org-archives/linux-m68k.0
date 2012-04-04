@@ -1,56 +1,79 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH 1/5] m68k/atari: EtherNAT - change number of Atari
- interrupts to make room for EtherNAT interrupts
-Date: Wed, 4 Apr 2012 11:16:30 +1200
-Message-ID: <CAOmrzkJOgg07T=0o1XXs_+935K1zRtGZ4OJaON-6HDUB4tzc_g@mail.gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
-	<4F4B2BB6.900@gmail.com>
-	<4F77C245.5090002@gmail.com>
-	<CAMuHMdUm8Mot6ioYemQVacCZxgYKBGBDGUz2X4Xh_zJf_ZPgKQ@mail.gmail.com>
-	<CAOmrzkJqkLC=dhsY0AUduv3Mm7PVmbtHrsjgS6v=V14eXuuA8g@mail.gmail.com>
-	<CAMuHMdXnVU2ZuCVLWA27RaCm2COi_AdDE9F2hj=qBGQLB6KxuA@mail.gmail.com>
-	<CAOmrzkJGonrmY4jztegh3JqZRW17H1sF7en765=Em+_G7SodXw@mail.gmail.com>
-	<4F7B6880.9050605@gmail.com>
-	<Pine.BSM.4.64L.1204032152530.9030@herc.mirbsd.org>
-	<4F7B77FF.200@gmail.com>
-	<Pine.BSM.4.64L.1204032229300.9030@herc.mirbsd.org>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH] irq: remove obsolete definitions in interrupt.h
+Date: Wed, 4 Apr 2012 09:45:54 +0200
+Message-ID: <20120404074553.GA14959@merkur.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f174.google.com ([209.85.214.174]:43936 "EHLO
-	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753519Ab2DCXQb convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Apr 2012 19:16:31 -0400
-Received: by obbtb18 with SMTP id tb18so329061obb.19
-        for <linux-m68k@vger.kernel.org>; Tue, 03 Apr 2012 16:16:30 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1204032229300.9030@herc.mirbsd.org>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org, ragnar@chaosdorf.de
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: lkml <linux-kernel@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, sparclinux <sparclinux@vger.kernel.org>
 
-Thorsten,
+interrupt.h contained a small fixlet for the days when
+m68k and sparc32 did not use genirq.
+As they have both entered the modern world this
+fixlet can be dropped.
 
->>> I think 141 interrupt sources covers sources #0 to #140, no?
->>>
->> What's interrupt #0? #1 to #7 are level 1 to 7 autovector interrupts=
-=2E #8 to
->
-> I was just guessing. An all-uppercase identifier in a C context
-> that expands to an integer and has NUMber in its name might just
-> be used in the declarartion of a C array, that=92s why.
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+---
 
-It's a bit more complicated - autovector 1-7 are vector numbers 25 to
-31, user vectors start from 64 so there's a gap between them. No
-simple array.
-
->> ragnar rings a bell, is that ragnar@chaosdorf.de?
->
-> Chaosdorf yes, so, probably yes.
-
-Ping? Does anyone have technical specs on the PCI bridge in question?
-
-Cheers,
-
-  Michael
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 2aea5d2..3848176 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -122,7 +122,6 @@ struct irqaction {
+ 
+ extern irqreturn_t no_action(int cpl, void *dev_id);
+ 
+-#ifdef CONFIG_GENERIC_HARDIRQS
+ extern int __must_check
+ request_threaded_irq(unsigned int irq, irq_handler_t handler,
+ 		     irq_handler_t thread_fn,
+@@ -144,42 +143,6 @@ request_percpu_irq(unsigned int irq, irq_handler_t handler,
+ 		   const char *devname, void __percpu *percpu_dev_id);
+ 
+ extern void exit_irq_thread(void);
+-#else
+-
+-extern int __must_check
+-request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
+-	    const char *name, void *dev);
+-
+-/*
+- * Special function to avoid ifdeffery in kernel/irq/devres.c which
+- * gets magically built by GENERIC_HARDIRQS=n architectures (sparc,
+- * m68k). I really love these $@%#!* obvious Makefile references:
+- * ../../../kernel/irq/devres.o
+- */
+-static inline int __must_check
+-request_threaded_irq(unsigned int irq, irq_handler_t handler,
+-		     irq_handler_t thread_fn,
+-		     unsigned long flags, const char *name, void *dev)
+-{
+-	return request_irq(irq, handler, flags, name, dev);
+-}
+-
+-static inline int __must_check
+-request_any_context_irq(unsigned int irq, irq_handler_t handler,
+-			unsigned long flags, const char *name, void *dev_id)
+-{
+-	return request_irq(irq, handler, flags, name, dev_id);
+-}
+-
+-static inline int __must_check
+-request_percpu_irq(unsigned int irq, irq_handler_t handler,
+-		   const char *devname, void __percpu *percpu_dev_id)
+-{
+-	return request_irq(irq, handler, 0, devname, percpu_dev_id);
+-}
+-
+-static inline void exit_irq_thread(void) { }
+-#endif
+ 
+ extern void free_irq(unsigned int, void *);
+ extern void free_percpu_irq(unsigned int, void __percpu *);
