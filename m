@@ -1,68 +1,61 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k/atari: EtherNEC - rewrite to use mainstream ne.c,
  take two
-Date: Fri, 06 Apr 2012 10:10:19 +1200
-Message-ID: <4F7E184B.6000903@gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com>	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>	<CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>	<4F5A0679.1020604@windriver.com>	<4F7816B0.3090802@gmail.com>	<4F7CB31D.8060002@windriver.com> <CAMuHMdWSzG4npwjpJ=cwNFKhyBZjvgPn1sp6nZ2re6QsRWPpXg@mail.gmail.com>
+Date: Fri, 6 Apr 2012 10:28:32 +0200
+Message-ID: <CAMuHMdVYULaeNp=6bBNn7_RMG9YoDFTyJnXQxTeY2AozHpUL2Q@mail.gmail.com>
+References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
+	<4F4B2BB6.900@gmail.com>
+	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>
+	<CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>
+	<4F5A0679.1020604@windriver.com>
+	<4F7816B0.3090802@gmail.com>
+	<4F7CB31D.8060002@windriver.com>
+	<CAMuHMdWSzG4npwjpJ=cwNFKhyBZjvgPn1sp6nZ2re6QsRWPpXg@mail.gmail.com>
+	<4F7E184B.6000903@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:48153 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756226Ab2DEWKl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Apr 2012 18:10:41 -0400
-In-Reply-To: <CAMuHMdWSzG4npwjpJ=cwNFKhyBZjvgPn1sp6nZ2re6QsRWPpXg@mail.gmail.com>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:40024 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752364Ab2DFI2d convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Apr 2012 04:28:33 -0400
+In-Reply-To: <4F7E184B.6000903@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>
 Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
 
-Geert,
->> How much lower?  Enough to matter?  Implicit in that question is
->> the assumption that this is largely a hobbyist platform and nobody
->> is using it in a closet to route gigabytes of traffic.
->>     
->
-> One other thing we could do is increase CONFIG_HZ to 250.
->   
-Making 3.x kernels run even more sluggish than they already do?
->> Also, the only advantage to modifying ne.c is to allow dumping
->> the old driver.  What is the "remove soon" plan?  Any reason
->> for it to not be synchronous?  That would eliminate the Kconfig
->> churn and the introduction of the _OLD option.  Modifying ne.c
->> and then deciding to keep the old driver because it is "faster"
->> would make this change pointless.
->>     
->
-> From my point of view, "remove soon" means it will never hit mainline.
->   
-That's what I meant to say - my patch is based on the m68k tree which 
-currently has another driver for this hardware, based on an older 
-version of ne.c which was never submitted to mainline. The old driver 
-would be removed from the m68k tree as soon as possible.
->> This seems more klunky than it needs to be.  If we assume that anyone
->> building ne.c on atari is hence trying to drive an ethernec device
->> than it can just be
+On Fri, Apr 6, 2012 at 00:10, Michael Schmitz <schmitzmic@googlemail.co=
+m> wrote:
+>> Indeed, with a small modification (keep multi-platform kernels in mi=
+nd):
 >>
 >> #ifdef CONFIG_ATARI
->> #define EI_IRQ_FLAGS    IRQF_SHARED
+>> #define EI_IRQ_FLAGS =C2=A0 =C2=A0(MACH_IS_ATARI ? IRQF_SHARED : 0)
 >> #else
->> #define EI_IRQ_FLAGS    0
+>> #define EI_IRQ_FLAGS =C2=A0 =C2=A00
 >> #endif
->>     
+>>
 >
-> Indeed, with a small modification (keep multi-platform kernels in mind):
->
-> #ifdef CONFIG_ATARI
-> #define EI_IRQ_FLAGS    (MACH_IS_ATARI ? IRQF_SHARED : 0)
-> #else
-> #define EI_IRQ_FLAGS    0
-> #endif
->   
-Right you are. Is any other m68k platform using ne.c directly, or do you 
-plan to convert all other NE2000 based drivers to ne.c now?
+> Right you are. Is any other m68k platform using ne.c directly, or do =
+you
+> plan to convert all other NE2000 based drivers to ne.c now?
 
-Cheers,
+Plain ne is also used on Q40.
 
-  Michael
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
