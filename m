@@ -1,61 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: EtherNEC - rewrite to use mainstream ne.c,
- take two
-Date: Fri, 6 Apr 2012 10:28:32 +0200
-Message-ID: <CAMuHMdVYULaeNp=6bBNn7_RMG9YoDFTyJnXQxTeY2AozHpUL2Q@mail.gmail.com>
-References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>
-	<4F4B2BB6.900@gmail.com>
-	<CAP=VYLqxtE4OamrdN2RXaQu_2kK5_57-x80z48JXzt+xEtQ7pw@mail.gmail.com>
-	<CAMuHMdX=4Vn=OsNTp04YcrhDOwz8NOFrWKankj2+3utvEfE-2A@mail.gmail.com>
-	<4F5A0679.1020604@windriver.com>
-	<4F7816B0.3090802@gmail.com>
-	<4F7CB31D.8060002@windriver.com>
-	<CAMuHMdWSzG4npwjpJ=cwNFKhyBZjvgPn1sp6nZ2re6QsRWPpXg@mail.gmail.com>
-	<4F7E184B.6000903@gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 1/5] m68k/atari: EtherNAT - change number of Atari interrupts
+ to make room for EtherNAT interrupts
+Date: Sat, 07 Apr 2012 09:43:09 +1200
+Message-ID: <4F7F636D.3090908@gmail.com>
+References: <1327085843-6980-1-git-send-email-geert@linux-m68k.org>	<4F4B2BB6.900@gmail.com>	<4F77C245.5090002@gmail.com>	<CAMuHMdUm8Mot6ioYemQVacCZxgYKBGBDGUz2X4Xh_zJf_ZPgKQ@mail.gmail.com>	<CAOmrzkJqkLC=dhsY0AUduv3Mm7PVmbtHrsjgS6v=V14eXuuA8g@mail.gmail.com>	<CAMuHMdXnVU2ZuCVLWA27RaCm2COi_AdDE9F2hj=qBGQLB6KxuA@mail.gmail.com> <CAOmrzkJGonrmY4jztegh3JqZRW17H1sF7en765=Em+_G7SodXw@mail.gmail.com> <4F7B6880.9050605@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:40024 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752364Ab2DFI2d convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Apr 2012 04:28:33 -0400
-In-Reply-To: <4F7E184B.6000903@gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:53800 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754247Ab2DFVna (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Apr 2012 17:43:30 -0400
+Received: by pbcun15 with SMTP id un15so3000371pbc.19
+        for <linux-m68k@vger.kernel.org>; Fri, 06 Apr 2012 14:43:30 -0700 (PDT)
+In-Reply-To: <4F7B6880.9050605@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-m68k@vger.kernel.org, netdev@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On Fri, Apr 6, 2012 at 00:10, Michael Schmitz <schmitzmic@googlemail.co=
-m> wrote:
->> Indeed, with a small modification (keep multi-platform kernels in mi=
-nd):
->>
->> #ifdef CONFIG_ATARI
->> #define EI_IRQ_FLAGS =C2=A0 =C2=A0(MACH_IS_ATARI ? IRQF_SHARED : 0)
->> #else
->> #define EI_IRQ_FLAGS =C2=A0 =C2=A00
->> #endif
->>
+Hi Geert,
+> See attached - the 3.3.0-ethernat patches implement switching over to 
+> the mainstream 91Cx driver (card detected on my Falcon, link brought 
+> up but not detected by the driver due to hardware problems). The 
+> 3.3.0-atari-cleanup-num-irqs.diff sets the number of interrupt sources 
+> to 141 on Atari, setting the number of VME sources back to 16 so we 
+> don't accidentially trash memory contiguous with the free_vme_irq bitmap.
 >
-> Right you are. Is any other m68k platform using ne.c directly, or do =
-you
-> plan to convert all other NE2000 based drivers to ne.c now?
+> For some reason, I have to set NUM_ATARI_SOURCES to 141 to actually 
+> get interrupt source 140 to register. Off-by-one error somewhere in 
+> the generic interrupt code I'd think, but I've not been able to spot 
+> it. (Just increasing the number of interrupts that are registered by 
+> atari_init_IRQ results in 'unexpected interrupt from 112' until the 
+> cows come home. And yes, it happens in ARAnyM, too.)
+>
+> That pretty much wraps it up for EtherNEC and EtherNAT - EtherNEC is 
+> fully tested by me, EtherNAT needs testing on Christian's Falcon or by 
+> someone else with fully functional hardware. Next project : SCSI, SCC 
+> serial, or what?...
+Forgot to add my Signed-off-by - I guess the same arguments apply here 
+as Paul raised them for ne.c. Do you want a new patch set based on 
+current m68k?
 
-Plain ne is also used on Q40.
+Cheers,
 
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+  Michael
