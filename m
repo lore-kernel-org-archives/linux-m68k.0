@@ -1,90 +1,58 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] m68k: Make sure {read,write}s[bwl]() are always defined
-Date: Mon, 16 Apr 2012 12:30:30 +0300
-Message-ID: <20120416093029.GJ30878@arwen.pp.htv.fi>
-References: <1334516410-5777-1-git-send-email-geert@linux-m68k.org>
-Reply-To: balbi@ti.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Atari ROM port ISA
+Date: Mon, 16 Apr 2012 11:42:37 +0200
+Message-ID: <CAMuHMdXo=A581yup5uw3sPN_eMg_7nood_wmb7qEOWs+rEoSmw@mail.gmail.com>
+References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
+	<4F8BCF49.4060109@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+RZeZVNR8VILNfK"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1334516410-5777-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Greg Ungerer <gerg@uclinux.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <4F8BCF49.4060109@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
+On Mon, Apr 16, 2012 at 09:50, Michael Schmitz
+<schmitzmic@googlemail.com> wrote:
+>> | #define rom_out_be16(addr, w) =C2=A0 ({u16 __w, __v =3D (w); __w =3D=
+ ((*(__force
+>> volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
+>> | #define rom_out_be32(addr, l) =C2=A0 ({u32 __w, __v =3D (l); __w =3D=
+ ((*(__force
+>> volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
+>> | #define rom_out_le16(addr, w) =C2=A0 ({u16 __w, __v =3D cpu_to_le1=
+6(w); __w =3D
+>> ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
+>> | #define rom_out_le32(addr, l) =C2=A0 ({u32 __w, __v =3D cpu_to_le3=
+2(l); __w =3D
+>> ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
+>>
+>> The above four also can't work. Remove them?
+>
+> Probably - not sure what the behavior will be if writing more than on=
+e byte
+> (might not be safe to use). Using dummies (potentially to generate co=
+mpiler
+> warnings or =C2=A0runtime warnings) might be safer.
 
---x+RZeZVNR8VILNfK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As soon as the value you're writing is bigger than 0x7fff, you'll get o=
+ut of the
+64 KiB write window.
 
-On Sun, Apr 15, 2012 at 09:00:10PM +0200, Geert Uytterhoeven wrote:
-> If CONFIG_ATARI_ROM_ISA is defined (e.g. allmodconfig), musb fails to
-> compile with:
->=20
-> In file included from drivers/usb/musb/musb_core.h:68,
->                  from drivers/usb/musb/musb_core.c:104:
-> drivers/usb/musb/musb_io.h:45: error: conflicting types for =E2=80=98raw_=
-insl=E2=80=99
-> arch/m68k/include/asm/raw_io.h:200: error: previous definition of =E2=80=
-=98raw_insl=E2=80=99 was here
-> drivers/usb/musb/musb_io.h:47: error: conflicting types for =E2=80=98raw_=
-insw=E2=80=99
-> arch/m68k/include/asm/raw_io.h:121: error: previous definition of =E2=80=
-=98raw_insw=E2=80=99 was here
-> drivers/usb/musb/musb_io.h:52: error: conflicting types for =E2=80=98raw_=
-outsl=E2=80=99
-> arch/m68k/include/asm/raw_io.h:240: error: previous definition of =E2=80=
-=98raw_outsl=E2=80=99 was here
-> drivers/usb/musb/musb_io.h:54: error: conflicting types for =E2=80=98raw_=
-outsw=E2=80=99
-> arch/m68k/include/asm/raw_io.h:161: error: previous definition of =E2=80=
-=98raw_outsw=E2=80=99 was here
-> make[4]: *** [drivers/usb/musb/musb_core.o] Error 1
->=20
-> This happens because musb_io.h provides default implementations for
-> {read,write}s[bwl]() on most platforms, some of which conflict with their
-> Atari ROM ISA counterparts.
->=20
-> To avoid adding a check for CONFIG_ATARI_ROM_ISA to musb_io.h, make sure
-> {read,write}s[bwl]() are always defined on m68k, and disable the default
-> implementations in musb_io.h on m68k, like is already done for several
-> other architectures.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Felipe Balbi <balbi@ti.com>
-> Cc: Greg Ungerer <gerg@uclinux.org>
+Gr{oetje,eeting}s,
 
-Go ahea Geert, here's my ack.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-Acked-by: Felipe Balbi <balbi@ti.com>
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
---=20
-balbi
-
---x+RZeZVNR8VILNfK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJPi+a1AAoJEIaOsuA1yqREBpsP/2kV7VPQdJv/en3pp2/KJLHH
-+2NsE6h79UBdSZoeC0vodCnU6m/ncUJYbtn0bLalcSTD6nceKWj5IsGZWCKJI/LI
-wgVOYlXrV4GJD+7pq2y96KlrUAg9HQDN6DZtzVKWa35naqO/wT0viaGAYwraqhuu
-o3r3OE6giv/sSD17nNCp9REep4ZAdmPbBbbu4V9smAuZr3pr7j5yyza7iM8PfDAB
-upViOOIixQrBuFRQw7JQPGDktAMBT6PumiUaal7O3hoTjSMu6T4vn0c5V5WFkzVi
-k8WenYzOOryINcsX+hyP/1VLxibyCLuw67KpOMNC4em0sheX/VKGpnW8zr3TGH7R
-uxQeb2zbVVnYNjzprlSRNIaqhbl8wP59xZhVyW6DP1EjwDHnkeiIUf3mzXjlVQil
-07rJqd2VmBExX7jIfZAnHmK1mxZ84H27gOZ4/8jJhXy9WaXK2NcjZuykjFrCqI1c
-ziNmP3WaFmAY2K/84r4TL+wzzXe4Ucl4ztWZdRXAN8yCaUeDNmiv5B02qslzHqI9
-DAIEVuvzo9S6rw44guQOEaZJCNzt3iilymn4K/tRGy5JS0b3iAesbFzlE4swNZjt
-qf9h+hW0LkxFm0JBcAQsok8R3SkXdXHv+e9rweW3J7Tzszz1+ac+t6+r1cJ9p+Jn
-G9XCCieVDzfW6MXjH8ae
-=5ILI
------END PGP SIGNATURE-----
-
---x+RZeZVNR8VILNfK--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
