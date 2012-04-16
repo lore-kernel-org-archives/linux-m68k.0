@@ -1,67 +1,64 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: Atari ROM port ISA
-Date: Tue, 17 Apr 2012 08:21:51 +1200
-Message-ID: <CAOmrzkLWAq3LJikDWLZojwYh5UGjBgW=kh_ip0rw_D9svUg2tA@mail.gmail.com>
-References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
-	<4F8BCF49.4060109@gmail.com>
-	<CAMuHMdXo=A581yup5uw3sPN_eMg_7nood_wmb7qEOWs+rEoSmw@mail.gmail.com>
+From: Mikael Pettersson <mikpe@it.uu.se>
+Subject: [atari regression] handle_irq_event_percpu() incorrectly blames nfeth_interrupt() for enabling interrupts
+Date: Mon, 16 Apr 2012 23:28:34 +0200
+Message-ID: <20364.36610.13318.165888@pilspetsen.it.uu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXo=A581yup5uw3sPN_eMg_7nood_wmb7qEOWs+rEoSmw@mail.gmail.com>
+Received: from fanny.its.uu.se ([130.238.4.241]:65264 "EHLO fanny.its.uu.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1755228Ab2DPWAD (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 16 Apr 2012 18:00:03 -0400
+Received: from fanny.its.uu.se (localhost [127.0.0.1])
+	by fanny.its.uu.se (Postfix) with ESMTP id DA9B261FA
+	for <linux-m68k@vger.kernel.org>; Mon, 16 Apr 2012 23:28:34 +0200 (MSZ)
+Received: from pilspetsen.it.uu.se (pilspetsen.it.uu.se [130.238.18.39])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by fanny.its.uu.se (Postfix) with ESMTP id 834A96285
+	for <linux-m68k@vger.kernel.org>; Mon, 16 Apr 2012 23:28:34 +0200 (MSZ)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org
 
-Hi Geert,
+This is with an emulated atari running in aranym-0.9.11 on an x86_64 host,
+using the natfeat (para-virtualized) nfeth and nfblock drivers.
 
-On Mon, Apr 16, 2012 at 9:42 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Apr 16, 2012 at 09:50, Michael Schmitz
-> <schmitzmic@googlemail.com> wrote:
->>> | #define rom_out_be16(addr, w) =A0 ({u16 __w, __v =3D (w); __w =3D=
- ((*(__force
->>> volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
->>> | #define rom_out_be32(addr, l) =A0 ({u32 __w, __v =3D (l); __w =3D=
- ((*(__force
->>> volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
->>> | #define rom_out_le16(addr, w) =A0 ({u16 __w, __v =3D cpu_to_le16(=
-w); __w =3D
->>> ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
->>> | #define rom_out_le32(addr, l) =A0 ({u32 __w, __v =3D cpu_to_le32(=
-l); __w =3D
->>> ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
->>>
->>> The above four also can't work. Remove them?
->>
->> Probably - not sure what the behavior will be if writing more than o=
-ne byte
->> (might not be safe to use). Using dummies (potentially to generate c=
-ompiler
->> warnings or =A0runtime warnings) might be safer.
->
-> As soon as the value you're writing is bigger than 0x7fff, you'll get=
- out of the
-> 64 KiB write window.
+Previously it ran a 2.6.38 kernel (with addon m68k and natfeat patches)
+for almost a year without issue.  Today I upgraded it to the 3.4-rc3
+kernel and got the following kernel warning:
 
-That's correct - on the ISA side only eight bits are wired up anyway
-so ((addr) + 0x10000 + (( __v & 0xFF )<<1)) is making sure we only
-write what's possible to write. The only side effect of the le[16,32]
-versions is to put a different byte in the one-byte write aperture.
-That's purely academic so let's lose it.
+WARNING: at kernel/irq/handle.c:146 handle_irq_event_percpu+0x134/0x142()
+irq 3 handler nfeth_interrupt+0x0/0x194 enabled interrupts
+Modules linked in:
+Call Trace: [<000299b2>] warn_slowpath_common+0x48/0x6a
+ [<000299c0>] warn_slowpath_common+0x56/0x6a
+ [<00029a4c>] warn_slowpath_fmt+0x2a/0x32
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0000a584>] nfeth_interrupt+0x0/0x194
+ [<001ba0a8>] schedule_preempt_disabled+0x0/0xc
+ [<0005b37a>] handle_irq_event+0x20/0x2c
+ [<0005add4>] generic_handle_irq+0x2c/0x3a
+ [<00002ab6>] do_IRQ+0x20/0x32
+ [<0000289e>] auto_irqhandler_fixup+0x4/0x6
+ [<00003144>] cpu_idle+0x22/0x2e
+ [<001b8a78>] printk+0x0/0x18
+ [<0024d112>] start_kernel+0x37a/0x386
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0024c31e>] _sinittext+0x31e/0x9c0
 
-As Andreas has confirmed, there's no way the adapter hardware could be
-extended to write full 16 bit words even if the design was changed to
-use the full data bus width (by using tri-state latches so the same
-ISA data lines can be wired to both data and address lines of the ROM
-port, possibly) - since we need the A0 bit as read/write select we
-only have 15 address bits left for writes.
+This always occurs exactly once, on the very first network packet sent
+to the emulated machine.  The same once-only warning also occurs with
+the 3.3.2 and 3.2.15 kernels, but not with the 3.1.10 kernel.
 
-Does this make sense? Either way, we only need byte reads and writes
-so please remove the rest.
+I inspected nfeth_interrupt() but couldn't find anything there that
+would enable interrupts as handle_irq_event_percpu() claims it did,
+so I added some runtime checks which showed that !irqs_disabled() is
+true already on entry to handle_irq_event_percpu(), well before
+nfeth_interrupt() is called.
 
-Cheers,
-
-  Michael
+Given the timeline and the fact that nfeth didn't change between 3.1
+and 3.2, I suspect a bug in last fall's genirq conversion.
