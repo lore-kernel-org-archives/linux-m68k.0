@@ -1,121 +1,138 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Make sure {read,write}s[bwl]() are always defined
-Date: Sun, 15 Apr 2012 21:00:10 +0200
-Message-ID: <1334516410-5777-1-git-send-email-geert__17577.2761962891$1334516443$gmane$org@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Atari ROM port ISA
+Date: Mon, 16 Apr 2012 19:50:33 +1200
+Message-ID: <4F8BCF49.4060109@gmail.com>
+References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Felipe Balbi <balbi@ti.com>, Greg Ungerer <gerg@uclinux.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-If CONFIG_ATARI_ROM_ISA is defined (e.g. allmodconfig), musb fails to
-compile with:
+Hi Geert,
 
-In file included from drivers/usb/musb/musb_core.h:68,
-                 from drivers/usb/musb/musb_core.c:104:
-drivers/usb/musb/musb_io.h:45: error: conflicting types for =E2=80=98ra=
-w_insl=E2=80=99
-arch/m68k/include/asm/raw_io.h:200: error: previous definition of =E2=80=
-=98raw_insl=E2=80=99 was here
-drivers/usb/musb/musb_io.h:47: error: conflicting types for =E2=80=98ra=
-w_insw=E2=80=99
-arch/m68k/include/asm/raw_io.h:121: error: previous definition of =E2=80=
-=98raw_insw=E2=80=99 was here
-drivers/usb/musb/musb_io.h:52: error: conflicting types for =E2=80=98ra=
-w_outsl=E2=80=99
-arch/m68k/include/asm/raw_io.h:240: error: previous definition of =E2=80=
-=98raw_outsl=E2=80=99 was here
-drivers/usb/musb/musb_io.h:54: error: conflicting types for =E2=80=98ra=
-w_outsw=E2=80=99
-arch/m68k/include/asm/raw_io.h:161: error: previous definition of =E2=80=
-=98raw_outsw=E2=80=99 was here
-make[4]: *** [drivers/usb/musb/musb_core.o] Error 1
+> arch/m68k/include/asm/io_mm.h:
+>
+> | #define enec_isa_read_base  0xfffa0000
+> | #define enec_isa_write_base 0xfffb0000
+> |
+> | #define ENEC_ISA_IO_B(ioaddr)   (enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
+> | #define ENEC_ISA_IO_W(ioaddr)   (enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
+> | #define ENEC_ISA_MEM_B(madr)    (enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
+> | #define ENEC_ISA_MEM_W(madr)    (enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
+>
+> So ISA memory space accesses (isa_readX()) are implemented the same as ISA I/O
+> space accesses? That can't work. Or are they not supported?
 
-This happens because musb_io.h provides default implementations for
-{read,write}s[bwl]() on most platforms, some of which conflict with the=
-ir
-Atari ROM ISA counterparts.
+There's no distinct 'IO' or 'memory' space on the ROM port adapter, it's 
+all memory mapped on ROM port addresses. How does access to ISA card mem 
+regions work on ix86? Different address range, or different instructions?
 
-To avoid adding a check for CONFIG_ATARI_ROM_ISA to musb_io.h, make sur=
-e
-{read,write}s[bwl]() are always defined on m68k, and disable the defaul=
-t
-implementations in musb_io.h on m68k, like is already done for several
-other architectures.
+> If they're not supported, I think it's better to implement dummies instead.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Felipe Balbi <balbi@ti.com>
-Cc: Greg Ungerer <gerg@uclinux.org>
---
-=46elipe: OK if I carry this through the m68k tree, as CONFIG_ATARI_ROM=
-_ISA
-        (and this compile problem) is not yet in mainline, and fixing o=
-nly
-        musb_io.h now would introduce a regression in mainline?
-        I could also proactively have m68k provide {read,write}s[bwl]()=
- in
-        mainline before pushing out Atari ROM ISA support.
-Greg: Do you want a similar change for asm/io_no.h? Or move it to asm/i=
-o.h?
-      Or do you want musb_io.h to check for
-      "!(defined(CONFIG_M68K) && defined(CONFIG_MMU))" instead?
-      Or don't you care, as allmodconfig never selects nommu anyway?
----
- arch/m68k/include/asm/io_mm.h |   12 +++++++-----
- drivers/usb/musb/musb_io.h    |    2 +-
- 2 files changed, 8 insertions(+), 6 deletions(-)
+The section above is the address translation only - that one definitely 
+is right. ne.c only uses inb/outb so we won't need readb/writeb support. 
+The only other potential user of this glue (USB chipset in the NetUSBee) 
+similarly only uses inb/outb so memory space access looks unnecessary.
 
-diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_m=
-m.h
-index eff3f83..73dc331 100644
---- a/arch/m68k/include/asm/io_mm.h
-+++ b/arch/m68k/include/asm/io_mm.h
-@@ -371,11 +371,6 @@ static inline void isa_delay(void)
- #define writeb(val,addr) out_8((addr),(val))
- #define readw(addr)      in_le16(addr)
- #define writew(val,addr) out_le16((addr),(val))
--
--#define readsw  raw_insw
--#define writesw raw_outsw
--#define readsl  raw_insl
--#define writesl raw_outsl
- #endif /* CONFIG_ATARI_ROM_ISA */
-=20
- #if !defined(CONFIG_ISA) && !defined(CONFIG_ATARI_ROM_ISA)
-@@ -415,6 +410,13 @@ static inline void isa_delay(void)
- #define readl(addr)      in_le32(addr)
- #define writel(val,addr) out_le32((addr),(val))
-=20
-+#define readsb(port, buf, nr)     raw_insb((port), (u8 *)(buf), (nr))
-+#define readsw(port, buf, nr)     raw_insw((port), (u16 *)(buf), (nr))
-+#define readsl(port, buf, nr)     raw_insl((port), (u32 *)(buf), (nr))
-+#define writesb(port, buf, nr)    raw_outsb((port), (u8 *)(buf), (nr))
-+#define writesw(port, buf, nr)    raw_outsw((port), (u16 *)(buf), (nr)=
-)
-+#define writesl(port, buf, nr)    raw_outsl((port), (u32 *)(buf), (nr)=
-)
-+
- #define mmiowb()
-=20
- static inline void __iomem *ioremap(unsigned long physaddr, unsigned l=
-ong size)
-diff --git a/drivers/usb/musb/musb_io.h b/drivers/usb/musb/musb_io.h
-index 1d5eda2..f7c1c8e 100644
---- a/drivers/usb/musb/musb_io.h
-+++ b/drivers/usb/musb/musb_io.h
-@@ -40,7 +40,7 @@
- #if !defined(CONFIG_ARM) && !defined(CONFIG_SUPERH) \
- 	&& !defined(CONFIG_AVR32) && !defined(CONFIG_PPC32) \
- 	&& !defined(CONFIG_PPC64) && !defined(CONFIG_BLACKFIN) \
--	&& !defined(CONFIG_MIPS)
-+	&& !defined(CONFIG_MIPS) && !defined(CONFIG_M68K)
- static inline void readsl(const void __iomem *addr, void *buf, int len=
-)
- 	{ insl((unsigned long)addr, buf, len); }
- static inline void readsw(const void __iomem *addr, void *buf, int len=
-)
---=20
-1.7.0.4
+> arch/m68k/include/asm/raw_io.h
+>
+> | /*
+> |  * Atari ROM port (cartridge port) ISA adapter, used for the EtherNEC NE2000
+> |  * network card driver.
+> |  * The ISA adapter connects address lines A9-A13 to ISA address lines A0-A4,
+>
+> That's handled via isa_[im]t[bwl](), which uses ENEC_ISA_{IO,MEM}_[BW]
+> internally. OK
+>
+> |  * and hardwires the rest of the ISA addresses for a base address of 0x300.
+> |  *
+> |  * Data lines D8-D15 are connected to ISA data lines D0-D7 for reading.
+> |  * For writes, address lines A1-A8 are latched to ISA data lines D0-D7
+> |  * (meaning the bit pattern on A1-A8 can be read back as byte).
+>
+> So writes are done using reads.
+
+Yup. Ugly but that's how it works.
+
+> |  *
+> |  * Reads and writes are byte only.
+> |  */
+>
+> Hence 8-bit access only, ...
+
+Right. Not sure how many data and address lines the ROM port has, but 
+the way the adapter is designed it's 8 bit only because of the 
+read/write bit shift.
+
+> |
+> | #if defined(CONFIG_ATARI_ROM_ISA)
+> | #define rom_in_8(addr) \
+> |         ({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
+> | #define rom_in_be16(addr) \
+> |         ({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
+> | #define rom_in_be32(addr) \
+> |         ({ u32 __v = (*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
+> | #define rom_in_le16(addr) \
+> |         ({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
+> | #define rom_in_le32(addr) \
+> |         ({ u32 __v = le32_to_cpu(*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
+>
+> So the above four can't work? Remove them?
+
+They'd ever only read 8 bit wide data. That's probably not what you'd 
+expect, so I guess they could be removed or turned into dummies. I 
+included them to safeguard against drivers using multibyte access, but 
+it might be better to warn in that case.
+
+Only inb and outb are used in ne.c so it should be safe to remove these.
+
+> | #define rom_out_8(addr, b)      ({u8 __w, __v = (b); __w = ((*(__force volatile u8 *)  ((addr) + 0x10000 + (__v<<1)))); })
+>
+> The 0x10000 is due to the different bases for reading and writing
+> (i.e. enec_isa_write_base - enec_isa_read_base), right?
+
+Right.
+
+> | #define rom_out_be16(addr, w)   ({u16 __w, __v = (w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
+> | #define rom_out_be32(addr, l)   ({u32 __w, __v = (l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
+> | #define rom_out_le16(addr, w)   ({u16 __w, __v = cpu_to_le16(w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
+> | #define rom_out_le32(addr, l)   ({u32 __w, __v = cpu_to_le32(l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
+>
+> The above four also can't work. Remove them?
+
+Probably - not sure what the behavior will be if writing more than one 
+byte (might not be safe to use). Using dummies (potentially to generate 
+compiler warnings or  runtime warnings) might be safer.
+
+>
+> | #define raw_rom_inb rom_in_8
+> | #define raw_rom_inw rom_in_be16
+> | #define raw_rom_inl rom_in_be32
+>
+> The above two also can't work. Remove them?
+>
+> | #define raw_rom_outb(val, port) rom_out_8((port), (val))
+> | #define raw_rom_outw(val, port) rom_out_be16((port), (val))
+> | #define raw_rom_outl(val, port) rom_out_be32((port), (val))
+>
+> The above two also can't work. Remove them?
+>
+> | #endif /* CONFIG_ATARI_ROM_ISA */
+>
+> If all of these are removed, the CONFIG_ATARI_ROM_ISA sections in
+> arch/m68k/include/asm/io_mm.h can be simplified a lot, too.
+>
+> Does all of this make sense?
+
+It does - seems I implemented a lot of unused and potentially dangerous 
+stuff there. Do you want me to test these changes up front (not that I 
+think there should be surprises)?
+
+Cheers,
+
+   Michael
