@@ -1,46 +1,50 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: Atari ROM port ISA
-Date: Mon, 16 Apr 2012 22:05:00 -0700
-Message-ID: <20120417050500.GA14387@cynthia.pants.nu>
-References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
- <4F8BCF49.4060109@gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: fix id number for second eth device on 5275 ColdFire
+Date: Tue, 17 Apr 2012 23:22:55 +1000
+Message-ID: <1334668975-30794-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4F8BCF49.4060109@gmail.com>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:29081 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932302Ab2DQNYT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 17 Apr 2012 09:24:19 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Mon, Apr 16, 2012 at 07:50:33PM +1200, Michael Schmitz wrote:
-> >arch/m68k/include/asm/io_mm.h:
-> >
-> >| #define enec_isa_read_base  0xfffa0000
-> >| #define enec_isa_write_base 0xfffb0000
-> >|
-> >| #define ENEC_ISA_IO_B(ioaddr)   (enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
-> >| #define ENEC_ISA_IO_W(ioaddr)   (enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
-> >| #define ENEC_ISA_MEM_B(madr)    (enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
-> >| #define ENEC_ISA_MEM_W(madr)    (enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
-> >
-> >So ISA memory space accesses (isa_readX()) are implemented the same as ISA I/O
-> >space accesses? That can't work. Or are they not supported?
-> 
-> There's no distinct 'IO' or 'memory' space on the ROM port adapter,
-> it's all memory mapped on ROM port addresses. How does access to ISA
-> card mem regions work on ix86? Different address range, or different
-> instructions?
+From: Greg Ungerer <gerg@uclinux.org>
 
-The real x86 instruction set has separate instructions to access any
-ports in the IO space (in and out). The instruction also has an access
-width field, which most assemblers encode into the instruction (leading
-to the inb,inw,outb,outw in assembly listings). This carried forward
-into PCI as well, which allows for separate IO and memory access.
+The second ColdFire FEC ethernet device should have an id number of 1,
+not 0. Otherwise it clashes with the first FEC ethernet device.
 
-Most non-x86 implementations of ISA (and PCI) just map the IO ports
-onto some otherwise unused address range in the normal memory space.
+On booting a kernel on a 5275 based board you will get messages out of
+the kernel like this:
 
-	Brad Boyer
-	flar@allandria.com
+    <4>------------[ cut here ]------------
+    <4>WARNING: at fs/sysfs/dir.c:508 0x0a8b50()
+    <4>sysfs: cannot create duplicate filename 'fec.0'
+
+And likely you won't be able to completely boot up after this at all.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/platform/coldfire/device.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/platform/coldfire/device.c b/arch/m68k/platform/coldfire/device.c
+index fa50c48..7af9736 100644
+--- a/arch/m68k/platform/coldfire/device.c
++++ b/arch/m68k/platform/coldfire/device.c
+@@ -114,7 +114,7 @@ static struct resource mcf_fec1_resources[] = {
+ 
+ static struct platform_device mcf_fec1 = {
+ 	.name			= "fec",
+-	.id			= 0,
++	.id			= 1,
+ 	.num_resources		= ARRAY_SIZE(mcf_fec1_resources),
+ 	.resource		= mcf_fec1_resources,
+ };
+-- 
+1.7.0.4
