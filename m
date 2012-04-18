@@ -1,44 +1,107 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Make sure {read,write}s[bwl]() are always defined
-Date: Wed, 18 Apr 2012 22:45:58 +1000
-Message-ID: <4F8EB786.8000000@snapgear.com>
-References: <1334516410-5777-1-git-send-email-geert@linux-m68k.org> <4F8C08F1.5050907@snapgear.com> <4F8E7458.8030301@gmail.com>
+From: Mikael Pettersson <mikpe@it.uu.se>
+Subject: [PATCH 1/2] m68k: correct the Atari ALLOWINT definition
+Date: Thu, 19 Apr 2012 00:53:36 +0200
+Message-ID: <20367.17904.199202.88993@pilspetsen.it.uu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4F8E7458.8030301@gmail.com>
+Received: from fanny.its.uu.se ([130.238.4.241]:58188 "EHLO fanny.its.uu.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751370Ab2DRWxj (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 18 Apr 2012 18:53:39 -0400
+Received: from fanny.its.uu.se (localhost [127.0.0.1])
+	by fanny.its.uu.se (Postfix) with ESMTP id C53406253
+	for <linux-m68k@vger.kernel.org>; Thu, 19 Apr 2012 00:53:36 +0200 (MSZ)
+Received: from pilspetsen.it.uu.se (pilspetsen.it.uu.se [130.238.18.39])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by fanny.its.uu.se (Postfix) with ESMTP id C00CE624B
+	for <linux-m68k@vger.kernel.org>; Thu, 19 Apr 2012 00:53:36 +0200 (MSZ)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
 
-On 04/18/2012 05:59 PM, Michael Schmitz wrote:
-> Greg,
->>>         Or do you want musb_io.h to check for
->>>         "!(defined(CONFIG_M68K)&&   defined(CONFIG_MMU))" instead?
->>
->> No, I would rather see just the defined(CONFIG_M68K), and no check for
->> CONFIG_MMU. I am pretty sure there is some similarity between the way
->> the Atari does ISA bus interfacing to what some of the ColdFire boards
->> do.
-> I sure hope you are wrong :-) But I think I saw some non-MMU Atari use
-> attempts mentioned on the list, and the ROM port ISA adapter could well
-> be used on non-MMU Ataris (though I'm not sure what address the ROM port
-> would be mapped at on those - I'm sure Andreas will know the details
-> there).
+Booting a 3.2, 3.3, or 3.4-rc4 kernel on an Atari using the
+`nfeth' ethernet device triggers a WARN_ONCE() in generic irq
+handling code on the first irq for that device:
 
-I wasn't referring to the ROM port exactly as it is on Atari playtforms.
-But some ColdFire based boards I have seen do ISA busses with some
-pretty funky wiring of addresses and data lines to be able to do 8bit
-accesses on even and odd boundaries, but also allow 16bit accesses.
+WARNING: at kernel/irq/handle.c:146 handle_irq_event_percpu+0x134/0x142()
+irq 3 handler nfeth_interrupt+0x0/0x194 enabled interrupts
+Modules linked in:
+Call Trace: [<000299b2>] warn_slowpath_common+0x48/0x6a
+ [<000299c0>] warn_slowpath_common+0x56/0x6a
+ [<00029a4c>] warn_slowpath_fmt+0x2a/0x32
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0000a584>] nfeth_interrupt+0x0/0x194
+ [<001ba0a8>] schedule_preempt_disabled+0x0/0xc
+ [<0005b37a>] handle_irq_event+0x20/0x2c
+ [<0005add4>] generic_handle_irq+0x2c/0x3a
+ [<00002ab6>] do_IRQ+0x20/0x32
+ [<0000289e>] auto_irqhandler_fixup+0x4/0x6
+ [<00003144>] cpu_idle+0x22/0x2e
+ [<001b8a78>] printk+0x0/0x18
+ [<0024d112>] start_kernel+0x37a/0x386
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0024c31e>] _sinittext+0x31e/0x9c0
 
-Regards
-Greg
+After invoking the irq's handler the kernel sees !irqs_disabled()
+and concludes that the handler erroneously enabled interrupts.
 
+However, debugging shows that !irqs_disabled() is true even before
+the handler is invoked, which indicates a problem in the platform
+code rather than the specific driver.
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+The warning does not occur in 3.1 or older kernels.
+
+It turns out that the ALLOWINT definition for Atari is incorrect.
+
+The Atari definition of ALLOWINT is ~0x400, the stated purpose of
+that is to avoid taking HSYNC interrupts.  irqs_disabled() returns
+true if the 3-bit ipl & 4 is non-zero.  The nfeth interrupt runs at
+ipl 3 (it's autovector 3), but 3 & 4 is zero so irqs_disabled() is
+false, and the warning above is generated.
+
+When interrupts are explicitly disabled, ipl is set to 7.  When they
+are enabled, ipl is masked with ALLOWINT.  On Atari this will result
+in ipl = 3, which blocks interrupts at ipl 3 and below.  So how come
+nfeth interrupts at ipl 3 are received at all?  That's because ipl
+is reset to 2 by Atari-specific code in default_idle(), again with
+the stated purpose of blocking HSYNC interrupts.  This discrepancy
+means that ipl 3 can remain blocked for longer than intended.
+
+Both default_idle() and falcon_hblhandler() identify HSYNC with
+ipl 2, and the "Atari ST/.../F030 Hardware Register Listing" agrees,
+but ALLOWINT is defined as if HSYNC was ipl 3.
+
+[As an experiment I modified default_idle() to reset ipl to 3, and
+as expected that resulted in all nfeth interrupts being blocked.]
+
+The fix is simple: define ALLOWINT as ~0x500 instead.  This makes
+arch_local_irq_enable() consistent with default_idle(), and prevents
+the !irqs_disabled() problems for ipl 3 interrupts.
+
+Tested on Atari running in an Aranym VM.
+
+Signed-off-by: Mikael Pettersson <mikpe@it.uu.se>
+---
+Since ipl is interpreted by HW as a numerical level, the current
+simple-minded bit masking operations in arch_local_irq_enable(),
+arch_irqs_disabled_flags(), and entry_mm.S aren't really correct,
+but only Atari is affected, and it doesn't seem to hurt in practice.
+
+--- linux-3.4-rc3/arch/m68k/include/asm/entry.h.~1~	2012-03-19 14:06:52.000000000 +0100
++++ linux-3.4-rc3/arch/m68k/include/asm/entry.h	2012-04-18 22:07:52.000000000 +0200
+@@ -33,8 +33,8 @@
+ 
+ /* the following macro is used when enabling interrupts */
+ #if defined(MACH_ATARI_ONLY)
+-	/* block out HSYNC on the atari */
+-#define ALLOWINT	(~0x400)
++	/* block out HSYNC = ipl 2 on the atari */
++#define ALLOWINT	(~0x500)
+ #define	MAX_NOINT_IPL	3
+ #else
+ 	/* portable version */
