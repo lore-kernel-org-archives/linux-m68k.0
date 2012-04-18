@@ -1,89 +1,45 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH V2 1/4] vgaarb: Add support for setting the default video device
-Date: Wed, 18 Apr 2012 11:44:52 +0200
-Message-ID: <CAMuHMdUsMy1i+DSYt+tjGL-JX+DBY=v1JyMEPSyf8RwYCEkvxg@mail.gmail.com>
-References: <1334607965-9582-1-git-send-email-mjg@redhat.com>
-	<CAMuHMdVYSajTYmfXjtVRXhz0u=xW0LbQ5BxjR=n7PP77o0dXhw@mail.gmail.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: _ebss == _edata if MMU
+Date: Wed, 18 Apr 2012 13:43:46 +0200
+Message-ID: <m2zka99sel.fsf@igel.home>
+References: <CAMuHMdXefcfjetrLAtnsqONRT1WefEFU3Ztv0=2itP+sjGJDrg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-iy0-f174.google.com ([209.85.210.174]:55804 "EHLO
-	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751202Ab2DRJox convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 05:44:53 -0400
-In-Reply-To: <CAMuHMdVYSajTYmfXjtVRXhz0u=xW0LbQ5BxjR=n7PP77o0dXhw@mail.gmail.com>
+Received: from mail-out.m-online.net ([212.18.0.9]:43699 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753203Ab2DRLn4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 07:43:56 -0400
+In-Reply-To: <CAMuHMdXefcfjetrLAtnsqONRT1WefEFU3Ztv0=2itP+sjGJDrg@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Wed, 18 Apr 2012 09:55:34 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Matthew Garrett <mjg@redhat.com>
-Cc: linux-kernel@vger.kernel.org, benh@kernel.crashing.org, airlied@redhat.com, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, Apr 18, 2012 at 11:37, Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
-> On Mon, Apr 16, 2012 at 22:26, Matthew Garrett <mjg@redhat.com> wrote=
-:
->> --- a/include/linux/vgaarb.h
->> +++ b/include/linux/vgaarb.h
->> @@ -31,6 +31,7 @@
->> =C2=A0#ifndef LINUX_VGA_H
->> =C2=A0#define LINUX_VGA_H
->>
->> +#include <video/vga.h>
->
-> Is this include really needed? x86_64/allmodconfig builds fine withou=
-t it.
->
-> It causes m68k/allmodconfig to fail with:
->
-> In file included from include/linux/vgaarb.h:35,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from drivers/=
-gpu/drm/drm_irq.c:43:
-> include/video/vga.h: In function =E2=80=98vga_mm_r=E2=80=99:
-> include/video/vga.h:242: error: implicit declaration of function =E2=80=
-=98z_readb=E2=80=99
-> include/video/vga.h: In function =E2=80=98vga_mm_w=E2=80=99:
-> include/video/vga.h:247: error: implicit declaration of function =E2=80=
-=98z_writeb=E2=80=99
-> include/video/vga.h: In function =E2=80=98vga_mm_w_fast=E2=80=99:
-> include/video/vga.h:253: error: implicit declaration of function =E2=80=
-=98z_writew=E2=80=99
-> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
->
-> http://kisskb.ellerman.id.au/kisskb/buildresult/6127136/
->
-> Currently <video/vga.h> has a crude hack to make cirrusfb work on Ami=
-ga,
-> but that's the only VGA support m68k has.
-> There's also no <asm/vga.h>, so m68k/allmodconfig with CONFIG_AMIGA
-> disabled now fails with:
->
-> In file included from include/linux/vgaarb.h:34,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from drivers/=
-gpu/drm/drm_irq.c:42:
-> include/video/vga.h:23:21: error: asm/vga.h: No such file or director=
-y
-> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
->
-> Removing the #include <video/vga.h> fixes both cases.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Anyway, I'll move the hack for cirrusfb on Amiga to <asm/vga.h> on m68k=
-=2E
+> On ARAnyM:
+>
+> Virtual kernel memory layout:
+>     vector  : 0x002f4d10 - 0x002f5110   (   1 KiB)
+>     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
+>     vmalloc : 0x11800000 - 0xd0000000   (3048 MiB)
+>     lowmem  : 0x00000000 - 0x11000000   ( 272 MiB)
+>       .init : 0x00319000 - 0x0033c000   ( 140 KiB)
+>       .text : 0x00001000 - 0x002487b8   (2334 KiB)
+>       .data : 0x0024b540 - 0x00318a40   ( 822 KiB)
+>       .bss  : 0x002f4ae0 - 0x00318a40   ( 144 KiB)
+>
+> End of data and end of bss are identical, as arch/m68k/kernel/vmlinux-std.lds
+> says bss is a subset of data:
 
-You still may want to remove the include of <video/vga.h> if it's not n=
-eeded.
+It's just the _edata symbol, I don't think this is a problem.  After
+all, bss is only zero-initialized data, thus still part of kernel data.
 
-Gr{oetje,eeting}s,
+Andreas.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
