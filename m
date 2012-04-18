@@ -1,36 +1,89 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH] m68k: Make sure {read,write}s[bwl]() are always defined
-Date: Wed, 18 Apr 2012 19:59:20 +1200
-Message-ID: <4F8E7458.8030301@gmail.com>
-References: <1334516410-5777-1-git-send-email-geert@linux-m68k.org> <4F8C08F1.5050907@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH V2 1/4] vgaarb: Add support for setting the default video device
+Date: Wed, 18 Apr 2012 11:44:52 +0200
+Message-ID: <CAMuHMdUsMy1i+DSYt+tjGL-JX+DBY=v1JyMEPSyf8RwYCEkvxg@mail.gmail.com>
+References: <1334607965-9582-1-git-send-email-mjg@redhat.com>
+	<CAMuHMdVYSajTYmfXjtVRXhz0u=xW0LbQ5BxjR=n7PP77o0dXhw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:41536 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751252Ab2DRH7h (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 03:59:37 -0400
-Received: by pbcun15 with SMTP id un15so8634348pbc.19
-        for <linux-m68k@vger.kernel.org>; Wed, 18 Apr 2012 00:59:37 -0700 (PDT)
-In-Reply-To: <4F8C08F1.5050907@snapgear.com>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:55804 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751202Ab2DRJox convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 05:44:53 -0400
+In-Reply-To: <CAMuHMdVYSajTYmfXjtVRXhz0u=xW0LbQ5BxjR=n7PP77o0dXhw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Matthew Garrett <mjg@redhat.com>
+Cc: linux-kernel@vger.kernel.org, benh@kernel.crashing.org, airlied@redhat.com, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Greg,
->>        Or do you want musb_io.h to check for
->>        "!(defined(CONFIG_M68K)&&  defined(CONFIG_MMU))" instead?
+On Wed, Apr 18, 2012 at 11:37, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> On Mon, Apr 16, 2012 at 22:26, Matthew Garrett <mjg@redhat.com> wrote=
+:
+>> --- a/include/linux/vgaarb.h
+>> +++ b/include/linux/vgaarb.h
+>> @@ -31,6 +31,7 @@
+>> =C2=A0#ifndef LINUX_VGA_H
+>> =C2=A0#define LINUX_VGA_H
+>>
+>> +#include <video/vga.h>
 >
-> No, I would rather see just the defined(CONFIG_M68K), and no check for
-> CONFIG_MMU. I am pretty sure there is some similarity between the way
-> the Atari does ISA bus interfacing to what some of the ColdFire boards
-> do.
-I sure hope you are wrong :-) But I think I saw some non-MMU Atari use 
-attempts mentioned on the list, and the ROM port ISA adapter could well 
-be used on non-MMU Ataris (though I'm not sure what address the ROM port 
-would be mapped at on those - I'm sure Andreas will know the details 
-there).
+> Is this include really needed? x86_64/allmodconfig builds fine withou=
+t it.
+>
+> It causes m68k/allmodconfig to fail with:
+>
+> In file included from include/linux/vgaarb.h:35,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from drivers/=
+gpu/drm/drm_irq.c:43:
+> include/video/vga.h: In function =E2=80=98vga_mm_r=E2=80=99:
+> include/video/vga.h:242: error: implicit declaration of function =E2=80=
+=98z_readb=E2=80=99
+> include/video/vga.h: In function =E2=80=98vga_mm_w=E2=80=99:
+> include/video/vga.h:247: error: implicit declaration of function =E2=80=
+=98z_writeb=E2=80=99
+> include/video/vga.h: In function =E2=80=98vga_mm_w_fast=E2=80=99:
+> include/video/vga.h:253: error: implicit declaration of function =E2=80=
+=98z_writew=E2=80=99
+> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
+>
+> http://kisskb.ellerman.id.au/kisskb/buildresult/6127136/
+>
+> Currently <video/vga.h> has a crude hack to make cirrusfb work on Ami=
+ga,
+> but that's the only VGA support m68k has.
+> There's also no <asm/vga.h>, so m68k/allmodconfig with CONFIG_AMIGA
+> disabled now fails with:
+>
+> In file included from include/linux/vgaarb.h:34,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from drivers/=
+gpu/drm/drm_irq.c:42:
+> include/video/vga.h:23:21: error: asm/vga.h: No such file or director=
+y
+> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
+>
+> Removing the #include <video/vga.h> fixes both cases.
 
-  Michael
+Anyway, I'll move the hack for cirrusfb on Amiga to <asm/vga.h> on m68k=
+=2E
+
+You still may want to remove the include of <video/vga.h> if it's not n=
+eeded.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
