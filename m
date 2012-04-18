@@ -1,41 +1,33 @@
 From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: _ebss == _edata if MMU
-Date: Wed, 18 Apr 2012 13:43:46 +0200
-Message-ID: <m2zka99sel.fsf@igel.home>
-References: <CAMuHMdXefcfjetrLAtnsqONRT1WefEFU3Ztv0=2itP+sjGJDrg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Make sure {read,write}s[bwl]() are always defined
+Date: Wed, 18 Apr 2012 13:49:08 +0200
+Message-ID: <m2vckx9s5n.fsf@igel.home>
+References: <1334516410-5777-1-git-send-email-geert@linux-m68k.org>
+	<4F8C08F1.5050907@snapgear.com> <4F8E7458.8030301@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:43699 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.9]:49837 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753203Ab2DRLn4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 07:43:56 -0400
-In-Reply-To: <CAMuHMdXefcfjetrLAtnsqONRT1WefEFU3Ztv0=2itP+sjGJDrg@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Wed, 18 Apr 2012 09:55:34 +0200")
+	with ESMTP id S1752524Ab2DRLtN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Apr 2012 07:49:13 -0400
+In-Reply-To: <4F8E7458.8030301@gmail.com> (Michael Schmitz's message of "Wed,
+	18 Apr 2012 19:59:20 +1200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Greg Ungerer <gerg@snapgear.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Michael Schmitz <schmitzmic@googlemail.com> writes:
 
-> On ARAnyM:
->
-> Virtual kernel memory layout:
->     vector  : 0x002f4d10 - 0x002f5110   (   1 KiB)
->     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
->     vmalloc : 0x11800000 - 0xd0000000   (3048 MiB)
->     lowmem  : 0x00000000 - 0x11000000   ( 272 MiB)
->       .init : 0x00319000 - 0x0033c000   ( 140 KiB)
->       .text : 0x00001000 - 0x002487b8   (2334 KiB)
->       .data : 0x0024b540 - 0x00318a40   ( 822 KiB)
->       .bss  : 0x002f4ae0 - 0x00318a40   ( 144 KiB)
->
-> End of data and end of bss are identical, as arch/m68k/kernel/vmlinux-std.lds
-> says bss is a subset of data:
+> I sure hope you are wrong :-) But I think I saw some non-MMU Atari use
+> attempts mentioned on the list, and the ROM port ISA adapter could well be
+> used on non-MMU Ataris (though I'm not sure what address the ROM port
+> would be mapped at on those - I'm sure Andreas will know the details
+> there).
 
-It's just the _edata symbol, I don't think this is a problem.  After
-all, bss is only zero-initialized data, thus still part of kernel data.
+There is no difference in the I/O memory layout between the Atari models
+for hardware components that are in common.
 
 Andreas.
 
