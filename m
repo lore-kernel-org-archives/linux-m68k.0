@@ -1,67 +1,67 @@
-From: Mikael Pettersson <mikpe@it.uu.se>
-Subject: Re: [PATCH 1/2] m68k: correct the Atari ALLOWINT definition
-Date: Thu, 19 Apr 2012 13:03:45 +0200
-Message-ID: <20367.61713.46772.272638@pilspetsen.it.uu.se>
-References: <20367.17904.199202.88993@pilspetsen.it.uu.se>
-	<4F8FDB16.3020502@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Atari ROM port ISA
+Date: Thu, 19 Apr 2012 15:00:51 +0000 (UTC)
+Message-ID: <loom.20120419T165359-796@post.gmane.org>
+References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg> <4F8BCF49.4060109@gmail.com> <20120417050500.GA14387@cynthia.pants.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from fanny.its.uu.se ([130.238.4.241]:56840 "EHLO fanny.its.uu.se"
+Received: from plane.gmane.org ([80.91.229.3]:49741 "EHLO plane.gmane.org"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753767Ab2DSLDs (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 19 Apr 2012 07:03:48 -0400
-In-Reply-To: <4F8FDB16.3020502@gmail.com>
+	id S1753907Ab2DSPBJ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 19 Apr 2012 11:01:09 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1SKsr5-0003d8-EU
+	for linux-m68k@vger.kernel.org; Thu, 19 Apr 2012 17:01:07 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Thu, 19 Apr 2012 17:01:07 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Thu, 19 Apr 2012 17:01:07 +0200
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Mikael Pettersson <mikpe@it.uu.se>, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-Michael Schmitz writes:
- > Mikael Pettersson wrote:
- > > The fix is simple: define ALLOWINT as ~0x500 instead.  This makes
- > > arch_local_irq_enable() consistent with default_idle(), and prevents
- > > the !irqs_disabled() problems for ipl 3 interrupts.
- > >
- > > Tested on Atari running in an Aranym VM.
- > >   
- > Tested on my Falcon/CT60.
+Brad Boyer <flar <at> allandria.com> writes:
 
-Thanks.  May I add an explicit
+> On Mon, Apr 16, 2012 at 07:50:33PM +1200, Michael Schmitz wrote:
 
-Tested-by: Michael Schmitz <schmitzmic@googlemail.com> (on Falcon/CT60)
+> > >So ISA memory space accesses (isa_readX()) are implemented the sam=
+e as ISA=20
+I/O
+> > >space accesses? That can't work. Or are they not supported?
+> >=20
+> > There's no distinct 'IO' or 'memory' space on the ROM port adapter,
+> > it's all memory mapped on ROM port addresses. How does access to IS=
+A
+> > card mem regions work on ix86? Different address range, or differen=
+t
+> > instructions?
+>=20
+> The real x86 instruction set has separate instructions to access any
+> ports in the IO space (in and out). The instruction also has an acces=
+s
 
-to the patch description?
+This maps to different lines being driven on the ISA side, see:
+https://upload.wikimedia.org/wikipedia/commons/3/3d/XT_Bus_pins.png
 
-/Mikael
+There are I/O read/write and MEM read/write lines (B11=E2=80=A5B14).
+So you need these that are actually wired up in the adapter.
 
- > 
- >   Michael
- > 
- > > Signed-off-by: Mikael Pettersson <mikpe@it.uu.se>
- > > ---
- > > Since ipl is interpreted by HW as a numerical level, the current
- > > simple-minded bit masking operations in arch_local_irq_enable(),
- > > arch_irqs_disabled_flags(), and entry_mm.S aren't really correct,
- > > but only Atari is affected, and it doesn't seem to hurt in practice.
- > >
- > > --- linux-3.4-rc3/arch/m68k/include/asm/entry.h.~1~	2012-03-19 14:06:52.000000000 +0100
- > > +++ linux-3.4-rc3/arch/m68k/include/asm/entry.h	2012-04-18 22:07:52.000000000 +0200
- > > @@ -33,8 +33,8 @@
- > >  
- > >  /* the following macro is used when enabling interrupts */
- > >  #if defined(MACH_ATARI_ONLY)
- > > -	/* block out HSYNC on the atari */
- > > -#define ALLOWINT	(~0x400)
- > > +	/* block out HSYNC = ipl 2 on the atari */
- > > +#define ALLOWINT	(~0x500)
- > >  #define	MAX_NOINT_IPL	3
- > >  #else
- > >  	/* portable version */
- > > --
- > > To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
- > > the body of a message to majordomo@vger.kernel.org
- > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
- > >   
- > 
+Bascially, =E2=80=9CPC=E2=80=9D I/O ports have a separate 16-bit=C2=B9 =
+address space
+from the main (originally) 20-bit address space of the main
+memory (RAM, ROM) which are addressed with different instructions
+and may behave different when accessed as 8-bit vs. 16-bit slots.
+
+=E2=91=A0 IIRC, only 12 bit were originally wired or used before the er=
+a
+  of the various Local Buses, although according to the 8086 docs
+  that seems to not have been a CPU issue but mainboard design.
+
+bye,
+//mirabilos
