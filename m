@@ -1,53 +1,54 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Atari ROM port ISA
-Date: Thu, 19 Apr 2012 20:43:21 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1204192041320.27380@herc.mirbsd.org>
-References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
- <4F8BCF49.4060109@gmail.com> <20120417050500.GA14387@cynthia.pants.nu>
- <loom.20120419T165359-796@post.gmane.org>
- <CAOmrzkKRE2SsJM532itFRd5fG2Bx-wxfno=ftb0SjXC1vWkbgQ@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch fixes for 3.4
+Date: Fri, 20 Apr 2012 13:47:16 +1000
+Message-ID: <201204200347.q3K3lGJv011042@goober.corp.nai.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:40407 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932281Ab2DSUwA convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 19 Apr 2012 16:52:00 -0400
-In-Reply-To: <CAOmrzkKRE2SsJM532itFRd5fG2Bx-wxfno=ftb0SjXC1vWkbgQ@mail.gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:63531 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751300Ab2DTDvG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 19 Apr 2012 23:51:06 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, geert@linux-m68k.org
 
-Michael Schmitz dixit:
+Hi Linus,
 
->Thanks for explaining this to me - to be honest I've never cared too
->much about ISA and friends.
+Can you please pull the m68knommu git tree:
 
-No problem. (I practically grew up with them, so while the knowledge
-isn=E2=80=99t fresh, some is there.)
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
->I'll check the layout - my guess would be that there's no memory
->read/write selects wired up on the adapter. The RTL8019 doesn't need
->them, the ISP1160  on the NetUSBee doesn't need them either.
+It contains four fixes for 3.4. Two fix and clean up compilation for the
+nommu 68x328 CPU targets. The other two fix the platform definition and
+multi-function pin setup of the second eth interface on the ColdFire
+5275 SoC.
 
-I=E2=80=99d guess the same. You=E2=80=99d need them for things like an =
-ISA graphics
-card, but not (most) I/O devices.
+Thanks
+Greg
 
->If someone ever comes up with a way to hook up a fully featured ISA
->slot to the ROM port (mapping ports 0x00 to 0x7f to IO and above to
->mem access should be possible) we might revisit the code. For now,
->anything except for 8 bit IO can be turned into dummy functions or
->compile warnings.
 
-Might be nice, if possible. But for now, that would indeed be
-the way to go (and clean up code).
 
-bye,
-//mirabilos
---=20
-  =E2=80=9CHaving a smoking section in a restaurant is like having
-          a peeing section in a swimming pool.=E2=80=9D
-						-- Edward Burr
+The following changes since commit e816b57a337ea3b755de72bec38c10c864f23015:
+  Linus Torvalds (1):
+        Linux 3.4-rc3
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Greg Ungerer (4):
+      m68knommu: remove the unused bootlogo.h processing for 68EZ328 and 68VZ328
+      m68knommu: move and fix the 68VZ328 platform bootlogo.h
+      m68knommu: fix id number for second eth device on 5275 ColdFire
+      m68knommu: make sure 2nd FEC eth interface pins are enabled on 5275 ColdFire
+
+ arch/m68k/configs/m5275evb_defconfig               |    1 -
+ arch/m68k/platform/527x/config.c                   |    2 --
+ arch/m68k/platform/68EZ328/Makefile                |    6 ------
+ arch/m68k/platform/68VZ328/Makefile                |    9 ++-------
+ arch/m68k/platform/{68EZ328 => 68VZ328}/bootlogo.h |    2 +-
+ arch/m68k/platform/coldfire/device.c               |    2 +-
+ 6 files changed, 4 insertions(+), 18 deletions(-)
+ rename arch/m68k/platform/{68EZ328 => 68VZ328}/bootlogo.h (99%)
