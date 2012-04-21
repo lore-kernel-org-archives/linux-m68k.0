@@ -1,121 +1,43 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/video: Create <asm/vga.h>
-Date: Sat, 21 Apr 2012 22:16:11 +0200
-Message-ID: <1335039371-10805-1-git-send-email-geert__28728.5186270767$1335039411$gmane$org@linux-m68k.org>
+Subject: Re: [PATCH 2/2] m68k: delete unused MAX_NOINT_IPL definition
+Date: Sat, 21 Apr 2012 22:18:44 +0200
+Message-ID: <CAMuHMdV4CAMFK8krqfDwBnTi1Ow4C2qM+Rra_Bch30yvhz+baA@mail.gmail.com>
+References: <20367.17967.190221.242729@pilspetsen.it.uu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-iy0-f174.google.com ([209.85.210.174]:63420 "EHLO
+	mail-iy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751277Ab2DUUSo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 21 Apr 2012 16:18:44 -0400
+Received: by iadi9 with SMTP id i9so277468iad.19
+        for <linux-m68k@vger.kernel.org>; Sat, 21 Apr 2012 13:18:44 -0700 (PDT)
+In-Reply-To: <20367.17967.190221.242729@pilspetsen.it.uu.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+To: Mikael Pettersson <mikpe@it.uu.se>
+Cc: linux-m68k@vger.kernel.org
 
-=46or now, it just contains the hack for cirrusfb on Amiga, which is mo=
-ved
-out of <video/vga.h> with some slight modifications (use raw_*() instea=
-d of
-z_*(), which are defined on all m68k platforms).
+On Thu, Apr 19, 2012 at 00:54, Mikael Pettersson <mikpe@it.uu.se> wrote=
+:
+> The MAX_NOINT_IPL macro is defined in m68k's <asm/entry.h> but not
+> used anywhere in the kernel. =C2=A0Delete it. =C2=A0Tested on Atari.
 
-This makes it safe to include <video/vga.h> in all contexts. Before it
-could fail to compile with
+Thanks, but I already had this removal queued for 3.5 anyway.
 
-include/video/vga.h: In function =E2=80=98vga_mm_r=E2=80=99:
-include/video/vga.h:242: error: implicit declaration of function =E2=80=
-=98z_readb=E2=80=99
-include/video/vga.h: In function =E2=80=98vga_mm_w=E2=80=99:
-include/video/vga.h:247: error: implicit declaration of function =E2=80=
-=98z_writeb=E2=80=99
-include/video/vga.h: In function =E2=80=98vga_mm_w_fast=E2=80=99:
-include/video/vga.h:253: error: implicit declaration of function =E2=80=
-=98z_writew=E2=80=99
+Gr{oetje,eeting}s,
 
-or
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-include/video/vga.h:23:21: error: asm/vga.h: No such file or directory
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-depending on the value of CONFIG_AMIGA.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
----
-Will queue for 3.5, cfr.
-http://kisskb.ellerman.id.au/kisskb/buildresult/6127136/
----
- arch/m68k/include/asm/vga.h |   27 +++++++++++++++++++++++++++
- include/video/vga.h         |   22 ----------------------
- 2 files changed, 27 insertions(+), 22 deletions(-)
- create mode 100644 arch/m68k/include/asm/vga.h
-
-diff --git a/arch/m68k/include/asm/vga.h b/arch/m68k/include/asm/vga.h
-new file mode 100644
-index 0000000..d3aa140
---- /dev/null
-+++ b/arch/m68k/include/asm/vga.h
-@@ -0,0 +1,27 @@
-+#ifndef _ASM_M68K_VGA_H
-+#define _ASM_M68K_VGA_H
-+
-+#include <asm/raw_io.h>
-+
-+/*
-+ * FIXME
-+ * Ugh, we don't have PCI space, so map readb() and friends to use raw=
- I/O
-+ * accessors, which are identical to the z_*() Zorro bus accessors.
-+ * This should make cirrusfb work again on Amiga
-+ */
-+#undef inb_p
-+#undef inw_p
-+#undef outb_p
-+#undef outw
-+#undef readb
-+#undef writeb
-+#undef writew
-+#define inb_p(port)		0
-+#define inw_p(port)		0
-+#define outb_p(port, val)	do { } while (0)
-+#define outw(port, val)		do { } while (0)
-+#define readb			raw_inb
-+#define writeb			raw_outb
-+#define writew			raw_outw
-+
-+#endif /* _ASM_M68K_VGA_H */
-diff --git a/include/video/vga.h b/include/video/vga.h
-index 2b8691f..cac567f 100644
---- a/include/video/vga.h
-+++ b/include/video/vga.h
-@@ -19,29 +19,7 @@
-=20
- #include <linux/types.h>
- #include <asm/io.h>
--#ifndef CONFIG_AMIGA
- #include <asm/vga.h>
--#else
--/*
-- * FIXME
-- * Ugh, we don't have PCI space, so map readb() and friends to use Zor=
-ro space
-- * for MMIO accesses. This should make cirrusfb work again on Amiga
-- */
--#undef inb_p
--#undef inw_p
--#undef outb_p
--#undef outw
--#undef readb
--#undef writeb
--#undef writew
--#define inb_p(port)	0
--#define inw_p(port)	0
--#define outb_p(port, val)	do { } while (0)
--#define outw(port, val)		do { } while (0)
--#define readb		z_readb
--#define writeb		z_writeb
--#define writew		z_writew
--#endif
- #include <asm/byteorder.h>
-=20
-=20
---=20
-1.7.0.4
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
