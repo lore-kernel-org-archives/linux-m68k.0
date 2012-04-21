@@ -1,89 +1,51 @@
-From: Dave Airlie <airlied@gmail.com>
-Subject: Re: [PATCH V2 1/4] vgaarb: Add support for setting the default video device
-Date: Fri, 20 Apr 2012 11:51:00 +0100
-Message-ID: <CAPM=9txHkpmTavs+PjW4jHzufQ_R7yYDU3DATVAhbb5MqcJG0Q@mail.gmail.com>
-References: <1334607965-9582-1-git-send-email-mjg@redhat.com>
-	<CAMuHMdVYSajTYmfXjtVRXhz0u=xW0LbQ5BxjR=n7PP77o0dXhw@mail.gmail.com>
-	<CAMuHMdUsMy1i+DSYt+tjGL-JX+DBY=v1JyMEPSyf8RwYCEkvxg@mail.gmail.com>
-	<CAPM=9tzma3o0aeikrqxadGae7MF_QUeQE0_k2ZkgS2tCOcjn9g@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: Atari ROM port ISA
+Date: Sun, 22 Apr 2012 03:44:10 +1200
+Message-ID: <4F92D5CA.1000205@gmail.com>
+References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg> <4F8BCF49.4060109@gmail.com> <20120417050500.GA14387@cynthia.pants.nu> <loom.20120419T165359-796@post.gmane.org> <CAOmrzkKRE2SsJM532itFRd5fG2Bx-wxfno=ftb0SjXC1vWkbgQ@mail.gmail.com> <Pine.BSM.4.64L.1204192041320.27380@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yx0-f174.google.com ([209.85.213.174]:49543 "EHLO
-	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753810Ab2DTKvC convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 20 Apr 2012 06:51:02 -0400
-In-Reply-To: <CAPM=9tzma3o0aeikrqxadGae7MF_QUeQE0_k2ZkgS2tCOcjn9g@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:39446 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751938Ab2DUHtJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 21 Apr 2012 03:49:09 -0400
+Received: by pbcun15 with SMTP id un15so1897619pbc.19
+        for <linux-m68k@vger.kernel.org>; Sat, 21 Apr 2012 00:49:09 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1204192041320.27380@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Matthew Garrett <mjg@redhat.com>, linux-kernel@vger.kernel.org, benh@kernel.crashing.org, airlied@redhat.com, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, linux-m68k@vger.kernel.org
 
-On Fri, Apr 20, 2012 at 11:49 AM, Dave Airlie <airlied@gmail.com> wrote=
-:
-> On Wed, Apr 18, 2012 at 10:44 AM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->> On Wed, Apr 18, 2012 at 11:37, Geert Uytterhoeven <geert@linux-m68k.=
-org> wrote:
->>> On Mon, Apr 16, 2012 at 22:26, Matthew Garrett <mjg@redhat.com> wro=
-te:
->>>> --- a/include/linux/vgaarb.h
->>>> +++ b/include/linux/vgaarb.h
->>>> @@ -31,6 +31,7 @@
->>>> =A0#ifndef LINUX_VGA_H
->>>> =A0#define LINUX_VGA_H
->>>>
->>>> +#include <video/vga.h>
->>>
->>> Is this include really needed? x86_64/allmodconfig builds fine with=
-out it.
->>>
->>> It causes m68k/allmodconfig to fail with:
->>>
->>> In file included from include/linux/vgaarb.h:35,
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/gpu/drm/drm_irq.c:43:
->>> include/video/vga.h: In function =91vga_mm_r=92:
->>> include/video/vga.h:242: error: implicit declaration of function =91=
-z_readb=92
->>> include/video/vga.h: In function =91vga_mm_w=92:
->>> include/video/vga.h:247: error: implicit declaration of function =91=
-z_writeb=92
->>> include/video/vga.h: In function =91vga_mm_w_fast=92:
->>> include/video/vga.h:253: error: implicit declaration of function =91=
-z_writew=92
->>> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
->>>
->>> http://kisskb.ellerman.id.au/kisskb/buildresult/6127136/
->>>
->>> Currently <video/vga.h> has a crude hack to make cirrusfb work on A=
-miga,
->>> but that's the only VGA support m68k has.
->>> There's also no <asm/vga.h>, so m68k/allmodconfig with CONFIG_AMIGA
->>> disabled now fails with:
->>>
->>> In file included from include/linux/vgaarb.h:34,
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from drivers/gpu/drm/drm_irq.c:42:
->>> include/video/vga.h:23:21: error: asm/vga.h: No such file or direct=
-ory
->>> make[1]: *** [drivers/gpu/drm/drm_irq.o] Error 1
->>>
->>> Removing the #include <video/vga.h> fixes both cases.
->>
->> Anyway, I'll move the hack for cirrusfb on Amiga to <asm/vga.h> on m=
-68k.
->>
->> You still may want to remove the include of <video/vga.h> if it's no=
-t needed.
->
-> I don't think its necessary, I'm dropping it here. should be gone in
-> -next soon after.
->
+Hi Thorsten,
+>> Thanks for explaining this to me - to be honest I've never cared too
+>> much about ISA and friends.
+> No problem. (I practically grew up with them, so while the knowledge
+> isn=E2=80=99t fresh, some is there.)
+I grew up without computers - the first I used was a TR440 mainframe :-=
+)
+>> I'll check the layout - my guess would be that there's no memory
+>> read/write selects wired up on the adapter. The RTL8019 doesn't need
+>> them, the ISP1160  on the NetUSBee doesn't need them either.
+> I=E2=80=99d guess the same. You=E2=80=99d need them for things like a=
+n ISA graphics
+> card, but not (most) I/O devices.
+Only /IOW and /IOR are wired up. Only A0 through A4 are wired up (from=20
+A9-A13).
+>> If someone ever comes up with a way to hook up a fully featured ISA
+>> slot to the ROM port (mapping ports 0x00 to 0x7f to IO and above to
+>> mem access should be possible) we might revisit the code. For now,
+>> anything except for 8 bit IO can be turned into dummy functions or
+>> compile warnings.
+> Might be nice, if possible. But for now, that would indeed be
+> the way to go (and clean up code).
+I've had a look at the NetUSBee docs and see that the USB part of it=20
+does require 8 bit writes but little endian 16 bit reads. So we will=20
+need to retain the 16 bit reads for potential USB support there.
 
-Of course then I read the rest of the patches, and yes patch 4/4 would =
-need it
-so we pick up the __ARCH_HAS define, unless we can think of a better
-place to put that.
+Cheers,
 
-Dave.
-> Dave.
+   Michael
