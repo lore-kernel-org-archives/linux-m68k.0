@@ -1,7 +1,7 @@
 From: Ezequiel Garcia <elezegarcia@gmail.com>
 Subject: [RFC/PATCH] m68k: fix compiler warning by properly inlining flat_set_persistent()
-Date: Mon, 23 Apr 2012 10:50:10 -0300
-Message-ID: <1335189010-8875-1-git-send-email-elezegarcia@gmail.com>
+Date: Mon, 23 Apr 2012 11:11:58 -0300
+Message-ID: <1335190318-9155-1-git-send-email-elezegarcia@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
