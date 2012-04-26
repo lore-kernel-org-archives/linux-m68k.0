@@ -1,46 +1,51 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH 01/22] m68knommu: introduce macros to simplify ColdFire
-	GPIO table initialization
-Date: Thu, 26 Apr 2012 09:16:10 +0200
-Message-ID: <20120426071610.GA31640@frolo.macqel>
-References: <1335399962-10308-1-git-send-email-gerg@snapgear.com> <1335399962-10308-2-git-send-email-gerg@snapgear.com>
+From: Steven King <sfking@fdwdc.com>
+Subject: Re: [PATCH 00/22] m68knommu: simplify ColdFire GPIO
+	init code
+Date: Thu, 26 Apr 2012 00:28:47 -0700
+Message-ID: <201204260028.47328.sfking@fdwdc.com>
+References: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173]:27669 "EHLO
-	mailrelay007.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751937Ab2DZHQO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 26 Apr 2012 03:16:14 -0400
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
 Content-Disposition: inline
-In-Reply-To: <1335399962-10308-2-git-send-email-gerg@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
 To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, sfking@fdwdc.com, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+List-Id: linux-m68k@vger.kernel.org
+
+On Wednesday 25 April 2012 5:25:40 pm gerg@snapgear.com wrote:
+> The GPIO init code for the ColdFire cores is a set of very large tables,
+> one for each ColdFire SoC type. Each SoC type has very different GPIO pin
+> arrangements, so one for each is unavoidable. But there is fundamentaly
+> two types of setup/access that we are trying to support.
+>
+> With some pre-processor macro magic we can reduce the tables significantly,
+> making them easier to read, easier to get correct, and easier to maintain.
+>
+> The following patches implement a set of simplifying changes. What do
+> others think?  Overall we remove close to 2000 lines of code, and the end
+> tables are much easier to read and get correct.
+>
 
 Hi Greg,
 
-On Thu, Apr 26, 2012 at 10:25:41AM +1000, gerg@snapgear.com wrote:
-> From: Greg Ungerer <gerg@uclinux.org>
-> 
-> We have very large tables in the ColdFire CPU GPIO setup code that essentially
-> boil down to 2 distinct types of GPIO pin initiaization. Using 2 macros we can
-> reduce these large tables to at most a dozen lines of setup code, and in quite
-> a few cases a single table entry.
-> 
-> Introduce these 2 macros into the existing mcfgpio.h header.
-...
-> +/*
-> + *	Define macros to ease the pain of setting up the gpio tables.
-> + */
-> +#define	MCFGPS(mlabel, mbase, mngpio, mpddr, mpodr, mppdr)		    \
-...
-> +#define	MCFGPF(mlabel, mbase, mngpio)					    \
-...
-
-Maybe a small comment to explain when to use MCFGPS and when to use MCFGPF ?
-
-Best regards
-
-Philippe
+This looks fine to me.
+You can add my Acked-by: Steven King <sfking@fdwdc.com>
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
