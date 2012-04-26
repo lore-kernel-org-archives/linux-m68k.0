@@ -1,59 +1,88 @@
-From: Luis Alves <ljalvs@gmail.com>
-Subject: Re: __udivsi3: coldfire vs non-coldfire implementation
-Date: Tue, 24 Apr 2012 17:29:59 +0100
-Message-ID: <CAGj5WxBYTttzLMktsY8MyuJTv3smjLKBFJ+OSVX+6xwVFpFhWw@mail.gmail.com>
-References: <CAGj5WxCrOC-SKUjrv=3RTTjx7F5n4+vLhH_7HRS1crVSnf6RuA@mail.gmail.com>
-	<m2wr55jg0s.fsf@igel.home>
+From: <gerg@snapgear.com>
+Subject: [PATCH 00/22] m68knommu: simplify ColdFire GPIO init code
+Date: Thu, 26 Apr 2012 10:25:40 +1000
+Message-ID: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lpp01m010-f46.google.com ([209.85.215.46]:41561 "EHLO
-	mail-lpp01m010-f46.google.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755762Ab2DXQaA convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 24 Apr 2012 12:30:00 -0400
-Received: by lahj13 with SMTP id j13so774154lah.19
-        for <linux-m68k@vger.kernel.org>; Tue, 24 Apr 2012 09:29:59 -0700 (PDT)
-In-Reply-To: <m2wr55jg0s.fsf@igel.home>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:28214 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932593Ab2DZA0w (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 Apr 2012 20:26:52 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, sfking@fdwdc.com
 
-I wasn't aware of the differences in the divide and multiply
-instructions (and that some coldfire's don't even have the division
-opcodes).
+The GPIO init code for the ColdFire cores is a set of very large tables,
+one for each ColdFire SoC type. Each SoC type has very different GPIO pin
+arrangements, so one for each is unavoidable. But there is fundamentaly
+two types of setup/access that we are trying to support.
 
-Thanks for the cycle count, it makes sense.
+With some pre-processor macro magic we can reduce the tables significantly,
+making them easier to read, easier to get correct, and easier to maintain.
 
-Luis Alves
+The following patches implement a set of simplifying changes. What do
+others think?  Overall we remove close to 2000 lines of code, and the end
+tables are much easier to read and get correct.
+
+Looking for feedback...
+
+Regards
+Greg
 
 
-On Tue, Apr 24, 2012 at 4:39 PM, Andreas Schwab <schwab@linux-m68k.org>=
- wrote:
-> Luis Alves <ljalvs@gmail.com> writes:
->
->> What's the reason for having two different algorithms for this funct=
-ion?
->> The coldfire version seems faster since it doesn't perform any div/m=
-ul
->> opcodes. Or am I wrong?
->
-> The coldfire version would require a minimum of 1800 cycles on a 6800=
-0.
-> The 68000 version is dominated by either two divu (max 140 cycles eac=
-h)
-> or an lsr loop of max 900 cycles plus divu and two mulu (max 70 cycle=
-s
-> each) plus some 100 cycles for the rest. =A0That should make it bette=
-r for
-> all inputs.
->
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756 =A001D3 44D5 214B 82=
-76 4ED5
-> "And now for something completely different."
+ a/arch/m68k/platform/5206/gpio.c     |   27 -
+ a/arch/m68k/platform/520x/gpio.c     |   34 -
+ a/arch/m68k/platform/523x/gpio.c     |   40 --
+ a/arch/m68k/platform/5249/gpio.c     |   28 -
+ a/arch/m68k/platform/5272/gpio.c     |   29 -
+ a/arch/m68k/platform/527x/gpio.c     |   61 ---
+ a/arch/m68k/platform/528x/gpio.c     |   49 --
+ a/arch/m68k/platform/5307/gpio.c     |   27 -
+ a/arch/m68k/platform/532x/gpio.c     |   43 --
+ a/arch/m68k/platform/5407/gpio.c     |   27 -
+ arch/m68k/include/asm/mcfgpio.h      |    3 
+ arch/m68k/platform/5206/gpio.c       |   12 
+ arch/m68k/platform/520x/gpio.c       |   12 
+ arch/m68k/platform/523x/gpio.c       |   12 
+ arch/m68k/platform/5249/gpio.c       |   12 
+ arch/m68k/platform/5272/gpio.c       |   12 
+ arch/m68k/platform/527x/gpio.c       |   12 
+ arch/m68k/platform/528x/gpio.c       |   12 
+ arch/m68k/platform/5307/gpio.c       |   12 
+ arch/m68k/platform/532x/gpio.c       |   12 
+ arch/m68k/platform/5407/gpio.c       |   12 
+ b/arch/m68k/include/asm/m528xsim.h   |  179 ++++------
+ b/arch/m68k/include/asm/mcfgpio.h    |   41 ++
+ b/arch/m68k/platform/5206/Makefile   |    2 
+ b/arch/m68k/platform/5206/config.c   |    9 
+ b/arch/m68k/platform/5206/gpio.c     |   16 
+ b/arch/m68k/platform/520x/Makefile   |    2 
+ b/arch/m68k/platform/520x/config.c   |   16 
+ b/arch/m68k/platform/520x/gpio.c     |  149 --------
+ b/arch/m68k/platform/523x/Makefile   |    2 
+ b/arch/m68k/platform/523x/config.c   |   22 +
+ b/arch/m68k/platform/523x/gpio.c     |  264 ---------------
+ b/arch/m68k/platform/5249/Makefile   |    2 
+ b/arch/m68k/platform/5249/config.c   |   10 
+ b/arch/m68k/platform/5249/gpio.c     |   33 -
+ b/arch/m68k/platform/5272/Makefile   |    2 
+ b/arch/m68k/platform/5272/config.c   |   11 
+ b/arch/m68k/platform/5272/gpio.c     |   50 --
+ b/arch/m68k/platform/527x/Makefile   |    2 
+ b/arch/m68k/platform/527x/config.c   |   43 ++
+ b/arch/m68k/platform/527x/gpio.c     |  604 +----------------------------------
+ b/arch/m68k/platform/528x/Makefile   |    2 
+ b/arch/m68k/platform/528x/config.c   |   31 +
+ b/arch/m68k/platform/528x/gpio.c     |  427 +-----------------------
+ b/arch/m68k/platform/5307/Makefile   |    2 
+ b/arch/m68k/platform/5307/config.c   |    9 
+ b/arch/m68k/platform/5307/gpio.c     |   16 
+ b/arch/m68k/platform/532x/Makefile   |    2 
+ b/arch/m68k/platform/532x/config.c   |   25 +
+ b/arch/m68k/platform/532x/gpio.c     |  320 ------------------
+ b/arch/m68k/platform/5407/Makefile   |    2 
+ b/arch/m68k/platform/5407/config.c   |    9 
+ b/arch/m68k/platform/5407/gpio.c     |   16 
+ b/arch/m68k/platform/coldfire/gpio.c |    4 
+ 54 files changed, 445 insertions(+), 2367 deletions(-)
