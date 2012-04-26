@@ -1,114 +1,255 @@
-From: burcu sariozlu <sariozlu@hotmail.com>
-Subject: Re: [PATCH 21/22] m68knommu: simplify the ColdFire
- 532x GPIO struct setup
-Date: Thu, 26 Apr 2012 20:45:39 +0000
-Message-ID: <BAY150-W39DC90982BA0C2E08C8F31CA240@phx.gbl>
-References: <1335399962-10308-1-git-send-email-gerg@snapgear.com>,
- <1335399962-10308-22-git-send-email-gerg@snapgear.com>,
- <CAECAou69e8KJ53SqEO1e_J4dmkVRhKV=Z5fUEz6tzyxKrzXCDA@mail.gmail.com>,
- <20120426161417.GU10301@caffeine.csclub.uwaterloo.ca>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5361588361809643925=="
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <20120426161417.GU10301@caffeine.csclub.uwaterloo.ca>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: uclinux-dev@uclinux.org
-Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
+From: Luis Alves <ljalvs@gmail.com>
+Subject: [PATCH 1/1] Changes for 68000 code integration.
+Date: Fri, 27 Apr 2012 00:08:37 +0100
+Message-ID: <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
+References: <MC68000 integration>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-wg0-f42.google.com ([74.125.82.42]:62727 "EHLO
+	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750864Ab2DZXIt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 26 Apr 2012 19:08:49 -0400
+Received: by wgbds11 with SMTP id ds11so39365wgb.1
+        for <linux-m68k@vger.kernel.org>; Thu, 26 Apr 2012 16:08:47 -0700 (PDT)
+In-Reply-To: <MC68000 integration>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: gerg@uclinux.org, Luis Alves <ljalvs@gmail.com>
 
---===============5361588361809643925==
-Content-Type: multipart/alternative;
-	boundary="_6202aa55-9769-4b25-b1e7-d7feeec709bb_"
+Hi all,
 
---_6202aa55-9769-4b25-b1e7-d7feeec709bb_
-Content-Type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: quoted-printable
+This is the first of a pack of patches to support the original 68000 cpu.
+This adds:
+ -MC68000 cpu as a choice in the config menu.
+ -Alcetronics M68K board (uses this cpu).
+
+What I have changed:
+ -CONFIG_M68000 was being used by 68328 CPUs.
+  Renamed to CONFIG_M68XXX. Now the 68000 and all CPU32 CPUs use this flag for common configurations.
+ -Modified all 68[VZ|EZ]328 to select CONFIG_MCPU32
+ -Modified CONFIG_MCPU32 to select CONFIG_M68XXX.
+ -Modified CONFIG_M68360 to select CONFIG_M68XXX (I think it was missing some settings).
+ -Modified some files to use CONFIG_M68XXX instead of CONFIG_M68000/CONFIG_MCPU32
 
 
-can somebody stop this please?
+Regards,
+Luis Alves
 
-> Date: Thu, 26 Apr 2012 12:14:17 -0400
-> To: uclinux-dev@uclinux.org
-> From: lsorense@csclub.uwaterloo.ca
-> CC: linux-m68k@vger.kernel.org; gerg@uclinux.org
-> Subject: Re: [uClinux-dev] [PATCH 21/22] m68knommu: simplify the ColdFi=
-re 532x GPIO struct setup
->=20
-> On Thu, Apr 26, 2012 at 02:36:20AM +0200, mohamed nabil wrote:
-> > that's a Fucking spam man !!
->=20
-> It was an overview and 22 patch files, sent in standard git email style=
-.
-> Very organized, all in one thread, easy to read.  Nothing wrong with it=
-.
->=20
-> --=20
-> Len Sorensen
-> _______________________________________________
-> uClinux-dev mailing list
-> uClinux-dev@uclinux.org
-> http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-> This message was resent by uclinux-dev@uclinux.org
-> To unsubscribe see:
-> http://mailman.uclinux.org/mailman/options/uclinux-dev
- 		 	   		 =20
---_6202aa55-9769-4b25-b1e7-d7feeec709bb_
-Content-Type: text/html; charset="windows-1254"
-Content-Transfer-Encoding: quoted-printable
+---
+ arch/m68k/Kconfig.cpu          |   29 ++++++++++++++++++-----------
+ arch/m68k/Kconfig.machine      |    6 ++++++
+ arch/m68k/Makefile             |    9 ++++++---
+ arch/m68k/include/asm/bitops.h |    2 +-
+ arch/m68k/include/asm/delay.h  |    2 +-
+ arch/m68k/lib/memcpy.c         |    4 ++--
+ arch/m68k/lib/memset.c         |    2 +-
+ arch/m68k/lib/muldi3.c         |    2 +-
+ 8 files changed, 36 insertions(+), 20 deletions(-)
 
-<html>
-<head>
-<style><!--
-.hmmessage P
-{
-margin:0px;
-padding:0px
-}
-body.hmmessage
-{
-font-size: 10pt;
-font-family:Tahoma
-}
---></style></head>
-<body class=3D'hmmessage'><div dir=3D'ltr'>
-can somebody stop this please?<br><br><div><div id=3D"SkyDrivePlaceholder=
-"></div>&gt; Date: Thu, 26 Apr 2012 12:14:17 -0400<br>&gt; To: uclinux-de=
-v@uclinux.org<br>&gt; From: lsorense@csclub.uwaterloo.ca<br>&gt; CC: linu=
-x-m68k@vger.kernel.org; gerg@uclinux.org<br>&gt; Subject: Re: [uClinux-de=
-v] [PATCH 21/22] m68knommu: simplify the ColdFire 532x GPIO struct setup<=
-br>&gt; <br>&gt; On Thu, Apr 26, 2012 at 02:36:20AM +0200, mohamed nabil =
-wrote:<br>&gt; &gt; that's a Fucking spam man !!<br>&gt; <br>&gt; It was =
-an overview and 22 patch files, sent in standard git email style.<br>&gt;=
- Very organized, all in one thread, easy to read.  Nothing wrong with it.=
-<br>&gt; <br>&gt; -- <br>&gt; Len Sorensen<br>&gt; ______________________=
-_________________________<br>&gt; uClinux-dev mailing list<br>&gt; uClinu=
-x-dev@uclinux.org<br>&gt; http://mailman.uclinux.org/mailman/listinfo/ucl=
-inux-dev<br>&gt; This message was resent by uclinux-dev@uclinux.org<br>&g=
-t; To unsubscribe see:<br>&gt; http://mailman.uclinux.org/mailman/options=
-/uclinux-dev<br></div> 		 	   		  </div></body>
-</html>
---_6202aa55-9769-4b25-b1e7-d7feeec709bb_--
-
---===============5361588361809643925==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
---===============5361588361809643925==--
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 8a9c767..2abac0f 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -32,26 +32,33 @@ endchoice
+ 
+ if M68KCLASSIC
+ 
+-config M68000
++
++config M68XXX
+ 	bool
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_MULDIV64
+ 	select GENERIC_CSUM
+ 	help
+-	  The Freescale (was Motorola) 68000 CPU is the first generation of
+-	  the well known M68K family of processors. The CPU core as well as
+-	  being available as a stand alone CPU was also used in many
+-	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
+-	  a paging MMU.
++	  Common features for the first generation of M68K CPUs. It
++	  includes the original MC68000 and CPU32 core.
++
+ 
+ config MCPU32
+ 	bool
+-	select CPU_HAS_NO_BITFIELDS
++	select M68XXX
+ 	help
+ 	  The Freescale (was then Motorola) CPU32 is a CPU core that is
+ 	  based on the 68020 processor. For the most part it is used in
+ 	  System-On-Chip parts, and does not contain a paging MMU.
+ 
++config M68000
++	bool "MC68000"
++	select M68XXX
++	help
++	  The Freescale (was Motorola) 68000 CPU is the first generation of
++	  the well known M68K family of processors. It does not contain
++	  a paging MMU.
++
+ config M68020
+ 	bool "68020 support"
+ 	depends on MMU
+@@ -96,28 +103,28 @@ config M68060
+ config M68328
+ 	bool "MC68328"
+ 	depends on !MMU
+-	select M68000
++	select MCPU32
+ 	help
+ 	  Motorola 68328 processor support.
+ 
+ config M68EZ328
+ 	bool "MC68EZ328"
+ 	depends on !MMU
+-	select M68000
++	select MCPU32
+ 	help
+ 	  Motorola 68EX328 processor support.
+ 
+ config M68VZ328
+ 	bool "MC68VZ328"
+ 	depends on !MMU
+-	select M68000
++	select MCPU32
+ 	help
+ 	  Motorola 68VZ328 processor support.
+ 
+ config M68360
+ 	bool "MC68360"
+ 	depends on !MMU
+-	select MCPU32
++	select M68XXX
+ 	help
+ 	  Motorola 68360 processor support.
+ 
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 7cdf6b0..25ce143 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -134,6 +134,12 @@ config SUN3
+ 
+ endif # M68KCLASSIC
+ 
++config ALCE68K
++	bool "Alcetronics M68K board support"
++	depends on M68000
++	help
++	  Support for the Alcetronics M68K board.
++
+ config PILOT
+ 	bool
+ 
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index cf318f2..d1d7343 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -32,8 +32,9 @@ cpuflags-$(CONFIG_M68040)	:= -m68040
+ endif
+ cpuflags-$(CONFIG_M68030)	:=
+ cpuflags-$(CONFIG_M68020)	:=
+-cpuflags-$(CONFIG_M68360)	:= -m68332
+ cpuflags-$(CONFIG_M68000)	:= -m68000
++cpuflags-$(CONFIG_MCPU32)	:= -m68000
++cpuflags-$(CONFIG_M68360)	:= -m68332
+ cpuflags-$(CONFIG_M54xx)	:= $(call cc-option,-mcpu=5475,-m5200)
+ cpuflags-$(CONFIG_M5407)	:= $(call cc-option,-mcpu=5407,-m5200)
+ cpuflags-$(CONFIG_M532x)	:= $(call cc-option,-mcpu=532x,-m5307)
+@@ -88,8 +89,9 @@ endif
+ #
+ head-y				:= arch/m68k/kernel/head.o
+ head-$(CONFIG_SUN3)		:= arch/m68k/kernel/sun3-head.o
++head-$(CONFIG_M68000)		:= arch/m68k/platform/68000/head.o
+ head-$(CONFIG_M68360)		:= arch/m68k/platform/68360/head.o
+-head-$(CONFIG_M68000)		:= arch/m68k/platform/68328/head.o
++head-$(CONFIG_MCPU32)		:= arch/m68k/platform/68328/head.o
+ head-$(CONFIG_COLDFIRE)		:= arch/m68k/platform/coldfire/head.o
+ 
+ core-y				+= arch/m68k/kernel/	arch/m68k/mm/
+@@ -111,7 +113,8 @@ core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
+ core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
+ core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
+ core-$(CONFIG_M68360)		+= arch/m68k/platform/68360/
+-core-$(CONFIG_M68000)		+= arch/m68k/platform/68328/
++core-$(CONFIG_M68000)		+= arch/m68k/platform/68000/
++core-$(CONFIG_MCPU32)		+= arch/m68k/platform/68328/
+ core-$(CONFIG_M68EZ328)		+= arch/m68k/platform/68EZ328/
+ core-$(CONFIG_M68VZ328)		+= arch/m68k/platform/68VZ328/
+ core-$(CONFIG_COLDFIRE)		+= arch/m68k/platform/coldfire/
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index c6baa91..93b944d 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -457,7 +457,7 @@ static inline unsigned long ffz(unsigned long word)
+  *	generic functions for those.
+  */
+ #if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
+-	!defined(CONFIG_M68000) && !defined(CONFIG_MCPU32)
++	!defined(CONFIG_M68XXX)
+ static inline int __ffs(int x)
+ {
+ 	__asm__ __volatile__ ("bitrev %0; ff1 %0"
+diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+index 9c09bec..8e58c2a 100644
+--- a/arch/m68k/include/asm/delay.h
++++ b/arch/m68k/include/asm/delay.h
+@@ -43,7 +43,7 @@ static inline void __delay(unsigned long loops)
+ extern void __bad_udelay(void);
+ 
+ 
+-#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+ /*
+  * The simpler m68k and ColdFire processors do not have a 32*32->64
+  * multiply instruction. So we need to handle them a little differently.
+diff --git a/arch/m68k/lib/memcpy.c b/arch/m68k/lib/memcpy.c
+index 10ca051..c0a1ae8 100644
+--- a/arch/m68k/lib/memcpy.c
++++ b/arch/m68k/lib/memcpy.c
+@@ -22,7 +22,7 @@ void *memcpy(void *to, const void *from, size_t n)
+ 		from = cfrom;
+ 		n--;
+ 	}
+-#if defined(CONFIG_M68000)
++#if defined(CONFIG_M68XXX)
+ 	if ((long)from & 1) {
+ 		char *cto = to;
+ 		const char *cfrom = from;
+@@ -43,7 +43,7 @@ void *memcpy(void *to, const void *from, size_t n)
+ 	if (temp) {
+ 		long *lto = to;
+ 		const long *lfrom = from;
+-#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+ 		for (; temp; temp--)
+ 			*lto++ = *lfrom++;
+ #else
+diff --git a/arch/m68k/lib/memset.c b/arch/m68k/lib/memset.c
+index 8a7639f..6196f39 100644
+--- a/arch/m68k/lib/memset.c
++++ b/arch/m68k/lib/memset.c
+@@ -32,7 +32,7 @@ void *memset(void *s, int c, size_t count)
+ 	temp = count >> 2;
+ 	if (temp) {
+ 		long *ls = s;
+-#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+ 		for (; temp; temp--)
+ 			*ls++ = c;
+ #else
+diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
+index 79e928a..1cd9ba4 100644
+--- a/arch/m68k/lib/muldi3.c
++++ b/arch/m68k/lib/muldi3.c
+@@ -19,7 +19,7 @@ along with GNU CC; see the file COPYING.  If not, write to
+ the Free Software Foundation, 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.  */
+ 
+-#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+ 
+ #define SI_TYPE_SIZE 32
+ #define __BITS4 (SI_TYPE_SIZE / 4)
+-- 
+1.7.5.4
