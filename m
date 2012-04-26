@@ -1,200 +1,129 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 21/22] m68knommu: simplify the ColdFire
+From: Alex LI <alexlihk@hotmail.com>
+Subject: Re: [uClinux-dev] [PATCH 21/22] m68knommu: simplify the ColdFire
  532x GPIO struct setup
-Date: Thu, 26 Apr 2012 10:45:51 +1000
-Message-ID: <4F989ABF.3020500@snapgear.com>
-References: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
- <1335399962-10308-22-git-send-email-gerg@snapgear.com>
- <CAECAou69e8KJ53SqEO1e_J4dmkVRhKV=Z5fUEz6tzyxKrzXCDA@mail.gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Date: Thu, 26 Apr 2012 08:53:24 +0800
+Message-ID: <BLU0-SMTP466FE400E21A67A2EC82F91D9240@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <CAECAou69e8KJ53SqEO1e_J4dmkVRhKV=Z5fUEz6tzyxKrzXCDA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from blu0-omc4-s26.blu0.hotmail.com ([65.55.111.165]:6217 "EHLO
+	blu0-omc4-s26.blu0.hotmail.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751608Ab2DZAxl (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 25 Apr 2012 20:53:41 -0400
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: uClinux development list <uclinux-dev@uclinux.org>
 Cc: mohamed nabil <m.nabil.hafez@gmail.com>, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
-List-Id: linux-m68k@vger.kernel.org
 
-On 04/26/2012 10:36 AM, mohamed nabil wrote:
-> that's a Fucking spam man !!
-
-Huh?
-
-Thats how open source development works. If you don't like it don't
-subscribe to a developers list.
-
-Regards
-Greg
-
-
-
-> On Thu, Apr 26, 2012 at 2:26 AM, <gerg@snapgear.com
-> <mailto:gerg@snapgear.com>> wrote:
->
->     From: Greg Ungerer <gerg@uclinux.org <mailto:gerg@uclinux.org>>
->
->     The GPIO data struct setup is now the only remaining code in the
->     platform
->     gpio.c file. So move it to the platform config.c code and remove the
->     gpio.c
->     file.
->
->     Signed-off-by: Greg Ungerer <gerg@uclinux.org <mailto:gerg@uclinux.org>>
->     ---
->       arch/m68k/platform/532x/Makefile |    2 +-
->       arch/m68k/platform/532x/config.c |   25 ++++++++++++++++++++++
->       arch/m68k/platform/532x/gpio.c   |   43
->     --------------------------------------
->       3 files changed, 26 insertions(+), 44 deletions(-)
->       delete mode 100644 arch/m68k/platform/532x/gpio.c
->
->     diff --git a/arch/m68k/platform/532x/Makefile
->     b/arch/m68k/platform/532x/Makefile
->     index ce01669..c0d8cf8 100644
->     --- a/arch/m68k/platform/532x/Makefile
->     +++ b/arch/m68k/platform/532x/Makefile
->     @@ -15,4 +15,4 @@
->       asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
->
->       #obj-y := config.o usb-mcf532x.o spi-mcf532x.o
->     -obj-y := config.o gpio.o
->     +obj-y := config.o
->     diff --git a/arch/m68k/platform/532x/config.c
->     b/arch/m68k/platform/532x/config.c
->     index 2bec347..a4dd3d8 100644
->     --- a/arch/m68k/platform/532x/config.c
->     +++ b/arch/m68k/platform/532x/config.c
->     @@ -26,10 +26,35 @@
->       #include <asm/mcfsim.h>
->       #include <asm/mcfuart.h>
->       #include <asm/mcfdma.h>
->     +#include <asm/mcfgpio.h>
->       #include <asm/mcfwdebug.h>
->
->       /***************************************************************************/
->
->     +struct mcf_gpio_chip mcf_gpio_chips[] = {
->     +       MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,
->     MCFEPORT_EPPDR),
->     +       MCFGPF(FECH, 8, 8),
->     +       MCFGPF(FECL, 16, 8),
->     +       MCFGPF(SSI, 24, 5),
->     +       MCFGPF(BUSCTL, 32, 4),
->     +       MCFGPF(BE, 40, 4),
->     +       MCFGPF(CS, 49, 5),
->     +       MCFGPF(PWM, 58, 4),
->     +       MCFGPF(FECI2C, 64, 4),
->     +       MCFGPF(UART, 72, 8),
->     +       MCFGPF(QSPI, 80, 6),
->     +       MCFGPF(TIMER, 88, 4),
->     +       MCFGPF(LCDDATAH, 96, 2),
->     +       MCFGPF(LCDDATAM, 104, 8),
->     +       MCFGPF(LCDDATAL, 112, 8),
->     +       MCFGPF(LCDCTLH, 120, 1),
->     +       MCFGPF(LCDCTLL, 128, 8),
->     +};
->     +
->     +unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
->     +
->     +/***************************************************************************/
->     +
->       #ifdef CONFIG_SPI_COLDFIRE_QSPI
->
->       static void __init m532x_qspi_init(void)
->     diff --git a/arch/m68k/platform/532x/gpio.c
->     b/arch/m68k/platform/532x/gpio.c
->     deleted file mode 100644
->     index 3e1b71d..0000000
->     --- a/arch/m68k/platform/532x/gpio.c
->     +++ /dev/null
->     @@ -1,43 +0,0 @@
->     -/*
->     - * Coldfire generic GPIO support
->     - *
->     - * (C) Copyright 2009, Steven King <sfking@fdwdc.com
->     <mailto:sfking@fdwdc.com>>
->     - *
->     - * This program is free software; you can redistribute it and/or modify
->     - * it under the terms of the GNU General Public License as published by
->     - * the Free Software Foundation; version 2 of the License.
->     - *
->     - * This program is distributed in the hope that it will be useful,
->     - * but WITHOUT ANY WARRANTY; without even the implied warranty of
->     - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->     - * GNU General Public License for more details.
->     -*/
->     -
->     -#include <linux/kernel.h>
->     -#include <linux/init.h>
->     -
->     -#include <asm/coldfire.h>
->     -#include <asm/mcfsim.h>
->     -#include <asm/mcfgpio.h>
->     -
->     -struct mcf_gpio_chip mcf_gpio_chips[] = {
->     -       MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,
->     MCFEPORT_EPPDR),
->     -       MCFGPF(FECH, 8, 8),
->     -       MCFGPF(FECL, 16, 8),
->     -       MCFGPF(SSI, 24, 5),
->     -       MCFGPF(BUSCTL, 32, 4),
->     -       MCFGPF(BE, 40, 4),
->     -       MCFGPF(CS, 49, 5),
->     -       MCFGPF(PWM, 58, 4),
->     -       MCFGPF(FECI2C, 64, 4),
->     -       MCFGPF(UART, 72, 8),
->     -       MCFGPF(QSPI, 80, 6),
->     -       MCFGPF(TIMER, 88, 4),
->     -       MCFGPF(LCDDATAH, 96, 2),
->     -       MCFGPF(LCDDATAM, 104, 8),
->     -       MCFGPF(LCDDATAL, 112, 8),
->     -       MCFGPF(LCDCTLH, 120, 1),
->     -       MCFGPF(LCDCTLL, 128, 8),
->     -};
->     -
->     -unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
->     --
->     1.7.0.4
->
->     _______________________________________________
->     uClinux-dev mailing list
->     uClinux-dev@uclinux.org <mailto:uClinux-dev@uclinux.org>
->     http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
->     This message was resent by uclinux-dev@uclinux.org
->     <mailto:uclinux-dev@uclinux.org>
->     To unsubscribe see:
->     http://mailman.uclinux.org/mailman/options/uclinux-dev
->
->
->
->
-> --
-> ______
-> Mohamed Nabil Hafez
-> Embedded Software Engineer
->
-
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+R3JlZywKCllvdSBzZW50IDUwIG1haWxzIGluIDEgbWluLiAKClNlbnQgZnJvbSBteSBTb255IEVy
+aWNzc29uIFhwZXJpYSBhcmMgUwoKR3JlZyBVbmdlcmVyIDxnZXJnQHNuYXBnZWFyLmNvbT4g5a+r
+OgoKPk9uIDA0LzI2LzIwMTIgMTA6MzYgQU0sIG1vaGFtZWQgbmFiaWwgd3JvdGU6Cj4+IHRoYXQn
+cyBhIEZ1Y2tpbmcgc3BhbSBtYW4gISEKPgo+SHVoPwo+Cj5UaGF0cyBob3cgb3BlbiBzb3VyY2Ug
+ZGV2ZWxvcG1lbnQgd29ya3MuIElmIHlvdSBkb24ndCBsaWtlIGl0IGRvbid0Cj5zdWJzY3JpYmUg
+dG8gYSBkZXZlbG9wZXJzIGxpc3QuCj4KPlJlZ2FyZHMKPkdyZWcKPgo+Cj4KPj4gT24gVGh1LCBB
+cHIgMjYsIDIwMTIgYXQgMjoyNiBBTSwgPGdlcmdAc25hcGdlYXIuY29tCj4+IDxtYWlsdG86Z2Vy
+Z0BzbmFwZ2Vhci5jb20+PiB3cm90ZToKPj4KPj4gICAgIEZyb206IEdyZWcgVW5nZXJlciA8Z2Vy
+Z0B1Y2xpbnV4Lm9yZyA8bWFpbHRvOmdlcmdAdWNsaW51eC5vcmc+Pgo+Pgo+PiAgICAgVGhlIEdQ
+SU8gZGF0YSBzdHJ1Y3Qgc2V0dXAgaXMgbm93IHRoZSBvbmx5IHJlbWFpbmluZyBjb2RlIGluIHRo
+ZQo+PiAgICAgcGxhdGZvcm0KPj4gICAgIGdwaW8uYyBmaWxlLiBTbyBtb3ZlIGl0IHRvIHRoZSBw
+bGF0Zm9ybSBjb25maWcuYyBjb2RlIGFuZCByZW1vdmUgdGhlCj4+ICAgICBncGlvLmMKPj4gICAg
+IGZpbGUuCj4+Cj4+ICAgICBTaWduZWQtb2ZmLWJ5OiBHcmVnIFVuZ2VyZXIgPGdlcmdAdWNsaW51
+eC5vcmcgPG1haWx0bzpnZXJnQHVjbGludXgub3JnPj4KPj4gICAgIC0tLQo+PiAgICAgICBhcmNo
+L202OGsvcGxhdGZvcm0vNTMyeC9NYWtlZmlsZSB8ICAgIDIgKy0KPj4gICAgICAgYXJjaC9tNjhr
+L3BsYXRmb3JtLzUzMngvY29uZmlnLmMgfCAgIDI1ICsrKysrKysrKysrKysrKysrKysrKysKPj4g
+ICAgICAgYXJjaC9tNjhrL3BsYXRmb3JtLzUzMngvZ3Bpby5jICAgfCAgIDQzCj4+ICAgICAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiAgICAgICAzIGZpbGVzIGNoYW5n
+ZWQsIDI2IGluc2VydGlvbnMoKyksIDQ0IGRlbGV0aW9ucygtKQo+PiAgICAgICBkZWxldGUgbW9k
+ZSAxMDA2NDQgYXJjaC9tNjhrL3BsYXRmb3JtLzUzMngvZ3Bpby5jCj4+Cj4+ICAgICBkaWZmIC0t
+Z2l0IGEvYXJjaC9tNjhrL3BsYXRmb3JtLzUzMngvTWFrZWZpbGUKPj4gICAgIGIvYXJjaC9tNjhr
+L3BsYXRmb3JtLzUzMngvTWFrZWZpbGUKPj4gICAgIGluZGV4IGNlMDE2NjkuLmMwZDhjZjggMTAw
+NjQ0Cj4+ICAgICAtLS0gYS9hcmNoL202OGsvcGxhdGZvcm0vNTMyeC9NYWtlZmlsZQo+PiAgICAg
+KysrIGIvYXJjaC9tNjhrL3BsYXRmb3JtLzUzMngvTWFrZWZpbGUKPj4gICAgIEBAIC0xNSw0ICsx
+NSw0IEBACj4+ICAgICAgIGFzZmxhZ3MtJChDT05GSUdfRlVMTERFQlVHKSA6PSAtRERFQlVHR0VS
+X0NPTVBBVElCTEVfQ0FDSEU9MQo+Pgo+PiAgICAgICAjb2JqLXkgOj0gY29uZmlnLm8gdXNiLW1j
+ZjUzMngubyBzcGktbWNmNTMyeC5vCj4+ICAgICAtb2JqLXkgOj0gY29uZmlnLm8gZ3Bpby5vCj4+
+ICAgICArb2JqLXkgOj0gY29uZmlnLm8KPj4gICAgIGRpZmYgLS1naXQgYS9hcmNoL202OGsvcGxh
+dGZvcm0vNTMyeC9jb25maWcuYwo+PiAgICAgYi9hcmNoL202OGsvcGxhdGZvcm0vNTMyeC9jb25m
+aWcuYwo+PiAgICAgaW5kZXggMmJlYzM0Ny4uYTRkZDNkOCAxMDA2NDQKPj4gICAgIC0tLSBhL2Fy
+Y2gvbTY4ay9wbGF0Zm9ybS81MzJ4L2NvbmZpZy5jCj4+ICAgICArKysgYi9hcmNoL202OGsvcGxh
+dGZvcm0vNTMyeC9jb25maWcuYwo+PiAgICAgQEAgLTI2LDEwICsyNiwzNSBAQAo+PiAgICAgICAj
+aW5jbHVkZSA8YXNtL21jZnNpbS5oPgo+PiAgICAgICAjaW5jbHVkZSA8YXNtL21jZnVhcnQuaD4K
+Pj4gICAgICAgI2luY2x1ZGUgPGFzbS9tY2ZkbWEuaD4KPj4gICAgICsjaW5jbHVkZSA8YXNtL21j
+ZmdwaW8uaD4KPj4gICAgICAgI2luY2x1ZGUgPGFzbS9tY2Z3ZGVidWcuaD4KPj4KPj4gICAgICAg
+LyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKi8KPj4KPj4gICAgICtzdHJ1Y3QgbWNmX2dwaW9fY2hpcCBtY2Zf
+Z3Bpb19jaGlwc1tdID0gewo+PiAgICAgKyAgICAgICBNQ0ZHUFMoUElSUSwgMCwgOCwgTUNGRVBP
+UlRfRVBERFIsIE1DRkVQT1JUX0VQRFIsCj4+ICAgICBNQ0ZFUE9SVF9FUFBEUiksCj4+ICAgICAr
+ICAgICAgIE1DRkdQRihGRUNILCA4LCA4KSwKPj4gICAgICsgICAgICAgTUNGR1BGKEZFQ0wsIDE2
+LCA4KSwKPj4gICAgICsgICAgICAgTUNGR1BGKFNTSSwgMjQsIDUpLAo+PiAgICAgKyAgICAgICBN
+Q0ZHUEYoQlVTQ1RMLCAzMiwgNCksCj4+ICAgICArICAgICAgIE1DRkdQRihCRSwgNDAsIDQpLAo+
+PiAgICAgKyAgICAgICBNQ0ZHUEYoQ1MsIDQ5LCA1KSwKPj4gICAgICsgICAgICAgTUNGR1BGKFBX
+TSwgNTgsIDQpLAo+PiAgICAgKyAgICAgICBNQ0ZHUEYoRkVDSTJDLCA2NCwgNCksCj4+ICAgICAr
+ICAgICAgIE1DRkdQRihVQVJULCA3MiwgOCksCj4+ICAgICArICAgICAgIE1DRkdQRihRU1BJLCA4
+MCwgNiksCj4+ICAgICArICAgICAgIE1DRkdQRihUSU1FUiwgODgsIDQpLAo+PiAgICAgKyAgICAg
+ICBNQ0ZHUEYoTENEREFUQUgsIDk2LCAyKSwKPj4gICAgICsgICAgICAgTUNGR1BGKExDRERBVEFN
+LCAxMDQsIDgpLAo+PiAgICAgKyAgICAgICBNQ0ZHUEYoTENEREFUQUwsIDExMiwgOCksCj4+ICAg
+ICArICAgICAgIE1DRkdQRihMQ0RDVExILCAxMjAsIDEpLAo+PiAgICAgKyAgICAgICBNQ0ZHUEYo
+TENEQ1RMTCwgMTI4LCA4KSwKPj4gICAgICt9Owo+PiAgICAgKwo+PiAgICAgK3Vuc2lnbmVkIGlu
+dCBtY2ZfZ3Bpb19jaGlwc19zaXplID0gQVJSQVlfU0laRShtY2ZfZ3Bpb19jaGlwcyk7Cj4+ICAg
+ICArCj4+ICAgICArLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KPj4gICAgICsKPj4gICAgICAgI2lmZGVm
+IENPTkZJR19TUElfQ09MREZJUkVfUVNQSQo+Pgo+PiAgICAgICBzdGF0aWMgdm9pZCBfX2luaXQg
+bTUzMnhfcXNwaV9pbml0KHZvaWQpCj4+ICAgICBkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL3BsYXRm
+b3JtLzUzMngvZ3Bpby5jCj4+ICAgICBiL2FyY2gvbTY4ay9wbGF0Zm9ybS81MzJ4L2dwaW8uYwo+
+PiAgICAgZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0Cj4+ICAgICBpbmRleCAzZTFiNzFkLi4wMDAw
+MDAwCj4+ICAgICAtLS0gYS9hcmNoL202OGsvcGxhdGZvcm0vNTMyeC9ncGlvLmMKPj4gICAgICsr
+KyAvZGV2L251bGwKPj4gICAgIEBAIC0xLDQzICswLDAgQEAKPj4gICAgIC0vKgo+PiAgICAgLSAq
+IENvbGRmaXJlIGdlbmVyaWMgR1BJTyBzdXBwb3J0Cj4+ICAgICAtICoKPj4gICAgIC0gKiAoQykg
+Q29weXJpZ2h0IDIwMDksIFN0ZXZlbiBLaW5nIDxzZmtpbmdAZmR3ZGMuY29tCj4+ICAgICA8bWFp
+bHRvOnNma2luZ0BmZHdkYy5jb20+Pgo+PiAgICAgLSAqCj4+ICAgICAtICogVGhpcyBwcm9ncmFt
+IGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkK
+Pj4gICAgIC0gKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
+aWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo+PiAgICAgLSAqIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5k
+YXRpb247IHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZS4KPj4gICAgIC0gKgo+PiAgICAgLSAqIFRo
+aXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
+ZnVsLAo+PiAgICAgLSAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRo
+ZSBpbXBsaWVkIHdhcnJhbnR5IG9mCj4+ICAgICAtICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5F
+U1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQo+PiAgICAgLSAqIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCj4+ICAgICAtKi8KPj4gICAgIC0K
+Pj4gICAgIC0jaW5jbHVkZSA8bGludXgva2VybmVsLmg+Cj4+ICAgICAtI2luY2x1ZGUgPGxpbnV4
+L2luaXQuaD4KPj4gICAgIC0KPj4gICAgIC0jaW5jbHVkZSA8YXNtL2NvbGRmaXJlLmg+Cj4+ICAg
+ICAtI2luY2x1ZGUgPGFzbS9tY2ZzaW0uaD4KPj4gICAgIC0jaW5jbHVkZSA8YXNtL21jZmdwaW8u
+aD4KPj4gICAgIC0KPj4gICAgIC1zdHJ1Y3QgbWNmX2dwaW9fY2hpcCBtY2ZfZ3Bpb19jaGlwc1td
+ID0gewo+PiAgICAgLSAgICAgICBNQ0ZHUFMoUElSUSwgMCwgOCwgTUNGRVBPUlRfRVBERFIsIE1D
+RkVQT1JUX0VQRFIsCj4+ICAgICBNQ0ZFUE9SVF9FUFBEUiksCj4+ICAgICAtICAgICAgIE1DRkdQ
+RihGRUNILCA4LCA4KSwKPj4gICAgIC0gICAgICAgTUNGR1BGKEZFQ0wsIDE2LCA4KSwKPj4gICAg
+IC0gICAgICAgTUNGR1BGKFNTSSwgMjQsIDUpLAo+PiAgICAgLSAgICAgICBNQ0ZHUEYoQlVTQ1RM
+LCAzMiwgNCksCj4+ICAgICAtICAgICAgIE1DRkdQRihCRSwgNDAsIDQpLAo+PiAgICAgLSAgICAg
+ICBNQ0ZHUEYoQ1MsIDQ5LCA1KSwKPj4gICAgIC0gICAgICAgTUNGR1BGKFBXTSwgNTgsIDQpLAo+
+PiAgICAgLSAgICAgICBNQ0ZHUEYoRkVDSTJDLCA2NCwgNCksCj4+ICAgICAtICAgICAgIE1DRkdQ
+RihVQVJULCA3MiwgOCksCj4+ICAgICAtICAgICAgIE1DRkdQRihRU1BJLCA4MCwgNiksCj4+ICAg
+ICAtICAgICAgIE1DRkdQRihUSU1FUiwgODgsIDQpLAo+PiAgICAgLSAgICAgICBNQ0ZHUEYoTENE
+REFUQUgsIDk2LCAyKSwKPj4gICAgIC0gICAgICAgTUNGR1BGKExDRERBVEFNLCAxMDQsIDgpLAo+
+PiAgICAgLSAgICAgICBNQ0ZHUEYoTENEREFUQUwsIDExMiwgOCksCj4+ICAgICAtICAgICAgIE1D
+RkdQRihMQ0RDVExILCAxMjAsIDEpLAo+PiAgICAgLSAgICAgICBNQ0ZHUEYoTENEQ1RMTCwgMTI4
+LCA4KSwKPj4gICAgIC19Owo+PiAgICAgLQo+PiAgICAgLXVuc2lnbmVkIGludCBtY2ZfZ3Bpb19j
+aGlwc19zaXplID0gQVJSQVlfU0laRShtY2ZfZ3Bpb19jaGlwcyk7Cj4+ICAgICAtLQo+PiAgICAg
+MS43LjAuNAo+Pgo+PiAgICAgX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPj4gICAgIHVDbGludXgtZGV2IG1haWxpbmcgbGlzdAo+PiAgICAgdUNsaW51eC1k
+ZXZAdWNsaW51eC5vcmcgPG1haWx0bzp1Q2xpbnV4LWRldkB1Y2xpbnV4Lm9yZz4KPj4gICAgIGh0
+dHA6Ly9tYWlsbWFuLnVjbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vdWNsaW51eC1kZXYKPj4g
+ICAgIFRoaXMgbWVzc2FnZSB3YXMgcmVzZW50IGJ5IHVjbGludXgtZGV2QHVjbGludXgub3JnCj4+
+ICAgICA8bWFpbHRvOnVjbGludXgtZGV2QHVjbGludXgub3JnPgo+PiAgICAgVG8gdW5zdWJzY3Jp
+YmUgc2VlOgo+PiAgICAgaHR0cDovL21haWxtYW4udWNsaW51eC5vcmcvbWFpbG1hbi9vcHRpb25z
+L3VjbGludXgtZGV2Cj4+Cj4+Cj4+Cj4+Cj4+IC0tCj4+IF9fX19fXwo+PiBNb2hhbWVkIE5hYmls
+IEhhZmV6Cj4+IEVtYmVkZGVkIFNvZnR3YXJlIEVuZ2luZWVyCj4+Cj4KPgo+LS0gCj4tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KPkdyZWcgVW5nZXJlciAgLS0gIFByaW5jaXBhbCBFbmdpbmVlciAgICAgICAgRU1B
+SUw6ICAgICBnZXJnQHNuYXBnZWFyLmNvbQo+U25hcEdlYXIgR3JvdXAsIE1jQWZlZSAgICAgICAg
+ICAgICAgICAgICAgICBQSE9ORTogICAgICAgKzYxIDcgMzQzNSAyODg4Cj44IEdhcmRuZXIgQ2xv
+c2UsICAgICAgICAgICAgICAgICAgICAgICAgICAgIEZBWDogICAgICAgICArNjEgNyAzODkxIDM2
+MzAKPk1pbHRvbiwgUUxELCA0MDY0LCBBdXN0cmFsaWEgICAgICAgICAgICAgICAgV0VCOiBodHRw
+Oi8vd3d3LlNuYXBHZWFyLmNvbQo+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPnVDbGludXgtZGV2IG1haWxpbmcgbGlzdAo+dUNsaW51eC1kZXZAdWNsaW51
+eC5vcmcKPmh0dHA6Ly9tYWlsbWFuLnVjbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vdWNsaW51
+eC1kZXYKPlRoaXMgbWVzc2FnZSB3YXMgcmVzZW50IGJ5IHVjbGludXgtZGV2QHVjbGludXgub3Jn
+Cj5UbyB1bnN1YnNjcmliZSBzZWU6Cj5odHRwOi8vbWFpbG1hbi51Y2xpbnV4Lm9yZy9tYWlsbWFu
+L29wdGlvbnMvdWNsaW51eC1kZXYKPgo=
