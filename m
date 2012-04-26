@@ -1,17 +1,16 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 01/22] m68knommu: introduce macros to
- simplify ColdFire GPIO table initialization
-Date: Thu, 26 Apr 2012 19:59:23 +1000
-Message-ID: <4F991C7B.2030406@snapgear.com>
+Subject: Re: [PATCH 00/22] m68knommu: simplify ColdFire GPIO
+	init code
+Date: Thu, 26 Apr 2012 20:02:29 +1000
+Message-ID: <4F991D35.1060500@snapgear.com>
 References: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
- <1335399962-10308-2-git-send-email-gerg@snapgear.com>
- <20120426071610.GA31640@frolo.macqel>
+ <201204260028.47328.sfking@fdwdc.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <20120426071610.GA31640@frolo.macqel>
+In-Reply-To: <201204260028.47328.sfking@fdwdc.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
  <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -21,40 +20,36 @@ List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
  <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
 Errors-To: uclinux-dev-bounces@uclinux.org
 Sender: uclinux-dev-bounces@uclinux.org
-To: Philippe De Muyter <phdm@macqel.be>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: Steven King <sfking@fdwdc.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Philippe,
+Hi Steven,
 
-On 04/26/2012 05:16 PM, Philippe De Muyter wrote:
+On 04/26/2012 05:28 PM, Steven King wrote:
+> On Wednesday 25 April 2012 5:25:40 pm gerg@snapgear.com wrote:
+>> The GPIO init code for the ColdFire cores is a set of very large tables,
+>> one for each ColdFire SoC type. Each SoC type has very different GPIO pin
+>> arrangements, so one for each is unavoidable. But there is fundamentaly
+>> two types of setup/access that we are trying to support.
+>>
+>> With some pre-processor macro magic we can reduce the tables significantly,
+>> making them easier to read, easier to get correct, and easier to maintain.
+>>
+>> The following patches implement a set of simplifying changes. What do
+>> others think?  Overall we remove close to 2000 lines of code, and the end
+>> tables are much easier to read and get correct.
+>>
+>
 > Hi Greg,
 >
-> On Thu, Apr 26, 2012 at 10:25:41AM +1000, gerg@snapgear.com wrote:
->> From: Greg Ungerer<gerg@uclinux.org>
->>
->> We have very large tables in the ColdFire CPU GPIO setup code that essentially
->> boil down to 2 distinct types of GPIO pin initiaization. Using 2 macros we can
->> reduce these large tables to at most a dozen lines of setup code, and in quite
->> a few cases a single table entry.
->>
->> Introduce these 2 macros into the existing mcfgpio.h header.
-> ...
->> +/*
->> + *	Define macros to ease the pain of setting up the gpio tables.
->> + */
->> +#define	MCFGPS(mlabel, mbase, mngpio, mpddr, mpodr, mppdr)		    \
-> ...
->> +#define	MCFGPF(mlabel, mbase, mngpio)					    \
-> ...
->
-> Maybe a small comment to explain when to use MCFGPS and when to use MCFGPF ?
+> This looks fine to me.
+> You can add my Acked-by: Steven King<sfking@fdwdc.com>
 
-Yep, that sounds like a good idea. I'll do that.
+Great, thanks.
 
-Thanks
+Regards
 Greg
-
 
 
 ------------------------------------------------------------------------
