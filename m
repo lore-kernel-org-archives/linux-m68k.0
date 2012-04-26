@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 21/22] m68knommu: simplify the ColdFire 532x GPIO struct setup
-Date: Thu, 26 Apr 2012 10:26:01 +1000
-Message-ID: <1335399962-10308-22-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 20/22] m68knommu: simplify the ColdFire 5307 GPIO struct setup
+Date: Thu, 26 Apr 2012 10:26:00 +1000
+Message-ID: <1335399962-10308-21-git-send-email-gerg@snapgear.com>
 References: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:25103 "EHLO
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:25101 "EHLO
 	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932670Ab2DZA1X (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 Apr 2012 20:27:23 -0400
+	with ESMTP id S932670Ab2DZA1W (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 Apr 2012 20:27:22 -0400
 In-Reply-To: <1335399962-10308-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -24,68 +24,58 @@ file.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/platform/532x/Makefile |    2 +-
- arch/m68k/platform/532x/config.c |   25 ++++++++++++++++++++++
- arch/m68k/platform/532x/gpio.c   |   43 --------------------------------------
- 3 files changed, 26 insertions(+), 44 deletions(-)
- delete mode 100644 arch/m68k/platform/532x/gpio.c
+ arch/m68k/platform/5307/Makefile |    2 +-
+ arch/m68k/platform/5307/config.c |    9 +++++++++
+ arch/m68k/platform/5307/gpio.c   |   27 ---------------------------
+ 3 files changed, 10 insertions(+), 28 deletions(-)
+ delete mode 100644 arch/m68k/platform/5307/gpio.c
 
-diff --git a/arch/m68k/platform/532x/Makefile b/arch/m68k/platform/532x/Makefile
-index ce01669..c0d8cf8 100644
---- a/arch/m68k/platform/532x/Makefile
-+++ b/arch/m68k/platform/532x/Makefile
-@@ -15,4 +15,4 @@
+diff --git a/arch/m68k/platform/5307/Makefile b/arch/m68k/platform/5307/Makefile
+index d4293b7..fd08186 100644
+--- a/arch/m68k/platform/5307/Makefile
++++ b/arch/m68k/platform/5307/Makefile
+@@ -14,7 +14,7 @@
+ 
  asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
  
- #obj-y := config.o usb-mcf532x.o spi-mcf532x.o
--obj-y := config.o gpio.o
-+obj-y := config.o
-diff --git a/arch/m68k/platform/532x/config.c b/arch/m68k/platform/532x/config.c
-index 2bec347..a4dd3d8 100644
---- a/arch/m68k/platform/532x/config.c
-+++ b/arch/m68k/platform/532x/config.c
-@@ -26,10 +26,35 @@
+-obj-y			+= config.o gpio.o
++obj-y			+= config.o
+ obj-$(CONFIG_NETtel)	+= nettel.o
+ obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+ 
+diff --git a/arch/m68k/platform/5307/config.c b/arch/m68k/platform/5307/config.c
+index a568d28..93b4849 100644
+--- a/arch/m68k/platform/5307/config.c
++++ b/arch/m68k/platform/5307/config.c
+@@ -16,6 +16,7 @@
+ #include <asm/machdep.h>
+ #include <asm/coldfire.h>
  #include <asm/mcfsim.h>
- #include <asm/mcfuart.h>
- #include <asm/mcfdma.h>
 +#include <asm/mcfgpio.h>
  #include <asm/mcfwdebug.h>
  
  /***************************************************************************/
+@@ -28,6 +29,14 @@ unsigned char ledbank = 0xff;
+ 
+ /***************************************************************************/
  
 +struct mcf_gpio_chip mcf_gpio_chips[] = {
-+	MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR, MCFEPORT_EPPDR),
-+	MCFGPF(FECH, 8, 8),
-+	MCFGPF(FECL, 16, 8),
-+	MCFGPF(SSI, 24, 5),
-+	MCFGPF(BUSCTL, 32, 4),
-+	MCFGPF(BE, 40, 4),
-+	MCFGPF(CS, 49, 5),
-+	MCFGPF(PWM, 58, 4),
-+	MCFGPF(FECI2C, 64, 4),
-+	MCFGPF(UART, 72, 8),
-+	MCFGPF(QSPI, 80, 6),
-+	MCFGPF(TIMER, 88, 4),
-+	MCFGPF(LCDDATAH, 96, 2),
-+	MCFGPF(LCDDATAM, 104, 8),
-+	MCFGPF(LCDDATAL, 112, 8),
-+	MCFGPF(LCDCTLH, 120, 1),
-+	MCFGPF(LCDCTLL, 128, 8),
++	MCFGPS(PP, 0, 16, MCFSIM_PADDR, MCFSIM_PADAT, MCFSIM_PADAT),
 +};
 +
 +unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
 +
 +/***************************************************************************/
 +
- #ifdef CONFIG_SPI_COLDFIRE_QSPI
- 
- static void __init m532x_qspi_init(void)
-diff --git a/arch/m68k/platform/532x/gpio.c b/arch/m68k/platform/532x/gpio.c
+ void __init config_BSP(char *commandp, int size)
+ {
+ #if defined(CONFIG_NETtel) || \
+diff --git a/arch/m68k/platform/5307/gpio.c b/arch/m68k/platform/5307/gpio.c
 deleted file mode 100644
-index 3e1b71d..0000000
---- a/arch/m68k/platform/532x/gpio.c
+index 7bbbea7..0000000
+--- a/arch/m68k/platform/5307/gpio.c
 +++ /dev/null
-@@ -1,43 +0,0 @@
+@@ -1,27 +0,0 @@
 -/*
 - * Coldfire generic GPIO support
 - *
@@ -109,23 +99,7 @@ index 3e1b71d..0000000
 -#include <asm/mcfgpio.h>
 -
 -struct mcf_gpio_chip mcf_gpio_chips[] = {
--	MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR, MCFEPORT_EPPDR),
--	MCFGPF(FECH, 8, 8),
--	MCFGPF(FECL, 16, 8),
--	MCFGPF(SSI, 24, 5),
--	MCFGPF(BUSCTL, 32, 4),
--	MCFGPF(BE, 40, 4),
--	MCFGPF(CS, 49, 5),
--	MCFGPF(PWM, 58, 4),
--	MCFGPF(FECI2C, 64, 4),
--	MCFGPF(UART, 72, 8),
--	MCFGPF(QSPI, 80, 6),
--	MCFGPF(TIMER, 88, 4),
--	MCFGPF(LCDDATAH, 96, 2),
--	MCFGPF(LCDDATAM, 104, 8),
--	MCFGPF(LCDDATAL, 112, 8),
--	MCFGPF(LCDCTLH, 120, 1),
--	MCFGPF(LCDCTLL, 128, 8),
+-	MCFGPS(PP, 0, 16, MCFSIM_PADDR, MCFSIM_PADAT, MCFSIM_PADAT),
 -};
 -
 -unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
