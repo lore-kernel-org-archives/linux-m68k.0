@@ -1,81 +1,67 @@
-From: Edward Shao <laface.tw@gmail.com>
-Subject: Re: Quest about m68knommu check in top of kernel Makefile.
-Date: Fri, 27 Apr 2012 14:51:13 +0800
-Message-ID: <CAKjXMyDBA4hLJ98BqfOfwx5bgkXQzu9V9NYfjBuP0h9eHrACeQ@mail.gmail.com>
-References: <CAKjXMyAvBMgPEsdiO=F1oLHt-_DBxdoz9+G=AOsejn5SLfDS_g@mail.gmail.com>
-	<4F9A3D1C.4030305@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/1] Changes for 68000 code integration.
+Date: Fri, 27 Apr 2012 08:55:39 +0200
+Message-ID: <CAMuHMdUQH+3XD59iqM-EOddXAixSdkQ0oyZd9CUaYfwUDFCrZw@mail.gmail.com>
+References: <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
+ <4F9A4017.8010405@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4F9A3D1C.4030305@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <4F9A4017.8010405@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org, uclinux-dev@uclinux.org
+List-Id: linux-m68k@vger.kernel.org
 
-Hi Greg,
-
-Thank you for your suggestion. :)
-I remove the whole m68knommu conditional in submitted patch.
-
-[REF]
-http://permalink.gmane.org/gmane.linux.kbuild.devel/8138
-
-Best Regards,
-Edward
-
-On Fri, Apr 27, 2012 at 2:30 PM, Greg Ungerer <gerg@snapgear.com> wrote=
-:
-> Hi Edward,
->
->
-> On 26/04/12 22:34, Edward Shao wrote:
->>
->> I have a question about ($(ARCH),m68knommu) check in top of kernel
->> Makefile.
->> Any reason not to change SRCARCH but change hdr-arch?
->>
->> If I modify the makefile as below, is it ok?
->>
->> diff --git a/Makefile b/Makefile
->> index afc868e..396ed28 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -228,13 +228,14 @@ ifeq ($(ARCH),tilegx)
->> =A0 =A0 =A0 =A0SRCARCH :=3D tile
->> =A0endif
->>
->> -# Where to locate arch specific headers
->> -hdr-arch =A0 =A0 =A0 :=3D $(SRCARCH)
->> -
->> +# Additional ARCH settings for m86k
->> =A0ifeq ($(ARCH),m68knommu)
->> - =A0 =A0 =A0 hdr-arch =A0 =A0 =A0 =A0:=3D m68k
->> + =A0 =A0 =A0 SRCARCH :=3D m68k
->> =A0endif
->>
->> +# Where to locate arch specific headers
->> +hdr-arch =A0 =A0 =A0 :=3D $(SRCARCH)
->> +
->> =A0KCONFIG_CONFIG ?=3D .config
->> =A0export KCONFIG_CONFIG
->
->
-> I think it better to just remove the whole m68knommu conditional,
-> since there is not longer a separate m68knommu arch branch.
->
-> Regards
-> Greg
->
->
-> ---------------------------------------------------------------------=
----
-> Greg Ungerer =A0-- =A0Principal Engineer =A0 =A0 =A0 =A0EMAIL: =A0 =A0=
- gerg@snapgear.com
-> SnapGear Group, McAfee =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PHO=
-NE: =A0 =A0 =A0 +61 7 3435 2888
-> 8 Gardner Close =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- FAX: =A0 =A0 =A0 =A0 +61 7 3217 5323
-> Milton, QLD, 4064, Australia =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0WEB: http=
-://www.SnapGear.com
+T24gRnJpLCBBcHIgMjcsIDIwMTIgYXQgMDg6NDMsIEdyZWcgVW5nZXJlciA8Z2VyZ0BzbmFwZ2Vh
+ci5jb20+IHdyb3RlOgo+IE9uIDI3LzA0LzEyIDA5OjA4LCBMdWlzIEFsdmVzIHdyb3RlOgo+PiBU
+aGlzIGlzIHRoZSBmaXJzdCBvZiBhIHBhY2sgb2YgcGF0Y2hlcyB0byBzdXBwb3J0IHRoZSBvcmln
+aW5hbCA2ODAwMCBjcHUuCj4+IFRoaXMgYWRkczoKPj4gwqAtTUM2ODAwMCBjcHUgYXMgYSBjaG9p
+Y2UgaW4gdGhlIGNvbmZpZyBtZW51Lgo+PiDCoC1BbGNldHJvbmljcyBNNjhLIGJvYXJkICh1c2Vz
+IHRoaXMgY3B1KS4KPgo+IE5pY2UhCgpCdXQgdGhlIGFjdHVhbCBhcmNoL202OGsvcGxhdGZvcm0v
+NjgwMDAvIHBhcnQgaXMgbWlzc2luZz8KCj4+IMKgLU1vZGlmaWVkIENPTkZJR19NQ1BVMzIgdG8g
+c2VsZWN0IENPTkZJR19NNjhYWFguCj4+IMKgLU1vZGlmaWVkIENPTkZJR19NNjgzNjAgdG8gc2Vs
+ZWN0IENPTkZJR19NNjhYWFggKEkgdGhpbmsgaXQgd2FzIG1pc3NpbmcKPj4gc29tZSBzZXR0aW5n
+cykuCj4+IMKgLU1vZGlmaWVkIHNvbWUgZmlsZXMgdG8gdXNlIENPTkZJR19NNjhYWFggaW5zdGVh
+ZCBvZgo+PiBDT05GSUdfTTY4MDAwL0NPTkZJR19NQ1BVMzIKPgo+IEFsdGhvdWdoIHRoZXJlIHdh
+cyBubyB0cnVlIDY4MDAwIHBhcnQgc3VwcG9ydGVkIGJlZm9yZSB0aGUgaW50ZW50aW9uCj4gb2Yg
+dGhlIENPTkZJR19NNjgwMDAgZGVmaW5lIHdhcyBmb3IgdGhhdCBDUFUgLSBvciBhbnkgU29DIHR5
+cGUgcGFydCB0aGF0Cj4gY29udGFpbmVkIGEgdHJ1ZSA2ODAwMCBDUFUgY29yZS4gQW5kIGl0IHdv
+dWxkIGJlIGdvb2QgdG8ga2VlcCB0aGF0CgpJbmRlZWQuCgo+IG5hbWluZyBzbyBpdCBpcyBjb25z
+aXN0ZW50IHdpdGggdGhlIG90aGVyIDY4MHgwIGNvcmVzLgoKSW5kZWVkLCAuLi4KCj4+IC0jaWYg
+ZGVmaW5lZChDT05GSUdfTTY4MDAwKSB8fCBkZWZpbmVkKENPTkZJR19DT0xERklSRSkKPj4gKyNp
+ZiBkZWZpbmVkKENPTkZJR19NNjhYWFgpIHx8IGRlZmluZWQoQ09ORklHX0NPTERGSVJFKQoKIkNP
+TkZJR19NNjhYWFggfHwgQ09ORklHX0NPTERGSVJFIiBtYWtlcyBtZSB0aGluayAiSXNuJ3QgdGhp
+cyBhbHdheXMKdHJ1ZT8iLi4uCgo+PiDCoC8qCj4+IMKgICogVGhlIHNpbXBsZXIgbTY4ayBhbmQg
+Q29sZEZpcmUgcHJvY2Vzc29ycyBkbyBub3QgaGF2ZSBhIDMyKjMyLT42NAo+PiDCoCAqIG11bHRp
+cGx5IGluc3RydWN0aW9uLiBTbyB3ZSBuZWVkIHRvIGhhbmRsZSB0aGVtIGEgbGl0dGxlIGRpZmZl
+cmVudGx5Lgo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2xpYi9tZW1jcHkuYyBiL2FyY2gvbTY4
+ay9saWIvbWVtY3B5LmMKPj4gaW5kZXggMTBjYTA1MS4uYzBhMWFlOCAxMDA2NDQKPj4gLS0tIGEv
+YXJjaC9tNjhrL2xpYi9tZW1jcHkuYwo+PiArKysgYi9hcmNoL202OGsvbGliL21lbWNweS5jCj4+
+IEBAIC0yMiw3ICsyMiw3IEBAIHZvaWQgKm1lbWNweSh2b2lkICp0bywgY29uc3Qgdm9pZCAqZnJv
+bSwgc2l6ZV90IG4pCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZnJvbSA9IGNmcm9tOwo+PiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoG4tLTsKPj4gwqAgwqAgwqAgwqB9Cj4+IC0jaWYgZGVmaW5l
+ZChDT05GSUdfTTY4MDAwKQo+PiArI2lmIGRlZmluZWQoQ09ORklHX002OFhYWCkKCi4uLiBhbmQg
+Q09ORklHX002OFhYWCBzb3VuZHMgbGlrZSBpdCdzIHNldCBmb3IgZS5nLiAnMDIwIHRvby4KCkdy
+e29ldGplLGVldGluZ31zLAoKwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgR2Vl
+cnQKCi0tCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25k
+IGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMg
+d2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJ
+J20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21l
+dGhpbmcgbGlrZSB0aGF0LgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oMKgIMKgwqAgLS0gTGludXMgVG9ydmFsZHMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KdUNsaW51eC1kZXYgbWFpbGluZyBsaXN0CnVDbGludXgtZGV2QHVj
+bGludXgub3JnCmh0dHA6Ly9tYWlsbWFuLnVjbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vdWNs
+aW51eC1kZXYKVGhpcyBtZXNzYWdlIHdhcyByZXNlbnQgYnkgdWNsaW51eC1kZXZAdWNsaW51eC5v
+cmcKVG8gdW5zdWJzY3JpYmUgc2VlOgpodHRwOi8vbWFpbG1hbi51Y2xpbnV4Lm9yZy9tYWlsbWFu
+L29wdGlvbnMvdWNsaW51eC1kZXY=
