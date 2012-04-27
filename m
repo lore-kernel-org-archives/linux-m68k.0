@@ -1,55 +1,41 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: Quest about m68knommu check in top of kernel Makefile.
-Date: Fri, 27 Apr 2012 16:30:52 +1000
-Message-ID: <4F9A3D1C.4030305@snapgear.com>
-References: <CAKjXMyAvBMgPEsdiO=F1oLHt-_DBxdoz9+G=AOsejn5SLfDS_g@mail.gmail.com>
+Subject: Re: [PATCH 08/22] m68knommu: switch to GPIO init macros in ColdFire
+ 528x init code
+Date: Fri, 27 Apr 2012 16:36:31 +1000
+Message-ID: <4F9A3E6F.8080906@snapgear.com>
+References: <1335399962-10308-1-git-send-email-gerg@snapgear.com> <1335399962-10308-9-git-send-email-gerg@snapgear.com> <alpine.LNX.2.00.1204271240130.6685@nippy.intranet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAKjXMyAvBMgPEsdiO=F1oLHt-_DBxdoz9+G=AOsejn5SLfDS_g@mail.gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:51792 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751278Ab2D0Ghb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Apr 2012 02:37:31 -0400
+In-Reply-To: <alpine.LNX.2.00.1204271240130.6685@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Edward Shao <laface.tw@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, sfking@fdwdc.com, Greg Ungerer <gerg@uclinux.org>
 
-Hi Edward,
+Hi Finn,
 
-On 26/04/12 22:34, Edward Shao wrote:
-> I have a question about ($(ARCH),m68knommu) check in top of kernel Makefile.
-> Any reason not to change SRCARCH but change hdr-arch?
+On 27/04/12 12:49, Finn Thain wrote:
+> On Thu, 26 Apr 2012, gerg@snapgear.com wrote:
 >
-> If I modify the makefile as below, is it ok?
+>> +	MCFGPS(QA, 24, 4, MCFQADC_DDRQA, MCFQADC_PORTQA, MCFQADC_PORTQA),
+>> +	MCFGPS(QA, 32, 4, MCFQADC_DDRQB, MCFQADC_PORTQB, MCFQADC_PORTQB),
 >
-> diff --git a/Makefile b/Makefile
-> index afc868e..396ed28 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -228,13 +228,14 @@ ifeq ($(ARCH),tilegx)
-> 	SRCARCH := tile
->  endif
+> I think the second label should be "QB".
 >
-> -# Where to locate arch specific headers
-> -hdr-arch	:= $(SRCARCH)
-> -
-> +# Additional ARCH settings for m86k
->  ifeq ($(ARCH),m68knommu)
-> -	hdr-arch	:= m68k
-> +	SRCARCH := m68k
->  endif
->
-> +# Where to locate arch specific headers
-> +hdr-arch	:= $(SRCARCH)
-> +
->  KCONFIG_CONFIG ?= .config
->  export KCONFIG_CONFIG
+> Also affected is "[PATCH 19/22] m68knommu: simplify the ColdFire 528x GPIO
+> struct setup".
 
-I think it better to just remove the whole m68knommu conditional,
-since there is not longer a separate m68knommu arch branch.
+Good catch!
+Thanks, I'll fix that up.
 
 Regards
 Greg
-
 
 ------------------------------------------------------------------------
 Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
