@@ -1,67 +1,77 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Brad Boyer <flar@allandria.com>
 Subject: Re: [PATCH 1/1] Changes for 68000 code integration.
-Date: Fri, 27 Apr 2012 08:55:39 +0200
-Message-ID: <CAMuHMdUQH+3XD59iqM-EOddXAixSdkQ0oyZd9CUaYfwUDFCrZw@mail.gmail.com>
-References: <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
- <4F9A4017.8010405@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Date: Fri, 27 Apr 2012 00:33:55 -0700
+Message-ID: <20120427073355.GA28132@cynthia.pants.nu>
+References: <MC68000integration>
+ <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <4F9A4017.8010405@snapgear.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org, uclinux-dev@uclinux.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from cynthia.allandria.com ([76.245.85.235]:60117 "EHLO
+	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758452Ab2D0Hz2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Apr 2012 03:55:28 -0400
+Content-Disposition: inline
+In-Reply-To: <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Luis Alves <ljalvs@gmail.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, gerg@uclinux.org
 
-T24gRnJpLCBBcHIgMjcsIDIwMTIgYXQgMDg6NDMsIEdyZWcgVW5nZXJlciA8Z2VyZ0BzbmFwZ2Vh
-ci5jb20+IHdyb3RlOgo+IE9uIDI3LzA0LzEyIDA5OjA4LCBMdWlzIEFsdmVzIHdyb3RlOgo+PiBU
-aGlzIGlzIHRoZSBmaXJzdCBvZiBhIHBhY2sgb2YgcGF0Y2hlcyB0byBzdXBwb3J0IHRoZSBvcmln
-aW5hbCA2ODAwMCBjcHUuCj4+IFRoaXMgYWRkczoKPj4gwqAtTUM2ODAwMCBjcHUgYXMgYSBjaG9p
-Y2UgaW4gdGhlIGNvbmZpZyBtZW51Lgo+PiDCoC1BbGNldHJvbmljcyBNNjhLIGJvYXJkICh1c2Vz
-IHRoaXMgY3B1KS4KPgo+IE5pY2UhCgpCdXQgdGhlIGFjdHVhbCBhcmNoL202OGsvcGxhdGZvcm0v
-NjgwMDAvIHBhcnQgaXMgbWlzc2luZz8KCj4+IMKgLU1vZGlmaWVkIENPTkZJR19NQ1BVMzIgdG8g
-c2VsZWN0IENPTkZJR19NNjhYWFguCj4+IMKgLU1vZGlmaWVkIENPTkZJR19NNjgzNjAgdG8gc2Vs
-ZWN0IENPTkZJR19NNjhYWFggKEkgdGhpbmsgaXQgd2FzIG1pc3NpbmcKPj4gc29tZSBzZXR0aW5n
-cykuCj4+IMKgLU1vZGlmaWVkIHNvbWUgZmlsZXMgdG8gdXNlIENPTkZJR19NNjhYWFggaW5zdGVh
-ZCBvZgo+PiBDT05GSUdfTTY4MDAwL0NPTkZJR19NQ1BVMzIKPgo+IEFsdGhvdWdoIHRoZXJlIHdh
-cyBubyB0cnVlIDY4MDAwIHBhcnQgc3VwcG9ydGVkIGJlZm9yZSB0aGUgaW50ZW50aW9uCj4gb2Yg
-dGhlIENPTkZJR19NNjgwMDAgZGVmaW5lIHdhcyBmb3IgdGhhdCBDUFUgLSBvciBhbnkgU29DIHR5
-cGUgcGFydCB0aGF0Cj4gY29udGFpbmVkIGEgdHJ1ZSA2ODAwMCBDUFUgY29yZS4gQW5kIGl0IHdv
-dWxkIGJlIGdvb2QgdG8ga2VlcCB0aGF0CgpJbmRlZWQuCgo+IG5hbWluZyBzbyBpdCBpcyBjb25z
-aXN0ZW50IHdpdGggdGhlIG90aGVyIDY4MHgwIGNvcmVzLgoKSW5kZWVkLCAuLi4KCj4+IC0jaWYg
-ZGVmaW5lZChDT05GSUdfTTY4MDAwKSB8fCBkZWZpbmVkKENPTkZJR19DT0xERklSRSkKPj4gKyNp
-ZiBkZWZpbmVkKENPTkZJR19NNjhYWFgpIHx8IGRlZmluZWQoQ09ORklHX0NPTERGSVJFKQoKIkNP
-TkZJR19NNjhYWFggfHwgQ09ORklHX0NPTERGSVJFIiBtYWtlcyBtZSB0aGluayAiSXNuJ3QgdGhp
-cyBhbHdheXMKdHJ1ZT8iLi4uCgo+PiDCoC8qCj4+IMKgICogVGhlIHNpbXBsZXIgbTY4ayBhbmQg
-Q29sZEZpcmUgcHJvY2Vzc29ycyBkbyBub3QgaGF2ZSBhIDMyKjMyLT42NAo+PiDCoCAqIG11bHRp
-cGx5IGluc3RydWN0aW9uLiBTbyB3ZSBuZWVkIHRvIGhhbmRsZSB0aGVtIGEgbGl0dGxlIGRpZmZl
-cmVudGx5Lgo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2xpYi9tZW1jcHkuYyBiL2FyY2gvbTY4
-ay9saWIvbWVtY3B5LmMKPj4gaW5kZXggMTBjYTA1MS4uYzBhMWFlOCAxMDA2NDQKPj4gLS0tIGEv
-YXJjaC9tNjhrL2xpYi9tZW1jcHkuYwo+PiArKysgYi9hcmNoL202OGsvbGliL21lbWNweS5jCj4+
-IEBAIC0yMiw3ICsyMiw3IEBAIHZvaWQgKm1lbWNweSh2b2lkICp0bywgY29uc3Qgdm9pZCAqZnJv
-bSwgc2l6ZV90IG4pCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZnJvbSA9IGNmcm9tOwo+PiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoG4tLTsKPj4gwqAgwqAgwqAgwqB9Cj4+IC0jaWYgZGVmaW5l
-ZChDT05GSUdfTTY4MDAwKQo+PiArI2lmIGRlZmluZWQoQ09ORklHX002OFhYWCkKCi4uLiBhbmQg
-Q09ORklHX002OFhYWCBzb3VuZHMgbGlrZSBpdCdzIHNldCBmb3IgZS5nLiAnMDIwIHRvby4KCkdy
-e29ldGplLGVldGluZ31zLAoKwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgR2Vl
-cnQKCi0tCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25k
-IGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMg
-d2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJ
-J20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21l
-dGhpbmcgbGlrZSB0aGF0LgrCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oMKgIMKgwqAgLS0gTGludXMgVG9ydmFsZHMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KdUNsaW51eC1kZXYgbWFpbGluZyBsaXN0CnVDbGludXgtZGV2QHVj
-bGludXgub3JnCmh0dHA6Ly9tYWlsbWFuLnVjbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vdWNs
-aW51eC1kZXYKVGhpcyBtZXNzYWdlIHdhcyByZXNlbnQgYnkgdWNsaW51eC1kZXZAdWNsaW51eC5v
-cmcKVG8gdW5zdWJzY3JpYmUgc2VlOgpodHRwOi8vbWFpbG1hbi51Y2xpbnV4Lm9yZy9tYWlsbWFu
-L29wdGlvbnMvdWNsaW51eC1kZXY=
+On Fri, Apr 27, 2012 at 12:08:37AM +0100, Luis Alves wrote:
+> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> index 8a9c767..2abac0f 100644
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -32,26 +32,33 @@ endchoice
+>  
+>  if M68KCLASSIC
+>  
+> -config M68000
+> +
+> +config M68XXX
+>  	bool
+>  	select CPU_HAS_NO_BITFIELDS
+>  	select CPU_HAS_NO_MULDIV64
+>  	select GENERIC_CSUM
+>  	help
+> -	  The Freescale (was Motorola) 68000 CPU is the first generation of
+> -	  the well known M68K family of processors. The CPU core as well as
+> -	  being available as a stand alone CPU was also used in many
+> -	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
+> -	  a paging MMU.
+> +	  Common features for the first generation of M68K CPUs. It
+> +	  includes the original MC68000 and CPU32 core.
+> +
+>  
+>  config MCPU32
+>  	bool
+> -	select CPU_HAS_NO_BITFIELDS
+> +	select M68XXX
+>  	help
+>  	  The Freescale (was then Motorola) CPU32 is a CPU core that is
+>  	  based on the 68020 processor. For the most part it is used in
+>  	  System-On-Chip parts, and does not contain a paging MMU.
+
+I believe this misrepresents the CPU32 feature set. According to the old
+paper copy I have of the Motorola CPU32 reference manual, the only
+unimplemented instructions relative to the 68020 are these:
+
+1) Bit field instructions
+2) Module call/return
+3) RMW instructions (CAS/CAS2)
+4) Coprocessor instructions
+5) BCD instructions
+
+The 64 bit MUL and DIV variants are explicitly listed in the instruction set.
+
+The CPU32 is also missing some (but not all) of the addressing modes
+which were added with the 68020.
+
+I haven't worked with any of these chips in a long time, but the CPU32
+is quite a bit newer and more complicated than a 68000 or 68010. I
+did a project based on a 68332 about 15 years ago and still have all
+the printed reference manuals for that particular chip.
+
+	Brad Boyer
+	flar@allandria.com
