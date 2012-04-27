@@ -1,567 +1,278 @@
-From: mohamed nabil <m.nabil.hafez@gmail.com>
-Subject: Re: [PATCH 21/22] m68knommu: simplify the ColdFire
- 532x GPIO struct setup
-Date: Thu, 26 Apr 2012 03:10:45 +0200
-Message-ID: <CAECAou40HhdZL5EvySwF4bxw71ahpdjM2DEfty4r7N7fsPJfbg@mail.gmail.com>
-References: <BLU0-SMTP466FE400E21A67A2EC82F91D9240@phx.gbl>
- <4F989FE1.1090109@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/1] Changes for 68000 code integration.
+Date: Sat, 28 Apr 2012 00:06:21 +1000
+Message-ID: <4F9AA7DD.2020501@snapgear.com>
+References: <MC68000 integration> <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3675241749378684453=="
-Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <4F989FE1.1090109@snapgear.com>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, uClinux development list <uclinux-dev@uclinux.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:48009 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759972Ab2D0OJA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Apr 2012 10:09:00 -0400
+In-Reply-To: <1335481717-8652-1-git-send-email-ljalvs@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Luis Alves <ljalvs@gmail.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, gerg@uclinux.org
 
---===============3675241749378684453==
-Content-Type: multipart/alternative; boundary=bcaec553fefa516efa04be8aa8a6
+Hi Luis,
 
---bcaec553fefa516efa04be8aa8a6
-Content-Type: text/plain; charset=ISO-8859-1
+On 04/27/2012 09:08 AM, Luis Alves wrote:
+> This is the first of a pack of patches to support the original 68000 cpu.
+> This adds:
+>   -MC68000 cpu as a choice in the config menu.
+>   -Alcetronics M68K board (uses this cpu).
+>
+> What I have changed:
+>   -CONFIG_M68000 was being used by 68328 CPUs.
+>    Renamed to CONFIG_M68XXX. Now the 68000 and all CPU32 CPUs use this flag for common configurations.
+>   -Modified all 68[VZ|EZ]328 to select CONFIG_MCPU32
+>   -Modified CONFIG_MCPU32 to select CONFIG_M68XXX.
+>   -Modified CONFIG_M68360 to select CONFIG_M68XXX (I think it was missing some settings).
+>   -Modified some files to use CONFIG_M68XXX instead of CONFIG_M68000/CONFIG_MCPU32
 
-Ah , Bloody Hell , we should punish this "reflecter"
-but still 23 emails are too much for 1 bloody min ?  no ?
+Thinking on this a little more, you probably don't want most of
+these changes. Certainly as Brad points out CPU32 and 68000 are
+quite different, and they need to remain as separate config options.
 
-On Thu, Apr 26, 2012 at 3:07 AM, Greg Ungerer <gerg@snapgear.com> wrote:
+I can see you will end up with a arch/m68k/platform/68000 with
+some new code. Is any of that common with what is currently in
+arch/m68k/platform/68328?  I would expect we want to move the
+common 68000 code into that platform/68000 directory. Longer
+term we may want to do away with 68328/68EZ328/68VZ328 directories
+all together. All the code may go in a platform/68000. (Still
+thinking this one over though, but I am planning on doing away
+with the separate 5xxx ColdFire directories real soon now).
 
-> Hi Alex,
->
->
-> On 04/26/2012 10:53 AM, Alex LI wrote:
->
->> You sent 50 mails in 1 min.
->>
->
-> I sent 23. And both list archives (linux-m68k and uclinux-dev) only
-> show the 23 emails.
->
-> Maybe the uclinux-dev reflecter is sending dupes to list recpients?
->
-> Regards
-> Greg
->
->
->
->  Sent from my Sony Ericsson Xperia arc S
->>
->> Greg Ungerer<gerg@snapgear.com>  ?:
->>
->>
->>  On 04/26/2012 10:36 AM, mohamed nabil wrote:
->>>
->>>> that's a Fucking spam man !!
->>>>
->>>
->>> Huh?
->>>
->>> Thats how open source development works. If you don't like it don't
->>> subscribe to a developers list.
->>>
->>> Regards
->>> Greg
->>>
->>>
->>>
->>>  On Thu, Apr 26, 2012 at 2:26 AM,<gerg@snapgear.com
->>>> <mailto:gerg@snapgear.com>>  wrote:
->>>>
->>>>     From: Greg Ungerer<gerg@uclinux.org<**mailto:gerg@uclinux.org>>
->>>>
->>>>     The GPIO data struct setup is now the only remaining code in the
->>>>     platform
->>>>     gpio.c file. So move it to the platform config.c code and remove the
->>>>     gpio.c
->>>>     file.
->>>>
->>>>     Signed-off-by: Greg Ungerer<gerg@uclinux.org<**mailto:
->>>> gerg@uclinux.org>>
->>>>     ---
->>>>       arch/m68k/platform/532x/**Makefile |    2 +-
->>>>       arch/m68k/platform/532x/**config.c |   25 ++++++++++++++++++++++
->>>>       arch/m68k/platform/532x/gpio.c   |   43
->>>>     ------------------------------**--------
->>>>       3 files changed, 26 insertions(+), 44 deletions(-)
->>>>       delete mode 100644 arch/m68k/platform/532x/gpio.c
->>>>
->>>>     diff --git a/arch/m68k/platform/532x/**Makefile
->>>>     b/arch/m68k/platform/532x/**Makefile
->>>>     index ce01669..c0d8cf8 100644
->>>>     --- a/arch/m68k/platform/532x/**Makefile
->>>>     +++ b/arch/m68k/platform/532x/**Makefile
->>>>     @@ -15,4 +15,4 @@
->>>>       asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
->>>>
->>>>       #obj-y := config.o usb-mcf532x.o spi-mcf532x.o
->>>>     -obj-y := config.o gpio.o
->>>>     +obj-y := config.o
->>>>     diff --git a/arch/m68k/platform/532x/**config.c
->>>>     b/arch/m68k/platform/532x/**config.c
->>>>     index 2bec347..a4dd3d8 100644
->>>>     --- a/arch/m68k/platform/532x/**config.c
->>>>     +++ b/arch/m68k/platform/532x/**config.c
->>>>     @@ -26,10 +26,35 @@
->>>>       #include<asm/mcfsim.h>
->>>>       #include<asm/mcfuart.h>
->>>>       #include<asm/mcfdma.h>
->>>>     +#include<asm/mcfgpio.h>
->>>>       #include<asm/mcfwdebug.h>
->>>>
->>>>       /***************************************************************
->>>> ****************/
->>>>
->>>>     +struct mcf_gpio_chip mcf_gpio_chips[] = {
->>>>     +       MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,
->>>>     MCFEPORT_EPPDR),
->>>>     +       MCFGPF(FECH, 8, 8),
->>>>     +       MCFGPF(FECL, 16, 8),
->>>>     +       MCFGPF(SSI, 24, 5),
->>>>     +       MCFGPF(BUSCTL, 32, 4),
->>>>     +       MCFGPF(BE, 40, 4),
->>>>     +       MCFGPF(CS, 49, 5),
->>>>     +       MCFGPF(PWM, 58, 4),
->>>>     +       MCFGPF(FECI2C, 64, 4),
->>>>     +       MCFGPF(UART, 72, 8),
->>>>     +       MCFGPF(QSPI, 80, 6),
->>>>     +       MCFGPF(TIMER, 88, 4),
->>>>     +       MCFGPF(LCDDATAH, 96, 2),
->>>>     +       MCFGPF(LCDDATAM, 104, 8),
->>>>     +       MCFGPF(LCDDATAL, 112, 8),
->>>>     +       MCFGPF(LCDCTLH, 120, 1),
->>>>     +       MCFGPF(LCDCTLL, 128, 8),
->>>>     +};
->>>>     +
->>>>     +unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
->>>>     +
->>>>     +/**************************************************************
->>>> *****************/
->>>>     +
->>>>       #ifdef CONFIG_SPI_COLDFIRE_QSPI
->>>>
->>>>       static void __init m532x_qspi_init(void)
->>>>     diff --git a/arch/m68k/platform/532x/**gpio.c
->>>>     b/arch/m68k/platform/532x/**gpio.c
->>>>     deleted file mode 100644
->>>>     index 3e1b71d..0000000
->>>>     --- a/arch/m68k/platform/532x/**gpio.c
->>>>     +++ /dev/null
->>>>     @@ -1,43 +0,0 @@
->>>>     -/*
->>>>     - * Coldfire generic GPIO support
->>>>     - *
->>>>     - * (C) Copyright 2009, Steven King<sfking@fdwdc.com
->>>>     <mailto:sfking@fdwdc.com>>
->>>>     - *
->>>>     - * This program is free software; you can redistribute it and/or
->>>> modify
->>>>     - * it under the terms of the GNU General Public License as
->>>> published by
->>>>     - * the Free Software Foundation; version 2 of the License.
->>>>     - *
->>>>     - * This program is distributed in the hope that it will be useful,
->>>>     - * but WITHOUT ANY WARRANTY; without even the implied warranty of
->>>>     - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->>>>     - * GNU General Public License for more details.
->>>>     -*/
->>>>     -
->>>>     -#include<linux/kernel.h>
->>>>     -#include<linux/init.h>
->>>>     -
->>>>     -#include<asm/coldfire.h>
->>>>     -#include<asm/mcfsim.h>
->>>>     -#include<asm/mcfgpio.h>
->>>>     -
->>>>     -struct mcf_gpio_chip mcf_gpio_chips[] = {
->>>>     -       MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,
->>>>     MCFEPORT_EPPDR),
->>>>     -       MCFGPF(FECH, 8, 8),
->>>>     -       MCFGPF(FECL, 16, 8),
->>>>     -       MCFGPF(SSI, 24, 5),
->>>>     -       MCFGPF(BUSCTL, 32, 4),
->>>>     -       MCFGPF(BE, 40, 4),
->>>>     -       MCFGPF(CS, 49, 5),
->>>>     -       MCFGPF(PWM, 58, 4),
->>>>     -       MCFGPF(FECI2C, 64, 4),
->>>>     -       MCFGPF(UART, 72, 8),
->>>>     -       MCFGPF(QSPI, 80, 6),
->>>>     -       MCFGPF(TIMER, 88, 4),
->>>>     -       MCFGPF(LCDDATAH, 96, 2),
->>>>     -       MCFGPF(LCDDATAM, 104, 8),
->>>>     -       MCFGPF(LCDDATAL, 112, 8),
->>>>     -       MCFGPF(LCDCTLH, 120, 1),
->>>>     -       MCFGPF(LCDCTLL, 128, 8),
->>>>     -};
->>>>     -
->>>>     -unsigned int mcf_gpio_chips_size = ARRAY_SIZE(mcf_gpio_chips);
->>>>     --
->>>>     1.7.0.4
->>>>
->>>>     ______________________________**_________________
->>>>     uClinux-dev mailing list
->>>>     uClinux-dev@uclinux.org<**mailto:uClinux-dev@uclinux.org**>
->>>>     http://mailman.uclinux.org/**mailman/listinfo/uclinux-dev<http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>
->>>>     This message was resent by uclinux-dev@uclinux.org
->>>>     <mailto:uclinux-dev@uclinux.**org <uclinux-dev@uclinux.org>>
->>>>     To unsubscribe see:
->>>>     http://mailman.uclinux.org/**mailman/options/uclinux-dev<http://mailman.uclinux.org/mailman/options/uclinux-dev>
->>>>
->>>>
->>>>
->>>>
->>>> --
->>>> ______
->>>> Mohamed Nabil Hafez
->>>> Embedded Software Engineer
->>>>
->>>>
->>>
->>> --
->>> ------------------------------**------------------------------**
->>> ------------
->>> Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
->>> SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
->>> 8 Gardner Close,                            FAX:         +61 7 3891 3630
->>> Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
->>> ______________________________**_________________
->>> uClinux-dev mailing list
->>> uClinux-dev@uclinux.org
->>> http://mailman.uclinux.org/**mailman/listinfo/uclinux-dev<http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>
->>> This message was resent by uclinux-dev@uclinux.org
->>> To unsubscribe see:
->>> http://mailman.uclinux.org/**mailman/options/uclinux-dev<http://mailman.uclinux.org/mailman/options/uclinux-dev>
->>>
->>>   ??? ?&?~?&? ??+-??? ??w??????m?b??f??"??^n?r???z? ??h????&?? ?G???h?
->> (????j"?? ? m?????z?????f???h???~?m?
->>
->>
->>
->
-> --
-> ------------------------------**------------------------------**
-> ------------
-> Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-> SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-> 8 Gardner Close,                            FAX:         +61 7 3891 3630
-> Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
->
+Regards
+Greg
 
+
+
+
+> ---
+>   arch/m68k/Kconfig.cpu          |   29 ++++++++++++++++++-----------
+>   arch/m68k/Kconfig.machine      |    6 ++++++
+>   arch/m68k/Makefile             |    9 ++++++---
+>   arch/m68k/include/asm/bitops.h |    2 +-
+>   arch/m68k/include/asm/delay.h  |    2 +-
+>   arch/m68k/lib/memcpy.c         |    4 ++--
+>   arch/m68k/lib/memset.c         |    2 +-
+>   arch/m68k/lib/muldi3.c         |    2 +-
+>   8 files changed, 36 insertions(+), 20 deletions(-)
+>
+> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> index 8a9c767..2abac0f 100644
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -32,26 +32,33 @@ endchoice
+>
+>   if M68KCLASSIC
+>
+> -config M68000
+> +
+> +config M68XXX
+>   	bool
+>   	select CPU_HAS_NO_BITFIELDS
+>   	select CPU_HAS_NO_MULDIV64
+>   	select GENERIC_CSUM
+>   	help
+> -	  The Freescale (was Motorola) 68000 CPU is the first generation of
+> -	  the well known M68K family of processors. The CPU core as well as
+> -	  being available as a stand alone CPU was also used in many
+> -	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
+> -	  a paging MMU.
+> +	  Common features for the first generation of M68K CPUs. It
+> +	  includes the original MC68000 and CPU32 core.
+> +
+>
+>   config MCPU32
+>   	bool
+> -	select CPU_HAS_NO_BITFIELDS
+> +	select M68XXX
+>   	help
+>   	  The Freescale (was then Motorola) CPU32 is a CPU core that is
+>   	  based on the 68020 processor. For the most part it is used in
+>   	  System-On-Chip parts, and does not contain a paging MMU.
+>
+> +config M68000
+> +	bool "MC68000"
+> +	select M68XXX
+> +	help
+> +	  The Freescale (was Motorola) 68000 CPU is the first generation of
+> +	  the well known M68K family of processors. It does not contain
+> +	  a paging MMU.
+> +
+>   config M68020
+>   	bool "68020 support"
+>   	depends on MMU
+> @@ -96,28 +103,28 @@ config M68060
+>   config M68328
+>   	bool "MC68328"
+>   	depends on !MMU
+> -	select M68000
+> +	select MCPU32
+>   	help
+>   	  Motorola 68328 processor support.
+>
+>   config M68EZ328
+>   	bool "MC68EZ328"
+>   	depends on !MMU
+> -	select M68000
+> +	select MCPU32
+>   	help
+>   	  Motorola 68EX328 processor support.
+>
+>   config M68VZ328
+>   	bool "MC68VZ328"
+>   	depends on !MMU
+> -	select M68000
+> +	select MCPU32
+>   	help
+>   	  Motorola 68VZ328 processor support.
+>
+>   config M68360
+>   	bool "MC68360"
+>   	depends on !MMU
+> -	select MCPU32
+> +	select M68XXX
+>   	help
+>   	  Motorola 68360 processor support.
+>
+> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+> index 7cdf6b0..25ce143 100644
+> --- a/arch/m68k/Kconfig.machine
+> +++ b/arch/m68k/Kconfig.machine
+> @@ -134,6 +134,12 @@ config SUN3
+>
+>   endif # M68KCLASSIC
+>
+> +config ALCE68K
+> +	bool "Alcetronics M68K board support"
+> +	depends on M68000
+> +	help
+> +	  Support for the Alcetronics M68K board.
+> +
+>   config PILOT
+>   	bool
+>
+> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+> index cf318f2..d1d7343 100644
+> --- a/arch/m68k/Makefile
+> +++ b/arch/m68k/Makefile
+> @@ -32,8 +32,9 @@ cpuflags-$(CONFIG_M68040)	:= -m68040
+>   endif
+>   cpuflags-$(CONFIG_M68030)	:=
+>   cpuflags-$(CONFIG_M68020)	:=
+> -cpuflags-$(CONFIG_M68360)	:= -m68332
+>   cpuflags-$(CONFIG_M68000)	:= -m68000
+> +cpuflags-$(CONFIG_MCPU32)	:= -m68000
+> +cpuflags-$(CONFIG_M68360)	:= -m68332
+>   cpuflags-$(CONFIG_M54xx)	:= $(call cc-option,-mcpu=5475,-m5200)
+>   cpuflags-$(CONFIG_M5407)	:= $(call cc-option,-mcpu=5407,-m5200)
+>   cpuflags-$(CONFIG_M532x)	:= $(call cc-option,-mcpu=532x,-m5307)
+> @@ -88,8 +89,9 @@ endif
+>   #
+>   head-y				:= arch/m68k/kernel/head.o
+>   head-$(CONFIG_SUN3)		:= arch/m68k/kernel/sun3-head.o
+> +head-$(CONFIG_M68000)		:= arch/m68k/platform/68000/head.o
+>   head-$(CONFIG_M68360)		:= arch/m68k/platform/68360/head.o
+> -head-$(CONFIG_M68000)		:= arch/m68k/platform/68328/head.o
+> +head-$(CONFIG_MCPU32)		:= arch/m68k/platform/68328/head.o
+>   head-$(CONFIG_COLDFIRE)		:= arch/m68k/platform/coldfire/head.o
+>
+>   core-y				+= arch/m68k/kernel/	arch/m68k/mm/
+> @@ -111,7 +113,8 @@ core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
+>   core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
+>   core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
+>   core-$(CONFIG_M68360)		+= arch/m68k/platform/68360/
+> -core-$(CONFIG_M68000)		+= arch/m68k/platform/68328/
+> +core-$(CONFIG_M68000)		+= arch/m68k/platform/68000/
+> +core-$(CONFIG_MCPU32)		+= arch/m68k/platform/68328/
+>   core-$(CONFIG_M68EZ328)		+= arch/m68k/platform/68EZ328/
+>   core-$(CONFIG_M68VZ328)		+= arch/m68k/platform/68VZ328/
+>   core-$(CONFIG_COLDFIRE)		+= arch/m68k/platform/coldfire/
+> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+> index c6baa91..93b944d 100644
+> --- a/arch/m68k/include/asm/bitops.h
+> +++ b/arch/m68k/include/asm/bitops.h
+> @@ -457,7 +457,7 @@ static inline unsigned long ffz(unsigned long word)
+>    *	generic functions for those.
+>    */
+>   #if (defined(__mcfisaaplus__) || defined(__mcfisac__))&&  \
+> -	!defined(CONFIG_M68000)&&  !defined(CONFIG_MCPU32)
+> +	!defined(CONFIG_M68XXX)
+>   static inline int __ffs(int x)
+>   {
+>   	__asm__ __volatile__ ("bitrev %0; ff1 %0"
+> diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+> index 9c09bec..8e58c2a 100644
+> --- a/arch/m68k/include/asm/delay.h
+> +++ b/arch/m68k/include/asm/delay.h
+> @@ -43,7 +43,7 @@ static inline void __delay(unsigned long loops)
+>   extern void __bad_udelay(void);
+>
+>
+> -#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+>   /*
+>    * The simpler m68k and ColdFire processors do not have a 32*32->64
+>    * multiply instruction. So we need to handle them a little differently.
+> diff --git a/arch/m68k/lib/memcpy.c b/arch/m68k/lib/memcpy.c
+> index 10ca051..c0a1ae8 100644
+> --- a/arch/m68k/lib/memcpy.c
+> +++ b/arch/m68k/lib/memcpy.c
+> @@ -22,7 +22,7 @@ void *memcpy(void *to, const void *from, size_t n)
+>   		from = cfrom;
+>   		n--;
+>   	}
+> -#if defined(CONFIG_M68000)
+> +#if defined(CONFIG_M68XXX)
+>   	if ((long)from&  1) {
+>   		char *cto = to;
+>   		const char *cfrom = from;
+> @@ -43,7 +43,7 @@ void *memcpy(void *to, const void *from, size_t n)
+>   	if (temp) {
+>   		long *lto = to;
+>   		const long *lfrom = from;
+> -#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+>   		for (; temp; temp--)
+>   			*lto++ = *lfrom++;
+>   #else
+> diff --git a/arch/m68k/lib/memset.c b/arch/m68k/lib/memset.c
+> index 8a7639f..6196f39 100644
+> --- a/arch/m68k/lib/memset.c
+> +++ b/arch/m68k/lib/memset.c
+> @@ -32,7 +32,7 @@ void *memset(void *s, int c, size_t count)
+>   	temp = count>>  2;
+>   	if (temp) {
+>   		long *ls = s;
+> -#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+>   		for (; temp; temp--)
+>   			*ls++ = c;
+>   #else
+> diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
+> index 79e928a..1cd9ba4 100644
+> --- a/arch/m68k/lib/muldi3.c
+> +++ b/arch/m68k/lib/muldi3.c
+> @@ -19,7 +19,7 @@ along with GNU CC; see the file COPYING.  If not, write to
+>   the Free Software Foundation, 59 Temple Place - Suite 330,
+>   Boston, MA 02111-1307, USA.  */
+>
+> -#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +#if defined(CONFIG_M68XXX) || defined(CONFIG_COLDFIRE)
+>
+>   #define SI_TYPE_SIZE 32
+>   #define __BITS4 (SI_TYPE_SIZE / 4)
 
 
 -- 
-______
-Mohamed Nabil Hafez
-Embedded Software Engineer
-
---bcaec553fefa516efa04be8aa8a6
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_extra" styl=
-e>Ah , Bloody Hell , we should punish this &quot;reflecter&quot;=A0</div><d=
-iv class=3D"gmail_extra" style>but still 23 emails are too much for 1 blood=
-y min ? =A0no ?</div>
-<br><div class=3D"gmail_quote">On Thu, Apr 26, 2012 at 3:07 AM, Greg Ungere=
-r <span dir=3D"ltr">&lt;<a href=3D"mailto:gerg@snapgear.com" target=3D"_bla=
-nk">gerg@snapgear.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_q=
-uote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1e=
-x">
-Hi Alex,<div class=3D"im"><br>
-<br>
-On 04/26/2012 10:53 AM, Alex LI wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-You sent 50 mails in 1 min.<br>
-</blockquote>
-<br></div>
-I sent 23. And both list archives (linux-m68k and uclinux-dev) only<br>
-show the 23 emails.<br>
-<br>
-Maybe the uclinux-dev reflecter is sending dupes to list recpients?<br>
-<br>
-Regards<br>
-Greg<br>
-<br>
-<br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex"><div class=3D"im">
-Sent from my Sony Ericsson Xperia arc S<br>
-<br></div>
-Greg Ungerer&lt;<a href=3D"mailto:gerg@snapgear.com" target=3D"_blank">gerg=
-@snapgear.com</a>&gt; =A0?:<div><div class=3D"h5"><br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-On 04/26/2012 10:36 AM, mohamed nabil wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-that&#39;s a Fucking spam man !!<br>
-</blockquote>
-<br>
-Huh?<br>
-<br>
-Thats how open source development works. If you don&#39;t like it don&#39;t=
-<br>
-subscribe to a developers list.<br>
-<br>
-Regards<br>
-Greg<br>
-<br>
-<br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-On Thu, Apr 26, 2012 at 2:26 AM,&lt;<a href=3D"mailto:gerg@snapgear.com" ta=
-rget=3D"_blank">gerg@snapgear.com</a><br>
-&lt;mailto:<a href=3D"mailto:gerg@snapgear.com" target=3D"_blank">gerg@snap=
-gear.com</a>&gt;&gt; =A0wrote:<br>
-<br>
- =A0 =A0 From: Greg Ungerer&lt;<a href=3D"mailto:gerg@uclinux.org" target=
-=3D"_blank">gerg@uclinux.org</a>&lt;<u></u>mailto:<a href=3D"mailto:gerg@uc=
-linux.org" target=3D"_blank">gerg@uclinux.org</a>&gt;&gt;<br>
-<br>
- =A0 =A0 The GPIO data struct setup is now the only remaining code in the<b=
-r>
- =A0 =A0 platform<br>
- =A0 =A0 gpio.c file. So move it to the platform config.c code and remove t=
-he<br>
- =A0 =A0 gpio.c<br>
- =A0 =A0 file.<br>
-<br>
- =A0 =A0 Signed-off-by: Greg Ungerer&lt;<a href=3D"mailto:gerg@uclinux.org"=
- target=3D"_blank">gerg@uclinux.org</a>&lt;<u></u>mailto:<a href=3D"mailto:=
-gerg@uclinux.org" target=3D"_blank">gerg@uclinux.org</a>&gt;&gt;<br>
- =A0 =A0 ---<br>
- =A0 =A0 =A0 arch/m68k/platform/532x/<u></u>Makefile | =A0 =A02 +-<br>
- =A0 =A0 =A0 arch/m68k/platform/532x/<u></u>config.c | =A0 25 +++++++++++++=
-+++++++++<br>
- =A0 =A0 =A0 arch/m68k/platform/532x/gpio.c =A0 | =A0 43<br>
- =A0 =A0 ------------------------------<u></u>--------<br>
- =A0 =A0 =A0 3 files changed, 26 insertions(+), 44 deletions(-)<br>
- =A0 =A0 =A0 delete mode 100644 arch/m68k/platform/532x/gpio.c<br>
-<br>
- =A0 =A0 diff --git a/arch/m68k/platform/532x/<u></u>Makefile<br>
- =A0 =A0 b/arch/m68k/platform/532x/<u></u>Makefile<br>
- =A0 =A0 index ce01669..c0d8cf8 100644<br>
- =A0 =A0 --- a/arch/m68k/platform/532x/<u></u>Makefile<br>
- =A0 =A0 +++ b/arch/m68k/platform/532x/<u></u>Makefile<br>
- =A0 =A0 @@ -15,4 +15,4 @@<br>
- =A0 =A0 =A0 asflags-$(CONFIG_FULLDEBUG) :=3D -DDEBUGGER_COMPATIBLE_CACHE=
-=3D1<br>
-<br>
- =A0 =A0 =A0 #obj-y :=3D config.o usb-mcf532x.o spi-mcf532x.o<br>
- =A0 =A0 -obj-y :=3D config.o gpio.o<br>
- =A0 =A0 +obj-y :=3D config.o<br>
- =A0 =A0 diff --git a/arch/m68k/platform/532x/<u></u>config.c<br>
- =A0 =A0 b/arch/m68k/platform/532x/<u></u>config.c<br>
- =A0 =A0 index 2bec347..a4dd3d8 100644<br>
- =A0 =A0 --- a/arch/m68k/platform/532x/<u></u>config.c<br>
- =A0 =A0 +++ b/arch/m68k/platform/532x/<u></u>config.c<br>
- =A0 =A0 @@ -26,10 +26,35 @@<br>
- =A0 =A0 =A0 #include&lt;asm/mcfsim.h&gt;<br>
- =A0 =A0 =A0 #include&lt;asm/mcfuart.h&gt;<br>
- =A0 =A0 =A0 #include&lt;asm/mcfdma.h&gt;<br>
- =A0 =A0 +#include&lt;asm/mcfgpio.h&gt;<br>
- =A0 =A0 =A0 #include&lt;asm/mcfwdebug.h&gt;<br>
-<br>
- =A0 =A0 =A0 /*****************************<u></u>*************************=
-*****<u></u>****************/<br>
-<br>
- =A0 =A0 +struct mcf_gpio_chip mcf_gpio_chips[] =3D {<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,<br=
->
- =A0 =A0 MCFEPORT_EPPDR),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(FECH, 8, 8),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(FECL, 16, 8),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(SSI, 24, 5),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(BUSCTL, 32, 4),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(BE, 40, 4),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(CS, 49, 5),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(PWM, 58, 4),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(FECI2C, 64, 4),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(UART, 72, 8),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(QSPI, 80, 6),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(TIMER, 88, 4),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(LCDDATAH, 96, 2),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(LCDDATAM, 104, 8),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(LCDDATAL, 112, 8),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(LCDCTLH, 120, 1),<br>
- =A0 =A0 + =A0 =A0 =A0 MCFGPF(LCDCTLL, 128, 8),<br>
- =A0 =A0 +};<br>
- =A0 =A0 +<br>
- =A0 =A0 +unsigned int mcf_gpio_chips_size =3D ARRAY_SIZE(mcf_gpio_chips);<=
-br>
- =A0 =A0 +<br>
- =A0 =A0 +/****************************<u></u>*****************************=
-*<u></u>*****************/<br>
- =A0 =A0 +<br>
- =A0 =A0 =A0 #ifdef CONFIG_SPI_COLDFIRE_QSPI<br>
-<br>
- =A0 =A0 =A0 static void __init m532x_qspi_init(void)<br>
- =A0 =A0 diff --git a/arch/m68k/platform/532x/<u></u>gpio.c<br>
- =A0 =A0 b/arch/m68k/platform/532x/<u></u>gpio.c<br>
- =A0 =A0 deleted file mode 100644<br>
- =A0 =A0 index 3e1b71d..0000000<br>
- =A0 =A0 --- a/arch/m68k/platform/532x/<u></u>gpio.c<br>
- =A0 =A0 +++ /dev/null<br>
- =A0 =A0 @@ -1,43 +0,0 @@<br>
- =A0 =A0 -/*<br>
- =A0 =A0 - * Coldfire generic GPIO support<br>
- =A0 =A0 - *<br>
- =A0 =A0 - * (C) Copyright 2009, Steven King&lt;<a href=3D"mailto:sfking@fd=
-wdc.com" target=3D"_blank">sfking@fdwdc.com</a><br>
- =A0 =A0 &lt;mailto:<a href=3D"mailto:sfking@fdwdc.com" target=3D"_blank">s=
-fking@fdwdc.com</a>&gt;&gt;<br>
- =A0 =A0 - *<br>
- =A0 =A0 - * This program is free software; you can redistribute it and/or =
-modify<br>
- =A0 =A0 - * it under the terms of the GNU General Public License as publis=
-hed by<br>
- =A0 =A0 - * the Free Software Foundation; version 2 of the License.<br>
- =A0 =A0 - *<br>
- =A0 =A0 - * This program is distributed in the hope that it will be useful=
-,<br>
- =A0 =A0 - * but WITHOUT ANY WARRANTY; without even the implied warranty of=
-<br>
- =A0 =A0 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See th=
-e<br>
- =A0 =A0 - * GNU General Public License for more details.<br>
- =A0 =A0 -*/<br>
- =A0 =A0 -<br>
- =A0 =A0 -#include&lt;linux/kernel.h&gt;<br>
- =A0 =A0 -#include&lt;linux/init.h&gt;<br>
- =A0 =A0 -<br>
- =A0 =A0 -#include&lt;asm/coldfire.h&gt;<br>
- =A0 =A0 -#include&lt;asm/mcfsim.h&gt;<br>
- =A0 =A0 -#include&lt;asm/mcfgpio.h&gt;<br>
- =A0 =A0 -<br>
- =A0 =A0 -struct mcf_gpio_chip mcf_gpio_chips[] =3D {<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPS(PIRQ, 0, 8, MCFEPORT_EPDDR, MCFEPORT_EPDR,<br=
->
- =A0 =A0 MCFEPORT_EPPDR),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(FECH, 8, 8),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(FECL, 16, 8),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(SSI, 24, 5),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(BUSCTL, 32, 4),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(BE, 40, 4),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(CS, 49, 5),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(PWM, 58, 4),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(FECI2C, 64, 4),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(UART, 72, 8),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(QSPI, 80, 6),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(TIMER, 88, 4),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(LCDDATAH, 96, 2),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(LCDDATAM, 104, 8),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(LCDDATAL, 112, 8),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(LCDCTLH, 120, 1),<br>
- =A0 =A0 - =A0 =A0 =A0 MCFGPF(LCDCTLL, 128, 8),<br>
- =A0 =A0 -};<br>
- =A0 =A0 -<br>
- =A0 =A0 -unsigned int mcf_gpio_chips_size =3D ARRAY_SIZE(mcf_gpio_chips);<=
-br>
- =A0 =A0 --<br>
- =A0 =A0 1.7.0.4<br>
-<br>
- =A0 =A0 ______________________________<u></u>_________________<br>
- =A0 =A0 uClinux-dev mailing list<br>
- =A0 =A0 <a href=3D"mailto:uClinux-dev@uclinux.org" target=3D"_blank">uClin=
-ux-dev@uclinux.org</a>&lt;<u></u>mailto:<a href=3D"mailto:uClinux-dev@uclin=
-ux.org" target=3D"_blank">uClinux-dev@uclinux.org</a><u></u>&gt;<br>
- =A0 =A0 <a href=3D"http://mailman.uclinux.org/mailman/listinfo/uclinux-dev=
-" target=3D"_blank">http://mailman.uclinux.org/<u></u>mailman/listinfo/ucli=
-nux-dev</a><br>
- =A0 =A0 This message was resent by <a href=3D"mailto:uclinux-dev@uclinux.o=
-rg" target=3D"_blank">uclinux-dev@uclinux.org</a><br>
- =A0 =A0 &lt;mailto:<a href=3D"mailto:uclinux-dev@uclinux.org" target=3D"_b=
-lank">uclinux-dev@uclinux.<u></u>org</a>&gt;<br>
- =A0 =A0 To unsubscribe see:<br>
- =A0 =A0 <a href=3D"http://mailman.uclinux.org/mailman/options/uclinux-dev"=
- target=3D"_blank">http://mailman.uclinux.org/<u></u>mailman/options/uclinu=
-x-dev</a><br>
-<br>
-<br>
-<br>
-<br>
---<br>
-______<br>
-Mohamed Nabil Hafez<br>
-Embedded Software Engineer<br>
-<br>
-</blockquote>
-<br>
-<br>
---<br>
-------------------------------<u></u>------------------------------<u></u>-=
------------<br>
-Greg Ungerer =A0-- =A0Principal Engineer =A0 =A0 =A0 =A0EMAIL: =A0 =A0 <a h=
-ref=3D"mailto:gerg@snapgear.com" target=3D"_blank">gerg@snapgear.com</a><br=
->
-SnapGear Group, McAfee =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PHONE: =
-=A0 =A0 =A0 +61 7 3435 2888<br>
-8 Gardner Close, =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAX=
-: =A0 =A0 =A0 =A0 +61 7 3891 3630<br>
-Milton, QLD, 4064, Australia =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0WEB: <a href=3D=
-"http://www.SnapGear.com" target=3D"_blank">http://www.SnapGear.com</a><br>
-______________________________<u></u>_________________<br>
-uClinux-dev mailing list<br>
-<a href=3D"mailto:uClinux-dev@uclinux.org" target=3D"_blank">uClinux-dev@uc=
-linux.org</a><br>
-<a href=3D"http://mailman.uclinux.org/mailman/listinfo/uclinux-dev" target=
-=3D"_blank">http://mailman.uclinux.org/<u></u>mailman/listinfo/uclinux-dev<=
-/a><br>
-This message was resent by <a href=3D"mailto:uclinux-dev@uclinux.org" targe=
-t=3D"_blank">uclinux-dev@uclinux.org</a><br>
-To unsubscribe see:<br>
-<a href=3D"http://mailman.uclinux.org/mailman/options/uclinux-dev" target=
-=3D"_blank">http://mailman.uclinux.org/<u></u>mailman/options/uclinux-dev</=
-a><br>
-<br>
-</blockquote></div></div>
-=A0??? ?&amp;?~?&amp;? ??+-??? ??w??????m?b??f??&quot;??^n?r???z? ??h????&a=
-mp;?? ?G???h? (????j&quot;?? ? m?????z?????f???h???~?m?<br>
-<br>
-<br>
-</blockquote><div class=3D"HOEnZb"><div class=3D"h5">
-<br>
-<br>
--- <br>
-------------------------------<u></u>------------------------------<u></u>-=
------------<br>
-Greg Ungerer =A0-- =A0Principal Engineer =A0 =A0 =A0 =A0EMAIL: =A0 =A0 <a h=
-ref=3D"mailto:gerg@snapgear.com" target=3D"_blank">gerg@snapgear.com</a><br=
->
-SnapGear Group, McAfee =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PHONE: =
-=A0 =A0 =A0 +61 7 3435 2888<br>
-8 Gardner Close, =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAX=
-: =A0 =A0 =A0 =A0 +61 7 3891 3630<br>
-Milton, QLD, 4064, Australia =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0WEB: <a href=3D=
-"http://www.SnapGear.com" target=3D"_blank">http://www.SnapGear.com</a><br>
-</div></div></blockquote></div><br><br clear=3D"all"><div><br></div>-- <br>=
-______<br>Mohamed Nabil Hafez<br>Embedded Software Engineer <br><br>
-</div></div>
-
---bcaec553fefa516efa04be8aa8a6--
-
---===============3675241749378684453==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
---===============3675241749378684453==--
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
