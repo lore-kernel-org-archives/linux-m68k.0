@@ -1,102 +1,44 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/1] Changes for 68000 code integration.
-Date: Sat, 28 Apr 2012 23:02:02 +1000
-Message-ID: <4F9BEA4A.8090802@snapgear.com>
-References: <1335481717-8652-1-git-send-email-ljalvs@gmail.com> <4F9AA7DD.2020501@snapgear.com> <CAGj5WxBNxkXdS8atb-WVwWR5QLWPS6wreDnmpwaZLa=PzE6cNw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: [PATCH] m68k: fix compiler warning by properly inlining flat_set_persistent()
+Date: Sat, 28 Apr 2012 11:13:04 -0300
+Message-ID: <1335622384-4806-1-git-send-email-elezegarcia@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:35574 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751905Ab2D1NCJ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Apr 2012 09:02:09 -0400
-In-Reply-To: <CAGj5WxBNxkXdS8atb-WVwWR5QLWPS6wreDnmpwaZLa=PzE6cNw@mail.gmail.com>
+Received: from mail-yx0-f174.google.com ([209.85.213.174]:40643 "EHLO
+	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752463Ab2D1ONN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Apr 2012 10:13:13 -0400
+Received: by yenl12 with SMTP id l12so923852yen.19
+        for <linux-m68k@vger.kernel.org>; Sat, 28 Apr 2012 07:13:12 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Luis Alves <ljalvs@gmail.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, gerg@uclinux.org
+To: geert@linux-m68k.org, gerg@uclinux.org
+Cc: linux-m68k@vger.kernel.org, Ezequiel Garcia <elezegarcia@gmail.com>
 
-Hi Luis,
+This patch removes the following warning:
+fs/binfmt_flat.c:752: warning: unused variable 'persistent'.
+There is neither functionality change, nor extra code generated.
 
-On 04/28/2012 12:30 AM, Luis Alves wrote:
-> On Fri, Apr 27, 2012 at 3:06 PM, Greg Ungerer<gerg@snapgear.com>  wro=
-te:
->> On 04/27/2012 09:08 AM, Luis Alves wrote:
->>> This is the first of a pack of patches to support the original 6800=
-0 cpu.
->>> This adds:
->>> =C3=A1-MC68000 cpu as a choice in the config menu.
->>> =C3=A1-Alcetronics M68K board (uses this cpu).
->>>
->>> What I have changed:
->>> =C3=A1-CONFIG_M68000 was being used by 68328 CPUs.
->>> =C3=A1 Renamed to CONFIG_M68XXX. Now the 68000 and all CPU32 CPUs u=
-se this flag
->>> for common configurations.
->>> =C3=A1-Modified all 68[VZ|EZ]328 to select CONFIG_MCPU32
->>> =C3=A1-Modified CONFIG_MCPU32 to select CONFIG_M68XXX.
->>> =C3=A1-Modified CONFIG_M68360 to select CONFIG_M68XXX (I think it w=
-as missing
->>> some settings).
->>> =C3=A1-Modified some files to use CONFIG_M68XXX instead of
->>> CONFIG_M68000/CONFIG_MCPU32
->>
->>
->> Thinking on this a little more, you probably don't want most of
->> these changes. Certainly as Brad points out CPU32 and 68000 are
->> quite different, and they need to remain as separate config options.
->>
->> I can see you will end up with a arch/m68k/platform/68000 with
->> some new code. Is any of that common with what is currently in
->> arch/m68k/platform/68328? =C3=A1I would expect we want to move the
->> common 68000 code into that platform/68000 directory. Longer
->> term we may want to do away with 68328/68EZ328/68VZ328 directories
->> all together. All the code may go in a platform/68000. (Still
->> thinking this one over though, but I am planning on doing away
->> with the separate 5xxx ColdFire directories real soon now).
->>
->
-> I think this is a good idea. Do you suggest putting all together in t=
-he
-> same file and use #ifdef's for cpu specific options? I could do that.
+Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+---
+ arch/m68k/include/asm/flat.h |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
 
-That may or may not make sense, we need to think about each case.
-Hopefully we can keep common code together with minimal additional
-#ifdefs. And put board (or on/off chip peripherals) in there own
-files.
-
-
-> Also, how to deal with board specific configuration files?
-> As I referred in the previous mail, the 68000 has zero on-chip periph=
-erals
-> so the initial setup and configuration is a lot 'board-dependent'.
-
-Yep. The best case is if you have specific configuration files
-separate, and built based on their appropriate defines in the Makefile.
-(See examples in arch/m68k/platform/coldfire/Makefile).
-
-To start I would just put them all in the common 68000 sub-directory.
-If the need arises we can start putting machine specific sub-directorie=
-s
-later (which is what we have at the top arch level, arch/m68k/). For
-quite a few years we had machine specific directories under
-platform/coldfire. But I gave up on it eventually - there was just so
-much duplicated code it didn't seem to make any sense.
-
-Regards
-Greg
-
-
-
------------------------------------------------------------------------=
--
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close,                            FAX:         +61 7 3891 363=
-0
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+diff --git a/arch/m68k/include/asm/flat.h b/arch/m68k/include/asm/flat.h
+index a0e2907..f9454b8 100644
+--- a/arch/m68k/include/asm/flat.h
++++ b/arch/m68k/include/asm/flat.h
+@@ -11,6 +11,11 @@
+ #define	flat_get_addr_from_rp(rp, relval, flags, p)	get_unaligned(rp)
+ #define	flat_put_addr_at_rp(rp, val, relval)	put_unaligned(val,rp)
+ #define	flat_get_relocate_addr(rel)		(rel)
+-#define	flat_set_persistent(relval, p)		0
++
++static inline int flat_set_persistent(unsigned long relval,
++				      unsigned long *persistent)
++{
++	return 0;
++}
+ 
+ #endif /* __M68KNOMMU_FLAT_H__ */
+-- 
+1.7.3.4
