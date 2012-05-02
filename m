@@ -1,63 +1,57 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: fix compiler warning by properly inlining flat_set_persistent()
-Date: Mon, 30 Apr 2012 13:42:56 +1000
-Message-ID: <4F9E0A40.40602@snapgear.com>
-References: <1335622384-4806-1-git-send-email-elezegarcia@gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH 00/11] m68knommu: remove ColdFire sub-architecture directories
+Date: Wed, 2 May 2012 11:08:55 +1000
+Message-ID: <1335920946-11297-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:10037 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755082Ab2D3DoP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Apr 2012 23:44:15 -0400
-In-Reply-To: <1335622384-4806-1-git-send-email-elezegarcia@gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:48859 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753290Ab2EBBKR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 1 May 2012 21:10:17 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Cc: geert@linux-m68k.org, gerg@uclinux.org, linux-m68k@vger.kernel.org
-
-Hi Ezequiel,
-
-On 29/04/12 00:13, Ezequiel Garcia wrote:
-> This patch removes the following warning:
-> fs/binfmt_flat.c:752: warning: unused variable 'persistent'.
-> There is neither functionality change, nor extra code generated.
->
-> Signed-off-by: Ezequiel Garcia<elezegarcia@gmail.com>
-
-Looks good, thanks.  I'll push that into the for-next branch
-of the m68knommu git tree.
-
-Regards
-Greg
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
 
->   arch/m68k/include/asm/flat.h |    7 ++++++-
->   1 files changed, 6 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/flat.h b/arch/m68k/include/asm/flat.h
-> index a0e2907..f9454b8 100644
-> --- a/arch/m68k/include/asm/flat.h
-> +++ b/arch/m68k/include/asm/flat.h
-> @@ -11,6 +11,11 @@
->   #define	flat_get_addr_from_rp(rp, relval, flags, p)	get_unaligned(rp)
->   #define	flat_put_addr_at_rp(rp, val, relval)	put_unaligned(val,rp)
->   #define	flat_get_relocate_addr(rel)		(rel)
-> -#define	flat_set_persistent(relval, p)		0
-> +
-> +static inline int flat_set_persistent(unsigned long relval,
-> +				      unsigned long *persistent)
-> +{
-> +	return 0;
-> +}
->
->   #endif /* __M68KNOMMU_FLAT_H__ */
+Currently the different ColdFire sub-archiectures are split up with a
+directory for each family type. Most though only contain a small amount
+of code, it just doesn't seem to make any sense to keep them separate.
 
+Move all the ColdFire sub-architecture code into the platform/coldfire
+directory, and remove the sub-architecture directories. We already build
+the common ColdFire components based on sub-architecture type anyway,
+so there is very little Makefile change required.
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Overall we remove about 200 lines of duplicated Makefile code, and end
+up with all the ColdFire specific code in a single directory.
+
+---
+
+ arch/m68k/Makefile                     |   10 ----------
+ arch/m68k/platform/5206/Makefile       |   18 ------------------
+ arch/m68k/platform/520x/Makefile       |   17 -----------------
+ arch/m68k/platform/523x/Makefile       |   17 -----------------
+ arch/m68k/platform/5249/Makefile       |   18 ------------------
+ arch/m68k/platform/5272/Makefile       |   18 ------------------
+ arch/m68k/platform/527x/Makefile       |   18 ------------------
+ arch/m68k/platform/528x/Makefile       |   18 ------------------
+ arch/m68k/platform/5307/Makefile       |   20 --------------------
+ arch/m68k/platform/532x/Makefile       |   18 ------------------
+ arch/m68k/platform/5407/Makefile       |   18 ------------------
+ arch/m68k/platform/54xx/Makefile       |   19 -------------------
+ arch/m68k/platform/coldfire/Makefile   |   24 ++++++++++++++----------
+ b/arch/m68k/Makefile                   |    2 --
+ b/arch/m68k/platform/coldfire/Makefile |    4 ++--
+ b/arch/m68k/platform/coldfire/m5206.c  |    1 -
+ b/arch/m68k/platform/coldfire/m520x.c  |    1 -
+ b/arch/m68k/platform/coldfire/m523x.c  |    1 -
+ b/arch/m68k/platform/coldfire/m5249.c  |    1 -
+ b/arch/m68k/platform/coldfire/m5272.c  |    1 -
+ b/arch/m68k/platform/coldfire/m527x.c  |    1 -
+ b/arch/m68k/platform/coldfire/m528x.c  |    1 -
+ b/arch/m68k/platform/coldfire/m532x.c  |    1 -
+ b/arch/m68k/platform/coldfire/m5407.c  |    1 -
+ b/arch/m68k/platform/coldfire/m54xx.c  |    1 -
+ b/arch/m68k/platform/coldfire/nettel.c |    1 -
+ 26 files changed, 16 insertions(+), 234 deletions(-)
