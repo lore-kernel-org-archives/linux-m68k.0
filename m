@@ -1,181 +1,224 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 2/2] m68k: merge the MMU and non-MMU versions of the arch dma code
-Date: Fri, 4 May 2012 16:50:47 +1000
-Message-ID: <1336114247-22764-3-git-send-email-gerg@snapgear.com>
-References: <1336114247-22764-1-git-send-email-gerg@snapgear.com>
+From: Luis Alves <ljalvs@gmail.com>
+Subject: Re: [PATCH 1/1] 68000 code integration
+Date: Fri, 4 May 2012 10:48:00 +0100
+Message-ID: <CAGj5WxA=uO0Pkbn5UM4Tu3oGFO9JAXA7mEiwNQ3cuiOHM2b+hg@mail.gmail.com>
+References: <1335818553-14402-1-git-send-email-ljalvs@gmail.com>
+	<4FA37D01.2000107@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:15756 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752867Ab2EDGxg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 May 2012 02:53:36 -0400
-In-Reply-To: <1336114247-22764-1-git-send-email-gerg@snapgear.com>
+Received: from mail-gg0-f174.google.com ([209.85.161.174]:55619 "EHLO
+	mail-gg0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753917Ab2EDJsC convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 May 2012 05:48:02 -0400
+Received: by gghe5 with SMTP id e5so384095ggh.19
+        for <linux-m68k@vger.kernel.org>; Fri, 04 May 2012 02:48:01 -0700 (PDT)
+In-Reply-To: <4FA37D01.2000107@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org
+Cc: gerg@uclinux.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+Hi Greg,
 
-The majority of the m68k architecture dma code is the same, so merge the
-current separated files dma_no.c and dma_mm.c back into a single dma.c
+On Fri, May 4, 2012 at 7:53 AM, Greg Ungerer <gerg@snapgear.com> wrote:
+> Hi Luis,
+>
+> On 01/05/12 06:42, Luis Alves wrote:
+>>
+>> Here is my second attempt for the 68000 code integration.
+>>
+>> What I have done:
+>> =A0Merged all 68000 based cpu's in platform/68000 and deleted 68*328
+>> subdirs.
+>> =A0Modified respective Makefile's to correctly build each target.
+>> =A0Added support for my board/cpu in Kconfig's
+>> =A0Merged all head.S files into one.
+>
+>
+> Overall this is starting to look really good. I like the common
+> 68000 platform directory. That has worked out well.
+>
+> Did you send this to the m68k-linux list as well?
+> I don't see it in the CC list.
 
-The main alloc and free routines are a little different, so we keep a
-single #ifdef based on CONFIG_MMU for them. All the other support functions
-are now identical.
+Yes, but in two separated emails (I had some headache with google smtp =
+server).
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+>
+> This is a big patch on its own though. Do you think there is any
+> way you can break it up, into logical but smaller pieces?
+> Something like firstly a patch that reorgs the directories for
+> current 68x328 targets. Then follow on patches that add your
+> board support.
+>
+> Oh, and another suggestion :-)
+> Did you use git to generate this?
+> If you use git format-patch with the -B and -M options it will
+> handle moves and renames a little better, producing much smaller
+> patches for email list review. It will collapse those pesky
+> bootlogo.h files in this patch for example. And it also makes it
+> much easier to see any changes made to moved files that are
+> otherwise no obvious.
+
+Yes, I've used git with Linus kernel as base, but I've just started
+using git and don't know all the available options and features.
+I'll try out the referred options.
+
+>
+> Oh, sorry, another suggestion as well :-)
+> If you run this patch through the kernels scripts/checkpatch.pl
+> checker it will list out any formating issues. It would be good to
+> fix those up as well.
+
+Your suggestions are always welcome :)
+I'll run that script.
+
+>
+> An observation from the patch, the 68000/entry-*.S files all look
+> quite similar. Is there any way they can be merged into a single
+> file?
+
+I'm just noticed that accidentally I've added the 'entry-68000.S'!
+This file should be removed.
+
+About merging, yes I plan to do it later. The thing is that in my
+first attempt of running this kernel in the 68000 the entry code from
+the  68328 had a strange behavior (you should remember debugging this
+with me - lots of softlocks).
+Then I've used the entry.S from coldfire sources as base and it worked =
+smooth.
+Also, the existing trap exception code doesn't work with 68000 cpu's
+since they don't provide the vector in the stack.
+
+
+>
+> Thanks for doing this, it is looking really nice.
+
+The pleasure is all mine :)
+
+Regards,
+Luis
+
+
+>
+> Regards
+> Greg
+>
+>
+>
+>
+>> In future iterations, more code can/will be merged.
+>>
+>> For the 68000 (and my board) the code is working fine. I have a fast=
+ and
+>> stable kernel running in the old 68000.
+>> It would be nice if someone could test the 68[xx]328 target code and
+>> eventually fix any bugs.
+>>
+>> The exception code for the 68000 is not yet completed (not having th=
+e
+>> exception vector on the stack is boring).
+>> I plan to send future updates for the 68000 (and the code for my boa=
+rd
+>> drivers, not included in this patch)
+>>
+>>
+>> Regards,
+>> Luis Alves
+>>
+>>
+>> ---
+>> =A0arch/m68k/Kconfig.cpu =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
+ =A02 +-
+>> =A0arch/m68k/Kconfig.machine =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
+6 +
+>> =A0arch/m68k/Makefile =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+| =A0 =A06 +-
+>> =A0arch/m68k/include/asm/alce68k.h =A0 =A0 =A0 =A0 =A0 | =A0136 ++
+>> =A0arch/m68k/kernel/setup_no.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
+3 +
+>> =A0arch/m68k/platform/68000/Makefile =A0 =A0 =A0 =A0 | =A0 26 +
+>> =A0arch/m68k/platform/68000/bootlogo-vz.h =A0 =A0| 3204
+>> +++++++++++++++++++++++++++++
+>> =A0arch/m68k/platform/68000/bootlogo.h =A0 =A0 =A0 | =A0270 +++
+>> =A0arch/m68k/platform/68000/config-alce68k.c | =A0179 ++
+>> =A0arch/m68k/platform/68000/config-ez.c =A0 =A0 =A0| =A0 76 +
+>> =A0arch/m68k/platform/68000/config-vz.c =A0 =A0 =A0| =A0188 ++
+>> =A0arch/m68k/platform/68000/config.c =A0 =A0 =A0 =A0 | =A0 55 +
+>> =A0arch/m68k/platform/68000/entry-68000.S =A0 =A0| =A0463 +++++
+>> =A0arch/m68k/platform/68000/entry-alce68k.S =A0| =A0453 ++++
+>> =A0arch/m68k/platform/68000/entry.S =A0 =A0 =A0 =A0 =A0| =A0261 +++
+>> =A0arch/m68k/platform/68000/head.S =A0 =A0 =A0 =A0 =A0 | =A0310 +++
+>> =A0arch/m68k/platform/68000/ints-alce68k.c =A0 | =A0387 ++++
+>> =A0arch/m68k/platform/68000/ints.c =A0 =A0 =A0 =A0 =A0 | =A0186 ++
+>> =A0arch/m68k/platform/68000/romvec.S =A0 =A0 =A0 =A0 | =A0 35 +
+>> =A0arch/m68k/platform/68000/timers-alce68k.c | =A0112 +
+>> =A0arch/m68k/platform/68000/timers.c =A0 =A0 =A0 =A0 | =A0135 ++
+>> =A0arch/m68k/platform/68328/Makefile =A0 =A0 =A0 =A0 | =A0 21 -
+>> =A0arch/m68k/platform/68328/bootlogo.h =A0 =A0 =A0 | =A0270 ---
+>> =A0arch/m68k/platform/68328/config.c =A0 =A0 =A0 =A0 | =A0 55 -
+>> =A0arch/m68k/platform/68328/entry.S =A0 =A0 =A0 =A0 =A0| =A0261 ---
+>> =A0arch/m68k/platform/68328/head-de2.S =A0 =A0 =A0 | =A0128 --
+>> =A0arch/m68k/platform/68328/head-pilot.S =A0 =A0 | =A0207 --
+>> =A0arch/m68k/platform/68328/head-ram.S =A0 =A0 =A0 | =A0141 --
+>> =A0arch/m68k/platform/68328/head-rom.S =A0 =A0 =A0 | =A0105 -
+>> =A0arch/m68k/platform/68328/ints.c =A0 =A0 =A0 =A0 =A0 | =A0186 --
+>> =A0arch/m68k/platform/68328/romvec.S =A0 =A0 =A0 =A0 | =A0 35 -
+>> =A0arch/m68k/platform/68328/timers.c =A0 =A0 =A0 =A0 | =A0135 --
+>> =A0arch/m68k/platform/68EZ328/Makefile =A0 =A0 =A0 | =A0 =A05 -
+>> =A0arch/m68k/platform/68EZ328/config.c =A0 =A0 =A0 | =A0 76 -
+>> =A0arch/m68k/platform/68VZ328/Makefile =A0 =A0 =A0 | =A0 11 -
+>> =A0arch/m68k/platform/68VZ328/bootlogo.h =A0 =A0 | 3204
+>> -----------------------------
+>> =A0arch/m68k/platform/68VZ328/config.c =A0 =A0 =A0 | =A0188 --
+>> =A037 files changed, 6488 insertions(+), 5033 deletions(-)
+>> =A0create mode 100644 arch/m68k/include/asm/alce68k.h
+>> =A0create mode 100644 arch/m68k/platform/68000/Makefile
+>> =A0create mode 100644 arch/m68k/platform/68000/bootlogo-vz.h
+>> =A0create mode 100644 arch/m68k/platform/68000/bootlogo.h
+>> =A0create mode 100644 arch/m68k/platform/68000/config-alce68k.c
+>> =A0create mode 100644 arch/m68k/platform/68000/config-ez.c
+>> =A0create mode 100644 arch/m68k/platform/68000/config-vz.c
+>> =A0create mode 100644 arch/m68k/platform/68000/config.c
+>> =A0create mode 100644 arch/m68k/platform/68000/entry-68000.S
+>> =A0create mode 100644 arch/m68k/platform/68000/entry-alce68k.S
+>> =A0create mode 100644 arch/m68k/platform/68000/entry.S
+>> =A0create mode 100644 arch/m68k/platform/68000/head.S
+>> =A0create mode 100644 arch/m68k/platform/68000/ints-alce68k.c
+>> =A0create mode 100644 arch/m68k/platform/68000/ints.c
+>> =A0create mode 100644 arch/m68k/platform/68000/romvec.S
+>> =A0create mode 100644 arch/m68k/platform/68000/timers-alce68k.c
+>> =A0create mode 100644 arch/m68k/platform/68000/timers.c
+>> =A0delete mode 100644 arch/m68k/platform/68328/Makefile
+>> =A0delete mode 100644 arch/m68k/platform/68328/bootlogo.h
+>> =A0delete mode 100644 arch/m68k/platform/68328/config.c
+>> =A0delete mode 100644 arch/m68k/platform/68328/entry.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/head-de2.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/head-pilot.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/head-ram.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/head-rom.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/ints.c
+>> =A0delete mode 100644 arch/m68k/platform/68328/romvec.S
+>> =A0delete mode 100644 arch/m68k/platform/68328/timers.c
+>> =A0delete mode 100644 arch/m68k/platform/68EZ328/Makefile
+>> =A0delete mode 100644 arch/m68k/platform/68EZ328/config.c
+>> =A0delete mode 100644 arch/m68k/platform/68VZ328/Makefile
+>> =A0delete mode 100644 arch/m68k/platform/68VZ328/bootlogo.h
+>> =A0delete mode 100644 arch/m68k/platform/68VZ328/config.c
+>
+>
+>
+>
+> --
+> ---------------------------------------------------------------------=
 ---
- arch/m68k/kernel/{dma_mm.c => dma.c} |   35 +++++++++++++++-
- arch/m68k/kernel/dma_no.c            |   75 ----------------------------------
- 2 files changed, 34 insertions(+), 76 deletions(-)
- rename arch/m68k/kernel/{dma_mm.c => dma.c} (83%)
- delete mode 100644 arch/m68k/kernel/dma_no.c
-
-diff --git a/arch/m68k/kernel/dma_mm.c b/arch/m68k/kernel/dma.c
-similarity index 83%
-rename from arch/m68k/kernel/dma_mm.c
-rename to arch/m68k/kernel/dma.c
-index a3c471b..f6daf6e 100644
---- a/arch/m68k/kernel/dma_mm.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -16,6 +16,8 @@
- 
- #include <asm/pgalloc.h>
- 
-+#ifdef CONFIG_MMU
-+
- void *dma_alloc_coherent(struct device *dev, size_t size,
- 			 dma_addr_t *handle, gfp_t flag)
- {
-@@ -58,7 +60,6 @@ void *dma_alloc_coherent(struct device *dev, size_t size,
- 
- 	return addr;
- }
--EXPORT_SYMBOL(dma_alloc_coherent);
- 
- void dma_free_coherent(struct device *dev, size_t size,
- 		       void *addr, dma_addr_t handle)
-@@ -66,6 +67,38 @@ void dma_free_coherent(struct device *dev, size_t size,
- 	pr_debug("dma_free_coherent: %p, %x\n", addr, handle);
- 	vfree(addr);
- }
-+
-+#else
-+
-+#include <asm/cacheflush.h>
-+
-+void *dma_alloc_coherent(struct device *dev, size_t size,
-+			   dma_addr_t *dma_handle, gfp_t gfp)
-+{
-+	void *ret;
-+	/* ignore region specifiers */
-+	gfp &= ~(__GFP_DMA | __GFP_HIGHMEM);
-+
-+	if (dev == NULL || (*dev->dma_mask < 0xffffffff))
-+		gfp |= GFP_DMA;
-+	ret = (void *)__get_free_pages(gfp, get_order(size));
-+
-+	if (ret != NULL) {
-+		memset(ret, 0, size);
-+		*dma_handle = virt_to_phys(ret);
-+	}
-+	return ret;
-+}
-+
-+void dma_free_coherent(struct device *dev, size_t size,
-+			 void *vaddr, dma_addr_t dma_handle)
-+{
-+	free_pages((unsigned long)vaddr, get_order(size));
-+}
-+
-+#endif /* CONFIG_MMU */
-+
-+EXPORT_SYMBOL(dma_alloc_coherent);
- EXPORT_SYMBOL(dma_free_coherent);
- 
- void dma_sync_single_for_device(struct device *dev, dma_addr_t handle,
-diff --git a/arch/m68k/kernel/dma_no.c b/arch/m68k/kernel/dma_no.c
-deleted file mode 100644
-index f1dc3fc..0000000
---- a/arch/m68k/kernel/dma_no.c
-+++ /dev/null
-@@ -1,75 +0,0 @@
--/*
-- * Dynamic DMA mapping support.
-- *
-- * We never have any address translations to worry about, so this
-- * is just alloc/free.
-- */
--
--#include <linux/types.h>
--#include <linux/gfp.h>
--#include <linux/mm.h>
--#include <linux/device.h>
--#include <linux/dma-mapping.h>
--#include <linux/export.h>
--#include <asm/cacheflush.h>
--
--void *dma_alloc_coherent(struct device *dev, size_t size,
--			   dma_addr_t *dma_handle, gfp_t gfp)
--{
--	void *ret;
--	/* ignore region specifiers */
--	gfp &= ~(__GFP_DMA | __GFP_HIGHMEM);
--
--	if (dev == NULL || (*dev->dma_mask < 0xffffffff))
--		gfp |= GFP_DMA;
--	ret = (void *)__get_free_pages(gfp, get_order(size));
--
--	if (ret != NULL) {
--		memset(ret, 0, size);
--		*dma_handle = virt_to_phys(ret);
--	}
--	return ret;
--}
--
--void dma_free_coherent(struct device *dev, size_t size,
--			 void *vaddr, dma_addr_t dma_handle)
--{
--	free_pages((unsigned long)vaddr, get_order(size));
--}
--
--void dma_sync_single_for_device(struct device *dev, dma_addr_t handle,
--				size_t size, enum dma_data_direction dir)
--{
--	switch (dir) {
--	case DMA_TO_DEVICE:
--		flush_dcache_range(handle, size);
--		break;
--	case DMA_FROM_DEVICE:
--		/* Should be clear already */
--		break;
--	default:
--		if (printk_ratelimit())
--			printk("dma_sync_single_for_device: unsupported dir %u\n", dir);
--		break;
--	}
--}
--
--EXPORT_SYMBOL(dma_sync_single_for_device);
--dma_addr_t dma_map_single(struct device *dev, void *addr, size_t size,
--			  enum dma_data_direction dir)
--{
--	dma_addr_t handle = virt_to_phys(addr);
--	flush_dcache_range(handle, size);
--	return handle;
--}
--EXPORT_SYMBOL(dma_map_single);
--
--dma_addr_t dma_map_page(struct device *dev, struct page *page,
--			unsigned long offset, size_t size,
--			enum dma_data_direction dir)
--{
--	dma_addr_t handle = page_to_phys(page) + offset;
--	dma_sync_single_for_device(dev, handle, size, dir);
--	return handle;
--}
--EXPORT_SYMBOL(dma_map_page);
--- 
-1.7.0.4
+> Greg Ungerer =A0-- =A0Principal Engineer =A0 =A0 =A0 =A0EMAIL: =A0 =A0=
+ gerg@snapgear.com
+> SnapGear Group, McAfee =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PHO=
+NE: =A0 =A0 =A0 +61 7 3435 2888
+> 8 Gardner Close =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ FAX: =A0 =A0 =A0 =A0 +61 7 3217 5323
+> Milton, QLD, 4064, Australia =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0WEB: http=
+://www.SnapGear.com
