@@ -1,50 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/1] 68000 code integration
-Date: Sun, 6 May 2012 22:46:18 +0200
-Message-ID: <CAMuHMdVjZdQXJ3aK+etfk5ewRwhb-WSfqqpa7mqwb71-3UfpFg@mail.gmail.com>
-References: <1335818553-14402-1-git-send-email-ljalvs@gmail.com>
-	<4FA37D01.2000107@snapgear.com>
-	<CAGj5WxA=uO0Pkbn5UM4Tu3oGFO9JAXA7mEiwNQ3cuiOHM2b+hg@mail.gmail.com>
-	<CAMuHMdWKkPwCa5rG55=ktG5kpr6Waf23DY17pQ7zNhYrwtDa1A@mail.gmail.com>
-	<CAGj5WxD8tziXOxtCOfsV8Ket=0D=rNg4HQT5Jco2dQ4n2_KRiQ@mail.gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: new ARAnyM with better FPU
+Date: Sun, 6 May 2012 23:19:44 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1205062318080.15462@herc.mirbsd.org>
+References: <1332282242.3352.7.camel@aspire>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yx0-f174.google.com ([209.85.213.174]:63884 "EHLO
-	mail-yx0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754365Ab2EFUqT convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 May 2012 16:46:19 -0400
-Received: by yenm10 with SMTP id m10so3268108yen.19
-        for <linux-m68k@vger.kernel.org>; Sun, 06 May 2012 13:46:18 -0700 (PDT)
-In-Reply-To: <CAGj5WxD8tziXOxtCOfsV8Ket=0D=rNg4HQT5Jco2dQ4n2_KRiQ@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <1332282242.3352.7.camel@aspire>
+Resent-Message-ID: <Yfp_pyCnhQ.A.pwG.4cwpPB@bendel>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Petr Stehlik <pstehlik@sophics.cz>
+Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Luis Alves <ljalvs@gmail.com>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-Hi Luis,
+Petr Stehlik dixit:
 
-On Fri, May 4, 2012 at 1:53 PM, Luis Alves <ljalvs@gmail.com> wrote:
-> Is the Amiga development active? I can see that the last commit was
-> about 1 year ago.
+>I have prepared some binary packages (available for download now) and
+>ARAnyM Debian maintainer is working on updating the package in Debian
+>sid as well.
 
-Not really. From time to time (starting at 2.6.8.1 IIRC), I spent some =
-time on
-it when I feel a bit bored ;-)
+I=E2=80=99ve NMU=E2=80=99d the package in Debian so it=E2=80=99s finally wo=
+rking, and backported
+that=C2=B9 to Kubuntu Hardy, using my=C2=B2 backported mpfr4 (co-installabl=
+e, does
+not touch anything else in the system, thus safe to use).
 
-Gr{oetje,eeting}s,
+=E2=91=A0 https://launchpad.net/~mirabilos/+archive/ppa/+sourcepub/2438011/=
++listing-archive-extra
+=E2=91=A1 https://launchpad.net/~mirabilos/+archive/ppa/+sourcepub/2323556/=
++listing-archive-extra
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+Highlights:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Zlib ................................... : yes
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+Enjoy!
+//mirabilos
+--=20
+16:47=E2=8E=9C=C2=ABmika:#grml=C2=BB .oO(mira ist einfach gut....)      23:=
+22=E2=8E=9C=C2=ABmikap:#grml=C2=BB
+mirabilos: und dein bootloader ist geil :)    23:29=E2=8E=9C=C2=ABmikap:#gr=
+ml=C2=BB und ich
+finds saugeil dass ich ein bsd zum booten mit grml hab, das muss ich dann
+gleich mal auf usb-stick installieren=09-- Michael Prokop =C3=BCber MirOS b=
+sd4grml
