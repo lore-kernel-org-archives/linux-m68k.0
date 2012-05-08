@@ -1,61 +1,53 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: ARAnyM 0.9.13 with MPFR even for Lucid
-Date: Sun, 6 May 2012 23:38:21 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1205062336340.15462@herc.mirbsd.org>
-References: <1332282242.3352.7.camel@aspire> <Pine.BSM.4.64L.1203210905300.23907@herc.mirbsd.org>
- <1332322473.10247.56.camel@petr> <CAMuHMdWNktLMKTCkBitY0VQjtaXRaaWR-L4bmKYdvyeadwOkJg@mail.gmail.com>
- <1332337279.5083.3.camel@aspire> <CAMuHMdXLUEYpiGrHrtDw=MjSZn3yZ1Of8TLf4wPmiDr9grpreg@mail.gmail.com>
- <1332505616.22403.27.camel@petr> <CAMuHMdXCiX=11xZcKn8b9JB1vvGpkozp_hAbZ4jKqpEpwsbroQ@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/1] 68000 code integration
+Date: Tue, 8 May 2012 12:56:28 +1000
+Message-ID: <4FA88B5C.3040406@snapgear.com>
+References: <1335818553-14402-1-git-send-email-ljalvs@gmail.com> <4FA37D01.2000107@snapgear.com> <CAGj5WxA=uO0Pkbn5UM4Tu3oGFO9JAXA7mEiwNQ3cuiOHM2b+hg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <CAMuHMdXCiX=11xZcKn8b9JB1vvGpkozp_hAbZ4jKqpEpwsbroQ@mail.gmail.com>
-Resent-Message-ID: <8CrVF3SCqCP.A.NEC.UuwpPB@bendel>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Petr Stehlik <pstehlik@sophics.cz>, debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:54333 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758177Ab2EHDAs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 May 2012 23:00:48 -0400
+In-Reply-To: <CAGj5WxA=uO0Pkbn5UM4Tu3oGFO9JAXA7mEiwNQ3cuiOHM2b+hg@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Luis Alves <ljalvs@gmail.com>
+Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-Geert Uytterhoeven dixit:
+Hi Luis,
 
->On Fri, Mar 23, 2012 at 13:26, Petr Stehlik <pstehlik@sophics.cz> wrote:
->> I couldn't stand the feeling that Geert cannot enjoy new Andreas' MPFR
->> FPU emulation in ARAnyM so I have backported the libmpfr4 for Lucid:
->>
->> http://sourceforge.net/projects/aranym/files/aranym/0.9.13/lucid_mpfr4/
+On 04/05/12 19:48, Luis Alves wrote:
+> On Fri, May 4, 2012 at 7:53 AM, Greg Ungerer<gerg@snapgear.com>  wrote:
+[snip]
+>> An observation from the patch, the 68000/entry-*.S files all look
+>> quite similar. Is there any way they can be merged into a single
+>> file?
+>
+> I'm just noticed that accidentally I've added the 'entry-68000.S'!
+> This file should be removed.
+>
+> About merging, yes I plan to do it later. The thing is that in my
+> first attempt of running this kernel in the 68000 the entry code from
+> the  68328 had a strange behavior (you should remember debugging this
+> with me - lots of softlocks).
+> Then I've used the entry.S from coldfire sources as base and it worked smooth.
 
->Thanks! You're too kind ;-)
+I suspect the existing 68x328 code is broken, and we probably want
+to use your fixed and working version of this entry.S for all.
 
-http://article.gmane.org/gmane.linux.debian.ports.68k/10307
+I don't have any real 68328 based hardware, but many years ago
+people used the xcopilot simulator for 68328 testing. I don't know
+what the state of it these days, but it may still be useful.
 
-Since this lucid thing-y seems to get some use=E2=80=A6 here you are:
-a forwardport of a backport of the official Debian sid mpfr4
-and aranym packages ;-)
+Regards
+Greg
 
-https://launchpad.net/~mirabilos/+archive/wtf-forwardports/+sourcepub/24380=
-38/+listing-archive-extra
 
-(just the stuff I backported to hardy, rebuilt for lucid)
-
-https://launchpad.net/~mirabilos/+archive/wtf-forwardports/+sourcepub/24380=
-41/+listing-archive-extra
-
-(re-enabled USB support, as libusb-1.0 is in lucid but not hardy)
-
-Enjoy!
-//mirabilos
---=20
-22:59=E2=8E=9C<Vutral> glaub ich termkit is kompliziert | glabe nicht das m=
-an
-damit schneller arbeitet | reiz=C3=BCberflutung =E2=94=82 wie windows =E2=
-=94=82 alles evil
-zuviel bilder =E2=94=82 wie ein spiel | 23:00=E2=8E=9C<Vutral> die meisten =
-raffen auch
-nicht mehr von windows | 23:01=E2=8E=9C<Vutral> bilderb=C3=BCcher sind ja a=
-uch nich
-wirklich verbreitet als erwachsenen literatur=09=E2=80=A3 who needs GUIs th=
-us?
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
