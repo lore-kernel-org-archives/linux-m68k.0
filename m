@@ -1,50 +1,57 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu fixes for 3.4
-Date: Fri, 11 May 2012 15:12:49 +1000
-Message-ID: <201205110512.q4B5CnJR030104@goober.corp.nai.org>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 2/4] m68k: Setup CROSS_COMPILE at the top
+Date: Sat, 12 May 2012 22:39:06 +0200
+Message-ID: <1336855148-18817-2-git-send-email-geert__15816.0525410951$1336855227$gmane$org@linux-m68k.org>
+References: <1336855148-18817-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sncsmrelay2.nai.com ([67.97.80.206]:12595 "EHLO
-	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753872Ab2EKFOw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 May 2012 01:14:52 -0400
+In-Reply-To: <1336855148-18817-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, geert@linux-m68k.org
+To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
 
-Hi Linus,
+CROSS_COMPILE must be setup before using e.g. cc-option (and a few other
+as-*, cc-*, ld-* macros), else they will check against the wrong compiler
+when cross-compiling, and may invoke the cross compiler with wrong or
+suboptimal compiler options.
 
-Can you please pull the m68knommu git tree:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/Makefile |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-It contains a single fix for including the ColdFire QSPI interface setup
-code when enabled as a module. This was broken in the consolidation of the
-ColdFire SoC device tables in the 3.4 merge window.
-
-Thanks
-Greg
-
-
-
-The following changes since commit d48b97b403d23f6df0b990cee652bdf9a52337a3:
-  Linus Torvalds (1):
-        Linux 3.4-rc6
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Steven King (1):
-      m68knommu: enable qspi support when SPI_COLDFIRE_QSPI = m
-
- arch/m68k/platform/520x/config.c     |    6 +++---
- arch/m68k/platform/523x/config.c     |    6 +++---
- arch/m68k/platform/5249/config.c     |    6 +++---
- arch/m68k/platform/527x/config.c     |    6 +++---
- arch/m68k/platform/528x/config.c     |    6 +++---
- arch/m68k/platform/532x/config.c     |    6 +++---
- arch/m68k/platform/coldfire/device.c |    6 +++---
- 7 files changed, 21 insertions(+), 21 deletions(-)
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index 804f139..b7f2e2d 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -16,6 +16,13 @@
+ 
+ KBUILD_DEFCONFIG := multi_defconfig
+ 
++ifneq ($(SUBARCH),$(ARCH))
++	ifeq ($(CROSS_COMPILE),)
++		CROSS_COMPILE := $(call cc-cross-prefix, \
++			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
++	endif
++endif
++
+ #
+ #	Enable processor type. Ordering of these is important - we want to
+ #	use the minimum processor type of the range we support. The logic
+@@ -62,12 +69,6 @@ endif
+ 
+ LDFLAGS := -m m68kelf
+ KBUILD_LDFLAGS_MODULE += -T $(srctree)/arch/m68k/kernel/module.lds
+-ifneq ($(SUBARCH),$(ARCH))
+-	ifeq ($(CROSS_COMPILE),)
+-		CROSS_COMPILE := $(call cc-cross-prefix, \
+-			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+-	endif
+-endif
+ 
+ ifdef CONFIG_SUN3
+ LDFLAGS_vmlinux = -N
+-- 
+1.7.0.4
