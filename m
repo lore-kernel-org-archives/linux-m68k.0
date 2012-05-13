@@ -1,74 +1,53 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 2/4] m68k: Setup CROSS_COMPILE at the top
-Date: Sun, 13 May 2012 21:38:39 +1000
-Message-ID: <4FAF9D3F.4010804__23604.9156905667$1336909196$gmane$org@snapgear.com>
-References: <1336855148-18817-1-git-send-email-geert@linux-m68k.org> <1336855148-18817-2-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Luis Alves <ljalvs@gmail.com>
+Subject: [PATCH] unaligned.h fix for M68000 core
+Date: Sun, 13 May 2012 17:40:51 +0100
+Message-ID: <1336927251-3550-1-git-send-email-ljalvs@gmail.com>
+References: <68000 unaligned.h>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1336855148-18817-2-git-send-email-geert@linux-m68k.org>
+Received: from mail-wg0-f44.google.com ([74.125.82.44]:33306 "EHLO
+	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753132Ab2EMVss (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 May 2012 17:48:48 -0400
+Received: by wgbdr13 with SMTP id dr13so4040627wgb.1
+        for <linux-m68k@vger.kernel.org>; Sun, 13 May 2012 14:48:47 -0700 (PDT)
+In-Reply-To: <68000 unaligned.h>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
-
-On 05/13/2012 06:39 AM, Geert Uytterhoeven wrote:
-> CROSS_COMPILE must be setup before using e.g. cc-option (and a few other
-> as-*, cc-*, ld-* macros), else they will check against the wrong compiler
-> when cross-compiling, and may invoke the cross compiler with wrong or
-> suboptimal compiler options.
->
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
-> Cc: Greg Ungerer<gerg@uclinux.org>
-
-Acked-by: Greg Ungerer<gerg@uclinux.org>
-
-Regards
-Greg
+To: linux-m68k@vger.kernel.org
+Cc: Luis Alves <ljalvs@gmail.com>
 
 
-> Cc: linux-m68k@lists.linux-m68k.org
-> ---
->   arch/m68k/Makefile |   13 +++++++------
->   1 files changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-> index 804f139..b7f2e2d 100644
-> --- a/arch/m68k/Makefile
-> +++ b/arch/m68k/Makefile
-> @@ -16,6 +16,13 @@
->
->   KBUILD_DEFCONFIG := multi_defconfig
->
-> +ifneq ($(SUBARCH),$(ARCH))
-> +	ifeq ($(CROSS_COMPILE),)
-> +		CROSS_COMPILE := $(call cc-cross-prefix, \
-> +			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-> +	endif
-> +endif
-> +
->   #
->   #	Enable processor type. Ordering of these is important - we want to
->   #	use the minimum processor type of the range we support. The logic
-> @@ -62,12 +69,6 @@ endif
->
->   LDFLAGS := -m m68kelf
->   KBUILD_LDFLAGS_MODULE += -T $(srctree)/arch/m68k/kernel/module.lds
-> -ifneq ($(SUBARCH),$(ARCH))
-> -	ifeq ($(CROSS_COMPILE),)
-> -		CROSS_COMPILE := $(call cc-cross-prefix, \
-> -			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-> -	endif
-> -endif
->
->   ifdef CONFIG_SUN3
->   LDFLAGS_vmlinux = -N
+Hi all,
+
+This patch fixes unaligned memory access for the 68000 core based cpu's.
+
+Some time ago, my cpu (68000) was raising address/bus error's when mounting cifs shares (didn't bother to debug it at the time).
+After developing the MMC/SD card driver I was having the same issue when mounting the vfat fs.
+
+I've traced the issue down to the 'unaligned.h' file. (I guess nobody has ever used unaligned.h back in the 68328 'era'.
 
 
+Regards,
+Luis Alves
+
+
+Signed-off-by: Luis Alves <ljalvs@gmail.com>
+---
+ arch/m68k/include/asm/unaligned.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/include/asm/unaligned.h b/arch/m68k/include/asm/unaligned.h
+index 019caa7..f4043ae 100644
+--- a/arch/m68k/include/asm/unaligned.h
++++ b/arch/m68k/include/asm/unaligned.h
+@@ -2,7 +2,7 @@
+ #define _ASM_M68K_UNALIGNED_H
+ 
+ 
+-#ifdef CONFIG_COLDFIRE
++#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
+ #include <linux/unaligned/be_struct.h>
+ #include <linux/unaligned/le_byteshift.h>
+ #include <linux/unaligned/generic.h>
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+1.7.5.4
