@@ -1,57 +1,71 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/4] m68k: Setup CROSS_COMPILE at the top
-Date: Sat, 12 May 2012 22:39:06 +0200
-Message-ID: <1336855148-18817-2-git-send-email-geert__15816.0525410951$1336855227$gmane$org@linux-m68k.org>
-References: <1336855148-18817-1-git-send-email-geert@linux-m68k.org>
+From: =?ISO-8859-1?Q?David_G=E1lvez?= <dgalvez75@gmail.com>
+Subject: Re: Atari ROM port ISA
+Date: Sun, 13 May 2012 12:33:01 +0200
+Message-ID: <CAL4YKD6AoF+tGByUYF0Zx=rrEx35m6Tzqr=PHUUs1tB5HW91pA@mail.gmail.com>
+References: <alpine.DEB.2.00.1204151113430.31626@ayla.of.borg>
+	<4F8BCF49.4060109@gmail.com>
+	<20120417050500.GA14387@cynthia.pants.nu>
+	<loom.20120419T165359-796@post.gmane.org>
+	<CAOmrzkKRE2SsJM532itFRd5fG2Bx-wxfno=ftb0SjXC1vWkbgQ@mail.gmail.com>
+	<Pine.BSM.4.64L.1204192041320.27380@herc.mirbsd.org>
+	<4F92D5CA.1000205@gmail.com>
+	<CAMuHMdWSpkD=-55nzG=mO=ZUVTG=-D0TM5-JGAhFWvdzTR=pPQ@mail.gmail.com>
+	<CAMuHMdW6tYbn6aW46x9yDiG7hptjSPz9gGDhS=n7bBTs7=pLkA@mail.gmail.com>
+	<4F93DF3D.5050402@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1336855148-18817-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:54720 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751980Ab2EMKdB convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 May 2012 06:33:01 -0400
+Received: by dady13 with SMTP id y13so4781677dad.19
+        for <linux-m68k@vger.kernel.org>; Sun, 13 May 2012 03:33:01 -0700 (PDT)
+In-Reply-To: <4F93DF3D.5050402@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@googlemail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-CROSS_COMPILE must be setup before using e.g. cc-option (and a few other
-as-*, cc-*, ld-* macros), else they will check against the wrong compiler
-when cross-compiling, and may invoke the cross compiler with wrong or
-suboptimal compiler options.
+2012/4/22 Michael Schmitz <schmitzmic@googlemail.com>:
+>
+> Correct again =A0- the A15 we can implement via the address field its=
+elf (just
+> as the USB command vs. data cycle on A14). The ISP1160 driver has pro=
+visions
+> to use two 8-bit writes in place of a 16 bit one but it might be clea=
+ner to
+> implement the 16 bit write the way the USB driver needs it.
+>
+> Now - does anyone here on this list or on debian-68k own such hardwar=
+e and
+> would be in a position to test a USB driver written to this spec? Is =
+the
+> hardware still for sale?
+> (Not that I am at all sure whether the ISP1160 driver will run in a t=
+imer
+> polled mode at all ...)
+>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/Makefile |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+Hi, I would like to help to make those tests, although my only
+experience with Linux is as Ubuntu user. I have a CT060 Falcon with a
+NetUSBee and also an Ethernat and I've just installed Linux in it. I
+did some work for FreeMiNT's USB drivers for both cards. Under MiNT
+the Ethernat driver is working but I have problems with the NetUSBee
+one, it isn't working reliable. I hope that the Linux driver for the
+NetUSBee enlighten me to see where is the problem with the MiNT
+driver.
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 804f139..b7f2e2d 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -16,6 +16,13 @@
- 
- KBUILD_DEFCONFIG := multi_defconfig
- 
-+ifneq ($(SUBARCH),$(ARCH))
-+	ifeq ($(CROSS_COMPILE),)
-+		CROSS_COMPILE := $(call cc-cross-prefix, \
-+			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-+	endif
-+endif
-+
- #
- #	Enable processor type. Ordering of these is important - we want to
- #	use the minimum processor type of the range we support. The logic
-@@ -62,12 +69,6 @@ endif
- 
- LDFLAGS := -m m68kelf
- KBUILD_LDFLAGS_MODULE += -T $(srctree)/arch/m68k/kernel/module.lds
--ifneq ($(SUBARCH),$(ARCH))
--	ifeq ($(CROSS_COMPILE),)
--		CROSS_COMPILE := $(call cc-cross-prefix, \
--			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
--	endif
--endif
- 
- ifdef CONFIG_SUN3
- LDFLAGS_vmlinux = -N
--- 
-1.7.0.4
+About if it's still possible to buy the NetUSBee, The last week there
+was a thread in atari-forum.com talking about it, it looks like nobody
+knows anybody who is making them right now:
+
+http://www.atari-forum.com/viewtopic.php?f=3D15&t=3D23362
+
+I bought mine last year from one person in Germany I can send you an
+email with his address if you're interested, just to try.
+
+Regards
+
+David
