@@ -1,20 +1,14 @@
 From: Luis Alves <ljalvs@gmail.com>
 Subject: [PATCH] unaligned.h fix for M68000 core
-Date: Sun, 13 May 2012 17:40:51 +0100
-Message-ID: <1336927251-3550-1-git-send-email-ljalvs@gmail.com>
+Date: Sun, 13 May 2012 17:39:42 +0100
+Message-ID: <1336927182-3505-1-git-send-email-ljalvs__41782.992918934$1336947304$gmane$org@gmail.com>
 References: <68000 unaligned.h>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wg0-f44.google.com ([74.125.82.44]:33306 "EHLO
-	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753132Ab2EMVss (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 May 2012 17:48:48 -0400
-Received: by wgbdr13 with SMTP id dr13so4040627wgb.1
-        for <linux-m68k@vger.kernel.org>; Sun, 13 May 2012 14:48:47 -0700 (PDT)
 In-Reply-To: <68000 unaligned.h>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Luis Alves <ljalvs@gmail.com>
+To: linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Cc: gerg@snapgear.com, Luis Alves <ljalvs@gmail.com>
 
 
 Hi all,
