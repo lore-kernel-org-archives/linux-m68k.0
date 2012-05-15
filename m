@@ -1,26 +1,69 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 00/03] m68k: clean up and merge MMU and non-MMU versions of entry.S
-Date: Tue, 15 May 2012 16:55:46 +1000
-Message-ID: <1337064949-966-1-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 2/3] m68k: use jbsr to call functions instead
+	of bsrl
+Date: Tue, 15 May 2012 16:55:48 +1000
+Message-ID: <1337064949-966-3-git-send-email-gerg@snapgear.com>
+References: <1337064949-966-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:46358 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752574Ab2EOG57 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 15 May 2012 02:57:59 -0400
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <1337064949-966-1-git-send-email-gerg@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
+List-Id: linux-m68k@vger.kernel.org
 
+From: Greg Ungerer <gerg@uclinux.org>
 
-m68k: clean up and merge the MMU and non-MMU versions of entry.S
+There is a few places that the m68k entry code uses the bsrl instruction
+to call other functions. That instruction is only supported on 68020 and
+higher CPU types. If we use jbsr instead the code will be clean for all
+68k and ColdFire CPU types.
 
-With a little cleanup we can use much of the entry.S code on both the
-MMU and non-MMU m68k targets.
-
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/kernel/entry.S    |  452 +++++++++++++++++++++++++++++++++++++++++++-
- arch/m68k/kernel/entry_mm.S |  422 -----------------------------------------
- arch/m68k/kernel/entry_no.S |  130 ------------
- 3 files changed, 451 insertions(+), 553 deletions(-)
+ arch/m68k/kernel/entry_mm.S |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/kernel/entry_mm.S b/arch/m68k/kernel/entry_mm.S
+index f2ecc64..fca00b4 100644
+--- a/arch/m68k/kernel/entry_mm.S
++++ b/arch/m68k/kernel/entry_mm.S
+@@ -55,7 +55,7 @@ ENTRY(buserr)
+ 	SAVE_ALL_INT
+ 	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@-		| stack frame pointer argument
+-	bsrl	buserr_c
++	jbsr	buserr_c
+ 	addql	#4,%sp
+ 	jra	ret_from_exception
+ 
+@@ -63,7 +63,7 @@ ENTRY(trap)
+ 	SAVE_ALL_INT
+ 	GET_CURRENT(%d0)
+ 	movel	%sp,%sp@-		| stack frame pointer argument
+-	bsrl	trap_c
++	jbsr	trap_c
+ 	addql	#4,%sp
+ 	jra	ret_from_exception
+ 
+-- 
+1.7.0.4
+
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
