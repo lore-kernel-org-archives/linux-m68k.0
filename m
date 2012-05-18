@@ -1,307 +1,52 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH v2 3/3] m68k: merge the MMU and non-MMU versions of the entry.S code
-Date: Fri, 18 May 2012 14:22:51 +1000
-Message-ID: <1337314971-11087-4-git-send-email-gerg@snapgear.com>
-References: <1337314971-11087-1-git-send-email-gerg@snapgear.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: EtherNat drivers (was: Re: Atari ROM port ISA)
+Date: Fri, 18 May 2012 19:43:10 +1200
+Message-ID: <4FB5FD8E.7030400@gmail.com>
+References: <CAL4YKD6eQN4jOO4LoiDTXLXYBffchPd4Wfjihf-_qnbSZ32+zg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:45257 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753636Ab2EREW7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 May 2012 00:22:59 -0400
-In-Reply-To: <1337314971-11087-1-git-send-email-gerg@snapgear.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:42825 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754304Ab2ERHnP (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 May 2012 03:43:15 -0400
+Received: by pbbrp8 with SMTP id rp8so3607505pbb.19
+        for <linux-m68k@vger.kernel.org>; Fri, 18 May 2012 00:43:15 -0700 (PDT)
+In-Reply-To: <CAL4YKD6eQN4jOO4LoiDTXLXYBffchPd4Wfjihf-_qnbSZ32+zg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: =?ISO-8859-1?Q?David_G=E1lvez?= <dgalvez75@gmail.com>
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+On 18/05/12 02:49, David G=E1lvez wrote:
+> What interrupt does it report it uses? Do you see the card interrupts
+> accumulate in /proc/interrupts?
+>
+> smc91x: IOADDR 0902c000 doesn't match configuration (300).
+> smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre<nico@fluxnic.net>
+> eth0: SMC91C11xFD (rev 2) at 0902c000 IRQ 140 [nowait]
+>
+> /proc/interrupts has this entry:
+>
+> 140:        68       atari    eth0
+That's good - now what is the transmit/receive speed you get with this=20
+driver on a large file transfer?
+>> Just what I'm getting as well. Back to the drawing board. I'll have =
+to get
+>> confirmation on the exact addresses being used from the EtherNAT des=
+igner.
+>>
+> The addresses are these:
+>
+> ISP116X_HCD_ADDR	0x80000016
+> ISP116X_HCD_DATA 	0x80000012
+I don't think I tried that combination - where did you find that?
 
-Some of the entry.S code is common to both MMU and non-MMU builds.
-So merge the entry_no.S and entry_mm.S files back into a single file.
-With a little code movement we only need a single #ifdef.
+Anyway, new test kernel on the way. Won't do anything useful with the=20
+USB chipset other than hopefully probe it OK.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/kernel/{entry_mm.S => entry.S} |  105 ++++++++++++++++--------
- arch/m68k/kernel/entry_no.S              |  130 ------------------------------
- 2 files changed, 69 insertions(+), 166 deletions(-)
- rename arch/m68k/kernel/{entry_mm.S => entry.S} (94%)
- delete mode 100644 arch/m68k/kernel/entry_no.S
+Thanks,
 
-diff --git a/arch/m68k/kernel/entry_mm.S b/arch/m68k/kernel/entry.S
-similarity index 94%
-rename from arch/m68k/kernel/entry_mm.S
-rename to arch/m68k/kernel/entry.S
-index 2385539..e871701 100644
---- a/arch/m68k/kernel/entry_mm.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -51,6 +51,42 @@
- .globl user_irqvec_fixup
- 
- .text
-+ENTRY(sys_fork)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_fork
-+	addql	#4,%sp
-+	RESTORE_SWITCH_STACK
-+	rts
-+
-+ENTRY(sys_clone)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_clone
-+	addql	#4,%sp
-+	RESTORE_SWITCH_STACK
-+	rts
-+
-+ENTRY(sys_vfork)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_vfork
-+	addql	#4,%sp
-+	RESTORE_SWITCH_STACK
-+	rts
-+
-+ENTRY(sys_sigreturn)
-+	SAVE_SWITCH_STACK
-+	jbsr	do_sigreturn
-+	RESTORE_SWITCH_STACK
-+	rts
-+
-+ENTRY(sys_rt_sigreturn)
-+	SAVE_SWITCH_STACK
-+	jbsr	do_rt_sigreturn
-+	RESTORE_SWITCH_STACK
-+	rts
-+
- ENTRY(buserr)
- 	SAVE_ALL_INT
- 	GET_CURRENT(%d0)
-@@ -76,6 +112,38 @@ ENTRY(ret_from_fork)
- 	addql	#4,%sp
- 	jra	ret_from_exception
- 
-+#if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
-+
-+#ifdef TRAP_DBG_INTERRUPT
-+
-+.globl dbginterrupt
-+ENTRY(dbginterrupt)
-+	SAVE_ALL_INT
-+	GET_CURRENT(%d0)
-+	movel	%sp,%sp@- 		/* stack frame pointer argument */
-+	jsr	dbginterrupt_c
-+	addql	#4,%sp
-+	jra	ret_from_exception
-+#endif
-+
-+ENTRY(reschedule)
-+	/* save top of frame */
-+	pea	%sp@
-+	jbsr	set_esp0
-+	addql	#4,%sp
-+	pea	ret_from_exception
-+	jmp	schedule
-+
-+ENTRY(ret_from_user_signal)
-+	moveq #__NR_sigreturn,%d0
-+	trap #0
-+
-+ENTRY(ret_from_user_rt_signal)
-+	movel #__NR_rt_sigreturn,%d0
-+	trap #0
-+
-+#else
-+
- do_trace_entry:
- 	movel	#-ENOSYS,%sp@(PT_OFF_D0)| needed for strace
- 	subql	#4,%sp
-@@ -274,42 +342,6 @@ ENTRY(bad_inthandler)
- 	RESTORE_ALL
- 
- 
--ENTRY(sys_fork)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_fork
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_clone)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_clone
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_vfork)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_vfork
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_sigreturn)
--	SAVE_SWITCH_STACK
--	jbsr	do_sigreturn
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_rt_sigreturn)
--	SAVE_SWITCH_STACK
--	jbsr	do_rt_sigreturn
--	RESTORE_SWITCH_STACK
--	rts
--
- resume:
- 	/*
- 	 * Beware - when entering resume, prev (the current task) is
-@@ -417,3 +449,4 @@ resume:
- 
- 	rts
- 
-+#endif /* CONFIG_MMU && !CONFIG_COLDFIRE */
-diff --git a/arch/m68k/kernel/entry_no.S b/arch/m68k/kernel/entry_no.S
-deleted file mode 100644
-index d80cba4..0000000
---- a/arch/m68k/kernel/entry_no.S
-+++ /dev/null
-@@ -1,130 +0,0 @@
--/*
-- *  linux/arch/m68knommu/kernel/entry.S
-- *
-- *  Copyright (C) 1999-2002, Greg Ungerer (gerg@snapgear.com)
-- *  Copyright (C) 1998  D. Jeff Dionne <jeff@lineo.ca>,
-- *                      Kenneth Albanowski <kjahds@kjahds.com>,
-- *  Copyright (C) 2000  Lineo Inc. (www.lineo.com) 
-- *
-- * Based on:
-- *
-- *  linux/arch/m68k/kernel/entry.S
-- *
-- *  Copyright (C) 1991, 1992  Linus Torvalds
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-- * Linux/m68k support by Hamish Macdonald
-- *
-- * 68060 fixes by Jesper Skov
-- * ColdFire support by Greg Ungerer (gerg@snapgear.com)
-- * 5307 fixes by David W. Miller
-- * linux 2.4 support David McCullough <davidm@snapgear.com>
-- */
--
--#include <linux/linkage.h>
--#include <asm/errno.h>
--#include <asm/setup.h>
--#include <asm/segment.h>
--#include <asm/asm-offsets.h>
--#include <asm/entry.h>
--#include <asm/unistd.h>
--
--.text
--
--.globl buserr
--.globl trap
--.globl ret_from_exception
--.globl ret_from_signal
--.globl sys_fork
--.globl sys_clone
--.globl sys_vfork
--
--ENTRY(buserr)
--	SAVE_ALL_INT
--	GET_CURRENT(%d0)
--	movel	%sp,%sp@- 		/* stack frame pointer argument */
--	jsr	buserr_c
--	addql	#4,%sp
--	jra	ret_from_exception
--
--ENTRY(trap)
--	SAVE_ALL_INT
--	GET_CURRENT(%d0)
--	movel	%sp,%sp@- 		/* stack frame pointer argument */
--	jsr	trap_c
--	addql	#4,%sp
--	jra	ret_from_exception
--
--#ifdef TRAP_DBG_INTERRUPT
--
--.globl dbginterrupt
--ENTRY(dbginterrupt)
--	SAVE_ALL_INT
--	GET_CURRENT(%d0)
--	movel	%sp,%sp@- 		/* stack frame pointer argument */
--	jsr	dbginterrupt_c
--	addql	#4,%sp
--	jra	ret_from_exception
--#endif
--
--ENTRY(reschedule)
--	/* save top of frame */
--	pea	%sp@
--	jbsr	set_esp0
--	addql	#4,%sp
--	pea	ret_from_exception
--	jmp	schedule
--
--ENTRY(ret_from_fork)
--	movel	%d1,%sp@-
--	jsr	schedule_tail
--	addql	#4,%sp
--	jra	ret_from_exception
--
--ENTRY(sys_fork)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_fork
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_vfork)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_vfork
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_clone)
--	SAVE_SWITCH_STACK
--	pea	%sp@(SWITCH_STACK_SIZE)
--	jbsr	m68k_clone
--	addql	#4,%sp
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_sigreturn)
--	SAVE_SWITCH_STACK
--	jbsr	do_sigreturn
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(sys_rt_sigreturn)
--	SAVE_SWITCH_STACK
--	jbsr	do_rt_sigreturn
--	RESTORE_SWITCH_STACK
--	rts
--
--ENTRY(ret_from_user_signal)
--	moveq #__NR_sigreturn,%d0
--	trap #0
--
--ENTRY(ret_from_user_rt_signal)
--	movel #__NR_rt_sigreturn,%d0
--	trap #0
--
--- 
-1.7.0.4
+   Michael
