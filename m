@@ -1,66 +1,29 @@
-From: =?ISO-8859-1?Q?David_G=E1lvez?= <dgalvez75@gmail.com>
-Subject: EtherNat drivers (was: Re: Atari ROM port ISA)
-Date: Thu, 17 May 2012 16:49:33 +0200
-Message-ID: <CAL4YKD6eQN4jOO4LoiDTXLXYBffchPd4Wfjihf-_qnbSZ32+zg@mail.gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH v2 00/03]: clean up and merge the MMU and non-MMU versions of entry.S
+Date: Fri, 18 May 2012 14:22:48 +1000
+Message-ID: <1337314971-11087-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:46891 "EHLO
-	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759873Ab2EQOte convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 May 2012 10:49:34 -0400
-Received: by dady13 with SMTP id y13so2512491dad.19
-        for <linux-m68k@vger.kernel.org>; Thu, 17 May 2012 07:49:34 -0700 (PDT)
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:45254 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753349Ab2EREWz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 May 2012 00:22:55 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-2012/5/17 Michael Schmitz <schmitzmic@googlemail.com>:
-> On 17/05/12 18:10, David G=E1lvez wrote:
->>
->> EtherNat's nertwork driver is working fine.
->
-> That's good to know. Well, not entirely - it does mean my EtherNAT is=
- dead
-> ...
->
-> What interrupt does it report it uses? Do you see the card interrupts
-> accumulate in /proc/interrupts?
->
 
-smc91x: IOADDR 0902c000 doesn't match configuration (300).
-smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre <nico@fluxnic.net>
-eth0: SMC91C11xFD (rev 2) at 0902c000 IRQ 140 [nowait]
+With a little cleanup we can use much of the entry.S code on both the
+MMU and non-MMU m68k targets.
 
-/proc/interrupts has this entry:
+This is the second iteration of this patch set. I have limited the
+changes converting to use the ret_from_exception function entry point
+over the label. I have only changed those shared by both the MMU and
+non-MMU code. Andreas, does this look more acceptable?
 
-140:        68       atari    eth0
-
->> When loading the USB driver I'm getting this:
->>
->> usbcore: registered new interface driver usbfs
->> usbcore: registered new interface driver hub
->> usbcore: registered new device driver usb
->> isp116x-hcd isp116x-hcd: ISP116x Host Controller
->> isp116x-hcd isp116x-hcd: new USB bus registered, assigned bus number=
- 1
->> 116x: Clock not ready after 15ms
->> 116x: Please make sure that the H_WAKEUP pin is pulled low!
->> isp116x-hcd isp116x-hcd: can't setup
->> isp116x-hcd isp116x-hcd: USB bus 1 deregistered
->> 116x: init error, -19
->
-> Just what I'm getting as well. Back to the drawing board. I'll have t=
-o get
-> confirmation on the exact addresses being used from the EtherNAT desi=
-gner.
->
-
-The addresses are these:
-
-ISP116X_HCD_ADDR	0x80000016
-ISP116X_HCD_DATA 	0x80000012
-
-Regards
+---
+ arch/m68k/kernel/entry.S    |  453 +++++++++++++++++++++++++++++++++++++++++++-
+ arch/m68k/kernel/entry_mm.S |  423 -----------------------------------------
+ arch/m68k/kernel/entry_no.S |  130 ------------
+ 3 files changed, 452 insertions(+), 554 deletions(-)
