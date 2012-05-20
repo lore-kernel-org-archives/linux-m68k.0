@@ -1,41 +1,36 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/2] m68knommu: reorganize the no-MMU cache flushing to
- match m68k
-Date: Sun, 20 May 2012 21:12:50 +1000
-Message-ID: <4FB8D1B2.8060302@snapgear.com>
-References: <1336114247-22764-1-git-send-email-gerg@snapgear.com> <1336114247-22764-2-git-send-email-gerg@snapgear.com> <CAMuHMdX48_zgpkRcVwOjLG6ahqZJ8wfLzX0QxhoyWVzh2ZBH+w@mail.gmail.com>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: What ISA hardware is integrated into m68k bridges
+Date: Sun, 20 May 2012 12:31:05 -0400
+Message-ID: <20120520163105.GC21177@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:60454 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753531Ab2ETLNE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 May 2012 07:13:04 -0400
-In-Reply-To: <CAMuHMdX48_zgpkRcVwOjLG6ahqZJ8wfLzX0QxhoyWVzh2ZBH+w@mail.gmail.com>
+Received: from mail1.windriver.com ([147.11.146.13]:61253 "EHLO
+	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753049Ab2ETQbN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 May 2012 12:31:13 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
 
 Hi Geert,
 
-On 05/20/2012 07:07 PM, Geert Uytterhoeven wrote:
-> On Fri, May 4, 2012 at 8:50 AM,<gerg@snapgear.com>  wrote:
->> In particular by reorganizing the __flush_caceh_all() code and separating
->
-> __flush_cache_all()
+A discussion is underway with respect to the future of the various ISA
+drivers[1], and Alan suggested checking with the m68k folks:
 
-I'll fix that up.
+  Check with the M68K people however. 3c501 won't matter to them but I'm
+  not sure which of the other chips ended up on Amiga ISA bridges. I know
+  NE2000 clones did.
+  
+I know you've currently got that "almost ne2k" driver that runs IRQ-less.  Are
+there other "ISA-like" onboard devices in the M68k harware scope that rely on 
+existing (x86) ISA drivers?
 
-Thanks for all the other acks too, I'll update the patches.
+Thanks,
+Paul.
 
-Regards
-Greg
+[1] http://patchwork.ozlabs.org/patch/160144/
 
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+--
