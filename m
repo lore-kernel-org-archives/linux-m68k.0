@@ -1,35 +1,75 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: What ISA hardware is integrated into m68k bridges
-Date: Mon, 21 May 2012 11:35:21 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1205211126290.2484@nippy.intranet>
-References: <20120520163105.GC21177@windriver.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.5
+Date: Mon, 21 May 2012 21:34:07 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1205212128130.22772@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vm4.telegraphics.com.au ([98.124.60.149]:40058 "EHLO
-	vps4.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754700Ab2EUBf2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 May 2012 21:35:28 -0400
-In-Reply-To: <20120520163105.GC21177@windriver.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
+	Hi Linus,
 
-> [1] http://patchwork.ozlabs.org/patch/160144/
-> 
+The following changes since commit 76e10d158efb6d4516018846f60c2ab5501900bc:
+  Linus Torvalds (1):
+        Linux 3.4
 
-That thread makes it pretty clear that you don't like the presence of a 
-certain NIC driver, because you don't like limited hardware, and because 
-you personally have no need of neither.
+are available in the git repository at:
 
-But, nowhere in that thread is there any reason given for piecemeal ISA 
-removal: Alan asked "So, should we dump ISA?" after suggesting "Removing 
-[the NIC driver] because nobody is running one even in a museum might be a 
-good reason".
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-So, I wonder, how will you ascertain that there are no users of this code 
-you've targetted?
+Geert Uytterhoeven (11):
+      m68k: Remove unused MAX_NOINT_IPL definition
+      m68k/amiga: Mark z_dev_present() __init
+      m68k/amiga: Add error checks when registering platform devices
+      m68k/amiga: Use arch_initcall() for registering platform devices
+      m68k/atari: Change VME irq numbers from unsigned long to unsigned int
+      net/ariadne: Improve debug prints
+      scsi/atari: Revive "atascsi=" setup option
+      scsi/atari: Make more functions static
+      m68k: Make sure {read,write}s[bwl]() are always defined
+      m68k/video: Create <asm/vga.h>
+      m68k: Setup CROSS_COMPILE at the top
 
-Finn
+Kautuk Consul (1):
+      m68k/mm: Port OOM changes to do_page_fault()
+
+Mikael Pettersson (1):
+      m68k: Correct the Atari ALLOWINT definition
+
+The net/ariadne change has been acked by David S. Miller.
+The drivers/usb/musb/musb_io.h change (for {read,write}s[bwl]()) has been
+acked by Felipe Balbi.
+
+Thanks for pulling!
+
+ arch/m68k/Makefile                    |   13 ++--
+ arch/m68k/amiga/platform.c            |  126 ++++++++++++++++++++++++---------
+ arch/m68k/atari/ataints.c             |    4 +-
+ arch/m68k/include/asm/atariints.h     |    4 +-
+ arch/m68k/include/asm/entry.h         |    6 +-
+ arch/m68k/include/asm/io_mm.h         |    7 ++
+ arch/m68k/include/asm/vga.h           |   27 +++++++
+ arch/m68k/mm/fault.c                  |   42 +++++++++--
+ drivers/net/ethernet/amd/ariadne.c    |    8 +-
+ drivers/net/ethernet/amd/atarilance.c |   11 +--
+ drivers/scsi/atari_scsi.c             |   26 +++++--
+ drivers/scsi/atari_scsi.h             |    5 --
+ drivers/usb/musb/musb_io.h            |    2 +-
+ include/video/vga.h                   |   22 ------
+ 14 files changed, 200 insertions(+), 103 deletions(-)
+ create mode 100644 arch/m68k/include/asm/vga.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
