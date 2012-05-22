@@ -1,62 +1,72 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: What ISA hardware is integrated into m68k bridges
-Date: Tue, 22 May 2012 09:52:18 -0400
-Message-ID: <4FBB9A12.8000101@windriver.com>
-References: <20120520163105.GC21177@windriver.com> <CAOmrzk+hWvu8L51JXogwj6A=KFsj_nu_UX2qS_HABxyks-8srw@mail.gmail.com>
+Date: Tue, 22 May 2012 21:52:47 +0200
+Message-ID: <CAMuHMdWZb1=R8Wc=hyxbGSzBJ8BzSOaXOcyW1Pgj9EPoJZsBFw@mail.gmail.com>
+References: <20120520163105.GC21177@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail1.windriver.com ([147.11.146.13]:55730 "EHLO
-	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752960Ab2EVNwh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 May 2012 09:52:37 -0400
-In-Reply-To: <CAOmrzk+hWvu8L51JXogwj6A=KFsj_nu_UX2qS_HABxyks-8srw@mail.gmail.com>
+Received: from mail-yw0-f46.google.com ([209.85.213.46]:63551 "EHLO
+	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932198Ab2EVTws convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 May 2012 15:52:48 -0400
+Received: by yhmm54 with SMTP id m54so5846970yhm.19
+        for <linux-m68k@vger.kernel.org>; Tue, 22 May 2012 12:52:48 -0700 (PDT)
+In-Reply-To: <20120520163105.GC21177@windriver.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
 
-On 12-05-20 05:10 PM, Michael Schmitz wrote:
-> Paul,
-> 
-> On Mon, May 21, 2012 at 4:31 AM, Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
->> Hi Geert,
->>
->> A discussion is underway with respect to the future of the various ISA
->> drivers[1], and Alan suggested checking with the m68k folks:
->>
->>  Check with the M68K people however. 3c501 won't matter to them but I'm
->>  not sure which of the other chips ended up on Amiga ISA bridges. I know
->>  NE2000 clones did.
->>
->> I know you've currently got that "almost ne2k" driver that runs IRQ-less.  Are
->> there other "ISA-like" onboard devices in the M68k harware scope that rely on
->> existing (x86) ISA drivers?
-> 
-> Not sure it's still considered ISA based in its current state, but the
-> smc91x is another one used on Atari. That one's got an interrupt
-> though, and I had confirmation that it works fine from a user just a
-> few days ago.
-> 
-> You mentioned the IRQ-less ne2k already - making that one run on
-> netpoll has stalled for now because I'm too busy at work. Neither
-> driver has been merged mainstream yet.
-> 
-> Most of the Amiga cards are 8390 or Lance based IIRC (there's a Lance
-> based Atari driver as well!) but these do not share code with the ISA
-> Lance drivers as far as I can see. Geert may know more details.
+Hi Paul,
 
-Thanks Michael for the level headed on-topic reply, I appreciate
-it.  That smc is used by 20-odd arm defconfigs, so it really isn't
-valid to consider it as a stand alone ISA card used just by older
-x86 hardware with ISA bus.  In fact I'm not sure it ever shipped as
-a standalone ISA card...
+On Sun, May 20, 2012 at 6:31 PM, Paul Gortmaker
+<paul.gortmaker@windriver.com> wrote:
+> A discussion is underway with respect to the future of the various IS=
+A
+> drivers[1], and Alan suggested checking with the m68k folks:
+>
+> =C2=A0Check with the M68K people however. 3c501 won't matter to them =
+but I'm
+> =C2=A0not sure which of the other chips ended up on Amiga ISA bridges=
+=2E I know
+> =C2=A0NE2000 clones did.
+>
+> I know you've currently got that "almost ne2k" driver that runs IRQ-l=
+ess. =C2=A0Are
+> there other "ISA-like" onboard devices in the M68k harware scope that=
+ rely on
+> existing (x86) ISA drivers?
 
-Paul.
+IIRC, the only m68k machines (supported by Linux) with ISA slots are:
+  - Q40/Q60, probably used with NE2000 cards only,
+  - Various Amiga bridgeboards, none of which are supported,
+  - Apollo DN, used with a 3Com 3c505 ISA Ethernet card (preferably the
+    version with an Apollo boot ROM), but the (changes to the existing)=
+ driver
+    never entered mainline, witnessed by the orphan APOLLO_ELPLUS confi=
+g
+    option we removed a few years ago.
 
-> 
-> Cheers,
-> 
->   Michael
+Apart from that, several "ISA" (Ethernet) chips were/are used, as
+typically that's
+the simplest solution to add peripheral support to a CPU local bus usin=
+g a
+minimum of glue logic.
+
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
