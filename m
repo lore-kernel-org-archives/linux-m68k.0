@@ -1,72 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
 Subject: Re: What ISA hardware is integrated into m68k bridges
-Date: Tue, 22 May 2012 21:52:47 +0200
-Message-ID: <CAMuHMdWZb1=R8Wc=hyxbGSzBJ8BzSOaXOcyW1Pgj9EPoJZsBFw@mail.gmail.com>
-References: <20120520163105.GC21177@windriver.com>
+Date: Wed, 23 May 2012 20:51:32 +1200
+Message-ID: <4FBCA514.1040108@gmail.com>
+References: <20120520163105.GC21177@windriver.com> <CAOmrzk+hWvu8L51JXogwj6A=KFsj_nu_UX2qS_HABxyks-8srw@mail.gmail.com> <4FBB9A12.8000101@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:63551 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932198Ab2EVTws convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 22 May 2012 15:52:48 -0400
-Received: by yhmm54 with SMTP id m54so5846970yhm.19
-        for <linux-m68k@vger.kernel.org>; Tue, 22 May 2012 12:52:48 -0700 (PDT)
-In-Reply-To: <20120520163105.GC21177@windriver.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:58700 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750895Ab2EWIvi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 May 2012 04:51:38 -0400
+Received: by pbbrp8 with SMTP id rp8so9588040pbb.19
+        for <linux-m68k@vger.kernel.org>; Wed, 23 May 2012 01:51:38 -0700 (PDT)
+In-Reply-To: <4FBB9A12.8000101@windriver.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
+Cc: Michael Schmitz <schmitzmic@googlemail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Alan Cox <alan@linux.intel.com>
 
 Hi Paul,
 
-On Sun, May 20, 2012 at 6:31 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
-> A discussion is underway with respect to the future of the various IS=
-A
-> drivers[1], and Alan suggested checking with the m68k folks:
->
-> =C2=A0Check with the M68K people however. 3c501 won't matter to them =
-but I'm
-> =C2=A0not sure which of the other chips ended up on Amiga ISA bridges=
-=2E I know
-> =C2=A0NE2000 clones did.
->
-> I know you've currently got that "almost ne2k" driver that runs IRQ-l=
-ess. =C2=A0Are
-> there other "ISA-like" onboard devices in the M68k harware scope that=
- rely on
-> existing (x86) ISA drivers?
+On 23/05/12 01:52, Paul Gortmaker wrote:
+>> Not sure it's still considered ISA based in its current state, but the
+>> smc91x is another one used on Atari. That one's got an interrupt
+>> though, and I had confirmation that it works fine from a user just a
+>> few days ago.
+> Thanks Michael for the level headed on-topic reply, I appreciate
+> it.  That smc is used by 20-odd arm defconfigs, so it really isn't
+> valid to consider it as a stand alone ISA card used just by older
+> x86 hardware with ISA bus.  In fact I'm not sure it ever shipped as
+> a standalone ISA card...
+Just the infamous NE2000 clone then for Atari (RTL8019AS is what it 
+reads on the ISA card hanging off the ROM port of my Falcon).
 
-IIRC, the only m68k machines (supported by Linux) with ISA slots are:
-  - Q40/Q60, probably used with NE2000 cards only,
-  - Various Amiga bridgeboards, none of which are supported,
-  - Apollo DN, used with a 3Com 3c505 ISA Ethernet card (preferably the
-    version with an Apollo boot ROM), but the (changes to the existing)=
- driver
-    never entered mainline, witnessed by the orphan APOLLO_ELPLUS confi=
-g
-    option we removed a few years ago.
+Cheers,
 
-Apart from that, several "ISA" (Ethernet) chips were/are used, as
-typically that's
-the simplest solution to add peripheral support to a CPU local bus usin=
-g a
-minimum of glue logic.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+   Michael
