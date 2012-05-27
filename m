@@ -1,108 +1,178 @@
-From: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
-Subject: [PATCH 6/11] Atari: new EtherNEC driver (ne.c)
-Date: Thu, 24 May 2012 02:50:28 +0200
-Message-ID: <E1SXMG4-0002Xo-BD@zirkon.biophys.uni-duesseldorf.de>
-Content-Transfer-Encoding: 7BIT
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: [PATCH 11/11 resend] Atari: enable/disable EtherNAT USB interrupt in isp116x-hcd
+Date: Sun, 27 May 2012 14:57:59 +1200
+Message-ID: <CAOmrzkJpDT1oeAaKtdDf2ODcZamijXN0B1ROKyxL-UGP9V7T7Q@mail.gmail.com>
+References: <E1SXMKj-0002YC-7H@zirkon.biophys.uni-duesseldorf.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailout-hades.uni-duesseldorf.de ([134.99.128.34]:55206 "EHLO
-	mail.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751409Ab2EXBu3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 23 May 2012 21:50:29 -0400
-Received: from pmxchannel-daemon.mail.rz.uni-duesseldorf.de by
- mail.rz.uni-duesseldorf.de
- (Sun Java(tm) System Messaging Server 6.3-11.01 (built Feb 12 2010; 32bit))
- id <0M4I000005058Z00@mail.rz.uni-duesseldorf.de> for
- linux-m68k@vger.kernel.org; Thu, 24 May 2012 02:50:29 +0200 (MEST)
+Received: from mail-ob0-f174.google.com ([209.85.214.174]:45513 "EHLO
+	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752078Ab2E0C6A (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 26 May 2012 22:58:00 -0400
+Received: by obbtb18 with SMTP id tb18so3426097obb.19
+        for <linux-m68k@vger.kernel.org>; Sat, 26 May 2012 19:58:00 -0700 (PDT)
+In-Reply-To: <E1SXMKj-0002YC-7H@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org
+To: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
+Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org
 
->From 075f3f1e95d544953c37b5c989d9fcc33e35c9ec Mon Sep 17 00:00:00 2001
-From: Michael Schmitz <schmitz@debian.org>
-Date: Mon, 30 Apr 2012 20:25:09 +1200
-Subject: [PATCH 06/11] [m68k] Atari: EtherNEC ethernet support - new platform driver
+Hi Geert,
+
+the previous patch adding interrupt source enable/disable had a bug
+preventing repeated module loading - please replace by this one.
+
+Cheers,
+
+  Michael
+
 
 ---
- drivers/net/ethernet/8390/8390.h   |    6 ++++++
- drivers/net/ethernet/8390/Kconfig  |   11 +++++++++++
- drivers/net/ethernet/8390/Makefile |    1 +
- drivers/net/ethernet/8390/ne.c     |    4 +++-
- 4 files changed, 21 insertions(+), 1 deletions(-)
+ drivers/usb/host/isp116x-hcd.c |   56 +++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 55 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/net/ethernet/8390/8390.h b/drivers/net/ethernet/8390/8390.h
-index ef325ff..434753e 100644
---- a/drivers/net/ethernet/8390/8390.h
-+++ b/drivers/net/ethernet/8390/8390.h
-@@ -32,6 +32,12 @@ extern void ei_poll(struct net_device *dev);
- extern void eip_poll(struct net_device *dev);
- #endif
- 
-+/* Some platforms may need special IRQ flags */
+diff --git a/drivers/usb/host/isp116x-hcd.c b/drivers/usb/host/isp116x-hcd.c
+index 9e65e30..0efd282 100644
+--- a/drivers/usb/host/isp116x-hcd.c
++++ b/drivers/usb/host/isp116x-hcd.c
+@@ -82,6 +82,10 @@ MODULE_LICENSE("GPL");
+
+ static const char hcd_name[] = "isp116x-hcd";
+
 +#ifdef CONFIG_ATARI
-+#  define EI_IRQ_FLAGS	(MACH_IS_ATARI ? IRQF_SHARED : 0)
-+#else
-+#  define EI_IRQ_FLAGS	0
++static unsigned long *enat_cr;		/* EtherNAT CPLD control register for
+USB interrupt enable */
 +#endif
- 
- /* Without I/O delay - non ISA or later chips */
- extern void NS8390_init(struct net_device *dev, int startp);
-diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-index 4501c75..3a03d50 100644
---- a/drivers/net/ethernet/8390/Kconfig
-+++ b/drivers/net/ethernet/8390/Kconfig
-@@ -223,6 +223,17 @@ config APNE
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called apne.
- 
-+config ATARI_ETHERNEC
-+	tristate "Atari EtherNEC Ethernet support"
-+	depends on ATARI_ROM_ISA
-+	---help---
-+	  Say Y to include support for the EtherNEC network adapter for the
-+	  ROM port. The driver works by polling instead of interrupts, so it
-+	  is quite slow.
 +
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called ne.
+ /*-----------------------------------------------------------------*/
+
+ /*
+@@ -594,6 +598,10 @@ static irqreturn_t isp116x_irq(struct usb_hcd *hcd)
+ 	irqreturn_t ret = IRQ_NONE;
+
+ 	spin_lock(&isp116x->lock);
++#ifdef CONFIG_ATARI
++	/* Shut out all further interrupts */
++	*enat_cr = (*enat_cr) & 0xFB;
++#endif
+ 	isp116x_write_reg16(isp116x, HCuPINTENB, 0);
+ 	irqstat = isp116x_read_reg16(isp116x, HCuPINT);
+ 	isp116x_write_reg16(isp116x, HCuPINT, irqstat);
+@@ -635,6 +643,10 @@ static irqreturn_t isp116x_irq(struct usb_hcd *hcd)
+
+ 	isp116x_write_reg16(isp116x, HCuPINTENB, isp116x->irqenb);
+       done:
++#ifdef CONFIG_ATARI
++	/* Enable CPLD USB interrupts */
++	*enat_cr = (*enat_cr)  | 0x04;
++#endif
+ 	spin_unlock(&isp116x->lock);
+ 	return ret;
+ }
+@@ -1291,6 +1303,11 @@ static void isp116x_stop(struct usb_hcd *hcd)
+ 	u32 val;
+
+ 	spin_lock_irqsave(&isp116x->lock, flags);
 +
- config ATARI_ETHERNEC_OLD
- 	tristate "Atari EtherNEC Ethernet support - obsolete driver"
- 	depends on ATARI_ROM_ISA
-diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
-index 8513e8d..f1ef3b8 100644
---- a/drivers/net/ethernet/8390/Makefile
-+++ b/drivers/net/ethernet/8390/Makefile
-@@ -6,6 +6,7 @@ obj-$(CONFIG_MAC8390) += mac8390.o
- obj-$(CONFIG_AC3200) += ac3200.o 8390.o
- obj-$(CONFIG_APNE) += apne.o 8390.o
- obj-$(CONFIG_ARM_ETHERH) += etherh.o
-+obj-$(CONFIG_ATARI_ETHERNEC) += ne.o 8390p.o
- obj-$(CONFIG_ATARI_ETHERNEC_OLD) += atari_ethernec.o 8390.o
- obj-$(CONFIG_AX88796) += ax88796.o
- obj-$(CONFIG_E2100) += e2100.o 8390.o
-diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
-index d04911d..43ca76f 100644
---- a/drivers/net/ethernet/8390/ne.c
-+++ b/drivers/net/ethernet/8390/ne.c
-@@ -166,6 +166,8 @@ bad_clone_list[] __initdata = {
- #elif defined(CONFIG_PLAT_OAKS32R)  || \
-    defined(CONFIG_MACH_TX49XX)
- #  define DCR_VAL 0x48		/* 8-bit mode */
-+#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
-+#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
- #else
- #  define DCR_VAL 0x49
- #endif
-@@ -491,7 +493,7 @@ static int __init ne_probe1(struct net_device *dev, unsigned long ioaddr)
- 
- 	/* Snarf the interrupt now.  There's no point in waiting since we cannot
- 	   share and the board will usually be enabled. */
--	ret = request_irq(dev->irq, eip_interrupt, 0, name, dev);
-+	ret = request_irq(dev->irq, eip_interrupt, EI_IRQ_FLAGS, name, dev);
- 	if (ret) {
- 		printk (" unable to get IRQ %d (errno=%d).\n", dev->irq, ret);
- 		goto err_out;
++#ifdef CONFIG_ATARI
++	/* EtherNAT control register, disable interrupt for USB */
++	*enat_cr = (*enat_cr) & 0xFB;
++#endif
+ 	isp116x_write_reg16(isp116x, HCuPINTENB, 0);
+
+ 	/* Switch off ports' power, some devices don't come up
+@@ -1394,6 +1411,9 @@ static int isp116x_start(struct usb_hcd *hcd)
+ 	isp116x_write_reg32(isp116x, HCRHPORT1, RH_PS_CCS);
+ 	isp116x_write_reg32(isp116x, HCRHPORT2, RH_PS_CCS);
+
++#ifdef CONFIG_ATARI
++        *enat_cr = (*enat_cr) | 0x04;		/* EtherNAT control register,
+enable interrupt for USB */
++#endif
+ 	isp116x_show_regs_log(isp116x);
+ 	spin_unlock_irqrestore(&isp116x->lock, flags);
+ 	return 0;
+@@ -1539,6 +1559,9 @@ static int isp116x_remove(struct platform_device *pdev)
+ 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+ 	struct isp116x *isp116x;
+ 	struct resource *res;
++#ifdef CONFIG_ATARI
++	unsigned long enat_cr_phys;
++#endif
+
+ 	if (!hcd)
+ 		return 0;
+@@ -1552,7 +1575,12 @@ static int isp116x_remove(struct platform_device *pdev)
+ 	iounmap(isp116x->addr_reg);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	release_mem_region(res->start, 2);
+-
++#ifdef CONFIG_ATARI
++	iounmap(enat_cr);
++        /* unmap & release EtherNAT CPLD control register - at 0x23
+off board base address */
++        enat_cr_phys = (res->start & 0xffffff00) + 0x23;
++        release_mem_region(enat_cr_phys, 2);
++#endif
+ 	usb_put_hcd(hcd);
+ 	return 0;
+ }
+@@ -1567,6 +1595,9 @@ static int __devinit isp116x_probe(struct
+platform_device *pdev)
+ 	int irq;
+ 	int ret = 0;
+ 	unsigned long irqflags;
++#ifdef CONFIG_ATARI
++	unsigned long enat_cr_phys;
++#endif
+
+ 	if (usb_disabled())
+ 		return -ENODEV;
+@@ -1613,6 +1644,22 @@ static int __devinit isp116x_probe(struct
+platform_device *pdev)
+ 		goto err4;
+ 	}
+
++#ifdef CONFIG_ATARI
++        /* map EtherNAT CPLD control register - at 0x23 off board
+base address */
++        enat_cr_phys = (data->start & 0xffffff00) + 0x23;
++	if (!request_mem_region(enat_cr_phys, 2, hcd_name)) {
++		ret = -EBUSY;
++		goto err41;
++	}
++	enat_cr = ioremap(addr->start, resource_size(addr));
++	if (enat_cr == NULL) {
++		ret = -ENOMEM;
++		goto err42;
++        }
++	/* Disable USB interrupt in the EtherNat board */
++	*enat_cr = (*enat_cr) & 0xFB;
++#endif
++
+ 	/* allocate and initialize hcd */
+ 	hcd = usb_create_hcd(&isp116x_hc_driver, &pdev->dev, dev_name(&pdev->dev));
+ 	if (!hcd) {
+@@ -1653,11 +1700,18 @@ static int __devinit isp116x_probe(struct
+platform_device *pdev)
+
+ 	return 0;
+
++
+       err7:
+ 	usb_remove_hcd(hcd);
+       err6:
+ 	usb_put_hcd(hcd);
+       err5:
++#ifdef CONFIG_ATARI
++	iounmap(enat_cr);
++      err42:
++	release_mem_region(enat_cr_phys, 2);
++      err41:
++#endif
+ 	iounmap(data_reg);
+       err4:
+ 	release_mem_region(data->start, 2);
 -- 
 1.7.0.4
