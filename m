@@ -1,60 +1,157 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] [m68k] Atari: support for NetUSBee register access to isp116x.h
-Date: Tue, 29 May 2012 22:46:39 +0200
-Message-ID: <CAMuHMdWpW5aPKasazs2yJX8BZv2F_KXreSAY3+_kXGUqGZVJEw@mail.gmail.com>
-References: <CAOmrzkL4BNWr6aLijfpg91m8VKU4A0DRsx1mjOa22qWPrysqtQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH] m68k: Use generic strncpy_from_user(), strlen_user(), and strnlen_user()
+Date: Tue, 29 May 2012 23:33:36 +0200
+Message-ID: <1338327216-15309-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:43215 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751667Ab2E2Uw0 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 29 May 2012 16:52:26 -0400
-Received: by yhmm54 with SMTP id m54so2706115yhm.19
-        for <linux-m68k@vger.kernel.org>; Tue, 29 May 2012 13:52:25 -0700 (PDT)
-In-Reply-To: <CAOmrzkL4BNWr6aLijfpg91m8VKU4A0DRsx1mjOa22qWPrysqtQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Michael,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Do we also want
 
-On Tue, May 29, 2012 at 12:48 AM, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
-> the following patch allows selecting the correct register access
-> macros depending on whether the EtherNAT or NetUSBee variant of the
-> ISP1160 chip is used. With this patch applied on top of the previous
-> two, it should be possible to test the NetUSBee USB port.
+    select HAVE_EFFICIENT_UNALIGNED_ACCESS if (!COLDFIRE && !M68000)
 
-Thanks!
+???
 
-Just like a few of the previous patches, this one is severely
-white-space damaged :-(
-In addition, several of the patches showed checkpatch errors.
-=46or bedtime reading, I can recommend linux/Documentation/email-client=
-s.txt and
-linux/Documentation/SubmittingPatches.
+ arch/m68k/Kconfig                  |    2 +
+ arch/m68k/include/asm/Kbuild       |    2 +
+ arch/m68k/include/asm/uaccess_mm.h |   11 +++--
+ arch/m68k/lib/uaccess.c            |   74 ------------------------------------
+ 4 files changed, 11 insertions(+), 78 deletions(-)
 
-After some manual fixes, I did manage to apply all of them to my
-private working tree.
-Everything builds and boots (on ARAnyM) fine. I will comment on the
-individual patches
-when time permits.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index cac5b6b..1471201 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -7,6 +7,8 @@ config M68K
+ 	select GENERIC_IRQ_SHOW
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select GENERIC_CPU_DEVICES
++	select GENERIC_STRNCPY_FROM_USER if MMU
++	select GENERIC_STRNLEN_USER if MMU
+ 	select FPU if MMU
+ 	select ARCH_USES_GETTIMEOFFSET if MMU && !COLDFIRE
+ 
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index 1a922fa..eafa253 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -1,2 +1,4 @@
+ include include/asm-generic/Kbuild.asm
+ header-y += cachectl.h
++
++generic-y += word-at-a-time.h
+diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
+index 9c80cd5..472c891 100644
+--- a/arch/m68k/include/asm/uaccess_mm.h
++++ b/arch/m68k/include/asm/uaccess_mm.h
+@@ -379,12 +379,15 @@ __constant_copy_to_user(void __user *to, const void *from, unsigned long n)
+ #define copy_from_user(to, from, n)	__copy_from_user(to, from, n)
+ #define copy_to_user(to, from, n)	__copy_to_user(to, from, n)
+ 
+-long strncpy_from_user(char *dst, const char __user *src, long count);
+-long strnlen_user(const char __user *src, long n);
++#define user_addr_max() \
++	(segment_eq(get_fs(), USER_DS) ? TASK_SIZE : ~0UL)
++
++extern long strncpy_from_user(char *dst, const char __user *src, long count);
++extern __must_check long strlen_user(const char __user *str);
++extern __must_check long strnlen_user(const char __user *str, long n);
++
+ unsigned long __clear_user(void __user *to, unsigned long n);
+ 
+ #define clear_user	__clear_user
+ 
+-#define strlen_user(str) strnlen_user(str, 32767)
+-
+ #endif /* _M68K_UACCESS_H */
+diff --git a/arch/m68k/lib/uaccess.c b/arch/m68k/lib/uaccess.c
+index 5664386..5e97f2e 100644
+--- a/arch/m68k/lib/uaccess.c
++++ b/arch/m68k/lib/uaccess.c
+@@ -104,80 +104,6 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
+ EXPORT_SYMBOL(__generic_copy_to_user);
+ 
+ /*
+- * Copy a null terminated string from userspace.
+- */
+-long strncpy_from_user(char *dst, const char __user *src, long count)
+-{
+-	long res;
+-	char c;
+-
+-	if (count <= 0)
+-		return count;
+-
+-	asm volatile ("\n"
+-		"1:	"MOVES".b	(%2)+,%4\n"
+-		"	move.b	%4,(%1)+\n"
+-		"	jeq	2f\n"
+-		"	subq.l	#1,%3\n"
+-		"	jne	1b\n"
+-		"2:	sub.l	%3,%0\n"
+-		"3:\n"
+-		"	.section .fixup,\"ax\"\n"
+-		"	.even\n"
+-		"10:	move.l	%5,%0\n"
+-		"	jra	3b\n"
+-		"	.previous\n"
+-		"\n"
+-		"	.section __ex_table,\"a\"\n"
+-		"	.align	4\n"
+-		"	.long	1b,10b\n"
+-		"	.previous"
+-		: "=d" (res), "+a" (dst), "+a" (src), "+r" (count), "=&d" (c)
+-		: "i" (-EFAULT), "0" (count));
+-
+-	return res;
+-}
+-EXPORT_SYMBOL(strncpy_from_user);
+-
+-/*
+- * Return the size of a string (including the ending 0)
+- *
+- * Return 0 on exception, a value greater than N if too long
+- */
+-long strnlen_user(const char __user *src, long n)
+-{
+-	char c;
+-	long res;
+-
+-	asm volatile ("\n"
+-		"1:	subq.l	#1,%1\n"
+-		"	jmi	3f\n"
+-		"2:	"MOVES".b	(%0)+,%2\n"
+-		"	tst.b	%2\n"
+-		"	jne	1b\n"
+-		"	jra	4f\n"
+-		"\n"
+-		"3:	addq.l	#1,%0\n"
+-		"4:	sub.l	%4,%0\n"
+-		"5:\n"
+-		"	.section .fixup,\"ax\"\n"
+-		"	.even\n"
+-		"20:	sub.l	%0,%0\n"
+-		"	jra	5b\n"
+-		"	.previous\n"
+-		"\n"
+-		"	.section __ex_table,\"a\"\n"
+-		"	.align	4\n"
+-		"	.long	2b,20b\n"
+-		"	.previous\n"
+-		: "=&a" (res), "+d" (n), "=&d" (c)
+-		: "0" (src), "r" (src));
+-
+-	return res;
+-}
+-EXPORT_SYMBOL(strnlen_user);
+-
+-/*
+  * Zero Userspace
+  */
+ 
+-- 
+1.7.0.4
