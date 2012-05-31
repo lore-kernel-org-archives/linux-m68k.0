@@ -1,64 +1,44 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/2] m68k: Use asm-generic version of <asm/types.h>
-Date: Thu, 31 May 2012 22:15:38 +0200
-Message-ID: <1338495338-1962-2-git-send-email-geert__284.888110081916$1338495384$gmane$org@linux-m68k.org>
-References: <1338495338-1962-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68knommu: Clean up printing of sections
+Date: Thu, 31 May 2012 22:23:54 +0200
+Message-ID: <1338495834-2468-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1338495338-1962-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-The extra definition for BITS_PER_LONG we had is also indirectly provided
-by <asm-generic/types.h>, via <asm-generic/int-ll64.h> and
-<asm/bitsperlong.h>
+  - Remove casts and unneeded address-of ('&') operators,
+  - Use %p to format pointers, %lx to format unsigned longs.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/Kbuild  |    1 +
- arch/m68k/include/asm/types.h |   22 ----------------------
- 2 files changed, 1 insertions(+), 22 deletions(-)
- delete mode 100644 arch/m68k/include/asm/types.h
+Not even compile tested
 
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index 4d1f8fa..064f867 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -23,5 +23,6 @@ generic-y += scatterlist.h
- generic-y += siginfo.h
- generic-y += statfs.h
- generic-y += topology.h
-+generic-y += types.h
- generic-y += word-at-a-time.h
- generic-y += xor.h
-diff --git a/arch/m68k/include/asm/types.h b/arch/m68k/include/asm/types.h
-deleted file mode 100644
-index 89705ad..0000000
---- a/arch/m68k/include/asm/types.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--#ifndef _M68K_TYPES_H
--#define _M68K_TYPES_H
--
--/*
-- * This file is never included by application software unless
-- * explicitly requested (e.g., via linux/types.h) in which case the
-- * application is Linux specific so (user-) name space pollution is
-- * not a major issue.  However, for interoperability, libraries still
-- * need to be careful to avoid a name clashes.
-- */
--#include <asm-generic/int-ll64.h>
--
--/*
-- * These aren't exported outside the kernel to avoid name space clashes
-- */
--#ifdef __KERNEL__
--
--#define BITS_PER_LONG 32
--
--#endif /* __KERNEL__ */
--
--#endif /* _M68K_TYPES_H */
+ arch/m68k/kernel/setup_no.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index 7dc186b..8a624ec 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -218,13 +218,10 @@ void __init setup_arch(char **cmdline_p)
+ 	printk(KERN_INFO "Motorola M5235EVB support (C)2005 Syn-tech Systems, Inc. (Jate Sujjavanich)\n");
+ #endif
+ 
+-	pr_debug("KERNEL -> TEXT=0x%06x-0x%06x DATA=0x%06x-0x%06x "
+-		 "BSS=0x%06x-0x%06x\n", (int) &_stext, (int) &_etext,
+-		 (int) &_sdata, (int) &_edata,
+-		 (int) &_sbss, (int) &_ebss);
+-	pr_debug("MEMORY -> ROMFS=0x%06x-0x%06x MEM=0x%06x-0x%06x\n ",
+-		 (int) &_ebss, (int) memory_start,
+-		 (int) memory_start, (int) memory_end);
++	pr_debug("KERNEL -> TEXT=0x%p-0x%p DATA=0x%p-0x%p BSS=0x%p-0x%p\n",
++		 _stext, _etext, _sdata, _edata, _sbss, _ebss);
++	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
++		 _ebss, memory_start, memory_start, memory_end);
+ 
+ 	/* Keep a copy of command line */
+ 	*cmdline_p = &command_line[0];
 -- 
 1.7.0.4
