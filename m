@@ -1,67 +1,62 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68knommu: Clean up printing of sections
-Date: Fri, 1 Jun 2012 16:01:10 +1000
-Message-ID: <4FC85AA6.5050308__25274.2797522389$1338530801$gmane$org@snapgear.com>
-References: <1338495834-2468-1-git-send-email-geert@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH] [m68k] Atari: support for NetUSBee register access to isp116x.h
+Date: Fri, 1 Jun 2012 20:46:38 +0200
+Message-ID: <CAOmrzk+2bYgDNtcW6DVy4WYT2i+07n8xR4bbNbwFJ__LWVRfaQ@mail.gmail.com>
+References: <CAOmrzkL4BNWr6aLijfpg91m8VKU4A0DRsx1mjOa22qWPrysqtQ@mail.gmail.com>
+	<CAMuHMdWpW5aPKasazs2yJX8BZv2F_KXreSAY3+_kXGUqGZVJEw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1338495834-2468-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:39323 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932805Ab2FASqi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 1 Jun 2012 14:46:38 -0400
+Received: by dady13 with SMTP id y13so3148755dad.19
+        for <linux-m68k@vger.kernel.org>; Fri, 01 Jun 2012 11:46:38 -0700 (PDT)
+In-Reply-To: <CAMuHMdWpW5aPKasazs2yJX8BZv2F_KXreSAY3+_kXGUqGZVJEw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-On 01/06/12 06:23, Geert Uytterhoeven wrote:
->    - Remove casts and unneeded address-of ('&') operators,
->    - Use %p to format pointers, %lx to format unsigned longs.
+On Tue, May 29, 2012 at 10:46 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Hi Michael,
 >
-> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
-
-Looks good. Compile and run tested, all ok.
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-Regards
-Greg
-
-
-> ---
-> Not even compile tested
+> On Tue, May 29, 2012 at 12:48 AM, Michael Schmitz
+> <schmitzmic@googlemail.com> wrote:
+>> the following patch allows selecting the correct register access
+>> macros depending on whether the EtherNAT or NetUSBee variant of the
+>> ISP1160 chip is used. With this patch applied on top of the previous
+>> two, it should be possible to test the NetUSBee USB port.
 >
->   arch/m68k/kernel/setup_no.c |   11 ++++-------
->   1 files changed, 4 insertions(+), 7 deletions(-)
+> Thanks!
 >
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index 7dc186b..8a624ec 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -218,13 +218,10 @@ void __init setup_arch(char **cmdline_p)
->   	printk(KERN_INFO "Motorola M5235EVB support (C)2005 Syn-tech Systems, Inc. (Jate Sujjavanich)\n");
->   #endif
->
-> -	pr_debug("KERNEL ->  TEXT=0x%06x-0x%06x DATA=0x%06x-0x%06x "
-> -		 "BSS=0x%06x-0x%06x\n", (int)&_stext, (int)&_etext,
-> -		 (int)&_sdata, (int)&_edata,
-> -		 (int)&_sbss, (int)&_ebss);
-> -	pr_debug("MEMORY ->  ROMFS=0x%06x-0x%06x MEM=0x%06x-0x%06x\n ",
-> -		 (int)&_ebss, (int) memory_start,
-> -		 (int) memory_start, (int) memory_end);
-> +	pr_debug("KERNEL ->  TEXT=0x%p-0x%p DATA=0x%p-0x%p BSS=0x%p-0x%p\n",
-> +		 _stext, _etext, _sdata, _edata, _sbss, _ebss);
-> +	pr_debug("MEMORY ->  ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
-> +		 _ebss, memory_start, memory_start, memory_end);
->
->   	/* Keep a copy of command line */
->   	*cmdline_p =&command_line[0];
+> Just like a few of the previous patches, this one is severely
+> white-space damaged :-(
 
+Which ones were affected? (Some were piped straight to sendmail while
+others used an e-mail client so I'd like to know what does actually
+work)
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> In addition, several of the patches showed checkpatch errors.
+
+I need to teach git to run checkpatch for me :-(
+
+> For bedtime reading, I can recommend linux/Documentation/email-clients.txt and
+> linux/Documentation/SubmittingPatches.
+>
+> After some manual fixes, I did manage to apply all of them to my
+> private working tree.
+
+Thanks for making the effort!
+
+> Everything builds and boots (on ARAnyM) fine. I will comment on the
+> individual patches
+> when time permits.
+
+Thanks - this was all tested on the Falcon.
+
+  Michael
