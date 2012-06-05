@@ -1,85 +1,70 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 4/11] Atari: fix EtherNAT interrupt; conditonal platform
- device register
-Date: Tue, 5 Jun 2012 22:07:59 +0200
-Message-ID: <CAMuHMdUrFzgjRmB6B9N7u9M2pT3Ta_D3eAmXX68oXQK5KZD7Rw@mail.gmail.com>
-References: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 6/11] Atari: new EtherNEC driver (ne.c)
+Date: Tue, 5 Jun 2012 22:16:29 +0200
+Message-ID: <CAMuHMdVSJ0etRcKUZTPKh_mq8Lz-GK+Ys5QWfq3e9BrsNoN=cA@mail.gmail.com>
+References: <E1SXMG4-0002Xo-BD@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-gg0-f174.google.com ([209.85.161.174]:52949 "EHLO
-	mail-gg0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752372Ab2FEUIA convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:08:00 -0400
-Received: by gglu4 with SMTP id u4so4371750ggl.19
-        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:07:59 -0700 (PDT)
-In-Reply-To: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
+Received: from mail-gh0-f174.google.com ([209.85.160.174]:53223 "EHLO
+	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751559Ab2FEUQa convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:16:30 -0400
+Received: by ghrr11 with SMTP id r11so4692451ghr.19
+        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:16:30 -0700 (PDT)
+In-Reply-To: <E1SXMG4-0002Xo-BD@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, May 24, 2012 at 2:48 AM, Michael Schmitz
+On Thu, May 24, 2012 at 2:50 AM, Michael Schmitz
 <schmitz@zirkon.biophys.uni-duesseldorf.de> wrote:
-> --- a/arch/m68k/atari/config.c
-> +++ b/arch/m68k/atari/config.c
-> @@ -662,7 +662,7 @@ static void atari_get_hardware_list(struct seq_fi=
-le *m)
-> =C2=A0*/
->
-> =C2=A0#define ATARI_ETHERNAT_PHYS_ADDR =C2=A0 =C2=A0 =C2=A0 0x8000000=
-0
-> -#define ATARI_ETHERNAT_IRQ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- 0xc3
-> +#define ATARI_ETHERNAT_IRQ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- 140
+> diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/etherne=
+t/8390/Makefile
+> index 8513e8d..f1ef3b8 100644
+> --- a/drivers/net/ethernet/8390/Makefile
+> +++ b/drivers/net/ethernet/8390/Makefile
+> @@ -6,6 +6,7 @@ obj-$(CONFIG_MAC8390) +=3D mac8390.o
+> =C2=A0obj-$(CONFIG_AC3200) +=3D ac3200.o 8390.o
+> =C2=A0obj-$(CONFIG_APNE) +=3D apne.o 8390.o
+> =C2=A0obj-$(CONFIG_ARM_ETHERH) +=3D etherh.o
+> +obj-$(CONFIG_ATARI_ETHERNEC) +=3D ne.o 8390p.o
 
-So the EtherNAT does have a working interrupt line?
+This duplicates the line for CONFIG_NE2000. You can remove it, if you
+make CONFIG_NE2000 selectable on Atari (see below).
 
-> @@ -686,16 +686,27 @@ static struct platform_device smc91x_device =3D=
- {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.resource =C2=A0 =C2=A0 =C2=A0 =3D smc91x_=
-resources,
-> =C2=A0};
->
-> -static struct platform_device *atari_platform_devices[] __initdata =3D=
- {
-> +static struct platform_device *atari_ethernat_devices[] __initdata =3D=
- {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0&smc91x_device
-> =C2=A0};
->
-> =C2=A0int __init atari_platform_init(void)
-> =C2=A0{
-> + =C2=A0 =C2=A0 =C2=A0 unsigned char *enatc_virt;
-> + =C2=A0 =C2=A0 =C2=A0 int rv =3D -ENODEV;
-> +
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!MACH_IS_ATARI)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV=
-;
->
-> - =C2=A0 =C2=A0 =C2=A0 return platform_add_devices(atari_platform_dev=
-ices, ARRAY_SIZE(atari_platform_devices));
-> +#if IS_ENABLED(CONFIG_ATARI_ETHERNAT_OLD)
-> + =C2=A0 =C2=A0 =C2=A0 enatc_virt =3D (unsigned char *)ioremap((ATARI=
-_ETHERNAT_PHYS_ADDR+0x23), 0xf);
-> + =C2=A0 =C2=A0 =C2=A0 if (hwreg_present(enatc_virt)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 *enatc_virt |=3D 0=
-x2; =C2=A0 =C2=A0 /* enable SMC91C111 interrupt */
+> =C2=A0obj-$(CONFIG_ATARI_ETHERNEC_OLD) +=3D atari_ethernec.o 8390.o
+> =C2=A0obj-$(CONFIG_AX88796) +=3D ax88796.o
+> =C2=A0obj-$(CONFIG_E2100) +=3D e2100.o 8390.o
 
-Do you really want to do that here?
-Typically this is done by the driver itself, in its probe() routine.
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 rv =3D platform_ad=
-d_devices(atari_ethernat_devices, ARRAY_SIZE(atari_ethernat_devices));
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +#endif
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return rv;
-> =C2=A0}
+> diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet=
+/8390/Kconfig
+> index 4501c75..3a03d50 100644
+> --- a/drivers/net/ethernet/8390/Kconfig
+> +++ b/drivers/net/ethernet/8390/Kconfig
+> @@ -223,6 +223,17 @@ config APNE
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0To compile this driver as a module,=
+ choose M here: the module
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0will be called apne.
 >
-> =C2=A0arch_initcall(atari_platform_init);
+> +config ATARI_ETHERNEC
+> + =C2=A0 =C2=A0 =C2=A0 tristate "Atari EtherNEC Ethernet support"
+
+I would make this bool, and move this section to arch/m68k/Kconfig.devi=
+ces.
+Then CONFIG_ATARI_ETHERNEC can control the creation of the platform
+devices.
+
+After that, you still need a way to make CONFIG_NE2000 selectable. E.g.
+in drivers/net/ethernet/8390/Kconfig:
+
+ config NE2000
+         tristate "NE2000/NE1000 support"
+-        depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
++        depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX || ATARI_=
+ETHERNEC)
 
 Gr{oetje,eeting}s,
 
