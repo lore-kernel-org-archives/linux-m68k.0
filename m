@@ -1,68 +1,48 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/11] Atari: change number of interrupt sources
-Date: Tue, 5 Jun 2012 22:42:04 +0200
-Message-ID: <CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
-References: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 9/11] Atari: add ndelay() (used by isp116x-hcd)
+Date: Tue, 5 Jun 2012 22:43:48 +0200
+Message-ID: <CAMuHMdV=U_6i=XaOUVC9rwy1WWbMDSF3WjRWDtLSG-6p+ecR2A@mail.gmail.com>
+References: <E1SXMIc-0002Y2-NB@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:56659 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751888Ab2FEUmF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:42:05 -0400
-Received: by yhmm54 with SMTP id m54so4286353yhm.19
-        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:42:05 -0700 (PDT)
-In-Reply-To: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
+Received: from mail-gh0-f174.google.com ([209.85.160.174]:55410 "EHLO
+	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751103Ab2FEUnt convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:43:49 -0400
+Received: by ghrr11 with SMTP id r11so4719638ghr.19
+        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:43:49 -0700 (PDT)
+In-Reply-To: <E1SXMIc-0002Y2-NB@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, May 24, 2012 at 2:45 AM, Michael Schmitz
+On Thu, May 24, 2012 at 2:53 AM, Michael Schmitz
 <schmitz@zirkon.biophys.uni-duesseldorf.de> wrote:
-> diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/as=
-m/atariints.h
-> index 5fc13bd..12c759a 100644
-> --- a/arch/m68k/include/asm/atariints.h
-> +++ b/arch/m68k/include/asm/atariints.h
-> @@ -32,7 +32,7 @@
-> =C2=A0#define VME_SOURCE_BASE =C2=A0 =C2=A056
-> =C2=A0#define VME_MAX_SOURCES =C2=A0 =C2=A016
->
-> -#define NUM_ATARI_SOURCES =C2=A0 (VME_SOURCE_BASE+VME_MAX_SOURCES-ST=
-MFP_SOURCE_BASE)
-> +#define NUM_ATARI_SOURCES =C2=A0141
+> +#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +/*
+> + * The simpler m68k and ColdFire processors do not have a 32*32->64
+> + * multiply instruction. So we need to handle them a little differen=
+tly.
+> + * We use a bit of shifting and a single 32*32->32 multiply to get c=
+lose.
+> + * This is a macro so that the const version can factor out the firs=
+t
+> + * multiply and shift.
+> + */
+> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0HZSCALE =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ (268435456 / (1000000 / HZ))
+> +
+> +#define ndelay(n) __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) *=
+ (loops_per_jiffy >> 11)) >> 6), 1000 ) );
+> +
+> +#endif
 
-This warrants a comment.
+Why do you need this? CONFIG_M68000 and CONFIG_COLDFIRE are not set?
 
-> diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.=
-h
-> index c1155f0..8bd9c7f 100644
-> --- a/arch/m68k/include/asm/irq.h
-> +++ b/arch/m68k/include/asm/irq.h
-> @@ -9,9 +9,11 @@
-> =C2=A0*/
-> =C2=A0#if defined(CONFIG_COLDFIRE)
-> =C2=A0#define NR_IRQS 256
-> -#elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG_=
-SUN3X)
-> +#elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG_=
-SUN3X)
-
-Bogus whitespace change (checkpatch should have told you).
-
-> =C2=A0#define NR_IRQS 200
-> -#elif defined(CONFIG_ATARI) || defined(CONFIG_MAC)
-> +#elif defined(CONFIG_ATARI)
-> +#define NR_IRQS 141
-
-This is the (not configurable) EtherNAT interrupt number + 1?
-
-> +#elif defined(CONFIG_MAC)
-> =C2=A0#define NR_IRQS 72
-> =C2=A0#elif defined(CONFIG_Q40)
-> =C2=A0#define NR_IRQS =C2=A0 =C2=A0 =C2=A0 =C2=A043
+You end up using the default implementation in include/linux/delay.h.
 
 Gr{oetje,eeting}s,
 
