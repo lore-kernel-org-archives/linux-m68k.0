@@ -1,48 +1,87 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 9/11] Atari: add ndelay() (used by isp116x-hcd)
-Date: Tue, 5 Jun 2012 22:43:48 +0200
-Message-ID: <CAMuHMdV=U_6i=XaOUVC9rwy1WWbMDSF3WjRWDtLSG-6p+ecR2A@mail.gmail.com>
-References: <E1SXMIc-0002Y2-NB@zirkon.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k: Use generic strncpy_from_user(), strlen_user(), and strnlen_user()
+Date: Tue, 5 Jun 2012 22:57:29 +0200
+Message-ID: <CAMuHMdW29QYN6XpBb9F3GGoJ-9frrD-00Wx=FchT9ALqW1LcPg__35950.1799954616$1338930180$gmane$org@mail.gmail.com>
+References: <1338327216-15309-1-git-send-email-geert@linux-m68k.org>
+	<20120530102226.GA28628@frolo.macqel>
+	<CAMuHMdV5GVZR1BvGD3EncDFfPt=Bt9ndkKE8Mp7euE9KoSaGNQ@mail.gmail.com>
+	<20120530140444.GA10543@frolo.macqel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-gh0-f174.google.com ([209.85.160.174]:55410 "EHLO
-	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751103Ab2FEUnt convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:43:49 -0400
-Received: by ghrr11 with SMTP id r11so4719638ghr.19
-        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:43:49 -0700 (PDT)
-In-Reply-To: <E1SXMIc-0002Y2-NB@zirkon.biophys.uni-duesseldorf.de>
+In-Reply-To: <20120530140444.GA10543@frolo.macqel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
-Cc: linux-m68k@vger.kernel.org
+To: Philippe De Muyter <phdm@macqel.be>, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Thu, May 24, 2012 at 2:53 AM, Michael Schmitz
-<schmitz@zirkon.biophys.uni-duesseldorf.de> wrote:
-> +#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
-> +/*
-> + * The simpler m68k and ColdFire processors do not have a 32*32->64
-> + * multiply instruction. So we need to handle them a little differen=
-tly.
-> + * We use a bit of shifting and a single 32*32->32 multiply to get c=
-lose.
-> + * This is a macro so that the const version can factor out the firs=
-t
-> + * multiply and shift.
-> + */
-> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0HZSCALE =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- (268435456 / (1000000 / HZ))
-> +
-> +#define ndelay(n) __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) *=
- (loops_per_jiffy >> 11)) >> 6), 1000 ) );
-> +
-> +#endif
+On Wed, May 30, 2012 at 4:04 PM, Philippe De Muyter <phdm@macqel.be> wr=
+ote:
+> On Wed, May 30, 2012 at 01:20:02PM +0200, Geert Uytterhoeven wrote:
+>> On Wed, May 30, 2012 at 12:22 PM, Philippe De Muyter <phdm@macqel.be=
+> wrote:
+>> > On Tue, May 29, 2012 at 11:33:36PM +0200, Geert Uytterhoeven wrote=
+:
+>> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> >> ---
+>> >> Do we also want
+>> >>
+>> >> =C2=A0 =C2=A0 select HAVE_EFFICIENT_UNALIGNED_ACCESS if (!COLDFIR=
+E && !M68000)
+>> >
+>> > Sorry, I did not follow what happened to unaligned accesses, but
+>> > CPU32 family (at least 68340) crashes on unaligned accesses.
+>>
+>> We don't seem to have CONFIG_M68340 in arch/m68k/Kconfig.cpu?
+>
+> I have a local port here (but based on an ancient linux kernel, 2.6.2=
+ IIRC)
+>
+>> But Freescale's website confirms both 68340 and 68360 are CPU32.
+>>
+>> arch/m68k/include/asm/unaligned.h assumes CPU32 (CONFIG_MCPU32)
+>> can do unaligned accesses:
+>
+> That's not true. =C2=A0Accessing a 16- or 32-bit word at an odd addre=
+ss
+> with a 68340 generates an Address Error Exception. =C2=A0I remember
+> discovering a bug in the ppp kernel code because of that.
+>
+>>
+>> #if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
+>> #include <linux/unaligned/be_struct.h>
+>> #include <linux/unaligned/le_byteshift.h>
+>> #include <linux/unaligned/generic.h>
+>>
+>> #define get_unaligned =C2=A0 __get_unaligned_be
+>> #define put_unaligned =C2=A0 __put_unaligned_be
+>>
+>> #else
+>> /*
+>> =C2=A0* The m68k can do unaligned accesses itself.
+>> =C2=A0*/
+>> #include <linux/unaligned/access_ok.h>
+>> #include <linux/unaligned/generic.h>
+>>
+>> #define get_unaligned =C2=A0 __get_unaligned_be
+>> #define put_unaligned =C2=A0 __put_unaligned_be
+>>
+>> #endif
+>>
+>> Is this wrong?
+>
+> I can't tell from reading just the lines above, but I think one shoul=
+d add
+> "|| defined(CONFIG_MCPU32)" at the end of the if condition.
 
-Why do you need this? CONFIG_M68000 and CONFIG_COLDFIRE are not set?
+Greg?
 
-You end up using the default implementation in include/linux/delay.h.
+If more CPUs cannot handle unaligned accesses, I propose to add
+CONFIG_CPU_HAS_NO_UNALIGNED.
+
+> I also think that the Coldfire 5272 can do unaligned accesses, but I
+> cannot test that at the moment.
 
 Gr{oetje,eeting}s,
 
