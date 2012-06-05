@@ -1,71 +1,98 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] [m68k] Atari: support for NetUSBee register access to
- isp116x.h
-Date: Tue, 5 Jun 2012 19:59:42 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1206051956320.9588@herc.mirbsd.org>
-References: <CAOmrzkL4BNWr6aLijfpg91m8VKU4A0DRsx1mjOa22qWPrysqtQ@mail.gmail.com>
- <CAMuHMdWpW5aPKasazs2yJX8BZv2F_KXreSAY3+_kXGUqGZVJEw@mail.gmail.com>
- <CAOmrzk+2bYgDNtcW6DVy4WYT2i+07n8xR4bbNbwFJ@mail.gmail.com>
- <loom.20120605T174709-209@post.gmane.org>
- <CAMuHMdWC8agVJoPt5uoxkK-Z6hpEwhoVq6hyniqP6XSXSuzwQg@mail.gmail.com>
- <Pine.BSM.4.64L.1206051623360.9588@herc.mirbsd.org> <m2sje94pdf.fsf@igel.home>
- <Pine.BSM.4.64L.1206051756340.9588@herc.mirbsd.org>
- <CAMuHMdUoQ+iRCpi0MNV2tdsfjW5M3i4RHECgu6Phtn9t1FAGeQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 4/11] Atari: fix EtherNAT interrupt; conditonal platform
+ device register
+Date: Tue, 5 Jun 2012 22:07:59 +0200
+Message-ID: <CAMuHMdUrFzgjRmB6B9N7u9M2pT3Ta_D3eAmXX68oXQK5KZD7Rw@mail.gmail.com>
+References: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:47756 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752497Ab2FEUFn convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:05:43 -0400
-Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
-	by herc.mirbsd.org (8.14.5/8.14.5) with ESMTP id q55JxhOB012415
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-m68k@vger.kernel.org>; Tue, 5 Jun 2012 19:59:47 GMT
-In-Reply-To: <CAMuHMdUoQ+iRCpi0MNV2tdsfjW5M3i4RHECgu6Phtn9t1FAGeQ@mail.gmail.com>
+Received: from mail-gg0-f174.google.com ([209.85.161.174]:52949 "EHLO
+	mail-gg0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752372Ab2FEUIA convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Jun 2012 16:08:00 -0400
+Received: by gglu4 with SMTP id u4so4371750ggl.19
+        for <linux-m68k@vger.kernel.org>; Tue, 05 Jun 2012 13:07:59 -0700 (PDT)
+In-Reply-To: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>
 Cc: linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven dixit:
-
->I used "git format-patch" to create a patch, which contains a.o. the f=
-ollowing
->headers:
+On Thu, May 24, 2012 at 2:48 AM, Michael Schmitz
+<schmitz@zirkon.biophys.uni-duesseldorf.de> wrote:
+> --- a/arch/m68k/atari/config.c
+> +++ b/arch/m68k/atari/config.c
+> @@ -662,7 +662,7 @@ static void atari_get_hardware_list(struct seq_fi=
+le *m)
+> =C2=A0*/
 >
->| Content-Type: text/plain; charset=3DUTF-8
->| Content-Transfer-Encoding: 8bit
+> =C2=A0#define ATARI_ETHERNAT_PHYS_ADDR =C2=A0 =C2=A0 =C2=A0 0x8000000=
+0
+> -#define ATARI_ETHERNAT_IRQ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ 0xc3
+> +#define ATARI_ETHERNAT_IRQ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ 140
 
-Yes, but that will not pass through all SMTP servers, since 8bit is
-an optional extension which, for example, exim4 does not support=C2=B9 =
-by
-default, and other servers=C2=B2 can be configured to be strict, too (o=
-r
-simply not show=C2=B3 8BITMIME support).
+So the EtherNAT does have a working interrupt line?
 
-[=E2=80=A6]
->No Base64 or QP involved.
+> @@ -686,16 +686,27 @@ static struct platform_device smc91x_device =3D=
+ {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0.resource =C2=A0 =C2=A0 =C2=A0 =3D smc91x_=
+resources,
+> =C2=A0};
+>
+> -static struct platform_device *atari_platform_devices[] __initdata =3D=
+ {
+> +static struct platform_device *atari_ethernat_devices[] __initdata =3D=
+ {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0&smc91x_device
+> =C2=A0};
+>
+> =C2=A0int __init atari_platform_init(void)
+> =C2=A0{
+> + =C2=A0 =C2=A0 =C2=A0 unsigned char *enatc_virt;
+> + =C2=A0 =C2=A0 =C2=A0 int rv =3D -ENODEV;
+> +
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!MACH_IS_ATARI)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENODEV=
+;
+>
+> - =C2=A0 =C2=A0 =C2=A0 return platform_add_devices(atari_platform_dev=
+ices, ARRAY_SIZE(atari_platform_devices));
+> +#if IS_ENABLED(CONFIG_ATARI_ETHERNAT_OLD)
+> + =C2=A0 =C2=A0 =C2=A0 enatc_virt =3D (unsigned char *)ioremap((ATARI=
+_ETHERNAT_PHYS_ADDR+0x23), 0xf);
+> + =C2=A0 =C2=A0 =C2=A0 if (hwreg_present(enatc_virt)) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 *enatc_virt |=3D 0=
+x2; =C2=A0 =C2=A0 /* enable SMC91C111 interrupt */
 
-Yes, but you cannot _depend_ on that.
+Do you really want to do that here?
+Typically this is done by the driver itself, in its probe() routine.
 
-=E2=91=A0 exim4 can be configured to either display 8BITMIME in the EHL=
-O
-  response or not, but that doesn=E2=80=99t change its handling =E2=80=93=
- it=E2=80=99s
-  simply oblivios of whether the message contains 8bit or not,
-  just passes them on in either case (violating the SMTP RFC)
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 rv =3D platform_ad=
+d_devices(atari_ethernat_devices, ARRAY_SIZE(atari_ethernat_devices));
+> + =C2=A0 =C2=A0 =C2=A0 }
+> +#endif
+> +
+> + =C2=A0 =C2=A0 =C2=A0 return rv;
+> =C2=A0}
+>
+> =C2=A0arch_initcall(atari_platform_init);
 
-=E2=91=A1 for curiosity reasons, I run such servers
+Gr{oetje,eeting}s,
 
-=E2=91=A2 e.g. those that don=E2=80=99t do EHLO at all; I *bet* there a=
-re still
-  commercial SMTP implementations like that around
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-bye,
-//mirabilos
---=20
-=E2=80=9CIt is inappropriate to require that a time represented as
- seconds since the Epoch precisely represent the number of
- seconds between the referenced time and the Epoch.=E2=80=9D
-	-- IEEE Std 1003.1b-1993 (POSIX) Section B.2.2.2
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
