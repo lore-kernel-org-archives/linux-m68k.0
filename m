@@ -1,20 +1,20 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH 8/11] Atari: add ISP16x host controller support
-Date: Wed, 6 Jun 2012 10:13:45 +0200
-Message-ID: <CAOmrzkJNn1EkNcqr_UzbmhRn2D1LwJn8923+O+EtPTyqL3GawQ@mail.gmail.com>
-References: <E1SXMHc-0002Xx-7A@zirkon.biophys.uni-duesseldorf.de>
-	<CAMuHMdUWygr2yVjgFxFTu+-GC-xXLv1+zsKstGZgYuZ_9=3SUA@mail.gmail.com>
+Subject: Re: [PATCH 1/11] Atari: change number of interrupt sources
+Date: Wed, 6 Jun 2012 10:16:04 +0200
+Message-ID: <CAOmrzkK7MbiTzAHR0s6dQdPK2y9ov3XTdEsOhH7TOwTQOMMHNg@mail.gmail.com>
+References: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
+	<CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:58813 "EHLO
-	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753495Ab2FFINq convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jun 2012 04:13:46 -0400
-Received: by dady13 with SMTP id y13so8457192dad.19
-        for <linux-m68k@vger.kernel.org>; Wed, 06 Jun 2012 01:13:46 -0700 (PDT)
-In-Reply-To: <CAMuHMdUWygr2yVjgFxFTu+-GC-xXLv1+zsKstGZgYuZ_9=3SUA@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:55152 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752672Ab2FFIQF convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jun 2012 04:16:05 -0400
+Received: by pbbrp8 with SMTP id rp8so8614832pbb.19
+        for <linux-m68k@vger.kernel.org>; Wed, 06 Jun 2012 01:16:04 -0700 (PDT)
+In-Reply-To: <CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -22,37 +22,39 @@ Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger
 
 Geert,
 
->> +config ATARI_USB
->> + =A0 =A0 =A0 bool "Atari USB host controller support"
->> + =A0 =A0 =A0 depends on ATARI
->> + =A0 =A0 =A0 select USB_SUPPORT
->> + =A0 =A0 =A0 select USB_ARCH_HAS_HCD
+>> -#define NUM_ATARI_SOURCES =A0 (VME_SOURCE_BASE+VME_MAX_SOURCES-STMF=
+P_SOURCE_BASE)
+>> +#define NUM_ATARI_SOURCES =A0141
 >
-> Nothing actually uses CONFIG_ATARI_USB, it's just used to select USB_=
-SUPPORT
-> and USB_ARCH_HAS_HCD?
-> Perhaps you can make the platform device creation depend on this?
+> This warrants a comment.
 
-I could select USB_ARCH_HAS_HCD conditional on USB_SUPPORT on Atari
-without the need for an additional option, is that what you mean? I'm
-not certain which way the selection works - do I get to select
-USB_SUPPORT unconditionally?
+OK, I'll add one.
 
-Otherwise, both can be enabled unconditionally on Atari now -
-inclusion of the HCD is controlled via the driver option.
-
->> +/*
->> + * EtherNEC: ISA NE2000 compatible card (i.e. Realtek 8019) via ROM=
--port adapter
->> + */
->> +
->> =A0#define ATARI_ETHERNEC_PHYS_ADDR =A0 =A0 =A0 0xfffa0000
->> =A0#define ATARI_ETHERNEC_BASE =A0 =A0 =A0 =A0 =A0 =A00x300
->> =A0#define ATARI_ETHERNEC_IRQ =A0 =A0 =A0 =A0 =A0 =A0 IRQ_MFP_TIMD
 >
-> This doesn't belong in this patch.
+>> diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq=
+=2Eh
+>> index c1155f0..8bd9c7f 100644
+>> --- a/arch/m68k/include/asm/irq.h
+>> +++ b/arch/m68k/include/asm/irq.h
+>> @@ -9,9 +9,11 @@
+>> =A0*/
+>> =A0#if defined(CONFIG_COLDFIRE)
+>> =A0#define NR_IRQS 256
+>> -#elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG=
+_SUN3X)
+>> +#elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG=
+_SUN3X)
+>
+> Bogus whitespace change (checkpatch should have told you).
+>
+>> =A0#define NR_IRQS 200
+>> -#elif defined(CONFIG_ATARI) || defined(CONFIG_MAC)
+>> +#elif defined(CONFIG_ATARI)
+>> +#define NR_IRQS 141
+>
+> This is the (not configurable) EtherNAT interrupt number + 1?
 
-Oops - need to be more disciplined.
+Right - still not sure where the +1 results from though.
 
 Cheers,
 
