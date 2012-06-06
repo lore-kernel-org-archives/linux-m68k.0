@@ -1,102 +1,54 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Use generic strncpy_from_user(), strlen_user(),
- and strnlen_user()
-Date: Wed, 6 Jun 2012 16:31:50 +1000
-Message-ID: <4FCEF956.9090603@snapgear.com>
-References: <1338327216-15309-1-git-send-email-geert@linux-m68k.org> <20120530102226.GA28628@frolo.macqel> <CAMuHMdV5GVZR1BvGD3EncDFfPt=Bt9ndkKE8Mp7euE9KoSaGNQ@mail.gmail.com> <20120530140444.GA10543@frolo.macqel> <CAMuHMdW29QYN6XpBb9F3GGoJ-9frrD-00Wx=FchT9ALqW1LcPg@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 4/11] Atari: fix EtherNAT interrupt; conditonal platform
+ device register
+Date: Wed, 6 Jun 2012 09:58:56 +0200
+Message-ID: <CAOmrzkKUxxYZh1CyD2+KFum=_go77RLXh4v=i=AFv+pBryG3+A@mail.gmail.com>
+References: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
+	<CAMuHMdUrFzgjRmB6B9N7u9M2pT3Ta_D3eAmXX68oXQK5KZD7Rw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW29QYN6XpBb9F3GGoJ-9frrD-00Wx=FchT9ALqW1LcPg@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:59592 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750885Ab2FFH65 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jun 2012 03:58:57 -0400
+Received: by pbbrp8 with SMTP id rp8so8597014pbb.19
+        for <linux-m68k@vger.kernel.org>; Wed, 06 Jun 2012 00:58:56 -0700 (PDT)
+In-Reply-To: <CAMuHMdUrFzgjRmB6B9N7u9M2pT3Ta_D3eAmXX68oXQK5KZD7Rw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Philippe De Muyter <phdm@macqel.be>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-On 06/06/12 06:57, Geert Uytterhoeven wrote:
-> On Wed, May 30, 2012 at 4:04 PM, Philippe De Muyter<phdm@macqel.be>  wrote:
->> On Wed, May 30, 2012 at 01:20:02PM +0200, Geert Uytterhoeven wrote:
->>> On Wed, May 30, 2012 at 12:22 PM, Philippe De Muyter<phdm@macqel.be>  wrote:
->>>> On Tue, May 29, 2012 at 11:33:36PM +0200, Geert Uytterhoeven wrote:
->>>>> Signed-off-by: Geert Uytterhoeven<geert@linux-m68k.org>
->>>>> ---
->>>>> Do we also want
->>>>>
->>>>> 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if (!COLDFIRE&&  !M68000)
->>>>
->>>> Sorry, I did not follow what happened to unaligned accesses, but
->>>> CPU32 family (at least 68340) crashes on unaligned accesses.
->>>
->>> We don't seem to have CONFIG_M68340 in arch/m68k/Kconfig.cpu?
->>
->> I have a local port here (but based on an ancient linux kernel, 2.6.2 IIRC)
->>
->>> But Freescale's website confirms both 68340 and 68360 are CPU32.
->>>
->>> arch/m68k/include/asm/unaligned.h assumes CPU32 (CONFIG_MCPU32)
->>> can do unaligned accesses:
->>
->> That's not true. Accessing a 16- or 32-bit word at an odd address
->> with a 68340 generates an Address Error Exception. I remember
->> discovering a bug in the ppp kernel code because of that.
->>
->>>
->>> #if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
->>> #include<linux/unaligned/be_struct.h>
->>> #include<linux/unaligned/le_byteshift.h>
->>> #include<linux/unaligned/generic.h>
->>>
->>> #define get_unaligned	__get_unaligned_be
->>> #define put_unaligned	__put_unaligned_be
->>>
->>> #else
->>> /*
->>>  * The m68k can do unaligned accesses itself.
->>>  */
->>> #include<linux/unaligned/access_ok.h>
->>> #include<linux/unaligned/generic.h>
->>>
->>> #define get_unaligned	__get_unaligned_be
->>> #define put_unaligned	__put_unaligned_be
->>>
->>> #endif
->>>
->>> Is this wrong?
->>
->> I can't tell from reading just the lines above, but I think one should add
->> "|| defined(CONFIG_MCPU32)" at the end of the if condition.
+>> =A0#define ATARI_ETHERNAT_PHYS_ADDR =A0 =A0 =A0 0x80000000
+>> -#define ATARI_ETHERNAT_IRQ =A0 =A0 =A0 =A0 =A0 =A0 0xc3
+>> +#define ATARI_ETHERNAT_IRQ =A0 =A0 =A0 =A0 =A0 =A0 140
 >
-> Greg?
+> So the EtherNAT does have a working interrupt line?
+
+It does - at least David's and others' do.
+
+
+>> + =A0 =A0 =A0 if (hwreg_present(enatc_virt)) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *enatc_virt |=3D 0x2; =A0 =A0 /* enabl=
+e SMC91C111 interrupt */
 >
-> If more CPUs cannot handle unaligned accesses, I propose to add
-> CONFIG_CPU_HAS_NO_UNALIGNED.
+> Do you really want to do that here?
+> Typically this is done by the driver itself, in its probe() routine.
 
-Yes, looks like that should have a "|| defined(CONFIG_CPU32)".
-(According to the CPU32 reference manual words and long words must
-be aligned on word boundaries.)
+That would mean adding a bit of platform specific code to the probe
+routine - nothing major as we can infer the address of the config
+register from the card's base address. If you think it's worth a try I
+can change that. I'll have to redo this series anyway as you spotted
+already.
 
-I think something like CONFIG_CPU_HAS_NO_UNALIGNED makes sense.
+The 91c111 is well behaved and won't generate interrupts before the
+card is properly started up so it does not hurt to enable the
+interrupt as soon as we're sure the card is present.
 
+Cheers,
 
->> I also think that the Coldfire 5272 can do unaligned accesses, but I
->> cannot test that at the moment.
-
-According to the MCF5272 User Manual, "it supports misaligned data
-accesses ...". So it looks like it does.
-
-Having a CONFIG_CPU_HAS_NO_UNALIGNED looks like a really good solution
-then. We need to be able select it as required on individual CPU types.
-
-Regards
-Greg
-
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+  Michael
