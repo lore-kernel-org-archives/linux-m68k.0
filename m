@@ -1,22 +1,21 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH 4/11] Atari: fix EtherNAT interrupt; conditonal platform
- device register
-Date: Wed, 6 Jun 2012 10:25:02 +0200
-Message-ID: <CAOmrzk+bATchh_sA3xKD571e9qQBBuGF13j8rZfBoqd9L=wE=Q@mail.gmail.com>
-References: <E1SXMDv-0002Xe-6F@zirkon.biophys.uni-duesseldorf.de>
-	<CAMuHMdUrFzgjRmB6B9N7u9M2pT3Ta_D3eAmXX68oXQK5KZD7Rw@mail.gmail.com>
-	<CAOmrzkKUxxYZh1CyD2+KFum=_go77RLXh4v=i=AFv+pBryG3+A@mail.gmail.com>
-	<CAMuHMdVd2NsyWwS+JAJRB5w9zDWHtxz=zWQg199vfVuskgP=QQ@mail.gmail.com>
+Subject: Re: [PATCH 6/11] Atari: new EtherNEC driver (ne.c)
+Date: Wed, 6 Jun 2012 10:29:41 +0200
+Message-ID: <CAOmrzkKQZi1M3Jh4MRW82qhboQqUZWwPTApT=je22Oe+-gaLLQ@mail.gmail.com>
+References: <E1SXMG4-0002Xo-BD@zirkon.biophys.uni-duesseldorf.de>
+	<CAMuHMdVSJ0etRcKUZTPKh_mq8Lz-GK+Ys5QWfq3e9BrsNoN=cA@mail.gmail.com>
+	<CAOmrzkJiEe_hd6BJKU-aWv7HU3EH7L-OWzi++2z0arcadAppKw@mail.gmail.com>
+	<CAMuHMdV0GudNYRvnDXj74KLoFtH4pkcAn93ufc-TCJhXqAno5g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:50342 "EHLO
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:42655 "EHLO
 	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754845Ab2FFIZD (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jun 2012 04:25:03 -0400
-Received: by dady13 with SMTP id y13so8468873dad.19
-        for <linux-m68k@vger.kernel.org>; Wed, 06 Jun 2012 01:25:02 -0700 (PDT)
-In-Reply-To: <CAMuHMdVd2NsyWwS+JAJRB5w9zDWHtxz=zWQg199vfVuskgP=QQ@mail.gmail.com>
+	with ESMTP id S1755034Ab2FFI3m (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jun 2012 04:29:42 -0400
+Received: by dady13 with SMTP id y13so8473538dad.19
+        for <linux-m68k@vger.kernel.org>; Wed, 06 Jun 2012 01:29:41 -0700 (PDT)
+In-Reply-To: <CAMuHMdV0GudNYRvnDXj74KLoFtH4pkcAn93ufc-TCJhXqAno5g@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -24,21 +23,15 @@ Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger
 
 Geert,
 
-
->> The 91c111 is well behaved and won't generate interrupts before the
->> card is properly started up so it does not hurt to enable the
->> interrupt as soon as we're sure the card is present.
+>> Can't we force NE2000 to be enabled whenever ATARI_ETHERNEC is enabled
+>> by default? We would not want one without the other usually.
 >
-> OK if it behaves well.
->
-> When I wrote that comment, I thought I had seen some Atari-specific interrupt
-> enabling/disabling in the smc driver, but it turns out that was in the USB part.
+> You can do a select NE2000 in the ETHERNEC part. But than ETHERNEC cannot
+> be boolean and must stay tristate. That may bypass other dependencies of NE2000,
+> though (e.g. NET).
 
-That one is most certainly _not_ well behaved - enabling the interrupt
-there does stop the kernel in its tracks.
-
-I'm confident that interrupt disable/enable in the interrupt handler
-is not required but this needs further testing still.
+True - maybe a comment to also enable NE2000 in the net section is
+enough to make it obvious then.
 
 Cheers,
 
