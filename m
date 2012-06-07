@@ -1,33 +1,75 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/5] m68k: Remove duplicate FPU config option
-Date: Thu,  7 Jun 2012 20:47:03 +0200
-Message-ID: <1339094827-12349-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 4/5] m68k: Introduce config option CPU_HAS_NO_UNALIGNED
+Date: Thu,  7 Jun 2012 20:47:06 +0200
+Message-ID: <1339094827-12349-4-git-send-email-geert@linux-m68k.org>
+References: <1339094827-12349-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1339094827-12349-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: Greg Ungerer <gerg@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-It's also defined in arch/m68k/Kconfig.cpu
+Use CONFIG_CPU_HAS_NO_UNALIGNED instead of open coding CONFIG_M68000 ||
+CONFIG_COLDFIRE
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ arch/m68k/Kconfig.cpu             |    5 +++++
+ arch/m68k/include/asm/unaligned.h |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 1471201..bc8cc50 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -62,9 +62,6 @@ config CPU_HAS_NO_MULDIV64
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 6cd8c1a..c4ed650 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -27,6 +27,7 @@ config COLDFIRE
+ 	select ARCH_HAVE_CUSTOM_GPIO_H
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_MULDIV64
++	select CPU_HAS_NO_UNALIGNED
+ 	select GENERIC_CSUM
+ 
+ endchoice
+@@ -37,6 +38,7 @@ config M68000
+ 	bool
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_MULDIV64
++	select CPU_HAS_NO_UNALIGNED
+ 	select GENERIC_CSUM
+ 	help
+ 	  The Freescale (was Motorola) 68000 CPU is the first generation of
+@@ -366,6 +368,9 @@ config CPU_HAS_NO_BITFIELDS
+ config CPU_HAS_NO_MULDIV64
+ 	bool
+ 
++config CPU_HAS_NO_UNALIGNED
++	bool
++
  config CPU_HAS_ADDRESS_SPACES
  	bool
  
--config FPU
--	bool
--
- config HZ
- 	int
- 	default 1000 if CLEOPATRA
+diff --git a/arch/m68k/include/asm/unaligned.h b/arch/m68k/include/asm/unaligned.h
+index f4043ae..2b3ca0b 100644
+--- a/arch/m68k/include/asm/unaligned.h
++++ b/arch/m68k/include/asm/unaligned.h
+@@ -2,7 +2,7 @@
+ #define _ASM_M68K_UNALIGNED_H
+ 
+ 
+-#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
++#ifdef CONFIG_CPU_HAS_NO_UNALIGNED
+ #include <linux/unaligned/be_struct.h>
+ #include <linux/unaligned/le_byteshift.h>
+ #include <linux/unaligned/generic.h>
+@@ -12,7 +12,7 @@
+ 
+ #else
+ /*
+- * The m68k can do unaligned accesses itself. 
++ * The m68k can do unaligned accesses itself.
+  */
+ #include <linux/unaligned/access_ok.h>
+ #include <linux/unaligned/generic.h>
 -- 
 1.7.0.4
