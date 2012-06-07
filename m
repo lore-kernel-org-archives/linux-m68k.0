@@ -1,35 +1,62 @@
-From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH 1/11] Atari: change number of interrupt sources
-Date: Thu, 7 Jun 2012 19:15:24 +0200
-Message-ID: <CAOmrzk+RDQF8B1KNTBMZh10QAbf6msnsPTtq0Kd5xuVqjkeh_g@mail.gmail.com>
-References: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
-	<CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
-	<CAOmrzkK7MbiTzAHR0s6dQdPK2y9ov3XTdEsOhH7TOwTQOMMHNg@mail.gmail.com>
-	<CAMuHMdUnooh3PR9hNSPHuh0brRCrK79YWoZiGeQ1q3hoxNmu9g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 2/5] m68k: Move CPU_HAS_* config options
+Date: Thu,  7 Jun 2012 20:47:04 +0200
+Message-ID: <1339094827-12349-2-git-send-email-geert@linux-m68k.org>
+References: <1339094827-12349-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:56739 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932308Ab2FGRP0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Jun 2012 13:15:26 -0400
-Received: by yhmm54 with SMTP id m54so609955yhm.19
-        for <linux-m68k@vger.kernel.org>; Thu, 07 Jun 2012 10:15:25 -0700 (PDT)
-In-Reply-To: <CAMuHMdUnooh3PR9hNSPHuh0brRCrK79YWoZiGeQ1q3hoxNmu9g@mail.gmail.com>
+In-Reply-To: <1339094827-12349-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@uclinux.org>, Philippe De Muyter <phdm@macqel.be>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Geert,
+They belong together with the CPU selection
 
->> Right - still not sure where the +1 results from though.
->
-> Because the interrupt array starts at zero, but zero itself is not used?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/Kconfig     |    9 ---------
+ arch/m68k/Kconfig.cpu |    9 +++++++++
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-Most likely - I didn't think about it as an array. Still stuck with
-the irq-to-vector and vice versa stuff...
-
-Thanks,
-
-  Michael
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index bc8cc50..87b504c 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -53,15 +53,6 @@ config ZONE_DMA
+ 	bool
+ 	default y
+ 
+-config CPU_HAS_NO_BITFIELDS
+-	bool
+-
+-config CPU_HAS_NO_MULDIV64
+-	bool
+-
+-config CPU_HAS_ADDRESS_SPACES
+-	bool
+-
+ config HZ
+ 	int
+ 	default 1000 if CLEOPATRA
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 2b53254..6cd8c1a 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -360,6 +360,15 @@ config NODES_SHIFT
+ 	default "3"
+ 	depends on !SINGLE_MEMORY_CHUNK
+ 
++config CPU_HAS_NO_BITFIELDS
++	bool
++
++config CPU_HAS_NO_MULDIV64
++	bool
++
++config CPU_HAS_ADDRESS_SPACES
++	bool
++
+ config FPU
+ 	bool
+ 
+-- 
+1.7.0.4
