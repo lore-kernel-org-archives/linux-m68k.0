@@ -1,47 +1,64 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Use generic strncpy_from_user(), strlen_user(),
- and strnlen_user()
-Date: Fri, 8 Jun 2012 14:14:00 +1000
-Message-ID: <4FD17C08.8030203__20344.6895619438$1339128944$gmane$org@snapgear.com>
-References: <1338327216-15309-1-git-send-email-geert@linux-m68k.org> <20120530102226.GA28628@frolo.macqel> <CAMuHMdV5GVZR1BvGD3EncDFfPt=Bt9ndkKE8Mp7euE9KoSaGNQ@mail.gmail.com> <20120530140444.GA10543@frolo.macqel> <CAMuHMdW29QYN6XpBb9F3GGoJ-9frrD-00Wx=FchT9ALqW1LcPg@mail.gmail.com> <4FCEF956.9090603@snapgear.com> <CAMuHMdWg6W4uOm3N-etXJud5Lw-vBkstQ2h7HK=6i+sCLgeksQ@mail.gmail.com> <4FD08C1B.1090107@snapgear.com> <m2bokvw9f1.fsf@igel.home>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68k: fix inclusion of arch_gettimeoffset for non-MMU 68k classic CPU types
+Date: Fri, 8 Jun 2012 15:25:43 +1000
+Message-ID: <1339133143-12984-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m2bokvw9f1.fsf@igel.home>
+Received: from sncsmrelay2.nai.com ([67.97.80.206]:39430 "EHLO
+	sncsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760272Ab2FHF1D convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jun 2012 01:27:03 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Philippe De Muyter <phdm@macqel.be>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On 07/06/12 23:14, Andreas Schwab wrote:
-> Greg Ungerer<gerg@snapgear.com>  writes:
->
->> This strikes me as odd. Maybe this has been wrong all along. I need
->> to check further but in a little testing I did today I think it may
->> well be that all ColdFire support unaligned reads and writes.
->
-> The CFPRM doesn't indicate otherwise (the address error exception is
-> only documented to be raised for a word index addressing mode).
+=46rom: Greg Ungerer <gerg@uclinux.org>
 
-Yeah, I can't find anything that says otherwise in any of the CPU
-specific data sheets either. I suspect the internals of unaligned.h
-have just been carried from the original non-mmu 68k support to
-ColdFire.
+When building for non-MMU based classic 68k CPU types (like the 68328 f=
+or
+example) you get a compilation error:
 
-Testing on the ColdFires I have at hand here shows unaligned reads
-and writes working on all. And that includes testing with a modified
-unaligned.h that allows unaligned accesses.
+  CC      arch/m68k/kernel/time.o
+arch/m68k/kernel/time.c:91:5: error: redefinition of =E2=80=98arch_gett=
+imeoffset=E2=80=99
+include/linux/time.h:145:19: note: previous definition of =E2=80=98arch=
+_gettimeoffset=E2=80=99 was here
 
-Geert, I'll put a patch together that changes this over. I'll make
-that on top of your recent patch series.
+The arch_gettimeoffset() code is included when building for these CPU t=
+ypes,
+but it shouldn't be. Those machine types do not have
+CONFIG_ARCH_USES_GETTIMEOFFSET set.
 
-Regards
-Greg
+The fix is simply to conditionally include the arch_gettimeoffset() cod=
+e on
+that same config setting that specifies its use or not.
 
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/time.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index d7deb7f..707f057 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -85,7 +85,7 @@ void __init time_init(void)
+ 	mach_sched_init(timer_interrupt);
+ }
+=20
+-#ifdef CONFIG_M68KCLASSIC
++#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
+=20
+ u32 arch_gettimeoffset(void)
+ {
+@@ -108,4 +108,4 @@ static int __init rtc_init(void)
+=20
+ module_init(rtc_init);
+=20
+-#endif /* CONFIG_M68KCLASSIC */
++#endif /* CONFIG_ARCH_USES_GETTIMEOFFSET */
+--=20
+1.7.0.4
