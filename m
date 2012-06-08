@@ -1,63 +1,44 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH] m68knommu: fix 68360 local setting of timer
-	interrupt handler
-Date: Fri, 8 Jun 2012 15:27:45 +1000
-Message-ID: <1339133265-13223-1-git-send-email-gerg@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: [PATCH] m68knommu: allow ColdFire CPUs to use unaligned accesses
+Date: Fri, 8 Jun 2012 15:43:00 +1000
+Message-ID: <1339134180-13630-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
+Content-Type: text/plain
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:35498 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933363Ab2FHFoU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jun 2012 01:44:20 -0400
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 Cc: Greg Ungerer <gerg@uclinux.org>
-List-Id: linux-m68k@vger.kernel.org
 
-RnJvbTogR3JlZyBVbmdlcmVyIDxnZXJnQHVjbGludXgub3JnPgoKQ29tcGlsaW5nIGZvciA2ODM2
-MCBiYXNlZCB0YXJnZXRzIGZhaWxzIHdpdGg6CgogICAgYXJjaC9tNjhrL3BsYXRmb3JtLzY4MzYw
-L2NvbmZpZy5jOiBJbiBmdW5jdGlvbiDigJhod190aWNr4oCZOgogICAgYXJjaC9tNjhrL3BsYXRm
-b3JtLzY4MzYwL2NvbmZpZy5jOjU1OjI6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBm
-dW5jdGlvbiDigJhhcmNoX3RpbWVyX2ludGVycnVwdOKAmQogICAgYXJjaC9tNjhrL3BsYXRmb3Jt
-LzY4MzYwL2NvbmZpZy5jOiBBdCB0b3AgbGV2ZWw6CiAgICBhcmNoL202OGsvcGxhdGZvcm0vNjgz
-NjAvY29uZmlnLmM6NjQ6NjogZXJyb3I6IGNvbmZsaWN0aW5nIHR5cGVzIGZvciDigJhod190aW1l
-cl9pbml04oCZCiAgICBhcmNoL202OGsvaW5jbHVkZS9hc20vbWFjaGRlcC5oOjM2OjEzOiBub3Rl
-OiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhod190aW1lcl9pbml04oCZIHdhcyBoZXJlCgpD
-aGFuZ2VzIG1hZGUgdG8gaHdfdGltZXJfaW5pdCgpIGRpZG4ndCBnZXQgdXBkYXRlZCBpbiB0aGUg
-NjgzMjggdGltZXIgY29kZS4KU28gcHJvY2VzcyBhbmQgY2FsbCB0aGUgImhhbmRsZXIiIGFyZyB0
-aGF0IGlzIG5vdyBwYXNzZWQgaW50byB0aGF0Cmh3X3RpbWVyX2luaXQoKSBmdW5jdGlvbi4KClNp
-Z25lZC1vZmYtYnk6IEdyZWcgVW5nZXJlciA8Z2VyZ0B1Y2xpbnV4Lm9yZz4KLS0tCiBhcmNoL202
-OGsvcGxhdGZvcm0vNjgzNjAvY29uZmlnLmMgfCAgICA3ICsrKysrLS0KIDEgZmlsZXMgY2hhbmdl
-ZCwgNSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvbTY4
-ay9wbGF0Zm9ybS82ODM2MC9jb25maWcuYyBiL2FyY2gvbTY4ay9wbGF0Zm9ybS82ODM2MC9jb25m
-aWcuYwppbmRleCAyNTVmYzAzLi45ODc3Y2VmIDEwMDY0NAotLS0gYS9hcmNoL202OGsvcGxhdGZv
-cm0vNjgzNjAvY29uZmlnLmMKKysrIGIvYXJjaC9tNjhrL3BsYXRmb3JtLzY4MzYwL2NvbmZpZy5j
-CkBAIC0zNSw2ICszNSw3IEBAIGV4dGVybiB2b2lkIG0zNjBfY3BtX3Jlc2V0KHZvaWQpOwogI2Rl
-ZmluZSBPU0NJTExBVE9SICAodW5zaWduZWQgbG9uZyBpbnQpMzMwMDAwMDAKICNlbmRpZgogCitz
-dGF0aWMgaXJxX2hhbmRsZXJfdCB0aW1lcl9pbnRlcnJ1cHQ7CiB1bnNpZ25lZCBsb25nIGludCBz
-eXN0ZW1fY2xvY2s7CiAKIGV4dGVybiBRVUlDQyAqcHF1aWNjOwpAQCAtNTIsNyArNTMsNyBAQCBz
-dGF0aWMgaXJxcmV0dXJuX3QgaHdfdGljayhpbnQgaXJxLCB2b2lkICpkdW1teSkKIAogICBwcXVp
-Y2MtPnRpbWVyX3RlcjEgPSAweDAwMDI7IC8qIGNsZWFyIHRpbWVyIGV2ZW50ICovCiAKLSAgcmV0
-dXJuIGFyY2hfdGltZXJfaW50ZXJydXB0KGlycSwgZHVtbXkpOworICByZXR1cm4gdGltZXJfaW50
-ZXJydXB0KGlycSwgZHVtbXkpOwogfQogCiBzdGF0aWMgc3RydWN0IGlycWFjdGlvbiBtNjgzNjBf
-dGltZXJfaXJxID0gewpAQCAtNjEsNyArNjIsNyBAQCBzdGF0aWMgc3RydWN0IGlycWFjdGlvbiBt
-NjgzNjBfdGltZXJfaXJxID0gewogCS5oYW5kbGVyID0gaHdfdGljaywKIH07CiAKLXZvaWQgaHdf
-dGltZXJfaW5pdCh2b2lkKQordm9pZCBod190aW1lcl9pbml0KGlycV9oYW5kbGVyX3QgaGFuZGxl
-cikKIHsKICAgdW5zaWduZWQgY2hhciBwcmVzY2FsZXI7CiAgIHVuc2lnbmVkIHNob3J0IHRnY3Jf
-c2F2ZTsKQEAgLTk0LDYgKzk1LDggQEAgdm9pZCBod190aW1lcl9pbml0KHZvaWQpCiAKICAgcHF1
-aWNjLT50aW1lcl90ZXIxID0gMHgwMDAzOyAvKiBjbGVhciB0aW1lciBldmVudHMgKi8KIAorICB0
-aW1lcl9pbnRlcnJ1cHQgPSBoYW5kbGVyOworCiAgIC8qIGVuYWJsZSB0aW1lciAxIGludGVycnVw
-dCBpbiBDSU1SICovCiAgIHNldHVwX2lycShDUE1WRUNfVElNRVIxLCAmbTY4MzYwX3RpbWVyX2ly
-cSk7CiAKLS0gCjEuNy4wLjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCnVDbGludXgtZGV2IG1haWxpbmcgbGlzdAp1Q2xpbnV4LWRldkB1Y2xpbnV4Lm9y
-ZwpodHRwOi8vbWFpbG1hbi51Y2xpbnV4Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL3VjbGludXgtZGV2
-ClRoaXMgbWVzc2FnZSB3YXMgcmVzZW50IGJ5IHVjbGludXgtZGV2QHVjbGludXgub3JnClRvIHVu
-c3Vic2NyaWJlIHNlZToKaHR0cDovL21haWxtYW4udWNsaW51eC5vcmcvbWFpbG1hbi9vcHRpb25z
-L3VjbGludXgtZGV2
+From: Greg Ungerer <gerg@uclinux.org>
+
+All current ColdFire CPUs are able to support unaligned memory accesses.
+So remove the CONFIG_CPU_HAS_NO_UNALIGNED option selection for ColdFire.
+
+It seems that the current restriction was inherrited from the early non-MMU
+support for the basic 68000 proecssors - which do not support unaligned
+accesses.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/Kconfig.cpu |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index d4f3a98..06fa0c3 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -27,7 +27,6 @@ config COLDFIRE
+ 	select ARCH_HAVE_CUSTOM_GPIO_H
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_MULDIV64
+-	select CPU_HAS_NO_UNALIGNED
+ 	select GENERIC_CSUM
+ 
+ endchoice
+-- 
+1.7.0.4
