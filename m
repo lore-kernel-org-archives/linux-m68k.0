@@ -1,80 +1,58 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH] m68knommu: allow ColdFire CPUs to use unaligned
-	accesses
-Date: Fri, 8 Jun 2012 15:35:03 +0200
-Message-ID: <20120608133503.GA12617@frolo.macqel>
-References: <1339134180-13630-1-git-send-email-gerg@snapgear.com> <20120608103931.GA26964@frolo.macqel> <4FD1EDDF.1040101@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: remove six unused headers
+Date: Sun, 10 Jun 2012 10:40:17 +0200
+Message-ID: <CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ__24872.1566204496$1339318043$gmane$org@mail.gmail.com>
+References: <1339059427.25798.3.camel@x61.thuisdomein>
+	<4FD19B29.4050904@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailrelay004.isp.belgacom.be ([195.238.6.170]:21003 "EHLO
-	mailrelay004.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751590Ab2FHNfH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jun 2012 09:35:07 -0400
-Content-Disposition: inline
-In-Reply-To: <4FD1EDDF.1040101@snapgear.com>
+In-Reply-To: <4FD19B29.4050904@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Cc: Paul Bolle <pebolle@tiscali.nl>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Fri, Jun 08, 2012 at 10:19:43PM +1000, Greg Ungerer wrote:
-> Hi Philippe,
->
-> On 06/08/2012 08:39 PM, Philippe De Muyter wrote:
->> On Fri, Jun 08, 2012 at 03:43:00PM +1000, gerg@snapgear.com wrote:
->>> From: Greg Ungerer<gerg@uclinux.org>
->>>
->>> All current ColdFire CPUs are able to support unaligned memory acce=
-sses.
->>> So remove the CONFIG_CPU_HAS_NO_UNALIGNED option selection for Cold=
-=46ire.
->>>
->>> It seems that the current restriction was inherrited from the early=
-=20
->>> non-MMU
->>> support for the basic 68000 proecssors - which do not support unali=
-gned
->>> accesses.
+On Fri, Jun 8, 2012 at 8:26 AM, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 07/06/12 18:57, Paul Bolle wrote:
+>> There are six entirely unused headers in arch/m68k/include/asm. Noth=
+ing
+>> includes these headers. And a few tests found no hits for the things
+>> they provide (which makes sense).
 >>
->> It seems that the first ColdFires needed the restriction :
->>
->> I read in the "MCF5200 ColdFire Family Programmer=C3=83=E2=80=A0s Re=
-ference Manual"=20
->> :
->>
->> The ColdFire processor default configuration supports word- and
->> longword-sized operand references on 0-modulo-2 and 0-modulo-4
->> addresses, respectively. All other references are defined as
->> misaligned accesses. Any attempt to access a misaligned operand
->> generates an address-error exception, unless the optional hardware
->> module for handling misalignment is present. This misalignment
->> module converts any misaligned operand references into a series
->> of aligned bus cycles to access the data. The existence of the
->> misalignment module is implementation-dependent and is documented
->> in the appropriate ColdFire user=C3=83=E2=80=A0s manual.
-
-I mentionned that only to make you able to soften the commit comment :)
-
+>> MC68332.h, mac_mouse.h, mcfmbus.h, and mcfne.h are all unused since =
+at
+>> least v2.6.12-rc2 (I didn't bother looking further back than that).
 >
-> I wish Freescale really did make that clear within the doco for each
-> part!
 >
-> The oldest (and I assume simplest) part we support is the 5206, and i=
-t
-> does explicitly state in the MCF5206UM that it supports unaligned
-> accesses (Section 6.6). It is not as clear as this in some of the
-> other CPU/SoC User Manuals that I looked through.
+> Although mcfne.h has been unused for a while I am working on some pat=
+ches
+> that do use it. No problem for the others.
+
+If I'm not mistaken, that should become mcf8390.h, as "NE2000" means
+"NE2000-compatible 8390-based Ethernet"? Cfr. the mac8390 and zorro8390
+discussions in the previous millennium.
+
+>> Signed-off-by: Paul Bolle<pebolle@tiscali.nl>
 >
-> I am pretty confident that all the parts we currently support in Linu=
-x
-> do unaligned accesses.
+>
+> Acked-by: Greg Ungerer<gerg@uclinux.org>
 
-I agree.  And if some parts did not implement it, we'd see it quickly.
+Thanks, queued for 3.6.
 
-Regards
+Gr{oetje,eeting}s,
 
-Philippe
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
