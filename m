@@ -1,46 +1,58 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH] m68knommu: allow ColdFire CPUs to use unaligned
-	accesses
-Date: Tue, 12 Jun 2012 09:26:19 +0200
-Message-ID: <20120612072619.GA17645@frolo.macqel>
-References: <1339134180-13630-1-git-send-email-gerg@snapgear.com> <20120608103931.GA26964@frolo.macqel> <4FD1EDDF.1040101@snapgear.com> <20120608133503.GA12617@frolo.macqel> <4FD6A8A8.1070809@snapgear.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: remove six unused headers
+Date: Tue, 12 Jun 2012 09:24:10 +0200
+Message-ID: <CAMuHMdWn7KsdW1mEcvp8tGrDZeMiD+e6RszB=qH7P3CLZEyftg__44804.7514343218$1339486266$gmane$org@mail.gmail.com>
+References: <1339059427.25798.3.camel@x61.thuisdomein>
+	<4FD19B29.4050904@snapgear.com>
+	<CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ@mail.gmail.com>
+	<4FD6DC69.2090008@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mailrelay020.isp.belgacom.be ([195.238.6.95]:7455 "EHLO
-	mailrelay020.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750733Ab2FLH0X (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 12 Jun 2012 03:26:23 -0400
-Content-Disposition: inline
-In-Reply-To: <4FD6A8A8.1070809@snapgear.com>
+In-Reply-To: <4FD6DC69.2090008@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+Cc: Paul Bolle <pebolle@tiscali.nl>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Tue, Jun 12, 2012 at 12:25:44PM +1000, Greg Ungerer wrote:
-> Hi Philippe,
->
-> On 08/06/12 23:35, Philippe De Muyter wrote:
-...
+On Tue, Jun 12, 2012 at 8:06 AM, Greg Ungerer <gerg@snapgear.com> wrote=
+:
+>>> Although mcfne.h has been unused for a while I am working on some p=
+atches
+>>> that do use it. No problem for the others.
 >>
->> I mentionned that only to make you able to soften the commit comment :)
+>> If I'm not mistaken, that should become mcf8390.h, as "NE2000" means
+>> "NE2000-compatible 8390-based Ethernet"? Cfr. the mac8390 and zorro8=
+390
+>> discussions in the previous millennium.
 >
-> Ok, makes sense. I should probably have mentioned that this means
-> the ColdFire processors currently support by Linux :-)
 >
-> Something like:
+> I guess I missed those :-(
+> I think I see from the code for those under ~/drivers/net/ethernet/83=
+90/
+> what this may have been about though.
 >
->   All of the current Linux supported ColdFire CPUs handle unaligned
->   memory accesses. So remove the CONFIG_CPU_HAS_NO_UNALIGNED option
->   selection for ColdFire. If we ever support a specific ColdFire CPU
->   that does not support unaligned accesses then we can insert the
->   CONFIG_CPU_HAS_NO_UNALIGNED for that specific CPU type.
+> Interestingly one of the ColdFire platforms (the Arnewsh 5206 board)
+> really did have an ISA NE2000 card fitted to it. Most of the follow
+> ons that where similar use a Davicom/9000.
 
-That's perfect.  The line about dumb copying of the m68knommu settings
-was too much self-flagellation for you to my eyes :)
+If it's a real ISA NE2000 card, you ISA bus support instead of a specia=
+l
+driver.
 
-Philippe
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
