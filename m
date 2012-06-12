@@ -1,55 +1,46 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: remove six unused headers
-Date: Tue, 12 Jun 2012 16:06:33 +1000
-Message-ID: <4FD6DC69.2090008@snapgear.com>
-References: <1339059427.25798.3.camel@x61.thuisdomein> <4FD19B29.4050904@snapgear.com> <CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ@mail.gmail.com>
+From: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [PATCH] m68knommu: allow ColdFire CPUs to use unaligned
+	accesses
+Date: Tue, 12 Jun 2012 09:26:19 +0200
+Message-ID: <20120612072619.GA17645@frolo.macqel>
+References: <1339134180-13630-1-git-send-email-gerg@snapgear.com> <20120608103931.GA26964@frolo.macqel> <4FD1EDDF.1040101@snapgear.com> <20120608133503.GA12617@frolo.macqel> <4FD6A8A8.1070809@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ@mail.gmail.com>
+Received: from mailrelay020.isp.belgacom.be ([195.238.6.95]:7455 "EHLO
+	mailrelay020.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750733Ab2FLH0X (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 12 Jun 2012 03:26:23 -0400
+Content-Disposition: inline
+In-Reply-To: <4FD6A8A8.1070809@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Paul Bolle <pebolle@tiscali.nl>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Geert,
+Hi Greg,
 
-On 10/06/12 18:40, Geert Uytterhoeven wrote:
-> On Fri, Jun 8, 2012 at 8:26 AM, Greg Ungerer<gerg@snapgear.com>  wrote:
->> On 07/06/12 18:57, Paul Bolle wrote:
->>> There are six entirely unused headers in arch/m68k/include/asm. Nothing
->>> includes these headers. And a few tests found no hits for the things
->>> they provide (which makes sense).
->>>
->>> MC68332.h, mac_mouse.h, mcfmbus.h, and mcfne.h are all unused since at
->>> least v2.6.12-rc2 (I didn't bother looking further back than that).
->>
->>
->> Although mcfne.h has been unused for a while I am working on some patches
->> that do use it. No problem for the others.
+On Tue, Jun 12, 2012 at 12:25:44PM +1000, Greg Ungerer wrote:
+> Hi Philippe,
 >
-> If I'm not mistaken, that should become mcf8390.h, as "NE2000" means
-> "NE2000-compatible 8390-based Ethernet"? Cfr. the mac8390 and zorro8390
-> discussions in the previous millennium.
+> On 08/06/12 23:35, Philippe De Muyter wrote:
+...
+>>
+>> I mentionned that only to make you able to soften the commit comment :)
+>
+> Ok, makes sense. I should probably have mentioned that this means
+> the ColdFire processors currently support by Linux :-)
+>
+> Something like:
+>
+>   All of the current Linux supported ColdFire CPUs handle unaligned
+>   memory accesses. So remove the CONFIG_CPU_HAS_NO_UNALIGNED option
+>   selection for ColdFire. If we ever support a specific ColdFire CPU
+>   that does not support unaligned accesses then we can insert the
+>   CONFIG_CPU_HAS_NO_UNALIGNED for that specific CPU type.
 
-I guess I missed those :-(
-I think I see from the code for those under ~/drivers/net/ethernet/8390/
-what this may have been about though.
+That's perfect.  The line about dumb copying of the m68knommu settings
+was too much self-flagellation for you to my eyes :)
 
-Interestingly one of the ColdFire platforms (the Arnewsh 5206 board)
-really did have an ISA NE2000 card fitted to it. Most of the follow
-ons that where similar use a Davicom/9000.
-
-I'll modify my work a little to follow the other examples.
-
-Thanks
-Greg
-
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Philippe
