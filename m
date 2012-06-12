@@ -1,68 +1,55 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch fixes for 3.5
-Date: Tue, 12 Jun 2012 14:10:13 +1000
-Message-ID: <201206120410.q5C4ADGw020486@goober.corp.nai.org>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: [PATCH] m68k: remove six unused headers
+Date: Tue, 12 Jun 2012 16:06:33 +1000
+Message-ID: <4FD6DC69.2090008@snapgear.com>
+References: <1339059427.25798.3.camel@x61.thuisdomein> <4FD19B29.4050904@snapgear.com> <CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: torvalds@linux-foundation.org
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org, gerg@uclinux.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdXisLvXAPbbkuYsYH2UZ_DJSyEhKZOL6_4qwuwLzFcEoQ@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Paul Bolle <pebolle@tiscali.nl>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Geert,
 
-Can you plase pull the m68knommu git tree, for-linux branch:
+On 10/06/12 18:40, Geert Uytterhoeven wrote:
+> On Fri, Jun 8, 2012 at 8:26 AM, Greg Ungerer<gerg@snapgear.com>  wrote:
+>> On 07/06/12 18:57, Paul Bolle wrote:
+>>> There are six entirely unused headers in arch/m68k/include/asm. Nothing
+>>> includes these headers. And a few tests found no hits for the things
+>>> they provide (which makes sense).
+>>>
+>>> MC68332.h, mac_mouse.h, mcfmbus.h, and mcfne.h are all unused since at
+>>> least v2.6.12-rc2 (I didn't bother looking further back than that).
+>>
+>>
+>> Although mcfne.h has been unused for a while I am working on some patches
+>> that do use it. No problem for the others.
+>
+> If I'm not mistaken, that should become mcf8390.h, as "NE2000" means
+> "NE2000-compatible 8390-based Ethernet"? Cfr. the mac8390 and zorro8390
+> discussions in the previous millennium.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+I guess I missed those :-(
+I think I see from the code for those under ~/drivers/net/ethernet/8390/
+what this may have been about though.
 
-It contains five fixes. Four fix build problems introduced by recent clean
-up and merging of the m68k timer and ptrace code. The other fixes the 528x
-ColdFire CPU QSPI base address definition, missed in the ColdFire QSPI
-cleanup.
+Interestingly one of the ColdFire platforms (the Arnewsh 5206 board)
+really did have an ISA NE2000 card fitted to it. Most of the follow
+ons that where similar use a Davicom/9000.
+
+I'll modify my work a little to follow the other examples.
 
 Thanks
 Greg
 
 
 
-The following changes since commit cfaf025112d3856637ff34a767ef785ef5cf2ca9:
-  Linus Torvalds (1):
-        Linux 3.5-rc2
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (4):
-      m68k: fix inclusion of arch_gettimeoffset for non-MMU 68k classic CPU types
-      m68knommu: fix 68328 local setting of timer interrupt handler
-      m68knommu: fix 68360 local setting of timer interrupt handler
-      m68k: make syscall_trace_enter/leave exist for non-MMU classic m68k types
-
-Steven King (1):
-      m68knommu: m528x qspi definition fix
-
- arch/m68k/include/asm/m528xsim.h  |    2 +-
- arch/m68k/kernel/ptrace.c         |    2 +-
- arch/m68k/kernel/time.c           |    4 ++--
- arch/m68k/platform/68328/timers.c |    6 ++++--
- arch/m68k/platform/68360/config.c |    7 +++++--
- 5 files changed, 13 insertions(+), 8 deletions(-)
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
