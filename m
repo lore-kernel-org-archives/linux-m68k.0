@@ -1,50 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Paul Mundt <lethal@linux-sh.org>
 Subject: Re: asm/kvm_para.h from asm-generic (was: Re: linux-next: triage for
  April 19, 2012)
-Date: Wed, 13 Jun 2012 14:49:21 +0200
-Message-ID: <CAMuHMdUw6fCcNmUmpzLfYkfKz1W=9E2o24VUiheLDGJdU58qAg@mail.gmail.com>
+Date: Thu, 14 Jun 2012 12:29:49 +0900
+Message-ID: <20120614032948.GD27673@linux-sh.org>
 References: <CAMuHMdW9D4FZSUibcd+qrtM+is75FyJXj+RxK+sb33XEjczdyg@mail.gmail.com>
-	<CAMuHMdVM3zn_OUAtGTV_O0d3yFWBM5b_6ORHxaMLVE27Cf_XrQ@mail.gmail.com>
+ <CAMuHMdVM3zn_OUAtGTV_O0d3yFWBM5b_6ORHxaMLVE27Cf_XrQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kbuild-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <CAMuHMdVM3zn_OUAtGTV_O0d3yFWBM5b_6ORHxaMLVE27Cf_XrQ@mail.gmail.com>
-Sender: linux-kbuild-owner@vger.kernel.org
-To: linux-kbuild <linux-kbuild@vger.kernel.org>, Avi Kivity <avi@redhat.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, kvm@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kbuild <linux-kbuild@vger.kernel.org>, Avi Kivity <avi@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, kvm@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Wed, Jun 13, 2012 at 2:46 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> "make headers_check" is also broken on m32r since Avi's fix, as m32r
-> doesn't even
-> have <asm/kvm_param.h>:
+On Wed, Jun 13, 2012 at 02:46:32PM +0200, Geert Uytterhoeven wrote:
+> There's a similar rule for kvm_para.h:
+> 
+> ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/asm/kvm_para.h \
+>                   $(srctree)/include/asm-$(SRCARCH)/kvm_para.h),)
+> header-y  += kvm_para.h
+> endif
+> 
+> It's this rule that's now biting m68k, as it no longer works when using
+> arch/*/include/asm/Kbuild to import <asm-generic/kvm_para.h>.
+> (I guess it'll bite SH soon, too).
+> 
+So it did, thanks for catching it, today looks to be chock full of header
+excitement.
 
-BTW, you don't need to install any cross-compilers for headers_check, j=
-ust do
+> I found two ways to fix it:
+>   1. Remove the "ifneq" above from include/asm-generic/Kbuild.asm,
+>      so kvm_para.h is exported unconditionally.
+>      Note that this breaks m32r and cris, as they don't have
+> asm/kvm_para.h yet),
+>    2. Add a similar "ifneq" to include/asm-generic/Kbuild, to make
+>      the export of <linux/kvm_para.h> conditional.
+>      I guess we want to remove all "dummy" kvm_para.h again, too?
+> 
+m32r and cris are broken at the moment anyways because they were
+overlooked to begin with, so stubbing in generic-y += kvm_para.h rules
+there should be sufficient. Presumably with those in place it should be
+possible to kill off the wildcarding and just have it exported
+unconditionally, as per your initial fix.
 
-make ARCH=3Dxxx headers_check
-
-if you want to give it a try...
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe linux-kbuild"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+As to the merit of exporting a header with nothing in it to userspace,
+Avi will have to figure that one out.
