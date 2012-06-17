@@ -1,85 +1,36 @@
-From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: [-next] FATAL: drivers/gpu/drm/udl/udl: sizeof(struct usb_device_id)=24 is not a modulo of the size of section __mod_usb_device_table=44.
-Date: Sun, 17 Jun 2012 16:00:57 +0200
-Message-ID: <87fw9urqau.fsf@nemi.mork.no>
+Date: Sun, 17 Jun 2012 17:42:22 +0200
+Message-ID: <m27gv654ip.fsf@igel.home>
 References: <CAMuHMdXk6pByz14JcDgY+UE6QM0sHD8cbXye9CgOVSRRtr7J+Q@mail.gmail.com>
 	<20120615201021.GB14544@kroah.com>
 	<CAMuHMdUj6tAcWhkSkV43Kw3-2-3+JzgP6W=2w3fjL2KBfRh9ZQ@mail.gmail.com>
 	<20120615231220.GC8205@kroah.com> <87lijns84s.fsf@nemi.mork.no>
-	<m2bokjb6tv.fsf@igel.home>
+	<m2bokjb6tv.fsf@igel.home> <87fw9urqau.fsf@nemi.mork.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kbuild-owner@vger.kernel.org>
-In-Reply-To: <m2bokjb6tv.fsf@igel.home> (Andreas Schwab's message of "Sat, 16
-	Jun 2012 17:43:40 +0200")
-Sender: linux-kbuild-owner@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <87fw9urqau.fsf@nemi.mork.no> (=?utf-8?Q?=22Bj=C3=B8rn?=
+ Mork"'s message of "Sun, 17
+	Jun 2012 16:00:57 +0200")
+Sender: linux-next-owner@vger.kernel.org
+To: =?utf-8?Q?Bj=C3=B8rn?= Mork <bjorn@mork.no>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Andreas Schwab <schwab@linux-m68k.org> writes:
-> Bj=C3=B8rn Mork <bjorn@mork.no> writes:
->
->> AFAIK (which admittedly is not much wrt cross building) there is no =
-way
->> we can make the host built file2alias know the proper aligment for t=
-he
->> structure in the target built modules.  That's the background for th=
-is
->> fix:=20
->>
->> commit 4ce6efed48d736e3384c39ff87bda723e1f8e041
->> Author: Sam Ravnborg <sam@uranus.ravnborg.org>
->> Date:   Sun Mar 23 21:38:54 2008 +0100
->>
->>     kbuild: soften modpost checks when doing cross builds
->
-> This is not a fix in any sense of the word.  modpost can only work
-> properly if its view of the device_id structures matches *exactly* th=
-at
-> of the target.
+Bj=C3=B8rn Mork <bjorn@mork.no> writes:
 
-You are absolutely correct, of course.  I am starting to believe Greg i=
-s
-correct.  Cross building works mostly by pure luck :-)
+> So the prosed fix from Greg is certainly the correct one, until someo=
+ne
+> rewrites modpost to be completely cross build safe.
 
-I found that the reason the change I referred to above didn't kick in
-was because CONFIG_DEBUG_SECTION_MISMATCH was set, causing modpost to b=
-e
-called from scripts/Makefile.build without the "-c" option:
+I started working on that.  Then I saw do_input and barfed.
 
- # Do section mismatch analysis for each module/built-in.o
- ifdef CONFIG_DEBUG_SECTION_MISMATCH
-   cmd_secanalysis =3D ; scripts/mod/modpost $@
- endif
+Andreas.
 
-
-But as you point out: The whole "soften modpost check" concept is bogus=
-=2E
-It just cannot work.  And I just verified it doing a m68k allmodconfig
-build without CONFIG_DEBUG_SECTION_MISMATCH.  modpost will bail out
-unless host and target aligment matches:
-
-  scripts/mod/modpost -m -a -o /usr/local/src/build-tmp/linux/Module.sy=
-mvers    -S  -c -s
-drivers/media/video/gspca/gspca_sunplus: struct usb_device_id is 24 byt=
-es.  The last of 55 is:
-0x04 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0=
-x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00=20
-=46ATAL: drivers/media/video/gspca/gspca_sunplus: struct usb_device_id =
-is not terminated with a NULL entry!
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
-
-
-So the prosed fix from Greg is certainly the correct one, until someone
-rewrites modpost to be completely cross build safe.
-
-
-Bj=C3=B8rn
---
-To unsubscribe from this list: send the line "unsubscribe linux-kbuild"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=20
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
+ED5
+"And now for something completely different."
