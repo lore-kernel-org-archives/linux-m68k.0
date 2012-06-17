@@ -1,146 +1,211 @@
-From: Martin Steigerwald <Martin@lichtvoll.de>
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while OK in AmigaOS 4.1
-Date: Sun, 17 Jun 2012 10:33:51 +0200
-Message-ID: <201206171033.51625.Martin@lichtvoll.de>
+From: jdow <jdow@earthlink.net>
+Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while
+ OK in AmigaOS 4.1
+Date: Sun, 17 Jun 2012 03:50:15 -0700
+Message-ID: <4FDDB667.4020609@earthlink.net>
+References: <201206170841.20222.Martin@lichtvoll.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mondschein.lichtvoll.de ([194.150.191.11]:42970 "EHLO
-	mail.lichtvoll.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752955Ab2FQIdx convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jun 2012 04:33:53 -0400
+Received: from elasmtp-spurfowl.atl.sa.earthlink.net ([209.86.89.66]:54416
+	"EHLO elasmtp-spurfowl.atl.sa.earthlink.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754727Ab2FQKuR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 17 Jun 2012 06:50:17 -0400
+In-Reply-To: <201206170841.20222.Martin@lichtvoll.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+To: Martin Steigerwald <Martin@lichtvoll.de>
+Cc: linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
 
-Sorry, forgot to keep Cc.
+I'll have to make time to look it over, considering I am more or less
+the mommy of the RDBs. Now, 2TB may be a tad beyond the abilities of
+the RDBs to express. Memory insists that the RDBs worked on either
+BYTE or block counts. Your seeing a problem at 2TB suggests it really
+stored bit counts. The numbers are supposed to be unsigned. And whether
+the RDBs store values in blocks or BYTEs is immaterial when you get
+down to it. (The RDBs do store the disk's actual and virtual block
+sizes. The latter is what the filesystem uses.)
 
-I think I will keep the disk as is for a while. I just won=C2=B4t plug =
-it to
-the Amiga, since I have my Amiga backup on another dedicated
-disk and do not want to overwrite my Linux backups. So its available
-for testing for a while. It should be save as long as I use the disk
-in Linux only.
+However, since C programs seek plus and minus in BYTEs you are stuck
+with 31 bits worth of disk as your limit. That matches nicely with
+your 31 bits. The RDBs should still be useful if you make sure to
+plant them on block 1 or higher leaving block zero for other OSs and
+you only use the first 2 TB for the Amiga OS files. (RDPrep and the
+HDWrench library both exhibited a strong preference for starting the
+RDB blocks on block 3 of the disk.)
 
-=46or safety I will recreate all backups. I can checksum the BTRFS base=
-d
-backup partition for checksum errors, but fscking the other non
-BTRFS ones will only give a vague hint.
+{^_^}   Joanne Dow, yeah, that antique broad.
 
-
-Am Sonntag, 17. Juni 2012 schrieb Martin Steigerwald:
+On 2012/06/16 23:41, Martin Steigerwald wrote:
 > Hi Jens, hi Linux m68k developers,
->=20
+>
 > I reported that as
->=20
+>
 > https://bugzilla.kernel.org/show_bug.cgi?id=3D43511
->=20
-> I will attach there some more debug data like binary copy of RDB and
-> such.
->=20
+>
+> I will attach there some more debug data like binary copy of RDB and =
+such.
+>
 > But maybe its easier to discuss here.
-
-I think this one is pretty serious:
-
-merkaba:~> pvdisplay /dev/sdb1
-  --- Physical volume ---
-  PV Name               /dev/sdb1
-  VG Name               steigerwald
-  PV Size               1,82 TiB / not usable 4,08 MiB
-  Allocatable           yes=20
-  PE Size               4,00 MiB
-  Total PE              476931
-  Free PE               105731
-  Allocated PE          371200
-  PV UUID               ZXMECC-JAir-lX8Q-rLhS-W1cS-quwz-b3FXWp
-  =20
-merkaba:~> vgdisplay steigerwald
-  --- Volume group ---
-  VG Name               steigerwald
-  System ID            =20
-  Format                lvm2
-  Metadata Areas        2
-  Metadata Sequence No  7
-  VG Access             read/write
-  VG Status             resizable
-  MAX LV                0
-  Cur LV                5
-  Open LV               1
-  Max PV                0
-  Cur PV                1
-  Act PV                1
-  VG Size               1,82 TiB
-  PE Size               4,00 MiB
-  Total PE              476931
-  Alloc PE / Size       371200 / 1,42 TiB
-  Free  PE / Size       105731 / 413,01 GiB
-  VG UUID               uhjjE1-0yrD-Ch1A-d9qL-P5jY-UDXE-io4bpi
-
-
-with
-
-merkaba:~#1> amiga-fdisk -l /dev/sdc
-Disk /dev/sdc: 3 heads, 16 sectors, 81396441 cylinders, RDB: 0
-Logical Cylinders from 43 to 81396440, 24576  bytes/Cylinder=20
-
-Device     Boot Mount   Begin      End     Size   Pri  BBlks    System
-/dev/sdc1       *        43   65536043   1572864024     0      0  Linux=
-=20
-native
-/dev/sdc2       *    65536044   78643244   314572824     0      0 =20
-[unknown]
-/dev/sdc3       *    78643245   81396440   66076704     0      0  Amiga=
-=20
-=46FS Int.
-
-
-Due to truncating oversized partition instead of refusing to use
-them the PV and consequently VG span the whole disk instead
-of leaving space for the >350GB in the two other partitions:
-
-merkaba:~> cat /proc/partitions=20
-major minor  #blocks  name
-
- [=E2=80=A6]
-   8       16 1953514584 sdb
-   8       17 1953513552 sdb1
-
-(now sdb instead of sdc back when I run amiga-fdisk)
-
-
-This is just asking for trouble. Thus:
-
-Bug 43521 - Amiga RDB partitions: truncates miscaluted partitions size=20
-instead of refusing to use it
-https://bugzilla.kernel.org/show_bug.cgi?id=3D43521
-
-
-My suggestion is to bail out if a partition size looks insane and=20
-impossible.
-Having to manually fix it up to access the data on disk still looks bet=
-ter
-to me than potentially overwriting lots of data.
-
-
-
-Until today I never actually did an Amiga backup to the disk, I just
-created the two Amiga partitions and copied some screenshots of them
-but that might be enough to explain the checksum errors I found in a
-BTRFS backup partition.
-
-I am now checking my Linux backups. They might be save, cause not all
-space on the volume group is used.
-
-See:
-
-kernel got struck while scrubbing BTRFS with node- and leafsize 32768
-http://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg17108.html
-
-s/struck/stuck
-
-Thanks,
---=20
-Martin 'Helios' Steigerwald - http://www.Lichtvoll.de
-GPG: 03B0 0D6C 0040 0710 4AFA  B82F 991B EAAC A599 84C7
+>
+> I am not sure whether its an issue with Linux or an issue with the RD=
+B
+> format and disks with big sizes. But AFAIK RDB format is capable of
+> handling 2 TB disks.
+>
+>
+>
+>
+> With my 2 TB mixed Amiga/Linux backup disk, which I partioned under
+> AmigaOS 4.0/1 with Media Toolbox I get the following in Linux:
+>
+>
+> Jun 17 07:28:14 merkaba kernel: [30852.968978] sata_sil24 0000:05:00.=
+0:
+> enabling device (0000 -> 0003)
+> Jun 17 07:28:14 merkaba kernel: [30852.969401] scsi9 : sata_sil24
+> Jun 17 07:28:14 merkaba kernel: [30852.969533] ata10: SATA max UDMA/1=
+00
+> host m128@0xf1c02000 port 0xf1c00000 irq 19
+> Jun 17 07:28:16 merkaba kernel: [30855.163712] ata10: SATA link up 3.=
+0
+> Gbps (SStatus 123 SControl 0)
+> Jun 17 07:28:16 merkaba kernel: [30855.165014] ata10.00: ATA-8: Hitac=
+hi
+> HDS5C3020ALA632, ML6OA580, max UDMA/133
+> Jun 17 07:28:16 merkaba kernel: [30855.165017] ata10.00: 3907029168
+> sectors, multi 16: LBA48 NCQ (depth 31/32)
+> Jun 17 07:28:16 merkaba kernel: [30855.166378] ata10.00: configured f=
+or
+> UDMA/100
+> Jun 17 07:28:16 merkaba kernel: [30855.166477] scsi 9:0:0:0: Direct-A=
+ccess
+> ATA      Hitachi HDS5C302 ML6O PQ: 0 ANSI: 5
+> Jun 17 07:28:16 merkaba kernel: [30855.166653] sd 9:0:0:0: [sdb]
+> 3907029168 512-byte logical blocks: (2.00 TB/1.81 TiB)
+> Jun 17 07:28:16 merkaba kernel: [30855.166699] sd 9:0:0:0: [sdb] Writ=
+e
+> Protect is off
+> Jun 17 07:28:16 merkaba kernel: [30855.166702] sd 9:0:0:0: [sdb] Mode
+> Sense: 00 3a 00 00
+> Jun 17 07:28:16 merkaba kernel: [30855.166726] sd 9:0:0:0: [sdb] Writ=
+e
+> cache: enabled, read cache: enabled, doesn't support DPO or FUA
+> Jun 17 07:28:16 merkaba kernel: [30855.200936]  sdb: RDSK (512) sdb1
+> (LNX^@)(res 2 spb 1) sdb2 (JXF^D)(res 2 spb 1) sdb3 (DOS^C)(res 2 spb=
+ 4)
+> Jun 17 07:28:16 merkaba kernel: [30855.200943] sdb: p1 size
+> 18446744072560312368 extends beyond EOD, enabling native capacity
+> Jun 17 07:28:16 merkaba kernel: [30855.201344]  sdb: RDSK (512) sdb1
+> (LNX^@)(res 2 spb 1) sdb2 (JXF^D)(res 2 spb 1) sdb3 (DOS^C)(res 2 spb=
+ 4)
+> Jun 17 07:28:16 merkaba kernel: [30855.201347] sdb: p1 size
+> 18446744072560312368 extends beyond EOD, truncated
+> Jun 17 07:28:16 merkaba kernel: [30855.201398] sdb: p2 start
+> 18446744072560314432 is beyond EOD, truncated
+> Jun 17 07:28:16 merkaba kernel: [30855.201400] sdb: p3 start
+> 18446744073189460080 is beyond EOD, truncated
+> Jun 17 07:28:16 merkaba kernel: [30855.201570] sd 9:0:0:0: [sdb] Atta=
+ched
+> SCSI disk
+>
+>
+> The first partition seems to be way to big:
+>
+> merkaba:~#1> amiga-fdisk -l /dev/sdc
+> Disk /dev/sdc: 3 heads, 16 sectors, 81396441 cylinders, RDB: 0
+> Logical Cylinders from 43 to 81396440, 24576  bytes/Cylinder
+>
+> Device     Boot Mount   Begin      End     Size   Pri  BBlks    Syste=
+m
+> /dev/sdc1       *        43   65536043   1572864024     0      0  Lin=
+ux
+> native
+> /dev/sdc2       *    65536044   78643244   314572824     0      0
+> [unknown]
+> /dev/sdc3       *    78643245   81396440   66076704     0      0  Ami=
+ga
+> FFS Int.
+>
+> (sdc2 is JXFS, a new filesystem in AmigaOS 4 that is not known to Lin=
+ux
+> yet)
+>
+>
+> In cat /proc/partitions I get:
+>
+> merkaba:~> cat /proc/partitions
+> major minor  #blocks  name
+>
+>   [=85]
+>     8       16 1953514584 sdb
+>     8       17 1953513552 sdb1
+> merkaba:~>
+>
+>
+> Thus the Debian Linux Kernel 3.4.1 I am using here, truncates the fir=
+st
+> oversized partition and has no space for the other, too, which theref=
+ore
+> are inaccessible under Linux.
+>
+> I didn=B4t notice this initially, but it happened from the beginning,=
+ I have
+> an old amiga-fdisk listing that is exactly the same.
+>
+> Amiga Mediatoolbox has a different oppinion on the partition layout:
+>
+> LVM aka sdc1: 1500 GByte, 43 to 65536043 cyl, size 65536001 Zylinder
+> BAK aka sdc2: 300 GByte, 65536044 to 78643244 cyl, size 13107201 Zyli=
+nder
+> TAUSCH2 aka sdc3: 63,016 GByte, 78643245 to  81396440 cyl, didn=B4t n=
+ote the
+> size here, but as far as I remember was okay as well
+>
+> But it seems to be confused about the whole size of the disk as well:
+>
+> Logical sizes:
+>
+> Blocks per cylinder: 48
+> Cylinders: 81396441
+> Sectors: -397938128
+> Blocksize: 512
+>
+> The sectors seem overflowed.
+>
+> So it might be a problem with RDB and 2TB disks and nothing to do wit=
+h
+> Linux. But still on AmigaOS 4.1 I can access the two Amiga partitions
+> after the Linux partition.
+>
+>
+>
+> I have another 500GB disk for backup up my Sam440ep AmigaOS 4.1 "Amig=
+a", I
+> plan to repartition the 2 TB disk as GPT anyway, but since MediaToolB=
+ox in
+> AmigaOS 4.1 has a different meaning about the partioning and this can=
+ cause
+> serious data loss, I think its good to look at it.
+>
+> I had a BTRFS filesystem that had some checksum errors. Maybe thats s=
+omehow
+> related to this issue and AmigaOS and/or Linux overwrote something it
+> shouldn=B4t have touched.
+>
+> I will report a bug with AmigaOS 4.1 developers as well to get more
+> details.
+>
+>
+> merkaba:~> cat /proc/version
+> Linux version 3.4-trunk-amd64 (Debian 3.4.1-1~experimental.1)
+> (debian-kernel@lists.debian.org) (gcc version 4.6.3 (Debian 4.6.3-1) =
+) #1
+> SMP
+> Wed Jun 6 10:34:53 CEST 2012
+>
+> Ciao,
+>
