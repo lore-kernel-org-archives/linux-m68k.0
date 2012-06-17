@@ -1,71 +1,85 @@
-From: Martin Steigerwald <Martin@lichtvoll.de>
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while OK in AmigaOS 4.1
-Date: Sun, 17 Jun 2012 14:58:58 +0200
-Message-ID: <201206171458.58462.Martin@lichtvoll.de>
-References: <201206170841.20222.Martin@lichtvoll.de> <4FDDB667.4020609@earthlink.net> (sfid-20120617_144808_729301_F71ACE9D)
+From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+Subject: Re: [-next] FATAL: drivers/gpu/drm/udl/udl: sizeof(struct usb_device_id)=24 is not a modulo of the size of section __mod_usb_device_table=44.
+Date: Sun, 17 Jun 2012 16:00:57 +0200
+Message-ID: <87fw9urqau.fsf@nemi.mork.no>
+References: <CAMuHMdXk6pByz14JcDgY+UE6QM0sHD8cbXye9CgOVSRRtr7J+Q@mail.gmail.com>
+	<20120615201021.GB14544@kroah.com>
+	<CAMuHMdUj6tAcWhkSkV43Kw3-2-3+JzgP6W=2w3fjL2KBfRh9ZQ@mail.gmail.com>
+	<20120615231220.GC8205@kroah.com> <87lijns84s.fsf@nemi.mork.no>
+	<m2bokjb6tv.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mondschein.lichtvoll.de ([194.150.191.11]:35369 "EHLO
-	mail.lichtvoll.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757220Ab2FQM67 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jun 2012 08:58:59 -0400
-In-Reply-To: <4FDDB667.4020609@earthlink.net>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+In-Reply-To: <m2bokjb6tv.fsf@igel.home> (Andreas Schwab's message of "Sat, 16
+	Jun 2012 17:43:40 +0200")
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: jdow <jdow@earthlink.net>
-Cc: linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
 
-Am Sonntag, 17. Juni 2012 schrieb jdow:
-> I'll have to make time to look it over, considering I am more or less
-> the mommy of the RDBs. Now, 2TB may be a tad beyond the abilities of
-> the RDBs to express. Memory insists that the RDBs worked on either
-> BYTE or block counts. Your seeing a problem at 2TB suggests it really
-> stored bit counts. The numbers are supposed to be unsigned. And wheth=
-er
-> the RDBs store values in blocks or BYTEs is immaterial when you get
-> down to it. (The RDBs do store the disk's actual and virtual block
-> sizes. The latter is what the filesystem uses.)
+Andreas Schwab <schwab@linux-m68k.org> writes:
+> Bj=C3=B8rn Mork <bjorn@mork.no> writes:
+>
+>> AFAIK (which admittedly is not much wrt cross building) there is no =
+way
+>> we can make the host built file2alias know the proper aligment for t=
+he
+>> structure in the target built modules.  That's the background for th=
+is
+>> fix:=20
+>>
+>> commit 4ce6efed48d736e3384c39ff87bda723e1f8e041
+>> Author: Sam Ravnborg <sam@uranus.ravnborg.org>
+>> Date:   Sun Mar 23 21:38:54 2008 +0100
+>>
+>>     kbuild: soften modpost checks when doing cross builds
+>
+> This is not a fix in any sense of the word.  modpost can only work
+> properly if its view of the device_id structures matches *exactly* th=
+at
+> of the target.
 
-Hmmm, I thought any 2 TB limit was gone meanwhile, but then your=20
-argumentation has some merit.
+You are absolutely correct, of course.  I am starting to believe Greg i=
+s
+correct.  Cross building works mostly by pure luck :-)
 
-Some hints that it might be gone nonetheless:
+I found that the reason the change I referred to above didn't kick in
+was because CONFIG_DEBUG_SECTION_MISMATCH was set, causing modpost to b=
+e
+called from scripts/Makefile.build without the "-c" option:
 
-| JXFS 64 bit file system
-|
-| With AmigaOS 4.x a new file system has been introduced called JXFS. I=
-t is=20
-| a totally new 64 bit file system that supports partitions up to 16 TB=
- in=20
-| size. It is a modern journalling file system, which means that it red=
-uces=20
-| data loss if data writes to the disk are interrupted. It is the faste=
-st=20
-| and most reliable file system ever created for AmigaOS.
+ # Do section mismatch analysis for each module/built-in.o
+ ifdef CONFIG_DEBUG_SECTION_MISMATCH
+   cmd_secanalysis =3D ; scripts/mod/modpost $@
+ endif
 
-http://www.amigaos.net/content/1/features
 
-Well I asked AmigaOS 4 developers about this issue as well. Lets see wh=
-at=20
-they say about 2 TB limits.
+But as you point out: The whole "soften modpost check" concept is bogus=
+=2E
+It just cannot work.  And I just verified it doing a m68k allmodconfig
+build without CONFIG_DEBUG_SECTION_MISMATCH.  modpost will bail out
+unless host and target aligment matches:
 
-But nonetheless, I think, Linux should refuse to use a partition that i=
-s=20
-clearly out of bound.
+  scripts/mod/modpost -m -a -o /usr/local/src/build-tmp/linux/Module.sy=
+mvers    -S  -c -s
+drivers/media/video/gspca/gspca_sunplus: struct usb_device_id is 24 byt=
+es.  The last of 55 is:
+0x04 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0=
+x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00=20
+=46ATAL: drivers/media/video/gspca/gspca_sunplus: struct usb_device_id =
+is not terminated with a NULL entry!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
 
-Scrubbing the one backup BTRFS that has 360 GiB of data was okay. Also =
-the=20
-fsck=B4s went well. Well the volume group is not completely full so som=
-e=20
-space on the end of the disk is not yet used by it.
 
-I am recreating all my backups on BTRFS volumes now - except maybe the =
-one=20
-thats on the BTRFS volume already and scrubs okay.
+So the prosed fix from Greg is certainly the correct one, until someone
+rewrites modpost to be completely cross build safe.
 
-Ciao,
---=20
-Martin 'Helios' Steigerwald - http://www.Lichtvoll.de
-GPG: 03B0 0D6C 0040 0710 4AFA  B82F 991B EAAC A599 84C7
+
+Bj=C3=B8rn
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kbuild"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
