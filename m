@@ -1,36 +1,71 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [-next] FATAL: drivers/gpu/drm/udl/udl: sizeof(struct usb_device_id)=24 is not a modulo of the size of section __mod_usb_device_table=44.
-Date: Sun, 17 Jun 2012 17:42:22 +0200
-Message-ID: <m27gv654ip.fsf@igel.home>
-References: <CAMuHMdXk6pByz14JcDgY+UE6QM0sHD8cbXye9CgOVSRRtr7J+Q@mail.gmail.com>
-	<20120615201021.GB14544@kroah.com>
-	<CAMuHMdUj6tAcWhkSkV43Kw3-2-3+JzgP6W=2w3fjL2KBfRh9ZQ@mail.gmail.com>
-	<20120615231220.GC8205@kroah.com> <87lijns84s.fsf@nemi.mork.no>
-	<m2bokjb6tv.fsf@igel.home> <87fw9urqau.fsf@nemi.mork.no>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while
+ OK in AmigaOS 4.1
+Date: Sun, 17 Jun 2012 18:36:41 +0200
+Message-ID: <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com>
+References: <201206170841.20222.Martin@lichtvoll.de>
+	<4FDDB667.4020609@earthlink.net>
+	<201206171458.58462.Martin@lichtvoll.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <87fw9urqau.fsf@nemi.mork.no> (=?utf-8?Q?=22Bj=C3=B8rn?=
- Mork"'s message of "Sun, 17
-	Jun 2012 16:00:57 +0200")
-Sender: linux-next-owner@vger.kernel.org
-To: =?utf-8?Q?Bj=C3=B8rn?= Mork <bjorn@mork.no>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-gg0-f174.google.com ([209.85.161.174]:41067 "EHLO
+	mail-gg0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757529Ab2FQQgm convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jun 2012 12:36:42 -0400
+In-Reply-To: <201206171458.58462.Martin@lichtvoll.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Martin Steigerwald <Martin@lichtvoll.de>
+Cc: jdow <jdow@earthlink.net>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
 
-Bj=C3=B8rn Mork <bjorn@mork.no> writes:
+On Sun, Jun 17, 2012 at 2:58 PM, Martin Steigerwald <Martin@lichtvoll.d=
+e> wrote:
+> Am Sonntag, 17. Juni 2012 schrieb jdow:
+> | JXFS 64 bit file system
+> |
+> | With AmigaOS 4.x a new file system has been introduced called JXFS.=
+ It is
+> | a totally new 64 bit file system that supports partitions up to 16 =
+TB in
+> | size. It is a modern journalling file system, which means that it r=
+educes
+> | data loss if data writes to the disk are interrupted. It is the fas=
+test
+> | and most reliable file system ever created for AmigaOS.
+>
+> http://www.amigaos.net/content/1/features
+>
+> Well I asked AmigaOS 4 developers about this issue as well. Lets see =
+what
+> they say about 2 TB limits.
 
-> So the prosed fix from Greg is certainly the correct one, until someo=
-ne
-> rewrites modpost to be completely cross build safe.
+16 TB =3D 2 TB * 8. Perhaps they increased the block size from 512 to 4=
+096?
 
-I started working on that.  Then I saw do_input and barfed.
+block/partitions/amiga.c reads the block size from
+RigidDiskBlock.rdb_BlockBytes,
+but after conversion to 512-byte blocks, all further calculations are d=
+one on
+"int", so it will overflow for disks larger than 2 TiB.
 
-Andreas.
+Note that in your profile-binary.img, the field is 0x200, i.e. 512
+bytes per block,
+so I'll have to get a deeper look into your RDB first...
 
---=20
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
-ED5
-"And now for something completely different."
+Gr{oetje,eeting}s,
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
