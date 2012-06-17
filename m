@@ -1,85 +1,33 @@
 From: jdow <jdow@earthlink.net>
 Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while
  OK in AmigaOS 4.1
-Date: Sun, 17 Jun 2012 15:17:07 -0700
-Message-ID: <4FDE5763.80801@earthlink.net>
-References: <201206170841.20222.Martin@lichtvoll.de> <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com> <4FDE46E4.7020009@earthlink.net> (sfid-20120617_231310_643468_CCA19A89) <201206172320.10272.Martin@lichtvoll.de>
+Date: Sun, 17 Jun 2012 15:27:55 -0700
+Message-ID: <4FDE59EB.8050305@earthlink.net>
+References: <201206170841.20222.Martin@lichtvoll.de> <201206171458.58462.Martin@lichtvoll.de> <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com> (sfid-20120617_225443_752860_DC66624F) <201206172306.03202.Martin@lichtvoll.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from elasmtp-dupuy.atl.sa.earthlink.net ([209.86.89.62]:50448 "EHLO
-	elasmtp-dupuy.atl.sa.earthlink.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753341Ab2FQWRL (ORCPT
+Received: from elasmtp-banded.atl.sa.earthlink.net ([209.86.89.70]:36147 "EHLO
+	elasmtp-banded.atl.sa.earthlink.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753259Ab2FQW15 (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 17 Jun 2012 18:17:11 -0400
-In-Reply-To: <201206172320.10272.Martin@lichtvoll.de>
+	Sun, 17 Jun 2012 18:27:57 -0400
+In-Reply-To: <201206172306.03202.Martin@lichtvoll.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Martin Steigerwald <Martin@lichtvoll.de>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
 
-On 2012/06/17 14:20, Martin Steigerwald wrote:
-> Am Sonntag, 17. Juni 2012 schrieb jdow:
->> On 2012/06/17 09:36, Geert Uytterhoeven wrote:
->>> On Sun, Jun 17, 2012 at 2:58 PM, Martin Steigerwald
-> <Martin@lichtvoll.de> wrote:
->>>> Am Sonntag, 17. Juni 2012 schrieb jdow:
->>>> | JXFS 64 bit file system
->>>> |
->>>> | With AmigaOS 4.x a new file system has been introduced called
->>>> | JXFS. It is a totally new 64 bit file system that supports
->>>> | partitions up to 16 TB in size. It is a modern journalling file
->>>> | system, which means that it reduces data loss if data writes to
->>>> | the disk are interrupted. It is the fastest and most reliable
->>>> | file system ever created for AmigaOS.
->>>>
->>>> http://www.amigaos.net/content/1/features
->>>>
->>>> Well I asked AmigaOS 4 developers about this issue as well. Lets s=
-ee
->>>> what they say about 2 TB limits.
->>>
->>> 16 TB =3D 2 TB * 8. Perhaps they increased the block size from 512 =
-to
->>> 4096?
->>>
->>> block/partitions/amiga.c reads the block size from
->>> RigidDiskBlock.rdb_BlockBytes,
->>> but after conversion to 512-byte blocks, all further calculations a=
-re
->>> done on "int", so it will overflow for disks larger than 2 TiB.
->>>
->>> Note that in your profile-binary.img, the field is 0x200, i.e. 512
->>> bytes per block,
->>> so I'll have to get a deeper look into your RDB first...
-> [=85]
->> Note that the work I did on the Linux RDB code eons ago took full
->> cognizance of the physical and virtual block sizes.
-> [=85]
->> I've asked Martin for a digital copy of his RDBs and what he thinks =
-the
->> partition(s) should look like. I should also be told whether the dis=
-k
->> is supposed to be solely Amiga OSs or not. I gather it's not.
->
-> Its all in the bug report. profile-binary.img should be it.
->
-> Its small so I attach it.
->
-> Meanwhile I try to get the currently supported maximum disk size out =
-from
-> the OS 4 developers. Maybe JXFS is playing tricks that other filesyst=
-ems do
-> not play or simply has a different implementation.
->
-> Thanks,
+On 2012/06/17 14:06, Martin Steigerwald wrote:
+...
 
-Ah it was on the report to which your bugzilla entry I had referred to.
-OK, it looks like it's not been overwritten - one of the usual overflow
-symptoms. Now I have to hook it up with my handy dandy translator and s=
-ee
-what that says. I couldn't find it on 43521.
+I have a usage note for you and the person who did that partitioning.
+If you start the partition at block 1 instead of block zero it probably
+can coexist nicely with normal fdisk partitioning as well. (It used to
+be able to since x86 partition tables didn't bother with blocks on the
+first "cylinder" other than block zero.) I designed RDPrepX and
+HDWrench to take advantage of that. (And I used it myself. Erm I used a
+LOT of abominations such as safely nested partitions.)
 
 {^_^}
