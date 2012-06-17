@@ -1,84 +1,78 @@
-From: Martin Steigerwald <Martin@lichtvoll.de>
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while OK in AmigaOS 4.1
-Date: Sun, 17 Jun 2012 23:06:02 +0200
-Message-ID: <201206172306.03202.Martin@lichtvoll.de>
-References: <201206170841.20222.Martin@lichtvoll.de> <201206171458.58462.Martin@lichtvoll.de> <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com> (sfid-20120617_225443_752860_DC66624F)
+From: jdow <jdow@earthlink.net>
+Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while
+ OK in AmigaOS 4.1
+Date: Sun, 17 Jun 2012 14:06:44 -0700
+Message-ID: <4FDE46E4.7020009@earthlink.net>
+References: <201206170841.20222.Martin@lichtvoll.de> <4FDDB667.4020609@earthlink.net> <201206171458.58462.Martin@lichtvoll.de> <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mondschein.lichtvoll.de ([194.150.191.11]:53260 "EHLO
-	mail.lichtvoll.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753152Ab2FQVGF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jun 2012 17:06:05 -0400
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <CAMuHMdWY7=2nJDUjQFGPhdOAFGYeUsnvgPcaEvB2Gxf7P=E+Ug@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: jdow <jdow@earthlink.net>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
+Cc: Martin Steigerwald <Martin@lichtvoll.de>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Am Sonntag, 17. Juni 2012 schrieb Geert Uytterhoeven:
+On 2012/06/17 09:36, Geert Uytterhoeven wrote:
 > On Sun, Jun 17, 2012 at 2:58 PM, Martin Steigerwald <Martin@lichtvoll.de> wrote:
-> > Am Sonntag, 17. Juni 2012 schrieb jdow:
-> > | JXFS 64 bit file system
-> > | 
-> > | With AmigaOS 4.x a new file system has been introduced called JXFS.
-> > | It is a totally new 64 bit file system that supports partitions up
-> > | to 16 TB in size. It is a modern journalling file system, which
-> > | means that it reduces data loss if data writes to the disk are
-> > | interrupted. It is the fastest and most reliable file system ever
-> > | created for AmigaOS.
-> > 
-> > http://www.amigaos.net/content/1/features
-> > 
-> > Well I asked AmigaOS 4 developers about this issue as well. Lets see
-> > what they say about 2 TB limits.
-> 
-> 16 TB = 2 TB * 8. Perhaps they increased the block size from 512 to
-> 4096?
-
-I hope to get anything back from the AmigaOS 4 developers.
-
+>> Am Sonntag, 17. Juni 2012 schrieb jdow:
+>> | JXFS 64 bit file system
+>> |
+>> | With AmigaOS 4.x a new file system has been introduced called JXFS. It is
+>> | a totally new 64 bit file system that supports partitions up to 16 TB in
+>> | size. It is a modern journalling file system, which means that it reduces
+>> | data loss if data writes to the disk are interrupted. It is the fastest
+>> | and most reliable file system ever created for AmigaOS.
+>>
+>> http://www.amigaos.net/content/1/features
+>>
+>> Well I asked AmigaOS 4 developers about this issue as well. Lets see what
+>> they say about 2 TB limits.
+>
+> 16 TB = 2 TB * 8. Perhaps they increased the block size from 512 to 4096?
+>
 > block/partitions/amiga.c reads the block size from
 > RigidDiskBlock.rdb_BlockBytes,
-> but after conversion to 512-byte blocks, all further calculations are
-> done on "int", so it will overflow for disks larger than 2 TiB.
-> 
+> but after conversion to 512-byte blocks, all further calculations are done on
+> "int", so it will overflow for disks larger than 2 TiB.
+>
 > Note that in your profile-binary.img, the field is 0x200, i.e. 512
 > bytes per block,
 > so I'll have to get a deeper look into your RDB first...
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
 
-Okay, thanks!
+Note that the work I did on the Linux RDB code eons ago took full
+cognizance of the physical and virtual block sizes.
 
-I did not get any information regarding the current size limit yet.
+I still have, I believe, a working Fuji Magneto Optical drive with 2k
+sectors. I used that for ages for moving data from systems at two
+different houses as I moved back and forth. I worked on the Linux RDB
+code because I wanted to be able to read those disks. I've been vaguely
+wondering what happened to the code in the latest builds. Now I guess I
+will find out.
 
-Strangely on AmigaOS 4.1 all values seem to be fine except for the total
-sectors value. 
+If RDBs are going to remain backwards compatible and AmigaOS disk usage
+is to remain sensible larger logical blocks, at the very least, are needed.
+Since both values (should) exist within the RDBs the partitions that are
+described in the RDBs can be managed by reading the logical block size and
+multiplying it by the ending block number storing as 64 bits. It sounds
+like this is not being done correctly. I may need some guidance to see
+about where to put the 64 bit byte position of the starting and ending
+blocks.
 
-And on Linux begin and end cylinders are correct, only size is off:
+I've asked Martin for a digital copy of his RDBs and what he thinks the
+partition(s) should look like. I should also be told whether the disk
+is supposed to be solely Amiga OSs or not. I gather it's not.
 
-merkaba:~> amiga-fdisk -l /dev/sdb                         
-Disk /dev/sdb: 3 heads, 16 sectors, 81396441 cylinders, RDB: 0
-Logical Cylinders from 43 to 81396440, 24576  bytes/Cylinder 
+(And for God's sake do NOT implement the two virus storage tools within
+the RDBs, the RDB encapsulated filesystems and the RDB encapsulated
+driver code. I worried about that potential since RDBs were first
+introduced. Oddly I never heard of them being used. So I kept quiet
+about it. These days those facilities could be extended to use signing
+and validation certificates, I suppose.)
 
-Device     Boot Mount   Begin      End     Size   Pri  BBlks    System
-/dev/sdb1       *        43   65536043   1572864024     0      0  Linux native
-/dev/sdb2       *    65536044   78643244   314572824     0      0  [unknown]
-/dev/sdb3       *    78643245   81396440   66076704     0      0  Amiga FFS Int.
-
-But not only from the first, also of the second and third one it seems.
-
-65536043 - 43 = 65536000
-
-78643244 - 65536044 = 13107200
-
-81396440 - 78643245 = 2753195
-
-I would think that if there is a overflow it would already be in the cylinder
-numbers.
-
-Ciao,
--- 
-Martin 'Helios' Steigerwald - http://www.Lichtvoll.de
-GPG: 03B0 0D6C 0040 0710 4AFA  B82F 991B EAAC A599 84C7
+{^_^}
