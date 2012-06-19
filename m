@@ -1,120 +1,52 @@
-From: Martin Steigerwald <Martin@lichtvoll.de>
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while OK in AmigaOS 4.1
-Date: Mon, 18 Jun 2012 23:14:16 +0200
-Message-ID: <201206182314.16483.Martin@lichtvoll.de>
-References: <201206170841.20222.Martin@lichtvoll.de> <201206172306.03202.Martin@lichtvoll.de> <4FDE5320.8070702@earthlink.net> (sfid-20120618_100053_901604_051256AF)
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: asm/kvm_para.h from asm-generic (was: Re: linux-next: triage
+	for April 19, 2012)
+Date: Tue, 19 Jun 2012 20:48:03 +0200
+Message-ID: <20120619184803.GA31656@merkur.ravnborg.org>
+References: <CAMuHMdW9D4FZSUibcd+qrtM+is75FyJXj+RxK+sb33XEjczdyg@mail.gmail.com> <CAMuHMdVM3zn_OUAtGTV_O0d3yFWBM5b_6ORHxaMLVE27Cf_XrQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4FDE5320.8070702@earthlink.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdow <jdow@earthlink.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVM3zn_OUAtGTV_O0d3yFWBM5b_6ORHxaMLVE27Cf_XrQ@mail.gmail.com>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kbuild <linux-kbuild@vger.kernel.org>, Avi Kivity <avi@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, kvm@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Am Sonntag, 17. Juni 2012 schrieb jdow:
-> On 2012/06/17 14:06, Martin Steigerwald wrote:
-> > Am Sonntag, 17. Juni 2012 schrieb Geert Uytterhoeven:
-> >> On Sun, Jun 17, 2012 at 2:58 PM, Martin Steigerwald 
-<Martin@lichtvoll.de> wrote:
-> >>> Am Sonntag, 17. Juni 2012 schrieb jdow:
-> >>> | JXFS 64 bit file system
-> >>> | 
-> >>> | With AmigaOS 4.x a new file system has been introduced called
-> >>> | JXFS. It is a totally new 64 bit file system that supports
-> >>> | partitions up to 16 TB in size. It is a modern journalling file
-> >>> | system, which means that it reduces data loss if data writes to
-> >>> | the disk are interrupted. It is the fastest and most reliable
-> >>> | file system ever created for AmigaOS.
-> >>> 
-> >>> http://www.amigaos.net/content/1/features
-> >>> 
-> >>> Well I asked AmigaOS 4 developers about this issue as well. Lets
-> >>> see what they say about 2 TB limits.
-> >> 
-> >> 16 TB = 2 TB * 8. Perhaps they increased the block size from 512 to
-> >> 4096?
-> > 
-> > I hope to get anything back from the AmigaOS 4 developers.
-> > 
-> >> block/partitions/amiga.c reads the block size from
-> >> RigidDiskBlock.rdb_BlockBytes,
-> >> but after conversion to 512-byte blocks, all further calculations
-> >> are done on "int", so it will overflow for disks larger than 2 TiB.
-> >> 
-> >> Note that in your profile-binary.img, the field is 0x200, i.e. 512
-> >> bytes per block,
-> >> so I'll have to get a deeper look into your RDB first...
-> > 
-> > Okay, thanks!
-> > 
-> > I did not get any information regarding the current size limit yet.
-> > 
-> > Strangely on AmigaOS 4.1 all values seem to be fine except for the
-> > total sectors value.
-> 
-> > And on Linux begin and end cylinders are correct, only size is off:
-> Ah, you DO know that "cylinders, surfaces, and tracks" are polite
-> fictions in AmigaOS, don't you? Start and End blocks are all that
-> matter on a real Amiga. The fictions arose because at first it was
-> thought they could be used to optimize disk accesses. Once drives
-> were notched these values became meaningless. So they're created on
-> the fly picking values out of the nose or something. (RDPrep tries
-> to find reasonable size factors for the total block counts.)
+> >>
+> >> I just noticed include/asm-generic/Kbuild.asm already had
+> >>
+> >> ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/asm/kvm_para.=
+h \
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$(srctree)/include/asm-$(SRCARC=
+H)/kvm_para.h),)
+> >> header-y =A0+=3D kvm_para.h
+> >> endif
+> >>
+> >> but this doesn't seem to work.
+> >>
+> >> Kbuild people: which one is correct?
 
-I know there are pure fiction on Linux as well. As in any other modern 
-operating system.
+Any use of wildcards in include/asm-generic/Kbuild.asm is bogus.
+We should:
+1) add explicit header-y for kvm.h + a.out.h to the relevant architectu=
+res.
+2) add explicit header-y for kvm_para.h for the archictectures that nee=
+ds this file
+3) and drop header-y / dummy file fro the others.
 
-Actually Media Toolbox shows both. Physical and logical sizes. See the 
-screenshots I attached to the bug report.
+Anything else is just papering over the initial wrong doings.
 
-> > merkaba:~> amiga-fdisk -l /dev/sdb
-> 
-> Are you sure "amiga-fdisk" is not broken?
+I actually coded up "header-n" support to explicitly say:
+do not include this file for this arch - but looking at the
+actual problem being solved this is just bogus so I killed
+it off again.
 
-Not at all, but there is also the syslog.
-
-> > Disk /dev/sdb: 3 heads, 16 sectors, 81396441 cylinders, RDB: 0
-> > Logical Cylinders from 43 to 81396440, 24576  bytes/Cylinder
-> > 
-> > Device     Boot Mount   Begin      End     Size   Pri  BBlks   
-> > System /dev/sdb1       *        43   65536043   1572864024     0    
-> >  0  Linux native /dev/sdb2       *    65536044   78643244  
-> > 314572824     0      0  [unknown] /dev/sdb3       *    78643245  
-> > 81396440   66076704     0      0  Amiga FFS Int.
-> > 
-> > But not only from the first, also of the second and third one it
-> > seems.
-> > 
-> > 65536043 - 43 = 65536000
-> 
-> So the size in bytes is 24 times the byte offset of the start of the
-> next partition. Fascinating. Let's see. You are working in 512 byte
-> blocks it looks like. With RDBs in blocks that means you can get up to
-> 1099511627776 bytes, 2147483648 blocks, or 44739242. So you are
-> already WAY over what can be expressed in the 32 bit values in the
-> RDBs. So the software that prepared your partitioning needs some
-> repair work of some sort or something other than traditional Amiga FFS
-> format disks.
-> 
-> The first thing on the agenda is "fixing" the partitioning software. Is
-> the version of Amiga FFS you are using cognizant of 64 bit values? If
-> not you will have to go to block sizes larger than 512 bytes. It looks
-> like 1k is suitable for this instance. Given the way Amiga FFS stores
-> data on the disk I'd go for 4k or 8k block sizes unless you have lots
-> of very small files.
-
-Is there still something to fix in there? Just still catching up the mail 
-exchange. From what I could see on AmigaOS 4.1 all seemed well. I already 
-reported the negative sector count value.
-
-Anyway, if there is an issue left we can discuss this privately. This 
-would have nothing to do with Linux and I can make sure that current 
-AmigaOS developers hear about your oppinion.
-
-Ciao,
--- 
-Martin 'Helios' Steigerwald - http://www.Lichtvoll.de
-GPG: 03B0 0D6C 0040 0710 4AFA  B82F 991B EAAC A599 84C7
+	Sam
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kbuild"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
