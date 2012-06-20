@@ -1,69 +1,88 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: PROBLEM: Unselectable code in ./arch/m68k/sun3/prom/init.c
-Date: Wed, 20 Jun 2012 16:04:19 +0200
-Message-ID: <CAMuHMdWva+hYF=TU0SwTuwgyoKK62fQ8pP=miZF-2gH7U_Ou7w@mail.gmail.com>
-References: <4FD65247.4000000@uwaterloo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH] m68k/sun3: Remove unselectable code in prom_init()
+Date: Wed, 20 Jun 2012 18:56:55 +0200
+Message-ID: <1340211415-24489-1-git-send-email-geert__8068.81804387576$1340211450$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-yw0-f46.google.com ([209.85.213.46]:45668 "EHLO
-	mail-yw0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751950Ab2FTOEU convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Jun 2012 10:04:20 -0400
-Received: by yhmm54 with SMTP id m54so5781984yhm.19
-        for <linux-m68k@vger.kernel.org>; Wed, 20 Jun 2012 07:04:19 -0700 (PDT)
-In-Reply-To: <4FD65247.4000000@uwaterloo.ca>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sarah Nadi <snadi@uwaterloo.ca>
-Cc: linux-m68k@vger.kernel.org, Sam Creasey <sammy@sammy.net>
+To: linux-m68k@lists.linux-m68k.org, Sam Creasey <sammy@sammy.net>
+Cc: Sarah Nadi <snadi@uwaterloo.ca>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Sarah,
+This was copied from SPARC, but isn't relevant for the supported Sun-3
+models.
 
-On Mon, Jun 11, 2012 at 10:17 PM, Sarah Nadi <snadi@uwaterloo.ca> wrote=
-:
-> Summary: Code block dead in ./arch/m68k/sun3/prom/init.c because file=
- only
-> gets compiled if CONFIG_SUN3 is enabled.
->
-> Problem Description:
-> Code block below in file ./arch/m68k/sun3/prom/init.c is only compile=
-d if
-> CONFIG_SUN3 is not enabled, while the file is compiled if CONFIG_SUN3=
- is
-> enabled which means that this code block is dead. Seems that this blo=
-ck has
-> always been around, and still exists in the latest release.
->
-> In ./arch/m68k/Makefile: core-$(CONFIG_SUN3)=C2=A0=C2=A0=C2=A0 =C2=A0=
-=C2=A0=C2=A0 +=3D arch/m68k/sun3/
-> arch/m68k/sun3/prom/
-> In ./arch/m68k/sun3/prom/init.c :
->
-> #ifndef CONFIG_SUN3
-> =C2=A0=C2=A0=C2=A0 switch(romvec->pv_romvers) {
+[Geert] Also remove the related extern declarations, and update the
+	comment about prom_init().
 
-> #endif
->
-> Should this code be removed, or should the condition be changed?
+Reported-by: Sarah Nadi <snadi@uwaterloo.ca>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/sun3/prom/init.c |   48 +------------------------------------------
+ 1 files changed, 2 insertions(+), 46 deletions(-)
 
-Thanks! This code was copied from SPARC, but isn't relevant for the sup=
-ported
-Sun-3 platforms. I'll remove it.
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/sun3/prom/init.c b/arch/m68k/sun3/prom/init.c
+index d8e6349..eeba067 100644
+--- a/arch/m68k/sun3/prom/init.c
++++ b/arch/m68k/sun3/prom/init.c
+@@ -22,57 +22,13 @@ int prom_root_node;
+ struct linux_nodeops *prom_nodeops;
+ 
+ /* You must call prom_init() before you attempt to use any of the
+- * routines in the prom library.  It returns 0 on success, 1 on
+- * failure.  It gets passed the pointer to the PROM vector.
++ * routines in the prom library.
++ * It gets passed the pointer to the PROM vector.
+  */
+ 
+-extern void prom_meminit(void);
+-extern void prom_ranges_init(void);
+-
+ void __init prom_init(struct linux_romvec *rp)
+ {
+ 	romvec = rp;
+-#ifndef CONFIG_SUN3
+-	switch(romvec->pv_romvers) {
+-	case 0:
+-		prom_vers = PROM_V0;
+-		break;
+-	case 2:
+-		prom_vers = PROM_V2;
+-		break;
+-	case 3:
+-		prom_vers = PROM_V3;
+-		break;
+-	case 4:
+-		prom_vers = PROM_P1275;
+-		prom_printf("PROMLIB: Sun IEEE Prom not supported yet\n");
+-		prom_halt();
+-		break;
+-	default:
+-		prom_printf("PROMLIB: Bad PROM version %d\n",
+-			    romvec->pv_romvers);
+-		prom_halt();
+-		break;
+-	};
+-
+-	prom_rev = romvec->pv_plugin_revision;
+-	prom_prev = romvec->pv_printrev;
+-	prom_nodeops = romvec->pv_nodeops;
+-
+-	prom_root_node = prom_getsibling(0);
+-	if((prom_root_node == 0) || (prom_root_node == -1))
+-		prom_halt();
+-
+-	if((((unsigned long) prom_nodeops) == 0) ||
+-	   (((unsigned long) prom_nodeops) == -1))
+-		prom_halt();
+-
+-	prom_meminit();
+-
+-	prom_ranges_init();
+-#endif
+-//	printk("PROMLIB: Sun Boot Prom Version %d Revision %d\n",
+-//	       romvec->pv_romvers, prom_rev);
+ 
+ 	/* Initialization successful. */
+ 	return;
+-- 
+1.7.0.4
