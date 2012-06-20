@@ -1,303 +1,818 @@
-From: Martin Steigerwald <Martin@lichtvoll.de>
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, while OK in AmigaOS 4.1
-Date: Tue, 19 Jun 2012 21:46:09 +0200
-Message-ID: <201206192146.09327.Martin@lichtvoll.de>
-References: <201206170841.20222.Martin@lichtvoll.de> <201206172320.10272.Martin@lichtvoll.de> <4FDE8450.6090907@earthlink.net> (sfid-20120618_100053_593503_16694734)
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68k/net: add support for NS8390 based eth controllers on some ColdFire boards
+Date: Wed, 20 Jun 2012 11:48:19 +1000
+Message-ID: <1340156899-18862-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4FDE8450.6090907@earthlink.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdow <jdow@earthlink.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:65512 "EHLO
+	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752401Ab2FTBvf (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Jun 2012 21:51:35 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Am Montag, 18. Juni 2012 schrieb jdow:
-> On 2012/06/17 14:20, Martin Steigerwald wrote:
-> > Am Sonntag, 17. Juni 2012 schrieb jdow:
-> >> On 2012/06/17 09:36, Geert Uytterhoeven wrote:
-> >>> On Sun, Jun 17, 2012 at 2:58 PM, Martin Steigerwald
-> >=20
-> > <Martin@lichtvoll.de> wrote:
-> >>>> Am Sonntag, 17. Juni 2012 schrieb jdow:
-> >>>> | JXFS 64 bit file system
-> >>>> |=20
-> >>>> | With AmigaOS 4.x a new file system has been introduced called
-> >>>> | JXFS. It is a totally new 64 bit file system that supports
-> >>>> | partitions up to 16 TB in size. It is a modern journalling fil=
-e
-> >>>> | system, which means that it reduces data loss if data writes t=
-o
-> >>>> | the disk are interrupted. It is the fastest and most reliable
-> >>>> | file system ever created for AmigaOS.
-> >>>>=20
-> >>>> http://www.amigaos.net/content/1/features
-> >>>>=20
-> >>>> Well I asked AmigaOS 4 developers about this issue as well. Lets
-> >>>> see what they say about 2 TB limits.
-> >>>=20
-> >>> 16 TB =3D 2 TB * 8. Perhaps they increased the block size from 51=
-2 to
-> >>> 4096?
-> >>>=20
-> >>> block/partitions/amiga.c reads the block size from
-> >>> RigidDiskBlock.rdb_BlockBytes,
-> >>> but after conversion to 512-byte blocks, all further calculations
-> >>> are done on "int", so it will overflow for disks larger than 2
-> >>> TiB.
-> >>>=20
-> >>> Note that in your profile-binary.img, the field is 0x200, i.e. 51=
-2
-> >>> bytes per block,
-> >>> so I'll have to get a deeper look into your RDB first...
-> >=20
-> > [=85]
-> >=20
-> >> Note that the work I did on the Linux RDB code eons ago took full
-> >> cognizance of the physical and virtual block sizes.
-> >=20
-> > [=85]
-> >=20
-> >> I've asked Martin for a digital copy of his RDBs and what he think=
-s
-> >> the partition(s) should look like. I should also be told whether
-> >> the disk is supposed to be solely Amiga OSs or not. I gather it's
-> >> not.
-> >=20
-> > Its all in the bug report. profile-binary.img should be it.
-> >=20
-> > Its small so I attach it.
-> >=20
-> > Meanwhile I try to get the currently supported maximum disk size ou=
-t
-> > from the OS 4 developers. Maybe JXFS is playing tricks that other
-> > filesystems do not play or simply has a different implementation.
-> >=20
-> > Thanks,
->=20
-> I've sent Jens a proposed fix changing these lines in amiga.c.
-> =3D=3D=3D8<--- was
->          struct PartitionBlock *pb;
->          int start_sect, nr_sects, blk, part, res =3D 0;
->          int blksize =3D 1;        /* Multiplier for disk block size =
-*/
-> =3D=3D=3D8<--- becomes changing line 338 into lines 338-339
->          struct PartitionBlock *pb;
->          sector_t start_sect, nr_sects;
->          int blk, part, res =3D 0;
->          int blksize =3D 1;        /* Multiplier for disk block size =
-*/
-> =3D=3D=3D8<---
->=20
-> (I'm working without proper tools at the moment or I'd make a real
-> diff. Sorry.)
->=20
-> This fix may not be complete. The RDBs contain provisions for
-> describing the physical disk block size and how many physical blocks
-> are used in a file system's logical blocks. This MAY not work quite
-> right large physical block sizes.
+From: Greg Ungerer <gerg@uclinux.org>
 
-Way better:
+A number of older ColdFire based boards use NS8390 based network controllers.
+Most use the Davicom 9008F or the UMC 9008F. This driver provides the support
+code to get these devices working on these platforms.
 
-dmesg:
+The way these devices are wired up to the ColdFire bus is similar but not
+completely identical on the various boards. Most use a special region to
+access odd register addresses, and still provide for both 8bit and 16bit
+accesses. But a couple do have a more advanced hardware decode and use direct
+mapping of all registers. It is easy enough to handle all the access
+variations in one driver though.
 
-Jun 19 21:19:09 merkaba kernel: [ 7891.819552] ata8: SATA link up 3.0 G=
-bps (SStatus 123 SControl 0)
-Jun 19 21:19:09 merkaba kernel: [ 7891.821306] ata8.00: ATA-8: Hitachi =
-HDS5C3020ALA632, ML6OA580, max UDMA/133
-Jun 19 21:19:09 merkaba kernel: [ 7891.821315] ata8.00: 3907029168 sect=
-ors, multi 0: LBA48 NCQ (depth 31/32)
-Jun 19 21:19:09 merkaba kernel: [ 7891.823252] ata8.00: configured for =
-UDMA/100
-Jun 19 21:19:09 merkaba kernel: [ 7891.823589] scsi 7:0:0:0: Direct-Acc=
-ess     ATA      Hitachi HDS5C302 ML6O PQ: 0 ANSI: 5
-Jun 19 21:19:09 merkaba kernel: [ 7891.824126] sd 7:0:0:0: [sdb] 390702=
-9168 512-byte logical blocks: (2.00 TB/1.81 TiB)
-Jun 19 21:19:09 merkaba kernel: [ 7891.824440] sd 7:0:0:0: [sdb] Write =
-Protect is off
-Jun 19 21:19:09 merkaba kernel: [ 7891.824452] sd 7:0:0:0: [sdb] Mode S=
-ense: 00 3a 00 00
-Jun 19 21:19:09 merkaba kernel: [ 7891.824531] sd 7:0:0:0: [sdb] Write =
-cache: enabled, read cache: enabled, doesn't support DPO or FUA
-Jun 19 21:19:09 merkaba kernel: [ 7891.843284]  sdb: RDSK (512) sdb1 (L=
-NX^@)(res 2 spb 1) sdb2 (JXF^D)(res 2 spb 1) sdb3 (DOS^C)
-(res 2 spb 4)
-Jun 19 21:19:09 merkaba kernel: [ 7891.844055] sd 7:0:0:0: [sdb] Attach=
-ed SCSI disk
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/mcfne.h         |  129 +---------
+ arch/m68k/platform/coldfire/Makefile  |    1 +
+ arch/m68k/platform/coldfire/mcf8390.c |   38 +++
+ drivers/net/ethernet/8390/Kconfig     |   14 +
+ drivers/net/ethernet/8390/Makefile    |    1 +
+ drivers/net/ethernet/8390/mcf8390.c   |  477 +++++++++++++++++++++++++++++++++
+ 6 files changed, 540 insertions(+), 120 deletions(-)
+ create mode 100644 arch/m68k/platform/coldfire/mcf8390.c
+ create mode 100644 drivers/net/ethernet/8390/mcf8390.c
 
-
-cat /proc/partitions:
-major minor  #blocks  name
-[=85]
-   8       16 1953514584 sdb
-   8       17 1572864024 sdb1
-   8       18  314572824 sdb2
-   8       19   66076704 sdb3
-
-1572864024 + 314572824 + 66076704 =3D 1953513552 which is below the com=
-plete
-size of the disk.
-
-
-Partition start analysis:
-
-merkaba:~> file -sk /dev/sdb1
-/dev/sdb1: sticky LVM2 PV (Linux Logical Volume Manager), UUID: ZXMECC-=
-JAir-lX8Q-rLhS-W1cS-quwz-b3FXWp, size: 2000397877248
-merkaba:~> file -sk /dev/sdb2
-/dev/sdb2: sticky data
-merkaba:~> file -sk /dev/sdb3
-/dev/sdb3: sticky Amiga Inter FFS disk
-
-merkaba:~> hd /dev/sdb2 | head
-00000000  4a 58 46 04 11 1a 0f 0c  00 00 00 00 00 00 00 00  |JXF.......=
-=2E.....|
-00000010  00 00 00 00 00 11 00 00  3e db 3d 54 40 00 00 00  |........>.=
-=3DT@...|
-00000020  00 00 00 00 00 00 00 00  00 00 01 77 00 10 80 00  |..........=
-=2Ew....|
-00000030  00 00 01 c2 00 10 e0 00  25 80 00 30 00 00 02 00  |........%.=
-=2E0....|
-00000040  00 00 00 30 00 00 00 00  00 00 00 00 00 00 00 00  |...0......=
-=2E.....|
-00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |..........=
-=2E.....|
-00000060  00 00 00 00 00 00 00 00  00 00 08 00 00 00 00 00  |..........=
-=2E.....|
-00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |..........=
-=2E.....|
-*
-00000200  54 52 4f 4b ab ad b0 b1  00 00 00 01 00 00 00 00  |TROK......=
-=2E.....|
-
-I don=B4t know the on-disk format for JXFS, but this could be it. JFX/0=
-4
-pretty much looks like the DOS type for JXFS. Yes, thats it. JXF/04 is
-the DOS type in use for JXFS as I verified by looking at a JFXS partiti=
-on
-with Media Toolbox.
-
-
-amiga-fdisk looks the same as before:
-
-merkaba:~> amiga-fdisk -l /dev/sdb
-Disk /dev/sdb: 3 heads, 16 sectors, 81396441 cylinders, RDB: 0
-Logical Cylinders from 43 to 81396440, 24576  bytes/Cylinder=20
-
-Device     Boot Mount   Begin      End     Size   Pri  BBlks    System
-/dev/sdb1       *        43   65536043   1572864024     0      0  Linux=
- native
-/dev/sdb2       *    65536044   78643244   314572824     0      0  [unk=
-nown]
-/dev/sdb3       *    78643245   81396440   66076704     0      0  Amiga=
- FFS Int.
-
-But obviously its right anyway: It seems to display the size in blocks,
-not in cylinders.
-
-
-Media Toolbox says:
-
-LVM aka sdc1: 1500 GByte, 43 to 65536043 cyl, size 65536001 Zylinder
-BAK aka sdc2: 300 GByte, 65536044 to 78643244 cyl, size 13107201 Zylind=
-er
-TAUSCH2 aka sdc3: 63,016 GByte, 78643245 to  81396440 cyl, didn=B4t not=
-e the size
-here, but as far as I remember was okay as well
-
-with
-
-Blocks per cylinder: 48
-Cylinders: 81396441
-
-So thats:
-
-65536001 * 48 / 2 =3D 1572864024
-
-13107201 * 48 / 2 =3D 314572824
-
-( 81396440 - 78643245 ) * 48 / 2 =3D 66076680
-
-(I verified from a windowshot I made that 81396440 - 78643245 =3D 27531=
-95
-is indeed displayed by Media Toolbox as size of the partition)
-
-
-
-So this is looking pretty good.
-
-Many thanks, Joanne for your detective work and the fix.
-
-Tested with:
-
-martin@merkaba:~> cat /proc/version
-Linux version 3.5.0-rc3-fix-bug-43511+ (martin@merkaba) (gcc version 4.=
-7.0 (Debian 4.7.1-1) ) #1 SMP Tue Jun 19 14:31:56 CEST 2012
-
-
-Tested-By: Martin Steigerwald <martin@lichtvoll.de>
-Reviewed-By: Martin Steigerwald <martin@lichtvoll.de>
-
-
-Patch from Joanne in diff format:
-
-martin@merkaba:~/Computer/Merkaba/Kernel/linux-2.6> git diff HEAD~ | ca=
-t
-diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
-index 70cbf44..42d36f9 100644
---- a/block/partitions/amiga.c
-+++ b/block/partitions/amiga.c
-@@ -29,7 +29,8 @@ int amiga_partition(struct parsed_partitions *state)
-        unsigned char *data;
-        struct RigidDiskBlock *rdb;
-        struct PartitionBlock *pb;
--       int start_sect, nr_sects, blk, part, res =3D 0;
-+       sector_t start_sect, nr_sects;
-+       int blk, part, res =3D 0;
-        int blksize =3D 1;        /* Multiplier for disk block size */
-        int slot =3D 1;
-        char b[BDEVNAME_SIZE];
-
-
-Jens, please take that patch. If you want I can prepare it further with=
- above
-testing report and some explaination as changelog and a From Joanne Dow
-line ;). But it might be easier if you just take it as is and attribute=
- it
-to her. Feel free to use as much of my test report as you want for in
-commit message. But I will copy this into the bug report anyway.
-
-If you taken it, please tell me the commit id. I think this should go t=
-o
-stable kernel since its a potential data loss issue and an isolated
-overflow fix.
-
-
-Only LVM is unhappy now, but thats to be expected since /dev/sdb1
-that it used is now smaller than the whole disk as it was before with
-the overflowing and truncating Amiga RDB code without Joanne=B4s fix.
-
-merkaba:~> vgscan
-  Reading all physical volumes.  This may take a while...
-  /dev/sdb1: lseek 2000396746752 failed: Das Argument ist ung=FCltig
-  /dev/sdb1: lseek 2000396746752 failed: Das Argument ist ung=FCltig
-  /dev/sdb1: lseek 2000396746752 failed: Das Argument ist ung=FCltig
-  WARNING: Inconsistent metadata found for VG steigerwald - updating to=
- use version 7
-  /dev/sdb1: lseek 2000396746752 failed: Das Argument ist ung=FCltig
-  Automatic metadata correction failed
-  Recovery of volume group "steigerwald" failed.
-  Found volume group "merkaba" using metadata type lvm2
-
-
-So I will now format the disk as GPT and use it only for Linux for now,
-as I now have a different backup disk for the Amiga anyway.
-
-So I have to recreate backups once again. Oh well, I possibly could
-still boot an older kernel to access the LVM again.
-
-Thanks,
---=20
-Martin 'Helios' Steigerwald - http://www.Lichtvoll.de
-GPG: 03B0 0D6C 0040 0710 4AFA  B82F 991B EAAC A599 84C7
+diff --git a/arch/m68k/include/asm/mcfne.h b/arch/m68k/include/asm/mcfne.h
+index bf638be..f5760b1 100644
+--- a/arch/m68k/include/asm/mcfne.h
++++ b/arch/m68k/include/asm/mcfne.h
+@@ -37,6 +37,7 @@
+ #if defined(CONFIG_ARN5206)
+ #define NE2000_ADDR		0x40000300
+ #define NE2000_ODDOFFSET	0x00010000
++#define NE2000_ADDRSIZE		0x00020000
+ #define	NE2000_IRQ_VECTOR	0xf0
+ #define	NE2000_IRQ_PRIORITY	2
+ #define	NE2000_IRQ_LEVEL	4
+@@ -46,6 +47,7 @@
+ #if defined(CONFIG_M5206eC3)
+ #define	NE2000_ADDR		0x40000300
+ #define	NE2000_ODDOFFSET	0x00010000
++#define	NE2000_ADDRSIZE		0x00020000
+ #define	NE2000_IRQ_VECTOR	0x1c
+ #define	NE2000_IRQ_PRIORITY	2
+ #define	NE2000_IRQ_LEVEL	4
+@@ -54,6 +56,7 @@
+ 
+ #if defined(CONFIG_M5206e) && defined(CONFIG_NETtel)
+ #define NE2000_ADDR		0x30000300
++#define NE2000_ADDRSIZE		0x00001000
+ #define NE2000_IRQ_VECTOR	25
+ #define NE2000_IRQ_PRIORITY	1
+ #define NE2000_IRQ_LEVEL	3
+@@ -63,6 +66,7 @@
+ #if defined(CONFIG_M5307C3)
+ #define NE2000_ADDR		0x40000300
+ #define NE2000_ODDOFFSET	0x00010000
++#define NE2000_ADDRSIZE		0x00020000
+ #define NE2000_IRQ_VECTOR	0x1b
+ #define	NE2000_BYTE		volatile unsigned short
+ #endif
+@@ -70,6 +74,7 @@
+ #if defined(CONFIG_M5272) && defined(CONFIG_NETtel)
+ #define NE2000_ADDR		0x30600300
+ #define NE2000_ODDOFFSET	0x00008000
++#define NE2000_ADDRSIZE		0x00010000
+ #define NE2000_IRQ_VECTOR	67
+ #undef	BSWAP
+ #define	BSWAP(w)		(w)
+@@ -82,6 +87,7 @@
+ #define NE2000_ADDR0		0x30600300
+ #define NE2000_ADDR1		0x30800300
+ #define NE2000_ODDOFFSET	0x00008000
++#define NE2000_ADDRSIZE		0x00010000
+ #define NE2000_IRQ_VECTOR0	27
+ #define NE2000_IRQ_VECTOR1	29
+ #undef	BSWAP
+@@ -94,6 +100,7 @@
+ #if defined(CONFIG_M5307) && defined(CONFIG_SECUREEDGEMP3)
+ #define NE2000_ADDR		0x30600300
+ #define NE2000_ODDOFFSET	0x00008000
++#define NE2000_ADDRSIZE		0x00010000
+ #define NE2000_IRQ_VECTOR	27
+ #undef	BSWAP
+ #define	BSWAP(w)		(w)
+@@ -105,6 +112,7 @@
+ #if defined(CONFIG_ARN5307)
+ #define NE2000_ADDR		0xfe600300
+ #define NE2000_ODDOFFSET	0x00010000
++#define NE2000_ADDRSIZE		0x00020000
+ #define NE2000_IRQ_VECTOR	0x1b
+ #define NE2000_IRQ_PRIORITY	2
+ #define NE2000_IRQ_LEVEL	3
+@@ -114,129 +122,10 @@
+ #if defined(CONFIG_M5407C3)
+ #define NE2000_ADDR		0x40000300
+ #define NE2000_ODDOFFSET	0x00010000
++#define NE2000_ADDRSIZE		0x00020000
+ #define NE2000_IRQ_VECTOR	0x1b
+ #define	NE2000_BYTE		volatile unsigned short
+ #endif
+ 
+ /****************************************************************************/
+-
+-/*
+- *	Side-band address space for odd address requires re-mapping
+- *	many of the standard ISA access functions.
+- */
+-#ifdef NE2000_ODDOFFSET
+-
+-#undef outb
+-#undef outb_p
+-#undef inb
+-#undef inb_p
+-#undef outsb
+-#undef outsw
+-#undef insb
+-#undef insw
+-
+-#define	outb	ne2000_outb
+-#define	inb	ne2000_inb
+-#define	outb_p	ne2000_outb
+-#define	inb_p	ne2000_inb
+-#define	outsb	ne2000_outsb
+-#define	outsw	ne2000_outsw
+-#define	insb	ne2000_insb
+-#define	insw	ne2000_insw
+-
+-
+-#ifndef COLDFIRE_NE2000_FUNCS
+-
+-void ne2000_outb(unsigned int val, unsigned int addr);
+-int  ne2000_inb(unsigned int addr);
+-void ne2000_insb(unsigned int addr, void *vbuf, int unsigned long len);
+-void ne2000_insw(unsigned int addr, void *vbuf, unsigned long len);
+-void ne2000_outsb(unsigned int addr, void *vbuf, unsigned long len);
+-void ne2000_outsw(unsigned int addr, void *vbuf, unsigned long len);
+-
+-#else
+-
+-/*
+- *	This macro converts a conventional register address into the
+- *	real memory pointer of the mapped NE2000 device.
+- *	On most NE2000 implementations on ColdFire boards the chip is
+- *	mapped in kinda funny, due to its ISA heritage.
+- */
+-#define	NE2000_PTR(addr)	((addr&0x1)?(NE2000_ODDOFFSET+addr-1):(addr))
+-#define	NE2000_DATA_PTR(addr)	(addr)
+-
+-
+-void ne2000_outb(unsigned int val, unsigned int addr)
+-{
+-	NE2000_BYTE	*rp;
+-
+-	rp = (NE2000_BYTE *) NE2000_PTR(addr);
+-	*rp = RSWAP(val);
+-}
+-
+-int ne2000_inb(unsigned int addr)
+-{
+-	NE2000_BYTE	*rp, val;
+-
+-	rp = (NE2000_BYTE *) NE2000_PTR(addr);
+-	val = *rp;
+-	return((int) ((NE2000_BYTE) RSWAP(val)));
+-}
+-
+-void ne2000_insb(unsigned int addr, void *vbuf, int unsigned long len)
+-{
+-	NE2000_BYTE	*rp, val;
+-	unsigned char	*buf;
+-
+-	buf = (unsigned char *) vbuf;
+-	rp = (NE2000_BYTE *) NE2000_DATA_PTR(addr);
+-	for (; (len > 0); len--) {
+-		val = *rp;
+-		*buf++ = RSWAP(val);
+-	}
+-}
+-
+-void ne2000_insw(unsigned int addr, void *vbuf, unsigned long len)
+-{
+-	volatile unsigned short	*rp;
+-	unsigned short		w, *buf;
+-
+-	buf = (unsigned short *) vbuf;
+-	rp = (volatile unsigned short *) NE2000_DATA_PTR(addr);
+-	for (; (len > 0); len--) {
+-		w = *rp;
+-		*buf++ = BSWAP(w);
+-	}
+-}
+-
+-void ne2000_outsb(unsigned int addr, const void *vbuf, unsigned long len)
+-{
+-	NE2000_BYTE	*rp, val;
+-	unsigned char	*buf;
+-
+-	buf = (unsigned char *) vbuf;
+-	rp = (NE2000_BYTE *) NE2000_DATA_PTR(addr);
+-	for (; (len > 0); len--) {
+-		val = *buf++;
+-		*rp = RSWAP(val);
+-	}
+-}
+-
+-void ne2000_outsw(unsigned int addr, const void *vbuf, unsigned long len)
+-{
+-	volatile unsigned short	*rp;
+-	unsigned short		w, *buf;
+-
+-	buf = (unsigned short *) vbuf;
+-	rp = (volatile unsigned short *) NE2000_DATA_PTR(addr);
+-	for (; (len > 0); len--) {
+-		w = *buf++;
+-		*rp = BSWAP(w);
+-	}
+-}
+-
+-#endif /* COLDFIRE_NE2000_FUNCS */
+-#endif /* NE2000_OFFOFFSET */
+-
+-/****************************************************************************/
+ #endif	/* mcfne_h */
+diff --git a/arch/m68k/platform/coldfire/Makefile b/arch/m68k/platform/coldfire/Makefile
+index 76d389d..e62de37 100644
+--- a/arch/m68k/platform/coldfire/Makefile
++++ b/arch/m68k/platform/coldfire/Makefile
+@@ -31,6 +31,7 @@ obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
+ obj-$(CONFIG_NETtel)	+= nettel.o
+ obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+ obj-$(CONFIG_FIREBEE)	+= firebee.o
++obj-$(CONFIG_MCF8390)	+= mcf8390.o
+ 
+ obj-y			+= pinmux.o gpio.o
+ extra-y := head.o
+diff --git a/arch/m68k/platform/coldfire/mcf8390.c b/arch/m68k/platform/coldfire/mcf8390.c
+new file mode 100644
+index 0000000..6db9213
+--- /dev/null
++++ b/arch/m68k/platform/coldfire/mcf8390.c
+@@ -0,0 +1,38 @@
++/*
++ * mcf8390.c  -- platform support for 8390 ethernet on many boards
++ *
++ * (C) Copyright 2012, Greg Ungerer <gerg@uclinux.org>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/resource.h>
++#include <linux/platform_device.h>
++#include <asm/mcfne.h>
++
++static struct resource mcf8390_resources[] = {
++	{
++		.start	= NE2000_ADDR,
++		.end	= NE2000_ADDR + NE2000_ADDRSIZE - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	{
++		.start	= NE2000_IRQ_VECTOR,
++		.end	= NE2000_IRQ_VECTOR,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static int __init mcf8390_platform_init(void)
++{
++	platform_device_register_simple("mcf8390", -1, mcf8390_resources,
++		ARRAY_SIZE(mcf8390_resources));
++	return 0;
++}
++
++arch_initcall(mcf8390_platform_init);
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index 2e53867..e1219e0 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -162,6 +162,20 @@ config MAC8390
+ 	  and read the Ethernet-HOWTO, available from
+ 	  <http://www.tldp.org/docs.html#howto>.
+ 
++config MCF8390
++	tristate "ColdFire NS8390 based Ethernet support"
++	depends on COLDFIRE
++	select CRC32
++	---help---
++	  This driver is for Ethernet devices using an NS8390-compatible
++	  chipset on many common ColdFire CPU based boards. Many of the older
++	  Freescale dev boards use this, and some other common boards like
++	  some SnapGear routers do as well.
++
++	  If you have one of these boards and want to use the network interface
++	  on them then choose Y. To compile this driver as a module, choose M
++	  here, the module will be called mcf8390.
++
+ config NE2000
+ 	tristate "NE2000/NE1000 support"
+ 	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
+diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
+index d13790b..f43038b 100644
+--- a/drivers/net/ethernet/8390/Makefile
++++ b/drivers/net/ethernet/8390/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_HPLAN_PLUS) += hp-plus.o 8390p.o
+ obj-$(CONFIG_HPLAN) += hp.o 8390p.o
+ obj-$(CONFIG_HYDRA) += hydra.o 8390.o
+ obj-$(CONFIG_LNE390) += lne390.o 8390.o
++obj-$(CONFIG_MCF8390) += mcf8390.o 8390.o
+ obj-$(CONFIG_NE2000) += ne.o 8390p.o
+ obj-$(CONFIG_NE2_MCA) += ne2.o 8390p.o
+ obj-$(CONFIG_NE2K_PCI) += ne2k-pci.o 8390.o
+diff --git a/drivers/net/ethernet/8390/mcf8390.c b/drivers/net/ethernet/8390/mcf8390.c
+new file mode 100644
+index 0000000..f0aa070
+--- /dev/null
++++ b/drivers/net/ethernet/8390/mcf8390.c
+@@ -0,0 +1,477 @@
++/*
++ *  Support for ColdFire CPU based boards using a NS8390 Ethernet device.
++ *
++ *  Derived from the many other 8390 drivers.
++ *
++ *  (C) Copyright 2012,  Greg Ungerer <gerg@uclinux.org>
++ *
++ *  This file is subject to the terms and conditions of the GNU General Public
++ *  License.  See the file COPYING in the main directory of the Linux
++ *  distribution for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/jiffies.h>
++#include <asm/io.h>
++#include <asm/mcfne.h>
++
++static const char version[] =
++	"mcf8390.c: (15-06-2012) Greg Ungerer <gerg@uclinux.org>";
++
++#define NE_CMD		0x00
++#define NE_DATAPORT	0x10	/* NatSemi-defined port window offset */
++#define NE_RESET	0x1f	/* Issue a read to reset ,a write to clear */
++#define NE_EN0_ISR	0x07
++#define NE_EN0_DCFG	0x0e
++#define NE_EN0_RSARLO	0x08
++#define NE_EN0_RSARHI	0x09
++#define NE_EN0_RCNTLO	0x0a
++#define NE_EN0_RXCR	0x0c
++#define NE_EN0_TXCR	0x0d
++#define NE_EN0_RCNTHI	0x0b
++#define NE_EN0_IMR	0x0f
++
++#define NESM_START_PG	0x40	/* First page of TX buffer */
++#define NESM_STOP_PG	0x80	/* Last page +1 of RX ring */
++
++#ifdef NE2000_ODDOFFSET
++/*
++ * A lot of the ColdFire boards use a separate address region for odd offset
++ * register addresses. The following macros and functions convert and map
++ * as required. Note that the data port accesses are treated a little
++ * differently, and always accessed via the insX/outsX functions.
++ */
++#define	NE_PTR(a)	(((a) & 0x1) ? (NE2000_ODDOFFSET + (a) - 1) : (a))
++#define	NE_DATA_PTR(a)	(a)
++
++void ei_outb(u32 val, u32 addr)
++{
++	NE2000_BYTE *rp;
++
++	rp = (NE2000_BYTE *) NE_PTR(addr);
++	*rp = RSWAP(val);
++}
++
++#define	ei_inb	ei_inb
++u8 ei_inb(u32 addr)
++{
++	NE2000_BYTE *rp, val;
++
++	rp = (NE2000_BYTE *) NE_PTR(addr);
++	val = *rp;
++	return (u8) (RSWAP(val) & 0xff);
++}
++
++void ei_insb(u32 addr, void *vbuf, int len)
++{
++	NE2000_BYTE *rp, val;
++	u8 *buf;
++
++	buf = (u8 *) vbuf;
++	rp = (NE2000_BYTE *) NE_DATA_PTR(addr);
++	for (; (len > 0); len--) {
++		val = *rp;
++		*buf++ = RSWAP(val);
++	}
++}
++
++void ei_insw(u32 addr, void *vbuf, int len)
++{
++	volatile u16 *rp;
++	u16 w, *buf;
++
++	buf = (u16 *) vbuf;
++	rp = (volatile u16 *) NE_DATA_PTR(addr);
++	for (; (len > 0); len--) {
++		w = *rp;
++		*buf++ = BSWAP(w);
++	}
++}
++
++void ei_outsb(u32 addr, const void *vbuf, int len)
++{
++	NE2000_BYTE *rp, val;
++	u8 *buf;
++
++	buf = (u8 *) vbuf;
++	rp = (NE2000_BYTE *) NE_DATA_PTR(addr);
++	for (; (len > 0); len--) {
++		val = *buf++;
++		*rp = RSWAP(val);
++	}
++}
++
++void ei_outsw(u32 addr, const void *vbuf, int len)
++{
++	volatile u16 *rp;
++	u16 w, *buf;
++
++	buf = (u16 *) vbuf;
++	rp = (volatile u16 *) NE_DATA_PTR(addr);
++	for (; (len > 0); len--) {
++		w = *buf++;
++		*rp = BSWAP(w);
++	}
++}
++
++#else /* !NE2000_ODDOFFSET */
++
++#define	ei_inb		inb
++#define	ei_outb		outb
++#define	ei_insb		insb
++#define	ei_insw		insw
++#define	ei_outsb	outsb
++#define	ei_outsw	outsw
++
++#endif /* !NE2000_ODDOFFSET */
++
++#define	ei_inb_p	ei_inb
++#define	ei_outb_p	ei_outb
++
++#include "lib8390.c"
++
++/*
++ * Hard reset the card. This used to pause for the same period that a
++ * 8390 reset command required, but that shouldn't be necessary.
++ */
++static void mcf8390_reset_8390(struct net_device *dev)
++{
++	unsigned long reset_start_time = jiffies;
++	u32 addr = dev->base_addr;
++
++	if (ei_debug > 1)
++		netdev_dbg(dev, "resetting the 8390 t=%ld...\n", jiffies);
++
++	ei_outb(ei_inb(addr + NE_RESET), addr + NE_RESET);
++
++	ei_status.txing = 0;
++	ei_status.dmaing = 0;
++
++	/* This check _should_not_ be necessary, omit eventually. */
++	while ((ei_inb(addr + NE_EN0_ISR) & ENISR_RESET) == 0) {
++		if (time_after(jiffies, reset_start_time + 2 * HZ / 100)) {
++			netdev_warn(dev, "%s: did not complete\n", __func__);
++			break;
++		}
++	}
++
++	ei_outb(ENISR_RESET, addr + NE_EN0_ISR);
++}
++
++/*
++ * Grab the 8390 specific header. Similar to the block_input routine, but
++ * we don't need to be concerned with ring wrap as the header will be at
++ * the start of a page, so we optimize accordingly.
++ */
++static void mcf8390_get_8390_hdr(struct net_device *dev,
++				 struct e8390_pkt_hdr *hdr, int ring_page)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	u32 addr = dev->base_addr;
++
++	/*
++	 * This *shouldn't* happen.
++	 * If it does, it's the last thing you'll see
++	 */
++	if (ei_status.dmaing) {
++		netdev_err(dev,
++			"%s: DMAing conflict [DMAstat:%d][irqlock:%d]\n",
++			 __func__, ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, addr + NE_CMD);
++	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
++	ei_outb(sizeof(struct e8390_pkt_hdr), addr + NE_EN0_RCNTLO);
++	ei_outb(0, addr + NE_EN0_RCNTHI);
++	ei_outb(0, addr + NE_EN0_RSARLO);		/* On page boundary */
++	ei_outb(ring_page, addr + NE_EN0_RSARHI);
++	ei_outb(E8390_RREAD + E8390_START, addr + NE_CMD);
++
++	ei_insw(addr + NE_DATAPORT, hdr, sizeof(struct e8390_pkt_hdr) >> 1);
++
++	outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
++	ei_local->dmaing &= ~0x01;
++
++	hdr->count = cpu_to_le16(hdr->count);
++}
++
++/*
++ * Block input and output, similar to the Crynwr packet driver.
++ * If you are porting to a new ethercard, look at the packet driver source
++ * for hints. The NEx000 doesn't share the on-board packet memory --
++ * you have to put the packet out through the "remote DMA" dataport
++ * using z_writeb.
++ */
++static void mcf8390_block_input(struct net_device *dev, int count,
++				struct sk_buff *skb, int ring_offset)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	u32 addr = dev->base_addr;
++	char *buf = skb->data;
++
++	/*
++	 * This *shouldn't* happen.
++	 * If it does, it's the last thing you'll see
++	 */
++	if (ei_local->dmaing) {
++		netdev_err(dev,
++			"%s: DMAing conflict [DMAstat:%d][irqlock:%d]\n",
++			__func__, ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, addr + NE_CMD);
++	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
++	ei_outb(count & 0xff, addr + NE_EN0_RCNTLO);
++	ei_outb(count >> 8, addr + NE_EN0_RCNTHI);
++	ei_outb(ring_offset & 0xff, addr + NE_EN0_RSARLO);
++	ei_outb(ring_offset >> 8, addr + NE_EN0_RSARHI);
++	ei_outb(E8390_RREAD + E8390_START, addr + NE_CMD);
++
++	ei_insw(addr + NE_DATAPORT, buf, count >> 1);
++	if (count & 1)
++		buf[count - 1] = ei_inb(addr + NE_DATAPORT);
++
++	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
++	ei_local->dmaing &= ~0x01;
++}
++
++static void mcf8390_block_output(struct net_device *dev, int count,
++				 const unsigned char *buf,
++				 const int start_page)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	u32 addr = dev->base_addr;
++	unsigned long dma_start;
++
++	/* Make sure we transfer all bytes if 16bit IO writes */
++	if (count & 0x1)
++		count++;
++
++	/*
++	 *This *shouldn't* happen.
++	 * If it does, it's the last thing you'll see
++	 */
++	if (ei_local->dmaing) {
++		netdev_err(dev,
++			"%s: DMAing conflict [DMAstat:%d][irqlock:%d]\n",
++			__func__, ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++	/* We should already be in page 0, but to be safe... */
++	ei_outb(E8390_PAGE0 + E8390_START + E8390_NODMA, addr + NE_CMD);
++
++	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
++
++	/* Now the normal output. */
++	ei_outb(count & 0xff, addr + NE_EN0_RCNTLO);
++	ei_outb(count >> 8, addr + NE_EN0_RCNTHI);
++	ei_outb(0x00, addr + NE_EN0_RSARLO);
++	ei_outb(start_page, addr + NE_EN0_RSARHI);
++	ei_outb(E8390_RWRITE + E8390_START, addr + NE_CMD);
++
++	ei_outsw(addr + NE_DATAPORT, buf, count >> 1);
++
++	dma_start = jiffies;
++	while ((ei_inb(addr + NE_EN0_ISR) & ENISR_RDC) == 0) {
++		if (time_after(jiffies, dma_start + 2 * HZ / 100)) { /* 20ms */
++			netdev_err(dev, "timeout waiting for Tx RDC\n");
++			mcf8390_reset_8390(dev);
++			__NS8390_init(dev, 1);
++			break;
++		}
++	}
++
++	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
++	ei_local->dmaing &= ~0x01;
++}
++
++static const struct net_device_ops mcf8390_netdev_ops = {
++	.ndo_open		= __ei_open,
++	.ndo_stop		= __ei_close,
++	.ndo_start_xmit		= __ei_start_xmit,
++	.ndo_tx_timeout		= __ei_tx_timeout,
++	.ndo_get_stats		= __ei_get_stats,
++	.ndo_set_rx_mode	= __ei_set_multicast_list,
++	.ndo_validate_addr	= eth_validate_addr,
++	.ndo_set_mac_address	= eth_mac_addr,
++	.ndo_change_mtu		= eth_change_mtu,
++#ifdef CONFIG_NET_POLL_CONTROLLER
++	.ndo_poll_controller	= __ei_poll,
++#endif
++};
++
++static int mcf8390_init(struct net_device *dev)
++{
++	static u32 offsets[] = {
++		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
++		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
++	};
++	struct ei_device *ei_local = netdev_priv(dev);
++	unsigned char SA_prom[32];
++	u32 addr = dev->base_addr;
++	int start_page, stop_page;
++	int i, ret;
++
++	mcf8390_reset_8390(dev);
++
++	/*
++	 * Read the 16 bytes of station address PROM.
++	 * We must first initialize registers,
++	 * similar to NS8390_init(eifdev, 0).
++	 * We can't reliably read the SAPROM address without this.
++	 * (I learned the hard way!).
++	 */
++	{
++		static const struct {
++			u32 value;
++			u32 offset;
++		} program_seq[] = {
++			{E8390_NODMA + E8390_PAGE0 + E8390_STOP, NE_CMD},
++						/* Select page 0 */
++			{0x48,	NE_EN0_DCFG},	/* 0x48: Set byte-wide access */
++			{0x00,	NE_EN0_RCNTLO},	/* Clear the count regs */
++			{0x00,	NE_EN0_RCNTHI},
++			{0x00,	NE_EN0_IMR},	/* Mask completion irq */
++			{0xFF,	NE_EN0_ISR},
++			{E8390_RXOFF, NE_EN0_RXCR}, /* 0x20 Set to monitor */
++			{E8390_TXOFF, NE_EN0_TXCR}, /* 0x02 and loopback mode */
++			{32,	NE_EN0_RCNTLO},
++			{0x00,	NE_EN0_RCNTHI},
++			{0x00,	NE_EN0_RSARLO},	/* DMA starting at 0x0000 */
++			{0x00,	NE_EN0_RSARHI},
++			{E8390_RREAD + E8390_START, NE_CMD},
++		};
++		for (i = 0; i < ARRAY_SIZE(program_seq); i++) {
++			ei_outb(program_seq[i].value,
++				 addr + program_seq[i].offset);
++		}
++	}
++
++	for (i = 0; i < 16; i++) {
++		SA_prom[i] = ei_inb(addr + NE_DATAPORT);
++		ei_inb(addr + NE_DATAPORT);
++	}
++
++	/* We must set the 8390 for word mode. */
++	ei_outb(0x49, addr + NE_EN0_DCFG);
++	start_page = NESM_START_PG;
++	stop_page = NESM_STOP_PG;
++
++	/* Install the Interrupt handler */
++	ret = request_irq(dev->irq, __ei_interrupt, 0, dev->name, dev);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < ETH_ALEN; i++)
++		dev->dev_addr[i] = SA_prom[i];
++
++	pr_debug("Found ethernet address: %pM\n", dev->dev_addr);
++
++	ei_local->name = "mcf8390";
++	ei_local->tx_start_page = start_page;
++	ei_local->stop_page = stop_page;
++	ei_local->word16 = 1;
++	ei_local->rx_start_page = start_page + TX_PAGES;
++	ei_local->reset_8390 = mcf8390_reset_8390;
++	ei_local->block_input = mcf8390_block_input;
++	ei_local->block_output = mcf8390_block_output;
++	ei_local->get_8390_hdr = mcf8390_get_8390_hdr;
++	ei_local->reg_offset = offsets;
++
++	dev->netdev_ops = &mcf8390_netdev_ops;
++	__NS8390_init(dev, 0);
++	ret = register_netdev(dev);
++	if (ret) {
++		free_irq(dev->irq, dev);
++		return ret;
++	}
++
++	netdev_info(dev, "addr=0x%08x irq=%d, Ethernet Address %pM\n",
++		addr, dev->irq, dev->dev_addr);
++	return 0;
++}
++
++static int mcf8390_probe(struct platform_device *pdev)
++{
++	struct net_device *dev;
++	struct ei_device *ei_local;
++	struct resource *mem, *irq;
++	resource_size_t msize;
++	int ret;
++
++	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (irq == NULL) {
++		dev_err(&pdev->dev, "no IRQ specified?\n");
++		return -ENXIO;
++	}
++
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (mem == NULL) {
++		dev_err(&pdev->dev, "no memory address specified?\n");
++		return -ENXIO;
++	}
++	msize = resource_size(mem);
++	if (!request_mem_region(mem->start, msize, pdev->name))
++		return -EBUSY;
++
++	dev = ____alloc_ei_netdev(0);
++	if (dev == NULL) {
++		release_mem_region(mem->start, msize);
++		return -ENOMEM;
++	}
++
++	SET_NETDEV_DEV(dev, &pdev->dev);
++	platform_set_drvdata(pdev, dev);
++	ei_local = netdev_priv(dev);
++
++	dev->irq = irq->start;
++	dev->base_addr = mem->start;
++
++	ret = mcf8390_init(dev);
++	if (ret) {
++		release_mem_region(mem->start, msize);
++		free_netdev(dev);
++		return ret;
++	}
++	return 0;
++}
++
++static int mcf8390_remove(struct platform_device *pdev)
++{
++	struct net_device *dev = platform_get_drvdata(pdev);
++	struct resource *mem;
++
++	unregister_netdev(dev);
++	if ((mem = platform_get_resource(pdev, IORESOURCE_MEM, 0)))
++		release_mem_region(mem->start, resource_size(mem));
++	free_netdev(dev);
++	return 0;
++}
++
++static struct platform_driver mcf8390_drv = {
++	.driver = {
++		.name	= "mcf8390",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= mcf8390_probe,
++	.remove		= mcf8390_remove,
++};
++
++module_platform_driver(mcf8390_drv);
++
++MODULE_DESCRIPTION("MCF8390 ColdFire NS8390 driver");
++MODULE_AUTHOR("Greg Ungerer <gerg@uclinux.org>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:mcf8390");
+-- 
+1.7.0.4
