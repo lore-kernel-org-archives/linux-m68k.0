@@ -1,88 +1,40 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/sun3: Remove unselectable code in prom_init()
-Date: Wed, 20 Jun 2012 18:56:55 +0200
-Message-ID: <1340211415-24489-1-git-send-email-geert__8068.81804387576$1340211450$gmane$org@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@googlemail.com>
+Subject: Re: [PATCH 1/11] Atari: change number of interrupt sources
+Date: Fri, 22 Jun 2012 11:50:06 +1200
+Message-ID: <CAOmrzkJ76Zipoj3gniu7AsLGsJtNMhAY67txBH86FKj3nZ0Vvg@mail.gmail.com>
+References: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
+	<CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
+	<CAOmrzkK7MbiTzAHR0s6dQdPK2y9ov3XTdEsOhH7TOwTQOMMHNg@mail.gmail.com>
+	<CAMuHMdUnooh3PR9hNSPHuh0brRCrK79YWoZiGeQ1q3hoxNmu9g@mail.gmail.com>
+	<CAOmrzk+RDQF8B1KNTBMZh10QAbf6msnsPTtq0Kd5xuVqjkeh_g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:57720 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760623Ab2FUXuH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Jun 2012 19:50:07 -0400
+Received: by dady13 with SMTP id y13so1555896dad.19
+        for <linux-m68k@vger.kernel.org>; Thu, 21 Jun 2012 16:50:07 -0700 (PDT)
+In-Reply-To: <CAOmrzk+RDQF8B1KNTBMZh10QAbf6msnsPTtq0Kd5xuVqjkeh_g@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org, Sam Creasey <sammy@sammy.net>
-Cc: Sarah Nadi <snadi@uwaterloo.ca>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
 
-This was copied from SPARC, but isn't relevant for the supported Sun-3
-models.
+Geert,
 
-[Geert] Also remove the related extern declarations, and update the
-	comment about prom_init().
+>> Because the interrupt array starts at zero, but zero itself is not used?
+>
+> Most likely - I didn't think about it as an array. Still stuck with
+> the irq-to-vector and vice versa stuff...
 
-Reported-by: Sarah Nadi <snadi@uwaterloo.ca>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/sun3/prom/init.c |   48 +------------------------------------------
- 1 files changed, 2 insertions(+), 46 deletions(-)
+Zero is indeed used - for spurious interrupts in the irqstat array.
+Everything as it should be ...
 
-diff --git a/arch/m68k/sun3/prom/init.c b/arch/m68k/sun3/prom/init.c
-index d8e6349..eeba067 100644
---- a/arch/m68k/sun3/prom/init.c
-+++ b/arch/m68k/sun3/prom/init.c
-@@ -22,57 +22,13 @@ int prom_root_node;
- struct linux_nodeops *prom_nodeops;
- 
- /* You must call prom_init() before you attempt to use any of the
-- * routines in the prom library.  It returns 0 on success, 1 on
-- * failure.  It gets passed the pointer to the PROM vector.
-+ * routines in the prom library.
-+ * It gets passed the pointer to the PROM vector.
-  */
- 
--extern void prom_meminit(void);
--extern void prom_ranges_init(void);
--
- void __init prom_init(struct linux_romvec *rp)
- {
- 	romvec = rp;
--#ifndef CONFIG_SUN3
--	switch(romvec->pv_romvers) {
--	case 0:
--		prom_vers = PROM_V0;
--		break;
--	case 2:
--		prom_vers = PROM_V2;
--		break;
--	case 3:
--		prom_vers = PROM_V3;
--		break;
--	case 4:
--		prom_vers = PROM_P1275;
--		prom_printf("PROMLIB: Sun IEEE Prom not supported yet\n");
--		prom_halt();
--		break;
--	default:
--		prom_printf("PROMLIB: Bad PROM version %d\n",
--			    romvec->pv_romvers);
--		prom_halt();
--		break;
--	};
--
--	prom_rev = romvec->pv_plugin_revision;
--	prom_prev = romvec->pv_printrev;
--	prom_nodeops = romvec->pv_nodeops;
--
--	prom_root_node = prom_getsibling(0);
--	if((prom_root_node == 0) || (prom_root_node == -1))
--		prom_halt();
--
--	if((((unsigned long) prom_nodeops) == 0) ||
--	   (((unsigned long) prom_nodeops) == -1))
--		prom_halt();
--
--	prom_meminit();
--
--	prom_ranges_init();
--#endif
--//	printk("PROMLIB: Sun Boot Prom Version %d Revision %d\n",
--//	       romvec->pv_romvers, prom_rev);
- 
- 	/* Initialization successful. */
- 	return;
--- 
-1.7.0.4
+I've worked on cleaning up the patches, just have to pull your latest
+changes now.
+
+Cheers,
+
+  Michael
