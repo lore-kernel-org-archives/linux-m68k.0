@@ -1,39 +1,50 @@
 From: Michael Schmitz <schmitzmic@googlemail.com>
-Subject: Re: [PATCH 1/11] Atari: change number of interrupt sources
-Date: Fri, 22 Jun 2012 11:50:06 +1200
-Message-ID: <CAOmrzkJ76Zipoj3gniu7AsLGsJtNMhAY67txBH86FKj3nZ0Vvg@mail.gmail.com>
-References: <E1SXMBV-0002XQ-JI@zirkon.biophys.uni-duesseldorf.de>
-	<CAMuHMdVXZGJmhLvQ-rfPGXHd7p90dDuSd95SZT0uBnShbYY5Rg@mail.gmail.com>
-	<CAOmrzkK7MbiTzAHR0s6dQdPK2y9ov3XTdEsOhH7TOwTQOMMHNg@mail.gmail.com>
-	<CAMuHMdUnooh3PR9hNSPHuh0brRCrK79YWoZiGeQ1q3hoxNmu9g@mail.gmail.com>
-	<CAOmrzk+RDQF8B1KNTBMZh10QAbf6msnsPTtq0Kd5xuVqjkeh_g@mail.gmail.com>
+Subject: Re: [PATCH 3/11] Atari: obsolete old EtherNAT driver
+Date: Fri, 22 Jun 2012 11:53:43 +1200
+Message-ID: <CAOmrzk+KgfmG4BfTB_j378UMzjT_+tRrK5nEd-NpFGn6jf8iiw@mail.gmail.com>
+References: <E1SXMCw-0002XZ-2q@zirkon.biophys.uni-duesseldorf.de>
+	<CAMuHMdXYEBcKrXi-9X2wW9niNt+K2-2i2MKh4RGUCEz0HFL3Ug@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pz0-f46.google.com ([209.85.210.46]:57720 "EHLO
-	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1760623Ab2FUXuH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Jun 2012 19:50:07 -0400
-Received: by dady13 with SMTP id y13so1555896dad.19
-        for <linux-m68k@vger.kernel.org>; Thu, 21 Jun 2012 16:50:07 -0700 (PDT)
-In-Reply-To: <CAOmrzk+RDQF8B1KNTBMZh10QAbf6msnsPTtq0Kd5xuVqjkeh_g@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:60707 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760640Ab2FUXxo convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Jun 2012 19:53:44 -0400
+Received: by pbbrp8 with SMTP id rp8so2785628pbb.19
+        for <linux-m68k@vger.kernel.org>; Thu, 21 Jun 2012 16:53:44 -0700 (PDT)
+In-Reply-To: <CAMuHMdXYEBcKrXi-9X2wW9niNt+K2-2i2MKh4RGUCEz0HFL3Ug@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
 
-Geert,
+Hi Geert,
 
->> Because the interrupt array starts at zero, but zero itself is not used?
+
+>> @@ -1142,7 +1140,7 @@ static const char * chip_ids[ 16 ] =3D =A0{
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ \
+>> =A0 =A0 =A0 =A0} while (0)
+>>
+>> -#if defined(CONFIG_ATARI_ETHERNAT) || defined(CONFIG_ATARI_ETHERNAT=
+_MODULE)
+>> +#if defined(CONFIG_ATARI)
+>> =A0/*
+>> =A0* MSch: EtherNAT is 32 bit, so the misaligned data buffer hack ap=
+plies.
+>> =A0* This appears to hurt quite a lot ... we actually need to byte s=
+wap the
 >
-> Most likely - I didn't think about it as an array. Still stuck with
-> the irq-to-vector and vice versa stuff...
+> This part we'll have to do differently, as it depends on the old Ethe=
+rNAT
+> driver having been present first, which is not true for mainline.
 
-Zero is indeed used - for spurious interrupts in the irqstat array.
-Everything as it should be ...
-
-I've worked on cleaning up the patches, just have to pull your latest
-changes now.
+I've split this one (and similar cases like in EtherNEC) into two
+parts - first remove old EtherNAT driver code, then add the new
+version. Is that what you wanted?
 
 Cheers,
 
