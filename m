@@ -1,31 +1,22 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: remove never used asm/shm.h
-Date: Fri, 22 Jun 2012 13:59:03 +0200
-Message-ID: <m2txy3imm0.fsf@igel.home>
-References: <1340361221.1773.78.camel@x61.thuisdomein>
+From: sara william <sara.william33@yahoo.ca>
+Subject: hi
+Date: Fri, 22 Jun 2012 19:52:33 +0200 (CEST)
+Message-ID: <411675.1368291340387553293.JavaMail.defaultUser__9535.05449365384$1340387602$gmane$org@defaultHost>
+Reply-To: sara william <sara.william33@yahoo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1340361221.1773.78.camel@x61.thuisdomein> (Paul Bolle's message
-	of "Fri, 22 Jun 2012 12:33:41 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Paul Bolle <pebolle@tiscali.nl> writes:
+  
+Hi..
 
-> m68k's asm/shm.h header has been part of the tree ever since m68k
-> support got added in v1.3.94. (It started as /include/asm-m68k/shm.h and
-> moved to its current location a few years ago.) It seems it was never
-> used: no file ever included it and nothing used the macros it defines.
+My Name is Miss Sara,
 
-Apparently this was a precursor to what is now <asm/shmparam.h> (which
-was introduced in 1.3.2).
+It will be a pleasure to know you.
 
-Andreas.
+Regards
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Sara
