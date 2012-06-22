@@ -1,74 +1,74 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/11] Atari: obsolete old EtherNAT driver
-Date: Fri, 22 Jun 2012 07:03:48 +0200
-Message-ID: <CAMuHMdW8jkqDedyjXArg5CSsYZvR+r=jGierN-0r-V_SuU78hQ@mail.gmail.com>
-References: <E1SXMCw-0002XZ-2q@zirkon.biophys.uni-duesseldorf.de>
-	<CAMuHMdXYEBcKrXi-9X2wW9niNt+K2-2i2MKh4RGUCEz0HFL3Ug@mail.gmail.com>
-	<CAOmrzk+KgfmG4BfTB_j378UMzjT_+tRrK5nEd-NpFGn6jf8iiw@mail.gmail.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] m68k: remove never used asm/shm.h
+Date: Fri, 22 Jun 2012 12:33:41 +0200
+Message-ID: <1340361221.1773.78.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f174.google.com ([209.85.214.174]:43215 "EHLO
-	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753778Ab2FVFDt convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 22 Jun 2012 01:03:49 -0400
-Received: by obbuo13 with SMTP id uo13so1414474obb.19
-        for <linux-m68k@vger.kernel.org>; Thu, 21 Jun 2012 22:03:49 -0700 (PDT)
-In-Reply-To: <CAOmrzk+KgfmG4BfTB_j378UMzjT_+tRrK5nEd-NpFGn6jf8iiw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@googlemail.com>
-Cc: Michael Schmitz <schmitz@zirkon.biophys.uni-duesseldorf.de>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Michael,
+m68k's asm/shm.h header has been part of the tree ever since m68k
+support got added in v1.3.94. (It started as /include/asm-m68k/shm.h and
+moved to its current location a few years ago.) It seems it was never
+used: no file ever included it and nothing used the macros it defines.
 
-On Fri, Jun 22, 2012 at 1:53 AM, Michael Schmitz
-<schmitzmic@googlemail.com> wrote:
->>> @@ -1142,7 +1140,7 @@ static const char * chip_ids[ 16 ] =3D =C2=A0=
-{
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0} =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0} while (0)
->>>
->>> -#if defined(CONFIG_ATARI_ETHERNAT) || defined(CONFIG_ATARI_ETHERNA=
-T_MODULE)
->>> +#if defined(CONFIG_ATARI)
->>> =C2=A0/*
->>> =C2=A0* MSch: EtherNAT is 32 bit, so the misaligned data buffer hac=
-k applies.
->>> =C2=A0* This appears to hurt quite a lot ... we actually need to by=
-te swap the
->>
->> This part we'll have to do differently, as it depends on the old Eth=
-erNAT
->> driver having been present first, which is not true for mainline.
->
-> I've split this one (and similar cases like in EtherNEC) into two
-> parts - first remove old EtherNAT driver code, then add the new
-> version. Is that what you wanted?
+(Actually, from v2.5.46 until v2.6.29-rc3 it was included by m68knommu's
+asm/shm.h. But that header was just a very thin wrapper for this header
+and was itself unused too.)
 
-Yes, and I only need the part that adds the new version.
-I'm just going to revert the whole old EtherNAT/EtherNEC driver in one =
-shot,
-as it's not in mainline.
+This header can safely be removed.
 
-Thanks!
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) Tested by using various git commands on (way too much of the history
+of) the tree.
 
-Gr{oetje,eeting}s,
+1) There's an almost identical patch for h8300's asm/shm.h header.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+ arch/m68k/include/asm/shm.h |   31 -------------------------------
+ 1 files changed, 0 insertions(+), 31 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/shm.h
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/shm.h b/arch/m68k/include/asm/shm.h
+deleted file mode 100644
+index fa56ec8..0000000
+--- a/arch/m68k/include/asm/shm.h
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#ifndef _M68K_SHM_H
+-#define _M68K_SHM_H
+-
+-
+-/* format of page table entries that correspond to shared memory pages
+-   currently out in swap space (see also mm/swap.c):
+-   bits 0-1 (PAGE_PRESENT) is  = 0
+-   bits 8..2 (SWP_TYPE) are = SHM_SWP_TYPE
+-   bits 31..9 are used like this:
+-   bits 15..9 (SHM_ID) the id of the shared memory segment
+-   bits 30..16 (SHM_IDX) the index of the page within the shared memory segment
+-                    (actually only bits 25..16 get used since SHMMAX is so low)
+-   bit 31 (SHM_READ_ONLY) flag whether the page belongs to a read-only attach
+-*/
+-/* on the m68k both bits 0 and 1 must be zero */
+-/* format on the sun3 is similar, but bits 30, 31 are set to zero and all
+-   others are reduced by 2. --m */
+-
+-#ifndef CONFIG_SUN3
+-#define SHM_ID_SHIFT	9
+-#else
+-#define SHM_ID_SHIFT	7
+-#endif
+-#define _SHM_ID_BITS	7
+-#define SHM_ID_MASK	((1<<_SHM_ID_BITS)-1)
+-
+-#define SHM_IDX_SHIFT	(SHM_ID_SHIFT+_SHM_ID_BITS)
+-#define _SHM_IDX_BITS	15
+-#define SHM_IDX_MASK	((1<<_SHM_IDX_BITS)-1)
+-
+-#endif /* _M68K_SHM_H */
+-- 
+1.7.7.6
