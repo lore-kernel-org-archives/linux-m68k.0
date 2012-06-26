@@ -1,44 +1,58 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH] mod/file2alias: make modalias generation safe for
-	cross compiling
-Date: Tue, 26 Jun 2012 07:00:49 +0200
-Message-ID: <20120626050049.GA24503@merkur.ravnborg.org>
-References: <CAMuHMdXk6pByz14JcDgY+UE6QM0sHD8cbXye9CgOVSRRtr7J+Q@mail.gmail.com> <20120615201021.GB14544@kroah.com> <CAMuHMdUj6tAcWhkSkV43Kw3-2-3+JzgP6W=2w3fjL2KBfRh9ZQ@mail.gmail.com> <20120615231220.GC8205@kroah.com> <87lijns84s.fsf@nemi.mork.no> <m2bokjb6tv.fsf@igel.home> <87fw9urqau.fsf@nemi.mork.no> <m2d34n1sz9.fsf_-_@igel.home>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/2] net: add support for NS8390 based eth controllers
+ on some ColdFire boards
+Date: Tue, 26 Jun 2012 15:16:58 +1000
+Message-ID: <4FE945CA.6060509@snapgear.com>
+References: <1340587792-8596-1-git-send-email-gerg@snapgear.com> <1340587792-8596-2-git-send-email-gerg@snapgear.com> <CAMuHMdXWCmDfGw65Ckr082xx8x4yJyG62wiNj0i4khxU2k3AhA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp.snhosting.dk ([87.238.248.203]:34975 "EHLO
-	smtp.domainteam.dk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752066Ab2FZFAw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jun 2012 01:00:52 -0400
-Content-Disposition: inline
-In-Reply-To: <m2d34n1sz9.fsf_-_@igel.home>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:34453 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750809Ab2FZFRQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jun 2012 01:17:16 -0400
+In-Reply-To: <CAMuHMdXWCmDfGw65Ckr082xx8x4yJyG62wiNj0i4khxU2k3AhA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, USB list <linux-usb@vger.kernel.org>, linux-kernel@vger.kernel.org, Linux-Next <linux-next@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-Hi Andreas.
+Hi Geert,
 
-On Mon, Jun 25, 2012 at 02:22:34PM +0200, Andreas Schwab wrote:
-> Use the target compiler to compute the offsets of the fields of the
-> device_id structures, so that it won't be broken by different alignments
-> between the host and target ABIs.
-Looks good.
+On 06/25/2012 05:59 PM, Geert Uytterhoeven wrote:
+> On Mon, Jun 25, 2012 at 3:29 AM,<gerg@snapgear.com>  wrote:
+>>   arch/m68k/include/asm/mcfne.h       |  129 +---------
+>
+> mcf8390.h?
+> mcfne.h is queued for removal.
 
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index 08dce14..ff22206 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -80,8 +80,7 @@ modpost = scripts/mod/modpost                    \
->   $(if $(KBUILD_EXTRA_SYMBOLS), $(patsubst %, -e %,$(KBUILD_EXTRA_SYMBOLS))) \
->   $(if $(KBUILD_EXTMOD),-o $(modulesymfile))      \
->   $(if $(CONFIG_DEBUG_SECTION_MISMATCH),,-S)      \
-> - $(if $(KBUILD_EXTMOD)$(KBUILD_MODPOST_WARN),-w) \
-> - $(if $(cross_build),-c)
-> + $(if $(KBUILD_EXTMOD)$(KBUILD_MODPOST_WARN),-w)
+I was trying to save it :-)
+Do you think I should just silently move the modified mcfne.h
+to a mcf8390.h?
 
-With this change we can kill cross_build, and thus we can
-drop KBUILD_BUILDHOST too (from top-level Makefile).
+Regards
+Greg
 
-	Sam
+
+
+>>   drivers/net/ethernet/8390/Kconfig   |   14 +
+>>   drivers/net/ethernet/8390/Makefile  |    1 +
+>>   drivers/net/ethernet/8390/mcf8390.c |  477 +++++++++++++++++++++++++++++++++++
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
