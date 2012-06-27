@@ -1,72 +1,44 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/2] net: add support for NS8390 based eth controllers
- on some ColdFire boards
-Date: Wed, 27 Jun 2012 12:55:38 +1000
-Message-ID: <4FEA762A.4070301@snapgear.com>
-References: <1340587792-8596-1-git-send-email-gerg@snapgear.com> <1340587792-8596-2-git-send-email-gerg@snapgear.com> <CAMuHMdXWCmDfGw65Ckr082xx8x4yJyG62wiNj0i4khxU2k3AhA@mail.gmail.com> <4FE945CA.6060509@snapgear.com> <CAMuHMdUmKkiHmEvSo7wgVMdE4=KcGoA=f9eJ_KFkc1OGrqm=3w@mail.gmail.com> <4FE98777.4090600@snapgear.com> <CAMuHMdXSTZ_vxhXr+0GuB+tXdjO3dNC2OVPC1OLci0POaShW2Q@mail.gmail.com> <4FE98B7D.4040506@snapgear.com> <CAMuHMdW7akU4wchpE9Vk24x41Vcg84nBiqbZtce_PjBXUkhdhw@mail.gmail.com>
+Subject: [git pull] m68knommu arch fix for 3.5-rc4
+Date: Wed, 27 Jun 2012 15:35:43 +1000
+Message-ID: <201206270535.q5R5ZhcM009947@goober.corp.nai.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:56900 "EHLO
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:56609 "EHLO
 	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750865Ab2F0Czw (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jun 2012 22:55:52 -0400
-In-Reply-To: <CAMuHMdW7akU4wchpE9Vk24x41Vcg84nBiqbZtce_PjBXUkhdhw@mail.gmail.com>
+	with ESMTP id S1750929Ab2F0Fi1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Jun 2012 01:38:27 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Hi Geert,
+Hi Linus,
 
-On 06/26/2012 09:03 PM, Geert Uytterhoeven wrote:
-> On Tue, Jun 26, 2012 at 12:14 PM, Greg Ungerer<gerg@snapgear.com>  wrote:
->> On 06/26/2012 08:03 PM, Geert Uytterhoeven wrote:
->>> On Tue, Jun 26, 2012 at 11:57 AM, Greg Ungerer<gerg@snapgear.com> wrote:
->>>> On 06/26/2012 05:47 PM, Geert Uytterhoeven wrote:
->>>>> On Tue, Jun 26, 2012 at 7:16 AM, Greg Ungerer<gerg@snapgear.com>
->>>>> wrote:
->>>>>> On 06/25/2012 05:59 PM, Geert Uytterhoeven wrote:
->>>>>>> On Mon, Jun 25, 2012 at 3:29 AM,<gerg@snapgear.com> wrote:
->>>>>>>> arch/m68k/include/asm/mcfne.h		129 +---------
->>>>>>>
->>>>>>> mcf8390.h?
->>>>>>> mcfne.h is queued for removal.
->>>>>>
->>>>>> I was trying to save it :-)
->>>>>> Do you think I should just silently move the modified mcfne.h
->>>>>> to a mcf8390.h?
->>>>>
->>>>> Sure. Why not?
->>>>
->>>> We lose any git history linking the original and new file.
->>>
->>> Your commit renaming-and-modifying it will provide the link?
->>
->> I would normally do that with a "git mv". But isn't that going to
->> clash with your "git rm"? Or am I mis-understanding what you mean?
->
-> It may indeed give a merge conflict.
->
-> If the conflict is too complicated (we'll see in -next), I can remove its
-> scheduled deletion.
+Can you plase pull the m68knommu git tree, for-linus branch:
 
-My concern here is that I expect that patch will go through DaveM's
-netdev tree. And he may get a little annoyed when a merge conflict
-arises in Linux next. Given that at this point we have the chance
-to resolve it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-I will just create a new mcf8390.h if you want to keep the removal
-that is already staged. Keep everyone happy :-)
+It contains a single fix for breakage using the Freescale FEC eth driver
+on ColdFire CPUs.
 
-Regards
+Thanks
 Greg
 
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+
+The following changes since commit 6b16351acbd415e66ba16bf7d473ece1574cf0bc:
+  Linus Torvalds (1):
+        Linux 3.5-rc4
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+Greg Ungerer (1):
+      m68knommu: define a local devm_clk_get() function
+
+ arch/m68k/platform/coldfire/clk.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
