@@ -1,18 +1,72 @@
-From: Audrie Preuss <ly1123darius@yahoo.com>
-Subject: Don't get me wrong but u're really interesting to me...
-Date: Tue, 26 Jun 2012 22:25:53 +0100 (BST)
-Message-ID: <1340745953.56874.YahooMailNeo@web29403.mail.ird.yahoo.com>
-Reply-To: Audrie Preuss <audrie.preuss@yahoo.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/2] net: add support for NS8390 based eth controllers
+ on some ColdFire boards
+Date: Wed, 27 Jun 2012 12:55:38 +1000
+Message-ID: <4FEA762A.4070301@snapgear.com>
+References: <1340587792-8596-1-git-send-email-gerg@snapgear.com> <1340587792-8596-2-git-send-email-gerg@snapgear.com> <CAMuHMdXWCmDfGw65Ckr082xx8x4yJyG62wiNj0i4khxU2k3AhA@mail.gmail.com> <4FE945CA.6060509@snapgear.com> <CAMuHMdUmKkiHmEvSo7wgVMdE4=KcGoA=f9eJ_KFkc1OGrqm=3w@mail.gmail.com> <4FE98777.4090600@snapgear.com> <CAMuHMdXSTZ_vxhXr+0GuB+tXdjO3dNC2OVPC1OLci0POaShW2Q@mail.gmail.com> <4FE98B7D.4040506@snapgear.com> <CAMuHMdW7akU4wchpE9Vk24x41Vcg84nBiqbZtce_PjBXUkhdhw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:56900 "EHLO
+	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750865Ab2F0Czw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jun 2012 22:55:52 -0400
+In-Reply-To: <CAMuHMdW7akU4wchpE9Vk24x41Vcg84nBiqbZtce_PjBXUkhdhw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "coa@yahoo.com" <coa@yahoo.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-I saw you during tour through site and became turned on? Yep, it is absolutely truth that I felt in love with u immediately. 
-Usually I am not writing or calling men first but something unordinary happened to me when I saw your profile. 
-Oh, I am Audrie. Write me about u. How do u spend ur free time? What turns u on? Which food do you prefer? 
-Would you write me next day?;)
-I am in the Internet at 11 pm tomorrow. Looking forward about our conversation!
+Hi Geert,
+
+On 06/26/2012 09:03 PM, Geert Uytterhoeven wrote:
+> On Tue, Jun 26, 2012 at 12:14 PM, Greg Ungerer<gerg@snapgear.com>  wrote:
+>> On 06/26/2012 08:03 PM, Geert Uytterhoeven wrote:
+>>> On Tue, Jun 26, 2012 at 11:57 AM, Greg Ungerer<gerg@snapgear.com> wrote:
+>>>> On 06/26/2012 05:47 PM, Geert Uytterhoeven wrote:
+>>>>> On Tue, Jun 26, 2012 at 7:16 AM, Greg Ungerer<gerg@snapgear.com>
+>>>>> wrote:
+>>>>>> On 06/25/2012 05:59 PM, Geert Uytterhoeven wrote:
+>>>>>>> On Mon, Jun 25, 2012 at 3:29 AM,<gerg@snapgear.com> wrote:
+>>>>>>>> arch/m68k/include/asm/mcfne.h		129 +---------
+>>>>>>>
+>>>>>>> mcf8390.h?
+>>>>>>> mcfne.h is queued for removal.
+>>>>>>
+>>>>>> I was trying to save it :-)
+>>>>>> Do you think I should just silently move the modified mcfne.h
+>>>>>> to a mcf8390.h?
+>>>>>
+>>>>> Sure. Why not?
+>>>>
+>>>> We lose any git history linking the original and new file.
+>>>
+>>> Your commit renaming-and-modifying it will provide the link?
+>>
+>> I would normally do that with a "git mv". But isn't that going to
+>> clash with your "git rm"? Or am I mis-understanding what you mean?
+>
+> It may indeed give a merge conflict.
+>
+> If the conflict is too complicated (we'll see in -next), I can remove its
+> scheduled deletion.
+
+My concern here is that I expect that patch will go through DaveM's
+netdev tree. And he may get a little annoyed when a merge conflict
+arises in Linux next. Given that at this point we have the chance
+to resolve it.
+
+I will just create a new mcf8390.h if you want to keep the removal
+that is already staged. Keep everyone happy :-)
+
+Regards
+Greg
+
+
+
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
