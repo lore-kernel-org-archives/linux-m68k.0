@@ -1,51 +1,33 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: remove never used asm/shm.h
-Date: Thu, 28 Jun 2012 20:46:52 +0200
-Message-ID: <CAMuHMdXjnAbNAjB=0jG1jRt5vWewYG+6Ky9oi01n96ngAUB=dw__10795.3489096419$1340911037$gmane$org@mail.gmail.com>
-References: <1340361221.1773.78.camel@x61.thuisdomein>
+From: <gerg@snapgear.com>
+Subject: [PATCH 0/3] m68knommu/net: add support for NS8390 based eth controllers on some ColdFire boards
+Date: Fri, 29 Jun 2012 10:09:21 +1000
+Message-ID: <1340928564-12116-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1340361221.1773.78.camel@x61.thuisdomein>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:31875 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751825Ab2F2AJS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Jun 2012 20:09:18 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-On Fri, Jun 22, 2012 at 12:33 PM, Paul Bolle <pebolle@tiscali.nl> wrote=
-:
-> m68k's asm/shm.h header has been part of the tree ever since m68k
-> support got added in v1.3.94. (It started as /include/asm-m68k/shm.h =
-and
-> moved to its current location a few years ago.) It seems it was never
-> used: no file ever included it and nothing used the macros it defines=
-=2E
->
-> (Actually, from v2.5.46 until v2.6.29-rc3 it was included by m68knomm=
-u's
-> asm/shm.h. But that header was just a very thin wrapper for this head=
-er
-> and was itself unused too.)
->
-> This header can safely be removed.
->
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-Thx, queued for 3.6.
+This is an updated patch set of the NS8390 eth support for some of the
+older ColdFire boards.
 
-Gr{oetje,eeting}s,
+I have broken out the mcfne.h -> mcf8390.h file move to its own patch,
+didn't want to make the actual driver patch any bigger or harder to follow.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+I also improved the commit log messages a little. The driver itself has a
+couple of minor checkpatch fixes, but is otherwise the same.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+---
+ b/arch/m68k/include/asm/mcf8390.h       |  121 --------
+ b/arch/m68k/platform/coldfire/Makefile  |    1
+ b/arch/m68k/platform/coldfire/mcf8390.c |   38 ++
+ b/drivers/net/ethernet/8390/Kconfig     |   14
+ b/drivers/net/ethernet/8390/Makefile    |    1
+ b/drivers/net/ethernet/8390/mcf8390.c   |  478 ++++++++++++++++++++++++++++++++
+ 7 files changed, 545 insertions(+), 124 deletions(-)
