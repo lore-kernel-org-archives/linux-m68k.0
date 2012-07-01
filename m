@@ -1,62 +1,75 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: (unknown)
-Date: Sun,  1 Jul 2012 16:20:56 +1200 (NZST)
-Message-ID: <20120701042056.8ED4D3600FE@xplor.waratah.dyndns.org>
+Date: Sun,  1 Jul 2012 16:21:01 +1200 (NZST)
+Message-ID: <20120701042102.0798E3600FE@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:40175 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750727Ab2GAEVC (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jul 2012 00:21:02 -0400
-Received: by pbbrp8 with SMTP id rp8so6169091pbb.19
-        for <linux-m68k@vger.kernel.org>; Sat, 30 Jun 2012 21:21:02 -0700 (PDT)
+Received: from mail-pz0-f46.google.com ([209.85.210.46]:57296 "EHLO
+	mail-pz0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750727Ab2GAEVH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Jul 2012 00:21:07 -0400
+Received: by mail-pz0-f46.google.com with SMTP id y13so6020715dad.19
+        for <linux-m68k@vger.kernel.org>; Sat, 30 Jun 2012 21:21:07 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org
 
->From 72cce075197cce09678b28f9ee7232549e3e8b9b Mon Sep 17 00:00:00 2001
+>From faba34dd8edb81af0b93ca4e9d5fc00f97016281 Mon Sep 17 00:00:00 2001
 From: Michael Schmitz <schmitz@debian.org>
-Date: Sat, 30 Jun 2012 15:11:16 +1200
-Subject: [PATCH 1/6] [m68k] Atari: increase number of Atari interrupt sources for EtherNAT
+Date: Sat, 30 Jun 2012 15:16:40 +1200
+Subject: [PATCH 2/6] [m68k] Atari: correct EtherNAT 91C111 interrupt, conditionalize platform device register
 
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/include/asm/atariints.h |    6 +++++-
- arch/m68k/include/asm/irq.h       |    4 +++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ arch/m68k/atari/config.c |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
-index 5fc13bd..f79a381 100644
---- a/arch/m68k/include/asm/atariints.h
-+++ b/arch/m68k/include/asm/atariints.h
-@@ -32,7 +32,11 @@
- #define VME_SOURCE_BASE    56
- #define VME_MAX_SOURCES    16
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 4fc7396..2939d03 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -662,7 +662,7 @@ static void atari_get_hardware_list(struct seq_file *m)
+  */
  
--#define NUM_ATARI_SOURCES   (VME_SOURCE_BASE+VME_MAX_SOURCES-STMFP_SOURCE_BASE)
-+/*
-+** EtherNAT CPLD interrupts are at irq 139 (vector 0xc3) and 140
-+** (vector 0xc4) so the total number is 141 now (including irq 0).
-+*/
-+#define NUM_ATARI_SOURCES  141
+ #define ATARI_ETHERNAT_PHYS_ADDR	0x80000000
+-#define ATARI_ETHERNAT_IRQ		0xc3
++#define ATARI_ETHERNAT_IRQ		140
  
- /* convert vector number to int source number */
- #define IRQ_VECTOR_TO_SOURCE(v)	((v) - ((v) < 0x20 ? 0x18 : (0x40-8)))
-diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
-index c1155f0..9030877 100644
---- a/arch/m68k/include/asm/irq.h
-+++ b/arch/m68k/include/asm/irq.h
-@@ -11,7 +11,9 @@
- #define NR_IRQS 256
- #elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG_SUN3X)
- #define NR_IRQS 200
--#elif defined(CONFIG_ATARI) || defined(CONFIG_MAC)
-+#elif defined(CONFIG_ATARI)
-+#define NR_IRQS 141
-+#elif defined(CONFIG_MAC)
- #define NR_IRQS 72
- #elif defined(CONFIG_Q40)
- #define NR_IRQS	43
+ static struct resource smc91x_resources[] = {
+ 	[0] = {
+@@ -686,16 +686,30 @@ static struct platform_device smc91x_device = {
+ 	.resource	= smc91x_resources,
+ };
+ 
+-static struct platform_device *atari_platform_devices[] __initdata = {
++static struct platform_device *atari_ethernat_devices[] __initdata = {
+ 	&smc91x_device
+ };
+ 
+ int __init atari_platform_init(void)
+ {
++	unsigned char *enatc_virt;
++	int rv = -ENODEV;
++
+ 	if (!MACH_IS_ATARI)
+ 		return -ENODEV;
+ 
+-	return platform_add_devices(atari_platform_devices, ARRAY_SIZE(atari_platform_devices));
++#if IS_ENABLED(CONFIG_ATARI_ETHERNAT)
++	enatc_virt = (unsigned char *)ioremap(
++                                        (ATARI_ETHERNAT_PHYS_ADDR + 0x23), 2);
++	if (hwreg_present(enatc_virt)) {
++		*enatc_virt |= 0x2;	/* enable SMC91C111 interrupt */
++		rv = platform_add_devices(atari_ethernat_devices,
++					  ARRAY_SIZE(atari_ethernat_devices));
++	}
++	iounmap(enatc_virt);
++#endif
++
++	return rv;
+ }
+ 
+ arch_initcall(atari_platform_init);
 -- 
 1.7.0.4
