@@ -1,61 +1,63 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 2/2] net: add support for NS8390 based eth controllers
- on some ColdFire CPU boards
-Date: Tue, 03 Jul 2012 23:39:59 -0700
-Message-ID: <1341383999.3627.20.camel@joe2Laptop>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] net: add support for NS8390 based eth controllers on
+ some ColdFire CPU boards
+Date: Wed, 4 Jul 2012 09:52:14 +0200
+Message-ID: <CAMuHMdVYiQyurOQOoeLbd6zXnaVK8Y9bUC=wXkHxhQO+cQwecQ@mail.gmail.com>
 References: <1341377789-12970-1-git-send-email-gerg@snapgear.com>
-	 <1341377789-12970-3-git-send-email-gerg@snapgear.com>
-	 <1341379091.3627.15.camel@joe2Laptop> <4FF3E031.5040703@snapgear.com>
+	<1341377789-12970-3-git-send-email-gerg@snapgear.com>
+	<1341379091.3627.15.camel@joe2Laptop>
+	<4FF3E031.5040703@snapgear.com>
+	<1341383999.3627.20.camel@joe2Laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from perches-mx.perches.com ([206.117.179.246]:58997 "EHLO
-	labridge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752452Ab2GDGj7 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 4 Jul 2012 02:39:59 -0400
-In-Reply-To: <4FF3E031.5040703@snapgear.com>
+Received: from mail-gh0-f174.google.com ([209.85.160.174]:64705 "EHLO
+	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752642Ab2GDHwP (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Jul 2012 03:52:15 -0400
+In-Reply-To: <1341383999.3627.20.camel@joe2Laptop>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: Joe Perches <joe@perches.com>
+Cc: Greg Ungerer <gerg@snapgear.com>, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-On Wed, 2012-07-04 at 16:18 +1000, Greg Ungerer wrote:
-> Hi Joe,
+On Wed, Jul 4, 2012 at 8:39 AM, Joe Perches <joe@perches.com> wrote:
+>> >> +static int mcf8390_init(struct net_device *dev)
+>> >> +{
+>> >> +  static u32 offsets[] = {
+>> >> +          0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+>> >> +          0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+>> >> +  };
+>> >
+>> > const?  u8?
+>>
+>> That is assigned to the "reg_offset" field of "struct ei_device"
+>> (defined in the existing 8390.h) and that is:
+>>
+>>      u32 *reg_offset;         /* Register mapping table */
+>>
+>> So I can't change this.
+>
+> Sure you can, you can assign a u8 to a u32 just fine.
 
-Hi Greg.
+It's not the value that's assigned, but a pointer to the table, so
+for now it must be non-const u32 *.
 
-> On 04/07/12 15:18, Joe Perches wrote:
-> > On Wed, 2012-07-04 at 14:56 +1000, gerg@snapgear.com wrote:
-> >> From: Greg Ungerer <gerg@uclinux.org>
-> >>
-> >> A number of older ColdFire CPU based boards use NS8390 based network
-> >> controllers. Most use the Davicom 9008F or the UMC 9008F. This driver
-> >> provides the support code to get these devices working on these platforms.
-[]
-> >> diff --git a/drivers/net/ethernet/8390/mcf8390.c b/drivers/net/ethernet/8390/mcf8390.c
-[]
-> >> +static int mcf8390_init(struct net_device *dev)
-> >> +{
-> >> +	static u32 offsets[] = {
-> >> +		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-> >> +		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-> >> +	};
-> >
-> > const?  u8?
-> 
-> That is assigned to the "reg_offset" field of "struct ei_device"
-> (defined in the existing 8390.h) and that is:
-> 
->      u32 *reg_offset;		/* Register mapping table */
-> 
-> So I can't change this.
+> The value fits in a u8.  Might as well make it take
+> less data space.  static const makes it read-only and
+> makes the compiler assign it just once instead of at
+> function invocation.
 
-Sure you can, you can assign a u8 to a u32 just fine.
+That needs changes to drivers/net/ethernet/8390/8390.h, and
+also probably to some drivers that assign values to the array.
 
-The value fits in a u8.  Might as well make it take
-less data space.  static const makes it read-only and
-makes the compiler assign it just once instead of at
-function invocation.
+Gr{oetje,eeting}s,
 
-cheers, Joe
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
