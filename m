@@ -1,51 +1,37 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 2/2] net: add support for NS8390 based eth controllers
- on some ColdFire CPU boards
-Date: Wed, 04 Jul 2012 07:52:35 -0700
-Message-ID: <1341413555.3627.33.camel@joe2Laptop>
-References: <1341377789-12970-1-git-send-email-gerg@snapgear.com>
-	 <1341377789-12970-3-git-send-email-gerg@snapgear.com>
-	 <1341379091.3627.15.camel@joe2Laptop> <4FF3E031.5040703@snapgear.com>
-	 <1341383999.3627.20.camel@joe2Laptop>
-	 <CAMuHMdVYiQyurOQOoeLbd6zXnaVK8Y9bUC=wXkHxhQO+cQwecQ@mail.gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH v2 0/2] net: support for NS8390 based ethernet on ColdFire CPU boards
+Date: Thu, 5 Jul 2012 09:49:58 +1000
+Message-ID: <1341445800-396-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from perches-mx.perches.com ([206.117.179.246]:47984 "EHLO
-	labridge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751450Ab2GDOwg (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 4 Jul 2012 10:52:36 -0400
-In-Reply-To: <CAMuHMdVYiQyurOQOoeLbd6zXnaVK8Y9bUC=wXkHxhQO+cQwecQ@mail.gmail.com>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:22972 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755024Ab2GDXyQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Jul 2012 19:54:16 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@snapgear.com>, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-On Wed, 2012-07-04 at 09:52 +0200, Geert Uytterhoeven wrote:
-> On Wed, Jul 4, 2012 at 8:39 AM, Joe Perches <joe@perches.com> wrote:
-> >> >> +static int mcf8390_init(struct net_device *dev)
-> >> >> +{
-> >> >> +  static u32 offsets[] = {
-> >> >> +          0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-> >> >> +          0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-> >> >> +  };
-> >> >
-> >> > const?  u8?
-> >>
-> >> That is assigned to the "reg_offset" field of "struct ei_device"
-> >> (defined in the existing 8390.h) and that is:
-> >>
-> >>      u32 *reg_offset;         /* Register mapping table */
-> >>
-> >> So I can't change this.
-> >
-> > Sure you can, you can assign a u8 to a u32 just fine.
-> 
-> It's not the value that's assigned, but a pointer to the table, so
-> for now it must be non-const u32 *.
 
-Oh, then of course you and Greg are correct.
+This is version 2 of patches that add platform support for using the NS8390
+based ethernet ports used on some ColdFire CPU boards. This version
+incorporates only minor changes from the first.
 
-It looks like the code in ax88796.c may actually
-need u32 sizes too.
+Patches to use these NS8390 devices on ColdFire boards have existed
+out-of-tree for years. Some of the base IO definitions (those in
+arch/m68k/include/asm/mcfne.h) have been in mainline, but unused for most
+of that time.
+
+The first patch just neatens up mcfne.h (moving it to mcf8390.h). The
+second patch is the platform driver. The first patch would normaly just
+go through the m68knommu git tree, but I figured keeping these together made
+more sense.
+
+---
+ arch/m68k/include/asm/mcf8390.h     |  371 ++++++++++++++++++---------
+ arch/m68k/include/asm/mcfne.h       |  242 ------------------
+ drivers/net/ethernet/8390/Kconfig   |   14 +
+ drivers/net/ethernet/8390/Makefile  |    1 
+ drivers/net/ethernet/8390/mcf8390.c |  480 ++++++++++++++++++++++++++++++++++++
+ 5 files changed, 746 insertions(+), 362 deletions(-)
