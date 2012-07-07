@@ -1,54 +1,52 @@
-From: schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: atafb and X/fbdev
-Date: Sat, 07 Jul 2012 15:41:11 +1200
-Message-ID: <4FF7AFD7.8000005@biophys.uni-duesseldorf.de>
+Date: Sat, 7 Jul 2012 07:54:07 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1207070751590.7146@herc.mirbsd.org>
 References: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org>
+ <4FF7AFD7.8000005@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:65427 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750956Ab2GGDlc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Jul 2012 23:41:32 -0400
-Received: by pbbrp8 with SMTP id rp8so15647330pbb.19
-        for <linux-m68k@vger.kernel.org>; Fri, 06 Jul 2012 20:41:32 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:19449 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751095Ab2GGHzH convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 7 Jul 2012 03:55:07 -0400
+Received: from herc.mirbsd.org (tg@localhost [IPv6:::1])
+	by herc.mirbsd.org (8.14.5/8.14.5) with ESMTP id q677s9FL030531
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Sat, 7 Jul 2012 07:54:13 GMT
+In-Reply-To: <4FF7AFD7.8000005@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
 Cc: linux-m68k@vger.kernel.org
 
-Thorsten,
-> X/xfbdef gets SIGFPE. X/fbdev doesn=E2=80=99t like *any* atafb mode: =
-it likes
-> neither interleaved planes nor 1bpp modes, and I don=E2=80=99t think =
-there are
->  =20
-Have you tried the VGA modes (vga256 for instance)? That might boil dow=
-n=20
-to interleaved planes in the end though.
-> any others. How can we get an X server on ARAnyM running (I=E2=80=99v=
-e got both
-> current x.org from sid and XFree86 from woody installed)?
->  =20
-You will have to go back to one of the earlier Debian releases (slink o=
-r=20
-potato) for Atari support in the X server. potato should still have the=
-=20
-required code.
-> Sitting at BAAMM! so quick response appreciated ;)
->  =20
-Geert is your best shot at getting framebuffer device questions answere=
-d.
+schmitz dixit:
 
-Cheers,
+> Have you tried the VGA modes (vga256 for instance)? That might boil d=
+own to
+> interleaved planes in the end though.
 
-    Michael
-  =20
-> http://lists.debian.org/debian-68k/2012/05/msg00027.html
->
-> bye,
-> //mirabilos
->  =20
+Yes, vgs256 was interleaved too. From my limited understanding of
+atafb.c all modes are interleaved or monochrome.
+
+> You will have to go back to one of the earlier Debian releases (slink=
+ or
+> potato) for Atari support in the X server. potato should still have t=
+he
+> required code.
+
+Hrm, okay. I couldn=E2=80=99t find much in the =E2=80=99net except a re=
+ference to
+xfree68 but was unable to find that, either. Too bad, all the history=E2=
+=80=A6
+you don=E2=80=99t happen to know the _package_ name of the server, and =
+the
+needed config? ;-)
+
+bye,
+//mirabilos
+--=20
+  =E2=80=9CHaving a smoking section in a restaurant is like having
+          a peeing section in a swimming pool.=E2=80=9D
+						-- Edward Burr
