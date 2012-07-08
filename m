@@ -1,58 +1,38 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: "Christian T. Steigies" <cts@debian.org>
 Subject: Re: atafb and X/fbdev
-Date: Sun, 08 Jul 2012 16:38:39 +1200
-Message-ID: <4FF90ECF.2090001@gmail.com>
-References: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org> <4FF7AFD7.8000005@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1207070751590.7146@herc.mirbsd.org> <CAMuHMdW1Gigu0642GuXHGyOmghDLkndboTKyGt=z=zDgWcNWFw@mail.gmail.com> <Pine.BSM.4.64L.1207070912580.7146@herc.mirbsd.org> <Pine.BSM.4.64L.1207071537230.13285@herc.mirbsd.org>
+Date: Sun, 8 Jul 2012 21:09:08 +0200
+Message-ID: <20120708190908.GA21377@chumley.earth.sol>
+References: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org>
+ <4FF7AFD7.8000005@biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1207070751590.7146@herc.mirbsd.org>
+ <4FF902DC.4010208@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:51272 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750742Ab2GHEir (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jul 2012 00:38:47 -0400
-Received: by pbbrp8 with SMTP id rp8so17198538pbb.19
-        for <linux-m68k@vger.kernel.org>; Sat, 07 Jul 2012 21:38:46 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1207071537230.13285@herc.mirbsd.org>
+Received: from mail-in-06.arcor-online.net ([151.189.21.46]:53736 "EHLO
+	mail-in-06.arcor-online.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751916Ab2GHTJK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Jul 2012 15:09:10 -0400
+Content-Disposition: inline
+In-Reply-To: <4FF902DC.4010208@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Thorsten Glaser <tg@mirbsd.de>, Debian m68k <debian-68k@lists.debian.org>, linux-m68k@vger.kernel.org
 
-Thorsten Glaser wrote:
->>> The 16-bpp Falcon mode should be chunky and work.
->>>       
->> That's video=atafb:falh16 ?
->>     
->
-> No, that's a 4bpp mode.
->
-> From my reading of drivers/video/atafb.c there are
-> no 16bpp modes?
->   
-There is a 16 bpp mode - look for 'hicolor' in the source. From my 
-understanding,
-it has all been wired up right (to be honest, I did only rewrite the 
-fbcon interface
-for 2.6 onwards, and touched as little of the business end of the driver 
-as possible).
+On Sun, Jul 08, 2012 at 03:47:40PM +1200, Michael Schmitz wrote:
+> 
+> Seaching for "xfree86 fbdev server m68k" does refresh my memory a bit -
+> the server package was called xserver-fbdev and you will find a
+> sample config
+> file at http://people.debian.org/~cts/debian-m68k/slink/XF86Config -
+> Christian is
+> away overseas ATM or else he might be able to give a few hints here.
 
-The driver detects hicolor mode from bit 8 of f_shift:
+Not overseas, just Moscow, but I'll be back tomorrow. But I could not give
+you any more hints, since it has been years that I used X on an m68k box. It
+has not worked on my Amiga since my CV64/3D died, and the Picasso cards I
+never got to work properly in X. On the Falcon and Mac I do not remember if
+X worked, I used them mostly via the network.
 
-        else if (hw->f_shift & 0x100)   /* hicolor */
-                var->bits_per_pixel = 16;  
-
-and uses the generic packed pixel cfb interface to draw characters to 
-the screen in this case.
-
-Thanks for the hint, Geert - I would have claimed there's only mono and 
-interleaved planes otherwise. 
-Nothing like a trip down memory lane - I had totally forgotten that I 
-wrote Mac fbcon drivers back in the days.
-
-I feel I should give the hicolor mode a test to see whether it does 
-actually work after all this time.
-
-Cheers,
-
-  Michael
+Christian
