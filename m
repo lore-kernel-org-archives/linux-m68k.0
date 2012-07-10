@@ -1,47 +1,37 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: fix ColdFire clear cache operation
-Date: Tue, 10 Jul 2012 22:50:40 +1000
-Message-ID: <4FFC2520.4030604@snapgear.com>
-References: <1341902481-8321-1-git-send-email-gerg@snapgear.com> <m2629w5bub.fsf@igel.home>
+From: serdal@med.sdu.edu.tr
+Subject: Greetings and Compliments
+Date: Tue, 10 Jul 2012 17:12:15 +0300
+Message-ID: <20120710171215.64277fle5nlzl2rj@medwm.sdu.edu.tr>
+Reply-To: officerexecutive206@yahoo.com.hk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain;
+ charset=ISO-8859-9;
+ DelSp="Yes";
+ format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:57980 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755617Ab2GJMxe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jul 2012 08:53:34 -0400
-In-Reply-To: <m2629w5bub.fsf@igel.home>
+Received: from med2.sdu.edu.tr ([193.140.135.234]:63243 "EHLO med.sdu.edu.tr"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752243Ab2GJOiL (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 10 Jul 2012 10:38:11 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
-
-Hi Andreas,
-
-On 07/10/2012 05:12 PM, Andreas Schwab wrote:
-> <gerg@snapgear.com> writes:
->
->> +static inline void clear_cf_icache(unsigned long start, unsigned long end)
->> +{
->> +	__asm__ __volatile__ (
->> +		"movel	%0,%%d0\n\t"
->> +		"movec	%%d0,%%cacr\n\t"
->> +		"nop\n\t"
->> +		:
->> +		: "i" (CACHE_MODE | CACR_ICINVA | CACR_BCINVA)
->
-> Why not "r"?
-
-Yes, that is better. I will revise and repost.
-
-Thanks
-Greg
 
 
 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+I am executive officer from HSBC Bank in Hong Kong and have a  
+sensitive and confidential brief from Hong Kong. I am asking for your  
+partnership in re-profiling funds ($18.350.000 Million) i am  
+contacting you because you live outside Hong Kong. Finally, note that  
+this must be concluded within two weeks.Kindly write back and i look  
+forward to hear from you so i can give you more information about  
+myself and the nature of the funds.
+
+Regards,
+P.Wong.
+Email: officerexecutive206@yahoo.com.hk
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
