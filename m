@@ -1,37 +1,43 @@
-From: Access Financial Services <info@lone.net>
-Subject: Darlehen anbieten !!!
-Date: Thu, 12 Jul 2012 06:25:29 -0400
-Message-ID: <20120712062529.13914chm8y1ft921__38888.3822168738$1342089140$gmane$org@webmail.onecommunications.net>
-Reply-To: insurloan@aol.com
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v2 0/2] net: support for NS8390 based ethernet on
+ ColdFire CPU boards
+Date: Thu, 12 Jul 2012 07:55:31 -0700 (PDT)
+Message-ID: <20120712.075531.836132484757271226.davem@davemloft.net>
+References: <1341445800-396-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	DelSp=Yes	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtphost003.onecommunications.net ([69.95.226.33]:50902 "HELO
-	smtphost003.onecommunications.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1030300Ab2GLKcL convert rfc822-to-8bit
-	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 12 Jul 2012 06:32:11 -0400
-Content-Disposition: inline
+Received: from shards.monkeyblade.net ([149.20.54.216]:57246 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932571Ab2GLOzc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 12 Jul 2012 10:55:32 -0400
+In-Reply-To: <1341445800-396-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: gerg@snapgear.com
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Hallo
+From: <gerg@snapgear.com>
+Date: Thu, 5 Jul 2012 09:49:58 +1000
 
-Sie ben=F6tigen keine finanzielle Hilfe? Wir sind =20
-Unternehmens-Kreditgebern. Wir bieten Darlehen an die auf der ganzen =20
-Welt. Unser Angebot reicht von 10.000,00 EUR ist um 100.000.000,00 EUR =
-=20
-um 2% Zinsen pro aufzuheben.
+> 
+> This is version 2 of patches that add platform support for using the NS8390
+> based ethernet ports used on some ColdFire CPU boards. This version
+> incorporates only minor changes from the first.
+> 
+> Patches to use these NS8390 devices on ColdFire boards have existed
+> out-of-tree for years. Some of the base IO definitions (those in
+> arch/m68k/include/asm/mcfne.h) have been in mainline, but unused for most
+> of that time.
+> 
+> The first patch just neatens up mcfne.h (moving it to mcf8390.h). The
+> second patch is the platform driver. The first patch would normaly just
+> go through the m68knommu git tree, but I figured keeping these together made
+> more sense.
 
-Bei Interesse bitten wir um folgende
+Applied, thanks.
 
-Ben=F6tigte Menge:
-Laufzeit des Kredits:
-Telefonnummer:
-Land:
-
-Viele Gr=FC=DFe
-Gesch=E4ftsf=FChrer
-Dr. Wendy Watt
+Can you explain why we've had this completely unused header
+file mcfne.h in the tree?  Was it used by some external driver
+sources that were never merged?
