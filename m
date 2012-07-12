@@ -1,50 +1,37 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH v2] m68k: fix ColdFire clear cache operation
-Date: Thu, 12 Jul 2012 11:50:51 +1000
-Message-ID: <4FFE2D7B.8090405@snapgear.com>
-References: <1341967036-14645-1-git-send-email-gerg@snapgear.com> <20120711155148.GA26577@frolo.macqel>
+From: Access Financial Services <info@lone.net>
+Subject: Darlehen anbieten !!!
+Date: Thu, 12 Jul 2012 06:25:29 -0400
+Message-ID: <20120712062529.13914chm8y1ft921__38888.3822168738$1342089140$gmane$org@webmail.onecommunications.net>
+Reply-To: insurloan@aol.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1;
+	DelSp=Yes	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:57823 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756467Ab2GLBtf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 11 Jul 2012 21:49:35 -0400
-In-Reply-To: <20120711155148.GA26577@frolo.macqel>
+Received: from smtphost003.onecommunications.net ([69.95.226.33]:50902 "HELO
+	smtphost003.onecommunications.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with SMTP id S1030300Ab2GLKcL convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 12 Jul 2012 06:32:11 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Philippe De Muyter <phdm@macqel.be>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
 
-Hi Philippe,
+Hallo
 
-On 12/07/12 01:51, Philippe De Muyter wrote:
-> On Wed, Jul 11, 2012 at 10:37:16AM +1000, gerg@snapgear.com wrote:
->
->> +	__asm__ __volatile__ (
->> +		"movec	%0,%%cacr\n\t"
->> +		"nop\n\t"
->
-> This could be written as
->
-> 		"movec %0,%%cacr; nop"
+Sie ben=F6tigen keine finanzielle Hilfe? Wir sind =20
+Unternehmens-Kreditgebern. Wir bieten Darlehen an die auf der ganzen =20
+Welt. Unser Angebot reicht von 10.000,00 EUR ist um 100.000.000,00 EUR =
+=20
+um 2% Zinsen pro aufzuheben.
 
-It could, but IMHO that is not as clear. One instruction per line
-is easier to read.
+Bei Interesse bitten wir um folgende
 
+Ben=F6tigte Menge:
+Laufzeit des Kredits:
+Telefonnummer:
+Land:
 
-> i.e. :
-> 	final "\n\t" is useless
-
-Yep, I will remove that.
-
-Thanks
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Viele Gr=FC=DFe
+Gesch=E4ftsf=FChrer
+Dr. Wendy Watt
