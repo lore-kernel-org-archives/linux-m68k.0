@@ -1,134 +1,150 @@
-From: Michael Eager <eager@eagercon.com>
-Subject: Re: M68k ColdFire ptrace/cache fix
-Date: Fri, 13 Jul 2012 13:18:23 -0700
-Message-ID: <5000828F.2090307@eagercon.com>
-References: <500073A8.5090700@eagercon.com> <CAMuHMdUgZBgKSZK1YJnvqvcF1M82Q6mHL41K-6hdvhM69JCB+w@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: atafb and X/fbdev
+Date: Sat, 14 Jul 2012 15:42:42 +1200
+Message-ID: <5000EAB2.4080900@gmail.com>
+References: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org>	<4FF7AFD7.8000005@biophys.uni-duesseldorf.de>	<Pine.BSM.4.64L.1207070751590.7146@herc.mirbsd.org>	<CAMuHMdW1Gigu0642GuXHGyOmghDLkndboTKyGt=z=zDgWcNWFw@mail.gmail.com>	<Pine.BSM.4.64L.1207070912580.7146@herc.mirbsd.org>	<Pine.BSM.4.64L.1207071537230.13285@herc.mirbsd.org>	<4FF90ECF.2090001@gmail.com> <CAOmrzk+uSw+o1rzoZP5Xz5usFwYm1Fc8-0-dJRq+uh6dV4La8Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------050804010605000207030409"
+ boundary="------------090606090602090501020407"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shell4.bayarea.net ([209.128.82.1]:40714 "EHLO
-	shell4.bayarea.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753041Ab2GMUZG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Jul 2012 16:25:06 -0400
-In-Reply-To: <CAMuHMdUgZBgKSZK1YJnvqvcF1M82Q6mHL41K-6hdvhM69JCB+w@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:56101 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757870Ab2GNDmw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Jul 2012 23:42:52 -0400
+Received: by pbbrp8 with SMTP id rp8so6503551pbb.19
+        for <linux-m68k@vger.kernel.org>; Fri, 13 Jul 2012 20:42:52 -0700 (PDT)
+In-Reply-To: <CAOmrzk+uSw+o1rzoZP5Xz5usFwYm1Fc8-0-dJRq+uh6dV4La8Q@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, debian m68k <debian-68k@lists.debian.org>
 
 This is a multi-part message in MIME format.
---------------050804010605000207030409
-Content-Type: text/plain; charset=UTF-8; format=flowed
+--------------090606090602090501020407
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 07/13/2012 01:06 PM, Geert Uytterhoeven wrote:
-> Hi Michael,
+Thorsten,
+>> There is a 16 bpp mode - look for 'hicolor' in the source. From my
+>> understanding,
+>> it has all been wired up right (to be honest, I did only rewrite the fbcon
+>> interface
+>> for 2.6 onwards, and touched as little of the business end of the driver as
+>> possible).
+>>     
 >
-> On Fri, Jul 13, 2012 at 9:14 PM, Michael Eager <eager@eagercon.com> wrote:
->> I've tracked down a problem in gdb/gdbserver to ptrace() not
->> clearing the i/d cache after modifying memory.
->>
->> To reproduce:
->>    m68k-gcc -g -o cf-gdb-test-no-io cf-gdb-test-no-io.c
->>    scp cf-gdb-test-no-io <target>:/
->>    on target:   gdbserver :1234 cf-gdb-test-no-io
->>    m68k-gcc cf-gdb-test-no-io
->>    (gdb) b 8
->>    (gdb) b 10
->>    (gdb) tar rem <target>:1234
->>    (gdb) c
->>    (gdb) c
->>
->> Program will hit first breakpoint, but not second breakpoint.
->>
->> It appears that the instruction at the last breakpoint location
->> is in the icache and does not get flushed when the bp is written.
->>
->> After applying the attached patch, gdb/gdbserver behavior is correct.
+> The mode is named TrueColor in GEM - I just cannot seem to chose it.
+> Any hints welcome.
 >
-> Thanks for your report and patch!
+>   
+Anyone? Do I need special hardware (external pixel clock generation?) to 
+use the truecolor mode?
+> If all else fails I'll hack a truecolor command line option into atafb :-)
+>   
+I've played with the framebuffer timing calculations a bit - 16 bpp 
+appears to require unreasonably
+low hsync frequency in order to keep within the available video 
+bandwidth of 32 MHz.
 
-I attached the test program, which I previously forgot.
+The attached patch should allow you to use the 16bpp mode in ARAnyM. 
+video=atafb:truecolor
+together with stram_pool=2048k should get you there.
 
-> Does this happen only in 2.6.29, or also in current kernels?
-> The first hunk of your patch no longer applies, as the affected code is
-> gone and those cases are now handled purely by the generic code.
+fbset could be used to switch depths on the fly if you don't want to use 
+it all the time.
 
-I'm working with a client's environment using 2.6.29, so I can't verify
-that the same failure occurs in recent kernels.  But I don't see anything
-in ptrace.c in the latest kernel which would clear the i/d caches when
-writing to memory.
+For real existing hardware, I fear 8 bit VGA mode is the best we can do.
 
->
-> If yes, feel free to take this to linux-m68k@lists.linux-m68k.org.
+Cheers,
 
-Done.
-
-
--- 
-Michael Eager	 eager@eagercon.com
-1960 Park Blvd., Palo Alto, CA 94306  650-325-8077
+    Michael
 
 
 
---------------050804010605000207030409
-Content-Type: text/x-csrc;
- name="cf-gdb-test-no-io.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="cf-gdb-test-no-io.c"
 
-int work (int a)
-{
-  return a * 2;
-}
-
-int main (void)
-{
-  int a = 10;
-  int b = work (a);
-  b = work (b);
-
-  a = b * a;
-
-  return 0;
-}
-
---------------050804010605000207030409
+--------------090606090602090501020407
 Content-Type: text/x-patch;
- name="ptrace-cache.patch"
+ name="atafb-truecolor.diff"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="ptrace-cache.patch"
+Content-Disposition: inline;
+ filename="atafb-truecolor.diff"
 
---- linux-2.6.29/arch/m68k/kernel/ptrace.c-orig	2012-06-30 06:37:34.000000000 -0700
-+++ linux-2.6.29/arch/m68k/kernel/ptrace.c	2012-07-13 11:25:24.000000000 -0700
-@@ -24,6 +24,7 @@
- #include <asm/pgtable.h>
- #include <asm/system.h>
- #include <asm/processor.h>
-+#include <asm/cacheflush_mm.h>
- 
- /*
-  * does not yet catch signals sent when the child dies.
-@@ -157,6 +158,8 @@ long arch_ptrace(struct task_struct *chi
- 	case PTRACE_POKETEXT:	/* write the word at location addr. */
- 	case PTRACE_POKEDATA:
- 		ret = generic_ptrace_pokedata(child, addr, data);
-+		flush_dcache ();
-+		flush_icache ();
- 		break;
- 
- 	case PTRACE_POKEUSR:	/* write the word at location addr in the USER area */
-@@ -183,6 +186,8 @@ long arch_ptrace(struct task_struct *chi
- 			child->thread.fp[addr - 21] = data;
- 		} else
- 			goto out_eio;
-+		flush_dcache ();
-+		flush_icache ();
- 		break;
- 
- 	case PTRACE_SYSCALL:	/* continue and stop at next (return from) syscall */
+commit cb0ac57a4163fba7a3e73ff613670dc5792fb5b6
+Author: schmitz <schmitz@michael.waratah.dyndns.org>
+Date:   Sat Jul 14 15:26:25 2012 +1200
 
---------------050804010605000207030409--
+    [m68k] Atari: experimental truecolor support for atafb (ARAnyM only!)
+
+diff --git a/drivers/video/atafb.c b/drivers/video/atafb.c
+index 64e41f5..71f9279 100644
+--- a/drivers/video/atafb.c
++++ b/drivers/video/atafb.c
+@@ -409,6 +409,7 @@ static char *vga16_names[] = { "vga16", "default3", NULL };
+ static char *vga256_names[] = { "vga256", NULL };
+ static char *falh2_names[] = { "falh2", NULL };
+ static char *falh16_names[] = { "falh16", NULL };
++static char *truecol_names[] = { "truecolor", NULL };
+ 
+ static char **fb_var_names[] = {
+ 	autodetect_names,
+@@ -424,6 +425,7 @@ static char **fb_var_names[] = {
+ 	vga256_names,
+ 	falh2_names,
+ 	falh16_names,
++	truecol_names,
+ 	NULL
+ };
+ 
+@@ -483,6 +485,10 @@ static struct fb_var_screeninfo atafb_predefined[] = {
+ 	  896, 608, 896, 0, 0, 0, 4, 0,
+ 	  {0, 6, 0}, {0, 6, 0}, {0, 6, 0}, {0, 0, 0},
+ 	  0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
++	{ /* truecolor */
++	  640, 480, 640, 0, 0, 0, 16, 0,
++	  {0, 5, 0}, {0, 6, 0}, {0, 5, 0}, {0, 0, 0},
++	  0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
+ };
+ 
+ static int num_atafb_predefined = ARRAY_SIZE(atafb_predefined);
+@@ -547,6 +553,14 @@ static struct fb_videomode atafb_modedb[] __initdata = {
+ 		"falh", 60, 896, 608, 32000, 18, 42, 31, 1, 96,3,
+ 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+ 	},
++
++	{
++		/* 640x400, 31 kHz, 70 Hz (VGA) */
++		"truecolor", 70, 640, 400, 32000, 18, 42, 31, 11, 96, 3,
++		FB_SYNC_VERT_HIGH_ACT | FB_SYNC_COMP_HIGH_ACT, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
++	},
++
++
+ };
+ 
+ #define NUM_TOTAL_MODES  ARRAY_SIZE(atafb_modedb)
+@@ -1181,8 +1195,13 @@ static int falcon_decode_var(struct fb_var_screeninfo *var,
+ 	}
+ 	/* Is video bus bandwidth (32MB/s) too low for this resolution? */
+ 	/* this is definitely wrong if bus clock != 32MHz */
+-	if (pclock->f / plen / 8 * bpp > 32000000L)
+-		return -EINVAL;
++	if (bpp == 16) {
++		if (pclock->f / plen / 16 * bpp > 32000000L)
++			return -EINVAL;
++	} else {
++		if (pclock->f / plen / 8 * bpp > 32000000L)
++			return -EINVAL;
++	}
+ 
+ 	if (vsync_len < 1)
+ 		vsync_len = 1;
+@@ -3147,7 +3166,7 @@ int __init atafb_init(void)
+ 	/* Multisync monitor capabilities */
+ 	/* Atari-TOS defaults if no boot option present */
+ 	if (fb_info.monspecs.hfmin == 0) {
+-		fb_info.monspecs.hfmin = 31000;
++		fb_info.monspecs.hfmin = 16000;
+ 		fb_info.monspecs.hfmax = 32000;
+ 		fb_info.monspecs.vfmin = 58;
+ 		fb_info.monspecs.vfmax = 62;
+
+--------------090606090602090501020407--
