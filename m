@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH v2 1/5] m68k: common PCI support definitions and code
-Date: Mon, 16 Jul 2012 22:27:22 +1000
-Message-ID: <1342441646-5645-2-git-send-email-gerg@snapgear.com>
+Subject: [PATCH v2 2/5] m68k: add PCI bus support definitions for the ColdFire M54xx SoC family
+Date: Mon, 16 Jul 2012 22:27:23 +1000
+Message-ID: <1342441646-5645-3-git-send-email-gerg@snapgear.com>
 References: <1342441646-5645-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:36798 "EHLO
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:36812 "EHLO
 	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751996Ab2GPMZW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jul 2012 08:25:22 -0400
+	with ESMTP id S1751996Ab2GPMZd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jul 2012 08:25:33 -0400
 In-Reply-To: <1342441646-5645-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,195 +18,171 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Basic set of definitions and support code required to turn on CONFIG_PCI
-for the m68k architecture. Nothing specific to any PCI implementation in
-any m68k class CPU hardware yet.
+Add all the required definitoins to support the ColdFire M54xx SoC PCI
+hardware unit. These are strait out of the MCF5475 Reference Manual.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/dma.h   |    4 ++
- arch/m68k/include/asm/io_mm.h |    2 +
- arch/m68k/include/asm/pci.h   |    6 ++
- arch/m68k/kernel/Makefile     |    1 +
- arch/m68k/kernel/pcibios.c    |  109 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 122 insertions(+), 0 deletions(-)
- create mode 100644 arch/m68k/kernel/pcibios.c
+ arch/m68k/include/asm/m54xxpci.h |  138 ++++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/m54xxsim.h |    3 +
+ 2 files changed, 141 insertions(+), 0 deletions(-)
+ create mode 100644 arch/m68k/include/asm/m54xxpci.h
 
-diff --git a/arch/m68k/include/asm/dma.h b/arch/m68k/include/asm/dma.h
-index 6fbdfe8..7a59439 100644
---- a/arch/m68k/include/asm/dma.h
-+++ b/arch/m68k/include/asm/dma.h
-@@ -486,6 +486,10 @@ static __inline__ int get_dma_residue(unsigned int dmanr)
- extern int request_dma(unsigned int dmanr, const char * device_id);	/* reserve a DMA channel */
- extern void free_dma(unsigned int dmanr);	/* release it again */
- 
-+#ifdef CONFIG_PCI
-+extern int isa_dma_bridge_buggy;
-+#else
- #define isa_dma_bridge_buggy    (0)
-+#endif
- 
- #endif /* _M68K_DMA_H */
-diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-index fa4324b..b85dbef 100644
---- a/arch/m68k/include/asm/io_mm.h
-+++ b/arch/m68k/include/asm/io_mm.h
-@@ -340,4 +340,6 @@ static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int
-  */
- #define xlate_dev_kmem_ptr(p)	p
- 
-+#define ioport_map(port, nr)	((void __iomem *)(port))
-+
- #endif /* _IO_H */
-diff --git a/arch/m68k/include/asm/pci.h b/arch/m68k/include/asm/pci.h
-index 4ad0aea..848c3df 100644
---- a/arch/m68k/include/asm/pci.h
-+++ b/arch/m68k/include/asm/pci.h
-@@ -2,6 +2,7 @@
- #define _ASM_M68K_PCI_H
- 
- #include <asm-generic/pci-dma-compat.h>
-+#include <asm-generic/pci.h>
- 
- /* The PCI address space does equal the physical memory
-  * address space.  The networking and block device layers use
-@@ -9,4 +10,9 @@
-  */
- #define PCI_DMA_BUS_IS_PHYS	(1)
- 
-+#define	pcibios_assign_all_busses()	1
-+
-+#define	PCIBIOS_MIN_IO		0x00000100
-+#define	PCIBIOS_MIN_MEM		0x02000000
-+
- #endif /* _ASM_M68K_PCI_H */
-diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
-index 5c7070e..068ad49 100644
---- a/arch/m68k/kernel/Makefile
-+++ b/arch/m68k/kernel/Makefile
-@@ -18,6 +18,7 @@ obj-y	+= setup.o signal.o sys_m68k.o syscalltable.o time.o traps.o
- 
- obj-$(CONFIG_MMU_MOTOROLA) += ints.o vectors.o
- obj-$(CONFIG_MMU_SUN3) += ints.o vectors.o
-+obj-$(CONFIG_PCI) += pcibios.o
- 
- ifndef CONFIG_MMU_SUN3
- obj-y	+= dma.o
-diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+diff --git a/arch/m68k/include/asm/m54xxpci.h b/arch/m68k/include/asm/m54xxpci.h
 new file mode 100644
-index 0000000..b2988aa
+index 0000000..6fbf54f
 --- /dev/null
-+++ b/arch/m68k/kernel/pcibios.c
-@@ -0,0 +1,109 @@
-+/*
-+ * pci.c -- basic PCI support code
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ *
-+ * (C) Copyright 2011, Greg Ungerer <gerg@uclinux.org>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/types.h>
-+#include <linux/mm.h>
-+#include <linux/init.h>
-+#include <linux/pci.h>
++++ b/arch/m68k/include/asm/m54xxpci.h
+@@ -0,0 +1,138 @@
++/****************************************************************************/
 +
 +/*
-+ * From arch/i386/kernel/pci-i386.c:
++ *	m54xxpci.h -- ColdFire 547x and 548x PCI bus support
 + *
-+ * We need to avoid collisions with `mirrored' VGA ports
-+ * and other strange ISA hardware, so we always want the
-+ * addresses to be allocated in the 0x000-0x0ff region
-+ * modulo 0x400.
++ *	(C) Copyright 2011,  Greg Ungerer <gerg@uclinux.org>
 + *
-+ * Why? Because some silly external IO cards only decode
-+ * the low 10 bits of the IO address. The 0x00-0xff region
-+ * is reserved for motherboard devices that decode all 16
-+ * bits, so it's ok to allocate at, say, 0x2800-0x28ff,
-+ * but we want to try to avoid allocating at 0x2900-0x2bff
-+ * which might be mirrored at 0x0100-0x03ff..
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
 + */
-+resource_size_t pcibios_align_resource(void *data, const struct resource *res,
-+	resource_size_t size, resource_size_t align)
-+{
-+	resource_size_t start = res->start;
 +
-+	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
-+		start = (start + 0x3ff) & ~0x3ff;
-+
-+	start = (start + align - 1) & ~(align - 1);
-+
-+	return start;
-+}
++/****************************************************************************/
++#ifndef	M54XXPCI_H
++#define	M54XXPCI_H
++/****************************************************************************/
 +
 +/*
-+ * This is taken from the ARM code for this.
++ *	The core set of PCI support registers are mapped into the MBAR region.
 + */
-+int pcibios_enable_device(struct pci_dev *dev, int mask)
-+{
-+	struct resource *r;
-+	u16 cmd, newcmd;
-+	int idx;
++#define	PCIIDR		(CONFIG_MBAR + 0xb00)	/* PCI device/vendor ID */
++#define	PCISCR		(CONFIG_MBAR + 0xb04)	/* PCI status/command */
++#define	PCICCRIR	(CONFIG_MBAR + 0xb08)	/* PCI class/revision */
++#define	PCICR1		(CONFIG_MBAR + 0xb0c)	/* PCI configuration 1 */
++#define	PCIBAR0		(CONFIG_MBAR + 0xb10)	/* PCI base address 0 */
++#define	PCIBAR1		(CONFIG_MBAR + 0xb14)	/* PCI base address 1 */
++#define	PCICCPR		(CONFIG_MBAR + 0xb28)	/* PCI cardbus CIS pointer */
++#define	PCISID		(CONFIG_MBAR + 0xb2c)	/* PCI subsystem IDs */
++#define	PCIERBAR	(CONFIG_MBAR + 0xb30)	/* PCI expansion ROM */
++#define	PCICPR		(CONFIG_MBAR + 0xb34)	/* PCI capabilities pointer */
++#define	PCICR2		(CONFIG_MBAR + 0xb3c)	/* PCI configuration 2 */
 +
-+	pci_read_config_word(dev, PCI_COMMAND, &cmd);
-+	newcmd = cmd;
++#define	PCIGSCR		(CONFIG_MBAR + 0xb60)	/* Global status/control */
++#define	PCITBATR0	(CONFIG_MBAR + 0xb64)	/* Target base translation 0 */
++#define	PCITBATR1	(CONFIG_MBAR + 0xb68)	/* Target base translation 1 */
++#define	PCITCR		(CONFIG_MBAR + 0xb6c)	/* Target control */
++#define	PCIIW0BTAR	(CONFIG_MBAR + 0xb70)	/* Initiator window 0 */
++#define	PCIIW1BTAR	(CONFIG_MBAR + 0xb74)	/* Initiator window 1 */
++#define	PCIIW2BTAR	(CONFIG_MBAR + 0xb78)	/* Initiator window 2 */
++#define	PCIIWCR		(CONFIG_MBAR + 0xb80)	/* Initiator window config */
++#define	PCIICR		(CONFIG_MBAR + 0xb84)	/* Initiator control */
++#define	PCIISR		(CONFIG_MBAR + 0xb88)	/* Initiator status */
++#define	PCICAR		(CONFIG_MBAR + 0xbf8)	/* Configuration address */
 +
-+	for (idx = 0; idx < 6; idx++) {
-+		/* Only set up the requested stuff */
-+		if (!(mask & (1 << idx)))
-+			continue;
++#define	PCITPSR		(CONFIG_MBAR + 0x8400)	/* TX packet size */
++#define	PCITSAR		(CONFIG_MBAR + 0x8404)	/* TX start address */
++#define	PCITTCR		(CONFIG_MBAR + 0x8408)	/* TX transaction control */
++#define	PCITER		(CONFIG_MBAR + 0x840c)	/* TX enables */
++#define	PCITNAR		(CONFIG_MBAR + 0x8410)	/* TX next address */
++#define	PCITLWR		(CONFIG_MBAR + 0x8414)	/* TX last word */
++#define	PCITDCR		(CONFIG_MBAR + 0x8418)	/* TX done counts */
++#define	PCITSR		(CONFIG_MBAR + 0x841c)	/* TX status */
++#define	PCITFDR		(CONFIG_MBAR + 0x8440)	/* TX FIFO data */
++#define	PCITFSR		(CONFIG_MBAR + 0x8444)	/* TX FIFO status */
++#define	PCITFCR		(CONFIG_MBAR + 0x8448)	/* TX FIFO control */
++#define	PCITFAR		(CONFIG_MBAR + 0x844c)	/* TX FIFO alarm */
++#define	PCITFRPR	(CONFIG_MBAR + 0x8450)	/* TX FIFO read pointer */
++#define	PCITFWPR	(CONFIG_MBAR + 0x8454)	/* TX FIFO write pointer */
 +
-+		r = dev->resource + idx;
-+		if (!r->start && r->end) {
-+			pr_err(KERN_ERR "PCI: Device %s not available because of resource collisions\n",
-+				pci_name(dev));
-+			return -EINVAL;
-+		}
-+		if (r->flags & IORESOURCE_IO)
-+			newcmd |= PCI_COMMAND_IO;
-+		if (r->flags & IORESOURCE_MEM)
-+			newcmd |= PCI_COMMAND_MEMORY;
-+	}
++#define	PCIRPSR		(CONFIG_MBAR + 0x8480)	/* RX packet size */
++#define	PCIRSAR		(CONFIG_MBAR + 0x8484)	/* RX start address */
++#define	PCIRTCR		(CONFIG_MBAR + 0x8488)	/* RX transaction control */
++#define	PCIRER		(CONFIG_MBAR + 0x848c)	/* RX enables */
++#define	PCIRNAR		(CONFIG_MBAR + 0x8490)	/* RX next address */
++#define	PCIRDCR		(CONFIG_MBAR + 0x8498)	/* RX done counts */
++#define	PCIRSR		(CONFIG_MBAR + 0x849c)	/* RX status */
++#define	PCIRFDR		(CONFIG_MBAR + 0x84c0)	/* RX FIFO data */
++#define	PCIRFSR		(CONFIG_MBAR + 0x84c4)	/* RX FIFO status */
++#define	PCIRFCR		(CONFIG_MBAR + 0x84c8)	/* RX FIFO control */
++#define	PCIRFAR		(CONFIG_MBAR + 0x84cc)	/* RX FIFO alarm */
++#define	PCIRFRPR	(CONFIG_MBAR + 0x84d0)	/* RX FIFO read pointer */
++#define	PCIRFWPR	(CONFIG_MBAR + 0x84d4)	/* RX FIFO write pointer */
 +
-+	/*
-+	 * Bridges (eg, cardbus bridges) need to be fully enabled
-+	 */
-+	if ((dev->class >> 16) == PCI_BASE_CLASS_BRIDGE)
-+		newcmd |= PCI_COMMAND_IO | PCI_COMMAND_MEMORY;
++#define	PACR		(CONFIG_MBAR + 0xc00)	/* PCI arbiter control */
++#define	PASR		(COFNIG_MBAR + 0xc04)	/* PCI arbiter status */
 +
++/*
++ *	Definitions for the Global status and control register.
++ */
++#define	PCIGSCR_PE	0x20000000		/* Parity error detected */
++#define	PCIGSCR_SE	0x10000000		/* System error detected */
++#define	PCIGSCR_XCLKBIN	0x07000000		/* XLB2CLKIN mask */
++#define	PCIGSCR_PEE	0x00002000		/* Parity error intr enable */
++#define	PCIGSCR_SEE	0x00001000		/* System error intr enable */
++#define	PCIGSCR_RESET	0x00000001		/* Reset bit */
 +
-+	if (newcmd != cmd) {
-+		pr_info("PCI: enabling device %s (0x%04x -> 0x%04x)\n",
-+			pci_name(dev), cmd, newcmd);
-+		pci_write_config_word(dev, PCI_COMMAND, newcmd);
-+	}
-+	return 0;
-+}
++/*
++ *	Bit definitions for the PCICAR configuration address register.
++ */
++#define	PCICAR_E	0x80000000		/* Enable config space */
++#define	PCICAR_BUSN	16			/* Move bus bits */
++#define	PCICAR_DEVFNN	8			/* Move devfn bits */
++#define	PCICAR_DWORDN	0			/* Move dword bits */
 +
-+void pcibios_update_irq(struct pci_dev *dev, int irq)
-+{
-+	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
-+}
++/*
++ *	The initiator windows hold the memory and IO mapping information.
++ *	This macro creates the register values from the desired addresses.
++ */
++#define	WXBTAR(hostaddr, pciaddr, size)	\
++			(((hostaddr) & 0xff000000) | \
++			((((size) - 1) & 0xff000000) >> 8) | \
++			(((pciaddr) & 0xff000000) >> 16))
 +
-+void __devinit pcibios_fixup_bus(struct pci_bus *bus)
-+{
-+	struct pci_dev *dev;
++#define	PCIIWCR_W0_MEM	0x00000000		/* Window 0 is memory */
++#define	PCIIWCR_W0_IO	0x08000000		/* Window 0 is IO */
++#define	PCIIWCR_W0_MRD	0x00000000		/* Window 0 memory read */
++#define	PCIIWCR_W0_MRDL	0x02000000		/* Window 0 memory read line */
++#define	PCIIWCR_W0_MRDM	0x04000000		/* Window 0 memory read mult */
++#define	PCIIWCR_W0_E	0x01000000		/* Window 0 enable */
 +
-+	list_for_each_entry(dev, &bus->devices, bus_list) {
-+		pci_write_config_byte(dev, PCI_CACHE_LINE_SIZE, 8);
-+		pci_write_config_byte(dev, PCI_LATENCY_TIMER, 32);
-+	}
-+}
++#define	PCIIWCR_W1_MEM	0x00000000		/* Window 0 is memory */
++#define	PCIIWCR_W1_IO	0x00080000		/* Window 0 is IO */
++#define	PCIIWCR_W1_MRD	0x00000000		/* Window 0 memory read */
++#define	PCIIWCR_W1_MRDL	0x00020000		/* Window 0 memory read line */
++#define	PCIIWCR_W1_MRDM	0x00040000		/* Window 0 memory read mult */
++#define	PCIIWCR_W1_E	0x00010000		/* Window 0 enable */
 +
-+char __devinit *pcibios_setup(char *str)
-+{
-+	return str;
-+}
++/*
++ *	Bit definitions for the PCIBATR registers.
++ */
++#define	PCITBATR0_E	0x00000001		/* Enable window 0 */
++#define	PCITBATR1_E	0x00000001		/* Enable window 1 */
 +
++/*
++ *	PCI arbiter support definitions and macros.
++ */
++#define	PACR_INTMPRI	0x00000001
++#define	PACR_EXTMPRI(x)	(((x) & 0x1f) << 1)
++#define	PACR_INTMINTE	0x00010000
++#define	PACR_EXTMINTE(x) (((x) & 0x1f) << 17)
++#define	PACR_PKMD	0x40000000
++#define	PACR_DS		0x80000000
++
++#define	PCICR1_CL(x)	((x) & 0xf)		/* Cacheline size field */
++#define	PCICR1_LT(x)	(((x) & 0xff) << 8)	/* Latency timer field */
++
++/****************************************************************************/
++#endif	/* M54XXPCI_H */
+diff --git a/arch/m68k/include/asm/m54xxsim.h b/arch/m68k/include/asm/m54xxsim.h
+index ae56b88..d3c5e0d 100644
+--- a/arch/m68k/include/asm/m54xxsim.h
++++ b/arch/m68k/include/asm/m54xxsim.h
+@@ -81,4 +81,7 @@
+ #define MCF_PAR_PSC_RTS_RTS	(0x30)
+ #define MCF_PAR_PSC_CANRX	(0x40)
+ 
++#define MCF_PAR_PCIBG		(CONFIG_MBAR + 0xa48)	/* PCI bus grant */
++#define MCF_PAR_PCIBR		(CONFIG_MBAR + 0xa4a)	/* PCI */
++
+ #endif	/* m54xxsim_h */
 -- 
 1.7.0.4
