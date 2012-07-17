@@ -1,73 +1,51 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k: fix ColdFire clear cache operation
-Date: Mon, 16 Jul 2012 21:13:32 +0200
-Message-ID: <CAMuHMdXV+PiY5LbahntSOAsV6GZgR-WuKQTmwDM=2wrM13wE7g@mail.gmail.com>
-References: <1341967036-14645-1-git-send-email-gerg@snapgear.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: atafb and X/fbdev
+Date: Tue, 17 Jul 2012 14:59:41 +1200
+Message-ID: <CAOmrzkKSv_JVqnc210e2ZH8iyHj8BQoKaRo9HBj6A6Qnd4ihEA@mail.gmail.com>
+References: <Pine.BSM.4.64L.1207062301330.12225@herc.mirbsd.org>
+	<4FF7AFD7.8000005@biophys.uni-duesseldorf.de>
+	<Pine.BSM.4.64L.1207070751590.7146@herc.mirbsd.org>
+	<CAMuHMdW1Gigu0642GuXHGyOmghDLkndboTKyGt=z=zDgWcNWFw@mail.gmail.com>
+	<Pine.BSM.4.64L.1207070912580.7146@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1207071537230.13285@herc.mirbsd.org>
+	<4FF90ECF.2090001@gmail.com>
+	<CAOmrzk+uSw+o1rzoZP5Xz5usFwYm1Fc8-0-dJRq+uh6dV4La8Q@mail.gmail.com>
+	<5000EAB2.4080900@gmail.com>
+	<CAMuHMdXG+TiuGi_chhx9dVJH+r4+4Lbj8BJDUCY0d_DH9zFPvA@mail.gmail.com>
+	<50026D5E.9060400@gmail.com>
+	<CAMuHMdXL6VY5e2YWBzUUqg2U6D1Reeyb8a8nFNQBiO4qVLAx+w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-gh0-f174.google.com ([209.85.160.174]:44748 "EHLO
-	mail-gh0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753615Ab2GPTNd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jul 2012 15:13:33 -0400
-Received: by ghrr11 with SMTP id r11so5372789ghr.19
-        for <linux-m68k@vger.kernel.org>; Mon, 16 Jul 2012 12:13:33 -0700 (PDT)
-In-Reply-To: <1341967036-14645-1-git-send-email-gerg@snapgear.com>
+Received: from mail-gg0-f174.google.com ([209.85.161.174]:49721 "EHLO
+	mail-gg0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753333Ab2GQC7m (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jul 2012 22:59:42 -0400
+Received: by gglu4 with SMTP id u4so5727054ggl.19
+        for <linux-m68k@vger.kernel.org>; Mon, 16 Jul 2012 19:59:42 -0700 (PDT)
+In-Reply-To: <CAMuHMdXL6VY5e2YWBzUUqg2U6D1Reeyb8a8nFNQBiO4qVLAx+w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org, debian m68k <debian-68k@lists.debian.org>
 
-On Wed, Jul 11, 2012 at 2:37 AM,  <gerg@snapgear.com> wrote:
-> --- a/arch/m68k/include/asm/cacheflush_mm.h
-> +++ b/arch/m68k/include/asm/cacheflush_mm.h
-> @@ -17,6 +17,41 @@
->  #define DCACHE_SETMASK 0
->  #endif
+Geert,
+
+>>> For 640x480 that's true.
+>>>
+>>> For 320x240, it should work. I definitely used a hicolor mode on ARAnyM
+>>> when
+>>> atafb was revived.
+>>
+>> Using what atafb option? Or did you use fbset to switch?
 >
-> +/*
-> + * ColdFire architecture has no way to clear individual cache lines, so we
-> + * are stuck invalidating all the cache entries when we want a clear operation.
-> + */
-> +static inline void clear_cf_icache(unsigned long start, unsigned long end)
-> +{
-> +       __asm__ __volatile__ (
-> +               "movec  %0,%%cacr\n\t"
-> +               "nop\n\t"
-> +               :
-> +               : "r" (CACHE_MODE | CACR_ICINVA | CACR_BCINVA));
+> I used fbset. But it should also be possible using the kernel command line.
 
-These new functions should be moved inside the #ifdef CONFIG_COLDFIRE
-at the top of the file:
+Try as I may, I do only get atafb to parse the first option. Neither
+the monitorcap nor resolution options were parsed correctly.
 
-arch/m68k/include/asm/cacheflush_mm.h:30:10: error: 'CACHE_MODE'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:30:23: error: 'CACR_ICINVA'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:30:37: error: 'CACR_BCINVA'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:39:10: error: 'CACHE_MODE'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:39:23: error: 'CACR_DCINVA'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:48:10: error: 'CACHE_MODE'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:48:23: error: 'CACR_ICINVA'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:48:37: error: 'CACR_BCINVA'
-undeclared (first use in this function)
-arch/m68k/include/asm/cacheflush_mm.h:48:51: error: 'CACR_DCINVA'
-undeclared (first use in this function)
+I"ll give fbset a shot though.
 
-http://kisskb.ellerman.id.au/kisskb/buildresult/6720541/
+Cheers,
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  Michael
