@@ -1,106 +1,73 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH v2] m68k: fix ColdFire clear cache operation
-Date: Tue, 17 Jul 2012 16:03:58 +1000
-Message-ID: <5005004E.7080201@snapgear.com>
-References: <1341967036-14645-1-git-send-email-gerg@snapgear.com> <CAMuHMdXV+PiY5LbahntSOAsV6GZgR-WuKQTmwDM=2wrM13wE7g@mail.gmail.com>
+From: "Carman Lapointe" <crussell5941@aol.com>
+Subject: UNITED NATIONS OFFICE
+Date: Thu, 19 Jul 2012 09:50:30 +0200
+Message-ID: <201207190752.q6J7qs28016136@ims-m14.mx.aol.com>
+Reply-To: ms.carmanlapointey1@yahoo.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed; boundary="===============0457701050=="
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:60574 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753057Ab2GQGJa convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 17 Jul 2012 02:09:30 -0400
-In-Reply-To: <CAMuHMdXV+PiY5LbahntSOAsV6GZgR-WuKQTmwDM=2wrM13wE7g@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: Recipients <crussell5941@aol.com>
 
-Hi Geert,
+You will not see this in a MIME-aware mail reader.
+--===============0457701050==
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
 
-On 17/07/12 05:13, Geert Uytterhoeven wrote:
-> On Wed, Jul 11, 2012 at 2:37 AM,  <gerg@snapgear.com> wrote:
->> --- a/arch/m68k/include/asm/cacheflush_mm.h
->> +++ b/arch/m68k/include/asm/cacheflush_mm.h
->> @@ -17,6 +17,41 @@
->>   #define DCACHE_SETMASK 0
->>   #endif
->>
->> +/*
->> + * ColdFire architecture has no way to clear individual cache lines=
-, so we
->> + * are stuck invalidating all the cache entries when we want a clea=
-r operation.
->> + */
->> +static inline void clear_cf_icache(unsigned long start, unsigned lo=
-ng end)
->> +{
->> +       __asm__ __volatile__ (
->> +               "movec  %0,%%cacr\n\t"
->> +               "nop\n\t"
->> +               :
->> +               : "r" (CACHE_MODE | CACR_ICINVA | CACR_BCINVA));
->
-> These new functions should be moved inside the #ifdef CONFIG_COLDFIRE
-> at the top of the file:
->
-> arch/m68k/include/asm/cacheflush_mm.h:30:10: error: 'CACHE_MODE'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:30:23: error: 'CACR_ICINVA'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:30:37: error: 'CACR_BCINVA'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:39:10: error: 'CACHE_MODE'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:39:23: error: 'CACR_DCINVA'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:48:10: error: 'CACHE_MODE'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:48:23: error: 'CACR_ICINVA'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:48:37: error: 'CACR_BCINVA'
-> undeclared (first use in this function)
-> arch/m68k/include/asm/cacheflush_mm.h:48:51: error: 'CACR_DCINVA'
-> undeclared (first use in this function)
->
-> http://kisskb.ellerman.id.au/kisskb/buildresult/6720541/
+OPEN AND READ THE ATTACHMENT FOR MORE DETAILS ABOUT YOUR APPROVED FUND
+--===============0457701050==
+Content-Type: application/octet-stream
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Young.rtf"
 
-Ah yes. Just moving those functions into a CONFIG_COLDFIRE region
-is not enough though. That will fail with:
-
-   CC      arch/m68k/mm/memory.o
-arch/m68k/mm/memory.c: In function =91cache_clear=92:
-arch/m68k/mm/memory.c:206:2: error: implicit declaration of function =91=
-clear_cf_bcache=92
-
-I hit the same problem with the other ColdFire flush functions too.
-To fix those I locally defined the required definitions if they are
-not set. I can do the same here with:
-
-   #ifndef CACHE_MODE
-   #define CACHE_MODE      0
-   #define CACR_ICINVA     0
-   #define CACR_DCINVA     0
-   #define CACR_BCINVA     0
-   #endif
-
-This pollutes the code less than littering the code with #ifdefs on
-the use COFIG_COLDFIRE, and doesn't seem any worse than defining
-empty cache clear and push functions when not CONFIG_COLDFIRE.
-
-Regards
-Greg
-
-
------------------------------------------------------------------------=
--
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.co=
-m
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 288=
-8
-8 Gardner Close                             FAX:         +61 7 3217 532=
-3
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.co=
-m
+e1xydGYxXGFuc2lcYW5zaWNwZzEyNTJcZGVmZjBcZGVmbGFuZzEwMzF7XGZvbnR0Ymx7XGYwXGZz
+d2lzc1xmY2hhcnNldDIwNHtcKlxmbmFtZSBBcmlhbDt9QXJpYWwgQ1lSO319DQp7XCpcZ2VuZXJh
+dG9yIE1zZnRlZGl0IDUuNDEuMjEuMjUwOTt9XHZpZXdraW5kNFx1YzFccGFyZFxmMFxmczIwIFVO
+SVRFRCBOQVRJT05TIEhFQURRVUFSVEVSU1xwYXINCk9GRklDRSBPRiBJTlRFUk5BTCBPVkVSU0lH
+SFQgU0VSVklDRVMoT0lPUylccGFyDQpJbnRlcm5hbCBBdWRpdCwgTW9uaXRvcmluZywgQ29uc3Vs
+dGluZyBhbmQgIEludmVzdGlnYXRpb25zIERpdmlzaW9uXHBhcg0KXHBhcg0KRnJvbTogTXMuIENh
+cm1hbiBMLiBMYXBvaW50ZVxwYXINClVOIFVuZGVyLVNlY3JldGFyeS1HZW5lcmFsIGZvciBJbnRl
+cm5hbCBPdmVyc2lnaHQgIFNlcnZpY2VzXHBhcg0KIFxwYXINClRoaXMgaXMgdG8gaW5mb3JtIHlv
+dSB0aGF0IEkgY2FtZSB0byBOaWdlcmlhIHllc3RlcmRheSAgYWZ0ZXIgc2VyaWVzIG9mIGNvbXBs
+YWlucyBmcm9tIHRoZSBGQkkgYW5kIG90aGVyICBTZWN1cml0eSBhZ2VuY2llcyBmcm9tIEFzaWEs
+IEV1cm9wZSwgT2NlYW5pYSwgIEFudGFyY3RpY2EsU291dGggQW1lcmljYSBhbmQgdGhlIFVuaXRl
+ZCBTdGF0ZXMgb2YgIEFtZXJpY2EgcmVzcGVjdGl2ZWx5LCBhZ2FpbnN0IHRoZSBGZWRlcmFsIEdv
+dmVybm1lbnQgb2YgIE5pZ2VyaWEgYW5kIHRoZSBCcml0aXNoIEdvdmVybm1lbnQgZm9yIHRoZSBy
+YXRlIG9mIHNjYW0gIGFjdGl2aXRpZXMgZ29pbmcgb24gaW4gdGhlc2UgdHdvIG5hdGlvbnMuIFxw
+YXINCiBccGFyDQpJIGhhdmUgbWV0IHdpdGggUHJlc2lkZW50IERyIEdvb2RsdWNrIEpvbmF0aGFu
+IG9mICBOaWdlcmlhIGFuZCBzb21lIG90aGVyIHRvcCBjb25jZXJuZWQgYmFua3Mgb2ZmaWNpYWxz
+ICBoZXJlIGluIE5pZ2VyaWEgd2hvIGNsYWltZWQgdGhhdCB0aGV5IGhhdmUgYmVlbiB0cnlpbmcg
+IHRoZWlyIGJlc3QgdG8gbWFrZSBzdXJlIHlvdSByZWNlaXZlIHlvdXIgZnVuZCBpbiB5b3VyICBh
+Y2NvdW50LiBccGFyDQogXHBhcg0KUmlnaHQgbm93LGFzIGRpcmVjdGVkIGJ5IG91ciBzZWNyZXRh
+cnkgZ2VuZXJhbCBNci5CYW4gIEtpLU1vb24sV2UgYXJlIHdvcmtpbmcgaW4gY29sbGFib3JhdGlv
+bnMgd2l0aCB0aGUgIE5pZ2VyaWFuIEVjb25vbWljIGFuZCBGaW5hbmNpYWwgQ3JpbWUgQ29tbWlz
+c2lvbiAoRUZDQykgIGFuZCBpdCB3YXMgcmVzb2x2ZWQgdG8gd2FpdmUgYXdheSBhbGwgeW91ciBj
+bGVhcmFuY2UgIGZlZXMvQ2hhcmdlcyBhbmQgYXV0aG9yaXplIHRoZSBHb3Zlcm5tZW50IG9mIE5p
+Z2VyaWEgdG8gIGVmZmVjdCB5b3VyIGFwcHJvdmVkIHBheW1lbnQgb2YgICQxMC41MDAsMDAwLDAw
+KSBidXQgdGhlICBvbmx5IGZlZSB5b3Ugd2lsbCBwYXkgdG8gY29uZmlybSB5b3VyIGZ1bmQgaXMg
+eW91ciAgTm90YXJpemF0aW9uIG9ibGlnYXRvcnkgZmVlcyB0byB0aGUgVW5pdGVkIE5hdGlvbiBI
+ZWFkICBPZmZpY2UgaW4gIEFidWphIE5pZ2VyaWEsIFRoaXMgcGF5bWVudCB3YXMgYXBwcm92ZWQg
+YnkgIGJvdGggdGhlIEJyaXRpc2ggIGdvdmVybm1lbnQgYW5kIHRoZSBVTiBpbiB5b3VyIGZhdm9y
+ICBlaXRoZXIgYnkgd2lyZSB0cmFuc2Zlci9DaGVjayBwYXltZW50L0FUTSBjYXJkIE1ldGhvZCAg
+d2l0aG91dCBhbnkgbW9yZSBkZWxheS5ccGFyDQpccGFyDQpTaW5jZXJlbHkseW91IGFyZSBhIGx1
+Y2t5IHBlcnNvbiBiZWNhdXNlIEkgaGF2ZSBqdXN0ICBkaXNjb3ZlcmVkIHRoYXQgc29tZSB0b3Ag
+TmlnZXJpYW4gYW5kIEJyaXRpc2ggR292ZXJubWVudCAgT2ZmaWNpYWxzIGFyZSBpbnRlcmVzdGVk
+IGluIHlvdXIgZnVuZCBhbmQgdGhleSBhcmUgIHdvcmtpbmcgaW4gY29sbGFib3JhdGlvbiB3aXRo
+IE9uZSBNci5SaWNoYXJkIEdyYXZlcyBmcm9tICBVU0EgdG8gZnJ1c3RyYXRlIHlvdSBhbmQgdGhl
+cmVhZnRlciBkaXZlcnQgeW91ciBmdW5kICBpbnRvIHRoZWlyIHBlcnNvbmFsIGFjY291bnQuIFxw
+YXINCiBccGFyDQpTaW5jZSBteSBzdGF5IGhlcmUgaW4gTmlnZXJpYSwgaSBoYXZlIGJlZW4gaG9s
+ZGluZyAgc2VyaWVzIG9mIG1lZXRpbmdzIHdpdGggdGhlIE5pZ2VyaWEgYW5kIHlvdSBjYW4gY2Fs
+bCBtZSAgb24gdGhlIG51bWJlciB3aGljaCBJIGp1c3QgYWNxdWlyZWQgaW4gTmlnZXJpYSB0b2Rh
+eTogICsyMzQtODAyNjExMzE4MlxwYXINCiBccGFyDQpJIGhhdmUgYSB2ZXJ5IGxpbWl0ZWQgdGlt
+ZSB0byBzdGF5IGluIE5pZ2VyaWEgaGVyZSBzbyBJICB3b3VsZCBsaWtlIHlvdSB0byB1cmdlbnRs
+eSByZXNwb25kIHRvIHRoaXMgbWVzc2FnZSBzbyAgdGhhdCBJIGNhbiBhZHZpc2UgeW91IG9uIGhv
+dyBiZXN0IHRvIGNvbmZpcm0geW91ciBmdW5kICBpbiB5b3VyIGFjY291bnQgd2l0aGluIHRoZSBu
+ZXh0IDcyIGhvdXJzLnJlcGx5IG1lICBpbmZvcnVuaXRlZG5hdGlvbkB6aW5nLnZuXHBhcg0KXHBh
+cg0KTXMuIENhcm1hbiBMYXBvaW50ZS1Zb3VuZy5ccGFyDQpVbml0ZWQgTmF0aW9ucyBVbmRlci1T
+ZWNyZXRhcnktXHBhcg0KR2VuZXJhbCBmb3IgSW50ZXJuYWwgT3ZlcnNpZ2h0LlxwYXINCkNlbGwg
+UGhvbmU6KzIzNC04MDI2MTEzMTgyXHBhcg0KfQ0KAA==
+--===============0457701050==--
