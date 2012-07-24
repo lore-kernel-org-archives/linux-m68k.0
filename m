@@ -1,37 +1,154 @@
-From: "Mystery Shopper" <doctorbandbarb@aol.com>
-Subject: Mystery Shopper: Get Paid working for us
-Date: Sat, 21 Jul 2012 00:16:17 -0500
-Message-ID: <201207210918.q6L9I759024528@imr-ma02.mx.aol.com>
-Reply-To: herira7@aol.com
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch fixes for 3.6
+Date: Wed, 25 Jul 2012 09:43:20 +1000
+Message-ID: <201207242343.q6ONhK6t009687@goober.corp.nai.org>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
+To: torvalds@linux-foundation.org
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org, gerg@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <doctorbandbarb@aol.com>
 
- Earn [ NO LESS THAN Dollar 200.00 ] Per Venture Becoming Our Mystery S=
-hopper!!
+Hi Linus,
 
-Secret Shopper is accepting applications for qualified individuals to b=
-ecome mystery shoppers. Its fun and rewarding, and you choose when and =
-where you want to shop. You are never obligated to accept an assignment=
-=2E There is no charge to become a shopper and you do not need previous=
- experience. After you sign up, you will have access to training materi=
-als via e-mail, fax or postal mail.
+Can you please pull the m68knommu git tree, for-next branch:
 
-If you are interested to work with us reply with the information reques=
-ted below=20
-and we will get back to you shortly with the assignment and details:
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-=46ull Name :
-Address:
-City: State:
-Zip Code:
-Phone #:
-Occupation:
+Quite a varied set of changes this time. A little more merge cleanup, this
+time the assembler entry code. New sub-architecture support for the ColdFire
+5251/5253 and 5441x CPU families. Specific clk support code for the ColdFire
+520x and 532x CPU familes. Refactoring of the ColdFire GPIO support. PCI bus
+support for some ColdFire CPUS that have PCI hardware (54xx family). This
+showed up a few problems with ColdFire cache, allocating coherent memory and
+bi-directional DMA support. Fixes for those too.
+
+Thanks
+Greg
 
 
-Shopper Inc=AE=20
+
+
+The following changes since commit 84a1caf1453c3d44050bd22db958af4a7f99315c:
+  Linus Torvalds (1):
+        Linux 3.5-rc7
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+Greg Ungerer (12):
+      m68k: use some direct calls to ret_from_exception in entry code
+      m68k: use jbsr to call functions instead of bsrl
+      m68k: merge the MMU and non-MMU versions of the entry.S code
+      m68knommu: platform support for 8390 based ethernet used on some boards
+      m68k: use simpler dma_alloc_coherent() for ColdFire CPUs
+      m68k: fix ColdFire clear cache operation
+      m68k: add support for DMA_BIDIRECTIONAL in dma support functions
+      m68k: common PCI support definitions and code
+      m68k: add PCI bus support definitions for the ColdFire M54xx SoC family
+      m68k: add IO access definitions to support PCI on ColdFire platforms
+      m68k: add PCI bus code support for the ColdFire M54xx SoC family
+      m68k: allow PCI bus to be enabled for ColdFire m54xx CPUs
+
+Steven King (9):
+      m68knommu: refactor Coldfire GPIO not to require GPIOLIB, eliminate mcf_gpio_chips.
+      m68knommu: Add support for the Coldfire 5251/5253
+      coldfire-qspi: Add support for the Coldfire 5251/5253.
+      m68knommu: use MCF_IRQ_PIT1 instead of MCFINT_VECBASE + MCFINT_PIT1
+      m68knommu: Add support for the Coldfire m5441x.
+      m68knommu: add definitions for the third interrupt controller on devices that don't have a third interrupt controller.
+      m68knommu: Add rtc device for m5441x.
+      m68knommu: Add clk definitions for m520x.
+      m68knommu: Add clk definitions for m532x.
+
+ arch/m68k/Kconfig.bus                   |    7 +
+ arch/m68k/Kconfig.cpu                   |   18 ++-
+ arch/m68k/Makefile                      |    2 +
+ arch/m68k/include/asm/cacheflush_mm.h   |   41 +++
+ arch/m68k/include/asm/dma.h             |    8 +-
+ arch/m68k/include/asm/gpio.h            |  179 +------------
+ arch/m68k/include/asm/io_mm.h           |   50 ++++-
+ arch/m68k/include/asm/m520xsim.h        |   14 +
+ arch/m68k/include/asm/m523xsim.h        |    1 +
+ arch/m68k/include/asm/m525xsim.h        |  194 +++++++++++++
+ arch/m68k/include/asm/m527xsim.h        |    1 +
+ arch/m68k/include/asm/m528xsim.h        |    2 +-
+ arch/m68k/include/asm/m532xsim.h        |   17 ++
+ arch/m68k/include/asm/m5441xsim.h       |  276 +++++++++++++++++++
+ arch/m68k/include/asm/m54xxacr.h        |    4 +
+ arch/m68k/include/asm/m54xxpci.h        |  138 ++++++++++
+ arch/m68k/include/asm/m54xxsim.h        |    3 +
+ arch/m68k/include/asm/mcfclk.h          |   43 +++
+ arch/m68k/include/asm/mcfgpio.h         |  343 +++++++++++++++++++-----
+ arch/m68k/include/asm/mcfsim.h          |    5 +
+ arch/m68k/include/asm/mcftimer.h        |    2 +-
+ arch/m68k/include/asm/mcfuart.h         |    4 +-
+ arch/m68k/include/asm/pci.h             |    6 +
+ arch/m68k/include/asm/pinmux.h          |   30 --
+ arch/m68k/kernel/Makefile               |    1 +
+ arch/m68k/kernel/dma.c                  |    5 +-
+ arch/m68k/kernel/entry.S                |  452 ++++++++++++++++++++++++++++++-
+ arch/m68k/kernel/entry_mm.S             |  419 ----------------------------
+ arch/m68k/kernel/entry_no.S             |  130 ---------
+ arch/m68k/kernel/pcibios.c              |  109 ++++++++
+ arch/m68k/mm/memory.c                   |    2 +-
+ arch/m68k/platform/coldfire/Makefile    |    7 +-
+ arch/m68k/platform/coldfire/clk.c       |  108 +++++++-
+ arch/m68k/platform/coldfire/device.c    |   57 ++++-
+ arch/m68k/platform/coldfire/gpio.c      |  172 ++++++++-----
+ arch/m68k/platform/coldfire/head.S      |    6 +-
+ arch/m68k/platform/coldfire/intc-525x.c |   91 ++++++
+ arch/m68k/platform/coldfire/intc-simr.c |   26 ++-
+ arch/m68k/platform/coldfire/m5206.c     |    9 -
+ arch/m68k/platform/coldfire/m520x.c     |  103 +++++++-
+ arch/m68k/platform/coldfire/m523x.c     |   22 --
+ arch/m68k/platform/coldfire/m5249.c     |   10 -
+ arch/m68k/platform/coldfire/m525x.c     |   66 +++++
+ arch/m68k/platform/coldfire/m5272.c     |   11 -
+ arch/m68k/platform/coldfire/m527x.c     |   43 ---
+ arch/m68k/platform/coldfire/m528x.c     |   33 +---
+ arch/m68k/platform/coldfire/m5307.c     |    9 -
+ arch/m68k/platform/coldfire/m532x.c     |  154 +++++++++--
+ arch/m68k/platform/coldfire/m5407.c     |    9 -
+ arch/m68k/platform/coldfire/m5441x.c    |  261 ++++++++++++++++++
+ arch/m68k/platform/coldfire/m54xx.c     |    7 -
+ arch/m68k/platform/coldfire/mcf8390.c   |   38 +++
+ arch/m68k/platform/coldfire/pci.c       |  327 ++++++++++++++++++++++
+ arch/m68k/platform/coldfire/pinmux.c    |   28 --
+ arch/m68k/platform/coldfire/pit.c       |    4 +-
+ arch/m68k/platform/coldfire/timers.c    |    2 +-
+ drivers/spi/Kconfig                     |    2 +-
+ 57 files changed, 2985 insertions(+), 1126 deletions(-)
+ create mode 100644 arch/m68k/include/asm/m525xsim.h
+ create mode 100644 arch/m68k/include/asm/m5441xsim.h
+ create mode 100644 arch/m68k/include/asm/m54xxpci.h
+ create mode 100644 arch/m68k/include/asm/mcfclk.h
+ delete mode 100644 arch/m68k/include/asm/pinmux.h
+ delete mode 100644 arch/m68k/kernel/entry_mm.S
+ delete mode 100644 arch/m68k/kernel/entry_no.S
+ create mode 100644 arch/m68k/kernel/pcibios.c
+ create mode 100644 arch/m68k/platform/coldfire/intc-525x.c
+ create mode 100644 arch/m68k/platform/coldfire/m525x.c
+ create mode 100644 arch/m68k/platform/coldfire/m5441x.c
+ create mode 100644 arch/m68k/platform/coldfire/mcf8390.c
+ create mode 100644 arch/m68k/platform/coldfire/pci.c
+ delete mode 100644 arch/m68k/platform/coldfire/pinmux.c
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
