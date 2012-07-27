@@ -1,55 +1,32 @@
 From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: [PATCH] m68k: make sys_atomic_cmpxchg_32 work on classic m68k
-Date: Sat, 28 Jul 2012 00:20:34 +0200
-Message-ID: <m2r4rwongt.fsf@igel.home>
+Subject: Re: ARAnyM VMs with Debian hanging at 100% CPU usage
+Date: Sat, 28 Jul 2012 00:24:48 +0200
+Message-ID: <m2k3xoon9r.fsf@igel.home>
+References: <Pine.BSM.4.64L.1207251948400.18420@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1207271525530.13882@herc.mirbsd.org>
+	<m2zk6lnqo0.fsf@igel.home>
+	<Pine.BSM.4.64L.1207271604380.13882@herc.mirbsd.org>
+	<m2vch9nnwu.fsf@igel.home>
+	<Pine.BSM.4.64L.1207271716480.13882@herc.mirbsd.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:47015 "EHLO
+Received: from mail-out.m-online.net ([212.18.0.9]:51725 "EHLO
 	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751882Ab2G0WUh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Jul 2012 18:20:37 -0400
-Received: from frontend1.mail.m-online.net (unknown [192.168.8.180])
-	by mail-out.m-online.net (Postfix) with ESMTP id 3WkPkq5GBTz4KK3N
-	for <linux-m68k@vger.kernel.org>; Sat, 28 Jul 2012 00:20:35 +0200 (CEST)
-Received: from igel.home (ppp-93-104-129-67.dynamic.mnet-online.de [93.104.129.67])
-	by mail.mnet-online.de (Postfix) with ESMTPA id 3WkPkq3dN8zbbj3
-	for <linux-m68k@vger.kernel.org>; Sat, 28 Jul 2012 00:20:35 +0200 (CEST)
+	with ESMTP id S1751286Ab2G0WYu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 27 Jul 2012 18:24:50 -0400
+In-Reply-To: <Pine.BSM.4.64L.1207271716480.13882@herc.mirbsd.org> (Thorsten
+	Glaser's message of "Fri, 27 Jul 2012 17:23:11 +0000 (UTC)")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org, Petr Stehlik <pstehlik@sophics.cz>
 
-User space access must always go through uaccess accessors, since on
-classic m68k user space and kernel space are completely separate.
+Obviously the syscall has never been tested on m68k.
 
-Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
----
- arch/m68k/kernel/sys_m68k.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+<http://permalink.gmane.org/gmane.linux.ports.m68k/4149>
 
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 8623f8d..9a5932e 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -479,9 +479,13 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
- 			goto bad_access;
- 		}
- 
--		mem_value = *mem;
-+		/*
-+		 * No need to check for EFAULT; we know that the page is
-+		 * present and writable.
-+		 */
-+		__get_user(mem_value, mem);
- 		if (mem_value == oldval)
--			*mem = newval;
-+			__put_user(newval, mem);
- 
- 		pte_unmap_unlock(pte, ptl);
- 		up_read(&mm->mmap_sem);
--- 
-1.7.11.3
-
+Andreas.
 
 -- 
 Andreas Schwab, schwab@linux-m68k.org
