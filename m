@@ -1,154 +1,129 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch fixes for 3.6
-Date: Wed, 25 Jul 2012 09:43:20 +1000
-Message-ID: <201207242343.q6ONhK6t009687@goober.corp.nai.org>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: ARAnyM VMs with Debian hanging at 100% CPU usage
+Date: Fri, 27 Jul 2012 17:23:11 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1207271716480.13882@herc.mirbsd.org>
+References: <Pine.BSM.4.64L.1207251948400.18420@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1207271525530.13882@herc.mirbsd.org> <m2zk6lnqo0.fsf@igel.home>
+ <Pine.BSM.4.64L.1207271604380.13882@herc.mirbsd.org> <m2vch9nnwu.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: torvalds@linux-foundation.org
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org, gerg@uclinux.org
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <m2vch9nnwu.fsf@igel.home>
+Resent-Message-ID: <IXq4MYViHGK.A.wKD.g6sEQB@bendel>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: linux-m68k@vger.kernel.org
+Cc: debian-68k@lists.debian.org, Petr Stehlik <pstehlik@sophics.cz>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Andreas Schwab dixit:
 
-Can you please pull the m68knommu git tree, for-next branch:
+>Thorsten Glaser <tg@mirbsd.de> writes:
+>
+>> GCC happens to generate these if you use the atomic builtins
+>> even in 4.6 already.
+>
+>I don't.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+You don=E2=80=99t say=E2=80=A6 oh well.
 
-Quite a varied set of changes this time. A little more merge cleanup, this
-time the assembler entry code. New sub-architecture support for the ColdFire
-5251/5253 and 5441x CPU families. Specific clk support code for the ColdFire
-520x and 532x CPU familes. Refactoring of the ColdFire GPIO support. PCI bus
-support for some ColdFire CPUS that have PCI hardware (54xx family). This
-showed up a few problems with ColdFire cache, allocating coherent memory and
-bi-directional DMA support. Fixes for those too.
+GCC 4.7 uses the cas instruction, against the recommendations
+of the Linux kernel developers. What=E2=80=99s to say? Let=E2=80=99s force =
+it
+to use the syscall then.
 
-Thanks
-Greg
+root@aranym:~ # gcc-4.7 -O2 -g3 -Wall -o t47 t.c -m68000
+root@aranym:~ # gdb ./t47
+[=E2=80=A6]
+Dump of assembler code for function main:
+   0x80000354 <+0>:     linkw %fp,#0
+   0x80000358 <+4>:     movel %a3,%sp@-
+   0x8000035a <+6>:     movel %a2,%sp@-
+   0x8000035c <+8>:     movel 0x80003388 <ctr>,%d0
+   0x80000362 <+14>:    movel %d0,%sp@-
+   0x80000364 <+16>:    pea 0x80001248
+   0x8000036a <+22>:    lea 0x80000304 <printf@plt>,%a3
+   0x80000370 <+28>:    jsr %a3@
+   0x80000372 <+30>:    clrl %sp@-
+   0x80000374 <+32>:    lea 0x80000318 <fflush@plt>,%a2
+   0x8000037a <+38>:    jsr %a2@
+=3D> 0x8000037c <+40>:    pea 0x1
+   0x80000380 <+44>:    pea 0x80003388 <ctr>
+   0x80000386 <+50>:    jsr 0x80000a06 <__sync_add_and_fetch_4>
+   0x8000038c <+56>:    addql #8,%sp
+   0x8000038e <+58>:    movel 0x80003388 <ctr>,%d0
+   0x80000394 <+64>:    movel %d0,%sp@-
+   0x80000396 <+66>:    pea 0x80001253
+   0x8000039c <+72>:    jsr %a3@
+   0x8000039e <+74>:    clrl %sp@-
+   0x800003a0 <+76>:    jsr %a2@
+   0x800003a2 <+78>:    moveq #0,%d0
+[=E2=80=A6]
+(gdb) si
+0x80000a06 in __sync_add_and_fetch_4 ()
+(gdb) disas
+Dump of assembler code for function __sync_add_and_fetch_4:
+=3D> 0x80000a06 <+0>:     linkw %fp,#0
+   0x80000a0a <+4>:     moveml %d2-%d3/%a2,%sp@-
+   0x80000a0e <+8>:     moveal %fp@(8),%a2
+   0x80000a12 <+12>:    movel %a2@,%d2
+   0x80000a14 <+14>:    movel %fp@(12),%d3
+   0x80000a18 <+18>:    addl %d2,%d3
+   0x80000a1a <+20>:    moveal %a2,%a0
+   0x80000a1c <+22>:    movel %d3,%d1
+   0x80000a1e <+24>:    movel #335,%d0
+   0x80000a24 <+30>:    trap #0
+   0x80000a26 <+32>:    cmpl %d2,%d0
+   0x80000a28 <+34>:    bnes 0x80000a34 <__sync_add_and_fetch_4+46>
+   0x80000a2a <+36>:    movel %d3,%d0
+   0x80000a2c <+38>:    moveml %sp@+,%d2-%d3/%a2
+   0x80000a30 <+42>:    unlk %fp
+   0x80000a32 <+44>:    rts
+   0x80000a34 <+46>:    movel %d0,%d2
+   0x80000a36 <+48>:    bras 0x80000a14 <__sync_add_and_fetch_4+14>
+End of assembler dump.
+[=E2=80=A6]
+0x80000a24 in __sync_add_and_fetch_4 ()
+(gdb) info r
+d0             0x14f    335
+d1             0x12345679       305419897
+d2             0x12345678       305419896
+d3             0x12345679       305419897
+d4             0x1d     29
+d5             0xd004eefc       -804983044
+d6             0xd004edfc       -804983300
+d7             0xc      12
+a0             0x80003388       0x80003388
+a1             0xc014b7f4       0xc014b7f4
+a2             0x80003388       0x80003388
+a3             0x80000304       0x80000304
+a4             0x800003b0       0x800003b0
+a5             0xc0148000       0xc0148000
+fp             0xef8d4b60       0xef8d4b60
+sp             0xef8d4b54       0xef8d4b54
+ps             0x8300   [ I0 I1 T1 ]
+pc             0x80000a24       0x80000a24 <__sync_add_and_fetch_4+30>
+fpcontrol      0x0      0
+fpstatus       0x0      0
+fpiaddr        0x0      0
+(gdb) si
+[=E2=80=A6 aaaaaaand, freeze! ]
 
+Okay. So there=E2=80=99s something wrong with either the way how
+GCC uses the syscall, or how the syscall is implemented
+in Linux, or how ARAnyM runs that (unlikely).
 
+Additionally, GCC doesn=E2=80=99t use the syscall with -m68020,
+which is default in Debian/m68k. Linux and Debian devs,
+please comment on whether that should be kept or changed.
 
-
-The following changes since commit 84a1caf1453c3d44050bd22db958af4a7f99315c:
-  Linus Torvalds (1):
-        Linux 3.5-rc7
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-Greg Ungerer (12):
-      m68k: use some direct calls to ret_from_exception in entry code
-      m68k: use jbsr to call functions instead of bsrl
-      m68k: merge the MMU and non-MMU versions of the entry.S code
-      m68knommu: platform support for 8390 based ethernet used on some boards
-      m68k: use simpler dma_alloc_coherent() for ColdFire CPUs
-      m68k: fix ColdFire clear cache operation
-      m68k: add support for DMA_BIDIRECTIONAL in dma support functions
-      m68k: common PCI support definitions and code
-      m68k: add PCI bus support definitions for the ColdFire M54xx SoC family
-      m68k: add IO access definitions to support PCI on ColdFire platforms
-      m68k: add PCI bus code support for the ColdFire M54xx SoC family
-      m68k: allow PCI bus to be enabled for ColdFire m54xx CPUs
-
-Steven King (9):
-      m68knommu: refactor Coldfire GPIO not to require GPIOLIB, eliminate mcf_gpio_chips.
-      m68knommu: Add support for the Coldfire 5251/5253
-      coldfire-qspi: Add support for the Coldfire 5251/5253.
-      m68knommu: use MCF_IRQ_PIT1 instead of MCFINT_VECBASE + MCFINT_PIT1
-      m68knommu: Add support for the Coldfire m5441x.
-      m68knommu: add definitions for the third interrupt controller on devices that don't have a third interrupt controller.
-      m68knommu: Add rtc device for m5441x.
-      m68knommu: Add clk definitions for m520x.
-      m68knommu: Add clk definitions for m532x.
-
- arch/m68k/Kconfig.bus                   |    7 +
- arch/m68k/Kconfig.cpu                   |   18 ++-
- arch/m68k/Makefile                      |    2 +
- arch/m68k/include/asm/cacheflush_mm.h   |   41 +++
- arch/m68k/include/asm/dma.h             |    8 +-
- arch/m68k/include/asm/gpio.h            |  179 +------------
- arch/m68k/include/asm/io_mm.h           |   50 ++++-
- arch/m68k/include/asm/m520xsim.h        |   14 +
- arch/m68k/include/asm/m523xsim.h        |    1 +
- arch/m68k/include/asm/m525xsim.h        |  194 +++++++++++++
- arch/m68k/include/asm/m527xsim.h        |    1 +
- arch/m68k/include/asm/m528xsim.h        |    2 +-
- arch/m68k/include/asm/m532xsim.h        |   17 ++
- arch/m68k/include/asm/m5441xsim.h       |  276 +++++++++++++++++++
- arch/m68k/include/asm/m54xxacr.h        |    4 +
- arch/m68k/include/asm/m54xxpci.h        |  138 ++++++++++
- arch/m68k/include/asm/m54xxsim.h        |    3 +
- arch/m68k/include/asm/mcfclk.h          |   43 +++
- arch/m68k/include/asm/mcfgpio.h         |  343 +++++++++++++++++++-----
- arch/m68k/include/asm/mcfsim.h          |    5 +
- arch/m68k/include/asm/mcftimer.h        |    2 +-
- arch/m68k/include/asm/mcfuart.h         |    4 +-
- arch/m68k/include/asm/pci.h             |    6 +
- arch/m68k/include/asm/pinmux.h          |   30 --
- arch/m68k/kernel/Makefile               |    1 +
- arch/m68k/kernel/dma.c                  |    5 +-
- arch/m68k/kernel/entry.S                |  452 ++++++++++++++++++++++++++++++-
- arch/m68k/kernel/entry_mm.S             |  419 ----------------------------
- arch/m68k/kernel/entry_no.S             |  130 ---------
- arch/m68k/kernel/pcibios.c              |  109 ++++++++
- arch/m68k/mm/memory.c                   |    2 +-
- arch/m68k/platform/coldfire/Makefile    |    7 +-
- arch/m68k/platform/coldfire/clk.c       |  108 +++++++-
- arch/m68k/platform/coldfire/device.c    |   57 ++++-
- arch/m68k/platform/coldfire/gpio.c      |  172 ++++++++-----
- arch/m68k/platform/coldfire/head.S      |    6 +-
- arch/m68k/platform/coldfire/intc-525x.c |   91 ++++++
- arch/m68k/platform/coldfire/intc-simr.c |   26 ++-
- arch/m68k/platform/coldfire/m5206.c     |    9 -
- arch/m68k/platform/coldfire/m520x.c     |  103 +++++++-
- arch/m68k/platform/coldfire/m523x.c     |   22 --
- arch/m68k/platform/coldfire/m5249.c     |   10 -
- arch/m68k/platform/coldfire/m525x.c     |   66 +++++
- arch/m68k/platform/coldfire/m5272.c     |   11 -
- arch/m68k/platform/coldfire/m527x.c     |   43 ---
- arch/m68k/platform/coldfire/m528x.c     |   33 +---
- arch/m68k/platform/coldfire/m5307.c     |    9 -
- arch/m68k/platform/coldfire/m532x.c     |  154 +++++++++--
- arch/m68k/platform/coldfire/m5407.c     |    9 -
- arch/m68k/platform/coldfire/m5441x.c    |  261 ++++++++++++++++++
- arch/m68k/platform/coldfire/m54xx.c     |    7 -
- arch/m68k/platform/coldfire/mcf8390.c   |   38 +++
- arch/m68k/platform/coldfire/pci.c       |  327 ++++++++++++++++++++++
- arch/m68k/platform/coldfire/pinmux.c    |   28 --
- arch/m68k/platform/coldfire/pit.c       |    4 +-
- arch/m68k/platform/coldfire/timers.c    |    2 +-
- drivers/spi/Kconfig                     |    2 +-
- 57 files changed, 2985 insertions(+), 1126 deletions(-)
- create mode 100644 arch/m68k/include/asm/m525xsim.h
- create mode 100644 arch/m68k/include/asm/m5441xsim.h
- create mode 100644 arch/m68k/include/asm/m54xxpci.h
- create mode 100644 arch/m68k/include/asm/mcfclk.h
- delete mode 100644 arch/m68k/include/asm/pinmux.h
- delete mode 100644 arch/m68k/kernel/entry_mm.S
- delete mode 100644 arch/m68k/kernel/entry_no.S
- create mode 100644 arch/m68k/kernel/pcibios.c
- create mode 100644 arch/m68k/platform/coldfire/intc-525x.c
- create mode 100644 arch/m68k/platform/coldfire/m525x.c
- create mode 100644 arch/m68k/platform/coldfire/m5441x.c
- create mode 100644 arch/m68k/platform/coldfire/mcf8390.c
- create mode 100644 arch/m68k/platform/coldfire/pci.c
- delete mode 100644 arch/m68k/platform/coldfire/pinmux.c
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+Thanks,
+//mirabilos
+--=20
+=E2=80=9CIt is inappropriate to require that a time represented as
+ seconds since the Epoch precisely represent the number of
+ seconds between the referenced time and the Epoch.=E2=80=9D
+=09-- IEEE Std 1003.1b-1993 (POSIX) Section B.2.2.2
