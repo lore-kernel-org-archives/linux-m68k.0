@@ -1,78 +1,57 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] m68k: make sys_atomic_cmpxchg_32 work on classic m68k
-Date: Sat, 28 Jul 2012 13:35:48 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1207281333300.20433@herc.mirbsd.org>
-References: <m2r4rwongt.fsf@igel.home>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Chained vs. shared EtherNEC interrupts - was: Re: [SOLVED] Re: ARAnyM
+ VMs with Debian hanging at 100% CPU usage
+Date: Mon, 30 Jul 2012 11:09:03 +1200
+Message-ID: <CAOmrzkKiPdAjcN4Pp883Gzj0hnYh=kv0Lxwau8Fa38ZsOCVTCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:6129 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752602Ab2G1Nns convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Jul 2012 09:43:48 -0400
-In-Reply-To: <m2r4rwongt.fsf@igel.home>
+Received: from mail-ob0-f174.google.com ([209.85.214.174]:36867 "EHLO
+	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753087Ab2G2XJE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jul 2012 19:09:04 -0400
+Received: by obbuo13 with SMTP id uo13so8035572obb.19
+        for <linux-m68k@vger.kernel.org>; Sun, 29 Jul 2012 16:09:03 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>, stable@kernel.org
-Cc: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Andreas Schwab dixit:
+Thorsten, Geert:
 
->User space access must always go through uaccess accessors, since on
->classic m68k user space and kernel space are completely separate.
+>>> I hear you - and I am still working on sanitizing the driver's
+>>> interrupt use.
+>>>
+>>
+>>
+>> Oh, sounds like fun. Good luck! (ragnar76 is the one in need of
+>> such drivers, he'd probably help testing, too.)
+>>
+>>
 >
->Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+> Looks like I may have something working that will require a minimum of
+> changes to the ne.c driver -
+> need to run a few last tests though.
 
-This fixes my testcases, both the reduced two and the real-life
-one (running apt-get update no longer freezes the system, yay!).
+Looks like it sort of works - but now I'm stuck at the very same point
+that got me
+to playing tricks with shared interrupts in the first place: the
+interrupt watchdog
+kicks in and disables the eip_interrupt handler.
 
-Ben, can we please get that in the next src:linux upload to sid?
+The good news: sharing the timer interrupt with other devices (USB
+function on NetUSBee) is trival.
 
-Tested-by: Thorsten Glaser <tg@debian.org>
+And the EtherNEC still functions even after its interrupts have been
+disabled - how that works is a
+bit of a mystery to me, but who am I to argue with serendipity?
+Latency mushrooms to 50ms, and
+data rate drops from 70k/sec to 20k/sec but it's still alive.
 
->---
-> arch/m68k/kernel/sys_m68k.c | 8 ++++++--
-> 1 file changed, 6 insertions(+), 2 deletions(-)
->
->diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
->index 8623f8d..9a5932e 100644
->--- a/arch/m68k/kernel/sys_m68k.c
->+++ b/arch/m68k/kernel/sys_m68k.c
->@@ -479,9 +479,13 @@ sys_atomic_cmpxchg_32(unsigned long newval, int o=
-ldval, int d3, int d4, int d5,
-> 			goto bad_access;
-> 		}
->=20
->-		mem_value =3D *mem;
->+		/*
->+		 * No need to check for EFAULT; we know that the page is
->+		 * present and writable.
->+		 */
->+		__get_user(mem_value, mem);
-> 		if (mem_value =3D=3D oldval)
->-			*mem =3D newval;
->+			__put_user(newval, mem);
->=20
-> 		pte_unmap_unlock(pte, ptl);
-> 		up_read(&mm->mmap_sem);
->--=20
->1.7.11.3
->
->
->--=20
->Andreas Schwab, schwab@linux-m68k.org
->GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 =
-4ED5
->"And now for something completely different."
->
+Geert - can we do anything other than using noirqdebug = 1 to ensure
+this doesn't impact on network
+performance?
 
-//mirabilos
---=20
-13:37=E2=8E=9C=C2=ABNatureshadow=C2=BB Deep inside, I hate mirabilos. I=
- mean, he's a good
-guy. But he's always right! In every fsckin' situation, he's right. Eve=
-n
-with his deeply perverted taste in software and borked ambition towards
-broken OSes - in the end, he's damn right about it :(! [=E2=80=A6] work=
-s in mksh
+Cheers,
+
+  Michael
