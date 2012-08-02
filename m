@@ -1,57 +1,65 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Chained vs. shared EtherNEC interrupts - was: Re: [SOLVED] Re: ARAnyM
- VMs with Debian hanging at 100% CPU usage
-Date: Mon, 30 Jul 2012 11:09:03 +1200
-Message-ID: <CAOmrzkKiPdAjcN4Pp883Gzj0hnYh=kv0Lxwau8Fa38ZsOCVTCQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: make sys_atomic_cmpxchg_32 work on classic m68k
+Date: Fri, 3 Aug 2012 00:52:44 +0200
+Message-ID: <CAMuHMdUUOm7ZbfnV2+wkugrfZEmSP3mc_0xAxtExJtgyCVvWWg@mail.gmail.com>
+References: <m2r4rwongt.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f174.google.com ([209.85.214.174]:36867 "EHLO
-	mail-ob0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753087Ab2G2XJE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Jul 2012 19:09:04 -0400
-Received: by obbuo13 with SMTP id uo13so8035572obb.19
-        for <linux-m68k@vger.kernel.org>; Sun, 29 Jul 2012 16:09:03 -0700 (PDT)
+Received: from mail-vb0-f46.google.com ([209.85.212.46]:35165 "EHLO
+	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752810Ab2HBWwp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Aug 2012 18:52:45 -0400
+Received: by vbbff1 with SMTP id ff1so67837vbb.19
+        for <linux-m68k@vger.kernel.org>; Thu, 02 Aug 2012 15:52:44 -0700 (PDT)
+In-Reply-To: <m2r4rwongt.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-Thorsten, Geert:
-
->>> I hear you - and I am still working on sanitizing the driver's
->>> interrupt use.
->>>
->>
->>
->> Oh, sounds like fun. Good luck! (ragnar76 is the one in need of
->> such drivers, he'd probably help testing, too.)
->>
->>
+On Sat, Jul 28, 2012 at 12:20 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> User space access must always go through uaccess accessors, since on
+> classic m68k user space and kernel space are completely separate.
 >
-> Looks like I may have something working that will require a minimum of
-> changes to the ne.c driver -
-> need to run a few last tests though.
+> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 
-Looks like it sort of works - but now I'm stuck at the very same point
-that got me
-to playing tricks with shared interrupts in the first place: the
-interrupt watchdog
-kicks in and disables the eip_interrupt handler.
+Thanks, applied and queued for 3.6-rc1 and stable.
 
-The good news: sharing the timer interrupt with other devices (USB
-function on NetUSBee) is trival.
+> ---
+>  arch/m68k/kernel/sys_m68k.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+> index 8623f8d..9a5932e 100644
+> --- a/arch/m68k/kernel/sys_m68k.c
+> +++ b/arch/m68k/kernel/sys_m68k.c
+> @@ -479,9 +479,13 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
+>                         goto bad_access;
+>                 }
+>
+> -               mem_value = *mem;
+> +               /*
+> +                * No need to check for EFAULT; we know that the page is
+> +                * present and writable.
+> +                */
+> +               __get_user(mem_value, mem);
+>                 if (mem_value == oldval)
+> -                       *mem = newval;
+> +                       __put_user(newval, mem);
+>
+>                 pte_unmap_unlock(pte, ptl);
+>                 up_read(&mm->mmap_sem);
+> --
+> 1.7.11.3
 
-And the EtherNEC still functions even after its interrupts have been
-disabled - how that works is a
-bit of a mystery to me, but who am I to argue with serendipity?
-Latency mushrooms to 50ms, and
-data rate drops from 70k/sec to 20k/sec but it's still alive.
+Gr{oetje,eeting}s,
 
-Geert - can we do anything other than using noirqdebug = 1 to ensure
-this doesn't impact on network
-performance?
+                        Geert
 
-Cheers,
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-  Michael
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
