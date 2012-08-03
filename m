@@ -1,172 +1,105 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.6
-Date: Fri, 3 Aug 2012 15:53:25 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1208031537150.17150@ayla.of.borg>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [PATCH] m68k: Correct the Atari ALLOWINT definition
+Date: Fri,  3 Aug 2012 23:21:17 +0200
+Message-ID: <1344028877-18838-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: stable@vger.kernel.org
+Cc: Ben Hutchings <bhutchings@solarflare.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Mikael Pettersson <mikpe@it.uu.se>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+From: Mikael Pettersson <mikpe@it.uu.se>
 
-The following changes since commit 28a33cbc24e4256c143dce96c7d93bf423229f92:
-  Linus Torvalds (1):
-        Linux 3.5
+commit c663600584a596b5e66258cc10716fb781a5c2c9 upstream.
 
-are available in the git repository at:
+Booting a 3.2, 3.3, or 3.4-rc4 kernel on an Atari using the
+`nfeth' ethernet device triggers a WARN_ONCE() in generic irq
+handling code on the first irq for that device:
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+WARNING: at kernel/irq/handle.c:146 handle_irq_event_percpu+0x134/0x142()
+irq 3 handler nfeth_interrupt+0x0/0x194 enabled interrupts
+Modules linked in:
+Call Trace: [<000299b2>] warn_slowpath_common+0x48/0x6a
+ [<000299c0>] warn_slowpath_common+0x56/0x6a
+ [<00029a4c>] warn_slowpath_fmt+0x2a/0x32
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0005b34c>] handle_irq_event_percpu+0x134/0x142
+ [<0000a584>] nfeth_interrupt+0x0/0x194
+ [<001ba0a8>] schedule_preempt_disabled+0x0/0xc
+ [<0005b37a>] handle_irq_event+0x20/0x2c
+ [<0005add4>] generic_handle_irq+0x2c/0x3a
+ [<00002ab6>] do_IRQ+0x20/0x32
+ [<0000289e>] auto_irqhandler_fixup+0x4/0x6
+ [<00003144>] cpu_idle+0x22/0x2e
+ [<001b8a78>] printk+0x0/0x18
+ [<0024d112>] start_kernel+0x37a/0x386
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0003021d>] __do_proc_dointvec+0xb1/0x366
+ [<0024c31e>] _sinittext+0x31e/0x9c0
 
-Andreas Schwab (1):
-      m68k: Make sys_atomic_cmpxchg_32 work on classic m68k
+After invoking the irq's handler the kernel sees !irqs_disabled()
+and concludes that the handler erroneously enabled interrupts.
 
-Geert Uytterhoeven (14):
-      m68k: Use Kbuild logic to import asm-generic headers
-      m68k: Use asm-generic version of <asm/types.h>
-      m68knommu: Clean up printing of sections
-      m68k: Remove duplicate FPU config option
-      m68k: Move CPU_HAS_* config options
-      m68k: delay, muldi3 - Use CONFIG_CPU_HAS_NO_MULDIV64
-      m68k: Introduce config option CPU_HAS_NO_UNALIGNED
-      m68k: CPU32 does not support unaligned accesses
-      mtd/uclinux: Use generic __bss_stop instead of _ebss
-      m68k: Replace m68k-specific _[se]bss by generic __bss_{start,stop}
-      m68k: Use asm-generic version of <asm/sections.h>
-      m68k/sun3: Remove unselectable code in prom_init()
-      zorro: Remove unused zorro_bus.devices
-      m68k/apollo: Rename "timer" to "apollo_timer"
+However, debugging shows that !irqs_disabled() is true even before
+the handler is invoked, which indicates a problem in the platform
+code rather than the specific driver.
 
-Greg Ungerer (1):
-      m68knommu: Allow ColdFire CPUs to use unaligned accesses
+The warning does not occur in 3.1 or older kernels.
 
-Paul Bolle (2):
-      m68k: Remove five unused headers
-      m68k: Remove never used asm/shm.h
+It turns out that the ALLOWINT definition for Atari is incorrect.
 
-All of these (except for the top commit) have been in linux-next for at
-least 2 weeks, and were ready at the 3.5 timeframe, but I didn't want to
-send a pull request the night I left for vacation.
+The Atari definition of ALLOWINT is ~0x400, the stated purpose of
+that is to avoid taking HSYNC interrupts.  irqs_disabled() returns
+true if the 3-bit ipl & 4 is non-zero.  The nfeth interrupt runs at
+ipl 3 (it's autovector 3), but 3 & 4 is zero so irqs_disabled() is
+false, and the warning above is generated.
 
-The top commit is a recent fix by Andreas (also destined for stable) that
-required one more linux-next cycle, so I had to delay my pull request to
-today.
+When interrupts are explicitly disabled, ipl is set to 7.  When they
+are enabled, ipl is masked with ALLOWINT.  On Atari this will result
+in ipl = 3, which blocks interrupts at ipl 3 and below.  So how come
+nfeth interrupts at ipl 3 are received at all?  That's because ipl
+is reset to 2 by Atari-specific code in default_idle(), again with
+the stated purpose of blocking HSYNC interrupts.  This discrepancy
+means that ipl 3 can remain blocked for longer than intended.
 
-The "mtd/uclinux" change is not really an MTD change, but an architecture
-change, and has been acked by the relevant architecture maintainers (for
-blackfin, microblaze, and sh).
+Both default_idle() and falcon_hblhandler() identify HSYNC with
+ipl 2, and the "Atari ST/.../F030 Hardware Register Listing" agrees,
+but ALLOWINT is defined as if HSYNC was ipl 3.
 
-Thanks for pulling!
+[As an experiment I modified default_idle() to reset ipl to 3, and
+as expected that resulted in all nfeth interrupts being blocked.]
 
- arch/blackfin/kernel/setup.c              |    1 -
- arch/m68k/Kconfig                         |   12 --
- arch/m68k/Kconfig.cpu                     |   14 ++
- arch/m68k/apollo/config.c                 |   16 +-
- arch/m68k/include/asm/Kbuild              |   25 +++
- arch/m68k/include/asm/MC68332.h           |  152 ------------------
- arch/m68k/include/asm/apollodma.h         |  248 -----------------------------
- arch/m68k/include/asm/apollohw.h          |    2 +-
- arch/m68k/include/asm/bitsperlong.h       |    1 -
- arch/m68k/include/asm/cputime.h           |    6 -
- arch/m68k/include/asm/delay.h             |    2 +-
- arch/m68k/include/asm/device.h            |    7 -
- arch/m68k/include/asm/emergency-restart.h |    6 -
- arch/m68k/include/asm/errno.h             |    6 -
- arch/m68k/include/asm/futex.h             |    6 -
- arch/m68k/include/asm/ioctl.h             |    1 -
- arch/m68k/include/asm/ipcbuf.h            |    1 -
- arch/m68k/include/asm/irq_regs.h          |    1 -
- arch/m68k/include/asm/kdebug.h            |    1 -
- arch/m68k/include/asm/kmap_types.h        |    6 -
- arch/m68k/include/asm/kvm_para.h          |    1 -
- arch/m68k/include/asm/local.h             |    6 -
- arch/m68k/include/asm/local64.h           |    1 -
- arch/m68k/include/asm/mac_mouse.h         |   23 ---
- arch/m68k/include/asm/mcfmbus.h           |   77 ---------
- arch/m68k/include/asm/mman.h              |    1 -
- arch/m68k/include/asm/mutex.h             |    9 -
- arch/m68k/include/asm/percpu.h            |    6 -
- arch/m68k/include/asm/resource.h          |    6 -
- arch/m68k/include/asm/sbus.h              |   45 -----
- arch/m68k/include/asm/scatterlist.h       |    6 -
- arch/m68k/include/asm/sections.h          |    8 -
- arch/m68k/include/asm/shm.h               |   31 ----
- arch/m68k/include/asm/siginfo.h           |    6 -
- arch/m68k/include/asm/statfs.h            |    6 -
- arch/m68k/include/asm/topology.h          |    6 -
- arch/m68k/include/asm/types.h             |   22 ---
- arch/m68k/include/asm/unaligned.h         |    4 +-
- arch/m68k/include/asm/xor.h               |    1 -
- arch/m68k/kernel/setup_no.c               |   11 +-
- arch/m68k/kernel/sys_m68k.c               |    8 +-
- arch/m68k/kernel/vmlinux-nommu.lds        |    2 -
- arch/m68k/kernel/vmlinux-std.lds          |    2 -
- arch/m68k/kernel/vmlinux-sun3.lds         |    2 -
- arch/m68k/lib/muldi3.c                    |    2 +-
- arch/m68k/mm/init_mm.c                    |    2 +-
- arch/m68k/mm/init_no.c                    |    2 +-
- arch/m68k/platform/68328/head-de2.S       |    8 +-
- arch/m68k/platform/68328/head-pilot.S     |   10 +-
- arch/m68k/platform/68328/head-ram.S       |    4 +-
- arch/m68k/platform/68328/head-rom.S       |    6 +-
- arch/m68k/platform/68360/head-ram.S       |    6 +-
- arch/m68k/platform/68360/head-rom.S       |    8 +-
- arch/m68k/platform/coldfire/head.S        |   10 +-
- arch/m68k/sun3/prom/init.c                |   48 +------
- arch/microblaze/include/asm/sections.h    |    4 -
- arch/microblaze/kernel/microblaze_ksyms.c |    3 -
- arch/microblaze/kernel/setup.c            |    4 +-
- arch/microblaze/kernel/vmlinux.lds.S      |    1 -
- arch/sh/include/asm/sections.h            |    1 -
- arch/sh/kernel/setup.c                    |    2 +-
- arch/sh/kernel/sh_ksyms_32.c              |    1 -
- arch/sh/kernel/vmlinux.lds.S              |    1 -
- arch/sh/lib/mcount.S                      |    8 +-
- drivers/mtd/maps/uclinux.c                |    5 +-
- drivers/zorro/zorro.c                     |    2 -
- 66 files changed, 100 insertions(+), 842 deletions(-)
- delete mode 100644 arch/m68k/include/asm/MC68332.h
- delete mode 100644 arch/m68k/include/asm/apollodma.h
- delete mode 100644 arch/m68k/include/asm/bitsperlong.h
- delete mode 100644 arch/m68k/include/asm/cputime.h
- delete mode 100644 arch/m68k/include/asm/device.h
- delete mode 100644 arch/m68k/include/asm/emergency-restart.h
- delete mode 100644 arch/m68k/include/asm/errno.h
- delete mode 100644 arch/m68k/include/asm/futex.h
- delete mode 100644 arch/m68k/include/asm/ioctl.h
- delete mode 100644 arch/m68k/include/asm/ipcbuf.h
- delete mode 100644 arch/m68k/include/asm/irq_regs.h
- delete mode 100644 arch/m68k/include/asm/kdebug.h
- delete mode 100644 arch/m68k/include/asm/kmap_types.h
- delete mode 100644 arch/m68k/include/asm/kvm_para.h
- delete mode 100644 arch/m68k/include/asm/local.h
- delete mode 100644 arch/m68k/include/asm/local64.h
- delete mode 100644 arch/m68k/include/asm/mac_mouse.h
- delete mode 100644 arch/m68k/include/asm/mcfmbus.h
- delete mode 100644 arch/m68k/include/asm/mman.h
- delete mode 100644 arch/m68k/include/asm/mutex.h
- delete mode 100644 arch/m68k/include/asm/percpu.h
- delete mode 100644 arch/m68k/include/asm/resource.h
- delete mode 100644 arch/m68k/include/asm/sbus.h
- delete mode 100644 arch/m68k/include/asm/scatterlist.h
- delete mode 100644 arch/m68k/include/asm/sections.h
- delete mode 100644 arch/m68k/include/asm/shm.h
- delete mode 100644 arch/m68k/include/asm/siginfo.h
- delete mode 100644 arch/m68k/include/asm/statfs.h
- delete mode 100644 arch/m68k/include/asm/topology.h
- delete mode 100644 arch/m68k/include/asm/types.h
- delete mode 100644 arch/m68k/include/asm/xor.h
+The fix is simple: define ALLOWINT as ~0x500 instead.  This makes
+arch_local_irq_enable() consistent with default_idle(), and prevents
+the !irqs_disabled() problems for ipl 3 interrupts.
 
-Gr{oetje,eeting}s,
+Tested on Atari running in an Aranym VM.
 
-						Geert
+Signed-off-by: Mikael Pettersson <mikpe@it.uu.se>
+Tested-by: Michael Schmitz <schmitzmic@googlemail.com> (on Falcon/CT60)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This version applies to v3.2..v3.4.
+For v2.6.29..v3.1, it should be applied to arch/m68k/include/asm/entry_mm.h
+instead
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ arch/m68k/include/asm/entry.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
+index c3c5a86..8798ebc 100644
+--- a/arch/m68k/include/asm/entry.h
++++ b/arch/m68k/include/asm/entry.h
+@@ -33,8 +33,8 @@
+ 
+ /* the following macro is used when enabling interrupts */
+ #if defined(MACH_ATARI_ONLY)
+-	/* block out HSYNC on the atari */
+-#define ALLOWINT	(~0x400)
++	/* block out HSYNC = ipl 2 on the atari */
++#define ALLOWINT	(~0x500)
+ #define	MAX_NOINT_IPL	3
+ #else
+ 	/* portable version */
+-- 
+1.7.0.4
