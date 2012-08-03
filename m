@@ -1,65 +1,55 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: make sys_atomic_cmpxchg_32 work on classic m68k
-Date: Fri, 3 Aug 2012 00:52:44 +0200
-Message-ID: <CAMuHMdUUOm7ZbfnV2+wkugrfZEmSP3mc_0xAxtExJtgyCVvWWg@mail.gmail.com>
-References: <m2r4rwongt.fsf@igel.home>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: select CONFIG_HAVE_CLK for
+	ColdFire CPU types
+Date: Fri, 3 Aug 2012 16:28:21 +1000
+Message-ID: <1343975301-6483-1-git-send-email-gerg@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vb0-f46.google.com ([209.85.212.46]:35165 "EHLO
-	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752810Ab2HBWwp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Aug 2012 18:52:45 -0400
-Received: by vbbff1 with SMTP id ff1so67837vbb.19
-        for <linux-m68k@vger.kernel.org>; Thu, 02 Aug 2012 15:52:44 -0700 (PDT)
-In-Reply-To: <m2r4rwongt.fsf@igel.home>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
 
-On Sat, Jul 28, 2012 at 12:20 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> User space access must always go through uaccess accessors, since on
-> classic m68k user space and kernel space are completely separate.
->
-> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+From: Greg Ungerer <gerg@uclinux.org>
 
-Thanks, applied and queued for 3.6-rc1 and stable.
+The ColdFire CPU sub-arch has kernel clk code support, so select
+CONFIG_HAVE_CLK.
 
-> ---
->  arch/m68k/kernel/sys_m68k.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-> index 8623f8d..9a5932e 100644
-> --- a/arch/m68k/kernel/sys_m68k.c
-> +++ b/arch/m68k/kernel/sys_m68k.c
-> @@ -479,9 +479,13 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
->                         goto bad_access;
->                 }
->
-> -               mem_value = *mem;
-> +               /*
-> +                * No need to check for EFAULT; we know that the page is
-> +                * present and writable.
-> +                */
-> +               __get_user(mem_value, mem);
->                 if (mem_value == oldval)
-> -                       *mem = newval;
-> +                       __put_user(newval, mem);
->
->                 pte_unmap_unlock(pte, ptl);
->                 up_read(&mm->mmap_sem);
-> --
-> 1.7.11.3
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/Kconfig.cpu |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 43a9f8f..69f2385 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -28,6 +28,7 @@ config COLDFIRE
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_MULDIV64
+ 	select GENERIC_CSUM
++	select HAVE_CLK
+ 
+ endchoice
+ 
+-- 
+1.7.0.4
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
