@@ -1,53 +1,61 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 31/41] TTY: nfcon, add tty_port and link it
-Date: Tue,  7 Aug 2012 21:47:56 +0200
-Message-ID: <1344368886-24033-32-git-send-email-jslaby__30861.8795163513$1344369569$gmane$org@suse.cz>
-References: <1344368886-24033-1-git-send-email-jslaby@suse.cz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Chained vs. shared EtherNEC interrupts - was: Re: [SOLVED] Re:
+ ARAnyM VMs with Debian hanging at 100% CPU usage
+Date: Wed, 8 Aug 2012 14:10:03 +0200
+Message-ID: <CAMuHMdWoq_M4yhuk8YK0+ibNXbwbZYDBu9WUfu+9cvvpvqQxpg@mail.gmail.com>
+References: <CAOmrzkKiPdAjcN4Pp883Gzj0hnYh=kv0Lxwau8Fa38ZsOCVTCQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1344368886-24033-1-git-send-email-jslaby@suse.cz>
+Received: from mail-vc0-f174.google.com ([209.85.220.174]:46041 "EHLO
+	mail-vc0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757505Ab2HHMKE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Aug 2012 08:10:04 -0400
+Received: by vcbfk26 with SMTP id fk26so636493vcb.19
+        for <linux-m68k@vger.kernel.org>; Wed, 08 Aug 2012 05:10:03 -0700 (PDT)
+In-Reply-To: <CAOmrzkKiPdAjcN4Pp883Gzj0hnYh=kv0Lxwau8Fa38ZsOCVTCQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gregkh@linuxfoundation.org
-Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Thorsten Glaser <tg@mirbsd.de>, debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Every tty driver needs tty_port for each line. So let us add one to
-nfcon too. And link it so that the tty layer knows about it.
+Hi Michael,
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/emu/nfcon.c |    4 ++++
- 1 file changed, 4 insertions(+)
+On Mon, Jul 30, 2012 at 1:09 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Looks like it sort of works - but now I'm stuck at the very same point
+> that got me
+> to playing tricks with shared interrupts in the first place: the
+> interrupt watchdog
+> kicks in and disables the eip_interrupt handler.
 
-diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
-index 8db25e8..16d170f 100644
---- a/arch/m68k/emu/nfcon.c
-+++ b/arch/m68k/emu/nfcon.c
-@@ -19,6 +19,7 @@
- #include <asm/natfeat.h>
- 
- static int stderr_id;
-+static struct tty_port nfcon_tty_port;
- static struct tty_driver *nfcon_tty_driver;
- 
- static void nfputs(const char *str, unsigned int count)
-@@ -119,6 +120,8 @@ static int __init nfcon_init(void)
- {
- 	int res;
- 
-+	tty_port_init(&nfcon_tty_port);
-+
- 	stderr_id = nf_get_id("NF_STDERR");
- 	if (!stderr_id)
- 		return -ENODEV;
-@@ -135,6 +138,7 @@ static int __init nfcon_init(void)
- 	nfcon_tty_driver->flags = TTY_DRIVER_REAL_RAW;
- 
- 	tty_set_operations(nfcon_tty_driver, &nfcon_tty_ops);
-+	tty_port_link_device(&nfcon_tty_port, nfcon_tty_driver, 0);
- 	res = tty_register_driver(nfcon_tty_driver);
- 	if (res) {
- 		pr_err("failed to register nfcon tty driver\n");
--- 
-1.7.10.4
+Oops...
+
+> The good news: sharing the timer interrupt with other devices (USB
+> function on NetUSBee) is trival.
+>
+> And the EtherNEC still functions even after its interrupts have been
+> disabled - how that works is a
+> bit of a mystery to me, but who am I to argue with serendipity?
+> Latency mushrooms to 50ms, and
+> data rate drops from 70k/sec to 20k/sec but it's still alive.
+
+My initial guess was that the transmit code also checks for received
+packets somewhere, but I can't seem to find this in the code. Oh well...
+
+> Geert - can we do anything other than using noirqdebug = 1 to ensure
+> this doesn't impact on network
+> performance?
+
+Hmm, so we do need IRQF_SHARED inside an #ifdef.
+If we can't convince Paul, that'll mean another 8390 driver. Sigh...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
