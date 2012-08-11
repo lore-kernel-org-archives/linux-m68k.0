@@ -1,153 +1,100 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 1/2] [m68k] Atari: use dedicated irq_chip for timer D interrupts (polling timer for EtherNEC and friends)
-Date: Sat, 11 Aug 2012 20:59:39 +1200 (NZST)
-Message-ID: <20120811085939.C4DDD360087@xplor.waratah.dyndns.org>
+Subject: [PATCH 2/2] [m68k] Atari: use dedicated timer interrupts for EtherNEC (ne.c driver).
+Date: Sat, 11 Aug 2012 21:01:54 +1200 (NZST)
+Message-ID: <20120811090154.A3218360087@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:42530 "EHLO
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:55738 "EHLO
 	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752838Ab2HKI7q (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Aug 2012 04:59:46 -0400
-Received: by pbbrr13 with SMTP id rr13so4126540pbb.19
-        for <linux-m68k@vger.kernel.org>; Sat, 11 Aug 2012 01:59:46 -0700 (PDT)
+	with ESMTP id S1752874Ab2HKJCA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Aug 2012 05:02:00 -0400
+Received: by pbbrr13 with SMTP id rr13so4129111pbb.19
+        for <linux-m68k@vger.kernel.org>; Sat, 11 Aug 2012 02:02:00 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-This is part one of the interrupt changes required to avoid using the IRQF_SHARED flag in ne.c. 
-As mentioned previously, this patch does not solve the unhandled interrupt watchdog problem, but 
-a simple noirqdebug kernel option is sufficient to sort that out. 
-
-Current sole user of the chained polling timer interrupt is ne.c - another user will be the driver 
-for the ISP1160 USB host adapter to support the NetUSBee ROM port adapter.
-
-Part 2 will be changes to atari/config.c tp make use of the new chained timer.
-
-Cheers,
-
-	Michael
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/atari/ataints.c         |   75 +++++++++++++++++++++++++++++++++++++
- arch/m68k/include/asm/atariints.h |    9 ++++
- 2 files changed, 84 insertions(+), 0 deletions(-)
+ arch/m68k/atari/config.c |   33 ++++++++++++---------------------
+ 1 files changed, 12 insertions(+), 21 deletions(-)
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index 3f41092..96f82f7 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -122,6 +122,62 @@ static struct irq_chip atari_irq_chip = {
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index c7bbfd8..b514aac 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -694,7 +694,7 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
+ 
+ #define ATARI_ETHERNEC_PHYS_ADDR	0xfffa0000
+ #define ATARI_ETHERNEC_BASE		0x300
+-#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMD
++#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMER1
+ 
+ static struct resource rtl8019_resources[] = {
+ 	[0] = {
+@@ -721,17 +721,12 @@ static struct platform_device rtl8019_device = {
+ static struct platform_device *atari_ethernec_devices[] __initdata = {
+ 	&rtl8019_device
  };
+-
+-irqreturn_t atari_timerd_interrupt(int irq, void *dev_id)
+-{
+-	return IRQ_HANDLED;
+-}
+ #endif
  
- /*
-+ * ST-MFP timer D chained interrupts - each driver gets its own timer
-+ * interrupt instance.
-+ */
-+
-+struct mfptimerbase {
-+	volatile struct MFP *mfp;
-+	unsigned char mfp_mask, mfp_data;
-+	unsigned short int_mask;
-+	int handler_irq, mfptimer_irq, server_irq;
-+	char *name;
-+} stmfp_base = {
-+	.mfp		= &st_mfp,
-+	.int_mask	= 0x0,
-+	.handler_irq	= IRQ_MFP_TIMD,
-+	.mfptimer_irq	= IRQ_MFP_TIMER1,
-+	.name		= "MFP Timer D"
-+};
-+
-+static irqreturn_t mfptimer_handler(int irq, void *dev_id)
-+{
-+	struct mfptimerbase *base = dev_id;
-+	int mach_irq;
-+	unsigned char ints;
-+
-+	mach_irq = base->mfptimer_irq;
-+	ints = base->int_mask;
-+	for (; ints; mach_irq++, ints >>= 1) {
-+		if (ints & 1)
-+			generic_handle_irq(mach_irq);
+ int __init atari_platform_init(void)
+ {
+ 	unsigned char *enatc_virt, *enec_virt;
+-	int rv = -ENODEV, rv2 = -ENODEV;
++	int rv = -ENODEV, rv2 = -ENODEV, need_timer = 0;
+ 
+ 	if (!MACH_IS_ATARI)
+ 		return -ENODEV;
+@@ -740,7 +735,7 @@ int __init atari_platform_init(void)
+ 	enatc_virt = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23),2);
+ 	if (hwreg_present(enatc_virt)) {
+ 		*enatc_virt |= 0x2;	/* enable SMC91C111 interrupt */
+-		rv = platform_add_devices(atari_ethernat_devices, 
++		rv = platform_add_devices(atari_ethernat_devices,
+ 					  ARRAY_SIZE(atari_ethernat_devices));
+ 	}
+ 	iounmap(enatc_virt);
+@@ -749,25 +744,21 @@ int __init atari_platform_init(void)
+ #if IS_ENABLED(CONFIG_ATARI_ETHERNEC)
+ 	enec_virt = (unsigned char *)ioremap((ATARI_ETHERNEC_PHYS_ADDR), 0xf);
+ 	if (hwreg_present(enec_virt)) {
+-		int ret;
+-		const char *name = "Timer D dummy interrupt";
++		need_timer = 1;
++		rv2 = platform_add_devices(atari_ethernec_devices,
++					   ARRAY_SIZE(atari_ethernec_devices));
 +	}
-+	return IRQ_HANDLED;
-+}
-+
-+
-+static void atari_mfptimer_enable(struct irq_data *data)
-+{
-+	int mfp_num = IRQ_MFP_TIMER1 - data->irq;
-+	stmfp_base.int_mask |= 1 << mfp_num;
-+	atari_enable_irq(IRQ_MFP_TIMD);
-+}
-+
-+static void atari_mfptimer_disable(struct irq_data *data)
-+{
-+	int mfp_num = IRQ_MFP_TIMER1 - data->irq;
-+	stmfp_base.int_mask &= ~(1 << mfp_num);
-+	if (!stmfp_base.int_mask)
-+		atari_disable_irq(IRQ_MFP_TIMD);
-+}
-+
-+static struct irq_chip atari_mfptimer_chip = {
-+	.name		= "timer_d",
-+	.irq_enable	= atari_mfptimer_enable,
-+	.irq_disable	= atari_mfptimer_disable,
-+};
-+
-+/*
-  * void atari_init_IRQ (void)
-  *
-  * Parameters:	None
-@@ -198,6 +254,26 @@ void __init atari_init_IRQ(void)
- 	/* Initialize the PSG: all sounds off, both ports output */
- 	sound_ym.rd_data_reg_sel = 7;
- 	sound_ym.wd_data = 0xff;
-+
-+	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
-+				  IRQ_MFP_TIMER1, 8);
-+	/* possibly unneeded */
-+	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq,
-+				  IRQ_MFP_TIMD, 1);
-+
-+	/* prepare timer D data for use as poll interrupt */
-+	/* set Timer D data Register - needs to be > 0 */
-+	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
-+	/* start timer D, div = 1:100 */
-+	st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
-+
-+	/* do we need this one ? */
-+	m68k_irq_startup_irq(IRQ_MFP_TIMD);
-+
-+	/* request timer D dispatch handler */
-+	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
-+			stmfp_base.name, &stmfp_base))
-+		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
- }
++	iounmap(enec_virt);
++#endif
  
+-		/* timer routine set up in atari_ethernec_probe() */
++	if (need_timer) {
+ 		/* set Timer D data Register */
+ 		st_mfp.tim_dt_d = 123;	/* 200 Hz */
+ 		/* start timer D, div = 1:100 */
+ 		st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
+-		/* Must make this shared in case other timer ints are needed */
+-		ret = request_irq(IRQ_MFP_TIMD, atari_timerd_interrupt,
+-				  IRQF_SHARED, name, atari_timerd_interrupt);
+-		if (ret) {
+-			printk(KERN_ERR "atari_platform_init: failed to register dummy timer interrupt for EtherNEC/EtherNAT!\n");
+-		}
+-		rv2 = platform_add_devices(atari_ethernec_devices,
+-					   ARRAY_SIZE(atari_ethernec_devices));
++		/* timer routine set up in atari_init_IRQ -
++		   master interrupt for multiple timer users */
+ 	}
+-	iounmap(enec_virt);
+-#endif
  
-diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
-index 904d4ad..5f37fc5 100644
---- a/arch/m68k/include/asm/atariints.h
-+++ b/arch/m68k/include/asm/atariints.h
-@@ -98,6 +98,15 @@
- #define IRQ_SCCA_RX	     (52)
- #define IRQ_SCCA_SPCOND	     (54)
- 
-+/* shared MFP timer D interrupts - hires timer for EtherNEC et al. */
-+#define IRQ_MFP_TIMER1       (64)
-+#define IRQ_MFP_TIMER2       (65)
-+#define IRQ_MFP_TIMER3       (66)
-+#define IRQ_MFP_TIMER4       (67)
-+#define IRQ_MFP_TIMER5       (68)
-+#define IRQ_MFP_TIMER6       (69)
-+#define IRQ_MFP_TIMER7       (70)
-+#define IRQ_MFP_TIMER8       (71)
- 
- #define INT_CLK   24576	    /* CLK while int_clk =2.456MHz and divide = 100 */
- #define INT_TICKS 246	    /* to make sched_time = 99.902... HZ */
+ 	if (rv2) 
+ 		return rv2;
 -- 
 1.5.6
