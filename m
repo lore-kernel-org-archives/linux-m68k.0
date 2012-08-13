@@ -1,66 +1,30 @@
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [userns:userns-always-map-user-v45 80/99] fs/namespace.c:2290:1: error: unknown type name 'atomic64_t'
-Date: Mon, 13 Aug 2012 09:13:09 -0700
-Message-ID: <63f9e712-3cd1-4020-9df6-8fb8d9c3f1ec@email.android.com>
-References: <20120812145023.GA17077@localhost> <87k3x3z3de.fsf@xmission.com> <20120813133910.GA30532@localhost>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [userns:userns-always-map-user-v45 80/99] fs/namespace.c:2290:1:
+ error: unknown type name 'atomic64_t'
+Date: Tue, 14 Aug 2012 01:55:16 +0800
+Message-ID: <20120813175516.GA32757__27441.1450991922$1344880533$gmane$org@localhost>
+References: <20120812145023.GA17077@localhost>
+ <87k3x3z3de.fsf@xmission.com>
+ <20120813133910.GA30532@localhost>
+ <63f9e712-3cd1-4020-9df6-8fb8d9c3f1ec@email.android.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20120813133910.GA30532@localhost>
+Content-Disposition: inline
+In-Reply-To: <63f9e712-3cd1-4020-9df6-8fb8d9c3f1ec@email.android.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Fengguang Wu <fengguang.wu@intel.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, kernel-janitors@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Fengguang Wu <fengguang.wu@intel.com> wrote:
+> >I'd suggest to fix it in m68k and make atomic64_t generally available.
+> 
+> Fengguang in your testing on any architechtures is atomic64_t missing on anything except some m68k subarchtechtures?
 
->On Sun, Aug 12, 2012 at 11:56:45PM -0700, Eric W. Biederman wrote:
->> Fengguang Wu <fengguang.wu@intel.com> writes:
->> 
->> > Hi Geert,
->> >
->> > This is the build error I get, on Eric's userns tree.
->> >
->> > tree:  
->git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git
->userns-always-map-user-v45
->> > head:   38a0b1b84f5f613ff4e01fffda27f87d4cb2b649
->> > commit: 5ea9fc30545b658380d4794340227fe821b83701 [80/99] vfs: Add
->setns support for the mount namespace
->> > config: m68k-m5475evb_defconfig (attached as .config)
->> >
->> > All related error/warning messages:
->> >
->> > fs/namespace.c:2290:1: error: unknown type name 'atomic64_t'
->> > fs/namespace.c:2290:1: error: implicit declaration of function
->'ATOMIC64_INIT' [-Werror=implicit-function-declaration]
->> > fs/namespace.c:2290:1: error: initializer element is not constant
->> > fs/namespace.c: In function 'alloc_mnt_ns':
->> > fs/namespace.c:2299:2: error: implicit declaration of function
->'atomic64_add_return' [-Werror=implicit-function-declaration]
->> > cc1: some warnings being treated as errors
->> 
->> Fengguang is m68k the only place you are seeing build failures?
->
->Yes.
->
->> Exactly how I get a 64bit counter in that code path is not terribly
->> important.  I picked an atomic64_t because it looked simple and
->cheap.
->
->Fair enough. As long as it's not in hot code path, it definitely helps
->to use simple solutions.
->
->> If this is limited to a couple of m68k sub-arches I will let you guys
->> finish fixing this up so people can depend on atomic64_t being
->> available.  Otherwise it probably makes sense to go to with a
->different
->> abstraction.
->
->I'd suggest to fix it in m68k and make atomic64_t generally available.
+Eric, it only complaints for m68k, among the architechtures the build
+tests covered (alpha arm avr32 blackfin cris frv h8300 i386 ia64 m32r
+m68k mips mn10300 openrisc parisc powerpc s390 sh sparc sparc64 tile
+um x86_64 xtensa).
 
-Fengguang in your testing on any architechtures is atomic64_t missing on anything except some m68k subarchtechtures?
-
-Eric
+Thanks,
+Fengguang
