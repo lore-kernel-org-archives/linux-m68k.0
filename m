@@ -1,12 +1,12 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Use PTR_RET rather than if(IS_ERR(.. [1]
-Date: Sat, 18 Aug 2012 15:20:11 +0200
-Message-ID: <CAMuHMdV-BMC5WSeU8RH0X17Hp32gyP1NWQJgnhDUCehniY+Rxw__39383.864918682$1345296353$gmane$org@mail.gmail.com>
-References: <1344275476.14513.98.camel@localhost.localdomain>
+Subject: Re: [PATCH] m68k: Use PTR_RET rather than if(IS_ERR(.. [2]
+Date: Sat, 18 Aug 2012 15:20:42 +0200
+Message-ID: <CAMuHMdWzw=hP2E2iXuNv_euXhreaGUE_91EZ2OcbtTm2HSUS7w__40767.6473878839$1345296430$gmane$org@mail.gmail.com>
+References: <1344275476.14513.99.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1344275476.14513.98.camel@localhost.localdomain>
+In-Reply-To: <1344275476.14513.99.camel@localhost.localdomain>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Thomas Meyer <thomas@m3y3r.de>
@@ -24,21 +24,20 @@ On Mon, Aug 6, 2012 at 7:51 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
 > Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 > ---
 >
-> diff -u -p a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-> --- a/arch/m68k/kernel/time.c
-> +++ b/arch/m68k/kernel/time.c
-> @@ -100,10 +100,7 @@ static int __init rtc_init(void)
+> diff -u -p a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+> --- a/arch/m68k/q40/config.c
+> +++ b/arch/m68k/q40/config.c
+> @@ -338,9 +338,6 @@ static __init int q40_add_kbd_device(voi
 >                 return -ENODEV;
 >
->         pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+>         pdev = platform_device_register_simple("q40kbd", -1, NULL, 0);
 > -       if (IS_ERR(pdev))
 > -               return PTR_ERR(pdev);
 > -
 > -       return 0;
 > +       return PTR_RET(pdev);
 >  }
->
->  module_init(rtc_init);
+>  arch_initcall(q40_add_kbd_device);
 
 Gr{oetje,eeting}s,
 
