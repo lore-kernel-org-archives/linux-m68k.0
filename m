@@ -1,52 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: amig: Use PTR_RET rather than if(IS_ERR(.. [1]
-Date: Sat, 18 Aug 2012 15:21:07 +0200
-Message-ID: <CAMuHMdX2eJpNsfA0xwR14K5_uZMk0B4p=n1ACxV6fg7BiyqpfQ__29780.613751109$1345296524$gmane$org@mail.gmail.com>
-References: <1344275476.14513.97.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] fbdev/amifb: Remove write-only variable amifb_inverse
+Date: Sat, 18 Aug 2012 15:30:21 +0200
+Message-ID: <1345296621-15367-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1344275476.14513.97.camel@localhost.localdomain>
+Received: from georges.telenet-ops.be ([195.130.137.68]:56465 "EHLO
+	georges.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754924Ab2HRNa1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 Aug 2012 09:30:27 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks, applied and queued for 3.7.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/video/amifb.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-On Mon, Aug 6, 2012 at 7:51 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> The semantic patch that makes this change is available
-> in scripts/coccinelle/api/ptr_ret.cocci.
->
-> More information about semantic patching is available at
-> http://coccinelle.lip6.fr/
->
-> Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
-> ---
->
-> diff -u -p a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
-> --- a/arch/m68k/amiga/platform.c
-> +++ b/arch/m68k/amiga/platform.c
-> @@ -56,10 +56,7 @@ static int __init amiga_init_bus(void)
->         n = AMIGAHW_PRESENT(ZORRO3) ? 4 : 2;
->         pdev = platform_device_register_simple("amiga-zorro", -1,
->                                                zorro_resources, n);
-> -       if (IS_ERR(pdev))
-> -               return PTR_ERR(pdev);
-> -
-> -       return 0;
-> +       return PTR_RET(pdev);
->  }
->
->  subsys_initcall(amiga_init_bus);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/video/amifb.c b/drivers/video/amifb.c
+index 887df9d..7fa1bf8 100644
+--- a/drivers/video/amifb.c
++++ b/drivers/video/amifb.c
+@@ -949,7 +949,6 @@ static int round_down_bpp = 1;	/* for mode probing */
+ 
+ 
+ static int amifb_ilbm = 0;	/* interleaved or normal bitplanes */
+-static int amifb_inverse = 0;
+ 
+ static u32 amifb_hfmin __initdata;	/* monitor hfreq lower limit (Hz) */
+ static u32 amifb_hfmax __initdata;	/* monitor hfreq upper limit (Hz) */
+@@ -2355,7 +2354,6 @@ static int __init amifb_setup(char *options)
+ 		if (!*this_opt)
+ 			continue;
+ 		if (!strcmp(this_opt, "inverse")) {
+-			amifb_inverse = 1;
+ 			fb_invert_cmaps();
+ 		} else if (!strcmp(this_opt, "ilbm"))
+ 			amifb_ilbm = 1;
+-- 
+1.7.0.4
