@@ -1,45 +1,63 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch fixes for 3.6
-Date: Tue, 21 Aug 2012 23:19:25 +1000
-Message-ID: <201208211319.q7LDJPXg027836@goober.corp.nai.org>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH] m68k: drop unused parts of 68VZ328 Makefile
+Date: Tue, 21 Aug 2012 23:21:37 +1000
+Message-ID: <50338B61.8050101__35585.8526229442$1345555328$gmane$org@westnet.com.au>
+References: <1345399091.1771.12.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:40493 "EHLO
-	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754451Ab2HUNUi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 21 Aug 2012 09:20:38 -0400
+In-Reply-To: <1345399091.1771.12.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Paul,
 
-Can you please pull the m68knommu git tree, for-linus branch, at:
+On 08/20/2012 03:58 AM, Paul Bolle wrote:
+> DRAGEN2 should obviously be CONFIG_DRAGEN2, but the screen.h entry it
+> triggers only references files that are nowhere to be found in the
+> current tree. Besides, nothing uses screen.h. So just drop all that.
+>
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-It contains 2 fixes. One fixes compilation of ColdFire clk code, the other
-makes sure we use the generic atomic64 support on all m68k targets.
+Thanks, I'll take this through the m68knommu git tree.
+Applied to for-next branch.
 
 Regards
 Greg
 
 
-
-The following changes since commit d9875690d9b89a866022ff49e3fcea892345ad92:
-  Linus Torvalds (1):
-        Linux 3.6-rc2
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (2):
-      m68knommu: select CONFIG_HAVE_CLK for ColdFire CPU types
-      m68k: select CONFIG_GENERIC_ATOMIC64 for all m68k CPU types
-
- arch/m68k/Kconfig     |    1 +
- arch/m68k/Kconfig.cpu |    5 +----
- 2 files changed, 2 insertions(+), 4 deletions(-)
+> ---
+> 0) Entirely untested. It's hard to see what could break, though.
+>
+> 1) These lines got added to the tree with a patch called "m68k-nommu:
+> change build process to use common head code". That patch predates the
+> mainline git repository by a month. That patch did not add screen.xbm or
+> xbm2lcd.pl.
+>
+> 2) For what it's worth: screen.xbm and xbm2lcd.pl can be found at
+> http://cvs.uclinux.org/cgi-bin/cvsweb.cgi/uClinux-2.4.x/arch/m68knommu/platform/68VZ328/de2/ .
+>
+>   arch/m68k/platform/68VZ328/Makefile |    8 +-------
+>   1 files changed, 1 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/m68k/platform/68VZ328/Makefile b/arch/m68k/platform/68VZ328/Makefile
+> index a49d75e..8166741 100644
+> --- a/arch/m68k/platform/68VZ328/Makefile
+> +++ b/arch/m68k/platform/68VZ328/Makefile
+> @@ -1,11 +1,5 @@
+>   #
+> -# Makefile for arch/m68knommu/platform/68VZ328.
+> +# Makefile for arch/m68k/platform/68VZ328.
+>   #
+>
+>   obj-y		:= config.o
+> -extra-$(DRAGEN2):= screen.h
+> -
+> -$(obj)/screen.h: $(src)/screen.xbm $(src)/xbm2lcd.pl
+> -	perl $(src)/xbm2lcd.pl < $(src)/screen.xbm > $(obj)/screen.h
+> -
+> -clean-files := $(obj)/screen.h
+>
