@@ -1,51 +1,57 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH 1/3] Add support to broadcom 5222 PHY
-Date: Thu, 23 Aug 2012 18:02:55 +0200
-Message-ID: <20120823160255.GA32671@frolo.macqel>
-References: <1345551531-15348-1-git-send-email-stany.marcel@novasys-ingenierie.com> <CAMuHMdUo5UPLtUhf6_GafMj_kEnM25k+XYszdwsGwkGyCUC6zw@mail.gmail.com> <CA+mBkFXnOB9hPoJVf6c92UuemqtLJwc2KW-G-ja6cG8VqLPZdw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
+Date: Thu, 23 Aug 2012 22:23:22 +0200
+Message-ID: <CAMuHMdX5R_7EBGDu00zdy_P3q65BzKJbNeRwFcuwij8eHavTYQ__20280.8284470395$1345753809$gmane$org@mail.gmail.com>
+References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
+	<CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
+	<20120823110157.GC18835@somewhere.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CA+mBkFXnOB9hPoJVf6c92UuemqtLJwc2KW-G-ja6cG8VqLPZdw@mail.gmail.com>
+In-Reply-To: <20120823110157.GC18835@somewhere.redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Parisc <linux-parisc@vger.kernel.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, m68k <linux-m68k@lists.linux-m68k.org>, Hirokazu Takata <takata@linux-m32r.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Cris <linux-cris-kernel@axis.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>
 
-On Thu, Aug 23, 2012 at 05:21:23PM +0200, Stany MARCEL wrote:
-> On Thu, Aug 23, 2012 at 12:47 PM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Tue, Aug 21, 2012 at 2:18 PM, Stany MARCEL
-> > <stany.marcel@novasys-ingenierie.com> wrote:
-> >> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
-> >> ---
-> >>
-> >>  This driver is an adaption of the one given by freescale for kernel 2.6.25.
-> >>
-> >>  Tested with kernel 3.4.8 with arch/m68k backported from linux-m68k head
-> >>  2 FEC configured with shared phy
-> >>
-> >>  drivers/net/phy/Kconfig        |    7 +-
-> >>  drivers/net/phy/Makefile       |    1 +
-> >>  drivers/net/phy/broadcom522x.c |  171 ++++++++++++++++++++++++++++++++++++++++
-> >
-> > This patch and "[PATCH 3/3] Add support to M54xx DMA FEC Driver" need to go
-> > through the netdev tree, or collect acks there.
-> >
-> > Gr{oetje,eeting}s,
-> >
-> >                         Geert
-> >
-> 
-> Hello Geert,
-> 
-> Please, what is the good process to follow as patch 3 depends on patch 1 ?
+Hi Frederic,
 
-Actually, IMHO patch 3 does not depend on patch 1, and I even think that
-patch 1 is not needed, except to get a message with "BCM5222" instead
-of "Generic PHY" in the kernel log.
+On Thu, Aug 23, 2012 at 1:02 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
+> On Wed, Aug 22, 2012 at 07:18:04PM +0200, Geert Uytterhoeven wrote:
+>> On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
+>> > So this fixes some potential RCU stalls in a bunch of architectures.
+>> > When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
+>> > to handle the architectures that don't support CONFIG_NO_HZ.
+>> >
+>> > I guess the set should be dispatched into arch maintainer trees.
+>>
+>> I can take the m68k version, but are you sure you want it this way?
+>> Each of them must be in mainline before they can enter stable.
+>
+> Yeah, I was thinking the right route is for these patches to be
+> carried by arch maintainer who then push to Linus and then this goes
+> to stable.
+>
+> Is that ok for you?
+>
+> Otherwise I can carry the patches myself. In a tree of my own, or
+> Paul's or mmotm. As long as I have your ack.
 
-AFAIK the phy interface is standardized.
+I applied your patch to the m68k for-3.6/for-linus branch.
+I'll ask Linus to pull later in the rc cycle (right now I don't have
+anything else
+queued for 3.6).
+Still, I think it's better to just collect acks and send it to Linus
+in one shot,
+so it can go into stable in one shot too.
 
-Philippe
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
