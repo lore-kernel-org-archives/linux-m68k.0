@@ -1,71 +1,64 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/3] Add support to broadcom 5222 PHY
-Date: Thu, 23 Aug 2012 22:34:18 +1000
-Message-ID: <5036234A.7060102@snapgear.com>
-References: <1345551531-15348-1-git-send-email-stany.marcel@novasys-ingenierie.com> <CAMuHMdUo5UPLtUhf6_GafMj_kEnM25k+XYszdwsGwkGyCUC6zw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Frederic Weisbecker <fweisbec@gmail.com>
+Subject: [PATCH 07/11] m68k: Add missing RCU idle APIs on idle loop
+Date: Thu, 23 Aug 2012 16:58:31 +0200
+Message-ID: <1345733915-20040-8-git-send-email-fweisbec__45208.4065684632$1345734066$gmane$org@gmail.com>
+References: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUo5UPLtUhf6_GafMj_kEnM25k+XYszdwsGwkGyCUC6zw@mail.gmail.com>
+In-Reply-To: <1345733915-20040-1-git-send-email-fweisbec@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>, m68k <linux-m68k@lists.linux-m68k.org>, "3.2.x.." <stable@vger.kernel.org>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 
-Hi Stany,
+In the old times, the whole idle task was considered
+as an RCU quiescent state. But as RCU became more and
+more successful overtime, some RCU read side critical
+section have been added even in the code of some
+architectures idle tasks, for tracing for example.
 
-On 08/23/2012 08:47 PM, Geert Uytterhoeven wrote:
-> On Tue, Aug 21, 2012 at 2:18 PM, Stany MARCEL
-> <stany.marcel@novasys-ingenierie.com> wrote:
->> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
->> ---
->>
->>   This driver is an adaption of the one given by freescale for kernel 2.6.25.
->>
->>   Tested with kernel 3.4.8 with arch/m68k backported from linux-m68k head
->>   2 FEC configured with shared phy
->>
->>   drivers/net/phy/Kconfig        |    7 +-
->>   drivers/net/phy/Makefile       |    1 +
->>   drivers/net/phy/broadcom522x.c |  171 ++++++++++++++++++++++++++++++++++++++++
->
-> This patch and "[PATCH 3/3] Add support to M54xx DMA FEC Driver" need to go
-> through the netdev tree, or collect acks there.
+So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+be called by the architecture to tell RCU about the part
+in the idle loop that doesn't make use of rcu read side
+critical sections, typically the part that puts the CPU
+in low power mode.
 
-And patch 2/3 never made it to the linux-m68k list. Though I can see
-that it made it onto the linux-kernel list.
+This is necessary for RCU to find the quiescent states in
+idle in order to complete grace periods.
 
-I would suggest running them through checkpatch, there is a number of
-formating and the like issues that need cleaning up.
+Add this missing pair of calls in the m68k's idle loop.
 
-Also you will want to break up patch 2. It is a bit large to be reviewed
-the way it is.
+Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: m68k <linux-m68k@lists.linux-m68k.org>
+Cc: 3.2.x.. <stable@vger.kernel.org>
+Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+---
+ arch/m68k/kernel/process.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Regards
-Greg
-
-
-> Gr{oetje,eeting}s,
->
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
-
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index c488e3c..ac2892e 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/reboot.h>
+ #include <linux/init_task.h>
+ #include <linux/mqueue.h>
++#include <linux/rcupdate.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/traps.h>
+@@ -75,8 +76,10 @@ void cpu_idle(void)
+ {
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
++		rcu_idle_enter();
+ 		while (!need_resched())
+ 			idle();
++		rcu_idle_exit();
+ 		schedule_preempt_disabled();
+ 	}
+ }
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+1.7.5.4
