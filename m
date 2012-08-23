@@ -1,55 +1,71 @@
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
-Date: Thu, 23 Aug 2012 13:02:00 +0200
-Message-ID: <20120823110157.GC18835__28756.0719335035$1345720175$gmane$org@somewhere.redhat.com>
-References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
- <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/3] Add support to broadcom 5222 PHY
+Date: Thu, 23 Aug 2012 22:34:18 +1000
+Message-ID: <5036234A.7060102@snapgear.com>
+References: <1345551531-15348-1-git-send-email-stany.marcel@novasys-ingenierie.com> <CAMuHMdUo5UPLtUhf6_GafMj_kEnM25k+XYszdwsGwkGyCUC6zw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUo5UPLtUhf6_GafMj_kEnM25k+XYszdwsGwkGyCUC6zw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Parisc <linux-parisc@vger.kernel.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, m68k <linux-m68k@lists.linux-m68k.org>, Hirokazu Takata <takata@linux-m32r.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Cris <linux-cris-kernel@axis.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>
+To: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Wed, Aug 22, 2012 at 07:18:04PM +0200, Geert Uytterhoeven wrote:
-> On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> > So this fixes some potential RCU stalls in a bunch of architectures.
-> > When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
-> > to handle the architectures that don't support CONFIG_NO_HZ.
-> >
-> > I guess the set should be dispatched into arch maintainer trees.
-> 
-> I can take the m68k version, but are you sure you want it this way?
-> Each of them must be in mainline before they can enter stable.
+Hi Stany,
 
-Yeah, I was thinking the right route is for these patches to be
-carried by arch maintainer who then push to Linus and then this goes
-to stable.
+On 08/23/2012 08:47 PM, Geert Uytterhoeven wrote:
+> On Tue, Aug 21, 2012 at 2:18 PM, Stany MARCEL
+> <stany.marcel@novasys-ingenierie.com> wrote:
+>> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
+>> ---
+>>
+>>   This driver is an adaption of the one given by freescale for kernel 2.6.25.
+>>
+>>   Tested with kernel 3.4.8 with arch/m68k backported from linux-m68k head
+>>   2 FEC configured with shared phy
+>>
+>>   drivers/net/phy/Kconfig        |    7 +-
+>>   drivers/net/phy/Makefile       |    1 +
+>>   drivers/net/phy/broadcom522x.c |  171 ++++++++++++++++++++++++++++++++++++++++
+>
+> This patch and "[PATCH 3/3] Add support to M54xx DMA FEC Driver" need to go
+> through the netdev tree, or collect acks there.
 
-Is that ok for you?
+And patch 2/3 never made it to the linux-m68k list. Though I can see
+that it made it onto the linux-kernel list.
 
-Otherwise I can carry the patches myself. In a tree of my own, or
-Paul's or mmotm. As long as I have your ack.
+I would suggest running them through checkpatch, there is a number of
+formating and the like issues that need cleaning up.
 
-Thanks.
+Also you will want to break up patch 2. It is a bit large to be reviewed
+the way it is.
 
-> 
-> > I'm sorry I haven't built tested everywhere. But the changes are
-> > small and need to be at least boot tested anyway.
-> 
-> Builds and boots fine on m68k under ARAnyM.
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> (for m68k)
-> 
+Regards
+Greg
+
+
 > Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+>
+>                          Geert
+>
 > --
 > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
+>
 > In personal conversations with technical people, I call myself a hacker. But
 > when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+>                                  -- Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
