@@ -1,76 +1,72 @@
-From: Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH tip/core/rcu 21/26] m68k: Add missing RCU idle APIs on
- idle loop
-Date: Fri, 31 Aug 2012 17:02:43 -0700
-Message-ID: <20120901000243.GS11771@jtriplet-mobl1>
-References: <20120830210520.GA2824@linux.vnet.ibm.com>
- <1346360743-3628-1-git-send-email-paulmck@linux.vnet.ibm.com>
- <1346360743-3628-21-git-send-email-paulmck@linux.vnet.ibm.com>
+From: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [PATCH 3/3] Add support to M54xx DMA FEC Driver
+Date: Wed, 5 Sep 2012 11:14:26 +0200
+Message-ID: <20120905091426.GA16015@frolo.macqel>
+References: <1345551531-15348-1-git-send-email-stany.marcel@novasys-ingenierie.com> <1345551531-15348-3-git-send-email-stany.marcel@novasys-ingenierie.com> <503C5C5C.8000901@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1346360743-3628-21-git-send-email-paulmck@linux.vnet.ibm.com>
+In-Reply-To: <503C5C5C.8000901@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: linux-kernel@vger.kernel.org, mingo@elte.hu, laijs@cn.fujitsu.com, dipankar@in.ibm.com, akpm@linux-foundation.org, mathieu.desnoyers@polymtl.ca, niv@us.ibm.com, tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org, Valdis.Kletnieks@vt.edu, dhowells@redhat.com, eric.dumazet@gmail.com, darren@dvhart.com, fweisbec@gmail.com, sbw@mit.edu, patches@linaro.org, m68k <linux-m68k@lists.linux-m68k.org>, "3.2.x.." <stable@vger.kernel.org>
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: Stany MARCEL <stany.marcel@novasys-ingenierie.com>, linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Thu, Aug 30, 2012 at 02:05:38PM -0700, Paul E. McKenney wrote:
-> From: Frederic Weisbecker <fweisbec@gmail.com>
-> 
-> In the old times, the whole idle task was considered
-> as an RCU quiescent state. But as RCU became more and
-> more successful overtime, some RCU read side critical
-> section have been added even in the code of some
-> architectures idle tasks, for tracing for example.
-> 
-> So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-> be called by the architecture to tell RCU about the part
-> in the idle loop that doesn't make use of rcu read side
-> critical sections, typically the part that puts the CPU
-> in low power mode.
-> 
-> This is necessary for RCU to find the quiescent states in
-> idle in order to complete grace periods.
-> 
-> Add this missing pair of calls in the m68k's idle loop.
-> 
-> Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: m68k <linux-m68k@lists.linux-m68k.org>
-> Cc: 3.2.x.. <stable@vger.kernel.org>
-> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Hi Stany & Greg
 
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+Seeing that I was not the only one wanting to have the m54xx fec dma
+driver merged in, and hoping to compare Stany's version to mine,
+I have rebased (step by step) my patch from v2.38 to v3.6rc2.
+The driver still works and perhaps even better due to some fixes
+in other m68k area.
 
->  arch/m68k/kernel/process.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-> index c488e3c..ac2892e 100644
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -25,6 +25,7 @@
->  #include <linux/reboot.h>
->  #include <linux/init_task.h>
->  #include <linux/mqueue.h>
-> +#include <linux/rcupdate.h>
->  
->  #include <asm/uaccess.h>
->  #include <asm/traps.h>
-> @@ -75,8 +76,10 @@ void cpu_idle(void)
->  {
->  	/* endless idle loop with no priority at all */
->  	while (1) {
-> +		rcu_idle_enter();
->  		while (!need_resched())
->  			idle();
-> +		rcu_idle_exit();
->  		schedule_preempt_disabled();
->  	}
->  }
-> -- 
-> 1.7.8
-> 
+Unfortunately I have not being able to compare it yet fully with Stany's
+version because Stany's patch 2/2 did not apply (using `git am') to v3.5
+or v3.6rc2.
+
+I have checked my patch using a recent version of checkpatch.pl (not the
+v3.5 version, because v3.5 version of checkpatch.pl fails with :
+Nested quantifiers in regex; marked by <-- HERE in m/(\((?:[^\(\)]++ <-- HERE |(
+?-1))*\))/ at scripts/checkpatch.pl line 340.))
+
+and I am now at :
+    464 WARNING: line over 80 characters
+     90 WARNING: Use of volatile is usually wrong: see Documentation/volatile-considered-harmful.txt
+
+Many "volatile" warnings are about such definitions :
+
+#define FEC_FECFRST(x)                 (*(volatile unsigned int *)(x + 0x1C4))
+which are afterwards used with
+
++       FEC_FECFRST(base_addr) |= FEC_SW_RST;
++       FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
++               FEC_FECFRST(base_addr) |= FEC_SW_RST;
++               FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
++       FEC_FECFRST(base_addr) |= FEC_SW_RST | FEC_RST_CTL;
++       FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
+
+Any advice about those ones ?
+
+while many "80 characters" ones are about :
+#4014: FILE: arch/m68k/platform/coldfire/MCD_tasks.c:2406:
++       0x6000000b, /* 0098(:1560):      DRD2A: EU0=0 EU1=0 EU2=0 EU3=11 EXT ini
+t=0 WS=0 RS=0 */
+
+I would like to keep those lines intact because the comment seems to actually
+be the assembler source of the hex value at left, which seems to be a
+microcode, and it makes sense to me to keep that on one line.  What do
+you think about that ?
+
+I did not include the current status of the patch because of its size
+(I did not separate the dma part of the ethernet driver part because
+the dma part is useless without the ethernet driver, and linking the
+ethernet driver cannot succeed without the dma part), but if you ask,
+I'll send it privately.
+
+Best regards
+
+Philippe
+
+-- 
+Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
