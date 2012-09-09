@@ -1,83 +1,176 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 3/3] Add support to M54xx DMA FEC Driver
-Date: Thu, 6 Sep 2012 08:48:00 +1000
-Message-ID: <5047D6A0.7000005@snapgear.com>
-References: <1345551531-15348-1-git-send-email-stany.marcel@novasys-ingenierie.com> <1345551531-15348-3-git-send-email-stany.marcel@novasys-ingenierie.com> <503C5C5C.8000901@snapgear.com> <20120905091426.GA16015@frolo.macqel> <504758A4.1050607@snapgear.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] clk: Make the managed clk functions generically available
+Date: Sun,  9 Sep 2012 17:01:02 +0200
+Message-ID: <1347202862-1617-1-git-send-email-lars__28995.5874941827$1347203802$gmane$org@metafoo.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <504758A4.1050607@snapgear.com>
+Received: from smtp-out-022.synserver.de ([212.40.185.22]:1058 "EHLO
+	smtp-out-022.synserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753255Ab2IIPQe (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Sep 2012 11:16:34 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Philippe De Muyter <phdm@macqel.be>
-Cc: Stany MARCEL <stany.marcel@novasys-ingenierie.com>, linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org
+To: Mike Turquette <mturquette@ti.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Greg Ungerer <gerg@uclinux.org>, Mark Brown <broonie@sirena.org.uk>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Lars-Peter Clausen <lars@metafoo.de>
 
-On 09/05/2012 11:50 PM, Greg Ungerer wrote:
-[snip]
->> I have checked my patch using a recent version of checkpatch.pl (not the
->> v3.5 version, because v3.5 version of checkpatch.pl fails with :
->> Nested quantifiers in regex; marked by <-- HERE in m/(\((?:[^\(\)]++
->> <-- HERE |(
->> ?-1))*\))/ at scripts/checkpatch.pl line 340.))
->>
->> and I am now at :
->>      464 WARNING: line over 80 characters
->>       90 WARNING: Use of volatile is usually wrong: see
->> Documentation/volatile-considered-harmful.txt
->>
->> Many "volatile" warnings are about such definitions :
->>
->> #define FEC_FECFRST(x)                 (*(volatile unsigned int *)(x +
->> 0x1C4))
->> which are afterwards used with
->>
->> +       FEC_FECFRST(base_addr) |= FEC_SW_RST;
->> +       FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
->> +               FEC_FECFRST(base_addr) |= FEC_SW_RST;
->> +               FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
->> +       FEC_FECFRST(base_addr) |= FEC_SW_RST | FEC_RST_CTL;
->> +       FEC_FECFRST(base_addr) &= ~FEC_SW_RST;
->>
->> Any advice about those ones ?
->
-> I am glad you brought this one up :-)
-> I really don't like the macro use for register access like this.
-> What I much prefer is use of the standard read/write functions for this.
->
-> So we have sane definitions for register offsets, eg:
->
->      #define FEC_FECFRST        0x1c4
->
-> And then use becomes something like:
->
->      frst = __raw_readl(base_addr + FEC_FECFRST);
->      __raw_writel(frst | FEC_SW_RST, base_addr + FEC_FECFRST);
->      __raw_writel(frst & ~FEC_SW_RST, base_addr + FEC_FECFRST);
->     ...
->
-> Obviously you need to be careful of requirement to re-read the
-> register, I just assumed it wasn't required for this example.
-> And we can possibly optimize the address, but you get the idea.
->
-> The keeps all the use of volatile hidden away like we want.
+The managed clk functions are currently only available when the generic clk
+lookup framework is build. But the managed clk functions are merely wrappers
+around clk_get and clk_put and do not depend on any specifics of the generic
+lookup functions and there are still quite a few custom implementations of the
+clk API. So make the managed functions available whenever the clk API is
+implemented.
 
-I should have been a little more careful here. The use of the
-normal versions of the memory access functions is preferred.
-So readl() instead of __raw_readl(), etc. Certainly within drivers
-we should be using the standard readl/writel/... varients.
+The patch also removes the custom implementation of devm_clk_get for the
+coldfire platform.
 
-There are some situations on some platforms in m68k arch where you
-may need to use one of the other variations.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ arch/m68k/platform/coldfire/clk.c |    6 ----
+ drivers/clk/Makefile              |    1 +
+ drivers/clk/clk-devres.c          |   55 +++++++++++++++++++++++++++++++++++++
+ drivers/clk/clkdev.c              |   45 ------------------------------
+ 4 files changed, 56 insertions(+), 51 deletions(-)
+ create mode 100644 drivers/clk/clk-devres.c
 
-Regards
-Greg
-
-
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close,                            FAX:         +61 7 3891 3630
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+diff --git a/arch/m68k/platform/coldfire/clk.c b/arch/m68k/platform/coldfire/clk.c
+index 75f9ee9..9cd13b4 100644
+--- a/arch/m68k/platform/coldfire/clk.c
++++ b/arch/m68k/platform/coldfire/clk.c
+@@ -146,9 +146,3 @@ struct clk_ops clk_ops1 = {
+ };
+ #endif /* MCFPM_PPMCR1 */
+ #endif /* MCFPM_PPMCR0 */
+-
+-struct clk *devm_clk_get(struct device *dev, const char *id)
+-{
+-	return NULL;
+-}
+-EXPORT_SYMBOL(devm_clk_get);
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 6327536..b7b8620 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -1,4 +1,5 @@
+ # common clock types
++obj-$(CONFIG_HAVE_CLK)		+= clk-devres.o
+ obj-$(CONFIG_CLKDEV_LOOKUP)	+= clkdev.o
+ obj-$(CONFIG_COMMON_CLK)	+= clk.o clk-fixed-rate.o clk-gate.o \
+ 				   clk-mux.o clk-divider.o clk-fixed-factor.o
+diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
+new file mode 100644
+index 0000000..f1e7a83
+--- /dev/null
++++ b/drivers/clk/clk-devres.c
+@@ -0,0 +1,55 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/export.h>
++#include <linux/gfp.h>
++
++static void devm_clk_release(struct device *dev, void *res)
++{
++	clk_put(*(struct clk **)res);
++}
++
++struct clk *devm_clk_get(struct device *dev, const char *id)
++{
++	struct clk **ptr, *clk;
++
++	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return ERR_PTR(-ENOMEM);
++
++	clk = clk_get(dev, id);
++	if (!IS_ERR(clk)) {
++		*ptr = clk;
++		devres_add(dev, ptr);
++	} else {
++		devres_free(ptr);
++	}
++
++	return clk;
++}
++EXPORT_SYMBOL(devm_clk_get);
++
++static int devm_clk_match(struct device *dev, void *res, void *data)
++{
++	struct clk **c = res;
++	if (!c || !*c) {
++		WARN_ON(!c || !*c);
++		return 0;
++	}
++	return *c == data;
++}
++
++void devm_clk_put(struct device *dev, struct clk *clk)
++{
++	int ret;
++
++	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
++
++	WARN_ON(ret);
++}
++EXPORT_SYMBOL(devm_clk_put);
+diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+index d423c9b..442a313 100644
+--- a/drivers/clk/clkdev.c
++++ b/drivers/clk/clkdev.c
+@@ -171,51 +171,6 @@ void clk_put(struct clk *clk)
+ }
+ EXPORT_SYMBOL(clk_put);
+ 
+-static void devm_clk_release(struct device *dev, void *res)
+-{
+-	clk_put(*(struct clk **)res);
+-}
+-
+-struct clk *devm_clk_get(struct device *dev, const char *id)
+-{
+-	struct clk **ptr, *clk;
+-
+-	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return ERR_PTR(-ENOMEM);
+-
+-	clk = clk_get(dev, id);
+-	if (!IS_ERR(clk)) {
+-		*ptr = clk;
+-		devres_add(dev, ptr);
+-	} else {
+-		devres_free(ptr);
+-	}
+-
+-	return clk;
+-}
+-EXPORT_SYMBOL(devm_clk_get);
+-
+-static int devm_clk_match(struct device *dev, void *res, void *data)
+-{
+-	struct clk **c = res;
+-	if (!c || !*c) {
+-		WARN_ON(!c || !*c);
+-		return 0;
+-	}
+-	return *c == data;
+-}
+-
+-void devm_clk_put(struct device *dev, struct clk *clk)
+-{
+-	int ret;
+-
+-	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
+-
+-	WARN_ON(ret);
+-}
+-EXPORT_SYMBOL(devm_clk_put);
+-
+ void clkdev_add(struct clk_lookup *cl)
+ {
+ 	mutex_lock(&clocks_mutex);
+-- 
+1.7.2.5
