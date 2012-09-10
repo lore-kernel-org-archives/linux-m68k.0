@@ -1,53 +1,46 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] clk: Make the managed clk functions generically available
-Date: Mon, 10 Sep 2012 08:20:21 +0800
-Message-ID: <20120910002020.GB16249@opensource.wolfsonmicro.com>
-References: <1347202862-1617-1-git-send-email-lars@metafoo.de>
- <20120909235059.GA2643@sirena.org.uk>
- <20120910001524.GL13739@n2100.arm.linux.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically
+	available
+Date: Mon, 10 Sep 2012 01:39:13 +0100
+Message-ID: <20120910003913.GM13739@n2100.arm.linux.org.uk>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de> <20120909235059.GA2643@sirena.org.uk> <20120910001524.GL13739@n2100.arm.linux.org.uk> <20120910002020.GB16249@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20120910001524.GL13739@n2100.arm.linux.org.uk>
+In-Reply-To: <20120910002020.GB16249@opensource.wolfsonmicro.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On Mon, Sep 10, 2012 at 01:15:24AM +0100, Russell King - ARM Linux wrote:
-> On Mon, Sep 10, 2012 at 12:50:59AM +0100, Mark Brown wrote:
+On Mon, Sep 10, 2012 at 08:20:21AM +0800, Mark Brown wrote:
+> On Mon, Sep 10, 2012 at 01:15:24AM +0100, Russell King - ARM Linux wrote:
+> > Note that the patch system doesn't always return error messages anymore
+> > (it used to do that reliably, but as it's now a favourite target for
+> > spammers and was creating soo much backscatter, which was then filling
+> > my mailbox with bounces... that had to change.)
+> 
+> Hrm, that's not ideal.  It'd be nice if it were able to do something
+> like always reply if there were patch contents, or if it found things
+> like the KernelVersion line in there.  Obviously e-mail is also not time
+> guaranteed so deciding it's not responded (and then working out why it
+> did that) is going to be unreliable too.
 
-> > I posted a patch for this (clk: Move devm_ APIs out of clkdev into
-> > HAVE_CLK) towards the end of the last release cycle and I think reposted
-> > it since and it had been sent to the patch tracker too (though I can't
-> > find any record of anything except the submission mail now).  It would
-> > be *really* good to get this merged.
+It tries to - if it finds what it thinks is a patch in the right place
+in the email.  If it doesn't think it found a patch then it won't reply.
+In other words, if you include a patch without a PATCH FOLLOWS or the ---
+commit message/diffstat break marker preceding it, it will ignore you.
 
-> Note that the patch system doesn't always return error messages anymore
-> (it used to do that reliably, but as it's now a favourite target for
-> spammers and was creating soo much backscatter, which was then filling
-> my mailbox with bounces... that had to change.)
+> I do recall seeing the patch in the database but it's not showing up any
+> more so perhaps I was thinking of a different patch.
 
-Hrm, that's not ideal.  It'd be nice if it were able to do something
-like always reply if there were patch contents, or if it found things
-like the KernelVersion line in there.  Obviously e-mail is also not time
-guaranteed so deciding it's not responded (and then working out why it
-did that) is going to be unreliable too.
+Well, no patch ever gets deleted from the database... the only way even I
+can do that is to manually issue the SQL.
 
-I do recall seeing the patch in the database but it's not showing up any
-more so perhaps I was thinking of a different patch.
+> OK, that's what I'd thought was going on - it was the fact that you'd
+> just acked the patch rather than asked for it to go to the patch tracker
+> or something which made me wonder if things had changed.
 
-> > Who's looking after clkdev these days?  Mike doesn't seem to take
-> > patches as he's expecting Russell to take them which was happening for a
-> > while but I'm not sure that's the case any more, especially given
-> > Russell's followup here.  Due to the patch tracker the usual things for
-> > following up on unapplied patches don't work terribly well, it's much
-> > less likely that it's just an oversight there.
-
-> Well, in theory I'm the maintainer for clkdev and clk API, so I should
-> take the patch...
-
-OK, that's what I'd thought was going on - it was the fact that you'd
-just acked the patch rather than asked for it to go to the patch tracker
-or something which made me wonder if things had changed.
+I kind'a forgot because it's been soo long since I took any of those
+patches...
