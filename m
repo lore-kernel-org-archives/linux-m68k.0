@@ -1,46 +1,197 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] clk: Make the managed clk functions generically
-	available
-Date: Mon, 10 Sep 2012 01:39:13 +0100
-Message-ID: <20120910003913.GM13739@n2100.arm.linux.org.uk>
-References: <1347202862-1617-1-git-send-email-lars@metafoo.de> <20120909235059.GA2643@sirena.org.uk> <20120910001524.GL13739@n2100.arm.linux.org.uk> <20120910002020.GB16249@opensource.wolfsonmicro.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically available
+Date: Mon, 10 Sep 2012 13:10:21 +1000
+Message-ID: <504D5A1D.2090808@snapgear.com>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120910002020.GB16249@opensource.wolfsonmicro.com>
+In-Reply-To: <1347202862-1617-1-git-send-email-lars@metafoo.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Turquette <mturquette@ti.com>, Russell King <linux@arm.linux.org.uk>, Greg Ungerer <gerg@uclinux.org>, Mark Brown <broonie@sirena.org.uk>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On Mon, Sep 10, 2012 at 08:20:21AM +0800, Mark Brown wrote:
-> On Mon, Sep 10, 2012 at 01:15:24AM +0100, Russell King - ARM Linux wrote:
-> > Note that the patch system doesn't always return error messages anymore
-> > (it used to do that reliably, but as it's now a favourite target for
-> > spammers and was creating soo much backscatter, which was then filling
-> > my mailbox with bounces... that had to change.)
-> 
-> Hrm, that's not ideal.  It'd be nice if it were able to do something
-> like always reply if there were patch contents, or if it found things
-> like the KernelVersion line in there.  Obviously e-mail is also not time
-> guaranteed so deciding it's not responded (and then working out why it
-> did that) is going to be unreliable too.
+Hi Lars-Peter,
 
-It tries to - if it finds what it thinks is a patch in the right place
-in the email.  If it doesn't think it found a patch then it won't reply.
-In other words, if you include a patch without a PATCH FOLLOWS or the ---
-commit message/diffstat break marker preceding it, it will ignore you.
+On 10/09/12 01:01, Lars-Peter Clausen wrote:
+> The managed clk functions are currently only available when the generic clk
+> lookup framework is build. But the managed clk functions are merely wrappers
+> around clk_get and clk_put and do not depend on any specifics of the generic
+> lookup functions and there are still quite a few custom implementations of the
+> clk API. So make the managed functions available whenever the clk API is
+> implemented.
+>
+> The patch also removes the custom implementation of devm_clk_get for the
+> coldfire platform.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-> I do recall seeing the patch in the database but it's not showing up any
-> more so perhaps I was thinking of a different patch.
+Nice work, thanks.
 
-Well, no patch ever gets deleted from the database... the only way even I
-can do that is to manually issue the SQL.
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
-> OK, that's what I'd thought was going on - it was the fact that you'd
-> just acked the patch rather than asked for it to go to the patch tracker
-> or something which made me wonder if things had changed.
+Regards
+Greg
 
-I kind'a forgot because it's been soo long since I took any of those
-patches...
+
+
+> ---
+>   arch/m68k/platform/coldfire/clk.c |    6 ----
+>   drivers/clk/Makefile              |    1 +
+>   drivers/clk/clk-devres.c          |   55 +++++++++++++++++++++++++++++++++++++
+>   drivers/clk/clkdev.c              |   45 ------------------------------
+>   4 files changed, 56 insertions(+), 51 deletions(-)
+>   create mode 100644 drivers/clk/clk-devres.c
+>
+> diff --git a/arch/m68k/platform/coldfire/clk.c b/arch/m68k/platform/coldfire/clk.c
+> index 75f9ee9..9cd13b4 100644
+> --- a/arch/m68k/platform/coldfire/clk.c
+> +++ b/arch/m68k/platform/coldfire/clk.c
+> @@ -146,9 +146,3 @@ struct clk_ops clk_ops1 = {
+>   };
+>   #endif /* MCFPM_PPMCR1 */
+>   #endif /* MCFPM_PPMCR0 */
+> -
+> -struct clk *devm_clk_get(struct device *dev, const char *id)
+> -{
+> -	return NULL;
+> -}
+> -EXPORT_SYMBOL(devm_clk_get);
+> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+> index 6327536..b7b8620 100644
+> --- a/drivers/clk/Makefile
+> +++ b/drivers/clk/Makefile
+> @@ -1,4 +1,5 @@
+>   # common clock types
+> +obj-$(CONFIG_HAVE_CLK)		+= clk-devres.o
+>   obj-$(CONFIG_CLKDEV_LOOKUP)	+= clkdev.o
+>   obj-$(CONFIG_COMMON_CLK)	+= clk.o clk-fixed-rate.o clk-gate.o \
+>   				   clk-mux.o clk-divider.o clk-fixed-factor.o
+> diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
+> new file mode 100644
+> index 0000000..f1e7a83
+> --- /dev/null
+> +++ b/drivers/clk/clk-devres.c
+> @@ -0,0 +1,55 @@
+> +/*
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/device.h>
+> +#include <linux/export.h>
+> +#include <linux/gfp.h>
+> +
+> +static void devm_clk_release(struct device *dev, void *res)
+> +{
+> +	clk_put(*(struct clk **)res);
+> +}
+> +
+> +struct clk *devm_clk_get(struct device *dev, const char *id)
+> +{
+> +	struct clk **ptr, *clk;
+> +
+> +	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
+> +	if (!ptr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	clk = clk_get(dev, id);
+> +	if (!IS_ERR(clk)) {
+> +		*ptr = clk;
+> +		devres_add(dev, ptr);
+> +	} else {
+> +		devres_free(ptr);
+> +	}
+> +
+> +	return clk;
+> +}
+> +EXPORT_SYMBOL(devm_clk_get);
+> +
+> +static int devm_clk_match(struct device *dev, void *res, void *data)
+> +{
+> +	struct clk **c = res;
+> +	if (!c || !*c) {
+> +		WARN_ON(!c || !*c);
+> +		return 0;
+> +	}
+> +	return *c == data;
+> +}
+> +
+> +void devm_clk_put(struct device *dev, struct clk *clk)
+> +{
+> +	int ret;
+> +
+> +	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
+> +
+> +	WARN_ON(ret);
+> +}
+> +EXPORT_SYMBOL(devm_clk_put);
+> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+> index d423c9b..442a313 100644
+> --- a/drivers/clk/clkdev.c
+> +++ b/drivers/clk/clkdev.c
+> @@ -171,51 +171,6 @@ void clk_put(struct clk *clk)
+>   }
+>   EXPORT_SYMBOL(clk_put);
+>
+> -static void devm_clk_release(struct device *dev, void *res)
+> -{
+> -	clk_put(*(struct clk **)res);
+> -}
+> -
+> -struct clk *devm_clk_get(struct device *dev, const char *id)
+> -{
+> -	struct clk **ptr, *clk;
+> -
+> -	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
+> -	if (!ptr)
+> -		return ERR_PTR(-ENOMEM);
+> -
+> -	clk = clk_get(dev, id);
+> -	if (!IS_ERR(clk)) {
+> -		*ptr = clk;
+> -		devres_add(dev, ptr);
+> -	} else {
+> -		devres_free(ptr);
+> -	}
+> -
+> -	return clk;
+> -}
+> -EXPORT_SYMBOL(devm_clk_get);
+> -
+> -static int devm_clk_match(struct device *dev, void *res, void *data)
+> -{
+> -	struct clk **c = res;
+> -	if (!c || !*c) {
+> -		WARN_ON(!c || !*c);
+> -		return 0;
+> -	}
+> -	return *c == data;
+> -}
+> -
+> -void devm_clk_put(struct device *dev, struct clk *clk)
+> -{
+> -	int ret;
+> -
+> -	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
+> -
+> -	WARN_ON(ret);
+> -}
+> -EXPORT_SYMBOL(devm_clk_put);
+> -
+>   void clkdev_add(struct clk_lookup *cl)
+>   {
+>   	mutex_lock(&clocks_mutex);
+>
+
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
