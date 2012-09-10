@@ -1,197 +1,50 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] clk: Make the managed clk functions generically available
-Date: Mon, 10 Sep 2012 13:10:21 +1000
-Message-ID: <504D5A1D.2090808@snapgear.com>
-References: <1347202862-1617-1-git-send-email-lars@metafoo.de>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68knommu: fix arch devm_get_clk() for some ColdFire parts
+Date: Mon, 10 Sep 2012 14:47:30 +1000
+Message-ID: <1347252450-20392-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1347202862-1617-1-git-send-email-lars@metafoo.de>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:39620 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751448Ab2IJEoR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 10 Sep 2012 00:44:17 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mike Turquette <mturquette@ti.com>, Russell King <linux@arm.linux.org.uk>, Greg Ungerer <gerg@uclinux.org>, Mark Brown <broonie@sirena.org.uk>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Lars-Peter,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On 10/09/12 01:01, Lars-Peter Clausen wrote:
-> The managed clk functions are currently only available when the generic clk
-> lookup framework is build. But the managed clk functions are merely wrappers
-> around clk_get and clk_put and do not depend on any specifics of the generic
-> lookup functions and there are still quite a few custom implementations of the
-> clk API. So make the managed functions available whenever the clk API is
-> implemented.
->
-> The patch also removes the custom implementation of devm_clk_get for the
-> coldfire platform.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+The arch local devm_get_clk() is always returning the NULL clock even on the
+ColdFire parts that we keep a list of clocks for. This breaks drivers that
+look for CPU clocks, like the Freescale FEC ethernet driver. So this is
+currently broken on ColdFire 520x, 532x amd 5441x SoC parts. All other
+ColdFire parts still work.
 
-Nice work, thanks.
+The simple clocking code traditionaly used by ColdFire parts didn't keep
+a list of clocks, and returned NULL for clk_get(). With commit fe66158a
+("m68knommu: Add clk definitions for m520x.") for example we now do have
+a list of real clocks for some ColdFire parts. The local devm_get_clk()
+function needs to return the clock struct on these, which it can easily do
+using the existing local clk_get().
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/platform/coldfire/clk.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Regards
-Greg
-
-
-
-> ---
->   arch/m68k/platform/coldfire/clk.c |    6 ----
->   drivers/clk/Makefile              |    1 +
->   drivers/clk/clk-devres.c          |   55 +++++++++++++++++++++++++++++++++++++
->   drivers/clk/clkdev.c              |   45 ------------------------------
->   4 files changed, 56 insertions(+), 51 deletions(-)
->   create mode 100644 drivers/clk/clk-devres.c
->
-> diff --git a/arch/m68k/platform/coldfire/clk.c b/arch/m68k/platform/coldfire/clk.c
-> index 75f9ee9..9cd13b4 100644
-> --- a/arch/m68k/platform/coldfire/clk.c
-> +++ b/arch/m68k/platform/coldfire/clk.c
-> @@ -146,9 +146,3 @@ struct clk_ops clk_ops1 = {
->   };
->   #endif /* MCFPM_PPMCR1 */
->   #endif /* MCFPM_PPMCR0 */
-> -
-> -struct clk *devm_clk_get(struct device *dev, const char *id)
-> -{
-> -	return NULL;
-> -}
-> -EXPORT_SYMBOL(devm_clk_get);
-> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-> index 6327536..b7b8620 100644
-> --- a/drivers/clk/Makefile
-> +++ b/drivers/clk/Makefile
-> @@ -1,4 +1,5 @@
->   # common clock types
-> +obj-$(CONFIG_HAVE_CLK)		+= clk-devres.o
->   obj-$(CONFIG_CLKDEV_LOOKUP)	+= clkdev.o
->   obj-$(CONFIG_COMMON_CLK)	+= clk.o clk-fixed-rate.o clk-gate.o \
->   				   clk-mux.o clk-divider.o clk-fixed-factor.o
-> diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
-> new file mode 100644
-> index 0000000..f1e7a83
-> --- /dev/null
-> +++ b/drivers/clk/clk-devres.c
-> @@ -0,0 +1,55 @@
-> +/*
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/device.h>
-> +#include <linux/export.h>
-> +#include <linux/gfp.h>
-> +
-> +static void devm_clk_release(struct device *dev, void *res)
-> +{
-> +	clk_put(*(struct clk **)res);
-> +}
-> +
-> +struct clk *devm_clk_get(struct device *dev, const char *id)
-> +{
-> +	struct clk **ptr, *clk;
-> +
-> +	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
-> +	if (!ptr)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	clk = clk_get(dev, id);
-> +	if (!IS_ERR(clk)) {
-> +		*ptr = clk;
-> +		devres_add(dev, ptr);
-> +	} else {
-> +		devres_free(ptr);
-> +	}
-> +
-> +	return clk;
-> +}
-> +EXPORT_SYMBOL(devm_clk_get);
-> +
-> +static int devm_clk_match(struct device *dev, void *res, void *data)
-> +{
-> +	struct clk **c = res;
-> +	if (!c || !*c) {
-> +		WARN_ON(!c || !*c);
-> +		return 0;
-> +	}
-> +	return *c == data;
-> +}
-> +
-> +void devm_clk_put(struct device *dev, struct clk *clk)
-> +{
-> +	int ret;
-> +
-> +	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
-> +
-> +	WARN_ON(ret);
-> +}
-> +EXPORT_SYMBOL(devm_clk_put);
-> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> index d423c9b..442a313 100644
-> --- a/drivers/clk/clkdev.c
-> +++ b/drivers/clk/clkdev.c
-> @@ -171,51 +171,6 @@ void clk_put(struct clk *clk)
->   }
->   EXPORT_SYMBOL(clk_put);
->
-> -static void devm_clk_release(struct device *dev, void *res)
-> -{
-> -	clk_put(*(struct clk **)res);
-> -}
-> -
-> -struct clk *devm_clk_get(struct device *dev, const char *id)
-> -{
-> -	struct clk **ptr, *clk;
-> -
-> -	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
-> -	if (!ptr)
-> -		return ERR_PTR(-ENOMEM);
-> -
-> -	clk = clk_get(dev, id);
-> -	if (!IS_ERR(clk)) {
-> -		*ptr = clk;
-> -		devres_add(dev, ptr);
-> -	} else {
-> -		devres_free(ptr);
-> -	}
-> -
-> -	return clk;
-> -}
-> -EXPORT_SYMBOL(devm_clk_get);
-> -
-> -static int devm_clk_match(struct device *dev, void *res, void *data)
-> -{
-> -	struct clk **c = res;
-> -	if (!c || !*c) {
-> -		WARN_ON(!c || !*c);
-> -		return 0;
-> -	}
-> -	return *c == data;
-> -}
-> -
-> -void devm_clk_put(struct device *dev, struct clk *clk)
-> -{
-> -	int ret;
-> -
-> -	ret = devres_destroy(dev, devm_clk_release, devm_clk_match, clk);
-> -
-> -	WARN_ON(ret);
-> -}
-> -EXPORT_SYMBOL(devm_clk_put);
-> -
->   void clkdev_add(struct clk_lookup *cl)
->   {
->   	mutex_lock(&clocks_mutex);
->
-
-
+diff --git a/arch/m68k/platform/coldfire/clk.c b/arch/m68k/platform/coldfire/clk.c
+index 75f9ee9..ca1d8fa 100644
+--- a/arch/m68k/platform/coldfire/clk.c
++++ b/arch/m68k/platform/coldfire/clk.c
+@@ -149,6 +149,6 @@ struct clk_ops clk_ops1 = {
+ 
+ struct clk *devm_clk_get(struct device *dev, const char *id)
+ {
+-	return NULL;
++	return clk_get(dev, id);
+ }
+ EXPORT_SYMBOL(devm_clk_get);
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+1.7.0.4
