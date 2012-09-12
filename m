@@ -1,103 +1,46 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH] m68k: always set stack frame format for
-	ColdFire on thread start
-Date: Wed, 12 Sep 2012 15:13:19 +1000
-Message-ID: <1347426799-24854-1-git-send-email-gerg@snapgear.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically available
+Date: Wed, 12 Sep 2012 22:43:07 +0200
+Message-ID: <5050F3DB.1050202__14949.9393687167$1347482632$gmane$org@metafoo.de>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de>  <20120909235059.GA2643@sirena.org.uk>  <20120910001524.GL13739@n2100.arm.linux.org.uk>  <20120910002020.GB16249@opensource.wolfsonmicro.com>  <20120910003913.GM13739@n2100.arm.linux.org.uk> <504F4E36.20309@metafoo.de> <1347375033.27206.3.camel@sauron.fi.intel.com> <504FE633.2090304@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <504FE633.2090304@snapgear.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: dedekind1@gmail.com, Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+On 09/12/2012 03:32 AM, Greg Ungerer wrote:
+> On 12/09/12 00:50, Artem Bityutskiy wrote:
+>> On Tue, 2012-09-11 at 16:44 +0200, Lars-Peter Clausen wrote:
+>>> On 09/10/2012 02:39 AM, Russell King - ARM Linux wrote:
+>>>> On Mon, Sep 10, 2012 at 08:20:21AM +0800, Mark Brown wrote:
+>>>>> [...]
+>>>>> OK, that's what I'd thought was going on - it was the fact that you'd
+>>>>> just acked the patch rather than asked for it to go to the patch
+>>>>> tracker
+>>>>> or something which made me wonder if things had changed.
+>>>>
+>>>> I kind'a forgot because it's been soo long since I took any of those
+>>>> patches...
+>>>
+>>> Ok, what's the plan? Should I add this patch to the patch tracker?
+>>
+>> I'd propose to send it to Linus for v3.6 even.
+> 
+> If we do this can we make a decision quickly on it.
+> 
+> I need to fix a regression on some ColdFire parts for 3.6. I either need
+> to use this clk patch, which fixes my problem, or a specific patch for the
+> ColdFire clk code http://marc.info/?l=linux-m68k&m=134725225823437&w=2
+> 
 
-The stack frame "format" field needs to be explicitly set on thread creation
-on ColdFire. For a normal long word aligned user stack pointer the frame
-format is 0x4.
+I wouldn't mind having this merged sooner rather than later, there is at least
+one driver in next which is currently broken due to the missing devm_clk_get.
+Russell what's your plan for the patch? Maybe under the given circumstances it
+makes sense to let it go through the m68k tree.
 
-We were doing this for non-MMU ColdFire, but not for the case with MMU enabled.
-So fix it so we always do it if targeting ColdFire.
-
-The old code happend to rely on the stack frame format being inhereted from
-the process calling exec. Furture changes means that may not always work,
-so we really do want to set it explicitly.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/include/asm/processor.h |   23 ++++++++++++-----------
- 1 files changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-index f17c42a..9b4c82c 100644
---- a/arch/m68k/include/asm/processor.h
-+++ b/arch/m68k/include/asm/processor.h
-@@ -100,6 +100,16 @@ struct thread_struct {
- 	.fs	= __KERNEL_DS,						\
- }
- 
-+/*
-+ * ColdFire stack format sbould be 0x4 for an aligned usp (will always be
-+ * true on thread creation). We need to set this explicitly.
-+ */
-+#ifdef CONFIG_COLDFIRE
-+#define setframeformat(_regs)	do { (_regs)->format = 0x4; } while(0)
-+#else
-+#define setframeformat(_regs)	do { } while (0)
-+#endif
-+
- #ifdef CONFIG_MMU
- /*
-  * Do necessary setup to start up a newly executed thread.
-@@ -109,6 +119,7 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
- {
- 	regs->pc = pc;
- 	regs->sr &= ~0x2000;
-+	setframeformat(regs);
- 	wrusp(usp);
- }
- 
-@@ -116,21 +127,11 @@ extern int handle_kernel_fault(struct pt_regs *regs);
- 
- #else
- 
--/*
-- * Coldfire stacks need to be re-aligned on trap exit, conventional
-- * 68k can handle this case cleanly.
-- */
--#ifdef CONFIG_COLDFIRE
--#define reformat(_regs)		do { (_regs)->format = 0x4; } while(0)
--#else
--#define reformat(_regs)		do { } while (0)
--#endif
--
- #define start_thread(_regs, _pc, _usp)                  \
- do {                                                    \
- 	(_regs)->pc = (_pc);                            \
- 	((struct switch_stack *)(_regs))[-1].a6 = 0;    \
--	reformat(_regs);                                \
-+	setframeformat(_regs);                          \
- 	if (current->mm)                                \
- 		(_regs)->d5 = current->mm->start_data;  \
- 	(_regs)->sr &= ~0x2000;                         \
--- 
-1.7.0.4
-
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+- Lars
