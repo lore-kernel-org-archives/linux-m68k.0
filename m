@@ -1,30 +1,47 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] clk: Make the managed clk functions generically
-	available
-Date: Tue, 11 Sep 2012 18:51:26 +0100
-Message-ID: <20120911175125.GR13739@n2100.arm.linux.org.uk>
-References: <1347202862-1617-1-git-send-email-lars@metafoo.de> <20120909235059.GA2643@sirena.org.uk> <20120910001524.GL13739@n2100.arm.linux.org.uk> <20120910002020.GB16249@opensource.wolfsonmicro.com> <20120910003913.GM13739@n2100.arm.linux.org.uk> <504F4E36.20309@metafoo.de>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically available
+Date: Wed, 12 Sep 2012 11:32:35 +1000
+Message-ID: <504FE633.2090304@snapgear.com>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de>  <20120909235059.GA2643@sirena.org.uk>  <20120910001524.GL13739@n2100.arm.linux.org.uk>  <20120910002020.GB16249@opensource.wolfsonmicro.com>  <20120910003913.GM13739@n2100.arm.linux.org.uk> <504F4E36.20309@metafoo.de> <1347375033.27206.3.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <504F4E36.20309@metafoo.de>
+In-Reply-To: <1347375033.27206.3.camel@sauron.fi.intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, Artem Bityutskiy <dedekind1@gmail.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: dedekind1@gmail.com
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 
-On Tue, Sep 11, 2012 at 04:44:06PM +0200, Lars-Peter Clausen wrote:
-> On 09/10/2012 02:39 AM, Russell King - ARM Linux wrote:
-> > On Mon, Sep 10, 2012 at 08:20:21AM +0800, Mark Brown wrote:
-> >>[...]
-> >> OK, that's what I'd thought was going on - it was the fact that you'd
-> >> just acked the patch rather than asked for it to go to the patch tracker
-> >> or something which made me wonder if things had changed.
-> > 
-> > I kind'a forgot because it's been soo long since I took any of those
-> > patches...
-> 
-> Ok, what's the plan? Should I add this patch to the patch tracker?
+On 12/09/12 00:50, Artem Bityutskiy wrote:
+> On Tue, 2012-09-11 at 16:44 +0200, Lars-Peter Clausen wrote:
+>> On 09/10/2012 02:39 AM, Russell King - ARM Linux wrote:
+>>> On Mon, Sep 10, 2012 at 08:20:21AM +0800, Mark Brown wrote:
+>>>> [...]
+>>>> OK, that's what I'd thought was going on - it was the fact that you'd
+>>>> just acked the patch rather than asked for it to go to the patch tracker
+>>>> or something which made me wonder if things had changed.
+>>>
+>>> I kind'a forgot because it's been soo long since I took any of those
+>>> patches...
+>>
+>> Ok, what's the plan? Should I add this patch to the patch tracker?
+>
+> I'd propose to send it to Linus for v3.6 even.
 
-Yes please.
+If we do this can we make a decision quickly on it.
+
+I need to fix a regression on some ColdFire parts for 3.6. I either need
+to use this clk patch, which fixes my problem, or a specific patch for the
+ColdFire clk code http://marc.info/?l=linux-m68k&m=134725225823437&w=2
+
+Regards
+Greg
+
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
