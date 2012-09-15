@@ -1,74 +1,30 @@
-From: Thierry Reding <thierry.reding@avionic-design.de>
-Subject: Re: [PATCH 1/2] PCI: Annotate pci_fixup_irqs with __devinit
-Date: Sat, 15 Sep 2012 09:57:37 +0200
-Message-ID: <20120915075737.GA31258__25610.8955284164$1347695912$gmane$org@avionic-0098.mockup.avionic-design.de>
-References: <1347655456-2542-1-git-send-email-thierry.reding@avionic-design.de>
- <CAErSpo6BqPUEpMmh2+FuEi-mHFK0U1XCmdCpJfo6V2XcNxzMNg@mail.gmail.com>
- <20120914223531.GA8771@kroah.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically
+	available
+Date: Sat, 15 Sep 2012 22:31:52 +0100
+Message-ID: <20120915213151.GM12245@n2100.arm.linux.org.uk>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de> <20120909235059.GA2643@sirena.org.uk> <20120910001524.GL13739@n2100.arm.linux.org.uk> <20120910002020.GB16249@opensource.wolfsonmicro.com> <20120910003913.GM13739@n2100.arm.linux.org.uk> <504F4E36.20309@metafoo.de> <1347375033.27206.3.camel@sauron.fi.intel.com> <504FE633.2090304@snapgear.com> <5050F3DB.1050202@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20120914223531.GA8771@kroah.com>
+In-Reply-To: <5050F3DB.1050202@metafoo.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Greg Ungerer <gerg@uclinux.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Greg Ungerer <gerg@snapgear.com>, dedekind1@gmail.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Turquette <mturquette@ti.com>, Greg Ungerer <gerg@uclinux.org>, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
 
+On Wed, Sep 12, 2012 at 10:43:07PM +0200, Lars-Peter Clausen wrote:
+> I wouldn't mind having this merged sooner rather than later, there is at least
+> one driver in next which is currently broken due to the missing devm_clk_get.
+> Russell what's your plan for the patch? Maybe under the given circumstances it
+> makes sense to let it go through the m68k tree.
 
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok, I've merged it but there was no indication in the patch that it was
+supposed to be a fix... there's no cc: to stable.  Does it need to go to
+stable?  When was this brokenness introduced?  What's the story for the
+m68k bit?
 
-On Fri, Sep 14, 2012 at 03:35:31PM -0700, Greg Kroah-Hartman wrote:
-> On Fri, Sep 14, 2012 at 02:53:11PM -0600, Bjorn Helgaas wrote:
-> > +cc Greg KH
-> >=20
-> > On Fri, Sep 14, 2012 at 2:44 PM, Thierry Reding
-> > <thierry.reding@avionic-design.de> wrote:
-> > > In order to keep pci_fixup_irqs() around after init (e.g. for hotplug=
-),
-> > > mark it __devinit instead of __init. This requires the same change for
-> > > the implementation of the pcibios_update_irq() function on all
-> > > architectures.
-> > >
-> > > Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
-> > > ---
-> > > Note: Ideally these annotations should go away completely in order to
-> > > be independent of the HOTPLUG symbol. However, there is work underway
-> > > to get rid of HOTPLUG altogether, so I've kept the __devinit for now.
->=20
-> No, just take away the __init marking completly.  For 3.7,
-> CONFIG_HOTPLUG will always be enabled, making it be the same thing.
-> That way this saves me the time and energy from deleting the __devinit
-> markings when I get to that point in the patch series :)
-
-Done. I'll give other people some time to comment before sending the
-updated series.
-
-Thierry
-
---+QahgC5+KEYLbs62
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQVDTxAAoJEN0jrNd/PrOhY84P/1V6CjM7bTnYamaHDOKyZQUc
-IyLN3mZRN6AbMMO8awcN6B4BDXuB6ua8nN7ozdlqRnFSUgSXVwWwrezZnrpc+Sws
-yO4Axr8IOBxpG2IDX+d2bGWRV5W34kzty5WsZhlPEJxOBSQH0MiNJCgTojSIIf5n
-9a6+7fF5qsSamGnmtWKwe01nwvlAsJg0i3sxyguWlFuBqd1IyQMCptCWsSBzMQVc
-1EeCDtWdLTKzxNHhkl97rWcQYi3ov8LTK76zUutTSDlpc2+HhX0nu73Tz34fLs9m
-k4Z1mw2VLHRUorvFCptwhvB72LR2hssTZxGDt3xbPLERUECtV3wwpFTDT8J4jZj0
-bzHCpbfj11K1Y7/Ku/1FBWBXjFPh1+YS0lA39V00WnHBx9Xv2DX6Ytm8FwGCtqEN
-wfV+VGyR+tvIWI6oA8vIgc/1xuMuDlrK4Ldn2uwZBHZfq28ghCiKFHasHA5RW+D/
-kTA2p4Yvuujuvh6PbsvJv2h4A9Sudko6rzwlclnv7OGxsxCa624yF8YN+rqLVU9C
-7Sq/vSCmpj1E3AQ9TKcnYyFYP1sUsc9BnslLNEHNly+MFRJoAMOAx3M6s/30vRJp
-FKyDyeWTzkjnlCYDiH/ebSQRk1tO9h6HJXnzrAAU55iJYHDxCGQ15I2emj8v/bqT
-3iUVzezeZpRhZ0IPIxbq
-=Q8MZ
------END PGP SIGNATURE-----
-
---+QahgC5+KEYLbs62--
+(Cc on this thread to stable added so they can hear the reply... so if
+it does end up with a Cc: being added to the commit, they have the
+background... this is *not* a stable submission request.)
