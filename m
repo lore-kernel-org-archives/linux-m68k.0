@@ -1,72 +1,76 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCH 00/10] rcu: Add missing RCU idle APIs on idle loop
-Date: Mon, 17 Sep 2012 13:55:19 -0700
-Message-ID: <20120917205519.GB2467@linux.vnet.ibm.com>
-References: <1345652628-15060-1-git-send-email-fweisbec@gmail.com>
- <CAMuHMdUt62GsYsPMAPbUWZUtFL=c2VmYFintpDAQmSwQrWriuA@mail.gmail.com>
- <20120823110157.GC18835@somewhere.redhat.com>
- <CAMuHMdX5R_7EBGDu00zdy_P3q65BzKJbNeRwFcuwij8eHavTYQ@mail.gmail.com>
- <20120823215052.GC19305@somewhere.redhat.com>
- <CAMuHMdURT2vdF8uGZbMO09iGbLeSaVzwNthKEA1WwOtH6dQN_A@mail.gmail.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically available
+Date: Tue, 18 Sep 2012 10:00:37 +0200
+Message-ID: <20120918080037.GA15982@avionic-0098.mockup.avionic-design.de>
+References: <1347202862-1617-1-git-send-email-lars@metafoo.de>
+ <20120909235059.GA2643@sirena.org.uk>
+ <20120910001524.GL13739@n2100.arm.linux.org.uk>
+ <20120910002020.GB16249@opensource.wolfsonmicro.com>
+ <20120910003913.GM13739@n2100.arm.linux.org.uk>
+ <504F4E36.20309@metafoo.de>
+ <1347375033.27206.3.camel@sauron.fi.intel.com>
+ <504FE633.2090304@snapgear.com>
+ <5050F3DB.1050202@metafoo.de>
+ <20120915213151.GM12245@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdURT2vdF8uGZbMO09iGbLeSaVzwNthKEA1WwOtH6dQN_A@mail.gmail.com>
+In-Reply-To: <20120915213151.GM12245@n2100.arm.linux.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Frederic Weisbecker <fweisbec@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Chris Zankel <chris@zankel.net>, "3.2.x.." <stable@kernel.org>, Chen Liqin <liqin.chen@sunplusct.com>, Lennox Wu <lennox.wu@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Parisc <linux-parisc@vger.kernel.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, m68k <linux-m68k@lists.linux-m68k.org>, Hirokazu Takata <takata@linux-m32r.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Cris <linux-cris-kernel@axis.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, alpha <linux-alpha@vger.kernel.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Greg Ungerer <gerg@snapgear.com>, dedekind1@gmail.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, linux-arm-kernel@lists.infradead.org, Mike Turquette <mturquette@ti.com>
 
-On Mon, Sep 17, 2012 at 10:31:24PM +0200, Geert Uytterhoeven wrote:
-> Hi Frederic, Paul,
-> 
-> On Thu, Aug 23, 2012 at 11:50 PM, Frederic Weisbecker
-> <fweisbec@gmail.com> wrote:
-> > On Thu, Aug 23, 2012 at 10:23:22PM +0200, Geert Uytterhoeven wrote:
-> >> On Thu, Aug 23, 2012 at 1:02 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> >> > On Wed, Aug 22, 2012 at 07:18:04PM +0200, Geert Uytterhoeven wrote:
-> >> >> On Wed, Aug 22, 2012 at 6:23 PM, Frederic Weisbecker <fweisbec@gmail.com> wrote:
-> >> >> > So this fixes some potential RCU stalls in a bunch of architectures.
-> >> >> > When rcu_idle_enter()/rcu_idle_exit() became a requirement, we forgot
-> >> >> > to handle the architectures that don't support CONFIG_NO_HZ.
-> >> >> >
-> >> >> > I guess the set should be dispatched into arch maintainer trees.
-> >> >>
-> >> >> I can take the m68k version, but are you sure you want it this way?
-> >> >> Each of them must be in mainline before they can enter stable.
-> >> >
-> >> > Yeah, I was thinking the right route is for these patches to be
-> >> > carried by arch maintainer who then push to Linus and then this goes
-> >> > to stable.
-> >> >
-> >> > Is that ok for you?
-> >> >
-> >> > Otherwise I can carry the patches myself. In a tree of my own, or
-> >> > Paul's or mmotm. As long as I have your ack.
-> >>
-> >> I applied your patch to the m68k for-3.6/for-linus branch.
-> >> I'll ask Linus to pull later in the rc cycle (right now I don't have
-> >> anything else
-> >> queued for 3.6).
-> >> Still, I think it's better to just collect acks and send it to Linus
-> >> in one shot,
-> >> so it can go into stable in one shot too.
-> >
-> > Sure I can do that if you prefer.
-> 
-> What's the conclusion on this one? I saw it entered tip.
 
-I don't see it at tip/master, but perhaps I am looking at the wrong branch.
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I still have it (as the only commit) on my for-3.6 branch, but I don't
-> think m68k
-> is important enough to be the only architecture to have this fix in 3.6 ;-)
+On Sat, Sep 15, 2012 at 10:31:52PM +0100, Russell King - ARM Linux wrote:
+> On Wed, Sep 12, 2012 at 10:43:07PM +0200, Lars-Peter Clausen wrote:
+> > I wouldn't mind having this merged sooner rather than later, there is a=
+t least
+> > one driver in next which is currently broken due to the missing devm_cl=
+k_get.
+> > Russell what's your plan for the patch? Maybe under the given circumsta=
+nces it
+> > makes sense to let it go through the m68k tree.
+>=20
+> Ok, I've merged it but there was no indication in the patch that it was
+> supposed to be a fix... there's no cc: to stable.  Does it need to go to
+> stable?  When was this brokenness introduced?  What's the story for the
+> m68k bit?
 
-I got only two acks in addition to yours, plus one Tested-by.  So, no,
-there does not appear to be a large groundswell of support for pushing
-this into 3.6.  If it doesn't go in by some other path, I will be pushing
-it into 3.7.
+What tree is this supposed to go through? I've checked your ARM tree as
+well as Mike's clock tree but neither seem to carry this patch. The
+reason I ask is because I want to take a patch series that converts the
+Unicore32 PWM code to the PWM framework into linux-next but it depends
+on this patch as well.
 
-							Thanx, Paul
+Thierry
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQWColAAoJEN0jrNd/PrOhbU0P/RLCwA0zeQ4Gd/sIZQzCNZCW
+2CN3DF38rfKcxvCA2ijJ25zSDa4b2ZvKjPQqVSEowFxY1SIq78vNrkV0N928kesU
+N1JVTViAs+eJGCc3OYKGgA4kzmcpeV+TWg2MDJFU5TsTCkzyoLyhAWQ098HScP+k
+3FhTTn7FVzE3acz+VUPoN7erKVBVdUJdqlGK/OXvFF+pSW9HPu4wuZZT6UD6EXSA
+FubNjIxgUNJeEGNQolPlpJswwUB7beKA8KaDd5a5xMfmkDmIoDjyHGwUwDDddNu8
+zkM7juuUo1tlzVRW989GgzoX3ix1PEyuyp/rKfX6atBGQYPAulJuGQKnOsza21G5
+IS5npDsmv8kM8Sy+0waxuXowhjr095Frez8g9+AIbtxJuERMHrDHBRvFbJpO1DGn
+0id79pqRa28dnXd85FL/8ZNVu/Q3Qdy4LRTWQxXt+IOaXDFAoqEn8EDGByGlAsla
+bc2eZWo/pK24PviJ2FjcYQJySGmTDZHzEzzL1x52QPZQ8Q/FAMvQokfBuxfojeuE
+ecWR9dTti1hy2bJiSLB0UawqBNgCis2nmKZS09C8YfNJlhycghi6T8uwwW2GITYD
+wDm0LQag+bQp7nNsUZQ4J1zGcyjVuoVTofm/jZkbKw2xLMyvkVf6iPbvJ3oMqQQo
+DnwlJhEzfFqNRphG57d4
+=Mzzu
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
