@@ -1,139 +1,107 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 9/9] m68knommu: make ColdFire 5249 MBAR2 register definitions absolute addresses
-Date: Wed, 19 Sep 2012 15:08:44 +1000
-Message-ID: <1348031324-13228-10-git-send-email-gerg@snapgear.com>
-References: <1348031324-13228-1-git-send-email-gerg@snapgear.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH] clk: Make the managed clk functions generically available
+Date: Wed, 19 Sep 2012 08:55:11 +0200
+Message-ID: <20120919065510.GA3213__41350.8154023022$1348037746$gmane$org@avionic-0098.mockup.avionic-design.de>
+References: <20120910003913.GM13739@n2100.arm.linux.org.uk>
+ <504F4E36.20309@metafoo.de>
+ <1347375033.27206.3.camel@sauron.fi.intel.com>
+ <504FE633.2090304@snapgear.com>
+ <5050F3DB.1050202@metafoo.de>
+ <20120915213151.GM12245@n2100.arm.linux.org.uk>
+ <20120918080037.GA15982@avionic-0098.mockup.avionic-design.de>
+ <20120918093536.GV12245@n2100.arm.linux.org.uk>
+ <20120918112555.GA21004@avionic-0098.mockup.avionic-design.de>
+ <20120918204014.GY12245@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:46996 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755224Ab2ISFHW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Sep 2012 01:07:22 -0400
-In-Reply-To: <1348031324-13228-1-git-send-email-gerg@snapgear.com>
+Content-Disposition: inline
+In-Reply-To: <20120918204014.GY12245@n2100.arm.linux.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Greg Ungerer <gerg@snapgear.com>, dedekind1@gmail.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, linux-arm-kernel@lists.infradead.org, Mike Turquette <mturquette@ti.com>
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-Make the ColdFire 5249 MBAR peripheral register definitions absolute
-addresses, instead of offsets into the region.
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The various ColdFire parts use different methods to address the internal
-registers, some are absolute, some are relative to peripheral regions
-which can be mapped at different address ranges (such as the MBAR and IPSBAR
-registers). We don't want to deal with this in the code when we are
-accessing these registers, so make all register definitions the absolute
-address - factoring out whether it is an offset into a peripheral region.
+On Tue, Sep 18, 2012 at 09:40:14PM +0100, Russell King - ARM Linux wrote:
+> On Tue, Sep 18, 2012 at 01:25:55PM +0200, Thierry Reding wrote:
+> > On Tue, Sep 18, 2012 at 10:35:36AM +0100, Russell King - ARM Linux wrot=
+e:
+> > > On Tue, Sep 18, 2012 at 10:00:37AM +0200, Thierry Reding wrote:
+> > > > On Sat, Sep 15, 2012 at 10:31:52PM +0100, Russell King - ARM Linux =
+wrote:
+> > > > > On Wed, Sep 12, 2012 at 10:43:07PM +0200, Lars-Peter Clausen wrot=
+e:
+> > > > > > I wouldn't mind having this merged sooner rather than later, th=
+ere is at least
+> > > > > > one driver in next which is currently broken due to the missing=
+ devm_clk_get.
+> > > > > > Russell what's your plan for the patch? Maybe under the given c=
+ircumstances it
+> > > > > > makes sense to let it go through the m68k tree.
+> > > > >=20
+> > > > > Ok, I've merged it but there was no indication in the patch that =
+it was
+> > > > > supposed to be a fix... there's no cc: to stable.  Does it need t=
+o go to
+> > > > > stable?  When was this brokenness introduced?  What's the story f=
+or the
+> > > > > m68k bit?
+>=20
+> I said abouve "I've merged it" - that means, I've put it in my
+> tree...
+>=20
+> > > > What tree is this supposed to go through? I've checked your ARM tre=
+e as
+> > > > well as Mike's clock tree but neither seem to carry this patch. The
+> > > > reason I ask is because I want to take a patch series that converts=
+ the
+> > > > Unicore32 PWM code to the PWM framework into linux-next but it depe=
+nds
+> > > > on this patch as well.
+> > >=20
+> > > It /is/ in my tree (you'll notice that it is in linux-next.)  You're
+> > > probably looking at my Linaro tree instead, which doesn't carry
+> > > anything which isn't about to be sent to Linus.
+> >=20
+> > I must be blind then. next-20120918 doesn't have it. And looking at your
+> > tree here[0] doesn't show the commit either.
+>=20
+> Hmm, it's possible I didn't push the tree out... well, I have done so
+> now, so it should be visible from tonight onwards and should be in
+> -next sometime during the next couple of days (it seems to take a
+> couple of days between me pushing stuff out one evening to stuff
+> appearing in -next because of the timezones and timing of sfr's pulls.)
 
-This makes them all consistently defined, and reduces the occasional bugs
-caused by inconsistent definition of the register addresses.
+Okay, I see it both in your tree and in linux-next now. Thanks!
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/include/asm/m5249sim.h        |   34 +++++++++++++++---------------
- arch/m68k/platform/coldfire/intc-5249.c |   10 ++++----
- arch/m68k/platform/coldfire/m5249.c     |    8 +++---
- 3 files changed, 26 insertions(+), 26 deletions(-)
+Thierry
 
-diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
-index 3d9c7d7..fdf45e6 100644
---- a/arch/m68k/include/asm/m5249sim.h
-+++ b/arch/m68k/include/asm/m5249sim.h
-@@ -134,23 +134,23 @@
- #define	MCFSIM2_GPIO1ENABLE	(MCF_MBAR2 + 0x0B8)	/* GPIO1 enabled */
- #define	MCFSIM2_GPIO1FUNC	(MCF_MBAR2 + 0x0BC)	/* GPIO1 function */
- 
--#define	MCFSIM2_GPIOINTSTAT	0xc0		/* GPIO interrupt status */
--#define	MCFSIM2_GPIOINTCLEAR	0xc0		/* GPIO interrupt clear */
--#define	MCFSIM2_GPIOINTENABLE	0xc4		/* GPIO interrupt enable */
--
--#define	MCFSIM2_INTLEVEL1	0x140		/* Interrupt level reg 1 */
--#define	MCFSIM2_INTLEVEL2	0x144		/* Interrupt level reg 2 */
--#define	MCFSIM2_INTLEVEL3	0x148		/* Interrupt level reg 3 */
--#define	MCFSIM2_INTLEVEL4	0x14c		/* Interrupt level reg 4 */
--#define	MCFSIM2_INTLEVEL5	0x150		/* Interrupt level reg 5 */
--#define	MCFSIM2_INTLEVEL6	0x154		/* Interrupt level reg 6 */
--#define	MCFSIM2_INTLEVEL7	0x158		/* Interrupt level reg 7 */
--#define	MCFSIM2_INTLEVEL8	0x15c		/* Interrupt level reg 8 */
--
--#define	MCFSIM2_DMAROUTE	0x188		/* DMA routing */
--
--#define	MCFSIM2_IDECONFIG1	0x18c		/* IDEconfig1 */
--#define	MCFSIM2_IDECONFIG2	0x190		/* IDEconfig2 */
-+#define	MCFSIM2_GPIOINTSTAT	(MCF_MBAR2 + 0xc0)	/* GPIO intr status */
-+#define	MCFSIM2_GPIOINTCLEAR	(MCF_MBAR2 + 0xc0)	/* GPIO intr clear */
-+#define	MCFSIM2_GPIOINTENABLE	(MCF_MBAR2 + 0xc4)	/* GPIO intr enable */
-+
-+#define	MCFSIM2_INTLEVEL1	(MCF_MBAR2 + 0x140)	/* Intr level reg 1 */
-+#define	MCFSIM2_INTLEVEL2	(MCF_MBAR2 + 0x144)	/* Intr level reg 2 */
-+#define	MCFSIM2_INTLEVEL3	(MCF_MBAR2 + 0x148)	/* Intr level reg 3 */
-+#define	MCFSIM2_INTLEVEL4	(MCF_MBAR2 + 0x14c)	/* Intr level reg 4 */
-+#define	MCFSIM2_INTLEVEL5	(MCF_MBAR2 + 0x150)	/* Intr level reg 5 */
-+#define	MCFSIM2_INTLEVEL6	(MCF_MBAR2 + 0x154)	/* Intr level reg 6 */
-+#define	MCFSIM2_INTLEVEL7	(MCF_MBAR2 + 0x158)	/* Intr level reg 7 */
-+#define	MCFSIM2_INTLEVEL8	(MCF_MBAR2 + 0x15c)	/* Intr level reg 8 */
-+
-+#define	MCFSIM2_DMAROUTE	(MCF_MBAR2 + 0x188)	/* DMA routing */
-+
-+#define	MCFSIM2_IDECONFIG1	(MCF_MBAR2 + 0x18c)	/* IDEconfig1 */
-+#define	MCFSIM2_IDECONFIG2	(MCF_MBAR2 + 0x190)	/* IDEconfig2 */
- 
- /*
-  * Define the base interrupt for the second interrupt controller.
-diff --git a/arch/m68k/platform/coldfire/intc-5249.c b/arch/m68k/platform/coldfire/intc-5249.c
-index f343bf7..0864b83 100644
---- a/arch/m68k/platform/coldfire/intc-5249.c
-+++ b/arch/m68k/platform/coldfire/intc-5249.c
-@@ -20,22 +20,22 @@
- static void intc2_irq_gpio_mask(struct irq_data *d)
- {
- 	u32 imr;
--	imr = readl(MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
-+	imr = readl(MCFSIM2_GPIOINTENABLE);
- 	imr &= ~(0x1 << (d->irq - MCFINTC2_GPIOIRQ0));
--	writel(imr, MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
-+	writel(imr, MCFSIM2_GPIOINTENABLE);
- }
- 
- static void intc2_irq_gpio_unmask(struct irq_data *d)
- {
- 	u32 imr;
--	imr = readl(MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
-+	imr = readl(MCFSIM2_GPIOINTENABLE);
- 	imr |= (0x1 << (d->irq - MCFINTC2_GPIOIRQ0));
--	writel(imr, MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
-+	writel(imr, MCFSIM2_GPIOINTENABLE);
- }
- 
- static void intc2_irq_gpio_ack(struct irq_data *d)
- {
--	writel(0x1 << (d->irq - MCFINTC2_GPIOIRQ0), MCF_MBAR2 + MCFSIM2_GPIOINTCLEAR);
-+	writel(0x1 << (d->irq - MCFINTC2_GPIOIRQ0), MCFSIM2_GPIOINTCLEAR);
- }
- 
- static struct irq_chip intc2_irq_gpio_chip = {
-diff --git a/arch/m68k/platform/coldfire/m5249.c b/arch/m68k/platform/coldfire/m5249.c
-index df2968d..23b19cb 100644
---- a/arch/m68k/platform/coldfire/m5249.c
-+++ b/arch/m68k/platform/coldfire/m5249.c
-@@ -72,11 +72,11 @@ static void __init m5249_smc91x_init(void)
- 	u32  gpio;
- 
- 	/* Set the GPIO line as interrupt source for smc91x device */
--	gpio = readl(MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
--	writel(gpio | 0x40, MCF_MBAR2 + MCFSIM2_GPIOINTENABLE);
-+	gpio = readl(MCFSIM2_GPIOINTENABLE);
-+	writel(gpio | 0x40, MCFSIM2_GPIOINTENABLE);
- 
--	gpio = readl(MCF_MBAR2 + MCFSIM2_INTLEVEL5);
--	writel(gpio | 0x04000000, MCF_MBAR2 + MCFSIM2_INTLEVEL5);
-+	gpio = readl(MCFSIM2_INTLEVEL5);
-+	writel(gpio | 0x04000000, MCFSIM2_INTLEVEL5);
- }
- 
- #endif /* CONFIG_M5249C3 */
--- 
-1.7.0.4
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQWWxOAAoJEN0jrNd/PrOhrvEP/1MGEbTNfLOJenwc5VvkXaJj
+FtdagDJlUsmFr4dayjtWVItm6tEqp7Ahrdbsui14xUMV2VuFxAcOnqQQ8WTZ5E9e
+O1jxTCzUK9VC24M1U3w/xq6swIzaSrlp1/j5Bfi3z2tRRLM/b8wHn453sN39k35u
+owZDIUVlN5ll9VZenM6LcDyZDHwv9Sw5jcZUEjxMXCwnDSU+FUbQqmSkBxi98sUD
+jY7vuXmX9a4q8GdEL7Ar8JctQZsf+ZYKKjeQcHuI2Cg0R14eyCP0vcW1S3/O2Fu+
+Cuj85l22PNP+zQNXOSVByAQ9YgnflMLueZ/udA7kn74OLMpgPC2GZkQjOcDW7yF6
+2Hl4UD+e4KKHGxWeLi3jS74rRSlJejHPxKO9xiT2Bm8btYrI8nzedTyod0jlfQIL
+GtYSB0hVlokctNU4ozt3z2hkS//GtXJSZZ5hhN50faI5S4kzQZAwjzN5Mt1ck0nO
+reug0hCvmbrEfU9bEqYvo+VcCdjD+QmfSWfEt4HXZne9eUzibKKJ1SxghvP64+0E
+agCYa+D9ONMaHYb+O4G4LLLACBG9xHhkgA35wrxLSQQnXkHkIiAHO70y9lqhGC6x
+lJQ0yNVnLUyajtZR7Y8cPcWNIvqns0OYMdt+WWRA1qcj12Gn/DLROomd0RRKIAEc
+t/SaDDpDrOvS/YfPOWRe
+=Pu2i
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
