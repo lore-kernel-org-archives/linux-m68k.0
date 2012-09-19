@@ -1,52 +1,222 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] clk: Make the managed clk functions generically
-	available
-Date: Tue, 18 Sep 2012 21:40:14 +0100
-Message-ID: <20120918204014.GY12245__4734.532259363$1348000927$gmane$org@n2100.arm.linux.org.uk>
-References: <20120910002020.GB16249@opensource.wolfsonmicro.com> <20120910003913.GM13739@n2100.arm.linux.org.uk> <504F4E36.20309@metafoo.de> <1347375033.27206.3.camel@sauron.fi.intel.com> <504FE633.2090304@snapgear.com> <5050F3DB.1050202@metafoo.de> <20120915213151.GM12245@n2100.arm.linux.org.uk> <20120918080037.GA15982@avionic-0098.mockup.avionic-design.de> <20120918093536.GV12245@n2100.arm.linux.org.uk> <20120918112555.GA21004@avionic-0098.mockup.avionic-design.de>
+From: <gerg@snapgear.com>
+Subject: [PATCH 1/9] m68knommu: make ColdFire IMR and IPR register definitions absolute addresses
+Date: Wed, 19 Sep 2012 15:08:36 +1000
+Message-ID: <1348031324-13228-2-git-send-email-gerg@snapgear.com>
+References: <1348031324-13228-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120918112555.GA21004@avionic-0098.mockup.avionic-design.de>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:25406 "EHLO
+	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751107Ab2ISFFB (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Sep 2012 01:05:01 -0400
+In-Reply-To: <1348031324-13228-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thierry Reding <thierry.reding@avionic-design.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Greg Ungerer <gerg@snapgear.com>, dedekind1@gmail.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, linux-arm-kernel@lists.infradead.org, Mike Turquette <mturquette@ti.com>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Tue, Sep 18, 2012 at 01:25:55PM +0200, Thierry Reding wrote:
-> On Tue, Sep 18, 2012 at 10:35:36AM +0100, Russell King - ARM Linux wrote:
-> > On Tue, Sep 18, 2012 at 10:00:37AM +0200, Thierry Reding wrote:
-> > > On Sat, Sep 15, 2012 at 10:31:52PM +0100, Russell King - ARM Linux wrote:
-> > > > On Wed, Sep 12, 2012 at 10:43:07PM +0200, Lars-Peter Clausen wrote:
-> > > > > I wouldn't mind having this merged sooner rather than later, there is at least
-> > > > > one driver in next which is currently broken due to the missing devm_clk_get.
-> > > > > Russell what's your plan for the patch? Maybe under the given circumstances it
-> > > > > makes sense to let it go through the m68k tree.
-> > > > 
-> > > > Ok, I've merged it but there was no indication in the patch that it was
-> > > > supposed to be a fix... there's no cc: to stable.  Does it need to go to
-> > > > stable?  When was this brokenness introduced?  What's the story for the
-> > > > m68k bit?
+From: Greg Ungerer <gerg@uclinux.org>
 
-I said abouve "I've merged it" - that means, I've put it in my
-tree...
+Make all definitions of the ColdFire Interrupt Mask and Pending registers
+absolute addresses. Currently some are relative to the MBAR peripheral region.
 
-> > > What tree is this supposed to go through? I've checked your ARM tree as
-> > > well as Mike's clock tree but neither seem to carry this patch. The
-> > > reason I ask is because I want to take a patch series that converts the
-> > > Unicore32 PWM code to the PWM framework into linux-next but it depends
-> > > on this patch as well.
-> > 
-> > It /is/ in my tree (you'll notice that it is in linux-next.)  You're
-> > probably looking at my Linaro tree instead, which doesn't carry
-> > anything which isn't about to be sent to Linus.
-> 
-> I must be blind then. next-20120918 doesn't have it. And looking at your
-> tree here[0] doesn't show the commit either.
+The various ColdFire parts use different methods to address the internal
+registers, some are absolute, some are relative to peripheral regions
+which can be mapped at different address ranges (such as the MBAR and IPSBAR
+registers). We don't want to deal with this in the code when we are
+accessing these registers, so make all register definitions the absolute
+address - factoring out whether it is an offset into a peripheral region.
 
-Hmm, it's possible I didn't push the tree out... well, I have done so
-now, so it should be visible from tonight onwards and should be in
--next sometime during the next couple of days (it seems to take a
-couple of days between me pushing stuff out one evening to stuff
-appearing in -next because of the timezones and timing of sfr's pulls.)
+This makes them all consistently defined, and reduces the occasional bugs
+caused by inconsistent definition of the register addresses.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/m5206sim.h   |    4 ++--
+ arch/m68k/include/asm/m5249sim.h   |    6 +++---
+ arch/m68k/include/asm/m525xsim.h   |    4 ++--
+ arch/m68k/include/asm/m5272sim.h   |    8 ++++----
+ arch/m68k/include/asm/m5307sim.h   |    6 +++---
+ arch/m68k/include/asm/m5407sim.h   |    6 +++---
+ arch/m68k/platform/coldfire/intc.c |   28 ++++++++++++++--------------
+ 7 files changed, 31 insertions(+), 31 deletions(-)
+
+diff --git a/arch/m68k/include/asm/m5206sim.h b/arch/m68k/include/asm/m5206sim.h
+index 6972236..e8bae33 100644
+--- a/arch/m68k/include/asm/m5206sim.h
++++ b/arch/m68k/include/asm/m5206sim.h
+@@ -40,8 +40,8 @@
+ #define	MCFSIM_ICR15		0x22		/* Intr Ctrl reg 15 (r/w) */
+ #endif
+ 
+-#define MCFSIM_IMR		0x36		/* Interrupt Mask reg (r/w) */
+-#define MCFSIM_IPR		0x3a		/* Interrupt Pend reg (r/w) */
++#define	MCFSIM_IMR		(MCF_MBAR + 0x36)	/* Interrupt Mask */
++#define	MCFSIM_IPR		(MCF_MBAR + 0x3a)	/* Interrupt Pending */
+ 
+ #define	MCFSIM_RSR		0x40		/* Reset Status reg (r/w) */
+ #define	MCFSIM_SYPCR		0x41		/* System Protection reg (r/w)*/
+diff --git a/arch/m68k/include/asm/m5249sim.h b/arch/m68k/include/asm/m5249sim.h
+index 7f0c2c3..d0aa7f2 100644
+--- a/arch/m68k/include/asm/m5249sim.h
++++ b/arch/m68k/include/asm/m5249sim.h
+@@ -32,9 +32,9 @@
+ #define	MCFSIM_PAR		0x04		/* Pin Assignment reg (r/w) */
+ #define	MCFSIM_IRQPAR		0x06		/* Interrupt Assignment reg (r/w) */
+ #define	MCFSIM_MPARK		0x0C		/* BUS Master Control Reg*/
+-#define	MCFSIM_IPR		0x40		/* Interrupt Pend reg (r/w) */
+-#define	MCFSIM_IMR		0x44		/* Interrupt Mask reg (r/w) */
+-#define	MCFSIM_AVR		0x4b		/* Autovector Ctrl reg (r/w) */
++#define	MCFSIM_IPR		(MCF_MBAR + 0x40)	/* Interrupt Pending */
++#define	MCFSIM_IMR		(MCF_MBAR + 0x44)	/* Interrupt Mask */
++#define	MCFSIM_AVR		(MCF_MBAR + 0x4b)	/* Autovector Ctrl */
+ #define	MCFSIM_ICR0		0x4c		/* Intr Ctrl reg 0 (r/w) */
+ #define	MCFSIM_ICR1		0x4d		/* Intr Ctrl reg 1 (r/w) */
+ #define	MCFSIM_ICR2		0x4e		/* Intr Ctrl reg 2 (r/w) */
+diff --git a/arch/m68k/include/asm/m525xsim.h b/arch/m68k/include/asm/m525xsim.h
+index 6da24f6..0d6d192 100644
+--- a/arch/m68k/include/asm/m525xsim.h
++++ b/arch/m68k/include/asm/m525xsim.h
+@@ -31,8 +31,8 @@
+ #define MCFSIM_SWIVR		0x02		/* SW Watchdog intr reg (r/w) */
+ #define MCFSIM_SWSR		0x03		/* SW Watchdog service (r/w) */
+ #define MCFSIM_MPARK		0x0C		/* BUS Master Control Reg*/
+-#define MCFSIM_IPR		0x40		/* Interrupt Pend reg (r/w) */
+-#define MCFSIM_IMR		0x44		/* Interrupt Mask reg (r/w) */
++#define MCFSIM_IPR		(MCF_MBAR + 0x40)	/* Interrupt Pending */
++#define MCFSIM_IMR		(MCF_MBAR + 0x44)	/* Interrupt Mask */
+ #define MCFSIM_ICR0		0x4c		/* Intr Ctrl reg 0 (r/w) */
+ #define MCFSIM_ICR1		0x4d		/* Intr Ctrl reg 1 (r/w) */
+ #define MCFSIM_ICR2		0x4e		/* Intr Ctrl reg 2 (r/w) */
+diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
+index a58f176..378a6d9 100644
+--- a/arch/m68k/include/asm/m5272sim.h
++++ b/arch/m68k/include/asm/m5272sim.h
+@@ -32,10 +32,10 @@
+ #define	MCFSIM_ICR3		0x28		/* Intr Ctrl reg 3 (r/w) */
+ #define	MCFSIM_ICR4		0x2c		/* Intr Ctrl reg 4 (r/w) */
+ 
+-#define MCFSIM_ISR		0x30		/* Interrupt Source reg (r/w) */
+-#define MCFSIM_PITR		0x34		/* Interrupt Transition (r/w) */
+-#define	MCFSIM_PIWR		0x38		/* Interrupt Wakeup reg (r/w) */
+-#define	MCFSIM_PIVR		0x3f		/* Interrupt Vector reg (r/w( */
++#define	MCFSIM_ISR		(MCF_MBAR + 0x30)	/* Intr Source */
++#define	MCFSIM_PITR		(MCF_MBAR + 0x34)	/* Intr Transition */
++#define	MCFSIM_PIWR		(MCF_MBAR + 0x38)	/* Intr Wakeup */
++#define	MCFSIM_PIVR		(MCF_MBAR + 0x3f)	/* Intr Vector */
+ 
+ #define	MCFSIM_WRRR		0x280		/* Watchdog reference (r/w) */
+ #define	MCFSIM_WIRR		0x284		/* Watchdog interrupt (r/w) */
+diff --git a/arch/m68k/include/asm/m5307sim.h b/arch/m68k/include/asm/m5307sim.h
+index 3bc3ada..255f7f3 100644
+--- a/arch/m68k/include/asm/m5307sim.h
++++ b/arch/m68k/include/asm/m5307sim.h
+@@ -31,9 +31,9 @@
+ #define	MCFSIM_IRQPAR		0x06		/* Interrupt Assignment reg (r/w) */
+ #define	MCFSIM_PLLCR		0x08		/* PLL Control Reg*/
+ #define	MCFSIM_MPARK		0x0C		/* BUS Master Control Reg*/
+-#define	MCFSIM_IPR		0x40		/* Interrupt Pend reg (r/w) */
+-#define	MCFSIM_IMR		0x44		/* Interrupt Mask reg (r/w) */
+-#define	MCFSIM_AVR		0x4b		/* Autovector Ctrl reg (r/w) */
++#define	MCFSIM_IPR		(MCF_MBAR + 0x40)	/* Interrupt Pend */
++#define	MCFSIM_IMR		(MCF_MBAR + 0x44)	/* Interrupt Mask */
++#define	MCFSIM_AVR		(MCF_MBAR + 0x4b)	/* Autovector Ctrl */
+ #define	MCFSIM_ICR0		0x4c		/* Intr Ctrl reg 0 (r/w) */
+ #define	MCFSIM_ICR1		0x4d		/* Intr Ctrl reg 1 (r/w) */
+ #define	MCFSIM_ICR2		0x4e		/* Intr Ctrl reg 2 (r/w) */
+diff --git a/arch/m68k/include/asm/m5407sim.h b/arch/m68k/include/asm/m5407sim.h
+index 79f58dd..afdd563 100644
+--- a/arch/m68k/include/asm/m5407sim.h
++++ b/arch/m68k/include/asm/m5407sim.h
+@@ -31,9 +31,9 @@
+ #define	MCFSIM_IRQPAR		0x06		/* Interrupt Assignment reg (r/w) */
+ #define	MCFSIM_PLLCR		0x08		/* PLL Control Reg*/
+ #define	MCFSIM_MPARK		0x0C		/* BUS Master Control Reg*/
+-#define	MCFSIM_IPR		0x40		/* Interrupt Pend reg (r/w) */
+-#define	MCFSIM_IMR		0x44		/* Interrupt Mask reg (r/w) */
+-#define	MCFSIM_AVR		0x4b		/* Autovector Ctrl reg (r/w) */
++#define	MCFSIM_IPR		(MCF_MBAR + 0x40)	/* Interrupt Pending */
++#define	MCFSIM_IMR		(MCF_MBAR + 0x44)	/* Interrupt Mask */
++#define	MCFSIM_AVR		(MCF_MBAR + 0x4b)	/* Autovector Ctrl */
+ #define	MCFSIM_ICR0		0x4c		/* Intr Ctrl reg 0 (r/w) */
+ #define	MCFSIM_ICR1		0x4d		/* Intr Ctrl reg 1 (r/w) */
+ #define	MCFSIM_ICR2		0x4e		/* Intr Ctrl reg 2 (r/w) */
+diff --git a/arch/m68k/platform/coldfire/intc.c b/arch/m68k/platform/coldfire/intc.c
+index 5c0c150..cce2574 100644
+--- a/arch/m68k/platform/coldfire/intc.c
++++ b/arch/m68k/platform/coldfire/intc.c
+@@ -45,23 +45,23 @@ unsigned char mcf_irq2imr[NR_IRQS];
+ void mcf_setimr(int index)
+ {
+ 	u16 imr;
+-	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
+-	__raw_writew(imr | (0x1 << index), MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readw(MCFSIM_IMR);
++	__raw_writew(imr | (0x1 << index), MCFSIM_IMR);
+ }
+ 
+ void mcf_clrimr(int index)
+ {
+ 	u16 imr;
+-	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
+-	__raw_writew(imr & ~(0x1 << index), MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readw(MCFSIM_IMR);
++	__raw_writew(imr & ~(0x1 << index), MCFSIM_IMR);
+ }
+ 
+ void mcf_maskimr(unsigned int mask)
+ {
+ 	u16 imr;
+-	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readw(MCFSIM_IMR);
+ 	imr |= mask;
+-	__raw_writew(imr, MCF_MBAR + MCFSIM_IMR);
++	__raw_writew(imr, MCFSIM_IMR);
+ }
+ 
+ #else
+@@ -69,23 +69,23 @@ void mcf_maskimr(unsigned int mask)
+ void mcf_setimr(int index)
+ {
+ 	u32 imr;
+-	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
+-	__raw_writel(imr | (0x1 << index), MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readl(MCFSIM_IMR);
++	__raw_writel(imr | (0x1 << index), MCFSIM_IMR);
+ }
+ 
+ void mcf_clrimr(int index)
+ {
+ 	u32 imr;
+-	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
+-	__raw_writel(imr & ~(0x1 << index), MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readl(MCFSIM_IMR);
++	__raw_writel(imr & ~(0x1 << index), MCFSIM_IMR);
+ }
+ 
+ void mcf_maskimr(unsigned int mask)
+ {
+ 	u32 imr;
+-	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
++	imr = __raw_readl(MCFSIM_IMR);
+ 	imr |= mask;
+-	__raw_writel(imr, MCF_MBAR + MCFSIM_IMR);
++	__raw_writel(imr, MCFSIM_IMR);
+ }
+ 
+ #endif
+@@ -104,9 +104,9 @@ void mcf_autovector(int irq)
+ #ifdef MCFSIM_AVR
+ 	if ((irq >= EIRQ1) && (irq <= EIRQ7)) {
+ 		u8 avec;
+-		avec = __raw_readb(MCF_MBAR + MCFSIM_AVR);
++		avec = __raw_readb(MCFSIM_AVR);
+ 		avec |= (0x1 << (irq - EIRQ1 + 1));
+-		__raw_writeb(avec, MCF_MBAR + MCFSIM_AVR);
++		__raw_writeb(avec, MCFSIM_AVR);
+ 	}
+ #endif
+ }
+-- 
+1.7.0.4
