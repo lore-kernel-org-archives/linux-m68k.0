@@ -1,75 +1,97 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2 2/2] PCI: Provide a default pcibios_update_irq()
-Date: Thu, 20 Sep 2012 08:37:31 +1000
-Message-ID: <20120920083731.b99255eb8fdeea908d34ed2f__2037.19166243008$1348094373$gmane$org@canb.auug.org.au>
-References: <1347880974-13615-1-git-send-email-thierry.reding@avionic-design.de>
-	<1347880974-13615-2-git-send-email-thierry.reding@avionic-design.de>
+From: <gerg@snapgear.com>
+Subject: [PATCH 02/11] m68knommu: remove unused ColdFire 5282 register definitions
+Date: Fri, 21 Sep 2012 16:51:04 +1000
+Message-ID: <1348210273-31246-3-git-send-email-gerg@snapgear.com>
+References: <1348210273-31246-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Thu__20_Sep_2012_08_37_31_+1000_w3NxfdoHc7EAjbxm"
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1347880974-13615-2-git-send-email-thierry.reding@avionic-design.de>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:28458 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752319Ab2IUGv1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 21 Sep 2012 02:51:27 -0400
+In-Reply-To: <1348210273-31246-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thierry Reding <thierry.reding@avionic-design.de>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Greg Ungerer <gerg@uclinux.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.or
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
---Signature=_Thu__20_Sep_2012_08_37_31_+1000_w3NxfdoHc7EAjbxm
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Greg Ungerer <gerg@uclinux.org>
 
-Hi,
+There is a bunch of old unused and ugly register definitions in the ColdFire
+5282 header. Remove them.
 
-On Mon, 17 Sep 2012 13:22:54 +0200 Thierry Reding <thierry.reding@avionic-d=
-esign.de> wrote:
->
-> diff --git a/drivers/pci/setup-irq.c b/drivers/pci/setup-irq.c
-> index 270ae7b..3d61ce3 100644
-> --- a/drivers/pci/setup-irq.c
-> +++ b/drivers/pci/setup-irq.c
-> @@ -17,6 +17,11 @@
->  #include <linux/ioport.h>
->  #include <linux/cache.h>
-> =20
-> +void __weak pcibios_update_irq(struct pci_dev *dev, int irq)
-> +{
-> +	dev_dbg(&dev->dev, "Assigning IRQ %02d\n", irq);
-> +	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
-> +}
-> =20
->  static void
->  pdev_fixup_irq(struct pci_dev *dev,
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/m528xsim.h |   51 +-------------------------------------
+ 1 files changed, 1 insertions(+), 50 deletions(-)
 
-Didn't we have a problem with some compiler versions when the weak
-definition was in the same file as the call (there is a call to this
-function in drivers/pci/setup-irq.c)?
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Thu__20_Sep_2012_08_37_31_+1000_w3NxfdoHc7EAjbxm
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBCAAGBQJQWkkrAAoJEECxmPOUX5FEW9wP/RZUlNoHKF/hdMIqgBXmqu9j
-ziwT/7xAnOx2PyPXzlr360bi/PMcjIv3oqf4DHv1tBxYe7tzxS9j1M2Moq8UHiWW
-1wOj+EXsgex73bIKtudojQojTpY9lZML9cdD5ki6zxvIEZTynAH4dSdomk2knPxw
-er3HuNnawQIA4iad+FF4IFp9ojKsduCCRHEGzgC0sfLm1zT/pKgT/jQjZYjdWtKy
-cTujkETaHoMG6rZdnUwmmZryGHWtPUAlWVyg9BDebJfIL32zzU66lQlpIFREyTnI
-zmOrfeJ4Ypw/B0NRUvEMQbUZJtRk7L/ovddItq9NNWHgYn5pznuJOlTaPQb9owOd
-i4oOZguBUyIQL92SrzMMXjxkx5RaBf8dtgGwvdvvCGv5F48Cnr3eCbQN5YQL08xQ
-fek/sjc5izX0MbNjKYw4twCrOwYVpd6Hj7W8L0lhZ0NgFZIoXQi8zTmEjDtf5cHw
-heVKZnH2zdtboYaiIB6utdl1/20mrq6YUd4yuQxwGpc9LveCkPxpPZ1fwTYJj6Fq
-sjabH0KJVKmHTKr3LJg6xFKNh98p+Z3PlVAz4Ac6JTfCWLroBb9df9XAbHZ5kUZd
-Q8RvTloTEYY6hiYKVUn7QF6iO7fUxYuY8/7s8HBhGEyJrwCrVJTpFCOgm7ySBwO5
-fqCAlk6bhtq1THZ3WZZh
-=VZA6
------END PGP SIGNATURE-----
-
---Signature=_Thu__20_Sep_2012_08_37_31_+1000_w3NxfdoHc7EAjbxm--
+diff --git a/arch/m68k/include/asm/m528xsim.h b/arch/m68k/include/asm/m528xsim.h
+index 4acb3c0..cf68ca0 100644
+--- a/arch/m68k/include/asm/m528xsim.h
++++ b/arch/m68k/include/asm/m528xsim.h
+@@ -233,23 +233,6 @@
+ #define MCFGPIO_IRQ_VECBASE	MCFINT_VECBASE
+ #define MCFGPIO_PIN_MAX		180
+ 
+-
+-/*
+- *	Derek Cheung - 6 Feb 2005
+- *		add I2C and QSPI register definition using Freescale's MCF5282
+- */
+-/* set Port AS pin for I2C or UART */
+-#define MCF5282_GPIO_PASPAR     (volatile u16 *) (MCF_IPSBAR + 0x00100056)
+-
+-/* Port UA Pin Assignment Register (8 Bit) */
+-#define MCF5282_GPIO_PUAPAR	0x10005C
+-
+-/* Interrupt Mask Register Register Low */ 
+-#define MCF5282_INTC0_IMRL      (volatile u32 *) (MCF_IPSBAR + 0x0C0C)
+-/* Interrupt Control Register 7 */
+-#define MCF5282_INTC0_ICR17     (volatile u8 *) (MCF_IPSBAR + 0x0C51)
+-
+-
+ /*
+  *  Reset Control Unit (relative to IPSBAR).
+  */
+@@ -259,37 +242,5 @@
+ #define	MCF_RCR_SWRESET		0x80		/* Software reset bit */
+ #define	MCF_RCR_FRCSTOUT	0x40		/* Force external reset */
+ 
+-/*********************************************************************
+-*
+-* Inter-IC (I2C) Module
+-*
+-*********************************************************************/
+-/* Read/Write access macros for general use */
+-#define MCF5282_I2C_I2ADR       (volatile u8 *) (MCF_IPSBAR + 0x0300) // Address 
+-#define MCF5282_I2C_I2FDR       (volatile u8 *) (MCF_IPSBAR + 0x0304) // Freq Divider
+-#define MCF5282_I2C_I2CR        (volatile u8 *) (MCF_IPSBAR + 0x0308) // Control
+-#define MCF5282_I2C_I2SR        (volatile u8 *) (MCF_IPSBAR + 0x030C) // Status
+-#define MCF5282_I2C_I2DR        (volatile u8 *) (MCF_IPSBAR + 0x0310) // Data I/O
+-
+-/* Bit level definitions and macros */
+-#define MCF5282_I2C_I2ADR_ADDR(x)                       (((x)&0x7F)<<0x01)
+-
+-#define MCF5282_I2C_I2FDR_IC(x)                         (((x)&0x3F))
+-
+-#define MCF5282_I2C_I2CR_IEN    (0x80)	// I2C enable
+-#define MCF5282_I2C_I2CR_IIEN   (0x40)  // interrupt enable
+-#define MCF5282_I2C_I2CR_MSTA   (0x20)  // master/slave mode
+-#define MCF5282_I2C_I2CR_MTX    (0x10)  // transmit/receive mode
+-#define MCF5282_I2C_I2CR_TXAK   (0x08)  // transmit acknowledge enable
+-#define MCF5282_I2C_I2CR_RSTA   (0x04)  // repeat start
+-
+-#define MCF5282_I2C_I2SR_ICF    (0x80)  // data transfer bit
+-#define MCF5282_I2C_I2SR_IAAS   (0x40)  // I2C addressed as a slave
+-#define MCF5282_I2C_I2SR_IBB    (0x20)  // I2C bus busy
+-#define MCF5282_I2C_I2SR_IAL    (0x10)  // aribitration lost
+-#define MCF5282_I2C_I2SR_SRW    (0x04)  // slave read/write
+-#define MCF5282_I2C_I2SR_IIF    (0x02)  // I2C interrupt
+-#define MCF5282_I2C_I2SR_RXAK   (0x01)  // received acknowledge
+-
+-
++/****************************************************************************/
+ #endif	/* m528xsim_h */
+-- 
+1.7.0.4
