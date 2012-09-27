@@ -1,46 +1,82 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 2/5] m68knommu: fix inconsistent formating in ColdFire 5272 definitions
-Date: Sat, 22 Sep 2012 21:08:24 +1000
-Message-ID: <1348312107-29294-3-git-send-email-gerg@snapgear.com>
-References: <1348312107-29294-1-git-send-email-gerg@snapgear.com>
+From: tip-bot for Frederic Weisbecker <fweisbec@gmail.com>
+Subject: [tip:core/rcu] m68k: Add missing RCU idle APIs on idle loop
+Date: Wed, 26 Sep 2012 22:20:39 -0700
+Message-ID: <tip-5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb@git.kernel.org>
+Reply-To: linux-kernel@vger.kernel.org, mingo@kernel.org, hpa@zytor.com,
+	  paulmck@linux.vnet.ibm.com, fweisbec@gmail.com,
+	  geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+	  tglx@linutronix.de, josh@joshtriplett.org
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:64892 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752725Ab2IVLII (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 22 Sep 2012 07:08:08 -0400
-In-Reply-To: <1348312107-29294-1-git-send-email-gerg@snapgear.com>
+Received: from terminus.zytor.com ([198.137.202.10]:53790 "EHLO
+	terminus.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753572Ab2I0FXA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Sep 2012 01:23:00 -0400
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: linux-tip-commits@vger.kernel.org
+Cc: hpa@zytor.com, mingo@kernel.org, paulmck@linux.vnet.ibm.com, fweisbec@gmail.com, geert@linux-m68k.org, linux-m68k@vger.kernel.org, tglx@linutronix.de, josh@joshtriplett.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+Commit-ID:  5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb
+Gitweb:     http://git.kernel.org/tip/5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb
+Author:     Frederic Weisbecker <fweisbec@gmail.com>
+AuthorDate: Wed, 22 Aug 2012 17:27:34 +0200
+Committer:  Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+CommitDate: Sun, 23 Sep 2012 07:44:47 -0700
 
-Fix tab broken defines to be consistent with others in this file.
+m68k: Add missing RCU idle APIs on idle loop
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+In the old times, the whole idle task was considered
+as an RCU quiescent state. But as RCU became more and
+more successful overtime, some RCU read side critical
+section have been added even in the code of some
+architectures idle tasks, for tracing for example.
+
+So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+be called by the architecture to tell RCU about the part
+in the idle loop that doesn't make use of rcu read side
+critical sections, typically the part that puts the CPU
+in low power mode.
+
+This is necessary for RCU to find the quiescent states in
+idle in order to complete grace periods.
+
+Add this missing pair of calls in the m68k's idle loop.
+
+Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: m68k <linux-m68k@lists.linux-m68k.org>
+Cc: <stable@vger.kernel.org> # 3.3+
+Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 ---
- arch/m68k/include/asm/m5272sim.h |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ arch/m68k/kernel/process.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m5272sim.h b/arch/m68k/include/asm/m5272sim.h
-index 52d1a33..1fb01bb 100644
---- a/arch/m68k/include/asm/m5272sim.h
-+++ b/arch/m68k/include/asm/m5272sim.h
-@@ -132,8 +132,9 @@
- /*
-  * Generic GPIO support
-  */
--#define MCFGPIO_PIN_MAX			48
--#define MCFGPIO_IRQ_MAX			-1
--#define MCFGPIO_IRQ_VECBASE		-1
-+#define MCFGPIO_PIN_MAX		48
-+#define MCFGPIO_IRQ_MAX		-1
-+#define MCFGPIO_IRQ_VECBASE	-1
-+
- /****************************************************************************/
- #endif	/* m5272sim_h */
--- 
-1.7.0.4
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index c488e3c..ac2892e 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/reboot.h>
+ #include <linux/init_task.h>
+ #include <linux/mqueue.h>
++#include <linux/rcupdate.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/traps.h>
+@@ -75,8 +76,10 @@ void cpu_idle(void)
+ {
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
++		rcu_idle_enter();
+ 		while (!need_resched())
+ 			idle();
++		rcu_idle_exit();
+ 		schedule_preempt_disabled();
+ 	}
+ }
