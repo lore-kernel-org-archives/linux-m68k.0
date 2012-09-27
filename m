@@ -1,82 +1,87 @@
-From: tip-bot for Frederic Weisbecker <fweisbec@gmail.com>
-Subject: [tip:core/rcu] m68k: Add missing RCU idle APIs on idle loop
-Date: Wed, 26 Sep 2012 22:20:39 -0700
-Message-ID: <tip-5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb@git.kernel.org>
-Reply-To: linux-kernel@vger.kernel.org, mingo@kernel.org, hpa@zytor.com,
-	  paulmck@linux.vnet.ibm.com, fweisbec@gmail.com,
-	  geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-	  tglx@linutronix.de, josh@joshtriplett.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: ICE
+Date: Thu, 27 Sep 2012 21:19:55 +0200
+Message-ID: <CAMuHMdU9ezFb2x5Fgzaqkg-OjmiCS8+j5uHFZA3cSc8DroLh6Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from terminus.zytor.com ([198.137.202.10]:53790 "EHLO
-	terminus.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753572Ab2I0FXA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Sep 2012 01:23:00 -0400
-Content-Disposition: inline
+Received: from mail-vc0-f174.google.com ([209.85.220.174]:42994 "EHLO
+	mail-vc0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752320Ab2I0TT4 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Sep 2012 15:19:56 -0400
+Received: by vcbfo13 with SMTP id fo13so2450760vcb.19
+        for <linux-m68k@vger.kernel.org>; Thu, 27 Sep 2012 12:19:56 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Cc: hpa@zytor.com, mingo@kernel.org, paulmck@linux.vnet.ibm.com, fweisbec@gmail.com, geert@linux-m68k.org, linux-m68k@vger.kernel.org, tglx@linutronix.de, josh@joshtriplett.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Commit-ID:  5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb
-Gitweb:     http://git.kernel.org/tip/5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb
-Author:     Frederic Weisbecker <fweisbec@gmail.com>
-AuthorDate: Wed, 22 Aug 2012 17:27:34 +0200
-Committer:  Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-CommitDate: Sun, 23 Sep 2012 07:44:47 -0700
+JFYI, I'm getting an ICE when doing a m68k allmodconfig on next-2012092=
+7:
 
-m68k: Add missing RCU idle APIs on idle loop
+fs/gfs2/rgrp.c: In function =E2=80=98try_rgrp_unlink=E2=80=99:
+fs/gfs2/rgrp.c:1625: internal compiler error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://gcc.gnu.org/bugs.html> for instructions.
+=46or Debian GNU/Linux specific bug reporting instructions,
+see <URL:file:///usr/share/doc/gcc-4.1/README.Bugs>.
+Preprocessed source stored into /tmp/ccWSprPJ.out file, please attach
+this to your bugreport.
+make[2]: *** [fs/gfs2/rgrp.o] Error 1
 
-In the old times, the whole idle task was considered
-as an RCU quiescent state. But as RCU became more and
-more successful overtime, some RCU read side critical
-section have been added even in the code of some
-architectures idle tasks, for tracing for example.
+The offending line has:
 
-So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-be called by the architecture to tell RCU about the part
-in the idle loop that doesn't make use of rcu read side
-critical sections, typically the part that puts the CPU
-in low power mode.
+struct gfs2_rbm rbm =3D { .rgd =3D rgd, .bi =3D rgd->rd_bits, .offset =3D=
+ 0 };
 
-This is necessary for RCU to find the quiescent states in
-idle in order to complete grace periods.
+Smaller failing case:
 
-Add this missing pair of calls in the m68k's idle loop.
+#include <linux/gfs2_ondisk.h>
+#include "glock.h"
 
-Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: m68k <linux-m68k@lists.linux-m68k.org>
-Cc: <stable@vger.kernel.org> # 3.3+
-Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
----
- arch/m68k/kernel/process.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+static void try_rgrp_unlink(struct gfs2_rgrpd *rgd, u64
+*last_unlinked, u64 skip)
+{
+        struct gfs2_rbm rbm =3D { .rgd =3D rgd, .bi =3D rgd->rd_bits, .=
+offset =3D 0 };
+        return;
+}
 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index c488e3c..ac2892e 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -25,6 +25,7 @@
- #include <linux/reboot.h>
- #include <linux/init_task.h>
- #include <linux/mqueue.h>
-+#include <linux/rcupdate.h>
- 
- #include <asm/uaccess.h>
- #include <asm/traps.h>
-@@ -75,8 +76,10 @@ void cpu_idle(void)
- {
- 	/* endless idle loop with no priority at all */
- 	while (1) {
-+		rcu_idle_enter();
- 		while (!need_resched())
- 			idle();
-+		rcu_idle_exit();
- 		schedule_preempt_disabled();
- 	}
- }
+Interestingly, it compiles fine if I replace "glock.h" by "incore.h"
+(the former includes
+the latter). If both are include (first incore.h), it also fails.
+
+$ m68k-linux-gnu-gcc -
+m68k-linux-gnu-gcc: -E or -x required when input is from standard input
+ayla$ m68k-linux-gnu-gcc -v
+Using built-in specs.
+Target: m68k-linux-gnu
+Configured with: ../src/configure -v --enable-languages=3Dc,c++
+--prefix=3D/usr --enable-shared --with-system-zlib --libexecdir=3D/usr/=
+lib
+--without-included-gettext --enable-threads=3Dposix --enable-nls
+--with-gxx-include-dir=3D/usr/m68k-linux-gnu/include/c++/4.1.2
+--program-suffix=3D-4.1 --enable-__cxa_atexit --enable-clocale=3Dgnu
+--enable-libstdcxx-debug --disable-libssp --disable-werror
+--enable-checking=3Drelease --program-prefix=3Dm68k-linux-gnu-
+--includedir=3D/usr/m68k-linux-gnu/include --build=3Dx86_64-linux-gnu
+--host=3Dx86_64-linux-gnu --target=3Dm68k-linux-gnu
+Thread model: posix
+gcc version 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
+
+Yeah, I know it's an old compiler...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
