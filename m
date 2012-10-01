@@ -1,43 +1,51 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: ICE
-Date: Sat, 29 Sep 2012 19:46:48 +0200
-Message-ID: <CAMuHMdWAgjMM=sg8rE+iXrboxX1LZu0yTOrAx_v=ztQHM2Sk5g@mail.gmail.com>
-References: <CAMuHMdU9ezFb2x5Fgzaqkg-OjmiCS8+j5uHFZA3cSc8DroLh6Q@mail.gmail.com>
-	<loom.20120929T192533-151@post.gmane.org>
+Subject: [git pull] m68k updates for 3.7
+Date: Mon, 1 Oct 2012 21:32:25 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1210012130130.30878@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vb0-f46.google.com ([209.85.212.46]:42044 "EHLO
-	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757284Ab2I2Rqt convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Sep 2012 13:46:49 -0400
-Received: by vbbff1 with SMTP id ff1so4194724vbb.19
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Sep 2012 10:46:49 -0700 (PDT)
-In-Reply-To: <loom.20120929T192533-151@post.gmane.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Sat, Sep 29, 2012 at 7:26 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
->> Yeah, I know it's an old compiler...
->
-> Would it help were I to rebuild my gcc-4.6 cross-compiler for you
-> on/targetting=E2=80=A6 I guess Ubuntu lucid?
+	Hi Linus,
 
-Thanks for the offer, but I also have a 4.6.3 from Tony's collection.
+The following changes since commit a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
+  Linus Torvalds (1):
+        Linux 3.6
+
+are available in the git repository at:
+
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+Geert Uytterhoeven (1):
+      m68k/apollo: Remove disabled definitions in apollohw.h
+
+Thomas Meyer (3):
+      m68k/amiga: Use PTR_RET rather than if(IS_ERR(...)) + PTR_ERR
+      m68k/q40: Use PTR_RET rather than if(IS_ERR(...)) + PTR_ERR
+      m68k: Use PTR_RET rather than if(IS_ERR(...)) + PTR_ERR
+
+All pretty boring, seems like all of us had better things to do last summer...
+
+Thanks for pulling!
+
+ arch/m68k/amiga/platform.c       |    5 +----
+ arch/m68k/include/asm/apollohw.h |   12 ------------
+ arch/m68k/kernel/time.c          |    5 +----
+ arch/m68k/q40/config.c           |    5 +----
+ 4 files changed, 3 insertions(+), 24 deletions(-)
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-                                -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
