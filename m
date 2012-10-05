@@ -1,50 +1,36 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: David Howells <dhowells@redhat.com>
 Subject: Re: [GIT PULL] Disintegrate UAPI for m68k
-Date: Fri, 5 Oct 2012 07:05:43 +0200
-Message-ID: <CAMuHMdWYdKPgVR8hvcXN1qmm7nqCyjWV3NPHzdVHG_H8F20-3w@mail.gmail.com>
-References: <17383.1349380286@warthog.procyon.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Date: Fri, 05 Oct 2012 13:50:21 +0100
+Message-ID: <7854.1349441421@warthog.procyon.org.uk>
+References: <CAMuHMdWYdKPgVR8hvcXN1qmm7nqCyjWV3NPHzdVHG_H8F20-3w@mail.gmail.com> <17383.1349380286@warthog.procyon.org.uk>
 Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <17383.1349380286@warthog.procyon.org.uk>
+In-Reply-To: <CAMuHMdWYdKPgVR8hvcXN1qmm7nqCyjWV3NPHzdVHG_H8F20-3w@mail.gmail.com>
 Sender: linux-arch-owner@vger.kernel.org
-To: David Howells <dhowells@redhat.com>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: dhowells@redhat.com, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Thu, Oct 4, 2012 at 9:51 PM, David Howells <dhowells@redhat.com> wrote:
->   git://git.infradead.org/users/dhowells/linux-headers.git disintegrate-m68k
->
-> for you to fetch changes up to b039235da939b28c539b3e1b4566107a9bdbdef8:
->
->   UAPI: (Scripted) Disintegrate arch/m68k/include/asm (2012-10-04 18:20:56 +0100)
->
-> ----------------------------------------------------------------
-> David Howells (6):
->       UAPI: Fix the guards on various asm/unistd.h files
->       UAPI: Split compound conditionals containing __KERNEL__ in Arm64
->       Merge remote-tracking branch 'c6x/for-linux-next' into uapi-prep
->       UAPI: Fix conditional header installation handling (notably kvm_para.h on m68k)
->       UAPI: (Scripted) Disintegrate include/asm-generic
->       UAPI: (Scripted) Disintegrate arch/m68k/include/asm
->
-> Mark Salter (2):
->       c6x: make dsk6455 the default config
->       c6x: remove c6x signal.h
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-I assume these c6x and asm-generic changes are the ones you just asked Linus
-to pull? Doesn't it make more sense to ask us (the individual arch maintainers)
-to pull our parts after Linus has pulled the generic part?
+> I assume these c6x and asm-generic changes are the ones you just asked Linus
+> to pull?
 
-Do you want this ("our parts") to go in 3.7 or 3.8?
+Yes.
 
-Gr{oetje,eeting}s,
+> Doesn't it make more sense to ask us (the individual arch maintainers) to
+> pull our parts after Linus has pulled the generic part?
 
-                        Geert
+I suppose so.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> Do you want this ("our parts") to go in 3.7 or 3.8?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+3.7 would be nice, but I know not everyone is willing to pull in this merge
+window.  It might also make sense to wait for (a) Linus to pull those and (b)
+Arnd to pass the asm-generic changes along too.
+
+The main reason I'd like to get things moved along asap is that the
+preparatory patches get things into a known state upon which these commits can
+be pulled.  However, the state is going to degrade over time as people make
+changes which requires more preparatory patches:-/
+
+David
