@@ -1,36 +1,18 @@
-From: <gregkh@linuxfoundation.org>
-Subject: Patch "m68k: Add missing RCU idle APIs on idle loop" has been added to the 3.6-stable tree
-Date: Wed, 10 Oct 2012 09:24:47 +0900
-Message-ID: <13498286873767@kroah.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ASCII
-Content-Transfer-Encoding: 8bit
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [ 106/133] m68k: Add missing RCU idle APIs on idle loop
+Date: Thu, 11 Oct 2012 07:52:12 +0900
+Message-ID: <20121010224913.602822966@linuxfoundation.org>
+References: <20121010224854.313159132@linuxfoundation.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20121010224854.313159132@linuxfoundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: fweisbec@gmail.com, geert@linux-m68k.org, gregkh@linuxfoundation.org, josh@joshtriplett.org, linux-m68k@lists.linux-m68k.org, paulmck@linux.vnet.ibm.com
-Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alan@lxorguk.ukuu.org.uk, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Frederic Weisbecker <fweisbec@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, m68k <linux-m68k@lists.linux-m68k.org>, Josh Triplett <josh@joshtriplett.org>
 
+3.5-stable review patch.  If anyone has any objections, please let me know.
 
-This is a note to let you know that I've just added the patch titled
-
-    m68k: Add missing RCU idle APIs on idle loop
-
-to the 3.6-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
-and it can be found in the queue-3.6 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
->From 5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb Mon Sep 17 00:00:00 2001
-From: Frederic Weisbecker <fweisbec@gmail.com>
-Date: Wed, 22 Aug 2012 17:27:34 +0200
-Subject: m68k: Add missing RCU idle APIs on idle loop
+------------------
 
 From: Frederic Weisbecker <fweisbec@gmail.com>
 
@@ -86,17 +68,3 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		schedule_preempt_disabled();
  	}
  }
-
-
-Patches currently in stable-queue which might be from fweisbec@gmail.com are
-
-queue-3.6/frv-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/cris-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/alpha-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/h8300-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/parisc-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/m32r-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/score-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/mn10300-add-missing-rcu-idle-apis-on-idle-loop.patch
-queue-3.6/xtensa-add-missing-rcu-idle-apis-on-idle-loop.patch
