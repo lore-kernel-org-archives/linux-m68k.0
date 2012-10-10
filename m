@@ -1,168 +1,102 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: [m68k,powerpc,dma,ethernet,freescale RFA] Coldfire m54xx FEC
-	ethernet driver
-Date: Tue, 9 Oct 2012 11:07:58 +0200
-Message-ID: <20121009090758.GA14142__10762.7362515361$1349774340$gmane$org@frolo.macqel>
-References: <1348473919-30257-1-git-send-email-phdm@macqel.be> <1348473919-30257-4-git-send-email-phdm@macqel.be> <506D3323.4000205@snapgear.com> <20121004073448.GA4339@frolo.macqel> <506D902C.30902@snapgear.com> <20121004145601.GA15358@frolo.macqel> <20121004150329.GB15358@frolo.macqel> <5073C05C.2080809@snapgear.com>
+From: <gregkh@linuxfoundation.org>
+Subject: Patch "m68k: Add missing RCU idle APIs on idle loop" has been added to the 3.4-stable tree
+Date: Wed, 10 Oct 2012 09:25:03 +0900
+Message-ID: <13498287031911@kroah.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ASCII
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5073C05C.2080809@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, stany.marcel@novasys-ingenierie.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: fweisbec@gmail.com, geert@linux-m68k.org, gregkh@linuxfoundation.org, josh@joshtriplett.org, linux-m68k@lists.linux-m68k.org, paulmck@linux.vnet.ibm.com
+Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
 
-[CCing lkml, linux-ppc, netdev, linux-m68k]
 
-Hello kernel sources architects
+This is a note to let you know that I've just added the patch titled
 
-I have a working driver for the m54xx FEC ethernet driver that I
-would like to integrate in the kernel tree.  Problems are that
-- this driver needs an associated DMA driver (provided by FreeScale)
-wich is not dma-engine enabled
-- they're are already many fec drivers in the kernel tree, and
-at least one, fec_mpc52xx.c, seems to be very similar (information
-below), to the one for the mcf54xx, except it uses a differently
-named associated DMA driver (BestComm/SmartDma/SDMA) which is also
-not dma-engine enabled, and even kept hidden in /arch/powerpc where
-it is inaccessible when compiling for m68k.  The underlying DMA part
-from Freescale however seems similar to the one used in the
-m54xx. (again, see information below)
+    m68k: Add missing RCU idle APIs on idle loop
 
-So, now I am lost, what should I do ?
+to the 3.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-The current state of my patches
-[http://mailman.uclinux.org/pipermail/uclinux-dev/2012-September/052147.html]
-is pushing the freescale provided MCD_DMA dma driver to /drivers/dma,
-without adding the dma-engine compatibility layer, and adding the specific
-fec_m54xx ethernet driver to /drivers/net/ethernet/freescale
+The filename of the patch is:
+     m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
+and it can be found in the queue-3.4 subdirectory.
 
-Best regards
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
 
-Philippe
 
-On Tue, Oct 09, 2012 at 04:12:44PM +1000, Greg Ungerer wrote:
-> Hi Philippe,
->
-> On 05/10/12 01:03, Philippe De Muyter wrote:
->> On Thu, Oct 04, 2012 at 04:56:01PM +0200, Philippe De Muyter wrote:
->>> On Thu, Oct 04, 2012 at 11:33:32PM +1000, Greg Ungerer wrote:
->>>>
->>>> My biggest concern is the amount of MCD/DMA support code. And it is
->>>> all done quite differently to everything else in the kernel. We may
->>>> get a bit of push back from kernel folk who look after DMA.
->>>
->>> Actually, there is already a similar code in arch/powerpc/sysdev/bestcomm
->>> (also from freescale, maybe an identical part, but I did not find any
->>> usable doc), but the powerpc folks kept that hidden in the arch/powerpc
->>> tree, instead of installing it in drivers/dma.
->>
->> The MCD DMA or DMA FEC code from freescale has a comment implying that 
->> this
->> was first used in the MPC8220 part.  And Montavista has a MPC8220 port, 
->> but
->> I did not find it, so I do not know where they installed the MCD DMA 
->> driver.
->
-> Ok, looks like there is a bit a variance in all this.
+>From 5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb Mon Sep 17 00:00:00 2001
+From: Frederic Weisbecker <fweisbec@gmail.com>
+Date: Wed, 22 Aug 2012 17:27:34 +0200
+Subject: m68k: Add missing RCU idle APIs on idle loop
 
-I also began to read the mpc5200 user's guide parts about the fec and
-BestComm/SmartDma/SDMA (not sure which one is the official FreeScale name)
-and they look very similar, but not identical, to their m54xx counterparts.
+From: Frederic Weisbecker <fweisbec@gmail.com>
 
-It seems possible to make the fec_mpc52xx.c driver work for the m54xx
-but that needs at least:
-- moving some files or part of them from /arch/powerpc/sysdev and
-  /arch/powerpc/include/asm to /drivers/dma and /include/linux,
-- renaming the fec_mpc52xx files to a more sensible name,
-- providing out_be32 and in_be32 in /arch/m68k/include/asm/io.h,
-- and then unifying the interface to BestComm/SmartDma/SDMA and MCD_DMA
-  in mcf_52xx.c.
+commit 5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb upstream.
 
-An additional problem is that the freescale docs for powerpcs and for
-coldfires do not use the same mnemonics for the same registers.
+In the old times, the whole idle task was considered
+as an RCU quiescent state. But as RCU became more and
+more successful overtime, some RCU read side critical
+section have been added even in the code of some
+architectures idle tasks, for tracing for example.
 
-e.g. FEC registers
-	offset	MPC5200		MCF5484
-	======	=======		=======
-	000	FEC_ID		n/a
-	004	IEVENT		EIR
-	008	IMASK		EIMR
-	010	R_DES_ACTIVE	n/a
-	014	X_DES_ACTIVE	n/a
-	024	ECNTRL		ECR
-	040	MII_DATA	MDATA
-	044	MII_SPEED	MSCR
-	064	MIB_CONTROL	MIBC
-	084	R_CNTRL		RCR
-	088	R_HASH		RHR
-	0C4	X_CNTRL		TCR
-	0E4	PADDR1		PALR
-	0E8	PADDR2		PAHR
-	0EC	OP_PAUSE	OPD
-	118	IADDR1		IAUR
-	11C	IADDR1		IALR
-	120	GADDR1		GAUR
-	124	GADDR2		GALR
-	144	X_WMRK		FECTFWR
-	184	RFIFO_DATA	FECRFDR
-	188	RFIFO_STATUS	FECRFSR
-	18C	RFIFO_CONTROL	FECRFCR
-	190	RFIFO_LRF_PTR	FECRLRFP
-	194	RFIFO_LWF_PTR	FECRLWFP
-	198	RFIFO_ALARM	FECRFAR
-	19C	RFIFO_RDPTR	FECRFRP
-	1A0	RFIFO_WRPTR	FECRFWP
-	1A4	TFIFO_DATA	FECTFDR
-	1A8	TFIFO_STATUS	FECTFSR
-	1AC	TFIFO_CONTROL	FECTFCR
-	1B0	TFIFO_LRF_PTR	FECTLRFP
-	1B4	TFIFO_LWF_PTR	FECTLWFP
-	1B8	TFIFO_ALARM	FECTFAR
-	1BC	TFIFO_RDPTR	FECTFRP
-	1C0	TFIFO_WRPTR	FECTFWP
-	1C4	RESET_CNTRL	FECFRST
-	1C8	XMIT_FSM	FECCTCWR
+So nowadays, rcu_idle_enter() and rcu_idle_exit() must
+be called by the architecture to tell RCU about the part
+in the idle loop that doesn't make use of rcu read side
+critical sections, typically the part that puts the CPU
+in low power mode.
 
-> Probably the best thing to do is post the patches on the linux kernel
-> mailing list then, asking for direction on a dma driver.
->
-> I have no problem with it going into the arch/m68k area. So that is
-> always an option.
+This is necessary for RCU to find the quiescent states in
+idle in order to complete grace periods.
 
-For the dma engines, the similarity is also obvious.  For example, find
-below side by side mpc52xx and m54xx definitions for the
-main DMA registers :
+Add this missing pair of calls in the m68k's idle loop.
 
-from mpc52xx.h				from MCD_dma.h
-/* SDMA */				/* MCD_DMA */
-struct mpc52xx_sdma {			struct dmaRegs { 
- u32 taskBar; /* 0x00 */		        u32 taskbar;
- u32 currentPointer; /* 0x04 */		        u32 currPtr;
- u32 endPointer; /* 0x08 */		        u32 endPtr;
- u32 variablePointer; /* 0x0c */	        u32 varTablePtr;
+Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: m68k <linux-m68k@lists.linux-m68k.org>
+Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
- u8 IntVect1; /* 0x10 */		        u16 dma_rsvd0;
- u8 IntVect2; /* 0x11 */
- u16 PtdCntrl; /* 0x12 */		        u16 ptdControl;
+---
+ arch/m68k/kernel/process.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
- u32 IntPend; /* 0x14 */		        u32 intPending;
- u32 IntMask; /* 0x18 */		        u32 intMask;
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/reboot.h>
+ #include <linux/init_task.h>
+ #include <linux/mqueue.h>
++#include <linux/rcupdate.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/traps.h>
+@@ -75,8 +76,10 @@ void cpu_idle(void)
+ {
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
++		rcu_idle_enter();
+ 		while (!need_resched())
+ 			idle();
++		rcu_idle_exit();
+ 		schedule_preempt_disabled();
+ 	}
+ }
 
- u16 tcr[16]; /* 0x1c .. 0x3a */	        u16 taskControl[16];
 
- u8 ipr[32]; /* 0x3c .. 0x5b */		        u8  priority[32];
+Patches currently in stable-queue which might be from fweisbec@gmail.com are
 
- u32 cReqSelect; /* 0x5c */		        u32 initiatorMux;
- u32 task_size0; /* 0x60 */		        u32 taskSize0;
- u32 task_size1; /* 0x64 */		        u32 taskSize1;
- u32 MDEDebug; /* 0x68 */		        u32 dma_rsvd1;
- u32 ADSDebug; /* 0x6c */		        u32 dma_rsvd2;
- u32 Value1; /* 0x70 */			        u32 debugComp1;
- u32 Value2; /* 0x74 */			        u32 debugComp2;
- u32 Control; /* 0x78 */		        u32 debugControl;
- u32 Status; /* 0x7c */			        u32 debugStatus;
- u32 PTDDebug; /* 0x80 */		        u32 ptdDebug;
-};					};
+queue-3.4/frv-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/cris-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/m68k-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/alpha-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/h8300-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/parisc-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/m32r-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/score-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/mn10300-add-missing-rcu-idle-apis-on-idle-loop.patch
+queue-3.4/xtensa-add-missing-rcu-idle-apis-on-idle-loop.patch
