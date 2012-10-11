@@ -1,16 +1,16 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [ 093/122] m68k: Add missing RCU idle APIs on idle loop
-Date: Thu, 11 Oct 2012 07:54:19 +0900
-Message-ID: <20121010225354.783613298__4492.13571050695$1349915501$gmane$org@linuxfoundation.org>
-References: <20121010225337.989799482@linuxfoundation.org>
+Subject: [ 092/120] m68k: Add missing RCU idle APIs on idle loop
+Date: Thu, 11 Oct 2012 10:00:44 +0900
+Message-ID: <20121011005843.704754281__32681.0169186958$1349919712$gmane$org@linuxfoundation.org>
+References: <20121011005825.364610894@linuxfoundation.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20121010225337.989799482@linuxfoundation.org>
+In-Reply-To: <20121011005825.364610894@linuxfoundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alan@lxorguk.ukuu.org.uk, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Frederic Weisbecker <fweisbec@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, m68k <linux-m68k@lists.linux-m68k.org>, Josh Triplett <josh@joshtriplett.org>
 
-3.6-stable review patch.  If anyone has any objections, please let me know.
+3.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
