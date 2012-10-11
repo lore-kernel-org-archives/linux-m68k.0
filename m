@@ -1,70 +1,35 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [ 092/120] m68k: Add missing RCU idle APIs on idle loop
-Date: Thu, 11 Oct 2012 10:00:44 +0900
-Message-ID: <20121011005843.704754281__32681.0169186958$1349919712$gmane$org@linuxfoundation.org>
-References: <20121011005825.364610894@linuxfoundation.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [GIT PULL] Disintegrate UAPI for m68k [ver #2]
+Date: Thu, 11 Oct 2012 14:50:24 +0200
+Message-ID: <CAMuHMdV0G_wFiTdSCKfFpPN83jfgmOPjHqCRugcLx9NVEh711g@mail.gmail.com>
+References: <21143.1349774135@warthog.procyon.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20121011005825.364610894@linuxfoundation.org>
+Received: from mail-vb0-f46.google.com ([209.85.212.46]:44460 "EHLO
+	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754124Ab2JKMuY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Oct 2012 08:50:24 -0400
+In-Reply-To: <21143.1349774135@warthog.procyon.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alan@lxorguk.ukuu.org.uk, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Frederic Weisbecker <fweisbec@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, m68k <linux-m68k@lists.linux-m68k.org>, Josh Triplett <josh@joshtriplett.org>
+To: David Howells <dhowells@redhat.com>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-3.4-stable review patch.  If anyone has any objections, please let me know.
+On Tue, Oct 9, 2012 at 11:15 AM, David Howells <dhowells@redhat.com> wrote:
+> Can you merge the following branch into the m68k tree please.
 
-------------------
+Thanks!
 
-From: Frederic Weisbecker <fweisbec@gmail.com>
+I will look into it, but I won't merge it before 3.7-rc1.
 
-commit 5b57ba37e82a15f345a6a2eb8c01a2b2d94c5eeb upstream.
+Gr{oetje,eeting}s,
 
-In the old times, the whole idle task was considered
-as an RCU quiescent state. But as RCU became more and
-more successful overtime, some RCU read side critical
-section have been added even in the code of some
-architectures idle tasks, for tracing for example.
+                        Geert
 
-So nowadays, rcu_idle_enter() and rcu_idle_exit() must
-be called by the architecture to tell RCU about the part
-in the idle loop that doesn't make use of rcu read side
-critical sections, typically the part that puts the CPU
-in low power mode.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-This is necessary for RCU to find the quiescent states in
-idle in order to complete grace periods.
-
-Add this missing pair of calls in the m68k's idle loop.
-
-Reported-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: m68k <linux-m68k@lists.linux-m68k.org>
-Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/m68k/kernel/process.c |    3 +++
- 1 file changed, 3 insertions(+)
-
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -25,6 +25,7 @@
- #include <linux/reboot.h>
- #include <linux/init_task.h>
- #include <linux/mqueue.h>
-+#include <linux/rcupdate.h>
- 
- #include <asm/uaccess.h>
- #include <asm/traps.h>
-@@ -75,8 +76,10 @@ void cpu_idle(void)
- {
- 	/* endless idle loop with no priority at all */
- 	while (1) {
-+		rcu_idle_enter();
- 		while (!need_resched())
- 			idle();
-+		rcu_idle_exit();
- 		schedule_preempt_disabled();
- 	}
- }
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
