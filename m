@@ -1,31 +1,37 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [GIT PULL] Disintegrate UAPI for m68k [ver #2]
-Date: Fri, 12 Oct 2012 18:50:35 +0100
-Message-ID: <11258.1350064235@warthog.procyon.org.uk>
-References: <CAMuHMdXYg+GGHwpYZmVff79SU_MhX+uiLtbmY5UH+BObiHvrXw@mail.gmail.com> <21143.1349774135@warthog.procyon.org.uk>
+From: <gerg@snapgear.com>
+Subject: [PATCH 00/11] m68k: use asm-generic headers when possible
+Date: Mon, 15 Oct 2012 16:49:08 +1000
+Message-ID: <1350283759-31158-1-git-send-email-gerg@snapgear.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx1.redhat.com ([209.132.183.28]:51333 "EHLO mx1.redhat.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755829Ab2JLRuk (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 12 Oct 2012 13:50:40 -0400
-In-Reply-To: <CAMuHMdXYg+GGHwpYZmVff79SU_MhX+uiLtbmY5UH+BObiHvrXw@mail.gmail.com>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:28915 "EHLO
+	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752705Ab2JOGqd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Oct 2012 02:46:33 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: dhowells@redhat.com, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-> This leaves the following empty construct:
-> 
->     #ifdef CONFIG_COLDFIRE
->     #else
->     #endif
+On Arnd's suggestion I have gone through the m68k asm headers and weeded
+out a bunch that are identical (or near enough) to the asm-generic versions
+of these files.
 
-Odd.  It emitted it in both headers, which it shouldn't have.
+All defconfigs build. Run tested on ColdFire (with and without MMU) and on
+ArranyM.
 
-> I'll remove it in a subsequent patch.
-
-Thanks.
-
-David
+---
+ arch/m68k/include/asm/Kbuild     |   11 ++
+ arch/m68k/include/asm/auxvec.h   |    4
+ arch/m68k/include/asm/hw_irq.h   |    6 -
+ arch/m68k/include/asm/msgbuf.h   |   31 ------
+ arch/m68k/include/asm/sembuf.h   |   25 ----
+ arch/m68k/include/asm/shmbuf.h   |   42 --------
+ arch/m68k/include/asm/shmparam.h |    6 -
+ arch/m68k/include/asm/socket.h   |   72 -------------
+ arch/m68k/include/asm/sockios.h  |   13 --
+ arch/m68k/include/asm/spinlock.h |    6 -
+ arch/m68k/include/asm/termbits.h |  201 ---------------------------------------
+ arch/m68k/include/asm/termios.h  |   92 -----------------
+ 12 files changed, 11 insertions(+), 498 deletions(-)
