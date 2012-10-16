@@ -1,76 +1,90 @@
 From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 4/4 V2] Set ACR1 cache mode depending on kernel configuration.
-Date: Tue, 16 Oct 2012 15:27:26 +1000
-Message-ID: <507CF03E.1000609@snapgear.com>
-References: <1350305680-5441-4-git-send-email-stany.marcel@novasys-ingenierie.com> <1350307377-7459-1-git-send-email-stany.marcel@novasys-ingenierie.com>
+Subject: Re: M54xx FEC and DMA
+Date: Tue, 16 Oct 2012 15:44:12 +1000
+Message-ID: <507CF42C.2050201@snapgear.com>
+References: <1512C13C0C5EA947AE50B9B9AC314F470343F021@ATLAS.pactenovation.fr> <20121015144318.GA12485@frolo.macqel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:39916 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:17733 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753125Ab2JPFYb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 01:24:31 -0400
-In-Reply-To: <1350307377-7459-1-git-send-email-stany.marcel@novasys-ingenierie.com>
+	with ESMTP id S1752611Ab2JPFpi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 01:45:38 -0400
+In-Reply-To: <20121015144318.GA12485@frolo.macqel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
-Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
+To: Philippe De Muyter <phdm@macqel.be>
+Cc: Stany MARCEL <smarcel@pactenovation.fr>, linux-m68k@vger.kernel.org
 
-Hi Stany,
+Hi Philippe,
 
-On 15/10/12 23:22, Stany MARCEL wrote:
-> For coldfire with MMU enabled, data cache did not follow the configuration but
-> was configured in writethrough mode.
+On 16/10/12 00:43, Philippe De Muyter wrote:
+> Hello Stany,
 >
-> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
+> [CCing linux-m68k@vger.kernel.org]
+>
+> On Mon, Oct 15, 2012 at 03:37:25PM +0200, Stany MARCEL wrote:
+>> Hello,
+>>
+>>
+>>
+>> I have sent a patch on linuxm68k mailing list, a few minutes ago, that
+>> permits to use your driver correctly with MMU without caching issues.
+>>
+>>
+>>
+>> The strategy is to map a memory zone used for dma allocation as non
+>> cachable.
+>
+> Bright idea.
+>
+>>
+>>
+>>
+>> It is a lot better than a complete flush at each network operation, and
+>> correct my issue of lost UDP frames.
+>>
+>>
+>>
+>> With this and the read write operation replaced by __raw_* one Your FEC
+>> and MCD DMA works very well for me.
+>
+> Thanks for the positive feedback.
+>
+> I was not aware of any difference between __raw_writel and writel on m68k.
+>
+> For the non-MMU case, I see:
+> arch/m68k/include/asm/io_no.h:#define __raw_writel writel
+>
+> but now I have found  for the MMU case:
+> arch/m68k/include/asm/io_mm.h:#define writel(val,addr) out_le32((addr),(val))
+> arch/m68k/include/asm/raw_io.h:#define __raw_writel(val,addr) out_be32((addr),(val))
+>
+> and I understand your problem (out_le32 vs out_be32), but I wonder:
+> should we not:
+>
+> - try to understand/fix the difference between __raw_writel and writel in
+> CONFIG_MMU case (Greg, Geert ?)
 
-Looks good, thanks. Applied without the white space changes.
+Yes, I figure they should be the same (on ColdFire at least).
+
+Typically you should use writel in a driver. From the kernels documentation,
+Documentation/DocBook/deviceiobook.tmpl:
+
+       <para>
+         The read and write functions are defined to be ordered. That is the
+         compiler is not permitted to reorder the I/O sequence. When the
+         ordering can be compiler optimised, you can use <function>
+         __readb</function> and friends to indicate the relaxed ordering. Use
+         this with care.
+       </para>
+
+Whereas __raw_writel is really raw, no ordering, no barriers, no
+bye-swapping, no nothing. Just direct write of the register.
 
 Regards
 Greg
-
-
-> ---
->
-> Changes:
->    V2: This patch is now independant from the previous one
->
->   arch/m68k/include/asm/m54xxacr.h |   10 +++++++---
->   1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
-> index 192bbfe..8f932be 100644
-> --- a/arch/m68k/include/asm/m54xxacr.h
-> +++ b/arch/m68k/include/asm/m54xxacr.h
-> @@ -94,14 +94,18 @@
->    *	register region as non-cacheable. And then we map all our RAM as
->    *	cacheable and supervisor access only.
->    */
-> -#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
-> +#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+	\
->   			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
-> +#if defined(CONFIG_CACHE_COPYBACK)
->   #define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-> -			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-> +			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_CP)
-> +#else
-> +#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-> +			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_WT)
-> +#endif
->   #define ACR2_MODE	0
->   #define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
->   			 ACR_ENABLE+ACR_SUPER+ACR_SP)
-> -
->   #else
->
->   /*
-> --
-> 1.7.9.5
->
->
->
->
 
 
 -- 
