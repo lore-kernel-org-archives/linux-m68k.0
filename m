@@ -1,446 +1,77 @@
 From: "Stany MARCEL" <smarcel@pactenovation.fr>
-Subject: RE: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone usable for data exchange with DMA
-Date: Tue, 16 Oct 2012 12:46:02 +0200
-Message-ID: <1512C13C0C5EA947AE50B9B9AC314F4701B00E1D@ATLAS.pactenovation.fr>
-References: <1350305680-5441-3-git-send-email-stany.marcel@novasys-ingenierie.com> <1350307324-7396-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CED8E.1000004@snapgear.com>
+Subject: RE: [PATCH 1/4 V2] Add linux/io.h to make m54xx_wdt.c compile with MMU enabled.
+Date: Tue, 16 Oct 2012 12:47:17 +0200
+Message-ID: <1512C13C0C5EA947AE50B9B9AC314F4701B00E1E@ATLAS.pactenovation.fr>
+References: <1350305680-5441-1-git-send-email-stany.marcel@novasys-ingenierie.com> <1350310101-17784-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CEAC0.2010107@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from gpn92sys-242-163.cnt.nerim.net ([195.5.242.163]:50593 "EHLO
+Received: from gpn92sys-242-163.cnt.nerim.net ([195.5.242.163]:50818 "EHLO
 	ATLAS.pactenovation.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1753523Ab2JPKli convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 06:41:38 -0400
+	with ESMTP id S1753528Ab2JPKnZ convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 06:43:25 -0400
 Content-class: urn:content-classes:message
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@snapgear.com>
 Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-Hi Greg,
+Hi,
 
-It might not be the usual approach in Linux, but after reading the MCF548x Reference Manual, 
-I think that is the best approach for this family of MCU.
+Ok I'll do a V3 soon.
 
 Regards,
-
-Stany
 
 
 -----Original Message-----
 From: Greg Ungerer [mailto:gerg@snapgear.com]
-Sent: Tue 10/16/2012 7:15 AM
+Sent: Tue 10/16/2012 7:04 AM
 To: Stany MARCEL
 Cc: linux-m68k@vger.kernel.org; gerg@uclinux.org
-Subject: Re: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone usable for data exchange with DMA
+Subject: Re: [PATCH 1/4 V2] Add linux/io.h to make m54xx_wdt.c compile with MMU enabled.
  
 Hi Stany,
 
-On 15/10/12 23:22, Stany MARCEL wrote:
-> This permit to share data with DMA without caching issues. M54xx DMA bypass
-> cache so exchanged data must be flushed before DMA operation. But M54xx cache
-> opperation does not permit to easily flush concerned data. So this patch permit
-> to have a non cached zone used for GFP_DMA allocated data.
+On 16/10/12 00:08, Stany MARCEL wrote:
+> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
 
-Interesting, but I think this is the wrong approach.
+I am fine with it. Though I think you should also include the
+actual compile error you get in the commit message.
 
-We don't want to bypass the cache. Admittedly the current cache support
-code we have for ColdFire is not great, it could be improved a lot. So
-lets do that, not work around it.
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+
+Being a watchdog driver fix though it needs to also be sent to
+the appropriate list and maintainer. get_mainatiner lists:
+
+  Wim Van Sebroeck <wim@iguana.be> (maintainer:WATCHDOG DEVICE D...)
+  linux-watchdog@vger.kernel.org (open list:WATCHDOG DEVICE D...)
+  linux-kernel@vger.kernel.org (open list)
 
 Regards
 Greg
 
 
-
-> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
 > ---
 >
 > Changes:
->    V2: This patch does not touch ACR anymore, ACR cache mode is only
->        modified by following patch that is now independant.
+>   - V2: reword commit message.
 >
->   arch/m68k/Kconfig.machine           |   32 +++++++++++++++++
->   arch/m68k/include/asm/dma.h         |    8 +++++
->   arch/m68k/include/asm/mcf_pgalloc.h |    6 ++--
->   arch/m68k/include/asm/page_mm.h     |   68 ++++++++++++++++++++++++++++++++++-
->   arch/m68k/kernel/dma.c              |   14 ++++++++
->   arch/m68k/mm/mcfmmu.c               |   38 ++++++++++++++++++++
->   arch/m68k/platform/coldfire/head.S  |   31 ++++++++++++++++
->   arch/m68k/platform/coldfire/m54xx.c |   21 +++++++++++
->   8 files changed, 214 insertions(+), 4 deletions(-)
+>   drivers/watchdog/m54xx_wdt.c |    1 +
+>   1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-> index 7cdf6b0..f9a4d9d 100644
-> --- a/arch/m68k/Kconfig.machine
-> +++ b/arch/m68k/Kconfig.machine
-> @@ -512,6 +512,38 @@ config KERNELBASE
->   	  a system with the RAM based at address 0, and leaving enough room
->   	  for the theoretical maximum number of 256 vectors.
+> diff --git a/drivers/watchdog/m54xx_wdt.c b/drivers/watchdog/m54xx_wdt.c
+> index 173494a..7466b4b 100644
+> --- a/drivers/watchdog/m54xx_wdt.c
+> +++ b/drivers/watchdog/m54xx_wdt.c
+> @@ -29,6 +29,7 @@
+>   #include <linux/bitops.h>
+>   #include <linux/ioport.h>
+>   #include <linux/uaccess.h>
+> +#include <linux/io.h>
 >
-> +config M54xx_DMA_ZONE
-> +	bool "M54xx non cached virtual zone for DMA"
-> +	depends on MMU
-> +	depends on M54xx
-> +	select SINGLE_MEMORY_CHUNK
-> +	help
-> +	  Activate a virtual zone with tlb data entries initialized, in non
-> +	  cached precise mode. This permit to share data with DMA without caching
-> +	  issues. M54xx DMA bypass cache so exchanged data must be flushed
-> +	  before DMA operation. But M54xx cache opperation does not permit to
-> +	  easily flush concerned data. So this patch permit to have a non cached
-> +	  zone used for GFP_DMA allocated data.
-> +
-> +config M54xx_DMA_ZONE_BASE
-> +	hex "Address of the base of a vitual non cached zone usable for DMA"
-> +	depends on M54xx_DMA_ZONE
-> +	default 0xC0000000
-> +	help
-> +	  Define the address of a virtual zone, with tlb data entries
-> +	  initialized, in non cached precise mode.
-> +	  Addresse must be 1MB aligned, not already mapped and different than
-> +	  KMAP and VM memory map
-> +
-> +config M54xx_DMA_ZONE_SIZE
-> +	hex "Size of the vitual non cached zone usable for DMA"
-> +	depends on M54xx_DMA_ZONE
-> +	default 0x800000
-> +	help
-> +	  Define the size of a virtual zone, with tlb data entries
-> +	  initialized, in non cached precise mode.
-> +	  Size must be 1MB divisable.
-> +
->   comment "ROM configuration"
->
->   config ROM
-> diff --git a/arch/m68k/include/asm/dma.h b/arch/m68k/include/asm/dma.h
-> index 0ff3fc6..04e5d2c 100644
-> --- a/arch/m68k/include/asm/dma.h
-> +++ b/arch/m68k/include/asm/dma.h
-> @@ -479,10 +479,18 @@ static __inline__ int get_dma_residue(unsigned int dmanr)
->   #endif /* !defined(CONFIG_M5272) */
->   #endif /* CONFIG_COLDFIRE */
->
-> +#if defined(CONFIG_M54xx_DMA_ZONE)
-> +
-> +#define MAX_DMA_ADDRESS (CONFIG_M54xx_DMA_ZONE_BASE + \
-> +			 CONFIG_M54xx_DMA_ZONE_SIZE - 1)
-> +
-> +#else
->   /* it's useless on the m68k, but unfortunately needed by the new
->      bootmem allocator (but this should do it for this) */
->   #define MAX_DMA_ADDRESS PAGE_OFFSET
->
-> +#endif
-> +
->   #define MAX_DMA_CHANNELS 8
->
->   extern int request_dma(unsigned int dmanr, const char * device_id);	/* reserve a DMA channel */
-> diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
-> index 313f3dd..7fbb5ce 100644
-> --- a/arch/m68k/include/asm/mcf_pgalloc.h
-> +++ b/arch/m68k/include/asm/mcf_pgalloc.h
-> @@ -14,7 +14,7 @@ extern const char bad_pmd_string[];
->   extern inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm,
->   	unsigned long address)
->   {
-> -	unsigned long page = __get_free_page(GFP_DMA|__GFP_REPEAT);
-> +	unsigned long page = __get_free_page(GFP_KERNEL|__GFP_REPEAT);
->
->   	if (!page)
->   		return NULL;
-> @@ -51,7 +51,7 @@ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t page,
->   static inline struct page *pte_alloc_one(struct mm_struct *mm,
->   	unsigned long address)
->   {
-> -	struct page *page = alloc_pages(GFP_DMA|__GFP_REPEAT, 0);
-> +	struct page *page = alloc_pages(GFP_KERNEL|__GFP_REPEAT, 0);
->   	pte_t *pte;
->
->   	if (!page)
-> @@ -89,7 +89,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
->   {
->   	pgd_t *new_pgd;
->
-> -	new_pgd = (pgd_t *)__get_free_page(GFP_DMA | __GFP_NOWARN);
-> +	new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_NOWARN);
->   	if (!new_pgd)
->   		return NULL;
->   	memcpy(new_pgd, swapper_pg_dir, PAGE_SIZE);
-> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-> index 89f2014..7985ffd 100644
-> --- a/arch/m68k/include/asm/page_mm.h
-> +++ b/arch/m68k/include/asm/page_mm.h
-> @@ -70,6 +70,8 @@ extern unsigned long m68k_memoffset;
->
->   #define WANT_PAGE_VIRTUAL
->
-> +#ifndef CONFIG_M54xx_DMA_ZONE
-> +
->   static inline unsigned long ___pa(void *vaddr)
->   {
->   	unsigned long paddr;
-> @@ -91,6 +93,58 @@ static inline void *__va(unsigned long paddr)
->   		: "0" (paddr), "i" (m68k_fixup_memoffset));
->   	return vaddr;
->   }
-> +#else   /* !CONFIG_M54xx_DMA_ZONE */
-> +
-> +extern unsigned long m54xx_dma_base;
-> +extern unsigned long m54xx_dma_end;
-> +
-> +/*
-> + * Convert a virt to a phys
-> + */
-> +static inline unsigned long ___pa(void *vaddr)
-> +{
-> +#if CONFIG_RAMBASE != PAGE_OFFSET
-> +	return ((unsigned long)vaddr & 0x0fffffff) + CONFIG_RAMBASE;
-> +#else
-> +	if ((unsigned long)vaddr >= CONFIG_M54xx_DMA_ZONE_BASE &&
-> +	    (unsigned long)vaddr < (CONFIG_M54xx_DMA_ZONE_BASE +
-> +				    CONFIG_M54xx_DMA_ZONE_SIZE)) {
-> +		/* address is in carved out DMA range */
-> +		return ((unsigned long)vaddr - CONFIG_M54xx_DMA_ZONE_BASE)
-> +			+ CONFIG_RAMBASE;
-> +	} else if ((unsigned long)vaddr >= PAGE_OFFSET &&
-> +		   (unsigned long)vaddr < (PAGE_OFFSET + CONFIG_RAMSIZE)) {
-> +		/* normal mapping */
-> +		return ((unsigned long)vaddr - PAGE_OFFSET) + CONFIG_RAMBASE;
-> +	}
-> +
-> +	return (unsigned long)vaddr;
-> +#endif
-> +}
-> +#define __pa(vaddr)	___pa((void *)(vaddr))
-> +
-> +/*
-> + * Convert a phys to a virt
-> + */
-> +static inline void *__va(unsigned long paddr)
-> +{
-> +#if CONFIG_RAMBASE != PAGE_OFFSET
-> +	return (void *)((paddr & 0x0fffffff) + PAGE_OFFSET);
-> +#else
-> +	if (paddr >= m54xx_dma_base && paddr <= m54xx_dma_end) {
-> +		/* mapped address for DMA */
-> +		return (void *)((paddr - CONFIG_RAMBASE)
-> +				+ CONFIG_M54xx_DMA_ZONE_BASE);
-> +	} else if (paddr >= m54xx_dma_end &&
-> +		   paddr < (CONFIG_RAMBASE + CONFIG_RAMSIZE)) {
-> +		/* normal mapping */
-> +		return (void *)((paddr - CONFIG_RAMBASE) + PAGE_OFFSET);
-> +	}
-> +	return (void *)paddr;
-> +#endif
-> +}
-> +
-> +#endif
->
->   #else	/* !CONFIG_SUN3 */
->   /* This #define is a horrible hack to suppress lots of warnings. --m */
-> @@ -168,7 +222,19 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
->   	((__p) - pgdat->node_mem_map) + pgdat->node_start_pfn;		\
->   })
->
-> -#define virt_addr_valid(kaddr)	((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
-> +#ifndef CONFIG_M54xx_DMA_ZONE
-> +#define virt_addr_valid(kaddr)				\
-> +	((void *)(kaddr) >= (void *)PAGE_OFFSET &&	\
-> +	 (void *)(kaddr) < high_memory)
-> +#else
-> +#define virt_addr_valid(kaddr)						\
-> +	(((void *)(kaddr) >= (void *)PAGE_OFFSET &&			\
-> +	  (void *)(kaddr) < high_memory) ||				\
-> +	 ((void *)(kaddr) >= (void *)CONFIG_M54xx_DMA_ZONE_BASE &&	\
-> +	  (void *)(kaddr) <  (void *)(CONFIG_M54xx_DMA_ZONE_BASE	\
-> +				      + CONFIG_M54xx_DMA_ZONE_SIZE)))
-> +#endif
-> +
->   #define pfn_valid(pfn)		virt_addr_valid(pfn_to_virt(pfn))
->
->   #endif /* __ASSEMBLY__ */
-> diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-> index e546a55..57873d1 100644
-> --- a/arch/m68k/kernel/dma.c
-> +++ b/arch/m68k/kernel/dma.c
-> @@ -76,6 +76,15 @@ void *dma_alloc_coherent(struct device *dev, size_t size,
->   			   dma_addr_t *dma_handle, gfp_t gfp)
->   {
->   	void *ret;
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	/*
-> +	 * On the M54xx platform with CONFIG_M54xx_DMA_ZONE the memory allocated
-> +	 * with GFP_DMA is guaranteed to be DMA'able, and cache coherent.
-> +	 */
-> +	size = PAGE_ALIGN(size);
-> +	ret = kmalloc(size, GFP_DMA);
-> +	*dma_handle = virt_to_phys(ret);
-> +#else
->   	/* ignore region specifiers */
->   	gfp &= ~(__GFP_DMA | __GFP_HIGHMEM);
->
-> @@ -87,13 +96,18 @@ void *dma_alloc_coherent(struct device *dev, size_t size,
->   		memset(ret, 0, size);
->   		*dma_handle = virt_to_phys(ret);
->   	}
-> +#endif
->   	return ret;
->   }
->
->   void dma_free_coherent(struct device *dev, size_t size,
->   			 void *vaddr, dma_addr_t dma_handle)
->   {
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	kfree((void *)dma_handle);
-> +#else
->   	free_pages((unsigned long)vaddr, get_order(size));
-> +#endif
->   }
->
->   #endif /* CONFIG_MMU && !CONFIG_COLDFIRE */
-> diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-> index 875b800..932415b 100644
-> --- a/arch/m68k/mm/mcfmmu.c
-> +++ b/arch/m68k/mm/mcfmmu.c
-> @@ -77,11 +77,49 @@ void __init paging_init(void)
->   		}
->   	}
->
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	/* setup page tables for DMA area */
-> +	/* starting loc in page directory */
-> +	pg_dir = swapper_pg_dir + (CONFIG_M54xx_DMA_ZONE_BASE >> PGDIR_SHIFT);
-> +
-> +	size = (CONFIG_M54xx_DMA_ZONE_SIZE >> PAGE_SHIFT) * sizeof(pte_t);
-> +	size = (size + PAGE_SIZE) & ~(PAGE_SIZE-1);
-> +
-> +	next_pgtable = (unsigned long)alloc_bootmem_pages(size);
-> +
-> +	address = CONFIG_M54xx_DMA_ZONE_BASE;
-> +	while (address < (CONFIG_M54xx_DMA_ZONE_BASE +
-> +			  CONFIG_M54xx_DMA_ZONE_SIZE)) {
-> +		pg_table = (pte_t *)next_pgtable;
-> +		next_pgtable += PTRS_PER_PTE * sizeof(pte_t);
-> +		pgd_val(*pg_dir) = (unsigned long)pg_table;
-> +		pg_dir++;
-> +
-> +		for (i = 0; i < PTRS_PER_PTE; ++i, ++pg_table) {
-> +			pte_t pte = pfn_pte(virt_to_pfn(address), PAGE_INIT);
-> +			if (address >= (CONFIG_M54xx_DMA_ZONE_BASE
-> +					+ CONFIG_M54xx_DMA_ZONE_SIZE))
-> +				pte_val(pte) = 0;
-> +
-> +			set_pte(pg_table, pte);
-> +			address += PAGE_SIZE;
-> +		}
-> +	}
-> +#endif
->   	current->mm = NULL;
->
->   	for (zone = 0; zone < MAX_NR_ZONES; zone++)
->   		zones_size[zone] = 0x0;
-> +
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	zones_size[ZONE_DMA] = CONFIG_M54xx_DMA_ZONE_SIZE >> PAGE_SHIFT;
-> +	zones_size[ZONE_NORMAL] =
-> +		(((unsigned long)high_memory
-> +		  - PAGE_OFFSET) >> PAGE_SHIFT)
-> +		- zones_size[ZONE_DMA];
-> +#else
->   	zones_size[ZONE_DMA] = num_pages;
-> +#endif
->   	free_area_init(zones_size);
->   }
->
-> diff --git a/arch/m68k/platform/coldfire/head.S b/arch/m68k/platform/coldfire/head.S
-> index fa31be2..62b4f17 100644
-> --- a/arch/m68k/platform/coldfire/head.S
-> +++ b/arch/m68k/platform/coldfire/head.S
-> @@ -265,6 +265,37 @@ _clear_bss:
->   	cmpl	%a0,%a1				/* check if at end */
->   	bne	_clear_bss
->
-> +
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	clrl	%d0
-> +__mmu_dma_map:
-> +	/* Set up search of TLB */
-> +	movel	#CONFIG_M54xx_DMA_ZONE_BASE, %d1
-> +	addl	%d0,%d1
-> +	addil	#1,%d1
-> +	movel	%d1, MMUAR
-> +	/* Search */
-> +	movel	#(MMUOR_STLB+MMUOR_ADR), %d1
-> +	movel   %d1, MMUOR
-> +	/* Set up tag value */
-> +	movel	#CONFIG_M54xx_DMA_ZONE_BASE,%d1
-> +	addl	%d0,%d1
-> +	addil	#(MMUTR_SG+MMUTR_V),%d1
-> +	movel	%d1, MMUTR
-> +	/* Set up data value */
-> +	movel	#CONFIG_RAMBASE,%d1
-> +	addl	%d0,%d1
-> +	addil	#(MMUDR_SZ_1MB+MMUDR_CM_NCP+MMUDR_SP+MMUDR_R+MMUDR_W+MMUDR_LK),%d1
-> +	movel	%d1, MMUDR
-> +	/* Save */
-> +	movel	#(MMUOR_ACC+MMUOR_UAA), %d1
-> +	movel   %d1, MMUOR
-> +
-> +	addil #0x100000,%d0
-> +	cmpil #CONFIG_M54xx_DMA_ZONE_SIZE,%d0
-> +	bnes __mmu_dma_map
-> +#endif
-> +
->   	/*
->   	 *	Load the current task pointer and stack.
->   	 */
-> diff --git a/arch/m68k/platform/coldfire/m54xx.c b/arch/m68k/platform/coldfire/m54xx.c
-> index b587bf3..c207822 100644
-> --- a/arch/m68k/platform/coldfire/m54xx.c
-> +++ b/arch/m68k/platform/coldfire/m54xx.c
-> @@ -23,6 +23,9 @@
->   #include <asm/m54xxgpt.h>
->   #ifdef CONFIG_MMU
->   #include <asm/mmu_context.h>
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +#include <asm/dma.h>
-> +#endif
->   #endif
->
->   /***************************************************************************/
-> @@ -56,6 +59,17 @@ static void mcf54xx_reset(void)
->
->   unsigned long num_pages;
->
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +/* cf dma physical addresses */
-> +unsigned long m54xx_dma_base;
-> +EXPORT_SYMBOL(m54xx_dma_base);
-> +unsigned long m54xx_dma_end;
-> +EXPORT_SYMBOL(m54xx_dma_end);
-> +unsigned long m54xx_dma_size;
-> +EXPORT_SYMBOL(m54xx_dma_size);
-> +#endif
-> +
-> +
->   static void __init mcf54xx_bootmem_alloc(void)
->   {
->   	unsigned long start_pfn;
-> @@ -83,6 +97,13 @@ static void __init mcf54xx_bootmem_alloc(void)
->   	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
->   		min_low_pfn, max_low_pfn);
->   	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
-> +
-> +#ifdef CONFIG_M54xx_DMA_ZONE
-> +	/* configure physical dma area */
-> +	m54xx_dma_base = __pa(PAGE_ALIGN(_ramstart));
-> +	m54xx_dma_size = CONFIG_M54xx_DMA_ZONE_SIZE;
-> +	m54xx_dma_end  = CONFIG_RAMBASE + m54xx_dma_size - 1;
-> +#endif /* CONFIG_M54xx_DMA_ZONE */
->   }
->
->   #endif /* CONFIG_MMU */
+>   #include <asm/coldfire.h>
+>   #include <asm/m54xxsim.h>
 > --
 > 1.7.9.5
 >
