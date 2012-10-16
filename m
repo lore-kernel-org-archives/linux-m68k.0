@@ -1,88 +1,65 @@
-From: "Stany MARCEL" <smarcel@pactenovation.fr>
-Subject: RE: [PATCH 1/4 V2] Add linux/io.h to make m54xx_wdt.c compile with MMU enabled.
-Date: Tue, 16 Oct 2012 12:47:17 +0200
-Message-ID: <1512C13C0C5EA947AE50B9B9AC314F4701B00E1E@ATLAS.pactenovation.fr>
-References: <1350305680-5441-1-git-send-email-stany.marcel@novasys-ingenierie.com> <1350310101-17784-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CEAC0.2010107@snapgear.com>
+From: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone
+	usable for data exchange with DMA
+Date: Tue, 16 Oct 2012 13:23:49 +0200
+Message-ID: <20121016112349.GA30393@frolo.macqel>
+References: <1350305680-5441-3-git-send-email-stany.marcel@novasys-ingenierie.com> <1350307324-7396-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CED8E.1000004@snapgear.com> <1512C13C0C5EA947AE50B9B9AC314F4701B00E1D@ATLAS.pactenovation.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from gpn92sys-242-163.cnt.nerim.net ([195.5.242.163]:50818 "EHLO
-	ATLAS.pactenovation.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-	with ESMTP id S1753528Ab2JPKnZ convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 06:43:25 -0400
-Content-class: urn:content-classes:message
+Received: from smtp2.macqel.be ([194.78.208.39]:3970 "EHLO smtp2.macqel.be"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753527Ab2JPLX4 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 16 Oct 2012 07:23:56 -0400
+Content-Disposition: inline
+In-Reply-To: <1512C13C0C5EA947AE50B9B9AC314F4701B00E1D@ATLAS.pactenovation.fr>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-m68k@vger.kernel.org, gerg@uclinux.org
+To: Stany MARCEL <smarcel@pactenovation.fr>
+Cc: Greg Ungerer <gerg@snapgear.com>, linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-Hi,
+Hi Stany and Greg,
 
-Ok I'll do a V3 soon.
+On Tue, Oct 16, 2012 at 12:46:02PM +0200, Stany MARCEL wrote:
+> 
+> It might not be the usual approach in Linux, but after reading the MCF548x Reference Manual, 
+> I think that is the best approach for this family of MCU.
 
-Regards,
+Maybe we should keep Stany's approach of reserving part of the memory
+as uncached and use dma_alloc_coherent() or dma_pool_create().
 
+Have a look at Documentation/DMA-API.txt
 
------Original Message-----
-From: Greg Ungerer [mailto:gerg@snapgear.com]
-Sent: Tue 10/16/2012 7:04 AM
-To: Stany MARCEL
-Cc: linux-m68k@vger.kernel.org; gerg@uclinux.org
-Subject: Re: [PATCH 1/4 V2] Add linux/io.h to make m54xx_wdt.c compile with MMU enabled.
- 
-Hi Stany,
+Best regards
 
-On 16/10/12 00:08, Stany MARCEL wrote:
-> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
+Philippe
 
-I am fine with it. Though I think you should also include the
-actual compile error you get in the commit message.
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-Being a watchdog driver fix though it needs to also be sent to
-the appropriate list and maintainer. get_mainatiner lists:
-
-  Wim Van Sebroeck <wim@iguana.be> (maintainer:WATCHDOG DEVICE D...)
-  linux-watchdog@vger.kernel.org (open list:WATCHDOG DEVICE D...)
-  linux-kernel@vger.kernel.org (open list)
-
-Regards
-Greg
-
-
-> ---
->
-> Changes:
->   - V2: reword commit message.
->
->   drivers/watchdog/m54xx_wdt.c |    1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/watchdog/m54xx_wdt.c b/drivers/watchdog/m54xx_wdt.c
-> index 173494a..7466b4b 100644
-> --- a/drivers/watchdog/m54xx_wdt.c
-> +++ b/drivers/watchdog/m54xx_wdt.c
-> @@ -29,6 +29,7 @@
->   #include <linux/bitops.h>
->   #include <linux/ioport.h>
->   #include <linux/uaccess.h>
-> +#include <linux/io.h>
->
->   #include <asm/coldfire.h>
->   #include <asm/m54xxsim.h>
-> --
-> 1.7.9.5
->
->
->
->
-
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> 
+> Regards,
+> 
+> Stany
+> 
+> 
+> -----Original Message-----
+> From: Greg Ungerer [mailto:gerg@snapgear.com]
+> Sent: Tue 10/16/2012 7:15 AM
+> To: Stany MARCEL
+> Cc: linux-m68k@vger.kernel.org; gerg@uclinux.org
+> Subject: Re: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone usable for data exchange with DMA
+>  
+> Hi Stany,
+> 
+> On 15/10/12 23:22, Stany MARCEL wrote:
+> > This permit to share data with DMA without caching issues. M54xx DMA bypass
+> > cache so exchanged data must be flushed before DMA operation. But M54xx cache
+> > opperation does not permit to easily flush concerned data. So this patch permit
+> > to have a non cached zone used for GFP_DMA allocated data.
+> 
+> Interesting, but I think this is the wrong approach.
+> 
+> We don't want to bypass the cache. Admittedly the current cache support
+> code we have for ColdFire is not great, it could be improved a lot. So
+> lets do that, not work around it.
+> 
+> Regards
+> Greg
