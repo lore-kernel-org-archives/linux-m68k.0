@@ -1,65 +1,94 @@
-From: Philippe De Muyter <phdm@macqel.be>
-Subject: Re: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone
-	usable for data exchange with DMA
-Date: Tue, 16 Oct 2012 13:23:49 +0200
-Message-ID: <20121016112349.GA30393@frolo.macqel>
-References: <1350305680-5441-3-git-send-email-stany.marcel@novasys-ingenierie.com> <1350307324-7396-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CED8E.1000004@snapgear.com> <1512C13C0C5EA947AE50B9B9AC314F4701B00E1D@ATLAS.pactenovation.fr>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 4/4 V2] Set ACR1 cache mode depending on kernel configuration.
+Date: Tue, 16 Oct 2012 22:06:39 +1000
+Message-ID: <507D4DCF.6050304@snapgear.com>
+References: <1350305680-5441-4-git-send-email-stany.marcel@novasys-ingenierie.com> <1350307377-7459-1-git-send-email-stany.marcel@novasys-ingenierie.com> <507CF03E.1000609@snapgear.com> <20121016081202.GB8427@frolo.macqel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp2.macqel.be ([194.78.208.39]:3970 "EHLO smtp2.macqel.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753527Ab2JPLX4 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 16 Oct 2012 07:23:56 -0400
-Content-Disposition: inline
-In-Reply-To: <1512C13C0C5EA947AE50B9B9AC314F4701B00E1D@ATLAS.pactenovation.fr>
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:46632 "EHLO
+	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751094Ab2JPMJk (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 16 Oct 2012 08:09:40 -0400
+In-Reply-To: <20121016081202.GB8427@frolo.macqel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stany MARCEL <smarcel@pactenovation.fr>
-Cc: Greg Ungerer <gerg@snapgear.com>, linux-m68k@vger.kernel.org, gerg@uclinux.org
+To: Philippe De Muyter <phdm@macqel.be>
+Cc: Stany MARCEL <stany.marcel@novasys-ingenierie.com>, linux-m68k@vger.kernel.org, gerg@uclinux.org
 
-Hi Stany and Greg,
+Hi Philippe,
 
-On Tue, Oct 16, 2012 at 12:46:02PM +0200, Stany MARCEL wrote:
-> 
-> It might not be the usual approach in Linux, but after reading the MCF548x Reference Manual, 
-> I think that is the best approach for this family of MCU.
+On 10/16/2012 06:12 PM, Philippe De Muyter wrote:
+> Hi Stany and Greg,
+>
+> On Tue, Oct 16, 2012 at 03:27:26PM +1000, Greg Ungerer wrote:
+>> Hi Stany,
+>>
+>> On 15/10/12 23:22, Stany MARCEL wrote:
+>>> For coldfire with MMU enabled, data cache did not follow the configuration
+>>> but
+>>> was configured in writethrough mode.
+>>>
+>>> Signed-off-by: Stany MARCEL <stany.marcel@novasys-ingenierie.com>
+>>
+>> Looks good, thanks. Applied without the white space changes.
+>
+> Wouldn't it be better to move the test on CONFIG_CACHE_COPYBACK outside
+> of the test on CONFIG_MMU instead of duplicating it ?
 
-Maybe we should keep Stany's approach of reserving part of the memory
-as uncached and use dma_alloc_coherent() or dma_pool_create().
+Sure that would be cleaner. If someone updates it and send me a
+new patch I will apply that.
 
-Have a look at Documentation/DMA-API.txt
+Regards
+Greg
 
-Best regards
 
-Philippe
+>>> ---
+>>>
+>>> Changes:
+>>>     V2: This patch is now independant from the previous one
+>>>
+>>>    arch/m68k/include/asm/m54xxacr.h |   10 +++++++---
+>>>    1 file changed, 7 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/arch/m68k/include/asm/m54xxacr.h
+>>> b/arch/m68k/include/asm/m54xxacr.h
+>>> index 192bbfe..8f932be 100644
+>>> --- a/arch/m68k/include/asm/m54xxacr.h
+>>> +++ b/arch/m68k/include/asm/m54xxacr.h
+>>> @@ -94,14 +94,18 @@
+>>>     *	register region as non-cacheable. And then we map all our RAM as
+>>>     *	cacheable and supervisor access only.
+>>>     */
+>>> -#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
+>>> +#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+	\
+>>>    			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
+>>> +#if defined(CONFIG_CACHE_COPYBACK)
+>>>    #define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+>>> -			 ACR_ENABLE+ACR_SUPER+ACR_SP)
+>>> +			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_CP)
+>>> +#else
+>>> +#define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+>>> +			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_WT)
+>>> +#endif
+>>>    #define ACR2_MODE	0
+>>>    #define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+>>>    			 ACR_ENABLE+ACR_SUPER+ACR_SP)
+>>> -
+>>>    #else
+>>>
+>>>    /*
+>>> --
+>>> 1.7.9.5
+>
+>
+>
 
-> 
-> Regards,
-> 
-> Stany
-> 
-> 
-> -----Original Message-----
-> From: Greg Ungerer [mailto:gerg@snapgear.com]
-> Sent: Tue 10/16/2012 7:15 AM
-> To: Stany MARCEL
-> Cc: linux-m68k@vger.kernel.org; gerg@uclinux.org
-> Subject: Re: [PATCH 3/4 V2] Add for MCF54xx a virtual non cached zone usable for data exchange with DMA
->  
-> Hi Stany,
-> 
-> On 15/10/12 23:22, Stany MARCEL wrote:
-> > This permit to share data with DMA without caching issues. M54xx DMA bypass
-> > cache so exchanged data must be flushed before DMA operation. But M54xx cache
-> > opperation does not permit to easily flush concerned data. So this patch permit
-> > to have a non cached zone used for GFP_DMA allocated data.
-> 
-> Interesting, but I think this is the wrong approach.
-> 
-> We don't want to bypass the cache. Admittedly the current cache support
-> code we have for ColdFire is not great, it could be improved a lot. So
-> lets do that, not work around it.
-> 
-> Regards
-> Greg
+
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
