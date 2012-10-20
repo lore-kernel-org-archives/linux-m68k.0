@@ -1,76 +1,42 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: Wire up kcmp
-Date: Fri, 19 Oct 2012 09:51:42 +1000
-Message-ID: <5080960E.2080501__46814.9591972635$1350617724$gmane$org@snapgear.com>
-References: <1350581535-29428-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/11] m68k: use asm-generic headers when possible
+Date: Sat, 20 Oct 2012 16:46:46 +0200
+Message-ID: <CAMuHMdU_=3-_UcWMT2yBif5dX30963sqNz4CV+_KjTSAZwBS9w@mail.gmail.com>
+References: <1350283759-31158-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1350581535-29428-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <1350283759-31158-1-git-send-email-gerg@snapgear.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: gerg@snapgear.com
+Cc: linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On 19/10/12 03:32, Geert Uytterhoeven wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Greg,
 
-Looks good Geert.
+On Mon, Oct 15, 2012 at 8:49 AM,  <gerg@snapgear.com> wrote:
+> On Arnd's suggestion I have gone through the m68k asm headers and weeded
+> out a bunch that are identical (or near enough) to the asm-generic versions
+> of these files.
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+Thanks, looks great!
 
-Rgeards
-Greg
+(my first thought a few days ago was "Oh no, we're changing to the correct
+padding for e.g. time_t", but apparently the asm-generic versions do it wrong
+on big endian platforms, too ;-)
 
+Do you plan to resubmit for the uapi header changes I have already queued?
+Or shall I try to rebase it myself, using Stephen's fix?
+Note that termios.h now needs 2 changes, as it's split in uapi and normal
+(kernel use only).
 
+Gr{oetje,eeting}s,
 
-> ---
->   arch/m68k/include/asm/unistd.h      |    2 +-
->   arch/m68k/include/uapi/asm/unistd.h |    1 +
->   arch/m68k/kernel/syscalltable.S     |    1 +
->   3 files changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-> index c004dfd..5fc7f7b 100644
-> --- a/arch/m68k/include/asm/unistd.h
-> +++ b/arch/m68k/include/asm/unistd.h
-> @@ -4,7 +4,7 @@
->   #include <uapi/asm/unistd.h>
->
->
-> -#define NR_syscalls		347
-> +#define NR_syscalls		348
->
->   #define __ARCH_WANT_OLD_READDIR
->   #define __ARCH_WANT_OLD_STAT
-> diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-> index fdeb341..b94bfbf 100644
-> --- a/arch/m68k/include/uapi/asm/unistd.h
-> +++ b/arch/m68k/include/uapi/asm/unistd.h
-> @@ -352,5 +352,6 @@
->   #define __NR_setns		344
->   #define __NR_process_vm_readv	345
->   #define __NR_process_vm_writev	346
-> +#define __NR_kcmp		347
->
->   #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
-> diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-> index ce827b3..4fc2e29 100644
-> --- a/arch/m68k/kernel/syscalltable.S
-> +++ b/arch/m68k/kernel/syscalltable.S
-> @@ -367,4 +367,5 @@ ENTRY(sys_call_table)
->   	.long sys_setns
->   	.long sys_process_vm_readv	/* 345 */
->   	.long sys_process_vm_writev
-> +	.long sys_kcmp
->
->
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
