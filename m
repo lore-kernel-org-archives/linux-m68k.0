@@ -1,38 +1,39 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: Event tracing support on m68k
-Date: Tue, 23 Oct 2012 11:24:48 +1000
-Message-ID: <5085F1E0.50901@snapgear.com>
-References: <CALF0-+W9ZZNW-ciRyk64WqsSwXVXHjVaFRC563XHN1--S+=Zgw@mail.gmail.com> <m2sj96zi88.fsf@igel.home> <CALF0-+WrgcJWHkMsCoD4YHz+Q=Uqu4fkPoZ6JuufLuQ29JTotw@mail.gmail.com> <m2objuzfxi.fsf@igel.home>
+From: Luis Alves <ljalvs@gmail.com>
+Subject: Re: [PATCH] Platform code merge for 68000 core cpus
+Date: Tue, 23 Oct 2012 11:01:15 +0100
+Message-ID: <CAGj5WxDCjfrqKsJXNCmKtCukUHhHSqZOuJJjSBk4yF9GeX-C6w@mail.gmail.com>
+References: <1350953556-9759-1-git-send-email-ljalvs@gmail.com>
+ <50864009.8070708@snapgear.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:55780 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932557Ab2JWJkd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Oct 2012 05:40:33 -0400
-In-Reply-To: <m2objuzfxi.fsf@igel.home>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <50864009.8070708@snapgear.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Ezequiel Garcia <elezegarcia@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Rostedt <rostedt@goodmis.org>, Tim Bird <tim.bird@am.sony.com>, linux-m68k@vger.kernel.org, uClinux development list <uclinux-dev@uclinux.org>
 
-On 23/10/12 01:26, Andreas Schwab wrote:
-> Ezequiel Garcia <elezegarcia@gmail.com> writes:
->> Is it just not implemented on this platform or is there no way to implement it?
->> (and is it a wanted feature by the m68k users?)
->
-> Probably nobody has looked into it yet.
+Hi Greg,
 
-That would be my guess.
+Thanks for the review!
+I'll get those fixed later tonight and re-send the patch.
 
-Regards
-Greg
-
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Regards,
+Luis
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
