@@ -1,58 +1,54 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] Disable MC68000 cpu target when MMU is selected
-Date: Fri, 26 Oct 2012 09:31:27 +1000
-Message-ID: <5089CBCF.8050701@snapgear.com>
-References: <1351195276-5937-1-git-send-email-ljalvs@gmail.com>
+From: <gerg@snapgear.com>
+Subject: [PATCH] m68k: remove unused asm/dbg.h
+Date: Mon, 29 Oct 2012 15:16:01 +1000
+Message-ID: <1351487761-8476-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dalsmrelay2.nai.com ([205.227.136.216]:24424 "EHLO
+Received: from dalsmrelay2.nai.com ([205.227.136.216]:37562 "EHLO
 	dalsmrelay2.nai.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751310Ab2JYX0c (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Oct 2012 19:26:32 -0400
-In-Reply-To: <1351195276-5937-1-git-send-email-ljalvs@gmail.com>
+	with ESMTP id S1750726Ab2J2FU3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Oct 2012 01:20:29 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Luis Alves <ljalvs@gmail.com>
-Cc: uclinux-dev@uclinux.org, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Luis,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On 26/10/12 06:01, Luis Alves wrote:
-> As pointed out by Geert, MC68000 target needs to be disabled when
->   MMU support is enabled.
+The contents of the m68k asm/dbg.h are never used, remove the file and
+remove the one reference to it.
 
-Thanks, I have applied to m68knommu git tree.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/dbg.h      |    6 ------
+ drivers/tty/serial/68328serial.c |    1 -
+ 2 files changed, 0 insertions(+), 7 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/dbg.h
 
-Regards
-Greg
-
-
->
-> Signed-off-by: Luis Alves <ljalvs@gmail.com>
-> ---
->   arch/m68k/Kconfig.cpu |    1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index aad3b0b..6708fa4 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -36,6 +36,7 @@ if M68KCLASSIC
->
->   config M68000
->   	bool "MC68000"
-> +	depends on !MMU
->   	select CPU_HAS_NO_BITFIELDS
->   	select CPU_HAS_NO_MULDIV64
->   	select CPU_HAS_NO_UNALIGNED
->
-
-
+diff --git a/arch/m68k/include/asm/dbg.h b/arch/m68k/include/asm/dbg.h
+deleted file mode 100644
+index 27af327..0000000
+--- a/arch/m68k/include/asm/dbg.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#define DEBUG 1
+-#ifdef CONFIG_COLDFIRE
+-#define	BREAK asm volatile ("halt")
+-#else
+-#define BREAK *(volatile unsigned char *)0xdeadbee0 = 0
+-#endif
+diff --git a/drivers/tty/serial/68328serial.c b/drivers/tty/serial/68328serial.c
+index 66c38a3..fa1bc91 100644
+--- a/drivers/tty/serial/68328serial.c
++++ b/drivers/tty/serial/68328serial.c
+@@ -14,7 +14,6 @@
+  * 2.4/2.5 port                 David McCullough
+  */
+ 
+-#include <asm/dbg.h>
+ #include <linux/module.h>
+ #include <linux/errno.h>
+ #include <linux/serial.h>
 -- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+1.7.0.4
