@@ -1,46 +1,77 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k: merge MMU and non-MMU versions of mm/init.c
-Date: Sun, 11 Nov 2012 11:43:56 +0100
-Message-ID: <CAMuHMdWA9DLVqGUJrJCUa_zUNjRT-xoab1y9AGrK04QRVgR6PQ@mail.gmail.com>
-References: <1351082187-15436-1-git-send-email-gerg@snapgear.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH] SUN3: Get interrupts working again
+Date: Sun, 11 Nov 2012 13:28:33 +0100 (CET)
+Message-ID: <20121111122833.B5FB71DBC2@solo.franken.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vb0-f46.google.com ([209.85.212.46]:37916 "EHLO
-	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751459Ab2KKKn5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Nov 2012 05:43:57 -0500
-Received: by mail-vb0-f46.google.com with SMTP id ff1so5322697vbb.19
-        for <linux-m68k@vger.kernel.org>; Sun, 11 Nov 2012 02:43:56 -0800 (PST)
-In-Reply-To: <1351082187-15436-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: sammy@sammy.net, geert@linux-m68k.org
 
-On Wed, Oct 24, 2012 at 2:36 PM,  <gerg@snapgear.com> wrote:
-> Some of the code in the existing mm/init_mm.c and mm/init_no.c files is
-> the same, and if we merge them back to a single file we can save some code
-> duplication.
->
-> Although the old mem_init() code for non-MMU was a little different than
-> the MMU version, it turns out we can use the same code. So I now we just
-> use the MMU mem_init() code for all. It also means we now get identical
-> console info messages for this code on kernel boot up.
->
-> So merge the two files back into a single file.
->
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+SUN3 Intregister is not for enabling individual interrupts, but to enable
+special interrupts. So using it for interrupt enable/disable was wrong.
+The clock interrupt needs some special treatment to keep ticking.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
 
-Gr{oetje,eeting}s,
+ arch/m68k/sun3/sun3ints.c |   29 ++++-------------------------
+ 1 files changed, 4 insertions(+), 25 deletions(-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 78b60f5..6bbca30 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -66,6 +66,8 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
+ #endif
++	sun3_disable_irq(5);
++	sun3_enable_irq(5);
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
+ #endif
+@@ -79,41 +81,18 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ 
+ static irqreturn_t sun3_vec255(int irq, void *dev_id)
+ {
+-//	intersil_clear();
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void sun3_irq_enable(struct irq_data *data)
+-{
+-    sun3_enable_irq(data->irq);
+-};
+-
+-static void sun3_irq_disable(struct irq_data *data)
+-{
+-    sun3_disable_irq(data->irq);
+-};
+-
+-static struct irq_chip sun3_irq_chip = {
+-	.name		= "sun3",
+-	.irq_startup	= m68k_irq_startup,
+-	.irq_shutdown	= m68k_irq_shutdown,
+-	.irq_enable	= sun3_irq_enable,
+-	.irq_disable	= sun3_irq_disable,
+-	.irq_mask	= sun3_irq_disable,
+-	.irq_unmask	= sun3_irq_enable,
+-};
+-
+ void __init sun3_init_IRQ(void)
+ {
+ 	*sun3_intreg = 1;
+ 
+-	m68k_setup_irq_controller(&sun3_irq_chip, handle_level_irq, IRQ_AUTO_1,
+-				  7);
+ 	m68k_setup_user_interrupt(VEC_USER, 128);
+ 
+-	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL))
++	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "clock", NULL))
+ 		pr_err("Couldn't register %s interrupt\n", "int5");
+-	if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "int7", NULL))
++	if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "nmi", NULL))
+ 		pr_err("Couldn't register %s interrupt\n", "int7");
+ 	if (request_irq(IRQ_USER+127, sun3_vec255, 0, "vec255", NULL))
+ 		pr_err("Couldn't register %s interrupt\n", "vec255");
