@@ -1,89 +1,55 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] SUN3: Get interrupts working again
-Date: Wed, 14 Nov 2012 08:46:31 +0100
-Message-ID: <CAMuHMdXYj5fwcM9ef7eujmzb7hrMpOfVcJANEhi3FdQW0kAbcw@mail.gmail.com>
-References: <20121111122833.B5FB71DBC2@solo.franken.de>
+Subject: Re: [PATCH v3 00/11] m68k: use asm-generic headers when possible
+Date: Wed, 14 Nov 2012 08:56:43 +0100
+Message-ID: <CAMuHMdVWaxjGYFXHwK6-CPUA3YFZ2x7k11FpPhMyudHt0xVa4g@mail.gmail.com>
+References: <1351578277-31882-1-git-send-email-gerg@snapgear.com>
+	<CAMuHMdXbwBLhryrcJ5Ln3uvBJL=_ZCYBErXyZzGznBirobU1kQ@mail.gmail.com>
+	<50A078CC.7080406@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20121111122833.B5FB71DBC2@solo.franken.de>
+Received: from mail-vb0-f46.google.com ([209.85.212.46]:61135 "EHLO
+	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751239Ab2KNH4p (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 14 Nov 2012 02:56:45 -0500
+In-Reply-To: <50A078CC.7080406@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-m68k@lists.linux-m68k.org, sammy@sammy.net
+To: Greg Ungerer <gerg@snapgear.com>
+Cc: linux-m68k@vger.kernel.org, linux-arch@vger.kernel.org
 
-On Sun, Nov 11, 2012 at 1:28 PM, Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
-> SUN3 Intregister is not for enabling individual interrupts, but to enable
-> special interrupts. So using it for interrupt enable/disable was wrong.
-> The clock interrupt needs some special treatment to keep ticking.
->
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Hi Greg,
 
-Thanks, will queue for 3.8.
+On Mon, Nov 12, 2012 at 5:19 AM, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 11/11/12 20:30, Geert Uytterhoeven wrote:
+>> On Tue, Oct 30, 2012 at 7:24 AM,  <gerg@snapgear.com> wrote:
+>>> Quite a few of the m68k asm headers are identical to the asm-generic
+>>> versions. So switch to using them where ever we can.
+>>>
+>>> v2 is rebased on top of 3.7-rc3.
+>>> v3 keep those in uapi/asm in uapi/asm (not moved to asm-generic)
+>>>
+>>> All defconfigs build. Run tested on ColdFire (with and without MMU) and
+>>> on
+>>> ArranyM.
+>>
+>>
+>> Thanks!
+>>
+>> Do you want me to queue these for 3.8, or take them yourselves?
+>> In the latter case:
+>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+>
+> I don't really mind either way. Happy for you to take them
+> if that is your preference.
+>
+> Same goes for the mm/init.c changes too. Happy for you to
+> take them if you want.
 
-> ---
->
->  arch/m68k/sun3/sun3ints.c |   29 ++++-------------------------
->  1 files changed, 4 insertions(+), 25 deletions(-)
->
-> diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-> index 78b60f5..6bbca30 100644
-> --- a/arch/m68k/sun3/sun3ints.c
-> +++ b/arch/m68k/sun3/sun3ints.c
-> @@ -66,6 +66,8 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
->  #ifdef CONFIG_SUN3
->         intersil_clear();
->  #endif
-> +       sun3_disable_irq(5);
-> +       sun3_enable_irq(5);
->  #ifdef CONFIG_SUN3
->         intersil_clear();
->  #endif
-> @@ -79,41 +81,18 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
->
->  static irqreturn_t sun3_vec255(int irq, void *dev_id)
->  {
-> -//     intersil_clear();
->         return IRQ_HANDLED;
->  }
->
-> -static void sun3_irq_enable(struct irq_data *data)
-> -{
-> -    sun3_enable_irq(data->irq);
-> -};
-> -
-> -static void sun3_irq_disable(struct irq_data *data)
-> -{
-> -    sun3_disable_irq(data->irq);
-> -};
-> -
-> -static struct irq_chip sun3_irq_chip = {
-> -       .name           = "sun3",
-> -       .irq_startup    = m68k_irq_startup,
-> -       .irq_shutdown   = m68k_irq_shutdown,
-> -       .irq_enable     = sun3_irq_enable,
-> -       .irq_disable    = sun3_irq_disable,
-> -       .irq_mask       = sun3_irq_disable,
-> -       .irq_unmask     = sun3_irq_enable,
-> -};
-> -
->  void __init sun3_init_IRQ(void)
->  {
->         *sun3_intreg = 1;
->
-> -       m68k_setup_irq_controller(&sun3_irq_chip, handle_level_irq, IRQ_AUTO_1,
-> -                                 7);
->         m68k_setup_user_interrupt(VEC_USER, 128);
->
-> -       if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL))
-> +       if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "clock", NULL))
->                 pr_err("Couldn't register %s interrupt\n", "int5");
-> -       if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "int7", NULL))
-> +       if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "nmi", NULL))
->                 pr_err("Couldn't register %s interrupt\n", "int7");
->         if (request_irq(IRQ_USER+127, sun3_vec255, 0, "vec255", NULL))
->                 pr_err("Couldn't register %s interrupt\n", "vec255");
+I applied all of them to master, and queued them in for-3.8/for-next, so they
+will be picked up by tomorrow's linux-next, which is the last one before
+next-20121126.
 
 Gr{oetje,eeting}s,
 
