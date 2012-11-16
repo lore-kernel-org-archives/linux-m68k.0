@@ -1,39 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 01/12] m68knommu: add clock creation support macro for
- other ColdFire CPUs
-Date: Fri, 16 Nov 2012 07:30:09 +0100
-Message-ID: <CAMuHMdUo=cqA=KHhV8+nBMB+sG0wMx9JD5Tds3Ur04524Sgszw@mail.gmail.com>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 00/12] m68knommu: generalize the ColdFire
+ clock support for all CPU types
+Date: Fri, 16 Nov 2012 19:09:14 +1000
+Message-ID: <50A602BA.8060500@snapgear.com>
 References: <1353041256-2959-1-git-send-email-gerg@snapgear.com>
-	<1353041256-2959-2-git-send-email-gerg@snapgear.com>
+ <CAMuHMdVLF+aqWWAG3_O6bzjaOGRyzSgSQqmddDwAh6coKaNPVA@mail.gmail.com>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vb0-f46.google.com ([209.85.212.46]:34987 "EHLO
-	mail-vb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750853Ab2KPGaK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Nov 2012 01:30:10 -0500
-Received: by mail-vb0-f46.google.com with SMTP id ff1so2542538vbb.19
-        for <linux-m68k@vger.kernel.org>; Thu, 15 Nov 2012 22:30:09 -0800 (PST)
-In-Reply-To: <1353041256-2959-2-git-send-email-gerg@snapgear.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+In-Reply-To: <CAMuHMdVLF+aqWWAG3_O6bzjaOGRyzSgSQqmddDwAh6coKaNPVA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: linux-m68k@vger.kernel.org
-To: gerg@snapgear.com
-Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 
-On Fri, Nov 16, 2012 at 5:47 AM,  <gerg@snapgear.com> wrote:
-> With this we will be able to define simple clock trees for all ColdFire
-> CPU types, even though will not be able to be enabled or disabled. They
-                         ^ they
+Hi Geert,
 
-> will be able to report the clock rate.
+On 11/16/2012 04:28 PM, Geert Uytterhoeven wrote:
+> On Fri, Nov 16, 2012 at 5:47 AM,  <gerg@snapgear.com> wrote:
+>> ColdFire p[eripheraps, instead of hard coded clock definitions.
+>
+> peripherals
 
-Gr{oetje,eeting}s,
+Thanks for the fixups. All applied.
 
-                        Geert
+Regards
+Greg
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close,                            FAX:         +61 7 3891 3630
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
