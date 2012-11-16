@@ -1,15 +1,15 @@
 From: <gerg@snapgear.com>
-Subject: [PATCH 07/12] m68knommu: add clock definitions for 527x ColdFire CPU types
-Date: Fri, 16 Nov 2012 14:47:31 +1000
-Message-ID: <1353041256-2959-8-git-send-email-gerg@snapgear.com>
+Subject: [PATCH 10/12] m68knommu: add clock definitions for 5407 ColdFire CPU types
+Date: Fri, 16 Nov 2012 14:47:34 +1000
+Message-ID: <1353041256-2959-11-git-send-email-gerg@snapgear.com>
 References: <1353041256-2959-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:45249 "EHLO
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:45256 "EHLO
 	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750939Ab2KPElg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Nov 2012 23:41:36 -0500
+	with ESMTP id S1750939Ab2KPElj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Nov 2012 23:41:39 -0500
 In-Reply-To: <1353041256-2959-1-git-send-email-gerg@snapgear.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -18,49 +18,39 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-Add a base set of clocks for the 527x ColdFire CPU types.
+Add a base set of clocks for the 5407 ColdFire CPU types.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/platform/coldfire/m527x.c |   30 ++++++++++++++++++++++++++++++
- 1 files changed, 30 insertions(+), 0 deletions(-)
+ arch/m68k/platform/coldfire/m5407.c |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/platform/coldfire/m527x.c b/arch/m68k/platform/coldfire/m527x.c
-index 1431ba0..6fbfe90 100644
---- a/arch/m68k/platform/coldfire/m527x.c
-+++ b/arch/m68k/platform/coldfire/m527x.c
-@@ -20,6 +20,36 @@
+diff --git a/arch/m68k/platform/coldfire/m5407.c b/arch/m68k/platform/coldfire/m5407.c
+index bb6c746..2fb3cdb 100644
+--- a/arch/m68k/platform/coldfire/m5407.c
++++ b/arch/m68k/platform/coldfire/m5407.c
+@@ -16,6 +16,26 @@
+ #include <asm/machdep.h>
  #include <asm/coldfire.h>
  #include <asm/mcfsim.h>
- #include <asm/mcfuart.h>
 +#include <asm/mcfclk.h>
 +
 +/***************************************************************************/
 +
 +DEFINE_CLK(pll, "pll.0", MCF_CLK);
 +DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
-+DEFINE_CLK(mcfpit0, "mcfpit.0", MCF_CLK);
-+DEFINE_CLK(mcfpit1, "mcfpit.1", MCF_CLK);
-+DEFINE_CLK(mcfpit2, "mcfpit.2", MCF_CLK);
-+DEFINE_CLK(mcfpit3, "mcfpit.3", MCF_CLK);
++DEFINE_CLK(mcftmr0, "mcftmr.0", MCF_BUSCLK);
++DEFINE_CLK(mcftmr1, "mcftmr.1", MCF_BUSCLK);
 +DEFINE_CLK(mcfuart0, "mcfuart.0", MCF_BUSCLK);
 +DEFINE_CLK(mcfuart1, "mcfuart.1", MCF_BUSCLK);
-+DEFINE_CLK(mcfuart2, "mcfuart.2", MCF_BUSCLK);
-+DEFINE_CLK(fec0, "fec.0", MCF_BUSCLK);
-+DEFINE_CLK(fec1, "fec.1", MCF_BUSCLK);
 +
 +struct clk *mcf_clks[] = {
 +	&clk_pll,
 +	&clk_sys,
-+	&clk_mcfpit0,
-+	&clk_mcfpit1,
-+	&clk_mcfpit2,
-+	&clk_mcfpit3,
++	&clk_mcftmr0,
++	&clk_mcftmr1,
 +	&clk_mcfuart0,
 +	&clk_mcfuart1,
-+	&clk_mcfuart2,
-+	&clk_fec0,
-+	&clk_fec1,
 +	NULL
 +};
  
