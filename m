@@ -1,7 +1,7 @@
 From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 008/493] zorro: remove CONFIG_HOTPLUG ifdefs
-Date: Mon, 19 Nov 2012 13:19:17 -0500
-Message-ID: <1353349642-3677-8-git-send-email-wfp5p@virginia.edu>
+Subject: [PATCH 286/493] m68k: remove use of __devinit
+Date: Mon, 19 Nov 2012 13:23:55 -0500
+Message-ID: <1353349642-3677-286-git-send-email-wfp5p@virginia.edu>
 References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
@@ -10,37 +10,53 @@ List-Id: linux-m68k@vger.kernel.org
 To: gregkh@linuxfoundation.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Remove conditional code based on CONFIG_HOTPLUG being false.  It's
-always on now in preparation of it going away as an option.
+CONFIG_HOTPLUG is going away as an option so __devinit is no longer
+needed.
 
 Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org> 
 Cc: linux-m68k@lists.linux-m68k.org 
 ---
- drivers/zorro/zorro-driver.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/m68k/include/asm/parport.h | 4 ++--
+ arch/m68k/kernel/pcibios.c      | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index 229624f..ac1db7f 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -142,7 +142,6 @@ static int zorro_bus_match(struct device *dev, struct device_driver *drv)
+diff --git a/arch/m68k/include/asm/parport.h b/arch/m68k/include/asm/parport.h
+index 646b187..5ea75e6 100644
+--- a/arch/m68k/include/asm/parport.h
++++ b/arch/m68k/include/asm/parport.h
+@@ -15,8 +15,8 @@
+ #define outsl(port,buf,len)  isa_outsb(port,buf,(len)<<2)
  
- static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
+ /* no dma, or IRQ autoprobing */
+-static int __devinit parport_pc_find_isa_ports (int autoirq, int autodma);
+-static int __devinit parport_pc_find_nonpci_ports (int autoirq, int autodma)
++static int parport_pc_find_isa_ports (int autoirq, int autodma);
++static int parport_pc_find_nonpci_ports (int autoirq, int autodma)
  {
--#ifdef CONFIG_HOTPLUG
- 	struct zorro_dev *z;
- 
- 	if (!dev)
-@@ -159,9 +158,6 @@ static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
- 		return -ENOMEM;
- 
+         if (! (MACH_IS_Q40))
+ 	  return 0; /* count=0 */
+diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+index 73fa0b5..931a31f 100644
+--- a/arch/m68k/kernel/pcibios.c
++++ b/arch/m68k/kernel/pcibios.c
+@@ -87,7 +87,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
  	return 0;
--#else /* !CONFIG_HOTPLUG */
--	return -ENODEV;
--#endif /* !CONFIG_HOTPLUG */
  }
  
- struct bus_type zorro_bus_type = {
+-void __devinit pcibios_fixup_bus(struct pci_bus *bus)
++void pcibios_fixup_bus(struct pci_bus *bus)
+ {
+ 	struct pci_dev *dev;
+ 
+@@ -97,7 +97,7 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+ 	}
+ }
+ 
+-char __devinit *pcibios_setup(char *str)
++char *pcibios_setup(char *str)
+ {
+ 	return str;
+ }
 -- 
 1.8.0
