@@ -1,44 +1,27 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.7 (take 3)
-Date: Sun, 18 Nov 2012 10:47:59 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1211181044490.29846@ayla.of.borg>
+From: <gerg@snapgear.com>
+Subject: [PATCH 0/4] m68knommu: add support for ColdFire 5373 CPU family
+Date: Mon, 19 Nov 2012 15:14:04 +1000
+Message-ID: <1353302048-924-1-git-send-email-gerg@snapgear.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mivwsmailout1.mcafee.com ([161.69.47.167]:27396 "EHLO
+	MIVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751395Ab2KSFOp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Nov 2012 00:14:45 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-	Hi Linus,
 
-The following changes since commit f4a75d2eb7b1e2206094b901be09adb31ba63681:
-  Linus Torvalds (1):
-        Linux 3.7-rc6
+The following patches add support for the ColdFire 5373 CPU family.
+At this stage it is very much an RFC really, I don't have any 5373 hardware
+to even test it on.
 
-are available in the git repository at:
+It is based on ideas taken from Gachet Daniel's patch set that added support
+for the M5373EVB. But these patches are quite different. I could see from
+his changes that the 5373 CPU family is very similar to the 532x family.
+So these patches morph the current 532x CPU family support to be able to
+also support the 5373 family.
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-Andreas Schwab (1):
-      m68k: fix sigset_t accessor functions
-
- arch/m68k/include/asm/signal.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-This is a bug fix for asm constraints that affect sending RT signals, also
-destined for -stable.
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Would be really great if someone could actually test that these work.
