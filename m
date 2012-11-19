@@ -1,48 +1,37 @@
-From: <gerg@snapgear.com>
-Subject: [PATCH 4/4] m68knommu: add support for configuring a Freescale M5373EVB board
-Date: Mon, 19 Nov 2012 15:14:08 +1000
-Message-ID: <1353302048-924-5-git-send-email-gerg@snapgear.com>
-References: <1353302048-924-1-git-send-email-gerg@snapgear.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Bill Pemberton <wfp5p@virginia.edu>
+Subject: [PATCH 381/493] m68k: remove use of __devinitconst
+Date: Mon, 19 Nov 2012 13:25:30 -0500
+Message-ID: <1353349642-3677-381-git-send-email-wfp5p@virginia.edu>
+References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mivwsmailout1.mcafee.com ([161.69.47.167]:27405 "EHLO
-	MIVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751395Ab2KSFOx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Nov 2012 00:14:53 -0500
-In-Reply-To: <1353302048-924-1-git-send-email-gerg@snapgear.com>
+In-Reply-To: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: gregkh@linuxfoundation.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-From: Greg Ungerer <gerg@uclinux.org>
+CONFIG_HOTPLUG is going away as an option so __devinitconst is no
+longer needed.
 
-Add a configuration switch for supporting the Freescale M5373EVB board.
-It is based on the newly added ColdFire 537x CPU support.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org> 
+Cc: linux-m68k@lists.linux-m68k.org 
 ---
- arch/m68k/Kconfig.machine |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+ arch/m68k/emu/nfeth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 7cdf6b0..5f93fad 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -359,6 +359,13 @@ config COBRA5329
- 	help
- 	  Support for the senTec COBRA5329 board.
+diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
+index a985a7e..695cd73 100644
+--- a/arch/m68k/emu/nfeth.c
++++ b/arch/m68k/emu/nfeth.c
+@@ -39,7 +39,7 @@ enum {
+ #define MAX_UNIT	8
  
-+config M5373EVB
-+	bool "Freescale M5373EVB board support"
-+	depends on M537x
-+	select FREESCALE
-+	help
-+	  Support for the Freescale M5373EVB board.
-+
- config M5407C3
- 	bool "Motorola M5407C3 board support"
- 	depends on M5407
+ /* These identify the driver base version and may not be removed. */
+-static const char version[] __devinitconst =
++static const char version[] =
+ 	KERN_INFO KBUILD_MODNAME ".c:v" DRV_VERSION " " DRV_RELDATE
+ 	" S.Opichal, M.Jurik, P.Stehlik\n"
+ 	KERN_INFO " http://aranym.org/\n";
 -- 
-1.7.0.4
+1.8.0
