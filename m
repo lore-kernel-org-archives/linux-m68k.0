@@ -1,16 +1,15 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] m68k: move to a single instance of
-	free_initmem()
-Date: Fri, 30 Nov 2012 14:24:24 +1000
-Message-ID: <50B834F8.3070007@snapgear.com>
-References: <1350963636-30424-1-git-send-email-gerg@snapgear.com>
- <CAMuHMdX5+gdM+jHEjLLZZJA8_oupeBP4CHbQrVHoE7CRuYBipQ@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH] m68k: merge arch free memory functions
+ into a single function
+Date: Sat, 1 Dec 2012 14:49:56 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1212011441010.9740@nippy.intranet>
+References: <1354249670-4376-1-git-send-email-gerg@snapgear.com>
 Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <uclinux-dev-bounces@uclinux.org>
-In-Reply-To: <CAMuHMdX5+gdM+jHEjLLZZJA8_oupeBP4CHbQrVHoE7CRuYBipQ@mail.gmail.com>
+In-Reply-To: <1354249670-4376-1-git-send-email-gerg@snapgear.com>
 List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
  <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
 List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
@@ -20,59 +19,23 @@ List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
  <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
 Errors-To: uclinux-dev-bounces@uclinux.org
 Sender: uclinux-dev-bounces@uclinux.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: gerg@snapgear.com
 Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Geert,
 
-On 11/11/12 20:43, Geert Uytterhoeven wrote:
-> On Tue, Oct 23, 2012 at 5:40 AM,  <gerg@snapgear.com> wrote:
-[snip]
->>   void free_initmem(void)
->>   {
->> -#ifdef CONFIG_RAMKERNEL
->> +#ifndef CONFIG_MMU_SUN3
->>          unsigned long addr;
->>
->> -       /*
->> -        * The following code should be cool even if these sections
->> -        * are not page aligned.
->> -        */
->> -       addr = PAGE_ALIGN((unsigned long) __init_begin);
->> -       /* next to check that the page we free is not a partial page */
->> -       for (; addr + PAGE_SIZE < ((unsigned long) __init_end); addr += PAGE_SIZE) {
->> +       addr = (unsigned long) __init_begin;
->> +       for (; addr < ((unsigned long) __init_end); addr += PAGE_SIZE) {
->>                  ClearPageReserved(virt_to_page(addr));
->>                  init_page_count(virt_to_page(addr));
->>                  free_page(addr);
->>                  totalram_pages++;
->>          }
->>          pr_notice("Freeing unused kernel memory: %luk freed (0x%x - 0x%x)\n",
->> -               (addr - PAGE_ALIGN((unsigned long) __init_begin)) >> 10,
->> -               (int)(PAGE_ALIGN((unsigned long) __init_begin)),
->> -               (int)(addr - PAGE_SIZE));
->> -#endif
->> +               (addr - (unsigned long) __init_begin) >> 10,
->> +               (unsigned int) __init_begin, (unsigned int) __init_end);
->
-> Which is now BTW almost identical to free_initrd_mem(), so the common
-> parts can be extracted in a helper function.
+On Fri, 30 Nov 2012, gerg@snapgear.com wrote:
 
-Indeed it can. Well spotted :-)
+> -	pr_notice("Freeing unused kernel memory: %luk freed (0x%x - 0x%x)\n",
+> -		(addr - (unsigned long) __init_begin) >> 10,
+> -		(unsigned int) __init_begin, (unsigned int) __init_end);
+> +	pr_notice("Freeing %s memory: %dk freed (0x%lx-0x%lx)\n", name, 
+> +		pages << (PAGE_SHIFT - 10), start, end);
 
-Patch coming up.
+Perhaps "Freed %d KiB %s memory: 0x%lx - 0x%lx\n" is better (a tad shorter 
+and has the correct unit).
 
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Finn
 _______________________________________________
 uClinux-dev mailing list
 uClinux-dev@uclinux.org
