@@ -1,76 +1,108 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] Platform code merge for 68000 core cpus (part2)
-Date: Wed, 5 Dec 2012 13:44:56 +1000
-Message-ID: <50BEC338.30601@snapgear.com>
-References: <1354662289-24601-1-git-send-email-ljalvs@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.8
+Date: Thu, 13 Dec 2012 20:44:14 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1212132040040.14664@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mivwsmailout1.mcafee.com ([161.69.47.167]:30580 "EHLO
-	MIVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753233Ab2LEDtR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Dec 2012 22:49:17 -0500
-In-Reply-To: <1354662289-24601-1-git-send-email-ljalvs@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Luis Alves <ljalvs@gmail.com>
-Cc: uclinux-dev@uclinux.org, linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hi Luis,
+	Hi Linus,
 
-On 05/12/12 09:04, Luis Alves wrote:
-> I'm sending the patch for the 68000 core code merge to add in the 'for-next' branch.
+The following changes since commit 29594404d7fe73cd80eaa4ee8c43dcc53970c60e:
+  Linus Torvalds (1):
+        Linux 3.7
 
-Looks good, thanks. Added to the m68knommu for-next branch.
+are available in the git repository at:
 
-Regards
-Greg
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
+Greg Ungerer (13):
+      m68k: switch to using the asm-generic hw_irq.h
+      m68k: switch to using the asm-generic spinlock.h
+      m68k: switch to using the asm-generic shmparam.h
+      m68k: switch to using the asm-generic auxvec.h
+      m68k: switch to using the asm-generic msgbuf.h
+      m68k: switch to using the asm-generic sembuf.h
+      m68k: switch to using the asm-generic shmbuf.h
+      m68k: switch to using the asm-generic socket.h
+      m68k: switch to using the asm-generic sockios.h
+      m68k: switch to using the asm-generic termbits.h
+      m68k: switch to using the asm-generic termios.h
+      m68k: merge MMU and non-MMU versions of mm/init.c
+      m68k: move to a single instance of free_initmem()
 
-> Signed-off-by: Luis Alves <ljalvs@gmail.com>
-> ---
->   arch/m68k/Makefile                                 |    6 +-
->   arch/m68k/platform/68000/Makefile                  |   18 ++
->   .../{68VZ328/bootlogo.h => 68000/bootlogo-vz.h}    |    0
->   arch/m68k/platform/{68328 => 68000}/bootlogo.h     |    0
->   arch/m68k/platform/{68328 => 68000}/entry.S        |    0
->   arch/m68k/platform/68000/head.S                    |  240 ++++++++++++++++++++
->   arch/m68k/platform/{68328 => 68000}/ints.c         |    2 +-
->   .../platform/{68328/config.c => 68000/m68328.c}    |    2 +-
->   .../{68EZ328/config.c => 68000/m68EZ328.c}         |    2 +-
->   .../{68VZ328/config.c => 68000/m68VZ328.c}         |    4 +-
->   arch/m68k/platform/{68328 => 68000}/romvec.S       |    2 +-
->   arch/m68k/platform/{68328 => 68000}/timers.c       |    2 +-
->   arch/m68k/platform/68328/Makefile                  |   21 --
->   arch/m68k/platform/68328/head-de2.S                |  128 -----------
->   arch/m68k/platform/68328/head-pilot.S              |  207 -----------------
->   arch/m68k/platform/68328/head-ram.S                |  141 ------------
->   arch/m68k/platform/68328/head-rom.S                |  105 ---------
->   arch/m68k/platform/68EZ328/Makefile                |    5 -
->   arch/m68k/platform/68VZ328/Makefile                |    5 -
->   19 files changed, 267 insertions(+), 623 deletions(-)
->   create mode 100644 arch/m68k/platform/68000/Makefile
->   rename arch/m68k/platform/{68VZ328/bootlogo.h => 68000/bootlogo-vz.h} (100%)
->   rename arch/m68k/platform/{68328 => 68000}/bootlogo.h (100%)
->   rename arch/m68k/platform/{68328 => 68000}/entry.S (100%)
->   create mode 100644 arch/m68k/platform/68000/head.S
->   rename arch/m68k/platform/{68328 => 68000}/ints.c (98%)
->   rename arch/m68k/platform/{68328/config.c => 68000/m68328.c} (97%)
->   rename arch/m68k/platform/{68EZ328/config.c => 68000/m68EZ328.c} (97%)
->   rename arch/m68k/platform/{68VZ328/config.c => 68000/m68VZ328.c} (98%)
->   rename arch/m68k/platform/{68328 => 68000}/romvec.S (94%)
->   rename arch/m68k/platform/{68328 => 68000}/timers.c (98%)
->   delete mode 100644 arch/m68k/platform/68328/Makefile
->   delete mode 100644 arch/m68k/platform/68328/head-de2.S
->   delete mode 100644 arch/m68k/platform/68328/head-pilot.S
->   delete mode 100644 arch/m68k/platform/68328/head-ram.S
->   delete mode 100644 arch/m68k/platform/68328/head-rom.S
->   delete mode 100644 arch/m68k/platform/68EZ328/Makefile
->   delete mode 100644 arch/m68k/platform/68VZ328/Makefile
->
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Kees Cook (1):
+      arch/m68k: remove CONFIG_EXPERIMENTAL
+
+Thomas Bogendoerfer (2):
+      m68k/sun3: Get interrupts working again
+      m68k/sun3: Fix instruction faults
+
+Summarized:
+  - Two fixes for Sun-3
+  - Several clean ups
+
+There will be a trivial merge conflict in
+arch/m68k/include/uapi/asm/socket.h, as we switched to the generic
+version, while you already pulled the net tree that added SO_GET_FILTER
+everywhere. Just remove the offending file to fix it.
+
+Thanks for pulling!
+
+ arch/m68k/Kconfig.bus                 |    4 +-
+ arch/m68k/Kconfig.cpu                 |    3 +-
+ arch/m68k/Kconfig.debug               |    2 +-
+ arch/m68k/Kconfig.devices             |    6 +-
+ arch/m68k/include/asm/Kbuild          |    4 +
+ arch/m68k/include/asm/hw_irq.h        |    6 -
+ arch/m68k/include/asm/shmparam.h      |    6 -
+ arch/m68k/include/asm/spinlock.h      |    6 -
+ arch/m68k/include/asm/termios.h       |   50 --------
+ arch/m68k/include/uapi/asm/Kbuild     |   17 ++--
+ arch/m68k/include/uapi/asm/auxvec.h   |    4 -
+ arch/m68k/include/uapi/asm/msgbuf.h   |   31 -----
+ arch/m68k/include/uapi/asm/sembuf.h   |   25 ----
+ arch/m68k/include/uapi/asm/shmbuf.h   |   42 ------
+ arch/m68k/include/uapi/asm/socket.h   |   72 -----------
+ arch/m68k/include/uapi/asm/sockios.h  |   13 --
+ arch/m68k/include/uapi/asm/termbits.h |  201 -----------------------------
+ arch/m68k/include/uapi/asm/termios.h  |   44 -------
+ arch/m68k/kernel/traps.c              |    2 +-
+ arch/m68k/mm/init.c                   |  224 ++++++++++++++++++++++++++++++++-
+ arch/m68k/mm/init_mm.c                |  176 --------------------------
+ arch/m68k/mm/init_no.c                |  145 ---------------------
+ arch/m68k/mm/mcfmmu.c                 |    4 -
+ arch/m68k/mm/motorola.c               |   14 --
+ arch/m68k/mm/sun3mmu.c                |    4 -
+ arch/m68k/sun3/sun3ints.c             |   29 +----
+ 26 files changed, 247 insertions(+), 887 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/hw_irq.h
+ delete mode 100644 arch/m68k/include/asm/shmparam.h
+ delete mode 100644 arch/m68k/include/asm/spinlock.h
+ delete mode 100644 arch/m68k/include/asm/termios.h
+ delete mode 100644 arch/m68k/include/uapi/asm/auxvec.h
+ delete mode 100644 arch/m68k/include/uapi/asm/msgbuf.h
+ delete mode 100644 arch/m68k/include/uapi/asm/sembuf.h
+ delete mode 100644 arch/m68k/include/uapi/asm/shmbuf.h
+ delete mode 100644 arch/m68k/include/uapi/asm/socket.h
+ delete mode 100644 arch/m68k/include/uapi/asm/sockios.h
+ delete mode 100644 arch/m68k/include/uapi/asm/termbits.h
+ delete mode 100644 arch/m68k/include/uapi/asm/termios.h
+ delete mode 100644 arch/m68k/mm/init_mm.c
+ delete mode 100644 arch/m68k/mm/init_no.c
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
