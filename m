@@ -1,108 +1,40 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.8
-Date: Thu, 13 Dec 2012 20:44:14 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1212132040040.14664@ayla.of.borg>
+From: Rob Landley <rob@landley.net>
+Subject: Re: [git pull] m68k updates for 3.8
+Date: Fri, 14 Dec 2012 03:08:54 -0600
+Message-ID: <1355476134.18402.5__21314.2778528438$1355476618$gmane$org@driftwood>
+References: <alpine.DEB.2.00.1212132040040.14664@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1212132040040.14664@ayla.of.borg> (from
+	geert@linux-m68k.org on Thu Dec 13 13:44:14 2012)
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-	Hi Linus,
+On 12/13/2012 01:44:14 PM, Geert Uytterhoeven wrote:
+> 	Hi Linus,
+> 
+> The following changes since commit  
+> 29594404d7fe73cd80eaa4ee8c43dcc53970c60e:
+>   Linus Torvalds (1):
+>         Linux 3.7
 
-The following changes since commit 29594404d7fe73cd80eaa4ee8c43dcc53970c60e:
-  Linus Torvalds (1):
-        Linux 3.7
+Query: what's your test environment?
 
-are available in the git repository at:
+I've been trying to get m68k linux to boot in qemu on and off for years  
+(http://landley.net/aboriginal/bin/system-image-m68k.tar.bz2), but qemu  
+seems to be missing bits (mmu stuff mostly, some work's being done at  
+git://gitorious.org/qemu-m68k/qemu-m68k especially in the q800 branch,  
+but it throws a double MMU fault during kernel boot).
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+Somebody got one of my images to boot under aranym but they had to  
+patch the kernel fairly extensively to add the emulated device support  
+that emulator provided. It doesn't emulate real devices the way qemu  
+does, but qemu doesn't fully emulate the processor (just coldfire in  
+mainline)...
 
-Greg Ungerer (13):
-      m68k: switch to using the asm-generic hw_irq.h
-      m68k: switch to using the asm-generic spinlock.h
-      m68k: switch to using the asm-generic shmparam.h
-      m68k: switch to using the asm-generic auxvec.h
-      m68k: switch to using the asm-generic msgbuf.h
-      m68k: switch to using the asm-generic sembuf.h
-      m68k: switch to using the asm-generic shmbuf.h
-      m68k: switch to using the asm-generic socket.h
-      m68k: switch to using the asm-generic sockios.h
-      m68k: switch to using the asm-generic termbits.h
-      m68k: switch to using the asm-generic termios.h
-      m68k: merge MMU and non-MMU versions of mm/init.c
-      m68k: move to a single instance of free_initmem()
-
-Kees Cook (1):
-      arch/m68k: remove CONFIG_EXPERIMENTAL
-
-Thomas Bogendoerfer (2):
-      m68k/sun3: Get interrupts working again
-      m68k/sun3: Fix instruction faults
-
-Summarized:
-  - Two fixes for Sun-3
-  - Several clean ups
-
-There will be a trivial merge conflict in
-arch/m68k/include/uapi/asm/socket.h, as we switched to the generic
-version, while you already pulled the net tree that added SO_GET_FILTER
-everywhere. Just remove the offending file to fix it.
-
-Thanks for pulling!
-
- arch/m68k/Kconfig.bus                 |    4 +-
- arch/m68k/Kconfig.cpu                 |    3 +-
- arch/m68k/Kconfig.debug               |    2 +-
- arch/m68k/Kconfig.devices             |    6 +-
- arch/m68k/include/asm/Kbuild          |    4 +
- arch/m68k/include/asm/hw_irq.h        |    6 -
- arch/m68k/include/asm/shmparam.h      |    6 -
- arch/m68k/include/asm/spinlock.h      |    6 -
- arch/m68k/include/asm/termios.h       |   50 --------
- arch/m68k/include/uapi/asm/Kbuild     |   17 ++--
- arch/m68k/include/uapi/asm/auxvec.h   |    4 -
- arch/m68k/include/uapi/asm/msgbuf.h   |   31 -----
- arch/m68k/include/uapi/asm/sembuf.h   |   25 ----
- arch/m68k/include/uapi/asm/shmbuf.h   |   42 ------
- arch/m68k/include/uapi/asm/socket.h   |   72 -----------
- arch/m68k/include/uapi/asm/sockios.h  |   13 --
- arch/m68k/include/uapi/asm/termbits.h |  201 -----------------------------
- arch/m68k/include/uapi/asm/termios.h  |   44 -------
- arch/m68k/kernel/traps.c              |    2 +-
- arch/m68k/mm/init.c                   |  224 ++++++++++++++++++++++++++++++++-
- arch/m68k/mm/init_mm.c                |  176 --------------------------
- arch/m68k/mm/init_no.c                |  145 ---------------------
- arch/m68k/mm/mcfmmu.c                 |    4 -
- arch/m68k/mm/motorola.c               |   14 --
- arch/m68k/mm/sun3mmu.c                |    4 -
- arch/m68k/sun3/sun3ints.c             |   29 +----
- 26 files changed, 247 insertions(+), 887 deletions(-)
- delete mode 100644 arch/m68k/include/asm/hw_irq.h
- delete mode 100644 arch/m68k/include/asm/shmparam.h
- delete mode 100644 arch/m68k/include/asm/spinlock.h
- delete mode 100644 arch/m68k/include/asm/termios.h
- delete mode 100644 arch/m68k/include/uapi/asm/auxvec.h
- delete mode 100644 arch/m68k/include/uapi/asm/msgbuf.h
- delete mode 100644 arch/m68k/include/uapi/asm/sembuf.h
- delete mode 100644 arch/m68k/include/uapi/asm/shmbuf.h
- delete mode 100644 arch/m68k/include/uapi/asm/socket.h
- delete mode 100644 arch/m68k/include/uapi/asm/sockios.h
- delete mode 100644 arch/m68k/include/uapi/asm/termbits.h
- delete mode 100644 arch/m68k/include/uapi/asm/termios.h
- delete mode 100644 arch/m68k/mm/init_mm.c
- delete mode 100644 arch/m68k/mm/init_no.c
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Rob
