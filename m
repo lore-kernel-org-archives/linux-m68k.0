@@ -1,122 +1,50 @@
-From: Greg Ungerer <gerg@snapgear.com>
-Subject: [git pull] m68knommu arch updates for 3.8
-Date: Sun, 16 Dec 2012 22:18:44 +1000
-Message-ID: <201212161218.qBGCIibN027429@goober.corp.nai.org>
+From: Mikael Pettersson <mikpe@it.uu.se>
+Subject: possible breakage with the >= 020 bfset et al bitops
+Date: Sun, 16 Dec 2012 16:05:37 +0100
+Message-ID: <20685.58177.575315.650990@pilspetsen.it.uu.se>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:24346 "EHLO
-	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752375Ab2LPMKi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Dec 2012 07:10:38 -0500
+Received: from smtp1.uu.se ([130.238.7.54]:41750 "EHLO smtp1.uu.se"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752253Ab2LPPML (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 16 Dec 2012 10:12:11 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: linux-m68k@vger.kernel.org
+Cc: Mikael Pettersson <mikpe@it.uu.se>
 
-Hi Linus,
+I've recently found and fixed a bug in e2fsprogs on m68k-linux,
+caused by it implementing bitops with bfset et al, and then using
+large (>= 2G) unsigned bit numbers even though such numbers are
+interpreted as negative by the bit field instructions, resulting
+in accesses way below the bitmap being operated upon.
 
-Can you please pull the m68knommu git tree, for-next branch, at:
+A quick glance in the kernel shows that its bitops for >= 020 may
+have the same problem.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+So,
 
-This one has a major restructuring of the non-mmu 68000 support. It merges
-all the related SoC types that use the original 68000 cpu core internally
-so they can share the same core code. It also allows for supporting the
-original stand alone 68000 cpu in its own right. There is also a
-generalization of the clock support of the ColdFire parts, some merging of
-common ColdFire code, and a couple of bug fixes as well.
+Q1: Are the kernel's bitops guaranteed to never be applied to
+bitmaps larger than 256MB (2Gbit)?  ARAnym can certainly boot
+kernels with much more memory than that, so I suspect the answer
+is "no".
 
-Regards
-Greg
+Q2: Assuming a "no" answer to Q1, what do we want to do about it?
+a) declare it a user (driver, whatever) error and ignore it?
+b) add a BUG_ON(nr < 0); at the start of bfset_mem_set_bit et al?
+c) manually adjust the base address and bit number to refer to the
+   correct byte before performing the bit field instructions?
+   (that is what my e2fsprogs fix does)
 
+With option c) I believe there is no longer any advantage to
+bfset et al over the classic bset et al, so some of the code
+in arch/m68k/include/asm/bitops.h could possibly be unified.
 
+Side note: in arch/m68k/include/asm/bitops.h, shouldn't the bit
+number parameter 'nr' be 'unsigned int' for consistency with
+Documentation/atomic_ops.txt?  Surely nothing expects to be able
+to use negative bit numbers...?
 
-The following changes since commit b69f0859dc8e633c5d8c06845811588fe17e68b3:
-  Linus Torvalds (1):
-        Linux 3.7-rc8
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-Greg Ungerer (15):
-      m68knommu: merge ColdFire 5249 and 525x definitions
-      m68knommu: make non-MMU page_to_virt() return a void *
-      m68k: fix unused variable warning in mempcy.c
-      m68knommu: add clock creation support macro for other ColdFire CPUs
-      m68knommu: add clock definitions for 5206 ColdFire CPU types
-      m68knommu: add clock definitions for 523x ColdFire CPU types
-      m68knommu: add clock definitions for 5249 ColdFire CPU types
-      m68knommu: add clock definitions for 525x ColdFire CPU types
-      m68knommu: add clock definitions for 5272 ColdFire CPU types
-      m68knommu: add clock definitions for 527x ColdFire CPU types
-      m68knommu: add clock definitions for 528x ColdFire CPU types
-      m68knommu: add clock definitions for 5307 ColdFire CPU types
-      m68knommu: add clock definitions for 5407 ColdFire CPU types
-      m68knommu: add clock definitions for 54xx ColdFire CPU types
-      m68knommu: modify clock code so it can be used by all ColdFire CPU types
-
-Luis Alves (3):
-      m68knommu: platform code merge for 68000 core cpus
-      m68knommu: allow for configuration of true 68000 based systems
-      m68knommu: disable MC68000 cpu target when MMU is selected
-
- arch/m68k/Kconfig.cpu                              |    3 +-
- arch/m68k/Makefile                                 |    6 +-
- arch/m68k/include/asm/m5249sim.h                   |  269 --------------------
- arch/m68k/include/asm/m525xsim.h                   |  116 +++++++++-
- arch/m68k/include/asm/mcfclk.h                     |    9 +-
- arch/m68k/include/asm/mcfsim.h                     |    5 +-
- arch/m68k/include/asm/page_no.h                    |    2 +-
- arch/m68k/lib/memcpy.c                             |    3 +-
- arch/m68k/platform/68000/Makefile                  |   18 ++
- .../{68VZ328/bootlogo.h => 68000/bootlogo-vz.h}    |    0
- arch/m68k/platform/{68328 => 68000}/bootlogo.h     |    0
- arch/m68k/platform/{68328 => 68000}/entry.S        |    0
- arch/m68k/platform/68000/head.S                    |  240 +++++++++++++++++
- arch/m68k/platform/{68328 => 68000}/ints.c         |    2 +-
- .../platform/{68328/config.c => 68000/m68328.c}    |    2 +-
- .../{68EZ328/config.c => 68000/m68EZ328.c}         |    2 +-
- .../{68VZ328/config.c => 68000/m68VZ328.c}         |    4 +-
- arch/m68k/platform/{68328 => 68000}/romvec.S       |    2 +-
- arch/m68k/platform/{68328 => 68000}/timers.c       |    2 +-
- arch/m68k/platform/68328/Makefile                  |   21 --
- arch/m68k/platform/68328/head-de2.S                |  128 ----------
- arch/m68k/platform/68328/head-pilot.S              |  207 ---------------
- arch/m68k/platform/68328/head-ram.S                |  141 ----------
- arch/m68k/platform/68328/head-rom.S                |  105 --------
- arch/m68k/platform/68EZ328/Makefile                |    5 -
- arch/m68k/platform/68VZ328/Makefile                |    5 -
- arch/m68k/platform/coldfire/clk.c                  |  100 +++-----
- arch/m68k/platform/coldfire/intc-5249.c            |    8 +-
- arch/m68k/platform/coldfire/m5206.c                |   20 ++
- arch/m68k/platform/coldfire/m523x.c                |   28 ++
- arch/m68k/platform/coldfire/m5249.c                |   28 ++-
- arch/m68k/platform/coldfire/m525x.c                |   20 ++
- arch/m68k/platform/coldfire/m5272.c                |   26 ++
- arch/m68k/platform/coldfire/m527x.c                |   30 +++
- arch/m68k/platform/coldfire/m528x.c                |   28 ++
- arch/m68k/platform/coldfire/m5307.c                |   20 ++
- arch/m68k/platform/coldfire/m5407.c                |   20 ++
- arch/m68k/platform/coldfire/m54xx.c                |   26 ++
- 38 files changed, 680 insertions(+), 971 deletions(-)
- delete mode 100644 arch/m68k/include/asm/m5249sim.h
- create mode 100644 arch/m68k/platform/68000/Makefile
- rename arch/m68k/platform/{68VZ328/bootlogo.h => 68000/bootlogo-vz.h} (100%)
- rename arch/m68k/platform/{68328 => 68000}/bootlogo.h (100%)
- rename arch/m68k/platform/{68328 => 68000}/entry.S (100%)
- create mode 100644 arch/m68k/platform/68000/head.S
- rename arch/m68k/platform/{68328 => 68000}/ints.c (98%)
- rename arch/m68k/platform/{68328/config.c => 68000/m68328.c} (97%)
- rename arch/m68k/platform/{68EZ328/config.c => 68000/m68EZ328.c} (97%)
- rename arch/m68k/platform/{68VZ328/config.c => 68000/m68VZ328.c} (98%)
- rename arch/m68k/platform/{68328 => 68000}/romvec.S (94%)
- rename arch/m68k/platform/{68328 => 68000}/timers.c (98%)
- delete mode 100644 arch/m68k/platform/68328/Makefile
- delete mode 100644 arch/m68k/platform/68328/head-de2.S
- delete mode 100644 arch/m68k/platform/68328/head-pilot.S
- delete mode 100644 arch/m68k/platform/68328/head-ram.S
- delete mode 100644 arch/m68k/platform/68328/head-rom.S
- delete mode 100644 arch/m68k/platform/68EZ328/Makefile
- delete mode 100644 arch/m68k/platform/68VZ328/Makefile
+/Mikael
