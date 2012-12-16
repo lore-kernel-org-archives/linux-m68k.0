@@ -1,39 +1,56 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: possible breakage with the >= 020 bfset et al bitops
-Date: Sun, 16 Dec 2012 16:21:37 +0100
-Message-ID: <CAMuHMdUsu-=K1rjPVAtZmj154KEjfQE1zHtO6FjVGLXii8zL+g@mail.gmail.com>
-References: <20685.58177.575315.650990@pilspetsen.it.uu.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <20685.58177.575315.650990@pilspetsen.it.uu.se>
-Sender: linux-arch-owner@vger.kernel.org
-To: Mikael Pettersson <mikpe@it.uu.se>
-Cc: linux-m68k@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Linux-Arch <linux-arch@vger.kernel.org>
+Subject: [PATCH 2/2] asm-generic/dma-mapping-broken.h: Provide dma_alloc_attrs()/dma_free_attrs()
+Date: Sun, 16 Dec 2012 18:38:47 +0100
+Message-ID: <1355679527-1207-2-git-send-email-geert@linux-m68k.org>
+References: <1355679527-1207-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1355679527-1207-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sun, Dec 16, 2012 at 4:05 PM, Mikael Pettersson <mikpe@it.uu.se> wrote:
-> Side note: in arch/m68k/include/asm/bitops.h, shouldn't the bit
-> number parameter 'nr' be 'unsigned int' for consistency with
-> Documentation/atomic_ops.txt?  Surely nothing expects to be able
-> to use negative bit numbers...?
+Since commit 0049fb2603b7afb1080776ee691dfa5a3d282357 ("OMAPFB: use
+dma_alloc_attrs to allocate memory") we have one non-arch user of
+dma_{alloc,free}_attrs().
 
-Haven't check all archs, but:
+Hence provide these functions, as wrappers around
+dma_{alloc,free}_coherent().
 
-m68k: int
-x86: mix of signed and unsigned int
-Documentation/atomic_ops.txt: unsigned long
-asm-generic: int
+Note that most architectures do it the other way around. But as these are
+dummy functions, we don't care.
 
-So at least we're consistent with asm-generic...
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ include/asm-generic/dma-mapping-broken.h |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/include/asm-generic/dma-mapping-broken.h b/include/asm-generic/dma-mapping-broken.h
+index ccf7b4f..6c32af9 100644
+--- a/include/asm-generic/dma-mapping-broken.h
++++ b/include/asm-generic/dma-mapping-broken.h
+@@ -16,6 +16,22 @@ extern void
+ dma_free_coherent(struct device *dev, size_t size, void *cpu_addr,
+ 		    dma_addr_t dma_handle);
+ 
++static inline void *dma_alloc_attrs(struct device *dev, size_t size,
++				    dma_addr_t *dma_handle, gfp_t flag,
++				    struct dma_attrs *attrs)
++{
++	/* attrs is not supported and ignored */
++	return dma_alloc_coherent(dev, size, dma_handle, flag);
++}
++
++static inline void dma_free_attrs(struct device *dev, size_t size,
++				  void *cpu_addr, dma_addr_t dma_handle,
++				  struct dma_attrs *attrs)
++{
++	/* attrs is not supported and ignored */
++	dma_free_coherent(dev, size, cpu_addr, dma_handle);
++}
++
+ #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
+ #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
+ 
+-- 
+1.7.0.4
