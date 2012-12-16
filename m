@@ -1,60 +1,122 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [git pull] m68k updates for 3.8
-Date: Sun, 16 Dec 2012 11:19:07 +0100
-Message-ID: <CAMuHMdWSFphLjm6Lwh15nj+mSp1B_JqavU8zygeK0UwEvwu-nA__1231.04782910577$1355653188$gmane$org@mail.gmail.com>
-References: <1355521700.18402.7@driftwood>
-	<50CC687F.6060305@westnet.com.au>
+From: Greg Ungerer <gerg@snapgear.com>
+Subject: [git pull] m68knommu arch updates for 3.8
+Date: Sun, 16 Dec 2012 22:18:44 +1000
+Message-ID: <201212161218.qBGCIibN027429@goober.corp.nai.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <50CC687F.6060305@westnet.com.au>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173]:24346 "EHLO
+	DNVWSMAILOUT1.mcafee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752375Ab2LPMKi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Dec 2012 07:10:38 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Cc: Rob Landley <rob@landley.net>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: gerg@uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-On Sat, Dec 15, 2012 at 1:09 PM, Greg Ungerer
-<gregungerer@westnet.com.au> wrote:
-> On 12/15/2012 07:48 AM, Rob Landley wrote:
->> On 12/14/2012 06:04:51 AM, Greg Ungerer wrote:
->>> Hi Rob,
->>>> Somebody got one of my images to boot under aranym but they had to patch
->>>> the kernel fairly extensively to add the emulated device support that
->>>> emulator provided. It doesn't emulate real devices the way qemu does,
->>>> but qemu doesn't fully emulate the processor (just coldfire in
->>>> mainline)...
->>>
->>> I use aranym for testing m68k. Though I don't really pound to heavily
->>> on the devices. I really only cross-compile small systems for testing
->>> on it.
->>
->> What kernel config do you use for aranym? I don't see an an aranym entry
->> in
->> arch/m68k/configs, and I stopped using it precisely because it required
->> several large patches to add emulated device support for everything from
->> serial console to block devices. (There was a kernel upgrade, it broke,
->> I cut a release without it. Pretty much the same reason I stopped using
->> squashfs for a year or so until it finally got merged.)
->
-> arch/m68k/configs/atari_defconfig
+Hi Linus,
 
-The normal defconfig (aka multi_defconfig) should also work.
+Can you please pull the m68knommu git tree, for-next branch, at:
 
-> AranyM is an Atari emulator. As far as I know all the special device
-> support has been merged into mainline now.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-Indeed, as of v2.6.39.
+This one has a major restructuring of the non-mmu 68000 support. It merges
+all the related SoC types that use the original 68000 cpu core internally
+so they can share the same core code. It also allows for supporting the
+original stand alone 68000 cpu in its own right. There is also a
+generalization of the clock support of the ColdFire parts, some merging of
+common ColdFire code, and a couple of bug fixes as well.
 
-Even without that support, an Atari kernel should work (albeit slower), except
-for networking.
+Regards
+Greg
 
-Gr{oetje,eeting}s,
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The following changes since commit b69f0859dc8e633c5d8c06845811588fe17e68b3:
+  Linus Torvalds (1):
+        Linux 3.7-rc8
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+Greg Ungerer (15):
+      m68knommu: merge ColdFire 5249 and 525x definitions
+      m68knommu: make non-MMU page_to_virt() return a void *
+      m68k: fix unused variable warning in mempcy.c
+      m68knommu: add clock creation support macro for other ColdFire CPUs
+      m68knommu: add clock definitions for 5206 ColdFire CPU types
+      m68knommu: add clock definitions for 523x ColdFire CPU types
+      m68knommu: add clock definitions for 5249 ColdFire CPU types
+      m68knommu: add clock definitions for 525x ColdFire CPU types
+      m68knommu: add clock definitions for 5272 ColdFire CPU types
+      m68knommu: add clock definitions for 527x ColdFire CPU types
+      m68knommu: add clock definitions for 528x ColdFire CPU types
+      m68knommu: add clock definitions for 5307 ColdFire CPU types
+      m68knommu: add clock definitions for 5407 ColdFire CPU types
+      m68knommu: add clock definitions for 54xx ColdFire CPU types
+      m68knommu: modify clock code so it can be used by all ColdFire CPU types
+
+Luis Alves (3):
+      m68knommu: platform code merge for 68000 core cpus
+      m68knommu: allow for configuration of true 68000 based systems
+      m68knommu: disable MC68000 cpu target when MMU is selected
+
+ arch/m68k/Kconfig.cpu                              |    3 +-
+ arch/m68k/Makefile                                 |    6 +-
+ arch/m68k/include/asm/m5249sim.h                   |  269 --------------------
+ arch/m68k/include/asm/m525xsim.h                   |  116 +++++++++-
+ arch/m68k/include/asm/mcfclk.h                     |    9 +-
+ arch/m68k/include/asm/mcfsim.h                     |    5 +-
+ arch/m68k/include/asm/page_no.h                    |    2 +-
+ arch/m68k/lib/memcpy.c                             |    3 +-
+ arch/m68k/platform/68000/Makefile                  |   18 ++
+ .../{68VZ328/bootlogo.h => 68000/bootlogo-vz.h}    |    0
+ arch/m68k/platform/{68328 => 68000}/bootlogo.h     |    0
+ arch/m68k/platform/{68328 => 68000}/entry.S        |    0
+ arch/m68k/platform/68000/head.S                    |  240 +++++++++++++++++
+ arch/m68k/platform/{68328 => 68000}/ints.c         |    2 +-
+ .../platform/{68328/config.c => 68000/m68328.c}    |    2 +-
+ .../{68EZ328/config.c => 68000/m68EZ328.c}         |    2 +-
+ .../{68VZ328/config.c => 68000/m68VZ328.c}         |    4 +-
+ arch/m68k/platform/{68328 => 68000}/romvec.S       |    2 +-
+ arch/m68k/platform/{68328 => 68000}/timers.c       |    2 +-
+ arch/m68k/platform/68328/Makefile                  |   21 --
+ arch/m68k/platform/68328/head-de2.S                |  128 ----------
+ arch/m68k/platform/68328/head-pilot.S              |  207 ---------------
+ arch/m68k/platform/68328/head-ram.S                |  141 ----------
+ arch/m68k/platform/68328/head-rom.S                |  105 --------
+ arch/m68k/platform/68EZ328/Makefile                |    5 -
+ arch/m68k/platform/68VZ328/Makefile                |    5 -
+ arch/m68k/platform/coldfire/clk.c                  |  100 +++-----
+ arch/m68k/platform/coldfire/intc-5249.c            |    8 +-
+ arch/m68k/platform/coldfire/m5206.c                |   20 ++
+ arch/m68k/platform/coldfire/m523x.c                |   28 ++
+ arch/m68k/platform/coldfire/m5249.c                |   28 ++-
+ arch/m68k/platform/coldfire/m525x.c                |   20 ++
+ arch/m68k/platform/coldfire/m5272.c                |   26 ++
+ arch/m68k/platform/coldfire/m527x.c                |   30 +++
+ arch/m68k/platform/coldfire/m528x.c                |   28 ++
+ arch/m68k/platform/coldfire/m5307.c                |   20 ++
+ arch/m68k/platform/coldfire/m5407.c                |   20 ++
+ arch/m68k/platform/coldfire/m54xx.c                |   26 ++
+ 38 files changed, 680 insertions(+), 971 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/m5249sim.h
+ create mode 100644 arch/m68k/platform/68000/Makefile
+ rename arch/m68k/platform/{68VZ328/bootlogo.h => 68000/bootlogo-vz.h} (100%)
+ rename arch/m68k/platform/{68328 => 68000}/bootlogo.h (100%)
+ rename arch/m68k/platform/{68328 => 68000}/entry.S (100%)
+ create mode 100644 arch/m68k/platform/68000/head.S
+ rename arch/m68k/platform/{68328 => 68000}/ints.c (98%)
+ rename arch/m68k/platform/{68328/config.c => 68000/m68328.c} (97%)
+ rename arch/m68k/platform/{68EZ328/config.c => 68000/m68EZ328.c} (97%)
+ rename arch/m68k/platform/{68VZ328/config.c => 68000/m68VZ328.c} (98%)
+ rename arch/m68k/platform/{68328 => 68000}/romvec.S (94%)
+ rename arch/m68k/platform/{68328 => 68000}/timers.c (98%)
+ delete mode 100644 arch/m68k/platform/68328/Makefile
+ delete mode 100644 arch/m68k/platform/68328/head-de2.S
+ delete mode 100644 arch/m68k/platform/68328/head-pilot.S
+ delete mode 100644 arch/m68k/platform/68328/head-ram.S
+ delete mode 100644 arch/m68k/platform/68328/head-rom.S
+ delete mode 100644 arch/m68k/platform/68EZ328/Makefile
+ delete mode 100644 arch/m68k/platform/68VZ328/Makefile
