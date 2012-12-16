@@ -1,10 +1,8 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/2] asm-generic/dma-mapping-broken.h: Provide dma_alloc_attrs()/dma_free_attrs()
-Date: Sun, 16 Dec 2012 18:38:47 +0100
-Message-ID: <1355679527-1207-2-git-send-email-geert@linux-m68k.org>
-References: <1355679527-1207-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 1/2] m68k: Provide dma_alloc_attrs()/dma_free_attrs()
+Date: Sun, 16 Dec 2012 18:38:46 +0100
+Message-ID: <1355679527-1207-1-git-send-email-geert__16714.0480167747$1355679555$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1355679527-1207-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
@@ -17,21 +15,22 @@ dma_{alloc,free}_attrs().
 Hence provide these functions, as wrappers around
 dma_{alloc,free}_coherent().
 
-Note that most architectures do it the other way around. But as these are
-dummy functions, we don't care.
+Note that most architectures do it the other way around. But as so far
+m68k doesn't support the attributes at all, our solution should generate
+smaller code.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- include/asm-generic/dma-mapping-broken.h |   16 ++++++++++++++++
+ arch/m68k/include/asm/dma-mapping.h |   16 ++++++++++++++++
  1 files changed, 16 insertions(+), 0 deletions(-)
 
-diff --git a/include/asm-generic/dma-mapping-broken.h b/include/asm-generic/dma-mapping-broken.h
-index ccf7b4f..6c32af9 100644
---- a/include/asm-generic/dma-mapping-broken.h
-+++ b/include/asm-generic/dma-mapping-broken.h
-@@ -16,6 +16,22 @@ extern void
- dma_free_coherent(struct device *dev, size_t size, void *cpu_addr,
- 		    dma_addr_t dma_handle);
+diff --git a/arch/m68k/include/asm/dma-mapping.h b/arch/m68k/include/asm/dma-mapping.h
+index 17f7a45..3e6b844 100644
+--- a/arch/m68k/include/asm/dma-mapping.h
++++ b/arch/m68k/include/asm/dma-mapping.h
+@@ -21,6 +21,22 @@ extern void *dma_alloc_coherent(struct device *, size_t,
+ extern void dma_free_coherent(struct device *, size_t,
+ 			      void *, dma_addr_t);
  
 +static inline void *dma_alloc_attrs(struct device *dev, size_t size,
 +				    dma_addr_t *dma_handle, gfp_t flag,
@@ -49,8 +48,8 @@ index ccf7b4f..6c32af9 100644
 +	dma_free_coherent(dev, size, cpu_addr, dma_handle);
 +}
 +
- #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
- #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
- 
+ static inline void *dma_alloc_noncoherent(struct device *dev, size_t size,
+ 					  dma_addr_t *handle, gfp_t flag)
+ {
 -- 
 1.7.0.4
