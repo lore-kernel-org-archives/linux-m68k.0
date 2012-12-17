@@ -1,55 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/2] m68k: Provide dma_alloc_attrs()/dma_free_attrs()
-Date: Sun, 16 Dec 2012 18:38:46 +0100
-Message-ID: <1355679527-1207-1-git-send-email-geert__16714.0480167747$1355679555$gmane$org@linux-m68k.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/2] asm-generic/dma-mapping-broken.h: Provide dma_alloc_attrs()/dma_free_attrs()
+Date: Mon, 17 Dec 2012 16:12:43 +0000
+Message-ID: <201212171612.44126.arnd__43733.9808712297$1355760809$gmane$org@arndb.de>
+References: <1355679527-1207-1-git-send-email-geert@linux-m68k.org> <1355679527-1207-2-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1355679527-1207-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Since commit 0049fb2603b7afb1080776ee691dfa5a3d282357 ("OMAPFB: use
-dma_alloc_attrs to allocate memory") we have one non-arch user of
-dma_{alloc,free}_attrs().
+On Sunday 16 December 2012, Geert Uytterhoeven wrote:
+> 
+> Since commit 0049fb2603b7afb1080776ee691dfa5a3d282357 ("OMAPFB: use
+> dma_alloc_attrs to allocate memory") we have one non-arch user of
+> dma_{alloc,free}_attrs().
+> 
+> Hence provide these functions, as wrappers around
+> dma_{alloc,free}_coherent().
+> 
+> Note that most architectures do it the other way around. But as these are
+> dummy functions, we don't care.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  include/asm-generic/dma-mapping-broken.h |   16 ++++++++++++++++
+>  1 files changed, 16 insertions(+), 0 deletions(-)
 
-Hence provide these functions, as wrappers around
-dma_{alloc,free}_coherent().
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Note that most architectures do it the other way around. But as so far
-m68k doesn't support the attributes at all, our solution should generate
-smaller code.
+Maybe you can put this one in your m68k tree along with your other
+patch.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/dma-mapping.h |   16 ++++++++++++++++
- 1 files changed, 16 insertions(+), 0 deletions(-)
-
-diff --git a/arch/m68k/include/asm/dma-mapping.h b/arch/m68k/include/asm/dma-mapping.h
-index 17f7a45..3e6b844 100644
---- a/arch/m68k/include/asm/dma-mapping.h
-+++ b/arch/m68k/include/asm/dma-mapping.h
-@@ -21,6 +21,22 @@ extern void *dma_alloc_coherent(struct device *, size_t,
- extern void dma_free_coherent(struct device *, size_t,
- 			      void *, dma_addr_t);
- 
-+static inline void *dma_alloc_attrs(struct device *dev, size_t size,
-+				    dma_addr_t *dma_handle, gfp_t flag,
-+				    struct dma_attrs *attrs)
-+{
-+	/* attrs is not supported and ignored */
-+	return dma_alloc_coherent(dev, size, dma_handle, flag);
-+}
-+
-+static inline void dma_free_attrs(struct device *dev, size_t size,
-+				  void *cpu_addr, dma_addr_t dma_handle,
-+				  struct dma_attrs *attrs)
-+{
-+	/* attrs is not supported and ignored */
-+	dma_free_coherent(dev, size, cpu_addr, dma_handle);
-+}
-+
- static inline void *dma_alloc_noncoherent(struct device *dev, size_t size,
- 					  dma_addr_t *handle, gfp_t flag)
- {
--- 
-1.7.0.4
+	Arnd
