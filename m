@@ -1,54 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] asm-generic/dma-mapping-broken.h: Provide dma_alloc_attrs()/dma_free_attrs()
-Date: Sat, 22 Dec 2012 13:51:32 +0100
-Message-ID: <CAMuHMdXhi_dA9Q04YoQ9yDRrJRpH8mNsLgU88oCdhAgcsQLpyg@mail.gmail.com>
-References: <1355679527-1207-1-git-send-email-geert@linux-m68k.org>
-	<1355679527-1207-2-git-send-email-geert@linux-m68k.org>
-	<201212171612.44126.arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] m68k: Wire up finit_module
+Date: Sun, 23 Dec 2012 10:29:58 +0100
+Message-ID: <1356254998-13380-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201212171612.44126.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Arnd,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/unistd.h      |    2 +-
+ arch/m68k/include/uapi/asm/unistd.h |    1 +
+ arch/m68k/kernel/syscalltable.S     |    1 +
+ 3 files changed, 3 insertions(+), 1 deletions(-)
 
-On Mon, Dec 17, 2012 at 5:12 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Sunday 16 December 2012, Geert Uytterhoeven wrote:
->> Since commit 0049fb2603b7afb1080776ee691dfa5a3d282357 ("OMAPFB: use
->> dma_alloc_attrs to allocate memory") we have one non-arch user of
->> dma_{alloc,free}_attrs().
->>
->> Hence provide these functions, as wrappers around
->> dma_{alloc,free}_coherent().
->>
->> Note that most architectures do it the other way around. But as these are
->> dummy functions, we don't care.
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> ---
->>  include/asm-generic/dma-mapping-broken.h |   16 ++++++++++++++++
->>  1 files changed, 16 insertions(+), 0 deletions(-)
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks!
-
-> Maybe you can put this one in your m68k tree along with your other
-> patch.
-
-Will do.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index 847994c..f9337f6 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -4,7 +4,7 @@
+ #include <uapi/asm/unistd.h>
+ 
+ 
+-#define NR_syscalls		348
++#define NR_syscalls		349
+ 
+ #define __ARCH_WANT_OLD_READDIR
+ #define __ARCH_WANT_OLD_STAT
+diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
+index b94bfbf..625f321 100644
+--- a/arch/m68k/include/uapi/asm/unistd.h
++++ b/arch/m68k/include/uapi/asm/unistd.h
+@@ -353,5 +353,6 @@
+ #define __NR_process_vm_readv	345
+ #define __NR_process_vm_writev	346
+ #define __NR_kcmp		347
++#define __NR_finit_module	348
+ 
+ #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
+diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+index c30da5b..3f04ea0 100644
+--- a/arch/m68k/kernel/syscalltable.S
++++ b/arch/m68k/kernel/syscalltable.S
+@@ -368,4 +368,5 @@ ENTRY(sys_call_table)
+ 	.long sys_process_vm_readv	/* 345 */
+ 	.long sys_process_vm_writev
+ 	.long sys_kcmp
++	.long sys_finit_module
+ 
+-- 
+1.7.0.4
