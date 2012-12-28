@@ -1,61 +1,201 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH] m68k: Wire up finit_module
-Date: Mon, 24 Dec 2012 21:31:01 +1000
-Message-ID: <50D83CF5.7090202__41053.535269066$1356348704$gmane$org@westnet.com.au>
-References: <1356254998-13380-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1356254998-13380-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/RFC 3/4] avr32/bfin/c6x/cris/frv/m68k/mn10300/parisc/xtensa: Add dummy get_dma_ops()
+Date: Fri, 28 Dec 2012 20:23:33 +0100
+Message-ID: <1356722614-18224-4-git-send-email-geert@linux-m68k.org>
+References: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: linux-arch@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>, linux-kernel@vger.kernel.org
 
-On 12/23/2012 07:29 PM, Geert Uytterhoeven wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Provide dummy versions of get_dma_ops(), as dma_mmap_attrs() and
+dma_get_sgtable_attrs() (will) need these
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/avr32/include/asm/dma-mapping.h    |    8 ++++++++
+ arch/blackfin/include/asm/dma-mapping.h |    8 ++++++++
+ arch/c6x/include/asm/dma-mapping.h      |    8 ++++++++
+ arch/cris/include/asm/dma-mapping.h     |    8 ++++++++
+ arch/frv/include/asm/dma-mapping.h      |    8 ++++++++
+ arch/m68k/include/asm/dma-mapping.h     |    8 ++++++++
+ arch/mn10300/include/asm/dma-mapping.h  |    8 ++++++++
+ arch/parisc/include/asm/dma-mapping.h   |    8 ++++++++
+ arch/xtensa/include/asm/dma-mapping.h   |    8 ++++++++
+ 9 files changed, 72 insertions(+), 0 deletions(-)
 
-
->   arch/m68k/include/asm/unistd.h      |    2 +-
->   arch/m68k/include/uapi/asm/unistd.h |    1 +
->   arch/m68k/kernel/syscalltable.S     |    1 +
->   3 files changed, 3 insertions(+), 1 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-> index 847994c..f9337f6 100644
-> --- a/arch/m68k/include/asm/unistd.h
-> +++ b/arch/m68k/include/asm/unistd.h
-> @@ -4,7 +4,7 @@
->   #include <uapi/asm/unistd.h>
->
->
-> -#define NR_syscalls		348
-> +#define NR_syscalls		349
->
->   #define __ARCH_WANT_OLD_READDIR
->   #define __ARCH_WANT_OLD_STAT
-> diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-> index b94bfbf..625f321 100644
-> --- a/arch/m68k/include/uapi/asm/unistd.h
-> +++ b/arch/m68k/include/uapi/asm/unistd.h
-> @@ -353,5 +353,6 @@
->   #define __NR_process_vm_readv	345
->   #define __NR_process_vm_writev	346
->   #define __NR_kcmp		347
-> +#define __NR_finit_module	348
->
->   #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
-> diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-> index c30da5b..3f04ea0 100644
-> --- a/arch/m68k/kernel/syscalltable.S
-> +++ b/arch/m68k/kernel/syscalltable.S
-> @@ -368,4 +368,5 @@ ENTRY(sys_call_table)
->   	.long sys_process_vm_readv	/* 345 */
->   	.long sys_process_vm_writev
->   	.long sys_kcmp
-> +	.long sys_finit_module
->
->
+diff --git a/arch/avr32/include/asm/dma-mapping.h b/arch/avr32/include/asm/dma-mapping.h
+index aaf5199..de55309 100644
+--- a/arch/avr32/include/asm/dma-mapping.h
++++ b/arch/avr32/include/asm/dma-mapping.h
+@@ -8,6 +8,14 @@
+ #include <asm/cacheflush.h>
+ #include <asm/io.h>
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ extern void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 	int direction);
+ 
+diff --git a/arch/blackfin/include/asm/dma-mapping.h b/arch/blackfin/include/asm/dma-mapping.h
+index bbf4610..a2778b3 100644
+--- a/arch/blackfin/include/asm/dma-mapping.h
++++ b/arch/blackfin/include/asm/dma-mapping.h
+@@ -10,6 +10,14 @@
+ #include <asm/cacheflush.h>
+ struct scatterlist;
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ void *dma_alloc_coherent(struct device *dev, size_t size,
+ 			 dma_addr_t *dma_handle, gfp_t gfp);
+ void dma_free_coherent(struct device *dev, size_t size, void *vaddr,
+diff --git a/arch/c6x/include/asm/dma-mapping.h b/arch/c6x/include/asm/dma-mapping.h
+index 3c69406..5ae2f81 100644
+--- a/arch/c6x/include/asm/dma-mapping.h
++++ b/arch/c6x/include/asm/dma-mapping.h
+@@ -17,6 +17,14 @@
+ 
+ #define dma_supported(d, m)	1
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ static inline int dma_set_mask(struct device *dev, u64 dma_mask)
+ {
+ 	if (!dev->dma_mask || !dma_supported(dev, dma_mask))
+diff --git a/arch/cris/include/asm/dma-mapping.h b/arch/cris/include/asm/dma-mapping.h
+index 8588b2c..05a55aa 100644
+--- a/arch/cris/include/asm/dma-mapping.h
++++ b/arch/cris/include/asm/dma-mapping.h
+@@ -10,6 +10,14 @@
+ #include <asm/io.h>
+ #include <asm/scatterlist.h>
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
+ #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
+ 
+diff --git a/arch/frv/include/asm/dma-mapping.h b/arch/frv/include/asm/dma-mapping.h
+index dfb8110..862e9b8 100644
+--- a/arch/frv/include/asm/dma-mapping.h
++++ b/arch/frv/include/asm/dma-mapping.h
+@@ -12,6 +12,14 @@
+  * following DMA API should work.
+  */
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
+ #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
+ 
+diff --git a/arch/m68k/include/asm/dma-mapping.h b/arch/m68k/include/asm/dma-mapping.h
+index c68cdb4..d8977f5 100644
+--- a/arch/m68k/include/asm/dma-mapping.h
++++ b/arch/m68k/include/asm/dma-mapping.h
+@@ -5,6 +5,14 @@
+ 
+ struct scatterlist;
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ static inline int dma_supported(struct device *dev, u64 mask)
+ {
+ 	return 1;
+diff --git a/arch/mn10300/include/asm/dma-mapping.h b/arch/mn10300/include/asm/dma-mapping.h
+index c1be439..b0cea53 100644
+--- a/arch/mn10300/include/asm/dma-mapping.h
++++ b/arch/mn10300/include/asm/dma-mapping.h
+@@ -22,6 +22,14 @@
+  * following DMA API should work.
+  */
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ extern void *dma_alloc_coherent(struct device *dev, size_t size,
+ 				dma_addr_t *dma_handle, int flag);
+ 
+diff --git a/arch/parisc/include/asm/dma-mapping.h b/arch/parisc/include/asm/dma-mapping.h
+index 467bbd5..cdd450f 100644
+--- a/arch/parisc/include/asm/dma-mapping.h
++++ b/arch/parisc/include/asm/dma-mapping.h
+@@ -46,6 +46,14 @@ extern struct hppa_dma_ops pcx_dma_ops;
+ 
+ extern struct hppa_dma_ops *hppa_dma_ops;
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ static inline void *
+ dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 		   gfp_t flag)
+diff --git a/arch/xtensa/include/asm/dma-mapping.h b/arch/xtensa/include/asm/dma-mapping.h
+index 4acb5fe..0061c2d 100644
+--- a/arch/xtensa/include/asm/dma-mapping.h
++++ b/arch/xtensa/include/asm/dma-mapping.h
+@@ -26,6 +26,14 @@ extern void *consistent_alloc(int, size_t, dma_addr_t, unsigned long);
+ extern void consistent_free(void*, size_t, dma_addr_t);
+ extern void consistent_sync(void*, size_t, int);
+ 
++/*
++ *  Dummy to make dma_mmap_attrs()/dma_get_sgtable_attrs() happy
++ */
++static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
++{
++	return NULL;
++}
++
+ #define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
+ #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
+ 
+-- 
+1.7.0.4
