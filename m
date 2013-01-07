@@ -1,129 +1,77 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH/RFC 0/4] Re: dma_mmap_coherent / ARCH_HAS_DMA_MMAP_COHERENT
-Date: Wed, 02 Jan 2013 15:39:55 +0100
-Message-ID: <50E446BB.7090609@samsung.com>
-References: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
- <1356722614-18224-1-git-send-email-geert@linux-m68k.org>
+From: gerg@uclinux.org
+Subject: [PATCH] m68k: fix conditional use of init_pointer_table
+Date: Mon,  7 Jan 2013 21:44:47 +1000
+Message-ID: <1357559087-2536-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-reply-to: <1356722614-18224-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-arch-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-m68k@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from outbound-mail01.westnet.com.au ([203.10.1.242]:65180 "EHLO
+	outbound-mail01.westnet.com.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754270Ab3AGLoz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jan 2013 06:44:55 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hello,
+=46rom: Greg Ungerer <gerg@uclinux.org>
 
-On 12/28/2012 8:23 PM, Geert Uytterhoeven wrote:
-> On Sun, Dec 16, 2012 at 5:03 PM, Geert Uytterhoeven <geert@linux-m68k=
-=2Eorg>
-> wrote:
-> > drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98=
-vb2_dc_mmap=E2=80=99:
-> > drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit=
- declaration of function =E2=80=98dma_mmap_coherent=E2=80=99
-> > drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98=
-vb2_dc_get_base_sgt=E2=80=99:
-> > drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit=
- declaration of function =E2=80=98dma_get_sgtable=E2=80=99
-> > make[6]: *** [drivers/media/v4l2-core/videobuf2-dma-contig.o] Error=
- 1
-> > make[6]: Target `__build' not remade because of errors.
-> > make[5]: *** [drivers/media/v4l2-core] Error 2
-> >
-> > Both dma_mmap_coherent() and dma_get_sgtable() are defined in
-> > include/asm-generic/dma-mapping-common.h only, which is included by
-> > <asm/dma-mapping.h> on alpha, arm, arm64, hexagon, ia64, microblaze=
-, mips,
-> > openrisc, powerpc, s390, sh, sparc, tile, unicore32, x86.
-> > Should the remaining architectures include this, too?
-> > Should it be moved to <linux/dma-mapping.h>?
->
-> I came up with an RFC-solution for this in [PATCH/RFC 3/4]
-> ("avr32/bfin/c6x/cris/frv/m68k/mn10300/parisc/xtensa: Add dummy get_d=
-ma_ops()")
-> and [PATCH/RFC 4/4] ("common: dma-mapping: Move dma_common_*() to
-> <linux/dma-mapping.h>") of this series.
->
-> > Furthermore, there's ARCH_HAS_DMA_MMAP_COHERENT, which is defined
-> > by powerpc only:
-> > arch/powerpc/include/asm/dma-mapping.h:#define ARCH_HAS_DMA_MMAP_CO=
-HERENT
-> >
-> > and handled in some fishy way in sound/core/pcm_native.c:
-> >
-> > #ifndef ARCH_HAS_DMA_MMAP_COHERENT
-> > /* This should be defined / handled globally! */
-> > #ifdef CONFIG_ARM
-> > #define ARCH_HAS_DMA_MMAP_COHERENT
-> > #endif
-> > #endif
-> >
-> > /*
-> >  * mmap the DMA buffer on RAM
-> >  */
-> > int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
-> >                              struct vm_area_struct *area)
-> > {
-> >         area->vm_flags |=3D VM_DONTEXPAND | VM_DONTDUMP;
-> > #ifdef ARCH_HAS_DMA_MMAP_COHERENT
-> >         if (!substream->ops->page &&
-> >             substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DE=
-V)
-> >                 return dma_mmap_coherent(substream->dma_buffer.dev.=
-dev,
-> >                                          area,
-> >                                          substream->runtime->dma_ar=
-ea,
-> >                                          substream->runtime->dma_ad=
-dr,
-> >                                          area->vm_end - area->vm_st=
-art);
-> > #elif defined(CONFIG_MIPS) && defined(CONFIG_DMA_NONCOHERENT)
-> >         if (substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DE=
-V &&
-> >             !plat_device_is_coherent(substream->dma_buffer.dev.dev)=
-)
-> >                 area->vm_page_prot =3D pgprot_noncached(area->vm_pa=
-ge_prot);
-> > #endif /* ARCH_HAS_DMA_MMAP_COHERENT */
-> >         /* mmap with fault handler */
-> >         area->vm_ops =3D &snd_pcm_vm_ops_data_fault;
-> >         return 0;
-> > }
-> > EXPORT_SYMBOL_GPL(snd_pcm_lib_default_mmap);
-> >
-> > What's up here?
->
-> Probably an easy solution here is to kill ARCH_HAS_DMA_MMAP_COHERENT =
-and
-> change the code to
->
->      #if defined(CONFIG_MIPS) && defined(CONFIG_DMA_NONCOHERENT)
-> 	    if (substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV &&
-> 		!plat_device_is_coherent(substream->dma_buffer.dev.dev))
-> 		    area->vm_page_prot =3D pgprot_noncached(area->vm_page_prot);
->      #else
-> 	    if (!substream->ops->page &&
-> 		substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV)
-> 		    return dma_mmap_coherent(substream->dma_buffer.dev.dev,
-> 					     area,
-> 					     substream->runtime->dma_area,
-> 					     substream->runtime->dma_addr,
-> 					     area->vm_end - area->vm_start);
->      #endif
->
-> but obviously I don't like the test for CONFIG_MIPS in generic code..=
-=2E
+Compiling 3.8-rc1 fails for some m68k targets (the non-mmu ones) with:
 
-I think that the best way of handling it would be to move this code to =
-MIPS
-specific dma_mmap_coherent() implementation.
+  CC      arch/m68k/mm/init.o
+arch/m68k/mm/init.c: In function =E2=80=98mem_init=E2=80=99:
+arch/m68k/mm/init.c:191:2: error: implicit declaration of function =E2=80=
+=98init_pointer_table=E2=80=99
+arch/m68k/mm/init.c:191:36: error: =E2=80=98kernel_pg_dir=E2=80=99 unde=
+clared (first use in this function)
+arch/m68k/mm/init.c:191:36: note: each undeclared identifier is reporte=
+d only once for each function it appears in
+arch/m68k/mm/init.c:192:18: error: =E2=80=98PTRS_PER_PGD=E2=80=99 undec=
+lared (first use in this function)
+arch/m68k/mm/init.c:194:4: error: implicit declaration of function =E2=80=
+=98__pgd_page=E2=80=99
+arch/m68k/mm/init.c:198:6: error: =E2=80=98zero_pgtable=E2=80=99 undecl=
+ared (first use in this function)
+make[2]: *** [arch/m68k/mm/init.o] Error 1
+make[1]: *** [arch/m68k/mm] Error 2
+make[1]: Leaving directory `/home/gerg/new-wave.git/linux-3.x'
+make: *** [linux] Error 1
 
-Best regards
+Change the conditions that define init_pointer_table so that it matches=
+ what
+actually uses it.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/mm/init.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index f0e05bc..afd8106 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -39,6 +39,11 @@
+ void *empty_zero_page;
+ EXPORT_SYMBOL(empty_zero_page);
+=20
++#if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
++extern void init_pointer_table(unsigned long ptable);
++extern pmd_t *zero_pgtable;
++#endif
++
+ #ifdef CONFIG_MMU
+=20
+ pg_data_t pg_data_map[MAX_NUMNODES];
+@@ -69,9 +74,6 @@ void __init m68k_setup_node(int node)
+ 	node_set_online(node);
+ }
+=20
+-extern void init_pointer_table(unsigned long ptable);
+-extern pmd_t *zero_pgtable;
+-
+ #else /* CONFIG_MMU */
+=20
+ /*
 --=20
-Marek Szyprowski
-Samsung Poland R&D Center
+1.7.0.4
