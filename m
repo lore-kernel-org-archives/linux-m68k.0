@@ -1,68 +1,91 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] swim: Add missing spinlock init
-Date: Sun, 13 Jan 2013 10:42:56 +0100
-Message-ID: <CAMuHMdX7QtTOeFf_tQyAeY0XPCdBTUZCYkTmC3jWi4S+3zG-Lw@mail.gmail.com>
-References: <20120906134830.52cbdfec@endymion.delvare>
-	<CAMuHMdUXvB8P9J26KbMXeicv0BH=gdaCHaRq-ZAP=73hn+ThMw@mail.gmail.com>
-	<20121216214800.3ad603b4@endymion.delvare>
+Subject: Re: [PATCH/RFC 4/4] common: dma-mapping: Move dma_common_*() to <linux/dma-mapping.h>
+Date: Sun, 13 Jan 2013 11:40:12 +0100
+Message-ID: <CAMuHMdVequkKT96i+7mhZnvogZrMPQDkd3d4EQxwZcvj5gSbWw@mail.gmail.com>
+References: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
+	<1356722614-18224-5-git-send-email-geert@linux-m68k.org>
+	<50E442A7.3010002@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vb0-f45.google.com ([209.85.212.45]:39152 "EHLO
-	mail-vb0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753882Ab3AMJm7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Jan 2013 04:42:59 -0500
-In-Reply-To: <20121216214800.3ad603b4@endymion.delvare>
+Received: from mail-vb0-f49.google.com ([209.85.212.49]:35783 "EHLO
+	mail-vb0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754219Ab3AMKkO convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Jan 2013 05:40:14 -0500
+In-Reply-To: <50E442A7.3010002@samsung.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Hi Jean,
+Hi Marek,
 
-On Sun, Dec 16, 2012 at 9:48 PM, Jean Delvare <khali@linux-fr.org> wrote:
-> On Thu, 6 Sep 2012 14:03:27 +0200, Geert Uytterhoeven wrote:
->> On Thu, Sep 6, 2012 at 1:48 PM, Jean Delvare <khali@linux-fr.org> wrote:
->> > It doesn't seem this spinlock was properly initialized.
+On Wed, Jan 2, 2013 at 3:22 PM, Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> On 12/28/2012 8:23 PM, Geert Uytterhoeven wrote:
+>> dma_common_mmap() and dma_common_get_sgtable() are defined in
+>> drivers/base/dma-mapping.c, and always compiled if CONFIG_HAS_DMA=3D=
+y.
 >>
->> Quiet possible. There's no SMP on m68k, so all spinlock ops expand to nothing.
+>> However, their forward declarations and the inline functions defined=
+ on
+>> top
+>> of them (dma_mmap_attrs(), dma_mmap_coherent(), dma_mmap_writecombin=
+e(),
+>> dma_get_sgtable_attrs()), dma_get_sgtable()) are in
+>> <asm-generic/dma-mapping-common.h>, which is not included by all
+>> architectures supporting CONFIG_HAS_DMA=3Dy.  There exist no alterna=
+tive
+>> implementations.
+>>
+>> Hence for e.g. m68k allmodconfig, I get:
+>>
+>> drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98=
+vb2_dc_mmap=E2=80=99:
+>> drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit
+>> declaration of function =E2=80=98dma_mmap_coherent=E2=80=99
+>> drivers/media/v4l2-core/videobuf2-dma-contig.c: In function
+>> =E2=80=98vb2_dc_get_base_sgt=E2=80=99:
+>> drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit
+>> declaration of function =E2=80=98dma_get_sgtable=E2=80=99
+>>
+>> To fix this
+>>    - Move the forward declarations and inline definitions to
+>>      <linux/dma-mapping.h>, so all CONFIG_HAS_DMA=3Dy architectures =
+can use
+>>      them,
+>>    - Replace the hard "BUG_ON(!ops)" checks for dma_map_ops by soft
+>> checks,
+>>      so architectures can fall back to the common code by returning =
+NULL
+>>      from their get_dma_ops(). Note that there are no "BUG_ON(!ops)"
+>> checks
+>>      in other functions in <asm-generic/dma-mapping-common.h>,
+>>    - Make "struct dma_map_ops *ops" const while we're at it.
 >
-> Can we apply my patch still? Or were you suggesting you're fine with
-> the code as it is?
 >
-> Certainly this isn't my area of expertise but I don't quite get the
-> point of passing a custom lock to blk_init_queue() if locks resolve to
-> nothing anyway.
+> I think that more appropriate way of handling it is to avoid dma_map_=
+ops
+> based
+> calls (those archs probably have some reasons why they don't use it a=
+t all)
+> and
+> provide static inline stubs which call dma_common_mmap and
+> dma_common_get_sgtable.
 
-Thanks, applied and queued for 3.9.
-
->> > Signed-off-by: Jean Delvare <khali@linux-fr.org>
->> > Cc: Finn Thain <fthain@telegraphics.com.au>
->> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> > ---
->> > I can't even build-test this.
->> >
->> >  drivers/block/swim.c |    1 +
->> >  1 file changed, 1 insertion(+)
->> >
->> > --- linux-3.6-rc4.orig/drivers/block/swim.c     2012-07-21 22:58:29.000000000 +0200
->> > +++ linux-3.6-rc4/drivers/block/swim.c  2012-09-06 13:09:26.713382169 +0200
->> > @@ -845,6 +845,7 @@ static int __devinit swim_floppy_init(st
->> >                 swd->unit[drive].swd = swd;
->> >         }
->> >
->> > +       spin_lock_init(&swd->lock);
->> >         swd->queue = blk_init_queue(do_fd_request, &swd->lock);
->> >         if (!swd->queue) {
->> >                 err = -ENOMEM;
+OK, I'll do that.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
                                 -- Linus Torvalds
