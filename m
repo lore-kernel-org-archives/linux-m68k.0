@@ -1,77 +1,68 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68k: fix conditional use of init_pointer_table
-Date: Mon,  7 Jan 2013 21:44:47 +1000
-Message-ID: <1357559087-2536-1-git-send-email-gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] swim: Add missing spinlock init
+Date: Sun, 13 Jan 2013 10:42:56 +0100
+Message-ID: <CAMuHMdX7QtTOeFf_tQyAeY0XPCdBTUZCYkTmC3jWi4S+3zG-Lw@mail.gmail.com>
+References: <20120906134830.52cbdfec@endymion.delvare>
+	<CAMuHMdUXvB8P9J26KbMXeicv0BH=gdaCHaRq-ZAP=73hn+ThMw@mail.gmail.com>
+	<20121216214800.3ad603b4@endymion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outbound-mail01.westnet.com.au ([203.10.1.242]:65180 "EHLO
-	outbound-mail01.westnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754270Ab3AGLoz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jan 2013 06:44:55 -0500
+Received: from mail-vb0-f45.google.com ([209.85.212.45]:39152 "EHLO
+	mail-vb0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753882Ab3AMJm7 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Jan 2013 04:42:59 -0500
+In-Reply-To: <20121216214800.3ad603b4@endymion.delvare>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Jean Delvare <khali@linux-fr.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-=46rom: Greg Ungerer <gerg@uclinux.org>
+Hi Jean,
 
-Compiling 3.8-rc1 fails for some m68k targets (the non-mmu ones) with:
+On Sun, Dec 16, 2012 at 9:48 PM, Jean Delvare <khali@linux-fr.org> wrote:
+> On Thu, 6 Sep 2012 14:03:27 +0200, Geert Uytterhoeven wrote:
+>> On Thu, Sep 6, 2012 at 1:48 PM, Jean Delvare <khali@linux-fr.org> wrote:
+>> > It doesn't seem this spinlock was properly initialized.
+>>
+>> Quiet possible. There's no SMP on m68k, so all spinlock ops expand to nothing.
+>
+> Can we apply my patch still? Or were you suggesting you're fine with
+> the code as it is?
+>
+> Certainly this isn't my area of expertise but I don't quite get the
+> point of passing a custom lock to blk_init_queue() if locks resolve to
+> nothing anyway.
 
-  CC      arch/m68k/mm/init.o
-arch/m68k/mm/init.c: In function =E2=80=98mem_init=E2=80=99:
-arch/m68k/mm/init.c:191:2: error: implicit declaration of function =E2=80=
-=98init_pointer_table=E2=80=99
-arch/m68k/mm/init.c:191:36: error: =E2=80=98kernel_pg_dir=E2=80=99 unde=
-clared (first use in this function)
-arch/m68k/mm/init.c:191:36: note: each undeclared identifier is reporte=
-d only once for each function it appears in
-arch/m68k/mm/init.c:192:18: error: =E2=80=98PTRS_PER_PGD=E2=80=99 undec=
-lared (first use in this function)
-arch/m68k/mm/init.c:194:4: error: implicit declaration of function =E2=80=
-=98__pgd_page=E2=80=99
-arch/m68k/mm/init.c:198:6: error: =E2=80=98zero_pgtable=E2=80=99 undecl=
-ared (first use in this function)
-make[2]: *** [arch/m68k/mm/init.o] Error 1
-make[1]: *** [arch/m68k/mm] Error 2
-make[1]: Leaving directory `/home/gerg/new-wave.git/linux-3.x'
-make: *** [linux] Error 1
+Thanks, applied and queued for 3.9.
 
-Change the conditions that define init_pointer_table so that it matches=
- what
-actually uses it.
+>> > Signed-off-by: Jean Delvare <khali@linux-fr.org>
+>> > Cc: Finn Thain <fthain@telegraphics.com.au>
+>> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> > ---
+>> > I can't even build-test this.
+>> >
+>> >  drivers/block/swim.c |    1 +
+>> >  1 file changed, 1 insertion(+)
+>> >
+>> > --- linux-3.6-rc4.orig/drivers/block/swim.c     2012-07-21 22:58:29.000000000 +0200
+>> > +++ linux-3.6-rc4/drivers/block/swim.c  2012-09-06 13:09:26.713382169 +0200
+>> > @@ -845,6 +845,7 @@ static int __devinit swim_floppy_init(st
+>> >                 swd->unit[drive].swd = swd;
+>> >         }
+>> >
+>> > +       spin_lock_init(&swd->lock);
+>> >         swd->queue = blk_init_queue(do_fd_request, &swd->lock);
+>> >         if (!swd->queue) {
+>> >                 err = -ENOMEM;
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/mm/init.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index f0e05bc..afd8106 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -39,6 +39,11 @@
- void *empty_zero_page;
- EXPORT_SYMBOL(empty_zero_page);
-=20
-+#if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
-+extern void init_pointer_table(unsigned long ptable);
-+extern pmd_t *zero_pgtable;
-+#endif
-+
- #ifdef CONFIG_MMU
-=20
- pg_data_t pg_data_map[MAX_NUMNODES];
-@@ -69,9 +74,6 @@ void __init m68k_setup_node(int node)
- 	node_set_online(node);
- }
-=20
--extern void init_pointer_table(unsigned long ptable);
--extern pmd_t *zero_pgtable;
--
- #else /* CONFIG_MMU */
-=20
- /*
---=20
-1.7.0.4
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
