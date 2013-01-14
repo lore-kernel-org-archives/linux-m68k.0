@@ -1,66 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 6/9] m68k: Provide dma_mmap_coherent() and dma_get_sgtable()
-Date: Sun, 13 Jan 2013 11:44:47 +0100
-Message-ID: <1358073890-3610-6-git-send-email-geert@linux-m68k.org>
-References: <1358073890-3610-1-git-send-email-geert@linux-m68k.org>
+From: Alex Courbot <acourbot@nvidia.com>
+Subject: Re: [PATCH 0/4] gpio: introduce descriptor-based interface
+Date: Mon, 14 Jan 2013 19:21:31 +0900
+Message-ID: <50F3DC2B.6000603__47825.3217218027$1358158845$gmane$org@nvidia.com>
+References: <1357629535-26033-1-git-send-email-acourbot@nvidia.com> <201301091046.13020.arnd@arndb.de> <2270940.DTxEYMZtED@percival> <201301101008.45091.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1358073890-3610-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <201301101008.45091.arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-m68k@lists.linux-m68k.org
+To: Arnd Bergmann <arnd@arndb.de>, Mike Frysinger <vapier@gentoo.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>, Guenter Roeck <linux@roeck-us.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, gnurou@gmail.com, linux-m68k@lists.linux-m68k.org, uclinux-dist-devel@blackfin.uclinux.org
 
-m68k/allmodconfig:
+On 01/10/2013 07:08 PM, Arnd Bergmann wrote:
+> I've tried to find platforms that don't yet use GPIOLIB and fortunately
+> there are very few left:
+>
+> I found two that provide the generic gpio interfaces when gpiolib
+> is disabled, but use gpiolib otherwise for the same hardware,
+> arch/m68k/include/asm/mcfgpio.h and arch/blackfin/include/asm/gpio.h.
+> I would assume that we can simply remove the non-gpiolib shortcut
+> here at cost of a small overhead.
 
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
-2_dc_mmap=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit dec=
-laration of function =E2=80=98dma_mmap_coherent=E2=80=99
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
-2_dc_get_base_sgt=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit dec=
-laration of function =E2=80=98dma_get_sgtable=E2=80=99
+I performed a search on my side too (checking configurations options 
+which select GENERIC_GPIO but not ARCH_REQUIRE_GPIOLIB) and found the 
+same list. This takes some time btw - many platforms use this combo to 
+make GPIO support optional. Can I ask how you figured out these two archs?
 
-=46or architectures using dma_map_ops, dma_mmap_coherent() and
-dma_get_sgtable() are provided in <asm-generic/dma-mapping-common.h>.
+I'd assume the overhead induced by forcibly compiling GPIOlib is 
+neglectable, but let's make sure this is ok indeed - Mike, Geert, would 
+you mind if selecting GENERIC_GPIO enforced GPIOlib to be compiled in, 
+effectively making it mandatory to implement the generic GPIO interface 
+using GPIOlib? Both your implementations support GPIOlib already, but 
+can also work without it, and that would make that possibility obsolete.
 
-M68k does not use dma_map_ops, hence it should implement them as inline
-stubs using dma_common_mmap() and dma_common_get_sgtable().
+> Then there are a bunch that use gpiolib but have a nontrivial
+> implementation of gpio_get_value and other functions. I'm not sure
+> if these are a problematic with your code.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/include/asm/dma-mapping.h |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+AFAICT these all implement an inline path that bypasses GPIOlib when the 
+GPIO number is known at compile time, for faster bitbanging I presume. 
+It should be totally harmless to keep them. Unfortunately, I don't think 
+it would be possible to have a similar trick using handlers.
 
-diff --git a/arch/m68k/include/asm/dma-mapping.h b/arch/m68k/include/as=
-m/dma-mapping.h
-index c68cdb4..05aa535 100644
---- a/arch/m68k/include/asm/dma-mapping.h
-+++ b/arch/m68k/include/asm/dma-mapping.h
-@@ -110,4 +110,14 @@ static inline int dma_mapping_error(struct device =
-*dev, dma_addr_t handle)
- 	return 0;
- }
-=20
-+/* drivers/base/dma-mapping.c */
-+extern int dma_common_mmap(struct device *dev, struct vm_area_struct *=
-vma,
-+			   void *cpu_addr, dma_addr_t dma_addr, size_t size);
-+extern int dma_common_get_sgtable(struct device *dev, struct sg_table =
-*sgt,
-+				  void *cpu_addr, dma_addr_t dma_addr,
-+				  size_t size);
-+
-+#define dma_mmap_coherent(d, v, c, h, s) dma_common_mmap(d, v, c, h, s=
-)
-+#define dma_get_sgtable(d, t, v, h, s) dma_common_get_sgtable(d, t, v,=
- h, s)
-+
- #endif  /* _M68K_DMA_MAPPING_H */
---=20
-1.7.0.4
+Thanks,
+Alex.
