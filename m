@@ -1,44 +1,81 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 0/4] gpio: introduce descriptor-based interface
-Date: Mon, 14 Jan 2013 10:46:12 +0000
-Message-ID: <201301141046.12976.arnd@arndb.de>
-References: <1357629535-26033-1-git-send-email-acourbot@nvidia.com> <201301101008.45091.arnd@arndb.de> <50F3DC2B.6000603@nvidia.com>
+From: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
+Subject: Re: EtherNat USB working
+Date: Fri, 18 Jan 2013 01:06:40 +0100
+Message-ID: <20130118000640.GA2752@mail.biophys.uni-duesseldorf.de>
+References: <50F2052E.3070808@biophys.uni-duesseldorf.de>
+ <CAL4YKD53-8vz+PzdqDkzc5Wp0iWZ4hsTwiZavW5-nDdZmty6UQ@mail.gmail.com>
+ <50F5E44A.1000709@biophys.uni-duesseldorf.de>
+ <CAL4YKD60xG=G=ACKuTk1vb7kAjgjuAUpC_z6-aSrMn2tX8FwWg@mail.gmail.com>
+ <20130116203536.GA16584@mail.biophys.uni-duesseldorf.de>
+ <CAL4YKD6pJ8RE80j-uHxGP7YUhjuP09a24baF8OsG0iv6Ke8bVw@mail.gmail.com>
+ <20130117002810.GA20320@mail.biophys.uni-duesseldorf.de>
+ <CAL4YKD4i38yJK8ponxTcOHMrabxytRDdFLbQU57x-3z2L1cUBw@mail.gmail.com>
+ <20130117193855.GA31693@mail.biophys.uni-duesseldorf.de>
+ <CAL4YKD6TQf6o0fzhVL5kgs76KyW6gzLZHCCSmoxDmMb3xN7WPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <50F3DC2B.6000603@nvidia.com>
+Content-Disposition: inline
+In-Reply-To: <CAL4YKD6TQf6o0fzhVL5kgs76KyW6gzLZHCCSmoxDmMb3xN7WPg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alex Courbot <acourbot@nvidia.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>, Guenter Roeck <linux@roeck-us.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, gnurou@gmail.com, linux-m68k@lists.linux-m68k.org, uclinux-dist-devel@blackfin.uclinux.org
+To: David =?iso-8859-1?Q?G=E1lvez?= <dgalvez75@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org
 
-On Monday 14 January 2013, Alex Courbot wrote:
-> On 01/10/2013 07:08 PM, Arnd Bergmann wrote:
-> > I found two that provide the generic gpio interfaces when gpiolib
-> > is disabled, but use gpiolib otherwise for the same hardware,
-> > arch/m68k/include/asm/mcfgpio.h and arch/blackfin/include/asm/gpio.h.
-> > I would assume that we can simply remove the non-gpiolib shortcut
-> > here at cost of a small overhead.
+Hi David,
+
+> Hi Michael, may be I've found something
+
+It appears you have! 
+
+> > Must be something rather obvious but I can't figure it out. Maybe it's time
+> > to stop fudging with the isa_rom_* macros and bang the ROM port directly
+> > until we know how to read the chip ID.
+> >
 > 
-> I performed a search on my side too (checking configurations options 
-> which select GENERIC_GPIO but not ARCH_REQUIRE_GPIOLIB) and found the 
-> same list. This takes some time btw - many platforms use this combo to 
-> make GPIO support optional. Can I ask how you figured out these two archs?
-
-I basically grepped for GENERIC_GPIO and looked at
-the individual implementations.
-
-> > Then there are a bunch that use gpiolib but have a nontrivial
-> > implementation of gpio_get_value and other functions. I'm not sure
-> > if these are a problematic with your code.
 > 
-> AFAICT these all implement an inline path that bypasses GPIOlib when the 
-> GPIO number is known at compile time, for faster bitbanging I presume. 
-> It should be totally harmless to keep them. Unfortunately, I don't think 
-> it would be possible to have a similar trick using handlers.
+> See the code below from isp116x.h, I've added some traces in function
+> isp116x_write_addr():
+> 
+> static inline void isp116x_write_addr(struct isp116x *isp116x, unsigned reg)
+> {
+> 	IRQ_TEST();
+> 	isp_writew(reg & 0xff, isp116x->addr_reg);
+> 	if (((int)isp116x->addr_reg & 0x00000FFFUL) == 0x360)
+> 		printk("addr_reg: 0x%08lx __pa(addr_reg):
+> 0x%08lx\n",isp116x->addr_reg, __pa(isp116x->addr_reg));
+> //	isp116x_delay(isp116x, 300);
+> }
+> 
+> This is what I'm getting for those two values:
+> 
+> addr_reg: 0xd0400360 __pa(addr_reg): 0xd0400360
+> addr_reg: 0xd0400360 __pa(addr_reg): 0xd0400360
+> addr_reg: 0xd0400360 __pa(addr_reg): 0xd0400360
 
-Right, makes sense.
+Bugger - the __pa() does not appear to work as expected. 
+ 
+> So if I'm not overlooking anything, __pa(p)<1024 is FALSE and the isa
+> routines aren't taken.
+> What do you think?
 
-	Arnd
+You're absolutely right - is the 0xd0400360 address the same as reported by
+the prinkt() statements frop isp116x_probe() ?? I think there are some that
+report what address the data register is at. 
+
+You probably also still have that error messafe about a resource being freed
+that wasn't registered - does that match the same address? 
+
+Geert et al. - what's the correct way to find out what physical address
+corresponds to a ioremapped virtual one? addr_reg is the ioremapped 'IO port
+address' 0x360 that I need to pass to the isa_rom macros in order to get the
+ROM port access right. Seems I've tangled myself up in too many indirections
+here. 
+
+David - just mask off the address with 0xFFFUL if the test returns true to
+force the correct address on the accessors - that way we can get on with
+testing at least. 
+
+Cheers,
+
+  Michael 
