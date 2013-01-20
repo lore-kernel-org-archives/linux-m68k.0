@@ -1,45 +1,75 @@
-From: Greg Ungerer <gerg@goober.accelcon.com>
-Subject: [git pull] m68knommu arch fixes for 3.8
-Date: Fri, 18 Jan 2013 16:47:16 +1000
-Message-ID: <201301180647.r0I6lGbf020653@goober.accelcon.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/atari: EtherNAT - remove __dev* attributes
+Date: Sun, 20 Jan 2013 11:30:16 +0100
+Message-ID: <1358677816-13513-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntqsrv03p.mx.bigpond.com ([61.9.168.237]:39415 "EHLO
-	nskntqsrv03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751032Ab3ARIQO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 18 Jan 2013 03:16:14 -0500
+Received: from jacques.telenet-ops.be ([195.130.132.50]:57175 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751358Ab3ATKaY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Jan 2013 05:30:24 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Michael Schmitz <schmitz@debian.org>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Linus,
+Cfr. commit 1e48fea4805db6766708d9387f8dc1c5d5226263 ("smc91x: remove
+__dev* attributes")
 
-Can you please pull the m68knommu git tree, for-linus branch, at:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/smsc/atari_91C111.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-It contains a couple of fixes, both affecting compilation of non-mmu m68k
-targets.
-
-Regards
-Greg
-
-
-
-
-The following changes since commit d1c3ed669a2d452cacfb48c2d171a1f364dae2ed:
-  Linus Torvalds (1):
-        Linux 3.8-rc2
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-Greg Ungerer (2):
-      m68knommu: add KMAP definitions for non-MMU definitions
-      m68k: fix conditional use of init_pointer_table
-
- arch/m68k/include/asm/pgtable_no.h |    2 ++
- arch/m68k/mm/init.c                |    8 +++++---
- 2 files changed, 7 insertions(+), 3 deletions(-)
+diff --git a/drivers/net/ethernet/smsc/atari_91C111.c b/drivers/net/ethernet/smsc/atari_91C111.c
+index 09be801..2708864 100644
+--- a/drivers/net/ethernet/smsc/atari_91C111.c
++++ b/drivers/net/ethernet/smsc/atari_91C111.c
+@@ -1736,7 +1736,7 @@ static const struct net_device_ops smc_netdev_ops = {
+  * I just deleted auto_irq.c, since it was never built...
+  *   --jgarzik
+  */
+-static int __devinit smc_findirq(struct smc_local *lp)
++static int smc_findirq(struct smc_local *lp)
+ {
+ 	void __iomem *ioaddr = lp->base;
+ 	int timeout = 20;
+@@ -1810,8 +1810,8 @@ static int __devinit smc_findirq(struct smc_local *lp)
+  * o  actually GRAB the irq.
+  * o  GRAB the region
+  */
+-static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
+-			       unsigned long irq_flags)
++static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
++		     unsigned long irq_flags)
+ {
+ 	struct smc_local *lp = netdev_priv(dev);
+ 	static int version_printed = 0;
+@@ -2165,7 +2165,7 @@ static void smc_release_datacs(struct platform_device *pdev, struct net_device *
+  *	0 --> there is a device
+  *	anything else, error
+  */
+-static int __devinit smc_drv_probe(struct platform_device *pdev)
++static int smc_drv_probe(struct platform_device *pdev)
+ {
+ 	struct smc91x_platdata *pd = pdev->dev.platform_data;
+ 	struct smc_local *lp;
+@@ -2328,7 +2328,7 @@ static int __devinit smc_drv_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int __devexit smc_drv_remove(struct platform_device *pdev)
++static int smc_drv_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct smc_local *lp = netdev_priv(ndev);
+@@ -2400,7 +2400,7 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 
+ static struct platform_driver smc_driver = {
+ 	.probe		= smc_drv_probe,
+-	.remove		= __devexit_p(smc_drv_remove),
++	.remove		= smc_drv_remove,
+ 	.driver		= {
+ 		.name	= CARDNAME,
+ 		.owner	= THIS_MODULE,
+-- 
+1.7.0.4
