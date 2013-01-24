@@ -1,49 +1,66 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.8 (take 2)
-Date: Wed, 23 Jan 2013 21:00:18 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1301232058001.14225@ayla.of.borg>
+From: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
+Subject: Re: Atari TT
+Date: Thu, 24 Jan 2013 21:20:50 +0100
+Message-ID: <20130124202050.GA28593@mail.biophys.uni-duesseldorf.de>
+References: <20130120205231.GC32291@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301202117270.27441@herc.mirbsd.org>
+ <20130120225718.GA1459@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301232011550.14843@herc.mirbsd.org>
+ <20130123212251.GA14282@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301232213380.14843@herc.mirbsd.org>
+ <20130124000856.GA15759@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301241759530.6423@herc.mirbsd.org>
+ <20130124185341.GA27701@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301241946080.6423@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from opal-mail.biophys.uni-duesseldorf.de ([134.99.176.33]:40510
+	"EHLO mail.biophys.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1030194Ab3AXUUw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 24 Jan 2013 15:20:52 -0500
+Content-Disposition: inline
+In-Reply-To: <Pine.BSM.4.64L.1301241946080.6423@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: debian-68k@lists.debian.org
+Cc: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+Thorsten,
 
-The following changes since commit a49f0d1ea3ec94fc7cf33a7c36a16343b74bd565:
-  Linus Torvalds (1):
-        Linux 3.8-rc1
+> >Does the other kernel show any boot progress on the screen at all, after the
+> >bootstrap has finished loading and passed control to the kernel? 
+> 
+> Coloured pixels.
 
-are available in the git repository at:
+If the other kernel (nonet) shows a proper boot screen, that's a kernel size
+issue. 
 
-  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+On the other hand: 
 
-Geert Uytterhoeven (3):
-      m68k: Provide dma_alloc_attrs()/dma_free_attrs()
-      asm-generic/dma-mapping-broken.h: Provide dma_alloc_attrs()/dma_free_attrs()
-      m68k: Wire up finit_module
+> 
+> >Can you send me the contents of arch/m68k/atari/config.c and
+> >arch/m68k/atari/atariints.c from the patched source tree you used for these
+> >kernels? 
+> 
+> Sure:
 
-The asm-generic changeset has been ack'ed by Arnd.
+That does not include my more recent patches to the interrupt code. I
+suspect you may be using the atari_ethernec driver instead of the generic ne
+one as well. I'll check your kernel image to see what it does use. 
 
-Thanks for pulling!
+The ne.c network driver does not appear to tolerate interrupts arriving before 
+the device has been configured, at least in the early boot phases. I'm uncertain
+whether it would work even with my latest patches applied - maybe I can find
+some time on the weekend to test that. 
 
- arch/m68k/include/asm/dma-mapping.h      |   16 ++++++++++++++++
- arch/m68k/include/asm/unistd.h           |    2 +-
- arch/m68k/include/uapi/asm/unistd.h      |    1 +
- arch/m68k/kernel/syscalltable.S          |    1 +
- include/asm-generic/dma-mapping-broken.h |   16 ++++++++++++++++
- 5 files changed, 35 insertions(+), 1 deletions(-)
+Geert: is there some way for kernel network drivers to figure out whether the
+network subsystem has been initialized, and hold off interrupt processing
+before that time? I'm using 'if (netif_running(dev))' in atari_ethernec but
+that does not appear to prevent the lockup. 
 
-Gr{oetje,eeting}s,
+Cheers,
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+	Michael
+ 
