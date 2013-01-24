@@ -1,59 +1,58 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: Atari TT
-Date: Thu, 24 Jan 2013 21:41:46 +0100
-Message-ID: <CAMuHMdUj_OhGOzZ=RHbdTnB8ej4538HZUKVuDuLB_MA7p4LHAQ@mail.gmail.com>
+Date: Thu, 24 Jan 2013 20:50:52 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1301242049350.6423@herc.mirbsd.org>
 References: <20130120205231.GC32291@mail.biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1301202117270.27441@herc.mirbsd.org>
-	<20130120225718.GA1459@mail.biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1301232011550.14843@herc.mirbsd.org>
-	<20130123212251.GA14282@mail.biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1301232213380.14843@herc.mirbsd.org>
-	<20130124000856.GA15759@mail.biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1301241759530.6423@herc.mirbsd.org>
-	<20130124185341.GA27701@mail.biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1301241946080.6423@herc.mirbsd.org>
-	<20130124202050.GA28593@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301202117270.27441@herc.mirbsd.org>
+ <20130120225718.GA1459@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301232011550.14843@herc.mirbsd.org>
+ <20130123212251.GA14282@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301232213380.14843@herc.mirbsd.org>
+ <20130124000856.GA15759@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301241759530.6423@herc.mirbsd.org>
+ <20130124185341.GA27701@mail.biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1301241946080.6423@herc.mirbsd.org>
+ <20130124202050.GA28593@mail.biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Sender: geert.uytterhoeven@gmail.com
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:42733 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756715Ab3AXU7e convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Jan 2013 15:59:34 -0500
 In-Reply-To: <20130124202050.GA28593@mail.biophys.uni-duesseldorf.de>
-Resent-Message-ID: <lQOc0rR2PkI.A.TDC.cyZARB@bendel>
-List-URL: <http://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
-Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitz@opal-mail.biophys.uni-duesseldorf.de>
+Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
 
-On Thu, Jan 24, 2013 at 9:20 PM, Michael Schmitz
-<schmitz@mail.biophys.uni-duesseldorf.de> wrote:
-> The ne.c network driver does not appear to tolerate interrupts arriving before
-> the device has been configured, at least in the early boot phases. I'm uncertain
-> whether it would work even with my latest patches applied - maybe I can find
-> some time on the weekend to test that.
+Michael Schmitz dixit:
 
-Stupid ISA-only driver without IRQ sharing support...
+>If the other kernel (nonet) shows a proper boot screen, that's a kerne=
+l size
+>issue.=20
 
-The hydra and zorro8390 driver should handle that case fine, as interrupts are
-shared on Amiga.
+They have very few difference, though.
 
-> Geert: is there some way for kernel network drivers to figure out whether the
-> network subsystem has been initialized, and hold off interrupt processing
-> before that time? I'm using 'if (netif_running(dev))' in atari_ethernec but
-> that does not appear to prevent the lockup.
+>That does not include my more recent patches to the interrupt code. I
+>suspect you may be using the atari_ethernec driver instead of the gene=
+ric ne
+>one as well. I'll check your kernel image to see what it does use.=20
 
-Doesn't the driver know when it's configured?
+I=E2=80=99m using Geert=E2=80=99s m68k-queue branch plus Alan=E2=80=99s=
+ patch.
+Is that not correct?
 
-Gr{oetje,eeting}s,
+And yes, of course I selected the EtherNAT and EtherNEC drivers.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+bye,
+//mirabilos
+--=20
+=E2=80=9Enein: BerliOS und Sourceforge sind Plattformen f=C3=BCr Projek=
+te, github ist
+eine Plattform f=C3=BCr Einzelk=C3=A4mpfer=E2=80=9C
+	-- dieses Zitat ist ein Beweis daf=C3=BCr, da=C3=9F auch ein blindes H=
+uhn
+	   mal ein Korn findet, bzw. =E2=80=93 in diesem Fall =E2=80=93 Recht =
+haben kann
