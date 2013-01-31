@@ -1,54 +1,100 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 08/17] [m68k] Atari: EtherNEC ethernet support - new driver (ne.c)
-Date: Thu, 31 Jan 2013 13:22:42 +1300 (NZDT)
-Message-ID: <20130131002242.29BA1360095@xplor.waratah.dyndns.org>
+Subject: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts
+Date: Thu, 31 Jan 2013 13:23:44 +1300 (NZDT)
+Message-ID: <20130131002344.1161E360095@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f45.google.com ([209.85.220.45]:60766 "EHLO
-	mail-pa0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755428Ab3AaAWs (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:22:48 -0500
-Received: by mail-pa0-f45.google.com with SMTP id bg2so1386777pad.18
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:22:47 -0800 (PST)
+Received: from mail-da0-f49.google.com ([209.85.210.49]:49906 "EHLO
+	mail-da0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751515Ab3AaAYE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:24:04 -0500
+Received: by mail-da0-f49.google.com with SMTP id v40so1012572dad.8
+        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:24:03 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org
 
-[PATCH 08/17] [m68k] Atari: EtherNEC ethernet support - new driver (ne.c)
+[PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
+        experimental hack to avoid unhandled interrupt timer to fire
+        on EtherNEC/NetUSBee cards that have no hardware interrupt
+        and need to be polled from a timer
 
+This patch adds a special 'polled interrupt' handler for timer based software interrupts.
+
+handle_simple_irq() will respond to excessive unhandled interrupts (as are expected for a
+polling timer interrupt) by disabling the apparently unhandled interrupt source.
+
+handle_polled_irq() prevents this by setting the IRQS_POLL_INPROGRESS flag which will cause
+the unhandled interrupt events to be ignored.
+
+This is a temporary hack to allow timer based polling of the Atari ROM port network and USB
+cards only. Suggestions on how to properly handle this in the normal interrupt framework are
+most welcome.
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- drivers/net/ethernet/8390/Kconfig |    3 ++-
- drivers/net/ethernet/8390/ne.c    |    2 ++
- 2 files changed, 4 insertions(+), 1 deletions(-)
+ include/linux/irq.h |    1 +
+ kernel/irq/chip.c   |   36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-index 30acd4f..42ba102 100644
---- a/drivers/net/ethernet/8390/Kconfig
-+++ b/drivers/net/ethernet/8390/Kconfig
-@@ -178,7 +178,8 @@ config MCF8390
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index fdf2c4a..39bfcff 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -407,6 +407,7 @@ extern void handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_edge_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_edge_eoi_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_simple_irq(unsigned int irq, struct irq_desc *desc);
++extern void handle_polled_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_percpu_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_percpu_devid_irq(unsigned int irq, struct irq_desc *desc);
+ extern void handle_bad_irq(unsigned int irq, struct irq_desc *desc);
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index 3aca9f2..ae7ef4d 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -339,6 +339,42 @@ out_unlock:
+ }
+ EXPORT_SYMBOL_GPL(handle_simple_irq);
  
- config NE2000
- 	tristate "NE2000/NE1000 support"
--	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
-+	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX || \
-+		    ATARI_ETHERNEC)
- 	select CRC32
- 	---help---
- 	  If you have a network (Ethernet) card of this type, say Y and read
-diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
-index 47618e5..49948f6 100644
---- a/drivers/net/ethernet/8390/ne.c
-+++ b/drivers/net/ethernet/8390/ne.c
-@@ -166,6 +166,8 @@ bad_clone_list[] __initdata = {
- #elif defined(CONFIG_PLAT_OAKS32R)  || \
-    defined(CONFIG_MACH_TX49XX)
- #  define DCR_VAL 0x48		/* 8-bit mode */
-+#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
-+#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
- #else
- #  define DCR_VAL 0x49
- #endif
++/**
++ *	handle_polled_irq - Simple and software-decoded IRQs.
++ *	@irq:	the interrupt number
++ *	@desc:	the interrupt description structure for this irq
++ *
++ *	Polled interrupts are sent from a demultiplexing software interrupt
++ *	handler, where no interrupt hardware control is necessary.
++ */
++void
++handle_polled_irq(unsigned int irq, struct irq_desc *desc)
++{
++	raw_spin_lock(&desc->lock);
++
++	if (unlikely(irqd_irq_inprogress(&desc->irq_data)))
++		if (!irq_check_poll(desc))
++			goto out_unlock;
++
++	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
++	kstat_incr_irqs_this_cpu(irq, desc);
++
++	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
++		desc->istate |= IRQS_PENDING;
++		goto out_unlock;
++	}
++
++	desc->istate |= IRQS_POLL_INPROGRESS;
++
++	handle_irq_event(desc);
++
++	desc->istate &= ~(IRQS_POLL_INPROGRESS);
++
++out_unlock:
++	raw_spin_unlock(&desc->lock);
++}
++EXPORT_SYMBOL_GPL(handle_polled_irq);
++
+ /*
+  * Called unconditionally from handle_level_irq() and only for oneshot
+  * interrupts from handle_fasteoi_irq()
 -- 
 1.7.0.4
