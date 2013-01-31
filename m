@@ -1,14 +1,14 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 17/17] [m68k] Atari: NetUSBee tweaks for ISP1160 USB HCD driver
-Date: Thu, 31 Jan 2013 13:36:53 +1300 (NZDT)
-Message-ID: <20130131003653.A8152360095@xplor.waratah.dyndns.org>
+Subject: [PATCH 17/17] [m68k] Atari: NetUSBee tweaks for ISP1160 USB HCD driver (updated patch)
+Date: Fri,  1 Feb 2013 09:54:45 +1300 (NZDT)
+Message-ID: <20130131205445.22899360952@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f49.google.com ([209.85.160.49]:42617 "EHLO
-	mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752703Ab3AaAg7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:36:59 -0500
-Received: by mail-pb0-f49.google.com with SMTP id xa12so1275984pbc.8
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:36:59 -0800 (PST)
+Received: from mail-pa0-f43.google.com ([209.85.220.43]:56529 "EHLO
+	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751734Ab3AaUyv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 31 Jan 2013 15:54:51 -0500
+Received: by mail-pa0-f43.google.com with SMTP id fb10so1915559pad.16
+        for <linux-m68k@vger.kernel.org>; Thu, 31 Jan 2013 12:54:51 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
@@ -20,6 +20,8 @@ Cc: geert@linux-m68k.org
 	second port shut down due to overcurrent otherwise. As all
 	NetUSBee stuff, this is provided by David. 
 
+This patch replaces the old patch of the same name - the previous version 
+would disable overcurrent protection on the EtherNAT!
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
@@ -50,8 +52,8 @@ index cb0745d..dd13b05 100644
 +#ifdef CONFIG_ATARI
 +        /* Galvez: For NetUSBee, Overcurrent protection disable,
 +           to stop interrupt storm because OC events */
-+        if ((unsigned long) hcd->rsrc_start > 0x80000000UL)
-+            val |= RH_A_NOCP;
++        if ((unsigned long) hcd->rsrc_start < 0x80000000UL)
++            val |= (RH_A_NOCP | RH_A_NPS);
 +#endif
  	isp116x_write_reg32(isp116x, HCRHDESCA, val);
  	isp116x->rhdesca = isp116x_read_reg32(isp116x, HCRHDESCA);
