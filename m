@@ -1,68 +1,141 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 6/9] m68k: Provide dma_mmap_coherent() and dma_get_sgtable()
-Date: Sun, 27 Jan 2013 11:33:25 +0100
-Message-ID: <1359282808-31398-7-git-send-email-geert__48580.5605109364$1359282983$gmane$org@linux-m68k.org>
-References: <1359282808-31398-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 01/17] [m68k] Atari: declare original EtherNEC driver obsolete
+Date: Thu, 31 Jan 2013 13:14:53 +1300 (NZDT)
+Message-ID: <20130131001454.07088360095@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1359282808-31398-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-da0-f42.google.com ([209.85.210.42]:61989 "EHLO
+	mail-da0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751553Ab3AaAPB (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:15:01 -0500
+Received: by mail-da0-f42.google.com with SMTP id z17so1012181dal.29
+        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:15:01 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-m68k@lists.linux-m68k.org
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org
 
-m68k/allmodconfig:
+Hello Geert.
 
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
-2_dc_mmap=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit dec=
-laration of function =E2=80=98dma_mmap_coherent=E2=80=99
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
-2_dc_get_base_sgt=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit dec=
-laration of function =E2=80=98dma_get_sgtable=E2=80=99
+This rather lengthy list of patches updates Atari EtherNAT and EtherNEC 
+network support, plus adds USB driver support for the ISP1160 chip found on 
+EtherNAT and NetUSBee adapters. 
 
-=46or architectures using dma_map_ops, dma_mmap_coherent() and
-dma_get_sgtable() are provided in <asm-generic/dma-mapping-common.h>.
+Network stuff: 
+ 1  declare original EtherNEC driver obsolete
+ 2  declare original EtherNAT driver obsolete
+ 3  use CONFIG_ATARI in smc91x.h
+ 4  change number of interrupt sources to include EtherNAT interrupts
+ 5  fix EtherNAT interrupt number, conditionalize platform device register 
+ 6  add platform support for EtherNEC
+ 7  EtherNAT ethernet support using new driver - smc91x.c
+ 8  EtherNEC ethernet support using new driver - ne.c
+ 9  IRQ: add handle_polled_irq for timer based software interrupts
+10  use dedicated irq_chip for timer D interrupts
+11  add interrupt chip definition for EtherNAT
+12  remove unnecessary cruft from Atari interrupt setup
 
-M68k does not use dma_map_ops, hence it should implement them as inline
-stubs using dma_common_mmap() and dma_common_get_sgtable().
+USB related: 
+13  implement 16 bit access macros for ROM port ISA adapters
+14  Implement ndelay based on the existing udelay code
+15  add platform device definitions for ISP1160 drivers
+16  Add ISP1160 USB host controller support for EtherNAT/NetUSBee
+17  NetUSBee tweaks for ISP1160 USB HCD driver
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: linux-m68k@lists.linux-m68k.org
+You may well decide to leave out #9 - use of EtherNEC and NetUSBee is then possible 
+only with the 'noirqdebug' kernel option. 
+
+Many thanks to David Galvez for setting me straight on register locations, ways to deal 
+with the USB fifo transfers and testing/fixing the code for the NetUSBee case. I have 
+departed from the code David used to switch between NetUSBee and EtherNAT access, but 
+only slighlty. Please test this version and yell if it's not doing the right thing, David. 
+
+With the present code, the timer D interrupt frequency is approximately 100 Hz. On fast 
+hardware, it should probably be doubled (change the timer D counter value fron 254 to 123
+to achieve that. I had the timer rate adjustable via kernel options in an earlier 
+incarnation pf the ethernet drivers - whoever feels like it can revive that bit please).
+
+Cheers,
+
+	Michael
+
+
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
-v2: No changes
----
- arch/m68k/include/asm/dma-mapping.h |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ drivers/net/Space.c                        |    2 +-
+ drivers/net/ethernet/8390/Kconfig          |    4 ++--
+ drivers/net/ethernet/8390/Makefile         |    2 +-
+ drivers/net/ethernet/8390/atari_ethernec.c |    6 +++---
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/dma-mapping.h b/arch/m68k/include/as=
-m/dma-mapping.h
-index c68cdb4..05aa535 100644
---- a/arch/m68k/include/asm/dma-mapping.h
-+++ b/arch/m68k/include/asm/dma-mapping.h
-@@ -110,4 +110,14 @@ static inline int dma_mapping_error(struct device =
-*dev, dma_addr_t handle)
- 	return 0;
- }
-=20
-+/* drivers/base/dma-mapping.c */
-+extern int dma_common_mmap(struct device *dev, struct vm_area_struct *=
-vma,
-+			   void *cpu_addr, dma_addr_t dma_addr, size_t size);
-+extern int dma_common_get_sgtable(struct device *dev, struct sg_table =
-*sgt,
-+				  void *cpu_addr, dma_addr_t dma_addr,
-+				  size_t size);
-+
-+#define dma_mmap_coherent(d, v, c, h, s) dma_common_mmap(d, v, c, h, s=
-)
-+#define dma_get_sgtable(d, t, v, h, s) dma_common_get_sgtable(d, t, v,=
- h, s)
-+
- #endif  /* _M68K_DMA_MAPPING_H */
---=20
+diff --git a/drivers/net/Space.c b/drivers/net/Space.c
+index 77a43b1..fd183d2 100644
+--- a/drivers/net/Space.c
++++ b/drivers/net/Space.c
+@@ -231,7 +231,7 @@ static struct devprobe2 m68k_probes[] __initdata = {
+ #ifdef CONFIG_ATARILANCE	/* Lance-based Atari ethernet boards */
+ 	{atarilance_probe, 0},
+ #endif
+-#ifdef CONFIG_ATARI_ETHERNEC	/* NE2000 based ROM port ethernet cards */
++#ifdef CONFIG_ATARI_ETHERNEC_OLD	/* NE2000 based ROM port ethernet cards */
+ 	{atari_ethernec_probe, 0},
+ #endif
+ #ifdef CONFIG_SUN3LANCE         /* sun3 onboard Lance chip */
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index f3efe71..30acd4f 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -226,8 +226,8 @@ config APNE
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called apne.
+ 
+-config ATARI_ETHERNEC
+-	tristate "Atari EtherNEC Ethernet support"
++config ATARI_ETHERNEC_OLD
++	tristate "Atari EtherNEC Ethernet support - obsolete driver"
+ 	depends on ATARI_ROM_ISA
+ 	help
+ 	  Say Y to include support for the EtherNEC network adapter for the
+diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
+index 73692bd..383f2be 100644
+--- a/drivers/net/ethernet/8390/Makefile
++++ b/drivers/net/ethernet/8390/Makefile
+@@ -6,7 +6,7 @@ obj-$(CONFIG_MAC8390) += mac8390.o
+ obj-$(CONFIG_AC3200) += ac3200.o 8390.o
+ obj-$(CONFIG_APNE) += apne.o 8390.o
+ obj-$(CONFIG_ARM_ETHERH) += etherh.o
+-obj-$(CONFIG_ATARI_ETHERNEC) += atari_ethernec.o 8390.o
++obj-$(CONFIG_ATARI_ETHERNEC_OLD) += atari_ethernec.o 8390.o
+ obj-$(CONFIG_AX88796) += ax88796.o
+ obj-$(CONFIG_E2100) += e2100.o 8390.o
+ obj-$(CONFIG_EL2) += 3c503.o 8390p.o
+diff --git a/drivers/net/ethernet/8390/atari_ethernec.c b/drivers/net/ethernet/8390/atari_ethernec.c
+index 4b1b953..69af404 100644
+--- a/drivers/net/ethernet/8390/atari_ethernec.c
++++ b/drivers/net/ethernet/8390/atari_ethernec.c
+@@ -184,13 +184,13 @@ bad_clone_list[] __initdata = {
+ #  define DCR_VAL 0x4b
+ #elif defined(CONFIG_PLAT_OAKS32R)  || \
+    defined(CONFIG_TOSHIBA_RBTX4927) || defined(CONFIG_TOSHIBA_RBTX4938) || \
+-   defined(CONFIG_ATARI_ETHERNEC) || defined(CONFIG_ATARI_ETHERNEC_MODULE)
++   defined(CONFIG_ATARI_ETHERNEC_OLD) || defined(CONFIG_ATARI_ETHERNEC_OLD_MODULE)
+ #  define DCR_VAL 0x48		/* 8-bit mode */
+ #else
+ #  define DCR_VAL 0x49
+ #endif
+ 
+-#if defined(CONFIG_ATARI_ETHERNEC) || defined(CONFIG_ATARI_ETHERNEC_MODULE)
++#if defined(CONFIG_ATARI_ETHERNEC_OLD) || defined(CONFIG_ATARI_ETHERNEC_OLD_MODULE)
+ #  define ETHERNEC_RTL_8019_BASE 0x300
+ #  define ETHERNEC_RTL_8019_IRQ IRQ_MFP_TIMD
+ #endif
+@@ -356,7 +356,7 @@ struct net_device * __init atari_ethernec_probe(int unit)
+ 	sprintf(dev->name, "eth%d", unit);
+ 	netdev_boot_setup_check(dev);
+ 
+-#if defined(CONFIG_ATARI_ETHERNEC)
++#if defined(CONFIG_ATARI_ETHERNEC_OLD)
+ 	dev->base_addr = ETHERNEC_RTL_8019_BASE;
+ 	dev->irq = ETHERNEC_RTL_8019_IRQ;
+ #endif
+-- 
 1.7.0.4
