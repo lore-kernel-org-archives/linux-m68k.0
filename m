@@ -1,114 +1,62 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 13/17] [m68k] Atari: implement 16 bit access macros for ROM port ISA
-Date: Thu, 31 Jan 2013 13:29:32 +1300 (NZDT)
-Message-ID: <20130131002932.ABA9F360095@xplor.waratah.dyndns.org>
+Subject: [PATCH 14/17] [m68k] Implement ndelay() based on the existing udelay() logic (needed for ISP1160)
+Date: Thu, 31 Jan 2013 13:30:15 +1300 (NZDT)
+Message-ID: <20130131003015.DCCF4360095@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f41.google.com ([209.85.160.41]:41329 "EHLO
-	mail-pb0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754082Ab3AaA3i (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:29:38 -0500
-Received: by mail-pb0-f41.google.com with SMTP id ro12so1279822pbb.0
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:29:38 -0800 (PST)
+Received: from mail-pa0-f42.google.com ([209.85.220.42]:36040 "EHLO
+	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755390Ab3AaAaV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:30:21 -0500
+Received: by mail-pa0-f42.google.com with SMTP id rl6so1396991pac.29
+        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:30:20 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org
 
-[PATCH 13/17] [m68k] Atari: implement 16 bit access macros for ROM port ISA
-        adapter cards, following debugging and clarification
-        by David Galvez
+[PATCH 14/17] [m68k] Implement ndelay() based on the existing udelay() logic (needed for ISP1160)
 
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/include/asm/io_mm.h  |   16 ++++++++++++----
- arch/m68k/include/asm/raw_io.h |   32 ++++++++++++++++++++++----------
- 2 files changed, 34 insertions(+), 14 deletions(-)
+ arch/m68k/include/asm/delay.h |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-index 6eb2834..20069a1 100644
---- a/arch/m68k/include/asm/io_mm.h
-+++ b/arch/m68k/include/asm/io_mm.h
-@@ -68,10 +68,10 @@
- #define enec_isa_read_base  0xfffa0000
- #define enec_isa_write_base 0xfffb0000
+diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+index 12d8fe4..b18b667 100644
+--- a/arch/m68k/include/asm/delay.h
++++ b/arch/m68k/include/asm/delay.h
+@@ -92,5 +92,31 @@ static inline void __udelay(unsigned long usecs)
+ #define udelay(n) (__builtin_constant_p(n) ? \
+ 	((n) > 20000 ? __bad_udelay() : __const_udelay(n)) : __udelay(n))
  
--#define ENEC_ISA_IO_B(ioaddr)	(enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
--#define ENEC_ISA_IO_W(ioaddr)	(enec_isa_read_base+((((unsigned long)(ioaddr))&0x1F)<<9))
--#define ENEC_ISA_MEM_B(madr)	(enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
--#define ENEC_ISA_MEM_W(madr)	(enec_isa_read_base+((((unsigned long)(madr))&0x1F)<<9))
-+#define ENEC_ISA_IO_B(ioaddr)	(enec_isa_read_base+((((unsigned long)(ioaddr))&0x7F)<<9))
-+#define ENEC_ISA_IO_W(ioaddr)	(enec_isa_read_base+((((unsigned long)(ioaddr))&0x7F)<<9))
-+#define ENEC_ISA_MEM_B(madr)	(enec_isa_read_base+((((unsigned long)(madr))&0x7F)<<9))
-+#define ENEC_ISA_MEM_W(madr)	(enec_isa_read_base+((((unsigned long)(madr))&0x7F)<<9))
- 
- #ifndef MULTI_ISA
- #define MULTI_ISA 0
-@@ -277,11 +277,19 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
- #define isa_rom_readw(p)       \
- 	(ISA_SEX ? rom_in_be16(isa_mtw((unsigned long)(p)))	\
- 		 : rom_in_le16(isa_mtw((unsigned long)(p))))
-+#define isa_rom_readw_swap(p)       \
-+	(ISA_SEX ? rom_in_le16(isa_mtw((unsigned long)(p)))	\
-+		 : rom_in_be16(isa_mtw((unsigned long)(p))))
-+#define isa_rom_readw_raw(p)   rom_in_be16(isa_mtw((unsigned long)(p)))
- 
- #define isa_rom_writeb(val, p)  rom_out_8(isa_mtb((unsigned long)(p)), (val))
- #define isa_rom_writew(val, p)  \
- 	(ISA_SEX ? rom_out_be16(isa_mtw((unsigned long)(p)), (val))	\
- 		 : rom_out_le16(isa_mtw((unsigned long)(p)), (val)))
-+#define isa_rom_writew_swap(val, p)  \
-+	(ISA_SEX ? rom_out_le16(isa_mtw((unsigned long)(p)), (val))	\
-+		 : rom_out_be16(isa_mtw((unsigned long)(p)), (val)))
-+#define isa_rom_writew_raw(val, p)  rom_out_be16(isa_mtw((unsigned long)(p)), (val))
- #endif /* CONFIG_ATARI_ROM_ISA */
- 
- static inline void isa_delay(void)
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index b1d9119..6b7d1d7 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -77,19 +77,31 @@ extern void __iounmap(void *addr, unsigned long size);
- #define rom_in_8(addr) \
- 	({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
- #define rom_in_be16(addr) \
--	({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
-+	({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
- #define rom_in_be32(addr) \
--	({ u32 __v = (*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
-+	({ u32 __v = (*(__force volatile u32 *) (addr)); __v; })
- #define rom_in_le16(addr) \
--	({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
-+	({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v; })
- #define rom_in_le32(addr) \
--	({ u32 __v = le32_to_cpu(*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
--
--#define rom_out_8(addr, b)	({u8 __w, __v = (b); __w = ((*(__force volatile u8 *)  ((addr) + 0x10000 + (__v<<1)))); })
--#define rom_out_be16(addr, w)	({u16 __w, __v = (w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
--#define rom_out_be32(addr, l)	({u32 __w, __v = (l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
--#define rom_out_le16(addr, w)	({u16 __w, __v = cpu_to_le16(w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
--#define rom_out_le32(addr, l)	({u32 __w, __v = cpu_to_le32(l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
-+	({ u32 __v = le32_to_cpu(*(__force volatile u32 *) (addr)); __v; })
++/*
++ * nanosecond delay: 
++ *
++ * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of loops per microsecond
++ *
++ * 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of nanoseconds per loop
++ *
++ * So n / ( 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) ) would be the number of loops for n nanoseconds
++ * 
++ * ndelay(n) = __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000 ) )
++ */
 +
-+#define rom_out_8(addr, b)	\
-+        ({u8 __w, __v = (b);  u32 _addr = ((u32) (addr)); \
-+        __w = ((*(__force volatile u8 *)  ((_addr | 0x10000) + (__v<<1)))); })
-+#define rom_out_be16(addr, w)	\
-+        ({u16 __w, __v = (w); u32 _addr = ((u32) (addr)); \
-+        __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-+        __w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
-+#define rom_out_be32(addr, l)	\
-+        ({u32 __w, __v = (l);  u32 _addr = ((u32) (addr)); \
-+        __w = ((*(__force volatile u32 *) ((_addr | 0x10000) + (__v<<1)))); })
-+#define rom_out_le16(addr, w)	\
-+        ({u16 __w, __v = cpu_to_le16(w); u32 _addr = ((u32) (addr)); \
-+        __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-+        __w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
-+#define rom_out_le32(addr, l)	\
-+        ({u32 __w, __v = cpu_to_le32(l); u32 _addr = ((u32) (addr)); \
-+        __w = ((*(__force volatile u32 *) ((_addr | 0x10000) + (__v<<1)))); })
++
++#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
++/*
++ * The simpler m68k and ColdFire processors do not have a 32*32->64
++ * multiply instruction. So we need to handle them a little differently.
++ * We use a bit of shifting and a single 32*32->32 multiply to get close.
++ * This is a macro so that the const version can factor out the first
++ * multiply and shift.
++ */
++#define	HZSCALE		(268435456 / (1000000 / HZ))
++
++#define ndelay(n) __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000 ) );
++
++#endif
  
- #define raw_rom_inb rom_in_8
- #define raw_rom_inw rom_in_be16
+ #endif /* defined(_M68K_DELAY_H) */
 -- 
 1.7.0.4
