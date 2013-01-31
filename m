@@ -1,100 +1,155 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts
-Date: Thu, 31 Jan 2013 13:23:44 +1300 (NZDT)
-Message-ID: <20130131002344.1161E360095@xplor.waratah.dyndns.org>
+Subject: [PATCH 10/17] [m68k] Atari: use dedicated irq_chip for timer D interrupts
+Date: Thu, 31 Jan 2013 13:24:33 +1300 (NZDT)
+Message-ID: <20130131002433.90B12360095@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-da0-f49.google.com ([209.85.210.49]:49906 "EHLO
-	mail-da0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751515Ab3AaAYE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:24:04 -0500
-Received: by mail-da0-f49.google.com with SMTP id v40so1012572dad.8
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:24:03 -0800 (PST)
+Received: from mail-pa0-f53.google.com ([209.85.220.53]:63427 "EHLO
+	mail-pa0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754082Ab3AaAYx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:24:53 -0500
+Received: by mail-pa0-f53.google.com with SMTP id bg4so1384535pad.40
+        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:24:53 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org
 
-[PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
-        experimental hack to avoid unhandled interrupt timer to fire
-        on EtherNEC/NetUSBee cards that have no hardware interrupt
-        and need to be polled from a timer
-
-This patch adds a special 'polled interrupt' handler for timer based software interrupts.
-
-handle_simple_irq() will respond to excessive unhandled interrupts (as are expected for a
-polling timer interrupt) by disabling the apparently unhandled interrupt source.
-
-handle_polled_irq() prevents this by setting the IRQS_POLL_INPROGRESS flag which will cause
-the unhandled interrupt events to be ignored.
-
-This is a temporary hack to allow timer based polling of the Atari ROM port network and USB
-cards only. Suggestions on how to properly handle this in the normal interrupt framework are
-most welcome.
+[PATCH 10/17] [m68k] Atari: use dedicated irq_chip for timer D interrupts (used as
+        a polling timer for EtherNEC and NetUSBee
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- include/linux/irq.h |    1 +
- kernel/irq/chip.c   |   36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 0 deletions(-)
+ arch/m68k/atari/ataints.c         |   76 +++++++++++++++++++++++++++++++++++++
+ arch/m68k/atari/config.c          |    2 +-
+ arch/m68k/include/asm/atariints.h |    9 ++++
+ 3 files changed, 86 insertions(+), 1 deletions(-)
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index fdf2c4a..39bfcff 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -407,6 +407,7 @@ extern void handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_edge_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_edge_eoi_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_simple_irq(unsigned int irq, struct irq_desc *desc);
-+extern void handle_polled_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_percpu_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_percpu_devid_irq(unsigned int irq, struct irq_desc *desc);
- extern void handle_bad_irq(unsigned int irq, struct irq_desc *desc);
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index 3aca9f2..ae7ef4d 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -339,6 +339,42 @@ out_unlock:
- }
- EXPORT_SYMBOL_GPL(handle_simple_irq);
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 3f41092..42b916f 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -122,6 +122,62 @@ static struct irq_chip atari_irq_chip = {
+ };
  
-+/**
-+ *	handle_polled_irq - Simple and software-decoded IRQs.
-+ *	@irq:	the interrupt number
-+ *	@desc:	the interrupt description structure for this irq
-+ *
-+ *	Polled interrupts are sent from a demultiplexing software interrupt
-+ *	handler, where no interrupt hardware control is necessary.
-+ */
-+void
-+handle_polled_irq(unsigned int irq, struct irq_desc *desc)
-+{
-+	raw_spin_lock(&desc->lock);
-+
-+	if (unlikely(irqd_irq_inprogress(&desc->irq_data)))
-+		if (!irq_check_poll(desc))
-+			goto out_unlock;
-+
-+	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-+	kstat_incr_irqs_this_cpu(irq, desc);
-+
-+	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
-+		desc->istate |= IRQS_PENDING;
-+		goto out_unlock;
-+	}
-+
-+	desc->istate |= IRQS_POLL_INPROGRESS;
-+
-+	handle_irq_event(desc);
-+
-+	desc->istate &= ~(IRQS_POLL_INPROGRESS);
-+
-+out_unlock:
-+	raw_spin_unlock(&desc->lock);
-+}
-+EXPORT_SYMBOL_GPL(handle_polled_irq);
-+
  /*
-  * Called unconditionally from handle_level_irq() and only for oneshot
-  * interrupts from handle_fasteoi_irq()
++ * ST-MFP timer D chained interrupts - each driver gets its own timer
++ * interrupt instance.
++ */
++
++struct mfptimerbase {
++	volatile struct MFP *mfp;
++	unsigned char mfp_mask, mfp_data;
++	unsigned short int_mask;
++	int handler_irq, mfptimer_irq, server_irq;
++	char *name;
++} stmfp_base = {
++	.mfp		= &st_mfp,
++	.int_mask	= 0x0,
++	.handler_irq	= IRQ_MFP_TIMD,
++	.mfptimer_irq	= IRQ_MFP_TIMER1,
++	.name		= "MFP Timer D"
++};
++
++static irqreturn_t mfptimer_handler(int irq, void *dev_id)
++{
++	struct mfptimerbase *base = dev_id;
++	int mach_irq;
++	unsigned char ints;
++
++	mach_irq = base->mfptimer_irq;
++	ints = base->int_mask;
++	for (; ints; mach_irq++, ints >>= 1) {
++		if (ints & 1)
++			generic_handle_irq(mach_irq);
++	}
++	return IRQ_HANDLED;
++}
++
++
++static void atari_mfptimer_enable(struct irq_data *data)
++{
++	int mfp_num = data->irq - IRQ_MFP_TIMER1;
++	stmfp_base.int_mask |= 1 << mfp_num;
++	atari_enable_irq(IRQ_MFP_TIMD);
++}
++
++static void atari_mfptimer_disable(struct irq_data *data)
++{
++	int mfp_num = data->irq - IRQ_MFP_TIMER1;
++	stmfp_base.int_mask &= ~(1 << mfp_num);
++	if (!stmfp_base.int_mask)
++		atari_disable_irq(IRQ_MFP_TIMD);
++}
++
++static struct irq_chip atari_mfptimer_chip = {
++	.name		= "timer_d",
++	.irq_enable	= atari_mfptimer_enable,
++	.irq_disable	= atari_mfptimer_disable,
++};
++
++/*
+  * void atari_init_IRQ (void)
+  *
+  * Parameters:	None
+@@ -198,6 +254,26 @@ void __init atari_init_IRQ(void)
+ 	/* Initialize the PSG: all sounds off, both ports output */
+ 	sound_ym.rd_data_reg_sel = 7;
+ 	sound_ym.wd_data = 0xff;
++
++	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
++				  IRQ_MFP_TIMER1, 8);
++	/* possibly unneeded */
++	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq,
++				  IRQ_MFP_TIMD, 1);
++
++	/* prepare timer D data for use as poll interrupt */
++	/* set Timer D data Register - needs to be > 0 */
++	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
++	/* start timer D, div = 1:100 */
++	st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
++
++	/* do we need this one ? */
++	m68k_irq_startup_irq(IRQ_MFP_TIMD);
++
++	/* request timer D dispatch handler */
++	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
++			stmfp_base.name, &stmfp_base))
++		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
+ }
+ 
+ 
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index c384454..2722c79 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -692,7 +692,7 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
+ 
+ #define ATARI_ETHERNEC_PHYS_ADDR	0xfffa0000
+ #define ATARI_ETHERNEC_BASE		0x300
+-#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMD
++#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMER1
+ 
+ static struct resource rtl8019_resources[] = {
+ 	[0] = {
+diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
+index 12c759a..953e0ac 100644
+--- a/arch/m68k/include/asm/atariints.h
++++ b/arch/m68k/include/asm/atariints.h
+@@ -94,6 +94,15 @@
+ #define IRQ_SCCA_RX	     (52)
+ #define IRQ_SCCA_SPCOND	     (54)
+ 
++/* shared MFP timer D interrupts - hires timer for EtherNEC et al. */
++#define IRQ_MFP_TIMER1       (64)
++#define IRQ_MFP_TIMER2       (65)
++#define IRQ_MFP_TIMER3       (66)
++#define IRQ_MFP_TIMER4       (67)
++#define IRQ_MFP_TIMER5       (68)
++#define IRQ_MFP_TIMER6       (69)
++#define IRQ_MFP_TIMER7       (70)
++#define IRQ_MFP_TIMER8       (71)
+ 
+ #define INT_CLK   24576	    /* CLK while int_clk =2.456MHz and divide = 100 */
+ #define INT_TICKS 246	    /* to make sched_time = 99.902... HZ */
 -- 
 1.7.0.4
