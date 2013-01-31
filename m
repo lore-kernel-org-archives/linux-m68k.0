@@ -1,55 +1,57 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 02/17] [m68k] Atari: declare original EtherNAT driver obsolete
-Date: Thu, 31 Jan 2013 13:15:59 +1300 (NZDT)
-Message-ID: <20130131001559.AFEFE360095@xplor.waratah.dyndns.org>
+Subject: [PATCH 03/17] [m68k] Atari: use CONFIG_ATARI in smc91x.h
+Date: Thu, 31 Jan 2013 13:17:12 +1300 (NZDT)
+Message-ID: <20130131001712.C1B1A360095@xplor.waratah.dyndns.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-da0-f43.google.com ([209.85.210.43]:40897 "EHLO
-	mail-da0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753761Ab3AaAQG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:16:06 -0500
-Received: by mail-da0-f43.google.com with SMTP id u36so1015434dak.16
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:16:05 -0800 (PST)
+Received: from mail-pa0-f51.google.com ([209.85.220.51]:64972 "EHLO
+	mail-pa0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753243Ab3AaARS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jan 2013 19:17:18 -0500
+Received: by mail-pa0-f51.google.com with SMTP id hz1so464925pad.38
+        for <linux-m68k@vger.kernel.org>; Wed, 30 Jan 2013 16:17:18 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org
 
-[PATCH 02/17] [m68k] Atari: declare original EtherNAT driver obsolete
+[PATCH 03/17] [m68k] Atari: use CONFIG_ATARI in smc91x.h
 
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- drivers/net/ethernet/smsc/Kconfig  |    4 ++--
- drivers/net/ethernet/smsc/Makefile |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/smsc/smc91x.h |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/smsc/Kconfig b/drivers/net/ethernet/smsc/Kconfig
-index 01893aa..c273eac 100644
---- a/drivers/net/ethernet/smsc/Kconfig
-+++ b/drivers/net/ethernet/smsc/Kconfig
-@@ -19,8 +19,8 @@ config NET_VENDOR_SMSC
+diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
+index f0f950c..528f7ba 100644
+--- a/drivers/net/ethernet/smsc/smc91x.h
++++ b/drivers/net/ethernet/smsc/smc91x.h
+@@ -231,7 +231,7 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
  
- if NET_VENDOR_SMSC
+ #include <unit/smc91111.h>
  
--config ATARI_ETHERNAT
--	tristate "Atari EtherNAT Ethernet support"
-+config ATARI_ETHERNAT_OLD
-+	tristate "Atari EtherNAT Ethernet support - obsolete driver"
- 	select CRC32
- 	select MII
- 	depends on ATARI
-diff --git a/drivers/net/ethernet/smsc/Makefile b/drivers/net/ethernet/smsc/Makefile
-index ef228db..a1992fa 100644
---- a/drivers/net/ethernet/smsc/Makefile
-+++ b/drivers/net/ethernet/smsc/Makefile
-@@ -2,7 +2,7 @@
- # Makefile for the SMSC network device drivers.
- #
+-#elif defined(CONFIG_ATARI_ETHERNAT) || defined(CONFIG_ATARI_ETHERNAT_MODULE)
++#elif defined(CONFIG_ATARI)
  
--obj-$(CONFIG_ATARI_ETHERNAT) += atari_91C111.o
-+obj-$(CONFIG_ATARI_ETHERNAT_OLD) += atari_91C111.o
- obj-$(CONFIG_SMC9194) += smc9194.o
- obj-$(CONFIG_SMC91X) += smc91x.o
- obj-$(CONFIG_PCMCIA_SMC91C92) += smc91c92_cs.o
+ #define SMC_CAN_USE_8BIT        1
+ #define SMC_CAN_USE_16BIT       1
+@@ -255,8 +255,6 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
+ #define RPC_LSA_DEFAULT         RPC_LED_100_10
+ #define RPC_LSB_DEFAULT         RPC_LED_TX_RX
+ 
+-#define SMC_DYNAMIC_BUS_CONFIG
+-
+ #elif defined(CONFIG_ARCH_MSM)
+ 
+ #define SMC_CAN_USE_8BIT	0
+@@ -1142,7 +1140,7 @@ static const char * chip_ids[ 16 ] =  {
+ 		}							\
+ 	} while (0)
+ 
+-#if defined(CONFIG_ATARI_ETHERNAT) || defined(CONFIG_ATARI_ETHERNAT_MODULE)
++#if defined(CONFIG_ATARI)
+ /*
+  * MSch: EtherNAT is 32 bit, so the misaligned data buffer hack applies.
+  * This appears to hurt quite a lot ... we actually need to byte swap the
 -- 
 1.7.0.4
