@@ -1,91 +1,73 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 13/17] [m68k] Atari: implement 16 bit access macros for
- ROM port ISA
-Date: Sun, 10 Feb 2013 17:14:48 +0100
-Message-ID: <CAMuHMdWhD2TZGCkyiCRecGnyqxKpG0La6iuJn8g-Kp8yL2yG6A@mail.gmail.com>
-References: <20130131002932.ABA9F360095@xplor.waratah.dyndns.org>
+Subject: Re: [PATCH 14/17] [m68k] Implement ndelay() based on the existing
+ udelay() logic (needed for ISP1160)
+Date: Sun, 10 Feb 2013 17:22:30 +0100
+Message-ID: <CAMuHMdVcRj3zVecKTqjRHze0P5q3eYsd0afZfo1h6Q8u3DRpQQ@mail.gmail.com>
+References: <20130131003015.DCCF4360095@xplor.waratah.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ie0-f178.google.com ([209.85.223.178]:45319 "EHLO
-	mail-ie0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754799Ab3BJQOt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Feb 2013 11:14:49 -0500
-Received: by mail-ie0-f178.google.com with SMTP id c13so6717642ieb.37
-        for <linux-m68k@vger.kernel.org>; Sun, 10 Feb 2013 08:14:48 -0800 (PST)
-In-Reply-To: <20130131002932.ABA9F360095@xplor.waratah.dyndns.org>
+Received: from mail-ie0-f179.google.com ([209.85.223.179]:65082 "EHLO
+	mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755745Ab3BJQWb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Feb 2013 11:22:31 -0500
+Received: by mail-ie0-f179.google.com with SMTP id k11so6781199iea.24
+        for <linux-m68k@vger.kernel.org>; Sun, 10 Feb 2013 08:22:30 -0800 (PST)
+In-Reply-To: <20130131003015.DCCF4360095@xplor.waratah.dyndns.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@gmail.com>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, Jan 31, 2013 at 1:29 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> [PATCH 13/17] [m68k] Atari: implement 16 bit access macros for ROM port ISA
->         adapter cards, following debugging and clarification
->         by David Galvez
->
+On Thu, Jan 31, 2013 at 1:30 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
 > Signed-off-by: Michael Schmitz <schmitz@debian.org>
 > ---
->  arch/m68k/include/asm/io_mm.h  |   16 ++++++++++++----
->  arch/m68k/include/asm/raw_io.h |   32 ++++++++++++++++++++++----------
+>  arch/m68k/include/asm/delay.h |   26 ++++++++++++++++++++++++++
+>  1 files changed, 26 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+> index 12d8fe4..b18b667 100644
+> --- a/arch/m68k/include/asm/delay.h
+> +++ b/arch/m68k/include/asm/delay.h
+> @@ -92,5 +92,31 @@ static inline void __udelay(unsigned long usecs)
+>  #define udelay(n) (__builtin_constant_p(n) ? \
+>         ((n) > 20000 ? __bad_udelay() : __const_udelay(n)) : __udelay(n))
+>
+> +/*
+> + * nanosecond delay:
+> + *
+> + * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of loops per microsecond
+> + *
+> + * 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of nanoseconds per loop
+> + *
+> + * So n / ( 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) ) would be the number of loops for n nanoseconds
+> + *
+> + * ndelay(n) = __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000 ) )
 
-To be folded into
-    m68k-queue/m68k-atari-Initial-ROM-port-ISA-adapter-support.patch
-    m68k-queue/m68k-atari-io.h-fixes-for-EtherNAT-driver.patch
+This comment line is just a copy of the implementation?
 
-> --- a/arch/m68k/include/asm/raw_io.h
-> +++ b/arch/m68k/include/asm/raw_io.h
-> @@ -77,19 +77,31 @@ extern void __iounmap(void *addr, unsigned long size);
->  #define rom_in_8(addr) \
->         ({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
->  #define rom_in_be16(addr) \
-> -       ({ u16 __v = (*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
-> +       ({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
->  #define rom_in_be32(addr) \
-> -       ({ u32 __v = (*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
-> +       ({ u32 __v = (*(__force volatile u32 *) (addr)); __v; })
->  #define rom_in_le16(addr) \
-> -       ({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v >>= 8; __v; })
-> +       ({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v; })
->  #define rom_in_le32(addr) \
-> -       ({ u32 __v = le32_to_cpu(*(__force volatile u32 *) (addr)); __v >>= 8; __v; })
-> -
-> -#define rom_out_8(addr, b)     ({u8 __w, __v = (b); __w = ((*(__force volatile u8 *)  ((addr) + 0x10000 + (__v<<1)))); })
-> -#define rom_out_be16(addr, w)  ({u16 __w, __v = (w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
-> -#define rom_out_be32(addr, l)  ({u32 __w, __v = (l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
-> -#define rom_out_le16(addr, w)  ({u16 __w, __v = cpu_to_le16(w); __w = ((*(__force volatile u16 *) ((addr) + 0x10000 + (__v<<1)))); })
-> -#define rom_out_le32(addr, l)  ({u32 __w, __v = cpu_to_le32(l); __w = ((*(__force volatile u32 *) ((addr) + 0x10000 + (__v<<1)))); })
-> +       ({ u32 __v = le32_to_cpu(*(__force volatile u32 *) (addr)); __v; })
+> + */
 > +
-> +#define rom_out_8(addr, b)     \
-> +        ({u8 __w, __v = (b);  u32 _addr = ((u32) (addr)); \
-> +        __w = ((*(__force volatile u8 *)  ((_addr | 0x10000) + (__v<<1)))); })
-> +#define rom_out_be16(addr, w)  \
-> +        ({u16 __w, __v = (w); u32 _addr = ((u32) (addr)); \
-> +        __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-> +        __w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
-> +#define rom_out_be32(addr, l)  \
-> +        ({u32 __w, __v = (l);  u32 _addr = ((u32) (addr)); \
-> +        __w = ((*(__force volatile u32 *) ((_addr | 0x10000) + (__v<<1)))); })
+> +
+> +#if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+> +/*
+> + * The simpler m68k and ColdFire processors do not have a 32*32->64
+> + * multiply instruction. So we need to handle them a little differently.
+> + * We use a bit of shifting and a single 32*32->32 multiply to get close.
+> + * This is a macro so that the const version can factor out the first
+> + * multiply and shift.
+> + */
+> +#define        HZSCALE         (268435456 / (1000000 / HZ))
+> +
+> +#define ndelay(n) __delay( DIV_ROUND_UP( (n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000 ) );
+> +
+> +#endif
 
-This doesn't look correct to me: "__v << 1" will not fit in 32-bit, so
-you loose data.
-Are 32-bit writes (and reads) supported?
-
-> +#define rom_out_le16(addr, w)  \
-> +        ({u16 __w, __v = cpu_to_le16(w); u32 _addr = ((u32) (addr)); \
-> +        __w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
-> +        __w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
-
-As you have to split the 16-bit data word in two bytes anyway, it's
-more efficient to
-hardcode the passing of the bytes than using cpu_to_le16().
-
-> +#define rom_out_le32(addr, l)  \
-> +        ({u32 __w, __v = cpu_to_le32(l); u32 _addr = ((u32) (addr)); \
-> +        __w = ((*(__force volatile u32 *) ((_addr | 0x10000) + (__v<<1)))); })
-
-Same comment as for out_be32().
+As both of CONFIG_M68000 and CONFIG_COLDFIRE are not set for regular Atari
+builds, we still end up using the generic implementation in
+<linux/delay.h>, which
+does "udelay(DIV_ROUND_UP(x, 1000));"?
+I.e. it will never wait for less than 1 us, do we really want that?
 
 Gr{oetje,eeting}s,
 
