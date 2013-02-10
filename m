@@ -1,109 +1,63 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based
- soft interrupts
-Date: Sun, 10 Feb 2013 11:36:31 +0100
-Message-ID: <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com>
-References: <20130131002344.1161E360095@xplor.waratah.dyndns.org>
+Subject: Re: [PATCH 10/17] [m68k] Atari: use dedicated irq_chip for timer D interrupts
+Date: Sun, 10 Feb 2013 16:50:53 +0100
+Message-ID: <CAMuHMdUC0kMpg09MtD2DYHCviBkF-OuLKznJHqDu5n6-wioKpw@mail.gmail.com>
+References: <20130131002433.90B12360095@xplor.waratah.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ie0-f179.google.com ([209.85.223.179]:49284 "EHLO
-	mail-ie0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753467Ab3BJKgc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Feb 2013 05:36:32 -0500
-In-Reply-To: <20130131002344.1161E360095@xplor.waratah.dyndns.org>
+Received: from mail-ie0-f182.google.com ([209.85.223.182]:37400 "EHLO
+	mail-ie0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755581Ab3BJPuy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Feb 2013 10:50:54 -0500
+Received: by mail-ie0-f182.google.com with SMTP id k14so6838260iea.27
+        for <linux-m68k@vger.kernel.org>; Sun, 10 Feb 2013 07:50:54 -0800 (PST)
+In-Reply-To: <20130131002433.90B12360095@xplor.waratah.dyndns.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org
 
-On Thu, Jan 31, 2013 at 1:23 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
->         experimental hack to avoid unhandled interrupt timer to fire
->         on EtherNEC/NetUSBee cards that have no hardware interrupt
->         and need to be polled from a timer
->
-> This patch adds a special 'polled interrupt' handler for timer based software interrupts.
+On Thu, Jan 31, 2013 at 1:24 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> --- a/arch/m68k/atari/ataints.c
+> +++ b/arch/m68k/atari/ataints.c
 
-Adding Thomas and lkml.
+> @@ -198,6 +254,26 @@ void __init atari_init_IRQ(void)
+>         /* Initialize the PSG: all sounds off, both ports output */
+>         sound_ym.rd_data_reg_sel = 7;
+>         sound_ym.wd_data = 0xff;
+> +
+> +       m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
+> +                                 IRQ_MFP_TIMER1, 8);
+> +       /* possibly unneeded */
+> +       m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq,
+> +                                 IRQ_MFP_TIMD, 1);
 
-> handle_simple_irq() will respond to excessive unhandled interrupts (as are expected for a
-> polling timer interrupt) by disabling the apparently unhandled interrupt source.
+Indeed, this is already handled for all NUM_ATARI_SOURCES at the top of
+the function.
+
+> +       /* prepare timer D data for use as poll interrupt */
+> +       /* set Timer D data Register - needs to be > 0 */
+> +       st_mfp.tim_dt_d = 254;  /* < 100 Hz */
+> +       /* start timer D, div = 1:100 */
+> +       st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
+> +
+> +       /* do we need this one ? */
+> +       m68k_irq_startup_irq(IRQ_MFP_TIMD);
+
+Probably not, as you remove it again in patch 12/17.
+
+> --- a/arch/m68k/atari/config.c
+> +++ b/arch/m68k/atari/config.c
+> @@ -692,7 +692,7 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
 >
-> handle_polled_irq() prevents this by setting the IRQS_POLL_INPROGRESS flag which will cause
-> the unhandled interrupt events to be ignored.
->
-> This is a temporary hack to allow timer based polling of the Atari ROM port network and USB
-> cards only. Suggestions on how to properly handle this in the normal interrupt framework are
-> most welcome.
->
-> Signed-off-by: Michael Schmitz <schmitz@debian.org>
-> ---
->  include/linux/irq.h |    1 +
->  kernel/irq/chip.c   |   36 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 37 insertions(+), 0 deletions(-)
->
-> diff --git a/include/linux/irq.h b/include/linux/irq.h
-> index fdf2c4a..39bfcff 100644
-> --- a/include/linux/irq.h
-> +++ b/include/linux/irq.h
-> @@ -407,6 +407,7 @@ extern void handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_edge_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_edge_eoi_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_simple_irq(unsigned int irq, struct irq_desc *desc);
-> +extern void handle_polled_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_percpu_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_percpu_devid_irq(unsigned int irq, struct irq_desc *desc);
->  extern void handle_bad_irq(unsigned int irq, struct irq_desc *desc);
-> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-> index 3aca9f2..ae7ef4d 100644
-> --- a/kernel/irq/chip.c
-> +++ b/kernel/irq/chip.c
-> @@ -339,6 +339,42 @@ out_unlock:
->  }
->  EXPORT_SYMBOL_GPL(handle_simple_irq);
->
-> +/**
-> + *     handle_polled_irq - Simple and software-decoded IRQs.
-> + *     @irq:   the interrupt number
-> + *     @desc:  the interrupt description structure for this irq
-> + *
-> + *     Polled interrupts are sent from a demultiplexing software interrupt
-> + *     handler, where no interrupt hardware control is necessary.
-> + */
-> +void
-> +handle_polled_irq(unsigned int irq, struct irq_desc *desc)
-> +{
-> +       raw_spin_lock(&desc->lock);
-> +
-> +       if (unlikely(irqd_irq_inprogress(&desc->irq_data)))
-> +               if (!irq_check_poll(desc))
-> +                       goto out_unlock;
-> +
-> +       desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-> +       kstat_incr_irqs_this_cpu(irq, desc);
-> +
-> +       if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
-> +               desc->istate |= IRQS_PENDING;
-> +               goto out_unlock;
-> +       }
-> +
-> +       desc->istate |= IRQS_POLL_INPROGRESS;
-> +
-> +       handle_irq_event(desc);
-> +
-> +       desc->istate &= ~(IRQS_POLL_INPROGRESS);
-> +
-> +out_unlock:
-> +       raw_spin_unlock(&desc->lock);
-> +}
-> +EXPORT_SYMBOL_GPL(handle_polled_irq);
-> +
->  /*
->   * Called unconditionally from handle_level_irq() and only for oneshot
->   * interrupts from handle_fasteoi_irq()
-> --
-> 1.7.0.4
+>  #define ATARI_ETHERNEC_PHYS_ADDR       0xfffa0000
+>  #define ATARI_ETHERNEC_BASE            0x300
+> -#define ATARI_ETHERNEC_IRQ             IRQ_MFP_TIMD
+> +#define ATARI_ETHERNEC_IRQ             IRQ_MFP_TIMER1
+
+This part belongs in patch 06/17. Please reorder the patches so this one, which
+adds the Timer D infrastructure), comes before the patches that add its users.
 
 Gr{oetje,eeting}s,
 
