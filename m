@@ -1,94 +1,178 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 01/17] [m68k] Atari: declare original EtherNEC driver obsolete
-Date: Sun, 10 Feb 2013 19:54:43 +0100
-Message-ID: <CAMuHMdUkc4T=FqdDRCrsdf1KHds1LUKR2ugDYxYRjfhwfXDHZw@mail.gmail.com>
-References: <20130131001454.07088360095@xplor.waratah.dyndns.org>
+From: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 16/17] [m68k] Atari: Add ISP1160 USB host controller
+ support (EtherNAT/NetUSBee)
+Date: Sun, 10 Feb 2013 22:57:10 +0100
+Message-ID: <20130210215710.GB4977@mail.biophys.uni-duesseldorf.de>
+References: <20130131003224.18C9B360095@xplor.waratah.dyndns.org>
+ <CAMuHMdVKwrGO2DQNABJAS38oFLXvisJzihyAvF5qvGVNkkP-SQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f179.google.com ([209.85.210.179]:34764 "EHLO
-	mail-ia0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756303Ab3BJSyo (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Feb 2013 13:54:44 -0500
-Received: by mail-ia0-f179.google.com with SMTP id x24so5778513iak.24
-        for <linux-m68k@vger.kernel.org>; Sun, 10 Feb 2013 10:54:43 -0800 (PST)
-In-Reply-To: <20130131001454.07088360095@xplor.waratah.dyndns.org>
+Received: from opal-mail.biophys.uni-duesseldorf.de ([134.99.176.33]:42551
+	"EHLO mail.biophys.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1756415Ab3BJV5M (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 10 Feb 2013 16:57:12 -0500
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVKwrGO2DQNABJAS38oFLXvisJzihyAvF5qvGVNkkP-SQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Geert,
 
-Sorry, it took a bit longer than expected.
-Sometimes FOSDEM is not good for the progress of free software ;-)
+> For this one, I don't know much about the internals. For next submission, please
+> CC the driver's maintainer and the linux-usb mailing list.
 
-On Thu, Jan 31, 2013 at 1:14 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> This rather lengthy list of patches updates Atari EtherNAT and EtherNEC
-> network support, plus adds USB driver support for the ISP1160 chip found on
-> EtherNAT and NetUSBee adapters.
->
-> Network stuff:
->  1  declare original EtherNEC driver obsolete
->  2  declare original EtherNAT driver obsolete
->  3  use CONFIG_ATARI in smc91x.h
->  4  change number of interrupt sources to include EtherNAT interrupts
->  5  fix EtherNAT interrupt number, conditionalize platform device register
->  6  add platform support for EtherNEC
->  7  EtherNAT ethernet support using new driver - smc91x.c
->  8  EtherNEC ethernet support using new driver - ne.c
->  9  IRQ: add handle_polled_irq for timer based software interrupts
-> 10  use dedicated irq_chip for timer D interrupts
-> 11  add interrupt chip definition for EtherNAT
-> 12  remove unnecessary cruft from Atari interrupt setup
->
-> USB related:
-> 13  implement 16 bit access macros for ROM port ISA adapters
-> 14  Implement ndelay based on the existing udelay code
-> 15  add platform device definitions for ISP1160 drivers
-> 16  Add ISP1160 USB host controller support for EtherNAT/NetUSBee
-> 17  NetUSBee tweaks for ISP1160 USB HCD driver
+This one will be discussed at length with the driver maintainer yet. 
+ 
+> >                 for (; len > 1; len -= 2) {
+> >                         w = *dp++;
+> >                         w |= *dp++ << 8;
+> 
+> This is a hand-coded little endian load...
+> 
+> >                         isp116x_raw_write_data16(isp116x, w);
+> >                 }
+> >                 if (len)
+> > +#ifdef CONFIG_ATARI    /* MSch: needs swap */
+> > +                       isp116x_raw_write_data16(isp116x, (u16) * dp);
+> 
+> ... while this just dereferences a u16 *.
 
-Here are my general comments for this series:
-  - Please run scripts/checkpatch.pl on your patches. 12 out of 17 have style
-    problems. Some of them you do want to fix for your next submission.
-  - You can use the --compose option of "git send-email" to write a separate
-    introductory email (i.e. the "[PATCH 0/17]" one).
-  - I don't know what went wrong with "git send-email", but the actual subjects
-    of the emails ended up in the bodies, too.
-  - For upstream submission, several of the patches should be folded into
-    older commits. As you based your series on m68k-queue, you can run
+It is weird that way - we've seen both aligned and unaligned accesses (the
+latter very rarely). This is the only way it actually works.  
 
-        git rebase -i v3.8-rc5 [top]
+> 
+> > +#else
+> >                         isp116x_write_data16(isp116x, (u16) * dp);
+> > +#endif
+> 
+> Hmm, something looks not right to me. But it could be the insane(?) wiring
+> instead. Cfr. the "[PATCH] drivers/block/xsysace - replace
+> in(out)_8/in(out)_be16/in(out)_le16 with generic iowrite(read)8/16(be)" thread
+> (https://lkml.org/lkml/2013/1/29/354).
 
-    to strip out the unrelated commits and fold/reorder/fix/clean up the rest.
-      - As you sent your patches on Jan 31, I assume m68k-queue was based on
-        v3.8-rc5 at the time you created the patches
-      - If your commits are on the current branch, the "top" is optional.
-        Else it would be your queue branch (e.g. for me that's "m68k-queue",
-        "for-linus", "for-next", or a more specific "for-vX.Y").
+That's it - the hardware designers have wired up the data bus byte swapped.
+Thanks for the pointer - I'll have to see what the outcome is when the dust
+settles. 
 
-> You may well decide to leave out #9 - use of EtherNEC and NetUSBee is then possible
-> only with the 'noirqdebug' kernel option.
+> > @@ -593,6 +632,11 @@ static irqreturn_t isp116x_irq(struct usb_hcd *hcd)
+> >         u16 irqstat;
+> >         irqreturn_t ret = IRQ_NONE;
+> >
+> > +#ifdef CONFIG_ATARI
+> > +        if ((unsigned long) hcd->rsrc_start >= 0x80000000UL)
+> > +               /* EtherNAT control register, disable interrupt for USB */
+> > +               *enat_cr = (*enat_cr) & 0xFB;
+> > +#endif
+> 
+> This is the interrupt routine. Shouldn't the interrupt have been
+> disabled already
+> by the generic IRQ code, by calling .irq_disable() on the EtherNAT
+> CPLD irq_chip?
 
-Yeah, this is something that should be sorted out with Thomas Gleixner
-on lkml (CC added
-for path 09/17).
+Should have been disabled - I tried to leave it out but still had problems.
+I'll revisit that now that the driver has stabilized a bit. 
 
-> With the present code, the timer D interrupt frequency is approximately 100 Hz. On fast
-> hardware, it should probably be doubled (change the timer D counter value fron 254 to 123
-> to achieve that. I had the timer rate adjustable via kernel options in an earlier
-> incarnation pf the ethernet drivers - whoever feels like it can revive that bit please).
+> > @@ -1291,6 +1339,12 @@ static void isp116x_stop(struct usb_hcd *hcd)
+> >         u32 val;
+> >
+> >         spin_lock_irqsave(&isp116x->lock, flags);
+> > +
+> > +#ifdef CONFIG_ATARI
+> > +        if ((unsigned long) hcd->rsrc_start >= 0x80000000UL)
+> > +               /* EtherNAT control register, disable interrupt for USB */
+> > +                *enat_cr = (*enat_cr) & 0xFB;
+> > +#endif
+> 
+> So hc_driver.stop() is called before the interrupt is disabled?
 
-Perhaps you can derive it from CPU frequency, i.e. loops_per_jiffy?
+Not sure about that - I'll have to see what the interrupt register is set to
+at that point. 
 
-Gr{oetje,eeting}s,
+> 
+> >         isp116x_write_reg16(isp116x, HCuPINTENB, 0);
+> >
+> >         /* Switch off ports' power, some devices don't come up
+> > @@ -1394,6 +1448,10 @@ static int isp116x_start(struct usb_hcd *hcd)
+> >         isp116x_write_reg32(isp116x, HCRHPORT1, RH_PS_CCS);
+> >         isp116x_write_reg32(isp116x, HCRHPORT2, RH_PS_CCS);
+> >
+> > +#ifdef CONFIG_ATARI
+> > +        if ((unsigned long) hcd->rsrc_start >= 0x80000000UL)
+> > +                *enat_cr = (*enat_cr) | 0x04;          /* EtherNAT control register, enable interrupt for USB */
+> > +#endif
+> 
+> And hc_driver.start() is called without enabling the interrupt later?
 
-                        Geert
+hc_driver.start() relies on the interrupt being enabled when the interrupt
+was requested - at that point, the chip appears to be in a state that will
+immediately generate interrupts. For that reason, the ethernat interrupt
+.startup() will not actually enable the interrupt for USB but rely on it
+happening in hcd.start(). 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> >         isp116x_show_regs_log(isp116x);
+> >         spin_unlock_irqrestore(&isp116x->lock, flags);
+> >         return 0;
+> > @@ -1539,6 +1597,9 @@ static int isp116x_remove(struct platform_device *pdev)
+> >         struct usb_hcd *hcd = platform_get_drvdata(pdev);
+> >         struct isp116x *isp116x;
+> >         struct resource *res;
+> > +#ifdef CONFIG_ATARI
+> > +       unsigned long enat_cr_phys;
+> > +#endif
+> >
+> >         if (!hcd)
+> >                 return 0;
+> > @@ -1552,7 +1613,14 @@ static int isp116x_remove(struct platform_device *pdev)
+> >         iounmap(isp116x->addr_reg);
+> >         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >         release_mem_region(res->start, 2);
+> > -
+> > +#ifdef CONFIG_ATARI
+> > +        if ((unsigned long) hcd->rsrc_start >= 0x80000000UL) {
+> > +               iounmap(enat_cr);
+> > +               /* unmap & release EtherNAT CPLD control register - at 0x23 off board base address */
+> > +               enat_cr_phys = (res->start & 0xFFFFFF00) + 0x23;
+> > +               release_mem_region(enat_cr_phys, 2);
+> > +        }
+> > +#endif
+> 
+> All of this is needed because you have to enable/disable the interrupt yourself?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yep. As I said - I need to go back and investigate whether that's still the
+case - I don't really see why I get the USB interrupts as soon as the driver
+is probed. 
+
+> > diff --git a/drivers/usb/host/isp116x.h b/drivers/usb/host/isp116x.h
+> > index 9a2c400..9d4d89d 100644
+> > --- a/drivers/usb/host/isp116x.h
+> > +++ b/drivers/usb/host/isp116x.h
+> > @@ -364,22 +364,37 @@ struct isp116x_ep {
+> >  #define        IRQ_TEST()      do{}while(0)
+> >  #endif
+> >
+> > +
+> > +#ifdef CONFIG_ATARI
+> > +  /* 16 bit data bus byte swapped in hardware */
+> > +#define isp_readw(p)           ( ( ((unsigned long)(__pa(p)) & 0x00000F00 ) == 0x00000300UL) ? isa_rom_readw_raw(__pa(p)) : __raw_readw((p)))
+> > +#define isp_writew(v,p)                ( ( ((unsigned long)(__pa(p)) & 0x00000F00 ) == 0x00000300UL) ? isa_rom_writew_raw((v),__pa(p)) : __raw_writew((v),(p)))
+> > +#define isp_raw_readw(p)       ( ( ((unsigned long)(__pa(p)) & 0x00000F00 ) == 0x00000300UL) ? isa_rom_readw(__pa(p)) : readw((p)))
+> > +#define isp_raw_writew(v,p)    ( ( ((unsigned long)(__pa(p)) & 0x00000F00 ) == 0x00000300UL) ? isa_rom_writew((v),__pa(p)) : writew((v),(p)))
+> 
+> What's the difference between the two cases of the ?-operator?
+
+The first case is the NetUSBee case - it requires going through the ROM port
+accessors. The second case is EtherNAT - straight memory mapped card. Both
+have the data bus byte swapped. 
+
+> Can you please add comments explaining this?
+
+I'll do that. 
+
+Cheers,
+
+	Michael
