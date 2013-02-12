@@ -1,52 +1,71 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 06/17] [m68k] Atari: add platform support for EtherNEC (conditionalized)
-Date: Mon, 11 Feb 2013 10:09:30 +0100
-Message-ID: <CAMuHMdUkKaJ3QH6T3Se8A-piMZ-UsVDyDVLMsuMb8aZH8aZ=yw@mail.gmail.com>
-References: <20130131001944.C85C0360095@xplor.waratah.dyndns.org>
+From: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH 15/17] [m68k] Atari: add platform device definitions for
+ ISP1160 USB HCD
+Date: Tue, 12 Feb 2013 02:20:08 +0100
+Message-ID: <20130212012008.GA17333@mail.biophys.uni-duesseldorf.de>
+References: <20130131003135.8B985360095@xplor.waratah.dyndns.org>
+ <CAMuHMdU6qfE6AUGKFEGvnxGZHbpDZ7Yg2KO85rApEnPXxEo7zA@mail.gmail.com>
+ <20130210224555.GC4977@mail.biophys.uni-duesseldorf.de>
+ <CAMuHMdXGLEqchFEkYRCMNSzqDaMo9aRt_hjm-2Mz=vqnAMmUew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ie0-f178.google.com ([209.85.223.178]:56817 "EHLO
-	mail-ie0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754285Ab3BKJJa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Feb 2013 04:09:30 -0500
-Received: by mail-ie0-f178.google.com with SMTP id c13so7249257ieb.37
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Feb 2013 01:09:30 -0800 (PST)
-In-Reply-To: <20130131001944.C85C0360095@xplor.waratah.dyndns.org>
+Received: from opal-mail.biophys.uni-duesseldorf.de ([134.99.176.33]:43315
+	"EHLO mail.biophys.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S932675Ab3BLBUK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 11 Feb 2013 20:20:10 -0500
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXGLEqchFEkYRCMNSzqDaMo9aRt_hjm-2Mz=vqnAMmUew@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
-On Thu, Jan 31, 2013 at 1:19 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> +static struct resource rtl8019_resources[] = {
-> +       [0] = {
-> +               .name   = "rtl9019-regs",
+Hi Geert,
 
-rtl8019-regs
+> >> > -static struct platform_device *atari_ethernec_devices[] __initdata = {
+> >> > -       &rtl8019_device
+> >>
+> >> Oops, removal of atari_ethernec_devices?
+> >
+> > Superseded by atari_netusbee_devices which holds both ethernet and usb
+> > platform data:
+> >
+> >> > +static struct platform_device *atari_netusbee_devices[] __initdata = {
+> >> > +       &rtl8019_device,
+> >> > +       &netusbee_device
+> >> >  };
+> 
+> Sorry, I missed that. You want to update the help text for ATARI_ETHERNEC.
 
-> +               .start  = ATARI_ETHERNEC_BASE,
-> +               .end    = ATARI_ETHERNEC_BASE + 0x20 - 1,
-> +               .flags  = IORESOURCE_IO,
-> +       },
-> +       [1] = {
-> +               .name   = "rtl9019-irq",
+Right - and maybe come up with a better name for the option -
+ATARI_ROM_PORT_DEVICES? 
 
-rtl8019-irq
+ 
+> BTW, wouldn't it better to rename netusbee_device to isp116x_device, cfr.
+> rtl8019_device?
 
-> +               .start  = ATARI_ETHERNEC_IRQ,
-> +               .end    = ATARI_ETHERNEC_IRQ,
-> +               .flags  = IORESOURCE_IRQ,
-> +       },
-> +};
+We already have isp1160_device - maybe I'll have to rename that to
+isp116x_ethernat_device, and the other one can be isp116x_netusbee_device?
+What's the practical limit for these device/struct names? 
 
-Gr{oetje,eeting}s,
+> > I'll have to check that CONFIG_ATARI_ETHERNEC is selected when either ne.c
+> > or isp116x driver are selected. It might otherwise be possible to select the
+> > USB driver only, and not the ethernet one, resulting in a nonfunctional
+> > driver.
+> 
+> ATARI_USB should depend on ...?
 
-                        Geert
+Either ATARI_ETHERNAT or ATARI_ETHERNEC, in practice. Not sure I'm building
+a kconfig dependency loop - can I rely on things set in Kconfig.devices when
+defining ATARI_USB in Kconfig.bus? 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I'll also have to change the help text for ATARI_ETHERNAT to include the USB
+function. 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Getting there, I'm sure. 
+
+Cheers,
+
+	Michael
