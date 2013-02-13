@@ -1,50 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 15/17] [m68k] Atari: add platform device definitions for
- ISP1160 USB HCD
-Date: Tue, 12 Feb 2013 09:32:59 +0100
-Message-ID: <CAMuHMdWCX56bpawFO0dPHEEmdxPoDzSAeFj2M1ggM=A=nATASQ@mail.gmail.com>
-References: <20130131003135.8B985360095@xplor.waratah.dyndns.org>
-	<CAMuHMdU6qfE6AUGKFEGvnxGZHbpDZ7Yg2KO85rApEnPXxEo7zA@mail.gmail.com>
-	<20130210224555.GC4977@mail.biophys.uni-duesseldorf.de>
-	<CAMuHMdXGLEqchFEkYRCMNSzqDaMo9aRt_hjm-2Mz=vqnAMmUew@mail.gmail.com>
-	<20130212012008.GA17333@mail.biophys.uni-duesseldorf.de>
+From: Lars Michael <lh_post@yahoo.com>
+Subject: Coldfire v4 low performance of read/write to shared memory
+Date: Wed, 13 Feb 2013 03:20:06 -0800 (PST)
+Message-ID: <1360754406.53672.YahooMailClassic@web125605.mail.ne1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f175.google.com ([209.85.210.175]:54545 "EHLO
-	mail-ia0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758308Ab3BLIdA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Feb 2013 03:33:00 -0500
-Received: by mail-ia0-f175.google.com with SMTP id r4so7176340iaj.20
-        for <linux-m68k@vger.kernel.org>; Tue, 12 Feb 2013 00:32:59 -0800 (PST)
-In-Reply-To: <20130212012008.GA17333@mail.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
-Cc: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: lh_post@yahoo.com
 
-On Tue, Feb 12, 2013 at 2:20 AM, Michael Schmitz
-<schmitz@mail.biophys.uni-duesseldorf.de> wrote:
->> > I'll have to check that CONFIG_ATARI_ETHERNEC is selected when either ne.c
->> > or isp116x driver are selected. It might otherwise be possible to select the
->> > USB driver only, and not the ethernet one, resulting in a nonfunctional
->> > driver.
->>
->> ATARI_USB should depend on ...?
->
-> Either ATARI_ETHERNAT or ATARI_ETHERNEC, in practice. Not sure I'm building
-> a kconfig dependency loop - can I rely on things set in Kconfig.devices when
-> defining ATARI_USB in Kconfig.bus?
+Hello,
 
-Sure.
+We are having some performance issues on our Coldfire v4 based board and hope we can get some help from the forum.
 
-Gr{oetje,eeting}s,
+The CPU is the 54418 running a 2.6.38 kernel. 128MB NAND flash and 256MB SDRAM. The compiler is GCC 4.5.97.
 
-                        Geert
+At first we had a low throughput on the ethernet and it drops significantly when CPU load increases. We have tested the controller and kernel module and found that it is not the bottleneck. It is like the kernel network layers do not process packets very fast. So we did more tests, one being access to SDRAM. Here are the main results:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Write 25MB to shared memory:
+[root@CPB529 /]# dd if=/dev/zero bs=1M count=25 of=/dev/shm/25MiB
+26214400 bytes (26 MB) copied, 1.58318 s, 16.6 MB/s
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Read 25MiB from shared mem:
+[root@CPB529 /]# dd if=/dev/shm/25MiB of=/dev/null
+26214400 bytes (26 MB) copied, 1.2091 s, 21.7 MB/s
+
+Read/write 25MiB to shared mem:
+[root@CPB529 /]# dd if=/dev/shm/25MiB of=/dev/shm/25MiBnew
+26214400 bytes (26 MB) copied, 6.36459 s, 4.1 MB/s
+
+In the last test, we would expect a much higher throughput. At least 8MB/s! Why is it so low? and could this indicate a problem in e.g. the kernel that can affect all processes running (including slowing down the kernel network layers)?
+
+How can we diagnose this further? 
+
+At the same time we noticed (by using strace) that there is an excessive and continously sequence of system calls at normal program execusion:
+ 
+333 (__NR_GET_THREAD_AREA), and 335 (__NR_ATOMIC_CMPXCHG_32)
+
+They appear for both single and multithreaded programs.
+
+Are all these calls required? are they adding unnecessary load on the CPU?
+
+Example:
+SYS_333(0, 0x601c2dc0, 0x602f8059, 0x8, 0x16078) = 1612489920
+SYS_335(0x1, 0, 0xffffffff, 0x8, 0x80000000) = 0
+SYS_335(0x602f4634, 0, 0, 0x8, 0x80000000) = 0
+SYS_335(0, 0x1, 0, 0x8, 0x80000000)     = 1
+SYS_333(0x8de, 0x601c2a90, 0x6003b37c, 0x2, 0xd8630) = 1612489920
+SYS_333(0, 0x601c2a90, 0x6003b41f, 0x2, 0xd8630) = 1612489920
+SYS_333(0x487, 0, 0x6003b37c, 0x2, 0xd833c) = 1612489920
+SYS_333(0, 0, 0x6003b9a0, 0x2, 0xd833c) = 1612489920
+SYS_335(0x1, 0, 0, 0x2, 0xbf839e84)     = 0
+
+Anybody running Linux on v4 Coldfire that has experienced similiar issues?
+
+Appreciate all comments and help on this. Let me know if more information is needed.
+
+Thanks and regards,
+Lars Horvath
