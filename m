@@ -1,57 +1,56 @@
-From: Luis Alves <ljalvs@gmail.com>
-Subject: [PATCH] Add CPU_NAME for 68000
-Date: Thu, 14 Feb 2013 21:18:34 +0000
-Message-ID: <1360876714-6675-1-git-send-email-ljalvs@gmail.com>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+From: Thorsten Glaser <tg@debian.org>
+Subject: Re: Coldfire v4 low performance of read/write to shared memory
+Date: Sat, 16 Feb 2013 18:54:34 +0000 (UTC)
+Message-ID: <loom.20130216T195126-34@post.gmane.org>
+References: <1360754406.53672.YahooMailClassic@web125605.mail.ne1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: uclinux-dev@uclinux.org, linux-m68k@vger.kernel.org
-Cc: gerg@uclinux.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:43341 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753968Ab3BPSyv (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 16 Feb 2013 13:54:51 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1U6mug-0000nL-Np
+	for linux-m68k@vger.kernel.org; Sat, 16 Feb 2013 19:55:06 +0100
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sat, 16 Feb 2013 19:55:06 +0100
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sat, 16 Feb 2013 19:55:06 +0100
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-This patch adds the correct CPU name.
-Without this, it just displays UNKNOWN at boot time and at '/proc/cpuinfo'.
+Lars Michael <lh_post <at> yahoo.com> writes:
 
-Regards,
-Luis
+> At the same time we noticed (by using strace) that there is an excess=
+ive and=20
+continously sequence of system
+> calls at normal program execusion:
+>=20
+> 333 (__NR_GET_THREAD_AREA), and 335 (__NR_ATOMIC_CMPXCHG_32)
 
-Signed-off-by: Luis Alves <ljalvs@gmail.com>
----
- arch/m68k/kernel/setup_no.c |    3 +++
- 1 file changed, 3 insertions(+)
+Yes, that is in fact normal. If you stop using programs (and libraries)
+that use TLS (thread-local storage) and atomics, you=E2=80=99ll notice =
+a massive
+speedup as these syscalls will no longer be issued.
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 71fb299..911ba47 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -57,6 +57,9 @@ void (*mach_reset)(void);
- void (*mach_halt)(void);
- void (*mach_power_off)(void);
- 
-+#ifdef CONFIG_M68000
-+#define CPU_NAME	"MC68000"
-+#endif
- #ifdef CONFIG_M68328
- #define CPU_NAME	"MC68328"
- #endif
--- 
-1.7.10.4
+The only way out of this is an ABI breakage, with at least
+* set one CPU register aside for the TLS base
+* add a VDSO or some other kind of page for =E2=80=9Cfast syscalls=E2=80=
+=9D,
+  to optimise away the need for cmpxchg to call into the
+  kernel (if possible), and maybe speed up e.g. gettimeofday
+* bump time_t to 64 bit (pet peeve of mine)
+* =E2=80=A6 maybe others? I=E2=80=99m not a Linux kernel coder.
 
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+bye,
+//mirabilos
+PS: Does strace by now know about these two syscalls,
+    and possibly filter them out? Does qemu=E2=80=99s userspace
+    emulation provide for them?
