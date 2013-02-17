@@ -1,37 +1,26 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-Subject: [PATCH] m68k/nommu: fix build when CPU is not coldfire
-Date: Sat, 16 Feb 2013 23:33:34 -0200
-Message-ID: <1361064814-9727-1-git-send-email-cascardo__37314.8265215152$1361065481$gmane$org@holoscopio.com>
+From: GFS <hillie82@broadweave.net>
+Subject: SPECIAL OFFER! APPLY NOW FOR 3% LOAN (PERSONAL, BUSINESS & PROJECT
+ FINANCING LOANS)
+Date: Sun, 17 Feb 2013 08:47:49 -0700 (MST)
+Message-ID: <1882796834.2678576.1361116069042.JavaMail.root@broadweave.net>
+Reply-To: Ari <arimonfared2013@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: gerg@uclinux.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
 
-Commit dd1cb3a7c43508c29e17836628090c0735bd3137 unified mm/init.c for both MMU
-and non-MMU m68k platforms. However, it broke when we build a non-MMU M68K
-Classic CPU kernel.
 
-This fix builds a section that came from the MMU version only when we are
-building a MMU kernel.
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
----
- arch/m68k/mm/init.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Good Day
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index afd8106f..519aad8 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -188,7 +188,7 @@ void __init mem_init(void)
- 		}
- 	}
- 
--#if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
-+#if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	/* insert pointer tables allocated so far into the tablelist */
- 	init_pointer_table((unsigned long)kernel_pg_dir);
- 	for (i = 0; i < PTRS_PER_PGD; i++) {
--- 
-1.7.10.4
+Apply for personal, business project financing and any type loan at 3%
+interest rate. Contact Ari Monfared of the Global Financial Solution
+via email: arimonfared@blumail.org
+
+In business, it takes money to make money. We are ready to entrust our money on you and your business ideas if you meet the necessary requirement.
+
+Best Regards
+Ari Monfared
+Global Financial Solution
