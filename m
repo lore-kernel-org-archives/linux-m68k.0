@@ -1,86 +1,59 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] Fix MC68328.h defines
-Date: Mon, 04 Mar 2013 11:16:53 +1000
-Message-ID: <5133F605.5060702@uclinux.org>
-References: <1361999142-15483-1-git-send-email-ljalvs@gmail.com>
+From: gerg@uclinux.org
+Subject: [PATCH] m68knommu: fix misnamed GPIO pin definition for ColdFire 528x CPU
+Date: Mon,  4 Mar 2013 15:18:43 +1000
+Message-ID: <1362374323-23471-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outbound-mail03.westnet.com.au ([203.10.1.244]:30675 "EHLO
-	outbound-mail03.westnet.com.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751473Ab3CDBRQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 3 Mar 2013 20:17:16 -0500
-In-Reply-To: <1361999142-15483-1-git-send-email-ljalvs@gmail.com>
+Received: from nskntmtas04p.mx.bigpond.com ([61.9.168.146]:54984 "EHLO
+	nskntmtas04p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750740Ab3CDFTK (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Mar 2013 00:19:10 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Luis Alves <ljalvs@gmail.com>
-Cc: uclinux-dev@uclinux.org, linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Luis,
+=46rom: Greg Ungerer <gerg@uclinux.org>
 
-On 28/02/13 07:05, Luis Alves wrote:
-> This patch fixes some broken #define's in the MC68328.h file.
-> Most of them are whitespaces and one is an incorrect define of TCN.
+Compiling for a ColdFire 528x CPU will result in:
 
-Thanks. Applied to the m68knommu git tree.
+arch/m68k/platform/coldfire/m528x.c: In function =E2=80=98m528x_uarts_i=
+nit=E2=80=99:
+arch/m68k/platform/coldfire/m528x.c:72: error: =E2=80=98MCF5282_GPIO_PU=
+APAR=E2=80=99 undeclared (first use in this function)
+arch/m68k/platform/coldfire/m528x.c:72: error: (Each undeclared identif=
+ier is reported only once
+arch/m68k/platform/coldfire/m528x.c:72: error: for each function it app=
+ears in.)
 
-Regards
-Greg
+The MCF5282_GPIO_PUAPAR definition changed names in the ColdFire defini=
+tions
+cleanup. It is now MCFGPIO_PUAPAR, so change it.
 
+Not sure how this one got missed, 2 lines below it is the correct use o=
+f
+this definition.
 
-> Signed-off-by: Luis Alves <ljalvs@gmail.com>
-> ---
->   arch/m68k/include/asm/MC68328.h |   10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/MC68328.h b/arch/m68k/include/asm/MC68328.h
-> index a337e56..4ebf098 100644
-> --- a/arch/m68k/include/asm/MC68328.h
-> +++ b/arch/m68k/include/asm/MC68328.h
-> @@ -293,7 +293,7 @@
->   /*
->    * Here go the bitmasks themselves
->    */
-> -#define IMR_MSPIM 	(1 << SPIM _IRQ_NUM)	/* Mask SPI Master interrupt */
-> +#define IMR_MSPIM 	(1 << SPIM_IRQ_NUM)	/* Mask SPI Master interrupt */
->   #define	IMR_MTMR2	(1 << TMR2_IRQ_NUM)	/* Mask Timer 2 interrupt */
->   #define IMR_MUART	(1 << UART_IRQ_NUM)	/* Mask UART interrupt */	
->   #define	IMR_MWDT	(1 << WDT_IRQ_NUM)	/* Mask Watchdog Timer interrupt */
-> @@ -327,7 +327,7 @@
->   #define IWR_ADDR	0xfffff308
->   #define IWR		LONG_REF(IWR_ADDR)
->
-> -#define IWR_SPIM 	(1 << SPIM _IRQ_NUM)	/* SPI Master interrupt */
-> +#define IWR_SPIM 	(1 << SPIM_IRQ_NUM)	/* SPI Master interrupt */
->   #define	IWR_TMR2	(1 << TMR2_IRQ_NUM)	/* Timer 2 interrupt */
->   #define IWR_UART	(1 << UART_IRQ_NUM)	/* UART interrupt */	
->   #define	IWR_WDT		(1 << WDT_IRQ_NUM)	/* Watchdog Timer interrupt */
-> @@ -357,7 +357,7 @@
->   #define ISR_ADDR	0xfffff30c
->   #define ISR		LONG_REF(ISR_ADDR)
->
-> -#define ISR_SPIM 	(1 << SPIM _IRQ_NUM)	/* SPI Master interrupt */
-> +#define ISR_SPIM 	(1 << SPIM_IRQ_NUM)	/* SPI Master interrupt */
->   #define	ISR_TMR2	(1 << TMR2_IRQ_NUM)	/* Timer 2 interrupt */
->   #define ISR_UART	(1 << UART_IRQ_NUM)	/* UART interrupt */	
->   #define	ISR_WDT		(1 << WDT_IRQ_NUM)	/* Watchdog Timer interrupt */
-> @@ -391,7 +391,7 @@
->   #define IPR_ADDR	0xfffff310
->   #define IPR		LONG_REF(IPR_ADDR)
->
-> -#define IPR_SPIM 	(1 << SPIM _IRQ_NUM)	/* SPI Master interrupt */
-> +#define IPR_SPIM 	(1 << SPIM_IRQ_NUM)	/* SPI Master interrupt */
->   #define	IPR_TMR2	(1 << TMR2_IRQ_NUM)	/* Timer 2 interrupt */
->   #define IPR_UART	(1 << UART_IRQ_NUM)	/* UART interrupt */	
->   #define	IPR_WDT		(1 << WDT_IRQ_NUM)	/* Watchdog Timer interrupt */
-> @@ -757,7 +757,7 @@
->
->   /* 'EZ328-compatible definitions */
->   #define TCN_ADDR	TCN1_ADDR
-> -#define TCN		TCN
-> +#define TCN		TCN1
->
->   /*
->    * Timer Unit 1 and 2 Status Registers
->
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/platform/coldfire/m528x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/platform/coldfire/m528x.c b/arch/m68k/platform/c=
+oldfire/m528x.c
+index 83b7dad..b03a9d2 100644
+--- a/arch/m68k/platform/coldfire/m528x.c
++++ b/arch/m68k/platform/coldfire/m528x.c
+@@ -69,7 +69,7 @@ static void __init m528x_uarts_init(void)
+ 	u8 port;
+=20
+ 	/* make sure PUAPAR is set for UART0 and UART1 */
+-	port =3D readb(MCF5282_GPIO_PUAPAR);
++	port =3D readb(MCFGPIO_PUAPAR);
+ 	port |=3D 0x03 | (0x03 << 2);
+ 	writeb(port, MCFGPIO_PUAPAR);
+ }
+--=20
+1.8.1.4
