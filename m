@@ -1,52 +1,51 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH] m68k: drop "select EMAC_INC"
-Date: Wed, 06 Mar 2013 16:10:07 +1000
-Message-ID: <5136DDBF.8090000@westnet.com.au>
-References: <1362504650.16460.95.camel@x61.thuisdomein>
+From: Lars Michael <lh_post@yahoo.com>
+Subject: Re: Coldfire v4 low performance of read/write to shared memory
+Date: Thu, 7 Mar 2013 02:01:39 -0800 (PST)
+Message-ID: <1362650499.60247.YahooMailClassic@web125606.mail.ne1.yahoo.com>
+References: <1360754406.53672.YahooMailClassic@web125605.mail.ne1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1362504650.16460.95.camel@x61.thuisdomein>
+In-Reply-To: <1360754406.53672.YahooMailClassic@web125605.mail.ne1.yahoo.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: lh_post@yahoo.com
 
-Hi Paul,
+Lars Michael <lh_post <at> yahoo.com> writes:
 
-On 06/03/13 03:30, Paul Bolle wrote:
-> Somehow this select statement managed to squeeze itself between commit
-> 0e152d80507b75c00aac60f2ffc586360687cd52 ("m68k: reorganize Kconfig
-> options to improve mmu/non-mmu selections") and commit
-> 95e82747d6e2abc513bfae416e6009968985d05b ("m68k: drop unused Kconfig
-> symbols"). Whatever happened, there is no Kconfig symbol named EMAC_INC.
-> The select statement for that symbol is a nop. Drop it.
->
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+At the same time we noticed (by using strace) that there is an excessiv=
+e and=20
+continously sequence of system
+calls at normal program execusion:
 
-Thanks, I'll add that to the m68knommu git tree, since it is a non-mmu
-target.
+333 (__NR_GET_THREAD_AREA), and 335 (__NR_ATOMIC_CMPXCHG_32)
 
-Regards
-Greg
+Thorsten Glaser <tg@xxxxxxxxxx> wrote:
+
+Yes, that is in fact normal. If you stop using programs (and libraries)
+that use TLS (thread-local storage) and atomics, you=E2=80=99ll notice =
+a massive
+speedup as these syscalls will no longer be issued.
+
+The only way out of this is an ABI breakage, with at least
+* set one CPU register aside for the TLS base
+* add a VDSO or some other kind of page for =E2=80=9Cfast syscalls=E2=80=
+=9D,
+  to optimise away the need for cmpxchg to call into the
+  kernel (if possible), and maybe speed up e.g. gettimeofday
+* bump time_t to 64 bit (pet peeve of mine)
+* =E2=80=A6 maybe others? I=E2=80=99m not a Linux kernel coder.
 
 
-> Untested, but it's hard to see what can got wrong here.
->
->   arch/m68k/Kconfig.machine | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-> index 7cdf6b0..7240584 100644
-> --- a/arch/m68k/Kconfig.machine
-> +++ b/arch/m68k/Kconfig.machine
-> @@ -310,7 +310,6 @@ config COBRA5282
->   config SOM5282EM
->   	bool "EMAC.Inc SOM5282EM board support"
->   	depends on M528x
-> -	select EMAC_INC
->   	help
->   	  Support for the EMAC.Inc SOM5282EM module.
->
->
+
+Thorsten, thanks for commenting. I am not really familiar with all this=
+, but given what you say is true, is it fair to say that the ColdFire v=
+4 is a 'less optimal' processor for running Linux? A thing to add is th=
+at there are no free register left for a TLS base.
+
+Does anybody have really good experience with running Linux on the v4?
+
+Thanks
+Lars Horvath
