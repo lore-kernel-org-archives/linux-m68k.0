@@ -1,60 +1,211 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 3.9
-Date: Mon, 11 Mar 2013 10:32:26 +1000
-Message-ID: <201303110032.r2B0WQXC024689@goober.accelcon.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Dead mappings and drivers in MTD
+Date: Mon, 11 Mar 2013 18:43:59 +0200
+Message-ID: <1363020239.3348.56.camel@sauron.fi.intel.com>
+References: <1363016099.3348.47.camel@sauron.fi.intel.com>
+	 <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
+Reply-To: dedekind1@gmail.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntmtas03p.mx.bigpond.com ([61.9.168.143]:28720 "EHLO
-	nskntmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753418Ab3CKAdF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 10 Mar 2013 20:33:05 -0400
+In-Reply-To: <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Olof Johansson <olof@lixom.net>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org, linux-pcmcia@lists.infradead.org
 
-Hi Linus,
+On Mon, 2013-03-11 at 09:20 -0700, Olof Johansson wrote:
+> On Mon, Mar 11, 2013 at 8:34 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > Hi MTD folks,
+> >
+> > we have huge amount of drivers, espacially mapping drives in
+> > 'drivers/mtd', and for sure may of them are for ancient devices which
+> > are long dead and not supported by modern kernels anyway. I would like
+> > to do a small clean-up. It is difficult to judge which ones are dead for
+> > me, so I am asking the community to help. Thanks!
+> >
+> > There are few easy cases - some drivers depend on Kconfig symbols which
+> > are not defined anywhere - I guess these are clear candidates for
+> > removal. For example this one:
+> >
+> > config MTD_DBOX2
+> >         tristate "CFI Flash device mapped on D-Box2"
+> >         depends on DBOX2 && MTD_CFI_INTELSTD && MTD_CFI_INTELEXT && MTD_CFI_AMDSTD
+> >         help
+> >           This enables access routines for the flash chips on the Nokia/Sagem
+> >           D-Box 2 board. If you have one of these boards and would like to use
+> >
+> > Grepping for "DBOX2" gives nothing.
+> 
+> In 2.6.14, it dropped two dependencies that used to be there for PPC32
+> and 8xx. There still was no DBOX2 symbol to fulfill that dependency
+> back then.
+> 
+> Take it out, if someone finds a user later on it can always be
+> reverted. Seems very very unlikely in this case.
 
-Can you please pull the m68knommu git tree, for-linus branch.
+I agree, thanks. I've quickly went through all the MTD map drivers and
+found many candidates for removal. I did not prepare a patch-set yet,
+but the below commit messages from my tree should give enough info about
+what I am thinking to remove.
 
-It contains a few small fixes for the non-MMU m68k platforms. Fixes some
-compilation problems, some broken header definitions, removes an unused
-config option and adds a name for the old 68000 CPU support.
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:24:37 2013 +0200
 
-Regards
-Greg
+    mtd: remove the mbx860 map driver
+    
+    This driver depends on CONFIG_MBX which is not defined anywhere, which means
+    this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |    9 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/ixp2000.c |  253 --------------------------------------------
+ 3 files changed, 263 deletions(-)
+
+commit 3e8b189c4fad6196333fb2069ab1f183b652a81d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:10:06 2013 +0200
+
+    mtd: remove the dilnetpc map driver support
+    
+    This driver is marked as broken for very long time. Most probably this board is
+    just something ancient no one cares about anyway.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig    |   16 --
+ drivers/mtd/maps/Makefile   |    1 -
+ drivers/mtd/maps/dilnetpc.c |  496 -------------------------------------------
+ 3 files changed, 513 deletions(-)
+
+commit e9313043d5bb4b2429b60092ebd9974598b5b62d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:07:35 2013 +0200
+
+    mtd: remove the tqm8xxl map driver
+    
+    This driver depends on the CONFIG_TQM8xxL symbol, which is not defined
+    anywhere, which means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |   10 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/tqm8xxl.c |  249 --------------------------------------------
+ 3 files changed, 260 deletions(-)
+
+commit 1b17ddb0219d9ab6b96a2bc22331d89ac4ca4539
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:05:13 2013 +0200
+
+    pcmcia: remove RPX board stuff
+    
+    The RPX board is not supported by the kernel because CONFIG_RPXCLASSIC and
+    CONFIG_RPXLITE symbols and not defined anywhere. Clean-up the m8xx_pcmcia
+    driver a little bit.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/pcmcia/m8xx_pcmcia.c |   81 ------------------------------------------
+ 1 file changed, 81 deletions(-)
+
+commit 518fa5d9718cbe00ed3de3798761cc051dcef04b
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:03:11 2013 +0200
+
+    m68k: remove rpxlite stuff
+    
+    The CONFIG_RPXLITE is not defined anywhere, which means that this board is not
+    supported anyway, and we can clean-up commproc.h a little.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ arch/m68k/include/asm/commproc.h |   17 -----------------
+ 1 file changed, 17 deletions(-)
+
+commit de70cc56d0c067275c3cac5659196d9ef4043888
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:01:02 2013 +0200
+
+    mtd: maps: kill the rpxlite map driver
+    
+    This driver depends on the CONFIG_RPXCLASSIC and CONFIG_RPXLITE symbols, which
+    are not defined anywhere, and this means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |   10 -------
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/rpxlite.c |   64 --------------------------------------------
+ 3 files changed, 75 deletions(-)
+
+commit 1ebbc11e1e2a143308689af47bb766824c035285
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:56:31 2013 +0200
+
+    pcmcia: remove Motorolla MBX860 support
+    
+    The CONFIG_MBX symbol is not defined anywhere in the kernel tree, which means
+    this platform is not supported by the Linux kernel and we can remove the
+    corresponding code from the 'm8xx_pcmcia' driver.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/pcmcia/m8xx_pcmcia.c |   59 ------------------------------------------
+ 1 file changed, 59 deletions(-)
+
+commit 61f417243e1157d436ac04b1307f40b2996a4923
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:54:11 2013 +0200
+
+    mtd: remove the mbx860 map driver
+    
+    This driver depends on CONFIG_MBX which is not defined anywhere, which means
+    this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig  |    8 ----
+ drivers/mtd/maps/Makefile |    1 -
+ drivers/mtd/maps/mbx860.c |   98 ---------------------------------------------
+ 3 files changed, 107 deletions(-)
+
+commit 55c159005c92a7ce8234c6d0072d8d2f6e45a57d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:42:54 2013 +0200
+
+    mtd: remove the dmv182 map driver
+    
+    This driver depends on the CONFIG_DMV182 symbol which is not defined anywhere,
+    and this means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig  |    9 ---
+ drivers/mtd/maps/Makefile |    1 -
+ drivers/mtd/maps/dmv182.c |  146 ---------------------------------------------
+ 3 files changed, 156 deletions(-)
+
+commit 750b26e3b17a148a7a7d64026088d1e29f9cd118
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:38:43 2013 +0200
+
+    mtd: remove the dbox2-flash map driver
+    
+    This driver depends on the CONFIG_DBOX2 symbol which does not exist in
+    the kernel, which means the driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig       |    8 ---
+ drivers/mtd/maps/Makefile      |    1 -
+ drivers/mtd/maps/dbox2-flash.c |  123 ----------------------------------------
+ 3 files changed, 132 deletions(-)
 
 
-
-The following changes since commit 6dbe51c251a327e012439c4772097a13df43c5b8:
-
-  Linux 3.9-rc1 (2013-03-03 15:11:05 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-for you to fetch changes up to ef9240f482e691e13a2d27208f60d1f1f5503545:
-
-  m68k: drop "select EMAC_INC" (2013-03-06 16:08:26 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68knommu: fix misnamed GPIO pin definition for ColdFire 528x CPU
-
-Luis Alves (2):
-      m68knommu: add CPU_NAME for 68000
-      m68knommu: fix MC68328.h defines
-
-Paul Bolle (1):
-      m68k: drop "select EMAC_INC"
-
-Thadeu Lima de Souza Cascardo (1):
-      m68knommu: fix build when CPU is not coldfire
-
- arch/m68k/Kconfig.machine           |  1 -
- arch/m68k/include/asm/MC68328.h     | 10 +++++-----
- arch/m68k/kernel/setup_no.c         |  3 +++
- arch/m68k/mm/init.c                 |  2 +-
- arch/m68k/platform/coldfire/m528x.c |  2 +-
- 5 files changed, 10 insertions(+), 8 deletions(-)
+-- 
+Best Regards,
+Artem Bityutskiy
