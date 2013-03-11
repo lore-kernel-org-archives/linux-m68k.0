@@ -1,144 +1,60 @@
-From: Mikael Pettersson <mikpe@it.uu.se>
-Subject: [PATCH][M68K] implement futex.h to support userspace robust futexes and PI mutexes
-Date: Fri, 8 Mar 2013 15:03:53 +0100
-Message-ID: <20793.61385.652975.797741@pilspetsen.it.uu.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 3.9
+Date: Mon, 11 Mar 2013 10:32:26 +1000
+Message-ID: <201303110032.r2B0WQXC024689@goober.accelcon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp1.uu.se ([130.238.7.54]:44023 "EHLO smtp1.uu.se"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1756973Ab3CHOMi (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 8 Mar 2013 09:12:38 -0500
+Received: from nskntmtas03p.mx.bigpond.com ([61.9.168.143]:28720 "EHLO
+	nskntmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753418Ab3CKAdF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 10 Mar 2013 20:33:05 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Mikael Pettersson <mikpe@it.uu.se>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Linux/M68K currently doesn't support robust futexes or PI mutexes.
-The problem is that the futex code needs to perform certain ops
-(cmpxchg, set, add, or, andn, xor) atomically on user-space
-addresses, and M68K's lack of a futex.h causes those operations
-to be unsupported and disabled.
+Hi Linus,
 
-This patch adds that support, but only for uniprocessor machines,
-which is adequate for M68K.  For UP it's enough to disable preemption
-to ensure mutual exclusion (futexes don't need to care about other
-hardware agents), and the mandatory pagefault_disable() does just that.
+Can you please pull the m68knommu git tree, for-linus branch.
 
-This patch is closely based on the one I co-wrote for UP ARM back
-in August 2008.  The main change is that this patch uses the C
-get_user/put_user accessors instead of inline assembly code with
-exception table fixups.
+It contains a few small fixes for the non-MMU m68k platforms. Fixes some
+compilation problems, some broken header definitions, removes an unused
+config option and adds a name for the old 68000 CPU support.
 
-For non-MMU machines the new futex.h simply redirects to the generic
-futex.h, so there is no functional change for them.
+Regards
+Greg
 
-Tested on aranym with the glibc-2.17 test suite: no regressions, and
-a number of mutex/condvar test cases went from failing to succeeding
-(tst-mutexpi{5,5a,6,9}, tst-cond2[45], tst-robust[1-9], tst-robustpi[1-8]).
-Also tested with glibc-2.18 HEAD and a local glibc patch to enable PI
-mutexes: no regressions.
 
-Signed-off-by: Mikael Pettersson <mikpe@it.uu.se>
----
- arch/m68k/include/asm/futex.h |   94 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
 
---- linux-3.8/arch/m68k/include/asm/futex.h.~1~	1970-01-01 01:00:00.000000000 +0100
-+++ linux-3.8/arch/m68k/include/asm/futex.h	2013-02-20 22:07:23.459917612 +0100
-@@ -0,0 +1,94 @@
-+#ifndef _ASM_M68K_FUTEX_H
-+#define _ASM_M68K_FUTEX_H
-+
-+#ifdef __KERNEL__
-+#if !defined(CONFIG_MMU)
-+#include <asm-generic/futex.h>
-+#else	/* CONFIG_MMU */
-+
-+#include <linux/futex.h>
-+#include <linux/uaccess.h>
-+#include <asm/errno.h>
-+
-+static inline int
-+futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+			      u32 oldval, u32 newval)
-+{
-+	u32 val;
-+
-+	if (unlikely(get_user(val, uaddr) != 0))
-+		return -EFAULT;
-+
-+	if (val == oldval && unlikely(put_user(newval, uaddr) != 0))
-+		return -EFAULT;
-+
-+	*uval = val;
-+
-+	return 0;
-+}
-+
-+static inline int
-+futex_atomic_op_inuser(int encoded_op, u32 __user *uaddr)
-+{
-+	int op = (encoded_op >> 28) & 7;
-+	int cmp = (encoded_op >> 24) & 15;
-+	int oparg = (encoded_op << 8) >> 20;
-+	int cmparg = (encoded_op << 20) >> 20;
-+	int oldval, ret;
-+	u32 tmp;
-+
-+	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
-+		oparg = 1 << oparg;
-+
-+	pagefault_disable();	/* implies preempt_disable() */
-+
-+	ret = -EFAULT;
-+	if (unlikely(get_user(oldval, uaddr) != 0))
-+		goto out_pagefault_enable;
-+
-+	ret = 0;
-+	tmp = oldval;
-+
-+	switch (op) {
-+	case FUTEX_OP_SET:
-+		tmp = oparg;
-+		break;
-+	case FUTEX_OP_ADD:
-+		tmp += oparg;
-+		break;
-+	case FUTEX_OP_OR:
-+		tmp |= oparg;
-+		break;
-+	case FUTEX_OP_ANDN:
-+		tmp &= ~oparg;
-+		break;
-+	case FUTEX_OP_XOR:
-+		tmp ^= oparg;
-+		break;
-+	default:
-+		ret = -ENOSYS;
-+	}
-+
-+	if (ret == 0 && unlikely(put_user(tmp, uaddr) != 0))
-+		ret = -EFAULT;
-+
-+out_pagefault_enable:
-+	pagefault_enable();	/* subsumes preempt_enable() */
-+
-+	if (ret == 0) {
-+		switch (cmp) {
-+		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
-+		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
-+		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
-+		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
-+		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
-+		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
-+		default: ret = -ENOSYS;
-+		}
-+	}
-+	return ret;
-+}
-+
-+#endif /* CONFIG_MMU */
-+#endif /* __KERNEL__ */
-+#endif /* _ASM_M68K_FUTEX_H */
+The following changes since commit 6dbe51c251a327e012439c4772097a13df43c5b8:
+
+  Linux 3.9-rc1 (2013-03-03 15:11:05 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+for you to fetch changes up to ef9240f482e691e13a2d27208f60d1f1f5503545:
+
+  m68k: drop "select EMAC_INC" (2013-03-06 16:08:26 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68knommu: fix misnamed GPIO pin definition for ColdFire 528x CPU
+
+Luis Alves (2):
+      m68knommu: add CPU_NAME for 68000
+      m68knommu: fix MC68328.h defines
+
+Paul Bolle (1):
+      m68k: drop "select EMAC_INC"
+
+Thadeu Lima de Souza Cascardo (1):
+      m68knommu: fix build when CPU is not coldfire
+
+ arch/m68k/Kconfig.machine           |  1 -
+ arch/m68k/include/asm/MC68328.h     | 10 +++++-----
+ arch/m68k/kernel/setup_no.c         |  3 +++
+ arch/m68k/mm/init.c                 |  2 +-
+ arch/m68k/platform/coldfire/m528x.c |  2 +-
+ 5 files changed, 10 insertions(+), 8 deletions(-)
