@@ -1,7 +1,7 @@
 From: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 03/10] mtd: remove the mbx860 map driver
-Date: Tue, 12 Mar 2013 13:14:08 +0200
-Message-ID: <1363086855-2847-4-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 05/10] mtd: maps: kill the rpxlite map driver
+Date: Tue, 12 Mar 2013 13:14:10 +0200
+Message-ID: <1363086855-2847-6-git-send-email-dedekind1@gmail.com>
 References: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
@@ -12,67 +12,61 @@ Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-pcmcia@lists.infr
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-This driver depends on CONFIG_MBX which is not defined anywhere, which means
-this driver is dead.
+This driver depends on the CONFIG_RPXCLASSIC and CONFIG_RPXLITE symbols, which
+are not defined anywhere, and this means that this driver is dead.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Cc: linux-pcmcia@lists.infradead.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/mtd/maps/Kconfig  |    8 ----
- drivers/mtd/maps/Makefile |    1 -
- drivers/mtd/maps/mbx860.c |   98 ---------------------------------------------
- 3 files changed, 107 deletions(-)
- delete mode 100644 drivers/mtd/maps/mbx860.c
+ drivers/mtd/maps/Kconfig   |   10 -------
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/rpxlite.c |   64 --------------------------------------------
+ 3 files changed, 75 deletions(-)
+ delete mode 100644 drivers/mtd/maps/rpxlite.c
 
 diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 7071486..300761f 100644
+index 300761f..3fe3216 100644
 --- a/drivers/mtd/maps/Kconfig
 +++ b/drivers/mtd/maps/Kconfig
-@@ -294,14 +294,6 @@ config MTD_RPXLITE
- 	  to communicate with the chips on the RPXLite board. More at
- 	  <http://www.embeddedplanet.com/>.
+@@ -284,16 +284,6 @@ config MTD_TQM8XXL
+ 	  code to communicate with the chips on the TQM8xxL board. More at
+ 	  <http://www.denx.de/wiki/PPCEmbedded/>.
  
--config MTD_MBX860
--	tristate "System flash on MBX860 board"
--	depends on MTD_CFI && MBX
+-config MTD_RPXLITE
+-	tristate "CFI Flash device mapped on RPX Lite or CLLF"
+-	depends on MTD_CFI && (RPXCLASSIC || RPXLITE)
 -	help
--	  This enables access routines for the flash chips on the Motorola
--	  MBX860 board. If you have one of these boards and would like
--	  to use the flash chips on it, say 'Y'.
+-	  The RPXLite PowerPC board has CFI-compliant chips mapped in
+-	  a strange sparse mapping. This 'mapping' driver supports that
+-	  arrangement, allowing the CFI probe and command set driver code
+-	  to communicate with the chips on the RPXLite board. More at
+-	  <http://www.embeddedplanet.com/>.
 -
  config MTD_CFI_FLAGADM
  	tristate "CFI Flash device mapping on FlagaDM"
  	depends on 8xx && MTD_CFI
 diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 819e2ab..b61ea98 100644
+index b61ea98..8e2b289 100644
 --- a/drivers/mtd/maps/Makefile
 +++ b/drivers/mtd/maps/Makefile
-@@ -17,7 +17,6 @@ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
- obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
--obj-$(CONFIG_MTD_MBX860)	+= mbx860.o
- obj-$(CONFIG_MTD_OCTAGON)	+= octagon-5066.o
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
- obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
-diff --git a/drivers/mtd/maps/mbx860.c b/drivers/mtd/maps/mbx860.c
+@@ -23,7 +23,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+-obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
+ obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
 deleted file mode 100644
-index 93fa56c..0000000
---- a/drivers/mtd/maps/mbx860.c
+index ed88225..0000000
+--- a/drivers/mtd/maps/rpxlite.c
 +++ /dev/null
-@@ -1,98 +0,0 @@
+@@ -1,64 +0,0 @@
 -/*
-- * Handle mapping of the flash on MBX860 boards
-- *
-- * Author:	Anton Todorov
-- * Copyright:	(C) 2001 Emness Technology
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
+- * Handle mapping of the flash on the RPX Lite and CLLF boards
 - */
 -
 -#include <linux/module.h>
@@ -82,84 +76,58 @@ index 93fa56c..0000000
 -#include <asm/io.h>
 -#include <linux/mtd/mtd.h>
 -#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
 -
 -
 -#define WINDOW_ADDR 0xfe000000
--#define WINDOW_SIZE 0x00200000
--
--/* Flash / Partition sizing */
--#define MAX_SIZE_KiB              8192
--#define BOOT_PARTITION_SIZE_KiB    512
--#define KERNEL_PARTITION_SIZE_KiB 5632
--#define APP_PARTITION_SIZE_KiB    2048
--
--#define NUM_PARTITIONS 3
--
--/* partition_info gives details on the logical partitions that the split the
-- * single flash device into. If the size if zero we use up to the end of the
-- * device. */
--static struct mtd_partition partition_info[]={
--	{ .name = "MBX flash BOOT partition",
--	.offset = 0,
--	.size =   BOOT_PARTITION_SIZE_KiB*1024 },
--	{ .name = "MBX flash DATA partition",
--	.offset = BOOT_PARTITION_SIZE_KiB*1024,
--	.size = (KERNEL_PARTITION_SIZE_KiB)*1024 },
--	{ .name = "MBX flash APPLICATION partition",
--	.offset = (BOOT_PARTITION_SIZE_KiB+KERNEL_PARTITION_SIZE_KiB)*1024 }
--};
--
+-#define WINDOW_SIZE 0x800000
 -
 -static struct mtd_info *mymtd;
 -
--struct map_info mbx_map = {
--	.name = "MBX flash",
+-static struct map_info rpxlite_map = {
+-	.name = "RPX",
 -	.size = WINDOW_SIZE,
--	.phys = WINDOW_ADDR,
 -	.bankwidth = 4,
+-	.phys = WINDOW_ADDR,
 -};
 -
--static int __init init_mbx(void)
+-static int __init init_rpxlite(void)
 -{
--	printk(KERN_NOTICE "Motorola MBX flash device: 0x%x at 0x%x\n", WINDOW_SIZE*4, WINDOW_ADDR);
--	mbx_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
+-	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
+-	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
 -
--	if (!mbx_map.virt) {
+-	if (!rpxlite_map.virt) {
 -		printk("Failed to ioremap\n");
 -		return -EIO;
 -	}
--	simple_map_init(&mbx_map);
--
--	mymtd = do_map_probe("jedec_probe", &mbx_map);
+-	simple_map_init(&rpxlite_map);
+-	mymtd = do_map_probe("cfi_probe", &rpxlite_map);
 -	if (mymtd) {
 -		mymtd->owner = THIS_MODULE;
 -		mtd_device_register(mymtd, NULL, 0);
--		mtd_device_register(mymtd, partition_info, NUM_PARTITIONS);
 -		return 0;
 -	}
 -
--	iounmap((void *)mbx_map.virt);
+-	iounmap((void *)rpxlite_map.virt);
 -	return -ENXIO;
 -}
 -
--static void __exit cleanup_mbx(void)
+-static void __exit cleanup_rpxlite(void)
 -{
 -	if (mymtd) {
 -		mtd_device_unregister(mymtd);
 -		map_destroy(mymtd);
 -	}
--	if (mbx_map.virt) {
--		iounmap((void *)mbx_map.virt);
--		mbx_map.virt = 0;
+-	if (rpxlite_map.virt) {
+-		iounmap((void *)rpxlite_map.virt);
+-		rpxlite_map.virt = 0;
 -	}
 -}
 -
--module_init(init_mbx);
--module_exit(cleanup_mbx);
+-module_init(init_rpxlite);
+-module_exit(cleanup_rpxlite);
 -
--MODULE_AUTHOR("Anton Todorov <a.todorov@emness.com>");
--MODULE_DESCRIPTION("MTD map driver for Motorola MBX860 board");
 -MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
+-MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
 -- 
 1.7.10.4
