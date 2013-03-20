@@ -1,123 +1,46 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based
- soft interrupts
-Date: Wed, 20 Mar 2013 09:54:56 +0100
-Message-ID: <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com>
-References: <20130131002344.1161E360095@xplor.waratah.dyndns.org>
-	<CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] m68k: clean up unused "config ROMVECSIZE"
+Date: Wed, 20 Mar 2013 11:38:06 +0100
+Message-ID: <1363775886.1390.90.camel__26891.5065484636$1363775937$gmane$org@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f175.google.com ([209.85.210.175]:57919 "EHLO
-	mail-ia0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751957Ab3CTIy5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Mar 2013 04:54:57 -0400
-In-Reply-To: <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Sun, Feb 10, 2013 at 11:36 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Thu, Jan 31, 2013 at 1:23 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->> [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
->>         experimental hack to avoid unhandled interrupt timer to fire
->>         on EtherNEC/NetUSBee cards that have no hardware interrupt
->>         and need to be polled from a timer
->>
->> This patch adds a special 'polled interrupt' handler for timer based software interrupts.
->
-> Adding Thomas and lkml.
+Kconfig symbol ROMVECSIZE is unused since commit
+f84f52a5c15db7d14a534815f27253b001735183 ("m68knommu: clean up linker
+script"). Let's clean up its Kconfig entry too.
 
-No comments/suggestions?
-Thanks again!
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Untested.
 
->> handle_simple_irq() will respond to excessive unhandled interrupts (as are expected for a
->> polling timer interrupt) by disabling the apparently unhandled interrupt source.
->>
->> handle_polled_irq() prevents this by setting the IRQS_POLL_INPROGRESS flag which will cause
->> the unhandled interrupt events to be ignored.
->>
->> This is a temporary hack to allow timer based polling of the Atari ROM port network and USB
->> cards only. Suggestions on how to properly handle this in the normal interrupt framework are
->> most welcome.
->>
->> Signed-off-by: Michael Schmitz <schmitz@debian.org>
->> ---
->>  include/linux/irq.h |    1 +
->>  kernel/irq/chip.c   |   36 ++++++++++++++++++++++++++++++++++++
->>  2 files changed, 37 insertions(+), 0 deletions(-)
->>
->> diff --git a/include/linux/irq.h b/include/linux/irq.h
->> index fdf2c4a..39bfcff 100644
->> --- a/include/linux/irq.h
->> +++ b/include/linux/irq.h
->> @@ -407,6 +407,7 @@ extern void handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_edge_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_edge_eoi_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_simple_irq(unsigned int irq, struct irq_desc *desc);
->> +extern void handle_polled_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_percpu_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_percpu_devid_irq(unsigned int irq, struct irq_desc *desc);
->>  extern void handle_bad_irq(unsigned int irq, struct irq_desc *desc);
->> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
->> index 3aca9f2..ae7ef4d 100644
->> --- a/kernel/irq/chip.c
->> +++ b/kernel/irq/chip.c
->> @@ -339,6 +339,42 @@ out_unlock:
->>  }
->>  EXPORT_SYMBOL_GPL(handle_simple_irq);
->>
->> +/**
->> + *     handle_polled_irq - Simple and software-decoded IRQs.
->> + *     @irq:   the interrupt number
->> + *     @desc:  the interrupt description structure for this irq
->> + *
->> + *     Polled interrupts are sent from a demultiplexing software interrupt
->> + *     handler, where no interrupt hardware control is necessary.
->> + */
->> +void
->> +handle_polled_irq(unsigned int irq, struct irq_desc *desc)
->> +{
->> +       raw_spin_lock(&desc->lock);
->> +
->> +       if (unlikely(irqd_irq_inprogress(&desc->irq_data)))
->> +               if (!irq_check_poll(desc))
->> +                       goto out_unlock;
->> +
->> +       desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
->> +       kstat_incr_irqs_this_cpu(irq, desc);
->> +
->> +       if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
->> +               desc->istate |= IRQS_PENDING;
->> +               goto out_unlock;
->> +       }
->> +
->> +       desc->istate |= IRQS_POLL_INPROGRESS;
->> +
->> +       handle_irq_event(desc);
->> +
->> +       desc->istate &= ~(IRQS_POLL_INPROGRESS);
->> +
->> +out_unlock:
->> +       raw_spin_unlock(&desc->lock);
->> +}
->> +EXPORT_SYMBOL_GPL(handle_polled_irq);
->> +
->>  /*
->>   * Called unconditionally from handle_level_irq() and only for oneshot
->>   * interrupts from handle_fasteoi_irq()
->> --
->> 1.7.0.4
+ arch/m68k/Kconfig.machine | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 7240584..28ec0c0 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -539,15 +539,6 @@ config ROMVEC
+ 	  68000 type variants the vectors are at the base of the boot device
+ 	  on system startup.
+ 
+-config ROMVECSIZE
+-	hex "Size of ROM vector region (in bytes)"
+-	default "0x400"
+-	depends on ROM
+-	help
+-	  Define the size of the vector region in ROM. For most 68000
+-	  variants this would be 0x400 bytes in size. Set to 0 if you do
+-	  not want a vector region at the start of the ROM.
+-
+ config ROMSTART
+ 	hex "Address of the base of system image in ROM"
+ 	default "0x400"
+-- 
+1.7.11.7
