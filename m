@@ -1,45 +1,32 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [RFC 2/3] m68k: coldfire: use gpiolib
-Date: Thu, 21 Mar 2013 15:35:21 +1000
-Message-ID: <514A9C19.8080008__8372.14953867278$1363844223$gmane$org@westnet.com.au>
-References: <1363527723-32713-1-git-send-email-acourbot@nvidia.com> <1363527723-32713-3-git-send-email-acourbot@nvidia.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: m68k: five unused boards in Kconfig.machine
+Date: Thu, 21 Mar 2013 13:17:38 +0100
+Message-ID: <1363868258.1390.129.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1363527723-32713-3-git-send-email-acourbot@nvidia.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alexandre Courbot <gnurou@gmail.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, uclinux-dist-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, Alexandre Courbot <acourbot@nvidia.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org
 
-On 17/03/13 23:42, Alexandre Courbot wrote:
-> Force use of gpiolib for Coldfire, as a step towards the deprecation of
-> GENERIC_GPIO.
->
-> Signed-off-by: Alexandre Courbot <acourbot@nvidia.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+0) These five Kconfig entries in arch/m68k/Kconfig.machine are entirely
+unused:
+    config UC5272
+    config UC5282
+    config SOM5282EM
+    config COBRA5329
+    config SNAPGEAR
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+1) I think that these can be removed. But I recall from an earlier
+thread (in 2011) that Greg wanted to keep SOM5282EM:
+    Although it isn't used inside the code it does let the configurer
+    know that this specific board is supported.
+
+2) Would it be acceptable to remove these five Kconfig entries but add
+text to the prompts or the help strings of some other entries to
+indicate support?
 
 
-> ---
->   arch/m68k/Kconfig.cpu | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index b1cfff8..d266787 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -22,8 +22,7 @@ config M68KCLASSIC
->
->   config COLDFIRE
->   	bool "Coldfire CPU family support"
-> -	select GENERIC_GPIO
-> -	select ARCH_WANT_OPTIONAL_GPIOLIB
-> +	select ARCH_REQUIRE_GPIOLIB
->   	select ARCH_HAVE_CUSTOM_GPIO_H
->   	select CPU_HAS_NO_BITFIELDS
->   	select CPU_HAS_NO_MULDIV64
->
+Paul Bolle
