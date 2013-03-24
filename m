@@ -1,7 +1,7 @@
 From: Jiang Liu <liuj97@gmail.com>
-Subject: [RFC PATCH v2, part4 21/39] mm/m68k: prepare for removing num_physpages and simplify mem_init()
-Date: Sun, 24 Mar 2013 15:25:00 +0800
-Message-ID: <1364109934-7851-35-git-send-email-jiang.liu__11230.2636997358$1364110352$gmane$org@huawei.com>
+Subject: [RFC PATCH v2, part4 22/39] mm/m68k: prepare for removing num_physpages and simplify mem_init()
+Date: Sun, 24 Mar 2013 15:25:01 +0800
+Message-ID: <1364109934-7851-36-git-send-email-jiang.liu__16637.6583082185$1364110829$gmane$org@huawei.com>
 References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
