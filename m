@@ -1,58 +1,42 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 09/11] m68k: Implement ndelay() based on the existing udelay() logic
-Date: Mon, 25 Mar 2013 19:37:42 +1300
-Message-ID: <1364193464-3890-10-git-send-email-schmitz@debian.org>
-References: <1364193464-3890-1-git-send-email-schmitz@debian.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: m68k: five unused boards in Kconfig.machine
+Date: Mon, 25 Mar 2013 16:43:50 +1000
+Message-ID: <514FF226.3050507@uclinux.org>
+References: <1363868258.1390.129.camel@x61.thuisdomein>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-da0-f50.google.com ([209.85.210.50]:43458 "EHLO
-	mail-da0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755426Ab3CYGiR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Mar 2013 02:38:17 -0400
-Received: by mail-da0-f50.google.com with SMTP id t1so1556578dae.9
-        for <linux-m68k@vger.kernel.org>; Sun, 24 Mar 2013 23:38:16 -0700 (PDT)
-In-Reply-To: <1364193464-3890-1-git-send-email-schmitz@debian.org>
+In-Reply-To: <1363868258.1390.129.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, tg@mirbsd.de, Michael Schmitz <schmitz@debian.org>
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Add a ndelay macro modeled after the Coldfire udelay(). The ISP1160
-driver needs a 150ns delay, so we need to have ndelay().
+Hi Paul,
 
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
----
- arch/m68k/include/asm/delay.h |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+On 21/03/13 22:17, Paul Bolle wrote:
+> 0) These five Kconfig entries in arch/m68k/Kconfig.machine are entirely
+> unused:
+>      config UC5272
+>      config UC5282
+>      config SOM5282EM
+>      config COBRA5329
+>      config SNAPGEAR
+>
+> 1) I think that these can be removed. But I recall from an earlier
+> thread (in 2011) that Greg wanted to keep SOM5282EM:
+>      Although it isn't used inside the code it does let the configurer
+>      know that this specific board is supported.
+>
+> 2) Would it be acceptable to remove these five Kconfig entries but add
+> text to the prompts or the help strings of some other entries to
+> indicate support?
 
-diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
-index 12d8fe4..8a9971d 100644
---- a/arch/m68k/include/asm/delay.h
-+++ b/arch/m68k/include/asm/delay.h
-@@ -92,5 +92,25 @@ static inline void __udelay(unsigned long usecs)
- #define udelay(n) (__builtin_constant_p(n) ? \
- 	((n) > 20000 ? __bad_udelay() : __const_udelay(n)) : __udelay(n))
- 
-+/*
-+ * nanosecond delay:
-+ *
-+ * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of loops per microsecond
-+ *
-+ * 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of nanoseconds per loop
-+ *
-+ * So n / ( 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) ) would be the number of loops for n nanoseconds
-+ */
-+
-+/*
-+ * The simpler m68k and ColdFire processors do not have a 32*32->64
-+ * multiply instruction. So we need to handle them a little differently.
-+ * We use a bit of shifting and a single 32*32->32 multiply to get close.
-+ * This is a macro so that the const version can factor out the first
-+ * multiply and shift.
-+ */
-+#define	HZSCALE		(268435456 / (1000000 / HZ))
-+
-+#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000));
- 
- #endif /* defined(_M68K_DELAY_H) */
--- 
-1.7.0.4
+I have been moving the underlying code to be more generic in
+its support of various ColdFire boards. I am a lot more comfortable
+now removing the specific board names if we really don't have
+anything specific keyed on them.
+
+Regards
+Greg
