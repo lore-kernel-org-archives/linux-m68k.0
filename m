@@ -1,42 +1,46 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: m68k: five unused boards in Kconfig.machine
-Date: Mon, 25 Mar 2013 16:43:50 +1000
-Message-ID: <514FF226.3050507@uclinux.org>
-References: <1363868258.1390.129.camel@x61.thuisdomein>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
+ and debian-kernel
+Date: Mon, 25 Mar 2013 17:53:01 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
+References: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1363868258.1390.129.camel@x61.thuisdomein>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:48446 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932333Ab3CYSL7 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Mar 2013 14:11:59 -0400
+In-Reply-To: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
-Hi Paul,
+Michael Schmitz dixit:
 
-On 21/03/13 22:17, Paul Bolle wrote:
-> 0) These five Kconfig entries in arch/m68k/Kconfig.machine are entirely
-> unused:
->      config UC5272
->      config UC5282
->      config SOM5282EM
->      config COBRA5329
->      config SNAPGEAR
->
-> 1) I think that these can be removed. But I recall from an earlier
-> thread (in 2011) that Greg wanted to keep SOM5282EM:
->      Although it isn't used inside the code it does let the configurer
->      know that this specific board is supported.
->
-> 2) Would it be acceptable to remove these five Kconfig entries but add
-> text to the prompts or the help strings of some other entries to
-> indicate support?
+>This patch series should be suitable for inclusion in the debian/68k k=
+ernel
+>packages (if policy allows).
 
-I have been moving the underlying code to be more generic in
-its support of various ColdFire boards. I am a lot more comfortable
-now removing the specific board names if we really don't have
-anything specific keyed on them.
+Sadly, policy allows only stuff that=E2=80=99s in Linus=E2=80=99 tree.
 
-Regards
-Greg
+But once it went upstream, we can just build a bleeding
+edge kernel from Debian/experimental with no amount of
+manual fiddling required.
+
+It just won=E2=80=99t go into the stable kernel. But it=E2=80=99s no
+regression, as the old driver was never in it either=E2=80=A6
+
+bye,
+//mirabilos
+--=20
+[DJBDNS Zone] TTL 86400 =E2=80=93 <Natureshadow> kann man da auch 1d sc=
+hreiben?
+<mirabilos> n=C3=B6, au=C3=9Ferdem kann ein Deutscher oder ein Japaner =
+mit 1d
+    ja erstmal nix anfangen, oder k=C3=B6nntest du 1=E6=97=A5 im zone f=
+ile lesen?
+<Natureshadow> das hei=C3=9Ft f=C3=BCr mich: ein Regal, das u.U. schief=
+stehen k=C3=B6nnte
