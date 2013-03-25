@@ -1,81 +1,137 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 07/11] m68k/atari: EtherNEC - ethernet support - new driver (ne.c)
-Date: Mon, 25 Mar 2013 19:37:40 +1300
-Message-ID: <1364193464-3890-8-git-send-email-schmitz@debian.org>
+Subject: [PATCH 03/11] m68k/atari: use dedicated irq_chip for timer D interrupts
+Date: Mon, 25 Mar 2013 19:37:36 +1300
+Message-ID: <1364193464-3890-4-git-send-email-schmitz@debian.org>
 References: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f45.google.com ([209.85.160.45]:39022 "EHLO
-	mail-pb0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755481Ab3CYGiP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Mar 2013 02:38:15 -0400
-Received: by mail-pb0-f45.google.com with SMTP id ro8so3991363pbb.32
-        for <linux-m68k@vger.kernel.org>; Sun, 24 Mar 2013 23:38:15 -0700 (PDT)
+Received: from mail-pa0-f45.google.com ([209.85.220.45]:62748 "EHLO
+	mail-pa0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755450Ab3CYGiL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Mar 2013 02:38:11 -0400
+Received: by mail-pa0-f45.google.com with SMTP id kl13so861112pab.32
+        for <linux-m68k@vger.kernel.org>; Sun, 24 Mar 2013 23:38:10 -0700 (PDT)
 In-Reply-To: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org, tg@mirbsd.de, Michael Schmitz <schmitz@debian.org>
 
-Support for Atari EtherNEC ROM port adapters in ne.c
+Add a special irq_chip for the Atari MFP timer D interrupt,
+which is used as a polling timer for EtherNEC and NetUSBee
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/Kconfig.devices         |   14 ++++++++++++++
- drivers/net/ethernet/8390/Kconfig |    3 ++-
- drivers/net/ethernet/8390/ne.c    |    2 ++
- 3 files changed, 18 insertions(+), 1 deletions(-)
+ arch/m68k/atari/ataints.c         |   70 +++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/atariints.h |    9 +++++
+ 2 files changed, 79 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-index d50ecbf..d163991 100644
---- a/arch/m68k/Kconfig.devices
-+++ b/arch/m68k/Kconfig.devices
-@@ -65,6 +65,20 @@ config ATARI_ETHERNAT
- 	  To compile the actual ethernet driver, choose Y or M for the SMC91X
- 	  option in the network device section; the module will be called smc91x.
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 3f41092..2cf7349 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -122,6 +122,62 @@ static struct irq_chip atari_irq_chip = {
+ };
  
-+config ATARI_ETHERNEC
-+	bool "Atari EtherNEC Ethernet support"
-+	depends on ATARI_ROM_ISA
-+	---help---
-+	  Say Y to include support for the EtherNEC network adapter for the
-+	  ROM port. The driver works by polling instead of interrupts, so it
-+	  is quite slow.
+ /*
++ * ST-MFP timer D chained interrupts - each driver gets its own timer
++ * interrupt instance.
++ */
 +
-+	  This driver also suppports the ethernet part of the NetUSBee ROM
-+	  port combined Ethernet/USB adapter.
++struct mfptimerbase {
++	volatile struct MFP *mfp;
++	unsigned char mfp_mask, mfp_data;
++	unsigned short int_mask;
++	int handler_irq, mfptimer_irq, server_irq;
++	char *name;
++} stmfp_base = {
++	.mfp		= &st_mfp,
++	.int_mask	= 0x0,
++	.handler_irq	= IRQ_MFP_TIMD,
++	.mfptimer_irq	= IRQ_MFP_TIMER1,
++	.name		= "MFP Timer D"
++};
 +
-+	  To compile the actual ethernet driver, choose Y or M in for the NE2000
-+	  option in the network device section; the module will be called ne.
++static irqreturn_t mfptimer_handler(int irq, void *dev_id)
++{
++	struct mfptimerbase *base = dev_id;
++	int mach_irq;
++	unsigned char ints;
 +
- endmenu
++	mach_irq = base->mfptimer_irq;
++	ints = base->int_mask;
++	for (; ints; mach_irq++, ints >>= 1) {
++		if (ints & 1)
++			generic_handle_irq(mach_irq);
++	}
++	return IRQ_HANDLED;
++}
++
++
++static void atari_mfptimer_enable(struct irq_data *data)
++{
++	int mfp_num = data->irq - IRQ_MFP_TIMER1;
++	stmfp_base.int_mask |= 1 << mfp_num;
++	atari_enable_irq(IRQ_MFP_TIMD);
++}
++
++static void atari_mfptimer_disable(struct irq_data *data)
++{
++	int mfp_num = data->irq - IRQ_MFP_TIMER1;
++	stmfp_base.int_mask &= ~(1 << mfp_num);
++	if (!stmfp_base.int_mask)
++		atari_disable_irq(IRQ_MFP_TIMD);
++}
++
++static struct irq_chip atari_mfptimer_chip = {
++	.name		= "timer_d",
++	.irq_enable	= atari_mfptimer_enable,
++	.irq_disable	= atari_mfptimer_disable,
++};
++
++/*
+  * void atari_init_IRQ (void)
+  *
+  * Parameters:	None
+@@ -198,6 +254,20 @@ void __init atari_init_IRQ(void)
+ 	/* Initialize the PSG: all sounds off, both ports output */
+ 	sound_ym.rd_data_reg_sel = 7;
+ 	sound_ym.wd_data = 0xff;
++
++	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
++				  IRQ_MFP_TIMER1, 8);
++
++	/* prepare timer D data for use as poll interrupt */
++	/* set Timer D data Register - needs to be > 0 */
++	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
++	/* start timer D, div = 1:100 */
++	st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
++
++	/* request timer D dispatch handler */
++	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
++			stmfp_base.name, &stmfp_base))
++		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
+ }
  
- menu "Character devices"
-diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-index a5f91e1..53abc78 100644
---- a/drivers/net/ethernet/8390/Kconfig
-+++ b/drivers/net/ethernet/8390/Kconfig
-@@ -91,7 +91,8 @@ config MCF8390
  
- config NE2000
- 	tristate "NE2000/NE1000 support"
--	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
-+	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX || \
-+		    ATARI_ETHERNEC)
- 	select CRC32
- 	---help---
- 	  If you have a network (Ethernet) card of this type, say Y and read
-diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
-index 47618e5..49948f6 100644
---- a/drivers/net/ethernet/8390/ne.c
-+++ b/drivers/net/ethernet/8390/ne.c
-@@ -166,6 +166,8 @@ bad_clone_list[] __initdata = {
- #elif defined(CONFIG_PLAT_OAKS32R)  || \
-    defined(CONFIG_MACH_TX49XX)
- #  define DCR_VAL 0x48		/* 8-bit mode */
-+#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
-+#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
- #else
- #  define DCR_VAL 0x49
- #endif
+diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
+index 5fc13bd..8f71504 100644
+--- a/arch/m68k/include/asm/atariints.h
++++ b/arch/m68k/include/asm/atariints.h
+@@ -94,6 +94,15 @@
+ #define IRQ_SCCA_RX	     (52)
+ #define IRQ_SCCA_SPCOND	     (54)
+ 
++/* shared MFP timer D interrupts - hires timer for EtherNEC et al. */
++#define IRQ_MFP_TIMER1       (64)
++#define IRQ_MFP_TIMER2       (65)
++#define IRQ_MFP_TIMER3       (66)
++#define IRQ_MFP_TIMER4       (67)
++#define IRQ_MFP_TIMER5       (68)
++#define IRQ_MFP_TIMER6       (69)
++#define IRQ_MFP_TIMER7       (70)
++#define IRQ_MFP_TIMER8       (71)
+ 
+ #define INT_CLK   24576	    /* CLK while int_clk =2.456MHz and divide = 100 */
+ #define INT_TICKS 246	    /* to make sched_time = 99.902... HZ */
 -- 
 1.7.0.4
