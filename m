@@ -1,175 +1,81 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 06/11] m68k/atari: EtherNAT - ethernet support - new driver (smc91x)
-Date: Mon, 25 Mar 2013 19:37:39 +1300
-Message-ID: <1364193464-3890-7-git-send-email-schmitz@debian.org>
+Subject: [PATCH 07/11] m68k/atari: EtherNEC - ethernet support - new driver (ne.c)
+Date: Mon, 25 Mar 2013 19:37:40 +1300
+Message-ID: <1364193464-3890-8-git-send-email-schmitz@debian.org>
 References: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f179.google.com ([209.85.192.179]:36166 "EHLO
-	mail-pd0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755426Ab3CYGiP (ORCPT
+Received: from mail-pb0-f45.google.com ([209.85.160.45]:39022 "EHLO
+	mail-pb0-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755481Ab3CYGiP (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Mar 2013 02:38:15 -0400
-Received: by mail-pd0-f179.google.com with SMTP id x10so2371788pdj.38
-        for <linux-m68k@vger.kernel.org>; Sun, 24 Mar 2013 23:38:14 -0700 (PDT)
+Received: by mail-pb0-f45.google.com with SMTP id ro8so3991363pbb.32
+        for <linux-m68k@vger.kernel.org>; Sun, 24 Mar 2013 23:38:15 -0700 (PDT)
 In-Reply-To: <1364193464-3890-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org, tg@mirbsd.de, Michael Schmitz <schmitz@debian.org>
 
-Add Atari specific code to the smc91x Ethernet driver. This code is used
-on the EtherNAT adapter card for the Atari Falcon extension port.
-
-Without the patch to smc91x.h, the first two bytes of every ethernet packet
-sent out are swapped, resulting in a wrong MAC address being read by the
-packet's target, and failure to establish communication.
+Support for Atari EtherNEC ROM port adapters in ne.c
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/Kconfig.devices          |   10 ++++++
- drivers/net/ethernet/smsc/Kconfig  |    4 +-
- drivers/net/ethernet/smsc/smc91x.h |   63 ++++++++++++++++++++++++++++++++++-
- 3 files changed, 73 insertions(+), 4 deletions(-)
+ arch/m68k/Kconfig.devices         |   14 ++++++++++++++
+ drivers/net/ethernet/8390/Kconfig |    3 ++-
+ drivers/net/ethernet/8390/ne.c    |    2 ++
+ 3 files changed, 18 insertions(+), 1 deletions(-)
 
 diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-index 4bc945d..d50ecbf 100644
+index d50ecbf..d163991 100644
 --- a/arch/m68k/Kconfig.devices
 +++ b/arch/m68k/Kconfig.devices
-@@ -55,6 +55,16 @@ config NFETH
- 	  which will emulate a regular ethernet device while presenting an
- 	  ethertap device to the host system.
+@@ -65,6 +65,20 @@ config ATARI_ETHERNAT
+ 	  To compile the actual ethernet driver, choose Y or M for the SMC91X
+ 	  option in the network device section; the module will be called smc91x.
  
-+config ATARI_ETHERNAT
-+	bool "Atari EtherNAT Ethernet support"
-+	depends on ATARI
++config ATARI_ETHERNEC
++	bool "Atari EtherNEC Ethernet support"
++	depends on ATARI_ROM_ISA
 +	---help---
-+	  Say Y to include support for the EtherNAT network adapter for the
-+	  CT/60 extension port.
++	  Say Y to include support for the EtherNEC network adapter for the
++	  ROM port. The driver works by polling instead of interrupts, so it
++	  is quite slow.
 +
-+	  To compile the actual ethernet driver, choose Y or M for the SMC91X
-+	  option in the network device section; the module will be called smc91x.
++	  This driver also suppports the ethernet part of the NetUSBee ROM
++	  port combined Ethernet/USB adapter.
++
++	  To compile the actual ethernet driver, choose Y or M in for the NE2000
++	  option in the network device section; the module will be called ne.
 +
  endmenu
  
  menu "Character devices"
-diff --git a/drivers/net/ethernet/smsc/Kconfig b/drivers/net/ethernet/smsc/Kconfig
-index 5a689af..d3485cf 100644
---- a/drivers/net/ethernet/smsc/Kconfig
-+++ b/drivers/net/ethernet/smsc/Kconfig
-@@ -6,7 +6,7 @@ config NET_VENDOR_SMSC
- 	bool "SMC (SMSC)/Western Digital devices"
- 	default y
- 	depends on ARM || ISA || MAC || ARM || MIPS || M32R || SUPERH || \
--		BLACKFIN || MN10300 || COLDFIRE || PCI || PCMCIA
-+		BLACKFIN || MN10300 || COLDFIRE || PCI || PCMCIA || ATARI
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index a5f91e1..53abc78 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -91,7 +91,8 @@ config MCF8390
+ 
+ config NE2000
+ 	tristate "NE2000/NE1000 support"
+-	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
++	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX || \
++		    ATARI_ETHERNEC)
+ 	select CRC32
  	---help---
- 	  If you have a network (Ethernet) card belonging to this class, say Y
- 	  and read the Ethernet-HOWTO, available from
-@@ -40,7 +40,7 @@ config SMC91X
- 	select NET_CORE
- 	select MII
- 	depends on (ARM || M32R || SUPERH || MIPS || BLACKFIN || \
--		    MN10300 || COLDFIRE)
-+		    MN10300 || COLDFIRE || ATARI_ETHERNAT)
- 	---help---
- 	  This is a driver for SMC's 91x series of Ethernet chipsets,
- 	  including the SMC91C94 and the SMC91C111. Say Y if you want it
-diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
-index 370e13d..528f7ba 100644
---- a/drivers/net/ethernet/smsc/smc91x.h
-+++ b/drivers/net/ethernet/smsc/smc91x.h
-@@ -231,6 +231,30 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
- 
- #include <unit/smc91111.h>
- 
-+#elif defined(CONFIG_ATARI)
-+
-+#define SMC_CAN_USE_8BIT        1
-+#define SMC_CAN_USE_16BIT       1
-+#define SMC_CAN_USE_32BIT       1
-+#define SMC_NOWAIT              1
-+
-+#define writew_be(val, addr) out_be16((addr), (val))
-+
-+#define SMC_inb(a, r)           readb((a) + (r))
-+#define SMC_inw(a, r)           readw((a) + (r))
-+#define SMC_inl(a, r)           readl((a) + (r))
-+#define SMC_outb(v, a, r)       writeb(v, (a) + (r))
-+#define SMC_outw(v, a, r)       writew(v, (a) + (r))
-+#define SMC_outw_be(v, a, r)    writew_be(v, (a) + (r))
-+#define SMC_outl(v, a, r)       writel(v, (a) + (r))
-+#define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
-+#define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
-+#define SMC_insl(a, r, p, l)    readsl((a) + (r), p, l)
-+#define SMC_outsl(a, r, p, l)   writesl((a) + (r), p, l)
-+
-+#define RPC_LSA_DEFAULT         RPC_LED_100_10
-+#define RPC_LSB_DEFAULT         RPC_LED_TX_RX
-+
- #elif defined(CONFIG_ARCH_MSM)
- 
- #define SMC_CAN_USE_8BIT	0
-@@ -1116,6 +1140,40 @@ static const char * chip_ids[ 16 ] =  {
- 		}							\
- 	} while (0)
- 
-+#if defined(CONFIG_ATARI)
-+/*
-+ * MSch: EtherNAT is 32 bit, so the misaligned data buffer hack applies.
-+ * This appears to hurt quite a lot ... we actually need to byte swap the
-+ * misaligned write because the data end up in the packet buffer swapped
-+ * otherwise (resulting in the first two bytes of the target MAC address
-+ * being swapped)
-+ */
-+#define SMC_PUSH_DATA(lp, p, l)					\
-+	do {								\
-+		if (SMC_32BIT(lp)) {				\
-+			void *__ptr = (p);				\
-+			int __len = (l);				\
-+			void __iomem *__ioaddr = ioaddr;		\
-+			if (__len >= 2 && (unsigned long)__ptr & 2) {	\
-+				__len -= 2;				\
-+				SMC_outw_be(*(u16 *)__ptr, ioaddr,	\
-+					DATA_REG(lp));		\
-+				__ptr += 2;				\
-+			}						\
-+			if (SMC_CAN_USE_DATACS && lp->datacs)		\
-+				__ioaddr = lp->datacs;			\
-+			SMC_outsl(__ioaddr, DATA_REG(lp), __ptr, __len>>2); \
-+			if (__len & 2) {				\
-+				__ptr += (__len & ~3);			\
-+				SMC_outw_be(*((u16 *)__ptr), ioaddr,	\
-+					 DATA_REG(lp));		\
-+			}						\
-+		} else if (SMC_16BIT(lp))				\
-+			SMC_outsw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1); \
-+		else if (SMC_8BIT(lp))				\
-+			SMC_outsb(ioaddr, DATA_REG(lp), p, l);	\
-+	} while (0)
-+#else
- #define SMC_PUSH_DATA(lp, p, l)					\
- 	do {								\
- 		if (SMC_32BIT(lp)) {				\
-@@ -1137,10 +1195,11 @@ static const char * chip_ids[ 16 ] =  {
- 					 DATA_REG(lp));		\
- 			}						\
- 		} else if (SMC_16BIT(lp))				\
--			SMC_outsw(ioaddr, DATA_REG(lp), p, (l) >> 1);	\
-+			SMC_outsw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1);	\
- 		else if (SMC_8BIT(lp))				\
- 			SMC_outsb(ioaddr, DATA_REG(lp), p, l);	\
- 	} while (0)
-+#endif
- 
- #define SMC_PULL_DATA(lp, p, l)					\
- 	do {								\
-@@ -1172,7 +1231,7 @@ static const char * chip_ids[ 16 ] =  {
- 			__len += 2;					\
- 			SMC_insl(__ioaddr, DATA_REG(lp), __ptr, __len>>2); \
- 		} else if (SMC_16BIT(lp))				\
--			SMC_insw(ioaddr, DATA_REG(lp), p, (l) >> 1);	\
-+			SMC_insw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1);	\
- 		else if (SMC_8BIT(lp))				\
- 			SMC_insb(ioaddr, DATA_REG(lp), p, l);		\
- 	} while (0)
+ 	  If you have a network (Ethernet) card of this type, say Y and read
+diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
+index 47618e5..49948f6 100644
+--- a/drivers/net/ethernet/8390/ne.c
++++ b/drivers/net/ethernet/8390/ne.c
+@@ -166,6 +166,8 @@ bad_clone_list[] __initdata = {
+ #elif defined(CONFIG_PLAT_OAKS32R)  || \
+    defined(CONFIG_MACH_TX49XX)
+ #  define DCR_VAL 0x48		/* 8-bit mode */
++#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
++#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
+ #else
+ #  define DCR_VAL 0x49
+ #endif
 -- 
 1.7.0.4
