@@ -1,48 +1,87 @@
-From: Wouter Verhelst <w@uter.be>
-Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
- and debian-kernel
-Date: Tue, 26 Mar 2013 09:12:57 +0100
-Message-ID: <51515889.6040106@uter.be>
-References: <1364193464-3890-1-git-send-email-schmitz@debian.org> <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH v3, part4 22/39] mm/m68k: prepare for removing num_physpages and simplify mem_init()
+Date: Tue, 26 Mar 2013 23:54:41 +0800
+Message-ID: <1364313298-17336-23-git-send-email-jiang.liu__16696.9921942384$1364314006$gmane$org@huawei.com>
+References: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from barbershop.grep.be ([89.106.240.122]:44872 "EHLO
-	barbershop.grep.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759487Ab3CZI41 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Mar 2013 04:56:27 -0400
-In-Reply-To: <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
+In-Reply-To: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>
+Cc: Jiang Liu <jiang.liu@huawei.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
 
-On 25-03-13 18:53, Thorsten Glaser wrote:
-> Michael Schmitz dixit:
->=20
->> This patch series should be suitable for inclusion in the debian/68k=
- kernel
->> packages (if policy allows).
->=20
-> Sadly, policy allows only stuff that=E2=80=99s in Linus=E2=80=99 tree=
-=2E
+Prepare for removing num_physpages and simplify mem_init().
 
-Nothing says we can't put a kernel with those patches into unreleased
-(or what was it called again?) for the time being...
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+---
+Hi all,
+	Sorry for my mistake that my previous patch series has been screwed up.
+So I regenerate a third version and also set up a git tree at:
+	git://github.com/jiangliu/linux.git mem_init
+	Any help to review and test are welcomed!
 
-> But once it went upstream, we can just build a bleeding
-> edge kernel from Debian/experimental with no amount of
-> manual fiddling required.
+	Regards!
+	Gerry
+---
+ arch/m68k/mm/init.c |   31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
-That also works, I suppose.
-
-> It just won=E2=80=99t go into the stable kernel. But it=E2=80=99s no
-> regression, as the old driver was never in it either=E2=80=A6
-
-Indeed.
-
---=20
-Copyshops should do vouchers. So that next time some bureaucracy
-requires you to mail a form in triplicate, you can mail it just once,
-add a voucher, and save on postage.
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 0450989..f58fa43 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -149,33 +149,11 @@ void __init print_memmap(void)
+ void __init mem_init(void)
+ {
+ 	pg_data_t *pgdat;
+-	int codepages = 0;
+-	int datapages = 0;
+-	int initpages = 0;
+ 	int i;
+ 
+ 	/* this will put all memory onto the freelists */
+-	num_physpages = 0;
+-	for_each_online_pgdat(pgdat) {
+-		num_physpages += pgdat->node_present_pages;
+-
++	for_each_online_pgdat(pgdat)
+ 		free_all_bootmem_node(pgdat);
+-		for (i = 0; i < pgdat->node_spanned_pages; i++) {
+-			struct page *page = pgdat->node_mem_map + i;
+-			char *addr = page_to_virt(page);
+-
+-			if (!PageReserved(page))
+-				continue;
+-			if (addr >= _text &&
+-			    addr < _etext)
+-				codepages++;
+-			else if (addr >= __init_begin &&
+-				 addr < __init_end)
+-				initpages++;
+-			else
+-				datapages++;
+-		}
+-	}
+ 
+ #if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
+ 	/* insert pointer tables allocated so far into the tablelist */
+@@ -190,12 +168,7 @@ void __init mem_init(void)
+ 		init_pointer_table((unsigned long)zero_pgtable);
+ #endif
+ 
+-	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10),
+-	       totalram_pages << (PAGE_SHIFT-10),
+-	       codepages << (PAGE_SHIFT-10),
+-	       datapages << (PAGE_SHIFT-10),
+-	       initpages << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	print_memmap();
+ }
+ 
+-- 
+1.7.9.5
