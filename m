@@ -1,87 +1,54 @@
-From: Jiang Liu <liuj97@gmail.com>
-Subject: [PATCH v3, part4 22/39] mm/m68k: prepare for removing num_physpages and simplify mem_init()
-Date: Tue, 26 Mar 2013 23:54:41 +0800
-Message-ID: <1364313298-17336-23-git-send-email-jiang.liu__16696.9921942384$1364314006$gmane$org@huawei.com>
-References: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
+ and debian-kernel
+Date: Wed, 27 Mar 2013 20:02:06 +1300
+Message-ID: <5152996E.50800@gmail.com>
+References: <1364193464-3890-1-git-send-email-schmitz@debian.org> <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org> <51515889.6040106@uter.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1364313298-17336-1-git-send-email-jiang.liu@huawei.com>
+Received: from mail-pb0-f51.google.com ([209.85.160.51]:63202 "EHLO
+	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754105Ab3C0HCM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Mar 2013 03:02:12 -0400
+Received: by mail-pb0-f51.google.com with SMTP id rr4so2451584pbb.38
+        for <linux-m68k@vger.kernel.org>; Wed, 27 Mar 2013 00:02:11 -0700 (PDT)
+In-Reply-To: <51515889.6040106@uter.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>
-Cc: Jiang Liu <jiang.liu@huawei.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
+To: Wouter Verhelst <w@uter.be>
+Cc: Thorsten Glaser <tg@mirbsd.de>, geert@linux-m68k.org, linux-m68k@vger.kernel.org, =?UTF-8?B?SW5nbyBKw7xyZ2Vuc21hbm4=?= <ij@2012.bluespice.org>
 
-Prepare for removing num_physpages and simplify mem_init().
+Wouter,
+>> Sadly, policy allows only stuff that=E2=80=99s in Linus=E2=80=99 tre=
+e.
+> Nothing says we can't put a kernel with those patches into unreleased
+> (or what was it called again?) for the time being...
+If that's possible - does anyone have a kernel cross-compile machine se=
+t=20
+up for that purpose?IJ?
+>> But once it went upstream, we can just build a bleeding
+>> edge kernel from Debian/experimental with no amount of
+>> manual fiddling required.
+> That also works, I suppose.
+I've split the commit introducing the timer D handling to use=20
+handle_simple_irq in the first instance,
+and switch to handle_polled_irq in a separate commit. We can leave out=20
+that one (and the commit
+introducing handle_polled_irq) for upstream submission for now, and=20
+revisit the issue once we have
+feedback from linux-kernel and linux-netdev. I'd also leave out the USB=
+=20
+patches for now - the changes
+to the ISP116x driver are far too intrusive for my taste.
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
----
-Hi all,
-	Sorry for my mistake that my previous patch series has been screwed up.
-So I regenerate a third version and also set up a git tree at:
-	git://github.com/jiangliu/linux.git mem_init
-	Any help to review and test are welcomed!
+Geert: only patches touching code outside arch/m68k have to go to=20
+linux-netdev?
 
-	Regards!
-	Gerry
----
- arch/m68k/mm/init.c |   31 ++-----------------------------
- 1 file changed, 2 insertions(+), 29 deletions(-)
+Next on my TODO: Amiga ESP SCSI (I've let that one sit for too long)
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 0450989..f58fa43 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -149,33 +149,11 @@ void __init print_memmap(void)
- void __init mem_init(void)
- {
- 	pg_data_t *pgdat;
--	int codepages = 0;
--	int datapages = 0;
--	int initpages = 0;
- 	int i;
- 
- 	/* this will put all memory onto the freelists */
--	num_physpages = 0;
--	for_each_online_pgdat(pgdat) {
--		num_physpages += pgdat->node_present_pages;
--
-+	for_each_online_pgdat(pgdat)
- 		free_all_bootmem_node(pgdat);
--		for (i = 0; i < pgdat->node_spanned_pages; i++) {
--			struct page *page = pgdat->node_mem_map + i;
--			char *addr = page_to_virt(page);
--
--			if (!PageReserved(page))
--				continue;
--			if (addr >= _text &&
--			    addr < _etext)
--				codepages++;
--			else if (addr >= __init_begin &&
--				 addr < __init_end)
--				initpages++;
--			else
--				datapages++;
--		}
--	}
- 
- #if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	/* insert pointer tables allocated so far into the tablelist */
-@@ -190,12 +168,7 @@ void __init mem_init(void)
- 		init_pointer_table((unsigned long)zero_pgtable);
- #endif
- 
--	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
--	       nr_free_pages() << (PAGE_SHIFT-10),
--	       totalram_pages << (PAGE_SHIFT-10),
--	       codepages << (PAGE_SHIFT-10),
--	       datapages << (PAGE_SHIFT-10),
--	       initpages << (PAGE_SHIFT-10));
-+	mem_init_print_info(NULL);
- 	print_memmap();
- }
- 
--- 
-1.7.9.5
+Cheers,
+
+     Michael
