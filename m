@@ -1,33 +1,46 @@
-From: Michele Roca <michele.rocca@cacciatoritrentini.it>
-Subject: MY GOOD FRIEND!
-Date: Wed, 27 Mar 2013 04:25:14 -0700
-Message-ID: <728055fa94edf4d2f83f4487e73d0824@cacciatoritrentini.it>
-Reply-To: <wernererichzeller@yahoo.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
+ and debian-kernel
+Date: Thu, 28 Mar 2013 17:53:22 +1300
+Message-ID: <5153CCC2.30007@gmail.com>
+References: <1364193464-3890-1-git-send-email-schmitz@debian.org> <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org> <51515889.6040106@uter.be> <5152996E.50800@gmail.com> <a83c235ec6ff2e8d7c6edd3722db0218@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pb0-f53.google.com ([209.85.160.53]:62989 "EHLO
+	mail-pb0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750815Ab3C1Ex3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Mar 2013 00:53:29 -0400
+Received: by mail-pb0-f53.google.com with SMTP id un1so5602270pbc.12
+        for <linux-m68k@vger.kernel.org>; Wed, 27 Mar 2013 21:53:29 -0700 (PDT)
+In-Reply-To: <a83c235ec6ff2e8d7c6edd3722db0218@localhost>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: =?UTF-8?B?SW5nbyBKw7xyZ2Vuc21hbm4=?= <ij@2012.bluespice.org>
+Cc: Wouter Verhelst <w@uter.be>, Thorsten Glaser <tg@mirbsd.de>, geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
+Ingo,
+> On 2013-03-27 08:02, Michael Schmitz wrote:
+>
+>> If that's possible - does anyone have a kernel cross-compile machine
+>> set up for that purpose?IJ?
+>
+> I've setup that virtual machine for cross-compile. It seemed to work, 
+> but maybe needs an update in the meanwhile. I can start that VM after 
+> work when I'm back home.
+Thanks, seems back up now.
+>
+>> Next on my TODO: Amiga ESP SCSI (I've let that one sit for too long)
+>
+> Yeah, would be great to have that driver working again... :-)
+I'll do what I can.
+> It's planned that Elgar will moved to FU Berlin somewhen in May. When 
+> we would have a working ESP driver I could setup Akire as well until 
+> then and both machines could move to Berlin. Would be a great 
+> improvement... :-)
+Still a bit of work to do until then :-)
 
+Cheers,
 
-
-I am Barrister Werner Erich Zeller; I need your sincere partnership in
-transferring the sum of 15,000,000.00 EUR The details await you as you=20
-reply!
-
-please! Call +44 702 409 0820 (office)
-
---=20
-Ich bin Barrister Werner Erich Zeller, ich brauche eure aufrichtige
-Partnerschaft intransferring die Summe von 15.000.000,00 EUR auf Ihr
-Bankkonto in dieser Woche f=C3=BCr den Nutzen der beiden von uns 50% ea=
-ch.It
-ist 100% legal, legitim und sicher! f=C3=BCr Details, schreiben Sie mir=
- auf
-dieser meiner privaten E-Mail statt: Dies ist dringende und ernste Sie
-m=C3=BCssen bereit sein und bereit, bevor Sie mich kontaktieren.
-
-bitte! Rufen Sie +44 702 409 0820 (B=C3=BCro)
+     Michael
