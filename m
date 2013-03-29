@@ -1,90 +1,121 @@
-From: "Christian T. Steigies" <cts@debian.org>
-Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
- and debian-kernel
-Date: Fri, 29 Mar 2013 09:22:38 +0100
-Message-ID: <20130329082238.GC14587@chumley.earth.sol>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream and debian-kernel
+Date: Fri, 29 Mar 2013 09:30:36 +0100
+Message-ID: <CAMuHMdXcy8Apvm58m4XudxfRTRa9aiTojRVanPtY3M=mTUUxqg@mail.gmail.com>
 References: <1364193464-3890-1-git-send-email-schmitz@debian.org>
- <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
- <51515889.6040106@uter.be>
- <5152996E.50800@gmail.com>
- <20130328211747.GA10917@chumley.earth.sol>
- <5154C5E0.3040608@gmail.com>
- <20130328231039.GA14587@chumley.earth.sol>
- <5154E9E0.1020005@gmail.com>
+	<Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
+	<51515889.6040106@uter.be>
+	<5152996E.50800@gmail.com>
+	<20130328211747.GA10917@chumley.earth.sol>
+	<5154C5E0.3040608@gmail.com>
+	<20130328231039.GA14587@chumley.earth.sol>
+	<CAMuHMdWxCW0Gp8jYYk7R3WDJ8u-LJBZJ5d9jjaPAf27vXv3jDA@mail.gmail.com>
+	<20130329080629.GB14587@chumley.earth.sol>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-in-11.arcor-online.net ([151.189.21.51]:34878 "EHLO
-	mail-in-11.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755474Ab3C2IWl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 29 Mar 2013 04:22:41 -0400
-Content-Disposition: inline
-In-Reply-To: <5154E9E0.1020005@gmail.com>
+Received: from mail-ia0-f176.google.com ([209.85.210.176]:42924 "EHLO
+	mail-ia0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755312Ab3C2Iah (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Mar 2013 04:30:37 -0400
+Received: by mail-ia0-f176.google.com with SMTP id i1so258202iaa.21
+        for <linux-m68k@vger.kernel.org>; Fri, 29 Mar 2013 01:30:36 -0700 (PDT)
+In-Reply-To: <20130329080629.GB14587@chumley.earth.sol>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Wouter Verhelst <w@uter.be>, Thorsten Glaser <tg@mirbsd.de>, geert@linux-m68k.org, linux-m68k@vger.kernel.org, Ingo J?rgensmann <ij@2012.bluespice.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, Wouter Verhelst <w@uter.be>, Thorsten Glaser <tg@mirbsd.de>, linux-m68k@vger.kernel.org, Ingo J?rgensmann <ij@2012.bluespice.org>
 
-On Fri, Mar 29, 2013 at 02:09:52PM +1300, Michael Schmitz wrote:
-> Christian,
-> 
-> >yup. CONFIG_SCSI_ZORRO7XX is enabled, will this be the new driver?
-> 
-> No, that's a different chipset, not ESP.
+On Fri, Mar 29, 2013 at 9:06 AM, Christian T. Steigies <cts@debian.org> wrote:
+> On Fri, Mar 29, 2013 at 08:56:43AM +0100, Geert Uytterhoeven wrote:
+>> On Fri, Mar 29, 2013 at 12:10 AM, Christian T. Steigies <cts@debian.org> wrote:
+>> > The HID drivers seem to be enabled in the official kernel, which runs on
+>> > kullervo, I don't seem to be able to switch off just the microsoft one.
+>> > Maybe by modifying the generic config, but I am afraid the magical package
+>> > building breaks again, genconfig.py does not run on my testing box, not sure
+>> > why. In Geert's tree, memcmp is not used in the driver, thats probably why
+>> > this one builds:
+>> >
+>> > @@ -47,9 +46,9 @@
+>> >                 rdesc[559] = 0x45;
+>> >         }
+>> >         /* the same as above (s/usage/physical/) */
+>> > -       if ((quirks & MS_RDESC_3K) && *rsize == 106 &&
+>> > -                       !memcmp((char []){ 0x19, 0x00, 0x29, 0xff },
+>> > -                               &rdesc[94], 4)) {
+>> > +       if ((quirks & MS_RDESC_3K) && *rsize == 106 && rdesc[94] == 0x19 &&
+>> > +                       rdesc[95] == 0x00 && rdesc[96] == 0x29 &&
+>> > +                       rdesc[97] == 0xff) {
+>> >                 rdesc[94] = 0x35;
+>> >                 rdesc[96] = 0x45;
+>> >         }
+>> >
+>> >> >buildds) another way. kernel-package?
+>>
+>> I reported that problem and it got fixed. Probably the fix never made it to
+>> -stable?
 
-ok
- 
-> >As far as I remember, the config is combined of a generic config, an m68k
-> >config, and an amiga config. Each file set only part of the total config,
-> 
-> And you can't patch the generic config? Not that I'd want to submit
-> that as a patch against the kernel source, of course.
+commit 6b90466cfec2a2fe027187d675d8d14217c12d82
+Author: Jiri Slaby <jslaby@suse.cz>
+Date:   Mon Nov 12 10:16:09 2012 +0100
 
-yes, probably. But it is not really defined anywhere... how does this
-Makefile work? 
-In drivers/hid/Makefile there is a line:
+    HID: microsoft: do not use compound literal - fix build
 
-obj-$(CONFIG_HID_MICROSOFT)     += hid-microsoft.o
- 
-This depends on HID_USB, we don't have USB on Amiga so I add:
-# CONFIG_USB_HID is not set
-to config.amiga, but then the build fails here, just as when I edit the
-subarches that should be built:
+> Yes, I was not precise. The orig is what hid-microsoft looks like in
+> Debian's linux-source-3.8. The patched one is from Geert's tree, so it is
+> fixed in linux-m68k. Maybe I am missing something, but I don't see anything
 
-debian/bin/gencontrol.py
-Traceback (most recent call last):
-  File "debian/bin/gencontrol.py", line 427, in <module>
-    Gencontrol()()
-  File "debian/lib/python/debian_linux/gencontrol.py", line 91, in __call__
-    self.do_main(packages, makefile)
-  File "debian/lib/python/debian_linux/gencontrol.py", line 111, in do_main
-    self.do_main_recurse(packages, makefile, vars, makeflags, extra)
-  File "debian/lib/python/debian_linux/gencontrol.py", line 125, in do_main_recurse
-    self.do_arch(packages, makefile, arch, vars.copy(), makeflags.copy(), extra)
-  File "debian/lib/python/debian_linux/gencontrol.py", line 157, in do_arch
-    self.do_arch_packages(packages, makefile, arch, vars, makeflags, extra)
-  File "debian/bin/gencontrol.py", line 132, in do_arch_packages
-    env=kw_env)
-  File "/usr/lib/python2.7/subprocess.py", line 679, in __init__
-    errread, errwrite)
-  File "/usr/lib/python2.7/subprocess.py", line 1259, in _execute_child
-    raise child_exception
-OSError: [Errno 2] No such file or directory
+The fix is present in upstream
 
-Maybe that is the real problem I am facing. And I always thought python
-produces usable error messages...
+$ git tag --contains 6b90466cfec2a2fe027187d675d8d14217c12d82
+linux-3.7
+linux-3.7-rc6
+linux-3.7-rc7
+linux-3.7-rc8
+linux-3.7.1
+linux-3.7.10
+linux-3.7.2
+linux-3.7.3
+linux-3.7.4
+linux-3.7.5
+linux-3.7.6
+linux-3.7.7
+linux-3.7.8
+linux-3.7.9
+linux-3.8
+linux-3.8-rc1
+linux-3.8-rc2
+linux-3.8-rc3
+linux-3.8-rc4
+linux-3.8-rc5
+linux-3.8-rc6
+linux-3.8-rc7
+linux-3.8.1
+linux-3.8.2
+linux-3.8.3
+linux-3.9-rc1
+linux-3.9-rc2
+linux-3.9-rc3
+linux-3.9-rc4
 
-> >probably so that the kernels across all arches support more of less the same
-> >features. Thats a good idea, but I think many drivers are useless for the
-> >buildds, by removing them the kernel can fit into memory again, just barely.
-> 
-> That sort of stuff should be built as modules anyway.
+How come it's broken in Debian's 3.8?
 
-Yes, it is built as a module, but the build still fails. I removed some
-video and network drivers, some filesystems which we do not use on the
-buildds, but the kernel size was just reduced by a little bit. So in the
-long run, maybe we do have to fix amiboot so that we can still use the full
-memory?
+> in the patches at first glance, only this, which makes me shiver:
+>
+> +       ret = hid_add_device(hid_dev);
+> +       if (ret)
+> +               goto probe_err1;
+>
+> Reminds me of fortran, are gotos legal in kernel source?
 
-Christian
+Nope, that's fine.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
