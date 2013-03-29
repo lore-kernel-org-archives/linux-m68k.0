@@ -1,88 +1,79 @@
-From: Thorsten Glaser <tg@mirbsd.de>
+From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: Re: [PATCH 00/11] Atari Ethernet/USB patch series - for upstream
  and debian-kernel
-Date: Fri, 29 Mar 2013 21:38:31 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1303292135220.3992@herc.mirbsd.org>
-References: <Pine.BSM.4.64L.1303251751380.27649@herc.mirbsd.org>
- <51515889.6040106@uter.be> <5152996E.50800@gmail.com>
- <20130328211747.GA10917@chumley.earth.sol> <5154C5E0.3040608@gmail.com>
- <20130328231039.GA14587@chumley.earth.sol>
- <CAMuHMdWxCW0Gp8jYYk7R3WDJ8u-LJBZJ5d9jjaPAf27vXv3jDA@mail.gmail.com>
- <20130329080629.GB14587@chumley.earth.sol>
- <CAMuHMdXcy8Apvm58m4XudxfRTRa9aiTojRVanPtY3M=mTUUxqg@mail.gmail.com>
- <5155E1A3.7060307@gmail.com> <20130329193323.GD14587@chumley.earth.sol>
+Date: Sat, 30 Mar 2013 12:24:11 +1300
+Message-ID: <5156229B.7030606@gmail.com>
+References: <5152996E.50800@gmail.com> <20130328211747.GA10917@chumley.earth.sol> <5154C5E0.3040608@gmail.com> <20130328231039.GA14587@chumley.earth.sol> <CAMuHMdWxCW0Gp8jYYk7R3WDJ8u-LJBZJ5d9jjaPAf27vXv3jDA@mail.gmail.com> <20130329080629.GB14587@chumley.earth.sol> <CAMuHMdXcy8Apvm58m4XudxfRTRa9aiTojRVanPtY3M=mTUUxqg@mail.gmail.com> <5155E1A3.7060307@gmail.com> <20130329193323.GD14587@chumley.earth.sol> <Pine.BSM.4.64L.1303292135220.3992@herc.mirbsd.org> <20130329224731.GA22830@chumley.earth.sol>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:38136 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757217Ab3C2Wsy convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Mar 2013 18:48:54 -0400
-In-Reply-To: <20130329193323.GD14587@chumley.earth.sol>
+Received: from mail-pd0-f179.google.com ([209.85.192.179]:37553 "EHLO
+	mail-pd0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757290Ab3C2XYR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Mar 2013 19:24:17 -0400
+Received: by mail-pd0-f179.google.com with SMTP id x11so432675pdj.10
+        for <linux-m68k@vger.kernel.org>; Fri, 29 Mar 2013 16:24:17 -0700 (PDT)
+In-Reply-To: <20130329224731.GA22830@chumley.earth.sol>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Christian T. Steigies" <cts@debian.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Wouter Verhelst <w@uter.be>, linux-m68k@vger.kernel.org, Ingo J?rgensmann <ij@2012.bluespice.org>
+To: Thorsten Glaser <tg@mirbsd.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Wouter Verhelst <w@uter.be>, linux-m68k@vger.kernel.org, Ingo J?rgensmann <ij@2012.bluespice.org>
 
-Christian T. Steigies dixit:
+Christian,
 
->On Sat, Mar 30, 2013 at 07:46:59AM +1300, Michael Schmitz wrote:
->> Explicitly allowed (and preferred) for that purpose (and a few
->> select other uses).
->> Nesting of if () else () branches for error unwinding would
->> otherwise look silly.
+thanks for this - I'm sure it will come handy for building test kernel 
+packages.
 
-Aye.
+Generic questions first - what is the best strategy to make Zorro boards 
+work with platform device utilizing drivers?
+Should I go and add code to amiga/platform.c to enumerate all Zorro 
+devices and add platform devices for those,
+or revert to looking up Zorro device data in the SCSI driver probe 
+function? Geert?
 
->> There's still some Real Programmers (Tm) out there :-)
+I've seen the following output on elgar:
 
-Right ;-)
+schmitz@elgar:~$ cat /proc/bus/zorro/devices
+00    21400c00    00e90000    00010000    d1
+01    0877c900    00ea0000    00010000    c1
 
->I think that goto could be easily avoided... but I am not a Real Progr=
-ammer
+The 21400c00 is product code I presume - what's the d1?  Which of the 
+two is the SCSI board?
 
-Avoiding gotos for the purpose of avoiding gotos is absolutely
-silly (as the compiler translates them to jumps, which are the
-same in asm) and positively harmful (for the legibility of the
-code; I wish I had goto in mksh=E2=80=A6).
 
->I managed to build an amiga kernel from linux-source-3.8 (in experimen=
-tal)
->with this command:
->
->make KBUILD_DEBARCH=3Dm68k ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu-=
- deb-pkg
+>>> I managed to build an amiga kernel from linux-source-3.8 (in experimental)
+>>> with this command:
+>>>
+>>> make KBUILD_DEBARCH=m68k ARCH=m68k CROSS_COMPILE=m68k-linux-gnu- deb-pkg
+>> You can just run dpkg-buildpackage -am68k???
+> Because linux-source, just like linux-m68k git, does not contain a debian
+> directory. The linux source package (note the missing dash) does contain a
+> debian directory, but that fails because gencontrol.py does not run on my
+> box (OSError: missing file or directory with no hint what file is missing).
+While you can catch errors of that sort in python, it's still left to 
+the programmer to provide a meaningful error message.
+Shame on python's subprocess.py for not printing the missing path on 
+failed exec.
 
-You can just run dpkg-buildpackage -am68k=E2=80=A6
+File "debian/bin/gencontrol.py", line 132, in do_arch_packages
+     env=kw_env)
 
->With this is should be easy to (cross-) build kernel-images for m68k w=
-ith
->additional patches and minimized config, since this does not use Debia=
-n's
->gencontrol.py. Maybe I will try to understand that later.
 
-I don=E2=80=99t think that=E2=80=99s a good thing. And patches can be a=
-dded to the
-normal process with not too much difficulty=E2=80=A6 but YMMV, and it=E2=
-=80=99s up
-to the person doing the work.
+seems to be where subprocess.py is invoked - I'd add a trace print there.
 
-IMHO we should try to get to as close to the normal Debian processes
-as possible though. I=E2=80=99d wager a guess and say that, if you ask,=
- for
-example, waldi or bwh in IRC, they=E2=80=99d be happy to help (as oppos=
-ed to
-see you doing some n=C5=8Dn-standard stuff).
+>> IMHO we should try to get to as close to the normal Debian processes
+>> as possible though. I???d wager a guess and say that, if you ask, for
+>> example, waldi or bwh in IRC, they???d be happy to help (as opposed to
+>> see you doing some n??n-standard stuff).
+> The kernels I am building are not for official use, only for testing of new
+> patches. In the long run I want to understand how the offical Debian images
+> are built again, but unfortunately my vacation comes to an end and the new
+> semester is starting... it will be at least a month before I will have time
+> to study the Debian processes again. I may try to get crest running again
+> with the IDE disk before that.
+If you do - what SCSI board does crest use? Can you test kernels or 
+possibly just modules there for me?
 
-bye,
-//mirabilos
---=20
-[DJBDNS Zone] TTL 86400 =E2=80=93 <Natureshadow> kann man da auch 1d sc=
-hreiben?
-<mirabilos> n=C3=B6, au=C3=9Ferdem kann ein Deutscher oder ein Japaner =
-mit 1d
-    ja erstmal nix anfangen, oder k=C3=B6nntest du 1=E6=97=A5 im zone f=
-ile lesen?
-<Natureshadow> das hei=C3=9Ft f=C3=BCr mich: ein Regal, das u.U. schief=
-stehen k=C3=B6nnte
+Cheers,
+
+     Michael
