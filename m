@@ -1,58 +1,96 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 10/12] m68k: Implement ndelay() based on the existing udelay() logic
-Date: Sat, 30 Mar 2013 13:27:50 +1300
-Message-ID: <1364603272-8148-11-git-send-email-schmitz@debian.org>
+Subject: [PATCH 06/12] m68k/atari: EtherNEC - add platform device support
+Date: Sat, 30 Mar 2013 13:27:46 +1300
+Message-ID: <1364603272-8148-7-git-send-email-schmitz@debian.org>
 References: <1364603272-8148-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-da0-f41.google.com ([209.85.210.41]:61845 "EHLO
-	mail-da0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757395Ab3C3A3f (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Mar 2013 20:29:35 -0400
-Received: by mail-da0-f41.google.com with SMTP id w4so385565dam.14
-        for <linux-m68k@vger.kernel.org>; Fri, 29 Mar 2013 17:29:34 -0700 (PDT)
+Received: from mail-da0-f49.google.com ([209.85.210.49]:44766 "EHLO
+	mail-da0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757302Ab3C3A32 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Mar 2013 20:29:28 -0400
+Received: by mail-da0-f49.google.com with SMTP id t11so385257daj.36
+        for <linux-m68k@vger.kernel.org>; Fri, 29 Mar 2013 17:29:28 -0700 (PDT)
 In-Reply-To: <1364603272-8148-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
 
-Add a ndelay macro modeled after the Coldfire udelay(). The ISP1160
-driver needs a 150ns delay, so we need to have ndelay().
+Add platform device for the Atari ROM port ethernet adapter, EtherNEC.
+This platform device will be used by the ne.c driver.
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/include/asm/delay.h |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+ arch/m68k/atari/config.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 50 insertions(+), 0 deletions(-)
 
-diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
-index 12d8fe4..8a9971d 100644
---- a/arch/m68k/include/asm/delay.h
-+++ b/arch/m68k/include/asm/delay.h
-@@ -92,5 +92,25 @@ static inline void __udelay(unsigned long usecs)
- #define udelay(n) (__builtin_constant_p(n) ? \
- 	((n) > 20000 ? __bad_udelay() : __const_udelay(n)) : __udelay(n))
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index d35e89d..fdcd875 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -694,6 +694,41 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
+ 	&smc91x_device
+ };
  
 +/*
-+ * nanosecond delay:
-+ *
-+ * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of loops per microsecond
-+ *
-+ * 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of nanoseconds per loop
-+ *
-+ * So n / ( 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) ) would be the number of loops for n nanoseconds
++ * EtherNEC: RTL8019 (NE2000 compatible) Ethernet chipset,
++ * handled by ne.c driver
 + */
 +
-+/*
-+ * The simpler m68k and ColdFire processors do not have a 32*32->64
-+ * multiply instruction. So we need to handle them a little differently.
-+ * We use a bit of shifting and a single 32*32->32 multiply to get close.
-+ * This is a macro so that the const version can factor out the first
-+ * multiply and shift.
-+ */
-+#define	HZSCALE		(268435456 / (1000000 / HZ))
++#define ATARI_ETHERNEC_PHYS_ADDR	0xfffa0000
++#define ATARI_ETHERNEC_BASE		0x300
++#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMER1
 +
-+#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000));
++static struct resource rtl8019_resources[] = {
++	[0] = {
++		.name	= "rtl8019-regs",
++		.start	= ATARI_ETHERNEC_BASE,
++		.end	= ATARI_ETHERNEC_BASE + 0x20 - 1,
++		.flags	= IORESOURCE_IO,
++	},
++	[1] = {
++		.name	= "rtl8019-irq",
++		.start	= ATARI_ETHERNEC_IRQ,
++		.end	= ATARI_ETHERNEC_IRQ,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device rtl8019_device = {
++	.name		= "ne",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(rtl8019_resources),
++	.resource	= rtl8019_resources,
++};
++
++static struct platform_device *atari_ethernec_devices[] __initdata = {
++	&rtl8019_device
++};
++
+ int __init atari_platform_init(void)
+ {
+ 	int rv = 0;
+@@ -713,6 +748,21 @@ int __init atari_platform_init(void)
+ 	}
+ #endif
  
- #endif /* defined(_M68K_DELAY_H) */
++#ifdef CONFIG_ATARI_ETHERNEC
++	{
++		int error;
++		unsigned char *enec_virt;
++		enec_virt = (unsigned char *)ioremap((ATARI_ETHERNEC_PHYS_ADDR), 0xf);
++		if (hwreg_present(enec_virt)) {
++			error = platform_add_devices(atari_ethernec_devices,
++						ARRAY_SIZE(atari_ethernec_devices));
++			if (error && !rv)
++				rv = error;
++		}
++		iounmap(enec_virt);
++	}
++#endif
++
+ 	return rv;
+ }
+ 
 -- 
 1.7.0.4
