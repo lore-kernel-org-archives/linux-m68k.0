@@ -1,50 +1,34 @@
-From: gerg@uclinux.org
-Subject: [PATCH] romfs: fix nommu map length to keep inside filesystem
-Date: Tue,  2 Apr 2013 15:44:47 +1000
-Message-ID: <1364881487-30761-1-git-send-email-gerg@uclinux.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, artem.bityutskiy@linux.intel.com
-Cc: lliubbo@gmail.com, dhowells@redhat.com, lethal@linux-sh.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Subject: m68k build regression
+Date: Fri, 5 Apr 2013 10:39:58 +0000
+Message-ID: <1365158496.626.28.camel@sauron.fi.intel.com>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Language: en-US
+Content-ID: <0FFA432C30E2C0439E655F56276F0262@intel.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
-
-Checks introduced in commit 4991e7251 ("romfs: do not use
-mtd->get_unmapped_area directly") re-introduce problems fixed in the earlier
-commit 2b4b2482e ("romfs: fix romfs_get_unmapped_area() argument check").
-
-If a flat binary app is located at the end of a romfs, its page aligned
-length may be outside of the romfs filesystem. The flat binary loader, via
-nommu do_mmap_pgoff(), page aligns the length it is mmaping. So simple
-offset+size checks will fail - returning EINVAL.
-
-We can truncate the length to keep it inside the romfs filesystem, and that
-also keeps the call to mtd_get_unmapped_area() happy.
-
-Are there any side effects to truncating the size here though?
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- fs/romfs/mmap-nommu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/romfs/mmap-nommu.c b/fs/romfs/mmap-nommu.c
-index e1a7779..f373bde 100644
---- a/fs/romfs/mmap-nommu.c
-+++ b/fs/romfs/mmap-nommu.c
-@@ -49,8 +49,11 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
- 		return (unsigned long) -EINVAL;
- 
- 	offset += ROMFS_I(inode)->i_dataoffset;
--	if (offset > mtd->size - len)
-+	if (offset >= mtd->size)
- 		return (unsigned long) -EINVAL;
-+	/* the mapping mustn't extend beyond the EOF */
-+	if ((offset + len) > mtd->size)
-+		len = mtd->size - offset;
- 
- 	ret = mtd_get_unmapped_area(mtd, len, offset, flags);
- 	if (ret == -EOPNOTSUPP)
--- 
-1.8.1.4
+SGksDQoNCnN0YXJ0aW5nIGZyb20gMy45LXJjMSBvbmUgb2YgbXkgbTY4ayBjb25maWd1cmF0aW9u
+cyBkb2VzIG5vdCBidWlsZCwNCndoaWNoIGlzIGEgcmVncmVzc2lvbi4gVGhlIGNvbmZpZ3VyYXRp
+b24gaXMgYXR0YWNoZWQuIEkgYnVpbGQgd2l0aA0KVz0xLiBJIGRpZCBub3QgbG9vayBhdCB0aGUg
+ZGV0YWlscywganVzdCBzaG9vdGluZyBhIGJ1ZyByZXBvcnQuDQoNCmRyaXZlcnMvZ3Bpby9kZXZy
+ZXMuYzogSW4gZnVuY3Rpb24gJ2Rldm1fZ3Bpb19yZXF1ZXN0X29uZSc6DQpkcml2ZXJzL2dwaW8v
+ZGV2cmVzLmM6OTA6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdn
+cGlvX3JlcXVlc3Rfb25lJyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0N
+CmNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0KbWFrZVszXTogKioq
+IFtkcml2ZXJzL2dwaW8vZGV2cmVzLm9dIEVycm9yIDENCg0KVGhhbmtzIQ0KDQotLSANCkJlc3Qg
+UmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBGaW5sYW5kIE95
+ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAwMDE4MSBIZWxzaW5raSAKQnVzaW5lc3MgSWRl
+bnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWljaWxlZCBpbiBIZWxzaW5raSAKClRoaXMgZS1t
+YWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFs
+IGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmll
+dyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlv
+dSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5k
+ZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
