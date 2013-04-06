@@ -1,142 +1,49 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 09/12] m68k/atari: EtherNAT - add interrupt chip definition for CPLD interrupts
-Date: Sat,  6 Apr 2013 13:26:43 +1300
-Message-ID: <1365208006-16227-10-git-send-email-schmitz@debian.org>
-References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
+Subject: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
+Date: Sat,  6 Apr 2013 13:26:34 +1300
+Message-ID: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f42.google.com ([209.85.220.42]:49519 "EHLO
-	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1163104Ab3DFA1Y (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:24 -0400
-Received: by mail-pa0-f42.google.com with SMTP id kq13so2303998pab.1
-        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:23 -0700 (PDT)
-In-Reply-To: <1365208006-16227-1-git-send-email-schmitz@debian.org>
+Received: from mail-pb0-f42.google.com ([209.85.160.42]:39111 "EHLO
+	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1163082Ab3DFA1B (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:01 -0400
+Received: by mail-pb0-f42.google.com with SMTP id up7so2257683pbc.29
+        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:01 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
+Cc: linux-m68k@vger.kernel.org
 
-Add a dedicated interrupt chip definition for the EtherNAT CPLD interrupts.
-SMC91C111 and ISP1160 chips have separate interrupts that can be enabled
-and disabled in a CPLD register at offset 0x23 from the card base.
+Hi Geert,
 
-Note the CPLD interrupt control register is mapped on demand, whenever any
-interrupt enable/disable action is requested. The EtherNAT USB driver still
-needs interrupts disabled around reset and start actions.
-In particular, we cannot entirely rely on the irq_startup being called first.
+here's my rewrite of the Atari patch series for upstream submission - 
+the only changes are to patches 9 and 12. 
 
-The smc91x and isp116x-hcd drivers will use this feature.
+The USB patch no longer disables the chip interrupt in the interrupt 
+handler - it turns out this wasn't necessary at all. It also does away 
+with direct writes to the EtherNAT interrupt control register, and uses 
+enable_irq() and disable_irq() instead. The probe code has become a lot 
+cleaner as a result.
 
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
----
- arch/m68k/atari/ataints.c |   81 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 81 insertions(+), 0 deletions(-)
+Defering interrupt enable until HCD start callback time is still necessary 
+though - if interrups are enabled when the handler is registered from 
+usb_hcd_add, the dead interrupt watchdog fires and disables the interrupt 
+again. This may be a result of the handler returning IRQ_NONE if the chip 
+hasn't been started yet - I need to look into that. 
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index 2cf7349..bb06c17 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -49,6 +49,7 @@
- #include <asm/atari_stdma.h>
- #include <asm/irq.h>
- #include <asm/entry.h>
-+#include <asm/io.h>
- 
- 
- /*
-@@ -177,6 +178,79 @@ static struct irq_chip atari_mfptimer_chip = {
- 	.irq_disable	= atari_mfptimer_disable,
- };
- 
-+
-+/*
-+ * EtherNAT CPLD interrupt handling
-+ * CPLD interrupt register is at phys. 0x80000023
-+ * Need this mapped in at interrupt startup time
-+ * Possibly need this mapped on demand anyway -
-+ * EtherNAT USB driver needs to disable IRQ before
-+ * startup! 
-+ */
-+
-+static unsigned char *enat_cpld;
-+
-+static unsigned int atari_ethernat_startup(struct irq_data *data)
-+{
-+	int enat_num = 140 - data->irq + 1;
-+
-+	m68k_irq_startup(data);
-+	/*
-+	* map CPLD interrupt register
-+	*/
-+	if (!enat_cpld)
-+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
-+	/*
-+	 * do _not_ enable the USB chip interrupt here - causes interrupt storm
-+	 * and triggers dead interrupt watchdog
-+	 * Need to reset the USB chip to a sane state in early startup before removing this hack
-+	 */
-+	if (enat_num == 1)
-+		*enat_cpld |= 1 << enat_num;
-+
-+	return 0;
-+}
-+
-+static void atari_ethernat_enable(struct irq_data *data)
-+{
-+	int enat_num = 140 - data->irq + 1;
-+	/*
-+	* map CPLD interrupt register
-+	*/
-+	if (!enat_cpld)
-+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
-+	*enat_cpld |= 1 << enat_num;
-+}
-+
-+static void atari_ethernat_disable(struct irq_data *data)
-+{
-+	int enat_num = 140 - data->irq + 1;
-+	/*
-+	* map CPLD interrupt register
-+	*/
-+	if (!enat_cpld)
-+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
-+	*enat_cpld &= ~(1 << enat_num);
-+}
-+
-+static void atari_ethernat_shutdown(struct irq_data *data)
-+{
-+	int enat_num = 140 - data->irq + 1;
-+	if (enat_cpld) {
-+		*enat_cpld &= ~(1 << enat_num);
-+		iounmap(enat_cpld);
-+		enat_cpld = NULL;
-+	}
-+}
-+
-+static struct irq_chip atari_ethernat_chip = {
-+	.name		= "ethernat",
-+	.irq_startup	= atari_ethernat_startup,
-+	.irq_shutdown	= atari_ethernat_shutdown,
-+	.irq_enable	= atari_ethernat_enable,
-+	.irq_disable	= atari_ethernat_disable,
-+};
-+
- /*
-  * void atari_init_IRQ (void)
-  *
-@@ -268,6 +342,13 @@ void __init atari_init_IRQ(void)
- 	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
- 			stmfp_base.name, &stmfp_base))
- 		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
-+
-+	/*
-+	 * EtherNAT ethernet / USB interrupt handlers
-+	 */
-+
-+	m68k_setup_irq_controller(&atari_ethernat_chip, handle_simple_irq,
-+				  139, 2);
- }
- 
- 
--- 
-1.7.0.4
+01/12 m68k/atari: ROM port ISA adapter support
+02/12 m68k/irq: Add handle_polled_irq() for timer based soft interrupts
+03/12 m68k/atari: use dedicated irq_chip for timer D interrupts
+04/12 m68k/atari: use polled interrupt handler for timer D interrupts
+05/12 m68k/atari: EtherNAT - platform device and IRQ support code
+06/12 m68k/atari: EtherNEC - add platform device support
+07/12 m68k/atari: EtherNAT - ethernet support - new driver (smc91x)
+08/12 m68k/atari: EtherNEC - ethernet support - new driver (ne.c)
+09/12 m68k/atari: EtherNAT - add interrupt chip definition for CPLD interrupts
+10/12 m68k: Implement ndelay() based on the existing udelay() logic
+11/12 m68k/atari: USB - add platform devices for EtherNAT/NetUSBee ISP1160 HCD
+12/12 m68k/atari: USB - add ISP1160 USB host controller support
+
+Cheers,
+
+	Michael
