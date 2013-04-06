@@ -1,175 +1,78 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 07/12] m68k/atari: EtherNAT - ethernet support - new driver (smc91x)
-Date: Sat,  6 Apr 2013 13:26:41 +1300
-Message-ID: <1365208006-16227-8-git-send-email-schmitz@debian.org>
-References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH v4, part3 24/41] mm/m68k: prepare for removing num_physpages and simplify mem_init()
+Date: Sat,  6 Apr 2013 22:32:23 +0800
+Message-ID: <1365258760-30821-25-git-send-email-jiang.liu@huawei.com>
+References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f175.google.com ([209.85.192.175]:33871 "EHLO
-	mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1163102Ab3DFA1V (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:21 -0400
-Received: by mail-pd0-f175.google.com with SMTP id g10so2040278pdj.34
-        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:20 -0700 (PDT)
-In-Reply-To: <1365208006-16227-1-git-send-email-schmitz@debian.org>
+In-Reply-To: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
 
-Add Atari specific code to the smc91x Ethernet driver. This code is used
-on the EtherNAT adapter card for the Atari Falcon extension port.
+Prepare for removing num_physpages and simplify mem_init().
 
-Without the patch to smc91x.h, the first two bytes of every ethernet packet
-sent out are swapped, resulting in a wrong MAC address being read by the
-packet's target, and failure to establish communication.
-
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
 ---
- arch/m68k/Kconfig.devices          |   10 ++++++
- drivers/net/ethernet/smsc/Kconfig  |    4 +-
- drivers/net/ethernet/smsc/smc91x.h |   63 ++++++++++++++++++++++++++++++++++-
- 3 files changed, 73 insertions(+), 4 deletions(-)
+ arch/m68k/mm/init.c |   31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-index 4bc945d..d50ecbf 100644
---- a/arch/m68k/Kconfig.devices
-+++ b/arch/m68k/Kconfig.devices
-@@ -55,6 +55,16 @@ config NFETH
- 	  which will emulate a regular ethernet device while presenting an
- 	  ethertap device to the host system.
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 2485a8c..0723141 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -149,33 +149,11 @@ void __init print_memmap(void)
+ void __init mem_init(void)
+ {
+ 	pg_data_t *pgdat;
+-	int codepages = 0;
+-	int datapages = 0;
+-	int initpages = 0;
+ 	int i;
  
-+config ATARI_ETHERNAT
-+	bool "Atari EtherNAT Ethernet support"
-+	depends on ATARI
-+	---help---
-+	  Say Y to include support for the EtherNAT network adapter for the
-+	  CT/60 extension port.
-+
-+	  To compile the actual ethernet driver, choose Y or M for the SMC91X
-+	  option in the network device section; the module will be called smc91x.
-+
- endmenu
+ 	/* this will put all memory onto the freelists */
+-	num_physpages = 0;
+-	for_each_online_pgdat(pgdat) {
+-		num_physpages += pgdat->node_present_pages;
+-
++	for_each_online_pgdat(pgdat)
+ 		free_all_bootmem_node(pgdat);
+-		for (i = 0; i < pgdat->node_spanned_pages; i++) {
+-			struct page *page = pgdat->node_mem_map + i;
+-			char *addr = page_to_virt(page);
+-
+-			if (!PageReserved(page))
+-				continue;
+-			if (addr >= _text &&
+-			    addr < _etext)
+-				codepages++;
+-			else if (addr >= __init_begin &&
+-				 addr < __init_end)
+-				initpages++;
+-			else
+-				datapages++;
+-		}
+-	}
  
- menu "Character devices"
-diff --git a/drivers/net/ethernet/smsc/Kconfig b/drivers/net/ethernet/smsc/Kconfig
-index 5a689af..d3485cf 100644
---- a/drivers/net/ethernet/smsc/Kconfig
-+++ b/drivers/net/ethernet/smsc/Kconfig
-@@ -6,7 +6,7 @@ config NET_VENDOR_SMSC
- 	bool "SMC (SMSC)/Western Digital devices"
- 	default y
- 	depends on ARM || ISA || MAC || ARM || MIPS || M32R || SUPERH || \
--		BLACKFIN || MN10300 || COLDFIRE || PCI || PCMCIA
-+		BLACKFIN || MN10300 || COLDFIRE || PCI || PCMCIA || ATARI
- 	---help---
- 	  If you have a network (Ethernet) card belonging to this class, say Y
- 	  and read the Ethernet-HOWTO, available from
-@@ -40,7 +40,7 @@ config SMC91X
- 	select NET_CORE
- 	select MII
- 	depends on (ARM || M32R || SUPERH || MIPS || BLACKFIN || \
--		    MN10300 || COLDFIRE)
-+		    MN10300 || COLDFIRE || ATARI_ETHERNAT)
- 	---help---
- 	  This is a driver for SMC's 91x series of Ethernet chipsets,
- 	  including the SMC91C94 and the SMC91C111. Say Y if you want it
-diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
-index 370e13d..528f7ba 100644
---- a/drivers/net/ethernet/smsc/smc91x.h
-+++ b/drivers/net/ethernet/smsc/smc91x.h
-@@ -231,6 +231,30 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
+ #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
+ 	/* insert pointer tables allocated so far into the tablelist */
+@@ -190,12 +168,7 @@ void __init mem_init(void)
+ 		init_pointer_table((unsigned long)zero_pgtable);
+ #endif
  
- #include <unit/smc91111.h>
+-	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10),
+-	       totalram_pages << (PAGE_SHIFT-10),
+-	       codepages << (PAGE_SHIFT-10),
+-	       datapages << (PAGE_SHIFT-10),
+-	       initpages << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	print_memmap();
+ }
  
-+#elif defined(CONFIG_ATARI)
-+
-+#define SMC_CAN_USE_8BIT        1
-+#define SMC_CAN_USE_16BIT       1
-+#define SMC_CAN_USE_32BIT       1
-+#define SMC_NOWAIT              1
-+
-+#define writew_be(val, addr) out_be16((addr), (val))
-+
-+#define SMC_inb(a, r)           readb((a) + (r))
-+#define SMC_inw(a, r)           readw((a) + (r))
-+#define SMC_inl(a, r)           readl((a) + (r))
-+#define SMC_outb(v, a, r)       writeb(v, (a) + (r))
-+#define SMC_outw(v, a, r)       writew(v, (a) + (r))
-+#define SMC_outw_be(v, a, r)    writew_be(v, (a) + (r))
-+#define SMC_outl(v, a, r)       writel(v, (a) + (r))
-+#define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
-+#define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
-+#define SMC_insl(a, r, p, l)    readsl((a) + (r), p, l)
-+#define SMC_outsl(a, r, p, l)   writesl((a) + (r), p, l)
-+
-+#define RPC_LSA_DEFAULT         RPC_LED_100_10
-+#define RPC_LSB_DEFAULT         RPC_LED_TX_RX
-+
- #elif defined(CONFIG_ARCH_MSM)
- 
- #define SMC_CAN_USE_8BIT	0
-@@ -1116,6 +1140,40 @@ static const char * chip_ids[ 16 ] =  {
- 		}							\
- 	} while (0)
- 
-+#if defined(CONFIG_ATARI)
-+/*
-+ * MSch: EtherNAT is 32 bit, so the misaligned data buffer hack applies.
-+ * This appears to hurt quite a lot ... we actually need to byte swap the
-+ * misaligned write because the data end up in the packet buffer swapped
-+ * otherwise (resulting in the first two bytes of the target MAC address
-+ * being swapped)
-+ */
-+#define SMC_PUSH_DATA(lp, p, l)					\
-+	do {								\
-+		if (SMC_32BIT(lp)) {				\
-+			void *__ptr = (p);				\
-+			int __len = (l);				\
-+			void __iomem *__ioaddr = ioaddr;		\
-+			if (__len >= 2 && (unsigned long)__ptr & 2) {	\
-+				__len -= 2;				\
-+				SMC_outw_be(*(u16 *)__ptr, ioaddr,	\
-+					DATA_REG(lp));		\
-+				__ptr += 2;				\
-+			}						\
-+			if (SMC_CAN_USE_DATACS && lp->datacs)		\
-+				__ioaddr = lp->datacs;			\
-+			SMC_outsl(__ioaddr, DATA_REG(lp), __ptr, __len>>2); \
-+			if (__len & 2) {				\
-+				__ptr += (__len & ~3);			\
-+				SMC_outw_be(*((u16 *)__ptr), ioaddr,	\
-+					 DATA_REG(lp));		\
-+			}						\
-+		} else if (SMC_16BIT(lp))				\
-+			SMC_outsw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1); \
-+		else if (SMC_8BIT(lp))				\
-+			SMC_outsb(ioaddr, DATA_REG(lp), p, l);	\
-+	} while (0)
-+#else
- #define SMC_PUSH_DATA(lp, p, l)					\
- 	do {								\
- 		if (SMC_32BIT(lp)) {				\
-@@ -1137,10 +1195,11 @@ static const char * chip_ids[ 16 ] =  {
- 					 DATA_REG(lp));		\
- 			}						\
- 		} else if (SMC_16BIT(lp))				\
--			SMC_outsw(ioaddr, DATA_REG(lp), p, (l) >> 1);	\
-+			SMC_outsw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1);	\
- 		else if (SMC_8BIT(lp))				\
- 			SMC_outsb(ioaddr, DATA_REG(lp), p, l);	\
- 	} while (0)
-+#endif
- 
- #define SMC_PULL_DATA(lp, p, l)					\
- 	do {								\
-@@ -1172,7 +1231,7 @@ static const char * chip_ids[ 16 ] =  {
- 			__len += 2;					\
- 			SMC_insl(__ioaddr, DATA_REG(lp), __ptr, __len>>2); \
- 		} else if (SMC_16BIT(lp))				\
--			SMC_insw(ioaddr, DATA_REG(lp), p, (l) >> 1);	\
-+			SMC_insw(ioaddr, DATA_REG(lp), (u16 *) p, (l) >> 1);	\
- 		else if (SMC_8BIT(lp))				\
- 			SMC_insb(ioaddr, DATA_REG(lp), p, l);		\
- 	} while (0)
 -- 
-1.7.0.4
+1.7.9.5
