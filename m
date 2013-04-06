@@ -1,34 +1,96 @@
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: m68k build regression
-Date: Fri, 5 Apr 2013 10:39:58 +0000
-Message-ID: <1365158496.626.28.camel@sauron.fi.intel.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 06/12] m68k/atari: EtherNEC - add platform device support
+Date: Sat,  6 Apr 2013 13:26:40 +1300
+Message-ID: <1365208006-16227-7-git-send-email-schmitz@debian.org>
+References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Language: en-US
-Content-ID: <0FFA432C30E2C0439E655F56276F0262@intel.com>
+Received: from mail-pd0-f180.google.com ([209.85.192.180]:62717 "EHLO
+	mail-pd0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1163102Ab3DFA1T (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:19 -0400
+Received: by mail-pd0-f180.google.com with SMTP id q11so2254080pdj.25
+        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:19 -0700 (PDT)
+In-Reply-To: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Grant Likely <grant.likely@secretlab.ca>, Linus Walleij <linus.walleij@linaro.org>
+To: geert@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
 
-SGksDQoNCnN0YXJ0aW5nIGZyb20gMy45LXJjMSBvbmUgb2YgbXkgbTY4ayBjb25maWd1cmF0aW9u
-cyBkb2VzIG5vdCBidWlsZCwNCndoaWNoIGlzIGEgcmVncmVzc2lvbi4gVGhlIGNvbmZpZ3VyYXRp
-b24gaXMgYXR0YWNoZWQuIEkgYnVpbGQgd2l0aA0KVz0xLiBJIGRpZCBub3QgbG9vayBhdCB0aGUg
-ZGV0YWlscywganVzdCBzaG9vdGluZyBhIGJ1ZyByZXBvcnQuDQoNCmRyaXZlcnMvZ3Bpby9kZXZy
-ZXMuYzogSW4gZnVuY3Rpb24gJ2Rldm1fZ3Bpb19yZXF1ZXN0X29uZSc6DQpkcml2ZXJzL2dwaW8v
-ZGV2cmVzLmM6OTA6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICdn
-cGlvX3JlcXVlc3Rfb25lJyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0N
-CmNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0KbWFrZVszXTogKioq
-IFtkcml2ZXJzL2dwaW8vZGV2cmVzLm9dIEVycm9yIDENCg0KVGhhbmtzIQ0KDQotLSANCkJlc3Qg
-UmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBGaW5sYW5kIE95
-ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAwMDE4MSBIZWxzaW5raSAKQnVzaW5lc3MgSWRl
-bnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWljaWxlZCBpbiBIZWxzaW5raSAKClRoaXMgZS1t
-YWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFs
-IGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmll
-dyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlv
-dSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5k
-ZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
+Add platform device for the Atari ROM port ethernet adapter, EtherNEC.
+This platform device will be used by the ne.c driver.
+
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+---
+ arch/m68k/atari/config.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 50 insertions(+), 0 deletions(-)
+
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index d35e89d..fdcd875 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -694,6 +694,41 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
+ 	&smc91x_device
+ };
+ 
++/*
++ * EtherNEC: RTL8019 (NE2000 compatible) Ethernet chipset,
++ * handled by ne.c driver
++ */
++
++#define ATARI_ETHERNEC_PHYS_ADDR	0xfffa0000
++#define ATARI_ETHERNEC_BASE		0x300
++#define ATARI_ETHERNEC_IRQ		IRQ_MFP_TIMER1
++
++static struct resource rtl8019_resources[] = {
++	[0] = {
++		.name	= "rtl8019-regs",
++		.start	= ATARI_ETHERNEC_BASE,
++		.end	= ATARI_ETHERNEC_BASE + 0x20 - 1,
++		.flags	= IORESOURCE_IO,
++	},
++	[1] = {
++		.name	= "rtl8019-irq",
++		.start	= ATARI_ETHERNEC_IRQ,
++		.end	= ATARI_ETHERNEC_IRQ,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device rtl8019_device = {
++	.name		= "ne",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(rtl8019_resources),
++	.resource	= rtl8019_resources,
++};
++
++static struct platform_device *atari_ethernec_devices[] __initdata = {
++	&rtl8019_device
++};
++
+ int __init atari_platform_init(void)
+ {
+ 	int rv = 0;
+@@ -713,6 +748,21 @@ int __init atari_platform_init(void)
+ 	}
+ #endif
+ 
++#ifdef CONFIG_ATARI_ETHERNEC
++	{
++		int error;
++		unsigned char *enec_virt;
++		enec_virt = (unsigned char *)ioremap((ATARI_ETHERNEC_PHYS_ADDR), 0xf);
++		if (hwreg_present(enec_virt)) {
++			error = platform_add_devices(atari_ethernec_devices,
++						ARRAY_SIZE(atari_ethernec_devices));
++			if (error && !rv)
++				rv = error;
++		}
++		iounmap(enec_virt);
++	}
++#endif
++
+ 	return rv;
+ }
+ 
+-- 
+1.7.0.4
