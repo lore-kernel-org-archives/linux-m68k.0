@@ -1,49 +1,81 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
-Date: Sat,  6 Apr 2013 13:26:34 +1300
-Message-ID: <1365208006-16227-1-git-send-email-schmitz@debian.org>
+Subject: [PATCH 08/12] m68k/atari: EtherNEC - ethernet support - new driver (ne.c)
+Date: Sat,  6 Apr 2013 13:26:42 +1300
+Message-ID: <1365208006-16227-9-git-send-email-schmitz@debian.org>
+References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f42.google.com ([209.85.160.42]:39111 "EHLO
-	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1163082Ab3DFA1B (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:01 -0400
-Received: by mail-pb0-f42.google.com with SMTP id up7so2257683pbc.29
-        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:01 -0700 (PDT)
+Received: from mail-da0-f49.google.com ([209.85.210.49]:56067 "EHLO
+	mail-da0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1163104Ab3DFA1W (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:22 -0400
+Received: by mail-da0-f49.google.com with SMTP id t11so1802764daj.36
+        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:21 -0700 (PDT)
+In-Reply-To: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
 
-Hi Geert,
+Support for Atari EtherNEC ROM port adapters in ne.c
 
-here's my rewrite of the Atari patch series for upstream submission - 
-the only changes are to patches 9 and 12. 
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+---
+ arch/m68k/Kconfig.devices         |   14 ++++++++++++++
+ drivers/net/ethernet/8390/Kconfig |    3 ++-
+ drivers/net/ethernet/8390/ne.c    |    2 ++
+ 3 files changed, 18 insertions(+), 1 deletions(-)
 
-The USB patch no longer disables the chip interrupt in the interrupt 
-handler - it turns out this wasn't necessary at all. It also does away 
-with direct writes to the EtherNAT interrupt control register, and uses 
-enable_irq() and disable_irq() instead. The probe code has become a lot 
-cleaner as a result.
-
-Defering interrupt enable until HCD start callback time is still necessary 
-though - if interrups are enabled when the handler is registered from 
-usb_hcd_add, the dead interrupt watchdog fires and disables the interrupt 
-again. This may be a result of the handler returning IRQ_NONE if the chip 
-hasn't been started yet - I need to look into that. 
-
-01/12 m68k/atari: ROM port ISA adapter support
-02/12 m68k/irq: Add handle_polled_irq() for timer based soft interrupts
-03/12 m68k/atari: use dedicated irq_chip for timer D interrupts
-04/12 m68k/atari: use polled interrupt handler for timer D interrupts
-05/12 m68k/atari: EtherNAT - platform device and IRQ support code
-06/12 m68k/atari: EtherNEC - add platform device support
-07/12 m68k/atari: EtherNAT - ethernet support - new driver (smc91x)
-08/12 m68k/atari: EtherNEC - ethernet support - new driver (ne.c)
-09/12 m68k/atari: EtherNAT - add interrupt chip definition for CPLD interrupts
-10/12 m68k: Implement ndelay() based on the existing udelay() logic
-11/12 m68k/atari: USB - add platform devices for EtherNAT/NetUSBee ISP1160 HCD
-12/12 m68k/atari: USB - add ISP1160 USB host controller support
-
-Cheers,
-
-	Michael
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+index d50ecbf..d163991 100644
+--- a/arch/m68k/Kconfig.devices
++++ b/arch/m68k/Kconfig.devices
+@@ -65,6 +65,20 @@ config ATARI_ETHERNAT
+ 	  To compile the actual ethernet driver, choose Y or M for the SMC91X
+ 	  option in the network device section; the module will be called smc91x.
+ 
++config ATARI_ETHERNEC
++	bool "Atari EtherNEC Ethernet support"
++	depends on ATARI_ROM_ISA
++	---help---
++	  Say Y to include support for the EtherNEC network adapter for the
++	  ROM port. The driver works by polling instead of interrupts, so it
++	  is quite slow.
++
++	  This driver also suppports the ethernet part of the NetUSBee ROM
++	  port combined Ethernet/USB adapter.
++
++	  To compile the actual ethernet driver, choose Y or M in for the NE2000
++	  option in the network device section; the module will be called ne.
++
+ endmenu
+ 
+ menu "Character devices"
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index a5f91e1..53abc78 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -91,7 +91,8 @@ config MCF8390
+ 
+ config NE2000
+ 	tristate "NE2000/NE1000 support"
+-	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
++	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX || \
++		    ATARI_ETHERNEC)
+ 	select CRC32
+ 	---help---
+ 	  If you have a network (Ethernet) card of this type, say Y and read
+diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
+index 47618e5..49948f6 100644
+--- a/drivers/net/ethernet/8390/ne.c
++++ b/drivers/net/ethernet/8390/ne.c
+@@ -166,6 +166,8 @@ bad_clone_list[] __initdata = {
+ #elif defined(CONFIG_PLAT_OAKS32R)  || \
+    defined(CONFIG_MACH_TX49XX)
+ #  define DCR_VAL 0x48		/* 8-bit mode */
++#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
++#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
+ #else
+ #  define DCR_VAL 0x49
+ #endif
+-- 
+1.7.0.4
