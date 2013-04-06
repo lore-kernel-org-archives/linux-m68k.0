@@ -1,137 +1,161 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 03/12] m68k/atari: use dedicated irq_chip for timer D interrupts
-Date: Sat,  6 Apr 2013 13:26:37 +1300
-Message-ID: <1365208006-16227-4-git-send-email-schmitz@debian.org>
+Subject: [PATCH 05/12] m68k/atari: EtherNAT - platform device and IRQ support code
+Date: Sat,  6 Apr 2013 13:26:39 +1300
+Message-ID: <1365208006-16227-6-git-send-email-schmitz@debian.org>
 References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f48.google.com ([209.85.160.48]:34396 "EHLO
-	mail-pb0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1163082Ab3DFA1Q (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:16 -0400
-Received: by mail-pb0-f48.google.com with SMTP id xb4so2257162pbc.21
-        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:16 -0700 (PDT)
+Received: from mail-pd0-f181.google.com ([209.85.192.181]:33960 "EHLO
+	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1163082Ab3DFA1S (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Apr 2013 20:27:18 -0400
+Received: by mail-pd0-f181.google.com with SMTP id y10so2248681pdj.26
+        for <linux-m68k@vger.kernel.org>; Fri, 05 Apr 2013 17:27:18 -0700 (PDT)
 In-Reply-To: <1365208006-16227-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org
 Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
 
-Add a special irq_chip for the Atari MFP timer D interrupt,
-which is used as a polling timer for EtherNEC and NetUSBee
+Add platform device and interrupt definitions necessary for the EtherNAT
+Ethernet/USB adapter for the Falcon extension port. EtherNAT interrupt
+numbers are 139/140 so the max. interrupt number for Atari has to be
+increased.
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- arch/m68k/atari/ataints.c         |   70 +++++++++++++++++++++++++++++++++++++
- arch/m68k/include/asm/atariints.h |    9 +++++
- 2 files changed, 79 insertions(+), 0 deletions(-)
+ arch/m68k/atari/config.c          |   62 +++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/atarihw.h   |    6 +++
+ arch/m68k/include/asm/atariints.h |    2 +-
+ arch/m68k/include/asm/irq.h       |    6 +++-
+ 4 files changed, 74 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index 3f41092..f699c82 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -122,6 +122,62 @@ static struct irq_chip atari_irq_chip = {
- };
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 037c11c..d35e89d 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -31,6 +31,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/ioport.h>
++#include <linux/platform_device.h>
+ #include <linux/vt_kern.h>
+ #include <linux/module.h>
  
- /*
-+ * ST-MFP timer D chained interrupts - each driver gets its own timer
-+ * interrupt instance.
-+ */
-+
-+struct mfptimerbase {
-+	volatile struct MFP *mfp;
-+	unsigned char mfp_mask, mfp_data;
-+	unsigned short int_mask;
-+	int handler_irq, mfptimer_irq, server_irq;
-+	char *name;
-+} stmfp_base = {
-+	.mfp		= &st_mfp,
-+	.int_mask	= 0x0,
-+	.handler_irq	= IRQ_MFP_TIMD,
-+	.mfptimer_irq	= IRQ_MFP_TIMER1,
-+	.name		= "MFP Timer D"
-+};
-+
-+static irqreturn_t mfptimer_handler(int irq, void *dev_id)
-+{
-+	struct mfptimerbase *base = dev_id;
-+	int mach_irq;
-+	unsigned char ints;
-+
-+	mach_irq = base->mfptimer_irq;
-+	ints = base->int_mask;
-+	for (; ints; mach_irq++, ints >>= 1) {
-+		if (ints & 1)
-+			generic_handle_irq(mach_irq);
-+	}
-+	return IRQ_HANDLED;
-+}
-+
-+
-+static void atari_mfptimer_enable(struct irq_data *data)
-+{
-+	int mfp_num = data->irq - IRQ_MFP_TIMER1;
-+	stmfp_base.int_mask |= 1 << mfp_num;
-+	atari_enable_irq(IRQ_MFP_TIMD);
-+}
-+
-+static void atari_mfptimer_disable(struct irq_data *data)
-+{
-+	int mfp_num = data->irq - IRQ_MFP_TIMER1;
-+	stmfp_base.int_mask &= ~(1 << mfp_num);
-+	if (!stmfp_base.int_mask)
-+		atari_disable_irq(IRQ_MFP_TIMD);
-+}
-+
-+static struct irq_chip atari_mfptimer_chip = {
-+	.name		= "timer_d",
-+	.irq_enable	= atari_mfptimer_enable,
-+	.irq_disable	= atari_mfptimer_disable,
-+};
+@@ -655,3 +656,64 @@ static void atari_get_hardware_list(struct seq_file *m)
+ 	ATARIHW_ANNOUNCE(VME, "VME Bus");
+ 	ATARIHW_ANNOUNCE(DSP56K, "DSP56001 processor");
+ }
 +
 +/*
-  * void atari_init_IRQ (void)
-  *
-  * Parameters:	None
-@@ -198,6 +254,20 @@ void __init atari_init_IRQ(void)
- 	/* Initialize the PSG: all sounds off, both ports output */
- 	sound_ym.rd_data_reg_sel = 7;
- 	sound_ym.wd_data = 0xff;
++ * MSch: initial platform device support for Atari,
++ * required for EtherNAT/EtherNEC/NetUSBee drivers
++ */
 +
-+	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
-+				  IRQ_MFP_TIMER1, 8);
++/*
++ * EtherNAT: SMC91C111 Ethernet chipset, handled by smc91x driver
++ */
 +
-+	/* prepare timer D data for use as poll interrupt */
-+	/* set Timer D data Register - needs to be > 0 */
-+	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
-+	/* start timer D, div = 1:100 */
-+	st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
++#define ATARI_ETHERNAT_IRQ		140
 +
-+	/* request timer D dispatch handler */
-+	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
-+			stmfp_base.name, &stmfp_base))
-+		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
- }
++static struct resource smc91x_resources[] = {
++	[0] = {
++		.name	= "smc91x-regs",
++		.start	= ATARI_ETHERNAT_PHYS_ADDR,
++		.end	= ATARI_ETHERNAT_PHYS_ADDR + 0xfffff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.name	= "smc91x-irq",
++		.start	= ATARI_ETHERNAT_IRQ,
++		.end	= ATARI_ETHERNAT_IRQ,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device smc91x_device = {
++	.name		= "smc91x",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(smc91x_resources),
++	.resource	= smc91x_resources,
++};
++
++static struct platform_device *atari_ethernat_devices[] __initdata = {
++	&smc91x_device
++};
++
++int __init atari_platform_init(void)
++{
++	int rv = 0;
++
++	if (!MACH_IS_ATARI)
++		return -ENODEV;
++
++#ifdef CONFIG_ATARI_ETHERNAT
++	{
++		unsigned char *enatc_virt;
++		enatc_virt = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0xf);
++		if (hwreg_present(enatc_virt)) {
++			rv = platform_add_devices(atari_ethernat_devices,
++						ARRAY_SIZE(atari_ethernat_devices));
++		}
++		iounmap(enatc_virt);
++	}
++#endif
++
++	return rv;
++}
++
++arch_initcall(atari_platform_init);
+diff --git a/arch/m68k/include/asm/atarihw.h b/arch/m68k/include/asm/atarihw.h
+index c0cb363..d887050 100644
+--- a/arch/m68k/include/asm/atarihw.h
++++ b/arch/m68k/include/asm/atarihw.h
+@@ -805,5 +805,11 @@ struct MSTE_RTC {
  
+ #define mste_rtc ((*(volatile struct MSTE_RTC *)MSTE_RTC_BAS))
+ 
++/*
++** EtherNAT add-on card for Falcon - combined ethernet and USB adapter
++*/
++
++#define ATARI_ETHERNAT_PHYS_ADDR	0x80000000
++
+ #endif /* linux/atarihw.h */
  
 diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
-index 5fc13bd..8f71504 100644
+index 8f71504..953e0ac 100644
 --- a/arch/m68k/include/asm/atariints.h
 +++ b/arch/m68k/include/asm/atariints.h
-@@ -94,6 +94,15 @@
- #define IRQ_SCCA_RX	     (52)
- #define IRQ_SCCA_SPCOND	     (54)
+@@ -32,7 +32,7 @@
+ #define VME_SOURCE_BASE    56
+ #define VME_MAX_SOURCES    16
  
-+/* shared MFP timer D interrupts - hires timer for EtherNEC et al. */
-+#define IRQ_MFP_TIMER1       (64)
-+#define IRQ_MFP_TIMER2       (65)
-+#define IRQ_MFP_TIMER3       (66)
-+#define IRQ_MFP_TIMER4       (67)
-+#define IRQ_MFP_TIMER5       (68)
-+#define IRQ_MFP_TIMER6       (69)
-+#define IRQ_MFP_TIMER7       (70)
-+#define IRQ_MFP_TIMER8       (71)
+-#define NUM_ATARI_SOURCES   (VME_SOURCE_BASE+VME_MAX_SOURCES-STMFP_SOURCE_BASE)
++#define NUM_ATARI_SOURCES  141
  
- #define INT_CLK   24576	    /* CLK while int_clk =2.456MHz and divide = 100 */
- #define INT_TICKS 246	    /* to make sched_time = 99.902... HZ */
+ /* convert vector number to int source number */
+ #define IRQ_VECTOR_TO_SOURCE(v)	((v) - ((v) < 0x20 ? 0x18 : (0x40-8)))
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index c1155f0..81ca118 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -6,12 +6,16 @@
+  * different m68k hosts compiled into the kernel.
+  * Currently the Atari has 72 and the Amiga 24, but if both are
+  * supported in the kernel it is better to make room for 72.
++ * With EtherNAT add-on card on Atari, the highest interrupt
++ * number is 140 so NR_IRQS needs to be 141.
+  */
+ #if defined(CONFIG_COLDFIRE)
+ #define NR_IRQS 256
+ #elif defined(CONFIG_VME) || defined(CONFIG_SUN3) || defined(CONFIG_SUN3X)
+ #define NR_IRQS 200
+-#elif defined(CONFIG_ATARI) || defined(CONFIG_MAC)
++#elif defined(CONFIG_ATARI)
++#define NR_IRQS 141
++#elif defined(CONFIG_MAC)
+ #define NR_IRQS 72
+ #elif defined(CONFIG_Q40)
+ #define NR_IRQS	43
 -- 
 1.7.0.4
