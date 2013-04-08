@@ -1,86 +1,101 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH v4, part3 24/41] mm/m68k: prepare for removing num_physpages
- and simplify mem_init()
-Date: Mon, 08 Apr 2013 11:34:10 +1000
-Message-ID: <51621E92.10400__38316.4449748167$1365403794$gmane$org@uclinux.org>
-References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com> <1365258760-30821-25-git-send-email-jiang.liu@huawei.com>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: m68k build regression
+Date: Mon, 08 Apr 2013 14:32:25 +1000
+Message-ID: <51624859.4030502@westnet.com.au>
+References: <1365158496.626.28.camel@sauron.fi.intel.com> <CACRpkdatu5e0eJ0W_LG5AqzK5g01+BCr2EMeaEsU14WyMO9rzA@mail.gmail.com> <515F07D5.5020905@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1365258760-30821-25-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <515F07D5.5020905@nvidia.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jiang Liu <liuj97@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Alex Courbot <acourbot@nvidia.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, "Bityutskiy, Artem" <artem.bityutskiy@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Grant Likely <grant.likely@secretlab.ca>, Jonas Bonn <jonas@southpole.se>
 
-On 07/04/13 00:32, Jiang Liu wrote:
-> Prepare for removing num_physpages and simplify mem_init().
+On 06/04/13 03:20, Alex Courbot wrote:
+> On 04/05/2013 07:49 AM, Linus Walleij wrote:
+>> On Fri, Apr 5, 2013 at 12:39 PM, Bityutskiy, Artem
+>> <artem.bityutskiy@intel.com> wrote:
+>>
+>>> starting from 3.9-rc1 one of my m68k configurations does not build,
+>>> which is a regression. The configuration is attached. I build with
+>>> W=1. I did not look at the details, just shooting a bug report.
+>>>
+>>> drivers/gpio/devres.c: In function 'devm_gpio_request_one':
+>>> drivers/gpio/devres.c:90:2: error: implicit declaration of function 'gpio_request_one' [-Werror=implicit-function-declaration]
+>>> cc1: some warnings being treated as errors
+>>> make[3]: *** [drivers/gpio/devres.o] Error 1
+>>
+>> Somehow GPIO_DEVRES get selected,
+>> m68k is using GENERIC_GPIO but not GPIOLIB, so
+>> devres.c include <linux/gpio.h> which includes <asm/gpio.h>
+>> as the arch has CONFIG_ARCH_HAVE_CUSTOM_GPIO_H.
+>>
+>> So to use the devres facility arch/m68k/include/asm/gpio.h
+>> needs to provide gpio_request_one().
+>>
+>> Which it doesn't and thus fails.
+>>
+>> Did some driver you're using start to use
+>> devm_gpio_request_one() recently?
+>>
+>> I vaguely remember Alexandre looking into things like this
+>> so adding him...
 > 
-> Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Greg Ungerer <gerg@uclinux.org>
-
-Acked-by: Greg Ungerer <gerg@uclinux.org
-
-
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/m68k/mm/init.c |   31 ++-----------------------------
->  1 file changed, 2 insertions(+), 29 deletions(-)
+> I know OpenRisc had an issue with devres.c (CC Jonas), please look at commit d4cb776f for the fix. I don't think my changes for 3.9 are responsible for this, they only deal with gpiolib's internals and not with header files, so they should be noop for platforms only using GENERIC_GPIO.
 > 
-> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-> index 2485a8c..0723141 100644
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -149,33 +149,11 @@ void __init print_memmap(void)
->  void __init mem_init(void)
->  {
->  	pg_data_t *pgdat;
-> -	int codepages = 0;
-> -	int datapages = 0;
-> -	int initpages = 0;
->  	int i;
->  
->  	/* this will put all memory onto the freelists */
-> -	num_physpages = 0;
-> -	for_each_online_pgdat(pgdat) {
-> -		num_physpages += pgdat->node_present_pages;
-> -
-> +	for_each_online_pgdat(pgdat)
->  		free_all_bootmem_node(pgdat);
-> -		for (i = 0; i < pgdat->node_spanned_pages; i++) {
-> -			struct page *page = pgdat->node_mem_map + i;
-> -			char *addr = page_to_virt(page);
-> -
-> -			if (!PageReserved(page))
-> -				continue;
-> -			if (addr >= _text &&
-> -			    addr < _etext)
-> -				codepages++;
-> -			else if (addr >= __init_begin &&
-> -				 addr < __init_end)
-> -				initpages++;
-> -			else
-> -				datapages++;
-> -		}
-> -	}
->  
->  #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
->  	/* insert pointer tables allocated so far into the tablelist */
-> @@ -190,12 +168,7 @@ void __init mem_init(void)
->  		init_pointer_table((unsigned long)zero_pgtable);
->  #endif
->  
-> -	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
-> -	       nr_free_pages() << (PAGE_SHIFT-10),
-> -	       totalram_pages << (PAGE_SHIFT-10),
-> -	       codepages << (PAGE_SHIFT-10),
-> -	       datapages << (PAGE_SHIFT-10),
-> -	       initpages << (PAGE_SHIFT-10));
-> +	mem_init_print_info(NULL);
->  	print_memmap();
->  }
->  
-> 
+> I'd recommend doing the same as OpenRisc (turning GENERIC_GPIO and ARCH_WANT_OPTIONAL_GPIOLIB into ARCH_REQUIRE_GPIOLIB), anyway GENERIC_GPIO is being removed for 3.10, so you better get used to using gpiolib from now on. :)
+
+Or we could fix like this, keeping the existing local functions
+intact for this one last kernel version.
+
+Regards
+Greg
+
+
+
+[PATCH] m68k: define a local gpio_request_one() function
+
+Compiling for linux-3.9-rc1 and later fails with:
+
+drivers/gpio/devres.c: In function 'devm_gpio_request_one':
+drivers/gpio/devres.c:90:2: error: implicit declaration of function 'gpio_request_one' [-Werror=implicit-function-declaration]
+
+So provide a local gpio_request_one() function. Code largely borrowed from
+blackfin's local gpio_request_one() function.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/gpio.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.h
+index 4395ffc..8cc8343 100644
+--- a/arch/m68k/include/asm/gpio.h
++++ b/arch/m68k/include/asm/gpio.h
+@@ -86,4 +86,24 @@ static inline int gpio_cansleep(unsigned gpio)
+ 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
+ }
+ 
++static inline int gpio_request_one(unsigned gpio, unsigned long flags, const char *label)
++{
++	int err;
++
++	err = gpio_request(gpio, label);
++	if (err)
++		return err;
++
++	if (flags & GPIOF_DIR_IN)
++		err = gpio_direction_input(gpio);
++	else
++		err = gpio_direction_output(gpio,
++			(flags & GPIOF_INIT_HIGH) ? 1 : 0);
++
++	if (err)
++		gpio_free(gpio);
++
++	return err;
++}
++
+ #endif
