@@ -1,80 +1,86 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: gcc 4.1.2 miscompiling 64-bit mask operations
-Date: Sun, 7 Apr 2013 10:18:23 +0200
-Message-ID: <CAMuHMdXzCTe6KLcLqu7=38V5yZCF=Z=9b7OzLeqC+jVdFiiYnw@mail.gmail.com>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH v4, part3 24/41] mm/m68k: prepare for removing num_physpages
+ and simplify mem_init()
+Date: Mon, 08 Apr 2013 11:34:10 +1000
+Message-ID: <51621E92.10400__38316.4449748167$1365403794$gmane$org@uclinux.org>
+References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com> <1365258760-30821-25-git-send-email-jiang.liu@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ie0-f171.google.com ([209.85.223.171]:49969 "EHLO
-	mail-ie0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1161584Ab3DGISY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Apr 2013 04:18:24 -0400
-Received: by mail-ie0-f171.google.com with SMTP id e14so5825133iej.30
-        for <linux-m68k@vger.kernel.org>; Sun, 07 Apr 2013 01:18:23 -0700 (PDT)
+In-Reply-To: <1365258760-30821-25-git-send-email-jiang.liu@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Jiang Liu <liuj97@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Recently I noticed this odd assembler warning when compiling using my
-good old cross
-toolchain based on gcc version 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21):
+On 07/04/13 00:32, Jiang Liu wrote:
+> Prepare for removing num_physpages and simplify mem_init().
+> 
+> Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Greg Ungerer <gerg@uclinux.org>
 
-  CC      fs/ext4/extents_status.o
-{standard input}: Assembler messages:
-{standard input}:666: Warning: expression out of range: defaulting to 0
+Acked-by: Greg Ungerer <gerg@uclinux.org
 
-The offending line is:
 
-        bfins %d1,-8(%fp){#4:#60}       | tmp63, newes.es_pblk,,
-
-where the "#60" is invalid, as bitfield widths are limited to 32 bits.
-
-This was generated from the 64-bit mask operation in the following C code:
-
-static inline void ext4_es_store_pblock(struct extent_status *es,
-                                        ext4_fsblk_t pb)
-{
-        ext4_fsblk_t block; /* unsigned long long */
-
-        block = (pb & ~EXTENT_STATUS_FLAGS) |
-                (es->es_pblk & EXTENT_STATUS_FLAGS);
-        es->es_pblk = block;
-}
-
-Using gcc 4.6.3, the bug is not present, as it avoids emitting bfins
-instructions.
-
-JFYI, gcc 4.6.3 generates bigger code than 4.1.2:
-
--Linux version 3.9.0-rc5-atari-00740-gbb55db0-dirty (geert@ayla) (gcc version 4.
-1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)) #1048 Sat Apr 6 13:37:34 CEST 2013
-+Linux version 3.9.0-rc5-atari-00741-gcfb7cca-dirty (geert@ayla) (gcc version 4.
-6.3 (GCC) ) #1050 Sat Apr 6 21:15:54 CEST 2013
-
--Memory: 268464k/268464k available (2728k kernel code, 5152k data, 144k init)
-+Memory: 268348k/268348k available (2864k kernel code, 5144k data, 132k init)
- Virtual kernel memory layout:
--    vector  : 0x0036ce8c - 0x0036d28c   (   1 KiB)
-+    vector  : 0x0038ce2c - 0x0038d22c   (   1 KiB)
-     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
-     vmalloc : 0x11800000 - 0xd0000000   (3048 MiB)
-     lowmem  : 0x00000000 - 0x11000000   ( 272 MiB)
--      .init : 0x00393000 - 0x003b7000   ( 144 KiB)
--      .text : 0x00001000 - 0x002aa9d4   (2727 KiB)
--      .data : 0x002ad7a8 - 0x00392148   ( 915 KiB)
--      .bss  : 0x0036cc60 - 0x00392148   ( 150 KiB)
-+      .init : 0x003b3000 - 0x003d4000   ( 132 KiB)
-+      .text : 0x00001000 - 0x002cc08e   (2861 KiB)
-+      .data : 0x002ceef8 - 0x003b20e8   ( 909 KiB)
-+      .bss  : 0x0038cc00 - 0x003b20e8   ( 150 KiB)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/m68k/mm/init.c |   31 ++-----------------------------
+>  1 file changed, 2 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+> index 2485a8c..0723141 100644
+> --- a/arch/m68k/mm/init.c
+> +++ b/arch/m68k/mm/init.c
+> @@ -149,33 +149,11 @@ void __init print_memmap(void)
+>  void __init mem_init(void)
+>  {
+>  	pg_data_t *pgdat;
+> -	int codepages = 0;
+> -	int datapages = 0;
+> -	int initpages = 0;
+>  	int i;
+>  
+>  	/* this will put all memory onto the freelists */
+> -	num_physpages = 0;
+> -	for_each_online_pgdat(pgdat) {
+> -		num_physpages += pgdat->node_present_pages;
+> -
+> +	for_each_online_pgdat(pgdat)
+>  		free_all_bootmem_node(pgdat);
+> -		for (i = 0; i < pgdat->node_spanned_pages; i++) {
+> -			struct page *page = pgdat->node_mem_map + i;
+> -			char *addr = page_to_virt(page);
+> -
+> -			if (!PageReserved(page))
+> -				continue;
+> -			if (addr >= _text &&
+> -			    addr < _etext)
+> -				codepages++;
+> -			else if (addr >= __init_begin &&
+> -				 addr < __init_end)
+> -				initpages++;
+> -			else
+> -				datapages++;
+> -		}
+> -	}
+>  
+>  #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
+>  	/* insert pointer tables allocated so far into the tablelist */
+> @@ -190,12 +168,7 @@ void __init mem_init(void)
+>  		init_pointer_table((unsigned long)zero_pgtable);
+>  #endif
+>  
+> -	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
+> -	       nr_free_pages() << (PAGE_SHIFT-10),
+> -	       totalram_pages << (PAGE_SHIFT-10),
+> -	       codepages << (PAGE_SHIFT-10),
+> -	       datapages << (PAGE_SHIFT-10),
+> -	       initpages << (PAGE_SHIFT-10));
+> +	mem_init_print_info(NULL);
+>  	print_memmap();
+>  }
+>  
+> 
