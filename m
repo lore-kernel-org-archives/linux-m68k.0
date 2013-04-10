@@ -1,112 +1,75 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
-Date: Wed, 10 Apr 2013 09:41:05 +1200
-Message-ID: <CAOmrzkK9igQScFoujYsnmBAf1mTGUvwqsEat48MyrsVGt99vWg@mail.gmail.com>
-References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
-	<CAMuHMdVv_EAsRUV9FRLmnR5DzaBmW9dPABiMMpuc43G0anMKxw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/RFC] m68k: Add -ffreestanding to KBUILD_CFLAGS
+Date: Wed, 10 Apr 2013 11:24:39 +0200
+Message-ID: <1365585879-5321-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-we0-f182.google.com ([74.125.82.182]:56605 "EHLO
-	mail-we0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934470Ab3DIVlH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Apr 2013 17:41:07 -0400
-Received: by mail-we0-f182.google.com with SMTP id k14so5869863wer.27
-        for <linux-m68k@vger.kernel.org>; Tue, 09 Apr 2013 14:41:06 -0700 (PDT)
-In-Reply-To: <CAMuHMdVv_EAsRUV9FRLmnR5DzaBmW9dPABiMMpuc43G0anMKxw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Geert,
+Without -ffreestanding, gcc may replace calls to standard C library
+functions by calls to other standard C library functions and/or inline
+code.  This may cause link errors if the replacement code calls a standard
+C library function that's implemented as a macro in the kernel.
 
-trying again as plain text ...
+E.g. gcc turned
 
->
-> On Sat, Apr 6, 2013 at 2:26 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> > here's my rewrite of the Atari patch series for upstream submission -
-> > the only changes are to patches 9 and 12.
-> >
-> > The USB patch no longer disables the chip interrupt in the interrupt
-> > handler - it turns out this wasn't necessary at all. It also does away
-> > with direct writes to the EtherNAT interrupt control register, and uses
-> > enable_irq() and disable_irq() instead. The probe code has become a lot
-> > cleaner as a result.
->
-> Thanks, I applied all of them, with some minor changes:
->   - Changed one instance of ATARI to ATARI_ETHERNAT in
->     drivers/net/ethernet/smsc/Kconfig, for consistency,
->   - Split too long comments,
->   - Made platform device structures and isp1160_delay() in
->     arch/m68k/atari/config.c depend on the appropriate CONFIG_* symbols, else
->     you get unused warnings from the compiler if CONFIG_ETHERNAT and/or
->     CONFIG_ETHERNEC are not set.
->
+    strncat(name, "%d", 2);
 
-Thanks, that's perfect!
+into a call to strlen() and a 16-bit store, causing a link failure, as
+arch/m68k/include/asm/string.h provides strlen() using a macro:
 
->
-> I also updated your old series for the m68k master branch to the
-> latest corresponding
-> version for upstream, so master == m68k-queue.
->
+    ERROR: "strlen" [net/ipv4/ip_tunnel.ko] undefined!
 
- Much appreciated! I'll look forward to pulling this back and
-resolving the differences now.
+In addition, this saves ca. 64 bytes of text on a typical kernel build.
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+http://kisskb.ellerman.id.au/kisskb/buildresult/8462108/
 
-> Please send the patches for drivers/net and drivers/usb to the net resp. usb
-> mailing lists, to collects acks and comments.
+QUESTION: Should we re-enable -ffreestanding in the main Makefile instead?
 
+It was removed in
 
-Will do that ASAP!
+commit 6edfba1b33c701108717f4e036320fc39abe1912
+Author: Andi Kleen <ak@suse.de>
+Date:   Sat Mar 25 16:29:49 2006 +0100
 
-Thanks,
+    [PATCH] x86_64: Don't define string functions to builtin
 
-    Michael
+    gcc should handle this anyways, and it causes problems when
+    sprintf is turned into strcpy by gcc behind our backs and
+    the C fallback version of strcpy is actually defining __builtin_strcpy
 
+    Then drop -ffreestanding from the main Makefile because it isn't
+    needed anymore and implies -fno-builtin, which is wrong now.
+    (it was only added for x86-64, so dropping it should be safe)
 
+    Noticed by Roman Zippel
 
-On Wed, Apr 10, 2013 at 8:55 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Hi Michael,
->
-> On Sat, Apr 6, 2013 at 2:26 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->> here's my rewrite of the Atari patch series for upstream submission -
->> the only changes are to patches 9 and 12.
->>
->> The USB patch no longer disables the chip interrupt in the interrupt
->> handler - it turns out this wasn't necessary at all. It also does away
->> with direct writes to the EtherNAT interrupt control register, and uses
->> enable_irq() and disable_irq() instead. The probe code has become a lot
->> cleaner as a result.
->
-> Thanks, I applied all of them, with some minor changes:
->   - Changed one instance of ATARI to ATARI_ETHERNAT in
->     drivers/net/ethernet/smsc/Kconfig, for consistency,
->   - Split too long comments,
->   - Made platform device structures and isp1160_delay() in
->     arch/m68k/atari/config.c depend on the appropriate CONFIG_* symbols, else
->     you get unused warnings from the compiler if CONFIG_ETHERNAT and/or
->     CONFIG_ETHERNEC are not set.
->
-> I also updated your old series for the m68k master branch to the
-> latest corresponding
-> version for upstream, so master == m68k-queue.
->
-> Please send the patches for drivers/net and drivers/usb to the net resp. usb
-> mailing lists, to collects acks and comments.
->
-> Thanks again!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+    Cc: Roman Zippel <zippel@linux-m68k.org>
+    Signed-off-by: Andi Kleen <ak@suse.de>
+    Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+
+Subsequently, it got re-enabled for mips, sh, x86-32, um/x86, xtensa, and
+score.
+
+ arch/m68k/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index 2f02acf..8e06a38 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -58,7 +58,7 @@ cpuflags-$(CONFIG_M5206e)	:= $(call cc-option,-mcpu=5206e,-m5200)
+ cpuflags-$(CONFIG_M5206)	:= $(call cc-option,-mcpu=5206,-m5200)
+ 
+ KBUILD_AFLAGS += $(cpuflags-y)
+-KBUILD_CFLAGS += $(cpuflags-y) -pipe
++KBUILD_CFLAGS += $(cpuflags-y) -pipe -ffreestanding
+ ifdef CONFIG_MMU
+ # without -fno-strength-reduce the 53c7xx.c driver fails ;-(
+ KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
+-- 
+1.7.0.4
