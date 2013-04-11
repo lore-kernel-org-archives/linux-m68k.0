@@ -1,7 +1,7 @@
 From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 12/26] hp_sdc_rtc: Don't use create_proc_read_entry() [RFC]
-Date: Thu, 11 Apr 2013 14:29:16 +0100
-Message-ID: <20130411132916.32763.83802.stgit@warthog.procyon.org.uk>
+Subject: [PATCH 11/26] nubus: Don't use create_proc_read_entry() [RFC]
+Date: Thu, 11 Apr 2013 14:29:09 +0100
+Message-ID: <20130411132909.32763.97657.stgit@warthog.procyon.org.uk>
 References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -10,163 +10,235 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, "Brian S. Julin" <bri@calyx.com>, viro@ZenIV.linux.org.uk, Helge Deller <deller@gmx.de>
+Cc: linux-m68k@vger.kernel.org, viro@ZenIV.linux.org.uk
 List-Id: linux-m68k@vger.kernel.org
 
 Don't use create_proc_read_entry() as that is deprecated, but rather use
 proc_create_data() and seq_file instead.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Brian S. Julin <bri@calyx.com>
-cc: Helge Deller <deller@gmx.de>
 cc: linux-m68k@lists.linux-m68k.org
 ---
 
- drivers/input/misc/hp_sdc_rtc.c |   58 +++++++++++++++++----------------------
- 1 file changed, 26 insertions(+), 32 deletions(-)
+ drivers/nubus/nubus.c |   55 ---------------------------------
+ drivers/nubus/proc.c  |   81 ++++++++++++++++++++++++++++++++++++++++++++++---
+ include/linux/nubus.h |    4 ++
+ 3 files changed, 80 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/input/misc/hp_sdc_rtc.c b/drivers/input/misc/hp_sdc_rtc.c
-index 2e3334b..770479d 100644
---- a/drivers/input/misc/hp_sdc_rtc.c
-+++ b/drivers/input/misc/hp_sdc_rtc.c
-@@ -41,6 +41,7 @@
- #include <linux/time.h>
- #include <linux/miscdevice.h>
- #include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
- #include <linux/poll.h>
- #include <linux/rtc.h>
- #include <linux/mutex.h>
-@@ -74,9 +75,6 @@ static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait);
- static int hp_sdc_rtc_open(struct inode *inode, struct file *file);
- static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on);
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index 44d01af..43926cd 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -19,7 +19,6 @@
+ #include <asm/setup.h>
+ #include <asm/page.h>
+ #include <asm/hwtest.h>
+-#include <linux/proc_fs.h>
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
  
--static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
--				int count, int *eof, void *data);
+@@ -954,56 +953,6 @@ void __init nubus_probe_slot(int slot)
+ 	}
+ }
+ 
+-#if defined(CONFIG_PROC_FS)
 -
- static void hp_sdc_rtc_isr (int irq, void *dev_id, 
- 			    uint8_t status, uint8_t data) 
- {
-@@ -427,22 +425,19 @@ static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on)
-         return fasync_helper (fd, filp, on, &hp_sdc_rtc_async_queue);
- }
- 
--static int hp_sdc_rtc_proc_output (char *buf)
-+static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
- {
- #define YN(bit) ("no")
- #define NY(bit) ("yes")
--        char *p;
-         struct rtc_time tm;
- 	struct timeval tv;
- 
- 	memset(&tm, 0, sizeof(struct rtc_time));
- 
--	p = buf;
+-/* /proc/nubus stuff */
 -
- 	if (hp_sdc_rtc_read_bbrtc(&tm)) {
--		p += sprintf(p, "BBRTC\t\t: READ FAILED!\n");
-+		seq_puts(m, "BBRTC\t\t: READ FAILED!\n");
- 	} else {
--		p += sprintf(p,
-+		seq_printf(m,
- 			     "rtc_time\t: %02d:%02d:%02d\n"
- 			     "rtc_date\t: %04d-%02d-%02d\n"
- 			     "rtc_epoch\t: %04lu\n",
-@@ -452,41 +447,41 @@ static int hp_sdc_rtc_proc_output (char *buf)
- 	}
- 
- 	if (hp_sdc_rtc_read_rt(&tv)) {
--		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
-+		seq_puts(m, "i8042 rtc\t: READ FAILED!\n");
- 	} else {
--		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
-+		seq_printf(m, "i8042 rtc\t: %ld.%02d seconds\n", 
- 			     tv.tv_sec, (int)tv.tv_usec/1000);
- 	}
- 
- 	if (hp_sdc_rtc_read_fhs(&tv)) {
--		p += sprintf(p, "handshake\t: READ FAILED!\n");
-+		seq_puts(m, "handshake\t: READ FAILED!\n");
- 	} else {
--        	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
-+        	seq_printf(m, "handshake\t: %ld.%02d seconds\n", 
- 			     tv.tv_sec, (int)tv.tv_usec/1000);
- 	}
- 
- 	if (hp_sdc_rtc_read_mt(&tv)) {
--		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
-+		seq_puts(m, "alarm\t\t: READ FAILED!\n");
- 	} else {
--		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
-+		seq_printf(m, "alarm\t\t: %ld.%02d seconds\n", 
- 			     tv.tv_sec, (int)tv.tv_usec/1000);
- 	}
- 
- 	if (hp_sdc_rtc_read_dt(&tv)) {
--		p += sprintf(p, "delay\t\t: READ FAILED!\n");
-+		seq_puts(m, "delay\t\t: READ FAILED!\n");
- 	} else {
--		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
-+		seq_printf(m, "delay\t\t: %ld.%02d seconds\n", 
- 			     tv.tv_sec, (int)tv.tv_usec/1000);
- 	}
- 
- 	if (hp_sdc_rtc_read_ct(&tv)) {
--		p += sprintf(p, "periodic\t: READ FAILED!\n");
-+		seq_puts(m, "periodic\t: READ FAILED!\n");
- 	} else {
--		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
-+		seq_printf(m, "periodic\t: %ld.%02d seconds\n", 
- 			     tv.tv_sec, (int)tv.tv_usec/1000);
- 	}
- 
--        p += sprintf(p,
-+        seq_printf(m,
-                      "DST_enable\t: %s\n"
-                      "BCD\t\t: %s\n"
-                      "24hr\t\t: %s\n"
-@@ -506,23 +501,23 @@ static int hp_sdc_rtc_proc_output (char *buf)
-                      1UL,
-                      1 ? "okay" : "dead");
- 
--        return  p - buf;
-+        return 0;
- #undef YN
- #undef NY
- }
- 
--static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
--                         int count, int *eof, void *data)
-+static int hp_sdc_rtc_proc_open(struct inode *inode, struct file *file)
+-static int sprint_nubus_board(struct nubus_board* board, char* ptr, int len)
+-{
+-	if(len < 100)
+-		return -1;
+-	
+-	sprintf(ptr, "Slot %X: %s\n",
+-		board->slot, board->name);
+-	
+-	return strlen(ptr);
+-}
+-
+-static int nubus_read_proc(char *page, char **start, off_t off,
+-				int count, int *eof, void *data)
+-{
+-	int nprinted, len, begin = 0;
+-	int size = PAGE_SIZE;
+-	struct nubus_board* board;
+-	
+-	len   = sprintf(page, "Nubus devices found:\n");
+-	/* Walk the list of NuBus boards */
+-	for (board = nubus_boards; board != NULL; board = board->next)
+-	{
+-		nprinted = sprint_nubus_board(board, page + len, size - len);
+-		if (nprinted < 0)
+-			break;
+-		len += nprinted;
+-		if (len+begin < off) {
+-			begin += len;
+-			len = 0;
+-		}
+-		if (len+begin >= off+count)
+-			break;
+-	}
+-	if (len+begin < off)
+-		*eof = 1;
+-	off -= begin;
+-	*start = page + off;
+-	len -= off;
+-	if (len>count)
+-		len = count;
+-	if (len<0)
+-		len = 0;
+-	return len;
+-}
+-#endif
+-
+ void __init nubus_scan_bus(void)
  {
--	int len = hp_sdc_rtc_proc_output (page);
--        if (len <= off+count) *eof = 1;
--        *start = page + off;
--        len -= off;
--        if (len>count) len = count;
--        if (len<0) len = 0;
--        return len;
-+	return single_open(file, hp_sdc_rtc_proc_show, NULL);
+ 	int slot;
+@@ -1041,11 +990,7 @@ static int __init nubus_init(void)
+ 	nubus_devices = NULL;
+ 	nubus_boards  = NULL;
+ 	nubus_scan_bus();
+-
+-#ifdef CONFIG_PROC_FS
+-	create_proc_read_entry("nubus", 0, NULL, nubus_read_proc, NULL);
+ 	nubus_proc_init();
+-#endif
+ 	return 0;
  }
  
-+static const struct file_operations hp_sdc_rtc_proc_fops = {
-+	.open		= hp_sdc_rtc_proc_open,
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index bb1446b..b8286ed 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -52,7 +52,6 @@ static int nubus_devices_proc_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations nubus_devices_proc_fops = {
+-	.owner		= THIS_MODULE,
+ 	.open		= nubus_devices_proc_open,
+ 	.read		= seq_read,
+ 	.llseek		= seq_lseek,
+@@ -61,6 +60,10 @@ static const struct file_operations nubus_devices_proc_fops = {
+ 
+ static struct proc_dir_entry *proc_bus_nubus_dir;
+ 
++static const struct file_operations nubus_proc_subdir_fops = {
++#warning Need to set some I/O handlers here
++};
++
+ static void nubus_proc_subdir(struct nubus_dev* dev,
+ 			      struct proc_dir_entry* parent,
+ 			      struct nubus_dir* dir)
+@@ -73,10 +76,10 @@ static void nubus_proc_subdir(struct nubus_dev* dev,
+ 		struct proc_dir_entry* e;
+ 		
+ 		sprintf(name, "%x", ent.type);
+-#warning Need to set some I/O handlers here
+-		e = create_proc_read_entry(name, S_IFREG | S_IRUGO | S_IWUSR,
+-					   parent, NULL, NULL);
+-		if (!e) return;
++		e = proc_create(name, S_IFREG | S_IRUGO | S_IWUSR, parent,
++				&nubus_proc_subdir_fops);
++		if (!e)
++			return;
+ 	}
+ }
+ 
+@@ -159,6 +162,73 @@ int nubus_proc_detach_device(struct nubus_dev *dev)
+ }
+ EXPORT_SYMBOL(nubus_proc_detach_device);
+ 
++/*
++ * /proc/nubus stuff
++ */
++static int nubus_proc_show(struct seq_file *m, void *v)
++{
++	const struct nubus_board *board = v;
++
++	/* Display header on line 1 */
++	if (v == SEQ_START_TOKEN)
++		seq_puts(m, "Nubus devices found:\n");
++	else
++		seq_printf(m, "Slot %X: %s\n", board->slot, board->name);
++	return 0;
++}
++
++static void *nubus_proc_start(struct seq_file *m, loff_t *_pos)
++{
++	struct nubus_board *board;
++	unsigned pos;
++
++	if (*_pos > LONG_MAX)
++		return NULL;
++	pos = *_pos;
++	if (pos == 0)
++		return SEQ_START_TOKEN;
++	for (board = nubus_boards; board; board = board->next)
++		if (--pos == 0)
++			break;
++	return board;
++}
++
++static void *nubus_proc_next(struct seq_file *p, void *v, loff_t *_pos)
++{
++	/* Walk the list of NuBus boards */
++	struct nubus_board *board = v;
++
++	++*_pos;
++	if (v == SEQ_START_TOKEN)
++		board = nubus_boards;
++	else if (board)
++		board = board->next;
++	return board;
++}
++
++static void nubus_proc_stop(struct seq_file *p, void *v)
++{
++}
++
++static const struct seq_operations nubus_proc_seqops = {
++	.start	= nubus_proc_start,
++	.next	= nubus_proc_next,
++	.stop	= nubus_proc_stop,
++	.show	= nubus_proc_show,
++};
++
++static int nubus_proc_open(struct inode *inode, struct file *file)
++{
++	return seq_open(file, &nubus_proc_seqops);
++}
++
++static const struct file_operations nubus_proc_fops = {
++	.open		= nubus_proc_open,
 +	.read		= seq_read,
 +	.llseek		= seq_lseek,
 +	.release	= seq_release,
 +};
 +
- static int hp_sdc_rtc_ioctl(struct file *file, 
- 			    unsigned int cmd, unsigned long arg)
+ void __init proc_bus_nubus_add_devices(void)
  {
-@@ -715,8 +710,7 @@ static int __init hp_sdc_rtc_init(void)
- 	if (misc_register(&hp_sdc_rtc_dev) != 0)
- 		printk(KERN_INFO "Could not register misc. dev for i8042 rtc\n");
+ 	struct nubus_dev *dev;
+@@ -169,6 +239,7 @@ void __init proc_bus_nubus_add_devices(void)
  
--        create_proc_read_entry ("driver/rtc", 0, NULL,
--				hp_sdc_rtc_read_proc, NULL);
-+        proc_create("driver/rtc", 0, NULL, &hp_sdc_rtc_proc_fops);
+ void __init nubus_proc_init(void)
+ {
++	proc_create("nubus", 0, NULL, &nubus_proc_fops);
+ 	if (!MACH_IS_MAC)
+ 		return;
+ 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index a8696bb..b374052 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -80,7 +80,11 @@ extern struct nubus_board* nubus_boards;
  
- 	printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support loaded "
- 			 "(RTC v " RTC_VERSION ")\n");
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+ void nubus_scan_bus(void);
++#ifdef CONFIG_PROC_FS
+ extern void nubus_proc_init(void);
++#else
++static inline void nubus_proc_init(void) {}
++#endif
+ int get_nubus_list(char *buf);
+ int nubus_proc_attach_device(struct nubus_dev *dev);
+ int nubus_proc_detach_device(struct nubus_dev *dev);
