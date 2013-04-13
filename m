@@ -1,45 +1,44 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 3.9
-Date: Sat, 13 Apr 2013 17:45:46 +1000
-Message-ID: <201304130745.r3D7jkPf013634@goober.accelcon.com>
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [RFC PATCH v1 05/19] mm/m68k: prepare for killing free_all_bootmem_node()
+Date: Sat, 13 Apr 2013 23:36:25 +0800
+Message-ID: <1365867399-21323-6-git-send-email-jiang.liu__30399.9755917632$1365867694$gmane$org@huawei.com>
+References: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas05p.mx.bigpond.com ([61.9.189.149]:62904 "EHLO
-	nschwmtas05p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752482Ab3DMHrs (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 13 Apr 2013 03:47:48 -0400
+In-Reply-To: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Andrew Morton <akpm@linux-foundation.org>, Yinghai Lu <yinghai@kernel.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
 
-Hi Linus,
+Prepare for killing free_all_bootmem_node() by using
+free_all_bootmem().
 
-Can you please pull the m68knommu git tree, for-linus branch.
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/m68k/mm/init.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-It contains only a single compilation fix for ColdFire m68k targets
-that use local non-GPIOLIB support.
-
-Regards
-Greg
-
-
-
-The following changes since commit 31880c37c11e28cb81c70757e38392b42e695dc6:
-
-  Linux 3.9-rc6 (2013-04-07 20:49:54 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-for you to fetch changes up to b2dfaa8d33cee9dd4ed78979f5d70063df546101:
-
-  m68k: define a local gpio_request_one() function (2013-04-09 15:15:31 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68k: define a local gpio_request_one() function
-
- arch/m68k/include/asm/gpio.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 0723141..20d0ae2 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -148,12 +148,10 @@ void __init print_memmap(void)
+ 
+ void __init mem_init(void)
+ {
+-	pg_data_t *pgdat;
+ 	int i;
+ 
+ 	/* this will put all memory onto the freelists */
+-	for_each_online_pgdat(pgdat)
+-		free_all_bootmem_node(pgdat);
++	free_all_bootmem();
+ 
+ #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
+ 	/* insert pointer tables allocated so far into the tablelist */
+-- 
+1.7.9.5
