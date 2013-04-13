@@ -1,92 +1,45 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC] m68k: Add -ffreestanding to KBUILD_CFLAGS
-Date: Fri, 12 Apr 2013 21:47:46 +0200
-Message-ID: <CAMuHMdXTKTVb_QLUn3xuA0tMThxC1mR331jU4O11dG4rNyWzRw__37161.5961929367$1365796092$gmane$org@mail.gmail.com>
-References: <1365585879-5321-1-git-send-email-geert@linux-m68k.org>
-	<51653C5D.4060408@suse.cz>
-	<CAMuHMdXEvLMz5rRjQrhENxJ6UHRnPCtzyNg=hqitspuY88G7sA@mail.gmail.com>
-	<20130410122611.GB17541@sepie.suse.cz>
-	<CAMuHMdUHiiBEZm7eFYtL3PqCXF6PjscbFKjiJ33BEwQ+YLKOXQ@mail.gmail.com>
-	<20130410152229.GC17541@sepie.suse.cz>
-	<CAMuHMdXJWo=R28rexHJZGof==CgEa0gbC3yr18iPs-tAkv2FZQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 3.9
+Date: Sat, 13 Apr 2013 17:45:46 +1000
+Message-ID: <201304130745.r3D7jkPf013634@goober.accelcon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXJWo=R28rexHJZGof==CgEa0gbC3yr18iPs-tAkv2FZQ@mail.gmail.com>
+Received: from nschwmtas05p.mx.bigpond.com ([61.9.189.149]:62904 "EHLO
+	nschwmtas05p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752482Ab3DMHrs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 13 Apr 2013 03:47:48 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michal Marek <mmarek@suse.cz>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andi Kleen <andi@firstfloor.org>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-On Thu, Apr 11, 2013 at 8:04 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Wed, Apr 10, 2013 at 5:22 PM, Michal Marek <mmarek@suse.cz> wrote:
->> Subject: [PATCH] m68k: Remove inline strlen() implementation
->>
->> GCC can replace a strncat() call with constant second argument into a
->> strlen + store, which results in a link error:
->>
->> ERROR: "strlen" [net/ipv4/ip_tunnel.ko] undefined!
->>
->> The inline function is a simple for loop in C. Other architectures
->> either use an asm optimized variant, or use the generic function from
->> lib/string.c.
->>
->> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Signed-off-by: Michal Marek <mmarek@suse.cz>
->
-> Thanks, this one works. Let me do some measurements...
+Hi Linus,
 
-No visible impact on size for a typical build; the increase in .text
-is offset by
-the decrease in .data:
+Can you please pull the m68knommu git tree, for-linus branch.
 
--      .text : 0x00001000 - 0x002aab64   (2727 KiB)
--      .data : 0x002ad938 - 0x00392148   ( 915 KiB)
-+      .text : 0x00001000 - 0x002aac74   (2728 KiB)
-+      .data : 0x002ada48 - 0x00392148   ( 914 KiB)
+It contains only a single compilation fix for ColdFire m68k targets
+that use local non-GPIOLIB support.
 
-On Wed, Apr 10, 2013 at 5:22 PM, Michal Marek <mmarek@suse.cz> wrote:
-> On Wed, Apr 10, 2013 at 04:19:14PM +0200, Geert Uytterhoeven wrote:
->> Thanks for the patch, but modpost still fails with
->>
->> ERROR: "strlen" [net/ipv4/ip_tunnel.ko] undefined!
->
-> OK OK, I am convinced. Then how about this? If you prefer speed over
-> size, the the other option is to add
->
-> size_t strlen(const char *s)
-> {
->        return __kernel_strlen(s);
-> }
-> EXPORT_SYMBOL(strlen);
->
-> to arch/m68k/lib/string.c.
+Regards
+Greg
 
-Interestingly, this also doesn't work. It turns out none of the
-symbols defined in
-this file (currently strcpy and strcat) end up in vmlinux.
 
-As we've been stripping code from string.c, we've been left with just
-a few symbols
-that are typically never referenced, so the whole string.o in
-arch/m68k/lib/lib.a
-is not included in the final vmlinux.
 
-So more stringectomy to do...
+The following changes since commit 31880c37c11e28cb81c70757e38392b42e695dc6:
 
-> On a related note, arch/m68k/lib/string.c is
-> built only in the CONFIG_MMU case, whereas asm/string.h is shared.
+  Linux 3.9-rc6 (2013-04-07 20:49:54 -0700)
 
-So due to the above, this difference is mostly moot ;-)
+are available in the git repository at:
 
-Gr{oetje,eeting}s,
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
 
-                        Geert
+for you to fetch changes up to b2dfaa8d33cee9dd4ed78979f5d70063df546101:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+  m68k: define a local gpio_request_one() function (2013-04-09 15:15:31 +1000)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68k: define a local gpio_request_one() function
+
+ arch/m68k/include/asm/gpio.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
