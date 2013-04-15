@@ -1,63 +1,28 @@
-From: Jiang Liu <liuj97@gmail.com>
-Subject: [RFC PATCH v1 17/19] mm/m68k: fix build warning of unused variable
-Date: Sat, 13 Apr 2013 23:36:37 +0800
-Message-ID: <1365867399-21323-18-git-send-email-jiang.liu__26425.0371641994$1365867901$gmane$org@huawei.com>
-References: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
+From: "Sonia Fung" <skfung@caos.iisc.ernet.in>
+Subject: N/A
+Date: Mon, 15 Apr 2013 22:40:24 +0630
+Message-ID: <20130415144838.M1002__47428.5501907163$1366055388$gmane$org@caos.iisc.ernet.in>
+Reply-To: skfung188@outlook.com
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1365867399-21323-1-git-send-email-jiang.liu@huawei.com>
+Received: from relay.iisc.ernet.in ([203.200.35.65]:43261 "EHLO
+	relay.iisc.ernet.in" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934335Ab3DOTt1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Apr 2013 15:49:27 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Yinghai Lu <yinghai@kernel.org>
-Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, linux-m68k@lists.linux-m68k.org
 
-Fix build warning of unused variable:
-arch/m68k/mm/init.c: In function 'mem_init':
-arch/m68k/mm/init.c:151:6: warning: unused variable 'i' [-Wunused-variable]
+Good day! I am Sonia Fung from Singapore and i am contacting you for a  
+prospective and lucrative business proposal which i will like you to partner 
+with me, more details and information will be shared once upon your email 
+acknowledgement.
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/m68k/mm/init.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Thank you,
+Sonia.
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 20d0ae2..e4cb0af 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -146,14 +146,11 @@ void __init print_memmap(void)
- 		MLK_ROUNDUP(__bss_start, __bss_stop));
- }
- 
--void __init mem_init(void)
-+static inline void init_pointer_tables(void)
- {
-+#if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	int i;
- 
--	/* this will put all memory onto the freelists */
--	free_all_bootmem();
--
--#if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	/* insert pointer tables allocated so far into the tablelist */
- 	init_pointer_table((unsigned long)kernel_pg_dir);
- 	for (i = 0; i < PTRS_PER_PGD; i++) {
-@@ -165,7 +162,13 @@ void __init mem_init(void)
- 	if (zero_pgtable)
- 		init_pointer_table((unsigned long)zero_pgtable);
- #endif
-+}
- 
-+void __init mem_init(void)
-+{
-+	/* this will put all memory onto the freelists */
-+	free_all_bootmem();
-+	init_pointer_tables();
- 	mem_init_print_info(NULL);
- 	print_memmap();
- }
 -- 
-1.7.9.5
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
