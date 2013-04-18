@@ -1,48 +1,99 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
-Date: Wed, 17 Apr 2013 10:01:52 +0200
-Message-ID: <CAMuHMdU8svz=FsCDDdn6PXwAOzUdfLSg8DbsD97sTOsS4Qoj8Q@mail.gmail.com>
-References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
-	<CAMuHMdVv_EAsRUV9FRLmnR5DzaBmW9dPABiMMpuc43G0anMKxw@mail.gmail.com>
-	<CAMuHMdV=KmLpwFF24sPr7PXdHJd2_K=LFRjdMORYp4TWwHR7Cg@mail.gmail.com>
-	<516E52F4.1020008@gmail.com>
+Subject: Re: [PATCH 1/2] lib: Add lz4 compressor module
+Date: Thu, 18 Apr 2013 11:50:08 +0200
+Message-ID: <CAMuHMdXXoaQjb9sRK=X3gEDwqQBJcJQtaJbUGB8cJmteHSN3vQ@mail.gmail.com>
+References: <CAOAMb1D8rokZpQpp6mEJw6KXcQq8fJUWBJoC5+ZfkNaE6WvAZA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ie0-f170.google.com ([209.85.223.170]:62880 "EHLO
-	mail-ie0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S965703Ab3DQIBx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 17 Apr 2013 04:01:53 -0400
-Received: by mail-ie0-f170.google.com with SMTP id c11so1607335ieb.1
-        for <linux-m68k@vger.kernel.org>; Wed, 17 Apr 2013 01:01:53 -0700 (PDT)
-In-Reply-To: <516E52F4.1020008@gmail.com>
+Received: from mail-ia0-f174.google.com ([209.85.210.174]:57995 "EHLO
+	mail-ia0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751119Ab3DRJuJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Apr 2013 05:50:09 -0400
+In-Reply-To: <CAOAMb1D8rokZpQpp6mEJw6KXcQq8fJUWBJoC5+ZfkNaE6WvAZA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Chanho Min <chanho.min@lge.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Darrick J. Wong" <djwong@us.ibm.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Herbert Xu <herbert@gondor.apana.org.au>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, Kyungsik Lee <kyungsik.lee@lge.com>, Chanho Min <chanho0207@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-Next <linux-next@vger.kernel.org>
 
-Hi Michael,
-
-On Wed, Apr 17, 2013 at 9:44 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->> I moved the introduction of CONFIG_ETHERNAT and CONFIG_ETHERNEC into
->> the commits that added the corresponding platform devices, so they became
->> independent of the commits that update files under drivers/net/.
+On Thu, Mar 14, 2013 at 10:48 AM, Chanho Min <chanho.min@lge.com> wrote:
+> +#ifdef __BIG_ENDIAN
+> +#define LZ4_NBCOMMONBYTES(val) (__builtin_clzll(val) >> 3)
+> +#else
+> +#define LZ4_NBCOMMONBYTES(val) (__builtin_ctzll(val) >> 3)
+> +#endif
 >
-> Thanks - I'll have a look at what that involves. Sounds reasonable.
+>  #else  /* 32-bit */
+>  #define STEPSIZE 4
+> @@ -83,6 +130,14 @@ typedef struct _U64_S { u64 v; } U64_S;
+>         } while (0)
 >
->> I also queued all arch/m68k commits to for-3.10/for-next.
->
-> Hint, hint ... I still haven't submitted net and USB stuff for comments :-(
+>  #define LZ4_SECURECOPY LZ4_WILDCOPY
+> +#define HTYPE const u8*
+> +
+> +#ifdef __BIG_ENDIAN
+> +#define LZ4_NBCOMMONBYTES(val) (__builtin_clz(val) >> 3)
+> +#else
+> +#define LZ4_NBCOMMONBYTES(val) (__builtin_ctz(val) >> 3)
+> +#endif
 
-I know. That's why I moved the Kconfig changes, so I can get the
-m68k-specific parts
-in without depending on the net/usb changes, as I expect the merge window to
-open next weekend.
+It seems at least m68k and sparc don't have the __builtin_clz() functions:
 
-> We have ANZAC day coming up next week - should give me enough time unless
-> sorted before.
+m68k-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572593/):
 
-Enjoy the holiday ;-)
+ERROR: "__clzsi2" [lib/lz4/lz4hc_compress.ko] undefined!
+ERROR: "__clzsi2" [lib/lz4/lz4_compress.ko] undefined!
+
+sparc64-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572790/):
+
+ERROR: "__clzdi2" [lib/lz4/lz4hc_compress.ko] undefined!
+ERROR: "__clzdi2" [lib/lz4/lz4_compress.ko] undefined!
+
+sparc-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572795/):
+
+ERROR: "__clzdi2" [lib/lz4/lz4hc_compress.ko] undefined!
+ERROR: "__clzdi2" [lib/lz4/lz4_compress.ko] undefined!
+
+There may be more, hidden by build errors before reaching the link or modpost
+phases.
+
+The gmail-whitespace-damaged patch below fixes the m68k and sparc builds
+for me, does this look acceptable?
+
+diff --git a/lib/lz4/lz4defs.h b/lib/lz4/lz4defs.h
+index abcecdc..81d3251 100644
+--- a/lib/lz4/lz4defs.h
++++ b/lib/lz4/lz4defs.h
+@@ -107,12 +107,6 @@ typedef struct _U64_S { u64 v; } U64_S;
+  } while (0)
+ #define HTYPE u32
+
+-#ifdef __BIG_ENDIAN
+-#define LZ4_NBCOMMONBYTES(val) (__builtin_clzll(val) >> 3)
+-#else
+-#define LZ4_NBCOMMONBYTES(val) (__builtin_ctzll(val) >> 3)
+-#endif
+-
+ #else /* 32-bit */
+ #define STEPSIZE 4
+
+@@ -132,12 +126,12 @@ typedef struct _U64_S { u64 v; } U64_S;
+ #define LZ4_SECURECOPY LZ4_WILDCOPY
+ #define HTYPE const u8*
+
+-#ifdef __BIG_ENDIAN
+-#define LZ4_NBCOMMONBYTES(val) (__builtin_clz(val) >> 3)
+-#else
+-#define LZ4_NBCOMMONBYTES(val) (__builtin_ctz(val) >> 3)
+ #endif
+
++#ifdef __BIG_ENDIAN
++#define LZ4_NBCOMMONBYTES(val) (((STEPSIZE * 8) - 1 - __fls(val)) >> 3)
++#else
++#define LZ4_NBCOMMONBYTES(val) (__ffs(val) >> 3)
+ #endif
+
+ #define LZ4_READ_LITTLEENDIAN_16(d, s, p) \
 
 Gr{oetje,eeting}s,
 
