@@ -1,99 +1,48 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 1/2] lib: Add lz4 compressor module
-Date: Thu, 18 Apr 2013 11:50:08 +0200
-Message-ID: <CAMuHMdXXoaQjb9sRK=X3gEDwqQBJcJQtaJbUGB8cJmteHSN3vQ@mail.gmail.com>
+Date: Mon, 22 Apr 2013 11:24:21 +0200
+Message-ID: <CAMuHMdUv=GR6s=BYXHR7KyaKCUSxmkJO8dzZJMRktu3cUCTbsw@mail.gmail.com>
 References: <CAOAMb1D8rokZpQpp6mEJw6KXcQq8fJUWBJoC5+ZfkNaE6WvAZA@mail.gmail.com>
+	<CAMuHMdXXoaQjb9sRK=X3gEDwqQBJcJQtaJbUGB8cJmteHSN3vQ@mail.gmail.com>
+	<51750159.07d70e0a.5461.ffffec64SMTPIN_ADDED_BROKEN@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f174.google.com ([209.85.210.174]:57995 "EHLO
-	mail-ia0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751119Ab3DRJuJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Apr 2013 05:50:09 -0400
-In-Reply-To: <CAOAMb1D8rokZpQpp6mEJw6KXcQq8fJUWBJoC5+ZfkNaE6WvAZA@mail.gmail.com>
+Received: from mail-ia0-f176.google.com ([209.85.210.176]:54049 "EHLO
+	mail-ia0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753001Ab3DVJYW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 22 Apr 2013 05:24:22 -0400
+In-Reply-To: <51750159.07d70e0a.5461.ffffec64SMTPIN_ADDED_BROKEN@mx.google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Chanho Min <chanho.min@lge.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "Darrick J. Wong" <djwong@us.ibm.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Herbert Xu <herbert@gondor.apana.org.au>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, Kyungsik Lee <kyungsik.lee@lge.com>, Chanho Min <chanho0207@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-Next <linux-next@vger.kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Darrick J. Wong" <djwong@us.ibm.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Herbert Xu <herbert@gondor.apana.org.au>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, Kyungsik Lee <kyungsik.lee@lge.com>, Linux/m68k <linux-m68k@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-Next <linux-next@vger.kernel.org>
 
-On Thu, Mar 14, 2013 at 10:48 AM, Chanho Min <chanho.min@lge.com> wrote:
-> +#ifdef __BIG_ENDIAN
-> +#define LZ4_NBCOMMONBYTES(val) (__builtin_clzll(val) >> 3)
-> +#else
-> +#define LZ4_NBCOMMONBYTES(val) (__builtin_ctzll(val) >> 3)
-> +#endif
+On Mon, Apr 22, 2013 at 11:22 AM, Chanho Min <chanho.min@lge.com> wrote:
+>>> +#define HTYPE const u8*
+>>> +
+>>> +#ifdef __BIG_ENDIAN
+>>> +#define LZ4_NBCOMMONBYTES(val) (__builtin_clz(val) >> 3)
+>>> +#else
+>>> +#define LZ4_NBCOMMONBYTES(val) (__builtin_ctz(val) >> 3)
+>>> +#endif
+>>
+>>It seems at least m68k and sparc don't have the __builtin_clz() functions:
+>>
+>>m68k-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572593/):
+>>
+>>ERROR: "__clzsi2" [lib/lz4/lz4hc_compress.ko] undefined!
+>>ERROR: "__clzsi2" [lib/lz4/lz4_compress.ko] undefined!
 >
->  #else  /* 32-bit */
->  #define STEPSIZE 4
-> @@ -83,6 +130,14 @@ typedef struct _U64_S { u64 v; } U64_S;
->         } while (0)
->
->  #define LZ4_SECURECOPY LZ4_WILDCOPY
-> +#define HTYPE const u8*
-> +
-> +#ifdef __BIG_ENDIAN
-> +#define LZ4_NBCOMMONBYTES(val) (__builtin_clz(val) >> 3)
-> +#else
-> +#define LZ4_NBCOMMONBYTES(val) (__builtin_ctz(val) >> 3)
-> +#endif
+> gcc seems to define __builtin_clz as __clzsi2 in some architecture.
+> But, kernel doesn't link libgcc.a.
+> If kernel should use gcc's built-in function without libgcc.a,
+> do we need to port __clzsi2 to 'arch/*/lib/*'?
 
-It seems at least m68k and sparc don't have the __builtin_clz() functions:
+That's another option.
 
-m68k-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572593/):
-
-ERROR: "__clzsi2" [lib/lz4/lz4hc_compress.ko] undefined!
-ERROR: "__clzsi2" [lib/lz4/lz4_compress.ko] undefined!
-
-sparc64-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572790/):
-
-ERROR: "__clzdi2" [lib/lz4/lz4hc_compress.ko] undefined!
-ERROR: "__clzdi2" [lib/lz4/lz4_compress.ko] undefined!
-
-sparc-allmodconfig (http://kisskb.ellerman.id.au/kisskb/buildresult/8572795/):
-
-ERROR: "__clzdi2" [lib/lz4/lz4hc_compress.ko] undefined!
-ERROR: "__clzdi2" [lib/lz4/lz4_compress.ko] undefined!
-
-There may be more, hidden by build errors before reaching the link or modpost
-phases.
-
-The gmail-whitespace-damaged patch below fixes the m68k and sparc builds
-for me, does this look acceptable?
-
-diff --git a/lib/lz4/lz4defs.h b/lib/lz4/lz4defs.h
-index abcecdc..81d3251 100644
---- a/lib/lz4/lz4defs.h
-+++ b/lib/lz4/lz4defs.h
-@@ -107,12 +107,6 @@ typedef struct _U64_S { u64 v; } U64_S;
-  } while (0)
- #define HTYPE u32
-
--#ifdef __BIG_ENDIAN
--#define LZ4_NBCOMMONBYTES(val) (__builtin_clzll(val) >> 3)
--#else
--#define LZ4_NBCOMMONBYTES(val) (__builtin_ctzll(val) >> 3)
--#endif
--
- #else /* 32-bit */
- #define STEPSIZE 4
-
-@@ -132,12 +126,12 @@ typedef struct _U64_S { u64 v; } U64_S;
- #define LZ4_SECURECOPY LZ4_WILDCOPY
- #define HTYPE const u8*
-
--#ifdef __BIG_ENDIAN
--#define LZ4_NBCOMMONBYTES(val) (__builtin_clz(val) >> 3)
--#else
--#define LZ4_NBCOMMONBYTES(val) (__builtin_ctz(val) >> 3)
- #endif
-
-+#ifdef __BIG_ENDIAN
-+#define LZ4_NBCOMMONBYTES(val) (((STEPSIZE * 8) - 1 - __fls(val)) >> 3)
-+#else
-+#define LZ4_NBCOMMONBYTES(val) (__ffs(val) >> 3)
- #endif
-
- #define LZ4_READ_LITTLEENDIAN_16(d, s, p) \
+So far no one used __builtin_c[lt]z in generic code. We always used
+__fls and __ffs.
 
 Gr{oetje,eeting}s,
 
