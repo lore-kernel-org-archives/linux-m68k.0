@@ -1,187 +1,81 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH 12/26] hp_sdc_rtc: Don't use create_proc_read_entry()
- [RFC]
-Date: Sun, 28 Apr 2013 22:36:28 +0200
-Message-ID: <517D884C.9080003@gmx.de>
-References: <20130411132739.32763.82609.stgit@warthog.procyon.org.uk> <20130411132916.32763.83802.stgit@warthog.procyon.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20130411132916.32763.83802.stgit@warthog.procyon.org.uk>
-Sender: linux-parisc-owner@vger.kernel.org
-To: David Howells <dhowells@redhat.com>
-Cc: linux-parisc <linux-parisc@vger.kernel.org>, linux-m68k@vger.kernel.org, "Brian S. Julin" <bri@calyx.com>
+From: Chanho Min <chanho.min@lge.com>
+Subject: [PATCH] lib: add weak __clzsi2()/__clzdi2() functions
+Date: Mon, 29 Apr 2013 14:40:05 +0900
+Message-ID: <1367214005-14302-1-git-send-email-chanho.min@lge.com>
+Return-path: <sparclinux-owner@vger.kernel.org>
+Sender: sparclinux-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>, Yann Collet <yann.collet.73@gmail.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert.uytterhoeven@gmail.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@vger.kernel.org, linux-next@vger.kernel.org, Chanho Min <chanho.min@lge.com>
 List-Id: linux-m68k@vger.kernel.org
 
-On 04/11/2013 03:29 PM, David Howells wrote:
-> Don't use create_proc_read_entry() as that is deprecated, but rather use
-> proc_create_data() and seq_file instead.
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Brian S. Julin <bri@calyx.com>
-> cc: Helge Deller <deller@gmx.de>
-> cc: linux-m68k@lists.linux-m68k.org
+Some architectures need __clzsi2() or __clzdi2() for __builtin_clz and
+It causes build failure. They can be implemented using the fls() and
+overridden by linking arch-specific versions may not be implemented yet.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Reference: https://lkml.org/lkml/2013/4/18/603
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Chanho Min <chanho.min@lge.com>
+---
+ lib/Makefile |    2 +-
+ lib/clz.c    |   36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 1 deletion(-)
+ create mode 100644 lib/clz.c
 
-
-Thanks David,
-
-I've cleaned up a few whitespace issues and queued it up for 3.10 in the parisc tree.
-
-Helge
-
-
-> ---
-> 
->  drivers/input/misc/hp_sdc_rtc.c |   58 +++++++++++++++++----------------------
->  1 file changed, 26 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/input/misc/hp_sdc_rtc.c b/drivers/input/misc/hp_sdc_rtc.c
-> index 2e3334b..770479d 100644
-> --- a/drivers/input/misc/hp_sdc_rtc.c
-> +++ b/drivers/input/misc/hp_sdc_rtc.c
-> @@ -41,6 +41,7 @@
->  #include <linux/time.h>
->  #include <linux/miscdevice.h>
->  #include <linux/proc_fs.h>
-> +#include <linux/seq_file.h>
->  #include <linux/poll.h>
->  #include <linux/rtc.h>
->  #include <linux/mutex.h>
-> @@ -74,9 +75,6 @@ static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait);
->  static int hp_sdc_rtc_open(struct inode *inode, struct file *file);
->  static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on);
->  
-> -static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
-> -				int count, int *eof, void *data);
-> -
->  static void hp_sdc_rtc_isr (int irq, void *dev_id, 
->  			    uint8_t status, uint8_t data) 
->  {
-> @@ -427,22 +425,19 @@ static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on)
->          return fasync_helper (fd, filp, on, &hp_sdc_rtc_async_queue);
->  }
->  
-> -static int hp_sdc_rtc_proc_output (char *buf)
-> +static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
->  {
->  #define YN(bit) ("no")
->  #define NY(bit) ("yes")
-> -        char *p;
->          struct rtc_time tm;
->  	struct timeval tv;
->  
->  	memset(&tm, 0, sizeof(struct rtc_time));
->  
-> -	p = buf;
-> -
->  	if (hp_sdc_rtc_read_bbrtc(&tm)) {
-> -		p += sprintf(p, "BBRTC\t\t: READ FAILED!\n");
-> +		seq_puts(m, "BBRTC\t\t: READ FAILED!\n");
->  	} else {
-> -		p += sprintf(p,
-> +		seq_printf(m,
->  			     "rtc_time\t: %02d:%02d:%02d\n"
->  			     "rtc_date\t: %04d-%02d-%02d\n"
->  			     "rtc_epoch\t: %04lu\n",
-> @@ -452,41 +447,41 @@ static int hp_sdc_rtc_proc_output (char *buf)
->  	}
->  
->  	if (hp_sdc_rtc_read_rt(&tv)) {
-> -		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
-> +		seq_puts(m, "i8042 rtc\t: READ FAILED!\n");
->  	} else {
-> -		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
-> +		seq_printf(m, "i8042 rtc\t: %ld.%02d seconds\n", 
->  			     tv.tv_sec, (int)tv.tv_usec/1000);
->  	}
->  
->  	if (hp_sdc_rtc_read_fhs(&tv)) {
-> -		p += sprintf(p, "handshake\t: READ FAILED!\n");
-> +		seq_puts(m, "handshake\t: READ FAILED!\n");
->  	} else {
-> -        	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
-> +        	seq_printf(m, "handshake\t: %ld.%02d seconds\n", 
->  			     tv.tv_sec, (int)tv.tv_usec/1000);
->  	}
->  
->  	if (hp_sdc_rtc_read_mt(&tv)) {
-> -		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
-> +		seq_puts(m, "alarm\t\t: READ FAILED!\n");
->  	} else {
-> -		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
-> +		seq_printf(m, "alarm\t\t: %ld.%02d seconds\n", 
->  			     tv.tv_sec, (int)tv.tv_usec/1000);
->  	}
->  
->  	if (hp_sdc_rtc_read_dt(&tv)) {
-> -		p += sprintf(p, "delay\t\t: READ FAILED!\n");
-> +		seq_puts(m, "delay\t\t: READ FAILED!\n");
->  	} else {
-> -		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
-> +		seq_printf(m, "delay\t\t: %ld.%02d seconds\n", 
->  			     tv.tv_sec, (int)tv.tv_usec/1000);
->  	}
->  
->  	if (hp_sdc_rtc_read_ct(&tv)) {
-> -		p += sprintf(p, "periodic\t: READ FAILED!\n");
-> +		seq_puts(m, "periodic\t: READ FAILED!\n");
->  	} else {
-> -		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
-> +		seq_printf(m, "periodic\t: %ld.%02d seconds\n", 
->  			     tv.tv_sec, (int)tv.tv_usec/1000);
->  	}
->  
-> -        p += sprintf(p,
-> +        seq_printf(m,
->                       "DST_enable\t: %s\n"
->                       "BCD\t\t: %s\n"
->                       "24hr\t\t: %s\n"
-> @@ -506,23 +501,23 @@ static int hp_sdc_rtc_proc_output (char *buf)
->                       1UL,
->                       1 ? "okay" : "dead");
->  
-> -        return  p - buf;
-> +        return 0;
->  #undef YN
->  #undef NY
->  }
->  
-> -static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
-> -                         int count, int *eof, void *data)
-> +static int hp_sdc_rtc_proc_open(struct inode *inode, struct file *file)
->  {
-> -	int len = hp_sdc_rtc_proc_output (page);
-> -        if (len <= off+count) *eof = 1;
-> -        *start = page + off;
-> -        len -= off;
-> -        if (len>count) len = count;
-> -        if (len<0) len = 0;
-> -        return len;
-> +	return single_open(file, hp_sdc_rtc_proc_show, NULL);
->  }
->  
-> +static const struct file_operations hp_sdc_rtc_proc_fops = {
-> +	.open		= hp_sdc_rtc_proc_open,
-> +	.read		= seq_read,
-> +	.llseek		= seq_lseek,
-> +	.release	= seq_release,
-> +};
-> +
->  static int hp_sdc_rtc_ioctl(struct file *file, 
->  			    unsigned int cmd, unsigned long arg)
->  {
-> @@ -715,8 +710,7 @@ static int __init hp_sdc_rtc_init(void)
->  	if (misc_register(&hp_sdc_rtc_dev) != 0)
->  		printk(KERN_INFO "Could not register misc. dev for i8042 rtc\n");
->  
-> -        create_proc_read_entry ("driver/rtc", 0, NULL,
-> -				hp_sdc_rtc_read_proc, NULL);
-> +        proc_create("driver/rtc", 0, NULL, &hp_sdc_rtc_proc_fops);
->  
->  	printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support loaded "
->  			 "(RTC v " RTC_VERSION ")\n");
-> 
+diff --git a/lib/Makefile b/lib/Makefile
+index af79e8c..e17b3ee 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -23,7 +23,7 @@ lib-y	+= kobject.o klist.o
+ 
+ obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
+ 	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
+-	 gcd.o lcm.o list_sort.o uuid.o flex_array.o \
++	 gcd.o lcm.o list_sort.o uuid.o flex_array.o clz.o\
+ 	 bsearch.o find_last_bit.o find_next_bit.o llist.o memweight.o kfifo.o
+ obj-y += string_helpers.o
+ obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
+diff --git a/lib/clz.c b/lib/clz.c
+new file mode 100644
+index 0000000..5222b2d
+--- /dev/null
++++ b/lib/clz.c
+@@ -0,0 +1,36 @@
++/*
++ * lib/clz.c
++ *
++ * Copyright (C) 2013 Chanho Min <chanho.min@lge.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * __clzsi2/_clzdi2() can be overridden by linking arch-specific versions.
++ */
++
++#include <linux/export.h>
++#include <linux/kernel.h>
++
++int __weak __clzsi2(int val)
++{
++	return BITS_PER_LONG - fls(val);
++}
++EXPORT_SYMBOL(__clzsi2);
++
++#if BITS_PER_LONG == 32
++int __weak __clzdi2(long val)
++{
++	return BITS_PER_LONG - fls((int)val);
++}
++EXPORT_SYMBOL(__clzdi2);
++#elif BITS_PER_LONG == 64
++int __weak __clzdi2i(long val)
++{
++	return BITS_PER_LONG - fls64((u64)val);
++}
++EXPORT_SYMBOL(__clzdi2);
++#else
++#error BITS_PER_LONG not 32 or 64
++#endif
+-- 
+1.7.9.5
 
