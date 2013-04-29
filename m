@@ -1,41 +1,71 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] lib: add weak __clzsi2()/__clzdi2() functions
-Date: Mon, 29 Apr 2013 09:20:25 +0200
-Message-ID: <CAMuHMdWk4oi_KCmZv7hLZ7JSwy=meziKPBMQ1HJiJR9W8AdrDg@mail.gmail.com>
-References: <1367214005-14302-1-git-send-email-chanho.min@lge.com>
+Subject: [git pull] m68k updates for 3.10
+Date: Mon, 29 Apr 2013 20:15:36 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1304292008580.20845@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f174.google.com ([209.85.210.174]:54063 "EHLO
-	mail-ia0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751784Ab3D2HU0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Apr 2013 03:20:26 -0400
-In-Reply-To: <1367214005-14302-1-git-send-email-chanho.min@lge.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Chanho Min <chanho.min@lge.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Kyungsik Lee <kyungsik.lee@lge.com>, Yann Collet <yann.collet.73@gmail.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Next <linux-next@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-On Mon, Apr 29, 2013 at 7:40 AM, Chanho Min <chanho.min@lge.com> wrote:
-> Some architectures need __clzsi2() or __clzdi2() for __builtin_clz and
-> It causes build failure. They can be implemented using the fls() and
-> overridden by linking arch-specific versions may not be implemented yet.
->
-> Reference: https://lkml.org/lkml/2013/4/18/603
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Chanho Min <chanho.min@lge.com>
+	Hi Linus,
 
-Thanks, this fixes the link error on m68k, so
+The following changes since commit c1be5a5b1b355d40e6cf79cc979eb66dafa24ad1:
+  Linus Torvalds (1):
+        Linux 3.9
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+are available in the git repository at:
+
+  ra.kernel.org:/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+Geert Uytterhoeven (1):
+      m68k: Add missing cmpxchg64() if CONFIG_RMW_INSNS=y
+
+Michael Schmitz (7):
+      m68k/atari: ROM port ISA adapter support
+      m68k/atari: use dedicated irq_chip for timer D interrupts
+      m68k/atari: EtherNAT - platform device and IRQ support code
+      m68k/atari: EtherNEC - add platform device support
+      m68k/atari: EtherNAT - add interrupt chip definition for CPLD interrupts
+      m68k: Implement ndelay() based on the existing udelay() logic
+      m68k/atari: USB - add platform devices for EtherNAT/NetUSBee ISP1160 HCD
+
+Michal Marek (1):
+      m68k: Remove inline strlen() implementation
+
+Summarized:
+  - The m68k-specific parts for Atari EtherNAT (smc91x), EtherNEC (ne), and
+    EtherNAT/NetUSBee (ISP1160 HCD) support,
+  - Two build fixes for build-breakage in linux-next.
+
+Thanks for pulling!
+
+ arch/m68k/Kconfig.bus             |   10 ++
+ arch/m68k/Kconfig.devices         |   24 ++++
+ arch/m68k/atari/ataints.c         |  152 +++++++++++++++++++++++
+ arch/m68k/atari/config.c          |  239 +++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/atarihw.h   |    6 +
+ arch/m68k/include/asm/atariints.h |   11 ++-
+ arch/m68k/include/asm/cmpxchg.h   |    3 +
+ arch/m68k/include/asm/delay.h     |   23 ++++
+ arch/m68k/include/asm/io_mm.h     |  136 ++++++++++++++++++++-
+ arch/m68k/include/asm/irq.h       |    6 +-
+ arch/m68k/include/asm/raw_io.h    |  109 +++++++++++++++++-
+ arch/m68k/include/asm/string.h    |   14 --
+ arch/m68k/kernel/setup_mm.c       |    6 +
+ arch/m68k/lib/string.c            |    2 +-
+ 14 files changed, 717 insertions(+), 24 deletions(-)
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
