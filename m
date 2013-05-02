@@ -1,22 +1,49 @@
-From: Jonathan Buzzard <jonathan.buzzard@strath.ac.uk>
-Subject: [PARPORT] Re: [PATCH] parport_pc
-Date: Wed, 1 May 2013 13:54:23 +0100
-Message-ID: <F5513AE92A5A1047AC2F91AEBB9202680288CBBA3983@E2K7-MS2.ds.strath.ac.uk>
-References: <Pine.GSO.4.21.0206091215480.28140-100000@vervain.sonytel.be>
+From: "=?EUC-KR?B?uc7C+cij?=" <chanho.min@lge.com>
+Subject: Re: [PATCH] lib: add weak __clzsi2()/__clzdi2() functions
+Date: Thu, 2 May 2013 09:58:02 +0900
+Message-ID: <OF7904F8C7.4731B9DC-ON49257B5F.00055048-49257B5F.0005504A@lge.com>
+References: <1367214005-14302-1-git-send-email-chanho.min@lge.com>
+	<CAMuHMdWk4oi_KCmZv7hLZ7JSwy=meziKPBMQ1HJiJR9W8AdrDg@mail.gmail.com>
+	<20130430144605.1a99a7397702b332ee818fc8@linux-foundation.org>
+Reply-To: "=?EUC-KR?B?uc7C+cij?=" <chanho.min@lge.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <Pine.GSO.4.21.0206091215480.28140-100000@vervain.sonytel.be>
-Content-Language: en-US
+Received: from LGEMRELSE1Q.lge.com ([156.147.1.111]:49641 "EHLO
+	LGEMRELSE1Q.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756053Ab3EBA6Q (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 1 May 2013 20:58:16 -0400
+In-Reply-To: <20130430144605.1a99a7397702b332ee818fc8@linux-foundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "geert@linux-m68k.org" <geert@linux-m68k.org>
-Cc: "Richard.Zidlicky@stud.informatik.uni-erlangen.de" <Richard.Zidlicky@stud.informatik.uni-erlangen.de>, "linux-parport@torque.net" <linux-parport@torque.net>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, =?EUC-KR?B?wMyw5r3E?= <kyungsik.lee@lge.com>, Yann Collet <yann.collet.73@gmail.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Next <linux-next@vger.kernel.org>
 
-T24gU3VuLCAyMDAyLTA2LTA5IGF0IDExOjE5LCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6Cj4g
-SSB0aGluayB0aGUgZm9sbG93aW5nIHBhdGggaXMgbmVlZGVkIGZvciBRNDAvUTYwIG9uIHRoZSBt
-NjhrIHBsYXRmb3JtLCB3aGljaAo+IGRvZXNuJ3QgaGF2ZSBQQ0kuCgpMb29rcyBPSyB0byBtZS4K
-IApwLgoKCi0tICBUbyB1bnN1YnNjcmliZSwgc2VuZCBtYWlsIHRvOiBsaW51eC1wYXJwb3J0LXJl
-cXVlc3RAdG9ycXVlLm5ldCAtLQotLSAgd2l0aCB0aGUgc2luZ2xlIHdvcmQgInVuc3Vic2NyaWJl
-IiBpbiB0aGUgYm9keSBvZiB0aGUgbWVzc2FnZS4gLS0KCg==
+
+>No, the link errors are for __ctzdi2, not __clzdi2.
+>__ctzdi2 can be implemented using __ffs().
+>> How's about we stop using __builtin_ctz[ll]() altogether?  Use N-fls()?
+>
+>That was my first suggestion ;-)
+>
+Do we remove existing __builtin_ct[l]z?
+Some architecture's __builtin_clz will be more optimized than N-fls
+IMHO, This is not only about __builtin- but also supporting another
+libgcc functions in kernel.
+Some future user may need __clz[t]s[d]i2 symbol also.
+
+>> btw, this:
+>>
+>> int __weak __clzsi2(int val)
+>> {
+>>        return BITS_PER_LONG - fls(val);
+>> }
+>>
+>> looks wrong.  It will give a different result for 32- and 64-bit.
+>
+>Indeed. It should be hardcoded 32.
+>
+I will re-work this for 64-bit, and ctz also.
+
+Thanks
+Chanho Min
