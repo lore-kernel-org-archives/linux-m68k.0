@@ -1,106 +1,65 @@
-From: Chanho Min <chanho.min@lge.com>
-Subject: [PATCH] lib: add weak clz/ctz functions
-Date: Thu,  2 May 2013 18:56:19 +0900
-Message-ID: <1367488579-15456-1-git-send-email-chanho.min@lge.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
+Date: Thu, 2 May 2013 22:12:45 +0200
+Message-ID: <CAMuHMdXQYSaUSTtsWR4dSWt9jqSmkdLKtDm139wOb=EXLk88Rg@mail.gmail.com>
+References: <516E52F4.1020008@gmail.com>
+	<CAMuHMdU8svz=FsCDDdn6PXwAOzUdfLSg8DbsD97sTOsS4Qoj8Q@mail.gmail.com>
+	<20130428222621.GA5821@mail.biophys.uni-duesseldorf.de>
+	<CAMuHMdU-Za_VqW4x9fJwDD4-VD=+DLaSNQNY6YrHibQq+GyC_A@mail.gmail.com>
+	<20130429082049.GA10441@mail.biophys.uni-duesseldorf.de>
+	<CAMuHMdVCfM8c=Aj-cgHMDLavFvbxcHAyHrh930S4ncV-6uDW_g@mail.gmail.com>
+	<20130429213755.GA18688@mail.biophys.uni-duesseldorf.de>
+	<CAMuHMdVJWU5uJB9iNRvOmXDV1C5C1dnCiEDPx4yG5n1C4hqtzQ@mail.gmail.com>
+	<20130430075016.GA23189@mail.biophys.uni-duesseldorf.de>
+	<CAMuHMdUkNUzF_Cr5xS+i7hFbW-wuxZYTa8Gh3wH2pyXVxDTouQ@mail.gmail.com>
+	<20130430221052.GA1618@mail.biophys.uni-duesseldorf.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from LGEMRELSE6Q.lge.com ([156.147.1.121]:51012 "EHLO
-	LGEMRELSE6Q.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751545Ab3EBJ4q (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 May 2013 05:56:46 -0400
+Received: from mail-ia0-f174.google.com ([209.85.210.174]:63667 "EHLO
+	mail-ia0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759629Ab3EBUMq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 May 2013 16:12:46 -0400
+Received: by mail-ia0-f174.google.com with SMTP id e36so781998iag.5
+        for <linux-m68k@vger.kernel.org>; Thu, 02 May 2013 13:12:45 -0700 (PDT)
+In-Reply-To: <20130430221052.GA1618@mail.biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>, Yann Collet <yann.collet.73@gmail.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert.uytterhoeven@gmail.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@vger.kernel.org, linux-next@vger.kernel.org, Chanho Min <chanho.min@lge.com>
+To: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Some architectures need __c[lt]z[sd]i2() for __builtin_c[lt]z[ll] and
-It causes build failure. They can be implemented using the fls()/__ffs() and
-overridden by linking arch-specific versions may not be implemented yet.
+On Wed, May 1, 2013 at 12:10 AM, Michael Schmitz
+<schmitz@mail.biophys.uni-duesseldorf.de> wrote:
+> Another question: Is there a way to find out which physical address maps to
+> a given ioremapped one?
+>
+> If I let the USB driver print the physical address, the ioremapped address,
+> and the result of __pa() on the ioremapped one, I get:
+>
+> ISP116X probe: data 80000012 virt. 21098012 pa 21098012 , addr 80000016
+> virt. 21096016 pa 21096016
+>
+> for the EtherNAT instance, and
+>
+> ISP116X probe: data 00000340 virt. 2109e340 pa 2109e340 , addr 00000360
+> virt. 2109c360 pa 2109c360
+>
+> for the NetUSBee instance. In both cases ioremapped and __pa() are equal.
+>
+> I had hoped to get the physical address back from __pa() in the first
+> instance, and check for _pa(reg) > 0x8000000 to differentiate between the
+> two instances. Not so simple, apparently.
 
-Reference: https://lkml.org/lkml/2013/4/18/603
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Chanho Min <chanho.min@lge.com>
----
- lib/Makefile  |    2 +-
- lib/clz_ctz.c |   58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 1 deletion(-)
- create mode 100644 lib/clz_ctz.c
+__pa() (and virt_to_phys()) only work for system RAM, where the mapping is
+just the addition of an offset.
 
-diff --git a/lib/Makefile b/lib/Makefile
-index af79e8c..3eacb2c 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -23,7 +23,7 @@ lib-y	+= kobject.o klist.o
- 
- obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
- 	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
--	 gcd.o lcm.o list_sort.o uuid.o flex_array.o \
-+	 gcd.o lcm.o list_sort.o uuid.o flex_array.o clz_ctz.o\
- 	 bsearch.o find_last_bit.o find_next_bit.o llist.o memweight.o kfifo.o
- obj-y += string_helpers.o
- obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
-diff --git a/lib/clz_ctz.c b/lib/clz_ctz.c
-new file mode 100644
-index 0000000..a8f8379
---- /dev/null
-+++ b/lib/clz_ctz.c
-@@ -0,0 +1,58 @@
-+/*
-+ * lib/clz_ctz.c
-+ *
-+ * Copyright (C) 2013 Chanho Min <chanho.min@lge.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * __c[lt]z[sd]i2 can be overridden by linking arch-specific versions.
-+ */
-+
-+#include <linux/export.h>
-+#include <linux/kernel.h>
-+
-+int __weak __ctzsi2(int val)
-+{
-+	return __ffs(val);
-+}
-+EXPORT_SYMBOL(__ctzsi2);
-+
-+int __weak __clzsi2(int val)
-+{
-+	return 32 - fls(val);
-+}
-+EXPORT_SYMBOL(__clzsi2);
-+
-+#if BITS_PER_LONG == 32
-+
-+int __weak __clzdi2(long val)
-+{
-+	return 32 - fls((int)val);
-+}
-+EXPORT_SYMBOL(__clzdi2);
-+
-+int __weak __ctzdi2(long val)
-+{
-+	return __ffs((u32)val);
-+}
-+EXPORT_SYMBOL(__ctzdi2);
-+
-+#elif BITS_PER_LONG == 64
-+
-+int __weak __clzdi2(long val)
-+{
-+	return 64 - fls64((u64)val);
-+}
-+EXPORT_SYMBOL(__clzdi2);
-+
-+int __weak __ctzdi2(long val)
-+{
-+	return __ffs64((u64)val);
-+}
-+EXPORT_SYMBOL(__ctzdi2);
-+
-+#else
-+#error BITS_PER_LONG not 32 or 64
-+#endif
--- 
-1.7.9.5
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
