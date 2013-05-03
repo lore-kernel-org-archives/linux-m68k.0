@@ -1,65 +1,75 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/13] Atari EtherNAT/EtherNEC/NetUSBee support
-Date: Thu, 2 May 2013 22:12:45 +0200
-Message-ID: <CAMuHMdXQYSaUSTtsWR4dSWt9jqSmkdLKtDm139wOb=EXLk88Rg@mail.gmail.com>
-References: <516E52F4.1020008@gmail.com>
-	<CAMuHMdU8svz=FsCDDdn6PXwAOzUdfLSg8DbsD97sTOsS4Qoj8Q@mail.gmail.com>
-	<20130428222621.GA5821@mail.biophys.uni-duesseldorf.de>
-	<CAMuHMdU-Za_VqW4x9fJwDD4-VD=+DLaSNQNY6YrHibQq+GyC_A@mail.gmail.com>
-	<20130429082049.GA10441@mail.biophys.uni-duesseldorf.de>
-	<CAMuHMdVCfM8c=Aj-cgHMDLavFvbxcHAyHrh930S4ncV-6uDW_g@mail.gmail.com>
-	<20130429213755.GA18688@mail.biophys.uni-duesseldorf.de>
-	<CAMuHMdVJWU5uJB9iNRvOmXDV1C5C1dnCiEDPx4yG5n1C4hqtzQ@mail.gmail.com>
-	<20130430075016.GA23189@mail.biophys.uni-duesseldorf.de>
-	<CAMuHMdUkNUzF_Cr5xS+i7hFbW-wuxZYTa8Gh3wH2pyXVxDTouQ@mail.gmail.com>
-	<20130430221052.GA1618@mail.biophys.uni-duesseldorf.de>
+Subject: [PATCH] nubus: Kill nubus_proc_detach_device()
+Date: Fri,  3 May 2013 22:20:38 +0200
+Message-ID: <1367612438-26490-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ia0-f174.google.com ([209.85.210.174]:63667 "EHLO
-	mail-ia0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1759629Ab3EBUMq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 May 2013 16:12:46 -0400
-Received: by mail-ia0-f174.google.com with SMTP id e36so781998iag.5
-        for <linux-m68k@vger.kernel.org>; Thu, 02 May 2013 13:12:45 -0700 (PDT)
-In-Reply-To: <20130430221052.GA1618@mail.biophys.uni-duesseldorf.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Howells <dhowells@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, David Huggins-Daines <dhd@debian.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, May 1, 2013 at 12:10 AM, Michael Schmitz
-<schmitz@mail.biophys.uni-duesseldorf.de> wrote:
-> Another question: Is there a way to find out which physical address maps to
-> a given ioremapped one?
->
-> If I let the USB driver print the physical address, the ioremapped address,
-> and the result of __pa() on the ioremapped one, I get:
->
-> ISP116X probe: data 80000012 virt. 21098012 pa 21098012 , addr 80000016
-> virt. 21096016 pa 21096016
->
-> for the EtherNAT instance, and
->
-> ISP116X probe: data 00000340 virt. 2109e340 pa 2109e340 , addr 00000360
-> virt. 2109c360 pa 2109c360
->
-> for the NetUSBee instance. In both cases ioremapped and __pa() are equal.
->
-> I had hoped to get the physical address back from __pa() in the first
-> instance, and check for _pa(reg) > 0x8000000 to differentiate between the
-> two instances. Not so simple, apparently.
+Commit 59d8053f1e16904d54ed7469d4b36801ea6b8f2c ("proc: Move non-public
+stuff from linux/proc_fs.h to fs/proc/internal.h") broke Apple NuBus
+support:
 
-__pa() (and virt_to_phys()) only work for system RAM, where the mapping is
-just the addition of an offset.
+drivers/nubus/proc.c: In function =E2=80=98nubus_proc_detach_device=E2=80=
+=99:
+drivers/nubus/proc.c:156: error: dereferencing pointer to incomplete ty=
+pe
+drivers/nubus/proc.c:158: error: dereferencing pointer to incomplete ty=
+pe
 
-Gr{oetje,eeting}s,
+=46ortunately nubus_proc_detach_device() is unused, and appears to have=
+ never
+been used, so just remove it.
 
-                        Geert
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/nubus/proc.c  |   15 ---------------
+ include/linux/nubus.h |    1 -
+ 2 files changed, 0 insertions(+), 16 deletions(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index b8286ed..5371b37 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -147,21 +147,6 @@ int nubus_proc_attach_device(struct nubus_dev *dev=
+)
+ }
+ EXPORT_SYMBOL(nubus_proc_attach_device);
+=20
+-/* FIXME: this is certainly broken! */
+-int nubus_proc_detach_device(struct nubus_dev *dev)
+-{
+-	struct proc_dir_entry *e;
+-
+-	if ((e =3D dev->procdir)) {
+-		if (atomic_read(&e->count))
+-			return -EBUSY;
+-		remove_proc_entry(e->name, proc_bus_nubus_dir);
+-		dev->procdir =3D NULL;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(nubus_proc_detach_device);
+-
+ /*
+  * /proc/nubus stuff
+  */
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index b374052..6165b2c 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -87,7 +87,6 @@ static inline void nubus_proc_init(void) {}
+ #endif
+ int get_nubus_list(char *buf);
+ int nubus_proc_attach_device(struct nubus_dev *dev);
+-int nubus_proc_detach_device(struct nubus_dev *dev);
+ /* If we need more precision we can add some more of these */
+ struct nubus_dev* nubus_find_device(unsigned short category,
+ 				    unsigned short type,
+--=20
+1.7.0.4
