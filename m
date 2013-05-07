@@ -1,38 +1,106 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] nubus: Kill nubus_proc_detach_device()
-Date: Sat, 04 May 2013 00:10:16 +0100
-Message-ID: <24064.1367622616@warthog.procyon.org.uk>
-References: <1367612438-26490-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1367612438-26490-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>, David Huggins-Daines <dhd@debian.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Chanho Min <chanho.min@lge.com>
+Subject: [PATCH RESEND] lib: add weak clz/ctz functions
+Date: Tue,  7 May 2013 17:12:37 +0900
+Message-ID: <1367914357-1876-1-git-send-email-chanho.min@lge.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from LGEMRELSE1Q.lge.com ([156.147.1.111]:42317 "EHLO
+	LGEMRELSE1Q.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757811Ab3EGIMv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 May 2013 04:12:51 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>, Yann Collet <yann.collet.73@gmail.com>, Bob Pearson <rpearson@systemfabricworks.com>, Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert.uytterhoeven@gmail.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-m68k@vger.kernel.org, linux-next@vger.kernel.org, Chanho Min <chanho.min@lge.com>
 
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Some architectures need __c[lt]z[sd]i2() for __builtin_c[lt]z[ll] and
+It causes build failure. They can be implemented using the fls()/__ffs() and
+overridden by linking arch-specific versions may not be implemented yet.
 
-> Commit 59d8053f1e16904d54ed7469d4b36801ea6b8f2c ("proc: Move non-publ=
-ic
-> stuff from linux/proc_fs.h to fs/proc/internal.h") broke Apple NuBus
-> support:
->=20
-> drivers/nubus/proc.c: In function =E2=80=98nubus_proc_detach_device=E2=
-=80=99:
-> drivers/nubus/proc.c:156: error: dereferencing pointer to incomplete =
-type
-> drivers/nubus/proc.c:158: error: dereferencing pointer to incomplete =
-type
->=20
-> Fortunately nubus_proc_detach_device() is unused, and appears to have=
- never
-> been used, so just remove it.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reference: https://lkml.org/lkml/2013/4/18/603
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Chanho Min <chanho.min@lge.com>
+---
+ lib/Makefile  |    2 +-
+ lib/clz_ctz.c |   58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+), 1 deletion(-)
+ create mode 100644 lib/clz_ctz.c
 
-=46ine by me.
-
-Acked-by: David Howells <dhowells@redhat.com>
+diff --git a/lib/Makefile b/lib/Makefile
+index af79e8c..3eacb2c 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -23,7 +23,7 @@ lib-y	+= kobject.o klist.o
+ 
+ obj-y += bcd.o div64.o sort.o parser.o halfmd4.o debug_locks.o random32.o \
+ 	 bust_spinlocks.o hexdump.o kasprintf.o bitmap.o scatterlist.o \
+-	 gcd.o lcm.o list_sort.o uuid.o flex_array.o \
++	 gcd.o lcm.o list_sort.o uuid.o flex_array.o clz_ctz.o\
+ 	 bsearch.o find_last_bit.o find_next_bit.o llist.o memweight.o kfifo.o
+ obj-y += string_helpers.o
+ obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
+diff --git a/lib/clz_ctz.c b/lib/clz_ctz.c
+new file mode 100644
+index 0000000..a8f8379
+--- /dev/null
++++ b/lib/clz_ctz.c
+@@ -0,0 +1,58 @@
++/*
++ * lib/clz_ctz.c
++ *
++ * Copyright (C) 2013 Chanho Min <chanho.min@lge.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * __c[lt]z[sd]i2 can be overridden by linking arch-specific versions.
++ */
++
++#include <linux/export.h>
++#include <linux/kernel.h>
++
++int __weak __ctzsi2(int val)
++{
++	return __ffs(val);
++}
++EXPORT_SYMBOL(__ctzsi2);
++
++int __weak __clzsi2(int val)
++{
++	return 32 - fls(val);
++}
++EXPORT_SYMBOL(__clzsi2);
++
++#if BITS_PER_LONG == 32
++
++int __weak __clzdi2(long val)
++{
++	return 32 - fls((int)val);
++}
++EXPORT_SYMBOL(__clzdi2);
++
++int __weak __ctzdi2(long val)
++{
++	return __ffs((u32)val);
++}
++EXPORT_SYMBOL(__ctzdi2);
++
++#elif BITS_PER_LONG == 64
++
++int __weak __clzdi2(long val)
++{
++	return 64 - fls64((u64)val);
++}
++EXPORT_SYMBOL(__clzdi2);
++
++int __weak __ctzdi2(long val)
++{
++	return __ffs64((u64)val);
++}
++EXPORT_SYMBOL(__ctzdi2);
++
++#else
++#error BITS_PER_LONG not 32 or 64
++#endif
+-- 
+1.7.9.5
