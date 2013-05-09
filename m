@@ -1,78 +1,37 @@
-From: Jiang Liu <liuj97@gmail.com>
-Subject: [PATCH v5, part4 24/41] mm/m68k: prepare for removing num_physpages and simplify mem_init()
-Date: Wed,  8 May 2013 23:51:21 +0800
-Message-ID: <1368028298-7401-25-git-send-email-jiang.liu__37479.8621902757$1368028877$gmane$org@huawei.com>
-References: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+From: Denis Efremov <yefremov.denis@gmail.com>
+Subject: [PATCH 18/21] m68k/sun3/: remove inline marking of EXPORT_SYMBOL functions
+Date: Thu,  9 May 2013 14:36:56 +0400
+Message-ID: <1368095819-11011-7-git-send-email-yefremov.denis__13996.4033653543$1368096076$gmane$org@gmail.com>
+References: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Sam Creasey <sammy@sammy.net>
+Cc: Denis Efremov <yefremov.denis@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, trivial@kernel.org, ldv-project@linuxtesting.org
 
-Prepare for removing num_physpages and simplify mem_init().
+EXPORT_SYMBOL and inline directives are contradictory to each other.
+The patch fixes this inconsistency.
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Denis Efremov <yefremov.denis@gmail.com>
 ---
- arch/m68k/mm/init.c |   31 ++-----------------------------
- 1 file changed, 2 insertions(+), 29 deletions(-)
+ arch/m68k/sun3/sun3dvma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 2485a8c..0723141 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -149,33 +149,11 @@ void __init print_memmap(void)
- void __init mem_init(void)
- {
- 	pg_data_t *pgdat;
--	int codepages = 0;
--	int datapages = 0;
--	int initpages = 0;
- 	int i;
+diff --git a/arch/m68k/sun3/sun3dvma.c b/arch/m68k/sun3/sun3dvma.c
+index ca0966c..cab5448 100644
+--- a/arch/m68k/sun3/sun3dvma.c
++++ b/arch/m68k/sun3/sun3dvma.c
+@@ -275,7 +275,7 @@ void dvma_init(void)
  
- 	/* this will put all memory onto the freelists */
--	num_physpages = 0;
--	for_each_online_pgdat(pgdat) {
--		num_physpages += pgdat->node_present_pages;
--
-+	for_each_online_pgdat(pgdat)
- 		free_all_bootmem_node(pgdat);
--		for (i = 0; i < pgdat->node_spanned_pages; i++) {
--			struct page *page = pgdat->node_mem_map + i;
--			char *addr = page_to_virt(page);
--
--			if (!PageReserved(page))
--				continue;
--			if (addr >= _text &&
--			    addr < _etext)
--				codepages++;
--			else if (addr >= __init_begin &&
--				 addr < __init_end)
--				initpages++;
--			else
--				datapages++;
--		}
--	}
- 
- #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
- 	/* insert pointer tables allocated so far into the tablelist */
-@@ -190,12 +168,7 @@ void __init mem_init(void)
- 		init_pointer_table((unsigned long)zero_pgtable);
- #endif
- 
--	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
--	       nr_free_pages() << (PAGE_SHIFT-10),
--	       totalram_pages << (PAGE_SHIFT-10),
--	       codepages << (PAGE_SHIFT-10),
--	       datapages << (PAGE_SHIFT-10),
--	       initpages << (PAGE_SHIFT-10));
-+	mem_init_print_info(NULL);
- 	print_memmap();
  }
  
+-inline unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
++unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
+ {
+ 
+ 	unsigned long baddr;
 -- 
-1.7.9.5
+1.8.1.4
