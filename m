@@ -1,37 +1,78 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 18/21] m68k/sun3/: remove inline marking of EXPORT_SYMBOL functions
-Date: Thu, 9 May 2013 13:09:18 +0200
-Message-ID: <CAMuHMdX9BiVKHm3ZdMjP1H0DVtGacAahztr+Rn+3epse8EWXZA__48715.2387541302$1368097782$gmane$org@mail.gmail.com>
-References: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com>
-	<1368095819-11011-7-git-send-email-yefremov.denis@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 3.10
+Date: Fri, 10 May 2013 17:13:58 +1000
+Message-ID: <201305100713.r4A7Dwq6031930@goober.accelcon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1368095819-11011-7-git-send-email-yefremov.denis@gmail.com>
+Received: from nskntqsrv03p.mx.bigpond.com ([61.9.168.237]:20768 "EHLO
+	nskntqsrv03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751561Ab3EJIPx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 10 May 2013 04:15:53 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Denis Efremov <yefremov.denis@gmail.com>
-Cc: Sam Creasey <sammy@sammy.net>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jiri Kosina <trivial@kernel.org>, ldv-project@linuxtesting.org
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-On Thu, May 9, 2013 at 12:36 PM, Denis Efremov <yefremov.denis@gmail.com> wrote:
-> EXPORT_SYMBOL and inline directives are contradictory to each other.
-> The patch fixes this inconsistency.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Signed-off-by: Denis Efremov <yefremov.denis@gmail.com>
+Hi Linus,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Can you please pull the m68knommu git tree, for-next branch.
 
-Do you want me to queue this in the m68k tree?
+The bulk of the changes are generalizing the ColdFire v3 core support and
+adding in 537x CPU support. Also a couple of other bug fixes, one to fix
+a reintroduction of a past bug in the romfs filesystem nommu support.
 
-Gr{oetje,eeting}s,
+Regards
+Greg
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+The following changes since commit 60d509fa6a9c4653a86ad830e4c4b30360b23f0e:
+
+  Linux 3.9-rc8 (2013-04-21 14:38:45 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 2842e5b00e99b30404f9af1c1b367c8e467b5c6c:
+
+  m68knommu: enable Timer on coldfire 532x (2013-04-29 09:17:59 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (8):
+      romfs: fix nommu map length to keep inside filesystem
+      m68k: remove unused asm/dbg.h
+      m68knommu: create and use a common M53xx ColdFire class of CPUs
+      m68knommu: make ColdFire M532x platform support more v3 generic
+      m68knommu: add support for the ColdFire 537x family of CPUs
+      m68knommu: add support for configuring a Freescale M5373EVB board
+      m68knommu: fix ColdFire 5373/5329 QSPI base address
+      m68knommu: enable Timer on coldfire 532x
+
+Paul Bolle (1):
+      m68k: clean up unused "config ROMVECSIZE"
+
+Stany MARCEL (1):
+      m68k: Set ColdFire ACR1 cache mode depending on kernel configuration
+
+ arch/m68k/Kconfig.cpu                            | 12 ++++++++++++
+ arch/m68k/Kconfig.machine                        | 16 +++++++---------
+ arch/m68k/Makefile                               |  1 +
+ arch/m68k/include/asm/dbg.h                      |  6 ------
+ arch/m68k/include/asm/dma.h                      |  2 +-
+ arch/m68k/include/asm/m53xxacr.h                 |  4 ++--
+ arch/m68k/include/asm/{m532xsim.h => m53xxsim.h} | 12 ++++++------
+ arch/m68k/include/asm/m54xxacr.h                 |  7 ++++++-
+ arch/m68k/include/asm/mcfgpio.h                  | 10 +++++-----
+ arch/m68k/include/asm/mcfsim.h                   |  4 ++--
+ arch/m68k/include/asm/mcftimer.h                 |  2 +-
+ arch/m68k/platform/coldfire/Makefile             |  2 +-
+ arch/m68k/platform/coldfire/{m532x.c => m53xx.c} | 23 +++++++++++------------
+ arch/m68k/platform/coldfire/timers.c             |  2 +-
+ drivers/tty/serial/68328serial.c                 |  1 -
+ fs/romfs/mmap-nommu.c                            |  5 ++++-
+ 16 files changed, 60 insertions(+), 49 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/dbg.h
+ rename arch/m68k/include/asm/{m532xsim.h => m53xxsim.h} (99%)
+ rename arch/m68k/platform/coldfire/{m532x.c => m53xx.c} (98%)
