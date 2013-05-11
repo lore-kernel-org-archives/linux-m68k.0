@@ -1,78 +1,74 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 3.10
-Date: Fri, 10 May 2013 17:13:58 +1000
-Message-ID: <201305100713.r4A7Dwq6031930@goober.accelcon.com>
+From: Thorsten Glaser <tg@debian.org>
+Subject: I/O macros redefined, inconsistent across m68k machdep headers
+Date: Sat, 11 May 2013 15:19:50 +0000 (UTC)
+Message-ID: <loom.20130511T171757-995@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntqsrv03p.mx.bigpond.com ([61.9.168.237]:20768 "EHLO
-	nskntqsrv03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751561Ab3EJIPx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 10 May 2013 04:15:53 -0400
+Received: from plane.gmane.org ([80.91.229.3]:38738 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753058Ab3EKPZH (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 11 May 2013 11:25:07 -0400
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1UbBfT-0007e3-Jq
+	for linux-m68k@vger.kernel.org; Sat, 11 May 2013 17:25:03 +0200
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sat, 11 May 2013 17:25:03 +0200
+Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Sat, 11 May 2013 17:25:03 +0200
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Hi!
 
-Can you please pull the m68knommu git tree, for-next branch.
+I *really* dislike seeing messages like this while compiling,
+that=E2=80=99s why I=E2=80=99m sending them there. I had a look at both=
+ files,
+but there=E2=80=99s a lot of ifdeffery going on, and I don=E2=80=99t kn=
+ow
+which of the macro resolutions, if any, is supposedly correct.
 
-The bulk of the changes are generalizing the ColdFire v3 core support and
-adding in 537x CPU support. Also a couple of other bug fixes, one to fix
-a reintroduction of a past bug in the romfs filesystem nommu support.
+  CC [M]  drivers/parport/parport_pc.o
+In file included from /tmp/buildd/linux-3.8.12/drivers/parport/
+parport_pc.c:67:0:
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:14:0: warning:=
+=20
+"insl" redefined [enabled by default]
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:280:0: note: thi=
+s is=20
+the location of the previous definition
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:15:0: warning:=
+=20
+"outsl" redefined [enabled by default]
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:283:0: note: thi=
+s is=20
+the location of the previous definition
+In file included from /tmp/buildd/linux-3.8.12/drivers/parport/
+parport_pc.c:67:0:
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:14:0: warning:=
+=20
+"insl" redefined [enabled by default]
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:280:0: note: thi=
+s is=20
+the location of the previous definition
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:15:0: warning:=
+=20
+"outsl" redefined [enabled by default]
+/tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:283:0:this is th=
+e=20
+location of the previous definition
 
-Regards
-Greg
 
+This is from building the amiga flavour (first of six!) of the Debian
+unstable Linux kernel source package. We=E2=80=99ll have the new kernel=
+s in
+roughly 1=C2=BD-2 weeks, if everything works =E2=98=BA
 
-
-
-The following changes since commit 60d509fa6a9c4653a86ad830e4c4b30360b23f0e:
-
-  Linux 3.9-rc8 (2013-04-21 14:38:45 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 2842e5b00e99b30404f9af1c1b367c8e467b5c6c:
-
-  m68knommu: enable Timer on coldfire 532x (2013-04-29 09:17:59 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (8):
-      romfs: fix nommu map length to keep inside filesystem
-      m68k: remove unused asm/dbg.h
-      m68knommu: create and use a common M53xx ColdFire class of CPUs
-      m68knommu: make ColdFire M532x platform support more v3 generic
-      m68knommu: add support for the ColdFire 537x family of CPUs
-      m68knommu: add support for configuring a Freescale M5373EVB board
-      m68knommu: fix ColdFire 5373/5329 QSPI base address
-      m68knommu: enable Timer on coldfire 532x
-
-Paul Bolle (1):
-      m68k: clean up unused "config ROMVECSIZE"
-
-Stany MARCEL (1):
-      m68k: Set ColdFire ACR1 cache mode depending on kernel configuration
-
- arch/m68k/Kconfig.cpu                            | 12 ++++++++++++
- arch/m68k/Kconfig.machine                        | 16 +++++++---------
- arch/m68k/Makefile                               |  1 +
- arch/m68k/include/asm/dbg.h                      |  6 ------
- arch/m68k/include/asm/dma.h                      |  2 +-
- arch/m68k/include/asm/m53xxacr.h                 |  4 ++--
- arch/m68k/include/asm/{m532xsim.h => m53xxsim.h} | 12 ++++++------
- arch/m68k/include/asm/m54xxacr.h                 |  7 ++++++-
- arch/m68k/include/asm/mcfgpio.h                  | 10 +++++-----
- arch/m68k/include/asm/mcfsim.h                   |  4 ++--
- arch/m68k/include/asm/mcftimer.h                 |  2 +-
- arch/m68k/platform/coldfire/Makefile             |  2 +-
- arch/m68k/platform/coldfire/{m532x.c => m53xx.c} | 23 +++++++++++------------
- arch/m68k/platform/coldfire/timers.c             |  2 +-
- drivers/tty/serial/68328serial.c                 |  1 -
- fs/romfs/mmap-nommu.c                            |  5 ++++-
- 16 files changed, 60 insertions(+), 49 deletions(-)
- delete mode 100644 arch/m68k/include/asm/dbg.h
- rename arch/m68k/include/asm/{m532xsim.h => m53xxsim.h} (99%)
- rename arch/m68k/platform/coldfire/{m532x.c => m53xx.c} (98%)
+bye,
+//mirabilos
