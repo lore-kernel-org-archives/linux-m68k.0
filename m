@@ -1,46 +1,57 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: I/O macros redefined, inconsistent across m68k machdep headers
-Date: Sun, 12 May 2013 16:17:43 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1305121616160.6805@herc.mirbsd.org>
-References: <loom.20130511T171757-995@post.gmane.org> <518EED4F.7080702@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: m68k-queue
+Date: Mon, 13 May 2013 11:56:39 +0200
+Message-ID: <CAMuHMdVdP2kyb3hD4H4hyY8O30QJwdHdJ+R9p-ujVncwHCCTLA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:41160 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754174Ab3ELQZ7 convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 May 2013 12:25:59 -0400
-In-Reply-To: <518EED4F.7080702@gmail.com>
+Received: from mail-ie0-f170.google.com ([209.85.223.170]:53913 "EHLO
+	mail-ie0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751620Ab3EMJ4k (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 May 2013 05:56:40 -0400
+Received: by mail-ie0-f170.google.com with SMTP id aq17so12200234iec.29
+        for <linux-m68k@vger.kernel.org>; Mon, 13 May 2013 02:56:39 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Michael Schmitz dixit:
+m68k-queue is at a historical low:
 
-> or just #undef anyway, since we can be fairly certain the previous #d=
-efines
+$ git cherry -v v3.10-rc1 m68k-queue | wc -l
+11
+$
 
-An #undef is always safe even if none has been made.
+and of course I want to keep that, and improve it!
 
-> What kernel versions are these?
+  - m68k/irq: Add handle_polled_irq() for timer based soft interrupts
+    Still no response from tglx :-(
+  - m68k/atari: use polled interrupt handler for timer D interrupts
+    Depends on above
+  - m68k/atari: EtherNAT - ethernet support (smc91x)
+    m68k/atari: EtherNEC - ethernet support (ne)
+    Michael will submit
+  - m68k/atari: USB - add ISP1160 USB host controller support
+    Michael WIP?
+  - m68k/atari: Update defconfigs for new features
+    m68k/mac: Update defconfig
+    I'm working on the defconfigs
+  - fs/fat: Revert "msdos fs: remove unsettable atari option"
+    fs/fat: Atari FAT updates
+    fs/fat: Use correct logical sector size for Atari GEMDOS FAT
+    Who dares to stand in front of the fat maintainer and will submit these?
+    Michael, too?
+  - mac: ADB raw packets
+    I guess this can be dropped?
 
->> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:283:0:this is=
- the
-                     ^^^^^^
+Thanks!
 
-As usual, when building Debian packages, I=E2=80=99m using whatever the
-Debian Linux kernel team has uploaded to unstable.
+Gr{oetje,eeting}s,
 
-(As a side note: will your Atari NIC drivers be in 3.8.10 vanilla?)
+                        Geert
 
-bye,
-//mirabilos
---=20
-Sorry,  I=E2=80=99m annoyed today and you came by as an Arch user. Thes=
-e are the
-perfect victims for any crime against humanity, like  systemd,  feminis=
-m
-or social democracy.
-		-- Christoph Lohmann on dev@suckless.org
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
