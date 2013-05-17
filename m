@@ -1,110 +1,255 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: m68k-queue
-Date: Fri, 17 May 2013 10:40:17 +1200
-Message-ID: <CAOmrzk+_RijrcSCYmAofwi5_0RgF_uUMbQqm_nz1NLq1UUq9Tw@mail.gmail.com>
-References: <CAMuHMdVdP2kyb3hD4H4hyY8O30QJwdHdJ+R9p-ujVncwHCCTLA@mail.gmail.com>
-	<5191FC4C.8010707@biophys.uni-duesseldorf.de>
-	<alpine.LNX.2.00.1305151727470.10554@nippy.intranet>
-	<CAOmrzkL89CrBL1O8EPyS6ivwn947KmgQzJ2mJH=7T5mzpM2ajw@mail.gmail.com>
-	<alpine.LNX.2.00.1305161226500.12344@nippy.intranet>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH v2] m68k: remove 16 unused boards in Kconfig.machine
+Date: Fri, 17 May 2013 09:59:17 +0200
+Message-ID: <1368777557.1350.221.camel@x61.thuisdomein>
+References: <1363868258.1390.129.camel@x61.thuisdomein>
+	 <514FF226.3050507@uclinux.org> <1368735111.1350.211.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-oa0-f43.google.com ([209.85.219.43]:44625 "EHLO
-	mail-oa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751190Ab3EPWkS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 16 May 2013 18:40:18 -0400
-Received: by mail-oa0-f43.google.com with SMTP id o6so4425586oag.2
-        for <linux-m68k@vger.kernel.org>; Thu, 16 May 2013 15:40:17 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1305161226500.12344@nippy.intranet>
+In-Reply-To: <1368735111.1350.211.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Greg Ungerer <gerg@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 
-Finn,
+The Kconfig entries for 16 boards are unused. Remove these, together
+with the 6 entries that these boards select, but are also unused.
 
-> As I recall, there used to be a repository that lived on purplehat.net
-> which was said to have been lost in a disk crash.
->
-> What is on sourceforge is quite a few years older than that, but the odd
-> commit did prove useful sometimes for cherry picking for 2.6, even though
-> the sourceforge repo has very little beyond Linux 2.2. There is a 2.4
-> branch but it was always too buggy to be viable, and didn't track mainline
-> beyond 2.4.18.
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) If double checking your commits is an art I'm no artist! I didn't
+notice that v1 (called "m68k: remove 15 unused boards in
+Kconfig.machine") depended on an older commit in my local stack of
+changes. This commit combines both into one.
 
-I must have been using 2.2 and never tried 2.4 I guess. Too many disk
-crashes to trace that now.
+1) Still only tested by (extensive) grepping of the tree.
 
-It appears there has been testing on recent kernels and continued
-improvement of hardware support - what is the latest kernel version
-that you or others tested?
+ arch/m68k/Kconfig.machine | 134 ----------------------------------------------
+ 1 file changed, 134 deletions(-)
 
-> Which reminds me - I'd like to update the mac68k sites. The sourceforge
-> material (i.e. downloads) are ancient and buggy and the project docs needs
-> some updating.
->
-> Spare time permitting, I'd like to make available some current kernel
-> binaries and tools for download (and remove/archive the broken 2.4
-> downloads), provide instructions for cross-compiling mainline kernels
-> using a current toolchain, with links to Thorsten's cross-compilers and so
-> on.
-
-By all means - if you have something that works better than what's
-there; update it.
-
-> The old material is a bit of an embarrassment, and the omission of current
-> binaries suggests that the port never worked since 2.2...
-
-Entirely possible. Some of the stuff that used to work fine on my
-Falcon is only supported in the 2.4 series now. Never got it to work
-since.
-
-> Does anyone have any thoughts about a refresh of the mac68k
-> downloads/docs?
-
-I've lost track - does the current unstable/experimental debian-ports
-distribution boot and install on Macs? Shame there's no such thing as
-060 accelerator for Macs, but with 040 models it might be feasible.
-
-If so, docs and tools to boot and install might be appreciated.
-
-Cheers,
-
-  Michael
-
-
-
-On Thu, May 16, 2013 at 2:55 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> On Thu, 16 May 2013, Michael Schmitz wrote:
->
->> I had forgotten about the mac68k CVS. Or never knew about it.
->>
->
-> As I recall, there used to be a repository that lived on purplehat.net
-> which was said to have been lost in a disk crash.
->
-> What is on sourceforge is quite a few years older than that, but the odd
-> commit did prove useful sometimes for cherry picking for 2.6, even though
-> the sourceforge repo has very little beyond Linux 2.2. There is a 2.4
-> branch but it was always too buggy to be viable, and didn't track mainline
-> beyond 2.4.18.
->
-> Which reminds me - I'd like to update the mac68k sites. The sourceforge
-> material (i.e. downloads) are ancient and buggy and the project docs needs
-> some updating.
->
-> Spare time permitting, I'd like to make available some current kernel
-> binaries and tools for download (and remove/archive the broken 2.4
-> downloads), provide instructions for cross-compiling mainline kernels
-> using a current toolchain, with links to Thorsten's cross-compilers and so
-> on.
->
-> The old material is a bit of an embarrassment, and the omission of current
-> binaries suggests that the port never worked since 2.2...
->
-> Does anyone have any thoughts about a refresh of the mac68k
-> downloads/docs?
->
-> Finn
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index b9ab0a6..61dc643 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -150,18 +150,6 @@ config XCOPILOT_BUGS
+ 	help
+ 	  Support the bugs of Xcopilot.
+ 
+-config UC5272
+-	bool "Arcturus Networks uC5272 dimm board support"
+-	depends on M5272
+-	help
+-	  Support for the Arcturus Networks uC5272 dimm board.
+-
+-config UC5282
+-	bool "Arcturus Networks uC5282 board support"
+-	depends on M528x
+-	help
+-	  Support for the Arcturus Networks uC5282 dimm board.
+-
+ config UCSIMM
+ 	bool "uCsimm module support"
+ 	depends on M68EZ328
+@@ -205,23 +193,15 @@ config UCQUICC
+ 	help
+ 	  Support for the Lineo uCquicc board.
+ 
+-config ARNEWSH
+-	bool
+-
+ config ARN5206
+ 	bool "Arnewsh 5206 board support"
+ 	depends on M5206
+-	select ARNEWSH
+ 	help
+ 	  Support for the Arnewsh 5206 board.
+ 
+-config FREESCALE
+-	bool
+-
+ config M5206eC3
+ 	bool "Motorola M5206eC3 board support"
+ 	depends on M5206e
+-	select FREESCALE
+ 	help
+ 	  Support for the Motorola M5206eC3 board.
+ 
+@@ -231,88 +211,24 @@ config ELITE
+ 	help
+ 	  Support for the Motorola M5206eLITE board.
+ 
+-config M5208EVB
+-	bool "Freescale M5208EVB board support"
+-	depends on M520x
+-	select FREESCALE
+-	help
+-	  Support for the Freescale Coldfire M5208EVB.
+-
+ config M5235EVB
+ 	bool "Freescale M5235EVB support"
+ 	depends on M523x
+-	select FREESCALE
+ 	help
+ 	  Support for the Freescale M5235EVB board.
+ 
+ config M5249C3
+ 	bool "Motorola M5249C3 board support"
+ 	depends on M5249
+-	select FREESCALE
+ 	help
+ 	  Support for the Motorola M5249C3 board.
+ 
+-config M5271EVB
+-	bool "Freescale (Motorola) M5271EVB board support"
+-	depends on M5271
+-	select FREESCALE
+-	help
+-	  Support for the Freescale (Motorola) M5271EVB board.
+-
+-config M5275EVB
+-	bool "Freescale (Motorola) M5275EVB board support"
+-	depends on M5275
+-	select FREESCALE
+-	help
+-	  Support for the Freescale (Motorola) M5275EVB board.
+-
+ config M5272C3
+ 	bool "Motorola M5272C3 board support"
+ 	depends on M5272
+-	select FREESCALE
+ 	help
+ 	  Support for the Motorola M5272C3 board.
+ 
+-config senTec
+-	bool
+-
+-config COBRA5272
+-	bool "senTec COBRA5272 board support"
+-	depends on M5272
+-	select senTec
+-	help
+-	  Support for the senTec COBRA5272 board.
+-
+-config AVNET
+-	bool
+-
+-config AVNET5282
+-	bool "Avnet 5282 board support"
+-	depends on M528x
+-	select AVNET
+-	help
+-	  Support for the Avnet 5282 board.
+-
+-config M5282EVB
+-	bool "Motorola M5282EVB board support"
+-	depends on M528x
+-	select FREESCALE
+-	help
+-	  Support for the Motorola M5282EVB board.
+-
+-config COBRA5282
+-	bool "senTec COBRA5282 board support"
+-	depends on M528x
+-	select senTec
+-	help
+-	  Support for the senTec COBRA5282 board.
+-
+-config SOM5282EM
+-	bool "EMAC.Inc SOM5282EM board support"
+-	depends on M528x
+-	help
+-	  Support for the EMAC.Inc SOM5282EM module.
+-
+ config WILDFIRE
+ 	bool "Intec Automation Inc. WildFire board support"
+ 	depends on M528x
+@@ -328,14 +244,12 @@ config WILDFIREMOD
+ config ARN5307
+ 	bool "Arnewsh 5307 board support"
+ 	depends on M5307
+-	select ARNEWSH
+ 	help
+ 	  Support for the Arnewsh 5307 board.
+ 
+ config M5307C3
+ 	bool "Motorola M5307C3 board support"
+ 	depends on M5307
+-	select FREESCALE
+ 	help
+ 	  Support for the Motorola M5307C3 board.
+ 
+@@ -345,30 +259,9 @@ config SECUREEDGEMP3
+ 	help
+ 	  Support for the SnapGear SecureEdge/MP3 platform.
+ 
+-config M5329EVB
+-	bool "Freescale (Motorola) M5329EVB board support"
+-	depends on M532x
+-	select FREESCALE
+-	help
+-	  Support for the Freescale (Motorola) M5329EVB board.
+-
+-config COBRA5329
+-	bool "senTec COBRA5329 board support"
+-	depends on M532x
+-	help
+-	  Support for the senTec COBRA5329 board.
+-
+-config M5373EVB
+-	bool "Freescale M5373EVB board support"
+-	depends on M537x
+-	select FREESCALE
+-	help
+-	  Support for the Freescale M5373EVB board.
+-
+ config M5407C3
+ 	bool "Motorola M5407C3 board support"
+ 	depends on M5407
+-	select FREESCALE
+ 	help
+ 	  Support for the Motorola M5407C3 board.
+ 
+@@ -402,39 +295,12 @@ config NETtel
+ 	help
+ 	  Support for the SnapGear NETtel/SecureEdge/SnapGear boards.
+ 
+-config SNAPGEAR
+-	bool "SnapGear router board support"
+-	depends on NETtel
+-	help
+-	  Special additional support for SnapGear router boards.
+-
+-config SNEHA
+-	bool
+-
+-config CPU16B
+-	bool "Sneha Technologies S.L. Sarasvati board support"
+-	depends on M5272
+-	select SNEHA
+-	help
+-	  Support for the SNEHA CPU16B board.
+-
+ config MOD5272
+ 	bool "Netburner MOD-5272 board support"
+ 	depends on M5272
+ 	help
+ 	  Support for the Netburner MOD-5272 board.
+ 
+-config SAVANT
+-	bool
+-
+-config SAVANTrosie1
+-	bool "Savant Rosie1 board support"
+-	depends on M523x
+-	select SAVANT
+-	help
+-	  Support for the Savant Rosie1 board.
+-
+-
+ if !MMU || COLDFIRE
+ 
+ comment "Machine Options"
+-- 
+1.7.11.7
