@@ -1,47 +1,47 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Brad Boyer <flar@allandria.com>
 Subject: Re: m68k-queue
-Date: Sat, 18 May 2013 09:03:41 +0200
-Message-ID: <CAMuHMdWmt8Kc8VNxFX3xRVhk4wL6a1Hgd7V9TcNH8WSE0fYw+A@mail.gmail.com>
+Date: Sat, 18 May 2013 00:09:11 -0700
+Message-ID: <20130518070910.GA26647@cynthia.pants.nu>
 References: <CAMuHMdVdP2kyb3hD4H4hyY8O30QJwdHdJ+R9p-ujVncwHCCTLA@mail.gmail.com>
-	<5191FC4C.8010707@biophys.uni-duesseldorf.de>
-	<alpine.LNX.2.00.1305151727470.10554@nippy.intranet>
-	<CAOmrzkL89CrBL1O8EPyS6ivwn947KmgQzJ2mJH=7T5mzpM2ajw@mail.gmail.com>
-	<alpine.LNX.2.00.1305161226500.12344@nippy.intranet>
-	<CAOmrzk+_RijrcSCYmAofwi5_0RgF_uUMbQqm_nz1NLq1UUq9Tw@mail.gmail.com>
-	<alpine.LNX.2.00.1305181106280.20776@nippy.intranet>
-	<m2ppwored8.fsf@linux-m68k.org>
+ <5191FC4C.8010707@biophys.uni-duesseldorf.de>
+ <20130515054540.GA8137@cynthia.pants.nu>
+ <CAMuHMdX_Mhd1gnZic1sr0nyJJs=oPt54hx7jRfv7j=Dth46VPQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f174.google.com ([209.85.192.174]:63650 "EHLO
-	mail-pd0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754005Ab3ERHDl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 May 2013 03:03:41 -0400
-Received: by mail-pd0-f174.google.com with SMTP id u10so3975428pdi.33
-        for <linux-m68k@vger.kernel.org>; Sat, 18 May 2013 00:03:41 -0700 (PDT)
-In-Reply-To: <m2ppwored8.fsf@linux-m68k.org>
+Received: from cynthia.allandria.com ([76.245.85.235]:40955 "EHLO
+	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753559Ab3ERHJT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 18 May 2013 03:09:19 -0400
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX_Mhd1gnZic1sr0nyJJs=oPt54hx7jRfv7j=Dth46VPQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sat, May 18, 2013 at 8:28 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
->> I haven't tested Thorsten's current images. But if they work on '040
->> Aranym, I can see no reason why they wouldn't work on '040 Macs.
->
-> There are a lot of possible reason why an emulator would not expose bugs
-> in the kernel.
+On Wed, May 15, 2013 at 08:53:15AM +0200, Geert Uytterhoeven wrote:
+> On Wed, May 15, 2013 at 7:45 AM, Brad Boyer <flar@allandria.com> wrote:
+> > On Tue, May 14, 2013 at 08:56:44PM +1200, schmitz wrote:
+> >> >  - mac: ADB raw packets
+> >> >    I guess this can be dropped?
+> >> I'd guess so - I struggle to recall what this was for. Perhaps to
+> >> talk to the clock chip on some Macs. Anyone?
+> >
+> > If you can give instructions on how to look at this one patch (or
+> > just send it in email), I'll take a look and hopefully I remember
+> > enough of the history to give some kind of explanation.
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/geert/linux-m68k.git/log/?h=m68k-queue
+> and click on the commit you're interested in.
 
-Modern kernels seem to work fine on the '040 in my Amiga.
-Note that I'm not (yet) running a modern userland. Still the old real Debian.
+Thank you. I took a look, and I agree with everyone else that this was a
+legacy patch that isn't required.
 
-Gr{oetje,eeting}s,
+The original idea was to use the same API for both real ADB requests and
+everything else that goes through the PMU, Egret, or CUDA chips. This
+includes not only RTC/PRAM management, but power control and several
+other things as well. It wasn't such a great idea, honestly.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Brad Boyer
+	flar@allandria.com
