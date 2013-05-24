@@ -1,46 +1,84 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Laurent Vivier <laurent@vivier.eu>
 Subject: Re: [RFC] m68k: Update defconfigs for v3.9
-Date: Fri, 24 May 2013 17:27:53 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
-References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
+Date: Fri, 24 May 2013 12:54:57 +0200 (CEST)
+Message-ID: <1329276799.240825.1369392897661.open-xchange@ox-webdesk.1and1.fr>
+References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com> <alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
+Reply-To: Laurent Vivier <laurent@vivier.eu>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59569 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756887Ab3EXH17 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 24 May 2013 03:27:59 -0400
-In-Reply-To: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: multipart/alternative;
+	boundary="----=_Part_240824_481899718.1369392897620"
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
+Resent-Message-ID: <1DV7axBTV4M.A.9gF.cc0nRB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+
+------=_Part_240824_481899718.1369392897620
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
 
-On Thu, 23 May 2013, Geert Uytterhoeven wrote:
+> Le 24 mai 2013 =C3=A0 09:27, Finn Thain <fthain@telegraphics.com.au> a =
+=C3=A9crit :
+[...]
+> I have a strong suspicion that some stuff not enabled in your configs
+> would still need to be explicitly disabled to get the best results. I wil=
+l
+> let you know when I get around to testing the mac_defconfig.
 
-> CONFIG_ADB_MACIISI                    : . . . . . y . . . . . y
+I think I can try this on a quadra 800 this week-end.
 
-This is broken. It should be disabled because it will crash (unless it has 
-fixed itself ;-)
+An advices, Finn ?
 
-I see that you have the pmac zilog serial console enabled, which is 
-essential for Macs with either PMU v1 or IIsi ADB.
+Regards,
+Laurent
+------=_Part_240824_481899718.1369392897620
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> CONFIG_INPUT_M68K_BEEP                : m . m . . m . . m . . m
-> CONFIG_INPUT_MISC                     : y . y . y y . . y . . y
-
-Dunno if this works on Macs. I never tested it.
-
-> Any comments are welcome! Thanks!
-
-Looks great but I would need to boot something to be sure. That's not 
-possible for the time being unfortunately. I expect that your defconfigs 
-will get merged before I get around to booting anything (which will make 
-testing easier).
-
-I have a strong suspicion that some stuff not enabled in your configs 
-would still need to be explicitly disabled to get the best results. I will 
-let you know when I get around to testing the mac_defconfig.
-
-Finn
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+ <style type="text/css">.mceResizeHandle {position: absolute;border: 1px solid black;background: #FFF;width: 5px;height: 5px;z-index: 10000}.mceResizeHandle:hover {background: #000}img[data-mce-selected] {outline: 1px solid black}img.mceClonedResizable, table.mceClonedResizable {position: absolute;outline: 1px dashed black;opacity: .5;z-index: 10000}
+</style></head><body style="">
+ 
+  
+ 
+ 
+  <div>
+   <br/>&#62; Le 24 mai 2013 &#224; 09:27, Finn Thain &#60;fthain@telegraphics.com.au&#62; a &#233;crit&#160;:
+   <br/>[...]
+   <br/>&#62; I have a strong suspicion that some stuff not enabled in your configs 
+   <br/>&#62; would still need to be explicitly disabled to get the best results. I will 
+   <br/>&#62; let you know when I get around to testing the mac_defconfig.
+   <br/>
+   <br/>
+  </div> 
+  <div>
+   I think I can try this on a quadra 800 this week-end.
+  </div> 
+  <div>
+   &#160;
+  </div> 
+  <div>
+   An advices, Finn ?
+  </div> 
+  <div>
+   &#160;
+  </div> 
+  <div>
+   Regards,
+  </div> 
+  <div>
+   Laurent
+  </div>
+ 
+</body></html>
+------=_Part_240824_481899718.1369392897620--
