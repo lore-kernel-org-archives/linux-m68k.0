@@ -1,46 +1,31 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [RFC] m68k: Update defconfigs for v3.9
-Date: Fri, 24 May 2013 14:59:45 +0200
-Message-ID: <CAMuHMdX5hqLUXqUZqhUqB7ErR5sR_-7FNxC2i6M__h0_L9M7Wg@mail.gmail.com>
+Date: Fri, 24 May 2013 15:06:16 +0200
+Message-ID: <CAMuHMdXheob0JJS4yWLRDU0rW56RT-rJ_G4vODW7xBWZghsr5Q@mail.gmail.com>
 References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
 	<alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
+	<CAMuHMdX5hqLUXqUZqhUqB7ErR5sR_-7FNxC2i6M__h0_L9M7Wg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f169.google.com ([209.85.192.169]:45542 "EHLO
-	mail-pd0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753579Ab3EXM7p (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 24 May 2013 08:59:45 -0400
-Received: by mail-pd0-f169.google.com with SMTP id y11so4144466pdj.28
-        for <linux-m68k@vger.kernel.org>; Fri, 24 May 2013 05:59:45 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
+Received: from mail-pd0-f180.google.com ([209.85.192.180]:38827 "EHLO
+	mail-pd0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754732Ab3EXNGQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 24 May 2013 09:06:16 -0400
+Received: by mail-pd0-f180.google.com with SMTP id 14so1705257pdc.39
+        for <linux-m68k@vger.kernel.org>; Fri, 24 May 2013 06:06:16 -0700 (PDT)
+In-Reply-To: <CAMuHMdX5hqLUXqUZqhUqB7ErR5sR_-7FNxC2i6M__h0_L9M7Wg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-On Fri, May 24, 2013 at 9:27 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> CONFIG_ADB_MACIISI                    : . . . . . y . . . . . y
->
-> This is broken. It should be disabled because it will crash (unless it has
-> fixed itself ;-)
+On Fri, May 24, 2013 at 2:59 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> However, hp300 doesn't set mach_beep, so I'll disable it on hp300.
 
-Will disable.
-If this is really broken, shall I mark ik BROKEN in Kconfig?
-
-> I see that you have the pmac zilog serial console enabled, which is
-> essential for Macs with either PMU v1 or IIsi ADB.
->
->> CONFIG_INPUT_M68K_BEEP                : m . m . . m . . m . . m
->> CONFIG_INPUT_MISC                     : y . y . y y . . y . . y
->
-> Dunno if this works on Macs. I never tested it.
-
- arch/m68k/mac/config.c: mach_beep = mac_mksound;
-
-so it should work ;-)
-
-However, hp300 doesn't set mach_beep, so I'll disable it on hp300.
+I meant INPUT_MISC, it doesn't set INPUT+M68K_BEEP.
+However, the former is needed for HP_SDC_RTC.
 
 Gr{oetje,eeting}s,
 
