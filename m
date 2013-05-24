@@ -1,50 +1,46 @@
-From: =?iso-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [RFC] m68k: Update defconfigs for v3.9
-Date: Thu, 23 May 2013 22:28:46 +0200
-Message-ID: <C99A4D13-CF11-49A8-9CEE-A3FB8563509F@2013.bluespice.org>
+Date: Fri, 24 May 2013 17:27:53 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1305241705020.3487@nippy.intranet>
 References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 6.3 \(1503\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59569 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756887Ab3EXH17 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 24 May 2013 03:27:59 -0400
 In-Reply-To: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
-Resent-Message-ID: <E42ZpGjdU2J.A.BgG.XwnnRB@bendel>
-List-URL: <http://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitzmic@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Am 23.05.2013 um 21:19 schrieb Geert Uytterhoeven =
-<geert@linux-m68k.org>:
 
-> I pushed out an RFC for a long-overdue update of the m68k defconfig
-> files to my defconfig branch:
-> =
-https://git.kernel.org/cgit/linux/kernel/git/geert/linux-m68k.git/commit/?=
-h=3Ddefconfig&id=3D417ed3fbd7bcc4e909421d35984947d6e45009bb
-> [...]
+On Thu, 23 May 2013, Geert Uytterhoeven wrote:
 
-Looks good for me for Amiga, as far as I can tell in a hurry...=20
+> CONFIG_ADB_MACIISI                    : . . . . . y . . . . . y
 
-> I really hope to push this into mainline this time, and start to =
-update the
-> defconfigs again every kernel release.
+This is broken. It should be disabled because it will crash (unless it has 
+fixed itself ;-)
+
+I see that you have the pmac zilog serial console enabled, which is 
+essential for Macs with either PMU v1 or IIsi ADB.
+
+> CONFIG_INPUT_M68K_BEEP                : m . m . . m . . m . . m
+> CONFIG_INPUT_MISC                     : y . y . y y . . y . . y
+
+Dunno if this works on Macs. I never tested it.
+
 > Any comments are welcome! Thanks!
 
+Looks great but I would need to boot something to be sure. That's not 
+possible for the time being unfortunately. I expect that your defconfigs 
+will get merged before I get around to booting anything (which will make 
+testing easier).
 
-I'm just waiting for the support for Blizzard SCSI Support (ESP), but =
-this should be the only thing I'm missing for now.=20
+I have a strong suspicion that some stuff not enabled in your configs 
+would still need to be explicitly disabled to get the best results. I will 
+let you know when I get around to testing the mac_defconfig.
 
-Maybe cbmuser and twice11 can help Michael in porting the driver when =
-Elgar finally got relocated to the FU Berlin?
-
---=20
-Ciao...            //      Fon: 0381-2744150
-      Ingo       \X/       http://blog.windfluechter.net
-
-
-gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
+Finn
