@@ -1,44 +1,41 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [RFC] m68k: Update defconfigs for v3.9
-Date: Sat, 25 May 2013 21:01:08 +1200
-Message-ID: <51A07DD4.3020601@gmail.com>
-References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com> <C99A4D13-CF11-49A8-9CEE-A3FB8563509F@2013.bluespice.org>
+Date: Sat, 25 May 2013 11:15:01 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1305251113540.5262@herc.mirbsd.org>
+References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
+ <C99A4D13-CF11-49A8-9CEE-A3FB8563509F@2013.bluespice.org> <51A07DD4.3020601@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f170.google.com ([209.85.192.170]:36489 "EHLO
-	mail-pd0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753154Ab3EYJBU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 May 2013 05:01:20 -0400
-Received: by mail-pd0-f170.google.com with SMTP id x10so4850261pdj.29
-        for <linux-m68k@vger.kernel.org>; Sat, 25 May 2013 02:01:19 -0700 (PDT)
-In-Reply-To: <C99A4D13-CF11-49A8-9CEE-A3FB8563509F@2013.bluespice.org>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:24559 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754244Ab3EYL2l convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 May 2013 07:28:41 -0400
+In-Reply-To: <51A07DD4.3020601@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Hi Ingo,
->> I really hope to push this into mainline this time, and start to update the
->> defconfigs again every kernel release.
->> Any comments are welcome! Thanks!
->>     
->
->
-> I'm just waiting for the support for Blizzard SCSI Support (ESP), but this should be the only thing I'm missing for now. 
->   
+Michael Schmitz dixit:
 
-Do remind me :-) I've copied the rather rudimentary Zorro ESP driver I 
-started on vivaldi off to my home machine, and merged  it into my 3.9  
-devel tree. It'll need a bit of backporting into 3.2.25 once it's ready 
-to test, but I can work on it more easily that way.
+> It'll need a bit of backporting into 3.2.25 once it's ready to test, =
+but I can
 
-> Maybe cbmuser and twice11 can help Michael in porting the driver when Elgar finally got relocated to the FU Berlin?
->
->   
-That would be appreciated.
+Don=E2=80=99t bother with that on account of Debian, it=E2=80=99s at 3.=
+8 already,
+and for the buildds, running a custom kernel until your driver is
+merged in 3.10 and Debian has 3.10 will be no problem ;-)
 
-Cheers,
-
-    Michael
+bye,
+//mirabilos
+--=20
+<gcc> ncal.c: In function 'parsemonth': warning: comparison between poi=
+nter
+and integer  =E2=80=A2 <mirabilos> =E2=86=91 hab da =E2=80=9Ein functio=
+n parselmouth=E2=80=9C gelesen
+<Natureshadow> ICH AUCH! =E2=80=A2 <Natureshadow> Ich hab gerade gedach=
+t "H=C3=A4h? Wie,
+hab da parselmouth gelesen ... steht da doch auch :o?"	-- too much fanf=
+ic=E2=80=A6
