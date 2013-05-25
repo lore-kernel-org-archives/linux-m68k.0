@@ -1,30 +1,36 @@
-From: Brad Boyer <flar@allandria.com>
+From: =?iso-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
 Subject: Re: [RFC] m68k: Update defconfigs for v3.9
-Date: Sat, 25 May 2013 12:33:01 -0700
-Message-ID: <20130525193301.GB10275@cynthia.pants.nu>
-References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
-Mime-Version: 1.0
+Date: Sat, 25 May 2013 21:47:44 +0200
+Message-ID: <4BE4134A-EB58-454A-97B3-94960777DF3F@2013.bluespice.org>
+References: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com> <20130525193301.GB10275@cynthia.pants.nu>
+Mime-Version: 1.0 (Mac OS X Mail 6.3 \(1503\))
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cynthia.allandria.com ([76.245.85.235]:45534 "EHLO
-	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757785Ab3EYTdG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 May 2013 15:33:06 -0400
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVSqN6Bjn1Ph-8xzZ64HzAcj7oBA8B3GNE8PTessUzBkQ@mail.gmail.com>
+Received: from vserv.windfluechter.net ([31.172.31.194]:51951 "EHLO
+	vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757763Ab3EYTrw convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 May 2013 15:47:52 -0400
+In-Reply-To: <20130525193301.GB10275@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitzmic@gmail.com>
+To: Brad Boyer <flar@allandria.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitzmic@gmail.com>
 
-On Thu, May 23, 2013 at 09:19:10PM +0200, Geert Uytterhoeven wrote:
-> I pushed out an RFC for a long-overdue update of the m68k defconfig
-> files to my defconfig branch:
-> 
-> arch/m68k/configs/mac_defconfig ------------------+
-> CONFIG_MAC_PARTITION                  : y y y y y . y y y y y .
+Am 25.05.2013 um 21:33 schrieb Brad Boyer <flar@allandria.com>:
 
-Shouldn't MAC_PARTITION be enabled for the mac configuration?
+>> arch/m68k/configs/mac_defconfig ------------------+
+>> CONFIG_MAC_PARTITION                  : y y y y y . y y y y y .
+> Shouldn't MAC_PARTITION be enabled for the mac configuration?
 
-	Brad Boyer
-	flar@allandria.com
+
+Yeah, I wondered about that for Amiga as well, but then I noticed that the corresponding partition is not selected for none of the specific subarch. 
+I assumed therefor that this isn't necessary and the partition is selected/included automatically when the subarch is chosen. 
+But I guess Geert can explain it in more depth. :-)
+
+-- 
+Ciao...            //      Fon: 0381-2744150
+      Ingo       \X/       http://blog.windfluechter.net
+
+
+gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
