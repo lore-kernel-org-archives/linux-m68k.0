@@ -1,41 +1,66 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k: remove CONFIG_EARLY_PRINTK dependency on CONFIG_EMBEDDED,
- default to n
-Date: Wed, 29 May 2013 16:53:32 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1305291630520.10197@nippy.intranet>
+From: gerg@uclinux.org
+Subject: [PATCH] m68k: only use local gpio_request_one if not using GPIOLIB
+Date: Wed, 29 May 2013 17:08:57 +1000
+Message-ID: <1369811337-31628-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56169 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S934833Ab3E2Gxn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 29 May 2013 02:53:43 -0400
+Received: from nschwqsrv01p.mx.bigpond.com ([61.9.189.231]:64830 "EHLO
+	nschwqsrv01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S964850Ab3E2H6l (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 29 May 2013 03:58:41 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
+=46rom: Greg Ungerer <gerg@uclinux.org>
 
-Allow CONFIG_EARLY_PRINTK without requiring both CONFIG_EMBEDDED and 
-CONFIG_DEBUG. Default to disabled.
+Compiling for targets that use the local gpio code (not GPIOLIB) fail t=
+o
+compile with:
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+  CC      arch/m68k/platform/coldfire/device.o
+In file included from include/linux/gpio.h:45:0,
+                 from arch/m68k/platform/coldfire/device.c:15:
+/home/gerg/new-wave.git/linux-3.x/arch/m68k/include/asm/gpio.h:89:19: e=
+rror: static declaration of =E2=80=98gpio_request_one=E2=80=99 follows =
+non-static declaration
+include/asm-generic/gpio.h:195:12: note: previous declaration of =E2=80=
+=98gpio_request_one=E2=80=99 was here
 
+=46ix by conditionally using the local gpio_request_one() function base=
+d on
+!CONFIG_GPIOLIB.
 
-Index: linux-3.3/arch/m68k/Kconfig.debug
-===================================================================
---- linux-3.3.orig/arch/m68k/Kconfig.debug	2012-03-19 10:15:34.000000000 +1100
-+++ linux-3.3/arch/m68k/Kconfig.debug	2013-05-29 10:54:21.000000000 +1000
-@@ -11,9 +11,9 @@ config BOOTPARAM_STRING
- 	depends on BOOTPARAM
- 
- config EARLY_PRINTK
--	bool "Early printk" if EMBEDDED
-+	bool "Early printk"
- 	depends on MVME16x || MAC
--	default y
-+	default n
- 	help
-           Write kernel log output directly to a serial port.
- 
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/gpio.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.=
+h
+index 8cc8343..2f6eec1 100644
+--- a/arch/m68k/include/asm/gpio.h
++++ b/arch/m68k/include/asm/gpio.h
+@@ -86,6 +86,7 @@ static inline int gpio_cansleep(unsigned gpio)
+ 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
+ }
+=20
++#ifndef CONFIG_GPIOLIB
+ static inline int gpio_request_one(unsigned gpio, unsigned long flags,=
+ const char *label)
+ {
+ 	int err;
+@@ -105,5 +106,5 @@ static inline int gpio_request_one(unsigned gpio, u=
+nsigned long flags, const cha
+=20
+ 	return err;
+ }
+-
++#endif /* !CONFIG_GPIOLIB */
+ #endif
+--=20
+1.8.1.4
