@@ -1,66 +1,78 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68k: only use local gpio_request_one if not using GPIOLIB
-Date: Wed, 29 May 2013 17:08:57 +1000
-Message-ID: <1369811337-31628-1-git-send-email-gerg@uclinux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Jiang Liu <liuj97@gmail.com>
+Subject: [PATCH v6, part4 24/41] mm/m68k: prepare for removing num_physpages and simplify mem_init()
+Date: Wed, 29 May 2013 21:57:42 +0800
+Message-ID: <1369835879-23553-25-git-send-email-jiang.liu__9363.48728505454$1369836401$gmane$org@huawei.com>
+References: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwqsrv01p.mx.bigpond.com ([61.9.189.231]:64830 "EHLO
-	nschwqsrv01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S964850Ab3E2H6l (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 29 May 2013 03:58:41 -0400
+In-Reply-To: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-=46rom: Greg Ungerer <gerg@uclinux.org>
+Prepare for removing num_physpages and simplify mem_init().
 
-Compiling for targets that use the local gpio code (not GPIOLIB) fail t=
-o
-compile with:
-
-  CC      arch/m68k/platform/coldfire/device.o
-In file included from include/linux/gpio.h:45:0,
-                 from arch/m68k/platform/coldfire/device.c:15:
-/home/gerg/new-wave.git/linux-3.x/arch/m68k/include/asm/gpio.h:89:19: e=
-rror: static declaration of =E2=80=98gpio_request_one=E2=80=99 follows =
-non-static declaration
-include/asm-generic/gpio.h:195:12: note: previous declaration of =E2=80=
-=98gpio_request_one=E2=80=99 was here
-
-=46ix by conditionally using the local gpio_request_one() function base=
-d on
-!CONFIG_GPIOLIB.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
 ---
- arch/m68k/include/asm/gpio.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/m68k/mm/init.c | 31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
-diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.=
-h
-index 8cc8343..2f6eec1 100644
---- a/arch/m68k/include/asm/gpio.h
-+++ b/arch/m68k/include/asm/gpio.h
-@@ -86,6 +86,7 @@ static inline int gpio_cansleep(unsigned gpio)
- 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
- }
-=20
-+#ifndef CONFIG_GPIOLIB
- static inline int gpio_request_one(unsigned gpio, unsigned long flags,=
- const char *label)
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 614c60a..397a884 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -149,33 +149,11 @@ void __init print_memmap(void)
+ void __init mem_init(void)
  {
- 	int err;
-@@ -105,5 +106,5 @@ static inline int gpio_request_one(unsigned gpio, u=
-nsigned long flags, const cha
-=20
- 	return err;
- }
+ 	pg_data_t *pgdat;
+-	int codepages = 0;
+-	int datapages = 0;
+-	int initpages = 0;
+ 	int i;
+ 
+ 	/* this will put all memory onto the freelists */
+-	num_physpages = 0;
+-	for_each_online_pgdat(pgdat) {
+-		num_physpages += pgdat->node_present_pages;
 -
-+#endif /* !CONFIG_GPIOLIB */
++	for_each_online_pgdat(pgdat)
+ 		free_all_bootmem_node(pgdat);
+-		for (i = 0; i < pgdat->node_spanned_pages; i++) {
+-			struct page *page = pgdat->node_mem_map + i;
+-			char *addr = page_to_virt(page);
+-
+-			if (!PageReserved(page))
+-				continue;
+-			if (addr >= _text &&
+-			    addr < _etext)
+-				codepages++;
+-			else if (addr >= __init_begin &&
+-				 addr < __init_end)
+-				initpages++;
+-			else
+-				datapages++;
+-		}
+-	}
+ 
+ #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
+ 	/* insert pointer tables allocated so far into the tablelist */
+@@ -190,12 +168,7 @@ void __init mem_init(void)
+ 		init_pointer_table((unsigned long)zero_pgtable);
  #endif
---=20
-1.8.1.4
+ 
+-	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10),
+-	       totalram_pages << (PAGE_SHIFT-10),
+-	       codepages << (PAGE_SHIFT-10),
+-	       datapages << (PAGE_SHIFT-10),
+-	       initpages << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	print_memmap();
+ }
+ 
+-- 
+1.8.1.2
