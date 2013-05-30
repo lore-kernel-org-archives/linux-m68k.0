@@ -1,49 +1,78 @@
 From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH] arch: m68k: math-emu: unsigned issue, 'unsigned long'
- will never be less than zero.
-Date: Thu, 30 May 2013 16:08:54 +0800
-Message-ID: <51A70916.40101@asianux.com>
-References: <51A6F0C6.9050806@asianux.com> <m2a9ndndu5.fsf@linux-m68k.org>
+Subject: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl' and
+ 'outsl' need '<< 2'
+Date: Thu, 30 May 2013 17:39:21 +0800
+Message-ID: <51A71E49.1000707__15280.5317346521$1369906827$gmane$org@asianux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m2a9ndndu5.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
-
-On 05/30/2013 03:09 PM, Andreas Schwab wrote:
-> Chen Gang <gang.chen@asianux.com> writes:
-> 
->> > 'oldmant.m32[1]' is 'unsigned long' which never '< 0', and the original
->> > author wanted to check the highest bit whether set.
->> >
->> > So need type cast form 'unsigned long' to 'long'.
-> Better to make the bit test explicit, since it is not a sign bit.
-> 
-
-That sounds good.
+To: Geert Uytterhoeven <geert@linux-m68k.org>, gerg@uclinux.org, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>, linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
 
->> > diff --git a/arch/m68k/math-emu/fp_arith.c b/arch/m68k/math-emu/fp_arith.c
->> > index 08f286d..ef013c5 100644
->> > --- a/arch/m68k/math-emu/fp_arith.c
->> > +++ b/arch/m68k/math-emu/fp_arith.c
->> > @@ -519,7 +519,7 @@ static void fp_roundint(struct fp_ext *dest, int mode)
->> >  				return;
->> >  			break;
->> >  		case 0x401e:
->> > -			if (!(oldmant.m32[1] >= 0))
->> > +			if (!((long)oldmant.m32[1] >= 0))
-> 			if (oldmant.m32[1] & 0x80000000)
+According to the original implementation in 2009, 'insl' and 'outsl'
+need '<< 2'.
 
-OK, I will send patch v2.
+Also add '#ifdef' to avoid multiple defination, and beautify code to
+pass "./scripts/checkpatch.pl"
+
+The related git number:
+  for parport.h: "4914802 m68k,m68knommu: merge header files" in 2009
+  for io_mm.h: "84b16b7 m68k/atari: ROM port ISA adapter support" in Apr 6 2013
+
+The related warning (make EXTRA_CFLAG=-W ARCH=m68k allmodconfig):
+  arch/m68k/include/asm/parport.h:14:0: warning: "insl" redefined [enabled by default]
+  arch/m68k/include/asm/io_mm.h:403:0: note: this is the location of the previous definition
+  arch/m68k/include/asm/parport.h:15:0: warning: "outsl" redefined [enabled by default]
+  arch/m68k/include/asm/io_mm.h:406:0: note: this is the location of the previous definition
 
 
-Thanks.
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ arch/m68k/include/asm/io_mm.h   |    5 +++--
+ arch/m68k/include/asm/parport.h |    9 +++++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
+index ffdf54f4..66be3b2 100644
+--- a/arch/m68k/include/asm/io_mm.h
++++ b/arch/m68k/include/asm/io_mm.h
+@@ -400,10 +400,11 @@ static inline void isa_delay(void)
+ 
+ #define insb(port, buf, nr)	((port) < 1024 ? isa_rom_insb((port), (buf), (nr)) : isa_insb((port), (buf), (nr)))
+ #define insw(port, buf, nr)	((port) < 1024 ? isa_rom_insw((port), (buf), (nr)) : isa_insw((port), (buf), (nr)))
+-#define insl			isa_insl
++#define insl(port, buf, len)	isa_insb((port), (buf), (len) << 2)
++
+ #define outsb(port, buf, nr)	((port) < 1024 ? isa_rom_outsb((port), (buf), (nr)) : isa_outsb((port), (buf), (nr)))
+ #define outsw(port, buf, nr)	((port) < 1024 ? isa_rom_outsw((port), (buf), (nr)) : isa_outsw((port), (buf), (nr)))
+-#define outsl			isa_outsl
++#define outsl(port, buf, len)	isa_outsb((port), (buf), (len) << 2)
+ 
+ #define readb(addr)		in_8(addr)
+ #define writeb(val, addr)	out_8((addr), (val))
+diff --git a/arch/m68k/include/asm/parport.h b/arch/m68k/include/asm/parport.h
+index 5ea75e6..e8e4a2a 100644
+--- a/arch/m68k/include/asm/parport.h
++++ b/arch/m68k/include/asm/parport.h
+@@ -11,8 +11,13 @@
+ #ifndef _ASM_M68K_PARPORT_H
+ #define _ASM_M68K_PARPORT_H 1
+ 
+-#define insl(port,buf,len)   isa_insb(port,buf,(len)<<2)
+-#define outsl(port,buf,len)  isa_outsb(port,buf,(len)<<2)
++#ifndef insl
++#define insl(port, buf, len)   isa_insb((port), (buf), (len) << 2)
++#endif
++
++#ifndef outsl
++#define outsl(port, buf, len)  isa_outsb((port), (buf), (len) << 2)
++#endif
+ 
+ /* no dma, or IRQ autoprobing */
+ static int parport_pc_find_isa_ports (int autoirq, int autodma);
 -- 
-Chen Gang
-
-Asianux Corporation
+1.7.7.6
