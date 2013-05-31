@@ -1,33 +1,84 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] arch: m68k: math-emu: unsigned issue, 'unsigned long'
- will never be less than zero
-Date: Fri, 31 May 2013 11:12:27 +0200
-Message-ID: <CAMuHMdWOxh_YvQyid-PiN7FsM=OC=0YWOzJb86pKaQn3HrjaQw__7485.60224096781$1369991559$gmane$org@mail.gmail.com>
-References: <51A6F0C6.9050806@asianux.com>
-	<m2a9ndndu5.fsf@linux-m68k.org>
-	<51A70C10.6000408@asianux.com>
+Subject: Re: [PATCH][M68K] implement futex.h to support userspace robust
+ futexes and PI mutexes
+Date: Fri, 31 May 2013 11:16:20 +0200
+Message-ID: <CAMuHMdVUtwF-fwvg0-cMVKA9+okcZcW+m-LhUXv+riEBt_hj0w@mail.gmail.com>
+References: <20793.61385.652975.797741@pilspetsen.it.uu.se>
+	<CAMuHMdV5BCRaoNTX+XT=QVNA0nYSh6ah0Sm3xy7RfhCwHN8O6Q@mail.gmail.com>
+	<20886.7458.959080.194716@pilspetsen.it.uu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <51A70C10.6000408@asianux.com>
+Received: from mail-pd0-f178.google.com ([209.85.192.178]:37089 "EHLO
+	mail-pd0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752925Ab3EaJQV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 31 May 2013 05:16:21 -0400
+Received: by mail-pd0-f178.google.com with SMTP id w11so1860527pde.23
+        for <linux-m68k@vger.kernel.org>; Fri, 31 May 2013 02:16:21 -0700 (PDT)
+In-Reply-To: <20886.7458.959080.194716@pilspetsen.it.uu.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Chen Gang <gang.chen@asianux.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+To: Mikael Pettersson <mikpe@it.uu.se>, Greg Ungerer <gerg@uclinux.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Andreas Schwab <schwab@linux-m68k.org>, uClinux development list <uclinux-dev@uclinux.org>
 
-On Thu, May 30, 2013 at 10:21 AM, Chen Gang <gang.chen@asianux.com> wrote:
-> 'oldmant.m32[1]' is 'unsigned long' which never '< 0', and the original
-> author wanted to check the highest bit whether set.
+On Fri, May 17, 2013 at 2:05 PM, Mikael Pettersson <mikpe@it.uu.se> wrote:
+>  > > --- linux-3.8/arch/m68k/include/asm/futex.h.~1~ 1970-01-01 01:00:00.000000000 +0100
+>  > > +++ linux-3.8/arch/m68k/include/asm/futex.h     2013-02-20 22:07:23.459917612 +0100
+>  > > @@ -0,0 +1,94 @@
+>  > > +#ifndef _ASM_M68K_FUTEX_H
+>  > > +#define _ASM_M68K_FUTEX_H
+>  > > +
+>  > > +#ifdef __KERNEL__
+>  > > +#if !defined(CONFIG_MMU)
+>  > > +#include <asm-generic/futex.h>
+>  > > +#else  /* CONFIG_MMU */
+>  >
+>  > Why would you not use the version below on nommu?
+>  > It doesn't seem to have any real dependencies on MMU support?
+>  > What am I missing?
 >
-> So need make the bit test explicit (which is better than type cast form
-> 'unsigned long' to 'long').
->
-> The related warning: (with EXTRA_CFLAGS=-W ARCH=m68k for allmodconfig)
->   arch/m68k/math-emu/fp_arith.c:522:4: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
->
-> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+> The only reason I don't handle no-MMU is that I don't know how much
+> no-MMU butchers the semantics of the various primitives (mainly the
+> user-space accessors).
 
-Thanks, applied and queued for 3.11!
+The userspace accessors shouldn't matter much, I think.
+
+> Does no-MMU pagefault_disable() disable preemption?  This code
+> relies on that.
+
+It seems it does.
+
+>  > > +#include <linux/futex.h>
+>  > > +#include <linux/uaccess.h>
+>  > > +#include <asm/errno.h>
+>  > > +
+>  > > +static inline int
+>  > > +futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+>  > > +                             u32 oldval, u32 newval)
+>  > > +{
+>  > > +       u32 val;
+>  > > +
+>  > > +       if (unlikely(get_user(val, uaddr) != 0))
+>  > > +               return -EFAULT;
+>  > > +
+>  > > +       if (val == oldval && unlikely(put_user(newval, uaddr) != 0))
+>  > > +               return -EFAULT;
+>  > > +
+>  > > +       *uval = val;
+>  > > +
+>  > > +       return 0;
+>  > > +}
+>  >
+>  > This is purely generic, so it could move to the asm-generic version,
+>  > also fixing blackfin, c6x, metag, openrisc, um, unicore32, and xtensa?
+>
+> Yes it should be put somewhere generic, but I don't want to have to
+> investigate each and every arch to guess if they can safely use this
+> version or not.  I'd rather put this somewhere alongside the stub futex.h
+> and have other archs opt-in at the discretion of their maintainers.
+
+Anyway, the m68k version is now in mainline, so I'll let the uClinux people
+decide the rest...
 
 Gr{oetje,eeting}s,
 
