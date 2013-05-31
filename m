@@ -1,39 +1,33 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: mac68k: fix unexpected interrupt with CONFIG_EARLY_PRINTK
-Date: Fri, 31 May 2013 11:11:47 +0200
-Message-ID: <CAMuHMdWKOMO7za+JxjyHu8r48UBNi_1-+LDqD90UAfUvKag6uA@mail.gmail.com>
-References: <alpine.LNX.2.00.1305291227560.6962@nippy.intranet>
+Subject: Re: [PATCH v2] arch: m68k: math-emu: unsigned issue, 'unsigned long'
+ will never be less than zero
+Date: Fri, 31 May 2013 11:12:27 +0200
+Message-ID: <CAMuHMdWOxh_YvQyid-PiN7FsM=OC=0YWOzJb86pKaQn3HrjaQw__7485.60224096781$1369991559$gmane$org@mail.gmail.com>
+References: <51A6F0C6.9050806@asianux.com>
+	<m2a9ndndu5.fsf@linux-m68k.org>
+	<51A70C10.6000408@asianux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1305291227560.6962@nippy.intranet>
+In-Reply-To: <51A70C10.6000408@asianux.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Chen Gang <gang.chen@asianux.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
-On Wed, May 29, 2013 at 4:37 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> The present code does not wait for the SCC to finish resetting itself
-> before trying to initialise the device. The result is that the SCC
-> interrupt sources become enabled (if they weren't already). This leads to
-> an early boot crash (unexpected interrupt) given CONFIG_EARLY_PRINTK. Fix
-> this by adding a delay. A successful reset disables the interrupt sources.
+On Thu, May 30, 2013 at 10:21 AM, Chen Gang <gang.chen@asianux.com> wrote:
+> 'oldmant.m32[1]' is 'unsigned long' which never '< 0', and the original
+> author wanted to check the highest bit whether set.
 >
-> Also, after the reset for channel A setup, the SCC then gets a second
-> reset for channel B setup which leaves channel A uninitialised again. Fix
-> this by performing the reset only once.
-
-Thanks, applied and queued for 3.10.
-
-> ---
+> So need make the bit test explicit (which is better than type cast form
+> 'unsigned long' to 'long').
 >
-> This patch can be applied to -stable trees >= 3.3.y.
+> The related warning: (with EXTRA_CFLAGS=-W ARCH=m68k for allmodconfig)
+>   arch/m68k/math-emu/fp_arith.c:522:4: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
+>
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
 
-... with a CC to stable.
-
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
-This line belongs above the "--".
+Thanks, applied and queued for 3.11!
 
 Gr{oetje,eeting}s,
 
