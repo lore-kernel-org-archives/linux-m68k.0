@@ -1,43 +1,40 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.10, take 3
-Date: Mon, 3 Jun 2013 09:57:52 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1306030955390.17881__35243.1978368715$1370246609$gmane$org@ayla.of.borg>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH v2] arch: m68k: math-emu: unsigned issue, 'unsigned long'
+ will never be less than zero
+Date: Mon, 03 Jun 2013 17:10:20 +0800
+Message-ID: <51AC5D7C.2000905__33317.5344662324$1370250699$gmane$org@asianux.com>
+References: <51A6F0C6.9050806@asianux.com> <m2a9ndndu5.fsf@linux-m68k.org> <51A70C10.6000408@asianux.com> <CAMuHMdWOxh_YvQyid-PiN7FsM=OC=0YWOzJb86pKaQn3HrjaQw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdWOxh_YvQyid-PiN7FsM=OC=0YWOzJb86pKaQn3HrjaQw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
-	Hi Linus,
+On 05/31/2013 05:12 PM, Geert Uytterhoeven wrote:
+> On Thu, May 30, 2013 at 10:21 AM, Chen Gang <gang.chen@asianux.com> wrote:
+>> 'oldmant.m32[1]' is 'unsigned long' which never '< 0', and the original
+>> author wanted to check the highest bit whether set.
+>>
+>> So need make the bit test explicit (which is better than type cast form
+>> 'unsigned long' to 'long').
+>>
+>> The related warning: (with EXTRA_CFLAGS=-W ARCH=m68k for allmodconfig)
+>>   arch/m68k/math-emu/fp_arith.c:522:4: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
+>>
+>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+> 
+> Thanks, applied and queued for 3.11!
+> 
 
-The following changes since commit e4aa937ec75df0eea0bee03bffa3303ad36c986b:
-  Linus Torvalds (1):
-        Linux 3.10-rc3
+Thank you too, and pardon: what is '3.11' ?  :-)
 
-are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+Thanks.
+-- 
+Chen Gang
 
-Finn Thain (1):
-      m68k/mac: Fix unexpected interrupt with CONFIG_EARLY_PRINTK
-
-Summarized:
-  - A boot lock-up on Mac, also destined for stable.
-
-Thanks for pulling!
-
- arch/m68k/kernel/head.S |   29 +++++++++++++++++++----------
- 1 files changed, 19 insertions(+), 10 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Asianux Corporation
