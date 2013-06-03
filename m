@@ -1,57 +1,64 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: Re: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl'
- and 'outsl' need '<< 2'
-Date: Mon, 03 Jun 2013 17:40:02 +0800
-Message-ID: <51AC6472.3060606__35532.9329534017$1370252465$gmane$org@asianux.com>
-References: <51A71E49.1000707@asianux.com> <CAMuHMdUz8o4d=RiAMW8-pCrnZyfoH9EETVqjcb7E1GqCgYmQ7g@mail.gmail.com> <51A93FA0.1050203@biophys.uni-duesseldorf.de> <51A94281.7050708@biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl' and
+ 'outsl' need '<< 2'
+Date: Mon, 3 Jun 2013 12:48:18 +0200
+Message-ID: <CAMuHMdVLA_zgeGxTTzfXnBYZiihH3w+LLcW0cRzVk_dvkFojgg@mail.gmail.com>
+References: <51A71E49.1000707@asianux.com>
+	<CAMuHMdUz8o4d=RiAMW8-pCrnZyfoH9EETVqjcb7E1GqCgYmQ7g@mail.gmail.com>
+	<51A93FA0.1050203@biophys.uni-duesseldorf.de>
+	<51A94281.7050708@biophys.uni-duesseldorf.de>
+	<51AC6472.3060606@asianux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <51A94281.7050708@biophys.uni-duesseldorf.de>
+In-Reply-To: <51AC6472.3060606@asianux.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>, Greg KH <gregkh@linuxfoundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+To: Chen Gang <gang.chen@asianux.com>
+Cc: schmitz <schmitz@biophys.uni-duesseldorf.de>, Greg Ungerer <gerg@uclinux.org>, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>, Greg KH <gregkh@linuxfoundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
-On 06/01/2013 08:38 AM, schmitz wrote:
-> All,
->> Geert ,
->>>>
->>>> The related git number:
->>>>   for parport.h: "4914802 m68k,m68knommu: merge header files" in 2009
->>>>   for io_mm.h: "84b16b7 m68k/atari: ROM port ISA adapter support" in
->>>> Apr 6 2013
->>>>
->>>> The related warning (make EXTRA_CFLAG=-W ARCH=m68k allmodconfig):
->>>>   arch/m68k/include/asm/parport.h:14:0: warning: "insl" redefined
->>>> [enabled by default]
->>>>   arch/m68k/include/asm/io_mm.h:403:0: note: this is the location of
->>>> the previous definition
->>>>   arch/m68k/include/asm/parport.h:15:0: warning: "outsl" redefined
->>>> [enabled by default]
->>>>   arch/m68k/include/asm/io_mm.h:406:0: note: this is the location of
->>>> the previous definition
->>>>     
->> Is that the same problem Thorsten reported recently? parport.h should
->> either use what the arch io.h include defined, or (in the case of Q40
->> on m68k) undef and redefine as needed.
-> It appears this is the same issue, see message ID
-> loom.20130511T171757-995@post.gmane.org to linux-m68k (May 12th, by
-> Thorsten Glaser).
-> 
-> This _only_ applies to use of insl/outsl macros in parport_pc.h, which
-> is only used by Q40 on m68k. I see no reason to change anything in io.h
-> to cope with this warning.
+On Mon, Jun 3, 2013 at 11:40 AM, Chen Gang <gang.chen@asianux.com> wrote:
+> On 06/01/2013 08:38 AM, schmitz wrote:
+>>>>> The related git number:
+>>>>>   for parport.h: "4914802 m68k,m68knommu: merge header files" in 2009
+>>>>>   for io_mm.h: "84b16b7 m68k/atari: ROM port ISA adapter support" in
+>>>>> Apr 6 2013
+>>>>>
+>>>>> The related warning (make EXTRA_CFLAG=-W ARCH=m68k allmodconfig):
+>>>>>   arch/m68k/include/asm/parport.h:14:0: warning: "insl" redefined
+>>>>> [enabled by default]
+>>>>>   arch/m68k/include/asm/io_mm.h:403:0: note: this is the location of
+>>>>> the previous definition
+>>>>>   arch/m68k/include/asm/parport.h:15:0: warning: "outsl" redefined
+>>>>> [enabled by default]
+>>>>>   arch/m68k/include/asm/io_mm.h:406:0: note: this is the location of
+>>>>> the previous definition
+>>>>>
+>>> Is that the same problem Thorsten reported recently? parport.h should
+>>> either use what the arch io.h include defined, or (in the case of Q40
+>>> on m68k) undef and redefine as needed.
+>> It appears this is the same issue, see message ID
+>> loom.20130511T171757-995@post.gmane.org to linux-m68k (May 12th, by
+>> Thorsten Glaser).
+>>
+>> This _only_ applies to use of insl/outsl macros in parport_pc.h, which
+>> is only used by Q40 on m68k. I see no reason to change anything in io.h
+>> to cope with this warning.
+>
+> It sounds reasonable.
+>
+> And excuse me, could you provide the related link directly ?  I don't
+> know how to see the detail of 'loom.20130511T171757-995@post.gmane.org'.
 
-It sounds reasonable.
+http://www.spinics.net/lists/linux-m68k/msg06041.html
 
-And excuse me, could you provide the related link directly ?  I don't
-know how to see the detail of 'loom.20130511T171757-995@post.gmane.org'.
+Gr{oetje,eeting}s,
 
+                        Geert
 
-Thanks.
--- 
-Chen Gang
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Asianux Corporation
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
