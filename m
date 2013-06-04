@@ -1,50 +1,48 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] swim: Release memory region after incorrect return/goto
-Date: Tue, 04 Jun 2013 11:34:35 -0700
-Message-ID: <1370370875.2385.48.camel@joe-AO722>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] swim: Release memory region after incorrect return/goto
+Date: Tue, 4 Jun 2013 20:53:31 +0200
+Message-ID: <CAMuHMdWgzx6P4_GGYarXg90EtPmnMf19sZ4drj=aUo-571piZA@mail.gmail.com>
+References: <1370370875.2385.48.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1370370875.2385.48.camel@joe-AO722>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Laurent Vivier <Laurent@Vivier.EU>
+To: Joe Perches <joe@perches.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Laurent Vivier <Laurent@vivier.eu>
 
-The code uses
+On Tue, Jun 4, 2013 at 8:34 PM, Joe Perches <joe@perches.com> wrote:
+> The code uses
+>
+>         return foo;
+>         goto err_type;
+>
+> when instead the form should have been
+>
+>         ret = foo;
+>         goto err_type;
+>
+> Here this causes a useful release_mem_region to be skipped.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> Reviewed-by: Laurent Vivier <Laurent@Vivier.EU>
+> ---
+>
+> Hey Geert.
+>
+> Just in case you don't see this on lkml.
+> I presume this has to go through you.
 
-	return foo;
-	goto err_type;
+Thanks, will apply and queue for 3.11.
 
-when instead the form should have been
+Gr{oetje,eeting}s,
 
-	ret = foo;
-	goto err_type;
+                        Geert
 
-Here this causes a useful release_mem_region to be skipped.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Reviewed-by: Laurent Vivier <Laurent@Vivier.EU>
----
-
-Hey Geert.
-
-Just in case you don't see this on lkml.
-I presume this has to go through you.
-
- drivers/block/swim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/swim.c b/drivers/block/swim.c
-index 2f445b7..8ed6ccb 100644
---- a/drivers/block/swim.c
-+++ b/drivers/block/swim.c
-@@ -893,7 +893,7 @@ static int swim_probe(struct platform_device *dev)
- 
- 	swim_base = ioremap(res->start, resource_size(res));
- 	if (!swim_base) {
--		return -ENOMEM;
-+		ret = -ENOMEM;
- 		goto out_release_io;
- 	}
- 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
