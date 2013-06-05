@@ -1,49 +1,42 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH] m68k/coldfire: flush cache when creating the signal stack frame
-Date: Wed,  5 Jun 2013 13:42:39 +0200
-Message-ID: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2] arch/*/asm/include/bitops.h: api issue, find_*_bit()
+ defination are different with each other
+Date: Wed, 5 Jun 2013 15:02:22 +0200
+Message-ID: <20130605130222.GL23140__26207.4282778942$1370437362$gmane$org@pengutronix.de>
+References: <51AE8FEF.1020809@asianux.com>
+ <51AE903C.6010806@asianux.com>
+ <51AE909D.9080006@asianux.com>
+ <20130605071915.GK23140@pengutronix.de>
+ <51AF225A.5020703@asianux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <51AF225A.5020703@asianux.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@lists.linux-m68k.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: Chen Gang <gang.chen@asianux.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-When the signal stack frame is created, it must be flushed in order to
-make sure the cache fetches the correct data.
-Without cache flush the icache might pick up old cached data from an older
-signal stack frame if the signal is raised again very fast.
-In case of copyback the data cache muist be pushed first, but is untested.
+Hello,
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
----
- arch/m68k/kernel/signal.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Wed, Jun 05, 2013 at 07:34:50PM +0800, Chen Gang wrote:
+> >> +extern unsigned long  _find_first_zero_bit_le(const void *p,
+> > doesn't checkpatch critizise the double space in the line above?
+> >=20
+>=20
+> Thank you very much for your carefully checking (could you tell me ho=
+w
+> do you find it ?)  :-)
+I have no tool for that, it just catched my eye.
 
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 2a16df3..57fd286 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -50,6 +50,7 @@
- #include <asm/pgtable.h>
- #include <asm/traps.h>
- #include <asm/ucontext.h>
-+#include <asm/cacheflush.h>
- 
- #ifdef CONFIG_MMU
- 
-@@ -181,6 +182,13 @@ static inline void push_cache (unsigned long vaddr)
- 		asm volatile ("movec %0,%%caar\n\t"
- 			      "movec %1,%%cacr"
- 			      : : "r" (vaddr + 4), "r" (temp));
-+	} else {
-+		/* CPU_IS_COLDFIRE */
-+#if defined(CONFIG_CACHE_COPYBACK)
-+		flush_cf_dcache(0, DCACHE_MAX_ADDR);
-+#endif
-+		/* Invalidate instruction cache for the pushed bytes */
-+		clear_cf_icache(vaddr, vaddr + 8);
- 	}
- }
- 
--- 
-1.8.1.5
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
+    |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
