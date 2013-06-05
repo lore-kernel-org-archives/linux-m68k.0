@@ -1,88 +1,126 @@
-From: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl'
- and 'outsl' need '<< 2'
-Date: Wed, 05 Jun 2013 19:24:48 +1200
-Message-ID: <51AEE7C0.9060206__788.583726580505$1370417199$gmane$org@biophys.uni-duesseldorf.de>
-References: <51A71E49.1000707@asianux.com> <CAMuHMdUz8o4d=RiAMW8-pCrnZyfoH9EETVqjcb7E1GqCgYmQ7g@mail.gmail.com> <51A93FA0.1050203@biophys.uni-duesseldorf.de> <51A94281.7050708@biophys.uni-duesseldorf.de> <51AC6472.3060606@asianux.com> <CAMuHMdVLA_zgeGxTTzfXnBYZiihH3w+LLcW0cRzVk_dvkFojgg@mail.gmail.com> <51AE87DF.5000301@asianux.com>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH v2] arch/*/asm/include/bitops.h: api issue, find_*_bit()
+ defination are different with each other
+Date: Wed, 05 Jun 2013 19:34:50 +0800
+Message-ID: <51AF225A.5020703__29166.1641597331$1370432181$gmane$org@asianux.com>
+References: <51AE8FEF.1020809@asianux.com> <51AE903C.6010806@asianux.com> <51AE909D.9080006@asianux.com> <20130605071915.GK23140@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <51AE87DF.5000301@asianux.com>
+In-Reply-To: <20130605071915.GK23140@pengutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Chen Gang <gang.chen@asianux.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>, Greg KH <gregkh@linuxfoundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
+To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
-Chen,
-> On 06/03/2013 06:48 PM, Geert Uytterhoeven wrote:
->   
->>>>>> This _only_ applies to use of insl/outsl macros in parport_pc.h, which
->>>>>> is only used by Q40 on m68k. I see no reason to change anything in io.h
->>>>>> to cope with this warning.
->>>>>>             
->
-> I guess your meaning is :
->
-> ----------------------------diff begin----------------------------------
->
-> diff --git a/arch/m68k/include/asm/parport.h b/arch/m68k/include/asm/parport.h
-> index 5ea75e6..dd1672a 100644
-> --- a/arch/m68k/include/asm/parport.h
-> +++ b/arch/m68k/include/asm/parport.h
-> @@ -11,9 +11,20 @@
->  #ifndef _ASM_M68K_PARPORT_H
->  #define _ASM_M68K_PARPORT_H 1
->  
-> +#ifdef CONFIG_Q40 /* for Q40, need redefine insl/outsl */
-> +
-> +#ifdef insl
-> +#undef insl
-> +#endif
->  #define insl(port,buf,len)   isa_insb(port,buf,(len)<<2)
-> +
-> +#ifdef outsl
-> +#undef outsl
-> +#endif
->  #define outsl(port,buf,len)  isa_outsb(port,buf,(len)<<2)
->  
-> +#endif /* CONFIG_Q40 */
-> +
->  /* no dma, or IRQ autoprobing */
->  static int parport_pc_find_isa_ports (int autoirq, int autodma);
->  static int parport_pc_find_nonpci_ports (int autoirq, int autodma)
->
-> ----------------------------diff end------------------------------------
->   
+On 06/05/2013 03:19 PM, Uwe =EF=BF=BD wrote:
+> Hello,
+>=20
+> On Wed, Jun 05, 2013 at 09:13:01AM +0800, Chen Gang wrote:
+>>
+>> For arm and m68k, they customize find_*_bit(), but the API is differ=
+ent
+>> with 'generic'.
+>>
+>> avr32, s390, and unicore32 also customize find_*_bit(), but the API =
+is
+>> the same with 'generic', and the left architectures all use 'generic=
+'.
+>>
+>> So need change arm and m68k related API to match the 'generic', then
+>> all another modules can face same public API for various architectur=
+es.
+>>
+>> Also beautify code and comments to pass "./scripts/checkpatch.pl"
+>>
+>>
+>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+>> ---
+>>  arch/arm/include/asm/bitops.h  |   26 ++++++++++++++++++--------
+>>  arch/arm/lib/findbit.S         |   14 ++++++++++----
+>>  arch/m68k/include/asm/bitops.h |   25 ++++++++++++++-----------
+>>  3 files changed, 42 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/arch/arm/include/asm/bitops.h b/arch/arm/include/asm/bi=
+tops.h
+>> index e691ec9..10566c8 100644
+>> --- a/arch/arm/include/asm/bitops.h
+>> +++ b/arch/arm/include/asm/bitops.h
+>> @@ -161,18 +161,28 @@ extern int _test_and_change_bit(int nr, volati=
+le unsigned long * p);
+>>  /*
+>>   * Little endian assembly bitops.  nr =3D 0 -> byte 0 bit 0.
+>>   */
+>> -extern int _find_first_zero_bit_le(const void * p, unsigned size);
+>> -extern int _find_next_zero_bit_le(const void * p, int size, int off=
+set);
+>> -extern int _find_first_bit_le(const unsigned long *p, unsigned size=
+);
+>> -extern int _find_next_bit_le(const unsigned long *p, int size, int =
+offset);
+>> +extern unsigned long  _find_first_zero_bit_le(const void *p,
+> doesn't checkpatch critizise the double space in the line above?
+>=20
 
-No need for the #ifdef CONFIG_Q40 - Q40 is the only m68k subarch that 
-builds the parport_pc module (which includes parport.h), IIRC. Is that 
-correct, Thorsten?
+Thank you very much for your carefully checking (could you tell me how
+do you find it ?)  :-)
 
->>>> It sounds reasonable.
->>>>
->>>> And excuse me, could you provide the related link directly ?  I don't
->>>> know how to see the detail of 'loom.20130511T171757-995@post.gmane.org'.
->>>>         
->> http://www.spinics.net/lists/linux-m68k/msg06041.html
->>     
->
-> OK, thanks.  And sorry for replying late (during these days, I have to
-> do another things, and almost can not connect net).
->
->   
-Thanks indeed for the link, Geert. I haven't yet had time to test 
-whether the io.h patch would interfere with Atari IDE or other drivers's 
-use of these macros - maybe this weekend.
-> It seems already has another related patch for it, and it is just
-> applying.
->
-> So need I send it again ?
->
->   
-I think Thorsten submitted a patch to that effect? If so, yours should 
-not be necessary.
+I need wait for a day at least, if no another suggestions or
+completions, I should send patch v3.
 
-Regards,
 
-    Michael
+>> +						unsigned long size);
+>> +extern unsigned long _find_next_zero_bit_le(const void *p, unsigned=
+ long size,
+>> +						unsigned long offset);
+>> +extern unsigned long _find_first_bit_le(const unsigned long *p,
+>> +						unsigned long size);
+>> +extern unsigned long _find_next_bit_le(const unsigned long *p,
+>> +						unsigned long size,
+>> +						unsigned long offset);
+>> =20
+>>  /*
+>>   * Big endian assembly bitops.  nr =3D 0 -> byte 3 bit 0.
+>>   */
+>> -extern int _find_first_zero_bit_be(const void * p, unsigned size);
+>> -extern int _find_next_zero_bit_be(const void * p, int size, int off=
+set);
+>> -extern int _find_first_bit_be(const unsigned long *p, unsigned size=
+);
+>> -extern int _find_next_bit_be(const unsigned long *p, int size, int =
+offset);
+>> +extern unsigned long _find_first_zero_bit_be(const void *p,
+>> +						unsigned long size);
+>> +extern unsigned long _find_next_zero_bit_be(const void *p, unsigned=
+ long size,
+>> +						unsigned long offset);
+>> +extern unsigned long _find_first_bit_be(const unsigned long *p,
+>> +						unsigned long size);
+>> +extern unsigned long _find_next_bit_be(const unsigned long *p,
+>> +						unsigned long size,
+>> +						unsigned long offset);
+>> =20
+>>  #ifndef CONFIG_SMP
+>>  /*
+>> diff --git a/arch/arm/lib/findbit.S b/arch/arm/lib/findbit.S
+>> index 64f6bc1..9e3263a 100644
+>> --- a/arch/arm/lib/findbit.S
+>> +++ b/arch/arm/lib/findbit.S
+>> @@ -19,7 +19,8 @@
+>> =20
+>>  /*
+>>   * Purpose  : Find a 'zero' bit
+>> - * Prototype: int find_first_zero_bit(void *addr, unsigned int maxb=
+it);
+>> + * Prototype: unsigned long  find_first_zero_bit(const void *p,
+> here is another one.
+>=20
+
+Thanks.
+
+
+--=20
+Chen Gang
+
+Asianux Corporation
