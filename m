@@ -1,91 +1,34 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH v3, part1 07/10] PCI, unicore, m68k: remove redundant
- call of pci_bus_add_devices()
-Date: Thu, 06 Jun 2013 16:54:17 +1000
-Message-ID: <51B03219.4020602@uclinux.org>
-References: <1369489718-25869-1-git-send-email-jiang.liu@huawei.com> <1369489718-25869-8-git-send-email-jiang.liu@huawei.com> <CAErSpo7Lbu_MuxYGa6sghu7xuDJ9ZFN8pK0=xM0QMOwr=P2Y_Q@mail.gmail.com>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl'
+ and 'outsl' need '<< 2'
+Date: Thu, 06 Jun 2013 16:38:24 +0800
+Message-ID: <51B04A80.7050001@asianux.com>
+References: <51A71E49.1000707@asianux.com> <CAMuHMdUz8o4d=RiAMW8-pCrnZyfoH9EETVqjcb7E1GqCgYmQ7g@mail.gmail.com> <51A93FA0.1050203@biophys.uni-duesseldorf.de> <51A94281.7050708@biophys.uni-duesseldorf.de> <51AC6472.3060606@asianux.com> <CAMuHMdVLA_zgeGxTTzfXnBYZiihH3w+LLcW0cRzVk_dvkFojgg@mail.gmail.com> <51AE87DF.5000301@asianux.com> <51AEE7C0.9060206@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAErSpo7Lbu_MuxYGa6sghu7xuDJ9ZFN8pK0=xM0QMOwr=P2Y_Q@mail.gmail.com>
+In-Reply-To: <51AEE7C0.9060206@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <liuj97@gmail.com>, Yinghai Lu <yinghai@kernel.org>, Jiang Liu <jiang.liu@huawei.com>, "Rafael J . Wysocki" <rjw@sisk.pl>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gu Zheng <guz.fnst@cn.fujitsu.com>, Toshi Kani <toshi.kani@hp.com>, Myron Stowe <myron.stowe@redhat.com>, Yijing Wang <wangyijing@huawei.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, Guan Xuetao <gxt@mprc.pku.edu.cn>
+To: schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>, Greg KH <gregkh@linuxfoundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Thorsten Glaser <tg@mirbsd.de>
 
-Hi Bjorn,
-
-On 06/06/13 07:31, Bjorn Helgaas wrote:
-> [+cc m68k and unicore32 maintainers]
-> 
-> On Sat, May 25, 2013 at 7:48 AM, Jiang Liu <liuj97@gmail.com> wrote:
->> pci_scan_bus() and pci_scan_root_bus() has called pci_bus_add_devices()
->> once, so remove the redundant call of pci_bus_add_devices().
->> On the other handle, subsys_init() callbacks will be invoked before
->> device_init() callbacks, so it should be safe to remove the redundant
->> calls.
+On 06/05/2013 03:24 PM, schmitz wrote:
+>> It seems already has another related patch for it, and it is just
+>> applying.
 >>
->> Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
->> ---
->>  arch/m68k/platform/coldfire/pci.c | 2 +-
->>  arch/unicore32/kernel/pci.c       | 5 -----
->>  2 files changed, 1 insertion(+), 6 deletions(-)
-> 
-> m68k and unicore32 guys:
-> 
-> I plan to apply the patch below.  I actually split it into two, one
-> for m68k and another for unicore32.  If you object or would rather
-> push it through your trees, let me know.  I don't think the rest of
-> the series has any actual dependency on this, so there shouldn't be
-> any problem if you want to take it yourselves.
-
-I have no objection for m68k, feel free to push it through your tree.
-I can't test the change in a board that has a PCI card in it right at
-the moment, but otherwise:
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-Regards
-Greg
-
-
-> Bjorn
-> 
->> diff --git a/arch/m68k/platform/coldfire/pci.c b/arch/m68k/platform/coldfire/pci.c
->> index 8572246..2345972 100644
->> --- a/arch/m68k/platform/coldfire/pci.c
->> +++ b/arch/m68k/platform/coldfire/pci.c
->> @@ -320,7 +320,7 @@ static int __init mcf_pci_init(void)
->>         pci_bus_size_bridges(rootbus);
->>         pci_bus_assign_resources(rootbus);
->>         pci_enable_bridges(rootbus);
->> -       pci_bus_add_devices(rootbus);
->> +
->>         return 0;
->>  }
+>> So need I send it again ?
 >>
->> diff --git a/arch/unicore32/kernel/pci.c b/arch/unicore32/kernel/pci.c
->> index ef69c0c..374a055 100644
->> --- a/arch/unicore32/kernel/pci.c
->> +++ b/arch/unicore32/kernel/pci.c
->> @@ -277,11 +277,6 @@ static int __init pci_common_init(void)
->>                 pci_bus_assign_resources(puv3_bus);
->>         }
->>
->> -       /*
->> -        * Tell drivers about devices found.
->> -        */
->> -       pci_bus_add_devices(puv3_bus);
->> -
->>         return 0;
->>  }
->>  subsys_initcall(pci_common_init);
->> --
->> 1.8.1.2
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+>>   
+> I think Thorsten submitted a patch to that effect? If so, yours should
+> not be necessary.
+
+OK, thanks.
+
+And also thank Geert.
+
+-- 
+Chen Gang
+
+Asianux Corporation
