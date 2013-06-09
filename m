@@ -1,84 +1,90 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] arch: m68k: include: asm: the 3rd parameter of 'insl' and
- 'outsl' need '<< 2'
-Date: Fri, 7 Jun 2013 10:47:45 +1200
-Message-ID: <CAOmrzkKROD5gkLdme7C2wF4NVMCB=i4_Tr+MVWt0DoVh9E5biw@mail.gmail.com>
-References: <51A71E49.1000707@asianux.com>
-	<CAMuHMdUz8o4d=RiAMW8-pCrnZyfoH9EETVqjcb7E1GqCgYmQ7g@mail.gmail.com>
-	<51A93FA0.1050203@biophys.uni-duesseldorf.de>
-	<51A94281.7050708@biophys.uni-duesseldorf.de>
-	<51AC6472.3060606@asianux.com>
-	<CAMuHMdVLA_zgeGxTTzfXnBYZiihH3w+LLcW0cRzVk_dvkFojgg@mail.gmail.com>
-	<51AE87DF.5000301@asianux.com>
-	<51AEE7C0.9060206@biophys.uni-duesseldorf.de>
-	<Pine.BSM.4.64L.1306050936200.18048@herc.mirbsd.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: I/O macros redefined, inconsistent across m68k machdep headers
+Date: Sun, 9 Jun 2013 14:44:41 +0200
+Message-ID: <CAMuHMdVD5cP5kf8Fw7FA-Xi3T1TfRQEX2O7zv9bfjyrOODGFFg@mail.gmail.com>
+References: <loom.20130511T171757-995@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <Pine.BSM.4.64L.1306050936200.18048@herc.mirbsd.org>
-Sender: linux-arch-owner@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: Chen Gang <gang.chen@asianux.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, schmitz@debian.org, Sam Ravnborg <sam@ravnborg.org>, Greg KH <gregkh@linuxfoundation.org>, linux-m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pb0-f51.google.com ([209.85.160.51]:42718 "EHLO
+	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753818Ab3FIMol convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Jun 2013 08:44:41 -0400
+Received: by mail-pb0-f51.google.com with SMTP id um15so6283653pbc.24
+        for <linux-m68k@vger.kernel.org>; Sun, 09 Jun 2013 05:44:41 -0700 (PDT)
+In-Reply-To: <loom.20130511T171757-995@post.gmane.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Thorsten Glaser <tg@debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Thorsten,
-
->> No need for the #ifdef CONFIG_Q40 - Q40 is the only m68k subarch tha=
-t builds
->> the parport_pc module (which includes parport.h), IIRC. Is that corr=
-ect,
->> Thorsten?
+On Sat, May 11, 2013 at 5:19 PM, Thorsten Glaser <tg@debian.org> wrote:
+>   CC [M]  drivers/parport/parport_pc.o
+> In file included from /tmp/buildd/linux-3.8.12/drivers/parport/
+> parport_pc.c:67:0:
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:14:0: warnin=
+g:
+> "insl" redefined [enabled by default]
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:280:0: note: t=
+his is
+> the location of the previous definition
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:15:0: warnin=
+g:
+> "outsl" redefined [enabled by default]
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:283:0: note: t=
+his is
+> the location of the previous definition
+> In file included from /tmp/buildd/linux-3.8.12/drivers/parport/
+> parport_pc.c:67:0:
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:14:0: warnin=
+g:
+> "insl" redefined [enabled by default]
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:280:0: note: t=
+his is
+> the location of the previous definition
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/parport.h:15:0: warnin=
+g:
+> "outsl" redefined [enabled by default]
+> /tmp/buildd/linux-3.8.12/arch/m68k/include/asm/io_mm.h:283:0:this is =
+the
+> location of the previous definition
 >
-> The header is included outside of Q40. There is no Q40 kernel
-> in Debian (yet). So, no.
-
-OK, so it's the Amiga use of parport_pc that you had issues with. I
-really should stop
-relying on my increasingly fuzzy memory.
-
-Looking at the arch defconfigs, neither Amiga or Atari defines
-CONFIG_PARPORT_PC.
-Is this driver used on any m68k subarch at all? At this stage I'm not
-even certain it is
-in fact used on Q40.
-
-Anyway, back to the patch at hand: any change to parport_pc.h should
-not affect m68k at all,
-so you're free to patch this any way you please.
-
-Changes to m68k asm/io.h should be avoided unless shown to cause no
-harm to existing drivers.
-I can't see direct use of insl/outsl in Atari m68k drivers I checked,
-but due to the slightly tangled
-nature of m68k io.h, these may get pulled in through macros yet. I'd
-prefer the code stays as-is.
-
-Regards,
-
-   Michael
-
-
-2013/6/6 Thorsten Glaser <tg@mirbsd.de>:
-> schmitz dixit:
 >
->> No need for the #ifdef CONFIG_Q40 - Q40 is the only m68k subarch tha=
-t builds
->> the parport_pc module (which includes parport.h), IIRC. Is that corr=
-ect,
->> Thorsten?
->
-> The header is included outside of Q40. There is no Q40 kernel
-> in Debian (yet). So, no.
->
-> bye,
-> //mirabilos
-> --
-> 17:08=E2=8E=9C=C2=ABVutral=C2=BB fr=C3=BCher gabs keine packenden sma=
-rtphones und so
-> 17:08=E2=8E=9C=C2=ABVutral=C2=BB heute gibts frauen die sind facebook=
-s=C3=BCchtig
-> 17:10=E2=8E=9C=C2=ABVutral=C2=BB aber auch traurig; fr=C3=BCher warst=
- du als nerd voll am arsch
-> 17:10=E2=8E=9C=C2=ABVutral=C2=BB heute bist du als nerd der einzige d=
-er wirklich damit klarkommt
+> This is from building the amiga flavour (first of six!) of the Debian
+> unstable Linux kernel source package. We=E2=80=99ll have the new kern=
+els in
+
+I only have this warning in builds that enable as much as possible (e.g=
+=2E
+allmodconfig).
+
+PARPORT_PC depends on (!M68K || ISA).
+ISA depends on Q40 || AMIGA_PCMCIA.
+
+However, I have CONFIG_PARPORT_PC=3Dn in amiga_defconfig and
+multi_defconfig, and CONFIG_PARPORT=3Dn in q40_defconfig.
+Hence I don't see it elsewhere.
+
+As we don't have support for bridgeboards on Amiga, we probably don't
+need CONFIG_PARPORT_PC on Amiga. Unless someone is using it
+with a PCMCIA parallel port adapter?
+
+Probably CONFIG_PARPORT and CONFIG_PARPORT_PC should be
+enabled in q40_defconfig (and thus multi_defconfig) though, to accommod=
+ate
+ISA multi-I/O boards.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
