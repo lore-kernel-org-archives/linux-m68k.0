@@ -1,30 +1,37 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k/uaccess: Fix asm constraints for userspace access
-Date: Thu, 13 Jun 2013 14:25:20 +0200
-Message-ID: <mvm7ghyrydr.fsf@hawking.suse.de>
+Date: Thu, 13 Jun 2013 15:16:32 +0200
+Message-ID: <CAMuHMdVdvHBzFbsNu96J+hXO-aVU8Z1XXVG_UtszJMdoz9nkMg__400.391958146606$1371129417$gmane$org@mail.gmail.com>
 References: <1371124784-13306-1-git-send-email-geert@linux-m68k.org>
+	<mvm7ghyrydr.fsf@hawking.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1371124784-13306-1-git-send-email-geert@linux-m68k.org> (Geert
-	Uytterhoeven's message of "Thu, 13 Jun 2013 13:59:44 +0200")
+In-Reply-To: <mvm7ghyrydr.fsf@hawking.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Thu, Jun 13, 2013 at 2:25 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>
+>> Also, relax the asm constraints for 16-bit userspace accesses in
+>> __put_user() and __get_user(), as both "move" and "moves" do support
+>> such transfers between memory and address registers.
+>
+> There's another occurrence in __constant_copy_from_user and
+> __constant_copy_to_user.
 
-> Also, relax the asm constraints for 16-bit userspace accesses in
-> __put_user() and __get_user(), as both "move" and "moves" do support
-> such transfers between memory and address registers.
+Thanks! I will fix those, too.
 
-There's another occurrence in __constant_copy_from_user and
-__constant_copy_to_user.
+Gr{oetje,eeting}s,
 
-Andreas.
+                        Geert
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
