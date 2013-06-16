@@ -1,29 +1,26 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/uaccess: Fix asm constraints for userspace access
-Date: Thu, 13 Jun 2013 15:16:32 +0200
-Message-ID: <CAMuHMdVdvHBzFbsNu96J+hXO-aVU8Z1XXVG_UtszJMdoz9nkMg__400.391958146606$1371129417$gmane$org@mail.gmail.com>
-References: <1371124784-13306-1-git-send-email-geert@linux-m68k.org>
-	<mvm7ghyrydr.fsf@hawking.suse.de>
+Subject: Re: [PATCH] M68K: Vector ints need a valid interrupt handler
+Date: Sun, 16 Jun 2013 14:08:54 +0200
+Message-ID: <CAMuHMdVa6KfTj6YfmnYcC-VDJqXhW0jxgk_UYpTEY7BMW8wWvw@mail.gmail.com>
+References: <20130603105301.30F8E1D018@solo.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <mvm7ghyrydr.fsf@hawking.suse.de>
+In-Reply-To: <20130603105301.30F8E1D018@solo.franken.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On Thu, Jun 13, 2013 at 2:25 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Mon, Jun 3, 2013 at 12:53 PM, Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> To get vectored interrupts working we need to switch from the default
+> handler handle_bad_irq() to something more sensible. Tested on a MVME177
+> board.
 >
->> Also, relax the asm constraints for 16-bit userspace accesses in
->> __put_user() and __get_user(), as both "move" and "moves" do support
->> such transfers between memory and address registers.
->
-> There's another occurrence in __constant_copy_from_user and
-> __constant_copy_to_user.
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Thanks! I will fix those, too.
+Thanks, queued for 3.11.
 
 Gr{oetje,eeting}s,
 
