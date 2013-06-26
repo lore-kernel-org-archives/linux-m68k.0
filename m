@@ -1,30 +1,43 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: iop_msg_pool
-Date: Wed, 26 Jun 2013 22:14:51 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1306262153080.20472@nippy.intranet>
-References: <CAMuHMdUCMUkoDbTFFXnVp-6E0LO5Y=4t64E13cWSpS1jVr2D_w@mail.gmail.com> <alpine.LNX.2.00.1306262026380.19790@nippy.intranet> <CAMuHMdXzh-3f2hRtUDxd3M+Gu9s1uLt-sPiERYDkXNuKkuUBig@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] m68k/sun3: Dynamically allocate the table to track
+ IOMMU use
+Date: Wed, 26 Jun 2013 17:00:09 +0200
+Message-ID: <CAMuHMdUuxvaMJP6rL6HgrPix+asx7acCfA=mZV_CFki5r103hw__10301.6392015435$1372258849$gmane$org@mail.gmail.com>
+References: <1372189326-12230-1-git-send-email-geert@linux-m68k.org>
+	<1372189326-12230-2-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58713 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752018Ab3FZMPI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 26 Jun 2013 08:15:08 -0400
-In-Reply-To: <CAMuHMdXzh-3f2hRtUDxd3M+Gu9s1uLt-sPiERYDkXNuKkuUBig@mail.gmail.com>
+In-Reply-To: <1372189326-12230-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Sam Creasey <sammy@sammy.net>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
+On Tue, Jun 25, 2013 at 9:42 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> -static unsigned long iommu_use[IOMMU_TOTAL_ENTRIES];
+> +static unsigned long *iommu_use;
+>
+>  #define dvma_index(baddr) ((baddr - DVMA_START) >> DVMA_PAGE_SHIFT)
+>
+> @@ -266,6 +267,7 @@ void __init dvma_init(void)
+>
+>         list_add(&(hole->list), &hole_list);
+>
+> +       iommu_use = alloc_bootmem(IOMMU_TOTAL_ENTRIES * sizeof(unsigned long));
+>         memset(iommu_use, 0, sizeof(iommu_use));
 
-On Wed, 26 Jun 2013, Geert Uytterhoeven wrote:
+Bummer, the sizeof in the above line is no longer valid.
+As the bootmem allocator zeroes memory, the line can just be removed.
 
-> Are iop_scc_present and iop_ism_present mutually exclusive?
+Gr{oetje,eeting}s,
 
-Both are true or both are false, assuming the existing values in 
-mac_data_table[]. But looking at iop_preinit(), I'd guess that the idea 
-was to have the ability to disable either the SCC or the ADB channel for a 
-particular model for development purposes. So I'd treat them as 
-independent.
+                        Geert
 
-Finn
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
