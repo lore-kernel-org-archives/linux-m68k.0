@@ -1,39 +1,82 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] m68knommu: Mark config_BSP() __init
-Date: Sun, 30 Jun 2013 12:50:19 +1000
-Message-ID: <51CF9CEB.20800@uclinux.org>
-References: <1372189212-12136-1-git-send-email-geert@linux-m68k.org> <51CB745B.4060604@uclinux.org> <CAMuHMdV2XakPGZP5gYygBPgg+DeSRj7qP6hF7T6nN-OQKTodtA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/setup: Use pr_*() instead of plain printk()
+Date: Sun, 30 Jun 2013 11:48:09 +0200
+Message-ID: <1372585689-29492-1-git-send-email-geert__38627.4173426957$1372585730$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdV2XakPGZP5gYygBPgg+DeSRj7qP6hF7T6nN-OQKTodtA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Geert,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/kernel/setup_mm.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-On 27/06/13 16:49, Geert Uytterhoeven wrote:
-> On Thu, Jun 27, 2013 at 1:08 AM, Greg Ungerer <gerg@uclinux.org> wrote:
->> On 26/06/13 05:40, Geert Uytterhoeven wrote:
->>>
->>> Some instances of config_BSP() lack an __init annotation.
->>>
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->>
->> Acked-by: Greg Ungerer <gerg@uclinux.org>
->>
->> Looks good. Are you going to push it via your tree, or do you want
->> me too?
->
-> As it's m68nommu, perhaps through your tree? Unless you don't have time to
-> handle it.
-
-I can take care of it. Though I may be a little slower than usual,
-I am traveling at the moment.
-
-Regards
-Greg
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index e67e531..a2c2c0c 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -161,7 +161,7 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ 				m68k_memory[m68k_num_memory].size = data[1];
+ 				m68k_num_memory++;
+ 			} else
+-				printk("m68k_parse_bootinfo: too many memory chunks\n");
++				pr_warn("m68k_parse_bootinfo: too many memory chunks\n");
+ 			break;
+ 
+ 		case BI_RAMDISK:
+@@ -197,8 +197,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ 				unknown = 1;
+ 		}
+ 		if (unknown)
+-			printk("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
+-			       record->tag);
++			pr_warn("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
++				   record->tag);
+ 		record = (struct bi_record *)((unsigned long)record +
+ 					      record->size);
+ 	}
+@@ -206,8 +206,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ 	m68k_realnum_memory = m68k_num_memory;
+ #ifdef CONFIG_SINGLE_MEMORY_CHUNK
+ 	if (m68k_num_memory > 1) {
+-		printk("Ignoring last %i chunks of physical memory\n",
+-		       (m68k_num_memory - 1));
++		pr_warn("Ignoring last %i chunks of physical memory\n",
++			(m68k_num_memory - 1));
+ 		m68k_num_memory = 1;
+ 	}
+ #endif
+@@ -247,7 +247,7 @@ void __init setup_arch(char **cmdline_p)
+ 		asm (".chip 68060; movec %%pcr,%0; .chip 68k"
+ 		     : "=d" (pcr));
+ 		if (((pcr >> 8) & 0xff) <= 5) {
+-			printk("Enabling workaround for errata I14\n");
++			pr_warn("Enabling workaround for errata I14\n");
+ 			asm (".chip 68060; movec %0,%%pcr; .chip 68k"
+ 			     : : "d" (pcr | 0x20));
+ 		}
+@@ -353,7 +353,7 @@ void __init setup_arch(char **cmdline_p)
+ 				     BOOTMEM_DEFAULT);
+ 		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
+ 		initrd_end = initrd_start + m68k_ramdisk.size;
+-		printk("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
++		pr_info("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
+ 	}
+ #endif
+ 
+@@ -538,9 +538,9 @@ void check_bugs(void)
+ {
+ #ifndef CONFIG_M68KFPU_EMU
+ 	if (m68k_fputype == 0) {
+-		printk(KERN_EMERG "*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
++		pr_emerg("*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
+ 			"WHICH IS REQUIRED BY LINUX/M68K ***\n");
+-		printk(KERN_EMERG "Upgrade your hardware or join the FPU "
++		pr_emerg("Upgrade your hardware or join the FPU "
+ 			"emulation project\n");
+ 		panic("no FPU");
+ 	}
+-- 
+1.7.9.5
