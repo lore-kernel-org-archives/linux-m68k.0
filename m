@@ -1,82 +1,44 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.11
-Date: Mon, 1 Jul 2013 12:16:16 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1307011212400.22695__2460.92697275362$1372673807$gmane$org@ayla.of.borg>
+Subject: Re: [PATCH] m68k/setup: Use pr_*() instead of plain printk()
+Date: Mon, 1 Jul 2013 23:02:06 +0200
+Message-ID: <CAMuHMdUA3+gLi00Tvik2SjZaRYSC2sMMmP9TMH=Vb1dAubXx3Q@mail.gmail.com>
+References: <1372585689-29492-1-git-send-email-geert@linux-m68k.org>
+	<1372630948.2083.3.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1372630948.2083.3.camel@joe-AO722>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-	Hi Linus,
+On Mon, Jul 1, 2013 at 12:22 AM, Joe Perches <joe@perches.com> wrote:
+>> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+>
+>> @@ -161,7 +161,7 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+> []
+>> -                             printk("m68k_parse_bootinfo: too many memory chunks\n");
+>> +                             pr_warn("m68k_parse_bootinfo: too many memory chunks\n");
+>
+> These are generally better written by
+> removing the hand-written function name
+> and using "%s: ", __func__
+>
+>                                 pr_warn("%s: too many memory chunks\n",
+>                                         __func__);
 
-The following changes since commit 9e895ace5d82df8929b16f58e9f515f6d54ab82d:
-
-  Linux 3.10-rc7 (2013-06-22 09:47:31 -1000)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-3.11
-
-for you to fetch changes up to 980f3a7315b4691ec90538352a9e9c5a53ea9d34:
-
-  m68k/q40: Enable PC parallel port in defconfig (2013-06-24 19:44:30 +0200)
-
-----------------------------------------------------------------
-Chen Gang (1):
-      m68k/math-emu: unsigned issue, 'unsigned long' will never be less than zero
-
-Denis Efremov (1):
-      m68k/sun3: remove inline marking of EXPORT_SYMBOL functions
-
-Finn Thain (1):
-      m68k: remove CONFIG_EARLY_PRINTK dependency on CONFIG_EMBEDDED, default to n
-
-Geert Uytterhoeven (4):
-      m68k: Remove inline strcpy() and strcat() implementations
-      m68k/uaccess: Fix asm constraints for userspace access
-      m68k/q40: Undefine insl/outsl before redefining them
-      m68k/q40: Enable PC parallel port in defconfig
-
-Jingoo Han (2):
-      [SCSI] a4000t: use module_platform_driver_probe()
-      [SCSI] a3000: use module_platform_driver_probe()
-
-Joe Perches (1):
-      swim: Release memory region after incorrect return/goto
-
-Thomas Bogendoerfer (1):
-      m68k/irq: Vector ints need a valid interrupt handler
-
-Thanks for pulling!
-
- arch/m68k/Kconfig.debug            |    3 +--
- arch/m68k/configs/multi_defconfig  |    2 ++
- arch/m68k/configs/q40_defconfig    |    6 ++++++
- arch/m68k/include/asm/parport.h    |    2 ++
- arch/m68k/include/asm/string.h     |   32 --------------------------------
- arch/m68k/include/asm/uaccess_mm.h |    8 ++++----
- arch/m68k/kernel/ints.c            |    2 +-
- arch/m68k/lib/Makefile             |    2 +-
- arch/m68k/lib/string.c             |   22 ----------------------
- arch/m68k/lib/uaccess.c            |    6 +++---
- arch/m68k/math-emu/fp_arith.c      |    2 +-
- arch/m68k/sun3/sun3dvma.c          |    2 +-
- drivers/block/swim.c               |    2 +-
- drivers/scsi/a3000.c               |   13 +------------
- drivers/scsi/a4000t.c              |   15 +--------------
- 15 files changed, 25 insertions(+), 94 deletions(-)
- delete mode 100644 arch/m68k/lib/string.c
+I had tried that, too. But surprisingly (although the same function
+name was in two
+messages), it increased the size of the kernel image.
 
 Gr{oetje,eeting}s,
 
-						Geert
+                        Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+                                -- Linus Torvalds
