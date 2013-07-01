@@ -1,49 +1,47 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] m68k/setup: Use pr_*() instead of plain printk()
-Date: Mon, 01 Jul 2013 14:07:33 -0700
-Message-ID: <1372712853.2481.24.camel@joe-AO722>
-References: <1372585689-29492-1-git-send-email-geert@linux-m68k.org>
-	 <1372630948.2083.3.camel@joe-AO722>
-	 <CAMuHMdUA3+gLi00Tvik2SjZaRYSC2sMMmP9TMH=Vb1dAubXx3Q@mail.gmail.com>
+From: Brad Boyer <flar@cynthia.pants.nu>
+Subject: Re: [PATCH] m68k/mac: Allocate IOP message pool and queues
+ dynamically
+Date: Mon, 1 Jul 2013 14:59:32 -0700
+Message-ID: <20130701215932.GA12663@cynthia.pants.nu>
+References: <1372586542-1318-1-git-send-email-geert@linux-m68k.org>
+ <alpine.LNX.2.00.1307011325520.9968@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUA3+gLi00Tvik2SjZaRYSC2sMMmP9TMH=Vb1dAubXx3Q@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1307011325520.9968@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Mon, 2013-07-01 at 23:02 +0200, Geert Uytterhoeven wrote:
-> On Mon, Jul 1, 2013 at 12:22 AM, Joe Perches <joe@perches.com> wrote:
-> >> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> >
-> >> @@ -161,7 +161,7 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
-> > []
-> >> -                             printk("m68k_parse_bootinfo: too many memory chunks\n");
-> >> +                             pr_warn("m68k_parse_bootinfo: too many memory chunks\n");
-> >
-> > These are generally better written by
-> > removing the hand-written function name
-> > and using "%s: ", __func__
-> >
-> >                                 pr_warn("%s: too many memory chunks\n",
-> >                                         __func__);
+On Mon, Jul 01, 2013 at 05:46:48PM +1000, Finn Thain wrote:
 > 
-> I had tried that, too. But surprisingly (although the same function
-> name was in two
-> messages), it increased the size of the kernel image.
+> On Sun, 30 Jun 2013, Geert Uytterhoeven wrote:
+> 
+> > -
+> > -/*
+> > - * Register the interrupt handler for the IOPs.
+> > - * TODO: might be wrong for non-OSS machines. Anyone?
+> > - */
+> > -
+> > -void __init iop_register_interrupts(void)
+> > -{
+> > -	if (iop_ism_present) {
+> > +		/*
+> > +		 * Register the interrupt handler for the IOPs.
+> > +		 * TODO: might be wrong for non-OSS machines. Anyone?
+> 
+> My testing with a non-OSS machine (Quadra 950) indicates that the TODO is 
+> obsolete. And the comment "register the interrupt handler for the IOPs" is 
+> a bit silly. It merely re-phrases the code. Otherwise, this patch looks 
+> good to me. Thanks.
 
-That's not surprising really.
-There is more call frame stack per use too.
+The code was all originally written and tested only on the IIfx. That's
+all JMT had, and at the time it was all I had as well. I have since
+acquired a Quadra 950. Lots of these comments are just out of date. I
+know it got tested on either a Quadra 900 or Quadra 950 after that
+comment was put in the source.
 
-It does eliminate any issue with function renaming
-though and is also less typo prone.
-
-And, at some point, those __func__ uses could be
-identified and rolled into a mechanism to emit the
-function name via a standardized use of %pf and
-__builtin_return_address(0) in the printk subsystem.
-
-cheers, Joe
+	Brad Boyer
+	flar@allandria.com
