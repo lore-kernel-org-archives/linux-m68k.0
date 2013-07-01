@@ -1,56 +1,74 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] m68k/setup: Use pr_*() instead of plain printk()
-Date: Sun, 30 Jun 2013 15:22:28 -0700
-Message-ID: <1372630948.2083.3.camel@joe-AO722>
-References: <1372585689-29492-1-git-send-email-geert@linux-m68k.org>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH] arch: m68k: include: asm: define 'VM_DATA_DEFAULT_FLAGS'
+ no matter whether has 'NOMMU' or not.
+Date: Mon, 01 Jul 2013 10:39:25 +0800
+Message-ID: <51D0EBDD.70804@asianux.com>
+References: <51C548E2.1060104@asianux.com> <51C54A9B.9060009@asianux.com> <51CE9442.2020105@gmail.com> <CAMuHMdVAQJWDem0=uMnH7iVrckxPJ9cPn=8pYOusNov+wW5VeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1372585689-29492-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <CAMuHMdVAQJWDem0=uMnH7iVrckxPJ9cPn=8pYOusNov+wW5VeA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
 
-On Sun, 2013-06-30 at 11:48 +0200, Geert Uytterhoeven wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On 06/29/2013 04:26 PM, Geert Uytterhoeven wrote:
+> On Sat, Jun 29, 2013 at 10:01 AM, Michael Schmitz <schmitzmic@gmail.c=
+om> wrote:
+>>> >> The same .config file, also report the compiling error below:
+>>> >>
+>>> >> drivers/i2c/busses/i2c-ocores.c:81:2: error: implicit declaratio=
+n of
+>>> >> function =E2=80=98iowrite8=E2=80=99 [-Werror=3Dimplicit-function=
+-declaration]
+>>> >> drivers/i2c/busses/i2c-ocores.c:86:2: error: implicit declaratio=
+n of
+>>> >> function =E2=80=98iowrite16=E2=80=99 [-Werror=3Dimplicit-functio=
+n-declaration]
+>>> >> drivers/i2c/busses/i2c-ocores.c:91:2: error: implicit declaratio=
+n of
+>>> >> function =E2=80=98iowrite32=E2=80=99 [-Werror=3Dimplicit-functio=
+n-declaration]
+>>> >> drivers/i2c/busses/i2c-ocores.c:96:2: error: implicit declaratio=
+n of
+>>> >> function =E2=80=98ioread8=E2=80=99 [-Werror=3Dimplicit-function-=
+declaration]
+>>> >> drivers/i2c/busses/i2c-ocores.c:101:2: error: implicit declarati=
+on of
+>>> >> function =E2=80=98ioread16=E2=80=99 [-Werror=3Dimplicit-function=
+-declaration]
+>>> >> drivers/i2c/busses/i2c-ocores.c:106:2: error: implicit declarati=
+on of
+>>> >> function =E2=80=98ioread32=E2=80=99 [-Werror=3Dimplicit-function=
+-declaration]
+>>> >>
+>>> >> Excuse me, I am not quite familiar with the related hardware and=
+ m68k,
+>>> >> I guess under m68k architecture, we need not this drivers, is it=
+ correct ?
+> Until someone synthesizes the OpenCores i2c core together with the
+> OpenCores 68000 core (they seem to have one), and tries to run uClinu=
+x
+> on it...
+>=20
 
-Hi Geert, just trivial comments...
+OK, thanks.
 
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+>> > That would be correct, yes. Perhaps add appropriate dependencies i=
+n
+>> > drivers/i2c/Kconfig to allow building I2C drivers
+>> > only on hardware that supports it?
+> We still want it for compile-coverage.
+>=20
+> Now, the issue is that m68knommu doesn't implement ioread8() and
+> friends, so I'm adding the uClinux list.
 
-> @@ -161,7 +161,7 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
-[]
-> -				printk("m68k_parse_bootinfo: too many memory chunks\n");
-> +				pr_warn("m68k_parse_bootinfo: too many memory chunks\n");
+Do you also add it to main tree (e.g next-tree), if not, I recommend to
+do add it to main tree.
 
-These are generally better written by
-removing the hand-written function name
-and using "%s: ", __func__
 
-				pr_warn("%s: too many memory chunks\n",
-					__func__);
-
-> @@ -197,8 +197,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
-
-> -			printk("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
-> -			       record->tag);
-> +			pr_warn("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
-> +				   record->tag);
-
-etc.
-
-> @@ -538,9 +538,9 @@ void check_bugs(void)
->  {
->  #ifndef CONFIG_M68KFPU_EMU
->  	if (m68k_fputype == 0) {
-> -		printk(KERN_EMERG "*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
-> +		pr_emerg("*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
->  			"WHICH IS REQUIRED BY LINUX/M68K ***\n");
-> -		printk(KERN_EMERG "Upgrade your hardware or join the FPU "
-> +		pr_emerg("Upgrade your hardware or join the FPU "
->  			"emulation project\n");
-
-It would be nicer to coalesce the formats
-into a single line.
+Thanks.
+--=20
+Chen Gang
