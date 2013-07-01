@@ -1,53 +1,45 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] m68k/mac: Allocate IOP message pool and queues
- dynamically
-Date: Mon, 1 Jul 2013 17:48:22 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1307011741500.9202@nippy.intranet>
-References: <1372586542-1318-1-git-send-email-geert@linux-m68k.org> <20130701065258.GA8425@cynthia.pants.nu>
+Subject: Re: iop_msg_pool
+Date: Mon, 1 Jul 2013 17:54:41 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1307011750540.9202@nippy.intranet>
+References: <CAMuHMdUCMUkoDbTFFXnVp-6E0LO5Y=4t64E13cWSpS1jVr2D_w@mail.gmail.com> <alpine.LNX.2.00.1306262026380.19790@nippy.intranet> <CAMuHMdX7WMDC9XXZrWYdcC0NouFjrS3TK+_U-DvmUAET5JB+DA@mail.gmail.com> <alpine.LNX.2.00.1306290034500.1099@nippy.intranet>
+ <20130701065713.GB8425@cynthia.pants.nu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20130701065258.GA8425@cynthia.pants.nu>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33563 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752457Ab3GAHyv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 1 Jul 2013 03:54:51 -0400
+In-Reply-To: <20130701065713.GB8425@cynthia.pants.nu>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Brad Boyer <flar@allandria.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
 
 On Sun, 30 Jun 2013, Brad Boyer wrote:
 
-> On Sun, Jun 30, 2013 at 12:02:22PM +0200, Geert Uytterhoeven wrote:
-> >  
-> >  	if (iop_scc_present) {
-> >  		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
-> > +		alloc_msg_queue(IOP_NUM_SCC);
+> On Sat, Jun 29, 2013 at 02:47:34PM +1000, Finn Thain wrote:
+> > The devices attached to the IOPs are SWIM, SCC and ADB. iop_preinit() 
+> > places the SCC channel in bypass mode, so we don't need iop_init() to 
+> > use the SCC. ADB doesn't start until device_initcall(adb_init).
 > 
-> Technically, this isn't actually useful. As long as we never start this
-> IOP, it can't ever send or be sent any messages.
+> It could become more complicated if we started using the SCC IOP and 
+> wanted to be able to do serial console, although I suppose we could use 
+> bypass mode until the real driver is loaded later and switch at runtime. 
+> It would make some things messy but might still be simpler than 
+> complicating this part of the code.
 
-That assumes that the SCC IOP is in a stopped state after iop_preinit(). 
-But I don't think that's the case. If it is technically possible to 
-exchange messages with a device in bypass mode (?) then I think the code 
-above is correct.
-
-> > @@ -315,6 +307,9 @@ void __init iop_register_interrupts(void)
-> >  		} else {
-> >  			printk("IOP: the ISM IOP seems to be alive.\n");
-> >  		}
-> 
-> The if/else above isn't useful if it is run before the call to 
-> iop_start. However, it's also useless if it is called immediately after 
-> the call to iop_alive which is now below. It was supposed to eventually 
-> be called in the background on a regular schedule, but that never 
-> happened.
-> 
-
-I agree. That if/else statement and the conditional printk's should be 
-omitted.
-
-I had thought that in the existing code the interrupt service routine was 
-registered before the call to iop_start() but in fact iop_start() happens 
-first. Looks like a bug to me. The interrupt handler needs to be able to 
-acknowledge unsolicited messages...
+I can't imagine anyone writing an IOP-based SCC driver unless they wanted 
+to implement DMA and LocalTalk support. The present code should work fine 
+with the pmac_zilog serial driver. It should also work with EARLY_CONSOLE 
+if MacOS is configured to put the IOPs into bypass (aka "compatible") mode 
+before Penguin boots Linux.
 
 Finn
+
+> 
+> 	Brad Boyer
+> 	flar@allandria.com
+> 
