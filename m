@@ -1,47 +1,69 @@
-From: Brad Boyer <flar@allandria.com>
-Subject: Re: iop_msg_pool
-Date: Mon, 1 Jul 2013 15:51:48 -0700
-Message-ID: <20130701225148.GC12663@cynthia.pants.nu>
-References: <CAMuHMdUCMUkoDbTFFXnVp-6E0LO5Y=4t64E13cWSpS1jVr2D_w@mail.gmail.com>
- <alpine.LNX.2.00.1306262026380.19790@nippy.intranet>
- <CAMuHMdX7WMDC9XXZrWYdcC0NouFjrS3TK+_U-DvmUAET5JB+DA@mail.gmail.com>
- <alpine.LNX.2.00.1306290034500.1099@nippy.intranet>
- <20130701065713.GB8425@cynthia.pants.nu>
- <alpine.LNX.2.00.1307011750540.9202@nippy.intranet>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH] m68k/coldfire: flush cache when creating the signal stack frame
+Date: Thu, 04 Jul 2013 07:54:51 +0200
+Message-ID: <1525076.03WGtcQxAz@ws-stein>
+References: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cynthia.allandria.com ([76.245.85.235]:33083 "EHLO
-	cynthia.pants.nu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753736Ab3GAWvu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 1 Jul 2013 18:51:50 -0400
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1307011750540.9202@nippy.intranet>
+In-Reply-To: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org
 
-On Mon, Jul 01, 2013 at 05:54:41PM +1000, Finn Thain wrote:
+Any feedback on this?
+
+On Wednesday 05 June 2013 13:42:39, Alexander Stein wrote:
+> When the signal stack frame is created, it must be flushed in order to
+> make sure the cache fetches the correct data.
+> Without cache flush the icache might pick up old cached data from an older
+> signal stack frame if the signal is raised again very fast.
+> In case of copyback the data cache muist be pushed first, but is untested.
 > 
-> On Sun, 30 Jun 2013, Brad Boyer wrote:
-> > 
-> > It could become more complicated if we started using the SCC IOP and 
-> > wanted to be able to do serial console, although I suppose we could use 
-> > bypass mode until the real driver is loaded later and switch at runtime. 
-> > It would make some things messy but might still be simpler than 
-> > complicating this part of the code.
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> ---
+>  arch/m68k/kernel/signal.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> I can't imagine anyone writing an IOP-based SCC driver unless they wanted 
-> to implement DMA and LocalTalk support. The present code should work fine 
-> with the pmac_zilog serial driver. It should also work with EARLY_CONSOLE 
-> if MacOS is configured to put the IOPs into bypass (aka "compatible") mode 
-> before Penguin boots Linux.
+> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+> index 2a16df3..57fd286 100644
+> --- a/arch/m68k/kernel/signal.c
+> +++ b/arch/m68k/kernel/signal.c
+> @@ -50,6 +50,7 @@
+>  #include <asm/pgtable.h>
+>  #include <asm/traps.h>
+>  #include <asm/ucontext.h>
+> +#include <asm/cacheflush.h>
+>  
+>  #ifdef CONFIG_MMU
+>  
+> @@ -181,6 +182,13 @@ static inline void push_cache (unsigned long vaddr)
+>  		asm volatile ("movec %0,%%caar\n\t"
+>  			      "movec %1,%%cacr"
+>  			      : : "r" (vaddr + 4), "r" (temp));
+> +	} else {
+> +		/* CPU_IS_COLDFIRE */
+> +#if defined(CONFIG_CACHE_COPYBACK)
+> +		flush_cf_dcache(0, DCACHE_MAX_ADDR);
+> +#endif
+> +		/* Invalidate instruction cache for the pushed bytes */
+> +		clear_cf_icache(vaddr, vaddr + 8);
+>  	}
+>  }
+>  
+> 
+-- 
+Dipl.-Inf. Alexander Stein
 
-Well, it would be less overhead even for regular serial usage. You wouldn't
-need to interrupt the processor as often. But it's probably not worth the
-effort. Getting LocalTalk working would be nearly impossible without some
-hardware assist such as an IOP (or the PSC-DMA on the models that have it).
-
-	Brad Boyer
-	flar@allandria.com
+SYS TEC electronic GmbH
+Am Windrad 2
+08468 Heinsdorfergrund
+Tel.: 03765 38600-1156
+Fax: 03765 38600-4100
+Email: alexander.stein@systec-electronic.com
+Website: www.systec-electronic.com
+ 
+Managing Director: Dipl.-Phys. Siegmar Schmidt
+Commercial registry: Amtsgericht Chemnitz, HRB 28082
