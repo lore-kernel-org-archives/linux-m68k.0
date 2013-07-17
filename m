@@ -1,188 +1,50 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] m68knommu: Mark functions only called from setup_arch()
- __init
-Date: Mon, 15 Jul 2013 11:22:26 +1000
-Message-ID: <51E34ED2.8060207__5386.73606138236$1373852028$gmane$org@uclinux.org>
-References: <1372586320-1151-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1372586320-1151-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] net/sun3_82586: Kill array subscript above array bounds warning
+Date: Wed, 17 Jul 2013 14:25:05 +0200
+Message-ID: <1374063905-4050-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>, Sam Creasey <sammy@sammy.net>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: uclinux-dev@uclinux.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Geert,
+drivers/net/ethernet/i825xx/sun3_82586.c: In function 'sun3_82586_timeout':
+drivers/net/ethernet/i825xx/sun3_82586.c:993:89: warning: array subscript is above array bounds [-Warray-bounds]
 
-On 30/06/13 19:58, Geert Uytterhoeven wrote:
-> Some functions that are only called (indirectly) from setup_arch() lack
-> __init annotations.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Using the default NUM_XMIT_BUFFS = 1, there's only one transmit buffer.
+Hence accessing the second buffer is an out-of-bounds access.
+Print the command status of the first NOP buffer instead.
 
-Thanks. Applied to m68knommu git tree.
+Fortunately this actually worked fine, as the layout of transmit and NOP
+buffers is sufficiently similar.
 
-Regards
-Greg
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+  - Untested due to lack of hardware
+  - Note that the driver never compiled with the non-default NUM_XMIT_BUFFS > 1
 
+ drivers/net/ethernet/i825xx/sun3_82586.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> ---
-> This is sort of a v2 of "m68knommu: Mark config_BSP() __init", adding
-> parse_uboot_commandline(), init_hardware(), m360_cpm_reset()
-> 
->  arch/m68k/kernel/setup_no.c         |    2 +-
->  arch/m68k/platform/68000/m68328.c   |    3 ++-
->  arch/m68k/platform/68000/m68EZ328.c |    3 ++-
->  arch/m68k/platform/68000/m68VZ328.c |    9 +++++----
->  arch/m68k/platform/68360/commproc.c |    3 ++-
->  arch/m68k/platform/68360/config.c   |    3 ++-
->  6 files changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index 911ba47..5b16f5d 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -118,7 +118,7 @@ void (*mach_power_off)(void);
->   *
->   * Returns:
->   */
-> -void parse_uboot_commandline(char *commandp, int size)
-> +static void __init parse_uboot_commandline(char *commandp, int size)
->  {
->  	extern unsigned long _init_sp;
->  	unsigned long *sp;
-> diff --git a/arch/m68k/platform/68000/m68328.c b/arch/m68k/platform/68000/m68328.c
-> index a86eb66..e53caf4 100644
-> --- a/arch/m68k/platform/68000/m68328.c
-> +++ b/arch/m68k/platform/68000/m68328.c
-> @@ -15,6 +15,7 @@
->  
->  /***************************************************************************/
->  
-> +#include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/rtc.h>
-> @@ -42,7 +43,7 @@ void m68328_reset (void)
->  
->  /***************************************************************************/
->  
-> -void config_BSP(char *command, int len)
-> +void __init config_BSP(char *command, int len)
->  {
->    printk(KERN_INFO "\n68328 support D. Jeff Dionne <jeff@uclinux.org>\n");
->    printk(KERN_INFO "68328 support Kenneth Albanowski <kjahds@kjshds.com>\n");
-> diff --git a/arch/m68k/platform/68000/m68EZ328.c b/arch/m68k/platform/68000/m68EZ328.c
-> index a6eb72d..332b5e8 100644
-> --- a/arch/m68k/platform/68000/m68EZ328.c
-> +++ b/arch/m68k/platform/68000/m68EZ328.c
-> @@ -13,6 +13,7 @@
->  
->  /***************************************************************************/
->  
-> +#include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/rtc.h>
-> @@ -52,7 +53,7 @@ _bsc1(unsigned char *, gethwaddr, int, a)
->  _bsc1(char *, getbenv, char *, a)
->  #endif
->  
-> -void config_BSP(char *command, int len)
-> +void __init config_BSP(char *command, int len)
->  {
->    unsigned char *p;
->  
-> diff --git a/arch/m68k/platform/68000/m68VZ328.c b/arch/m68k/platform/68000/m68VZ328.c
-> index eb6964f..fd66583 100644
-> --- a/arch/m68k/platform/68000/m68VZ328.c
-> +++ b/arch/m68k/platform/68000/m68VZ328.c
-> @@ -14,6 +14,7 @@
->  
->  /***************************************************************************/
->  
-> +#include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/kd.h>
-> @@ -59,7 +60,7 @@ static void m68vz328_reset(void)
->  	);
->  }
->  
-> -static void init_hardware(char *command, int size)
-> +static void __init init_hardware(char *command, int size)
->  {
->  #ifdef CONFIG_DIRECT_IO_ACCESS
->  	SCR = 0x10;					/* allow user access to internal registers */
-> @@ -145,7 +146,7 @@ _bsc0(char *, getserialnum)
->  _bsc1(unsigned char *, gethwaddr, int, a)
->  _bsc1(char *, getbenv, char *, a)
->  
-> -static void init_hardware(char *command, int size)
-> +static void __init init_hardware(char *command, int size)
->  {
->  	char *p;
->  
-> @@ -167,7 +168,7 @@ static void m68vz328_reset(void)
->  {
->  }
->  
-> -static void init_hardware(char *command, int size)
-> +static void __init init_hardware(char *command, int size)
->  {
->  }
->  
-> @@ -175,7 +176,7 @@ static void init_hardware(char *command, int size)
->  #endif
->  /***************************************************************************/
->  
-> -void config_BSP(char *command, int size)
-> +void __init config_BSP(char *command, int size)
->  {
->  	printk(KERN_INFO "68VZ328 DragonBallVZ support (c) 2001 Lineo, Inc.\n");
->  
-> diff --git a/arch/m68k/platform/68360/commproc.c b/arch/m68k/platform/68360/commproc.c
-> index 8e4e10c..315727b 100644
-> --- a/arch/m68k/platform/68360/commproc.c
-> +++ b/arch/m68k/platform/68360/commproc.c
-> @@ -31,6 +31,7 @@
->   */
->  
->  #include <linux/errno.h>
-> +#include <linux/init.h>
->  #include <linux/sched.h>
->  #include <linux/kernel.h>
->  #include <linux/param.h>
-> @@ -77,7 +78,7 @@ void m360_cpm_reset(void);
->  
->  
->  
-> -void m360_cpm_reset()
-> +void __init m360_cpm_reset()
->  {
->  /* 	pte_t		   *pte; */
->  
-> diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/platform/68360/config.c
-> index 9877cef..0570741 100644
-> --- a/arch/m68k/platform/68360/config.c
-> +++ b/arch/m68k/platform/68360/config.c
-> @@ -11,6 +11,7 @@
->   */
->  
->  #include <stdarg.h>
-> +#include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
-> @@ -140,7 +141,7 @@ _bsc1(char *, getbenv, char *, a)
->  #endif
->  
->  
-> -void config_BSP(char *command, int len)
-> +void __init config_BSP(char *command, int len)
->  {
->    unsigned char *p;
->  
-> 
+diff --git a/drivers/net/ethernet/i825xx/sun3_82586.c b/drivers/net/ethernet/i825xx/sun3_82586.c
+index 353f57f6..d283d2e 100644
+--- a/drivers/net/ethernet/i825xx/sun3_82586.c
++++ b/drivers/net/ethernet/i825xx/sun3_82586.c
+@@ -990,7 +990,14 @@ static void sun3_82586_timeout(struct net_device *dev)
+ 	{
+ #ifdef DEBUG
+ 		printk("%s: xmitter timed out, try to restart! stat: %02x\n",dev->name,p->scb->cus);
+-		printk("%s: command-stats: %04x %04x\n",dev->name,swab16(p->xmit_cmds[0]->cmd_status),swab16(p->xmit_cmds[1]->cmd_status));
++		printk("%s: command-stats: %04x %04x\n", dev->name,
++		       swab16(p->xmit_cmds[0]->cmd_status),
++#if (NUM_XMIT_BUFFS > 1)
++		       swab16(p->xmit_cmds[1]->cmd_status)
++#else
++		       swab16(p->nop_cmds[0]->cmd_status)
++#endif
++		);
+ 		printk("%s: check, whether you set the right interrupt number!\n",dev->name);
+ #endif
+ 		sun3_82586_close(dev);
+-- 
+1.7.9.5
