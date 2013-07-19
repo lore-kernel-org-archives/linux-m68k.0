@@ -1,43 +1,35 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] net/sun3_82586: Kill array subscript above array bounds warning
-Date: Thu, 18 Jul 2013 09:04:36 +0200
-Message-ID: <CAMuHMdWeKuFVd-8_XRzWmJNp11cHP6wRj7K96v=D9We2=XyAgw@mail.gmail.com>
-References: <1374063905-4050-1-git-send-email-geert@linux-m68k.org>
-	<20130717.182237.906875287830581782.davem@davemloft.net>
+Subject: Re: Atari 4 MiB kernel limit
+Date: Fri, 19 Jul 2013 17:49:15 +0200
+Message-ID: <CAMuHMdXh9NHMeqVck23aXco0m1N9qHkB7L9vAd7Rva4mh1ePcQ@mail.gmail.com>
+References: <alpine.DEB.2.10.1307191630490.14572@tglase.lan.tarent.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f49.google.com ([209.85.220.49]:55481 "EHLO
-	mail-pa0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756654Ab3GRHEg (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Jul 2013 03:04:36 -0400
-In-Reply-To: <20130717.182237.906875287830581782.davem@davemloft.net>
+Received: from mail-pd0-f173.google.com ([209.85.192.173]:38967 "EHLO
+	mail-pd0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752643Ab3GSPtP (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 19 Jul 2013 11:49:15 -0400
+Received: by mail-pd0-f173.google.com with SMTP id v14so4400689pde.32
+        for <linux-m68k@vger.kernel.org>; Fri, 19 Jul 2013 08:49:15 -0700 (PDT)
+In-Reply-To: <alpine.DEB.2.10.1307191630490.14572@tglase.lan.tarent.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: Sam Creasey <sammy@sammy.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, Jul 18, 2013 at 3:22 AM, David Miller <davem@davemloft.net> wrote:
->> drivers/net/ethernet/i825xx/sun3_82586.c: In function 'sun3_82586_timeout':
->> drivers/net/ethernet/i825xx/sun3_82586.c:993:89: warning: array subscript is above array bounds [-Warray-bounds]
->>
->> Using the default NUM_XMIT_BUFFS = 1, there's only one transmit buffer.
->> Hence accessing the second buffer is an out-of-bounds access.
->> Print the command status of the first NOP buffer instead.
->>
->> Fortunately this actually worked fine, as the layout of transmit and NOP
->> buffers is sufficiently similar.
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Three more CPP directives in a DEBUG ifdef'd piece of code, yuck.
->
-> I'd say just kill this whole DEBUG section entirely.  If people
-> want this driver to print this debugging, do it properly with
-> netif_err() or similar.
+On Fri, Jul 19, 2013 at 4:31 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
+> does the limit apply to just the kernel image
+> (plus some margin) or is the initrd also subject
+> to that restriction?
 
-Yeah, this driver could use some major cleanup. I had to protect my eyes while
-fixing the compiler warning.
+That's a very good question ;-)
+
+The 4 MiB limit only applies to early startup, in arch/m68k/kernel/head.S.
+Initrd is accessed later, in arch/m68k/kernel/setup_mm.c, so I'd expect it to
+not fall under the limit.
+
+Of course, better try it to be sure ;-)
 
 Gr{oetje,eeting}s,
 
