@@ -1,44 +1,43 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Thorsten Glaser <tg@mirbsd.de>
 Subject: Re: [PATCH] make NatFeat drivers bool, not tristate
-Date: Wed, 24 Jul 2013 18:19:54 +0200
-Message-ID: <CAMuHMdXNBMgHoA50Ek=edWB7jrGTWJogBMTMfDwjDF6SMVU3Dw@mail.gmail.com>
-References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
-	<87li4wpc79.fsf@igel.home>
-	<Pine.BSM.4.64L.1307241241550.30771@herc.mirbsd.org>
-	<loom.20130724T152350-539@post.gmane.org>
-	<alpine.DEB.2.02.1307241645500.8930@ayla.of.borg>
-	<1374678140.18072.10.camel@pracovni>
+Date: Wed, 24 Jul 2013 17:23:55 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1307241723110.6532@herc.mirbsd.org>
+References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org> <87li4wpc79.fsf@igel.home>
+ <Pine.BSM.4.64L.1307241241550.30771@herc.mirbsd.org> <loom.20130724T152350-539@post.gmane.org>
+ <alpine.DEB.2.02.1307241645500.8930@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f51.google.com ([209.85.160.51]:50061 "EHLO
-	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751935Ab3GXQTz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 24 Jul 2013 12:19:55 -0400
-Received: by mail-pb0-f51.google.com with SMTP id um15so9859709pbc.38
-        for <linux-m68k@vger.kernel.org>; Wed, 24 Jul 2013 09:19:55 -0700 (PDT)
-In-Reply-To: <1374678140.18072.10.camel@pracovni>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:48433 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751800Ab3GXR2h convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 24 Jul 2013 13:28:37 -0400
+In-Reply-To: <alpine.DEB.2.02.1307241645500.8930@ayla.of.borg>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Petr Stehlik <pstehlik@sophics.cz>
-Cc: Thorsten Glaser <tg@mirbsd.de>, Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, aranym@lists.bobek.cz
 
-On Wed, Jul 24, 2013 at 5:02 PM, Petr Stehlik <pstehlik@sophics.cz> wrote:
->> ARAnyM hackers: What's the maximum size of ID names?
->
-> There isn't any given limit AFAIK, it's based on a common sense when
-> creating a new NatFeat name.
+Geert Uytterhoeven dixit:
 
-Understood :-) What's the size of the longest name in use?
-Is 32 OK?
+>The patch below adds a wrapper that copies the (supposedly short) name=
+ to
+>the kernel stack before calling into ARAnyM.
 
-Gr{oetje,eeting}s,
+Is that enough? What about buffers and all that?
 
-                        Geert
+Sorry, won=E2=80=99t be testing these patches for a while,
+I need to concentrate on the Debian sid kernel for now.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+bye,
+//mirabilos
+--=20
+<ch> you introduced a merge commit        =E2=94=82<mika> % g rebase -i=
+ HEAD^^
+<mika> sorry, no idea and rebasing just fscked =E2=94=82<mika> Segmenta=
+tion
+<ch> should have cloned into a clean repo      =E2=94=82  fault (core d=
+umped)
+<ch> if I rebase that now, it's really ugh     =E2=94=82<mika:#grml> wu=
+ahhhhhh
