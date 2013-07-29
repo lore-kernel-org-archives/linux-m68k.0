@@ -1,60 +1,43 @@
-From: Petr Stehlik <pstehlik@sophics.cz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] make NatFeat drivers bool, not tristate
-Date: Wed, 24 Jul 2013 22:04:56 +0200
-Message-ID: <1374696296.27253.5.camel@pracovni>
+Date: Mon, 29 Jul 2013 23:52:29 +0200
+Message-ID: <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
 References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
-	 <87li4wpc79.fsf@igel.home>
-	 <Pine.BSM.4.64L.1307241241550.30771@herc.mirbsd.org>
-	 <loom.20130724T152350-539@post.gmane.org>
-	 <alpine.DEB.2.02.1307241645500.8930@ayla.of.borg>
-	 <1374678140.18072.10.camel@pracovni>
-	 <CAMuHMdXNBMgHoA50Ek=edWB7jrGTWJogBMTMfDwjDF6SMVU3Dw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx.zln.cz ([188.246.101.4]:49670 "EHLO mx.zln.cz"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752070Ab3GXUFH convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 24 Jul 2013 16:05:07 -0400
-In-Reply-To: <CAMuHMdXNBMgHoA50Ek=edWB7jrGTWJogBMTMfDwjDF6SMVU3Dw@mail.gmail.com>
+Received: from mail-pd0-f176.google.com ([209.85.192.176]:46816 "EHLO
+	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755318Ab3G2Vw3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Jul 2013 17:52:29 -0400
+Received: by mail-pd0-f176.google.com with SMTP id q10so2758393pdj.7
+        for <linux-m68k@vger.kernel.org>; Mon, 29 Jul 2013 14:52:29 -0700 (PDT)
+In-Reply-To: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.de>, Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
+To: Thorsten Glaser <tg@debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven p=ED=B9e v St 24. 07. 2013 v 18:19 +0200:
-> On Wed, Jul 24, 2013 at 5:02 PM, Petr Stehlik <pstehlik@sophics.cz> w=
-rote:
-> >> ARAnyM hackers: What's the maximum size of ID names?
-> >
-> > There isn't any given limit AFAIK, it's based on a common sense whe=
-n
-> > creating a new NatFeat name.
->=20
-> Understood :-) What's the size of the longest name in use?
+On Wed, Jul 24, 2013 at 12:51 AM, Thorsten Glaser <tg@debian.org> wrote:
+> - nfeth: says "No such device" upon insmod
 
-aranym/src/natfeat$ grep name\(\) * | grep return
-debugprintf.h:	const char *name() { return "DEBUGPRINTF"; }
-ethernet.h:	const char *name() { return "ETHERNET"; }
-hostfs.h:	const char *name() { return "HOSTFS"; }
-nfaudio.h:	const char *name() { return "AUDIO"; }
-nf_basicset.h:	const char *name() { return "NF_NAME"; }
-nf_basicset.h:	const char *name() { return "NF_VERSION"; }
-nf_basicset.h:	const char *name() { return "NF_SHUTDOWN"; }
-nf_basicset.h:	const char *name() { return "NF_STDERR"; }
-nfbootstrap.h:	const char *name() { return "BOOTSTRAP"; }
-nfcdrom.h:	const char *name() { return "CDROM"; }
-nfclipbrd.h:	const char *name() { return "CLIPBRD"; }
-nfjpeg.h:	const char *name() { return "JPEG"; }
-nfosmesa.h:	const char *name() { return "OSMESA"; }
-nfpci.h:	const char *name() { return "PCI"; }
-nfvdi.h:	const char *name() { return "fVDI"; }
-usbhost.h:	const char *name() { return "USBHOST"; }
-xhdi.h:		const char *name() { return "XHDI"; }
+You're lucky. When insmodding nfeth.ko, my ARAnyM just terminates with:
 
-> Is 32 OK?
+Gotcha! Illegal memory access. Atari PC = $968c
+If the Full History was enabled you would see the last 20 instructions here.
 
-yes, for now :)
+With my patch, insmod works again, and the network works, too.
+AFAIK you cannot have two physical memory blocks with ARAnyM, so using
+a copy on the stack should be safe.
 
-Petr
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus TorvaldsIf the Full History
+was enabled you would see the last 20 instructions here.
