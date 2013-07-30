@@ -1,43 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] make NatFeat drivers bool, not tristate
-Date: Mon, 29 Jul 2013 23:52:29 +0200
-Message-ID: <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
-References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] m68k/coldfire: flush cache when creating the signal stack
+ frame
+Date: Tue, 30 Jul 2013 16:41:43 +1000
+Message-ID: <51F76027.604@uclinux.org>
+References: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f176.google.com ([209.85.192.176]:46816 "EHLO
-	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755318Ab3G2Vw3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Jul 2013 17:52:29 -0400
-Received: by mail-pd0-f176.google.com with SMTP id q10so2758393pdj.7
-        for <linux-m68k@vger.kernel.org>; Mon, 29 Jul 2013 14:52:29 -0700 (PDT)
-In-Reply-To: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
+In-Reply-To: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@debian.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-On Wed, Jul 24, 2013 at 12:51 AM, Thorsten Glaser <tg@debian.org> wrote:
-> - nfeth: says "No such device" upon insmod
+Hi Alexander,
 
-You're lucky. When insmodding nfeth.ko, my ARAnyM just terminates with:
+On 05/06/13 21:42, Alexander Stein wrote:
+> When the signal stack frame is created, it must be flushed in order to
+> make sure the cache fetches the correct data.
+> Without cache flush the icache might pick up old cached data from an older
+> signal stack frame if the signal is raised again very fast.
+> In case of copyback the data cache muist be pushed first, but is untested.
+> 
+> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 
-Gotcha! Illegal memory access. Atari PC = $968c
-If the Full History was enabled you would see the last 20 instructions here.
+Sorry for the delay.
 
-With my patch, insmod works again, and the network works, too.
-AFAIK you cannot have two physical memory blocks with ARAnyM, so using
-a copy on the stack should be safe.
+I haven't been able to actually test it, I can't get the M5475 to
+boot in copyback cache mode at the moment. I need to debug it and
+figure out why it is broken.
 
-Gr{oetje,eeting}s,
+For now I think the best is if I push it into for-next on the
+m68knommu git tree.
 
-                        Geert
+(Aside it looks like the clear_cf_icache call here is a bit bogus.
+It takes cache line number args, not virtual addresses - it works
+here because clear_cf_cache invalidates the whole icache... :-(
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Regards
+Greg
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus TorvaldsIf the Full History
-was enabled you would see the last 20 instructions here.
+
+> ---
+>  arch/m68k/kernel/signal.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+> index 2a16df3..57fd286 100644
+> --- a/arch/m68k/kernel/signal.c
+> +++ b/arch/m68k/kernel/signal.c
+> @@ -50,6 +50,7 @@
+>  #include <asm/pgtable.h>
+>  #include <asm/traps.h>
+>  #include <asm/ucontext.h>
+> +#include <asm/cacheflush.h>
+>  
+>  #ifdef CONFIG_MMU
+>  
+> @@ -181,6 +182,13 @@ static inline void push_cache (unsigned long vaddr)
+>  		asm volatile ("movec %0,%%caar\n\t"
+>  			      "movec %1,%%cacr"
+>  			      : : "r" (vaddr + 4), "r" (temp));
+> +	} else {
+> +		/* CPU_IS_COLDFIRE */
+> +#if defined(CONFIG_CACHE_COPYBACK)
+> +		flush_cf_dcache(0, DCACHE_MAX_ADDR);
+> +#endif
+> +		/* Invalidate instruction cache for the pushed bytes */
+> +		clear_cf_icache(vaddr, vaddr + 8);
+>  	}
+>  }
+>  
+> 
