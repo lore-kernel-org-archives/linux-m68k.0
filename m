@@ -1,75 +1,58 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] m68k/coldfire: flush cache when creating the signal stack
- frame
-Date: Tue, 30 Jul 2013 16:41:43 +1000
-Message-ID: <51F76027.604@uclinux.org>
-References: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH] make NatFeat drivers bool, not tristate
+Date: Tue, 30 Jul 2013 08:50:25 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1307300847360.2555@herc.mirbsd.org>
+References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
+ <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com>
+Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:8817 "EHLO
+	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758242Ab3G3IwY convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 30 Jul 2013 04:52:24 -0400
+Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
+	by herc.mirbsd.org (8.14.5/8.14.5) with ESMTP id r6U8oP8t011471
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-m68k@vger.kernel.org>; Tue, 30 Jul 2013 08:50:29 GMT
+In-Reply-To: <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Alexander,
+Geert Uytterhoeven dixit:
 
-On 05/06/13 21:42, Alexander Stein wrote:
-> When the signal stack frame is created, it must be flushed in order to
-> make sure the cache fetches the correct data.
-> Without cache flush the icache might pick up old cached data from an older
-> signal stack frame if the signal is raised again very fast.
-> In case of copyback the data cache muist be pushed first, but is untested.
-> 
-> Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+>On Wed, Jul 24, 2013 at 12:51 AM, Thorsten Glaser <tg@debian.org> wrot=
+e:
+>> - nfeth: says "No such device" upon insmod
+>
+>You're lucky. When insmodding nfeth.ko, my ARAnyM just terminates with=
+:
+>
+>Gotcha! Illegal memory access. Atari PC =3D $968c
 
-Sorry for the delay.
+That=E2=80=99s http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D69806=
+4
 
-I haven't been able to actually test it, I can't get the M5475 to
-boot in copyback cache mode at the moment. I need to debug it and
-figure out why it is broken.
+>With my patch, insmod works again, and the network works, too.
 
-For now I think the best is if I push it into for-next on the
-m68knommu git tree.
+Nice!
 
-(Aside it looks like the clear_cf_icache call here is a bit bogus.
-It takes cache line number args, not virtual addresses - it works
-here because clear_cf_cache invalidates the whole icache... :-(
+>AFAIK you cannot have two physical memory blocks with ARAnyM, so using
+>a copy on the stack should be safe.
 
-Regards
-Greg
+Hmm, okay. I think the ARAnyM code also only checks that
+beginning and end are physical memory, so it=E2=80=99s contiguous.
 
-
-> ---
->  arch/m68k/kernel/signal.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-> index 2a16df3..57fd286 100644
-> --- a/arch/m68k/kernel/signal.c
-> +++ b/arch/m68k/kernel/signal.c
-> @@ -50,6 +50,7 @@
->  #include <asm/pgtable.h>
->  #include <asm/traps.h>
->  #include <asm/ucontext.h>
-> +#include <asm/cacheflush.h>
->  
->  #ifdef CONFIG_MMU
->  
-> @@ -181,6 +182,13 @@ static inline void push_cache (unsigned long vaddr)
->  		asm volatile ("movec %0,%%caar\n\t"
->  			      "movec %1,%%cacr"
->  			      : : "r" (vaddr + 4), "r" (temp));
-> +	} else {
-> +		/* CPU_IS_COLDFIRE */
-> +#if defined(CONFIG_CACHE_COPYBACK)
-> +		flush_cf_dcache(0, DCACHE_MAX_ADDR);
-> +#endif
-> +		/* Invalidate instruction cache for the pushed bytes */
-> +		clear_cf_icache(vaddr, vaddr + 8);
->  	}
->  }
->  
-> 
+bye,
+//mirabilos
+--=20
+=46WIW, I'm quite impressed with mksh interactively. I thought it was m=
+uch
+*much* more bare bones. But it turns out it beats the living hell out o=
+f
+ksh93 in that respect. I'd even consider it for my daily use if I hadn'=
+t
+wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mks=
+h
