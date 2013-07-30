@@ -1,59 +1,46 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2] Make PPC macro spin_event_timeout() architecture independent
-Date: Tue, 30 Jul 2013 15:08:43 +0200
-Message-ID: <CAMuHMdXP3-uKbftP-2UeZdE6X_iTi1podNDh0aVF3bJwDYssdg@mail.gmail.com>
-References: <1375187900-17582-1-git-send-email-B44344@freescale.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH] m68k/coldfire: flush cache when creating the signal stack frame
+Date: Tue, 30 Jul 2013 16:12:56 +0200
+Message-ID: <8366284.jmWuEafP7M@ws-stein>
+References: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com> <51F76027.604@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <1375187900-17582-1-git-send-email-B44344@freescale.com>
-Sender: sparclinux-owner@vger.kernel.org
-To: Arpit Goel <B44344@freescale.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Hirokazu Takata <takata@linux-m32r.org>, Philip Blundell <philb@gnu.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, "David S. Miller" <davem@davemloft.net>, Rob Herring <rob.herring@calxeda.com>, Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@nvidia.com>, John Stultz <john.stultz@linaro.org>, Jesper Nilsson <jesper.nilsson@axis.com>, Greg KH <gregkh@linuxfoundation.org>, Sam Ravnborg <sam@ravnborg.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, Linux/m68k <linux-m68k@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, sparclinux <sparclinux@vger>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <51F76027.604@uclinux.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-On Tue, Jul 30, 2013 at 2:38 PM, Arpit Goel <B44344@freescale.com> wrote:
-> This patch-set moves USECS_PER_JIFFY to architecture timex.h from architecture
-> specific C files. Patch-set further uses this to make PPC macro
-> spin_event_timeout() architecture independent. This change enables drivers to
-> use spin_event_timeout() even in non-PowerPC based SoC's.
->
-> This patchset has been compiled for ARM, PowerPC and x86.
->
-> Patch[1/2] : Moves USECS_PER_JIFFY to architecture specific timex.h files from
->              architecture specific C files.
+Hello Greg,
 
->  arch/arm/include/asm/timex.h      |  2 ++
->  arch/arm/kernel/time.c            |  3 ---
->  arch/m32r/include/asm/timex.h     |  2 ++
->  arch/m32r/kernel/time.c           |  3 ---
->  arch/m68k/hp300/time.c            |  4 +---
->  arch/m68k/include/asm/timex.h     |  2 ++
->  arch/s390/include/asm/timex.h     |  2 ++
->  arch/s390/kernel/time.c           |  2 --
->  arch/sparc/include/asm/timex_32.h |  2 ++
->  arch/sparc/include/asm/timex_64.h |  2 ++
->  arch/sparc/kernel/pcic.c          |  1 -
+On Tuesday 30 July 2013 16:41:43, Greg Ungerer wrote:
+> Hi Alexander,
+> 
+> On 05/06/13 21:42, Alexander Stein wrote:
+> > When the signal stack frame is created, it must be flushed in order to
+> > make sure the cache fetches the correct data.
+> > Without cache flush the icache might pick up old cached data from an older
+> > signal stack frame if the signal is raised again very fast.
+> > In case of copyback the data cache muist be pushed first, but is untested.
+> > 
+> > Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+> 
+> Sorry for the delay.
+> 
+> I haven't been able to actually test it, I can't get the M5475 to
+> boot in copyback cache mode at the moment. I need to debug it and
+> figure out why it is broken.
+> 
+> For now I think the best is if I push it into for-next on the
+> m68knommu git tree.
+> 
+> (Aside it looks like the clear_cf_icache call here is a bit bogus.
+> It takes cache line number args, not virtual addresses - it works
+> here because clear_cf_cache invalidates the whole icache... :-(
 
-As the definition is the same on all architectures, why not move it to
-<linux/delay.h>?
+Yep, the problem is that IIRC coldfire can only invalidate the whole cache, or single cache lines where I think it is impossible to find out which one to invalidate.
 
-> Patch[2/2] : Converts PPC macro spin_event_timeout() in architecture independent
->              macro.
-
->  include/linux/delay.h             | 40 +++++++++++++++++++++++++++++++++++++++
-
-After your first patch, USECS_PER_JIFFY is still available only on
-arm/m32r/m68k/s390/sparc. What about other architectures?
-If anyone uses spin_event_timeout() on e.g. x86, it will fail to compile.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+Alexander
