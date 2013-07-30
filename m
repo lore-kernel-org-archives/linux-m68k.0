@@ -1,58 +1,56 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] make NatFeat drivers bool, not tristate
-Date: Tue, 30 Jul 2013 08:50:25 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1307300847360.2555@herc.mirbsd.org>
-References: <201307232255.r6NMt8Z9027017@herc.mirbsd.org>
- <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
+From: Arpit Goel <B44344@freescale.com>
+Subject: [PATCH 0/2] Make PPC macro spin_event_timeout() architecture
+ independent
+Date: Tue, 30 Jul 2013 18:08:18 +0530
+Message-ID: <1375187900-17582-1-git-send-email-B44344@freescale.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121]:8817 "EHLO
-	herc.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758242Ab3G3IwY convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 30 Jul 2013 04:52:24 -0400
-Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
-	by herc.mirbsd.org (8.14.5/8.14.5) with ESMTP id r6U8oP8t011471
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-m68k@vger.kernel.org>; Tue, 30 Jul 2013 08:50:29 GMT
-In-Reply-To: <CAMuHMdVF8HntVUiV7vBU7ZDwyjXbnpn=NiM05O60ewtz5S=KKw@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux@arm.linux.org.uk, takata@linux-m32r.org, philb@gnu.org, geert@linux-m68k.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, davem@davemloft.net, rob.herring@calxeda.com, arnd@arndb.de, sboyd@codeaurora.org, swarren@nvidia.com, john.stultz@linaro.org, jesper.nilsson@axis.com, gregkh@linuxfoundation.org, sam@ravnborg.org
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-s390@vger.kernel.org, linux-m68k@vger.kernel.org, linux-m32r@ml.linux-m32r.org, Arpit Goel <B44344@freescale.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven dixit:
+This patch-set moves USECS_PER_JIFFY to architecture timex.h from architecture
+specific C files. Patch-set further uses this to make PPC macro
+spin_event_timeout() architecture independent. This change enables drivers to
+use spin_event_timeout() even in non-PowerPC based SoC's.
 
->On Wed, Jul 24, 2013 at 12:51 AM, Thorsten Glaser <tg@debian.org> wrot=
-e:
->> - nfeth: says "No such device" upon insmod
->
->You're lucky. When insmodding nfeth.ko, my ARAnyM just terminates with=
-:
->
->Gotcha! Illegal memory access. Atari PC =3D $968c
+This patchset has been compiled for ARM, PowerPC and x86.
 
-That=E2=80=99s http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D69806=
-4
+Patch[1/2] : Moves USECS_PER_JIFFY to architecture specific timex.h files from
+	     architecture specific C files.
 
->With my patch, insmod works again, and the network works, too.
+Patch[2/2] : Converts PPC macro spin_event_timeout() in architecture independent
+	     macro.
 
-Nice!
+Arpit Goel (2):
+  Make USECS_PER_JIFFY available for generic use
+  Convert PowerPC macro spin_event_timeout() to architecture independent
+        macro
 
->AFAIK you cannot have two physical memory blocks with ARAnyM, so using
->a copy on the stack should be safe.
+ arch/arm/include/asm/timex.h      |  2 ++
+ arch/arm/kernel/time.c            |  3 ---
+ arch/m32r/include/asm/timex.h     |  2 ++
+ arch/m32r/kernel/time.c           |  3 ---
+ arch/m68k/hp300/time.c            |  4 +---
+ arch/m68k/include/asm/timex.h     |  2 ++
+ arch/s390/include/asm/timex.h     |  2 ++
+ arch/s390/kernel/time.c           |  2 --
+ arch/sparc/include/asm/timex_32.h |  2 ++
+ arch/sparc/include/asm/timex_64.h |  2 ++
+ arch/sparc/kernel/pcic.c          |  1 -
+ include/linux/delay.h             | 40 +++++++++++++++++++++++++++++++++++++++
+ 12 files changed, 53 insertions(+), 12 deletions(-)
 
-Hmm, okay. I think the ARAnyM code also only checks that
-beginning and end are physical memory, so it=E2=80=99s contiguous.
-
-bye,
-//mirabilos
---=20
-=46WIW, I'm quite impressed with mksh interactively. I thought it was m=
-uch
-*much* more bare bones. But it turns out it beats the living hell out o=
-f
-ksh93 in that respect. I'd even consider it for my daily use if I hadn'=
-t
-wasted half my life on my zsh setup. :-) -- Frank Terbeck in #!/bin/mks=
-h
+-- 
+1.8.1.4
