@@ -1,82 +1,81 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 2/2] Convert PowerPC macro spin_event_timeout() to
- architecture independent macro
-Date: Wed, 31 Jul 2013 00:16:30 -0700
-Message-ID: <20130731071630.GI8868@codeaurora.org>
-References: <1375187900-17582-1-git-send-email-B44344@freescale.com>
- <1375187900-17582-3-git-send-email-B44344@freescale.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux 3.10.1 with initrd (was Re: linux 3.8.12-1 (atari flavour)
+ does not boot)
+Date: Wed, 31 Jul 2013 10:39:50 +0200
+Message-ID: <CAMuHMdVj_xZWYc1Cszun0F6Xrrz0=e_EJN4b1cqdbcRqgC7ABg@mail.gmail.com>
+References: <alpine.DEB.2.02.1305132122190.14304@tglase.lan.tarent.de>
+	<CAMuHMdX+t0=J+8a1JoF6Jf=gO_ROuL_kgAVjF0DJA-cgPGp_Ng@mail.gmail.com>
+	<Pine.BSM.4.64L.1305132126170.11828@herc.mirbsd.org>
+	<5192331E.9010009@debian.org>
+	<Pine.BSM.4.64L.1305141338580.14676@herc.mirbsd.org>
+	<20130514144112.GH11842@chumley.earth.sol>
+	<Pine.BSM.4.64L.1305141642360.9568@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1307201716460.31890@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp.codeaurora.org ([198.145.11.231]:59536 "EHLO
-	smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754965Ab3GaHQc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 31 Jul 2013 03:16:32 -0400
-Content-Disposition: inline
-In-Reply-To: <1375187900-17582-3-git-send-email-B44344@freescale.com>
+Received: from mail-pa0-f51.google.com ([209.85.220.51]:50813 "EHLO
+	mail-pa0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759134Ab3GaIjv convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 31 Jul 2013 04:39:51 -0400
+Received: by mail-pa0-f51.google.com with SMTP id lf11so599554pab.38
+        for <linux-m68k@vger.kernel.org>; Wed, 31 Jul 2013 01:39:51 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1307201716460.31890@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arpit Goel <B44344@freescale.com>
-Cc: linux@arm.linux.org.uk, takata@linux-m32r.org, philb@gnu.org, geert@linux-m68k.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, davem@davemloft.net, rob.herring@calxeda.com, arnd@arndb.de, swarren@nvidia.com, john.stultz@linaro.org, jesper.nilsson@axis.com, gregkh@linuxfoundation.org, sam@ravnborg.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, mattw@codeaurora.org
+To: Thorsten Glaser <tg@mirbsd.de>, Mikael Pettersson <mikpe@it.uu.se>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 07/30, Arpit Goel wrote:
-> This patch ports PowerPC implementation of spin_event_timeout() for generic
-> use. Architecture specific implementation can be added to asm/delay.h, which
-> will override the generic linux implementation.
-> 
-> Signed-off-by: Arpit Goel <B44344@freescale.com>
-> ---
+On Sat, Jul 20, 2013 at 7:27 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
+> So good, so far. An ARAnyM log of the build (kernel
+> messages) is attached. There=E2=80=99s one thing sticking out:
+>
+> [    0.160000] WARNING: at /root/linux-3.10.1/init/main.c:698 do_one_=
+initcall+0x12e/0x13a()
+> [    0.160000] initcall param_sysfs_init+0x0/0x1a4 returned with disa=
+bled interrupts
+>
+> This seems to happen for several initcalls. Geert et al,
+> can you have a look at them, they=E2=80=99re scary =E2=98=BA
 
-We use something similar internally but it's tied specifically to
-readl.
+It only happens on multi-platform kernels, because of the following def=
+inition
+of ALLOWINT:
 
->  
-> +#ifndef spin_event_timeout
-> +/**
-> + * spin_event_timeout - spin until a condition gets true or a timeout elapses
-> + * @condition: a C expression to evalate
-> + * @timeout: timeout, in microseconds
-> + * @delay: the number of microseconds to delay between each evaluation of
-> + *         @condition
-> + *
-> + * The process spins until the condition evaluates to true (non-zero) or the
-> + * timeout elapses.  The return value of this macro is the value of
-> + * @condition when the loop terminates. This allows you to determine the cause
-> + * of the loop terminates.  If the return value is zero, then you know a
-> + * timeout has occurred.
-> + *
-> + * This primary purpose of this macro is to poll on a hardware register
-> + * until a status bit changes.  The timeout ensures that the loop still
-> + * terminates even if the bit never changes.  The delay is for devices that
-> + * need a delay in between successive reads.
-> + *
-> + * gcc will optimize out the if-statement if @delay is a constant.
-> + *
-> + * This is copied from PowerPC based spin_event_timeout() implementation
-> + * and modified for generic usecase.
-> + */
-> +#define spin_event_timeout(condition, timeout, delay)		\
-> +({								\
-> +	typeof(condition) __ret;				\
-> +	unsigned long __loops = timeout/USECS_PER_JIFFY;	\
-> +	unsigned long __start = jiffies;			\
-> +	while (!(__ret = (condition)) &&			\
-> +		time_before(jiffies, __start + __loops + 1))	\
-> +		if (delay)					\
-> +			udelay(delay);				\
-> +		else						\
-> +			schedule();				\
-> +	if (!__ret)						\
-> +		__ret = (condition);				\
-> +	__ret;							\
-> +})
+#if defined(MACH_ATARI_ONLY)
+        /* block out HSYNC =3D ipl 2 on the atari */
+#define ALLOWINT        (~0x500)
+#else
+        /* portable version */
+#define ALLOWINT        (~0x700)
+#endif /* machine compilation types */
 
-What do you do here if jiffies aren't incrementing (i.e
-interrupts are disabled). The time_before() check won't work
-there and it would be nice if we were able to use this in such
-situations. I think powerpc gets around this by reading the
-hardware timer directly?
+On an Atari-only kernel, flags is either 0x00c02204 or 0x00c02214.
+Hence "flags & ~ALLOWINT" is "flags & 0x500" is always zero.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-hosted by The Linux Foundation
+On a multi-platform kernel, flags is one of 0x00c02004, 0x00c02014,
+0x00c02204, or 0x00c02214.
+Hence "flags & ~ALLOWINT" is "flags & 0x700" is sometimes non-zero,
+triggering the warning.
+
+Anyone who sees a solution that doesn't involve adding a variable to ho=
+ld
+ALLOWINT?
+
+We're already having a check for Q40 in arch_local_irq_enable()
+(in multi-platfom kernels only).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
