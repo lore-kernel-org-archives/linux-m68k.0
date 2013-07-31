@@ -1,46 +1,82 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH] m68k/coldfire: flush cache when creating the signal stack frame
-Date: Tue, 30 Jul 2013 16:12:56 +0200
-Message-ID: <8366284.jmWuEafP7M@ws-stein>
-References: <1370432559-31711-1-git-send-email-alexander.stein@systec-electronic.com> <51F76027.604@uclinux.org>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 2/2] Convert PowerPC macro spin_event_timeout() to
+ architecture independent macro
+Date: Wed, 31 Jul 2013 00:16:30 -0700
+Message-ID: <20130731071630.GI8868@codeaurora.org>
+References: <1375187900-17582-1-git-send-email-B44344@freescale.com>
+ <1375187900-17582-3-git-send-email-B44344@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <51F76027.604@uclinux.org>
+Received: from smtp.codeaurora.org ([198.145.11.231]:59536 "EHLO
+	smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754965Ab3GaHQc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 31 Jul 2013 03:16:32 -0400
+Content-Disposition: inline
+In-Reply-To: <1375187900-17582-3-git-send-email-B44344@freescale.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Arpit Goel <B44344@freescale.com>
+Cc: linux@arm.linux.org.uk, takata@linux-m32r.org, philb@gnu.org, geert@linux-m68k.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, davem@davemloft.net, rob.herring@calxeda.com, arnd@arndb.de, swarren@nvidia.com, john.stultz@linaro.org, jesper.nilsson@axis.com, gregkh@linuxfoundation.org, sam@ravnborg.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, mattw@codeaurora.org
 
-Hello Greg,
+On 07/30, Arpit Goel wrote:
+> This patch ports PowerPC implementation of spin_event_timeout() for generic
+> use. Architecture specific implementation can be added to asm/delay.h, which
+> will override the generic linux implementation.
+> 
+> Signed-off-by: Arpit Goel <B44344@freescale.com>
+> ---
 
-On Tuesday 30 July 2013 16:41:43, Greg Ungerer wrote:
-> Hi Alexander,
-> 
-> On 05/06/13 21:42, Alexander Stein wrote:
-> > When the signal stack frame is created, it must be flushed in order to
-> > make sure the cache fetches the correct data.
-> > Without cache flush the icache might pick up old cached data from an older
-> > signal stack frame if the signal is raised again very fast.
-> > In case of copyback the data cache muist be pushed first, but is untested.
-> > 
-> > Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-> 
-> Sorry for the delay.
-> 
-> I haven't been able to actually test it, I can't get the M5475 to
-> boot in copyback cache mode at the moment. I need to debug it and
-> figure out why it is broken.
-> 
-> For now I think the best is if I push it into for-next on the
-> m68knommu git tree.
-> 
-> (Aside it looks like the clear_cf_icache call here is a bit bogus.
-> It takes cache line number args, not virtual addresses - it works
-> here because clear_cf_cache invalidates the whole icache... :-(
+We use something similar internally but it's tied specifically to
+readl.
 
-Yep, the problem is that IIRC coldfire can only invalidate the whole cache, or single cache lines where I think it is impossible to find out which one to invalidate.
+>  
+> +#ifndef spin_event_timeout
+> +/**
+> + * spin_event_timeout - spin until a condition gets true or a timeout elapses
+> + * @condition: a C expression to evalate
+> + * @timeout: timeout, in microseconds
+> + * @delay: the number of microseconds to delay between each evaluation of
+> + *         @condition
+> + *
+> + * The process spins until the condition evaluates to true (non-zero) or the
+> + * timeout elapses.  The return value of this macro is the value of
+> + * @condition when the loop terminates. This allows you to determine the cause
+> + * of the loop terminates.  If the return value is zero, then you know a
+> + * timeout has occurred.
+> + *
+> + * This primary purpose of this macro is to poll on a hardware register
+> + * until a status bit changes.  The timeout ensures that the loop still
+> + * terminates even if the bit never changes.  The delay is for devices that
+> + * need a delay in between successive reads.
+> + *
+> + * gcc will optimize out the if-statement if @delay is a constant.
+> + *
+> + * This is copied from PowerPC based spin_event_timeout() implementation
+> + * and modified for generic usecase.
+> + */
+> +#define spin_event_timeout(condition, timeout, delay)		\
+> +({								\
+> +	typeof(condition) __ret;				\
+> +	unsigned long __loops = timeout/USECS_PER_JIFFY;	\
+> +	unsigned long __start = jiffies;			\
+> +	while (!(__ret = (condition)) &&			\
+> +		time_before(jiffies, __start + __loops + 1))	\
+> +		if (delay)					\
+> +			udelay(delay);				\
+> +		else						\
+> +			schedule();				\
+> +	if (!__ret)						\
+> +		__ret = (condition);				\
+> +	__ret;							\
+> +})
 
-Best regards,
-Alexander
+What do you do here if jiffies aren't incrementing (i.e
+interrupts are disabled). The time_before() check won't work
+there and it would be nice if we were able to use this in such
+situations. I think powerpc gets around this by reading the
+hardware timer directly?
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+hosted by The Linux Foundation
