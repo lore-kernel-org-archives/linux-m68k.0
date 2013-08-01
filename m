@@ -1,42 +1,24 @@
 From: Timur Tabi <timur@tabi.org>
 Subject: Re: [PATCH 2/2] Convert PowerPC macro spin_event_timeout() to
  architecture independent macro
-Date: Wed, 31 Jul 2013 18:44:58 -0500
-Message-ID: <CAOZdJXVvNBR-qf7LXNOHZVstH_Rebxwn-wAkSaBS53Wn55mYCw@mail.gmail.com>
+Date: Wed, 31 Jul 2013 19:02:12 -0500
+Message-ID: <CAOZdJXW8uF_e2nQr3gAiMf4E5pvsH_S-ztAXvx9R7-nXyaZGag@mail.gmail.com>
 References: <1375187900-17582-1-git-send-email-B44344@freescale.com>
- <1375187900-17582-3-git-send-email-B44344@freescale.com>
- <20130731071630.GI8868@codeaurora.org>
+	<1375187900-17582-3-git-send-email-B44344@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20130731071630.GI8868@codeaurora.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-m68k@vger.kernel.org, heiko.carstens@de.ibm.com, mattw@codeaurora.org, sparclinux@vger.kernel.org, sam@ravnborg.org, linux-s390@vger.kernel.org, jesper.nilsson@axis.com, linux@arm.linux.org.uk, takata@linux-m32r.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Rob Herring <rob.herring@calxeda.com>, john.stultz@linaro.org, Stephen Warren <swarren@nvidia.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-m32r@ml.linux-m32r.org, Arpit Goel <B44344@freescale.com>, gregkh@linuxfoundation.org, lkml <linux-kernel@vger.kernel.org>, schwidefsky@de.ibm.com, linux390@de.ibm.com, philb@gnu.org, David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <1375187900-17582-3-git-send-email-B44344@freescale.com>
+Sender: sparclinux-owner@vger.kernel.org
+To: Arpit Goel <B44344@freescale.com>
+Cc: linux@arm.linux.org.uk, takata@linux-m32r.org, philb@gnu.org, Geert Uytterhoeven <geert@linux-m68k.org>, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, David Miller <davem@davemloft.net>, Rob Herring <rob.herring@calxeda.com>, Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@nvidia.com>, john.stultz@linaro.org, jesper.nilsson@axis.com, gregkh@linuxfoundation.org, sam@ravnborg.org, linux-m32r-ja@ml.linux-m32r.org, linux-s390@vger.kernel.org, linux-m68k@vger.kernel.org, linux-m32r@ml.linux-m32r.org, lkml <linux-kernel@vger.kernel.org>, sparclinux@vger.kernel.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Wed, Jul 31, 2013 at 2:16 AM, Stephen Boyd <sboyd@codeaurora.org> wrote:
+On Tue, Jul 30, 2013 at 7:38 AM, Arpit Goel <B44344@freescale.com> wrote:
 >
-> What do you do here if jiffies aren't incrementing (i.e
-> interrupts are disabled). The time_before() check won't work
-> there and it would be nice if we were able to use this in such
-> situations. I think powerpc gets around this by reading the
-> hardware timer directly?
+> +#ifndef spin_event_timeout
+> +/**
 
-I believe that jiffies is always a global variable.  It should behave
-the same on PowerPC as on other architectures.
 
-The answer to your question is that you should not use
-spin_event_timeout() in interrupt context, because it yields.
-
-(FYI, I'm the author of spin_event_timeout(), so please CC: me on all
-changes to it)
+Why don't you make PowerPC also use this generic version?  It seems
+silly to have two virtually identical implementations of this macro?
