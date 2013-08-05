@@ -1,120 +1,264 @@
-From: Chen Gang F T <chen.gang.flying.transformer@gmail.com>
-Subject: Re: [PATCH] arch: m68k: include: asm: define 'VM_DATA_DEFAULT_FLAGS'
- no matter whether has 'NOMMU' or not.
-Date: Mon, 05 Aug 2013 10:21:14 +0800
-Message-ID: <51FF0C1A.3020907@gmail.com>
-References: <51C548E2.1060104@asianux.com> <51D0ECC2.3020101@asianux.com> <51FF01E7.5020105@uclinux.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH v2] m68k: remove 16 unused boards in Kconfig.machine
+Date: Mon, 05 Aug 2013 14:04:10 +1000
+Message-ID: <51FF243A.3090508@uclinux.org>
+References: <1363868258.1390.129.camel@x61.thuisdomein>  <514FF226.3050507@uclinux.org> <1368735111.1350.211.camel@x61.thuisdomein> <1368777557.1350.221.camel@x61.thuisdomein>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <51FF01E7.5020105@uclinux.org>
+In-Reply-To: <1368777557.1350.221.camel@x61.thuisdomein>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: Chen Gang <gang.chen@asianux.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul McKenney <paulmck@linux.vnet.ibm.com>, "dhowells@redhat.com" <dhowells@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, davej@redhat.com, Arnd Bergmann <arnd@arndb.de>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-On 08/05/2013 09:37 AM, Greg Ungerer wrote:
-> Hi Chen Gang,
->=20
-> On 01/07/13 12:43, Chen Gang wrote:
->> Hello Maintainers:
->>
->> Please help check the patch whether OK or not, when you have time.
->>
->> Thanks.
->>
->> On 06/22/2013 02:49 PM, Chen Gang wrote:
->>>
->>> Define 'VM_DATA_DEFAULT_FLAGS' when 'NOMMU' to pass compiling.
->>>
->>> So move it from "include/asm/page_mm.h to "include/asm/page.h"
->>>
->>> The related make:
->>>
->>>   make ARCH=3Dm68k randconfig
->>>   make ARCH=3Dm68k menuconfig
->>>     choose cross compiler
->>>     disable MMU support
->>>   make ARCH=3Dm68k V=3D1 EXTRA_CFLAGS=3D-W
->>>
->>> The related error:
->>>
->>>   security/selinux/hooks.c: In function =E2=80=98selinux_init=E2=80=
-=99:
->>>   security/selinux/hooks.c:5821:21: error: =E2=80=98VM_DATA_DEFAULT=
-_FLAGS=E2=80=99 undeclared (first use in this function)
->>>
->>> (the attachment is the related .config file)
->>>
->>>
->>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
->=20
-> I am fine with this:
->=20
-> Acked-by: Greg Ungerer <gerg@uclinux.org>
->=20
+Hi Paul,
 
-Thank you very much.
+On 17/05/13 17:59, Paul Bolle wrote:
+> The Kconfig entries for 16 boards are unused. Remove these, together
+> with the 6 entries that these boards select, but are also unused.
+> 
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-> Do you want me to add this to the m68knommu git tree, and push to
-> Linus?
->=20
+I have pushed this onto the for-next branch of the m68knommu git
+tree.
 
-Yeah, thank you.
-
-:-)
-
-> Regards
-> Greg
->=20
->=20
->>> ---
->>>  arch/m68k/include/asm/page.h    |    3 +++
->>>  arch/m68k/include/asm/page_mm.h |    3 ---
->>>  2 files changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/p=
-age.h
->>> index 7c360da..38b024a 100644
->>> --- a/arch/m68k/include/asm/page.h
->>> +++ b/arch/m68k/include/asm/page.h
->>> @@ -48,6 +48,9 @@ extern unsigned long _ramend;
->>>  #include <asm/page_no.h>
->>>  #endif
->>> =20
->>> +#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
->>> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
->>> +
->>>  #include <asm-generic/getorder.h>
->>> =20
->>>  #endif /* _M68K_PAGE_H */
->>> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/as=
-m/page_mm.h
->>> index 89f2014..5029f73 100644
->>> --- a/arch/m68k/include/asm/page_mm.h
->>> +++ b/arch/m68k/include/asm/page_mm.h
->>> @@ -173,7 +173,4 @@ static inline __attribute_const__ int __virt_to=
-_node_shift(void)
->>> =20
->>>  #endif /* __ASSEMBLY__ */
->>> =20
->>> -#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
->>> -				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
->>> -
->>>  #endif /* _M68K_PAGE_MM_H */
->>>
->>
->>
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kerne=
-l" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->=20
+Regards
+Greg
 
 
---=20
-Chen Gang
+> ---
+> 0) If double checking your commits is an art I'm no artist! I didn't
+> notice that v1 (called "m68k: remove 15 unused boards in
+> Kconfig.machine") depended on an older commit in my local stack of
+> changes. This commit combines both into one.
+> 
+> 1) Still only tested by (extensive) grepping of the tree.
+> 
+>  arch/m68k/Kconfig.machine | 134 ----------------------------------------------
+>  1 file changed, 134 deletions(-)
+> 
+> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+> index b9ab0a6..61dc643 100644
+> --- a/arch/m68k/Kconfig.machine
+> +++ b/arch/m68k/Kconfig.machine
+> @@ -150,18 +150,6 @@ config XCOPILOT_BUGS
+>  	help
+>  	  Support the bugs of Xcopilot.
+>  
+> -config UC5272
+> -	bool "Arcturus Networks uC5272 dimm board support"
+> -	depends on M5272
+> -	help
+> -	  Support for the Arcturus Networks uC5272 dimm board.
+> -
+> -config UC5282
+> -	bool "Arcturus Networks uC5282 board support"
+> -	depends on M528x
+> -	help
+> -	  Support for the Arcturus Networks uC5282 dimm board.
+> -
+>  config UCSIMM
+>  	bool "uCsimm module support"
+>  	depends on M68EZ328
+> @@ -205,23 +193,15 @@ config UCQUICC
+>  	help
+>  	  Support for the Lineo uCquicc board.
+>  
+> -config ARNEWSH
+> -	bool
+> -
+>  config ARN5206
+>  	bool "Arnewsh 5206 board support"
+>  	depends on M5206
+> -	select ARNEWSH
+>  	help
+>  	  Support for the Arnewsh 5206 board.
+>  
+> -config FREESCALE
+> -	bool
+> -
+>  config M5206eC3
+>  	bool "Motorola M5206eC3 board support"
+>  	depends on M5206e
+> -	select FREESCALE
+>  	help
+>  	  Support for the Motorola M5206eC3 board.
+>  
+> @@ -231,88 +211,24 @@ config ELITE
+>  	help
+>  	  Support for the Motorola M5206eLITE board.
+>  
+> -config M5208EVB
+> -	bool "Freescale M5208EVB board support"
+> -	depends on M520x
+> -	select FREESCALE
+> -	help
+> -	  Support for the Freescale Coldfire M5208EVB.
+> -
+>  config M5235EVB
+>  	bool "Freescale M5235EVB support"
+>  	depends on M523x
+> -	select FREESCALE
+>  	help
+>  	  Support for the Freescale M5235EVB board.
+>  
+>  config M5249C3
+>  	bool "Motorola M5249C3 board support"
+>  	depends on M5249
+> -	select FREESCALE
+>  	help
+>  	  Support for the Motorola M5249C3 board.
+>  
+> -config M5271EVB
+> -	bool "Freescale (Motorola) M5271EVB board support"
+> -	depends on M5271
+> -	select FREESCALE
+> -	help
+> -	  Support for the Freescale (Motorola) M5271EVB board.
+> -
+> -config M5275EVB
+> -	bool "Freescale (Motorola) M5275EVB board support"
+> -	depends on M5275
+> -	select FREESCALE
+> -	help
+> -	  Support for the Freescale (Motorola) M5275EVB board.
+> -
+>  config M5272C3
+>  	bool "Motorola M5272C3 board support"
+>  	depends on M5272
+> -	select FREESCALE
+>  	help
+>  	  Support for the Motorola M5272C3 board.
+>  
+> -config senTec
+> -	bool
+> -
+> -config COBRA5272
+> -	bool "senTec COBRA5272 board support"
+> -	depends on M5272
+> -	select senTec
+> -	help
+> -	  Support for the senTec COBRA5272 board.
+> -
+> -config AVNET
+> -	bool
+> -
+> -config AVNET5282
+> -	bool "Avnet 5282 board support"
+> -	depends on M528x
+> -	select AVNET
+> -	help
+> -	  Support for the Avnet 5282 board.
+> -
+> -config M5282EVB
+> -	bool "Motorola M5282EVB board support"
+> -	depends on M528x
+> -	select FREESCALE
+> -	help
+> -	  Support for the Motorola M5282EVB board.
+> -
+> -config COBRA5282
+> -	bool "senTec COBRA5282 board support"
+> -	depends on M528x
+> -	select senTec
+> -	help
+> -	  Support for the senTec COBRA5282 board.
+> -
+> -config SOM5282EM
+> -	bool "EMAC.Inc SOM5282EM board support"
+> -	depends on M528x
+> -	help
+> -	  Support for the EMAC.Inc SOM5282EM module.
+> -
+>  config WILDFIRE
+>  	bool "Intec Automation Inc. WildFire board support"
+>  	depends on M528x
+> @@ -328,14 +244,12 @@ config WILDFIREMOD
+>  config ARN5307
+>  	bool "Arnewsh 5307 board support"
+>  	depends on M5307
+> -	select ARNEWSH
+>  	help
+>  	  Support for the Arnewsh 5307 board.
+>  
+>  config M5307C3
+>  	bool "Motorola M5307C3 board support"
+>  	depends on M5307
+> -	select FREESCALE
+>  	help
+>  	  Support for the Motorola M5307C3 board.
+>  
+> @@ -345,30 +259,9 @@ config SECUREEDGEMP3
+>  	help
+>  	  Support for the SnapGear SecureEdge/MP3 platform.
+>  
+> -config M5329EVB
+> -	bool "Freescale (Motorola) M5329EVB board support"
+> -	depends on M532x
+> -	select FREESCALE
+> -	help
+> -	  Support for the Freescale (Motorola) M5329EVB board.
+> -
+> -config COBRA5329
+> -	bool "senTec COBRA5329 board support"
+> -	depends on M532x
+> -	help
+> -	  Support for the senTec COBRA5329 board.
+> -
+> -config M5373EVB
+> -	bool "Freescale M5373EVB board support"
+> -	depends on M537x
+> -	select FREESCALE
+> -	help
+> -	  Support for the Freescale M5373EVB board.
+> -
+>  config M5407C3
+>  	bool "Motorola M5407C3 board support"
+>  	depends on M5407
+> -	select FREESCALE
+>  	help
+>  	  Support for the Motorola M5407C3 board.
+>  
+> @@ -402,39 +295,12 @@ config NETtel
+>  	help
+>  	  Support for the SnapGear NETtel/SecureEdge/SnapGear boards.
+>  
+> -config SNAPGEAR
+> -	bool "SnapGear router board support"
+> -	depends on NETtel
+> -	help
+> -	  Special additional support for SnapGear router boards.
+> -
+> -config SNEHA
+> -	bool
+> -
+> -config CPU16B
+> -	bool "Sneha Technologies S.L. Sarasvati board support"
+> -	depends on M5272
+> -	select SNEHA
+> -	help
+> -	  Support for the SNEHA CPU16B board.
+> -
+>  config MOD5272
+>  	bool "Netburner MOD-5272 board support"
+>  	depends on M5272
+>  	help
+>  	  Support for the Netburner MOD-5272 board.
+>  
+> -config SAVANT
+> -	bool
+> -
+> -config SAVANTrosie1
+> -	bool "Savant Rosie1 board support"
+> -	depends on M523x
+> -	select SAVANT
+> -	help
+> -	  Support for the Savant Rosie1 board.
+> -
+> -
+>  if !MMU || COLDFIRE
+>  
+>  comment "Machine Options"
+> 
