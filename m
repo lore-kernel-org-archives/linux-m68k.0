@@ -1,89 +1,87 @@
-From: =?iso-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
-Subject: Re: Multiple Memory Chunks
-Date: Sat, 10 Aug 2013 23:00:58 +0200
-Message-ID: <6EF44417-6A7D-467E-8489-3E9928E22B12@2013.bluespice.org>
-References: <2ff3a4b6bf1251e63cd24d4bda680c5b@localhost> <CAMuHMdVEdz9cmenqYNeemSK+O0aZj0RG7oKdxwygfBE6WWONsg@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vserv.windfluechter.net ([31.172.31.194]:48682 "EHLO
-	vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758795Ab3HJVBK convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 10 Aug 2013 17:01:10 -0400
-In-Reply-To: <CAMuHMdVEdz9cmenqYNeemSK+O0aZj0RG7oKdxwygfBE6WWONsg@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH] m68k: truncate base in do_div
+Date: Sun, 11 Aug 2013 21:57:27 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1308112157110.5944@herc.mirbsd.org>
+References: <871u633t27.fsf@igel.home>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <871u633t27.fsf@igel.home>
+Resent-Message-ID: <zTqSe6HalwB.A.H6E.XkACSB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Am 10.08.2013 um 13:46 schrieb Geert Uytterhoeven <geert@linux-m68k.org>:
+Andreas Schwab dixit:
 
->> Memfile:
->> 2097152
->> 0x08000000 67108864
->> 0x07400000 12582912
-> As 0x07400000 < 0x08000000, the kernel ignores the second chunk.
+>Explicitly truncate the second operand of do_div to 32 bits to guard
+>against bogus code calling it with a 64bit divisor.
+>
+>Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 
-True, but as you state yourself below, everyone would usually want to get the kernel loaded at 0x08000000, because it's way faster. 
+Tested-by: Thorsten Glaser <tg@debian.org>
 
->> So, apparently the second FastMem chunk is ignored by the kernel itself. Is
->> there a way to make use of the additional 12 MB RAM? Although it's not as
->> fast as the 32bit memory on the accelerator card (64MB), it is still faster
->> than swapping to/from disk.
-> If you reverse the order of the chunks, it will use both. Unfortunately the
-> kernel will be in the slowest chunk.
+>---
+> arch/m68k/include/asm/div64.h | 9 +++++----
+> 1 file changed, 5 insertions(+), 4 deletions(-)
+>
+>diff --git a/arch/m68k/include/asm/div64.h b/arch/m68k/include/asm/div64.h
+>index 444ea8a..ef881cf 100644
+>--- a/arch/m68k/include/asm/div64.h
+>+++ b/arch/m68k/include/asm/div64.h
+>@@ -15,16 +15,17 @@
+> =09=09unsigned long long n64;=09=09=09=09\
+> =09} __n;=09=09=09=09=09=09=09\
+> =09unsigned long __rem, __upper;=09=09=09=09\
+>+=09unsigned long __base =3D (base);=09=09=09=09\
+> =09=09=09=09=09=09=09=09\
+> =09__n.n64 =3D (n);=09=09=09=09=09=09\
+> =09if ((__upper =3D __n.n32[0])) {=09=09=09=09\
+> =09=09asm ("divul.l %2,%1:%0"=09=09=09=09\
+>-=09=09=09: "=3Dd" (__n.n32[0]), "=3Dd" (__upper)=09\
+>-=09=09=09: "d" (base), "0" (__n.n32[0]));=09\
+>+=09=09     : "=3Dd" (__n.n32[0]), "=3Dd" (__upper)=09\
+>+=09=09     : "d" (__base), "0" (__n.n32[0]));=09=09\
+> =09}=09=09=09=09=09=09=09\
+> =09asm ("divu.l %2,%1:%0"=09=09=09=09=09\
+>-=09=09: "=3Dd" (__n.n32[1]), "=3Dd" (__rem)=09=09\
+>-=09=09: "d" (base), "1" (__upper), "0" (__n.n32[1]));=09\
+>+=09     : "=3Dd" (__n.n32[1]), "=3Dd" (__rem)=09=09=09\
+>+=09     : "d" (__base), "1" (__upper), "0" (__n.n32[1]));=09\
+> =09(n) =3D __n.n64;=09=09=09=09=09=09\
+> =09__rem;=09=09=09=09=09=09=09\
+> })
+>--=20
+>1.8.3.4
+>
+>
+>--=20
+>Andreas Schwab, schwab@linux-m68k.org
+>GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+>"And now for something completely different."
+>
+>
+>--=20
+>To UNSUBSCRIBE, email to debian-68k-REQUEST@lists.debian.org
+>with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.=
+org
+>Archive: http://lists.debian.org/871u633t27.fsf@igel.home
+>
+>
 
-Yes, and I would like to avoid this, of course. ;-) It really slows down the machine and you can even feel it... ;)
-
->> Especially this becomes important when we want to put BigRamPlus RAM
->> extensions into Amigas. Those are 256MB RAM extensions via ZorroIII bus and
->> the port would highly benefit from supporting multiple memory chunks. Is
->> this possible?
-> I'd expect a Zorro III RAM expansion to end up at either 0xff000000 or
-> 0x40000000, which is a higher address than your other RAM, so it
-> should be OK.
-
-Except that the ZorroIII RAM will be 4-6x slower than the RAM on the accelerator cards. 
-
-> Now why do you have a memfile like this: a long time ago, the m68k kernel
-> used its own mapping code for system RAM, where virtual and physical
-
-Remember that there were problems with loading 3.2.0-4-amiga without the memfile. 
-
-> addresses differed. This was needed as unlike on PC, (a) memory doesn't
-> always start at address zero, and (b) memory isn't always contiguous.
-> Hence we used the MMU to map all memory chunks next to each other,
-> starting at virtual address zero.
-> 
-> With the unification of memory mapping across the different architectures,
-> ouw own mapping code (and this feature) was lost.
-> Due to lack of manpower, we (IIRC Roman Zippel) switched to the
-> simplest memory model, where virtual == physical, but where memory
-> doesn't have to start at zero.
-> 
-> However, it should be possible to revive the virtual mapping using
-> generic code, as some of the big NUMA systems also needed it.
-
-Yeah, that would be great... 
-
-But we would still have the problem with the loading the kernel to the proper memory chunk, i.e. the fastest. 
-AmigaOS has the concept of priorities for memory chunks. The memory on Cyberstorm MK2 accel cards have a priority of 40 whereas normal FastRAM on the mainboard has a priority of 10 (IIRC). The Amiga memory manager automatically selects the priority based on actually memory speeds on each boot, as stated at http://amigadev.elowar.com/read/ADCD_2.1/Hardware_Manual_guide/node00D2.html and http://amigadev.elowar.com/read/ADCD_2.1/Hardware_Manual_guide/node00D4.html outlines that the fastest memory will be located between the mainboard memory and the ZorroIII memory, as you said above. 
-So the trick is get the kernel loaded in the fastest memory chunk and then reorder the other chunks accordingly. I think it's easier to have the kernel do the right thing[TM] than to rely on a fixed version of amiboot. That way we could use the memfile to determine where the kernel will get loaded (fastest chunk) by amiboot. 
-
-> See mm/Kconfig, which offers DISCONTIGMEM (what we use),
-> SPARSEMEM (what you need), and FLATMEM.
-> 
-> Note that SPARSEMEM may give better performance with
-> BigRamPlus, as there's probably a huge gap between its physical
-> address and the addresses of your other memory chunks.
-
-
-So, to test this, I could edit that file, make the change and recompile the kernel and see whether amiboot loads the kernel to 0x08000000 and the kernel still uses the 12 MB memory on the mainboard?
-
--- 
-Ciao...            //      Fon: 0381-2744150
-      Ingo       \X/       http://blog.windfluechter.net
-
-
-gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
+//mirabilos
+--=20
+17:08=E2=8E=9C=C2=ABVutral=C2=BB fr=C3=BCher gabs keine packenden smartphon=
+es und so
+17:08=E2=8E=9C=C2=ABVutral=C2=BB heute gibts frauen die sind facebooks=C3=
+=BCchtig
+17:10=E2=8E=9C=C2=ABVutral=C2=BB aber auch traurig; fr=C3=BCher warst du al=
+s nerd voll am arsch
+17:10=E2=8E=9C=C2=ABVutral=C2=BB heute bist du als nerd der einzige der wir=
+klich damit klarkommt
