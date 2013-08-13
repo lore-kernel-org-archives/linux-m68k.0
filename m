@@ -1,72 +1,118 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Multiple Memory Chunks
-Date: Tue, 13 Aug 2013 10:46:36 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1308131043250.1920@herc.mirbsd.org>
-References: <2ff3a4b6bf1251e63cd24d4bda680c5b@localhost>
- <CAMuHMdVEdz9cmenqYNeemSK+O0aZj0RG7oKdxwygfBE6WWONsg@mail.gmail.com>
- <6EF44417-6A7D-467E-8489-3E9928E22B12@2013.bluespice.org>
- <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: truncate base in do_div
+Date: Tue, 13 Aug 2013 16:50:26 +0200
+Message-ID: <CAMuHMdV-cWUgsjHkuSMwrTE8jeq8U8Xr13ZT0Vji2utfQJHhLg@mail.gmail.com>
+References: <871u633t27.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:6120 "EHLO
-	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757147Ab3HMKxS convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 13 Aug 2013 06:53:18 -0400
-Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7DAr5nr001932
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Tue, 13 Aug 2013 10:53:16 GMT
-In-Reply-To: <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <871u633t27.fsf@igel.home>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven dixit:
-
->We may also use the slow mainboard RAM (I get ca. 12 MiB/s) as a fast =
-swap
->device.
->For Z2 RAM we have our good old z2ram driver, but in the mean time the=
-re's a
->more generic solution in drivers/mtd, IIRC.
-
-bwh mentioned transcendent memory in
-http://womble.decadent.org.uk/talks/debconf13-kernel-news/
-
-But I think with total memory sizes at the magnitude that real
-m68k machines have, we=E2=80=99re probably better off using them for
-main memory as much as possible. (Compressed swap comes to mind,
-but even so, main memory is likely to be under pressure; this
-might help with machines with _very_ slow disc, or root on nfs/nbd
-with slow NIC, though.)
-
->> Remember that there were problems with loading 3.2.0-4-amiga without=
- the memfile.
+On Fri, Aug 9, 2013 at 3:14 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> Explicitly truncate the second operand of do_div to 32 bits to guard
+> against bogus code calling it with a 64bit divisor.
 >
->Yes, going out of memory when allocating the page table arrays? That w=
-on't
->improve when adding 256 MiB of Z3 RAM in the far end of the physical
->address space...
+> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 
-Right, that=E2=80=99s another reason I made the 3.10 kernel much more
-modular and the best one to swallow the bitter pill of having
-to construct an initrd.
+I added
 
-You can always build your own custom kernel, of course, but I
-think that Debian buildds should, as much as possible, use the
-proper Debian kernels of course ;-)
+    [Thorsten]
 
-bye,
-//mirabilos
---=20
-<gcc> ncal.c: In function 'parsemonth': warning: comparison between poi=
-nter
-and integer  =E2=80=A2 <mirabilos> =E2=86=91 hab da =E2=80=9Ein functio=
-n parselmouth=E2=80=9C gelesen
-<Natureshadow> ICH AUCH! =E2=80=A2 <Natureshadow> Ich hab gerade gedach=
-t "H=C3=A4h? Wie,
-hab da parselmouth gelesen ... steht da doch auch :o?"	-- too much fanf=
-ic=E2=80=A6
+    After upgrading from 3.2 to 3.10, mounting a btrfs volume fails with:
+
+    btrfs: setting nodatacow, compression disabled
+    btrfs: enabling auto recovery
+    btrfs: disk space caching is enabled
+    *** ZERO DIVIDE ***   FORMAT=2
+    Current process id is 722
+    BAD KERNEL TRAP: 00000000
+    Modules linked in: evdev mac_hid ext4 crc16 jbd2 mbcache btrfs xor lzo_compr
+    PC: [<319535b2>] __btrfs_map_block+0x11c/0x119a [btrfs]
+    SR: 2000  SP: 30c1fab4  a2: 30f0faf0
+    d0: 00000000    d1: 00001000    d2: 00000000    d3: 00000000
+    d4: 00010000    d5: 00000000    a0: 3085c72c    a1: 3085c72c
+    Process mount (pid: 722, task=30f0faf0)
+    Frame format=2 instr addr=319535ae
+    Stack from 30c1faec:
+            00000000 00000020 00000000 00001000 00000000 01401000 30253928 300ff
+            00a843ac 3026f640 00000000 00010000 0009e250 00d106c0 00011220 00000
+            00001000 301c6830 0009e32a 000000ff 00000009 3085c72c 00000000 00000
+            30c1fd14 00000000 00000020 00000000 30c1fd14 0009e26c 00000020 00000
+            00000000 0009dd8a 300b0b6c 30253928 00a843ac 00001000 00000000 00000
+            0000a008 3194e76a 30253928 00a843ac 00001000 00000000 00000000 00000
+    Call Trace: [<00001000>] kernel_pg_dir+0x0/0x1000
+
+        [...]
+
+    Code: 222e ff74 2a2e ff5c 2c2e ff60 4c45 1402 <2d40> ff64 2d41 ff68 2205 4c2
+
+    [Geert]
+
+    As diagnosed by Andreas, fs/btrfs/volumes.c:__btrfs_map_block()
+    calls
+
+        do_div(stripe_nr, stripe_len);
+
+    with stripe_len u64, while do_div() assumes the divisor is a 32-bit number.
+
+    Due to the lack of truncation in the m68k-specific implementation of
+    do_div(), the division is performed using the upper 32-bit word of
+    stripe_len, which is zero.
+
+    This was introduced by commit 53b381b3abeb86f12787a6c40fee9b2f71edc23b
+    ("Btrfs: RAID5 and RAID6"), which changed the divisor from
+    map->stripe_len (struct map_lookup.stripe_len is int) to a 64-bit temporary.
+
+    Reported-by: Thorsten Glaser <tg@debian.org>
+    Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+    Tested-by: Thorsten Glaser <tg@debian.org>
+    Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+    Cc: stable@vger.kernel.org
+
+> ---
+>  arch/m68k/include/asm/div64.h | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/div64.h b/arch/m68k/include/asm/div64.h
+> index 444ea8a..ef881cf 100644
+> --- a/arch/m68k/include/asm/div64.h
+> +++ b/arch/m68k/include/asm/div64.h
+> @@ -15,16 +15,17 @@
+>                 unsigned long long n64;                         \
+>         } __n;                                                  \
+>         unsigned long __rem, __upper;                           \
+> +       unsigned long __base = (base);                          \
+>                                                                 \
+>         __n.n64 = (n);                                          \
+>         if ((__upper = __n.n32[0])) {                           \
+>                 asm ("divul.l %2,%1:%0"                         \
+> -                       : "=d" (__n.n32[0]), "=d" (__upper)     \
+> -                       : "d" (base), "0" (__n.n32[0]));        \
+> +                    : "=d" (__n.n32[0]), "=d" (__upper)        \
+> +                    : "d" (__base), "0" (__n.n32[0]));         \
+>         }                                                       \
+>         asm ("divu.l %2,%1:%0"                                  \
+> -               : "=d" (__n.n32[1]), "=d" (__rem)               \
+> -               : "d" (base), "1" (__upper), "0" (__n.n32[1])); \
+> +            : "=d" (__n.n32[1]), "=d" (__rem)                  \
+> +            : "d" (__base), "1" (__upper), "0" (__n.n32[1]));  \
+>         (n) = __n.n64;                                          \
+>         __rem;                                                  \
+>  })
+> --
+> 1.8.3.4
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
