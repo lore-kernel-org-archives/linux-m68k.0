@@ -1,179 +1,68 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
-Date: Tue, 13 Aug 2013 20:31:08 +1200
-Message-ID: <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
-References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: multipart/alternative; boundary=Apple-Mail-1-790993917
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Sender: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
-Resent-Message-ID: <xf98hsWQHIF.A.lXH.NLfCSB@bendel>
-List-URL: <http://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Date: Tue, 13 Aug 2013 10:58:25 +0200
+Message-ID: <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
+	<f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
+	<Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
+	<8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pa0-f43.google.com ([209.85.220.43]:46208 "EHLO
+	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753895Ab3HMI60 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 13 Aug 2013 04:58:26 -0400
+Received: by mail-pa0-f43.google.com with SMTP id hz10so8608410pad.16
+        for <linux-m68k@vger.kernel.org>; Tue, 13 Aug 2013 01:58:25 -0700 (PDT)
+In-Reply-To: <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Thorsten Glaser <tg@mirbsd.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-
---Apple-Mail-1-790993917
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=UTF-8;
-	format=flowed
-
-Hi Thorsten,
-
-> (Can you please use UTF-8 for eMails, not Windows-1252?)
-
-I'll try - no idea why Mac Mail would have used that. This one ought to=20=
-
-be UTF-8.
-
+On Tue, Aug 13, 2013 at 10:31 AM, Michael Schmitz
+<schmitz@biophys.uni-duesseldorf.de> wrote:
+>>> It really was Geert's work, I did not meaningfully contribute to th=
+at.
 >>
->> It really was Geert's work, I did not meaningfully contribute to =
-that.
+>> Hm okay. Let=E2=80=99s just hope Geert hurries up and accepts them i=
+nto
+>> his tree and pushes them to Linus, because that=E2=80=99s normally t=
+he
+>> requirement to get anything into the Debian kernel=E2=80=A6 not doin=
+g so
+>> seriously hinders my position.
 >
-> Hm okay. Let=E2=80=99s just hope Geert hurries up and accepts them =
-into
-> his tree and pushes them to Linus, because that=E2=80=99s normally the
-> requirement to get anything into the Debian kernel=E2=80=A6 not doing =
-so
-> seriously hinders my position.
+> He's orders of magnitude faster than me. Not very difficult really :-=
+)
 
-He's orders of magnitude faster than me. Not very difficult really :-)
+He's just returned from holidays, working through the still-growing mai=
+l backlog
+while entertaining the kids and the household environment ;-)
 
+>>> Having revived my Falcon, I should be in a position to test these.
+>>
+>> OK cool. The latter is only available now, having replaced the
+>> former (but it WFM even on the buildd that uses btrfs).
 >
->> Having revived my Falcon, I should be in a position to test these.
->
-> OK cool. The latter is only available now, having replaced the
-> former (but it WFM even on the buildd that uses btrfs).
+> I can only test the interrupt patch part of it for now.
 
-I can only test the interrupt patch part of it for now.
+BTW, the interrupt patch only kills some messages at boot, right?
+Or does (the lack of) it cause real errors later?
 
-Cheers,
+Gr{oetje,eeting}s,
 
-	Michael
-
-
->
-> bye,
-> //mirabilos
-> --=20
-> <ch> you introduced a merge commit        =E2=94=82<mika> % g rebase =
--i HEAD^^
-> <mika> sorry, no idea and rebasing just fscked =E2=94=82<mika> =
-Segmentation
-> <ch> should have cloned into a clean repo      =E2=94=82  fault (core =
-dumped)
-> <ch> if I rebase that now, it's really ugh     =E2=94=82<mika:#grml> =
-wuahhhhhh
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=20=
-
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---Apple-Mail-1-790993917
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/enriched;
-	charset=UTF-8
-
-Hi Thorsten,
-
-
-<excerpt>(Can you please use UTF-8 for eMails, not Windows-1252?)
-
-</excerpt>
-
-I'll try - no idea why Mac Mail would have used that. This one ought
-to be UTF-8.
-
-
-<excerpt><excerpt>
-
-It really was Geert's work, I did not meaningfully contribute to that.
-
-</excerpt>
-
-Hm okay. Let=E2=80=99s just hope Geert hurries up and accepts them into
-
-his tree and pushes them to Linus, because that=E2=80=99s normally the
-
-requirement to get anything into the Debian kernel=E2=80=A6 not doing so
-
-seriously hinders my position.
-
-</excerpt>
-
-He's orders of magnitude faster than me. Not very difficult really :-)=20=
-
-
-
-<excerpt>
-
-<excerpt>Having revived my Falcon, I should be in a position to test
-these.
-
-</excerpt>
-
-OK cool. The latter is only available now, having replaced the
-
-former (but it WFM even on the buildd that uses btrfs).
-
-</excerpt>
-
-I can only test the interrupt patch part of it for now.=20
-
-
-Cheers,
-
-
-	Michael
-
-
-
-<excerpt>
-
-bye,
-
-//mirabilos
-
---=20
-
-<<ch> you introduced a merge commit      =20
-<fontfamily><param>Hiragino Kaku Gothic =
-Pro</param>=E2=94=82</fontfamily><<mika>
-% g rebase -i HEAD^^
-
-<<mika> sorry, no idea and rebasing just fscked
-<fontfamily><param>Hiragino Kaku Gothic =
-Pro</param>=E2=94=82</fontfamily><<mika>
-Segmentation
-
-<<ch> should have cloned into a clean repo    =20
-<fontfamily><param>Hiragino Kaku Gothic Pro</param>=E2=94=82</fontfamily>=20=
-
-fault (core dumped)
-
-<<ch> if I rebase that now, it's really ugh   =20
-<fontfamily><param>Hiragino Kaku Gothic =
-Pro</param>=E2=94=82</fontfamily><<mika:#grml>
-wuahhhhhh
+                        Geert
 
 --
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-To unsubscribe from this list: send the line "unsubscribe linux-m68k"
-in
-
-the body of a message to majordomo@vger.kernel.org
-
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-</excerpt>=
-
---Apple-Mail-1-790993917--
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
