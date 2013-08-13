@@ -1,26 +1,24 @@
 From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
-Date: Tue, 13 Aug 2013 10:42:09 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org>
-References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
- <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
- <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
- <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
- <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
- <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
+Subject: Re: Multiple Memory Chunks
+Date: Tue, 13 Aug 2013 10:46:36 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1308131043250.1920@herc.mirbsd.org>
+References: <2ff3a4b6bf1251e63cd24d4bda680c5b@localhost>
+ <CAMuHMdVEdz9cmenqYNeemSK+O0aZj0RG7oKdxwygfBE6WWONsg@mail.gmail.com>
+ <6EF44417-6A7D-467E-8489-3E9928E22B12@2013.bluespice.org>
+ <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:10070 "EHLO
+Received: from eurynome.mirbsd.org ([81.169.181.30]:6120 "EHLO
 	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757147Ab3HMKxM convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 13 Aug 2013 06:53:12 -0400
+	with ESMTP id S1757147Ab3HMKxS convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 13 Aug 2013 06:53:18 -0400
 Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7DAr5np001932
+	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7DAr5nr001932
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Tue, 13 Aug 2013 10:53:10 GMT
-In-Reply-To: <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
+	for <linux-m68k@vger.kernel.org>; Tue, 13 Aug 2013 10:53:16 GMT
+In-Reply-To: <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: debian-68k@lists.debian.org
@@ -28,38 +26,47 @@ Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
 Geert Uytterhoeven dixit:
 
->On Tue, Aug 13, 2013 at 10:31 AM, Michael Schmitz
-><schmitz@biophys.uni-duesseldorf.de> wrote:
+>We may also use the slow mainboard RAM (I get ca. 12 MiB/s) as a fast =
+swap
+>device.
+>For Z2 RAM we have our good old z2ram driver, but in the mean time the=
+re's a
+>more generic solution in drivers/mtd, IIRC.
 
->>(Can you please use UTF-8 for eMails, not Windows-1252?)
+bwh mentioned transcendent memory in
+http://womble.decadent.org.uk/talks/debconf13-kernel-news/
+
+But I think with total memory sizes at the magnitude that real
+m68k machines have, we=E2=80=99re probably better off using them for
+main memory as much as possible. (Compressed swap comes to mind,
+but even so, main memory is likely to be under pressure; this
+might help with machines with _very_ slow disc, or root on nfs/nbd
+with slow NIC, though.)
+
+>> Remember that there were problems with loading 3.2.0-4-amiga without=
+ the memfile.
 >
->I'll try - no idea why Mac Mail would have used that. This one ought t=
-o be UTF-8.
+>Yes, going out of memory when allocating the page table arrays? That w=
+on't
+>improve when adding 256 MiB of Z3 RAM in the far end of the physical
+>address space...
 
-Yes, that one was better.
+Right, that=E2=80=99s another reason I made the 3.10 kernel much more
+modular and the best one to swallow the bitter pill of having
+to construct an initrd.
 
->He's just returned from holidays, working through the still-growing ma=
-il backlog
->while entertaining the kids and the household environment ;-)
-
-Ah, I see. Have fun, then =E2=98=BA
-
->BTW, the interrupt patch only kills some messages at boot, right?
->Or does (the lack of) it cause real errors later?
-
-I=E2=80=99m not entirely sure, but the =E2=80=9Cscary-looking=E2=80=9D =
-boot messages
-are gone. Performance was mentioned in the thread IIRC, but
-I haven=E2=80=99t noticed anything more than subtle.
+You can always build your own custom kernel, of course, but I
+think that Debian buildds should, as much as possible, use the
+proper Debian kernels of course ;-)
 
 bye,
-//mirabilos, no holidays here =E2=98=B9
+//mirabilos
 --=20
-Sometimes they [people] care too much: pretty printers [and syntax high=
-ligh-
-ting, d.A.] mechanically produce pretty output that accentuates irrelev=
-ant
-detail in the program, which is as sensible as putting all the preposit=
-ions
-in English text in bold font.	-- Rob Pike in "Notes on Programming in C=
-"
+<gcc> ncal.c: In function 'parsemonth': warning: comparison between poi=
+nter
+and integer  =E2=80=A2 <mirabilos> =E2=86=91 hab da =E2=80=9Ein functio=
+n parselmouth=E2=80=9C gelesen
+<Natureshadow> ICH AUCH! =E2=80=A2 <Natureshadow> Ich hab gerade gedach=
+t "H=C3=A4h? Wie,
+hab da parselmouth gelesen ... steht da doch auch :o?"	-- too much fanf=
+ic=E2=80=A6
