@@ -1,79 +1,208 @@
-From: Arpit Goel <B44344@freescale.com>
-Subject: [PATCH v2 2/2] Convert PowerPC macro spin_event_timeout() to architecture independent macro
-Date: Wed, 14 Aug 2013 12:33:55 +0530
-Message-ID: <1376463835-13040-3-git-send-email-B44344@freescale.com>
-References: <1376463835-13040-1-git-send-email-B44344@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]:31684 "EHLO
-	tx2outboundpool.messaging.microsoft.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1757886Ab3HNHT1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 14 Aug 2013 03:19:27 -0400
-In-Reply-To: <1376463835-13040-1-git-send-email-B44344@freescale.com>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Wed, 14 Aug 2013 20:20:08 +1200
+Message-ID: <ce0b5bb143ce14c3a631ce2d9d185963@biophys.uni-duesseldorf.de>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org> <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de> <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com> <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: multipart/alternative; boundary=Apple-Mail-1-876733505
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Sender: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org>
+Resent-Message-ID: <aebgEcrEX-F.A.6SG.6F0CSB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, debian-68k@lists.debian.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux@arm.linux.org.uk, takata@linux-m32r.org, philb@gnu.org, geert@linux-m68k.org
-Cc: schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, davem@davemloft.net, rob.herring@calxeda.com, arnd@arndb.de, swarren@nvidia.com, john.stultz@linaro.org, jesper.nilsson@axis.com, gregkh@linuxfoundation.org, sam@ravnborg.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, mattw@codeaurora.org, timur@tabi.org, sboyd@codeaurora.org, akpm@linux-foundation.org, Arpit Goel <B44344@freescale.com>
 
-This patch ports PowerPC implementation of spin_event_timeout() for generic
-use. Architecture specific implementation can be added to asm/delay.h, which
-will override the generic linux implementation.
 
-Signed-off-by: Arpit Goel <B44344@freescale.com>
----
- include/linux/delay.h | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+--Apple-Mail-1-876733505
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=UTF-8;
+	delsp=yes;
+	format=flowed
 
-diff --git a/include/linux/delay.h b/include/linux/delay.h
-index a6ecb34..2ee7fa8 100644
---- a/include/linux/delay.h
-+++ b/include/linux/delay.h
-@@ -52,4 +52,44 @@ static inline void ssleep(unsigned int seconds)
- 	msleep(seconds * 1000);
- }
- 
-+#ifndef spin_event_timeout
-+/**
-+ * spin_event_timeout - spin until a condition gets true or a timeout elapses
-+ * @condition: a C expression to evalate
-+ * @timeout: timeout, in microseconds
-+ * @delay: the number of microseconds to delay between each evaluation of
-+ *         @condition
-+ *
-+ * The process spins until the condition evaluates to true (non-zero) or the
-+ * timeout elapses.  The return value of this macro is the value of
-+ * @condition when the loop terminates. This allows you to determine the cause
-+ * of the loop terminates.  If the return value is zero, then you know a
-+ * timeout has occurred.
-+ *
-+ * This primary purpose of this macro is to poll on a hardware register
-+ * until a status bit changes.  The timeout ensures that the loop still
-+ * terminates even if the bit never changes.  The delay is for devices that
-+ * need a delay in between successive reads.
-+ *
-+ * gcc will optimize out the if-statement if @delay is a constant.
-+ *
-+ * This is copied from PowerPC based spin_event_timeout() implementation
-+ * and modified for generic usecase.
-+ */
-+#define spin_event_timeout(condition, timeout, delay)		\
-+({								\
-+	typeof(condition) __ret;				\
-+	unsigned long __loops = usecs_to_jiffies(timeout);	\
-+	unsigned long __start = jiffies;			\
-+	while (!(__ret = (condition)) &&			\
-+		time_before(jiffies, __start + __loops + 1))	\
-+		if (delay)					\
-+			udelay(delay);				\
-+		else						\
-+			schedule();				\
-+	if (!__ret)						\
-+		__ret = (condition);				\
-+	__ret;							\
-+})
-+#endif
- #endif /* defined(_LINUX_DELAY_H) */
--- 
-1.8.1.4
+Thorsten,
+
+>>> (Can you please use UTF-8 for eMails, not Windows-1252?)
+>>
+>> I'll try - no idea why Mac Mail would have used that. This one ought =20=
+
+>> to be UTF-8.
+>
+> Yes, that one was better.
+
+Good - now I'll just have to remember that.
+
+>
+>> He's just returned from holidays, working through the still-growing =20=
+
+>> mail backlog
+>> while entertaining the kids and the household environment ;-)
+>
+> Ah, I see. Have fun, then =E2=98=BA
+
+Seconded :-)
+
+>
+>> BTW, the interrupt patch only kills some messages at boot, right?
+>> Or does (the lack of) it cause real errors later?
+>
+> I=E2=80=99m not entirely sure, but the =E2=80=9Cscary-looking=E2=80=9D =
+boot messages
+> are gone. Performance was mentioned in the thread IIRC, but
+> I haven=E2=80=99t noticed anything more than subtle.
+
+Might not make much of a difference in ARAnyM - that's why I want to =20
+test it on the real hardware. The way things are going, not before =20
+Saturday though.
+
+> bye,
+> //mirabilos, no holidays here =E2=98=B9
+
+Same here - with a bit of luck we may finally get away sometime next =20
+week. The ultimate adventure: how to keep a toddler entertained on a =20
+long distance flight...
+
+Cheers,
+
+	Michael
+
+
+> -- =20
+> Sometimes they [people] care too much: pretty printers [and syntax =20
+> highligh-
+> ting, d.A.] mechanically produce pretty output that accentuates =20
+> irrelevant
+> detail in the program, which is as sensible as putting all the =20
+> prepositions
+> in English text in bold font.	-- Rob Pike in "Notes on Programming in =20=
+
+> C"
+>
+>
+> --
+> To UNSUBSCRIBE, email to debian-68k-REQUEST@lists.debian.org
+> with a subject of "unsubscribe". Trouble? Contact =20
+> listmaster@lists.debian.org
+> Archive: =20
+> http://lists.debian.org/=20
+> Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org
+
+--Apple-Mail-1-876733505
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/enriched;
+	charset=UTF-8
+
+Thorsten,
+
+
+<excerpt><excerpt><excerpt>(Can you please use UTF-8 for eMails, not
+Windows-1252?)
+
+</excerpt>
+
+I'll try - no idea why Mac Mail would have used that. This one ought
+to be UTF-8.
+
+</excerpt>
+
+Yes, that one was better.=20
+
+</excerpt>
+
+Good - now I'll just have to remember that.=20
+
+
+<excerpt>
+
+<excerpt>He's just returned from holidays, working through the
+still-growing mail backlog
+
+while entertaining the kids and the household environment ;-)
+
+</excerpt>
+
+Ah, I see. Have fun, then <fontfamily><param>OpenSymbol</param>=E2=98=BA
+
+</fontfamily></excerpt>
+
+Seconded :-)
+
+
+<excerpt><fontfamily><param>OpenSymbol</param>
+
+</fontfamily><excerpt>BTW, the interrupt patch only kills some
+messages at boot, right?
+
+Or does (the lack of) it cause real errors later?
+
+</excerpt>
+
+I=E2=80=99m not entirely sure, but the =E2=80=9Cscary-looking=E2=80=9D =
+boot messages
+
+are gone. Performance was mentioned in the thread IIRC, but
+
+I haven=E2=80=99t noticed anything more than subtle.
+
+</excerpt>
+
+Might not make much of a difference in ARAnyM - that's why I want to
+test it on the real hardware. The way things are going, not before
+Saturday though.
+
+
+<excerpt>bye,
+
+//mirabilos, no holidays here <fontfamily><param>OpenSymbol</param>=E2=98=B9=
+
+
+</fontfamily></excerpt>
+
+Same here - with a bit of luck we may finally get away sometime next
+week. The ultimate adventure: how to keep a toddler entertained on a
+long distance flight...
+
+
+Cheers,
+
+
+	Michael
+
+
+
+<excerpt>--=20
+
+Sometimes they [people] care too much: pretty printers [and syntax
+highligh-
+
+ting, d.A.] mechanically produce pretty output that accentuates
+irrelevant
+
+detail in the program, which is as sensible as putting all the
+prepositions
+
+in English text in bold font.	-- Rob Pike in "Notes on Programming in
+C"
+
+
+
+--
+
+To UNSUBSCRIBE, email to debian-68k-REQUEST@lists.debian.org
+
+with a subject of "unsubscribe". Trouble? Contact
+listmaster@lists.debian.org
+
+Archive:
+=
+http://lists.debian.org/Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org
+
+</excerpt>=
+
+--Apple-Mail-1-876733505--
