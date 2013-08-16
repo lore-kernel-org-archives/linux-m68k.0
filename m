@@ -1,43 +1,58 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: nfhd performance
-Date: Fri, 16 Aug 2013 23:57:18 +0200
-Message-ID: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
+Subject: [git pull] m68k updates for 3.11-rc6
+Date: Fri, 16 Aug 2013 23:55:38 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1308162324580.23373__14672.3245307387$1376692992$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f181.google.com ([209.85.192.181]:54221 "EHLO
-	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752224Ab3HPW1k (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Aug 2013 18:27:40 -0400
-Received: by mail-pd0-f181.google.com with SMTP id g10so2759467pdj.40
-        for <linux-m68k@vger.kernel.org>; Fri, 16 Aug 2013 15:27:40 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-So far I never really used nfhd.
+	Hi Linus,
 
-In a kernel that has both IDE and nfhd support, once everything is in the
-buffer cache, I get:
+The following changes since commit d4e4ab86bcba5a72779c43dc1459f71fea3d89c8:
 
-atari:~# dd if=/dev/hda2 bs=1M of=/dev/null
-134+1 records in
-134+1 records out
-141114880 bytes (141 MB) copied, 5.91 seconds, 23.9 MB/s
-atari:~# dd if=/dev/nfhd8p2 bs=1M of=/dev/null
-134+1 records in
-134+1 records out
-141114880 bytes (141 MB) copied, 17.09 seconds, 8.3 MB/s
+  Linux 3.11-rc5 (2013-08-11 18:04:20 -0700)
 
-So nfhd is slower than emulated IDE?
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-3.11
+
+for you to fetch changes up to ea077b1b96e073eac5c3c5590529e964767fc5f7:
+
+  m68k: Truncate base in do_div() (2013-08-14 11:46:30 +0200)
+
+----------------------------------------------------------------
+Andreas Schwab (1):
+      m68k: Truncate base in do_div()
+
+Geert Uytterhoeven (1):
+      m68k/atari: ARAnyM - Fix NatFeat module support
+
+Summary:
+
+These are two critical fixes, needed by distro kernels, and thus also
+destined for stable:
+  - The do_div() commit fixes a crash in mounting btrfs volumes, which was
+    a regression from 3.2,
+  - The ARAnyM fix allows to have NatFeat drivers as loadable modules,
+    which is needed for initrds.
+
+Thanks for pulling!
+
+ arch/m68k/emu/natfeat.c       |   23 +++++++++++++++++++----
+ arch/m68k/include/asm/div64.h |    9 +++++----
+ 2 files changed, 24 insertions(+), 8 deletions(-)
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
