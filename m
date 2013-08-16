@@ -1,208 +1,108 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Fri, 16 Aug 2013 00:40:51 +0300
-Message-ID: <520D4AE3.6040801@aalto.fi>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="------------050003000302090609000000"
+From: =?iso-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
+Subject: Re: Multiple Memory Chunks
+Date: Fri, 16 Aug 2013 07:59:04 +0200
+Message-ID: <4E605291-9891-4120-AA3E-728A63C052D8@2013.bluespice.org>
+References: <2ff3a4b6bf1251e63cd24d4bda680c5b@localhost> <CAMuHMdVEdz9cmenqYNeemSK+O0aZj0RG7oKdxwygfBE6WWONsg@mail.gmail.com> <6EF44417-6A7D-467E-8489-3E9928E22B12@2013.bluespice.org> <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.5 \(1508\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx03.aalto.fi ([130.233.222.102]:34241 "EHLO mx03.aalto.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751232Ab3HOVsr (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 15 Aug 2013 17:48:47 -0400
-In-Reply-To: <1370552199-15048-1-git-send-email-schmitz@debian.org>
+Received: from vserv.windfluechter.net ([31.172.31.194]:38636 "EHLO
+	vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753084Ab3HPF7R convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Aug 2013 01:59:17 -0400
+In-Reply-To: <CAMuHMdUNS5UXbzV5g_YFESJmu43EqiZsE6c1_F3YSLpxN39+Wg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
---------------050003000302090609000000
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Am 13.08.2013 um 11:14 schrieb Geert Uytterhoeven <geert@linux-m68k.org>:
 
-On 06/06/2013 11:56 PM, Michael Schmitz wrote:
-> Geert,
->
-> other than 'it compiles', I can't really say much about this one.
-> I've done what seemed necessary to do the ESP probe setup in the
-> zorro driver framework (using the NCR7xx driver as a guideline),
-> and used the old Blizzard 2060 driver as a model for the DMA setup.
->
-> To adapt to another style of ESP integration, the DMA setup function
-> will need to be changed. The simplest way to cater for multipe boards
-> in this driver may be to provide a separate DMA setup function for
-> each, and substitute the correct one for the default esp_ops field in
-> the driver probe. Please correct me if you see a better or simpler way.
-Thank you for rewriting the driver.
+>> Yes, and I would like to avoid this, of course. ;-) It really slows down the machine and you can even feel it... ;)
+> We may also use the slow mainboard RAM (I get ca. 12 MiB/s) as a fast swap
+> device.
 
-I copypasted the appropriate DMA code from blz1230.c, and added some 
-code to switch
-to the appropriate function. I compiled the module, and was able to 
-insert and remove it.
+I would like to avoid using those kind of RAM as swap. Reasons: 
+- it would add an additional layer of paging in/out. Even if it is comparable fast, pages of data and code would need to swapped in and out.
+- to make sense it would need an higher swap priority to get used first, but then again it will most likey result in being filled with something that accidently gets swapped out first, whereas stuff that gets frequently used and swapped in/out will still be swapped to disk. 
+- to avoid this we would need some kind of write through cache like it's often used for SSD hybrid disks where stuff that is often needed will reside within SSD side of that hybrid disks while other stuff will be stored on the slower spinning disk. 
 
-The dmesg output is attached. I also attached the modified zorro_esp.c.
+>> Except that the ZorroIII RAM will be 4-6x slower than the RAM on the accelerator cards.
+> So this is also a candidate for swap? Does anyone have benchmark results?
+> I found that ZoRAM does 12 MiB/s.
 
-There is a HDD attached to the SCSI bus, but the scan does not take place.
+12 MB/s is about the maximum of the ZIII bus, so that's ok. As already said above, I'm no big fan of the swap idea, but would favor the usage as "real" memory. ;)
 
-The chip on the controller is a FAS216, but it is identified as a 
-FAS236. Does that matter?
+> BTW, http://www.bigbookofamigahardware.com/bboah/product.aspx?id=1936 claims
+> it's only guaranteed to work with the original daughter board, and thus may fail
+> with '060 accelerators.
 
--Tuomas
+The accelerator cards reside in the CPU slot. The daughter board is the riser card where the Zorro slots are. So, this claim only counts for third party tower cases were the Desktop mainboards riser card (vertical to mainboard) gets replaced by a custom made new riser card (parallel to mainboard): 
 
---------------050003000302090609000000
-Content-Type: application/x-gzip; name="dmesg.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="dmesg.gz"
+Original riser card
 
-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
-vs4jAAA=
---------------050003000302090609000000
-Content-Type: application/x-gzip; name="zorro_esp.c.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="zorro_esp.c.gz"
+   --| <- riser card w/ attached cards
+   --|  
+   --|
+   --|
+     |
+--------------------
+mainboard
 
-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
---------------050003000302090609000000--
+
+Tower mod: 
+
+riser card w/ attached cards
+ |   mainboard
+ \/  \/
+
+      | 
+      |
+      | 
+--|   | 
+--|   | 
+--|---|
+--|   | 
+--|   | 
+--|   | 
+      | 
+      | 
+      | 
+
+ 
+
+>>> Now why do you have a memfile like this: a long time ago, the m68k kernel
+>>> used its own mapping code for system RAM, where virtual and physical
+>> 
+>> Remember that there were problems with loading 3.2.0-4-amiga without the memfile.
+> Yes, going out of memory when allocating the page table arrays? That won't
+> improve when adding 256 MiB of Z3 RAM in the far end of the physical
+> address space...
+
+No, but we would have more memory to waste for this. Excluding 8 MB for this from 128 MB does hurt more than 8 MB out of 384 MB. ;)
+
+But this problem was solved by using initrds now. 
+
+> The NUMA code should also take into account priorities, at least for CPU
+> affinity (although we have only one CPU).
+
+Actually any Amiga with a accel card has two CPUs. Unfortunately the second CPU on the mainboard will get electrically deactivated when there is an accel card. Otherwise we could use the 68030/25 for I/O or other things. I don't know if the Copper can be used for anything as it only knows 3 commands. But I guess the effort to make it usuable would be too big for the benefit. ;)
+
+But when the NUMA code could use the priorities for the memory and we could then use any memory that is in the machine as real main memory we would greatly benefit from that. Remember that we could maybe even plug two BigRamPlus cards into one host, resulting in 2x 256 MB Z3RAM + 128 MB AccelRAM + 16 MB mainboard + 2 MB chip instead of 128 MB AccelRAM maximum now. (the other 2 Zorro slots would be occupied by NIC and graphic card in a standard A3000). 
+
+>> So, to test this, I could edit that file, make the change and recompile the kernel and see whether amiboot loads the kernel to 0x08000000 and the kernel still uses the 12 MB memory on the mainboard?
+> Unfortunately it's not that simple. I haven't checked the details, but
+> I think we'll
+> have to change other parts in arch/m68k/mm, too. Definitely the check to
+> ignore blocks with lower addresses has to go ;-)
+
+
+If you think we could made this work as desired, I would order a BigRamPlus and put it into Spice so we could test it. :)
+
+-- 
+Ciao...            //      Fon: 0381-2744150
+      Ingo       \X/       http://blog.windfluechter.net
+
+
+gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
