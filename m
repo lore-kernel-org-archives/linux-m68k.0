@@ -1,58 +1,244 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.11-rc6
-Date: Fri, 16 Aug 2013 23:55:38 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1308162324580.23373__14672.3245307387$1376692992$gmane$org@ayla.of.borg>
+From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
+Date: Fri, 16 Aug 2013 22:01:16 +0300
+Message-ID: <520E76FC.9040803@aalto.fi>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+	boundary="------------000108000706080804020909"
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx03.aalto.fi ([130.233.222.102]:49928 "EHLO mx03.aalto.fi"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753676Ab3HQAFE (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 16 Aug 2013 20:05:04 -0400
+In-Reply-To: <520D4AE3.6040801@aalto.fi>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
-	Hi Linus,
+--------------000108000706080804020909
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The following changes since commit d4e4ab86bcba5a72779c43dc1459f71fea3d89c8:
+On 08/16/2013 12:40 AM, Tuomas Vainikka wrote:
+> On 06/06/2013 11:56 PM, Michael Schmitz wrote:
+>> Geert,
+>>
+>> other than 'it compiles', I can't really say much about this one.
+>> I've done what seemed necessary to do the ESP probe setup in the
+>> zorro driver framework (using the NCR7xx driver as a guideline),
+>> and used the old Blizzard 2060 driver as a model for the DMA setup.
+>>
+>> To adapt to another style of ESP integration, the DMA setup function
+>> will need to be changed. The simplest way to cater for multipe boards
+>> in this driver may be to provide a separate DMA setup function for
+>> each, and substitute the correct one for the default esp_ops field in
+>> the driver probe. Please correct me if you see a better or simpler way.
+> Thank you for rewriting the driver.
+>
+> I copypasted the appropriate DMA code from blz1230.c, and added some 
+> code to switch
+> to the appropriate function. I compiled the module, and was able to 
+> insert and remove it.
+>
+> The dmesg output is attached. I also attached the modified zorro_esp.c.
+>
+> There is a HDD attached to the SCSI bus, but the scan does not take 
+> place.
+>
+> The chip on the controller is a FAS216, but it is identified as a 
+> FAS236. Does that matter?
+I got a little further, but now there seems to be something wrong with 
+the IRQ:
 
-  Linux 3.11-rc5 (2013-08-11 18:04:20 -0700)
+[  297.720000] esp: esp0, regs[80ea8000:80eb0000] irq[2]
+[  297.730000] esp: esp0 is a FAS236, 40 MHz (ccf=0), SCSI ID 7
+[  300.750000] scsi0 : esp
+[  301.020000] scsi 0:0:1:0: Direct-Access     SAMSUNG SP1213N          
+TL10 PQ: 0 ANSI: 2
+[  301.030000] scsi target0:0:1: Beginning Domain Validation
+[  301.060000] scsi target0:0:1: FAST-10 SCSI 10.0 MB/s ST (100 ns, 
+offset 15)
+[  301.090000] scsi target0:0:1: Domain Validation skipping write tests
+[  301.100000] scsi target0:0:1: Ending Domain Validation
+[  301.880000] esp: esp0: Reconnect IRQ2 timeout
+[  332.040000] esp: esp0: Aborting command [0f9998a0:12]
+[  332.040000] esp: esp0: Current command [0f999940:25]
+[  332.040000] esp: esp0: Queued command [0f9998a0:12]
+[  332.040000] esp: esp0: Active command [0f999940:25]
+[  332.040000] esp: esp0: Dumping command log
+...
 
-are available in the git repository at:
+I attached a full log containing the dmesg output from both probing and 
+removing the module.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-3.11
+-Tuomas
 
-for you to fetch changes up to ea077b1b96e073eac5c3c5590529e964767fc5f7:
+--------------000108000706080804020909
+Content-Type: application/x-gzip; name="zorro_esp.c.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="zorro_esp.c.gz"
 
-  m68k: Truncate base in do_div() (2013-08-14 11:46:30 +0200)
+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
+4r9PD6sMEjQAAA==
+--------------000108000706080804020909
+Content-Type: application/x-gzip; name="zorro_esp_modprobe2.cap.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="zorro_esp_modprobe2.cap.gz"
 
-----------------------------------------------------------------
-Andreas Schwab (1):
-      m68k: Truncate base in do_div()
-
-Geert Uytterhoeven (1):
-      m68k/atari: ARAnyM - Fix NatFeat module support
-
-Summary:
-
-These are two critical fixes, needed by distro kernels, and thus also
-destined for stable:
-  - The do_div() commit fixes a crash in mounting btrfs volumes, which was
-    a regression from 3.2,
-  - The ARAnyM fix allows to have NatFeat drivers as loadable modules,
-    which is needed for initrds.
-
-Thanks for pulling!
-
- arch/m68k/emu/natfeat.c       |   23 +++++++++++++++++++----
- arch/m68k/include/asm/div64.h |    9 +++++----
- 2 files changed, 24 insertions(+), 8 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+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
+b8/+B2zwn1wPeQAA
+--------------000108000706080804020909--
