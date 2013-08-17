@@ -1,64 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: nfhd performance
-Date: Sat, 17 Aug 2013 09:36:55 +0200
-Message-ID: <CAMuHMdUkMEorK34WnV9==thRPCVRXV0ySWq=fFTNFO1fe3Qc6g@mail.gmail.com>
-References: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
-	<03094f45e85bca24df9306f73df2c84c@biophys.uni-duesseldorf.de>
+From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
+Date: Sat, 17 Aug 2013 14:33:21 +0300
+Message-ID: <520F5F81.7090409@aalto.fi>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f48.google.com ([209.85.220.48]:38261 "EHLO
-	mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751600Ab3HQHgz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Aug 2013 03:36:55 -0400
-Received: by mail-pa0-f48.google.com with SMTP id kp13so2742721pab.35
-        for <linux-m68k@vger.kernel.org>; Sat, 17 Aug 2013 00:36:55 -0700 (PDT)
-In-Reply-To: <03094f45e85bca24df9306f73df2c84c@biophys.uni-duesseldorf.de>
+Received: from mx04.aalto.fi ([130.233.222.103]:56560 "EHLO mx04.aalto.fi"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752614Ab3HQLdY (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 17 Aug 2013 07:33:24 -0400
+In-Reply-To: <11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sat, Aug 17, 2013 at 4:01 AM, Michael Schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->> In a kernel that has both IDE and nfhd support, once everything is in the
->> buffer cache, I get:
->>
->> atari:~# dd if=/dev/hda2 bs=1M of=/dev/null
->> 134+1 records in
->> 134+1 records out
->> 141114880 bytes (141 MB) copied, 5.91 seconds, 23.9 MB/s
->> atari:~# dd if=/dev/nfhd8p2 bs=1M of=/dev/null
->> 134+1 records in
->> 134+1 records out
->> 141114880 bytes (141 MB) copied, 17.09 seconds, 8.3 MB/s
->>
->> So nfhd is slower than emulated IDE?
+On 08/17/2013 04:49 AM, Michael Schmitz wrote:
 >
+>> [  301.880000] esp: esp0: Reconnect IRQ2 timeout
 >
-> That seems odd indeed ... is the disk attached as IDE or via USB adapter?
-> (Checking to see whether I should get similar results)
+> Are there interrupts logged for IRQ2 at all (cat /proc/interrupts)? It 
+> looks to me as though all DMA transfers fail (the first command to 
+> fail is READ_CAPACITY which would usually be issued right after 
+> IDENTIFY IIRC).
 
-It's not a physical disk:
+root@amiga:/# cat /proc/interrupts
+            CPU0
+   2:    1066320      auto  CIAA, zorro8390, ide0, Amiga Zorro ESP
+   6:     456970      auto  CIAB
+   8:      38239     amiga  serial TX
+   9:          0     amiga  floppy_dma
+  12:     315934     amiga  fb vertb handler
+  13:     315741     amiga  serial status
+  15:          0     amiga  DMA sound
+  19:        401     amiga  serial RX
+  23:          1       cia  floppy_timer
+  25:          0       cia  amikbd
+  27:     456971       cia  timer
+ERR:          0
 
-[IDE0]
-Present = Yes
-IsCDROM = No
-ByteSwap = No
-ReadOnly = No
-Path = /scratch/geert/aranym/etch-m68k.img
-Cylinders = 2102
-Heads = 16
-SectorsPerTrack = 63
-ModelName = Sarge m68k
+Seems like IRQ2 is very popular, so it's hard to say which device has 
+generated the interrupts...
+Should the assigned irq name match the module name?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-Tuomas
