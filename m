@@ -1,56 +1,69 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
-Date: Sun, 18 Aug 2013 01:06:35 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org>
-References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
- <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
- <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
- <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
- <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
- <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
- <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
+Date: Sun, 18 Aug 2013 14:05:32 +1200
+Message-ID: <52102BEC.7000006@gmail.com>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com> <520F5F81.7090409@aalto.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:47544 "EHLO
-	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752175Ab3HRBRa convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Aug 2013 21:17:30 -0400
-Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7I1HKrD010621
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Sun, 18 Aug 2013 01:17:25 GMT
-In-Reply-To: <52101C34.8060404@gmail.com>
+Received: from mail-pd0-f172.google.com ([209.85.192.172]:33203 "EHLO
+	mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752588Ab3HRCFi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Aug 2013 22:05:38 -0400
+Received: by mail-pd0-f172.google.com with SMTP id z10so3643170pdj.17
+        for <linux-m68k@vger.kernel.org>; Sat, 17 Aug 2013 19:05:38 -0700 (PDT)
+In-Reply-To: <520F5F81.7090409@aalto.fi>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Michael Schmitz dixit:
+Tuomas,
+>>
+>>> [  301.880000] esp: esp0: Reconnect IRQ2 timeout
+>>
+>> Are there interrupts logged for IRQ2 at all (cat /proc/interrupts)? 
+>> It looks to me as though all DMA transfers fail (the first command to 
+>> fail is READ_CAPACITY which would usually be issued right after 
+>> IDENTIFY IIRC).
+>
+> root@amiga:/# cat /proc/interrupts
+>            CPU0
+>   2:    1066320      auto  CIAA, zorro8390, ide0, Amiga Zorro ESP
+>   6:     456970      auto  CIAB
+>   8:      38239     amiga  serial TX
+>   9:          0     amiga  floppy_dma
+>  12:     315934     amiga  fb vertb handler
+>  13:     315741     amiga  serial status
+>  15:          0     amiga  DMA sound
+>  19:        401     amiga  serial RX
+>  23:          1       cia  floppy_timer
+>  25:          0       cia  amikbd
+>  27:     456971       cia  timer
+> ERR:          0
+>
+> Seems like IRQ2 is very popular, so it's hard to say which device has 
+> generated the interrupts...
 
-> Would you care to point me to a download link for the Atari multiplat=
-form
-> kernel?
+Yep - you'll be guaranteed to get a few IDE interrupts just by calling 
+up cat - might be possible to get away without too much interrupts 
+generated if it's all in the buffer cache - try whether the interrupt 
+count changes after a few repetitions of that command.
 
-http://ftp.de.debian.org/debian-ports/pool-m68k/main/l/linux/ contains
-the files, currently: linux-image-3.10-2-m68k_3.10.5-1+m68k.2_m68k.deb
+Might require more elaborate IRQ bookkeeping though.
 
-> The server I usually read my debian-68k mail through has gone down ag=
-ain, alas.
+> Should the assigned irq name match the module name?
+No, that's just the string passed to request_irq. I'm not aware of a 
+policy mandating use of module names there.
 
-http://news.gmane.org/gmane.linux.debian.ports.68k works;
-nntp://news.gmane.org/gmane.linux.debian.ports.68k too (in lynx;
-{news.gmane.org/nntp}#news.gmane.linux.debian.ports.68k in pine
-which uses a different syntax, c-client IMAP instead of URI).
+Another question, after I had a look at your driver: are you certain 
+mapping a size of 0x20 is enough for the Mark IV DMA engine? The latch 
+register is at offset 0x8000 from the address register ...
 
-bye,
-//mirabilos
---=20
-> emacs als auch vi zum Kotzen finde (joe rules) und pine f=C3=BCr den =
-einzig
-> bedienbaren textmode-mailclient halte (und ich hab sie alle ausprobie=
-rt). ;)
-Hallooooo, ich bin der Holger ("Hallo Holger!"), und ich bin ebenfalls
-=2E.. pine-User, und das auch noch gewohnheitsm=C3=A4=C3=9Fig ("Ooooooo=
-ohhh").  [aus dasr]
+All (or most) other ESP drivers use 16 bit transfer counts only - you 
+set the 1230 to use 24 bit, can it actually do that?
+
+Cheers,
+
+    Michael
