@@ -1,33 +1,43 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
-Date: Sun, 18 Aug 2013 21:00:24 +1200
-Message-ID: <52108D28.1010405@gmail.com>
-References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org> <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de> <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com> <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com> <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
+Date: Sun, 18 Aug 2013 11:10:13 +0200
+Message-ID: <CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org>
+	<520D4AE3.6040801@aalto.fi>
+	<520E76FC.9040803@aalto.fi>
+	<11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
+	<520F5F81.7090409@aalto.fi>
+	<52102BEC.7000006@gmail.com>
+	<CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com>
+	<52108CAF.1010700@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f51.google.com ([209.85.160.51]:48431 "EHLO
-	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753240Ab3HRJA3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Aug 2013 05:00:29 -0400
-Received: by mail-pb0-f51.google.com with SMTP id jt11so3684698pbb.24
-        for <linux-m68k@vger.kernel.org>; Sun, 18 Aug 2013 02:00:29 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org>
+Received: from mail-pb0-f52.google.com ([209.85.160.52]:33366 "EHLO
+	mail-pb0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753397Ab3HRJKN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Aug 2013 05:10:13 -0400
+Received: by mail-pb0-f52.google.com with SMTP id wz12so3683713pbc.25
+        for <linux-m68k@vger.kernel.org>; Sun, 18 Aug 2013 02:10:13 -0700 (PDT)
+In-Reply-To: <52108CAF.1010700@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Thorsten,
+On Sun, Aug 18, 2013 at 10:58 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> I'll also need to check the command_block and command_block_dma addresses -
+> does the DMA require virtual or physical addresses?
 
-> http://ftp.de.debian.org/debian-ports/pool-m68k/main/l/linux/ contains
-> the files, currently: linux-image-3.10-2-m68k_3.10.5-1+m68k.2_m68k.deb
->   
+Physical, of course.
 
-Sorry, that one's unparseable on any Linux system I have access to. When 
-did Debian switch to xz as compressor in archives?
+Gr{oetje,eeting}s,
 
-Cheers,
+                        Geert
 
-    Michael
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
