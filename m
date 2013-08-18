@@ -1,48 +1,43 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Sat, 17 Aug 2013 14:33:21 +0300
-Message-ID: <520F5F81.7090409@aalto.fi>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Sun, 18 Aug 2013 12:58:28 +1200
+Message-ID: <52101C34.8060404@gmail.com>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org> <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de> <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com> <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx04.aalto.fi ([130.233.222.103]:56560 "EHLO mx04.aalto.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752614Ab3HQLdY (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 17 Aug 2013 07:33:24 -0400
-In-Reply-To: <11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
+Received: from mail-pa0-f51.google.com ([209.85.220.51]:34397 "EHLO
+	mail-pa0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751943Ab3HRA6t (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Aug 2013 20:58:49 -0400
+Received: by mail-pa0-f51.google.com with SMTP id lf1so3291313pab.24
+        for <linux-m68k@vger.kernel.org>; Sat, 17 Aug 2013 17:58:49 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 08/17/2013 04:49 AM, Michael Schmitz wrote:
+Hello Thorsten
+>> BTW, the interrupt patch only kills some messages at boot, right?
+>> Or does (the lack of) it cause real errors later?
+>>    =20
 >
->> [  301.880000] esp: esp0: Reconnect IRQ2 timeout
+> I=E2=80=99m not entirely sure, but the =E2=80=9Cscary-looking=E2=80=9D=
+ boot messages
+> are gone. Performance was mentioned in the thread IIRC, but
+> I haven=E2=80=99t noticed anything more than subtle.
 >
-> Are there interrupts logged for IRQ2 at all (cat /proc/interrupts)? It 
-> looks to me as though all DMA transfers fail (the first command to 
-> fail is READ_CAPACITY which would usually be issued right after 
-> IDENTIFY IIRC).
+>  =20
 
-root@amiga:/# cat /proc/interrupts
-            CPU0
-   2:    1066320      auto  CIAA, zorro8390, ide0, Amiga Zorro ESP
-   6:     456970      auto  CIAB
-   8:      38239     amiga  serial TX
-   9:          0     amiga  floppy_dma
-  12:     315934     amiga  fb vertb handler
-  13:     315741     amiga  serial status
-  15:          0     amiga  DMA sound
-  19:        401     amiga  serial RX
-  23:          1       cia  floppy_timer
-  25:          0       cia  amikbd
-  27:     456971       cia  timer
-ERR:          0
+Would you care to point me to a download link for the Atari=20
+multiplatform kernel?
 
-Seems like IRQ2 is very popular, so it's hard to say which device has 
-generated the interrupts...
-Should the assigned irq name match the module name?
+The server I usually read my debian-68k mail through has gone down=20
+again, alas.
 
--Tuomas
+Cheers,
+
+    Michael
