@@ -1,44 +1,32 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
-Date: Sun, 18 Aug 2013 14:07:44 +1200
-Message-ID: <52102C70.5060302@gmail.com>
-References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org> <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de> <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com> <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com> <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org>
+From: Petr Stehlik <pstehlik@sophics.cz>
+Subject: Re: nfhd performance
+Date: Sun, 18 Aug 2013 07:08:20 +0200
+Message-ID: <1376802500.26218.3.camel@pracovni>
+References: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f41.google.com ([209.85.160.41]:56880 "EHLO
-	mail-pb0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752588Ab3HRCHv (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Aug 2013 22:07:51 -0400
-Received: by mail-pb0-f41.google.com with SMTP id rp2so3517250pbb.28
-        for <linux-m68k@vger.kernel.org>; Sat, 17 Aug 2013 19:07:50 -0700 (PDT)
-In-Reply-To: <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org>
+Received: from mx.zln.cz ([188.246.101.4]:55653 "EHLO mx.zln.cz"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751098Ab3HRFI0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Aug 2013 01:08:26 -0400
+In-Reply-To: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
 
-Hello Thorsten,
->> Would you care to point me to a download link for the Atari multiplatform
->> kernel?
->>     
->
-> http://ftp.de.debian.org/debian-ports/pool-m68k/main/l/linux/ contains
-> the files, currently: linux-image-3.10-2-m68k_3.10.5-1+m68k.2_m68k.deb
->
->   
-Thanks, downloaded.
->> The server I usually read my debian-68k mail through has gone down again, alas.
->>     
->
-> http://news.gmane.org/gmane.linux.debian.ports.68k works;
-> nntp://news.gmane.org/gmane.linux.debian.ports.68k too (in lynx;
-> {news.gmane.org/nntp}#news.gmane.linux.debian.ports.68k in pine
-> which uses a different syntax, c-client IMAP instead of URI).
->   
-Wish I had pine to hand :-( I'll give lynx a try, thanks.
+Geert Uytterhoeven p=ED=B9e v P=E1 16. 08. 2013 v 23:57 +0200:
+> 141114880 bytes (141 MB) copied, 17.09 seconds, 8.3 MB/s
+> So nfhd is slower than emulated IDE?
 
-Cheers,
+nfhd is something like IDE with DMA (if everything is in buffer cache
+then it's doing basically just a memcpy() from cache to the destination
+place) - can't believe it would be that slow.
 
-    Michael
+Don't have profiling numbers at hand but one of the main purposes of
+nfhd was to be way way faster than the emulated IDE. Something must be
+seriously wrong somewhere.
+
+Petr
