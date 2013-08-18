@@ -1,69 +1,60 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Sun, 18 Aug 2013 11:42:59 +0200
-Message-ID: <CAMuHMdUZEX424oHtdTdeeG-4oa0pAjrxVUkD=g=5xu4YFmvhTQ@mail.gmail.com>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org>
-	<520D4AE3.6040801@aalto.fi>
-	<520E76FC.9040803@aalto.fi>
-	<11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
-	<520F5F81.7090409@aalto.fi>
-	<52102BEC.7000006@gmail.com>
-	<CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com>
-	<52108CAF.1010700@gmail.com>
-	<52109087.5070702@aalto.fi>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Sun, 18 Aug 2013 09:41:34 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1308180934140.2593@herc.mirbsd.org>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
+ <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
+ <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
+ <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
+ <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com>
+ <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org> <52108D28.1010405@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f48.google.com ([209.85.220.48]:33446 "EHLO
-	mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751600Ab3HRJnA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Aug 2013 05:43:00 -0400
-Received: by mail-pa0-f48.google.com with SMTP id kp13so3551909pab.35
-        for <linux-m68k@vger.kernel.org>; Sun, 18 Aug 2013 02:42:59 -0700 (PDT)
-In-Reply-To: <52109087.5070702@aalto.fi>
+Received: from eurynome.mirbsd.org ([81.169.181.30]:10469 "EHLO
+	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751675Ab3HRJxX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Aug 2013 05:53:23 -0400
+Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
+	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7I9rGGE003205
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-m68k@vger.kernel.org>; Sun, 18 Aug 2013 09:53:21 GMT
+In-Reply-To: <52108D28.1010405@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: debian-68k@lists.debian.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Aug 18, 2013 at 11:14 AM, Tuomas Vainikka
-<tuomas.vainikka@aalto.fi> wrote:
-> The original blz1230 / blz2060 drivers did PIO commands. I attached a log of
-> modprobing first without interrupt messages and then with the interrupt
-> messages, because, indeed, the zorro_esp_irq_pending function gets called a
-> lot, and it takes forever to printk those messages. I have no idea about the
+Michael Schmitz dixit:
 
-You can use WARN_RATELIMIT() instead to avoid flooding the screen
-with the same values.
-printk_ratelimit() is similar, but it uses a single instance of the
-ratelimit state,
-i.e. you cannot use it to limit two different value sets.
+> Sorry, that one's unparseable on any Linux system I have access to.
+> When did Debian switch to xz as compressor in archives?
 
-> correct iomappings for the registers, nor do I know about the correct sizes
-> for them. I have no idea where to use physical addresses and where to use
-> virtual addresses...
+Support for it was in squeeze, and first packages begun to
+use it shortly afterwards, so for years. I think I even saw
+it being used before squeeze, for leaf packages such as -dbg
+ones or those with huge data.
 
-When the CPU accesses memory, you have to use virtual addresses.
-When the DMA engine accesses memory, it has to use physical addresses.
+On the other hand, to actually *boot* a system successfully
+with this kernel you need an initrd, which requires a system
+up to date as of roughly end of 2012, anyway (due to the
+initramfs-tools package and the versions of the packages
+that are actually needed to be put *on* the initrd, and due
+to the initrd being expected to be xz IIRC). So I'm afraid
+you need to boot into at least Linux 3.2 first - images are
+at http://snapshot.debian.org/package/linux/3.2.35-2/ and
+also require xz to unpack already, but that can be done on
+any Unix box (even BSD) using ar and tar; those are mostly
+monolithic and don't require an initrd to boot - then to
+dist-upgrade your system to latest unstable, at which point
+you can apt-get install the 3.10 kernel.
 
-Typically the DMA API is used to do the conversion
-> What is the difference between ioremap() and ZTWO_VADDR() and which one
-> should be used where?
-
-ioremap() is the generic way to map hardware registers into the CPU's virtual
-address space.
-
-As the 16 MiB Zorro II address space is always mapped, you can use
-ZTWO_VADDR() for Zorro II addresses instead. This macro converts from
-physical Zorro II addresses to virtual kernel addresses.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+bye,
+//mirabilos
+-- 
+> Hi, does anyone sell openbsd stickers by themselves and not packaged
+> with other products?
+No, the only way I've seen them sold is for $40 with a free OpenBSD CD.
+	-- Haroon Khalid and Steve Shockley in gmane.os.openbsd.misc
