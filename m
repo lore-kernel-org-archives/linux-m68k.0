@@ -1,52 +1,63 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Mon, 19 Aug 2013 14:01:45 +0200
-Message-ID: <CAMuHMdXrs5mc5xSWZPfvfNzp3dHDARYN2nWMAMH7Q4jvgRUUqg@mail.gmail.com>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org>
-	<520D4AE3.6040801@aalto.fi>
-	<520E76FC.9040803@aalto.fi>
-	<11425cb5ec432e2fbb7b675052e8b33d@gmail.com>
-	<520F5F81.7090409@aalto.fi>
-	<52102BEC.7000006@gmail.com>
-	<CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com>
-	<52108CAF.1010700@gmail.com>
-	<CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com>
-	<5211DBD8.5090801@gmail.com>
-	<521205C3.1060807@aalto.fi>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Mon, 19 Aug 2013 12:00:31 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1308191159200.29960@herc.mirbsd.org>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
+ <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
+ <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
+ <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org>
+ <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de>
+ <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com>
+ <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com>
+ <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org> <52108D28.1010405@gmail.com>
+ <Pine.BSM.4.64L.1308180934140.2593@herc.mirbsd.org> <e4fb41650bb91f3e148195be63834bef@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f173.google.com ([209.85.192.173]:63287 "EHLO
-	mail-pd0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751694Ab3HSMBp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Aug 2013 08:01:45 -0400
-Received: by mail-pd0-f173.google.com with SMTP id p10so5100878pdj.18
-        for <linux-m68k@vger.kernel.org>; Mon, 19 Aug 2013 05:01:45 -0700 (PDT)
-In-Reply-To: <521205C3.1060807@aalto.fi>
+Received: from eurynome.mirbsd.org ([81.169.181.30]:45904 "EHLO
+	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751376Ab3HSMF0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Aug 2013 08:05:26 -0400
+Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
+	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r7JC5IoF009923
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-m68k@vger.kernel.org>; Mon, 19 Aug 2013 12:05:23 GMT
+In-Reply-To: <e4fb41650bb91f3e148195be63834bef@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, debian-68k@lists.debian.org
 
-On Mon, Aug 19, 2013 at 1:47 PM, Tuomas Vainikka
-<tuomas.vainikka@aalto.fi> wrote:
-> Is it possible that the problem is with memory alignment?
+Michael Schmitz dixit:
 
-Not here:
+> I must admit I'm using Ubuntu LTS releases mostly, so 'years' might b=
+e the
+> right ballpark.
 
-[ 2549.540000] zorro_esp: esp_count = 2,  dma_count = 2, addr =
-0x7fbe1000. Writing.
-[ 2549.540000] esp: esp0: Reconnect IRQ2 timeout
+Haha=E2=80=A6
 
-addr = 0x7fbe1000, which is even PAGE_SIZE aligned.
+> I assumed the initrd was pre-built and included in the package. Silly=
+ of me.
 
-Gr{oetje,eeting}s,
+No, that=E2=80=99s not how they work (which is the reason for much anno=
+yance
+and reluctance on my part to switch to using initrd, and the reason
+for me asking around on how to port kexec to m68k).
 
-                        Geert
+> Much easier to integrate the patch in question into my 3.10 git tree.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+True.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+bye,
+//mirabilos
+--=20
+<hecker> cool ein Ada Lovelace Google-Doodle. aber zum 197. Geburtstag?=
+ H=C3=A4tten
+die nicht noch 3 Jahre warten k=C3=B6nnen? <mirabilos> bis dahin gibts =
+google nicht
+mehr <hecker> ja, k=C3=B6nnte man meinen. wahrscheinlich ist der angek=C3=
+=BCndigte welt-
+untergang aus dem maya-kalender die globale abschaltung von google =E2=98=
+=BA und darum
+m=C3=BCssen die die doodles vorher noch raushauen
