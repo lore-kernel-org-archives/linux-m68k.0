@@ -1,198 +1,68 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Sun, 18 Aug 2013 15:25:54 +0300
-Message-ID: <5210BD52.5010708@aalto.fi>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com> <520F5F81.7090409@aalto.fi> <52102BEC.7000006@gmail.com> <CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com> <52108CAF.1010700@gmail.com> <52109087.5070702@aalto.fi> <CAMuHMdUZEX424oHtdTdeeG-4oa0pAjrxVUkD=g=5xu4YFmvhTQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="------------080906010807070904020502"
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Mon, 19 Aug 2013 20:17:05 +1200
+Message-ID: <e4fb41650bb91f3e148195be63834bef@gmail.com>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <Pine.BSM.4.64L.1308130810460.20692@herc.mirbsd.org> <8612ec946622122a048ec3805a30fef5@biophys.uni-duesseldorf.de> <CAMuHMdXZb4RWKxxzLZpnzmYN02EaeqQJ9X0QHH6ty9sL_7P=bg@mail.gmail.com> <Pine.BSM.4.64L.1308131039210.1920@herc.mirbsd.org> <52101C34.8060404@gmail.com> <Pine.BSM.4.64L.1308180059420.18148@herc.mirbsd.org> <52108D28.1010405@gmail.com> <Pine.BSM.4.64L.1308180934140.2593@herc.mirbsd.org>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx03.aalto.fi ([130.233.222.102]:59887 "EHLO mx03.aalto.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755093Ab3HRMZ5 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 18 Aug 2013 08:25:57 -0400
-In-Reply-To: <CAMuHMdUZEX424oHtdTdeeG-4oa0pAjrxVUkD=g=5xu4YFmvhTQ@mail.gmail.com>
+Received: from mail-pa0-f54.google.com ([209.85.220.54]:61812 "EHLO
+	mail-pa0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750768Ab3HSIRU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 19 Aug 2013 04:17:20 -0400
+Received: by mail-pa0-f54.google.com with SMTP id kx10so4336964pab.27
+        for <linux-m68k@vger.kernel.org>; Mon, 19 Aug 2013 01:17:20 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1308180934140.2593@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, debian-68k@lists.debian.org
 
---------------080906010807070904020502
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello Thorsten,
 
-On 08/18/2013 12:42 PM, Geert Uytterhoeven wrote:
-> On Sun, Aug 18, 2013 at 11:14 AM, Tuomas Vainikka
-> <tuomas.vainikka@aalto.fi> wrote:
->> The original blz1230 / blz2060 drivers did PIO commands. I attached a log of
->> modprobing first without interrupt messages and then with the interrupt
->> messages, because, indeed, the zorro_esp_irq_pending function gets called a
->> lot, and it takes forever to printk those messages. I have no idea about the
-> You can use WARN_RATELIMIT() instead to avoid flooding the screen
-> with the same values.
-> printk_ratelimit() is similar, but it uses a single instance of the
-> ratelimit state,
-> i.e. you cannot use it to limit two different value sets.
+> Michael Schmitz dixit:
 >
+>> Sorry, that one's unparseable on any Linux system I have access to.
+>> When did Debian switch to xz as compressor in archives?
 >
-Ok, here's the suppressed output. Like Michael said, the short DMA 
-command seems to be the problem, and should probably be sent using PIO.
+> Support for it was in squeeze, and first packages begun to
+> use it shortly afterwards, so for years. I think I even saw
+> it being used before squeeze, for leaf packages such as -dbg
+> ones or those with huge data.
 
--Tuomas
+I must admit I'm using Ubuntu LTS releases mostly, so 'years' might be 
+the right ballpark.
 
---------------080906010807070904020502
-Content-Type: application/x-gzip; name="zesp004.cap.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="zesp004.cap.gz"
+> On the other hand, to actually *boot* a system successfully
+> with this kernel you need an initrd, which requires a system
+> up to date as of roughly end of 2012, anyway (due to the
+> initramfs-tools package and the versions of the packages
+> that are actually needed to be put *on* the initrd, and due
+> to the initrd being expected to be xz IIRC). So I'm afraid
+> you need to boot into at least Linux 3.2 first - images are
+> at http://snapshot.debian.org/package/linux/3.2.35-2/ and
+> also require xz to unpack already, but that can be done on
+> any Unix box (even BSD) using ar and tar; those are mostly
+> monolithic and don't require an initrd to boot - then to
+> dist-upgrade your system to latest unstable, at which point
+> you can apt-get install the 3.10 kernel.
 
-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
-uP8PuA9x9iyNAAA=
---------------080906010807070904020502
-Content-Type: application/x-gzip; name="zorro_esp.c.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="zorro_esp.c.gz"
+I assumed the initrd was pre-built and included in the package. Silly 
+of me.
 
-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
-8sbWQ6ellWw6ilEMrObH6w+X1nu8o5bYuV1laKaygInt+TJJ43M6NYrFuGXMuE44o1sJqAhi
-CCf5QFXtIA8QiPgGS+5PehOvGexxmPou9bJIDM+6s0edqQgD2RxghWhCx199+kpt2SVRWdsq
-6C17Z+X0xWTLB/J1lMv9kJnrdLXBrGG2ghfGmHUyrzEkSTF3fCecz23yEHBLaS4U3TKD0Wbv
-ux1R2dRqm2VkWdPR593bKwtDXf9MDY2+KSOssl0k1M2iGL7sT6pRYzDxGGpNeDoY/pfVOx+8
-61lXl8PrUVcZvcptAGVk8A2WpQIwadAqYL+1Rqe9Yf9E3kcUXn2Gbk8MxNQelF9UyF3YWKZc
-4kch+IeuFmi3D/E+WCzocN0iGnkqHmebvXlTADRz9862pIxOtE2bT3RkmuRFqTFZoHaQkHBs
-qsqjO8yxWAtk6SHve6D2y3HBRvaxGMz4p4EuAaIWGO3Xa+pX/UR00ApN7otrIMJcbY+MlY1r
-5QJa1xJLZXT7a1zVCwm2PN1YovNiGmrKmxcVizTJsrJK6PvqeCKOLxzwrFrTzwbL7ZP++7U3
-A/Pwjq9qV/QGZKmTyFLpVDcPs9xg1KqLizXmQa+QeDGOQPP3ieImu+LRzIbUiyWDK9bRagAG
-sG0Xb/NEEbjanv42oxFJSwtMh1r6lHV/tZ2sOH3KhNUmsPrgSwMIvWkq/W2DnEBgoVtjhep4
-GxlvUEfvWvQnL4XKKXu7FiGw7BT45RZYNPtoYUsAudmVGmmLsPU6jUIbPKPspd+VKz0I85G7
-MkpvEpevpy2LP5R54LOch1jMrfMZ8uJvoYScFbIDkIQgLhWcAeJ/APXnVfHyNwAA
---------------080906010807070904020502--
+Much easier to integrate the patch in question into my 3.10 git tree.
+
+Thanks,
+
+	Michael
+
+
+>
+> bye,
+> //mirabilos
+> -- 
+>> Hi, does anyone sell openbsd stickers by themselves and not packaged
+>> with other products?
+> No, the only way I've seen them sold is for $40 with a free OpenBSD CD.
+> 	-- Haroon Khalid and Steve Shockley in gmane.os.openbsd.misc
