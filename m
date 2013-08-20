@@ -1,56 +1,40 @@
 From: Petr Stehlik <pstehlik@sophics.cz>
 Subject: Re: nfhd performance
-Date: Tue, 20 Aug 2013 08:24:58 +0200
-Message-ID: <1376979898.5651.10.camel@pracovni>
+Date: Tue, 20 Aug 2013 08:52:17 +0200
+Message-ID: <1376981537.5651.18.camel@pracovni>
 References: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
+	 <03094f45e85bca24df9306f73df2c84c@biophys.uni-duesseldorf.de>
+	 <CAMuHMdUkMEorK34WnV9==thRPCVRXV0ySWq=fFTNFO1fe3Qc6g@mail.gmail.com>
+	 <21010.11209.818043.191186@pilspetsen.it.uu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx.zln.cz ([188.246.101.4]:47090 "EHLO mx.zln.cz"
+Received: from mx.zln.cz ([188.246.101.4]:50635 "EHLO mx.zln.cz"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751926Ab3HTGZF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 20 Aug 2013 02:25:05 -0400
-In-Reply-To: <CAMuHMdUwzzx5Ae7sdvbRBtgY4UoXpo5-ig4PfdqFH4beWv_AHQ@mail.gmail.com>
+	id S1750816Ab3HTGwW convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 20 Aug 2013 02:52:22 -0400
+In-Reply-To: <21010.11209.818043.191186@pilspetsen.it.uu.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
+To: Mikael Pettersson <mikpe@it.uu.se>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux/m68k <linux-m68k@vger.kernel.org>, aranym@lists.bobek.cz
 
-Geert Uytterhoeven p=ED=B9e v P=E1 16. 08. 2013 v 23:57 +0200:
+Mikael Pettersson p=ED=B9e v Po 19. 08. 2013 v 16:29 +0200:
+> There are also other things in xhdi.cpp I don't really like, such as =
+going through
+> stdio when raw Unix file-descriptors would do
 
-> In a kernel that has both IDE and nfhd support, once everything is in=
- the
-> buffer cache, I get:
->=20
-> atari:~# dd if=3D/dev/hda2 bs=3D1M of=3D/dev/null
-> 141114880 bytes (141 MB) copied, 5.91 seconds, 23.9 MB/s
-> atari:~# dd if=3D/dev/nfhd8p2 bs=3D1M of=3D/dev/null
-> 141114880 bytes (141 MB) copied, 17.09 seconds, 8.3 MB/s
+I think I recall that we did that for portability of LARGE FILES (64bit
+offsets) at that time (think 10 years ago, various linux distros, MS
+Windows, Mac OS, BeOS, various BSD Unices...). Perhaps the situation is
+better (file descriptors with 64bit offsets are more portable) now?
 
-=46YI, I have just tried running XFERRATE.TTP (freeware by
-AnodyneSoftware.com) under plain TOS with clock driven by RTC and disk
-image without byteswap (it's still my original 1000 MB disk from Atari
-=46alcon). I got the following results with a small 30 MB partition tha=
-t
-most probably fully fit into host buffer cache:
+Anyway, I have just converted the XHDI to using raw Unix file
+descriptors and guess what - there's NO measurable difference (at least
+using the previously mentioned XFERRATE.TTP).
 
-Rwabs() transfer rate: 26660-26220 kb/sec
-XHDI transfer rate: 26750 kb/sec
-
-Please note that the Rwabs is a direct BIOS access. I think it's rather
-close if not equivalent to your 'dd if=3D/dev/hda2'.
-
-It basically means that since the XHDI path is slightly shorter code
-path so the data transfer is very slightly faster. That's actually what
-one could expect.
-
-I will try more tests, especially with ByteSwap in ARAnyM enabled (to
-see if there's a performance penalty). Will also try changing fread to
-read and implement reading more sectors at once in the XHDI NatFeat
-implementation. Will post my results here.
-
-In summary, the slow nfhd above seems to be caused by the linux-m68k
-implementation as I can't see such slow down under plain TOS.
+Unless someone has a good reason for committing the Unix file
+descriptors I'll throw it away and return to good old stdio.
 
 Petr
