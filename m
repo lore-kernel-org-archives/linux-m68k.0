@@ -1,73 +1,48 @@
-From: Richard Weinberger <richard@nod.at>
+From: "H. Peter Anvin" <hpa@zytor.com>
 Subject: Re: [RFC] Get rid of SUBARCH
-Date: Wed, 21 Aug 2013 14:16:14 +0200
-Message-ID: <5214AF8E.1010406__22249.1331900985$1377087396$gmane$org@nod.at>
-References: <1377073172-3662-1-git-send-email-richard@nod.at> <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
+Date: Wed, 21 Aug 2013 14:58:04 +0200
+Message-ID: <7813eeb3-8f96-4d3d-87ec-f2a880122804@email.android.com>
+References: <1377073172-3662-1-git-send-email-richard@nod.at> <alpine.DEB.2.10.1308211452260.31430@tglase.lan.tarent.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from b.ns.miles-group.at ([95.130.255.144]:1661 "EHLO radon.swed.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751467Ab3HUMQZ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 21 Aug 2013 08:16:25 -0400
-In-Reply-To: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <alpine.DEB.2.10.1308211452260.31430@tglase.lan.tarent.de>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Thorsten Glaser <t.glaser@tarent.de>, Richard Weinberger <richard@nod.at>
+Cc: linux-arch@vger.kernel.org, mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Am 21.08.2013 14:07, schrieb Geert Uytterhoeven:
-> On Wed, Aug 21, 2013 at 10:19 AM, Richard Weinberger <richard@nod.at> wrote:
->> This series is an attempt to remove the SUBARCH make parameter.
->> It as introduced at the times of Linux 2.5 for UML to tell the UML
->> build system what the real architecture is.
->>
->> But we actually don't need SUBARCH, we can store this information
->> in the .config file.
-> 
-> Haha, now you have OS_ARCH (shouldn't that be called HOST_ARCH?) instead,
-> which is available only for UM?
+If ARCH doesn't match uname for some definition of match?
 
-We have already OS (which is always "Linux"), so OS_ARCH is IMHO a good choice.
-UML always needs to know what the underlying arch is.
-
-OS_ARCH is not only visible to arch/um/ because of that code in the global Makefile:
-
-# UML needs a little special treatment here.  It wants to use the host
-# toolchain, so needs $(SUBARCH) passed to checkstack.pl.  Everyone
-# else wants $(ARCH), including people doing cross-builds, which means
-# that $(SUBARCH) doesn't work here.
-ifeq ($(ARCH), um)
-CHECKSTACK_ARCH := $(SUBARCH)
-else
-CHECKSTACK_ARCH := $(ARCH)
-endif
-
-scripts/tags.sh also needs some work. V2 will contain a patch for that.
-
+Thorsten Glaser <t.glaser@tarent.de> wrote:
+>On Wed, 21 Aug 2013, Richard Weinberger wrote:
+>
 >> The series touches also m68k, sh, mips and unicore32.
->> These architectures magically select a cross compiler if ARCH != SUBARCH.
+>> These architectures magically select a cross compiler if ARCH !=3D
+>SUBARCH.
 >> Do really need that behavior?
-> 
-> This does remove functionality.
-> It allows to build a kernel using e.g. "make ARCH=m68k".
+>
+>Not precisely that, but it=E2=80=99s very common in m68k land
+>to just cross-build kernels with
+>
+>$ make ARCH=3Dm68k menuconfig
+>$ make ARCH=3Dm68k
+>
+>Maybe a generalising of that feature, and making it
+>independent of SUBARCH (which can then die)?
+>
+>bye,
+>//mirabilos
 
-If this functionality is expected and has users I'll happily keep that.
-
-> Perhaps this can be moved to generic code? Most (not all!) cross-toolchains
-> are called $ARCH-{unknown-,}linux{,-gnu}.
-> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
-
-Sounds good.
-
->> [PATCH 1/8] um: Create defconfigs for i386 and x86_64
->> [PATCH 3/8] um: Remove old defconfig
-> 
-> Why not merge these two, so git copy/rename detection will show only the real
-> changes?
-
-Will do.
-
-Thanks,
-//richard
+--=20
+Sent from my mobile phone. Please excuse brevity and lack of formatting=
+=2E
