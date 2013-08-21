@@ -1,13 +1,13 @@
 From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4/8] m68k: Do not use SUBARCH
-Date: Wed, 21 Aug 2013 10:19:28 +0200
-Message-ID: <1377073172-3662-5-git-send-email-richard__9040.83920545435$1377073625$gmane$org@nod.at>
+Subject: [PATCH 6/8] mips: Do not use SUBARCH
+Date: Wed, 21 Aug 2013 10:19:30 +0200
+Message-ID: <1377073172-3662-7-git-send-email-richard__10963.7327994735$1377073626$gmane$org@nod.at>
 References: <1377073172-3662-1-git-send-email-richard@nod.at>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from b.ns.miles-group.at ([95.130.255.144]:1683 "EHLO radon.swed.at"
+Received: from b.ns.miles-group.at ([95.130.255.144]:1687 "EHLO radon.swed.at"
 	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751657Ab3HUI0f (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 21 Aug 2013 04:26:35 -0400
+	id S1751509Ab3HUI0g (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 21 Aug 2013 04:26:36 -0400
 In-Reply-To: <1377073172-3662-1-git-send-email-richard@nod.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -19,26 +19,25 @@ of automatically selecting more or less randomly a cross compiler.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/m68k/Makefile | 7 -------
- 1 file changed, 7 deletions(-)
+ arch/mips/Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 7f7830f..3bd6355 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -16,13 +16,6 @@
- 
- KBUILD_DEFCONFIG := multi_defconfig
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 37f9ef3..514fea6 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -42,12 +42,6 @@ tool-archpref		= $(64bit-tool-archpref)
+ UTS_MACHINE		:= mips64
+ endif
  
 -ifneq ($(SUBARCH),$(ARCH))
--	ifeq ($(CROSS_COMPILE),)
--		CROSS_COMPILE := $(call cc-cross-prefix, \
--			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
--	endif
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+-  endif
 -endif
 -
- #
- #	Enable processor type. Ordering of these is important - we want to
- #	use the minimum processor type of the range we support. The logic
+ ifdef CONFIG_FUNCTION_GRAPH_TRACER
+   ifndef KBUILD_MCOUNT_RA_ADDRESS
+     ifeq ($(call cc-option-yn,-mmcount-ra-address), y)
 -- 
 1.8.1.4
