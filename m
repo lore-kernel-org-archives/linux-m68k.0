@@ -1,67 +1,42 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
-Date: Tue, 20 Aug 2013 13:00:40 +0300
-Message-ID: <52133E48.50501@aalto.fi>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org>	<520D4AE3.6040801@aalto.fi>	<520E76FC.9040803@aalto.fi>	<11425cb5ec432e2fbb7b675052e8b33d@gmail.com>	<520F5F81.7090409@aalto.fi>	<52102BEC.7000006@gmail.com>	<CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com>	<52108CAF.1010700@gmail.com> <CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com> <5211DBD8.5090801@gmail.com> <5212840A.4080300@aalto.fi> <1ef2d87e4efecb2d8c8c2eaf8ac5fd51@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Richard Weinberger <richard@nod.at>
+Subject: [RFC] Get rid of SUBARCH
+Date: Wed, 21 Aug 2013 10:19:24 +0200
+Message-ID: <1377073172-3662-1-git-send-email-richard__43479.8112292357$1377073602$gmane$org@nod.at>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx05.aalto.fi ([130.233.222.104]:59371 "EHLO mx05.aalto.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750881Ab3HTKAn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 20 Aug 2013 06:00:43 -0400
-In-Reply-To: <1ef2d87e4efecb2d8c8c2eaf8ac5fd51@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144]:1663 "EHLO radon.swed.at"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1751473Ab3HUI03 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 21 Aug 2013 04:26:29 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-arch@vger.kernel.org
+Cc: mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On 08/20/2013 12:36 PM, Michael Schmitz wrote:
-> Tuomas,
->
->> I guess those two bytes have something to do with target 
->> (re)selection... There are two different ways of attempting to read 
->> these bytes in the code, one is reading them from the FIFO byte by 
->> byte, and the other way is to setup a DMA read (write from device). 
->> The two different schemes are used in two different functions, and I 
->> do not understand why one method would be preferred over the other 
->> when comparing these functions.
->
-> What the driver attempts to read on reselection are the tag bytes that 
-> were used in the previous disconnect. These have to match otherwise we 
-> are not reselecting the command we need.
->
-> No idea which functions you refer to regarding PIO (reading from 
-> FIFO). Anyway, the DMA will read from the same FIFO that the CPU 
-> would, if I understand DMA correctly. There really should be no 
-> difference-
-esp.scsi.c:1058 versus esp.scsi.c:1120
->
->> I think I managed to find these two bytes; They are not ready for 
->> DMA, but are sitting in the FIFO waiting to be read.
->> So the loop before the "IRQ2 timeout" is waiting for an interrupt 
->> that would tell that the DMA transfer has finished.
->
-> The loop checks whether the ESP status indicates the transfer is done 
-> - if the bytes are still stuck in the FIFO I'd guess the DMA does not 
-> bother to transfer for such small transfer counts.
-In:
-http://pdf.datasheetcatalog.com/datasheet/AdvancedMicroDevices/mXxxsy.pdf
-page 42: Enable Selection/Reselection Command (Command Code 44H/C4H)
+This series is an attempt to remove the SUBARCH make parameter.
+It as introduced at the times of Linux 2.5 for UML to tell the UML
+build system what the real architecture is.
 
-explains why the bytes might end up in FIFO; The chip DMA got disabled 
-at some point. Also, you need to explicitly issue a specific (don't know 
-which, yet) command to let the DMA access the FIFO.
->
-> The DMA transfer function can be changed to fetch less than seven 
-> bytes from the FIFO by PIO instead of setting up DMA transfer (just 
-> poll the FIFO after sending the command to the ESP, instead of first 
-> setting up the DMA then sending the command),
->
-I'd rather find out why and where the DMA is disabled before we resort 
-to PIO. It is also possible that the chip interrupt is cleared 
-prematurely by reading the interrupt register, in which case the 
-interrupt is not seen by  The Loop.
+But we actually don't need SUBARCH, we can store this information
+in the .config file.
+i386_defconfig will produce a kernel for x86, and x86_64_defconfig
+for x86_64. There is no need to specify SUBARCH.
+With this patchset applied you can build UML always with "make linux ARCH=um"
+and it will produce the an image for the architecture specified in your .config.
+Currenlty "make linux ARCH=um" will alter your .config to match the detected SUBARCH
+whith sucks and causes problems on automated build systems.
 
--Tuomas
+The series touches also m68k, sh, mips and unicore32.
+These architectures magically select a cross compiler if ARCH != SUBARCH.
+Do really need that behavior?
+
+[PATCH 1/8] um: Create defconfigs for i386 and x86_64
+[PATCH 2/8] um: Do not use SUBARCH
+[PATCH 3/8] um: Remove old defconfig
+[PATCH 4/8] m68k: Do not use SUBARCH
+[PATCH 5/8] sh: Do not use SUBARCH
+[PATCH 6/8] mips: Do not use SUBARCH
+[PATCH 7/8] unicore32: Do not use SUBARCH
+[PATCH 8/8] Makefile: Remove SUBARCH
+
+Thanks,
+//richard
