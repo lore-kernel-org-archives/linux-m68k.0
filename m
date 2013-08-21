@@ -1,36 +1,72 @@
-From: Thorsten Glaser <t.glaser@tarent.de>
+From: Rob Landley <rob@landley.net>
 Subject: Re: [RFC] Get rid of SUBARCH
-Date: Wed, 21 Aug 2013 14:53:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1308211452260.31430__21648.0867159136$1377090086$gmane$org@tglase.lan.tarent.de>
-References: <1377073172-3662-1-git-send-email-richard@nod.at>
+Date: Wed, 21 Aug 2013 12:25:11 -0500
+Message-ID: <1377105911.2737.94__18203.3020108522$1377105953$gmane$org@driftwood>
+References: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1377073172-3662-1-git-send-email-richard@nod.at>
+In-Reply-To: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
+	(from geert@linux-m68k.org on Wed Aug 21 07:07:33 2013)
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-arch@vger.kernel.org, mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, 21 Aug 2013, Richard Weinberger wrote:
+On 08/21/2013 07:07:33 AM, Geert Uytterhoeven wrote:
+> On Wed, Aug 21, 2013 at 10:19 AM, Richard Weinberger <richard@nod.at>  
+> wrote:
+> > This series is an attempt to remove the SUBARCH make parameter.
+> > It as introduced at the times of Linux 2.5 for UML to tell the UML
+> > build system what the real architecture is.
+> >
+> > But we actually don't need SUBARCH, we can store this information
+> > in the .config file.
+> 
+> Haha, now you have OS_ARCH (shouldn't that be called HOST_ARCH?)  
+> instead,
+> which is available only for UM?
+> 
+> > The series touches also m68k, sh, mips and unicore32.
+> > These architectures magically select a cross compiler if ARCH !=  
+> SUBARCH.
+> > Do really need that behavior?
+> 
+> This does remove functionality.
+> It allows to build a kernel using e.g. "make ARCH=m68k".
 
-> The series touches also m68k, sh, mips and unicore32.
-> These architectures magically select a cross compiler if ARCH !=3D SU=
-BARCH.
-> Do really need that behavior?
+   make ARCH=m68k CROSS_COMPILE=m68k-
+   make ARCH=arm CROSS_COMPILE=armv5l-
+   make ARCH=sparc CROSS_COMPILE=sparc-
+   make ARCH=ppc CROSS_COMPILE=powerpc-
+   make ARCH=sh CROSS_COMPILE=sh4-
+   make ARCH=mips CROSS_COMPILE=mipsel-
+   make ARCH=x86 CROSS_COMPILE=i686-
+   make ARCH=alpha CROSS_COMPILE=alpha-
 
-Not precisely that, but it=E2=80=99s very common in m68k land
-to just cross-build kernels with
+Works the same way on all the targets I've tried so far. You specify  
+the architecture, you specify the cross compiler prefix, you feed it a  
+config file, you build.
 
-$ make ARCH=3Dm68k menuconfig
-$ make ARCH=3Dm68k
+(If a target supplies its own default cross compiler prefix I just have  
+to override it with what mine's called anyway...)
 
-Maybe a generalising of that feature, and making it
-independent of SUBARCH (which can then die)?
+> Perhaps this can be moved to generic code? Most (not all!)  
+> cross-toolchains
+> are called $ARCH-{unknown-,}linux{,-gnu}.
+> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
 
-bye,
-//mirabilos
---=20
-[16:04:33] bkix: "veni vidi violini"
-[16:04:45] bkix: "ich kam, sah und vergeigte"...
+The linaro toolchain is arm-linux-gnueabihf- and the one on kernel.org  
+is arm-unknown-linux-gnueabi- and the one I build is armv5l- (because  
+the FSF's  
+$ARCH-unknown-gnu-format-tuple-all-hail-stallman-gnu-gnu-gnu-dammit-gcc  
+is just nuts: why would I say -linux- in a linux-to-linux toolchain? Do  
+windows toolchains say -windows-?)
+
+Other toolchain sources use other prefixes (-unknown- is often  
+-$VENDORNAME-), and then of course there's llvm... which is why you  
+specify CROSS_COMPILE= on the make command line.
+
+Rob
