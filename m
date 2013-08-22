@@ -1,68 +1,47 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: TLS, was Re: Getting the ol' Macintosh LC475 modernized
-Date: Thu, 22 Aug 2013 16:44:25 +0200
-Message-ID: <CAMuHMdXfPL-KMKwoYgToTzU+thcytsGma1huaSgyyYvxhz6Xzg@mail.gmail.com>
-References: <52116B54.8080507@iamscott.net>
-	<Pine.BSM.4.64L.1308190104230.780@herc.mirbsd.org>
-	<5212C061.9040306@iamscott.net>
-	<Pine.BSM.4.64L.1308200654590.2366@herc.mirbsd.org>
-	<52143FE6.9050805@iamscott.net>
-	<alpine.LNX.2.00.1308211423540.885@nippy.intranet>
-	<Pine.BSM.4.64L.1308210819340.10692@herc.mirbsd.org>
-	<CAMuHMdV4dns1-B6C9gx2oqX-umrVzJLQmvgJu+h163KOjJxRCA@mail.gmail.com>
-	<Pine.BSM.4.64L.1308212250320.16289@herc.mirbsd.org>
-	<alpine.LNX.2.00.1308221034260.3643@nippy.intranet>
-	<Pine.LNX.4.64.1308221142180.31459@digraph.polyomino.org.uk>
-	<CAMuHMdW+zp1=3Jpg2FVDEFD+B58iAO=8ibL=45rgsgy32S43ZQ@mail.gmail.com>
-	<Pine.LNX.4.64.1308221334330.2618@digraph.polyomino.org.uk>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Thu, 22 Aug 2013 19:27:12 +0200
+Message-ID: <CAMuHMdWNHyTUYrcn9M2wn5-1+KYi+momBKHE2t9y4zXAEvygrw@mail.gmail.com>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
+	<f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f48.google.com ([209.85.160.48]:54562 "EHLO
-	mail-pb0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752852Ab3HVOo0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Aug 2013 10:44:26 -0400
-Received: by mail-pb0-f48.google.com with SMTP id ma3so1857045pbc.7
-        for <linux-m68k@vger.kernel.org>; Thu, 22 Aug 2013 07:44:25 -0700 (PDT)
-In-Reply-To: <Pine.LNX.4.64.1308221334330.2618@digraph.polyomino.org.uk>
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:40849 "EHLO
+	mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753016Ab3HVR1N convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 22 Aug 2013 13:27:13 -0400
+Received: by mail-pd0-f175.google.com with SMTP id q10so2137664pdj.20
+        for <linux-m68k@vger.kernel.org>; Thu, 22 Aug 2013 10:27:12 -0700 (PDT)
+In-Reply-To: <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Joseph S. Myers" <joseph@codesourcery.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Thorsten Glaser <tg@mirbsd.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Thorsten Glaser <tg@mirbsd.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-On Thu, Aug 22, 2013 at 3:37 PM, Joseph S. Myers
-<joseph@codesourcery.com> wrote:
-> On Thu, 22 Aug 2013, Geert Uytterhoeven wrote:
+On Tue, Aug 13, 2013 at 9:57 AM, Michael Schmitz
+<schmitz@biophys.uni-duesseldorf.de> wrote:
+>> =E2=80=A2 this interrupt patch
 >
->> > The vDSO support has been there in glibc ever since the NPTL port was
->> > first added.  I've no idea why the kernel changes still haven't gone in.
->>
->> I didn't know that. Seems to be recent work, cfr.
->> https://github.com/Xilinx/glibc/blob/master/ports/ChangeLog.m68k ?
->
-> It dates back to the original 2010-03-09 addition of NPTL support.
+> Having revived my Falcon, I should be in a position to test these.
 
-Ah yes, further in the log...
+Anyone who has tried this on real iron? I haven't (on Amiga).
 
->> Where can I find the kernel changes?
->
-> I don't know where such changes may have originally been posted but e.g.
-> one version appears to be at
-> <https://dev.openwrt.org/browser/trunk/target/linux/coldfire/patches/012-Add-vDSO-support-for-Coldfire-platform.patch?rev=31546>.
-
-Thanks!
-
-I (Google) can't find any evidence of them ever being posted to a public list.
-They seem to have entered OpenWRT without any discussion on
-openwrt-devel@lists.openwrt.org (yes, I'm subscribed)...
+The merge window may open this weekend (but I wouldn't be surprised
+if there was one more rc).
 
 Gr{oetje,eeting}s,
 
                         Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
                                 -- Linus Torvalds
