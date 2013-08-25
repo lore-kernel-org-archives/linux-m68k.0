@@ -1,62 +1,46 @@
-From: Rob Landley <rob@landley.net>
-Subject: Re: [RFC] Get rid of SUBARCH
-Date: Thu, 22 Aug 2013 16:32:55 -0500
-Message-ID: <1377207175.2737.113__27324.8372869149$1377207207$gmane$org@driftwood>
-References: <52167AB8.4060206@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Sun, 25 Aug 2013 20:49:22 +0200
+Message-ID: <CAMuHMdUMAfYbj=Bh6WnFC2qZH1O-9UDSRCGAKDpO=v0aPV9C_A@mail.gmail.com>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org>
+	<Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org>
+	<f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de>
+	<CAMuHMdWNHyTUYrcn9M2wn5-1+KYi+momBKHE2t9y4zXAEvygrw@mail.gmail.com>
+	<Pine.BSM.4.64L.1308221903570.2722@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <52167AB8.4060206@gmail.com> (from ddaney.cavm@gmail.com on Thu
-	Aug 22 15:55:20 2013)
-Content-Disposition: inline
+Received: from mail-pb0-f44.google.com ([209.85.160.44]:46457 "EHLO
+	mail-pb0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755645Ab3HYStX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Aug 2013 14:49:23 -0400
+Received: by mail-pb0-f44.google.com with SMTP id xa7so2581704pbc.31
+        for <linux-m68k@vger.kernel.org>; Sun, 25 Aug 2013 11:49:22 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1308221903570.2722@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Daney <ddaney.cavm@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-On 08/22/2013 03:55:20 PM, David Daney wrote:
-> On 08/22/2013 01:41 PM, Rob Landley wrote:
->> On 08/22/2013 07:58:26 AM, Geert Uytterhoeven wrote:
->>> On Wed, Aug 21, 2013 at 9:51 PM, Sam Ravnborg <sam@ravnborg.org>  
->>> wrote:
->>> >> > The series touches also m68k, sh, mips and unicore32.
->>> >> > These architectures magically select a cross compiler if ARCH  
->>> !=
->>> SUBARCH.
->>> >> > Do really need that behavior?
->>> >>
->>> >> This does remove functionality.
->>> >> It allows to build a kernel using e.g. "make ARCH=m68k".
->>> >>
->>> >> Perhaps this can be moved to generic code? Most (not all!)
->>> cross-toolchains
->>> >> are called $ARCH-{unknown-,}linux{,-gnu}.
->>> >> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
->>> >
->>> > Today you can specify CROSS_COMPILE in Kconfig.
->>> > With this we should be able to remove these hacks.
->>> 
->>> The correct CROSS_COMPILE value depends on the host environment, not
->>> on the target configuration.
->> 
->> Actually it depends on _both_.
->> 
-> 
-> I think the important issue is not the exact dependencies of the  
-> value of CROSS_COMPILE, but rather that it varies enough that  
-> automatically choosing a value based on SUBARCH often gives the wrong  
-> result.
-> 
-> Removing SUBARCH and setting CROSS_COMPILE either from the make  
-> command line (or environment) or the config file, is a good idea  
-> because it simplifies the build system, makes things clearer, and  
-> yields more predictable results.
-> 
-> David Daney
+On Thu, Aug 22, 2013 at 9:07 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
+>>Anyone who has tried this on real iron? I haven't (on Amiga).
+>
+> FWIW, that patch was in Debian linux-image-3.10-2-m68k
+> so everyone who successfully booted that counts.
+>
+> Scott Holder booted it on his Macintosh AFAIR.
 
-Agreed. Expecting the build to guess the right $CROSS_COMPILE is like  
-expecting it to guess the right $PATH. It should be specified, not  
-heuristically probed.
+Applied and queued for 3.12
 
-Rob
+
+-- 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
