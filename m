@@ -1,74 +1,87 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 11/12] m68k/atari: USB - add platform devices for
- EtherNAT/NetUSBee ISP1160 HCD
-Date: Mon, 26 Aug 2013 12:18:32 +0200
-Message-ID: <CAMuHMdUK_bc1Kodws0gbHJnpXuxm6eCsE1HRteWYGD4Zto2rdg@mail.gmail.com>
-References: <1365208006-16227-1-git-send-email-schmitz@debian.org>
-	<1365208006-16227-12-git-send-email-schmitz@debian.org>
+From: Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH] m68k: handle Atari interrupts in multi-platform kernels
+Date: Mon, 26 Aug 2013 12:57:46 +0200 (CEST)
+Message-ID: <162721916.231588.1377514666818.open-xchange@ox-webdesk.1and1.fr>
+References: <201308092135.r79LZwL1013105@herc.mirbsd.org> <Pine.BSM.4.64L.1308092147300.28970@herc.mirbsd.org> <f853f42622f9fd3b1f832a3b2b1d04ae@biophys.uni-duesseldorf.de> <CAMuHMdWNHyTUYrcn9M2wn5-1+KYi+momBKHE2t9y4zXAEvygrw@mail.gmail.com> <Pine.BSM.4.64L.1308221903570.2722@herc.mirbsd.org>
+Reply-To: Laurent Vivier <laurent@vivier.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f178.google.com ([209.85.192.178]:61833 "EHLO
-	mail-pd0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751732Ab3HZKSd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 Aug 2013 06:18:33 -0400
-Received: by mail-pd0-f178.google.com with SMTP id w10so3288558pde.37
-        for <linux-m68k@vger.kernel.org>; Mon, 26 Aug 2013 03:18:32 -0700 (PDT)
-In-Reply-To: <1365208006-16227-12-git-send-email-schmitz@debian.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: multipart/alternative;
+	boundary="----=_Part_231587_107244506.1377514666747"
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <Pine.BSM.4.64L.1308221903570.2722@herc.mirbsd.org>
+Resent-Message-ID: <gUCf1yxlFvJ.A.wfD.BTzGSB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Thorsten Glaser <tg@mirbsd.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Michael Schmitz <schmitz@debian.org>
 
-Hi Michael,
+------=_Part_231587_107244506.1377514666747
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 6, 2013 at 2:26 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> --- a/arch/m68k/atari/config.c
-> +++ b/arch/m68k/atari/config.c
 
-> +static struct resource isp1160_resources[] = {
-> +       [0] = {
-> +               .name   = "isp1160-data",
-> +               .start  = ATARI_USB_PHYS_ADDR,
-> +               .end    = ATARI_USB_PHYS_ADDR + 0x1,
-> +               .flags  = IORESOURCE_MEM,
+> Le 22 ao=C3=BBt 2013 =C3=A0 21:07, Thorsten Glaser <tg@mirbsd.de> a =C3=
+=A9crit :
+>
+>
+> Geert Uytterhoeven dixit:
+>
+> >Anyone who has tried this on real iron? I haven't (on Amiga).
+>
+> FWIW, that patch was in Debian linux-image-3.10-2-m68k
+> so everyone who successfully booted that counts.
+>
+> Scott Holder booted it on his Macintosh AFAIR.
 
-Shouldn't this be IORESOURCE_IO?
+I'd like to test this on my Quadra 800, where can I find the .deb ?
 
-> +       },
-> +       [1] = {
-> +               .name   = "isp1160-regs",
-> +               .start  = ATARI_USB_PHYS_ADDR + 0x4,
-> +               .end    = ATARI_USB_PHYS_ADDR + 0x5,
-> +               .flags  = IORESOURCE_MEM,
+Regards,
+Laurent
+------=_Part_231587_107244506.1377514666747
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Ditto.
-
-> +       },
-
-I have in /proc/iomem:
-
-00000340-00000341 : isp1160-data
-00000360-00000361 : isp1160-regs
-00684000-00783fff : ST-RAM Pool
-  00684000-006cffff : atafb
-  006d0000-006d3fff : ataflop
-  006d4000-006d4fff : SCSI
-fff00000-fff0003f : falconide
-
-and in /proc/ioports:
-
-00000300-0000031f : rtl8019-regs
-
-Sorry for not noticing before.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+ 
+  <style type="text/css">.mceResizeHandle {position: absolute;border: 1px solid black;background: #FFF;width: 5px;height: 5px;z-index: 10000}.mceResizeHandle:hover {background: #000}img[data-mce-selected] {outline: 1px solid black}img.mceClonedResizable, table.mceClonedResizable {position: absolute;outline: 1px dashed black;opacity: .5;z-index: 10000}
+</style>
+ 
+ </head><body style="">
+ 
+  <div>
+   <br/>&#62; Le 22 ao&#251;t 2013 &#224; 21:07, Thorsten Glaser &#60;tg@mirbsd.de&#62; a &#233;crit&#160;:
+   <br/>&#62; 
+   <br/>&#62; 
+   <br/>&#62; Geert Uytterhoeven dixit:
+   <br/>&#62; 
+   <br/>&#62; &#62;Anyone who has tried this on real iron? I haven&#39;t (on Amiga).
+   <br/>&#62; 
+   <br/>&#62; FWIW, that patch was in Debian linux-image-3.10-2-m68k
+   <br/>&#62; so everyone who successfully booted that counts.
+   <br/>&#62; 
+   <br/>&#62; Scott Holder booted it on his Macintosh AFAIR.
+   <br/>
+   <br/>
+  </div> 
+  <div>
+   I&#39;d like to test this on my Quadra 800, where can I find the .deb ?
+  </div> 
+  <div>
+   &#160;
+  </div> 
+  <div>
+   Regards,
+  </div> 
+  <div>
+   Laurent
+  </div>
+ 
+</body></html>
+------=_Part_231587_107244506.1377514666747--
