@@ -1,42 +1,56 @@
-From: Thorsten Glaser <tg@debian.org>
-Subject: /proc/diskstats all-zero on NatFeat HDD
-Date: Sun, 1 Sep 2013 16:26:55 +0000 (UTC)
-Message-ID: <loom.20130901T182605-142@post.gmane.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.12
+Date: Mon, 2 Sep 2013 23:44:24 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1309022339040.10575@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:58616 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753409Ab3IAQ1O (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 1 Sep 2013 12:27:14 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1VGAUa-0008LV-Nx
-	for linux-m68k@vger.kernel.org; Sun, 01 Sep 2013 18:27:12 +0200
-Received: from static-87-79-237-121.netcologne.de ([87.79.237.121])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 01 Sep 2013 18:27:12 +0200
-Received: from tg by static-87-79-237-121.netcologne.de with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Sun, 01 Sep 2013 18:27:12 +0200
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-root@ara4:~ # cat /proc/diskstats ; uname -
-a                                                                   =20
- 254     128 nfhd8 0 0 0 0 0 0 0 0 0 0 0
- 254     129 nfhd8p1 0 0 0 0 0 0 0 0 0 0 0
- 254     130 nfhd8p2 0 0 0 0 0 0 0 0 0 0 0
-Linux ara4.mirbsd.org 3.10-2-m68k #1 Debian 3.10.7-1 (2013-08-17) m68k =
-GNU/
-Linux
+	Hi Linus,
 
+The following changes since commit b36f4be3de1b123d8601de062e7dbfc904f305fb:
 
-We found this during procps debugging. JFYI.
-(I don=E2=80=99t particularily care about the stats myself=E2=80=A6)
+  Linux 3.11-rc6 (2013-08-18 14:36:53 -0700)
 
-bye,
-//mirabilos
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+for you to fetch changes up to 55490050df0f5d82ce070be11351c65f7696101c:
+
+  m68k/atari: ARAnyM - Always use physical addresses in NatFeat calls (2013-08-23 12:49:01 +0200)
+
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: Ignore disabled HSYNC interrupt on Atari for irqs_disabled()
+      m68k/atari: ARAnyM - Always use physical addresses in NatFeat calls
+
+Summary:
+  - Kill harmless warning messages when running a multi-platform kernel on
+    Atari,
+  - Correct virt/phys mixups that didn't actually hurt due to identity
+    mappings.
+
+Thanks for pulling!
+
+ arch/m68k/emu/natfeat.c          |   14 +++++++-------
+ arch/m68k/emu/nfblock.c          |    4 ++--
+ arch/m68k/emu/nfcon.c            |    8 +++++---
+ arch/m68k/emu/nfeth.c            |    7 ++++---
+ arch/m68k/include/asm/irqflags.h |    4 ++++
+ 5 files changed, 22 insertions(+), 15 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
