@@ -1,72 +1,46 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 2/2] m68k/amiga: Provide mach_get_cycles()
-Date: Mon,  9 Sep 2013 21:26:14 +0200
-Message-ID: <1378754774-25804-2-git-send-email-geert__38025.5682197914$1378754809$gmane$org@linux-m68k.org>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: [PATCH 1/2] m68k: Add infrastructure for machine-specific
+ get_cycles()
+Date: Mon, 9 Sep 2013 20:35:23 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1309092033110.15325@herc.mirbsd.org>
 References: <1378754774-25804-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from eurynome.mirbsd.org ([81.169.181.30]:2255 "EHLO
+	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755549Ab3IIUq2 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Sep 2013 16:46:28 -0400
 In-Reply-To: <1378754774-25804-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Thorsten Glaser <tg@mirbsd.de>, Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org
 
-Use the 24-bit Time-Of-Day clock in CIA B, which is clocked by HSYNC.
+Geert Uytterhoeven dixit:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-  1. Completely untested! It does compile ;-)
+>Currently get_cycles() always returns zero.  As get_cycles() is called=
+ to
+>add entropy to the random number generator pool, security can be incre=
+ased
 
-  2. Is a 24-bit counter running at 15-31 kHz good enough?
-     Two cascaded 16-bit CIA timers running from the 700 kHz E-clock would
-     be better, but as jiffies use CIA B Timer A and the floppy driver uses
-     CIA A Timer B, we don't have two available timers in the same CIA
-     without some code shuffling.
+You rock for having something before MIPS ;-) (Note that other
+architectures like CRIS are also affected=E2=80=A6 just, MIPS probably
+has the broadest impact=E2=80=A6 even I have a FreeWRT WLAN AP.)
 
-  3. What are the semantics of get_cycles()?
-     Does it have to be a "nice" counter, or can there be some
-     irregularities?
-     I.e. can I add one more line
-     
-	x = (x << 8) | ciab.talo;	// low byte of 700 kHz timer
-	
-     to get 32 bits?
+Sorry I can=E2=80=99t provide any feedback because I=E2=80=99m out of m=
+y depth on
+both the hardware and the requirements aspect.
 
- arch/m68k/amiga/config.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index acd9c16..914e056 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -358,6 +358,20 @@ static void __init amiga_identify(void)
- #undef AMIGAHW_ANNOUNCE
- }
- 
-+
-+static cycles_t amiga_get_cycles(void)
-+{
-+	cycles_t x;
-+
-+	/* CIA B 24-bit TOD is clocked by HSYNC */
-+	x = ciab.todhi;
-+	x = (x << 8) | ciab.todmid;
-+	x = (x << 8) | ciab.todlo;
-+
-+	return x;
-+}
-+
-+
-     /*
-      *  Setup the Amiga configuration info
-      */
-@@ -395,6 +409,8 @@ void __init config_amiga(void)
- 	mach_heartbeat = amiga_heartbeat;
- #endif
- 
-+	mach_get_cycles = amiga_get_cycles;
-+
- 	/* Fill in the clock value (based on the 700 kHz E-Clock) */
- 	amiga_colorclock = 5*amiga_eclock;	/* 3.5 MHz */
- 
--- 
-1.7.9.5
+bye,
+//mirabilos
+--=20
+Sometimes they [people] care too much: pretty printers [and syntax high=
+ligh-
+ting, d.A.] mechanically produce pretty output that accentuates irrelev=
+ant
+detail in the program, which is as sensible as putting all the preposit=
+ions
+in English text in bold font.	-- Rob Pike in "Notes on Programming in C=
+"
