@@ -1,51 +1,50 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Missing =?utf-8?b?Z2V0X2N5Y2xlcygp?= has effect on quality of entropy
-Date: Mon, 9 Sep 2013 09:27:52 +0000 (UTC)
-Message-ID: <loom.20130909T112514-903@post.gmane.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [000/121] 3.2.51-rc1 review
+Date: Mon, 09 Sep 2013 23:16:41 +1000
+Message-ID: <522DCA39.4090505@uclinux.org>
+References: <lsq.1378608720.401499712@decadent.org.uk> <522C22DB.9080008@roeck-us.net> <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:34515 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750871Ab3IIJ2N (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 9 Sep 2013 05:28:13 -0400
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1VIxlS-0005x9-Uh
-	for linux-m68k@vger.kernel.org; Mon, 09 Sep 2013 11:28:11 +0200
-Received: from fb-n15-11.unbelievable-machine.net ([94.198.62.204])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 09 Sep 2013 11:28:10 +0200
-Received: from tg by fb-n15-11.unbelievable-machine.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Mon, 09 Sep 2013 11:28:10 +0200
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, Ben Hutchings <ben@decadent.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
 
-Hi!
+On 08/09/13 18:18, Geert Uytterhoeven wrote:
+> On Sun, Sep 8, 2013 at 9:10 AM, Guenter Roeck <linux@roeck-us.net> wrote:
+>> m68k-linux-ld: error: no memory region specified for loadable section
+>> `.note.gnu.build-id'
+>
+> I can't seem to find an explicit fix for that since v3.2.
+> Perhaps the fix is a side effect of f84f52a5c15db7d14a534815f27253b001735183
+> ("m68knommu: clean up linker script").
+>
+> Greg, any idea?
 
-https://lists.openwrt.org/pipermail/openwrt-devel/2013-September/021318=
-=2Ehtml
-affects several architectures =E2=80=93 m68k among them.
+Looks like Guenter found follow up patches that fix it. I don't recall
+this specific change breaking like this at the time though.
 
-Some arches have comments like =E2=80=9Conly used by the scheduler=E2=80=
-=9D. This may
-have been once true, but a quick =E2=80=9Cgit grep -w get_cycles=E2=80=9D=
- shows much
-more use throughout the Linux kernel.
+Regards
+Greg
 
-The random thing is scary already, but=E2=80=A6
-mm/slub.c:      p +=3D 64 + (get_cycles() & 0xff) * sizeof(void *);
-=E2=80=A6 there are several cases like this, where an always-zero get_c=
-ycles()
-result severely impacts operation of the code.
 
-So I ask whether it=E2=80=99s possible to fill this code with life, for=
- at
-least a subset of all architectures?
-
-bye,
-//mirabilos
+>> Details are at http://server.roeck-us.net:8010/builders.
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
