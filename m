@@ -1,54 +1,49 @@
-From: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
-Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share
- all credential caches on a per-transport basis)
-Date: Thu, 12 Sep 2013 14:13:48 +0000
-Message-ID: <1378995227.3117.9.camel@leira.trondhjem.org>
-References: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
+From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Subject: esp_scsi QTAG in FAS216 (was Re: [PATCH 0/2] Experimental Amiga Zorro
+ ESP driver)
+Date: Thu, 12 Sep 2013 18:36:09 +0300
+Message-ID: <5231DF69.6070807@aalto.fi>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com> <520F5F81.7090409@aalto.fi> <52102BEC.7000006@gmail.com> <CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com> <52108CAF.1010700@gmail.com> <CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com> <5211DBD8.5090801@gmail.com> <5212840A.4080300@aalto.fi> <1ef2d87e4efecb2d8c8c2eaf8ac5fd51@gmail.com> <52133E48.50501@aalto.fi> <CAOmrzkKtB4OpnFNFh9PR4V8bc3ExfFXpwtkhGj0veQ4w-d=cqA@mail.gmail.com> <522F8B67.2080603@aalto.fi> <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com> <CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx11.netapp.com ([216.240.18.76]:61386 "EHLO mx11.netapp.com"
+Received: from mx06.aalto.fi ([130.233.222.105]:37602 "EHLO mx06.aalto.fi"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751461Ab3ILONt (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 12 Sep 2013 10:13:49 -0400
-In-Reply-To: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <10F38056DFEB214288D754123D0D0BD7@hq.netapp.com>
+	id S1754125Ab3ILPgM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 12 Sep 2013 11:36:12 -0400
+In-Reply-To: <CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-scsi@vger.kernel.org, David Miller <davem@davemloft.net>
 
-T24gVGh1LCAyMDEzLTA5LTEyIGF0IDE1OjI0ICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
-dGU6DQo+IE9uIE1vbiwgU2VwIDksIDIwMTMgYXQgNjo1NyBQTSwgTGludXggS2VybmVsIE1haWxp
-bmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4gd3JvdGU6DQo+ID4gZGlm
-ZiAtLWdpdCBhL25ldC9zdW5ycGMvYXV0aF9nc3MvYXV0aF9nc3MuYyBiL25ldC9zdW5ycGMvYXV0
-aF9nc3MvYXV0aF9nc3MuYw0KPiA+IGluZGV4IDVlYzE1YmIuLmRjNGI0NDkgMTAwNjQ0DQo+ID4g
-LS0tIGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ID4gKysrIGIvbmV0L3N1bnJw
-Yy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ID4gQEAgLTUxLDYgKzUxLDcgQEANCj4gPiAgI2luY2x1
-ZGUgPGxpbnV4L3N1bnJwYy9ycGNfcGlwZV9mcy5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvc3Vu
-cnBjL2dzc19hcGkuaD4NCj4gPiAgI2luY2x1ZGUgPGFzbS91YWNjZXNzLmg+DQo+ID4gKyNpbmNs
-dWRlIDxsaW51eC9oYXNodGFibGUuaD4NCj4gPg0KPiA+ICAjaW5jbHVkZSAiLi4vbmV0bnMuaCIN
-Cj4gPg0KPiA+IEBAIC03MSw2ICs3Miw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgZ3NzX2V4cGly
-ZWRfY3JlZF9yZXRyeV9kZWxheSA9IEdTU19SRVRSWV9FWFBJUkVEOw0KPiA+ICAgKiB1c2luZyBp
-bnRlZ3JpdHkgKHR3byA0LWJ5dGUgaW50ZWdlcnMpOiAqLw0KPiA+ICAjZGVmaW5lIEdTU19WRVJG
-X1NMQUNLICAgICAgICAgMTAwDQo+ID4NCj4gPiArc3RhdGljIERFRklORV9IQVNIVEFCTEUoZ3Nz
-X2F1dGhfaGFzaF90YWJsZSwgMTYpOw0KPiA+ICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGdzc19h
-dXRoX2hhc2hfbG9jayk7DQo+IA0KPiBUb2RheSdzIG02OGsvYXRhcmktZGVmY29uZmlnIGtlcm5l
-bCBubyBsb25nZXIgYm9vdHMsIGFzIGl0IGJlY2FtZSBsYXJnZXIgdGhhbg0KPiA0IE1pQi4NCj4g
-DQo+IGJsb2F0LW8tbWV0ZXIgdGVsbHMgbWU6DQo+IA0KPiBmdW5jdGlvbiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBvbGQgICAgIG5ldyAgIGRlbHRhDQo+IGdzc19hdXRoX2hh
-c2hfdGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAgMjYyMTQ0ICsyNjIxNDQNCj4g
-DQo+IFdvb3BzLi4uDQoNCldob29wcyBpbmRlZWQuIFRoZSBhYm92ZSBzaG91bGQgaGF2ZSBkZWNs
-YXJlZCAxNiBidWNrZXRzLCBhbmQgbm90IDE8PDE2Lg0KSSBmZWxsIGZvciBTYXNoYSdzIHN1YnRs
-ZSB0cmFwLi4uDQoNCj4gQXJlIHlvdSB0cnlpbmcgdG8gZ2FtZSBUaW0ncyBzdXJ2ZXk/IDstKQ0K
-PiAocXVlc3Rpb24gMTMgYXQgaHR0cDovL3d3dy5lbWJlZGRlZGxpbnV4Y29uZmVyZW5jZS5jb20v
-Y2dpLWJpbi9zdXJ2ZXkuY2dpKQ0KPiANCj4gQ2FuIHRoaXMgbWVtb3J5IGJlIGFsbG9jYXRlZCBk
-eW5hbWljYWxseSAvIG9ubHkgd2hlbiBpdCdzIHVzZWQ/DQoNCjotKSBJdCdzIGRlY2xhcmVkIGlu
-c2lkZSBhIG1vZHVsZSwgc28gdGhhdCBzaG91bGQgYWxyZWFkeSBiZSB0aGUgY2FzZSwNCmhvd2V2
-ZXIgSSdsbCBzZW5kIGluIGEgcGF0Y2ggdG8gY2hhbmdlIHRoZSBhYm92ZSB0byB0aGUgaW50ZW5k
-ZWQ6DQoNCkRFRklORV9IQVNIVEFCTEUoZ3NzX2F1dGhfaGFzaF90YWJsZSwgNCk7DQoNClRoYW5r
-cyBHZWVydCENCg0KLS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRh
-aW5lcg0KDQpOZXRBcHANClRyb25kLk15a2xlYnVzdEBuZXRhcHAuY29tDQp3d3cubmV0YXBwLmNv
-bQ0K
+On 09/11/2013 05:48 PM, Geert Uytterhoeven wrote:
+> On Wed, Sep 11, 2013 at 12:12 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>> problem. Using PIO, only the first byte of the tag message comes through. It
+>>> might not be esp_scsi's fault, but there seems to be an assumption that all
+>>> devices support TCQ. Also, no SCSI-2 features seem to be enabled in the chip
+>>> by esp_scsi.
+>> I'd have to check with DaveM, but such an assumption might in fact exist.
+> BTW, it would be nice to start CCing linux-scsi@vger.kernel.org and
+> David S. Miller <davem@davemloft.net> on future discussions.
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+>
+Hello,
+
+Does anyone have the register descriptions for the FAS216 chip? It would 
+seem that receiving only one byte during reconnect is perfectly normal 
+[1] unless SCSI-2 features are explicitly enabled (which esp_scsi 
+doesn't seem to be doing).
+
+Also, looking at the timeout formulae in the old NCR53C9x.c driver, the 
+values would be different for FAS216. Why was this dropped from the 
+modern esp_scsi?
+
+1. Page 2 in http://www.datasheetarchive.com/dl/Scans-030/ScansU9X12569.pdf
+
+-Tuomas
