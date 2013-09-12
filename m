@@ -1,61 +1,54 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share all
- credential caches on a per-transport basis)
-Date: Thu, 12 Sep 2013 15:24:19 +0200
-Message-ID: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
+From: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
+Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share
+ all credential caches on a per-transport basis)
+Date: Thu, 12 Sep 2013 14:13:48 +0000
+Message-ID: <1378995227.3117.9.camel@leira.trondhjem.org>
+References: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Trond Myklebust <Trond.Myklebust@netapp.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx11.netapp.com ([216.240.18.76]:61386 "EHLO mx11.netapp.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751461Ab3ILONt (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 12 Sep 2013 10:13:49 -0400
+In-Reply-To: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <10F38056DFEB214288D754123D0D0BD7@hq.netapp.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Mon, Sep 9, 2013 at 6:57 PM, Linux Kernel Mailing List
-<linux-kernel@vger.kernel.org> wrote:
-> diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
-> index 5ec15bb..dc4b449 100644
-> --- a/net/sunrpc/auth_gss/auth_gss.c
-> +++ b/net/sunrpc/auth_gss/auth_gss.c
-> @@ -51,6 +51,7 @@
->  #include <linux/sunrpc/rpc_pipe_fs.h>
->  #include <linux/sunrpc/gss_api.h>
->  #include <asm/uaccess.h>
-> +#include <linux/hashtable.h>
->
->  #include "../netns.h"
->
-> @@ -71,6 +72,9 @@ static unsigned int gss_expired_cred_retry_delay = GSS_RETRY_EXPIRED;
->   * using integrity (two 4-byte integers): */
->  #define GSS_VERF_SLACK         100
->
-> +static DEFINE_HASHTABLE(gss_auth_hash_table, 16);
-> +static DEFINE_SPINLOCK(gss_auth_hash_lock);
-
-Today's m68k/atari-defconfig kernel no longer boots, as it became larger than
-4 MiB.
-
-bloat-o-meter tells me:
-
-function                                     old     new   delta
-gss_auth_hash_table                            -  262144 +262144
-
-Woops...
-
-Are you trying to game Tim's survey? ;-)
-(question 13 at http://www.embeddedlinuxconference.com/cgi-bin/survey.cgi)
-
-Can this memory be allocated dynamically / only when it's used?
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+T24gVGh1LCAyMDEzLTA5LTEyIGF0IDE1OjI0ICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
+dGU6DQo+IE9uIE1vbiwgU2VwIDksIDIwMTMgYXQgNjo1NyBQTSwgTGludXggS2VybmVsIE1haWxp
+bmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4gd3JvdGU6DQo+ID4gZGlm
+ZiAtLWdpdCBhL25ldC9zdW5ycGMvYXV0aF9nc3MvYXV0aF9nc3MuYyBiL25ldC9zdW5ycGMvYXV0
+aF9nc3MvYXV0aF9nc3MuYw0KPiA+IGluZGV4IDVlYzE1YmIuLmRjNGI0NDkgMTAwNjQ0DQo+ID4g
+LS0tIGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ID4gKysrIGIvbmV0L3N1bnJw
+Yy9hdXRoX2dzcy9hdXRoX2dzcy5jDQo+ID4gQEAgLTUxLDYgKzUxLDcgQEANCj4gPiAgI2luY2x1
+ZGUgPGxpbnV4L3N1bnJwYy9ycGNfcGlwZV9mcy5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvc3Vu
+cnBjL2dzc19hcGkuaD4NCj4gPiAgI2luY2x1ZGUgPGFzbS91YWNjZXNzLmg+DQo+ID4gKyNpbmNs
+dWRlIDxsaW51eC9oYXNodGFibGUuaD4NCj4gPg0KPiA+ICAjaW5jbHVkZSAiLi4vbmV0bnMuaCIN
+Cj4gPg0KPiA+IEBAIC03MSw2ICs3Miw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgZ3NzX2V4cGly
+ZWRfY3JlZF9yZXRyeV9kZWxheSA9IEdTU19SRVRSWV9FWFBJUkVEOw0KPiA+ICAgKiB1c2luZyBp
+bnRlZ3JpdHkgKHR3byA0LWJ5dGUgaW50ZWdlcnMpOiAqLw0KPiA+ICAjZGVmaW5lIEdTU19WRVJG
+X1NMQUNLICAgICAgICAgMTAwDQo+ID4NCj4gPiArc3RhdGljIERFRklORV9IQVNIVEFCTEUoZ3Nz
+X2F1dGhfaGFzaF90YWJsZSwgMTYpOw0KPiA+ICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGdzc19h
+dXRoX2hhc2hfbG9jayk7DQo+IA0KPiBUb2RheSdzIG02OGsvYXRhcmktZGVmY29uZmlnIGtlcm5l
+bCBubyBsb25nZXIgYm9vdHMsIGFzIGl0IGJlY2FtZSBsYXJnZXIgdGhhbg0KPiA0IE1pQi4NCj4g
+DQo+IGJsb2F0LW8tbWV0ZXIgdGVsbHMgbWU6DQo+IA0KPiBmdW5jdGlvbiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBvbGQgICAgIG5ldyAgIGRlbHRhDQo+IGdzc19hdXRoX2hh
+c2hfdGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAgMjYyMTQ0ICsyNjIxNDQNCj4g
+DQo+IFdvb3BzLi4uDQoNCldob29wcyBpbmRlZWQuIFRoZSBhYm92ZSBzaG91bGQgaGF2ZSBkZWNs
+YXJlZCAxNiBidWNrZXRzLCBhbmQgbm90IDE8PDE2Lg0KSSBmZWxsIGZvciBTYXNoYSdzIHN1YnRs
+ZSB0cmFwLi4uDQoNCj4gQXJlIHlvdSB0cnlpbmcgdG8gZ2FtZSBUaW0ncyBzdXJ2ZXk/IDstKQ0K
+PiAocXVlc3Rpb24gMTMgYXQgaHR0cDovL3d3dy5lbWJlZGRlZGxpbnV4Y29uZmVyZW5jZS5jb20v
+Y2dpLWJpbi9zdXJ2ZXkuY2dpKQ0KPiANCj4gQ2FuIHRoaXMgbWVtb3J5IGJlIGFsbG9jYXRlZCBk
+eW5hbWljYWxseSAvIG9ubHkgd2hlbiBpdCdzIHVzZWQ/DQoNCjotKSBJdCdzIGRlY2xhcmVkIGlu
+c2lkZSBhIG1vZHVsZSwgc28gdGhhdCBzaG91bGQgYWxyZWFkeSBiZSB0aGUgY2FzZSwNCmhvd2V2
+ZXIgSSdsbCBzZW5kIGluIGEgcGF0Y2ggdG8gY2hhbmdlIHRoZSBhYm92ZSB0byB0aGUgaW50ZW5k
+ZWQ6DQoNCkRFRklORV9IQVNIVEFCTEUoZ3NzX2F1dGhfaGFzaF90YWJsZSwgNCk7DQoNClRoYW5r
+cyBHZWVydCENCg0KLS0gDQpUcm9uZCBNeWtsZWJ1c3QNCkxpbnV4IE5GUyBjbGllbnQgbWFpbnRh
+aW5lcg0KDQpOZXRBcHANClRyb25kLk15a2xlYnVzdEBuZXRhcHAuY29tDQp3d3cubmV0YXBwLmNv
+bQ0K
