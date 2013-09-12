@@ -1,49 +1,87 @@
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Subject: esp_scsi QTAG in FAS216 (was Re: [PATCH 0/2] Experimental Amiga Zorro
- ESP driver)
-Date: Thu, 12 Sep 2013 18:36:09 +0300
-Message-ID: <5231DF69.6070807@aalto.fi>
-References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com> <520F5F81.7090409@aalto.fi> <52102BEC.7000006@gmail.com> <CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com> <52108CAF.1010700@gmail.com> <CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com> <5211DBD8.5090801@gmail.com> <5212840A.4080300@aalto.fi> <1ef2d87e4efecb2d8c8c2eaf8ac5fd51@gmail.com> <52133E48.50501@aalto.fi> <CAOmrzkKtB4OpnFNFh9PR4V8bc3ExfFXpwtkhGj0veQ4w-d=cqA@mail.gmail.com> <522F8B67.2080603@aalto.fi> <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com> <CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share all
+ credential caches on a per-transport basis)
+Date: Thu, 12 Sep 2013 21:20:15 +0200
+Message-ID: <CAMuHMdV+gVwKbk=RS0CNdiMuom-1j-8FAu+aVMLMDeOm3EXb1A@mail.gmail.com>
+References: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
+	<1378995227.3117.9.camel@leira.trondhjem.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx06.aalto.fi ([130.233.222.105]:37602 "EHLO mx06.aalto.fi"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1754125Ab3ILPgM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 12 Sep 2013 11:36:12 -0400
-In-Reply-To: <CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
+Received: from mail-pd0-f176.google.com ([209.85.192.176]:38528 "EHLO
+	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754085Ab3ILTUQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 12 Sep 2013 15:20:16 -0400
+In-Reply-To: <1378995227.3117.9.camel@leira.trondhjem.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-scsi@vger.kernel.org, David Miller <davem@davemloft.net>
+To: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On 09/11/2013 05:48 PM, Geert Uytterhoeven wrote:
-> On Wed, Sep 11, 2013 at 12:12 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->>> problem. Using PIO, only the first byte of the tag message comes through. It
->>> might not be esp_scsi's fault, but there seems to be an assumption that all
->>> devices support TCQ. Also, no SCSI-2 features seem to be enabled in the chip
->>> by esp_scsi.
->> I'd have to check with DaveM, but such an assumption might in fact exist.
-> BTW, it would be nice to start CCing linux-scsi@vger.kernel.org and
-> David S. Miller <davem@davemloft.net> on future discussions.
+On Thu, Sep 12, 2013 at 4:13 PM, Myklebust, Trond
+<Trond.Myklebust@netapp.com> wrote:
+>> > --- a/net/sunrpc/auth_gss/auth_gss.c
+>> > +++ b/net/sunrpc/auth_gss/auth_gss.c
+>> > @@ -51,6 +51,7 @@
+>> >  #include <linux/sunrpc/rpc_pipe_fs.h>
+>> >  #include <linux/sunrpc/gss_api.h>
+>> >  #include <asm/uaccess.h>
+>> > +#include <linux/hashtable.h>
+>> >
+>> >  #include "../netns.h"
+>> >
+>> > @@ -71,6 +72,9 @@ static unsigned int gss_expired_cred_retry_delay = GSS_RETRY_EXPIRED;
+>> >   * using integrity (two 4-byte integers): */
+>> >  #define GSS_VERF_SLACK         100
+>> >
+>> > +static DEFINE_HASHTABLE(gss_auth_hash_table, 16);
+>> > +static DEFINE_SPINLOCK(gss_auth_hash_lock);
+>>
+>> Today's m68k/atari-defconfig kernel no longer boots, as it became larger than
+>> 4 MiB.
+>>
+>> bloat-o-meter tells me:
+>>
+>> function                                     old     new   delta
+>> gss_auth_hash_table                            -  262144 +262144
+>>
+>> Woops...
 >
-> Gr{oetje,eeting}s,
+> Whoops indeed. The above should have declared 16 buckets, and not 1<<16.
+> I fell for Sasha's subtle trap...
 >
->                          Geert
+>> Are you trying to game Tim's survey? ;-)
+>> (question 13 at http://www.embeddedlinuxconference.com/cgi-bin/survey.cgi)
+>>
+>> Can this memory be allocated dynamically / only when it's used?
 >
+> :-) It's declared inside a module, so that should already be the case,
+
+Only for the modular case. What about builtin, e.g. for nfsroot?
+
+Or is it better to not build in NFS_V4 support in that case?
+
+config NFS_V4
+          If unsure, say Y.
+
+config NFSD_V4
+          If unsure, say N.
+
+So that's why my defconfig has NFS_V4 but not NFSD_V4.
+
+> however I'll send in a patch to change the above to the intended:
 >
-Hello,
+> DEFINE_HASHTABLE(gss_auth_hash_table, 4);
 
-Does anyone have the register descriptions for the FAS216 chip? It would 
-seem that receiving only one byte during reconnect is perfectly normal 
-[1] unless SCSI-2 features are explicitly enabled (which esp_scsi 
-doesn't seem to be doing).
+Thanks, that's better! Booting again ;-)
 
-Also, looking at the timeout formulae in the old NCR53C9x.c driver, the 
-values would be different for FAS216. Why was this dropped from the 
-modern esp_scsi?
+Gr{oetje,eeting}s,
 
-1. Page 2 in http://www.datasheetarchive.com/dl/Scans-030/ScansU9X12569.pdf
+                        Geert
 
--Tuomas
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
