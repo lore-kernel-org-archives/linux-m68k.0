@@ -1,64 +1,59 @@
-From: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
-Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share
- all credential caches on a per-transport basis)
-Date: Thu, 12 Sep 2013 20:17:23 +0000
-Message-ID: <1379017042.2627.3.camel@leira.trondhjem.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share all
+ credential caches on a per-transport basis)
+Date: Fri, 13 Sep 2013 08:23:54 +0200
+Message-ID: <CAMuHMdXz+wcjwf=ebcn3nMJhYk8mCGm2T16dcJzOGx+gN+TYTw@mail.gmail.com>
 References: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
-	 <1378995227.3117.9.camel@leira.trondhjem.org>
-	 <CAMuHMdV+gVwKbk=RS0CNdiMuom-1j-8FAu+aVMLMDeOm3EXb1A@mail.gmail.com>
+	<1378995227.3117.9.camel@leira.trondhjem.org>
+	<CAMuHMdV+gVwKbk=RS0CNdiMuom-1j-8FAu+aVMLMDeOm3EXb1A@mail.gmail.com>
+	<1379017042.2627.3.camel@leira.trondhjem.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx11.netapp.com ([216.240.18.76]:39787 "EHLO mx11.netapp.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753803Ab3ILURa (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 12 Sep 2013 16:17:30 -0400
-In-Reply-To: <CAMuHMdV+gVwKbk=RS0CNdiMuom-1j-8FAu+aVMLMDeOm3EXb1A@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <62C5D6F1628FEB4F8A05EE2F9C092075@hq.netapp.com>
+Received: from mail-pd0-f176.google.com ([209.85.192.176]:61746 "EHLO
+	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751467Ab3IMGXz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Sep 2013 02:23:55 -0400
+In-Reply-To: <1379017042.2627.3.camel@leira.trondhjem.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-T24gVGh1LCAyMDEzLTA5LTEyIGF0IDIxOjIwICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
-dGU6DQo+IE9uIFRodSwgU2VwIDEyLCAyMDEzIGF0IDQ6MTMgUE0sIE15a2xlYnVzdCwgVHJvbmQN
-Cj4gPFRyb25kLk15a2xlYnVzdEBuZXRhcHAuY29tPiB3cm90ZToNCj4gPj4gPiAtLS0gYS9uZXQv
-c3VucnBjL2F1dGhfZ3NzL2F1dGhfZ3NzLmMNCj4gPj4gPiArKysgYi9uZXQvc3VucnBjL2F1dGhf
-Z3NzL2F1dGhfZ3NzLmMNCj4gPj4gPiBAQCAtNTEsNiArNTEsNyBAQA0KPiA+PiA+ICAjaW5jbHVk
-ZSA8bGludXgvc3VucnBjL3JwY19waXBlX2ZzLmg+DQo+ID4+ID4gICNpbmNsdWRlIDxsaW51eC9z
-dW5ycGMvZ3NzX2FwaS5oPg0KPiA+PiA+ICAjaW5jbHVkZSA8YXNtL3VhY2Nlc3MuaD4NCj4gPj4g
-PiArI2luY2x1ZGUgPGxpbnV4L2hhc2h0YWJsZS5oPg0KPiA+PiA+DQo+ID4+ID4gICNpbmNsdWRl
-ICIuLi9uZXRucy5oIg0KPiA+PiA+DQo+ID4+ID4gQEAgLTcxLDYgKzcyLDkgQEAgc3RhdGljIHVu
-c2lnbmVkIGludCBnc3NfZXhwaXJlZF9jcmVkX3JldHJ5X2RlbGF5ID0gR1NTX1JFVFJZX0VYUElS
-RUQ7DQo+ID4+ID4gICAqIHVzaW5nIGludGVncml0eSAodHdvIDQtYnl0ZSBpbnRlZ2Vycyk6ICov
-DQo+ID4+ID4gICNkZWZpbmUgR1NTX1ZFUkZfU0xBQ0sgICAgICAgICAxMDANCj4gPj4gPg0KPiA+
-PiA+ICtzdGF0aWMgREVGSU5FX0hBU0hUQUJMRShnc3NfYXV0aF9oYXNoX3RhYmxlLCAxNik7DQo+
-ID4+ID4gK3N0YXRpYyBERUZJTkVfU1BJTkxPQ0soZ3NzX2F1dGhfaGFzaF9sb2NrKTsNCj4gPj4N
-Cj4gPj4gVG9kYXkncyBtNjhrL2F0YXJpLWRlZmNvbmZpZyBrZXJuZWwgbm8gbG9uZ2VyIGJvb3Rz
-LCBhcyBpdCBiZWNhbWUgbGFyZ2VyIHRoYW4NCj4gPj4gNCBNaUIuDQo+ID4+DQo+ID4+IGJsb2F0
-LW8tbWV0ZXIgdGVsbHMgbWU6DQo+ID4+DQo+ID4+IGZ1bmN0aW9uICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIG9sZCAgICAgbmV3ICAgZGVsdGENCj4gPj4gZ3NzX2F1dGhfaGFz
-aF90YWJsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAtICAyNjIxNDQgKzI2MjE0NA0KPiA+
-Pg0KPiA+PiBXb29wcy4uLg0KPiA+DQo+ID4gV2hvb3BzIGluZGVlZC4gVGhlIGFib3ZlIHNob3Vs
-ZCBoYXZlIGRlY2xhcmVkIDE2IGJ1Y2tldHMsIGFuZCBub3QgMTw8MTYuDQo+ID4gSSBmZWxsIGZv
-ciBTYXNoYSdzIHN1YnRsZSB0cmFwLi4uDQo+ID4NCj4gPj4gQXJlIHlvdSB0cnlpbmcgdG8gZ2Ft
-ZSBUaW0ncyBzdXJ2ZXk/IDstKQ0KPiA+PiAocXVlc3Rpb24gMTMgYXQgaHR0cDovL3d3dy5lbWJl
-ZGRlZGxpbnV4Y29uZmVyZW5jZS5jb20vY2dpLWJpbi9zdXJ2ZXkuY2dpKQ0KPiA+Pg0KPiA+PiBD
-YW4gdGhpcyBtZW1vcnkgYmUgYWxsb2NhdGVkIGR5bmFtaWNhbGx5IC8gb25seSB3aGVuIGl0J3Mg
-dXNlZD8NCj4gPg0KPiA+IDotKSBJdCdzIGRlY2xhcmVkIGluc2lkZSBhIG1vZHVsZSwgc28gdGhh
-dCBzaG91bGQgYWxyZWFkeSBiZSB0aGUgY2FzZSwNCj4gDQo+IE9ubHkgZm9yIHRoZSBtb2R1bGFy
-IGNhc2UuIFdoYXQgYWJvdXQgYnVpbHRpbiwgZS5nLiBmb3IgbmZzcm9vdD8NCj4gDQo+IE9yIGlz
-IGl0IGJldHRlciB0byBub3QgYnVpbGQgaW4gTkZTX1Y0IHN1cHBvcnQgaW4gdGhhdCBjYXNlPw0K
-PiANCj4gY29uZmlnIE5GU19WNA0KPiAgICAgICAgICAgSWYgdW5zdXJlLCBzYXkgWS4NCj4gDQo+
-IGNvbmZpZyBORlNEX1Y0DQo+ICAgICAgICAgICBJZiB1bnN1cmUsIHNheSBOLg0KPiANCj4gU28g
-dGhhdCdzIHdoeSBteSBkZWZjb25maWcgaGFzIE5GU19WNCBidXQgbm90IE5GU0RfVjQuDQoNCkl0
-IHNob3VsZCBiZSBwb3NzaWJsZSBub3cgdG8gY29tcGlsZSBpbiBORlN2MyBzdXBwb3J0IChhbmQv
-b3IgTkZTdjIpLA0Kd2hpbGUga2VlcGluZyBORlN2NCBhIG1vZHVsZS4gVGhhdCB3aWxsIHVzdWFs
-bHkgcmVzdWx0IGluDQpDT05GSUdfU1VOUlBDX0dTUz1tLi4uDQoNCk9mIGNvdXJzZSwgaWYgeW91
-ciBkZWZjb25maWcgZG9lc24ndCBoYXZlIG1vZHVsZSBzdXBwb3J0IHRoZW4sIHllcywgeW91cg0K
-b25seSBvcHRpb24gdG8gYXZvaWQgY29tcGlsaW5nIGluIHJwY3NlY19nc3MgaXMgdG8gbm90IHNl
-bGVjdCBORlN2NCBhdA0KYWxsLg0KDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNs
-aWVudCBtYWludGFpbmVyDQoNCk5ldEFwcA0KVHJvbmQuTXlrbGVidXN0QG5ldGFwcC5jb20NCnd3
-dy5uZXRhcHAuY29tDQo=
+On Thu, Sep 12, 2013 at 10:17 PM, Myklebust, Trond
+<Trond.Myklebust@netapp.com> wrote:
+>> Only for the modular case. What about builtin, e.g. for nfsroot?
+>>
+>> Or is it better to not build in NFS_V4 support in that case?
+>>
+>> config NFS_V4
+>>           If unsure, say Y.
+>>
+>> config NFSD_V4
+>>           If unsure, say N.
+>>
+>> So that's why my defconfig has NFS_V4 but not NFSD_V4.
+>
+> It should be possible now to compile in NFSv3 support (and/or NFSv2),
+> while keeping NFSv4 a module. That will usually result in
+> CONFIG_SUNRPC_GSS=m...
+
+Indeed. Making NFS_V4 modular saves 102 KiB, i.e. 2.5% of a typical
+almost-4-MiB kernel image!
+
+> Of course, if your defconfig doesn't have module support then, yes, your
+> only option to avoid compiling in rpcsec_gss is to not select NFSv4 at
+> all.
+
+It has. But it needs everything to boot (block, net, nfs) as built-in.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
