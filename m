@@ -1,51 +1,37 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Kernel size increase of +256 KiB (was: Re: RPCSEC_GSS: Share all
- credential caches on a per-transport basis)
-Date: Fri, 13 Sep 2013 08:23:54 +0200
-Message-ID: <CAMuHMdXz+wcjwf=ebcn3nMJhYk8mCGm2T16dcJzOGx+gN+TYTw@mail.gmail.com>
-References: <CAMuHMdViO7yNJ5rxvRkv5NhmW6PQY1N+HW75NwokFnGQp+nxxw@mail.gmail.com>
-	<1378995227.3117.9.camel@leira.trondhjem.org>
-	<CAMuHMdV+gVwKbk=RS0CNdiMuom-1j-8FAu+aVMLMDeOm3EXb1A@mail.gmail.com>
-	<1379017042.2627.3.camel@leira.trondhjem.org>
+Subject: Atafb failed to detect the video mode on ARAnyM after kexec
+Date: Fri, 13 Sep 2013 09:34:00 +0200
+Message-ID: <CAMuHMdVFRb_-YmjV5VEh1nNsifgyQhw=J3UXHak_vgKix53QSA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f176.google.com ([209.85.192.176]:61746 "EHLO
-	mail-pd0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751467Ab3IMGXz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Sep 2013 02:23:55 -0400
-In-Reply-To: <1379017042.2627.3.camel@leira.trondhjem.org>
+Received: from mail-pa0-f46.google.com ([209.85.220.46]:59377 "EHLO
+	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755967Ab3IMHeB (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Sep 2013 03:34:01 -0400
+Received: by mail-pa0-f46.google.com with SMTP id fa1so2188212pad.33
+        for <linux-m68k@vger.kernel.org>; Fri, 13 Sep 2013 00:34:00 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, Sep 12, 2013 at 10:17 PM, Myklebust, Trond
-<Trond.Myklebust@netapp.com> wrote:
->> Only for the modular case. What about builtin, e.g. for nfsroot?
->>
->> Or is it better to not build in NFS_V4 support in that case?
->>
->> config NFS_V4
->>           If unsure, say Y.
->>
->> config NFSD_V4
->>           If unsure, say N.
->>
->> So that's why my defconfig has NFS_V4 but not NFSD_V4.
->
-> It should be possible now to compile in NFSv3 support (and/or NFSv2),
-> while keeping NFSv4 a module. That will usually result in
-> CONFIG_SUNRPC_GSS=m...
+When doing a kexec (WIP) on ARAnyM while the screen was blanked, the
+kexec'd kernel failed to initialize atafb. If the screen isn't
+blanked, it works fine.
 
-Indeed. Making NFS_V4 modular saves 102 KiB, i.e. 2.5% of a typical
-almost-4-MiB kernel image!
+Difference between success and failure is:
 
-> Of course, if your defconfig doesn't have module support then, yes, your
-> only option to avoid compiling in rpcsec_gss is to not select NFSv4 at
-> all.
+ atafb_init: start
+ atafb_init: initializing Falcon hw
+-atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 311296
+-Determined 640x480, depth 4
+-   virtual 640x972
+-Console: switching to colour frame buffer device 80x30
+-fb0: frame buffer device, using 304K of video memory
++atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 4096
 
-It has. But it needs everything to boot (block, net, nfs) as built-in.
+I guess atafb should unblank on shutdown to restore the videl registers, so it
+will detect the correct video mode on re-initialization?
 
 Gr{oetje,eeting}s,
 
