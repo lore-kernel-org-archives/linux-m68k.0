@@ -1,41 +1,98 @@
-From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Subject: Re: [PATCH] m68k: remove unused Kconfig parameters
-Date: Tue, 17 Sep 2013 05:06:14 +0200
-Message-ID: <5237C726.9070002__47121.2339158685$1379387209$gmane$org@free-electrons.com>
-References: <1378468779-3289-1-git-send-email-michael.opdenacker@free-electrons.com> <523798BD.9010108@westnet.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Preliminary kexec support for Linux/m68k
+Date: Tue, 17 Sep 2013 12:01:30 +0200
+Message-ID: <1379412095-7213-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <523798BD.9010108@westnet.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org
 
-Hi Greg,
+This is a preliminary set of patches to add kexec support for m68k.
 
-On 09/17/2013 01:48 AM, Greg Ungerer wrote:
-> Hi Michael,
->
-> On 06/09/13 21:59, Michael Opdenacker wrote:
->> This patch proposes to remove the UC5282 and UC5272 kernel configuration
->> parameters defined in arch/m68k/Kconfig.machine,
->> but used nowhere in the makefiles and source code.
->>
->> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-> This change is a subset of c065edde ("remove 16 unused boards in
-> Kconfig.machine") by Pauk Bolle. And that is in 3.12-rc1.
-Awesome! Thank you very much for the good news, and for not applying the
-same change twice. Pfooh, this would have created anti-kconfig
-parameters. Scary. ;)
+  - Kexec only, no kdump support yet (do you have enough RAM to keep a
+    crashdump kernel in memory at all times? ;-)
 
-Cheers,
+  - Tested on ARAnyM only. No support for other CPU/MMUs than 68040.
 
-Michael.
+  - Although the code contains some phys/virt conversions, it will probably
+    fail miserably on platforms where kernel virtual addresses are different
+    from physical address.
 
--- 
-Michael Opdenacker, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-+33 484 258 098
+  - To have automatic "kexec -e" on reboot, copy /etc/rc6.d/S85kexec from
+    another system, and fix it up for kexec living in /usr/local/sbin instead
+    of /sbin.
+
+  - Sample invocation:
+
+	kexec -d -l vmlinux --reuse-cmdline
+
+
+KERNEL:
+
+Patches:
+  - [PATCH 1/3] m68k: Add preliminary kexec support
+  - [PATCH 2/3] m68k: Add support to export bootinfo in procfs
+  - [PATCH 3/3] [RFC] m68k: Add System RAM to /proc/iomem
+
+Notes:
+  - The bootinfo is now saved and exported to /proc/bootinfo, so kexec-tools
+    can read it and pass it (possibly after modification) to the new kernel.
+    This is similar to /proc/atags on ARM.
+
+  - We should create arch/m68k/include/uapi/asm/bootinfo.h (and probably a few
+    more, e.g. machine-specific model IDs), as this is needed by both m68kboot
+    and kexec-tools.
+
+  - I based [PATCH 3/3] on the PowerPC version, but it's no longer needed as we
+    now get this information from the bootinfo.
+    Does anyone think this is nice to have anyway?
+
+
+KEXEC-TOOLS:
+
+Patches:
+  - [PATCH 1/2] kexec: Let slurp_file_len() return the number of bytes
+  - [PATCH 2/2] kexec: Add preliminary m68k support
+
+Notes:
+  - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
+
+  - Tagged bootinfo is read from /proc/bootinfo by default, but this can be
+    overridden using --bootinfo. No bootinfo editor is provided.
+    The kexec command will replace/delete command line and ramdisk tags in the
+    bootinfo.
+
+  - The ramdisk is loaded at the top of memory minus 4096, unlike with
+    m68boot (ataboot/amiboot), as locate_hole() seems to have a bug that it
+    cannot reserve a block at the real top of memory.
+
+  - The first unused page of the kernel image (at address zero) is
+    automatically removed, just like m68kboot does.
+    If I don't do this, relocate_new_kernel() fails with a "cannot handle
+    kernel paging request at address NULL" exception, although the MMU is
+    disabled at that point.
+    As m68kboot does this too, I guess this is OK?
+
+  - Do we want to check the struct bootversion at the start of the kernel,
+    like m68kboot does?
+    Kexec may be used to load ELF files that are not Linux kernel images,
+    and thus don't have a Linux-specific struct bootversion.
+
+  - Do we want to check the size of the kernel image + bootinfo, and warn the
+    user if it's larger than 4 MiB?
+    This is a limitation of the current Linux/m68k kernel only.
+
+All comments are welcome!
+Have fun! ;-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
