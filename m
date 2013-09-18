@@ -1,60 +1,85 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
-Date: Tue, 17 Sep 2013 23:24:49 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
-References: <20130917082838.218329307@infradead.org> <20130917182350.449685712@linutronix.de> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: Atafb failed to detect the video mode on ARAnyM after kexec
+Date: Wed, 18 Sep 2013 10:50:02 +0200
+Message-ID: <CAOmrzkL0-4bUwWA+MNNGATEMaf4Q5Px-k_OFwz_P=8Hd96tL4A@mail.gmail.com>
+References: <CAMuHMdVFRb_-YmjV5VEh1nNsifgyQhw=J3UXHak_vgKix53QSA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:55019 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753216Ab3IQVYx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 17 Sep 2013 17:24:53 -0400
-In-Reply-To: <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com>
+Received: from mail-wi0-f170.google.com ([209.85.212.170]:38800 "EHLO
+	mail-wi0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751850Ab3IRIuE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Sep 2013 04:50:04 -0400
+Received: by mail-wi0-f170.google.com with SMTP id cb5so6055565wib.5
+        for <linux-m68k@vger.kernel.org>; Wed, 18 Sep 2013 01:50:02 -0700 (PDT)
+In-Reply-To: <CAMuHMdVFRb_-YmjV5VEh1nNsifgyQhw=J3UXHak_vgKix53QSA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>, Linux-Arch <linux-arch@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andi Kleen <ak@linux.intel.com>, Peter Anvin <hpa@zytor.com>, Mike Galbraith <bitbucket@online.de>, Arjan van de Ven <arjan@linux.intel.com>, Frederic Weisbecker <fweisbec@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, 17 Sep 2013, Geert Uytterhoeven wrote:
+Geert,
 
-> On Tue, Sep 17, 2013 at 8:53 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
-> > --- linux-2.6.orig/arch/m68k/include/asm/hardirq.h
-> > +++ linux-2.6/arch/m68k/include/asm/hardirq.h
-> > @@ -5,17 +5,6 @@
-> >  #include <linux/cache.h>
-> >  #include <asm/irq.h>
-> >
-> > -#define HARDIRQ_BITS   8
-> 
-> > --- linux-2.6.orig/include/linux/preempt_mask.h
-> > +++ linux-2.6/include/linux/preempt_mask.h
-> > @@ -11,36 +11,22 @@
-> >   * - bits 0-7 are the preemption count (max preemption depth: 256)
-> >   * - bits 8-15 are the softirq count (max # of softirqs: 256)
-> >   *
-> > - * The hardirq count can in theory reach the same as NR_IRQS.
-> > - * In reality, the number of nested IRQS is limited to the stack
-> > - * size as well. For archs with over 1000 IRQS it is not practical
-> > - * to expect that they will all nest. We give a max of 10 bits for
-> > - * hardirq nesting. An arch may choose to give less than 10 bits.
-> > - * m68k expects it to be 8.
-> 
-> m68k needs some changes in arch/m68k/kernel/entry.S, cfr. this check
-> in arch/m68k/kernel/ints.c:
-> 
->         /* assembly irq entry code relies on this... */
->         if (HARDIRQ_MASK != 0x00ff0000) {
->                 extern void hardirq_mask_is_broken(void);
->                 hardirq_mask_is_broken();
->         }
-> 
-> Haven't looked into the details yet...
+On Fri, Sep 13, 2013 at 9:34 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> When doing a kexec (WIP) on ARAnyM while the screen was blanked, the
+> kexec'd kernel failed to initialize atafb. If the screen isn't
+> blanked, it works fine.
+>
+> Difference between success and failure is:
+>
+>  atafb_init: start
+>  atafb_init: initializing Falcon hw
+> -atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 311296
+> -Determined 640x480, depth 4
+> -   virtual 640x972
+> -Console: switching to colour frame buffer device 80x30
+> -fb0: frame buffer device, using 304K of video memory
+> +atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 4096
 
-Whee. Did not notice that one. Though I can't find anything
-interesting in the low level entry code... Looks like some more
-histerical left overs.
+That's odd - the screen size has been lost completely.
 
-Thanks,
+> I guess atafb should unblank on shutdown to restore the videl registers, so it
+> will detect the correct video mode on re-initialization?
 
-	tglx
+That might be the best option (and would be helpful anyway).
+
+Cheers,
+
+  Michael
+
+
+On Fri, Sep 13, 2013 at 9:34 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> When doing a kexec (WIP) on ARAnyM while the screen was blanked, the
+> kexec'd kernel failed to initialize atafb. If the screen isn't
+> blanked, it works fine.
+>
+> Difference between success and failure is:
+>
+>  atafb_init: start
+>  atafb_init: initializing Falcon hw
+> -atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 311296
+> -Determined 640x480, depth 4
+> -   virtual 640x972
+> -Console: switching to colour frame buffer device 80x30
+> -fb0: frame buffer device, using 304K of video memory
+> +atafb: screen_base 0068c000 real_screen_base 0068c000 screen_len 4096
+>
+> I guess atafb should unblank on shutdown to restore the videl registers, so it
+> will detect the correct video mode on re-initialization?
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
