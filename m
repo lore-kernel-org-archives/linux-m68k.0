@@ -1,52 +1,104 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Atafb failed to detect the video mode on ARAnyM after kexec
-Date: Thu, 19 Sep 2013 14:11:14 +0200
-Message-ID: <CAMuHMdV4VkpLxTgUa2Be1=N5MBRUyExvcTiUjQ-hGEEmOM=LHA@mail.gmail.com>
-References: <CAMuHMdVFRb_-YmjV5VEh1nNsifgyQhw=J3UXHak_vgKix53QSA@mail.gmail.com>
-	<CAOmrzkL0-4bUwWA+MNNGATEMaf4Q5Px-k_OFwz_P=8Hd96tL4A@mail.gmail.com>
-	<CAMuHMdVnWu4TCNLsM6Y2emQYe=s4PnZXeggtWpzPQXSu0FJdUw@mail.gmail.com>
-	<CAOmrzk+e1ku-B4tUOWtXe5-GaEVsOuvaVFdftkELmD02pPD9fw@mail.gmail.com>
+From: Dave Young <dyoung@redhat.com>
+Subject: Re: [PATCH 1/2] kexec: Let slurp_file_len() return the number of
+ bytes read
+Date: Thu, 19 Sep 2013 22:40:17 +0800
+Message-ID: <20130919144017.GB4487@dhcp-16-126.nay.redhat.com>
+References: <1379412095-7213-1-git-send-email-geert@linux-m68k.org>
+ <1379412095-7213-5-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f44.google.com ([209.85.160.44]:40677 "EHLO
-	mail-pb0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753874Ab3ISMLP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 19 Sep 2013 08:11:15 -0400
-Received: by mail-pb0-f44.google.com with SMTP id xa7so8305422pbc.31
-        for <linux-m68k@vger.kernel.org>; Thu, 19 Sep 2013 05:11:14 -0700 (PDT)
-In-Reply-To: <CAOmrzk+e1ku-B4tUOWtXe5-GaEVsOuvaVFdftkELmD02pPD9fw@mail.gmail.com>
+Received: from mx1.redhat.com ([209.132.183.28]:64641 "EHLO mx1.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751562Ab3ISOkt (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 19 Sep 2013 10:40:49 -0400
+Content-Disposition: inline
+In-Reply-To: <1379412095-7213-5-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On Thu, Sep 19, 2013 at 1:42 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->>>> When doing a kexec (WIP) on ARAnyM while the screen was blanked, the
->>>> kexec'd kernel failed to initialize atafb. If the screen isn't
->>>> blanked, it works fine.
->>
->> falcon_blank() clears several videl registers, while falcon_detect()
->> reads them to detect the current video mode.
->
-> I suppose we can't just leave the cleared registers loaded when kexec
-> support is compiled in, and effect screen blanking in another way
-> (color map)?
->
-> Can the screen be blanked/unblanked from user space (fbset)?
+On 09/17/13 at 12:01pm, Geert Uytterhoeven wrote:
+> Add an optional output parameter to slurp_file_len() so it can return the
+> actual number of bytes read.
 
-You can unblank from userspace.
+Acked-by: Dave Young <dyoung@redhat.com>
 
-Probably the right way is to convert atafb to use a platform device first,
-and hook up its shutdown() method later.
+BTW, looking the slurp_file function, it would be better to call/reuse slurp_file_len
+in slurp_file, care to improve this as well?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  kexec/arch/i386/crashdump-x86.c |    5 ++---
+>  kexec/kexec.c                   |    4 +++-
+>  kexec/kexec.h                   |    2 +-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kexec/arch/i386/crashdump-x86.c b/kexec/arch/i386/crashdump-x86.c
+> index e44fceb..e2da50b 100644
+> --- a/kexec/arch/i386/crashdump-x86.c
+> +++ b/kexec/arch/i386/crashdump-x86.c
+> @@ -121,7 +121,7 @@ static int get_kernel_vaddr_and_size(struct kexec_info *UNUSED(info),
+>  	struct mem_ehdr ehdr;
+>  	struct mem_phdr *phdr, *end_phdr;
+>  	int align;
+> -	unsigned long size;
+> +	off_t size;
+>  	uint32_t elf_flags = 0;
+>  
+>  	if (elf_info->machine != EM_X86_64)
+> @@ -131,8 +131,7 @@ static int get_kernel_vaddr_and_size(struct kexec_info *UNUSED(info),
+>  		return 0;
+>  
+>  	align = getpagesize();
+> -	size = KCORE_ELF_HEADERS_SIZE;
+> -	buf = slurp_file_len(kcore, size);
+> +	buf = slurp_file_len(kcore, KCORE_ELF_HEADERS_SIZE, &size);
+>  	if (!buf) {
+>  		fprintf(stderr, "Cannot read %s: %s\n", kcore, strerror(errno));
+>  		return -1;
+> diff --git a/kexec/kexec.c b/kexec/kexec.c
+> index b863d2a..2b98ef0 100644
+> --- a/kexec/kexec.c
+> +++ b/kexec/kexec.c
+> @@ -537,7 +537,7 @@ char *slurp_file(const char *filename, off_t *r_size)
+>  /* This functions reads either specified number of bytes from the file or
+>     lesser if EOF is met. */
+>  
+> -char *slurp_file_len(const char *filename, off_t size)
+> +char *slurp_file_len(const char *filename, off_t size, off_t *nread)
+>  {
+>  	int fd;
+>  	char *buf;
+> @@ -575,6 +575,8 @@ char *slurp_file_len(const char *filename, off_t size)
+>  		die("Close of %s failed: %s\n",
+>  			filename, strerror(errno));
+>  	}
+> +	if (nread)
+> +		*nread = progress;
+>  	return buf;
+>  }
+>  
+> diff --git a/kexec/kexec.h b/kexec/kexec.h
+> index 715b568..5844b42 100644
+> --- a/kexec/kexec.h
+> +++ b/kexec/kexec.h
+> @@ -237,7 +237,7 @@ extern void die(const char *fmt, ...)
+>  extern void *xmalloc(size_t size);
+>  extern void *xrealloc(void *ptr, size_t size);
+>  extern char *slurp_file(const char *filename, off_t *r_size);
+> -extern char *slurp_file_len(const char *filename, off_t size);
+> +extern char *slurp_file_len(const char *filename, off_t size, off_t *nread);
+>  extern char *slurp_decompress_file(const char *filename, off_t *r_size);
+>  extern unsigned long virt_to_phys(unsigned long addr);
+>  extern void add_segment(struct kexec_info *info,
+> -- 
+> 1.7.9.5
+> 
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
