@@ -1,77 +1,69 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Preliminary kexec support for Linux/m68k
-Date: Fri, 20 Sep 2013 09:15:02 +0200
-Message-ID: <CAMuHMdVx3KmL9cK-_g3qcrkHxxCAno+3z4O=kVTOGCYhD_WmWw__49681.6348903396$1379661335$gmane$org@mail.gmail.com>
-References: <1379412095-7213-1-git-send-email-geert@linux-m68k.org>
-	<20130919210750.GH2918@verge.net.au>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Fri, 20 Sep 2013 11:26:13 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1309201124211.4089@ionos.tec.linutronix.de>
+References: <20130917082838.218329307@infradead.org> <20130917182350.449685712@linutronix.de> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20130919210750.GH2918@verge.net.au>
+Received: from www.linutronix.de ([62.245.132.108]:39468 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754282Ab3ITJ0R (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 20 Sep 2013 05:26:17 -0400
+In-Reply-To: <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, kexec@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>, Linux-Arch <linux-arch@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andi Kleen <ak@linux.intel.com>, Peter Anvin <hpa@zytor.com>, Mike Galbraith <bitbucket@online.de>, Arjan van de Ven <arjan@linux.intel.com>, Frederic Weisbecker <fweisbec@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Simon,
+On Thu, 19 Sep 2013, Geert Uytterhoeven wrote:
 
-Thanks for your comments!
+> On Thu, Sep 19, 2013 at 7:02 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> > Thomas Gleixner <tglx@linutronix.de> writes:
+> >> +     /*
+> >> +      * Only the last interrupt leaving the kernel goes through the
+> >> +      * various exception return checks.
+> >> +      */
+> >> +     cmpl    #0, %d0
+> >         tstl    %d0
+> 
+> arch/m68k/kernel/built-in.o: In function `bad_inthandler':
+> (.text+0x2a6): undefined reference to `ret_from_last_interrupt'
+> 
+> I came up with the quick (whitespace-damaged-gmail) fix below.
+> Or should we handle the nesting in handle_badint(), too?
 
-On Thu, Sep 19, 2013 at 11:07 PM, Simon Horman <horms@verge.net.au> wrote:
-> Pasting two series in one was a bit confusing for me at first.
-> Perhaps you could consider posting two separate series in future.
+Hmm, probably yes. If a badint gets interrupted by a good one, you
+would fail to go through ret_from_exception.
+ 
+> --- a/arch/m68k/kernel/entry.S
+> +++ b/arch/m68k/kernel/entry.S
+> @@ -313,17 +313,11 @@ user_irqvec_fixup = . + 2
+> 
+>  ENTRY(bad_inthandler)
+>         SAVE_ALL_INT
+> -       GET_CURRENT(%d0)
+> -       movel   %d0,%a1
+> -       addqb   #1,%a1@(TINFO_PREEMPT+1)
+> 
+>         movel   %sp,%sp@-
+>         jsr     handle_badint
+>         addql   #4,%sp
+> 
+> -       movel   %curptr@(TASK_STACK),%a1
+> -       subqb   #1,%a1@(TINFO_PREEMPT+1)
+> -       jeq     ret_from_last_interrupt
+>         RESTORE_ALL
+> 
+> However, the resulting kernel hangs (on ARAnyM) after starting userspace:
+> 
+> | INIT: version 2.86 booting
 
-Sorry, I wanted to have all information in one series for the first posting, to
-avoid people having to look around too much if they want to give it a try.
+Hmm.
+ 
+> I'll have a deeper look when I have some more time...
 
-I'll post seperate series in the future.
+Thanks a lot!
 
->> Patches:
->>   - [PATCH 1/2] kexec: Let slurp_file_len() return the number of bytes
->>   - [PATCH 2/2] kexec: Add preliminary m68k support
->>
->> Notes:
->>   - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
->
-> A good choice.
-
-Is it normal I don't see much activity there?
-
->>   - The ramdisk is loaded at the top of memory minus 4096, unlike with
->>     m68boot (ataboot/amiboot), as locate_hole() seems to have a bug that it
->>     cannot reserve a block at the real top of memory.
->
-> Is this a bug that could be fixed?
-
-Possibly. I suspect an off-by-one bug somewhere, but I haven't looked deeply
-into it.
-
->>   - Do we want to check the struct bootversion at the start of the kernel,
->>     like m68kboot does?
->>     Kexec may be used to load ELF files that are not Linux kernel images,
->>     and thus don't have a Linux-specific struct bootversion.
->
-> If the check can sanely be skipped for non Linux kernel images then
-> this sounds like a reasonable idea to me. Otherwise I would lean towards
-> omitting it. Either way, I don't feel strongly about this.
->
->>   - Do we want to check the size of the kernel image + bootinfo, and warn the
->>     user if it's larger than 4 MiB?
->>     This is a limitation of the current Linux/m68k kernel only.
->
-> I think that sounds like a good idea but I don't feel strongly about it.
-
-Currently I'm leaning towards just printing a warning for both
-(missing/incompatible
-bootversion and image-too-large).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+       tglx
