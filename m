@@ -1,60 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/8] um: Do not use SUBARCH
-Date: Thu, 26 Sep 2013 15:26:06 +0200
-Message-ID: <CAMuHMdU3LdDhbp_AKjD7b8Wytbqfp29DrPwTdtwQa2hUNdcy3Q__35649.8410496444$1380201983$gmane$org@mail.gmail.com>
-References: <1377073172-3662-1-git-send-email-richard@nod.at>
-	<1377073172-3662-3-git-send-email-richard@nod.at>
-	<CALkWK0kCrQ9hPABD_XQ9QFG-vByP+xZWZs+RkVK77+cX7Odz7g@mail.gmail.com>
-	<52441025.9030308@nod.at>
-	<CALkWK0k5neR50h+AWEF5AgnpbgWMitZUnbv_caVzt6HiUA6mXg@mail.gmail.com>
-	<52441407.9010603@nod.at>
-	<CALkWK0=FG4COEjv5+mu1JRiiFQ2k6vop1mhFPmAT4bjtYeK6nA@mail.gmail.com>
-	<52442108.1020304@nod.at>
-	<CALkWK0nm=9n7DiV0MaGKVLMs=vxAiiQUx=OFuOg-DinkdMej5A@mail.gmail.com>
-	<CALkWK0ndMtyQxE0uK4H-Ly6oy+tRn-SFc=_1WoC2QAp2uy0dtw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 0/2] Experimental Amiga Zorro ESP driver
+Date: Fri, 27 Sep 2013 01:44:46 +1200
+Message-ID: <e063fd84a10c9413e4515c80ea4a139f@gmail.com>
+References: <1370552199-15048-1-git-send-email-schmitz@debian.org> <520D4AE3.6040801@aalto.fi> <520E76FC.9040803@aalto.fi> <11425cb5ec432e2fbb7b675052e8b33d@gmail.com> <520F5F81.7090409@aalto.fi> <52102BEC.7000006@gmail.com> <CAMuHMdV9vP-Qg2my5fyT+pa_WcDfZAPx5T1-4kXP8eD1oL8Kog@mail.gmail.com> <52108CAF.1010700@gmail.com> <CAMuHMdWqNBjHKiDojPdjzuOV65QXzjeMX5VbtUvgU7VTP4iYFg@mail.gmail.com> <5211DBD8.5090801@gmail.com> <5212840A.4080300@aalto.fi> <1ef2d87e4efecb2d8c8c2eaf8ac5fd51@gmail.com> <52133E48.50501@aalto.fi> <CAOmrzkKtB4OpnFNFh9PR4V8bc3ExfFXpwtkhGj0veQ4w-d=cqA@mail.gmail.com> <522F8B67.2080603@aalto.fi> <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com> <52306B53.6030306@aalto.fi>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CALkWK0ndMtyQxE0uK4H-Ly6oy+tRn-SFc=_1WoC2QAp2uy0dtw@mail.gmail.com>
+Received: from mail-pd0-f173.google.com ([209.85.192.173]:50635 "EHLO
+	mail-pd0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750764Ab3IZNpI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 26 Sep 2013 09:45:08 -0400
+Received: by mail-pd0-f173.google.com with SMTP id p10so1177456pdj.4
+        for <linux-m68k@vger.kernel.org>; Thu, 26 Sep 2013 06:45:08 -0700 (PDT)
+In-Reply-To: <52306B53.6030306@aalto.fi>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ramkumar Ramachandra <artagnon@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Thu, Sep 26, 2013 at 3:13 PM, Ramkumar Ramachandra
-<artagnon@gmail.com> wrote:
-> Ramkumar Ramachandra wrote:
->> Richard Weinberger wrote:
->>> I told you already that "make defconfig ARCH=um SUBARCH=x86" will spuriously
->>> create a x86_64 config on x86_64.
->>> This breaks existing setups.
+Hello Tuomas,
+
+apologies for dropping off the conversation for so long - I only 
+returned from an overseas trip with only sporadic net access three days 
+ago.
+
+>> What exactly does your device support - SCSI-1, SCSI-2 CCS, SCSI-2 or
+>> higher? (Apologies for asking this - it will be in one of your old
+>> logs but I cannot easily read these here.)
 >>
->> I'll fix this and resubmit soon.
->
-> Wait a minute. You're now arguing about whether the generic "x86"
-> means i386 or x86_64. Its meaning is already defined in
-> arch/x86/Kconfig and arch/x86/um/Kconfig: see the config 64BIT. Unless
-> i386 is explicitly specified, the default is to build a 64-bit kernel.
-> That is already defined for a normal Linux kernel, and user-mode Linux
-> should not break that convention. So, in the example you pulled out of
-> your hat:
->
->   $ make defconfig ARCH=um SUBARCH=x86
->
-> the user should expect a 64-bit build, and not an i386 build as you
-> say. Both my patches are correct, and the "regression" that you
-> pointed out is a red herring.
+> The drive you would find by searching with the model number in the 
+> logs would point you to an IDE drive, which is actually connected to a 
+> bridge adapter (ACard AEC-7720U) that supports full Ultra SCSI 
+> features. I also have a 'real' ST51080N that supports Fast SCSI-2 that 
+> I've also tested with the driver to no avail. I will double check 
+> again with the real SCSI drive to ascertain that the bridge adapter is 
+> not the culprit, just to make sure.
 
-Sorry for chiming in, but... what about cross compiling?
-SUBARCH=x86 should give you a 32-bit ia32 kernel, right?
+I'm fully aware the info would have been in the logs, but all I had to 
+work with was a dodgy XP box at my in-law's place, and not a lot of 
+time to poke around.
 
-Gr{oetje,eeting}s,
+You have established that the SCSI bridge is responsible for a few odd 
+warnings but nothing serious, so I'd say we give your patched driver a 
+good workout on a number of Amiga m68k porter boxes, Unless you beat me 
+to it, I would suggest I provide a patch against Geert's latest m68k 
+development tree for someone else to integrate into the Debian kernel 
+package (would be a highly experimental one). Does that sound fair?
 
-                        Geert
+Cheers,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+   Michael
