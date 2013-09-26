@@ -1,79 +1,187 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: Preliminary kexec support for Linux/m68k
-Date: Fri, 20 Sep 2013 12:18:50 -0700
-Message-ID: <20130920191850.GA23335@verge.net.au>
-References: <1379412095-7213-1-git-send-email-geert@linux-m68k.org>
- <20130919210750.GH2918@verge.net.au>
- <CAMuHMdVx3KmL9cK-_g3qcrkHxxCAno+3z4O=kVTOGCYhD_WmWw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/defconfig: Make NFS_V4 modular instead of builtin
+Date: Thu, 26 Sep 2013 10:15:15 +0200
+Message-ID: <1380183315-6704-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVx3KmL9cK-_g3qcrkHxxCAno+3z4O=kVTOGCYhD_WmWw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, kexec@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Fri, Sep 20, 2013 at 09:15:02AM +0200, Geert Uytterhoeven wrote:
-> Hi Simon,
-> 
-> Thanks for your comments!
-> 
-> On Thu, Sep 19, 2013 at 11:07 PM, Simon Horman <horms@verge.net.au> wrote:
-> > Pasting two series in one was a bit confusing for me at first.
-> > Perhaps you could consider posting two separate series in future.
-> 
-> Sorry, I wanted to have all information in one series for the first posting, to
-> avoid people having to look around too much if they want to give it a try.
-> 
-> I'll post seperate series in the future.
+This reduces the kernel image size by ca. 100 KiB, while still allowing
+NFS root.
 
-Thanks.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    |    2 +-
+ arch/m68k/configs/apollo_defconfig   |    2 +-
+ arch/m68k/configs/atari_defconfig    |    2 +-
+ arch/m68k/configs/bvme6000_defconfig |    2 +-
+ arch/m68k/configs/hp300_defconfig    |    2 +-
+ arch/m68k/configs/mac_defconfig      |    2 +-
+ arch/m68k/configs/multi_defconfig    |    2 +-
+ arch/m68k/configs/mvme147_defconfig  |    2 +-
+ arch/m68k/configs/mvme16x_defconfig  |    2 +-
+ arch/m68k/configs/q40_defconfig      |    2 +-
+ arch/m68k/configs/sun3_defconfig     |    2 +-
+ arch/m68k/configs/sun3x_defconfig    |    2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-> >> Patches:
-> >>   - [PATCH 1/2] kexec: Let slurp_file_len() return the number of bytes
-> >>   - [PATCH 2/2] kexec: Add preliminary m68k support
-> >>
-> >> Notes:
-> >>   - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
-> >
-> > A good choice.
-> 
-> Is it normal I don't see much activity there?
-
-Yes, that is normal.
-
-> 
-> >>   - The ramdisk is loaded at the top of memory minus 4096, unlike with
-> >>     m68boot (ataboot/amiboot), as locate_hole() seems to have a bug that it
-> >>     cannot reserve a block at the real top of memory.
-> >
-> > Is this a bug that could be fixed?
-> 
-> Possibly. I suspect an off-by-one bug somewhere, but I haven't looked deeply
-> into it.
-
-My feeling is that if possible it would be better to fix the bug than add a
-work-around.
-
-> >>   - Do we want to check the struct bootversion at the start of the kernel,
-> >>     like m68kboot does?
-> >>     Kexec may be used to load ELF files that are not Linux kernel images,
-> >>     and thus don't have a Linux-specific struct bootversion.
-> >
-> > If the check can sanely be skipped for non Linux kernel images then
-> > this sounds like a reasonable idea to me. Otherwise I would lean towards
-> > omitting it. Either way, I don't feel strongly about this.
-> >
-> >>   - Do we want to check the size of the kernel image + bootinfo, and warn the
-> >>     user if it's larger than 4 MiB?
-> >>     This is a limitation of the current Linux/m68k kernel only.
-> >
-> > I think that sounds like a good idea but I don't feel strongly about it.
-> 
-> Currently I'm leaning towards just printing a warning for both
-> (missing/incompatible
-> bootversion and image-too-large).
-
-That sounds fine to me.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 8eb2251..fc6aa81 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -392,7 +392,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index faf811f..074ed30 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -349,7 +349,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index f24d9e9..b605928 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -376,7 +376,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 12a53ae..d0f1e8b 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index ca786df..b552489 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -351,7 +351,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index afa3832..9c7414b 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -373,7 +373,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index ffafda8..434bfa7 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -453,7 +453,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index d0b8e1e..e92c449 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 10fb00c..b953842 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index cecf6d1..9f1ba13 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -365,7 +365,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 7f8c8e0..b43006d 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -343,7 +343,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 8f04709..d1343f9 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -343,7 +343,7 @@ CONFIG_QNX6FS_FS=m
+ CONFIG_SYSV_FS=m
+ CONFIG_UFS_FS=m
+ CONFIG_NFS_FS=y
+-CONFIG_NFS_V4=y
++CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+-- 
+1.7.9.5
