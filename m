@@ -1,32 +1,28 @@
-From: Richard Weinberger <richard@nod.at>
+From: Ramkumar Ramachandra <artagnon@gmail.com>
 Subject: Re: [PATCH 2/8] um: Do not use SUBARCH
-Date: Thu, 26 Sep 2013 12:44:53 +0200
-Message-ID: <52441025.9030308__37569.8663796813$1380192309$gmane$org@nod.at>
-References: <1377073172-3662-1-git-send-email-richard@nod.at> <1377073172-3662-3-git-send-email-richard@nod.at> <CALkWK0kCrQ9hPABD_XQ9QFG-vByP+xZWZs+RkVK77+cX7Odz7g@mail.gmail.com>
+Date: Thu, 26 Sep 2013 16:23:29 +0530
+Message-ID: <CALkWK0k5neR50h+AWEF5AgnpbgWMitZUnbv_caVzt6HiUA6mXg__34120.6631427214$1380192876$gmane$org@mail.gmail.com>
+References: <1377073172-3662-1-git-send-email-richard@nod.at>
+ <1377073172-3662-3-git-send-email-richard@nod.at> <CALkWK0kCrQ9hPABD_XQ9QFG-vByP+xZWZs+RkVK77+cX7Odz7g@mail.gmail.com>
+ <52441025.9030308@nod.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from b.ns.miles-group.at ([95.130.255.144]:1662 "EHLO radon.swed.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1756306Ab3IZKo5 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 26 Sep 2013 06:44:57 -0400
-In-Reply-To: <CALkWK0kCrQ9hPABD_XQ9QFG-vByP+xZWZs+RkVK77+cX7Odz7g@mail.gmail.com>
+In-Reply-To: <52441025.9030308@nod.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ramkumar Ramachandra <artagnon@gmail.com>
-Cc: linux-arch@vger.kernel.org, Michal Marek <mmarek@suse.cz>, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, Jeff Dike <jdike@addtoit.com>, gxt@mprc.pku.edu.cn, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-arch@vger.kernel.org, Michal Marek <mmarek@suse.cz>, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Am 26.09.2013 12:40, schrieb Ramkumar Ramachandra:
-> Richard Weinberger wrote:
-> Forget all that. What matters is that upstream is still broken, and
-> users are suffering. Despite a reasonable fix being submitted in July.
+Richard Weinberger wrote:
+> So, what exactly is broken in upstream?
+> make defconfig works as it always did.
 
-So, what exactly is broken in upstream?
-make defconfig works as it always did.
+Auto-detection of SUBARCH, which can be done with a simple call to
+uname -m (the 90% case). The second patch I submitted prevented
+spawning xterms unnecessarily, which we discussed was a good move.
 
-make defconfig ARCH=um SUBARCH=x86 (or SUBARCH=i386) will create a defconfig for 32bit.
-make defconfig ARCH=um SUBARCH=x86_64 one for 64bit.
+> make defconfig ARCH=um SUBARCH=x86 (or SUBARCH=i386) will create a defconfig for 32bit.
+> make defconfig ARCH=um SUBARCH=x86_64 one for 64bit.
 
-Thanks,
-//richard
+Yes, that's how I prepared the patch in the first place.
