@@ -1,52 +1,86 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: remove deprecated IRQF_DISABLED
-Date: Thu, 26 Sep 2013 10:22:53 +0200
-Message-ID: <CAMuHMdVEAZy5_rrLYyc2FWe1n1WjpKKOczTaPs4XLjKMto5pwQ__43841.7341829792$1380183817$gmane$org@mail.gmail.com>
-References: <1378532588-6054-1-git-send-email-michael.opdenacker@free-electrons.com>
-	<CAMuHMdVc6N3ThirpsOFOtJ-9EUN77R38TyAyVPMMgH_y1+NOCQ@mail.gmail.com>
+From: Ramkumar Ramachandra <artagnon@gmail.com>
+Subject: Re: [PATCH 1/8] um: Create defconfigs for i386 and x86_64
+Date: Thu, 26 Sep 2013 15:50:15 +0530
+Message-ID: <CALkWK0=W38JpZoGVkPYD4qd=+Pt1G7oYPEK_R=c8TAW6W=wxyg__14320.3225954951$1380190885$gmane$org@mail.gmail.com>
+References: <1377073172-3662-1-git-send-email-richard@nod.at> <1377073172-3662-2-git-send-email-richard@nod.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVc6N3ThirpsOFOtJ-9EUN77R38TyAyVPMMgH_y1+NOCQ@mail.gmail.com>
+In-Reply-To: <1377073172-3662-2-git-send-email-richard@nod.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Cc: Sam Creasey <sammy@sammy.net>, Luis Alves <ljalvs@gmail.com>, Greg Ungerer <gerg@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yong Zhang <yong.zhang0@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-arch@vger.kernel.org, Michal Marek <mmarek@suse.cz>, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, Jeff Dike <jdike@addtoit.com>, gxt@mprc.pku.edu.cn, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Sep 9, 2013 at 9:32 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Sat, Sep 7, 2013 at 7:43 AM, Michael Opdenacker
-> <michael.opdenacker@free-electrons.com> wrote:
->> This patch proposes to remove the IRQF_DISABLED flag from m68k architecture
->> code. It's a NOOP since 2.6.35 and it will be removed one day.
->>
->> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Richard Weinberger wrote:
+> This patch is based on: https://lkml.org/lkml/2013/7/4/396
 >
-> Thanks!
->
-> BTW, 2 years ago Yong Zhang sent 3 big versions of series removing
-> IRQF_DISABLED everywhere.
-> At that time, I had hoped they would all go in through tglx:
->
-> | > But do you expect the individual
-> | > maintainers to take these patches, or are you just collecting Acks?
-> |
-> | Quoted from Thomas's reply to Ralf (MIPS):
-> | [ We can hold off the "remove the define" patch until 3.2-rc1 and push
-> | it along with everything which hasn't been merged until then.
->
-> but apparently that never happened... oh well...
->
-> Anyway, will queue if nothing happens at the global front...
+> Cc: Ramkumar Ramachandra <artagnon@gmail.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  arch/um/configs/i386_defconfig   | 954 +++++++++++++++++++++++++++++++++++++++
+>  arch/um/configs/x86_64_defconfig | 943 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 1897 insertions(+)
+>  create mode 100644 arch/um/configs/i386_defconfig
+>  create mode 100644 arch/um/configs/x86_64_defconfig
 
-Queued for 3.13.
+First, I'm pissed that the upstream tree doesn't build and run out of
+the box months after I submitted a fix in July (and it's September
+now). Fact that you dropped my sane patches aside and decided to write
+a much larger series aside, user-mode Linux in upstream is broken.
+This means that any user who does:
 
-Gr{oetje,eeting}s,
+$ ARCH=um make defconfig
+$ ARCH=um make
 
-                        Geert
+will end up with a *broken* Linux _today_. Unless the user is living
+in the Stone Age with a 32-bit computer, this is what she will see
+when she attempts to boot up Linux:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+$ file linux
+linux: ELF 32-bit LSB  executable, Intel 80386, version 1 (SYSV),
+dynamically linked (uses shared libs), for GNU/Linux 2.6.32, not
+stripped
+$ ./linux ubd0=busybox-rootfs
+[...]
+Kernel panic - not syncing: No init found.  Try passing init= option
+to kernel. See Linux Documentation/init.txt for guidance.
+CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0-rc2-00083-g4b97280 #1
+0b869fbc 08272f87 0b869fdc 0820c5cd 00000001 00000000 00000000 00000000
+       0b869fe8 0820c126 08252593 0b869ff8 08059317 00000000 00000001 00000000
+       00000000 0b869f94:  [<0805a11c>] show_stack+0x54/0x8c
+0b869fb4:  [<0820e3c8>] dump_stack+0x16/0x1b
+0b869fc8:  [<0820c5cd>] panic+0x67/0x149
+0b869fe0:  [<0820c126>] kernel_init+0xab/0xaf
+0b869fec:  [<08059317>] new_thread_handler+0x63/0x7c
+0b869ffc:  [<00000000>] 0x0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+EIP: 0023:[<f7717430>] CPU: 0 Not tainted ESP: 002b:ffc386dc EFLAGS: 00000296
+    Not tainted
+EAX: 00000000 EBX: 000063ba ECX: 00000013 EDX: 000063ba
+ESI: 000063b6 EDI: 00000002 EBP: ffc38708 DS: 002b ES: 002b
+0b869f44:  [<0806aff4>] show_regs+0xb4/0xbc
+0b869f70:  [<0805b23b>] panic_exit+0x20/0x36
+0b869f84:  [<0808521b>] notifier_call_chain+0x28/0x4b
+0b869fac:  [<0808526c>] atomic_notifier_call_chain+0x15/0x17
+0b869fbc:  [<0820c5de>] panic+0x78/0x149
+0b869fe0:  [<0820c126>] kernel_init+0xab/0xaf
+0b869fec:  [<08059317>] new_thread_handler+0x63/0x7c
+0b869ffc:  [<00000000>] 0x0
+
+[1]    25526 abort (core dumped)  linux ubd0=busybox-rootfs
+                                                           %
+
+Rubbish.
+
+When I rebase my original patches (exactly 2 small independent
+patches) onto the new upstream, stuff works as usual. If you're not
+convinced, try the um-build branch from
+https://github.com/artagnon/linux for yourself.
+
+Are you against accepting good patches and stalling work? What is your
+plan exactly?
+
+Annoyed,
+Ram
