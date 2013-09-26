@@ -1,187 +1,52 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/defconfig: Make NFS_V4 modular instead of builtin
-Date: Thu, 26 Sep 2013 10:15:15 +0200
-Message-ID: <1380183315-6704-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: remove deprecated IRQF_DISABLED
+Date: Thu, 26 Sep 2013 10:22:53 +0200
+Message-ID: <CAMuHMdVEAZy5_rrLYyc2FWe1n1WjpKKOczTaPs4XLjKMto5pwQ__43841.7341829792$1380183817$gmane$org@mail.gmail.com>
+References: <1378532588-6054-1-git-send-email-michael.opdenacker@free-electrons.com>
+	<CAMuHMdVc6N3ThirpsOFOtJ-9EUN77R38TyAyVPMMgH_y1+NOCQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVc6N3ThirpsOFOtJ-9EUN77R38TyAyVPMMgH_y1+NOCQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Cc: Sam Creasey <sammy@sammy.net>, Luis Alves <ljalvs@gmail.com>, Greg Ungerer <gerg@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yong Zhang <yong.zhang0@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
 
-This reduces the kernel image size by ca. 100 KiB, while still allowing
-NFS root.
+On Mon, Sep 9, 2013 at 9:32 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Sat, Sep 7, 2013 at 7:43 AM, Michael Opdenacker
+> <michael.opdenacker@free-electrons.com> wrote:
+>> This patch proposes to remove the IRQF_DISABLED flag from m68k architecture
+>> code. It's a NOOP since 2.6.35 and it will be removed one day.
+>>
+>> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+>
+> Thanks!
+>
+> BTW, 2 years ago Yong Zhang sent 3 big versions of series removing
+> IRQF_DISABLED everywhere.
+> At that time, I had hoped they would all go in through tglx:
+>
+> | > But do you expect the individual
+> | > maintainers to take these patches, or are you just collecting Acks?
+> |
+> | Quoted from Thomas's reply to Ralf (MIPS):
+> | [ We can hold off the "remove the define" patch until 3.2-rc1 and push
+> | it along with everything which hasn't been merged until then.
+>
+> but apparently that never happened... oh well...
+>
+> Anyway, will queue if nothing happens at the global front...
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/configs/amiga_defconfig    |    2 +-
- arch/m68k/configs/apollo_defconfig   |    2 +-
- arch/m68k/configs/atari_defconfig    |    2 +-
- arch/m68k/configs/bvme6000_defconfig |    2 +-
- arch/m68k/configs/hp300_defconfig    |    2 +-
- arch/m68k/configs/mac_defconfig      |    2 +-
- arch/m68k/configs/multi_defconfig    |    2 +-
- arch/m68k/configs/mvme147_defconfig  |    2 +-
- arch/m68k/configs/mvme16x_defconfig  |    2 +-
- arch/m68k/configs/q40_defconfig      |    2 +-
- arch/m68k/configs/sun3_defconfig     |    2 +-
- arch/m68k/configs/sun3x_defconfig    |    2 +-
- 12 files changed, 12 insertions(+), 12 deletions(-)
+Queued for 3.13.
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 8eb2251..fc6aa81 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -392,7 +392,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index faf811f..074ed30 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -349,7 +349,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index f24d9e9..b605928 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -376,7 +376,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 12a53ae..d0f1e8b 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index ca786df..b552489 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -351,7 +351,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index afa3832..9c7414b 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -373,7 +373,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index ffafda8..434bfa7 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -453,7 +453,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index d0b8e1e..e92c449 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 10fb00c..b953842 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -341,7 +341,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index cecf6d1..9f1ba13 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -365,7 +365,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 7f8c8e0..b43006d 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -343,7 +343,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 8f04709..d1343f9 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -343,7 +343,7 @@ CONFIG_QNX6FS_FS=m
- CONFIG_SYSV_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=y
--CONFIG_NFS_V4=y
-+CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
--- 
-1.7.9.5
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
