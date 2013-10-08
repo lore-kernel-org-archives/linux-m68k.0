@@ -1,73 +1,40 @@
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 1/8] um: Create defconfigs for i386 and x86_64
-Date: Fri, 27 Sep 2013 11:26:16 +0200
-Message-ID: <52454F38.60902__29464.2787929208$1380273998$gmane$org@nod.at>
-References: <1377073172-3662-1-git-send-email-richard@nod.at> <1377073172-3662-2-git-send-email-richard@nod.at> <CALkWK0=W38JpZoGVkPYD4qd=+Pt1G7oYPEK_R=c8TAW6W=wxyg@mail.gmail.com> <52440DE0.1030807@nod.at> <52454E58.3010305@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Mark Salter <msalter@redhat.com>
+Subject: [PATCH v2 05/14] m68k: select ARCH_MAY_HAVE_PC_PARPORT
+Date: Tue,  8 Oct 2013 01:10:21 -0400
+Message-ID: <1381209030-351-6-git-send-email-msalter@redhat.com>
+References: <1381209030-351-1-git-send-email-msalter@redhat.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from b.ns.miles-group.at ([95.130.255.144]:1661 "EHLO radon.swed.at"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752283Ab3I0J00 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 27 Sep 2013 05:26:26 -0400
-In-Reply-To: <52454E58.3010305@gmx.de>
+Received: from mx1.redhat.com ([209.132.183.28]:15352 "EHLO mx1.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752509Ab3JHFMf (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 8 Oct 2013 01:12:35 -0400
+In-Reply-To: <1381209030-351-1-git-send-email-msalter@redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-Cc: Ramkumar Ramachandra <artagnon@gmail.com>, linux-arch@vger.kernel.org, Michal Marek <mmarek@suse.cz>, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, Jeff Dike <jdike@addtoit.com>, gxt@mprc.pku.edu.cn, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: Mark Salter <msalter@redhat.com>, linux-m68k@vger.kernel.org
 
-Am 27.09.2013 11:22, schrieb Toralf F=C3=B6rster:
-> On 09/26/2013 12:35 PM, Richard Weinberger wrote:
->> Am 26.09.2013 12:20, schrieb Ramkumar Ramachandra:
->>> Richard Weinberger wrote:
->>>> This patch is based on: https://lkml.org/lkml/2013/7/4/396
->>>>
->>>> Cc: Ramkumar Ramachandra <artagnon@gmail.com>
->>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>> ---
->>>>  arch/um/configs/i386_defconfig   | 954 ++++++++++++++++++++++++++=
-+++++++++++++
->>>>  arch/um/configs/x86_64_defconfig | 943 ++++++++++++++++++++++++++=
-++++++++++++
->>>>  2 files changed, 1897 insertions(+)
->>>>  create mode 100644 arch/um/configs/i386_defconfig
->>>>  create mode 100644 arch/um/configs/x86_64_defconfig
->>>
->>> First, I'm pissed that the upstream tree doesn't build and run out =
-of
->>> the box months after I submitted a fix in July (and it's September
->>> now). Fact that you dropped my sane patches aside and decided to wr=
-ite
->>> a much larger series aside, user-mode Linux in upstream is broken.
->>> This means that any user who does:
->>>
->>> $ ARCH=3Dum make defconfig
->>> $ ARCH=3Dum make
->>>
->>> will end up with a *broken* Linux _today_. Unless the user is livin=
-g
->>> in the Stone Age with a 32-bit computer, this is what she will see
->>> when she attempts to boot up Linux:
->=20
-> :-{
->=20
-> Grmpf
->=20
-> There are a lot of 32 bit user land linux installation (beside my own=
-,
-> look at the x86 Gentoo world) in the wild - even running on modern 64=
-bit
-> CPUs. The simple reason is that those installations run fine and the
-> performance "boost" of 64bit often isn't worth a new reinstallation.
+Architectures which support CONFIG_PARPORT_PC should select
+ARCH_MAY_HAVE_PC_PARPORT.
 
-You *can* of course run 32bit userland on UML. Just create a 32bit UML =
-on x86_64.
+Signed-off-by: Mark Salter <msalter@redhat.com>
+Acked by: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-make defconfig ARCH=3Dum SUBARCH=3Di386
-make linux ARCH=3Dum SUBARCH=3Di386
-
-This will work on x86_64 and x86 hosts.
-
-Thanks,
-//richard
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 311a300..0d88a0b 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -1,6 +1,7 @@
+ config M68K
+ 	bool
+ 	default y
++	select ARCH_MAY_HAVE_PC_PARPORT if ISA
+ 	select HAVE_IDE
+ 	select HAVE_AOUT if MMU
+ 	select HAVE_DEBUG_BUGVERBOSE
+-- 
+1.8.3.1
