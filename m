@@ -1,30 +1,124 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH v2 14/14] Kconfig cleanup (PARPORT_PC dependencies)
-Date: Tue, 8 Oct 2013 09:00:54 +0200
-Message-ID: <20131008070054.GE1615@linux-mips.org>
-References: <1381209030-351-1-git-send-email-msalter@redhat.com>
- <1381209030-351-15-git-send-email-msalter@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-ia64-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1381209030-351-15-git-send-email-msalter@redhat.com>
-Sender: linux-ia64-owner@vger.kernel.org
-To: Mark Salter <msalter@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>, linux-alpha@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Paul Mundt <lethal@linux-sh.org>, linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tgl>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/3] kexec: Add debug printing of kimage table entries
+Date: Tue, 15 Oct 2013 19:48:25 +0200
+Message-ID: <1381859307-11932-2-git-send-email-geert__48554.5021052987$1381859374$gmane$org@linux-m68k.org>
+References: <1381859307-11932-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1381859307-11932-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Eric Biederman <ebiederm@xmission.com>
 
-On Tue, Oct 08, 2013 at 01:10:30AM -0400, Mark Salter wrote:
+Print a list of pages to be copied if debugging is enabled.
+Consecutive entries are merged to reduce screen clutter.
 
-> Remove messy dependencies from PARPORT_PC by having it depend on one
-> Kconfig symbol (ARCH_MAY_HAVE_PC_PARPORT) and having architectures
-> which need it, select ARCH_MAY_HAVE_PC_PARPORT in arch/*/Kconfig.
-> New architectures are unlikely to need PARPORT_PC, so this avoids
-> having an ever growing list of architectures to exclude. Those
-> architectures which do select ARCH_MAY_HAVE_PC_PARPORT in this
-> patch are the ones which have an asm/parport.h (or use the generic
-> version).
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Eric Biederman <ebiederm@xmission.com>
+---
+ kernel/kexec.c |   76 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
-
-  Ralf
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 490afc03627e..e25022ac229e 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -1073,6 +1073,80 @@ asmlinkage long compat_sys_kexec_load(unsigned long entry,
+ }
+ #endif
+ 
++#ifdef DEBUG
++struct kimage_block {
++	unsigned long dst, src, len;
++};
++
++static void kimage_print_block(const struct kimage_block *block)
++{
++	pr_info("Copy from 0x%lx-0x%lx to 0x%lx-0x%lx (0x%lx bytes)\n",
++		block->src, block->src + block->len - 1, block->dst,
++		block->dst + block->len - 1, block->len);
++}
++
++static void kimage_print(const struct kimage *image)
++{
++	void *control_code_page;
++	const kimage_entry_t *ptr;
++	kimage_entry_t entry;
++	struct kimage_block block;
++	unsigned long dnext = KIMAGE_NO_DEST, snext = KIMAGE_NO_DEST;
++	unsigned long total = 0;
++
++	control_code_page = page_address(image->control_code_page);
++	pr_info("Control code page 0x%p (phys 0x%lx)\n",
++		control_code_page, virt_to_phys(control_code_page));
++
++	ptr = &image->head;
++	block.dst = KIMAGE_NO_DEST;
++	block.src = KIMAGE_NO_DEST;
++	block.len = 0;
++	while ((entry = *ptr)) {
++		if (entry & IND_DONE)
++			break;
++
++		if (entry & IND_DESTINATION) {
++			if (block.len > 0) {
++				kimage_print_block(&block);
++				total += block.len;
++			}
++			dnext = block.dst = entry & PAGE_MASK;
++			block.src = KIMAGE_NO_DEST;
++			block.len = 0;
++		}
++
++		if (entry & IND_SOURCE) {
++			if (!block.len) {
++				snext = block.src = entry & PAGE_MASK;
++			} else if ((entry & PAGE_MASK) != snext) {
++				kimage_print_block(&block);
++				total += block.len;
++				block.dst = dnext;
++				snext = block.src = entry & PAGE_MASK;
++				block.len = 0;
++			}
++			dnext += PAGE_SIZE;
++			snext += PAGE_SIZE;
++			block.len += PAGE_SIZE;
++		}
++
++		if (entry & IND_INDIRECTION) {
++			pr_info("Indirection page 0x%lx\n", entry & PAGE_MASK);
++			ptr = phys_to_virt(entry & PAGE_MASK);
++		} else
++			ptr++;
++	}
++	if (block.len) {
++		kimage_print_block(&block);
++		total += block.len;
++	}
++	pr_info("Total: 0x%lx/%ld bytes\n", total, total);
++}
++#else
++static inline void kimage_print(const struct kimage *image) {}
++#endif
++
+ void crash_kexec(struct pt_regs *regs)
+ {
+ 	/* Take the kexec_mutex here to prevent sys_kexec_load
+@@ -1090,6 +1164,7 @@ void crash_kexec(struct pt_regs *regs)
+ 			crash_setup_regs(&fixed_regs, regs);
+ 			crash_save_vmcoreinfo();
+ 			machine_crash_shutdown(&fixed_regs);
++			kimage_print(kexec_crash_image);
+ 			machine_kexec(kexec_crash_image);
+ 		}
+ 		mutex_unlock(&kexec_mutex);
+@@ -1680,6 +1755,7 @@ int kernel_kexec(void)
+ 		machine_shutdown();
+ 	}
+ 
++	kimage_print(kexec_image);
+ 	machine_kexec(kexec_image);
+ 
+ #ifdef CONFIG_KEXEC_JUMP
+-- 
+1.7.9.5
