@@ -1,61 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 0/3] kexec support for Linux/m68k (tools part)
-Date: Tue, 15 Oct 2013 19:50:57 +0200
-Message-ID: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 1/3] kexec: Add debug printing of kimage table entries
+Date: Tue, 15 Oct 2013 10:58:15 -0700
+Message-ID: <1381859895.22110.30.camel__3422.93110811642$1381860588$gmane$org@joe-AO722>
+References: <1381859307-11932-1-git-send-email-geert@linux-m68k.org>
+	 <1381859307-11932-2-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1381859307-11932-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>
-Cc: linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>
 
-kexec support for Linux/m68k (tools part)
+On Tue, 2013-10-15 at 19:48 +0200, Geert Uytterhoeven wrote:
+> Print a list of pages to be copied if debugging is enabled.
+> Consecutive entries are merged to reduce screen clutter.
+[]
+> diff --git a/kernel/kexec.c b/kernel/kexec.c
+[]
+> +static void kimage_print_block(const struct kimage_block *block)
+> +{
+> +	pr_info("Copy from 0x%lx-0x%lx to 0x%lx-0x%lx (0x%lx bytes)\n",
+> +		block->src, block->src + block->len - 1, block->dst,
+> +		block->dst + block->len - 1, block->len);
+> +}
 
-This is a set of patches to add kexec support for m68k to kexec-tools.
+Perhaps pr_debug and this maybe nicer to read like:
 
-  - Kexec only, no kdump support yet (do you have enough RAM to keep a
-    crashdump kernel in memory at all times? ;-)
+	pr_debug("kimage: Copy from 0x%lx-0x%lx to 0x%lx-0x%lx (0x%lx bytes)\n",
+		 block->src, block->src + block->len - 1,
+		 block->dst, block->dst + block->len - 1,
+		 block->len);
 
-Patches:
-  - [PATCH 1/3] kexec: Let slurp_file_len() return the number of bytes
-      - v2: no changes
-  - [PATCH 2/3] kexec: Extract slurp_fd()
-      - v2: new patch
-  - [PATCH 3/3] kexec: Add m68k support
-      - v2:
-	  - Fix handling of virtual and physical addresses, for machines where
-	    memory doesn't start at zero,
-	  - Print a warning if the kernel size exceeds 4 MiB, as current kernels
-	    cannot handle that,
-	  - Check struct bootversion at the start of the kernel, and print a
-	    warning if it cannot be found or doesn't match,
-	  - Replace literal 4096 by PAGE_SIZE,
-	  - Handle removal of page zero at the ELF program segment level, as
-	    m68kboot does,
-	  - Remove -PAGE_SIZE for the ramdisk location now the bug in
-            locate_hole() is fixed,
-	  - Use endian-correct types for bootinfo,
-	  - Remove unused -? option handling, cfr. commit
-	    bf9d0f055c791a26b2237b5a12b48ae1b7e0d550 ("kexec: Remove unused -?
-	    option handling"),
-	  - Use <asm/bootinfo.h> instead of our own definitions.
-
-Notes:
-  - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
-
-  - Tagged bootinfo is read from /proc/bootinfo by default, but this can be
-    overridden using --bootinfo. No bootinfo editor is provided.
-    The kexec command will replace/delete command line and ramdisk tags in the
-    bootinfo.
-
-Have fun!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Using a "kimage: " prefix could help grep too.
