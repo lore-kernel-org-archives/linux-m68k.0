@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 02/16] m68k: The bootinfo is located right after the kernel
-Date: Wed, 16 Oct 2013 14:31:19 +0200
-Message-ID: <1381926693-6392-3-git-send-email-geert__25474.8295098127$1381926966$gmane$org@linux-m68k.org>
+Subject: [PATCH 01/16] block/z2ram: Remove duplicate external declarations
+Date: Wed, 16 Oct 2013 14:31:18 +0200
+Message-ID: <1381926693-6392-2-git-send-email-geert__9139.07656581632$1381926967$gmane$org@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
@@ -10,55 +10,27 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Since the introduction of init sections (which are located after BSS), the
-bootinfo is no longer located right after the BSS, but after all kernel
-sections.
+Remove the external declarations for m68k_realnum_memory and m68k_memory,
+which are already provided by <asm/setup.h>, to avoid conflicts later.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/bootinfo.h |    2 +-
- arch/m68k/kernel/head.S          |    2 +-
- arch/m68k/kernel/setup_mm.c      |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/block/z2ram.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
-index 3c2da7bd057f..a66a7f9200f7 100644
---- a/arch/m68k/include/asm/bootinfo.h
-+++ b/arch/m68k/include/asm/bootinfo.h
-@@ -34,7 +34,7 @@
-      *  This way I hope to keep all future changes back/forewards compatible.
-      *  Thus, keep your fingers crossed...
-      *
--     *  This structure is copied right after the kernel bss by the bootstrap
-+     *  This structure is copied right after the kernel by the bootstrap
-      *  routine.
-      */
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 8b2a60cee3a0..27de5046708a 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -43,9 +43,6 @@
+ #include <linux/zorro.h>
  
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index ac85f16534af..fb348caa734e 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -1532,7 +1532,7 @@ L(cache_done):
  
- /*
-  * Find a tag record in the bootinfo structure
-- * The bootinfo structure is located right after the kernel bss
-+ * The bootinfo structure is located right after the kernel
-  * Returns: d0: size (-1 if not found)
-  *          a0: data pointer (end-of-records if not found)
-  */
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 2299080d77f2..b979a3781dcb 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -222,7 +222,7 @@ void __init setup_arch(char **cmdline_p)
- 	int i;
- #endif
- 
--	/* The bootinfo is located right after the kernel bss */
-+	/* The bootinfo is located right after the kernel */
- 	if (!CPU_IS_COLDFIRE)
- 		m68k_parse_bootinfo((const struct bi_record *)_end);
- 
+-extern int m68k_realnum_memory;
+-extern struct mem_info m68k_memory[NUM_MEMINFO];
+-
+ #define Z2MINOR_COMBINED      (0)
+ #define Z2MINOR_Z2ONLY        (1)
+ #define Z2MINOR_CHIPONLY      (2)
 -- 
 1.7.9.5
