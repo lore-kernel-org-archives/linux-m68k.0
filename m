@@ -1,86 +1,121 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] m68k/setup: Use pr_*() and __func__ instead of plain printk()
-Date: Wed, 16 Oct 2013 12:12:15 +0200
-Message-ID: <1381918335-23545-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH 19/34] m68k: handle pgtable_page_ctor() fail
+Date: Wed, 16 Oct 2013 13:29:39 +0300 (EEST)
+Message-ID: <20131016102939.DC0D0E0090@blue.fi.intel.com>
+References: <1381428359-14843-1-git-send-email-kirill.shutemov@linux.intel.com>
+ <1381428359-14843-20-git-send-email-kirill.shutemov@linux.intel.com>
+ <CAMuHMdUqQVphjUbvPg+47ZjFmS8WUK_70VMb43w4jaBOcGfNxA@mail.gmail.com>
+ <20131016095612.34707E0090@blue.fi.intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arch-owner@vger.kernel.org>
+In-Reply-To: <20131016095612.34707E0090@blue.fi.intel.com>
+Sender: linux-arch-owner@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Kirill A. Shutemov wrote:
+> Geert Uytterhoeven wrote:
+> > On Thu, Oct 10, 2013 at 8:05 PM, Kirill A. Shutemov
+> > <kirill.shutemov@linux.intel.com> wrote:
+> > > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > ---
+> > >  arch/m68k/include/asm/motorola_pgalloc.h | 5 ++++-
+> > >  arch/m68k/include/asm/sun3_pgalloc.h     | 5 ++++-
+> > >  2 files changed, 8 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
+> > > index 2f02f264e6..dd254eeb03 100644
+> > > --- a/arch/m68k/include/asm/motorola_pgalloc.h
+> > > +++ b/arch/m68k/include/asm/motorola_pgalloc.h
+> > > @@ -40,7 +40,10 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long addres
+> > >         flush_tlb_kernel_page(pte);
+> > >         nocache_page(pte);
+> >         ^^^^^^^^^^^^^^^^^^
+> > >         kunmap(page);
+> > > -       pgtable_page_ctor(page);
+> > > +       if (!pgtable_page_ctor(page)) {
+> > > +               __free_page(page);
+> > 
+> > Shouldn't you mark the page cacheable again, like is done in pte_free()?
+> 
+> Hm. You're right. Updated patch below.
+
+I also noticed that one of pte_alloc_one didn't have the constructor at
+all. New patch revision bellow.
+
+>From 22109077ef31ea28bbfe6b72902854214285bc0c Mon Sep 17 00:00:00 2001
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Date: Wed, 9 Oct 2013 03:58:39 +0300
+Subject: [PATCHv3] m68k: handle pgtable_page_ctor() fail
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-v2:
-  - Use __func__
+ arch/m68k/include/asm/mcf_pgalloc.h      | 4 ++++
+ arch/m68k/include/asm/motorola_pgalloc.h | 8 ++++++--
+ arch/m68k/include/asm/sun3_pgalloc.h     | 5 ++++-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
- arch/m68k/kernel/setup_mm.c |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 4f6158aa8d48..2299080d77f2 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -163,7 +163,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
- 				m68k_memory[m68k_num_memory].size = data[1];
- 				m68k_num_memory++;
- 			} else
--				printk("m68k_parse_bootinfo: too many memory chunks\n");
-+				pr_warn("%s: too many memory chunks\n",
-+					__func__);
- 			break;
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+index 313f3dd23c..f9924fbcfe 100644
+--- a/arch/m68k/include/asm/mcf_pgalloc.h
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -56,6 +56,10 @@ static inline struct page *pte_alloc_one(struct mm_struct *mm,
  
- 		case BI_RAMDISK:
-@@ -199,8 +200,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
- 				unknown = 1;
- 		}
- 		if (unknown)
--			printk("m68k_parse_bootinfo: unknown tag 0x%04x ignored\n",
--			       record->tag);
-+			pr_warn("%s: unknown tag 0x%04x ignored\n", __func__,
-+				   record->tag);
- 		record = (struct bi_record *)((unsigned long)record +
- 					      record->size);
- 	}
-@@ -208,8 +209,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
- 	m68k_realnum_memory = m68k_num_memory;
- #ifdef CONFIG_SINGLE_MEMORY_CHUNK
- 	if (m68k_num_memory > 1) {
--		printk("Ignoring last %i chunks of physical memory\n",
--		       (m68k_num_memory - 1));
-+		pr_warn("%s: ignoring last %i chunks of physical memory\n",
-+			__func__, (m68k_num_memory - 1));
- 		m68k_num_memory = 1;
- 	}
- #endif
-@@ -249,7 +250,7 @@ void __init setup_arch(char **cmdline_p)
- 		asm (".chip 68060; movec %%pcr,%0; .chip 68k"
- 		     : "=d" (pcr));
- 		if (((pcr >> 8) & 0xff) <= 5) {
--			printk("Enabling workaround for errata I14\n");
-+			pr_warn("Enabling workaround for errata I14\n");
- 			asm (".chip 68060; movec %0,%%pcr; .chip 68k"
- 			     : : "d" (pcr | 0x20));
- 		}
-@@ -355,7 +356,7 @@ void __init setup_arch(char **cmdline_p)
- 				     BOOTMEM_DEFAULT);
- 		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
- 		initrd_end = initrd_start + m68k_ramdisk.size;
--		printk("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
-+		pr_info("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
- 	}
- #endif
+ 	if (!page)
+ 		return NULL;
++	if (!pgtable_page_ctor(page)) {
++		__free_page(page);
++		return NULL;
++	}
  
-@@ -540,9 +541,9 @@ void check_bugs(void)
+ 	pte = kmap(page);
+ 	if (pte) {
+diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
+index 2f02f264e6..24bcba496c 100644
+--- a/arch/m68k/include/asm/motorola_pgalloc.h
++++ b/arch/m68k/include/asm/motorola_pgalloc.h
+@@ -29,18 +29,22 @@ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
  {
- #ifndef CONFIG_M68KFPU_EMU
- 	if (m68k_fputype == 0) {
--		printk(KERN_EMERG "*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
-+		pr_emerg("*** YOU DO NOT HAVE A FLOATING POINT UNIT, "
- 			"WHICH IS REQUIRED BY LINUX/M68K ***\n");
--		printk(KERN_EMERG "Upgrade your hardware or join the FPU "
-+		pr_emerg("Upgrade your hardware or join the FPU "
- 			"emulation project\n");
- 		panic("no FPU");
- 	}
+-	struct page *page = alloc_pages(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO, 0);
++	struct page *page;
+ 	pte_t *pte;
+ 
++	page = alloc_pages(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO, 0);
+ 	if(!page)
+ 		return NULL;
++	if (!pgtable_page_ctor(page)) {
++		__free_page(page);
++		return NULL;
++	}
+ 
+ 	pte = kmap(page);
+ 	__flush_page_to_ram(pte);
+ 	flush_tlb_kernel_page(pte);
+ 	nocache_page(pte);
+ 	kunmap(page);
+-	pgtable_page_ctor(page);
+ 	return page;
+ }
+ 
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+index 48d80d5a66..f868506e33 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -59,7 +59,10 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm,
+ 		return NULL;
+ 
+ 	clear_highpage(page);
+-	pgtable_page_ctor(page);
++	if (!pgtable_page_ctor(page)) {
++		__free_page(page);
++		return NULL;
++	}
+ 	return page;
+ 
+ }
 -- 
-1.7.9.5
+ Kirill A. Shutemov
