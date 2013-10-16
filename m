@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 12/16] m68k/UAPI: Move HP300 model definitions to <asm/bootinfo-hp300.h>
-Date: Wed, 16 Oct 2013 14:31:29 +0200
-Message-ID: <1381926693-6392-13-git-send-email-geert__45307.0035241128$1381926871$gmane$org@linux-m68k.org>
+Subject: [PATCH 11/16] m68k/UAPI: Move Apollo model definitions to <asm/bootinfo-apollo.h>
+Date: Wed, 16 Oct 2013 14:31:28 +0200
+Message-ID: <1381926693-6392-12-git-send-email-geert__49693.0500180044$1381926890$gmane$org@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
@@ -13,77 +13,55 @@ Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Dav
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: David Howells <dhowells@redhat.com>
 ---
- arch/m68k/include/asm/hp300hw.h             |   20 ++------------------
- arch/m68k/include/uapi/asm/bootinfo-hp300.h |   25 +++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 18 deletions(-)
+ arch/m68k/include/asm/apollohw.h             |   11 ++---------
+ arch/m68k/include/uapi/asm/bootinfo-apollo.h |   12 ++++++++++++
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/arch/m68k/include/asm/hp300hw.h b/arch/m68k/include/asm/hp300hw.h
-index d998ea67c19c..64f5271dd7be 100644
---- a/arch/m68k/include/asm/hp300hw.h
-+++ b/arch/m68k/include/asm/hp300hw.h
-@@ -1,25 +1,9 @@
- #ifndef _M68K_HP300HW_H
- #define _M68K_HP300HW_H
+diff --git a/arch/m68k/include/asm/apollohw.h b/arch/m68k/include/asm/apollohw.h
+index 6c19e0c22411..87fc899d32ee 100644
+--- a/arch/m68k/include/asm/apollohw.h
++++ b/arch/m68k/include/asm/apollohw.h
+@@ -5,18 +5,11 @@
  
--extern unsigned long hp300_model;
-+#include <asm/bootinfo-hp300.h>
+ #include <linux/types.h>
  
--/* This information was taken from NetBSD */
--#define	HP_320		(0)	/* 16MHz 68020+HP MMU+16K external cache */
--#define	HP_330		(1)	/* 16MHz 68020+68851 MMU */
--#define	HP_340		(2)	/* 16MHz 68030 */
--#define	HP_345		(3)	/* 50MHz 68030+32K external cache */
--#define	HP_350		(4)	/* 25MHz 68020+HP MMU+32K external cache */
--#define	HP_360		(5)	/* 25MHz 68030 */
--#define	HP_370		(6)	/* 33MHz 68030+64K external cache */
--#define	HP_375		(7)	/* 50MHz 68030+32K external cache */
--#define	HP_380		(8)	/* 25MHz 68040 */
--#define	HP_385		(9)	/* 33MHz 68040 */
+-/*
+-   apollo models
+-*/
++#include <asm/bootinfo-apollo.h>
++
  
--#define	HP_400		(10)	/* 50MHz 68030+32K external cache */
--#define	HP_425T		(11)	/* 25MHz 68040 - model 425t */
--#define	HP_425S		(12)	/* 25MHz 68040 - model 425s */
--#define HP_425E		(13)	/* 25MHz 68040 - model 425e */
--#define HP_433T		(14)	/* 33MHz 68040 - model 433t */
--#define HP_433S		(15)	/* 33MHz 68040 - model 433s */
-+extern unsigned long hp300_model;
+ extern u_long apollo_model;
  
- #endif /* _M68K_HP300HW_H */
-diff --git a/arch/m68k/include/uapi/asm/bootinfo-hp300.h b/arch/m68k/include/uapi/asm/bootinfo-hp300.h
-index e7ed19cdafe5..08530e12d4c3 100644
---- a/arch/m68k/include/uapi/asm/bootinfo-hp300.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo-hp300.h
-@@ -16,6 +16,31 @@
+-#define APOLLO_UNKNOWN (0)
+-#define APOLLO_DN3000 (1)
+-#define APOLLO_DN3010 (2)
+-#define APOLLO_DN3500 (3)
+-#define APOLLO_DN4000 (4)
+-#define APOLLO_DN4500 (5)
+ 
+ /*
+    see scn2681 data sheet for more info.
+diff --git a/arch/m68k/include/uapi/asm/bootinfo-apollo.h b/arch/m68k/include/uapi/asm/bootinfo-apollo.h
+index 3a2051e822b0..69923697e131 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo-apollo.h
++++ b/arch/m68k/include/uapi/asm/bootinfo-apollo.h
+@@ -13,4 +13,16 @@
+ #define BI_APOLLO_MODEL		0x8000	/* model (u_long) */
  
  
-     /*
-+     *  HP9000/300 and /400 models (BI_HP300_MODEL)
-+     *
-+     * This information was taken from NetBSD
++    /*
++     *  Apollo models (BI_APOLLO_MODEL)
 +     */
 +
-+#define HP_320		0	/* 16MHz 68020+HP MMU+16K external cache */
-+#define HP_330		1	/* 16MHz 68020+68851 MMU */
-+#define HP_340		2	/* 16MHz 68030 */
-+#define HP_345		3	/* 50MHz 68030+32K external cache */
-+#define HP_350		4	/* 25MHz 68020+HP MMU+32K external cache */
-+#define HP_360		5	/* 25MHz 68030 */
-+#define HP_370		6	/* 33MHz 68030+64K external cache */
-+#define HP_375		7	/* 50MHz 68030+32K external cache */
-+#define HP_380		8	/* 25MHz 68040 */
-+#define HP_385		9	/* 33MHz 68040 */
-+
-+#define HP_400		10	/* 50MHz 68030+32K external cache */
-+#define HP_425T		11	/* 25MHz 68040 - model 425t */
-+#define HP_425S		12	/* 25MHz 68040 - model 425s */
-+#define HP_425E		13	/* 25MHz 68040 - model 425e */
-+#define HP_433T		14	/* 33MHz 68040 - model 433t */
-+#define HP_433S		15	/* 33MHz 68040 - model 433s */
++#define APOLLO_UNKNOWN		0
++#define APOLLO_DN3000		1
++#define APOLLO_DN3010		2
++#define APOLLO_DN3500		3
++#define APOLLO_DN4000		4
++#define APOLLO_DN4500		5
 +
 +
-+    /*
-      *  Latest HP9000/300 bootinfo version
-      */
- 
+ #endif /* _UAPI_ASM_M68K_BOOTINFO_APOLLO_H */
 -- 
 1.7.9.5
