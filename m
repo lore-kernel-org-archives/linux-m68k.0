@@ -1,62 +1,75 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 0/3] kexec support for Linux/m68k (tools part)
-Date: Wed, 16 Oct 2013 16:22:36 +0900
-Message-ID: <20131016072236.GB29696@verge.net.au>
-References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 19/34] m68k: handle pgtable_page_ctor() fail
+Date: Wed, 16 Oct 2013 10:07:52 +0200
+Message-ID: <CAMuHMdUqQVphjUbvPg+47ZjFmS8WUK_70VMb43w4jaBOcGfNxA@mail.gmail.com>
+References: <1381428359-14843-1-git-send-email-kirill.shutemov@linux.intel.com>
+	<1381428359-14843-20-git-send-email-kirill.shutemov@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <owner-linux-mm@kvack.org>
+In-Reply-To: <1381428359-14843-20-git-send-email-kirill.shutemov@linux.intel.com>
+Sender: owner-linux-mm@kvack.org
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
 
-On Tue, Oct 15, 2013 at 07:50:57PM +0200, Geert Uytterhoeven wrote:
-> kexec support for Linux/m68k (tools part)
-> 
-> This is a set of patches to add kexec support for m68k to kexec-tools.
-> 
->   - Kexec only, no kdump support yet (do you have enough RAM to keep a
->     crashdump kernel in memory at all times? ;-)
-> 
-> Patches:
->   - [PATCH 1/3] kexec: Let slurp_file_len() return the number of bytes
->       - v2: no changes
->   - [PATCH 2/3] kexec: Extract slurp_fd()
->       - v2: new patch
->   - [PATCH 3/3] kexec: Add m68k support
->       - v2:
-> 	  - Fix handling of virtual and physical addresses, for machines where
-> 	    memory doesn't start at zero,
-> 	  - Print a warning if the kernel size exceeds 4 MiB, as current kernels
-> 	    cannot handle that,
-> 	  - Check struct bootversion at the start of the kernel, and print a
-> 	    warning if it cannot be found or doesn't match,
-> 	  - Replace literal 4096 by PAGE_SIZE,
-> 	  - Handle removal of page zero at the ELF program segment level, as
-> 	    m68kboot does,
-> 	  - Remove -PAGE_SIZE for the ramdisk location now the bug in
->             locate_hole() is fixed,
-> 	  - Use endian-correct types for bootinfo,
-> 	  - Remove unused -? option handling, cfr. commit
-> 	    bf9d0f055c791a26b2237b5a12b48ae1b7e0d550 ("kexec: Remove unused -?
-> 	    option handling"),
-> 	  - Use <asm/bootinfo.h> instead of our own definitions.
-> 
-> Notes:
->   - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
-> 
->   - Tagged bootinfo is read from /proc/bootinfo by default, but this can be
->     overridden using --bootinfo. No bootinfo editor is provided.
->     The kexec command will replace/delete command line and ramdisk tags in the
->     bootinfo.
+On Thu, Oct 10, 2013 at 8:05 PM, Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  arch/m68k/include/asm/motorola_pgalloc.h | 5 ++++-
+>  arch/m68k/include/asm/sun3_pgalloc.h     | 5 ++++-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
+> index 2f02f264e6..dd254eeb03 100644
+> --- a/arch/m68k/include/asm/motorola_pgalloc.h
+> +++ b/arch/m68k/include/asm/motorola_pgalloc.h
+> @@ -40,7 +40,10 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long addres
+>         flush_tlb_kernel_page(pte);
+>         nocache_page(pte);
+        ^^^^^^^^^^^^^^^^^^
+>         kunmap(page);
+> -       pgtable_page_ctor(page);
+> +       if (!pgtable_page_ctor(page)) {
+> +               __free_page(page);
 
-Thanks,
+Shouldn't you mark the page cacheable again, like is done in pte_free()?
 
-I've taken a quick look over this and it seems reasonable to me.
-However, I wonder if I should wait for review of the kernel-side
-to be completed before applying the kexec-tools patches.
+> +               return NULL;
+> +       }
+>         return page;
+>  }
+>
+> diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+> index 48d80d5a66..f868506e33 100644
+> --- a/arch/m68k/include/asm/sun3_pgalloc.h
+> +++ b/arch/m68k/include/asm/sun3_pgalloc.h
+> @@ -59,7 +59,10 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm,
+>                 return NULL;
+>
+>         clear_highpage(page);
+> -       pgtable_page_ctor(page);
+> +       if (!pgtable_page_ctor(page)) {
+> +               __free_page(page);
+> +               return NULL;
+> +       }
+>         return page;
 
-Let me know what you think.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
