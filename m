@@ -1,135 +1,86 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 16/16] m68k: Remove superfluous inclusions of <asm/bootinfo.h>
-Date: Wed, 16 Oct 2013 14:31:33 +0200
-Message-ID: <1381926693-6392-17-git-send-email-geert__36125.0863330953$1381926827$gmane$org@linux-m68k.org>
+Subject: [PATCH 14/16] m68k/UAPI: Move VME Board ID definition to <asm/bootinfo-vme.h>
+Date: Wed, 16 Oct 2013 14:31:31 +0200
+Message-ID: <1381926693-6392-15-git-send-email-geert@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, David Howells <dhowells@redhat.com>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: David Howells <dhowells@redhat.com>
 ---
- arch/m68k/mac/iop.c                     |    1 -
- arch/m68k/mac/misc.c                    |    1 -
- arch/m68k/mac/oss.c                     |    1 -
- arch/m68k/mac/psc.c                     |    1 -
- arch/m68k/mac/via.c                     |    1 -
- arch/m68k/sun3x/prom.c                  |    1 -
- drivers/net/ethernet/natsemi/macsonic.c |    1 -
- drivers/video/macfb.c                   |    1 -
- drivers/video/valkyriefb.c              |    1 -
- 9 files changed, 9 deletions(-)
+ arch/m68k/include/asm/mvme16xhw.h         |   15 ---------------
+ arch/m68k/include/uapi/asm/bootinfo-vme.h |   25 +++++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index ed0d9b0473ea..4d2adfb32a2a 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -111,7 +111,6 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
+diff --git a/arch/m68k/include/asm/mvme16xhw.h b/arch/m68k/include/asm/mvme16xhw.h
+index 87fa84ad252e..1eb89de631e5 100644
+--- a/arch/m68k/include/asm/mvme16xhw.h
++++ b/arch/m68k/include/asm/mvme16xhw.h
+@@ -3,21 +3,6 @@
  
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 3d02a3c3a93a..707b61aea203 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -25,7 +25,6 @@
- #include <asm/mac_via.h>
- #include <asm/mac_oss.h>
+ #include <asm/irq.h>
  
--#include <asm/bootinfo.h>
- #include <asm/machdep.h>
+-/* Board ID data structure - pointer to this retrieved from Bug by head.S */
+-
+-/* Note, bytes 12 and 13 are board no in BCD (0162,0166,0167,0177,etc) */
+-
+-typedef struct {
+-	char	bdid[4];
+-	u_char	rev, mth, day, yr;
+-	u_short	size, reserved;
+-	u_short	brdno;
+-	char brdsuffix[2];
+-	u_long	options;
+-	u_short	clun, dlun, ctype, dnum;
+-	u_long	option2;
+-} t_bdid, *p_bdid;
+-
  
- /* Offset between Unix time (1970-based) and Mac time (1904-based) */
-diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index 6c4c882c126e..54037125ebf8 100644
---- a/arch/m68k/mac/oss.c
-+++ b/arch/m68k/mac/oss.c
-@@ -21,7 +21,6 @@
- #include <linux/init.h>
- #include <linux/irq.h>
+ typedef struct {
+ 	u_char	ack_icr,
+diff --git a/arch/m68k/include/uapi/asm/bootinfo-vme.h b/arch/m68k/include/uapi/asm/bootinfo-vme.h
+index 4643a55ed768..13ba5e19fe24 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo-vme.h
++++ b/arch/m68k/include/uapi/asm/bootinfo-vme.h
+@@ -28,11 +28,32 @@
+ #define VME_TYPE_BVME4000	0x4000	/* BVM Ltd. BVME4000 */
+ #define VME_TYPE_BVME6000	0x6000	/* BVM Ltd. BVME6000 */
  
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_via.h>
-diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-index cc9f3f097be7..835fa04511c8 100644
---- a/arch/m68k/mac/psc.c
-+++ b/arch/m68k/mac/psc.c
-@@ -21,7 +21,6 @@
- #include <linux/irq.h>
+-/* BI_VME_BRDINFO is a 32 byte struct as returned by the Bug code on
++
++#ifndef __ASSEMBLY__
++
++/*
++ * Board ID data structure - pointer to this retrieved from Bug by head.S
++ *
++ * BI_VME_BRDINFO is a 32 byte struct as returned by the Bug code on
+  * Motorola VME boards.  Contains board number, Bug version, board
+- * configuration options, etc.  See include/asm/mvme16xhw.h for details.
++ * configuration options, etc.
++ *
++ * Note, bytes 12 and 13 are board no in BCD (0162,0166,0167,0177,etc)
+  */
  
- #include <asm/traps.h>
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_psc.h>
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 5d1458bb871b..e198dec868e4 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -30,7 +30,6 @@
- #include <linux/module.h>
- #include <linux/irq.h>
++typedef struct {
++	char	bdid[4];
++	u_char	rev, mth, day, yr;
++	u_short	size, reserved;
++	u_short	brdno;
++	char	brdsuffix[2];
++	u_long	options;
++	u_short	clun, dlun, ctype, dnum;
++	u_long	option2;
++} t_bdid, *p_bdid;
++
++#endif /* __ASSEMBLY__ */
++
  
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_via.h>
-diff --git a/arch/m68k/sun3x/prom.c b/arch/m68k/sun3x/prom.c
-index a7b7e818d627..0898c3f81508 100644
---- a/arch/m68k/sun3x/prom.c
-+++ b/arch/m68k/sun3x/prom.c
-@@ -10,7 +10,6 @@
- 
- #include <asm/page.h>
- #include <asm/pgtable.h>
--#include <asm/bootinfo.h>
- #include <asm/setup.h>
- #include <asm/traps.h>
- #include <asm/sun3xprom.h>
-diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
-index 346a4e025c34..04b3ec1352f1 100644
---- a/drivers/net/ethernet/natsemi/macsonic.c
-+++ b/drivers/net/ethernet/natsemi/macsonic.c
-@@ -52,7 +52,6 @@
- #include <linux/bitrev.h>
- #include <linux/slab.h>
- 
--#include <asm/bootinfo.h>
- #include <asm/pgtable.h>
- #include <asm/io.h>
- #include <asm/hwtest.h>
-diff --git a/drivers/video/macfb.c b/drivers/video/macfb.c
-index fe01add3700e..945779cc7672 100644
---- a/drivers/video/macfb.c
-+++ b/drivers/video/macfb.c
-@@ -34,7 +34,6 @@
- #include <linux/fb.h>
- 
- #include <asm/setup.h>
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #include <asm/io.h>
- 
-diff --git a/drivers/video/valkyriefb.c b/drivers/video/valkyriefb.c
-index 3f5a041601da..88f911e9e612 100644
---- a/drivers/video/valkyriefb.c
-+++ b/drivers/video/valkyriefb.c
-@@ -56,7 +56,6 @@
- #include <linux/cuda.h>
- #include <asm/io.h>
- #ifdef CONFIG_MAC
--#include <asm/bootinfo.h>
- #include <asm/macintosh.h>
- #else
- #include <asm/prom.h>
+     /*
+      *  Latest VME bootinfo versions
 -- 
 1.7.9.5
