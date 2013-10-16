@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 06/16] m68k/mac: Remove unused hardware profile tags
-Date: Wed, 16 Oct 2013 14:31:23 +0200
-Message-ID: <1381926693-6392-7-git-send-email-geert__169.795848387544$1381926957$gmane$org@linux-m68k.org>
+Subject: [PATCH 02/16] m68k: The bootinfo is located right after the kernel
+Date: Wed, 16 Oct 2013 14:31:19 +0200
+Message-ID: <1381926693-6392-3-git-send-email-geert__25474.8295098127$1381926966$gmane$org@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
@@ -10,45 +10,55 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+Since the introduction of init sections (which are located after BSS), the
+bootinfo is no longer located right after the BSS, but after all kernel
+sections.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/bootinfo.h |   24 ------------------------
- 1 file changed, 24 deletions(-)
+ arch/m68k/include/asm/bootinfo.h |    2 +-
+ arch/m68k/kernel/head.S          |    2 +-
+ arch/m68k/kernel/setup_mm.c      |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
-index ef888d4af4e6..007c95759e6b 100644
+index 3c2da7bd057f..a66a7f9200f7 100644
 --- a/arch/m68k/include/asm/bootinfo.h
 +++ b/arch/m68k/include/asm/bootinfo.h
-@@ -149,30 +149,6 @@ static inline void save_bootinfo(const struct bi_record *bi) {}
- #define BI_MAC_CPUID		0x800a	/* Mac CPU type (sanity check) */
- #define BI_MAC_ROMBASE		0x800b	/* Mac system ROM base address */
+@@ -34,7 +34,7 @@
+      *  This way I hope to keep all future changes back/forewards compatible.
+      *  Thus, keep your fingers crossed...
+      *
+-     *  This structure is copied right after the kernel bss by the bootstrap
++     *  This structure is copied right after the kernel by the bootstrap
+      *  routine.
+      */
  
--    /*
--     *  Macintosh hardware profile data - unused, see macintosh.h for
--     *  reasonable type values
--     */
--
--#define BI_MAC_VIA1BASE		0x8010	/* Mac VIA1 base address (always present) */
--#define BI_MAC_VIA2BASE		0x8011	/* Mac VIA2 base address (type varies) */
--#define BI_MAC_VIA2TYPE		0x8012	/* Mac VIA2 type (VIA, RBV, OSS) */
--#define BI_MAC_ADBTYPE		0x8013	/* Mac ADB interface type */
--#define BI_MAC_ASCBASE		0x8014	/* Mac Apple Sound Chip base address */
--#define BI_MAC_SCSI5380		0x8015	/* Mac NCR 5380 SCSI (base address, multi) */
--#define BI_MAC_SCSIDMA		0x8016	/* Mac SCSI DMA (base address) */
--#define BI_MAC_SCSI5396		0x8017	/* Mac NCR 53C96 SCSI (base address, multi) */
--#define BI_MAC_IDETYPE		0x8018	/* Mac IDE interface type */
--#define BI_MAC_IDEBASE		0x8019	/* Mac IDE interface base address */
--#define BI_MAC_NUBUS		0x801a	/* Mac Nubus type (none, regular, pseudo) */
--#define BI_MAC_SLOTMASK		0x801b	/* Mac Nubus slots present */
--#define BI_MAC_SCCTYPE		0x801c	/* Mac SCC serial type (normal, IOP) */
--#define BI_MAC_ETHTYPE		0x801d	/* Mac builtin ethernet type (Sonic, MACE */
--#define BI_MAC_ETHBASE		0x801e	/* Mac builtin ethernet base address */
--#define BI_MAC_PMU		0x801f	/* Mac power management / poweroff hardware */
--#define BI_MAC_IOP_SWIM		0x8020	/* Mac SWIM floppy IOP */
--#define BI_MAC_IOP_ADB		0x8021	/* Mac ADB IOP */
--
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index ac85f16534af..fb348caa734e 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -1532,7 +1532,7 @@ L(cache_done):
  
-     /*
-      *  Apollo-specific tags
+ /*
+  * Find a tag record in the bootinfo structure
+- * The bootinfo structure is located right after the kernel bss
++ * The bootinfo structure is located right after the kernel
+  * Returns: d0: size (-1 if not found)
+  *          a0: data pointer (end-of-records if not found)
+  */
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 2299080d77f2..b979a3781dcb 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -222,7 +222,7 @@ void __init setup_arch(char **cmdline_p)
+ 	int i;
+ #endif
+ 
+-	/* The bootinfo is located right after the kernel bss */
++	/* The bootinfo is located right after the kernel */
+ 	if (!CPU_IS_COLDFIRE)
+ 		m68k_parse_bootinfo((const struct bi_record *)_end);
+ 
 -- 
 1.7.9.5
