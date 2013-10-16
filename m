@@ -1,44 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/3] kexec: Add debug printing of kimage table entries
-Date: Tue, 15 Oct 2013 22:03:58 +0200
-Message-ID: <CAMuHMdWfk5awf3ycuY0ULyzk-8gc209p0DGDXwYEM2si6KpCuw__32826.8127203502$1381867460$gmane$org@mail.gmail.com>
-References: <1381859307-11932-1-git-send-email-geert@linux-m68k.org>
-	<1381859307-11932-2-git-send-email-geert@linux-m68k.org>
-	<8761sy1gmb.fsf@xmission.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH v2 0/3] kexec support for Linux/m68k (tools part)
+Date: Wed, 16 Oct 2013 16:22:36 +0900
+Message-ID: <20131016072236.GB29696@verge.net.au>
+References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <8761sy1gmb.fsf@xmission.com>
+Content-Disposition: inline
+In-Reply-To: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, kexec@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
 
-On Tue, Oct 15, 2013 at 9:25 PM, Eric W. Biederman
-<ebiederm@xmission.com> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> Print a list of pages to be copied if debugging is enabled.
->> Consecutive entries are merged to reduce screen clutter.
->
-> Why is this desirable?
->
-> I can understand this as debugging code to understand what is happening,
-> but why would we want to maintain this print statement long term?
+On Tue, Oct 15, 2013 at 07:50:57PM +0200, Geert Uytterhoeven wrote:
+> kexec support for Linux/m68k (tools part)
+> 
+> This is a set of patches to add kexec support for m68k to kexec-tools.
+> 
+>   - Kexec only, no kdump support yet (do you have enough RAM to keep a
+>     crashdump kernel in memory at all times? ;-)
+> 
+> Patches:
+>   - [PATCH 1/3] kexec: Let slurp_file_len() return the number of bytes
+>       - v2: no changes
+>   - [PATCH 2/3] kexec: Extract slurp_fd()
+>       - v2: new patch
+>   - [PATCH 3/3] kexec: Add m68k support
+>       - v2:
+> 	  - Fix handling of virtual and physical addresses, for machines where
+> 	    memory doesn't start at zero,
+> 	  - Print a warning if the kernel size exceeds 4 MiB, as current kernels
+> 	    cannot handle that,
+> 	  - Check struct bootversion at the start of the kernel, and print a
+> 	    warning if it cannot be found or doesn't match,
+> 	  - Replace literal 4096 by PAGE_SIZE,
+> 	  - Handle removal of page zero at the ELF program segment level, as
+> 	    m68kboot does,
+> 	  - Remove -PAGE_SIZE for the ramdisk location now the bug in
+>             locate_hole() is fixed,
+> 	  - Use endian-correct types for bootinfo,
+> 	  - Remove unused -? option handling, cfr. commit
+> 	    bf9d0f055c791a26b2237b5a12b48ae1b7e0d550 ("kexec: Remove unused -?
+> 	    option handling"),
+> 	  - Use <asm/bootinfo.h> instead of our own definitions.
+> 
+> Notes:
+>   - Based on git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git
+> 
+>   - Tagged bootinfo is read from /proc/bootinfo by default, but this can be
+>     overridden using --bootinfo. No bootinfo editor is provided.
+>     The kexec command will replace/delete command line and ramdisk tags in the
+>     bootinfo.
 
-Because the next person who ports kexec to a new platform may need it,
-so he doesn't have to reimplement the wheel?
+Thanks,
 
-It's disabled by default.
+I've taken a quick look over this and it seems reasonable to me.
+However, I wonder if I should wait for review of the kernel-side
+to be completed before applying the kexec-tools patches.
 
-It also serves as documentation for the indirection page.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Let me know what you think.
