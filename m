@@ -1,74 +1,52 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 5/8] zorro: Let the driver core handle device enumeration
-Date: Wed, 16 Oct 2013 13:03:22 +0200
-Message-ID: <1381921405-11206-6-git-send-email-geert__35294.1398429268$1381921562$gmane$org@linux-m68k.org>
-References: <1381921405-11206-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 00/16] m68k bootinfo updates
+Date: Wed, 16 Oct 2013 14:31:17 +0200
+Message-ID: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1381921405-11206-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org
 
-Filling in dev_name of the Zorro bus type and dev.id of each device allows
-the driver core to enumerate devices, so we don't have to do that
-ourselves.
+This patch series cleans up various definitions used in the Linux/m68k
+bootinfo API, and exports the public definitions in
+  - <asm/bootinfo.h>, for generic definitions,
+  - <asm/bootinfo-<mach>>, for machine-specific definitions.
+Hence those are the only header files needed by bootstraps (Amiga
+bootstraps also need <linux/zorro.h> and <linux/zorro_id.h>).
 
-This changes the names of devices in sysfs from "%02x" to "zorro%u".
+This will add more compile-breakage to bootstraps that do not have a
+private copy of the bootinfo definitions. But given those bootstrap sources
+already rely on header files that are currently not exported, they need
+fixes anyway.
 
-Note that filling in dev.id is also needed to support MFD Zorro devices.
+  - [01/16] block/z2ram: Remove duplicate external declarations
+  - [02/16] m68k: The bootinfo is located right after the kernel
+  - [03/16] m68k: head.S - Correct date and spelling
+  - [04/16] m68k: Drop remainings and API of BOOTINFO_COMPAT_1_0
+  - [05/16] m68k/mac: Move struct mac_booter_data to <asm/macintosh.h>
+  - [06/16] m68k/mac: Remove unused hardware profile tags
+  - [07/16] m68k/vme: Remove unused mvme_bdid_ptr
+  - [08/16] m68k/UAPI: Disintegrate arch/m68k/include/asm/bootinfo.h
+  - [09/16] m68k/UAPI: Move generic definitions to <asm/bootinfo.h>
+  - [10/16] m68k/UAPI: Move Amiga model/chipset definitions to
+	    <asm/bootinfo-amiga.h>
+  - [11/16] m68k/UAPI: Move Apollo model definitions to <asm/bootinfo-apollo.h>
+  - [12/16] m68k/UAPI: Move HP300 model definitions to <asm/bootinfo-hp300.h>
+  - [13/16] m68k/UAPI: Move Macintosh model definitions to <asm/bootinfo-mac.h>
+  - [14/16] m68k/UAPI: Move VME Board ID definition to <asm/bootinfo-vme.h>
+  - [15/16] m68k/UAPI: Use proper types (endianness/size) in <asm/bootinfo*.h>
+  - [16/16] m68k: Remove superfluous inclusions of <asm/bootinfo.h>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/zorro/zorro-driver.c |   11 ++++++-----
- drivers/zorro/zorro.c        |    4 ++--
- 2 files changed, 8 insertions(+), 7 deletions(-)
+All comments are welcome!
 
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index ac1db7f1bcab..eacae1434b73 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -161,11 +161,12 @@ static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
- }
- 
- struct bus_type zorro_bus_type = {
--	.name	= "zorro",
--	.match	= zorro_bus_match,
--	.uevent	= zorro_uevent,
--	.probe	= zorro_device_probe,
--	.remove	= zorro_device_remove,
-+	.name     = "zorro",
-+	.dev_name = "zorro",
-+	.match    = zorro_bus_match,
-+	.uevent   = zorro_uevent,
-+	.probe    = zorro_device_probe,
-+	.remove   = zorro_device_remove,
- };
- EXPORT_SYMBOL(zorro_bus_type);
- 
-diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
-index 10c7f77aec08..450abf100f06 100644
---- a/drivers/zorro/zorro.c
-+++ b/drivers/zorro/zorro.c
-@@ -142,7 +142,7 @@ static int __init amiga_zorro_probe(struct platform_device *pdev)
- 
- 	zorro_autocon = bus->devices;
- 	bus->dev.parent = &pdev->dev;
--	dev_set_name(&bus->dev, "zorro");
-+	dev_set_name(&bus->dev, zorro_bus_type.name);
- 	error = device_register(&bus->dev);
- 	if (error) {
- 		pr_err("Zorro: Error registering zorro_bus\n");
-@@ -180,9 +180,9 @@ static int __init amiga_zorro_probe(struct platform_device *pdev)
- 			dev_err(&bus->dev,
- 				"Address space collision on device %s %pR\n",
- 				z->name, &z->resource);
--		dev_set_name(&z->dev, "%02x", i);
- 		z->dev.parent = &bus->dev;
- 		z->dev.bus = &zorro_bus_type;
-+		z->dev.id = i;
- 	}
- 
- 	/* ... then register them */
--- 
-1.7.9.5
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
