@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 14/16] m68k/UAPI: Move VME Board ID definition to <asm/bootinfo-vme.h>
-Date: Wed, 16 Oct 2013 14:31:31 +0200
-Message-ID: <1381926693-6392-15-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 13/16] m68k/UAPI: Move Macintosh model definitions to <asm/bootinfo-mac.h>
+Date: Wed, 16 Oct 2013 14:31:30 +0200
+Message-ID: <1381926693-6392-14-git-send-email-geert@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
@@ -13,74 +13,160 @@ Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Dav
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: David Howells <dhowells@redhat.com>
 ---
- arch/m68k/include/asm/mvme16xhw.h         |   15 ---------------
- arch/m68k/include/uapi/asm/bootinfo-vme.h |   25 +++++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 17 deletions(-)
+ arch/m68k/include/asm/macintosh.h         |   62 ++---------------------------
+ arch/m68k/include/uapi/asm/bootinfo-mac.h |   60 ++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+), 59 deletions(-)
 
-diff --git a/arch/m68k/include/asm/mvme16xhw.h b/arch/m68k/include/asm/mvme16xhw.h
-index 87fa84ad252e..1eb89de631e5 100644
---- a/arch/m68k/include/asm/mvme16xhw.h
-+++ b/arch/m68k/include/asm/mvme16xhw.h
-@@ -3,21 +3,6 @@
+diff --git a/arch/m68k/include/asm/macintosh.h b/arch/m68k/include/asm/macintosh.h
+index 6a633eb64331..d323b2c2d07d 100644
+--- a/arch/m68k/include/asm/macintosh.h
++++ b/arch/m68k/include/asm/macintosh.h
+@@ -4,6 +4,9 @@
+ #include <linux/seq_file.h>
+ #include <linux/interrupt.h>
  
- #include <asm/irq.h>
- 
--/* Board ID data structure - pointer to this retrieved from Bug by head.S */
--
--/* Note, bytes 12 and 13 are board no in BCD (0162,0166,0167,0177,etc) */
--
--typedef struct {
--	char	bdid[4];
--	u_char	rev, mth, day, yr;
--	u_short	size, reserved;
--	u_short	brdno;
--	char brdsuffix[2];
--	u_long	options;
--	u_short	clun, dlun, ctype, dnum;
--	u_long	option2;
--} t_bdid, *p_bdid;
--
- 
- typedef struct {
- 	u_char	ack_icr,
-diff --git a/arch/m68k/include/uapi/asm/bootinfo-vme.h b/arch/m68k/include/uapi/asm/bootinfo-vme.h
-index 4643a55ed768..13ba5e19fe24 100644
---- a/arch/m68k/include/uapi/asm/bootinfo-vme.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo-vme.h
-@@ -28,11 +28,32 @@
- #define VME_TYPE_BVME4000	0x4000	/* BVM Ltd. BVME4000 */
- #define VME_TYPE_BVME6000	0x6000	/* BVM Ltd. BVME6000 */
- 
--/* BI_VME_BRDINFO is a 32 byte struct as returned by the Bug code on
++#include <asm/bootinfo-mac.h>
 +
-+#ifndef __ASSEMBLY__
 +
-+/*
-+ * Board ID data structure - pointer to this retrieved from Bug by head.S
-+ *
-+ * BI_VME_BRDINFO is a 32 byte struct as returned by the Bug code on
-  * Motorola VME boards.  Contains board number, Bug version, board
-- * configuration options, etc.  See include/asm/mvme16xhw.h for details.
-+ * configuration options, etc.
-+ *
-+ * Note, bytes 12 and 13 are board no in BCD (0162,0166,0167,0177,etc)
+ /*
+  *	Apple Macintoshisms
   */
+@@ -74,65 +77,6 @@ struct mac_model
+ #define MAC_FLOPPY_SWIM_IOP	3
+ #define MAC_FLOPPY_AV		4
  
-+typedef struct {
-+	char	bdid[4];
-+	u_char	rev, mth, day, yr;
-+	u_short	size, reserved;
-+	u_short	brdno;
-+	char	brdsuffix[2];
-+	u_long	options;
-+	u_short	clun, dlun, ctype, dnum;
-+	u_long	option2;
-+} t_bdid, *p_bdid;
-+
-+#endif /* __ASSEMBLY__ */
-+
+-/*
+- *	Gestalt numbers
+- */
+-
+-#define MAC_MODEL_II		6
+-#define MAC_MODEL_IIX		7
+-#define MAC_MODEL_IICX		8
+-#define MAC_MODEL_SE30		9
+-#define MAC_MODEL_IICI		11
+-#define MAC_MODEL_IIFX		13	/* And well numbered it is too */
+-#define MAC_MODEL_IISI		18
+-#define MAC_MODEL_LC		19
+-#define MAC_MODEL_Q900		20
+-#define MAC_MODEL_PB170		21
+-#define MAC_MODEL_Q700		22
+-#define MAC_MODEL_CLII		23	/* aka: P200 */
+-#define MAC_MODEL_PB140		25
+-#define MAC_MODEL_Q950		26	/* aka: WGS95 */
+-#define MAC_MODEL_LCIII		27	/* aka: P450 */
+-#define MAC_MODEL_PB210		29
+-#define MAC_MODEL_C650		30
+-#define MAC_MODEL_PB230		32
+-#define MAC_MODEL_PB180		33
+-#define MAC_MODEL_PB160		34
+-#define MAC_MODEL_Q800		35	/* aka: WGS80 */
+-#define MAC_MODEL_Q650		36
+-#define MAC_MODEL_LCII		37	/* aka: P400/405/410/430 */
+-#define MAC_MODEL_PB250		38
+-#define MAC_MODEL_IIVI		44
+-#define MAC_MODEL_P600		45	/* aka: P600CD */
+-#define MAC_MODEL_IIVX		48
+-#define MAC_MODEL_CCL		49	/* aka: P250 */
+-#define MAC_MODEL_PB165C	50
+-#define MAC_MODEL_C610		52	/* aka: WGS60 */
+-#define MAC_MODEL_Q610		53
+-#define MAC_MODEL_PB145		54	/* aka: PB145B */
+-#define MAC_MODEL_P520		56	/* aka: LC520 */
+-#define MAC_MODEL_C660		60
+-#define MAC_MODEL_P460		62	/* aka: LCIII+, P466/P467 */
+-#define MAC_MODEL_PB180C	71
+-#define MAC_MODEL_PB520		72	/* aka: PB520C, PB540, PB540C, PB550C */
+-#define MAC_MODEL_PB270C	77
+-#define MAC_MODEL_Q840		78
+-#define MAC_MODEL_P550		80	/* aka: LC550, P560 */
+-#define MAC_MODEL_CCLII		83	/* aka: P275 */
+-#define MAC_MODEL_PB165		84
+-#define MAC_MODEL_PB190		85	/* aka: PB190CS */
+-#define MAC_MODEL_TV		88
+-#define MAC_MODEL_P475		89	/* aka: LC475, P476 */
+-#define MAC_MODEL_P475F		90	/* aka: P475 w/ FPU (no LC040) */
+-#define MAC_MODEL_P575		92	/* aka: LC575, P577/P578 */
+-#define MAC_MODEL_Q605		94
+-#define MAC_MODEL_Q605_ACC	95	/* Q605 accelerated to 33 MHz */
+-#define MAC_MODEL_Q630		98	/* aka: LC630, P630/631/635/636/637/638/640 */
+-#define MAC_MODEL_P588		99	/* aka: LC580, P580 */
+-#define MAC_MODEL_PB280		102
+-#define MAC_MODEL_PB280C	103
+-#define MAC_MODEL_PB150		115
+-
+ extern struct mac_model *macintosh_config;
+ 
+ 
+diff --git a/arch/m68k/include/uapi/asm/bootinfo-mac.h b/arch/m68k/include/uapi/asm/bootinfo-mac.h
+index 29a4109ab089..0667c041d1a7 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo-mac.h
++++ b/arch/m68k/include/uapi/asm/bootinfo-mac.h
+@@ -25,6 +25,66 @@
+ 
  
      /*
-      *  Latest VME bootinfo versions
++     * Macintosh Gestalt numbers (BI_MAC_MODEL)
++     */
++
++#define MAC_MODEL_II		6
++#define MAC_MODEL_IIX		7
++#define MAC_MODEL_IICX		8
++#define MAC_MODEL_SE30		9
++#define MAC_MODEL_IICI		11
++#define MAC_MODEL_IIFX		13	/* And well numbered it is too */
++#define MAC_MODEL_IISI		18
++#define MAC_MODEL_LC		19
++#define MAC_MODEL_Q900		20
++#define MAC_MODEL_PB170		21
++#define MAC_MODEL_Q700		22
++#define MAC_MODEL_CLII		23	/* aka: P200 */
++#define MAC_MODEL_PB140		25
++#define MAC_MODEL_Q950		26	/* aka: WGS95 */
++#define MAC_MODEL_LCIII		27	/* aka: P450 */
++#define MAC_MODEL_PB210		29
++#define MAC_MODEL_C650		30
++#define MAC_MODEL_PB230		32
++#define MAC_MODEL_PB180		33
++#define MAC_MODEL_PB160		34
++#define MAC_MODEL_Q800		35	/* aka: WGS80 */
++#define MAC_MODEL_Q650		36
++#define MAC_MODEL_LCII		37	/* aka: P400/405/410/430 */
++#define MAC_MODEL_PB250		38
++#define MAC_MODEL_IIVI		44
++#define MAC_MODEL_P600		45	/* aka: P600CD */
++#define MAC_MODEL_IIVX		48
++#define MAC_MODEL_CCL		49	/* aka: P250 */
++#define MAC_MODEL_PB165C	50
++#define MAC_MODEL_C610		52	/* aka: WGS60 */
++#define MAC_MODEL_Q610		53
++#define MAC_MODEL_PB145		54	/* aka: PB145B */
++#define MAC_MODEL_P520		56	/* aka: LC520 */
++#define MAC_MODEL_C660		60
++#define MAC_MODEL_P460		62	/* aka: LCIII+, P466/P467 */
++#define MAC_MODEL_PB180C	71
++#define MAC_MODEL_PB520		72	/* aka: PB520C, PB540, PB540C, PB550C */
++#define MAC_MODEL_PB270C	77
++#define MAC_MODEL_Q840		78
++#define MAC_MODEL_P550		80	/* aka: LC550, P560 */
++#define MAC_MODEL_CCLII		83	/* aka: P275 */
++#define MAC_MODEL_PB165		84
++#define MAC_MODEL_PB190		85	/* aka: PB190CS */
++#define MAC_MODEL_TV		88
++#define MAC_MODEL_P475		89	/* aka: LC475, P476 */
++#define MAC_MODEL_P475F		90	/* aka: P475 w/ FPU (no LC040) */
++#define MAC_MODEL_P575		92	/* aka: LC575, P577/P578 */
++#define MAC_MODEL_Q605		94
++#define MAC_MODEL_Q605_ACC	95	/* Q605 accelerated to 33 MHz */
++#define MAC_MODEL_Q630		98	/* aka: LC630, P630/631/635/636/637/638/640 */
++#define MAC_MODEL_P588		99	/* aka: LC580, P580 */
++#define MAC_MODEL_PB280		102
++#define MAC_MODEL_PB280C	103
++#define MAC_MODEL_PB150		115
++
++
++    /*
+      *  Latest Macintosh bootinfo version
+      */
+ 
 -- 
 1.7.9.5
