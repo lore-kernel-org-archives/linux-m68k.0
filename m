@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 07/16] m68k/vme: Remove unused mvme_bdid_ptr
-Date: Wed, 16 Oct 2013 14:31:24 +0200
-Message-ID: <1381926693-6392-8-git-send-email-geert__29829.6202476651$1381926918$gmane$org@linux-m68k.org>
+Subject: [PATCH 06/16] m68k/mac: Remove unused hardware profile tags
+Date: Wed, 16 Oct 2013 14:31:23 +0200
+Message-ID: <1381926693-6392-7-git-send-email-geert__169.795848387544$1381926957$gmane$org@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
@@ -12,21 +12,43 @@ Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/mvme16xhw.h |    2 --
- 1 file changed, 2 deletions(-)
+ arch/m68k/include/asm/bootinfo.h |   24 ------------------------
+ 1 file changed, 24 deletions(-)
 
-diff --git a/arch/m68k/include/asm/mvme16xhw.h b/arch/m68k/include/asm/mvme16xhw.h
-index 6117f56653d2..87fa84ad252e 100644
---- a/arch/m68k/include/asm/mvme16xhw.h
-+++ b/arch/m68k/include/asm/mvme16xhw.h
-@@ -7,8 +7,6 @@
+diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
+index ef888d4af4e6..007c95759e6b 100644
+--- a/arch/m68k/include/asm/bootinfo.h
++++ b/arch/m68k/include/asm/bootinfo.h
+@@ -149,30 +149,6 @@ static inline void save_bootinfo(const struct bi_record *bi) {}
+ #define BI_MAC_CPUID		0x800a	/* Mac CPU type (sanity check) */
+ #define BI_MAC_ROMBASE		0x800b	/* Mac system ROM base address */
  
- /* Note, bytes 12 and 13 are board no in BCD (0162,0166,0167,0177,etc) */
- 
--extern long mvme_bdid_ptr;
+-    /*
+-     *  Macintosh hardware profile data - unused, see macintosh.h for
+-     *  reasonable type values
+-     */
 -
- typedef struct {
- 	char	bdid[4];
- 	u_char	rev, mth, day, yr;
+-#define BI_MAC_VIA1BASE		0x8010	/* Mac VIA1 base address (always present) */
+-#define BI_MAC_VIA2BASE		0x8011	/* Mac VIA2 base address (type varies) */
+-#define BI_MAC_VIA2TYPE		0x8012	/* Mac VIA2 type (VIA, RBV, OSS) */
+-#define BI_MAC_ADBTYPE		0x8013	/* Mac ADB interface type */
+-#define BI_MAC_ASCBASE		0x8014	/* Mac Apple Sound Chip base address */
+-#define BI_MAC_SCSI5380		0x8015	/* Mac NCR 5380 SCSI (base address, multi) */
+-#define BI_MAC_SCSIDMA		0x8016	/* Mac SCSI DMA (base address) */
+-#define BI_MAC_SCSI5396		0x8017	/* Mac NCR 53C96 SCSI (base address, multi) */
+-#define BI_MAC_IDETYPE		0x8018	/* Mac IDE interface type */
+-#define BI_MAC_IDEBASE		0x8019	/* Mac IDE interface base address */
+-#define BI_MAC_NUBUS		0x801a	/* Mac Nubus type (none, regular, pseudo) */
+-#define BI_MAC_SLOTMASK		0x801b	/* Mac Nubus slots present */
+-#define BI_MAC_SCCTYPE		0x801c	/* Mac SCC serial type (normal, IOP) */
+-#define BI_MAC_ETHTYPE		0x801d	/* Mac builtin ethernet type (Sonic, MACE */
+-#define BI_MAC_ETHBASE		0x801e	/* Mac builtin ethernet base address */
+-#define BI_MAC_PMU		0x801f	/* Mac power management / poweroff hardware */
+-#define BI_MAC_IOP_SWIM		0x8020	/* Mac SWIM floppy IOP */
+-#define BI_MAC_IOP_ADB		0x8021	/* Mac ADB IOP */
+-
+ 
+     /*
+      *  Apollo-specific tags
 -- 
 1.7.9.5
