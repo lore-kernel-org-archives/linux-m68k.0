@@ -1,313 +1,172 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 09/16] m68k/UAPI: Move generic definitions to <asm/bootinfo.h>
-Date: Wed, 16 Oct 2013 14:31:26 +0200
-Message-ID: <1381926693-6392-10-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 04/16] m68k: Drop remainings and API of BOOTINFO_COMPAT_1_0
+Date: Wed, 16 Oct 2013 14:31:21 +0200
+Message-ID: <1381926693-6392-5-git-send-email-geert__23818.8515337699$1381926734$gmane$org@linux-m68k.org>
 References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, David Howells <dhowells@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Move generic definitions used by bootstraps to uapi/asm/bootinfo.h:
-  - Machine types,
-  - CPU, FPU, and MMU types,
-  - struct mem_info.
+Drop remainings and API for backwards compatibility with bootinfo interface
+version 1.0.  This was used when booting a 2.1.x or newer kernel on Amiga,
+Atari, or Mac using a bootstrap for kernel 2.0.x.
 
-Keep a copy of struct mem_info for in-kernel use, and rename it to struct
-m68k_mem_info, as the exported one will be modified later.
+Everybody upgraded his bootstrap a long time ago, so this can go.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Howells <dhowells@redhat.com>
 ---
- arch/m68k/include/asm/setup.h         |    5 +-
- arch/m68k/include/uapi/asm/bootinfo.h |   80 +++++++++++++++++++++++++++++-
- arch/m68k/include/uapi/asm/setup.h    |   87 ---------------------------------
- arch/m68k/kernel/setup_mm.c           |    4 +-
- arch/m68k/mm/init.c                   |    2 +-
- arch/m68k/mm/motorola.c               |    2 +-
- 6 files changed, 85 insertions(+), 95 deletions(-)
+ arch/m68k/include/asm/bootinfo.h |  112 --------------------------------------
+ arch/m68k/mac/config.c           |    1 -
+ arch/m68k/mac/misc.c             |    1 -
+ 3 files changed, 114 deletions(-)
 
-diff --git a/arch/m68k/include/asm/setup.h b/arch/m68k/include/asm/setup.h
-index 65e78a2dad64..8f2023f8c1c4 100644
---- a/arch/m68k/include/asm/setup.h
-+++ b/arch/m68k/include/asm/setup.h
-@@ -22,6 +22,7 @@
- #ifndef _M68K_SETUP_H
- #define _M68K_SETUP_H
+diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
+index a66a7f9200f7..b992aa726082 100644
+--- a/arch/m68k/include/asm/bootinfo.h
++++ b/arch/m68k/include/asm/bootinfo.h
+@@ -269,116 +269,4 @@ struct bootversion {
+ #define Q40_BOOTI_VERSION      MK_BI_VERSION( 2, 0 )
+ #define HP300_BOOTI_VERSION    MK_BI_VERSION( 2, 0 )
  
-+#include <uapi/asm/bootinfo.h>
- #include <uapi/asm/setup.h>
- 
- 
-@@ -297,14 +298,14 @@ extern int m68k_is040or060;
- #define NUM_MEMINFO	4
- 
- #ifndef __ASSEMBLY__
--struct mem_info {
-+struct m68k_mem_info {
- 	unsigned long addr;		/* physical address of memory chunk */
- 	unsigned long size;		/* length of memory chunk (in bytes) */
- };
- 
- extern int m68k_num_memory;		/* # of memory blocks found (and used) */
- extern int m68k_realnum_memory;		/* real # of memory blocks found */
--extern struct mem_info m68k_memory[NUM_MEMINFO];/* memory description */
-+extern struct m68k_mem_info m68k_memory[NUM_MEMINFO];/* memory description */
- #endif
- 
- #endif /* _M68K_SETUP_H */
-diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
-index 74a6fae2a5bf..9d64599d7bf5 100644
---- a/arch/m68k/include/uapi/asm/bootinfo.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo.h
-@@ -11,8 +11,6 @@
- #ifndef _UAPI_ASM_M68K_BOOTINFO_H
- #define _UAPI_ASM_M68K_BOOTINFO_H
- 
--#include <linux/types.h>
--
- 
- #ifndef __ASSEMBLY__
- 
-@@ -35,6 +33,12 @@ struct bi_record {
- 	unsigned long data[0];		/* data */
- };
- 
-+
-+struct mem_info {
-+	unsigned long addr;		/* physical address of memory chunk */
-+	unsigned long size;		/* length of memory chunk (in bytes) */
-+};
-+
- #endif /* __ASSEMBLY__ */
- 
- 
-@@ -59,6 +63,78 @@ struct bi_record {
- 
- 
-     /*
-+     *  Linux/m68k Architectures (BI_MACHTYPE)
-+     */
-+
-+#define MACH_AMIGA		1
-+#define MACH_ATARI		2
-+#define MACH_MAC		3
-+#define MACH_APOLLO		4
-+#define MACH_SUN3		5
-+#define MACH_MVME147		6
-+#define MACH_MVME16x		7
-+#define MACH_BVME6000		8
-+#define MACH_HP300		9
-+#define MACH_Q40		10
-+#define MACH_SUN3X		11
-+#define MACH_M54XX		12
-+
-+
-+    /*
-+     *  CPU, FPU and MMU types (BI_CPUTYPE, BI_FPUTYPE, BI_MMUTYPE)
-+     *
-+     *  Note: we may rely on the following equalities:
-+     *
-+     *      CPU_68020 == MMU_68851
-+     *      CPU_68030 == MMU_68030
-+     *      CPU_68040 == FPU_68040 == MMU_68040
-+     *      CPU_68060 == FPU_68060 == MMU_68060
-+     */
-+
-+#define CPUB_68020		0
-+#define CPUB_68030		1
-+#define CPUB_68040		2
-+#define CPUB_68060		3
-+#define CPUB_COLDFIRE		4
-+
-+#define CPU_68020		(1 << CPUB_68020)
-+#define CPU_68030		(1 << CPUB_68030)
-+#define CPU_68040		(1 << CPUB_68040)
-+#define CPU_68060		(1 << CPUB_68060)
-+#define CPU_COLDFIRE		(1 << CPUB_COLDFIRE)
-+
-+#define FPUB_68881		0
-+#define FPUB_68882		1
-+#define FPUB_68040		2	/* Internal FPU */
-+#define FPUB_68060		3	/* Internal FPU */
-+#define FPUB_SUNFPA		4	/* Sun-3 FPA */
-+#define FPUB_COLDFIRE		5	/* ColdFire FPU */
-+
-+#define FPU_68881		(1 << FPUB_68881)
-+#define FPU_68882		(1 << FPUB_68882)
-+#define FPU_68040		(1 << FPUB_68040)
-+#define FPU_68060		(1 << FPUB_68060)
-+#define FPU_SUNFPA		(1 << FPUB_SUNFPA)
-+#define FPU_COLDFIRE		(1 << FPUB_COLDFIRE)
-+
-+#define MMUB_68851		0
-+#define MMUB_68030		1	/* Internal MMU */
-+#define MMUB_68040		2	/* Internal MMU */
-+#define MMUB_68060		3	/* Internal MMU */
-+#define MMUB_APOLLO		4	/* Custom Apollo */
-+#define MMUB_SUN3		5	/* Custom Sun-3 */
-+#define MMUB_COLDFIRE		6	/* Internal MMU */
-+
-+#define MMU_68851		(1 << MMUB_68851)
-+#define MMU_68030		(1 << MMUB_68030)
-+#define MMU_68040		(1 << MMUB_68040)
-+#define MMU_68060		(1 << MMUB_68060)
-+#define MMU_SUN3		(1 << MMUB_SUN3)
-+#define MMU_APOLLO		(1 << MMUB_APOLLO)
-+#define MMU_COLDFIRE		(1 << MMUB_COLDFIRE)
-+
-+
-+    /*
-      * Stuff for bootinfo interface versioning
-      *
-      * At the start of kernel code, a 'struct bootversion' is located.
-diff --git a/arch/m68k/include/uapi/asm/setup.h b/arch/m68k/include/uapi/asm/setup.h
-index 85579bff455c..6a6dc636761e 100644
---- a/arch/m68k/include/uapi/asm/setup.h
-+++ b/arch/m68k/include/uapi/asm/setup.h
-@@ -6,98 +6,11 @@
- ** This file is subject to the terms and conditions of the GNU General Public
- ** License.  See the file COPYING in the main directory of this archive
- ** for more details.
--**
--** Created 09/29/92 by Greg Harp
--**
--** 5/2/94 Roman Hodek:
--**   Added bi_atari part of the machine dependent union bi_un; for now it
--**   contains just a model field to distinguish between TT and Falcon.
--** 26/7/96 Roman Zippel:
--**   Renamed to setup.h; added some useful macros to allow gcc some
--**   optimizations if possible.
--** 5/10/96 Geert Uytterhoeven:
--**   Redesign of the boot information structure; moved boot information
--**   structure to bootinfo.h
- */
- 
- #ifndef _UAPI_M68K_SETUP_H
- #define _UAPI_M68K_SETUP_H
- 
--
+-#ifdef BOOTINFO_COMPAT_1_0
 -
 -    /*
--     *  Linux/m68k Architectures
+-     *  Backwards compatibility with bootinfo interface version 1.0
 -     */
 -
--#define MACH_AMIGA    1
--#define MACH_ATARI    2
--#define MACH_MAC      3
--#define MACH_APOLLO   4
--#define MACH_SUN3     5
--#define MACH_MVME147  6
--#define MACH_MVME16x  7
--#define MACH_BVME6000 8
--#define MACH_HP300    9
--#define MACH_Q40     10
--#define MACH_SUN3X   11
--#define MACH_M54XX   12
+-#define COMPAT_AMIGA_BOOTI_VERSION    MK_BI_VERSION( 1, 0 )
+-#define COMPAT_ATARI_BOOTI_VERSION    MK_BI_VERSION( 1, 0 )
+-#define COMPAT_MAC_BOOTI_VERSION      MK_BI_VERSION( 1, 0 )
 -
- #define COMMAND_LINE_SIZE 256
+-#include <linux/zorro.h>
+-
+-#define COMPAT_NUM_AUTO    16
+-
+-struct compat_bi_Amiga {
+-    int model;
+-    int num_autocon;
+-    struct ConfigDev autocon[COMPAT_NUM_AUTO];
+-    unsigned long chip_size;
+-    unsigned char vblank;
+-    unsigned char psfreq;
+-    unsigned long eclock;
+-    unsigned long chipset;
+-    unsigned long hw_present;
+-};
+-
+-struct compat_bi_Atari {
+-    unsigned long hw_present;
+-    unsigned long mch_cookie;
+-};
+-
+-#ifndef __ASSEMBLY__
+-
+-struct compat_bi_Macintosh
+-{
+-	unsigned long videoaddr;
+-	unsigned long videorow;
+-	unsigned long videodepth;
+-	unsigned long dimensions;
+-	unsigned long args;
+-	unsigned long boottime;
+-	unsigned long gmtbias;
+-	unsigned long bootver;
+-	unsigned long videological;
+-	unsigned long sccbase;
+-	unsigned long id;
+-	unsigned long memsize;
+-	unsigned long serialmf;
+-	unsigned long serialhsk;
+-	unsigned long serialgpi;
+-	unsigned long printmf;
+-	unsigned long printhsk;
+-	unsigned long printgpi;
+-	unsigned long cpuid;
+-	unsigned long rombase;
+-	unsigned long adbdelay;
+-	unsigned long timedbra;
+-};
+-
+-#endif
+-
+-struct compat_mem_info {
+-    unsigned long addr;
+-    unsigned long size;
+-};
+-
+-#define COMPAT_NUM_MEMINFO  4
+-
+-#define COMPAT_CPUB_68020 0
+-#define COMPAT_CPUB_68030 1
+-#define COMPAT_CPUB_68040 2
+-#define COMPAT_CPUB_68060 3
+-#define COMPAT_FPUB_68881 5
+-#define COMPAT_FPUB_68882 6
+-#define COMPAT_FPUB_68040 7
+-#define COMPAT_FPUB_68060 8
+-
+-#define COMPAT_CPU_68020    (1<<COMPAT_CPUB_68020)
+-#define COMPAT_CPU_68030    (1<<COMPAT_CPUB_68030)
+-#define COMPAT_CPU_68040    (1<<COMPAT_CPUB_68040)
+-#define COMPAT_CPU_68060    (1<<COMPAT_CPUB_68060)
+-#define COMPAT_CPU_MASK     (31)
+-#define COMPAT_FPU_68881    (1<<COMPAT_FPUB_68881)
+-#define COMPAT_FPU_68882    (1<<COMPAT_FPUB_68882)
+-#define COMPAT_FPU_68040    (1<<COMPAT_FPUB_68040)
+-#define COMPAT_FPU_68060    (1<<COMPAT_FPUB_68060)
+-#define COMPAT_FPU_MASK     (0xfe0)
+-
+-#define COMPAT_CL_SIZE      (256)
+-
+-struct compat_bootinfo {
+-    unsigned long machtype;
+-    unsigned long cputype;
+-    struct compat_mem_info memory[COMPAT_NUM_MEMINFO];
+-    int num_memory;
+-    unsigned long ramdisk_size;
+-    unsigned long ramdisk_addr;
+-    char command_line[COMPAT_CL_SIZE];
+-    union {
+-	struct compat_bi_Amiga     bi_ami;
+-	struct compat_bi_Atari     bi_ata;
+-	struct compat_bi_Macintosh bi_mac;
+-    } bi_un;
+-};
+-
+-#define bi_amiga	bi_un.bi_ami
+-#define bi_atari	bi_un.bi_ata
+-#define bi_mac		bi_un.bi_mac
+-
+-#endif /* BOOTINFO_COMPAT_1_0 */
+-
+-
+ #endif /* _M68K_BOOTINFO_H */
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index afb95d5fb26b..677244e0371c 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -26,7 +26,6 @@
+ #include <linux/adb.h>
+ #include <linux/cuda.h>
  
--
--
--    /*
--     *  CPU, FPU and MMU types
--     *
--     *  Note: we may rely on the following equalities:
--     *
--     *      CPU_68020 == MMU_68851
--     *      CPU_68030 == MMU_68030
--     *      CPU_68040 == FPU_68040 == MMU_68040
--     *      CPU_68060 == FPU_68060 == MMU_68060
--     */
--
--#define CPUB_68020     0
--#define CPUB_68030     1
--#define CPUB_68040     2
--#define CPUB_68060     3
--#define CPUB_COLDFIRE  4
--
--#define CPU_68020      (1<<CPUB_68020)
--#define CPU_68030      (1<<CPUB_68030)
--#define CPU_68040      (1<<CPUB_68040)
--#define CPU_68060      (1<<CPUB_68060)
--#define CPU_COLDFIRE   (1<<CPUB_COLDFIRE)
--
--#define FPUB_68881     0
--#define FPUB_68882     1
--#define FPUB_68040     2                       /* Internal FPU */
--#define FPUB_68060     3                       /* Internal FPU */
--#define FPUB_SUNFPA    4                       /* Sun-3 FPA */
--#define FPUB_COLDFIRE  5                       /* ColdFire FPU */
--
--#define FPU_68881      (1<<FPUB_68881)
--#define FPU_68882      (1<<FPUB_68882)
--#define FPU_68040      (1<<FPUB_68040)
--#define FPU_68060      (1<<FPUB_68060)
--#define FPU_SUNFPA     (1<<FPUB_SUNFPA)
--#define FPU_COLDFIRE   (1<<FPUB_COLDFIRE)
--
--#define MMUB_68851     0
--#define MMUB_68030     1                       /* Internal MMU */
--#define MMUB_68040     2                       /* Internal MMU */
--#define MMUB_68060     3                       /* Internal MMU */
--#define MMUB_APOLLO    4                       /* Custom Apollo */
--#define MMUB_SUN3      5                       /* Custom Sun-3 */
--#define MMUB_COLDFIRE  6                       /* Internal MMU */
--
--#define MMU_68851      (1<<MMUB_68851)
--#define MMU_68030      (1<<MMUB_68030)
--#define MMU_68040      (1<<MMUB_68040)
--#define MMU_68060      (1<<MMUB_68060)
--#define MMU_SUN3       (1<<MMUB_SUN3)
--#define MMU_APOLLO     (1<<MMUB_APOLLO)
--#define MMU_COLDFIRE   (1<<MMUB_COLDFIRE)
--
--
- #endif /* _UAPI_M68K_SETUP_H */
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index b979a3781dcb..d3f3fe6374c6 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -71,10 +71,10 @@ EXPORT_SYMBOL(m68k_num_memory);
- int m68k_realnum_memory;
- EXPORT_SYMBOL(m68k_realnum_memory);
- unsigned long m68k_memoffset;
--struct mem_info m68k_memory[NUM_MEMINFO];
-+struct m68k_mem_info m68k_memory[NUM_MEMINFO];
- EXPORT_SYMBOL(m68k_memory);
+-#define BOOTINFO_COMPAT_1_0
+ #include <asm/setup.h>
+ #include <asm/bootinfo.h>
  
--static struct mem_info m68k_ramdisk __initdata;
-+static struct m68k_mem_info m68k_ramdisk __initdata;
+diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+index 5e085554ac7f..3d02a3c3a93a 100644
+--- a/arch/m68k/mac/misc.c
++++ b/arch/m68k/mac/misc.c
+@@ -25,7 +25,6 @@
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
  
- static char m68k_command_line[CL_SIZE] __initdata;
+-#define BOOTINFO_COMPAT_1_0
+ #include <asm/bootinfo.h>
+ #include <asm/machdep.h>
  
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 6b4baa6e4d31..acaff6a49e35 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -59,7 +59,7 @@ EXPORT_SYMBOL(pg_data_table);
- void __init m68k_setup_node(int node)
- {
- #ifndef CONFIG_SINGLE_MEMORY_CHUNK
--	struct mem_info *info = m68k_memory + node;
-+	struct m68k_mem_info *info = m68k_memory + node;
- 	int i, end;
- 
- 	i = (unsigned long)phys_to_virt(info->addr) >> __virt_to_node_shift();
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 251c5437787b..7d4024432163 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -233,7 +233,7 @@ void __init paging_init(void)
- 			printk("Fix your bootloader or use a memfile to make use of this area!\n");
- 			m68k_num_memory--;
- 			memmove(m68k_memory + i, m68k_memory + i + 1,
--				(m68k_num_memory - i) * sizeof(struct mem_info));
-+				(m68k_num_memory - i) * sizeof(struct m68k_mem_info));
- 			continue;
- 		}
- 		addr = m68k_memory[i].addr + m68k_memory[i].size;
 -- 
 1.7.9.5
