@@ -1,45 +1,39 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: nfeth and non-zero m68k_memoffset (was: Re: m68k discontigmem bug)
-Date: Fri, 18 Oct 2013 09:33:32 +0200
-Message-ID: <CAMuHMdXP14tx3vNgErN=wWao1Fp-DoKs4icpmzp0kt4pNRKEgA@mail.gmail.com>
+Subject: Re: [PATCH] m68k/atari: Call paging_init() before nf_init()
+Date: Fri, 18 Oct 2013 09:42:12 +0200
+Message-ID: <CAMuHMdVPnyRhfGjpMraMrwhxwy9_mSfm=ouDEnYm2YJMzhhZ_Q@mail.gmail.com>
+References: <1382080184-19115-1-git-send-email-geert@linux-m68k.org>
+	<172f2b40c29a29a470215c14250a559e@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f51.google.com ([209.85.160.51]:46646 "EHLO
-	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751103Ab3JRHdd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Oct 2013 03:33:33 -0400
-Received: by mail-pb0-f51.google.com with SMTP id jt11so3485084pbb.10
-        for <linux-m68k@vger.kernel.org>; Fri, 18 Oct 2013 00:33:32 -0700 (PDT)
+In-Reply-To: <172f2b40c29a29a470215c14250a559e@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
-Cc: aranym@lists.bobek.cz
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Tue, Oct 15, 2013 at 9:15 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> P.S.2. There still seems to be a virt/phys mismatch in the NatFeat code too,
->        as nfeth doesn't work when m68k_memoffset is non-zero.
+On Fri, Oct 18, 2013 at 9:29 AM, Michael Schmitz
+<schmitz@biophys.uni-duesseldorf.de> wrote:
+> does your fiddling with memory blocks in bootinfo now result in kernels
+> being possible to boot in FastRAM?
 
-Background: As NatFeat calls use physical addresses, all kernel
-virtual addresses
-passed must be converted to physical addresses using virt_to_phys().
+No, I only played with the start address of ST-RAM.
 
-However, nfeth still doesn't work, as XIF_GET_MAC returns 0 if
-m68k_memoffset is non-zero.
+Probably you can run a kernel in FastRAM with some minor tweaks if
+you remove the ST-RAM block from the bootinfo, but then you loose
+(at least) atafb :-)
 
-Interestingly, when dropping the virt_to_phys() on the MAC address buffer,
-it does return 1, but the MAC address is not written to the buffer, and thus
-contains the stack garbage that was there before.
-But now the network works (with a bogus MAC address)!
+With the DISCONTIGMEM memory model, the kernel must be stored in the
+first memory block. As ST-RAM is before FastRAM in memory, you cannot
+have the kernel in FastRAM without losing ST-RAM (as main memory ---
+you can still e.g. ioremap() it for atafb, and use the rest of it as
+swap through
+a block device like z2ram. This is basically what we do on Amiga with Chip RAM
+and Z2 RAM).
 
-XIF_GET_IPHOST and XIF_GET_IPATARI return 11 (the correct strlen() of
-the IP address), but there's nothing written in the buffer (it's unmodified).
-Dropping the virt_to_phys() here makes it fail (return 0). All of this
-is harmless,
-as the results are printed only.
-
-This is on aranym 0.9.13-1.1 from Ubuntu 12.04 LTS.
+With the SPARSEMEM memory model, you should be able to store the kernel
+in FastRAM and have ST-RAM, too.
 
 Gr{oetje,eeting}s,
 
