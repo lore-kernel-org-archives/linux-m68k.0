@@ -1,52 +1,54 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [000/121] 3.2.51-rc1 review
-Date: Sun, 20 Oct 2013 09:23:21 -0700
-Message-ID: <52640379.8070609@roeck-us.net>
-References: <lsq.1378608720.401499712@decadent.org.uk>	 <522C22DB.9080008@roeck-us.net>	 <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>	 <522CAB38.2010909@roeck-us.net> <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Linux 3.1-2-m68k config
+Date: Sun, 20 Oct 2013 18:49:37 +0200
+Message-ID: <CAMuHMdWfi4ymGd=Af+gMuvcBif2PBbPd09KYSe8GH6-KZuqaiA@mail.gmail.com>
+References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
+	<5263A185.1040303@Vivier.EU>
+	<Pine.BSM.4.64L.1310201454250.19879@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.active-venture.com ([67.228.131.205]:62866 "EHLO
-	mail.active-venture.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751285Ab3JTQXb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Oct 2013 12:23:31 -0400
-In-Reply-To: <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>
+Received: from mail-pa0-f53.google.com ([209.85.220.53]:54491 "EHLO
+	mail-pa0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751083Ab3JTQti convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Oct 2013 12:49:38 -0400
+Received: by mail-pa0-f53.google.com with SMTP id kq14so6889213pab.12
+        for <linux-m68k@vger.kernel.org>; Sun, 20 Oct 2013 09:49:38 -0700 (PDT)
+In-Reply-To: <Pine.BSM.4.64L.1310201454250.19879@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 10/20/2013 04:56 AM, Ben Hutchings wrote:
-> On Sun, 2013-09-08 at 09:52 -0700, Guenter Roeck wrote:
->> On 09/08/2013 01:18 AM, Geert Uytterhoeven wrote:
->>> On Sun, Sep 8, 2013 at 9:10 AM, Guenter Roeck <linux@roeck-us.net> wrote:
->>>> m68k-linux-ld: error: no memory region specified for loadable section
->>>> `.note.gnu.build-id'
->>>
->>> I can't seem to find an explicit fix for that since v3.2.
->>> Perhaps the fix is a side effect of f84f52a5c15db7d14a534815f27253b001735183
->>> ("m68knommu: clean up linker script").
->>>
->>
->> Kind of. Turns out it requires the following patches.
->>
->> 40c1b9cf (m68k: consolidate the vmlinux.lds linker scripts)
->> ed865e31 (m68k: use non-MMU linker script for ColdFire MMU builds)
->> f84f52a5 (m68knommu: clean up linker script)
->>
->> With those patches applied, all my m68k builds (mmu and nommu) pass with 3.2.
->
-> I've queued these up for 3.2.  The first looks quite a big change in
-> terms of lines, but most of that is just renaming a file so I think it's
-> within the spirit of the stable rules.  The third is also pretty big as
-> m68knommu seems so broken in 3.2 that I suppose it is OK.
->
-> Ben.
->
-Hi Ben,
+On Sun, Oct 20, 2013 at 5:01 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
+> One pet peeve of mine is that I don=E2=80=99t know which of the trist=
+ate
+> options add =E2=80=9Ccommon code=E2=80=9D (such as hooks) and which, =
+when set to
+> =E2=80=98m=E2=80=99, do _not_ add something to vmlinux.
 
-is that in your patch list yet ? Just wondering, because the latest nommu build still failed.
+To find code that's compiled if a tristate symbol is "m":
 
-Thanks,
-Guenter
+git grep "\<CONFIG_[^ ]*_MODULE\>"
+
+This is not necessariy code in vmlinux; it can be code in another modul=
+e.
+
+And in Makefile logic:
+
+git grep "\<CONFIG_[^ ]*\>.*\m=3Dy" -- "*Makefile"
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
