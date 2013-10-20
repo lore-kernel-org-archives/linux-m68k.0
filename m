@@ -1,68 +1,106 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 06/16] m68k/mac: Remove unused hardware profile tags
-Date: Sun, 20 Oct 2013 14:14:25 +0200
-Message-ID: <CAMuHMdXTf8WnAZgs31rN3YLB1FCf0KPDHLnCQBkP5SB1QPu8MA@mail.gmail.com>
-References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
-	<1381926693-6392-7-git-send-email-geert@linux-m68k.org>
+From: Thorsten Glaser <tg@mirbsd.de>
+Subject: Re: Linux 3.1-2-m68k config
+Date: Sun, 20 Oct 2013 15:01:19 +0000 (UTC)
+Message-ID: <Pine.BSM.4.64L.1310201454250.19879@herc.mirbsd.org>
+References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
+ <5263A185.1040303@Vivier.EU>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1381926693-6392-7-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <5263A185.1040303@Vivier.EU>
+Resent-Message-ID: <Z3uNv_9WsOK.A.L2H.yG_YSB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: debian-68k@lists.debian.org
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Wed, Oct 16, 2013 at 2:31 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Geert Uytterhoeven dixit:
 
-I'm gonna drop this one, to avoid reusing the old values for new tags,
-and to allow them to be used by bootinfo tools.
+>Big differences are due to many drivers being modular in the initrd for th=
+e
+>Debian kernel, which I want to avoid for my defconfigs, for hassle-free
+>testing.
 
-> ---
->  arch/m68k/include/asm/bootinfo.h |   24 ------------------------
->  1 file changed, 24 deletions(-)
->
-> diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
-> index ef888d4af4e6..007c95759e6b 100644
-> --- a/arch/m68k/include/asm/bootinfo.h
-> +++ b/arch/m68k/include/asm/bootinfo.h
-> @@ -149,30 +149,6 @@ static inline void save_bootinfo(const struct bi_record *bi) {}
->  #define BI_MAC_CPUID           0x800a  /* Mac CPU type (sanity check) */
->  #define BI_MAC_ROMBASE         0x800b  /* Mac system ROM base address */
->
-> -    /*
-> -     *  Macintosh hardware profile data - unused, see macintosh.h for
-> -     *  reasonable type values
-> -     */
-> -
-> -#define BI_MAC_VIA1BASE                0x8010  /* Mac VIA1 base address (always present) */
-> -#define BI_MAC_VIA2BASE                0x8011  /* Mac VIA2 base address (type varies) */
-> -#define BI_MAC_VIA2TYPE                0x8012  /* Mac VIA2 type (VIA, RBV, OSS) */
-> -#define BI_MAC_ADBTYPE         0x8013  /* Mac ADB interface type */
-> -#define BI_MAC_ASCBASE         0x8014  /* Mac Apple Sound Chip base address */
-> -#define BI_MAC_SCSI5380                0x8015  /* Mac NCR 5380 SCSI (base address, multi) */
-> -#define BI_MAC_SCSIDMA         0x8016  /* Mac SCSI DMA (base address) */
-> -#define BI_MAC_SCSI5396                0x8017  /* Mac NCR 53C96 SCSI (base address, multi) */
-> -#define BI_MAC_IDETYPE         0x8018  /* Mac IDE interface type */
-> -#define BI_MAC_IDEBASE         0x8019  /* Mac IDE interface base address */
-> -#define BI_MAC_NUBUS           0x801a  /* Mac Nubus type (none, regular, pseudo) */
-> -#define BI_MAC_SLOTMASK                0x801b  /* Mac Nubus slots present */
-> -#define BI_MAC_SCCTYPE         0x801c  /* Mac SCC serial type (normal, IOP) */
-> -#define BI_MAC_ETHTYPE         0x801d  /* Mac builtin ethernet type (Sonic, MACE */
-> -#define BI_MAC_ETHBASE         0x801e  /* Mac builtin ethernet base address */
-> -#define BI_MAC_PMU             0x801f  /* Mac power management / poweroff hardware */
-> -#define BI_MAC_IOP_SWIM                0x8020  /* Mac SWIM floppy IOP */
-> -#define BI_MAC_IOP_ADB         0x8021  /* Mac ADB IOP */
+ACK, but we need that.
 
-Gr{oetje,eeting}s,
+>What sticks out:
+>  - Lack of FPU emulation support in the Debian kernel,
 
-                        Geert
+Hm okay.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>  - CONFIG_COMPAT_BRK is not enabled in the Debian kernel, which
+>    is needed if you want to boot the good old filesys-ELF-2.0.x-1400K-2.g=
+z
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I wonder=E2=80=A6
+
+>    ramdisk (probably not with the Debian kernel, as all your drivers are =
+in
+>    modules?)
+
+=E2=80=A6 yes, we have everything that can be shoved into modules there,
+since we bit the bullet and require an initrd now. But I guess
+CONFIG_COMPAT_BRK is =E2=80=9Cnot much=E2=80=9D code, so I=E2=80=99ll proba=
+bly add them
+both.
+
+Any further suggestions (please in form of "toggle this setting"
+because the Debian configs are =E2=80=9Cminified deltas=E2=80=9D) into my g=
+eneral
+direction ;-)
+
+>Apart from that, (probably both) configs need more stripping in the common
+>part. I want to have bootable (i.e. < 4 MiB) defconfig kernels.
+
+Ours is bootable and decently small. Still could use shaving off
+more, but it=E2=80=99s a good start considering I only really worked with
+Linux 2.0.3x and later 2.4.3 and otherwise only BSD=E2=80=A6
+
+One pet peeve of mine is that I don=E2=80=99t know which of the tristate
+options add =E2=80=9Ccommon code=E2=80=9D (such as hooks) and which, when s=
+et to
+=E2=80=98m=E2=80=99, do _not_ add something to vmlinux.
+
+But since Debian is a generic, universal distro, I=E2=80=99ve kept most
+of the things Debian uses enabled as modules, in case someone
+actually does want to run it.
+
+There are some exceptions, most notably Ceph and the likes.
+And LSM and cgroups were removed from the core for obvious
+size reasons.
+
+
+Laurent Vivier dixit:
+
+> Moreover, a compressed kernel fitting on a floppy would be better : there=
+ is no
+
+Just use a custom kernel then: you=E2=80=99d want that to be as optimised
+to the target machine as possible; multi-platform configs are not
+just bigger but also require more (e.g. HDD) drivers.
+
+> USB port on this kind of machine, and the floppy is the easiest way to bo=
+ot a
+
+This is wrong, I=E2=80=99ve seen Ataris with USB and even a PCI Radeon
+graphics card running FreeMiNT IRL.
+
+> (With 2.2 kernel we were able to put kernel AND ramdisk on the SAME flopp=
+y !)
+
+Yes, but Linux 3.0 is bigger. SOL.
+
+(Even in MirBSD, I have to squeeze more and more for the boot floppy,
+both the one i386 one and the one sparc one, over time.)
+
+bye,
+//mirabilos
+--=20
+Gast: =E2=80=9EEin Bier, bitte!=E2=80=9C
+Wirt: =E2=80=9EGeht auch alkoholfrei?=E2=80=9C
+Gast: =E2=80=9EGeht auch Spielgeld?=E2=80=9C
