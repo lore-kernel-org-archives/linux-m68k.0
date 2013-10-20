@@ -1,78 +1,68 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [000/121] 3.2.51-rc1 review
-Date: Sun, 20 Oct 2013 12:56:53 +0100
-Message-ID: <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>
-References: <lsq.1378608720.401499712@decadent.org.uk>
-	 <522C22DB.9080008@roeck-us.net>
-	 <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>
-	 <522CAB38.2010909@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 06/16] m68k/mac: Remove unused hardware profile tags
+Date: Sun, 20 Oct 2013 14:14:25 +0200
+Message-ID: <CAMuHMdXTf8WnAZgs31rN3YLB1FCf0KPDHLnCQBkP5SB1QPu8MA@mail.gmail.com>
+References: <1381926693-6392-1-git-send-email-geert@linux-m68k.org>
+	<1381926693-6392-7-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="=-LYxmelbr38wHD5b/t77S"
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <522CAB38.2010909@roeck-us.net>
-Sender: stable-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1381926693-6392-7-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
+On Wed, Oct 16, 2013 at 2:31 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
---=-LYxmelbr38wHD5b/t77S
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I'm gonna drop this one, to avoid reusing the old values for new tags,
+and to allow them to be used by bootinfo tools.
 
-On Sun, 2013-09-08 at 09:52 -0700, Guenter Roeck wrote:
-> On 09/08/2013 01:18 AM, Geert Uytterhoeven wrote:
-> > On Sun, Sep 8, 2013 at 9:10 AM, Guenter Roeck <linux@roeck-us.net> wrot=
-e:
-> >> m68k-linux-ld: error: no memory region specified for loadable section
-> >> `.note.gnu.build-id'
-> >
-> > I can't seem to find an explicit fix for that since v3.2.
-> > Perhaps the fix is a side effect of f84f52a5c15db7d14a534815f27253b0017=
-35183
-> > ("m68knommu: clean up linker script").
-> >
->=20
-> Kind of. Turns out it requires the following patches.
->=20
-> 40c1b9cf (m68k: consolidate the vmlinux.lds linker scripts)
-> ed865e31 (m68k: use non-MMU linker script for ColdFire MMU builds)
-> f84f52a5 (m68knommu: clean up linker script)
->=20
-> With those patches applied, all my m68k builds (mmu and nommu) pass with =
-3.2.
+> ---
+>  arch/m68k/include/asm/bootinfo.h |   24 ------------------------
+>  1 file changed, 24 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
+> index ef888d4af4e6..007c95759e6b 100644
+> --- a/arch/m68k/include/asm/bootinfo.h
+> +++ b/arch/m68k/include/asm/bootinfo.h
+> @@ -149,30 +149,6 @@ static inline void save_bootinfo(const struct bi_record *bi) {}
+>  #define BI_MAC_CPUID           0x800a  /* Mac CPU type (sanity check) */
+>  #define BI_MAC_ROMBASE         0x800b  /* Mac system ROM base address */
+>
+> -    /*
+> -     *  Macintosh hardware profile data - unused, see macintosh.h for
+> -     *  reasonable type values
+> -     */
+> -
+> -#define BI_MAC_VIA1BASE                0x8010  /* Mac VIA1 base address (always present) */
+> -#define BI_MAC_VIA2BASE                0x8011  /* Mac VIA2 base address (type varies) */
+> -#define BI_MAC_VIA2TYPE                0x8012  /* Mac VIA2 type (VIA, RBV, OSS) */
+> -#define BI_MAC_ADBTYPE         0x8013  /* Mac ADB interface type */
+> -#define BI_MAC_ASCBASE         0x8014  /* Mac Apple Sound Chip base address */
+> -#define BI_MAC_SCSI5380                0x8015  /* Mac NCR 5380 SCSI (base address, multi) */
+> -#define BI_MAC_SCSIDMA         0x8016  /* Mac SCSI DMA (base address) */
+> -#define BI_MAC_SCSI5396                0x8017  /* Mac NCR 53C96 SCSI (base address, multi) */
+> -#define BI_MAC_IDETYPE         0x8018  /* Mac IDE interface type */
+> -#define BI_MAC_IDEBASE         0x8019  /* Mac IDE interface base address */
+> -#define BI_MAC_NUBUS           0x801a  /* Mac Nubus type (none, regular, pseudo) */
+> -#define BI_MAC_SLOTMASK                0x801b  /* Mac Nubus slots present */
+> -#define BI_MAC_SCCTYPE         0x801c  /* Mac SCC serial type (normal, IOP) */
+> -#define BI_MAC_ETHTYPE         0x801d  /* Mac builtin ethernet type (Sonic, MACE */
+> -#define BI_MAC_ETHBASE         0x801e  /* Mac builtin ethernet base address */
+> -#define BI_MAC_PMU             0x801f  /* Mac power management / poweroff hardware */
+> -#define BI_MAC_IOP_SWIM                0x8020  /* Mac SWIM floppy IOP */
+> -#define BI_MAC_IOP_ADB         0x8021  /* Mac ADB IOP */
 
-I've queued these up for 3.2.  The first looks quite a big change in
-terms of lines, but most of that is just renaming a file so I think it's
-within the spirit of the stable rules.  The third is also pretty big as
-m68knommu seems so broken in 3.2 that I suppose it is OK.
+Gr{oetje,eeting}s,
 
-Ben.
+                        Geert
 
---=20
-Ben Hutchings
-Tomorrow will be cancelled due to lack of interest.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=-LYxmelbr38wHD5b/t77S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iQIVAwUAUmPE3ue/yOyVhhEJAQoMEg/9FgfIV64GqP93g3jr8Zy/owOAe8E74sgJ
-uDXMm+7INkdrRSxsmlp/YdkFagpOrc1iUbMoUKD+HVzLDv9oQWx5KGUSmX73tbsw
-DY4F6x71OCT3V/5irqbKGzmMlJNPIcJKBzjuezGi2RiAcyjrMyyC11hqKfNkcGcp
-/3HGgYAQcOfvpamjxHFEsDerrAP2x6o/oY8UCBhyeWoLxJK27cvXg6bEem1ts8EP
-ogH5Wk/5HEGNKHDKcio62ik2yiq57aKsitlv7K/nUfAETGsHkZfEu46MZIG5vgyF
-VnYqBD68cyBzXNu+7S7pP4Ah+1GfmjgjcyNXgdzCjgOCx8WNXk/XAMM2U6yQVdqr
-O9vY0DL+aTa3YQzwEoiG78qEGsEKPju5t38wIo/zkGCYuPBm+rPQ836nN9i/drC3
-tPL8j+0pp/b2RDIRv0nbr785DuH3OWlCK/8Bbxwu/Y+lM1/uHGQiTLuw7hyJc3fT
-yuh5aMFKJtoQ8NnVfLqW/kx6AIQmVVmCrjlf+Yur/DMSFHSkfyUUN1jpzM8C1Q2V
-JIeX5MU40s8V/O8r4/tDmb2ehB05w6twtzf2IvNlvoIm4Ys1NrH8RE7XCKfmEgf0
-Ok2gVCM1zp8IPuEq8GcRdg81K5l6WG2M1ifkxrsUkI4VsIi3kyVa1M4sPnwg/6Ev
-AbmiHurcwpI=
-=Na25
------END PGP SIGNATURE-----
-
---=-LYxmelbr38wHD5b/t77S--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
