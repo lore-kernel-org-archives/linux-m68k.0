@@ -1,38 +1,52 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Zero Divide in Kernel 3.12-rc4
-Date: Sun, 20 Oct 2013 15:08:59 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1310201508100.19879@herc.mirbsd.org>
-References: <dbbdc369c25c9eea7abc4ca331128de3@muaddib.hro.localnet>
- <CAMuHMdUkgQFBg8GJf6xsCVJ0_ciVs+HvtySh8YnvAeVHp8jS4Q@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [000/121] 3.2.51-rc1 review
+Date: Sun, 20 Oct 2013 09:23:21 -0700
+Message-ID: <52640379.8070609@roeck-us.net>
+References: <lsq.1378608720.401499712@decadent.org.uk>	 <522C22DB.9080008@roeck-us.net>	 <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>	 <522CAB38.2010909@roeck-us.net> <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:40379 "EHLO
-	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751061Ab3JTPTN convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Oct 2013 11:19:13 -0400
-Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r9KFJ6DS003582
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Sun, 20 Oct 2013 15:19:11 GMT
-In-Reply-To: <CAMuHMdUkgQFBg8GJf6xsCVJ0_ciVs+HvtySh8YnvAeVHp8jS4Q@mail.gmail.com>
+Received: from mail.active-venture.com ([67.228.131.205]:62866 "EHLO
+	mail.active-venture.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751285Ab3JTQXb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Oct 2013 12:23:31 -0400
+In-Reply-To: <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: debian-68k@lists.debian.org
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven dixit:
+On 10/20/2013 04:56 AM, Ben Hutchings wrote:
+> On Sun, 2013-09-08 at 09:52 -0700, Guenter Roeck wrote:
+>> On 09/08/2013 01:18 AM, Geert Uytterhoeven wrote:
+>>> On Sun, Sep 8, 2013 at 9:10 AM, Guenter Roeck <linux@roeck-us.net> wrote:
+>>>> m68k-linux-ld: error: no memory region specified for loadable section
+>>>> `.note.gnu.build-id'
+>>>
+>>> I can't seem to find an explicit fix for that since v3.2.
+>>> Perhaps the fix is a side effect of f84f52a5c15db7d14a534815f27253b001735183
+>>> ("m68knommu: clean up linker script").
+>>>
+>>
+>> Kind of. Turns out it requires the following patches.
+>>
+>> 40c1b9cf (m68k: consolidate the vmlinux.lds linker scripts)
+>> ed865e31 (m68k: use non-MMU linker script for ColdFire MMU builds)
+>> f84f52a5 (m68knommu: clean up linker script)
+>>
+>> With those patches applied, all my m68k builds (mmu and nommu) pass with 3.2.
+>
+> I've queued these up for 3.2.  The first looks quite a big change in
+> terms of lines, but most of that is just renaming a file so I think it's
+> within the spirit of the stable rules.  The third is also pretty big as
+> m68knommu seems so broken in 3.2 that I suppose it is OK.
+>
+> Ben.
+>
+Hi Ben,
 
->BIG FAT WARNING for Thorsten: 3.10.7 does _not_ have this fix!
+is that in your patch list yet ? Just wondering, because the latest nommu build still failed.
 
-Debian 3.10.7-1 does have it (as Debian-specific patch).
-Otherwise my buildd couldn=E2=80=99t run that kernel as it uses btrfs.
-
-bye,
-//mirabilos
---=20
-<diogenese> Beware of ritual lest you forget the meaning behind it.
-<igli> yeah but it means if you really care about something, don't
-    ritualise it, or you will lose it. don't fetishise it, don't
-    obsess. or you'll forget why you love it in the first place.
+Thanks,
+Guenter
