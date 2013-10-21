@@ -1,79 +1,108 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Linux 3.1-2-m68k config
-Date: Mon, 21 Oct 2013 09:03:02 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1310210900100.3018@herc.mirbsd.org>
-References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
- <alpine.LNX.2.00.1310211538010.21434@nippy.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Kernel sections loosing attributes
+Date: Mon, 21 Oct 2013 21:55:43 +0200
+Message-ID: <CAMuHMdXsYFw6NR1BRfAEW8GYoQqUFsH5N-oSB7TxHYn8jRGCZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:1710 "EHLO
-	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753992Ab3JUJHV convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Oct 2013 05:07:21 -0400
-Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id r9L978wQ024795
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Mon, 21 Oct 2013 09:07:13 GMT
-In-Reply-To: <alpine.LNX.2.00.1310211538010.21434@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-=46inn Thain dixit:
+While trimming the kernel size to try kexec on real hardware with only
+12 MiB of RAM, I got several weird crashes and lock-ups indicating memory
+corruption somewhere (illegal instructions, BUG()s for incorrect magics in
+fresh lock objects, ...).
 
->CONFIG_ADB_MACIISI is disabled in -multi due to crashing bugs. Debian=20
->might want to do the same (until I get a chance to fix it). The serial=
-=20
+As I also got complaints about overlapping sections from strip, I switched
+from the good old gcc 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
+and binutils 2.18.0.20080103 to gcc 4.6.3 and binutils 2.22, but apart
+from fixing the overlapping sections, it still didn't work.
 
-OK, thanks.
+After lots of serial debugging, I ended up bisecting the configs, and it
+turned out that CONFIG_XZ_DEC was the difference between a working
+and non-working kernel.
+However, just disabling CONFIG_XZ_DEC on one of my defconfigs
+still gave a working kernel. So there must be a deeper issue.
 
->Below is the same list after sort -k4 -k5 -k2. Note that some modules =
-in=20
->-multi are disabled in the Debian config. That may or may not help you=
-=20
+It seems like non-working kernel have lost the CONTENTS, LOAD,
+READONLY, and DATA attributes of the __modver section:
 
-Some do, yes.
+vmlinux.ok5:     file format elf32-m68k
 
->! CONFIG_DEFAULT_IOSCHED                   : "noop" "cfq"
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0014986c  00001000  00001000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 __ex_table    000022b8  0014a870  0014a870  0014a870  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .rodata       0003a900  0014d000  0014d000  0014d000  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 __param       000002f0  00187900  00187900  00187900  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 __modver      00000410  00187bf0  00187bf0  00187bf0  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  5 .data         000137c0  00188000  00188000  00188000  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .bss          0001b040  0019b7c0  0019b7c0  0019b7c0  2**4
+                  ALLOC
+  7 .init.text    0000db5e  001b7000  001b7000  0019d000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  8 .init.data    00003004  001c4b60  001c4b60  001aab60  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .m68k_fixup   00000908  001c7b64  001c7b64  001adb64  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+ 10 .notes        00000024  001c846c  001c846c  001ae46c  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 11 .init_end     00000b70  001c8490  001c8490  001ae490  2**0
+                  ALLOC
+ 12 .comment      00000011  00000000  00000000  001ae490  2**0
+                  CONTENTS, READONLY
 
-size
 
->! CONFIG_FAT_DEFAULT_IOCHARSET             : "utf8" "iso8859-1"
->! CONFIG_NLS_DEFAULT                       : "utf8" "iso8859-1"
+vmlinux.crash5:     file format elf32-m68k
 
-by design
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00147824  00001000  00001000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 __ex_table    000022b8  00148830  00148830  00148830  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .rodata       0003a770  0014b000  0014b000  0014b000  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 __param       000002f0  00185770  00185770  00185770  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 __modver      000005a0  00185a60  00185a60  00185a60  2**0
+                  ALLOC
+  5 .data         000137a0  00186000  00186000  00186000  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .bss          0001b040  001997a0  001997a0  001997a0  2**4
+                  ALLOC
+  7 .init.text    0000db5e  001b5000  001b5000  0019b000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  8 .init.data    00003004  001c2b60  001c2b60  001a8b60  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .m68k_fixup   00000908  001c5b64  001c5b64  001abb64  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+ 10 .notes        00000024  001c646c  001c646c  001ac46c  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 11 .init_end     00000b70  001c6490  001c6490  001ac490  2**0
+                  ALLOC
+ 12 .comment      00000011  00000000  00000000  001ac490  2**0
+                  CONTENTS, READONLY
 
->! CONFIG_LOGO_LINUX_CLUT224                : . y
->! CONFIG_LOGO_LINUX_MONO                   : . y
->! CONFIG_LOGO_LINUX_VGA16                  : . y
->! CONFIG_LOGO_MAC_CLUT224                  : . y
+Does anyone have a clue? Who controls the presence of these
+attributes?
 
-I never liked those boot logos tbh, and Debian disables them too.
+Thanks in advance!
 
->! CONFIG_ROOT_NFS                          : . y
+Gr{oetje,eeting}s,
 
-by design (we use initrd)
+                        Geert
 
->! CONFIG_SUN3LANCE                         : . y
->! CONFIG_SUN3X_ESP                         : . y
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I think Sun3 support can=E2=80=99t coexist with the others, or at
-least I=E2=80=99ve read about it. Anyway, I didn=E2=80=99t even enable =
-all
-platforms in the Debian kernel.
-
-But if you think I should change any more than the three
-already listed (fpu, brk, CONFIG_ADB_MACIISI) please say
-so. (Though the bit about users triggering things is also
-true.)
-
-bye,
-//mirabilos
---=20
-<diogenese> Beware of ritual lest you forget the meaning behind it.
-<igli> yeah but it means if you really care about something, don't
-    ritualise it, or you will lose it. don't fetishise it, don't
-    obsess. or you'll forget why you love it in the first place.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
