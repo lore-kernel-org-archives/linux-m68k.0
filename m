@@ -1,61 +1,623 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [000/121] 3.2.51-rc1 review
-Date: Sun, 20 Oct 2013 12:28:07 -0700
-Message-ID: <52642EC7.7070901@roeck-us.net>
-References: <lsq.1378608720.401499712@decadent.org.uk>		 <522C22DB.9080008@roeck-us.net>		 <CAMuHMdW6TGdfi+FH=hRWY_hhs5Cb5N9xV1OL0O9Dcs+PfXm2xA@mail.gmail.com>		 <522CAB38.2010909@roeck-us.net>	 <1382270174.2794.96.camel@deadeye.wl.decadent.org.uk>	 <52640379.8070609@roeck-us.net> <1382292356.2794.116.camel@deadeye.wl.decadent.org.uk>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU
+ support)
+Date: Mon, 21 Oct 2013 15:39:30 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1310211538010.21434@nippy.intranet>
+References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.active-venture.com ([67.228.131.205]:59073 "EHLO
-	mail.active-venture.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751483Ab3JTT2O (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Oct 2013 15:28:14 -0400
-In-Reply-To: <1382292356.2794.116.camel@deadeye.wl.decadent.org.uk>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
+Resent-Message-ID: <d_7GuzXaRyG.A.nUC.wALZSB@bendel>
+List-URL: <http://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 10/20/2013 11:05 AM, Ben Hutchings wrote:
-> On Sun, 2013-10-20 at 09:23 -0700, Guenter Roeck wrote:
->> On 10/20/2013 04:56 AM, Ben Hutchings wrote:
->>> On Sun, 2013-09-08 at 09:52 -0700, Guenter Roeck wrote:
->>>> On 09/08/2013 01:18 AM, Geert Uytterhoeven wrote:
->>>>> On Sun, Sep 8, 2013 at 9:10 AM, Guenter Roeck <linux@roeck-us.net> wrote:
->>>>>> m68k-linux-ld: error: no memory region specified for loadable section
->>>>>> `.note.gnu.build-id'
->>>>>
->>>>> I can't seem to find an explicit fix for that since v3.2.
->>>>> Perhaps the fix is a side effect of f84f52a5c15db7d14a534815f27253b001735183
->>>>> ("m68knommu: clean up linker script").
->>>>>
->>>>
->>>> Kind of. Turns out it requires the following patches.
->>>>
->>>> 40c1b9cf (m68k: consolidate the vmlinux.lds linker scripts)
->>>> ed865e31 (m68k: use non-MMU linker script for ColdFire MMU builds)
->>>> f84f52a5 (m68knommu: clean up linker script)
->>>>
->>>> With those patches applied, all my m68k builds (mmu and nommu) pass with 3.2.
->>>
->>> I've queued these up for 3.2.  The first looks quite a big change in
->>> terms of lines, but most of that is just renaming a file so I think it's
->>> within the spirit of the stable rules.  The third is also pretty big as
->>> m68knommu seems so broken in 3.2 that I suppose it is OK.
->>>
->>> Ben.
->>>
->> Hi Ben,
->>
->> is that in your patch list yet ? Just wondering, because the latest nommu build still failed.
->
-> I've only just pushed them.
->
 
-Yes, I see that m68k-nommu build failures are all gone now.
+On Sun, 20 Oct 2013, Geert Uytterhoeven wrote:
 
-Great!
+> This is the difference between my multi_defconfig and 
+> config-3.10-2-m68k.
 
-Thanks,
-Guenter
+Nice!
+
+> Big differences are due to many drivers being modular in the initrd for 
+> the Debian kernel, which I want to avoid for my defconfigs, for 
+> hassle-free testing.
+> 
+> What sticks out:
+>   - Lack of FPU emulation support in the Debian kernel,
+>   - CONFIG_COMPAT_BRK is not enabled in the Debian kernel, which is 
+>     needed if you want to boot the good old filesys-ELF-2.0.x-1400K-2.gz 
+>     ramdisk (probably not with the Debian kernel, as all your drivers 
+>     are in modules?)
+> 
+> I have to look a bit more at it, but all help is welcome.
+> 
+
+CONFIG_ADB_MACIISI is disabled in -multi due to crashing bugs. Debian 
+might want to do the same (until I get a chance to fix it). The serial 
+console is a good workaround.
+
+> Apart from that, (probably both) configs need more stripping in the 
+> common part. I want to have bootable (i.e. < 4 MiB) defconfig kernels.
+
+Below is the same list after sort -k4 -k5 -k2. Note that some modules in 
+-multi are disabled in the Debian config. That may or may not help you 
+with the 4 MiB limit (might be worth checking the vmlinux sizes).
+
+Should an end-user file a bug report about missing functionality, I'm sure 
+they will understand the difficulty in supporting obscure functionality in 
+large generic binaries.
+
+Finn
+
+
+! multi_defconfig -----------------------------+
+! config-3.10-2-m68k ------------------------+ |
+!                                            | |
+
+! CONFIG_LOCALVERSION                      : "" "-multi"
+! CONFIG_UEVENT_HELPER_PATH                : "" "/sbin/hotplug"
+! CONFIG_NFS_V4_1_IMPLEMENTATION_ID_DOMAIN : "kernel.org" .
+! CONFIG_DEFAULT_IOSCHED                   : "noop" "cfq"
+! CONFIG_FAT_DEFAULT_IOCHARSET             : "utf8" "iso8859-1"
+! CONFIG_NLS_DEFAULT                       : "utf8" "iso8859-1"
+! CONFIG_HP_SDC_RTC                        : . m
+! CONFIG_LRU_CACHE                         : . m
+! CONFIG_OCFS2_FS_O2CB                     : . m
+! CONFIG_OCFS2_FS_USERSPACE_CLUSTER        : . m
+! CONFIG_RDS_TCP                           : . m
+! CONFIG_BATMAN_ADV_BLA                    : . y
+! CONFIG_BATMAN_ADV_DAT                    : . y
+! CONFIG_BATMAN_ADV_NC                     : . y
+! CONFIG_DEFAULT_CFQ                       : . y
+! CONFIG_DIO                               : . y
+! CONFIG_FB_HP300                          : . y
+! CONFIG_HIL_MLC                           : . y
+! CONFIG_HPLANCE                           : . y
+! CONFIG_HP_SDC                            : . y
+! CONFIG_IP_PNP_BOOTP                      : . y
+! CONFIG_IP_PNP_DHCP                       : . y
+! CONFIG_IP_PNP_RARP                       : . y
+! CONFIG_KEYBOARD_HIL                      : . y
+! CONFIG_KEYBOARD_HIL_OLD                  : . y
+! CONFIG_LOGO_LINUX_CLUT224                : . y
+! CONFIG_LOGO_LINUX_MONO                   : . y
+! CONFIG_LOGO_LINUX_VGA16                  : . y
+! CONFIG_LOGO_MAC_CLUT224                  : . y
+! CONFIG_ROOT_NFS                          : . y
+! CONFIG_SCTP_COOKIE_HMAC_MD5              : . y
+! CONFIG_SCTP_COOKIE_HMAC_SHA1             : . y
+! CONFIG_SCTP_DEFAULT_COOKIE_HMAC_MD5      : . y
+! CONFIG_SUN3LANCE                         : . y
+! CONFIG_SUN3X_ESP                         : . y
+! CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE   : 0 .
+! CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE  : 0 .
+! CONFIG_MAGIC_SYSRQ_DEFAULT_MASK          : 0x01b6 .
+! CONFIG_SCSI_OSD_DPRINT_SENSE             : 1 .
+! CONFIG_IP_VS_TAB_BITS                    : 12 .
+! CONFIG_DEFAULT_HUNG_TASK_TIMEOUT         : 120 .
+! CONFIG_NET_EMATCH_STACK                  : 32 .
+! CONFIG_SERIAL_8250_NR_UARTS              : 4 .
+! CONFIG_SERIAL_8250_RUNTIME_UARTS         : 4 .
+! CONFIG_IP_VS_SH_TAB_BITS                 : 8 .
+! CONFIG_9P_FS                             : m .
+! CONFIG_AMD_PHY                           : m .
+! CONFIG_AT803X_PHY                        : m .
+! CONFIG_AUFS_FS                           : m .
+! CONFIG_BCM87XX_PHY                       : m .
+! CONFIG_BLK_DEV_OSD                       : m .
+! CONFIG_BRIDGE_EBT_802_3                  : m .
+! CONFIG_BRIDGE_EBT_AMONG                  : m .
+! CONFIG_BRIDGE_EBT_ARP                    : m .
+! CONFIG_BRIDGE_EBT_ARPREPLY               : m .
+! CONFIG_BRIDGE_EBT_BROUTE                 : m .
+! CONFIG_BRIDGE_EBT_DNAT                   : m .
+! CONFIG_BRIDGE_EBT_IP                     : m .
+! CONFIG_BRIDGE_EBT_IP6                    : m .
+! CONFIG_BRIDGE_EBT_LIMIT                  : m .
+! CONFIG_BRIDGE_EBT_LOG                    : m .
+! CONFIG_BRIDGE_EBT_MARK                   : m .
+! CONFIG_BRIDGE_EBT_MARK_T                 : m .
+! CONFIG_BRIDGE_EBT_NFLOG                  : m .
+! CONFIG_BRIDGE_EBT_PKTTYPE                : m .
+! CONFIG_BRIDGE_EBT_REDIRECT               : m .
+! CONFIG_BRIDGE_EBT_SNAT                   : m .
+! CONFIG_BRIDGE_EBT_STP                    : m .
+! CONFIG_BRIDGE_EBT_T_FILTER               : m .
+! CONFIG_BRIDGE_EBT_T_NAT                  : m .
+! CONFIG_BRIDGE_EBT_ULOG                   : m .
+! CONFIG_BRIDGE_EBT_VLAN                   : m .
+! CONFIG_BRIDGE_NF_EBTABLES                : m .
+! CONFIG_BROADCOM_PHY                      : m .
+! CONFIG_CACHEFILES                        : m .
+! CONFIG_CICADA_PHY                        : m .
+! CONFIG_DAVICOM_PHY                       : m .
+! CONFIG_GARP                              : m .
+! CONFIG_ICPLUS_PHY                        : m .
+! CONFIG_IFB                               : m .
+! CONFIG_IP_VS_DH                          : m .
+! CONFIG_IP_VS_FTP                         : m .
+! CONFIG_IP_VS_LBLC                        : m .
+! CONFIG_IP_VS_LBLCR                       : m .
+! CONFIG_IP_VS_LC                          : m .
+! CONFIG_IP_VS_NQ                          : m .
+! CONFIG_IP_VS_PE_SIP                      : m .
+! CONFIG_IP_VS_RR                          : m .
+! CONFIG_IP_VS_SED                         : m .
+! CONFIG_IP_VS_SH                          : m .
+! CONFIG_IP_VS_WLC                         : m .
+! CONFIG_IP_VS_WRR                         : m .
+! CONFIG_L2TP_ETH                          : m .
+! CONFIG_L2TP_IP                           : m .
+! CONFIG_LSI_ET1011C_PHY                   : m .
+! CONFIG_LXT_PHY                           : m .
+! CONFIG_MACVTAP                           : m .
+! CONFIG_MARVELL_PHY                       : m .
+! CONFIG_MDIO_BITBANG                      : m .
+! CONFIG_MICREL_PHY                        : m .
+! CONFIG_MRP                               : m .
+! CONFIG_NATIONAL_PHY                      : m .
+! CONFIG_NETFILTER_XT_MATCH_IPVS           : m .
+! CONFIG_NETFILTER_XT_MATCH_PHYSDEV        : m .
+! CONFIG_NETFILTER_XT_MATCH_SOCKET         : m .
+! CONFIG_NETFILTER_XT_TARGET_CONNSECMARK   : m .
+! CONFIG_NETFILTER_XT_TARGET_SECMARK       : m .
+! CONFIG_NETFILTER_XT_TARGET_TPROXY        : m .
+! CONFIG_NET_ACT_CSUM                      : m .
+! CONFIG_NET_ACT_GACT                      : m .
+! CONFIG_NET_ACT_IPT                       : m .
+! CONFIG_NET_ACT_MIRRED                    : m .
+! CONFIG_NET_ACT_NAT                       : m .
+! CONFIG_NET_ACT_PEDIT                     : m .
+! CONFIG_NET_ACT_POLICE                    : m .
+! CONFIG_NET_ACT_SIMP                      : m .
+! CONFIG_NET_ACT_SKBEDIT                   : m .
+! CONFIG_NET_CLS_BASIC                     : m .
+! CONFIG_NET_CLS_FLOW                      : m .
+! CONFIG_NET_CLS_FW                        : m .
+! CONFIG_NET_CLS_ROUTE4                    : m .
+! CONFIG_NET_CLS_RSVP                      : m .
+! CONFIG_NET_CLS_RSVP6                     : m .
+! CONFIG_NET_CLS_TCINDEX                   : m .
+! CONFIG_NET_CLS_U32                       : m .
+! CONFIG_NET_EMATCH_CMP                    : m .
+! CONFIG_NET_EMATCH_IPSET                  : m .
+! CONFIG_NET_EMATCH_META                   : m .
+! CONFIG_NET_EMATCH_NBYTE                  : m .
+! CONFIG_NET_EMATCH_TEXT                   : m .
+! CONFIG_NET_EMATCH_U32                    : m .
+! CONFIG_NET_SCH_CBQ                       : m .
+! CONFIG_NET_SCH_CHOKE                     : m .
+! CONFIG_NET_SCH_CODEL                     : m .
+! CONFIG_NET_SCH_DRR                       : m .
+! CONFIG_NET_SCH_DSMARK                    : m .
+! CONFIG_NET_SCH_FQ_CODEL                  : m .
+! CONFIG_NET_SCH_GRED                      : m .
+! CONFIG_NET_SCH_HFSC                      : m .
+! CONFIG_NET_SCH_HTB                       : m .
+! CONFIG_NET_SCH_INGRESS                   : m .
+! CONFIG_NET_SCH_MQPRIO                    : m .
+! CONFIG_NET_SCH_MULTIQ                    : m .
+! CONFIG_NET_SCH_NETEM                     : m .
+! CONFIG_NET_SCH_PLUG                      : m .
+! CONFIG_NET_SCH_PRIO                      : m .
+! CONFIG_NET_SCH_QFQ                       : m .
+! CONFIG_NET_SCH_RED                       : m .
+! CONFIG_NET_SCH_SFB                       : m .
+! CONFIG_NET_SCH_SFQ                       : m .
+! CONFIG_NET_SCH_TBF                       : m .
+! CONFIG_NET_SCH_TEQL                      : m .
+! CONFIG_NFS_ACL_SUPPORT                   : m .
+! CONFIG_NF_CT_NETLINK_HELPER              : m .
+! CONFIG_NF_NAT_PROTO_DCCP                 : m .
+! CONFIG_ORE                               : m .
+! CONFIG_PNFS_BLOCK                        : m .
+! CONFIG_PNFS_FILE_LAYOUT                  : m .
+! CONFIG_PNFS_OBJLAYOUT                    : m .
+! CONFIG_QSEMI_PHY                         : m .
+! CONFIG_REALTEK_PHY                       : m .
+! CONFIG_SCSI_DH_ALUA                      : m .
+! CONFIG_SCSI_DH_EMC                       : m .
+! CONFIG_SCSI_DH_HP_SW                     : m .
+! CONFIG_SCSI_DH_RDAC                      : m .
+! CONFIG_SCSI_OSD_ULD                      : m .
+! CONFIG_SMC91X                            : m .
+! CONFIG_SMSC_PHY                          : m .
+! CONFIG_STE10XP                           : m .
+! CONFIG_STP                               : m .
+! CONFIG_TCP_CONG_BIC                      : m .
+! CONFIG_TCP_CONG_HSTCP                    : m .
+! CONFIG_TCP_CONG_HTCP                     : m .
+! CONFIG_TCP_CONG_HYBLA                    : m .
+! CONFIG_TCP_CONG_ILLINOIS                 : m .
+! CONFIG_TCP_CONG_LP                       : m .
+! CONFIG_TCP_CONG_SCALABLE                 : m .
+! CONFIG_TCP_CONG_VEGAS                    : m .
+! CONFIG_TCP_CONG_VENO                     : m .
+! CONFIG_TCP_CONG_WESTWOOD                 : m .
+! CONFIG_TCP_CONG_YEAH                     : m .
+! CONFIG_UIO_PDRV                          : m .
+! CONFIG_UIO_PDRV_GENIRQ                   : m .
+! CONFIG_VITESSE_PHY                       : m .
+! CONFIG_BCACHE                            : m n
+! CONFIG_BLK_DEV_IDETAPE                   : m n
+! CONFIG_BLK_DEV_PLATFORM                  : m n
+! CONFIG_BONDING                           : m n
+! CONFIG_BRIDGE                            : m n
+! CONFIG_BTRFS_FS                          : m n
+! CONFIG_CHR_DEV_SCH                       : m n
+! CONFIG_CRC7                              : m n
+! CONFIG_CRYPTO_ANSI_CPRNG                 : m n
+! CONFIG_DM_DELAY                          : m n
+! CONFIG_DM_FLAKEY                         : m n
+! CONFIG_DM_LOG_USERSPACE                  : m n
+! CONFIG_DM_MULTIPATH_QL                   : m n
+! CONFIG_DM_MULTIPATH_ST                   : m n
+! CONFIG_DM_VERITY                         : m n
+! CONFIG_FB_SYS_COPYAREA                   : m n
+! CONFIG_FB_SYS_FILLRECT                   : m n
+! CONFIG_FB_SYS_FOPS                       : m n
+! CONFIG_FB_SYS_IMAGEBLIT                  : m n
+! CONFIG_FSCACHE                           : m n
+! CONFIG_HID_ACRUX                         : m n
+! CONFIG_HID_AUREAL                        : m n
+! CONFIG_HID_DRAGONRISE                    : m n
+! CONFIG_HID_ELECOM                        : m n
+! CONFIG_HID_EMS_FF                        : m n
+! CONFIG_HID_GENERIC                       : m n
+! CONFIG_HID_GREENASIA                     : m n
+! CONFIG_HID_GYRATION                      : m n
+! CONFIG_HID_ICADE                         : m n
+! CONFIG_HID_KEYTOUCH                      : m n
+! CONFIG_HID_KYE                           : m n
+! CONFIG_HID_LCPOWER                       : m n
+! CONFIG_HID_LOGITECH_DJ                   : m n
+! CONFIG_HID_MAGICMOUSE                    : m n
+! CONFIG_HID_MULTITOUCH                    : m n
+! CONFIG_HID_ORTEK                         : m n
+! CONFIG_HID_PANTHERLORD                   : m n
+! CONFIG_HID_PETALYNX                      : m n
+! CONFIG_HID_PICOLCD                       : m n
+! CONFIG_HID_PRIMAX                        : m n
+! CONFIG_HID_PS3REMOTE                     : m n
+! CONFIG_HID_SAITEK                        : m n
+! CONFIG_HID_SAMSUNG                       : m n
+! CONFIG_HID_SENSOR_HUB                    : m n
+! CONFIG_HID_SMARTJOYPLUS                  : m n
+! CONFIG_HID_SPEEDLINK                     : m n
+! CONFIG_HID_STEELSERIES                   : m n
+! CONFIG_HID_SUNPLUS                       : m n
+! CONFIG_HID_THRUSTMASTER                  : m n
+! CONFIG_HID_TIVO                          : m n
+! CONFIG_HID_TOPSEED                       : m n
+! CONFIG_HID_TWINHAN                       : m n
+! CONFIG_HID_UCLOGIC                       : m n
+! CONFIG_HID_WALTOP                        : m n
+! CONFIG_HID_ZEROPLUS                      : m n
+! CONFIG_HID_ZYDACRON                      : m n
+! CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION : m n
+! CONFIG_INET_LRO                          : m n
+! CONFIG_INPUT_FF_MEMLESS                  : m n
+! CONFIG_INPUT_JOYDEV                      : m n
+! CONFIG_INPUT_SPARSEKMAP                  : m n
+! CONFIG_INPUT_UINPUT                      : m n
+! CONFIG_IPV6_MIP6                         : m n
+! CONFIG_IPX                               : m n
+! CONFIG_IP_VS                             : m n
+! CONFIG_ISCSI_TARGET                      : m n
+! CONFIG_JOYSTICK_DB9                      : m n
+! CONFIG_LOOPBACK_TARGET                   : m n
+! CONFIG_MACVLAN                           : m n
+! CONFIG_MD_FAULTY                         : m n
+! CONFIG_MD_MULTIPATH                      : m n
+! CONFIG_MFD_CORE                          : m n
+! CONFIG_MOUSE_PS2                         : m n
+! CONFIG_NCP_FS                            : m n
+! CONFIG_NETFILTER_TPROXY                  : m n
+! CONFIG_NETFILTER_XT_MATCH_CPU            : m n
+! CONFIG_NET_9P                            : m n
+! CONFIG_NET_PKTGEN                        : m n
+! CONFIG_NF_CT_NETLINK                     : m n
+! CONFIG_NF_CT_NETLINK_TIMEOUT             : m n
+! CONFIG_NF_CT_PROTO_DCCP                  : m n
+! CONFIG_NILFS2_FS                         : m n
+! CONFIG_OPENVSWITCH                       : m n
+! CONFIG_PHYLIB                            : m n
+! CONFIG_QFMT_V1                           : m n
+! CONFIG_QFMT_V2                           : m n
+! CONFIG_ROMFS_FS                          : m n
+! CONFIG_RTC_DRV_CMOS                      : m n
+! CONFIG_SCSI_DH                           : m n
+! CONFIG_SCSI_OSD_INITIATOR                : m n
+! CONFIG_SCSI_SAS_LIBSAS                   : m n
+! CONFIG_SERIAL_8250                       : m n
+! CONFIG_TUN                               : m n
+! CONFIG_UIO                               : m n
+! CONFIG_VLAN_8021Q                        : m n
+! CONFIG_XFRM_USER                         : m n
+! CONFIG_A2065                             : m y
+! CONFIG_A2091_SCSI                        : m y
+! CONFIG_A3000_SCSI                        : m y
+! CONFIG_AMIGA_FLOPPY                      : m y
+! CONFIG_APNE                              : m y
+! CONFIG_ARIADNE                           : m y
+! CONFIG_ATARILANCE                        : m y
+! CONFIG_ATARI_FLOPPY                      : m y
+! CONFIG_ATARI_SCSI                        : m y
+! CONFIG_BLK_DEV_BUDDHA                    : m y
+! CONFIG_BLK_DEV_FALCON_IDE                : m y
+! CONFIG_BLK_DEV_GAYLE                     : m y
+! CONFIG_BLK_DEV_IDECD                     : m y
+! CONFIG_BLK_DEV_LOOP                      : m y
+! CONFIG_BLK_DEV_MAC_IDE                   : m y
+! CONFIG_BLK_DEV_Q40IDE                    : m y
+! CONFIG_BLK_DEV_RAM                       : m y
+! CONFIG_BLK_DEV_SD                        : m y
+! CONFIG_BLK_DEV_SR                        : m y
+! CONFIG_BVME6000_NET                      : m y
+! CONFIG_BVME6000_SCSI                     : m y
+! CONFIG_CRC16                             : m y
+! CONFIG_CRC_T10DIF                        : m y
+! CONFIG_CRYPTO_CRC32C                     : m y
+! CONFIG_EXT2_FS                           : m y
+! CONFIG_EXT3_FS                           : m y
+! CONFIG_EXT4_FS                           : m y
+! CONFIG_FS_MBCACHE                        : m y
+! CONFIG_GVP11_SCSI                        : m y
+! CONFIG_HYDRA                             : m y
+! CONFIG_IDE                               : m y
+! CONFIG_IDE_GD                            : m y
+! CONFIG_IOSCHED_CFQ                       : m y
+! CONFIG_ISO9660_FS                        : m y
+! CONFIG_JBD                               : m y
+! CONFIG_JBD2                              : m y
+! CONFIG_LOCKD                             : m y
+! CONFIG_MAC89x0                           : m y
+! CONFIG_MACSONIC                          : m y
+! CONFIG_MAC_EMUMOUSEBTN                   : m y
+! CONFIG_MII                               : m y
+! CONFIG_MVME147_NET                       : m y
+! CONFIG_MVME16x_NET                       : m y
+! CONFIG_MVME16x_SCSI                      : m y
+! CONFIG_NET_KEY                           : m y
+! CONFIG_NFS_FS                            : m y
+! CONFIG_NFS_V2                            : m y
+! CONFIG_NFS_V3                            : m y
+! CONFIG_NLS_CODEPAGE_437                  : m y
+! CONFIG_NLS_ISO8859_1                     : m y
+! CONFIG_SCSI_A4000T                       : m y
+! CONFIG_SCSI_MAC_ESP                      : m y
+! CONFIG_SCSI_ZORRO7XX                     : m y
+! CONFIG_SUNRPC                            : m y
+! CONFIG_XFRM_ALGO                         : m y
+! CONFIG_ZORRO8390                         : m y
+! CONFIG_ASYNC_RAID6_TEST                  : n m
+! CONFIG_BATMAN_ADV                        : n m
+! CONFIG_BLK_DEV_CRYPTOLOOP                : n m
+! CONFIG_BLK_DEV_DRBD                      : n m
+! CONFIG_CRYPTO_CMAC                       : n m
+! CONFIG_CRYPTO_CRYPTD                     : n m
+! CONFIG_CRYPTO_USER                       : n m
+! CONFIG_DLM                               : n m
+! CONFIG_DUMMY_IRQ                         : n m
+! CONFIG_ENCRYPTED_KEYS                    : n m
+! CONFIG_HPFS_FS                           : n m
+! CONFIG_IP_NF_MATCH_ECN                   : n m
+! CONFIG_IP_NF_TARGET_NETMAP               : n m
+! CONFIG_IP_NF_TARGET_REDIRECT             : n m
+! CONFIG_IP_SCTP                           : n m
+! CONFIG_ISCSI_BOOT_SYSFS                  : n m
+! CONFIG_JFS_FS                            : n m
+! CONFIG_NETFILTER_XT_TARGET_NOTRACK       : n m
+! CONFIG_OCFS2_FS                          : n m
+! CONFIG_OMFS_FS                           : n m
+! CONFIG_PARPORT_PC                        : n m
+! CONFIG_PTP_1588_CLOCK                    : n m
+! CONFIG_QNX4FS_FS                         : n m
+! CONFIG_QNX6FS_FS                         : n m
+! CONFIG_RDS                               : n m
+! CONFIG_RTC_DRV_MSM6242                   : n m
+! CONFIG_TEST_STRING_HELPERS               : n m
+! CONFIG_UHID                              : n m
+! CONFIG_XZ_DEC_TEST                       : n m
+! CONFIG_CLEANCACHE                        : n y
+! CONFIG_COMPAT_BRK                        : n y
+! CONFIG_CRYPTO_MANAGER_DISABLE_TESTS      : n y
+! CONFIG_ECRYPT_FS_MESSAGING               : n y
+! CONFIG_HP300                             : n y
+! CONFIG_IP_PNP                            : n y
+! CONFIG_KEYBOARD_SUNKBD                   : n y
+! CONFIG_LOCALVERSION_AUTO                 : n y
+! CONFIG_LOGO                              : n y
+! CONFIG_M68KFPU_EMU                       : n y
+! CONFIG_NTP_PPS                           : n y
+! CONFIG_SCSI_PROC_FS                      : n y
+! CONFIG_SOUND_OSS_CORE_PRECLAIM           : n y
+! CONFIG_SUN3X                             : n y
+! CONFIG_9P_FSCACHE                        : y .
+! CONFIG_9P_FS_POSIX_ACL                   : y .
+! CONFIG_AUFS_BDEV_LOOP                    : y .
+! CONFIG_AUFS_BRANCH_MAX_127               : y .
+! CONFIG_AUFS_BR_FUSE                      : y .
+! CONFIG_AUFS_BR_HFSPLUS                   : y .
+! CONFIG_AUFS_EXPORT                       : y .
+! CONFIG_AUFS_POLL                         : y .
+! CONFIG_AUFS_SBILIST                      : y .
+! CONFIG_BOOT_PRINTK_DELAY                 : y .
+! CONFIG_BRIDGE_IGMP_SNOOPING              : y .
+! CONFIG_BRIDGE_NETFILTER                  : y .
+! CONFIG_BRIDGE_VLAN_FILTERING             : y .
+! CONFIG_BTRFS_FS_POSIX_ACL                : y .
+! CONFIG_CIFS_ACL                          : y .
+! CONFIG_CIFS_FSCACHE                      : y .
+! CONFIG_CIFS_POSIX                        : y .
+! CONFIG_CLS_U32_MARK                      : y .
+! CONFIG_CLS_U32_PERF                      : y .
+! CONFIG_CRYPTO_FIPS                       : y .
+! CONFIG_DEFAULT_CUBIC                     : y .
+! CONFIG_DETECT_HUNG_TASK                  : y .
+! CONFIG_DRAGONRISE_FF                     : y .
+! CONFIG_EXT2_FS_POSIX_ACL                 : y .
+! CONFIG_EXT3_FS_POSIX_ACL                 : y .
+! CONFIG_FB_ATY_GX                         : y .
+! CONFIG_FB_BOTH_ENDIAN                    : y .
+! CONFIG_FB_DEFERRED_IO                    : y .
+! CONFIG_FIB_RULES                         : y .
+! CONFIG_FSCACHE_STATS                     : y .
+! CONFIG_GACT_PROB                         : y .
+! CONFIG_GENERIC_ACL                       : y .
+! CONFIG_GREENASIA_FF                      : y .
+! CONFIG_HID_ACRUX_FF                      : y .
+! CONFIG_HID_PICOLCD_FB                    : y .
+! CONFIG_IPV6_MROUTE_MULTIPLE_TABLES       : y .
+! CONFIG_IPV6_PIMSM_V2                     : y .
+! CONFIG_IPV6_SUBTREES                     : y .
+! CONFIG_IP_DCCP_TFRC_LIB                  : y .
+! CONFIG_IP_MROUTE                         : y .
+! CONFIG_IP_PIMSM_V1                       : y .
+! CONFIG_IP_PIMSM_V2                       : y .
+! CONFIG_IP_VS_IPV6                        : y .
+! CONFIG_IP_VS_NFCT                        : y .
+! CONFIG_IP_VS_PROTO_AH                    : y .
+! CONFIG_IP_VS_PROTO_AH_ESP                : y .
+! CONFIG_IP_VS_PROTO_ESP                   : y .
+! CONFIG_IP_VS_PROTO_SCTP                  : y .
+! CONFIG_IP_VS_PROTO_TCP                   : y .
+! CONFIG_IP_VS_PROTO_UDP                   : y .
+! CONFIG_IRQ_DOMAIN                        : y .
+! CONFIG_LDM_DEBUG                         : y .
+! CONFIG_LOCKUP_DETECTOR                   : y .
+! CONFIG_MOUSE_PS2_ALPS                    : y .
+! CONFIG_MOUSE_PS2_CYPRESS                 : y .
+! CONFIG_MOUSE_PS2_LOGIPS2PP               : y .
+! CONFIG_MOUSE_PS2_SYNAPTICS               : y .
+! CONFIG_MOUSE_PS2_TRACKPOINT              : y .
+! CONFIG_NCPFS_EXTRAS                      : y .
+! CONFIG_NCPFS_IOCTL_LOCKING               : y .
+! CONFIG_NCPFS_NFS_NS                      : y .
+! CONFIG_NCPFS_NLS                         : y .
+! CONFIG_NCPFS_OS2_NS                      : y .
+! CONFIG_NCPFS_PACKET_SIGNING              : y .
+! CONFIG_NCPFS_STRONG                      : y .
+! CONFIG_NET_CLS                           : y .
+! CONFIG_NET_CLS_ACT                       : y .
+! CONFIG_NET_CLS_IND                       : y .
+! CONFIG_NET_EMATCH                        : y .
+! CONFIG_NET_IPGRE_BROADCAST               : y .
+! CONFIG_NET_SCH_FIFO                      : y .
+! CONFIG_NFSD_V2_ACL                       : y .
+! CONFIG_NFS_FSCACHE                       : y .
+! CONFIG_NF_CONNTRACK_PROC_COMPAT          : y .
+! CONFIG_NF_CONNTRACK_SECMARK              : y .
+! CONFIG_PANTHERLORD_FF                    : y .
+! CONFIG_REISERFS_FS_POSIX_ACL             : y .
+! CONFIG_ROMFS_BACKED_BY_BLOCK             : y .
+! CONFIG_ROMFS_ON_BLOCK                    : y .
+! CONFIG_SCSI_SAS_HOST_SMP                 : y .
+! CONFIG_SERIO_LIBPS2                      : y .
+! CONFIG_SMARTJOYPLUS_FF                   : y .
+! CONFIG_SUNRPC_BACKCHANNEL                : y .
+! CONFIG_TASK_DELAY_ACCT                   : y .
+! CONFIG_TASK_IO_ACCOUNTING                : y .
+! CONFIG_TASK_XACCT                        : y .
+! CONFIG_THRUSTMASTER_FF                   : y .
+! CONFIG_VLAN_8021Q_GVRP                   : y .
+! CONFIG_VLAN_8021Q_MVRP                   : y .
+! CONFIG_ZEROPLUS_FF                       : y .
+! CONFIG_CRYPTO_MD5                        : y m
+! CONFIG_RTC_DRV_GENERIC                   : y m
+! CONFIG_RTC_DRV_RP5C01                    : y m
+! CONFIG_ADB_MACIISI                       : y n
+! CONFIG_CC_OPTIMIZE_FOR_SIZE              : y n
+! CONFIG_CIFS_DEBUG                        : y n
+! CONFIG_CIFS_DFS_UPCALL                   : y n
+! CONFIG_CIFS_UPCALL                       : y n
+! CONFIG_CIFS_WEAK_PW_HASH                 : y n
+! CONFIG_CIFS_XATTR                        : y n
+! CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS     : y n
+! CONFIG_DEBUG_KERNEL                      : y n
+! CONFIG_DEFAULT_NOOP                      : y n
+! CONFIG_DEVPTS_MULTIPLE_INSTANCES         : y n
+! CONFIG_EFI_PARTITION                     : y n
+! CONFIG_EXT2_FS_XATTR                     : y n
+! CONFIG_EXT3_DEFAULTS_TO_ORDERED          : y n
+! CONFIG_EXT3_FS_XATTR                     : y n
+! CONFIG_EXT4_FS_POSIX_ACL                 : y n
+! CONFIG_FB_ATY                            : y n
+! CONFIG_FB_FOREIGN_ENDIAN                 : y n
+! CONFIG_FONTS                             : y n
+! CONFIG_FRAMEBUFFER_CONSOLE_ROTATION      : y n
+! CONFIG_FW_LOADER_USER_HELPER             : y n
+! CONFIG_IPC_NS                            : y n
+! CONFIG_IPV6_MROUTE                       : y n
+! CONFIG_IPV6_MULTIPLE_TABLES              : y n
+! CONFIG_IPV6_OPTIMISTIC_DAD               : y n
+! CONFIG_IPV6_ROUTE_INFO                   : y n
+! CONFIG_IPV6_SIT_6RD                      : y n
+! CONFIG_IP_DCCP_CCID3                     : y n
+! CONFIG_IP_MULTICAST                      : y n
+! CONFIG_KEYBOARD_ATKBD                    : y n
+! CONFIG_KEYS_DEBUG_PROC_KEYS              : y n
+! CONFIG_L2TP_V3                           : y n
+! CONFIG_LDM_PARTITION                     : y n
+! CONFIG_LOGIG940_FF                       : y n
+! CONFIG_LOGIRUMBLEPAD2_FF                 : y n
+! CONFIG_LOGITECH_FF                       : y n
+! CONFIG_LOGIWHEELS_FF                     : y n
+! CONFIG_MODULE_FORCE_LOAD                 : y n
+! CONFIG_MODULE_FORCE_UNLOAD               : y n
+! CONFIG_MODVERSIONS                       : y n
+! CONFIG_NETFILTER_NETLINK_QUEUE_CT        : y n
+! CONFIG_NETLINK_MMAP                      : y n
+! CONFIG_NETWORK_SECMARK                   : y n
+! CONFIG_NET_CADENCE                       : y n
+! CONFIG_NET_KEY_MIGRATE                   : y n
+! CONFIG_NET_NS                            : y n
+! CONFIG_NET_SCHED                         : y n
+! CONFIG_NET_VENDOR_3COM                   : y n
+! CONFIG_NET_VENDOR_BROADCOM               : y n
+! CONFIG_NET_VENDOR_FUJITSU                : y n
+! CONFIG_NET_VENDOR_HP                     : y n
+! CONFIG_NET_VENDOR_MARVELL                : y n
+! CONFIG_NET_VENDOR_MICREL                 : y n
+! CONFIG_NET_VENDOR_SEEQ                   : y n
+! CONFIG_NET_VENDOR_STMICRO                : y n
+! CONFIG_NET_VENDOR_WIZNET                 : y n
+! CONFIG_NFSD_V3_ACL                       : y n
+! CONFIG_NFSD_V4                           : y n
+! CONFIG_NFS_V3_ACL                        : y n
+! CONFIG_NFS_V4_1                          : y n
+! CONFIG_NF_CONNTRACK_EVENTS               : y n
+! CONFIG_NF_CONNTRACK_PROCFS               : y n
+! CONFIG_NF_CONNTRACK_TIMEOUT              : y n
+! CONFIG_NF_CONNTRACK_TIMESTAMP            : y n
+! CONFIG_PID_NS                            : y n
+! CONFIG_PPP_MULTILINK                     : y n
+! CONFIG_PRINTK_TIME                       : y n
+! CONFIG_PRINT_QUOTA_WARNING               : y n
+! CONFIG_PROFILING                         : y n
+! CONFIG_REISERFS_FS_XATTR                 : y n
+! CONFIG_RELAY                             : y n
+! CONFIG_SCSI_LOGGING                      : y n
+! CONFIG_SCSI_MULTI_LUN                    : y n
+! CONFIG_SCSI_SCAN_ASYNC                   : y n
+! CONFIG_SQUASHFS_XATTR                    : y n
+! CONFIG_SQUASHFS_XZ                       : y n
+! CONFIG_STRIP_ASM_SYMS                    : y n
+! CONFIG_TASKSTATS                         : y n
+! CONFIG_TCP_CONG_ADVANCED                 : y n
+! CONFIG_TMPFS_POSIX_ACL                   : y n
+! CONFIG_TMPFS_XATTR                       : y n
+! CONFIG_UNUSED_SYMBOLS                    : y n
+! CONFIG_UTS_NS                            : y n
+! CONFIG_XFRM_SUB_POLICY                   : y n
+! CONFIG_XFS_POSIX_ACL                     : y n
+! CONFIG_XFS_QUOTA                         : y n
+! CONFIG_XFS_RT                            : y n
