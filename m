@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: Kernel sections loosing attributes
-Date: Tue, 22 Oct 2013 11:55:04 +0200
-Message-ID: <CAMuHMdU2_pjLTTEfxteZBQ=TzpyX_BTgyjpOeJ7ja3yJHGbfFg@mail.gmail.com>
+Date: Tue, 22 Oct 2013 21:08:55 +0200
+Message-ID: <CAMuHMdXrkSnswAr+0corHPO3fv9mtmwBxxsy7t0p=MK40hbC7w@mail.gmail.com>
 References: <CAMuHMdXsYFw6NR1BRfAEW8GYoQqUFsH5N-oSB7TxHYn8jRGCZg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,21 +13,35 @@ To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
 On Mon, Oct 21, 2013 at 9:55 PM, Geert Uytterhoeven
 <geert@linux-m68k.org> wrote:
-> However, just disabling CONFIG_XZ_DEC on one of my defconfigs
-> still gave a working kernel. So there must be a deeper issue.
+> As I also got complaints about overlapping sections from strip, I switched
+> from the good old gcc 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
+> and binutils 2.18.0.20080103 to gcc 4.6.3 and binutils 2.22, but apart
+> from fixing the overlapping sections, it still didn't work.
 
-Just disabling CONFIG_XZ_DEC is not enough as there's also
-a MODULE_VERSION() in net/ipv4/tcp_cubic.c.
-So you also have to disable CONFIG_TCP_CONG_CUBIC.
+Binutils 2.18 is indeed buggy here. LMA of the data section is the same
+as LMA of the __modver section, despite the correct __modver size due
+to the ". = ALIGN((align))" at the end of the section (see
+include/asm-generic/vmlinux.lds.h):
 
- __start___modver and __stop___modver are equal, so the __modver
-section has no entries, but it's size is non-zero:
-
-  4 __modver      000005a0  00185a60  00185a60  00185a60  2**0
+Idx Name          Size      VMA       LMA       File off  Algn
+  7 __modver      000003f8  0034dc08  0034dc08  0034dc08  2**0
                   ALLOC
+  8 .data         00020ae0  0034e000  0034dc08  0034dc08  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
 
-BTW, so far it didn't crash on ARAnyM, but if there's memory corruption,
-it still may go undetected depending on what is corrupted.
+So that's where the overlap warning comes from.
+And the resulting kernel crashes on ARAnyM after
+
+| Blitter tried to read byte from register ff8a00 at 0075ea
+
+With binutils 2.22/2.23.2, .data is correctly aligned:
+
+  7 __modver      000003f8  0034dc08  0034dc08  0034dc08  2**0
+                  ALLOC
+  8 .data         00020ae0  0034e000  0034e000  0034e000  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
+
+and it seems to work fine on ARAnyM.
 
 Gr{oetje,eeting}s,
 
