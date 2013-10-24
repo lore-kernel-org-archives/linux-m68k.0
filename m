@@ -1,72 +1,68 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: Zero Divide in Kernel 3.12-rc4
-Date: Thu, 24 Oct 2013 17:56:49 +1300
-Message-ID: <37e97244c2631005e80ecf196812c6cc@biophys.uni-duesseldorf.de>
-References: <dbbdc369c25c9eea7abc4ca331128de3@muaddib.hro.localnet> <f8389c591d50fe216b546e70d464c1f9@biophys.uni-duesseldorf.de> <CAMuHMdVfvDAuqpTFFq5qQK2Prio55i2bmcne-eu_VQt5xFY-LQ@mail.gmail.com> <335d2ba0b0b19e56b2880882a1c4c543@biophys.uni-duesseldorf.de> <9f57bf0fdf7329055ee5f7d2b2fe966d@biophys.uni-duesseldorf.de> <5cbf031e8c962394a34615d18977f609@muaddib.hro.localnet>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Thu, 24 Oct 2013 10:37:44 +0200
+Message-ID: <CAMuHMdX_hbDzak-y0CMbdXUhgdQCCoGOeyaCH_DE2C7E3gLi7A@mail.gmail.com>
+References: <dbbdc369c25c9eea7abc4ca331128de3@muaddib.hro.localnet>
+	<f8389c591d50fe216b546e70d464c1f9@biophys.uni-duesseldorf.de>
+	<CAMuHMdVfvDAuqpTFFq5qQK2Prio55i2bmcne-eu_VQt5xFY-LQ@mail.gmail.com>
+	<335d2ba0b0b19e56b2880882a1c4c543@biophys.uni-duesseldorf.de>
+	<9f57bf0fdf7329055ee5f7d2b2fe966d@biophys.uni-duesseldorf.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f48.google.com ([209.85.160.48]:46487 "EHLO
-	mail-pb0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751203Ab3JXE7B (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Oct 2013 00:59:01 -0400
-Received: by mail-pb0-f48.google.com with SMTP id ma3so2016360pbc.35
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Oct 2013 21:59:00 -0700 (PDT)
-In-Reply-To: <5cbf031e8c962394a34615d18977f609@muaddib.hro.localnet>
+Received: from mail-pd0-f174.google.com ([209.85.192.174]:58874 "EHLO
+	mail-pd0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753903Ab3JXIho (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Oct 2013 04:37:44 -0400
+Received: by mail-pd0-f174.google.com with SMTP id y13so2623671pdi.5
+        for <linux-m68k@vger.kernel.org>; Thu, 24 Oct 2013 01:37:44 -0700 (PDT)
+In-Reply-To: <9f57bf0fdf7329055ee5f7d2b2fe966d@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?ISO-8859-1?Q?Ingo_J=FCrgensmann?= <ij@2013.bluespice.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, tuomas.vainikka@kopteri.net
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, tuomas.vainikka@kopteri.net, =?UTF-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2013.bluespice.org>
 
-Hi Ingo,
+On Tue, Oct 22, 2013 at 10:38 PM, Michael Schmitz
+<schmitz@biophys.uni-duesseldorf.de> wrote:
+>>>> To pinpoint where in sd_completed_bytes this happens, I'd need the
+>>>> sd_mod
+>>>> module and the module symbol map.
+>>>
+>>>
+>>>                 /* be careful ... don't want any overflows */
+>>>                 u64 factor = scmd->device->sector_size / 512;
+>>>                 do_div(start_lba, factor);
+>>>                 do_div(end_lba, factor);
+>>>
+>>> scmd->device->sector_size should be 512, so factor should be 1.
+>
+>
+> Looking at a bit of context right above what you quote here, we can be
+> reasonably certain that scmd->device->sector_size is greater or equal 512.
 
-> On 2013-10-22 22:38, Michael Schmitz wrote:
->
->> Ingo - could you add
->> if (scmd->device->sector_size > 2048)
->> sdev_printk(KERN_ERR, scmd->device, "Whoa - large secor size %d\n",
->> scmd->device->sector_size);
->> before the do_div calls, and see what that reports?
->
-> Ok, so, drivers/scsi/sd.c looks now as this:
->
->
->         if (scmd->device->sector_size < 512) {
->                 /* only legitimate sector_size here is 256 */
->                 start_lba <<= 1;
->                 end_lba <<= 1;
->         } else {
->                 /* be careful ... don't want any overflows */
->                 u64 factor = scmd->device->sector_size / 512;
->                 if (scmd->device->sector_size > 2048)
->                      sdev_printk(KERN_ERR, scmd->device, "Whoa - large  
-> sector size %d\n", scmd->device->sector_size);
->                 do_div(start_lba, factor);
->                 do_div(end_lba, factor);
->         }
->
-> ... will rebuilt and install it then...
+Stupid me, I missed that check ;-)
 
-Precisely what I meant, thanks.
+Perhaps the "u64" is still an issue there, despite Andreas' fix for do_div()?
 
-Cheers,
+> Ingo - could you add
+>
+> if (scmd->device->sector_size > 2048)
+>         sdev_printk(KERN_ERR, scmd->device, "Whoa - large secor size %d\n",
+> scmd->device->sector_size);
+>
+> before the do_div calls, and see what that reports?
 
-	Michael
+Anyway, if it triggers again, I'd like to see the real kernel binary
+that matches
+the crash log.
 
+Gr{oetje,eeting}s,
 
->
-> --  
-> Ciao...          //    Fon: 0381-2744150
-> .     Ingo     \X/     http://blog.windfluechter.net
->
-> gpg pubkey: http://www.juergensmann.de/ij_public_key.
->
->
-> --  
-> To UNSUBSCRIBE, email to debian-68k-REQUEST@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact  
-> listmaster@lists.debian.org
-> Archive:  
-> http://lists.debian.org/ 
-> 5cbf031e8c962394a34615d18977f609@muaddib.hro.localnet
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
