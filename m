@@ -1,68 +1,41 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Zero Divide in Kernel 3.12-rc4
-Date: Thu, 24 Oct 2013 10:37:44 +0200
-Message-ID: <CAMuHMdX_hbDzak-y0CMbdXUhgdQCCoGOeyaCH_DE2C7E3gLi7A@mail.gmail.com>
-References: <dbbdc369c25c9eea7abc4ca331128de3@muaddib.hro.localnet>
-	<f8389c591d50fe216b546e70d464c1f9@biophys.uni-duesseldorf.de>
-	<CAMuHMdVfvDAuqpTFFq5qQK2Prio55i2bmcne-eu_VQt5xFY-LQ@mail.gmail.com>
-	<335d2ba0b0b19e56b2880882a1c4c543@biophys.uni-duesseldorf.de>
-	<9f57bf0fdf7329055ee5f7d2b2fe966d@biophys.uni-duesseldorf.de>
+From: Mr Ebrahim Sido <ebrahimsido5@gmail.com>
+Subject: I NEED YOUR CO-OPERATION AND ASSISTANCE
+Date: Wed, 30 Oct 2013 08:13:57 -0700 (PDT)
+Message-ID: <1383146037.23648.YahooMailBasic@web162101.mail.bf1.yahoo.com>
+Reply-To: ebrahimsido5@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f174.google.com ([209.85.192.174]:58874 "EHLO
-	mail-pd0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753903Ab3JXIho (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Oct 2013 04:37:44 -0400
-Received: by mail-pd0-f174.google.com with SMTP id y13so2623671pdi.5
-        for <linux-m68k@vger.kernel.org>; Thu, 24 Oct 2013 01:37:44 -0700 (PDT)
-In-Reply-To: <9f57bf0fdf7329055ee5f7d2b2fe966d@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, tuomas.vainikka@kopteri.net, =?UTF-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2013.bluespice.org>
 
-On Tue, Oct 22, 2013 at 10:38 PM, Michael Schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->>>> To pinpoint where in sd_completed_bytes this happens, I'd need the
->>>> sd_mod
->>>> module and the module symbol map.
->>>
->>>
->>>                 /* be careful ... don't want any overflows */
->>>                 u64 factor = scmd->device->sector_size / 512;
->>>                 do_div(start_lba, factor);
->>>                 do_div(end_lba, factor);
->>>
->>> scmd->device->sector_size should be 512, so factor should be 1.
->
->
-> Looking at a bit of context right above what you quote here, we can be
-> reasonably certain that scmd->device->sector_size is greater or equal 512.
+I NEED YOUR CO-OPERATION AND ASSISTANCE
 
-Stupid me, I missed that check ;-)
+>From Mr Ebrahim Sido
 
-Perhaps the "u64" is still an issue there, despite Andreas' fix for do_div()?
+My Dear Friend
 
-> Ingo - could you add
->
-> if (scmd->device->sector_size > 2048)
->         sdev_printk(KERN_ERR, scmd->device, "Whoa - large secor size %d\n",
-> scmd->device->sector_size);
->
-> before the do_div calls, and see what that reports?
+I am Mr Ebrahim Sido a director in African Development Bank (ADB) Ouagadougou Burkina Faso, I got your email information through the Burkina's Chamber of Commerce and industry on foreign business relations here in Ouagadougou Burkina Faso I haven't disclose this deal to anybody.
 
-Anyway, if it triggers again, I'd like to see the real kernel binary
-that matches
-the crash log.
+I hoped that you will not expose or betray this trust and confident that i am about to establish with you for the mutual benefit of you and i. I need your urgent assistance in transferring the sum of ($10.5) millions dollars into your account within 14 working banking days.
 
-Gr{oetje,eeting}s,
+This money has been dormant for years in our bank without claim due to the owner of this fund died along with his entire family and supposed next of kin in an air crash.
 
-                        Geert
+I want our bank to release these funds to you as the nearest person to our deceased customer while i come over to your country to share this fund with you as soon as you confirm this fund into your account and ask me to come over. I don't want the money to go into our bank treasure as an abandoned fund. So this is the reason why i contacted you so that our bank will release this money to you as the next of kin to the deceased customer. Please i would like you to keep this proposal as a top secret and delete it if you are not interesting.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Upon the receipt of your reply and indication of your capability, i will give you full details on how the business will be executed and also note that you will have 50% of the above mentioned sum if you agree to handle this business with me while the remaining 50% will be for me because i don't want anyone here in our bank to know my involvement until you confirm this fund into your account and ask me to come over for the sharing as i indicated.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+If you agree to follow up this transaction with a full dedication do get back to me with this requested information below as I listed it: please contact me with my direct email for security reason:
+
+1. Full Name: .........
+2. Telephone Numbers: ...........
+3. Your Age: ........
+4. Your Sex: ...........
+5. Your Occupation: ............
+6. Your Country: ............
+7. City: ...........
+8. Your Home Address: ................
+9. Marital Status: ................
+
+Thanks,
+Mr Ebrahim Sido
