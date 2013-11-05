@@ -1,40 +1,34 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 0/3] kexec support for Linux/m68k (tools part)
-Date: Tue, 5 Nov 2013 16:05:13 +0900
-Message-ID: <20131105070513.GB16448@verge.net.au>
-References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
- <20131016072236.GB29696@verge.net.au>
- <CAMuHMdVsKLBt8MiZ-dpX7expx+37XfO2kUjbRA_h5eMcsWJ1VQ@mail.gmail.com>
+From: "Mrs. Mary Saleh Saville" <pattersonjwilliam@yahoo.com>
+Subject: Donation Project
+Date: Wed, 6 Nov 2013 01:42:15 +0800
+Message-ID: <201311050334.rA53YJuP021289__8610.93615317277$1383673636$gmane$org@tx.cpta.com.cn>
+Reply-To: <mary_saleh@europemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVsKLBt8MiZ-dpX7expx+37XfO2kUjbRA_h5eMcsWJ1VQ@mail.gmail.com>
+Received: from [114.255.29.133] ([114.255.29.133]:53428 "EHLO tx.cpta.com.cn"
+	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1754482Ab3KERqw (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 5 Nov 2013 12:46:52 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, kexec@lists.infradead.org
+To: linuxdicas@yahoogroups.com.br, linxlunx@yahoogroups.com, linuxvadapav@yahoogroups.com, linuxtechbiz@yahoogroups.com, linuxindo@yahoogroups.com, linuxhubli@yahoogroups.com, lioc_farrerab@yahoo.es, linux-sparse@vger.kernel.org, linux-securitymodule@vger.kernel.org, linux-scsi@vger.kernel.org, linux-rtusers@vger.kernel.org, linux-raid@vger.kernel.org, linuxnewbie@vger.kernel.org, linux-net@vger.kernel.org, linux-msdos@vger.kernel.org, linux-m68k@vger.kernel.org, linuxkernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-ia64@vger.kernel.org, linuxhams@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, linuxcrypto@vger.kernel.org, linux-btrace@vger.kernel.org, linux-fai-devel@rrz.unikoeln.de, linux-fai@rrz.uni-koeln.de, lio@pd.jaring.my, linuxppc-embedded@ozlabs.org, linux-streams@openss7.org, linuxutf8@nl.linux.org, linuxers@mm.glug-bom.org, linuxwacom-discuss@lists.sourceforge.net, linux-usbusers@lists.sourceforge.net, linux-usb-devel@lists.sourceforge.net, linux-karma-devel@lists.sourceforge.net, linux-india-help@lists.sourceforge.net, linux-indiageneral@lists.sourceforge.net, linuxr3000@lists.pcxperience.com, linux-ha-dev@lists.linux-ha.org, linux-pcmcia@lists.infradead.org, linux-uvc-devel@lists.berlios.de, linux-nantes@listes.univ-nantes.fr, linuxchix@linuxchix.org.br, linux-plug@linux.org.pe, linux-programming@linux.or.id, lio@kecegroup.com, linux-users@it.canterbury.ac.nz, linux-il@cs.huji.ac.il, linviawin@bellpac.po.my, linviani@aneka-infokom.co.id
 
-On Sun, Nov 03, 2013 at 03:08:50PM +0100, Geert Uytterhoeven wrote:
-> On Wed, Oct 16, 2013 at 9:22 AM, Simon Horman <horms@verge.net.au> wrote:
-> > I've taken a quick look over this and it seems reasonable to me.
-> 
-> Thanks!
-> 
-> > However, I wonder if I should wait for review of the kernel-side
-> > to be completed before applying the kexec-tools patches.
-> >
-> > Let me know what you think.
-> 
-> The kexec-tools part seems to be stable. The issues to be sorted out are on
-> the kernel side.
-> 
-> However, it doesn't hurt to wait a little bit more to apply this. We m68k
-> people are patient and used to multi-year development ;-)
+Hello,
 
-It is said that patience is a virtue :^)
+I am Mrs. Mary Saleh Saville an ageing widow suffering from long time illness. I have some funds I inherited from my late husband, the sum of US$3,500,000.00 and I am in need of a very honest and God fearing person that will use the fund for God's work to help the less privileged out there.
 
-As the kexec-tools portion of this change isn't useful without the
-kernel portion I think I would like to wait before applying this series.
-Please repost once the kernel changes have been merged or if you
-would like them re-considered for any other reason.
+I have mapped out$1,200.000.00 for your personal use in this work. While the rest will be for the work.Please if you would be able to use the funds for the Lord's work kindly reply for further details.
+
+Your full name:
+Your full address:
+Your telephone/mobile number:
+Your fax Number:
+Your full company name:
+Your age:
+
+Thanks and God bless.
+
+Mrs. Mary Saleh Saville
