@@ -1,42 +1,160 @@
-From: "Mrs. Nkoana Maite Mashabane" <pesa_san@yahoo.gr>
-Subject: INVESTMENT PARTNERSHIP
-Date: Wed, 6 Nov 2013 13:30:25 +0800
-Message-ID: <201311051522.rA5FMPuP032011__26929.9605316066$1383716160$gmane$org@tx.cpta.com.cn>
-Reply-To: <nkoa_mashabane@safrica.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer
+ based soft interrupts
+Date: Wed, 6 Nov 2013 12:30:07 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
+References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [114.255.29.133] ([114.255.29.133]:42781 "EHLO tx.cpta.com.cn"
-	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750802Ab3KFFfn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 6 Nov 2013 00:35:43 -0500
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linuxdicas@yahoogroups.com.br, linxlunx@yahoogroups.com, linuxvadapav@yahoogroups.com, linuxtechbiz@yahoogroups.com, linuxindo@yahoogroups.com, linuxhubli@yahoogroups.com, lioc_farrerab@yahoo.es, linux-sparse@vger.kernel.org, linux-securitymodule@vger.kernel.org, linux-scsi@vger.kernel.org, linux-rtusers@vger.kernel.org, linux-raid@vger.kernel.org, linuxnewbie@vger.kernel.org, linux-net@vger.kernel.org, linux-msdos@vger.kernel.org, linux-m68k@vger.kernel.org, linuxkernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-ia64@vger.kernel.org, linuxhams@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, linuxcrypto@vger.kernel.org, linux-btrace@vger.kernel.org, linux-fai-devel@rrz.unikoeln.de, linux-fai@rrz.uni-koeln.de, lio@pd.jaring.my, linuxppc-embedded@ozlabs.org, linux-streams@openss7.org, linuxutf8@nl.linux.org, linuxers@mm.glug-bom.org, linuxwacom-discuss@lists.sourceforge.net, linux-usbusers@lists.sourceforge.net, linux-usb-devel@lists.sourceforge.net, linux-karma-devel@lists.sourceforge.net, linux-india-help@lists.sourceforge.net, linux-indiageneral@lists.sourceforge.net, linuxr3000@lists.pcxperience.com, linux-ha-dev@lists.linux-ha.org, linux-pcmcia@lists.infradead.org, linux-uvc-devel@lists.berlios.de, linux-nantes@listes.univ-nantes.fr, linuxchix@linuxchix.org.br, linux-plug@linux.org.pe, linux-programming@linux.or.id, lio@kecegroup.com, linux-users@it.canterbury.ac.nz, linux-il@cs.huji.ac.il, linviawin@bellpac.po.my, linviani@aneka-infokom.co.id
 
-Hello,
+On Wed, 20 Mar 2013, Geert Uytterhoeven wrote:
 
-I am Mrs. Maite Nkoana Mashabane, am the Minister of International Relations and Cooperation of South Africa, Please view my profile. http://www.gcis.gov.za/gcis/gcis_profile.jsp?id=1480.
+> On Sun, Feb 10, 2013 at 11:36 AM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Thu, Jan 31, 2013 at 1:23 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> >> [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
+> >>         experimental hack to avoid unhandled interrupt timer to fire
+> >>         on EtherNEC/NetUSBee cards that have no hardware interrupt
+> >>         and need to be polled from a timer
+> >>
+> >> This patch adds a special 'polled interrupt' handler for timer
+> >> based software interrupts.
+> >
+> > Adding Thomas and lkml.
+> 
+> No comments/suggestions?
+> Thanks again!
 
-I would like you to indicate your interest to receive the transfer of $3.5 Million. I will like you to stand as the beneficiary of the said fund.
+Sorry for answering late. This slipped out of my view completely.
 
-However, I will be resigning soon and want to establish any type of machinery tools devices or agriculture or even real estate under my own registered company. I have the sum to invest. How can I come in contact with you in partnership/investment transaction?
+> >> handle_simple_irq() will respond to excessive unhandled
+> >> interrupts (as are expected for a polling timer interrupt) by
+> >> disabling the apparently unhandled interrupt source.
+> >> handle_polled_irq() prevents this by setting the
+> >> IRQS_POLL_INPROGRESS flag which will cause the unhandled
+> >> interrupt events to be ignored.
 
-I want you to assist me in investing the money in your country.
+> >> This is a temporary hack to allow timer based polling of the
+> >> Atari ROM port network and USB cards only. Suggestions on how to
+> >> properly handle this in the normal interrupt framework are most
+> >> welcome.
 
-I will also like you to send me the following information below:
+So you're polling devices which have no hardware interrupt from the
+timer interrupt. Of course if there is no interrupt pending on one of
+these devices, this will trigger the spurious detector. By setting the
+POLL_INPROGRESS flag, you're preventing that.
 
-(1)Full names:
-(2)Private phone number:
-(3)Current residential address:
-(4)Your Country:
-(5)Occupation:
-(6)Age and Sex:
+Reading the demultiplex handler it seems you have no way to figure out
+which of the sub interrupts actually triggered the mfptimer_handler,
+right?
 
-Please I do not need to remind you of the need for absolute Confidentiality if this transaction must succeed. YOU MUST NOT CALL ME! If you do not feel comfortable with this transaction, do not hesitate to discontinue.
+I'm not too happy about the POLL flag "abuse". I'd rather have such
+interrupts explicitely marked as polled by some other interrupt. That
+also excludes such interrupts from the spurious mechanism completely.
 
-I will give you more detail's as soon as you confirm your willingness to assisting me.
+Does the following patch solve the problem? You need to call
 
-Mrs. Nkoana Maite Mashabane
+     irq_set_status_flags(irq, IRQ_IS_POLLED);
+
+when setting up the interrupt controller for those polled interrupt
+lines.
+
+Thanks,
+
+	tglx
+-----------------
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 56bb0dc..7dc1003 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -70,6 +70,9 @@ typedef	void (*irq_preflow_handler_t)(struct irq_data *data);
+  * IRQ_MOVE_PCNTXT		- Interrupt can be migrated from process context
+  * IRQ_NESTED_TRHEAD		- Interrupt nests into another thread
+  * IRQ_PER_CPU_DEVID		- Dev_id is a per-cpu variable
++ * IRQ_IS_POLLED		- Always polled by another interrupt. Exclude
++ *				  it from the spurious interrupt detection
++ *				  mechanism and from core side polling.
+  */
+ enum {
+ 	IRQ_TYPE_NONE		= 0x00000000,
+@@ -94,12 +97,14 @@ enum {
+ 	IRQ_NESTED_THREAD	= (1 << 15),
+ 	IRQ_NOTHREAD		= (1 << 16),
+ 	IRQ_PER_CPU_DEVID	= (1 << 17),
++	IRQ_IS_POLLED		= (1 << 18),
+ };
+ 
+ #define IRQF_MODIFY_MASK	\
+ 	(IRQ_TYPE_SENSE_MASK | IRQ_NOPROBE | IRQ_NOREQUEST | \
+ 	 IRQ_NOAUTOEN | IRQ_MOVE_PCNTXT | IRQ_LEVEL | IRQ_NO_BALANCING | \
+-	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID)
++	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID | \
++	 IRQ_IS_POLLED)
+ 
+ #define IRQ_NO_BALANCING_MASK	(IRQ_PER_CPU | IRQ_NO_BALANCING)
+ 
+diff --git a/kernel/irq/settings.h b/kernel/irq/settings.h
+index 1162f10..3320b84 100644
+--- a/kernel/irq/settings.h
++++ b/kernel/irq/settings.h
+@@ -14,6 +14,7 @@ enum {
+ 	_IRQ_NO_BALANCING	= IRQ_NO_BALANCING,
+ 	_IRQ_NESTED_THREAD	= IRQ_NESTED_THREAD,
+ 	_IRQ_PER_CPU_DEVID	= IRQ_PER_CPU_DEVID,
++	_IRQ_IS_POLLED		= IRQ_IS_POLLED,
+ 	_IRQF_MODIFY_MASK	= IRQF_MODIFY_MASK,
+ };
+ 
+@@ -26,6 +27,7 @@ enum {
+ #define IRQ_NOAUTOEN		GOT_YOU_MORON
+ #define IRQ_NESTED_THREAD	GOT_YOU_MORON
+ #define IRQ_PER_CPU_DEVID	GOT_YOU_MORON
++#define IRQ_IS_POLLED		GOT_YOU_MORON
+ #undef IRQF_MODIFY_MASK
+ #define IRQF_MODIFY_MASK	GOT_YOU_MORON
+ 
+@@ -147,3 +149,8 @@ static inline bool irq_settings_is_nested_thread(struct irq_desc *desc)
+ {
+ 	return desc->status_use_accessors & _IRQ_NESTED_THREAD;
+ }
++
++static inline bool irq_settings_is_polled(struct irq_desc *desc)
++{
++	return desc->status_use_accessors & _IRQ_IS_POLLED;
++}
+diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+index 7b5f012..a1d8cc6 100644
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -67,8 +67,13 @@ static int try_one_irq(int irq, struct irq_desc *desc, bool force)
+ 
+ 	raw_spin_lock(&desc->lock);
+ 
+-	/* PER_CPU and nested thread interrupts are never polled */
+-	if (irq_settings_is_per_cpu(desc) || irq_settings_is_nested_thread(desc))
++	/*
++	 * PER_CPU, nested thread interrupts and interrupts explicitely
++	 * marked polled are excluded from polling.
++	 */
++	if (irq_settings_is_per_cpu(desc) ||
++	    irq_settings_is_nested_thread(desc) ||
++	    irq_settings_is_polled(desc))
+ 		goto out;
+ 
+ 	/*
+@@ -268,7 +273,8 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
+ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 		    irqreturn_t action_ret)
+ {
+-	if (desc->istate & IRQS_POLL_INPROGRESS)
++	if (desc->istate & IRQS_POLL_INPROGRESS ||
++	    irq_settings_is_polled(desc))
+ 		return;
+ 
+ 	/* we get here again via the threaded handler */
