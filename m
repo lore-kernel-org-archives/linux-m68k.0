@@ -1,160 +1,145 @@
 From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer
- based soft interrupts
-Date: Wed, 6 Nov 2013 12:30:07 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
-References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Wed, 6 Nov 2013 18:23:21 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de>
+References: <20130917082838.218329307@infradead.org> <20130917182350.449685712@linutronix.de> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from www.linutronix.de ([62.245.132.108]:46593 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751017Ab3KFRX0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Nov 2013 12:23:26 -0500
+In-Reply-To: <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>, Linux-Arch <linux-arch@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andi Kleen <ak@linux.intel.com>, Peter Anvin <hpa@zytor.com>, Mike Galbraith <bitbucket@online.de>, Arjan van de Ven <arjan@linux.intel.com>, Frederic Weisbecker <fweisbec@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Wed, 20 Mar 2013, Geert Uytterhoeven wrote:
+Geert,
 
-> On Sun, Feb 10, 2013 at 11:36 AM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Thu, Jan 31, 2013 at 1:23 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts -
-> >>         experimental hack to avoid unhandled interrupt timer to fire
-> >>         on EtherNEC/NetUSBee cards that have no hardware interrupt
-> >>         and need to be polled from a timer
-> >>
-> >> This patch adds a special 'polled interrupt' handler for timer
-> >> based software interrupts.
-> >
-> > Adding Thomas and lkml.
+On Mon, 4 Nov 2013, Geert Uytterhoeven wrote:
+> But only if you look at "[m68k] IRQ: add handle_polled_irq() for timer
+> based soft interrupt" (http://www.spinics.net/lists/linux-m68k/msg05889.html)
+> first ;-)
+
+Done. Thanks for the reminder!
+ 
+> Below is a patch with some fixups, on top of your two patches.
 > 
-> No comments/suggestions?
-> Thanks again!
+> Unfortunately it still hangs somewhere after mounting the root filesystem.
+> 
+> Using this debug code for do_IRQ():
+> 
+> diff --git a/arch/m68k/kernel/irq.c b/arch/m68k/kernel/irq.c
+> index aaf7b15fad41..da9687803d98 100644
+> --- a/arch/m68k/kernel/irq.c
+> +++ b/arch/m68k/kernel/irq.c
+> @@ -22,11 +22,21 @@ asmlinkage int do_IRQ(int irq, struct pt_regs *regs)
+>  	struct pt_regs *oldregs = set_irq_regs(regs);
+>  	int nested = regs->sr & ~ALLOWINT;
+>  
+> +static int nesting;
+> +const char prefix[] = "                ";
+> +unsigned long flags;
+> +local_irq_save(flags);
+> +nesting++;
+> +printk("# %sirq %d nested %d\n", &prefix[16-2*nesting], irq, nested);
+> +local_irq_restore(flags);
+>  	irq_enter();
+>  	generic_handle_irq(irq);
+>  	irq_exit_nested(nested);
+>  
+>  	set_irq_regs(oldregs);
+> +local_irq_save(flags);
+> +nesting--;
+> +local_irq_restore(flags);
+>  	return nested;
+>  }
+>  
+> I get output like
+> 
+> #   irq 15 nested 0
+> #     irq 15 nested 1024
+> 
+> irq 15 while irq 15 in progress??
 
-Sorry for answering late. This slipped out of my view completely.
+Huch, that's odd.
+ 
+> With similar debug code on the old working do_IRQ(), I get
+>   - slightly less deep nesting,
+>   - do_IRQ() is never re-entered with the same irq number.
+> 
+> Also note that the value of "nested" doesn't match the indentation level,
+> which depends on my own bookkeeping using "nesting".
 
-> >> handle_simple_irq() will respond to excessive unhandled
-> >> interrupts (as are expected for a polling timer interrupt) by
-> >> disabling the apparently unhandled interrupt source.
-> >> handle_polled_irq() prevents this by setting the
-> >> IRQS_POLL_INPROGRESS flag which will cause the unhandled
-> >> interrupt events to be ignored.
+Well, nested is just an indicator. It's not the nest level.
 
-> >> This is a temporary hack to allow timer based polling of the
-> >> Atari ROM port network and USB cards only. Suggestions on how to
-> >> properly handle this in the normal interrupt framework are most
-> >> welcome.
+      nested = pt->sr & ~ALLOWINT;
+i.e.:
+      nested = pt->sr & 0x0700;
 
-So you're polling devices which have no hardware interrupt from the
-timer interrupt. Of course if there is no interrupt pending on one of
-these devices, this will trigger the spurious detector. By setting the
-POLL_INPROGRESS flag, you're preventing that.
+So in the case above nested is 0x400
+ 
+> Anyone with an idea where it's going wrong?
 
-Reading the demultiplex handler it seems you have no way to figure out
-which of the sub interrupts actually triggered the mfptimer_handler,
-right?
+The original code does:
 
-I'm not too happy about the POLL flag "abuse". I'd rather have such
-interrupts explicitely marked as polled by some other interrupt. That
-also excludes such interrupts from the spurious mechanism completely.
+    add_preempt_count(HARDIRQ_OFFSET);
 
-Does the following patch solve the problem? You need to call
+    do_IRQ()
+	irq_enter();
+	  add_preempt_count(HARDIRQ_OFFSET);
 
-     irq_set_status_flags(irq, IRQ_IS_POLLED);
+	handle_irq();
 
-when setting up the interrupt controller for those polled interrupt
-lines.
+	irq_exit();
+	    local_irq_disable();
+	    sub_preempt_count(HARDIRQ_OFFSET);
+
+    sub_preempt_count(HARDIRQ_OFFSET);
+    
+    /* Check for nested irq */
+    if (in_hardirq())
+       reti();
+
+    /* Check for nested irq again */
+    if (pt->sr & ~ALLOWINT != 0)
+       reti();
+
+    do_softirq();
+       ....
+    ret_from_exception();
+
+With the patches in place it looks like this:
+
+     do_IRQ()
+	nested = pt->sr & ~ALLOWINT;
+
+	irq_enter();
+	  add_preempt_count(HARDIRQ_OFFSET);
+
+	handle_irq();
+
+	irq_exit_nested(nested);
+	    local_irq_disable();
+	    sub_preempt_count(HARDIRQ_OFFSET);
+	    if (!nested && !in_hardirq())
+	       do_softirq()
+		  
+	return nested;
+
+      if (nested)
+      	 reti();
+
+      ret_from_exception();
+
+So all it does essentially is to move the softirq invocation in the
+non nested case a tad earlier. I'm really puzzled as I can't spot the
+point where this change makes a real difference.
 
 Thanks,
 
 	tglx
------------------
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 56bb0dc..7dc1003 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -70,6 +70,9 @@ typedef	void (*irq_preflow_handler_t)(struct irq_data *data);
-  * IRQ_MOVE_PCNTXT		- Interrupt can be migrated from process context
-  * IRQ_NESTED_TRHEAD		- Interrupt nests into another thread
-  * IRQ_PER_CPU_DEVID		- Dev_id is a per-cpu variable
-+ * IRQ_IS_POLLED		- Always polled by another interrupt. Exclude
-+ *				  it from the spurious interrupt detection
-+ *				  mechanism and from core side polling.
-  */
- enum {
- 	IRQ_TYPE_NONE		= 0x00000000,
-@@ -94,12 +97,14 @@ enum {
- 	IRQ_NESTED_THREAD	= (1 << 15),
- 	IRQ_NOTHREAD		= (1 << 16),
- 	IRQ_PER_CPU_DEVID	= (1 << 17),
-+	IRQ_IS_POLLED		= (1 << 18),
- };
- 
- #define IRQF_MODIFY_MASK	\
- 	(IRQ_TYPE_SENSE_MASK | IRQ_NOPROBE | IRQ_NOREQUEST | \
- 	 IRQ_NOAUTOEN | IRQ_MOVE_PCNTXT | IRQ_LEVEL | IRQ_NO_BALANCING | \
--	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID)
-+	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID | \
-+	 IRQ_IS_POLLED)
- 
- #define IRQ_NO_BALANCING_MASK	(IRQ_PER_CPU | IRQ_NO_BALANCING)
- 
-diff --git a/kernel/irq/settings.h b/kernel/irq/settings.h
-index 1162f10..3320b84 100644
---- a/kernel/irq/settings.h
-+++ b/kernel/irq/settings.h
-@@ -14,6 +14,7 @@ enum {
- 	_IRQ_NO_BALANCING	= IRQ_NO_BALANCING,
- 	_IRQ_NESTED_THREAD	= IRQ_NESTED_THREAD,
- 	_IRQ_PER_CPU_DEVID	= IRQ_PER_CPU_DEVID,
-+	_IRQ_IS_POLLED		= IRQ_IS_POLLED,
- 	_IRQF_MODIFY_MASK	= IRQF_MODIFY_MASK,
- };
- 
-@@ -26,6 +27,7 @@ enum {
- #define IRQ_NOAUTOEN		GOT_YOU_MORON
- #define IRQ_NESTED_THREAD	GOT_YOU_MORON
- #define IRQ_PER_CPU_DEVID	GOT_YOU_MORON
-+#define IRQ_IS_POLLED		GOT_YOU_MORON
- #undef IRQF_MODIFY_MASK
- #define IRQF_MODIFY_MASK	GOT_YOU_MORON
- 
-@@ -147,3 +149,8 @@ static inline bool irq_settings_is_nested_thread(struct irq_desc *desc)
- {
- 	return desc->status_use_accessors & _IRQ_NESTED_THREAD;
- }
-+
-+static inline bool irq_settings_is_polled(struct irq_desc *desc)
-+{
-+	return desc->status_use_accessors & _IRQ_IS_POLLED;
-+}
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index 7b5f012..a1d8cc6 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -67,8 +67,13 @@ static int try_one_irq(int irq, struct irq_desc *desc, bool force)
- 
- 	raw_spin_lock(&desc->lock);
- 
--	/* PER_CPU and nested thread interrupts are never polled */
--	if (irq_settings_is_per_cpu(desc) || irq_settings_is_nested_thread(desc))
-+	/*
-+	 * PER_CPU, nested thread interrupts and interrupts explicitely
-+	 * marked polled are excluded from polling.
-+	 */
-+	if (irq_settings_is_per_cpu(desc) ||
-+	    irq_settings_is_nested_thread(desc) ||
-+	    irq_settings_is_polled(desc))
- 		goto out;
- 
- 	/*
-@@ -268,7 +273,8 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
- void note_interrupt(unsigned int irq, struct irq_desc *desc,
- 		    irqreturn_t action_ret)
- {
--	if (desc->istate & IRQS_POLL_INPROGRESS)
-+	if (desc->istate & IRQS_POLL_INPROGRESS ||
-+	    irq_settings_is_polled(desc))
- 		return;
- 
- 	/* we get here again via the threaded handler */
