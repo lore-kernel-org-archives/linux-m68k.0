@@ -1,176 +1,84 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts
-Date: Thu, 7 Nov 2013 20:59:40 +1300
-Message-ID: <65b9e5f265b02af3b316e59e55450385@gmail.com>
-References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com> <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: Kernel sections loosing attributes
+Date: Thu, 7 Nov 2013 21:20:05 +1300
+Message-ID: <a20610c002caef02061373fe70e59b01@biophys.uni-duesseldorf.de>
+References: <CAMuHMdXsYFw6NR1BRfAEW8GYoQqUFsH5N-oSB7TxHYn8jRGCZg@mail.gmail.com> <CAMuHMdXrkSnswAr+0corHPO3fv9mtmwBxxsy7t0p=MK40hbC7w@mail.gmail.com>
 Mime-Version: 1.0 (Apple Message framework v624)
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f181.google.com ([209.85.192.181]:60790 "EHLO
-	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751824Ab3KGIAB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 7 Nov 2013 03:00:01 -0500
-In-Reply-To: <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
+In-Reply-To: <CAMuHMdXrkSnswAr+0corHPO3fv9mtmwBxxsy7t0p=MK40hbC7w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Thomas,
+Hi Geert,
 
->>>> This is a temporary hack to allow timer based polling of the
->>>> Atari ROM port network and USB cards only. Suggestions on how to
->>>> properly handle this in the normal interrupt framework are most
->>>> welcome.
->
-> So you're polling devices which have no hardware interrupt from the
-> timer interrupt. Of course if there is no interrupt pending on one of
-> these devices, this will trigger the spurious detector. By setting the
-> POLL_INPROGRESS flag, you're preventing that.
+loosely related - when did vmlinux.lds last change? I have seen 
+messages to the effect that .init_end is not in a sectiion in my last 
+attempts to build 3.10 kernels (both for Atari and Amiga).
 
-That's the general idea, yes. I am aware I abuse the flag somewhat. 
-This was
-the least invasive fix I came up with (i.e. no risk to cause 
-regressions elsewhere).
-Adding a new IRQ flag would have been my preference, but that seemed a 
-bit
-bold at the time.
+I had been using a patched version of vmlinux.lds to add extra explicit 
+alignment at the end to pad the last section out to a page boundary 
+(binutils 2.16 is even more horribly broken than 2.18 potentially is), 
+but changes to vmlinux.lds appear to have defeated that.
 
-> Reading the demultiplex handler it seems you have no way to figure out
-> which of the sub interrupts actually triggered the mfptimer_handler,
-> right?
+Now that you have got tglx' attention in regards to the interrupt 
+polling, I would certainly be willing to test his patch. 3.10 won't 
+boot - how far back do I have to go?
 
-Correct.
-
-> I'm not too happy about the POLL flag "abuse". I'd rather have such
-
-Precisely why I asked for this to be reviewed, thanks,
-
-> interrupts explicitely marked as polled by some other interrupt. That
-> also excludes such interrupts from the spurious mechanism completely.
->
-> Does the following patch solve the problem? You need to call
->
->      irq_set_status_flags(irq, IRQ_IS_POLLED);
->
-> when setting up the interrupt controller for those polled interrupt
-> lines.
-
-This should do the trick, from what I can see. I have tried to test it, 
-but recent changes
-to the m68k vmlinux.lds have thrown a monkey wrench in the works, it 
-seems (kernels
-just won't boot at all). I'll sort that out with Geert and report back.
-
-Much obliged,
+Cheers,
 
 	Michael
 
 
+> On Mon, Oct 21, 2013 at 9:55 PM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+>> As I also got complaints about overlapping sections from strip, I 
+>> switched
+>> from the good old gcc 4.1.2 20061115 (prerelease) (Ubuntu 4.1.1-21)
+>> and binutils 2.18.0.20080103 to gcc 4.6.3 and binutils 2.22, but apart
+>> from fixing the overlapping sections, it still didn't work.
 >
-> Thanks,
+> Binutils 2.18 is indeed buggy here. LMA of the data section is the same
+> as LMA of the __modver section, despite the correct __modver size due
+> to the ". = ALIGN((align))" at the end of the section (see
+> include/asm-generic/vmlinux.lds.h):
 >
-> 	tglx
-> -----------------
-> diff --git a/include/linux/irq.h b/include/linux/irq.h
-> index 56bb0dc..7dc1003 100644
-> --- a/include/linux/irq.h
-> +++ b/include/linux/irq.h
-> @@ -70,6 +70,9 @@ typedef	void (*irq_preflow_handler_t)(struct 
-> irq_data *data);
->   * IRQ_MOVE_PCNTXT		- Interrupt can be migrated from process context
->   * IRQ_NESTED_TRHEAD		- Interrupt nests into another thread
->   * IRQ_PER_CPU_DEVID		- Dev_id is a per-cpu variable
-> + * IRQ_IS_POLLED		- Always polled by another interrupt. Exclude
-> + *				  it from the spurious interrupt detection
-> + *				  mechanism and from core side polling.
->   */
->  enum {
->  	IRQ_TYPE_NONE		= 0x00000000,
-> @@ -94,12 +97,14 @@ enum {
->  	IRQ_NESTED_THREAD	= (1 << 15),
->  	IRQ_NOTHREAD		= (1 << 16),
->  	IRQ_PER_CPU_DEVID	= (1 << 17),
-> +	IRQ_IS_POLLED		= (1 << 18),
->  };
+> Idx Name          Size      VMA       LMA       File off  Algn
+>   7 __modver      000003f8  0034dc08  0034dc08  0034dc08  2**0
+>                   ALLOC
+>   8 .data         00020ae0  0034e000  0034dc08  0034dc08  2**4
+>                   CONTENTS, ALLOC, LOAD, DATA
 >
->  #define IRQF_MODIFY_MASK	\
->  	(IRQ_TYPE_SENSE_MASK | IRQ_NOPROBE | IRQ_NOREQUEST | \
->  	 IRQ_NOAUTOEN | IRQ_MOVE_PCNTXT | IRQ_LEVEL | IRQ_NO_BALANCING | \
-> -	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID)
-> +	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID 
-> | \
-> +	 IRQ_IS_POLLED)
+> So that's where the overlap warning comes from.
+> And the resulting kernel crashes on ARAnyM after
 >
->  #define IRQ_NO_BALANCING_MASK	(IRQ_PER_CPU | IRQ_NO_BALANCING)
+> | Blitter tried to read byte from register ff8a00 at 0075ea
 >
-> diff --git a/kernel/irq/settings.h b/kernel/irq/settings.h
-> index 1162f10..3320b84 100644
-> --- a/kernel/irq/settings.h
-> +++ b/kernel/irq/settings.h
-> @@ -14,6 +14,7 @@ enum {
->  	_IRQ_NO_BALANCING	= IRQ_NO_BALANCING,
->  	_IRQ_NESTED_THREAD	= IRQ_NESTED_THREAD,
->  	_IRQ_PER_CPU_DEVID	= IRQ_PER_CPU_DEVID,
-> +	_IRQ_IS_POLLED		= IRQ_IS_POLLED,
->  	_IRQF_MODIFY_MASK	= IRQF_MODIFY_MASK,
->  };
+> With binutils 2.22/2.23.2, .data is correctly aligned:
 >
-> @@ -26,6 +27,7 @@ enum {
->  #define IRQ_NOAUTOEN		GOT_YOU_MORON
->  #define IRQ_NESTED_THREAD	GOT_YOU_MORON
->  #define IRQ_PER_CPU_DEVID	GOT_YOU_MORON
-> +#define IRQ_IS_POLLED		GOT_YOU_MORON
->  #undef IRQF_MODIFY_MASK
->  #define IRQF_MODIFY_MASK	GOT_YOU_MORON
+>   7 __modver      000003f8  0034dc08  0034dc08  0034dc08  2**0
+>                   ALLOC
+>   8 .data         00020ae0  0034e000  0034e000  0034e000  2**4
+>                   CONTENTS, ALLOC, LOAD, DATA
 >
-> @@ -147,3 +149,8 @@ static inline bool 
-> irq_settings_is_nested_thread(struct irq_desc *desc)
->  {
->  	return desc->status_use_accessors & _IRQ_NESTED_THREAD;
->  }
-> +
-> +static inline bool irq_settings_is_polled(struct irq_desc *desc)
-> +{
-> +	return desc->status_use_accessors & _IRQ_IS_POLLED;
-> +}
-> diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-> index 7b5f012..a1d8cc6 100644
-> --- a/kernel/irq/spurious.c
-> +++ b/kernel/irq/spurious.c
-> @@ -67,8 +67,13 @@ static int try_one_irq(int irq, struct irq_desc 
-> *desc, bool force)
+> and it seems to work fine on ARAnyM.
 >
->  	raw_spin_lock(&desc->lock);
+> Gr{oetje,eeting}s,
 >
-> -	/* PER_CPU and nested thread interrupts are never polled */
-> -	if (irq_settings_is_per_cpu(desc) || 
-> irq_settings_is_nested_thread(desc))
-> +	/*
-> +	 * PER_CPU, nested thread interrupts and interrupts explicitely
-> +	 * marked polled are excluded from polling.
-> +	 */
-> +	if (irq_settings_is_per_cpu(desc) ||
-> +	    irq_settings_is_nested_thread(desc) ||
-> +	    irq_settings_is_polled(desc))
->  		goto out;
+>                         Geert
 >
->  	/*
-> @@ -268,7 +273,8 @@ try_misrouted_irq(unsigned int irq, struct 
-> irq_desc *desc,
->  void note_interrupt(unsigned int irq, struct irq_desc *desc,
->  		    irqreturn_t action_ret)
->  {
-> -	if (desc->istate & IRQS_POLL_INPROGRESS)
-> +	if (desc->istate & IRQS_POLL_INPROGRESS ||
-> +	    irq_settings_is_polled(desc))
->  		return;
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
+> geert@linux-m68k.org
 >
->  	/* we get here again via the threaded handler */
->
->
->
+> In personal conversations with technical people, I call myself a 
+> hacker. But
+> when I'm talking to journalists I just say "programmer" or something 
+> like that.
+>                                 -- Linus Torvalds
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
 > in
