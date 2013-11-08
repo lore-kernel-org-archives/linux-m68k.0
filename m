@@ -1,79 +1,61 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
-Date: Thu, 7 Nov 2013 17:39:31 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de>
-References: <20130917082838.218329307@infradead.org> <20130917182350.449685712@linutronix.de> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
- <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de>
- <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg> <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de> <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-arch-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@elte.hu>, Linux-Arch <linux-arch@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Andi Kleen <ak@linux.intel.com>, Peter Anvin <hpa@zytor.com>, Mike Galbraith <bitbucket@online.de>, Arjan van de Ven <arjan@linux.intel.com>, Frederic Weisbecker <fweisbec@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: Kernel sections loosing attributes
+Date: Fri, 8 Nov 2013 20:58:44 +1300
+Message-ID: <9a3cdbb0e7e6a1deb0a85905b967bd01@biophys.uni-duesseldorf.de>
+References: <CAMuHMdXsYFw6NR1BRfAEW8GYoQqUFsH5N-oSB7TxHYn8jRGCZg@mail.gmail.com> <CAMuHMdXrkSnswAr+0corHPO3fv9mtmwBxxsy7t0p=MK40hbC7w@mail.gmail.com> <a20610c002caef02061373fe70e59b01@biophys.uni-duesseldorf.de> <CAMuHMdWXDXYnx7J=EOpOQS0M2-roZof=iekYJ4F5xMxyYC7GHQ@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdWXDXYnx7J=EOpOQS0M2-roZof=iekYJ4F5xMxyYC7GHQ@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On Thu, 7 Nov 2013, Geert Uytterhoeven wrote:
+Hi Geert,
 
-> Hi Thomas,
-> 
-> On Wed, Nov 6, 2013 at 6:23 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> Also note that the value of "nested" doesn't match the indentation level,
-> >> which depends on my own bookkeeping using "nesting".
-> >
-> > Well, nested is just an indicator. It's not the nest level.
-> 
-> I know, the only thing that matters is whether it's zero or not.
-> But it should always be zero if there's no nesting, and non-zero if there
-> is, right?
-> 
-> So:
-> 
-> #   irq 13 nested 1024
-> 
-> nested should be 0 here.
-> 
-> #   irq 4 nested 0
-> 
-> ok
-> 
-> #     irq 13 nested 1024
-> 
-> ok (two extra spaces in front of "irq").
-> 
-> #     irq 4 nested 0
-> 
-> nested should be non-zero here.
-
-Hmm. The softirq code reenables interrupts unconditionally. So when an
-interrupt hits there SR on stack has the bits cleared. You could
-verify that by checking in_serving_softirq() at the entry to
-do_IRQ(). That could also explain the irq 4 nests in irq 4 issue. You
-can't observe that on the original code as the softirq invocation and
-therefor the interrupt enable happens outside of do_IRQ().
-
-Though that does not explain the non nested case where nested is !=
-0. But it looks like that irq 13 has a higher level than 4:
-
-> #     irq 13 nested 1024
+>> loosely related - when did vmlinux.lds last change? I have seen 
+>> messages to
 >
-> ok (two extra spaces in front of "irq").
+> 17 months ago (the m68k part).
+>
+>> the effect that .init_end is not in a sectiion in my last attempts to 
+>> build
+>> 3.10 kernels (both for Atari and Amiga).
+>
+> Strange. Can you send me kernel and .config by private email?
 
-So it could actually be the following:
+Not so strange - I had dropped a patch fixing up end of kernel 
+alignment problems with old binutils (see PM). With that patch, it 
+boots fine.
 
-   irq X arrives, SR I2/1/0 is set to 4
+>
+>> I had been using a patched version of vmlinux.lds to add extra 
+>> explicit
+>> alignment at the end to pad the last section out to a page boundary
+>> (binutils 2.16 is even more horribly broken than 2.18 potentially 
+>> is), but
+>> changes to vmlinux.lds appear to have defeated that.
+>
+> For cross-compiling, you can also try (ia32 version available as well):
+> https://www.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/
+> These should work.
 
-   Now before we reach do_IRQ()
-   
-	irq 13 arrives and interrupts irq X as it has a higher level
+Thanks - these look precisely what I need.
 
-   	Your nest accounting shows 0, but the SR says nested, which is
-   	actually the correct state.
+>
+>> Now that you have got tglx' attention in regards to the interrupt 
+>> polling, I
+>> would certainly be willing to test his patch. 3.10 won't boot - how 
+>> far back
+>> do I have to go?
+>
+> Happily running 3.12 here.
 
-Is there an easy to setup/use emulator around on which I could try to
-dig into that myself?
+I'll stick to 3.10 for  now - should be a simple matter of setting the 
+new flag and switching the handler now.
 
-Thanks,
+Cheers,
 
-	tglx
+	Michael
