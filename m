@@ -1,61 +1,59 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: Kernel sections loosing attributes
-Date: Fri, 8 Nov 2013 20:58:44 +1300
-Message-ID: <9a3cdbb0e7e6a1deb0a85905b967bd01@biophys.uni-duesseldorf.de>
-References: <CAMuHMdXsYFw6NR1BRfAEW8GYoQqUFsH5N-oSB7TxHYn8jRGCZg@mail.gmail.com> <CAMuHMdXrkSnswAr+0corHPO3fv9mtmwBxxsy7t0p=MK40hbC7w@mail.gmail.com> <a20610c002caef02061373fe70e59b01@biophys.uni-duesseldorf.de> <CAMuHMdWXDXYnx7J=EOpOQS0M2-roZof=iekYJ4F5xMxyYC7GHQ@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.13
+Date: Fri, 8 Nov 2013 09:33:39 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1311080929260.10299@ayla.of.borg>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWXDXYnx7J=EOpOQS0M2-roZof=iekYJ4F5xMxyYC7GHQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Geert,
+	Hi Linus,
 
->> loosely related - when did vmlinux.lds last change? I have seen 
->> messages to
->
-> 17 months ago (the m68k part).
->
->> the effect that .init_end is not in a sectiion in my last attempts to 
->> build
->> 3.10 kernels (both for Atari and Amiga).
->
-> Strange. Can you send me kernel and .config by private email?
+The following changes since commit 6e4664525b1db28f8c4e1130957f70a94c19213e:
 
-Not so strange - I had dropped a patch fixing up end of kernel 
-alignment problems with old binutils (see PM). With that patch, it 
-boots fine.
+  Linux 3.11 (2013-09-02 13:46:10 -0700)
 
->
->> I had been using a patched version of vmlinux.lds to add extra 
->> explicit
->> alignment at the end to pad the last section out to a page boundary
->> (binutils 2.16 is even more horribly broken than 2.18 potentially 
->> is), but
->> changes to vmlinux.lds appear to have defeated that.
->
-> For cross-compiling, you can also try (ia32 version available as well):
-> https://www.kernel.org/pub/tools/crosstool/files/bin/x86_64/4.6.3/
-> These should work.
+are available in the git repository at:
 
-Thanks - these look precisely what I need.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
->
->> Now that you have got tglx' attention in regards to the interrupt 
->> polling, I
->> would certainly be willing to test his patch. 3.10 won't boot - how 
->> far back
->> do I have to go?
->
-> Happily running 3.12 here.
+for you to fetch changes up to 77a42796786c2ea2d3a67262fb5f1f707c3e0594:
 
-I'll stick to 3.10 for  now - should be a simple matter of setting the 
-new flag and switching the handler now.
+  m68k: Remove deprecated IRQF_DISABLED (2013-09-26 09:54:16 +0200)
 
-Cheers,
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k/m68knommu: Implement __get_user_unaligned/__put_user_unaligned()
 
-	Michael
+Michael Opdenacker (1):
+      m68k: Remove deprecated IRQF_DISABLED
+
+Summary:
+  - __put_user_unaligned may/will be used by btrfs
+  - m68k part of a global cleanup
+
+Thanks for pulling!
+
+ arch/m68k/include/asm/floppy.h         |    2 +-
+ arch/m68k/include/asm/sun3xflop.h      |    2 +-
+ arch/m68k/include/asm/uaccess.h        |    7 +++++++
+ arch/m68k/platform/68000/timers.c      |    2 +-
+ arch/m68k/platform/68360/config.c      |    2 +-
+ arch/m68k/platform/coldfire/pit.c      |    2 +-
+ arch/m68k/platform/coldfire/sltimers.c |    4 ++--
+ arch/m68k/platform/coldfire/timers.c   |    4 ++--
+ 8 files changed, 16 insertions(+), 9 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
