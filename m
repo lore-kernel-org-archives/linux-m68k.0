@@ -1,59 +1,148 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.13
-Date: Fri, 8 Nov 2013 09:33:39 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311080929260.10299@ayla.of.borg>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts
+Date: Sun, 10 Nov 2013 21:33:10 +1300
+Message-ID: <753aef27d368410b1e5c5814b1e7c8a7@gmail.com>
+References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com> <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pb0-f51.google.com ([209.85.160.51]:49027 "EHLO
+	mail-pb0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750952Ab3KJIdU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Nov 2013 03:33:20 -0500
+In-Reply-To: <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+Thomas,
 
-The following changes since commit 6e4664525b1db28f8c4e1130957f70a94c19213e:
+> Does the following patch solve the problem? You need to call
+>
+>      irq_set_status_flags(irq, IRQ_IS_POLLED);
+>
+> when setting up the interrupt controller for those polled interrupt
+> lines.
 
-  Linux 3.11 (2013-09-02 13:46:10 -0700)
+Your patch works just fine, thanks.
 
-are available in the git repository at:
+I suppose setting the flag can be done in the corresponding irq startup 
+function, instead of when setting up the irq controller?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+Geert - I will send the patch to ataints.c implementing this as soon as 
+Thomas' fix is merged.
 
-for you to fetch changes up to 77a42796786c2ea2d3a67262fb5f1f707c3e0594:
+Regards,
 
-  m68k: Remove deprecated IRQF_DISABLED (2013-09-26 09:54:16 +0200)
+	Michael
 
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k/m68knommu: Implement __get_user_unaligned/__put_user_unaligned()
 
-Michael Opdenacker (1):
-      m68k: Remove deprecated IRQF_DISABLED
-
-Summary:
-  - __put_user_unaligned may/will be used by btrfs
-  - m68k part of a global cleanup
-
-Thanks for pulling!
-
- arch/m68k/include/asm/floppy.h         |    2 +-
- arch/m68k/include/asm/sun3xflop.h      |    2 +-
- arch/m68k/include/asm/uaccess.h        |    7 +++++++
- arch/m68k/platform/68000/timers.c      |    2 +-
- arch/m68k/platform/68360/config.c      |    2 +-
- arch/m68k/platform/coldfire/pit.c      |    2 +-
- arch/m68k/platform/coldfire/sltimers.c |    4 ++--
- arch/m68k/platform/coldfire/timers.c   |    4 ++--
- 8 files changed, 16 insertions(+), 9 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+> Thanks,
+>
+> 	tglx
+> -----------------
+> diff --git a/include/linux/irq.h b/include/linux/irq.h
+> index 56bb0dc..7dc1003 100644
+> --- a/include/linux/irq.h
+> +++ b/include/linux/irq.h
+> @@ -70,6 +70,9 @@ typedef	void (*irq_preflow_handler_t)(struct 
+> irq_data *data);
+>   * IRQ_MOVE_PCNTXT		- Interrupt can be migrated from process context
+>   * IRQ_NESTED_TRHEAD		- Interrupt nests into another thread
+>   * IRQ_PER_CPU_DEVID		- Dev_id is a per-cpu variable
+> + * IRQ_IS_POLLED		- Always polled by another interrupt. Exclude
+> + *				  it from the spurious interrupt detection
+> + *				  mechanism and from core side polling.
+>   */
+>  enum {
+>  	IRQ_TYPE_NONE		= 0x00000000,
+> @@ -94,12 +97,14 @@ enum {
+>  	IRQ_NESTED_THREAD	= (1 << 15),
+>  	IRQ_NOTHREAD		= (1 << 16),
+>  	IRQ_PER_CPU_DEVID	= (1 << 17),
+> +	IRQ_IS_POLLED		= (1 << 18),
+>  };
+>
+>  #define IRQF_MODIFY_MASK	\
+>  	(IRQ_TYPE_SENSE_MASK | IRQ_NOPROBE | IRQ_NOREQUEST | \
+>  	 IRQ_NOAUTOEN | IRQ_MOVE_PCNTXT | IRQ_LEVEL | IRQ_NO_BALANCING | \
+> -	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID)
+> +	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID 
+> | \
+> +	 IRQ_IS_POLLED)
+>
+>  #define IRQ_NO_BALANCING_MASK	(IRQ_PER_CPU | IRQ_NO_BALANCING)
+>
+> diff --git a/kernel/irq/settings.h b/kernel/irq/settings.h
+> index 1162f10..3320b84 100644
+> --- a/kernel/irq/settings.h
+> +++ b/kernel/irq/settings.h
+> @@ -14,6 +14,7 @@ enum {
+>  	_IRQ_NO_BALANCING	= IRQ_NO_BALANCING,
+>  	_IRQ_NESTED_THREAD	= IRQ_NESTED_THREAD,
+>  	_IRQ_PER_CPU_DEVID	= IRQ_PER_CPU_DEVID,
+> +	_IRQ_IS_POLLED		= IRQ_IS_POLLED,
+>  	_IRQF_MODIFY_MASK	= IRQF_MODIFY_MASK,
+>  };
+>
+> @@ -26,6 +27,7 @@ enum {
+>  #define IRQ_NOAUTOEN		GOT_YOU_MORON
+>  #define IRQ_NESTED_THREAD	GOT_YOU_MORON
+>  #define IRQ_PER_CPU_DEVID	GOT_YOU_MORON
+> +#define IRQ_IS_POLLED		GOT_YOU_MORON
+>  #undef IRQF_MODIFY_MASK
+>  #define IRQF_MODIFY_MASK	GOT_YOU_MORON
+>
+> @@ -147,3 +149,8 @@ static inline bool 
+> irq_settings_is_nested_thread(struct irq_desc *desc)
+>  {
+>  	return desc->status_use_accessors & _IRQ_NESTED_THREAD;
+>  }
+> +
+> +static inline bool irq_settings_is_polled(struct irq_desc *desc)
+> +{
+> +	return desc->status_use_accessors & _IRQ_IS_POLLED;
+> +}
+> diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
+> index 7b5f012..a1d8cc6 100644
+> --- a/kernel/irq/spurious.c
+> +++ b/kernel/irq/spurious.c
+> @@ -67,8 +67,13 @@ static int try_one_irq(int irq, struct irq_desc 
+> *desc, bool force)
+>
+>  	raw_spin_lock(&desc->lock);
+>
+> -	/* PER_CPU and nested thread interrupts are never polled */
+> -	if (irq_settings_is_per_cpu(desc) || 
+> irq_settings_is_nested_thread(desc))
+> +	/*
+> +	 * PER_CPU, nested thread interrupts and interrupts explicitely
+> +	 * marked polled are excluded from polling.
+> +	 */
+> +	if (irq_settings_is_per_cpu(desc) ||
+> +	    irq_settings_is_nested_thread(desc) ||
+> +	    irq_settings_is_polled(desc))
+>  		goto out;
+>
+>  	/*
+> @@ -268,7 +273,8 @@ try_misrouted_irq(unsigned int irq, struct 
+> irq_desc *desc,
+>  void note_interrupt(unsigned int irq, struct irq_desc *desc,
+>  		    irqreturn_t action_ret)
+>  {
+> -	if (desc->istate & IRQS_POLL_INPROGRESS)
+> +	if (desc->istate & IRQS_POLL_INPROGRESS ||
+> +	    irq_settings_is_polled(desc))
+>  		return;
+>
+>  	/* we get here again via the threaded handler */
+>
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
+> in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
