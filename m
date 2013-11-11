@@ -1,74 +1,62 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU support)
-Date: Mon, 11 Nov 2013 14:20:04 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1311111418320.23723@herc.mirbsd.org>
-References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
- <alpine.LNX.2.00.1311111111320.10595@nippy.intranet>
- <Pine.BSM.4.64L.1311110108550.15024@herc.mirbsd.org>
- <alpine.LNX.2.00.1311111600420.13170@nippy.intranet>
- <CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Mon, 11 Nov 2013 20:34:31 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1311112031220.30673@ionos.tec.linutronix.de>
+References: <20130917082838.218329307@infradead.org> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
+ <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de> <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com> <alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de> <ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de>
+ <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com> <alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from eurynome.mirbsd.org ([81.169.181.30]:38527 "EHLO
-	eurynome.mirbsd.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753173Ab3KKOcn convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 09:32:43 -0500
-Received: from herc.mirbsd.org (root@herc.mirbsd.org [IPv6:2a01:198:25d:0:202:b3ff:feb7:54e8])
-	by eurynome.mirbsd.org (8.14.5.Beta0/8.14.3) with ESMTP id rABEWWoH020992
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-m68k@vger.kernel.org>; Mon, 11 Nov 2013 14:32:37 GMT
-In-Reply-To: <CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
+Received: from www.linutronix.de ([62.245.132.108]:43321 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754368Ab3KKTef (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 14:34:35 -0500
+In-Reply-To: <alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven dixit:
+On Mon, 11 Nov 2013, Thomas Gleixner wrote:
+> Not what you would expect, right?
 
->On Mon, Nov 11, 2013 at 6:16 AM, Finn Thain <fthain@telegraphics.com.a=
-u> wrote:
->>> > ! CONFIG_FB_SYS_COPYAREA                   : m n
->>> > ! CONFIG_FB_SYS_FILLRECT                   : m n
->>> > ! CONFIG_FB_SYS_FOPS                       : m n
->>> > ! CONFIG_FB_SYS_IMAGEBLIT                  : m n
->>> >
->>> >Would this prevent the macfb framebuffer console from working in t=
-he
->>> >absence of kernel modules?
+Finally found the issue. The patch below fixes the problem here. The
+little missing detail is, that I zapped GET_CURRENT() assuming blindly
+that this is only needed for the preempt_count hackery. But in fact
+the world and some more depends on it which leads to interesting
+explosions.
 
->> When something goes wrong, and the kernel messages aren't available =
-to
->> tell you what went wrong, then you may lack the information you need=
- to
+Thanks,
 
-I see.
-
->> Hence I was trying to find an explanation for the screen shot posted=
-,
->> which says "console [tty0] enabled" even though the macfb console di=
-d not
->> appear.
->
->No, without fb/console support you wouldn't even see those.
-
-OK.
-
->Indeed. Mac needs the CONFIG_FB_CFB_* counterparts.
->
->CONFIG_FB_SYS_* is for system RAM, while CONFIG_FB_CFB_*
->is for iomem. Not that it would matter much on m68k, m68k has no
->strict separation between both.
-
-OK. So there needs to be no further change then those already
-submitted to the Debian Linux maintainers in #728392 correct?
-
-bye,
-//mirabilos
---=20
-=E2=80=9ECool, /usr/share/doc/mksh/examples/uhr.gz ist ja ein Grund,
-mksh auf jedem System zu installieren.=E2=80=9C
-	-- XTaran auf der OpenRheinRuhr, ganz begeistert
-(EN: =E2=80=9C[=E2=80=A6]uhr.gz is a reason to install mksh on every sy=
-stem.=E2=80=9D)
+	tglx
+----
+Index: linux-2.6/arch/m68k/kernel/entry.S
+===================================================================
+--- linux-2.6.orig/arch/m68k/kernel/entry.S
++++ linux-2.6/arch/m68k/kernel/entry.S
+@@ -274,6 +274,7 @@ do_delayed_trace:
+ 
+ ENTRY(auto_inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 					|  put exception # in d0
+ 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
+ 	subw	#VEC_SPUR,%d0
+@@ -297,6 +298,7 @@ ret_from_interrupt:
+ 
+ ENTRY(user_inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 					|  put exception # in d0
+ 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
+ user_irqvec_fixup = . + 2
+@@ -313,6 +315,7 @@ user_irqvec_fixup = . + 2
+ 
+ ENTRY(bad_inthandler)
+ 	SAVE_ALL_INT
++	GET_CURRENT(%d0)
+ 
+ 	movel	%sp,%sp@-
+ 	jsr	handle_badint
