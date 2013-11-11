@@ -1,68 +1,80 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU support)
-Date: Mon, 11 Nov 2013 10:33:26 +0100
-Message-ID: <CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
-References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
-	<alpine.LNX.2.00.1311111111320.10595@nippy.intranet>
-	<Pine.BSM.4.64L.1311110108550.15024@herc.mirbsd.org>
-	<alpine.LNX.2.00.1311111600420.13170@nippy.intranet>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Mon, 11 Nov 2013 15:11:10 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de>
+References: <20130917082838.218329307@infradead.org> <20130917182350.449685712@linutronix.de> <20130917183628.534494408@linutronix.de> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de>
+ <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg> <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de> <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com> <alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de>
+ <ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de> <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f41.google.com ([209.85.160.41]:54281 "EHLO
-	mail-pb0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751256Ab3KKJd1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 04:33:27 -0500
-Received: by mail-pb0-f41.google.com with SMTP id wy17so5024092pbc.0
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Nov 2013 01:33:26 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1311111600420.13170@nippy.intranet>
+Received: from www.linutronix.de ([62.245.132.108]:41631 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753418Ab3KKOLO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 09:11:14 -0500
+In-Reply-To: <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Thorsten Glaser <tg@mirbsd.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Mon, Nov 11, 2013 at 6:16 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> > ! CONFIG_FB_SYS_COPYAREA                   : m n
->> > ! CONFIG_FB_SYS_FILLRECT                   : m n
->> > ! CONFIG_FB_SYS_FOPS                       : m n
->> > ! CONFIG_FB_SYS_IMAGEBLIT                  : m n
->> >
->> >Would this prevent the macfb framebuffer console from working in the
->> >absence of kernel modules?
->> >
->>
->> With the switch to initrd, absence of modules is simply no longer
->> supported at all, period.
->
-> When something goes wrong, and the kernel messages aren't available to
-> tell you what went wrong, then you may lack the information you need to
-> support those things that you are willing to support.
->
-> Hence I was trying to find an explanation for the screen shot posted,
-> which says "console [tty0] enabled" even though the macfb console did not
-> appear.
+On Sun, 10 Nov 2013, Geert Uytterhoeven wrote:
 
-No, without fb/console support you wouldn't even see those.
+> On Sun, Nov 10, 2013 at 9:49 AM, Michael Schmitz
+> <schmitz@biophys.uni-duesseldorf.de> wrote:
+> >> Is there an easy to setup/use emulator around on which I could try to
+> >> dig into that myself?
+> >
+> > I believe Geert uses ARAnyM for his tests of m68k kernels on emulators - it
+> > is reasonably easy to set up and use. I've used it to debug problems we had
+> > with the SLUB allocator two years ago.
+> 
+> Indeed. ARAnyM is the way to go.
 
->> ...
->> Besides, if multi_defconfig has it as "n"...
->
-> That should be OK; all of my test kernel configs also disable these
-> options.
+Ok. Got it running and looked a bit deeper. I haven't yet found the
+root cause, but there are quite some fishy things going on. Adding
+enough debug printks makes the thing boot. Aside of that there seems
+to be a violation of the 68k interrupt model.
 
-Indeed. Mac needs the CONFIG_FB_CFB_* counterparts.
+The 68k interrupt handling allows only interrupts which have an higher
+level than the value of the interrupt priority mask in SR. Further the
+cpu sets the SR priority mask on interrupt entry to the level of the
+interrupt which is serviced.
 
-CONFIG_FB_SYS_* is for system RAM, while CONFIG_FB_CFB_*
-is for iomem. Not that it would matter much on m68k, m68k has no
-strict separation between both.
+So now with aranym I can see a different behaviour. I just added the
+debug patch below to a vanilla 3.12.
 
-Gr{oetje,eeting}s,
+And I can see ever repeating
 
-                        Geert
+  IRQ 13 flags 0x400 regs->sr 0x400
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+with a few
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  IRQ 15 flags 0x400 regs->sr 0x400
+
+sprinkeled in.
+
+Not what you would expect, right?
+
+Thanks,
+
+	tglx
+
+Index: linux-2.6/arch/m68k/kernel/irq.c
+===================================================================
+--- linux-2.6.orig/arch/m68k/kernel/irq.c
++++ linux-2.6/arch/m68k/kernel/irq.c
+@@ -20,6 +20,12 @@
+ asmlinkage void do_IRQ(int irq, struct pt_regs *regs)
+ {
+ 	struct pt_regs *oldregs = set_irq_regs(regs);
++	unsigned long nested = regs->sr & ~ALLOWINT;
++	unsigned long flags = arch_local_save_flags() & ~ALLOWINT;
++
++	if (nested >= flags)
++		printk(KERN_ERR "IRQ %d flags 0x%lx regs->sr 0x%lx\n",
++		       irq, flags, nested);
+ 
+ 	irq_enter();
+ 	generic_handle_irq(irq);
