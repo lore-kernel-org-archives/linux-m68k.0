@@ -1,59 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
-Date: Sun, 10 Nov 2013 10:12:39 +0100
-Message-ID: <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com>
-References: <20130917082838.218329307@infradead.org>
-	<20130917182350.449685712@linutronix.de>
-	<20130917183628.534494408@linutronix.de>
-	<CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com>
-	<alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
-	<alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de>
-	<alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de>
-	<87txhg3ftx.fsf@igel.home>
-	<CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com>
-	<alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de>
-	<alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
-	<alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de>
-	<CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com>
-	<alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de>
-	<ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU
+ support)
+Date: Mon, 11 Nov 2013 11:13:55 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1311111111320.10595@nippy.intranet>
+References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f179.google.com ([209.85.192.179]:43415 "EHLO
-	mail-pd0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750841Ab3KJJMl (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Nov 2013 04:12:41 -0500
-In-Reply-To: <ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45153 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752407Ab3KKAOF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Nov 2013 19:14:05 -0500
+In-Reply-To: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Nov 10, 2013 at 9:49 AM, Michael Schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->> Is there an easy to setup/use emulator around on which I could try to
->> dig into that myself?
->
-> I believe Geert uses ARAnyM for his tests of m68k kernels on emulators - it
-> is reasonably easy to set up and use. I've used it to debug problems we had
-> with the SLUB allocator two years ago.
 
-Indeed. ARAnyM is the way to go.
+On Sun, 20 Oct 2013, Geert Uytterhoeven wrote:
 
-> Not that it would hurt to try Geert's last non-booting kernel on true
-> hardware - either send the kernel image or a patch to apply to your current
-> tree please, Geert.
+> This is the difference between my multi_defconfig and config-3.10-2-m68k.
 
-Patches sent by private email.
+...
 
-Gr{oetje,eeting}s,
+> 
+> ! multi_defconfig -----------------------------+
+> ! config-3.10-2-m68k ------------------------+ |
+> !                                            | |
 
-                        Geert
+...
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> ! CONFIG_FB_SYS_COPYAREA                   : m n
+> ! CONFIG_FB_SYS_FILLRECT                   : m n
+> ! CONFIG_FB_SYS_FOPS                       : m n
+> ! CONFIG_FB_SYS_IMAGEBLIT                  : m n
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Would this prevent the macfb framebuffer console from working in the 
+absence of kernel modules?
+
+Finn
