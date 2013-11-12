@@ -1,44 +1,57 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: 3.12 won't startup at amiga 1200 [Antworten] [AntwortenAnAlle]
-Date: Tue, 12 Nov 2013 11:02:42 +0100
-Message-ID: <mvmtxfiq6nx.fsf@hawking.suse.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Tue, 12 Nov 2013 15:09:42 +0100
+Message-ID: <CAMuHMdX+dGkOK==kfJAzmnfjz35gTNCazB84nhL4SmxTWX9tjQ@mail.gmail.com>
+References: <20130917082838.218329307@infradead.org>
+	<20130917183628.534494408@linutronix.de>
+	<CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com>
+	<alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de>
+	<alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de>
+	<alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de>
+	<87txhg3ftx.fsf@igel.home>
+	<CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com>
+	<alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de>
+	<alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
+	<alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de>
+	<CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com>
+	<alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de>
+	<ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de>
+	<CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com>
+	<alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de>
+	<alpine.DEB.2.02.1311112031220.30673@ionos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:45116 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752409Ab3KLKDH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 05:03:07 -0500
-In-Reply-To: tuxist@tuxist.de's message of "Sat\, Oct 26\, 2013 at 7\:37 PM"
+Received: from mail-pa0-f51.google.com ([209.85.220.51]:58868 "EHLO
+	mail-pa0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751534Ab3KLOJn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 09:09:43 -0500
+In-Reply-To: <alpine.DEB.2.02.1311112031220.30673@ionos.tec.linutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Tuxist <tuxist@tuxist.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Tuxist <tuxist@tuxist.de> writes:
+Hi Thomas,
 
-> i have now successfully boot my amiga with rtc and linux-next now seem's
-> the fpu emulation brocken
->
-> Failure Message:
->
-> PC: [<00020840>] fp_normalize_ext+0x0/0xe
+On Mon, Nov 11, 2013 at 8:34 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> Finally found the issue. The patch below fixes the problem here. The
+> little missing detail is, that I zapped GET_CURRENT() assuming blindly
+> that this is only needed for the preempt_count hackery. But in fact
+> the world and some more depends on it which leads to interesting
+> explosions.
 
-        move.l  (%a0)+,%d0
+Yes, GET_CURRENT() sets up the current task in %a2.
 
-> SR: 2010  SP: 079d1f3c  a2: 079e3820
->
-> d0: 079e3a7a    d1: 7fffffff    d2: f23c5438    d3: 00000002
->
-> d4: 00000005    d5: 800261b8    a0: 0000001c    a1: 079e3a0a
->
-> Process syslogd-listfil (pid: 1397, task=079e3820)
+Many thanks for tracking this down!
 
-Can you find out what is the actual FPU insn that is emulated?
+Gr{oetje,eeting}s,
 
-Andreas.
+                        Geert
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
