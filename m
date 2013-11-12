@@ -1,53 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU support)
-Date: Tue, 12 Nov 2013 09:44:23 +0100
-Message-ID: <CAMuHMdVSA6bGKd+U0Y4=nfT=YKFAi6TFVe__citkOhetsy8pdw@mail.gmail.com>
-References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com>
-	<alpine.LNX.2.00.1311111111320.10595@nippy.intranet>
-	<Pine.BSM.4.64L.1311110108550.15024@herc.mirbsd.org>
-	<alpine.LNX.2.00.1311111600420.13170@nippy.intranet>
-	<CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
-	<alpine.LNX.2.00.1311121104180.20517@nippy.intranet>
+From: schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
+Date: Tue, 12 Nov 2013 21:44:15 +1300
+Message-ID: <5281EA5F.3080604@biophys.uni-duesseldorf.de>
+References: <20130917082838.218329307@infradead.org> <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg> <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de> <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com> <alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de> <ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de> <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com> <alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311112031220
+ .30673@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311112052360.30673@ionos.tec.linutronix.de> <55642d365fc4272c4f43a88ea435e360@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f53.google.com ([209.85.160.53]:41219 "EHLO
-	mail-pb0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751788Ab3KLIoX (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 03:44:23 -0500
-Received: by mail-pb0-f53.google.com with SMTP id up7so6559748pbc.40
-        for <linux-m68k@vger.kernel.org>; Tue, 12 Nov 2013 00:44:23 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1311121104180.20517@nippy.intranet>
+Received: from mail-pd0-f170.google.com ([209.85.192.170]:50854 "EHLO
+	mail-pd0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751788Ab3KLIob (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 03:44:31 -0500
+In-Reply-To: <55642d365fc4272c4f43a88ea435e360@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Thorsten Glaser <tg@mirbsd.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Tue, Nov 12, 2013 at 1:21 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> > Hence I was trying to find an explanation for the screen shot posted,
->> > which says "console [tty0] enabled" even though the macfb console did
->> > not appear.
->>
->> No, without fb/console support you wouldn't even see those.
+Thomas,
 >
-> "console [tty0] enabled" comes from the early console, which implies
-> CONFIG_FRAMEBUFFER_CONSOLE and CONFIG_EARLY_PRINTK. But neither of these
-> implies a working macfb...
+>>
+>> If you look at the probability of the first two checks catching
+>> anything, then it's pretty low. Most interrupts returns go through
+>> ret_from_exception. Yes, I added counters which prove that at least on
+>> the aranym, but I doubt that it will make a real difference if you run
+>> this on real hardware.
+>
+> I'm happy to try that (indeed, verify your patch works on Atari 
+> hardware first) - I trust the patch is relative to m68k git, not your 
+> previous patches?
 
-Ah, I forgot about the Mac's graphical early console.
-So you don't get any output in between "console [tty0] enabled.
-bootconsole disabled" and the initialization of macfb.
-But there are several things that can go wrong there.
-As the next line is "Calibrating delay loop...", it could be e.g. an
-interrupt problem.
+Pleased to report the patch works, as expected, on the actual hardware. 
+I doubt we still need to profile the interrupt return path, Geert?
 
-Gr{oetje,eeting}s,
+Cheers,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+    Michael
