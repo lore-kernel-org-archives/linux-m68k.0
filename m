@@ -1,36 +1,64 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer
- based soft interrupts
-Date: Tue, 12 Nov 2013 20:08:34 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311121956480.30673@ionos.tec.linutronix.de>
-References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com> <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de>
- <753aef27d368410b1e5c5814b1e7c8a7@gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <753aef27d368410b1e5c5814b1e7c8a7@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] net/7990: Make lance_private.name const
+Date: Tue, 12 Nov 2013 20:14:09 +0100
+Message-ID: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from jacques.telenet-ops.be ([195.130.132.50]:41787 "EHLO
+	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751972Ab3KLTOO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 14:14:14 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sun, 10 Nov 2013, Michael Schmitz wrote:
-> Your patch works just fine, thanks.
-> 
-> I suppose setting the flag can be done in the corresponding irq startup
-> function, instead of when setting up the irq controller?
+This allows to drop a few casts.
 
-irq_startup() is called with irq_desc->lock held and
-irq_set_status_flags() wants desc->lock as well. Deadlock
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/amd/7990.h    |    2 +-
+ drivers/net/ethernet/amd/hplance.c |    2 +-
+ drivers/net/ethernet/amd/mvme147.c |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-And no, you don't want to fiddle manually in the irq descriptor data
-fields. See commit a6967caf00eb :)
-
-> Geert - I will send the patch to ataints.c implementing this as soon as
-> Thomas' fix is merged.
-
-I'll expedite it for 3.13.
-
-Thanks,
-
-	tglx
+diff --git a/drivers/net/ethernet/amd/7990.h b/drivers/net/ethernet/amd/7990.h
+index 0a5837b96421..60c60926afda 100644
+--- a/drivers/net/ethernet/amd/7990.h
++++ b/drivers/net/ethernet/amd/7990.h
+@@ -100,7 +100,7 @@ struct lance_init_block {
+  */
+ struct lance_private
+ {
+-        char *name;
++        const char *name;
+ 	unsigned long base;
+         volatile struct lance_init_block *init_block; /* CPU address of RAM */
+         volatile struct lance_init_block *lance_init_block; /* LANCE address of RAM */
+diff --git a/drivers/net/ethernet/amd/hplance.c b/drivers/net/ethernet/amd/hplance.c
+index 0c61fd50d882..a9046cf3a564 100644
+--- a/drivers/net/ethernet/amd/hplance.c
++++ b/drivers/net/ethernet/amd/hplance.c
+@@ -149,7 +149,7 @@ static void hplance_init(struct net_device *dev, struct dio_dev *d)
+         }
+ 
+         lp = netdev_priv(dev);
+-        lp->lance.name = (char*)d->name;                /* discards const, shut up gcc */
++        lp->lance.name = d->name;
+         lp->lance.base = va;
+         lp->lance.init_block = (struct lance_init_block *)(va + HPLANCE_MEMOFF); /* CPU addr */
+         lp->lance.lance_init_block = NULL;              /* LANCE addr of same RAM */
+diff --git a/drivers/net/ethernet/amd/mvme147.c b/drivers/net/ethernet/amd/mvme147.c
+index e108e911da05..b5d76b45176e 100644
+--- a/drivers/net/ethernet/amd/mvme147.c
++++ b/drivers/net/ethernet/amd/mvme147.c
+@@ -120,7 +120,7 @@ struct net_device * __init mvme147lance_probe(int unit)
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+-	lp->lance.name = (char*)name;                   /* discards const, shut up gcc */
++	lp->lance.name = name;
+ 	lp->lance.base = dev->base_addr;
+ 	lp->lance.init_block = (struct lance_init_block *)(lp->ram); /* CPU addr */
+ 	lp->lance.lance_init_block = (struct lance_init_block *)(lp->ram);                 /* LANCE addr of same RAM */
+-- 
+1.7.9.5
