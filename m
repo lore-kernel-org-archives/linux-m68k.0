@@ -1,61 +1,34 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+From: David Miller <davem@davemloft.net>
 Subject: Re: [PATCH] net/7990: Make lance_private.name const
-Date: Wed, 13 Nov 2013 01:04:17 +0300
-Message-ID: <5282A5E1.9090501@cogentembedded.com>
+Date: Tue, 12 Nov 2013 16:12:53 -0500 (EST)
+Message-ID: <20131112.161253.601617211955537751.davem@davemloft.net>
 References: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
+	<5282A5E1.9090501@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lb0-f181.google.com ([209.85.217.181]:63801 "EHLO
-	mail-lb0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932170Ab3KLVEM (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 16:04:12 -0500
-Received: by mail-lb0-f181.google.com with SMTP id x18so5080690lbi.12
-        for <linux-m68k@vger.kernel.org>; Tue, 12 Nov 2013 13:04:11 -0800 (PST)
-In-Reply-To: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
+Received: from shards.monkeyblade.net ([149.20.54.216]:37364 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753427Ab3KLVMz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 16:12:55 -0500
+In-Reply-To: <5282A5E1.9090501@cogentembedded.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
+To: sergei.shtylyov@cogentembedded.com
+Cc: geert@linux-m68k.org, netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Hello.
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Date: Wed, 13 Nov 2013 01:04:17 +0300
 
-On 11/12/2013 10:14 PM, Geert Uytterhoeven wrote:
+>> @@ -100,7 +100,7 @@ struct lance_init_block {
+>>    */
+>>   struct lance_private
+>>   {
+>> -        char *name;
+>> +        const char *name;
+> 
+>    Indent with tab, not spaces, please.
 
-> This allows to drop a few casts.
-
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->   drivers/net/ethernet/amd/7990.h    |    2 +-
->   drivers/net/ethernet/amd/hplance.c |    2 +-
->   drivers/net/ethernet/amd/mvme147.c |    2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-
-> diff --git a/drivers/net/ethernet/amd/7990.h b/drivers/net/ethernet/amd/7990.h
-> index 0a5837b96421..60c60926afda 100644
-> --- a/drivers/net/ethernet/amd/7990.h
-> +++ b/drivers/net/ethernet/amd/7990.h
-> @@ -100,7 +100,7 @@ struct lance_init_block {
->    */
->   struct lance_private
->   {
-> -        char *name;
-> +        const char *name;
-
-    Indent with tab, not spaces, please.
-
-> diff --git a/drivers/net/ethernet/amd/hplance.c b/drivers/net/ethernet/amd/hplance.c
-> index 0c61fd50d882..a9046cf3a564 100644
-> --- a/drivers/net/ethernet/amd/hplance.c
-> +++ b/drivers/net/ethernet/amd/hplance.c
-> @@ -149,7 +149,7 @@ static void hplance_init(struct net_device *dev, struct dio_dev *d)
->           }
->
->           lp = netdev_priv(dev);
-> -        lp->lance.name = (char*)d->name;                /* discards const, shut up gcc */
-> +        lp->lance.name = d->name;
-
-    Same here.
-
-WBR, Sergei
+This whole file is %99 space indentation, you really can't blame
+Geert for this.
