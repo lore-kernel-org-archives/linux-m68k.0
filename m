@@ -1,373 +1,70 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/6] hardirq: Make hardirq bits generic
-Date: Mon, 11 Nov 2013 21:52:26 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311112052360.30673@ionos.tec.linutronix.de>
-References: <20130917082838.218329307@infradead.org> <CAMuHMdWgrQf+ULDrZyY5R+vT3GtiWEgpsWxmfk0b5pivN7wBmg@mail.gmail.com> <alpine.DEB.2.02.1309172315550.4089@ionos.tec.linutronix.de> <alpine.DEB.2.02.1309181159520.4089@ionos.tec.linutronix.de>
- <alpine.DEB.2.02.1309191652480.4089@ionos.tec.linutronix.de> <87txhg3ftx.fsf@igel.home> <CAMuHMdW-YBroi6GezUP-KQBVRAcmYtUQERvBC=ekmemopDhVow@mail.gmail.com> <alpine.DEB.2.02.1311041305540.28335@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311042032130.16975@ayla.of.borg>
- <alpine.DEB.2.02.1311061237430.23353@ionos.tec.linutronix.de> <CAMuHMdXDA2MRbR3GmD3KWC-iE6jnWX4uvbf1qeMd7RYX3O8f_g@mail.gmail.com> <alpine.DEB.2.02.1311071655240.23353@ionos.tec.linutronix.de> <ecf977d9ccbd241723a606423267bb2d@biophys.uni-duesseldorf.de>
- <CAMuHMdVXk0NpinvqEszqL63fZEt3rOk6ZR9ogz0aHEzmEaW22A@mail.gmail.com> <alpine.DEB.2.02.1311111421400.30673@ionos.tec.linutronix.de> <alpine.DEB.2.02.1311112031220.30673@ionos.tec.linutronix.de>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Linux 3.1-2-m68k config (was: Re: Linux 3.10-2-m68k FPU
+ support)
+Date: Tue, 12 Nov 2013 11:21:52 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1311121104180.20517@nippy.intranet>
+References: <CAMuHMdXDDyzdy80gDvS-i96pMSgiCw9AJTD3ts=HaCwC26KWUw@mail.gmail.com> <alpine.LNX.2.00.1311111111320.10595@nippy.intranet> <Pine.BSM.4.64L.1311110108550.15024@herc.mirbsd.org> <alpine.LNX.2.00.1311111600420.13170@nippy.intranet>
+ <CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.linutronix.de ([62.245.132.108]:43647 "EHLO
-	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751481Ab3KKUwa (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 15:52:30 -0500
-In-Reply-To: <alpine.DEB.2.02.1311112031220.30673@ionos.tec.linutronix.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56491 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753427Ab3KLAWH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Nov 2013 19:22:07 -0500
+In-Reply-To: <CAMuHMdXKPDo-cNL5btcmy=4obz9WB2W=9BUxbu5m72UXDSyN_w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, LKML <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Thorsten Glaser <tg@mirbsd.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Mon, 11 Nov 2013, Thomas Gleixner wrote:
 
-> On Mon, 11 Nov 2013, Thomas Gleixner wrote:
-> > Not what you would expect, right?
+On Mon, 11 Nov 2013, Geert Uytterhoeven wrote:
+
+> On Mon, Nov 11, 2013 at 6:16 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> >> > ! CONFIG_FB_SYS_COPYAREA                   : m n
+> >> > ! CONFIG_FB_SYS_FILLRECT                   : m n
+> >> > ! CONFIG_FB_SYS_FOPS                       : m n
+> >> > ! CONFIG_FB_SYS_IMAGEBLIT                  : m n
+> >> >
+> >> >Would this prevent the macfb framebuffer console from working in the 
+> >> >absence of kernel modules?
+> >> >
+> >>
+> >> With the switch to initrd, absence of modules is simply no longer 
+> >> supported at all, period.
+> >
+> > When something goes wrong, and the kernel messages aren't available to 
+> > tell you what went wrong, then you may lack the information you need 
+> > to support those things that you are willing to support.
+> >
+> > Hence I was trying to find an explanation for the screen shot posted, 
+> > which says "console [tty0] enabled" even though the macfb console did 
+> > not appear.
 > 
-> Finally found the issue. The patch below fixes the problem here. The
-> little missing detail is, that I zapped GET_CURRENT() assuming blindly
-> that this is only needed for the preempt_count hackery. But in fact
-> the world and some more depends on it which leads to interesting
-> explosions.
+> No, without fb/console support you wouldn't even see those.
 
-Some more thoughts on this.
+"console [tty0] enabled" comes from the early console, which implies 
+CONFIG_FRAMEBUFFER_CONSOLE and CONFIG_EARLY_PRINTK. But neither of these 
+implies a working macfb...
 
-The whole nesting check in the exisiting low level entry code and what
-I tried to resemble with the irq_exit_nested() is pretty pointless.
+> 
+> >> ...
+> >> Besides, if multi_defconfig has it as "n"...
+> >
+> > That should be OK; all of my test kernel configs also disable these 
+> > options.
+> 
+> Indeed. Mac needs the CONFIG_FB_CFB_* counterparts.
+> 
+> CONFIG_FB_SYS_* is for system RAM, while CONFIG_FB_CFB_* is for iomem. 
+> Not that it would matter much on m68k, m68k has no strict separation 
+> between both.
 
-Let's look at auto_inthandler and ret_from_exception
+OK, thanks Geert.
 
-ENTRY(auto_inthandler)
-	SAVE_ALL_INT
-	GET_CURRENT(%d0)
-	movel	%d0,%a1
-	addqb	#1,%a1@(TINFO_PREEMPT+1)
-					|  put exception # in d0
-	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
-	subw	#VEC_SPUR,%d0
+I guess the mystery of the missing macfb remains unsolved.
 
-	movel	%sp,%sp@-
-	movel	%d0,%sp@-		|  put vector # on stack
-auto_irqhandler_fixup = . + 2
-	jsr	do_IRQ			|  process the IRQ
-	addql	#8,%sp			|  pop parameters off stack
+Without hardware I'm not going to be much help here.
 
-ret_from_interrupt:
-	movel	%curptr@(TASK_STACK),%a1
-	subqb	#1,%a1@(TINFO_PREEMPT+1)
-	jeq	ret_from_last_interrupt
-2:	RESTORE_ALL
-
-	ALIGN
-ret_from_last_interrupt:
-	moveq	#(~ALLOWINT>>8)&0xff,%d0
-	andb	%sp@(PT_OFF_SR),%d0
-	jne	2b
-
-	/* check if we need to do software interrupts */
-	tstl	irq_stat+CPUSTAT_SOFTIRQ_PENDING
-	jeq	.Lret_from_exception
-	pea	ret_from_exception
-	jra	do_softirq
-
-
-ENTRY(ret_from_exception)
-.Lret_from_exception:
-	btst	#5,%sp@(PT_OFF_SR)	| check if returning to kernel
-	bnes	1f			| if so, skip resched, signals
-	....
-1:	RESTORE_ALL
-
-So in every interrupt exit path we check:
-
-   1) Whether the hardirq part of preempt_count is zero
-
-   2) Whether the interrupt prio mask of SR on stack is zero
-
-and if we finally reach ret_from_exception we have the final check:
-
-   3) whether we return to kernel or user space.
-
-And this final check is the only one which matters, really.
-
-If you look at the probability of the first two checks catching
-anything, then it's pretty low. Most interrupts returns go through
-ret_from_exception. Yes, I added counters which prove that at least on
-the aranym, but I doubt that it will make a real difference if you run
-this on real hardware.
-
-So what's the point of having these checks in the hotpath? The patch
-below against 3.12 vanilla works nicely on the aranym and I don't see
-a reason why this extra hackery is necessary at all. It's just code
-bloat in a hotpath.
-
-Now the only valid concern might be do_softirq itself, but that's
-pointless as well. If the softirq is interrupted, then we do not
-invoke it again. If the nested interrupt happens before irq_exit()
-actually disables interrupts, then we won't invoke it either as the
-hardirq part of preempt_count is still not zero.
-
-As a side note: The do_softirq calls in the platform/68xxx entry
-pathes are just copied leftovers as well. Both entry code pathes are
-not fiddling with the preempt count and both call do_IRQ() which will
-call irq_exit() at the end which will invoke do_softirq(), so the
-check for more softirqs in the irq return path is just pointless.
-
-Thanks,
-
-	tglx
----
- kernel/entry.S         |   40 ++++------------------------------------
- kernel/ints.c          |    6 ------
- platform/68000/entry.S |   33 ++++++++-------------------------
- platform/68360/entry.S |   24 +++---------------------
- 4 files changed, 15 insertions(+), 88 deletions(-)
-
-
-Index: linux-2.6/arch/m68k/kernel/entry.S
-===================================================================
---- linux-2.6.orig/arch/m68k/kernel/entry.S
-+++ linux-2.6/arch/m68k/kernel/entry.S
-@@ -45,7 +45,7 @@
- .globl system_call, buserr, trap, resume
- .globl sys_call_table
- .globl __sys_fork, __sys_clone, __sys_vfork
--.globl ret_from_interrupt, bad_interrupt
-+.globl bad_interrupt
- .globl auto_irqhandler_fixup
- .globl user_irqvec_fixup
- 
-@@ -275,8 +275,6 @@ do_delayed_trace:
- ENTRY(auto_inthandler)
- 	SAVE_ALL_INT
- 	GET_CURRENT(%d0)
--	movel	%d0,%a1
--	addqb	#1,%a1@(TINFO_PREEMPT+1)
- 					|  put exception # in d0
- 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
- 	subw	#VEC_SPUR,%d0
-@@ -286,32 +284,13 @@ ENTRY(auto_inthandler)
- auto_irqhandler_fixup = . + 2
- 	jsr	do_IRQ			|  process the IRQ
- 	addql	#8,%sp			|  pop parameters off stack
--
--ret_from_interrupt:
--	movel	%curptr@(TASK_STACK),%a1
--	subqb	#1,%a1@(TINFO_PREEMPT+1)
--	jeq	ret_from_last_interrupt
--2:	RESTORE_ALL
--
--	ALIGN
--ret_from_last_interrupt:
--	moveq	#(~ALLOWINT>>8)&0xff,%d0
--	andb	%sp@(PT_OFF_SR),%d0
--	jne	2b
--
--	/* check if we need to do software interrupts */
--	tstl	irq_stat+CPUSTAT_SOFTIRQ_PENDING
--	jeq	.Lret_from_exception
--	pea	ret_from_exception
--	jra	do_softirq
-+	jra	ret_from_exception
- 
- /* Handler for user defined interrupt vectors */
- 
- ENTRY(user_inthandler)
- 	SAVE_ALL_INT
- 	GET_CURRENT(%d0)
--	movel	%d0,%a1
--	addqb	#1,%a1@(TINFO_PREEMPT+1)
- 					|  put exception # in d0
- 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
- user_irqvec_fixup = . + 2
-@@ -321,29 +300,18 @@ user_irqvec_fixup = . + 2
- 	movel	%d0,%sp@-		|  put vector # on stack
- 	jsr	do_IRQ			|  process the IRQ
- 	addql	#8,%sp			|  pop parameters off stack
--
--	movel	%curptr@(TASK_STACK),%a1
--	subqb	#1,%a1@(TINFO_PREEMPT+1)
--	jeq	ret_from_last_interrupt
--	RESTORE_ALL
-+	jra	ret_from_exception
- 
- /* Handler for uninitialized and spurious interrupts */
- 
- ENTRY(bad_inthandler)
- 	SAVE_ALL_INT
- 	GET_CURRENT(%d0)
--	movel	%d0,%a1
--	addqb	#1,%a1@(TINFO_PREEMPT+1)
- 
- 	movel	%sp,%sp@-
- 	jsr	handle_badint
- 	addql	#4,%sp
--
--	movel	%curptr@(TASK_STACK),%a1
--	subqb	#1,%a1@(TINFO_PREEMPT+1)
--	jeq	ret_from_last_interrupt
--	RESTORE_ALL
--
-+	jra	ret_from_exception
- 
- resume:
- 	/*
-Index: linux-2.6/arch/m68k/kernel/ints.c
-===================================================================
---- linux-2.6.orig/arch/m68k/kernel/ints.c
-+++ linux-2.6/arch/m68k/kernel/ints.c
-@@ -58,12 +58,6 @@ void __init init_IRQ(void)
- {
- 	int i;
- 
--	/* assembly irq entry code relies on this... */
--	if (HARDIRQ_MASK != 0x00ff0000) {
--		extern void hardirq_mask_is_broken(void);
--		hardirq_mask_is_broken();
--	}
--
- 	for (i = IRQ_AUTO_1; i <= IRQ_AUTO_7; i++)
- 		irq_set_chip_and_handler(i, &auto_irq_chip, handle_simple_irq);
- 
-Index: linux-2.6/arch/m68k/platform/68000/entry.S
-===================================================================
---- linux-2.6.orig/arch/m68k/platform/68000/entry.S
-+++ linux-2.6/arch/m68k/platform/68000/entry.S
-@@ -27,7 +27,6 @@
- .globl ret_from_exception
- .globl ret_from_signal
- .globl sys_call_table
--.globl ret_from_interrupt
- .globl bad_interrupt
- .globl inthandler1
- .globl inthandler2
-@@ -137,7 +136,7 @@ inthandler1:
- 	movel	#65,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler2:
- 	SAVE_ALL_INT
-@@ -148,7 +147,7 @@ inthandler2:
- 	movel	#66,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler3:
- 	SAVE_ALL_INT
-@@ -159,7 +158,7 @@ inthandler3:
- 	movel	#67,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler4:
- 	SAVE_ALL_INT
-@@ -170,7 +169,7 @@ inthandler4:
- 	movel	#68,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler5:
- 	SAVE_ALL_INT
-@@ -181,7 +180,7 @@ inthandler5:
- 	movel	#69,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler6:
- 	SAVE_ALL_INT
-@@ -192,7 +191,7 @@ inthandler6:
- 	movel	#70,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler7:
- 	SAVE_ALL_INT
-@@ -203,7 +202,7 @@ inthandler7:
- 	movel	#71,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
-+	bra	ret_from_exception
- 
- inthandler:
- 	SAVE_ALL_INT
-@@ -214,23 +213,7 @@ inthandler:
- 	movel	%d0,%sp@- 		/*  put vector # on stack*/
- 	jbsr	process_int		/*  process the IRQ*/
- 3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
--
--ret_from_interrupt:
--	jeq	1f
--2:
--	RESTORE_ALL
--1:
--	moveb	%sp@(PT_OFF_SR), %d0
--	and	#7, %d0
--	jhi	2b
--
--	/* check if we need to do software interrupts */
--	jeq	ret_from_exception
--
--	pea	ret_from_exception
--	jra	do_softirq
--
-+	bra	ret_from_exception
- 
- /*
-  * Handler for uninitialized and spurious interrupts.
-Index: linux-2.6/arch/m68k/platform/68360/entry.S
-===================================================================
---- linux-2.6.orig/arch/m68k/platform/68360/entry.S
-+++ linux-2.6/arch/m68k/platform/68360/entry.S
-@@ -29,7 +29,6 @@
- .globl ret_from_exception
- .globl ret_from_signal
- .globl sys_call_table
--.globl ret_from_interrupt
- .globl bad_interrupt
- .globl inthandler
- 
-@@ -132,26 +131,9 @@ inthandler:
- 
- 	movel	%sp,%sp@-
- 	movel	%d0,%sp@- 		/*  put vector # on stack*/
--	jbsr	do_IRQ			/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_interrupt
--
--ret_from_interrupt:
--	jeq	1f
--2:
--	RESTORE_ALL
--1:
--	moveb	%sp@(PT_OFF_SR), %d0
--	and	#7, %d0
--	jhi	2b
--	/* check if we need to do software interrupts */
--
--	movel	irq_stat+CPUSTAT_SOFTIRQ_PENDING,%d0
--	jeq	ret_from_exception
--
--	pea	ret_from_exception
--	jra	do_softirq
--
-+	jbsr	do_IRQ			/*  process the IRQ */
-+	addql	#8,%sp			/*  pop parameters off stack*/
-+	jra	ret_from_exception
- 
- /*
-  * Handler for uninitialized and spurious interrupts.
+Finn
