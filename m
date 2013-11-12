@@ -1,54 +1,38 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+From: David Miller <davem@davemloft.net>
 Subject: Re: [PATCH] net/7990: Make lance_private.name const
-Date: Wed, 13 Nov 2013 03:04:15 +0300
-Message-ID: <5282C1FF.2090608@cogentembedded.com>
-References: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>	<5282A5E1.9090501@cogentembedded.com>	<20131112.161253.601617211955537751.davem@davemloft.net>	<5282BC76.5050701@cogentembedded.com> <CAMuHMdVn6MFbXgdE_teYW10OfYBjyZsN7v2yTTAsKj0kXao7Hw@mail.gmail.com>
+Date: Tue, 12 Nov 2013 18:15:54 -0500 (EST)
+Message-ID: <20131112.181554.988522407538617117.davem@davemloft.net>
+References: <5282A5E1.9090501@cogentembedded.com>
+	<20131112.161253.601617211955537751.davem@davemloft.net>
+	<5282BC76.5050701@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-la0-f48.google.com ([209.85.215.48]:50216 "EHLO
-	mail-la0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753864Ab3KLXEL (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 18:04:11 -0500
-Received: by mail-la0-f48.google.com with SMTP id n7so4695005lam.35
-        for <linux-m68k@vger.kernel.org>; Tue, 12 Nov 2013 15:04:10 -0800 (PST)
-In-Reply-To: <CAMuHMdVn6MFbXgdE_teYW10OfYBjyZsN7v2yTTAsKj0kXao7Hw@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <5282BC76.5050701@cogentembedded.com>
+Sender: netdev-owner@vger.kernel.org
+To: sergei.shtylyov@cogentembedded.com
+Cc: geert@linux-m68k.org, netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Miller <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 11/13/2013 01:44 AM, Geert Uytterhoeven wrote:
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Date: Wed, 13 Nov 2013 02:40:38 +0300
 
->>>>> @@ -100,7 +100,7 @@ struct lance_init_block {
->>>>>      */
->>>>>     struct lance_private
->>>>>     {
->>>>> -        char *name;
->>>>> +        const char *name;
+> On 11/13/2013 12:12 AM, David Miller wrote:
+> 
+>>>> @@ -100,7 +100,7 @@ struct lance_init_block {
+>>>>     */
+>>>>    struct lance_private
+>>>>    {
+>>>> -        char *name;
+>>>> +        const char *name;
+> 
+>>>     Indent with tab, not spaces, please.
+> 
+>> This whole file is %99 space indentation, you really can't blame
+>> Geert for this.
+> 
+>    It's never late to fix some. And remember about checkpatch.pl which
+>    was hardly content with the patch.
 
->>>>      Indent with tab, not spaces, please.
-
->>> This whole file is %99 space indentation, you really can't blame
->>> Geert for this.
-
->>     It's never late to fix some.
-
-> That would be a separate patch. Care to create and send it?
-
-    I wasn't telling you to fix all of them, just the ones you touched anyway. 
-I don't see why the separate patch is needed for that.
-
->> And remember about checkpatch.pl which was hardly content with the patch.
-
-> Only because checkpatch looks at the _new_ lines, and doesn't compare the
-> styles of the old and new lines.
-
-    Care to fix it? :-)
-
-> Gr{oetje,eeting}s,
-
->                          Geert
-
-WBR, Sergei
+Good point, Geert please respin this, thanks.
