@@ -1,64 +1,61 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net/7990: Make lance_private.name const
-Date: Tue, 12 Nov 2013 20:14:09 +0100
-Message-ID: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH] net/7990: Make lance_private.name const
+Date: Wed, 13 Nov 2013 01:04:17 +0300
+Message-ID: <5282A5E1.9090501@cogentembedded.com>
+References: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from jacques.telenet-ops.be ([195.130.132.50]:41787 "EHLO
-	jacques.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751972Ab3KLTOO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 14:14:14 -0500
+Received: from mail-lb0-f181.google.com ([209.85.217.181]:63801 "EHLO
+	mail-lb0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932170Ab3KLVEM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 16:04:12 -0500
+Received: by mail-lb0-f181.google.com with SMTP id x18so5080690lbi.12
+        for <linux-m68k@vger.kernel.org>; Tue, 12 Nov 2013 13:04:11 -0800 (PST)
+In-Reply-To: <1384283649-10482-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org
 
-This allows to drop a few casts.
+Hello.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/ethernet/amd/7990.h    |    2 +-
- drivers/net/ethernet/amd/hplance.c |    2 +-
- drivers/net/ethernet/amd/mvme147.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+On 11/12/2013 10:14 PM, Geert Uytterhoeven wrote:
 
-diff --git a/drivers/net/ethernet/amd/7990.h b/drivers/net/ethernet/amd/7990.h
-index 0a5837b96421..60c60926afda 100644
---- a/drivers/net/ethernet/amd/7990.h
-+++ b/drivers/net/ethernet/amd/7990.h
-@@ -100,7 +100,7 @@ struct lance_init_block {
-  */
- struct lance_private
- {
--        char *name;
-+        const char *name;
- 	unsigned long base;
-         volatile struct lance_init_block *init_block; /* CPU address of RAM */
-         volatile struct lance_init_block *lance_init_block; /* LANCE address of RAM */
-diff --git a/drivers/net/ethernet/amd/hplance.c b/drivers/net/ethernet/amd/hplance.c
-index 0c61fd50d882..a9046cf3a564 100644
---- a/drivers/net/ethernet/amd/hplance.c
-+++ b/drivers/net/ethernet/amd/hplance.c
-@@ -149,7 +149,7 @@ static void hplance_init(struct net_device *dev, struct dio_dev *d)
-         }
- 
-         lp = netdev_priv(dev);
--        lp->lance.name = (char*)d->name;                /* discards const, shut up gcc */
-+        lp->lance.name = d->name;
-         lp->lance.base = va;
-         lp->lance.init_block = (struct lance_init_block *)(va + HPLANCE_MEMOFF); /* CPU addr */
-         lp->lance.lance_init_block = NULL;              /* LANCE addr of same RAM */
-diff --git a/drivers/net/ethernet/amd/mvme147.c b/drivers/net/ethernet/amd/mvme147.c
-index e108e911da05..b5d76b45176e 100644
---- a/drivers/net/ethernet/amd/mvme147.c
-+++ b/drivers/net/ethernet/amd/mvme147.c
-@@ -120,7 +120,7 @@ struct net_device * __init mvme147lance_probe(int unit)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	lp->lance.name = (char*)name;                   /* discards const, shut up gcc */
-+	lp->lance.name = name;
- 	lp->lance.base = dev->base_addr;
- 	lp->lance.init_block = (struct lance_init_block *)(lp->ram); /* CPU addr */
- 	lp->lance.lance_init_block = (struct lance_init_block *)(lp->ram);                 /* LANCE addr of same RAM */
--- 
-1.7.9.5
+> This allows to drop a few casts.
+
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   drivers/net/ethernet/amd/7990.h    |    2 +-
+>   drivers/net/ethernet/amd/hplance.c |    2 +-
+>   drivers/net/ethernet/amd/mvme147.c |    2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+
+> diff --git a/drivers/net/ethernet/amd/7990.h b/drivers/net/ethernet/amd/7990.h
+> index 0a5837b96421..60c60926afda 100644
+> --- a/drivers/net/ethernet/amd/7990.h
+> +++ b/drivers/net/ethernet/amd/7990.h
+> @@ -100,7 +100,7 @@ struct lance_init_block {
+>    */
+>   struct lance_private
+>   {
+> -        char *name;
+> +        const char *name;
+
+    Indent with tab, not spaces, please.
+
+> diff --git a/drivers/net/ethernet/amd/hplance.c b/drivers/net/ethernet/amd/hplance.c
+> index 0c61fd50d882..a9046cf3a564 100644
+> --- a/drivers/net/ethernet/amd/hplance.c
+> +++ b/drivers/net/ethernet/amd/hplance.c
+> @@ -149,7 +149,7 @@ static void hplance_init(struct net_device *dev, struct dio_dev *d)
+>           }
+>
+>           lp = netdev_priv(dev);
+> -        lp->lance.name = (char*)d->name;                /* discards const, shut up gcc */
+> +        lp->lance.name = d->name;
+
+    Same here.
+
+WBR, Sergei
