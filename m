@@ -1,54 +1,58 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/7990: Make lance_private.name const
-Date: Tue, 12 Nov 2013 18:16:29 -0500 (EST)
-Message-ID: <20131112.181629.742226266240112179.davem@davemloft.net>
-References: <20131112.161253.601617211955537751.davem@davemloft.net>
-	<5282BC76.5050701@cogentembedded.com>
-	<CAMuHMdVn6MFbXgdE_teYW10OfYBjyZsN7v2yTTAsKj0kXao7Hw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 09/17] [m68k] IRQ: add handle_polled_irq() for timer based soft interrupts
+Date: Wed, 13 Nov 2013 20:57:23 +1300
+Message-ID: <1d531dbddb96cdcb0dfbc1183ee6d443@gmail.com>
+References: <20130131002344.1161E360095@xplor.waratah.dyndns.org> <CAMuHMdUFuNpiZzTr=86Yi2yx73xh_qv8S6PnT0hp9U8x86vskw@mail.gmail.com> <CAMuHMdXB1LNGXkz=_eCQ+i+tu18ffbCA9dP_LRrF1CUBv-q-uQ@mail.gmail.com> <alpine.DEB.2.02.1311061149250.23353@ionos.tec.linutronix.de> <753aef27d368410b1e5c5814b1e7c8a7@gmail.com> <alpine.DEB.2.02.1311121956480.30673@ionos.tec.linutronix.de>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:38070 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754389Ab3KLXQb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2013 18:16:31 -0500
-In-Reply-To: <CAMuHMdVn6MFbXgdE_teYW10OfYBjyZsN7v2yTTAsKj0kXao7Hw@mail.gmail.com>
+Received: from mail-pb0-f44.google.com ([209.85.160.44]:61667 "EHLO
+	mail-pb0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758635Ab3KMH5f (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 13 Nov 2013 02:57:35 -0500
+In-Reply-To: <alpine.DEB.2.02.1311121956480.30673@ionos.tec.linutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: sergei.shtylyov@cogentembedded.com, netdev@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 12 Nov 2013 23:44:06 +0100
+Thomas,
 
-> On Wed, Nov 13, 2013 at 12:40 AM, Sergei Shtylyov
-> <sergei.shtylyov@cogentembedded.com> wrote:
->> On 11/13/2013 12:12 AM, David Miller wrote:
->>
->>>>> @@ -100,7 +100,7 @@ struct lance_init_block {
->>>>>     */
->>>>>    struct lance_private
->>>>>    {
->>>>> -        char *name;
->>>>> +        const char *name;
->>
->>
->>>>     Indent with tab, not spaces, please.
->>
->>
->>> This whole file is %99 space indentation, you really can't blame
->>> Geert for this.
->>
->>
->>    It's never late to fix some.
-> 
-> That would be a separate patch. Care to create and send it?
-> 
->> And remember about checkpatch.pl which was hardly content with the patch.
-> 
-> Only because checkpatch looks at the _new_ lines, and doesn't compare the
-> styles of the old and new lines.
+>> I suppose setting the flag can be done in the corresponding irq 
+>> startup
+>> function, instead of when setting up the irq controller?
+>
+> irq_startup() is called with irq_desc->lock held and
+> irq_set_status_flags() wants desc->lock as well. Deadlock
 
-You really should fix the line you are changing to use tabs, please respin
-with this in mind, thanks.
+Thanks, point taken.
+
+> And no, you don't want to fiddle manually in the irq descriptor data
+> fields. See commit a6967caf00eb :)
+
+I'm not that crazy :-)
+
+>
+>> Geert - I will send the patch to ataints.c implementing this as soon 
+>> as
+>> Thomas' fix is merged.
+>
+> I'll expedite it for 3.13.
+
+Thanks, that'll help.
+
+Cheers,
+
+	Michael
+
+
+>
+> Thanks,
+>
+> 	tglx
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
+> in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
