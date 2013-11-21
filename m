@@ -1,205 +1,121 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH WIP] X-Surf-100 Ethernet driver
-Date: Sun, 17 Nov 2013 11:19:30 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1311171118440.17141@ayla.of.borg>
-References: <alpine.DEB.2.02.1311171005410.19767@ayla.of.borg>
+Subject: Re: Debian kernel regression, was Re: Modernizing a Macintosh LC III
+Date: Thu, 21 Nov 2013 15:16:26 +0100
+Message-ID: <CAMuHMdXN2CZqNorxPmHqw3cpFqBtfX-GOCqLcBpJ5wKV5DByPA@mail.gmail.com>
+References: <mcII9-2Ep-5@gated-at.bofh.it>
+	<mdhPA-3Y1-15@gated-at.bofh.it>
+	<52824A09.3060906@gmail.com>
+	<CAMuHMdUJTx3pRzW8xewbhq+yow5CbXNKix2Za5kUqP5m7kv-Dg@mail.gmail.com>
+	<Pine.BSM.4.64L.1311121708580.2989@herc.mirbsd.org>
+	<5282DE78.2000109@iamscott.net>
+	<alpine.LNX.2.00.1311170913380.6636@nippy.intranet>
+	<5289723D.5090509@iamscott.net>
+	<CAMuHMdUz=cJK7VTgvL3-4BWOqK-kP4ge5LD6v1snsRtkL3aNiw@mail.gmail.com>
+	<1f16cd3b6538d850d32c3f8274fd8688@biophys.uni-duesseldorf.de>
+	<alpine.LNX.2.00.1311192205430.3217@nippy.intranet>
+	<89f415777a8134f27561668e8fb56d65@biophys.uni-duesseldorf.de>
+	<alpine.LNX.2.00.1311212023220.17773@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.02.1311171005410.19767@ayla.of.borg>
+Received: from mail-pd0-f172.google.com ([209.85.192.172]:45583 "EHLO
+	mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753896Ab3KUOQ1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Nov 2013 09:16:27 -0500
+Received: by mail-pd0-f172.google.com with SMTP id g10so6877374pdj.3
+        for <linux-m68k@vger.kernel.org>; Thu, 21 Nov 2013 06:16:26 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1311212023220.17773@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Scott Holder <scott@iamscott.net>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, 17 Nov 2013, Geert Uytterhoeven wrote:
-> This is a preliminary driver for the Individual Computers XSurf100 Ethernet
-> card, written by Michael Karcher. It currently works fine with the 3.2.0-4
-> kernel in Debian.
+I gave linux-image-3.12-trunk-m68k_3.12-1~exp1_m68k.deb a try on my
+Amiga. Actually I tried my own first, using my current tree, and a config
+derived from config-3.12-1~exp1, as I couldn't find the Debian kernel.
+However, both gave the same result.
 
-> --- linux-3.2.0-4/drivers/net/ethernet/8390/ax88796.c.orig	2013-11-16 13:49:37.000000000 +0100
-> +++ linux-3.2.0-4/drivers/net/ethernet/8390/ax88796.c	2013-09-14 13:52:35.000000000 +0200
+Surprise 1: There was no ABC...
 
-This is not ready for inclusion as-is, as it just converts the existing
-ax88796.c to support XSurf100 only. A separate driver needs to be created.
+head.S has this "interesting" piece of code, which plays foul of
+multi-platform kernels:
 
-However, I'm wondering whether we can just use the original driver, with a
-small shim providing a platform_device with a suitable ax_plat_data as
-platform_data.
+#ifdef CONFIG_MAC
 
-> @@ -10,6 +10,7 @@
->   * it under the terms of the GNU General Public License version 2 as
->   * published by the Free Software Foundation.
->   */
-> +#define CONFIG_AX88796_93CX6
+#include <asm/machw.h>
 
-Should be open-coded below (or XS100 should select it in Kconfig if ax88796
-is used).
+#ifdef CONFIG_FRAMEBUFFER_CONSOLE
+#define CONSOLE
+#define CONSOLE_PENGUIN
+#endif
 
-> +static inline void fast_out32(char *out, const char *in, size_t len)
-> +{
-> +	while(len > 128)
-> +	{
-> +		memcpy(out, in, 128);
-> +		in += 128;
-> +		len -= 128;
-> +	}
-> +	memcpy(out, in, len & 0xFC);
-> +	in += len & 0xFC;
-> +	memcpy(out, in, len & 3);
-> +}
+#ifdef CONFIG_EARLY_PRINTK
+#define SERIAL_DEBUG
+#else
+#undef SERIAL_DEBUG
+#endif
 
-No need to call memcpy() in this convoluted way. arch/m68k/lib/memcpy.c
-should handle this fine.
+#else /* !CONFIG_MAC */
 
-However, as this is MMIO, memcpy_toio() would be more appropriate.
+#define SERIAL_DEBUG
 
-> +
->  static inline struct ax_device *to_ax_dev(struct net_device *dev)
->  {
->  	struct ei_device *ei_local = netdev_priv(dev);
-> @@ -192,10 +209,10 @@ static void ax_get_8390_hdr(struct net_d
->  	ei_outb(E8390_RREAD+E8390_START, nic_base + NE_CMD);
->  
->  	if (ei_local->word16)
-> -		readsw(nic_base + NE_DATAPORT, hdr,
-> +		ioread16_rep(nic_base + NE_DATAPORT, hdr,
->  		       sizeof(struct e8390_pkt_hdr) >> 1);
->  	else
-> -		readsb(nic_base + NE_DATAPORT, hdr,
-> +		ioread8_rep(nic_base + NE_DATAPORT, hdr,
->  		       sizeof(struct e8390_pkt_hdr));
->  
->  	ei_outb(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
-> @@ -238,12 +255,12 @@ static void ax_block_input(struct net_de
->  	ei_outb(E8390_RREAD+E8390_START, nic_base + NE_CMD);
->  
->  	if (ei_local->word16) {
-> -		readsw(nic_base + NE_DATAPORT, buf, count >> 1);
-> +		ioread16_rep(nic_base + NE_DATAPORT, buf, count >> 1);
->  		if (count & 0x01)
->  			buf[count-1] = ei_inb(nic_base + NE_DATAPORT);
->  
->  	} else {
-> -		readsb(nic_base + NE_DATAPORT, buf, count);
-> +		ioread8_rep(nic_base + NE_DATAPORT, buf, count);
+#endif /* !CONFIG_MAC */
 
-These changes are already in current ax88796.c, good.
+As CONFIG_MAC=y, and CONFIG_EARLY_PRINTK=n, SERIAL_DEBUG
+is not defined, and no one gets early serial debug output :-(
+Enabling CONFIG_EARLY_PRINTK fixes this.
+Is there a good reason for this construct?
+  - Should it check for MACH_MAC_ONLY instead?
+  - Can we just unconditionally enable SERIAL_DEBUG?
 
->  	}
->  
->  	ei_local->dmaing &= ~1;
-> @@ -286,10 +303,11 @@ static void ax_block_output(struct net_d
->  	ei_outb(start_page, nic_base + EN0_RSARHI);
->  
->  	ei_outb(E8390_RWRITE+E8390_START, nic_base + NE_CMD);
-> -	if (ei_local->word16)
-> -		writesw(nic_base + NE_DATAPORT, buf, count >> 1);
-> +/*	if (ei_local->word16)
-> +		iowrite16_rep(nic_base + NE_DATAPORT, buf, count >> 1);
->  	else
-> -		writesb(nic_base + NE_DATAPORT, buf, count);
-> +		iowrite8_rep(nic_base + NE_DATAPORT, buf, count);*/
-> +	fast_out32(nic_base + NE_DATAPORT, buf, count);
+Surprise 2: Instead of a deadly non-Mac driver, I found a deadly Mac driver.
+When passing "debug=ser", it crashes with:
 
-If we reuse ax88796.c, can this be done in a more generic way?
-E.g. by adding a fifo flag to ax_plat_data.flags (accessible using
-to_ax_dev()).
+Console: colour dummy device 80x25
+Unable to handle kernel NULL pointer dereference at virtual address   (null)
+Oops: 00000000
+PC: [<0013ad28>] __pmz_startup+0x32/0x2a0
+SR: 2010  SP: 0025ff10  a2: 00266300
+d0: 00000080    d1: ffffffff    d2: 00000000    d3: 002cbd32
+d4: 00000000    d5: 000119a8    a0: 00000000    a1: 002c5cda
+Process swapper (pid: 0, task=00266300)
+Frame format=7 eff addr=0025ff5c ssw=04a5 faddr=00000000
+wb 1 stat/addr/data: 0005 00000000 0013ad0c
+wb 2 stat/addr/data: 00a5 00000000 00000009
+wb 3 stat/addr/data: 0025 00000000 00000009
+push data: 0013ad0c 002a9f7a 00000000 00000011
+Stack from 0025ff78:
+        002a9ecc 002c5d3e 002a9ecc 00000000 002cbd32 0000000a 00283454 0029170e
+        0000006e 0000006e 00000008 00009600 0025fff8 000499f4 00283454 00000000
+        00000002 002d3b10 000fc4a8 00048b96 002c5cd4 00283454 002c5142 000fc39c
+        002b2728 002d4000 000000fa 00001538 0743ed40 07401000 07401000 002cbd32
+        00000000 002b07f8
+Call Trace: [<002c5d3e>] pmz_console_setup+0x64/0xe4
+ [<00009600>] atari_keyboard_interrupt+0x164/0x2dc
+ [<000499f4>] register_console+0x104/0x2a6
+ [<000fc4a8>] strlen+0x0/0x14
+ [<00048b96>] printk+0x0/0x26
+ [<002c5cd4>] pmz_console_init+0x10/0x16
+ [<002c5142>] console_init+0x14/0x20
+ [<000fc39c>] strcpy+0x0/0x16
+ [<002b2728>] start_kernel+0x29a/0x3fc
+ [<00001538>] kernel_pg_dir+0x538/0x1000
+ [<002b07f8>] _sinittext+0x7f8/0x10dc
 
->  	dma_start = jiffies;
->  
-> @@ -400,6 +418,10 @@ static int ax_open(struct net_device *de
->  
->  	netdev_dbg(dev, "open\n");
->  
-> +	ret = ax_mii_init(dev);
-> +	if (ret)
-> +		goto failed_request_irq;
+Code: 00c3 6604 103c 0040 206b 00c6 10bc 0009 <206b> 00c6 1080 206b
+00c6 1010 223c 0000 a7c6 2039 0026 60bc 4c01 0401 2001 e988
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill the idle task!
 
-Why is this moved to here?
-
-> +
->  	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
->  			  dev->name, dev);
->  	if (ret)
-> @@ -446,6 +468,10 @@ static int ax_close(struct net_device *d
->  	phy_disconnect(ax->phy_dev);
->  
->  	free_irq(dev->irq, dev);
-> +
-> +	mdiobus_unregister(ax->mii_bus);
-> +	kfree(ax->mii_bus->irq);
-> +	free_mdio_bitbang(ax->mii_bus);
-
-Related to the move of ax_mii_init()?
-
-> @@ -692,10 +718,16 @@ static int ax_init_dev(struct net_device
->  	if (ax->plat->flags & AXFLG_HAS_EEPROM) {
->  		unsigned char SA_prom[32];
->  
-> +		ei_outb(6, ioaddr + EN0_RCNTLO);
-> +		ei_outb(0, ioaddr + EN0_RCNTHI);
-> +		ei_outb(0, ioaddr + EN0_RSARLO);
-> +		ei_outb(0, ioaddr + EN0_RSARHI);
-> +		ei_outb(E8390_RREAD+E8390_START, ioaddr + NE_CMD);
->  		for (i = 0; i < sizeof(SA_prom); i += 2) {
->  			SA_prom[i] = ei_inb(ioaddr + NE_DATAPORT);
->  			SA_prom[i + 1] = ei_inb(ioaddr + NE_DATAPORT);
->  		}
-> +		ei_outb(ENISR_RDC, ioaddr + EN0_ISR);	/* Ack intr. */
-
-Why these changes?
-
-As CONFIG_AX88796_93CX6 is set at the top, I'd expect the 93CX6 code
-below to be used instead, ...
-
-> +static const struct ax_plat_data xsurf100_plat_data = {
-> +	.flags = AXFLG_HAS_EEPROM,
-
-... and why AXFLG_HAS_EEPROM and not AXFLG_HAS_93CX6?
-
-> +	.wordlength = 2,
-> +	.dcr_val = 0x48,
-> +	.rcr_val = 0x40,
-> +};
-> +
->  /*
->   * ax_probe
->   *
-
->  	/*
->  	 * setup the register offsets from either the platform data or
->  	 * by using the size of the resource provided
->  	 */
-> -	if (ax->plat->reg_offsets)
-> -		ei_local->reg_offset = ax->plat->reg_offsets;
-> -	else {
-> -		ei_local->reg_offset = ax->reg_offsets;
-> -		for (ret = 0; ret < 0x18; ret++)
-> -			ax->reg_offsets[ret] = (mem_size / 0x18) * ret;
-> -	}
-> +	ei_local->reg_offset = ax->reg_offsets;
-> +	for (ret = 0; ret < 0x20; ret++)
-> +		ax->reg_offsets[ret] = 4 * ret + 0x800;
-
-When reusing ax88796.c, you can fill in ax_plat_data.reg_offsets[].
-
-> +#define ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100 ZORRO_ID(INDIVIDUAL_COMPUTERS, 0x64, 0)
-
-This belongs in <linux/zorro_ids.h>.
-Please also add an entry to drivers/zorro/zorro.ids.
-(Note to myself: update zorroutils).
-
-Forward porting to 3.2.12 should be simple. Just look at all changes that
-have been made to ax88796.c recently.
+drivers/tty/serial/pmac_zilog.c needs some MACH_IS_MAC() tests.
 
 Gr{oetje,eeting}s,
 
-						Geert
+                        Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+                                -- Linus Torvalds
