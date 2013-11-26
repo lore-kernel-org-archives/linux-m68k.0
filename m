@@ -1,34 +1,37 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH/RFC] m68k/amiga: Fix specifying multiple debug= parameters
-Date: Mon, 25 Nov 2013 20:03:33 +0100
-Message-ID: <87fvqkpam2.fsf__18496.4665947065$1385406254$gmane$org@igel.home>
-References: <1382039212-26062-1-git-send-email-geert@linux-m68k.org>
-	<CAMuHMdUUvzc1eGhJjqye7aOcNQoGgOEfT=TDLQgbef6-0vT=qQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/mac: Mark Mac IIsi ADB driver BROKEN
+Date: Tue, 26 Nov 2013 11:52:41 +0100
+Message-ID: <1385463161-16428-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUUvzc1eGhJjqye7aOcNQoGgOEfT=TDLQgbef6-0vT=qQ@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Mon, 25 Nov 2013 17:16:10 +0100")
+Received: from juliette.telenet-ops.be ([195.130.137.74]:49199 "EHLO
+	juliette.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754830Ab3KZKwr (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Nov 2013 05:52:47 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+As reported by Finn Thain, the Mac IIsi ADB driver should be disabled
+because it will crash.
 
->>   2. Do we want to fix it this way? Alternatives are:
->>        a. Reject a second debug= parameter by checking for a non-NULL .write()
->>           method
->>           => only the first debug console will be used,
->>        b. Skip console registration in case of a non-NULL .write() method
->>           => only the last debug console will be used,
->>   3. Atari has a similar issue, with even more (4) debug consoles.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/macintosh/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-2b is backward compatible.
-
-Andreas.
-
+diff --git a/drivers/macintosh/Kconfig b/drivers/macintosh/Kconfig
+index d26a312f117a..3067d56b11a6 100644
+--- a/drivers/macintosh/Kconfig
++++ b/drivers/macintosh/Kconfig
+@@ -32,7 +32,7 @@ config ADB_MACII
+ 
+ config ADB_MACIISI
+ 	bool "Include Mac IIsi ADB driver"
+-	depends on ADB && MAC
++	depends on ADB && MAC && BROKEN
+ 	help
+ 	  Say Y here if want your kernel to support Macintosh systems that use
+ 	  the Mac IIsi style ADB.  This includes the IIsi, IIvi, IIvx, Classic
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+1.7.9.5
