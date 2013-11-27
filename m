@@ -1,68 +1,116 @@
-From: Eunbong Song <eunb.song@samsung.com>
-Subject: [PATCH] m68k : Kill CONFIG_MTD_PARTITIONS
-Date: Wed, 27 Nov 2013 01:48:55 +0000 (GMT)
-Message-ID: <11558848.81811385516934809.JavaMail.weblogic__35776.636520359$1385516975$gmane$org@epml11>
-Reply-To: eunb.song@samsung.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Evolution of Linux kernel sizes
+Date: Wed, 27 Nov 2013 10:35:25 +0100
+Message-ID: <CAMuHMdUr2Vr9+STwcYf1PcB=PF+u3SJxU3LYnzqQ+vdbDsp71A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=euc-kr
-Content-Transfer-Encoding: base64
-Return-path: <linux-m68k-owner@vger.kernel.org>
-MIME-version: 1.0
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Embedded <linux-embedded@vger.kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-DQpUaGlzIHBhdGNoIHJlbW92ZXMgQ09ORklHX01URF9QQVJUSVRJT05TIGluIGNvbmZpZyBmaWxl
-cyBmb3IgbTY4ay4NCkJlY2F1c2UgQ09ORklHX01URF9QQVJUSVRJT05TIHdhcyByZW1vdmVkIGJ5
-IGNvbW1pdCA2YThhOThiMjJiMTBmMTU2MGQ1ZjkwYWRlZDRhNTQyMzRiOWIyNzI0Lg0KDQpTaWdu
-ZWQtb2ZmLWJ5OiBFdW5ib25nIFNvbmcgPGV1bmIuc29uZ0BzYW1zdW5nLmNvbT4NCi0tLQ0KIGFy
-Y2gvbTY4ay9jb25maWdzL201MjA4ZXZiX2RlZmNvbmZpZyB8ICAgIDEgLQ0KIGFyY2gvbTY4ay9j
-b25maWdzL201MjQ5ZXZiX2RlZmNvbmZpZyB8ICAgIDEgLQ0KIGFyY2gvbTY4ay9jb25maWdzL201
-MjcyYzNfZGVmY29uZmlnICB8ICAgIDEgLQ0KIGFyY2gvbTY4ay9jb25maWdzL201Mjc1ZXZiX2Rl
-ZmNvbmZpZyB8ICAgIDEgLQ0KIGFyY2gvbTY4ay9jb25maWdzL201MzA3YzNfZGVmY29uZmlnICB8
-ICAgIDEgLQ0KIGFyY2gvbTY4ay9jb25maWdzL201NDA3YzNfZGVmY29uZmlnICB8ICAgIDEgLQ0K
-IDYgZmlsZXMgY2hhbmdlZCwgMCBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KDQpkaWZm
-IC0tZ2l0IGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUyMDhldmJfZGVmY29uZmlnIGIvYXJjaC9tNjhr
-L2NvbmZpZ3MvbTUyMDhldmJfZGVmY29uZmlnDQppbmRleCBjMTYxNjgyLi5lNzI5MmY0IDEwMDY0
-NA0KLS0tIGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUyMDhldmJfZGVmY29uZmlnDQorKysgYi9hcmNo
-L202OGsvY29uZmlncy9tNTIwOGV2Yl9kZWZjb25maWcNCkBAIC00MCw3ICs0MCw2IEBAIENPTkZJ
-R19JTkVUPXkNCiAjIENPTkZJR19JUFY2IGlzIG5vdCBzZXQNCiAjIENPTkZJR19GV19MT0FERVIg
-aXMgbm90IHNldA0KIENPTkZJR19NVEQ9eQ0KLUNPTkZJR19NVERfUEFSVElUSU9OUz15DQogQ09O
-RklHX01URF9DSEFSPXkNCiBDT05GSUdfTVREX0JMT0NLPXkNCiBDT05GSUdfTVREX1JBTT15DQpk
-aWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUyNDlldmJfZGVmY29uZmlnIGIvYXJjaC9t
-NjhrL2NvbmZpZ3MvbTUyNDlldmJfZGVmY29uZmlnDQppbmRleCBhNjU5OWU0Li4wY2Q0YjM5IDEw
-MDY0NA0KLS0tIGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUyNDlldmJfZGVmY29uZmlnDQorKysgYi9h
-cmNoL202OGsvY29uZmlncy9tNTI0OWV2Yl9kZWZjb25maWcNCkBAIC0zOCw3ICszOCw2IEBAIENP
-TkZJR19JTkVUPXkNCiAjIENPTkZJR19JUFY2IGlzIG5vdCBzZXQNCiAjIENPTkZJR19GV19MT0FE
-RVIgaXMgbm90IHNldA0KIENPTkZJR19NVEQ9eQ0KLUNPTkZJR19NVERfUEFSVElUSU9OUz15DQog
-Q09ORklHX01URF9DSEFSPXkNCiBDT05GSUdfTVREX0JMT0NLPXkNCiBDT05GSUdfTVREX1JBTT15
-DQpkaWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUyNzJjM19kZWZjb25maWcgYi9hcmNo
-L202OGsvY29uZmlncy9tNTI3MmMzX2RlZmNvbmZpZw0KaW5kZXggM2ZhNjBhNS4uYTYwY2IzNSAx
-MDA2NDQNCi0tLSBhL2FyY2gvbTY4ay9jb25maWdzL201MjcyYzNfZGVmY29uZmlnDQorKysgYi9h
-cmNoL202OGsvY29uZmlncy9tNTI3MmMzX2RlZmNvbmZpZw0KQEAgLTM2LDcgKzM2LDYgQEAgQ09O
-RklHX0lORVQ9eQ0KICMgQ09ORklHX0lQVjYgaXMgbm90IHNldA0KICMgQ09ORklHX0ZXX0xPQURF
-UiBpcyBub3Qgc2V0DQogQ09ORklHX01URD15DQotQ09ORklHX01URF9QQVJUSVRJT05TPXkNCiBD
-T05GSUdfTVREX0NIQVI9eQ0KIENPTkZJR19NVERfQkxPQ0s9eQ0KIENPTkZJR19NVERfUkFNPXkN
-CmRpZmYgLS1naXQgYS9hcmNoL202OGsvY29uZmlncy9tNTI3NWV2Yl9kZWZjb25maWcgYi9hcmNo
-L202OGsvY29uZmlncy9tNTI3NWV2Yl9kZWZjb25maWcNCmluZGV4IGExMjMwZTguLmU2NTAyYWIg
-MTAwNjQ0DQotLS0gYS9hcmNoL202OGsvY29uZmlncy9tNTI3NWV2Yl9kZWZjb25maWcNCisrKyBi
-L2FyY2gvbTY4ay9jb25maWdzL201Mjc1ZXZiX2RlZmNvbmZpZw0KQEAgLTM5LDcgKzM5LDYgQEAg
-Q09ORklHX0lORVQ9eQ0KICMgQ09ORklHX0lQVjYgaXMgbm90IHNldA0KICMgQ09ORklHX0ZXX0xP
-QURFUiBpcyBub3Qgc2V0DQogQ09ORklHX01URD15DQotQ09ORklHX01URF9QQVJUSVRJT05TPXkN
-CiBDT05GSUdfTVREX0NIQVI9eQ0KIENPTkZJR19NVERfQkxPQ0s9eQ0KIENPTkZJR19NVERfUkFN
-PXkNCmRpZmYgLS1naXQgYS9hcmNoL202OGsvY29uZmlncy9tNTMwN2MzX2RlZmNvbmZpZyBiL2Fy
-Y2gvbTY4ay9jb25maWdzL201MzA3YzNfZGVmY29uZmlnDQppbmRleCA0Mzc5NWY0Li4wMjM4MTJh
-IDEwMDY0NA0KLS0tIGEvYXJjaC9tNjhrL2NvbmZpZ3MvbTUzMDdjM19kZWZjb25maWcNCisrKyBi
-L2FyY2gvbTY4ay9jb25maWdzL201MzA3YzNfZGVmY29uZmlnDQpAQCAtMzgsNyArMzgsNiBAQCBD
-T05GSUdfSU5FVD15DQogIyBDT05GSUdfSVBWNiBpcyBub3Qgc2V0DQogIyBDT05GSUdfRldfTE9B
-REVSIGlzIG5vdCBzZXQNCiBDT05GSUdfTVREPXkNCi1DT05GSUdfTVREX1BBUlRJVElPTlM9eQ0K
-IENPTkZJR19NVERfQ0hBUj15DQogQ09ORklHX01URF9CTE9DSz15DQogQ09ORklHX01URF9SQU09
-eQ0KZGlmZiAtLWdpdCBhL2FyY2gvbTY4ay9jb25maWdzL201NDA3YzNfZGVmY29uZmlnIGIvYXJj
-aC9tNjhrL2NvbmZpZ3MvbTU0MDdjM19kZWZjb25maWcNCmluZGV4IDcyNzQ2YzUuLjU1N2IzOWYg
-MTAwNjQ0DQotLS0gYS9hcmNoL202OGsvY29uZmlncy9tNTQwN2MzX2RlZmNvbmZpZw0KKysrIGIv
-YXJjaC9tNjhrL2NvbmZpZ3MvbTU0MDdjM19kZWZjb25maWcNCkBAIC0zOCw3ICszOCw2IEBAIENP
-TkZJR19JTkVUPXkNCiAjIENPTkZJR19JUFY2IGlzIG5vdCBzZXQNCiAjIENPTkZJR19GV19MT0FE
-RVIgaXMgbm90IHNldA0KIENPTkZJR19NVEQ9eQ0KLUNPTkZJR19NVERfUEFSVElUSU9OUz15DQog
-Q09ORklHX01URF9DSEFSPXkNCiBDT05GSUdfTVREX0JMT0NLPXkNCiBDT05GSUdfTVREX1JBTT15
-DQotLSANCjEuNy4wLjQNCg==
+Preface:
+    The results below are for m68k.
+    Why would you care about m68k? You don't, but that doesn't
+    mean the results are not applicable to other architectures and
+    platforms where RAM is a precious resource.
+
+Below are the static kernel sizes (as reported by "size") for m68k
+multi-platform kernels (m68k/multi_defconfig), for kernel versions
+2.6.28 to 3.12:
+
+   text    data     bss     dec     hex filename
+3420940  204772  163888 3789600  39d320 vmlinux-v2.6.28
+3464548  219592  164972 3849112  3abb98 vmlinux-v2.6.29
+3388760  207964  156588 3753312  394560 vmlinux-v2.6.30
+3453128  210649  157580 3821357  3a4f2d vmlinux-v2.6.31
+3477222  212032  158156 3847410  3ab4f2 vmlinux-v2.6.32
+3513197  210032  154880 3878109  3b2cdd vmlinux-v2.6.33
+3530751  211200  154032 3895983  3b72af vmlinux-v2.6.34
+3583761  211404  154448 3949613  3c442d vmlinux-v2.6.35
+3570768  179888  153344 3904000  3b9200 vmlinux-v2.6.36
+3568083  182516  149992 3900591  3b84af vmlinux-v2.6.37
+3609796  182736  149228 3941760  3c2580 vmlinux-v2.6.38
+3621429  180576  145056 3947061  3c3a35 vmlinux-v2.6.39
+3756437  181424  140184 4078045  3e39dd vmlinux-v3.0
+3778616  203272  135564 4117452  3ed3cc vmlinux-v3.1
+3550337  182512  183004 3915853  3bc04d vmlinux-v3.2
+3579169  183044  182360 3944573  3c307d vmlinux-v3.3
+3520525  210752  176384 3907661  3ba04d vmlinux-v3.4
+3543961  211604  181788 3937353  3c1449 vmlinux-v3.5
+3567386  209328  181888 3958602  3c674a vmlinux-v3.6
+3623569  210344  181572 4015485  3d457d vmlinux-v3.7
+3981063  216584  184284 4381931  42dceb vmlinux-v3.8
+3999784  220336  183356 4403476  433114 vmlinux-v3.9
+4040393  217440  188108 4445941  43d6f5 vmlinux-v3.10
+4076456  222544  190632 4489632  4481a0 vmlinux-v3.11
+4010686  220476  190220 4421382  437706 vmlinux-v3.12
+
+It's not a perfect list, as config files evolve over time, but there's
+clearly a trend of increasing kernel sizes, ca. 25 KiB/version.
+
+One issue we're facing is that currently the early kernel startup
+code on m68k does not support kernel images larger than 4 MiB.
+However, I'm not inclined to fix that, as it removes all incentive
+to keep kernel sizes small ;-)
+
+The current distro solution is to make as many drivers as possible
+modular, and use an initrd. But this adds complexity, and not
+everyone wants to use an initrd.
+
+Then you start wondering: What options can I disable? What does
+disabling an option gain?
+
+So I wrote a script to automate this process, starting from the current
+.config:
+
+https://github.com/geertu/linux-scripts/blob/master/linux-analyze-marginal-sizes
+
+>From the accompanying README:
+
+    Starting from the current .config file, find out how much space is saved
+    in the kernel image by individually disabling each of the currently
+    enabled config options. Module support and all modules are disabled first.
+
+    You can pass make options to specify e.g. the target architecture and
+    cross compiler.
+
+    Caveats:
+      * This is only about static kernel size, not about dynamic memory
+        consumption.
+      * You cannot just add up the numbers, as some config options depend on
+        other config options.
+      * It's highly recommended to use ccache or distcc.
+
+    Example: Display the top 10 options to decrease kernel image size:
+
+        linux-analyze-marginal-sizes CROSS_COMPILE=m68k-linux-gnu- \
+                ARCH=m68k -j 4 | tee log
+        grep -w saves log | sort -nr --key=4 | head -10
+
+For v3.13-rc1, the top 10 is:
+
+Disabling CONFIG_NET saves 1038404 bytes
+Disabling CONFIG_INET saves 572034 bytes
+Disabling CONFIG_EXT4_FS saves 328370 bytes
+Disabling CONFIG_NFS_FS saves 258728 bytes
+Disabling CONFIG_NETWORK_FILESYSTEMS saves 258728 bytes
+Disabling CONFIG_SCSI saves 241850 bytes
+Disabling CONFIG_FB saves 207496 bytes
+Disabling CONFIG_AMIGA saves 160700 bytes
+Disabling CONFIG_MAC saves 151134 bytes
+Disabling CONFIG_ATARI saves 138392 bytes
+
+I hope you find this useful!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
