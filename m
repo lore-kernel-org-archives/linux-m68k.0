@@ -1,75 +1,113 @@
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: Evolution of Linux kernel sizes
-Date: Wed, 27 Nov 2013 16:17:26 +0100
-Message-ID: <20131127151726.DCE57380416@gemini.denx.de>
-References: <CAMuHMdUr2Vr9+STwcYf1PcB=PF+u3SJxU3LYnzqQ+vdbDsp71A@mail.gmail.com>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH] m68k : Kill CONFIG_MTD_PARTITIONS
+Date: Thu, 28 Nov 2013 10:50:08 +1000
+Message-ID: <52969340.3080005@westnet.com.au>
+References: <11558848.81811385516934809.JavaMail.weblogic@epml11>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-embedded-owner@vger.kernel.org>
-In-reply-to: <CAMuHMdUr2Vr9+STwcYf1PcB=PF+u3SJxU3LYnzqQ+vdbDsp71A@mail.gmail.com>
-Sender: linux-embedded-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Embedded <linux-embedded@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <11558848.81811385516934809.JavaMail.weblogic@epml11>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: eunb.song@samsung.com, geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Dear Geert,
+Hi Eunbong,
 
-In message <CAMuHMdUr2Vr9+STwcYf1PcB=PF+u3SJxU3LYnzqQ+vdbDsp71A@mail.gmail.com> you wrote:
->
-> Below are the static kernel sizes (as reported by "size") for m68k
-> multi-platform kernels (m68k/multi_defconfig), for kernel versions
-> 2.6.28 to 3.12:
+On 27/11/13 11:48, Eunbong Song wrote:
+> This patch removes CONFIG_MTD_PARTITIONS in config files for m68k.
+> Because CONFIG_MTD_PARTITIONS was removed by commit 6a8a98b22b10f1560d5f90aded4a54234b9b2724.
 > 
->    text    data     bss     dec     hex filename
-...
-> 4010686  220476  190220 4421382  437706 vmlinux-v3.12
+> Signed-off-by: Eunbong Song <eunb.song@samsung.com>
 
-It's even more dramatic if you look further back.  The U-Boot README
-still has examples of 2.4.4 kernels for PowerPC _including_ network
-support:
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
-        -> tools/mkimage -l examples/uImage.TQM850L
-        Image Name:   2.4.4 kernel for TQM850L
-        Created:      Wed Jul 19 02:34:59 2000
-        Image Type:   PowerPC Linux Kernel Image (gzip compressed)
-        Data Size:    335725 Bytes = 327.86 kB = 0.32 MB
-        Load Address: 0x00000000
-        Entry Point:  0x00000000
+Did you want me to pick this up for the m68knommu git tree?
 
-resp. the same kernel using an uncompressed image:
-
-	Image Type:   PowerPC Linux Kernel Image (uncompressed)
-	Data Size:    792160 Bytes = 773.59 kB = 0.76 MB
-
-Those were the days then, 13 years ago...
-
-Today:
-
-	Image Name:   Linux-3.12.0-11101-gfe9baba
-	Created:      Wed Nov 27 15:05:33 2013
-	Image Type:   PowerPC Linux Kernel Image (gzip compressed)
-	Data Size:    1509145 Bytes = 1473.77 kB = 1.44 MB
-	Load Address: 00000000
-	Entry Point:  00000000
-
-	Image Type:   PowerPC Linux Kernel Image (uncompressed)
-	Data Size:    3172240 Bytes = 3097.89 kB = 3.03 MB
-
-Compressed:   1509145 / 335725 = 4.50
-Uncompressed: 3172240 / 792160 = 4.00
+Thanks
+Greg
 
 
-
-[1] http://git.denx.de/?p=u-boot.git;a=blob;f=README#l5142
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-I think it's a new feature. Don't tell anyone it was an accident. :-)
-  -- Larry Wall on s/foo/bar/eieio in <10911@jpl-devvax.JPL.NASA.GOV>
+> ---
+>   arch/m68k/configs/m5208evb_defconfig |    1 -
+>   arch/m68k/configs/m5249evb_defconfig |    1 -
+>   arch/m68k/configs/m5272c3_defconfig  |    1 -
+>   arch/m68k/configs/m5275evb_defconfig |    1 -
+>   arch/m68k/configs/m5307c3_defconfig  |    1 -
+>   arch/m68k/configs/m5407c3_defconfig  |    1 -
+>   6 files changed, 0 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
+> index c161682..e7292f4 100644
+> --- a/arch/m68k/configs/m5208evb_defconfig
+> +++ b/arch/m68k/configs/m5208evb_defconfig
+> @@ -40,7 +40,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
+> index a6599e4..0cd4b39 100644
+> --- a/arch/m68k/configs/m5249evb_defconfig
+> +++ b/arch/m68k/configs/m5249evb_defconfig
+> @@ -38,7 +38,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
+> index 3fa60a5..a60cb35 100644
+> --- a/arch/m68k/configs/m5272c3_defconfig
+> +++ b/arch/m68k/configs/m5272c3_defconfig
+> @@ -36,7 +36,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
+> index a1230e8..e6502ab 100644
+> --- a/arch/m68k/configs/m5275evb_defconfig
+> +++ b/arch/m68k/configs/m5275evb_defconfig
+> @@ -39,7 +39,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
+> index 43795f4..023812a 100644
+> --- a/arch/m68k/configs/m5307c3_defconfig
+> +++ b/arch/m68k/configs/m5307c3_defconfig
+> @@ -38,7 +38,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
+> index 72746c5..557b39f 100644
+> --- a/arch/m68k/configs/m5407c3_defconfig
+> +++ b/arch/m68k/configs/m5407c3_defconfig
+> @@ -38,7 +38,6 @@ CONFIG_INET=y
+>   # CONFIG_IPV6 is not set
+>   # CONFIG_FW_LOADER is not set
+>   CONFIG_MTD=y
+> -CONFIG_MTD_PARTITIONS=y
+>   CONFIG_MTD_CHAR=y
+>   CONFIG_MTD_BLOCK=y
+>   CONFIG_MTD_RAM=y
+> 
