@@ -1,210 +1,53 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/defconfig: Use ext4 for ext2/ext3 file systems
-Date: Thu, 28 Nov 2013 14:03:23 +0100
-Message-ID: <1385643803-6297-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: kexec (was: Re: Kernel sections loosing attributes)
+Date: Sat, 30 Nov 2013 18:48:56 +0100
+Message-ID: <CAMuHMdW3aZncimLvz40z7i3181opO1ecRUBVEePnXMfWwHwR2A@mail.gmail.com>
+References: <CAMuHMdWhNYnYbKw+qC8d0j2i5Om0BKTuBdPruQMCGRSCaE4-zw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdWhNYnYbKw+qC8d0j2i5Om0BKTuBdPruQMCGRSCaE4-zw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-This reduces the kernel image size by ca. 160 KiB.
+On Tue, Oct 22, 2013 at 11:39 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Mon, Oct 21, 2013 at 9:55 PM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+>> While trimming the kernel size to try kexec on real hardware with only
+>> 12 MiB of RAM, I got several weird crashes and lock-ups indicating memory
+>> corruption somewhere (illegal instructions, BUG()s for incorrect magics in
+>> fresh lock objects, ...).
+>
+> The good news is that with a smaller kernel (ca. 2 MiB), kexec gets further on
+> real hardware, up to "ABCDGH" in head.S, which is just before it calls
+> mmu_engage.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/configs/amiga_defconfig    |    4 ----
- arch/m68k/configs/apollo_defconfig   |    4 ----
- arch/m68k/configs/atari_defconfig    |    4 ----
- arch/m68k/configs/bvme6000_defconfig |    4 ----
- arch/m68k/configs/hp300_defconfig    |    4 ----
- arch/m68k/configs/mac_defconfig      |    4 ----
- arch/m68k/configs/multi_defconfig    |    4 ----
- arch/m68k/configs/mvme147_defconfig  |    4 ----
- arch/m68k/configs/mvme16x_defconfig  |    4 ----
- arch/m68k/configs/q40_defconfig      |    4 ----
- arch/m68k/configs/sun3_defconfig     |    4 ----
- arch/m68k/configs/sun3x_defconfig    |    4 ----
- 12 files changed, 48 deletions(-)
+After enabling MMU_PRINT in head.S, and adding debug code that
+prints all registers, I found the problem: I forgot to clear [di]tt[01] after
+turning off the MMU in relocate_kernel.S :-(
+On Atari this doesn't matter due to the 1-1 mapping, but on Amiga it does.
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 2886706abdf5..d99ac22759b2 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -376,10 +376,6 @@ CONFIG_HEARTBEAT=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index ae1e9b9f7f2f..d486413ed25f 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -334,10 +334,6 @@ CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_HEARTBEAT=y
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 4c6ab2227c1f..7a15fc001769 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -364,10 +364,6 @@ CONFIG_NFETH=y
- CONFIG_ATARI_ETHERNAT=y
- CONFIG_ATARI_ETHERNEC=y
- CONFIG_ATARI_DSP56K=m
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 5fd1a1ccdca9..f77b1b6520b3 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -327,10 +327,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 5e958c9593d6..d53b06bd0298 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -336,10 +336,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 298adf262dd6..6b19b5e7e65e 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -358,10 +358,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index ef9c15b19fc4..3194afb2fc06 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -440,10 +440,6 @@ CONFIG_ATARI_ETHERNEC=y
- CONFIG_ATARI_DSP56K=m
- CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 7bf520f661c8..224e21c788be 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -327,10 +327,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 2b4f58288966..23e5ebd81cdc 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -327,10 +327,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index ac9a949ea810..bb0d3bb3dd7e 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -349,10 +349,6 @@ CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_HEARTBEAT=y
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 161331f74269..7e5915ceeb8d 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -328,10 +328,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 289607ac283a..8313075d56dd 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -328,10 +328,6 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_PROC_HARDWARE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--# CONFIG_EXT3_FS_XATTR is not set
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
--- 
-1.7.9.5
+Will send my updated patches. Still waiting/hoping for reports on real '020,
+'030, and '060 (which also needs clearing of [di]tt[01] on machines with
+non-identical RAM mapping, so better wait a bit).
+
+BTW, there's one difference left in the register dump compared to plain
+booting: with kexec, the caches are enabled, while plain booting has them
+disabled. This is the case for both Atari and Amiga. This seems to work fine,
+though.
+
+Are there bootloaders on other platforms that boot Linux/m68k with caches
+enabled?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
