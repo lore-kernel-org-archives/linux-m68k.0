@@ -1,28 +1,39 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: kexec (was: Re: Kernel sections loosing attributes)
-Date: Sun, 1 Dec 2013 11:25:36 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1312011120360.11358@nippy.intranet>
-References: <CAMuHMdWhNYnYbKw+qC8d0j2i5Om0BKTuBdPruQMCGRSCaE4-zw@mail.gmail.com> <CAMuHMdW3aZncimLvz40z7i3181opO1ecRUBVEePnXMfWwHwR2A@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH/RFC] m68k/amiga: Fix specifying multiple debug= parameters
+Date: Sun, 1 Dec 2013 12:15:19 +0100
+Message-ID: <CAMuHMdUsEc=webi62QpMasTjRVo2exsxxr204QDhM60MV383Ew@mail.gmail.com>
+References: <1382039212-26062-1-git-send-email-geert@linux-m68k.org>
+	<CAMuHMdUUvzc1eGhJjqye7aOcNQoGgOEfT=TDLQgbef6-0vT=qQ@mail.gmail.com>
+	<87fvqkpam2.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW3aZncimLvz40z7i3181opO1ecRUBVEePnXMfWwHwR2A@mail.gmail.com>
+In-Reply-To: <87fvqkpam2.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
+On Mon, Nov 25, 2013 at 8:03 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+>>>   2. Do we want to fix it this way? Alternatives are:
+>>>        a. Reject a second debug= parameter by checking for a non-NULL .write()
+>>>           method
+>>>           => only the first debug console will be used,
+>>>        b. Skip console registration in case of a non-NULL .write() method
+>>>           => only the last debug console will be used,
+>>>   3. Atari has a similar issue, with even more (4) debug consoles.
+>
+> 2b is backward compatible.
 
-On Sat, 30 Nov 2013, Geert Uytterhoeven wrote:
+Thanks, good point!
 
-> 
-> Are there bootloaders on other platforms that boot Linux/m68k with 
-> caches enabled?
+Gr{oetje,eeting}s,
 
-I don't know, but the Penguin source can be found here:
-http://linux-mac68k.cvs.sourceforge.net/viewvc/linux-mac68k/penguin/
+                        Geert
 
-And EMILE source can be found here:
-https://gitorious.org/emile
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Finn
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
