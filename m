@@ -1,116 +1,182 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] m68k/amiga,atari: Fix specifying multiple debug= parameters
-Date: Sun,  1 Dec 2013 12:15:39 +0100
-Message-ID: <1385896539-18351-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v3 2/2] m68k: Add support to export bootinfo in procfs
+Date: Sun,  1 Dec 2013 12:30:35 +0100
+Message-ID: <1385897435-18618-3-git-send-email-geert@linux-m68k.org>
+References: <1385897435-18618-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1385897435-18618-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Since commit d6713b4091a99fa2af2fabdcd2f3fb97f32ecf2e ("m68k: early
-parameter support"), the user can specify multiple debug consoles using the
-"debug=" kernel command line parameter.
-However, as there's only a single struct console object, which is reused,
-it would actually register the same console object multiple times, causing
-the following warning:
+Add optional support to export the bootinfo used to boot the kernel in a
+"bootinfo" file in procfs.  This is useful with kexec.
 
-WARNING: CPU: 0 PID: 0 at kernel/printk/printk.c:2233 register_console+0x36/
-console 'debug0' already registered
-
-Make sure to register the console object only once, to avoid the warning.
-
-Note that still only one console (the one corresponding to the last
-"debug=" parameter) will be active at the same time, as the .write() method
-of the already registered console object is overwritten by a subsequent
-"debug=" parameter.
+This is based on the similar feature for ATAGS on ARM.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
 v2:
-  - Skip console registration in case of a non-NULL .write() method,
-    instead of using separate console objects,
-  - Add fix for Atari.
+  - No changes
+v3:
+  - Rebased on top of current m68k tree
 
- arch/m68k/amiga/config.c |   19 ++++++++++++++-----
- arch/m68k/atari/debug.c  |    5 ++++-
- 2 files changed, 18 insertions(+), 6 deletions(-)
+ arch/m68k/Kconfig                |    7 ++++
+ arch/m68k/include/asm/bootinfo.h |   12 ++++++
+ arch/m68k/kernel/Makefile        |    1 +
+ arch/m68k/kernel/bootinfo_proc.c |   80 ++++++++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/setup_mm.c      |    2 +
+ 5 files changed, 102 insertions(+)
+ create mode 100644 arch/m68k/kernel/bootinfo_proc.c
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index c425fa6c2795..9625b7132227 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -620,6 +620,8 @@ static void amiga_mem_console_write(struct console *co, const char *s,
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 178dffa9de80..dbdd2231c75d 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -104,6 +104,13 @@ config KEXEC
+ 	  interface is strongly in flux, so no good recommendation can be
+ 	  made.
  
- static int __init amiga_savekmsg_setup(char *arg)
++config BOOTINFO_PROC
++	bool "Export bootinfo in procfs"
++	depends on KEXEC && M68KCLASSIC
++	help
++	  Say Y to export the bootinfo used to boot the kernel in a
++	  "bootinfo" file in procfs.  This is useful with kexec.
++
+ menu "Platform setup"
+ 
+ source arch/m68k/Kconfig.cpu
+diff --git a/arch/m68k/include/asm/bootinfo.h b/arch/m68k/include/asm/bootinfo.h
+index 9edc31893fb8..8e213267f8e7 100644
+--- a/arch/m68k/include/asm/bootinfo.h
++++ b/arch/m68k/include/asm/bootinfo.h
+@@ -13,4 +13,16 @@
+ 
+ #include <uapi/asm/bootinfo.h>
+ 
++
++#ifndef __ASSEMBLY__
++
++#ifdef CONFIG_BOOTINFO_PROC
++extern void save_bootinfo(const struct bi_record *bi);
++#else
++static inline void save_bootinfo(const struct bi_record *bi) {}
++#endif
++
++#endif /* __ASSEMBLY__ */
++
++
+ #endif /* _M68K_BOOTINFO_H */
+diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
+index 7ee5f00a9abb..2d5d9be16273 100644
+--- a/arch/m68k/kernel/Makefile
++++ b/arch/m68k/kernel/Makefile
+@@ -23,4 +23,5 @@ obj-$(CONFIG_PCI) += pcibios.o
+ obj-$(CONFIG_HAS_DMA)	+= dma.o
+ 
+ obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o
++obj-$(CONFIG_BOOTINFO_PROC)	+= bootinfo_proc.o
+ 
+diff --git a/arch/m68k/kernel/bootinfo_proc.c b/arch/m68k/kernel/bootinfo_proc.c
+new file mode 100644
+index 000000000000..7ee853e1432b
+--- /dev/null
++++ b/arch/m68k/kernel/bootinfo_proc.c
+@@ -0,0 +1,80 @@
++/*
++ * Based on arch/arm/kernel/atags_proc.c
++ */
++
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/printk.h>
++#include <linux/proc_fs.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++
++#include <asm/bootinfo.h>
++#include <asm/byteorder.h>
++
++
++static char bootinfo_tmp[1536] __initdata;
++
++static void *bootinfo_copy;
++static size_t bootinfo_size;
++
++static ssize_t bootinfo_read(struct file *file, char __user *buf,
++			  size_t count, loff_t *ppos)
++{
++	return simple_read_from_buffer(buf, count, ppos, bootinfo_copy,
++				       bootinfo_size);
++}
++
++static const struct file_operations bootinfo_fops = {
++	.read = bootinfo_read,
++	.llseek = default_llseek,
++};
++
++void __init save_bootinfo(const struct bi_record *bi)
++{
++	const void *start = bi;
++	size_t size = sizeof(bi->tag);
++
++	while (be16_to_cpu(bi->tag) != BI_LAST) {
++		uint16_t n = be16_to_cpu(bi->size);
++		size += n;
++		bi = (struct bi_record *)((unsigned long)bi + n);
++	}
++
++	if (size > sizeof(bootinfo_tmp)) {
++		pr_err("Cannot save %zu bytes of bootinfo\n", size);
++		return;
++	}
++
++	pr_info("Saving %zu bytes of bootinfo\n", size);
++	memcpy(bootinfo_tmp, start, size);
++	bootinfo_size = size;
++}
++
++static int __init init_bootinfo_procfs(void)
++{
++	/*
++	 * This cannot go into save_bootinfo() because kmalloc and proc don't
++	 * work yet when it is called.
++	 */
++	struct proc_dir_entry *pde;
++
++	if (!bootinfo_size)
++		return -EINVAL;
++
++	bootinfo_copy = kmalloc(bootinfo_size, GFP_KERNEL);
++	if (!bootinfo_copy)
++		return -ENOMEM;
++
++	memcpy(bootinfo_copy, bootinfo_tmp, bootinfo_size);
++
++	pde = proc_create_data("bootinfo", 0400, NULL, &bootinfo_fops, NULL);
++	if (!pde) {
++		kfree(bootinfo_copy);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++arch_initcall(init_bootinfo_procfs);
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 28abca421974..5b8ec4d5f8e8 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -146,6 +146,8 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
  {
-+	bool registered;
+ 	uint16_t tag;
+ 
++	save_bootinfo(record);
 +
- 	if (!MACH_IS_AMIGA || strcmp(arg, "mem"))
- 		return 0;
- 
-@@ -636,8 +638,10 @@ static int __init amiga_savekmsg_setup(char *arg)
- 	savekmsg->magicptr = ZTWO_PADDR(savekmsg);
- 	savekmsg->size = 0;
- 
-+	registered = !!amiga_console_driver.write;
- 	amiga_console_driver.write = amiga_mem_console_write;
--	register_console(&amiga_console_driver);
-+	if (!registered)
-+		register_console(&amiga_console_driver);
- 	return 0;
- }
- 
-@@ -719,11 +723,16 @@ void amiga_serial_gets(struct console *co, char *s, int len)
- 
- static int __init amiga_debug_setup(char *arg)
- {
--	if (MACH_IS_AMIGA && !strcmp(arg, "ser")) {
--		/* no initialization required (?) */
--		amiga_console_driver.write = amiga_serial_console_write;
-+	bool registered;
-+
-+	if (!MACH_IS_AMIGA || strcmp(arg, "ser"))
-+		return 0;
-+
-+	/* no initialization required (?) */
-+	registered = !!amiga_console_driver.write;
-+	amiga_console_driver.write = amiga_serial_console_write;
-+	if (!registered)
- 		register_console(&amiga_console_driver);
--	}
- 	return 0;
- }
- 
-diff --git a/arch/m68k/atari/debug.c b/arch/m68k/atari/debug.c
-index a547ba9683d1..03cb5e08d7cf 100644
---- a/arch/m68k/atari/debug.c
-+++ b/arch/m68k/atari/debug.c
-@@ -287,6 +287,8 @@ static void __init atari_init_midi_port(int cflag)
- 
- static int __init atari_debug_setup(char *arg)
- {
-+	bool registered;
-+
- 	if (!MACH_IS_ATARI)
- 		return 0;
- 
-@@ -294,6 +296,7 @@ static int __init atari_debug_setup(char *arg)
- 		/* defaults to ser2 for a Falcon and ser1 otherwise */
- 		arg = MACH_IS_FALCON ? "ser2" : "ser1";
- 
-+	registered = !!atari_console_driver.write;
- 	if (!strcmp(arg, "ser1")) {
- 		/* ST-MFP Modem1 serial port */
- 		atari_init_mfp_port(B9600|CS8);
-@@ -317,7 +320,7 @@ static int __init atari_debug_setup(char *arg)
- 		sound_ym.wd_data = sound_ym.rd_data_reg_sel | 0x20; /* strobe H */
- 		atari_console_driver.write = atari_par_console_write;
- 	}
--	if (atari_console_driver.write)
-+	if (atari_console_driver.write && !registered)
- 		register_console(&atari_console_driver);
- 
- 	return 0;
+ 	while ((tag = be16_to_cpu(record->tag)) != BI_LAST) {
+ 		int unknown = 0;
+ 		const void *data = record->data;
 -- 
 1.7.9.5
