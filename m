@@ -1,105 +1,159 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Mikael Pettersson <mikpelinux@gmail.com>
 Subject: Re: Boot crash on 68030, was Re: [PATCH][M68K] implement futex.h to
  support userspace robust futexes and PI mutexes
-Date: Tue, 10 Dec 2013 11:12:50 +0100
-Message-ID: <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
+Date: Tue, 10 Dec 2013 11:13:50 +0100
+Message-ID: <21158.59742.841241.260782@gargle.gargle.HOWL>
 References: <20793.61385.652975.797741@pilspetsen.it.uu.se>
 	<alpine.LNX.2.00.1312101000250.10258@nippy.intranet>
 	<87iouxzju3.fsf@igel.home>
 	<alpine.LNX.2.00.1312101141250.17926@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f177.google.com ([209.85.192.177]:52083 "EHLO
-	mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753187Ab3LJKMu (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Dec 2013 05:12:50 -0500
-Received: by mail-pd0-f177.google.com with SMTP id q10so6995130pdj.22
-        for <linux-m68k@vger.kernel.org>; Tue, 10 Dec 2013 02:12:50 -0800 (PST)
+Received: from mail-la0-f41.google.com ([209.85.215.41]:43947 "EHLO
+	mail-la0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751631Ab3LJKN4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Dec 2013 05:13:56 -0500
+Received: by mail-la0-f41.google.com with SMTP id eo20so2512941lab.0
+        for <linux-m68k@vger.kernel.org>; Tue, 10 Dec 2013 02:13:55 -0800 (PST)
 In-Reply-To: <alpine.LNX.2.00.1312101141250.17926@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org, Mikael Pettersson <mikpelinux@gmail.com>
 
-On Tue, Dec 10, 2013 at 1:54 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> futex_init()
->   cmpxchg_futex_value_locked(&curval, NULL, 0, 0)
->     pagefault_disable();
->     futex_atomic_cmpxchg_inatomic(curval, NULL, 0, 0)
->       get_user(val, NULL)
->
-> That is, futex_init() passes a NULL pointer expecting it to fault, as
-> described in the comments in kernel/futex.c. Clearly the fault is not
-> expected to be fatal.
+Finn Thain writes:
+ > 
+ > On Tue, 10 Dec 2013, Andreas Schwab wrote:
+ > 
+ > > Finn Thain <fthain@telegraphics.com.au> writes:
+ > > 
+ > > > Data read fault at 0x00000000 in Super Data (pc=0x3afec)
+ > > > BAD KERNEL BUSERR
+ > > > Oops: 00000000
+ > > > Modules linked in:
+ > > > PC: [<0003afec>] cmpxchg_futex_value_locked+0x14/0x4a
+ > > 
+ > > What does it do here?
+ > 
+ > What happens next is that swapper dies leading to panic (see below).
+ > 
+ > It appears that the call graph looks like this,
+ > 
+ > futex_init()
+ >   cmpxchg_futex_value_locked(&curval, NULL, 0, 0)
+ >     pagefault_disable();
+ >     futex_atomic_cmpxchg_inatomic(curval, NULL, 0, 0)
+ >       get_user(val, NULL)
+ > 
+ > That is, futex_init() passes a NULL pointer expecting it to fault, as 
+ > described in the comments in kernel/futex.c. Clearly the fault is not 
+ > expected to be fatal.
+ > 
+ > Finn
 
-I added some debugging (basically enabling DEBUG in
-arch/m68k/kernel/traps.c, but dependent on a flag that's set to 1 in
-futex_init(), and a check in do_page_fault()), and ran it on ARAnyM,
-to get a grasp of what's happening on '040:
+Since it works for 040 I'd have to suspect some breakage in the
+pagefault handling for 030.  However I haven't looked at that code
+in any detail yet.
 
-futex_atomic_cmpxchg_inatomic:20
-*** Bus Error *** Format is 7
-ssw=0x505, fa=0x0
-wb1s=0x0, wb2s=0x0, wb3s=0x0
-wb2a=0, wb3a=0, wb2d=0, wb3d=0
-mmusr = 800
-in_atomic() = 1
-mm =   (null)
-no_context
-send_fault_sig:   (null),7,0
-do_page_fault() !=0
-.. disabling wb2
+/Mikael
 
-Summarized: access_error040() calls do_page_fault(), which just sends
-SIGBUS (7), as in_atomic() is 1.
+ > 
+ > 
+ > MacLinux
+ > 
+ >  vidaddr: 60040000
+ >   _stext: 00001000
+ > bootinfo: 002CC000
+ >    cpuid: 00000000
+ >  sccbase: 50F04000
+ > 
+ > ABCFGHIJK
+ > Linux version 3.10.0-rc2-mac-111606-ge4f2dfb (fthain@nippy) (gcc version 
+ > 4.4.6 (GCC) ) #14 Tue Dec 10 11:31:21 EST 2013
+ > bootconsole [early0] enabled
+ > Detected Macintosh model: 33
+ > VIA1 at 50f00000 is a 6522 or clone
+ > VIA2 at 50f02000 is a 6522 or clone
+ > Apple Macintosh PowerBook 180
+ > Built 1 zonelists in Zone order, mobility grouping off.  Total pages: 3045
+ > Kernel command line: console=ttyS0
+ > PID hash table entries: 64 (order: -4, 256 bytes)
+ > Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
+ > Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
+ > Sorting __ex_table...
+ > Memory: 9252k/9252k available (1948k kernel code, 984k data, 104k init)
+ > Virtual kernel memory layout:
+ >     vector  : 0x0029318c - 0x0029358c   (   1 KiB)
+ >     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
+ >     vmalloc : 0x01000000 - 0xd0000000   (3312 MiB)
+ >     lowmem  : 0x00000000 - 0x00c00000   (  12 MiB)
+ >       .init : 0x002b2000 - 0x002cc000   ( 104 KiB)
+ >       .text : 0x00001000 - 0x001e71aa   (1945 KiB)
+ >       .data : 0x001e9d60 - 0x002b11d0   ( 798 KiB)
+ >       .bss  : 0x00292f80 - 0x002b11d0   ( 121 KiB)
+ > SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
+ > NR_IRQS:72
+ > Killing onboard sonic... Done.
+ > WARNING: Persistent clock returned invalid value!
+ >          Check your CMOS/BIOS settings.
+ > Console: colour dummy device 80x25
+ > console [ttyS0] enabled, bootconsole disabled
+ > console [ttyS0] enabled, bootconsole disabled
+ > Calibrating delay loop... 7.83 BogoMIPS (lpj=39168)
+ > pid_max: default: 32768 minimum: 301
+ > Mount-cache hash table entries: 512
+ > devtmpfs: initialized
+ > NET: Registered protocol family 16
+ > bio: create slab <bio-0> at 0
+ > NuBus: Scanning NuBus slots.
+ > SCSI subsystem initialized
+ > NET: Registered protocol family 2
+ > TCP established hash table entries: 512 (order: 0, 4096 bytes)
+ > TCP bind hash table entries: 512 (order: -1, 2048 bytes)
+ > TCP: Hash tables configured (established 512 bind 512)
+ > TCP: reno registered
+ > UDP hash table entries: 256 (order: 0, 4096 bytes)
+ > UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+ > NET: Registered protocol family 1
+ > RPC: Registered named UNIX socket transport module.
+ > RPC: Registered udp transport module.
+ > RPC: Registered tcp transport module.
+ > RPC: Registered tcp NFSv4.1 backchannel transport module.
+ > Data read fault at 0x00000000 in Super Data (pc=0x3afec)
+ > BAD KERNEL BUSERR
+ > Oops: 00000000
+ > Modules linked in:
+ > PC: [<0003afec>] cmpxchg_futex_value_locked+0x14/0x4a
+ > SR: 2004  SP: 0082fed4  a2: 0082c000
+ > d0: 00000000    d1: 00000001    d2: 00000018    d3: 00000000
+ > d4: 00000061    d5: 00001000    a0: 00000000    a1: 0082e000
+ > Process swapper (pid: 1, task=0082c000)
+ > Frame format=B ssw=074d isc=4a80 isb=661c daddr=00000000 dobuf=00000001
+ > baddr=0003aff2 dibuf=00000000 ver=f
+ > Stack from 0082ff5c:
+ >         002b8cb8 0082ff70 00000000 00000000 00000000 00000000 00000000 000020ac
+ >         00000018 00000007 00000061 00001000 00000000 00000000 002cab50 00002008
+ >         002b3a56 002b8ca4 0082c3f0 00000000 0082c53c 001e316a 00000000 00000000
+ >         001e3172 001e316a 000025d4 00000000 00000000 00000000 00000000 00000000
+ >         00000000 00000000 00000000 00000000 00000000 00000000 00000000 20000000
+ >         00000000
+ > Call Trace: [<002b8cb8>] futex_init+0x14/0x54
+ >  [<000020ac>] do_one_initcall+0xa4/0x144
+ >  [<00001000>] kernel_pg_dir+0x0/0x1000
+ >  [<00002008>] do_one_initcall+0x0/0x144
+ >  [<002b3a56>] kernel_init_freeable+0xca/0x152
+ >  [<002b8ca4>] futex_init+0x0/0x54
+ >  [<001e316a>] kernel_init+0x0/0xc8
+ >  [<001e3172>] kernel_init+0x8/0xc8
+ >  [<001e316a>] kernel_init+0x0/0xc8
+ >  [<000025d4>] ret_from_kernel_thread+0xc/0x14
+ > 
+ > Code: 200f 0280 ffff e000 2240 52a9 0010 4280 <0e90> 1000 4a80 661c b2af 
+ > 000c 660c 226f 0010 0e90 9800 4a80 660a 206f 0004 2081
+ > Disabling lock debugging due to kernel taint
+ > note: swapper[1] exited with preempt_count 1
+ > Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-> Data read fault at 0x00000000 in Super Data (pc=0x3afec)
-> BAD KERNEL BUSERR
-
-On '030, the relevant code is:
-
-    if (mmusr & (MMU_I | MMU_WP)) {
-            if (ssw & 4) {
-                    printk("Data %s fault at %#010lx in %s (pc=%#lx)\n",
-                           ssw & RW ? "read" : "write",
-                           fp->un.fmtb.daddr,
-                           space_names[ssw & DFC], fp->ptregs.pc);
-                    goto buserr;
-            }
-            /* Don't try to do anything further if an exception was
-               handled. */
-            if (do_page_fault (&fp->ptregs, addr, errorcode) < 0)
-                    return;
-
-But we never get to do_page_fault(), as ssw = 5 (SUPER_DATA).
-
-The "if (ssw & 4) { ... }" chunk was added in commit
-e48d483d581278fae02a5fffeba2b1fef47be4d4 (from full-history-linux):
-
-Author: Andrew Morton <akpm@osdl.org>
-Date:   Sun Jan 18 18:32:30 2004 -0800
-
-    [PATCH] M68k RMW accesses
-
-    From: Geert Uytterhoeven <geert@linux-m68k.org>
-
-    M68k: Avoid bus fault for certain RMW accesses (from Roman Zippel)
-
-Which originates from a CVS commit in 2003, based on v2 (v1 didn't have
-the chunk) of a patch in the thread "RMW instructions on
-MC68020/MC68851 combo..." between Kars and Roman Z.
-
-I guess this case will work(TM) if you remove that chunk again?
-But what are the other implications of that?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
