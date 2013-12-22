@@ -1,35 +1,53 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 0/3] kexec support for Linux/m68k (tools part)
-Date: Sat, 14 Dec 2013 09:31:55 +0900
-Message-ID: <20131214003155.GA12584@verge.net.au>
-References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
- <20131213005322.GJ32101@verge.net.au>
- <CAMuHMdW8cSLXy36fD1QaSjHoFsM5B4ZK4JVwLY-OefX+wFOtiQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Fwd: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
+Date: Sun, 22 Dec 2013 11:19:04 +0100
+Message-ID: <CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com>
+References: <1387611538-18305-1-git-send-email-schmitz@debian.org>
+	<1387611538-18305-2-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdW8cSLXy36fD1QaSjHoFsM5B4ZK4JVwLY-OefX+wFOtiQ@mail.gmail.com>
+Received: from mail-pd0-f172.google.com ([209.85.192.172]:33150 "EHLO
+	mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752418Ab3LVKTG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Dec 2013 05:19:06 -0500
+Received: by mail-pd0-f172.google.com with SMTP id g10so4175928pdj.17
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Dec 2013 02:19:05 -0800 (PST)
+In-Reply-To: <1387611538-18305-2-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, kexec@lists.infradead.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Fri, Dec 13, 2013 at 09:03:45AM +0100, Geert Uytterhoeven wrote:
-> Hi Simon,
-> 
-> On Fri, Dec 13, 2013 at 1:53 AM, Simon Horman <horms@verge.net.au> wrote:
-> > On Tue, Oct 15, 2013 at 07:50:57PM +0200, Geert Uytterhoeven wrote:
-> >> kexec support for Linux/m68k (tools part)
-> >>
-> >> This is a set of patches to add kexec support for m68k to kexec-tools.
-> >>
-> >>   - Kexec only, no kdump support yet (do you have enough RAM to keep a
-> >>     crashdump kernel in memory at all times? ;-)
-> >
-> > Thanks, applied.
-> 
-> Thanks, I have queued the kernel counterpart for 3.14.
+---------- Forwarded message ----------
+From: Michael Schmitz <schmitzmic@gmail.com>
+Date: Sat, Dec 21, 2013 at 8:38 AM
+Subject: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded
+interrupts
+To: geert@linux-m68k.org
+Cc: schmitzmic@gmail.com, Michael Schmitz <schmitz@debian.org>
 
-Great. It sounds like it would be ideal if a new kexec-tools release
-coincided with the release of v3.14 of the kernel.
+
+---
+ arch/m68k/atari/ataints.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 90f7a48..3e73a63 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -330,9 +330,12 @@ void __init atari_init_IRQ(void)
+        sound_ym.rd_data_reg_sel = 7;
+        sound_ym.wd_data = 0xff;
+
+-       m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
++       m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
+                                  IRQ_MFP_TIMER1, 8);
+
++       irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
++       irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
++
+        /* prepare timer D data for use as poll interrupt */
+        /* set Timer D data Register - needs to be > 0 */
+        st_mfp.tim_dt_d = 254;  /* < 100 Hz */
+--
+1.7.0.4
