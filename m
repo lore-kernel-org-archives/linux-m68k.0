@@ -1,42 +1,63 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: Re: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
-Date: Mon, 23 Dec 2013 22:16:19 +1300
-Message-ID: <0662fd1f6f09f26ea0b7c0ea44a0b961@biophys.uni-duesseldorf.de>
-References: <1387611538-18305-1-git-send-email-schmitz@debian.org> <1387611538-18305-2-git-send-email-schmitz@debian.org> <CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com> <m238llp255.fsf@linux-m68k.org>
+Date: Mon, 23 Dec 2013 22:23:42 +1300
+Message-ID: <f61c2f6c42756c3bcd905f901767893a@gmail.com>
+References: <1387611538-18305-1-git-send-email-schmitz@debian.org> <1387611538-18305-2-git-send-email-schmitz@debian.org> <CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com> <CAMuHMdXwXi6jeKz0TJPm9iHBBC8vfXrJnG19+Vogq32zr79zmw@mail.gmail.com>
 Mime-Version: 1.0 (Apple Message framework v624)
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f43.google.com ([209.85.220.43]:39617 "EHLO
-	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932108Ab3LWJQY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 23 Dec 2013 04:16:24 -0500
-Received: by mail-pa0-f43.google.com with SMTP id bj1so5109352pad.30
-        for <linux-m68k@vger.kernel.org>; Mon, 23 Dec 2013 01:16:24 -0800 (PST)
-In-Reply-To: <m238llp255.fsf@linux-m68k.org>
+In-Reply-To: <CAMuHMdXwXi6jeKz0TJPm9iHBBC8vfXrJnG19+Vogq32zr79zmw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Andreas,
+Geert,
 
-> What does that fix?
+forgot to reply to all last time ...
 
-Hardware with no interrupt line (EtherNEC, NetUSBee) has the driver 
-interrupt routine polled from the Atari timer D interrupt, which calls 
-in to the driver inthandler via driver-specific chained interrupts 
-IRQ_MFP_TIMER1 etc. (see patch to set up irq chip for timer D interrupt 
-earlier).
+>>
+>
+> Missing SoB.
 
-These interrupts will, more often than not, return IRQ_NONE as there's 
-not always any work to be done when called from the timer. Accumulation 
-of unhandled interrupts then causes the handler to be disabled by the 
-unhandled interrupt watchdog.
+Sorry, please add:
 
-Driver maintainers have been reluctant to accept other hacks to fix 
-this issue (such as declaring the driver interrupt shared, and hooking 
-up a handler that just returns IRQ_HANDLED always).
+Signed-off-By: Michael Schmitz <schmitz@debian.org>
+
+>
+>> ---
+>>  arch/m68k/atari/ataints.c |    5 ++++-
+>>  1 files changed, 4 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+>> index 90f7a48..3e73a63 100644
+>> --- a/arch/m68k/atari/ataints.c
+>> +++ b/arch/m68k/atari/ataints.c
+>> @@ -330,9 +330,12 @@ void __init atari_init_IRQ(void)
+>>         sound_ym.rd_data_reg_sel = 7;
+>>         sound_ym.wd_data = 0xff;
+>>
+>> -       m68k_setup_irq_controller(&atari_mfptimer_chip, 
+>> handle_polled_irq,
+>> +       m68k_setup_irq_controller(&atari_mfptimer_chip, 
+>> handle_simple_irq,
+>>                                   IRQ_MFP_TIMER1, 8);
+>>
+>> +       irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
+>> +       irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
+>
+> Why do you set this flag for timer 2, too? Timer D is timer1, right?
+>
+>
+
+The  IRQ_MFP_TIMER1 and IRQ_MFP_TIMER2 interrupts are the multiplexed 
+ones. These are the only ones currently used by EtherNEC and NetUSBee 
+(if someone wants to use IRQ_MFP_TIMER3 for another piece of broken 
+hardware, this one would need the same flag added).
+
+IRQ_MFP_TIMD is the real hardware interrupt driving IRQ_MFP_TIMER1 and 
+IRQ_MFP_TIMER2. It always returns IRQ_HANDLED so no flag required.
 
 Cheers,
 
@@ -44,13 +65,24 @@ Cheers,
 
 
 >
-> Andreas.
+>> +
+>>         /* prepare timer D data for use as poll interrupt */
+>>         /* set Timer D data Register - needs to be > 0 */
+>>         st_mfp.tim_dt_d = 254;  /* < 100 Hz */
 >
-> -- 
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 
-> 4ED5
-> "And now for something completely different."
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
+> geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a 
+> hacker. But
+> when I'm talking to journalists I just say "programmer" or something 
+> like that.
+>                                 -- Linus Torvalds
 > --
 > To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
 > in
