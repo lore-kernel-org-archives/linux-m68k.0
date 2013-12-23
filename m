@@ -1,90 +1,31 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
-Date: Mon, 23 Dec 2013 22:23:42 +1300
-Message-ID: <f61c2f6c42756c3bcd905f901767893a@gmail.com>
-References: <1387611538-18305-1-git-send-email-schmitz@debian.org> <1387611538-18305-2-git-send-email-schmitz@debian.org> <CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com> <CAMuHMdXwXi6jeKz0TJPm9iHBBC8vfXrJnG19+Vogq32zr79zmw@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Mon, 23 Dec 2013 12:30:19 +0100
+Message-ID: <87ioufajp0.fsf@igel.home>
+References: <1387611538-18305-1-git-send-email-schmitz@debian.org>
+	<1387611538-18305-2-git-send-email-schmitz@debian.org>
+	<CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com>
+	<m238llp255.fsf@linux-m68k.org>
+	<0662fd1f6f09f26ea0b7c0ea44a0b961@biophys.uni-duesseldorf.de>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXwXi6jeKz0TJPm9iHBBC8vfXrJnG19+Vogq32zr79zmw@mail.gmail.com>
+Received: from mail-out.m-online.net ([212.18.0.10]:50324 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757268Ab3LWLa0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 23 Dec 2013 06:30:26 -0500
+In-Reply-To: <0662fd1f6f09f26ea0b7c0ea44a0b961@biophys.uni-duesseldorf.de>
+	(Michael Schmitz's message of "Mon, 23 Dec 2013 22:16:19 +1300")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Geert,
+Please add your explanation to the patch.
 
-forgot to reply to all last time ...
+Andreas.
 
->>
->
-> Missing SoB.
-
-Sorry, please add:
-
-Signed-off-By: Michael Schmitz <schmitz@debian.org>
-
->
->> ---
->>  arch/m68k/atari/ataints.c |    5 ++++-
->>  1 files changed, 4 insertions(+), 1 deletions(-)
->>
->> diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
->> index 90f7a48..3e73a63 100644
->> --- a/arch/m68k/atari/ataints.c
->> +++ b/arch/m68k/atari/ataints.c
->> @@ -330,9 +330,12 @@ void __init atari_init_IRQ(void)
->>         sound_ym.rd_data_reg_sel = 7;
->>         sound_ym.wd_data = 0xff;
->>
->> -       m68k_setup_irq_controller(&atari_mfptimer_chip, 
->> handle_polled_irq,
->> +       m68k_setup_irq_controller(&atari_mfptimer_chip, 
->> handle_simple_irq,
->>                                   IRQ_MFP_TIMER1, 8);
->>
->> +       irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
->> +       irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
->
-> Why do you set this flag for timer 2, too? Timer D is timer1, right?
->
->
-
-The  IRQ_MFP_TIMER1 and IRQ_MFP_TIMER2 interrupts are the multiplexed 
-ones. These are the only ones currently used by EtherNEC and NetUSBee 
-(if someone wants to use IRQ_MFP_TIMER3 for another piece of broken 
-hardware, this one would need the same flag added).
-
-IRQ_MFP_TIMD is the real hardware interrupt driving IRQ_MFP_TIMER1 and 
-IRQ_MFP_TIMER2. It always returns IRQ_HANDLED so no flag required.
-
-Cheers,
-
-	Michael
-
-
->
->> +
->>         /* prepare timer D data for use as poll interrupt */
->>         /* set Timer D data Register - needs to be > 0 */
->>         st_mfp.tim_dt_d = 254;  /* < 100 Hz */
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
-> geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a 
-> hacker. But
-> when I'm talking to journalists I just say "programmer" or something 
-> like that.
->                                 -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
