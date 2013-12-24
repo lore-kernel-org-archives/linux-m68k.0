@@ -1,41 +1,57 @@
-From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
-Date: Tue, 24 Dec 2013 12:36:32 +1300
-Message-ID: <1747264c09e9babafcc3ee6486060a0f@biophys.uni-duesseldorf.de>
-References: <1387611538-18305-1-git-send-email-schmitz@debian.org> <1387611538-18305-2-git-send-email-schmitz@debian.org> <CAMuHMdWirPo7HSsBiLdQDKdMmP4sjKEhcB1hfW0HabhkpQ-Jxg@mail.gmail.com> <m238llp255.fsf@linux-m68k.org> <0662fd1f6f09f26ea0b7c0ea44a0b961@biophys.uni-duesseldorf.de> <87ioufajp0.fsf@igel.home>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] TTY: pmac_zilog, check existence of ports in pmz_console_init()
+Date: Tue, 24 Dec 2013 15:39:50 +0100
+Message-ID: <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
+References: <1385135247-9068-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f181.google.com ([209.85.192.181]:53390 "EHLO
-	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758197Ab3LWXgq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 23 Dec 2013 18:36:46 -0500
-Received: by mail-pd0-f181.google.com with SMTP id p10so5652336pdj.12
-        for <linux-m68k@vger.kernel.org>; Mon, 23 Dec 2013 15:36:45 -0800 (PST)
-In-Reply-To: <87ioufajp0.fsf@igel.home>
+Received: from mail-pa0-f43.google.com ([209.85.220.43]:48098 "EHLO
+	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752340Ab3LXOjv (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Dec 2013 09:39:51 -0500
+In-Reply-To: <1385135247-9068-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, stable <stable@vger.kernel.org>
+Cc: linux-serial@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-Andreas,
+On Fri, Nov 22, 2013 at 4:47 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> When booting a multi-platform m68k kernel on a non-Mac with "console=ttyS0"
+> on the kernel command line, it crashes with:
 
-> Please add your explanation to the patch.
+Can we please get this in stable, too?
 
-OK, will do.
+commit dc1dc2f8a5dd863bf2e79f338fc3ae29e99c683a
 
-Happy Xmas to all!
+Thanks!
 
-Cheers,
-
-	Michael
-
+> Unable to handle kernel NULL pointer dereference at virtual address   (null)
+> Oops: 00000000
+> PC: [<0013ad28>] __pmz_startup+0x32/0x2a0
+> ...
+> Call Trace: [<002c5d3e>] pmz_console_setup+0x64/0xe4
 >
-> Andreas.
+> The normal tty driver doesn't crash, because init_pmz() checks
+> pmz_ports_count again after calling pmz_probe().
 >
-> -- 
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 
-> 4ED5
-> "And now for something completely different."
+> In the serial console initialization path, pmz_console_init() doesn't do
+> this, causing the driver to crash later.
+>
+> Add a check for pmz_ports_count to fix this.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Finn Thain <fthain@telegraphics.com.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
