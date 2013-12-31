@@ -1,53 +1,30 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/mm: kmap spelling/grammar fixes
-Date: Mon, 30 Dec 2013 10:08:50 +0100
-Message-ID: <1388394530-25851-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] TTY: pmac_zilog, check existence of ports in
+ pmz_console_init()
+Date: Mon, 30 Dec 2013 21:19:36 -0800
+Message-ID: <20131231051936.GA29909@kroah.com>
+References: <1385135247-9068-1-git-send-email-geert@linux-m68k.org>
+ <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jiri Slaby <jslaby@suse.cz>, stable <stable@vger.kernel.org>, linux-serial@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/mm/kmap.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Tue, Dec 24, 2013 at 03:39:50PM +0100, Geert Uytterhoeven wrote:
+> On Fri, Nov 22, 2013 at 4:47 PM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > When booting a multi-platform m68k kernel on a non-Mac with "console=ttyS0"
+> > on the kernel command line, it crashes with:
+> 
+> Can we please get this in stable, too?
+> 
+> commit dc1dc2f8a5dd863bf2e79f338fc3ae29e99c683a
 
-diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
-index 568cfad3ceb8..6e4955bc542b 100644
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -27,9 +27,9 @@
- 
- /*
-  * For 040/060 we can use the virtual memory area like other architectures,
-- * but for 020/030 we want to use early termination page descriptor and we
-+ * but for 020/030 we want to use early termination page descriptors and we
-  * can't mix this with normal page descriptors, so we have to copy that code
-- * (mm/vmalloc.c) and return appriorate aligned addresses.
-+ * (mm/vmalloc.c) and return appropriately aligned addresses.
-  */
- 
- #ifdef CPU_M68040_OR_M68060_ONLY
-@@ -224,7 +224,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
- EXPORT_SYMBOL(__ioremap);
- 
- /*
-- * Unmap a ioremap()ed region again
-+ * Unmap an ioremap()ed region again
-  */
- void iounmap(void __iomem *addr)
- {
-@@ -241,8 +241,8 @@ EXPORT_SYMBOL(iounmap);
- 
- /*
-  * __iounmap unmaps nearly everything, so be careful
-- * it doesn't free currently pointer/page tables anymore but it
-- * wans't used anyway and might be added later.
-+ * Currently it doesn't free pointer/page tables anymore but this
-+ * wasn't used anyway and might be added later.
-  */
- void __iounmap(void *addr, unsigned long size)
- {
--- 
-1.7.9.5
+Now applied, thanks.
+
+greg k-h
