@@ -1,110 +1,109 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Fwd: [PATCH, RFC 14/30] tty/amiserial: avoid interruptible_sleep_on
-Date: Thu, 2 Jan 2014 13:27:25 +0100
-Message-ID: <CAMuHMdVZtkW5LjJ8yTqdQ9xNigPP9V-qfHFCv56wJOa=6sfN4Q@mail.gmail.com>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
-	<1388664474-1710039-15-git-send-email-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
+Date: Sun, 5 Jan 2014 14:35:46 +1300
+Message-ID: <70d98fc4293247b4d5a11235a1d676b6@biophys.uni-duesseldorf.de>
+References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <1388664474-1710039-3-git-send-email-arnd@arndb.de> <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f53.google.com ([209.85.220.53]:57027 "EHLO
-	mail-pa0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750740AbaABM1Z (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jan 2014 07:27:25 -0500
-Received: by mail-pa0-f53.google.com with SMTP id hz1so14394583pad.26
-        for <linux-m68k@vger.kernel.org>; Thu, 02 Jan 2014 04:27:25 -0800 (PST)
-In-Reply-To: <1388664474-1710039-15-git-send-email-arnd@arndb.de>
+Received: from mail-pa0-f47.google.com ([209.85.220.47]:43252 "EHLO
+	mail-pa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750805AbaAEBgG (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 4 Jan 2014 20:36:06 -0500
+Received: by mail-pa0-f47.google.com with SMTP id kq14so17181630pab.34
+        for <linux-m68k@vger.kernel.org>; Sat, 04 Jan 2014 17:36:05 -0800 (PST)
+In-Reply-To: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux//m68k <linux-m68k@vger.kernel.org>, arnd@arndb.de
 
----------- Forwarded message ----------
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, Jan 2, 2014 at 1:07 PM
-Subject: [PATCH, RFC 14/30] tty/amiserial: avoid interruptible_sleep_on
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven
-<geert@linux-m68k.org>, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>
+Geert,
+
+thanks for passing that on - I had in fact disabled that feature of the 
+driver for a good part of the 3.x series of kernels while attempting to 
+figure out what else is wrong with the locking scheme.
+
+I'll take a fresh stab at this.
+
+Cheers,
+
+	Michael
 
 
-interruptible_sleep_on is generally problematic and we want to get
-rid of it. In case of TIOCMIWAIT, that race is actually in user
-space and does not get fixed since we can only detect changes after
-entering the ioctl handler, but it removes one more caller.
+Am 03.01.2014 um 01:26 schrieb Geert Uytterhoeven:
 
-This instance can not be trivially replaced with wait_event, so
-I chose to open-code the wait loop using prepare_to_wait/finish_wait.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/tty/amiserial.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
-index 71630a2..979e7c3 100644
---- a/drivers/tty/amiserial.c
-+++ b/drivers/tty/amiserial.c
-@@ -1248,6 +1248,8 @@ static int rs_ioctl(struct tty_struct *tty,
-        struct async_icount cprev, cnow;        /* kernel counter temps */
-        void __user *argp = (void __user *)arg;
-        unsigned long flags;
-+       DEFINE_WAIT(wait);
-+       int ret;
-
-        if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
-                return -ENODEV;
-@@ -1288,25 +1290,33 @@ static int rs_ioctl(struct tty_struct *tty,
-                        cprev = info->icount;
-                        local_irq_restore(flags);
-                        while (1) {
--
-interruptible_sleep_on(&info->tport.delta_msr_wait);
--                               /* see if a signal did it */
--                               if (signal_pending(current))
--                                       return -ERESTARTSYS;
-+                               prepare_to_wait(&info->tport.delta_msr_wait,
-+                                               &wait, TASK_INTERRUPTIBLE);
-                                local_irq_save(flags);
-                                cnow = info->icount; /* atomic copy */
-                                local_irq_restore(flags);
-                                if (cnow.rng == cprev.rng && cnow.dsr
-== cprev.dsr &&
--                                   cnow.dcd == cprev.dcd && cnow.cts
-== cprev.cts)
--                                       return -EIO; /* no change => error */
-+                                   cnow.dcd == cprev.dcd && cnow.cts
-== cprev.cts) {
-+                                       ret = -EIO; /* no change => error */
-+                                       break;
-+                               }
-                                if ( ((arg & TIOCM_RNG) && (cnow.rng
-!= cprev.rng)) ||
-                                     ((arg & TIOCM_DSR) && (cnow.dsr
-!= cprev.dsr)) ||
-                                     ((arg & TIOCM_CD)  && (cnow.dcd
-!= cprev.dcd)) ||
-                                     ((arg & TIOCM_CTS) && (cnow.cts
-!= cprev.cts)) ) {
--                                       return 0;
-+                                       ret = 0;
-+                                       break;
-+                               }
-+                               schedule();
-+                               /* see if a signal did it */
-+                               if (signal_pending(current)) {
-+                                       ret = -ERESTARTSYS;
-+                                       break;
-                                }
-                                cprev = cnow;
-                        }
--                       /* NOTREACHED */
-+                       finish_wait(&info->tport.delta_msr_wait, &wait);
-+                       return ret;
-
-                case TIOCSERGWILD:
-                case TIOCSERSWILD:
---
-1.8.3.2
+> ---------- Forwarded message ----------
+> From: Arnd Bergmann <arnd@arndb.de>
+> Date: Thu, Jan 2, 2014 at 1:07 PM
+> Subject: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
+> To: linux-kernel@vger.kernel.org
+> Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven
+> <geert@linux-m68k.org>, "James E.J. Bottomley"
+> <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
+>
+>
+> sleep_on is known broken and going away. The atari_scsi driver is one 
+> of
+> two remaining users in the falcon_get_lock() function, which is a 
+> rather
+> crazy piece of code. This does not attempt to fix the driver's locking
+> scheme in general, but at least prevents falcon_get_lock from going to
+> sleep when no other thread holds the same lock or tries to get it,
+> and we no longer schedule with irqs disabled.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: James E.J. Bottomley <JBottomley@parallels.com>
+> Cc: linux-scsi@vger.kernel.org
+> ---
+>  drivers/scsi/atari_scsi.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+> index a3e6c8a..b55a58a 100644
+> --- a/drivers/scsi/atari_scsi.c
+> +++ b/drivers/scsi/atari_scsi.c
+> @@ -90,6 +90,7 @@
+>  #include <linux/init.h>
+>  #include <linux/nvram.h>
+>  #include <linux/bitops.h>
+> +#include <linux/wait.h>
+>
+>  #include <asm/setup.h>
+>  #include <asm/atarihw.h>
+> @@ -549,8 +550,10 @@ static void falcon_get_lock(void)
+>
+>         local_irq_save(flags);
+>
+> -       while (!in_irq() && falcon_got_lock && stdma_others_waiting())
+> -               sleep_on(&falcon_fairness_wait);
+> +       wait_event_cmd(falcon_fairness_wait,
+> +                      !in_irq() && falcon_got_lock && 
+> stdma_others_waiting(),
+> +                      local_irq_restore(flags),
+> +                      local_irq_save(flags));
+>
+>         while (!falcon_got_lock) {
+>                 if (in_irq())
+> @@ -562,7 +565,10 @@ static void falcon_get_lock(void)
+>                         falcon_trying_lock = 0;
+>                         wake_up(&falcon_try_wait);
+>                 } else {
+> -                       sleep_on(&falcon_try_wait);
+> +                       wait_event_cmd(falcon_try_wait,
+> +                                      !falcon_got_lock && 
+> !falcon_trying_lock,
+> +                                      local_irq_restore(flags),
+> +                                      local_irq_save(flags));
+>                 }
+>         }
+>
+> --
+> 1.8.3.2
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" 
+> in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
