@@ -1,105 +1,139 @@
 From: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
-Date: Sun, 5 Jan 2014 14:35:46 +1300
-Message-ID: <70d98fc4293247b4d5a11235a1d676b6@biophys.uni-duesseldorf.de>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <1388664474-1710039-3-git-send-email-arnd@arndb.de> <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
+Subject: Re: [PATCH, RFC 01/30] ataflop: fix sleep_on races
+Date: Sun, 5 Jan 2014 14:39:33 +1300
+Message-ID: <c3caa289fd7fbc6a06aeabb422b17e4c@biophys.uni-duesseldorf.de>
+References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <1388664474-1710039-2-git-send-email-arnd@arndb.de> <CAMuHMdXijU=ga0mYihoF4Ac_7aDMfU9id5matjz1PUW1nO2oYQ@mail.gmail.com>
 Mime-Version: 1.0 (Apple Message framework v624)
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f47.google.com ([209.85.220.47]:43252 "EHLO
-	mail-pa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750805AbaAEBgG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 4 Jan 2014 20:36:06 -0500
-Received: by mail-pa0-f47.google.com with SMTP id kq14so17181630pab.34
-        for <linux-m68k@vger.kernel.org>; Sat, 04 Jan 2014 17:36:05 -0800 (PST)
-In-Reply-To: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
+Received: from mail-pa0-f44.google.com ([209.85.220.44]:55418 "EHLO
+	mail-pa0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750767AbaAEBjx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 4 Jan 2014 20:39:53 -0500
+Received: by mail-pa0-f44.google.com with SMTP id fa1so17179714pad.31
+        for <linux-m68k@vger.kernel.org>; Sat, 04 Jan 2014 17:39:53 -0800 (PST)
+In-Reply-To: <CAMuHMdXijU=ga0mYihoF4Ac_7aDMfU9id5matjz1PUW1nO2oYQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux//m68k <linux-m68k@vger.kernel.org>, arnd@arndb.de
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, arnd@arndb.de
 
 Geert,
 
-thanks for passing that on - I had in fact disabled that feature of the 
-driver for a good part of the 3.x series of kernels while attempting to 
-figure out what else is wrong with the locking scheme.
-
-I'll take a fresh stab at this.
+will look at this one as well, thanks.
 
 Cheers,
 
 	Michael
 
-
-Am 03.01.2014 um 01:26 schrieb Geert Uytterhoeven:
+Am 03.01.2014 um 01:27 schrieb Geert Uytterhoeven:
 
 > ---------- Forwarded message ----------
 > From: Arnd Bergmann <arnd@arndb.de>
 > Date: Thu, Jan 2, 2014 at 1:07 PM
-> Subject: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
+> Subject: [PATCH, RFC 01/30] ataflop: fix sleep_on races
 > To: linux-kernel@vger.kernel.org
-> Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven
-> <geert@linux-m68k.org>, "James E.J. Bottomley"
-> <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
+> Cc: Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>, Geert
+> Uytterhoeven <geert@linux-m68k.org>
 >
 >
-> sleep_on is known broken and going away. The atari_scsi driver is one 
-> of
-> two remaining users in the falcon_get_lock() function, which is a 
-> rather
-> crazy piece of code. This does not attempt to fix the driver's locking
-> scheme in general, but at least prevents falcon_get_lock from going to
-> sleep when no other thread holds the same lock or tries to get it,
-> and we no longer schedule with irqs disabled.
+> sleep_on() is inherently racy, and has been deprecated for a long time.
+> This fixes two instances in the atari floppy driver:
+>
+> * fdc_wait/fdc_busy becomes an open-coded mutex. We cannot use the
+>   regular mutex since it gets released in interrupt context. The
+>   open-coded version using wait_event() and cmpxchg() is equivalent
+>   to the existing code but does the checks atomically, and we can
+>   now safely check the condition with irqs enabled.
+>
+> * format_wait becomes a completion, which is the natural structure
+>   here. The format ioctl waits for the background task to either
+>   complete or abort.
+>
+> This does not attempt to fix the preexisting bug of calling schedule
+> with local interrupts disabled.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Jens Axboe <axboe@kernel.dk>
 > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: James E.J. Bottomley <JBottomley@parallels.com>
-> Cc: linux-scsi@vger.kernel.org
 > ---
->  drivers/scsi/atari_scsi.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  drivers/block/ataflop.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-> index a3e6c8a..b55a58a 100644
-> --- a/drivers/scsi/atari_scsi.c
-> +++ b/drivers/scsi/atari_scsi.c
-> @@ -90,6 +90,7 @@
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index 0e30c6e..96b629e 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -68,6 +68,8 @@
 >  #include <linux/init.h>
->  #include <linux/nvram.h>
->  #include <linux/bitops.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/mutex.h>
+> +#include <linux/completion.h>
 > +#include <linux/wait.h>
 >
->  #include <asm/setup.h>
->  #include <asm/atarihw.h>
-> @@ -549,8 +550,10 @@ static void falcon_get_lock(void)
+>  #include <asm/atafd.h>
+>  #include <asm/atafdreg.h>
+> @@ -301,7 +303,7 @@ module_param_array(UserSteprate, int, NULL, 0);
+>  /* Synchronization of FDC access. */
+>  static volatile int fdc_busy = 0;
+>  static DECLARE_WAIT_QUEUE_HEAD(fdc_wait);
+> -static DECLARE_WAIT_QUEUE_HEAD(format_wait);
+> +static DECLARE_COMPLETION(format_wait);
 >
->         local_irq_save(flags);
->
-> -       while (!in_irq() && falcon_got_lock && stdma_others_waiting())
-> -               sleep_on(&falcon_fairness_wait);
-> +       wait_event_cmd(falcon_fairness_wait,
-> +                      !in_irq() && falcon_got_lock && 
-> stdma_others_waiting(),
-> +                      local_irq_restore(flags),
-> +                      local_irq_save(flags));
->
->         while (!falcon_got_lock) {
->                 if (in_irq())
-> @@ -562,7 +565,10 @@ static void falcon_get_lock(void)
->                         falcon_trying_lock = 0;
->                         wake_up(&falcon_try_wait);
->                 } else {
-> -                       sleep_on(&falcon_try_wait);
-> +                       wait_event_cmd(falcon_try_wait,
-> +                                      !falcon_got_lock && 
-> !falcon_trying_lock,
-> +                                      local_irq_restore(flags),
-> +                                      local_irq_save(flags));
->                 }
+>  static unsigned long changed_floppies = 0xff, fake_change = 0;
+>  #define        CHECK_CHANGE_DELAY      HZ/2
+> @@ -608,7 +610,7 @@ static void fd_error( void )
+>         if (IsFormatting) {
+>                 IsFormatting = 0;
+>                 FormatError = 1;
+> -               wake_up( &format_wait );
+> +               complete(&format_wait);
+>                 return;
 >         }
 >
+> @@ -650,9 +652,8 @@ static int do_format(int drive, int type, struct
+> atari_format_descr *desc)
+>         DPRINT(("do_format( dr=%d tr=%d he=%d offs=%d )\n",
+>                 drive, desc->track, desc->head, desc->sect_offset ));
+>
+> +       wait_event(fdc_wait, cmpxchg(&fdc_busy, 0, 1) == 0);
+>         local_irq_save(flags);
+> -       while( fdc_busy ) sleep_on( &fdc_wait );
+> -       fdc_busy = 1;
+>         stdma_lock(floppy_irq, NULL);
+>         atari_turnon_irq( IRQ_MFP_FDC ); /* should be already, just to
+> be sure */
+>         local_irq_restore(flags);
+> @@ -706,7 +707,7 @@ static int do_format(int drive, int type, struct
+> atari_format_descr *desc)
+>         ReqSide  = desc->head;
+>         do_fd_action( drive );
+>
+> -       sleep_on( &format_wait );
+> +       wait_for_completion(&format_wait);
+>
+>         redo_fd_request();
+>         return( FormatError ? -EIO : 0 );
+> @@ -1229,7 +1230,7 @@ static void fd_writetrack_done( int status )
+>                 goto err_end;
+>         }
+>
+> -       wake_up( &format_wait );
+> +       complete(&format_wait);
+>         return;
+>
+>    err_end:
+> @@ -1497,8 +1498,7 @@ repeat:
+>  void do_fd_request(struct request_queue * q)
+>  {
+>         DPRINT(("do_fd_request for pid %d\n",current->pid));
+> -       while( fdc_busy ) sleep_on( &fdc_wait );
+> -       fdc_busy = 1;
+> +       wait_event(fdc_wait, cmpxchg(&fdc_busy, 0, 1) == 0);
+>         stdma_lock(floppy_irq, NULL);
+>
+>         atari_disable_irq( IRQ_MFP_FDC );
 > --
 > 1.8.3.2
 > --
