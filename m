@@ -1,60 +1,54 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
-Date: Sat, 11 Jan 2014 14:01:31 +1300
-Message-ID: <1389402091-20815-1-git-send-email-schmitz@debian.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
+Date: Sat, 11 Jan 2014 11:39:49 +0100
+Message-ID: <CAMuHMdWOcXTZ05pp4V+G5dUnoo5ihv_ZFKoh2AZ=yi30yqXWKA@mail.gmail.com>
+References: <1389402091-20815-1-git-send-email-schmitz@debian.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f52.google.com ([209.85.220.52]:45110 "EHLO
-	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751609AbaAKBBj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Jan 2014 20:01:39 -0500
-Received: by mail-pa0-f52.google.com with SMTP id kx10so1589144pab.11
-        for <linux-m68k@vger.kernel.org>; Fri, 10 Jan 2014 17:01:38 -0800 (PST)
+Received: from mail-pa0-f42.google.com ([209.85.220.42]:40311 "EHLO
+	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751100AbaAKKju (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Jan 2014 05:39:50 -0500
+Received: by mail-pa0-f42.google.com with SMTP id lj1so5835447pab.1
+        for <linux-m68k@vger.kernel.org>; Sat, 11 Jan 2014 02:39:50 -0800 (PST)
+In-Reply-To: <1389402091-20815-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Michael Schmitz <schmitz@debian.org>
 
-Some Atari hardware has no capacity to raise interrupts (e.g.
-network or USB adapter hardware attached via ROM port). The driver
-interrupt routine is called from a timer interrupt (timer D) in
-these cases, using chained device specific pseudo interrupts
-(IRQ_MFP_TIMER1 ff.)
+On Sat, Jan 11, 2014 at 2:01 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Some Atari hardware has no capacity to raise interrupts (e.g.
+> network or USB adapter hardware attached via ROM port). The driver
+> interrupt routine is called from a timer interrupt (timer D) in
+> these cases, using chained device specific pseudo interrupts
+> (IRQ_MFP_TIMER1 ff.)
+>
+> These interrupts will more often than not, return IRQ_NONE as
+> there is not always work for the device handler when called.
+> Too many unhandled interrupts will result in the interrupt
+> being disabled by the stuck interrupt watchdog.
+>
+> As preferred option to flag interrupts as needing exclusion
+> from the watchdog mechanism, tglx added the IRQ_IS_POLLED flag
+> for use in such a case. Currently, two interrupts need to use
+> this flag. Add more users as needed.
+>
+> This patch obsoletes the introduction of handle_polled_irq()
+> in the m68k tree.
+>
+> Signed-off-By: Michael Schmitz <schmitz@debian.org>
 
-These interrupts will more often than not, return IRQ_NONE as
-there is not always work for the device handler when called.
-Too many unhandled interrupts will result in the interrupt
-being disabled by the stuck interrupt watchdog.
+Thanks, will apply and queue for 3.14.
 
-As preferred option to flag interrupts as needing exclusion
-from the watchdog mechanism, tglx added the IRQ_IS_POLLED flag
-for use in such a case. Currently, two interrupts need to use
-this flag. Add more users as needed.
+Gr{oetje,eeting}s,
 
-This patch obsoletes the introduction of handle_polled_irq()
-in the m68k tree.
+                        Geert
 
-Signed-off-By: Michael Schmitz <schmitz@debian.org>
----
- arch/m68k/atari/ataints.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index 90f7a48..3e73a63 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -330,9 +330,12 @@ void __init atari_init_IRQ(void)
- 	sound_ym.rd_data_reg_sel = 7;
- 	sound_ym.wd_data = 0xff;
- 
--	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
-+	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
- 				  IRQ_MFP_TIMER1, 8);
- 
-+	irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
-+	irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
-+
- 	/* prepare timer D data for use as poll interrupt */
- 	/* set Timer D data Register - needs to be > 0 */
- 	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
--- 
-1.7.0.4
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
