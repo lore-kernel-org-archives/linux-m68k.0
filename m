@@ -1,67 +1,60 @@
-From: Luis Henriques <luis.henriques@canonical.com>
-Subject: Re: [PATCH 1/2] TTY: pmac_zilog, check existence of ports in
- pmz_console_init()
-Date: Mon, 6 Jan 2014 14:43:33 +0000
-Message-ID: <20140106144333.GE2776@hercules>
-References: <1385135247-9068-1-git-send-email-geert@linux-m68k.org>
- <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-serial-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
-Sender: linux-serial-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, stable <stable@vger.kernel.org>, linux-serial@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH] m68k/irq - use polled IRQ flag for MFP timer cascaded interrupts
+Date: Sat, 11 Jan 2014 14:01:31 +1300
+Message-ID: <1389402091-20815-1-git-send-email-schmitz@debian.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pa0-f52.google.com ([209.85.220.52]:45110 "EHLO
+	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751609AbaAKBBj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Jan 2014 20:01:39 -0500
+Received: by mail-pa0-f52.google.com with SMTP id kx10so1589144pab.11
+        for <linux-m68k@vger.kernel.org>; Fri, 10 Jan 2014 17:01:38 -0800 (PST)
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: geert@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitz@debian.org>
 
-On Tue, Dec 24, 2013 at 03:39:50PM +0100, Geert Uytterhoeven wrote:
-> On Fri, Nov 22, 2013 at 4:47 PM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > When booting a multi-platform m68k kernel on a non-Mac with "console=ttyS0"
-> > on the kernel command line, it crashes with:
-> 
-> Can we please get this in stable, too?
-> 
-> commit dc1dc2f8a5dd863bf2e79f338fc3ae29e99c683a
-> 
-> Thanks!
+Some Atari hardware has no capacity to raise interrupts (e.g.
+network or USB adapter hardware attached via ROM port). The driver
+interrupt routine is called from a timer interrupt (timer D) in
+these cases, using chained device specific pseudo interrupts
+(IRQ_MFP_TIMER1 ff.)
 
-Thanks Geert, I'm queuing it for the 3.5 and 3.11 kernels as well.
+These interrupts will more often than not, return IRQ_NONE as
+there is not always work for the device handler when called.
+Too many unhandled interrupts will result in the interrupt
+being disabled by the stuck interrupt watchdog.
 
-Cheers,
---
-Luis
+As preferred option to flag interrupts as needing exclusion
+from the watchdog mechanism, tglx added the IRQ_IS_POLLED flag
+for use in such a case. Currently, two interrupts need to use
+this flag. Add more users as needed.
 
-> > Unable to handle kernel NULL pointer dereference at virtual address   (null)
-> > Oops: 00000000
-> > PC: [<0013ad28>] __pmz_startup+0x32/0x2a0
-> > ...
-> > Call Trace: [<002c5d3e>] pmz_console_setup+0x64/0xe4
-> >
-> > The normal tty driver doesn't crash, because init_pmz() checks
-> > pmz_ports_count again after calling pmz_probe().
-> >
-> > In the serial console initialization path, pmz_console_init() doesn't do
-> > this, causing the driver to crash later.
-> >
-> > Add a check for pmz_ports_count to fix this.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Finn Thain <fthain@telegraphics.com.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe stable" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This patch obsoletes the introduction of handle_polled_irq()
+in the m68k tree.
+
+Signed-off-By: Michael Schmitz <schmitz@debian.org>
+---
+ arch/m68k/atari/ataints.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 90f7a48..3e73a63 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -330,9 +330,12 @@ void __init atari_init_IRQ(void)
+ 	sound_ym.rd_data_reg_sel = 7;
+ 	sound_ym.wd_data = 0xff;
+ 
+-	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_polled_irq,
++	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
+ 				  IRQ_MFP_TIMER1, 8);
+ 
++	irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
++	irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
++
+ 	/* prepare timer D data for use as poll interrupt */
+ 	/* set Timer D data Register - needs to be > 0 */
+ 	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
+-- 
+1.7.0.4
