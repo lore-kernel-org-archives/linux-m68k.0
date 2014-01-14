@@ -1,61 +1,63 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
-Date: Tue, 14 Jan 2014 21:29:45 +1300
-Message-ID: <52D4F579.50806@gmail.com>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <1388664474-1710039-3-git-send-email-arnd@arndb.de> <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com> <70d98fc4293247b4d5a11235a1d676b6@biophys.uni-duesseldorf.de> <52D1F299.7080909@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH] m68k/mac: Make SCC reset work more reliably
+Date: Tue, 14 Jan 2014 19:31:40 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1401141907220.12677@nippy.intranet>
+References: <alpine.LNX.2.00.1401122320210.21591@nippy.intranet> <CAMuHMdXtAzA_UPJS_OaMSSxGE493uqGGCNVwy_RMrNoPBxxmDw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f52.google.com ([209.85.220.52]:50710 "EHLO
-	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750880AbaANI35 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Jan 2014 03:29:57 -0500
-Received: by mail-pa0-f52.google.com with SMTP id kx10so4958584pab.39
-        for <linux-m68k@vger.kernel.org>; Tue, 14 Jan 2014 00:29:57 -0800 (PST)
-In-Reply-To: <52D1F299.7080909@gmail.com>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42831 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750949AbaANIcu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Jan 2014 03:32:50 -0500
+In-Reply-To: <CAMuHMdXtAzA_UPJS_OaMSSxGE493uqGGCNVwy_RMrNoPBxxmDw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, arnd@arndb.de
-Cc: Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux//m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Arnd,
 
-this one looks like it should be changed as well:
->>> @@ -562,7 +565,10 @@ static void falcon_get_lock(void)
->>>                         falcon_trying_lock = 0;
->>>                         wake_up(&falcon_try_wait);
->>>                 } else {
->>> -                       sleep_on(&falcon_try_wait);
->>> +                       wait_event_cmd(falcon_try_wait,
->>> +                                      !falcon_got_lock && 
->>> !falcon_trying_lock,
+On Mon, 13 Jan 2014, Geert Uytterhoeven wrote:
 
-I think using falcon_got_lock && !falcon_trying_lock here reflects what 
-we try to achieve - the if branch above this will set that exact
-condition, then wake the wait queue. Any other calls to falcon_get_lock 
-that have been waiting on the lock should then continue on
-as the lock is now held by the driver. Thoughts?
+> Hi Finn,
+> 
+> On Sun, Jan 12, 2014 at 2:56 PM, Finn Thain <fthain@telegraphics.com.au> 
+> wrote:
+> > For SCC initialization we cannot assume that the control register is 
+> > in the correct state to accept a register pointer. So first read from 
+> > the control register in order to "sync" up.
+> >
+> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> 
+> Thaks for your patch!
+> 
+> > ---
+> >
 
-I've not see that case used in a cursory test on hardware, more stress 
-testing is needed (logging lock history to a kernel buffer instead
-of clogging up the console).
+> > This patch fixes a boot failure (presumably caused by unhandled SCC 
+> > interrupt) on PowerBook 180 with CONFIG_EARLY_PRINTK and with the 
+> > bootloader not configured to wake up the serial ports.
 
-Cheers,
+> > AFAIK this happens only on PowerBooks. Even with this fix, Penguin 
+> > still has to wake the serial ports or else they don't function on 
+> > PowerBooks like this one.
 
-     Michael
+> 
+> IMHO the above should be part of the patch description (i.e. above the 
+> three dashes), as it contains valuable information. Is that OK for you?
 
->>> + local_irq_restore(flags),
->>> +                                      local_irq_save(flags));
->>>                 }
->>>         }
->>>
->>> -- 
->>> 1.8.3.2
->>> -- 
->>> To unsubscribe from this list: send the line "unsubscribe 
->>> linux-m68k" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>
->
+The first part is good information, especially if this were submitted to 
+-stable.
+
+The rest, beginning with "AFAIK", is really guesswork based on anecdote 
+(e.g. reports from users not affected). Even the mailing list archives are 
+perhaps too permanent (e.g. the need for the wake-up workaround may go 
+away one day).
+
+I'm unsure about submitting this to -stable. I don't like the idea that 
+the first debian user to boot a powerbook might see a crash (depending on 
+bootloader etc). But not all stable trees carry df66834a which is a 
+prerequisite. This patch is only applicable to 3.4.y and >= 3.9.y. Can you 
+nominate particular stable trees?
+
+Finn
