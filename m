@@ -1,62 +1,73 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] m68k/mac: Make SCC reset work more reliably
-Date: Wed, 15 Jan 2014 08:15:41 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1401150731340.6166@nippy.intranet>
-References: <alpine.LNX.2.00.1401122320210.21591@nippy.intranet> <CAMuHMdXtAzA_UPJS_OaMSSxGE493uqGGCNVwy_RMrNoPBxxmDw@mail.gmail.com> <alpine.LNX.2.00.1401141907220.12677@nippy.intranet> <CAMuHMdWuGPjyU_7fQKzgFsjm2w5wH38rSi_8ct7OiskZkrz+ng@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mm: Make {,set}page_address() static inline if WANT_PAGE_VIRTUAL
+Date: Wed, 15 Jan 2014 10:33:46 +0100
+Message-ID: <1389778426-14836-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47953 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751499AbaANVRF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Jan 2014 16:17:05 -0500
-In-Reply-To: <CAMuHMdWuGPjyU_7fQKzgFsjm2w5wH38rSi_8ct7OiskZkrz+ng@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <owner-linux-mm@kvack.org>
+Sender: owner-linux-mm@kvack.org
+To: Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-mm@kvack.org, linux-bcache@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, sparclinux@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
+{,set}page_address() are macros if WANT_PAGE_VIRTUAL.
+If !WANT_PAGE_VIRTUAL, they're plain C functions.
 
-On Tue, 14 Jan 2014, Geert Uytterhoeven wrote:
+If someone calls them with a void *, this pointer is auto-converted to
+struct page * if !WANT_PAGE_VIRTUAL, but causes a build failure on
+architectures using WANT_PAGE_VIRTUAL (arc, m68k and sparc):
 
-> 
-> > I'm unsure about submitting this to -stable. I don't like the idea 
-> > that the first debian user to boot a powerbook might see a crash 
-> > (depending on bootloader etc). But not all stable trees carry df66834a 
-> > which is a prerequisite. This patch is only applicable to 3.4.y and >= 
-> > 3.9.y. Can you nominate particular stable trees?
-> 
-> Sure, just add it to the comment, cfr. 
-> Documentation/stable_kernel_rules.txt:
+drivers/md/bcache/bset.c: In function =E2=80=98__btree_sort=E2=80=99:
+drivers/md/bcache/bset.c:1190: warning: dereferencing =E2=80=98void *=E2=80=
+=99 pointer
+drivers/md/bcache/bset.c:1190: error: request for member =E2=80=98virtual=
+=E2=80=99 in something not a structure or union
 
-Yes. I read the docs before I wrote.
+Convert them to static inline functions to fix this. There are already
+plenty of  users of struct page members inside <linux/mm.h>, so there's n=
+o
+reason to keep them as macros.
 
-> 
->  - If the patch requires other patches as prerequisites which can be 
->    cherry-picked than this can be specified in the following format in 
->    the sign-off area:
-> 
->      Cc: <stable@vger.kernel.org> # 3.3.x: a1f84a3: sched: Check for idle
->      Cc: <stable@vger.kernel.org> # 3.3.x: 1b9508f: sched: Rate-limit newidle
->      Cc: <stable@vger.kernel.org> # 3.3.x: fd21073: sched: Fix affinity logic
->      Cc: <stable@vger.kernel.org> # 3.3.x
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+http://kisskb.ellerman.id.au/kisskb/buildresult/10469287/ (m68k/next)
+http://kisskb.ellerman.id.au/kisskb/buildresult/10469488/ (sparc64/next)
+https://lkml.org/lkml/2014/1/13/1044 (m68k & sparc/3.10.27-stable)
 
-I didn't want the commit to be cherry-picked as it's already there (under 
-different commit IDs) in some stable trees.
+ include/linux/mm.h |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-The prerequisite commit is df66834a in mainline (merged in 3.10). It is 
-known as f64747c9 in 3.9.y and 8cfd67a3 in 3.4.y.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 35527173cf50..9fac6dd69b11 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -846,11 +846,14 @@ static __always_inline void *lowmem_page_address(co=
+nst struct page *page)
+ #endif
+=20
+ #if defined(WANT_PAGE_VIRTUAL)
+-#define page_address(page) ((page)->virtual)
+-#define set_page_address(page, address)			\
+-	do {						\
+-		(page)->virtual =3D (address);		\
+-	} while(0)
++static inline void *page_address(const struct page *page)
++{
++	return page->virtual;
++}
++static inline void set_page_address(struct page *page, void *address)
++{
++	page->virtual =3D address;
++}
+ #define page_address_init()  do { } while(0)
+ #endif
+=20
+--=20
+1.7.9.5
 
-I only checked the trees in linux-stable.git which is not exhaustive but 
-there are some stable trees that don't have it at all.
-
-Perhaps it would be best to request that the new patch only gets applied 
-where the prerequisite patch was already in mainline, i.e. >= 3.10.
-
-Finn
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=3Dmailto:"dont@kvack.org"> email@kvack.org </a>
