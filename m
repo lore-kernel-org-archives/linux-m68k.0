@@ -1,37 +1,47 @@
-From: Thorsten Glaser <t.glaser@tarent.de>
-Subject: Re: [PATCH] m68k/mac: Make SCC reset work more reliably
-Date: Thu, 16 Jan 2014 11:18:08 +0000 (UTC)
-Message-ID: <loom.20140116T121759-965@post.gmane.org>
-References: <alpine.LNX.2.00.1401122320210.21591@nippy.intranet> <CAMuHMdXtAzA_UPJS_OaMSSxGE493uqGGCNVwy_RMrNoPBxxmDw@mail.gmail.com> <alpine.LNX.2.00.1401141907220.12677@nippy.intranet> <CAMuHMdWuGPjyU_7fQKzgFsjm2w5wH38rSi_8ct7OiskZkrz+ng@mail.gmail.com> <alpine.LNX.2.00.1401150731340.6166@nippy.intranet>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] m68k: don't use module_init in non-modular mvme16x/rtc.c code
+Date: Thu, 16 Jan 2014 17:15:14 -0500
+Message-ID: <1389910514-3802-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from plane.gmane.org ([80.91.229.3]:39706 "EHLO plane.gmane.org"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752394AbaAPLZF (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 16 Jan 2014 06:25:05 -0500
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glpm-linux-m68k@m.gmane.org>)
-	id 1W3l4J-0002Lz-Gl
-	for linux-m68k@vger.kernel.org; Thu, 16 Jan 2014 12:25:03 +0100
-Received: from fb-n15-11.unbelievable-machine.net ([94.198.62.204])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2014 12:25:03 +0100
-Received: from t.glaser by fb-n15-11.unbelievable-machine.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2014 12:25:03 +0100
+Received: from mail.windriver.com ([147.11.1.11]:33472 "EHLO
+	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751071AbaAPWPu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 16 Jan 2014 17:15:50 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-=46inn Thain <fthain <at> telegraphics.com.au> writes:
+The rtc.o is built for obj-y, i.e. always built in.  It will
+never be modular, so using module_init as an alias for __initcall
+can be somewhat misleading.
 
-> Perhaps it would be best to request that the new patch only gets appl=
-ied=20
-> where the prerequisite patch was already in mainline, i.e. >=3D 3.10.
+Fix this up now, so that we can relocate module_init from
+init.h into module.h in the future.  If we don't do this, we'd
+have to add module.h to obviously non-modular code, and that
+would be a worse thing.
 
-=46WIW Debian has 3.12, with 3.13 coming Soon=E2=84=A2.
+Note that direct use of __initcall is discouraged, vs. one
+of the priority categorized subgroups.  As __initcall gets
+mapped onto device_initcall, our use of device_initcall
+directly in this change means that the runtime impact is
+zero -- it will remain at level 6 in initcall ordering.
 
-//mirabilos
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+
+diff --git a/arch/m68k/mvme16x/rtc.c b/arch/m68k/mvme16x/rtc.c
+index 6ef7a81a3b12..1755e2f7137d 100644
+--- a/arch/m68k/mvme16x/rtc.c
++++ b/arch/m68k/mvme16x/rtc.c
+@@ -161,4 +161,4 @@ static int __init rtc_MK48T08_init(void)
+ 	printk(KERN_INFO "MK48T08 Real Time Clock Driver v%s\n", RTC_VERSION);
+ 	return misc_register(&rtc_dev);
+ }
+-module_init(rtc_MK48T08_init);
++device_initcall(rtc_MK48T08_init);
+-- 
+1.8.5.2
