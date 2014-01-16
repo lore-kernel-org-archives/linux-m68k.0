@@ -1,67 +1,37 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: Make {,set}page_address() static inline if
- WANT_PAGE_VIRTUAL
-Date: Wed, 15 Jan 2014 15:02:14 -0800
-Message-ID: <20140115150214.d30aa6ab15b02c24b6923821@linux-foundation.org>
-References: <1389778426-14836-1-git-send-email-geert@linux-m68k.org>
-	<alpine.DEB.2.02.1401151454440.24121@chino.kir.corp.google.com>
+From: Thorsten Glaser <t.glaser@tarent.de>
+Subject: Re: [PATCH] m68k/mac: Make SCC reset work more reliably
+Date: Thu, 16 Jan 2014 11:18:08 +0000 (UTC)
+Message-ID: <loom.20140116T121759-965@post.gmane.org>
+References: <alpine.LNX.2.00.1401122320210.21591@nippy.intranet> <CAMuHMdXtAzA_UPJS_OaMSSxGE493uqGGCNVwy_RMrNoPBxxmDw@mail.gmail.com> <alpine.LNX.2.00.1401141907220.12677@nippy.intranet> <CAMuHMdWuGPjyU_7fQKzgFsjm2w5wH38rSi_8ct7OiskZkrz+ng@mail.gmail.com> <alpine.LNX.2.00.1401150731340.6166@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <alpine.DEB.2.02.1401151454440.24121@chino.kir.corp.google.com>
-Sender: owner-linux-mm@kvack.org
-To: David Rientjes <rientjes@google.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>, "Michael S. Tsirkin" <mst@redhat.com>, linux-mm@kvack.org, linux-bcache@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, sparclinux@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from plane.gmane.org ([80.91.229.3]:39706 "EHLO plane.gmane.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752394AbaAPLZF (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 16 Jan 2014 06:25:05 -0500
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glpm-linux-m68k@m.gmane.org>)
+	id 1W3l4J-0002Lz-Gl
+	for linux-m68k@vger.kernel.org; Thu, 16 Jan 2014 12:25:03 +0100
+Received: from fb-n15-11.unbelievable-machine.net ([94.198.62.204])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2014 12:25:03 +0100
+Received: from t.glaser by fb-n15-11.unbelievable-machine.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2014 12:25:03 +0100
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-On Wed, 15 Jan 2014 14:57:56 -0800 (PST) David Rientjes <rientjes@google.com> wrote:
+=46inn Thain <fthain <at> telegraphics.com.au> writes:
 
-> On Wed, 15 Jan 2014, Geert Uytterhoeven wrote:
-> 
-> > {,set}page_address() are macros if WANT_PAGE_VIRTUAL.
-> > If !WANT_PAGE_VIRTUAL, they're plain C functions.
-> > 
-> > If someone calls them with a void *, this pointer is auto-converted to
-> > struct page * if !WANT_PAGE_VIRTUAL, but causes a build failure on
-> > architectures using WANT_PAGE_VIRTUAL (arc, m68k and sparc):
-> 
-> s/sparc/sparc64/
-> 
-> > 
-> > drivers/md/bcache/bset.c: In function _____btree_sort___:
-> > drivers/md/bcache/bset.c:1190: warning: dereferencing ___void *___ pointer
-> > drivers/md/bcache/bset.c:1190: error: request for member ___virtual___ in something not a structure or union
-> > 
-> > Convert them to static inline functions to fix this. There are already
-> > plenty of  users of struct page members inside <linux/mm.h>, so there's no
-> > reason to keep them as macros.
-> > 
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Tested-by: David Rientjes <rientjes@google.com>
-> 
-> I'm cringing at the page_address(mempool_alloc(..., GFP_NOIO)) in 
-> drivers/md/bcache/bset.c, though.
+> Perhaps it would be best to request that the new patch only gets appl=
+ied=20
+> where the prerequisite patch was already in mainline, i.e. >=3D 3.10.
 
-Yes, I was staring suspiciously at that as well.  Ended up deciding
-that I wouldn't have coded it that way, but we should support the
-casting.
+=46WIW Debian has 3.12, with 3.13 coming Soon=E2=84=A2.
 
->  It's relying on that fact that 
-> mempool_alloc() can never return NULL if __GFP_WAIT but I think this could 
-> have all been avoided with
-> 
-> 	struct page *page = mempool_alloc(state->pool, GFP_NOIO);
-> 	out = page_address(page);
-> 
-> instead of burying the mempool_alloc() in page_address() for what I think 
-> is cleaner code.  Owell, it fixes the issue.
-
-And that would make the later virt_to_page() unnecessary.
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+//mirabilos
