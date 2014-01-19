@@ -1,74 +1,45 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: don't use module_init in non-modular ... (was: Re: [PATCH] m68k:
- don't use module_init in non-modular mvme16x/rtc.c code)
-Date: Sun, 19 Jan 2014 10:40:18 +0100
-Message-ID: <CAMuHMdWx9QVn1j2QauMQfza_e_+4DHRg9WpZkocCr7+jtjwtMQ@mail.gmail.com>
+Subject: Re: [PATCH] net: smc91x: Remove accidentally introduced casts
+Date: Sun, 19 Jan 2014 11:13:17 +0100
+Message-ID: <CAMuHMdWBwoHVZaHJEVF9LsZDtJaBL0MnM=_RvkgvGjKC9Ur5+w@mail.gmail.com>
+References: <1390126252-14672-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f178.google.com ([209.85.192.178]:64564 "EHLO
-	mail-pd0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751334AbaASJkT (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Jan 2014 04:40:19 -0500
+Received: from mail-pa0-f54.google.com ([209.85.220.54]:45493 "EHLO
+	mail-pa0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751614AbaASKNS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 19 Jan 2014 05:13:18 -0500
+Received: by mail-pa0-f54.google.com with SMTP id fa1so5821950pad.41
+        for <linux-m68k@vger.kernel.org>; Sun, 19 Jan 2014 02:13:17 -0800 (PST)
+In-Reply-To: <1390126252-14672-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitz@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Paul,
-
-On Thu, Jan 16, 2014 at 11:15 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
-> The rtc.o is built for obj-y, i.e. always built in.  It will
-> never be modular, so using module_init as an alias for __initcall
-> can be somewhat misleading.
+On Sun, Jan 19, 2014 at 11:10 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> arm/lpd270_defconfig:
 >
-> Fix this up now, so that we can relocate module_init from
-> init.h into module.h in the future.  If we don't do this, we'd
-> have to add module.h to obviously non-modular code, and that
-> would be a worse thing.
-
-The word "module" has different meanings: it can be a "loadable kernel module",
-or just a "code module". include/linux/init.h seems to agree with this:
-    /**
-     * module_init() - driver initialization entry point
-     * @x: function to be run at kernel boot time or module insertion
-     *
-     * module_init() will either be called during do_initcalls() (if
-     * builtin) or at module insertion time (if a module).  There can only
-     * be one per module.
-     */
-    #define module_init(x)  __initcall(x);
-
-I can understand you want to restrict "module_init()" to real loadable
-modules, but "device_initcall()" sounds like a real bad name or this.
-
-Furthermore, many places that contain always compiled-in code and
-currently only use module_init() should probably start using module_exit()
-as well, to do the proper cleanups to make kexec work.
-
-So I'm not really convinced this is the way we want to go...
-
-> Note that direct use of __initcall is discouraged, vs. one
-> of the priority categorized subgroups.  As __initcall gets
-> mapped onto device_initcall, our use of device_initcall
-> directly in this change means that the runtime impact is
-> zero -- it will remain at level 6 in initcall ordering.
+>     drivers/net/ethernet/smsc/smc91x.c: In function 'smc_rcv':
+>     drivers/net/ethernet/smsc/smc91x.c:490:3: warning: passing argument 5 of 'smc_pxa_dma_insw' from incompatible pointer type [enabled by default]
+>     drivers/net/ethernet/smsc/smc91x.h:423:1: note: expected 'u_char *' but argument is of type 'u16 *'
 >
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Introduced by commit afb3df11f1c8925811a1087f2351b0738a3146a2 ("m68k: Atari
+> EtherNAT warning fixes").
 >
-> diff --git a/arch/m68k/mvme16x/rtc.c b/arch/m68k/mvme16x/rtc.c
-> index 6ef7a81a3b12..1755e2f7137d 100644
-> --- a/arch/m68k/mvme16x/rtc.c
-> +++ b/arch/m68k/mvme16x/rtc.c
-> @@ -161,4 +161,4 @@ static int __init rtc_MK48T08_init(void)
->         printk(KERN_INFO "MK48T08 Real Time Clock Driver v%s\n", RTC_VERSION);
->         return misc_register(&rtc_dev);
->  }
-> -module_init(rtc_MK48T08_init);
-> +device_initcall(rtc_MK48T08_init);
+> Remove two casts to fix this:
+>   - The first cast was in the !CONFIG_ATARI case, so it didn't matter for
+>     us anyway,
+>   - The second cast is for a pointer parameter we don't do arithmetic
+>     operations on, so it's also not needed.
+>
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Applied to master, folded into "m68k/atari: EtherNAT - ethernet support
+(smc91x)" on m68k-queue.
 
 Gr{oetje,eeting}s,
 
