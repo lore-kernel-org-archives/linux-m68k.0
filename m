@@ -1,13 +1,21 @@
-From: "Gaffney, Vicki" <Victoria.Gaffney@sinclair.edu>
-Subject: Contact Email : msellenmore8@rogers.com
-Date: Fri, 24 Jan 2014 06:44:51 +0000
-Message-ID: <8981653B1D67354DBF3E058CC2F94D795A918523@APPALOOSA.scc-nt.sinclair.edu>
+From: Abdul Nasser <nasser500@justin.ddo.jp>
+Subject: Kind Regards
+Date: Sun, 26 Jan 2014 21:30:31 +0000
+Message-ID: <SECEXCHANGEPzGNsokL00003851@mail.standardelectronics.com>
+Reply-To: s.abdulnasser@yahoo.com.hk
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Recipients <nasser500@justin.ddo.jp>
 
-Account Holder, We would like to inform you that 3,000,000.86 Great British Pounds has been completed. To find instruction, kindly send your Names and Reference Number to EMAIL :  msellenmore8@rogers.com<mailto:msellenmore8@rogers.com> . Regards, Mr.Abdelgalil Abdelgader
+Greetings,
+My name is Abdul Nasser Sokariah and I am writing you from Syria, I choose to contact you directly as I need a reliable person to trust who can help me handle my huge deposit  with a vault company in EUROPE, and based on my present situation in Syria, I need you urgently to take possession of everything and further modalities/directives will follow.Please reply to my private  Email: nasserabdul190@yahoo.com
+
+I wait for your response.
+
+Yours truly,
+Abdul Nasser Sokariah
