@@ -1,7 +1,7 @@
-From: Abdul Nasser <nasser500@justin.ddo.jp>
+From: Abdul Nasser <abdulnas500@justin.ddo.jp>
 Subject: Kind Regards
-Date: Sun, 26 Jan 2014 21:30:31 +0000
-Message-ID: <SECEXCHANGEPzGNsokL00003851@mail.standardelectronics.com>
+Date: Sun, 26 Jan 2014 21:51:55 +0000
+Message-ID: <SECEXCHANGEn4FtVQmQ00003f7c@mail.standardelectronics.com>
 Reply-To: s.abdulnasser@yahoo.com.hk
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -10,7 +10,7 @@ Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <nasser500@justin.ddo.jp>
+To: Recipients <abdulnas500@justin.ddo.jp>
 
 Greetings,
 My name is Abdul Nasser Sokariah and I am writing you from Syria, I choose to contact you directly as I need a reliable person to trust who can help me handle my huge deposit  with a vault company in EUROPE, and based on my present situation in Syria, I need you urgently to take possession of everything and further modalities/directives will follow.Please reply to my private  Email: nasserabdul190@yahoo.com
