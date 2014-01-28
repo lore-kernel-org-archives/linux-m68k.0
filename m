@@ -1,69 +1,50 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH RFC 00/73] tree-wide: clean up some no longer required
- #include <linux/init.h>
-Date: Tue, 28 Jan 2014 14:13:03 +1100
-Message-ID: <1390878783.3872.63.camel@pasglop>
-References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>
-         <20140122180023.dd90d34cba38d9f9ac516349@canb.auug.org.au>
-         <20140123003838.GA10182@windriver.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20140123003838.GA10182@windriver.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, rusty@rustcorp.com.au, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, linux-s390@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, gregkh@linuxfoundation.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 0/3] m68k/atari - Atari NCR5380 SCSI driver fixes
+Date: Tue, 28 Jan 2014 20:52:28 +1300
+Message-ID: <1390895551-16270-1-git-send-email-schmitz@debian.org>
+References: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pa0-f46.google.com ([209.85.220.46]:60191 "EHLO
+	mail-pa0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751985AbaA1Hwq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Jan 2014 02:52:46 -0500
+Received: by mail-pa0-f46.google.com with SMTP id rd3so40175pab.5
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Jan 2014 23:52:46 -0800 (PST)
+In-Reply-To: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org
 
-On Wed, 2014-01-22 at 19:38 -0500, Paul Gortmaker wrote:
+Geert,
 
-> Thanks, it was a great help as it uncovered a few issues in fringe arch
-> that I didn't have toolchains for, and I've fixed all of those up.
-> 
-> I've noticed that powerpc has been un-buildable for a while now; I have
-> used this hack patch locally so I could run the ppc defconfigs to check
-> that I didn't break anything.  Maybe useful for linux-next in the
-> interim?  It is a hack patch -- Not-Signed-off-by: Paul Gortmaker.  :)
+this patch series brings the Atari NCR5380 driver up to date with current 3.x
+(or even 2.6) series SCSI midlevel and error handling changes. 
 
-Can you and/or Aneesh submit that as a proper patch (with S-O-B
-etc...) ?
+The first patch fixes completion condition errors contained in Arnd Bergmann's
+patch ([PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race). The locking
+scheme still isn't 100% race free that way, but much improved, and I've seen
+the driver successfully handle error recovery from aborting a disconnected
+command via bus reset with all three patches applied. Never managed to do that
+before. Not sure whether this one should be taken through your tree or handled
+by Arnd rather. 
 
-Thanks !
+The other two are a rehash of old patches I had prepared somewhere along the
+2.6 series - somehow or other these were lost when one of my old git trees
+went pear shaped. Abort and reset handler return codes have changed, and the
+SCSI midlevel now queues commands (in particular error handling ones) from
+softirq context - the Falcon locking scheme was ill equipped to deal with that.
+
+Another issue that surfaced while debugging SCSI deadlocks was the odd fact
+that two interrupts get registered for the ST-DMA/floppy/SCSI/IDE interrupt:
+the stdma_int multiplexer, and the IDE interrupt handler itself. I'll send a
+separate patch for that. 
 
 Cheers,
-Ben.
 
-> Paul.
-> --
-> 
-> diff --git a/arch/powerpc/include/asm/pgtable-ppc64.h b/arch/powerpc/include/asm/pgtable-ppc64.h
-> index d27960c89a71..d0f070a2b395 100644
-> --- a/arch/powerpc/include/asm/pgtable-ppc64.h
-> +++ b/arch/powerpc/include/asm/pgtable-ppc64.h
-> @@ -560,9 +560,9 @@ extern void pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->  			    pmd_t *pmdp);
->  
->  #define pmd_move_must_withdraw pmd_move_must_withdraw
-> -typedef struct spinlock spinlock_t;
-> -static inline int pmd_move_must_withdraw(spinlock_t *new_pmd_ptl,
-> -					 spinlock_t *old_pmd_ptl)
-> +struct spinlock;
-> +static inline int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-> +					 struct spinlock *old_pmd_ptl)
->  {
->  	/*
->  	 * Archs like ppc64 use pgtable to store per pmd
-> 
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
+	Michael
+
+
+[PATCH 1/3] m68k/atari - atari_scsi: fix wait_event completion conditions
+[PATCH 2/3] m68k/atari - atari_scsi: change abort/reset return codes
+[PATCH 3/3] m68k/atari - atari_scsi: punt if deadlocked on stdma_lock
