@@ -1,134 +1,69 @@
-From: Yann Droneaud <ydroneaud@opteya.com>
-Subject: Re: [PATCH] arm64: Add pdev_archdata for dmamask
-Date: Mon, 27 Jan 2014 22:42:22 +0100
-Message-ID: <1390858942-10904-1-git-send-email-ydroneaud@opteya.com>
-References: <y> <1390845177-2626-1-git-send-email-lauraa@codeaurora.org> <20140127181836.GH26766@pengutronix.de> <1390854331.23180.22.camel@localhost.localdomain> <20140127203635.GA15937@n2100.arm.linux.org.uk>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH RFC 00/73] tree-wide: clean up some no longer required
+ #include <linux/init.h>
+Date: Tue, 28 Jan 2014 14:13:03 +1100
+Message-ID: <1390878783.3872.63.camel@pasglop>
+References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>
+         <20140122180023.dd90d34cba38d9f9ac516349@canb.auug.org.au>
+         <20140123003838.GA10182@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp4-g21.free.fr ([212.27.42.4]:40225 "EHLO smtp4-g21.free.fr"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752830AbaA0Vnf (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 27 Jan 2014 16:43:35 -0500
-In-Reply-To: <20140127203635.GA15937@n2100.arm.linux.org.uk>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <20140123003838.GA10182@windriver.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, rusty@rustcorp.com.au, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, linux-s390@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, gregkh@linuxfoundation.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Yann Droneaud <ydroneaud@opteya.com>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Laura Abbott <lauraa@codeaurora.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, linux-arm-kernel@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
 
-Hi Russel,
+On Wed, 2014-01-22 at 19:38 -0500, Paul Gortmaker wrote:
 
-Le lundi 27 janvier 2014 =C3=A0 20:36 +0000, Russell King - ARM Linux a
-=C3=A9crit :
-> On Mon, Jan 27, 2014 at 09:25:31PM +0100, Yann Droneaud wrote:
-> > ARM, even AAAAARGH64 [1], doesn't need a special treatement regardi=
-ng
-> > the infamous dma_mask pointer. So perhaps my solution is better.
-> >=20
-> > This solution (adding dma_mask in pdev_archdata) is already in use =
-in
-> > powerpc architecture. See arch/powerpc/kernel/setup-common.c
-> >=20
-> > The advantage of this solution is that it makes a dma_mask placehol=
-der
-> > available to statically allocated platform_device struct, while min=
-e
-> > only address the problem for platform_device struct allocated with
-> > platform_device_alloc().
->=20
-> As I've already said in this thread, the basic problem comes from DT'=
-s
-> platform device creation.  It's the responsibility of the device crea=
-tor
-> to set the dma_mask pointer appropriately, and DT doesn't do that.  S=
-o,
-> DT needs to be fixed rather than everyone introducing their own
-> workarounds for this.
->
+> Thanks, it was a great help as it uncovered a few issues in fringe arch
+> that I didn't have toolchains for, and I've fixed all of those up.
+> 
+> I've noticed that powerpc has been un-buildable for a while now; I have
+> used this hack patch locally so I could run the ppc defconfigs to check
+> that I didn't break anything.  Maybe useful for linux-next in the
+> interim?  It is a hack patch -- Not-Signed-off-by: Paul Gortmaker.  :)
 
-Sure proliferation of fixes is not what we want.
+Can you and/or Aneesh submit that as a proper patch (with S-O-B
+etc...) ?
 
-Note that Uwe added me to the thread not because I tried to address
-the same issue, but I tried to improve platform_device_register_full() =
-to
-not allocate and leak an u64 used to hold the dma mask provided as part=
- of
-platform_device_info. I believe he thought the two issues could be solv=
-ed
-at the same time.
+Thanks !
 
-> > I'm also considering using dma_set_mask_and_coherent() in
-> > platform_device_register_full() and drivers using
-> > platform_device_alloc().
->=20
-> As the one who introduced dma_set_mask_and_coherent, consider this a
-> strong NAK on that.  The reason is dma_set_mask_and_coherent() is
-> for drivers to set their requirements, not for the bus requirements
-> to be set in the first place.
->=20
-> It also means that drivers which need no DMA support are subjected to
-> DMA restrictions (in that dma_set_mask_and_coherent can error out if
-> the platform can't support the DMA mask.)
->=20
+Cheers,
+Ben.
 
-I'm not sure to understand your point here. If the driver explicitly se=
-t
-a DMA mask in its call to platform_device_register_full(), can't we sup=
-pose
-it should be subject to restriction from the platform ?
-
-As I'm not sure to be clear on this particular point, here's the patch =
-I
-was considering, (sorry of being quite out of topic):
-
-                           ---8<---
-
-Subject: [PATCH] driver core/platform: use dma_set_mask_and_coherent() =
-in
- platform_device_register_full()
-
-dma_set_mask_and_coherent() is a nice function for setting the
-various DMA masks in struct device. Additionnaly, it checks the
-mask value against arch limits.
-
-It may be used to control the validity of the dma_mask given to
-platform_device_register_full() and setting the masks in struct
-platform_device.
-
-Note: as dma_set_mask() does nothing on m68k, or returns -EINVAL
-      on sparc (if PCI support not built), etc. this could break
-      in unpleasant ways I'm not yet able to detail ...
-
-Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
-Signed-off-by: Yann Droneaud <ydroneaud@opteya.com>
----
- drivers/base/platform.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index bc78848dd59a..ada1d366e1b6 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -446,8 +446,10 @@ struct platform_device *platform_device_register_f=
-ull(
- 		if (!pdev->dev.dma_mask)
- 			goto err;
-=20
--		*pdev->dev.dma_mask =3D pdevinfo->dma_mask;
--		pdev->dev.coherent_dma_mask =3D pdevinfo->dma_mask;
-+		ret =3D dma_set_mask_and_coherent(&pdev->dev,
-+						pdevinfo->dma_mask);
-+		if (ret)
-+			goto err;
- 	}
-=20
- 	ret =3D platform_device_add_resources(pdev,
---=20
-1.8.5.3
+> Paul.
+> --
+> 
+> diff --git a/arch/powerpc/include/asm/pgtable-ppc64.h b/arch/powerpc/include/asm/pgtable-ppc64.h
+> index d27960c89a71..d0f070a2b395 100644
+> --- a/arch/powerpc/include/asm/pgtable-ppc64.h
+> +++ b/arch/powerpc/include/asm/pgtable-ppc64.h
+> @@ -560,9 +560,9 @@ extern void pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+>  			    pmd_t *pmdp);
+>  
+>  #define pmd_move_must_withdraw pmd_move_must_withdraw
+> -typedef struct spinlock spinlock_t;
+> -static inline int pmd_move_must_withdraw(spinlock_t *new_pmd_ptl,
+> -					 spinlock_t *old_pmd_ptl)
+> +struct spinlock;
+> +static inline int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
+> +					 struct spinlock *old_pmd_ptl)
+>  {
+>  	/*
+>  	 * Archs like ppc64 use pgtable to store per pmd
+> 
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/linuxppc-dev
