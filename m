@@ -1,7 +1,7 @@
 From: Sayed Abdul <sayedab2007@aksb.com.my>
 Subject: Investment Partnership
-Date: Tue, 28 Jan 2014 22:53:16 +0000
-Message-ID: <SECEXCHANGEVzHfbBfb00005aa2@mail.standardelectronics.com>
+Date: Tue, 28 Jan 2014 23:08:16 +0000
+Message-ID: <SECEXCHANGElYrh18XK00006088@mail.standardelectronics.com>
 Reply-To: ansokariah@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
