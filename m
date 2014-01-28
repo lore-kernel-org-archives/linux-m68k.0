@@ -1,61 +1,153 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 1/3] m68k/atari - atari_scsi: fix wait_event completion conditions
-Date: Tue, 28 Jan 2014 20:52:29 +1300
-Message-ID: <1390895551-16270-2-git-send-email-schmitz@debian.org>
+Subject: [PATCH 2/3] m68k/atari - atari_scsi: change abort/reset return codes
+Date: Tue, 28 Jan 2014 20:52:30 +1300
+Message-ID: <1390895551-16270-3-git-send-email-schmitz@debian.org>
 References: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f44.google.com ([209.85.160.44]:56483 "EHLO
-	mail-pb0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751985AbaA1HxJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Jan 2014 02:53:09 -0500
-Received: by mail-pb0-f44.google.com with SMTP id rq2so42502pbb.3
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Jan 2014 23:53:08 -0800 (PST)
+Received: from mail-pb0-f54.google.com ([209.85.160.54]:35159 "EHLO
+	mail-pb0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751985AbaA1HxP (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Jan 2014 02:53:15 -0500
+Received: by mail-pb0-f54.google.com with SMTP id uo5so38863pbc.27
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Jan 2014 23:53:14 -0800 (PST)
 In-Reply-To: <CAMuHMdWNnOA8dtUPWfQfikTiWxe9-ZwMUU7gkfP3Mv8PcWcvyQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org, Michael Schmitz <schmitz@debian.org>
 
-Fix patch by ArndB changing falcon_get_lock to use wait_event.
-Some of the completion conditions had been missed when converting
-from while() {} to do {} until() logic.
+The abort/reset lowlevel return codes had changed with the new
+error SCSI handling - update Atari NCR5380 driver to reflect this.
+
+Change reset handling to clear queues only, do not attempt to
+call done() on each command aborted by the reset. The EH code
+should do that for us.
+Queues _must_ be cleared, otherwise atari_scsi_bus_reset will not
+release the ST-DMA lock, deadlocking further error recovery.
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
 ---
- drivers/scsi/atari_scsi.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/scsi/atari_NCR5380.c |   29 ++++++++++++++++++-----------
+ drivers/scsi/atari_scsi.c    |    2 +-
+ 2 files changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index 1986ecb..cc1b013 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -550,10 +550,10 @@ static void falcon_get_lock(void)
- 
- 	local_irq_save(flags);
- 
--       wait_event_cmd(falcon_fairness_wait,
--                      !in_irq() && falcon_got_lock && stdma_others_waiting(),
--                      local_irq_restore(flags),
--                      local_irq_save(flags));
-+	wait_event_cmd(falcon_fairness_wait,
-+		in_irq() || !falcon_got_lock || !stdma_others_waiting(),
-+		local_irq_restore(flags),
-+		local_irq_save(flags));
- 
- 	while (!falcon_got_lock) {
- 		if (in_irq())
-@@ -566,9 +566,9 @@ static void falcon_get_lock(void)
- 			wake_up(&falcon_try_wait);
+diff --git a/drivers/scsi/atari_NCR5380.c b/drivers/scsi/atari_NCR5380.c
+index 0f3cdbc..465e63d 100644
+--- a/drivers/scsi/atari_NCR5380.c
++++ b/drivers/scsi/atari_NCR5380.c
+@@ -2683,11 +2683,11 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			local_irq_restore(flags);
+ 			cmd->scsi_done(cmd);
+ 			falcon_release_lock_if_possible(hostdata);
+-			return SCSI_ABORT_SUCCESS;
++			return SUCCESS;
  		} else {
-                        wait_event_cmd(falcon_try_wait,
--                                      !falcon_got_lock && !falcon_trying_lock,
--                                      local_irq_restore(flags),
--                                      local_irq_save(flags));
-+				falcon_got_lock && !falcon_trying_lock,
-+				local_irq_restore(flags),
-+				local_irq_save(flags));
+ /*			local_irq_restore(flags); */
+ 			printk("scsi%d: abort of connected command failed!\n", HOSTNO);
+-			return SCSI_ABORT_ERROR;
++			return FAILED;
+ 		}
+ 	}
+ #endif
+@@ -2711,7 +2711,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			 * yet... */
+ 			tmp->scsi_done(tmp);
+ 			falcon_release_lock_if_possible(hostdata);
+-			return SCSI_ABORT_SUCCESS;
++			return SUCCESS;
  		}
  	}
  
+@@ -2729,7 +2729,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 	if (hostdata->connected) {
+ 		local_irq_restore(flags);
+ 		ABRT_PRINTK("scsi%d: abort failed, command connected.\n", HOSTNO);
+-		return SCSI_ABORT_SNOOZE;
++		return FAILED;
+ 	}
+ 
+ 	/*
+@@ -2764,7 +2764,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			ABRT_PRINTK("scsi%d: aborting disconnected command.\n", HOSTNO);
+ 
+ 			if (NCR5380_select(instance, cmd, (int)cmd->tag))
+-				return SCSI_ABORT_BUSY;
++				return FAILED;
+ 
+ 			ABRT_PRINTK("scsi%d: nexus reestablished.\n", HOSTNO);
+ 
+@@ -2791,7 +2791,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 					local_irq_restore(flags);
+ 					tmp->scsi_done(tmp);
+ 					falcon_release_lock_if_possible(hostdata);
+-					return SCSI_ABORT_SUCCESS;
++					return SUCCESS;
+ 				}
+ 			}
+ 		}
+@@ -2816,7 +2816,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 	 */
+ 	falcon_release_lock_if_possible(hostdata);
+ 
+-	return SCSI_ABORT_NOT_RUNNING;
++	return FAILED;
+ }
+ 
+ 
+@@ -2834,7 +2834,7 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	SETUP_HOSTDATA(cmd->device->host);
+ 	int i;
+ 	unsigned long flags;
+-#if 1
++#if defined(RESET_RUN_DONE)
+ 	Scsi_Cmnd *connected, *disconnected_queue;
+ #endif
+ 
+@@ -2859,7 +2859,14 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	 * through anymore ... */
+ 	(void)NCR5380_read(RESET_PARITY_INTERRUPT_REG);
+ 
+-#if 1	/* XXX Should now be done by midlevel code, but it's broken XXX */
++	/* MSch 20140115 - looking at the generic NCR5380 driver, all of this
++	 * should go.
++	 * Catch-22: if we don't clear all queues, the SCSI driver lock will
++	 * not be reset by atari_scsi_reset()!
++	 */
++
++#if defined(RESET_RUN_DONE)
++	/* XXX Should now be done by midlevel code, but it's broken XXX */
+ 	/* XXX see below                                            XXX */
+ 
+ 	/* MSch: old-style reset: actually abort all command processing here */
+@@ -2915,7 +2922,7 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	 * the midlevel code that the reset was SUCCESSFUL, and there is no
+ 	 * need to 'wake up' the commands by a request_sense
+ 	 */
+-	return SCSI_RESET_SUCCESS | SCSI_RESET_BUS_RESET;
++	return SUCCESS;
+ #else /* 1 */
+ 
+ 	/* MSch: new-style reset handling: let the mid-level do what it can */
+@@ -2963,6 +2970,6 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	local_irq_restore(flags);
+ 
+ 	/* we did no complete reset of all commands, so a wakeup is required */
+-	return SCSI_RESET_WAKEUP | SCSI_RESET_BUS_RESET;
++	return SUCCESS;
+ #endif /* 1 */
+ }
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index cc1b013..5e19509 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -827,7 +827,7 @@ static int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
+ 	} else {
+ 		atari_turnon_irq(IRQ_MFP_FSCSI);
+ 	}
+-	if ((rv & SCSI_RESET_ACTION) == SCSI_RESET_SUCCESS)
++	if (rv == SUCCESS)
+ 		falcon_release_lock_if_possible(hostdata);
+ 
+ 	return rv;
 -- 
 1.7.0.4
