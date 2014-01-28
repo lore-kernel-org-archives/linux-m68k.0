@@ -1,42 +1,78 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 0/1] m68k/atari - ide: do not register interrupt if host->get_lock is set
-Date: Tue, 28 Jan 2014 21:07:45 +1300
-Message-ID: <1390896466-16446-1-git-send-email-schmitz@debian.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f52.google.com ([209.85.220.52]:48745 "EHLO
-	mail-pa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753180AbaA1IHz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Jan 2014 03:07:55 -0500
-Received: by mail-pa0-f52.google.com with SMTP id bj1so50979pad.39
-        for <linux-m68k@vger.kernel.org>; Tue, 28 Jan 2014 00:07:55 -0800 (PST)
-Sender: linux-m68k-owner@vger.kernel.org
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: [PATCH RFC 00/73] tree-wide: clean up some no longer required
+ #include <linux/init.h>
+Date: Tue, 28 Jan 2014 11:21:44 -0500
+Message-ID: <52E7D918.5020704@windriver.com>
+References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>      <20140122180023.dd90d34cba38d9f9ac516349@canb.auug.org.au>      <20140123003838.GA10182@windriver.com> <1390878783.3872.63.camel@pasglop>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1390878783.3872.63.camel@pasglop>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, rusty@rustcorp.com.au, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, linux-s390@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, gregkh@linuxfoundation.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org
 
-Geert,
+On 14-01-27 10:13 PM, Benjamin Herrenschmidt wrote:
+> On Wed, 2014-01-22 at 19:38 -0500, Paul Gortmaker wrote:
+> 
+>> Thanks, it was a great help as it uncovered a few issues in fringe arch
+>> that I didn't have toolchains for, and I've fixed all of those up.
+>>
+>> I've noticed that powerpc has been un-buildable for a while now; I have
+>> used this hack patch locally so I could run the ppc defconfigs to check
+>> that I didn't break anything.  Maybe useful for linux-next in the
+>> interim?  It is a hack patch -- Not-Signed-off-by: Paul Gortmaker.  :)
+> 
+> Can you and/or Aneesh submit that as a proper patch (with S-O-B
+> etc...) ?
 
-as hinted in my earlier patch series, this one bit me while debugging the
-SCSI/IDE deadlock on my Falcon. 
+I'd updated toolchains and didn't realize it was still broken.  Patch sent.
 
-On Falcon, registering the IDE interrupt handler is taken care of by
-registering stdma_int() in the arch setup code, then passing the relevant
-IDE interrupt handler as argument to stdma_lock(). This ensures that the IDE
-inthandler is only called if IDE has acquired the ST-DMA lock, and avoids
-the IDE handler stepping on the SCSI handlers' toes if the ST-DMA is locked
-by SCSI. 
+http://patchwork.ozlabs.org/patch/314749/
 
-At some point in the past, the IDE interrupt was registered unconditionally
-even on m68k, resulting in both stdma_int() and ide_interrupt() being
-registered, again opening up the potential of IDE taking interrupts meant to
-be handled by SCSI (or floppy). This might result in deadlocking the SCSI
-driver if IDE releases the ST-DMA lock in error. 
+Paul.
+--
 
-The next patch changes the IDE core to only register the IDE handler if
-host->get_lock is not set - AFAIK m68k is the sole user of host->get_lock
-so we can rely on IDE interrupts being handled through the multiplexer
-whenever host->get_lock happens to be set. 
-
-Cheers,
-
-	Michael
+> 
+> Thanks !
+> 
+> Cheers,
+> Ben.
+> 
+>> Paul.
+>> --
+>>
+>> diff --git a/arch/powerpc/include/asm/pgtable-ppc64.h b/arch/powerpc/include/asm/pgtable-ppc64.h
+>> index d27960c89a71..d0f070a2b395 100644
+>> --- a/arch/powerpc/include/asm/pgtable-ppc64.h
+>> +++ b/arch/powerpc/include/asm/pgtable-ppc64.h
+>> @@ -560,9 +560,9 @@ extern void pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+>>  			    pmd_t *pmdp);
+>>  
+>>  #define pmd_move_must_withdraw pmd_move_must_withdraw
+>> -typedef struct spinlock spinlock_t;
+>> -static inline int pmd_move_must_withdraw(spinlock_t *new_pmd_ptl,
+>> -					 spinlock_t *old_pmd_ptl)
+>> +struct spinlock;
+>> +static inline int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
+>> +					 struct spinlock *old_pmd_ptl)
+>>  {
+>>  	/*
+>>  	 * Archs like ppc64 use pgtable to store per pmd
+>>
+>> _______________________________________________
+>> Linuxppc-dev mailing list
+>> Linuxppc-dev@lists.ozlabs.org
+>> https://lists.ozlabs.org/listinfo/linuxppc-dev
+> 
+> 
