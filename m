@@ -1,56 +1,32 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 1/3] m68k/atari - atari_scsi: fix wait_event completion conditions
-Date: Wed, 29 Jan 2014 12:55:22 +1300
-Message-ID: <1390953324-19962-2-git-send-email-schmitz@debian.org>
-References: <1388664474-1710039-3-git-send-email-arnd@arndb.de>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <1388664474-1710039-3-git-send-email-arnd@arndb.de>
-Sender: linux-scsi-owner@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, JBottomley@parallels.com, linux-scsi@vger.kernel.org, arnd@arndb.de, Michael Schmitz <schmitz@debian.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
+Date: Wed, 29 Jan 2014 15:53:53 +0100
+Message-ID: <201401291553.53531.arnd@arndb.de>
+References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <201401122100.28877.arnd@arndb.de> <52E61895.6000007@gmail.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from moutng.kundenserver.de ([212.227.126.171]:52472 "EHLO
+	moutng.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751888AbaA2Ox7 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 29 Jan 2014 09:53:59 -0500
+In-Reply-To: <52E61895.6000007@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux//m68k <linux-m68k@vger.kernel.org>
 
-Fix patch by ArndB changing falcon_get_lock to use wait_event.
-Some of the completion conditions had been missed when converting
-from while() {} to do {} until() logic.
+On Monday 27 January 2014, Michael Schmitz wrote:
+> I will submit patches to the Atari SCSI driver based on Arnd's patch 
+> later this week. Has Arnd's initial patch made it into mainline yet?
 
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
----
- drivers/scsi/atari_scsi.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+I've been a little occupied with other work recently, so I have never
+gotten around to post a non-RFC version of the sleep_on patches.
+Some have been picked up by various maintainers anyway, but this
+one has not.
 
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index 1986ecb..cc1b013 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -550,10 +550,10 @@ static void falcon_get_lock(void)
- 
- 	local_irq_save(flags);
- 
--       wait_event_cmd(falcon_fairness_wait,
--                      !in_irq() && falcon_got_lock && stdma_others_waiting(),
--                      local_irq_restore(flags),
--                      local_irq_save(flags));
-+	wait_event_cmd(falcon_fairness_wait,
-+		in_irq() || !falcon_got_lock || !stdma_others_waiting(),
-+		local_irq_restore(flags),
-+		local_irq_save(flags));
- 
- 	while (!falcon_got_lock) {
- 		if (in_irq())
-@@ -566,9 +566,9 @@ static void falcon_get_lock(void)
- 			wake_up(&falcon_try_wait);
- 		} else {
-                        wait_event_cmd(falcon_try_wait,
--                                      !falcon_got_lock && !falcon_trying_lock,
--                                      local_irq_restore(flags),
--                                      local_irq_save(flags));
-+				falcon_got_lock && !falcon_trying_lock,
-+				local_irq_restore(flags),
-+				local_irq_save(flags));
- 		}
- 	}
- 
--- 
-1.7.0.4
+Thanks so much for taking care of this one!
 
+	Arnd
