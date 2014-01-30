@@ -1,49 +1,49 @@
-From: schmitz <schmitz@biophys.uni-duesseldorf.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
-Date: Thu, 30 Jan 2014 20:54:40 +1300
-Message-ID: <52EA0540.2030503@biophys.uni-duesseldorf.de>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de> <201401122100.28877.arnd@arndb.de> <52E61895.6000007@gmail.com> <201401291553.53531.arnd@arndb.de>
+Date: Thu, 30 Jan 2014 08:57:57 +0100
+Message-ID: <CAMuHMdWM=MXZveRHMQPbBvg88MFABViVueVfo0mT4esXZuvfsg@mail.gmail.com>
+References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
+	<70d98fc4293247b4d5a11235a1d676b6@biophys.uni-duesseldorf.de>
+	<52D1F299.7080909@gmail.com>
+	<201401122100.28877.arnd@arndb.de>
+	<52E61895.6000007@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f179.google.com ([209.85.192.179]:35566 "EHLO
-	mail-pd0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752538AbaA3HzB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jan 2014 02:55:01 -0500
-Received: by mail-pd0-f179.google.com with SMTP id q10so2726947pdj.10
-        for <linux-m68k@vger.kernel.org>; Wed, 29 Jan 2014 23:55:00 -0800 (PST)
-In-Reply-To: <201401291553.53531.arnd@arndb.de>
+Received: from mail-pb0-f49.google.com ([209.85.160.49]:44183 "EHLO
+	mail-pb0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750954AbaA3H56 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jan 2014 02:57:58 -0500
+Received: by mail-pb0-f49.google.com with SMTP id up15so2800253pbc.22
+        for <linux-m68k@vger.kernel.org>; Wed, 29 Jan 2014 23:57:58 -0800 (PST)
+In-Reply-To: <52E61895.6000007@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux//m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Michael Schmitz <schmitz@biophys.uni-duesseldorf.de>, Linux//m68k <linux-m68k@vger.kernel.org>
 
-Hi Arnd,
-> On Monday 27 January 2014, Michael Schmitz wrote:
->   
->> I will submit patches to the Atari SCSI driver based on Arnd's patch 
->> later this week. Has Arnd's initial patch made it into mainline yet?
->>     
->
-> I've been a little occupied with other work recently, so I have never
-> gotten around to post a non-RFC version of the sleep_on patches.
-> Some have been picked up by various maintainers anyway, but this
-> one has not.
->   
+Hi Michael,
 
-OK, I will resend a merged patch for you or Geert to submit further up 
-the food chain.
+On Mon, Jan 27, 2014 at 9:28 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> While working on the driver, I noticed my Falcon ran into a memory squeeze
+> once a day, resulting in oom-killing processes and rendering the system
+> unusable. Most likely culprit to trigger this is the daily updatedb run.
+> This sort of trouble started pretty much with my work on the SCSI driver,
+> based on commit aa5311c454ed0ff959adca29c65be2157f52a84c (3.13-rc7). Do you
+> know of any memory leak affecting m68k, introduced between last November and
+> 3.13-rc7?
 
-> Thanks so much for taking care of this one!
->   
+How much RAM and swap do you have?
 
-No matter - thanks for taking the time to look into arcane stuff like 
-Atari SCSI drivers!
+Modern kernels just require more memory...
 
-Cheers,
+Gr{oetje,eeting}s,
 
-    Michael
+                        Geert
 
-> 	Arnd
->   
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
