@@ -1,52 +1,39 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH, RFC 02/30] scsi: atari_scsi: fix sleep_on race
-Date: Thu, 30 Jan 2014 09:27:19 +0100
-Message-ID: <CAMuHMdXxJcCRundWF-yB_19HnVU2gzahO6Pva2QWmPqsO1U7GA@mail.gmail.com>
-References: <1388664474-1710039-1-git-send-email-arnd@arndb.de>
-	<70d98fc4293247b4d5a11235a1d676b6@biophys.uni-duesseldorf.de>
-	<52D1F299.7080909@gmail.com>
-	<201401122100.28877.arnd@arndb.de>
-	<52E61895.6000007@gmail.com>
-	<CAMuHMdWM=MXZveRHMQPbBvg88MFABViVueVfo0mT4esXZuvfsg@mail.gmail.com>
-	<52EA0874.7070302@biophys.uni-duesseldorf.de>
+Subject: Re: [PATCH] m68k/atari - ide: do not register interrupt if
+ host->get_lock is set
+Date: Thu, 30 Jan 2014 16:03:27 +0100
+Message-ID: <CAMuHMdXNfcE8r4L9D=FkhjCubimsA45UjRPmfpgKwri2eGNJfQ@mail.gmail.com>
+References: <1390896466-16446-1-git-send-email-schmitz@debian.org>
+	<1390896466-16446-2-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f41.google.com ([209.85.220.41]:36756 "EHLO
-	mail-pa0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751028AbaA3I1T (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jan 2014 03:27:19 -0500
-Received: by mail-pa0-f41.google.com with SMTP id fa1so2854824pad.28
-        for <linux-m68k@vger.kernel.org>; Thu, 30 Jan 2014 00:27:19 -0800 (PST)
-In-Reply-To: <52EA0874.7070302@biophys.uni-duesseldorf.de>
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:35958 "EHLO
+	mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751433AbaA3PD2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jan 2014 10:03:28 -0500
+Received: by mail-pd0-f175.google.com with SMTP id w10so3095511pde.34
+        for <linux-m68k@vger.kernel.org>; Thu, 30 Jan 2014 07:03:27 -0800 (PST)
+In-Reply-To: <1390896466-16446-2-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux//m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Michael Schmitz <schmitz@debian.org>
 
-On Thu, Jan 30, 2014 at 9:08 AM, schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->>> While working on the driver, I noticed my Falcon ran into a memory
->>> squeeze
->>> once a day, resulting in oom-killing processes and rendering the system
->>> unusable. Most likely culprit to trigger this is the daily updatedb run.
->>> This sort of trouble started pretty much with my work on the SCSI driver,
->>> based on commit aa5311c454ed0ff959adca29c65be2157f52a84c (3.13-rc7). Do
->>> you
->>> know of any memory leak affecting m68k, introduced between last November
->>> and
->>> 3.13-rc7?
->>
->> How much RAM and swap do you have?
+On Tue, Jan 28, 2014 at 9:07 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> --- a/drivers/ide/ide-probe.c
+> +++ b/drivers/ide/ide-probe.c
+> @@ -853,8 +853,9 @@ static int init_irq (ide_hwif_t *hwif)
+>         if (irq_handler == NULL)
+>                 irq_handler = ide_intr;
 >
-> 14 MB ST-RAM, 512 MB FastRAM, 2GB swap.
->
->> Modern kernels just require more memory...
->
-> Surely not that much more, I hope?
+> -       if (request_irq(hwif->irq, irq_handler, sa, hwif->name, hwif))
+> -               goto out_up;
+> +       if (!host->get_lock)
+> +               if (request_irq(hwif->irq, irq_handler, sa, hwif->name, hwif))
+> +                       goto out_up;
 
-512 MB should be plenty ;-)
-My poor m68k box has 500 MB less...
+Don't you need a similar check for free_irq()?
 
 Gr{oetje,eeting}s,
 
