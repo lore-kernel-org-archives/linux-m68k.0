@@ -1,45 +1,52 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [GIT PULL] tree-wide: clean up no longer required #include
- <linux/init.h>
-Date: Wed, 5 Feb 2014 07:41:50 +0100
-Message-ID: <20140205064150.GA31568@gmail.com>
-References: <1391547118-21967-1-git-send-email-paul.gortmaker@windriver.com>
- <CAP=VYLp+zus5591g-1YQBCJifbk+UY59yJ7rV06ZN3QhhdnK7w@mail.gmail.com>
- <20140205060633.GE30094@gmail.com>
- <20140205172723.3fa841793b3fa3f3f534937f@canb.auug.org.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/3] m68k: Switch to asm-generic/barrier.h
+Date: Wed, 5 Feb 2014 08:47:01 +0100
+Message-ID: <CAMuHMdWdNtGaOAxhpBEJdb7VspRmd1bd_GwD8af1nzAuu7VfHA@mail.gmail.com>
+References: <1391544954-7422-1-git-send-email-geert@linux-m68k.org>
+	<1391544954-7422-2-git-send-email-geert@linux-m68k.org>
+	<alpine.LNX.2.00.1402051145390.2188@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-alpha-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140205172723.3fa841793b3fa3f3f534937f@canb.auug.org.au>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Linus Torvalds <torvalds@linux-foundation.org>, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, akpm@linux-foundation.org, gregkh@linuxfoundation.org, rusty@rustcorp.com.au, linux-arch@vger.kernel.org, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, linux-s390@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1402051145390.2188@nippy.intranet>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
+Hi Finn,
 
-* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Feb 5, 2014 at 2:03 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Tue, 4 Feb 2014, Geert Uytterhoeven wrote:
+>> The generic nop() implementation is fine for m68k.
+>
+> If the barrier in the old nop() implementation isn't needed anymore,
+> perhaps we should also remove the nop() instances in macfb.c? One comment
+> from this file says, "the nop's are there to order writes". (I don't know
+> whether there is any timing issue here. Seeing the way nop() was sprinkled
+> through macfb.c, I doubt that there is.) Is the volatile casting in
+> nubus_writeb() aka raw_outb() aka out_8() equivalent to the old barrier?
 
-> Hi Ingo,
-> 
-> On Wed, 5 Feb 2014 07:06:33 +0100 Ingo Molnar <mingo@kernel.org> wrote:
-> > 
-> > So, if you meant Linus to pull it, you probably want to cite a real 
-> > Git URI along the lines of:
-> > 
-> >    git://git.kernel.org/pub/scm/linux/kernel/git/paulg/init.git
-> 
-> Paul provided the proper git url further down in the mail along with the
-> usual pull request message (I guess he should have put that bit at the
-> top).
+barrier() does:
 
-Yeah, indeed, and it even comes with a signed tag, which is an extra 
-nice touch:
+#define barrier() __asm__ __volatile__("": : :"memory")
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulg/linux.git tags/init-cleanup
+I.e. it prevents gcc from:
+  1. Reordering instructions due to the volatile,
+  2. Caching data in registers due to the "memory".
 
-(I guess the https was mentioned first to lower expectations.)
+nop() still has the former, while the volatile casting in the I/O macros
+should have the same effect as the latter.
 
-Thanks,
+So yes, I think they can be removed. Can you test that, please?
 
-	Ingo
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
