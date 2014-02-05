@@ -1,28 +1,49 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 2/3] m68k: Switch to asm-generic/barrier.h
-Date: Wed, 5 Feb 2014 12:03:05 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1402051145390.2188@nippy.intranet>
-References: <1391544954-7422-1-git-send-email-geert@linux-m68k.org> <1391544954-7422-2-git-send-email-geert@linux-m68k.org>
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [GIT PULL] tree-wide: clean up no longer required #include
+ <linux/init.h>
+Date: Wed, 5 Feb 2014 07:06:33 +0100
+Message-ID: <20140205060633.GE30094@gmail.com>
+References: <1391547118-21967-1-git-send-email-paul.gortmaker@windriver.com>
+ <CAP=VYLp+zus5591g-1YQBCJifbk+UY59yJ7rV06ZN3QhhdnK7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1391544954-7422-2-git-send-email-geert@linux-m68k.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAP=VYLp+zus5591g-1YQBCJifbk+UY59yJ7rV06ZN3QhhdnK7w@mail.gmail.com>
+Sender: netdev-owner@vger.kernel.org
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, akpm@linux-foundation.org, sfr@canb.auug.org.au, gregkh@linuxfoundation.org, rusty@rustcorp.com.au, linux-arch@vger.kernel.org, kvm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, linux-s390@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
 
 
-On Tue, 4 Feb 2014, Geert Uytterhoeven wrote:
+* Paul Gortmaker <paul.gortmaker@windriver.com> wrote:
 
-> The generic nop() implementation is fine for m68k.
+> On Feb 4, 2014 3:52 PM, "Paul Gortmaker" <paul.gortmaker@windriver.com>
+> wrote:
+> >
+> > We've had this in linux-next for 2+ weeks (thanks Stephen!) as a
+> > linux-stable like queue of patches, and as can be seen here:
+> >
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/paulg/init.git
 > 
+> Argh, above link is meant for cloning, not viewing.
+> 
+> This should be better...
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/paulg/init.git/
 
-If the barrier in the old nop() implementation isn't needed anymore, 
-perhaps we should also remove the nop() instances in macfb.c? One comment 
-from this file says, "the nop's are there to order writes". (I don't know 
-whether there is any timing issue here. Seeing the way nop() was sprinkled 
-through macfb.c, I doubt that there is.) Is the volatile casting in 
-nubus_writeb() aka raw_outb() aka out_8() equivalent to the old barrier?
+So, if you meant Linus to pull it, you probably want to cite a real 
+Git URI along the lines of:
 
-Finn
+   git://git.kernel.org/pub/scm/linux/kernel/git/paulg/init.git
+
+( Otherwise your pull request might be ignored or worse, you might get
+  an honest reply, due to the https transport being considered evil
+  that no free man outside of corporate firewalls should ever consider
+  and all that. )
+
+Nice cleanups btw.
+
+Thanks,
+
+	Ingo
