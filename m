@@ -1,52 +1,59 @@
-From: "Dr.William Davies" <purchase@veltechuniv.edu.in>
-Subject: Re: Instructions to release your payment.
-Date: Fri, 14 Feb 2014 18:06:49 +0530
-Message-ID: <05850bfa675129882bc42edd957194c7__37147.9857284159$1392389483$gmane$org@127.0.0.1>
-Reply-To: williamdavies54@yahoo.co.uk
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [RFC 1/4] m68k: remove CONSOLE_PENGIUN macro, adopt CONFIG_LOGO
+Date: Sat, 15 Feb 2014 15:45:29 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1402151532410.16321@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from webmail.veltechuniv.edu.in ([202.71.145.3]:57988 "EHLO
-	server.veltechuniv.edu.in" rhost-flags-OK-OK-OK-FAIL)
-	by vger.kernel.org with ESMTP id S1751065AbaBNOul (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 14 Feb 2014 09:50:41 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Attention
 
-Sir,
+Allow CONFIG_LOGO to enable/disable the head.S penguin logo as well as the 
+framebuffer console logo. This should save a few bytes. It also gets rid 
+of the obscure CONSOLE_PENGIUN macro.
 
-Following an application brought, seeking the release of your due payment
-through British bank, I am directed to inform you that the application has
-been approved and Natwest bank of London has been mandated to make transfer
-of your payment to the bank account you will nominate. Please kindly reply
-for immediate release of your US$6.2 Million to you nominates account.
 
-Sir, for the avoidance of doubts, reconfirm the following information to
-me to enable us forward same to Natwest bank to contact you for your
-payment.
-
-Name:
-
-Address:
-
-Tel/Fax No.:
-
-Nationality:
-
-Occupation:
-
-Date of birth: 
-
-As soon as I received the above information, I will forward them to
-Natwest bank to contact you for your approved payment. Please see in the
-attachment, letter I wrote to Natwest bank informing them of the
-transaction
-
-Yours faithfully
-
-Dr.William Davies
-Chairman,British Banking Regulatory Board.
+Index: linux-m68k/arch/m68k/kernel/head.S
+===================================================================
+--- linux-m68k.orig/arch/m68k/kernel/head.S	2014-02-15 14:49:20.000000000 +1100
++++ linux-m68k/arch/m68k/kernel/head.S	2014-02-15 15:08:07.000000000 +1100
+@@ -275,7 +275,6 @@
+ 
+ #ifdef CONFIG_FRAMEBUFFER_CONSOLE
+ #define CONSOLE
+-#define CONSOLE_PENGUIN
+ #endif
+ 
+ #ifdef CONFIG_EARLY_PRINTK
+@@ -907,15 +906,15 @@ L(nothp):
+  */
+ #ifdef CONFIG_MAC
+ 	is_not_mac(L(nocon))
+-#ifdef CONSOLE
++#  ifdef CONSOLE
+ 	console_init
+-#ifdef CONSOLE_PENGUIN
++#    ifdef CONFIG_LOGO
+ 	console_put_penguin
+-#endif	/* CONSOLE_PENGUIN */
++#    endif /* CONFIG_LOGO */
+ 	console_put_stats
+-#endif	/* CONSOLE */
++#  endif /* CONSOLE */
+ L(nocon):
+-#endif	/* CONFIG_MAC */
++#endif /* CONFIG_MAC */
+ 
+ 
+ 	putc	'\n'
+@@ -3456,7 +3455,7 @@ func_start	console_put_stats,%a0/%d7
+ 
+ func_return	console_put_stats
+ 
+-#ifdef CONSOLE_PENGUIN
++#ifdef CONFIG_LOGO
+ func_start	console_put_penguin,%a0-%a1/%d0-%d7
+ 	/*
+ 	 *	Get 'that_penguin' onto the screen in the upper right corner
