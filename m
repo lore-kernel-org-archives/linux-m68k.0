@@ -1,56 +1,42 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [RFC 3/4] m68k: multi-platform EARLY_PRINTK
-Date: Sun, 16 Feb 2014 23:59:08 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1402162320580.21487@nippy.intranet>
-References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet> <CAMuHMdWfZRXKdqabTFmvCjW0NcM5HnfmMwx=Pgvu27drZcDkmw@mail.gmail.com>
+Date: Mon, 17 Feb 2014 11:03:20 +0100
+Message-ID: <CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
+References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWfZRXKdqabTFmvCjW0NcM5HnfmMwx=Pgvu27drZcDkmw@mail.gmail.com>
+In-Reply-To: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Sam Creasey <sammy@sammy.net>
 
+On Sat, Feb 15, 2014 at 5:47 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> --- linux-m68k.orig/arch/m68k/Kconfig.debug     2014-02-15 14:49:18.000000000 +1100
+> +++ linux-m68k/arch/m68k/Kconfig.debug  2014-02-15 15:06:30.000000000 +1100
+> @@ -12,12 +12,15 @@ config BOOTPARAM_STRING
+>
+>  config EARLY_PRINTK
+>         bool "Early printk"
+> -       depends on MVME16x || MAC
 
-On Sun, 16 Feb 2014, Geert Uytterhoeven wrote:
+This should depend on !SUN3, as arch/m68k/kernel/sun3-head.S doesn't
+have debug_cons_write:
 
-> On Sat, Feb 15, 2014 at 5:47 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> > --- linux-m68k.orig/arch/m68k/Kconfig.debug     2014-02-15 14:49:18.000000000 +1100
-> > +++ linux-m68k/arch/m68k/Kconfig.debug  2014-02-15 15:06:30.000000000 +1100
-> > @@ -12,12 +12,15 @@ config BOOTPARAM_STRING
-> >
-> >  config EARLY_PRINTK
-> >         bool "Early printk"
-> > -       depends on MVME16x || MAC
-> >         help
-> >            Write kernel log output directly to a serial port.
-> > +          Where implemented, output goes to the framebuffer as well.
-> > +
-> > +          Pass "earlyprintk=debug" on the kernel command line to get a
-> > +          boot console (not required on MVME16x).
-> 
-> Just "earlyprintk" should be enough?
+arch/m68k/kernel/built-in.o: In function `early_cons_write':
+early_printk.c:(.init.text+0x512): undefined reference to `debug_cons_write'
 
-Perhaps. I ended up using the "debug" parameter because of MVME16x. At the 
-moment it has its own early console implementation.
+Alternatively, we can have a loop around prom_putchar() here in the
+#ifdef CONFIG_SUN3 case?
 
-MVME16x might need some interrupt masking added before the head.S boot 
-console can work there. (BTW, the interrupt problem may affect other 
-platforms too. Atari has the same SCC initialization bugs that I fixed for 
-the Mac. I should patch that. Does anyone know the Zilog SCC PCLK rate on 
-Atari?)
+Gr{oetje,eeting}s,
 
-Otherwise the existing MVME16x early console could be scrapped in favour 
-of the head.S console. Or those users might want both options: the 
-existing console in arch/m68k/mvme16x/config.c (say, "earlyprintk=cd2401") 
-as well as the head.S console (as "earlyprintk=debug") ... or they might 
-want no head.S boot console at all (and "earlyprintk" would imply CD2401) 
-... or something completely different ...
+                        Geert
 
-> 
-> Please also consider adding m68k to Documentation/kernel-parameters.txt
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Will do.
-
-Finn
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
