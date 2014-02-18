@@ -1,51 +1,183 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC 3/4] m68k: multi-platform EARLY_PRINTK
-Date: Tue, 18 Feb 2014 13:45:30 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1402181311200.5417@nippy.intranet>
-References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet> <CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: SCSI OOPS.
+Date: Tue, 18 Feb 2014 09:06:14 +0100
+Message-ID: <CAMuHMdUcy5dCrPr03bNsDcVMCRh6zJxD33fSw2eBB0Y4=zi7ag@mail.gmail.com>
+References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet>
+	<CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
+	<OF85B22C02.E99ADB8D-ONCA257C82.007AA014-CA257C82.007B99D2@csc.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:57720 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753859AbaBRIGO (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 18 Feb 2014 03:06:14 -0500
+Received: by mail-pb0-f46.google.com with SMTP id um1so16358685pbc.19
+        for <linux-m68k@vger.kernel.org>; Tue, 18 Feb 2014 00:06:14 -0800 (PST)
+In-Reply-To: <OF85B22C02.E99ADB8D-ONCA257C82.007AA014-CA257C82.007B99D2@csc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Sam Creasey <sammy@sammy.net>
+To: Stephen N Chivers <schivers@csc.com.au>
+Cc: Kars de Jong <jongk@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
+Hi Stephen,
 
-On Mon, 17 Feb 2014, Geert Uytterhoeven wrote:
+(adding Kars and linux-m68k)
 
-> On Sat, Feb 15, 2014 at 5:47 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> > --- linux-m68k.orig/arch/m68k/Kconfig.debug     2014-02-15 14:49:18.000000000 +1100
-> > +++ linux-m68k/arch/m68k/Kconfig.debug  2014-02-15 15:06:30.000000000 +1100
-> > @@ -12,12 +12,15 @@ config BOOTPARAM_STRING
-> >
-> >  config EARLY_PRINTK
-> >         bool "Early printk"
-> > -       depends on MVME16x || MAC
-> 
-> This should depend on !SUN3, as arch/m68k/kernel/sun3-head.S doesn't 
-> have debug_cons_write:
-> 
-> arch/m68k/kernel/built-in.o: In function `early_cons_write':
-> early_printk.c:(.init.text+0x512): undefined reference to `debug_cons_write'
-> 
-> Alternatively, we can have a loop around prom_putchar() here in the
-> #ifdef CONFIG_SUN3 case?
+On Mon, Feb 17, 2014 at 11:30 PM, Stephen N Chivers <schivers@csc.com.au> wrote:
+> Below is the OOPS I got for linux-3.14-rc2 compiled for the MVME167.
+>
+> For me it is not particularly important as my boards are normally operated
+> diskless.
+>
+> ABCGHIJK
+> Linux version 3.14.0-rc2-mvme16x (schivers@canberra) (gcc version 4.1.2)
+> #4 Tue Feb 18 08:43:50 EST 2014
+>
+> BRD_ID: Motorola MVME167   BUG 2.3 94/02/25
+> bootconsole [sercon0] enabled
+> MVME16x: early console registered
+> Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 8120
+> Kernel command line: BOOT_IMAGE=linux auto root=/dev/nfs console=ttyS0
+> nfsroot=129.130.20.1:/clients/VME/m68k/sdf2
+> nfsaddrs=129.130.20.242:129.130.20.1:129.130.20.1:255.255.255.0:::
+> PID hash table entries: 128 (order: -3, 512 bytes)
+> Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+> Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+> Sorting __ex_table...
+> Memory: 28896K/32768K available (2486K kernel code, 285K rwdata, 572K
+> rodata, 116K init, 148K bss, 3872K reserved)
+> Virtual kernel memory layout:
+>     vector  : 0x00322a84 - 0x00322e84   (   1 KiB)
+>     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
+>     vmalloc : 0x02800000 - 0xd0000000   (3288 MiB)
+>     lowmem  : 0x00000000 - 0x02000000   (  32 MiB)
+>       .init : 0x00348000 - 0x00365000   ( 116 KiB)
+>       .text : 0x00001000 - 0x0026ea50   (2487 KiB)
+>       .data : 0x00271610 - 0x00347bf4   ( 858 KiB)
+>       .bss  : 0x003229a0 - 0x00347bf4   ( 149 KiB)
+> NR_IRQS:200
+> Console: colour dummy device 80x25
+> Calibrating delay loop... 21.70 BogoMIPS (lpj=108544)
+> pid_max: default: 32768 minimum: 301
+> Mount-cache hash table entries: 512
+> devtmpfs: initialized
+> NET: Registered protocol family 16
+> bio: create slab <bio-0> at 0
+> SCSI subsystem initialized
+> NET: Registered protocol family 2
+> TCP established hash table entries: 1024 (order: 0, 4096 bytes)
+> TCP bind hash table entries: 1024 (order: 0, 4096 bytes)
+> TCP: Hash tables configured (established 1024 bind 1024)
+> TCP: reno registered
+> UDP hash table entries: 256 (order: 0, 4096 bytes)
+> UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+> NET: Registered protocol family 1
+> RPC: Registered named UNIX socket transport module.
+> RPC: Registered udp transport module.
+> RPC: Registered tcp transport module.
+> RPC: Registered tcp NFSv4.1 backchannel transport module.
+> MK48T08 Real Time Clock Driver v1.00
+> futex hash table entries: 256 (order: -1, 2048 bytes)
+> VFS: Disk quotas dquot_6.5.2
+> Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+> msgmni has been set to 56
+> Block layer SCSI generic (bsg) driver version 0.4 loaded (major 253)
+> io scheduler noop registered
+> io scheduler cfq registered (default)
+> brd: module loaded
+> loop: module loaded
+> Unable to handle kernel access at virtual address fff47020
+> Oops: 00000000
+> Modules linked in:
+> PC: [<001b69fe>] NCR_700_detect+0x26c/0x428
 
-Why not?
+This looks like the first access to the chip:
 
-I just noticed that there's another debug console in arch/m68k/sun3x/prom.c
-We could replace that one too (as with MVME16x), assuming someone can test 
-the changes.
+    /* kick the chip */
+    NCR_700_writeb(0xff, host, CTEST9_REG);
 
-Or we could just do,
- config EARLY_PRINTK
-        bool "Early printk"
--       depends on MVME16x || MAC
-+       depends on !SUN3 && !SUN3X
+The driver didn't ioremap() 0xfff47000, but this should be covered
+by the transparent mapping set up in head.S:
 
-I guess !SUN3 && !SUN3X is correct for this patch anyway; any work on the 
-other platforms I will put into subsequent patches in the same series.
+    mmu_map_tt      #1,#0xe0000000,#0x20000000,#_PAGE_NOCACHE_S
 
-Finn
+Does SCSI work from the boot loader/in older kernels?
+
+> SR: 2008  SP: 01c27d48  a2: 01c24be0
+> d0: 000000ff    d1: fff47020    d2: 00042b78    d3: 01d404e0
+> d4: 01cbf26a    d5: 0019bbb2    a0: fff47020    a1: 0028599e
+> Process swapper (pid: 1, task=01c24be0)
+> Frame format=7 eff addr=00000004 ssw=00a5 faddr=fff47020
+> wb 1 stat/addr/data: 00a5 fff47020 ffffffff
+> wb 2 stat/addr/data: 0025 fff47020 ffffffff
+> wb 3 stat/addr/data: 0025 fff47020 ffffffff
+> push data: ffffffff 001b69fc 000000ff fff47020
+> Stack from 01c27db0:
+>         01cbf26a 01c27e4c 01cbf26a 01d2b9f0 01cbf26a 01cbf26a 01d40000
+> 01cbf26a
+>         001b79bc 0031d014 01d2b9f0 01cbf26a 0031cfc0 01cbf26a 0031c27a
+> 002d0e84
+>         0019f822 01cbf260 01cbf26a 0031cfd4 0019e4de 01cbf26a 01cbf26a
+> 0031cfd4
+>         0019e7c4 0031c27a 0019e7f2 0031cfd4 01cbf26a 00000000 00267d92
+> 0019d038
+>         0031cfd4 01cbf26a 00000000 00000000 0019b8e4 01cbf26a 01cbf29c
+> 01c4cefc
+>         01d2bae4 0019e858 0031c27a 00000000 01cbf26a 0019e7c4 00000000
+> 01cbf26a
+> Call Trace: [<001b79bc>] mvme16x_probe+0x6a/0x156
+>  [<0019f822>] platform_drv_probe+0x18/0x40
+>  [<0019e4de>] driver_probe_device+0xce/0x270
+>  [<0019e7c4>] __device_attach+0x0/0x36
+>  [<0019e7f2>] __device_attach+0x2e/0x36
+>  [<00267d92>] klist_next+0x0/0xfa
+>  [<0019d038>] bus_for_each_drv+0x62/0xae
+>  [<0019b8e4>] device_create_file+0x0/0x98
+>  [<0019e858>] device_attach+0x5e/0x76
+>  [<0019e7c4>] __device_attach+0x0/0x36
+>  [<0019d5f0>] bus_probe_device+0x7a/0xbc
+>  [<0019bd8c>] device_add+0x1c4/0x4f2
+>  [<00035002>] parse_args+0x0/0x296
+>  [<00170b14>] strcpy+0x0/0x16
+>  [<0019fb14>] platform_device_add+0x200/0x232
+>  [<0019fb36>] platform_device_add+0x222/0x232
+>  [<0019ff48>] platform_device_register_full+0xb8/0xec
+>  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
+>  [<0035908a>] mvme16x_scsi_init+0x4e/0x7a
+>  [<000020f4>] do_one_initcall+0xec/0x188
+>  [<00035002>] parse_args+0x0/0x296
+>  [<00170b14>] strcpy+0x0/0x16
+>  [<00002008>] do_one_initcall+0x0/0x188
+>  [<00035002>] parse_args+0x0/0x296
+>  [<00170b14>] strcpy+0x0/0x16
+>  [<00002008>] do_one_initcall+0x0/0x188
+>  [<00040006>] __wake_up_common+0x6/0x66
+>  [<00348b34>] kernel_init_freeable+0xc4/0x184
+>  [<00348b4c>] kernel_init_freeable+0xdc/0x184
+>  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
+>  [<0026b602>] schedule+0x0/0x46
+>  [<00018df4>] _060_fpsp_effadd+0x8210/0xd518
+>  [<00269d50>] kernel_init+0x0/0xd0
+>  [<00269d58>] kernel_init+0x8/0xd0
+>  [<00269d50>] kernel_init+0x0/0xd0
+>  [<000028dc>] ret_from_kernel_thread+0xc/0x14
+>
+> Code: 0004 2f01 4878 00ff 61ff fffc 40f4 508f <082c> 0006 0018 6600 00c2
+> 206d 0248 7218 d2a8 0004 2f01 47f9 0017 ab84 4e93 e808
+> Disabling lock debugging due to kernel taint
+> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+>
+>
+> I will put in diagnostics for this sometime this coming weekend.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
