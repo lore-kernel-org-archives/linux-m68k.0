@@ -1,28 +1,30 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: Boot crash on 68030, was Re: [PATCH][M68K] implement futex.h to
- support userspace robust futexes and PI mutexes
-Date: Fri, 21 Feb 2014 13:33:43 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1402211323140.7194@nippy.intranet>
-References: <20793.61385.652975.797741@pilspetsen.it.uu.se> <alpine.LNX.2.00.1312101000250.10258@nippy.intranet> <87iouxzju3.fsf@igel.home> <alpine.LNX.2.00.1312101141250.17926@nippy.intranet>
- <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: Boot crash on 68030, was Re: [PATCH][M68K] implement futex.h to support userspace robust futexes and PI mutexes
+Date: Fri, 21 Feb 2014 10:53:45 +0100
+Message-ID: <8738jcpz9y.fsf@igel.home>
+References: <20793.61385.652975.797741@pilspetsen.it.uu.se>
+	<alpine.LNX.2.00.1312101000250.10258@nippy.intranet>
+	<87iouxzju3.fsf@igel.home>
+	<alpine.LNX.2.00.1312101141250.17926@nippy.intranet>
+	<CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47404 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751600AbaBUCof (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Feb 2014 21:44:35 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:55292 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754663AbaBUJxs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 21 Feb 2014 04:53:48 -0500
 In-Reply-To: <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Tue, 10 Dec 2013 11:12:50 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>, Mikael Pettersson <mikpelinux@gmail.com>
 
-
-On Tue, 10 Dec 2013, Geert Uytterhoeven wrote:
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
 > On '030, the relevant code is:
-> 
+>
 >     if (mmusr & (MMU_I | MMU_WP)) {
 >             if (ssw & 4) {
 >                     printk("Data %s fault at %#010lx in %s (pc=%#lx)\n",
@@ -35,39 +37,20 @@ On Tue, 10 Dec 2013, Geert Uytterhoeven wrote:
 >                handled. */
 >             if (do_page_fault (&fp->ptregs, addr, errorcode) < 0)
 >                     return;
-> 
+>
 > But we never get to do_page_fault(), as ssw = 5 (SUPER_DATA).
-> 
-> The "if (ssw & 4) { ... }" chunk was added in commit 
+>
+> The "if (ssw & 4) { ... }" chunk was added in commit
 > e48d483d581278fae02a5fffeba2b1fef47be4d4 (from full-history-linux):
 
-The entire commit can be found here as well, 
-https://git.kernel.org/cgit/linux/kernel/git/tglx/history.git/commit/arch/m68k/kernel/traps.c?id=cf9c906f8eb31033b39f47b4313f7228dc5aa201
+I guess it just reinstates the condition in the first hunk.
 
-> Which originates from a CVS commit in 2003, based on v2 (v1 didn't have 
-> the chunk) of a patch in the thread "RMW instructions on MC68020/MC68851 
-> combo..." between Kars and Roman Z.
-> 
-> I guess this case will work(TM) if you remove that chunk again? But what 
-> are the other implications of that?
+-       if (fp->ptregs.sr & PS_S) {
+-               /* kernel fault must be a data fault to user space */
 
-So how shall we understand the intention of that patch? Here's the new 
-logic:
+Andreas.
 
-	if (mmusr & (MMU_I | MMU_WP)) {
-		if (ssw & 4) {
-			...
-		}
-		...
-	} else if (!(mmusr & MMU_I)) {
-		/* propably a 020 cas fault */
-		...
-	} else if (mmusr & (MMU_B|MMU_L|MMU_S)) {
-		...
-	} else {
-		...
-	}
-
-Seems to me that everything after the first else clause is dead code.
-
-Finn
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
