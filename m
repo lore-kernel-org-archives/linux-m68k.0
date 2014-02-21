@@ -1,156 +1,73 @@
-From: Stephen N Chivers <schivers@csc.com.au>
-Subject: Re: SCSI OOPS.
-Date: Wed, 19 Feb 2014 06:23:10 +1000
-Message-ID: <OF77FDF379.1F1F9CA9-ONCA257C83.006F5534-CA257C83.006FFC0F@csc.com>
-References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet>	<CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
-	<OF85B22C02.E99ADB8D-ONCA257C82.007AA014-CA257C82.007B99D2@csc.com> <CAMuHMdUcy5dCrPr03bNsDcVMCRh6zJxD33fSw2eBB0Y4=zi7ag@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: Boot crash on 68030, was Re: [PATCH][M68K] implement futex.h to
+ support userspace robust futexes and PI mutexes
+Date: Fri, 21 Feb 2014 13:33:43 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1402211323140.7194@nippy.intranet>
+References: <20793.61385.652975.797741@pilspetsen.it.uu.se> <alpine.LNX.2.00.1312101000250.10258@nippy.intranet> <87iouxzju3.fsf@igel.home> <alpine.LNX.2.00.1312101141250.17926@nippy.intranet>
+ <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.206]:31612 "EHLO
-	mail1.bemta8.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751930AbaBRU3o (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 18 Feb 2014 15:29:44 -0500
-In-Reply-To: <CAMuHMdUcy5dCrPr03bNsDcVMCRh6zJxD33fSw2eBB0Y4=zi7ag@mail.gmail.com>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47404 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751600AbaBUCof (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Feb 2014 21:44:35 -0500
+In-Reply-To: <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: geert.uytterhoeven@gmail.com, Kars de Jong <jongk@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Stephen N Chivers <schivers@csc.com.au>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Mikael Pettersson <mikpelinux@gmail.com>
 
-Geert , Karl et al:
 
-geert.uytterhoeven@gmail.com wrote on 02/18/2014 07:06:14 PM:
+On Tue, 10 Dec 2013, Geert Uytterhoeven wrote:
 
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> To: Stephen N Chivers <schivers@csc.com.au>
-> Cc: Kars de Jong <jongk@linux-m68k.org>, "Linux/m68k" <linux-
-> m68k@vger.kernel.org>
-> Date: 02/18/2014 07:06 PM
-> Subject: Re: SCSI OOPS.
-> Sent by: geert.uytterhoeven@gmail.com
+> On '030, the relevant code is:
 > 
-> Hi Stephen,
+>     if (mmusr & (MMU_I | MMU_WP)) {
+>             if (ssw & 4) {
+>                     printk("Data %s fault at %#010lx in %s (pc=%#lx)\n",
+>                            ssw & RW ? "read" : "write",
+>                            fp->un.fmtb.daddr,
+>                            space_names[ssw & DFC], fp->ptregs.pc);
+>                     goto buserr;
+>             }
+>             /* Don't try to do anything further if an exception was
+>                handled. */
+>             if (do_page_fault (&fp->ptregs, addr, errorcode) < 0)
+>                     return;
 > 
-> (adding Kars and linux-m68k)
+> But we never get to do_page_fault(), as ssw = 5 (SUPER_DATA).
 > 
-> On Mon, Feb 17, 2014 at 11:30 PM, Stephen N Chivers 
-> <schivers@csc.com.au> wrote:
-> > Below is the OOPS I got for linux-3.14-rc2 compiled for the MVME167.
-> >
-> > For me it is not particularly important as my boards are normally 
-operated
-> > diskless.
-> >
-snip.....
-> > Modules linked in:
-> > PC: [<001b69fe>] NCR_700_detect+0x26c/0x428
-> 
-> This looks like the first access to the chip:
-> 
->     /* kick the chip */
->     NCR_700_writeb(0xff, host, CTEST9_REG);
-> 
-> The driver didn't ioremap() 0xfff47000, but this should be covered
-> by the transparent mapping set up in head.S:
-> 
->     mmu_map_tt      #1,#0xe0000000,#0x20000000,#_PAGE_NOCACHE_S
-> 
-> Does SCSI work from the boot loader/in older kernels?
-I have never tried as the boards have always been operated
-diskless, either with VxWorks or Linux.
-I do not think I have any suitable SCSI disks, or
-even a mechanism to power them. The boards are in ancient
-VME32 backplanes.
+> The "if (ssw & 4) { ... }" chunk was added in commit 
+> e48d483d581278fae02a5fffeba2b1fef47be4d4 (from full-history-linux):
 
-I might be able to use some old disks from
-some SUN sparcstation10/20s I have as they would probably be the
-closest to those supported by the controller.
+The entire commit can be found here as well, 
+https://git.kernel.org/cgit/linux/kernel/git/tglx/history.git/commit/arch/m68k/kernel/traps.c?id=cf9c906f8eb31033b39f47b4313f7228dc5aa201
 
-It is an area I have not thought about at all. 
+> Which originates from a CVS commit in 2003, based on v2 (v1 didn't have 
+> the chunk) of a patch in the thread "RMW instructions on MC68020/MC68851 
+> combo..." between Kars and Roman Z.
 > 
-> > SR: 2008  SP: 01c27d48  a2: 01c24be0
-> > d0: 000000ff    d1: fff47020    d2: 00042b78    d3: 01d404e0
-> > d4: 01cbf26a    d5: 0019bbb2    a0: fff47020    a1: 0028599e
-> > Process swapper (pid: 1, task=01c24be0)
-> > Frame format=7 eff addr=00000004 ssw=00a5 faddr=fff47020
-> > wb 1 stat/addr/data: 00a5 fff47020 ffffffff
-> > wb 2 stat/addr/data: 0025 fff47020 ffffffff
-> > wb 3 stat/addr/data: 0025 fff47020 ffffffff
-> > push data: ffffffff 001b69fc 000000ff fff47020
-> > Stack from 01c27db0:
-> >         01cbf26a 01c27e4c 01cbf26a 01d2b9f0 01cbf26a 01cbf26a 01d40000
-> > 01cbf26a
-> >         001b79bc 0031d014 01d2b9f0 01cbf26a 0031cfc0 01cbf26a 0031c27a
-> > 002d0e84
-> >         0019f822 01cbf260 01cbf26a 0031cfd4 0019e4de 01cbf26a 01cbf26a
-> > 0031cfd4
-> >         0019e7c4 0031c27a 0019e7f2 0031cfd4 01cbf26a 00000000 00267d92
-> > 0019d038
-> >         0031cfd4 01cbf26a 00000000 00000000 0019b8e4 01cbf26a 01cbf29c
-> > 01c4cefc
-> >         01d2bae4 0019e858 0031c27a 00000000 01cbf26a 0019e7c4 00000000
-> > 01cbf26a
-> > Call Trace: [<001b79bc>] mvme16x_probe+0x6a/0x156
-> >  [<0019f822>] platform_drv_probe+0x18/0x40
-> >  [<0019e4de>] driver_probe_device+0xce/0x270
-> >  [<0019e7c4>] __device_attach+0x0/0x36
-> >  [<0019e7f2>] __device_attach+0x2e/0x36
-> >  [<00267d92>] klist_next+0x0/0xfa
-> >  [<0019d038>] bus_for_each_drv+0x62/0xae
-> >  [<0019b8e4>] device_create_file+0x0/0x98
-> >  [<0019e858>] device_attach+0x5e/0x76
-> >  [<0019e7c4>] __device_attach+0x0/0x36
-> >  [<0019d5f0>] bus_probe_device+0x7a/0xbc
-> >  [<0019bd8c>] device_add+0x1c4/0x4f2
-> >  [<00035002>] parse_args+0x0/0x296
-> >  [<00170b14>] strcpy+0x0/0x16
-> >  [<0019fb14>] platform_device_add+0x200/0x232
-> >  [<0019fb36>] platform_device_add+0x222/0x232
-> >  [<0019ff48>] platform_device_register_full+0xb8/0xec
-> >  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
-> >  [<0035908a>] mvme16x_scsi_init+0x4e/0x7a
-> >  [<000020f4>] do_one_initcall+0xec/0x188
-> >  [<00035002>] parse_args+0x0/0x296
-> >  [<00170b14>] strcpy+0x0/0x16
-> >  [<00002008>] do_one_initcall+0x0/0x188
-> >  [<00035002>] parse_args+0x0/0x296
-> >  [<00170b14>] strcpy+0x0/0x16
-> >  [<00002008>] do_one_initcall+0x0/0x188
-> >  [<00040006>] __wake_up_common+0x6/0x66
-> >  [<00348b34>] kernel_init_freeable+0xc4/0x184
-> >  [<00348b4c>] kernel_init_freeable+0xdc/0x184
-> >  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
-> >  [<0026b602>] schedule+0x0/0x46
-> >  [<00018df4>] _060_fpsp_effadd+0x8210/0xd518
-> >  [<00269d50>] kernel_init+0x0/0xd0
-> >  [<00269d58>] kernel_init+0x8/0xd0
-> >  [<00269d50>] kernel_init+0x0/0xd0
-> >  [<000028dc>] ret_from_kernel_thread+0xc/0x14
-> >
-> > Code: 0004 2f01 4878 00ff 61ff fffc 40f4 508f <082c> 0006 0018 6600 
-00c2
-> > 206d 0248 7218 d2a8 0004 2f01 47f9 0017 ab84 4e93 e808
-> > Disabling lock debugging due to kernel taint
-> > Kernel panic - not syncing: Attempted to kill init! 
-exitcode=0x0000000b
-> >
-> >
-> > I will put in diagnostics for this sometime this coming weekend.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
-> geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. 
-But
-> when I'm talking to journalists I just say "programmer" or somethinglike 
-that.
->                                 -- Linus Torvalds
-Regards,
-Stephen Chivers,
-CSC Australia Pty. Ltd.
+> I guess this case will work(TM) if you remove that chunk again? But what 
+> are the other implications of that?
+
+So how shall we understand the intention of that patch? Here's the new 
+logic:
+
+	if (mmusr & (MMU_I | MMU_WP)) {
+		if (ssw & 4) {
+			...
+		}
+		...
+	} else if (!(mmusr & MMU_I)) {
+		/* propably a 020 cas fault */
+		...
+	} else if (mmusr & (MMU_B|MMU_L|MMU_S)) {
+		...
+	} else {
+		...
+	}
+
+Seems to me that everything after the first else clause is dead code.
+
+Finn
