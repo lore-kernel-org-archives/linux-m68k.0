@@ -1,56 +1,73 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.14 (take 2)
-Date: Tue, 25 Feb 2014 21:02:09 +0100 (CET)
-Message-ID: <alpine.DEB.2.02.1402252058290.9497@ayla.of.borg>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: futex_init() vs. KERNEL_DS, was Re: Boot crash on 68030
+Date: Fri, 28 Feb 2014 14:12:22 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1402281202180.21491@nippy.intranet>
+References: <20793.61385.652975.797741@pilspetsen.it.uu.se> <alpine.LNX.2.00.1312101000250.10258@nippy.intranet> <87iouxzju3.fsf@igel.home> <alpine.LNX.2.00.1312101141250.17926@nippy.intranet> <CAMuHMdVB3w3JpNSrdZXPk+xrDXyhm-CgDHX5XW_1CUKn8pQmtA@mail.gmail.com>
+ <mvmy53t6mac.fsf@hawking.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56384 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750941AbaB1DMw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Feb 2014 22:12:52 -0500
+In-Reply-To: <mvmy53t6mac.fsf@hawking.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Linux-m68k <linux-m68k@vger.kernel.org>, Linux-arch <linux-arch@vger.kernel.org>
 
-	Hi Linus,
 
-The following changes since commit b28a960c42fcd9cfc987441fa6d1c1a471f0f9ed:
+On Tue, 10 Dec 2013, Andreas Schwab wrote:
 
-  Linux 3.14-rc2 (2014-02-09 18:15:47 -0800)
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> 
+> >> Data read fault at 0x00000000 in Super Data (pc=0x3afec) BAD KERNEL 
+> >> BUSERR
+> 
+> I think futex_init needs to do set_fs(USER_DS), since futex is about 
+> user data.
 
-are available in the git repository at:
+Rhetorical question: does it make sense to explicitly switch to USER_DS 
+when we know that current->mm may be invalid at the time?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+Given that the presence of USER_DS or KERNEL_DS at initcall-time varies 
+between architectures, perhaps this question must be left to arch 
+implementors.
 
-for you to fetch changes up to 7247f55381d54645a1eb47588de51bb26fa7cb7a:
+Moreover, architectures that have no need for a run-time test for usable 
+futex_value ops have no real interest in such questions. AFAICT, only mips 
+needs the run-time test.
 
-  m68k: Wire up sched_setattr and sched_getattr (2014-02-10 20:10:20 +0100)
+For every other arch the availability of futex_value ops is known at 
+compile-time. We don't need to pursue universal answers to questions like 
+these:
 
-Summary:
-  - More barrier.h consolidation,
-  - Sched_[gs]etattr() syscalls.
+1) the correctness of switching to USER_DS with mm->current == NULL [1]
 
-Thanks for pulling!
+2) the correctness of USER_DS vs. KERNEL_DS for (all) initcalls [2]
 
-----------------------------------------------------------------
-Geert Uytterhoeven (3):
-      m68k: Sort arch/m68k/include/asm/Kbuild
-      m68k: Switch to asm-generic/barrier.h
-      m68k: Wire up sched_setattr and sched_getattr
+3) the correctness of allowing faults when get_fs() == KERNEL_DS [3]
 
- arch/m68k/include/asm/Kbuild        |    6 +++---
- arch/m68k/include/asm/barrier.h     |    8 --------
- arch/m68k/include/asm/unistd.h      |    2 +-
- arch/m68k/include/uapi/asm/unistd.h |    2 ++
- arch/m68k/kernel/syscalltable.S     |    2 ++
- 5 files changed, 8 insertions(+), 12 deletions(-)
- delete mode 100644 arch/m68k/include/asm/barrier.h
+4) the proposition that "[futex_value ops] explicitly take a __user 
+   pointer and are expected to do whatever is needed to perform the 
+   operation"  ... even during kernel initialization. [4]
 
-Gr{oetje,eeting}s,
+The discussion of these questions in various threads on various lists did 
+not resolve anything. Again, this is probably because all of these 
+questions are actually arch implementation issues.
 
-						Geert
+So it seems to me that the solution to the futex_init() problem is to 
+evaluate the futex_cmpxchg_enabled assignment at compile-time where 
+possible, and use the run-time test only on mips. Thoughts?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Finn
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+
+[1] http://marc.info/?l=linux-next&m=138876015228975&w=2
+
+[2] https://lkml.org/lkml/2014/1/15/476
+    http://marc.info/?l=linux-kernel&m=138971456630101&w=2
+
+[3] http://marc.info/?l=linux-next&m=138876367730190&w=2
+
+[4] http://marc.info/?l=linux-kernel&m=138970641726884&w=2
