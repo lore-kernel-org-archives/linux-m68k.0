@@ -1,21 +1,36 @@
-From: Jantima Khuntaraksa <jantima@steelintertech.com>
-Subject: CONTACT KENYA COMMERCIAL BANK LTD IMMEDIATELY FOR YOUR PAYMENT
- (3MILLION UNITED STATE DOLLARS)
-Date: Fri, 28 Feb 2014 21:11:48 +0000 (UTC)
-Message-ID: <597971520.33985.1393621908151.JavaMail.root__48362.2345877395$1393630839$gmane$org@steelintertech.com>
-Reply-To: "services1@kenya.ncommercialbnk.com"
-	  <services1@kenya.ncommercialbnk.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.mailgateway02.dragonhispeed.com ([103.4.216.22]:55456 "EHLO
-	mail.cmcgw.dragonhispeed.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752619AbaB1Xjn (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 28 Feb 2014 18:39:43 -0500
-Sender: linux-m68k-owner@vger.kernel.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 0/3] m68k Atari SCSI fixes
+Date: Sat,  1 Mar 2014 20:51:02 +1300
+Message-ID: <1393660265-19384-1-git-send-email-schmitz@debian.org>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+Sender: linux-scsi-owner@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, JBottomley@parallels.com, linux-scsi@vger.kernel.org, arnd@arndb.de
 List-Id: linux-m68k@vger.kernel.org
 
-Attention: Please, Kindly contact KENYA COMMERCIAL BANK immediately for your compensation payment of (3MILLION UNITED STATE DOLLARS) via email: Email:(services1@kenya.ncommercialbnk.com) quote your payment Ref No:KCB/00Y/2014 For purposes of immediate payment.   
- 
+All, 
+
+please review the following patches to the m68k Atari NCR5380 SCSI code. 
+
+The first patch is my corrected version of Arnd Bergmann's sleep_on removal RFC
+series (2/16), tested on my Atari Falcon. Geert, please take this one through the   
+linux-m68k tree so Arnd's sleep_on remove can go ahead. 
+
+The second and third one are updates to the Atari NCR5380 drivers' error handling
+(return codes updated) and queue_command() function (return SCSI_MLQEUE_HOST_BUSY  
+if the lock for the SCSI/DMA hardware cannot be safely taken). Again, tested on my 
+Falcon. These will need Ack from the SCSI maintainers but could be taken through
+Geert's tree as well. 
+
+This patch series supersedes a previous one of mine, due to a botch-up mingling parts
+of patch 1 and 3. Apologies for spamming everyone again.
+
+Please CC: me in on any replies, I am not subscribed to linux-scsi.
+
+Thanks,
+
+        Michael Schmitz 
+
+[PATCH 1/3] m68k/atari - convert atari_scsi falcon_get_lock() to use wait_event()
+[PATCH 2/3] m68k/atari - atari_scsi: change abort/reset return codes
+[PATCH 3/3] m68k/atari - atari_scsi: punt if deadlocked
