@@ -1,72 +1,30 @@
-From: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: [PATCH 1/3] m68k/atari - convert atari_scsi falcon_get_lock()
- to use wait_event()
-Date: Sun, 02 Mar 2014 12:05:43 +1300
-Message-ID: <531267C7.2020108@biophys.uni-duesseldorf.de>
-References: <1393660265-19384-1-git-send-email-schmitz@debian.org> <1393660265-19384-2-git-send-email-schmitz@debian.org> <201403011253.56831.arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <201403011253.56831.arnd@arndb.de>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, JBottomley@parallels.com, linux-scsi@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: head.S - Remove bogus L prefix in comment
+Date: Sun,  2 Mar 2014 11:05:19 +0100
+Message-ID: <1393754720-28267-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Arnd ,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/kernel/head.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Saturday 01 March 2014, Michael Schmitz wrote:
->   
->> sleep_on is known broken and going away. The atari_scsi driver is one of
->> two remaining users in the falcon_get_lock() function, which is a rather
->> crazy piece of code. This does not attempt to fix the driver's locking
->> scheme in general, but at least prevents falcon_get_lock from going to
->> sleep when no other thread holds the same lock or tries to get it,
->> and we no longer schedule with irqs disabled.
->>
->> MSch: fixed completion conditions missed in Arnds' original RFC patch.
->>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> Acked-by: Michael Schmitz <schmitz@debian.org>
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Cc: James E.J. Bottomley <JBottomley@parallels.com>
->> Cc: linux-scsi@vger.kernel.org
->>     
->
-> Thanks a lot for taking care of this so quickly!
->   
-
-No matter - if I don't do it right away, chances are it won't get done 
-for weeks. Happens far too often.
-
-> A minor note about patch processing: The normal way to forward
-> a patch from another person is to add your 'Signed-off-by:' line
-> below the one from the original submitter, i.e. in the place where
-> you have the 'Acked-by:'. Not sure if you just forgot to update
-> your patch or you weren't aware of that. Geert will be able to
-> fix that when he adds his own Signed-off-by line.
->   
-
-I wasn't aware really - thanks.
-
-> Also if you want to preserve authorship of the patch, you can add
-> as the first line before the description a line 'From: Arnd Bergmann
-> <arnd@arndb.de>'. Since you modified most the lines I originally
-> changed and the patch is very small, I don't care about having
-> me listed as the author, it's absolutely ok to have you listed here,
-> just explaining it here in case you intended differently.
->   
-
-I think I'd prefer for you to retain ownership of the patch - by rights 
-it belongs into your patch series and I just did the testing. I'm 
-blissfully unaware of all the problems with locking and sleep_on vs. 
-wait_event - as the general state of the Atari NCR5380 driver probably 
-attests.
-
-Can you fix that up in passing as  well please, Geert?
-
-Cheers,
-
-    Michael
-
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index 4c99bab7e664..b83e09a8c956 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -3331,7 +3331,7 @@ func_start	console_init,%a0-%a4/%d0-%d7
+ 	 *	Some of the register usage that follows
+ 	 *		a0 = pointer to boot_info
+ 	 *		a1 = pointer to screen
+-	 *		a2 = pointer to Lconsole_globals
++	 *		a2 = pointer to console_globals
+ 	 *		d3 = pixel width of screen
+ 	 *		d4 = pixel height of screen
+ 	 *		(d3,d4) ~= (x,y) of a point just below
+-- 
+1.7.9.5
