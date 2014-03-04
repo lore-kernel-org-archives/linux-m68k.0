@@ -1,39 +1,41 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC 4/4] m68k/atari: fix SCC initialization for debug console
-Date: Tue, 4 Mar 2014 13:31:35 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1403041304120.13150@nippy.intranet>
-References: <alpine.LNX.2.00.1403022341590.5357@nippy.intranet> <CAOmrzkJhFs=HCBkxKQYNk9tNs1Nd8O5KiUG0qsWDJSRtWGzuGQ@mail.gmail.com>
+Subject: [PATCH] m68k: skip futex_atomic_cmpxchg_inatomic() test
+Date: Tue, 4 Mar 2014 18:28:09 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1403041740580.17377@nippy.intranet>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAOmrzkJhFs=HCBkxKQYNk9tNs1Nd8O5KiUG0qsWDJSRtWGzuGQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
 Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
 
-On Tue, 4 Mar 2014, Michael Schmitz wrote:
+The futex_atomic_cmpxchg_inatomic() test in futex_init() causes a fatal 
+exception on 68030 (and presumably 68020 also).
 
-> >
-> > The 7.9872 MHz PCLK used in this patch was inferred from the existing 
-> > code as I don't have any hardware data.
-> 
-> The difference in clock source settings is the main reason we can't use 
-> the exact same code IIRC.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-> >         .byte   14,2,14,3       /* use master clock for BRG, enable */
+---
 
-This is the other difference. For some reason the SCC initialization code 
-on a Mac selects the external clock for the Baud Rate Generator, whereas 
-on an Atari the master clock is used.
+Ingo Molnar has committed Heiko Carstens' patch to the -tip repo:
+http://git.kernel.org/cgit/linux/kernel/git/tip/tip.git/commit/?id=03b8c7b623c80af264c4c8d6111e5c6289933666
 
-pmac_zilog does the same as the Mac code here. There is some mention of 
-MIDI in the comments there. AppleTalk also uses an external clock, IIRC.
+I downloaded that patch and tested it along with the patch below, and 
+together these fix the boot crash.
 
-I've no idea whether the master clock runs at the same rate across all Mac 
-models. Anyway, the existing code works on all the Macs I've tested 
-(though it needs the bootloader to "warm up serial ports" on some 
-powerbooks).
+What's the best way to merge this? Perhaps it should be sent on to the 
+-tip maintainers?
 
-Finn
+Index: linux-m68k/arch/m68k/Kconfig
+===================================================================
+--- linux-m68k.orig/arch/m68k/Kconfig
++++ linux-m68k/arch/m68k/Kconfig
+@@ -17,6 +17,7 @@ config M68K
+ 	select FPU if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_USES_GETTIMEOFFSET if MMU && !COLDFIRE
++	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select MODULES_USE_ELF_REL
+ 	select MODULES_USE_ELF_RELA
