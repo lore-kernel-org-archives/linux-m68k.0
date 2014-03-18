@@ -1,120 +1,54 @@
-From: "GOOGLE Gewinnbenachrichtigung!!!" <gogle.promuk@live.com>
-Subject: GOOGLE Gewinnbenachrichtigung!!!
-Date: Tue, 18 Mar 2014 12:47:59 -0000
-Message-ID: <16805e39f71fda956e3e1395d47bbafc.squirrel__32566.586850635$1395151613$gmane$org@23.96.39.92>
-Reply-To: gogle.eurolotto@gmail.com
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 00/12] scsi/NCR5380: fix debugging macros and #include
+ structure
+Date: Wed, 19 Mar 2014 10:14:22 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1403190925550.6652@nippy.intranet>
+References: <20140318002822.372705594@telegraphics.com.au>  <1395112756.20860.1.camel@joe-AO722>  <alpine.LNX.2.00.1403182208590.2018@nippy.intranet>  <1395146702.2812.47.camel@joe-AO722>  <CAMuHMdUMpdp7deL5zC4hUVTHjyNbtkZ2bNFupo5JiDyuyc345w@mail.gmail.com>
+ <1395148051.2812.51.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38436 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758300AbaCRXOq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 18 Mar 2014 19:14:46 -0400
+In-Reply-To: <1395148051.2812.51.camel@joe-AO722>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "James E.J. Bottomley" <JBottomley@parallels.com>, scsi <linux-scsi@vger.kernel.org>, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-GOOGLE INTERNATIONALE F=F6rderung-GEWINNZUTEILUNG
-           GOOGLE  F=F6rderung
 
-GOOGLE Einarbeitung=A9
-UROPA INTERLOTTO/EUROMILLINEN LOTTO BONUS-PROGRAMM
-BEL-GRAVE HOUSE, 76 BUCKINGHAM PALACE ROAD,
-LONDON SW1W 9TQ, UNITED KINGDOM.OFFICE;
-VOM SCHREIBTISCH VON VICE PRESIDENT INTERNATIONAL
-PROMOTION/PREISVERLEIHUNG AKTENZEICHEN: ANA/BCL654560010/ESP.
-OFFIZIELLE GEWINNBENACHRITIGUNG.
-DATUM: 18/03/2014.
+On Tue, 18 Mar 2014, Joe Perches wrote:
 
-ACHTUNG! DER BEG=DCNSTIGTE,
+> On Tue, 2014-03-18 at 13:55 +0100, Geert Uytterhoeven wrote:
 
-GOOGLE Gewinnbenachrichtigung!!!
+> > 
+> > #define dprintk(flg, fmt, ...) no_printk(fmt, ##__VA_ARGS__)
+> 
+> Fine, but with a correction.
+> 
+> no_printk keeps all side effects like performing any function calls made 
+> by the statement or accessing any volatiles.
+> 
+> Using
+> 
+> do { if (0) no_printk(fmt, ##__VA_ARGS__); } while (0)
+> 
+> does not have any side-effects.
 
-Wir freuen uns,Ihnen noch einmal gratulieren zu dieser Notiz, die Teil
-unserer gl=FCcklichen Gewinner ausgew=E4hlt diesem Jahr. Diese Aktion w=
-urde im
-Anschluss an die aktive Nutzung des Google-Suchmaschine und im
-Google-Hilfsdienste anzukurbeln. Daher machen wir mit Ihren Preis zu
-gewinnen glauben, werden Sie weiterhin aktiv zu sein und Schirmherrscha=
-ft
-f=FCr dieses Unternehmen. Google ist heute der weltweit f=FChrende
-Suchmaschine weltweit und in dem Bestreben, sicherzustellen, dass sie d=
-ie
-am weitesten verbreitete Suchmaschinen bleibt, ein Online-E-Mail
-Stimmabgabe aus wurde am 13/03/2014 ohne Ihr Wissen ausgef=FChrt wurde
-offiziell freigegeben am 18/03/2014. Wir m=F6chten Ihnen f=F6rmlich mit=
-teilen,
-dass Ihre E-Mail-Adresse zu einem Pauschalbetrag von:(=80450,000,00)(VI=
-ER
-HUNDERT UND F=DCNFZIG TAUSEND Euro.)Die summe ergibt sich einer
-gewinnausschuttung von.(=8018,000,000:00)(ACHTZEHN MILLIONEN EURO.)Die =
-summe
-wurde durch 40 gewinnern aus der gleichen kategorie geteilt.HERZLICHEN
-GLUCKWUNSCH!!! befestigt war
+I take your point about having the compiler check arguments when
+NDEBUG & flg == 0.
 
-Wir m=F6chten Ihnen mitteilen, dass Sie erfolgreich den Anforderungen, =
-den
-gesetzlichen Auflagen, =DCberpr=FCfungen und unsere zufriedenstellenden
-Bericht Test f=FCr alle unsere Online-Gewinner durchgef=FChrt weitergeg=
-eben.
-Eine gewinnende Scheck wird in Ihrem Namen von Google F=F6rderpreis Tea=
-m
-erteilt werden, und auch eine Bescheinigung =FCber die Auszeichnung
-Anspr=FCche werden an der Seite Ihrer gewinnenden Scheck zugesandt.
+As for side-effects, chip register accesses would be affected if dprintk() 
+expanded to no_printk() when NDEBUG & flg == 0.
 
-Dies sind Ihre Auszeichnung Details.
-Security Code Nummer: GU/N/3642375G
-Ticket Nr.: GU/K/699/33/2014
-Gewinnzahlen: UK/877/798/2014
+E.g. NCR5380.c line 1213:
+dprintk(NDEBUG_INTR, "scsi : unknown interrupt, BASR 0x%X, MR 0x%X, SR 0x%x\n",
+                     basr, NCR5380_read(MODE_REG), NCR5380_read(STATUS_REG));
 
-Erforderliche Angaben von Ihnen Teil unserer vorsorglich  zu verdoppeln
-behaupten und ungerechtfertigten Missbrauch von diesem  Programm  zu
-vermeiden. Um Ihren Preis gewonnen, bitte, sind die Mittel unserer
-ausl=E4ndischen  Transfer Manager Mr. Audrew C. Nielsen korrekt, Pr=FCf=
-ung und
-Genehmigung  gef=FCllt
+I don't want to re-introduce side-effects into a dozen different NCR5380 
+drivers on three different architectures when I can test only one of those 
+drivers. It's difficult to get good code coverage even for one driver.
 
-        Bitte vollst=E4ndige =DCberpr=FCfung und Mittel freizugeben For=
-m
-
-(1) Ihr vollst=E4ndiger Name ...............................
-(2) Kontakt-Adresse ........................................
-(3) Tel. Zahlen ...............................................
-(4) Mobile ......................................................
-(5) Nationalit=E4t / Land .....................................
-(6) Beruf .......................................................
-(7) Sex /Geschlecht........................................
-(8) Alter ........................................................
-(9) jemals gewonnen eine Online-Lotterie? .............
-(10) Mode von Preisgeld nach Hause: Courier Lieferung oder Bank=FCberwe=
-isung
-=2E.........
-Die oben genannten Anforderungen sind erforderlich.
-
-Gl=FCckw=FCnsche noch einmal.
-
-    Mode des Geldpreises Transfer
-(1) =DCberweisung / Courier Lieferung Ihrer Certified Winning Scheck Na=
-me
-und andere Dokumente, um sicherzustellen, Sie gewinnen. Wir empfehlen,
-dass Ihr ausw=E4rtige Transfer Manager, Mr. Audrew C. Nielsen mit seine=
-r
-privaten E-Mail unten, um unn=F6tige Verz=F6gerungen und Komplikationen=
-:
-***********************************************
-AUSLANDSFORDERUNGEN MANAGER
-Dr. Mrs. ROSALINE CHARLES
-GOOGLE Sicherheitsabteilung [London]
-
-Kontakt E-Mail: gogle.eurolotto@gmail.com
-                Google-Verwaltung@linuxmail.org
-                Google-Verwaltung@planetmail.net
-***********************************************
-Security Code Nummer: GU/N/3642375G
-Ticket Nr.: GU/K/699/33/2014
-Gewinnzahlen: UK/877/798/2014
-***********************************************
-Herzlichen Gl=FCckwunsch noch einmal von Mitgliedern und Personal der
-Lotterie Bord.
-
-Herzlichst,
-Mr. larry Page.
-Chief Executive Officer (C.E.O)
-GOOGLE zonale Koordinator
-LONDON, UNITED KINGDOM.
+-- 
