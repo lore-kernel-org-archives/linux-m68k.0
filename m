@@ -1,95 +1,115 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 2/2] m68k/atari - atafb: convert allocation of fb ram to new interface
-Date: Wed, 19 Mar 2014 20:23:04 +1300
-Message-ID: <1395213784-3249-2-git-send-email-schmitz@debian.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] m68k/atari - stram: alloc ST-RAM pool even if kernel
+ not in ST-RAM
+Date: Wed, 19 Mar 2014 08:51:10 +0100
+Message-ID: <CAMuHMdXksY0Sfq-AN-1hi42=-yHYqgRnH0RM5z0k2oR-hPcOtQ@mail.gmail.com>
 References: <1395213784-3249-1-git-send-email-schmitz@debian.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f50.google.com ([209.85.160.50]:46229 "EHLO
-	mail-pb0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753162AbaCSHXY (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Mar 2014 03:23:24 -0400
-Received: by mail-pb0-f50.google.com with SMTP id md12so8483630pbc.37
-        for <linux-m68k@vger.kernel.org>; Wed, 19 Mar 2014 00:23:23 -0700 (PDT)
+Received: from mail-pa0-f44.google.com ([209.85.220.44]:59996 "EHLO
+	mail-pa0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757420AbaCSHvL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Mar 2014 03:51:11 -0400
+Received: by mail-pa0-f44.google.com with SMTP id bj1so8609823pad.3
+        for <linux-m68k@vger.kernel.org>; Wed, 19 Mar 2014 00:51:10 -0700 (PDT)
 In-Reply-To: <1395213784-3249-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
 
-The new atari_stram_alloc interface returns kernel virtual addresses
-even if the kernel runs in FastRAM. These addresses are not
-guaranteed to be identical with the physical addresses. Since ST-RAM
-mappings have not been set up by mem_init, virt_to_phys() and its
-cousin do not work and the atari_stram_to_phys() etc. helpers must
-be used to determine physical addresses.
-fb.fix->smem_start needs physical addresses, fb.par->screen_base
-needs virtual addresses. Take care of the virt-to-phys conversion
-both on fb init and par changes.
+Hi Michael,
 
-FIXME - currently double faukts at fb init.
+On Wed, Mar 19, 2014 at 8:23 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Instead of mucking around with ioremap (which appears to
+> rely on the physical area being mappped by mem_init), use
 
-Signed-off-by: Michael Schmitz <schmitz@debian.org>
----
- drivers/video/atafb.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+That's not true. E.g. I/O memory is never mapped by mem_init().
 
-diff --git a/drivers/video/atafb.c b/drivers/video/atafb.c
-index e21d1f5..40d105e 100644
---- a/drivers/video/atafb.c
-+++ b/drivers/video/atafb.c
-@@ -790,7 +790,7 @@ static void tt_get_par(struct atafb_par *par)
- 	addr = ((shifter.bas_hi & 0xff) << 16) |
- 	       ((shifter.bas_md & 0xff) << 8)  |
- 	       ((shifter.bas_lo & 0xff));
--	par->screen_base = phys_to_virt(addr);
-+	par->screen_base = atari_stram_to_virt(addr);
- }
- 
- static void tt_set_par(struct atafb_par *par)
-@@ -1584,7 +1584,7 @@ static void falcon_get_par(struct atafb_par *par)
- 	addr = (shifter.bas_hi & 0xff) << 16 |
- 	       (shifter.bas_md & 0xff) << 8  |
- 	       (shifter.bas_lo & 0xff);
--	par->screen_base = phys_to_virt(addr);
-+	par->screen_base = atari_stram_to_virt(addr);
- 
- 	/* derived parameters */
- 	hw->ste_mode = (hw->f_shift & 0x510) == 0 && hw->st_shift == 0x100;
-@@ -1980,7 +1980,7 @@ static void stste_get_par(struct atafb_par *par)
- 	       ((shifter.bas_md & 0xff) << 8);
- 	if (ATARIHW_PRESENT(EXTD_SHIFTER))
- 		addr |= (shifter.bas_lo & 0xff);
--	par->screen_base = phys_to_virt(addr);
-+	par->screen_base = atari_stram_to_virt(addr);
- }
- 
- static void stste_set_par(struct atafb_par *par)
-@@ -2039,7 +2039,7 @@ static int stste_detect(void)
- static void stste_set_screen_base(void *s_base)
- {
- 	unsigned long addr;
--	addr = virt_to_phys(s_base);
-+	addr = (unsigned long) atari_stram_to_phys((unsigned long) s_base);
- 	/* Setup Screen Memory */
- 	shifter.bas_hi = (unsigned char)((addr & 0xff0000) >> 16);
- 	shifter.bas_md = (unsigned char)((addr & 0x00ff00) >> 8);
-@@ -2286,7 +2286,7 @@ static void set_screen_base(void *s_base)
- {
- 	unsigned long addr;
- 
--	addr = virt_to_phys(s_base);
-+	addr = (unsigned long) atari_stram_to_phys((unsigned long) s_base);
- 	/* Setup Screen Memory */
- 	shifter.bas_hi = (unsigned char)((addr & 0xff0000) >> 16);
- 	shifter.bas_md = (unsigned char)((addr & 0x00ff00) >> 8);
-@@ -3166,7 +3166,7 @@ int __init atafb_init(void)
- 		memset(screen_base, 0, mem_req);
- 		pad = -(unsigned long)screen_base & (PAGE_SIZE - 1);
- 		screen_base += pad;
--		real_screen_base = screen_base + ovsc_offset;
-+		real_screen_base = atari_stram_to_phys((unsigned long) (screen_base + ovsc_offset));
- 		screen_len = (mem_req - pad - ovsc_offset) & PAGE_MASK;
- 		st_ovsc_switch();
- 		if (CPU_IS_040_OR_060) {
--- 
-1.7.0.4
+> @@ -93,21 +92,54 @@ void __init atari_stram_init(void)
+>   */
+>  void __init atari_stram_reserve_pages(void *start_mem)
+>  {
+> -       /*
+> -        * always reserve first page of ST-RAM, the first 2 KiB are
+> -        * supervisor-only!
+> -        */
+> -       if (!kernel_in_stram)
+> -               reserve_bootmem(0, PAGE_SIZE, BOOTMEM_DEFAULT);
+> -
+> -       stram_pool.start = (resource_size_t)alloc_bootmem_low_pages(pool_size);
+> -       stram_pool.end = stram_pool.start + pool_size - 1;
+> -       request_resource(&iomem_resource, &stram_pool);
+> +       if (kernel_in_stram) {
+> +
+> +               stram_pool.start = (resource_size_t)alloc_bootmem_low_pages(pool_size);
+> +               stram_pool.end = stram_pool.start + pool_size - 1;
+> +               request_resource(&iomem_resource, &stram_pool);
+> +
+> +               printk("atari_stram pool: kernel in ST-RAM, using alloc_bootmem!\n");
+> +
+> +               printk("atari_stram pool: size = %lu bytes, resource = %pR\n",
+> +                        pool_size, &stram_pool);
+> +               printk("atari_stram pool: start = %p, end = %p\n",
+> +                         (void *) stram_pool.start, (void *) stram_pool.end);
+> +               printk("atari_stram pool: stram_virt_offset = %p\n",
+> +                         (void *) stram_virt_offset);
+> +       } else {
+> +               /*
+> +                * Skip page 0, as the fhe first 2 KiB are supervisor-only!
+> +                */
+> +
+> +               printk("atari_stram pool: kernel not in ST-RAM, using ioremap!\n");
+> +
+> +               stram_pool.start = PAGE_SIZE;
+> +               stram_pool.end = stram_pool.start + pool_size - 1;
+> +
+> +               request_resource(&iomem_resource, &stram_pool);
+> +
+> +               printk("atari_stram pool: size = %lu bytes, resource = %pR\n",
+> +                        pool_size, &stram_pool);
+> +               printk("atari_stram pool: start = %p, end = %p\n",
+> +                         (void *) stram_pool.start, (void *) stram_pool.end);
+> +
+> +               /* stram_virt_offset = ioremap(stram_pool.start, pool_size); */
+> +               stram_virt_offset = (unsigned long) 0xFF000000;
+> +
+> +               printk("atari_stram pool: stram_virt_offset = %p\n",
+> +                         (void *) stram_virt_offset);
+> +       }
+
+If you reorder some lines, you can share more code between the "if" and
+"else" cases.
+
+> +void *atari_stram_to_virt(unsigned long phys)
+> +{
+> +       return (void *)(phys + stram_virt_offset);
+>  }
+>
+> +void *atari_stram_to_phys(unsigned long virt)
+
+This should be "unsigned long atari_stram_to_phys(void *)",
+allowing to remove a few casts in the callers...
+
+> +{
+> +       return (void *)(virt - stram_virt_offset);
+> +}
+
+>  void atari_stram_free(void *addr)
+>  {
+> -       unsigned long start = (unsigned long)addr;
+> +       unsigned long start = (unsigned long) atari_stram_to_phys((unsigned long) addr);
+
+... like here.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
