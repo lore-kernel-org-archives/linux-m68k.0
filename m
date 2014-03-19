@@ -1,31 +1,60 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH 1/2] m68k/atari - stram: alloc ST-RAM pool even if kernel not in ST-RAM
-Date: Wed, 19 Mar 2014 09:18:49 +0100
-Message-ID: <mvmd2hisis6.fsf@hawking.suse.de>
-References: <1395213784-3249-1-git-send-email-schmitz@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:50746 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752319AbaCSISx (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Mar 2014 04:18:53 -0400
-In-Reply-To: <1395213784-3249-1-git-send-email-schmitz@debian.org> (Michael
-	Schmitz's message of "Wed, 19 Mar 2014 20:23:03 +1300")
-Sender: linux-m68k-owner@vger.kernel.org
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v2 00/12] scsi/NCR5380: fix debugging macros and #include structure
+Date: Wed, 19 Mar 2014 23:35:16 +1100
+Message-ID: <20140319123516.542623278@telegraphics.com.au>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
+Cc: Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>
 
-Michael Schmitz <schmitzmic@gmail.com> writes:
 
-> +		 * Skip page 0, as the fhe first 2 KiB are supervisor-only!
+This patch series addresses several issues with NCR5380 drivers:
 
-s/fhe//
+1. The complex network of #include directives.
 
-Andreas.
+2. Three inconsistent implementations of the core driver all attempting
+   to share the same macro definitions in NCR5380.h.
+
+3. Broken debugging code.
+
+In the past these issues have led to compiler warnings and ugly hacks to
+fix build failures.
+
+This patch series fixes the debugging code by reducing the divergence
+between the various core driver implementations.
+
+The final two patches in the series further reduce divergence by refactoring
+sun3_scsi.c and sun3_scsi_vme.c so that they follow the same structure as
+the other NCR5380 drivers.
+
+By the end of this patch series over 800 net lines of code have been
+removed. This is mostly duplicated code that's easily eliminated once the
+debugging code is made consistent (and some dead code is removed).
+
+Better uniformity and less duplication should assist future work such as
+modernization and trivial clean-up.
+
+To make code review easier I've tried to keep these patches succinct and
+free of extraneous changes. Though I did run checkpatch.pl, I've ignored
+whitespace issues in existing code. I will send separate patches for
+whitespace clean-up of NCR5380 drivers.
+
+All NCR5380 drivers have been compile-tested with this patch series:
+  arm/cumana_1.c
+  arm/oak.c
+  atari_scsi.c
+  dmx3191d.c
+  dtc.c
+  g_NCR5380.c
+  g_NCR5380_mmio.c
+  mac_scsi.c
+  pas16.c
+  sun3_scsi.c
+  sun3_scsi_vme.c
+  t128.c
+
+I've successfully regression tested this patch series using mac_scsi on a 
+PowerBook 180. The debugging macros are now usable again.
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
