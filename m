@@ -1,81 +1,39 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] m68k/atari - atafb: convert allocation of fb ram to
- new interface
-Date: Thu, 20 Mar 2014 09:33:48 +0100
-Message-ID: <CAMuHMdVq=XEW_aVnu=M8skWYbiAOxOjNyT9zoZqTLUM0HxiM-Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k/atari - stram: alloc ST-RAM pool even if kernel
+ not in ST-RAM
+Date: Thu, 20 Mar 2014 09:35:32 +0100
+Message-ID: <CAMuHMdXOwhE9WU1QK2mjHbwwA4iaS1vsROPNgLwR0ggz9ruW9Q@mail.gmail.com>
 References: <1395213784-3249-1-git-send-email-schmitz@debian.org>
-	<1395213784-3249-2-git-send-email-schmitz@debian.org>
-	<CAMuHMdVriMKQrNjxBnPDekVAzML5Np-ygvN57OTcTMxO97rsfQ@mail.gmail.com>
-	<532AA422.8040208@biophys.uni-duesseldorf.de>
+	<CAMuHMdXksY0Sfq-AN-1hi42=-yHYqgRnH0RM5z0k2oR-hPcOtQ@mail.gmail.com>
+	<532AA57E.70506@biophys.uni-duesseldorf.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f177.google.com ([209.85.192.177]:63386 "EHLO
-	mail-pd0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755560AbaCTIdt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Mar 2014 04:33:49 -0400
-Received: by mail-pd0-f177.google.com with SMTP id y10so602324pdj.36
-        for <linux-m68k@vger.kernel.org>; Thu, 20 Mar 2014 01:33:48 -0700 (PDT)
-In-Reply-To: <532AA422.8040208@biophys.uni-duesseldorf.de>
+Received: from mail-pd0-f169.google.com ([209.85.192.169]:48495 "EHLO
+	mail-pd0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756244AbaCTIfd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Mar 2014 04:35:33 -0400
+Received: by mail-pd0-f169.google.com with SMTP id fp1so610297pdb.0
+        for <linux-m68k@vger.kernel.org>; Thu, 20 Mar 2014 01:35:33 -0700 (PDT)
+In-Reply-To: <532AA57E.70506@biophys.uni-duesseldorf.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: schmitz <schmitz@biophys.uni-duesseldorf.de>
 Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
 
-Hi Michael,
-
-On Thu, Mar 20, 2014 at 9:17 AM, schmitz
+On Thu, Mar 20, 2014 at 9:23 AM, schmitz
 <schmitz@biophys.uni-duesseldorf.de> wrote:
->>         kernel_set_cachemode(screen_base, screen_len,
->>                                                      IOMAP_WRITETHROUGH);
+>>> Instead of mucking around with ioremap (which appears to
+>>> rely on the physical area being mappped by mem_init), use
+>>>
 >>
->> woops, that won't work with the virt_to_phys() above, nor with transparent
->> translation. I guess it writes to a non-existent pointer table,
->> causing the crash?
+>>
+>> That's not true. E.g. I/O memory is never mapped by mem_init().
 >
-> You mean kernel_set_cachemode wants a physical address?
+> Why, then, does the ioremap() of ST-RAM fail? Because the physical address
+> is lower than the lowest currently mapped physical address?
 
-No, it wants memory mapped using the page tables. Probably it will
-work only for System RAM, not for MMIO mapped in head.S.
-
-> Not sure the mapping in head.S is actually per transparent translation for
-> 040 or 060. But I'll try with that chunk of code disabled (the early mapping
-> is done as NOCACHE_SER so we don't really need all of that if the kernel is
-> not in ST-RAM).
-
-it's using mmu_map, not mmu_map_tt, so no transparent translation.
-
-> The last log line I get is:
->
-> atafb_init: start
-> atafb_init: initializing Falcon hw
-> atafb: screen_base ff001000 real_screen_base 00001000 screen_len 69632
-> Determined 640x400, depth 1
->   virtual 640x870
->
-> which is a bit further down.
->
-> I guess it dies in register_framebuffer() - the next log entry is missing:
->
->        fb_info(&fb_info, "frame buffer device, using %dK of video memory\n",
->                screen_len >> 10);
-
-And register_framebuffer() will write to the frame buffer, I think.
-So info->screen_base may be incorrect.
-
-Yep:
-
-static void atafb_set_disp(struct fb_info *info)
-{
-        atafb_get_var(&info->var, info);
-        atafb_get_fix(&info->fix, info);
-
-        info->screen_base = (void *)info->fix.smem_start;
-}
-
-Missing atari_stram_to_virt().
-
-Any other casts that indicate bugs? ;-)
+I don't know. How does it fail?
 
 Gr{oetje,eeting}s,
 
