@@ -1,76 +1,51 @@
-From: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Subject: Re: [PATCH 2/2] m68k/atari - atafb: convert allocation of fb ram
- to new interface
-Date: Sat, 22 Mar 2014 20:36:11 +1300
-Message-ID: <532D3D6B.4040600@biophys.uni-duesseldorf.de>
-References: <1395213784-3249-1-git-send-email-schmitz@debian.org>	<1395213784-3249-2-git-send-email-schmitz@debian.org>	<CAMuHMdVriMKQrNjxBnPDekVAzML5Np-ygvN57OTcTMxO97rsfQ@mail.gmail.com>	<532AA422.8040208@biophys.uni-duesseldorf.de> <CAMuHMdVq=XEW_aVnu=M8skWYbiAOxOjNyT9zoZqTLUM0HxiM-Q@mail.gmail.com> <532CE74B.6010406@biophys.uni-duesseldorf.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 0/2] m68k/atari - make atafb work with kernel loaded to FastRAM
+Date: Sat, 22 Mar 2014 21:47:06 +1300
+Message-ID: <1395478028-17274-1-git-send-email-schmitz@debian.org>
+References: <1395213784-3249-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f42.google.com ([209.85.160.42]:32986 "EHLO
-	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750831AbaCVHhR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 22 Mar 2014 03:37:17 -0400
-Received: by mail-pb0-f42.google.com with SMTP id rr13so3357617pbb.29
-        for <linux-m68k@vger.kernel.org>; Sat, 22 Mar 2014 00:37:16 -0700 (PDT)
-In-Reply-To: <532CE74B.6010406@biophys.uni-duesseldorf.de>
+Received: from mail-pd0-f181.google.com ([209.85.192.181]:41808 "EHLO
+	mail-pd0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750738AbaCVIrW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 22 Mar 2014 04:47:22 -0400
+Received: by mail-pd0-f181.google.com with SMTP id p10so3293749pdj.12
+        for <linux-m68k@vger.kernel.org>; Sat, 22 Mar 2014 01:47:22 -0700 (PDT)
+In-Reply-To: <1395213784-3249-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, debian-68k@lists.debian.org
 
-Hi Geert,
->>> I guess it dies in register_framebuffer() - the next log entry is 
->>> missing:
->>>
->>>        fb_info(&fb_info, "frame buffer device, using %dK of video 
->>> memory\n",
->>>                screen_len >> 10);
->>>     
->>
->> And register_framebuffer() will write to the frame buffer, I think.
->> So info->screen_base may be incorrect.
->>
->> Yep:
->>
->> static void atafb_set_disp(struct fb_info *info)
->> {
->>         atafb_get_var(&info->var, info);
->>         atafb_get_fix(&info->fix, info);
->>
->>         info->screen_base = (void *)info->fix.smem_start;
->> }
->>
->> Missing atari_stram_to_virt().
->>   
->
-> Should have had phys_to_virt() before I guess. Thanks.
+Geert,
 
-Bingo!
+cleaned up version of my earlier patches to make allocation of ST-RAM work
+even when the kernel resides in FastRAM, and ST-RAM is not normally usable
+by Linux because it violates the memory chunk order required for the 
+discontig memory model.
 
->
->> Any other casts that indicate bugs? ;-)
->>   
->
-> Probably - I'll go over the source again. My port of atafb a few years 
-> back was none too subtle.
->
+The code relies on a mapping that has been set up for the first 16 MB of
+address space in head.S - this may  not be ideal, because the mapping is
+set up as non-cacheable and serialized (for reasons of hardware registers
+mapped in the upper end of that segment). 
 
-Only a few more - in the external VGA adapter code, in the ioctl code 
-(copy tp/from user) and one in the atafb_imageblit() that I'm fairly 
-sure is dead code.
+I've taken care not to disturb the cache mode for the framebuffer if the
+framebuffer resides in the first 4 MB of ST-RAM, for now. This is easily
+disabled by reverting the relevant piece of code back to its old state
+(preserving the changes to the virt/phys translation).
 
-ARAnyM is happy - I'll have yet to see how this works on real hardware. 
-We might yet need a writethrough mapping for performance.
+So far, I've only tested this on a patched version of ARAnyM, using Andreas'
+SkipSTRAM or LoadToFastRAM options. 
 
-In the interest of minimizing casts, I'll rewrite the virt/phys 
-translation helpers and clean up the rest of the code a bit more. Saves 
-a bit of headache when I need to revisit this code in another decade or 
-so :-)
+Code path for external framebuffer has not been changed - this code relies on
+the user passing the address of an external VGA framebuffer to the kernel, 
+and should continue to work as normal. 
 
-Thanks again for your help in tracking this down.
+The use of special ST-RAM virt/phys translation helpers somewhat complicates
+the addition of code to deal with Videl-compatible hardware that uses a
+dedicated video RAM chunk distinct from ST-RAM. Not sure how to work around
+that. 
 
 Cheers,
 
-    Michael
+	Michael
+ 
