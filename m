@@ -1,60 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] m68k/atari - stram: alloc ST-RAM pool even if kernel
- not in ST-RAM
-Date: Sun, 23 Mar 2014 21:02:42 +0100
-Message-ID: <CAMuHMdVB0uZYb9QQyDGumRev_0wu=iAgYLTqQyBAeOSc0apPHQ@mail.gmail.com>
-References: <1395213784-3249-1-git-send-email-schmitz@debian.org>
-	<CAMuHMdXksY0Sfq-AN-1hi42=-yHYqgRnH0RM5z0k2oR-hPcOtQ@mail.gmail.com>
-	<532AA57E.70506@biophys.uni-duesseldorf.de>
-	<CAMuHMdXOwhE9WU1QK2mjHbwwA4iaS1vsROPNgLwR0ggz9ruW9Q@mail.gmail.com>
-	<532CE84A.8090305@biophys.uni-duesseldorf.de>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: kswapd0 bug
+Date: Mon, 24 Mar 2014 21:46:38 +0100
+Message-ID: <874n2nz5n5.fsf@igel.home>
+References: <Pine.BSM.4.64L.1403221138430.7386@herc.mirbsd.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f49.google.com ([209.85.220.49]:51027 "EHLO
-	mail-pa0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750866AbaCWUCm (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Mar 2014 16:02:42 -0400
-Received: by mail-pa0-f49.google.com with SMTP id lj1so4521190pab.22
-        for <linux-m68k@vger.kernel.org>; Sun, 23 Mar 2014 13:02:42 -0700 (PDT)
-In-Reply-To: <532CE84A.8090305@biophys.uni-duesseldorf.de>
+Received: from mail-out.m-online.net ([212.18.0.10]:37132 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753862AbaCXUqk (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 24 Mar 2014 16:46:40 -0400
+In-Reply-To: <Pine.BSM.4.64L.1403221138430.7386@herc.mirbsd.org> (Thorsten
+	Glaser's message of "Sat, 22 Mar 2014 11:41:00 +0000 (UTC)")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: schmitz <schmitz@biophys.uni-duesseldorf.de>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
 
-Hi Michael,
+Thorsten Glaser <tg@mirbsd.de> writes:
 
-On Sat, Mar 22, 2014 at 2:32 AM, schmitz
-<schmitz@biophys.uni-duesseldorf.de> wrote:
->>>> That's not true. E.g. I/O memory is never mapped by mem_init().
->>>>
->>>
->>> Why, then, does the ioremap() of ST-RAM fail? Because the physical
->>> address
->>> is lower than the lowest currently mapped physical address?
->>
->> I don't know. How does it fail?
+> I just had the kswapd0 bug: it using 49.9% CPU, dpkg-deb the other 49=
+=2E9%
+> (I=E2=80=99m just finishing building eglibc 2.18 in the background si=
+nce the
+> buildds are currently limited).
 >
-> Example:
+> This =E2=80=9Cfixed=E2=80=9D it:
 >
-> Unable to handle kernel access at virtual address 5f435059
-> Oops: 00000000
-> Modules linked in:
-> PC: [<00089552>] kmem_cache_alloc+0x12/0x9a
-> SR: 2700  SP: 0029dec0  a2: 002a42d8
-> d0: 000080d0    d1: 00000013    d2: 000080d0    d3: 0007fe3c
-> d4: 00000001    d5: 000000d0    a0: 5f435055    a1: 002a75ee
+> # echo 1 >/proc/sys/vm/drop_caches
+>
+> The system was not swapping, but almost all free RAM was used up for
+> the bugger cache, which I suspect triggered it.
 
-This may be too early in the boot process to call ioremap().
+I guess this suggests that there is something wrong with vm scanning?
 
-Gr{oetje,eeting}s,
+Andreas.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4=
+ED5
+"And now for something completely different."
