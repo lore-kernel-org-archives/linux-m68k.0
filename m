@@ -1,65 +1,50 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH 1/2] TTY: pmac_zilog, check existence of ports in
- pmz_console_init()
-Date: Sun, 30 Mar 2014 17:46:27 +0100
-Message-ID: <1396197987.2898.107.camel@deadeye.wl.decadent.org.uk>
-References: <1385135247-9068-1-git-send-email-geert@linux-m68k.org>
-	 <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/4] m68k/atari - stram: alloc ST-RAM pool even if kernel
+ not in ST-RAM
+Date: Sun, 30 Mar 2014 21:11:19 +0200
+Message-ID: <CAMuHMdXBHrh8ZP5mU2VaRkbsssf0_NHKWdh_e27gMGJZtWj5WQ@mail.gmail.com>
+References: <1396137686-32678-1-git-send-email-schmitz@debian.org>
+	<1396137686-32678-2-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-QLTcni1/4CI/WtFmZlQx"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVcqiNQiMHD3pgRWUzt7n3+F0dwmeXVnmZtgCxyo=GmFw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, stable <stable@vger.kernel.org>, linux-serial@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pb0-f46.google.com ([209.85.160.46]:57183 "EHLO
+	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751718AbaC3TLU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Mar 2014 15:11:20 -0400
+Received: by mail-pb0-f46.google.com with SMTP id rq2so7241506pbb.33
+        for <linux-m68k@vger.kernel.org>; Sun, 30 Mar 2014 12:11:19 -0700 (PDT)
+In-Reply-To: <1396137686-32678-2-git-send-email-schmitz@debian.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
 
+Hi Michael,
 
---=-QLTcni1/4CI/WtFmZlQx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sun, Mar 30, 2014 at 1:01 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> +               pr_debug("atari_stram pool: size = %lu bytes, resource = %pR\n",
+> +                       pool_size, &stram_pool);
+> +               pr_debug("atari_stram pool: start = %p, end = %p\n",
+> +                       (void *) stram_pool.start, (void *) stram_pool.end);
 
-On Tue, 2013-12-24 at 15:39 +0100, Geert Uytterhoeven wrote:
-> On Fri, Nov 22, 2013 at 4:47 PM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > When booting a multi-platform m68k kernel on a non-Mac with "console=3D=
-ttyS0"
-> > on the kernel command line, it crashes with:
->=20
-> Can we please get this in stable, too?
->=20
-> commit dc1dc2f8a5dd863bf2e79f338fc3ae29e99c683a
-[...]
+Please drop this line, as it prints more or less the same as the %pR in the
+line above. Also in the other block.
 
-I've queued this up for 3.2; sorry for the delay.
+> +               pr_debug("atari_stram pool: stram_virt_offset = %p\n",
+> +                       (void *) stram_virt_offset);
 
-Ben.
+Please use "%lx", and drop the cast to "void *". Also in the other block.
 
---=20
-Ben Hutchings
-If more than one person is responsible for a bug, no one is at fault.
+Thanks!
 
---=-QLTcni1/4CI/WtFmZlQx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+                        Geert
 
-iQIVAwUAUzhKY+e/yOyVhhEJAQoCgQ//d0eD2jEhagQ3aCkR/zgGpuaFKr8abPwy
-DnkrD2cXoFZ+ULvFK5mWlGsqR/rnwCjCfkZQ7W4MVUCb7zSOXZbPGTKbiwgmrrjr
-7KOZxtQqRlBdg1bEan5ZDzz1K0koJ+/7fXJHbweGfWZP1vLOT8uAW3C4Ltl58jJJ
-4iPceV6iKl35S+PLkCXwh+IPAV7Zv+KdQHkpE/U1ElGLvBI1RH1md1hzk4uBQ7me
-BomNsZjMcH1eN0tH+dfhMXPhHBE1ylstMG8FHvrVgC69q7Y7/cfRRtSIxTWP3rwL
-YjZvSiBy4skIEpB6MTqT1aYMtZY2vOuNrmnqhqabqWQJgKPRQRoszmLstCVniDob
-ruGXZlDLZ0w9GUHTlaSb8JmxTsOM1X7VdykIkaJto3VO20aHcmHAuoMrIogmG8ha
-fxO9XU21dAYLsvdAmkfu6SghUZngkke8YpTLPsxjIjqL+QGEgUMlRRY1Cz3/MrOv
-J8sc375x/U/gDSn6jMmLMXktlE1LezNXh7bi0bsONUuGouMPiuEGiL48vcnBr1IY
-uZCMW99vDY579UGbxBQHhs189xtAutx7zSB5g6nQUWVwfqKx3qobsqZelI/2fDHo
-Fs2ssq/7Lp8QyUjdIohEgmC+RjFza/4mjYYmxecY7v8A/5od2NaEBSUPGrf6ak8s
-tBvdUtaLxGk=
-=wZdD
------END PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=-QLTcni1/4CI/WtFmZlQx--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
