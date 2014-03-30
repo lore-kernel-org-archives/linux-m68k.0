@@ -1,20 +1,19 @@
-From: "Linux c programming" <zayakin@krstur.ru>
-Subject: Half price off all watches
-Date: Sun, 30 Mar 2014 03:29:32 +0200
-Message-ID: <8D73FB71.4B2466D7__36983.720251783$1396144567$gmane$org@krstur.ru>
-Reply-To: "Linux c programming" <zayakin@krstur.ru>
+From: "Linux fsdevel" <yrivera@healthalliance.com.pa>
+Subject: All that glitters on your wrist
+Date: Sun, 30 Mar 2014 09:25:09 +0200
+Message-ID: <DF63953B.4BF63A54__8567.35104830495$1396175337$gmane$org@healthalliance.com.pa>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ns.krstur.ru ([212.41.14.30]:28224 "EHLO mx.krstur.ru"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752531AbaC3Bzu (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sat, 29 Mar 2014 21:55:50 -0400
+Received: from www.quattroholding.com ([190.33.200.122]:54886 "HELO
+	healthalliance.com.pa" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+	with SMTP id S1752612AbaC3K2P (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Mar 2014 06:28:15 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-c-programming@vger.kernel.org
+To: linux-fsdevel@vger.kernel.org
 
-Look rich without paying the price with one of our quality branded watches
-http://www.princessbag.co.jp/eufqour.php
+Designer branded watches available at clearance prices
+http://bhp-trade.home.pl/bwjobii.php
