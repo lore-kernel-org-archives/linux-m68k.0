@@ -1,60 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 4/4] m68k/atari - atari_scsi: use correct virt/phys
- translation for DMA buffer
-Date: Mon, 31 Mar 2014 09:48:47 +0200
-Message-ID: <CAMuHMdVVyagkFQZdO6RzV2VAjC-jntHcU+7YRWisZGeKRRbjAg@mail.gmail.com>
-References: <1396137686-32678-1-git-send-email-schmitz@debian.org>
-	<1396137686-32678-5-git-send-email-schmitz@debian.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 0/4] Atari kernel-in-FastRAM patches, take three
+Date: Mon, 31 Mar 2014 20:54:38 +1300
+Message-ID: <53391F3E.1090005@gmail.com>
+References: <1396137686-32678-1-git-send-email-schmitz@debian.org> <CAMuHMdV_6e0qsrP6H6mguJ53inndFR--0MYG9KM9iso=F3X0Rg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f41.google.com ([209.85.160.41]:60988 "EHLO
-	mail-pb0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753005AbaCaHsr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 03:48:47 -0400
-In-Reply-To: <1396137686-32678-5-git-send-email-schmitz@debian.org>
+Received: from mail-pa0-f47.google.com ([209.85.220.47]:35825 "EHLO
+	mail-pa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752572AbaCaHyx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 03:54:53 -0400
+Received: by mail-pa0-f47.google.com with SMTP id lj1so7834764pab.34
+        for <linux-m68k@vger.kernel.org>; Mon, 31 Mar 2014 00:54:52 -0700 (PDT)
+In-Reply-To: <CAMuHMdV_6e0qsrP6H6mguJ53inndFR--0MYG9KM9iso=F3X0Rg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jej B <James.Bottomley@hansenpartnership.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>, Michael Schmitz <schmitzmic@gmail.com>, scsi <linux-scsi@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Hi James,
+Hi Geert,
 
-If you don't object, I'd like to take this one through the m68k tree, as it
-depends on a new m68k platform function.
 
-On Sun, Mar 30, 2014 at 1:01 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> With new ST-RAM allocation to work also when the kernel is running
-> from FastRAM, use dedicated virt/phys translation for this case.
+> Hi Michael,
 >
-> Signed-off-by: Michael Schmitz <schmitz@debian.org>
-> ---
->  drivers/scsi/atari_scsi.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> On Sun, Mar 30, 2014 at 1:01 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> see the following patch series for the hopefully final word on
+>> the 'make ST-RAM pool accessible for kernels running from FastRAM'
+>> story.
+> When submitting a "take three", please annotate the individual patches
+> with "[PATCH v3 x/y]".
+
+Will follow shortly.
+
+> It would also have been nice to CC the block resp. SCSI maintainers to
+> get their acks for patches 3 and 4, but I'm gonna take them through the
+> m68k tree anyway.
+
+I'll do that anyway - not that I've got much hope to elicit a response 
+from either. Still waiting for feedback from the last SCSI patches sent 
+there.
+
+(Not that I'm any better - still haven't given Finn's patches a try...)
+
+Cheers,
+
+     Michael
+
+
+
 >
-> diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-> index 296c936..a8d721f 100644
-> --- a/drivers/scsi/atari_scsi.c
-> +++ b/drivers/scsi/atari_scsi.c
-> @@ -639,7 +639,7 @@ static int __init atari_scsi_detect(struct scsi_host_template *host)
->                                         "double buffer\n");
->                         return 0;
->                 }
-> -               atari_dma_phys_buffer = virt_to_phys(atari_dma_buffer);
-> +               atari_dma_phys_buffer = atari_stram_to_phys(atari_dma_buffer);
->                 atari_dma_orig_addr = 0;
->         }
->  #endif
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
 > --
-> 1.7.0.4
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
