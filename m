@@ -1,27 +1,42 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 0/4] Atari kernel-in-FastRAM patches v3
-Date: Mon, 31 Mar 2014 21:06:04 +1300
-Message-ID: <1396253168-25601-1-git-send-email-schmitz@debian.org>
+Subject: [PATCH v3 4/4] m68k/atari - atari_scsi: use correct virt/phys translation for DMA buffer
+Date: Mon, 31 Mar 2014 21:06:08 +1300
+Message-ID: <1396253168-25601-5-git-send-email-schmitz@debian.org>
+References: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f173.google.com ([209.85.192.173]:64064 "EHLO
-	mail-pd0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752035AbaCaIGS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 04:06:18 -0400
-Received: by mail-pd0-f173.google.com with SMTP id z10so7660345pdj.32
-        for <linux-m68k@vger.kernel.org>; Mon, 31 Mar 2014 01:06:17 -0700 (PDT)
+Received: from mail-pb0-f54.google.com ([209.85.160.54]:62413 "EHLO
+	mail-pb0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753246AbaCaIGe (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 04:06:34 -0400
+In-Reply-To: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, debian-68k@lists.debian.org
+Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>, linux-scsi@vger.kernel.org
 
-Hi Geert,
+With the kernel running from FastRAM instead of ST-RAM, none of ST-RAM is
+mapped by mem_init, and DMA-addressable buffer must be mapped by ioremap.
 
-changes to stram.c and atafb.c patches as requested. The external_addr
-case is still untested - may have other bugs that I've not seen when
-changing the external_addr types.
+Use platform specific virt/phys translation helpers for this case.
 
-CC to the relevant lists for floppy and SCSI patches. 
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+Cc: linux-scsi@vger.kernel.org
+---
+ drivers/scsi/atari_scsi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Cheers,
-
-	Michael
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index 296c936..a8d721f 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -639,7 +639,7 @@ static int __init atari_scsi_detect(struct scsi_host_template *host)
+ 					"double buffer\n");
+ 			return 0;
+ 		}
+-		atari_dma_phys_buffer = virt_to_phys(atari_dma_buffer);
++		atari_dma_phys_buffer = atari_stram_to_phys(atari_dma_buffer);
+ 		atari_dma_orig_addr = 0;
+ 	}
+ #endif
+-- 
+1.7.0.4
