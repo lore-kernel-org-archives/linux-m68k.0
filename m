@@ -1,58 +1,66 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v3 2/4] m68k/atari - atafb: convert allocation of fb ram
- to new interface
-Date: Mon, 31 Mar 2014 11:12:07 +0200
-Message-ID: <CAMuHMdX+pZ_HAtODJ6zvxjxBHYpbmvG1QcBLwC-hYu_fW7HfXQ@mail.gmail.com>
-References: <1396253168-25601-1-git-send-email-schmitz@debian.org>
-	<1396253168-25601-3-git-send-email-schmitz@debian.org>
+Subject: [git pull] m68k updates for 3.15
+Date: Mon, 31 Mar 2014 15:09:45 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1403311440160.11624__17769.583015661$1396271418$gmane$org@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f169.google.com ([209.85.192.169]:63177 "EHLO
-	mail-pd0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753766AbaCaJMH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 05:12:07 -0400
-Received: by mail-pd0-f169.google.com with SMTP id fp1so7749622pdb.0
-        for <linux-m68k@vger.kernel.org>; Mon, 31 Mar 2014 02:12:07 -0700 (PDT)
-In-Reply-To: <1396253168-25601-3-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hi Michael,
+	Hi Linus,
 
-On Mon, Mar 31, 2014 at 10:06 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> The new atari_stram_alloc interface returns kernel virtual addresses
-> even if the kernel runs in FastRAM. These addresses are not
-> guaranteed to be identical with the physical addresses. Since ST-RAM
-> mappings have not been set up by mem_init, virt_to_phys() and its
-> cousin do not work and the atari_stram_to_phys() etc. helpers must
-> be used to determine physical addresses.
+The following changes since commit cfbf8d4857c26a8a307fb7cd258074c9dcd8c691:
 
-Thanks!
+  Linux 3.14-rc4 (2014-02-23 17:40:03 -0800)
 
-> @@ -2213,7 +2214,7 @@ static int ext_encode_var(struct fb_var_screeninfo *var, struct atafb_par *par)
->
->  static void ext_get_par(struct atafb_par *par)
->  {
-> -       par->screen_base = external_addr;
-> +       par->screen_base =external_screen_base;
+are available in the git repository at:
 
-I'll add the missing space after "=".
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-> +               external_screen_base = ioremap_writethrough((unsigned long)external_addr,
->                                                      external_len);
+for you to fetch changes up to 50be9eba831da114e1979726f4119d342698e651:
 
-I'll remove the now superfluous cast.
+  m68k: Update defconfigs for v3.14-rc1 (2014-03-31 15:07:24 +0200)
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      [SCSI] atari_scsi: Fix sleep_on race
+
+Finn Thain (2):
+      m68k: Remove CONSOLE_PENGUIN macro, adopt CONFIG_LOGO
+      m68k: Remove dead code
+
+Geert Uytterhoeven (2):
+      m68k: head.S - Remove bogus L prefix in comment
+      m68k: Update defconfigs for v3.14-rc1
+
+ arch/m68k/configs/amiga_defconfig    |   10 +++--
+ arch/m68k/configs/apollo_defconfig   |   10 +++--
+ arch/m68k/configs/atari_defconfig    |   10 +++--
+ arch/m68k/configs/bvme6000_defconfig |   10 +++--
+ arch/m68k/configs/hp300_defconfig    |   10 +++--
+ arch/m68k/configs/mac_defconfig      |   10 +++--
+ arch/m68k/configs/multi_defconfig    |   10 +++--
+ arch/m68k/configs/mvme147_defconfig  |   10 +++--
+ arch/m68k/configs/mvme16x_defconfig  |   10 +++--
+ arch/m68k/configs/q40_defconfig      |   10 +++--
+ arch/m68k/configs/sun3_defconfig     |   10 +++--
+ arch/m68k/configs/sun3x_defconfig    |   10 +++--
+ arch/m68k/kernel/head.S              |   70 ++++------------------------------
+ drivers/scsi/atari_scsi.c            |   12 ++++--
+ 14 files changed, 88 insertions(+), 114 deletions(-)
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
