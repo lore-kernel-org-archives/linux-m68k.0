@@ -1,179 +1,42 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 1/4] m68k/atari - stram: alloc ST-RAM pool even if kernel not in ST-RAM
-Date: Mon, 31 Mar 2014 21:06:05 +1300
-Message-ID: <1396253168-25601-2-git-send-email-schmitz@debian.org>
+Subject: [PATCH v3 3/4] m68k/atari - ataflop: use correct virt/phys translation for DMA buffer
+Date: Mon, 31 Mar 2014 21:06:07 +1300
+Message-ID: <1396253168-25601-4-git-send-email-schmitz@debian.org>
 References: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f172.google.com ([209.85.192.172]:42368 "EHLO
-	mail-pd0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752956AbaCaIG0 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 04:06:26 -0400
-Received: by mail-pd0-f172.google.com with SMTP id p10so7679433pdj.3
-        for <linux-m68k@vger.kernel.org>; Mon, 31 Mar 2014 01:06:26 -0700 (PDT)
+Received: from mail-pa0-f48.google.com ([209.85.220.48]:54946 "EHLO
+	mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753229AbaCaIGd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 04:06:33 -0400
 In-Reply-To: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>
+Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>, linux-kernel@vger.kernel.org
 
-With the kernel loaded to FastRAM (TT-RAM), none of the ST-RAM
-address range is mapped by init_mem, and ST-RAM is not accessible
-through the normal allocation pathways as a result.
+With the kernel running from FastRAM instead of ST-RAM, none of ST-RAM is
+mapped by mem_init, and DMA-addressable buffer must be mapped by ioremap.
 
-Implement ST-RAM pool allocation to be based on physical addresses
-always (it already was when the kernel was loaded in ST-RAM).
-Return kernel virtual addresses as per normal.
-
-The current test for the kernel residing in ST-RAM always returns
-true. Use the bootinfo memory chunk order instead - with the kernel
-in FastRAM, ST-RAM (phys. 0x0) is not the first chunk.
-
-In case the kernel is running from FastRAM, delay mapping of ST-RAM
-pool until after mem_init.
-
-Provide helper functions for those users of ST-RAM that need
-to be aware of the backing physical addresses.
-
-Kudos to Geert for his hints on getting this started.
+Use platform specific virt/phys translation helpers for this case.
 
 Signed-off-by: Michael Schmitz <schmitz@debian.org>
+Cc: linux-kernel@vger.kernel.org
 ---
- arch/m68k/atari/stram.c             |   71 ++++++++++++++++++++++++++--------
- arch/m68k/include/asm/atari_stram.h |    2 +
- 2 files changed, 56 insertions(+), 17 deletions(-)
+ drivers/block/ataflop.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/m68k/atari/stram.c b/arch/m68k/atari/stram.c
-index 0810c8d..5f8cb5a 100644
---- a/arch/m68k/atari/stram.c
-+++ b/arch/m68k/atari/stram.c
-@@ -47,6 +47,7 @@ static struct resource stram_pool = {
- 
- static unsigned long pool_size = 1024*1024;
- 
-+static unsigned long stram_virt_offset;
- 
- static int __init atari_stram_setup(char *arg)
- {
-@@ -67,14 +68,12 @@ early_param("stram_pool", atari_stram_setup);
- void __init atari_stram_init(void)
- {
- 	int i;
--	void *stram_start;
- 
- 	/*
- 	 * determine whether kernel code resides in ST-RAM
- 	 * (then ST-RAM is the first memory block at virtual 0x0)
- 	 */
--	stram_start = phys_to_virt(0);
--	kernel_in_stram = (stram_start == 0);
-+	kernel_in_stram = (m68k_memory[0].addr == 0);
- 
- 	for (i = 0; i < m68k_num_memory; ++i) {
- 		if (m68k_memory[i].addr == 0) {
-@@ -89,24 +88,62 @@ void __init atari_stram_init(void)
- 
- /*
-  * This function is called from setup_arch() to reserve the pages needed for
-- * ST-RAM management.
-+ * ST-RAM management, if the kernel resides in ST-RAM.
-  */
- void __init atari_stram_reserve_pages(void *start_mem)
- {
--	/*
--	 * always reserve first page of ST-RAM, the first 2 KiB are
--	 * supervisor-only!
--	 */
--	if (!kernel_in_stram)
--		reserve_bootmem(0, PAGE_SIZE, BOOTMEM_DEFAULT);
-+	if (kernel_in_stram) {
-+		pr_debug("atari_stram pool: kernel in ST-RAM, using alloc_bootmem!\n");
-+		stram_pool.start = (resource_size_t)alloc_bootmem_low_pages(pool_size);
-+		stram_pool.end = stram_pool.start + pool_size - 1;
-+		request_resource(&iomem_resource, &stram_pool);
-+		stram_virt_offset = 0;
-+		pr_debug("atari_stram pool: size = %lu bytes, resource = %pR\n",
-+			pool_size, &stram_pool);
-+		pr_debug("atari_stram pool: stram_virt_offset = %lx\n",
-+			stram_virt_offset);
-+	}
-+}
- 
--	stram_pool.start = (resource_size_t)alloc_bootmem_low_pages(pool_size);
--	stram_pool.end = stram_pool.start + pool_size - 1;
--	request_resource(&iomem_resource, &stram_pool);
- 
--	pr_debug("atari_stram pool: size = %lu bytes, resource = %pR\n",
--		 pool_size, &stram_pool);
-+/*
-+ * This function is called as arch initcall to reserve the pages needed for
-+ * ST-RAM management, if the kernel does not reside in ST-RAM.
-+ */
-+int __init atari_stram_map_pages(void)
-+{
-+	if (!kernel_in_stram) {
-+		/*
-+		 * Skip page 0, as the fhe first 2 KiB are supervisor-only!
-+		 */
-+		pr_debug("atari_stram pool: kernel not in ST-RAM, using ioremap!\n");
-+		stram_pool.start = PAGE_SIZE;
-+		stram_pool.end = stram_pool.start + pool_size - 1;
-+		request_resource(&iomem_resource, &stram_pool);
-+		stram_virt_offset = (unsigned long) ioremap(stram_pool.start,
-+				resource_size(&stram_pool)) - stram_pool.start;
-+		pr_debug("atari_stram pool: size = %lu bytes, resource = %pR\n",
-+			pool_size, &stram_pool);
-+		pr_debug("atari_stram pool: stram_virt_offset = %lx\n",
-+			stram_virt_offset);
-+	}
-+	return 0;
-+}
-+arch_initcall(atari_stram_map_pages);
-+
-+
-+void *atari_stram_to_virt(unsigned long phys)
-+{
-+	return (void *)(phys + stram_virt_offset);
-+}
-+EXPORT_SYMBOL(atari_stram_to_virt);
-+
-+
-+unsigned long atari_stram_to_phys(void *virt)
-+{
-+	return (unsigned long)(virt - stram_virt_offset);
- }
-+EXPORT_SYMBOL(atari_stram_to_phys);
- 
- 
- void *atari_stram_alloc(unsigned long size, const char *owner)
-@@ -134,14 +171,14 @@ void *atari_stram_alloc(unsigned long size, const char *owner)
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index 0e30c6e..f54655a 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -1952,7 +1952,7 @@ static int __init atari_floppy_init (void)
+ 		goto Enomem;
  	}
+ 	TrackBuffer = DMABuffer + 512;
+-	PhysDMABuffer = virt_to_phys(DMABuffer);
++	PhysDMABuffer = atari_stram_to_phys(DMABuffer);
+ 	PhysTrackBuffer = virt_to_phys(TrackBuffer);
+ 	BufferDrive = BufferSide = BufferTrack = -1;
  
- 	pr_debug("atari_stram_alloc: returning %pR\n", res);
--	return (void *)res->start;
-+	return atari_stram_to_virt(res->start);
- }
- EXPORT_SYMBOL(atari_stram_alloc);
- 
- 
- void atari_stram_free(void *addr)
- {
--	unsigned long start = (unsigned long)addr;
-+	unsigned long start = atari_stram_to_phys(addr);
- 	struct resource *res;
- 	unsigned long size;
- 
-diff --git a/arch/m68k/include/asm/atari_stram.h b/arch/m68k/include/asm/atari_stram.h
-index 62e2759..4e771c2 100644
---- a/arch/m68k/include/asm/atari_stram.h
-+++ b/arch/m68k/include/asm/atari_stram.h
-@@ -8,6 +8,8 @@
- /* public interface */
- void *atari_stram_alloc(unsigned long size, const char *owner);
- void atari_stram_free(void *);
-+void *atari_stram_to_virt(unsigned long phys);
-+unsigned long atari_stram_to_phys(void *);
- 
- /* functions called internally by other parts of the kernel */
- void atari_stram_init(void);
 -- 
 1.7.0.4
