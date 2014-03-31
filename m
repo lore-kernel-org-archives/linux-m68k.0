@@ -1,36 +1,52 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/4] Atari kernel-in-FastRAM patches, take three
-Date: Mon, 31 Mar 2014 09:42:29 +0200
-Message-ID: <CAMuHMdV_6e0qsrP6H6mguJ53inndFR--0MYG9KM9iso=F3X0Rg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] m68k/atari - ataflop: use correct virt/phys
+ translation for DMA buffer
+Date: Mon, 31 Mar 2014 09:46:11 +0200
+Message-ID: <CAMuHMdWFuh5SpiAwp-0-KCnG=NFJT+DamDZUr2tAwdK=FrVW=w@mail.gmail.com>
 References: <1396137686-32678-1-git-send-email-schmitz@debian.org>
+	<1396137686-32678-4-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pb0-f46.google.com ([209.85.160.46]:52165 "EHLO
-	mail-pb0-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753415AbaCaHma (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 03:42:30 -0400
-Received: by mail-pb0-f46.google.com with SMTP id rq2so7800729pbb.19
-        for <linux-m68k@vger.kernel.org>; Mon, 31 Mar 2014 00:42:29 -0700 (PDT)
-In-Reply-To: <1396137686-32678-1-git-send-email-schmitz@debian.org>
+Received: from mail-pd0-f170.google.com ([209.85.192.170]:37166 "EHLO
+	mail-pd0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752572AbaCaHqM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Mar 2014 03:46:12 -0400
+In-Reply-To: <1396137686-32678-4-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+To: Jens Axboe <axboe@fb.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>, Michael Schmitz <schmitzmic@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Michael,
+Hi Jens,
+
+If you don't object, I'd like to take this one through the m68k tree, as it
+depends on a new m68k platform function.
 
 On Sun, Mar 30, 2014 at 1:01 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> see the following patch series for the hopefully final word on
-> the 'make ST-RAM pool accessible for kernels running from FastRAM'
-> story.
-
-When submitting a "take three", please annotate the individual patches
-with "[PATCH v3 x/y]".
-
-It would also have been nice to CC the block resp. SCSI maintainers to
-get their acks for patches 3 and 4, but I'm gonna take them through the
-m68k tree anyway.
+> With new ST-RAM allocation to work also when the kernel is running
+> from FastRAM, use dedicated virt/phys translation for this case.
+>
+> Signed-off-by: Michael Schmitz <schmitz@debian.org>
+> ---
+>  drivers/block/ataflop.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index 0e30c6e..f54655a 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -1952,7 +1952,7 @@ static int __init atari_floppy_init (void)
+>                 goto Enomem;
+>         }
+>         TrackBuffer = DMABuffer + 512;
+> -       PhysDMABuffer = virt_to_phys(DMABuffer);
+> +       PhysDMABuffer = atari_stram_to_phys(DMABuffer);
+>         PhysTrackBuffer = virt_to_phys(TrackBuffer);
+>         BufferDrive = BufferSide = BufferTrack = -1;
+>
+> --
+> 1.7.0.4
 
 Gr{oetje,eeting}s,
 
