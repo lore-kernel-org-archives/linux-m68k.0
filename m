@@ -1,39 +1,38 @@
-From: Daniel Palmer <danieruru@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: Getting stuck during boot on a 68VZ328 (DragonBallVZ).
-Date: Wed, 2 Apr 2014 20:33:26 +0900
-Message-ID: <CAO64nm7RTG0V8RUj+4wZc336QHiVa6q=xH0NsU710_vhhHLfkQ@mail.gmail.com>
-References: <CAO64nm7D_cfy95rdDasH9jeHhXRzLpMMpniK-BKxCsqZsn7yZw@mail.gmail.com>
-	<CAO64nm6s8SYRFpnd1yMV5UsvM7JetkzkYgWMiRfNQyT93+PuGQ@mail.gmail.com>
-	<CAO64nm6Z0rOhiUYu5nqeZuVvfz0-9wy8D02gj_82nXRdi0NECw@mail.gmail.com>
-	<alpine.LNX.2.00.1404021529450.9604@nippy.intranet>
-	<CAO64nm6NJSmVWyo779AKqD_8FyXPKK-_EYEM1SsMz+N7WJWeHg@mail.gmail.com>
-	<CAGj5WxBpHJwH5sgE_kmOGL+xq-kLNBTuab_0mZw7gy-XuEYifQ@mail.gmail.com>
+Date: Wed, 2 Apr 2014 23:02:16 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1404022244160.18569@nippy.intranet>
+References: <CAO64nm7D_cfy95rdDasH9jeHhXRzLpMMpniK-BKxCsqZsn7yZw@mail.gmail.com> <CAO64nm6s8SYRFpnd1yMV5UsvM7JetkzkYgWMiRfNQyT93+PuGQ@mail.gmail.com> <CAO64nm6Z0rOhiUYu5nqeZuVvfz0-9wy8D02gj_82nXRdi0NECw@mail.gmail.com> <alpine.LNX.2.00.1404021529450.9604@nippy.intranet>
+ <CAO64nm6NJSmVWyo779AKqD_8FyXPKK-_EYEM1SsMz+N7WJWeHg@mail.gmail.com> <CAGj5WxBpHJwH5sgE_kmOGL+xq-kLNBTuab_0mZw7gy-XuEYifQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vc0-f176.google.com ([209.85.220.176]:37727 "EHLO
-	mail-vc0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758372AbaDBLd1 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Apr 2014 07:33:27 -0400
-Received: by mail-vc0-f176.google.com with SMTP id lc6so63906vcb.35
-        for <linux-m68k@vger.kernel.org>; Wed, 02 Apr 2014 04:33:26 -0700 (PDT)
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56287 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1758394AbaDBMCl (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Apr 2014 08:02:41 -0400
 In-Reply-To: <CAGj5WxBpHJwH5sgE_kmOGL+xq-kLNBTuab_0mZw7gy-XuEYifQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Luis Alves <ljalvs@gmail.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, linux-m68k@vger.kernel.org
+Cc: Daniel Palmer <danieruru@gmail.com>, linux-m68k@vger.kernel.org
 
-On Wed, Apr 2, 2014 at 7:47 PM, Luis Alves <ljalvs@gmail.com> wrote:
-> is compiled for 64-bit arch only):
-> https://code.google.com/p/m68k/downloads/detail?name=m68k-uclinux-tools-20121115.tar.bz2&can=2&q=
 
-I have a 64bit machine so I might try it later. I have compiled my
-kernel with GCC 4.8.2 for the m68k-elf target and that is working.
+On Wed, 2 Apr 2014, Luis Alves wrote:
 
-The problem I'm having now is that every time I run something in hush
-it runs when it exits hush exits with it and busybox's init restarts
-it.
-A quick bit of googling suggested that busybox's init couldn't be used
-on nommu systems but the source has #ifdefs for nommu systems all over
-the place.
-simpleinit from the uclinux dist seems to be doing the same thing.
+> Hi Daniel,
+> 
+> Nice work.
+> I remember that I managed to get gcc 4.7.2 working (I had to patch a
+> few files in gcc due to abi changes).
+> ...
+> > Here is the bug: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53386
+
+Would you mind revisiting the bug report to attach the patch or add a 
+comment with a link to the patch submission?
+
+The last thing you wrote in the bug report suggests that strict alignment 
+isn't sufficient to fix the problem or else gcc-4.6 contains some sort of 
+regression that caused Linux to log "BUG", which is a bit confusing.
+
+Finn
