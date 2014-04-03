@@ -1,59 +1,80 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH 2/2] Fix mach_sched_init for EZ and VZ DragonBall chips.
-Date: Thu, 03 Apr 2014 22:45:16 +1000
-Message-ID: <533D57DC.6060105@westnet.com.au>
-References: <1396449792-5121-1-git-send-email-danieruru@gmail.com> <1396449792-5121-2-git-send-email-danieruru@gmail.com>
+From: Greg Ungerer <gregungerer00@gmail.com>
+Subject: Re: [PATCH 1/2] Add correct PLL settings for DragonBall VZ.
+Date: Thu, 03 Apr 2014 22:41:51 +1000
+Message-ID: <533D570F.8080000@gmail.com>
+References: <1396449792-5121-1-git-send-email-danieruru@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1396449792-5121-2-git-send-email-danieruru@gmail.com>
+In-Reply-To: <1396449792-5121-1-git-send-email-danieruru@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Daniel Palmer <danieruru@gmail.com>, linux-m68k@lists.linux-m68k.org
 
 Hi Daniel,
 
+Looks good, nice and small, a single fix.
+
+Can I suggest that you add an arch name to the patch title, so:
+
+   [PATCH 1/2] m68k: Add correct PLL settings for DragonBall VZ
+
+Obviously on this email list we know it is for m68k, but when merged
+up stream it makes it much easier from the title to know what it
+applies to.
+
+
 On 03/04/14 00:43, Daniel Palmer wrote:
 > Signed-off-by: Daniel Palmer <danieruru@gmail.com>
+> ---
+>   arch/m68k/platform/68000/head.S | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/m68k/platform/68000/head.S b/arch/m68k/platform/68000/head.S
+> index 536ef96..0d00489 100644
+> --- a/arch/m68k/platform/68000/head.S
+> +++ b/arch/m68k/platform/68000/head.S
+> @@ -91,12 +91,18 @@ _start:
+>   	movew	#0xe100, 0xfffff900		/* enable */
+>   #endif /* DEBUG_HEAD */
+>
+> -#ifdef CONFIG_PILOT
+> +#if defined(CONFIG_PILOT)
+>   	movew	#0x2410, 0xfffff200		/* PLLCR */
+> +#elif defined(CONFIG_M68VZ328)
+> +	movew	#0x2493, 0xfffff200		/* PLLCR */
 
-Looks good. As soon as the current merge window has closed I'll push
-this into the m68knommu git tree.
+Would it be cleaner to have a defined value here instead?
+This moves the #ifdef'ery to just the PLLCR value, and keeps the
+code instructions here cleaner. So something like this at the top of
+this head.S:
+
+#if defined(CONFIG_PILOT)
+#define PLLCR	0x2410
+#elif defined(CONFIG_M68VZ328)
+#define PLLCR	0x2493
+#else
+#define PLLCR	0x2400
+#endif
+
+and then just
+
+	movew	#PLLCR, 0xfffff200		/* PLLCR */
 
 Regards
 Greg
 
 
-
-> ---
->   arch/m68k/platform/68000/m68EZ328.c | 3 ++-
->   arch/m68k/platform/68000/m68VZ328.c | 1 +
->   2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/m68k/platform/68000/m68EZ328.c b/arch/m68k/platform/68000/m68EZ328.c
-> index 332b5e8..2195290 100644
-> --- a/arch/m68k/platform/68000/m68EZ328.c
-> +++ b/arch/m68k/platform/68000/m68EZ328.c
-> @@ -69,7 +69,8 @@ void __init config_BSP(char *command, int len)
->     if (p) strcpy(p,command);
->     else command[0] = 0;
+>   #else
+>   	movew	#0x2400, 0xfffff200		/* PLLCR */
 >   #endif
-> -
-> +
-> +  mach_sched_init = hw_timer_init;
->     mach_hwclk = m68328_hwclk;
->     mach_reset = m68ez328_reset;
->   }
-> diff --git a/arch/m68k/platform/68000/m68VZ328.c b/arch/m68k/platform/68000/m68VZ328.c
-> index fd66583..0e5e5a1 100644
-> --- a/arch/m68k/platform/68000/m68VZ328.c
-> +++ b/arch/m68k/platform/68000/m68VZ328.c
-> @@ -182,6 +182,7 @@ void __init config_BSP(char *command, int size)
->
->   	init_hardware(command, size);
->
-> +	mach_sched_init = hw_timer_init;
->   	mach_hwclk = m68328_hwclk;
->   	mach_reset = m68vz328_reset;
->   }
+> +#if defined(CONFIG_M68VZ328)
+> +	movew	#0x0347, 0xfffff202		/* PLLFSR */
+> +#else
+>   	movew	#0x0123, 0xfffff202		/* PLLFSR */
+> +#endif
+>   	moveq	#0, %d0
+>   	movew	#16384, %d0			/* PLL settle wait loop */
+>   _pll_settle:
 >
