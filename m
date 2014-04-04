@@ -1,37 +1,69 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 0/4] Atari kernel-in-FastRAM patches, take three
-Date: Fri, 4 Apr 2014 17:12:09 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1404041704430.29768@nippy.intranet>
-References: <1396137686-32678-1-git-send-email-schmitz@debian.org> <8761mvl3jb.fsf@igel.home> <CAOmrzkLWKq_qxmL5wKsGQGvAwNEQCP1QHhkd70vxViAyBoP98g@mail.gmail.com> <87a9c63x1c.fsf@igel.home> <CAOmrzkLbnUYjaEYa3MAccs03J46OWWKtndA3zyE8Kc+Ckr2eEg@mail.gmail.com>
- <87txae2dt4.fsf@igel.home> <20140331235216.GA2109@mail.biophys.uni-duesseldorf.de> <CAMuHMdUeMv1R69vSLv0HZpKEgVpRUG_iMs=61JWVubBsSN7VVA@mail.gmail.com> <alpine.LNX.2.00.1404012153360.16187@nippy.intranet>
- <CAOmrzk+GSRe6TjzqbnCqwZuBR10HwC47dJ6TBF+MJBvgAvkhjA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Add correct PLL settings for DragonBall VZ.
+Date: Fri, 4 Apr 2014 18:45:42 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1404041755100.29768@nippy.intranet>
+References: <1396449792-5121-1-git-send-email-danieruru@gmail.com> <533D570F.8080000@gmail.com> <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:48178 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751965AbaDDGMd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Apr 2014 02:12:33 -0400
-In-Reply-To: <CAOmrzk+GSRe6TjzqbnCqwZuBR10HwC47dJ6TBF+MJBvgAvkhjA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@mail.biophys.uni-duesseldorf.de>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, debian m68k <debian-68k@lists.debian.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gregungerer00@gmail.com>, Daniel Palmer <danieruru@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
 
-On Wed, 2 Apr 2014, Michael Schmitz wrote:
+On Thu, 3 Apr 2014, Geert Uytterhoeven wrote:
 
-> Hi Finn,
+> On Thu, Apr 3, 2014 at 2:41 PM, Greg Ungerer <gregungerer00@gmail.com> wrote:
+> >> -#ifdef CONFIG_PILOT
+> >> +#if defined(CONFIG_PILOT)
+> >>         movew   #0x2410, 0xfffff200             /* PLLCR */
+> >> +#elif defined(CONFIG_M68VZ328)
+> >> +       movew   #0x2493, 0xfffff200             /* PLLCR */
+> >
+> >
+> > Would it be cleaner to have a defined value here instead?
+> > This moves the #ifdef'ery to just the PLLCR value, and keeps the
+> > code instructions here cleaner. So something like this at the top of
+> > this head.S:
+> >
+> > #if defined(CONFIG_PILOT)
+> > #define PLLCR   0x2410
+> > #elif defined(CONFIG_M68VZ328)
+> > #define PLLCR   0x2493
+> > #else
+> > #define PLLCR   0x2400
+> > #endif
+> >
+> > and then just
+> >
+> >         movew   #PLLCR, 0xfffff200              /* PLLCR */
+
+In this case, the #ifdef ... #elif ... #else ... #endif cascade is already 
+present, so I wonder whether your way is in fact better here.
+
 > 
-> > It may be possible to boot Linux with MacOS running in 24-bit mode, 
-> > and ISTR that this leads to a large number of memory chunks. The 
-> > Penguin
+> While I like this advice in general, I prefer to use a different name than
+> "PLLCR" for this definition.
 > 
-> The chunk size would still be 16 MB, perhaps?
+> One day someone may want to put "#define PLLCR 0xfffff200" in a
+> header file...
+> 
 
-Looking at the Penguin source, findRAM() in Source/mmu_support.c sorts the 
-boot info memory mappings so that the largest chunk comes first. In 32-bit 
-mode, it will probably be the only chunk. Regardless of 24-bit mode or 
-32-bit mode, it may not be a 16 MB chunk.
+It's defined in asm/MC68328.h:
 
-Finn
+#define PLLCR_ADDR      0xfffff200
+...
+#define PLLCR_DISPLL           0x0008   /* Disable PLL */
+#define PLLCR_CLKEN            0x0010   /* Clock (CLKO pin) enable */
+#define PLLCR_SYSCLK_SEL_MASK  0x0700   /* System Clock Selection */
+#define PLLCR_SYSCLK_SEL_SHIFT 8
+#define PLLCR_PIXCLK_SEL_MASK  0x3800   /* LCD Clock Selection */
+#define PLLCR_PIXCLK_SEL_SHIFT 11
+
+Some bit name definitions are missing, i.e.
+
+#define PLLCR_PRESC1           0x0080
+
+-- 
