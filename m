@@ -1,69 +1,35 @@
 From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [PATCH 1/2] Add correct PLL settings for DragonBall VZ.
-Date: Fri, 4 Apr 2014 18:45:42 +1100 (EST)
-Message-ID: <alpine.LNX.2.00.1404041755100.29768@nippy.intranet>
-References: <1396449792-5121-1-git-send-email-danieruru@gmail.com> <533D570F.8080000@gmail.com> <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com>
+Date: Fri, 4 Apr 2014 19:16:36 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1404041746130.29768@nippy.intranet>
+References: <1396449792-5121-1-git-send-email-danieruru@gmail.com> <533D570F.8080000@gmail.com> <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com> <CAO64nm6L=p-hcH9NSFxhfQF9RNaid4fPLno9zKsAy4Jn2QnHjg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com>
+In-Reply-To: <CAO64nm6L=p-hcH9NSFxhfQF9RNaid4fPLno9zKsAy4Jn2QnHjg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gregungerer00@gmail.com>, Daniel Palmer <danieruru@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Daniel Palmer <danieruru@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gregungerer00@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
 
-On Thu, 3 Apr 2014, Geert Uytterhoeven wrote:
-
-> On Thu, Apr 3, 2014 at 2:41 PM, Greg Ungerer <gregungerer00@gmail.com> wrote:
-> >> -#ifdef CONFIG_PILOT
-> >> +#if defined(CONFIG_PILOT)
-> >>         movew   #0x2410, 0xfffff200             /* PLLCR */
-> >> +#elif defined(CONFIG_M68VZ328)
-> >> +       movew   #0x2493, 0xfffff200             /* PLLCR */
-> >
-> >
-> > Would it be cleaner to have a defined value here instead?
-> > This moves the #ifdef'ery to just the PLLCR value, and keeps the
-> > code instructions here cleaner. So something like this at the top of
-> > this head.S:
-> >
-> > #if defined(CONFIG_PILOT)
-> > #define PLLCR   0x2410
-> > #elif defined(CONFIG_M68VZ328)
-> > #define PLLCR   0x2493
-> > #else
-> > #define PLLCR   0x2400
-> > #endif
-> >
-> > and then just
-> >
-> >         movew   #PLLCR, 0xfffff200              /* PLLCR */
-
-In this case, the #ifdef ... #elif ... #else ... #endif cascade is already 
-present, so I wonder whether your way is in fact better here.
+On Fri, 4 Apr 2014, Daniel Palmer wrote:
 
 > 
-> While I like this advice in general, I prefer to use a different name than
-> "PLLCR" for this definition.
-> 
-> One day someone may want to put "#define PLLCR 0xfffff200" in a
-> header file...
-> 
+> I doubt there are many people that are attempting to run Linux on Palms 
+> or extremely rare development boards but it does seem like it's possible 
+> to detect what chip the kernel is booting on from the chip id register. 
+> So the kernel could pick the right PLL settings based on the chip it's 
+> booting on and then the same kernel image could be used for all 
+> DragonBall based machines.
 
-It's defined in asm/MC68328.h:
+A look at the user manual for the VZ says that the CHIPID register takes 
+the value of 0x5600 upon reset, but does anyone know what crystals are in 
+use in the various VZ hardware that Linux runs on?
 
-#define PLLCR_ADDR      0xfffff200
-...
-#define PLLCR_DISPLL           0x0008   /* Disable PLL */
-#define PLLCR_CLKEN            0x0010   /* Clock (CLKO pin) enable */
-#define PLLCR_SYSCLK_SEL_MASK  0x0700   /* System Clock Selection */
-#define PLLCR_SYSCLK_SEL_SHIFT 8
-#define PLLCR_PIXCLK_SEL_MASK  0x3800   /* LCD Clock Selection */
-#define PLLCR_PIXCLK_SEL_SHIFT 11
-
-Some bit name definitions are missing, i.e.
-
-#define PLLCR_PRESC1           0x0080
+It's more difficult for EZ: a quick look at wikipedia shows that Palm 
+shipped MC68EZ328 devices clocked at 16 MHz and 20 MHz. And the user 
+manual for the chip doesn't say what the reset value for the silicon ID 
+register is.
 
 -- 
