@@ -1,41 +1,43 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH 1/2] Add correct PLL settings for DragonBall VZ.
-Date: Fri, 04 Apr 2014 23:42:52 +1000
-Message-ID: <533EB6DC.5030003@westnet.com.au>
-References: <1396449792-5121-1-git-send-email-danieruru@gmail.com>	<533D570F.8080000@gmail.com>	<CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com> <CAO64nm6L=p-hcH9NSFxhfQF9RNaid4fPLno9zKsAy4Jn2QnHjg@mail.gmail.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: esp_scsi QTAG in FAS216
+Date: Fri, 04 Apr 2014 16:28:30 -0400 (EDT)
+Message-ID: <20140404.162830.1700547572091852195.davem@davemloft.net>
+References: <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com>
+	<CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
+	<5231DF69.6070807@aalto.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAO64nm6L=p-hcH9NSFxhfQF9RNaid4fPLno9zKsAy4Jn2QnHjg@mail.gmail.com>
+Received: from shards.monkeyblade.net ([149.20.54.216]:54219 "EHLO
+	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753203AbaDDU05 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Apr 2014 16:26:57 -0400
+In-Reply-To: <5231DF69.6070807@aalto.fi>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Daniel Palmer <danieruru@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: tuomas.vainikka@aalto.fi
+Cc: geert@linux-m68k.org, schmitzmic@gmail.com, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
 
-Hi Daniel,
+From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
+Date: Thu, 12 Sep 2013 18:36:09 +0300
 
-On 04/04/14 13:18, Daniel Palmer wrote:
-> Only slightly related to the patch itself;
->
-> At the moment you can select to support multiple DragonBall chips in a
-> single kernel but I don't think that'll actually work if the PLL
-> register values are hardcoded like they are at the moment. So I think
-> the kconfig needs to be changed to only allow support for one chip.
-> Should I make this change and send a patch?
+> Does anyone have the register descriptions for the FAS216 chip? It
+> would seem that receiving only one byte during reconnect is perfectly
+> normal [1] unless SCSI-2 features are explicitly enabled (which
+> esp_scsi doesn't seem to be doing).
 
-Sure, that sounds reasonable.
+This is quite possibly true.  I've never see it happen myself while
+testing the driver though.
 
+> Also, looking at the timeout formulae in the old NCR53C9x.c driver,
+> the values would be different for FAS216. Why was this dropped from
+> the modern esp_scsi?
 
-> I doubt there are many people that are attempting to run Linux on
-> Palms or extremely rare development boards but it does seem like it's
-> possible to detect what chip the kernel is booting on from the chip id
-> register. So the kernel could pick the right PLL settings based on the
-> chip it's booting on and then the same kernel image could be used for
-> all DragonBall based machines.
+I've never seen a formula for any ESP or FAS chip for the timeout
+other than the one mentioned in huge comment in
+esp_set_clock_params(), although I do see the 7668 instead of 8192
+factor being used in the old NCR53C9x driver.
 
-The mutually exclusive board selection can be changed back if or when
-code gets added to do this. No problem there.
-
-Regards
-Greg
+I wrote esp_scsi.c based upon the old sparc ESP driver and the docs
+I had available to me.
