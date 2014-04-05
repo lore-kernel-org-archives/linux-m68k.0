@@ -1,43 +1,60 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: esp_scsi QTAG in FAS216
-Date: Fri, 04 Apr 2014 16:28:30 -0400 (EDT)
-Message-ID: <20140404.162830.1700547572091852195.davem@davemloft.net>
-References: <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com>
-	<CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
-	<5231DF69.6070807@aalto.fi>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+From: Daniel Palmer <danieruru@gmail.com>
+Subject: [PATCH 2/2] m68k: Only allow for one member of the DragonBall family to be       selected in Kconfig. The support code for these chips       doesn't currently handle support for multiple family       members to be supported in a single kernel image.
+Date: Sat,  5 Apr 2014 14:39:58 +0900
+Message-ID: <1396676398-31175-2-git-send-email-danieruru@gmail.com>
+References: <1396676398-31175-1-git-send-email-danieruru@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:54219 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753203AbaDDU05 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Apr 2014 16:26:57 -0400
-In-Reply-To: <5231DF69.6070807@aalto.fi>
+In-Reply-To: <1396676398-31175-1-git-send-email-danieruru@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: tuomas.vainikka@aalto.fi
-Cc: geert@linux-m68k.org, schmitzmic@gmail.com, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Daniel Palmer <danieruru@gmail.com>
 
-From: Tuomas Vainikka <tuomas.vainikka@aalto.fi>
-Date: Thu, 12 Sep 2013 18:36:09 +0300
+Signed-off-by: Daniel Palmer <danieruru@gmail.com>
+---
+ arch/m68k/Kconfig.cpu | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-> Does anyone have the register descriptions for the FAS216 chip? It
-> would seem that receiving only one byte during reconnect is perfectly
-> normal [1] unless SCSI-2 features are explicitly enabled (which
-> esp_scsi doesn't seem to be doing).
-
-This is quite possibly true.  I've never see it happen myself while
-testing the driver though.
-
-> Also, looking at the timeout formulae in the old NCR53C9x.c driver,
-> the values would be different for FAS216. Why was this dropped from
-> the modern esp_scsi?
-
-I've never seen a formula for any ESP or FAS chip for the timeout
-other than the one mentioned in huge comment in
-esp_set_clock_params(), although I do see the 7668 instead of 8192
-factor being used in the old NCR53C9x driver.
-
-I wrote esp_scsi.c based upon the old sparc ESP driver and the docs
-I had available to me.
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 33013df..1ca7cbe 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -93,27 +93,29 @@ config M68060
+ 	  If you anticipate running this kernel on a computer with a MC68060
+ 	  processor, say Y. Otherwise, say N.
+ 
++choice
++	prompt "DragonBall SoC family support"
++	depends on M68000
++	help
++	  Select which member of the DragonBall SoC family to support.
++
+ config M68328
+ 	bool "MC68328"
+-	depends on !MMU
+-	select M68000
+ 	help
+ 	  Motorola 68328 processor support.
+ 
+ config M68EZ328
+ 	bool "MC68EZ328"
+-	depends on !MMU
+-	select M68000
+ 	help
+-	  Motorola 68EX328 processor support.
++	  Motorola 68EZ328 processor support.
+ 
+ config M68VZ328
+ 	bool "MC68VZ328"
+-	depends on !MMU
+-	select M68000
+ 	help
+ 	  Motorola 68VZ328 processor support.
+ 
++endchoice
++
+ config M68360
+ 	bool "MC68360"
+ 	depends on !MMU
+-- 
+1.9.1
