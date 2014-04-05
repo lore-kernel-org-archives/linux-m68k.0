@@ -1,55 +1,31 @@
-From: Daniel Palmer <danieruru@gmail.com>
-Subject: [PATCH v2 1/2] m68k: fix a compiler warning when building for DragonBall
-Date: Sat,  5 Apr 2014 17:05:45 +0900
-Message-ID: <1396685145-12935-1-git-send-email-danieruru@gmail.com>
-References: <1396676398-31175-1-git-send-email-danieruru@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 1/2] Add correct PLL settings for DragonBall VZ.
+Date: Sat, 5 Apr 2014 19:46:21 +1100 (EST)
+Message-ID: <alpine.LNX.2.00.1404051926580.32404@nippy.intranet>
+References: <1396449792-5121-1-git-send-email-danieruru@gmail.com> <533D570F.8080000@gmail.com> <CAMuHMdVECm8bWBZ_ZUhrQ34dgmf3aZ2c7aMnXORtPe9ufggsfQ@mail.gmail.com> <alpine.LNX.2.00.1404041755100.29768@nippy.intranet> <533EB53A.2030700@westnet.com.au>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1396676398-31175-1-git-send-email-danieruru@gmail.com>
+In-Reply-To: <533EB53A.2030700@westnet.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Daniel Palmer <danieruru@gmail.com>
+To: Greg Ungerer <gregungerer@westnet.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Daniel Palmer <danieruru@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-In file included from arch/m68k/kernel/setup.c:4:0:
-arch/m68k/kernel/setup_no.c:70:0: warning: "CPU_NAME" redefined [enabled by default]
- #define CPU_NAME "MC68VZ328"
- ^
-arch/m68k/kernel/setup_no.c:61:0: note: this is the location of the previous definition
- #define CPU_NAME "MC68000"
- ^
 
-Signed-off-by: Daniel Palmer <danieruru@gmail.com>
----
- arch/m68k/kernel/setup_no.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+On Fri, 4 Apr 2014, Greg Ungerer wrote:
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 5b16f5d..88c27d9 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -58,17 +58,16 @@ void (*mach_halt)(void);
- void (*mach_power_off)(void);
- 
- #ifdef CONFIG_M68000
--#define CPU_NAME	"MC68000"
--#endif
--#ifdef CONFIG_M68328
-+#if defined(CONFIG_M68328)
- #define CPU_NAME	"MC68328"
--#endif
--#ifdef CONFIG_M68EZ328
-+#elif defined(CONFIG_M68EZ328)
- #define CPU_NAME	"MC68EZ328"
--#endif
--#ifdef CONFIG_M68VZ328
-+#elif defined(CONFIG_M68VZ328)
- #define CPU_NAME	"MC68VZ328"
-+#else
-+#define CPU_NAME	"MC68000"
- #endif
-+#endif /* CONFIG_M68000 */
- #ifdef CONFIG_M68360
- #define CPU_NAME	"MC68360"
- #endif
+> I don't follow what you mean.
+
+I wasn't being very clear I'm afraid.
+
+> The intention is to move it away from the actual code - to make it 
+> easier to read.
+
+Your call.
+
+> Not add another #elif and make it worse than it currently is.
+
+Right.
+
 -- 
-1.9.1
