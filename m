@@ -1,204 +1,221 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Boot crash fix for 68030
-Date: Sun, 6 Apr 2014 11:34:46 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1404061132530.6867__45561.950808815$1396776902$gmane$org@ayla.of.borg>
+From: Stephen N Chivers <schivers@csc.com.au>
+Subject: Re: SCSI OOPS.
+Date: Mon, 7 Apr 2014 06:56:37 +1100
+Message-ID: <OF159B0259.BD2F9FC2-ONCA257CB2.001A1A26-CA257CB2.006D8EE0@csc.com>
+References: <alpine.LNX.2.00.1402151533350.16321@nippy.intranet>	<CAMuHMdULJ+61j4SreJXjPwnHVcQ_W4_ousfBzZz1+RqgF+hSGA@mail.gmail.com>
+	<OF85B22C02.E99ADB8D-ONCA257C82.007AA014-CA257C82.007B99D2@csc.com> <CAMuHMdUcy5dCrPr03bNsDcVMCRh6zJxD33fSw2eBB0Y4=zi7ag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="US-ASCII"
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.17]:30696 "EHLO
+	mail1.bemta12.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750957AbaDFUDQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Apr 2014 16:03:16 -0400
+In-Reply-To: <CAMuHMdUcy5dCrPr03bNsDcVMCRh6zJxD33fSw2eBB0Y4=zi7ag@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: stable@vger.kernel.org
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, Finn Thain <fthain@telegraphics.com.au>, Thomas Gleixner <tglx@linutronix.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: geert.uytterhoeven@gmail.com, Kars de Jong <jongk@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Stephen N Chivers <schivers@csc.com.au>
 
-Please queue the two commits below for stable:
-  - The second commit fixes a boot crash on 68030,
-  - The first commit is a prerequisite for the second.
+geert.uytterhoeven@gmail.com wrote on 02/18/2014 07:06:14 PM:
 
-This fix is needed on all versions that contain commit
-e4f2dfbb5e92be4e46c0625f4f8eb101110f756f ("m68k: implement futex.h to s=
-upport
-userspace robust futexes and PI mutexes"), i.e. v3.10 until v3.14.
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> To: Stephen N Chivers <schivers@csc.com.au>
+> Cc: Kars de Jong <jongk@linux-m68k.org>, "Linux/m68k" <linux-
+> m68k@vger.kernel.org>
+> Date: 02/18/2014 07:06 PM
+> Subject: Re: SCSI OOPS.
+> Sent by: geert.uytterhoeven@gmail.com
+> 
+> Hi Stephen,
+> 
+> (adding Kars and linux-m68k)
+Finally got to apply some to this.
+> 
+> On Mon, Feb 17, 2014 at 11:30 PM, Stephen N Chivers 
+> <schivers@csc.com.au> wrote:
+> > Below is the OOPS I got for linux-3.14-rc2 compiled for the MVME167.
+> >
+> > For me it is not particularly important as my boards are normally 
+operated
+> > diskless.
+> >
+> > ABCGHIJK
+> > Linux version 3.14.0-rc2-mvme16x (schivers@canberra) (gcc version 
+4.1.2)
+> > #4 Tue Feb 18 08:43:50 EST 2014
+> >
+> > BRD_ID: Motorola MVME167   BUG 2.3 94/02/25
+> > bootconsole [sercon0] enabled
+> > MVME16x: early console registered
+> > Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 
+8120
+> > Kernel command line: BOOT_IMAGE=linux auto root=/dev/nfs console=ttyS0
+> > nfsroot=129.130.20.1:/clients/VME/m68k/sdf2
+> > nfsaddrs=129.130.20.242:129.130.20.1:129.130.20.1:255.255.255.0:::
+> > PID hash table entries: 128 (order: -3, 512 bytes)
+> > Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+> > Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+> > Sorting __ex_table...
+> > Memory: 28896K/32768K available (2486K kernel code, 285K rwdata, 572K
+> > rodata, 116K init, 148K bss, 3872K reserved)
+> > Virtual kernel memory layout:
+> >     vector  : 0x00322a84 - 0x00322e84   (   1 KiB)
+> >     kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
+> >     vmalloc : 0x02800000 - 0xd0000000   (3288 MiB)
+> >     lowmem  : 0x00000000 - 0x02000000   (  32 MiB)
+> >       .init : 0x00348000 - 0x00365000   ( 116 KiB)
+> >       .text : 0x00001000 - 0x0026ea50   (2487 KiB)
+> >       .data : 0x00271610 - 0x00347bf4   ( 858 KiB)
+> >       .bss  : 0x003229a0 - 0x00347bf4   ( 149 KiB)
+> > NR_IRQS:200
+> > Console: colour dummy device 80x25
+> > Calibrating delay loop... 21.70 BogoMIPS (lpj=108544)
+> > pid_max: default: 32768 minimum: 301
+> > Mount-cache hash table entries: 512
+> > devtmpfs: initialized
+> > NET: Registered protocol family 16
+> > bio: create slab <bio-0> at 0
+> > SCSI subsystem initialized
+> > NET: Registered protocol family 2
+> > TCP established hash table entries: 1024 (order: 0, 4096 bytes)
+> > TCP bind hash table entries: 1024 (order: 0, 4096 bytes)
+> > TCP: Hash tables configured (established 1024 bind 1024)
+> > TCP: reno registered
+> > UDP hash table entries: 256 (order: 0, 4096 bytes)
+> > UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+> > NET: Registered protocol family 1
+> > RPC: Registered named UNIX socket transport module.
+> > RPC: Registered udp transport module.
+> > RPC: Registered tcp transport module.
+> > RPC: Registered tcp NFSv4.1 backchannel transport module.
+> > MK48T08 Real Time Clock Driver v1.00
+> > futex hash table entries: 256 (order: -1, 2048 bytes)
+> > VFS: Disk quotas dquot_6.5.2
+> > Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+> > msgmni has been set to 56
+> > Block layer SCSI generic (bsg) driver version 0.4 loaded (major 253)
+> > io scheduler noop registered
+> > io scheduler cfq registered (default)
+> > brd: module loaded
+> > loop: module loaded
+> > Unable to handle kernel access at virtual address fff47020
+> > Oops: 00000000
+> > Modules linked in:
+> > PC: [<001b69fe>] NCR_700_detect+0x26c/0x428
+> 
+> This looks like the first access to the chip:
+> 
+>     /* kick the chip */
+>     NCR_700_writeb(0xff, host, CTEST9_REG);
+> 
+> The driver didn't ioremap() 0xfff47000, but this should be covered
+> by the transparent mapping set up in head.S:
+> 
+>     mmu_map_tt      #1,#0xe0000000,#0x20000000,#_PAGE_NOCACHE_S
+> 
+> Does SCSI work from the boot loader/in older kernels?
+Yes, it works from MVME167-Bug using the "NCR" diagnostic tests.
 
-The first commit only applies cleanly to v3.14.
-I appended a backported version for v3.10..v3.13 at the bottom of this =
-email.
+I agree that there should no problem with the address. The
+ethernet is working fine and it is around 0xfff46000.
 
-Thanks for applying!
+Finally got around to adding diagnostics.
 
-commit 03b8c7b623c80af264c4c8d6111e5c6289933666
-Author: Heiko Carstens <heiko.carstens@de.ibm.com>
-Date: =A0 Sun Mar 2 13:09:47 2014 +0100
+It looks like a toolchain problem, I added plenty of printks to
+the path leading to the first access to the chip and the fault
+went away. Reducing the set of printks to just before the
+NCR_700_writeb and just after, the fault returns.
 
-=A0 =A0 futex: Allow architectures to skip futex_atomic_cmpxchg_inatomi=
-c() test
-=A0 =A0
-=A0 =A0 If an architecture has futex_atomic_cmpxchg_inatomic() implemen=
-ted and there
-=A0 =A0 is no runtime check necessary, allow to skip the test within fu=
-tex_init().
-=A0 =A0
-=A0 =A0 This allows to get rid of some code which would always give the=
- same result,
-=A0 =A0 and also allows the compiler to optimize a couple of if stateme=
-nts away.
-=A0 =A0
-=A0 =A0 Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-=A0 =A0 Cc: Finn Thain <fthain@telegraphics.com.au>
-=A0 =A0 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-=A0 =A0 Link: http://lkml.kernel.org/r/20140302120947.GA3641@osiris
-=A0 =A0 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+As can be seen from the early boot logging my toolchain is a 
+gcc version 4.1.2 compiler (cross).
 
-commit e571c58f313d35c56e0018470e3375ddd1fd320e
-Author: Finn Thain <fthain@telegraphics.com.au>
-Date: =A0 Thu Mar 6 10:29:27 2014 +1100
+I built a gcc 4.4.7 version cross compiler and a stock
+Linux 3.14 compiled with that still faults. So, perhaps
+it isn't the toolchain.
 
-=A0 =A0 m68k: Skip futex_atomic_cmpxchg_inatomic() test
-=A0 =A0
-=A0 =A0 Skip the futex_atomic_cmpxchg_inatomic() test in futex_init(). =
-It causes a
-=A0 =A0 fatal exception on 68030 (and presumably 68020 also).
-=A0 =A0
-=A0 =A0 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-=A0 =A0 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-=A0 =A0 Link: http://lkml.kernel.org/r/alpine.LNX.2.00.1403061006440.55=
-25@nippy.intranet
-=A0 =A0 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
----
-=46rom 4ff4cbd563da5ff27b61abb31cb6efaf9498cf07 Mon Sep 17 00:00:00 200=
-1
-=46rom: Heiko Carstens <heiko.carstens@de.ibm.com>
-Date: Sun, 2 Mar 2014 13:09:47 +0100
-Subject: [PATCH] futex: Allow architectures to skip
- futex_atomic_cmpxchg_inatomic() test
-
-If an architecture has futex_atomic_cmpxchg_inatomic() implemented and =
-there
-is no runtime check necessary, allow to skip the test within futex_init=
-().
-
-This allows to get rid of some code which would always give the same re=
-sult,
-and also allows the compiler to optimize a couple of if statements away=
-=2E
-
-Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: http://lkml.kernel.org/r/20140302120947.GA3641@osiris
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[geert: Backported to v3.10..v3.13]
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/s390/Kconfig     |    1 +
- include/linux/futex.h |    4 ++++
- init/Kconfig          |    7 +++++++
- kernel/futex.c        |   14 ++++++++++++--
- 4 files changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index e9f312532526..c8d8283cb20e 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -117,6 +117,7 @@ config S390
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
-+	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_KERNEL_BZIP2
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZ4
-diff --git a/include/linux/futex.h b/include/linux/futex.h
-index b0d95cac826e..6435f46d6e13 100644
---- a/include/linux/futex.h
-+++ b/include/linux/futex.h
-@@ -55,7 +55,11 @@ union futex_key {
- #ifdef CONFIG_FUTEX
- extern void exit_robust_list(struct task_struct *curr);
- extern void exit_pi_state_list(struct task_struct *curr);
-+#ifdef CONFIG_HAVE_FUTEX_CMPXCHG
-+#define futex_cmpxchg_enabled 1
-+#else
- extern int futex_cmpxchg_enabled;
-+#endif
- #else
- static inline void exit_robust_list(struct task_struct *curr)
- {
-diff --git a/init/Kconfig b/init/Kconfig
-index 4e5d96ab2034..66e6759e4436 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1399,6 +1399,13 @@ config FUTEX
- 	  support for "fast userspace mutexes".  The resulting kernel may not
- 	  run glibc-based applications correctly.
-=20
-+config HAVE_FUTEX_CMPXCHG
-+	bool
-+	help
-+	  Architectures should select this if futex_atomic_cmpxchg_inatomic()
-+	  is implemented and always working. This removes a couple of runtime
-+	  checks.
-+
- config EPOLL
- 	bool "Enable eventpoll support" if EXPERT
- 	default y
-diff --git a/kernel/futex.c b/kernel/futex.c
-index f6ff0191ecf7..0d74e3aecb0b 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -68,7 +68,9 @@
-=20
- #include "locking/rtmutex_common.h"
-=20
-+#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
- int __read_mostly futex_cmpxchg_enabled;
-+#endif
-=20
- #define FUTEX_HASHBITS (CONFIG_BASE_SMALL ? 4 : 8)
-=20
-@@ -2731,10 +2733,10 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int=
-, op, u32, val,
- 	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
- }
-=20
--static int __init futex_init(void)
-+static void __init futex_detect_cmpxchg(void)
- {
-+#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
- 	u32 curval;
--	int i;
-=20
- 	/*
- 	 * This will fail and we want it. Some arch implementations do
-@@ -2748,6 +2750,14 @@ static int __init futex_init(void)
- 	 */
- 	if (cmpxchg_futex_value_locked(&curval, NULL, 0, 0) =3D=3D -EFAULT)
- 		futex_cmpxchg_enabled =3D 1;
-+#endif
-+}
-+
-+static int __init futex_init(void)
-+{
-+	int i;
-+
-+	futex_detect_cmpxchg();
-=20
- 	for (i =3D 0; i < ARRAY_SIZE(futex_queues); i++) {
- 		plist_head_init(&futex_queues[i].chain);
---=20
-1.7.9.5
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-							    -- Linus Torvalds
+My original 2.6.24 kernel when rebuilt (gcc 4.1.2) with
+SCSI support enabled also faults.
+> 
+> > SR: 2008  SP: 01c27d48  a2: 01c24be0
+> > d0: 000000ff    d1: fff47020    d2: 00042b78    d3: 01d404e0
+> > d4: 01cbf26a    d5: 0019bbb2    a0: fff47020    a1: 0028599e
+> > Process swapper (pid: 1, task=01c24be0)
+> > Frame format=7 eff addr=00000004 ssw=00a5 faddr=fff47020
+> > wb 1 stat/addr/data: 00a5 fff47020 ffffffff
+> > wb 2 stat/addr/data: 0025 fff47020 ffffffff
+> > wb 3 stat/addr/data: 0025 fff47020 ffffffff
+> > push data: ffffffff 001b69fc 000000ff fff47020
+> > Stack from 01c27db0:
+> >         01cbf26a 01c27e4c 01cbf26a 01d2b9f0 01cbf26a 01cbf26a 01d40000
+> > 01cbf26a
+> >         001b79bc 0031d014 01d2b9f0 01cbf26a 0031cfc0 01cbf26a 0031c27a
+> > 002d0e84
+> >         0019f822 01cbf260 01cbf26a 0031cfd4 0019e4de 01cbf26a 01cbf26a
+> > 0031cfd4
+> >         0019e7c4 0031c27a 0019e7f2 0031cfd4 01cbf26a 00000000 00267d92
+> > 0019d038
+> >         0031cfd4 01cbf26a 00000000 00000000 0019b8e4 01cbf26a 01cbf29c
+> > 01c4cefc
+> >         01d2bae4 0019e858 0031c27a 00000000 01cbf26a 0019e7c4 00000000
+> > 01cbf26a
+> > Call Trace: [<001b79bc>] mvme16x_probe+0x6a/0x156
+> >  [<0019f822>] platform_drv_probe+0x18/0x40
+> >  [<0019e4de>] driver_probe_device+0xce/0x270
+> >  [<0019e7c4>] __device_attach+0x0/0x36
+> >  [<0019e7f2>] __device_attach+0x2e/0x36
+> >  [<00267d92>] klist_next+0x0/0xfa
+> >  [<0019d038>] bus_for_each_drv+0x62/0xae
+> >  [<0019b8e4>] device_create_file+0x0/0x98
+> >  [<0019e858>] device_attach+0x5e/0x76
+> >  [<0019e7c4>] __device_attach+0x0/0x36
+> >  [<0019d5f0>] bus_probe_device+0x7a/0xbc
+> >  [<0019bd8c>] device_add+0x1c4/0x4f2
+> >  [<00035002>] parse_args+0x0/0x296
+> >  [<00170b14>] strcpy+0x0/0x16
+> >  [<0019fb14>] platform_device_add+0x200/0x232
+> >  [<0019fb36>] platform_device_add+0x222/0x232
+> >  [<0019ff48>] platform_device_register_full+0xb8/0xec
+> >  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
+> >  [<0035908a>] mvme16x_scsi_init+0x4e/0x7a
+> >  [<000020f4>] do_one_initcall+0xec/0x188
+> >  [<00035002>] parse_args+0x0/0x296
+> >  [<00170b14>] strcpy+0x0/0x16
+> >  [<00002008>] do_one_initcall+0x0/0x188
+> >  [<00035002>] parse_args+0x0/0x296
+> >  [<00170b14>] strcpy+0x0/0x16
+> >  [<00002008>] do_one_initcall+0x0/0x188
+> >  [<00040006>] __wake_up_common+0x6/0x66
+> >  [<00348b34>] kernel_init_freeable+0xc4/0x184
+> >  [<00348b4c>] kernel_init_freeable+0xdc/0x184
+> >  [<0035903c>] mvme16x_scsi_init+0x0/0x7a
+> >  [<0026b602>] schedule+0x0/0x46
+> >  [<00018df4>] _060_fpsp_effadd+0x8210/0xd518
+> >  [<00269d50>] kernel_init+0x0/0xd0
+> >  [<00269d58>] kernel_init+0x8/0xd0
+> >  [<00269d50>] kernel_init+0x0/0xd0
+> >  [<000028dc>] ret_from_kernel_thread+0xc/0x14
+> >
+> > Code: 0004 2f01 4878 00ff 61ff fffc 40f4 508f <082c> 0006 0018 6600 
+00c2
+> > 206d 0248 7218 d2a8 0004 2f01 47f9 0017 ab84 4e93 e808
+> > Disabling lock debugging due to kernel taint
+> > Kernel panic - not syncing: Attempted to kill init! 
+exitcode=0x0000000b
+> >
+> >
+> > I will put in diagnostics for this sometime this coming weekend.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- 
+> geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. 
+But
+> when I'm talking to journalists I just say "programmer" or somethinglike 
+that.
+>                                 -- Linus Torvalds
