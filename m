@@ -1,61 +1,70 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH RESEND 3/4] m68k/mvme16x: adopt common boot console
-Date: Fri, 11 Apr 2014 11:19:32 +0200
-Message-ID: <CAMuHMdVVHbyQQq8-OVTOmzNzSzco6jUu7YpVDcLUKw4s1tKiUg@mail.gmail.com>
-References: <20140411052757.888960081@telegraphics.com.au>
-	<20140411052758.849384587@telegraphics.com.au>
+From: Sam Creasey <sammy@sammy.net>
+Subject: Re: [PATCH v2 00/12] scsi/NCR5380: fix debugging macros and #include structure
+Date: Fri, 11 Apr 2014 10:39:01 -0400
+Message-ID: <20140411143900.GG21346@anhedonia>
+References: <20140319123516.542623278@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-la0-f41.google.com ([209.85.215.41]:37801 "EHLO
-	mail-la0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756340AbaDKJTe (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Apr 2014 05:19:34 -0400
-Received: by mail-la0-f41.google.com with SMTP id gl10so3333496lab.0
-        for <linux-m68k@vger.kernel.org>; Fri, 11 Apr 2014 02:19:32 -0700 (PDT)
-In-Reply-To: <20140411052758.849384587@telegraphics.com.au>
+Received: from anhedonia.sammy.net ([174.143.180.86]:37080 "EHLO sammy.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1758536AbaDKOjH (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 11 Apr 2014 10:39:07 -0400
+Content-Disposition: inline
+In-Reply-To: <20140319123516.542623278@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitz@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-m68k@vger.kernel.org
 
-Hi Finn,
+Acked-by: Sam Creasey <sammy@sammy.net>
 
-On Fri, Apr 11, 2014 at 7:28 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> In a multi-platform kernel binary we only need one early console instance.
-> The difficulty here is that the common early console gets started by
-> early_param(), whereas the MVME16x instance would be started later by
-> config_mvme16x(). That means some interrupt setup must be done earlier.
-
-Thanks!
-
-> --- linux-m68k.orig/arch/m68k/kernel/early_printk.c     2014-03-03 10:29:59.000000000 +1100
-> +++ linux-m68k/arch/m68k/kernel/early_printk.c  2014-03-03 10:30:01.000000000 +1100
-
-> +#ifdef CONFIG_MVME16X
-> +static struct console early_console_instance = {
-> +#else
->  static struct console early_console_instance __initdata = {
-> +#endif
-
-> +       if (MACH_IS_MVME16x)
-> +               early_console_instance.write = mvme16x_cons_write;
-> +       else
-> +               early_console_instance.write = debug_cons_write;
-
-> +       if (!early_console || MACH_IS_MVME16x)
->                 return 0;
-
-I don't like these tests for MVME16X in (presumably) generic code.
-Is there a way we can avoid this?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On Wed, Mar 19, 2014 at 11:35:16PM +1100, Finn Thain wrote:
+> 
+> This patch series addresses several issues with NCR5380 drivers:
+> 
+> 1. The complex network of #include directives.
+> 
+> 2. Three inconsistent implementations of the core driver all attempting
+>    to share the same macro definitions in NCR5380.h.
+> 
+> 3. Broken debugging code.
+> 
+> In the past these issues have led to compiler warnings and ugly hacks to
+> fix build failures.
+> 
+> This patch series fixes the debugging code by reducing the divergence
+> between the various core driver implementations.
+> 
+> The final two patches in the series further reduce divergence by refactoring
+> sun3_scsi.c and sun3_scsi_vme.c so that they follow the same structure as
+> the other NCR5380 drivers.
+> 
+> By the end of this patch series over 800 net lines of code have been
+> removed. This is mostly duplicated code that's easily eliminated once the
+> debugging code is made consistent (and some dead code is removed).
+> 
+> Better uniformity and less duplication should assist future work such as
+> modernization and trivial clean-up.
+> 
+> To make code review easier I've tried to keep these patches succinct and
+> free of extraneous changes. Though I did run checkpatch.pl, I've ignored
+> whitespace issues in existing code. I will send separate patches for
+> whitespace clean-up of NCR5380 drivers.
+> 
+> All NCR5380 drivers have been compile-tested with this patch series:
+>   arm/cumana_1.c
+>   arm/oak.c
+>   atari_scsi.c
+>   dmx3191d.c
+>   dtc.c
+>   g_NCR5380.c
+>   g_NCR5380_mmio.c
+>   mac_scsi.c
+>   pas16.c
+>   sun3_scsi.c
+>   sun3_scsi_vme.c
+>   t128.c
+> 
+> I've successfully regression tested this patch series using mac_scsi on a 
+> PowerBook 180. The debugging macros are now usable again.
