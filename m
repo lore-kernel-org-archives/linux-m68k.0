@@ -1,379 +1,305 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH RESEND 1/4 v2] m68k: toward platform agnostic framebuffer debug logging
-Date: Fri, 11 Apr 2014 15:27:58 +1000
-Message-ID: <20140411052758.228811887@telegraphics.com.au>
+Subject: [PATCH RESEND 2/4 v2] m68k: multi-platform EARLY_PRINTK
+Date: Fri, 11 Apr 2014 15:27:59 +1000
+Message-ID: <20140411052758.539352564@telegraphics.com.au>
 References: <20140411052757.888960081@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54462 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54467 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751084AbaDKFdI (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Apr 2014 01:33:08 -0400
-Content-Disposition: inline; filename=platform-agnostic-framebuffer-debug-console
+	with ESMTP id S1751084AbaDKFdN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Apr 2014 01:33:13 -0400
+Content-Disposition: inline; filename=multi-platform-early-printk
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
-Code subject to #ifdef CONSOLE is made more generic, as was apparently
-intended by the original author.             
+Make the head.S debug console available to all m68k platforms.
 
-Remove console_put_stats() routine. If it should be somehow useful, it   
-should also be useful on platforms without framebuffer debug logging. The
-present implementation is only built #if defined CONFIG_MAC && defined
-CONSOLE even though puts() works everywhere.
+The boot console is subject to the "earlyprintk" command line argument,
+which is how most other architectures do this.
+
+This is a change of behaviour for the Mac but does not impact the common
+use-case which is not debugging. It is also a change of behaviour for
+other platforms, because it means the serial port stays quiet when
+CONFIG_EARLY_PRINTK is not enabled, eliminating debugging output that's
+not normally needed.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Tested-by: Stephen N Chivers <schivers@csc.com.au>
 
 ---
-The CONSOLE_DEBUG and SERIAL_DEBUG macros can be used independently. I
-think renaming CONSOLE as CONSOLE_DEBUG makes this apparent. (It is not
-clear how to actually enable them independently. That might need to be 
-controlled from the bootloader.)
+This patch set is mostly aimed at making Mac-specific code more useful to
+other platforms. The early printk code becomes more generic, which is
+probably the approach I should have taken when I first implemented it for
+Macs.
 
-This version (v2) makes macro use more consistent: CONSOLE_DEBUG and
-SERIAL_DEBUG act on the platform independent code whilst MAC_USE_SCC_{A,B}
-act on the platform specific code, like USE_SCC_{A,B}.
+This should mean that multi-platform configs behave in a more consistent
+way.
+
+The use of the Kconfig and kernel command line user interfaces seems more
+sensible than having obscure macros buried in asm source files to control
+this functionality.
+
+This version (v2) reflects suggestions & corrections to the previous one:
+- depends on !SUN3
+- "earlyprintk" kernel parameter takes no argument (but see MVME changes
+  in the next patch)
+- documentation update
 
 ---
- arch/m68k/kernel/head.S |  112 +++++++++++-------------------------------------
- 1 file changed, 26 insertions(+), 86 deletions(-)
+ Documentation/kernel-parameters.txt |    2 -
+ arch/m68k/Kconfig.debug             |    9 ++++-
+ arch/m68k/kernel/Makefile           |    2 +
+ arch/m68k/kernel/early_printk.c     |   57 ++++++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/head.S             |   36 +++++++---------------
+ arch/m68k/mac/config.c              |   29 ------------------
+ 6 files changed, 79 insertions(+), 56 deletions(-)
 
+Index: linux-m68k/arch/m68k/Kconfig.debug
+===================================================================
+--- linux-m68k.orig/arch/m68k/Kconfig.debug	2014-03-03 10:17:44.000000000 +1100
++++ linux-m68k/arch/m68k/Kconfig.debug	2014-03-03 10:29:59.000000000 +1100
+@@ -12,12 +12,17 @@ config BOOTPARAM_STRING
+ 
+ config EARLY_PRINTK
+ 	bool "Early printk"
+-	depends on MVME16x || MAC
++	depends on !SUN3
+ 	help
+           Write kernel log output directly to a serial port.
++          Where implemented, output goes to the framebuffer as well.
++          PROM console functionaliy on Sun 3x is not affected by this option.
++
++          Pass "earlyprintk" on the kernel command line to get a
++          boot console.
+ 
+           This is useful for kernel debugging when your machine crashes very
+-          early before the console code is initialized.
++          early, i.e. before the normal console driver is loaded.
+           You should normally say N here, unless you want to debug such a crash.
+ 
+ if !MMU
+Index: linux-m68k/arch/m68k/kernel/Makefile
+===================================================================
+--- linux-m68k.orig/arch/m68k/kernel/Makefile	2014-03-03 10:17:44.000000000 +1100
++++ linux-m68k/arch/m68k/kernel/Makefile	2014-03-03 10:29:59.000000000 +1100
+@@ -25,3 +25,5 @@ obj-$(CONFIG_HAS_DMA)	+= dma.o
+ obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o
+ obj-$(CONFIG_BOOTINFO_PROC)	+= bootinfo_proc.o
+ 
++obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
++
+Index: linux-m68k/arch/m68k/kernel/early_printk.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-m68k/arch/m68k/kernel/early_printk.c	2014-03-03 10:29:59.000000000 +1100
+@@ -0,0 +1,57 @@
++/*
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file "COPYING" in the main directory of this archive
++ * for more details.
++ *
++ * Copyright (c) 2014 Finn Thain
++ */
++
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <linux/init.h>
++#include <linux/string.h>
++#include <asm/setup.h>
++
++asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
++
++static void __init debug_cons_write(struct console *c,
++                                    const char *s, unsigned n)
++{
++	debug_cons_nputs(s, n);
++}
++
++static struct console early_console_instance __initdata = {
++	.name  = "debug",
++	.flags = CON_PRINTBUFFER | CON_BOOT,
++	.index = -1
++};
++
++static int __init setup_early_printk(char *buf)
++{
++	/* MVME16x registers an early console after interrupt setup. */
++	if (MACH_IS_MVME16x)
++		return 0;
++
++	if (early_console || buf)
++		return 0;
++
++	early_console_instance.write = debug_cons_write;
++
++	early_console = &early_console_instance;
++	register_console(early_console);
++
++	return 0;
++}
++
++early_param("earlyprintk", setup_early_printk);
++
++static int __init unregister_early_console(void)
++{
++	if (!early_console)
++		return 0;
++
++	/* debug_cons_nputs() can't be used after init sections are discarded */
++	return unregister_console(early_console);
++}
++
++late_initcall(unregister_early_console);
 Index: linux-m68k/arch/m68k/kernel/head.S
 ===================================================================
---- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-03 10:29:46.000000000 +1100
-+++ linux-m68k/arch/m68k/kernel/head.S	2014-03-03 10:29:47.000000000 +1100
-@@ -153,7 +153,7 @@
-  * ------------
-  *	The console is also able to be turned off.  The console in head.S
-  * is specifically for debugging and can be very useful.  It is surrounded by
-- * #ifdef CONSOLE/#endif clauses so it doesn't have to ship in known-good
-+ * #ifdef / #endif clauses so it doesn't have to ship in known-good
-  * kernels.  It's basic algorithm is to determine the size of the screen
-  * (in height/width and bit depth) and then use that information for
-  * displaying an 8x8 font or an 8x16 (widthxheight).  I prefer the 8x8 for
-@@ -198,9 +198,8 @@
-  * CONFIG_xxx:	These are the obvious machine configuration defines created
-  * during configuration.  These are defined in autoconf.h.
+--- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-03 10:29:47.000000000 +1100
++++ linux-m68k/arch/m68k/kernel/head.S	2014-03-03 10:29:59.000000000 +1100
+@@ -221,7 +221,7 @@
+  * MMU_PRINT:	There is a routine built into head.S that can display the
+  * MMU data structures.  It outputs its result through the serial_putc
+  * interface.  So where ever that winds up driving data, that's where the
+- * mmu struct will appear.  On the Macintosh that's typically the console.
++ * mmu struct will appear.
   *
-- * CONSOLE:	There is support for head.S console in this file.  This
-- * console can talk to a Mac frame buffer, but could easily be extrapolated
-- * to extend it to support other platforms.
-+ * CONSOLE_DEBUG:  Only supports a Mac frame buffer but could easily be
-+ * extended to support other platforms.
+  * SERIAL_DEBUG:	There are a series of putc() macro statements
+  * scattered through out the code to give progress of status to the
+@@ -249,8 +249,8 @@
+  * USE_MFP:	Use the ST-MFP port (Modem1) for serial debug.
   *
-  * TEST_MMU:	This is a test harness for running on any given machine but
-  * getting an MMU dump for another class of machine.  The classes of machines
-@@ -274,7 +273,7 @@
- #include <asm/machw.h>
+  * Macintosh constants:
+- * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug and early console.
+- * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug and early console.
++ * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug.
++ * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug.
+  */
  
- #ifdef CONFIG_FRAMEBUFFER_CONSOLE
--#define CONSOLE
-+#define CONSOLE_DEBUG
+ #include <linux/linkage.h>
+@@ -267,27 +267,17 @@
+ #include <asm/pgtable.h>
+ #include <asm/page.h>
+ #include <asm/asm-offsets.h>
+-
+ #ifdef CONFIG_MAC
+-
+-#include <asm/machw.h>
+-
+-#ifdef CONFIG_FRAMEBUFFER_CONSOLE
+-#define CONSOLE_DEBUG
++#  include <asm/machw.h>
  #endif
  
  #ifdef CONFIG_EARLY_PRINTK
-@@ -480,22 +479,21 @@ func_define	serial_putc,1
- func_define	console_putc,1
- 
- func_define	console_init
--func_define	console_put_stats
- func_define	console_put_penguin
- func_define	console_plot_pixel,3
- func_define	console_scroll
- 
- .macro	putc	ch
--#if defined(CONSOLE) || defined(SERIAL_DEBUG)
-+#if defined(CONSOLE_DEBUG) || defined(SERIAL_DEBUG)
- 	pea	\ch
- #endif
--#ifdef CONSOLE
-+#ifdef CONSOLE_DEBUG
- 	func_call	console_putc
- #endif
- #ifdef SERIAL_DEBUG
- 	func_call	serial_putc
- #endif
--#if defined(CONSOLE) || defined(SERIAL_DEBUG)
-+#if defined(CONSOLE_DEBUG) || defined(SERIAL_DEBUG)
- 	addql	#4,%sp
- #endif
- .endm
-@@ -515,7 +513,7 @@ func_define	putn,1
- .endm
- 
- .macro	puts		string
--#if defined(CONSOLE) || defined(SERIAL_DEBUG)
-+#if defined(CONSOLE_DEBUG) || defined(SERIAL_DEBUG)
- 	__INITDATA
- .Lstr\@:
- 	.string	"\string"
-@@ -651,11 +649,9 @@ ENTRY(__start)
- 	lea	%pc@(L(mac_rowbytes)),%a1
- 	movel	%a0@,%a1@
- 
--#ifdef SERIAL_DEBUG
- 	get_bi_record	BI_MAC_SCCBASE
- 	lea	%pc@(L(mac_sccbase)),%a1
- 	movel	%a0@,%a1@
--#endif
- 
- L(test_notmac):
- #endif /* CONFIG_MAC */
-@@ -885,13 +881,12 @@ L(nothp):
-  */
- #ifdef CONFIG_MAC
- 	is_not_mac(L(nocon))
--#  ifdef CONSOLE
-+#  ifdef CONSOLE_DEBUG
- 	console_init
- #    ifdef CONFIG_LOGO
- 	console_put_penguin
- #    endif /* CONFIG_LOGO */
--	console_put_stats
--#  endif /* CONSOLE */
-+#  endif /* CONSOLE_DEBUG */
- L(nocon):
- #endif /* CONFIG_MAC */
- 
-@@ -1396,15 +1391,13 @@ L(mmu_fixup_done):
- 	andl	L(mac_videobase),%d0
- 	addl	#VIDEOMEMBASE,%d0
- 	movel	%d0,L(mac_videobase)
--#if defined(CONSOLE)
-+#ifdef CONSOLE_DEBUG
- 	movel	%pc@(L(phys_kernel_start)),%d0
- 	subl	#PAGE_OFFSET,%d0
- 	subl	%d0,L(console_font)
- 	subl	%d0,L(console_font_data)
- #endif
--#ifdef SERIAL_DEBUG
- 	orl	#0x50000000,L(mac_sccbase)
--#endif
- 1:
+-#define SERIAL_DEBUG
+-#else
+-#undef SERIAL_DEBUG
++#  define SERIAL_DEBUG
++#  ifdef CONFIG_MAC
++#    define CONSOLE_DEBUG
++#  endif
  #endif
  
-@@ -2734,7 +2727,11 @@ func_return	get_new_page
-  */
+-#else /* !CONFIG_MAC */
+-
+-#define SERIAL_DEBUG
+-
+-#endif /* !CONFIG_MAC */
+-
+ #undef MMU_PRINT
+ #undef MMU_NOCACHE_KERNEL
+ #undef DEBUG
+@@ -3213,21 +3203,19 @@ func_start	putn,%d0-%d2
  
- #ifdef CONFIG_MAC
-+/* You may define either or both of these. */
-+#define MAC_USE_SCC_A /* Modem port */
-+#define MAC_USE_SCC_B /* Printer port */
+ func_return	putn
  
-+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
- L(scc_initable_mac):
- 	.byte	4,0x44		/* x16, 1 stopbit, no parity */
- 	.byte	3,0xc0		/* receiver: 8 bpc */
-@@ -2748,6 +2745,7 @@ L(scc_initable_mac):
- 	.byte	-1
- 	.even
- #endif
-+#endif /* CONFIG_MAC */
- 
- #ifdef CONFIG_ATARI
- /* #define USE_PRINTER */
-@@ -2843,6 +2841,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
- |	movew	#61,CUSTOMBASE+C_SERPER-ZTWOBASE
- 1:
- #endif
-+
- #ifdef CONFIG_ATARI
- 	is_not_atari(4f)
- 	movel	%pc@(L(iobase)),%a1
-@@ -2877,21 +2876,14 @@ func_start	serial_init,%d0/%d1/%a0/%a1
- 	jra	L(serial_init_done)
- 4:
- #endif
-+
- #ifdef CONFIG_MAC
- 	is_not_mac(L(serial_init_not_mac))
--
--#ifdef SERIAL_DEBUG
--
--/* You may define either or both of these. */
--#define MAC_USE_SCC_A /* Modem port */
--#define MAC_USE_SCC_B /* Printer port */
--
-+#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
- #define mac_scc_cha_b_ctrl_offset	0x0
- #define mac_scc_cha_a_ctrl_offset	0x2
- #define mac_scc_cha_b_data_offset	0x4
- #define mac_scc_cha_a_data_offset	0x6
--
--#if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
- 	movel	%pc@(L(mac_sccbase)),%a0
- 	/* Reset SCC register pointer */
- 	moveb	%a0@(mac_scc_cha_a_ctrl_offset),%d0
-@@ -2905,7 +2897,6 @@ func_start	serial_init,%d0/%d1/%a0/%a1
- 	subq	#1,%d0
- 	jne	5b
- #endif
--
- #ifdef MAC_USE_SCC_A
- 	/* Initialize channel A */
- 	lea	%pc@(L(scc_initable_mac)),%a1
-@@ -2916,7 +2907,6 @@ func_start	serial_init,%d0/%d1/%a0/%a1
- 	jra	5b
- 6:
- #endif	/* MAC_USE_SCC_A */
--
- #ifdef MAC_USE_SCC_B
- 	/* Initialize channel B */
- 	lea	%pc@(L(scc_initable_mac)),%a1
-@@ -2927,9 +2917,6 @@ func_start	serial_init,%d0/%d1/%a0/%a1
- 	jra	7b
- 8:
- #endif	/* MAC_USE_SCC_B */
--
--#endif	/* SERIAL_DEBUG */
--
- 	jra	L(serial_init_done)
- L(serial_init_not_mac):
- #endif	/* CONFIG_MAC */
-@@ -2998,27 +2985,19 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
- 
- #ifdef CONFIG_MAC
- 	is_not_mac(5f)
--
--#ifdef SERIAL_DEBUG
--
- #if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
- 	movel	%pc@(L(mac_sccbase)),%a1
- #endif
--
- #ifdef MAC_USE_SCC_A
- 3:	btst	#2,%a1@(mac_scc_cha_a_ctrl_offset)
- 	jeq	3b
- 	moveb	%d0,%a1@(mac_scc_cha_a_data_offset)
- #endif	/* MAC_USE_SCC_A */
--
- #ifdef MAC_USE_SCC_B
- 4:	btst	#2,%a1@(mac_scc_cha_b_ctrl_offset)
- 	jeq	4b
- 	moveb	%d0,%a1@(mac_scc_cha_b_data_offset)
- #endif	/* MAC_USE_SCC_B */
--
--#endif	/* SERIAL_DEBUG */
--
- 	jra	L(serial_putc_done)
- 5:
- #endif	/* CONFIG_MAC */
-@@ -3195,7 +3174,7 @@ func_start	puts,%d0/%a0
- 	movel	ARG1,%a0
- 	jra	2f
- 1:
--#ifdef CONSOLE
-+#ifdef CONSOLE_DEBUG
- 	console_putc	%d0
- #endif
- #ifdef SERIAL_DEBUG
-@@ -3224,7 +3203,7 @@ func_start	putn,%d0-%d2
- 	jls	2f
- 	addb	#'A'-('9'+1),%d2
- 2:
--#ifdef CONSOLE
-+#ifdef CONSOLE_DEBUG
- 	console_putc	%d2
- #endif
- #ifdef SERIAL_DEBUG
-@@ -3256,7 +3235,7 @@ ENTRY(mac_early_print)
- 	movel	%sp@(22),%d1		/* fetch parameter */
- 	jra	2f
- 1:
--#ifdef CONSOLE
-+#ifdef CONSOLE_DEBUG
- 	console_putc	%d0
- #endif
- #ifdef SERIAL_DEBUG
-@@ -3292,7 +3271,7 @@ func_start	set_leds,%d0/%a0
- func_return	set_leds
- #endif
- 
--#ifdef CONSOLE
-+#ifdef CONSOLE_DEBUG
+-#ifdef CONFIG_MAC
++#ifdef CONFIG_EARLY_PRINTK
  /*
-  *	For continuity, see the data alignment
-  *	to which this structure is tied.
-@@ -3396,43 +3375,6 @@ L(console_clear_loop):
- 1:
- func_return	console_init
+- *	mac_early_print
+- *
+  *	This routine takes its parameters on the stack.  It then
+  *	turns around and calls the internal routines.  This routine
+  *	is used by the boot console.
+  *
+  *	The calling parameters are:
+- *		void mac_early_print(const char *str, unsigned length);
++ *		void debug_cons_nputs(const char *str, unsigned length)
+  *
+  *	This routine does NOT understand variable arguments only
+  *	simple strings!
+  */
+-ENTRY(mac_early_print)
++ENTRY(debug_cons_nputs)
+ 	moveml	%d0/%d1/%a0,%sp@-
+ 	movew	%sr,%sp@-
+ 	ori	#0x0700,%sr
+@@ -3249,7 +3237,7 @@ ENTRY(mac_early_print)
+ 	movew	%sp@+,%sr
+ 	moveml	%sp@+,%d0/%d1/%a0
+ 	rts
+-#endif /* CONFIG_MAC */
++#endif /* CONFIG_EARLY_PRINTK */
  
--func_start	console_put_stats,%a0/%d7
--	/*
--	 *	Some of the register usage that follows
--	 *		a0 = pointer to boot_info
--	 *		d7 = value of boot_info fields
--	 */
--	puts	"\nMacLinux\n"
--
--#ifdef SERIAL_DEBUG
--	puts	"\n vidaddr:"
--	putn	%pc@(L(mac_videobase))		/* video addr. */
--
--	puts	"\n  _stext:"
--	lea	%pc@(_stext),%a0
--	putn	%a0
--
--	puts	"\nbootinfo:"
--	lea	%pc@(_end),%a0
--	putn	%a0
--
--	puts	"\n   cpuid:"
--	putn	%pc@(L(cputype))
--
--#  ifdef CONFIG_MAC
--	puts	"\n sccbase:"
--	putn	%pc@(L(mac_sccbase))
--#  endif
--#  ifdef MMU_PRINT
--	putc	'\n'
--	jbsr	mmu_print_machine_cpu_types
--#  endif
--#endif /* SERIAL_DEBUG */
--
--	putc	'\n'
--
--func_return	console_put_stats
--
- #ifdef CONFIG_LOGO
- func_start	console_put_penguin,%a0-%a1/%d0-%d7
- 	/*
-@@ -3774,7 +3716,7 @@ L(white_16):
+ #if defined(CONFIG_HP300) || defined(CONFIG_APOLLO)
+ func_start	set_leds,%d0/%a0
+Index: linux-m68k/arch/m68k/mac/config.c
+===================================================================
+--- linux-m68k.orig/arch/m68k/mac/config.c	2014-03-03 10:17:44.000000000 +1100
++++ linux-m68k/arch/m68k/mac/config.c	2014-03-03 10:29:59.000000000 +1100
+@@ -71,31 +71,6 @@ static void mac_get_model(char *str);
+ static void mac_identify(void);
+ static void mac_report_hardware(void);
  
- L(console_plot_pixel_exit):
- func_return	console_plot_pixel
--#endif /* CONSOLE */
-+#endif /* CONSOLE_DEBUG */
- 
- 
- __INITDATA
-@@ -3787,7 +3729,7 @@ L(iobase):
- 	.long 0
+-#ifdef CONFIG_EARLY_PRINTK
+-asmlinkage void __init mac_early_print(const char *s, unsigned n);
+-
+-static void __init mac_early_cons_write(struct console *con,
+-                                 const char *s, unsigned n)
+-{
+-	mac_early_print(s, n);
+-}
+-
+-static struct console __initdata mac_early_cons = {
+-	.name  = "early",
+-	.write = mac_early_cons_write,
+-	.flags = CON_PRINTBUFFER | CON_BOOT,
+-	.index = -1
+-};
+-
+-int __init mac_unregister_early_cons(void)
+-{
+-	/* mac_early_print can't be used after init sections are discarded */
+-	return unregister_console(&mac_early_cons);
+-}
+-
+-late_initcall(mac_unregister_early_cons);
+-#endif
+-
+ static void __init mac_sched_init(irq_handler_t vector)
+ {
+ 	via_init_clock(vector);
+@@ -190,10 +165,6 @@ void __init config_mac(void)
+ 	mach_beep = mac_mksound;
  #endif
  
--#if defined(CONSOLE)
-+#ifdef CONSOLE_DEBUG
- L(console_globals):
- 	.long	0		/* cursor column */
- 	.long	0		/* cursor row */
-@@ -3798,7 +3740,7 @@ L(console_font):
- 	.long	0		/* pointer to console font (struct font_desc) */
- L(console_font_data):
- 	.long	0		/* pointer to console font data */
--#endif /* CONSOLE */
-+#endif /* CONSOLE_DEBUG */
- 
- #if defined(MMU_PRINT)
- L(mmu_print_data):
-@@ -3856,10 +3798,8 @@ L(mac_dimensions):
- 	.long	0
- L(mac_rowbytes):
- 	.long	0
--#ifdef SERIAL_DEBUG
- L(mac_sccbase):
- 	.long	0
+-#ifdef CONFIG_EARLY_PRINTK
+-	register_console(&mac_early_cons);
 -#endif
- #endif /* CONFIG_MAC */
+-
+ 	/*
+ 	 * Determine hardware present
+ 	 */
+Index: linux-m68k/Documentation/kernel-parameters.txt
+===================================================================
+--- linux-m68k.orig/Documentation/kernel-parameters.txt	2014-03-03 10:17:44.000000000 +1100
++++ linux-m68k/Documentation/kernel-parameters.txt	2014-03-03 10:29:59.000000000 +1100
+@@ -845,7 +845,7 @@ bytes respectively. Such letter suffixes
+ 			(mmio) or 32-bit (mmio32).
+ 			The options are the same as for ttyS, above.
  
- #if defined (CONFIG_APOLLO)
+-	earlyprintk=	[X86,SH,BLACKFIN,ARM]
++	earlyprintk=	[X86,SH,BLACKFIN,ARM,M68k]
+ 			earlyprintk=vga
+ 			earlyprintk=efi
+ 			earlyprintk=xen
