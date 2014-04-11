@@ -1,166 +1,123 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH RESEND 3/4] m68k/mvme16x: adopt common boot console
-Date: Fri, 11 Apr 2014 15:28:00 +1000
-Message-ID: <20140411052758.849384587@telegraphics.com.au>
+Subject: [PATCH RESEND 4/4] m68k/atari: fix SCC initialization for debug console
+Date: Fri, 11 Apr 2014 15:28:01 +1000
+Message-ID: <20140411052759.169790206@telegraphics.com.au>
 References: <20140411052757.888960081@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54470 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54471 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751084AbaDKFdV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Apr 2014 01:33:21 -0400
-Content-Disposition: inline; filename=mvme16x-boot-console
+	with ESMTP id S1751084AbaDKFd0 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 11 Apr 2014 01:33:26 -0400
+Content-Disposition: inline; filename=atari-scc-serial-debug
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
-In a multi-platform kernel binary we only need one early console instance.   
-The difficulty here is that the common early console gets started by
-early_param(), whereas the MVME16x instance would be started later by
-config_mvme16x(). That means some interrupt setup must be done earlier.
+Fix SCC initialization for Atari as was previously fixed for Mac. It's
+probably not practical to share more code but some attempt is made to
+align the Mac and Atari variants.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stephen N Chivers <schivers@csc.com.au>
 
 ---
- arch/m68k/kernel/early_printk.c |   18 ++++++++++++------
- arch/m68k/kernel/head.S         |   11 +++++++++++
- arch/m68k/mvme16x/config.c      |   27 ++-------------------------
- 3 files changed, 25 insertions(+), 31 deletions(-)
+This patch needs testing on Atari. It can't be tested without editing
+macro definitions to enable SCC debug output (which also means disabling
+MFP debug output).
 
-Index: linux-m68k/arch/m68k/kernel/early_printk.c
-===================================================================
---- linux-m68k.orig/arch/m68k/kernel/early_printk.c	2014-03-03 10:29:59.000000000 +1100
-+++ linux-m68k/arch/m68k/kernel/early_printk.c	2014-03-03 10:30:01.000000000 +1100
-@@ -12,6 +12,9 @@
- #include <linux/string.h>
- #include <asm/setup.h>
- 
-+extern void mvme16x_cons_write(struct console *co,
-+                               const char *str, unsigned count);
-+
- asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
- 
- static void __init debug_cons_write(struct console *c,
-@@ -20,7 +23,11 @@ static void __init debug_cons_write(stru
- 	debug_cons_nputs(s, n);
- }
- 
-+#ifdef CONFIG_MVME16X
-+static struct console early_console_instance = {
-+#else
- static struct console early_console_instance __initdata = {
-+#endif
- 	.name  = "debug",
- 	.flags = CON_PRINTBUFFER | CON_BOOT,
- 	.index = -1
-@@ -28,14 +35,13 @@ static struct console early_console_inst
- 
- static int __init setup_early_printk(char *buf)
- {
--	/* MVME16x registers an early console after interrupt setup. */
--	if (MACH_IS_MVME16x)
--		return 0;
--
- 	if (early_console || buf)
- 		return 0;
- 
--	early_console_instance.write = debug_cons_write;
-+	if (MACH_IS_MVME16x)
-+		early_console_instance.write = mvme16x_cons_write;
-+	else
-+		early_console_instance.write = debug_cons_write;
- 
- 	early_console = &early_console_instance;
- 	register_console(early_console);
-@@ -47,7 +53,7 @@ early_param("earlyprintk", setup_early_p
- 
- static int __init unregister_early_console(void)
- {
--	if (!early_console)
-+	if (!early_console || MACH_IS_MVME16x)
- 		return 0;
- 
- 	/* debug_cons_nputs() can't be used after init sections are discarded */
-Index: linux-m68k/arch/m68k/mvme16x/config.c
-===================================================================
---- linux-m68k.orig/arch/m68k/mvme16x/config.c	2014-03-03 10:17:44.000000000 +1100
-+++ linux-m68k/arch/m68k/mvme16x/config.c	2014-03-03 10:30:01.000000000 +1100
-@@ -213,7 +213,8 @@ static void __init mvme16x_init_IRQ (voi
- #define CySCRH		(0x22)
- #define CyTFTC		(0x80)
- 
--static void cons_write(struct console *co, const char *str, unsigned count)
-+void mvme16x_cons_write(struct console *co,
-+                        const char *str, unsigned count)
- {
- 	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
- 	volatile u_char sink;
-@@ -268,20 +269,6 @@ static void cons_write(struct console *c
- 	base_addr[CyIER] = ier;
- }
- 
--static struct console cons_info =
--{
--	.name	= "sercon",
--	.write	= cons_write,
--	.flags	= CON_PRINTBUFFER | CON_BOOT,
--	.index	= -1,
--};
--
--static void __init mvme16x_early_console(void)
--{
--	register_console(&cons_info);
--
--	printk(KERN_INFO "MVME16x: early console registered\n");
--}
- #endif
- 
- void __init config_mvme16x(void)
-@@ -336,16 +323,6 @@ void __init config_mvme16x(void)
-     else
-     {
- 	mvme16x_config = MVME16x_CONFIG_GOT_LP | MVME16x_CONFIG_GOT_CD2401;
--
--	/* Dont allow any interrupts from the CD2401 until the interrupt */
--	/* handlers are installed					 */
--
--	pcc2chip[PccSCCMICR] = 0x10;
--	pcc2chip[PccSCCTICR] = 0x10;
--	pcc2chip[PccSCCRICR] = 0x10;
--#ifdef CONFIG_EARLY_PRINTK
--	mvme16x_early_console();
--#endif
-     }
- }
- 
+The line rate is changed to 38400 baud to match the Mac code (which
+follows the pmac_zilog serial console default). It would be nice to
+standardize but I don't know whether this is realistic.
+
+The 7.9872 MHz PCLK used in this patch was inferred from the existing code
+as I don't have any hardware data.
+
+---
+ arch/m68k/kernel/head.S |   34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+
 Index: linux-m68k/arch/m68k/kernel/head.S
 ===================================================================
---- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-03 10:29:59.000000000 +1100
-+++ linux-m68k/arch/m68k/kernel/head.S	2014-03-03 10:30:01.000000000 +1100
-@@ -2936,6 +2936,15 @@ L(serial_init_not_mac):
- 2:
- #endif
+--- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
++++ linux-m68k/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
+@@ -2722,6 +2722,7 @@ func_return	get_new_page
+ #define MAC_USE_SCC_B /* Printer port */
  
-+#ifdef CONFIG_MVME16x
-+	is_not_mvme16x(L(serial_init_not_mvme16x))
-+	moveb	#0x10,M167_PCSCCMICR
-+	moveb	#0x10,M167_PCSCCTICR
-+	moveb	#0x10,M167_PCSCCRICR
-+	jra	L(serial_init_done)
-+L(serial_init_not_mvme16x):
-+#endif
-+
- #ifdef CONFIG_APOLLO
- /* We count on the PROM initializing SIO1 */
- #endif
-@@ -3768,7 +3777,9 @@ M167_CYIER = 0xfff45011
- M167_CYLICR = 0xfff45026
- M167_CYTEOIR = 0xfff45085
- M167_CYTDR = 0xfff450f8
-+M167_PCSCCMICR = 0xfff4201d
- M167_PCSCCTICR = 0xfff4201e
-+M167_PCSCCRICR = 0xfff4201f
- M167_PCTPIACKR = 0xfff42025
- #endif
+ #if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
++/* Initialisation table for SCC with 3.6864 MHz PCLK */
+ L(scc_initable_mac):
+ 	.byte	4,0x44		/* x16, 1 stopbit, no parity */
+ 	.byte	3,0xc0		/* receiver: 8 bpc */
+@@ -2744,17 +2745,14 @@ L(scc_initable_mac):
+ #define USE_MFP
  
+ #if defined(USE_SCC_A) || defined(USE_SCC_B)
+-#define USE_SCC
+-/* Initialisation table for SCC */
+-L(scc_initable):
+-	.byte	9,12		/* Reset */
+-	.byte	4,0x44		/* x16, 1 stopbit, no parity */
++/* Initialisation table for SCC with 7.9872 MHz PCLK */
++L(scc_initable_atari):
++	.byte	4,0x04		/* x1, 1 stopbit, no parity */
+ 	.byte	3,0xc0		/* receiver: 8 bpc */
+ 	.byte	5,0xe2		/* transmitter: 8 bpc, assert dtr/rts */
+-	.byte	9,0		/* no interrupts */
+ 	.byte	10,0		/* NRZ */
+ 	.byte	11,0x50		/* use baud rate generator */
+-	.byte	12,24,13,0	/* 9600 baud */
++	.byte	12,102,13,0	/* 38400 baud */
+ 	.byte	14,2,14,3	/* use master clock for BRG, enable */
+ 	.byte	3,0xc1		/* enable receiver */
+ 	.byte	5,0xea		/* enable transmitter */
+@@ -2800,7 +2798,7 @@ LMFP_UDR     = 0xfffa2f
+  */
+ 
+ /*
+- * Initialize serial port hardware for 9600/8/1
++ * Initialize serial port hardware
+  */
+ func_start	serial_init,%d0/%d1/%a0/%a1
+ 	/*
+@@ -2810,7 +2808,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+ 	 *		d0 = boot info offset
+ 	 *	CONFIG_ATARI
+ 	 *		a0 = address of SCC
+-	 *		a1 = Liobase address/address of scc_initable
++	 *		a1 = Liobase address/address of scc_initable_atari
+ 	 *		d0 = init data for serial port
+ 	 *	CONFIG_MAC
+ 	 *		a0 = address of SCC
+@@ -2846,9 +2844,21 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+ 	moveb	%a1@(LPSG_READ),%d0
+ 	bset	#5,%d0
+ 	moveb	%d0,%a1@(LPSG_WRITE)
+-#elif defined(USE_SCC)
++#elif defined(USE_SCC_A) || defined(USE_SCC_B)
+ 	lea	%a1@(LSCC_CTRL),%a0
+-	lea	%pc@(L(scc_initable)),%a1
++	/* Reset SCC register pointer */
++	moveb	%a0@,%d0
++	/* Reset SCC device: write register pointer then register value */
++	moveb	#9,%a0@
++	moveb	#0xc0,%a0@
++	/* Wait for 5 PCLK cycles, which is about 63 CPU cycles */
++	/* 5 / 7.9872 MHz = approx. 0.63 us = 63 / 100 MHz */
++	movel	#32,%d0
++2:
++	subq	#1,%d0
++	jne	2b
++	/* Initialize channel */
++	lea	%pc@(L(scc_initable_atari)),%a1
+ 2:	moveb	%a1@+,%d0
+ 	jmi	3f
+ 	moveb	%d0,%a0@
+@@ -3017,7 +3027,7 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
+ 	nop
+ 	bset	#5,%d0
+ 	moveb	%d0,%a1@(LPSG_WRITE)
+-#elif defined(USE_SCC)
++#elif defined(USE_SCC_A) || defined(USE_SCC_B)
+ 3:	btst	#2,%a1@(LSCC_CTRL)
+ 	jeq	3b
+ 	moveb	%d0,%a1@(LSCC_DATA)
