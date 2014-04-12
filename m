@@ -1,321 +1,165 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3 2/4] m68k: multi-platform EARLY_PRINTK
-Date: Sat, 12 Apr 2014 23:48:56 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1404122341280.8333@nippy.intranet>
+Subject: [PATCH v2 3/4] m68k/mvme16x: adopt common boot console
+Date: Sat, 12 Apr 2014 23:49:30 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1404122228590.8333@nippy.intranet>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41781 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41785 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754223AbaDLNtU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Apr 2014 09:49:20 -0400
+	with ESMTP id S1754290AbaDLNts (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Apr 2014 09:49:48 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org
 
 
-Make the boot console available to more m68k platforms by leveraging
-the head.S debug console.
+In a multi-platform kernel binary we only need one early console instance.   
 
-The boot console is enabled by the "earlyprintk" command line argument
-which is how most other architectures do this.
-
-This is a change of behaviour for the Mac but does not negatively impact
-the common use-case which is not debugging.
-
-This is also a change of behaviour for other platforms because it means
-the serial port stays quiet when CONFIG_EARLY_PRINTK is not enabled. This
-is also an improvement for the common use-case.
+The difficulty here is that the common early console is started by
+early_param(), whereas the MVME16x instance is started later by
+config_mvme16x(). That means some interrupt setup must be done earlier.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Tested-by: Stephen N Chivers <schivers@csc.com.au>
 
 ---
-This patch set is mostly aimed at making Mac-specific code useful to
-other m68k platforms. The early printk code becomes more generic. This is
-probably the approach I should have taken when I first implemented it for
-Macs.
-
-This should make multi-platform configs behave more consistently.
-
-Kconfig and the kernel command line as user interfaces seems more sensible
-than obscure macros buried in asm source files to control this
-functionality.
-
 Changes in v2:
-- depends on !SUN3
-- "earlyprintk" kernel parameter takes no argument
-- documentation update
-
-Changes in v3:
-- depends on !(SUN3 || M68360 || M68000 || COLDFIRE)
-  that is, platforms where debug_cons_write() is presently useful.
-- fix typo in Kconfig help
-- drop __init attributes for both console struct and debug_cons_write() so
-  that MVME16x no longer needs special treatment. Unfortunately, this causes
-  WARNING: modpost: Found 1 section mismatch(es).
-  because debug_cons_write() is in .init.text.
-- unregister_console() initcall only on platforms using arch/m68k/kernel/head.S
+- place MACH_IS_MVME16x tests inside #ifdef platform tests
+- eliminate #ifdef CONFIG_MVME16x
 
 ---
- Documentation/kernel-parameters.txt |    2 -
- arch/m68k/Kconfig.debug             |    9 ++++-
- arch/m68k/kernel/Makefile           |    2 +
- arch/m68k/kernel/early_printk.c     |   62 ++++++++++++++++++++++++++++++++++++
- arch/m68k/kernel/head.S             |   36 ++++++--------------
- arch/m68k/mac/config.c              |   29 ----------------
- 6 files changed, 84 insertions(+), 56 deletions(-)
+ arch/m68k/kernel/early_printk.c |   17 +++++++++++------
+ arch/m68k/kernel/head.S         |   11 +++++++++++
+ arch/m68k/mvme16x/config.c      |   26 +-------------------------
+ 3 files changed, 23 insertions(+), 31 deletions(-)
 
-Index: linux-m68k/arch/m68k/Kconfig.debug
-===================================================================
---- linux-m68k.orig/arch/m68k/Kconfig.debug	2014-04-12 22:35:01.000000000 +1000
-+++ linux-m68k/arch/m68k/Kconfig.debug	2014-04-12 22:37:13.000000000 +1000
-@@ -12,12 +12,17 @@ config BOOTPARAM_STRING
- 
- config EARLY_PRINTK
- 	bool "Early printk"
--	depends on MVME16x || MAC
-+	depends on !(SUN3 || M68360 || M68000 || COLDFIRE)
- 	help
-           Write kernel log output directly to a serial port.
-+          Where implemented, output goes to the framebuffer as well.
-+          PROM console functionality on Sun 3x is not affected by this option.
-+
-+          Pass "earlyprintk" on the kernel command line to get a
-+          boot console.
- 
-           This is useful for kernel debugging when your machine crashes very
--          early before the console code is initialized.
-+          early, i.e. before the normal console driver is loaded.
-           You should normally say N here, unless you want to debug such a crash.
- 
- if !MMU
-Index: linux-m68k/arch/m68k/kernel/Makefile
-===================================================================
---- linux-m68k.orig/arch/m68k/kernel/Makefile	2014-04-12 22:35:01.000000000 +1000
-+++ linux-m68k/arch/m68k/kernel/Makefile	2014-04-12 22:37:13.000000000 +1000
-@@ -25,3 +25,5 @@ obj-$(CONFIG_HAS_DMA)	+= dma.o
- obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o
- obj-$(CONFIG_BOOTINFO_PROC)	+= bootinfo_proc.o
- 
-+obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
-+
 Index: linux-m68k/arch/m68k/kernel/early_printk.c
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-m68k/arch/m68k/kernel/early_printk.c	2014-04-12 22:37:13.000000000 +1000
-@@ -0,0 +1,62 @@
-+/*
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file "COPYING" in the main directory of this archive
-+ * for more details.
-+ *
-+ * Copyright (c) 2014 Finn Thain
-+ */
+--- linux-m68k.orig/arch/m68k/kernel/early_printk.c	2014-04-12 22:20:45.000000000 +1000
++++ linux-m68k/arch/m68k/kernel/early_printk.c	2014-04-12 22:20:48.000000000 +1000
+@@ -12,12 +12,21 @@
+ #include <linux/string.h>
+ #include <asm/setup.h>
+ 
++extern void mvme16x_cons_write(struct console *co,
++                               const char *str, unsigned count);
 +
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <linux/init.h>
-+#include <linux/string.h>
-+#include <asm/setup.h>
-+
-+asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
-+
-+static void debug_cons_write(struct console *c,
-+                             const char *s, unsigned n)
-+{
-+	debug_cons_nputs(s, n);
-+}
-+
-+static struct console early_console_instance = {
-+	.name  = "debug",
-+	.write = debug_cons_write,
-+	.flags = CON_PRINTBUFFER | CON_BOOT,
-+	.index = -1
-+};
-+
-+static int __init setup_early_printk(char *buf)
-+{
-+	/* MVME16x registers an early console after interrupt setup. */
-+	if (MACH_IS_MVME16x)
-+		return 0;
-+
-+	if (early_console || buf)
-+		return 0;
-+
-+	early_console = &early_console_instance;
-+	register_console(early_console);
-+
-+	return 0;
-+}
-+early_param("earlyprintk", setup_early_printk);
-+
-+/*
-+ * debug_cons_nputs() defined in arch/m68k/kernel/head.S cannot be called
-+ * after init sections are discarded (for platforms that use it).
-+ */
+ asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
+ 
+ static void debug_cons_write(struct console *c,
+                              const char *s, unsigned n)
+ {
+-	debug_cons_nputs(s, n);
 +#if !(defined(CONFIG_SUN3)   || defined(CONFIG_M68360) || \
 +      defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE))
-+
-+static int __init unregister_early_console(void)
-+{
-+	if (!early_console)
-+		return 0;
-+
-+	return unregister_console(early_console);
-+}
-+late_initcall(unregister_early_console);
-+
++	if (MACH_IS_MVME16x)
++		mvme16x_cons_write(c, s, n);
++	else
++		debug_cons_nputs(s, n);
 +#endif
-Index: linux-m68k/arch/m68k/kernel/head.S
+ }
+ 
+ static struct console early_console_instance = {
+@@ -29,10 +38,6 @@ static struct console early_console_inst
+ 
+ static int __init setup_early_printk(char *buf)
+ {
+-	/* MVME16x registers an early console after interrupt setup. */
+-	if (MACH_IS_MVME16x)
+-		return 0;
+-
+ 	if (early_console || buf)
+ 		return 0;
+ 
+@@ -53,7 +58,7 @@ early_param("earlyprintk", setup_early_p
+ 
+ static int __init unregister_early_console(void)
+ {
+-	if (!early_console)
++	if (!early_console || MACH_IS_MVME16x)
+ 		return 0;
+ 
+ 	return unregister_console(early_console);
+Index: linux-m68k/arch/m68k/mvme16x/config.c
 ===================================================================
---- linux-m68k.orig/arch/m68k/kernel/head.S	2014-04-12 22:37:13.000000000 +1000
-+++ linux-m68k/arch/m68k/kernel/head.S	2014-04-12 22:37:13.000000000 +1000
-@@ -221,7 +221,7 @@
-  * MMU_PRINT:	There is a routine built into head.S that can display the
-  * MMU data structures.  It outputs its result through the serial_putc
-  * interface.  So where ever that winds up driving data, that's where the
-- * mmu struct will appear.  On the Macintosh that's typically the console.
-+ * mmu struct will appear.
-  *
-  * SERIAL_DEBUG:	There are a series of putc() macro statements
-  * scattered through out the code to give progress of status to the
-@@ -249,8 +249,8 @@
-  * USE_MFP:	Use the ST-MFP port (Modem1) for serial debug.
-  *
-  * Macintosh constants:
-- * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug and early console.
-- * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug and early console.
-+ * MAC_USE_SCC_A: Use SCC port A (modem) for serial debug.
-+ * MAC_USE_SCC_B: Use SCC port B (printer) for serial debug.
-  */
+--- linux-m68k.orig/arch/m68k/mvme16x/config.c	2014-04-12 22:20:10.000000000 +1000
++++ linux-m68k/arch/m68k/mvme16x/config.c	2014-04-12 22:20:48.000000000 +1000
+@@ -213,7 +213,7 @@ static void __init mvme16x_init_IRQ (voi
+ #define CySCRH		(0x22)
+ #define CyTFTC		(0x80)
  
- #include <linux/linkage.h>
-@@ -267,27 +267,17 @@
- #include <asm/pgtable.h>
- #include <asm/page.h>
- #include <asm/asm-offsets.h>
--
- #ifdef CONFIG_MAC
--
--#include <asm/machw.h>
--
--#ifdef CONFIG_FRAMEBUFFER_CONSOLE
--#define CONSOLE_DEBUG
-+#  include <asm/machw.h>
- #endif
+-static void cons_write(struct console *co, const char *str, unsigned count)
++void mvme16x_cons_write(struct console *co, const char *str, unsigned count)
+ {
+ 	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
+ 	volatile u_char sink;
+@@ -268,20 +268,6 @@ static void cons_write(struct console *c
+ 	base_addr[CyIER] = ier;
+ }
  
- #ifdef CONFIG_EARLY_PRINTK
--#define SERIAL_DEBUG
--#else
--#undef SERIAL_DEBUG
-+#  define SERIAL_DEBUG
-+#  ifdef CONFIG_MAC
-+#    define CONSOLE_DEBUG
-+#  endif
- #endif
- 
--#else /* !CONFIG_MAC */
--
--#define SERIAL_DEBUG
--
--#endif /* !CONFIG_MAC */
--
- #undef MMU_PRINT
- #undef MMU_NOCACHE_KERNEL
- #undef DEBUG
-@@ -3213,21 +3203,19 @@ func_start	putn,%d0-%d2
- 
- func_return	putn
- 
--#ifdef CONFIG_MAC
-+#ifdef CONFIG_EARLY_PRINTK
- /*
-- *	mac_early_print
-- *
-  *	This routine takes its parameters on the stack.  It then
-  *	turns around and calls the internal routines.  This routine
-  *	is used by the boot console.
-  *
-  *	The calling parameters are:
-- *		void mac_early_print(const char *str, unsigned length);
-+ *		void debug_cons_nputs(const char *str, unsigned length)
-  *
-  *	This routine does NOT understand variable arguments only
-  *	simple strings!
-  */
--ENTRY(mac_early_print)
-+ENTRY(debug_cons_nputs)
- 	moveml	%d0/%d1/%a0,%sp@-
- 	movew	%sr,%sp@-
- 	ori	#0x0700,%sr
-@@ -3249,7 +3237,7 @@ ENTRY(mac_early_print)
- 	movew	%sp@+,%sr
- 	moveml	%sp@+,%d0/%d1/%a0
- 	rts
--#endif /* CONFIG_MAC */
-+#endif /* CONFIG_EARLY_PRINTK */
- 
- #if defined(CONFIG_HP300) || defined(CONFIG_APOLLO)
- func_start	set_leds,%d0/%a0
-Index: linux-m68k/arch/m68k/mac/config.c
-===================================================================
---- linux-m68k.orig/arch/m68k/mac/config.c	2014-04-12 22:35:01.000000000 +1000
-+++ linux-m68k/arch/m68k/mac/config.c	2014-04-12 22:37:13.000000000 +1000
-@@ -71,31 +71,6 @@ static void mac_get_model(char *str);
- static void mac_identify(void);
- static void mac_report_hardware(void);
- 
--#ifdef CONFIG_EARLY_PRINTK
--asmlinkage void __init mac_early_print(const char *s, unsigned n);
--
--static void __init mac_early_cons_write(struct console *con,
--                                 const char *s, unsigned n)
+-static struct console cons_info =
 -{
--	mac_early_print(s, n);
--}
--
--static struct console __initdata mac_early_cons = {
--	.name  = "early",
--	.write = mac_early_cons_write,
--	.flags = CON_PRINTBUFFER | CON_BOOT,
--	.index = -1
+-	.name	= "sercon",
+-	.write	= cons_write,
+-	.flags	= CON_PRINTBUFFER | CON_BOOT,
+-	.index	= -1,
 -};
 -
--int __init mac_unregister_early_cons(void)
+-static void __init mvme16x_early_console(void)
 -{
--	/* mac_early_print can't be used after init sections are discarded */
--	return unregister_console(&mac_early_cons);
+-	register_console(&cons_info);
+-
+-	printk(KERN_INFO "MVME16x: early console registered\n");
 -}
--
--late_initcall(mac_unregister_early_cons);
--#endif
--
- static void __init mac_sched_init(irq_handler_t vector)
- {
- 	via_init_clock(vector);
-@@ -190,10 +165,6 @@ void __init config_mac(void)
- 	mach_beep = mac_mksound;
  #endif
  
--#ifdef CONFIG_EARLY_PRINTK
--	register_console(&mac_early_cons);
--#endif
+ void __init config_mvme16x(void)
+@@ -336,16 +322,6 @@ void __init config_mvme16x(void)
+     else
+     {
+ 	mvme16x_config = MVME16x_CONFIG_GOT_LP | MVME16x_CONFIG_GOT_CD2401;
 -
- 	/*
- 	 * Determine hardware present
- 	 */
-Index: linux-m68k/Documentation/kernel-parameters.txt
-===================================================================
---- linux-m68k.orig/Documentation/kernel-parameters.txt	2014-04-12 22:35:01.000000000 +1000
-+++ linux-m68k/Documentation/kernel-parameters.txt	2014-04-12 22:37:13.000000000 +1000
-@@ -880,7 +880,7 @@ bytes respectively. Such letter suffixes
- 			(mmio) or 32-bit (mmio32).
- 			The options are the same as for ttyS, above.
+-	/* Dont allow any interrupts from the CD2401 until the interrupt */
+-	/* handlers are installed					 */
+-
+-	pcc2chip[PccSCCMICR] = 0x10;
+-	pcc2chip[PccSCCTICR] = 0x10;
+-	pcc2chip[PccSCCRICR] = 0x10;
+-#ifdef CONFIG_EARLY_PRINTK
+-	mvme16x_early_console();
+-#endif
+     }
+ }
  
--	earlyprintk=	[X86,SH,BLACKFIN,ARM]
-+	earlyprintk=	[X86,SH,BLACKFIN,ARM,M68k]
- 			earlyprintk=vga
- 			earlyprintk=efi
- 			earlyprintk=xen
+Index: linux-m68k/arch/m68k/kernel/head.S
+===================================================================
+--- linux-m68k.orig/arch/m68k/kernel/head.S	2014-04-12 22:20:45.000000000 +1000
++++ linux-m68k/arch/m68k/kernel/head.S	2014-04-12 22:20:48.000000000 +1000
+@@ -2936,6 +2936,15 @@ L(serial_init_not_mac):
+ 2:
+ #endif
+ 
++#ifdef CONFIG_MVME16x
++	is_not_mvme16x(L(serial_init_not_mvme16x))
++	moveb	#0x10,M167_PCSCCMICR
++	moveb	#0x10,M167_PCSCCTICR
++	moveb	#0x10,M167_PCSCCRICR
++	jra	L(serial_init_done)
++L(serial_init_not_mvme16x):
++#endif
++
+ #ifdef CONFIG_APOLLO
+ /* We count on the PROM initializing SIO1 */
+ #endif
+@@ -3768,7 +3777,9 @@ M167_CYIER = 0xfff45011
+ M167_CYLICR = 0xfff45026
+ M167_CYTEOIR = 0xfff45085
+ M167_CYTDR = 0xfff450f8
++M167_PCSCCMICR = 0xfff4201d
+ M167_PCSCCTICR = 0xfff4201e
++M167_PCSCCRICR = 0xfff4201f
+ M167_PCTPIACKR = 0xfff42025
+ #endif
+ 
