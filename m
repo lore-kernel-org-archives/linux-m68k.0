@@ -1,165 +1,113 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2 3/4] m68k/mvme16x: adopt common boot console
-Date: Sat, 12 Apr 2014 23:49:30 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1404122228590.8333@nippy.intranet>
+From: Kars de Jong <jongk@linux-m68k.org>
+Subject: Re: esp_scsi QTAG in FAS216
+Date: Sun, 13 Apr 2014 16:47:45 +0200
+Message-ID: <CACz-3rjNixJBjKxzjpneFE8BHKpzR-hvhWsabT_AtrWZZUgvsA@mail.gmail.com>
+References: <CAOmrzkKP4YcvnHcrtucMvS9WSaeg+6-qnobOWN6hBK=wkUHemg@mail.gmail.com>
+	<CAMuHMdUH=9sv-Vb3ZTAGyfvEQOO0x0x1cUYhfd7040k8d+bSYg@mail.gmail.com>
+	<5231DF69.6070807@aalto.fi>
+	<20140404.162830.1700547572091852195.davem@davemloft.net>
+	<CAOmrzkL_6Y2RhpKANmTEWL53-6Ts+PF9Hhk_4Fh1s0wx7f_NhQ@mail.gmail.com>
+	<CACz-3rg3LNFKNPUNwc1OF_O_b5k=28hw8Nj50dWhxy4A5_QbVg@mail.gmail.com>
+	<CAOmrzkK1hoT72zA4CzajCH2uNwkiVPWi8vJQswB=4Q4uf-kSZQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41785 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754290AbaDLNts (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Apr 2014 09:49:48 -0400
+Received: from smtpq4.gn.mail.iss.as9143.net ([212.54.34.167]:48850 "EHLO
+	smtpq4.gn.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751112AbaDMOru (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 13 Apr 2014 10:47:50 -0400
+In-Reply-To: <CAOmrzkK1hoT72zA4CzajCH2uNwkiVPWi8vJQswB=4Q4uf-kSZQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: David Miller <davem@davemloft.net>, Tuomas Vainikka <tuomas.vainikka@aalto.fi>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>
+
+Hi Michael,
 
 
-In a multi-platform kernel binary we only need one early console instance.   
+2014-04-11 3:47 GMT+02:00 Michael Schmitz <schmitzmic@gmail.com>:
+> The more important issue is the one about the one-byte reconnect
+> message. Does the manual speak to that particular issue? Any hint on
+> how we could enable SCSI-2 features on chip init?
 
-The difficulty here is that the common early console is started by
-early_param(), whereas the MVME16x instance is started later by
-config_mvme16x(). That means some interrupt setup must be done earlier.
+There's the SCSI2 bit in the Config 2 register and/or the QTE bit in
+the Config 3 register. The 53CF9x-2 manual says about SCSI-2 bit:
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stephen N Chivers <schivers@csc.com.au>
+Bit 2 SCSI-2
 
----
-Changes in v2:
-- place MACH_IS_MVME16x tests inside #ifdef platform tests
-- eliminate #ifdef CONFIG_MVME16x
+Setting this bit allows the FSC to support two new features adopted in
+SCSI-2: the 3-byte message exchange for Tagged-Queueing and Group 2
+commands. These features can also be set independently in the Config 3
+register.
 
----
- arch/m68k/kernel/early_printk.c |   17 +++++++++++------
- arch/m68k/kernel/head.S         |   11 +++++++++++
- arch/m68k/mvme16x/config.c      |   26 +-------------------------
- 3 files changed, 23 insertions(+), 31 deletions(-)
+Tagged-Queueing
+When this bit is set and the FSC is selected with ATN (Attention), it
+will request either one or three message bytes depending on whether
+ATN remains true or goes false. If ATN is still true after the first
+byte has been received, the FSC may request two more message bytes
+before switching to Command phase. If ATN goes false, it will switch
+to Command phase after the first message byte. When the bit is not set
+it will request a single message byte (as a target) when selected with
+ATN, and abort the selection sequence (as an initiator) if the target
+does not switch to Command phase after one message byte has been
+transferred.
 
-Index: linux-m68k/arch/m68k/kernel/early_printk.c
-===================================================================
---- linux-m68k.orig/arch/m68k/kernel/early_printk.c	2014-04-12 22:20:45.000000000 +1000
-+++ linux-m68k/arch/m68k/kernel/early_printk.c	2014-04-12 22:20:48.000000000 +1000
-@@ -12,12 +12,21 @@
- #include <linux/string.h>
- #include <asm/setup.h>
- 
-+extern void mvme16x_cons_write(struct console *co,
-+                               const char *str, unsigned count);
-+
- asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
- 
- static void debug_cons_write(struct console *c,
-                              const char *s, unsigned n)
- {
--	debug_cons_nputs(s, n);
-+#if !(defined(CONFIG_SUN3)   || defined(CONFIG_M68360) || \
-+      defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE))
-+	if (MACH_IS_MVME16x)
-+		mvme16x_cons_write(c, s, n);
-+	else
-+		debug_cons_nputs(s, n);
-+#endif
- }
- 
- static struct console early_console_instance = {
-@@ -29,10 +38,6 @@ static struct console early_console_inst
- 
- static int __init setup_early_printk(char *buf)
- {
--	/* MVME16x registers an early console after interrupt setup. */
--	if (MACH_IS_MVME16x)
--		return 0;
--
- 	if (early_console || buf)
- 		return 0;
- 
-@@ -53,7 +58,7 @@ early_param("earlyprintk", setup_early_p
- 
- static int __init unregister_early_console(void)
- {
--	if (!early_console)
-+	if (!early_console || MACH_IS_MVME16x)
- 		return 0;
- 
- 	return unregister_console(early_console);
-Index: linux-m68k/arch/m68k/mvme16x/config.c
-===================================================================
---- linux-m68k.orig/arch/m68k/mvme16x/config.c	2014-04-12 22:20:10.000000000 +1000
-+++ linux-m68k/arch/m68k/mvme16x/config.c	2014-04-12 22:20:48.000000000 +1000
-@@ -213,7 +213,7 @@ static void __init mvme16x_init_IRQ (voi
- #define CySCRH		(0x22)
- #define CyTFTC		(0x80)
- 
--static void cons_write(struct console *co, const char *str, unsigned count)
-+void mvme16x_cons_write(struct console *co, const char *str, unsigned count)
- {
- 	volatile unsigned char *base_addr = (u_char *)CD2401_ADDR;
- 	volatile u_char sink;
-@@ -268,20 +268,6 @@ static void cons_write(struct console *c
- 	base_addr[CyIER] = ier;
- }
- 
--static struct console cons_info =
--{
--	.name	= "sercon",
--	.write	= cons_write,
--	.flags	= CON_PRINTBUFFER | CON_BOOT,
--	.index	= -1,
--};
--
--static void __init mvme16x_early_console(void)
--{
--	register_console(&cons_info);
--
--	printk(KERN_INFO "MVME16x: early console registered\n");
--}
- #endif
- 
- void __init config_mvme16x(void)
-@@ -336,16 +322,6 @@ void __init config_mvme16x(void)
-     else
-     {
- 	mvme16x_config = MVME16x_CONFIG_GOT_LP | MVME16x_CONFIG_GOT_CD2401;
--
--	/* Dont allow any interrupts from the CD2401 until the interrupt */
--	/* handlers are installed					 */
--
--	pcc2chip[PccSCCMICR] = 0x10;
--	pcc2chip[PccSCCTICR] = 0x10;
--	pcc2chip[PccSCCRICR] = 0x10;
--#ifdef CONFIG_EARLY_PRINTK
--	mvme16x_early_console();
--#endif
-     }
- }
- 
-Index: linux-m68k/arch/m68k/kernel/head.S
-===================================================================
---- linux-m68k.orig/arch/m68k/kernel/head.S	2014-04-12 22:20:45.000000000 +1000
-+++ linux-m68k/arch/m68k/kernel/head.S	2014-04-12 22:20:48.000000000 +1000
-@@ -2936,6 +2936,15 @@ L(serial_init_not_mac):
- 2:
- #endif
- 
-+#ifdef CONFIG_MVME16x
-+	is_not_mvme16x(L(serial_init_not_mvme16x))
-+	moveb	#0x10,M167_PCSCCMICR
-+	moveb	#0x10,M167_PCSCCTICR
-+	moveb	#0x10,M167_PCSCCRICR
-+	jra	L(serial_init_done)
-+L(serial_init_not_mvme16x):
-+#endif
-+
- #ifdef CONFIG_APOLLO
- /* We count on the PROM initializing SIO1 */
- #endif
-@@ -3768,7 +3777,9 @@ M167_CYIER = 0xfff45011
- M167_CYLICR = 0xfff45026
- M167_CYTEOIR = 0xfff45085
- M167_CYTDR = 0xfff450f8
-+M167_PCSCCMICR = 0xfff4201d
- M167_PCSCCTICR = 0xfff4201e
-+M167_PCSCCRICR = 0xfff4201f
- M167_PCTPIACKR = 0xfff42025
- #endif
- 
+Group 2 Commands
+(seems to only be relevant for target mode).
+
+And about the QTE bit:
+
+Bit 6 Queue Tag Enable
+
+When this bit is set, the 53CF94/96 can receive 3-byte messages during
+bus-initiated Select With ATN. This feature is also enabled by setting
+bit 3 in the Configuration 2 register.
+The message bytes consist of a one-byte identify message and a
+two-byte queue tag message. The middle byte is the tagged queue
+message itself and the last byte is the tag value (0 to 255). When
+this bit is set, the second byte is checked to see if it is a valid
+queue tagging message. If the value of the byte is not 20, 21 or 22h,
+the sequence halts and an interrupt is generated. When this bit is not
+set, the chip aborts the Select With ATN sequence after it receives
+one Identify Message byte, if ATN is still asserted.
+
+Then there is a section called "Bus Initiated Reselection":
+
+Bus Initiated Reselection
+The FSC will allow itself to be reselected as an initiator by a target
+if it has previously received the Enable Selection/Reselection
+command. If the sequence completes normally, the following information
+will be in the FIFO:
+
+* Bus ID
+* Identify Message
+* Optional 2-byte queue tag message
+
+The bus ID will always be present and will always be one byte. It is
+an un-encoded version of the state of the bus during Reselection
+phase.
+
+The identify message will always be present and will always be one byte.
+
+If queue tagging is enabled, and the target is sending a queue tag
+message, the target will also send two queue tag message bytes.
+
+> Can you point me to a source for the manuals if possible?
+
+I only have dead tree versions of the QLogic manual and the Symbios
+Logic manual.
+
+The only public place I know of is bitsavers, they do have a manual
+for the 53C94/95/96 online here:
+http://bitsavers.trailing-edge.com/pdf/ncr/scsi/NCR_53C94_53C95_53C96_Data_Sheet_Feb90.pdf.
+
+I put the 53C90A/B manual online at
+http://members.home.nl/karsdejong/NCR53C90ab.pdf and a preliminary
+version of the 53CF94/96-2 at
+http://members.home.nl/karsdejong/NCR53CF9x-2.pdf.
+
+
+Kind regards,
+
+Kars.
