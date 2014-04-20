@@ -1,107 +1,70 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: esp_scsi QTAG in FAS216
-Date: Mon, 14 Apr 2014 21:01:02 +1200
-Message-ID: <0ee24dc77b71e282562b794aaa4039cd@gmail.com>
-References: <CAOmrzkK1hoT72zA4CzajCH2uNwkiVPWi8vJQswB=4Q4uf-kSZQ@mail.gmail.com> <CACz-3rjNixJBjKxzjpneFE8BHKpzR-hvhWsabT_AtrWZZUgvsA@mail.gmail.com> <CAOmrzkJZEZigKEyb5_66H2FNaEX7F_TXyvQNMpMZu1MyuOudBw@mail.gmail.com> <20140413.221414.853080853067673824.davem@davemloft.net>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Davidlohr Bueso <davidlohr@hp.com>
+Subject: [PATCH 2/6] m68k: call find_vma with the mmap_sem held in sys_cacheflush()
+Date: Sat, 19 Apr 2014 19:26:27 -0700
+Message-ID: <1397960791-16320-3-git-send-email-davidlohr__21456.7157243893$1397960884$gmane$org@hp.com>
+References: <1397960791-16320-1-git-send-email-davidlohr@hp.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f174.google.com ([209.85.192.174]:51141 "EHLO
-	mail-pd0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752760AbaDNJBK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 14 Apr 2014 05:01:10 -0400
-In-Reply-To: <20140413.221414.853080853067673824.davem@davemloft.net>
+In-Reply-To: <1397960791-16320-1-git-send-email-davidlohr@hp.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, jongk@linux-m68k.org, tuomas.vainikka@aalto.fi, linux-scsi@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: zeus@gnu.org, aswin@hp.com, davidlohr@hp.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Hi Dave,
+Performing vma lookups without taking the mm->mmap_sem is asking
+for trouble. While doing the search, the vma in question can be
+modified or even removed before returning to the caller. Take the
+lock (shared) in order to avoid races while iterating through
+the vmacache and/or rbtree.
 
->>> When this bit is set, the 53CF94/96 can receive 3-byte messages  
->>> during
->>> bus-initiated Select With ATN. This feature is also enabled by  
->>> setting
->>> bit 3 in the Configuration 2 register.
->>
->> My preference would be to set this one (named ESP_CONFIG3_TBMS). Your
->> opinion, Dave?
->
-> As seems to be agreed upon here, the SCSI2 bit in the CONFIG2 register
-> (ESP_CONFIG2_SCSI2ENAB) is only for when the chip is used in target
-> mode.  So it is not relevant for our discussion because this driver is
-> for initiator mode operation only.
+This patch is completely *untested*.
 
-Agreed. ESP_CONFIG2_SCSI2ENAB might do more than we intend, and have  
-unintended side effects. It's just easier to test whether this fixes  
-our problem.
+Signed-off-by: Davidlohr Bueso <davidlohr@hp.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/kernel/sys_m68k.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
->
-> But some pieces of documentation seem like they might not agree on
-> this point.
->
-> With respect to bit 3 in the config3 register, it can take on one of
-> two meaning depending upon chip revision.  As per  
-> ESP_CONFIG3_{TMS,FCLK}
-> it either controls fast SCSI clocking, or it enabled 3 byte message
-> recognition.
->
-> But oddly in the NCR53CX docs:
->
-> 	http://www.ibiblio.org/pub/historic-linux/early-ports/Sparc/NCR/ 
-> NCR53C9X.txt
->
-> it speaks as if ESP_CONFIG3_TMS and ESP_CONFIG3_TENB are merely finer
-> grained versions of config2 register setting ESP_CONFIG2_SCSI2ENAB,
-> which enables both features.
-
-That's what I understood from the bits Kars quoted, yes. And in the  
-Amiga driver cases, it will always be the 3 byte message feature  
-controlled by that bit, as far as I can see.
-
->
-> Again I looked at the FreeBSD driver and for all chips after plain
-> esp100, they set ESP_CONFIG2_SCSI2ENAB.
->
-> Can we try testing the following patch?
-
-That would be even easier than setting it explicitly in the Zorro  
-driver, thanks,
-
-	Michael
-
-
->
-> ====================
-> esp_scsi: Set SCSI2 bit in config2 register.
->
-> This should allow proper recognition of 3 byte reselection
-> on all esp100a and later chips.
->
-> Reported-by: Kars de Jong <jongk@linux-m68k.org>
-> Reported-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
->
-> diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
-> index 55548dc..16f69e0 100644
-> --- a/drivers/scsi/esp_scsi.c
-> +++ b/drivers/scsi/esp_scsi.c
-> @@ -2160,7 +2160,7 @@ static void esp_get_revision(struct esp *esp)
->  		 */
->  		esp->rev = ESP100;
->  	} else {
-> -		esp->config2 = 0;
-> +		esp->config2 = ESP_CONFIG2_SCSI2ENAB;
->  		esp_set_all_config3(esp, 5);
->  		esp->prev_cfg3 = 5;
->  		esp_write8(esp->config2, ESP_CFG2);
-> @@ -2187,8 +2187,6 @@ static void esp_get_revision(struct esp *esp)
->  			} else {
->  				esp->rev = ESP236;
->  			}
-> -			esp->config2 = 0;
-> -			esp_write8(esp->config2, ESP_CFG2);
->  		}
->  	}
->  }
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 3a480b3..d2263a0 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -376,7 +376,6 @@ cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
+ asmlinkage int
+ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ {
+-	struct vm_area_struct *vma;
+ 	int ret = -EINVAL;
+ 
+ 	if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
+@@ -389,16 +388,23 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			goto out;
+ 	} else {
++		struct vm_area_struct *vma;
++		bool invalid;
++
++		/* Check for overflow.  */
++		if (addr + len < addr)
++			goto out;
++
+ 		/*
+ 		 * Verify that the specified address region actually belongs
+ 		 * to this process.
+ 		 */
+-		vma = find_vma (current->mm, addr);
+ 		ret = -EINVAL;
+-		/* Check for overflow.  */
+-		if (addr + len < addr)
+-			goto out;
+-		if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
++		down_read(&current->mm->mmap_sem);
++		vma = find_vma(current->mm, addr);
++		invalid = !vma || addr < vma->vm_start || addr + len > vma->vm_end;
++		up_read(&current->mm->mmap_sem);
++		if (invalid)
+ 			goto out;
+ 	}
+ 
+-- 
+1.8.1.4
