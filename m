@@ -1,103 +1,80 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/6] m68k: call find_vma with the mmap_sem held in sys_cacheflush()
-Date: Mon, 21 Apr 2014 09:52:32 +0200
-Message-ID: <CAMuHMdV5HKvzE6H_JCH=01med8mVuXbVBz92tpNk7poH4ymXOQ__22514.4488773823$1398066764$gmane$org@mail.gmail.com>
-References: <1397960791-16320-1-git-send-email-davidlohr@hp.com>
-	<1397960791-16320-3-git-send-email-davidlohr@hp.com>
-	<CAMuHMdVBZSC3Kvwsw5pa-m8ZAUCjpkF8gjJH1XbOK2iFbU1KEg@mail.gmail.com>
-	<1398032896.19331.25.camel@buesod1.americas.hpqcorp.net>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] m68k: Increase initial mapping to 16MB if possible
+Date: Thu, 24 Apr 2014 12:24:48 +0200
+Message-ID: <87ppk7m3db.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1398032896.19331.25.camel@buesod1.americas.hpqcorp.net>
+Received: from mail-out.m-online.net ([212.18.0.9]:54419 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753264AbaDXKYw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 24 Apr 2014 06:24:52 -0400
+Received: from frontend1.mail.m-online.net (unknown [192.168.8.180])
+	by mail-out.m-online.net (Postfix) with ESMTP id 3gDvlQ1k8mz4KK7F
+	for <linux-m68k@vger.kernel.org>; Thu, 24 Apr 2014 12:24:49 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 3gDvlP6KnzzbbtG
+	for <linux-m68k@vger.kernel.org>; Thu, 24 Apr 2014 12:24:49 +0200 (CEST)
+Received: from mail.mnet-online.de ([192.168.8.180])
+	by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavisd-new, port 10024)
+	with ESMTP id dFiGtQ4mp-VW for <linux-m68k@vger.kernel.org>;
+	Thu, 24 Apr 2014 12:24:48 +0200 (CEST)
+Received: from igel.home (ppp-188-174-154-23.dynamic.mnet-online.de [188.174.154.23])
+	by mail.mnet-online.de (Postfix) with ESMTPA
+	for <linux-m68k@vger.kernel.org>; Thu, 24 Apr 2014 12:24:48 +0200 (CEST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Davidlohr Bueso <davidlohr@hp.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, zeus@gnu.org, Aswin Chandramouleeswaran <aswin@hp.com>, Linux MM <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org
 
-Hi David,
+If the size of the first memory chunk is at least 16MB increase the
+initial mapping to 16MB instead of 4MB.  This makes it possible to map
+more memory in the first node without running out of space for the page
+tables.
 
-On Mon, Apr 21, 2014 at 12:28 AM, Davidlohr Bueso <davidlohr@hp.com> wrote:
-> On Sun, 2014-04-20 at 10:04 +0200, Geert Uytterhoeven wrote:
->> On Sun, Apr 20, 2014 at 4:26 AM, Davidlohr Bueso <davidlohr@hp.com> wrote:
->> > Performing vma lookups without taking the mm->mmap_sem is asking
->> > for trouble. While doing the search, the vma in question can be
->> > modified or even removed before returning to the caller. Take the
->> > lock (shared) in order to avoid races while iterating through
->> > the vmacache and/or rbtree.
->>
->> Thanks for your patch!
->>
->> > This patch is completely *untested*.
->> >
->> > Signed-off-by: Davidlohr Bueso <davidlohr@hp.com>
->> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> > Cc: linux-m68k@lists.linux-m68k.org
->> > ---
->> >  arch/m68k/kernel/sys_m68k.c | 18 ++++++++++++------
->> >  1 file changed, 12 insertions(+), 6 deletions(-)
->> >
->> > diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
->> > index 3a480b3..d2263a0 100644
->> > --- a/arch/m68k/kernel/sys_m68k.c
->> > +++ b/arch/m68k/kernel/sys_m68k.c
->> > @@ -376,7 +376,6 @@ cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
->> >  asmlinkage int
->> >  sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
->> >  {
->> > -       struct vm_area_struct *vma;
->> >         int ret = -EINVAL;
->> >
->> >         if (scope < FLUSH_SCOPE_LINE || scope > FLUSH_SCOPE_ALL ||
->> > @@ -389,16 +388,23 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
->> >                 if (!capable(CAP_SYS_ADMIN))
->> >                         goto out;
->> >         } else {
->> > +               struct vm_area_struct *vma;
->> > +               bool invalid;
->> > +
->> > +               /* Check for overflow.  */
->> > +               if (addr + len < addr)
->> > +                       goto out;
->> > +
->> >                 /*
->> >                  * Verify that the specified address region actually belongs
->> >                  * to this process.
->> >                  */
->> > -               vma = find_vma (current->mm, addr);
->> >                 ret = -EINVAL;
->> > -               /* Check for overflow.  */
->> > -               if (addr + len < addr)
->> > -                       goto out;
->> > -               if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
->> > +               down_read(&current->mm->mmap_sem);
->> > +               vma = find_vma(current->mm, addr);
->> > +               invalid = !vma || addr < vma->vm_start || addr + len > vma->vm_end;
->> > +               up_read(&current->mm->mmap_sem);
->> > +               if (invalid)
->> >                         goto out;
->> >         }
->>
->> Shouldn't the up_read() be moved to the end of the function?
->> The vma may still be modified or destroyed between the call to find_vma(),
->> and the actual cache flush?
->
-> I don't think so. afaict the vma is only searched to check upon validity
-> for the address being passed. Once the sem is dropped, the call doesn't
-> do absolutely anything else with the returned vma.
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+ arch/m68k/kernel/head.S | 9 ++++++++-
+ arch/m68k/mm/motorola.c | 2 +-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-The function indeed doesn't do anything anymore with the vma itself, but
-it does do something with the addr/len pair, which may no longer match
-with the vma if it changes after the up_read(). I.e. the address may no longer
-be valid when the cache is actually flushed.
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index ac85f16..23091ea 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -941,7 +941,14 @@ L(nocon):
+  *	First map the first 4 MB of kernel code & data
+  */
+ 
+-	mmu_map	#PAGE_OFFSET,%pc@(L(phys_kernel_start)),#4*1024*1024,\
++	get_bi_record BI_MEMCHUNK
++	movel	%a0@(4),%d0
++	movel	#16*1024*1024,%d1
++	cmpl	%d0,%d1
++	jls	1f
++	lsrl	#2,%d1
++1:
++	mmu_map	#PAGE_OFFSET,%pc@(L(phys_kernel_start)),%d1,\
+ 		%pc@(m68k_supervisor_cachemode)
+ 
+ 	putc	'C'
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 251c543..0e4c3a9 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -45,7 +45,7 @@ EXPORT_SYMBOL(mm_cachebits);
+ #endif
+ 
+ /* size of memory already mapped in head.S */
+-#define INIT_MAPPED_SIZE	(4UL<<20)
++#define INIT_MAPPED_SIZE	(m68k_memory[0].size >= 16UL<<20 ? 16UL<<20 : 4UL<<20)
+ 
+ extern unsigned long availmem;
+ 
+-- 
+1.9.2
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
