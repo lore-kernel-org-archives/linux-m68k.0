@@ -1,37 +1,53 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Increase initial mapping to 16MB if possible
-Date: Tue, 29 Apr 2014 12:33:44 +0200
-Message-ID: <8738gwxw53.fsf@igel.home>
-References: <87ppk7m3db.fsf@igel.home>
-	<loom.20140429T121132-254@post.gmane.org>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH v2 00/12] scsi/NCR5380: fix debugging macros and
+ #include structure
+Date: Tue, 29 Apr 2014 07:41:16 -0700
+Message-ID: <1398782476.2218.20.camel@dabdike.int.hansenpartnership.com>
+References: <20140319123516.542623278@telegraphics.com.au>
+	 <1398532863.24466.2.camel@dabdike.int.hansenpartnership.com>
+	 <alpine.LNX.2.00.1404291202190.32739@nippy.intranet>
+	 <CAOmrzk+kuepC7QR4uchP_zxk7-Bi7faiF-Z5jGX9KMcHn-7_9Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:40424 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933248AbaD2Kdr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Apr 2014 06:33:47 -0400
-In-Reply-To: <loom.20140429T121132-254@post.gmane.org> (Thorsten Glaser's
-	message of "Tue, 29 Apr 2014 10:11:55 +0000 (UTC)")
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:33206 "EHLO
+	bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757482AbaD2OlT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 29 Apr 2014 10:41:19 -0400
+In-Reply-To: <CAOmrzk+kuepC7QR4uchP_zxk7-Bi7faiF-Z5jGX9KMcHn-7_9Q@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@debian.org>
-Cc: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, scsi <linux-scsi@vger.kernel.org>, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, Joe Perches <joe@perches.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Thorsten Glaser <tg@debian.org> writes:
+On Tue, 2014-04-29 at 15:15 +1200, Michael Schmitz wrote:
+> Finn,
+> 
+> On Tue, Apr 29, 2014 at 2:22 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> >
+> > On Sat, 26 Apr 2014, James Bottomley wrote:
+> >
+> >> OK, so this is a pretty big change to an unmaintained driver.  I'll take
+> >> it if you're willing to maintain the driver afterwards ... in which case
+> >> I need another patch to add you to the MAINTAINERS file.
+> >
+> > Sure, I'm happy to support these patches and future work I plan to do on
+> > the driver.
+> >
+> > What additional responsibilities would come with adding my name the
+> > MAINTAINERS file?
+> >
+> > Perhaps Michael and Sam would be interested in sharing the role, for atari
+> > and sun3 NCR5380 drivers (?)
+> 
+> If you insist ...
+> 
+> (kidding - I"m OK with it if James thinks it's worth it)
 
-> Andreas Schwab <schwab <at> linux-m68k.org> writes:
->
->> If the size of the first memory chunk is at least 16MB increase the
->> initial mapping to 16MB instead of 4MB.  This makes it possible to map
->
-> Why not always?
+As long as you understand how it works and how to fix it, the more the
+merrier.  It gives me more people to yell at if something goes wrong
+with the driver.
 
-Always what?
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+James
