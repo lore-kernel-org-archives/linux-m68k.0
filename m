@@ -1,36 +1,39 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] m68k: Increase initial mapping to 16MB if possible
-Date: Wed, 30 Apr 2014 19:38:41 +1200
-Message-ID: <5360A881.7040107@gmail.com>
-References: <87ppk7m3db.fsf@igel.home> <loom.20140429T121132-254@post.gmane.org> <8738gwxw53.fsf@igel.home> <CAMuHMdU50FnSD0K896b7aJN-RPXWpUoW46oiOFy-9AsYP2LGGQ@mail.gmail.com> <87sioww0gb.fsf@igel.home>
+Subject: Re: [PATCH v2 00/12] scsi/NCR5380: fix debugging macros and #include
+ structure
+Date: Wed, 30 Apr 2014 19:45:25 +1200
+Message-ID: <5360AA15.9060006@gmail.com>
+References: <20140319123516.542623278@telegraphics.com.au>  <1398532863.24466.2.camel@dabdike.int.hansenpartnership.com>  <alpine.LNX.2.00.1404291202190.32739@nippy.intranet>  <CAOmrzk+kuepC7QR4uchP_zxk7-Bi7faiF-Z5jGX9KMcHn-7_9Q@mail.gmail.com> <1398782476.2218.20.camel@dabdike.int.hansenpartnership.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ig0-f172.google.com ([209.85.213.172]:50575 "EHLO
-	mail-ig0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750799AbaD3Hit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Apr 2014 03:38:49 -0400
-Received: by mail-ig0-f172.google.com with SMTP id hn18so7203784igb.11
-        for <linux-m68k@vger.kernel.org>; Wed, 30 Apr 2014 00:38:49 -0700 (PDT)
-In-Reply-To: <87sioww0gb.fsf@igel.home>
+Received: from mail-ie0-f172.google.com ([209.85.223.172]:48173 "EHLO
+	mail-ie0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751330AbaD3Hpc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Apr 2014 03:45:32 -0400
+In-Reply-To: <1398782476.2218.20.camel@dabdike.int.hansenpartnership.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Thorsten Glaser <tg@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, scsi <linux-scsi@vger.kernel.org>, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, Joe Perches <joe@perches.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Andreas,
+Hi James,
+> Perhaps Michael and Sam would be interested in sharing the role, for atari
+> and sun3 NCR5380 drivers (?)
+>> If you insist ...
+>>
+>> (kidding - I"m OK with it if James thinks it's worth it)
+> As long as you understand how it works and how to fix it, the more the
+> merrier.  It gives me more people to yell at if something goes wrong
+> with the driver.
 
-first off - thanks for the patch!
+I used to have a fair understanding of the Atari driver years back - 
+just need to get my head around all the midlevel and error handling 
+changes since.
 
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->
->> Always increases the initial mapping to 16 MiB.
-> You can't map more than is available.
->
-How about trying for 16, then 8, then 4? Would help my 14 MB ST-RAM Falcon.
-
-I had a patch half prepared for that which I forgot to send ...
+You'll be yelling at me regarding any breakage in the Atari NCR5380 
+driver anyway in the end - count me in.
 
 Cheers,
 
