@@ -1,148 +1,350 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/1] ARCH/M68K/AMIGA: convert printk to pr_foo()
-Date: Thu, 1 May 2014 15:21:06 +0200
-Message-ID: <CAMuHMdWj0LPu74j=ESULRgYVO9gnR2wUMXjY8Wpn+-H3m9cDgA@mail.gmail.com>
-References: <20140501090240.49bc6c280cb6c093980d26f3@skynet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v2] m68k/atari - atari_scsi: change abort/reset return codes
+Date: Fri,  2 May 2014 20:43:01 +1200
+Message-ID: <1399020181-27155-1-git-send-email-schmitz@debian.org>
+References: <1393660265-19384-3-git-send-email-schmitz@debian.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f170.google.com ([209.85.192.170]:55247 "EHLO
-	mail-pd0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754064AbaEANVH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 1 May 2014 09:21:07 -0400
-In-Reply-To: <20140501090240.49bc6c280cb6c093980d26f3@skynet.be>
+Received: from mail-pd0-f178.google.com ([209.85.192.178]:50121 "EHLO
+	mail-pd0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751752AbaEBInd (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 2 May 2014 04:43:33 -0400
+In-Reply-To: <1393660265-19384-3-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Fabian Frederick <fabf@skynet.be>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitz@debian.org>, Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org
 
-CC linux-m68k
+[Resend of earlier patch - added equivalent changes to sun3 NCR5380 code]
 
-Hi Fabian
+The abort/reset lowlevel return codes had changed with the new
+error SCSI handling - update Atari and Sun3 NCR5380 drivers to reflect this.
 
-Thanks for your patch. A few comments below.
+Change reset handling for Atari to clear queues only, do not attempt
+to call done() on each command aborted by the reset. The EH code
+should do that for us. Queues _must_ be cleared, otherwise
+atari_scsi_bus_reset will not release the ST-DMA lock, deadlocking
+further error recovery.
 
-On Thu, May 1, 2014 at 9:02 AM, Fabian Frederick <fabf@skynet.be> wrote:
-> -no level printk converted to pr_warn/pr_info
-> -fixed a small identation problem
->
-> This is untested
->
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> ---
->  arch/m68k/amiga/amisound.c |  2 +-
->  arch/m68k/amiga/config.c   | 20 ++++++++++----------
->  2 files changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/m68k/amiga/amisound.c b/arch/m68k/amiga/amisound.c
-> index 2559eef..90a60d7 100644
-> --- a/arch/m68k/amiga/amisound.c
-> +++ b/arch/m68k/amiga/amisound.c
-> @@ -51,7 +51,7 @@ void __init amiga_init_sound(void)
->
->         snd_data = amiga_chip_alloc_res(sizeof(sine_data), &beep_res);
->         if (!snd_data) {
-> -               printk (KERN_CRIT "amiga init_sound: failed to allocate chipmem\n");
-> +               pr_crit("amiga init_sound: failed to allocate chipmem\n");
->                 return;
->         }
->         memcpy (snd_data, sine_data, sizeof(sine_data));
-> diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-> index 9625b71..024d7f9 100644
-> --- a/arch/m68k/amiga/config.c
-> +++ b/arch/m68k/amiga/config.c
-> @@ -183,7 +183,7 @@ int __init amiga_parse_bootinfo(const struct bi_record *record)
->                         dev->boardaddr = be32_to_cpu(cd->cd_BoardAddr);
->                         dev->boardsize = be32_to_cpu(cd->cd_BoardSize);
->                 } else
-> -                       printk("amiga_parse_bootinfo: too many AutoConfig devices\n");
-> +                       pr_warn("amiga_parse_bootinfo: too many AutoConfig devices\n");
->  #endif /* CONFIG_ZORRO */
->                 break;
->
-> @@ -209,9 +209,9 @@ static void __init amiga_identify(void)
->
->         memset(&amiga_hw_present, 0, sizeof(amiga_hw_present));
->
-> -       printk("Amiga hardware found: ");
-> +       pr_info("Amiga hardware found: ");
->         if (amiga_model >= AMI_500 && amiga_model <= AMI_DRACO) {
-> -               printk("[%s] ", amiga_models[amiga_model-AMI_500]);
-> +               pr_info("[%s] ", amiga_models[amiga_model-AMI_500]);
+Update the Sun3 NCR5380 driver as well - the Sun3 driver was
+derived from the Atari one. Kudos to Finn Thain for the Sun3 part
+and cleaning up the header files. After the header cleanup, the
+initio.h include (!) can be dropped from sun3_scsi.h now.
 
-This should use pr_cont(), as the previous print didn't have a trailing newline.
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Acked-by: Sam Creasey <sammy@sammy.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: James E.J. Bottomley <JBottomley@parallels.com>
+Cc: linux-scsi@vger.kernel.org
+---
+ drivers/scsi/atari_NCR5380.c |   31 +++++++++++++++++++------------
+ drivers/scsi/atari_scsi.c    |    2 +-
+ drivers/scsi/atari_scsi.h    |   26 --------------------------
+ drivers/scsi/sun3_NCR5380.c  |   33 ++++++++++++++++++++-------------
+ drivers/scsi/sun3_scsi.c     |    3 ++-
+ 5 files changed, 42 insertions(+), 53 deletions(-)
 
->                 strcat(amiga_model_name, amiga_models[amiga_model-AMI_500]);
->         }
->
-> @@ -322,7 +322,7 @@ static void __init amiga_identify(void)
->
->  #define AMIGAHW_ANNOUNCE(name, str)            \
->         if (AMIGAHW_PRESENT(name))              \
-> -               printk(str)
-> +               pr_info(str)
-
-Llikewise.
-
->         AMIGAHW_ANNOUNCE(AMI_VIDEO, "VIDEO ");
->         AMIGAHW_ANNOUNCE(AMI_BLITTER, "BLITTER ");
-> @@ -354,8 +354,8 @@ static void __init amiga_identify(void)
->         AMIGAHW_ANNOUNCE(MAGIC_REKICK, "MAGIC_REKICK ");
->         AMIGAHW_ANNOUNCE(PCMCIA, "PCMCIA ");
->         if (AMIGAHW_PRESENT(ZORRO))
-> -               printk("ZORRO%s ", AMIGAHW_PRESENT(ZORRO3) ? "3" : "");
-> -       printk("\n");
-> +               pr_info("ZORRO%s ", AMIGAHW_PRESENT(ZORRO3) ? "3" : "");
-
-Likewise
-
-> +       pr_info("\n");
-
-Likewise
-
->  #undef AMIGAHW_ANNOUNCE
->  }
-> @@ -424,7 +424,7 @@ void __init config_amiga(void)
->                         if (m68k_memory[i].addr < 16*1024*1024) {
->                                 if (i == 0) {
->                                         /* don't cut off the branch we're sitting on */
-> -                                       printk("Warning: kernel runs in Zorro II memory\n");
-> +                                       pr_warn("Warning: kernel runs in Zorro II memory\n");
->                                         continue;
->                                 }
->                                 disabled_z2mem += m68k_memory[i].size;
-> @@ -435,8 +435,8 @@ void __init config_amiga(void)
->                         }
->                 }
->                 if (disabled_z2mem)
-> -               printk("%dK of Zorro II memory will not be used as system memory\n",
-> -               disabled_z2mem>>10);
-> +                       pr_info("%dK of Zorro II memory will not be used as system memory\n",
-> +                               disabled_z2mem>>10);
->         }
->
->         /* request all RAM */
-> @@ -475,7 +475,7 @@ static void __init amiga_sched_init(irq_handler_t timer_routine)
->         jiffy_ticks = DIV_ROUND_CLOSEST(amiga_eclock, HZ);
->
->         if (request_resource(&mb_resources._ciab, &sched_res))
-> -               printk("Cannot allocate ciab.ta{lo,hi}\n");
-> +               pr_warn("Cannot allocate ciab.ta{lo,hi}\n");
->         ciab.cra &= 0xC0;   /* turn off timer A, continuous mode, from Eclk */
->         ciab.talo = jiffy_ticks % 256;
->         ciab.tahi = jiffy_ticks / 256;
-> --
-> 1.9.1
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/scsi/atari_NCR5380.c b/drivers/scsi/atari_NCR5380.c
+index 0f3cdbc..e4aaf9a 100644
+--- a/drivers/scsi/atari_NCR5380.c
++++ b/drivers/scsi/atari_NCR5380.c
+@@ -2683,11 +2683,11 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			local_irq_restore(flags);
+ 			cmd->scsi_done(cmd);
+ 			falcon_release_lock_if_possible(hostdata);
+-			return SCSI_ABORT_SUCCESS;
++			return SUCCESS;
+ 		} else {
+ /*			local_irq_restore(flags); */
+ 			printk("scsi%d: abort of connected command failed!\n", HOSTNO);
+-			return SCSI_ABORT_ERROR;
++			return FAILED;
+ 		}
+ 	}
+ #endif
+@@ -2711,7 +2711,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			 * yet... */
+ 			tmp->scsi_done(tmp);
+ 			falcon_release_lock_if_possible(hostdata);
+-			return SCSI_ABORT_SUCCESS;
++			return SUCCESS;
+ 		}
+ 	}
+ 
+@@ -2729,7 +2729,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 	if (hostdata->connected) {
+ 		local_irq_restore(flags);
+ 		ABRT_PRINTK("scsi%d: abort failed, command connected.\n", HOSTNO);
+-		return SCSI_ABORT_SNOOZE;
++		return FAILED;
+ 	}
+ 
+ 	/*
+@@ -2764,7 +2764,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 			ABRT_PRINTK("scsi%d: aborting disconnected command.\n", HOSTNO);
+ 
+ 			if (NCR5380_select(instance, cmd, (int)cmd->tag))
+-				return SCSI_ABORT_BUSY;
++				return FAILED;
+ 
+ 			ABRT_PRINTK("scsi%d: nexus reestablished.\n", HOSTNO);
+ 
+@@ -2791,7 +2791,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 					local_irq_restore(flags);
+ 					tmp->scsi_done(tmp);
+ 					falcon_release_lock_if_possible(hostdata);
+-					return SCSI_ABORT_SUCCESS;
++					return SUCCESS;
+ 				}
+ 			}
+ 		}
+@@ -2816,7 +2816,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+ 	 */
+ 	falcon_release_lock_if_possible(hostdata);
+ 
+-	return SCSI_ABORT_NOT_RUNNING;
++	return FAILED;
+ }
+ 
+ 
+@@ -2825,7 +2825,7 @@ int NCR5380_abort(Scsi_Cmnd *cmd)
+  *
+  * Purpose : reset the SCSI bus.
+  *
+- * Returns : SCSI_RESET_WAKEUP
++ * Returns : SUCCESS or FAILURE
+  *
+  */
+ 
+@@ -2834,7 +2834,7 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	SETUP_HOSTDATA(cmd->device->host);
+ 	int i;
+ 	unsigned long flags;
+-#if 1
++#if defined(RESET_RUN_DONE)
+ 	Scsi_Cmnd *connected, *disconnected_queue;
+ #endif
+ 
+@@ -2859,7 +2859,14 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	 * through anymore ... */
+ 	(void)NCR5380_read(RESET_PARITY_INTERRUPT_REG);
+ 
+-#if 1	/* XXX Should now be done by midlevel code, but it's broken XXX */
++	/* MSch 20140115 - looking at the generic NCR5380 driver, all of this
++	 * should go.
++	 * Catch-22: if we don't clear all queues, the SCSI driver lock will
++	 * not be reset by atari_scsi_reset()!
++	 */
++
++#if defined(RESET_RUN_DONE)
++	/* XXX Should now be done by midlevel code, but it's broken XXX */
+ 	/* XXX see below                                            XXX */
+ 
+ 	/* MSch: old-style reset: actually abort all command processing here */
+@@ -2915,7 +2922,7 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	 * the midlevel code that the reset was SUCCESSFUL, and there is no
+ 	 * need to 'wake up' the commands by a request_sense
+ 	 */
+-	return SCSI_RESET_SUCCESS | SCSI_RESET_BUS_RESET;
++	return SUCCESS;
+ #else /* 1 */
+ 
+ 	/* MSch: new-style reset handling: let the mid-level do what it can */
+@@ -2963,6 +2970,6 @@ static int NCR5380_bus_reset(Scsi_Cmnd *cmd)
+ 	local_irq_restore(flags);
+ 
+ 	/* we did no complete reset of all commands, so a wakeup is required */
+-	return SCSI_RESET_WAKEUP | SCSI_RESET_BUS_RESET;
++	return SUCCESS;
+ #endif /* 1 */
+ }
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index 296c936..4ae0c1a 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -827,7 +827,7 @@ static int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
+ 	} else {
+ 		atari_turnon_irq(IRQ_MFP_FSCSI);
+ 	}
+-	if ((rv & SCSI_RESET_ACTION) == SCSI_RESET_SUCCESS)
++	if (rv == SUCCESS)
+ 		falcon_release_lock_if_possible(hostdata);
+ 
+ 	return rv;
+diff --git a/drivers/scsi/atari_scsi.h b/drivers/scsi/atari_scsi.h
+index 11c624b..ae559f4 100644
+--- a/drivers/scsi/atari_scsi.h
++++ b/drivers/scsi/atari_scsi.h
+@@ -54,32 +54,6 @@
+ #define	NCR5380_dma_xfer_len(i,cmd,phase) \
+ 	atari_dma_xfer_len(cmd->SCp.this_residual,cmd,((phase) & SR_IO) ? 0 : 1)
+ 
+-/* former generic SCSI error handling stuff */
+-
+-#define SCSI_ABORT_SNOOZE 0
+-#define SCSI_ABORT_SUCCESS 1
+-#define SCSI_ABORT_PENDING 2
+-#define SCSI_ABORT_BUSY 3
+-#define SCSI_ABORT_NOT_RUNNING 4
+-#define SCSI_ABORT_ERROR 5
+-
+-#define SCSI_RESET_SNOOZE 0
+-#define SCSI_RESET_PUNT 1
+-#define SCSI_RESET_SUCCESS 2
+-#define SCSI_RESET_PENDING 3
+-#define SCSI_RESET_WAKEUP 4
+-#define SCSI_RESET_NOT_RUNNING 5
+-#define SCSI_RESET_ERROR 6
+-
+-#define SCSI_RESET_SYNCHRONOUS		0x01
+-#define SCSI_RESET_ASYNCHRONOUS		0x02
+-#define SCSI_RESET_SUGGEST_BUS_RESET	0x04
+-#define SCSI_RESET_SUGGEST_HOST_RESET	0x08
+-
+-#define SCSI_RESET_BUS_RESET 0x100
+-#define SCSI_RESET_HOST_RESET 0x200
+-#define SCSI_RESET_ACTION   0xff
+-
+ /* Debugging printk definitions:
+  *
+  *  ARB  -> arbitration
+diff --git a/drivers/scsi/sun3_NCR5380.c b/drivers/scsi/sun3_NCR5380.c
+index 636bbe0..72550bd 100644
+--- a/drivers/scsi/sun3_NCR5380.c
++++ b/drivers/scsi/sun3_NCR5380.c
+@@ -2664,11 +2664,11 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+ #endif
+ 	  local_irq_restore(flags);
+ 	  cmd->scsi_done(cmd);
+-	  return SCSI_ABORT_SUCCESS;
++	  return SUCCESS;
+ 	} else {
+ /*	  local_irq_restore(flags); */
+ 	  printk("scsi%d: abort of connected command failed!\n", HOSTNO);
+-	  return SCSI_ABORT_ERROR;
++	  return FAILED;
+ 	} 
+    }
+ #endif
+@@ -2691,7 +2691,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+ 	    /* Tagged queuing note: no tag to free here, hasn't been assigned
+ 	     * yet... */
+ 	    tmp->scsi_done(tmp);
+-	    return SCSI_ABORT_SUCCESS;
++	    return SUCCESS;
+ 	}
+ 
+ /* 
+@@ -2708,7 +2708,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+     if (hostdata->connected) {
+ 	local_irq_restore(flags);
+ 	ABRT_PRINTK("scsi%d: abort failed, command connected.\n", HOSTNO);
+-        return SCSI_ABORT_SNOOZE;
++        return FAILED;
+     }
+ 
+ /*
+@@ -2743,7 +2743,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+ 	    ABRT_PRINTK("scsi%d: aborting disconnected command.\n", HOSTNO);
+   
+             if (NCR5380_select (instance, cmd, (int) cmd->tag)) 
+-		return SCSI_ABORT_BUSY;
++		return FAILED;
+ 
+ 	    ABRT_PRINTK("scsi%d: nexus reestablished.\n", HOSTNO);
+ 
+@@ -2769,7 +2769,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+ #endif
+ 		    local_irq_restore(flags);
+ 		    tmp->scsi_done(tmp);
+-		    return SCSI_ABORT_SUCCESS;
++		    return SUCCESS;
+ 		}
+ 	}
+ 
+@@ -2786,7 +2786,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+     local_irq_restore(flags);
+     printk(KERN_INFO "scsi%d: warning : SCSI command probably completed successfully before abortion\n", HOSTNO); 
+ 
+-    return SCSI_ABORT_NOT_RUNNING;
++    return FAILED;
+ }
+ 
+ 
+@@ -2795,7 +2795,7 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
+  * 
+  * Purpose : reset the SCSI bus.
+  *
+- * Returns : SCSI_RESET_WAKEUP
++ * Returns : SUCCESS or FAILURE
+  *
+  */ 
+ 
+@@ -2804,7 +2804,7 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cmd)
+     SETUP_HOSTDATA(cmd->device->host);
+     int           i;
+     unsigned long flags;
+-#if 1
++#if defined(RESET_RUN_DONE)
+     struct scsi_cmnd *connected, *disconnected_queue;
+ #endif
+ 
+@@ -2826,8 +2826,15 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cmd)
+      * through anymore ... */
+     (void)NCR5380_read( RESET_PARITY_INTERRUPT_REG );
+ 
+-#if 1 /* XXX Should now be done by midlevel code, but it's broken XXX */
+-      /* XXX see below                                            XXX */
++	/* MSch 20140115 - looking at the generic NCR5380 driver, all of this
++	 * should go.
++	 * Catch-22: if we don't clear all queues, the SCSI driver lock will
++	 * not be released by atari_scsi_reset()!
++	 */
++
++#if defined(RESET_RUN_DONE)
++	/* XXX Should now be done by midlevel code, but it's broken XXX */
++	/* XXX see below                                            XXX */
+ 
+     /* MSch: old-style reset: actually abort all command processing here */
+ 
+@@ -2876,7 +2883,7 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cmd)
+      * the midlevel code that the reset was SUCCESSFUL, and there is no 
+      * need to 'wake up' the commands by a request_sense
+      */
+-    return SCSI_RESET_SUCCESS | SCSI_RESET_BUS_RESET;
++    return SUCCESS;
+ #else /* 1 */
+ 
+     /* MSch: new-style reset handling: let the mid-level do what it can */
+@@ -2924,7 +2931,7 @@ static int NCR5380_bus_reset(struct scsi_cmnd *cmd)
+     local_irq_restore(flags);
+ 
+     /* we did no complete reset of all commands, so a wakeup is required */
+-    return SCSI_RESET_WAKEUP | SCSI_RESET_BUS_RESET;
++    return SUCCESS;
+ #endif /* 1 */
+ }
+ 
+diff --git a/drivers/scsi/sun3_scsi.c b/drivers/scsi/sun3_scsi.c
+index e2c009b..243c228 100644
+--- a/drivers/scsi/sun3_scsi.c
++++ b/drivers/scsi/sun3_scsi.c
+@@ -79,7 +79,6 @@
+ #define REAL_DMA
+ 
+ #include "scsi.h"
+-#include "initio.h"
+ #include <scsi/scsi_host.h>
+ #include "sun3_scsi.h"
+ 
+@@ -123,6 +122,8 @@ module_param(setup_hostid, int, 0);
+ 
+ static struct scsi_cmnd *sun3_dma_setup_done = NULL;
+ 
++#define	RESET_RUN_DONE
++
+ #define	AFTER_RESET_DELAY	(HZ/2)
+ 
+ /* ms to wait after hitting dma regs */
+-- 
+1.7.0.4
