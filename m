@@ -1,59 +1,43 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add an entry for all the NCR5380 drivers
-Date: Wed, 7 May 2014 08:16:33 +1200
-Message-ID: <CAOmrzkKFiEW6sMXr6nxgjGW=Bf2EUbBoBC=sXVLPH=r8iY8BCg@mail.gmail.com>
-References: <alpine.LNX.2.00.1405051458460.16664@nippy.intranet>
+From: United Nations <maj@junin.gob.ar>
+Subject: =?utf-8?Q?Felicit=C4=83ri?=
+Date: Mon, 12 May 2014 12:22:58 -0300 (ART)
+Message-ID: <132381478.422760.1399908178095.JavaMail.zimbra@junin.gob.ar>
+Reply-To: United Nations <unitednationsgrants@admin.in.th>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1405051458460.16664@nippy.intranet>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, scsi <linux-scsi@vger.kernel.org>, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Joe Perches <joe@perches.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Acked-by: Michael Schmitz <schmitzmic@gmail.com>
 
-On Mon, May 5, 2014 at 5:35 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
->
-> ---
->
-> As requested:
-> http://marc.info/?l=linux-arm-kernel&m=139853302724112&w=2
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e67ea24..60ea600 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5996,6 +5996,28 @@ M:       Petr Vandrovec <petr@vandrovec.name>
->  S:     Odd Fixes
->  F:     fs/ncpfs/
->
-> +NCR 5380 SCSI DRIVERS
-> +M:     Finn Thain <fthain@telegraphics.com.au>
-> +M:     Michael Schmitz <schmitzmic@gmail.com>
-> +L:     linux-scsi@vger.kernel.org
-> +S:     Maintained
-> +F:     Documentation/scsi/g_NCR5380.txt
-> +F:     drivers/scsi/NCR5380.*
-> +F:     drivers/scsi/arm/cumana_1.c
-> +F:     drivers/scsi/arm/oak.c
-> +F:     drivers/scsi/atari_NCR5380.c
-> +F:     drivers/scsi/atari_scsi.*
-> +F:     drivers/scsi/dmx3191d.c
-> +F:     drivers/scsi/dtc.*
-> +F:     drivers/scsi/g_NCR5380.*
-> +F:     drivers/scsi/g_NCR5380_mmio.c
-> +F:     drivers/scsi/mac_scsi.*
-> +F:     drivers/scsi/pas16.*
-> +F:     drivers/scsi/sun3_NCR5380.c
-> +F:     drivers/scsi/sun3_scsi.*
-> +F:     drivers/scsi/sun3_scsi_vme.c
-> +F:     drivers/scsi/t128.*
-> +
->  NCR DUAL 700 SCSI DRIVER (MICROCHANNEL)
->  M:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
->  L:     linux-scsi@vger.kernel.org
+
+=46elicit=C4=83ri=20
+
+Sunte=C8=9Bi unul dintre beneficiarii de pe ordinea de zi a Na=C8=9Biun=
+ilor Unite 2014/2015 Grant Award. Informa=C8=9Biile dvs. au fost verifi=
+cate =C8=99i suma de =C8=99ase milioane de euro (6.000.000,00) a fost a=
+cordat pentru a v=C4=83 =C3=AEn programul de granturi al Na=C8=9Biunilo=
+r Unite ca Date tale au fost listate pe lista c=C3=A2=C8=99tig=C4=83toa=
+re.=20
+
+Aceast=C4=83 sum=C4=83 urmeaz=C4=83 a fi utilizate de dumneavoastr=C4=83=
+ pentru orice scop, de care vor beneficia foloseste comunitatea ta.=20
+
+Informa=C8=9Biile de care avem nevoie pentru verificare sunt:=20
+
+Numele complet:=20
+adresa:=20
+Urm=C4=83tor de Kin:=20
+
+Va oferi, de asemenea, un cont bancar care premiile de finan=C8=9Bare a=
+r trebui s=C4=83 fie depus =C3=AEn. Ve=C8=9Bi avea nevoie, de asemenea,=
+ s=C4=83 pl=C4=83teasc=C4=83 doar o tax=C4=83 administrativ=C4=83 de 72=
+1 de euro (=C8=99apte sute dou=C4=83zeci =C8=99i unu de euro).=20
+
+Ajunge =C3=AEnapoi la noi c=C3=A2t mai cur=C3=A2nd posibil, astfel =C3=AE=
+nc=C3=A2t s=C4=83 pute=C8=9Bi trimite certificatul c=C3=A2=C8=99tig=C4=83=
+toare.=20
+
+Biroul Organiza=C8=9Biei Na=C8=9Biunilor Unite.=20
+2014/2015
