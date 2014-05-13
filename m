@@ -1,43 +1,40 @@
-From: United Nations <maj@junin.gob.ar>
-Subject: =?utf-8?Q?Felicit=C4=83ri?=
-Date: Mon, 12 May 2014 12:22:58 -0300 (ART)
-Message-ID: <132381478.422760.1399908178095.JavaMail.zimbra@junin.gob.ar>
-Reply-To: United Nations <unitednationsgrants@admin.in.th>
+From: Ley Foon Tan <lftan@altera.com>
+Subject: [PATCH 11/25] m68k: Add 32 bit time_t and clock_t
+Date: Tue, 13 May 2014 17:03:50 +0800
+Message-ID: <1399971830-4375-1-git-send-email-lftan__12323.9650311463$1399973904$gmane$org@altera.com>
+References: <1399971456-3941-1-git-send-email-lftan@altera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1399971456-3941-1-git-send-email-lftan@altera.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ley Foon Tan <lftan@altera.com>, lftan.linux@gmail.com, cltang@codesourcery.com, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
+Override time_t and clock_t in include/uapi/asm-generic.
 
+Signed-off-by: Ley Foon Tan <lftan@altera.com>
+---
+ arch/m68k/include/uapi/asm/posix_types.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-=46elicit=C4=83ri=20
-
-Sunte=C8=9Bi unul dintre beneficiarii de pe ordinea de zi a Na=C8=9Biun=
-ilor Unite 2014/2015 Grant Award. Informa=C8=9Biile dvs. au fost verifi=
-cate =C8=99i suma de =C8=99ase milioane de euro (6.000.000,00) a fost a=
-cordat pentru a v=C4=83 =C3=AEn programul de granturi al Na=C8=9Biunilo=
-r Unite ca Date tale au fost listate pe lista c=C3=A2=C8=99tig=C4=83toa=
-re.=20
-
-Aceast=C4=83 sum=C4=83 urmeaz=C4=83 a fi utilizate de dumneavoastr=C4=83=
- pentru orice scop, de care vor beneficia foloseste comunitatea ta.=20
-
-Informa=C8=9Biile de care avem nevoie pentru verificare sunt:=20
-
-Numele complet:=20
-adresa:=20
-Urm=C4=83tor de Kin:=20
-
-Va oferi, de asemenea, un cont bancar care premiile de finan=C8=9Bare a=
-r trebui s=C4=83 fie depus =C3=AEn. Ve=C8=9Bi avea nevoie, de asemenea,=
- s=C4=83 pl=C4=83teasc=C4=83 doar o tax=C4=83 administrativ=C4=83 de 72=
-1 de euro (=C8=99apte sute dou=C4=83zeci =C8=99i unu de euro).=20
-
-Ajunge =C3=AEnapoi la noi c=C3=A2t mai cur=C3=A2nd posibil, astfel =C3=AE=
-nc=C3=A2t s=C4=83 pute=C8=9Bi trimite certificatul c=C3=A2=C8=99tig=C4=83=
-toare.=20
-
-Biroul Organiza=C8=9Biei Na=C8=9Biunilor Unite.=20
-2014/2015
+diff --git a/arch/m68k/include/uapi/asm/posix_types.h b/arch/m68k/include/uapi/asm/posix_types.h
+index cf4dbf7..01e39fe 100644
+--- a/arch/m68k/include/uapi/asm/posix_types.h
++++ b/arch/m68k/include/uapi/asm/posix_types.h
+@@ -20,6 +20,12 @@ typedef unsigned short	__kernel_gid_t;
+ typedef unsigned short	__kernel_old_dev_t;
+ #define __kernel_old_dev_t __kernel_old_dev_t
+ 
++typedef long	__kernel_time_t;
++#define __kernel_time_t __kernel_time_t
++
++typedef long	__kernel_clock_t;
++#define __kernel_clock_t __kernel_clock_t
++
+ #include <asm-generic/posix_types.h>
+ 
+ #endif
+-- 
+1.8.2.1
