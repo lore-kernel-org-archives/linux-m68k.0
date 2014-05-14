@@ -1,42 +1,54 @@
-From: Steven King <sfking@fdwdc.com>
-Subject: [PATCH] m68knommu: Fix the 5249/525x qspi base address.
-Date: Wed, 14 May 2014 10:06:46 -0700
-Message-ID: <201405141006.46618.sfking@fdwdc.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 13/27] m68k: Use common bits from generic tlb.h
+Date: Wed, 14 May 2014 20:59:45 +0200
+Message-ID: <1400093999-18703-14-git-send-email-richard@nod.at>
+References: <1400093999-18703-1-git-send-email-richard@nod.at>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp103.biz.mail.bf1.yahoo.com ([98.139.221.62]:29286 "HELO
-	smtp103.biz.mail.bf1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with SMTP id S1756485AbaENRN2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 14 May 2014 13:13:28 -0400
-Content-Disposition: inline
+In-Reply-To: <1400093999-18703-1-git-send-email-richard@nod.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, Greg Ungerer <gerg@uclinux.org>
+To: linux-arch@vger.kernel.org, arnd@arndb.de, linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+
+It is no longer needed to define them on our own.
+
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Use the correct base address for the QSPI module on the 5249/525x.
-
-Signed-off-by: Steven King <sfking@fdwdc.com>
-
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/m68k/include/asm/m525xsim.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/include/asm/tlb.h | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m525xsim.h 
-b/arch/m68k/include/asm/m525xsim.h
-index c2b22a6..8980b1a 100644
---- a/arch/m68k/include/asm/m525xsim.h
-+++ b/arch/m68k/include/asm/m525xsim.h
-@@ -105,7 +105,7 @@
- /*
-  *	QSPI module.
-  */
--#define MCFQSPI_BASE		(MCF_MBAR + 0x300)	/* Base address QSPI */
-+#define MCFQSPI_BASE		(MCF_MBAR + 0x400)	/* Base address QSPI */
- #define MCFQSPI_SIZE		0x40			/* Register set size */
+diff --git a/arch/m68k/include/asm/tlb.h b/arch/m68k/include/asm/tlb.h
+index 1785cff..74c15f6 100644
+--- a/arch/m68k/include/asm/tlb.h
++++ b/arch/m68k/include/asm/tlb.h
+@@ -1,19 +1,11 @@
+ #ifndef _M68K_TLB_H
+ #define _M68K_TLB_H
  
- #ifdef CONFIG_M5249
+-/*
+- * m68k doesn't need any special per-pte or
+- * per-vma handling..
+- */
+-#define tlb_start_vma(tlb, vma)	do { } while (0)
+-#define tlb_end_vma(tlb, vma)	do { } while (0)
+-#define __tlb_remove_tlb_entry(tlb, ptep, address)	do { } while (0)
+-
+-/*
+- * .. because we flush the whole mm when it
+- * fills up.
+- */
+-#define tlb_flush(tlb)		flush_tlb_mm((tlb)->mm)
++#ifdef CONFIG_MMU && !defined(CONFIG_COLDFIRE) && !defined(CONFIG_SUN3)
++/* These defines are needed to override the defaults from asm-generic/tlb.h */
++#define __pte_free_tlb __pte_free_tlb
++#define __pmd_free_tlb __pmd_free_tlb
++#endif
+ 
+ #include <asm-generic/tlb.h>
+ 
+-- 
+1.8.4.2
