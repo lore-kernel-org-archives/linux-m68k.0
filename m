@@ -1,66 +1,256 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 13/27] m68k: Use common bits from generic tlb.h
-Date: Thu, 15 May 2014 11:49:32 +0200
-Message-ID: <CAMuHMdUQfa1E1aJWKU-UN+5WyVZ7LTcQDu+cTr4crjnH69+JMg@mail.gmail.com>
-References: <1400093999-18703-1-git-send-email-richard@nod.at>
-	<1400093999-18703-14-git-send-email-richard@nod.at>
-	<CAMuHMdUddNc3Suq25JU7UC+YdWQHmk0nCRzCEbqmKg1+a+=FXw@mail.gmail.com>
-	<5373C36E.3020900@nod.at>
-	<CAMuHMdVWp8-aByVf+7M=8HEXXJRJBbZLdfj1v0rgDU-UEQM=8Q@mail.gmail.com>
-	<5373D8CE.6090003@nod.at>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] m68knommu: qspi declutter.
+Date: Thu, 15 May 2014 21:44:18 +1000
+Message-ID: <5374A892.4080802@uclinux.org>
+References: <201405141007.56034.sfking@fdwdc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <5373D8CE.6090003@nod.at>
+Received: from icp-osb-irony-out4.external.iinet.net.au ([203.59.1.220]:27551
+	"EHLO icp-osb-irony-out4.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1753221AbaEOLxi (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 15 May 2014 07:53:38 -0400
+In-Reply-To: <201405141007.56034.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Steven King <sfking@fdwdc.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Hi Richard,
+Hi Steven,
 
-On Wed, May 14, 2014 at 10:57 PM, Richard Weinberger <richard@nod.at> wrote:
->> On Wed, May 14, 2014 at 9:26 PM, Richard Weinberger <richard@nod.at> wrote:
->>>> But why this sudden #ifdef checks?
->>>
->>> They are needed because in pgalloc.h you have:
->>> #ifdef CONFIG_MMU
->>> #include <asm/virtconvert.h>
->>> #if defined(CONFIG_COLDFIRE)
->>> #include <asm/mcf_pgalloc.h>
->>> #elif defined(CONFIG_SUN3)
->>> #include <asm/sun3_pgalloc.h>
->>> #else
->>> #include <asm/motorola_pgalloc.h>
->>> #endif
->>>
->>> And only asm/motorola_pgalloc.h have __pte/pmd_free_tlb as static inline functions.
->>> Therefore we need to define them such that the generic tlb.h versions will not clash
->>> with yours.
->>
->> Thanks for the clarification!
+On 15/05/14 03:07, Steven King wrote:
+> Move the check for the QSPI config option inside the function body.  If the
+> option is not enabled, the compiler will optimize away the empty function
+> body so we can remove the other check for the config option.
 >
-> One problem which arises here is that me need to make sure that pgalloc.h is included before
-> tlb.h. Which kind of sucks.
+> Signed-off-by: Steven King <sfking@fdwdc.com>
 
-Indeed.
+These three Coldfire qspi patches look good to me.
+I have added them to the for-next branch of the m68knommu git tree.
 
-arch/m68k/include/asm/mmu_context.h includes pgalloc.h, but not tlb.h.
-Didn't check whether it gets it indirectly.
+Thanks
+Greg
 
-> I'll move __pte/pmd_free_tlb from *_pgalloc.h into tlb.h to prevent this issue.
+
+
+> ---
+>   arch/m68k/platform/coldfire/m520x.c |    8 ++------
+>   arch/m68k/platform/coldfire/m523x.c |    8 ++------
+>   arch/m68k/platform/coldfire/m5249.c |    8 ++------
+>   arch/m68k/platform/coldfire/m527x.c |    8 ++------
+>   arch/m68k/platform/coldfire/m528x.c |    8 ++------
+>   arch/m68k/platform/coldfire/m53xx.c |    8 ++------
+>   6 files changed, 12 insertions(+), 36 deletions(-)
 >
-> Are you fine with that?
-
-As long as it compiles, I'm happy ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> diff --git a/arch/m68k/platform/coldfire/m520x.c b/arch/m68k/platform/coldfire/m520x.c
+> index ea1be0e..4040a3c 100644
+> --- a/arch/m68k/platform/coldfire/m520x.c
+> +++ b/arch/m68k/platform/coldfire/m520x.c
+> @@ -118,10 +118,9 @@ static void __init m520x_clk_init(void)
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m520x_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	u16 par;
+>   	/* setup Port QS for QSPI with gpio CS control */
+>   	writeb(0x3f, MCF_GPIO_PAR_QSPI);
+> @@ -129,9 +128,8 @@ static void __init m520x_qspi_init(void)
+>   	par = readw(MCF_GPIO_PAR_UART);
+>   	par &= 0x00ff;
+>   	writew(par, MCF_GPIO_PAR_UART);
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -176,9 +174,7 @@ void __init config_BSP(char *commandp, int size)
+>   	m520x_clk_init();
+>   	m520x_uarts_init();
+>   	m520x_fec_init();
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m520x_qspi_init();
+> -#endif
+>   }
+>
+>   /***************************************************************************/
+> diff --git a/arch/m68k/platform/coldfire/m523x.c b/arch/m68k/platform/coldfire/m523x.c
+> index 2b10e9f..446eee5 100644
+> --- a/arch/m68k/platform/coldfire/m523x.c
+> +++ b/arch/m68k/platform/coldfire/m523x.c
+> @@ -50,10 +50,9 @@ struct clk *mcf_clks[] = {
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m523x_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	u16 par;
+>
+>   	/* setup QSPS pins for QSPI with gpio CS control */
+> @@ -62,9 +61,8 @@ static void __init m523x_qspi_init(void)
+>   	par = readw(MCFGPIO_PAR_TIMER);
+>   	par &= 0x3f3f;
+>   	writew(par, MCFGPIO_PAR_TIMER);
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -80,9 +78,7 @@ void __init config_BSP(char *commandp, int size)
+>   {
+>   	mach_sched_init = hw_timer_init;
+>   	m523x_fec_init();
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m523x_qspi_init();
+> -#endif
+>   }
+>
+>   /***************************************************************************/
+> diff --git a/arch/m68k/platform/coldfire/m5249.c b/arch/m68k/platform/coldfire/m5249.c
+> index c80b5e5..f7ba2a2 100644
+> --- a/arch/m68k/platform/coldfire/m5249.c
+> +++ b/arch/m68k/platform/coldfire/m5249.c
+> @@ -71,17 +71,15 @@ static struct platform_device *m5249_devices[] __initdata = {
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m5249_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	/* QSPI irq setup */
+>   	writeb(MCFSIM_ICR_AUTOVEC | MCFSIM_ICR_LEVEL4 | MCFSIM_ICR_PRI0,
+>   	       MCFSIM_QSPIICR);
+>   	mcf_mapirq2imr(MCF_IRQ_QSPI, MCFINTC_QSPI);
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -110,9 +108,7 @@ void __init config_BSP(char *commandp, int size)
+>   #ifdef CONFIG_M5249C3
+>   	m5249_smc91x_init();
+>   #endif
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m5249_qspi_init();
+> -#endif
+>   }
+>
+>   /***************************************************************************/
+> diff --git a/arch/m68k/platform/coldfire/m527x.c b/arch/m68k/platform/coldfire/m527x.c
+> index 6fbfe909..f253ce0 100644
+> --- a/arch/m68k/platform/coldfire/m527x.c
+> +++ b/arch/m68k/platform/coldfire/m527x.c
+> @@ -53,10 +53,9 @@ struct clk *mcf_clks[] = {
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m527x_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   #if defined(CONFIG_M5271)
+>   	u16 par;
+>
+> @@ -70,9 +69,8 @@ static void __init m527x_qspi_init(void)
+>   	/* setup QSPS pins for QSPI with gpio CS control */
+>   	writew(0x003e, MCFGPIO_PAR_QSPI);
+>   #endif
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -120,9 +118,7 @@ void __init config_BSP(char *commandp, int size)
+>   	mach_sched_init = hw_timer_init;
+>   	m527x_uarts_init();
+>   	m527x_fec_init();
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m527x_qspi_init();
+> -#endif
+>   }
+>
+>   /***************************************************************************/
+> diff --git a/arch/m68k/platform/coldfire/m528x.c b/arch/m68k/platform/coldfire/m528x.c
+> index b03a9d2..7c258e9 100644
+> --- a/arch/m68k/platform/coldfire/m528x.c
+> +++ b/arch/m68k/platform/coldfire/m528x.c
+> @@ -52,15 +52,13 @@ struct clk *mcf_clks[] = {
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m528x_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	/* setup Port QS for QSPI with gpio CS control */
+>   	__raw_writeb(0x07, MCFGPIO_PQSPAR);
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -126,9 +124,7 @@ void __init config_BSP(char *commandp, int size)
+>   	mach_sched_init = hw_timer_init;
+>   	m528x_uarts_init();
+>   	m528x_fec_init();
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m528x_qspi_init();
+> -#endif
+>   }
+>
+>   /***************************************************************************/
+> diff --git a/arch/m68k/platform/coldfire/m53xx.c b/arch/m68k/platform/coldfire/m53xx.c
+> index 5286f98..80879a7 100644
+> --- a/arch/m68k/platform/coldfire/m53xx.c
+> +++ b/arch/m68k/platform/coldfire/m53xx.c
+> @@ -166,15 +166,13 @@ static void __init m53xx_clk_init(void)
+>
+>   /***************************************************************************/
+>
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+> -
+>   static void __init m53xx_qspi_init(void)
+>   {
+> +#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	/* setup QSPS pins for QSPI with gpio CS control */
+>   	writew(0x01f0, MCFGPIO_PAR_QSPI);
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI) */
+> +}
+>
+>   /***************************************************************************/
+>
+> @@ -219,9 +217,7 @@ void __init config_BSP(char *commandp, int size)
+>   	m53xx_clk_init();
+>   	m53xx_uarts_init();
+>   	m53xx_fec_init();
+> -#if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	m53xx_qspi_init();
+> -#endif
+>
+>   #ifdef CONFIG_BDM_DISABLE
+>   	/*
+>
