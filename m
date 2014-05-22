@@ -1,102 +1,51 @@
 From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: m68knommu: CONFIG_I2C_COLDFIRE and CONFIG_RTC_DRV_M5441x
-Date: Thu, 22 May 2014 11:04:26 +1000
-Message-ID: <537D4D1A.2070108@westnet.com.au>
-References: <1400614121.4912.58.camel@x220> <CAMuHMdVbRJOO1fvMDOeVH1j5HiDY=FMA35us0u7oP2jbYS=NAQ@mail.gmail.com> <201405201350.35661.sfking@fdwdc.com> <537CCA66.1050502@open.eurogiciel.org>
+Subject: Re: [PATCH 0/4] m68knommu: Coldfire gpio fixes and updates.
+Date: Thu, 22 May 2014 11:15:48 +1000
+Message-ID: <537D4FC4.4070406@westnet.com.au>
+References: <1400713233-9155-1-git-send-email-sfking@fdwdc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <537CCA66.1050502@open.eurogiciel.org>
+Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.219]:37534
+	"EHLO icp-osb-irony-out3.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751524AbaEVB3J (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 21 May 2014 21:29:09 -0400
+In-Reply-To: <1400713233-9155-1-git-send-email-sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Yannick GICQUEL <yannick.gicquel@open.eurogiciel.org>
-Cc: Steven King <sfking@fdwdc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Paul Bolle <pebolle@tiscali.nl>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Gilles DOFFE <gdoffe.pro@gmail.com>, Baptiste Durand <baptiste.durand@open.eurogiciel.org>
+To: sfking@fdwdc.com
+Cc: greg@uclinux.org, geert@linux-m68k.org, linux-m68k@vger.kernel.org
 
-Hi Yannick,
+Hi Steven,
 
-On 22/05/14 01:46, Yannick GICQUEL wrote:
-> The MCF5441x support is quite a hot topic today for our company.
-> This Soc family is seducing some of our customers, especially for it'=
-s long term support from Freescale.
->=20
-> We have worked on this target since past few weeks, using a Tower Kit=
- hardware and JTag, and just about to prepare a full integration of thi=
-s device on recent kernel release.
-> As a part of the open-source department, we have also planned to deli=
-ver this work to the community and propose some patches to refresh this=
- target support.
->=20
-> Some informations we observe on this target to be refreshed:
->  - NAND controller needs to be integrated again,
->  - UART controller as well,
+On 22/05/14 09:00, sfking@fdwdc.com wrote:
+> From: Steven King <sfking@fdwdc.com>
+> 
+> I had these queued up, forgot to send.  This fixes a heinous bug in
+> mcfgpio_direction_output, adds code to enable gpio_to_irq functionality,
+> removes some of the global namespace pollution in gpio.c and adds gpio support
+> for the m54xx.  Tested on m5253, m5282, m5484 and m54418; compile tested only
+> for the rest of the currenly supported coldfire targets.
 
-What needs to be done to the mcf UART driver?
-It seems all other ColdFire parts have used pretty much the same
-module.
+All looks good to me. Can I add your:
 
+  Singed-off-by: Steven King <sfking@fdwdc.com>
 
-> Also :
->  - This chip contains a MMU and can be unlink from the !MMU dependenc=
-y
-
-The ColdFire v4e MMU has been supported for quite a while in main
-line kernels (from linux-3.3 onwards). I believe it will need some
-tweaks for the mcf5441x, but the heavy lifting is done.
-
-Also keep in mind that for ColdFire that have an MMU we support them
-both with the MMU enabled and disabled.
-
-
-> This is for the big lines, if the community is ok for a patch receipt=
-, some other feature can be also pushed.
-> BTW, what about this patches proposal ? Is there some time slot for p=
-atch proposal ?
-
-Early and often :-)
-Post them here. If you are really unsure about some specific feature
-then you can discuss it here first. But if you have code already why
-not just send patches.
-
-Regards
+Thanks
 Greg
 
 
-> Regards,
->=20
-> Le 20/05/2014 22:50, Steven King a =C3=A9crit :
->> On Tuesday 20 May 2014 1:19:26 pm Geert Uytterhoeven wrote:
->>> Hi Paul,
->>>
->>> On Tue, May 20, 2014 at 9:28 PM, Paul Bolle <pebolle@tiscali.nl> wr=
-ote:
->>>> In v3.6 both a check for CONFIG_I2C_COLDFIRE and two checks for
->>>> CONFIG_RTC_DRV_M5441x were added to the code for the coldfire plat=
-form
->>>> (in m525x.c and in m5441x.c respectively). Neither of these macros=
- can
->>>> be matched to a Kconfig symbol.
->>>>
->>>> Is a series that adds these Kconfig symbols pending?
->>> For the former, Steven King (cc) submitted patches in 2010 and 2012=
-=2E
->>> For the latter, he submitted patches in 2012.
->>>
->>> Seems like they were never integrated...
->> Indeed.
->>
->> At this point, they're pretty much superfluous so if someone were to=
- submit a patch removing them, they would not get any objections from m=
-e.
->> --=20
->> To unsubscribe from this list: send the line "unsubscribe linux-m68k=
-" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
-> --=20
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+> Steven King (4):
+>   add to_irq function so we can map gpios to external interrupts.
+>   setting the gpio data direction register to output doesn't dependent
+>     upon the value to output!
+>   Make everything thats not exported, static.
+>   Implement gpio support for m54xx.
+> 
+>  arch/m68k/include/asm/m54xxsim.h   |   12 +++++++++---
+>  arch/m68k/include/asm/mcfgpio.h    |   12 ++++++++----
+>  arch/m68k/platform/coldfire/gpio.c |   34 +++++++++++++++++++++++-----------
+>  3 files changed, 40 insertions(+), 18 deletions(-)
+> 
