@@ -1,17 +1,46 @@
-From: "Linux archive org" <info@drkhulood.com>
-Subject: 50-70% off on selected branded items
-Date: Fri, 23 May 2014 06:20:38 +0200
-Message-ID: <FD48B0C4.5C09E226@drkhulood.com>
-Reply-To: "Linux archive org" <info@drkhulood.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: esp_scsi QTAG in FAS216
+Date: Sun, 25 May 2014 10:56:09 +0200
+Message-ID: <CAMuHMdVWNh8511ThemX6DqvwCabRw4iqcg863CqgtC1FvOPJ8A@mail.gmail.com>
+References: <CAOmrzkK1hoT72zA4CzajCH2uNwkiVPWi8vJQswB=4Q4uf-kSZQ@mail.gmail.com>
+	<CACz-3rjNixJBjKxzjpneFE8BHKpzR-hvhWsabT_AtrWZZUgvsA@mail.gmail.com>
+	<CAOmrzkJZEZigKEyb5_66H2FNaEX7F_TXyvQNMpMZu1MyuOudBw@mail.gmail.com>
+	<20140413.221414.853080853067673824.davem@davemloft.net>
+	<534B6C9E.3070307@aalto.fi>
+	<529ac1e986ffc7a0c361a7f758e0abc3@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ie0-f176.google.com ([209.85.223.176]:46368 "EHLO
+	mail-ie0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750811AbaEYI4K (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 May 2014 04:56:10 -0400
+In-Reply-To: <529ac1e986ffc7a0c361a7f758e0abc3@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-archive.org@lists.debian.org, linux-ee@lists.eenet.ee, linux-minidisc@lists.fu-berlin.de, linux-archive.org@lists.gentoo.org, linux-stammtisch@lists.infodrom.org, linux-arm-kernel@lists.infradead.org, linux-arm-toolchain@lists.infradead.org, linux-arm@lists.infradead.org, linux-mtd-cvs@lists.infradead.org, linux-mtd-request@lists.infradead.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parport@lists.infradead.org, linux-pcmcia@lists.infradead.org, linuxuser-on@lists.kastanet.org, linux.sch.gr@lists.launchpad.net, linuxmint-mu@lists.launchpad.net, linux-pm@lists.linux-foundation.org, linux-ha-dev@lists.linux-ha.org, linux-ha@lists.linux-ha.org, linux-m68k@lists.linux-m68k.org, linux-wlan-user@lists.linux-wlan.com, linuxday-idee-request@lists.linux.it, linuxday-idee@lists.linux.itlin
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Tuomas Vainikka <tuomas.vainikka@aalto.fi>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, David Miller <davem@davemloft.net>, Kars de Jong <jongk@linux-m68k.org>
 
-Fantastic brands all going for less than half price
+Hi Michael,
 
-http://hgulms.com/vekiqnu.php
+[sorry for the long delay]
+
+On Mon, Apr 14, 2014 at 10:51 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Not sure my patch had ever made it into Geert's m68k-queue - except for the
+> patch in my previous mail, my zorro_esp.c is still the same as I got from
+> you in October last year. The project has been on the back burner for too
+> long ...
+
+I don't think it makes much sense to add it to my queue, as it's purely SCSI
+and not critical for current m68k.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
