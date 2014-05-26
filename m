@@ -1,46 +1,538 @@
-From: HUSAM AL SAYED <Husamalsayed@asia.com>
-Subject: Your Urgent reply.
-Date: Mon, 26 May 2014 22:00:48 +0400
-Message-ID: <CAKFyHyqE-jAV0G8GqYW7H_3cUYv2iXVQm5a6-m1VNZWRhKVXAg__42924.4935665794$1401127294$gmane$org@mail.gmail.com>
-Reply-To: Husamalsayed@asia.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Update defconfigs for v3.15-rc2
+Date: Mon, 26 May 2014 22:46:01 +0200
+Message-ID: <1401137161-11973-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Dear Friend,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    | 5 ++++-
+ arch/m68k/configs/apollo_defconfig   | 5 ++++-
+ arch/m68k/configs/atari_defconfig    | 5 ++++-
+ arch/m68k/configs/bvme6000_defconfig | 5 ++++-
+ arch/m68k/configs/hp300_defconfig    | 5 ++++-
+ arch/m68k/configs/mac_defconfig      | 5 ++++-
+ arch/m68k/configs/multi_defconfig    | 5 ++++-
+ arch/m68k/configs/mvme147_defconfig  | 5 ++++-
+ arch/m68k/configs/mvme16x_defconfig  | 5 ++++-
+ arch/m68k/configs/q40_defconfig      | 5 ++++-
+ arch/m68k/configs/sun3_defconfig     | 5 ++++-
+ arch/m68k/configs/sun3x_defconfig    | 5 ++++-
+ 12 files changed, 48 insertions(+), 12 deletions(-)
 
-
-Compliments of the day.This mail May be a surprise to you Because you
-did not give me the permission to do so and Neither do you know me but
-before I tell you about myself I want you to please forgive me for
-sending this mail without your permission I have been in search of
-someone with this last name so when I saw you online, I was pushed to
-contact you and see how best we can assist each other. I am Mr. Husam
-Al Sayed, a Bank Officer here in U.A.E. I believe it is the wish of
-God for me to come across you now. I am having an important business
-discussion I wish to share with you which I  believe will interest
-you, because it is in connection with your last name and you are going
-to benefit from it.
-
-One Late peter who was among the death victims in the May 27 2006
-Earthquake disaster in Java, Indonesia that killed over 5,000 people.
-He was in Indonesia on a business trip and that was how he met his
-end. My bank management is yet to know about his death, I knew about
-it because he was my friend and I am his account officer.he did not
-mention any Next of Kin/ Heir when the account was opened, and he was
-not married and no children. Last week my Bank Management requested
-that he should give instructions on what to do about his funds,I know
-this will happen and that is why I have been looking for a means to
-handle the situation,
-
-If you are interested send me your private Email Address so that i can
-send you more details of the transaction,
-Thanks for your understanding
-
-I am waiting for your reply.
-
-Best regards,
-
-Mr. Husam Al Sayed
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 96da4963d14b..d7eac833a94f 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -159,6 +159,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -227,6 +228,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -279,6 +281,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -305,7 +308,6 @@ CONFIG_VETH=m
+ CONFIG_A2065=y
+ CONFIG_ARIADNE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_CIRRUS is not set
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -315,6 +317,7 @@ CONFIG_ARIADNE=y
+ CONFIG_HYDRA=y
+ CONFIG_APNE=y
+ CONFIG_ZORRO8390=y
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_SMSC is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 1b8739f50cbf..650ee75de6cd 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -157,6 +157,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -225,6 +226,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -261,6 +263,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -284,12 +287,12 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 6ea4e91f0caa..3142e69342fa 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -156,6 +156,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -224,6 +225,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -269,6 +271,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -293,11 +296,11 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_ATARILANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index e5a12739ff2d..0daa8a172f30 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -155,6 +155,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -223,6 +224,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -260,6 +262,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -283,12 +286,12 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_BVME6000_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 8936d7fb0f0f..88af78f7bad9 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -157,6 +157,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -225,6 +226,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -261,6 +263,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -285,12 +288,12 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_HPLANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index be5342cca25b..66f915574a85 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -156,6 +156,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -227,6 +228,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -270,6 +272,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -301,7 +304,6 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_MACMACE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_INTEL is not set
+@@ -309,6 +311,7 @@ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_MICREL is not set
+ CONFIG_MACSONIC=y
+ CONFIG_MAC8390=y
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_SMSC is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index f27194ade167..5eaa49924fa6 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -165,6 +165,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -236,6 +237,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -302,6 +304,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -340,7 +343,6 @@ CONFIG_MVME147_NET=y
+ CONFIG_SUN3LANCE=y
+ CONFIG_MACMACE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -354,6 +356,7 @@ CONFIG_MAC8390=y
+ CONFIG_NE2000=m
+ CONFIG_APNE=y
+ CONFIG_ZORRO8390=y
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index c3887603c1db..324d0b4d8351 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -154,6 +154,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -222,6 +223,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -259,6 +261,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -283,12 +286,12 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_MVME147_NET=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index f7ff784d05ac..f0cb4338952e 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -155,6 +155,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -223,6 +224,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -260,6 +262,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -283,12 +286,12 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MVME16x_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index f0c72ab037be..d6cf0880c463 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -155,6 +155,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -223,6 +224,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -266,6 +268,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -291,7 +294,6 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_3COM is not set
+ # CONFIG_NET_VENDOR_AMD is not set
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_CIRRUS is not set
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -299,6 +301,7 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ CONFIG_NE2000=m
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_SMSC is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 7bca0f464521..f4e88d1c7472 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -152,6 +152,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -220,6 +221,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -257,6 +259,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -281,11 +284,11 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_SUN3LANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ CONFIG_SUN3_82586=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_SUN is not set
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 317f3e1fec95..49f4032c1ad6 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -152,6 +152,7 @@ CONFIG_IP_SET_BITMAP_IP=m
+ CONFIG_IP_SET_BITMAP_IPMAC=m
+ CONFIG_IP_SET_BITMAP_PORT=m
+ CONFIG_IP_SET_HASH_IP=m
++CONFIG_IP_SET_HASH_IPMARK=m
+ CONFIG_IP_SET_HASH_IPPORT=m
+ CONFIG_IP_SET_HASH_IPPORTIP=m
+ CONFIG_IP_SET_HASH_IPPORTNET=m
+@@ -220,6 +221,7 @@ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
++CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+@@ -257,6 +259,7 @@ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+ CONFIG_DM_THIN_PROVISIONING=m
+ CONFIG_DM_CACHE=m
++CONFIG_DM_ERA=m
+ CONFIG_DM_MIRROR=m
+ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+@@ -281,12 +284,12 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_SUN3LANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
+-# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
+ # CONFIG_NET_VENDOR_SEEQ is not set
+ # CONFIG_NET_VENDOR_STMICRO is not set
+ # CONFIG_NET_VENDOR_VIA is not set
+-- 
+1.9.1
