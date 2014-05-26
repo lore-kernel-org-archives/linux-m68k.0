@@ -1,150 +1,41 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH RESEND 4/4] m68k/atari: fix SCC initialization for debug
- console
-Date: Mon, 26 May 2014 20:56:26 +1200
-Message-ID: <538301BA.1070605@gmail.com>
-References: <20140411052757.888960081@telegraphics.com.au> <20140411052759.169790206@telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH RESEND 4/4] m68k/atari: fix SCC initialization for debug console
+Date: Mon, 26 May 2014 11:28:24 +0200
+Message-ID: <CAMuHMdXHWrusZSpfNkT03Q_vgSraoO535Un-Cazxmy6JQxzn6Q@mail.gmail.com>
+References: <20140411052757.888960081@telegraphics.com.au>
+	<20140411052759.169790206@telegraphics.com.au>
+	<538301BA.1070605@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f42.google.com ([209.85.220.42]:55768 "EHLO
-	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751186AbaEZI5H (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 04:57:07 -0400
-Received: by mail-pa0-f42.google.com with SMTP id rd3so7367880pab.29
-        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2014 01:57:07 -0700 (PDT)
-In-Reply-To: <20140411052759.169790206@telegraphics.com.au>
+Received: from mail-ie0-f178.google.com ([209.85.223.178]:34720 "EHLO
+	mail-ie0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751957AbaEZJ2Z (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 05:28:25 -0400
+Received: by mail-ie0-f178.google.com with SMTP id rl12so7450837iec.37
+        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2014 02:28:24 -0700 (PDT)
+In-Reply-To: <538301BA.1070605@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Finn Thain wrote:
-> Fix SCC initialization for Atari as was previously fixed for Mac. It's
-> probably not practical to share more code but some attempt is made to
-> align the Mac and Atari variants.
+On Mon, May 26, 2014 at 10:56 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> +       /* Wait for 5 PCLK cycles, which is about 63 CPU cycles */
+>> +       /* 5 / 7.9872 MHz = approx. 0.63 us = 63 / 100 MHz */
 >
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->
-> ---
-> This patch needs testing on Atari. It can't be tested without editing
-> macro definitions to enable SCC debug output (which also means disabling
-> MFP debug output).
->
-> The line rate is changed to 38400 baud to match the Mac code (which
-> follows the pmac_zilog serial console default). It would be nice to
-> standardize but I don't know whether this is realistic.
->
-> The 7.9872 MHz PCLK used in this patch was inferred from the existing code
-> as I don't have any hardware data.
->   
+> The original Falcon and TT had a 16 MHz CPU clock IIRC.
 
-Might just be my PC not autodetecting this 38400 baud rate right, but 
-all I get is gibberish from the early console. The original code (still 
-running at 9600 baud) works.
+This loop is meant to introduce a minimum delay, right? So assuming
+a 100 MHz CPU will only prolong the delay on slower CPUs, which is safe.
 
-I'll have to check clock source and rate from the old SCC driver.
+Gr{oetje,eeting}s,
 
-> ---
->  arch/m68k/kernel/head.S |   34 ++++++++++++++++++++++------------
->  1 file changed, 22 insertions(+), 12 deletions(-)
->
-> Index: linux-m68k/arch/m68k/kernel/head.S
-> ===================================================================
-> --- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
-> +++ linux-m68k/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
-> @@ -2722,6 +2722,7 @@ func_return	get_new_page
->  #define MAC_USE_SCC_B /* Printer port */
->  
->  #if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
-> +/* Initialisation table for SCC with 3.6864 MHz PCLK */
->  L(scc_initable_mac):
->  	.byte	4,0x44		/* x16, 1 stopbit, no parity */
->  	.byte	3,0xc0		/* receiver: 8 bpc */
->   
-That hunk fails to apply when merging this patch alone, i.e. without 
-applying the other ones from this series first. Probably belongs with 
-patch 1 where the #if defined() is introduced.
-> @@ -2744,17 +2745,14 @@ L(scc_initable_mac):
->  #define USE_MFP
->  
->  #if defined(USE_SCC_A) || defined(USE_SCC_B)
-> -#define USE_SCC
-> -/* Initialisation table for SCC */
-> -L(scc_initable):
-> -	.byte	9,12		/* Reset */
-> -	.byte	4,0x44		/* x16, 1 stopbit, no parity */
-> +/* Initialisation table for SCC with 7.9872 MHz PCLK */
-> +L(scc_initable_atari):
-> +	.byte	4,0x04		/* x1, 1 stopbit, no parity */
->  	.byte	3,0xc0		/* receiver: 8 bpc */
->  	.byte	5,0xe2		/* transmitter: 8 bpc, assert dtr/rts */
-> -	.byte	9,0		/* no interrupts */
->  	.byte	10,0		/* NRZ */
->  	.byte	11,0x50		/* use baud rate generator */
-> -	.byte	12,24,13,0	/* 9600 baud */
-> +	.byte	12,102,13,0	/* 38400 baud */
->  	.byte	14,2,14,3	/* use master clock for BRG, enable */
->  	.byte	3,0xc1		/* enable receiver */
->  	.byte	5,0xea		/* enable transmitter */
-> @@ -2800,7 +2798,7 @@ LMFP_UDR     = 0xfffa2f
->   */
->  
->  /*
-> - * Initialize serial port hardware for 9600/8/1
-> + * Initialize serial port hardware
->   */
->  func_start	serial_init,%d0/%d1/%a0/%a1
->  	/*
-> @@ -2810,7 +2808,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
->  	 *		d0 = boot info offset
->  	 *	CONFIG_ATARI
->  	 *		a0 = address of SCC
-> -	 *		a1 = Liobase address/address of scc_initable
-> +	 *		a1 = Liobase address/address of scc_initable_atari
->  	 *		d0 = init data for serial port
->  	 *	CONFIG_MAC
->  	 *		a0 = address of SCC
-> @@ -2846,9 +2844,21 @@ func_start	serial_init,%d0/%d1/%a0/%a1
->  	moveb	%a1@(LPSG_READ),%d0
->  	bset	#5,%d0
->  	moveb	%d0,%a1@(LPSG_WRITE)
-> -#elif defined(USE_SCC)
-> +#elif defined(USE_SCC_A) || defined(USE_SCC_B)
->  	lea	%a1@(LSCC_CTRL),%a0
-> -	lea	%pc@(L(scc_initable)),%a1
-> +	/* Reset SCC register pointer */
-> +	moveb	%a0@,%d0
-> +	/* Reset SCC device: write register pointer then register value */
-> +	moveb	#9,%a0@
-> +	moveb	#0xc0,%a0@
-> +	/* Wait for 5 PCLK cycles, which is about 63 CPU cycles */
-> +	/* 5 / 7.9872 MHz = approx. 0.63 us = 63 / 100 MHz */
->   
+                        Geert
 
-The original Falcon and TT had a 16 MHz CPU clock IIRC.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> +	movel	#32,%d0
-> +2:
-> +	subq	#1,%d0
-> +	jne	2b
-> +	/* Initialize channel */
-> +	lea	%pc@(L(scc_initable_atari)),%a1
->  2:	moveb	%a1@+,%d0
->  	jmi	3f
->  	moveb	%d0,%a0@
-> @@ -3017,7 +3027,7 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
->  	nop
->  	bset	#5,%d0
->  	moveb	%d0,%a1@(LPSG_WRITE)
-> -#elif defined(USE_SCC)
-> +#elif defined(USE_SCC_A) || defined(USE_SCC_B)
->  3:	btst	#2,%a1@(LSCC_CTRL)
->  	jeq	3b
->  	moveb	%d0,%a1@(LSCC_DATA)
->
->   
-Cheers,
-
-    Michael
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
