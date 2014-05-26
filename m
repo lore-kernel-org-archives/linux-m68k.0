@@ -1,69 +1,150 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: Re: [PATCH RESEND 4/4] m68k/atari: fix SCC initialization for debug
  console
-Date: Mon, 26 May 2014 14:30:32 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1405261416530.4170@nippy.intranet>
-References: <20140411052757.888960081@telegraphics.com.au> <20140411052759.169790206@telegraphics.com.au> <CAMuHMdUnoZVpq79LPPFN1dop8r0fMJYi7knT9a+pUHFqBAxEfQ@mail.gmail.com> <alpine.LNX.2.00.1405252030460.18784@nippy.intranet>
- <CAOmrzk+iOMyv5WtTeqcZkWZsqaXSAfSMcCAMVUJqRNdnyxKq9g@mail.gmail.com>
+Date: Mon, 26 May 2014 20:56:26 +1200
+Message-ID: <538301BA.1070605@gmail.com>
+References: <20140411052757.888960081@telegraphics.com.au> <20140411052759.169790206@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49572 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751014AbaEZEbh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 00:31:37 -0400
-In-Reply-To: <CAOmrzk+iOMyv5WtTeqcZkWZsqaXSAfSMcCAMVUJqRNdnyxKq9g@mail.gmail.com>
+Received: from mail-pa0-f42.google.com ([209.85.220.42]:55768 "EHLO
+	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751186AbaEZI5H (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 04:57:07 -0400
+Received: by mail-pa0-f42.google.com with SMTP id rd3so7367880pab.29
+        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2014 01:57:07 -0700 (PDT)
+In-Reply-To: <20140411052759.169790206@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitz@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
+Finn Thain wrote:
+> Fix SCC initialization for Atari as was previously fixed for Mac. It's
+> probably not practical to share more code but some attempt is made to
+> align the Mac and Atari variants.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+>
+> ---
+> This patch needs testing on Atari. It can't be tested without editing
+> macro definitions to enable SCC debug output (which also means disabling
+> MFP debug output).
+>
+> The line rate is changed to 38400 baud to match the Mac code (which
+> follows the pmac_zilog serial console default). It would be nice to
+> standardize but I don't know whether this is realistic.
+>
+> The 7.9872 MHz PCLK used in this patch was inferred from the existing code
+> as I don't have any hardware data.
+>   
 
-On Mon, 26 May 2014, Michael Schmitz wrote:
+Might just be my PC not autodetecting this 38400 baud rate right, but 
+all I get is gibberish from the early console. The original code (still 
+running at 9600 baud) works.
 
-> On Sun, May 25, 2014 at 10:37 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> 
-> >
-> > diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-> > index 3ab329b..b210a29 100644
-> > --- a/arch/m68k/kernel/head.S
-> > +++ b/arch/m68k/kernel/head.S
-> > @@ -2752,7 +2752,7 @@ L(scc_initable_mac):
-> >  #ifdef CONFIG_ATARI
-> >  /* #define USE_PRINTER */
-> >  /* #define USE_SCC_B */
-> > -/* #define USE_SCC_A */
-> > +#define USE_SCC_A
-> >  #define USE_MFP
-> >
-> >  #if defined(USE_SCC_A) || defined(USE_SCC_B)
-> >
-> 
-> Does it even work if both USE_SCC_A and USE_MFP are defined? I've only
-> ever had defined one or the other.
+I'll have to check clock source and rate from the old SCC driver.
 
-Right, you can't use both. The logic throughout head.S seems to be 
-consistent --
+> ---
+>  arch/m68k/kernel/head.S |   34 ++++++++++++++++++++++------------
+>  1 file changed, 22 insertions(+), 12 deletions(-)
+>
+> Index: linux-m68k/arch/m68k/kernel/head.S
+> ===================================================================
+> --- linux-m68k.orig/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
+> +++ linux-m68k/arch/m68k/kernel/head.S	2014-03-11 22:43:38.000000000 +1100
+> @@ -2722,6 +2722,7 @@ func_return	get_new_page
+>  #define MAC_USE_SCC_B /* Printer port */
+>  
+>  #if defined(MAC_USE_SCC_A) || defined(MAC_USE_SCC_B)
+> +/* Initialisation table for SCC with 3.6864 MHz PCLK */
+>  L(scc_initable_mac):
+>  	.byte	4,0x44		/* x16, 1 stopbit, no parity */
+>  	.byte	3,0xc0		/* receiver: 8 bpc */
+>   
+That hunk fails to apply when merging this patch alone, i.e. without 
+applying the other ones from this series first. Probably belongs with 
+patch 1 where the #if defined() is introduced.
+> @@ -2744,17 +2745,14 @@ L(scc_initable_mac):
+>  #define USE_MFP
+>  
+>  #if defined(USE_SCC_A) || defined(USE_SCC_B)
+> -#define USE_SCC
+> -/* Initialisation table for SCC */
+> -L(scc_initable):
+> -	.byte	9,12		/* Reset */
+> -	.byte	4,0x44		/* x16, 1 stopbit, no parity */
+> +/* Initialisation table for SCC with 7.9872 MHz PCLK */
+> +L(scc_initable_atari):
+> +	.byte	4,0x04		/* x1, 1 stopbit, no parity */
+>  	.byte	3,0xc0		/* receiver: 8 bpc */
+>  	.byte	5,0xe2		/* transmitter: 8 bpc, assert dtr/rts */
+> -	.byte	9,0		/* no interrupts */
+>  	.byte	10,0		/* NRZ */
+>  	.byte	11,0x50		/* use baud rate generator */
+> -	.byte	12,24,13,0	/* 9600 baud */
+> +	.byte	12,102,13,0	/* 38400 baud */
+>  	.byte	14,2,14,3	/* use master clock for BRG, enable */
+>  	.byte	3,0xc1		/* enable receiver */
+>  	.byte	5,0xea		/* enable transmitter */
+> @@ -2800,7 +2798,7 @@ LMFP_UDR     = 0xfffa2f
+>   */
+>  
+>  /*
+> - * Initialize serial port hardware for 9600/8/1
+> + * Initialize serial port hardware
+>   */
+>  func_start	serial_init,%d0/%d1/%a0/%a1
+>  	/*
+> @@ -2810,7 +2808,7 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+>  	 *		d0 = boot info offset
+>  	 *	CONFIG_ATARI
+>  	 *		a0 = address of SCC
+> -	 *		a1 = Liobase address/address of scc_initable
+> +	 *		a1 = Liobase address/address of scc_initable_atari
+>  	 *		d0 = init data for serial port
+>  	 *	CONFIG_MAC
+>  	 *		a0 = address of SCC
+> @@ -2846,9 +2844,21 @@ func_start	serial_init,%d0/%d1/%a0/%a1
+>  	moveb	%a1@(LPSG_READ),%d0
+>  	bset	#5,%d0
+>  	moveb	%d0,%a1@(LPSG_WRITE)
+> -#elif defined(USE_SCC)
+> +#elif defined(USE_SCC_A) || defined(USE_SCC_B)
+>  	lea	%a1@(LSCC_CTRL),%a0
+> -	lea	%pc@(L(scc_initable)),%a1
+> +	/* Reset SCC register pointer */
+> +	moveb	%a0@,%d0
+> +	/* Reset SCC device: write register pointer then register value */
+> +	moveb	#9,%a0@
+> +	moveb	#0xc0,%a0@
+> +	/* Wait for 5 PCLK cycles, which is about 63 CPU cycles */
+> +	/* 5 / 7.9872 MHz = approx. 0.63 us = 63 / 100 MHz */
+>   
 
-#if defined(USE_PRINTER)
-        ...
-#elif defined(USE_SCC_A) || defined(USE_SCC_B)
-        ...
-#elif defined(USE_MFP)
-        ...
-#endif
+The original Falcon and TT had a 16 MHz CPU clock IIRC.
 
-> 
-> Would not object to making that change too, if it happens to work OK.
+> +	movel	#32,%d0
+> +2:
+> +	subq	#1,%d0
+> +	jne	2b
+> +	/* Initialize channel */
+> +	lea	%pc@(L(scc_initable_atari)),%a1
+>  2:	moveb	%a1@+,%d0
+>  	jmi	3f
+>  	moveb	%d0,%a0@
+> @@ -3017,7 +3027,7 @@ func_start	serial_putc,%d0/%d1/%a0/%a1
+>  	nop
+>  	bset	#5,%d0
+>  	moveb	%d0,%a1@(LPSG_WRITE)
+> -#elif defined(USE_SCC)
+> +#elif defined(USE_SCC_A) || defined(USE_SCC_B)
+>  3:	btst	#2,%a1@(LSCC_CTRL)
+>  	jeq	3b
+>  	moveb	%d0,%a1@(LSCC_DATA)
+>
+>   
+Cheers,
 
-Disabling the MFP output might not be desirable, so I'm not actually 
-proposing that change should be merged.
-
-> More to test, sigh.
-
-I'm sorry for sending untested patches but I didn't really expect anyone 
-to test this. It amounts to a bug fix in dead code and probably doesn't 
-need any more testing: it's mostly copied from the Mac SCC code, which has 
-been tested already.
-
--- 
+    Michael
