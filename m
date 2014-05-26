@@ -1,36 +1,33 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH RESEND 0/4] m68k: earlyprintk and debug console improvements
-Date: Mon, 26 May 2014 22:55:43 +0200
-Message-ID: <CAMuHMdXPuAWVYdpaCfRsdBMfgDXt13tz452TZdpL2d+_Mj00+g@mail.gmail.com>
-References: <20140411053150.16F1E23CBB@kvm5.telegraphics.com.au>
+Subject: Re: [PATCH v3 0/4] Atari kernel-in-FastRAM patches v3
+Date: Mon, 26 May 2014 22:56:58 +0200
+Message-ID: <CAMuHMdVcn2sRZXvSTWQay879maoUbxB46n2w7E9S8jRuWPfniw@mail.gmail.com>
+References: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ig0-f171.google.com ([209.85.213.171]:54365 "EHLO
-	mail-ig0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751652AbaEZUzo (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 16:55:44 -0400
-Received: by mail-ig0-f171.google.com with SMTP id c1so342122igq.16
-        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2014 13:55:44 -0700 (PDT)
-In-Reply-To: <20140411053150.16F1E23CBB@kvm5.telegraphics.com.au>
+Received: from mail-ig0-f169.google.com ([209.85.213.169]:60125 "EHLO
+	mail-ig0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751800AbaEZU46 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 26 May 2014 16:56:58 -0400
+Received: by mail-ig0-f169.google.com with SMTP id hl10so377927igb.0
+        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2014 13:56:58 -0700 (PDT)
+In-Reply-To: <1396253168-25601-1-git-send-email-schmitz@debian.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitz@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Hi Finn,
+Hi Michael,
 
-On Fri, Apr 11, 2014 at 7:27 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> I'm re-sending this series with signed-off-by and tested-by attribution.
+On Mon, Mar 31, 2014 at 10:06 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> changes to stram.c and atafb.c patches as requested. The external_addr
+> case is still untested - may have other bugs that I've not seen when
+> changing the external_addr types.
+>
+> CC to the relevant lists for floppy and SCSI patches.
 
-Thanks!
-
-I applied and queued for 3.16 the most recent versions:
-
-[PATCH v2 1/4] m68k: toward platform agnostic framebuffer debug logging
-[PATCH v3 2/4] m68k: multi-platform EARLY_PRINTK
-[PATCH v2 3/4] m68k/mvme16x: adopt common boot console
-[PATCH v2 4/4] m68k/atari: fix SCC initialization for debug
+Thanks, applied and queued for 3.16.
 
 Gr{oetje,eeting}s,
 
