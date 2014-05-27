@@ -1,42 +1,49 @@
-From: gerg@uclinux.org
-Subject: [PATCH 0/2] m68knommu: clean up timer code on the ColdFire 53xx
-Date: Tue, 27 May 2014 16:28:20 +1000
-Message-ID: <1401172102-1599-1-git-send-email-gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/head.S: CONSOLE_DEBUG should depend on CONFIG_FONT_SUPPORT
+Date: Tue, 27 May 2014 09:41:42 +0200
+Message-ID: <1401176502-11664-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntqsrv02p.mx.bigpond.com ([61.9.168.234]:35902 "EHLO
-	nskntqsrv02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751932AbaE0GmD (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 27 May 2014 02:42:03 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
+allmodconfig:
 
-The timer code used on the ColdFire 53xx series is abusing the old 16bit
-timer code. The hardware module it uses is really the more modern DMA
-timer hardware module. It bends the reads/writes and modifies some addresses
-so that it basically works.
+arch/m68k/kernel/head.o: In function `debug_cons_nputs':
+(.init.text+0x1500): undefined reference to `font_vga_8x8'
+make[3]: *** [vmlinux] Error 1
 
-It would be much better to use the modern Programmable Interrupt Timer
-hardware module that these SoC contain. This PIT timer is used on all
-the other modern ColdFire family members.
+CONFIG_FONT_8x8=y, but CONFIG_FRAMEBUFFER_CONSOLE=m and
+CONFIG_FONT_SUPPORT=m, causing the font to be modular.
 
-We also have DMA timer code that we will in the future use as a more
-accurate clock source and cycle counter. So the idea here is to clean up
-this usage to free up the timer hardware.
+Introduced by commit 0ff3cc858e74436c2234183ea2dd200474cba09a ("m68k:
+Multi-platform EARLY_PRINTK"), which dropped a dependency on
+CONFIG_FRAMEBUFFER_CONSOLE (FRAMEBUFFER_CONSOLE selects FONT_SUPPORT).
 
-I don't have any 53xx based hardware, so I have not been able to run time
-test this. If anyone can test this and confirm that it works as expected
-that would be great.
+Make CONSOLE_DEBUG depend on CONFIG_FONT_SUPPORT to fix this.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig.cpu                |    2 ++
- arch/m68k/include/asm/m53xxsim.h     |   19 ++++++++++---------
- arch/m68k/include/asm/mcftimer.h     |    4 ----
- arch/m68k/platform/coldfire/Makefile |    2 +-
- arch/m68k/platform/coldfire/timers.c |   16 ++--------------
- 5 files changed, 15 insertions(+), 28 deletions(-)
+To be folded into "m68k: Multi-platform EARLY_PRINTK" in m68k-queue and
+for-3.16.
+
+ arch/m68k/kernel/head.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index 673dcaf0a55c..dbb118e1a4e0 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -273,7 +273,7 @@
+ 
+ #ifdef CONFIG_EARLY_PRINTK
+ #  define SERIAL_DEBUG
+-#  ifdef CONFIG_MAC
++#  if defined(CONFIG_MAC) && defined(CONFIG_FONT_SUPPORT)
+ #    define CONSOLE_DEBUG
+ #  endif
+ #endif
+-- 
+1.9.1
