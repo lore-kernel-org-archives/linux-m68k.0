@@ -1,14 +1,14 @@
 From: gerg@uclinux.org
-Subject: [PATCH 1/2] m68knommu: modify ColdFire 53xx family to use PIT timer
-Date: Tue, 27 May 2014 16:28:21 +1000
-Message-ID: <1401172102-1599-2-git-send-email-gerg@uclinux.org>
+Subject: [PATCH 2/2] m68knommu: clean up ColdFire legacy timer
+Date: Tue, 27 May 2014 16:28:22 +1000
+Message-ID: <1401172102-1599-3-git-send-email-gerg@uclinux.org>
 References: <1401172102-1599-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntqsrv01p.mx.bigpond.com ([61.9.168.231]:25078 "EHLO
-	nskntqsrv01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751607AbaE0Gk6 (ORCPT
+Received: from nskntqsrv02p.mx.bigpond.com ([61.9.168.234]:35902 "EHLO
+	nskntqsrv02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751823AbaE0GmB (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 27 May 2014 02:40:58 -0400
+	Tue, 27 May 2014 02:42:01 -0400
 In-Reply-To: <1401172102-1599-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -17,104 +17,74 @@ Cc: Greg Ungerer <gerg@uclinux.org>
 
 From: Greg Ungerer <gerg@uclinux.org>
 
-The ColdFire 53xx Family of SoCs (that is the 537x and 532x) contain the
-more modern Freescale Programmable Interrupt Timer (PIT) hardware module.
-Switch to using it in preference to the older timers.c driving code.
-
-This will allow future clean ups to the old timers.c code that supports
-the simple 16bit counter timer. The 53xx family also supports the 32bit
-DMA timer hardware module, and we will use that for accurate timing.
+The ColdFire legacy timer code is used by ColdFire parts using the old 16bit
+hardware timer module. It is no longer used by the m5441x or 53xx parts, so
+changes to support them can be cleaned out.
 
 Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- arch/m68k/Kconfig.cpu                |  2 ++
- arch/m68k/include/asm/m53xxsim.h     | 19 ++++++++++---------
- arch/m68k/platform/coldfire/Makefile |  2 +-
- 3 files changed, 13 insertions(+), 10 deletions(-)
+ arch/m68k/include/asm/mcftimer.h     |  4 ----
+ arch/m68k/platform/coldfire/timers.c | 16 ++--------------
+ 2 files changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 33013df..a255f65 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -231,6 +231,7 @@ config M532x
- 	depends on !MMU
- 	select M53xx
- 	select HAVE_CACHE_CB
-+	select GENERIC_CLOCKEVENTS
- 	help
- 	  Freescale (Motorola) ColdFire 532x processor support.
+diff --git a/arch/m68k/include/asm/mcftimer.h b/arch/m68k/include/asm/mcftimer.h
+index 089f0f1..769acf3 100644
+--- a/arch/m68k/include/asm/mcftimer.h
++++ b/arch/m68k/include/asm/mcftimer.h
+@@ -19,11 +19,7 @@
+ #define	MCFTIMER_TRR		0x04		/* Timer Reference (r/w) */
+ #define	MCFTIMER_TCR		0x08		/* Timer Capture reg (r/w) */
+ #define	MCFTIMER_TCN		0x0C		/* Timer Counter reg (r/w) */
+-#if defined(CONFIG_M53xx) || defined(CONFIG_M5441x)
+-#define	MCFTIMER_TER		0x03		/* Timer Event reg (r/w) */
+-#else
+ #define	MCFTIMER_TER		0x11		/* Timer Event reg (r/w) */
+-#endif
  
-@@ -239,6 +240,7 @@ config M537x
- 	depends on !MMU
- 	select M53xx
- 	select HAVE_CACHE_CB
-+	select GENERIC_CLOCKEVENTS
- 	help
- 	  Freescale ColdFire 537x processor support.
+ /*
+  *	Bit definitions for the Timer Mode Register (TMR).
+diff --git a/arch/m68k/platform/coldfire/timers.c b/arch/m68k/platform/coldfire/timers.c
+index cd496a2..0b222c2 100644
+--- a/arch/m68k/platform/coldfire/timers.c
++++ b/arch/m68k/platform/coldfire/timers.c
+@@ -30,20 +30,8 @@
+ #define	FREQ	(MCF_BUSCLK / 16)
+ #define	TA(a)	(MCFTIMER_BASE1 + (a))
  
-diff --git a/arch/m68k/include/asm/m53xxsim.h b/arch/m68k/include/asm/m53xxsim.h
-index faa1a21..5497216 100644
---- a/arch/m68k/include/asm/m53xxsim.h
-+++ b/arch/m68k/include/asm/m53xxsim.h
-@@ -23,6 +23,7 @@
- #define MCFINT_FECRX0	    36		/* Interrupt number for FEC */
- #define MCFINT_FECTX0	    40		/* Interrupt number for FEC */
- #define MCFINT_FECENTC0	    42		/* Interrupt number for FEC */
-+#define MCFINT_PIT1	    43		/* Interrupt number for PIT1 */
- 
- #define MCF_IRQ_UART0       (MCFINT_VECBASE + MCFINT_UART0)
- #define MCF_IRQ_UART1       (MCFINT_VECBASE + MCFINT_UART1)
-@@ -33,6 +34,7 @@
- #define MCF_IRQ_FECENTC0    (MCFINT_VECBASE + MCFINT_FECENTC0)
- 
- #define	MCF_IRQ_QSPI	    (MCFINT_VECBASE + MCFINT_QSPI)
-+#define MCF_IRQ_PIT1	    (MCFINT_VECBASE + MCFINT_PIT1)
- 
- #define MCF_WTM_WCR		0xFC098000
- 
-@@ -82,15 +84,6 @@
- #define MCFINTC2_CIMR		(0)
- #define MCFINTC2_ICR0		(0)
- 
--#define MCFSIM_ICR_TIMER1	(0xFC048040+32)
--#define MCFSIM_ICR_TIMER2	(0xFC048040+33)
--
 -/*
-- *	Define system peripheral IRQ usage.
+- *	These provide the underlying interrupt vector support.
+- *	Unfortunately it is a little different on each ColdFire.
 - */
--#define	MCF_IRQ_TIMER		(64 + 32)	/* Timer0 */
--#define	MCF_IRQ_PROFILER	(64 + 33)	/* Timer1 */
--
- /*
-  *  UART module.
-  */
-@@ -115,6 +108,14 @@
- #define	MCFQSPI_CS2		86
+ void coldfire_profile_init(void);
  
- /*
-+ *  PIT timer module.
-+ */
-+#define MCFPIT_BASE1		0xFC080000	/* Base address of TIMER1 */
-+#define MCFPIT_BASE2		0xFC084000	/* Base address of TIMER2 */
-+#define MCFPIT_BASE3		0xFC088000	/* Base address of TIMER3 */
-+#define MCFPIT_BASE4		0xFC08C000	/* Base address of TIMER4 */
-+
-+/*
-  *  Timer module.
-  */
- #define MCFTIMER_BASE1		0xFC070000	/* Base address of TIMER1 */
-diff --git a/arch/m68k/platform/coldfire/Makefile b/arch/m68k/platform/coldfire/Makefile
-index 68f0fac..0818f77 100644
---- a/arch/m68k/platform/coldfire/Makefile
-+++ b/arch/m68k/platform/coldfire/Makefile
-@@ -25,7 +25,7 @@ obj-$(CONFIG_M527x)	+= m527x.o pit.o intc-2.o reset.o
- obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o timers.o
- obj-$(CONFIG_M528x)	+= m528x.o pit.o intc-2.o reset.o
- obj-$(CONFIG_M5307)	+= m5307.o timers.o intc.o reset.o
--obj-$(CONFIG_M53xx)	+= m53xx.o timers.o intc-simr.o reset.o
-+obj-$(CONFIG_M53xx)	+= m53xx.o pit.o intc-simr.o reset.o
- obj-$(CONFIG_M5407)	+= m5407.o timers.o intc.o reset.o
- obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
- obj-$(CONFIG_M5441x)	+= m5441x.o pit.o intc-simr.o reset.o
+-#if defined(CONFIG_M53xx) || defined(CONFIG_M5441x)
+-#define	__raw_readtrr	__raw_readl
+-#define	__raw_writetrr	__raw_writel
+-#else
+-#define	__raw_readtrr	__raw_readw
+-#define	__raw_writetrr	__raw_writew
+-#endif
+-
+ static u32 mcftmr_cycles_per_jiffy;
+ static u32 mcftmr_cnt;
+ 
+@@ -125,7 +113,7 @@ void hw_timer_init(irq_handler_t handler)
+ 	 *	for 1 tick, not TRR.  So if you want n cycles,
+ 	 *	initialize TRR with n - 1.
+ 	 */
+-	__raw_writetrr(mcftmr_cycles_per_jiffy - 1, TA(MCFTIMER_TRR));
++	__raw_writew(mcftmr_cycles_per_jiffy - 1, TA(MCFTIMER_TRR));
+ 	__raw_writew(MCFTIMER_TMR_ENORI | MCFTIMER_TMR_CLK16 |
+ 		MCFTIMER_TMR_RESTART | MCFTIMER_TMR_ENABLE, TA(MCFTIMER_TMR));
+ 
+@@ -183,7 +171,7 @@ void coldfire_profile_init(void)
+ 	/* Set up TIMER 2 as high speed profile clock */
+ 	__raw_writew(MCFTIMER_TMR_DISABLE, PA(MCFTIMER_TMR));
+ 
+-	__raw_writetrr(((MCF_BUSCLK / 16) / PROFILEHZ), PA(MCFTIMER_TRR));
++	__raw_writew(((MCF_BUSCLK / 16) / PROFILEHZ), PA(MCFTIMER_TRR));
+ 	__raw_writew(MCFTIMER_TMR_ENORI | MCFTIMER_TMR_CLK16 |
+ 		MCFTIMER_TMR_RESTART | MCFTIMER_TMR_ENABLE, PA(MCFTIMER_TMR));
+ 
 -- 
 1.8.1.4
