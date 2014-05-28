@@ -1,58 +1,73 @@
-From: gerg@uclinux.org
-Subject: [PATCH 9/9] m68knommu: use ColdFire DMA timer module on devices that have it
-Date: Wed, 28 May 2014 10:49:49 +1000
-Message-ID: <1401238189-4402-10-git-send-email-gerg@uclinux.org>
-References: <1401238189-4402-1-git-send-email-gerg@uclinux.org>
+From: Amos Kong <akong@redhat.com>
+Subject: [PATCH] mvme147: use correct order of ram pages
+Date: Wed, 28 May 2014 12:07:53 +0800
+Message-ID: <1401250073-16603-1-git-send-email-akong@redhat.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntmtas04p.mx.bigpond.com ([61.9.168.146]:47362 "EHLO
-	nskntmtas04p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752068AbaE1At5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 27 May 2014 20:49:57 -0400
-In-Reply-To: <1401238189-4402-1-git-send-email-gerg@uclinux.org>
+Received: from mx1.redhat.com ([209.132.183.28]:56759 "EHLO mx1.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750900AbaE1EIB (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 28 May 2014 00:08:01 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: geert@linux-m68k.org, linux-m68k@vger.kernel.org
+Cc: netdev@vger.kernel.org, davem@davemloft.net
 
-From: Greg Ungerer <gerg@uclinux.org>
+16K is 2^2 * PAGE_SIZE, so the page order should be 2, not 3.
 
-The DMA timer hardware module is present in all of the 520x, 527x, 528x,
-53xx and 5441x families of ColdFire SoC. Use it as clock source on those
-parts to give a more accurate clock.
+This patch uses get_order() to get correct order, and fixes
+one typo in comment.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Amos Kong <akong@redhat.com>
 ---
- arch/m68k/platform/coldfire/Makefile | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+This patch wasn't built. Geert, can you help to test it?
+I don't know if it needs a head file by using get_order().
+---
+ drivers/net/ethernet/amd/mvme147.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/platform/coldfire/Makefile b/arch/m68k/platform/coldfire/Makefile
-index 0818f77..cdd0b03 100644
---- a/arch/m68k/platform/coldfire/Makefile
-+++ b/arch/m68k/platform/coldfire/Makefile
-@@ -17,18 +17,18 @@ asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
- obj-$(CONFIG_COLDFIRE)	+= cache.o clk.o device.o dma.o entry.o vectors.o
- obj-$(CONFIG_M5206)	+= m5206.o timers.o intc.o reset.o
- obj-$(CONFIG_M5206e)	+= m5206.o timers.o intc.o reset.o
--obj-$(CONFIG_M520x)	+= m520x.o pit.o intc-simr.o reset.o
-+obj-$(CONFIG_M520x)	+= m520x.o pit.o dma_timer.o intc-simr.o reset.o
- obj-$(CONFIG_M523x)	+= m523x.o pit.o dma_timer.o intc-2.o reset.o
- obj-$(CONFIG_M5249)	+= m5249.o timers.o intc.o intc-5249.o reset.o
- obj-$(CONFIG_M525x)	+= m525x.o timers.o intc.o intc-525x.o reset.o
--obj-$(CONFIG_M527x)	+= m527x.o pit.o intc-2.o reset.o
-+obj-$(CONFIG_M527x)	+= m527x.o pit.o dma_timer.o intc-2.o reset.o
- obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o timers.o
--obj-$(CONFIG_M528x)	+= m528x.o pit.o intc-2.o reset.o
-+obj-$(CONFIG_M528x)	+= m528x.o pit.o dma_timer.o intc-2.o reset.o
- obj-$(CONFIG_M5307)	+= m5307.o timers.o intc.o reset.o
--obj-$(CONFIG_M53xx)	+= m53xx.o pit.o intc-simr.o reset.o
-+obj-$(CONFIG_M53xx)	+= m53xx.o pit.o dma_timer.o intc-simr.o reset.o
- obj-$(CONFIG_M5407)	+= m5407.o timers.o intc.o reset.o
- obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
--obj-$(CONFIG_M5441x)	+= m5441x.o pit.o intc-simr.o reset.o
-+obj-$(CONFIG_M5441x)	+= m5441x.o pit.o dma_timer.o intc-simr.o reset.o
+diff --git a/drivers/net/ethernet/amd/mvme147.c b/drivers/net/ethernet/amd/mvme147.c
+index 0e8399d..4e98bf8 100644
+--- a/drivers/net/ethernet/amd/mvme147.c
++++ b/drivers/net/ethernet/amd/mvme147.c
+@@ -26,10 +26,11 @@
+ #include <asm/pgtable.h>
+ #include <asm/mvme147hw.h>
  
- obj-$(CONFIG_NETtel)	+= nettel.o
- obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+-/* We have 16834 bytes of RAM for the init block and buffers. This places
++/* We have 16384 bytes of RAM for the init block and buffers. This places
+  * an upper limit on the number of buffers we can use. NetBSD uses 8 Rx
+  * buffers and 2 Tx buffers.
+  */
++#define M147LANCE_RAM_SIZE   16384 /* 16K */
+ #define LANCE_LOG_TX_BUFFERS 1
+ #define LANCE_LOG_RX_BUFFERS 3
+ 
+@@ -111,7 +112,7 @@ struct net_device * __init mvme147lance_probe(int unit)
+ 	       dev->dev_addr);
+ 
+ 	lp = netdev_priv(dev);
+-	lp->ram = __get_dma_pages(GFP_ATOMIC, 3);	/* 16K */
++	lp->ram = __get_dma_pages(GFP_ATOMIC, get_order(M147LANCE_RAM_SIZE));
+ 	if (!lp->ram) {
+ 		printk("%s: No memory for LANCE buffers\n", dev->name);
+ 		free_netdev(dev);
+@@ -134,7 +135,7 @@ struct net_device * __init mvme147lance_probe(int unit)
+ 
+ 	err = register_netdev(dev);
+ 	if (err) {
+-		free_pages(lp->ram, 3);
++		free_pages(lp->ram, get_order(M147LANCE_RAM_SIZE));
+ 		free_netdev(dev);
+ 		return ERR_PTR(err);
+ 	}
+@@ -193,7 +194,7 @@ void __exit cleanup_module(void)
+ {
+ 	struct m147lance_private *lp = netdev_priv(dev_mvme147_lance);
+ 	unregister_netdev(dev_mvme147_lance);
+-	free_pages(lp->ram, 3);
++	free_pages(lp->ram, get_order(M147LANCE_RAM_SIZE));
+ 	free_netdev(dev_mvme147_lance);
+ }
+ 
 -- 
-1.8.1.4
+1.9.0
