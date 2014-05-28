@@ -1,42 +1,30 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] mvme147: use correct order of ram pages
-Date: Wed, 28 May 2014 11:39:20 +0200
-Message-ID: <mvmvbsqjl87.fsf@hawking.suse.de>
-References: <1401250073-16603-1-git-send-email-akong@redhat.com>
-	<CAMuHMdV-g35ijLgcE=sSM3eE+fCxC1WOiAX2PaWs0z4-+bDP+A@mail.gmail.com>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 01/12] scsi/NCR5380: remove unused BOARD_NORMAL and
+ BOARD_NCR53C400
+Date: Wed, 28 May 2014 02:48:49 -0700
+Message-ID: <20140528094849.GA26617@infradead.org>
+References: <20140318004212.612472697@telegraphics.com.au>
+ <20140318004212.932470722@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:39015 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751031AbaE1JjZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 28 May 2014 05:39:25 -0400
-In-Reply-To: <CAMuHMdV-g35ijLgcE=sSM3eE+fCxC1WOiAX2PaWs0z4-+bDP+A@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Wed, 28 May 2014 09:51:39 +0200")
+Received: from bombadil.infradead.org ([198.137.202.9]:50209 "EHLO
+	bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750780AbaE1Jsw (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 28 May 2014 05:48:52 -0400
+Content-Disposition: inline
+In-Reply-To: <20140318004212.932470722@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Amos Kong <akong@redhat.com>, Linux/m68k <linux-m68k@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, linux-scsi@vger.kernel.org, Sam Creasey <sammy@sammy.net>, Russell King <linux@arm.linux.org.uk>, Michael Schmitz <schmitz@debian.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Tue, Mar 18, 2014 at 11:42:13AM +1100, Finn Thain wrote:
+> BOARD_NORMAL is completely unused and BOARD_NCR53C400 is used only by
+> g_NCR5380 internally. Remove the unused definitions.
+> 
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
->> -/* We have 16834 bytes of RAM for the init block and buffers. This places
->> +/* We have 16384 bytes of RAM for the init block and buffers. This places
->>   * an upper limit on the number of buffers we can use. NetBSD uses 8 Rx
->>   * buffers and 2 Tx buffers.
->>   */
->> +#define M147LANCE_RAM_SIZE   16384 /* 16K */
->>  #define LANCE_LOG_TX_BUFFERS 1
->>  #define LANCE_LOG_RX_BUFFERS 3
->
-> BTW,I also find it fishy why the driver uses only 1+3 buffers, since more
-> RAM is available.
+Looks good,
 
-It's 2^1+2^3.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Reviewed-by: Christoph Hellwig <hch@lst.de>
