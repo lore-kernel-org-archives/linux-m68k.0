@@ -1,44 +1,64 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v2 4/4] m68k/atari: fix SCC initialization for debug
- console
-Date: Tue, 27 May 2014 23:20:04 +1000 (EST)
-Message-ID: <alpine.LNX.2.00.1405272232070.4667@nippy.intranet>
-References: <alpine.LNX.2.00.1405262326290.13815@nippy.intranet> <CAOmrzkLw1r+QUxqxQUKEwewtnWRmJknYCzLzf29Tq_TsjK-RyQ@mail.gmail.com> <alpine.LNX.2.00.1405271047450.14863@nippy.intranet> <CAOmrzkLLNeCgFsam+e0_nBKRGhjpFv=bv_eT0wp8R=o4z8D0QQ@mail.gmail.com>
- <alpine.LNX.2.00.1405271306310.14863@nippy.intranet> <538444D8.9000805@gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v3 0/4] Atari kernel-in-FastRAM patches v3
+Date: Wed, 28 May 2014 12:18:55 +1200
+Message-ID: <CAOmrzk+=ccumZNU0tySmce+9AXFLJTxQ43pYY3jRpxzLSfZ5kw@mail.gmail.com>
+References: <1396253168-25601-1-git-send-email-schmitz@debian.org>
+	<CAMuHMdVcn2sRZXvSTWQay879maoUbxB46n2w7E9S8jRuWPfniw@mail.gmail.com>
+	<CAOmrzkJFqR4FzKaQGwa9vjzCM+OEP2mre=qRWuxbeH-imPhEXQ@mail.gmail.com>
+	<5384533B.1050501@gmail.com>
+	<CAMuHMdWjUqEsrMXMbWdbtG8SXCuMaQUchMssDDud-b2VkiC+uA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38054 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751936AbaE0NVR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 27 May 2014 09:21:17 -0400
-In-Reply-To: <538444D8.9000805@gmail.com>
+Received: from mail-oa0-f52.google.com ([209.85.219.52]:55316 "EHLO
+	mail-oa0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752908AbaE1AS4 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 27 May 2014 20:18:56 -0400
+Received: by mail-oa0-f52.google.com with SMTP id eb12so10396527oac.39
+        for <linux-m68k@vger.kernel.org>; Tue, 27 May 2014 17:18:55 -0700 (PDT)
+In-Reply-To: <CAMuHMdWjUqEsrMXMbWdbtG8SXCuMaQUchMssDDud-b2VkiC+uA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+
+Hi Geert,
+
+>> Found the error, most likely - when the kernel runs in FastRAM,
+>> m68k_num_memory is == 1. Is there a way to access the bootinfo view of the
+>> number of memory chunks after the MMU init code has tweaked m68k_num_memory,
+>> Geert?
+>
+> You mean the ones that were removed due to "Ignoring memory chunk"?
+
+These ones exactly.
+
+> No, bootinfo is gone, unless saved for kexec with CONFIG_BOOTINFO_PROC=y.
+>
+> What exactly is the issue?
+
+When deciding whether a ST-RAM DMA buffer needs to be allocated, the
+Atari SCSI driver checks whether there's more than a single chunk of
+RAM (there's always ST-RAM, so the second one indicates FastRAM).
+That's no longer a good test now with the kernel capable of running
+from FastRAM (and the ST-RAM chunk being dropped in MM init).
+
+Maybe we need another variable to hold the number of memory chunks
+before adjustment. Or look at size or physical base address of the
+first chunk...
+
+Cheers,
+
+  Michael
 
 
-On Tue, 27 May 2014, Michael Schmitz wrote:
-
-> >
-> > Problem: bdtab_norm[] above specifies { CLK_RTxC, 24 } for 9600 baud. 
-> > This doesn't make sense. Perhaps the logic in SCC_ioctl() in 
-> > Atari_SCC.c fixes it up for speeds specified by the user? Who knows.
-> >   
-> 
-> That ends up using time constant 10 and mode 16 as per your calculation 
-> for 3.67 MHz clock input - 9562 baud instead of the 9680 possible from 
-> the 8 MHz clock.
-
-Yes, I see now. This code is confusing.
-
-> I might have misunderstood something - would really want to check that 
-> using a scope.
-> 
-> Both appear to work OK, so no matter really.
-
-And besides, there's no need to change the baud rate until someone 
-#defines USE_SCC_[AB] and then gets annoyed with 9600 baud.
-
--- 
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
