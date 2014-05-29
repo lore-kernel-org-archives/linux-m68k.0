@@ -1,60 +1,67 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68knommu: add DMA timer counter to entropy
-Date: Thu, 29 May 2014 10:58:48 +1000
-Message-ID: <1401325128-29787-1-git-send-email-gerg@uclinux.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: rcu alignment warning tripping on m68k
+Date: Thu, 29 May 2014 12:08:32 +1000
+Message-ID: <538696A0.5090601@uclinux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntmtas01p.mx.bigpond.com ([61.9.168.137]:30756 "EHLO
-	nskntmtas01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751758AbaE2A6j (ORCPT
+Received: from [203.59.1.221] ([203.59.1.221]:41346 "EHLO
+	icp-osb-irony-out5.external.iinet.net.au" rhost-flags-FAIL-FAIL-OK-OK)
+	by vger.kernel.org with ESMTP id S1753044AbaE2CIr (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 28 May 2014 20:58:39 -0400
+	Wed, 28 May 2014 22:08:47 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
+Hi All,
 
-The ColdFire DMA timer hardware module is a free running counter that is
-derived from the master system clock. It is effectively a cycle counter,
-so lets add it to the entropy pool.
+Inside kernel/rcy/tree.c in __call_rcu() it does an alignment check on
+the head pointer passed in. This trips on m68k systems, because they only
+need alignment of 32bit quantities to 16bit boundaries.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/platform/coldfire/dma_timer.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+...
+UDP hash table entries: 512 (order: 0, 8192 bytes)
+UDP-Lite hash table entries: 512 (order: 0, 8192 bytes)
+NET: Registered protocol family 1
+ROMFS MTD (C) 2007 Red Hat, Inc.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 18 at kernel/rcu/tree.c:2470 0x400577e0()
+Modules linked in:
+CPU: 0 PID: 18 Comm: kworker/u2:0 Not tainted 3.15.0-rc4-00013-g1c07b64-dirty #14
+Stack from 418ada9c:
+        418ada9c 401e8336 400258e0 401c69c4 418ac000 418a86f6 4003bc0a 418a8390
+        418a86f6 4002590e 401e176b 000009a6 400577e0 00000009 00000000 400577e0
+        401e176b 000009a6 401c69c4 418ac000 418a8390 418a8390 418ac000 40057928
+        418a86f6 40025bcc 40218fe0 00000000 401ddb56 401e17ad 000002af 400261c2
+        418a86f6 40025bcc 00000013 00000030 00000010 00000013 418ac000 418adf88
+        418a8390 418adf70 400263f0 418a8000 418adf18 41885950 00000000 00000000
+Call Trace:
+        [<400258e0>] 0x400258e0
+ [<401c69c4>] 0x401c69c4
+ [<4003bc0a>] 0x4003bc0a
+ [<4002590e>] 0x4002590e
+ [<400577e0>] 0x400577e0
 
-diff --git a/arch/m68k/platform/coldfire/dma_timer.c b/arch/m68k/platform/coldfire/dma_timer.c
-index 1f8d967..850463c 100644
---- a/arch/m68k/platform/coldfire/dma_timer.c
-+++ b/arch/m68k/platform/coldfire/dma_timer.c
-@@ -9,6 +9,7 @@
- #include <linux/clocksource.h>
- #include <linux/clk.h>
- #include <linux/io.h>
-+#include <linux/timex.h>
+
+What is the best solution to fix?
+Make the alignment check be only 16bits?
+
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2467,7 +2467,7 @@ __call_rcu(struct rcu_head *head, void (*func)(struct rcu_
+        unsigned long flags;
+        struct rcu_data *rdp;
  
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
-@@ -30,6 +31,11 @@
- #define DMA_DTMR_CLK_DIV_16	(2 << 1)
- #define DMA_DTMR_ENABLE		(1 << 0)
- 
-+static unsigned long cf_dt_random_get_entropy(void)
-+{
-+	return __raw_readl(DTCN0);
-+}
-+
- static cycle_t cf_dt_get_cycles(struct clocksource *cs)
- {
- 	return __raw_readl(DTCN0);
-@@ -56,6 +62,7 @@ static int __init  init_cf_dt_clocksource(void)
- 	clk = clk_get(NULL, "mcftmr.0");
- 	if (clk)
- 		clk_enable(clk);
-+	mach_random_get_entropy = cf_dt_random_get_entropy;
- 
- 	__raw_writeb(0x00, DTXMR0);
- 	__raw_writeb(0x00, DTER0);
--- 
-1.8.1.4
+-       WARN_ON_ONCE((unsigned long)head & 0x3); /* Misaligned rcu_head! */
++       WARN_ON_ONCE((unsigned long)head & 0x1); /* Misaligned rcu_head! */
+        if (debug_rcu_head_queue(head)) {
+                /* Probable double call_rcu(), so leak the callback. */
+                ACCESS_ONCE(head->func) = rcu_leak_callback;
+
+
+Or should we just get rid of this check altogether?
+
+Regards
+Greg
