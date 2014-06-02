@@ -1,113 +1,101 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: Re: TASK_SIZE for !MMU
-Date: Mon, 2 Jun 2014 10:51:50 +0200
-Message-ID: <20140602085150.GA31147@pengutronix.de>
-References: <20140429100028.GH28564@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.16
+Date: Mon, 2 Jun 2014 16:01:42 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1406021556230.30881@ayla.of.borg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140429100028.GH28564@pengutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Rabin Vincent <rabin@rab.in>, Will Deacon <will.deacon@arm.com>, linux-arm-kernel@lists.infradead.org
-Cc: David Howells <dhowells@redhat.com>, uclinux-dist-devel@blackfin.uclinux.org, linux-m68k@lists.linux-m68k.org, linux-c6x-dev@linux-c6x.org, linux-m32r@ml.linux-m32r.org, microblaze-uclinux@itee.uq.edu.au, linux-xtensa@linux-xtensa.org, kernel@pengutronix.de, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hello
+	Hi Linus,
 
-[expand Cc: a bit]
+The following changes since commit c7208164e66f63e3ec1759b98087849286410741:
 
-On Tue, Apr 29, 2014 at 12:00:28PM +0200, Uwe Kleine-K=F6nig wrote:
-> I grepped through the kernel (v3.15-rc1) for usages of TASK_SIZE to
-> check if/how it is used on !MMU ARM machines. Most open questions als=
-o
-> affect the other !MMU platforms, so I put the blackfin, c6x, frv and
-> m32r, m68k, microblaze and xtensa lists on Cc:. (Did I miss a platfor=
-m
-> that cares for !MMU ?)
->=20
-> Most occurences are fine, see the list at the end of this mail. Howev=
-er
-> some are not or are unclear to me. Here is the complete list[1] apart=
- from
-> the definition of TASK_SIZE for !MMU in arch/arm/include/asm/memory.h=
-:
->=20
->  - Probably this should be explict s/TASK_SIZE/CONFIG_DRAM_SIZE/. Thi=
-s
->    is generic code however while CONFIG_DRAM_SIZE is ARM only.
->         mm/nommu.c:     if (!rlen || rlen > TASK_SIZE)
->=20
->  - The issue the patch by Rabin is addressing (Subject: [PATCH] ARM: =
-fix
->    string functions on !MMU), alternatively make TASK_SIZE ~0UL.
->         arch/arm/include/asm/uaccess.h:#define user_addr_max() \
->         arch/arm/include/asm/uaccess.h: (segment_eq(get_fs(), USER_DS=
-) ? TASK_SIZE : ~0UL)
-[reference: http://www.spinics.net/lists/arm-kernel/msg324112.html ]
-=20
->  - probably bearable if broken:
->         drivers/misc/lkdtm.c:           if (user_addr >=3D TASK_SIZE)=
- {
->         lib/test_user_copy.c:   user_addr =3D vm_mmap(...)
->         lib/test_user_copy.c:   if (user_addr >=3D (unsigned long)(TA=
-SK_SIZE)) {
->         lib/test_user_copy.c:           pr_warn("Failed to allocate u=
-ser memory\n");
->         lib/test_user_copy.c:           return -ENOMEM;
->=20
->  - unclear to me:
->         fs/exec.c:      current->mm->task_size =3D TASK_SIZE;
->    - depends on PERF_EVENTS
->         kernel/events/core.c:   if (!addr || addr >=3D TASK_SIZE)
->         kernel/events/core.c:   return TASK_SIZE - addr;
->         kernel/events/uprobes.c:                area->vaddr =3D get_u=
-nmapped_area(NULL, TASK_SIZE - PAGE_SIZE,
->    - depends on (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)):
->         arch/arm/kernel/hw_breakpoint.c:        return (va >=3D TASK_=
-SIZE) && ((va + len - 1) >=3D TASK_SIZE);
->    - seems to cope with big TASK_SIZE
->         fs/namespace.c:        size =3D TASK_SIZE - (unsigned long)da=
-ta;
->         fs/namespace.c:        if (size > PAGE_SIZE)
->         fs/namespace.c:                size =3D PAGE_SIZE;
->    - depends on PLAT_S5P || ARCH_EXYNOS, this looks wrong
->         drivers/media/platform/s5p-mfc/s5p_mfc_common.h:#define DST_Q=
-UEUE_OFF_BASE      (TASK_SIZE / 2)
->    - used for prctl(PR_SET_MM, ...)
->         kernel/sys.c:   if (addr >=3D TASK_SIZE || addr < mmap_min_ad=
-dr)
->=20
-> Any help to judge if these are OK is appreciated (even from Will :-)
->=20
-> I think it would be OK to define TASK_SIZE to 0xffffffff for !MMU.
-> blackfin, frv and m68k also do this. c6x does define it to 0xFFFFF000=
- to
-> leave space for error codes.
->=20
-> Thoughts?
-The problem is that current linus/master (and also next) doesn't boot o=
-n
-my ARM-nommu machine because the user string functions (strnlen_user,
-strncpy_from_user et al.) refuse to work on strings above TASK_SIZE
-which in my case also includes the XIP kernel image.
+  Linux 3.15-rc7 (2014-05-25 16:06:00 -0700)
 
-Maybe someone of the mm people can bring light into the unclear points
-above and the question what TASK_SIZE is supposed to be on no-MMU
-machines?
+are available in the git repository at:
 
-Best regards
-Uwe
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-> [1] complete as in "skip everything below arch/ but arch/arm" :-)
->=20
-[removed the list, if you're interested, it's available at
-http://mid.gmane.org/20140429100028.GH28564@pengutronix.de]
+for you to fetch changes up to e8d6dc5ad26eb027c19cfb44825f038734be2cb3:
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
-    |
-Industrial Linux Solutions                 | http://www.pengutronix.de/=
-  |
+  m68k/hp300: Convert printk to pr_foo() (2014-05-28 10:11:55 +0200)
+
+Highlights:
+  - Support for running kernels in fast TT-RAM instead of slow ST-RAM on
+    Atari,
+  - Multi-platform EARLY_PRINTK,
+  - Better support for machines with lots of RAM (think ARAnyM), and for
+    running kernels larger than 4 MiB (think multi-platform).
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Andreas Schwab (1):
+      m68k: Increase initial mapping to 8 or 16 MiB if possible
+
+Fabian Frederick (3):
+      m68k/amiga: Convert printk(foo to pr_foo()
+      m68k/apollo: Convert printk to pr_foo()
+      m68k/hp300: Convert printk to pr_foo()
+
+Finn Thain (4):
+      m68k: Toward platform agnostic framebuffer debug logging
+      m68k: Multi-platform EARLY_PRINTK
+      m68k/mvme16x: Adopt common boot console
+      m68k/atari: fix SCC initialization for debug console
+
+Geert Uytterhoeven (1):
+      m68k: Update defconfigs for v3.15-rc2
+
+Michael Schmitz (4):
+      m68k/atari - stram: alloc ST-RAM pool even if kernel not in ST-RAM
+      m68k/atari - atafb: convert allocation of fb ram to new interface
+      m68k/atari - ataflop: use correct virt/phys translation for DMA buffer
+      m68k/atari - atari_scsi: use correct virt/phys translation for DMA buffer
+
+ Documentation/kernel-parameters.txt  |   2 +-
+ arch/m68k/Kconfig.debug              |   9 +-
+ arch/m68k/amiga/amisound.c           |   2 +-
+ arch/m68k/amiga/config.c             |  20 ++--
+ arch/m68k/apollo/config.c            |  20 ++--
+ arch/m68k/atari/stram.c              |  71 +++++++++---
+ arch/m68k/configs/amiga_defconfig    |   5 +-
+ arch/m68k/configs/apollo_defconfig   |   5 +-
+ arch/m68k/configs/atari_defconfig    |   5 +-
+ arch/m68k/configs/bvme6000_defconfig |   5 +-
+ arch/m68k/configs/hp300_defconfig    |   5 +-
+ arch/m68k/configs/mac_defconfig      |   5 +-
+ arch/m68k/configs/multi_defconfig    |   5 +-
+ arch/m68k/configs/mvme147_defconfig  |   5 +-
+ arch/m68k/configs/mvme16x_defconfig  |   5 +-
+ arch/m68k/configs/q40_defconfig      |   5 +-
+ arch/m68k/configs/sun3_defconfig     |   5 +-
+ arch/m68k/configs/sun3x_defconfig    |   5 +-
+ arch/m68k/hp300/config.c             |  11 +-
+ arch/m68k/include/asm/atari_stram.h  |   2 +
+ arch/m68k/kernel/Makefile            |   2 +
+ arch/m68k/kernel/early_printk.c      |  67 ++++++++++++
+ arch/m68k/kernel/head.S              | 207 +++++++++++++++--------------------
+ arch/m68k/mac/config.c               |  29 -----
+ arch/m68k/mm/motorola.c              |  10 +-
+ arch/m68k/mvme16x/config.c           |  26 +----
+ drivers/block/ataflop.c              |   2 +-
+ drivers/scsi/atari_scsi.c            |   2 +-
+ drivers/video/fbdev/atafb.c          |  49 +++++----
+ 29 files changed, 329 insertions(+), 262 deletions(-)
+ create mode 100644 arch/m68k/kernel/early_printk.c
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
