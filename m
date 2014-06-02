@@ -1,45 +1,49 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [uClinux-dev] [PATCH m68knommu] Add the m54xx fec driver
-Date: Mon, 02 Jun 2014 16:55:31 +1000
-Message-ID: <538C1FE3.5050308@westnet.com.au>
-References: <1348473919-30257-1-git-send-email-phdm@macqel.be> <201405301909.34699.sfking@fdwdc.com>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: gcc -fstack-limit-symbol patches for ColdFile CPU still waiting
+ to be applied
+Date: Mon, 02 Jun 2014 17:16:00 +1000
+Message-ID: <538C24B0.4030806__15653.3258421861$1401693980$gmane$org@uclinux.org>
+References: <FC21FA30-ECB6-42D0-AAE5-62D07717B72D@usgs.gov>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201405301909.34699.sfking@fdwdc.com>
+In-Reply-To: <FC21FA30-ECB6-42D0-AAE5-62D07717B72D@usgs.gov>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Steven King <sfking@fdwdc.com>
-Cc: uclinux-dev@uclinux.org, Philippe De Muyter <phdm@macqel.be>, stany.marcel@novasys-ingenierie.com, greg@uclinux.org, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Larry Baker <baker@usgs.gov>
+Cc: uClinux development list <uclinux-dev@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On 31/05/14 12:09, Steven King wrote:
-> On Monday 24 September 2012 1:05:16 am Philippe De Muyter wrote:
->> Hello,
->>
->> I have cleaned up and updated to 3.6-rc5 my previous port of the
->> freescale-written driver for the fast Ethernet Controller of the M547x
->> and M548x ColdFires.  It seems from comments found in Freescale sources
->> that this uses a MultiChannel DMA controller marketed as MCD and available
->> also in the NPC8220 also from Freescale.  Therefore, I have split the
->> submission in three parts :
->> 	A generic MCD dma driver
->> 	The M54xx instantiation of the MCD driver
->> 	The FEC driver for M54xx
->>
->> I know there are still lines above 80 characters, but I feel they must be
->> left that way.  There are also parts of an unfinished netpoll interface.
->>
->> Feel free to test and comment.
-> 
-> So whatever happened with this?  Was there ever any feedback from the other 
-> maintainers?
-> 
-> For what it is worth, I was able to take the original patches and rebase them 
-> to v3.15-rc6 with just a couple of very minor changes and produce a working 
-> ethernet for my 5484 system.
+Hi Larry,
 
-I don't recall seeing too much. Time to try again?
+Note that you can no longer get to me on gerg@snapgear.com.
+(McAfee shutdown the Snapgear group a couple of years back, and I am no
+longer with them. Unfortunately the email address doesn't bounce :-(
+Using gerg@uclinux.org is best.
+
+
+On 01/06/14 07:45, Larry Baker wrote:
+> I haven't thought about this in a while, but recent activity on the uClinux developer's list reminded me again to check into this bug.
+> 
+> A couple years ago I posted patches on gcc bugzilla for gcc 4.6, 4.7, and 4.8 to implement -fstack-limit-symbol for ColdFire processors, as well as to correct the code generated for all m68k processors [1] [2].  I posted an announcement here as well back on 25 September 2012.  The recent conversations here about ColdFire processors made me think someone might still care about that work.
+> 
+> Merging my patches into the gcc trunk keeps getting deferred.  The last time I had any correspondence with anyone about a time frame, I think the delay was because of the lack of someone working on the m68k code in the compiler.  I've never written any compiler code before this, but I do know how to read assembly language to see what the compiler is emitting.  (That's how I determined the existing implementation was not right and not as efficient as it could be.)  I was able to generate and run my code on uClinux with the stack checking option using my patched gcc.
+
+It is a shame this is taking so long to get back into gcc proper.
+But thanks for the good work, and posting it here.
 
 Regards
 Greg
+
+
+
+> Regards,
+> 
+> Larry Baker
+> US Geological Survey
+> 650-329-5608
+> baker@usgs.gov
+> 
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53834
+> [2] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=28896
+> 
