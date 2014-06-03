@@ -1,16 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.16
-Date: Mon, 2 Jun 2014 16:01:42 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1406021556230.30881@ayla.of.borg>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 3.16
+Date: Tue, 3 Jun 2014 11:49:21 +1000
+Message-ID: <201406030149.s531nLIO004581@goober.accelcon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from nschwmtas03p.mx.bigpond.com ([61.9.189.143]:16563 "EHLO
+	nschwmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751200AbaFCBt3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jun 2014 21:49:29 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
-	Hi Linus,
+Hi Linus,
+
+Can you please pull the m68knommu git tree, for-next branch.
+
+Nothing too big, just a handfull of small changes. A couple of dragonball
+fixes, coldfire qspi cleanup and fixes, and some coldfire gpio cleanup,
+fixes and extensions.
+
+Regards
+Greg
+
+
 
 The following changes since commit c7208164e66f63e3ec1759b98087849286410741:
 
@@ -18,84 +31,39 @@ The following changes since commit c7208164e66f63e3ec1759b98087849286410741:
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-for you to fetch changes up to e8d6dc5ad26eb027c19cfb44825f038734be2cb3:
+for you to fetch changes up to 83c6bdb827c9422fe6e02130d9546800143304c1:
 
-  m68k/hp300: Convert printk to pr_foo() (2014-05-28 10:11:55 +0200)
-
-Highlights:
-  - Support for running kernels in fast TT-RAM instead of slow ST-RAM on
-    Atari,
-  - Multi-platform EARLY_PRINTK,
-  - Better support for machines with lots of RAM (think ARAnyM), and for
-    running kernels larger than 4 MiB (think multi-platform).
-
-Thanks for pulling!
+  m68knommu: Implement gpio support for m54xx. (2014-05-26 13:28:38 +1000)
 
 ----------------------------------------------------------------
-Andreas Schwab (1):
-      m68k: Increase initial mapping to 8 or 16 MiB if possible
+Daniel Palmer (2):
+      m68knommu: Fix mach_sched_init for EZ and VZ DragonBall chips
+      m68k: fix a compiler warning when building for DragonBall
 
-Fabian Frederick (3):
-      m68k/amiga: Convert printk(foo to pr_foo()
-      m68k/apollo: Convert printk to pr_foo()
-      m68k/hp300: Convert printk to pr_foo()
+Steven King (7):
+      m68knommu: Add qspi clk for Coldfire SoCs without real clks.
+      m68knommu: Fix the 5249/525x qspi base address.
+      m68knommu: qspi declutter.
+      m68knommu: add to_irq function so we can map gpios to external interrupts.
+      m68knommu: setting the gpio data direction register to output doesn't dependent upon the value to output!
+      m68knommu: Make everything thats not exported, static.
+      m68knommu: Implement gpio support for m54xx.
 
-Finn Thain (4):
-      m68k: Toward platform agnostic framebuffer debug logging
-      m68k: Multi-platform EARLY_PRINTK
-      m68k/mvme16x: Adopt common boot console
-      m68k/atari: fix SCC initialization for debug console
-
-Geert Uytterhoeven (1):
-      m68k: Update defconfigs for v3.15-rc2
-
-Michael Schmitz (4):
-      m68k/atari - stram: alloc ST-RAM pool even if kernel not in ST-RAM
-      m68k/atari - atafb: convert allocation of fb ram to new interface
-      m68k/atari - ataflop: use correct virt/phys translation for DMA buffer
-      m68k/atari - atari_scsi: use correct virt/phys translation for DMA buffer
-
- Documentation/kernel-parameters.txt  |   2 +-
- arch/m68k/Kconfig.debug              |   9 +-
- arch/m68k/amiga/amisound.c           |   2 +-
- arch/m68k/amiga/config.c             |  20 ++--
- arch/m68k/apollo/config.c            |  20 ++--
- arch/m68k/atari/stram.c              |  71 +++++++++---
- arch/m68k/configs/amiga_defconfig    |   5 +-
- arch/m68k/configs/apollo_defconfig   |   5 +-
- arch/m68k/configs/atari_defconfig    |   5 +-
- arch/m68k/configs/bvme6000_defconfig |   5 +-
- arch/m68k/configs/hp300_defconfig    |   5 +-
- arch/m68k/configs/mac_defconfig      |   5 +-
- arch/m68k/configs/multi_defconfig    |   5 +-
- arch/m68k/configs/mvme147_defconfig  |   5 +-
- arch/m68k/configs/mvme16x_defconfig  |   5 +-
- arch/m68k/configs/q40_defconfig      |   5 +-
- arch/m68k/configs/sun3_defconfig     |   5 +-
- arch/m68k/configs/sun3x_defconfig    |   5 +-
- arch/m68k/hp300/config.c             |  11 +-
- arch/m68k/include/asm/atari_stram.h  |   2 +
- arch/m68k/kernel/Makefile            |   2 +
- arch/m68k/kernel/early_printk.c      |  67 ++++++++++++
- arch/m68k/kernel/head.S              | 207 +++++++++++++++--------------------
- arch/m68k/mac/config.c               |  29 -----
- arch/m68k/mm/motorola.c              |  10 +-
- arch/m68k/mvme16x/config.c           |  26 +----
- drivers/block/ataflop.c              |   2 +-
- drivers/scsi/atari_scsi.c            |   2 +-
- drivers/video/fbdev/atafb.c          |  49 +++++----
- 29 files changed, 329 insertions(+), 262 deletions(-)
- create mode 100644 arch/m68k/kernel/early_printk.c
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+ arch/m68k/include/asm/m525xsim.h    |  2 +-
+ arch/m68k/include/asm/m54xxsim.h    | 12 +++++++++---
+ arch/m68k/include/asm/mcfgpio.h     | 12 ++++++++----
+ arch/m68k/kernel/setup_no.c         | 13 ++++++-------
+ arch/m68k/platform/68000/m68EZ328.c |  3 ++-
+ arch/m68k/platform/68000/m68VZ328.c |  1 +
+ arch/m68k/platform/coldfire/gpio.c  | 34 +++++++++++++++++++++++-----------
+ arch/m68k/platform/coldfire/m520x.c |  8 ++------
+ arch/m68k/platform/coldfire/m523x.c | 10 ++++------
+ arch/m68k/platform/coldfire/m5249.c | 10 ++++------
+ arch/m68k/platform/coldfire/m525x.c |  2 ++
+ arch/m68k/platform/coldfire/m5272.c |  2 ++
+ arch/m68k/platform/coldfire/m527x.c | 10 ++++------
+ arch/m68k/platform/coldfire/m528x.c | 10 ++++------
+ arch/m68k/platform/coldfire/m53xx.c |  8 ++------
+ 15 files changed, 74 insertions(+), 63 deletions(-)
