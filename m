@@ -1,69 +1,129 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 3.16
-Date: Tue, 3 Jun 2014 11:49:21 +1000
-Message-ID: <201406030149.s531nLIO004581@goober.accelcon.com>
+Subject: Re: TASK_SIZE for !MMU
+Date: Tue, 03 Jun 2014 22:14:55 +1000
+Message-ID: <538DBC3F.9060207__25668.4514265091$1401797757$gmane$org@uclinux.org>
+References: <20140429100028.GH28564@pengutronix.de> <20140602085150.GA31147@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas03p.mx.bigpond.com ([61.9.189.143]:16563 "EHLO
-	nschwmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751200AbaFCBt3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jun 2014 21:49:29 -0400
+In-Reply-To: <20140602085150.GA31147@pengutronix.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Rabin Vincent <rabin@rab.in>, Will Deacon <will.deacon@arm.com>, linux-arm-kernel@lists.infradead.org
+Cc: David Howells <dhowells@redhat.com>, uclinux-dist-devel@blackfin.uclinux.org, linux-m68k@lists.linux-m68k.org, linux-c6x-dev@linux-c6x.org, linux-m32r@ml.linux-m32r.org, microblaze-uclinux@itee.uq.edu.au, linux-xtensa@linux-xtensa.org, kernel@pengutronix.de, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Uwe,
 
-Can you please pull the m68knommu git tree, for-next branch.
+On 02/06/14 18:51, Uwe Kleine-K=F6nig wrote:
+> Hello
+>
+> [expand Cc: a bit]
+>
+> On Tue, Apr 29, 2014 at 12:00:28PM +0200, Uwe Kleine-K=F6nig wrote:
+>> I grepped through the kernel (v3.15-rc1) for usages of TASK_SIZE to
+>> check if/how it is used on !MMU ARM machines. Most open questions al=
+so
+>> affect the other !MMU platforms, so I put the blackfin, c6x, frv and
+>> m32r, m68k, microblaze and xtensa lists on Cc:. (Did I miss a platfo=
+rm
+>> that cares for !MMU ?)
+>>
+>> Most occurences are fine, see the list at the end of this mail. Howe=
+ver
+>> some are not or are unclear to me. Here is the complete list[1] apar=
+t from
+>> the definition of TASK_SIZE for !MMU in arch/arm/include/asm/memory.=
+h:
+>>
+>>   - Probably this should be explict s/TASK_SIZE/CONFIG_DRAM_SIZE/. T=
+his
+>>     is generic code however while CONFIG_DRAM_SIZE is ARM only.
+>>          mm/nommu.c:     if (!rlen || rlen > TASK_SIZE)
+>>
+>>   - The issue the patch by Rabin is addressing (Subject: [PATCH] ARM=
+: fix
+>>     string functions on !MMU), alternatively make TASK_SIZE ~0UL.
+>>          arch/arm/include/asm/uaccess.h:#define user_addr_max() \
+>>          arch/arm/include/asm/uaccess.h: (segment_eq(get_fs(), USER_=
+DS) ? TASK_SIZE : ~0UL)
+> [reference: http://www.spinics.net/lists/arm-kernel/msg324112.html ]
+>
+>>   - probably bearable if broken:
+>>          drivers/misc/lkdtm.c:           if (user_addr >=3D TASK_SIZ=
+E) {
+>>          lib/test_user_copy.c:   user_addr =3D vm_mmap(...)
+>>          lib/test_user_copy.c:   if (user_addr >=3D (unsigned long)(=
+TASK_SIZE)) {
+>>          lib/test_user_copy.c:           pr_warn("Failed to allocate=
+ user memory\n");
+>>          lib/test_user_copy.c:           return -ENOMEM;
+>>
+>>   - unclear to me:
+>>          fs/exec.c:      current->mm->task_size =3D TASK_SIZE;
+>>     - depends on PERF_EVENTS
+>>          kernel/events/core.c:   if (!addr || addr >=3D TASK_SIZE)
+>>          kernel/events/core.c:   return TASK_SIZE - addr;
+>>          kernel/events/uprobes.c:                area->vaddr =3D get=
+_unmapped_area(NULL, TASK_SIZE - PAGE_SIZE,
+>>     - depends on (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)):
+>>          arch/arm/kernel/hw_breakpoint.c:        return (va >=3D TAS=
+K_SIZE) && ((va + len - 1) >=3D TASK_SIZE);
+>>     - seems to cope with big TASK_SIZE
+>>          fs/namespace.c:        size =3D TASK_SIZE - (unsigned long)=
+data;
+>>          fs/namespace.c:        if (size > PAGE_SIZE)
+>>          fs/namespace.c:                size =3D PAGE_SIZE;
+>>     - depends on PLAT_S5P || ARCH_EXYNOS, this looks wrong
+>>          drivers/media/platform/s5p-mfc/s5p_mfc_common.h:#define DST=
+_QUEUE_OFF_BASE      (TASK_SIZE / 2)
+>>     - used for prctl(PR_SET_MM, ...)
+>>          kernel/sys.c:   if (addr >=3D TASK_SIZE || addr < mmap_min_=
+addr)
+>>
+>> Any help to judge if these are OK is appreciated (even from Will :-)
+>>
+>> I think it would be OK to define TASK_SIZE to 0xffffffff for !MMU.
+>> blackfin, frv and m68k also do this. c6x does define it to 0xFFFFF00=
+0 to
+>> leave space for error codes.
 
-Nothing too big, just a handfull of small changes. A couple of dragonball
-fixes, coldfire qspi cleanup and fixes, and some coldfire gpio cleanup,
-fixes and extensions.
+I did that same change for m68k in commit cc24c40 ("m68knommu: remove
+size limit on non-MMU TASK_SIZE"). For similar reasons as you need to
+now.
+
+
+>> Thoughts?
+> The problem is that current linus/master (and also next) doesn't boot=
+ on
+> my ARM-nommu machine because the user string functions (strnlen_user,
+> strncpy_from_user et al.) refuse to work on strings above TASK_SIZE
+> which in my case also includes the XIP kernel image.
+
+I seem to recall that we were not considering flash or anything else
+other than RAM when defining that original TASK_SIZE (back many, many
+years ago). Some of the address checks you list above made some sense
+if you had everything in RAM (though only upper bounds are checked).
+The thinking was some checking is better than none I suppose.
+
+Setting a hard coded memory size in CONFIG_DRAM_SIZE is not all that
+fantastic either...
 
 Regards
 Greg
 
 
-
-The following changes since commit c7208164e66f63e3ec1759b98087849286410741:
-
-  Linux 3.15-rc7 (2014-05-25 16:06:00 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 83c6bdb827c9422fe6e02130d9546800143304c1:
-
-  m68knommu: Implement gpio support for m54xx. (2014-05-26 13:28:38 +1000)
-
-----------------------------------------------------------------
-Daniel Palmer (2):
-      m68knommu: Fix mach_sched_init for EZ and VZ DragonBall chips
-      m68k: fix a compiler warning when building for DragonBall
-
-Steven King (7):
-      m68knommu: Add qspi clk for Coldfire SoCs without real clks.
-      m68knommu: Fix the 5249/525x qspi base address.
-      m68knommu: qspi declutter.
-      m68knommu: add to_irq function so we can map gpios to external interrupts.
-      m68knommu: setting the gpio data direction register to output doesn't dependent upon the value to output!
-      m68knommu: Make everything thats not exported, static.
-      m68knommu: Implement gpio support for m54xx.
-
- arch/m68k/include/asm/m525xsim.h    |  2 +-
- arch/m68k/include/asm/m54xxsim.h    | 12 +++++++++---
- arch/m68k/include/asm/mcfgpio.h     | 12 ++++++++----
- arch/m68k/kernel/setup_no.c         | 13 ++++++-------
- arch/m68k/platform/68000/m68EZ328.c |  3 ++-
- arch/m68k/platform/68000/m68VZ328.c |  1 +
- arch/m68k/platform/coldfire/gpio.c  | 34 +++++++++++++++++++++++-----------
- arch/m68k/platform/coldfire/m520x.c |  8 ++------
- arch/m68k/platform/coldfire/m523x.c | 10 ++++------
- arch/m68k/platform/coldfire/m5249.c | 10 ++++------
- arch/m68k/platform/coldfire/m525x.c |  2 ++
- arch/m68k/platform/coldfire/m5272.c |  2 ++
- arch/m68k/platform/coldfire/m527x.c | 10 ++++------
- arch/m68k/platform/coldfire/m528x.c | 10 ++++------
- arch/m68k/platform/coldfire/m53xx.c |  8 ++------
- 15 files changed, 74 insertions(+), 63 deletions(-)
+> Maybe someone of the mm people can bring light into the unclear point=
+s
+> above and the question what TASK_SIZE is supposed to be on no-MMU
+> machines?
+>
+> Best regards
+> Uwe
+>
+>> [1] complete as in "skip everything below arch/ but arch/arm" :-)
+>>
+> [removed the list, if you're interested, it's available at
+> http://mid.gmane.org/20140429100028.GH28564@pengutronix.de]
+>
