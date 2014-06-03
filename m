@@ -1,79 +1,64 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
 Subject: Re: TASK_SIZE for !MMU
 Date: Tue, 3 Jun 2014 17:19:56 +0200
-Message-ID: <CAMuHMdXpOcWhsjMRaW6YVeK4g-QJN7WNkRHD+q4==GkBPp5=0w__28948.8322720446$1401808865$gmane$org@mail.gmail.com>
+Message-ID: <CAMuHMdXpOcWhsjMRaW6YVeK4g-QJN7WNkRHD+q4==GkBPp5=0w__39781.8208941773$1401808907$gmane$org@mail.gmail.com>
 References: <20140429100028.GH28564@pengutronix.de>
-	<20140602085150.GA31147@pengutronix.de>
-	<538DBC3F.9060207@uclinux.org>
-	<20140603141138.GH16741@pengutronix.de>
+ <20140602085150.GA31147@pengutronix.de>
+ <538DBC3F.9060207@uclinux.org>
+ <20140603141138.GH16741@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20140603141138.GH16741@pengutronix.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <microblaze-linux-bounces-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org>
+Sender: <geert.uytterhoeven-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20140603141138.GH16741-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.eait.uq.edu.au/mailman/options/microblaze-linux>,
+ <mailto:microblaze-linux-request-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.eait.uq.edu.au/pipermail/microblaze-linux/>
+List-Post: <mailto:microblaze-linux-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org>
+List-Help: <mailto:microblaze-linux-request-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.eait.uq.edu.au/mailman/listinfo/microblaze-linux>,
+ <mailto:microblaze-linux-request-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org?subject=subscribe>
+Errors-To: microblaze-linux-bounces-FR6EJeJVuqfA6Z3fQjNZrN9u6TNh0Fb7@public.gmane.org
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: "linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org" <linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org>, David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, linux-m32r-rQhvJZKUsGBRYuoOT4C5/9i2O/JbrIOy@public.gmane.org, linux-c6x-dev-jPsnJVOj+W6hPH1hqNUYSQ@public.gmane.org, microblaze-uclinux-rVRm/Wmeqae7NGdpmJTKYQ@public.gmane.org, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, panchaxari <panchaxari.prasannamurthy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rabin Vincent <rabin-66gdRtMMWGc@public.gmane.org>, Linux MM <linux-mm-Bw31MaZKKs3YtjvyW6yDsg@public.gmane.org>, linux-m68k <linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Greg Ungerer <gerg-JBU5SbJe1FlAfugRpC6u6w@public.gmane.org>, "uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org" <uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: linux-m68k@vger.kernel.org
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Ungerer <gerg@uclinux.org>, Rabin Vincent <rabin@rab.in>, Will Deacon <will.deacon@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, linux-m32r@ml.linux-m32r.org, linux-c6x-dev@linux-c6x.org, microblaze-uclinux@itee.uq.edu.au, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Sascha Hauer <kernel@pengutronix.de>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, Andrew Morton <akpm@linux-foundation.org>, panchaxari <panchaxari.prasannamurthy@linaro.org>, Linus Walleij <linus.walleij@linaro.org>
 
-On Tue, Jun 3, 2014 at 4:11 PM, Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->> I did that same change for m68k in commit cc24c40 ("m68knommu: remov=
-e
->> size limit on non-MMU TASK_SIZE"). For similar reasons as you need t=
-o
->> now.
-> ok.
->
->> >>Thoughts?
->> >The problem is that current linus/master (and also next) doesn't bo=
-ot on
->> >my ARM-nommu machine because the user string functions (strnlen_use=
-r,
->> >strncpy_from_user et al.) refuse to work on strings above TASK_SIZE
->> >which in my case also includes the XIP kernel image.
->>
->> I seem to recall that we were not considering flash or anything else
->> other than RAM when defining that original TASK_SIZE (back many, man=
-y
->> years ago). Some of the address checks you list above made some sens=
-e
->> if you had everything in RAM (though only upper bounds are checked).
->> The thinking was some checking is better than none I suppose.
-> What is the actual meaning of TASK_SIZE? The maximal value of a valid
-> userspace address?
-
-Yes
-
-$ git show cc24c40
-commit cc24c405949e3d4418a90014d10166679d78141a
-Author: Greg Ungerer <gerg@uclinux.org>
-Date:   Mon May 24 11:22:05 2010 +1000
-
-    m68knommu: remove size limit on non-MMU TASK_SIZE
-
-    The TASK_SIZE define is used in some places as a limit on the size =
-of
-    the virtual address space of a process. On non-MMU systems those ad=
-dresses
-    used in comparison will be physical addresses, and they could be an=
-ywhere
-    in the 32bit physical address space. So for !CONFIG_MMU systems set=
- the
-    TASK_SIZE to the maximum physical address.
-
-    Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-                                -- Linus Torvalds
+T24gVHVlLCBKdW4gMywgMjAxNCBhdCA0OjExIFBNLCBVd2UgS2xlaW5lLUvDtm5pZwo8dS5rbGVp
+bmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPj4gSSBkaWQgdGhhdCBzYW1lIGNoYW5n
+ZSBmb3IgbTY4ayBpbiBjb21taXQgY2MyNGM0MCAoIm02OGtub21tdTogcmVtb3ZlCj4+IHNpemUg
+bGltaXQgb24gbm9uLU1NVSBUQVNLX1NJWkUiKS4gRm9yIHNpbWlsYXIgcmVhc29ucyBhcyB5b3Ug
+bmVlZCB0bwo+PiBub3cuCj4gb2suCj4KPj4gPj5UaG91Z2h0cz8KPj4gPlRoZSBwcm9ibGVtIGlz
+IHRoYXQgY3VycmVudCBsaW51cy9tYXN0ZXIgKGFuZCBhbHNvIG5leHQpIGRvZXNuJ3QgYm9vdCBv
+bgo+PiA+bXkgQVJNLW5vbW11IG1hY2hpbmUgYmVjYXVzZSB0aGUgdXNlciBzdHJpbmcgZnVuY3Rp
+b25zIChzdHJubGVuX3VzZXIsCj4+ID5zdHJuY3B5X2Zyb21fdXNlciBldCBhbC4pIHJlZnVzZSB0
+byB3b3JrIG9uIHN0cmluZ3MgYWJvdmUgVEFTS19TSVpFCj4+ID53aGljaCBpbiBteSBjYXNlIGFs
+c28gaW5jbHVkZXMgdGhlIFhJUCBrZXJuZWwgaW1hZ2UuCj4+Cj4+IEkgc2VlbSB0byByZWNhbGwg
+dGhhdCB3ZSB3ZXJlIG5vdCBjb25zaWRlcmluZyBmbGFzaCBvciBhbnl0aGluZyBlbHNlCj4+IG90
+aGVyIHRoYW4gUkFNIHdoZW4gZGVmaW5pbmcgdGhhdCBvcmlnaW5hbCBUQVNLX1NJWkUgKGJhY2sg
+bWFueSwgbWFueQo+PiB5ZWFycyBhZ28pLiBTb21lIG9mIHRoZSBhZGRyZXNzIGNoZWNrcyB5b3Ug
+bGlzdCBhYm92ZSBtYWRlIHNvbWUgc2Vuc2UKPj4gaWYgeW91IGhhZCBldmVyeXRoaW5nIGluIFJB
+TSAodGhvdWdoIG9ubHkgdXBwZXIgYm91bmRzIGFyZSBjaGVja2VkKS4KPj4gVGhlIHRoaW5raW5n
+IHdhcyBzb21lIGNoZWNraW5nIGlzIGJldHRlciB0aGFuIG5vbmUgSSBzdXBwb3NlLgo+IFdoYXQg
+aXMgdGhlIGFjdHVhbCBtZWFuaW5nIG9mIFRBU0tfU0laRT8gVGhlIG1heGltYWwgdmFsdWUgb2Yg
+YSB2YWxpZAo+IHVzZXJzcGFjZSBhZGRyZXNzPwoKWWVzCgokIGdpdCBzaG93IGNjMjRjNDAKY29t
+bWl0IGNjMjRjNDA1OTQ5ZTNkNDQxOGE5MDAxNGQxMDE2NjY3OWQ3ODE0MWEKQXV0aG9yOiBHcmVn
+IFVuZ2VyZXIgPGdlcmdAdWNsaW51eC5vcmc+CkRhdGU6ICAgTW9uIE1heSAyNCAxMToyMjowNSAy
+MDEwICsxMDAwCgogICAgbTY4a25vbW11OiByZW1vdmUgc2l6ZSBsaW1pdCBvbiBub24tTU1VIFRB
+U0tfU0laRQoKICAgIFRoZSBUQVNLX1NJWkUgZGVmaW5lIGlzIHVzZWQgaW4gc29tZSBwbGFjZXMg
+YXMgYSBsaW1pdCBvbiB0aGUgc2l6ZSBvZgogICAgdGhlIHZpcnR1YWwgYWRkcmVzcyBzcGFjZSBv
+ZiBhIHByb2Nlc3MuIE9uIG5vbi1NTVUgc3lzdGVtcyB0aG9zZSBhZGRyZXNzZXMKICAgIHVzZWQg
+aW4gY29tcGFyaXNvbiB3aWxsIGJlIHBoeXNpY2FsIGFkZHJlc3NlcywgYW5kIHRoZXkgY291bGQg
+YmUgYW55d2hlcmUKICAgIGluIHRoZSAzMmJpdCBwaHlzaWNhbCBhZGRyZXNzIHNwYWNlLiBTbyBm
+b3IgIUNPTkZJR19NTVUgc3lzdGVtcyBzZXQgdGhlCiAgICBUQVNLX1NJWkUgdG8gdGhlIG1heGlt
+dW0gcGh5c2ljYWwgYWRkcmVzcy4KCiAgICBTaWduZWQtb2ZmLWJ5OiBHcmVnIFVuZ2VyZXIgPGdl
+cmdAdWNsaW51eC5vcmc+CgpHcntvZXRqZSxlZXRpbmd9cywKCiAgICAgICAgICAgICAgICAgICAg
+ICAgIEdlZXJ0CgotLQpHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4
+IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnCgpJbiBwZXJzb25hbCBjb252ZXJz
+YXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0
+CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIg
+b3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAt
+LSBMaW51cyBUb3J2YWxkcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwptaWNyb2JsYXplLWxpbnV4IG1haWxpbmcgbGlzdAptaWNyb2JsYXplLWxpbnV4QGxp
+c3RzLml0ZWUudXEuZWR1LmF1Cmh0dHBzOi8vbGlzdHMuZWFpdC51cS5lZHUuYXUvbWFpbG1hbi9s
+aXN0aW5mby9taWNyb2JsYXplLWxpbnV4Cg==
