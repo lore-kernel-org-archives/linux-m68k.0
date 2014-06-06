@@ -1,53 +1,80 @@
-From: Mikael Pettersson <mikpelinux@gmail.com>
-Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
-Date: Fri, 6 Jun 2014 15:11:20 +0200
-Message-ID: <21393.48632.521704.579850@gargle.gargle.HOWL>
-References: <21393.43065.207399.530921@gargle.gargle.HOWL>
-	<CAMuHMdXhnaHEfF2VV+QiSGFrZxNvbMDSujM+eOwh4eQX3p7xRw@mail.gmail.com>
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: Re: rcu alignment warning tripping on m68k
+Date: Fri, 6 Jun 2014 11:46:05 -0700
+Message-ID: <20140606184605.GT4581@linux.vnet.ibm.com>
+References: <538696A0.5090601@uclinux.org>
+ <20140529141151.21ed6f95@alan.etchedpixels.co.uk>
+ <5387DF05.1020103@uclinux.org>
+Reply-To: paulmck@linux.vnet.ibm.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-la0-f54.google.com ([209.85.215.54]:50129 "EHLO
-	mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751791AbaFFNLZ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Jun 2014 09:11:25 -0400
-Received: by mail-la0-f54.google.com with SMTP id pv20so1533742lab.13
-        for <linux-m68k@vger.kernel.org>; Fri, 06 Jun 2014 06:11:23 -0700 (PDT)
-In-Reply-To: <CAMuHMdXhnaHEfF2VV+QiSGFrZxNvbMDSujM+eOwh4eQX3p7xRw@mail.gmail.com>
+Received: from e38.co.us.ibm.com ([32.97.110.159]:58163 "EHLO
+	e38.co.us.ibm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751197AbaFFSqJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 6 Jun 2014 14:46:09 -0400
+Received: from /spool/local
+	by e38.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+	for <linux-m68k@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+	Fri, 6 Jun 2014 12:46:08 -0600
+Content-Disposition: inline
+In-Reply-To: <5387DF05.1020103@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mikael Pettersson <mikpelinux@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Geert Uytterhoeven writes:
- > Hi Mikael,
- > 
- > On Fri, Jun 6, 2014 at 1:38 PM, Mikael Pettersson <mikpelinux@gmail.com> wrote:
- > > Since updating my ARAnym VMs from 3.12.16 to 3.13.11 I see kswapd0
- > > and ksoftirqd/0 consume inordinate amounts of CPU.  kswapd0 often
- > > rises to about 30-50% CPU even though RAM shouldn't be anywhere near
- > > depleted (768GB, a gcc bootstrap running in a screen session).
- > > kswapd0 tends to stay this way until I drop caches, but doing that
- > > doesn't always fix it.  I also sometimes see ksoftirqd/0 consume
- > > 5-30% CPU.
- > >
- > > Reverting to 3.12.16 completely eliminates these problems.
- > 
- > Any chance to bisect it?
- > 
- > > I haven't tested 3.14 or 3.15-rc yet.
- > 
- > Would be good to know, though, as it may have been fixed.
- > However, as v3.13.11 is the most recent stable version of v3.13, this may be
- > an elsewhere unknown and thus unfixed issue.
+On Fri, May 30, 2014 at 11:29:41AM +1000, Greg Ungerer wrote:
+> On 29/05/14 23:11, One Thousand Gnomes wrote:
+> > On Thu, 29 May 2014 12:08:32 +1000
+> > Greg Ungerer <gerg@uclinux.org> wrote:
+> > 
+> >> Hi All,
+> >>
+> >> Inside kernel/rcy/tree.c in __call_rcu() it does an alignment check on
+> >> the head pointer passed in. This trips on m68k systems, because they only
+> >> need alignment of 32bit quantities to 16bit boundaries.
+> > 
+> > __alignof perhaps ?
+> 
+> That might do. Change then becomes something like:
+> 
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2467,7 +2467,7 @@ __call_rcu(struct rcu_head *head, void (*func)(struct rcu_
+>         unsigned long flags;
+>         struct rcu_data *rdp;
+> 
+> -       WARN_ON_ONCE((unsigned long)head & 0x3); /* Misaligned rcu_head! */
+> +       WARN_ON_ONCE((unsigned long)head & (__alignof__(head) - 1)); /* Misaligned rcu_head! */
 
-I've just started a gcc-4.8 bootstrap on 3.14.5, and then I'll try 3.15
-if it isn't fixed in 3.14.  If 3.15 too is broken, I'll do the bisect,
-but it will be a slow process since it takes anywhere from a few hours
-to a couple of days for the bug to appear.
+Hmmm...  The purpose of the check is to reserve the low-order bits to
+allow RCU to classify callbacks as being time-critical or not.  RCU
+can probably live with a single bit, but if there is some architecture
+out there that simply refuses to do alignment, I need to know about it.
 
-BTW, the presence of some unknown bug causing kswapd0 to hog the CPU has
-been mentioned on the Debian m68k list earlier this year.
+(See "git show 0bb7b59d6e2b8" for more info.)
 
-/Mikael
+So how about this instead?
+
+ -       WARN_ON_ONCE((unsigned long)head & 0x1); /* Misaligned rcu_head! */
+
+(Trying to remember if I have seen Linux kernel code that uses both
+the lower bits...)
+
+							Thanx, Paul
+
+>         if (debug_rcu_head_queue(head)) {
+>                 /* Probable double call_rcu(), so leak the callback. */
+>                 ACCESS_ONCE(head->func) = rcu_leak_callback;
+> 
+> Thanks
+> Greg
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+> 
