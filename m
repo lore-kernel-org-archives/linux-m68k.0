@@ -1,24 +1,49 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: converting the NCR5380 drivers away from scsi_register
-Date: Mon, 16 Jun 2014 07:18:53 -0700
-Message-ID: <20140616141853.GA32399@infradead.org>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] zorro: use ARRAY_SIZE
+Date: Tue, 17 Jun 2014 01:40:04 +0530
+Message-ID: <20140616201004.GA18240__25767.5105393448$1402949452$gmane$org@himangi-Dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from bombadil.infradead.org ([198.137.202.9]:38113 "EHLO
-	bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752098AbaFPOS5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jun 2014 10:18:57 -0400
 Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: julia.lawall@lip6.fr
 
-Hi Finn,
+ARRAY_SIZE is more concise to use when the size of an array is divided
+by the size of its type or the size of its first element.
 
-now that you've officially taken over NCR5380 is there a chance to look
-into converting the drivers away from scsi_register to the modern
-scsi_host_alloc/scsi_add_host method?  The NCR5380 drivers are a large
-armound of the remaining users of this interface, so converting them
-over would be a great help in killing that 10 year old legacy off.
+The Coccinelle semantic patch that makes this change is as follows:
+
+// <smpl>
+@@
+type T;
+T[] E;
+@@
+
+- (sizeof(E)/sizeof(T))
++ ARRAY_SIZE(E)
+// </smpl>
+
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+---
+ drivers/zorro/names.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/zorro/names.c b/drivers/zorro/names.c
+index 6f3fd99..4ccbcc9 100644
+--- a/drivers/zorro/names.c
++++ b/drivers/zorro/names.c
+@@ -52,7 +52,7 @@ static struct zorro_manuf_info __initdata zorro_manuf_list[] = {
+ #include "devlist.h"
+ };
+ 
+-#define MANUFS (sizeof(zorro_manuf_list)/sizeof(struct zorro_manuf_info))
++#define MANUFS ARRAY_SIZE(zorro_manuf_list)
+ 
+ void __init zorro_name_device(struct zorro_dev *dev)
+ {
+-- 
+1.9.1
