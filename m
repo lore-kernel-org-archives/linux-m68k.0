@@ -1,49 +1,39 @@
-From: Himangi Saraogi <himangi774@gmail.com>
-Subject: [PATCH] zorro: use ARRAY_SIZE
-Date: Tue, 17 Jun 2014 01:40:04 +0530
-Message-ID: <20140616201004.GA18240__25767.5105393448$1402949452$gmane$org@himangi-Dell>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: converting the NCR5380 drivers away from scsi_register
+Date: Tue, 17 Jun 2014 18:20:55 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1406171756040.17715@nippy.intranet>
+References: <20140616141853.GA32399@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43217 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755781AbaFQIVR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 17 Jun 2014 04:21:17 -0400
+In-Reply-To: <20140616141853.GA32399@infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
-
-ARRAY_SIZE is more concise to use when the size of an array is divided
-by the size of its type or the size of its first element.
-
-The Coccinelle semantic patch that makes this change is as follows:
-
-// <smpl>
-@@
-type T;
-T[] E;
-@@
-
-- (sizeof(E)/sizeof(T))
-+ ARRAY_SIZE(E)
-// </smpl>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitz@debian.org>, linux-m68k@vger.kernel.org
 
 
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
----
- drivers/zorro/names.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 16 Jun 2014, Christoph Hellwig wrote:
 
-diff --git a/drivers/zorro/names.c b/drivers/zorro/names.c
-index 6f3fd99..4ccbcc9 100644
---- a/drivers/zorro/names.c
-+++ b/drivers/zorro/names.c
-@@ -52,7 +52,7 @@ static struct zorro_manuf_info __initdata zorro_manuf_list[] = {
- #include "devlist.h"
- };
- 
--#define MANUFS (sizeof(zorro_manuf_list)/sizeof(struct zorro_manuf_info))
-+#define MANUFS ARRAY_SIZE(zorro_manuf_list)
- 
- void __init zorro_name_device(struct zorro_dev *dev)
- {
+> now that you've officially taken over NCR5380 is there a chance to look 
+> into converting the drivers away from scsi_register to the modern 
+> scsi_host_alloc/scsi_add_host method?
+
+Have any other conversions taken place? I'm curious to see what was 
+involved. Hopefully not a re-write, like esp_scsi (?)
+
+I have not yet managed to get mac_scsi working as well as it should: PDMA 
+is not working, either because I'm running it on the wrong (poorly 
+documented) hardware or because the driver has bugs.
+
+I still plan to set up a machine with a DMX3191D pci card for testing. It 
+would be nice to have the driver working on that hardware (at least) 
+before making (or just testing) any substantial changes.
+
+This will take time...
+
 -- 
-1.9.1
