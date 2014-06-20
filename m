@@ -1,53 +1,65 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: converting the NCR5380 drivers away from scsi_register
-Date: Tue, 17 Jun 2014 10:38:18 +0200
-Message-ID: <CAMuHMdUkMHoMahyppwttnm7qs6etoqMGtvk77HezUBj-GOeMKg@mail.gmail.com>
-References: <20140616141853.GA32399@infradead.org>
-	<alpine.LNX.2.00.1406171756040.17715@nippy.intranet>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] m68knommu: Correct page_to_phys when PAGE_OFFSET is non-zero.
+Date: Fri, 20 Jun 2014 15:16:19 +1000
+Message-ID: <53A3C3A3.6040007@uclinux.org>
+References: <201406112001.10513.sfking@fdwdc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lb0-f177.google.com ([209.85.217.177]:44322 "EHLO
-	mail-lb0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754609AbaFQIiU (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 17 Jun 2014 04:38:20 -0400
-Received: by mail-lb0-f177.google.com with SMTP id u10so1083409lbd.36
-        for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2014 01:38:18 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1406171756040.17715@nippy.intranet>
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:51327
+	"EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S933503AbaFTFQX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 20 Jun 2014 01:16:23 -0400
+In-Reply-To: <201406112001.10513.sfking@fdwdc.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Christoph Hellwig <hch@infradead.org>, Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitz@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Steven King <sfking@fdwdc.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 
-Hi Finn,
 
-On Tue, Jun 17, 2014 at 10:20 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> now that you've officially taken over NCR5380 is there a chance to look
->> into converting the drivers away from scsi_register to the modern
->> scsi_host_alloc/scsi_add_host method?
+Hi Steven,
+
+On 12/06/14 13:01, Steven King wrote:
+> The definition of page_to_phys for nommu produces an incorrect value when
+> PAGE_OFFSET is non-zero.  The nommu version of page_to_pfn works correctly
+> for non-zero PAGE_OFFSET, so use that instead.
 >
-> Have any other conversions taken place? I'm curious to see what was
-> involved. Hopefully not a re-write, like esp_scsi (?)
+> Signed-off-by: Steven King <sfking@fdwdc.com>
 
-I did a few of them in 2009:
 
-commit c2a24a4ca1137473971842461612e56a654e7edb
-("m68k: amiga - A3000 SCSI platform device conversion")
-commit c1d288a58936cd0654844d807e53a203f4838fb4
-("m68k: amiga - GVP Series II SCSI zorro_driver conversion")
-commit c737e22cde37e4e2ad126316e4aab7349a491ab3
-("m68k: amiga - A2091/A590 SCSI zorro_driver conversion")
+Looks good, thanks. Applied to m68knommu git tree, for-next branch.
 
-All of them without access to the hardware. So far I haven't heard any
-complaints ;-)
+Regards
+Greg
 
-Gr{oetje,eeting}s,
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>   arch/m68k/include/asm/virtconvert.h |    6 +-----
+>   1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/virtconvert.h b/arch/m68k/include/asm/virtconvert.h
+> index f35229b..b8a82fb 100644
+> --- a/arch/m68k/include/asm/virtconvert.h
+> +++ b/arch/m68k/include/asm/virtconvert.h
+> @@ -26,16 +26,12 @@ static inline void *phys_to_virt(unsigned long address)
+>   }
+>
+>   /* Permanent address of a page. */
+> -#ifdef CONFIG_MMU
+> -#ifdef CONFIG_SINGLE_MEMORY_CHUNK
+> +#if defined(CONFIG_MMU) && defined(CONFIG_SINGLE_MEMORY_CHUNK)
+>   #define page_to_phys(page) \
+>   	__pa(PAGE_OFFSET + (((page) - pg_data_map[0].node_mem_map) << PAGE_SHIFT))
+>   #else
+>   #define page_to_phys(page)	(page_to_pfn(page) << PAGE_SHIFT)
+>   #endif
+> -#else
+> -#define page_to_phys(page)	(((page) - mem_map) << PAGE_SHIFT)
+> -#endif
+>
+>   /*
+>    * IO bus memory addresses are 1:1 with the physical address,
+>
