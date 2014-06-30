@@ -1,42 +1,33 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] m68k: Increase initial mapping to 16MB if possible
-Date: Sat, 28 Jun 2014 18:27:33 +0200
-Message-ID: <877g41dmoa.fsf@igel.home>
-References: <87ppk7m3db.fsf@igel.home>
-	<loom.20140429T121132-254@post.gmane.org> <8738gwxw53.fsf@igel.home>
-	<CAMuHMdU50FnSD0K896b7aJN-RPXWpUoW46oiOFy-9AsYP2LGGQ@mail.gmail.com>
-	<87sioww0gb.fsf@igel.home> <5360A881.7040107@gmail.com>
-	<alpine.DEB.2.02.1405251846540.6045@ayla.of.borg>
-	<87k381dwwj.fsf@igel.home>
-	<CAMuHMdXseK3HydzVyQdSFQg93bOa1Uo29mg=EEHpT_9A3A1+pQ@mail.gmail.com>
-	<87fvipdtz8.fsf@igel.home>
-	<CAMuHMdV7QTMN+2C4OOf_zyKQ43oXec8g8T9g2qE+jNNU2HFW4w@mail.gmail.com>
-	<87bntddrto.fsf@igel.home>
-	<CAMuHMdXz-ek=go9dV_rcDRKYYve3q80RASFjfJj4nTCe4aMVoQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Nicholas Krause <xerofoify@gmail.com>
+Subject: [PATCH] Fixes q40_irq_startup to return -ENXIO
+Date: Sun, 29 Jun 2014 23:06:50 -0400
+Message-ID: <1404097610-5739-1-git-send-email-xerofoify__13577.8496777222$1404097649$gmane$org@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:51324 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751215AbaF1Q1g (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Jun 2014 12:27:36 -0400
-In-Reply-To: <CAMuHMdXz-ek=go9dV_rcDRKYYve3q80RASFjfJj4nTCe4aMVoQ@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Sat, 28 Jun 2014 17:55:14 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Thorsten Glaser <tg@debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Fixes q40_irq_startup to return -ENXIO for cases 11-13 in the switch
+statement of this function to handle these failure cases.
 
-> I guess this failure can be triggered with some specific memory
-> configuration with your original version, too.
+Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+---
+ arch/m68k/q40/q40ints.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No.
-
-Andreas.
-
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 513f9bb..9dfa1ea 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -49,7 +49,7 @@ static unsigned int q40_irq_startup(struct irq_data *data)
+ 	case 1: case 2: case 8: case 9:
+ 	case 11: case 12: case 13:
+ 		printk("%s: ISA IRQ %d not implemented by HW\n", __func__, irq);
+-		/* FIXME return -ENXIO; */
++		return -ENXIO;
+ 	}
+ 	return 0;
+ }
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+1.9.1
