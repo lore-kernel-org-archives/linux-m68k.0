@@ -1,44 +1,68 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] Fixes q40_irq_startup to return -ENXIO
-Date: Mon, 30 Jun 2014 19:27:55 +0200
-Message-ID: <871tu6ux2c.fsf@igel.home>
+Date: Mon, 30 Jun 2014 19:52:19 +0200
+Message-ID: <CAMuHMdXFf0VXJikw1d6b6NAC91NUfDvw64oEME=fc7=+Sms98g__29613.2042225965$1404150768$gmane$org@mail.gmail.com>
 References: <1404097610-5739-1-git-send-email-xerofoify@gmail.com>
+	<871tu6ux2c.fsf@igel.home>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1404097610-5739-1-git-send-email-xerofoify@gmail.com> (Nicholas
-	Krause's message of "Sun, 29 Jun 2014 23:06:50 -0400")
+In-Reply-To: <871tu6ux2c.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Nicholas Krause <xerofoify@gmail.com>
-Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Nicholas Krause <xerofoify@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 
-Nicholas Krause <xerofoify@gmail.com> writes:
-
-> Fixes q40_irq_startup to return -ENXIO for cases 11-13 in the switch
-> statement of this function to handle these failure cases.
+On Mon, Jun 30, 2014 at 7:27 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> Nicholas Krause <xerofoify@gmail.com> writes:
 >
-> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
-> ---
->  arch/m68k/q40/q40ints.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> Fixes q40_irq_startup to return -ENXIO for cases 11-13 in the switch
+>> statement of this function to handle these failure cases.
+>>
+>> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+>> ---
+>>  arch/m68k/q40/q40ints.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+>> index 513f9bb..9dfa1ea 100644
+>> --- a/arch/m68k/q40/q40ints.c
+>> +++ b/arch/m68k/q40/q40ints.c
+>> @@ -49,7 +49,7 @@ static unsigned int q40_irq_startup(struct irq_data *data)
+>>       case 1: case 2: case 8: case 9:
+>>       case 11: case 12: case 13:
+>>               printk("%s: ISA IRQ %d not implemented by HW\n", __func__, irq);
+>> -             /* FIXME return -ENXIO; */
+>> +             return -ENXIO;
 >
-> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-> index 513f9bb..9dfa1ea 100644
-> --- a/arch/m68k/q40/q40ints.c
-> +++ b/arch/m68k/q40/q40ints.c
-> @@ -49,7 +49,7 @@ static unsigned int q40_irq_startup(struct irq_data *data)
->  	case 1: case 2: case 8: case 9:
->  	case 11: case 12: case 13:
->  		printk("%s: ISA IRQ %d not implemented by HW\n", __func__, irq);
-> -		/* FIXME return -ENXIO; */
-> +		return -ENXIO;
+> There must be more to it, given the FIXME.
 
-There must be more to it, given the FIXME.
+I think I really just forgot to get rid of it. It was introduced in commit
+c288bf2533e57174b90b07860c4391bcd1ea269c ("m68k/irq: Rename
+irq_controller to irq_chip").
 
-Andreas.
+I think I added the FIXME because I got puzzled by the return value change
+from (signed) int to unsigned int, which doesn't match well with a negative
+error number.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+However:
+  1. While irq_chip.irq_startup() returns unsigned int, irq_startup()
+does return
+     int (why this difference, historical reasons?), so it becomes a negative
+     number again later,
+  2. The return value of irq_startup() seems to used in
+     kernel/irq/autoprobe.c:probe_irq_on() only, and the actual (non-zero) value
+     doesn't matter, just whether it returns zero or non-zero.
+
+So I'm gonna take this patch, unless someone screams with a very good reason.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
