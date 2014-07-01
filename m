@@ -1,74 +1,36 @@
-From: Nick Krause <xerofoify@gmail.com>
-Subject: Re: [PATCH] Fixes q40_irq_startup to return -ENXIO
-Date: Mon, 30 Jun 2014 21:56:03 -0400
-Message-ID: <CAPDOMVjMU7vWUUeC89dg4aRkvZQf7mB+bNvF7Cazs5JWY1D0Ug__39740.4077499688$1404179811$gmane$org@mail.gmail.com>
-References: <1404097610-5739-1-git-send-email-xerofoify@gmail.com>
-	<871tu6ux2c.fsf@igel.home>
-	<CAMuHMdXFf0VXJikw1d6b6NAC91NUfDvw64oEME=fc7=+Sms98g@mail.gmail.com>
+From: Mikael Pettersson <mikpelinux@gmail.com>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Tue, 1 Jul 2014 13:43:38 +0200
+Message-ID: <21426.40682.197715.245775@gargle.gargle.HOWL>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL>
+	<mvm1tuv6dhk.fsf@hawking.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXFf0VXJikw1d6b6NAC91NUfDvw64oEME=fc7=+Sms98g@mail.gmail.com>
+Received: from mail-lb0-f180.google.com ([209.85.217.180]:64805 "EHLO
+	mail-lb0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751357AbaGALnm (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Jul 2014 07:43:42 -0400
+Received: by mail-lb0-f180.google.com with SMTP id w7so6770648lbi.39
+        for <linux-m68k@vger.kernel.org>; Tue, 01 Jul 2014 04:43:41 -0700 (PDT)
+In-Reply-To: <mvm1tuv6dhk.fsf@hawking.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Mikael Pettersson <mikpelinux@gmail.com>, linux-m68k@vger.kernel.org
 
-Seems fair if there is another way of doing it then I will rewrite this patch.
-Cheers Nick
+Andreas Schwab writes:
+ > Mikael Pettersson <mikpelinux@gmail.com> writes:
+ > 
+ > > Reverting to 3.12.16 completely eliminates these problems.
+ > 
+ > Even 3.11 has the kswapd0 cpu hog problem.
 
-On Mon, Jun 30, 2014 at 1:52 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Jun 30, 2014 at 7:27 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
->> Nicholas Krause <xerofoify@gmail.com> writes:
->>
->>> Fixes q40_irq_startup to return -ENXIO for cases 11-13 in the switch
->>> statement of this function to handle these failure cases.
->>>
->>> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
->>> ---
->>>  arch/m68k/q40/q40ints.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
->>> index 513f9bb..9dfa1ea 100644
->>> --- a/arch/m68k/q40/q40ints.c
->>> +++ b/arch/m68k/q40/q40ints.c
->>> @@ -49,7 +49,7 @@ static unsigned int q40_irq_startup(struct irq_data *data)
->>>       case 1: case 2: case 8: case 9:
->>>       case 11: case 12: case 13:
->>>               printk("%s: ISA IRQ %d not implemented by HW\n", __func__, irq);
->>> -             /* FIXME return -ENXIO; */
->>> +             return -ENXIO;
->>
->> There must be more to it, given the FIXME.
->
-> I think I really just forgot to get rid of it. It was introduced in commit
-> c288bf2533e57174b90b07860c4391bcd1ea269c ("m68k/irq: Rename
-> irq_controller to irq_chip").
->
-> I think I added the FIXME because I got puzzled by the return value change
-> from (signed) int to unsigned int, which doesn't match well with a negative
-> error number.
->
-> However:
->   1. While irq_chip.irq_startup() returns unsigned int, irq_startup()
-> does return
->      int (why this difference, historical reasons?), so it becomes a negative
->      number again later,
->   2. The return value of irq_startup() seems to used in
->      kernel/irq/autoprobe.c:probe_irq_on() only, and the actual (non-zero) value
->      doesn't matter, just whether it returns zero or non-zero.
->
-> So I'm gonna take this patch, unless someone screams with a very good reason.
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Hmm, I just got the kswapd0 CPU hog on 3.12.16 too (while compiling
+java code during a gcc package rebuild).
+
+So kernels >= 3.11 have the kswapd0 CPU hog bug, and kernels >= 3.13
+also have the ksoftirdq/0 CPU hog bug.
+
+What's the last known-good kernel? 3.10?
