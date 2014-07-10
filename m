@@ -1,40 +1,46 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Fix boot regression on machines with RAM at non-zero
-Date: Tue,  8 Jul 2014 09:25:58 +0200
-Message-ID: <1404804358-30299-1-git-send-email-geert__12920.5042765991$1404804400$gmane$org@linux-m68k.org>
+Subject: [PATCH -next] m68k: Export mach_random_get_entropy to modules
+Date: Thu, 10 Jul 2014 18:05:53 +0200
+Message-ID: <1405008353-10359-1-git-send-email-geert__3750.38317074559$1405008380$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-My enhancement to store the initial mapping size for later reuse in commit
-486df8bc4627bdfc032d11bedcd056cc5343ee62 ("m68k: Increase initial mapping
-to 8 or 16 MiB if possible") broke booting on machines where RAM doesn't
-start at address zero.
+When a module calls random_get_entropy():
 
-Use pc-relative addressing to fix this.
+    ERROR: "mach_random_get_entropy" [crypto/drbg.ko] undefined!
+    make[1]: *** [__modpost] Error 1
 
-Reported-by: Andreas Schwab <schwab@linux-m68k.org>
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Andreas Schwab <schwab@linux-m68k.org>
 ---
- arch/m68k/kernel/head.S | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+To be queued for 3.17
 
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index dbb118e1a4e0..a54788458ca3 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -921,7 +921,8 @@ L(nocon):
- 	jls	1f
- 	lsrl	#1,%d1
- 1:
--	movel	%d1,m68k_init_mapped_size
-+	lea	%pc@(m68k_init_mapped_size),%a0
-+	movel	%d1,%a0@
- 	mmu_map	#PAGE_OFFSET,%pc@(L(phys_kernel_start)),%d1,\
- 		%pc@(m68k_supervisor_cachemode)
+kisskb.ellerman.id.au/kisskb/buildresult/11449343/
+---
+ arch/m68k/kernel/time.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index 958f1adb9d0c..3857737e3958 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -11,6 +11,7 @@
+  */
  
+ #include <linux/errno.h>
++#include <linux/export.h>
+ #include <linux/module.h>
+ #include <linux/sched.h>
+ #include <linux/kernel.h>
+@@ -30,6 +31,7 @@
+ 
+ 
+ unsigned long (*mach_random_get_entropy)(void);
++EXPORT_SYMBOL_GPL(mach_random_get_entropy);
+ 
+ 
+ /*
 -- 
 1.9.1
