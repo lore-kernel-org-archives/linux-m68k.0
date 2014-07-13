@@ -1,46 +1,51 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH -next] m68k: Export mach_random_get_entropy to modules
-Date: Thu, 10 Jul 2014 18:05:53 +0200
-Message-ID: <1405008353-10359-1-git-send-email-geert__3750.38317074559$1405008380$gmane$org@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.16 (take 2)
+Date: Sun, 13 Jul 2014 11:08:07 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1407131105390.7520@ayla.of.borg>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-When a module calls random_get_entropy():
+	Hi Linus,
 
-    ERROR: "mach_random_get_entropy" [crypto/drbg.ko] undefined!
-    make[1]: *** [__modpost] Error 1
+The following changes since commit cd3de83f147601356395b57a8673e9c5ff1e59d1:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued for 3.17
+  Linux 3.16-rc4 (2014-07-06 12:37:51 -0700)
 
-kisskb.ellerman.id.au/kisskb/buildresult/11449343/
----
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+for you to fetch changes up to 5bc8c7cdeb6e3d9c1b938b4029d9a22f8dc5cd9d:
+
+  m68k: Export mach_random_get_entropy to modules (2014-07-11 10:37:53 +0200)
+
+Summary:
+  - Fix for a boot regression introduced in v3.16-rc1,
+  - Fix for a built issue in -next.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: Fix boot regression on machines with RAM at non-zero
+      m68k: Export mach_random_get_entropy to modules
+
+ arch/m68k/kernel/head.S | 3 ++-
  arch/m68k/kernel/time.c | 2 ++
- 1 file changed, 2 insertions(+)
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index 958f1adb9d0c..3857737e3958 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -11,6 +11,7 @@
-  */
- 
- #include <linux/errno.h>
-+#include <linux/export.h>
- #include <linux/module.h>
- #include <linux/sched.h>
- #include <linux/kernel.h>
-@@ -30,6 +31,7 @@
- 
- 
- unsigned long (*mach_random_get_entropy)(void);
-+EXPORT_SYMBOL_GPL(mach_random_get_entropy);
- 
- 
- /*
--- 
-1.9.1
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
