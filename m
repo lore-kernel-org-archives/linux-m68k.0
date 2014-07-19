@@ -1,34 +1,47 @@
-From: Nicholas Krause <xerofoify@gmail.com>
-Subject: [PATCH] m68k: Remove unneeded FIXME message in sun3_pgalloc.h
-Date: Wed, 16 Jul 2014 22:13:37 -0400
-Message-ID: <1405563217-9628-1-git-send-email-xerofoify__3271.55833733759$1405563273$gmane$org@gmail.com>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] mm/m68k: Eliminate memset after alloc_bootmem_pages
+Date: Sat, 19 Jul 2014 17:05:13 +0530
+Message-ID: <20140719113513.GA23586__21225.7141167813$1405769752$gmane$org@himangi-Dell>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: sammy@sammy.net
-Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>
 
-This removes a FIX ME message due to this file not compiling.
-Now that this message is no longer needed I am removing it
-from sun3_pgalloc.h.
+alloc_bootmem and related functions always return a zeroed region of memory.
+Thus a memset after calls to these functions is unnecessary.
 
-Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+The following Coccinelle semantic patch was used for making the change:
+
+@@
+expression E,E1;
+@@
+
+E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+... when != E
+- memset(E,0,E1);
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
 ---
- arch/m68k/include/asm/sun3_pgalloc.h | 2 --
- 1 file changed, 2 deletions(-)
+To send to: Geert Uytterhoeven <geert@linux-m68k.org>,linux-m68k@lists.linux-m68k.org,linux-kernel@vger.kernel.org
+ arch/m68k/mm/init.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
-index f868506..66644f3 100644
---- a/arch/m68k/include/asm/sun3_pgalloc.h
-+++ b/arch/m68k/include/asm/sun3_pgalloc.h
-@@ -12,8 +12,6 @@
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index acaff6a..b09a3cb 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -94,7 +94,6 @@ void __init paging_init(void)
+ 	high_memory = (void *) end_mem;
  
- #include <asm/tlb.h>
+ 	empty_zero_page = alloc_bootmem_pages(PAGE_SIZE);
+-	memset(empty_zero_page, 0, PAGE_SIZE);
  
--/* FIXME - when we get this compiling */
--/* erm, now that it's compiling, what do we do with it? */
- #define _KERNPG_TABLE 0
- 
- extern const char bad_pmd_string[];
+ 	/*
+ 	 * Set up SFC/DFC registers (user data space).
 -- 
 1.9.1
