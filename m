@@ -1,47 +1,66 @@
-From: Himangi Saraogi <himangi774@gmail.com>
-Subject: [PATCH] mm/m68k: Eliminate memset after alloc_bootmem_pages
-Date: Sat, 19 Jul 2014 17:05:13 +0530
-Message-ID: <20140719113513.GA23586__21225.7141167813$1405769752$gmane$org@himangi-Dell>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Richard Weinberger <richard@sigma-star.at>
+Subject: [PATCH 37/43] m68k: Use sigsp()
+Date: Mon, 21 Jul 2014 16:03:23 +0200
+Message-ID: <1405951409-16953-38-git-send-email-richard@sigma-star.at>
+References: <1405951409-16953-1-git-send-email-richard@sigma-star.at>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <1405951409-16953-1-git-send-email-richard@sigma-star.at>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Richard Weinberger <richard@nod.at>, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 
-alloc_bootmem and related functions always return a zeroed region of memory.
-Thus a memset after calls to these functions is unnecessary.
+From: Richard Weinberger <richard@nod.at>
 
-The following Coccinelle semantic patch was used for making the change:
+Use sigsp() instead of the open coded variant.
 
-@@
-expression E,E1;
-@@
-
-E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
-... when != E
-- memset(E,0,E1);
-
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
-To send to: Geert Uytterhoeven <geert@linux-m68k.org>,linux-m68k@lists.linux-m68k.org,linux-kernel@vger.kernel.org
- arch/m68k/mm/init.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/m68k/kernel/signal.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index acaff6a..b09a3cb 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -94,7 +94,6 @@ void __init paging_init(void)
- 	high_memory = (void *) end_mem;
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index c8e6fa8..967a8b7 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -835,18 +835,10 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
+ }
  
- 	empty_zero_page = alloc_bootmem_pages(PAGE_SIZE);
--	memset(empty_zero_page, 0, PAGE_SIZE);
+ static inline void __user *
+-get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size)
++get_sigframe(struct ksignal *ksig, size_t frame_size)
+ {
+-	unsigned long usp;
+-
+-	/* Default to using normal stack.  */
+-	usp = rdusp();
++	unsigned long usp = sigsp(rdusp(), ksig);
  
- 	/*
- 	 * Set up SFC/DFC registers (user data space).
+-	/* This is the X/Open sanctioned signal stack switching.  */
+-	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (!sas_ss_flags(usp))
+-			usp = current->sas_ss_sp + current->sas_ss_size;
+-	}
+ 	return (void __user *)((usp - frame_size) & -8UL);
+ }
+ 
+@@ -866,7 +858,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 		return -EFAULT;
+ 	}
+ 
+-	frame = get_sigframe(&ksig->ka, regs, sizeof(*frame) + fsize);
++	frame = get_sigframe(ksig, sizeof(*frame) + fsize);
+ 
+ 	if (fsize)
+ 		err |= copy_to_user (frame + 1, regs + 1, fsize);
+@@ -951,7 +943,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 		return -EFAULT;
+ 	}
+ 
+-	frame = get_sigframe(&ksig->ka, regs, sizeof(*frame));
++	frame = get_sigframe(ksig, sizeof(*frame));
+ 
+ 	if (fsize)
+ 		err |= copy_to_user (&frame->uc.uc_extra, regs + 1, fsize);
 -- 
-1.9.1
+1.8.4.5
