@@ -1,63 +1,23 @@
-From: Nick Krause <xerofoify@gmail.com>
+From: Davidlohr Bueso <davidlohr@hp.com>
 Subject: Re: [PATCH] m68k/q40: Revert "m68k/q40: Fix q40_irq_startup() to
  return -ENXIO on failures"
-Date: Wed, 23 Jul 2014 11:39:57 -0400
-Message-ID: <CAPDOMVj7mP3uBGKP-pGgc7mrZXyun4rc7xsAi+=faC-hhKUmWQ@mail.gmail.com>
+Date: Wed, 23 Jul 2014 09:02:19 -0700
+Message-ID: <1406131339.2488.0.camel@buesod1.americas.hpqcorp.net>
 References: <1406119899-22659-1-git-send-email-sasha.levin@oracle.com>
-	<53CFC170.9090505@roeck-us.net>
+	 <53CFC170.9090505@roeck-us.net>
+	 <CAPDOMVj7mP3uBGKP-pGgc7mrZXyun4rc7xsAi+=faC-hhKUmWQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-vc0-f173.google.com ([209.85.220.173]:56898 "EHLO
-	mail-vc0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757984AbaGWPkD (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jul 2014 11:40:03 -0400
-In-Reply-To: <53CFC170.9090505@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAPDOMVj7mP3uBGKP-pGgc7mrZXyun4rc7xsAi+=faC-hhKUmWQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nick Krause <xerofoify@gmail.com>
+Cc: Guenter Roeck <linux@roeck-us.net>, Sasha Levin <sasha.levin@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Rostedt <rostedt@goodmis.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, linux-m68k@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Sasha Levin <sashal@kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Sasha Levin <sasha.levin@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Rostedt <rostedt@goodmis.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, linux-m68k@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Sasha Levin <sashal@kernel.org>
 
-On Wed, Jul 23, 2014 at 10:06 AM, Guenter Roeck <linux@roeck-us.net> wrote:
-> On 07/23/2014 05:51 AM, Sasha Levin wrote:
->>
->> Revert since we're trying to return -ENXIO from a function returning
->> unsigned int. Not only it causes compiler warnings it's also obviously
->> incorrect.
->>
->> In general, watch for patches from Nick Krause since they are not even
->> build tested.
->>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->
-> Guess I wasn't fast enough with my comments :-(
->
-> Acked-by: Guenter Roeck <linux@roeck-us.net>
->
->
->> ---
->>   arch/m68k/q40/q40ints.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
->> index 9dfa1ea..513f9bb 100644
->> --- a/arch/m68k/q40/q40ints.c
->> +++ b/arch/m68k/q40/q40ints.c
->> @@ -49,7 +49,7 @@ static unsigned int q40_irq_startup(struct irq_data
->> *data)
->>         case 1: case 2: case 8: case 9:
->>         case 11: case 12: case 13:
->>                 printk("%s: ISA IRQ %d not implemented by HW\n", __func__,
->> irq);
->> -               return -ENXIO;
->> +               /* FIXME return -ENXIO; */
->>         }
->>         return 0;
->>   }
->>
->
+On Wed, 2014-07-23 at 11:39 -0400, Nick Krause wrote:
+> I guess this is another bad patch :(.
 
-
-I guess this is another bad patch :(.
-Nick
+This is an example of you wasting peoples time with thoughtless patches.
+Please stop. You've been asked a million times.
