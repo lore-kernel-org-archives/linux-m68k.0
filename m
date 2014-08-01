@@ -1,68 +1,31 @@
-From: chrisbuendia@rocketmail.com
-Subject: A recommendation from Commission Notice - Need Account Information
-Date: Thu, 31 Jul 2014 10:32:17 -0400 (EDT)
-Message-ID: <20140731143217.EBAFBD8A70@hfan17.xwing17.dkbhosting.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: converting the NCR5380 drivers away from scsi_register
+Date: Fri, 1 Aug 2014 13:13:57 +1000 (EST)
+Message-ID: <alpine.LNX.2.00.1408011307120.6796@nippy.intranet>
+References: <20140616141853.GA32399@infradead.org> <alpine.LNX.2.00.1406171756040.17715@nippy.intranet> <CAMuHMdUkMHoMahyppwttnm7qs6etoqMGtvk77HezUBj-GOeMKg@mail.gmail.com> <alpine.LNX.2.00.1407301726430.9554@nippy.intranet> <53D9D4B2.9080801@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from rrcs-74-218-90-124.central.biz.rr.com ([74.218.90.124]:35442
-	"EHLO hfan17.xwing17.dkbhosting.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750821AbaGaOcV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 31 Jul 2014 10:32:21 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:57070 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750978AbaHADPA (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 31 Jul 2014 23:15:00 -0400
+In-Reply-To: <53D9D4B2.9080801@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: mike.debbie34@gmail.com, ejohnson_108@yahoo.co.uk, linux-m68k@vger.kernel.org, ctmanage@yahoo.com, rpriest34@hotmail.com
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Michael Schmitz <schmitz@debian.org>, Sam Creasey <sammy@sammy.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-=0D
-Hello,=0D
-=0D
-CONGRATULATIONS!=0D
-=0D
-Wow - you=E2=80=99re about to start getting a TON of =0D
-AUTOMATED commissions deposited into your=0D
-account!=0D
-=0D
-You already have some waiting for you.  However,=0D
-we need you to finish ACTIVATING YOUR ACCOUNT:=0D
-=0D
-=3D=3D> http://pakerpaker.secretmon.clicksureCPA.com/=0D
-=0D
-Please take 2 minutes to do this.  If you don=E2=80=99t, we =0D
-can=E2=80=99t deposit any more commissions into your bank!=0D
-=0D
-=3D=3D> http://pakerpaker.secretmon.clicksureCPA.com/=0D
-=0D
-=0D
-Thank you!=0D
-=0D
--Secret Money System=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-Want More Information?=0D
-Click or Copy Paste : =3D=3D> http://pakerpaker.secretmon.clicksureCPA.=
-com/=0D
-              =0D
-NOTE: If your email account doesn't automatically turn the URL above in=
-to a link, =0D
-      you can copy and paste it into your browser.=0D
-=0D
-Click below to view the webpage that your friend has recommended:=0D
-=0D
-=0D
-Commission Notice - Need Account Information has used the Tell-a-Friend=
- form to send you this link.=0D
-=0D
-We look forward to your visit!=0D
-=0D
+
+On Thu, 31 Jul 2014, Michael Schmitz wrote:
+
+> atari_scsi is only used on TT and Falcon Atari variants. 'Testing' for 
+> hardware presence is just checking bits from a bitmap populated at 
+> arch_init time, that can easily be moved into a platform device setup, 
+> much like I already do for the network drivers. Does that answer your 
+> question?
+
+Yes. I'll convert {atari,mac,sun3}_scsi to platform devices and 
+scsi_host_alloc/scsi_add_host.
+
+-- 
