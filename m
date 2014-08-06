@@ -1,36 +1,80 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: m68k v3.16 status update
-Date: Wed, 06 Aug 2014 11:53:06 +0200
-Message-ID: <53E1FB02.8090000@physik.fu-berlin.de>
-References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com>	<06A072CC-7C42-47C2-A877-9012C3DE6585@2014.bluespice.org>	<20140805202904.GA23676@physik.fu-berlin.de> <CAMuHMdX-46QGM6T3G_e0RzeTm8vDZ1Ofa2R2w3BQmf_nJxPQLA@mail.gmail.com>
+From: Sam Creasey <sammy@sammy.net>
+Subject: Re: Sun3 SCSI DMA, was Re: converting the NCR5380 drivers away from scsi_register
+Date: Wed, 6 Aug 2014 10:42:52 -0400
+Message-ID: <20140806144252.GJ21346@anhedonia>
+References: <53D9D4B2.9080801@gmail.com> <alpine.LNX.2.00.1408011307120.6796@nippy.intranet> <53DB4C98.8020907@gmail.com> <alpine.LNX.2.00.1408021106030.28603@nippy.intranet> <53DCA6AE.5060801@gmail.com> <alpine.LNX.2.00.1408031314200.545@nippy.intranet> <53DDFBC0.4050906@gmail.com> <alpine.LNX.2.00.1408041146400.21367@nippy.intranet> <53E09EAE.70308@gmail.com> <alpine.LNX.2.00.1408051948330.16933@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdX-46QGM6T3G_e0RzeTm8vDZ1Ofa2R2w3BQmf_nJxPQLA@mail.gmail.com>
+Received: from anhedonia.sammy.net ([174.143.180.86]:33645 "EHLO sammy.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751306AbaHFPf3 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 6 Aug 2014 11:35:29 -0400
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1408051948330.16933@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: =?UTF-8?B?SW5nbyBKw7xyZ2Vuc21hbm4=?= <ij@2014.bluespice.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Debian m68k <debian-68k@lists.debian.org>, karcher@physik.fu-berlin.de
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, Christoph Hellwig <hch@infradead.org>, Michael Schmitz <schmitz@debian.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 08/06/2014 09:35 AM, Geert Uytterhoeven wrote:
->> Add to that the X-Surf100 driver that Michael Karcher wrote [1] but
->> unfortunately he hasn't cleaned up the code yet and submitted it for
->> inclusion in the mainline kernel.
+On Wed, Aug 06, 2014 at 11:25:18AM +1000, Finn Thain wrote:
 > 
-> "May I remind you that patches touching areas outside arch/m68k must be
-> submitted to the appropriate maintainer (use scripts/get_maintainer.pl)."
+> On Tue, 5 Aug 2014, Michael Schmitz wrote:
 > 
-> The current policy is to not add drivers to the m68k repository if they should
-> go in through other maintainers.
+> > 
+> > On Sun3, the code is not even configured from what I've seen 
+> > (SUPPORT_TAGS not defined)
+> > 
+> [...]
+> > 
+> > That's what I meant to say before - sun3_NCR5380.c does peek at the 
+> > message byte without invoking NCR5380_transfer_pio() (needs to manually 
+> > set/clear ACK for that resason, finds the disconnected command at issue, 
+> > does some DMA setup stuff for that command, and then goes ahead to fetch 
+> > the tag message bytes if the phase is still at message in. No idea where 
+> > the variable 'phase' gets set in that routine so it might never get to 
+> > read tag messages.
+> > 
+> > atari_NCR5390.c does things a bit different - instead of peeking at the 
+> > message byte, NCR5380_transfer_pio() is used for the first message byte 
+> > (ACK set there, cleared manually later). NCR5380_transfer_pio() sets the 
+> > current phase, so the subsequent transfer of the tag message may work 
+> > there (again ACK raised in NCR5380_transfer_pio(), cleared manually 
+> > later).
+> 
+> Yes, but why the discrepancy?
+> 
+> Not unlike the use of DMA in NCR5380_reselect(), the sun3 version of 
+> NCR5380_information_transfer() also uses DMA in one situation where the 
+> atari version uses PIO. That is, when phase == PHASE_DATA_IN && 
+> cmd->device->borken.
+> 
+> Can we just use the PIO code from atari_NCR5380, or should we keep the DMA 
+> versions with #ifdef CONFIG_SUN3? Sam?
 
-I know, I was not implying that, sorry :). I am just still waiting for
-the xsurf100 driver to be included in the mainline kernel.
+Oof, my memory is hazy around this one, but I would strongly hesitate
+to use the PIO version from the atari driver.  IIRC, the DMA
+controller for the sun3's NCR5380 implementation is extremely fussy
+about what happens in which phase, and it's quick to anger if you
+don't handle everything exactly how it expects.
+ 
+> > From what I've checked both should work, but the sun3 code never sets 
+> > 'phase' so it should never actually have worked. It should not even 
+> > compile.
+> 
+> I guess that's why sun3_scsi leaves SUPPORT_TAGS undefined. I suppose we 
+> can ignore all the code in sun3_NCR5380.c that is conditional upon #ifdef 
+> SUPPORT_TAGS. (That's actually how I did my preliminary merge patches.)
+> 
+> I guess having two versions of the NCR5380_transfer_dma() routine is 
+> reasonable but it would be nice if some of the other discrepancies could 
+> be resolved. Without knowledge of the Sun 3 DMA hardware it is difficult 
+> to avoid some questionable #ifdefs.
 
-Adrian
+I definitely remember that the DMA setup logic from the atari version
+did not work at all on sun3.  Unfortunatly working from 15 year old
+memories, I can't quickly recall what the discrepencies were.  I never
+did find any documentation for that DMA chip, so there was a heck of a
+lot of trial and error on getting to a working driver.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-- Sam
