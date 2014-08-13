@@ -1,59 +1,79 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: Re: [PATCH] m68k/atari: EtherNEC - ethernet support (ne),>
-Date: Wed, 13 Aug 2014 09:15:47 +0200
-Message-ID: <CAMuHMdWqXPf_1a1b=VGGayS2y2DPEibeOpFMFZth6KZUMue6BQ@mail.gmail.com>
-References: <1407636153-24864-1-git-send-email-schmitzmic@gmail.com>
-	<53EA2AF2.3040709@windriver.com>
-	<CAOmrzk+m7b58Xb=zFv6Kf=_HgGR4FzwpwRvsh08uGMkg0xPLWA@mail.gmail.com>
+Date: Wed, 13 Aug 2014 20:37:33 +1200
+Message-ID: <53EB23CD.2060101@gmail.com>
+References: <1407636153-24864-1-git-send-email-schmitzmic@gmail.com>	<53EA2AF2.3040709@windriver.com>	<CAOmrzk+m7b58Xb=zFv6Kf=_HgGR4FzwpwRvsh08uGMkg0xPLWA@mail.gmail.com> <CAMuHMdWqXPf_1a1b=VGGayS2y2DPEibeOpFMFZth6KZUMue6BQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CAOmrzk+m7b58Xb=zFv6Kf=_HgGR4FzwpwRvsh08uGMkg0xPLWA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWqXPf_1a1b=VGGayS2y2DPEibeOpFMFZth6KZUMue6BQ@mail.gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Linux/m68k <linux-m68k@vger.kernel.org>, debian m68k <debian-68k@lists.debian.org>, "David S. Miller" <davem@davemloft.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Geert,
 
-On Tue, Aug 12, 2014 at 11:40 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Would you be OK if I expanded the comment like this?
 >
-> /* ne.c is used on m68k Atari and Q40 computers - the Atari ROM-port
-> adapter is 8-bit, Q40 uses ISA */
-
-DaveM already applied it to his tree, and sent a pull request to Linus.
-
-> This would limit the runtime test to the case where it is actually
-> needed (untested):
+>> Would you be OK if I expanded the comment like this?
+>>
+>> /* ne.c is used on m68k Atari and Q40 computers - the Atari ROM-port
+>> adapter is 8-bit, Q40 uses ISA */
+>>     
 >
-> #elif defined(CONFIG_ATARI) && defined(CONFIG_Q40)
-> /* multiplatform m68k kernel - the Atari ROM-port adapter is 8-bit,
-> Q40 uses ISA */
-> #  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
-> #elif defined(CONFIG_ATARI) /* no Q40 support - 8-bit mode on Atari ROM port */
-> #  define DCR_VAL 0x48
-> #else
-> #  define DCR_VAL 0x49
-> #endif
+> DaveM already applied it to his tree, and sent a pull request to Linus.
+>   
 
-MACH_IS_ATARI already evaluates to a constant on single-platform
-kernels, so this is optimized at compile time.
-Hence there's not really a need for this.
+OK - won't resend then unless explicitly requested.
 
-> Are there any other m68k platforms that use the ne.c driver, Geert?
-> apne, hydra and zorro8390 all have their own separate drivers - any
-> others?
+Many thanks, Dave!
 
-Not that I'm aware of. Only Q40 has CONFIG_NE2000 in defconfig.
+>> This would limit the runtime test to the case where it is actually
+>> needed (untested):
+>>
+>> #elif defined(CONFIG_ATARI) && defined(CONFIG_Q40)
+>> /* multiplatform m68k kernel - the Atari ROM-port adapter is 8-bit,
+>> Q40 uses ISA */
+>> #  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
+>> #elif defined(CONFIG_ATARI) /* no Q40 support - 8-bit mode on Atari ROM port */
+>> #  define DCR_VAL 0x48
+>> #else
+>> #  define DCR_VAL 0x49
+>> #endif
+>>     
+>
+> MACH_IS_ATARI already evaluates to a constant on single-platform
+> kernels, so this is optimized at compile time.
+> Hence there's not really a need for this.
+>   
 
-Gr{oetje,eeting}s,
+I was hoping it would. More of an attempt to make the logic easier to 
+understand, but a comment would be sufficient (and avoid redundancy).
 
-                        Geert
+>> Are there any other m68k platforms that use the ne.c driver, Geert?
+>> apne, hydra and zorro8390 all have their own separate drivers - any
+>> others?
+>>     
+>
+> Not that I'm aware of. Only Q40 has CONFIG_NE2000 in defconfig.
+>   
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Good - we can finally put this one to rest.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+
+    Michael
+
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>   
