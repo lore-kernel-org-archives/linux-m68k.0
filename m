@@ -1,54 +1,94 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH 0/2] m68k: propose move of platform coldfire
-Date: Thu, 21 Aug 2014 21:47:56 +1000
-Message-ID: <53F5DC6C.9070603@uclinux.org>
-References: <1408590247-10875-1-git-send-email-gerg@uclinux.org> <CAMuHMdX2a4n3+wAOmF43NCSBKowJ6X72KDtjgKzW-vYCLGisbQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: gerg@uclinux.org
+Subject: [PATCH 2/4] m68k: move non-mmu 68360 platform code
+Date: Thu, 21 Aug 2014 23:24:14 +1000
+Message-ID: <1408627456-26718-2-git-send-email-gerg@uclinux.org>
+References: <1408627456-26718-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:49986
-	"EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1753955AbaHUL5Q (ORCPT
+Received: from nschwmtas02p.mx.bigpond.com ([61.9.189.140]:34870 "EHLO
+	nschwmtas02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1755305AbaHUNYR (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 21 Aug 2014 07:57:16 -0400
-In-Reply-To: <CAMuHMdX2a4n3+wAOmF43NCSBKowJ6X72KDtjgKzW-vYCLGisbQ@mail.gmail.com>
+	Thu, 21 Aug 2014 09:24:17 -0400
+In-Reply-To: <1408627456-26718-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Geert,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On 21/08/14 17:30, Geert Uytterhoeven wrote:
-> Hi Greg,
->
-> On Thu, Aug 21, 2014 at 5:04 AM,  <gerg@uclinux.org> wrote:
->> I propose that we move the arch/m68k/platform/coldfire directory to be
->> directly under arch/m68k.
->>
->> The current platform/ structure was inhereted from the move of m68knommu,
->> and is inconsistent with the existing m68k platforms (each having a
->> directory under arch/m68k).
->>
->> Moving platform/coldfire is quite strait forward. The following patches do a
->> move, and fix up the broken pathname comments.
-> That sounds fine to me.
->
->> This does leave the question of what to do with the other directories still
->> under arch/m68k/platform, namely 68000 and 68360. Should they be moved in
->> the same way as coldfire?
-> I think the 68*328 and 68360 SoC support can have their own directories,
-> as these are platforms.
->
-> However, these directories also contain 68000 and 68360 CPU support,
-> which we may want to share with other platforms in the future, to support
-> 68000-based Amigas, Ataris, Macs, Suns, ...
->
-> But as that's a problem to fix when someone is working on it, it's fine
-> for me to move these one level up, too.
+The non-mmu 68360 specific code is inconsistently placed under a directory
+named "platform". Move it to arch/m68k/ along with the other platform and
+board directories.
 
-Thanks for the feedback. I'll prepare patches that move these too then.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/{platform => }/68360/Makefile   | 0
+ arch/m68k/{platform => }/68360/commproc.c | 0
+ arch/m68k/{platform => }/68360/config.c   | 0
+ arch/m68k/{platform => }/68360/entry.S    | 0
+ arch/m68k/{platform => }/68360/head-ram.S | 0
+ arch/m68k/{platform => }/68360/head-rom.S | 0
+ arch/m68k/{platform => }/68360/ints.c     | 0
+ arch/m68k/Makefile                        | 4 ++--
+ 8 files changed, 2 insertions(+), 2 deletions(-)
+ rename arch/m68k/{platform => }/68360/Makefile (100%)
+ rename arch/m68k/{platform => }/68360/commproc.c (100%)
+ rename arch/m68k/{platform => }/68360/config.c (100%)
+ rename arch/m68k/{platform => }/68360/entry.S (100%)
+ rename arch/m68k/{platform => }/68360/head-ram.S (100%)
+ rename arch/m68k/{platform => }/68360/head-rom.S (100%)
+ rename arch/m68k/{platform => }/68360/ints.c (100%)
 
-Regards
-Greg
+diff --git a/arch/m68k/platform/68360/Makefile b/arch/m68k/68360/Makefile
+similarity index 100%
+rename from arch/m68k/platform/68360/Makefile
+rename to arch/m68k/68360/Makefile
+diff --git a/arch/m68k/platform/68360/commproc.c b/arch/m68k/68360/commproc.c
+similarity index 100%
+rename from arch/m68k/platform/68360/commproc.c
+rename to arch/m68k/68360/commproc.c
+diff --git a/arch/m68k/platform/68360/config.c b/arch/m68k/68360/config.c
+similarity index 100%
+rename from arch/m68k/platform/68360/config.c
+rename to arch/m68k/68360/config.c
+diff --git a/arch/m68k/platform/68360/entry.S b/arch/m68k/68360/entry.S
+similarity index 100%
+rename from arch/m68k/platform/68360/entry.S
+rename to arch/m68k/68360/entry.S
+diff --git a/arch/m68k/platform/68360/head-ram.S b/arch/m68k/68360/head-ram.S
+similarity index 100%
+rename from arch/m68k/platform/68360/head-ram.S
+rename to arch/m68k/68360/head-ram.S
+diff --git a/arch/m68k/platform/68360/head-rom.S b/arch/m68k/68360/head-rom.S
+similarity index 100%
+rename from arch/m68k/platform/68360/head-rom.S
+rename to arch/m68k/68360/head-rom.S
+diff --git a/arch/m68k/platform/68360/ints.c b/arch/m68k/68360/ints.c
+similarity index 100%
+rename from arch/m68k/platform/68360/ints.c
+rename to arch/m68k/68360/ints.c
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index dd96fc2..0b29dcf 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -92,7 +92,7 @@ endif
+ #
+ head-y				:= arch/m68k/kernel/head.o
+ head-$(CONFIG_SUN3)		:= arch/m68k/kernel/sun3-head.o
+-head-$(CONFIG_M68360)		:= arch/m68k/platform/68360/head.o
++head-$(CONFIG_M68360)		:= arch/m68k/68360/head.o
+ head-$(CONFIG_M68000)		:= arch/m68k/68000/head.o
+ head-$(CONFIG_COLDFIRE)		:= arch/m68k/coldfire/head.o
+ 
+@@ -114,7 +114,7 @@ core-$(CONFIG_NATFEAT)		+= arch/m68k/emu/
+ core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
+ core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
+ core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
+-core-$(CONFIG_M68360)		+= arch/m68k/platform/68360/
++core-$(CONFIG_M68360)		+= arch/m68k/68360/
+ core-$(CONFIG_M68000)		+= arch/m68k/68000/
+ core-$(CONFIG_COLDFIRE)		+= arch/m68k/coldfire/
+ 
+-- 
+1.9.1
