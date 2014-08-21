@@ -1,37 +1,36 @@
-From: gerg@uclinux.org
-Subject: [PATCH 3/4] m68k: remove the unused arch/m68k/platform directory
-Date: Thu, 21 Aug 2014 23:24:15 +1000
-Message-ID: <1408627456-26718-3-git-send-email-gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/4] m68k: move non-mmu 68000 platform code
+Date: Thu, 21 Aug 2014 15:32:22 +0200
+Message-ID: <CAMuHMdUDaLS-MumpvOFKw4PZi=ORKNdrHQQjZuOeNShiHgyY0g@mail.gmail.com>
 References: <1408627456-26718-1-git-send-email-gerg@uclinux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas02p.mx.bigpond.com ([61.9.189.140]:34872 "EHLO
-	nschwmtas02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755306AbaHUNYR (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 21 Aug 2014 09:24:17 -0400
+Received: from mail-lb0-f176.google.com ([209.85.217.176]:61637 "EHLO
+	mail-lb0-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754782AbaHUNcX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 21 Aug 2014 09:32:23 -0400
+Received: by mail-lb0-f176.google.com with SMTP id u10so7951374lbd.7
+        for <linux-m68k@vger.kernel.org>; Thu, 21 Aug 2014 06:32:22 -0700 (PDT)
 In-Reply-To: <1408627456-26718-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
+On Thu, Aug 21, 2014 at 3:24 PM,  <gerg@uclinux.org> wrote:
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-The non-mmu platform/machine directories have been move up one level.
-We no longer need arch/m68k/platform, or its Makefile, so remove them.
----
- arch/m68k/platform/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
- delete mode 100644 arch/m68k/platform/Makefile
+All 4 of this series:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/arch/m68k/platform/Makefile b/arch/m68k/platform/Makefile
-deleted file mode 100644
-index fc932bf..0000000
---- a/arch/m68k/platform/Makefile
-+++ /dev/null
-@@ -1,3 +0,0 @@
--#
--# Makefile for the arch/m68knommu/platform.
--#
--- 
-1.9.1
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
