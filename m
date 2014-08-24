@@ -1,51 +1,60 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/4] m68k: move non-mmu 68000 platform code
-Date: Fri, 22 Aug 2014 08:55:40 +0200
-Message-ID: <CAMuHMdWv9uOxvZYNwGZgONvso2ap4Fm3iENr2gq0_d8KP+wehg@mail.gmail.com>
-References: <1408627456-26718-1-git-send-email-gerg@uclinux.org>
-	<CAMuHMdUDaLS-MumpvOFKw4PZi=ORKNdrHQQjZuOeNShiHgyY0g@mail.gmail.com>
-	<53F68595.4020107@uclinux.org>
+From: Chen Gang <gang.chen.5i5j@gmail.com>
+Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
+Date: Sun, 24 Aug 2014 16:38:39 +0800
+Message-ID: <53F9A48F.3020803@gmail.com>
+References: <53ECE9DD.80004@gmail.com> <20140814180418.GA20777@linux-mips.org> <53ED34CE.3040001@gmail.com> <53EDCC60.5040608@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lb0-f170.google.com ([209.85.217.170]:48799 "EHLO
-	mail-lb0-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755647AbaHVGzm (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 22 Aug 2014 02:55:42 -0400
-Received: by mail-lb0-f170.google.com with SMTP id l4so9077500lbv.1
-        for <linux-m68k@vger.kernel.org>; Thu, 21 Aug 2014 23:55:40 -0700 (PDT)
-In-Reply-To: <53F68595.4020107@uclinux.org>
+Received: from mail-pa0-f48.google.com ([209.85.220.48]:48808 "EHLO
+	mail-pa0-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751946AbaHXIeW (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Aug 2014 04:34:22 -0400
+In-Reply-To: <53EDCC60.5040608@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org, rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <jdelvare@suse.de>, linux@arm.linux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com, msalter@redhat.com, a-jacquiot@ti.com, starvik@axis.com, jesper.nilsson@axis.com, dhowells@redhat.com, rkuo@codeaurora.org, tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org, james.hogan@imgtec.com, Michal Simek <monstr@monstr.eu>, yasutake.koichi@jp.panasonic.com, jonas@southpole.se, jejb@parisc-linux.org, deller@gmx.de, Benjamin Herrenschmidt <benh@kernel.crashing.org>, paulus@samba.org, mpe@ellerman.id.au, Martin Schwidefsky <schwidefsky@de.ibm.com>, heiko.carstens@de.ibm.com, Liqin Chen <liqin.linux@gmail>
 
-Hi Greg,
+Hello Maintainers:
 
-On Fri, Aug 22, 2014 at 1:49 AM, Greg Ungerer <gerg@uclinux.org> wrote:
-> On 21/08/14 23:32, Geert Uytterhoeven wrote:
->>
->> On Thu, Aug 21, 2014 at 3:24 PM,  <gerg@uclinux.org> wrote:
+Is this patch OK? If it pass basic checking, please let me know, and I
+shall try to make another related patch for KBuild (I can do nothing
+related with Kbuild, before get confirmation for this patch).
+
+Thanks.
+
+On 8/15/14 17:01, Chen Gang wrote:
+> 
+> 
+> On 8/15/14 6:14, Chen Gang wrote:
+>> On 08/15/2014 02:04 AM, Ralf Baechle wrote:
 >>>
->>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+>>
+>> OK, thanks, I assumes when support both endian, the default choice is
+>> CPU_BIG_ENDIAN, although no default value for choice (originally, I did
+>> worry about it).
+>>
+>>> So I think you can just drop the MIPS segment from your patch.
+>>>
+>>
+>> If what I assumes is correct, what you said sounds reasonable to me.
 >>
 >>
->> All 4 of this series:
->> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
->
-> Thanks Geert.
-> Are you happy for these to go via the m68knommu tree?
+> 
+> So for me, it is harmless to add CPU_*_ENDIAN explicitly, and can let
+> other members don't need think of.
+> 
+> By the way, for sh, it is almost the same case, except it contents the
+> default value, for me, it is clear enough, so I skip sh architecture in
+> this patch.
+> 
+> 
+> Thanks
+> 
 
-Sure. Thanks!
+-- 
+Chen Gang
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Open, share, and attitude like air, water, and life which God blessed
