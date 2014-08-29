@@ -1,92 +1,51 @@
-From: Chen Gang <gang.chen.5i5j@gmail.com>
-Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
-Date: Mon, 25 Aug 2014 20:26:31 +0800
-Message-ID: <53FB2B77.8070606@gmail.com>
-References: <53ECE9DD.80004@gmail.com> <20140814180418.GA20777@linux-mips.org> <53ED34CE.3040001@gmail.com> <53EDCC60.5040608@gmail.com> <53F9A48F.3020803@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <53F9A48F.3020803@gmail.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org, rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <jdelvare@suse.de>, linux@arm.linux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com, msalter@redhat.com, a-jacquiot@ti.com, starvik@axis.com, jesper.nilsson@axis.com, dhowells@redhat.com, rkuo@codeaurora.org, tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org, james.hogan@imgtec.com, Michal Simek <monstr@monstr.eu>, yasutake.koichi@jp.panasonic.com, jonas@southpole.se, jejb@parisc-linux.org, deller@gmx.de, Benjamin Herrenschmidt <benh@kernel.crashing.org>, paulus@samba.org, mpe@ellerman.id.au, Mart
+From: gerg@uclinux.org
+Subject: [PATCH] m68knommu: fix size of address field for 5272 interrupt controller
+Date: Fri, 29 Aug 2014 13:23:32 +1000
+Message-ID: <1409282612-5181-1-git-send-email-gerg@uclinux.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from nskntqsrv01p.mx.bigpond.com ([61.9.168.231]:40472 "EHLO
+	nskntqsrv01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751578AbaH2DdF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 28 Aug 2014 23:33:05 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hello all:
+From: Greg Ungerer <gerg@uclinux.org>
 
-It seems no any additional rejections for it. I guess, I need split the
-'big' patch into pieces, and each send to its' related mailing list, so
-let it not like a spam. And the schedule may like:
+Picked up by the 0-day buidler:
 
- - Firstly, send patch for "init/Kconfig" to add CPU_*_ENDIAN. If pass
-   checking (hope it can be passed checking), then
+All warnings:
+>> arch/m68k/coldfire/intc-5272.c:46:20: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+     /*MCF_IRQ_EINT1*/ { .icr = MCFSIM_ICR1, .index = 28, .ack = 1, },
+...
 
- - Send each related patch to each related architectures which already
-   knew their ENDIAN attributes in config time (24 patches, I guess),
-   then
+The problem stems from the changes to make all ColdFire register addresses
+absolute, in commit d72a5abb ("make remaining ColdFire 5272 register
+definitions absolute"). That change did not take into account that the
+addresses were stored as offsets in the irqmap of the intc-5272.c code.
+Make the field that now stores register addresses big enough to hold
+addresses.
 
- - Make patch for Kbuild to support __BUILDING_TIME_BIG_ENDIAN__, and
-   pass checking (hope I can finish), then
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/coldfire/intc-5272.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- - Finish left architectures which need __BUILDING_TIME_BIG_ENDIAN__
-   (4 patches, I guess).
-
-Welcome any ideas, suggestions, or completions. And if no additional
-reply, I shall not send any additional information any more to avoid
-spam to other members.
-
-
-Thanks.
-
-On 08/24/2014 04:38 PM, Chen Gang wrote:
-> Hello Maintainers:
-> 
-> Is this patch OK? If it pass basic checking, please let me know, and I
-> shall try to make another related patch for KBuild (I can do nothing
-> related with Kbuild, before get confirmation for this patch).
-> 
-> Thanks.
-> 
-> On 8/15/14 17:01, Chen Gang wrote:
->>
->>
->> On 8/15/14 6:14, Chen Gang wrote:
->>> On 08/15/2014 02:04 AM, Ralf Baechle wrote:
->>>>
->>>
->>> OK, thanks, I assumes when support both endian, the default choice is
->>> CPU_BIG_ENDIAN, although no default value for choice (originally, I did
->>> worry about it).
->>>
->>>> So I think you can just drop the MIPS segment from your patch.
->>>>
->>>
->>> If what I assumes is correct, what you said sounds reasonable to me.
->>>
->>>
->>
->> So for me, it is harmless to add CPU_*_ENDIAN explicitly, and can let
->> other members don't need think of.
->>
->> By the way, for sh, it is almost the same case, except it contents the
->> default value, for me, it is clear enough, so I skip sh architecture in
->> this patch.
->>
->>
->> Thanks
->>
-> 
-
+diff --git a/arch/m68k/coldfire/intc-5272.c b/arch/m68k/coldfire/intc-5272.c
+index d7b6956..d1e2fba 100644
+--- a/arch/m68k/coldfire/intc-5272.c
++++ b/arch/m68k/coldfire/intc-5272.c
+@@ -36,7 +36,7 @@
+  * they also need acknowledging via acknowledge bits.
+  */
+ struct irqmap {
+-	unsigned char	icr;
++	unsigned int	icr;
+ 	unsigned char	index;
+ 	unsigned char	ack;
+ };
 -- 
-Chen Gang
-
-Open, share, and attitude like air, water, and life which God blessed
+1.9.1
