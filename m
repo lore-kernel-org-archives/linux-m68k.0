@@ -1,41 +1,59 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/atari: Remove obsolete keyboard_tasklet scheduling
-Date: Fri, 29 Aug 2014 18:14:56 +0200
-Message-ID: <1409328896-8457-1-git-send-email-geert__9478.58003569326$1409328932$gmane$org@linux-m68k.org>
+Subject: [PATCH] USB: isp116x: isa_rom_*() calls should depend on CONFIG_ATARI_ROM_ISA
+Date: Fri, 29 Aug 2014 18:16:06 +0200
+Message-ID: <1409328966-10079-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-If CONFIG_VT=n:
+If CONFIG_ATARI_ROM_ISA=3Dn:
 
-arch/m68k/atari/built-in.o: In function `atari_keyboard_interrupt':
-atakeyb.c:(.text+0x1846): undefined reference to `keyboard_tasklet'
-atakeyb.c:(.text+0x1852): undefined reference to `keyboard_tasklet'
+drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_write_addr=E2=80=
+=99:
+drivers/usb/host/isp116x.h:382: error: implicit declaration of function=
+ =E2=80=98isa_rom_writew_raw=E2=80=99
+drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_raw_write_data=
+16=E2=80=99:
+drivers/usb/host/isp116x.h:394: error: implicit declaration of function=
+ =E2=80=98isa_rom_writew=E2=80=99
+drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_read_data16=E2=
+=80=99:
+drivers/usb/host/isp116x.h:402: error: implicit declaration of function=
+ =E2=80=98isa_rom_readw_raw=E2=80=99
+drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_raw_read_data1=
+6=E2=80=99:
+drivers/usb/host/isp116x.h:411: error: implicit declaration of function=
+ =E2=80=98isa_rom_readw=E2=80=99
 
-I think the keyboard_tasklet scheduling is no longer needed, as I
-believe it's handled by drivers/tty/vt/keyboard.c based on events
-received from the input subsystem. So just remove it.
+The isa_rom_*() calls should depend on CONFIG_ATARI_ROM_ISA instead of
+on CONFIG_ATARI.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Not tested on real hardware. ARAnyM doesn't have keyboard LEDs.
+To be folded into "m68k/atari: USB - add ISP1160 USB host controller
+support"
+---
+ drivers/usb/host/isp116x.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/m68k/atari/atakeyb.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-index 95022b04b62d..1e2be1d34635 100644
---- a/arch/m68k/atari/atakeyb.c
-+++ b/arch/m68k/atari/atakeyb.c
-@@ -170,7 +170,6 @@ repeat:
- 	if (acia_stat & ACIA_RDRF) {
- 		/* received a character */
- 		scancode = acia.key_data;	/* get it or reset the ACIA, I'll get it! */
--		tasklet_schedule(&keyboard_tasklet);
- 	interpret_scancode:
- 		switch (kb_state.state) {
- 		case KEYBOARD:
--- 
+diff --git a/drivers/usb/host/isp116x.h b/drivers/usb/host/isp116x.h
+index c436f55f2882..634258df159b 100644
+--- a/drivers/usb/host/isp116x.h
++++ b/drivers/usb/host/isp116x.h
+@@ -355,7 +355,7 @@ struct isp116x_ep {
+ #endif
+=20
+=20
+-#ifdef CONFIG_ATARI
++#ifdef CONFIG_ATARI_ROM_ISA
+   /*
+    * 16 bit data bus byte swapped in hardware on both Atari variants.
+    * EtherNAT variant of ISP1160 integration is memory mapped at 0x800=
+000XX,
+--=20
 1.9.1
