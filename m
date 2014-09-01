@@ -1,43 +1,46 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: Remove obsolete keyboard_tasklet scheduling
-Date: Sun, 31 Aug 2014 11:16:43 +0200
-Message-ID: <CAMuHMdVFcFwhnJ0wSOLLucE3hEUavVLMMoqwetG5n9jU57BYiA__47424.2219738246$1409476636$gmane$org@mail.gmail.com>
-References: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
-	<5402E5D8.6080401@gmail.com>
+Subject: USB/IP support?
+Date: Mon, 1 Sep 2014 11:08:16 +0200
+Message-ID: <CAMuHMdW+yOKA0fswU630HoNd2-BGFMAtBX+kVStgHSgBASBLBg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <5402E5D8.6080401@gmail.com>
+Received: from mail-la0-f43.google.com ([209.85.215.43]:60342 "EHLO
+	mail-la0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752928AbaIAJIS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 1 Sep 2014 05:08:18 -0400
+Received: by mail-la0-f43.google.com with SMTP id ty20so5683013lab.2
+        for <linux-m68k@vger.kernel.org>; Mon, 01 Sep 2014 02:08:16 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Debian m68k <debian-68k@lists.debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Michael,
+v3.17-rc3 gained (well, it was present before in staging) an interesting new
+feature:
 
-On Sun, Aug 31, 2014 at 11:07 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->> If CONFIG_VT=n:
->>
->> arch/m68k/atari/built-in.o: In function `atari_keyboard_interrupt':
->> atakeyb.c:(.text+0x1846): undefined reference to `keyboard_tasklet'
->> atakeyb.c:(.text+0x1852): undefined reference to `keyboard_tasklet'
->
-> Has keyboard_tasklet gone for good, or just been conditionalized on
-> CONFIG_VT?
+config USBIP_CORE
+        tristate "USB/IP support"
+        depends on USB && NET
+        ---help---
+          This enables pushing USB packets over IP to allow remote
+          machines direct access to USB devices. It provides the
+          USB/IP core that is required by both drivers.
 
-Conditionalized. It's in drivers/tty/vt/keyboard.c.
-Note that this was from a randconfig build.
+          For more details, and to get the userspace utility
+          programs, please see <http://usbip.sourceforge.net/>.
 
->> I think the keyboard_tasklet scheduling is no longer needed, as I
->> believe it's handled by drivers/tty/vt/keyboard.c based on events
->> received from the input subsystem. So just remove it.
->
-> I'd like to test this on real hardware (though ARAnyM does emulate the
-> keyboard ACIA IIRC - if you had a working keyboard there I should find no
-> different),
+          To compile this as a module, choose M here: the module will
+          be called usbip-core.
 
-Keyboard was still working on ARAnyM.
-But AFAICU, the keyboard_tasklet is used for the LED state only.
+          If unsure, say N.
+
+Hence USB is no longer limited to Ataris with NetUSBee, but can be used
+"by proxy" on all network-enabled m68k machines.
+Have fun with webcams, TV-cards, ...
+
+Do you think we should enable (modular, of course) USB and its myriads of
+drivers in all defconfigs now?
 
 Gr{oetje,eeting}s,
 
