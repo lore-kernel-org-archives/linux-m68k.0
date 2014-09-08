@@ -1,51 +1,104 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.17 (take 2)
-Date: Thu, 4 Sep 2014 18:25:10 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1409041822460.17564@ayla.of.borg>
+Subject: Re: [PATCH] USB: isp116x: isa_rom_*() calls should depend on CONFIG_ATARI_ROM_ISA
+Date: Mon, 8 Sep 2014 09:45:16 +0200
+Message-ID: <CAMuHMdUVxCqLr5P4DVwsobsM7470QhXcy+RcPp=bD19K_uVmwA@mail.gmail.com>
+References: <1409328966-10079-1-git-send-email-geert@linux-m68k.org>
+	<540127EE.7080900@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <540127EE.7080900@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-        Hi Linus,
+Hi Michael,
 
-The following changes since commit 69e273c0b0a3c337a521d083374c918dc52c666f:
+On Sat, Aug 30, 2014 at 3:25 AM, Michael Schmitz <schmitzmic@gmail.com>=
+ wrote:
+> that's certainly correct - the EtherNAT version of the USB driver did=
+n't
+> need the ROM accessors but the version including NetUSBee support doe=
+s for
+> sure.
+>
+> Thanks!
+>
+> Ack'ed-by: Michael Schmitz <schmitzmic@gmail.com>
+>
+>> If CONFIG_ATARI_ROM_ISA=3Dn:
+>>
+>> drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_write_addr=E2=
+=80=99:
+>> drivers/usb/host/isp116x.h:382: error: implicit declaration of funct=
+ion
+>> =E2=80=98isa_rom_writew_raw=E2=80=99
+>> drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_raw_write_d=
+ata16=E2=80=99:
+>> drivers/usb/host/isp116x.h:394: error: implicit declaration of funct=
+ion
+>> =E2=80=98isa_rom_writew=E2=80=99
+>> drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_read_data16=
+=E2=80=99:
+>> drivers/usb/host/isp116x.h:402: error: implicit declaration of funct=
+ion
+>> =E2=80=98isa_rom_readw_raw=E2=80=99
+>> drivers/usb/host/isp116x.h: In function =E2=80=98isp116x_raw_read_da=
+ta16=E2=80=99:
+>> drivers/usb/host/isp116x.h:411: error: implicit declaration of funct=
+ion
+>> =E2=80=98isa_rom_readw=E2=80=99
+>>
+>> The isa_rom_*() calls should depend on CONFIG_ATARI_ROM_ISA instead =
+of
+>> on CONFIG_ATARI.
 
-  Linux 3.17-rc3 (2014-08-31 18:23:04 -0700)
+Upon closer look, I think I broke the NetUSBee support if CONFIG_ATARI_=
+ROM_ISA
+is not set, as the mapping from isp_*() to low-level I/O accessors is
+different.
 
-are available in the git repository at:
+On NetUSBee with CONFIG_ATARI_ROM_ISA=3Dy, we now have:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+#ifdef CONFIG_ATARI_ROM_ISA
+#define isp_readw(p)            (__raw_readw((p)))
+#define isp_writew(v, p)        (__raw_writew((v), (p)))
+#define isp_raw_readw(p)        (readw((p)))
+#define isp_raw_writew(v, p)    (writew((v), (p)))
+#else
+  /* sane hardware */
+#define isp_readw               readw
+#define isp_writew              writew
+#define isp_raw_readw           __raw_readw
+#define isp_raw_writew          __raw_writew
+#endif
 
-for you to fetch changes up to 4ed7800987b1b082f8fc98c5cb7eb20cf74280a8:
+Before my patch, there was an "#ifdef CONFIG_ATARI", so the plain isp_*=
+()
+mapped to the raw ops on Atari, but to the plain ones elsewhere, while =
+the
+isp_raw_*() mapped to the plain ops on Atari, but the raw ops elsewhere=
+=2E
 
-  m68k: Wire up memfd_create (2014-09-01 10:28:00 +0200)
+The plain ops do byteswapping on m68k. If you change the mapping, perha=
+ps
+you can get rid of some of the #ifdefs in drivers/usb/host/isp116x-hcd.=
+c?
 
-Summary:
-  - m68k: Wire up new syscalls getrandom and memfd_create
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k: Wire up getrandom
-      m68k: Wire up memfd_create
-
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 2 ++
- arch/m68k/kernel/syscalltable.S     | 2 ++
- 3 files changed, 5 insertions(+), 1 deletion(-)
+P.S. Shall I revert my patch for now?
 
 Gr{oetje,eeting}s,
 
-						Geert
+                        Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
