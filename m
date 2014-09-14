@@ -1,55 +1,49 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH/RESENT] m68k/atari - update Kconfig.bus help text
-Date: Sat, 13 Sep 2014 12:44:35 +1200
-Message-ID: <1410569075-18692-1-git-send-email-schmitzmic@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] USB: isp116x: Fix EtherNAT if !CONFIG_ATARI_ROM_ISA
+Date: Sun, 14 Sep 2014 11:39:20 +0200
+Message-ID: <1410687560-10169-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f182.google.com ([209.85.192.182]:41481 "EHLO
-	mail-pd0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751150AbaIMAop (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 12 Sep 2014 20:44:45 -0400
-Received: by mail-pd0-f182.google.com with SMTP id w10so2322486pde.41
-        for <linux-m68k@vger.kernel.org>; Fri, 12 Sep 2014 17:44:45 -0700 (PDT)
+Received: from baptiste.telenet-ops.be ([195.130.132.51]:59279 "EHLO
+	baptiste.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752336AbaINJjS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Sep 2014 05:39:18 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, Michael Schmitz <schmitzmic@gmail.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Add NetUSBee to users of ATARI_ROM_ISA option (thanks Geert for
-spotting this in randconfig builds).
+Commit eece8a651c96a2a3 ("USB: isp116x: isa_rom_*() calls should depend
+on CONFIG_ATARI_ROM_ISA") broke USB on EtherNAT if CONFIG_ATARI_ROM_ISA
+is not set, as USB on EtherNAT requires byte-swapped I/O accessors.
 
-Add note to ATARI_USB option to alert user to enable ATARI_ROM_ISA
-if they want support for the NetUSBee USB driver.
+Add a separate #elif section for Atari without ROM port ISA to fix this.
 
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig.bus |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+To be folded into "m68k/atari: USB - add ISP1160 USB host controller
+support"
+---
+ drivers/usb/host/isp116x.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index b473f40..a934018 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -52,8 +52,10 @@ config ATARI_ROM_ISA
- 	  This option enables support for the ROM port ISA adapter used to
- 	  operate ISA cards on Atari. Only 8  bit cards are supported, and
- 	  no interrupt lines are connected.
--	  The only driver currently using this adapter is the EtherNEC
--	  driver for RTL8019AS based NE2000 compatible network cards.
-+	  The only drivers currently using this adapter are the NE2000 ISA
-+	  driver for EtherNEC (RTL8019AS based NE2000 compatible network
-+	  cards), and drivers for the NetUSBee (RTL8019AS / ISP1160 ethernet/
-+	  USB combo card).
- 
- config ATARI_USB
- 	bool "Atari USB host controller support"
-@@ -64,6 +66,8 @@ config ATARI_USB
- 	  the EtherNAT and NetUSBee cards for Atari. You will have to select
- 	  an appropriate HCD driver in the USB section (the ISP1160 one is
- 	  the most commonly used one).
-+	  Support for the NetUSBee in the ISP116x host controller driver also
-+	  requires the ATARI_ROM_ISA option to be set. 
- 
- config GENERIC_ISA_DMA
- 	def_bool ISA
+diff --git a/drivers/usb/host/isp116x.h b/drivers/usb/host/isp116x.h
+index 634258df159b..adebe0251574 100644
+--- a/drivers/usb/host/isp116x.h
++++ b/drivers/usb/host/isp116x.h
+@@ -369,6 +369,14 @@ struct isp116x_ep {
+ #define isp_writew(v, p)	((((unsigned long)(__pa(p)) & 0x00000F00) == 0x00000300UL) ? isa_rom_writew_raw((v), __pa(p)) : __raw_writew((v), (p)))
+ #define isp_raw_readw(p)	((((unsigned long)(__pa(p)) & 0x00000F00) == 0x00000300UL) ? isa_rom_readw(__pa(p)) : readw((p)))
+ #define isp_raw_writew(v, p)	((((unsigned long)(__pa(p)) & 0x00000F00) == 0x00000300UL) ? isa_rom_writew((v), __pa(p)) : writew((v), (p)))
++#elif defined(CONFIG_ATARI)
++  /*
++   * 16 bit data bus byte swapped in hardware on EtherNAT only.
++   */
++#define isp_readw		__raw_readw
++#define isp_writew		__raw_writew
++#define isp_raw_readw		readw
++#define isp_raw_writew		writew
+ #else
+   /* sane hardware */
+ #define isp_readw		readw
 -- 
-1.7.0.4
+1.9.1
