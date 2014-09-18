@@ -1,47 +1,47 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH 1/1 linux-next] m68k/coldfire: remove second asm/mcfclk.h
- inclusion in m54xx.c
-Date: Wed, 17 Sep 2014 11:25:47 +1000
-Message-ID: <5418E31B.9020103@westnet.com.au>
-References: <1410893014-32665-1-git-send-email-fabf@skynet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: gerg@uclinux.org
+Subject: [PATCH] m68knommu: add missing ioport_map() and ioport_unmap()
+Date: Thu, 18 Sep 2014 15:43:44 +1000
+Message-ID: <1411019024-16162-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1410893014-32665-1-git-send-email-fabf@skynet.be>
+Received: from nschwmtas01p.mx.bigpond.com ([61.9.189.137]:18327 "EHLO
+	nschwmtas01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751427AbaIRFnq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 18 Sep 2014 01:43:46 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Fabian Frederick <fabf@skynet.be>, linux-kernel@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi Fabian,
+From: Greg Ungerer <gerg@uclinux.org>
 
-On 17/09/14 04:43, Fabian Frederick wrote:
-> asm/mcfclk.h was included twice.
-> 
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
+Add the missing ioport_map() and ioport_unmap() functions for the
+non-MMU platforms.
 
-Looks good, thanks. I have added it to the for-next branch
-of the m68knommu git tree.
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/io_no.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Regards
-Greg
-
-
-> ---
->  arch/m68k/coldfire/m54xx.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/m68k/coldfire/m54xx.c b/arch/m68k/coldfire/m54xx.c
-> index eec7f71..075aaab 100644
-> --- a/arch/m68k/coldfire/m54xx.c
-> +++ b/arch/m68k/coldfire/m54xx.c
-> @@ -23,7 +23,6 @@
->  #include <asm/mcfuart.h>
->  #include <asm/mcfclk.h>
->  #include <asm/m54xxgpt.h>
-> -#include <asm/mcfclk.h>
->  #ifdef CONFIG_MMU
->  #include <asm/mmu_context.h>
->  #endif
-> 
+diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
+index 52f7e84..be4b5a8 100644
+--- a/arch/m68k/include/asm/io_no.h
++++ b/arch/m68k/include/asm/io_no.h
+@@ -179,6 +179,15 @@ static inline void *ioremap_fullcache(unsigned long physaddr, unsigned long size
+  */
+ #define xlate_dev_kmem_ptr(p)	p
+ 
++static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
++{
++	return (void __iomem *) port;
++}
++
++static inline void ioport_unmap(void __iomem *p)
++{
++}
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* _M68KNOMMU_IO_H */
+-- 
+1.9.1
