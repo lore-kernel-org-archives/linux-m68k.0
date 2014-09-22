@@ -1,47 +1,39 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68knommu: add missing ioport_map() and ioport_unmap()
-Date: Thu, 18 Sep 2014 15:43:44 +1000
-Message-ID: <1411019024-16162-1-git-send-email-gerg@uclinux.org>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] kexec: distribute kexec/arch/m68k/bootinfo.h
+Date: Mon, 22 Sep 2014 22:04:59 +0200
+Message-ID: <87r3z3bevo.fsf_-_@igel.home>
+References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
+	<1381859460-13645-4-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas01p.mx.bigpond.com ([61.9.189.137]:18327 "EHLO
-	nschwmtas01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751427AbaIRFnq (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 18 Sep 2014 01:43:46 -0400
+In-Reply-To: <1381859460-13645-4-git-send-email-geert@linux-m68k.org> (Geert
+	Uytterhoeven's message of "Tue, 15 Oct 2013 19:51:00 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Simon Horman <horms@verge.net.au>, linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
 
-From: Greg Ungerer <gerg@uclinux.org>
-
-Add the missing ioport_map() and ioport_unmap() functions for the
-non-MMU platforms.
-
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 ---
- arch/m68k/include/asm/io_no.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kexec/arch/m68k/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
-index 52f7e84..be4b5a8 100644
---- a/arch/m68k/include/asm/io_no.h
-+++ b/arch/m68k/include/asm/io_no.h
-@@ -179,6 +179,15 @@ static inline void *ioremap_fullcache(unsigned long physaddr, unsigned long size
-  */
- #define xlate_dev_kmem_ptr(p)	p
+diff --git a/kexec/arch/m68k/Makefile b/kexec/arch/m68k/Makefile
+index 7b13564..eeaacbd 100644
+--- a/kexec/arch/m68k/Makefile
++++ b/kexec/arch/m68k/Makefile
+@@ -10,5 +10,6 @@ m68k_ADD_SEGMENT =
+ m68k_VIRT_TO_PHYS =
  
-+static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
-+{
-+	return (void __iomem *) port;
-+}
-+
-+static inline void ioport_unmap(void __iomem *p)
-+{
-+}
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _M68KNOMMU_IO_H */
+ dist += kexec/arch/m68k/Makefile $(m68k_KEXEC_SRCS)			\
++	kexec/arch/m68k/bootinfo.h					\
+ 	kexec/arch/m68k/kexec-m68k.h					\
+ 	kexec/arch/m68k/include/arch/options.h
 -- 
-1.9.1
+2.1.1
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
