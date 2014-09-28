@@ -1,37 +1,45 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] [TRIVIAL] m68k: Fix typo 'COFNIG_MBAR'
-Date: Fri, 26 Sep 2014 19:40:16 +0200
-Message-ID: <1411753216.7866.65.camel__11439.0690614984$1411753987$gmane$org@x220>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 3/5] cirrus/mac89x0: Remove superfluous interrupt disable/restore
+Date: Sun, 28 Sep 2014 11:26:23 +0200
+Message-ID: <1411896385-25384-3-git-send-email-geert@linux-m68k.org>
+References: <1411896385-25384-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1411896385-25384-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+As of commit XXX ("m68k: Disable/restore interrupts in
+hwreg_present()/hwreg_write()"), this is no longer needed.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Untested!
+Do not apply before commit XXX has been applied.
+---
+ drivers/net/ethernet/cirrus/mac89x0.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Geert, PASR is obviously unused. Is it needed?
-
- arch/m68k/include/asm/m54xxpci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/m54xxpci.h b/arch/m68k/include/asm/m54xxpci.h
-index 6fbf54f72f2e..4687f5aa3741 100644
---- a/arch/m68k/include/asm/m54xxpci.h
-+++ b/arch/m68k/include/asm/m54xxpci.h
-@@ -72,7 +72,7 @@
- #define	PCIRFWPR	(CONFIG_MBAR + 0x84d4)	/* RX FIFO write pointer */
+diff --git a/drivers/net/ethernet/cirrus/mac89x0.c b/drivers/net/ethernet/cirrus/mac89x0.c
+index e285f384b0966dfe..07719676c305fc0b 100644
+--- a/drivers/net/ethernet/cirrus/mac89x0.c
++++ b/drivers/net/ethernet/cirrus/mac89x0.c
+@@ -216,14 +216,10 @@ struct net_device * __init mac89x0_probe(int unit)
+ 	ioaddr = (unsigned long)
+ 		nubus_slot_addr(slot) | (((slot&0xf) << 20) + DEFAULTIOBASE);
+ 	{
+-		unsigned long flags;
+ 		int card_present;
  
- #define	PACR		(CONFIG_MBAR + 0xc00)	/* PCI arbiter control */
--#define	PASR		(COFNIG_MBAR + 0xc04)	/* PCI arbiter status */
-+#define	PASR		(CONFIG_MBAR + 0xc04)	/* PCI arbiter status */
- 
- /*
-  *	Definitions for the Global status and control register.
+-		local_irq_save(flags);
+-		card_present = (hwreg_present((void*) ioaddr+4) &&
+-				hwreg_present((void*) ioaddr + DATA_PORT));
+-		local_irq_restore(flags);
+-
++		card_present = (hwreg_present((void *)ioaddr + 4) &&
++				hwreg_present((void *)ioaddr + DATA_PORT));
+ 		if (!card_present)
+ 			goto out;
+ 	}
 -- 
-1.9.3
+1.9.1
