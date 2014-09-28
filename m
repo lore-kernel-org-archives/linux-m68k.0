@@ -1,42 +1,45 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4/5] natsemi/macsonic: Remove superfluous interrupt disable/restore
-Date: Sun, 28 Sep 2014 11:26:24 +0200
-Message-ID: <1411896385-25384-4-git-send-email-geert__10679.8181812794$1411896475$gmane$org@linux-m68k.org>
-References: <1411896385-25384-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH] USB: isp116x: Fix EtherNAT if !CONFIG_ATARI_ROM_ISA
+Date: Sun, 28 Sep 2014 11:39:14 +0200
+Message-ID: <CAMuHMdWNQvB9QfidZBnHZznF-UH3Sgsr79YdhkW_H-W9P5Ni8A@mail.gmail.com>
+References: <1410687560-10169-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1411896385-25384-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-lb0-f179.google.com ([209.85.217.179]:46350 "EHLO
+	mail-lb0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751070AbaI1JjQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 28 Sep 2014 05:39:16 -0400
+Received: by mail-lb0-f179.google.com with SMTP id 10so15576974lbg.24
+        for <linux-m68k@vger.kernel.org>; Sun, 28 Sep 2014 02:39:15 -0700 (PDT)
+In-Reply-To: <1410687560-10169-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-As of commit XXX ("m68k: Disable/restore interrupts in
-hwreg_present()/hwreg_write()"), this is no longer needed.
+On Sun, Sep 14, 2014 at 11:39 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Commit eece8a651c96a2a3 ("USB: isp116x: isa_rom_*() calls should depend
+> on CONFIG_ATARI_ROM_ISA") broke USB on EtherNAT if CONFIG_ATARI_ROM_ISA
+> is not set, as USB on EtherNAT requires byte-swapped I/O accessors.
+>
+> Add a separate #elif section for Atari without ROM port ISA to fix this.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> To be folded into "m68k/atari: USB - add ISP1160 USB host controller
+> support"
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Do not apply before commit XXX has been applied.
----
- drivers/net/ethernet/natsemi/macsonic.c | 4 ----
- 1 file changed, 4 deletions(-)
+Applied to master, folded on m68k-queue.
 
-diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
-index 9e4ddbba70363b8f..66c2d50d5b8d12df 100644
---- a/drivers/net/ethernet/natsemi/macsonic.c
-+++ b/drivers/net/ethernet/natsemi/macsonic.c
-@@ -326,13 +326,9 @@ static int mac_onboard_sonic_probe(struct net_device *dev)
- 	    macintosh_config->ident == MAC_MODEL_P588 ||
- 	    macintosh_config->ident == MAC_MODEL_P575 ||
- 	    macintosh_config->ident == MAC_MODEL_C610) {
--		unsigned long flags;
- 		int card_present;
- 
--		local_irq_save(flags);
- 		card_present = hwreg_present((void*)ONBOARD_SONIC_REGISTERS);
--		local_irq_restore(flags);
--
- 		if (!card_present) {
- 			printk("none.\n");
- 			return -ENODEV;
--- 
-1.9.1
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
