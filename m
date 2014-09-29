@@ -1,32 +1,52 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/5] m68k: Disable/restore interrupts in hwreg_present()/hwreg_write()
-Date: Sun, 28 Sep 2014 11:44:14 +0200
-Message-ID: <CAMuHMdUXk5HxwXzTMWP6R0W6gTA+vqNuu75z1DHa=8sF8SxL0g__35279.9626569778$1411897480$gmane$org@mail.gmail.com>
-References: <1411896385-25384-1-git-send-email-geert@linux-m68k.org>
-	<m2oau09j6k.fsf@linux-m68k.org>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH] [TRIVIAL] m68k: Fix typo 'COFNIG_MBAR'
+Date: Mon, 29 Sep 2014 10:10:40 +1000
+Message-ID: <5428A380.9030408@westnet.com.au>
+References: <1411753216.7866.65.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <m2oau09j6k.fsf@linux-m68k.org>
+In-Reply-To: <1411753216.7866.65.camel@x220>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>
+To: Paul Bolle <pebolle@tiscali.nl>, Jiri Kosina <trivial@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Sun, Sep 28, 2014 at 11:40 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
->> While most callers run early, before interrupt are disabled, or
->
->                                        interrupts are enabled
+Hi Paul,
 
-Thanks, will fix.
+On 27/09/14 03:40, Paul Bolle wrote:
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+> ---
+> Untested!
 
-Gr{oetje,eeting}s,
+Thanks. I have applied this to the m68knommu git tree (since
+that is where we tend to keep all ColdFire fixes).
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> Geert, PASR is obviously unused. Is it needed?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Not at the moment. It will be if/when we implement better error
+handling for external master errors.
+
+Regards
+Greg
+
+ 
+>  arch/m68k/include/asm/m54xxpci.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/include/asm/m54xxpci.h b/arch/m68k/include/asm/m54xxpci.h
+> index 6fbf54f72f2e..4687f5aa3741 100644
+> --- a/arch/m68k/include/asm/m54xxpci.h
+> +++ b/arch/m68k/include/asm/m54xxpci.h
+> @@ -72,7 +72,7 @@
+>  #define	PCIRFWPR	(CONFIG_MBAR + 0x84d4)	/* RX FIFO write pointer */
+>  
+>  #define	PACR		(CONFIG_MBAR + 0xc00)	/* PCI arbiter control */
+> -#define	PASR		(COFNIG_MBAR + 0xc04)	/* PCI arbiter status */
+> +#define	PASR		(CONFIG_MBAR + 0xc04)	/* PCI arbiter status */
+>  
+>  /*
+>   *	Definitions for the Global status and control register.
+> 
