@@ -1,50 +1,40 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 10/29] ncr5380: Fix SCSI_IRQ_NONE bugs
-Date: Fri, 3 Oct 2014 10:22:20 +0200
-Message-ID: <CAMuHMdWHkGFamsnxJAi++WFqx8OAZ-qyuQDQN66Gi8JJunB0dw@mail.gmail.com>
+Subject: Re: [PATCH 12/29] ncr5380: Cleanup host info() methods
+Date: Fri, 3 Oct 2014 10:32:15 +0200
+Message-ID: <CAMuHMdXVVvbSqZ1fKqbd3TgjO7ymcOLojhUhXsph-Nn8UUStNw@mail.gmail.com>
 References: <20141002065628.256592712@telegraphics.com.au>
-	<20141002065630.639025422@telegraphics.com.au>
+	<20141002065631.136827342@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-la0-f54.google.com ([209.85.215.54]:54887 "EHLO
-	mail-la0-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751343AbaJCIWW (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Oct 2014 04:22:22 -0400
-In-Reply-To: <20141002065630.639025422@telegraphics.com.au>
+Received: from mail-lb0-f169.google.com ([209.85.217.169]:62041 "EHLO
+	mail-lb0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750992AbaJCIcR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Oct 2014 04:32:17 -0400
+In-Reply-To: <20141002065631.136827342@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 
 On Thu, Oct 2, 2014 at 8:56 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Oak scsi doesn't use any IRQ, but it sets irq = IRQ_NONE rather than
-> SCSI_IRQ_NONE. Problem is, the core NCR5380 driver expects SCSI_IRQ_NONE
-> if it is to issue IDENTIFY commands that prevent target disconnection.
->
-> Other drivers, when they can't get an IRQ or can't use one, will set
-> host->irq = SCSI_IRQ_NONE (that is, 255). But when they exit they will
-> attempt to free IRQ 255 which was never requested.
->
-> Fix these bugs by using IRQ_NONE in place of SCSI_IRQ_NONE. This means
-> IRQ 0 is no longer probed by ISA drivers but I don't think this matters.
+> +static void prepare_info(struct Scsi_Host *instance)
+> +{
+> +       struct NCR5380_hostdata *hostdata = shost_priv(instance);
+> +
+> +       snprintf(hostdata->info, sizeof(hostdata->info),
 
-IRQ_NONE is part of enum irqreturn. I guess you meant NO_IRQ?
+[...]
 
-But NO_IRQ is deprecated, and not available on all architectures.
-The recommended way is to just use 0, like in "if (instance->irq) ...".
+> +                "");
+> +       hostdata->info[sizeof(hostdata->info) - 1] = '\0';
 
-Note that some drivers do
+snprintf() will make sure the string is zero-terminated, so doing this manually
+is not needed.
 
-#ifndef NO_IRQ
-#define NO_IRQ  (-1)
-#endif
+This applies to all three occurrences.
 
-and others do
-
-#ifndef NO_IRQ
-#define NO_IRQ  0
-#endif
+>  }
 
 Gr{oetje,eeting}s,
 
