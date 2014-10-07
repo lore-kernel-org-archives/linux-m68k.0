@@ -1,74 +1,71 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 42/44] efi: Register poweroff handler with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:44 -0700
-Message-ID: <1412659726-29957-43-git-send-email-linux__15702.7804213159$1412660017$gmane$org@roeck-us.net>
+Subject: [PATCH 44/44] kernel: Remove pm_power_off
+Date: Mon,  6 Oct 2014 22:28:46 -0700
+Message-ID: <1412659726-29957-45-git-send-email-linux__12626.4116647237$1412660105$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Matt
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Rafael J. W
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with low priority value of 64 since the efi code
-states that this is a poweroff handler of last resort.
+No users of pm_power_off are left, so it is safe to remove the function.
 
-Cc: Matt Fleming <matt.fleming@intel.com>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Len Brown <len.brown@intel.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/firmware/efi/reboot.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ include/linux/pm.h              |  1 -
+ kernel/power/poweroff_handler.c | 10 +---------
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/firmware/efi/reboot.c b/drivers/firmware/efi/reboot.c
-index 9c59d1c..c082439 100644
---- a/drivers/firmware/efi/reboot.c
-+++ b/drivers/firmware/efi/reboot.c
-@@ -3,6 +3,8 @@
-  * Copyright (c) 2014 Red Hat, Inc., Mark Salter <msalter@redhat.com>
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 45271b5..fce7645 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -31,7 +31,6 @@
+ /*
+  * Callbacks for platform drivers to implement.
   */
- #include <linux/efi.h>
-+#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/reboot.h>
+-extern void (*pm_power_off)(void);
+ extern void (*pm_power_off_prepare)(void);
  
- int efi_reboot_quirk_mode = -1;
-@@ -38,19 +40,32 @@ bool __weak efi_poweroff_required(void)
- 	return false;
- }
+ /*
+diff --git a/kernel/power/poweroff_handler.c b/kernel/power/poweroff_handler.c
+index 96f59ef..01a3a39 100644
+--- a/kernel/power/poweroff_handler.c
++++ b/kernel/power/poweroff_handler.c
+@@ -20,12 +20,6 @@
+ #include <linux/types.h>
  
--static void efi_power_off(void)
-+static int efi_power_off(struct notifier_block *this,
-+			 unsigned long unused1, void *unused2)
+ /*
+- * If set, calling this function will power off the system immediately.
+- */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+-/*
+  *	Notifier list for kernel code which wants to be called
+  *	to power off the system.
+  */
+@@ -163,8 +157,6 @@ int register_poweroff_handler_simple(void (*handler)(void), int priority)
+  */
+ void do_kernel_poweroff(void)
  {
- 	efi.reset_system(EFI_RESET_SHUTDOWN, EFI_SUCCESS, 0, NULL);
-+
-+	return NOTIFY_DONE;
+-	if (pm_power_off)
+-		pm_power_off();
+ 	atomic_notifier_call_chain(&poweroff_handler_list, 0, NULL);
  }
  
-+static struct notifier_block efi_poweroff_nb = {
-+	.notifier_call = efi_power_off,
-+	.priority = 64,
-+};
-+
- static int __init efi_shutdown_init(void)
+@@ -175,6 +167,6 @@ void do_kernel_poweroff(void)
+  */
+ bool have_kernel_poweroff(void)
  {
-+	int ret = 0;
-+
- 	if (!efi_enabled(EFI_RUNTIME_SERVICES))
- 		return -ENODEV;
- 
--	if (efi_poweroff_required())
--		pm_power_off = efi_power_off;
-+	if (efi_poweroff_required()) {
-+		ret = register_poweroff_handler(&efi_poweroff_nb);
-+		if (ret)
-+			pr_err("efi: Failed to register poweroff handler\n");
-+	}
- 
--	return 0;
-+	return ret;
+-	return pm_power_off != NULL || poweroff_handler_list.head != NULL;
++	return poweroff_handler_list.head != NULL;
  }
- late_initcall(efi_shutdown_init);
+ EXPORT_SYMBOL(have_kernel_poweroff);
 -- 
 1.9.1
