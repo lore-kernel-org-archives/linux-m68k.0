@@ -1,7 +1,7 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 21/44] power/reset: gpio-poweroff: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:23 -0700
-Message-ID: <1412659726-29957-22-git-send-email-linux__42123.6644768671$1412660106$gmane$org@roeck-us.net>
+Subject: [PATCH 22/44] power/reset: as3722-poweroff: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:24 -0700
+Message-ID: <1412659726-29957-23-git-send-email-linux__15605.1631704488$1412660111$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
@@ -14,102 +14,86 @@ Register with kernel poweroff handler instead of setting pm_power_off
 directly. Register with a low priority value of 64 to reflect that
 the original code only sets pm_power_off if it was not already set.
 
-Other changes:
-
-Drop note that there can not be an additional instance of this driver.
-The original reason no longer applies, it should be obvious that there
-can only be one instance of the driver if static variables are used to
-reflect its state, and support for multiple instances can now be added
-easily if needed by avoiding static variables.
-
-Do not create an error message if another poweroff handler has already been
-registered. This is perfectly normal and acceptable.
-
-Do not display a warning traceback if the poweroff handler fails to
-power off the system. There may be other poweroff handlers.
-
 Cc: Sebastian Reichel <sre@kernel.org>
 Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/power/reset/gpio-poweroff.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/power/reset/as3722-poweroff.c | 36 ++++++++++++++++++-----------------
+ 1 file changed, 19 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
-index ce849bc..e95a7a1 100644
---- a/drivers/power/reset/gpio-poweroff.c
-+++ b/drivers/power/reset/gpio-poweroff.c
-@@ -14,18 +14,18 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
-+#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/platform_device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/of_platform.h>
+diff --git a/drivers/power/reset/as3722-poweroff.c b/drivers/power/reset/as3722-poweroff.c
+index 6849711..7ebaed9 100644
+--- a/drivers/power/reset/as3722-poweroff.c
++++ b/drivers/power/reset/as3722-poweroff.c
+@@ -17,32 +17,33 @@
+ 
+ #include <linux/mfd/as3722.h>
  #include <linux/module.h>
++#include <linux/notifier.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/slab.h>
  
--/*
-- * Hold configuration here, cannot be more than one instance of the driver
-- * since pm_power_off itself is global.
-- */
- static struct gpio_desc *reset_gpio;
+ struct as3722_poweroff {
+ 	struct device *dev;
+ 	struct as3722 *as3722;
++	struct notifier_block poweroff_nb;
+ };
  
--static void gpio_poweroff_do_poweroff(void)
-+static int gpio_poweroff_do_poweroff(struct notifier_block *this,
-+				     unsigned long unused1, void *unused2)
-+
+-static struct as3722_poweroff *as3722_pm_poweroff;
+-
+-static void as3722_pm_power_off(void)
++static int as3722_power_off(struct notifier_block *this, unsigned long unused1,
++			    void *unused2)
  {
- 	BUG_ON(!reset_gpio);
++	struct as3722_poweroff *as3722_poweroff =
++		container_of(this, struct as3722_poweroff, poweroff_nb);
+ 	int ret;
  
-@@ -42,20 +42,18 @@ static void gpio_poweroff_do_poweroff(void)
- 	/* give it some time */
- 	mdelay(3000);
- 
--	WARN_ON(1);
+-	if (!as3722_pm_poweroff) {
+-		pr_err("AS3722 poweroff is not initialised\n");
+-		return;
+-	}
+-
+-	ret = as3722_update_bits(as3722_pm_poweroff->as3722,
++	ret = as3722_update_bits(as3722_poweroff->as3722,
+ 		AS3722_RESET_CONTROL_REG, AS3722_POWER_OFF, AS3722_POWER_OFF);
+ 	if (ret < 0)
+-		dev_err(as3722_pm_poweroff->dev,
++		dev_err(as3722_poweroff->dev,
+ 			"RESET_CONTROL_REG update failed, %d\n", ret);
++
 +	return NOTIFY_DONE;
  }
  
-+static struct notifier_block gpio_poweroff_nb = {
-+	.notifier_call = gpio_poweroff_do_poweroff,
-+	.priority = 64,
-+};
-+
- static int gpio_poweroff_probe(struct platform_device *pdev)
- {
- 	bool input = false;
--
--	/* If a pm_power_off function has already been added, leave it alone */
--	if (pm_power_off != NULL) {
--		dev_err(&pdev->dev,
--			"%s: pm_power_off function already registered",
--		       __func__);
--		return -EBUSY;
--	}
-+	int err;
+ static int as3722_poweroff_probe(struct platform_device *pdev)
+@@ -63,18 +64,19 @@ static int as3722_poweroff_probe(struct platform_device *pdev)
  
- 	reset_gpio = devm_gpiod_get(&pdev->dev, NULL);
- 	if (IS_ERR(reset_gpio))
-@@ -77,14 +75,16 @@ static int gpio_poweroff_probe(struct platform_device *pdev)
- 		}
- 	}
+ 	as3722_poweroff->as3722 = dev_get_drvdata(pdev->dev.parent);
+ 	as3722_poweroff->dev = &pdev->dev;
+-	as3722_pm_poweroff = as3722_poweroff;
+-	if (!pm_power_off)
+-		pm_power_off = as3722_pm_power_off;
++	as3722_poweroff->poweroff_nb.notifier_call = as3722_power_off;
++	as3722_poweroff->poweroff_nb.priority = 64;
  
--	pm_power_off = &gpio_poweroff_do_poweroff;
 -	return 0;
-+	err = register_poweroff_handler(&gpio_poweroff_nb);
-+	if (err)
-+		dev_err(&pdev->dev, "Failed to register poweroff handler\n");
++	platform_set_drvdata(pdev, as3722_poweroff);
 +
-+	return err;
++	return register_poweroff_handler(&as3722_poweroff->poweroff_nb);
  }
  
- static int gpio_poweroff_remove(struct platform_device *pdev)
+ static int as3722_poweroff_remove(struct platform_device *pdev)
  {
--	if (pm_power_off == &gpio_poweroff_do_poweroff)
+-	if (pm_power_off == as3722_pm_power_off)
 -		pm_power_off = NULL;
-+	unregister_poweroff_handler(&gpio_poweroff_nb);
+-	as3722_pm_poweroff = NULL;
++	struct as3722_poweroff *as3722_poweroff = platform_get_drvdata(pdev);
++
++	unregister_poweroff_handler(&as3722_poweroff->poweroff_nb);
  
  	return 0;
  }
