@@ -1,7 +1,7 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 22/44] power/reset: as3722-poweroff: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:24 -0700
-Message-ID: <1412659726-29957-23-git-send-email-linux__15605.1631704488$1412660111$gmane$org@roeck-us.net>
+Subject: [PATCH 20/44] power/reset: restart-poweroff: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:22 -0700
+Message-ID: <1412659726-29957-21-git-send-email-linux__36113.3441365839$1412660125$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
@@ -10,90 +10,67 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Sebastian
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+Register with kernel poweroff handler instead of seting pm_power_off
+directly.  Register as poweroff handler of last resort since the driver
+does not really power off the system but executes a restart.
 
 Cc: Sebastian Reichel <sre@kernel.org>
 Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/power/reset/as3722-poweroff.c | 36 ++++++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 17 deletions(-)
+ drivers/power/reset/restart-poweroff.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/power/reset/as3722-poweroff.c b/drivers/power/reset/as3722-poweroff.c
-index 6849711..7ebaed9 100644
---- a/drivers/power/reset/as3722-poweroff.c
-+++ b/drivers/power/reset/as3722-poweroff.c
-@@ -17,32 +17,33 @@
- 
- #include <linux/mfd/as3722.h>
- #include <linux/module.h>
+diff --git a/drivers/power/reset/restart-poweroff.c b/drivers/power/reset/restart-poweroff.c
+index edd707e..5437697 100644
+--- a/drivers/power/reset/restart-poweroff.c
++++ b/drivers/power/reset/restart-poweroff.c
+@@ -12,35 +12,34 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/init.h>
 +#include <linux/notifier.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
  #include <linux/platform_device.h>
+ #include <linux/of_platform.h>
+ #include <linux/module.h>
 +#include <linux/pm.h>
- #include <linux/slab.h>
+ #include <linux/reboot.h>
+-#include <asm/system_misc.h>
  
- struct as3722_poweroff {
- 	struct device *dev;
- 	struct as3722 *as3722;
-+	struct notifier_block poweroff_nb;
- };
- 
--static struct as3722_poweroff *as3722_pm_poweroff;
--
--static void as3722_pm_power_off(void)
-+static int as3722_power_off(struct notifier_block *this, unsigned long unused1,
-+			    void *unused2)
+-static void restart_poweroff_do_poweroff(void)
++static int restart_poweroff_do_poweroff(struct notifier_block *this,
++					unsigned long unused1, void *unused2)
  {
-+	struct as3722_poweroff *as3722_poweroff =
-+		container_of(this, struct as3722_poweroff, poweroff_nb);
- 	int ret;
- 
--	if (!as3722_pm_poweroff) {
--		pr_err("AS3722 poweroff is not initialised\n");
--		return;
--	}
--
--	ret = as3722_update_bits(as3722_pm_poweroff->as3722,
-+	ret = as3722_update_bits(as3722_poweroff->as3722,
- 		AS3722_RESET_CONTROL_REG, AS3722_POWER_OFF, AS3722_POWER_OFF);
- 	if (ret < 0)
--		dev_err(as3722_pm_poweroff->dev,
-+		dev_err(as3722_poweroff->dev,
- 			"RESET_CONTROL_REG update failed, %d\n", ret);
+ 	reboot_mode = REBOOT_HARD;
+ 	machine_restart(NULL);
 +
 +	return NOTIFY_DONE;
  }
  
- static int as3722_poweroff_probe(struct platform_device *pdev)
-@@ -63,18 +64,19 @@ static int as3722_poweroff_probe(struct platform_device *pdev)
- 
- 	as3722_poweroff->as3722 = dev_get_drvdata(pdev->dev.parent);
- 	as3722_poweroff->dev = &pdev->dev;
--	as3722_pm_poweroff = as3722_poweroff;
--	if (!pm_power_off)
--		pm_power_off = as3722_pm_power_off;
-+	as3722_poweroff->poweroff_nb.notifier_call = as3722_power_off;
-+	as3722_poweroff->poweroff_nb.priority = 64;
- 
--	return 0;
-+	platform_set_drvdata(pdev, as3722_poweroff);
++static struct notifier_block restart_poweroff_handler = {
++	.notifier_call = restart_poweroff_do_poweroff,
++};
 +
-+	return register_poweroff_handler(&as3722_poweroff->poweroff_nb);
+ static int restart_poweroff_probe(struct platform_device *pdev)
+ {
+-	/* If a pm_power_off function has already been added, leave it alone */
+-	if (pm_power_off != NULL) {
+-		dev_err(&pdev->dev,
+-			"pm_power_off function already registered");
+-		return -EBUSY;
+-	}
+-
+-	pm_power_off = &restart_poweroff_do_poweroff;
+-	return 0;
++	return register_poweroff_handler(&restart_poweroff_handler);
  }
  
- static int as3722_poweroff_remove(struct platform_device *pdev)
+ static int restart_poweroff_remove(struct platform_device *pdev)
  {
--	if (pm_power_off == as3722_pm_power_off)
+-	if (pm_power_off == &restart_poweroff_do_poweroff)
 -		pm_power_off = NULL;
--	as3722_pm_poweroff = NULL;
-+	struct as3722_poweroff *as3722_poweroff = platform_get_drvdata(pdev);
-+
-+	unregister_poweroff_handler(&as3722_poweroff->poweroff_nb);
++	unregister_poweroff_handler(&restart_poweroff_handler);
  
  	return 0;
  }
