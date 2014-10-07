@@ -1,114 +1,117 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 11/44] mfd: retu: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:13 -0700
-Message-ID: <1412659726-29957-12-git-send-email-linux__17092.3025267713$1412659934$gmane$org@roeck-us.net>
+Subject: [PATCH 19/44] ipmi: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:21 -0700
+Message-ID: <1412659726-29957-20-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>Lee Jones <l>
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Corey
 
 Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+directly. Register with a high priority value of 192 to reflect that
+the original code overwrites pm_power_off unconditionally.
 
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Samuel Ortiz <sameo@linux.intel.com>
+Register poweroff handler after the ipmi system is ready, and unregister
+it prior to cleanup. This avoids having to check for the ready variable
+in the poweroff callback.
+
+Cc: Corey Minyard <minyard@acm.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/mfd/retu-mfd.c | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ drivers/char/ipmi/ipmi_poweroff.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mfd/retu-mfd.c b/drivers/mfd/retu-mfd.c
-index 663f8a3..64b60fa 100644
---- a/drivers/mfd/retu-mfd.c
-+++ b/drivers/mfd/retu-mfd.c
-@@ -22,6 +22,8 @@
- #include <linux/slab.h>
- #include <linux/mutex.h>
- #include <linux/module.h>
+diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
+index 9f2e3be..a942a41 100644
+--- a/drivers/char/ipmi/ipmi_poweroff.c
++++ b/drivers/char/ipmi/ipmi_poweroff.c
+@@ -36,6 +36,7 @@
+ #include <linux/proc_fs.h>
+ #include <linux/string.h>
+ #include <linux/completion.h>
 +#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/regmap.h>
- #include <linux/mfd/core.h>
- #include <linux/mfd/retu.h>
-@@ -43,6 +45,7 @@ struct retu_dev {
- 	struct device			*dev;
- 	struct mutex			mutex;
- 	struct regmap_irq_chip_data	*irq_data;
-+	struct notifier_block		poweroff_nb;
- };
+ #include <linux/pm.h>
+ #include <linux/kdev_t.h>
+ #include <linux/ipmi.h>
+@@ -63,9 +64,6 @@ static ipmi_user_t ipmi_user;
+ static int ipmi_ifnum;
+ static void (*specific_poweroff_func)(ipmi_user_t user);
  
- static struct resource retu_pwrbutton_res[] = {
-@@ -81,9 +84,6 @@ static struct regmap_irq_chip retu_irq_chip = {
- 	.ack_base	= RETU_REG_IDR,
- };
- 
--/* Retu device registered for the power off. */
--static struct retu_dev *retu_pm_power_off;
+-/* Holds the old poweroff function so we can restore it on removal. */
+-static void (*old_poweroff_func)(void);
 -
- static struct resource tahvo_usb_res[] = {
- 	{
- 		.name	= "tahvo-usb",
-@@ -165,12 +165,14 @@ int retu_write(struct retu_dev *rdev, u8 reg, u16 data)
- }
- EXPORT_SYMBOL_GPL(retu_write);
- 
--static void retu_power_off(void)
-+static int retu_power_off(struct notifier_block *this, unsigned long unused1,
-+			  void *unused2)
+ static int set_param_ifnum(const char *val, struct kernel_param *kp)
  {
--	struct retu_dev *rdev = retu_pm_power_off;
-+	struct retu_dev *rdev = container_of(this, struct retu_dev,
-+					     poweroff_nb);
- 	int reg;
+ 	int rv = param_set_int(val, kp);
+@@ -544,15 +542,20 @@ static struct poweroff_function poweroff_functions[] = {
  
--	mutex_lock(&retu_pm_power_off->mutex);
-+	mutex_lock(&rdev->mutex);
  
- 	/* Ignore power button state */
- 	regmap_read(rdev->regmap, RETU_REG_CC1, &reg);
-@@ -183,7 +185,9 @@ static void retu_power_off(void)
- 	for (;;)
- 		cpu_relax();
- 
--	mutex_unlock(&retu_pm_power_off->mutex);
-+	mutex_unlock(&rdev->mutex);
+ /* Called on a powerdown request. */
+-static void ipmi_poweroff_function(void)
++static int ipmi_poweroff_function(struct notifier_block *this,
++				  unsigned long unused1, void *unused2)
+ {
+-	if (!ready)
+-		return;
+-
+ 	/* Use run-to-completion mode, since interrupts may be off. */
+ 	specific_poweroff_func(ipmi_user);
 +
 +	return NOTIFY_DONE;
  }
  
- static int retu_regmap_read(void *context, const void *reg, size_t reg_size,
-@@ -279,9 +283,13 @@ static int retu_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
- 		return ret;
++static struct notifier_block ipmi_poweroff_nb = {
++	.notifier_call = ipmi_poweroff_function,
++	.priority = 192,
++};
++
+ /* Wait for an IPMI interface to be installed, the first one installed
+    will be grabbed by this code and used to perform the powerdown. */
+ static void ipmi_po_new_smi(int if_num, struct device *device)
+@@ -631,9 +634,12 @@ static void ipmi_po_new_smi(int if_num, struct device *device)
+ 	printk(KERN_INFO PFX "Found a %s style poweroff function\n",
+ 	       poweroff_functions[i].platform_type);
+ 	specific_poweroff_func = poweroff_functions[i].poweroff_func;
+-	old_poweroff_func = pm_power_off;
+-	pm_power_off = ipmi_poweroff_function;
++
+ 	ready = 1;
++
++	rv = register_poweroff_handler(&ipmi_poweroff_nb);
++	if (rv)
++		pr_err(PFX "failed to register poweroff handler\n");
+ }
+ 
+ static void ipmi_po_smi_gone(int if_num)
+@@ -644,9 +650,10 @@ static void ipmi_po_smi_gone(int if_num)
+ 	if (ipmi_ifnum != if_num)
+ 		return;
+ 
++	unregister_poweroff_handler(&ipmi_poweroff_nb);
++
+ 	ready = 0;
+ 	ipmi_destroy_user(ipmi_user);
+-	pm_power_off = old_poweroff_func;
+ }
+ 
+ static struct ipmi_smi_watcher smi_watcher = {
+@@ -732,12 +739,13 @@ static void __exit ipmi_poweroff_cleanup(void)
+ 
+ 	ipmi_smi_watcher_unregister(&smi_watcher);
+ 
++	unregister_poweroff_handler(&ipmi_poweroff_nb);
++
+ 	if (ready) {
+ 		rv = ipmi_destroy_user(ipmi_user);
+ 		if (rv)
+ 			printk(KERN_ERR PFX "could not cleanup the IPMI"
+ 			       " user: 0x%x\n", rv);
+-		pm_power_off = old_poweroff_func;
  	}
- 
--	if (i2c->addr == 1 && !pm_power_off) {
--		retu_pm_power_off = rdev;
--		pm_power_off	  = retu_power_off;
-+	if (i2c->addr == 1) {
-+		rdev->poweroff_nb.notifier_call = retu_power_off;
-+		rdev->poweroff_nb.priority = 64;
-+		ret = register_poweroff_handler(&rdev->poweroff_nb);
-+		if (ret)
-+			dev_err(rdev->dev,
-+				"Failed to register poweroff handler\n");
- 	}
- 
- 	return 0;
-@@ -291,10 +299,7 @@ static int retu_remove(struct i2c_client *i2c)
- {
- 	struct retu_dev *rdev = i2c_get_clientdata(i2c);
- 
--	if (retu_pm_power_off == rdev) {
--		pm_power_off	  = NULL;
--		retu_pm_power_off = NULL;
--	}
-+	unregister_poweroff_handler(&rdev->poweroff_nb);
- 	mfd_remove_devices(rdev->dev);
- 	regmap_del_irq_chip(i2c->irq, rdev->irq_data);
- 
+ }
+ module_exit(ipmi_poweroff_cleanup);
 -- 
 1.9.1
