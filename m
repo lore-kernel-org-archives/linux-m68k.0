@@ -1,117 +1,106 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 19/44] ipmi: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:21 -0700
-Message-ID: <1412659726-29957-20-git-send-email-linux@roeck-us.net>
+Subject: [PATCH 17/44] mfd: tps65910: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:19 -0700
+Message-ID: <1412659726-29957-18-git-send-email-linux__26177.3427868777$1412659947$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Corey
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Samuel
 
 Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a high priority value of 192 to reflect that
-the original code overwrites pm_power_off unconditionally.
+directly. Register with a low priority value of 64 to reflect that
+the original code only sets pm_power_off if it was not already set.
 
-Register poweroff handler after the ipmi system is ready, and unregister
-it prior to cleanup. This avoids having to check for the ready variable
-in the poweroff callback.
-
-Cc: Corey Minyard <minyard@acm.org>
+Cc: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/char/ipmi/ipmi_poweroff.c | 30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+ drivers/mfd/tps65910.c       | 27 ++++++++++++++++++---------
+ include/linux/mfd/tps65910.h |  3 +++
+ 2 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
-index 9f2e3be..a942a41 100644
---- a/drivers/char/ipmi/ipmi_poweroff.c
-+++ b/drivers/char/ipmi/ipmi_poweroff.c
-@@ -36,6 +36,7 @@
- #include <linux/proc_fs.h>
- #include <linux/string.h>
- #include <linux/completion.h>
+diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
+index f243e75..0b114d3 100644
+--- a/drivers/mfd/tps65910.c
++++ b/drivers/mfd/tps65910.c
+@@ -23,6 +23,8 @@
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/mfd/core.h>
 +#include <linux/notifier.h>
- #include <linux/pm.h>
- #include <linux/kdev_t.h>
- #include <linux/ipmi.h>
-@@ -63,9 +64,6 @@ static ipmi_user_t ipmi_user;
- static int ipmi_ifnum;
- static void (*specific_poweroff_func)(ipmi_user_t user);
++#include <linux/pm.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/tps65910.h>
+ #include <linux/of.h>
+@@ -437,19 +439,20 @@ struct tps65910_board *tps65910_parse_dt(struct i2c_client *client,
+ }
+ #endif
  
--/* Holds the old poweroff function so we can restore it on removal. */
--static void (*old_poweroff_func)(void);
+-static struct i2c_client *tps65910_i2c_client;
+-static void tps65910_power_off(void)
++static int tps65910_power_off(struct notifier_block *this,
++			      unsigned long unused1, void *unused2)
+ {
+-	struct tps65910 *tps65910;
 -
- static int set_param_ifnum(const char *val, struct kernel_param *kp)
- {
- 	int rv = param_set_int(val, kp);
-@@ -544,15 +542,20 @@ static struct poweroff_function poweroff_functions[] = {
+-	tps65910 = dev_get_drvdata(&tps65910_i2c_client->dev);
++	struct tps65910 *tps65910 = container_of(this, struct tps65910,
++						 poweroff_nb);
  
- 
- /* Called on a powerdown request. */
--static void ipmi_poweroff_function(void)
-+static int ipmi_poweroff_function(struct notifier_block *this,
-+				  unsigned long unused1, void *unused2)
- {
--	if (!ready)
+ 	if (tps65910_reg_set_bits(tps65910, TPS65910_DEVCTRL,
+ 			DEVCTRL_PWR_OFF_MASK) < 0)
 -		return;
--
- 	/* Use run-to-completion mode, since interrupts may be off. */
- 	specific_poweroff_func(ipmi_user);
++		return NOTIFY_DONE;
+ 
+ 	tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
+ 			DEVCTRL_DEV_ON_MASK);
 +
 +	return NOTIFY_DONE;
  }
  
-+static struct notifier_block ipmi_poweroff_nb = {
-+	.notifier_call = ipmi_poweroff_function,
-+	.priority = 192,
-+};
-+
- /* Wait for an IPMI interface to be installed, the first one installed
-    will be grabbed by this code and used to perform the powerdown. */
- static void ipmi_po_new_smi(int if_num, struct device *device)
-@@ -631,9 +634,12 @@ static void ipmi_po_new_smi(int if_num, struct device *device)
- 	printk(KERN_INFO PFX "Found a %s style poweroff function\n",
- 	       poweroff_functions[i].platform_type);
- 	specific_poweroff_func = poweroff_functions[i].poweroff_func;
--	old_poweroff_func = pm_power_off;
--	pm_power_off = ipmi_poweroff_function;
-+
- 	ready = 1;
-+
-+	rv = register_poweroff_handler(&ipmi_poweroff_nb);
-+	if (rv)
-+		pr_err(PFX "failed to register poweroff handler\n");
- }
+ static int tps65910_i2c_probe(struct i2c_client *i2c,
+@@ -500,9 +503,13 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
+ 	tps65910_ck32k_init(tps65910, pmic_plat_data);
+ 	tps65910_sleepinit(tps65910, pmic_plat_data);
  
- static void ipmi_po_smi_gone(int if_num)
-@@ -644,9 +650,10 @@ static void ipmi_po_smi_gone(int if_num)
- 	if (ipmi_ifnum != if_num)
- 		return;
- 
-+	unregister_poweroff_handler(&ipmi_poweroff_nb);
-+
- 	ready = 0;
- 	ipmi_destroy_user(ipmi_user);
--	pm_power_off = old_poweroff_func;
- }
- 
- static struct ipmi_smi_watcher smi_watcher = {
-@@ -732,12 +739,13 @@ static void __exit ipmi_poweroff_cleanup(void)
- 
- 	ipmi_smi_watcher_unregister(&smi_watcher);
- 
-+	unregister_poweroff_handler(&ipmi_poweroff_nb);
-+
- 	if (ready) {
- 		rv = ipmi_destroy_user(ipmi_user);
- 		if (rv)
- 			printk(KERN_ERR PFX "could not cleanup the IPMI"
- 			       " user: 0x%x\n", rv);
--		pm_power_off = old_poweroff_func;
+-	if (pmic_plat_data->pm_off && !pm_power_off) {
+-		tps65910_i2c_client = i2c;
+-		pm_power_off = tps65910_power_off;
++	if (pmic_plat_data->pm_off) {
++		tps65910->poweroff_nb.notifier_call = tps65910_power_off;
++		tps65910->poweroff_nb.priority = 64;
++		ret = register_poweroff_handler(&tps65910->poweroff_nb);
++		if (ret)
++			dev_err(&i2c->dev,
++				"failed to register poweroff handler\n");
  	}
- }
- module_exit(ipmi_poweroff_cleanup);
+ 
+ 	ret = mfd_add_devices(tps65910->dev, -1,
+@@ -522,6 +529,8 @@ static int tps65910_i2c_remove(struct i2c_client *i2c)
+ {
+ 	struct tps65910 *tps65910 = i2c_get_clientdata(i2c);
+ 
++	unregister_poweroff_handler(&tps65910->poweroff_nb);
++
+ 	tps65910_irq_exit(tps65910);
+ 	mfd_remove_devices(tps65910->dev);
+ 
+diff --git a/include/linux/mfd/tps65910.h b/include/linux/mfd/tps65910.h
+index 6483a6f..65cae2c 100644
+--- a/include/linux/mfd/tps65910.h
++++ b/include/linux/mfd/tps65910.h
+@@ -905,6 +905,9 @@ struct tps65910 {
+ 	/* IRQ Handling */
+ 	int chip_irq;
+ 	struct regmap_irq_chip_data *irq_data;
++
++	/* Poweroff handling */
++	struct notifier_block poweroff_nb;
+ };
+ 
+ struct tps65910_platform_data {
 -- 
 1.9.1
