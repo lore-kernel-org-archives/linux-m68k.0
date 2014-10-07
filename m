@@ -1,54 +1,77 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 43/44] hwmon: (ab8500) Call kernel_power_off instead of pm_power_off
-Date: Mon,  6 Oct 2014 22:28:45 -0700
-Message-ID: <1412659726-29957-44-git-send-email-linux__9997.73845910585$1412660001$gmane$org@roeck-us.net>
+Subject: [PATCH 25/44] power/reset: vexpress-poweroff: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:27 -0700
+Message-ID: <1412659726-29957-26-git-send-email-linux__34314.1151512556$1412660004$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Jean
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>
 
-Drivers should not call pm_power_off directly; it is not guaranteed
-to be non-NULL. Call kernel_power_off instead.
+Register with kernel poweroff handler instead of setting pm_power_off
+directly.
 
-Cc: Jean Delvare <jdelvare@suse.de>
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/hwmon/ab8500.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/power/reset/vexpress-poweroff.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwmon/ab8500.c b/drivers/hwmon/ab8500.c
-index d844dc8..8b6a4f4 100644
---- a/drivers/hwmon/ab8500.c
-+++ b/drivers/hwmon/ab8500.c
-@@ -6,7 +6,7 @@
-  *
-  * When the AB8500 thermal warning temperature is reached (threshold cannot
-  * be changed by SW), an interrupt is set, and if no further action is taken
-- * within a certain time frame, pm_power off will be called.
-+ * within a certain time frame, kernel_power_off will be called.
-  *
-  * When AB8500 thermal shutdown temperature is reached a hardware shutdown of
-  * the AB8500 will occur.
-@@ -21,6 +21,7 @@
- #include <linux/module.h>
+diff --git a/drivers/power/reset/vexpress-poweroff.c b/drivers/power/reset/vexpress-poweroff.c
+index 4dc102e2..060c55d 100644
+--- a/drivers/power/reset/vexpress-poweroff.c
++++ b/drivers/power/reset/vexpress-poweroff.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/delay.h>
++#include <linux/notifier.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/power/ab8500.h>
-+#include <linux/reboot.h>
- #include <linux/slab.h>
- #include <linux/sysfs.h>
- #include "abx500.h"
-@@ -106,7 +107,7 @@ static void ab8500_thermal_power_off(struct work_struct *work)
+@@ -36,11 +37,19 @@ static void vexpress_reset_do(struct device *dev, const char *what)
  
- 	dev_warn(&abx500_data->pdev->dev, "Power off due to critical temp\n");
+ static struct device *vexpress_power_off_device;
  
--	pm_power_off();
-+	kernel_power_off();
+-static void vexpress_power_off(void)
++static int vexpress_power_off(struct notifier_block *this,
++			      unsigned long unused1, void *unused2)
+ {
+ 	vexpress_reset_do(vexpress_power_off_device, "power off");
++
++	return NOTIFY_DONE;
  }
  
- static ssize_t ab8500_show_name(struct device *dev,
++static struct notifier_block vexpress_poweroff_nb = {
++	.notifier_call = vexpress_power_off,
++	.priority = 128,
++};
++
+ static struct device *vexpress_restart_device;
+ 
+ static void vexpress_restart(enum reboot_mode reboot_mode, const char *cmd)
+@@ -92,6 +101,7 @@ static int vexpress_reset_probe(struct platform_device *pdev)
+ 	const struct of_device_id *match =
+ 			of_match_device(vexpress_reset_of_match, &pdev->dev);
+ 	struct regmap *regmap;
++	int ret;
+ 
+ 	if (match)
+ 		func = (enum vexpress_reset_func)match->data;
+@@ -106,7 +116,12 @@ static int vexpress_reset_probe(struct platform_device *pdev)
+ 	switch (func) {
+ 	case FUNC_SHUTDOWN:
+ 		vexpress_power_off_device = &pdev->dev;
+-		pm_power_off = vexpress_power_off;
++		ret = register_poweroff_handler(&vexpress_poweroff_nb);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"Failed to register poweroff handler\n");
++			return ret;
++		}
+ 		break;
+ 	case FUNC_RESET:
+ 		if (!vexpress_restart_device)
 -- 
 1.9.1
