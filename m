@@ -1,101 +1,54 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 10/44] mfd: axp20x: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:12 -0700
-Message-ID: <1412659726-29957-11-git-send-email-linux__4198.73344149$1412659994$gmane$org@roeck-us.net>
+Subject: [PATCH 43/44] hwmon: (ab8500) Call kernel_power_off instead of pm_power_off
+Date: Mon,  6 Oct 2014 22:28:45 -0700
+Message-ID: <1412659726-29957-44-git-send-email-linux__9997.73845910585$1412660001$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>Lee Jones <l>
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Jean
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+Drivers should not call pm_power_off directly; it is not guaranteed
+to be non-NULL. Call kernel_power_off instead.
 
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Jean Delvare <jdelvare@suse.de>
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/mfd/axp20x.c       | 30 +++++++++++++++++-------------
- include/linux/mfd/axp20x.h |  1 +
- 2 files changed, 18 insertions(+), 13 deletions(-)
+ drivers/hwmon/ab8500.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-index dee6539..238db4c 100644
---- a/drivers/mfd/axp20x.c
-+++ b/drivers/mfd/axp20x.c
-@@ -17,7 +17,8 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
+diff --git a/drivers/hwmon/ab8500.c b/drivers/hwmon/ab8500.c
+index d844dc8..8b6a4f4 100644
+--- a/drivers/hwmon/ab8500.c
++++ b/drivers/hwmon/ab8500.c
+@@ -6,7 +6,7 @@
+  *
+  * When the AB8500 thermal warning temperature is reached (threshold cannot
+  * be changed by SW), an interrupt is set, and if no further action is taken
+- * within a certain time frame, pm_power off will be called.
++ * within a certain time frame, kernel_power_off will be called.
+  *
+  * When AB8500 thermal shutdown temperature is reached a hardware shutdown of
+  * the AB8500 will occur.
+@@ -21,6 +21,7 @@
  #include <linux/module.h>
--#include <linux/pm_runtime.h>
-+#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/power/ab8500.h>
++#include <linux/reboot.h>
  #include <linux/slab.h>
- #include <linux/regulator/consumer.h>
-@@ -161,11 +162,16 @@ static struct mfd_cell axp20x_cells[] = {
- 	},
- };
+ #include <linux/sysfs.h>
+ #include "abx500.h"
+@@ -106,7 +107,7 @@ static void ab8500_thermal_power_off(struct work_struct *work)
  
--static struct axp20x_dev *axp20x_pm_power_off;
--static void axp20x_power_off(void)
-+static int axp20x_power_off(struct notifier_block *this, unsigned long unused1,
-+			    void *unused2)
-+
- {
--	regmap_write(axp20x_pm_power_off->regmap, AXP20X_OFF_CTRL,
--		     AXP20X_OFF);
-+	struct axp20x_dev *axp20x = container_of(this, struct axp20x_dev,
-+						 poweroff_nb);
-+
-+	regmap_write(axp20x->regmap, AXP20X_OFF_CTRL, AXP20X_OFF);
-+
-+	return NOTIFY_DONE;
+ 	dev_warn(&abx500_data->pdev->dev, "Power off due to critical temp\n");
+ 
+-	pm_power_off();
++	kernel_power_off();
  }
  
- static int axp20x_i2c_probe(struct i2c_client *i2c,
-@@ -215,10 +221,11 @@ static int axp20x_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
--	if (!pm_power_off) {
--		axp20x_pm_power_off = axp20x;
--		pm_power_off = axp20x_power_off;
--	}
-+	axp20x->poweroff_nb.notifier_call = axp20x_power_off;
-+	axp20x->poweroff_nb.priority = 64;
-+	ret = register_poweroff_handler(&axp20x->poweroff_nb);
-+	if (ret)
-+		dev_err(&i2c->dev, "failed to register poweroff handler\n");
- 
- 	dev_info(&i2c->dev, "AXP20X driver loaded\n");
- 
-@@ -229,10 +236,7 @@ static int axp20x_i2c_remove(struct i2c_client *i2c)
- {
- 	struct axp20x_dev *axp20x = i2c_get_clientdata(i2c);
- 
--	if (axp20x == axp20x_pm_power_off) {
--		axp20x_pm_power_off = NULL;
--		pm_power_off = NULL;
--	}
-+	unregister_poweroff_handler(&axp20x->poweroff_nb);
- 
- 	mfd_remove_devices(axp20x->dev);
- 	regmap_del_irq_chip(axp20x->i2c_client->irq, axp20x->regmap_irqc);
-diff --git a/include/linux/mfd/axp20x.h b/include/linux/mfd/axp20x.h
-index d0e31a2..8f23b39 100644
---- a/include/linux/mfd/axp20x.h
-+++ b/include/linux/mfd/axp20x.h
-@@ -175,6 +175,7 @@ struct axp20x_dev {
- 	struct regmap			*regmap;
- 	struct regmap_irq_chip_data	*regmap_irqc;
- 	long				variant;
-+	struct notifier_block		poweroff_nb;
- };
- 
- #endif /* __LINUX_MFD_AXP20X_H */
+ static ssize_t ab8500_show_name(struct device *dev,
 -- 
 1.9.1
