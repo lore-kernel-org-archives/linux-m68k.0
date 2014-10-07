@@ -1,40 +1,52 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 05/44] mfd: as3722: Drop reference to pm_power_off from devicetree bindings
-Date: Mon,  6 Oct 2014 22:28:07 -0700
-Message-ID: <1412659726-29957-6-git-send-email-linux__3479.90324157781$1412660498$gmane$org@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+From: =?windows-1252?Q?Philippe_R=E9tornaz?=
+	<philippe.retornaz@gmail.com>
+Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
+Date: Tue, 07 Oct 2014 09:46:59 +0200
+Message-ID: <54339A73.40107@gmail.com>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-2-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Rob
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Len Brown <len.brown@intel.com>, linux-xtensa@linux-xtensa.org, Pavel Machek <pavel@ucw.cz>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, Alexander Graf <agraf@suse.de>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead
 
-Devicetree bindings are supposed to be operating system independent
-and should thus not describe how a specific functionality is implemented
-in Linux.
+Hello
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Pawel Moll <pawel.moll@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- Documentation/devicetree/bindings/mfd/as3722.txt | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This seems exactly what I would need on the mc13783 to handle cleanly 
+the poweroff,
+but after reading this patchset I have the following question:
 
-diff --git a/Documentation/devicetree/bindings/mfd/as3722.txt b/Documentation/devicetree/bindings/mfd/as3722.txt
-index 4f64b2a..0b2a609 100644
---- a/Documentation/devicetree/bindings/mfd/as3722.txt
-+++ b/Documentation/devicetree/bindings/mfd/as3722.txt
-@@ -122,8 +122,7 @@ Following are properties of regulator subnode.
- 
- Power-off:
- =========
--AS3722 supports the system power off by turning off all its rail. This
--is provided through pm_power_off.
-+AS3722 supports the system power off by turning off all its rails.
- The device node should have the following properties to enable this
- functionality
- ams,system-power-controller: Boolean, to enable the power off functionality
--- 
-1.9.1
+[...]
+
+> +/*
+> + *	Notifier list for kernel code which wants to be called
+> + *	to power off the system.
+> + */
+> +static ATOMIC_NOTIFIER_HEAD(poweroff_handler_list);
+
+[...]
+
+> +void do_kernel_poweroff(void)
+> +{
+> +	atomic_notifier_call_chain(&poweroff_handler_list, 0, NULL);
+> +}
+> +
+
+It seems that the poweroff callback needs to be atomic as per
+_atomic_notifier_call_chain documentation:
+
+	"Calls each function in a notifier chain in turn.  The functions
+	 run in an atomic context"
+
+But this is a problem for many MFD (mc13783, twl4030 etc ...) which are
+accessible on only a blocking bus (SPI, I2C).
+
+What I am missing here ?
+
+Thanks,
+
+Philippe
