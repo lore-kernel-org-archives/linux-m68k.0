@@ -1,66 +1,116 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 24/44] power/reset: msm-powroff: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:26 -0700
-Message-ID: <1412659726-29957-25-git-send-email-linux__27981.2548462816$1412659975$gmane$org@roeck-us.net>
+Subject: [PATCH 18/44] mfd: twl4030-power: Register with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:20 -0700
+Message-ID: <1412659726-29957-19-git-send-email-linux__4359.62840351767$1412659975$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Samuel
 
 Register with kernel poweroff handler instead of setting pm_power_off
-directly. Select proprity 0 since the code does not really poweroff
-the system.
+directly. Register with a low priority value of 64 to reflect that
+the original code only sets pm_power_off if it was not already set.
 
+Make twl4030_power_off static as it is only called from the twl4030-power
+driver.
+
+Cc: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/power/reset/msm-poweroff.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mfd/twl4030-power.c | 25 +++++++++++++++++++++----
+ include/linux/i2c/twl.h     |  1 -
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/power/reset/msm-poweroff.c b/drivers/power/reset/msm-poweroff.c
-index 774f9a3..189bcd3 100644
---- a/drivers/power/reset/msm-poweroff.c
-+++ b/drivers/power/reset/msm-poweroff.c
-@@ -19,6 +19,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
+diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
+index 4d3ff37..bd6b830 100644
+--- a/drivers/mfd/twl4030-power.c
++++ b/drivers/mfd/twl4030-power.c
+@@ -25,9 +25,10 @@
+  */
+ 
  #include <linux/module.h>
+-#include <linux/pm.h>
 +#include <linux/notifier.h>
- #include <linux/reboot.h>
+ #include <linux/i2c/twl.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
  
- #include <asm/system_misc.h>
-@@ -31,12 +32,19 @@ static void do_msm_restart(enum reboot_mode reboot_mode, const char *cmd)
- 	mdelay(10000);
- }
- 
--static void do_msm_poweroff(void)
-+static int do_msm_poweroff(struct notifier_block *this,
-+			   unsigned long unused1, void *unused2)
+@@ -611,7 +612,8 @@ twl4030_power_configure_resources(const struct twl4030_power_data *pdata)
+  * After a successful execution, TWL shuts down the power to the SoC
+  * and all peripherals connected to it.
+  */
+-void twl4030_power_off(void)
++static int twl4030_power_off(struct notifier_block *this, unsigned long unused1,
++			     void *unused2)
  {
- 	/* TODO: Add poweroff capability */
- 	do_msm_restart(REBOOT_HARD, NULL);
+ 	int err;
+ 
+@@ -619,8 +621,15 @@ void twl4030_power_off(void)
+ 			       TWL4030_PM_MASTER_P1_SW_EVENTS);
+ 	if (err)
+ 		pr_err("TWL4030 Unable to power off\n");
 +
 +	return NOTIFY_DONE;
  }
  
-+static struct notifier_block msm_powroff_nb = {
-+	.notifier_call = do_msm_poweroff,
++static struct notifier_block twl4030_poweroff_nb = {
++	.notifier_call = twl4030_power_off,
++	.priority = 64,
 +};
 +
- static int msm_restart_probe(struct platform_device *pdev)
+ static bool twl4030_power_use_poweroff(const struct twl4030_power_data *pdata,
+ 					struct device_node *node)
  {
- 	struct device *dev = &pdev->dev;
-@@ -47,7 +55,8 @@ static int msm_restart_probe(struct platform_device *pdev)
- 	if (IS_ERR(msm_ps_hold))
- 		return PTR_ERR(msm_ps_hold);
+@@ -836,7 +845,7 @@ static int twl4030_power_probe(struct platform_device *pdev)
+ 	}
  
--	pm_power_off = do_msm_poweroff;
-+	if (register_poweroff_handler(&msm_powroff_nb))
-+		dev_err(&pdev->dev, "Failed to register poweroff handler\n");
- 	arm_pm_restart = do_msm_restart;
+ 	/* Board has to be wired properly to use this feature */
+-	if (twl4030_power_use_poweroff(pdata, node) && !pm_power_off) {
++	if (twl4030_power_use_poweroff(pdata, node)) {
+ 		/* Default for SEQ_OFFSYNC is set, lets ensure this */
+ 		err = twl_i2c_read_u8(TWL_MODULE_PM_MASTER, &val,
+ 				      TWL4030_PM_MASTER_CFG_P123_TRANSITION);
+@@ -853,7 +862,13 @@ static int twl4030_power_probe(struct platform_device *pdev)
+ 			}
+ 		}
+ 
+-		pm_power_off = twl4030_power_off;
++		err = register_poweroff_handler(&twl4030_poweroff_nb);
++		if (err) {
++			dev_err(&pdev->dev,
++				"Failed to register poweroff handler\n");
++			/* Not a fatal error */
++			err = 0;
++		}
+ 	}
+ 
+ relock:
+@@ -869,6 +884,8 @@ relock:
+ 
+ static int twl4030_power_remove(struct platform_device *pdev)
+ {
++	unregister_poweroff_handler(&twl4030_poweroff_nb);
++
  	return 0;
  }
+ 
+diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+index 8cfb50f..f8544f1 100644
+--- a/include/linux/i2c/twl.h
++++ b/include/linux/i2c/twl.h
+@@ -680,7 +680,6 @@ struct twl4030_power_data {
+ };
+ 
+ extern int twl4030_remove_script(u8 flags);
+-extern void twl4030_power_off(void);
+ 
+ struct twl4030_codec_data {
+ 	unsigned int digimic_delay; /* in ms */
 -- 
 1.9.1
