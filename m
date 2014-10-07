@@ -1,124 +1,93 @@
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 09/44] mfd: palmas: Register with kernel poweroff handler
-Date: Mon,  6 Oct 2014 22:28:11 -0700
-Message-ID: <1412659726-29957-10-git-send-email-linux__448.012169408862$1412659891$gmane$org@roeck-us.net>
+Subject: [PATCH 28/44] x86: olpc: Register xo1 poweroff handler with kernel poweroff handler
+Date: Mon,  6 Oct 2014 22:28:30 -0700
+Message-ID: <1412659726-29957-29-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Samuel
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Thomas
 
 Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+directly. Register with high priority value of 192 to reflect that
+the driver explicitly wants to override default poweroff handlers.
 
-Cc: Samuel Ortiz <sameo@linux.intel.com>
-Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/mfd/palmas.c       | 30 +++++++++++++++++-------------
- include/linux/mfd/palmas.h |  3 +++
- 2 files changed, 20 insertions(+), 13 deletions(-)
+ arch/x86/platform/olpc/olpc-xo1-pm.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/palmas.c b/drivers/mfd/palmas.c
-index 28cb048..4d78847 100644
---- a/drivers/mfd/palmas.c
-+++ b/drivers/mfd/palmas.c
-@@ -19,6 +19,7 @@
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/pm.h>
- #include <linux/regmap.h>
- #include <linux/err.h>
+diff --git a/arch/x86/platform/olpc/olpc-xo1-pm.c b/arch/x86/platform/olpc/olpc-xo1-pm.c
+index a9acde7..96fba36 100644
+--- a/arch/x86/platform/olpc/olpc-xo1-pm.c
++++ b/arch/x86/platform/olpc/olpc-xo1-pm.c
+@@ -15,6 +15,7 @@
+ #include <linux/cs5535.h>
+ #include <linux/platform_device.h>
+ #include <linux/export.h>
++#include <linux/notifier.h>
+ #include <linux/pm.h>
  #include <linux/mfd/core.h>
-@@ -425,20 +426,18 @@ static void palmas_dt_to_pdata(struct i2c_client *i2c,
- 			"ti,system-power-controller");
+ #include <linux/suspend.h>
+@@ -92,7 +93,8 @@ asmlinkage __visible int xo1_do_sleep(u8 sleep_state)
+ 	return 0;
  }
  
--static struct palmas *palmas_dev;
--static void palmas_power_off(void)
-+static int palmas_power_off(struct notifier_block *this, unsigned long unused1,
-+			    void *unused2)
+-static void xo1_power_off(void)
++static int xo1_power_off(struct notifier_block *this, unsigned long unused1,
++			 void *unused2)
  {
-+	struct palmas *palmas = container_of(this, struct palmas, poweroff_nb);
- 	unsigned int addr;
- 	int ret, slave;
+ 	printk(KERN_INFO "OLPC XO-1 power off sequence...\n");
  
--	if (!palmas_dev)
--		return;
--
- 	slave = PALMAS_BASE_TO_SLAVE(PALMAS_PMU_CONTROL_BASE);
- 	addr = PALMAS_BASE_TO_REG(PALMAS_PMU_CONTROL_BASE, PALMAS_DEV_CTRL);
+@@ -108,8 +110,15 @@ static void xo1_power_off(void)
  
- 	ret = regmap_update_bits(
--			palmas_dev->regmap[slave],
-+			palmas->regmap[slave],
- 			addr,
- 			PALMAS_DEV_CTRL_DEV_ON,
- 			0);
-@@ -446,6 +445,8 @@ static void palmas_power_off(void)
- 	if (ret)
- 		pr_err("%s: Unable to write to DEV_CTRL_DEV_ON: %d\n",
- 				__func__, ret);
+ 	/* Write SLP_EN bit to start the machinery */
+ 	outl(0x00002000, acpi_base + CS5536_PM1_CNT);
 +
 +	return NOTIFY_DONE;
  }
  
- static unsigned int palmas_features = PALMAS_PMIC_FEATURE_SMPS10_BOOST;
-@@ -668,9 +669,15 @@ no_irq:
- 		ret = of_platform_populate(node, NULL, NULL, &i2c->dev);
- 		if (ret < 0) {
- 			goto err_irq;
--		} else if (pdata->pm_off && !pm_power_off) {
--			palmas_dev = palmas;
--			pm_power_off = palmas_power_off;
-+		} else if (pdata->pm_off) {
-+			palmas->poweroff_nb.notifier_call = palmas_power_off;
-+			palmas->poweroff_nb.priority = 64;
-+			ret = register_poweroff_handler(&palmas->poweroff_nb);
-+			if (ret) {
-+				dev_err(palmas->dev,
-+					"Failed to register poweroff handler");
-+				ret = 0;
-+			}
- 		}
++static struct notifier_block xo1_poweroff_nb = {
++	.notifier_call = xo1_power_off,
++	.priority = 192,
++};
++
+ static int xo1_power_state_valid(suspend_state_t pm_state)
+ {
+ 	/* suspend-to-RAM only */
+@@ -146,8 +155,12 @@ static int xo1_pm_probe(struct platform_device *pdev)
+ 
+ 	/* If we have both addresses, we can override the poweroff hook */
+ 	if (pms_base && acpi_base) {
++		err = register_poweroff_handler(&xo1_poweroff_nb);
++		if (err) {
++			dev_err(&pdev->dev, "Failed to register poweroff handler\n");
++			return err;
++		}
+ 		suspend_set_ops(&xo1_suspend_ops);
+-		pm_power_off = xo1_power_off;
+ 		printk(KERN_INFO "OLPC XO-1 support registered\n");
  	}
  
-@@ -698,10 +705,7 @@ static int palmas_i2c_remove(struct i2c_client *i2c)
- 			i2c_unregister_device(palmas->i2c_clients[i]);
- 	}
+@@ -158,12 +171,13 @@ static int xo1_pm_remove(struct platform_device *pdev)
+ {
+ 	mfd_cell_disable(pdev);
  
--	if (palmas == palmas_dev) {
--		pm_power_off = NULL;
--		palmas_dev = NULL;
--	}
-+	unregister_poweroff_handler(&palmas->poweroff_nb);
++	unregister_poweroff_handler(&xo1_poweroff_nb);
++
+ 	if (strcmp(pdev->name, "cs5535-pms") == 0)
+ 		pms_base = 0;
+ 	else if (strcmp(pdev->name, "olpc-xo1-pm-acpi") == 0)
+ 		acpi_base = 0;
  
+-	pm_power_off = NULL;
  	return 0;
  }
-diff --git a/include/linux/mfd/palmas.h b/include/linux/mfd/palmas.h
-index fb0390a..4715057 100644
---- a/include/linux/mfd/palmas.h
-+++ b/include/linux/mfd/palmas.h
-@@ -18,6 +18,7 @@
- 
- #include <linux/usb/otg.h>
- #include <linux/leds.h>
-+#include <linux/notifier.h>
- #include <linux/regmap.h>
- #include <linux/regulator/driver.h>
- #include <linux/extcon.h>
-@@ -68,6 +69,8 @@ struct palmas {
- 	struct i2c_client *i2c_clients[PALMAS_NUM_CLIENTS];
- 	struct regmap *regmap[PALMAS_NUM_CLIENTS];
- 
-+	struct notifier_block poweroff_nb;
-+
- 	/* Stored chip id */
- 	int id;
  
 -- 
 1.9.1
