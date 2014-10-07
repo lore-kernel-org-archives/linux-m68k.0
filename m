@@ -1,67 +1,53 @@
 From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH 06/44] gpio-poweroff: Drop reference to pm_power_off from
+Subject: Re: [PATCH 07/44] qnap-poweroff: Drop reference to pm_power_off from
  devicetree bindings
-Date: Tue, 7 Oct 2014 17:50:44 +0200
-Message-ID: <20141007155044.GA19005__35254.3393536054$1412697106$gmane$org@lunn.ch>
+Date: Tue, 7 Oct 2014 17:51:24 +0200
+Message-ID: <20141007155124.GB19005__18888.2791474045$1412697139$gmane$org@lunn.ch>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-7-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-8-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1412659726-29957-7-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-8-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Guenter Roeck <linux@roeck-us.net>
 Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Mark Rutland <mark.rutland@arm.com>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, Rob
 
-On Mon, Oct 06, 2014 at 10:28:08PM -0700, Guenter Roeck wrote:
-> pm_power_off is an implementation detail. Replace it with a more generic
-> description of the driver's functionality.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Pawel Moll <pawel.moll@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+On Mon, Oct 06, 2014 at 10:28:09PM -0700, Guenter Roeck wrote:
+> Replace reference to pm_power_off (which is an implementation detail)
+> and replace it with a more generic description of the driver's functionality.
 
 Acked-by: Andrew Lunn <andrew@lunn.ch>
 
 Thanks
 	Andrew
-> ---
->  Documentation/devicetree/bindings/gpio/gpio-poweroff.txt | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+
 > 
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-> index d4eab92..c95a1a6 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-> @@ -2,12 +2,12 @@ Driver a GPIO line that can be used to turn the power off.
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Pawel Moll <pawel.moll@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> index af25e77..1e2260a 100644
+> --- a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> +++ b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
+> @@ -3,8 +3,8 @@
+>  QNAP NAS devices have a microcontroller controlling the main power
+>  supply. This microcontroller is connected to UART1 of the Kirkwood and
+>  Orion5x SoCs. Sending the character 'A', at 19200 baud, tells the
+> -microcontroller to turn the power off. This driver adds a handler to
+> -pm_power_off which is called to turn the power off.
+> +microcontroller to turn the power off. This driver installs a handler
+> +to power off the system.
 >  
->  The driver supports both level triggered and edge triggered power off.
->  At driver load time, the driver will request the given gpio line and
-> -install a pm_power_off handler. If the optional properties 'input' is
-> -not found, the GPIO line will be driven in the inactive
-> +install a handler to power off the system. If the optional properties
-> +'input' is not found, the GPIO line will be driven in the inactive
->  state. Otherwise its configured as an input.
->  
-> -When the pm_power_off is called, the gpio is configured as an output,
-> -and drive active, so triggering a level triggered power off
-> +When the the poweroff handler is called, the gpio is configured as an
-> +output, and drive active, so triggering a level triggered power off
->  condition. This will also cause an inactive->active edge condition, so
->  triggering positive edge triggered power off. After a delay of 100ms,
->  the GPIO is set to inactive, thus causing an active->inactive edge,
-> @@ -24,7 +24,7 @@ Required properties:
->  
->  Optional properties:
->  - input : Initially configure the GPIO line as an input. Only reconfigure
-> -  it to an output when the pm_power_off function is called. If this optional
-> +  it to an output when the poweroff handler is called. If this optional
->    property is not specified, the GPIO is initialized as an output in its
->    inactive state.
->  
+>  Synology NAS devices use a similar scheme, but a different baud rate,
+>  9600, and a different character, '1'.
 > -- 
 > 1.9.1
 > 
