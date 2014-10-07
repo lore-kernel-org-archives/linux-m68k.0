@@ -1,31 +1,33 @@
-From: Mark Rutland <mark.rutland@arm.com>
+From: Andrew Lunn <andrew@lunn.ch>
 Subject: Re: [PATCH 06/44] gpio-poweroff: Drop reference to pm_power_off from
  devicetree bindings
-Date: Tue, 7 Oct 2014 12:03:32 +0100
-Message-ID: <20141007110332.GF24725@leverpostej>
+Date: Tue, 7 Oct 2014 17:50:44 +0200
+Message-ID: <20141007155044.GA19005__35254.3393536054$1412697106$gmane$org@lunn.ch>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
  <1412659726-29957-7-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <1412659726-29957-7-git-send-email-linux@roeck-us.net>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>lin
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Mark Rutland <mark.rutland@arm.com>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, Rob
 
-On Tue, Oct 07, 2014 at 06:28:08AM +0100, Guenter Roeck wrote:
+On Mon, Oct 06, 2014 at 10:28:08PM -0700, Guenter Roeck wrote:
 > pm_power_off is an implementation detail. Replace it with a more generic
 > description of the driver's functionality.
 > 
 > Cc: Rob Herring <robh+dt@kernel.org>
 > Cc: Pawel Moll <pawel.moll@arm.com>
 > Cc: Mark Rutland <mark.rutland@arm.com>
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
 > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+Acked-by: Andrew Lunn <andrew@lunn.ch>
+
+Thanks
+	Andrew
 > ---
 >  Documentation/devicetree/bindings/gpio/gpio-poweroff.txt | 10 +++++-----
 >  1 file changed, 5 insertions(+), 5 deletions(-)
@@ -64,3 +66,7 @@ Acked-by: Mark Rutland <mark.rutland@arm.com>
 > 1.9.1
 > 
 > 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
