@@ -1,42 +1,80 @@
-From: =?gbk?B?WHVldGFvIEd1YW4g?= <gxt@pku.edu.cn>
-Subject: =?utf-8?Q?=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH_08/44]_kernel:_Mov?=
- =?utf-8?Q?e_pm=5Fpower=5Foff_to_common_code?=
-Date: Wed, 8 Oct 2014 19:06:32 +0800 (CST)
-Message-ID: <218135571.28324.1412766392198.JavaMail.root@bj-mail03.pku.edu.cn>
-References: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 23/29] atari_scsi: Convert to platform device
+Date: Wed, 8 Oct 2014 22:59:16 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1410081443410.15753@nippy.intranet>
+References: <20141002065628.256592712@telegraphics.com.au> <20141002065633.766165263@telegraphics.com.au> <CAMuHMdWmxEUMabRrbQpjhWTE1W4WD4CDkmXZNem06C0ScnKkFw@mail.gmail.com> <alpine.LNX.2.00.1410032054150.12643@nippy.intranet> <54308629.6060800@gmail.com>
+ <alpine.LNX.2.00.1410061754280.26699@nippy.intranet> <54324F78.6090303@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vg
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34979 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754555AbaJHMAc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Oct 2014 08:00:32 -0400
+In-Reply-To: <54324F78.6090303@gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Ondrej Zary <linux@rainbow-software.org>
 
 
------ Guenter Roeck <linux@roeck-us.net> =E5=86=99=E9=81=93=EF=BC=9A
-> pm_power_off is defined for all architectures. Move it to common code=
-=2E
->=20
-> Have all architectures call do_kernel_poweroff instead of pm_power_of=
-f.
-> Some architectures point pm_power_off to machine_power_off. For those=
-,
-> call do_kernel_poweroff from machine_power_off instead.
->=20
+On Mon, 6 Oct 2014, Michael Schmitz wrote:
 
-=46or UniCore32 part,
+> > > > > Can these be handled through the platform_device's resources?
+> > > > 
+> > > > I don't know.
+> > > 
+> > > Should be possible - I've seen that used in the ISP116x HCD driver 
+> > > (arch-dependent post-register access delay function passed via 
+> > > platform data).
+> >
+> > Yes, possible, but is it desirable?
+> 
+> Only long term, i.e. if we can find a way to fold all the separate 
+> *_NCR5380 drivers into a core one.
 
-Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
+But would it improve the ISA drivers to paramaterize the core driver using 
+platform data? I don't know the answer, so I tend to think of code 
+duplication as a separate issue.
 
-Thanks
-Xuetao
+> >
+> > If there's no third configuration then I see little to be gained from 
+> > completely parameterizing the driver using a bunch of resources.
+> >
+> > What am I missing? Why would it be desirable to have bits of driver 
+> > code in arch/m68k/ and other bits of the same driver kept elsewhere in 
+> > the tree (in drivers/)?
+> 
+> Again, only makes sense if the goal is to reduce the driver to a core 
+> driver with implementation bits separate.
+> 
+
+I think it makes sense if it completely eliminates modules like 
+{atari,mac,sun3}_scsi and replaces them with a generic ncr5380 platform 
+driver entirely parameterized by mac/atari/sun3 platform data.
+
+Or maybe that would only amount to a complicated renaming, as the 
+{atari,mac,sun3}_scsi driver logic would presumably just move from 
+drivers/scsi to arch/m68k.
+
+Anyway, that's a long way off. To begin with, it would require the 
+elimination of all the macros (e.g. SUN3_SCSI_VME, REAL_DMA etc, and
+NCR5380_{read,write,dma_read_setup,etc}) and all the static variables 
+(setup_use_tagged_queuing, atari_read_overruns etc).
+
+I have written patches that eliminate static variables because that 
+enables atari_NCR5380.c to support multiple chips, and it helps fix a 
+compiler warning, and also helps cleanup the *RELEASE macros.
+
+Replacing all the macros with flags and an ops struct/plataform data is 
+not too difficult for atari_NCR5380.c at present but will be more 
+difficult after sun3_NCR5380.c is merged into it.
+
+The same goes for NCR5380.c and the ISA drivers.
+
+I don't yet see a good way to merge all three core drivers, and if I did, 
+I wouldn't be able to test the results. Hence I've taken a more gradual 
+approach. This patch set eliminates scsi_register() from 
+{atari,mac,sun3}_scsi at least.
+
+-- 
