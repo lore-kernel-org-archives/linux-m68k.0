@@ -1,59 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.18
-Date: Wed, 8 Oct 2014 09:49:19 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1410080943190.27455@ayla.of.borg>
+From: =?gbk?B?WHVldGFvIEd1YW4g?= <gxt@pku.edu.cn>
+Subject: =?utf-8?Q?=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH_08/44]_kernel:_Mov?=
+ =?utf-8?Q?e_pm=5Fpower=5Foff_to_common_code?=
+Date: Wed, 8 Oct 2014 19:06:32 +0800 (CST)
+Message-ID: <218135571.28324.1412766392198.JavaMail.root@bj-mail03.pku.edu.cn>
+References: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vg
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-	Hi Linus,
 
-The following changes since commit 2ce7598c9a453e0acd0e07be7be3f5eb39608ebd:
+----- Guenter Roeck <linux@roeck-us.net> =E5=86=99=E9=81=93=EF=BC=9A
+> pm_power_off is defined for all architectures. Move it to common code=
+=2E
+>=20
+> Have all architectures call do_kernel_poweroff instead of pm_power_of=
+f.
+> Some architectures point pm_power_off to machine_power_off. For those=
+,
+> call do_kernel_poweroff from machine_power_off instead.
+>=20
 
-  Linux 3.17-rc4 (2014-09-07 16:09:43 -0700)
+=46or UniCore32 part,
 
-are available in the git repository at:
+Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-for you to fetch changes up to 24cae7934cf1455c9793a95376a206ca6b965ade:
-
-  m68k: Reformat arch/m68k/mm/hwtest.c (2014-10-03 10:50:56 +0200)
-
-Summary:
-  - A fix for an intermittent crash in macsonic and hilkbd, marked for stable,
-  - Build fixes for uncommon configs.
-
-Note: "m68k: AMIGA_BUILTIN_SERIAL should depend on TTY" was also picked up by
-      GregKH for "[GIT PULL] TTY/Serial patches for 3.18-rc1".
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (5):
-      m68k/atari - stram: Add missing #include <linux/ioport.h>
-      m68k: Add missing ioport_unmap()
-      m68k: AMIGA_BUILTIN_SERIAL should depend on TTY
-      m68k: Disable/restore interrupts in hwreg_present()/hwreg_write()
-      m68k: Reformat arch/m68k/mm/hwtest.c
-
- arch/m68k/Kconfig.devices     |  2 +-
- arch/m68k/atari/stram.c       |  1 +
- arch/m68k/include/asm/io_mm.h |  9 ++++-
- arch/m68k/mm/hwtest.c         | 78 ++++++++++++++++++++++++-------------------
- 4 files changed, 53 insertions(+), 37 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Thanks
+Xuetao
