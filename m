@@ -1,80 +1,48 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 23/29] atari_scsi: Convert to platform device
-Date: Wed, 8 Oct 2014 22:59:16 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1410081443410.15753@nippy.intranet>
-References: <20141002065628.256592712@telegraphics.com.au> <20141002065633.766165263@telegraphics.com.au> <CAMuHMdWmxEUMabRrbQpjhWTE1W4WD4CDkmXZNem06C0ScnKkFw@mail.gmail.com> <alpine.LNX.2.00.1410032054150.12643@nippy.intranet> <54308629.6060800@gmail.com>
- <alpine.LNX.2.00.1410061754280.26699@nippy.intranet> <54324F78.6090303@gmail.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 08/44] kernel: Move pm_power_off to common code
+Date: Thu, 9 Oct 2014 11:28:55 +0100
+Message-ID: <20141009102855.GE17836@e104818-lin.cambridge.arm.com>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-9-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34979 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754555AbaJHMAc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Oct 2014 08:00:32 -0400
-In-Reply-To: <54324F78.6090303@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+In-Reply-To: <1412659726-29957-9-git-send-email-linux@roeck-us.net>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxp>
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Ondrej Zary <linux@rainbow-software.org>
 
-
-On Mon, 6 Oct 2014, Michael Schmitz wrote:
-
-> > > > > Can these be handled through the platform_device's resources?
-> > > > 
-> > > > I don't know.
-> > > 
-> > > Should be possible - I've seen that used in the ISP116x HCD driver 
-> > > (arch-dependent post-register access delay function passed via 
-> > > platform data).
-> >
-> > Yes, possible, but is it desirable?
+On Tue, Oct 07, 2014 at 06:28:10AM +0100, Guenter Roeck wrote:
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index e0ef8ba..db396bb 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -94,8 +94,6 @@ void soft_restart(unsigned long addr)
+>  /*
+>   * Function pointers to optional machine specific functions
+>   */
+> -void (*pm_power_off)(void);
+> -EXPORT_SYMBOL_GPL(pm_power_off);
 > 
-> Only long term, i.e. if we can find a way to fold all the separate 
-> *_NCR5380 drivers into a core one.
-
-But would it improve the ISA drivers to paramaterize the core driver using 
-platform data? I don't know the answer, so I tend to think of code 
-duplication as a separate issue.
-
-> >
-> > If there's no third configuration then I see little to be gained from 
-> > completely parameterizing the driver using a bunch of resources.
-> >
-> > What am I missing? Why would it be desirable to have bits of driver 
-> > code in arch/m68k/ and other bits of the same driver kept elsewhere in 
-> > the tree (in drivers/)?
+>  void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
 > 
-> Again, only makes sense if the goal is to reduce the driver to a core 
-> driver with implementation bits separate.
-> 
+> @@ -155,8 +153,7 @@ void machine_power_off(void)
+>  {
+>         local_irq_disable();
+>         smp_send_stop();
+> -       if (pm_power_off)
+> -               pm_power_off();
+> +       do_kernel_poweroff();
+>  }
 
-I think it makes sense if it completely eliminates modules like 
-{atari,mac,sun3}_scsi and replaces them with a generic ncr5380 platform 
-driver entirely parameterized by mac/atari/sun3 platform data.
-
-Or maybe that would only amount to a complicated renaming, as the 
-{atari,mac,sun3}_scsi driver logic would presumably just move from 
-drivers/scsi to arch/m68k.
-
-Anyway, that's a long way off. To begin with, it would require the 
-elimination of all the macros (e.g. SUN3_SCSI_VME, REAL_DMA etc, and
-NCR5380_{read,write,dma_read_setup,etc}) and all the static variables 
-(setup_use_tagged_queuing, atari_read_overruns etc).
-
-I have written patches that eliminate static variables because that 
-enables atari_NCR5380.c to support multiple chips, and it helps fix a 
-compiler warning, and also helps cleanup the *RELEASE macros.
-
-Replacing all the macros with flags and an ops struct/plataform data is 
-not too difficult for atari_NCR5380.c at present but will be more 
-difficult after sun3_NCR5380.c is merged into it.
-
-The same goes for NCR5380.c and the ISA drivers.
-
-I don't yet see a good way to merge all three core drivers, and if I did, 
-I wouldn't be able to test the results. Hence I've taken a more gradual 
-approach. This patch set eliminates scsi_register() from 
-{atari,mac,sun3}_scsi at least.
-
--- 
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
