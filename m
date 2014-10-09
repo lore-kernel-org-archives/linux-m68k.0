@@ -1,77 +1,61 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 12/44] mfd: ab8500-sysctrl: Register with kernel poweroff
- handler
-Date: Thu, 9 Oct 2014 14:33:55 +0100
-Message-ID: <20141009133355.GQ20647@lee--X1>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
+Date: Thu, 9 Oct 2014 08:38:36 -0700
+Message-ID: <20141009153836.GA31987__7773.38642296872$1412869460$gmane$org@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-13-git-send-email-linux@roeck-us.net>
- <20141007080048.GB25331@lee--X1>
- <20141009103656.GF17836@e104818-lin.cambridge.arm.com>
- <20141009104927.GN20647@lee--X1>
- <54368D16.40404@roeck-us.net>
+ <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+ <20141009103143.GA6787@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-hexagon-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <54368D16.40404@roeck-us.net>
-Sender: linux-hexagon-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, Linus Walleij <linus.walleij@linaro.org>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, devicetree
+In-Reply-To: <20141009103143.GA6787@amd>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Andrew Morton <akp>
 
-On Thu, 09 Oct 2014, Guenter Roeck wrote:
+On Thu, Oct 09, 2014 at 12:31:43PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > +/**
+> > + *	register_poweroff_handler_simple - Register function to be called to power off
+> > + *					   the system
+> > + *	@handler:	Function to be called to power off the system
+> > + *	@priority:	Handler priority. For priority guidelines see
+> > + *			register_poweroff_handler.
+> > + *
+> > + *	This is a simplified version of register_poweroff_handler. It does not
+> > + *	take a notifier as argument, but a function pointer. The function
+> > + *	registers a poweroff handler with specified priority. Poweroff
+> > + *	handlers registered with this function can not be unregistered,
+> > + *	and only a single poweroff handler can be installed using it.
+> > + *
+> > + *	This function must not be called from modules and is therefore
+> > + *	not exported.
+> > + *
+> > + *	Returns -EBUSY if a poweroff handler has already been registered
+> > + *	using register_poweroff_handler_simple. Otherwise returns zero,
+> > + *	since atomic_notifier_chain_register() currently always returns zero.
+> > + */
+> > +int register_poweroff_handler_simple(void (*handler)(void), int priority)
+> > +{
+> > +	char symname[KSYM_NAME_LEN];
+> > +
+> > +	if (poweroff_handler_data.handler) {
+> > +		lookup_symbol_name((unsigned long)poweroff_handler_data.handler,
+> > +				   symname);
+> > +		pr_warn("Poweroff function already registered (%s)", symname);
+> > +		lookup_symbol_name((unsigned long)handler, symname);
+> > +		pr_cont(", cannot register %s\n", symname);
+> > +		return -EBUSY;
+> > +	}
+> 
+> Dunno, are you maybe overdoing the debugging infrastructure a bit?
+> This is not going to happen in production, and if it does happen,
+> developer can look the symbol name himself.
 
-> On 10/09/2014 03:49 AM, Lee Jones wrote:
-> >On Thu, 09 Oct 2014, Catalin Marinas wrote:
-> >
-> >>On Tue, Oct 07, 2014 at 09:00:48AM +0100, Lee Jones wrote:
-> >>>On Mon, 06 Oct 2014, Guenter Roeck wrote:
-> >>>>--- a/drivers/mfd/ab8500-sysctrl.c
-> >>>>+++ b/drivers/mfd/ab8500-sysctrl.c
-> >>>>@@ -6,6 +6,7 @@
-> >>>
-> >>>[...]
-> >>>
-> >>>>+static int ab8500_power_off(struct notifier_block *this, unsigne=
-d long unused1,
-> >>>>+			    void *unused2)
-> >>>>  {
-> >>>>  	sigset_t old;
-> >>>>  	sigset_t all;
-> >>>>@@ -34,11 +36,6 @@ static void ab8500_power_off(void)
-> >>>>  	struct power_supply *psy;
-> >>>>  	int ret;
-> >>>>
-> >>>>-	if (sysctrl_dev =3D=3D NULL) {
-> >>>>-		pr_err("%s: sysctrl not initialized\n", __func__);
-> >>>>-		return;
-> >>>>-	}
-> >>>
-> >>>Can you explain the purpose of this change please?
-> >>
-> >>I guess it's because the sysctrl_dev is already initialised when
-> >>registering the power_off handler, so there isn't a way to call the
-> >>above function with a NULL sysctrl_dev. Probably even with the orig=
-inal
-> >>code you didn't need this check (after some race fix in
-> >>ab8500_sysctrl_remove but races is one of the things Guenter's patc=
-hes
-> >>try to address).
-> >
-> >Sounds reasonable, although I think this change should be part of
-> >another patch.
-> >
-> Sure, no problem. I'll split this into two patches.
->=20
-> Since we are at it, any idea what to do with the restart function
-> in the same file ? It is not used anywhere.
+On the other side, I don't think it hurts to have that message.
+Anyway, I'll use %ps as suggested by Geert.
 
-You can strip it out with Linus Walleij's Ack.  Or I'll be happy to do
-it?
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+Guenter
