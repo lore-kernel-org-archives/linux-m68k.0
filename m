@@ -1,18 +1,39 @@
-From: "Jose Calvache" <josecalvache@vodafone.es>
-Subject: Please reply
-Date: Sat, 11 Oct 2014 12:34:19 -0700
-Message-ID: <7217ced4083c969324ed66659d466f10.squirrel__35883.4084975117$1413056236$gmane$org@cpanel.gruieo.concrete5.arvixe.com>
-Reply-To: josecalvache@gmx.es
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] kexec: distribute kexec/arch/m68k/bootinfo.h
+Date: Sun, 12 Oct 2014 21:37:17 +0200
+Message-ID: <87tx39w042.fsf_-_@igel.home>
+References: <1381859460-13645-1-git-send-email-geert@linux-m68k.org>
+	<1381859460-13645-4-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from canary.arvixe.com ([50.97.138.116]:47694 "EHLO
-	canary.arvixe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751717AbaJKTgf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Oct 2014 15:36:35 -0400
+In-Reply-To: <1381859460-13645-4-git-send-email-geert@linux-m68k.org> (Geert
+	Uytterhoeven's message of "Tue, 15 Oct 2013 19:51:00 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Simon Horman <horms@verge.net.au>, linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
 
-Dear Sir/Madam, Here is a pdf attachment of my proposal to you. Please
-read and reply I would be grateful. Jose Calvache
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+ kexec/arch/m68k/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kexec/arch/m68k/Makefile b/kexec/arch/m68k/Makefile
+index 7b13564..eeaacbd 100644
+--- a/kexec/arch/m68k/Makefile
++++ b/kexec/arch/m68k/Makefile
+@@ -10,5 +10,6 @@ m68k_ADD_SEGMENT =
+ m68k_VIRT_TO_PHYS =
+ 
+ dist += kexec/arch/m68k/Makefile $(m68k_KEXEC_SRCS)			\
++	kexec/arch/m68k/bootinfo.h					\
+ 	kexec/arch/m68k/kexec-m68k.h					\
+ 	kexec/arch/m68k/include/arch/options.h
+-- 
+2.1.2
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
