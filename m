@@ -1,34 +1,39 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Michael Schmitz <schmitzmic@gmail.com>
 Subject: Re: [PATCH 23/29] atari_scsi: Convert to platform device
-Date: Mon, 20 Oct 2014 22:22:00 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1410202217270.18012@nippy.intranet>
-References: <20141002065628.256592712@telegraphics.com.au> <20141002065633.766165263@telegraphics.com.au> <5444BAB7.5000908@gmail.com>
+Date: Tue, 21 Oct 2014 07:34:30 +1300
+Message-ID: <CAOmrzk+_pujcr_SPfijV5Z5fp057tkbtbZHq0URWFh9RKpNdUQ@mail.gmail.com>
+References: <20141002065628.256592712@telegraphics.com.au>
+	<20141002065633.766165263@telegraphics.com.au>
+	<5444BAB7.5000908@gmail.com>
+	<alpine.LNX.2.00.1410202217270.18012@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35636 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753371AbaJTLXG (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 20 Oct 2014 07:23:06 -0400
-In-Reply-To: <5444BAB7.5000908@gmail.com>
+Received: from mail-qa0-f47.google.com ([209.85.216.47]:55416 "EHLO
+	mail-qa0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750993AbaJTSec (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 20 Oct 2014 14:34:32 -0400
+In-Reply-To: <alpine.LNX.2.00.1410202217270.18012@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
+Hi Finn,
 
-On Mon, 20 Oct 2014, Michael Schmitz wrote:
+>> not certain it is related to this exact patch - the driver crashes
+>> pretty much on the spot when selecting the first target on the bus.
+>
+> If it isn't that exact patch then it will probably be one of the other
+> atari_scsi patches. Most of the other relevant stuff was covered by my own
+> testing.
+>
+> Anyway, thanks for testing and for sending the backtrace. I'll figure out
+> what went wrong and fix it before I send a new patch set.
 
-> Hi Finn,
-> 
-> not certain it is related to this exact patch - the driver crashes 
-> pretty much on the spot when selecting the first target on the bus.
+Let me know what I can do to help - e.g. can the platform device patch
+be backed out without upsetting the rest of the series?
 
-If it isn't that exact patch then it will probably be one of the other 
-atari_scsi patches. Most of the other relevant stuff was covered by my own 
-testing.
+Cheers,
 
-Anyway, thanks for testing and for sending the backtrace. I'll figure out 
-what went wrong and fix it before I send a new patch set.
-
--- 
+  Michael
