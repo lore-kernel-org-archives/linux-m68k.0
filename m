@@ -1,54 +1,53 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2 39/47] m68k: Register with kernel poweroff handler
-Date: Mon, 20 Oct 2014 21:12:55 -0700
-Message-ID: <1413864783-3271-40-git-send-email-linux@roeck-us.net>
-References: <1413864783-3271-1-git-send-email-linux@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Wire up bpf
+Date: Tue, 21 Oct 2014 19:30:53 +0200
+Message-ID: <1413912653-3269-1-git-send-email-geert__13356.9047939547$1413912963$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1413864783-3271-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly.
-
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-- Use defines to specify poweroff handler priorities
+ arch/m68k/include/asm/unistd.h      | 2 +-
+ arch/m68k/include/uapi/asm/unistd.h | 1 +
+ arch/m68k/kernel/syscalltable.S     | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
- arch/m68k/emu/natfeat.c | 3 ++-
- arch/m68k/mac/config.c  | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 91e2ae7..b105681 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -91,5 +91,6 @@ void __init nf_init(void)
- 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
- 		version & 0xffff);
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index 4ef7a54813e6b72d..75e75d7b1702fb64 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -4,7 +4,7 @@
+ #include <uapi/asm/unistd.h>
  
--	pm_power_off = nf_poweroff;
-+	register_power_off_handler_simple(nf_poweroff,
-+					  POWEROFF_PRIORITY_DEFAULT);
- }
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 677913ff..07e853e 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -160,7 +160,8 @@ void __init config_mac(void)
- 	mach_set_clock_mmss = mac_set_clock_mmss;
- 	mach_reset = mac_reset;
- 	mach_halt = mac_poweroff;
--	pm_power_off = mac_poweroff;
-+	register_power_off_handler_simple(mac_poweroff,
-+					  POWEROFF_PRIORITY_DEFAULT);
- 	mach_max_dma_address = 0xffffffff;
- #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
- 	mach_beep = mac_mksound;
+ 
+-#define NR_syscalls		354
++#define NR_syscalls		355
+ 
+ #define __ARCH_WANT_OLD_READDIR
+ #define __ARCH_WANT_OLD_STAT
+diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
+index b419c6b7ac3739b1..2c1bec9a14b67da4 100644
+--- a/arch/m68k/include/uapi/asm/unistd.h
++++ b/arch/m68k/include/uapi/asm/unistd.h
+@@ -359,5 +359,6 @@
+ #define __NR_renameat2		351
+ #define __NR_getrandom		352
+ #define __NR_memfd_create	353
++#define __NR_bpf		354
+ 
+ #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
+diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+index 05b46c2b08b8d8d4..2ca219e184cd16e6 100644
+--- a/arch/m68k/kernel/syscalltable.S
++++ b/arch/m68k/kernel/syscalltable.S
+@@ -374,4 +374,5 @@ ENTRY(sys_call_table)
+ 	.long sys_renameat2
+ 	.long sys_getrandom
+ 	.long sys_memfd_create
++	.long sys_bpf
+ 
 -- 
 1.9.1
