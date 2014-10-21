@@ -1,39 +1,25 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] nubus: Remove superfluous interrupt disable/restore
-Date: Tue, 21 Oct 2014 19:55:20 +0200
-Message-ID: <1413914120-23894-1-git-send-email-geert@linux-m68k.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH] m68k: Wire up bpf
+Date: Tue, 21 Oct 2014 14:12:21 -0700
+Message-ID: <CAADnVQ+5J+BM3onCUxzX+eL-gDqiJ04vDG4iD+3zbqngcmoqzQ__10380.6173465729$1413925981$gmane$org@mail.gmail.com>
+References: <1413912653-3269-1-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1413912653-3269-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-As of commit e4dc601bf99ccd1c ("m68k: Disable/restore interrupts in
-hwreg_present()/hwreg_write()"), this is no longer needed.
+On Tue, Oct 21, 2014 at 10:30 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  arch/m68k/include/asm/unistd.h      | 2 +-
+>  arch/m68k/include/uapi/asm/unistd.h | 1 +
+>  arch/m68k/kernel/syscalltable.S     | 1 +
+>  3 files changed, 3 insertions(+), 1 deletion(-)
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/nubus/nubus.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index 5066a7ef7b6c38a2..3319cf19deebe0f2 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -920,14 +920,10 @@ void __init nubus_probe_slot(int slot)
- 	rp = nubus_rom_addr(slot);	
- 	for(i = 4; i; i--)
- 	{
--		unsigned long flags;
- 		int card_present;
- 
- 		rp--;
--		local_irq_save(flags);
- 		card_present = hwreg_present(rp);
--		local_irq_restore(flags);
--	       
- 		if (!card_present)
- 			continue;
- 
--- 
-1.9.1
+did the tests pass in samples/bpf/test_verifier ?
+Thank you for taking care of it.
