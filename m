@@ -1,25 +1,148 @@
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH] m68k: Wire up bpf
-Date: Tue, 21 Oct 2014 14:12:21 -0700
-Message-ID: <CAADnVQ+5J+BM3onCUxzX+eL-gDqiJ04vDG4iD+3zbqngcmoqzQ__10380.6173465729$1413925981$gmane$org@mail.gmail.com>
-References: <1413912653-3269-1-git-send-email-geert@linux-m68k.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH v2 04/47] m68k: Replace mach_power_off with pm_power_off
+Date: Wed, 22 Oct 2014 13:50:04 +1000
+Message-ID: <5447296C.5090806__8555.03977877579$1413950383$gmane$org@uclinux.org>
+References: <1413864783-3271-1-git-send-email-linux@roeck-us.net> <1413864783-3271-5-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1413912653-3269-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1413864783-3271-5-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc: linux-pm@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
 
-On Tue, Oct 21, 2014 at 10:30 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Guenter,
+
+On 21/10/14 14:12, Guenter Roeck wrote:
+> Replace mach_power_off with pm_power_off to simplify the subsequent
+> move of pm_power_off to generic code.
+> 
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Greg Ungerer <gerg@uclinux.org>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+I have no problem with the non-MMU affected parts.
+
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+
+Regards
+Greg
+
+
+
 > ---
->  arch/m68k/include/asm/unistd.h      | 2 +-
->  arch/m68k/include/uapi/asm/unistd.h | 1 +
->  arch/m68k/kernel/syscalltable.S     | 1 +
->  3 files changed, 3 insertions(+), 1 deletion(-)
-
-did the tests pass in samples/bpf/test_verifier ?
-Thank you for taking care of it.
+> v2:
+> - have_kernel_poweroff -> have_kernel_power_off
+> 
+>  arch/m68k/emu/natfeat.c         | 3 ++-
+>  arch/m68k/include/asm/machdep.h | 1 -
+>  arch/m68k/kernel/process.c      | 5 +++--
+>  arch/m68k/kernel/setup_mm.c     | 1 -
+>  arch/m68k/kernel/setup_no.c     | 1 -
+>  arch/m68k/mac/config.c          | 3 ++-
+>  6 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
+> index 71b78ec..91e2ae7 100644
+> --- a/arch/m68k/emu/natfeat.c
+> +++ b/arch/m68k/emu/natfeat.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/string.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/pm.h>
+>  #include <linux/io.h>
+>  #include <asm/machdep.h>
+>  #include <asm/natfeat.h>
+> @@ -90,5 +91,5 @@ void __init nf_init(void)
+>  	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
+>  		version & 0xffff);
+>  
+> -	mach_power_off = nf_poweroff;
+> +	pm_power_off = nf_poweroff;
+>  }
+> diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
+> index 953ca21..f9fac51 100644
+> --- a/arch/m68k/include/asm/machdep.h
+> +++ b/arch/m68k/include/asm/machdep.h
+> @@ -24,7 +24,6 @@ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+>  extern int (*mach_set_clock_mmss)(unsigned long);
+>  extern void (*mach_reset)( void );
+>  extern void (*mach_halt)( void );
+> -extern void (*mach_power_off)( void );
+>  extern unsigned long (*mach_hd_init) (unsigned long, unsigned long);
+>  extern void (*mach_hd_setup)(char *, int *);
+>  extern long mach_max_dma_address;
+> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+> index c55ff71..afe3d6e 100644
+> --- a/arch/m68k/kernel/process.c
+> +++ b/arch/m68k/kernel/process.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/unistd.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/user.h>
+> +#include <linux/pm.h>
+>  #include <linux/reboot.h>
+>  #include <linux/init_task.h>
+>  #include <linux/mqueue.h>
+> @@ -77,8 +78,8 @@ void machine_halt(void)
+>  
+>  void machine_power_off(void)
+>  {
+> -	if (mach_power_off)
+> -		mach_power_off();
+> +	if (pm_power_off)
+> +		pm_power_off();
+>  	for (;;);
+>  }
+>  
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 5b8ec4d..002fea6 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -96,7 +96,6 @@ EXPORT_SYMBOL(mach_get_rtc_pll);
+>  EXPORT_SYMBOL(mach_set_rtc_pll);
+>  void (*mach_reset)( void );
+>  void (*mach_halt)( void );
+> -void (*mach_power_off)( void );
+>  long mach_max_dma_address = 0x00ffffff; /* default set to the lower 16MB */
+>  #ifdef CONFIG_HEARTBEAT
+>  void (*mach_heartbeat) (int);
+> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+> index 88c27d9..1520156 100644
+> --- a/arch/m68k/kernel/setup_no.c
+> +++ b/arch/m68k/kernel/setup_no.c
+> @@ -55,7 +55,6 @@ int (*mach_hwclk) (int, struct rtc_time*);
+>  /* machine dependent reboot functions */
+>  void (*mach_reset)(void);
+>  void (*mach_halt)(void);
+> -void (*mach_power_off)(void);
+>  
+>  #ifdef CONFIG_M68000
+>  #if defined(CONFIG_M68328)
+> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+> index a471eab..677913ff 100644
+> --- a/arch/m68k/mac/config.c
+> +++ b/arch/m68k/mac/config.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/tty.h>
+>  #include <linux/console.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/pm.h>
+>  /* keyb */
+>  #include <linux/random.h>
+>  #include <linux/delay.h>
+> @@ -159,7 +160,7 @@ void __init config_mac(void)
+>  	mach_set_clock_mmss = mac_set_clock_mmss;
+>  	mach_reset = mac_reset;
+>  	mach_halt = mac_poweroff;
+> -	mach_power_off = mac_poweroff;
+> +	pm_power_off = mac_poweroff;
+>  	mach_max_dma_address = 0xffffffff;
+>  #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
+>  	mach_beep = mac_mksound;
+> 
