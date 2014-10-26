@@ -1,42 +1,49 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 08/47] kernel: Move pm_power_off to common code
-Date: Fri, 24 Oct 2014 08:53:40 -0700
-Message-ID: <20141024155340.GA22426@roeck-us.net>
-References: <1413864783-3271-1-git-send-email-linux@roeck-us.net>
- <1413864783-3271-9-git-send-email-linux@roeck-us.net>
- <544A2017.7020804@imgtec.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 23/29] atari_scsi: Convert to platform device
+Date: Sun, 26 Oct 2014 20:37:05 +1300
+Message-ID: <544CA4A1.6050802@gmail.com>
+References: <20141002065628.256592712@telegraphics.com.au> <20141002065633.766165263@telegraphics.com.au> <5444BAB7.5000908@gmail.com> <alpine.LNX.2.00.1410202217270.18012@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <544A2017.7020804@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux390@de.ibm.com, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux@openrisc.net, linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, x86@kernel.org, xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pd0-f175.google.com ([209.85.192.175]:62095 "EHLO
+	mail-pd0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750892AbaJZHhM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 26 Oct 2014 03:37:12 -0400
+In-Reply-To: <alpine.LNX.2.00.1410202217270.18012@nippy.intranet>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Fri, Oct 24, 2014 at 10:47:03AM +0100, James Hogan wrote:
-> Hi Guenter,
-> 
-> On 21/10/14 05:12, Guenter Roeck wrote:
-> > pm_power_off is defined for all architectures. Move it to common code.
-> > 
-> > Have all architectures call do_kernel_power_off instead of pm_power_off.
-> > Some architectures point pm_power_off to machine_power_off. For those,
-> > call do_kernel_power_off from machine_power_off instead.
-> > 
-> > Acked-by: David Vrabel <david.vrabel@citrix.com>
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Acked-by: Hirokazu Takata <takata@linux-m32r.org>
-> > Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
-> > Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-> > Acked-by: Rafael J. Wysocki <rjw@rjwysocki.net>
-> > Acked-by: Richard Weinberger <richard@nod.at>
-> > Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
-> 
-> For metag:
-> Acked-by: James Hogan <james.hogan@imgtec.com>
-> 
-Thanks!
+Finn,
+> On Mon, 20 Oct 2014, Michael Schmitz wrote:
+>
+>   
+>> Hi Finn,
+>>
+>> not certain it is related to this exact patch - the driver crashes 
+>> pretty much on the spot when selecting the first target on the bus.
+>>     
+>
+> If it isn't that exact patch then it will probably be one of the other 
+> atari_scsi patches. Most of the other relevant stuff was covered by my own 
+> testing.
+>
+> Anyway, thanks for testing and for sending the backtrace. I'll figure out 
+> what went wrong and fix it before I send a new patch set.
+>
+>   
 
-Guenter
+Turns out I missed a reject in patch 29 of the series (hunk #4) which 
+caused a local_irq_save(flags) to go AWOL. Both commenting out the 
+resulting lone local_irq_restore(flags), as well as fixing the reject 
+properly makes the driver behave as it should.
+
+No locking races, and no more warnings about bytes stuck in the DMA 
+fifo. We might be on to a winner here :-)
+
+Cheers,
+
+    Michael
