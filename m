@@ -1,55 +1,43 @@
-From: egomaniacs72087@gmail.com
-Subject: Fix Penguin Penalty 17th October2014 ( mail-archive.com )
-Date: Tue, 28 Oct 2014 14:36:15 +0530
-Message-ID: <544f5c89.e494420a.442b.3346@mx.google.com>
-Reply-To: sexpert277@gmail.com
+From: GRUPPO_FINANZIARIO <ho_plantinv@exponentgroup.ph>
+Subject: lening
+Date: Tue, 28 Oct 2014 17:14:30 +0800 (PHT)
+Message-ID: <1014763844.416128.1414487670007.JavaMail.root__33910.1758356721$1414488269$gmane$org@mail>
+Reply-To: "gruppo_finanziario01@webadicta.org"
+	  <gruppo_finanziario01@webadicta.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f68.google.com ([209.85.220.68]:64238 "EHLO
-	mail-pa0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750927AbaJ1JGT (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Oct 2014 05:06:19 -0400
-Received: by mail-pa0-f68.google.com with SMTP id kx10so117378pab.11
-        for <linux-m68k@vger.kernel.org>; Tue, 28 Oct 2014 02:06:18 -0700 (PDT)
-Received: from localhost.localdomain ([202.164.40.59])
-        by mx.google.com with ESMTPSA id tv4sm1046004pab.28.2014.10.28.02.06.15
-        for <linux-m68k@vger.kernel.org>
-        (version=TLSv1 cipher=RC4-SHA bits=128/128);
-        Tue, 28 Oct 2014 02:06:17 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
 
-Dear Sir
 
-Did your website get hit by Google Penguin update on October 17th 2014?=
- What basically is Google Penguin Update? It is actually a code name fo=
-r Google algorithm which aims at decreasing your websites search engine=
- rankings that violate Google=92s guidelines by using black hat SEO tec=
-hniques to rank your webpage by giving number of spammy links to the pa=
-ge.
+
+Goede dag:=20
+
+Mijn naam is Francesco Benito; Ik ben de mediator / lening officier bij=
+ GRUPPO finanziario SPA.=20
+Ik ben hier om een lening programma dat zal helpen bij het verbeteren v=
+an uw financi=C3=ABle situatie te geven,=20
+economische en verlichten u van alle financi=C3=ABle crisis / probleem.=
 =20
-We are one of those few SEO companies that can help you avoid penalties=
- from Google Updates like Penguin and Panda. Our clients have survived =
-all the previous and present updates with ease. They have never been hi=
-t because we use 100% white hat SEO techniques to rank Webpages.  Simpl=
-e thing that we do to keep websites away from any Penguin or Panda pena=
-lties is follow Google guidelines and we give Google users the best ans=
-wers to their queries.
+Lening bieden op korte en lange termijn voor de klanten tegen een tarie=
+f van 3%, zoals persoonlijke lening,=20
+zakelijke lening, autolening, lening bedrijf, etc.=20
+Bent u ge=C3=AFnteresseerd in het ontvangen van een lening van ons, dan=
+ kunt u contact met ons opnemen=20
+door middel van deze e-mail: gruppo_finanziario01@webadicta.org=20
 
-If you are looking to increase the quality of your websites and to get =
-more targeted traffic or save your websites from these Google penalties=
- email us back with your interest.=20
+Ook het verstrekken van advies op het inschrijfformulier hieronder in t=
+e vullen:=20
 
-We will be glad to serve you and help you grow your business.
+naam:=20
+Geslacht:=20
+land:=20
+Bedrag dat nodig is:=20
+Jaren van Lening:=20
+Doel van de lening:=20
 
-Regards
+Bedankt voor uw begrip.=20
 
-Vince G
-
-SEO Manager ( TOB )
-B7 Green Avenue, Amritsar 143001 Punjab
-____________________________
-NO CLICK in the subject to STOP EMAILS
+=46rancesco Benito.
