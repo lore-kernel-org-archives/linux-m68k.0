@@ -1,32 +1,28 @@
 From: Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v2 23/36] atari_scsi: Convert to platform device
-Date: Thu, 30 Oct 2014 09:17:10 +0100
-Message-ID: <5451F406.7030500@suse.de>
-References: <20141027052607.105914311@telegraphics.com.au> <20141027052612.685449600@telegraphics.com.au>
+Subject: Re: [PATCH v2 24/36] atari_scsi: Remove header
+Date: Thu, 30 Oct 2014 09:18:00 +0100
+Message-ID: <5451F438.8050707@suse.de>
+References: <20141027052607.105914311@telegraphics.com.au> <20141027052612.925453933@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20141027052612.685449600@telegraphics.com.au>
+In-Reply-To: <20141027052612.925453933@telegraphics.com.au>
 Sender: linux-scsi-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <JBottomley@parallels.com>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
 On 10/27/2014 06:26 AM, Finn Thain wrote:
-> Convert atari_scsi to platform device and eliminate scsi_register().
+> The #defines in atari_scsi.h are intended to influence subsequent #in=
+cludes
+> in atari_scsi.c. IMHO, that's too convoluted.
 >=20
-> Validate __setup options later on so that module options are checked =
-as well.
->=20
-> Remove the comment about the scsi mid-layer disabling the host irq as=
- it
-> is no longer true (AFAICT). Also remove the obsolete slow interrupt s=
-tuff
-> (IRQ_TYPE_SLOW =3D=3D 0 anyway).
+> Remove atari_scsi.h by moving those macro definitions to atari_scsi.c=
+,
+> consistent with other NCR5380 drivers.
 >=20
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->=20
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 
 Cheers,
