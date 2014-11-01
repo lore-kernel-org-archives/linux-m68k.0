@@ -1,34 +1,47 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v2 30/36] atari_NCR5380: Merge from sun3_NCR5380.c
-Date: Fri, 31 Oct 2014 23:48:54 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1410312303580.24830@nippy.intranet>
-References: <20141027052607.105914311@telegraphics.com.au> <20141027052614.365442007@telegraphics.com.au> <5451F7F6.3020704@suse.de> <alpine.LNX.2.00.1410311524140.7380@nippy.intranet> <54534B07.5080302@suse.de>
+From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Subject: Re: [PATCH 33/44] avr32: atngw100: Register with kernel poweroff
+ handler
+Date: Sat, 1 Nov 2014 11:16:37 +0100
+Message-ID: <20141101101637.GA5765__30360.2486769252$1414837058$gmane$org@samfundet.no>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-34-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58299 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1758408AbaJaMt5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 31 Oct 2014 08:49:57 -0400
-In-Reply-To: <54534B07.5080302@suse.de>
+Content-Disposition: inline
+In-Reply-To: <1412659726-29957-34-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sam Creasey <sammy@sammy.net>, Hannes Reinecke <hare@suse.de>
-Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Haavard
 
-
-On Fri, 31 Oct 2014, Hannes Reinecke wrote:
-
-> Hmm. I always feel a bit awkward by using personal names in the code.
-> It's not good practice nowadays. Plus one can never be sure if that 
-> address is still valid. Or remains so for the foreseeable future.
-
-It was valid as of a couple of months ago.
-
+Around Mon 06 Oct 2014 22:28:35 -0700 or thereabout, Guenter Roeck wrote:
+> Register with kernel poweroff handler instead of setting pm_power_off
+> directly.
 > 
-> But hey, these are just my personal opinions.
+> Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>
+> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-I agree with your opinions and I'm not entirely happy with this patch 
-either. But I don't know what to do about it.
+Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
 
+> ---
+>  arch/avr32/boards/atngw100/mrmt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/avr32/boards/atngw100/mrmt.c b/arch/avr32/boards/atngw100/mrmt.c
+> index 91146b4..54d0c27 100644
+> --- a/arch/avr32/boards/atngw100/mrmt.c
+> +++ b/arch/avr32/boards/atngw100/mrmt.c
+> @@ -274,7 +274,7 @@ static int __init mrmt1_init(void)
+>  {
+>  	gpio_set_value( PIN_PWR_ON, 1 );	/* Ensure PWR_ON is enabled */
+>  
+> -	pm_power_off = mrmt_power_off;
+> +	register_poweroff_handler_simple(mrmt_power_off, 128);
+>  
+>  	/* Setup USARTS (other than console) */
+>  	at32_map_usart(2, 1, 0);	/* USART 2: /dev/ttyS1, RMT1:DB9M */
 -- 
+mvh
+Hans-Christian Egtvedt
