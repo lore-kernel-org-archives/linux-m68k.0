@@ -1,47 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.18 (take two)
-Date: Mon, 3 Nov 2014 11:37:01 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1411031135330.7868@ayla.of.borg>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2 00/36] Fixes, cleanups and modernization for NCR5380 drivers
+Date: Wed, 5 Nov 2014 12:36:02 +1300
+Message-ID: <CAOmrzkKVYBcznyEaUX7Ta9z3P+B9=BTSj3kCZTjx-euZ2gannQ@mail.gmail.com>
+References: <20141027052607.105914311@telegraphics.com.au>
+	<5455C107.6040500@gmail.com>
+	<alpine.LNX.2.00.1411021710210.27266@nippy.intranet>
+	<5455E340.7080305@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-qg0-f47.google.com ([209.85.192.47]:45146 "EHLO
+	mail-qg0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751129AbaKDXgD (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Nov 2014 18:36:03 -0500
+In-Reply-To: <5455E340.7080305@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-	Hi Linus,
+Hi Finn,
 
-The following changes since commit cac7f2429872d3733dc3f9915857b1691da2eb2f:
 
-  Linux 3.18-rc2 (2014-10-26 16:48:41 -0700)
+> Thanks for testing.
+>
+> "No regressions over v1" means "no regressions", right?
+>
+>
+>
+> Well, what would I compare the driver performance to? With your patches to
+> sort out locking races, the driver is more stable than I've ever seen it in
+> years. That's a definite win. Big improvement over the driver in its current
+> state in m68k and mainstream (which locks up quite reliably with even
+> moderate concurrent IDE and SCSI I/O for me). No regression over v1 or
+> patches that you sent for me to test off-list.
+>
+> On the other hand, I've seen warnings about lost bytes (stuck in the DMA
+> fifo) for the first time _ever_ with the new driver - we've discussed that
+> at length, and it is still unclear why these happen. This is a known NCR5380
+> issue, and pretty much anything could have precipitated that. Must have
+> happened for other Falcon users before in the past, because the interrupt
+> handler explicitly checks for this condition.
 
-are available in the git repository at:
+I went back and checked test logs from driver tests before any of your
+patches - no regressions over vanilla 3.17 or 3.16.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+The 'lost bytes' error is rare enough that it would not have shown in
+those tests. Vanilla kernels run into the ST-DMA locking race at about
+7% of the total test set.
 
-for you to fetch changes up to f7bbd12a4b7e088f53f20dd31019984459699fb9:
+The last kernel that performed with a similar stability as with your
+patches was 2.4.30 or thereabouts.
 
-  m68k: Wire up bpf (2014-10-27 11:02:19 +0100)
+Cheers,
 
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: Wire up bpf
-
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/syscalltable.S     | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Michael
