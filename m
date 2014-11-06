@@ -1,59 +1,63 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v2 00/36] Fixes, cleanups and modernization for NCR5380
- drivers
-Date: Thu, 6 Nov 2014 15:50:01 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1411061507240.20750@nippy.intranet>
-References: <20141027052607.105914311@telegraphics.com.au> <5455C107.6040500@gmail.com> <alpine.LNX.2.00.1411021710210.27266@nippy.intranet> <5455E340.7080305@gmail.com> <CAOmrzkKVYBcznyEaUX7Ta9z3P+B9=BTSj3kCZTjx-euZ2gannQ@mail.gmail.com>
- <CAL4YKD5fqhZKZG3_cOTxasqTSdb5oC3g0aUKnnxzE3Q4MJyxGQ@mail.gmail.com> <CAMuHMdV_xAdXB-0Q=qCGqDKt9uY7LT5mn_DXKZiA1aVmcuMOLA@mail.gmail.com> <CAOmrzkLW+cRi1p7Wa63L-Tf-hCtVkkcFxGmqQVBQHL4A3F+hKQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v5 39/48] m68k: Register with kernel power-off handler
+Date: Thu,  6 Nov 2014 08:43:23 -0800
+Message-ID: <1415292213-28652-40-git-send-email-linux__27917.282903991$1415292561$gmane$org@roeck-us.net>
+References: <1415292213-28652-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44014 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751084AbaKFEvK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Nov 2014 23:51:10 -0500
-In-Reply-To: <CAOmrzkLW+cRi1p7Wa63L-Tf-hCtVkkcFxGmqQVBQHL4A3F+hKQ@mail.gmail.com>
+In-Reply-To: <1415292213-28652-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, =?ISO-8859-15?Q?David_G=E1lvez?= <dgalvez75@gmail.com>, "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, aniplay@wanadoo.fr
+To: linux-kernel@vger.kernel.org
+Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
 
+Register with kernel power-off handler instead of setting pm_power_off
+directly.
 
-On Thu, 6 Nov 2014, Michael Schmitz wrote:
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v5:
+- Rebase to v3.18-rc3
+v4:
+- No change
+v3:
+- Replace poweroff in all newly introduced variables and in text
+  with power_off or power-off as appropriate
+- Replace POWEROFF_PRIORITY_xxx with POWER_OFF_PRIORITY_xxx
+v2:
+- Use defines to specify poweroff handler priorities
 
-> Leaves the current instability - I did some work on the CT60 accelerator 
-> (reflashed the firmware so I can use the CTPCI board). This might have 
-> caused the system to become more unstable. Needs more investigation.
+ arch/m68k/emu/natfeat.c | 3 ++-
+ arch/m68k/mac/config.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-I gather from the emails we've exchanged that the "current" instability 
-(data corruption) dates back to March or thereabouts, so it is unrelated 
-to this patch series.
-
-The lockups have been resolved, which leaves only the ST DMA FIFO issue, 
-which seems to be an old problem. From the comments in atari_scsi, it 
-doesn't look like this was ever resolved.
-
-        /* If the DMA was active, but now bit 1 is not clear, it is some
-         * other 5380 interrupt that finishes the DMA transfer. We have to
-         * calculate the number of residual bytes and give a warning if
-         * bytes are stuck in the ST-DMA fifo (there's no way to reach them!)
-         */
-        if (atari_dma_active && (dma_stat & 0x02)) {
-                unsigned long transferred;
-
-                transferred = SCSI_DMA_GETADR() - atari_dma_startaddr;
-                /* The ST-DMA address is incremented in 2-byte steps, but the
-                 * data are written only in 16-byte chunks. If the number of
-                 * transferred bytes is not divisible by 16, the remainder is
-                 * lost somewhere in outer space.
-                 */
-                if (transferred & 15)
-                        printk(KERN_ERR "SCSI DMA error: %ld bytes lost in "
-                               "ST-DMA fifo\n", transferred & 15);
-
-Presuming that this is an old issue (apparently timing sensitive), we can 
-conclude that no regressions were observed in your tests. I'm content with 
-this presumption. I gather that you are too, or you would not have sent a 
-"tested-by" tag. Which seems to put the ball in Geert's court?
-
+diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
+index 91e2ae7..38fec50 100644
+--- a/arch/m68k/emu/natfeat.c
++++ b/arch/m68k/emu/natfeat.c
+@@ -91,5 +91,6 @@ void __init nf_init(void)
+ 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
+ 		version & 0xffff);
+ 
+-	pm_power_off = nf_poweroff;
++	register_power_off_handler_simple(nf_poweroff,
++					  POWER_OFF_PRIORITY_DEFAULT);
+ }
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 677913ff..14fd981 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -160,7 +160,8 @@ void __init config_mac(void)
+ 	mach_set_clock_mmss = mac_set_clock_mmss;
+ 	mach_reset = mac_reset;
+ 	mach_halt = mac_poweroff;
+-	pm_power_off = mac_poweroff;
++	register_power_off_handler_simple(mac_poweroff,
++					  POWER_OFF_PRIORITY_DEFAULT);
+ 	mach_max_dma_address = 0xffffffff;
+ #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
+ 	mach_beep = mac_mksound;
 -- 
+1.9.1
