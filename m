@@ -1,139 +1,68 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v5 04/48] m68k: Replace mach_power_off with pm_power_off
-Date: Thu,  6 Nov 2014 08:42:48 -0800
-Message-ID: <1415292213-28652-5-git-send-email-linux__24220.541076693$1415293474$gmane$org@roeck-us.net>
-References: <1415292213-28652-1-git-send-email-linux@roeck-us.net>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1415292213-28652-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2 00/36] Fixes, cleanups and modernization for NCR5380 drivers
+Date: Fri, 7 Nov 2014 07:54:45 +1300
+Message-ID: <CAOmrzkKUXJaDh7gchStxkwMeR6MUDGZPD+O+iAsvSbQOT0yB2g@mail.gmail.com>
+References: <20141027052607.105914311@telegraphics.com.au>
+	<5455C107.6040500@gmail.com>
+	<alpine.LNX.2.00.1411021710210.27266@nippy.intranet>
+	<5455E340.7080305@gmail.com>
+	<CAOmrzkKVYBcznyEaUX7Ta9z3P+B9=BTSj3kCZTjx-euZ2gannQ@mail.gmail.com>
+	<CAL4YKD5fqhZKZG3_cOTxasqTSdb5oC3g0aUKnnxzE3Q4MJyxGQ@mail.gmail.com>
+	<CAMuHMdV_xAdXB-0Q=qCGqDKt9uY7LT5mn_DXKZiA1aVmcuMOLA@mail.gmail.com>
+	<CAOmrzkLW+cRi1p7Wa63L-Tf-hCtVkkcFxGmqQVBQHL4A3F+hKQ@mail.gmail.com>
+	<alpine.LNX.2.00.1411061507240.20750@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1411061507240.20750@nippy.intranet>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, =?UTF-8?Q?David_G=C3=A1lvez?= <dgalvez75@gmail.com>, "James E.J. Bottomley" <JBottomley@parallels.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, aniplay@wanadoo.fr
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
 
-Replace mach_power_off with pm_power_off to simplify the subsequent
-move of pm_power_off to generic code.
+Hi Finn,
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v5:
-- Rebase to v3.18-rc3
-v4:
-- No change
-v3:
-- No change
-v2:
-- have_kernel_poweroff -> have_kernel_power_off
+>> Leaves the current instability - I did some work on the CT60 accelerator
+>> (reflashed the firmware so I can use the CTPCI board). This might have
+>> caused the system to become more unstable. Needs more investigation.
+>
+> I gather from the emails we've exchanged that the "current" instability
+> (data corruption) dates back to March or thereabouts, so it is unrelated
+> to this patch series.
 
- arch/m68k/emu/natfeat.c         | 3 ++-
- arch/m68k/include/asm/machdep.h | 1 -
- arch/m68k/kernel/process.c      | 5 +++--
- arch/m68k/kernel/setup_mm.c     | 1 -
- arch/m68k/kernel/setup_no.c     | 1 -
- arch/m68k/mac/config.c          | 3 ++-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+Absolutely right - meant to add that but got interrupted in that train
+of thought :-(
 
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 71b78ec..91e2ae7 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -15,6 +15,7 @@
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/io.h>
- #include <asm/machdep.h>
- #include <asm/natfeat.h>
-@@ -90,5 +91,5 @@ void __init nf_init(void)
- 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
- 		version & 0xffff);
- 
--	mach_power_off = nf_poweroff;
-+	pm_power_off = nf_poweroff;
- }
-diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 953ca21..f9fac51 100644
---- a/arch/m68k/include/asm/machdep.h
-+++ b/arch/m68k/include/asm/machdep.h
-@@ -24,7 +24,6 @@ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
- extern int (*mach_set_clock_mmss)(unsigned long);
- extern void (*mach_reset)( void );
- extern void (*mach_halt)( void );
--extern void (*mach_power_off)( void );
- extern unsigned long (*mach_hd_init) (unsigned long, unsigned long);
- extern void (*mach_hd_setup)(char *, int *);
- extern long mach_max_dma_address;
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index c55ff71..afe3d6e 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -22,6 +22,7 @@
- #include <linux/unistd.h>
- #include <linux/ptrace.h>
- #include <linux/user.h>
-+#include <linux/pm.h>
- #include <linux/reboot.h>
- #include <linux/init_task.h>
- #include <linux/mqueue.h>
-@@ -77,8 +78,8 @@ void machine_halt(void)
- 
- void machine_power_off(void)
- {
--	if (mach_power_off)
--		mach_power_off();
-+	if (pm_power_off)
-+		pm_power_off();
- 	for (;;);
- }
- 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 5b8ec4d..002fea6 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -96,7 +96,6 @@ EXPORT_SYMBOL(mach_get_rtc_pll);
- EXPORT_SYMBOL(mach_set_rtc_pll);
- void (*mach_reset)( void );
- void (*mach_halt)( void );
--void (*mach_power_off)( void );
- long mach_max_dma_address = 0x00ffffff; /* default set to the lower 16MB */
- #ifdef CONFIG_HEARTBEAT
- void (*mach_heartbeat) (int);
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 88c27d9..1520156 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -55,7 +55,6 @@ int (*mach_hwclk) (int, struct rtc_time*);
- /* machine dependent reboot functions */
- void (*mach_reset)(void);
- void (*mach_halt)(void);
--void (*mach_power_off)(void);
- 
- #ifdef CONFIG_M68000
- #if defined(CONFIG_M68328)
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index a471eab..677913ff 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -16,6 +16,7 @@
- #include <linux/tty.h>
- #include <linux/console.h>
- #include <linux/interrupt.h>
-+#include <linux/pm.h>
- /* keyb */
- #include <linux/random.h>
- #include <linux/delay.h>
-@@ -159,7 +160,7 @@ void __init config_mac(void)
- 	mach_set_clock_mmss = mac_set_clock_mmss;
- 	mach_reset = mac_reset;
- 	mach_halt = mac_poweroff;
--	mach_power_off = mac_poweroff;
-+	pm_power_off = mac_poweroff;
- 	mach_max_dma_address = 0xffffffff;
- #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
- 	mach_beep = mac_mksound;
--- 
-1.9.1
+> The lockups have been resolved, which leaves only the ST DMA FIFO issue,
+> which seems to be an old problem. From the comments in atari_scsi, it
+> doesn't look like this was ever resolved.
+>
+>         /* If the DMA was active, but now bit 1 is not clear, it is some
+>          * other 5380 interrupt that finishes the DMA transfer. We have to
+>          * calculate the number of residual bytes and give a warning if
+>          * bytes are stuck in the ST-DMA fifo (there's no way to reach them!)
+>          */
+>         if (atari_dma_active && (dma_stat & 0x02)) {
+>                 unsigned long transferred;
+>
+>                 transferred = SCSI_DMA_GETADR() - atari_dma_startaddr;
+>                 /* The ST-DMA address is incremented in 2-byte steps, but the
+>                  * data are written only in 16-byte chunks. If the number of
+>                  * transferred bytes is not divisible by 16, the remainder is
+>                  * lost somewhere in outer space.
+>                  */
+>                 if (transferred & 15)
+>                         printk(KERN_ERR "SCSI DMA error: %ld bytes lost in "
+>                                "ST-DMA fifo\n", transferred & 15);
+>
+> Presuming that this is an old issue (apparently timing sensitive), we can
+> conclude that no regressions were observed in your tests. I'm content with
+> this presumption. I gather that you are too, or you would not have sent a
+> "tested-by" tag. Which seems to put the ball in Geert's court?
+
+Right again - though it's probably not Geert but James who needs to
+give the go-ahead.
+
+Cheers,
+
+  Michael
