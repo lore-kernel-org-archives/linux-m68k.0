@@ -1,30 +1,86 @@
-From: AAlink <dinkyint24@gmail.com>
-Subject: REPLY FOR TRADE COOPERATIONS.
-Date: Sat, 8 Nov 2014 15:07:38 +0100
-Message-ID: <CAMkue_s9-TGzaoq+RVe=xW91xT1qnTKgQHNmqK5rh-DLLn+ciA@mail.gmail.com>
-Reply-To: aoalink@gmail.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 25/36] sun3_scsi: Convert to platform device
+Date: Sun, 9 Nov 2014 11:25:00 +0100
+Message-ID: <CAMuHMdUULx29rmrSPxmSJugTQAbRVnkcjVzg6j3-eN4U7hLpZA@mail.gmail.com>
+References: <20141027052607.105914311@telegraphics.com.au>
+	<20141027052613.155430175@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20141027052613.155430175@telegraphics.com.au>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Dear sir.
-we got your contacts form the Benin Trade house.
-we are a well registered company with good reputation in our continents=
-=2E
-Could you reply as if you could be willing to export or trade with us
-for the forth coming xmas sales and new year sales. response back with
-your products list and prices and terms of payments etc.
-we want to hear from you ,should you need more informations about our
-company you are free to reach back to us.
-Best regards.
-John O. C.
-STE AALINK SARL.
-Siege est =C3=A0 cotonou.
-C/ 137 Quartier Attinkam=C3=A9.
-Cotonou-4483 principals 01
-Republique du Benin.
-Tel +229 6159 0330.
-Email: aoalink@gmail.com
+On Mon, Oct 27, 2014 at 6:26 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> --- linux.orig/arch/m68k/sun3/config.c  2014-10-27 16:17:59.000000000 +1100
+> +++ linux/arch/m68k/sun3/config.c       2014-10-27 16:25:50.000000000 +1100
+
+> @@ -169,3 +171,61 @@ static void __init sun3_sched_init(irq_h
+>          intersil_clear();
+>  }
+>
+> +#ifdef CONFIG_SUN3_SCSI
+> +
+> +static const struct resource sun3_scsi_vme_rsrc[] __initconst = {
+> +       {
+> +               .flags = IORESOURCE_IRQ,
+> +               .start = SUN3_VEC_VMESCSI0,
+> +               .end   = SUN3_VEC_VMESCSI0,
+> +       }, {
+> +               .flags = IORESOURCE_MEM,
+> +               .start = 0xff200000,
+> +               .end   = 0xff200000 + PAGE_SIZE - 1,
+
+PAGE_SIZE is a software kernel configuration option, not a hardware
+property. It makes sense to use it in an ioremap() call, but not in a
+platform device's resource, which describes the hardware.
+
+> +       }, {
+> +               .flags = IORESOURCE_IRQ,
+> +               .start = SUN3_VEC_VMESCSI1,
+> +               .end   = SUN3_VEC_VMESCSI1,
+> +       }, {
+> +               .flags = IORESOURCE_MEM,
+> +               .start = 0xff204000,
+> +               .end   = 0xff204000 + PAGE_SIZE - 1,
+
+Likewise
+
+> +       },
+> +};
+> +
+> +/*
+> + * Int: level 2 autovector
+> + * IO: type 1, base 0x00140000, 5 bits phys space: A<4..0>
+> + */
+> +static const struct resource sun3_scsi_rsrc[] __initconst = {
+> +       {
+> +               .flags = IORESOURCE_IRQ,
+> +               .start = 2,
+> +               .end   = 2,
+> +       }, {
+> +               .flags = IORESOURCE_MEM,
+> +               .start = 0x00140000,
+> +               .end   = 0x00140000 + PAGE_SIZE - 1,
+
+Likewise
+
+According to the Sun-3 Architecture Manual v2.0 (May 1985), end should
+be 0x0014001f.
+
+I guess the resource length is 0x20 for VME SCSI, too?
+
+> +       },
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
