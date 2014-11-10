@@ -1,102 +1,66 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v2 06/36] ncr5380: Remove more useless prototypes
-Date: Sun, 9 Nov 2014 23:19:50 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1411091121190.4669@nippy.intranet>
-References: <20141027052607.105914311@telegraphics.com.au> <20141027052608.595432496@telegraphics.com.au> <5450FD34.2020208@suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <5450FD34.2020208@suse.de>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Hannes Reinecke <hare@suse.de>
-Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v6 39/48] m68k: Register with kernel power-off handler
+Date: Sun,  9 Nov 2014 17:42:56 -0800
+Message-ID: <1415583785-6980-40-git-send-email-linux__8091.88487842238$1415584066$gmane$org@roeck-us.net>
+References: <1415583785-6980-1-git-send-email-linux@roeck-us.net>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1415583785-6980-1-git-send-email-linux@roeck-us.net>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
 
+Register with kernel power-off handler instead of setting pm_power_off
+directly.
 
-Ping...
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v6:
+- This patch: No change.
+  Global: Replaced priority defines with enum.
+v5:
+- Rebase to v3.18-rc3
+v4:
+- No change
+v3:
+- Replace poweroff in all newly introduced variables and in text
+  with power_off or power-off as appropriate
+- Replace POWEROFF_PRIORITY_xxx with POWER_OFF_PRIORITY_xxx
+v2:
+- Use defines to specify poweroff handler priorities
 
-On Wed, 29 Oct 2014, Hannes Reinecke wrote:
+ arch/m68k/emu/natfeat.c | 3 ++-
+ arch/m68k/mac/config.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-> On 10/27/2014 06:26 AM, Finn Thain wrote:
-> > Make use of the host template static initializer instead of assigning
-> > handlers at run-time. Move __maybe_unused qualifiers from declarations
-> > to definitions. Move the atari_scsi_bus_reset() wrapper after the
-> > definition of NCR5380_bus_reset(). All of the host template handler
-> > prototypes are now redundant so remove them.
-> > 
-> > The write_info() handler is only relevant to drivers using PSEUDO_DMA so
-> > this patch fixes the compiler warning in atari_NCR5380.c and sun3_NCR5380.c:
-> > 
-> >   CC      drivers/scsi/atari_scsi.o
-> >   drivers/scsi/NCR5380.h:329: warning: 'NCR5380_write_info' declared 'static' but never defined
-> > 
-> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > 
-> > ---
-> >  drivers/scsi/NCR5380.h       |    8 ----
-> >  drivers/scsi/atari_NCR5380.c |    3 +
-> >  drivers/scsi/atari_scsi.c    |   76 ++++++++++++++++++++-----------------------
-> >  drivers/scsi/dtc.c           |    7 +--
-> >  drivers/scsi/pas16.c         |    7 +--
-> >  drivers/scsi/sun3_NCR5380.c  |    3 +
-> >  drivers/scsi/t128.c          |    7 +--
-> >  7 files changed, 50 insertions(+), 61 deletions(-)
-> > 
-> > Index: linux/drivers/scsi/NCR5380.h
-> > ===================================================================
-> > --- linux.orig/drivers/scsi/NCR5380.h	2014-10-27 16:25:06.000000000 +1100
-> > +++ linux/drivers/scsi/NCR5380.h	2014-10-27 16:25:14.000000000 +1100
-> > @@ -322,14 +322,6 @@ static irqreturn_t NCR5380_intr(int irq,
-> >  #endif
-> >  static void NCR5380_main(struct work_struct *work);
-> >  static void __maybe_unused NCR5380_print_options(struct Scsi_Host *instance);
-> > -static int NCR5380_abort(Scsi_Cmnd * cmd);
-> > -static int NCR5380_bus_reset(Scsi_Cmnd * cmd);
-> > -static int NCR5380_queue_command(struct Scsi_Host *, struct scsi_cmnd *);
-> > -static int __maybe_unused NCR5380_show_info(struct seq_file *,
-> > -	struct Scsi_Host *);
-> > -static int __maybe_unused NCR5380_write_info(struct Scsi_Host *instance,
-> > -	char *buffer, int length);
-> > -
-> >  static void NCR5380_reselect(struct Scsi_Host *instance);
-> >  static int NCR5380_select(struct Scsi_Host *instance, Scsi_Cmnd * cmd, int tag);
-> >  #if defined(PSEUDO_DMA) || defined(REAL_DMA) || defined(REAL_DMA_POLL)
-> > Index: linux/drivers/scsi/dtc.c
-> > ===================================================================
-> > --- linux.orig/drivers/scsi/dtc.c	2014-10-27 16:25:08.000000000 +1100
-> > +++ linux/drivers/scsi/dtc.c	2014-10-27 16:25:14.000000000 +1100
-> > @@ -219,10 +219,6 @@ static int __init dtc_detect(struct scsi
-> >  	void __iomem *base;
-> >  	int sig, count;
-> >  
-> > -	tpnt->proc_name = "dtc3x80";
-> > -	tpnt->show_info = dtc_show_info;
-> > -	tpnt->write_info = dtc_write_info;
-> > -
-> >  	for (count = 0; current_override < NO_OVERRIDES; ++current_override) {
-> >  		addr = 0;
-> >  		base = NULL;
-> > @@ -477,6 +473,9 @@ static struct scsi_host_template driver_
-> >  	.name				= "DTC 3180/3280 ",
-> >  	.detect				= dtc_detect,
-> >  	.release			= dtc_release,
-> > +	.proc_name			= "dtc3x80",
-> > +	.show_info			= dtc_show_info,
-> > +	.write_info			= dtc_write_info,
-> >  	.queuecommand			= dtc_queue_command,
-> >  	.eh_abort_handler		= dtc_abort,
-> >  	.eh_bus_reset_handler		= dtc_bus_reset,
-> 
-> What is the current consensus on using '.proc_name' ?
-> At one point is was claimed to be deprecated, yet the only driver
-> actually following this seems to be lpfc.
-> (_And_ we have a patch in our tree to hook that back in).
-> 
-> Can't we just get it back for the time being and decide upon a
-> proper solution later?
-> 
-> Cheers,
-> 
-> Hannes
-> 
+diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
+index 91e2ae7..38fec50 100644
+--- a/arch/m68k/emu/natfeat.c
++++ b/arch/m68k/emu/natfeat.c
+@@ -91,5 +91,6 @@ void __init nf_init(void)
+ 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
+ 		version & 0xffff);
+ 
+-	pm_power_off = nf_poweroff;
++	register_power_off_handler_simple(nf_poweroff,
++					  POWER_OFF_PRIORITY_DEFAULT);
+ }
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 677913ff..14fd981 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -160,7 +160,8 @@ void __init config_mac(void)
+ 	mach_set_clock_mmss = mac_set_clock_mmss;
+ 	mach_reset = mac_reset;
+ 	mach_halt = mac_poweroff;
+-	pm_power_off = mac_poweroff;
++	register_power_off_handler_simple(mac_poweroff,
++					  POWER_OFF_PRIORITY_DEFAULT);
+ 	mach_max_dma_address = 0xffffffff;
+ #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
+ 	mach_beep = mac_mksound;
 -- 
+1.9.1
