@@ -1,141 +1,93 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v6 04/48] m68k: Replace mach_power_off with pm_power_off
-Date: Sun,  9 Nov 2014 17:42:21 -0800
-Message-ID: <1415583785-6980-5-git-send-email-linux__45336.9404691786$1415584588$gmane$org@roeck-us.net>
-References: <1415583785-6980-1-git-send-email-linux@roeck-us.net>
+From: gerg@uclinux.org
+Subject: [PATCH] m68knommu: fix irq handler types in 68360/commproc.c
+Date: Mon, 10 Nov 2014 11:58:40 +1000
+Message-ID: <1415584720-21704-1-git-send-email-gerg@uclinux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1415583785-6980-1-git-send-email-linux@roeck-us.net>
+Received: from nskntmtas03p.mx.bigpond.com ([61.9.168.143]:59131 "EHLO
+	nskntmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751942AbaKJB7A (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2014 20:59:00 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
-
-Replace mach_power_off with pm_power_off to simplify the subsequent
-move of pm_power_off to generic code.
-
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@vger.kernel.org
 Cc: Greg Ungerer <gerg@uclinux.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+
+=46rom: Greg Ungerer <gerg@uclinux.org>
+
+Compilation of arch/m68k/68360/commproc.c fails with the following erro=
+rs:
+
+arch/m68k/68360/commproc.c:75:1: error: function declaration isn=E2=80=99=
+t a prototype
+arch/m68k/68360/commproc.c:211:1: error: function declaration isn=E2=80=
+=99t a prototype
+arch/m68k/68360/commproc.c: In function =E2=80=98cpm_install_handler=E2=
+=80=99:
+arch/m68k/68360/commproc.c:214:2: warning: passing argument 2 of =E2=80=
+=98request_irq=E2=80=99 from incompatible pointer type
+include/linux/interrupt.h:128:1: note: expected =E2=80=98irq_handler_t=E2=
+=80=99 but argument is of type =E2=80=98void (*)()=E2=80=99
+
+It should be using the proper irq hander type, irq_handler_t. Modify it
+to use that.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
-v6:
-- No change.
-v5:
-- Rebase to v3.18-rc3
-v4:
-- No change
-v3:
-- No change
-v2:
-- have_kernel_poweroff -> have_kernel_power_off
+ arch/m68k/68360/commproc.c       | 8 ++++----
+ arch/m68k/include/asm/commproc.h | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- arch/m68k/emu/natfeat.c         | 3 ++-
- arch/m68k/include/asm/machdep.h | 1 -
- arch/m68k/kernel/process.c      | 5 +++--
- arch/m68k/kernel/setup_mm.c     | 1 -
- arch/m68k/kernel/setup_no.c     | 1 -
- arch/m68k/mac/config.c          | 3 ++-
- 6 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 71b78ec..91e2ae7 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -15,6 +15,7 @@
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/io.h>
- #include <asm/machdep.h>
- #include <asm/natfeat.h>
-@@ -90,5 +91,5 @@ void __init nf_init(void)
- 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
- 		version & 0xffff);
- 
--	mach_power_off = nf_poweroff;
-+	pm_power_off = nf_poweroff;
- }
-diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 953ca21..f9fac51 100644
---- a/arch/m68k/include/asm/machdep.h
-+++ b/arch/m68k/include/asm/machdep.h
-@@ -24,7 +24,6 @@ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
- extern int (*mach_set_clock_mmss)(unsigned long);
- extern void (*mach_reset)( void );
- extern void (*mach_halt)( void );
--extern void (*mach_power_off)( void );
- extern unsigned long (*mach_hd_init) (unsigned long, unsigned long);
- extern void (*mach_hd_setup)(char *, int *);
- extern long mach_max_dma_address;
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index c55ff71..afe3d6e 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -22,6 +22,7 @@
- #include <linux/unistd.h>
- #include <linux/ptrace.h>
- #include <linux/user.h>
-+#include <linux/pm.h>
- #include <linux/reboot.h>
- #include <linux/init_task.h>
- #include <linux/mqueue.h>
-@@ -77,8 +78,8 @@ void machine_halt(void)
- 
- void machine_power_off(void)
+diff --git a/arch/m68k/68360/commproc.c b/arch/m68k/68360/commproc.c
+index 315727b..14d7f35 100644
+--- a/arch/m68k/68360/commproc.c
++++ b/arch/m68k/68360/commproc.c
+@@ -64,15 +64,15 @@ QUICC  *pquicc;
+=20
+ /* CPM interrupt vector functions. */
+ struct	cpm_action {
+-	void	(*handler)(void *);
+-	void	*dev_id;
++	irq_handler_t	handler;
++	void		*dev_id;
+ };
+ static	struct	cpm_action cpm_vecs[CPMVEC_NR];
+ static	void	cpm_interrupt(int irq, void * dev, struct pt_regs * regs);
+ static	void	cpm_error_interrupt(void *);
+=20
+ /* prototypes: */
+-void cpm_install_handler(int vec, void (*handler)(), void *dev_id);
++void cpm_install_handler(int vec, irq_handler_t handler, void *dev_id)=
+;
+ void m360_cpm_reset(void);
+=20
+=20
+@@ -208,7 +208,7 @@ cpm_error_interrupt(void *dev)
+ /* Install a CPM interrupt handler.
+ */
+ void
+-cpm_install_handler(int vec, void (*handler)(), void *dev_id)
++cpm_install_handler(int vec, irq_handler_t handler, void *dev_id)
  {
--	if (mach_power_off)
--		mach_power_off();
-+	if (pm_power_off)
-+		pm_power_off();
- 	for (;;);
- }
- 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 5b8ec4d..002fea6 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -96,7 +96,6 @@ EXPORT_SYMBOL(mach_get_rtc_pll);
- EXPORT_SYMBOL(mach_set_rtc_pll);
- void (*mach_reset)( void );
- void (*mach_halt)( void );
--void (*mach_power_off)( void );
- long mach_max_dma_address = 0x00ffffff; /* default set to the lower 16MB */
- #ifdef CONFIG_HEARTBEAT
- void (*mach_heartbeat) (int);
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 88c27d9..1520156 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -55,7 +55,6 @@ int (*mach_hwclk) (int, struct rtc_time*);
- /* machine dependent reboot functions */
- void (*mach_reset)(void);
- void (*mach_halt)(void);
--void (*mach_power_off)(void);
- 
- #ifdef CONFIG_M68000
- #if defined(CONFIG_M68328)
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index a471eab..677913ff 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -16,6 +16,7 @@
- #include <linux/tty.h>
- #include <linux/console.h>
- #include <linux/interrupt.h>
-+#include <linux/pm.h>
- /* keyb */
- #include <linux/random.h>
- #include <linux/delay.h>
-@@ -159,7 +160,7 @@ void __init config_mac(void)
- 	mach_set_clock_mmss = mac_set_clock_mmss;
- 	mach_reset = mac_reset;
- 	mach_halt = mac_poweroff;
--	mach_power_off = mac_poweroff;
-+	pm_power_off = mac_poweroff;
- 	mach_max_dma_address = 0xffffffff;
- #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
- 	mach_beep = mac_mksound;
--- 
+=20
+ 	request_irq(vec, handler, 0, "timer", dev_id);
+diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/c=
+ommproc.h
+index c67e092..f41c968 100644
+--- a/arch/m68k/include/asm/commproc.h
++++ b/arch/m68k/include/asm/commproc.h
+@@ -649,7 +649,7 @@ typedef struct scc_trans {
+ /* #define	CPMVEC_PIO_PC4		((ushort)0x01) */
+ /* #define	CPMVEC_ERROR		((ushort)0x00) */
+=20
+-extern void cpm_install_handler(int vec, void (*handler)(void *), void=
+ *dev_id);
++extern void cpm_install_handler(int vec, irq_handler_t handler, void *=
+dev_id);
+=20
+ /* CPM interrupt configuration vector.
+ */
+--=20
 1.9.1
