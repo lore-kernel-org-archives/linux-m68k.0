@@ -1,93 +1,72 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68knommu: fix irq handler types in 68360/commproc.c
-Date: Mon, 10 Nov 2014 11:58:40 +1000
-Message-ID: <1415584720-21704-1-git-send-email-gerg@uclinux.org>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH] m68k: remove check for CONFIG_BSEIP
+Date: Mon, 10 Nov 2014 12:44:09 +1000
+Message-ID: <54602679.80505@westnet.com.au>
+References: <1400572571.4912.7.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntmtas03p.mx.bigpond.com ([61.9.168.143]:59131 "EHLO
-	nskntmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751942AbaKJB7A (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Nov 2014 20:59:00 -0500
+In-Reply-To: <1400572571.4912.7.camel@x220>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Paul Bolle <pebolle@tiscali.nl>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-=46rom: Greg Ungerer <gerg@uclinux.org>
+Hi Paul,
 
-Compilation of arch/m68k/68360/commproc.c fails with the following erro=
-rs:
+On 20/05/14 17:56, Paul Bolle wrote:
+> There used to be a Kconfig symbol BSEIP. It was PPC specific and was
+> removed in v2.6.27. So the check for CONFIG_BSEIP can be removed. This
+> means a few defines will be removed. None of the macros involved are
+> used, so no one should care.
+> 
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-arch/m68k/68360/commproc.c:75:1: error: function declaration isn=E2=80=99=
-t a prototype
-arch/m68k/68360/commproc.c:211:1: error: function declaration isn=E2=80=
-=99t a prototype
-arch/m68k/68360/commproc.c: In function =E2=80=98cpm_install_handler=E2=
-=80=99:
-arch/m68k/68360/commproc.c:214:2: warning: passing argument 2 of =E2=80=
-=98request_irq=E2=80=99 from incompatible pointer type
-include/linux/interrupt.h:128:1: note: expected =E2=80=98irq_handler_t=E2=
-=80=99 but argument is of type =E2=80=98void (*)()=E2=80=99
+Thanks, applied to m68knommu for-next branch.
 
-It should be using the proper irq hander type, irq_handler_t. Modify it
-to use that.
+Regards
+Greg
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/68360/commproc.c       | 8 ++++----
- arch/m68k/include/asm/commproc.h | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/68360/commproc.c b/arch/m68k/68360/commproc.c
-index 315727b..14d7f35 100644
---- a/arch/m68k/68360/commproc.c
-+++ b/arch/m68k/68360/commproc.c
-@@ -64,15 +64,15 @@ QUICC  *pquicc;
-=20
- /* CPM interrupt vector functions. */
- struct	cpm_action {
--	void	(*handler)(void *);
--	void	*dev_id;
-+	irq_handler_t	handler;
-+	void		*dev_id;
- };
- static	struct	cpm_action cpm_vecs[CPMVEC_NR];
- static	void	cpm_interrupt(int irq, void * dev, struct pt_regs * regs);
- static	void	cpm_error_interrupt(void *);
-=20
- /* prototypes: */
--void cpm_install_handler(int vec, void (*handler)(), void *dev_id);
-+void cpm_install_handler(int vec, irq_handler_t handler, void *dev_id)=
-;
- void m360_cpm_reset(void);
-=20
-=20
-@@ -208,7 +208,7 @@ cpm_error_interrupt(void *dev)
- /* Install a CPM interrupt handler.
- */
- void
--cpm_install_handler(int vec, void (*handler)(), void *dev_id)
-+cpm_install_handler(int vec, irq_handler_t handler, void *dev_id)
- {
-=20
- 	request_irq(vec, handler, 0, "timer", dev_id);
-diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/c=
-ommproc.h
-index c67e092..f41c968 100644
---- a/arch/m68k/include/asm/commproc.h
-+++ b/arch/m68k/include/asm/commproc.h
-@@ -649,7 +649,7 @@ typedef struct scc_trans {
- /* #define	CPMVEC_PIO_PC4		((ushort)0x01) */
- /* #define	CPMVEC_ERROR		((ushort)0x00) */
-=20
--extern void cpm_install_handler(int vec, void (*handler)(void *), void=
- *dev_id);
-+extern void cpm_install_handler(int vec, irq_handler_t handler, void *=
-dev_id);
-=20
- /* CPM interrupt configuration vector.
- */
---=20
-1.9.1
+
+> ---
+> Untested.
+> 
+>  arch/m68k/include/asm/commproc.h | 22 ----------------------
+>  1 file changed, 22 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/commproc.h
+> index 66a36bd51aa1..c67e09279ea9 100644
+> --- a/arch/m68k/include/asm/commproc.h
+> +++ b/arch/m68k/include/asm/commproc.h
+> @@ -480,28 +480,6 @@ typedef struct scc_enet {
+>  #define SICR_ENET_CLKRT	((uint)0x0000003d)
+>  #endif
+>  
+> -#ifdef CONFIG_BSEIP
+> -/* This ENET stuff is for the MPC823 with ethernet on SCC2.
+> - * This is unique to the BSE ip-Engine board.
+> - */
+> -#define PA_ENET_RXD	((ushort)0x0004)
+> -#define PA_ENET_TXD	((ushort)0x0008)
+> -#define PA_ENET_TCLK	((ushort)0x0100)
+> -#define PA_ENET_RCLK	((ushort)0x0200)
+> -#define PB_ENET_TENA	((uint)0x00002000)
+> -#define PC_ENET_CLSN	((ushort)0x0040)
+> -#define PC_ENET_RENA	((ushort)0x0080)
+> -
+> -/* BSE uses port B and C bits for PHY control also.
+> -*/
+> -#define PB_BSE_POWERUP	((uint)0x00000004)
+> -#define PB_BSE_FDXDIS	((uint)0x00008000)
+> -#define PC_BSE_LOOPBACK	((ushort)0x0800)
+> -
+> -#define SICR_ENET_MASK	((uint)0x0000ff00)
+> -#define SICR_ENET_CLKRT	((uint)0x00002c00)
+> -#endif
+> -
+>  /* SCC Event register as used by Ethernet.
+>  */
+>  #define SCCE_ENET_GRA	((ushort)0x0080)	/* Graceful stop complete */
+> 
