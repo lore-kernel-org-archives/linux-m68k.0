@@ -1,88 +1,43 @@
-From: support2341@millionaire.com
-Subject: A recommendation from Support
-Date: Mon, 10 Nov 2014 05:50:30 +0000 (GMT)
-Message-ID: <20141110055030.E43214ABA8@vps91566031.123-vps.co.uk>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] mm/m68k: Eliminate memset after alloc_bootmem_pages
+Date: Mon, 10 Nov 2014 09:57:45 +0100
+Message-ID: <CAMuHMdX46dEKLm6cD3gEEvc_aW52NAKgWG5zNmthCs5jMciU3g__40272.0138583847$1415609895$gmane$org@mail.gmail.com>
+References: <20140719113513.GA23586@himangi-Dell>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vps91566031.123-vps.co.uk ([212.48.66.191]:51885 "EHLO
-	vps91566031.123-vps.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750890AbaKJHGt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 10 Nov 2014 02:06:49 -0500
+In-Reply-To: <20140719113513.GA23586@himangi-Dell>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: mike.debbie34@gmail.com, ejohnson_108@yahoo.co.uk, linux-m68k@vger.kernel.org, ctmanage@yahoo.com, rpriest34@hotmail.com
+To: Himangi Saraogi <himangi774@gmail.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>
 
+On Sat, Jul 19, 2014 at 1:35 PM, Himangi Saraogi <himangi774@gmail.com> wrote:
+> alloc_bootmem and related functions always return a zeroed region of memory.
+> Thus a memset after calls to these functions is unnecessary.
+>
+> The following Coccinelle semantic patch was used for making the change:
+>
+> @@
+> expression E,E1;
+> @@
+>
+> E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+> ... when != E
+> - memset(E,0,E1);
+>
+> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+> Acked-by: Julia Lawall <julia.lawall@lip6.fr>
 
-Hello,
+Thanks, applied and queued for v3.19.
 
-Hey Friend,=0D
-=0D
-As you know, I=92m always on the lookout for =0D
-real ways to make decent money.       =0D
-                                                     =0D
-Not just a measly $20 or $30 a day; I mean real money. =0D
-=0D
-$20,000 or $30,000 A DAY?!?! Now THAT is=85=0D
-=0D
-DAMN GOOD REAL MONEY!=0D
-=0D
-His 6 figure bank accounts now are a pretty good =0D
-indicator that Trevor Haynes has figured it out.=0D
-=0D
-Check this out -  http://tinyurl.com/ko7bljk=0D
-=0D
-The Millionaire Money Machine has nothing to do with =0D
-eBooks, websites, T-shirts, MLM, gambling, writing, =0D
-flipping sites or any of that.=0D
-=0D
-THIS isn=92t about making ten buck here or there. =0D
-=0D
-It=92s about making TENS OF THOUSANDS DAILY.=0D
-=0D
-You=92ll meet one Millionaire Money Machine user who =0D
-banked over $30K overnight=85 =0D
-=0D
-While he was asleep!=0D
-=0D
-Take a look -  http://tinyurl.com/ko7bljk  =0D
-=0D
-=46or a VERY LIMITED number, Haynes is giving away his =0D
-Millionaire Money Machine. No strings, No BS.=0D
-=0D
-But DO NOT WAIT on this!=0D
-=0D
-Check it out here:=0D
-=0D
--  http://tinyurl.com/ko7bljk=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-NOTE: If your email account doesn't automatically turn the URL above in=
-to a link, =0D
-      you can copy and paste it into your browser.               =0D
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=0D
-If the link is broken please use this: http://nikkanares.mmmachine.cpa.=
-clicksure.com   =0D
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=0D
+Gr{oetje,eeting}s,
 
+                        Geert
 
-Click below to view the webpage that your friend has recommended:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-Support has used the Tell-a-Friend form to send you this link.
-
-We look forward to your visit!
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
