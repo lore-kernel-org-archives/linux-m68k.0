@@ -1,43 +1,36 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] mm/m68k: Eliminate memset after alloc_bootmem_pages
-Date: Mon, 10 Nov 2014 09:57:45 +0100
-Message-ID: <CAMuHMdX46dEKLm6cD3gEEvc_aW52NAKgWG5zNmthCs5jMciU3g__40272.0138583847$1415609895$gmane$org@mail.gmail.com>
-References: <20140719113513.GA23586@himangi-Dell>
+From: Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v2 06/36] ncr5380: Remove more useless prototypes
+Date: Tue, 11 Nov 2014 13:47:44 +0100
+Message-ID: <54620570.2010006@suse.de>
+References: <20141027052607.105914311@telegraphics.com.au> <20141027052608.595432496@telegraphics.com.au> <5450FD34.2020208@suse.de> <alpine.LNX.2.00.1411091121190.4669@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20140719113513.GA23586@himangi-Dell>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1411091121190.4669@nippy.intranet>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Himangi Saraogi <himangi774@gmail.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>
 
-On Sat, Jul 19, 2014 at 1:35 PM, Himangi Saraogi <himangi774@gmail.com> wrote:
-> alloc_bootmem and related functions always return a zeroed region of memory.
-> Thus a memset after calls to these functions is unnecessary.
->
-> The following Coccinelle semantic patch was used for making the change:
->
-> @@
-> expression E,E1;
-> @@
->
-> E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
-> ... when != E
-> - memset(E,0,E1);
->
-> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-> Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+On 11/09/2014 01:19 PM, Finn Thain wrote:
+>=20
+> Ping...
+>=20
+Ok, disregard the .proc_name issue for now.
 
-Thanks, applied and queued for v3.19.
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Gr{oetje,eeting}s,
+Cheers,
 
-                        Geert
-
+Hannes
+--=20
+Dr. Hannes Reinecke		      zSeries & Storage
+hare@suse.de			      +49 911 74053 688
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
+GF: J. Hawn, J. Guild, F. Imend=F6rffer, HRB 21284 (AG N=FCrnberg)
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
