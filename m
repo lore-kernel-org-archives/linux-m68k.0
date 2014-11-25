@@ -1,26 +1,55 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v3 00/37] Fixes, cleanups and modernization for NCR5380
- drivers
-Date: Fri, 21 Nov 2014 15:21:41 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1411211417260.26570@nippy.intranet>
-References: <20141112051146.525489687@telegraphics.com.au> <20141120155659.GA2450@infradead.org>
+From: ceremonials69080@gmail.com
+Subject: Fix Penguin Penalty 17th October2014 ( mail-archive.com )
+Date: Tue, 25 Nov 2014 22:10:16 +0530
+Message-ID: <5474b0ee.815f460a.5199.4ca9@mx.google.com>
+Reply-To: julia.kites@yahoo.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20141120155659.GA2450@infradead.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: "James E.J. Bottomley" <JBottomley@parallels.com>, Michael Schmitz <schmitzmic@gmail.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-pd0-f193.google.com ([209.85.192.193]:33292 "EHLO pdew10"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1750834AbaKYQkP (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 25 Nov 2014 11:40:15 -0500
+Received: by pdew10 with SMTP id w10so376960pde.0
+        for <linux-m68k@vger.kernel.org>; Tue, 25 Nov 2014 08:40:15 -0800 (PST)
+Received: from localhost.localdomain ([124.253.10.7])
+        by mx.google.com with ESMTPSA id dk1sm1927990pdb.48.2014.11.25.08.40.12
+        for <linux-m68k@vger.kernel.org>
+        (version=TLSv1 cipher=RC4-SHA bits=128/128);
+        Tue, 25 Nov 2014 08:40:14 -0800 (PST)
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
+Dear Sir
 
-On Thu, 20 Nov 2014, Christoph Hellwig wrote:
+Did your website get hit by Google Penguin update on October 17th 2014?=
+ What basically is Google Penguin Update? It is actually a code name fo=
+r Google algorithm which aims at decreasing your websites search engine=
+ rankings that violate Google=92s guidelines by using black hat SEO tec=
+hniques to rank your webpage by giving number of spammy links to the pa=
+ge.
+=20
+We are one of those few SEO companies that can help you avoid penalties=
+ from Google Updates like Penguin and Panda. Our clients have survived =
+all the previous and present updates with ease. They have never been hi=
+t because we use 100% white hat SEO techniques to rank Webpages.  Simpl=
+e thing that we do to keep websites away from any Penguin or Panda pena=
+lties is follow Google guidelines and we give Google users the best ans=
+wers to their queries.
 
-> Thanks, I've applied all patches to the drivers-for-3.19 branch.
-> 
-> I had a few rejects due to Hannes logging changes.  I think I've fixed
-> them properly, but please verify it.
+If you are looking to increase the quality of your websites and to get =
+more targeted traffic or save your websites from these Google penalties=
+ email us back with your interest.=20
 
-The merge looks good, thanks.
+We will be glad to serve you and help you grow your business.
 
--- 
+Regards
+
+Julia kites
+
+SEO Manager ( TOB )
+B7 Green Avenue, Amritsar 143001 Punjab
+____________________________
+NO CLICK in the subject to STOP EMAILS
