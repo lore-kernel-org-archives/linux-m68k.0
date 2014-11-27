@@ -1,55 +1,108 @@
-From: ceremonials69080@gmail.com
-Subject: Fix Penguin Penalty 17th October2014 ( mail-archive.com )
-Date: Tue, 25 Nov 2014 22:10:16 +0530
-Message-ID: <5474b0ee.815f460a.5199.4ca9@mx.google.com>
-Reply-To: julia.kites@yahoo.com
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pd0-f193.google.com ([209.85.192.193]:33292 "EHLO pdew10"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1750834AbaKYQkP (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 25 Nov 2014 11:40:15 -0500
-Received: by pdew10 with SMTP id w10so376960pde.0
-        for <linux-m68k@vger.kernel.org>; Tue, 25 Nov 2014 08:40:15 -0800 (PST)
-Received: from localhost.localdomain ([124.253.10.7])
-        by mx.google.com with ESMTPSA id dk1sm1927990pdb.48.2014.11.25.08.40.12
-        for <linux-m68k@vger.kernel.org>
-        (version=TLSv1 cipher=RC4-SHA bits=128/128);
-        Tue, 25 Nov 2014 08:40:14 -0800 (PST)
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2] Input: amikbd - Fix build if !CONFIG_HW_CONSOLE
+Date: Thu, 27 Nov 2014 10:42:19 +0100
+Message-ID: <1417081340-2989-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
 
-Dear Sir
+If CONFIG_HW_CONSOLE is not set:
 
-Did your website get hit by Google Penguin update on October 17th 2014?=
- What basically is Google Penguin Update? It is actually a code name fo=
-r Google algorithm which aims at decreasing your websites search engine=
- rankings that violate Google=92s guidelines by using black hat SEO tec=
-hniques to rank your webpage by giving number of spammy links to the pa=
-ge.
-=20
-We are one of those few SEO companies that can help you avoid penalties=
- from Google Updates like Penguin and Panda. Our clients have survived =
-all the previous and present updates with ease. They have never been hi=
-t because we use 100% white hat SEO techniques to rank Webpages.  Simpl=
-e thing that we do to keep websites away from any Penguin or Panda pena=
-lties is follow Google guidelines and we give Google users the best ans=
-wers to their queries.
+drivers/built-in.o: In function `amikbd_probe':
+amikbd.c:(.init.text+0x3e4e): undefined reference to `key_maps'
+amikbd.c:(.init.text+0x3dd4): undefined reference to `key_maps'
 
-If you are looking to increase the quality of your websites and to get =
-more targeted traffic or save your websites from these Google penalties=
- email us back with your interest.=20
+To fix this, extract the initialization of the console keyboard maps
+into amikbd_init_console_keymaps(), protected by #ifdef
+CONFIG_HW_CONSOLE.
 
-We will be glad to serve you and help you grow your business.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Discovered during randconfig builds.
+---
+ drivers/input/keyboard/amikbd.c | 46 ++++++++++++++++++++++++++---------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-Regards
+diff --git a/drivers/input/keyboard/amikbd.c b/drivers/input/keyboard/amikbd.c
+index 096d6067ae1f890f..4f81e65d9e35cb7d 100644
+--- a/drivers/input/keyboard/amikbd.c
++++ b/drivers/input/keyboard/amikbd.c
+@@ -45,6 +45,7 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
+ MODULE_DESCRIPTION("Amiga keyboard driver");
+ MODULE_LICENSE("GPL");
+ 
++#ifdef CONFIG_HW_CONSOLE
+ static unsigned char amikbd_keycode[0x78] __initdata = {
+ 	[0]	 = KEY_GRAVE,
+ 	[1]	 = KEY_1,
+@@ -144,6 +145,31 @@ static unsigned char amikbd_keycode[0x78] __initdata = {
+ 	[103]	 = KEY_RIGHTMETA
+ };
+ 
++static void __init amikbd_init_console_keymaps(void)
++{
++	int i, j;
++
++	for (i = 0; i < MAX_NR_KEYMAPS; i++) {
++		static u_short temp_map[NR_KEYS] __initdata;
++		if (!key_maps[i])
++			continue;
++		memset(temp_map, 0, sizeof(temp_map));
++		for (j = 0; j < 0x78; j++) {
++			if (!amikbd_keycode[j])
++				continue;
++			temp_map[j] = key_maps[i][amikbd_keycode[j]];
++		}
++		for (j = 0; j < NR_KEYS; j++) {
++			if (!temp_map[j])
++				temp_map[j] = 0xf200;
++		}
++		memcpy(key_maps[i], temp_map, sizeof(temp_map));
++	}
++}
++#else /* !CONFIG_HW_CONSOLE */
++static inline void amikbd_init_console_keymaps(void) {}
++#endif /* !CONFIG_HW_CONSOLE */
++
+ static const char *amikbd_messages[8] = {
+ 	[0] = KERN_ALERT "amikbd: Ctrl-Amiga-Amiga reset warning!!\n",
+ 	[1] = KERN_WARNING "amikbd: keyboard lost sync\n",
+@@ -186,7 +212,7 @@ static irqreturn_t amikbd_interrupt(int irq, void *data)
+ static int __init amikbd_probe(struct platform_device *pdev)
+ {
+ 	struct input_dev *dev;
+-	int i, j, err;
++	int i, err;
+ 
+ 	dev = input_allocate_device();
+ 	if (!dev) {
+@@ -207,22 +233,8 @@ static int __init amikbd_probe(struct platform_device *pdev)
+ 	for (i = 0; i < 0x78; i++)
+ 		set_bit(i, dev->keybit);
+ 
+-	for (i = 0; i < MAX_NR_KEYMAPS; i++) {
+-		static u_short temp_map[NR_KEYS] __initdata;
+-		if (!key_maps[i])
+-			continue;
+-		memset(temp_map, 0, sizeof(temp_map));
+-		for (j = 0; j < 0x78; j++) {
+-			if (!amikbd_keycode[j])
+-				continue;
+-			temp_map[j] = key_maps[i][amikbd_keycode[j]];
+-		}
+-		for (j = 0; j < NR_KEYS; j++) {
+-			if (!temp_map[j])
+-				temp_map[j] = 0xf200;
+-		}
+-		memcpy(key_maps[i], temp_map, sizeof(temp_map));
+-	}
++	amikbd_init_console_keymaps();
++
+ 	ciaa.cra &= ~0x41;	 /* serial data in, turn off TA */
+ 	err = request_irq(IRQ_AMIGA_CIAA_SP, amikbd_interrupt, 0, "amikbd",
+ 			  dev);
+-- 
+1.9.1
 
-Julia kites
-
-SEO Manager ( TOB )
-B7 Green Avenue, Amritsar 143001 Punjab
-____________________________
-NO CLICK in the subject to STOP EMAILS
