@@ -1,51 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [git pull] m68k updates for 3.19
-Date: Mon, 8 Dec 2014 11:32:18 +0100
-Message-ID: <CAMuHMdWSUP=iRsMZD2ZphdGnZy_d6+wKByVZ+RbrpUmvMvjsdA@mail.gmail.com>
-References: <1418032337-15218-1-git-send-email-geert@linux-m68k.org>
-	<20141208212523.47c3cf35@canb.auug.org.au>
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 18/18] m68k/uaccess: fix sparse errors
+Date: Sun, 14 Dec 2014 18:53:14 +0200
+Message-ID: <1418575877-21488-19-git-send-email-mst@redhat.com>
+References: <1418575877-21488-1-git-send-email-mst@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20141208212523.47c3cf35@canb.auug.org.au>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418575877-21488-1-git-send-email-mst@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Stephen,
+virtio wants to read bitwise types from userspace using get_user.  At the
+moment this triggers sparse errors, since the value is passed through an
+integer.
 
-On Mon, Dec 8, 2014 at 11:25 AM, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> On Mon,  8 Dec 2014 10:52:17 +0100 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> The following changes since commit cac7f2429872d3733dc3f9915857b1691da2eb2f:
->>
->>   Linux 3.18-rc2 (2014-10-26 16:48:41 -0700)
->>
->> are available in the git repository at:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
->>
->> for you to fetch changes up to f0b99a643e9613beb28af43333bbfa90d4bf85cc:
->>
->>   m68k/mm: Eliminate memset after alloc_bootmem_pages (2014-11-10 09:56:44 +0100)
->
-> It looks like this branch has not updated yet (or you forgot to push).
-> It is still commit f7bbd12a4b7e088f53f20dd31019984459699fb9 on
-> git.kernel.org.
+Fix that up using __force.
 
-Woops, fixed. Sorry for that.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ arch/m68k/include/asm/uaccess_mm.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Actually git tried to tell me, by showing "for-next" instead of "for-linus"
-in the output from request-pull, but I choose to ignore that as they're
-both pointing to the same commit, and fix that manually. Oh well...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
+index 15901db..c31f53f 100644
+--- a/arch/m68k/include/asm/uaccess_mm.h
++++ b/arch/m68k/include/asm/uaccess_mm.h
+@@ -146,7 +146,7 @@ asm volatile ("\n"					\
+ 		"	.previous"				\
+ 		: "+d" (res), "=&" #reg (__gu_val)		\
+ 		: "m" (*(ptr)), "i" (err));			\
+-	(x) = (typeof(*(ptr)))(unsigned long)__gu_val;		\
++	(x) = (__force typeof(*(ptr)))(__force unsigned long)__gu_val;		\
+ })
+ 
+ #define __get_user(x, ptr)						\
+@@ -188,7 +188,7 @@ asm volatile ("\n"					\
+ 			  "+a" (__gu_ptr)				\
+ 			: "i" (-EFAULT)					\
+ 			: "memory");					\
+-		(x) = (typeof(*(ptr)))__gu_val;				\
++		(x) = (__force typeof(*(ptr)))__gu_val;				\
+ 		break;							\
+ 	    }	*/							\
+ 	default:							\
+-- 
+MST
