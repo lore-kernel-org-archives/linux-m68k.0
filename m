@@ -1,146 +1,84 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [Question] How to print size_t type variable?
-Date: Tue, 16 Dec 2014 10:50:02 +0100
-Message-ID: <CAMuHMdWbGdgK4vPGZfyvfcVj7hF=YMqL5mX46FY+WUqFVPg_WA__3305.18397172472$1418723441$gmane$org@mail.gmail.com>
-References: <20141215195101.0530.AA925319@jp.panasonic.com>
-	<CAMuHMdUaSOr2iDHzWhkKXwwxdvHhpL1C_UR_tw9B1ALhebbdtQ@mail.gmail.com>
-	<20141216120551.053B.AA925319@jp.panasonic.com>
+From: Joe Perches <joe@perches.com>
+Subject: rfc: remove early_printk from a few arches? (blackfin, m68k, mips)
+Date: Wed, 17 Dec 2014 12:58:47 -0800
+Message-ID: <1418849927.28384.1.camel__37357.9166517176$1418850246$gmane$org@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20141216120551.053B.AA925319@jp.panasonic.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Masahiro Yamada <yamada.m@jp.panasonic.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Andrew Murray <amurray@mpc-data.co.uk>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-arch <linux-arch@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
 
-Hi Yamada-san,
+It seems like early_printk can be configured into
+a few architectures but also appear not to be used.
 
-On Tue, Dec 16, 2014 at 4:05 AM, Masahiro Yamada
-<yamada.m@jp.panasonic.com> wrote:
-> On Mon, 15 Dec 2014 12:00:25 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, Dec 15, 2014 at 11:51 AM, Masahiro Yamada
->> <yamada.m@jp.panasonic.com> wrote:
->> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> >> On Mon, Dec 15, 2014 at 10:32 AM, Masahiro Yamada
->> >> <yamada.m@jp.panasonic.com> wrote:
->> >> > I read through Documentation/printk-formats.txt
->> >> >
->> >> > It clearly says to use "%zu" or "%zx" to print size_t variables,
->> >> > but I still have a question.
->> >> >
->> >> > Assume we have code something like:
->> >> >
->> >> >     printk("%zx", (size_t)10);
->> >> >
->> >> > I think this code works fine as long as it includes
->> >> > the compiler-provided <stddef.h>.
->> >> >
->> >> > In the kernel space, however, <stddef.h> is never included.
->> >> > Instead, size_t is defined by include/linux/types.h
->> >> > and include/uapi/asm-generic/posix_types.h.
->> >> >
->> >> > That is, size_t is defined independently from the compiler you are using,
->> >> > although the compiler still decides which variable type is expected for the "%zx" format.
->> >>
->> >> That's correct.
->> >>
->> >> > This causes compiler warnings for some compilers.
->> >> >
->> >> > On bare-metal m68k toolchains, for example, size_t is "unsignd long",
->> >> > whearas it is "unsigned int" on kernel.org m68k toolchains.
->> >> >
->> >> > I see such warnings when I built the kernel with bare-metal m68k toolchains.
->> >> >
->> >> > $ git describe
->> >> > v3.18
->> >> > $ make ARCH=m68k  CROSS_COMPILE=m68k-elf-  defconfig all
->> >> >   HOSTCC  scripts/basic/fixdep
->> >> >   HOSTCC  scripts/kconfig/conf.o
->> >> >   SHIPPED scripts/kconfig/zconf.tab.c
->> >> >   SHIPPED scripts/kconfig/zconf.lex.c
->> >> >   SHIPPED scripts/kconfig/zconf.hash.c
->> >> >   HOSTCC  scripts/kconfig/zconf.tab.o
->> >> >   HOSTLD  scripts/kconfig/conf
->> >> > *** Default configuration is based on 'multi_defconfig'
->> >> > kernel/time/Kconfig:163:warning: range is invalid
->> >> > #
->> >> > # configuration written to .config
->> >> > #
->> >> >
->> >> >   [ snip ]
->> >> >
->> >> >   LD      init/mounts.o
->> >> >   CC      init/initramfs.o
->> >> > init/initramfs.c: In function 'populate_rootfs':
->> >> > init/initramfs.c:635:5: warning: format '%zd' expects argument of type 'signed size_t', but argument 2 has type 'ssize_t' [-Wformat]
->> >>
->> >> Please use a compiler configured for Linux, i.e. m68k-linux-*.
->> >
->> > Yes, I can use it, but I am still curious.
->> >
->> > Do we have a good reason to keep this limitation?
->> >
->> > (All the problem I could see for using GCC that was not configured for Linux
->> > was just the printk-related warnings.)
->> >
->> > Instead of hard-coding the size_t type,
->> > can we use compiler-provided __SIZE_TYPE__ (or include <stddef.h>) ??
->>
->> Note that cris and s390 used __SIZE_TYPE__ in kernel headers before,
->> but it caused other compiler warnings due to a mismatch in the base types
->> for size_t and ssize_t, cfr. https://lkml.org/lkml/2012/8/12/36.
->> AFAIK, there's no __SSIZE_TYPE__.
->
-> I notice __kernel_(s)size_t has the same width as "long".
-> (The kernel does not support LLP64.  We just have to take LP64 into account.)
+$ git grep -w "early_printk"
+arch/arm/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/arm/kernel/early_printk.c: *  linux/arch/arm/kernel/early_printk.c
+arch/arm/mach-socfpga/socfpga.c:	early_printk("Early printk initialized\n");
+arch/blackfin/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)           += early_printk.o
+arch/blackfin/kernel/bfin_dma.c:#include <asm/early_printk.h>
+arch/blackfin/kernel/early_printk.c: * derived from arch/x86/kernel/early_printk.c
+arch/blackfin/kernel/early_printk.c:#include <asm/early_printk.h>
+arch/blackfin/kernel/setup.c:#include <asm/early_printk.h>
+arch/blackfin/kernel/shadow_console.c:#include <asm/early_printk.h>
+arch/blackfin/mm/init.c:#include <asm/early_printk.h>
+arch/ia64/sn/kernel/setup.c:	 * IO on SN2 is done via SAL calls, early_printk won't work without this.
+arch/m68k/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/microblaze/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/microblaze/kernel/cpu/cpuinfo-pvr-full.c:	early_printk("ERROR: Microblaze " x "-different for PVR and DTS\n");
+arch/microblaze/kernel/cpu/cpuinfo-static.c:	early_printk("ERROR: Microblaze " x "-different for kernel and DTS\n");
+arch/microblaze/kernel/setup.c:/* initialize device tree for usage in early_printk */
+arch/mips/ath25/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+arch/mips/ath79/Makefile:obj-$(CONFIG_EARLY_PRINTK)		+= early_printk.o
+arch/mips/bcm63xx/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/mips/include/asm/mach-lantiq/falcon/lantiq_soc.h: * during early_printk no ioremap possible at this early stage
+arch/mips/include/asm/mach-lantiq/xway/lantiq_soc.h: * during early_printk no ioremap is possible
+arch/mips/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/mips/lantiq/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+arch/mips/loongson/common/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+arch/mips/ralink/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+arch/tile/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/tile/kernel/early_printk.c:	early_printk("Kernel panic - not syncing: %pV", &vaf);
+arch/um/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+arch/unicore32/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/unicore32/kernel/early_printk.c: * linux/arch/unicore32/kernel/early_printk.c
+arch/x86/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+arch/x86/kernel/e820.c:	early_printk(msg);
+arch/x86/kernel/head64.c:		early_printk("Kernel alive\n");
+arch/x86/kernel/head_64.S:	call early_printk
+arch/x86/platform/efi/Makefile:obj-$(CONFIG_EARLY_PRINTK_EFI)	+= early_printk.o
+drivers/tty/serial/8250/8250_early.c: * and on early_printk.c by Andi Kleen.
+drivers/tty/serial/sn_console.c: * synchronous (raw) and asynchronous (buffered).  initially, early_printk
+drivers/tty/serial/sn_console.c:	/* without early_printk, we may be invoked late enough to race
+drivers/tty/serial/sn_console.c:	/* early_printk invocation may have done this for us */
+include/linux/printk.h:void early_printk(const char *fmt, ...);
+include/linux/printk.h:void early_printk(const char *s, ...) { }
+kernel/events/core.c:		early_printk("perf interrupt took too long (%lld > %lld), lowering "
+kernel/locking/lockdep.c: * We cannot printk in early bootup code. Not even early_printk()
+kernel/printk/printk.c:asmlinkage __visible void early_printk(const char *fmt, ...)
+kernel/printk/printk.c: * early_printk) - sometimes before setup_arch() completes - be careful
+kernel/printk/printk.c: * There are two types of consoles - bootconsoles (early_printk) and
 
-On 64-bit, __kernel_(s)size_t are indeed (unsigned) long
-On 32-bit, __kernel_(s)size_t is usually (unsigned) int for historical
-reasons.
-Cfr. include/uapi/asm-generic/posix_types.h:
+These seem to the only uses:
 
-/*
- * Most 32 bit architectures use "unsigned int" size_t,
- * and all 64 bit architectures use "unsigned long" size_t.
- */
-#ifndef __kernel_size_t
-#if __BITS_PER_LONG != 64
-typedef unsigned int    __kernel_size_t;
-typedef int             __kernel_ssize_t;
-typedef int             __kernel_ptrdiff_t;
-#else
-typedef __kernel_ulong_t __kernel_size_t;
-typedef __kernel_long_t __kernel_ssize_t;
-typedef __kernel_long_t __kernel_ptrdiff_t;
-#endif
-#endif
+arch/arm/mach-socfpga/socfpga.c:	early_printk("Early printk initialized\n");
+[]
+arch/microblaze/kernel/cpu/cpuinfo-pvr-full.c:	early_printk("ERROR: Microblaze " x "-different for PVR and DTS\n");
+arch/microblaze/kernel/cpu/cpuinfo-static.c:	early_printk("ERROR: Microblaze " x "-different for kernel and DTS\n");
+[]
+arch/tile/kernel/early_printk.c:	early_printk("Kernel panic - not syncing: %pV", &vaf);
+[]
+arch/x86/kernel/e820.c:	early_printk(msg);
+arch/x86/kernel/head64.c:		early_printk("Kernel alive\n");
+arch/x86/kernel/head_64.S:	call early_printk
+[]
+kernel/events/core.c:		early_printk("perf interrupt took too long (%lld > %lld), lowering "
 
-The are a few exceptions (e.g. avr32 and blackfin)
+So blackfin, m68k, and mips seems to have it possible to enable,
+but also don't appear at first glance to use it,
 
-> Perhaps, we should have hard-coded
->
-> typedef __kernel_ulong_t __kernel_size_t;
-> typedef __kernel_long_t __kernel_ssize_t;
->
-> and used "%lx" to print (s)size_t type variables.
->
-> I think we do not have a good reason to use "%zx",
-> although it might be too late.
-
-In hindsight, it would have been better for (s)size_t to match (unsigned) long,
-removing the need for %z.
-However, that was realized only after 64-bit architectures were introduced.
-It's definitely to late to change this for existing 32-bit architectures.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Is early_printk really used by these architectures?
+Should it be removed?
