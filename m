@@ -1,50 +1,22 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH repost 16/16] m68k/uaccess: fix sparse errors
-Date: Thu, 25 Dec 2014 11:30:45 +0200
-Message-ID: <1419499661-8566-17-git-send-email-mst@redhat.com>
-References: <1419499661-8566-1-git-send-email-mst@redhat.com>
+From: "White, Marlys L" <MWHITE17@houstonisd.org>
+Subject: (unknown)
+Date: Sat, 27 Dec 2014 06:48:27 -0600
+Message-ID: <E211CCD1337A404F8F89276DD1D79B4A61AC2B@EXPRODMB06.AD.HISD.ORG>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arch-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1419499661-8566-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Subject: 
+Content-Language: en-US
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-virtio wants to read bitwise types from userspace using get_user.  At the
-moment this triggers sparse errors, since the value is passed through an
-integer.
-
-Fix that up using __force.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/m68k/include/asm/uaccess_mm.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
-index 15901db..c31f53f 100644
---- a/arch/m68k/include/asm/uaccess_mm.h
-+++ b/arch/m68k/include/asm/uaccess_mm.h
-@@ -146,7 +146,7 @@ asm volatile ("\n"					\
- 		"	.previous"				\
- 		: "+d" (res), "=&" #reg (__gu_val)		\
- 		: "m" (*(ptr)), "i" (err));			\
--	(x) = (typeof(*(ptr)))(unsigned long)__gu_val;		\
-+	(x) = (__force typeof(*(ptr)))(__force unsigned long)__gu_val;		\
- })
- 
- #define __get_user(x, ptr)						\
-@@ -188,7 +188,7 @@ asm volatile ("\n"					\
- 			  "+a" (__gu_ptr)				\
- 			: "i" (-EFAULT)					\
- 			: "memory");					\
--		(x) = (typeof(*(ptr)))__gu_val;				\
-+		(x) = (__force typeof(*(ptr)))__gu_val;				\
- 		break;							\
- 	    }	*/							\
- 	default:							\
--- 
-MST
+hallo,
+Ich bin Mr.Morgan Ich habe eine sensible und vertrauliche
+Gesch=E4fts wert 12 Millionen Pfund, die wir nutzen die uns beide ich w=
+ill auf meiner privaten E-Mail geben die details.contact mich (morganan=
+192@hotmail.com)--
+To unsubscribe from this list: send the line "unsubscribe linux-m68k" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
