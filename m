@@ -1,47 +1,101 @@
-From: fernalynbuendia@outlook.com
-Subject: A recommendation from Friend, screw college, I'm dropping out
-Date: Sun, 28 Dec 2014 11:24:48 +0000 (GMT)
-Message-ID: <20141228112448.F370AA874A@vps91566031.123-vps.co.uk>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: rfc: remove early_printk from a few arches? (blackfin, m68k,
+ mips)
+Date: Sun, 28 Dec 2014 19:33:07 +0100
+Message-ID: <20141228183306.GD3922@amd>
+References: <1418849927.28384.1.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vps91566031.123-vps.co.uk ([212.48.66.191]:60017 "EHLO
-	vps91566031.123-vps.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751517AbaL1LZf (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 28 Dec 2014 06:25:35 -0500
+Content-Disposition: inline
+In-Reply-To: <1418849927.28384.1.camel@perches.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: mike.debbie34@gmail.com, ejohnson_108@yahoo.co.uk, linux-m68k@vger.kernel.org, ctmanage@yahoo.com, rpriest34@hotmail.com
+To: Joe Perches <joe@perches.com>
+Cc: linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
 
+On Wed 2014-12-17 12:58:47, Joe Perches wrote:
+> It seems like early_printk can be configured into
+> a few architectures but also appear not to be used.
+> 
+> $ git grep -w "early_printk"
+> arch/arm/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/arm/kernel/early_printk.c: *  linux/arch/arm/kernel/early_printk.c
+> arch/arm/mach-socfpga/socfpga.c:	early_printk("Early printk initialized\n");
+> arch/blackfin/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)           += early_printk.o
+> arch/blackfin/kernel/bfin_dma.c:#include <asm/early_printk.h>
+> arch/blackfin/kernel/early_printk.c: * derived from arch/x86/kernel/early_printk.c
+> arch/blackfin/kernel/early_printk.c:#include <asm/early_printk.h>
+> arch/blackfin/kernel/setup.c:#include <asm/early_printk.h>
+> arch/blackfin/kernel/shadow_console.c:#include <asm/early_printk.h>
+> arch/blackfin/mm/init.c:#include <asm/early_printk.h>
+> arch/ia64/sn/kernel/setup.c:	 * IO on SN2 is done via SAL calls, early_printk won't work without this.
+> arch/m68k/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/microblaze/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/microblaze/kernel/cpu/cpuinfo-pvr-full.c:	early_printk("ERROR: Microblaze " x "-different for PVR and DTS\n");
+> arch/microblaze/kernel/cpu/cpuinfo-static.c:	early_printk("ERROR: Microblaze " x "-different for kernel and DTS\n");
+> arch/microblaze/kernel/setup.c:/* initialize device tree for usage in early_printk */
+> arch/mips/ath25/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+> arch/mips/ath79/Makefile:obj-$(CONFIG_EARLY_PRINTK)		+= early_printk.o
+> arch/mips/bcm63xx/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/mips/include/asm/mach-lantiq/falcon/lantiq_soc.h: * during early_printk no ioremap possible at this early stage
+> arch/mips/include/asm/mach-lantiq/xway/lantiq_soc.h: * during early_printk no ioremap is possible
+> arch/mips/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/mips/lantiq/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+> arch/mips/loongson/common/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+> arch/mips/ralink/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+> arch/tile/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/tile/kernel/early_printk.c:	early_printk("Kernel panic - not syncing: %pV", &vaf);
+> arch/um/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+> arch/unicore32/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/unicore32/kernel/early_printk.c: * linux/arch/unicore32/kernel/early_printk.c
+> arch/x86/kernel/Makefile:obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+> arch/x86/kernel/e820.c:	early_printk(msg);
+> arch/x86/kernel/head64.c:		early_printk("Kernel alive\n");
+> arch/x86/kernel/head_64.S:	call early_printk
+> arch/x86/platform/efi/Makefile:obj-$(CONFIG_EARLY_PRINTK_EFI)	+= early_printk.o
+> drivers/tty/serial/8250/8250_early.c: * and on early_printk.c by Andi Kleen.
+> drivers/tty/serial/sn_console.c: * synchronous (raw) and asynchronous (buffered).  initially, early_printk
+> drivers/tty/serial/sn_console.c:	/* without early_printk, we may be invoked late enough to race
+> drivers/tty/serial/sn_console.c:	/* early_printk invocation may have done this for us */
+> include/linux/printk.h:void early_printk(const char *fmt, ...);
+> include/linux/printk.h:void early_printk(const char *s, ...) { }
+> kernel/events/core.c:		early_printk("perf interrupt took too long (%lld > %lld), lowering "
+> kernel/locking/lockdep.c: * We cannot printk in early bootup code. Not even early_printk()
+> kernel/printk/printk.c:asmlinkage __visible void early_printk(const char *fmt, ...)
+> kernel/printk/printk.c: * early_printk) - sometimes before setup_arch() completes - be careful
+> kernel/printk/printk.c: * There are two types of consoles - bootconsoles (early_printk) and
+> 
+> These seem to the only uses:
+> 
+> arch/arm/mach-socfpga/socfpga.c:	early_printk("Early printk initialized\n");
+> []
+> arch/microblaze/kernel/cpu/cpuinfo-pvr-full.c:	early_printk("ERROR: Microblaze " x "-different for PVR and DTS\n");
+> arch/microblaze/kernel/cpu/cpuinfo-static.c:	early_printk("ERROR: Microblaze " x "-different for kernel and DTS\n");
+> []
+> arch/tile/kernel/early_printk.c:	early_printk("Kernel panic - not syncing: %pV", &vaf);
+> []
+> arch/x86/kernel/e820.c:	early_printk(msg);
+> arch/x86/kernel/head64.c:		early_printk("Kernel alive\n");
+> arch/x86/kernel/head_64.S:	call early_printk
+> []
+> kernel/events/core.c:		early_printk("perf interrupt took too long (%lld > %lld), lowering "
+> 
+> So blackfin, m68k, and mips seems to have it possible to enable,
+> but also don't appear at first glance to use it,
+> 
+> Is early_printk really used by these architectures?
+> Should it be removed?
 
-Hello,
+early_printk() is for debugging. Actually, feel free to remove:
 
-Hey!=0D
-=0D
-I told you I wouldn't let you down!=0D
-=0D
-=46irst, thanks for putting up that cash so we could keep production on=
- track. I really appreciate it.=0D
-=0D
-Just give me another week and I'll have that $20k back in your pocket.=0D
-=0D
-I've found something that can fund this whole project here:=0D
-=0D
-=3D=3D> (   http://tinyurl.com/buendia915   )=0D
-=0D
-I'll pay you back and put in for the rest of the film myself.=0D
-=0D
-We'll be showing =93Mass Plan=94 at Cannes next year - guaranteed!=0D
-=0D
-Best,=0D
-=0D
-=46ernalyn Buendia
+arch/arm/mach-socfpga/socfpga.c:      early_printk("Early printk initialized\n");
 
-Click below to view the webpage that your friend has recommended:
+Its debugging output I added and should have been removed. So... early_printk()s
+_should_ be unused in the mainline code, but functionality should be
+kept, so that when someone needs it, he can enable it.
 
-
-=46riend, screw college, I'm dropping out has used the Tell-a-Friend fo=
-rm to send you this link.
-
-We look forward to your visit!
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
