@@ -1,62 +1,114 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: rfc: remove early_printk from a few arches? (blackfin, m68k,
- mips)
-Date: Sun, 28 Dec 2014 19:36:25 +0100
-Message-ID: <20141228183625.GE3922@amd>
-References: <1418849927.28384.1.camel@perches.com>
- <alpine.DEB.2.11.1412190031530.17382@nanos>
- <1418951658.28384.20.camel@perches.com>
- <yw1x388ch0su.fsf@unicorn.mansr.com>
- <1418954914.25129.1.camel@perches.com>
- <yw1xy4q4exo9.fsf@unicorn.mansr.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] arch: m68k: atari: atakeyb.c:  Remove some unused functions
+Date: Thu,  1 Jan 2015 16:37:57 +0100
+Message-ID: <1420126677-27948-1-git-send-email-rickard_strandqvist__23136.0602462248$1420126878$gmane$org@spectrumdigital.se>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <yw1xy4q4exo9.fsf@unicorn.mansr.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Cc: Joe Perches <joe@perches.com>, Thomas Gleixner <tglx@linutronix.de>, linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips <linux-mips@linux-mips.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, linux-kernel@vger.kernel.org
 
-On Fri 2014-12-19 10:33:42, M=E5ns Rullg=E5rd wrote:
-> Joe Perches <joe@perches.com> writes:
->=20
-> > On Fri, 2014-12-19 at 01:43 +0000, M=E5ns Rullg=E5rd wrote:
-> >> What exactly are you proposing to remove?
-> >
-> > Optionally compile out
-> > kernel/printk/printk.c:early_printk()
-> > even if CONFIG_EARLY_PRINTK is enabled.
-> >
-> >> I see no unused code related
-> >> to early printk (in any variant) under arch/mips.
-> >
-> > I think there could be yet another CONFIG option
-> > to specifically enable the early_printk function
-> > for the arches that use it.
->=20
-> Why bother?  On MIPS it would save 132 bytes of compiled code.
->=20
-> > The kernel/printk/early_printk() function seems
-> > used only by arm/microblaze/tile/x86.
->=20
-> Rather than introduce more config complexity, you could try to remove
-> the 7 remaining uses of early_printk().
->=20
-> - arch/arm/mach-socfpga
->   Single early_printk("Early printk initialized\n") call serving no
->   apparent purpose can probably be safely deleted.  Since there are n=
-o
->   other early_printk() calls, this information seems rather useless.
+Removes some functions that are not used anywhere:
+atari_kbd_leds() ikbd_exec() ikbd_mem_read() ikbd_mem_write()
+ikbd_clock_get() ikbd_clock_set() ikbd_pause() ikbd_resume()
 
-=46eel free to do that, but please keep early_printk() available...
+This was partially found by using a static code analysis program called cppcheck.
 
-=2E..so that I can debug the socfpga early boot when needed.
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+---
+ arch/m68k/atari/atakeyb.c |   66 ---------------------------------------------
+ 1 file changed, 66 deletions(-)
 
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses=
-/blog.html
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index 95022b0..ad91969 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -430,14 +430,6 @@ void ikbd_mouse_y0_top(void)
+ }
+ EXPORT_SYMBOL(ikbd_mouse_y0_top);
+ 
+-/* Resume */
+-void ikbd_resume(void)
+-{
+-	static const char cmd[1] = { 0x11 };
+-
+-	ikbd_write(cmd, 1);
+-}
+-
+ /* Disable mouse */
+ void ikbd_mouse_disable(void)
+ {
+@@ -447,14 +439,6 @@ void ikbd_mouse_disable(void)
+ }
+ EXPORT_SYMBOL(ikbd_mouse_disable);
+ 
+-/* Pause output */
+-void ikbd_pause(void)
+-{
+-	static const char cmd[1] = { 0x13 };
+-
+-	ikbd_write(cmd, 1);
+-}
+-
+ /* Set joystick event reporting */
+ void ikbd_joystick_event_on(void)
+ {
+@@ -502,56 +486,6 @@ void ikbd_joystick_disable(void)
+ 	ikbd_write(cmd, 1);
+ }
+ 
+-/* Time-of-day clock set */
+-void ikbd_clock_set(int year, int month, int day, int hour, int minute, int second)
+-{
+-	char cmd[7] = { 0x1B, year, month, day, hour, minute, second };
+-
+-	ikbd_write(cmd, 7);
+-}
+-
+-/* Interrogate time-of-day clock */
+-void ikbd_clock_get(int *year, int *month, int *day, int *hour, int *minute, int second)
+-{
+-	static const char cmd[1] = { 0x1C };
+-
+-	ikbd_write(cmd, 1);
+-}
+-
+-/* Memory load */
+-void ikbd_mem_write(int address, int size, char *data)
+-{
+-	panic("Attempt to write data into keyboard memory");
+-}
+-
+-/* Memory read */
+-void ikbd_mem_read(int address, char data[6])
+-{
+-	char cmd[3] = { 0x21, address>>8, address&0xFF };
+-
+-	ikbd_write(cmd, 3);
+-
+-	/* receive data and put it in data */
+-}
+-
+-/* Controller execute */
+-void ikbd_exec(int address)
+-{
+-	char cmd[3] = { 0x22, address>>8, address&0xFF };
+-
+-	ikbd_write(cmd, 3);
+-}
+-
+-/* Status inquiries (0x87-0x9A) not yet implemented */
+-
+-/* Set the state of the caps lock led. */
+-void atari_kbd_leds(unsigned int leds)
+-{
+-	char cmd[6] = {32, 0, 4, 1, 254 + ((leds & 4) != 0), 0};
+-
+-	ikbd_write(cmd, 6);
+-}
+-
+ /*
+  * The original code sometimes left the interrupt line of
+  * the ACIAs low forever. I hope, it is fixed now.
+-- 
+1.7.10.4
