@@ -1,114 +1,34 @@
 From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] arch: m68k: atari: atakeyb.c:  Remove some unused functions
-Date: Thu,  1 Jan 2015 16:37:57 +0100
-Message-ID: <1420126677-27948-1-git-send-email-rickard_strandqvist__23136.0602462248$1420126878$gmane$org@spectrumdigital.se>
+Subject: [PATCH] arch: m68k: mvme147: config.c:  Remove unused function
+Date: Thu,  1 Jan 2015 17:49:11 +0100
+Message-ID: <1420130951-29766-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, linux-kernel@vger.kernel.org
 
-Removes some functions that are not used anywhere:
-atari_kbd_leds() ikbd_exec() ikbd_mem_read() ikbd_mem_write()
-ikbd_clock_get() ikbd_clock_set() ikbd_pause() ikbd_resume()
+Remove the function mvme147_init_console_port() that is not used anywhere.
 
 This was partially found by using a static code analysis program called cppcheck.
 
 Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 ---
- arch/m68k/atari/atakeyb.c |   66 ---------------------------------------------
- 1 file changed, 66 deletions(-)
+ arch/m68k/mvme147/config.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-index 95022b0..ad91969 100644
---- a/arch/m68k/atari/atakeyb.c
-+++ b/arch/m68k/atari/atakeyb.c
-@@ -430,14 +430,6 @@ void ikbd_mouse_y0_top(void)
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 1bb3ce6..5da5e6e 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -209,8 +209,3 @@ void m147_scc_write (struct console *co, const char *str, unsigned count)
+ 	}
+ 	local_irq_restore(flags);
  }
- EXPORT_SYMBOL(ikbd_mouse_y0_top);
- 
--/* Resume */
--void ikbd_resume(void)
+-
+-void mvme147_init_console_port (struct console *co, int cflag)
 -{
--	static const char cmd[1] = { 0x11 };
--
--	ikbd_write(cmd, 1);
+-	co->write    = m147_scc_write;
 -}
--
- /* Disable mouse */
- void ikbd_mouse_disable(void)
- {
-@@ -447,14 +439,6 @@ void ikbd_mouse_disable(void)
- }
- EXPORT_SYMBOL(ikbd_mouse_disable);
- 
--/* Pause output */
--void ikbd_pause(void)
--{
--	static const char cmd[1] = { 0x13 };
--
--	ikbd_write(cmd, 1);
--}
--
- /* Set joystick event reporting */
- void ikbd_joystick_event_on(void)
- {
-@@ -502,56 +486,6 @@ void ikbd_joystick_disable(void)
- 	ikbd_write(cmd, 1);
- }
- 
--/* Time-of-day clock set */
--void ikbd_clock_set(int year, int month, int day, int hour, int minute, int second)
--{
--	char cmd[7] = { 0x1B, year, month, day, hour, minute, second };
--
--	ikbd_write(cmd, 7);
--}
--
--/* Interrogate time-of-day clock */
--void ikbd_clock_get(int *year, int *month, int *day, int *hour, int *minute, int second)
--{
--	static const char cmd[1] = { 0x1C };
--
--	ikbd_write(cmd, 1);
--}
--
--/* Memory load */
--void ikbd_mem_write(int address, int size, char *data)
--{
--	panic("Attempt to write data into keyboard memory");
--}
--
--/* Memory read */
--void ikbd_mem_read(int address, char data[6])
--{
--	char cmd[3] = { 0x21, address>>8, address&0xFF };
--
--	ikbd_write(cmd, 3);
--
--	/* receive data and put it in data */
--}
--
--/* Controller execute */
--void ikbd_exec(int address)
--{
--	char cmd[3] = { 0x22, address>>8, address&0xFF };
--
--	ikbd_write(cmd, 3);
--}
--
--/* Status inquiries (0x87-0x9A) not yet implemented */
--
--/* Set the state of the caps lock led. */
--void atari_kbd_leds(unsigned int leds)
--{
--	char cmd[6] = {32, 0, 4, 1, 254 + ((leds & 4) != 0), 0};
--
--	ikbd_write(cmd, 6);
--}
--
- /*
-  * The original code sometimes left the interrupt line of
-  * the ACIAs low forever. I hope, it is fixed now.
 -- 
 1.7.10.4
