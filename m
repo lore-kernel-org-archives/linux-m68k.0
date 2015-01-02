@@ -1,79 +1,45 @@
 From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] arch: m68k: mac: misc.c:  Remove some unused functions
-Date: Thu,  1 Jan 2015 18:02:12 +0100
-Message-ID: <1420131732-31039-1-git-send-email-rickard_strandqvist__28729.8170653687$1420131577$gmane$org@spectrumdigital.se>
+Subject: [PATCH] arch: m68k: 68360: config:  Remove unused function
+Date: Fri,  2 Jan 2015 22:05:14 +0100
+Message-ID: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Joshua Thompson <funaho@jurai.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
 Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Removes some functions that are not used anywhere:
-mac_pram_write() mac_pram_read()
+Remove the function BSP_set_clock_mmss() that is not used anywhere.
 
 This was partially found by using a static code analysis program called cppcheck.
 
 Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 ---
- arch/m68k/mac/misc.c |   46 ----------------------------------------------
- 1 file changed, 46 deletions(-)
+ arch/m68k/68360/config.c |   13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 707b61a..6fe7eb6 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -453,52 +453,6 @@ void pmu_shutdown(void)
-  *-------------------------------------------------------------------
-  */
+diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
+index 17ec416..fd1f948 100644
+--- a/arch/m68k/68360/config.c
++++ b/arch/m68k/68360/config.c
+@@ -106,19 +106,6 @@ void hw_timer_init(irq_handler_t handler)
+   pquicc->timer_tgcr  = tgcr_save;
+ }
  
--void mac_pram_read(int offset, __u8 *buffer, int len)
+-int BSP_set_clock_mmss(unsigned long nowtime)
 -{
--	__u8 (*func)(int);
--	int i;
+-#if 0
+-  short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
 -
--	switch(macintosh_config->adb_type) {
--	case MAC_ADB_IISI:
--		func = maciisi_read_pram; break;
--	case MAC_ADB_PB1:
--	case MAC_ADB_PB2:
--		func = pmu_read_pram; break;
--	case MAC_ADB_CUDA:
--		func = cuda_read_pram; break;
--	default:
--		func = via_read_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		buffer[i] = (*func)(offset++);
--	}
+-  tod->second1 = real_seconds / 10;
+-  tod->second2 = real_seconds % 10;
+-  tod->minute1 = real_minutes / 10;
+-  tod->minute2 = real_minutes % 10;
+-#endif
+-  return 0;
 -}
 -
--void mac_pram_write(int offset, __u8 *buffer, int len)
--{
--	void (*func)(int, __u8);
--	int i;
--
--	switch(macintosh_config->adb_type) {
--	case MAC_ADB_IISI:
--		func = maciisi_write_pram; break;
--	case MAC_ADB_PB1:
--	case MAC_ADB_PB2:
--		func = pmu_write_pram; break;
--	case MAC_ADB_CUDA:
--		func = cuda_write_pram; break;
--	default:
--		func = via_write_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		(*func)(offset++, buffer[i]);
--	}
--}
--
- void mac_poweroff(void)
+ void BSP_reset (void)
  {
- 	/*
+   local_irq_disable();
 -- 
 1.7.10.4
