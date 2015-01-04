@@ -1,45 +1,114 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] arch: m68k: 68360: config:  Remove unused function
-Date: Fri,  2 Jan 2015 22:05:14 +0100
-Message-ID: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH] arch: m68k: mac: misc.c: Remove some unused functions
+Date: Sun, 4 Jan 2015 18:21:42 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1501041045020.15927@nippy.intranet>
+References: <1420131732-31039-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1420131732-31039-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Cc: Joshua Thompson <funaho@jurai.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Remove the function BSP_set_clock_mmss() that is not used anywhere.
 
-This was partially found by using a static code analysis program called cppcheck.
+On Thu, 1 Jan 2015, Rickard Strandqvist wrote:
 
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
----
- arch/m68k/68360/config.c |   13 -------------
- 1 file changed, 13 deletions(-)
+> Removes some functions that are not used anywhere:
+> mac_pram_write() mac_pram_read()
+> 
 
-diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
-index 17ec416..fd1f948 100644
---- a/arch/m68k/68360/config.c
-+++ b/arch/m68k/68360/config.c
-@@ -106,19 +106,6 @@ void hw_timer_init(irq_handler_t handler)
-   pquicc->timer_tgcr  = tgcr_save;
- }
- 
--int BSP_set_clock_mmss(unsigned long nowtime)
--{
--#if 0
--  short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
--
--  tod->second1 = real_seconds / 10;
--  tod->second2 = real_seconds % 10;
--  tod->minute1 = real_minutes / 10;
--  tod->minute2 = real_minutes % 10;
--#endif
--  return 0;
--}
--
- void BSP_reset (void)
- {
-   local_irq_disable();
+If you remove those functions, you'd then find that all of the called 
+functions become unused:
+
+maciisi_read_pram
+maciisi_write_pram
+pmu_read_pram
+pmu_write_pram
+cuda_read_pram
+cuda_write_pram
+via_read_pram
+via_write_pram
+
+I'd rather not remove all of this code. Better to finish the 
+implementation.
+
+If we provide access to the PRAM (i.e. NVRAM) from userspace then the 
+EMILE bootloader would be able to assign the boot device, for example.
+
+Within the kernel, the CUDA PRAM functions could be used by valkyriefb to 
+determine the correct default video mode (see comment in that driver).
+
+Would it be acceptable to utilize drivers/char/generic_nvram.c and 
+CONFIG_GENERIC_NVRAM? This is the PowerMac PRAM driver but looks generic 
+enough that it may not need any modification for 68k Macs.
+
 -- 
-1.7.10.4
+
+> This was partially found by using a static code analysis program called 
+> cppcheck.
+> 
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+> ---
+>  arch/m68k/mac/misc.c |   46 ----------------------------------------------
+>  1 file changed, 46 deletions(-)
+> 
+> diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+> index 707b61a..6fe7eb6 100644
+> --- a/arch/m68k/mac/misc.c
+> +++ b/arch/m68k/mac/misc.c
+> @@ -453,52 +453,6 @@ void pmu_shutdown(void)
+>   *-------------------------------------------------------------------
+>   */
+>  
+> -void mac_pram_read(int offset, __u8 *buffer, int len)
+> -{
+> -	__u8 (*func)(int);
+> -	int i;
+> -
+> -	switch(macintosh_config->adb_type) {
+> -	case MAC_ADB_IISI:
+> -		func = maciisi_read_pram; break;
+> -	case MAC_ADB_PB1:
+> -	case MAC_ADB_PB2:
+> -		func = pmu_read_pram; break;
+> -	case MAC_ADB_CUDA:
+> -		func = cuda_read_pram; break;
+> -	default:
+> -		func = via_read_pram;
+> -	}
+> -	if (!func)
+> -		return;
+> -	for (i = 0 ; i < len ; i++) {
+> -		buffer[i] = (*func)(offset++);
+> -	}
+> -}
+> -
+> -void mac_pram_write(int offset, __u8 *buffer, int len)
+> -{
+> -	void (*func)(int, __u8);
+> -	int i;
+> -
+> -	switch(macintosh_config->adb_type) {
+> -	case MAC_ADB_IISI:
+> -		func = maciisi_write_pram; break;
+> -	case MAC_ADB_PB1:
+> -	case MAC_ADB_PB2:
+> -		func = pmu_write_pram; break;
+> -	case MAC_ADB_CUDA:
+> -		func = cuda_write_pram; break;
+> -	default:
+> -		func = via_write_pram;
+> -	}
+> -	if (!func)
+> -		return;
+> -	for (i = 0 ; i < len ; i++) {
+> -		(*func)(offset++, buffer[i]);
+> -	}
+> -}
+> -
+>  void mac_poweroff(void)
+>  {
+>  	/*
+> 
