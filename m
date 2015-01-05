@@ -1,59 +1,100 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] arch: m68k: 68360: config:  Remove unused function
-Date: Mon, 05 Jan 2015 10:29:35 +1000
-Message-ID: <54A9DAEF.1020008@uclinux.org>
-References: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k/mac: Fix scsi_type for Mac LC and similar models
+Date: Mon, 5 Jan 2015 14:35:58 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1501051421480.21732@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35914 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753102AbbAEDg3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Jan 2015 22:36:29 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-Hi Rickard,
+Designing Cards and Drivers for the Macintosh Family 3rd ed., page 310 
+says that the I/O address space for the Mac LC is $50F0 0000 - $50FF FFFF.
 
-On 03/01/15 07:05, Rickard Strandqvist wrote:
-> Remove the function BSP_set_clock_mmss() that is not used anywhere.
-> 
-> This was partially found by using a static code analysis program called cppcheck.
-> 
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+I'm guessing that the LC II and LC III are the same, which would mean that 
+I've assigned the wrong platform resources to these models. For those 
+models, restore the SCSI base addresses as per Linux 3.17 and earlier.
 
-Thanks, I'll add it to the m68knommu git tree.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Regards
-Greg
+---
 
+The Performa 460 is a rebadged LC III+; the Classic II aka Performa 200 is 
+equivalent to the Mac LC.
 
-> ---
->  arch/m68k/68360/config.c |   13 -------------
->  1 file changed, 13 deletions(-)
-> 
-> diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
-> index 17ec416..fd1f948 100644
-> --- a/arch/m68k/68360/config.c
-> +++ b/arch/m68k/68360/config.c
-> @@ -106,19 +106,6 @@ void hw_timer_init(irq_handler_t handler)
->    pquicc->timer_tgcr  = tgcr_save;
->  }
->  
-> -int BSP_set_clock_mmss(unsigned long nowtime)
-> -{
-> -#if 0
-> -  short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
-> -
-> -  tod->second1 = real_seconds / 10;
-> -  tod->second2 = real_seconds % 10;
-> -  tod->minute1 = real_minutes / 10;
-> -  tod->minute2 = real_minutes % 10;
-> -#endif
-> -  return 0;
-> -}
-> -
->  void BSP_reset (void)
->  {
->    local_irq_disable();
-> 
+Based on everything I've read this patch is likely to be correct but I 
+can't test it on all of these models. In anycase, this patch isn't 
+sufficient to make mac_scsi work on the relevant Macs, for two reasons:
+
+Firstly, aliased I/O address space on some hardware means that 
+MAC_SCSI_CCL and MAC_SCSI_OLD are probably equivalent anyway. Secondly, 
+from my own testing and from reports from another user, mac_scsi only ever 
+worked on the Mac IIfx, because all other models attempt Pseudo DMA.
+
+---
+ arch/m68k/mac/config.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+Index: linux/arch/m68k/mac/config.c
+===================================================================
+--- linux.orig/arch/m68k/mac/config.c	2015-01-04 21:31:00.000000000 +1100
++++ linux/arch/m68k/mac/config.c	2015-01-04 21:46:25.000000000 +1100
+@@ -320,7 +320,7 @@ static struct mac_model mac_data_table[]
+ 		.name		= "Classic II",
+ 		.adb_type	= MAC_ADB_IISI,
+ 		.via_type	= MAC_VIA_IICI,
+-		.scsi_type	= MAC_SCSI_OLD,
++		.scsi_type	= MAC_SCSI_CCL,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
+ 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
+@@ -353,7 +353,7 @@ static struct mac_model mac_data_table[]
+ 		.name		= "LC",
+ 		.adb_type	= MAC_ADB_IISI,
+ 		.via_type	= MAC_VIA_IICI,
+-		.scsi_type	= MAC_SCSI_OLD,
++		.scsi_type	= MAC_SCSI_CCL,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
+ 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
+@@ -362,7 +362,7 @@ static struct mac_model mac_data_table[]
+ 		.name		= "LC II",
+ 		.adb_type	= MAC_ADB_IISI,
+ 		.via_type	= MAC_VIA_IICI,
+-		.scsi_type	= MAC_SCSI_OLD,
++		.scsi_type	= MAC_SCSI_CCL,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
+ 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
+@@ -371,7 +371,7 @@ static struct mac_model mac_data_table[]
+ 		.name		= "LC III",
+ 		.adb_type	= MAC_ADB_IISI,
+ 		.via_type	= MAC_VIA_IICI,
+-		.scsi_type	= MAC_SCSI_OLD,
++		.scsi_type	= MAC_SCSI_CCL,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
+ 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
+@@ -499,7 +499,7 @@ static struct mac_model mac_data_table[]
+ 		.name		= "Performa 460",
+ 		.adb_type	= MAC_ADB_IISI,
+ 		.via_type	= MAC_VIA_IICI,
+-		.scsi_type	= MAC_SCSI_OLD,
++		.scsi_type	= MAC_SCSI_CCL,
+ 		.scc_type	= MAC_SCC_II,
+ 		.nubus_type	= MAC_NUBUS,
+ 		.floppy_type	= MAC_FLOPPY_SWIM_ADDR2,
+@@ -1111,6 +1111,7 @@ int __init mac_platform_init(void)
+ 		break;
+ 	case MAC_SCSI_CCL:
+ 		/* Addresses from the Color Classic Developer Note.
++		 * Also found in Mac LC data in Designing Cards & Drivers 3ed.
+ 		 * $50F0 6000 - $50F0 7FFF: SCSI handshake
+ 		 * $50F1 0000 - $50F1 1FFF: SCSI
+ 		 * $50F1 2000 - $50F1 3FFF: SCSI DMA
