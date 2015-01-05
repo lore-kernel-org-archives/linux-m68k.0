@@ -1,31 +1,44 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] selftests/exec: allow shell return code of 126
-Date: Mon, 5 Jan 2015 12:35:04 +0100
-Message-ID: <CAMuHMdWFoSKB9F969_jUhwHQdPiid8QcjeYOSoE8cS9wHewH7A__5852.03947634927$1420457758$gmane$org@mail.gmail.com>
-References: <1420456786-5989-1-git-send-email-drysdale@google.com>
+Subject: Re: [PATCH] arch: m68k: mvme147: config.c: Remove unused function
+Date: Mon, 5 Jan 2015 12:39:57 +0100
+Message-ID: <CAMuHMdUSWJW=ozYgPSBysEk9hrVF0eqXScaHU25zPWzEyZYFbw__10107.8875050463$1420458053$gmane$org@mail.gmail.com>
+References: <1420130951-29766-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1420456786-5989-1-git-send-email-drysdale@google.com>
+In-Reply-To: <1420130951-29766-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Drysdale <drysdale@google.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andreas Schwab <schwab@linux-m68k.org>, Shuah Khan <shuahkh@osg.samsung.com>, Andrew Morton <akpm@linux-foundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Mon, Jan 5, 2015 at 12:19 PM, David Drysdale <drysdale@google.com> wrote:
-> When the shell fails to invoke a script because its path name
-> is too long (ENAMETOOLONG), most shells return 127 to indicate
-> command not found.  However, some systems report 126 (which POSIX
-> suggests should indicate a non-executable file) for this case,
-> so allow that too.
+On Thu, Jan 1, 2015 at 5:49 PM, Rickard Strandqvist
+<rickard_strandqvist@spectrumdigital.se> wrote:
+> Remove the function mvme147_init_console_port() that is not used anywhere.
+>
+> This was partially found by using a static code analysis program called cppcheck.
+>
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+> ---
+>  arch/m68k/mvme147/config.c |    5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+> index 1bb3ce6..5da5e6e 100644
+> --- a/arch/m68k/mvme147/config.c
+> +++ b/arch/m68k/mvme147/config.c
+> @@ -209,8 +209,3 @@ void m147_scc_write (struct console *co, const char *str, unsigned count)
+>         }
+>         local_irq_restore(flags);
+>  }
+> -
+> -void mvme147_init_console_port (struct console *co, int cflag)
+> -{
+> -       co->write    = m147_scc_write;
+> -}
 
-Thanks, after this patch, the execveat selftest succeeds on m68k with
-Debian 4.0.
-
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: David Drysdale <drysdale@google.com>
-
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+And after that m147_scc_write() becomes unused, and scc_write(), and
+scc_delay()... I will remove these, too.
 
 Gr{oetje,eeting}s,
 
