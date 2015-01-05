@@ -1,53 +1,59 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] arch: m68k: mac: misc.c: Remove some unused functions
-Date: Sun, 4 Jan 2015 20:36:59 +0100
-Message-ID: <CAMuHMdXFu3n4d0dMZop186UF+QG=MtLHV=oQr+VszftpEA1kFQ@mail.gmail.com>
-References: <1420131732-31039-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-	<alpine.LNX.2.00.1501041045020.15927@nippy.intranet>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] arch: m68k: 68360: config:  Remove unused function
+Date: Mon, 05 Jan 2015 10:29:35 +1000
+Message-ID: <54A9DAEF.1020008@uclinux.org>
+References: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1501041045020.15927@nippy.intranet>
+In-Reply-To: <1420232714-3989-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Sun, Jan 4, 2015 at 8:21 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Thu, 1 Jan 2015, Rickard Strandqvist wrote:
->> Removes some functions that are not used anywhere:
->> mac_pram_write() mac_pram_read()
->
-> If you remove those functions, you'd then find that all of the called
-> functions become unused:
->
-> maciisi_read_pram
-> maciisi_write_pram
-> pmu_read_pram
-> pmu_write_pram
-> cuda_read_pram
-> cuda_write_pram
-> via_read_pram
-> via_write_pram
->
-> I'd rather not remove all of this code. Better to finish the
-> implementation.
+Hi Rickard,
 
-Indeed.
+On 03/01/15 07:05, Rickard Strandqvist wrote:
+> Remove the function BSP_set_clock_mmss() that is not used anywhere.
+> 
+> This was partially found by using a static code analysis program called cppcheck.
+> 
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 
-> Would it be acceptable to utilize drivers/char/generic_nvram.c and
-> CONFIG_GENERIC_NVRAM? This is the PowerMac PRAM driver but looks generic
-> enough that it may not need any modification for 68k Macs.
+Thanks, I'll add it to the m68knommu git tree.
 
-Yes, that would be great.
+Regards
+Greg
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>  arch/m68k/68360/config.c |   13 -------------
+>  1 file changed, 13 deletions(-)
+> 
+> diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
+> index 17ec416..fd1f948 100644
+> --- a/arch/m68k/68360/config.c
+> +++ b/arch/m68k/68360/config.c
+> @@ -106,19 +106,6 @@ void hw_timer_init(irq_handler_t handler)
+>    pquicc->timer_tgcr  = tgcr_save;
+>  }
+>  
+> -int BSP_set_clock_mmss(unsigned long nowtime)
+> -{
+> -#if 0
+> -  short real_seconds = nowtime % 60, real_minutes = (nowtime / 60) % 60;
+> -
+> -  tod->second1 = real_seconds / 10;
+> -  tod->second2 = real_seconds % 10;
+> -  tod->minute1 = real_minutes / 10;
+> -  tod->minute2 = real_minutes % 10;
+> -#endif
+> -  return 0;
+> -}
+> -
+>  void BSP_reset (void)
+>  {
+>    local_irq_disable();
+> 
