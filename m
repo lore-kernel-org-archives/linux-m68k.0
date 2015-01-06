@@ -1,86 +1,39 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v2 16/40] m68k/uaccess: fix sparse errors
-Date: Tue, 6 Jan 2015 17:44:24 +0200
-Message-ID: <1420558883-10131-17-git-send-email-mst@redhat.com>
-References: <1420558883-10131-1-git-send-email-mst@redhat.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCHv2] selftests/exec: allow shell return code of 126
+Date: Tue, 06 Jan 2015 13:02:16 -0700
+Message-ID: <54AC3F48.5010803@osg.samsung.com>
+References: <1420532636-7317-1-git-send-email-drysdale@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1420558883-10131-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1420532636-7317-1-git-send-email-drysdale@google.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: David Drysdale <drysdale@google.com>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-api@vger.kernel.org
 
-virtio wants to read bitwise types from userspace using get_user.  At the
-moment this triggers sparse errors, since the value is passed through an
-integer.
+On 01/06/2015 01:23 AM, David Drysdale wrote:
+> When the shell fails to invoke a script because its path name
+> is too long (ENAMETOOLONG), most shells return 127 to indicate
+> command not found.  However, some systems report 126 (which POSIX
+> suggests should indicate a non-executable file) for this case,
+> so allow that too.
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: David Drysdale <drysdale@google.com>
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  tools/testing/selftests/exec/execveat.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
 
-Fix that up using __force.
+Thanks. Applied to kernel/git/shuah/linux-kselftest fixes branch
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/m68k/include/asm/uaccess_mm.h | 40 +++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+-- Shuah
 
-diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
-index 15901db..d228601 100644
---- a/arch/m68k/include/asm/uaccess_mm.h
-+++ b/arch/m68k/include/asm/uaccess_mm.h
-@@ -128,25 +128,25 @@ asm volatile ("\n"					\
- #define put_user(x, ptr)	__put_user(x, ptr)
- 
- 
--#define __get_user_asm(res, x, ptr, type, bwl, reg, err) ({	\
--	type __gu_val;						\
--	asm volatile ("\n"					\
--		"1:	"MOVES"."#bwl"	%2,%1\n"		\
--		"2:\n"						\
--		"	.section .fixup,\"ax\"\n"		\
--		"	.even\n"				\
--		"10:	move.l	%3,%0\n"			\
--		"	sub.l	%1,%1\n"			\
--		"	jra	2b\n"				\
--		"	.previous\n"				\
--		"\n"						\
--		"	.section __ex_table,\"a\"\n"		\
--		"	.align	4\n"				\
--		"	.long	1b,10b\n"			\
--		"	.previous"				\
--		: "+d" (res), "=&" #reg (__gu_val)		\
--		: "m" (*(ptr)), "i" (err));			\
--	(x) = (typeof(*(ptr)))(unsigned long)__gu_val;		\
-+#define __get_user_asm(res, x, ptr, type, bwl, reg, err) ({		\
-+	type __gu_val;							\
-+	asm volatile ("\n"						\
-+		"1:	"MOVES"."#bwl"	%2,%1\n"			\
-+		"2:\n"							\
-+		"	.section .fixup,\"ax\"\n"			\
-+		"	.even\n"					\
-+		"10:	move.l	%3,%0\n"				\
-+		"	sub.l	%1,%1\n"				\
-+		"	jra	2b\n"					\
-+		"	.previous\n"					\
-+		"\n"							\
-+		"	.section __ex_table,\"a\"\n"			\
-+		"	.align	4\n"					\
-+		"	.long	1b,10b\n"				\
-+		"	.previous"					\
-+		: "+d" (res), "=&" #reg (__gu_val)			\
-+		: "m" (*(ptr)), "i" (err));				\
-+	(x) = (__force typeof(*(ptr)))(__force unsigned long)__gu_val;	\
- })
- 
- #define __get_user(x, ptr)						\
-@@ -188,7 +188,7 @@ asm volatile ("\n"					\
- 			  "+a" (__gu_ptr)				\
- 			: "i" (-EFAULT)					\
- 			: "memory");					\
--		(x) = (typeof(*(ptr)))__gu_val;				\
-+		(x) = (__force typeof(*(ptr)))__gu_val;			\
- 		break;							\
- 	    }	*/							\
- 	default:							\
 -- 
-MST
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
