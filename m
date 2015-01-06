@@ -1,68 +1,134 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH] selftests/exec: allow shell return code of 126
-Date: Mon, 05 Jan 2015 12:03:39 -0700
-Message-ID: <54AAE00B.1020809__13556.6262797967$1420484666$gmane$org@osg.samsung.com>
-References: <1420456786-5989-1-git-send-email-drysdale@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Switch to asm-generic/futex.h
+Date: Tue,  6 Jan 2015 08:53:55 +0100
+Message-ID: <1420530835-8123-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1420456786-5989-1-git-send-email-drysdale@google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: David Drysdale <drysdale@google.com>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-api@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Ley Foon Tan <lftan@altera.com>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 01/05/2015 04:19 AM, David Drysdale wrote:
-> When the shell fails to invoke a script because its path name
-> is too long (ENAMETOOLONG), most shells return 127 to indicate
-> command not found.  However, some systems report 126 (which POSIX
-> suggests should indicate a non-executable file) for this case,
-> so allow that too.
-> 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: David Drysdale <drysdale@google.com>
-> ---
->  tools/testing/selftests/exec/execveat.c | 28 ++++++++++++++++++++++------
->  1 file changed, 22 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/exec/execveat.c b/tools/testing/selftests/exec/execveat.c
-> index d273624c93a6..0d940c6e26bd 100644
-> --- a/tools/testing/selftests/exec/execveat.c
-> +++ b/tools/testing/selftests/exec/execveat.c
-> @@ -62,7 +62,7 @@ static int _check_execveat_fail(int fd, const char *path, int flags,
->  }
->  
->  static int check_execveat_invoked_rc(int fd, const char *path, int flags,
-> -				     int expected_rc)
-> +				     int expected_rc, int expected_rc2)
+As of commit 00f634bc522dedc8 ("asm-generic: add generic futex for
+!CONFIG_SMP") asm-generic follows the m68k futex implementation.
 
-This logic doesn't scale well if there other expected return
-values to account for. Please think about a re-write to handle
-multiple expected return codes.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/Kbuild  |  1 +
+ arch/m68k/include/asm/futex.h | 94 -------------------------------------------
+ 2 files changed, 1 insertion(+), 94 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/futex.h
 
-
->  {
->  	int status;
->  	int rc;
-> @@ -99,9 +99,19 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
->  		return 1;
->  	}
->  	if (WEXITSTATUS(status) != expected_rc) {
-> -		printf("[FAIL] (child %d exited with %d not %d)\n",
-> -			child, WEXITSTATUS(status), expected_rc);
-> -		return 1;
-> +		if (expected_rc != expected_rc2) {
-
-Please collapse expected_rc and expected_rc2 checks. You can rephrase
-the error message to work for both cases.
-
-thanks,
--- Shuah
-
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index 9b6c691874bd5d4f..1517ed1c64711028 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -6,6 +6,7 @@ generic-y += device.h
+ generic-y += emergency-restart.h
+ generic-y += errno.h
+ generic-y += exec.h
++generic-y += futex.h
+ generic-y += hw_irq.h
+ generic-y += ioctl.h
+ generic-y += ipcbuf.h
+diff --git a/arch/m68k/include/asm/futex.h b/arch/m68k/include/asm/futex.h
+deleted file mode 100644
+index bc868af10c965269..0000000000000000
+--- a/arch/m68k/include/asm/futex.h
++++ /dev/null
+@@ -1,94 +0,0 @@
+-#ifndef _ASM_M68K_FUTEX_H
+-#define _ASM_M68K_FUTEX_H
+-
+-#ifdef __KERNEL__
+-#if !defined(CONFIG_MMU)
+-#include <asm-generic/futex.h>
+-#else	/* CONFIG_MMU */
+-
+-#include <linux/futex.h>
+-#include <linux/uaccess.h>
+-#include <asm/errno.h>
+-
+-static inline int
+-futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+-			      u32 oldval, u32 newval)
+-{
+-	u32 val;
+-
+-	if (unlikely(get_user(val, uaddr) != 0))
+-		return -EFAULT;
+-
+-	if (val == oldval && unlikely(put_user(newval, uaddr) != 0))
+-		return -EFAULT;
+-
+-	*uval = val;
+-
+-	return 0;
+-}
+-
+-static inline int
+-futex_atomic_op_inuser(int encoded_op, u32 __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval, ret;
+-	u32 tmp;
+-
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	pagefault_disable();	/* implies preempt_disable() */
+-
+-	ret = -EFAULT;
+-	if (unlikely(get_user(oldval, uaddr) != 0))
+-		goto out_pagefault_enable;
+-
+-	ret = 0;
+-	tmp = oldval;
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-		tmp = oparg;
+-		break;
+-	case FUTEX_OP_ADD:
+-		tmp += oparg;
+-		break;
+-	case FUTEX_OP_OR:
+-		tmp |= oparg;
+-		break;
+-	case FUTEX_OP_ANDN:
+-		tmp &= ~oparg;
+-		break;
+-	case FUTEX_OP_XOR:
+-		tmp ^= oparg;
+-		break;
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	if (ret == 0 && unlikely(put_user(tmp, uaddr) != 0))
+-		ret = -EFAULT;
+-
+-out_pagefault_enable:
+-	pagefault_enable();	/* subsumes preempt_enable() */
+-
+-	if (ret == 0) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif /* CONFIG_MMU */
+-#endif /* __KERNEL__ */
+-#endif /* _ASM_M68K_FUTEX_H */
 -- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+1.9.1
