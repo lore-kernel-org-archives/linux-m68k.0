@@ -1,78 +1,41 @@
-From: David Drysdale <drysdale@google.com>
-Subject: [PATCHv2] selftests/exec: allow shell return code of 126
-Date: Tue,  6 Jan 2015 08:23:56 +0000
-Message-ID: <1420532636-7317-1-git-send-email-drysdale__42078.4817812548$1420534912$gmane$org@google.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v2 36/40] m68k: macro whitespace fixes
+Date: Tue, 6 Jan 2015 17:45:31 +0200
+Message-ID: <1420558883-10131-37-git-send-email-mst@redhat.com>
+References: <1420558883-10131-1-git-send-email-mst@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1420558883-10131-1-git-send-email-mst@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Shuah Khan <shuahkh@osg.samsung.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org, linux-api@vger.kernel.org, David Drysdale <drysdale@google.com>
 
-When the shell fails to invoke a script because its path name
-is too long (ENAMETOOLONG), most shells return 127 to indicate
-command not found.  However, some systems report 126 (which POSIX
-suggests should indicate a non-executable file) for this case,
-so allow that too.
+While working on arch/m68k/include/asm/uaccess.h, I noticed
+that one macro within this header is made harder to read because it
+violates a coding style rule: space is missing after comma.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: David Drysdale <drysdale@google.com>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fix it up.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- tools/testing/selftests/exec/execveat.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ arch/m68k/include/asm/segment.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/exec/execveat.c b/tools/testing/selftests/exec/execveat.c
-index d273624c93a6..e238c9559caf 100644
---- a/tools/testing/selftests/exec/execveat.c
-+++ b/tools/testing/selftests/exec/execveat.c
-@@ -62,7 +62,7 @@ static int _check_execveat_fail(int fd, const char *path, int flags,
- }
+diff --git a/arch/m68k/include/asm/segment.h b/arch/m68k/include/asm/segment.h
+index 0fa80e9..98216b8 100644
+--- a/arch/m68k/include/asm/segment.h
++++ b/arch/m68k/include/asm/segment.h
+@@ -58,7 +58,7 @@ static inline mm_segment_t get_ds(void)
+ #define set_fs(x)	(current_thread_info()->addr_limit = (x))
+ #endif
  
- static int check_execveat_invoked_rc(int fd, const char *path, int flags,
--				     int expected_rc)
-+				     int expected_rc, int expected_rc2)
- {
- 	int status;
- 	int rc;
-@@ -98,9 +98,10 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
- 			child, status);
- 		return 1;
- 	}
--	if (WEXITSTATUS(status) != expected_rc) {
--		printf("[FAIL] (child %d exited with %d not %d)\n",
--			child, WEXITSTATUS(status), expected_rc);
-+	if ((WEXITSTATUS(status) != expected_rc) &&
-+	    (WEXITSTATUS(status) != expected_rc2)) {
-+		printf("[FAIL] (child %d exited with %d not %d nor %d)\n",
-+			child, WEXITSTATUS(status), expected_rc, expected_rc2);
- 		return 1;
- 	}
- 	printf("[OK]\n");
-@@ -109,7 +110,7 @@ static int check_execveat_invoked_rc(int fd, const char *path, int flags,
+-#define segment_eq(a,b)	((a).seg == (b).seg)
++#define segment_eq(a, b) ((a).seg == (b).seg)
  
- static int check_execveat(int fd, const char *path, int flags)
- {
--	return check_execveat_invoked_rc(fd, path, flags, 99);
-+	return check_execveat_invoked_rc(fd, path, flags, 99, 99);
- }
- 
- static char *concat(const char *left, const char *right)
-@@ -192,9 +193,15 @@ static int check_execveat_pathmax(int dot_dfd, const char *src, int is_script)
- 	 * Execute as a long pathname relative to ".".  If this is a script,
- 	 * the interpreter will launch but fail to open the script because its
- 	 * name ("/dev/fd/5/xxx....") is bigger than PATH_MAX.
-+	 *
-+	 * The failure code is usually 127 (POSIX: "If a command is not found,
-+	 * the exit status shall be 127."), but some systems give 126 (POSIX:
-+	 * "If the command name is found, but it is not an executable utility,
-+	 * the exit status shall be 126."), so allow either.
- 	 */
- 	if (is_script)
--		fail += check_execveat_invoked_rc(dot_dfd, longpath, 0, 127);
-+		fail += check_execveat_invoked_rc(dot_dfd, longpath, 0,
-+						  127, 126);
- 	else
- 		fail += check_execveat(dot_dfd, longpath, 0);
+ #endif /* __ASSEMBLY__ */
  
 -- 
-2.2.0.rc0.207.ga3a616c
+MST
