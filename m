@@ -1,41 +1,26 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: don't use module_init in non-modular mvme16x/rtc.c code
-Date: Sun, 11 Jan 2015 11:42:00 +0100
-Message-ID: <CAMuHMdWxEiBNas2S18fu9H8BK5aEdEmgazT0dpj1N0TFeDHiAg@mail.gmail.com>
-References: <1389910514-3802-1-git-send-email-paul.gortmaker@windriver.com>
+Subject: Re: [PATCH] arch: m68k: atari: atakeyb.c: Remove some unused functions
+Date: Sun, 11 Jan 2015 11:42:22 +0100
+Message-ID: <CAMuHMdXA+geFx56t61Ec-pb9WaB_yvP7S1NyFVcHoMcTSrYVSQ__34.875112078403$1420972968$gmane$org@mail.gmail.com>
+References: <1420126677-27948-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lb0-f177.google.com ([209.85.217.177]:63164 "EHLO
-	mail-lb0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751267AbbAKKmC (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Jan 2015 05:42:02 -0500
-In-Reply-To: <1389910514-3802-1-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <1420126677-27948-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Thu, Jan 16, 2014 at 11:15 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
-> The rtc.o is built for obj-y, i.e. always built in.  It will
-> never be modular, so using module_init as an alias for __initcall
-> can be somewhat misleading.
+On Thu, Jan 1, 2015 at 4:37 PM, Rickard Strandqvist
+<rickard_strandqvist@spectrumdigital.se> wrote:
+> Removes some functions that are not used anywhere:
+> atari_kbd_leds() ikbd_exec() ikbd_mem_read() ikbd_mem_write()
+> ikbd_clock_get() ikbd_clock_set() ikbd_pause() ikbd_resume()
 >
-> Fix this up now, so that we can relocate module_init from
-> init.h into module.h in the future.  If we don't do this, we'd
-> have to add module.h to obviously non-modular code, and that
-> would be a worse thing.
+> This was partially found by using a static code analysis program called cppcheck.
 >
-> Note that direct use of __initcall is discouraged, vs. one
-> of the priority categorized subgroups.  As __initcall gets
-> mapped onto device_initcall, our use of device_initcall
-> directly in this change means that the runtime impact is
-> zero -- it will remain at level 6 in initcall ordering.
->
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 
 Thanks, applied and queued for 3.20.
 
