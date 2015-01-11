@@ -1,28 +1,50 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 16/40] m68k/uaccess: fix sparse errors
-Date: Wed, 7 Jan 2015 11:38:43 +0100
-Message-ID: <CAMuHMdXx+LEHjOoA3q6hs2_Lm4Ma+svGRT10ux_uHgBbbzooUQ@mail.gmail.com>
-References: <1420558883-10131-1-git-send-email-mst@redhat.com>
-	<1420558883-10131-17-git-send-email-mst@redhat.com>
+Subject: Re: [PATCH] m68k/atari: Remove obsolete keyboard_tasklet scheduling
+Date: Sun, 11 Jan 2015 11:12:00 +0100
+Message-ID: <CAMuHMdXx+dSDCCG5rutfmGmrJe5w2eFQXseGXEV21MmJBMN0EQ@mail.gmail.com>
+References: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
+	<5402E5D8.6080401@gmail.com>
+	<CAMuHMdVFcFwhnJ0wSOLLucE3hEUavVLMMoqwetG5n9jU57BYiA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1420558883-10131-17-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Linux-Arch <linux-arch@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVFcFwhnJ0wSOLLucE3hEUavVLMMoqwetG5n9jU57BYiA@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Tue, Jan 6, 2015 at 4:44 PM, Michael S. Tsirkin <mst@redhat.com> wrote:
-> virtio wants to read bitwise types from userspace using get_user.  At the
-> moment this triggers sparse errors, since the value is passed through an
-> integer.
->
-> Fix that up using __force.
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Hi Michael,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Sun, Aug 31, 2014 at 11:16 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sun, Aug 31, 2014 at 11:07 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>> If CONFIG_VT=n:
+>>>
+>>> arch/m68k/atari/built-in.o: In function `atari_keyboard_interrupt':
+>>> atakeyb.c:(.text+0x1846): undefined reference to `keyboard_tasklet'
+>>> atakeyb.c:(.text+0x1852): undefined reference to `keyboard_tasklet'
+>>
+>> Has keyboard_tasklet gone for good, or just been conditionalized on
+>> CONFIG_VT?
+>
+> Conditionalized. It's in drivers/tty/vt/keyboard.c.
+> Note that this was from a randconfig build.
+>
+>>> I think the keyboard_tasklet scheduling is no longer needed, as I
+>>> believe it's handled by drivers/tty/vt/keyboard.c based on events
+>>> received from the input subsystem. So just remove it.
+>>
+>> I'd like to test this on real hardware (though ARAnyM does emulate the
+>> keyboard ACIA IIRC - if you had a working keyboard there I should find no
+>> different),
+>
+> Keyboard was still working on ARAnyM.
+> But AFAICU, the keyboard_tasklet is used for the LED state only.
+
+Did you manage to test this on real hardware?
+
+Thanks!
 
 Gr{oetje,eeting}s,
 
