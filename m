@@ -1,47 +1,207 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k/mac: Fix scsi_type for Mac LC and similar models
-Date: Sun, 11 Jan 2015 11:44:13 +0100
-Message-ID: <CAMuHMdU-wgj5Ne=S1E52gOTj+f9QrNYGJbnqkRUnj_zQbbtG2Q@mail.gmail.com>
-References: <alpine.LNX.2.00.1501051421480.21732@nippy.intranet>
-	<alpine.LNX.2.00.1501071104260.12963@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] m68k: Remove FSF address
+Date: Sun, 11 Jan 2015 11:52:43 +0100
+Message-ID: <1420973563-18305-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lb0-f181.google.com ([209.85.217.181]:49642 "EHLO
-	mail-lb0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751593AbbAKKoP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Jan 2015 05:44:15 -0500
-Received: by mail-lb0-f181.google.com with SMTP id l4so13960656lbv.12
-        for <linux-m68k@vger.kernel.org>; Sun, 11 Jan 2015 02:44:14 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1501071104260.12963@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Wed, Jan 7, 2015 at 1:17 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Designing Cards and Drivers for the Macintosh Family, 3rd ed. on page 310
-> says that the I/O address space for the Mac LC is $50F0 0000 - $50FF FFFF.
-> The developer notes for the Classic II, LC III and IIvx/IIvi give the same
-> I/O address space.
->
-> That means I've assigned the wrong platform resources to those Mac models.
-> Fix the scsi_type initialization for the affected models, to restore the
-> SCSI base address to its value prior to Linux 3.18.
->
-> Also rename MAC_SCSI_CCL as MAC_SCSI_LC for the sake of correct chronology.
->
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+We have a central copy of the GPL for that, and the FSF may change
+address again in the future.
 
-Thanks, v2 applied and queued for 3.20.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/mcfqspi.h | 5 -----
+ arch/m68k/lib/ashldi3.c         | 7 +------
+ arch/m68k/lib/ashrdi3.c         | 7 +------
+ arch/m68k/lib/divsi3.S          | 7 +------
+ arch/m68k/lib/lshrdi3.c         | 7 +------
+ arch/m68k/lib/modsi3.S          | 7 +------
+ arch/m68k/lib/muldi3.c          | 7 +------
+ arch/m68k/lib/mulsi3.S          | 7 +------
+ arch/m68k/lib/udivsi3.S         | 7 +------
+ arch/m68k/lib/umodsi3.S         | 7 +------
+ 10 files changed, 9 insertions(+), 59 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/mcfqspi.h b/arch/m68k/include/asm/mcfqspi.h
+index 7b51416ccae221d1..256da0e4aeb41b8a 100644
+--- a/arch/m68k/include/asm/mcfqspi.h
++++ b/arch/m68k/include/asm/mcfqspi.h
+@@ -11,11 +11,6 @@
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+ */
+ 
+ #ifndef mcfqspi_h
+diff --git a/arch/m68k/lib/ashldi3.c b/arch/m68k/lib/ashldi3.c
+index 7729f33878d1c43b..37234c2df47f6e8e 100644
+--- a/arch/m68k/lib/ashldi3.c
++++ b/arch/m68k/lib/ashldi3.c
+@@ -11,12 +11,7 @@ any later version.
+ GNU CC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with GNU CC; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++GNU General Public License for more details. */
+ 
+ #define BITS_PER_UNIT 8
+ 
+diff --git a/arch/m68k/lib/ashrdi3.c b/arch/m68k/lib/ashrdi3.c
+index 18ea5f7ed921f50e..1d59345f36c63155 100644
+--- a/arch/m68k/lib/ashrdi3.c
++++ b/arch/m68k/lib/ashrdi3.c
+@@ -11,12 +11,7 @@ any later version.
+ GNU CC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with GNU CC; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++GNU General Public License for more details. */
+ 
+ #define BITS_PER_UNIT 8
+ 
+diff --git a/arch/m68k/lib/divsi3.S b/arch/m68k/lib/divsi3.S
+index ec307b61991e417d..2c0ec85ac6615473 100644
+--- a/arch/m68k/lib/divsi3.S
++++ b/arch/m68k/lib/divsi3.S
+@@ -19,12 +19,7 @@ distribution when not linked into another program.)
+ This file is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++General Public License for more details. */
+ 
+ /* As a special exception, if you link this library with files
+    compiled with GCC to produce an executable, this does not cause
+diff --git a/arch/m68k/lib/lshrdi3.c b/arch/m68k/lib/lshrdi3.c
+index d06442d3a3288abf..49e1ec8f2cc27a9f 100644
+--- a/arch/m68k/lib/lshrdi3.c
++++ b/arch/m68k/lib/lshrdi3.c
+@@ -11,12 +11,7 @@ any later version.
+ GNU CC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with GNU CC; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++GNU General Public License for more details. */
+ 
+ #define BITS_PER_UNIT 8
+ 
+diff --git a/arch/m68k/lib/modsi3.S b/arch/m68k/lib/modsi3.S
+index ef38494357685878..1d9e0efdf31d201f 100644
+--- a/arch/m68k/lib/modsi3.S
++++ b/arch/m68k/lib/modsi3.S
+@@ -19,12 +19,7 @@ distribution when not linked into another program.)
+ This file is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++General Public License for more details. */
+ 
+ /* As a special exception, if you link this library with files
+    compiled with GCC to produce an executable, this does not cause
+diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
+index ee5f0b1b5c5dd9b8..9006d15b87218d95 100644
+--- a/arch/m68k/lib/muldi3.c
++++ b/arch/m68k/lib/muldi3.c
+@@ -12,12 +12,7 @@ any later version.
+ GNU CC is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with GNU CC; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++GNU General Public License for more details. */
+ 
+ #ifdef CONFIG_CPU_HAS_NO_MULDIV64
+ 
+diff --git a/arch/m68k/lib/mulsi3.S b/arch/m68k/lib/mulsi3.S
+index ce29ea37b45ffdfc..c39ad4e738e9a652 100644
+--- a/arch/m68k/lib/mulsi3.S
++++ b/arch/m68k/lib/mulsi3.S
+@@ -19,12 +19,7 @@ distribution when not linked into another program.)
+ This file is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++General Public License for more details. */
+ 
+ /* As a special exception, if you link this library with files
+    compiled with GCC to produce an executable, this does not cause
+diff --git a/arch/m68k/lib/udivsi3.S b/arch/m68k/lib/udivsi3.S
+index c424c4a1f0a3276a..35a5446572a5ee3b 100644
+--- a/arch/m68k/lib/udivsi3.S
++++ b/arch/m68k/lib/udivsi3.S
+@@ -19,12 +19,7 @@ distribution when not linked into another program.)
+ This file is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++General Public License for more details. */
+ 
+ /* As a special exception, if you link this library with files
+    compiled with GCC to produce an executable, this does not cause
+diff --git a/arch/m68k/lib/umodsi3.S b/arch/m68k/lib/umodsi3.S
+index 5def5f626478c38c..099da514a8fd80da 100644
+--- a/arch/m68k/lib/umodsi3.S
++++ b/arch/m68k/lib/umodsi3.S
+@@ -19,12 +19,7 @@ distribution when not linked into another program.)
+ This file is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with this program; see the file COPYING.  If not, write to
+-the Free Software Foundation, 59 Temple Place - Suite 330,
+-Boston, MA 02111-1307, USA.  */
++General Public License for more details. */
+ 
+ /* As a special exception, if you link this library with files
+    compiled with GCC to produce an executable, this does not cause
+-- 
+1.9.1
