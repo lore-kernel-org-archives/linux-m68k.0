@@ -1,36 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net: smc91x: Remove unused definition of SMC_outw_be()
-Date: Sun, 11 Jan 2015 23:39:14 +0100
-Message-ID: <1421015954-6743-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 4/5] sound: dmasound_atari: Remove obsolete IRQ_TYPE_SLOW
+Date: Mon, 12 Jan 2015 09:40:20 +0100
+Message-ID: <1421052021-12560-5-git-send-email-geert__30783.0463083976$1421052115$gmane$org@linux-m68k.org>
+References: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from albert.telenet-ops.be ([195.130.137.90]:44065 "EHLO
-	albert.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750774AbbAKWjO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Jan 2015 17:39:14 -0500
+In-Reply-To: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: "David S. Miller" <davem@davemloft.net>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org
 
-As of commit b7e10fc9c1205fc2 ("net: smc91x: Remove Atari special case
-handling for SMC_PUSH_DATA") SMC_outw_be() is unused. Remove it.
+IRQ_TYPE_SLOW is no longer used by the Atari platform interrupt code
+since commit 734085651c9b80aa ("[PATCH] m68k: convert atari irq code")
+in v2.6.18-rc1, so drop it.
+
+Note that its value has been reused for a different purpose
+(IRQ_TYPE_NONE) since commit 6a6de9ef5850d063 ("[PATCH] genirq: core")
+in v2.6.18-rc1.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: alsa-devel@alsa-project.org
 ---
- drivers/net/ethernet/smsc/smc91x.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/oss/dmasound/dmasound_atari.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
-index 14c53252a73363c0..be67baf5f6778d08 100644
---- a/drivers/net/ethernet/smsc/smc91x.h
-+++ b/drivers/net/ethernet/smsc/smc91x.h
-@@ -228,7 +228,6 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
- #define SMC_inl(a, r)           readl((a) + (r))
- #define SMC_outb(v, a, r)       writeb(v, (a) + (r))
- #define SMC_outw(v, a, r)       writew(v, (a) + (r))
--#define SMC_outw_be(v, a, r)    writew_be(v, (a) + (r))
- #define SMC_outl(v, a, r)       writel(v, (a) + (r))
- #define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
- #define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
+diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
+index 13c214466d3b9f0e..1c56bf58eff906e0 100644
+--- a/sound/oss/dmasound/dmasound_atari.c
++++ b/sound/oss/dmasound/dmasound_atari.c
+@@ -851,7 +851,7 @@ static int __init AtaIrqInit(void)
+ 	st_mfp.tim_dt_a = 1;	/* Cause interrupt after first event. */
+ 	st_mfp.tim_ct_a = 8;	/* Turn on event counting. */
+ 	/* Register interrupt handler. */
+-	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, IRQ_TYPE_SLOW, "DMA sound",
++	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, 0, "DMA sound",
+ 			AtaInterrupt))
+ 		return 0;
+ 	st_mfp.int_en_a |= 0x20;	/* Turn interrupt on. */
 -- 
 1.9.1
