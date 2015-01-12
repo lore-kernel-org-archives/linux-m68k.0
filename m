@@ -1,14 +1,14 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4/5] sound: dmasound_atari: Remove obsolete IRQ_TYPE_SLOW
-Date: Mon, 12 Jan 2015 09:40:20 +0100
-Message-ID: <1421052021-12560-5-git-send-email-geert__30783.0463083976$1421052115$gmane$org@linux-m68k.org>
+Subject: [PATCH 2/5] parport: parport_atari: Remove obsolete IRQ_TYPE_SLOW
+Date: Mon, 12 Jan 2015 09:40:18 +0100
+Message-ID: <1421052021-12560-3-git-send-email-geert__46600.2861423933$1421052115$gmane$org@linux-m68k.org>
 References: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-parport@lists.infradead.org
 
 IRQ_TYPE_SLOW is no longer used by the Atari platform interrupt code
 since commit 734085651c9b80aa ("[PATCH] m68k: convert atari irq code")
@@ -19,23 +19,25 @@ Note that its value has been reused for a different purpose
 in v2.6.18-rc1.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: alsa-devel@alsa-project.org
+Cc: linux-parport@lists.infradead.org
 ---
- sound/oss/dmasound/dmasound_atari.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/parport/parport_atari.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
-index 13c214466d3b9f0e..1c56bf58eff906e0 100644
---- a/sound/oss/dmasound/dmasound_atari.c
-+++ b/sound/oss/dmasound/dmasound_atari.c
-@@ -851,7 +851,7 @@ static int __init AtaIrqInit(void)
- 	st_mfp.tim_dt_a = 1;	/* Cause interrupt after first event. */
- 	st_mfp.tim_ct_a = 8;	/* Turn on event counting. */
- 	/* Register interrupt handler. */
--	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, IRQ_TYPE_SLOW, "DMA sound",
-+	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, 0, "DMA sound",
- 			AtaInterrupt))
- 		return 0;
- 	st_mfp.int_en_a |= 0x20;	/* Turn interrupt on. */
+diff --git a/drivers/parport/parport_atari.c b/drivers/parport/parport_atari.c
+index 7ad59ac68cf69eab..a81cd2a2747f71a1 100644
+--- a/drivers/parport/parport_atari.c
++++ b/drivers/parport/parport_atari.c
+@@ -192,8 +192,8 @@ static int __init parport_atari_init(void)
+ 					  &parport_atari_ops);
+ 		if (!p)
+ 			return -ENODEV;
+-		if (request_irq(IRQ_MFP_BUSY, parport_irq_handler,
+-				IRQ_TYPE_SLOW, p->name, p)) {
++		if (request_irq(IRQ_MFP_BUSY, parport_irq_handler, 0, p->name,
++				p)) {
+ 			parport_put_port (p);
+ 			return -ENODEV;
+ 		}
 -- 
 1.9.1
