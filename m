@@ -1,32 +1,34 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari: Remove obsolete keyboard_tasklet scheduling
-Date: Tue, 13 Jan 2015 09:48:52 +0100
-Message-ID: <CAMuHMdX7CMfHid6=Px4+m6Urph7Vs-av+tr+12zOFbt7TqX+sQ__20450.3462337472$1421138958$gmane$org@mail.gmail.com>
-References: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/atari - smc91x: remove Atari special case handling
+ for SMC_PUSH_DATA
+Date: Tue, 13 Jan 2015 09:50:17 +0100
+Message-ID: <CAMuHMdVS=tu1wRp==GmaZJMhYk+h7PPwxW1c=ummMygq5tD87Q@mail.gmail.com>
+References: <1417373882-22011-1-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-la0-f47.google.com ([209.85.215.47]:35482 "EHLO
+	mail-la0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751103AbbAMIuT (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 13 Jan 2015 03:50:19 -0500
+Received: by mail-la0-f47.google.com with SMTP id hz20so1429577lab.6
+        for <linux-m68k@vger.kernel.org>; Tue, 13 Jan 2015 00:50:18 -0800 (PST)
+In-Reply-To: <1417373882-22011-1-git-send-email-schmitzmic@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>, Michael Schmitz <schmitz@debian.org>
 
-On Fri, Aug 29, 2014 at 6:14 PM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> If CONFIG_VT=n:
+On Sun, Nov 30, 2014 at 7:58 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Use of string accessors for unaligned writes (see mainstream commit
+> e9e4ea74f06635f2ffc1dffe5ef40c854faa0a90) have fixed the swapped
+> first unaligned byte problem for the Atari EtherNAT. Drop the
+> redundant special case code now.
 >
-> arch/m68k/atari/built-in.o: In function `atari_keyboard_interrupt':
-> atakeyb.c:(.text+0x1846): undefined reference to `keyboard_tasklet'
-> atakeyb.c:(.text+0x1852): undefined reference to `keyboard_tasklet'
->
-> I think the keyboard_tasklet scheduling is no longer needed, as I
-> believe it's handled by drivers/tty/vt/keyboard.c based on events
-> received from the input subsystem. So just remove it.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Michael Schmitz <schmitz@debian.org>
+> Tested-by: Christian Steigies <cts@debian.org>
 
-Applied with Michael's Tested-by, and queued for 3.20.
+Thanks, applied and folded into "net: smc91x: Add Atari EtherNAT support".
 
 Gr{oetje,eeting}s,
 
