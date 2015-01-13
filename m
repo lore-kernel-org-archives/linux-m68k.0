@@ -1,52 +1,40 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] net: smc91x: Remove unused definition of SMC_outw_be()
-Date: Tue, 13 Jan 2015 08:10:58 +1300
-Message-ID: <CAOmrzkJUQO=GL=DPXuwvngQf3__H8dLnyC_pncJYyww6GeDiWA@mail.gmail.com>
-References: <1421015954-6743-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/atari: Remove obsolete keyboard_tasklet scheduling
+Date: Tue, 13 Jan 2015 09:48:52 +0100
+Message-ID: <CAMuHMdX7CMfHid6=Px4+m6Urph7Vs-av+tr+12zOFbt7TqX+sQ__20450.3462337472$1421138958$gmane$org@mail.gmail.com>
+References: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-qg0-f50.google.com ([209.85.192.50]:58672 "EHLO
-	mail-qg0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752002AbbALTLA (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Jan 2015 14:11:00 -0500
-Received: by mail-qg0-f50.google.com with SMTP id z60so19127491qgd.9
-        for <linux-m68k@vger.kernel.org>; Mon, 12 Jan 2015 11:10:59 -0800 (PST)
-In-Reply-To: <1421015954-6743-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1409328896-8457-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks Geert!
-
-Cheers,
-
-  Michael
-
-
-On Mon, Jan 12, 2015 at 11:39 AM, Geert Uytterhoeven
+On Fri, Aug 29, 2014 at 6:14 PM, Geert Uytterhoeven
 <geert@linux-m68k.org> wrote:
-> As of commit b7e10fc9c1205fc2 ("net: smc91x: Remove Atari special case
-> handling for SMC_PUSH_DATA") SMC_outw_be() is unused. Remove it.
+> If CONFIG_VT=n:
+>
+> arch/m68k/atari/built-in.o: In function `atari_keyboard_interrupt':
+> atakeyb.c:(.text+0x1846): undefined reference to `keyboard_tasklet'
+> atakeyb.c:(.text+0x1852): undefined reference to `keyboard_tasklet'
+>
+> I think the keyboard_tasklet scheduling is no longer needed, as I
+> believe it's handled by drivers/tty/vt/keyboard.c based on events
+> received from the input subsystem. So just remove it.
 >
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  drivers/net/ethernet/smsc/smc91x.h | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
-> index 14c53252a73363c0..be67baf5f6778d08 100644
-> --- a/drivers/net/ethernet/smsc/smc91x.h
-> +++ b/drivers/net/ethernet/smsc/smc91x.h
-> @@ -228,7 +228,6 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
->  #define SMC_inl(a, r)           readl((a) + (r))
->  #define SMC_outb(v, a, r)       writeb(v, (a) + (r))
->  #define SMC_outw(v, a, r)       writew(v, (a) + (r))
-> -#define SMC_outw_be(v, a, r)    writew_be(v, (a) + (r))
->  #define SMC_outl(v, a, r)       writel(v, (a) + (r))
->  #define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
->  #define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
-> --
-> 1.9.1
->
+
+Applied with Michael's Tested-by, and queued for 3.20.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
