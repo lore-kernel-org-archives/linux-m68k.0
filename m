@@ -1,86 +1,65 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 3/5] video: atafb: Remove obsolete IRQ_TYPE_PRIO
-Date: Tue, 13 Jan 2015 14:51:36 +0200
-Message-ID: <54B514D8.9020507@ti.com>
-References: <1421052021-12560-1-git-send-email-geert@linux-m68k.org> <1421052021-12560-4-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: linux-next: Tree for Jan 12 (build failures: m68k, ppc)
+Date: Thu, 15 Jan 2015 11:12:13 +0100
+Message-ID: <CAMuHMdV1k4viMKmi_8vM52iz+ry50k=Ard1ADkEGzia+yJ5e3Q__48356.5670591362$1421317144$gmane$org@mail.gmail.com>
+References: <20150112180322.003b44f2@canb.auug.org.au>
+	<20150112162438.GA18723@roeck-us.net>
+	<CAMuHMdUYEe=L=H75AOYVjinRSW=okRJNrNJVy-bY1gshdVrO7Q@mail.gmail.com>
+	<20150112175920.GC19868@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="IeH71uidaU8LdDdSd7R3B3XBCvMlaoBnI"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from bear.ext.ti.com ([192.94.94.41]:54938 "EHLO bear.ext.ti.com"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1750981AbbAMMvx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 13 Jan 2015 07:51:53 -0500
-In-Reply-To: <1421052021-12560-4-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <20150112175920.GC19868@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next <linux-next@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
---IeH71uidaU8LdDdSd7R3B3XBCvMlaoBnI
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 12, 2015 at 6:59 PM, Guenter Roeck <linux@roeck-us.net> wrote:
+>> > Build failures, seen since next-20150109:
+>> >         m68k:allmodconfig
+>> >         powerpc:ppc6xx_defconfig
 
-On 12/01/15 10:40, Geert Uytterhoeven wrote:
-> IRQ_TYPE_PRIO is no longer used by the Atari platform interrupt code
-> since commit 734085651c9b80aa ("[PATCH] m68k: convert atari irq code")
-> in v2.6.18-rc1, so drop it.
->=20
-> Note that its value has been reused for a different purpose
-> (IRQ_TYPE_EDGE_FALLING) since commit 6a6de9ef5850d063 ("[PATCH] genirq:=
+It looks like parisc is also suffering:
+http://kisskb.ellerman.id.au/kisskb/buildresult/12343847/
 
-> core") in v2.6.18-rc1.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-fbdev@vger.kernel.org
-> ---
->  drivers/video/fbdev/atafb.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-> index b2d38097a95718ce..7b231771a4b668b0 100644
-> --- a/drivers/video/fbdev/atafb.c
-> +++ b/drivers/video/fbdev/atafb.c
-> @@ -3121,8 +3121,7 @@ int __init atafb_init(void)
->  			printk("atafb_init: initializing Falcon hw\n");
->  			fbhw =3D &falcon_switch;
->  			atafb_ops.fb_setcolreg =3D &falcon_setcolreg;
-> -			error =3D request_irq(IRQ_AUTO_4, falcon_vbl_switcher,
-> -					    IRQ_TYPE_PRIO,
-> +			error =3D request_irq(IRQ_AUTO_4, falcon_vbl_switcher, 0,
->  					    "framebuffer:modeswitch",
->  					    falcon_vbl_switcher);
->  			if (error)
->=20
+>> > Due to:
+>> >         ERROR: "__get_user_bad" [drivers/gpu/drm/drm.ko] undefined!
+>> >         make[1]: *** [__modpost] Error 1
+>> >
+>> > Caused by commit d34f20d6e2f (drm: Atomic modeset ioctl).
+>>
+>> Yeah, it needs a get_user() that supports 64-bit data.
+>>
+> Hi Geert,
+>
+> I assume you mean m68k, where 64 bit support for get_user has been disabled.
+>
+> The problem on powerpc is different though: __get_user_nocheck()
+> and __get_user_check() use
+>         unsigned long __gu_val;
+> followed by
+>         __get_user_size(__gu_val, __gu_addr, (size), __gu_err);
+>
+> __get_user_size() fails in
+>         if (size > sizeof(x))
+>                  (x) = __get_user_bad();
+>
+> Presumably "unsigned long" is 32 bit on 32 bit powerpc, not 64 bit.
+>
+> Overall, the explicit 64-bit use of get_user() seems to be quite unusual.
 
-Acked-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+I noticed you've sent a fix for DRM.
 
- Tomi
+Doh, and I was just fixing m68k...
 
+Gr{oetje,eeting}s,
 
+                        Geert
 
---IeH71uidaU8LdDdSd7R3B3XBCvMlaoBnI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUtRTYAAoJEPo9qoy8lh71QGEQAJCHbpZqmfy4dDqM4CpxCQNb
-5oXUXmEeQgrJaUmHYNPyjoQpGyccz/p7gQo14b7MPP3obD1yitNedgz/EhoeC6rQ
-GGxR00Z/WcJ+hhkKgH9EwaQvhozeUQhqSxT2rZGHJud+fFVop69MgirvKADBqrCk
-ub4h9Px7r+rEtUlkFbehpcHtF03IWRjRXk7rH7ulJxBN11b0F9rJnWLi7ZzTmnF7
-RhhegHuxTaxKrVtPDYSPVeeFukF4JozGXah4f6j+FaDUlVUtp8grVt6gJRzc8uDj
-43YdU14dYAZ+qOtp46x9w97QiA4WohLodQJVVj7QiySnkzdUumYkItjuKMwri96t
-j7FKWnag5HkYO+WhqQyzhSMSbLBewz/PHhiNR+ueKfG5RlpEs41199XozyuWJSm8
-tiU2Dxr0XLhxMhN7QpLTwCrfYYdQJypGptXjifQc0kUB3PZMYp2N/RXLpBnGeEcy
-8zBEvq7kSPB+/t7pps8YsQYK3WLQgijQSFh/TlOIXYwZk51pdlEBvBlmmMW8Og7Z
-DqZ9qsxYK2/KOxP9OvMXZSn/6c6bCKwGWEDQ7gnVSQNDj6lxpOnvOn9CRrlz70vO
-Etp6rnHD9Aqb0KYUdnidoV/FQ3b7eeTFJAirH7ZtKfyqtO6IVM8kxNHCDNJiOxf6
-HiaQ+1csV3vj0cT+qpLQ
-=5XS9
------END PGP SIGNATURE-----
-
---IeH71uidaU8LdDdSd7R3B3XBCvMlaoBnI--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
