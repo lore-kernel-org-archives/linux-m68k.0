@@ -1,65 +1,48 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: linux-next: Tree for Jan 12 (build failures: m68k, ppc)
-Date: Thu, 15 Jan 2015 11:12:13 +0100
-Message-ID: <CAMuHMdV1k4viMKmi_8vM52iz+ry50k=Ard1ADkEGzia+yJ5e3Q__48356.5670591362$1421317144$gmane$org@mail.gmail.com>
-References: <20150112180322.003b44f2@canb.auug.org.au>
-	<20150112162438.GA18723@roeck-us.net>
-	<CAMuHMdUYEe=L=H75AOYVjinRSW=okRJNrNJVy-bY1gshdVrO7Q@mail.gmail.com>
-	<20150112175920.GC19868@roeck-us.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [git pull] m68k updates for 3.19 (take 2)
+Date: Thu, 15 Jan 2015 12:31:00 +0100
+Message-ID: <1421321460-4791-1-git-send-email-geert__33659.0152387091$1421321491$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150112175920.GC19868@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next <linux-next@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Mon, Jan 12, 2015 at 6:59 PM, Guenter Roeck <linux@roeck-us.net> wrote:
->> > Build failures, seen since next-20150109:
->> >         m68k:allmodconfig
->> >         powerpc:ppc6xx_defconfig
+	Hi Linus,
 
-It looks like parisc is also suffering:
-http://kisskb.ellerman.id.au/kisskb/buildresult/12343847/
+The following changes since commit b1940cd21c0f4abdce101253e860feff547291b0:
 
->> > Due to:
->> >         ERROR: "__get_user_bad" [drivers/gpu/drm/drm.ko] undefined!
->> >         make[1]: *** [__modpost] Error 1
->> >
->> > Caused by commit d34f20d6e2f (drm: Atomic modeset ioctl).
->>
->> Yeah, it needs a get_user() that supports 64-bit data.
->>
-> Hi Geert,
->
-> I assume you mean m68k, where 64 bit support for get_user has been disabled.
->
-> The problem on powerpc is different though: __get_user_nocheck()
-> and __get_user_check() use
->         unsigned long __gu_val;
-> followed by
->         __get_user_size(__gu_val, __gu_addr, (size), __gu_err);
->
-> __get_user_size() fails in
->         if (size > sizeof(x))
->                  (x) = __get_user_bad();
->
-> Presumably "unsigned long" is 32 bit on 32 bit powerpc, not 64 bit.
->
-> Overall, the explicit 64-bit use of get_user() seems to be quite unusual.
+  Linux 3.19-rc3 (2015-01-05 17:05:20 -0800)
 
-I noticed you've sent a fix for DRM.
+are available in the git repository at:
 
-Doh, and I was just fixing m68k...
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+for you to fetch changes up to f27bd5bfeda5881ce283aa06408c8fa99fb950fa:
+
+  m68k: Wire up execveat (2015-01-11 11:14:14 +0100)
+
+Summary:
+      m68k: Wire up execveat
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k: Wire up execveat
+
+ arch/m68k/include/asm/unistd.h      | 2 +-
+ arch/m68k/include/uapi/asm/unistd.h | 1 +
+ arch/m68k/kernel/syscalltable.S     | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+Thanks for pulling!
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
