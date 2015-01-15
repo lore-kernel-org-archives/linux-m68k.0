@@ -1,58 +1,107 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: linux-next: Tree for Jan 12 (build failures: m68k, ppc)
-Date: Thu, 15 Jan 2015 06:09:25 -0800
-Message-ID: <54B7CA15.7000200@roeck-us.net>
-References: <20150112180322.003b44f2@canb.auug.org.au>	<20150112162438.GA18723@roeck-us.net>	<CAMuHMdUYEe=L=H75AOYVjinRSW=okRJNrNJVy-bY1gshdVrO7Q@mail.gmail.com>	<20150112175920.GC19868@roeck-us.net> <CAMuHMdV1k4viMKmi_8vM52iz+ry50k=Ard1ADkEGzia+yJ5e3Q@mail.gmail.com>
+From: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [PATCH] net: smc91x: Add Atari EtherNAT support
+Date: Thu, 15 Jan 2015 11:13:41 -0500 (EST)
+Message-ID: <alpine.LFD.2.11.1501151112160.1322@knanqh.ubzr>
+References: <1421327175-7613-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdV1k4viMKmi_8vM52iz+ry50k=Ard1ADkEGzia+yJ5e3Q@mail.gmail.com>
+Received: from relais.videotron.ca ([24.201.245.36]:26891 "EHLO
+	relais.videotron.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752430AbbAOQ2n (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jan 2015 11:28:43 -0500
+In-reply-to: <1421327175-7613-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next <linux-next@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>, Michael Schmitz <schmitz@debian.org>
 
-On 01/15/2015 02:12 AM, Geert Uytterhoeven wrote:
-> On Mon, Jan 12, 2015 at 6:59 PM, Guenter Roeck <linux@roeck-us.net> wrote:
->>>> Build failures, seen since next-20150109:
->>>>          m68k:allmodconfig
->>>>          powerpc:ppc6xx_defconfig
->
-> It looks like parisc is also suffering:
-> http://kisskb.ellerman.id.au/kisskb/buildresult/12343847/
->
->>>> Due to:
->>>>          ERROR: "__get_user_bad" [drivers/gpu/drm/drm.ko] undefined!
->>>>          make[1]: *** [__modpost] Error 1
->>>>
->>>> Caused by commit d34f20d6e2f (drm: Atomic modeset ioctl).
->>>
->>> Yeah, it needs a get_user() that supports 64-bit data.
->>>
->> Hi Geert,
->>
->> I assume you mean m68k, where 64 bit support for get_user has been disabled.
->>
->> The problem on powerpc is different though: __get_user_nocheck()
->> and __get_user_check() use
->>          unsigned long __gu_val;
->> followed by
->>          __get_user_size(__gu_val, __gu_addr, (size), __gu_err);
->>
->> __get_user_size() fails in
->>          if (size > sizeof(x))
->>                   (x) = __get_user_bad();
->>
->> Presumably "unsigned long" is 32 bit on 32 bit powerpc, not 64 bit.
->>
->> Overall, the explicit 64-bit use of get_user() seems to be quite unusual.
->
-> I noticed you've sent a fix for DRM.
->
-> Doh, and I was just fixing m68k...
->
+On Thu, 15 Jan 2015, Geert Uytterhoeven wrote:
 
-Sorry, should have Cc:'d you.
+> From: Michael Schmitz <schmitzmic@gmail.com>
+> 
+> Add Atari specific code to the smc91x Ethernet driver. This code is used
+> on the EtherNAT adapter card for the Atari Falcon extension port.
+> 
+> Signed-off-by: Michael Schmitz <schmitz@debian.org>
+> Tested-by: Christian Steigies <cts@debian.org>
+> [geert: Sort Kconfig entries, split in hard and soft dependencies]
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Guenter
+Long gone is the time I had access to hardware with this ethernet chip, 
+but FWIW:
+
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+
+
+
+> ---
+>  drivers/net/ethernet/smsc/Kconfig  | 10 ++++++----
+>  drivers/net/ethernet/smsc/smc91x.h | 21 +++++++++++++++++++++
+>  2 files changed, 27 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/smsc/Kconfig b/drivers/net/ethernet/smsc/Kconfig
+> index 9468e64e6007bd2e..3e97a8b43147cc7c 100644
+> --- a/drivers/net/ethernet/smsc/Kconfig
+> +++ b/drivers/net/ethernet/smsc/Kconfig
+> @@ -5,8 +5,9 @@
+>  config NET_VENDOR_SMSC
+>  	bool "SMC (SMSC)/Western Digital devices"
+>  	default y
+> -	depends on ARM || ISA || MAC || ARM64 || MIPS || M32R || SUPERH || \
+> -		BLACKFIN || MN10300 || COLDFIRE || XTENSA || NIOS2 || PCI || PCMCIA
+> +	depends on ARM || ARM64 || ATARI_ETHERNAT || BLACKFIN || COLDFIRE || \
+> +		   ISA || M32R || MAC || MIPS || MN10300 || NIOS2 || PCI || \
+> +		   PCMCIA || SUPERH || XTENSA
+>  	---help---
+>  	  If you have a network (Ethernet) card belonging to this class, say Y
+>  	  and read the Ethernet-HOWTO, available from
+> @@ -38,8 +39,9 @@ config SMC91X
+>  	tristate "SMC 91C9x/91C1xxx support"
+>  	select CRC32
+>  	select MII
+> -	depends on (ARM || M32R || SUPERH || MIPS || BLACKFIN || \
+> -		    MN10300 || COLDFIRE || ARM64 || XTENSA || NIOS2) && (!OF || GPIOLIB)
+> +	depends on !OF || GPIOLIB
+> +	depends on ARM || ARM64 || ATARI_ETHERNAT || BLACKFIN || COLDFIRE || \
+> +		   M32R || MIPS || MN10300 || NIOS2 || SUPERH || XTENSA
+>  	---help---
+>  	  This is a driver for SMC's 91x series of Ethernet chipsets,
+>  	  including the SMC91C94 and the SMC91C111. Say Y if you want it
+> diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
+> index 2a38dacbbd27fba4..be67baf5f6778d08 100644
+> --- a/drivers/net/ethernet/smsc/smc91x.h
+> +++ b/drivers/net/ethernet/smsc/smc91x.h
+> @@ -216,6 +216,27 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
+>  
+>  #include <unit/smc91111.h>
+>  
+> +#elif defined(CONFIG_ATARI)
+> +
+> +#define SMC_CAN_USE_8BIT        1
+> +#define SMC_CAN_USE_16BIT       1
+> +#define SMC_CAN_USE_32BIT       1
+> +#define SMC_NOWAIT              1
+> +
+> +#define SMC_inb(a, r)           readb((a) + (r))
+> +#define SMC_inw(a, r)           readw((a) + (r))
+> +#define SMC_inl(a, r)           readl((a) + (r))
+> +#define SMC_outb(v, a, r)       writeb(v, (a) + (r))
+> +#define SMC_outw(v, a, r)       writew(v, (a) + (r))
+> +#define SMC_outl(v, a, r)       writel(v, (a) + (r))
+> +#define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
+> +#define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
+> +#define SMC_insl(a, r, p, l)    readsl((a) + (r), p, l)
+> +#define SMC_outsl(a, r, p, l)   writesl((a) + (r), p, l)
+> +
+> +#define RPC_LSA_DEFAULT         RPC_LED_100_10
+> +#define RPC_LSB_DEFAULT         RPC_LED_TX_RX
+> +
+>  #elif defined(CONFIG_ARCH_MSM)
+>  
+>  #define SMC_CAN_USE_8BIT	0
+> -- 
+> 1.9.1
+> 
+> 
