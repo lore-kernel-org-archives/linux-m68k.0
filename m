@@ -1,48 +1,86 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.19 (take 2)
-Date: Thu, 15 Jan 2015 12:31:00 +0100
-Message-ID: <1421321460-4791-1-git-send-email-geert__33659.0152387091$1421321491$gmane$org@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Subject: [PATCH] net: smc91x: Add Atari EtherNAT support
+Date: Thu, 15 Jan 2015 14:06:15 +0100
+Message-ID: <1421327175-7613-1-git-send-email-geert@linux-m68k.org>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Nicolas Pitre <nico@fluxnic.net>, "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>, Michael Schmitz <schmitz@debian.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+From: Michael Schmitz <schmitzmic@gmail.com>
 
-The following changes since commit b1940cd21c0f4abdce101253e860feff547291b0:
+Add Atari specific code to the smc91x Ethernet driver. This code is used
+on the EtherNAT adapter card for the Atari Falcon extension port.
 
-  Linux 3.19-rc3 (2015-01-05 17:05:20 -0800)
+Signed-off-by: Michael Schmitz <schmitz@debian.org>
+Tested-by: Christian Steigies <cts@debian.org>
+[geert: Sort Kconfig entries, split in hard and soft dependencies]
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/smsc/Kconfig  | 10 ++++++----
+ drivers/net/ethernet/smsc/smc91x.h | 21 +++++++++++++++++++++
+ 2 files changed, 27 insertions(+), 4 deletions(-)
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-for you to fetch changes up to f27bd5bfeda5881ce283aa06408c8fa99fb950fa:
-
-  m68k: Wire up execveat (2015-01-11 11:14:14 +0100)
-
-Summary:
-      m68k: Wire up execveat
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: Wire up execveat
-
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/syscalltable.S     | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/drivers/net/ethernet/smsc/Kconfig b/drivers/net/ethernet/smsc/Kconfig
+index 9468e64e6007bd2e..3e97a8b43147cc7c 100644
+--- a/drivers/net/ethernet/smsc/Kconfig
++++ b/drivers/net/ethernet/smsc/Kconfig
+@@ -5,8 +5,9 @@
+ config NET_VENDOR_SMSC
+ 	bool "SMC (SMSC)/Western Digital devices"
+ 	default y
+-	depends on ARM || ISA || MAC || ARM64 || MIPS || M32R || SUPERH || \
+-		BLACKFIN || MN10300 || COLDFIRE || XTENSA || NIOS2 || PCI || PCMCIA
++	depends on ARM || ARM64 || ATARI_ETHERNAT || BLACKFIN || COLDFIRE || \
++		   ISA || M32R || MAC || MIPS || MN10300 || NIOS2 || PCI || \
++		   PCMCIA || SUPERH || XTENSA
+ 	---help---
+ 	  If you have a network (Ethernet) card belonging to this class, say Y
+ 	  and read the Ethernet-HOWTO, available from
+@@ -38,8 +39,9 @@ config SMC91X
+ 	tristate "SMC 91C9x/91C1xxx support"
+ 	select CRC32
+ 	select MII
+-	depends on (ARM || M32R || SUPERH || MIPS || BLACKFIN || \
+-		    MN10300 || COLDFIRE || ARM64 || XTENSA || NIOS2) && (!OF || GPIOLIB)
++	depends on !OF || GPIOLIB
++	depends on ARM || ARM64 || ATARI_ETHERNAT || BLACKFIN || COLDFIRE || \
++		   M32R || MIPS || MN10300 || NIOS2 || SUPERH || XTENSA
+ 	---help---
+ 	  This is a driver for SMC's 91x series of Ethernet chipsets,
+ 	  including the SMC91C94 and the SMC91C111. Say Y if you want it
+diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
+index 2a38dacbbd27fba4..be67baf5f6778d08 100644
+--- a/drivers/net/ethernet/smsc/smc91x.h
++++ b/drivers/net/ethernet/smsc/smc91x.h
+@@ -216,6 +216,27 @@ SMC_outw(u16 val, void __iomem *ioaddr, int reg)
+ 
+ #include <unit/smc91111.h>
+ 
++#elif defined(CONFIG_ATARI)
++
++#define SMC_CAN_USE_8BIT        1
++#define SMC_CAN_USE_16BIT       1
++#define SMC_CAN_USE_32BIT       1
++#define SMC_NOWAIT              1
++
++#define SMC_inb(a, r)           readb((a) + (r))
++#define SMC_inw(a, r)           readw((a) + (r))
++#define SMC_inl(a, r)           readl((a) + (r))
++#define SMC_outb(v, a, r)       writeb(v, (a) + (r))
++#define SMC_outw(v, a, r)       writew(v, (a) + (r))
++#define SMC_outl(v, a, r)       writel(v, (a) + (r))
++#define SMC_insw(a, r, p, l)    readsw((a) + (r), p, l)
++#define SMC_outsw(a, r, p, l)   writesw((a) + (r), p, l)
++#define SMC_insl(a, r, p, l)    readsl((a) + (r), p, l)
++#define SMC_outsl(a, r, p, l)   writesl((a) + (r), p, l)
++
++#define RPC_LSA_DEFAULT         RPC_LED_100_10
++#define RPC_LSB_DEFAULT         RPC_LED_TX_RX
++
+ #elif defined(CONFIG_ARCH_MSM)
+ 
+ #define SMC_CAN_USE_8BIT	0
+-- 
+1.9.1
