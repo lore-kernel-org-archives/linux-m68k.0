@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH 26/28] PCI: Export find_pci_host_bridge()
-Date: Fri, 16 Jan 2015 09:44:24 +0800
-Message-ID: <1421372666-12288-27-git-send-email-wangyijing__12230.8210623034$1421380432$gmane$org@huawei.com>
+Subject: [PATCH 18/28] PCI/sparc: Use pci_scan_root_bridge() for simplicity
+Date: Fri, 16 Jan 2015 09:44:16 +0800
+Message-ID: <1421372666-12288-19-git-send-email-wangyijing__12019.6286043667$1421380432$gmane$org@huawei.com>
 References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,38 +12,72 @@ List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Export find_pci_host_bridge().
+Now we could use pci_scan_root_bridge() to scan
+pci buses, provide sparc specific pci_host_bridge_ops.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- drivers/pci/host-bridge.c |    2 +-
- include/linux/pci.h       |    1 +
- 2 files changed, 2 insertions(+), 1 deletions(-)
+ arch/sparc/kernel/pci.c |   30 ++++++++++++++++++++++++------
+ 1 files changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index ccbf168..74f7572 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -104,7 +104,7 @@ static struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
- 	return bus;
+diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+index d798b42..42dc21f 100644
+--- a/arch/sparc/kernel/pci.c
++++ b/arch/sparc/kernel/pci.c
+@@ -647,12 +647,31 @@ static void pci_claim_bus_resources(struct pci_bus *bus)
+ 		pci_claim_bus_resources(child_bus);
  }
  
--static struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
-+struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
++static void pci_host_bridge_probe_mode(
++		struct pci_host_bridge *host)
++{
++	host->of_scan = true;
++}
++
++static void pci_host_bridge_of_scan_bus(
++		struct pci_host_bridge *host)
++{
++	struct pci_pbm_info *pbm = dev_get_drvdata(&host->dev);
++	struct device_node *node = pbm->op->dev.of_node;
++
++	pci_of_scan_bus(pbm, node, host->bus);
++}
++
++static struct pci_host_bridge_ops phb_ops = {
++	.phb_of_scan_bus,
++};
++
+ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
+ 				 struct device *parent)
  {
- 	struct pci_bus *root_bus = find_pci_root_bus(bus);
+ 	LIST_HEAD(resources);
+ 	struct device_node *node = pbm->op->dev.of_node;
+-	struct pci_bus *bus;
++	struct pci_host_bridge *host;
  
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 9ddca3b..3ebee9d 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -431,6 +431,7 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
- struct pci_host_bridge *pci_create_host_bridge(
- 		struct device *parent, u32 dombus, struct list_head *resources, 
- 		void *sysdata, struct pci_host_bridge_ops *ops);
-+struct pci_host_bridge *find_pci_host_bridge(struct pci_bus* bus);
- /*
-  * The first PCI_BRIDGE_RESOURCE_NUM PCI bus resources (those that correspond
-  * to P2P or CardBus bridge windows) go in a table.  Additional ones (for
+ 	printk("PCI: Scanning PBM %s\n", node->full_name);
+ 
+@@ -664,17 +683,16 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
+ 	pbm->busn.end	= pbm->pci_last_busno;
+ 	pbm->busn.flags	= IORESOURCE_BUS;
+ 	pci_add_resource(&resources, &pbm->busn);
+-	bus = pci_create_root_bus(parent, 
++	host = pci_scan_root_bridge(parent,
+ 			PCI_DOMBUS(pbm->index, pbm->pci_first_busno), 
+-			pbm->pci_ops, pbm, &resources);
+-	if (!bus) {
+-		printk(KERN_ERR "Failed to create bus for %s\n",
++			pbm->pci_ops, pbm, &resources, &phb_ops);
++	if (!host) {
++		printk(KERN_ERR "Failed to create host bridge for %s\n",
+ 		       node->full_name);
+ 		pci_free_resource_list(&resources);
+ 		return NULL;
+ 	}
+ 
+-	pci_of_scan_bus(pbm, node, bus);
+ 	pci_bus_add_devices(bus);
+ 	pci_bus_register_of_sysfs(bus);
+ 
 -- 
 1.7.1
