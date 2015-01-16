@@ -1,33 +1,133 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net: smc91x: Add Atari EtherNAT support
-Date: Thu, 15 Jan 2015 19:33:14 -0500 (EST)
-Message-ID: <20150115.193314.72275448543984078.davem@davemloft.net>
-References: <1421327175-7613-1-git-send-email-geert@linux-m68k.org>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH 10/28] PCI: Save sysdata in pci_host_bridge drvdata
+Date: Fri, 16 Jan 2015 09:44:08 +0800
+Message-ID: <1421372666-12288-11-git-send-email-wangyijing__5070.95430880344$1421380051$gmane$org@huawei.com>
+References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([149.20.54.216]:56066 "EHLO
-	shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750928AbbAPAdQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jan 2015 19:33:16 -0500
-In-Reply-To: <1421327175-7613-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org
-Cc: nico@fluxnic.net, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, schmitzmic@gmail.com, schmitz@debian.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Jan 2015 14:06:15 +0100
+Save platform specific sysdata in pci_host_bridge
+drvdata, host bridge specific operation need to
+access it before the pci bus creation.
 
-> From: Michael Schmitz <schmitzmic@gmail.com>
-> 
-> Add Atari specific code to the smc91x Ethernet driver. This code is used
-> on the EtherNAT adapter card for the Atari Falcon extension port.
-> 
-> Signed-off-by: Michael Schmitz <schmitz@debian.org>
-> Tested-by: Christian Steigies <cts@debian.org>
-> [geert: Sort Kconfig entries, split in hard and soft dependencies]
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+---
+ drivers/pci/host-bridge.c |    4 +++-
+ drivers/pci/probe.c       |   18 ++++++++----------
+ include/linux/pci.h       |    3 ++-
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-Applied to net-next, thanks.
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index c9ee582..0b6ba5c 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -23,7 +23,8 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ }
+ 
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 db, struct list_head *resources)
++		struct device *parent, u32 db,
++		struct list_head *resources, void *sysdata)
+ {
+ 	int error;
+ 	int bus = PCI_BUSNUM(db);
+@@ -58,6 +59,7 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	host->dev.parent = parent;
+ 	INIT_LIST_HEAD(&host->windows);
+ 	host->dev.release = pci_release_host_bridge_dev;
++	dev_set_drvdata(&host->dev, sysdata);
+ 	dev_set_name(&host->dev, "pci%04x:%02x", host->domain, 
+ 			host->busnum);
+ 
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 2e0b952..98a8d97 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1865,8 +1865,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
+ }
+ 
+ static struct pci_bus *__pci_create_root_bus(
+-		struct pci_host_bridge *bridge, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *bridge, struct pci_ops *ops)
+ {
+ 	int error;
+ 	struct pci_bus *b;
+@@ -1882,7 +1881,7 @@ static struct pci_bus *__pci_create_root_bus(
+ 	if (!b)
+ 		return NULL;
+ 
+-	b->sysdata = sysdata;
++	b->sysdata = dev_get_drvdata(&bridge->dev);
+ 	b->ops = ops;
+ 	b->number = b->busn_res.start = bridge->busnum;
+ 	pci_bus_assign_domain_nr(b, parent);
+@@ -1954,11 +1953,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 	
+-	return __pci_create_root_bus(host, ops, sysdata);
++	return __pci_create_root_bus(host, ops);
+ }
+ 
+ int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
+@@ -2025,8 +2024,7 @@ void pci_bus_release_busn_res(struct pci_bus *b)
+ }
+ 
+ static struct pci_bus *__pci_scan_root_bus(
+-		struct pci_host_bridge *host, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *host, struct pci_ops *ops)
+ {
+ 
+ 	struct pci_host_bridge_window *window;
+@@ -2040,7 +2038,7 @@ static struct pci_bus *__pci_scan_root_bus(
+ 			break;
+ 		}
+ 
+-	b = __pci_create_root_bus(host, ops, sysdata);
++	b = __pci_create_root_bus(host, ops);
+ 	if (!b) {
+ 		pci_free_host_bridge(host);
+ 		return NULL;
+@@ -2066,11 +2064,11 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 
+-	return __pci_scan_root_bus(host, ops, sysdata);
++	return __pci_scan_root_bus(host, ops);
+ }
+ EXPORT_SYMBOL(pci_scan_root_bus);
+ 
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 5ee0033..3ee8436 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -419,7 +419,8 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
+ 
+ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge);
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 dombus, struct list_head *resources);
++		struct device *parent, u32 dombus,
++		struct list_head *resources, void *sysdata);
+ /*
+  * The first PCI_BRIDGE_RESOURCE_NUM PCI bus resources (those that correspond
+  * to P2P or CardBus bridge windows) go in a table.  Additional ones (for
+-- 
+1.7.1
