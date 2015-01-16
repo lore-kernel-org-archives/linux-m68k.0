@@ -1,40 +1,56 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 09/28] PCI: Separate pci_host_bridge creation out of pci_create_root_bus()
-Date: Fri, 16 Jan 2015 10:14:09 +0100
-Message-ID: <6955534.AnUg4xpxEu__49560.5786135004$1421401095$gmane$org@wuerfel>
-References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com> <1421372666-12288-10-git-send-email-wangyijing@huawei.com>
+Subject: Re: [PATCH 08/28] PCI: Introduce pci_host_assign_domain_nr() to assign domain
+Date: Fri, 16 Jan 2015 10:40:26 +0100
+Message-ID: <3026954.09KG7UaUTi__7269.84410216591$1421401338$gmane$org@wuerfel>
+References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com> <1421372666-12288-9-git-send-email-wangyijing@huawei.com> <13182982.DnZJMY2KHL@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1421372666-12288-10-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <13182982.DnZJMY2KHL@wuerfel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, Marc Zyngier <marc.zyngier@arm.com>, linux-pci@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Yinghai Lu <yinghai@kernel.org>, Jiang Liu <jiang.liu@linux.intel.com>
+Cc: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, Marc Zyngier <marc.zyngier@arm.com>, linux-pci@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Yinghai Lu <yinghai@kernel.org>, Jiang Liu <jiang.liu@linux.intel.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 
-On Friday 16 January 2015 09:44:07 Yijing Wang wrote:
-> We want to make a generic pci_host_bridge, then we could
-> place common PCI infos like domain number in it. Ripping
-> out pci_host_bridge creation from pci_create_root_bus()
-> make code more better readability. Further more, we could
-> use the generic pci_host_bridge to hold host bridge specific
-> operations like pcibios_root_bridge_prepare().
+On Friday 16 January 2015 10:08:45 Arnd Bergmann wrote:
+> On Friday 16 January 2015 09:44:06 Yijing Wang wrote:
+> > Introduce pci_host_assign_domain_nr() to assign domain
+> > number for pci_host_bridge. Later we will remove
+> > pci_bus_assign_domain_nr().
+> > 
+> > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 > 
-> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> I'm confused: the same code is already part of the PCI tree, but with
+> Lorenzo Pieralisi listed as the patch author. The code is good,
+> and I acked it in the past, but one of you is (probably by accident)
+> misattributing the patch.
 > 
+> Assuming that the patch that is already merged in next is the right
+> one, I think you should rebase your series on top of
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git#next
+> 
+> to avoid conflicts like this one.
+>
 
-I assume this patch is doing the right thing, but the description
-above doesn't really tell me enough to be sure.
+I think I just got confused because the code duplicates most of
+pci_bus_assign_domain_nr(). Maybe this can be done in a better way
+by splitting the existing function into 
 
-This is supposed to be transparent to the callers, right? If
-so, please mention it explicitly in the text.
+static int pci_assign_domain_nr(struct device *)
+{
+	... /* most of pci_bus_assign_domain_nr */
 
-Also you don't explain what the list of host bridges is
-used for. Maybe you can split this out into a separate patch
-so you have one patch that just moves code from one file
-to the other but no functional changes, and a second patch
-that exports pci_create_host_bridge and introduces the list,
-with an explanation of what it is used for.
+	return domain;
+}
 
-	Arnd
+void pci_host_assign_domain_nr(struct pci_host_bridge *host)
+{
+	host->domain = pci_assign_domain_nr(host->dev.parent);
+}
+
+void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
+{
+	bus->domain_nr = pci_assign_domain_nr(parent);
+}
