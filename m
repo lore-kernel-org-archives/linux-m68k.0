@@ -1,42 +1,39 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 23/28] PCI/designware: Use pci_scan_root_bus() for simplicity
-Date: Sat, 17 Jan 2015 19:39:46 +0300
-Message-ID: <54BA9052.9080904__34399.4118193679$1421512816$gmane$org@cogentembedded.com>
-References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com> <1421372666-12288-24-git-send-email-wangyijing@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] input: atari - Enable the 102nd key for German keyboards
+Date: Sat, 17 Jan 2015 19:02:05 +0100
+Message-ID: <1421517725-31970-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1421372666-12288-24-git-send-email-wangyijing@huawei.com>
+Received: from mail-wi0-f175.google.com ([209.85.212.175]:56743 "EHLO
+	mail-wi0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750994AbbAQSCN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Jan 2015 13:02:13 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, linux-pci@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Yinghai Lu <yinghai@kernel.org>, Jiang Liu <jiang.liu@linux.intel.com>, linux-arm-kernel@lists.infradead.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Michael Schmitz <schmitz@debian.org>, linux-input@vger.kernel.org, linux-m68k@vger.kernel.org, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hello.
+From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-On 1/16/2015 4:44 AM, Yijing Wang wrote:
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Acked-by: Thorsten Glaser <tg@mirbsd.org>
+Tested-by: Stefan Niestegge <beetle@atari.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/input/keyboard/atakbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Use pci_scan_root_bus() instead of pci_create_root_bus() +
-> pci_scan_child_bus() for simplicity.
-
-> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-> ---
->   drivers/pci/host/pcie-designware.c |    4 +---
->   1 files changed, 1 insertions(+), 3 deletions(-)
-
-> diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
-> index eef3111..d37fe27 100644
-> --- a/drivers/pci/host/pcie-designware.c
-> +++ b/drivers/pci/host/pcie-designware.c
-> @@ -725,13 +725,11 @@ static struct pci_bus *dw_pcie_scan_bus(int nr, struct pci_sys_data *sys)
->   	struct pcie_port *pp = sys_to_pcie(sys);
->
->   	pp->root_bus_nr = sys->busnr;
-> -	bus = pci_create_root_bus(pp->dev, sys->busnr,
-> +	bus = pci_scan_root_bus(pp->dev, sys->busnr,
->   				  &dw_pcie_ops, sys, &sys->resources);
-
-    Please realign this line, so that it still starts under 'pp'.
-
-WBR, Sergei
+diff --git a/drivers/input/keyboard/atakbd.c b/drivers/input/keyboard/atakbd.c
+index 10bcd4ae5402..f1235831283d 100644
+--- a/drivers/input/keyboard/atakbd.c
++++ b/drivers/input/keyboard/atakbd.c
+@@ -170,7 +170,7 @@ static unsigned char atakbd_keycode[0x72] = {	/* American layout */
+ 	[93]	 = KEY_KPASTERISK,
+ 	[94]	 = KEY_KPPLUS,
+ 	[95]	 = KEY_HELP,
+-	[96]	 = KEY_BACKSLASH,	/* FIXME: '<' */
++	[96]	 = KEY_102ND,
+ 	[97]	 = KEY_KPASTERISK,	/* FIXME */
+ 	[98]	 = KEY_KPSLASH,
+ 	[99]	 = KEY_KPLEFTPAREN,
+-- 
+1.9.1
