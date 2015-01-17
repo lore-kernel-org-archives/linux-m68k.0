@@ -1,46 +1,42 @@
-From: Yinghai Lu <yinghai@kernel.org>
-Subject: Re: [PATCH 01/28] PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
-Date: Fri, 16 Jan 2015 15:16:28 -0800
-Message-ID: <CAE9FiQV97PuDWBZYRxh8R0ADnUFTbo1NO3wAufj97en0yseYSQ@mail.gmail.com>
-References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>
-	<1421372666-12288-2-git-send-email-wangyijing@huawei.com>
-	<CAE9FiQUoocCzBKsHL_D4ypH1-DV7XxZMdREX7n=Tz1Kq3kHHeA@mail.gmail.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 23/28] PCI/designware: Use pci_scan_root_bus() for simplicity
+Date: Sat, 17 Jan 2015 19:39:46 +0300
+Message-ID: <54BA9052.9080904__34399.4118193679$1421512816$gmane$org@cogentembedded.com>
+References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com> <1421372666-12288-24-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAE9FiQUoocCzBKsHL_D4ypH1-DV7XxZMdREX7n=Tz1Kq3kHHeA@mail.gmail.com>
+In-Reply-To: <1421372666-12288-24-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Yijing Wang <wangyijing@huawei.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, the arch/x86 maintainers <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
+To: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, linux-pci@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Yinghai Lu <yinghai@kernel.org>, Jiang Liu <jiang.liu@linux.intel.com>, linux-arm-kernel@lists.infradead.org
 
-On Fri, Jan 16, 2015 at 3:15 PM, Yinghai Lu <yinghai@kernel.org> wrote:
-> On Thu, Jan 15, 2015 at 5:43 PM, Yijing Wang <wangyijing@huawei.com> wrote:
->> Pci_bus_add_devices() should not be placed in pci_scan_bus().
->> Now pci device will be added to driver core once its
->> creation. All things left in pci_bus_add_devices() are
->> driver attachment and other trivial sysfs things.
->> Pci_scan_bus() should be the function responsible for
->> scanning PCI devices, not including driver attachment.
->> Other, some callers(m68k,unicore32,alpha) of pci_scan_bus()
->> will call pci_bus_size_bridges() and pci_bus_assign_resources()
->> after pci_scan_bus().
->>
->> E.g.
->> In m68k
->> mcf_pci_init()
->>         pci_scan_bus()
->>                 ...
->>                 pci_bus_add_devices() --- try to attach driver
->>         pci_fixup_irqs()
->>         pci_bus_size_bridges()
->>         pci_bus_assign_resources()
->>
->> It is not correct, resources should be assigned correctly
->> before attaching driver.
+Hello.
+
+On 1/16/2015 4:44 AM, Yijing Wang wrote:
+
+> Use pci_scan_root_bus() instead of pci_create_root_bus() +
+> pci_scan_child_bus() for simplicity.
+
+> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> ---
+>   drivers/pci/host/pcie-designware.c |    4 +---
+>   1 files changed, 1 insertions(+), 3 deletions(-)
+
+> diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
+> index eef3111..d37fe27 100644
+> --- a/drivers/pci/host/pcie-designware.c
+> +++ b/drivers/pci/host/pcie-designware.c
+> @@ -725,13 +725,11 @@ static struct pci_bus *dw_pcie_scan_bus(int nr, struct pci_sys_data *sys)
+>   	struct pcie_port *pp = sys_to_pcie(sys);
 >
-No, for booting path, at that time pci drivers are *NOT* loaded yet.
+>   	pp->root_bus_nr = sys->busnr;
+> -	bus = pci_create_root_bus(pp->dev, sys->busnr,
+> +	bus = pci_scan_root_bus(pp->dev, sys->busnr,
+>   				  &dw_pcie_ops, sys, &sys->resources);
 
-Thanks
+    Please realign this line, so that it still starts under 'pp'.
 
-Yinghai
+WBR, Sergei
