@@ -1,52 +1,44 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH] input: atari - Enable the 102nd key for German keyboards
-Date: Sat, 17 Jan 2015 14:12:44 -0800
-Message-ID: <20150117221244.GA38334@dtor-ws>
-References: <1421517725-31970-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: CONFIG_DEVTMPFS_MOUNT
+Date: Sun, 18 Jan 2015 12:50:36 +0100
+Message-ID: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ig0-f172.google.com ([209.85.213.172]:56745 "EHLO
-	mail-ig0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751902AbbAQWMt (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Jan 2015 17:12:49 -0500
-Content-Disposition: inline
-In-Reply-To: <1421517725-31970-1-git-send-email-geert@linux-m68k.org>
+Received: from mail-lb0-f180.google.com ([209.85.217.180]:58935 "EHLO
+	mail-lb0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751425AbbARLui (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jan 2015 06:50:38 -0500
+Received: by mail-lb0-f180.google.com with SMTP id u10so3856529lbd.11
+        for <linux-m68k@vger.kernel.org>; Sun, 18 Jan 2015 03:50:36 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitz@debian.org>, linux-input@vger.kernel.org, linux-m68k@vger.kernel.org, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+To: Thorsten Glaser <tg@mirbsd.org>
+Cc: Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sat, Jan 17, 2015 at 07:02:05PM +0100, Geert Uytterhoeven wrote:
-> From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-> 
-> Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-> Acked-by: Thorsten Glaser <tg@mirbsd.org>
-> Tested-by: Stefan Niestegge <beetle@atari.org>
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Thorsten,
 
-Applied, thank you.
+While init on Beetle's system complained about not being able to open
+tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
+broke remote login using ssh on my ARAnyM:
 
-> ---
->  drivers/input/keyboard/atakbd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/atakbd.c b/drivers/input/keyboard/atakbd.c
-> index 10bcd4ae5402..f1235831283d 100644
-> --- a/drivers/input/keyboard/atakbd.c
-> +++ b/drivers/input/keyboard/atakbd.c
-> @@ -170,7 +170,7 @@ static unsigned char atakbd_keycode[0x72] = {	/* American layout */
->  	[93]	 = KEY_KPASTERISK,
->  	[94]	 = KEY_KPPLUS,
->  	[95]	 = KEY_HELP,
-> -	[96]	 = KEY_BACKSLASH,	/* FIXME: '<' */
-> +	[96]	 = KEY_102ND,
->  	[97]	 = KEY_KPASTERISK,	/* FIXME */
->  	[98]	 = KEY_KPSLASH,
->  	[99]	 = KEY_KPLEFTPAREN,
-> -- 
-> 1.9.1
-> 
+$ ssh atari
+PTY allocation request failed on channel 0
+stdin: is not a tty
 
--- 
-Dmitry
+(hang)
+
+Scp still works, as it doesn't need a pty.
+
+IIRC, you logged in succesfully on his machine using ssh?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
