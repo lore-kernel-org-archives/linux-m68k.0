@@ -1,50 +1,58 @@
-From: Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: CONFIG_DEVTMPFS_MOUNT
-Date: Sun, 18 Jan 2015 12:07:39 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1501181206220.1142@herc.mirbsd.org>
-References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: kullervo with bigram
+Date: Sun, 18 Jan 2015 13:19:33 +0100
+Message-ID: <CAMuHMdXTyYp=7SOL4qG1JoK6x6zO5mqkGt9wKGXceqbjejMwgA@mail.gmail.com>
+References: <54BACEB6.6060805@debian.org>
+	<20150118115355.GA20168@guido.earth.sol>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
-Content-Language: de-DE-1901, en-GB
-Resent-Message-ID: <2fXNaOhT4OL.A.KrD.OS6uUB@bendel>
-List-URL: <http://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20150118115355.GA20168@guido.earth.sol>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Geert Uytterhoeven dixit:
+On Sun, Jan 18, 2015 at 12:53 PM, Christian T. Steigies <cts@debian.org> wrote:
+>> [   10.340000] pc=0x122478, fa=0x8000ef4c
 
->While init on Beetle's system complained about not being able to open
->tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
->broke remote login using ssh on my ARAnyM:
+00122460 T __clear_user
 
-Hm, interesting.
+Fault Address is logical, i.e. virtual.
 
-If you do not run udev, you may need the following lines in /etc/rc.local:
+>> [   10.350000] 68060 access error, fslw=810040
 
-(test -e /dev/fd || ln -s /proc/self/fd /dev/fd || :)
-(test -e /dev/stdin || ln -s /proc/self/fd/0 /dev/stdin || :)
-(test -e /dev/stdout || ln -s /proc/self/fd/1 /dev/stdout || :)
-(test -e /dev/stderr || ln -s /proc/self/fd/2 /dev/stderr || :)
+# define MMU060_W       (0x00800000)    /* general write, includes rmw */
+#define MMU060_TM       (0x00070000)    /* transfer modifier (TM) bits */
 
-Otherwise=E2=80=A6 redo with ssh -vvv and possibly log in locally to it, ki=
-ll
-the ssh service, and run it in a one-shot manually:
+'1' means Debug Access for alternate accesses, which is here the case
+(moves).
 
-/usr/sbin/sshd -ddde 2>&1 | tee log
+#define MMU060_TWE      (0x00000040)    /* bus error on table search */
 
-bye,
-//mirabilos
---=20
-<igli> exceptions: a truly awful implementation of quite a nice idea.
-<igli> just about the worst way you could do something like that, afaic.
-<igli> it's like anti-design.  <mirabilos> that too=E2=80=A6 may I quote yo=
-u on that?
-<igli> sure, tho i doubt anyone will listen ;)
+>> [   10.360000] Failed to execute /init (error -14)
+>> [   10.380000] pc=0x9c23e, fa=0x2ce0c8
+
+0009c234 t get_user_arg_ptr
+
+002ce0c8 d argv_init
+
+As the kernel runs in the first memory chunk, which is not BigRAMPlus,
+this should work. Or is the page table for that page stored in BigRAMPlus
+memory?
+
+>> [   10.390000] 68060 access error, fslw=1010040
+
+# define MMU060_RW_R    (0x01000000)    /* read */
+
+Same as above, but read.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
