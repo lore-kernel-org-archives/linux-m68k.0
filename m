@@ -1,58 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: kullervo with bigram
-Date: Sun, 18 Jan 2015 13:19:33 +0100
-Message-ID: <CAMuHMdXTyYp=7SOL4qG1JoK6x6zO5mqkGt9wKGXceqbjejMwgA@mail.gmail.com>
-References: <54BACEB6.6060805@debian.org>
-	<20150118115355.GA20168@guido.earth.sol>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: CONFIG_DEVTMPFS_MOUNT
+Date: Sun, 18 Jan 2015 13:33:09 +0100
+Message-ID: <87wq4ke0ai.fsf@igel.home>
+References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150118115355.GA20168@guido.earth.sol>
+Received: from mail-out.m-online.net ([212.18.0.10]:56254 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752044AbbARMdN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jan 2015 07:33:13 -0500
+In-Reply-To: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Sun, 18 Jan 2015 12:50:36 +0100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@lists.linux-m68k.org>, Debian m68k <debian-68k@lists.debian.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.org>, Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Jan 18, 2015 at 12:53 PM, Christian T. Steigies <cts@debian.org> wrote:
->> [   10.340000] pc=0x122478, fa=0x8000ef4c
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-00122460 T __clear_user
+> While init on Beetle's system complained about not being able to open
+> tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
+> broke remote login using ssh on my ARAnyM:
+>
+> $ ssh atari
+> PTY allocation request failed on channel 0
+> stdin: is not a tty
 
-Fault Address is logical, i.e. virtual.
+What are the available ptys and is devpts properly mounted?
 
->> [   10.350000] 68060 access error, fslw=810040
+Andreas.
 
-# define MMU060_W       (0x00800000)    /* general write, includes rmw */
-#define MMU060_TM       (0x00070000)    /* transfer modifier (TM) bits */
-
-'1' means Debug Access for alternate accesses, which is here the case
-(moves).
-
-#define MMU060_TWE      (0x00000040)    /* bus error on table search */
-
->> [   10.360000] Failed to execute /init (error -14)
->> [   10.380000] pc=0x9c23e, fa=0x2ce0c8
-
-0009c234 t get_user_arg_ptr
-
-002ce0c8 d argv_init
-
-As the kernel runs in the first memory chunk, which is not BigRAMPlus,
-this should work. Or is the page table for that page stored in BigRAMPlus
-memory?
-
->> [   10.390000] 68060 access error, fslw=1010040
-
-# define MMU060_RW_R    (0x01000000)    /* read */
-
-Same as above, but read.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
