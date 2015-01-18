@@ -1,37 +1,53 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: CONFIG_DEVTMPFS_MOUNT
-Date: Sun, 18 Jan 2015 13:33:09 +0100
-Message-ID: <87wq4ke0ai.fsf@igel.home>
-References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: The BigRAMPlus works - Re: kullervo with bigram
+Date: Sun, 18 Jan 2015 13:36:35 +0100
+Message-ID: <54BBA8D3.8020703__2019.1517346122$1421585006$gmane$org@physik.fu-berlin.de>
+References: <54BACEB6.6060805@debian.org>	<20150118115355.GA20168@guido.earth.sol> <CAMuHMdXTyYp=7SOL4qG1JoK6x6zO5mqkGt9wKGXceqbjejMwgA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:56254 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752044AbbARMdN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jan 2015 07:33:13 -0500
-In-Reply-To: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Sun, 18 Jan 2015 12:50:36 +0100")
+In-Reply-To: <CAMuHMdXTyYp=7SOL4qG1JoK6x6zO5mqkGt9wKGXceqbjejMwgA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.org>, Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Hi Geert!
 
-> While init on Beetle's system complained about not being able to open
-> tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
-> broke remote login using ssh on my ARAnyM:
->
-> $ ssh atari
-> PTY allocation request failed on channel 0
-> stdin: is not a tty
+Important side note: We can no longer reproduce this particular crash.
 
-What are the available ptys and is devpts properly mounted?
+All we get now is a CPU soft-lockup which goes away when using a memfile
+to either exclude the BigRAMPlus ~256 MB from 0x40000000 _or_ the
+accelerator's on-board memory ~128 MB from 0x07000000.
 
-Andreas.
+Thus, the memfile to run Linux in the accelerator's memory is:
+
+2097152
+0x07000000 134217728
+
+and the memfile for running the kernel in the BigRAMPlus:
+
+2097152
+0x40000000 268435456
+
+Both seem to work fine so far. Activating both regions will lead
+to a soft-lockup right after the message "Freeing unused kernel
+memory", using them mutually exclusively works.
+
+Furthermore, we just wanted to use the BigRAMPlus as a swap device
+now following Ingo's description [1]. Unfortunately, CONFIG_MTD
+is not set in the current Debian m68k kernel and we therefore
+can't use it.
+
+Any chance we can activate that?
+
+Adrian
+
+> [1]
+https://blog.windfluechter.net/content/blog/2013/12/18/1677-debian-donation-m68k-arrived
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
