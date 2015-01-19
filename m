@@ -1,70 +1,59 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH 18/28] PCI/sparc: Use pci_scan_root_bridge() for simplicity
-Date: Mon, 19 Jan 2015 11:17:02 +0800
-Message-ID: <54BC772E.6020103__45.7786758945034$1421637605$gmane$org@huawei.com>
-References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com> <1421372666-12288-19-git-send-email-wangyijing@huawei.com> <2658988.B0VmbMPdJ9@wuerfel>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH 01/28] PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
+Date: Mon, 19 Jan 2015 14:59:44 +1000
+Message-ID: <54BC8F40.1080405__6743.15427099845$1421644153$gmane$org@westnet.com.au>
+References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>	<1421372666-12288-2-git-send-email-wangyijing@huawei.com>	<CAE9FiQUoocCzBKsHL_D4ypH1-DV7XxZMdREX7n=Tz1Kq3kHHeA@mail.gmail.com> <CAE9FiQV97PuDWBZYRxh8R0ADnUFTbo1NO3wAufj97en0yseYSQ@mail.gmail.com> <54BC6611.9020002@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <2658988.B0VmbMPdJ9@wuerfel>
+In-Reply-To: <54BC6611.9020002@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
-Cc: Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, Russell King <linux@arm.linux.org.uk>, Marc Zyngier <marc.zyngier@arm.com>, linux-pci@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, Jiang Liu <jiang.liu@linux.intel.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Yinghai Lu <yinghai@kernel.org>, "David S. Miller" <davem@davemloft.net>
+To: Yijing Wang <wangyijing@huawei.com>, Yinghai Lu <yinghai@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, the arch/x86 maintainers <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
 
-On 2015/1/16 18:01, Arnd Bergmann wrote:
-> On Friday 16 January 2015 09:44:16 Yijing Wang wrote:
->> +static void pci_host_bridge_probe_mode(
->> +               struct pci_host_bridge *host)
->> +{
->> +       host->of_scan = true;
->> +}
->>
+On 19/01/15 12:04, Yijing Wang wrote:
+> On 2015/1/17 7:16, Yinghai Lu wrote:
+>> On Fri, Jan 16, 2015 at 3:15 PM, Yinghai Lu <yinghai@kernel.org> wrote:
+>>> On Thu, Jan 15, 2015 at 5:43 PM, Yijing Wang <wangyijing@huawei.com> wrote:
+>>>> Pci_bus_add_devices() should not be placed in pci_scan_bus().
+>>>> Now pci device will be added to driver core once its
+>>>> creation. All things left in pci_bus_add_devices() are
+>>>> driver attachment and other trivial sysfs things.
+>>>> Pci_scan_bus() should be the function responsible for
+>>>> scanning PCI devices, not including driver attachment.
+>>>> Other, some callers(m68k,unicore32,alpha) of pci_scan_bus()
+>>>> will call pci_bus_size_bridges() and pci_bus_assign_resources()
+>>>> after pci_scan_bus().
+>>>>
+>>>> E.g.
+>>>> In m68k
+>>>> mcf_pci_init()
+>>>>         pci_scan_bus()
+>>>>                 ...
+>>>>                 pci_bus_add_devices() --- try to attach driver
+>>>>         pci_fixup_irqs()
+>>>>         pci_bus_size_bridges()
+>>>>         pci_bus_assign_resources()
+>>>>
+>>>> It is not correct, resources should be assigned correctly
+>>>> before attaching driver.
+>>>
+>> No, for booting path, at that time pci drivers are *NOT* loaded yet.
 > 
-> I probably missed something here, but where does host->of_scan
-> get used?
-> 
+> Hi Yinghai, I knew code flow here would not cause problems, sorry the log
+> confused you, I will refresh it. But I think pci_scan_bus()/pci_scan_root_bus()
+> which could only be used during system boot up(before module_init) make
+> the pci scan logic obscure. Because most callers additionally call
+> pci_bus_size_bridges() and pci_bus_assign_resources() later,
+> so rip out pci_bus_add_devices() from pci_scan_bus()/pci_scan_root_bus()
+> make code have better readability.
 
-It is used in __pci_scan_root_bus() to detect whether of scan bus is needed in patch 11.
+I agree that ordering seems odd. I recall there was a reason I had
+to put it in that order (at that time - which is a few years back now).
+I can't remember exactly now, but it was something like bridges
+didn't get resourced properly without a pci scan first.
 
-
-@@ -2051,10 +2053,17 @@ static struct pci_bus *__pci_scan_root_bus(
- 		pci_bus_insert_busn_res(b, host->busnum, 255);
- 	}
-
--	max = pci_scan_child_bus(b);
-+	if (host->ops && host->ops->phb_probe_mode)
-+		host->ops->phb_probe_mode(host);
-
--	if (!found)
--		pci_bus_update_busn_res_end(b, max);
-+	if (host->of_scan) {
-+		if (host->ops &&host->ops->phb_of_scan_bus)
-+			host->ops->phb_of_scan_bus(host);
-+	} else {
-+		max = pci_scan_child_bus(b);
-+		if (!found)
-+			pci_bus_update_busn_res_end(b, max);
-+	}
-
- 	return b;
-
-Thanks!
-Yijing.
-
-
-> 	Arnd
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> .
-> 
-
-
--- 
-Thanks!
-Yijing
+Regards
+Greg
