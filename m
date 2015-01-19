@@ -1,98 +1,66 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: CONFIG_DEVTMPFS_MOUNT
-Date: Mon, 19 Jan 2015 09:52:06 +1300
-Message-ID: <CAOmrzk+G_wvLtCDeuo-R9_xFcqNfUp3=6Dxd0xK+_2e_wXkASA@mail.gmail.com>
-References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
-	<Pine.BSM.4.64L.1501181206220.1142@herc.mirbsd.org>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: Re: [PATCH 01/28] PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
+Date: Mon, 19 Jan 2015 10:04:01 +0800
+Message-ID: <54BC6611.9020002__34812.3995624066$1421633093$gmane$org@huawei.com>
+References: <1421372666-12288-1-git-send-email-wangyijing@huawei.com>	<1421372666-12288-2-git-send-email-wangyijing@huawei.com>	<CAE9FiQUoocCzBKsHL_D4ypH1-DV7XxZMdREX7n=Tz1Kq3kHHeA@mail.gmail.com> <CAE9FiQV97PuDWBZYRxh8R0ADnUFTbo1NO3wAufj97en0yseYSQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-qc0-f179.google.com ([209.85.216.179]:50674 "EHLO
-	mail-qc0-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751596AbbARUwH convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jan 2015 15:52:07 -0500
-Received: by mail-qc0-f179.google.com with SMTP id w7so3285294qcr.10
-        for <linux-m68k@vger.kernel.org>; Sun, 18 Jan 2015 12:52:06 -0800 (PST)
-In-Reply-To: <Pine.BSM.4.64L.1501181206220.1142@herc.mirbsd.org>
+In-Reply-To: <CAE9FiQV97PuDWBZYRxh8R0ADnUFTbo1NO3wAufj97en0yseYSQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thorsten Glaser <tg@mirbsd.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Yinghai Lu <yinghai@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, the arch/x86 maintainers <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
 
-This is what I have used since - called from rcS.d as S37mountdevpts.sh=
- :
+On 2015/1/17 7:16, Yinghai Lu wrote:
+> On Fri, Jan 16, 2015 at 3:15 PM, Yinghai Lu <yinghai@kernel.org> wrote:
+>> On Thu, Jan 15, 2015 at 5:43 PM, Yijing Wang <wangyijing@huawei.com> wrote:
+>>> Pci_bus_add_devices() should not be placed in pci_scan_bus().
+>>> Now pci device will be added to driver core once its
+>>> creation. All things left in pci_bus_add_devices() are
+>>> driver attachment and other trivial sysfs things.
+>>> Pci_scan_bus() should be the function responsible for
+>>> scanning PCI devices, not including driver attachment.
+>>> Other, some callers(m68k,unicore32,alpha) of pci_scan_bus()
+>>> will call pci_bus_size_bridges() and pci_bus_assign_resources()
+>>> after pci_scan_bus().
+>>>
+>>> E.g.
+>>> In m68k
+>>> mcf_pci_init()
+>>>         pci_scan_bus()
+>>>                 ...
+>>>                 pci_bus_add_devices() --- try to attach driver
+>>>         pci_fixup_irqs()
+>>>         pci_bus_size_bridges()
+>>>         pci_bus_assign_resources()
+>>>
+>>> It is not correct, resources should be assigned correctly
+>>> before attaching driver.
+>>
+> No, for booting path, at that time pci drivers are *NOT* loaded yet.
+
+Hi Yinghai, I knew code flow here would not cause problems, sorry the log
+confused you, I will refresh it. But I think pci_scan_bus()/pci_scan_root_bus()
+which could only be used during system boot up(before module_init) make
+the pci scan logic obscure. Because most callers additionally call
+pci_bus_size_bridges() and pci_bus_assign_resources() later,
+so rip out pci_bus_add_devices() from pci_scan_bus()/pci_scan_root_bus()
+make code have better readability.
+
+Thanks!
+Yijing.
+
+> 
+> Thanks
+> 
+> Yinghai
+> 
+> .
+> 
 
 
-#
-# mountdevpts.sh    Mount devpts filesystem.
-#
-# Version:    @(#)mountall.sh  2.85-23  29-Jul-2004  miquels@cistron.nl
-#
-
-#
-# We might have mounted something over /dev, see if /dev/pts is there.
-#
-if [ ! -d /dev/pts ]
-then
-    rm -f /dev/pts
-    mkdir /dev/pts
-fi
-
-#
-# Mount local file systems in /etc/fstab.
-#
-[ "$VERBOSE" !=3D no ] && echo "Mounting devpts filesystem..."
-mount -av -t devpts 2>&1 |
-    egrep -v '(already|nothing was) mounted'
-
-
-: exit 0
-
-Typos and other faults mine. Runs on a dark ages version of Debian
-(3.1 with locl mods).
-
-Cheers,
-
-  Michael
-
-
-
-On Mon, Jan 19, 2015 at 1:07 AM, Thorsten Glaser <tg@mirbsd.de> wrote:
-> Geert Uytterhoeven dixit:
->
->>While init on Beetle's system complained about not being able to open
->>tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MO=
-UNT
->>broke remote login using ssh on my ARAnyM:
->
-> Hm, interesting.
->
-> If you do not run udev, you may need the following lines in /etc/rc.l=
-ocal:
->
-> (test -e /dev/fd || ln -s /proc/self/fd /dev/fd || :)
-> (test -e /dev/stdin || ln -s /proc/self/fd/0 /dev/stdin || :)
-> (test -e /dev/stdout || ln -s /proc/self/fd/1 /dev/stdout || :)
-> (test -e /dev/stderr || ln -s /proc/self/fd/2 /dev/stderr || :)
->
-> Otherwise=E2=80=A6 redo with ssh -vvv and possibly log in locally to =
-it, kill
-> the ssh service, and run it in a one-shot manually:
->
-> /usr/sbin/sshd -ddde 2>&1 | tee log
->
-> bye,
-> //mirabilos
-> --
-> <igli> exceptions: a truly awful implementation of quite a nice idea.
-> <igli> just about the worst way you could do something like that, afa=
-ic.
-> <igli> it's like anti-design.  <mirabilos> that too=E2=80=A6 may I qu=
-ote you on that?
-> <igli> sure, tho i doubt anyone will listen ;)
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Thanks!
+Yijing
