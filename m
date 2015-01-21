@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v2 08/30] PCI: Introduce pci_host_assign_domain_nr() to assign domain
-Date: Wed, 21 Jan 2015 08:30:03 +0800
-Message-ID: <1421800225-26230-9-git-send-email-wangyijing__46666.1178078086$1421808023$gmane$org@huawei.com>
+Subject: [PATCH v2 11/30] PCI: Save sysdata in pci_host_bridge drvdata
+Date: Wed, 21 Jan 2015 08:30:06 +0800
+Message-ID: <1421800225-26230-12-git-send-email-wangyijing__24245.1401347809$1421808054$gmane$org@huawei.com>
 References: <1421800225-26230-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,70 +12,122 @@ List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Introduce pci_host_assign_domain_nr() to assign domain
-number for pci_host_bridge. Later we will remove
-pci_bus_assign_domain_nr().
+Save platform specific sysdata in pci_host_bridge
+drvdata, host bridge specific operation need to
+access it before the pci bus creation.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- drivers/pci/pci.c   |   14 +++++++++++---
- include/linux/pci.h |    4 ++++
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ drivers/pci/host-bridge.c |    4 +++-
+ drivers/pci/probe.c       |   18 ++++++++----------
+ include/linux/pci.h       |    3 ++-
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index c419554..3e10772 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4443,10 +4443,10 @@ int pci_get_new_domain_nr(void)
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index 0de21d5..91b354b 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -23,7 +23,8 @@ static void pci_release_host_bridge_dev(struct device *dev)
  }
  
- #ifdef CONFIG_PCI_DOMAINS_GENERIC
--void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
-+static int pci_assign_domain_nr(struct device *dev)
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 db, struct list_head *resources)
++		struct device *parent, u32 db,
++		struct list_head *resources, void *sysdata)
  {
- 	static int use_dt_domains = -1;
--	int domain = of_get_pci_domain_nr(parent->of_node);
-+	int domain = of_get_pci_domain_nr(dev->of_node);
+ 	int error;
+ 	int bus = PCI_BUSNUM(db);
+@@ -58,6 +59,7 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	host->dev.parent = parent;
+ 	INIT_LIST_HEAD(&host->windows);
+ 	host->dev.release = pci_release_host_bridge_dev;
++	dev_set_drvdata(&host->dev, sysdata);
+ 	dev_set_name(&host->dev, "pci%04x:%02x", host->domain, 
+ 			host->busnum);
  
- 	/*
- 	 * Check DT domain and use_dt_domains values.
-@@ -4484,8 +4484,16 @@ void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
- 			parent->of_node->full_name);
- 		domain = -1;
- 	}
-+}
- 
--	bus->domain_nr = domain;
-+void pci_host_assign_domain_nr(struct pci_host_bridge *host)
-+{
-+	host->domain = pci_assign_domain_nr(host->dev.parent);
-+}
-+
-+void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
-+{
-+	bus->domain_nr = pci_assign_domain_nr(parent);
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 4015841..103ef69 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1865,8 +1865,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
  }
- #endif
- #endif
+ 
+ static struct pci_bus *__pci_create_root_bus(
+-		struct pci_host_bridge *bridge, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *bridge, struct pci_ops *ops)
+ {
+ 	int error;
+ 	struct pci_bus *b;
+@@ -1882,7 +1881,7 @@ static struct pci_bus *__pci_create_root_bus(
+ 	if (!b)
+ 		return NULL;
+ 
+-	b->sysdata = sysdata;
++	b->sysdata = dev_get_drvdata(&bridge->dev);
+ 	b->ops = ops;
+ 	b->number = b->busn_res.start = bridge->busnum;
+ 	pci_bus_assign_domain_nr(b, parent);
+@@ -1954,11 +1953,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 	
+-	return __pci_create_root_bus(host, ops, sysdata);
++	return __pci_create_root_bus(host, ops);
+ }
+ 
+ int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
+@@ -2025,8 +2024,7 @@ void pci_bus_release_busn_res(struct pci_bus *b)
+ }
+ 
+ static struct pci_bus *__pci_scan_root_bus(
+-		struct pci_host_bridge *host, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *host, struct pci_ops *ops)
+ {
+ 
+ 	struct pci_host_bridge_window *window;
+@@ -2040,7 +2038,7 @@ static struct pci_bus *__pci_scan_root_bus(
+ 			break;
+ 		}
+ 
+-	b = __pci_create_root_bus(host, ops, sysdata);
++	b = __pci_create_root_bus(host, ops);
+ 	if (!b) {
+ 		pci_free_host_bridge(host);
+ 		return NULL;
+@@ -2066,11 +2064,11 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 
+-	return __pci_scan_root_bus(host, ops, sysdata);
++	return __pci_scan_root_bus(host, ops);
+ }
+ EXPORT_SYMBOL(pci_scan_root_bus);
+ 
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index c771508..1b9c799 100644
+index 5ee0033..3ee8436 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
-@@ -1316,11 +1316,15 @@ static inline int pci_domain_nr(struct pci_bus *bus)
- 	return bus->domain_nr;
- }
- void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent);
-+void pci_host_assign_domain_nr(struct pci_host_bridge *host);
- #else
- static inline void pci_bus_assign_domain_nr(struct pci_bus *bus,
- 					struct device *parent)
- {
- }
-+static inline void pci_host_assign_domain_nr(struct pci_host_bridge *host)
-+{
-+}
- #endif
+@@ -419,7 +419,8 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
  
- /* some architectures require additional setup to direct VGA traffic */
+ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge);
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 dombus, struct list_head *resources);
++		struct device *parent, u32 dombus,
++		struct list_head *resources, void *sysdata);
+ /*
+  * The first PCI_BRIDGE_RESOURCE_NUM PCI bus resources (those that correspond
+  * to P2P or CardBus bridge windows) go in a table.  Additional ones (for
 -- 
 1.7.1
