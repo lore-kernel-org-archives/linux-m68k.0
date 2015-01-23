@@ -1,49 +1,34 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v2 23/30] PCI/mvebu: Use pci_common_init_dev() to simplify
- code
-Date: Fri, 23 Jan 2015 10:11:47 +0800
-Message-ID: <54C1ADE3.9060606__46086.8245958865$1421979199$gmane$org@huawei.com>
-References: <1421800225-26230-1-git-send-email-wangyijing@huawei.com> <1421800225-26230-24-git-send-email-wangyijing@huawei.com> <20150122184000.63ba06bb@free-electrons.com>
+From: YesGrowth@mail.pelni.co.id, Loans@mail.pelni.co.id,
+	" <info@yesgrowthloans.com>"@mail.pelni.co.id
+Subject: Darlehen
+Date: Fri, 23 Jan 2015 15:58:47 +0100
+Message-ID: <20150123145915.25F4D408F88@mail.pelni.co.id>
+Reply-To: yesgrowth1986@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150122184000.63ba06bb@free-electrons.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, linux-ia64@vger.kernel.org, linux-pci@vger.kernel.org, Nadav Haklai <nadavh@marvell.com>, =?ISO-8859-1?Q?Gregory_Cl=E9ment?= <gregory.clement@free-electrons.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Jason Cooper <jason@lakedaemon.net>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, Rusty Russell <rusty@rustcorp.com.au>, linux-m68k@lists.linux-m68k.org, Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>, Yinghai Lu <yinghai@kernel.org>, linux-arm-kernel@lists.infradead.org, Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org, Jiang Liu <jiang.liu@linux.intel.com>, linux-alpha@vger.
+To: Recipients <YesGrowth@mail.pelni.co.id>
 
-On 2015/1/23 1:40, Thomas Petazzoni wrote:
-> Dear Yijing Wang,
-> 
-> On Wed, 21 Jan 2015 08:30:18 +0800, Yijing Wang wrote:
->> Mvebu_pcie_scan_bus() is not necessary, we could use
->> pci_common_init_dev() instead of pci_common_init(),
->> and pass the device pointer as the parent. Then
->> pci_scan_root_bus() will be called to scan the pci busses.
->>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
->> CC: Jason Cooper <jason@lakedaemon.net>
-> 
-> While I'm fine with the change to pci_common_init_dev(), I am not so
-> sure about the removal of mvebu_pcie_scan_bus(). I vaguely remember
-> that we intentionally did not use the default function for a specific
-> reason. Of course, this was a long time ago, and I don't remember the
-> reason. I would have to take a bit of time to 1/ review the archives of
-> the discussion surrounding the pcie-mvebu driver, and 2/ test your
-> patch to validate it works fine on HW.
+Guten Tag,
 
-Hi Thomas, Thanks for your comments and help to test :)
+Ich bin Frau Rose Butler von einem privaten Kreditvergabe Unternehmen a=
+ls YesGrowth Loans=AE bekannt. Wir bieten alle Arten von Darlehen zu 3%=
+ Zinsen. Wenn Sie in Not von Darlehen sind bitte kontaktieren Sie uns m=
+it dem unten stehenden Informationen.
 
-> 
-> Thanks!
-> 
-> Thomas
-> 
+Vollst=E4ndiger Name:
+Geschlecht:
+Land:
+Adresse:
+Darlehensbetrag:
+Dauer:
+Tel:
 
+Wir warten auf Ihre Antwort, wenn Sie interessiert sind.
 
--- 
-Thanks!
-Yijing
+Danke,
+=46rau Rose Butler
