@@ -1,42 +1,41 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: CONFIG_DEVTMPFS_MOUNT
-Date: Sun, 25 Jan 2015 11:33:29 +0100
-Message-ID: <CAMuHMdXeQ13BHLewpKA0CHRX=pq_3V1_E4AY=k1k3PwKgvh37w@mail.gmail.com>
+Date: Sun, 25 Jan 2015 11:34:34 +0100
+Message-ID: <CAMuHMdWHdr8-Wi2D6APt-uHVnNwojq-wgdTWbp1ZR7uErKgUcg@mail.gmail.com>
 References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
-	<87wq4ke0ai.fsf@igel.home>
+	<Pine.BSM.4.64L.1501181206220.1142@herc.mirbsd.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-la0-f53.google.com ([209.85.215.53]:33123 "EHLO
-	mail-la0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753206AbbAYKdb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Jan 2015 05:33:31 -0500
-Received: by mail-la0-f53.google.com with SMTP id gq15so3770197lab.12
-        for <linux-m68k@vger.kernel.org>; Sun, 25 Jan 2015 02:33:29 -0800 (PST)
-In-Reply-To: <87wq4ke0ai.fsf@igel.home>
+Received: from mail-la0-f49.google.com ([209.85.215.49]:41822 "EHLO
+	mail-la0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752232AbbAYKeg (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Jan 2015 05:34:36 -0500
+Received: by mail-la0-f49.google.com with SMTP id gf13so3755708lab.8
+        for <linux-m68k@vger.kernel.org>; Sun, 25 Jan 2015 02:34:34 -0800 (PST)
+In-Reply-To: <Pine.BSM.4.64L.1501181206220.1142@herc.mirbsd.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Thorsten Glaser <tg@mirbsd.org>, Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Thorsten Glaser <tg@mirbsd.de>
+Cc: Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sun, Jan 18, 2015 at 1:33 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> While init on Beetle's system complained about not being able to open
->> tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
->> broke remote login using ssh on my ARAnyM:
->>
->> $ ssh atari
->> PTY allocation request failed on channel 0
->> stdin: is not a tty
+On Sun, Jan 18, 2015 at 1:07 PM, Thorsten Glaser <tg@mirbsd.de> wrote:
+> Geert Uytterhoeven dixit:
 >
-> What are the available ptys and is devpts properly mounted?
+>>While init on Beetle's system complained about not being able to open
+>>tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
+>>broke remote login using ssh on my ARAnyM:
+>
+> Hm, interesting.
+>
+> If you do not run udev, you may need the following lines in /etc/rc.local:
+>
+> (test -e /dev/fd || ln -s /proc/self/fd /dev/fd || :)
+> (test -e /dev/stdin || ln -s /proc/self/fd/0 /dev/stdin || :)
+> (test -e /dev/stdout || ln -s /proc/self/fd/1 /dev/stdout || :)
+> (test -e /dev/stderr || ln -s /proc/self/fd/2 /dev/stderr || :)
 
-None.
-
-The ancient /etc/init.d/mountdevsubfs.h looked for devfs instead of devtmpfs.
-After fixing that, it works again.
-
-Thanks!
+I don't have these, but the system doesn't seem to miss them ;-)
 
 Gr{oetje,eeting}s,
 
