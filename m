@@ -1,38 +1,50 @@
-From: Sam Protsenko <semen.protsenko@globallogic.com>
-Subject: Re: [PATCH 0/4] defconfigs: cleanup obsolete MTD configs
-Date: Sat, 24 Jan 2015 22:54:28 +0200
-Message-ID: <CAJOTznWHpRh8ysVxwSWyvZL1UAe-G9A64j=M6z0+zPeoycgkDg__41200.6389852197$1422132899$gmane$org@mail.gmail.com>
-References: <1422117213-3130-1-git-send-email-semen.protsenko@globallogic.com>
-	<1422118156.27947.7.camel@x220>
-Reply-To: semen.protsenko@globallogic.com
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: CONFIG_DEVTMPFS_MOUNT
+Date: Sun, 25 Jan 2015 11:33:29 +0100
+Message-ID: <CAMuHMdXeQ13BHLewpKA0CHRX=pq_3V1_E4AY=k1k3PwKgvh37w@mail.gmail.com>
+References: <CAMuHMdV413F57YQw_ODzjgYAi4ndVgOvJ39k_kL0yksCQF5jAg@mail.gmail.com>
+	<87wq4ke0ai.fsf@igel.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1422118156.27947.7.camel@x220>
+Received: from mail-la0-f53.google.com ([209.85.215.53]:33123 "EHLO
+	mail-la0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753206AbbAYKdb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 25 Jan 2015 05:33:31 -0500
+Received: by mail-la0-f53.google.com with SMTP id gq15so3770197lab.12
+        for <linux-m68k@vger.kernel.org>; Sun, 25 Jan 2015 02:33:29 -0800 (PST)
+In-Reply-To: <87wq4ke0ai.fsf@igel.home>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Russell King <linux@arm.linux.org.uk>, adi-buildroot-devel@lists.sourceforge.net, linux-am33-list@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Thorsten Glaser <tg@mirbsd.org>, Stefan Niestegge <beetle@atari.org>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-> That's news for me. I thought they are silently ignored. Do you have an
-> example of such a warning?
+On Sun, Jan 18, 2015 at 1:33 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>> While init on Beetle's system complained about not being able to open
+>> tty* with CONFIG_DEVTMPFS_MOUNT disabled, enabling CONFIG_DEVTMPFS_MOUNT
+>> broke remote login using ssh on my ARAnyM:
+>>
+>> $ ssh atari
+>> PTY allocation request failed on channel 0
+>> stdin: is not a tty
+>
+> What are the available ptys and is devpts properly mounted?
 
-Not really. It was just assumption. It seems you are right, they are just
-ignored silently. But item 2 is still relevant and it was actually confused
-me when I tried to figure out MTD configuration for my platform.
-Anyway, garbage should be taken out from time to time.
+None.
 
-> Seems like the kind of change that can only be reviewed by a script.
+The ancient /etc/init.d/mountdevsubfs.h looked for devfs instead of devtmpfs.
+After fixing that, it works again.
 
-Good point. Because these patches were done by script to start with.
-Anyway, I reviewed result patches manually to be completely sure.
-You can write verifying script though, if you need to, it wouldn't take
-more than 2 minutes (it takes one-liner, actually).
+Thanks!
 
-> I seem to remember Greg stating that defconfig files are on their way
-> out. Did I remember that correctly?
+Gr{oetje,eeting}s,
 
-Maybe they are. But they still in place, and why it's so, we should
-maintain them up-to-date. Ideally, this kind of work should be done by
-someone who introduces changes into Kconfig files. So I just fixed
-that oversight.
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
