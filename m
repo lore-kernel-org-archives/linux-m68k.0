@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 5/6] m68k/defconfig: Enable Atari EtherNAT and EtherNEC Ethernet support
-Date: Sun, 25 Jan 2015 15:30:38 +0100
-Message-ID: <1422196239-30694-6-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 4/6] m68k/defconfig: Enable automounting of devtmpfs at /dev
+Date: Sun, 25 Jan 2015 15:30:37 +0100
+Message-ID: <1422196239-30694-5-git-send-email-geert@linux-m68k.org>
 References: <1422196239-30694-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1422196239-30694-1-git-send-email-geert@linux-m68k.org>
@@ -10,85 +10,167 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@lists.linux-m68k.org
 Cc: debian-68k@lists.debian.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Enable support for Atari EtherNAT (SMC91X) and EtherNEC (NE2000)
-Ethernet support in the Atari and multiplatform defconfig files.
+Enable CONFIG_DEVTMPFS_MOUNT, as it's useful for initrd-less kernels.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/configs/atari_defconfig | 5 +++++
- arch/m68k/configs/multi_defconfig | 6 +++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ arch/m68k/configs/amiga_defconfig    | 1 +
+ arch/m68k/configs/apollo_defconfig   | 1 +
+ arch/m68k/configs/atari_defconfig    | 1 +
+ arch/m68k/configs/bvme6000_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig    | 1 +
+ arch/m68k/configs/mac_defconfig      | 1 +
+ arch/m68k/configs/multi_defconfig    | 1 +
+ arch/m68k/configs/mvme147_defconfig  | 1 +
+ arch/m68k/configs/mvme16x_defconfig  | 1 +
+ arch/m68k/configs/q40_defconfig      | 1 +
+ arch/m68k/configs/sun3_defconfig     | 1 +
+ arch/m68k/configs/sun3x_defconfig    | 1 +
+ 12 files changed, 12 insertions(+)
 
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 8c2f78197e5432b6..c23afcc544580405 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -244,6 +244,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 9139ff7b3279ace0..c72fcbd11a9e6219 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -242,6 +242,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
 diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index c53bd87bd68c3727..776964f25774f617 100644
+index de543dbabdf4f7a1..c53bd87bd68c3727 100644
 --- a/arch/m68k/configs/atari_defconfig
 +++ b/arch/m68k/configs/atari_defconfig
-@@ -31,6 +31,7 @@ CONFIG_M68030=y
- CONFIG_M68040=y
- CONFIG_M68060=y
- CONFIG_ATARI=y
-+CONFIG_ATARI_ROM_ISA=y
- # CONFIG_COMPACTION is not set
- CONFIG_CLEANCACHE=y
- CONFIG_ZPOOL=m
-@@ -313,10 +314,12 @@ CONFIG_ATARILANCE=y
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-+CONFIG_NE2000=y
- # CONFIG_NET_VENDOR_QUALCOMM is not set
- # CONFIG_NET_VENDOR_ROCKER is not set
- # CONFIG_NET_VENDOR_SAMSUNG is not set
- # CONFIG_NET_VENDOR_SEEQ is not set
-+CONFIG_SMC91X=y
- # CONFIG_NET_VENDOR_STMICRO is not set
- # CONFIG_NET_VENDOR_VIA is not set
- # CONFIG_NET_VENDOR_WIZNET is not set
-@@ -371,6 +374,8 @@ CONFIG_NATFEAT=y
- CONFIG_NFBLOCK=y
- CONFIG_NFCON=y
- CONFIG_NFETH=y
-+CONFIG_ATARI_ETHERNAT=y
-+CONFIG_ATARI_ETHERNEC=y
- CONFIG_ATARI_DSP56K=m
- CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
+@@ -241,6 +241,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 7ab0a79a68c536c1..41a5a0e60c2a8efa 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -240,6 +240,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 263d1d55e5ba54e3..f36a1ac8e5c080ea 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -242,6 +242,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 1d224d086bf00f87..b9479aa87f289a0e 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -244,6 +244,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_SWIM=m
 diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index a0b539c99ad24a57..80ea4b4da872656b 100644
+index 03070f7b8634bece..a0b539c99ad24a57 100644
 --- a/arch/m68k/configs/multi_defconfig
 +++ b/arch/m68k/configs/multi_defconfig
-@@ -39,6 +39,7 @@ CONFIG_SUN3X=y
- CONFIG_Q40=y
- CONFIG_ZORRO=y
- CONFIG_AMIGA_PCMCIA=y
-+CONFIG_ATARI_ROM_ISA=y
- CONFIG_ZORRO_NAMES=y
- # CONFIG_COMPACTION is not set
- CONFIG_CLEANCACHE=y
-@@ -366,13 +367,14 @@ CONFIG_MVME16x_NET=y
- CONFIG_MACSONIC=y
- CONFIG_HYDRA=y
- CONFIG_MAC8390=y
--CONFIG_NE2000=m
-+CONFIG_NE2000=y
- CONFIG_APNE=y
- CONFIG_ZORRO8390=y
- # CONFIG_NET_VENDOR_QUALCOMM is not set
- # CONFIG_NET_VENDOR_ROCKER is not set
- # CONFIG_NET_VENDOR_SAMSUNG is not set
- # CONFIG_NET_VENDOR_SEEQ is not set
-+CONFIG_SMC91X=y
- # CONFIG_NET_VENDOR_STMICRO is not set
- # CONFIG_NET_VENDOR_VIA is not set
- # CONFIG_NET_VENDOR_WIZNET is not set
-@@ -452,6 +454,8 @@ CONFIG_NATFEAT=y
- CONFIG_NFBLOCK=y
- CONFIG_NFCON=y
- CONFIG_NFETH=y
-+CONFIG_ATARI_ETHERNAT=y
-+CONFIG_ATARI_ETHERNEC=y
- CONFIG_ATARI_DSP56K=m
- CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
+@@ -253,6 +253,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 0f19164df62e8de0..ab657e2a01998b89 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -239,6 +239,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 70292d6abfb708d2..7d232282e5517ae1 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -240,6 +240,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index b60ccfb59bb0123b..4aeedf893913a299 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -240,6 +240,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 014672ab72916fa7..cfe2f268a6be7b89 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -237,6 +237,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 7f2fe78bc881d219..b867fd133bab6d06 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -237,6 +237,7 @@ CONFIG_NET_MPLS_GSO=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_LOOP=y
 -- 
 1.9.1
