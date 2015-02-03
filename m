@@ -1,111 +1,93 @@
 From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: nvram and generic_nvram modules are problematic, was Re: [PATCH]
  arch: m68k: mac: misc.c: Remove some unused functions
-Date: Tue, 3 Feb 2015 14:22:17 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1502031317130.28495@nippy.intranet>
+Date: Tue, 3 Feb 2015 17:11:25 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1502031453160.21644__48206.9347323433$1422943931$gmane$org@nippy.intranet>
 References: <1420131732-31039-1-git-send-email-rickard_strandqvist@spectrumdigital.se> <alpine.LNX.2.00.1501041045020.15927@nippy.intranet> <CAMuHMdXFu3n4d0dMZop186UF+QG=MtLHV=oQr+VszftpEA1kFQ@mail.gmail.com> <alpine.LNX.2.00.1502011230150.32582@nippy.intranet>
- <CAMuHMdXcV8nxCvhMDZ3WRrWKXxxjR6d8Uf8gp5w9NUTkyTNTjg@mail.gmail.com>
+ <20150201084245.GF26493@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXcV8nxCvhMDZ3WRrWKXxxjR6d8Uf8gp5w9NUTkyTNTjg@mail.gmail.com>
+In-Reply-To: <20150201084245.GF26493@n2100.arm.linux.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 
 
-On Sun, 1 Feb 2015, Geert Uytterhoeven wrote:
+On Sun, 1 Feb 2015, Russell King - ARM Linux wrote:
 
-> On Sun, Feb 1, 2015 at 4:39 AM, Finn Thain wrote:
-> > On Sun, 4 Jan 2015, Geert Uytterhoeven wrote:
-> > > On Sun, Jan 4, 2015 at 8:21 AM, Finn Thain wrote:
-> > > > On Thu, 1 Jan 2015, Rickard Strandqvist wrote:
-> > > > > Removes some functions that are not used anywhere: 
-> > > > > mac_pram_write() mac_pram_read()
-> > > >
-> > > > ... I'd rather not remove all of this code. Better to finish the 
-> > > > implementation.
-> > >
-> > > Indeed.
-> > >
-> > > > Would it be acceptable to utilize drivers/char/generic_nvram.c and 
-> > > > CONFIG_GENERIC_NVRAM? This is the PowerMac PRAM driver but looks 
-> > > > generic enough that it may not need any modification for 68k Macs.
-> > >
-> > > Yes, that would be great.
-> > >
-> >
-> > Unfortunately, it seems to be unworkable.
+> On Sun, Feb 01, 2015 at 02:39:42PM +1100, Finn Thain wrote:
+> > I find the ARM support in drivers/char/nvram to be surprising, not to 
+> > say questionable. The /proc/driver/nvram implementation, given 
+> > defined(__arm__), decodes the NVRAM contents in exactly the same 
+> > format as when defined(__i386__) || defined(__x86_64__).
 > 
-> An alternative could be to just provide an nvram attribute file in 
-> sysfs, like many RTC drivers do.
-> 
+> That's because it's used on the Netwinder and EBSA285 platforms, which 
+> are PCI-like, complete with a southbridge which makes them look like a 
+> PC.
 
-Are attribute files seekable? Even if userspace could use "/dev/nvram" and 
-"/sys/whatever/nvram" interchangably, wouldn't it be better if PPC Macs 
-and 68k Macs offered a consistent API to userspace?
+Well, that explains the presence of RTC NVRAM, but the question was also 
+about the format of that NVRAM.
 
-And your suggestion doesn't solve the problem, that is, to be able to 
-build a multi-platform kernel binary in which drivers can access NVRAM.
+The the code in question in drivers/char/nvram.c decodes RTC NVRAM on ARM 
+as if it took the same format as x86 PC RTC NVRAM. Apparently they are not 
+in the same format (for EBSA-285 at least).
 
-The __nvram_read_byte(), nvram_read_byte() etc functions defined in 
-drivers/char/nvram.c, if allowed to proliferate because random 
-architectures might like to use a generic /dev/nvram API, would further 
-uglify that file.
+I downloaded the EBSA-285 BIOS,
+ftp://ftp.arm.linux.org.uk/pub/armlinux/source/boot/bios-1.11.tar.gz
 
-If the m68k Mac kernel doesn't define the nvram_read_byte() routine then 
-valkyriefb can't use it. (fbdev drivers are apparently the reason why 
-powerpc defines them.)
+This is from bios/init/cfg.c --
 
-drivers/char/nvram.c has two sets of these routines for PC RTC NVRAM; one 
-for m68k (Atari) and one for arm/x86. We don't want to introduce more code 
-into drivers/char/nvram.c to support all four configurations:
-1) arm/x86
-2) atari
-3) atari + mac
-4) mac
+        img_nr = rtc_read_cmos(0);
+        root_dev = rtc_read_cmos(2) | rtc_read_cmos(3) << 8;
 
-So we'd end up having to move m68k-specific code out of 
-drivers/char/nvram.c, to make it generic. And that then begs all of the 
-questions in my previous message.
+        for (i = 0; i < 80; i++) {
+                extra_args[i] = rtc_read_cmos(128+i);
+                if (!extra_args[i])
+                        break;
+        }
+        extra_args[79] = '\0';
 
-BTW, my experimental patches replaced all of those __nvram_* and nvram_* 
-functions with an ops struct. E.g.
+(Like /dev/nvram, file offset 0 is actually device offset 14.)
 
-$ cat include/linux/nvram.h 
-#ifndef _LINUX_NVRAM_H
-#define _LINUX_NVRAM_H
+This EBSA-285 BIOS code uses bytes 128 through 208 as "extra_args", 
+whereas /dev/nvram has only 114 bytes in total. The EBSA-285 BIOS doesn't 
+read or write any checksum.
 
-#include <uapi/linux/nvram.h>
+The first two bytes aren't reported in /proc/driver/nvram, whereas 
+EBSA-285 BIOS uses them for img_nr and root_dev. The next one is reported 
+as "floppy type" on x86 PC, though the EBSA-285 BIOS uses it for 
+root_dev >> 8.
 
-struct nvram_ops {
-        ssize_t         (*read)(char *, size_t, loff_t *);
-        ssize_t         (*write)(char *, size_t, loff_t *);
-        unsigned char   (*read_byte)(int);
-        void            (*write_byte)(unsigned char, int);
-        ssize_t         (*get_size)(void);
-#ifdef CONFIG_PPC
-        void            (*sync)(void);
-#else
-        long            (*set_checksum)(void);
-        long            (*initialize)(void);
-#endif
-};
+This is from an x86 PC, for example:
 
-extern const struct nvram_ops arch_nvram_ops;
+# cat /proc/driver/nvram 
+Checksum status: valid
+# floppies     : 1
+Floppy 0 type  : none
+Floppy 1 type  : none
+HD 0 type      : 01
+HD 1 type      : none
+HD type 48 data: 512/0/0 C/H/S, precomp 0, lz 256
+HD type 49 data: 1/124/0 C/H/S, precomp 0, lz 0
+DOS base memory: 640 kB
+Extended memory: 64512 kB (configured), 64512 kB (tested)
+Gfx adapter    : EGA, VGA, ... (with BIOS)
+FPU            : installed
 
-extern const struct nvram_ops rtc_nvram_ops;
+My original question was whether the CONFIG_PROC_FS support found in 
+drivers/char/nvram.c should be moved to arch/x86 and arch/m68k.
 
-#endif  /* _LINUX_NVRAM_H */
+So that question now seems to hinge on the Netwinder ROM ("nettrom") which 
+I gather is proprietary (I didn't find any source code). Does anyone know 
+what format the Netwinder NVRAM takes?
 
+If NVRAM on Netwinder has a different format to x86 PC, then the 
+CONFIG_PROC_FS code in drivers/char/nvram should go elsewhere.
 
-This experiment has m68k implement arch_nvram_ops that dispatch to Atari 
-or Mac methods (at compile-time for a single-platform kernel, or at 
-run-time for a multi-platform kernel binary).
-
-But this implies modifications to fbdev drivers, PPC32 and PPC64, nvram 
-and generic_nvram modules. And any work at all done on generic_nvram seems 
-to be misguided, unless it is removal.
+And if the NVRAM on Netwinder had no checksum, drivers/char/nvram.c would 
+become a generic /dev/nvram misc device, and drivers/char/generic_nvram.c 
+could go away, along with its inherent problems.
 
 -- 
