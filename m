@@ -1,93 +1,96 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: nvram and generic_nvram modules are problematic, was Re: [PATCH]
- arch: m68k: mac: misc.c: Remove some unused functions
-Date: Tue, 3 Feb 2015 17:11:25 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1502031453160.21644__48206.9347323433$1422943931$gmane$org@nippy.intranet>
-References: <1420131732-31039-1-git-send-email-rickard_strandqvist@spectrumdigital.se> <alpine.LNX.2.00.1501041045020.15927@nippy.intranet> <CAMuHMdXFu3n4d0dMZop186UF+QG=MtLHV=oQr+VszftpEA1kFQ@mail.gmail.com> <alpine.LNX.2.00.1502011230150.32582@nippy.intranet>
- <20150201084245.GF26493@n2100.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.20
+Date: Mon,  9 Feb 2015 16:28:20 +0100
+Message-ID: <1423495700-24540-1-git-send-email-geert__17740.0975874209$1423495724$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150201084245.GF26493@n2100.arm.linux.org.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+	Hi Linus,
 
-On Sun, 1 Feb 2015, Russell King - ARM Linux wrote:
+The following changes since commit b1940cd21c0f4abdce101253e860feff547291b0:
 
-> On Sun, Feb 01, 2015 at 02:39:42PM +1100, Finn Thain wrote:
-> > I find the ARM support in drivers/char/nvram to be surprising, not to 
-> > say questionable. The /proc/driver/nvram implementation, given 
-> > defined(__arm__), decodes the NVRAM contents in exactly the same 
-> > format as when defined(__i386__) || defined(__x86_64__).
-> 
-> That's because it's used on the Netwinder and EBSA285 platforms, which 
-> are PCI-like, complete with a southbridge which makes them look like a 
-> PC.
+  Linux 3.19-rc3 (2015-01-05 17:05:20 -0800)
 
-Well, that explains the presence of RTC NVRAM, but the question was also 
-about the format of that NVRAM.
+are available in the git repository at:
 
-The the code in question in drivers/char/nvram.c decodes RTC NVRAM on ARM 
-as if it took the same format as x86 PC RTC NVRAM. Apparently they are not 
-in the same format (for EBSA-285 at least).
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
 
-I downloaded the EBSA-285 BIOS,
-ftp://ftp.arm.linux.org.uk/pub/armlinux/source/boot/bios-1.11.tar.gz
+for you to fetch changes up to 4436820a98cdaf497a874323095e328831030956:
 
-This is from bios/init/cfg.c --
+  m68k/defconfig: Enable Ethernet bridging (2015-01-31 15:00:59 +0100)
 
-        img_nr = rtc_read_cmos(0);
-        root_dev = rtc_read_cmos(2) | rtc_read_cmos(3) << 8;
+Summary:
+  - Switch to asm-generic/futex.h,
+  - Various cleanups,
+  - Defconfig updates.
 
-        for (i = 0; i < 80; i++) {
-                extra_args[i] = rtc_read_cmos(128+i);
-                if (!extra_args[i])
-                        break;
-        }
-        extra_args[79] = '\0';
+----------------------------------------------------------------
+Finn Thain (1):
+      m68k/mac: Fix scsi_type for Mac LC and similar models
 
-(Like /dev/nvram, file offset 0 is actually device offset 14.)
+Geert Uytterhoeven (13):
+      m68k: Switch to asm-generic/futex.h
+      m68k/atari: Remove obsolete keyboard_tasklet scheduling
+      net: atarilance: Remove obsolete IRQ_TYPE_PRIO
+      parport: parport_atari: Remove obsolete IRQ_TYPE_SLOW
+      video: atafb: Remove obsolete IRQ_TYPE_PRIO
+      sound: dmasound_atari: Remove obsolete IRQ_TYPE_SLOW
+      m68k/atari: Remove obsolete IRQ_TYPE_*
+      m68k/defconfig: Refresh defconfigs for v3.16-rc1--v3.19-rc2
+      m68k/defconfig: Enable test modules
+      m68k/defconfig: Enable early printk support
+      m68k/defconfig: Enable automounting of devtmpfs at /dev
+      m68k/defconfig: Enable Atari EtherNAT and EtherNEC Ethernet support
+      m68k/defconfig: Enable Ethernet bridging
 
-This EBSA-285 BIOS code uses bytes 128 through 208 as "extra_args", 
-whereas /dev/nvram has only 114 bytes in total. The EBSA-285 BIOS doesn't 
-read or write any checksum.
+Paul Gortmaker (1):
+      m68k/mvme16x: rtc - Don't use module_init in non-modular code
 
-The first two bytes aren't reported in /proc/driver/nvram, whereas 
-EBSA-285 BIOS uses them for img_nr and root_dev. The next one is reported 
-as "floppy type" on x86 PC, though the EBSA-285 BIOS uses it for 
-root_dev >> 8.
+Rickard Strandqvist (2):
+      m68k/atari: atakeyb.c - Remove some unused functions
+      m68k/mvme147: config.c - Remove unused functions
 
-This is from an x86 PC, for example:
+ arch/m68k/atari/atakeyb.c             | 72 +--------------------------
+ arch/m68k/atari/stdma.c               |  2 +-
+ arch/m68k/atari/time.c                |  3 +-
+ arch/m68k/configs/amiga_defconfig     | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/apollo_defconfig    | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/atari_defconfig     | 78 +++++++++++++++++++++++++----
+ arch/m68k/configs/bvme6000_defconfig  | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/hp300_defconfig     | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/mac_defconfig       | 72 +++++++++++++++++++++++----
+ arch/m68k/configs/multi_defconfig     | 78 ++++++++++++++++++++++++-----
+ arch/m68k/configs/mvme147_defconfig   | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/mvme16x_defconfig   | 72 +++++++++++++++++++++++----
+ arch/m68k/configs/q40_defconfig       | 73 +++++++++++++++++++++++----
+ arch/m68k/configs/sun3_defconfig      | 72 +++++++++++++++++++++++----
+ arch/m68k/configs/sun3x_defconfig     | 73 +++++++++++++++++++++++----
+ arch/m68k/include/asm/Kbuild          |  1 +
+ arch/m68k/include/asm/atariints.h     |  5 --
+ arch/m68k/include/asm/futex.h         | 94 -----------------------------------
+ arch/m68k/include/asm/macintosh.h     |  2 +-
+ arch/m68k/mac/config.c                | 32 ++++++------
+ arch/m68k/mvme147/config.c            | 46 -----------------
+ arch/m68k/mvme16x/rtc.c               |  2 +-
+ drivers/net/ethernet/amd/atarilance.c |  8 +--
+ drivers/parport/parport_atari.c       |  4 +-
+ drivers/video/fbdev/atafb.c           |  3 +-
+ sound/oss/dmasound/dmasound_atari.c   |  2 +-
+ 26 files changed, 782 insertions(+), 377 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/futex.h
 
-# cat /proc/driver/nvram 
-Checksum status: valid
-# floppies     : 1
-Floppy 0 type  : none
-Floppy 1 type  : none
-HD 0 type      : 01
-HD 1 type      : none
-HD type 48 data: 512/0/0 C/H/S, precomp 0, lz 256
-HD type 49 data: 1/124/0 C/H/S, precomp 0, lz 0
-DOS base memory: 640 kB
-Extended memory: 64512 kB (configured), 64512 kB (tested)
-Gfx adapter    : EGA, VGA, ... (with BIOS)
-FPU            : installed
+Thanks for pulling!
 
-My original question was whether the CONFIG_PROC_FS support found in 
-drivers/char/nvram.c should be moved to arch/x86 and arch/m68k.
+Gr{oetje,eeting}s,
 
-So that question now seems to hinge on the Netwinder ROM ("nettrom") which 
-I gather is proprietary (I didn't find any source code). Does anyone know 
-what format the Netwinder NVRAM takes?
+						Geert
 
-If NVRAM on Netwinder has a different format to x86 PC, then the 
-CONFIG_PROC_FS code in drivers/char/nvram should go elsewhere.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-And if the NVRAM on Netwinder had no checksum, drivers/char/nvram.c would 
-become a generic /dev/nvram misc device, and drivers/char/generic_nvram.c 
-could go away, along with its inherent problems.
-
--- 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
