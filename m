@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 3.20
-Date: Mon,  9 Feb 2015 16:28:20 +0100
-Message-ID: <1423495700-24540-1-git-send-email-geert__17740.0975874209$1423495724$gmane$org@linux-m68k.org>
+Subject: [git pull] m68k updates for 3.20 (fixed branch due to forgotten pull)
+Date: Mon,  9 Feb 2015 16:30:15 +0100
+Message-ID: <1423495815-24667-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -16,7 +16,7 @@ The following changes since commit b1940cd21c0f4abdce101253e860feff547291b0:
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
 for you to fetch changes up to 4436820a98cdaf497a874323095e328831030956:
 
