@@ -1,50 +1,68 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 3.20
-Date: Mon, 16 Feb 2015 13:52:09 +1000
-Message-ID: <201502160352.t1G3q9PW031840@goober.accelecon.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwqsrv02p.mx.bigpond.com ([61.9.189.234]:34495 "EHLO
-	nschwqsrv02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754817AbbBPEJ6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 15 Feb 2015 23:09:58 -0500
-Sender: linux-m68k-owner@vger.kernel.org
+From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH v2 23/30] PCI/mvebu: Use pci_common_init_dev() to
+ simplify code
+Date: Mon, 16 Feb 2015 17:46:29 +0000
+Message-ID: <20150216174628.GA13861@red-moon>
+References: <1421800225-26230-1-git-send-email-wangyijing@huawei.com>
+ <1421800225-26230-24-git-send-email-wangyijing@huawei.com>
+ <20150122184000.63ba06bb@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150122184000.63ba06bb@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Yinghai Lu <yinghai@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <Marc.Zyngier@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, Liv
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Hi Linus,
+Hi Thomas,
 
-Can you please pull the m68knommu git tree, for-next branch.
-Nothing big, only a small collection of minor cleanups/fixes to be pulled.
+On Thu, Jan 22, 2015 at 05:40:00PM +0000, Thomas Petazzoni wrote:
+> Dear Yijing Wang,
+> 
+> On Wed, 21 Jan 2015 08:30:18 +0800, Yijing Wang wrote:
+> > Mvebu_pcie_scan_bus() is not necessary, we could use
+> > pci_common_init_dev() instead of pci_common_init(),
+> > and pass the device pointer as the parent. Then
+> > pci_scan_root_bus() will be called to scan the pci busses.
+> > 
+> > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> > CC: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> > CC: Jason Cooper <jason@lakedaemon.net>
+> 
+> While I'm fine with the change to pci_common_init_dev(), I am not so
+> sure about the removal of mvebu_pcie_scan_bus(). I vaguely remember
+> that we intentionally did not use the default function for a specific
+> reason. Of course, this was a long time ago, and I don't remember the
+> reason. I would have to take a bit of time to 1/ review the archives of
+> the discussion surrounding the pcie-mvebu driver, and 2/ test your
+> patch to validate it works fine on HW.
 
-Regards
-Greg
+I guess the reason: by providing the scan pointer to pcibios through
+the hw_pci struct you were preventing calling pci_scan_root_bus() in
+bios32.c that in turn can add devices before the resources are assigned.
 
+Basically mvebu_pci_scan_bus() was doing what pci_scan_root_bus() does
+except for calling pci_bus_add_devices().
 
-The following changes since commit e36f014edff70fc02b3d3d79cead1d58f289332e:
+Yijing patches remove pci_bus_add_devices() from pci_scan_root_bus() so
+his change should be fine and it actually improves the current behaviour
+which is quite hard to untangle, and not just on mvebu (I suspect
+drivers/pci/host/pcie-xilinx.c can suffer from the same problem).
 
-  Linux 3.19-rc7 (2015-02-01 20:07:21 -0800)
+Lorenzo
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 21b30ca5da14613dcf8fd8350ecdb0d5d245e814:
-
-  arch: m68k: 68360: config: Remove unused function (2015-02-03 14:16:23 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68knommu: fix irq handler types in 68360/commproc.c
-
-Paul Bolle (1):
-      m68k: remove check for CONFIG_BSEIP
-
-Rickard Strandqvist (1):
-      arch: m68k: 68360: config: Remove unused function
-
- arch/m68k/68360/commproc.c       |  8 ++++----
- arch/m68k/68360/config.c         | 13 -------------
- arch/m68k/include/asm/commproc.h | 24 +-----------------------
- 3 files changed, 5 insertions(+), 40 deletions(-)
+> 
+> Thanks!
+> 
+> Thomas
+> -- 
+> Thomas Petazzoni, CTO, Free Electrons
+> Embedded Linux, Kernel and Android engineering
+> http://free-electrons.com
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
