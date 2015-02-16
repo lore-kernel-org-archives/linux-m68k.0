@@ -1,63 +1,50 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v2 00/30] Refine PCI scan interfaces and make generic
- pci host bridge
-Date: Mon, 16 Feb 2015 11:28:25 +0800
-Message-ID: <54E163D9.3050107@huawei.com>
-References: <1421800225-26230-1-git-send-email-wangyijing@huawei.com>	 <20150214194552.GA3932@e102568-lin.cambridge.arm.com>	 <54E14562.30407@huawei.com> <1424056424.21410.33.camel@kernel.crashing.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <1424056424.21410.33.camel@kernel.crashing.org>
-Sender: linux-ia64-owner@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Yinghai Lu <yinghai@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <Marc.Zyngier@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, Liviu Dudau <liviu@dudau.co.uk>, Arnd
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 3.20
+Date: Mon, 16 Feb 2015 14:02:01 +1000
+Message-ID: <201502160402.t1G421eH032113@goober.accelecon.com>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from nschwmtas05p.mx.bigpond.com ([61.9.189.149]:50623 "EHLO
+	nschwmtas05p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752203AbbBPECF (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 15 Feb 2015 23:02:05 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-On 2015/2/16 11:13, Benjamin Herrenschmidt wrote:
-> On Mon, 2015-02-16 at 09:18 +0800, Yijing Wang wrote:
->>>> I tested this series on x86 (with or without ACPI).
->>>> Comments and tests are warmly welcome!
->>>
->>> Can you push a public branch out rebased against mainline for us to pull
->>> and test please ?
->>
->> Hi Lorenzo, I rebased the series and you could pull it from git@github.com:YijingWang/linux-pci.git for-gen-host-v2
->>
->> Thank you to help test!
-> 
-> Thanks, I'll try to spend some time reviewing and testing this on
-> powerpc as well.
+Hi Linus,
 
-Thanks very much!
+Can you please pull the m68knommu git tree, for-next branch.
+Nothing big, only a small collection of minor cleanups/fixes to be pulled.
 
-Thanks!
-Yijing.
-
-> 
-> Cheers,
-> Ben.
-> 
->> Thanks!
->> Yijing.
->>
->>>
->>> Thanks !
->>> Lorenzo
->>>
->>>
->>> .
->>>
->>
->>
-> 
-> 
-> 
-> .
-> 
+Regards
+Greg
 
 
--- 
-Thanks!
-Yijing
+The following changes since commit e36f014edff70fc02b3d3d79cead1d58f289332e:
 
+  Linux 3.19-rc7 (2015-02-01 20:07:21 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 21b30ca5da14613dcf8fd8350ecdb0d5d245e814:
+
+  arch: m68k: 68360: config: Remove unused function (2015-02-03 14:16:23 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68knommu: fix irq handler types in 68360/commproc.c
+
+Paul Bolle (1):
+      m68k: remove check for CONFIG_BSEIP
+
+Rickard Strandqvist (1):
+      arch: m68k: 68360: config: Remove unused function
+
+ arch/m68k/68360/commproc.c       |  8 ++++----
+ arch/m68k/68360/config.c         | 13 -------------
+ arch/m68k/include/asm/commproc.h | 24 +-----------------------
+ 3 files changed, 5 insertions(+), 40 deletions(-)
