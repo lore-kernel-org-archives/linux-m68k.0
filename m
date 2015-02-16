@@ -1,13 +1,13 @@
 From: Greg Ungerer <gerg@uclinux.org>
 Subject: [git pull] m68knommu arch fixes for 3.20
-Date: Mon, 16 Feb 2015 14:02:01 +1000
-Message-ID: <201502160402.t1G421eH032113@goober.accelecon.com>
+Date: Mon, 16 Feb 2015 13:52:09 +1000
+Message-ID: <201502160352.t1G3q9PW031840@goober.accelecon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas05p.mx.bigpond.com ([61.9.189.149]:50623 "EHLO
-	nschwmtas05p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752203AbbBPECF (ORCPT
+Received: from nschwqsrv02p.mx.bigpond.com ([61.9.189.234]:34495 "EHLO
+	nschwqsrv02p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754817AbbBPEJ6 (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 15 Feb 2015 23:02:05 -0500
+	Sun, 15 Feb 2015 23:09:58 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: torvalds@linux-foundation.org
