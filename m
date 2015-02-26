@@ -1,169 +1,96 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v4 01/30] PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
-Date: Thu, 26 Feb 2015 16:11:55 +0800
-Message-ID: <1424938344-4017-2-git-send-email-wangyijing__33836.7463126362$1424939071$gmane$org@huawei.com>
-References: <1424938344-4017-1-git-send-email-wangyijing@huawei.com>
+Subject: Re: [PATCH v3 00/30] Refine PCI scan interfaces and make generic
+ pci host bridge
+Date: Thu, 26 Feb 2015 16:23:36 +0800
+Message-ID: <54EED808.4070803__33099.2221869112$1424939093$gmane$org@huawei.com>
+References: <1424914187-21027-1-git-send-email-wangyijing@huawei.com> <20150226055123.GA5415@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1424938344-4017-1-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <20150226055123.GA5415@google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, sparclinux
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Pci_bus_add_devices() should not be placed in pci_scan_bus().
-Now pci device will be added to driver core once its
-creation. All things left in pci_bus_add_devices() are
-driver attachment and other trivial sysfs things.
-Pci_scan_bus() should be the function responsible for
-scanning PCI devices, not including driver attachment.
-Other, some callers(m68k,unicore32,alpha) of pci_scan_bus()
-will call pci_bus_size_bridges() and pci_bus_assign_resources()
-after pci_scan_bus().
+On 2015/2/26 13:51, Bjorn Helgaas wrote:
+> On Thu, Feb 26, 2015 at 09:29:17AM +0800, Yijing Wang wrote:
+>> v2->v3:
+>> 	Rebase this series on v4.0-rc1.
+> 
+> Hm, still doesn't apply for me:
 
-E.g.
-In m68k
-mcf_pci_init()
-	pci_scan_bus()
-		...
-		pci_bus_add_devices() --- try to attach driver
-	pci_fixup_irqs()
-	pci_bus_size_bridges()
-	pci_bus_assign_resources()
+Hi Bjorn, I redo the series, I guess the errors were introduced by calling ./scripts/cleanpatch
+which is used to clean the whitespace errors.
 
-Above code flow make pci scan logic obscure, resources should
-be assigned correctly before attaching driver. Because
-pci_scan_bus() mostly be called in system boot path, when
-before drivers are loaded(in module_init), so no pci scan
-issues will occur. Most pci_scan_bus() callers additionally
-call pci_bus_size_bridges() and pci_bus_assign_resources()
-after pci_scan_bus(), we could rip out pci_bus_add_devices()
-for better code readability. After applied this patch,
-pci_scan_bus() should be used like:
+The new v4 version should be ok, I test it in the local, apply it on your pci-next branch, and
+result is fine.
 
-pci_scan_bus() (mandatory)
-pci_fixup_irqs() (optional)
-pci_bus_size_bridges() (optional)
-pci_pci_bus_assign_resources() (optional)
-pci_bus_add_devices() (mandatory)
+[yijing@localhost linux]$ git log --pretty=oneline | head -31
+217e6044658c11a438468cd13bf6fff03d42016d PCI: Remove pci_bus_assign_domain_nr()
+aaf54636ad37341d162e6ce598285ce593ca297d PCI: Remove platform specific pci_domain_nr()
+9cbee5603394b9f5f3f84a5ce5d0a95706895193 PCI: Export find_pci_host_bridge()
+1ae4eec37a2fa33c13e7f7fdaf503fe46b6b5a6b PCI: Rename __pci_create_root_bus() to pci_create_root_bus()
+2fcbdfedb004f95ecc4d49d66c672997c3e0dd15 PCI/xgene: Use pci_scan_root_bus() instead of pci_create_root_bus()
+e54e48dff9e0b37228d19603a33d9fddc4af9e36 PCI/designware: Use pci_scan_root_bus() for simplicity
+bd265daafd0dca995dcd3640c3a4361ab0afebfd PCI/tegra: Remove redundant tegra_pcie_scan_bus()
+092c5e0d80178d463a841d07aa94fd0ee496a58b PCI/mvebu: Use pci_common_init_dev() to simplify code
+628f76372ff1537cf9b5a950d0ce44c1cc2b587e PCI/Parisc: Use pci_scan_root_bus() for simplicity
+442c46b8981a1cbb03dcc272f8cbdfb394fb2b57 PCI: Introduce pci_bus_child_max_busnr()
+e46bdddc2cf43ecdfe86b76ae44958ed17a660da PCI/sparc: Use pci_scan_root_bridge() for simplicity
+b58787711a5387892e1aae2da71499e3030309a3 PCI: Remove weak pcibios_root_bridge_prepare()
+0a15d7033ee5201d4632faf13902fb25d67d1b90 PCI/powerpc: Use pci_scan_root_bridge() for simplicity
+c3afd3cdbee4bac9c5cb2f3cf19f961ad76fac43 PCI/powerpc: Rename pcibios_root_bridge_prepare()
+1c3ef8136c322c9da468fd9eb55db7b1075ec0e6 PCI/IA64: Fix the build warning about pci_domain_nr()
+3f2577647c8d0f2a66d3bd050cd43003a597ddb7 PCI/IA64: Refine pci_acpi_scan_root() with generic pci_host_bridge
+46f5e1aab98f9e210c5d6b7b3bf2de96cdef8048 PCI/x86: Refine pci_acpi_scan_root() with generic pci_host_bridge
+78229587d0b2c4e7149599aa95582405270cdbf4 PCI: Introduce new scan function pci_scan_root_bridge()
+918a08001d064a11248c00559817d61bfe09614e PCI: Introduce pci_host_bridge_ops to support host specific operations
+20d0e7067c2f60f461d5caac46a8dfc4e0baf5e5 PCI: Save sysdata in pci_host_bridge drvdata
+f054be8a2f2fb3dbc5ae195d9feeb32a2c115b8d PCI: Introduce pci_host_bridge_list to manage host bridges
+47a01e2b4480167d19e302714e0ba5b950f81d25 PCI: Separate pci_host_bridge creation out of pci_create_root_bus()
+7095a7806b1a1379aa048a4a1931ea826de467fa PCI: Introduce pci_host_assign_domain_nr() to assign domain
+3b3c968c1ecd4ec9eeab448d21180ac4bbb273d8 PCI: Pass PCI domain number combined with root bus number
+7eace57bcb341be6cb457d5a5d958a4a79c19131 PCI: Combine PCI domain and bus number in u32 arg
+051523ea7e331474948a946497d9d7ba30a75bdd PCI: Rename pci_scan_bus() to pci_scan_bus_legacy()
+712f1326e26b7a58559ad895c8efc94721dffbcc PCI: Remove deprecated pci_scan_bus_parented()
+856ca244888b1c1b84177fa4b50a2bd118b890b6 xen/PCI: Don't use deprecated function pci_scan_bus_parented()
+134ef4b9728afc06cbad03c6d37362bfb7581b86 PCI: Rip out pci_bus_add_devices() from pci_scan_root_bus()
+2b4a39b85d014149c55cc383a30c1ba4b7690277 PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
+c517d838eb7d07bbe9507871fab3931deccff539 Linux 4.0-rc1
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Guan Xuetao <gxt@mprc.pku.edu.cn>
-CC: Richard Henderson <rth@twiddle.net>
-CC: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-CC: Matt Turner <mattst88@gmail.com>
-CC: linux-alpha@vger.kernel.org
-CC: linux-m68k@lists.linux-m68k.org
-CC: sparclinux@vger.kernel.org
----
- arch/alpha/kernel/sys_nautilus.c  |    1 +
- arch/m68k/coldfire/pci.c          |    1 +
- arch/sparc/kernel/pcic.c          |    2 ++
- arch/unicore32/kernel/pci.c       |   11 +++--------
- drivers/pci/hotplug/ibmphp_core.c |    6 ++++--
- drivers/pci/probe.c               |    1 -
- 6 files changed, 11 insertions(+), 11 deletions(-)
+Thanks!
+Yijing.
 
-diff --git a/arch/alpha/kernel/sys_nautilus.c b/arch/alpha/kernel/sys_nautilus.c
-index 837c0fa..4ae4a40 100644
---- a/arch/alpha/kernel/sys_nautilus.c
-+++ b/arch/alpha/kernel/sys_nautilus.c
-@@ -253,6 +253,7 @@ nautilus_init_pci(void)
- 	   for the root bus, so just clear it. */
- 	bus->self = NULL;
- 	pci_fixup_irqs(alpha_mv.pci_swizzle, alpha_mv.pci_map_irq);
-+	pci_bus_add_devices(bus);
- }
- 
- /*
-diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
-index df96792..d45f087 100644
---- a/arch/m68k/coldfire/pci.c
-+++ b/arch/m68k/coldfire/pci.c
-@@ -319,6 +319,7 @@ static int __init mcf_pci_init(void)
- 	pci_fixup_irqs(pci_common_swizzle, mcf_pci_map_irq);
- 	pci_bus_size_bridges(rootbus);
- 	pci_bus_assign_resources(rootbus);
-+	pci_bus_add_devices(rootbus);
- 	return 0;
- }
- 
-diff --git a/arch/sparc/kernel/pcic.c b/arch/sparc/kernel/pcic.c
-index 6cc78c2..7a82fe2 100644
---- a/arch/sparc/kernel/pcic.c
-+++ b/arch/sparc/kernel/pcic.c
-@@ -391,6 +391,8 @@ static void __init pcic_pbm_scan_bus(struct linux_pcic *pcic)
- 	struct linux_pbm_info *pbm = &pcic->pbm;
- 
- 	pbm->pci_bus = pci_scan_bus(pbm->pci_first_busno, &pcic_ops, pbm);
-+	if (pbm->pci_bus)
-+		pci_bus_add_devices(pbm->pci_bus);
- #if 0 /* deadwood transplanted from sparc64 */
- 	pci_fill_in_pbm_cookies(pbm->pci_bus, pbm, pbm->prom_node);
- 	pci_record_assignments(pbm, pbm->pci_bus);
-diff --git a/arch/unicore32/kernel/pci.c b/arch/unicore32/kernel/pci.c
-index 374a055..3d82024 100644
---- a/arch/unicore32/kernel/pci.c
-+++ b/arch/unicore32/kernel/pci.c
-@@ -266,17 +266,12 @@ static int __init pci_common_init(void)
- 	pci_fixup_irqs(pci_common_swizzle, pci_puv3_map_irq);
- 
- 	if (!pci_has_flag(PCI_PROBE_ONLY)) {
--		/*
--		 * Size the bridge windows.
--		 */
-+		/* Size the bridge windows. */
- 		pci_bus_size_bridges(puv3_bus);
--
--		/*
--		 * Assign resources.
--		 */
-+		/* Assign resources. */
- 		pci_bus_assign_resources(puv3_bus);
- 	}
--
-+	pci_bus_add_devices(puv3_bus);
- 	return 0;
- }
- subsys_initcall(pci_common_init);
-diff --git a/drivers/pci/hotplug/ibmphp_core.c b/drivers/pci/hotplug/ibmphp_core.c
-index 96c5c72..86e3bfd 100644
---- a/drivers/pci/hotplug/ibmphp_core.c
-+++ b/drivers/pci/hotplug/ibmphp_core.c
-@@ -738,7 +738,7 @@ static void ibm_unconfigure_device(struct pci_func *func)
-  */
- static u8 bus_structure_fixup(u8 busno)
- {
--	struct pci_bus *bus;
-+	struct pci_bus *bus, *b;
- 	struct pci_dev *dev;
- 	u16 l;
- 
-@@ -765,7 +765,9 @@ static u8 bus_structure_fixup(u8 busno)
- 					(l != 0x0000) && (l != 0xffff)) {
- 			debug("%s - Inside bus_structure_fixup()\n",
- 							__func__);
--			pci_scan_bus(busno, ibmphp_pci_bus->ops, NULL);
-+			b = pci_scan_bus(busno, ibmphp_pci_bus->ops, NULL);
-+			if (b)
-+				pci_bus_add_devices(b);
- 			break;
- 		}
- 	}
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 8d2f400..88604f2 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -2123,7 +2123,6 @@ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
- 	b = pci_create_root_bus(NULL, bus, ops, sysdata, &resources);
- 	if (b) {
- 		pci_scan_child_bus(b);
--		pci_bus_add_devices(b);
- 	} else {
- 		pci_free_resource_list(&resources);
- 	}
+
+
+> 
+>   11:48:15 ~/linux (pci/enumeration)$ git show --oneline | head -1
+>   c517d838eb7d Linux 4.0-rc1
+>   11:48:36 ~/linux (pci/enumeration)$ stg import -M --sign m/yw
+>   Checking for changes in the working directory ... done
+>   Importing patch "pci-rip-out" ... done
+>   Importing patch "pci-rip-out-0" ... done
+>   Importing patch "xen-pci-don-t-use-deprecated" ... done
+>   Importing patch "pci-remove-deprecated" ... done
+>   Importing patch "pci-rename-pci_scan_bus-to" ... done
+>   Importing patch "pci-combine-pci-domain-and-bus" ... done
+>   Importing patch "pci-pass-pci-domain-number" ... done
+>   Importing patch "pci-introduce" ... done
+>   Importing patch "pci-separate-pci_host_bridge" ... done
+>   Importing patch "pci-introduce-0" ... done
+>   Importing patch "pci-save-sysdata-in" ... error: patch failed: drivers/pci/host-bridge.c:58
+>   error: drivers/pci/host-bridge.c: patch does not apply
+>   error: patch failed: drivers/pci/probe.c:1954
+>   error: drivers/pci/probe.c: patch does not apply
+>   stg import: Diff does not apply cleanly
+>   11:48:52 ~/linux (pci/enumeration)$ 
+> 
+> .
+> 
+
+
 -- 
-1.7.1
+Thanks!
+Yijing
