@@ -1,100 +1,42 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v3 17/30] PCI/powerpc: Rename pcibios_root_bridge_prepare()
-Date: Thu, 26 Feb 2015 09:29:34 +0800
-Message-ID: <1424914187-21027-18-git-send-email-wangyijing__1171.88203516907$1424914968$gmane$org@huawei.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 00/30] Refine PCI scan interfaces and make generic pci
+ host bridge
+Date: Wed, 25 Feb 2015 23:51:23 -0600
+Message-ID: <20150226055123.GA5415__7226.64826685122$1424929959$gmane$org@google.com>
 References: <1424914187-21027-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1424914187-21027-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, linuxppc-dev@lists.ozlabs.org
+To: Yijing Wang <wangyijing@huawei.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Pcibios_root_bridge_prepare() in powerpc is used
-to set root bus speed. Rename it to
-pcibios_set_root_bus_speed() for better readability.
+On Thu, Feb 26, 2015 at 09:29:17AM +0800, Yijing Wang wrote:
+> v2->v3:
+> 	Rebase this series on v4.0-rc1.
 
-Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-CC: linuxppc-dev@lists.ozlabs.org
----
- arch/powerpc/include/asm/machdep.h       |    2 +-
- arch/powerpc/kernel/pci-common.c         |    6 +++---
- arch/powerpc/platforms/pseries/pci.c     |    2 +-
- arch/powerpc/platforms/pseries/pseries.h |    2 +-
- arch/powerpc/platforms/pseries/setup.c   |    2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+Hm, still doesn't apply for me:
 
-diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
-index c8175a3..8e7f2a8 100644
---- a/arch/powerpc/include/asm/machdep.h
-+++ b/arch/powerpc/include/asm/machdep.h
-@@ -129,7 +129,7 @@ struct machdep_calls {
- 	void		(*pcibios_fixup)(void);
- 	int		(*pci_probe_mode)(struct pci_bus *);
- 	void		(*pci_irq_fixup)(struct pci_dev *dev);
--	int		(*pcibios_root_bridge_prepare)(struct pci_host_bridge
-+	int		(*pcibios_set_root_bus_speed)(struct pci_host_bridge
- 				*bridge);
- 
- 	/* To setup PHBs when using automatic OF platform driver for PCI */
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index 78cd41b..4401b6a 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -769,9 +769,9 @@ int pci_proc_domain(struct pci_bus *bus)
- 
- int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
- {
--	if (ppc_md.pcibios_root_bridge_prepare)
--		return ppc_md.pcibios_root_bridge_prepare(bridge);
--
-+	if (ppc_md.pcibios_set_root_bus_speed)
-+		return ppc_md.pcibios_set_root_bus_speed(bridge);
-+
- 	return 0;
- }
- 
-diff --git a/arch/powerpc/platforms/pseries/pci.c b/arch/powerpc/platforms/pseries/pci.c
-index fe16a50..af685d6 100644
---- a/arch/powerpc/platforms/pseries/pci.c
-+++ b/arch/powerpc/platforms/pseries/pci.c
-@@ -110,7 +110,7 @@ static void fixup_winbond_82c105(struct pci_dev* dev)
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_WINBOND, PCI_DEVICE_ID_WINBOND_82C105,
- 			 fixup_winbond_82c105);
- 
--int pseries_root_bridge_prepare(struct pci_host_bridge *bridge)
-+int pseries_set_root_bus_speed(struct pci_host_bridge *bridge)
- {
- 	struct device_node *dn, *pdn;
- 	struct pci_bus *bus;
-diff --git a/arch/powerpc/platforms/pseries/pseries.h b/arch/powerpc/platforms/pseries/pseries.h
-index 1796c54..5d0be3a 100644
---- a/arch/powerpc/platforms/pseries/pseries.h
-+++ b/arch/powerpc/platforms/pseries/pseries.h
-@@ -63,7 +63,7 @@ extern int dlpar_detach_node(struct device_node *);
- 
- /* PCI root bridge prepare function override for pseries */
- struct pci_host_bridge;
--int pseries_root_bridge_prepare(struct pci_host_bridge *bridge);
-+int pseries_set_root_bus_speed(struct pci_host_bridge *bridge);
- 
- unsigned long pseries_memory_block_size(void);
- 
-diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-index e445b67..b196c0d 100644
---- a/arch/powerpc/platforms/pseries/setup.c
-+++ b/arch/powerpc/platforms/pseries/setup.c
-@@ -496,7 +496,7 @@ static void __init pSeries_setup_arch(void)
- 		ppc_md.enable_pmcs = power4_enable_pmcs;
- 	}
- 
--	ppc_md.pcibios_root_bridge_prepare = pseries_root_bridge_prepare;
-+	ppc_md.pcibios_set_root_bus_speed = pseries_set_root_bus_speed;
- 
- 	if (firmware_has_feature(FW_FEATURE_SET_MODE)) {
- 		long rc;
--- 
-1.7.1
+  11:48:15 ~/linux (pci/enumeration)$ git show --oneline | head -1
+  c517d838eb7d Linux 4.0-rc1
+  11:48:36 ~/linux (pci/enumeration)$ stg import -M --sign m/yw
+  Checking for changes in the working directory ... done
+  Importing patch "pci-rip-out" ... done
+  Importing patch "pci-rip-out-0" ... done
+  Importing patch "xen-pci-don-t-use-deprecated" ... done
+  Importing patch "pci-remove-deprecated" ... done
+  Importing patch "pci-rename-pci_scan_bus-to" ... done
+  Importing patch "pci-combine-pci-domain-and-bus" ... done
+  Importing patch "pci-pass-pci-domain-number" ... done
+  Importing patch "pci-introduce" ... done
+  Importing patch "pci-separate-pci_host_bridge" ... done
+  Importing patch "pci-introduce-0" ... done
+  Importing patch "pci-save-sysdata-in" ... error: patch failed: drivers/pci/host-bridge.c:58
+  error: drivers/pci/host-bridge.c: patch does not apply
+  error: patch failed: drivers/pci/probe.c:1954
+  error: drivers/pci/probe.c: patch does not apply
+  stg import: Diff does not apply cleanly
+  11:48:52 ~/linux (pci/enumeration)$ 
