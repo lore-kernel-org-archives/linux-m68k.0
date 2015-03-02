@@ -1,62 +1,31 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v4 00/30] Refine PCI scan interfaces and make generic
- pci host bridge
-Date: Fri, 27 Feb 2015 08:56:34 +0800
-Message-ID: <54EFC0C2.3040000__29327.9335638092$1424998647$gmane$org@huawei.com>
-References: <1424938344-4017-1-git-send-email-wangyijing@huawei.com> <20150226235732.GF25765@google.com>
+From: "Mr. Juan Sebastian Morato" <noreply@popfax.com>
+Subject: Confidential Letter
+Date: Mon, 02 Mar 2015 01:34:40 +0100
+Message-ID: <20150302003449.C20903EE0FE@mail.quartzbg.ro>
+Reply-To: juan_morato@yahoo.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150226235732.GF25765@google.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Recipients <noreply@popfax.com>
 
-On 2015/2/27 7:57, Bjorn Helgaas wrote:
-> On Thu, Feb 26, 2015 at 04:11:54PM +0800, Yijing Wang wrote:
->> v3->v4:
->> 	Fix the rebase issue.
-> 
-> This did apply on v4.0-rc1, but with many whitespace complaints:
-> 
->   Importing patch "pci-pass-pci-domain-number" ... <stdin>:29: trailing whitespace.
-> 	  bus = pci_scan_root_bus(NULL, 
->   <stdin>:44: trailing whitespace.
->       bus = pci_scan_bus_legacy(PCI_DOMBUS(hose->index, 0), 
->   <stdin>:59: trailing whitespace.
->       pbus = pci_create_root_bus(NULL, PCI_DOMBUS(domain, bus), 
->   <stdin>:74: trailing whitespace.
->       bus = pci_scan_root_bus(NULL, 
->   <stdin>:75: trailing whitespace.
-> 	      PCI_DOMBUS(controller->segment, busnum), 
->   warning: squelched 15 whitespace errors
->   warning: 20 lines add whitespace errors.
->   done
->   Importing patch "pci-introduce" ... done
->   Importing patch "pci-separate-pci_host_bridge" ... <stdin>:50: trailing whitespace.
->       dev_set_name(&host->dev, "pci%04x:%02x", host->domain, 
->   <stdin>:181: trailing whitespace.
->       dev_set_name(&b->dev, "%04x:%02x", bridge->domain, 
->   <stdin>:225: trailing whitespace.
->       
->   warning: 3 lines add whitespace errors.
-> 
-> I'll fix them myself this time because I want to make progress on this and
-> I need something to do on the plane tomorrow, but please try to fix them
-> yourself in the future.
->
+Dear Friend, 
 
-I will fix them in the local, thanks!
+I am Mr. Juan Sebastian Morato, the Auditor General of Unicaja Bank Madrid. In the course of my auditing, I discovered a floating fund in an account, which was opened in 1990 at Cam Bank before it was bought over by Unicaja Group which I am the auditor belonging to a dead foreigner Mr. Kenny who died in 2004. Every effort made to track any member of his family or next of kin has since failed; hence I got in contact with you to stand as his next of kin since you bear the same last name. He died leaving no heir or a will.
 
+My intention is to transfer this sum of 5.5M in the aforementioned account to a safe account. I am therefore proposing that you quietly partner with me and provide an account or set up a new one that will serve the purpose of receiving this fund. For your assistance in this venture, I am ready to part with a good percentage of the entire funds. After going through the deceased person's records and files, I discovered that:
 
-> Bjorn
-> 
-> .
-> 
+(1) No one has operated this account since 2004
+(2) He died without an heir; hence the money has been floating.
+(3) No other person knows about this account and there was no known beneficiary.
 
+If I do not remit this money urgently, it would be forfeited and subsequently converted to company's funds, which will benefit only the directors of my firm. This money can be approved to you legally as with all the necessary documentary approvals in your name. However, you would be required to show some proof of claim, which I will provide you with and also guide you on how to make your applications.
 
--- 
-Thanks!
-Yijing
+Please do give me a reply on my private e-mail juan.morato1@1email.eu or fax 00 34 917 692 656 so that I can send you detailed information on the modalities of my proposition. I completely trust you to keep this proposition absolutely confidential. Kindly forward your telephone number where I can reach you easily. I look forward to your prompt response.
+
+Best Regards,
+Mr. Juan Sebastian Morato
+Fax: 00 34 917 692 656
