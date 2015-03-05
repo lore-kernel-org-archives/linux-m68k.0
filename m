@@ -1,77 +1,34 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v4 28/30] PCI: Export find_pci_host_bridge()
-Date: Tue, 3 Mar 2015 17:35:22 +0800
-Message-ID: <54F5805A.7080000__27020.5660294325$1425375362$gmane$org@huawei.com>
-References: <1424938344-4017-1-git-send-email-wangyijing@huawei.com> <1424938344-4017-29-git-send-email-wangyijing@huawei.com> <20150303034048.GM11978@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] m68k: remove a superflous KERN_ERR
+Date: Thu, 5 Mar 2015 14:27:00 +0300
+Message-ID: <20150305112700.GC13378@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150303034048.GM11978@google.com>
+Received: from aserp1040.oracle.com ([141.146.126.69]:20076 "EHLO
+	aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755181AbbCEL1O (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Mar 2015 06:27:14 -0500
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-On 2015/3/3 11:40, Bjorn Helgaas wrote:
-> On Thu, Feb 26, 2015 at 04:12:22PM +0800, Yijing Wang wrote:
->> Export find_pci_host_bridge().
->>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> ---
->>  drivers/pci/host-bridge.c |    2 +-
->>  include/linux/pci.h       |    1 +
->>  2 files changed, 2 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
->> index 4a2baa2..51e24f8 100644
->> --- a/drivers/pci/host-bridge.c
->> +++ b/drivers/pci/host-bridge.c
->> @@ -104,7 +104,7 @@ static struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
->>  	return bus;
->>  }
->>  
->> -static struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
->> +struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
-> 
-> Please name this "pci_find_host_bridge()" or similar so it looks like other
-> PCI functions.
+pr_err() has a KERN_ERR built in.  Smatch complains about these nowadays.
 
-OK, will rename it to "pci_find_host_bridge()" like others.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-
-> 
->>  {
->>  	struct pci_bus *root_bus = find_pci_root_bus(bus);
->>  
->> diff --git a/include/linux/pci.h b/include/linux/pci.h
->> index 2f29e95..6ac7926 100644
->> --- a/include/linux/pci.h
->> +++ b/include/linux/pci.h
->> @@ -426,6 +426,7 @@ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
->>  struct pci_host_bridge *pci_create_host_bridge(
->>  		struct device *parent, u32 dombus, struct list_head *resources, 
->>  		void *sysdata, struct pci_host_bridge_ops *ops);
->> +struct pci_host_bridge *find_pci_host_bridge(struct pci_bus* bus);
-> 
-> I'm not sure this needs to be in include/linux/pci.h.  Wouldn't
-> drivers/pci/pci.h be enough?
-
-It's enough for this series, so I would move it to drivers/pci/pci.h, thanks!
-
-
-> 
->>  /*
->>   * The first PCI_BRIDGE_RESOURCE_NUM PCI bus resources (those that correspond
->>   * to P2P or CardBus bridge windows) go in a table.  Additional ones (for
->> -- 
->> 1.7.1
->>
-> 
-> .
-> 
-
-
--- 
-Thanks!
-Yijing
+diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+index 931a31f..8520250 100644
+--- a/arch/m68k/kernel/pcibios.c
++++ b/arch/m68k/kernel/pcibios.c
+@@ -62,7 +62,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
+ 
+ 		r = dev->resource + idx;
+ 		if (!r->start && r->end) {
+-			pr_err(KERN_ERR "PCI: Device %s not available because of resource collisions\n",
++			pr_err("PCI: Device %s not available because of resource collisions\n",
+ 				pci_name(dev));
+ 			return -EINVAL;
+ 		}
