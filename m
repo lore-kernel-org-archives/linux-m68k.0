@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v5 09/29] PCI: Introduce pci_host_bridge_list to manage host bridges
-Date: Fri, 6 Mar 2015 17:33:26 +0800
-Message-ID: <1425634426-437-10-git-send-email-wangyijing__42318.3905230418$1425635236$gmane$org@huawei.com>
+Subject: [PATCH v5 02/29] PCI: Rip out pci_bus_add_devices() from pci_scan_root_bus()
+Date: Fri, 6 Mar 2015 17:33:19 +0800
+Message-ID: <1425634426-437-3-git-send-email-wangyijing__30079.0700981908$1425635378$gmane$org@huawei.com>
 References: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -9,120 +9,316 @@ Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>David
 
-Introduce pci_host_bridge_list to manage pci host
-bridges in system, so we could detect whether
-the host in domain:bus is alreay registered.
-Then we could remove bus alreay exist test in
-__pci_create_root_bus().
+Just like pci_scan_bus(), we also should rip out
+pci_bus_add_devices() from pci_scan_root_bus().
+Lots platforms first call pci_scan_root_bus(), but
+after that, they call pci_bus_size_bridges() and
+pci_bus_assign_resources(). Place pci_bus_add_devices()
+in pci_scan_root_bus() hurts PCI scan logic.
+For arm hw_pci->scan() functions which call
+pci_scan_root_bus(), it's no need to change anything,
+because pci_bus_add_devices() will be called later
+in pci_common_init_dev().
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Richard Henderson <rth@twiddle.net>
+CC: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+CC: Matt Turner <mattst88@gmail.com>
+CC: David Howells <dhowells@redhat.com>
+CC: Tony Luck <tony.luck@intel.com>
+CC: Michal Simek <monstr@monstr.eu>
+CC: Ralf Baechle <ralf@linux-mips.org>
+CC: Koichi Yasutake <yasutake.koichi@jp.panasonic.com>
+CC: Sebastian Ott <sebott@linux.vnet.ibm.com>
+CC: "David S. Miller" <davem@davemloft.net>
+CC: Chris Metcalf <cmetcalf@ezchip.com>
+CC: Chris Zankel <chris@zankel.net>
+CC: Max Filippov <jcmvbkbc@gmail.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: linux-alpha@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-mips@linux-mips.org
+CC: linux-am33-list@redhat.com
+CC: linux-s390@vger.kernel.org
+CC: linux-sh@vger.kernel.org
+CC: sparclinux@vger.kernel.org
+CC: linux-xtensa@linux-xtensa.org
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- drivers/pci/host-bridge.c |   24 +++++++++++++++++++++++-
- drivers/pci/probe.c       |    8 +-------
- include/linux/pci.h       |    1 +
- 3 files changed, 25 insertions(+), 8 deletions(-)
+ arch/alpha/kernel/pci.c          |    9 ++++++++-
+ arch/frv/mb93090-mb00/pci-vdk.c  |    6 +++++-
+ arch/ia64/sn/kernel/io_init.c    |    2 ++
+ arch/microblaze/pci/pci-common.c |    3 +++
+ arch/mips/pci/pci.c              |    1 +
+ arch/mn10300/unit-asb2305/pci.c  |    7 ++++++-
+ arch/s390/pci/pci.c              |    2 +-
+ arch/sh/drivers/pci/pci.c        |    1 +
+ arch/sparc/kernel/leon_pci.c     |    1 +
+ arch/tile/kernel/pci.c           |    2 ++
+ arch/tile/kernel/pci_gx.c        |    2 ++
+ arch/x86/pci/common.c            |    1 +
+ arch/xtensa/kernel/pci.c         |   11 +++++++++--
+ drivers/pci/probe.c              |    1 -
+ 14 files changed, 42 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index 3bd45e7..0bb08ef 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -8,6 +8,9 @@
- 
- #include "pci.h"
- 
-+static LIST_HEAD(pci_host_bridge_list);
-+static DEFINE_MUTEX(phb_mutex);
-+
- static void pci_release_host_bridge_dev(struct device *dev)
+diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
+index 98a1525..5c845ad 100644
+--- a/arch/alpha/kernel/pci.c
++++ b/arch/alpha/kernel/pci.c
+@@ -312,7 +312,7 @@ common_init_pci(void)
  {
- 	struct pci_host_bridge *bridge = to_pci_host_bridge(dev);
-@@ -25,7 +28,7 @@ struct pci_host_bridge *pci_create_host_bridge(
- 	int error;
- 	int bus = PCI_BUSNUM(db);
- 	int domain = PCI_DOMAIN(db);
--	struct pci_host_bridge *host;
-+	struct pci_host_bridge *host, *temp;
- 	struct resource_entry *window, *n;
+ 	struct pci_controller *hose;
+ 	struct list_head resources;
+-	struct pci_bus *bus;
++	struct pci_bus *bus, *root_bus;
+ 	int next_busno;
+ 	int need_domain_info = 0;
+ 	u32 pci_mem_end;
+@@ -338,6 +338,8 @@ common_init_pci(void)
  
- 	host = kzalloc(sizeof(*host), GFP_KERNEL);
-@@ -40,6 +43,18 @@ struct pci_host_bridge *pci_create_host_bridge(
- 	 */
- 	pci_host_assign_domain_nr(host);
+ 		bus = pci_scan_root_bus(NULL, next_busno, alpha_mv.pci_ops,
+ 					hose, &resources);
++		if (!bus)
++			continue;
+ 		hose->bus = bus;
+ 		hose->need_domain_info = need_domain_info;
+ 		next_busno = bus->busn_res.end + 1;
+@@ -353,6 +355,11 @@ common_init_pci(void)
  
-+	mutex_lock(&phb_mutex);
-+	list_for_each_entry(temp, &pci_host_bridge_list, list)
-+		if (temp->domain == host->domain
-+				&& temp->busnum == host->busnum) {
-+			dev_dbg(&host->dev, "pci host bridge pci%04x:%02x exist\n",
-+					host->domain, host->busnum);
-+			mutex_unlock(&phb_mutex);
-+			kfree(host);
-+			return NULL;
-+		}
-+	mutex_unlock(&phb_mutex);
-+
- 	host->dev.parent = parent;
- 	INIT_LIST_HEAD(&host->windows);
- 	host->dev.release = pci_release_host_bridge_dev;
-@@ -55,11 +70,18 @@ struct pci_host_bridge *pci_create_host_bridge(
- 	resource_list_for_each_entry_safe(window, n, resources)
- 		list_move_tail(&window->node, &host->windows);
- 
-+	mutex_lock(&phb_mutex);
-+	list_add_tail(&host->list, &pci_host_bridge_list);
-+	mutex_unlock(&phb_mutex);
- 	return host;
+ 	pci_assign_unassigned_resources();
+ 	pci_fixup_irqs(alpha_mv.pci_swizzle, alpha_mv.pci_map_irq);
++	for (hose = hose_head; hose; hose = hose->next) {
++		root_bus = hose->bus;
++		if (root_bus)
++			pci_bus_add_devices(root_bus);
++	}
  }
  
- void pci_free_host_bridge(struct pci_host_bridge *host)
+ 
+diff --git a/arch/frv/mb93090-mb00/pci-vdk.c b/arch/frv/mb93090-mb00/pci-vdk.c
+index b073f4d..f211839 100644
+--- a/arch/frv/mb93090-mb00/pci-vdk.c
++++ b/arch/frv/mb93090-mb00/pci-vdk.c
+@@ -316,6 +316,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+ 
+ int __init pcibios_init(void)
  {
-+	mutex_lock(&phb_mutex);
-+	list_del(&host->list);
-+	mutex_unlock(&phb_mutex);
-+
- 	device_unregister(&host->dev);
++	struct pci_bus *bus;
+ 	struct pci_ops *dir = NULL;
+ 	LIST_HEAD(resources);
+ 
+@@ -383,12 +384,15 @@ int __init pcibios_init(void)
+ 	printk("PCI: Probing PCI hardware\n");
+ 	pci_add_resource(&resources, &pci_ioport_resource);
+ 	pci_add_resource(&resources, &pci_iomem_resource);
+-	pci_scan_root_bus(NULL, 0, pci_root_ops, NULL, &resources);
++	bus = pci_scan_root_bus(NULL, 0, pci_root_ops, NULL, &resources);
+ 
+ 	pcibios_irq_init();
+ 	pcibios_fixup_irqs();
+ 	pcibios_resource_survey();
++	if (!bus)
++		return 0;
+ 
++	pci_bus_add_devices(bus);
+ 	return 0;
  }
  
+diff --git a/arch/ia64/sn/kernel/io_init.c b/arch/ia64/sn/kernel/io_init.c
+index 0b5ce82..1be65eb 100644
+--- a/arch/ia64/sn/kernel/io_init.c
++++ b/arch/ia64/sn/kernel/io_init.c
+@@ -271,7 +271,9 @@ sn_pci_controller_fixup(int segment, int busnum, struct pci_bus *bus)
+  	if (bus == NULL) {
+ 		kfree(res);
+ 		kfree(controller);
++		return;
+ 	}
++	pci_bus_add_devices(bus);
+ }
+ 
+ /*
+diff --git a/arch/microblaze/pci/pci-common.c b/arch/microblaze/pci/pci-common.c
+index 48528fb..6d8d173 100644
+--- a/arch/microblaze/pci/pci-common.c
++++ b/arch/microblaze/pci/pci-common.c
+@@ -1382,6 +1382,9 @@ static int __init pcibios_init(void)
+ 
+ 	/* Call common code to handle resource allocation */
+ 	pcibios_resource_survey();
++	list_for_each_entry_safe(hose, tmp, &hose_list, list_node)
++		if (hose->bus)
++			pci_bus_add_devices(hose->bus);
+ 
+ 	return 0;
+ }
+diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
+index 1bf60b1..9eb54b5 100644
+--- a/arch/mips/pci/pci.c
++++ b/arch/mips/pci/pci.c
+@@ -114,6 +114,7 @@ static void pcibios_scanbus(struct pci_controller *hose)
+ 			pci_bus_size_bridges(bus);
+ 			pci_bus_assign_resources(bus);
+ 		}
++		pci_bus_add_devices(bus);
+ 	}
+ }
+ 
+diff --git a/arch/mn10300/unit-asb2305/pci.c b/arch/mn10300/unit-asb2305/pci.c
+index 613ca1e..cde5e05 100644
+--- a/arch/mn10300/unit-asb2305/pci.c
++++ b/arch/mn10300/unit-asb2305/pci.c
+@@ -340,6 +340,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+  */
+ static int __init pcibios_init(void)
+ {
++	struct pci_bus *bus;
+ 	resource_size_t io_offset, mem_offset;
+ 	LIST_HEAD(resources);
+ 
+@@ -371,11 +372,15 @@ static int __init pcibios_init(void)
+ 
+ 	pci_add_resource_offset(&resources, &pci_ioport_resource, io_offset);
+ 	pci_add_resource_offset(&resources, &pci_iomem_resource, mem_offset);
+-	pci_scan_root_bus(NULL, 0, &pci_direct_ampci, NULL, &resources);
++	bus = pci_scan_root_bus(NULL, 0, &pci_direct_ampci, NULL, &resources);
+ 
+ 	pcibios_irq_init();
+ 	pcibios_fixup_irqs();
+ 	pcibios_resource_survey();
++	if (!bus)
++		return 0;
++
++	pci_bus_add_devices(bus);
+ 	return 0;
+ }
+ 
+diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+index 753a567..a2a7391 100644
+--- a/arch/s390/pci/pci.c
++++ b/arch/s390/pci/pci.c
+@@ -776,8 +776,8 @@ static int zpci_scan_bus(struct zpci_dev *zdev)
+ 		zpci_cleanup_bus_resources(zdev);
+ 		return -EIO;
+ 	}
+-
+ 	zdev->bus->max_bus_speed = zdev->max_bus_speed;
++	pci_bus_add_devices(zdev->bus);
+ 	return 0;
+ }
+ 
+diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+index 1bc09ee..efc1051 100644
+--- a/arch/sh/drivers/pci/pci.c
++++ b/arch/sh/drivers/pci/pci.c
+@@ -69,6 +69,7 @@ static void pcibios_scanbus(struct pci_channel *hose)
+ 
+ 		pci_bus_size_bridges(bus);
+ 		pci_bus_assign_resources(bus);
++		pci_bus_add_devices(bus);
+ 	} else {
+ 		pci_free_resource_list(&resources);
+ 	}
+diff --git a/arch/sparc/kernel/leon_pci.c b/arch/sparc/kernel/leon_pci.c
+index 899b720..2971076 100644
+--- a/arch/sparc/kernel/leon_pci.c
++++ b/arch/sparc/kernel/leon_pci.c
+@@ -40,6 +40,7 @@ void leon_pci_init(struct platform_device *ofdev, struct leon_pci_info *info)
+ 
+ 		/* Assign devices with resources */
+ 		pci_assign_unassigned_resources();
++		pci_bus_add_devices(root_bus);
+ 	} else {
+ 		pci_free_resource_list(&resources);
+ 	}
+diff --git a/arch/tile/kernel/pci.c b/arch/tile/kernel/pci.c
+index 325df47..9475a74 100644
+--- a/arch/tile/kernel/pci.c
++++ b/arch/tile/kernel/pci.c
+@@ -339,6 +339,8 @@ int __init pcibios_init(void)
+ 			struct pci_bus *next_bus;
+ 			struct pci_dev *dev;
+ 
++			pci_bus_add_devices(root_bus);
++
+ 			list_for_each_entry(dev, &root_bus->devices, bus_list) {
+ 				/*
+ 				 * Find the PCI host controller, ie. the 1st
+diff --git a/arch/tile/kernel/pci_gx.c b/arch/tile/kernel/pci_gx.c
+index 2c95f37..b1df847 100644
+--- a/arch/tile/kernel/pci_gx.c
++++ b/arch/tile/kernel/pci_gx.c
+@@ -1030,6 +1030,8 @@ int __init pcibios_init(void)
+ alloc_mem_map_failed:
+ 			break;
+ 		}
++
++		pci_bus_add_devices(root_bus);
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
+index 3d2612b..0cbc723 100644
+--- a/arch/x86/pci/common.c
++++ b/arch/x86/pci/common.c
+@@ -491,6 +491,7 @@ void pcibios_scan_root(int busnum)
+ 		pci_free_resource_list(&resources);
+ 		kfree(sd);
+ 	}
++	pci_bus_add_devices(bus);
+ }
+ 
+ void __init pcibios_set_cache_line_size(void)
+diff --git a/arch/xtensa/kernel/pci.c b/arch/xtensa/kernel/pci.c
+index 5b34033..140e2fd 100644
+--- a/arch/xtensa/kernel/pci.c
++++ b/arch/xtensa/kernel/pci.c
+@@ -174,7 +174,7 @@ static int __init pcibios_init(void)
+ 	struct pci_controller *pci_ctrl;
+ 	struct list_head resources;
+ 	struct pci_bus *bus;
+-	int next_busno = 0;
++	int ret, next_busno = 0;
+ 
+ 	printk("PCI: Probing PCI hardware\n");
+ 
+@@ -185,14 +185,21 @@ static int __init pcibios_init(void)
+ 		pci_controller_apertures(pci_ctrl, &resources);
+ 		bus = pci_scan_root_bus(NULL, pci_ctrl->first_busno,
+ 					pci_ctrl->ops, pci_ctrl, &resources);
++		if (!bus)
++			continue;
++
+ 		pci_ctrl->bus = bus;
+ 		pci_ctrl->last_busno = bus->busn_res.end;
+ 		if (next_busno <= pci_ctrl->last_busno)
+ 			next_busno = pci_ctrl->last_busno+1;
+ 	}
+ 	pci_bus_count = next_busno;
++	ret = platform_pcibios_fixup();
++	for (pci_ctrl = pci_ctrl_head; pci_ctrl; pci_ctrl = pci_ctrl->next)
++		if (pci_ctrl->bus)
++			pci_bus_add_devices(pci_ctrl->bus);
+ 
+-	return platform_pcibios_fixup();
++	return ret;
+ }
+ 
+ subsys_initcall(pcibios_init);
 diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 751fec3..fdb808c 100644
+index 88604f2..8ef0375 100644
 --- a/drivers/pci/probe.c
 +++ b/drivers/pci/probe.c
-@@ -1869,7 +1869,7 @@ static struct pci_bus *__pci_create_root_bus(
- 		void *sysdata)
- {
- 	int error;
--	struct pci_bus *b, *b2;
-+	struct pci_bus *b;
- 	struct resource_entry *window;
- 	struct device *parent;
- 	struct resource *res;
-@@ -1886,12 +1886,6 @@ static struct pci_bus *__pci_create_root_bus(
- 	b->ops = ops;
- 	b->number = b->busn_res.start = bridge->busnum;
- 	pci_bus_assign_domain_nr(b, parent);
--	b2 = pci_find_bus(pci_domain_nr(b), b->number);
--	if (b2) {
--		/* If we already got to this bus through a different bridge, ignore it */
--		dev_dbg(&b2->dev, "bus already known\n");
--		goto err_out;
--	}
+@@ -2087,7 +2087,6 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+ 	if (!found)
+ 		pci_bus_update_busn_res_end(b, max);
  
- 	bridge->bus = b;
- 	b->bridge = get_device(&bridge->dev);
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 463eaa3..b621f5b 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -406,6 +406,7 @@ struct pci_host_bridge {
- 	struct device dev;
- 	struct pci_bus *bus;		/* root bus */
- 	struct list_head windows;	/* resource_entry */
-+	struct list_head list;
- 	void (*release_fn)(struct pci_host_bridge *);
- 	void *release_data;
- };
+-	pci_bus_add_devices(b);
+ 	return b;
+ }
+ EXPORT_SYMBOL(pci_scan_root_bus);
 -- 
 1.7.1
