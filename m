@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v5 07/29] PCI: Introduce pci_host_assign_domain_nr() to assign domain
-Date: Fri, 6 Mar 2015 17:33:24 +0800
-Message-ID: <1425634426-437-8-git-send-email-wangyijing__33076.7850544818$1425635210$gmane$org@huawei.com>
+Subject: [PATCH v5 04/29] PCI: Remove deprecated pci_scan_bus_parented()
+Date: Fri, 6 Mar 2015 17:33:21 +0800
+Message-ID: <1425634426-437-5-git-send-email-wangyijing__47022.2873184413$1425635215$gmane$org@huawei.com>
 References: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,79 +11,58 @@ Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
 
-Introduce pci_host_assign_domain_nr() to assign domain
-number for pci_host_bridge. Later we will remove
-pci_bus_assign_domain_nr().
+No one uses pci_scan_bus_parented() any more,
+remove it.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- drivers/pci/pci.c   |   20 +++++++++++++++-----
- include/linux/pci.h |    4 ++++
- 2 files changed, 19 insertions(+), 5 deletions(-)
+ drivers/pci/probe.c |   19 -------------------
+ include/linux/pci.h |    2 --
+ 2 files changed, 0 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 81f06e8..c49eec1 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4501,10 +4501,10 @@ int pci_get_new_domain_nr(void)
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 8ef0375..699a238 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2091,25 +2091,6 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
  }
+ EXPORT_SYMBOL(pci_scan_root_bus);
  
- #ifdef CONFIG_PCI_DOMAINS_GENERIC
--void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
-+static int pci_assign_domain_nr(struct device *dev)
+-/* Deprecated; use pci_scan_root_bus() instead */
+-struct pci_bus *pci_scan_bus_parented(struct device *parent,
+-		int bus, struct pci_ops *ops, void *sysdata)
+-{
+-	LIST_HEAD(resources);
+-	struct pci_bus *b;
+-
+-	pci_add_resource(&resources, &ioport_resource);
+-	pci_add_resource(&resources, &iomem_resource);
+-	pci_add_resource(&resources, &busn_resource);
+-	b = pci_create_root_bus(parent, bus, ops, sysdata, &resources);
+-	if (b)
+-		pci_scan_child_bus(b);
+-	else
+-		pci_free_resource_list(&resources);
+-	return b;
+-}
+-EXPORT_SYMBOL(pci_scan_bus_parented);
+-
+ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
+ 					void *sysdata)
  {
- 	static int use_dt_domains = -1;
--	int domain = of_get_pci_domain_nr(parent->of_node);
-+	int domain = of_get_pci_domain_nr(dev->of_node);
- 
- 	/*
- 	 * Check DT domain and use_dt_domains values.
-@@ -4538,12 +4538,22 @@ void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
- 		use_dt_domains = 0;
- 		domain = pci_get_new_domain_nr();
- 	} else {
--		dev_err(parent, "Node %s has inconsistent \"linux,pci-domain\" property in DT\n",
--			parent->of_node->full_name);
-+		dev_err(dev, "Node %s has inconsistent \"linux,pci-domain\" property in DT\n",
-+			dev->of_node->full_name);
- 		domain = -1;
- 	}
- 
--	bus->domain_nr = domain;
-+	return domain;
-+}
-+
-+void pci_host_assign_domain_nr(struct pci_host_bridge *host)
-+{
-+	host->domain = pci_assign_domain_nr(host->dev.parent);
-+}
-+
-+void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
-+{
-+	bus->domain_nr = pci_assign_domain_nr(parent);
- }
- #endif
- #endif
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 8b3d245..2b1b998 100644
+index 211e9da..36effb8 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
-@@ -1327,11 +1327,15 @@ static inline int pci_domain_nr(struct pci_bus *bus)
- 	return bus->domain_nr;
- }
- void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent);
-+void pci_host_assign_domain_nr(struct pci_host_bridge *host);
- #else
- static inline void pci_bus_assign_domain_nr(struct pci_bus *bus,
- 					struct device *parent)
- {
- }
-+static inline void pci_host_assign_domain_nr(struct pci_host_bridge *host)
-+{
-+}
- #endif
- 
- /* some architectures require additional setup to direct VGA traffic */
+@@ -769,8 +769,6 @@ void pcibios_bus_to_resource(struct pci_bus *bus, struct resource *res,
+ void pcibios_scan_specific_bus(int busn);
+ struct pci_bus *pci_find_bus(int domain, int busnr);
+ void pci_bus_add_devices(const struct pci_bus *bus);
+-struct pci_bus *pci_scan_bus_parented(struct device *parent, int bus,
+-				      struct pci_ops *ops, void *sysdata);
+ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops, void *sysdata);
+ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+ 				    struct pci_ops *ops, void *sysdata,
 -- 
 1.7.1
