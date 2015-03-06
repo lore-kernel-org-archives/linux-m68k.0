@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v5 12/29] PCI: Introduce new scan function pci_scan_host_bridge()
-Date: Fri, 6 Mar 2015 17:33:29 +0800
-Message-ID: <1425634426-437-13-git-send-email-wangyijing__32726.3258783661$1425634981$gmane$org@huawei.com>
+Subject: [PATCH v5 13/29] x86/PCI: Refine pci_acpi_scan_root() with generic pci_host_bridge
+Date: Fri, 6 Mar 2015 17:33:30 +0800
+Message-ID: <1425634426-437-14-git-send-email-wangyijing__29472.3709616393$1425635013$gmane$org@huawei.com>
 References: <1425634426-437-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,64 +11,81 @@ Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
 
-Introduce new scan function pci_scan_host_bridge() to
-support host bridge drivers that need to provide platform
-own pci_host_bridge_ops.
-
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: x86@kernel.org
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- drivers/pci/probe.c |   22 ++++++++++++++++++++++
- include/linux/pci.h |    4 ++++
- 2 files changed, 26 insertions(+), 0 deletions(-)
+ arch/x86/pci/acpi.c |   36 ++++++++++++++++++++----------------
+ 1 files changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index b76fca6..54557a1 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -2063,6 +2063,28 @@ static struct pci_bus *__pci_scan_root_bus(
- 	return b;
+diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
+index ad0e926..e730d31 100644
+--- a/arch/x86/pci/acpi.c
++++ b/arch/x86/pci/acpi.c
+@@ -349,6 +349,18 @@ static void probe_pci_root_info(struct pci_root_info *info,
+ 			entry->res->name = info->name;
  }
  
-+struct pci_host_bridge *pci_scan_host_bridge(struct device *parent,
-+		u32 db, struct pci_ops *ops, void *sysdata,
-+		struct list_head *resources,
-+		struct pci_host_bridge_ops *phb_ops)
++static int pci_host_bridge_prepare(struct pci_host_bridge *bridge)
 +{
-+	struct pci_host_bridge *host;
-+	struct pci_bus *bus;
++	struct pci_sysdata *sd = dev_get_drvdata(&bridge->dev);
 +
-+	host = pci_create_host_bridge(parent, db, resources,
-+			sysdata, phb_ops);
-+	if (!host)
-+		return NULL;
-+
-+	bus = __pci_scan_root_bus(host, ops);
-+	if (!bus)
-+		pci_free_host_bridge(host);
-+
-+	return host;
++	ACPI_COMPANION_SET(&bridge->dev, sd->companion);
++	return 0;
 +}
-+EXPORT_SYMBOL(pci_scan_host_bridge);
 +
++static struct pci_host_bridge_ops phb_ops = {
++	.prepare = pci_host_bridge_prepare,
++};
 +
- struct pci_bus *pci_scan_root_bus(struct device *parent, u32 db,
- 		struct pci_ops *ops, void *sysdata, struct list_head *resources)
+ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
  {
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index e9922b1..28eafb5 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -790,6 +790,10 @@ void pci_bus_release_busn_res(struct pci_bus *b);
- struct pci_bus *pci_scan_root_bus(struct device *parent, u32 dombus,
- 					     struct pci_ops *ops, void *sysdata,
- 					     struct list_head *resources);
-+struct pci_host_bridge *pci_scan_host_bridge(struct device *parent,
-+		u32 dombus, struct pci_ops *ops, void *sysdata,
-+		struct list_head *resources,
-+		struct pci_host_bridge_ops *phb_ops);
- struct pci_bus *pci_add_new_bus(struct pci_bus *parent, struct pci_dev *dev,
- 				int busnr);
- void pcie_update_link_speed(struct pci_bus *bus, u16 link_status);
+ 	struct acpi_device *device = root->device;
+@@ -359,6 +371,7 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+ 	LIST_HEAD(crs_res);
+ 	LIST_HEAD(resources);
+ 	struct pci_bus *bus;
++	struct pci_host_bridge *host = NULL;
+ 	struct pci_sysdata *sd;
+ 	int node;
+ 
+@@ -425,14 +438,13 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+ 
+ 		if (!setup_mcfg_map(info, domain, (u8)root->secondary.start,
+ 				(u8)root->secondary.end, root->mcfg_addr))
+-			bus = pci_create_root_bus(NULL,
+-				PCI_DOMBUS(domain, busnum), &pci_root_ops,
+-				sd, &resources);
+-
+-		if (bus) {
+-			pci_scan_child_bus(bus);
+-			pci_set_host_bridge_release(
+-				to_pci_host_bridge(bus->bridge),
++			host = pci_scan_host_bridge(NULL,
++				PCI_DOMBUS(domain, busnum),
++				&pci_root_ops, sd, &resources, &phb_ops);
++
++		if (host) {
++			bus = host->bus;
++			pci_set_host_bridge_release(host,
+ 				release_pci_root_info, info);
+ 		} else {
+ 			resource_list_free(&resources);
+@@ -456,14 +468,6 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+ 	return bus;
+ }
+ 
+-int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
+-{
+-	struct pci_sysdata *sd = bridge->bus->sysdata;
+-
+-	ACPI_COMPANION_SET(&bridge->dev, sd->companion);
+-	return 0;
+-}
+-
+ int __init pci_acpi_init(void)
+ {
+ 	struct pci_dev *dev = NULL;
 -- 
 1.7.1
