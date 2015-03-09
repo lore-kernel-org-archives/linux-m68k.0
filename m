@@ -1,59 +1,133 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v5 16/29] powerpc/pci: Use pci_scan_host_bridge() for
- simplicity
-Date: Mon, 9 Mar 2015 10:47:41 +0800
-Message-ID: <54FD09CD.6010306@huawei.com>
-References: <1425634426-437-1-git-send-email-wangyijing@huawei.com> <1425634426-437-17-git-send-email-wangyijing@huawei.com> <CAL_JsqJqpbTThfm2yctHr-gyySyxsJT3HS8rxm6oY+ZYVT5vvQ@mail.gmail.com>
+Subject: [PATCH v6 11/30] PCI: Save sysdata in pci_host_bridge drvdata
+Date: Mon, 9 Mar 2015 10:34:08 +0800
+Message-ID: <1425868467-9667-12-git-send-email-wangyijing__23767.8344281905$1425869369$gmane$org@huawei.com>
+References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqJqpbTThfm2yctHr-gyySyxsJT3HS8rxm6oY+ZYVT5vvQ@mail.gmail.com>
+In-Reply-To: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Rob Herring <robherring2@gmail.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-ia64@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, Rusty Russell <rusty@rustcorp.com.au>, linux-m68k@lists.linux-m68k.org, Thomas Gleixner <tglx@linutronix.de>, Yinghai Lu <yinghai@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liviu Dudau <liviu@dudau.co.uk>, Tony Luck <tony.luck@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jiang Liu <jiang.liu@linux.intel.com>, linux-alpha@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, David S
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
 
-On 2015/3/6 22:19, Rob Herring wrote:
-> On Fri, Mar 6, 2015 at 3:33 AM, Yijing Wang <wangyijing@huawei.com> wrote:
->> Now we could use pci_scan_host_bridge() to scan
->> pci buses, provide powerpc specific pci_host_bridge_ops.
->>
->> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
->> CC: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> CC: linuxppc-dev@lists.ozlabs.org
->> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->> ---
->>  arch/powerpc/include/asm/machdep.h       |    2 +-
->>  arch/powerpc/kernel/pci-common.c         |   63 ++++++++++++++++++------------
->>  arch/powerpc/platforms/pseries/pci.c     |    8 ++--
->>  arch/powerpc/platforms/pseries/pseries.h |    2 +-
->>  4 files changed, 44 insertions(+), 31 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
->> index 8e7f2a8..b811d12 100644
->> --- a/arch/powerpc/include/asm/machdep.h
->> +++ b/arch/powerpc/include/asm/machdep.h
->> @@ -129,7 +129,7 @@ struct machdep_calls {
->>         void            (*pcibios_fixup)(void);
->>         int             (*pci_probe_mode)(struct pci_bus *);
->>         void            (*pci_irq_fixup)(struct pci_dev *dev);
->> -       int             (*pcibios_set_root_bus_speed)(struct pci_host_bridge
->> +       void            (*pcibios_set_root_bus_speed)(struct pci_host_bridge
->>                                 *bridge);
-> 
-> Shouldn't this be part of patch 15?
+Save platform specific sysdata in pci_host_bridge
+drvdata, host bridge specific operation need to
+access it before the pci bus creation.
 
-Hi Rob, I didn't merge this to patch 15 for building happy for patch 15.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/pci/host-bridge.c |    4 +++-
+ drivers/pci/pci.h         |    4 +++-
+ drivers/pci/probe.c       |   18 ++++++++----------
+ 3 files changed, 14 insertions(+), 12 deletions(-)
 
-> 
-> Rob
-> 
-> .
-> 
-
-
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index 0bb08ef..3c34c49 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -23,7 +23,8 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ }
+ 
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 db, struct list_head *resources)
++		struct device *parent, u32 db,
++		struct list_head *resources, void *sysdata)
+ {
+ 	int error;
+ 	int bus = PCI_BUSNUM(db);
+@@ -58,6 +59,7 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	host->dev.parent = parent;
+ 	INIT_LIST_HEAD(&host->windows);
+ 	host->dev.release = pci_release_host_bridge_dev;
++	dev_set_drvdata(&host->dev, sysdata);
+ 	dev_set_name(&host->dev, "pci%04x:%02x", host->domain,
+ 			host->busnum);
+ 
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 3de5e51..79a8894 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -324,6 +324,8 @@ static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
+ #endif
+ 
+ struct pci_host_bridge *pci_create_host_bridge(
+-		struct device *parent, u32 dombus, struct list_head *resources);
++		struct device *parent, u32 dombus,
++		struct list_head *resources, void *sysdata);
++
+ void pci_free_host_bridge(struct pci_host_bridge *host);
+ #endif /* DRIVERS_PCI_H */
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 7238fa3..c8e074d 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1866,8 +1866,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
+ }
+ 
+ static struct pci_bus *__pci_create_root_bus(
+-		struct pci_host_bridge *bridge, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *bridge, struct pci_ops *ops)
+ {
+ 	int error;
+ 	struct pci_bus *b;
+@@ -1883,7 +1882,7 @@ static struct pci_bus *__pci_create_root_bus(
+ 	if (!b)
+ 		return NULL;
+ 
+-	b->sysdata = sysdata;
++	b->sysdata = dev_get_drvdata(&bridge->dev);
+ 	b->ops = ops;
+ 	b->number = b->busn_res.start = bridge->busnum;
+ 	pci_bus_assign_domain_nr(b, parent);
+@@ -1955,11 +1954,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 
+-	return __pci_create_root_bus(host, ops, sysdata);
++	return __pci_create_root_bus(host, ops);
+ }
+ 
+ int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
+@@ -2026,8 +2025,7 @@ void pci_bus_release_busn_res(struct pci_bus *b)
+ }
+ 
+ static struct pci_bus *__pci_scan_root_bus(
+-		struct pci_host_bridge *host, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *host, struct pci_ops *ops)
+ {
+ 	struct resource_entry *window;
+ 	bool found = false;
+@@ -2040,7 +2038,7 @@ static struct pci_bus *__pci_scan_root_bus(
+ 			break;
+ 		}
+ 
+-	b = __pci_create_root_bus(host, ops, sysdata);
++	b = __pci_create_root_bus(host, ops);
+ 	if (!b) {
+ 		pci_free_host_bridge(host);
+ 		return NULL;
+@@ -2066,11 +2064,11 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, u32 db,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, db, resources);
++	host = pci_create_host_bridge(parent, db, resources, sysdata);
+ 	if (!host)
+ 		return NULL;
+ 
+-	return __pci_scan_root_bus(host, ops, sysdata);
++	return __pci_scan_root_bus(host, ops);
+ }
+ EXPORT_SYMBOL(pci_scan_root_bus);
+ 
 -- 
-Thanks!
-Yijing
+1.7.1
