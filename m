@@ -1,73 +1,181 @@
 From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v6 03/30] PCI: Export busn_resource to drivers/pci
-Date: Wed, 11 Mar 2015 17:28:35 -0500
-Message-ID: <20150311222835.GA1082__20927.8771923438$1426114650$gmane$org@google.com>
+Subject: Re: [PATCH v6 06/30] PCI: Combine PCI domain and bus number in u32
+ arg
+Date: Wed, 11 Mar 2015 20:29:46 -0500
+Message-ID: <20150312012946.GA10949__28134.4000519768$1426123826$gmane$org@google.com>
 References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
- <1425868467-9667-4-git-send-email-wangyijing@huawei.com>
+ <1425868467-9667-7-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1425868467-9667-4-git-send-email-wangyijing@huawei.com>
+In-Reply-To: <1425868467-9667-7-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Yijing Wang <wangyijing@huawei.com>
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Mon, Mar 09, 2015 at 10:34:00AM +0800, Yijing Wang wrote:
-> Export out busn_resource. Xen pcifront module need it.
+On Mon, Mar 09, 2015 at 10:34:03AM +0800, Yijing Wang wrote:
+> Currently, we use int type for bus number in
+> pci_create_root_bus(), pci_scan_root_bus() and
+> pci_scan_bus_legacy. Because PCI bus number
+> always <= 255, so we could change the bus number
+> argument type to u32, and combine PCI domain and
+> bus number in one. 
+
+This makes no sense.  Or rather, it only states the obvious: an 8-bit value
+and a 16-bit value will both fit in a 32-bit value.  But it doesn't say
+*why* you think it's a good idea to pass a single value that contains both
+domain and bus numbers.  The obvious thing is to pass two separate values,
+and you don't say why passing a single combined value is better.
+
+Also see whitespace mistakes below.  I get a little testy when people don't
+follow the whitespace convention of neighboring lines because if people are
+sloppy about whitespace I assume they're sloppy about the code.
+
+> Also add a domain member in
+> pci_host_bridge to save domain number. Finally,
+> we could eliminate lots of the platform specific
+> pci_domain_nr() in the last of the series.
 > 
 > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 > ---
->  drivers/pci/pci.h   |    2 ++
->  drivers/pci/probe.c |    3 ++-
->  2 files changed, 4 insertions(+), 1 deletions(-)
+>  drivers/pci/probe.c      |   16 +++++++++-------
+>  include/linux/pci.h      |    7 ++++---
+>  include/uapi/linux/pci.h |    3 +++
+>  3 files changed, 16 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 4091f82..eeacab9 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -10,6 +10,8 @@ bool pcie_cap_has_lnkctl(const struct pci_dev *dev);
->  
->  /* Functions internal to the PCI core code */
->  
-> +extern struct resource busn_resource;
-> +
->  int pci_create_sysfs_dev_files(struct pci_dev *pdev);
->  void pci_remove_sysfs_dev_files(struct pci_dev *pdev);
->  #if !defined(CONFIG_DMI) && !defined(CONFIG_ACPI)
 > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 8ef0375..b97ea81 100644
+> index 187fa54..3d6befd 100644
 > --- a/drivers/pci/probe.c
 > +++ b/drivers/pci/probe.c
-> @@ -17,12 +17,13 @@
->  #define CARDBUS_LATENCY_TIMER	176	/* secondary latency timer */
->  #define CARDBUS_RESERVE_BUSNR	3
+> @@ -1890,7 +1890,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
+>  {
+>  }
 >  
-> -static struct resource busn_resource = {
-> +struct resource busn_resource = {
->  	.name	= "PCI busn",
->  	.start	= 0,
->  	.end	= 255,
->  	.flags	= IORESOURCE_BUS,
->  };
-> +EXPORT_SYMBOL(busn_resource);
+> -struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+> +struct pci_bus *pci_create_root_bus(struct device *parent, u32 db,
+>  		struct pci_ops *ops, void *sysdata, struct list_head *resources)
+>  {
+>  	int error;
+> @@ -1901,6 +1901,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+>  	resource_size_t offset;
+>  	char bus_addr[64];
+>  	char *fmt;
+> +	u8	bus = PCI_BUSNUM(db);
 
-I don't think this is a good idea.  We support multiple PCI domains, and
-each domain has its own 0-255 bus number range.  This busn_resource is
-only for domain 0 and probably should be handled in arch code instead of
-the PCI core.
-
-Right now, I think it's possible to call pci_scan_bus_parented() or
-pci_scan_bus() several times for buses in different domains, and they would
-all share the same busn_resource, which would cause corruption.
-
-So it's already broken, but I don't want to make it harder to fix by
-exporting this stuff.
+Whitespace botch.
 
 >  
->  /* Ugh.  Need to stop exporting this to modules. */
->  LIST_HEAD(pci_root_buses);
+>  	b = pci_alloc_bus(NULL);
+>  	if (!b)
+> @@ -1921,6 +1922,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+>  	if (!bridge)
+>  		goto err_out;
+>  
+> +	bridge->domain = PCI_DOMAIN(db);
+>  	bridge->dev.parent = parent;
+>  	bridge->dev.release = pci_release_host_bridge_dev;
+>  	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
+> @@ -2058,7 +2060,7 @@ void pci_bus_release_busn_res(struct pci_bus *b)
+>  			res, ret ? "can not be" : "is");
+>  }
+>  
+> -struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+> +struct pci_bus *pci_scan_root_bus(struct device *parent, u32 db,
+>  		struct pci_ops *ops, void *sysdata, struct list_head *resources)
+>  {
+>  	struct resource_entry *window;
+> @@ -2072,15 +2074,15 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+>  			break;
+>  		}
+>  
+> -	b = pci_create_root_bus(parent, bus, ops, sysdata, resources);
+> +	b = pci_create_root_bus(parent, db, ops, sysdata, resources);
+>  	if (!b)
+>  		return NULL;
+>  
+>  	if (!found) {
+>  		dev_info(&b->dev,
+>  		 "No busn resource found for root bus, will use [bus %02x-ff]\n",
+> -			bus);
+> -		pci_bus_insert_busn_res(b, bus, 255);
+> +			PCI_BUSNUM(db));
+> +		pci_bus_insert_busn_res(b, PCI_BUSNUM(db), 255);
+>  	}
+>  
+>  	max = pci_scan_child_bus(b);
+> @@ -2092,7 +2094,7 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+>  }
+>  EXPORT_SYMBOL(pci_scan_root_bus);
+>  
+> -struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
+> +struct pci_bus *pci_scan_bus(u32 db, struct pci_ops *ops,
+>  					void *sysdata)
+>  {
+>  	LIST_HEAD(resources);
+> @@ -2101,7 +2103,7 @@ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
+>  	pci_add_resource(&resources, &ioport_resource);
+>  	pci_add_resource(&resources, &iomem_resource);
+>  	pci_add_resource(&resources, &busn_resource);
+> -	b = pci_create_root_bus(NULL, bus, ops, sysdata, &resources);
+> +	b = pci_create_root_bus(NULL, db, ops, sysdata, &resources);
+>  	if (b) {
+>  		pci_scan_child_bus(b);
+>  	} else {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 36effb8..8b3d245 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -401,6 +401,7 @@ static inline int pci_channel_offline(struct pci_dev *pdev)
+>  }
+>  
+>  struct pci_host_bridge {
+> +	u16	domain;
+
+Please follow the existing whitespace convention, i.e., use a space, not a
+tab, between "u16 domain".
+
+>  	struct device dev;
+>  	struct pci_bus *bus;		/* root bus */
+>  	struct list_head windows;	/* resource_entry */
+> @@ -769,14 +770,14 @@ void pcibios_bus_to_resource(struct pci_bus *bus, struct resource *res,
+>  void pcibios_scan_specific_bus(int busn);
+>  struct pci_bus *pci_find_bus(int domain, int busnr);
+>  void pci_bus_add_devices(const struct pci_bus *bus);
+> -struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops, void *sysdata);
+> -struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+> +struct pci_bus *pci_scan_bus(u32 dombus, struct pci_ops *ops, void *sysdata);
+> +struct pci_bus *pci_create_root_bus(struct device *parent, u32 dombus,
+>  				    struct pci_ops *ops, void *sysdata,
+>  				    struct list_head *resources);
+>  int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int busmax);
+>  int pci_bus_update_busn_res_end(struct pci_bus *b, int busmax);
+>  void pci_bus_release_busn_res(struct pci_bus *b);
+> -struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+> +struct pci_bus *pci_scan_root_bus(struct device *parent, u32 dombus,
+>  					     struct pci_ops *ops, void *sysdata,
+>  					     struct list_head *resources);
+>  struct pci_bus *pci_add_new_bus(struct pci_bus *parent, struct pci_dev *dev,
+> diff --git a/include/uapi/linux/pci.h b/include/uapi/linux/pci.h
+> index 3c292bc..89c6f15 100644
+> --- a/include/uapi/linux/pci.h
+> +++ b/include/uapi/linux/pci.h
+> @@ -30,6 +30,9 @@
+>  #define PCI_DEVFN(slot, func)	((((slot) & 0x1f) << 3) | ((func) & 0x07))
+>  #define PCI_SLOT(devfn)		(((devfn) >> 3) & 0x1f)
+>  #define PCI_FUNC(devfn)		((devfn) & 0x07)
+> +#define PCI_DOMAIN(db)		((db) >> 16)
+> +#define PCI_BUSNUM(db)		((db) & 0xffff)
+> +#define PCI_DOMBUS(domain, bus)		(((domain) << 16) | (bus))
+>  
+>  /* Ioctls for /proc/bus/pci/X/Y nodes. */
+>  #define PCIIOC_BASE		('P' << 24 | 'C' << 16 | 'I' << 8)
 > -- 
 > 1.7.1
 > 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
