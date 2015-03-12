@@ -1,79 +1,25 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v6 04/30] xen/PCI: Don't use deprecated function pci_scan_bus_parented()
-Date: Thu, 12 Mar 2015 19:46:45 +0800
-Message-ID: <55017CA5.2010502__29182.4026186534$1426160844$gmane$org@huawei.com>
-References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com> <1425868467-9667-5-git-send-email-wangyijing@huawei.com> <20150311223211.GB1082@google.com>
+From: "pepa6.es@ono.com" <pepa6.es@ono.com>
+Subject: (unknown)
+Date: Thu, 12 Mar 2015 12:49:37 +0100 (CET)
+Message-ID: <13666170.126121426160977904.JavaMail.defaultUser__21591.0198203803$1426161982$gmane$org@defaultHost>
+Reply-To: pepa6.es@ono.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain;charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150311223211.GB1082@google.com>
+Subject: 
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org
 
->>  	struct pci_bus *b;
->> +	LIST_HEAD(resources);
->>  	struct pcifront_sd *sd = NULL;
->>  	struct pci_bus_entry *bus_entry = NULL;
->>  	int err = 0;
->> @@ -470,17 +472,21 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
->>  		err = -ENOMEM;
->>  		goto err_out;
->>  	}
->> +	pci_add_resource(&resources, &ioport_resource);
->> +	pci_add_resource(&resources, &iomem_resource);
->> +	pci_add_resource(&resources, &busn_resource);
-> 
-> Since I don't want to export busn_resource, you might have to allocate your
-> own struct resource for it here.  And, of course, figure out the details of
-> which PCI domain you're in and whether you need to share one struct
-> resource across several host bridges in the same domain.
+Proposal,
 
-Allocate its own resource here is ok for me, as I mentioned in previous reply,
-so do we still need to add additional info to figure out which domain own the bus resource ?
+Respond to my personal email;  mrs.zhangxiao1962@outlook.
+com 
 
 
-> 
->>  	pcifront_init_sd(sd, domain, bus, pdev);
->>  
->>  	pci_lock_rescan_remove();
->>  
->> -	b = pci_scan_bus_parented(&pdev->xdev->dev, bus,
->> -				  &pcifront_bus_ops, sd);
->> +	b = pci_scan_root_bus(&pdev->xdev->dev, bus,
->> +				  &pcifront_bus_ops, sd, &resources);
->>  	if (!b) {
->>  		dev_err(&pdev->xdev->dev,
->>  			"Error creating PCI Frontend Bus!\n");
->>  		err = -ENOMEM;
->>  		pci_unlock_rescan_remove();
->> +		pci_free_resource_list(&resources);
->>  		goto err_out;
->>  	}
->>  
->> @@ -488,7 +494,7 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
->>  
->>  	list_add(&bus_entry->list, &pdev->root_buses);
->>  
->> -	/* pci_scan_bus_parented skips devices which do not have a have
->> +	/* pci_scan_root_bus skips devices which do not have a
->>  	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
->>  	err = pcifront_scan_bus(pdev, domain, bus, b);
->>  
->> -- 
->> 1.7.1
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> .
-> 
-
-
--- 
-Thanks!
-Yijing
+Yours Sincerely.
+Mrs. Zhang Xiao (Accounts book Keeper)
+Angang 
+Steel Company Limited
+396 Nan Zhong Hua Lu, Tie Dong District Anshan, 
+Liaoning 114021, China.
