@@ -1,57 +1,44 @@
 From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v6 10/30] PCI: Introduce pci_host_bridge_list to manage
- host bridges
-Date: Fri, 13 Mar 2015 09:33:29 -0500
-Message-ID: <CAErSpo5RgADWDPDvA-sg+MhmayPgTCfQqN1j0hYorAzZ=8_-qg@mail.gmail.com>
+Subject: Re: [PATCH v6 00/30] Refine PCI scan interfaces and make generic pci
+ host bridge
+Date: Fri, 13 Mar 2015 09:48:25 -0500
+Message-ID: <CAErSpo7KuchFy0U=80buz4oRKwn-tcwz1Ej9-hBZHg+a-eYCbw__13222.208855632$1426258162$gmane$org@mail.gmail.com>
 References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
- <1425868467-9667-11-git-send-email-wangyijing@huawei.com> <20150312025537.GD10949@google.com>
- <55018E90.9030301@huawei.com> <20150312195651.GD7346@google.com> <55025955.3020000@huawei.com>
+ <20150312212306.GH7346@google.com> <20150313113156.GA4739@bart.dudau.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <55025955.3020000@huawei.com>
+In-Reply-To: <20150313113156.GA4739@bart.dudau.co.uk>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Yijing Wang <wangyijing@huawei.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Yinghai Lu <yinghai@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, linux-arm <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Liviu Dudau <liviu@dudau.co.uk>
+Cc: Yijing Wang <wangyijing@huawei.com>, Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Yinghai Lu <yinghai@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, linux-arm <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Thu, Mar 12, 2015 at 10:28 PM, Yijing Wang <wangyijing@huawei.com> wrote:
->>>> It's a nice idea to move this test into the core.  While you're at it, why
->>>> don't you check for any overlap with the bus ranges of existing host
->>>> bridges?  For example, if we're trying to create a new host bridge to
->>>> [bus 40-7f], it should conflict with existing bridges to [bus 00-7f]
->>>> as well as to [bus 40-ff].  I think your current patch will detect the
->>>> latter conflict but not the former.
->>>
->>> Now pci host bridge may only know its start bus number, like acpi _BBN provided,
->>> but does not limit the end bus number, Eg. two pci roots report _BBN 0x0 and 0x80,
->>> so we have two bus number resource (0, 0xff) and (0x80, 0xff), if we check it strictly,
->>> some pci scan would fail which currently scan success.
+On Fri, Mar 13, 2015 at 6:31 AM, Liviu Dudau <liviu@dudau.co.uk> wrote:
+> On Thu, Mar 12, 2015 at 04:23:06PM -0500, Bjorn Helgaas wrote:
+>> On Mon, Mar 09, 2015 at 10:33:57AM +0800, Yijing Wang wrote:
+>> > ...
+>> > Yijing Wang (29):
+>> >   PCI: Rip out pci_bus_add_devices() from pci_scan_bus()
+>> >   PCI: Rip out pci_bus_add_devices() from pci_scan_root_bus()
+>> >   sparc/PCI: Claim bus resources before pci_bus_add_devices()
 >>
->> _BBN is not the correct source for the bridge's bus number range.  There's
->> a comment in acpi_pci_root_add() that explains why:
->>
->>   * We need both the start and end of the downstream bus range
->>   * to interpret _CBA (MMCONFIG base address), so it really is
->>   * supposed to be in _CRS.  If we don't find it there, all we
->>   * can do is assume [_BBN-0xFF] or [0-0xFF].
->>
->> A platform SHOULD know the start and and end bus number.  If it doesn't I
->> think it's the platform's responsibility to carve up the bus number range.
->> Maybe this can be done by trimming the range of the [bus 00-ff] bridge when
->> we discover another bridge that leads to bus 80.
+>> I put the above patches plus a cleanup patch on my pci/enumeration branch.
+>> Please rebase your next revision to that.  If there's anything else
+>> non-controversial that we can pull in to chip away at this, let me know.
 >
-> Currently, if platform does not know the end bus number (not provide the bus resource),
-> we will update the max bus number returned by pci_scan_child_bus() to the bus resource end,
-> and I think this is reasonable. I consider to introduce a flag to identify the bus resource
-> which end bus number is undefined, then we could force all pci_scan_root_bus()  etc. callers
-> to provide the bus resource, and we could process the bus resource end according the bus resource flag.
-> Also then we could reduce the bus argument which is the same as busn_res->start.
-> I would try to provide draft patch, then we could discuss it more clearly.
+> Hi Bjorn and Yijing,
+>
+> Sorry for not providing feedback earlier on this series (or any previous ones),
+> I'm just crawling out from under a rock of doing graphics drivers :)
+>
+> The patch ripping out pci_bus_add_devices() from pci_scan_root_bus() misses out
+> the users of that function from drivers/pci/host. If Yijing is going to refresh
+> the series it is probably worth starting with adding back the call into pcie-xilinx.c
+> and pci-versatile.c.
 
-Without having seen a patch, my inclination is to avoid a flag because
-flags change the behavior of the code you call, which makes that code
-harder to follow.  Maybe we could require these platforms to
-explicitly update the ending bus number after scanning the bus.
+Huh, sure enough, I missed those, too.  Yijing, when you add those,
+can you pull my branch, update the patch, and repost it?  That way
+you'll keep my changelog and cleanup updates.
 
 Bjorn
