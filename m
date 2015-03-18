@@ -1,47 +1,49 @@
-From: Ian Campbell <ian.campbell@citrix.com>
-Subject: Re: [Xen-devel] [PATCH v6 07/30] PCI: Pass PCI domain number
- combined with root bus number
-Date: Tue, 17 Mar 2015 14:05:30 +0000
-Message-ID: <1426601130.18247.238.camel__7939.76900536126$1426601306$gmane$org@citrix.com>
-References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
-	 <1425868467-9667-8-git-send-email-wangyijing@huawei.com>
-	 <5507B88D.1020300@caviumnetworks.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: gerg@uclinux.org
+Subject: [PATCH] m68knommu: ColdFire 5271 only has a single FEC controller
+Date: Wed, 18 Mar 2015 11:56:40 +1000
+Message-ID: <1426643800-27130-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <5507B88D.1020300@caviumnetworks.com>
+Received: from nschwmtas06p.mx.bigpond.com ([61.9.189.152]:45066 "EHLO
+	nschwmtas06p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754605AbbCRB4q (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 17 Mar 2015 21:56:46 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Manish Jaggi <mjaggi@caviumnetworks.com>
-Cc: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-pci@vger.kernel.org, Chris Metcalf <cmetcalf@ezchip.com>, Paul Mackerras <paulus@samba.org>, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-s390@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org, Sebastian Ott <sebott@linux.vnet.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, xen-devel@lists.xenproject.org, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <marc.zyngier@arm.com>, Rusty Russell <rusty@rustcorp.com.au>, linux-m68k@lists.linux-m68k.org, I
+To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On Tue, 2015-03-17 at 10:45 +0530, Manish Jaggi wrote:
-> On Monday 09 March 2015 08:04 AM, Yijing Wang wrote:
-> > Now we could pass PCI domain combined with bus number
-> > in u32 argu. Because in arm/arm64, PCI domain number
-> > is assigned by pci_bus_assign_domain_nr(). So we leave
-> > pci_scan_root_bus() and pci_create_root_bus() in arm/arm64
-> > unchanged. A new function pci_host_assign_domain_nr()
-> > will be introduced for arm/arm64 to assign domain number
-> > in later patch.
-> Hi,
-> I think these changes might not be required. We have made very few 
-> changes in the xen-pcifront to support PCI passthrough in arm64.
-> As per xen architecture for a domU only a single pci virtual bus is 
-> created and all passthrough devices are attached to it.
+From: Greg Ungerer <gerg@uclinux.org>
 
-I guess you are only talking about the changes to xen-pcifront.c?
-Otherwise you are ignoring the dom0 case which is exposed to the real
-set of PCI root complexes and anyway I'm not sure how "not needed for
-Xen domU" translates into not required, since it is clearly required for
-other systems.
+The inclusion of multiple FEC ethernet platform devices is based around
+the FEC address definitions in the platform headers. The ColdFire m527x
+platform is defining 2 FEC modules, but the 5271 SoC only has a single
+FEC hardware module. The attempt to probe and init a second FEC module
+causes a trap and dump on boot on this platform.
 
-Strictly speaking the Xen pciif protocol does support multiple buses,
-it's just that the tools, and perhaps kernels, have not yet felt any
-need to actually make use of that.
+Fix the definitions so that only the 5275 SoC platform (which has 2 FEC
+hardware modules) defines the second base address.
 
-There doesn't seem to be any harm in updating pcifront to follow this
-generic API change.
+Reported-by: ertheb <3rth3bnospam@ethe.fr>
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/include/asm/m527xsim.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Ian.
+diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
+index 1bebbe7..2c648a0 100644
+--- a/arch/m68k/include/asm/m527xsim.h
++++ b/arch/m68k/include/asm/m527xsim.h
+@@ -103,8 +103,10 @@
+  */
+ #define	MCFFEC_BASE0		(MCF_IPSBAR + 0x1000)
+ #define	MCFFEC_SIZE0		0x800
++#ifdef CONFIG_M5275
+ #define	MCFFEC_BASE1		(MCF_IPSBAR + 0x1800)
+ #define	MCFFEC_SIZE1		0x800
++#endif
+ 
+ /*
+  *	QSPI module.
+-- 
+1.9.1
