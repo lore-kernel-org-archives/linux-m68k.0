@@ -1,49 +1,92 @@
-From: gerg@uclinux.org
-Subject: [PATCH] m68knommu: ColdFire 5271 only has a single FEC controller
-Date: Wed, 18 Mar 2015 11:56:40 +1000
-Message-ID: <1426643800-27130-1-git-send-email-gerg@uclinux.org>
+From: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
+Subject: Re: [PATCH v6 09/30] PCI: Separate pci_host_bridge creation out of
+ pci_create_root_bus()
+Date: Sat, 21 Mar 2015 18:21:55 -0500
+Message-ID: <550DFD13.9080505@amd.com>
+References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com>
+ <1425868467-9667-10-git-send-email-wangyijing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas06p.mx.bigpond.com ([61.9.189.152]:45066 "EHLO
-	nschwmtas06p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754605AbbCRB4q (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 17 Mar 2015 21:56:46 -0400
+In-Reply-To: <1425868467-9667-10-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Yijing Wang <wangyijing@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-From: Greg Ungerer <gerg@uclinux.org>
 
-The inclusion of multiple FEC ethernet platform devices is based around
-the FEC address definitions in the platform headers. The ColdFire m527x
-platform is defining 2 FEC modules, but the 5271 SoC only has a single
-FEC hardware module. The attempt to probe and init a second FEC module
-causes a trap and dump on boot on this platform.
 
-Fix the definitions so that only the 5275 SoC platform (which has 2 FEC
-hardware modules) defines the second base address.
+On 3/8/15 21:34, Yijing Wang wrote:
+> This patch separate pci_host_bridge creation out
+> of pci_create_root_bus(), and try to make a generic
+> pci_host_bridge, then we could place generic PCI
+> infos like domain number in it. Also Ripping out
+> pci_host_bridge creation from pci_create_root_bus()
+> make code more better readability. Further more,
+> we could use the generic pci_host_bridge to hold
+> host bridge specific operations like
+> pcibios_root_bridge_prepare(). The changes are
+> transparent to platform host bridge drivers.
+>
+> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>   drivers/pci/host-bridge.c |   55 ++++++++++++++++++++++
+>   drivers/pci/pci.h         |    3 +
+>   drivers/pci/probe.c       |  114 ++++++++++++++++++++-------------------------
+>   include/linux/pci.h       |    1 +
+>   4 files changed, 109 insertions(+), 64 deletions(-)
+>
+> diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+> index 39b2dbe..3bd45e7 100644
+> --- a/drivers/pci/host-bridge.c
+> +++ b/drivers/pci/host-bridge.c
+> @@ -8,6 +8,61 @@
+>
+>   #include "pci.h"
+>
+> +static void pci_release_host_bridge_dev(struct device *dev)
+> +{
+> +	struct pci_host_bridge *bridge = to_pci_host_bridge(dev);
+> +
+> +	if (bridge->release_fn)
+> +		bridge->release_fn(bridge);
+> +
+> +	pci_free_resource_list(&bridge->windows);
+> +	kfree(bridge);
+> +}
+> +
+> +struct pci_host_bridge *pci_create_host_bridge(
+> +		struct device *parent, u32 db, struct list_head *resources)
+> +{
+> +	int error;
+> +	int bus = PCI_BUSNUM(db);
+> +	int domain = PCI_DOMAIN(db);
+> +	struct pci_host_bridge *host;
+> +	struct resource_entry *window, *n;
+> +
+> +	host = kzalloc(sizeof(*host), GFP_KERNEL);
+> +	if (!host)
+> +		return NULL;
+> +
+> +	host->busnum = bus;
+> +	host->domain = domain;
+> +	/* If support CONFIG_PCI_DOMAINS_GENERIC, use
+> +	 * pci_host_assign_domain_nr() to assign domain
+> +	 * number instead PCI_DOMAIN(db).
+> +	 */
+> +	pci_host_assign_domain_nr(host);
 
-Reported-by: ertheb <3rth3bnospam@ethe.fr>
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/include/asm/m527xsim.h | 2 ++
- 1 file changed, 2 insertions(+)
+At this point, host->dev.parent has not been assigned. However, when 
+calling pci_host_assign_domain_nr(host), it calls 
+pci_assign_domain_nr(host->dev.parent), which uses parent->of_node 
+directly w/o checking if parent is NULL. This ended up causing NULL 
+pointer exception when I do the test.
 
-diff --git a/arch/m68k/include/asm/m527xsim.h b/arch/m68k/include/asm/m527xsim.h
-index 1bebbe7..2c648a0 100644
---- a/arch/m68k/include/asm/m527xsim.h
-+++ b/arch/m68k/include/asm/m527xsim.h
-@@ -103,8 +103,10 @@
-  */
- #define	MCFFEC_BASE0		(MCF_IPSBAR + 0x1000)
- #define	MCFFEC_SIZE0		0x800
-+#ifdef CONFIG_M5275
- #define	MCFFEC_BASE1		(MCF_IPSBAR + 0x1800)
- #define	MCFFEC_SIZE1		0x800
-+#endif
- 
- /*
-  *	QSPI module.
--- 
-1.9.1
+I think we need to moveo host->dev.parent = parent before calling 
+pci_host_assign_domain_nr(host).
+
+Thanks,
+
+Suravee
