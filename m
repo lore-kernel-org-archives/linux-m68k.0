@@ -1,53 +1,54 @@
-From: UK Credit Ltd Loan <ukcreditltdloan@gmail.com>
-Subject: Darlehen anbieten 3%
-Date: Mon, 23 Mar 2015 00:54:14 +0100
-Message-ID: <20150323005414.11372ovjndclqs6e@webmail.nordixnett.no>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: Re: [PATCH v6 09/30] PCI: Separate pci_host_bridge creation out of
+ pci_create_root_bus()
+Date: Mon, 23 Mar 2015 09:08:41 +0800
+Message-ID: <550F6799.1000301__20455.1658164293$1427072968$gmane$org@huawei.com>
+References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com> <1425868467-9667-10-git-send-email-wangyijing@huawei.com> <550DFD13.9080505@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	DelSp=Yes	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <550DFD13.9080505@amd.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+
+>> +struct pci_host_bridge *pci_create_host_bridge(
+>> +        struct device *parent, u32 db, struct list_head *resources)
+>> +{
+>> +    int error;
+>> +    int bus = PCI_BUSNUM(db);
+>> +    int domain = PCI_DOMAIN(db);
+>> +    struct pci_host_bridge *host;
+>> +    struct resource_entry *window, *n;
+>> +
+>> +    host = kzalloc(sizeof(*host), GFP_KERNEL);
+>> +    if (!host)
+>> +        return NULL;
+>> +
+>> +    host->busnum = bus;
+>> +    host->domain = domain;
+>> +    /* If support CONFIG_PCI_DOMAINS_GENERIC, use
+>> +     * pci_host_assign_domain_nr() to assign domain
+>> +     * number instead PCI_DOMAIN(db).
+>> +     */
+>> +    pci_host_assign_domain_nr(host);
+> 
+> At this point, host->dev.parent has not been assigned. However, when calling pci_host_assign_domain_nr(host), it calls pci_assign_domain_nr(host->dev.parent), which uses parent->of_node directly w/o checking if parent is NULL. This ended up causing NULL pointer exception when I do the test.
+> 
+> I think we need to moveo host->dev.parent = parent before calling pci_host_assign_domain_nr(host).
+
+Good catch! Hi Suravee, thanks for your test, I would assign host->dev.parent before pci_host_assign_domain_nr().
+
+Thanks!
+Yijing.
+
+> 
+> .
+> 
 
 
-
-Gr=FC=DF Gott,
-
-        Dies ist in Gro=DFbritannien Kredit Ltd Darlehen, Eine legitime=
- =20
-und um Geld f=FCr akkreditierte company.We Kredite zu einem niedrigen =20
-Zinssatz von 3% zu leihen. Wir leihen Geld, um Menschen in Not der =20
-finanziellen Unterst=FCtzung sind. Haben Sie eine schlechte Kredit? ode=
-r =20
-Sie brauchen Geld, um Rechnungen zu bezahlen? Wir m=F6chten dieses =20
-Medium nutzen, zu beachten, dass zuverl=E4ssige Empf=E4nger Hilfe, wie =
-wir =20
-Ihnen gerne einen Kredit zu geben. Bitte, wenn Sie interessiert sind, =20
-kontaktieren Sie uns =FCber diese E-Mail: ukcreditltdloan@hotmail.com
-
-Nach der Reaktion, werden Sie einen Antrag auf Kredit F=FCllung =20
-erhalten. Keine soziale Sicherheit und keine Bonit=E4tspr=FCfung, 100% =
-=20
-garantiert.
-Wir freuen uns erlauben Sie mir behilflich sein.
-
-INFORMATIONEN
-
-Ihre Namen:
-Adresse: ...........
-Telefon: ...........
-Ben=F6tigte Menge: ........
-Dauer: ...............
-Beruf: ...........
-Monatliches Einkommen Level: ........
-Geschlecht: ...............
-Geburtsdatum: ........
-Status: ..................
-Land: ..........
-Zweck: .........
-
-=46reundlichen Gr=FC=DFen,
-
-Dr. Peter Mohammed.
+-- 
+Thanks!
+Yijing
