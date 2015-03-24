@@ -1,113 +1,66 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v8 27/30] PCI: Rename __pci_create_root_bus() to pci_create_root_bus()
-Date: Tue, 24 Mar 2015 11:34:21 +0800
-Message-ID: <1427168064-8657-28-git-send-email-wangyijing__35284.0043524795$1427168803$gmane$org@huawei.com>
+From: Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH v8 24/30] PCI/tegra: Remove redundant
+ tegra_pcie_scan_bus()
+Date: Tue, 24 Mar 2015 13:31:40 +0100
+Message-ID: <20150324123139.GA11625__19431.8743925125$1427200344$gmane$org@ulmo.nvidia.com>
 References: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
+ <1427168064-8657-25-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
+Content-Disposition: inline
+In-Reply-To: <1427168064-8657-25-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
+To: Yijing Wang <wangyijing@huawei.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-tegra@vger.kernel.org
 
-Now no one use pci_create_root_bus(), we could remove it
-and rename __pci_create_root_bus() to pci_create_root_bus().
 
-Signed-off-by: wangyijing@huawei.com
----
- drivers/pci/probe.c |   35 +++++++++--------------------------
- include/linux/pci.h |    3 ---
- 2 files changed, 9 insertions(+), 29 deletions(-)
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 7796bf8..cb0237f 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1852,7 +1852,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
- {
- }
- 
--static struct pci_bus *__pci_create_root_bus(
-+static struct pci_bus *pci_create_root_bus(
- 		struct pci_host_bridge *bridge, struct pci_ops *ops)
- {
- 	int error;
-@@ -1937,24 +1937,6 @@ put_dev:
- 	return NULL;
- }
- 
--struct pci_bus *pci_create_root_bus(struct device *parent,
--		int domain, int bus, struct pci_ops *ops, void *sysdata,
--		struct list_head *resources)
--{
--	struct pci_host_bridge *host;
--
--	host = pci_create_host_bridge(parent, domain, bus,
--			sysdata, resources, NULL);
--	if (!host)
--		return NULL;
--
--	host->bus = __pci_create_root_bus(host, ops);
--	if (!host->bus)
--		pci_free_host_bridge(host);
--
--	return host->bus;
--}
--
- int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
- {
- 	struct resource *res = &b->busn_res;
-@@ -2030,7 +2012,7 @@ static struct pci_bus *__pci_scan_root_bus(
- 	struct pci_bus *b;
- 	int max;
- 
--	b = __pci_create_root_bus(host, ops);
-+	b = pci_create_root_bus(host, ops);
- 	if (!b)
- 		return NULL;
- 
-@@ -2093,19 +2075,20 @@ struct pci_bus *pci_scan_bus(int domain, int bus,
- 		struct pci_ops *ops, void *sysdata)
- {
- 	LIST_HEAD(resources);
--	struct pci_bus *b;
-+	struct pci_host_bridge *host;
- 
- 	pci_add_resource(&resources, &ioport_resource);
- 	pci_add_resource(&resources, &iomem_resource);
- 	pci_add_resource(&resources, &busn_resource);
--	b = pci_create_root_bus(NULL, domain, bus, ops, sysdata,
--			&resources);
--	if (b) {
--		pci_scan_child_bus(b);
-+	host = pci_create_host_bridge(NULL, domain, bus, sysdata,
-+			&resources, NULL);
-+	if (host) {
-+		__pci_scan_root_bus(host, ops);
-+		return host->bus;
- 	} else {
- 		pci_free_resource_list(&resources);
- 	}
--	return b;
-+	return NULL;
- }
- EXPORT_SYMBOL(pci_scan_bus);
- 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 61e0853..62333ff 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -782,9 +782,6 @@ struct pci_bus *pci_find_bus(int domain, int busnr);
- void pci_bus_add_devices(const struct pci_bus *bus);
- struct pci_bus *pci_scan_bus(int domain, int bus, struct pci_ops *ops,
- 					void *sysdata);
--struct pci_bus *pci_create_root_bus(struct device *parent, int domain, int bus,
--				    struct pci_ops *ops, void *sysdata,
--				    struct list_head *resources);
- int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int busmax);
- int pci_bus_update_busn_res_end(struct pci_bus *b, int busmax);
- void pci_bus_release_busn_res(struct pci_bus *b);
--- 
-1.7.1
+On Tue, Mar 24, 2015 at 11:34:18AM +0800, Yijing Wang wrote:
+> Now pci_scan_root_bus() is almost similar to
+> pci_create_root_bus() + pci_scan_child_bus().
+> So we could use common pci_scan_root_bus() in
+> pci_common_init_dev() to scan pci busses.
+> tegra_pcie_scan_bus() is redundant, remove it.
+>=20
+> Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+> CC: Thierry Reding <thierry.reding@gmail.com>
+> CC: linux-tegra@vger.kernel.org
+> ---
+>  drivers/pci/host/pci-tegra.c |   16 ----------------
+>  1 files changed, 0 insertions(+), 16 deletions(-)
+
+Jetson TK1 still boots over NFS root via the onboard PCIe network card
+with this series applied, so:
+
+Tested-by: Thierry Reding <treding@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCAAGBQJVEVknAAoJEN0jrNd/PrOhgSAQAKCC9PfTMZLcgurKsdBmqctU
+7WkCuoKLDv1sbEfF1mzfk8VI/9kROf6bIyKKgvXV2V50p8OHBbJBJmjR5U48/37v
+iDGVlSrSII4+G3Mv/HWx/Dvh1whXYp/TH+SNUPNY1BdSIRmvjmLQ3QYBuC6P3N6W
+kjd5NW5KkgZ0NPORWfXzEabkXIGEjIk8fsB6ILXxBVJMdUxiLA4LyOQAmmuzoviW
+TAsboT7liAJPbiM2mjnYqo6ZdDR7Y8hotXBf8KtIxlzns12VQZl40GdtvZ7zWi4R
+tH3zyYqJuhyg6VjvDMZzKZsmU4hctOQ2sgeYOFn52t8nPIZqJMoLT3nAabgUw+7x
+NNI+oZGD8Wo4XGDXQyiY1ihjObLCD2uDfpKfdwmCRlYFef66rEWW0gImACCCprEc
+9jqQgqZAN9AXX+1OkNyX+Ioiy2v7yicVi/JMHawdEEdszSuG3RuZIQQWku+T2UDy
+WmpI2MdZRUEAJiW1V5rOBibae2uvGEHedkZmOqkjG2NLFqt633FlUg416ucPD+eJ
+VKWNXwsJyqBtGpifsUaFZfSNFsvSZ4gceI+/KD0ZpmhhAXkh+AVoNTa1iZLjq3X9
+q8J1YflS6mHPbE+D37LRDLg47XoHRIf0Ly/9GukoXbowfnP3/Fy1532Zy+1eXyBb
+Lk3IVyxC8BFsZ0j1FZKG
+=0jIA
+-----END PGP SIGNATURE-----
+
+--bp/iNruPH9dso1Pn--
