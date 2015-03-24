@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v8 30/30] PCI: Clean up CONFIG_PCI_DOMAINS_GENERIC
-Date: Tue, 24 Mar 2015 11:34:24 +0800
-Message-ID: <1427168064-8657-31-git-send-email-wangyijing__35294.6493927904$1427168590$gmane$org@huawei.com>
+Subject: [PATCH v8 22/30] parisc/PCI: Use pci_scan_root_bus() for simplicity
+Date: Tue, 24 Mar 2015 11:34:16 +0800
+Message-ID: <1427168064-8657-23-git-send-email-wangyijing__30120.3113435351$1427168593$gmane$org@huawei.com>
 References: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,108 +10,65 @@ In-Reply-To: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Yijing Wang <wangyijing0307@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, linux-parisc@vger.kernel.org
 
-Now we could clean up CONFIG_PCI_DOMAINS_GENERIC.
+From: Yijing Wang <wangyijing0307@gmail.com>
+
+Now pci_bus_add_devices() has been ripped out
+from pci_scan_root_bus(), we could use pci_scan_root_bus()
+instead of pci_create_root_bus() + pci_scan_child_bus()
+for simplicity.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: "James E.J. Bottomley" <jejb@parisc-linux.org>
+CC: linux-parisc@vger.kernel.org
 ---
- arch/arm/Kconfig          |    3 ---
- arch/arm64/Kconfig        |    3 ---
- drivers/pci/host-bridge.c |   11 ++++++-----
- drivers/pci/pci.c         |    2 --
- 4 files changed, 6 insertions(+), 13 deletions(-)
+ drivers/parisc/dino.c    |    4 ++--
+ drivers/parisc/lba_pci.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 9f1f09a..b5dab6c 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1283,9 +1283,6 @@ config PCI_DOMAINS
- 	bool
- 	depends on PCI
+diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
+index f375252..146c3ff 100644
+--- a/drivers/parisc/dino.c
++++ b/drivers/parisc/dino.c
+@@ -985,7 +985,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 	** It's not used to avoid chicken/egg problems
+ 	** with configuration accessor functions.
+ 	*/
+-	dino_dev->hba.hba_bus = bus = pci_create_root_bus(&dev->dev,
++	dino_dev->hba.hba_bus = bus = pci_scan_root_bus(&dev->dev,
+ 			 0, dino_current_bus, &dino_cfg_ops, NULL, &resources);
+ 	if (!bus) {
+ 		printk(KERN_ERR "ERROR: failed to scan PCI bus on %s (duplicate bus number %d?)\n",
+@@ -996,7 +996,7 @@ static int __init dino_probe(struct parisc_device *dev)
+ 		return 0;
+ 	}
  
--config PCI_DOMAINS_GENERIC
--	def_bool PCI_DOMAINS
--
- config PCI_NANOENGINE
- 	bool "BSE nanoEngine PCI support"
- 	depends on SA1100_NANOENGINE
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1b8e973..4b1cc27 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -242,9 +242,6 @@ config PCI
- config PCI_DOMAINS
- 	def_bool PCI
+-	max = pci_scan_child_bus(bus);
++	max = pci_bus_child_max_busnr(bus);
+ 	pci_bus_update_busn_res_end(bus, max);
  
--config PCI_DOMAINS_GENERIC
--	def_bool PCI
--
- config PCI_SYSCALL
- 	def_bool PCI
+ 	/* This code *depends* on scanning being single threaded
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 2949030..b630364 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1563,14 +1563,14 @@ lba_driver_probe(struct parisc_device *dev)
  
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index c78f4d0..18a0f6c 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -4,6 +4,8 @@
+ 	dev->dev.platform_data = lba_dev;
+ 	lba_bus = lba_dev->hba.hba_bus =
+-		pci_create_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
++		pci_scan_root_bus(&dev->dev, 0, lba_dev->hba.bus_num.start,
+ 				    cfg_ops, NULL, &resources);
+ 	if (!lba_bus) {
+ 		pci_free_resource_list(&resources);
+ 		return 0;
+ 	}
  
- #include <linux/kernel.h>
- #include <linux/pci.h>
-+#include <linux/of_pci.h>
-+#include <linux/of.h>
- #include <linux/module.h>
+-	max = pci_scan_child_bus(lba_bus);
++	max = pci_bus_child_max_busnr(lba_bus);
  
- #include "pci.h"
-@@ -82,12 +84,13 @@ struct pci_host_bridge *pci_create_host_bridge(
- 	resource_list_for_each_entry_safe(window, n, resources)
- 		list_move_tail(&window->node, &host->windows);
- 	/*
--	 * If support CONFIG_PCI_DOMAINS_GENERIC, use
-+	 * If domain == -1, we need to use
- 	 * pci_host_assign_domain_nr() to update domain
- 	 * number.
- 	 */
- 	host->domain = domain;
--	pci_host_assign_domain_nr(host);
-+	if (host->domain == -1)
-+		pci_host_assign_domain_nr(host);
- 	mutex_lock(&pci_host_mutex);
- 	list_for_each_entry(tmp, &pci_host_bridge_list, list) {
- 		if (tmp->domain != host->domain
-@@ -169,7 +172,6 @@ int pci_get_new_domain_nr(void)
- 	return atomic_inc_return(&__domain_nr);
- }
- 
--#ifdef CONFIG_PCI_DOMAINS_GENERIC
- static int pci_assign_domain_nr(struct device *dev)
- {
- 	static int use_dt_domains = -1;
-@@ -215,11 +217,10 @@ static int pci_assign_domain_nr(struct device *dev)
- 	return domain;
- }
- #endif
--#endif
- 
- void pci_host_assign_domain_nr(struct pci_host_bridge *host)
- {
--#ifdef CONFIG_PCI_DOMAINS_GENERIC
-+#ifdef CONFIG_PCI_DOMAINS
- 	host->domain = pci_assign_domain_nr(host->dev.parent);
- #endif
- }
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 044801c..5b18429 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -10,8 +10,6 @@
- #include <linux/kernel.h>
- #include <linux/delay.h>
- #include <linux/init.h>
--#include <linux/of.h>
--#include <linux/of_pci.h>
- #include <linux/pci.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
+ 	/* This is in lieu of calling pci_assign_unassigned_resources() */
+ 	if (is_pdc_pat()) {
 -- 
 1.7.1
