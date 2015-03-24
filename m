@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v8 08/30] PCI: Update pci_host_bridge bus resource
-Date: Tue, 24 Mar 2015 11:34:02 +0800
-Message-ID: <1427168064-8657-9-git-send-email-wangyijing__32290.8262409785$1427168712$gmane$org@huawei.com>
+Subject: [PATCH v8 25/30] PCI/designware: Use pci_scan_root_bus() for simplicity
+Date: Tue, 24 Mar 2015 11:34:19 +0800
+Message-ID: <1427168064-8657-26-git-send-email-wangyijing__744.394670664583$1427168728$gmane$org@huawei.com>
 References: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,39 +10,36 @@ In-Reply-To: <1427168064-8657-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Yijing Wang <wangyijing0307@gmail.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Mohit Kumar <mohit.kumar@st.com>, Jingoo Han <jg1.han@samsung.com>
 
-From: Yijing Wang <wangyijing0307@gmail.com>
-
-Sometimes, the bus resource start number is not equal to
-root bus number. For example, in pci_scan_bus(), we always
-add the default bus resource which start bus number is 0,
-but the root bus number callers given may != 0, so
-we need to update pci_host_bridge bus resource, because we
-would check whether host bridge bus resoruce is confict
-in later patch.
+Use pci_scan_root_bus() instead of pci_create_root_bus() +
+pci_scan_child_bus() for simplicity.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Mohit Kumar <mohit.kumar@st.com>
+CC: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/pci/host-bridge.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ drivers/pci/host/pcie-designware.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index ecc1a7c..1a9834b 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -26,8 +26,11 @@ static void pci_host_update_busn_res(
- 	struct resource_entry *window;
+diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
+index 93778b9..3d7d6fb 100644
+--- a/drivers/pci/host/pcie-designware.c
++++ b/drivers/pci/host/pcie-designware.c
+@@ -728,13 +728,11 @@ static struct pci_bus *dw_pcie_scan_bus(int nr, struct pci_sys_data *sys)
+ 	struct pcie_port *pp = sys_to_pcie(sys);
  
- 	resource_list_for_each_entry(window, resources)
--		if (window->res->flags & IORESOURCE_BUS)
-+		if (window->res->flags & IORESOURCE_BUS) {
-+			if (bus > window->res->start)
-+				window->res->start = bus;
- 			return;
-+		}
+ 	pp->root_bus_nr = sys->busnr;
+-	bus = pci_create_root_bus(pp->dev, -1, sys->busnr,
++	bus = pci_scan_root_bus(pp->dev, -1, sys->busnr,
+ 				  &dw_pcie_ops, sys, &sys->resources);
+ 	if (!bus)
+ 		return NULL;
  
- 	pr_info(
- 	 "No busn resource found for pci%04x:%02x, will use [bus %02x-ff]\n",
+-	pci_scan_child_bus(bus);
+-
+ 	if (bus && pp->ops->scan_bus)
+ 		pp->ops->scan_bus(pp);
+ 
 -- 
 1.7.1
