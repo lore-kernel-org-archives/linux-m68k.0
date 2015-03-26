@@ -1,47 +1,31 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v6 04/30] xen/PCI: Don't use deprecated function pci_scan_bus_parented()
-Date: Thu, 26 Mar 2015 15:30:44 +0800
-Message-ID: <5513B5A4.1070209@huawei.com>
-References: <1425868467-9667-1-git-send-email-wangyijing@huawei.com> <1425868467-9667-5-git-send-email-wangyijing@huawei.com> <20150311223211.GB1082@google.com> <55017CA5.2010502@huawei.com> <20150312193505.GB7346@google.com> <55024D35.6050509@huawei.com> <CAErSpo4T7f9PNVMLrQbCvW2a=HnRauQR2eBz6H69B7Q2=ELNWw@mail.gmail.com> <20150313140132.GH5378@l.oracle.com> <CAErSpo69ytCxBK5AD79Nz05wy=GwzcOGV7WkiKFxpLDH4wtJXw@mail.gmail.com> <20150325192331.GG25884@l.oracle.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH] m68knommu: fix fec setup warning for ColdFire 5271 builds
+Date: Thu, 26 Mar 2015 09:27:46 +0100
+Message-ID: <mvma8z0yxh9.fsf@hawking.suse.de>
+References: <1427340156-11839-1-git-send-email-gerg@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-ia64-owner@vger.kernel.org>
-In-Reply-To: <20150325192331.GG25884@l.oracle.com>
-Sender: linux-ia64-owner@vger.kernel.org
-To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Yinghai Lu <yinghai@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, linux-arm <linux-arm-kernel@lists.infradead.org>, Russell King <linux@arm.linux.org.uk>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenprojec>
+Content-Type: text/plain
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-out.m-online.net ([212.18.0.9]:56753 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752347AbbCZI1t (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 26 Mar 2015 04:27:49 -0400
+In-Reply-To: <1427340156-11839-1-git-send-email-gerg@uclinux.org>
+	(gerg@uclinux.org's message of "Thu, 26 Mar 2015 13:22:36 +1000")
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: gerg@uclinux.org
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org
 
->>> Is there an git tree with this so I can just try it out?
->>
->> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git
->> pci/enumeration-yw6 has similar code (it exports the single
-> 
-> I presume now it is bjorn/pci/enumeration-yw8 ? Going to test this out
-> this week.
+gerg@uclinux.org writes:
 
-Hi Konrad, I fixed two issues found by Tomasz and Daniel for the current v8 version.
-I posted out the latest v9 in my github tree. Could you pull this series from my
-github tree ?
-The URL is: https://github.com/YijingWang/linux-pci.git enumer9
+> Fix it my moving the definition of par inside the 5271 conditional code.
 
-Thanks!
-Yijing.
+s/my/by/
 
->> busn_resource and makes xen use it).  That should be functionally
->> identical to what v4.0-rc1 does.
->>
->> Yijing hasn't posted the static busn_res proposal above yet, so I
->> don't have a branch with that in it.
->>
->> Bjorn
-> 
-> .
-> 
-
+Andreas.
 
 -- 
-Thanks!
-Yijing
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
