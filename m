@@ -1,39 +1,42 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2] m68k/mac: Fix out-of-bounds array index in OSS IRQ source
- initialization
-Date: Mon, 30 Mar 2015 12:22:30 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1503301222220.18094@nippy.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2] m68k/mac: Fix out-of-bounds array index in OSS IRQ
+ source initialization
+Date: Mon, 30 Mar 2015 10:17:40 +0200
+Message-ID: <CAMuHMdWP+Rwy7v9S0LP5i2gsTBD7FTxbDWLFHJMs97ZsgEHEBA@mail.gmail.com>
 References: <alpine.LNX.2.00.1503281605050.26059@nippy.intranet>
+	<alpine.LNX.2.00.1503301222220.18094@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41323 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751936AbbC3BW7 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Mar 2015 21:22:59 -0400
-In-Reply-To: <alpine.LNX.2.00.1503281605050.26059@nippy.intranet>
+Received: from mail-oi0-f52.google.com ([209.85.218.52]:33397 "EHLO
+	mail-oi0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753282AbbC3IRk (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 30 Mar 2015 04:17:40 -0400
+Received: by oifl3 with SMTP id l3so121694156oif.0
+        for <linux-m68k@vger.kernel.org>; Mon, 30 Mar 2015 01:17:40 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1503301222220.18094@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, David Binderman <dcb314@hotmail.com>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, David Binderman <dcb314@hotmail.com>
 
----
+On Mon, Mar 30, 2015 at 3:22 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> ---
+>
+> Changes since v1:
+> - remove pointless braces
 
-Changes since v1:
-- remove pointless braces
+Thanks!
 
-Index: linux/arch/m68k/mac/oss.c
-===================================================================
---- linux.orig/arch/m68k/mac/oss.c	2015-03-20 20:10:54.000000000 +1100
-+++ linux/arch/m68k/mac/oss.c	2015-03-29 19:58:40.000000000 +1100
-@@ -47,9 +47,8 @@ void __init oss_init(void)
- 	/* Disable all interrupts. Unlike a VIA it looks like we    */
- 	/* do this by setting the source's interrupt level to zero. */
- 
--	for (i = 0; i <= OSS_NUM_SOURCES; i++) {
-+	for (i = 0; i < OSS_NUM_SOURCES; i++)
- 		oss->irq_level[i] = 0;
--	}
- }
- 
- /*
+Applied with re-added lost RB and SoB from v1, and queued for v4.1.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
