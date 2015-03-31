@@ -1,42 +1,53 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k/mac: Fix out-of-bounds array index in OSS IRQ
- source initialization
-Date: Mon, 30 Mar 2015 10:17:40 +0200
-Message-ID: <CAMuHMdWP+Rwy7v9S0LP5i2gsTBD7FTxbDWLFHJMs97ZsgEHEBA@mail.gmail.com>
-References: <alpine.LNX.2.00.1503281605050.26059@nippy.intranet>
-	<alpine.LNX.2.00.1503301222220.18094@nippy.intranet>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Tue, 31 Mar 2015 14:16:27 +1300
+Message-ID: <CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL>
+	<mvm1tuv6dhk.fsf@hawking.suse.de>
+	<21426.40682.197715.245775@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-oi0-f52.google.com ([209.85.218.52]:33397 "EHLO
-	mail-oi0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753282AbbC3IRk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 30 Mar 2015 04:17:40 -0400
-Received: by oifl3 with SMTP id l3so121694156oif.0
-        for <linux-m68k@vger.kernel.org>; Mon, 30 Mar 2015 01:17:40 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1503301222220.18094@nippy.intranet>
+Received: from mail-qc0-f172.google.com ([209.85.216.172]:33005 "EHLO
+	mail-qc0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753644AbbCaBQ2 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 30 Mar 2015 21:16:28 -0400
+Received: by qcbjx9 with SMTP id jx9so2341507qcb.0
+        for <linux-m68k@vger.kernel.org>; Mon, 30 Mar 2015 18:16:27 -0700 (PDT)
+In-Reply-To: <21426.40682.197715.245775@gargle.gargle.HOWL>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, David Binderman <dcb314@hotmail.com>
+To: Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Mon, Mar 30, 2015 at 3:22 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> ---
+Hi,
+
+has anyone found a solution to this one?
+
+3.18-rc5 has kswapd0 hogging the CPU - haven't seen ksoftirqd0 yet.
+Unpacking a large tarball tends to trigger this for me.
+
+Cheers,
+
+  Michael
+
+
+On Tue, Jul 1, 2014 at 11:43 PM, Mikael Pettersson <mikpelinux@gmail.com> wrote:
+> Andreas Schwab writes:
+>  > Mikael Pettersson <mikpelinux@gmail.com> writes:
+>  >
+>  > > Reverting to 3.12.16 completely eliminates these problems.
+>  >
+>  > Even 3.11 has the kswapd0 cpu hog problem.
 >
-> Changes since v1:
-> - remove pointless braces
-
-Thanks!
-
-Applied with re-added lost RB and SoB from v1, and queued for v4.1.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Hmm, I just got the kswapd0 CPU hog on 3.12.16 too (while compiling
+> java code during a gcc package rebuild).
+>
+> So kernels >= 3.11 have the kswapd0 CPU hog bug, and kernels >= 3.13
+> also have the ksoftirdq/0 CPU hog bug.
+>
+> What's the last known-good kernel? 3.10?
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
