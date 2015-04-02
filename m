@@ -1,8 +1,8 @@
 From: DIAMOND SWISS LOAN COMPANY
 	<andressa.nogueira@terceirizado.mda.gov.br>
 Subject: Darlehen bieten AT 1,5% ZINS
-Date: Thu, 2 Apr 2015 03:11:21 -0300 (BRT)
-Message-ID: <1578928549.1886069.1427955081413.JavaMail.zimbra@terceirizado.mda.gov.br>
+Date: Thu, 2 Apr 2015 03:09:47 -0300 (BRT)
+Message-ID: <1105080646.1885633.1427954987154.JavaMail.zimbra@terceirizado.mda.gov.br>
 Reply-To: "diamondswissloanscompanys@gmail.com"
 	  <diamondswissloanscompanys@gmail.com>
 Mime-Version: 1.0
