@@ -1,39 +1,55 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
-Date: Wed, 01 Apr 2015 18:11:36 +0200
-Message-ID: <87sicjltfr.fsf@igel.home>
-References: <21393.43065.207399.530921@gargle.gargle.HOWL>
-	<mvm1tuv6dhk.fsf@hawking.suse.de>
-	<21426.40682.197715.245775@gargle.gargle.HOWL>
-	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+From: DIAMOND SWISS LOAN COMPANY
+	<andressa.nogueira@terceirizado.mda.gov.br>
+Subject: Darlehen bieten AT 1,5% ZINS
+Date: Thu, 2 Apr 2015 03:11:21 -0300 (BRT)
+Message-ID: <1578928549.1886069.1427955081413.JavaMail.zimbra@terceirizado.mda.gov.br>
+Reply-To: "diamondswissloanscompanys@gmail.com"
+	  <diamondswissloanscompanys@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:37931 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751210AbbDAQLk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 1 Apr 2015 12:11:40 -0400
-In-Reply-To: <CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
-	(Michael Schmitz's message of "Tue, 31 Mar 2015 14:16:27 +1300")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Mikael Pettersson <mikpelinux@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Michael Schmitz <schmitzmic@gmail.com> writes:
 
-> has anyone found a solution to this one?
->
-> 3.18-rc5 has kswapd0 hogging the CPU - haven't seen ksoftirqd0 yet.
-> Unpacking a large tarball tends to trigger this for me.
 
-The only workaround I have is to drop caches regularily
-(/proc/sys/vm/drop_caches) when MemFree is getting low.  All my OBS
-build workers are stable running 3.11.6 with this workaround.
+Gr=C3=BC=C3=9F Gott,
 
-Andreas.
+=C2=A0Dies ist DIAMOMD SWISS Darlehen Unternehmen Darlehen Angebot.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+=C2=A0=C2=A0=C2=A0DIAMOMD SWISS LOAN bietet flexible und erschwingliche=
+ Kredite f=C3=BCr jeden Zweck zu helfen, Ihre Ziele zu erreichen. wir D=
+arlehen zu niedrigen Zinssatz von 1,5%. Hier sind einige wichtige Merkm=
+ale der pers=C3=B6nlichen Kredit von DIAMOMD SWISS KREDIT angeboten. Hi=
+er sind die Darlehen Faktoren arbeiten wir mit den f=C3=BChrenden briti=
+schen Broker, die den Zugang zu Top-Kreditgeber haben und in der Lage, =
+die beste finanzielle L=C3=B6sung zu einem erschwinglichen price.Please=
+ finden, wenn Sie daran interessiert sind bitte kontaktieren Sie uns =C3=
+=BCber diese E-Mail: d_iamondswissloans@hotmail.com
+
+Nach der Reaktion, werden Sie einen Antrag auf Kredit F=C3=BCllung erha=
+lten. Keine soziale Sicherheit und keine Bonit=C3=A4tspr=C3=BCfung, 100=
+% garantiert.
+
+Es wird uns eine Ehre, wenn Sie uns erlauben, zu Ihren Diensten.
+
+
+Mehr Informationen ben=C3=B6tigt
+
+Ihre Namen:
+Adresse: ...........
+Telefon: ...........
+Darlehensbetrag ben=C3=B6tigt: ........
+Dauer: ...............
+Beruf: ...........
+Monatliches Einkommen Level: ........
+Geschlecht: ...............
+Geburtsdatum: ........
+Status: ..................
+Land: ..........
+Zweck: .........
+
+Treffen Sie Ihre finanziellen Bed=C3=BCrfnisse ist unser Stolz.
+
+Dr.Diamond peters
