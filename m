@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v9 21/30] sparc/PCI: Use pci_scan_host_bridge() for simplicity
-Date: Fri, 3 Apr 2015 17:25:55 +0800
-Message-ID: <1428053164-28277-23-git-send-email-wangyijing__18479.255718603$1428053851$gmane$org@huawei.com>
+Subject: [PATCH] PCI: Save sysdata in pci_host_bridge drvdata
+Date: Fri, 3 Apr 2015 17:25:34 +0800
+Message-ID: <1428053164-28277-2-git-send-email-wangyijing__36479.3060384274$1428053869$gmane$org@huawei.com>
 References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,73 +10,121 @@ In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, sparclinux@vger.kernel.org
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Now we could use pci_scan_host_bridge() to scan
-pci buses, provide sparc specific pci_host_bridge_ops.
+Save platform specific sysdata in pci_host_bridge
+drvdata, host bridge specific operation need to
+access it before the pci bus creation.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: sparclinux@vger.kernel.org
 ---
- arch/sparc/kernel/pci.c |   28 ++++++++++++++++++++++------
- 1 files changed, 22 insertions(+), 6 deletions(-)
+ drivers/pci/host-bridge.c |    3 ++-
+ drivers/pci/pci.h         |    2 +-
+ drivers/pci/probe.c       |   20 ++++++++++----------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-index e40e456..fa95a1d 100644
---- a/arch/sparc/kernel/pci.c
-+++ b/arch/sparc/kernel/pci.c
-@@ -650,12 +650,27 @@ static void pci_claim_bus_resources(struct pci_bus *bus)
- 		pci_claim_bus_resources(child_bus);
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index dffb345..98047c6 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -63,7 +63,7 @@ static bool pci_host_busn_res_overlap(
+ 
+ struct pci_host_bridge *pci_create_host_bridge(
+ 		struct device *parent, int domain, int bus,
+-		struct list_head *resources)
++		void *sysdata, struct list_head *resources)
+ {
+ 	int error;
+ 	struct pci_host_bridge *host, *tmp;
+@@ -101,6 +101,7 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	mutex_unlock(&pci_host_mutex);
+ 
+ 	host->dev.release = pci_release_host_bridge_dev;
++	dev_set_drvdata(&host->dev, sysdata);
+ 	dev_set_name(&host->dev, "pci%04x:%02x",
+ 			host->domain, bus);
+ 
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 886d72f..aa8dff6 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -335,7 +335,7 @@ static inline void pci_host_assign_domain_nr(struct pci_host_bridge *host)
+ #endif
+ 
+ struct pci_host_bridge *pci_create_host_bridge(struct device *parent,
+-		int domain, int bus, struct list_head *resources);
++		int domain, int bus, void *sysdata, struct list_head *resources);
+ void pci_free_host_bridge(struct pci_host_bridge *host);
+ 
+ static inline int pci_host_first_busnr(struct pci_host_bridge *host)
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 8517d1b..0ac2bf6 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1865,8 +1865,7 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
  }
  
-+static int pci_host_of_scan_bus(
-+		struct pci_host_bridge *host)
-+{
-+	struct pci_pbm_info *pbm = dev_get_drvdata(&host->dev);
-+	struct device_node *node = pbm->op->dev.of_node;
-+
-+	pci_of_scan_bus(pbm, node, host->bus);
-+	return pci_bus_child_max_busnr(host->bus);
-+}
-+
-+static struct pci_host_bridge_ops pci_host_ops = {
-+	.scan_bus = pci_host_of_scan_bus,
-+};
-+
- struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
- 				 struct device *parent)
+ static struct pci_bus *__pci_create_root_bus(
+-		struct pci_host_bridge *bridge, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *bridge, struct pci_ops *ops)
  {
- 	LIST_HEAD(resources);
- 	struct device_node *node = pbm->op->dev.of_node;
- 	struct pci_bus *bus;
-+	struct pci_host_bridge *host;
- 
- 	printk("PCI: Scanning PBM %s\n", node->full_name);
- 
-@@ -667,16 +682,17 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
- 	pbm->busn.end	= pbm->pci_last_busno;
- 	pbm->busn.flags	= IORESOURCE_BUS;
- 	pci_add_resource(&resources, &pbm->busn);
--	bus = pci_create_root_bus(parent, pbm->index, pbm->pci_first_busno,
--			pbm->pci_ops, pbm, &resources);
--	if (!bus) {
--		printk(KERN_ERR "Failed to create bus for %s\n",
--		       node->full_name);
-+	pci_host_ops.pci_ops = pbm->pci_ops;
-+	host = pci_scan_host_bridge(parent, pbm->index, pbm->pci_first_busno,
-+			pbm, &resources, &pci_host_ops);
-+	if (!host) {
-+		pr_err("Failed to create host bridge pci%04x:%02x for %s\n",
-+		       pbm->index, pbm->pci_first_busno, node->full_name);
- 		pci_free_resource_list(&resources);
+ 	int error;
+ 	struct pci_bus *b;
+@@ -1882,7 +1881,7 @@ static struct pci_bus *__pci_create_root_bus(
+ 	if (!b)
  		return NULL;
- 	}
  
--	pci_of_scan_bus(pbm, node, bus);
-+	bus = host->bus;
- 	pci_bus_register_of_sysfs(bus);
+-	b->sysdata = sysdata;
++	b->sysdata = dev_get_drvdata(&bridge->dev);
+ 	b->ops = ops;
+ 	b->number = b->busn_res.start =
+ 		pci_host_first_busnr(bridge);
+@@ -1956,11 +1955,12 @@ struct pci_bus *pci_create_root_bus(struct device *parent,
+ {
+ 	struct pci_host_bridge *host;
  
- 	pci_claim_bus_resources(bus);
+-	host = pci_create_host_bridge(parent, domain, bus, resources);
++	host = pci_create_host_bridge(parent, domain, bus,
++			sysdata, resources);
+ 	if (!host)
+ 		return NULL;
+ 
+-	host->bus = __pci_create_root_bus(host, ops, sysdata);
++	host->bus = __pci_create_root_bus(host, ops);
+ 	if (!host->bus)
+ 		pci_free_host_bridge(host);
+ 
+@@ -2037,13 +2037,12 @@ void pci_bus_release_busn_res(struct pci_bus *b)
+ }
+ 
+ static struct pci_bus *__pci_scan_root_bus(
+-		struct pci_host_bridge *host, struct pci_ops *ops,
+-		void *sysdata)
++		struct pci_host_bridge *host, struct pci_ops *ops)
+ {
+ 	struct pci_bus *b;
+ 	int max;
+ 
+-	b = __pci_create_root_bus(host, ops, sysdata);
++	b = __pci_create_root_bus(host, ops);
+ 	if (!b)
+ 		return NULL;
+ 
+@@ -2064,11 +2063,12 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int domain,
+ {
+ 	struct pci_host_bridge *host;
+ 
+-	host = pci_create_host_bridge(parent, domain, bus, resources);
++	host = pci_create_host_bridge(parent, domain, bus,
++			sysdata, resources);
+ 	if (!host)
+ 		return NULL;
+ 
+-	host->bus = __pci_scan_root_bus(host, ops, sysdata);
++	host->bus = __pci_scan_root_bus(host, ops);
+ 	if (!host->bus)
+ 		pci_free_host_bridge(host);
+ 
 -- 
 1.7.1
