@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v9 26/30] PCI/xgene: Use pci_scan_root_bus() instead of pci_create_root_bus()
-Date: Fri, 3 Apr 2015 17:26:00 +0800
-Message-ID: <1428053164-28277-28-git-send-email-wangyijing__33234.3706897975$1428053438$gmane$org@huawei.com>
+Subject: [PATCH v9 30/30] PCI: Clean up CONFIG_PCI_DOMAINS_GENERIC
+Date: Fri, 3 Apr 2015 17:26:04 +0800
+Message-ID: <1428053164-28277-32-git-send-email-wangyijing@huawei.com>
 References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,34 +10,108 @@ In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Tanmay Inamdar <tinamdar@apm.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Use pci_scan_root_bus() instead of pci_create_root_bus() +
-pci_scan_child_bus() for simplicity.
+Now we could clean up CONFIG_PCI_DOMAINS_GENERIC.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: Tanmay Inamdar <tinamdar@apm.com>
 ---
- drivers/pci/host/pci-xgene.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ arch/arm/Kconfig          |    3 ---
+ arch/arm64/Kconfig        |    3 ---
+ drivers/pci/host-bridge.c |   11 ++++++-----
+ drivers/pci/pci.c         |    2 --
+ 4 files changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
-index 078e853..380c259 100644
---- a/drivers/pci/host/pci-xgene.c
-+++ b/drivers/pci/host/pci-xgene.c
-@@ -499,12 +499,11 @@ static int xgene_pcie_probe_bridge(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 9f1f09a..b5dab6c 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1283,9 +1283,6 @@ config PCI_DOMAINS
+ 	bool
+ 	depends on PCI
  
--	bus = pci_create_root_bus(&pdev->dev, -1, 0,
-+	bus = pci_scan_root_bus(&pdev->dev, -1, 0,
- 					&xgene_pcie_ops, port, &res);
- 	if (!bus)
- 		return -ENOMEM;
+-config PCI_DOMAINS_GENERIC
+-	def_bool PCI_DOMAINS
+-
+ config PCI_NANOENGINE
+ 	bool "BSE nanoEngine PCI support"
+ 	depends on SA1100_NANOENGINE
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 1b8e973..4b1cc27 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -242,9 +242,6 @@ config PCI
+ config PCI_DOMAINS
+ 	def_bool PCI
  
--	pci_scan_child_bus(bus);
- 	pci_assign_unassigned_bus_resources(bus);
- 	pci_bus_add_devices(bus);
+-config PCI_DOMAINS_GENERIC
+-	def_bool PCI
+-
+ config PCI_SYSCALL
+ 	def_bool PCI
  
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index f193136..eb901b2 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -4,6 +4,8 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/pci.h>
++#include <linux/of_pci.h>
++#include <linux/of.h>
+ #include <linux/module.h>
+ 
+ #include "pci.h"
+@@ -82,12 +84,13 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	resource_list_for_each_entry_safe(window, n, resources)
+ 		list_move_tail(&window->node, &host->windows);
+ 	/*
+-	 * If support CONFIG_PCI_DOMAINS_GENERIC, use
++	 * If domain == -1, we need to use
+ 	 * pci_host_assign_domain_nr() to update domain
+ 	 * number.
+ 	 */
+ 	host->domain = domain;
+-	pci_host_assign_domain_nr(host);
++	if (host->domain == -1)
++		pci_host_assign_domain_nr(host);
+ 	mutex_lock(&pci_host_mutex);
+ 	list_for_each_entry(tmp, &pci_host_bridge_list, list) {
+ 		if (tmp->domain == host->domain
+@@ -169,7 +172,6 @@ int pci_get_new_domain_nr(void)
+ 	return atomic_inc_return(&__domain_nr);
+ }
+ 
+-#ifdef CONFIG_PCI_DOMAINS_GENERIC
+ static int pci_assign_domain_nr(struct device *dev)
+ {
+ 	static int use_dt_domains = -1;
+@@ -215,11 +217,10 @@ static int pci_assign_domain_nr(struct device *dev)
+ 	return domain;
+ }
+ #endif
+-#endif
+ 
+ static void pci_host_assign_domain_nr(struct pci_host_bridge *host)
+ {
+-#ifdef CONFIG_PCI_DOMAINS_GENERIC
++#ifdef CONFIG_PCI_DOMAINS
+ 	host->domain = pci_assign_domain_nr(host->dev.parent);
+ #endif
+ }
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 044801c..5b18429 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -10,8 +10,6 @@
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
+-#include <linux/of.h>
+-#include <linux/of_pci.h>
+ #include <linux/pci.h>
+ #include <linux/pm.h>
+ #include <linux/slab.h>
 -- 
 1.7.1
