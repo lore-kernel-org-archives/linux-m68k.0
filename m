@@ -1,55 +1,82 @@
-From: DIAMOND SWISS LOAN COMPANY
-	<andressa.nogueira@terceirizado.mda.gov.br>
-Subject: Darlehen bieten AT 1,5% ZINS
-Date: Thu, 2 Apr 2015 03:09:47 -0300 (BRT)
-Message-ID: <1105080646.1885633.1427954987154.JavaMail.zimbra@terceirizado.mda.gov.br>
-Reply-To: "diamondswissloanscompanys@gmail.com"
-	  <diamondswissloanscompanys@gmail.com>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v9 01/30] xen/PCI: Don't use deprecated function pci_scan_bus_parented()
+Date: Fri, 3 Apr 2015 17:25:35 +0800
+Message-ID: <1428053164-28277-3-git-send-email-wangyijing__45607.7445800931$1428053372$gmane$org@huawei.com>
+References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+Use pci_scan_root_bus() instead of deprecated function
+pci_scan_bus_parented().
 
-Gr=C3=BC=C3=9F Gott,
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+CC: xen-devel@lists.xenproject.org
+---
+ drivers/pci/xen-pcifront.c |   16 +++++++++++++---
+ 1 files changed, 13 insertions(+), 3 deletions(-)
 
-=C2=A0Dies ist DIAMOMD SWISS Darlehen Unternehmen Darlehen Angebot.
-
-=C2=A0=C2=A0=C2=A0DIAMOMD SWISS LOAN bietet flexible und erschwingliche=
- Kredite f=C3=BCr jeden Zweck zu helfen, Ihre Ziele zu erreichen. wir D=
-arlehen zu niedrigen Zinssatz von 1,5%. Hier sind einige wichtige Merkm=
-ale der pers=C3=B6nlichen Kredit von DIAMOMD SWISS KREDIT angeboten. Hi=
-er sind die Darlehen Faktoren arbeiten wir mit den f=C3=BChrenden briti=
-schen Broker, die den Zugang zu Top-Kreditgeber haben und in der Lage, =
-die beste finanzielle L=C3=B6sung zu einem erschwinglichen price.Please=
- finden, wenn Sie daran interessiert sind bitte kontaktieren Sie uns =C3=
-=BCber diese E-Mail: d_iamondswissloans@hotmail.com
-
-Nach der Reaktion, werden Sie einen Antrag auf Kredit F=C3=BCllung erha=
-lten. Keine soziale Sicherheit und keine Bonit=C3=A4tspr=C3=BCfung, 100=
-% garantiert.
-
-Es wird uns eine Ehre, wenn Sie uns erlauben, zu Ihren Diensten.
-
-
-Mehr Informationen ben=C3=B6tigt
-
-Ihre Namen:
-Adresse: ...........
-Telefon: ...........
-Darlehensbetrag ben=C3=B6tigt: ........
-Dauer: ...............
-Beruf: ...........
-Monatliches Einkommen Level: ........
-Geschlecht: ...............
-Geburtsdatum: ........
-Status: ..................
-Land: ..........
-Zweck: .........
-
-Treffen Sie Ihre finanziellen Bed=C3=BCrfnisse ist unser Stolz.
-
-Dr.Diamond peters
+diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+index b1ffebe..a69e529 100644
+--- a/drivers/pci/xen-pcifront.c
++++ b/drivers/pci/xen-pcifront.c
+@@ -446,9 +446,15 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 				 unsigned int domain, unsigned int bus)
+ {
+ 	struct pci_bus *b;
++	LIST_HEAD(resources);
+ 	struct pcifront_sd *sd = NULL;
+ 	struct pci_bus_entry *bus_entry = NULL;
+ 	int err = 0;
++	static struct resource busn_res = {
++		.start = 0,
++		.end = 255,
++		.flags = IORESOURCE_BUS,
++	};
+ 
+ #ifndef CONFIG_PCI_DOMAINS
+ 	if (domain != 0) {
+@@ -470,17 +476,21 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 		err = -ENOMEM;
+ 		goto err_out;
+ 	}
++	pci_add_resource(&resources, &ioport_resource);
++	pci_add_resource(&resources, &iomem_resource);
++	pci_add_resource(&resources, &busn_res);
+ 	pcifront_init_sd(sd, domain, bus, pdev);
+ 
+ 	pci_lock_rescan_remove();
+ 
+-	b = pci_scan_bus_parented(&pdev->xdev->dev, bus,
+-				  &pcifront_bus_ops, sd);
++	b = pci_scan_root_bus(&pdev->xdev->dev, bus,
++				  &pcifront_bus_ops, sd, &resources);
+ 	if (!b) {
+ 		dev_err(&pdev->xdev->dev,
+ 			"Error creating PCI Frontend Bus!\n");
+ 		err = -ENOMEM;
+ 		pci_unlock_rescan_remove();
++		pci_free_resource_list(&resources);
+ 		goto err_out;
+ 	}
+ 
+@@ -488,7 +498,7 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 
+ 	list_add(&bus_entry->list, &pdev->root_buses);
+ 
+-	/* pci_scan_bus_parented skips devices which do not have a have
++	/* pci_scan_root_bus skips devices which do not have a
+ 	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
+ 	err = pcifront_scan_bus(pdev, domain, bus, b);
+ 
+-- 
+1.7.1
