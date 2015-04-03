@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v9 30/30] PCI: Clean up CONFIG_PCI_DOMAINS_GENERIC
-Date: Fri, 3 Apr 2015 17:26:04 +0800
-Message-ID: <1428053164-28277-32-git-send-email-wangyijing@huawei.com>
+Subject: [PATCH v9 07/30] PCI: Add default bus resource in pci_host_bridge
+Date: Fri, 3 Apr 2015 17:25:41 +0800
+Message-ID: <1428053164-28277-9-git-send-email-wangyijing__44990.819207351$1428053441$gmane$org@huawei.com>
 References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,106 +12,124 @@ List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Now we could clean up CONFIG_PCI_DOMAINS_GENERIC.
+If there is no busn resource provided for pci_scan_root_bus(),
+we would insert a default bus resource (root_bus_number, 255)
+in root bus, and update the max bus number we found after
+pci_scan_child_bus(). We also need to hold the default bus
+resource in pci_host_bridge, then we could identify whether
+the new pci host bridge conflict with existing one.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/arm/Kconfig          |    3 ---
- arch/arm64/Kconfig        |    3 ---
- drivers/pci/host-bridge.c |   11 ++++++-----
- drivers/pci/pci.c         |    2 --
- 4 files changed, 6 insertions(+), 13 deletions(-)
+ drivers/pci/host-bridge.c |   20 ++++++++++++++++++++
+ drivers/pci/probe.c       |   26 ++++++++++----------------
+ include/linux/pci.h       |    2 ++
+ 3 files changed, 32 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 9f1f09a..b5dab6c 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1283,9 +1283,6 @@ config PCI_DOMAINS
- 	bool
- 	depends on PCI
- 
--config PCI_DOMAINS_GENERIC
--	def_bool PCI_DOMAINS
--
- config PCI_NANOENGINE
- 	bool "BSE nanoEngine PCI support"
- 	depends on SA1100_NANOENGINE
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1b8e973..4b1cc27 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -242,9 +242,6 @@ config PCI
- config PCI_DOMAINS
- 	def_bool PCI
- 
--config PCI_DOMAINS_GENERIC
--	def_bool PCI
--
- config PCI_SYSCALL
- 	def_bool PCI
- 
 diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index f193136..eb901b2 100644
+index 7d52a0a..ecc1a7c 100644
 --- a/drivers/pci/host-bridge.c
 +++ b/drivers/pci/host-bridge.c
-@@ -4,6 +4,8 @@
+@@ -19,6 +19,25 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ 	kfree(bridge);
+ }
  
- #include <linux/kernel.h>
- #include <linux/pci.h>
-+#include <linux/of_pci.h>
-+#include <linux/of.h>
- #include <linux/module.h>
++static void pci_host_update_busn_res(
++		struct pci_host_bridge *host, int bus,
++		struct list_head *resources)
++{
++	struct resource_entry *window;
++
++	resource_list_for_each_entry(window, resources)
++		if (window->res->flags & IORESOURCE_BUS)
++			return;
++
++	pr_info(
++	 "No busn resource found for pci%04x:%02x, will use [bus %02x-ff]\n",
++		host->domain, bus, bus);
++	host->busn_res.flags = IORESOURCE_BUS;
++	host->busn_res.start = bus;
++	host->busn_res.end = 255;
++	pci_add_resource(resources, &host->busn_res);
++}
++
+ struct pci_host_bridge *pci_create_host_bridge(
+ 		struct device *parent, int domain, int bus,
+ 		struct list_head *resources)
+@@ -33,6 +52,7 @@ struct pci_host_bridge *pci_create_host_bridge(
  
- #include "pci.h"
-@@ -82,12 +84,13 @@ struct pci_host_bridge *pci_create_host_bridge(
+ 	host->dev.parent = parent;
+ 	INIT_LIST_HEAD(&host->windows);
++	pci_host_update_busn_res(host, bus, resources);
  	resource_list_for_each_entry_safe(window, n, resources)
  		list_move_tail(&window->node, &host->windows);
  	/*
--	 * If support CONFIG_PCI_DOMAINS_GENERIC, use
-+	 * If domain == -1, we need to use
- 	 * pci_host_assign_domain_nr() to update domain
- 	 * number.
- 	 */
- 	host->domain = domain;
--	pci_host_assign_domain_nr(host);
-+	if (host->domain == -1)
-+		pci_host_assign_domain_nr(host);
- 	mutex_lock(&pci_host_mutex);
- 	list_for_each_entry(tmp, &pci_host_bridge_list, list) {
- 		if (tmp->domain == host->domain
-@@ -169,7 +172,6 @@ int pci_get_new_domain_nr(void)
- 	return atomic_inc_return(&__domain_nr);
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 9bc4784..d5a12d9 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2022,6 +2022,12 @@ int pci_bus_update_busn_res_end(struct pci_bus *b, int bus_max)
+ 	return ret;
  }
  
--#ifdef CONFIG_PCI_DOMAINS_GENERIC
- static int pci_assign_domain_nr(struct device *dev)
++static void pci_host_update_busn_res_end(
++		struct pci_host_bridge *host, int max)
++{
++	host->busn_res.end = max;
++}
++
+ void pci_bus_release_busn_res(struct pci_bus *b)
  {
- 	static int use_dt_domains = -1;
-@@ -215,11 +217,10 @@ static int pci_assign_domain_nr(struct device *dev)
- 	return domain;
- }
- #endif
--#endif
+ 	struct resource *res = &b->busn_res;
+@@ -2040,32 +2046,20 @@ static struct pci_bus *__pci_scan_root_bus(int bus,
+ 		struct pci_host_bridge *host, struct pci_ops *ops,
+ 		void *sysdata)
+ {
+-	struct resource_entry *window;
+-	bool found = false;
+ 	struct pci_bus *b;
+ 	int max;
  
- static void pci_host_assign_domain_nr(struct pci_host_bridge *host)
- {
--#ifdef CONFIG_PCI_DOMAINS_GENERIC
-+#ifdef CONFIG_PCI_DOMAINS
- 	host->domain = pci_assign_domain_nr(host->dev.parent);
- #endif
+-	resource_list_for_each_entry(window, &host->windows)
+-		if (window->res->flags & IORESOURCE_BUS) {
+-			found = true;
+-			break;
+-		}
+-
+ 	b = __pci_create_root_bus(bus, host, ops, sysdata);
+ 	if (!b)
+ 		return NULL;
+ 
+-	if (!found) {
+-		dev_info(&b->dev,
+-		 "No busn resource found for root bus, will use [bus %02x-ff]\n",
+-			bus);
+-		pci_bus_insert_busn_res(b, bus, 255);
+-	}
+-
+ 	max = pci_scan_child_bus(b);
+ 
+-	if (!found)
++	/* If default busn resource used, update the max bus number */
++	if (host->busn_res.flags & IORESOURCE_BUS) {
++		pci_host_update_busn_res_end(host, max);
+ 		pci_bus_update_busn_res_end(b, max);
++	}
+ 
+ 	return b;
  }
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 044801c..5b18429 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -10,8 +10,6 @@
- #include <linux/kernel.h>
- #include <linux/delay.h>
- #include <linux/init.h>
--#include <linux/of.h>
--#include <linux/of_pci.h>
- #include <linux/pci.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 1542df8..f189dfb 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -404,6 +404,8 @@ struct pci_host_bridge {
+ 	int domain;
+ 	struct device dev;
+ 	struct pci_bus *bus;		/* root bus */
++	/* we use default bus resource if no bus resource provided */
++	struct resource busn_res;
+ 	struct list_head windows;	/* resource_entry */
+ 	void (*release_fn)(struct pci_host_bridge *);
+ 	void *release_data;
 -- 
 1.7.1
