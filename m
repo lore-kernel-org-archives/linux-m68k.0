@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v9 08/30] PCI: Update pci_host_bridge bus resource
-Date: Fri, 3 Apr 2015 17:25:42 +0800
-Message-ID: <1428053164-28277-10-git-send-email-wangyijing__8388.70123629949$1428053372$gmane$org@huawei.com>
+Subject: [PATCH v9 19/30] powerpc/pci: Use pci_scan_host_bridge() for simplicity
+Date: Fri, 3 Apr 2015 17:25:53 +0800
+Message-ID: <1428053164-28277-21-git-send-email-wangyijing@huawei.com>
 References: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,39 +10,124 @@ In-Reply-To: <1428053164-28277-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Yijing Wang <wangyijing0307@gmail.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, linuxppc-dev@lists.ozlabs.org
 
-From: Yijing Wang <wangyijing0307@gmail.com>
-
-Sometimes, the bus resource start number is not equal to
-root bus number. For example, in pci_scan_bus(), we always
-add the default bus resource which start bus number is 0,
-but the root bus number callers given may != 0, so
-we need to update pci_host_bridge bus resource, because we
-would check whether host bridge bus resoruce is confict
-in later patch.
+Now we could use pci_scan_host_bridge() to scan
+pci buses, provide powerpc specific pci_host_bridge_ops.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC: linuxppc-dev@lists.ozlabs.org
 ---
- drivers/pci/host-bridge.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ arch/powerpc/kernel/pci-common.c |   62 +++++++++++++++++++++++--------------
+ 1 files changed, 38 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index ecc1a7c..1a9834b 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -26,8 +26,11 @@ static void pci_host_update_busn_res(
- 	struct resource_entry *window;
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index 2c58200..50b32f6 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -773,6 +773,29 @@ void pcibios_set_root_bus_speed(struct pci_host_bridge *bridge)
+ 		return ppc_md.pcibios_set_root_bus_speed(bridge);
+ }
  
- 	resource_list_for_each_entry(window, resources)
--		if (window->res->flags & IORESOURCE_BUS)
-+		if (window->res->flags & IORESOURCE_BUS) {
-+			if (bus > window->res->start)
-+				window->res->start = bus;
- 			return;
-+		}
++static int pci_host_scan_bus(struct pci_host_bridge *host)
++{
++	int mode = PCI_PROBE_NORMAL;
++	struct pci_bus *bus = host->bus;
++	struct pci_controller *hose = dev_get_drvdata(&host->dev);
++
++	/* Get probe mode and perform scan */
++	if (hose->dn && ppc_md.pci_probe_mode)
++		mode = ppc_md.pci_probe_mode(bus);
++
++	pr_debug("    probe mode: %d\n", mode);
++	if (mode == PCI_PROBE_DEVTREE)
++		of_scan_bus(hose->dn, bus);
++
++	if (mode == PCI_PROBE_NORMAL) {
++		pci_bus_update_busn_res_end(bus, 255);
++		hose->last_busno = pci_scan_child_bus(bus);
++		pci_bus_update_busn_res_end(bus, hose->last_busno);
++	}
++
++	return pci_bus_child_max_busnr(bus);
++}
++
+ /* This header fixup will do the resource fixup for all devices as they are
+  * probed, but not for bridge ranges
+  */
+@@ -1585,6 +1608,11 @@ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+ 	return of_node_get(hose->dn);
+ }
  
- 	pr_info(
- 	 "No busn resource found for pci%04x:%02x, will use [bus %02x-ff]\n",
++static struct pci_host_bridge_ops pci_host_ops = {
++	.set_root_bus_speed = pcibios_set_root_bus_speed,
++	.scan_bus = pci_host_scan_bus,
++};
++
+ /**
+  * pci_scan_phb - Given a pci_controller, setup and scan the PCI bus
+  * @hose: Pointer to the PCI host controller instance structure
+@@ -1592,9 +1620,8 @@ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+ void pcibios_scan_phb(struct pci_controller *hose)
+ {
+ 	LIST_HEAD(resources);
+-	struct pci_bus *bus;
++	struct pci_host_bridge *host;
+ 	struct device_node *node = hose->dn;
+-	int mode;
+ 
+ 	pr_debug("PCI: Scanning PHB %s\n", of_node_full_name(node));
+ 
+@@ -1609,30 +1636,17 @@ void pcibios_scan_phb(struct pci_controller *hose)
+ 	hose->busn.flags = IORESOURCE_BUS;
+ 	pci_add_resource(&resources, &hose->busn);
+ 
++	pci_host_ops.pci_ops = hose->ops;
+ 	/* Create an empty bus for the toplevel */
+-	bus = pci_create_root_bus(hose->parent, hose->global_number,
+-			hose->first_busno, hose->ops, hose, &resources);
+-	if (bus == NULL) {
+-		pr_err("Failed to create bus for PCI domain %04x\n",
+-			hose->global_number);
++	host = pci_scan_host_bridge(hose->parent, hose->global_number,
++			hose->first_busno, hose, &resources, &pci_host_ops);
++	if (host == NULL) {
++		pr_err("Failed to create host bridge for pci%04x:%02x\n",
++			hose->global_number, hose->first_busno);
+ 		pci_free_resource_list(&resources);
+ 		return;
+ 	}
+-	hose->bus = bus;
+-
+-	/* Get probe mode and perform scan */
+-	mode = PCI_PROBE_NORMAL;
+-	if (node && ppc_md.pci_probe_mode)
+-		mode = ppc_md.pci_probe_mode(bus);
+-	pr_debug("    probe mode: %d\n", mode);
+-	if (mode == PCI_PROBE_DEVTREE)
+-		of_scan_bus(node, bus);
+-
+-	if (mode == PCI_PROBE_NORMAL) {
+-		pci_bus_update_busn_res_end(bus, 255);
+-		hose->last_busno = pci_scan_child_bus(bus);
+-		pci_bus_update_busn_res_end(bus, hose->last_busno);
+-	}
++	hose->bus = host->bus;
+ 
+ 	/* Platform gets a chance to do some global fixups before
+ 	 * we proceed to resource allocation
+@@ -1641,9 +1655,9 @@ void pcibios_scan_phb(struct pci_controller *hose)
+ 		ppc_md.pcibios_fixup_phb(hose);
+ 
+ 	/* Configure PCI Express settings */
+-	if (bus && !pci_has_flag(PCI_PROBE_ONLY)) {
++	if (host->bus && !pci_has_flag(PCI_PROBE_ONLY)) {
+ 		struct pci_bus *child;
+-		list_for_each_entry(child, &bus->children, node)
++		list_for_each_entry(child, &host->bus->children, node)
+ 			pcie_bus_configure_settings(child);
+ 	}
+ }
 -- 
 1.7.1
