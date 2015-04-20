@@ -1,74 +1,50 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.1
-Date: Mon, 13 Apr 2015 10:35:11 +0200
-Message-ID: <1428914111-2284-1-git-send-email-geert@linux-m68k.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu arch fixes for 4.1
+Date: Mon, 20 Apr 2015 11:40:01 +1000
+Message-ID: <201504200140.t3K1e1e8003814@goober.accelecon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from nschwmtas01p.mx.bigpond.com ([61.9.189.137]:40733 "EHLO
+	nschwmtas01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751261AbbDTBje (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 19 Apr 2015 21:39:34 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-	Hi Linus,
+Hi Linus,
 
-The following changes since commit 9eccca0843205f87c00404b663188b88eb248051:
+Can you please pull the m68knommu git tree, for-next branch.
+Nothing big, spelling fixes and fix/cleanup for ColdFire eth device setup.
 
-  Linux 4.0-rc3 (2015-03-08 16:09:09 -0700)
+Regards
+Greg
+
+
+
+
+The following changes since commit e42391cd048809d903291d07f86ed3934ce138e9:
+
+  Linux 4.0-rc6 (2015-03-29 15:26:31 -0700)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-for you to fetch changes up to b24f670b7f5b2058b95370caa9f104b3cefb9f1d:
+for you to fetch changes up to 6e4206136faa9a4d588946dfa604e1d989a9b3b6:
 
-  m68k/mac: Fix out-of-bounds array index in OSS IRQ source initialization (2015-03-30 10:14:34 +0200)
+  m68knommu: fix fec setup warning for ColdFire 5271 builds (2015-03-30 09:52:24 +1000)
 
 ----------------------------------------------------------------
-Dan Carpenter (1):
-      m68k/pci: Remove a superflous KERN_ERR
+Greg Ungerer (2):
+      m68knommu: ColdFire 5271 only has a single FEC controller
+      m68knommu: fix fec setup warning for ColdFire 5271 builds
 
-Finn Thain (1):
-      m68k/mac: Fix out-of-bounds array index in OSS IRQ source initialization
+Yannick Guerrini (1):
+      m68k: Fix trivial typos in comments
 
-Geert Uytterhoeven (3):
-      m68k: Remove FSF address
-      m68k/q40: Make NE2000 builtin instead of modular
-      m68k/defconfig: Update defconfigs for v4.0-rc1
-
- arch/m68k/configs/amiga_defconfig    | 3 +++
- arch/m68k/configs/apollo_defconfig   | 3 +++
- arch/m68k/configs/atari_defconfig    | 3 +++
- arch/m68k/configs/bvme6000_defconfig | 3 +++
- arch/m68k/configs/hp300_defconfig    | 3 +++
- arch/m68k/configs/mac_defconfig      | 3 +++
- arch/m68k/configs/multi_defconfig    | 3 +++
- arch/m68k/configs/mvme147_defconfig  | 3 +++
- arch/m68k/configs/mvme16x_defconfig  | 3 +++
- arch/m68k/configs/q40_defconfig      | 5 ++++-
- arch/m68k/configs/sun3_defconfig     | 3 +++
- arch/m68k/configs/sun3x_defconfig    | 3 +++
- arch/m68k/include/asm/mcfqspi.h      | 5 -----
- arch/m68k/kernel/pcibios.c           | 2 +-
- arch/m68k/lib/ashldi3.c              | 7 +------
- arch/m68k/lib/ashrdi3.c              | 7 +------
- arch/m68k/lib/divsi3.S               | 7 +------
- arch/m68k/lib/lshrdi3.c              | 7 +------
- arch/m68k/lib/modsi3.S               | 7 +------
- arch/m68k/lib/muldi3.c               | 7 +------
- arch/m68k/lib/mulsi3.S               | 7 +------
- arch/m68k/lib/udivsi3.S              | 7 +------
- arch/m68k/lib/umodsi3.S              | 7 +------
- arch/m68k/mac/oss.c                  | 3 +--
- 24 files changed, 48 insertions(+), 63 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+ arch/m68k/coldfire/m527x.c          | 3 ++-
+ arch/m68k/include/asm/m527xsim.h    | 2 ++
+ arch/m68k/include/asm/m68360_pram.h | 4 ++--
+ 3 files changed, 6 insertions(+), 3 deletions(-)
