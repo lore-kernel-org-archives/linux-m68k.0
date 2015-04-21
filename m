@@ -1,50 +1,82 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 4.1
-Date: Mon, 20 Apr 2015 11:40:01 +1000
-Message-ID: <201504200140.t3K1e1e8003814@goober.accelecon.com>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH v10 01/29] xen/PCI: Don't use deprecated function pci_scan_bus_parented()
+Date: Tue, 21 Apr 2015 19:34:20 +0800
+Message-ID: <1429616088-10249-2-git-send-email-wangyijing@huawei.com>
+References: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nschwmtas01p.mx.bigpond.com ([61.9.189.137]:40733 "EHLO
-	nschwmtas01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1751261AbbDTBje (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 19 Apr 2015 21:39:34 -0400
+In-Reply-To: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, xen-devel@lists.xenproject.org
 
-Hi Linus,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Can you please pull the m68knommu git tree, for-next branch.
-Nothing big, spelling fixes and fix/cleanup for ColdFire eth device setup.
+Use pci_scan_root_bus() instead of deprecated function
+pci_scan_bus_parented().
 
-Regards
-Greg
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+CC: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+CC: xen-devel@lists.xenproject.org
+---
+ drivers/pci/xen-pcifront.c |   16 +++++++++++++---
+ 1 files changed, 13 insertions(+), 3 deletions(-)
 
-
-
-
-The following changes since commit e42391cd048809d903291d07f86ed3934ce138e9:
-
-  Linux 4.0-rc6 (2015-03-29 15:26:31 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 6e4206136faa9a4d588946dfa604e1d989a9b3b6:
-
-  m68knommu: fix fec setup warning for ColdFire 5271 builds (2015-03-30 09:52:24 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (2):
-      m68knommu: ColdFire 5271 only has a single FEC controller
-      m68knommu: fix fec setup warning for ColdFire 5271 builds
-
-Yannick Guerrini (1):
-      m68k: Fix trivial typos in comments
-
- arch/m68k/coldfire/m527x.c          | 3 ++-
- arch/m68k/include/asm/m527xsim.h    | 2 ++
- arch/m68k/include/asm/m68360_pram.h | 4 ++--
- 3 files changed, 6 insertions(+), 3 deletions(-)
+diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+index b1ffebe..a69e529 100644
+--- a/drivers/pci/xen-pcifront.c
++++ b/drivers/pci/xen-pcifront.c
+@@ -446,9 +446,15 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 				 unsigned int domain, unsigned int bus)
+ {
+ 	struct pci_bus *b;
++	LIST_HEAD(resources);
+ 	struct pcifront_sd *sd = NULL;
+ 	struct pci_bus_entry *bus_entry = NULL;
+ 	int err = 0;
++	static struct resource busn_res = {
++		.start = 0,
++		.end = 255,
++		.flags = IORESOURCE_BUS,
++	};
+ 
+ #ifndef CONFIG_PCI_DOMAINS
+ 	if (domain != 0) {
+@@ -470,17 +476,21 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 		err = -ENOMEM;
+ 		goto err_out;
+ 	}
++	pci_add_resource(&resources, &ioport_resource);
++	pci_add_resource(&resources, &iomem_resource);
++	pci_add_resource(&resources, &busn_res);
+ 	pcifront_init_sd(sd, domain, bus, pdev);
+ 
+ 	pci_lock_rescan_remove();
+ 
+-	b = pci_scan_bus_parented(&pdev->xdev->dev, bus,
+-				  &pcifront_bus_ops, sd);
++	b = pci_scan_root_bus(&pdev->xdev->dev, bus,
++				  &pcifront_bus_ops, sd, &resources);
+ 	if (!b) {
+ 		dev_err(&pdev->xdev->dev,
+ 			"Error creating PCI Frontend Bus!\n");
+ 		err = -ENOMEM;
+ 		pci_unlock_rescan_remove();
++		pci_free_resource_list(&resources);
+ 		goto err_out;
+ 	}
+ 
+@@ -488,7 +498,7 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+ 
+ 	list_add(&bus_entry->list, &pdev->root_buses);
+ 
+-	/* pci_scan_bus_parented skips devices which do not have a have
++	/* pci_scan_root_bus skips devices which do not have a
+ 	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
+ 	err = pcifront_scan_bus(pdev, domain, bus, b);
+ 
+-- 
+1.7.1
