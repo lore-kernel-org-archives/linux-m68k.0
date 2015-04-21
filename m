@@ -1,7 +1,7 @@
 From: Yijing Wang <wangyijing@huawei.com>
-Subject: [PATCH v10 25/29] PCI/designware: Use pci_scan_root_bus() for simplicity
-Date: Tue, 21 Apr 2015 19:34:44 +0800
-Message-ID: <1429616088-10249-26-git-send-email-wangyijing__11780.0804357559$1429616882$gmane$org@huawei.com>
+Subject: [PATCH v10 08/29] PCI: Introduce pci_host_assign_domain_nr() to assign domain
+Date: Tue, 21 Apr 2015 19:34:27 +0800
+Message-ID: <1429616088-10249-9-git-send-email-wangyijing__32131.9212708206$1429616886$gmane$org@huawei.com>
 References: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -10,36 +10,80 @@ In-Reply-To: <1429616088-10249-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>, Mohit Kumar <mohit.kumar@st.com>, Jingoo Han <jg1.han@samsung.com>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-Use pci_scan_root_bus() instead of pci_create_root_bus() +
-pci_scan_child_bus() for simplicity.
+Introduce pci_host_assign_domain_nr() to assign domain
+number for pci_host_bridge. In the later patch, we would
+assign domain in pci_create_host_bridge, clean up the
+pci_bus_assign_domain_nr() and move this function into
+drivers/pci/host-bridge.c.
 
 Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-CC: Mohit Kumar <mohit.kumar@st.com>
-CC: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/pci/host/pcie-designware.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/pci/pci.c |   24 +++++++++++++++++++-----
+ drivers/pci/pci.h |    1 +
+ 2 files changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/host/pcie-designware.c b/drivers/pci/host/pcie-designware.c
-index 8854d25..f8d3424 100644
---- a/drivers/pci/host/pcie-designware.c
-+++ b/drivers/pci/host/pcie-designware.c
-@@ -728,13 +728,11 @@ static struct pci_bus *dw_pcie_scan_bus(int nr, struct pci_sys_data *sys)
- 	struct pcie_port *pp = sys_to_pcie(sys);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index acc4b6e..95ea445 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4506,10 +4506,10 @@ int pci_get_new_domain_nr(void)
+ }
  
- 	pp->root_bus_nr = sys->busnr;
--	bus = pci_create_root_bus(pp->dev, -1, &dw_pcie_ops, sys,
-+	bus = pci_scan_root_bus(pp->dev, -1, sys->busnr, &dw_pcie_ops, sys,
- 			&sys->resources);
- 	if (!bus)
- 		return NULL;
+ #ifdef CONFIG_PCI_DOMAINS_GENERIC
+-void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
++static int pci_assign_domain_nr(struct device *dev)
+ {
+ 	static int use_dt_domains = -1;
+-	int domain = of_get_pci_domain_nr(parent->of_node);
++	int domain = of_get_pci_domain_nr(dev->of_node);
  
--	pci_scan_child_bus(bus);
--
- 	if (bus && pp->ops->scan_bus)
- 		pp->ops->scan_bus(pp);
+ 	/*
+ 	 * Check DT domain and use_dt_domains values.
+@@ -4543,16 +4543,30 @@ void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
+ 		use_dt_domains = 0;
+ 		domain = pci_get_new_domain_nr();
+ 	} else {
+-		dev_err(parent, "Node %s has inconsistent \"linux,pci-domain\" property in DT\n",
+-			parent->of_node->full_name);
++		dev_err(dev, "Node %s has inconsistent \"linux,pci-domain\" property in DT\n",
++			dev->of_node->full_name);
+ 		domain = -1;
+ 	}
  
+-	bus->domain_nr = domain;
++	return domain;
++}
++
++void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
++{
++	bus->domain_nr = pci_assign_domain_nr(parent);
+ }
+ #endif
+ #endif
+ 
++void pci_host_assign_domain_nr(struct pci_host_bridge *host, int domain)
++{
++#ifdef CONFIG_PCI_DOMAINS_GENERIC
++	host->domain = pci_assign_domain_nr(host->dev.parent);
++#else
++	host->domain = domain;
++#endif
++}
++
+ /**
+  * pci_ext_cfg_avail - can we access extended PCI config space?
+  *
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index dbf1ac0..1e291e4 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -332,4 +332,5 @@ static inline void pci_bus_assign_domain_nr(struct pci_bus *bus,
+ }
+ #endif
+ 
++void pci_host_assign_domain_nr(struct pci_host_bridge *host, int domain);
+ #endif /* DRIVERS_PCI_H */
 -- 
 1.7.1
