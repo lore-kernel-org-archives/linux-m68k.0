@@ -1,300 +1,798 @@
-From: Yijing Wang <wangyijing@huawei.com>
-Subject: Re: [PATCH v10 00/29] Refine PCI scan interfaces and make generic
- pci host bridge
-Date: Mon, 27 Apr 2015 14:25:26 +0800
-Message-ID: <553DD656.7000401__38656.8158901811$1430116014$gmane$org@huawei.com>
-References: <1429616088-10249-1-git-send-email-wangyijing@huawei.com> <1430107754.6073.9.camel@axtens.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.1-rc1
+Date: Mon, 27 Apr 2015 11:20:26 +0200
+Message-ID: <1430126426-19372-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1430107754.6073.9.camel@axtens.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Daniel Axtens <dja@axtens.net>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jiang Liu <jiang.liu@linux.intel.com>, linux-pci@vger.kernel.org, Yinghai Lu <yinghai@kernel.org>, linux-kernel@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 2015/4/27 12:09, Daniel Axtens wrote:
-> Hi Yijing,
-> 
-> I'm wondering if you might get some more momentum on these changes if
-> we could split them into a few smaller patch sets. I think we might
-> then be able to start getting bits of this in for 4.2, which should help
-> with getting the rest of it in.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Updates for later releases may be squashed into this one later.
+---
+ arch/m68k/configs/amiga_defconfig    | 9 +++++++--
+ arch/m68k/configs/apollo_defconfig   | 9 +++++++--
+ arch/m68k/configs/atari_defconfig    | 9 +++++++--
+ arch/m68k/configs/bvme6000_defconfig | 9 +++++++--
+ arch/m68k/configs/hp300_defconfig    | 9 +++++++--
+ arch/m68k/configs/mac_defconfig      | 9 +++++++--
+ arch/m68k/configs/multi_defconfig    | 9 +++++++--
+ arch/m68k/configs/mvme147_defconfig  | 9 +++++++--
+ arch/m68k/configs/mvme16x_defconfig  | 9 +++++++--
+ arch/m68k/configs/q40_defconfig      | 9 +++++++--
+ arch/m68k/configs/sun3_defconfig     | 9 +++++++--
+ arch/m68k/configs/sun3x_defconfig    | 9 +++++++--
+ 12 files changed, 84 insertions(+), 24 deletions(-)
 
-Yes, I think this is a good idea, the whole series maybe a bit heavy,
-split it to several parts make it easier for folks to review and test the patchset.
-
-> 
-> I think there are a few things that would be easy to pull out.
-> 
->   * #1 (xen/PCI: Don't use deprecated function
->      pci_scan_bus_parented()) can go directly to Xen people and should
->      be easy to merge. #2 (PCI: Remove deprecated
->      pci_scan_bus_parented()) is then an easy fixup.
-
-I will poke Konrad to try to get some feedback.
-
-> 
->   * I think #12 (powerpc/PCI: Rename pcibios_root_bridge_prepare() to
->     pcibios_set_root_bus_speed()) could go to the PowerPC folks
->     individually. I'm not sure, however, that it's worth renaming it
->     and creating another function and another hook when no other arch
->     uses it. If mpe and benh don't want to pick it up, it'd be pretty
->     easy to take out set_root_bus_speed from the host_bridge_ops
->     struct, and this way we can still advance other parts of the
->     series.
-> 
->   * #16 (PCI: Introduce pci_bus_child_max_busnr()) is self-contained
->      and already has a user, so that should go in easily.
-> 
->   * The domain/bus numbering cleanup stuff could be broken out:
->     #3  (PCI: Save domain in pci_host_bridge)
->     #4  (PCI: Move pci_bus_assign_domain_nr() declaration into
-> drivers/pci/pci.h)
->     #8  (PCI: Introduce pci_host_assign_domain_nr() to assign domain),
->     #28 (PCI: Remove platform specific pci_domain_nr())
->     #29 (PCI: Remove pci_bus_assign_domain_nr())
-> 
-
-The domain number related changes could be pulled out first, in this part,
-try to remove arch spec pci_domain_nr().
-
-> 
-> 
-> I've done a bunch of rebasing and compiles to try to make sure all of
-> these proposed divisions work and there are no dependencies that I've
-> missed. It it's helpful, you can see what I've done at
-> https://github.com/daxtens/linux in the YijingWang-enumer10
-> branch. Feel free to use it as you wish.
-> 
-> I think the remaining 20 patches could probably be split again at least
-> once - it looks like the bus/bus numbering stuff might be easy to split
-> out? I might have a look again in a few days.
-
-Hi Daniel, thanks very much!
-I will try to reorganize these patches in two days.
-
-Thanks!
-Yijing.
-
-> 
-> Regards,
-> Daniel
-> 
-> My final set of series, using your original patch names:
-> 
-> Set 1 (Xen cleanup):
->   xen/PCI: Don't use deprecated function pci_scan_bus_parented()
->   PCI: Remove deprecated pci_scan_bus_parented()
-> 
-> Set 2 (PowerPC cleanup):
->   powerpc/PCI: Rename pcibios_root_bridge_prepare() to
->     pcibios_set_root_bus_speed()
-> 
-> Set 3: (could possibly be merged with set 4)
->   PCI: Introduce pci_bus_child_max_busnr()
-> 
-> Set 4: (_nr and friends)
->   PCI: Save domain in pci_host_bridge
->   PCI: Move pci_bus_assign_domain_nr() declaration into
->        drivers/pci/pci.h
->   PCI: Introduce pci_host_assign_domain_nr() to assign domain
->   PCI: Remove platform specific pci_domain_nr()
->   PCI: Remove pci_bus_assign_domain_nr()
-> 
-> Remainder:
->   PCI: Remove argument bus for pci_create_root_bus()
->   PCI: Alloc busn resource dynamically for pci_scan_bus()
->   PCI: Allocate busn resource for pci_scan_root_bus()
->   PCI: Separate pci_host_bridge creation out of pci_create_root_bus()
->   PCI: Introduce pci_host_bridge_list to manage host bridges
->   PCI: Save sysdata in pci_host_bridge drvdata  
->   PCI: Move pcibios_root_bridge_prepare() to pci_create_host_bridge()
->   PCI: Introduce pci_host_bridge_ops to support host specific
->     operations
->   PCI: Introduce new scan function pci_scan_host_bridge()
->   x86/PCI: Refine pci_acpi_scan_root() with generic pci_host_bridge
->   ia64/PCI: Refine pci_acpi_scan_root() with generic pci_host_bridge
->   powerpc/pci: Use pci_scan_host_bridge() for simplicity
->   PCI: Remove pcibios_root_bridge_prepare() and
->     pcibos_set_root_bus_speed()
->   sparc/PCI: Use pci_scan_host_bridge() for simplicity
->   parisc/PCI: Use pci_scan_root_bus() for simplicity
->   PCI/mvebu: Use pci_common_init_dev() to simplify code
->   PCI/tegra: Remove redundant tegra_pcie_scan_bus()
->   PCI/designware: Use pci_scan_root_bus() for simplicity
->   PCI/xgene: Use pci_scan_root_bus() instead of pci_create_root_bus()
->   PCI: Rename __pci_create_root_bus() to pci_create_root_bus()
-> 
-> On Tue, 2015-04-21 at 19:34 +0800, Yijing Wang wrote:
->> This series could be pulled from:
->> https://github.com/YijingWang/linux-pci.git enumer10
->>
->> v9->v10:
->> 	Dynamically allocate busn resource if callers don't supply.
->> 	Try to adjust busn resource if host bridge busn resource conlict.
->> 	Rebase whole series on Bjorn's latest pci-next branch.
->> 	Major v9->v10 changes are in patch 5,6,7,10.
->> v8->v9:
->> 	Add Thierry's Acked-by and Tested-by.
->> 	Fix the building error for powerpc found by Daniel.
->> 	Change pci_host_assign_domain_nr() to static.
->> v7->v8:
->> 	Fix some cross building errors found by kbuild test.
->> 	Drop the rename patch for find_pci_host_bridge().
->> v6->v7:
->> 	Drop previous patch which combined the domain and bus in one argument.
->> 	Make the pci_host_bridge hold the default busn resource, so we could
->> 	check whether new host busn resource is conflict with existing ones.
->> 	Move pci_host_assign_domain_nr() to drivers/pci/host-bridge.c
->> 	Other changes suggested by Bjorn and Suravee.
->> v5->v6:
->> 	Fix cross building errors found by kbuild test.
->> 	Export busn_resource to Xen pcifront driver.
->> v4->v5:
->> 	Fix some code style issues and rename some functions suggested by Bjorn.
->> 	Fix some code flaw(Eg. call pci_bus_add_devices() before resources claim
->> 	or lack the return checking).
->> v3->v4:
->> 	Fix the rebase issue.
->> v2->v3:
->> 	Rebase this series on v4.0-rc1.
->> v1->v2:
->> 	Split pci_host_bridge_list into a new patch, remove .phb_probe_mode
->> 	and rework powerpc .phb_of_scan_bus() for simpilicty suggested by
->> 	Arnd. Refresh some patch description log, and add a new patch to fix
->> 	build warning in ia64.
->>
->> This series is based on Bjorn's pci/enumeration branch.
->> You could pull it from https://github.com/YijingWang/linux-pci.git enumer9
->>
->> Now in kernel, we scan pci bus use the following ways:
->> 1. pci_scan_bus. 
->> 	parent = NULL, default io/mem/bus resources
->> 	call pci_bus_add_devices()
->>
->> 2. pci_scan_bus_parented() + pci_bus_add_devices()
->> 	default io/mem/bus resources, only used by xen
->>
->> 3. pci_scan_root_bus() + pci_bus_add_devices()
->>
->> 4. pci_create_root_bus() + pci_scan_child_bus() + pci_bus_add_devices()
->>
->> 5. pci_create_root_bus() + xx_of_scan_bus()  +  pci_bus_add_devices()
->>
->> And we have a lot of arch specific pci_domain_nr() and other platform
->> specific weak function like pcibios_root_bridge_prepare().
->>
->> After applied this series, we have following scan interfaces:
->>
->> 1. pci_scan_bus() 
->> 	parent = NULL, default io/mem/bus resources.
->> 	for legacy pci scan
->>
->> 2. pci_scan_root_bus()
->> 	for callers provide its own parent and io/mem/bus resources
->> 	but no platform specific pci_host_bridge operations
->>
->> 3. pci_scan_host_bridge()
->> 	for callers provide its own parent and io/mem/bus resources
->>
->>
->>
->> Arnd Bergmann (1):
->>   xen/PCI: Don't use deprecated function pci_scan_bus_parented()
->>
->> Yijing Wang (28):
->>   PCI: Remove deprecated pci_scan_bus_parented()
->>   PCI: Save domain in pci_host_bridge
->>   PCI: Move pci_bus_assign_domain_nr() declaration into
->>     drivers/pci/pci.h
->>   PCI: Remove argument bus for pci_create_root_bus()
->>   PCI: Alloc busn resource dynamically for pci_scan_bus()
->>   PCI: Allocate busn resource for pci_scan_root_bus()
->>   PCI: Introduce pci_host_assign_domain_nr() to assign domain
->>   PCI: Separate pci_host_bridge creation out of pci_create_root_bus()
->>   PCI: Introduce pci_host_bridge_list to manage host bridges
->>   PCI: Save sysdata in pci_host_bridge drvdata
->>   powerpc/PCI: Rename pcibios_root_bridge_prepare() to
->>     pcibios_set_root_bus_speed()
->>   PCI: Move pcibios_root_bridge_prepare() to pci_create_host_bridge()
->>   PCI: Introduce pci_host_bridge_ops to support host specific
->>     operations
->>   PCI: Introduce new scan function pci_scan_host_bridge()
->>   PCI: Introduce pci_bus_child_max_busnr()
->>   x86/PCI: Refine pci_acpi_scan_root() with generic pci_host_bridge
->>   ia64/PCI: Refine pci_acpi_scan_root() with generic pci_host_bridge
->>   powerpc/pci: Use pci_scan_host_bridge() for simplicity
->>   PCI: Remove pcibios_root_bridge_prepare() and
->>     pcibos_set_root_bus_speed()
->>   sparc/PCI: Use pci_scan_host_bridge() for simplicity
->>   parisc/PCI: Use pci_scan_root_bus() for simplicity
->>   PCI/mvebu: Use pci_common_init_dev() to simplify code
->>   PCI/tegra: Remove redundant tegra_pcie_scan_bus()
->>   PCI/designware: Use pci_scan_root_bus() for simplicity
->>   PCI/xgene: Use pci_scan_root_bus() instead of pci_create_root_bus()
->>   PCI: Rename __pci_create_root_bus() to pci_create_root_bus()
->>   PCI: Remove platform specific pci_domain_nr()
->>   PCI: Remove pci_bus_assign_domain_nr()
->>
->>  arch/alpha/include/asm/pci.h             |    2 -
->>  arch/alpha/kernel/pci.c                  |    4 +-
->>  arch/alpha/kernel/sys_nautilus.c         |    2 +-
->>  arch/arm/kernel/bios32.c                 |    2 +-
->>  arch/arm/mach-dove/pcie.c                |    2 +-
->>  arch/arm/mach-iop13xx/pci.c              |    4 +-
->>  arch/arm/mach-mv78xx0/pcie.c             |    2 +-
->>  arch/arm/mach-orion5x/pci.c              |    4 +-
->>  arch/frv/mb93090-mb00/pci-vdk.c          |    3 +-
->>  arch/ia64/include/asm/pci.h              |    1 -
->>  arch/ia64/pci/pci.c                      |   35 ++--
->>  arch/ia64/sn/kernel/io_init.c            |    4 +-
->>  arch/m68k/coldfire/pci.c                 |    2 +-
->>  arch/microblaze/pci/pci-common.c         |   15 +--
->>  arch/mips/include/asm/pci.h              |    2 -
->>  arch/mips/pci/pci.c                      |    4 +-
->>  arch/mn10300/unit-asb2305/pci.c          |    3 +-
->>  arch/powerpc/include/asm/machdep.h       |    2 +-
->>  arch/powerpc/kernel/pci-common.c         |   79 +++++-----
->>  arch/powerpc/platforms/pseries/pci.c     |    8 +-
->>  arch/powerpc/platforms/pseries/pseries.h |    2 +-
->>  arch/powerpc/platforms/pseries/setup.c   |    2 +-
->>  arch/s390/pci/pci.c                      |   10 +-
->>  arch/sh/drivers/pci/pci.c                |    4 +-
->>  arch/sh/include/asm/pci.h                |    2 -
->>  arch/sparc/kernel/leon_pci.c             |    2 +-
->>  arch/sparc/kernel/pci.c                  |   45 +++---
->>  arch/sparc/kernel/pcic.c                 |    2 +-
->>  arch/tile/include/asm/pci.h              |    2 -
->>  arch/tile/kernel/pci.c                   |    4 +-
->>  arch/tile/kernel/pci_gx.c                |    4 +-
->>  arch/unicore32/kernel/pci.c              |    2 +-
->>  arch/x86/include/asm/pci.h               |    6 -
->>  arch/x86/pci/acpi.c                      |   37 +++--
->>  arch/x86/pci/common.c                    |    2 +-
->>  arch/xtensa/kernel/pci.c                 |    2 +-
->>  drivers/parisc/dino.c                    |    6 +-
->>  drivers/parisc/lba_pci.c                 |    6 +-
->>  drivers/pci/host-bridge.c                |  223 +++++++++++++++++++++++++
->>  drivers/pci/host/pci-mvebu.c             |   18 +--
->>  drivers/pci/host/pci-tegra.c             |   16 --
->>  drivers/pci/host/pci-versatile.c         |    3 +-
->>  drivers/pci/host/pci-xgene.c             |    5 +-
->>  drivers/pci/host/pcie-designware.c       |    6 +-
->>  drivers/pci/host/pcie-xilinx.c           |    2 +-
->>  drivers/pci/hotplug/acpiphp_glue.c       |   29 +---
->>  drivers/pci/hotplug/ibmphp_core.c        |    2 +-
->>  drivers/pci/pci.c                        |   85 +++-------
->>  drivers/pci/pci.h                        |    5 +
->>  drivers/pci/probe.c                      |  265 ++++++++++++++---------------
->>  drivers/pci/xen-pcifront.c               |   16 ++-
->>  include/linux/pci.h                      |   45 +++---
->>  52 files changed, 573 insertions(+), 467 deletions(-)
->>
-> 
-
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index ed1643b4c67893b6..2d4e8be0e9a3f826 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -177,9 +177,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -267,7 +267,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -285,6 +287,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -324,6 +327,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -348,6 +352,7 @@ CONFIG_VETH=m
+ CONFIG_A2065=y
+ CONFIG_ARIADNE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_CIRRUS is not set
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -414,7 +419,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_MSM6242=m
+@@ -576,5 +580,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index d38822b1847ee272..65b8ccdfbb2ab67a 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -175,9 +175,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -265,7 +265,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -277,6 +279,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -306,6 +309,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -327,6 +331,7 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -375,7 +380,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -534,5 +538,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index cdcfa080047cb8f0..c7f197b617c32949 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -175,9 +175,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -265,7 +265,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -281,6 +283,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -315,6 +318,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -337,6 +341,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_ATARILANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -391,7 +396,6 @@ CONFIG_DMASOUND_ATARI=m
+ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+-# CONFIG_HID_PLANTRONICS is not set
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=m
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+@@ -566,5 +570,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 9b880371d6421ec9..cc0138e1d296ff8d 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -173,9 +173,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -263,7 +263,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -275,6 +277,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -305,6 +308,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -326,6 +330,7 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_BVME6000_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -369,7 +374,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -527,5 +531,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 49ae3376e993a50f..86352279eb4f7141 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -175,9 +175,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -265,7 +265,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -277,6 +279,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -306,6 +309,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -328,6 +332,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_HPLANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -378,7 +383,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -536,5 +540,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index ee143a57058cb93e..61e3be5ca8189bf6 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -174,9 +174,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -267,7 +267,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -280,6 +282,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -315,6 +318,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -344,6 +348,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_MACMACE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_INTEL is not set
+@@ -400,7 +405,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -558,5 +562,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index c777aa05048f0bad..7a4d4214bfe6efa4 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -184,9 +184,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -277,7 +277,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -299,6 +301,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -348,6 +351,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -384,6 +388,7 @@ CONFIG_MVME147_NET=y
+ CONFIG_SUN3LANCE=y
+ CONFIG_MACMACE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -468,7 +473,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_MSM6242=m
+@@ -638,5 +642,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index a7628a85e260ddab..1a1dd0c100b06ff0 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -172,9 +172,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -262,7 +262,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -274,6 +276,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -304,6 +307,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -326,6 +330,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_MVME147_NET=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -369,7 +374,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -527,5 +531,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index ebaa68268a4a5f35..3be02020feb288a9 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -173,9 +173,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -263,7 +263,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -275,6 +277,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -305,6 +308,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -326,6 +330,7 @@ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ CONFIG_MVME16x_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -369,7 +374,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -527,5 +531,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 2c16853aedd350b8..91a7a445c754a6b2 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -173,9 +173,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -263,7 +263,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -278,6 +280,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -311,6 +314,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -334,6 +338,7 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_3COM is not set
+ # CONFIG_NET_VENDOR_AMD is not set
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_CIRRUS is not set
+ # CONFIG_NET_VENDOR_HP is not set
+@@ -390,7 +395,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -549,5 +553,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index e3056bf0f65bdea7..bc7c7f9cbd94954d 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -170,9 +170,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -260,7 +260,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -272,6 +274,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -302,6 +305,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -324,6 +328,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_SUN3LANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ CONFIG_SUN3_82586=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+@@ -370,7 +375,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -527,5 +531,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 73c36b7a000978cf..42da1a1d0fa2365e 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -170,9 +170,9 @@ CONFIG_IP_SET_HASH_NETPORT=m
+ CONFIG_IP_SET_HASH_NETIFACE=m
+ CONFIG_IP_SET_LIST_SET=m
+ CONFIG_NF_CONNTRACK_IPV4=m
+-CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_ROUTE_IPV4=m
+ CONFIG_NF_TABLES_ARP=m
++CONFIG_NF_LOG_ARP=m
+ CONFIG_NFT_CHAIN_NAT_IPV4=m
+ CONFIG_NFT_MASQ_IPV4=m
+ CONFIG_NFT_REDIR_IPV4=m
+@@ -260,7 +260,9 @@ CONFIG_BATMAN_ADV_DAT=y
+ CONFIG_BATMAN_ADV_NC=y
+ CONFIG_BATMAN_ADV_MCAST=y
+ CONFIG_NETLINK_DIAG=m
++CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
++CONFIG_MPLS_ROUTING=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -272,6 +274,7 @@ CONFIG_BLK_DEV_CRYPTOLOOP=m
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_PMEM=m
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+@@ -302,6 +305,7 @@ CONFIG_DM_RAID=m
+ CONFIG_DM_ZERO=m
+ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_UEVENT=y
++CONFIG_DM_LOG_WRITES=m
+ CONFIG_TARGET_CORE=m
+ CONFIG_TCM_IBLOCK=m
+ CONFIG_TCM_FILEIO=m
+@@ -324,6 +328,7 @@ CONFIG_NETCONSOLE_DYNAMIC=y
+ CONFIG_VETH=m
+ CONFIG_SUN3LANCE=y
+ # CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+@@ -370,7 +375,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_PLANTRONICS is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_GENERIC=m
+@@ -528,5 +532,6 @@ CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
++CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_XZ_DEC_TEST=m
 -- 
-Thanks!
-Yijing
+1.9.1
