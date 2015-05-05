@@ -1,43 +1,71 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 01/10] m68k: use for_each_sg()
-Date: Mon, 4 May 2015 11:04:31 +0200
-Message-ID: <CAMuHMdVT6wMjj3kf64T12KiVXYwET3LySNbmbgUyOXX3UpO1oQ__8251.34379924766$1430730294$gmane$org@mail.gmail.com>
-References: <1430488603-11055-1-git-send-email-akinobu.mita@gmail.com>
+From: "Robin Mischeff" <aggie@idroesse.com>
+Subject: "UniCredit  International Holdings LLC"
+Date: Tue, 5 May 2015 14:25:47 -0700
+Message-ID: <E1Ypmvs-0007ry-Tv__31549.1574503996$1430907917$gmane$org@sweeper-03.cybersmart.co.za>
+Reply-To: <unicredit0transfer@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1430488603-11055-1-git-send-email-akinobu.mita@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>
 
-On Fri, May 1, 2015 at 3:56 PM, Akinobu Mita <akinobu.mita@gmail.com> wrote:
-> This replaces the plain loop over the sglist array with for_each_sg()
-> macro which consists of sg_next() function calls.  Since m68k doesn't
-> select ARCH_HAS_SG_CHAIN, it is not necessary to use for_each_sg() in
-> order to loop over each sg element.  But this can help find problems
-> with drivers that do not properly initialize their sg tables when
-> CONFIG_DEBUG_SG is enabled.
->
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-arch@vger.kernel.org
-> ---
-> * Changes from v1
-> - Update commit log
+From: "UniCredit  International Holdings LLC"
+Reply-To: <unicredit0transfer@gmail.com>
+Subject: $$$$$$$$$$$$ GET 2% OFFER NOW $$$$$$
 
-Thanks, applied, and queued for v4.2.
 
-Gr{oetje,eeting}s,
+Sender: UniCredit  International Holdings LLC (unicredit0transfer@gmail.com)
+SA Office: sunny park Esselen road, Pretoria,Gauteng 0002, South Africa
+Telephone: +278 4890 6721
+Email: (unicredit0transfer@gmail.com)
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+Welcome to UniCredit  International Holdings LLC. Here all problem regarding loan is solved between a short period of time.
+With a low interest rate of 2% and loan duration more than 15 years and above.
+What are you waiting for ? Apply now and solve your problem or start a business with our fast loan.
+
+Say no more to High Bank rate and Collateral Bargain. Apply for 2% loan and get money in your bank account instantly without any fixed collateral.
+UniCredit  International Holdings LLC. to provide one final solutions to your finances.
+
+For more Information, Kindly Email us: unicredit0transfer@gmail.com
+
+UniCredit  International Holdings LLC. We are efficient,Dynamic and Reliable.
+
+TYPE OF LOAN SERVICES.
+# Bad Credit Loan
+# Consolidation Loan
+# Debt Consolidation Loans
+# Fast Consolidation Loans
+# Finance Loans
+# Home Loans
+# Loans To Clear Credit Cards
+# Loans for Any Purpose
+# Poor Credit Loan
+# Quick Decision Loans
+# Secured Homeowner Loans
+# Self Employed Loans
+# Loan Providers
+# Finance Blog
+# Tenant Loans
+# School Loans
+# Business Loans
+# Wedding Loans
+# Constructions Loans
+# Auto Loans
+# Company Loans
+# Secured and Unsecured Loans
+
+
+For more Information Kindly contact U.I.H LLC. Head Office
+
+London: 64 Eaton Place, London SW1X 8AT, UK
+Telephone: +447 (937) 414 029 6964, Fax: +44 (0) 207 235 7570
+Email: unicredit0transfer@gmail.com
+SA Office: sunny park Esselen road, Pretoria,Gauteng 0002, South Africa
+
+
+**Powered by ** U.I.H LLC. Holdings **
