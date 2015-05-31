@@ -1,75 +1,105 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC 13/24] powerpc: Cleanup nvram includes
-Date: Sun, 31 May 2015 11:01:45 +1000
-Message-ID: <20150531010135.589206045@telegraphics.com.au>
+Subject: [RFC 07/24] x86/thinkpad_acpi: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
+Date: Sun, 31 May 2015 11:01:39 +1000
+Message-ID: <20150531010134.129479218@telegraphics.com.au>
 References: <20150531010132.289674310@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline; filename=powerpc-fix-nvram-includes
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Content-Disposition: inline; filename=pc-rtc-replace-exported-nvram-functions
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Darren Hart <dvhart@infradead.org>, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-VGhlIG52cmFtX3JlYWRfYnl0ZSgpIGFuZCBudnJhbV93cml0ZV9ieXRlKCkgZGVmaW5pdGlvbnMg
-aW4gYXNtL252cmFtLmgKZHVwbGljYXRlIHRob3NlIGluIGxpbnV4L252cmFtLmguIEdldCByaWQg
-b2YgdGhlIGZvcm1lciB0byBwcmVwYXJlIGZvcgphZG9wdGlvbiBvZiBzdHJ1Y3QgYXJjaF9udnJh
-bV9vcHMgKHdoaWNoIGlzIGRlZmluZWQgaW4gbGludXgvbnZyYW0uaCBmb3IKZ2VuZXJhbCB1c2Up
-LgoKU2lnbmVkLW9mZi1ieTogRmlubiBUaGFpbiA8ZnRoYWluQHRlbGVncmFwaGljcy5jb20uYXU+
-CgotLS0KIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9udnJhbS5oICAgICAgICAgICB8ICAgIDMg
-LS0tCiBhcmNoL3Bvd2VycGMva2VybmVsL3NldHVwXzMyLmMgICAgICAgICAgICAgfCAgICAxICsK
-IGRyaXZlcnMvY2hhci9nZW5lcmljX252cmFtLmMgICAgICAgICAgICAgICB8ICAgIDQgKysrLQog
-ZHJpdmVycy92aWRlby9mYmRldi9tYXRyb3gvbWF0cm94ZmJfYmFzZS5jIHwgICAgMiArLQogNCBm
-aWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpJbmRleDogbGlu
-dXgvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL252cmFtLmgKPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgu
-b3JpZy9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vbnZyYW0uaAkyMDE1LTA1LTMxIDExOjAwOjU5
-LjAwMDAwMDAwMCArMTAwMAorKysgbGludXgvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL252cmFt
-LmgJMjAxNS0wNS0zMSAxMTowMToxMy4wMDAwMDAwMDAgKzEwMDAKQEAgLTEwMSw3ICsxMDEsNCBA
-QCBleHRlcm4gaW50IG52cmFtX3dyaXRlX29zX3BhcnRpdGlvbihzdHJ1CiAvKiBEZXRlcm1pbmUg
-TlZSQU0gc2l6ZSAqLwogZXh0ZXJuIHNzaXplX3QgbnZyYW1fZ2V0X3NpemUodm9pZCk7CiAKLS8q
-IE5vcm1hbCBhY2Nlc3MgdG8gTlZSQU0gKi8KLWV4dGVybiB1bnNpZ25lZCBjaGFyIG52cmFtX3Jl
-YWRfYnl0ZShpbnQgaSk7Ci1leHRlcm4gdm9pZCBudnJhbV93cml0ZV9ieXRlKHVuc2lnbmVkIGNo
-YXIgYywgaW50IGkpOwogI2VuZGlmIC8qIF9BU01fUE9XRVJQQ19OVlJBTV9IICovCkluZGV4OiBs
-aW51eC9hcmNoL3Bvd2VycGMva2VybmVsL3NldHVwXzMyLmMKPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgu
-b3JpZy9hcmNoL3Bvd2VycGMva2VybmVsL3NldHVwXzMyLmMJMjAxNS0wNS0zMSAxMTowMDo1OS4w
-MDAwMDAwMDAgKzEwMDAKKysrIGxpbnV4L2FyY2gvcG93ZXJwYy9rZXJuZWwvc2V0dXBfMzIuYwky
-MDE1LTA1LTMxIDExOjAxOjEzLjAwMDAwMDAwMCArMTAwMApAQCAtMTYsNiArMTYsNyBAQAogI2lu
-Y2x1ZGUgPGxpbnV4L2NwdS5oPgogI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4KICNpbmNsdWRl
-IDxsaW51eC9tZW1ibG9jay5oPgorI2luY2x1ZGUgPGxpbnV4L252cmFtLmg+CiAKICNpbmNsdWRl
-IDxhc20vaW8uaD4KICNpbmNsdWRlIDxhc20vcHJvbS5oPgpJbmRleDogbGludXgvZHJpdmVycy9j
-aGFyL2dlbmVyaWNfbnZyYW0uYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmlnL2RyaXZlcnMvY2hh
-ci9nZW5lcmljX252cmFtLmMJMjAxNS0wNS0zMSAxMTowMDo1OS4wMDAwMDAwMDAgKzEwMDAKKysr
-IGxpbnV4L2RyaXZlcnMvY2hhci9nZW5lcmljX252cmFtLmMJMjAxNS0wNS0zMSAxMTowMToxMy4w
-MDAwMDAwMDAgKzEwMDAKQEAgLTIwLDkgKzIwLDExIEBACiAjaW5jbHVkZSA8bGludXgvZmNudGwu
-aD4KICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+CiAjaW5jbHVkZSA8bGludXgvbXV0ZXguaD4KKyNp
-bmNsdWRlIDxsaW51eC9udnJhbS5oPgogI2luY2x1ZGUgPGFzbS91YWNjZXNzLmg+Ci0jaW5jbHVk
-ZSA8YXNtL252cmFtLmg+CisKICNpZmRlZiBDT05GSUdfUFBDX1BNQUMKKyNpbmNsdWRlIDxhc20v
-bnZyYW0uaD4KICNpbmNsdWRlIDxhc20vbWFjaGRlcC5oPgogI2VuZGlmCiAKSW5kZXg6IGxpbnV4
-L2RyaXZlcnMvdmlkZW8vZmJkZXYvbWF0cm94L21hdHJveGZiX2Jhc2UuYwo9PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0t
-LSBsaW51eC5vcmlnL2RyaXZlcnMvdmlkZW8vZmJkZXYvbWF0cm94L21hdHJveGZiX2Jhc2UuYwky
-MDE1LTA1LTMxIDExOjAwOjU5LjAwMDAwMDAwMCArMTAwMAorKysgbGludXgvZHJpdmVycy92aWRl
-by9mYmRldi9tYXRyb3gvbWF0cm94ZmJfYmFzZS5jCTIwMTUtMDUtMzEgMTE6MDE6MTMuMDAwMDAw
-MDAwICsxMDAwCkBAIC0xMTEsMTIgKzExMSwxMiBAQAogI2luY2x1ZGUgIm1hdHJveGZiX2c0NTAu
-aCIKICNpbmNsdWRlIDxsaW51eC9tYXRyb3hmYi5oPgogI2luY2x1ZGUgPGxpbnV4L2ludGVycnVw
-dC5oPgorI2luY2x1ZGUgPGxpbnV4L252cmFtLmg+CiAjaW5jbHVkZSA8bGludXgvc2xhYi5oPgog
-I2luY2x1ZGUgPGxpbnV4L3VhY2Nlc3MuaD4KIAogI2lmZGVmIENPTkZJR19QUENfUE1BQwogI2lu
-Y2x1ZGUgPGFzbS9tYWNoZGVwLmg+Ci11bnNpZ25lZCBjaGFyIG52cmFtX3JlYWRfYnl0ZShpbnQp
-Owogc3RhdGljIGludCBkZWZhdWx0X3Ztb2RlID0gVk1PREVfTlZSQU07CiBzdGF0aWMgaW50IGRl
-ZmF1bHRfY21vZGUgPSBDTU9ERV9OVlJBTTsKICNlbmRpZgoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGlu
-dXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3Rp
-bmZvL2xpbnV4cHBjLWRldg==
+Make use of arch_nvram_ops in the thinkpad_acpi driver so that the
+nvram_* function exports can be removed.
+
+This patch series was tested on a ThinkPad T43.
+
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+ drivers/platform/x86/thinkpad_acpi.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+Index: linux/drivers/platform/x86/thinkpad_acpi.c
+===================================================================
+--- linux.orig/drivers/platform/x86/thinkpad_acpi.c	2015-05-31 11:00:59.000000000 +1000
++++ linux/drivers/platform/x86/thinkpad_acpi.c	2015-05-31 11:01:07.000000000 +1000
+@@ -2311,30 +2311,30 @@ static void hotkey_read_nvram(struct tp_
+ 	u8 d;
+ 
+ 	if (m & TP_NVRAM_HKEY_GROUP_HK2) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_HK2);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_HK2);
+ 		n->thinkpad_toggle = !!(d & TP_NVRAM_MASK_HKT_THINKPAD);
+ 		n->zoom_toggle = !!(d & TP_NVRAM_MASK_HKT_ZOOM);
+ 		n->display_toggle = !!(d & TP_NVRAM_MASK_HKT_DISPLAY);
+ 		n->hibernate_toggle = !!(d & TP_NVRAM_MASK_HKT_HIBERNATE);
+ 	}
+ 	if (m & TP_ACPI_HKEY_THNKLGHT_MASK) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_THINKLIGHT);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_THINKLIGHT);
+ 		n->thinklight_toggle = !!(d & TP_NVRAM_MASK_THINKLIGHT);
+ 	}
+ 	if (m & TP_ACPI_HKEY_DISPXPAND_MASK) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_VIDEO);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_VIDEO);
+ 		n->displayexp_toggle =
+ 				!!(d & TP_NVRAM_MASK_HKT_DISPEXPND);
+ 	}
+ 	if (m & TP_NVRAM_HKEY_GROUP_BRIGHTNESS) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
+ 		n->brightness_level = (d & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 				>> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
+ 		n->brightness_toggle =
+ 				!!(d & TP_NVRAM_MASK_HKT_BRIGHTNESS);
+ 	}
+ 	if (m & TP_NVRAM_HKEY_GROUP_VOLUME) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
+ 		n->volume_level = (d & TP_NVRAM_MASK_LEVEL_VOLUME)
+ 				>> TP_NVRAM_POS_LEVEL_VOLUME;
+ 		n->mute = !!(d & TP_NVRAM_MASK_MUTE);
+@@ -6153,7 +6153,7 @@ static unsigned int tpacpi_brightness_nv
+ {
+ 	u8 lnvram;
+ 
+-	lnvram = (nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
++	lnvram = (arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
+ 		  & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 		  >> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
+ 	lnvram &= bright_maxlvl;
+@@ -6178,7 +6178,7 @@ static void tpacpi_brightness_checkpoint
+ 	if (unlikely(!acpi_ec_read(TP_EC_BACKLIGHT, &lec)))
+ 		goto unlock;
+ 	lec &= TP_EC_BACKLIGHT_LVLMSK;
+-	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
++	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
+ 
+ 	if (lec != ((b_nvram & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 			     >> TP_NVRAM_POS_LEVEL_BRIGHTNESS)) {
+@@ -6186,7 +6186,7 @@ static void tpacpi_brightness_checkpoint
+ 		b_nvram &= ~(TP_NVRAM_MASK_LEVEL_BRIGHTNESS <<
+ 				TP_NVRAM_POS_LEVEL_BRIGHTNESS);
+ 		b_nvram |= lec;
+-		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
++		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
+ 		dbg_printk(TPACPI_DBG_BRGHT,
+ 			   "updated NVRAM backlight level to %u (0x%02x)\n",
+ 			   (unsigned int) lec, (unsigned int) b_nvram);
+@@ -6794,13 +6794,13 @@ static void tpacpi_volume_checkpoint_nvr
+ 	if (unlikely(!acpi_ec_read(TP_EC_AUDIO, &lec)))
+ 		goto unlock;
+ 	lec &= ec_mask;
+-	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
++	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
+ 
+ 	if (lec != (b_nvram & ec_mask)) {
+ 		/* NVRAM needs update */
+ 		b_nvram &= ~ec_mask;
+ 		b_nvram |= lec;
+-		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
++		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
+ 		dbg_printk(TPACPI_DBG_MIXER,
+ 			   "updated NVRAM mixer status to 0x%02x (0x%02x)\n",
+ 			   (unsigned int) lec, (unsigned int) b_nvram);
