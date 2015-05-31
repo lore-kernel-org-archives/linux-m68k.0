@@ -1,156 +1,158 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC 01/24] macintosh/nvram: Remove as unused
-Date: Sun, 31 May 2015 11:01:33 +1000
-Message-ID: <20150531010132.549451549@telegraphics.com.au>
+Subject: [RFC 08/24] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
+Date: Sun, 31 May 2015 11:01:40 +1000
+Message-ID: <20150531010134.369458269@telegraphics.com.au>
 References: <20150531010132.289674310@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47195 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47196 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757798AbbEaBRD (ORCPT
+	with ESMTP id S1757801AbbEaBRD (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 30 May 2015 21:17:03 -0400
-Content-Disposition: inline; filename=macintosh-nvram-remove
+Content-Disposition: inline; filename=nvram-generalize-ioctl
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+The drivers/char/nvram module has previously only supported RTC "CMOS"
+NVRAM, for which it provides appropriate checksum ioctls. Make these
+ioctls optional so the module can be re-used with other kinds of NVRAM.
+
+The ops struct methods that implement the ioctls now return error
+codes so that a multi-platform kernel binary can do the right thing when
+running on hardware without suitable NVRAM.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/macintosh/nvram.c |  130 ----------------------------------------------
- 1 file changed, 130 deletions(-)
+ drivers/char/nvram.c  |   61 ++++++++++++++++++++++++++++----------------------
+ include/linux/nvram.h |    2 +
+ 2 files changed, 37 insertions(+), 26 deletions(-)
 
-Index: linux/drivers/macintosh/nvram.c
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/macintosh/nvram.c	2015-05-31 11:00:59.000000000 +1000
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,130 +0,0 @@
--/*
-- * /dev/nvram driver for Power Macintosh.
-- */
+--- linux.orig/drivers/char/nvram.c	2015-05-31 11:01:06.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-05-31 11:01:08.000000000 +1000
+@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
+ 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+ }
+ 
+-#if 0
+-void nvram_set_checksum(void)
++static long nvram_set_checksum(void)
+ {
+-	unsigned long flags;
++	spin_lock_irq(&rtc_lock);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
++}
++
++static long nvram_initialize(void)
++{
++	ssize_t i;
+ 
+-	spin_lock_irqsave(&rtc_lock, flags);
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		__nvram_write_byte(0, i);
+ 	__nvram_set_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
++	spin_unlock_irq(&rtc_lock);
++	return 0;
+ }
+-#endif  /*  0  */
+ 
+ static ssize_t nvram_get_size(void)
+ {
+@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
+ 	.read_byte      = nvram_read_byte,
+ 	.write_byte     = nvram_write_byte,
+ 	.get_size       = nvram_get_size,
++	.set_checksum   = nvram_set_checksum,
++	.initialize     = nvram_initialize,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+@@ -272,26 +283,19 @@ checksum_err:
+ static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
+                              unsigned long arg)
+ {
+-	int i;
++	long ret = -ENOTTY;
+ 
+ 	switch (cmd) {
 -
--#define NVRAM_VERSION "1.0"
+ 	case NVRAM_INIT:
+ 		/* initialize NVRAM contents and checksum */
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
+ 
+ 		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
 -
--#include <linux/module.h>
+-		for (i = 0; i < NVRAM_BYTES; ++i)
+-			__nvram_write_byte(0, i);
+-		__nvram_set_checksum();
 -
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/fs.h>
--#include <linux/miscdevice.h>
--#include <linux/fcntl.h>
--#include <linux/nvram.h>
--#include <linux/init.h>
--#include <asm/uaccess.h>
--#include <asm/nvram.h>
+-		spin_unlock_irq(&rtc_lock);
++		if (arch_nvram_ops.initialize != NULL)
++			ret = arch_nvram_ops.initialize();
+ 		mutex_unlock(&nvram_mutex);
+-		return 0;
 -
--#define NVRAM_SIZE	8192
++		break;
+ 	case NVRAM_SETCKS:
+ 		/* just set checksum, contents unchanged (maybe useful after
+ 		 * checksum garbaged somehow...) */
+@@ -299,24 +303,29 @@ static long nvram_misc_ioctl(struct file
+ 			return -EACCES;
+ 
+ 		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
+-		__nvram_set_checksum();
+-		spin_unlock_irq(&rtc_lock);
++		if (arch_nvram_ops.set_checksum != NULL)
++			ret = arch_nvram_ops.set_checksum();
+ 		mutex_unlock(&nvram_mutex);
+-		return 0;
 -
--static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
--{
--	switch (origin) {
--	case 0:
--		break;
--	case 1:
--		offset += file->f_pos;
--		break;
--	case 2:
--		offset += NVRAM_SIZE;
--		break;
 -	default:
--		offset = -1;
--	}
--	if (offset < 0)
--		return -EINVAL;
--
--	file->f_pos = offset;
--	return file->f_pos;
--}
--
--static ssize_t read_nvram(struct file *file, char __user *buf,
--			  size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	char __user *p = buf;
--
--	if (!access_ok(VERIFY_WRITE, buf, count))
--		return -EFAULT;
--	if (*ppos >= NVRAM_SIZE)
--		return 0;
--	for (i = *ppos; count > 0 && i < NVRAM_SIZE; ++i, ++p, --count)
--		if (__put_user(nvram_read_byte(i), p))
--			return -EFAULT;
--	*ppos = i;
--	return p - buf;
--}
--
--static ssize_t write_nvram(struct file *file, const char __user *buf,
--			   size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	const char __user *p = buf;
--	char c;
--
--	if (!access_ok(VERIFY_READ, buf, count))
--		return -EFAULT;
--	if (*ppos >= NVRAM_SIZE)
--		return 0;
--	for (i = *ppos; count > 0 && i < NVRAM_SIZE; ++i, ++p, --count) {
--		if (__get_user(c, p))
--			return -EFAULT;
--		nvram_write_byte(c, i);
--	}
--	*ppos = i;
--	return p - buf;
--}
--
--static long nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	switch(cmd) {
--		case PMAC_NVRAM_GET_OFFSET:
--		{
--			int part, offset;
--			if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
--				return -EFAULT;
--			if (part < pmac_nvram_OF || part > pmac_nvram_NR)
--				return -EINVAL;
--			offset = pmac_get_partition(part);
--			if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
--				return -EFAULT;
--			break;
--		}
--
--		default:
--			return -EINVAL;
--	}
--
--	return 0;
--}
--
--const struct file_operations nvram_fops = {
--	.owner		= THIS_MODULE,
--	.llseek		= nvram_llseek,
--	.read		= read_nvram,
--	.write		= write_nvram,
--	.unlocked_ioctl	= nvram_ioctl,
--};
--
--static struct miscdevice nvram_dev = {
--	NVRAM_MINOR,
--	"nvram",
--	&nvram_fops
--};
--
--int __init nvram_init(void)
--{
--	printk(KERN_INFO "Macintosh non-volatile memory driver v%s\n",
--		NVRAM_VERSION);
--	return misc_register(&nvram_dev);
--}
--
--void __exit nvram_cleanup(void)
--{
--        misc_deregister( &nvram_dev );
--}
--
--module_init(nvram_init);
--module_exit(nvram_cleanup);
--MODULE_LICENSE("GPL");
+-		return -ENOTTY;
++		break;
+ 	}
++	return ret;
+ }
+ 
+ static int nvram_misc_open(struct inode *inode, struct file *file)
+ {
+ 	spin_lock(&nvram_state_lock);
+ 
++	/* Prevent multiple readers/writers if desired. */
+ 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
+-	    (nvram_open_mode & NVRAM_EXCL) ||
+-	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
++	    (nvram_open_mode & NVRAM_EXCL)) {
++		spin_unlock(&nvram_state_lock);
++		return -EBUSY;
++	}
++
++	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
++	if ((arch_nvram_ops.set_checksum != NULL) &&
++	    (file->f_mode & FMODE_WRITE) &&
++	    (nvram_open_mode & NVRAM_WRITE)) {
+ 		spin_unlock(&nvram_state_lock);
+ 		return -EBUSY;
+ 	}
+Index: linux/include/linux/nvram.h
+===================================================================
+--- linux.orig/include/linux/nvram.h	2015-05-31 11:01:06.000000000 +1000
++++ linux/include/linux/nvram.h	2015-05-31 11:01:08.000000000 +1000
+@@ -17,6 +17,8 @@ struct nvram_ops {
+ 	unsigned char   (*read_byte)(int);
+ 	void            (*write_byte)(unsigned char, int);
+ 	ssize_t         (*get_size)(void);
++	long            (*set_checksum)(void);
++	long            (*initialize)(void);
+ };
+ 
+ extern const struct nvram_ops arch_nvram_ops;
