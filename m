@@ -1,130 +1,112 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC 06/24] char/nvram: Adopt arch_nvram_ops
-Date: Sun, 31 May 2015 11:01:38 +1000
-Message-ID: <20150531010133.879182445@telegraphics.com.au>
+Subject: [RFC 15/24] powerpc: Implement arch_nvram_ops.get_size() and remove old nvram_* exports
+Date: Sun, 31 May 2015 11:01:47 +1000
+Message-ID: <20150531010136.089460931@telegraphics.com.au>
 References: <20150531010132.289674310@telegraphics.com.au>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47170 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756429AbbEaBRB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 30 May 2015 21:17:01 -0400
-Content-Disposition: inline; filename=nvram-adopt-nvram_ops
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=ppc32-introduce-nvram_ops-get_size
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Different platforms and architectures offer different NVRAM sizes and
-access methods. E.g. PPC32 has byte-at-a-time read/write functions whereas
-PPC64 has byte-range read/write functions. Adopt the nvram_ops struct so
-the nvram module can call such functions as are defined by the various 
-platforms and architectures.
+Implement arch_nvram_ops for PPC32 and make use of it in the generic_nvram
+misc device module so that the nvram_* function exports can be removed.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/powerpc/include/asm/nvram.h |    3 ---
+ arch/powerpc/kernel/setup_32.c   |   10 +++++++---
+ drivers/char/generic_nvram.c     |   24 ++++++++++++------------
+ 3 files changed, 19 insertions(+), 18 deletions(-)
 
-The #ifdefs here restrict the procfs and checksumming code to those
-architectures with PC-style RTC NVRAM. There may be a better place for
-that code but it's an open question. See https://lkml.org/lkml/2015/2/3/22
-
-The procfs code here, if irrelevant to ARM platforms, could be moved to
-arch/x86 (like the earlier patch does for m68k code) and the nvram ops
-could implemented and exported by the rtc-cmos driver instead. This
-would eliminate these #ifdefs.
-
----
- drivers/char/nvram.c  |   30 +++++++++++++++++++++++++++---
- include/linux/nvram.h |    2 ++
- 2 files changed, 29 insertions(+), 3 deletions(-)
-
-Index: linux/drivers/char/nvram.c
+Index: linux/arch/powerpc/include/asm/nvram.h
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-05-31 11:01:05.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-05-31 11:01:06.000000000 +1000
-@@ -51,9 +51,12 @@ static DEFINE_MUTEX(nvram_mutex);
- static DEFINE_SPINLOCK(nvram_state_lock);
- static int nvram_open_cnt;	/* #times opened */
- static int nvram_open_mode;	/* special open modes */
-+static ssize_t nvram_size;
- #define NVRAM_WRITE		1 /* opened for writing (exclusive) */
- #define NVRAM_EXCL		2 /* opened with O_EXCL */
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-05-31 11:01:13.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-05-31 11:01:16.000000000 +1000
+@@ -98,7 +98,4 @@ extern int nvram_write_os_partition(stru
+ 				    unsigned int err_type,
+ 				    unsigned int error_log_cnt);
  
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM)
-+
- /*
-  * These functions are provided to be called internally or by other parts of
-  * the kernel. It's up to the caller to ensure correct checksum before reading
-@@ -161,6 +164,20 @@ void nvram_set_checksum(void)
+-/* Determine NVRAM size */
+-extern ssize_t nvram_get_size(void);
+-
+ #endif /* _ASM_POWERPC_NVRAM_H */
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-05-31 11:01:13.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-05-31 11:01:16.000000000 +1000
+@@ -186,13 +186,12 @@ void nvram_write_byte(unsigned char val,
  }
- #endif  /*  0  */
+ EXPORT_SYMBOL(nvram_write_byte);
  
-+static ssize_t nvram_get_size(void)
-+{
-+	return NVRAM_BYTES;
-+}
-+
+-ssize_t nvram_get_size(void)
++static ssize_t ppc_nvram_get_size(void)
+ {
+ 	if (ppc_md.nvram_size)
+ 		return ppc_md.nvram_size();
+-	return -1;
++	return -ENODEV;
+ }
+-EXPORT_SYMBOL(nvram_get_size);
+ 
+ void nvram_sync(void)
+ {
+@@ -201,6 +200,11 @@ void nvram_sync(void)
+ }
+ EXPORT_SYMBOL(nvram_sync);
+ 
 +const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = nvram_read_byte,
-+	.write_byte     = nvram_write_byte,
-+	.get_size       = nvram_get_size,
++	.get_size       = ppc_nvram_get_size,
 +};
 +EXPORT_SYMBOL(arch_nvram_ops);
 +
-+#endif /* CONFIG_X86 || CONFIG_ARM */
-+
- /*
-  * The are the file operation function for user access to /dev/nvram
-  */
-@@ -332,7 +349,7 @@ static int nvram_misc_release(struct ino
- 	return 0;
- }
+ #endif /* CONFIG_NVRAM */
  
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
+ int __init ppc_init(void)
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-05-31 11:01:13.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-05-31 11:01:16.000000000 +1000
+@@ -28,8 +28,6 @@
+ #include <asm/machdep.h>
+ #endif
  
- static char *floppy_types[] = {
- 	"none", "5.25'' 360k", "5.25'' 1.2M", "3.5'' 720k", "3.5'' 1.44M",
-@@ -459,13 +476,20 @@ static int __init nvram_module_init(void
+-#define NVRAM_SIZE	8192
+-
+ static DEFINE_MUTEX(nvram_mutex);
+ static ssize_t nvram_len;
+ 
+@@ -150,20 +148,22 @@ static struct miscdevice nvram_dev = {
+ 
+ int __init nvram_init(void)
  {
- 	int ret;
+-	int ret = 0;
++	int ret;
  
+-	printk(KERN_INFO "Generic non-volatile memory driver v%s\n",
+-		NVRAM_VERSION);
+-	ret = misc_register(&nvram_dev);
+-	if (ret != 0)
+-		goto out;
 +	if (arch_nvram_ops.get_size == NULL)
 +		return -ENODEV;
+ 
+-	nvram_len = nvram_get_size();
++	nvram_len = arch_nvram_ops.get_size();
+ 	if (nvram_len < 0)
+-		nvram_len = NVRAM_SIZE;
++		return nvram_len;
+ 
+-out:
+-	return ret;
++	ret = misc_register(&nvram_dev);
++	if (ret)
++		return ret;
 +
-+	nvram_size = arch_nvram_ops.get_size();
-+	if (nvram_size < 0)
-+		return nvram_size;
++	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
 +
- 	ret = misc_register(&nvram_misc);
- 	if (ret) {
- 		pr_err("nvram: can't misc_register on minor=%d\n", NVRAM_MINOR);
- 		return ret;
- 	}
++	return 0;
+ }
  
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops)) {
- 		pr_err("nvram: can't create /proc/driver/nvram\n");
- 		misc_deregister(&nvram_misc);
-@@ -479,7 +503,7 @@ static int __init nvram_module_init(void
- 
- static void __exit nvram_module_exit(void)
- {
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	remove_proc_entry("driver/nvram", NULL);
- #endif
- 	misc_deregister(&nvram_misc);
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-05-31 11:01:03.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-05-31 11:01:06.000000000 +1000
-@@ -14,6 +14,8 @@ extern int nvram_check_checksum(void);
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-+	unsigned char   (*read_byte)(int);
-+	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
- };
- 
+ void __exit nvram_cleanup(void)
