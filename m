@@ -1,301 +1,118 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC 24/24] m68k: Dispatch nvram_ops calls to Atari or Mac functions
-Date: Sun, 31 May 2015 11:01:56 +1000
-Message-ID: <20150531010138.309478365@telegraphics.com.au>
+Subject: [RFC 14/24] powerpc: Add missing ppc_md.nvram_size for CHRP and PowerMac
+Date: Sun, 31 May 2015 11:01:46 +1000
+Message-ID: <20150531010135.839511898@telegraphics.com.au>
 References: <20150531010132.289674310@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47169 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47168 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756651AbbEaBRB (ORCPT
+	with ESMTP id S1755079AbbEaBRB (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 30 May 2015 21:17:01 -0400
-Content-Disposition: inline; filename=m68k-introduce-arch_nvram_ops
+Content-Disposition: inline; filename=fix-powerpc-machdep-inconsistencies
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>
 
-A multi-platform kernel binary needs to decide at run-time how to dispatch
-the arch_nvram_ops calls. Add platform-independent arch_nvram_ops, for use
-when multiple platform-specific NVRAM ops implementations are needed.
+Add the nvram_size() function to those PowerPC platforms that don't already
+have one: CHRP and PowerMac. This means that the ppc_md.nvram_size()
+function can be used to implement arch_nvram_ops.get_size()
+
+Since we are addressing inconsistencies here, also rename chrp_nvram_read
+and chrp_nvram_write, which break the naming convention used across
+PowerPC platforms for NVRAM accessor functions.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/Kconfig                 |    2 
- arch/m68k/atari/nvram.c           |   22 +++++----
- arch/m68k/include/asm/atarihw.h   |    6 ++
- arch/m68k/include/asm/macintosh.h |    4 +
- arch/m68k/kernel/setup_mm.c       |   89 ++++++++++++++++++++++++++++++++++++++
- arch/m68k/mac/misc.c              |    8 ++-
- 6 files changed, 117 insertions(+), 14 deletions(-)
+ arch/powerpc/platforms/chrp/nvram.c     |   14 ++++++++++----
+ arch/powerpc/platforms/powermac/nvram.c |    9 +++++++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-Index: linux/arch/m68k/atari/nvram.c
+Index: linux/arch/powerpc/platforms/chrp/nvram.c
 ===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-05-31 11:01:21.000000000 +1000
-+++ linux/arch/m68k/atari/nvram.c	2015-05-31 11:01:29.000000000 +1000
-@@ -73,7 +73,7 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum, ATARI_CKS_LOC + 1);
- }
+--- linux.orig/arch/powerpc/platforms/chrp/nvram.c	2015-05-31 11:00:59.000000000 +1000
++++ linux/arch/powerpc/platforms/chrp/nvram.c	2015-05-31 11:01:15.000000000 +1000
+@@ -23,7 +23,7 @@ static unsigned int nvram_size;
+ static unsigned char nvram_buf[4];
+ static DEFINE_SPINLOCK(nvram_lock);
  
--static long nvram_set_checksum(void)
-+long atari_nvram_set_checksum(void)
+-static unsigned char chrp_nvram_read(int addr)
++static unsigned char chrp_nvram_read_byte(int addr)
  {
- 	spin_lock_irq(&rtc_lock);
- 	__nvram_set_checksum();
-@@ -81,7 +81,7 @@ static long nvram_set_checksum(void)
- 	return 0;
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -45,7 +45,7 @@ static unsigned char chrp_nvram_read(int
+ 	return ret;
  }
  
--static long nvram_initialize(void)
-+long atari_nvram_initialize(void)
+-static void chrp_nvram_write(int addr, unsigned char val)
++static void chrp_nvram_write_byte(int addr, unsigned char val)
  {
- 	loff_t i;
- 
-@@ -93,7 +93,7 @@ static long nvram_initialize(void)
- 	return 0;
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -63,6 +63,11 @@ static void chrp_nvram_write(int addr, u
+ 	spin_unlock_irqrestore(&nvram_lock, flags);
  }
  
--static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
-+ssize_t atari_nvram_read(char *buf, size_t count, loff_t *ppos)
++static ssize_t chrp_nvram_size(void)
++{
++	return nvram_size;
++}
++
+ void __init chrp_nvram_init(void)
  {
- 	char *p = buf;
- 	loff_t i;
-@@ -114,7 +114,7 @@ static ssize_t nvram_read(char *buf, siz
- 	return p - buf;
+ 	struct device_node *nvram;
+@@ -84,8 +89,9 @@ void __init chrp_nvram_init(void)
+ 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
+ 	of_node_put(nvram);
+ 
+-	ppc_md.nvram_read_val = chrp_nvram_read;
+-	ppc_md.nvram_write_val = chrp_nvram_write;
++	ppc_md.nvram_read_val  = chrp_nvram_read_byte;
++	ppc_md.nvram_write_val = chrp_nvram_write_byte;
++	ppc_md.nvram_size      = chrp_nvram_size;
+ 
+ 	return;
  }
- 
--static ssize_t nvram_write(char *buf, size_t count, loff_t *ppos)
-+ssize_t atari_nvram_write(char *buf, size_t count, loff_t *ppos)
- {
- 	char *p = buf;
- 	loff_t i;
-@@ -137,21 +137,23 @@ static ssize_t nvram_write(char *buf, si
- 	return p - buf;
- }
- 
--static ssize_t nvram_get_size(void)
-+ssize_t atari_nvram_get_size(void)
- {
- 	if (!MACH_IS_ATARI)
- 		return -ENODEV;
- 	return NVRAM_BYTES;
- }
- 
-+#ifndef CONFIG_MAC
- const struct nvram_ops arch_nvram_ops = {
--	.read           = nvram_read,
--	.write          = nvram_write,
--	.get_size       = nvram_get_size,
--	.set_checksum   = nvram_set_checksum,
--	.initialize     = nvram_initialize,
-+	.read           = atari_nvram_read,
-+	.write          = atari_nvram_write,
-+	.get_size       = atari_nvram_get_size,
-+	.set_checksum   = atari_nvram_set_checksum,
-+	.initialize     = atari_nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
-+#endif
- 
- #ifdef CONFIG_PROC_FS
- static struct {
-Index: linux/arch/m68k/mac/misc.c
+Index: linux/arch/powerpc/platforms/powermac/nvram.c
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-05-31 11:01:28.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-05-31 11:01:29.000000000 +1000
-@@ -489,7 +489,7 @@ void pmu_shutdown(void)
-  */
+--- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-05-31 11:00:59.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-05-31 11:01:15.000000000 +1000
+@@ -147,6 +147,11 @@ static ssize_t core99_nvram_size(void)
+ static volatile unsigned char __iomem *nvram_addr;
+ static int nvram_mult;
  
- #if IS_ENABLED(CONFIG_NVRAM)
--static unsigned char mac_pram_read_byte(int addr)
-+unsigned char mac_pram_read_byte(int addr)
++static ssize_t ppc32_nvram_size(void)
++{
++	return NVRAM_SIZE;
++}
++
+ static unsigned char direct_nvram_read_byte(int addr)
  {
- 	unsigned char (*func)(int);
- 
-@@ -513,7 +513,7 @@ static unsigned char mac_pram_read_byte(
- 	return 0xff;
- }
- 
--static void mac_pram_write_byte(unsigned char val, int addr)
-+void mac_pram_write_byte(unsigned char val, int addr)
- {
- 	void (*func)(unsigned char, int);
- 
-@@ -536,19 +536,21 @@ static void mac_pram_write_byte(unsigned
- 		(*func)(val, addr);
- }
- 
--static ssize_t mac_pram_get_size(void)
-+ssize_t mac_pram_get_size(void)
- {
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 	return 256;
- }
- 
-+#ifndef CONFIG_ATARI
- const struct nvram_ops arch_nvram_ops = {
- 	.read_byte      = mac_pram_read_byte,
- 	.write_byte     = mac_pram_write_byte,
- 	.get_size       = mac_pram_get_size,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
-+#endif
- #endif /* CONFIG_NVRAM */
- 
- 
-Index: linux/arch/m68k/kernel/setup_mm.c
-===================================================================
---- linux.orig/arch/m68k/kernel/setup_mm.c	2015-05-31 11:00:59.000000000 +1000
-+++ linux/arch/m68k/kernel/setup_mm.c	2015-05-31 11:01:29.000000000 +1000
-@@ -23,6 +23,7 @@
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
- #include <linux/module.h>
-+#include <linux/nvram.h>
- #include <linux/initrd.h>
- 
- #include <asm/bootinfo.h>
-@@ -40,6 +41,9 @@
- #include <asm/atarihw.h>
- #include <asm/atari_stram.h>
- #endif
-+#ifdef CONFIG_MAC
-+#include <asm/macintosh.h>
-+#endif
- #ifdef CONFIG_SUN3X
- #include <asm/dvma.h>
- #endif
-@@ -568,3 +572,88 @@ static int __init adb_probe_sync_enable
- 
- __setup("adb_sync", adb_probe_sync_enable);
- #endif /* CONFIG_ADB */
-+
-+#if IS_ENABLED(CONFIG_NVRAM) && defined(CONFIG_ATARI) && defined(CONFIG_MAC)
-+static ssize_t m68k_nvram_read(char *buf, size_t count, loff_t *ppos)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_read(buf, count, ppos);
-+	else if (MACH_IS_MAC) {
-+		ssize_t size = mac_pram_get_size();
-+		char *p = buf;
-+		loff_t i;
-+
-+		for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+			*p = mac_pram_read_byte(i);
-+
-+		*ppos = i;
-+		return p - buf;
-+	}
-+	return -EINVAL;
-+}
-+
-+static ssize_t m68k_nvram_write(char *buf, size_t count, loff_t *ppos)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_write(buf, count, ppos);
-+	else if (MACH_IS_MAC) {
-+		ssize_t size = mac_pram_get_size();
-+		char *p = buf;
-+		loff_t i;
-+
-+		for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+			mac_pram_write_byte(*p, i);
-+
-+		*ppos = i;
-+		return p - buf;
-+	}
-+	return -EINVAL;
-+}
-+
-+static unsigned char m68k_nvram_read_byte(int addr)
-+{
-+	if (MACH_IS_MAC)
-+		return mac_pram_read_byte(addr);
-+	return 0xff;
-+}
-+
-+static void m68k_nvram_write_byte(unsigned char val, int addr)
-+{
-+	if (MACH_IS_MAC)
-+		mac_pram_write_byte(val, addr);
-+}
-+
-+static ssize_t m68k_nvram_get_size(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_get_size();
-+	else if (MACH_IS_MAC)
-+		return mac_pram_get_size();
-+	return -ENODEV;
-+}
-+
-+static long m68k_nvram_set_checksum(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_set_checksum();
-+	return -EINVAL;
-+}
-+
-+static long m68k_nvram_initialize(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_initialize();
-+	return -EINVAL;
-+}
-+
-+const struct nvram_ops arch_nvram_ops = {
-+	.read           = m68k_nvram_read,
-+	.write          = m68k_nvram_write,
-+	.read_byte      = m68k_nvram_read_byte,
-+	.write_byte     = m68k_nvram_write_byte,
-+	.get_size       = m68k_nvram_get_size,
-+	.set_checksum   = m68k_nvram_set_checksum,
-+	.initialize     = m68k_nvram_initialize,
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+#endif
-Index: linux/arch/m68k/Kconfig
-===================================================================
---- linux.orig/arch/m68k/Kconfig	2015-05-31 11:01:26.000000000 +1000
-+++ linux/arch/m68k/Kconfig	2015-05-31 11:01:29.000000000 +1000
-@@ -72,7 +72,7 @@ config PGTABLE_LEVELS
- 	default 3
- 
- config HAVE_ARCH_NVRAM_OPS
--	def_bool (ATARI && !MAC) || (MAC && !ATARI)
-+	def_bool ATARI || MAC
- 
- source "init/Kconfig"
- 
-Index: linux/arch/m68k/include/asm/atarihw.h
-===================================================================
---- linux.orig/arch/m68k/include/asm/atarihw.h	2015-05-31 11:00:59.000000000 +1000
-+++ linux/arch/m68k/include/asm/atarihw.h	2015-05-31 11:01:29.000000000 +1000
-@@ -32,6 +32,12 @@ extern int atari_dont_touch_floppy_selec
- 
- extern int atari_SCC_reset_done;
- 
-+extern ssize_t atari_nvram_read(char *, size_t, loff_t *);
-+extern ssize_t atari_nvram_write(char *, size_t, loff_t *);
-+extern ssize_t atari_nvram_get_size(void);
-+extern long atari_nvram_set_checksum(void);
-+extern long atari_nvram_initialize(void);
-+
- /* convenience macros for testing machine type */
- #define MACH_IS_ST	((atari_mch_cookie >> 16) == ATARI_MCH_ST)
- #define MACH_IS_STE	((atari_mch_cookie >> 16) == ATARI_MCH_STE && \
-Index: linux/arch/m68k/include/asm/macintosh.h
-===================================================================
---- linux.orig/arch/m68k/include/asm/macintosh.h	2015-05-31 11:00:59.000000000 +1000
-+++ linux/arch/m68k/include/asm/macintosh.h	2015-05-31 11:01:29.000000000 +1000
-@@ -18,6 +18,10 @@ extern void mac_init_IRQ(void);
- extern void mac_irq_enable(struct irq_data *data);
- extern void mac_irq_disable(struct irq_data *data);
- 
-+extern unsigned char mac_pram_read_byte(int);
-+extern void mac_pram_write_byte(unsigned char, int);
-+extern ssize_t mac_pram_get_size(void);
-+
- /*
-  *	Macintosh Table
-  */
+ 	return in_8(&nvram_data[(addr & (NVRAM_SIZE - 1)) * nvram_mult]);
+@@ -590,21 +595,25 @@ int __init pmac_nvram_init(void)
+ 		nvram_mult = 1;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 1) {
+ 		nvram_data = ioremap(r1.start, s1);
+ 		nvram_mult = (s1 + NVRAM_SIZE - 1) / NVRAM_SIZE;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 2) {
+ 		nvram_addr = ioremap(r1.start, s1);
+ 		nvram_data = ioremap(r2.start, s2);
+ 		ppc_md.nvram_read_val	= indirect_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= indirect_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 0 && sys_ctrler == SYS_CTRLER_PMU) {
+ #ifdef CONFIG_ADB_PMU
+ 		nvram_naddrs = -1;
+ 		ppc_md.nvram_read_val	= pmu_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= pmu_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ #endif /* CONFIG_ADB_PMU */
+ 	} else {
+ 		printk(KERN_ERR "Incompatible type of NVRAM\n");
