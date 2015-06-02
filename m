@@ -1,266 +1,85 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC 24/24] m68k: Dispatch nvram_ops calls to Atari or Mac
- functions
-Date: Tue, 2 Jun 2015 17:21:22 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1506021517460.3598@nippy.intranet>
-References: <20150531010132.289674310@telegraphics.com.au> <20150531010138.309478365@telegraphics.com.au> <CAMuHMdW3qrFqesRqR=YW8qEEbVZPtK8exG0jF+YyfVqokMiyNg@mail.gmail.com>
+From: Henrique de Moraes Holschuh <hmh-N3TV7GIv+o9fyO9Q7EP/yw@public.gmane.org>
+Subject: Re: [RFC 07/24] x86/thinkpad_acpi: Use
+ arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
+Date: Tue, 02 Jun 2015 07:09:28 -0300
+Message-ID: <1433239768.902135.284523153.1200C3E3@webmail.messagingengine.com>
+References: <20150531010132.289674310@telegraphics.com.au>
+	<20150531010134.129479218@telegraphics.com.au>
+	<20150531041114.GA30431@khazad-dum.debian.net>
+	<alpine.LNX.2.00.1505311605420.23528@nippy.intranet>
+	<20150531143422.GA12337@khazad-dum.debian.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49456 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754811AbbFBHVj (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 2 Jun 2015 03:21:39 -0400
-In-Reply-To: <CAMuHMdW3qrFqesRqR=YW8qEEbVZPtK8exG0jF+YyfVqokMiyNg@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+In-Reply-To: <20150531143422.GA12337-ZGHd14iZgfaRjzvQDGKj+xxZW9W5cXbT@public.gmane.org>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
+	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ibm-acpi-devel>
+List-Post: <mailto:ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+List-Help: <mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
+	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
+Errors-To: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+To: Finn Thain <fthain-PnMVE5gNl/W9dxLkCovUHLpzq4S04n8Q@public.gmane.org>
+Cc: linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, platform-driver-x86-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Darren Hart <dvhart-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 
+Test results were sent to me privately, and they are correct, so...
 
-On Mon, 1 Jun 2015, Geert Uytterhoeven wrote:
+Acked-by: Henrique de Moraes Holschuh <hmh-N3TV7GIv+o9fyO9Q7EP/yw@public.gmane.org>
 
-> > Index: linux/arch/m68k/atari/nvram.c
-> > ===================================================================
-> > --- linux.orig/arch/m68k/atari/nvram.c  2015-05-31 11:01:21.000000000
-> > +1000
-> > +++ linux/arch/m68k/atari/nvram.c       2015-05-31 11:01:29.000000000
-> > +1000
-> > @@ -73,7 +73,7 @@ static void __nvram_set_checksum(void)
+On Sun, May 31, 2015, at 11:34, Henrique de Moraes Holschuh wrote:
+> On Sun, 31 May 2015, Finn Thain wrote:
+> > On Sun, 31 May 2015, Henrique de Moraes Holschuh wrote:
+> > > On Sun, 31 May 2015, Finn Thain wrote:
+> > > > Make use of arch_nvram_ops in the thinkpad_acpi driver so that the 
+> > > > nvram_* function exports can be removed.
+> > > > 
+> > > > This patch series was tested on a ThinkPad T43.
+> > > 
+> > > Can you describe how you did the testing?  A specific procedure is 
+> > > required to test the hotkey NVRAM polling codepaths (which will read 
+> > > several NVRAM bytes @10Hz by default) in a T43...
+> > > 
+> > > > Signed-off-by: Finn Thain <fthain-PnMVE5gNl/W9dxLkCovUHLpzq4S04n8Q@public.gmane.org>
+> > > 
+> > > The patch looks correct, so I don't expect any problems.
+> > > 
+> > > Provided that your test procedure did enable hotkey NVRAM polling in the 
+> > > T43 and your hotkeys all still worked fine, you have my Acked-by.
+> > 
+> > The procedure I used was this,
+> > 
+> > 1. $ xev
+> > 2. # rmmod thinkpad_acpi
+> > 3. Press <Access IBM> key and confirm that xev does not report any
+> >    events.
+> > 4. # modprobe thinkpad_acpi
+> > 5. Press <Access IBM> key and confirm that xev now reports the key press 
+> >    events.
+> > 
+> > Is this sufficient?
 > 
-> > +#ifndef CONFIG_MAC
-> >  const struct nvram_ops arch_nvram_ops = {
-> > -       .read           = nvram_read,
-> > -       .write          = nvram_write,
-> > -       .get_size       = nvram_get_size,
-> > -       .set_checksum   = nvram_set_checksum,
-> > -       .initialize     = nvram_initialize,
-> > +       .read           = atari_nvram_read,
-> > +       .write          = atari_nvram_write,
-> > +       .get_size       = atari_nvram_get_size,
-> > +       .set_checksum   = atari_nvram_set_checksum,
-> > +       .initialize     = atari_nvram_initialize,
-> >  };
-> >  EXPORT_SYMBOL(arch_nvram_ops);
-> > +#endif
+> No.  Please try:
 > 
-> IMHO, the #ifdef is ugly.
+> modprobe thinkpad_acpi
+> echo 0xfb88c0 > /sys/devices/platform/thinkpad_acpi/hotkey_source_mask
 > 
-> >  #ifdef CONFIG_PROC_FS
-> >  static struct {
-> > Index: linux/arch/m68k/mac/misc.c
-> > ===================================================================
-> > --- linux.orig/arch/m68k/mac/misc.c     2015-05-31 11:01:28.000000000 +1000
-> > +++ linux/arch/m68k/mac/misc.c  2015-05-31 11:01:29.000000000 +1000
-> > @@ -489,7 +489,7 @@ void pmu_shutdown(void)
+> test the hotkeys.  Please test several of them, as not all of them are
+> available through NVRAM polling... at least Fn+SPACE, Fn+F1..FN+F12
 > 
-> > +#ifndef CONFIG_ATARI
-> >  const struct nvram_ops arch_nvram_ops = {
-> >         .read_byte      = mac_pram_read_byte,
-> >         .write_byte     = mac_pram_write_byte,
-> >         .get_size       = mac_pram_get_size,
-> >  };
-> >  EXPORT_SYMBOL(arch_nvram_ops);
-> > +#endif
-> >  #endif /* CONFIG_NVRAM */
+> Please test the brightness keys. In the T43 we use "direct EC mode",
+> which
+> depends on the NVRAM to sync with the SMBIOS firmware.
 > 
-> Same here.
-
-We could eliminate the Atari and Mac definitions of arch_nvram_ops, and 
-define the struct only in arch/m68k/kernel/setup_mm.c -- at the cost of 
-some bloat (see below).
-
-> 
-> > Index: linux/arch/m68k/kernel/setup_mm.c
-> > ===================================================================
-> > --- linux.orig/arch/m68k/kernel/setup_mm.c      2015-05-31 11:00:59.000000000 +1000
-> > +++ linux/arch/m68k/kernel/setup_mm.c   2015-05-31 11:01:29.000000000 +1000
-> 
-> > @@ -568,3 +572,88 @@ static int __init adb_probe_sync_enable
-> >
-> >  __setup("adb_sync", adb_probe_sync_enable);
-> >  #endif /* CONFIG_ADB */
-> > +
-> > +#if IS_ENABLED(CONFIG_NVRAM) && defined(CONFIG_ATARI) && defined(CONFIG_MAC)
-> 
-> Likewise.
-
-Given the Kconfig constraints, this can be simplified to 
-IS_ENABLED(CONFIG_NVRAM). Will fix.
-
-> 
-> > +static ssize_t m68k_nvram_read(char *buf, size_t count, loff_t *ppos)
-> > +{
-> > +       if (MACH_IS_ATARI)
-> > +               return atari_nvram_read(buf, count, ppos);
-> > +       else if (MACH_IS_MAC) {
-> > +               ssize_t size = mac_pram_get_size();
-> > +               char *p = buf;
-> > +               loff_t i;
-> > +
-> > +               for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-> > +                       *p = mac_pram_read_byte(i);
-> > +
-> > +               *ppos = i;
-> > +               return p - buf;
-> > +       }
-> > +       return -EINVAL;
-> 
-> Isn't this handled already by the nvram core, based on the available 
-> operations in nvram_ops?
-
-A multi-platform kernel can't set inappropriate ops to NULL at run-time, 
-because the struct is const. (Maybe we can on m68k? That doesn't mean it 
-is good style.)
-
-There isn't any nvram core as such. The nvram misc device is just one of 
-many callers of the functions in the ops struct.
-
-(The read_byte and write_byte loops above that also appear in the misc 
-device are different in that latter loops involve userspace. So I have not 
-factored them out. If it were possible to refactor, the shared code would 
-have to go into include/linux/nvram.h.)
-
-> Same for the other nvram abstractions in this file.
-
-Again, a multi-platform kernel needs them. E.g. a kernel eith CONFIG_ATARI 
-&& CONFIG_MAC has to support checksummed Atari NVRAM. If you boot it on a 
-Mac, you need the m68k_nvram_set_checksum() and m68k_nvram_initialize() 
-stubs.
-
-Whereas, a single-platform kernel, having CONFIG_MAC && !CONFIG_ATARI, you 
-don't define the .set_checksum and .initialize ops at all. (Like any PPC32 
-kernel, BTW.)
-
-> 
-> > +const struct nvram_ops arch_nvram_ops = {
-> > +       .read           = m68k_nvram_read,
-> > +       .write          = m68k_nvram_write,
-> > +       .read_byte      = m68k_nvram_read_byte,
-> > +       .write_byte     = m68k_nvram_write_byte,
-> > +       .get_size       = m68k_nvram_get_size,
-> > +       .set_checksum   = m68k_nvram_set_checksum,
-> > +       .initialize     = m68k_nvram_initialize,
-> > +};
-> > +EXPORT_SYMBOL(arch_nvram_ops);
-> 
-> Can't you just fill in the mach specific pointers in the generic 
-> structure, and be done with it?
-
-Not at compile-time. Hence the mach-independent functions, i.e. the 
-wrapper functions that dispatch to the mach-specific functions.
-
-The wrappers and stubs only add bloat in a single-platform kernel binary. 
-I avoided this by use of the #ifdefs you objected to above.
-
-I suppose we could instead do, in arch/m68k/kernel/setup_mm.c, something 
-like the following.
-
-+
-+#if IS_ENABLED(CONFIG_NVRAM)
-+#ifdef CONFIG_MAC
-+static unsigned char m68k_nvram_read_byte(int addr)
-+{
-+       if (MACH_IS_MAC)
-+               return mac_pram_read_byte(addr);
-+       return 0xff;
-+}
-+
-+static void m68k_nvram_write_byte(unsigned char val, int addr)
-+{
-+       if (MACH_IS_MAC)
-+               mac_pram_write_byte(val, addr);
-+}
-+#endif
-+
-+#ifdef CONFIG_ATARI
-+static ssize_t m68k_nvram_read(char *buf, size_t count, loff_t *ppos)
-+{
-+       if (MACH_IS_ATARI)
-+               return atari_nvram_read(buf, count, ppos);
-+       else if (MACH_IS_MAC) {
-+               ssize_t size = mac_pram_get_size();
-+               char *p = buf;
-+               loff_t i;
-+
-+               for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+                       *p = mac_pram_read_byte(i);
-+
-+               *ppos = i;
-+               return p - buf;
-+       }
-+       return -EINVAL;
-+}
-+
-+static ssize_t m68k_nvram_write(char *buf, size_t count, loff_t *ppos)
-+{
-+       if (MACH_IS_ATARI)
-+               return atari_nvram_write(buf, count, ppos);
-+       else if (MACH_IS_MAC) {
-+               ssize_t size = mac_pram_get_size();
-+               char *p = buf;
-+               loff_t i;
-+
-+               for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+                       mac_pram_write_byte(*p, i);
-+
-+               *ppos = i;
-+               return p - buf;
-+       }
-+       return -EINVAL;
-+}
-+
-+static long m68k_nvram_set_checksum(void)
-+{
-+       if (MACH_IS_ATARI)
-+               return atari_nvram_set_checksum();
-+       return -EINVAL;
-+}
-+
-+static long m68k_nvram_initialize(void)
-+{
-+       if (MACH_IS_ATARI)
-+               return atari_nvram_initialize();
-+       return -EINVAL;
-+}
-+#endif
-+
-+const struct nvram_ops arch_nvram_ops = {
-+       .get_size       = m68k_nvram_get_size,
-+#ifdef CONFIG_MAC
-+       .read_byte      = m68k_nvram_read_byte,
-+       .write_byte     = m68k_nvram_write_byte,
-+#endif
-+#ifdef CONFIG_ATARI
-+       .read           = m68k_nvram_read,
-+       .write          = m68k_nvram_write,
-+       .set_checksum   = m68k_nvram_set_checksum,
-+       .initialize     = m68k_nvram_initialize,
-+#endif
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+#endif /* CONFIG_NVRAM */
-
-This would eliminate the conditional ops struct definitions in 
-arch/m68k/atari/nvram.c and in arch/m68k/mac/misc.c, and still avoid stubs 
-in single-platform kernels. OTOH, it does mean a single-platform kernel 
-binary gets pointless wrapper functions.
-
-Is this better than the original submission? 
-
-> 
-> If you handle this right, I think you can do without the temporary 
-> "def_bool (ATARI && !MAC) || (MAC && !ATARI)" in "[RFC 22/24] m68k/mac: 
-> Adopt nvram module", too.
-
-It's moot.
+> to reset the driver to normal mode, it is enough to do this:
+> echo 0 > /sys/devices/platform/thinkpad_acpi/hotkey_source_mask
 
 -- 
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
 
-> 
-> Thanks!
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+------------------------------------------------------------------------------
