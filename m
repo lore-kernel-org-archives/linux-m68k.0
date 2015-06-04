@@ -1,66 +1,37 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [RFC 07/24] x86/thinkpad_acpi: Use arch_nvram_ops methods instead of
- nvram_read_byte() and nvram_write_byte()
-Date: Wed, 03 Jun 2015 07:37:13 -0300
-Message-ID: <1433327833.2629421.285594817.4B21A0BD@webmail.messagingengine.com>
-References: <20150531010132.289674310@telegraphics.com.au>
- <20150531010134.129479218@telegraphics.com.au>
- <20150531041114.GA30431@khazad-dum.debian.net>
- <alpine.LNX.2.00.1505311605420.23528@nippy.intranet>
- <20150531143422.GA12337@khazad-dum.debian.net>
- <1433239768.902135.284523153.1200C3E3@webmail.messagingengine.com>
- <20150603033401.GB49670@vmdeb7>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+From: Jiang Liu <jiang.liu@linux.intel.com>
+Subject: [RFT v2 24/48] m68k, irq: Prepare for killing the first parameter 'irq' of irq_flow_handler_t
+Date: Thu,  4 Jun 2015 12:13:34 +0800
+Message-ID: <1433391238-19471-25-git-send-email-jiang.liu__12939.6891607486$1433391450$gmane$org@linux.intel.com>
+References: <1433391238-19471-1-git-send-email-jiang.liu@linux.intel.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:60319 "EHLO
-	out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752157AbbFCKhO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 3 Jun 2015 06:37:14 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 19CB821544
-	for <linux-m68k@vger.kernel.org>; Wed,  3 Jun 2015 06:37:14 -0400 (EDT)
-In-Reply-To: <20150603033401.GB49670@vmdeb7>
+In-Reply-To: <1433391238-19471-1-git-send-email-jiang.liu@linux.intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Randy Dunlap <rdunlap@infradead.org>, Yinghai Lu <yinghai@kernel.org>, Borislav Petkov <bp@alien8.de>, Joshua Thompson <funaho@jurai.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jiang Liu <jiang.liu@linux.intel.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Tony Luck <tony.luck@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
-On Wed, Jun 3, 2015, at 00:34, Darren Hart wrote:
-> On Tue, Jun 02, 2015 at 07:09:28AM -0300, Henrique de Moraes Holschuh
-> wrote:
-> > Test results were sent to me privately, and they are correct, so...
-> 
-> Finn, unless there is some compelling reason not to - like they are MBs
-> worth of
-> data, please submit these to the list in the future so we have them for
-> reference.
+Change irq flow handler to prepare for killing the first parameter 'irq'
+of irq_flow_handler_t.
 
-After I told him which exact bitmask to use on a T43 to test
-hotkey_source_mask, his test results can be summarized as "I could see
-no difference in behavior", which is *exactly* what I expected to
-happen.
+Signed-off-by: Jiang Liu <jiang.liu@linux.intel.com>
+---
+ arch/m68k/mac/psc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-If anything went wrong with the thinkpad-acpi NVRAM code, you'd notice a
-very large change in behavior (typical: hotkeys don't work, less
-typical: random hotkey keypresses, hotkey press bursts, low responsivity
-of hotkeys).
-
-> > Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-> 
-> I'm fine with the changes, but they need to be submitted with the other
-> changes
-> as this one change cannot compile independently in my tree.
-> 
-> Finn, please work with whomever is pulling the series to include this in
-> their
-> pull request.
-> 
-> Reviewed-by: Darren Hart <dvhart@linux.intel.com>
-
+diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
+index 835fa04511c8..ea7651a7908b 100644
+--- a/arch/m68k/mac/psc.c
++++ b/arch/m68k/mac/psc.c
+@@ -113,8 +113,9 @@ void __init psc_init(void)
+  * PSC interrupt handler. It's a lot like the VIA interrupt handler.
+  */
+ 
+-static void psc_irq(unsigned int irq, struct irq_desc *desc)
++static void psc_irq(unsigned int __irq, struct irq_desc *desc)
+ {
++	unsigned int irq = irq_desc_get_irq(desc);
+ 	unsigned int offset = (unsigned int)irq_desc_get_handler_data(desc);
+ 	int pIFR	= pIFRbase + offset;
+ 	int pIER	= pIERbase + offset;
 -- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+1.7.10.4
