@@ -1,53 +1,23 @@
-From: Darren Hart <dvhart@infradead.org>
-Subject: Re: [RFC 07/24] x86/thinkpad_acpi: Use arch_nvram_ops methods
- instead of nvram_read_byte() and nvram_write_byte()
-Date: Wed, 3 Jun 2015 22:14:11 -0700
-Message-ID: <20150604051411.GB31158@fury.dvhart.com>
-References: <20150531010132.289674310@telegraphics.com.au>
- <20150531010134.129479218@telegraphics.com.au>
- <20150531041114.GA30431@khazad-dum.debian.net>
- <alpine.LNX.2.00.1505311605420.23528@nippy.intranet>
- <20150531143422.GA12337@khazad-dum.debian.net>
- <1433239768.902135.284523153.1200C3E3@webmail.messagingengine.com>
- <20150603033401.GB49670@vmdeb7>
- <1433327833.2629421.285594817.4B21A0BD@webmail.messagingengine.com>
+From: aswamina@purdue.edu
+Subject: Re: Thanks for responding
+Date: Tue, 09 Jun 2015 17:17:12 +0200
+Message-ID: <SRV-XCHANGE66hxQA730001a434__5530.62667972899$1433865730$gmane$org@srv-xchange.rupaligroup.com>
+Reply-To: r.gsvaso@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from bombadil.infradead.org ([198.137.202.9]:56733 "EHLO
-	bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750761AbbFDFOP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 4 Jun 2015 01:14:15 -0400
-Content-Disposition: inline
-In-Reply-To: <1433327833.2629421.285594817.4B21A0BD@webmail.messagingengine.com>
+Received: from corp.multi.net.pk ([202.141.229.26]:38013 "EHLO
+	corp.multi.net.pk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751279AbbFIQA0 convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Jun 2015 12:00:26 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc: Finn Thain <fthain@telegraphics.com.au>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
+To: "r.gsvaso@yahoo.com.ph" <aswamina@purdue.edu>
 
-On Wed, Jun 03, 2015 at 07:37:13AM -0300, Henrique de Moraes Holschuh wrote:
-> On Wed, Jun 3, 2015, at 00:34, Darren Hart wrote:
-> > On Tue, Jun 02, 2015 at 07:09:28AM -0300, Henrique de Moraes Holschuh
-> > wrote:
-> > > Test results were sent to me privately, and they are correct, so...
-> > 
-> > Finn, unless there is some compelling reason not to - like they are MBs
-> > worth of
-> > data, please submit these to the list in the future so we have them for
-> > reference.
-> 
-> After I told him which exact bitmask to use on a T43 to test
-> hotkey_source_mask, his test results can be summarized as "I could see
-> no difference in behavior", which is *exactly* what I expected to
-> happen.
-> 
-> If anything went wrong with the thinkpad-acpi NVRAM code, you'd notice a
-> very large change in behavior (typical: hotkeys don't work, less
-> typical: random hotkey keypresses, hotkey press bursts, low responsivity
-> of hotkeys).
+Hi,
 
-Perfect, thanks for the update so we have it recorded here on the list.
+I am diagnosed with laryngeal cancer, I' want to give my money to you & my body to science. Respond with this ref SvaSo so I know you got this.
 
--- 
-Darren Hart
-Intel Open Source Technology Center
+Ruby
