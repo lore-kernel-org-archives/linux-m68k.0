@@ -1,58 +1,49 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.2
-Date: Mon, 22 Jun 2015 09:35:06 +0200
-Message-ID: <1434958506-5444-1-git-send-email-geert@linux-m68k.org>
+From: "Herr Martins D Weber" <test@fumeilaistone.cn>
+Subject: Lieber Freund!!!
+Date: Sat, 13 Jun 2015 05:14:17 -0700
+Message-ID: <9D68CE35-B679-4AAF-A49F-CE77F9D3D665@fumeilaistone.cn>
+Reply-To: <martinsdweber@aim.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+Lieber Freund!!!
 
-The following changes since commit c65b99f046843d2455aa231747b5a07a999a9f3d:
+Ich vermute das diese E-Mail eine ?berraschung f?r Sie sein wird, aber =
+es ist wahr.Ich bin bei einer routinen ?berpr?fung in meiner Bank (Stan=
+dardBank PLC von S?d Afrika) wo ich arbeite, auf einem Konto gesto?en, =
+was nicht in anspruch genommen worden ist, wo derzeit USD$18.5M (Achtze=
+hn Million, F?nf Hundert Tausend, US Dollar)  gutgeschrieben sind.Diese=
+s Konto geh?rte Herrn Manfred Becker, der ein Kunde in unsere Bank war,=
+ der leider verstorben ist. Herrn Manfred Becker war ein geb?rtiger Deu=
+tscher.
 
-  Linux 4.1-rc6 (2015-05-31 19:01:07 -0700)
+Damit es mir m?glich ist dieses Geld $18,500,000 inanspruch zunehmen,be=
+n?tige ich die zusammenarbeit eines Ausl?ndischen Partners wie Sie,den =
+ich als Verwandter und Erbe des verstorbenen Herrn Manfred Becker vorst=
+ellen kann,damit wir das Geld inanspruch nehmen k?nnen. F?r diese Unter=
+st?tzung erhalten Sie 30% der Erbschaftsumme und die restlichen 70% tei=
+le ich mirmit meinen zwei Arbeitskollegen, die mich bei dieser Transakt=
+ion ebenfalls unterst?tzen.
 
-are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-4.2
+Wenn Sie interessiert sind, k?nnen Sie mir bitte eine E-Mail schicken, =
+damit ich Ihnen mehr Details zukommen lassen kann. N.B.BITTE SENDEN SIE=
+ MIR Martins D Weber ANTWORT ZU durch mein E-mail: ( martinsdweber@aim.=
+com ) f?R VERTRAULICHEN GRUND. Schicken Sie keine POST ZU MEINEM B?RO-E=
+-MAIL.(martinsdweber@aim.com )
 
-for you to fetch changes up to 1214c525484cabb27ed37df936c3451682757263:
 
-  m68k: Use for_each_sg() (2015-06-01 10:36:29 +0200)
+If you understand english,please  kindly reply with english ( martinsdw=
+eber@aim.com )
 
-----------------------------------------------------------------
-Akinobu Mita (1):
-      m68k: Use for_each_sg()
+Mit freundlichen Gr=FC=DFen
 
-Geert Uytterhoeven (1):
-      m68k/defconfig: Update defconfigs for v4.1-rc6
+Herr Martins D Weber
 
- arch/m68k/configs/amiga_defconfig    |  8 ++++++--
- arch/m68k/configs/apollo_defconfig   |  8 ++++++--
- arch/m68k/configs/atari_defconfig    |  8 ++++++--
- arch/m68k/configs/bvme6000_defconfig |  8 ++++++--
- arch/m68k/configs/hp300_defconfig    |  8 ++++++--
- arch/m68k/configs/mac_defconfig      |  8 ++++++--
- arch/m68k/configs/multi_defconfig    |  8 ++++++--
- arch/m68k/configs/mvme147_defconfig  |  8 ++++++--
- arch/m68k/configs/mvme16x_defconfig  |  8 ++++++--
- arch/m68k/configs/q40_defconfig      |  8 ++++++--
- arch/m68k/configs/sun3_defconfig     |  8 ++++++--
- arch/m68k/configs/sun3x_defconfig    |  8 ++++++--
- arch/m68k/kernel/dma.c               | 19 ++++++++++++-------
- 13 files changed, 84 insertions(+), 31 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
