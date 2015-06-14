@@ -1,154 +1,48 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v2 01/24] macintosh/nvram: Remove as unused
-Date: Sun, 14 Jun 2015 17:46:08 +1000
-Message-ID: <20150614074607.524658883@telegraphics.com.au>
+Subject: [RFC v2 10/24] char/nvram: Use generic fixed_size_llseek()
+Date: Sun, 14 Jun 2015 17:46:17 +1000
+Message-ID: <20150614074609.804677453@telegraphics.com.au>
 References: <20150614074607.242676098@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=macintosh-nvram-remove
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55696 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752059AbbFNNIS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2015 09:08:18 -0400
+Content-Disposition: inline; filename=nvram-generic-llseek
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 ---
- drivers/macintosh/nvram.c |  130 ----------------------------------------------
- 1 file changed, 130 deletions(-)
+ drivers/char/nvram.c |   16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-Index: linux/drivers/macintosh/nvram.c
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/macintosh/nvram.c	2015-06-14 17:45:34.000000000 +1000
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,130 +0,0 @@
--/*
-- * /dev/nvram driver for Power Macintosh.
-- */
--
--#define NVRAM_VERSION "1.0"
--
--#include <linux/module.h>
--
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/fs.h>
--#include <linux/miscdevice.h>
--#include <linux/fcntl.h>
--#include <linux/nvram.h>
--#include <linux/init.h>
--#include <asm/uaccess.h>
--#include <asm/nvram.h>
--
--#define NVRAM_SIZE	8192
--
--static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
--{
+--- linux.orig/drivers/char/nvram.c	2015-06-14 17:45:45.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-14 17:45:46.000000000 +1000
+@@ -235,21 +235,7 @@ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+ static loff_t nvram_misc_llseek(struct file *file, loff_t offset, int origin)
+ {
 -	switch (origin) {
 -	case 0:
+-		/* nothing to do */
 -		break;
 -	case 1:
 -		offset += file->f_pos;
 -		break;
 -	case 2:
--		offset += NVRAM_SIZE;
+-		offset += NVRAM_BYTES;
 -		break;
 -	default:
--		offset = -1;
--	}
--	if (offset < 0)
 -		return -EINVAL;
--
--	file->f_pos = offset;
--	return file->f_pos;
--}
--
--static ssize_t read_nvram(struct file *file, char __user *buf,
--			  size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	char __user *p = buf;
--
--	if (!access_ok(VERIFY_WRITE, buf, count))
--		return -EFAULT;
--	if (*ppos >= NVRAM_SIZE)
--		return 0;
--	for (i = *ppos; count > 0 && i < NVRAM_SIZE; ++i, ++p, --count)
--		if (__put_user(nvram_read_byte(i), p))
--			return -EFAULT;
--	*ppos = i;
--	return p - buf;
--}
--
--static ssize_t write_nvram(struct file *file, const char __user *buf,
--			   size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	const char __user *p = buf;
--	char c;
--
--	if (!access_ok(VERIFY_READ, buf, count))
--		return -EFAULT;
--	if (*ppos >= NVRAM_SIZE)
--		return 0;
--	for (i = *ppos; count > 0 && i < NVRAM_SIZE; ++i, ++p, --count) {
--		if (__get_user(c, p))
--			return -EFAULT;
--		nvram_write_byte(c, i);
--	}
--	*ppos = i;
--	return p - buf;
--}
--
--static long nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	switch(cmd) {
--		case PMAC_NVRAM_GET_OFFSET:
--		{
--			int part, offset;
--			if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
--				return -EFAULT;
--			if (part < pmac_nvram_OF || part > pmac_nvram_NR)
--				return -EINVAL;
--			offset = pmac_get_partition(part);
--			if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
--				return -EFAULT;
--			break;
--		}
--
--		default:
--			return -EINVAL;
 -	}
 -
--	return 0;
--}
--
--const struct file_operations nvram_fops = {
--	.owner		= THIS_MODULE,
--	.llseek		= nvram_llseek,
--	.read		= read_nvram,
--	.write		= write_nvram,
--	.unlocked_ioctl	= nvram_ioctl,
--};
--
--static struct miscdevice nvram_dev = {
--	NVRAM_MINOR,
--	"nvram",
--	&nvram_fops
--};
--
--int __init nvram_init(void)
--{
--	printk(KERN_INFO "Macintosh non-volatile memory driver v%s\n",
--		NVRAM_VERSION);
--	return misc_register(&nvram_dev);
--}
--
--void __exit nvram_cleanup(void)
--{
--        misc_deregister( &nvram_dev );
--}
--
--module_init(nvram_init);
--module_exit(nvram_cleanup);
--MODULE_LICENSE("GPL");
+-	return (offset >= 0) ? (file->f_pos = offset) : -EINVAL;
++	return fixed_size_llseek(file, offset, origin, nvram_size);
+ }
+ 
+ static ssize_t nvram_misc_read(struct file *file, char __user *buf,
