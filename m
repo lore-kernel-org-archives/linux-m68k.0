@@ -1,142 +1,203 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v2 20/24] char/generic_nvram: Remove as unused
-Date: Sun, 14 Jun 2015 17:46:27 +1000
-Message-ID: <20150614074612.304821989@telegraphics.com.au>
+Subject: [RFC v2 21/24] powerpc: Adopt nvram module for PPC64
+Date: Sun, 14 Jun 2015 17:46:28 +1000
+Message-ID: <20150614074612.554665073@telegraphics.com.au>
 References: <20150614074607.242676098@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55704 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55705 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752327AbbFNNIX (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2015 09:08:23 -0400
-Content-Disposition: inline; filename=generic_nvram-remove
+	with ESMTP id S1752339AbbFNNIY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2015 09:08:24 -0400
+Content-Disposition: inline; filename=ppc64-adopt-drivers-char-nvram
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-And thus eliminate some twisted CONFIG_GENERIC_NVRAM logic.
+Adopt nvram module to reduce code duplication.
+
+The IOC_NVRAM_GET_OFFSET ioctl as implemented on PPC64 validates the offset
+returned by pmac_get_partition(). Add this test to the nvram module.
+
+Note that the old PPC32 generic_nvram module lacked this test.
+So when CONFIG_PPC32 && CONFIG_PPC_PMAC, the IOC_NVRAM_GET_OFFSET ioctl
+would have returned 0 (always). But when CONFIG_PPC64 && CONFIG_PPC_PMAC,
+the IOC_NVRAM_GET_OFFSET ioctl would have returned -1 (which is -EPERM)
+when the requested partition was not found.
+
+With this patch, the result is now -EINVAL on both PPC32 and PPC64 when
+the requested PowerMac NVRAM partition is not found.
+
+This is a userspace-visible change, in the non-existent partition case,
+which would be in an error path for an IOC_NVRAM_GET_OFFSET ioctl syscall.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/char/Makefile        |    6 -
- drivers/char/generic_nvram.c |  176 -------------------------------------------
- 2 files changed, 1 insertion(+), 181 deletions(-)
 
-Index: linux/drivers/char/Makefile
+BTW, the IOC_NVRAM_SYNC ioctl call returns -EINVAL on PPC64. This patch
+retains this behaviour though it might be better to actually perform a sync.
+Both PPC64 and PPC32 kernels implement ppc_md.nvram_sync() for Core99,
+but on PPC64 the ioctl is unimplemented (unlike PPC32).
+
+---
+
+Changed since v1:
+- The -ENOENT that appeared in v1 was changed to -EINVAL, to be
+consistent with existing logic, that is,
+	if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+		return -EINVAL;
+
+---
+ arch/powerpc/Kconfig                     |    3 
+ arch/powerpc/kernel/nvram_64.c           |  203 ++++---------------------------
+ arch/powerpc/platforms/powermac/Makefile |    5 
+ arch/powerpc/platforms/powermac/setup.c  |    2 
+ drivers/char/nvram.c                     |    2 
+ 5 files changed, 36 insertions(+), 179 deletions(-)
+
+Index: linux/arch/powerpc/Kconfig
 ===================================================================
---- linux.orig/drivers/char/Makefile	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/char/Makefile	2015-06-14 17:45:59.000000000 +1000
-@@ -30,11 +30,7 @@ obj-$(CONFIG_GEN_RTC)		+= genrtc.o
- obj-$(CONFIG_EFI_RTC)		+= efirtc.o
- obj-$(CONFIG_DS1302)		+= ds1302.o
- obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
--ifeq ($(CONFIG_GENERIC_NVRAM),y)
--  obj-$(CONFIG_NVRAM)	+= generic_nvram.o
--else
--  obj-$(CONFIG_NVRAM)	+= nvram.o
--endif
-+obj-$(CONFIG_NVRAM)		+= nvram.o
- obj-$(CONFIG_TOSHIBA)		+= toshiba.o
- obj-$(CONFIG_I8K)		+= i8k.o
- obj-$(CONFIG_DS1620)		+= ds1620.o
-Index: linux/drivers/char/generic_nvram.c
+--- linux.orig/arch/powerpc/Kconfig	2015-06-14 17:45:57.000000000 +1000
++++ linux/arch/powerpc/Kconfig	2015-06-14 17:46:00.000000000 +1000
+@@ -177,10 +177,9 @@ config SYSVIPC_COMPAT
+ 	depends on COMPAT && SYSVIPC
+ 	default y
+ 
+-# All PPC32s use generic nvram driver through ppc_md
+ config HAVE_ARCH_NVRAM_OPS
+ 	bool
+-	default y if PPC32
++	default y
+ 
+ config SCHED_OMIT_FRAME_POINTER
+ 	bool
+Index: linux/arch/powerpc/kernel/nvram_64.c
 ===================================================================
---- linux.orig/drivers/char/generic_nvram.c	2015-06-14 17:45:54.000000000 +1000
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,176 +0,0 @@
--/*
-- * Generic /dev/nvram driver for architectures providing some
-- * "generic" hooks, that is :
+--- linux.orig/arch/powerpc/kernel/nvram_64.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/kernel/nvram_64.c	2015-06-14 17:46:00.000000000 +1000
+@@ -7,12 +7,6 @@
+  *      2 of the License, or (at your option) any later version.
+  *
+  * /dev/nvram driver for PPC64
 - *
-- * nvram_read_byte, nvram_write_byte, nvram_sync, nvram_get_size
+- * This perhaps should live in drivers/char
 - *
-- * Note that an additional hook is supported for PowerMac only
-- * for getting the nvram "partition" informations
-- *
-- */
--
--#define NVRAM_VERSION "1.1"
--
--#include <linux/module.h>
--
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/fs.h>
--#include <linux/miscdevice.h>
--#include <linux/fcntl.h>
--#include <linux/init.h>
--#include <linux/mutex.h>
--#include <linux/nvram.h>
--#include <asm/uaccess.h>
--
--#ifdef CONFIG_PPC_PMAC
--#include <asm/nvram.h>
--#include <asm/machdep.h>
--#endif
--
--static DEFINE_MUTEX(nvram_mutex);
--static ssize_t nvram_len;
--
--static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
+- * TODO: Split the /dev/nvram part (that one can use
+- *       drivers/char/generic_nvram.c) from the arch & partition
+- *       parsing code.
+  */
+ 
+ #include <linux/module.h>
+@@ -731,153 +725,6 @@ static void oops_to_nvram(struct kmsg_du
+ 	spin_unlock_irqrestore(&lock, flags);
+ }
+ 
+-static loff_t dev_nvram_llseek(struct file *file, loff_t offset, int origin)
 -{
+-	int size;
+-
+-	if (ppc_md.nvram_size == NULL)
+-		return -ENODEV;
+-	size = ppc_md.nvram_size();
+-
 -	switch (origin) {
--	case 0:
--		break;
 -	case 1:
 -		offset += file->f_pos;
 -		break;
 -	case 2:
--		offset += nvram_len;
+-		offset += size;
 -		break;
--	default:
--		offset = -1;
 -	}
 -	if (offset < 0)
 -		return -EINVAL;
--
 -	file->f_pos = offset;
--
 -	return file->f_pos;
 -}
 -
--static ssize_t read_nvram(struct file *file, char __user *buf,
+-
+-static ssize_t dev_nvram_read(struct file *file, char __user *buf,
 -			  size_t count, loff_t *ppos)
 -{
--	unsigned int i;
--	char __user *p = buf;
+-	ssize_t ret;
+-	char *tmp = NULL;
+-	ssize_t size;
 -
--	if (!access_ok(VERIFY_WRITE, buf, count))
--		return -EFAULT;
--	if (*ppos >= nvram_len)
--		return 0;
--	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
--		if (__put_user(arch_nvram_ops.read_byte(i), p))
--			return -EFAULT;
--	*ppos = i;
--	return p - buf;
--}
--
--static ssize_t write_nvram(struct file *file, const char __user *buf,
--			   size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	const char __user *p = buf;
--	char c;
--
--	if (!access_ok(VERIFY_READ, buf, count))
--		return -EFAULT;
--	if (*ppos >= nvram_len)
--		return 0;
--	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
--		if (__get_user(c, p))
--			return -EFAULT;
--		arch_nvram_ops.write_byte(c, i);
+-	if (!ppc_md.nvram_size) {
+-		ret = -ENODEV;
+-		goto out;
 -	}
--	*ppos = i;
--	return p - buf;
+-
+-	size = ppc_md.nvram_size();
+-	if (size < 0) {
+-		ret = size;
+-		goto out;
+-	}
+-
+-	if (*ppos >= size) {
+-		ret = 0;
+-		goto out;
+-	}
+-
+-	count = min_t(size_t, count, size - *ppos);
+-	count = min(count, PAGE_SIZE);
+-
+-	tmp = kmalloc(count, GFP_KERNEL);
+-	if (!tmp) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ret = ppc_md.nvram_read(tmp, count, ppos);
+-	if (ret <= 0)
+-		goto out;
+-
+-	if (copy_to_user(buf, tmp, ret))
+-		ret = -EFAULT;
+-
+-out:
+-	kfree(tmp);
+-	return ret;
+-
 -}
 -
--static int nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-static ssize_t dev_nvram_write(struct file *file, const char __user *buf,
+-			  size_t count, loff_t *ppos)
+-{
+-	ssize_t ret;
+-	char *tmp = NULL;
+-	ssize_t size;
+-
+-	ret = -ENODEV;
+-	if (!ppc_md.nvram_size)
+-		goto out;
+-
+-	ret = 0;
+-	size = ppc_md.nvram_size();
+-	if (*ppos >= size || size < 0)
+-		goto out;
+-
+-	count = min_t(size_t, count, size - *ppos);
+-	count = min(count, PAGE_SIZE);
+-
+-	ret = -ENOMEM;
+-	tmp = kmalloc(count, GFP_KERNEL);
+-	if (!tmp)
+-		goto out;
+-
+-	ret = -EFAULT;
+-	if (copy_from_user(tmp, buf, count))
+-		goto out;
+-
+-	ret = ppc_md.nvram_write(tmp, count, ppos);
+-
+-out:
+-	kfree(tmp);
+-	return ret;
+-
+-}
+-
+-static long dev_nvram_ioctl(struct file *file, unsigned int cmd,
+-			    unsigned long arg)
 -{
 -	switch(cmd) {
 -#ifdef CONFIG_PPC_PMAC
@@ -152,38 +213,24 @@ Index: linux/drivers/char/generic_nvram.c
 -		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
 -			return -EINVAL;
 -		offset = pmac_get_partition(part);
+-		if (offset < 0)
+-			return offset;
 -		if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
 -			return -EFAULT;
--		break;
+-		return 0;
 -	}
 -#endif /* CONFIG_PPC_PMAC */
--	case IOC_NVRAM_SYNC:
--		arch_nvram_ops.sync();
--		break;
 -	default:
 -		return -EINVAL;
 -	}
--
--	return 0;
--}
--
--static long nvram_unlocked_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	int ret;
--
--	mutex_lock(&nvram_mutex);
--	ret = nvram_ioctl(file, cmd, arg);
--	mutex_unlock(&nvram_mutex);
--
--	return ret;
 -}
 -
 -const struct file_operations nvram_fops = {
 -	.owner		= THIS_MODULE,
--	.llseek		= nvram_llseek,
--	.read		= read_nvram,
--	.write		= write_nvram,
--	.unlocked_ioctl	= nvram_unlocked_ioctl,
+-	.llseek		= dev_nvram_llseek,
+-	.read		= dev_nvram_read,
+-	.write		= dev_nvram_write,
+-	.unlocked_ioctl	= dev_nvram_ioctl,
 -};
 -
 -static struct miscdevice nvram_dev = {
@@ -192,31 +239,117 @@ Index: linux/drivers/char/generic_nvram.c
 -	&nvram_fops
 -};
 -
--int __init nvram_init(void)
--{
--	int ret;
--
--	if (arch_nvram_ops.get_size == NULL)
--		return -ENODEV;
--
--	nvram_len = arch_nvram_ops.get_size();
--	if (nvram_len < 0)
--		return nvram_len;
--
--	ret = misc_register(&nvram_dev);
--	if (ret)
--		return ret;
--
--	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
--
--	return 0;
--}
--
--void __exit nvram_cleanup(void)
--{
+ 
+ #ifdef DEBUG_NVRAM
+ static void __init nvram_print_partitions(char * label)
+@@ -1026,6 +873,8 @@ loff_t __init nvram_create_partition(con
+ 	long size = 0;
+ 	int rc;
+ 
++	BUILD_BUG_ON(NVRAM_BLOCK_LEN != 16);
++
+ 	/* Convert sizes from bytes to blocks */
+ 	req_size = _ALIGN_UP(req_size, NVRAM_BLOCK_LEN) / NVRAM_BLOCK_LEN;
+ 	min_size = _ALIGN_UP(min_size, NVRAM_BLOCK_LEN) / NVRAM_BLOCK_LEN;
+@@ -1226,29 +1075,41 @@ int __init nvram_scan_partitions(void)
+ 	return err;
+ }
+ 
+-static int __init nvram_init(void)
++
++#if IS_ENABLED(CONFIG_NVRAM)
++
++static ssize_t ppc_nvram_read(char *buf, size_t count, loff_t *index)
+ {
+-	int rc;
+-	
+-	BUILD_BUG_ON(NVRAM_BLOCK_LEN != 16);
++	if (ppc_md.nvram_read)
++		return ppc_md.nvram_read(buf, count, index);
++	return -EINVAL;
++}
+ 
+-	if (ppc_md.nvram_size == NULL || ppc_md.nvram_size() <= 0)
+-		return  -ENODEV;
++static ssize_t ppc_nvram_write(char *buf, size_t count, loff_t *index)
++{
++	if (ppc_md.nvram_write)
++		return ppc_md.nvram_write(buf, count, index);
++	return -EINVAL;
++}
+ 
+-  	rc = misc_register(&nvram_dev);
+-	if (rc != 0) {
+-		printk(KERN_ERR "nvram_init: failed to register device\n");
+-		return rc;
+-	}
+-  	
+-  	return rc;
++static ssize_t ppc_nvram_get_size(void)
++{
++	if (ppc_md.nvram_size)
++		return ppc_md.nvram_size();
++	return -ENODEV;
+ }
+ 
+-static void __exit nvram_cleanup(void)
++static long ppc_nvram_sync(void)
+ {
 -        misc_deregister( &nvram_dev );
--}
--
++	return -EINVAL;
+ }
+ 
 -module_init(nvram_init);
 -module_exit(nvram_cleanup);
 -MODULE_LICENSE("GPL");
++const struct nvram_ops arch_nvram_ops = {
++	.read           = ppc_nvram_read,
++	.write          = ppc_nvram_write,
++	.get_size       = ppc_nvram_get_size,
++	.sync           = ppc_nvram_sync,
++};
++EXPORT_SYMBOL(arch_nvram_ops);
++
++#endif /* CONFIG_NVRAM */
+Index: linux/arch/powerpc/platforms/powermac/Makefile
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/Makefile	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/Makefile	2015-06-14 17:46:00.000000000 +1000
+@@ -9,11 +9,6 @@ obj-y				+= pic.o setup.o time.o feature
+ 				   sleep.o low_i2c.o cache.o pfunc_core.o \
+ 				   pfunc_base.o udbg_scc.o udbg_adb.o
+ obj-$(CONFIG_PMAC_BACKLIGHT)	+= backlight.o
+-# CONFIG_NVRAM is an arch. independent tristate symbol, for pmac32 we really
+-# need this to be a bool.  Cheat here and pretend CONFIG_NVRAM=m is really
+-# CONFIG_NVRAM=y
+ obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
+-# ppc64 pmac doesn't define CONFIG_NVRAM but needs nvram stuff
+-obj-$(CONFIG_PPC64)		+= nvram.o
+ obj-$(CONFIG_PPC32)		+= bootx_init.o
+ obj-$(CONFIG_SMP)		+= smp.o
+Index: linux/arch/powerpc/platforms/powermac/setup.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-06-14 17:45:57.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/setup.c	2015-06-14 17:46:00.000000000 +1000
+@@ -321,7 +321,7 @@ static void __init pmac_setup_arch(void)
+ 	find_via_pmu();
+ 	smu_init();
+ 
+-#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
++#if IS_ENABLED(CONFIG_NVRAM)
+ 	pmac_nvram_init();
+ #endif
+ 
+Index: linux/drivers/char/nvram.c
+===================================================================
+--- linux.orig/drivers/char/nvram.c	2015-06-14 17:45:56.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-14 17:46:00.000000000 +1000
+@@ -342,6 +342,8 @@ static long nvram_misc_ioctl(struct file
+ 		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+ 			return -EINVAL;
+ 		offset = pmac_get_partition(part);
++		if (offset < 0)
++			return -EINVAL;
+ 		if (copy_to_user((void __user *)arg,
+ 		                 &offset, sizeof(offset)) != 0)
+ 			return -EFAULT;
