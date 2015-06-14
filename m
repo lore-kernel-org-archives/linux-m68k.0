@@ -1,126 +1,114 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v2 06/24] char/nvram: Adopt arch_nvram_ops
-Date: Sun, 14 Jun 2015 17:46:13 +1000
-Message-ID: <20150614074608.774666234@telegraphics.com.au>
+Subject: [RFC v2 14/24] powerpc: Add missing ppc_md.nvram_size for CHRP and PowerMac
+Date: Sun, 14 Jun 2015 17:46:21 +1000
+Message-ID: <20150614074610.794638886@telegraphics.com.au>
 References: <20150614074607.242676098@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-adopt-nvram_ops
+Content-Disposition: inline; filename=fix-powerpc-machdep-inconsistencies
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>
 List-Id: linux-m68k@vger.kernel.org
 
-Different platforms and architectures offer different NVRAM sizes and
-access methods. E.g. PPC32 has byte-at-a-time read/write functions whereas
-PPC64 has byte-range read/write functions. Adopt the nvram_ops struct so
-the nvram module can call such functions as are defined by the various 
-platforms and architectures.
+Add the nvram_size() function to those PowerPC platforms that don't already
+have one: CHRP and PowerMac. This means that the ppc_md.nvram_size()
+function can be used to implement arch_nvram_ops.get_size()
+
+Since we are addressing inconsistencies here, also rename chrp_nvram_read
+and chrp_nvram_write, which break the naming convention used across
+PowerPC platforms for NVRAM accessor functions.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/powerpc/platforms/chrp/nvram.c     |   14 ++++++++++----
+ arch/powerpc/platforms/powermac/nvram.c |    9 +++++++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-The #ifdefs here restrict the procfs and checksumming code to those
-architectures with PC-style RTC NVRAM. There may be a better place for
-that code but it's an open question. See https://lkml.org/lkml/2015/2/3/22
-
-The procfs code here, if irrelevant to ARM platforms, could be moved to
-arch/x86 (like the earlier patch does for m68k code) and the nvram ops
-could implemented and exported by the rtc-cmos driver instead. This
-would eliminate these #ifdefs.
-
----
- drivers/char/nvram.c  |   30 +++++++++++++++++++++++++++---
- include/linux/nvram.h |    2 ++
- 2 files changed, 29 insertions(+), 3 deletions(-)
-
-Index: linux/drivers/char/nvram.c
+Index: linux/arch/powerpc/platforms/chrp/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-06-14 17:45:40.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-06-14 17:45:41.000000000 +1000
-@@ -51,9 +51,12 @@ static DEFINE_MUTEX(nvram_mutex);
- static DEFINE_SPINLOCK(nvram_state_lock);
- static int nvram_open_cnt;	/* #times opened */
- static int nvram_open_mode;	/* special open modes */
-+static ssize_t nvram_size;
- #define NVRAM_WRITE		1 /* opened for writing (exclusive) */
- #define NVRAM_EXCL		2 /* opened with O_EXCL */
+--- linux.orig/arch/powerpc/platforms/chrp/nvram.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/platforms/chrp/nvram.c	2015-06-14 17:45:50.000000000 +1000
+@@ -23,7 +23,7 @@ static unsigned int nvram_size;
+ static unsigned char nvram_buf[4];
+ static DEFINE_SPINLOCK(nvram_lock);
  
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM)
-+
- /*
-  * These functions are provided to be called internally or by other parts of
-  * the kernel. It's up to the caller to ensure correct checksum before reading
-@@ -161,6 +164,20 @@ void nvram_set_checksum(void)
+-static unsigned char chrp_nvram_read(int addr)
++static unsigned char chrp_nvram_read_byte(int addr)
+ {
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -45,7 +45,7 @@ static unsigned char chrp_nvram_read(int
+ 	return ret;
  }
- #endif  /*  0  */
  
-+static ssize_t nvram_get_size(void)
+-static void chrp_nvram_write(int addr, unsigned char val)
++static void chrp_nvram_write_byte(int addr, unsigned char val)
+ {
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -63,6 +63,11 @@ static void chrp_nvram_write(int addr, u
+ 	spin_unlock_irqrestore(&nvram_lock, flags);
+ }
+ 
++static ssize_t chrp_nvram_size(void)
 +{
-+	return NVRAM_BYTES;
++	return nvram_size;
 +}
 +
-+const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = nvram_read_byte,
-+	.write_byte     = nvram_write_byte,
-+	.get_size       = nvram_get_size,
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+
-+#endif /* CONFIG_X86 || CONFIG_ARM */
-+
- /*
-  * The are the file operation function for user access to /dev/nvram
-  */
-@@ -332,7 +349,7 @@ static int nvram_misc_release(struct ino
- 	return 0;
+ void __init chrp_nvram_init(void)
+ {
+ 	struct device_node *nvram;
+@@ -84,8 +89,9 @@ void __init chrp_nvram_init(void)
+ 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
+ 	of_node_put(nvram);
+ 
+-	ppc_md.nvram_read_val = chrp_nvram_read;
+-	ppc_md.nvram_write_val = chrp_nvram_write;
++	ppc_md.nvram_read_val  = chrp_nvram_read_byte;
++	ppc_md.nvram_write_val = chrp_nvram_write_byte;
++	ppc_md.nvram_size      = chrp_nvram_size;
+ 
+ 	return;
  }
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 
- static char *floppy_types[] = {
- 	"none", "5.25'' 360k", "5.25'' 1.2M", "3.5'' 720k", "3.5'' 1.44M",
-@@ -459,13 +476,20 @@ static int __init nvram_module_init(void
- {
- 	int ret;
- 
-+	if (arch_nvram_ops.get_size == NULL)
-+		return -ENODEV;
-+
-+	nvram_size = arch_nvram_ops.get_size();
-+	if (nvram_size < 0)
-+		return nvram_size;
-+
- 	ret = misc_register(&nvram_misc);
- 	if (ret) {
- 		pr_err("nvram: can't misc_register on minor=%d\n", NVRAM_MINOR);
- 		return ret;
- 	}
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops)) {
- 		pr_err("nvram: can't create /proc/driver/nvram\n");
- 		misc_deregister(&nvram_misc);
-@@ -479,7 +503,7 @@ static int __init nvram_module_init(void
- 
- static void __exit nvram_module_exit(void)
- {
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	remove_proc_entry("driver/nvram", NULL);
- #endif
- 	misc_deregister(&nvram_misc);
-Index: linux/include/linux/nvram.h
+Index: linux/arch/powerpc/platforms/powermac/nvram.c
 ===================================================================
---- linux.orig/include/linux/nvram.h	2015-06-14 17:45:39.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-06-14 17:45:41.000000000 +1000
-@@ -14,6 +14,8 @@ extern int nvram_check_checksum(void);
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-+	unsigned char   (*read_byte)(int);
-+	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
- };
+--- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-06-14 17:45:50.000000000 +1000
+@@ -147,6 +147,11 @@ static ssize_t core99_nvram_size(void)
+ static volatile unsigned char __iomem *nvram_addr;
+ static int nvram_mult;
  
++static ssize_t ppc32_nvram_size(void)
++{
++	return NVRAM_SIZE;
++}
++
+ static unsigned char direct_nvram_read_byte(int addr)
+ {
+ 	return in_8(&nvram_data[(addr & (NVRAM_SIZE - 1)) * nvram_mult]);
+@@ -590,21 +595,25 @@ int __init pmac_nvram_init(void)
+ 		nvram_mult = 1;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 1) {
+ 		nvram_data = ioremap(r1.start, s1);
+ 		nvram_mult = (s1 + NVRAM_SIZE - 1) / NVRAM_SIZE;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 2) {
+ 		nvram_addr = ioremap(r1.start, s1);
+ 		nvram_data = ioremap(r2.start, s2);
+ 		ppc_md.nvram_read_val	= indirect_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= indirect_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 0 && sys_ctrler == SYS_CTRLER_PMU) {
+ #ifdef CONFIG_ADB_PMU
+ 		nvram_naddrs = -1;
+ 		ppc_md.nvram_read_val	= pmu_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= pmu_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ #endif /* CONFIG_ADB_PMU */
+ 	} else {
+ 		printk(KERN_ERR "Incompatible type of NVRAM\n");
