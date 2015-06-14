@@ -1,112 +1,88 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v2 07/24] x86/thinkpad_acpi: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
-Date: Sun, 14 Jun 2015 17:46:14 +1000
-Message-ID: <20150614074609.036850762@telegraphics.com.au>
+Subject: [RFC v2 13/24] powerpc: Cleanup nvram includes
+Date: Sun, 14 Jun 2015 17:46:20 +1000
+Message-ID: <20150614074610.545107014@telegraphics.com.au>
 References: <20150614074607.242676098@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55695 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55701 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751615AbbFNNIO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2015 09:08:14 -0400
-Content-Disposition: inline; filename=pc-rtc-replace-exported-nvram-functions
+	with ESMTP id S1752183AbbFNNIU (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2015 09:08:20 -0400
+Content-Disposition: inline; filename=powerpc-fix-nvram-includes
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Darren Hart <dvhart@infradead.org>, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
-Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 
-Make use of arch_nvram_ops in the thinkpad_acpi driver so that the
-nvram_* function exports can be removed.
-
-This patch series was tested on a ThinkPad T43.
+The nvram_read_byte() and nvram_write_byte() definitions in asm/nvram.h
+duplicate those in linux/nvram.h. Get rid of the former to prepare for
+adoption of struct arch_nvram_ops (which is defined in linux/nvram.h for
+general use).
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Reviewed-by: Darren Hart <dvhart@linux.intel.com>
 
 ---
- drivers/platform/x86/thinkpad_acpi.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/powerpc/include/asm/nvram.h           |    3 ---
+ arch/powerpc/kernel/setup_32.c             |    1 +
+ drivers/char/generic_nvram.c               |    4 +++-
+ drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Index: linux/drivers/platform/x86/thinkpad_acpi.c
+Index: linux/arch/powerpc/include/asm/nvram.h
 ===================================================================
---- linux.orig/drivers/platform/x86/thinkpad_acpi.c	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/platform/x86/thinkpad_acpi.c	2015-06-14 17:45:42.000000000 +1000
-@@ -2311,30 +2311,30 @@ static void hotkey_read_nvram(struct tp_
- 	u8 d;
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-06-14 17:45:49.000000000 +1000
+@@ -101,7 +101,4 @@ extern int nvram_write_os_partition(stru
+ /* Determine NVRAM size */
+ extern ssize_t nvram_get_size(void);
  
- 	if (m & TP_NVRAM_HKEY_GROUP_HK2) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_HK2);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_HK2);
- 		n->thinkpad_toggle = !!(d & TP_NVRAM_MASK_HKT_THINKPAD);
- 		n->zoom_toggle = !!(d & TP_NVRAM_MASK_HKT_ZOOM);
- 		n->display_toggle = !!(d & TP_NVRAM_MASK_HKT_DISPLAY);
- 		n->hibernate_toggle = !!(d & TP_NVRAM_MASK_HKT_HIBERNATE);
- 	}
- 	if (m & TP_ACPI_HKEY_THNKLGHT_MASK) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_THINKLIGHT);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_THINKLIGHT);
- 		n->thinklight_toggle = !!(d & TP_NVRAM_MASK_THINKLIGHT);
- 	}
- 	if (m & TP_ACPI_HKEY_DISPXPAND_MASK) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_VIDEO);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_VIDEO);
- 		n->displayexp_toggle =
- 				!!(d & TP_NVRAM_MASK_HKT_DISPEXPND);
- 	}
- 	if (m & TP_NVRAM_HKEY_GROUP_BRIGHTNESS) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
- 		n->brightness_level = (d & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 				>> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
- 		n->brightness_toggle =
- 				!!(d & TP_NVRAM_MASK_HKT_BRIGHTNESS);
- 	}
- 	if (m & TP_NVRAM_HKEY_GROUP_VOLUME) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
- 		n->volume_level = (d & TP_NVRAM_MASK_LEVEL_VOLUME)
- 				>> TP_NVRAM_POS_LEVEL_VOLUME;
- 		n->mute = !!(d & TP_NVRAM_MASK_MUTE);
-@@ -6155,7 +6155,7 @@ static unsigned int tpacpi_brightness_nv
- {
- 	u8 lnvram;
+-/* Normal access to NVRAM */
+-extern unsigned char nvram_read_byte(int i);
+-extern void nvram_write_byte(unsigned char c, int i);
+ #endif /* _ASM_POWERPC_NVRAM_H */
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-06-14 17:45:49.000000000 +1000
+@@ -16,6 +16,7 @@
+ #include <linux/cpu.h>
+ #include <linux/console.h>
+ #include <linux/memblock.h>
++#include <linux/nvram.h>
  
--	lnvram = (nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
-+	lnvram = (arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
- 		  & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 		  >> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
- 	lnvram &= bright_maxlvl;
-@@ -6180,7 +6180,7 @@ static void tpacpi_brightness_checkpoint
- 	if (unlikely(!acpi_ec_read(TP_EC_BACKLIGHT, &lec)))
- 		goto unlock;
- 	lec &= TP_EC_BACKLIGHT_LVLMSK;
--	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
-+	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
+ #include <asm/io.h>
+ #include <asm/prom.h>
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-06-14 17:45:49.000000000 +1000
+@@ -20,9 +20,11 @@
+ #include <linux/fcntl.h>
+ #include <linux/init.h>
+ #include <linux/mutex.h>
++#include <linux/nvram.h>
+ #include <asm/uaccess.h>
+-#include <asm/nvram.h>
++
+ #ifdef CONFIG_PPC_PMAC
++#include <asm/nvram.h>
+ #include <asm/machdep.h>
+ #endif
  
- 	if (lec != ((b_nvram & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 			     >> TP_NVRAM_POS_LEVEL_BRIGHTNESS)) {
-@@ -6188,7 +6188,7 @@ static void tpacpi_brightness_checkpoint
- 		b_nvram &= ~(TP_NVRAM_MASK_LEVEL_BRIGHTNESS <<
- 				TP_NVRAM_POS_LEVEL_BRIGHTNESS);
- 		b_nvram |= lec;
--		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
-+		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
- 		dbg_printk(TPACPI_DBG_BRGHT,
- 			   "updated NVRAM backlight level to %u (0x%02x)\n",
- 			   (unsigned int) lec, (unsigned int) b_nvram);
-@@ -6796,13 +6796,13 @@ static void tpacpi_volume_checkpoint_nvr
- 	if (unlikely(!acpi_ec_read(TP_EC_AUDIO, &lec)))
- 		goto unlock;
- 	lec &= ec_mask;
--	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
-+	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
+Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-14 17:45:34.000000000 +1000
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-14 17:45:49.000000000 +1000
+@@ -111,12 +111,12 @@
+ #include "matroxfb_g450.h"
+ #include <linux/matroxfb.h>
+ #include <linux/interrupt.h>
++#include <linux/nvram.h>
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
  
- 	if (lec != (b_nvram & ec_mask)) {
- 		/* NVRAM needs update */
- 		b_nvram &= ~ec_mask;
- 		b_nvram |= lec;
--		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
-+		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
- 		dbg_printk(TPACPI_DBG_MIXER,
- 			   "updated NVRAM mixer status to 0x%02x (0x%02x)\n",
- 			   (unsigned int) lec, (unsigned int) b_nvram);
+ #ifdef CONFIG_PPC_PMAC
+ #include <asm/machdep.h>
+-unsigned char nvram_read_byte(int);
+ static int default_vmode = VMODE_NVRAM;
+ static int default_cmode = CMODE_NVRAM;
+ #endif
