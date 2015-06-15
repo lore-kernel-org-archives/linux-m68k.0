@@ -1,64 +1,44 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] m68k:  Use vsprintf %pM extension
-Date: Sun, 14 Jun 2015 19:01:37 -0700
-Message-ID: <1434333697.2507.31.camel__9820.21032036773$1434334060$gmane$org@perches.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [RFC,v2,01/24] macintosh/nvram: Remove as unused
+Date: Mon, 15 Jun 2015 16:41:48 +1000 (AEST)
+Message-ID: <20150615064148.83D59140291@ozlabs.org>
+References: <20150614074607.524658883@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ozlabs.org ([103.22.144.67]:46798 "EHLO ozlabs.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1753861AbbFOGlu (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 15 Jun 2015 02:41:50 -0400
+In-Reply-To: <20150614074607.524658883@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Format mac addresses with the normal kernel extension.
+On Sun, 2015-14-06 at 07:46:08 UTC, Finn Thain wrote:
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/macintosh/nvram.c |  130 ----------------------------------------------
+>  1 file changed, 130 deletions(-)
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- arch/m68k/68000/m68EZ328.c | 3 +--
- arch/m68k/68000/m68VZ328.c | 3 +--
- arch/m68k/68360/config.c   | 3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+This seems uncontroversial, so I'll take it via powerpc for 4.1.
 
-diff --git a/arch/m68k/68000/m68EZ328.c b/arch/m68k/68000/m68EZ328.c
-index 2195290..e6ab321 100644
---- a/arch/m68k/68000/m68EZ328.c
-+++ b/arch/m68k/68000/m68EZ328.c
-@@ -62,8 +62,7 @@ void __init config_BSP(char *command, int len)
- #ifdef CONFIG_UCSIMM
-   printk(KERN_INFO "uCsimm serial string [%s]\n",getserialnum());
-   p = cs8900a_hwaddr = gethwaddr(0);
--  printk(KERN_INFO "uCsimm hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
--         p[0], p[1], p[2], p[3], p[4], p[5]);
-+  printk(KERN_INFO "uCsimm hwaddr %pM\n", p);
- 
-   p = getbenv("APPEND");
-   if (p) strcpy(p,command);
-diff --git a/arch/m68k/68000/m68VZ328.c b/arch/m68k/68000/m68VZ328.c
-index 0e5e5a1..1154bdb 100644
---- a/arch/m68k/68000/m68VZ328.c
-+++ b/arch/m68k/68000/m68VZ328.c
-@@ -152,8 +152,7 @@ static void __init init_hardware(char *command, int size)
- 
- 	printk(KERN_INFO "uCdimm serial string [%s]\n", getserialnum());
- 	p = cs8900a_hwaddr = gethwaddr(0);
--	printk(KERN_INFO "uCdimm hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
--		p[0], p[1], p[2], p[3], p[4], p[5]);
-+	printk(KERN_INFO "uCdimm hwaddr %pM\n", p);
- 	p = getbenv("APPEND");
- 	if (p)
- 		strcpy(p, command);
-diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
-index fd1f948c..b65fe4e 100644
---- a/arch/m68k/68360/config.c
-+++ b/arch/m68k/68360/config.c
-@@ -154,8 +154,7 @@ void __init config_BSP(char *command, int len)
- #if defined(CONFIG_UCQUICC) && 0
-   printk(KERN_INFO "uCquicc serial string [%s]\n",getserialnum());
-   p = scc1_hwaddr = gethwaddr(0);
--  printk(KERN_INFO "uCquicc hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
--         p[0], p[1], p[2], p[3], p[4], p[5]);
-+  printk(KERN_INFO "uCquicc hwaddr %pM\n", p);
- 
-   p = getbenv("APPEND");
-   if (p)
+In future please include the details on how/why it's unused in the changelog.
+
+Geert did the digging for you:
+
+  Removal seems to be forgotten by full-history-linux
+  commit 17c6f4635bea74e110ab3558d408c9cd218c568a
+  Author: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+  Date:   Fri Feb 6 14:20:56 2004 +1100
+  
+      ppc32: Rework nvram management
+  
+      move drivers/macintosh/nvram.c to drivers/char/generic_nvram.c,
+      update platform hooks,
+      fix powermac nvram driver for newer machines
+
+
+I'll fold that into the changelog.
+
+cheers
