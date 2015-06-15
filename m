@@ -1,201 +1,64 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v2 17/24] powerpc, fbdev: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
-Date: Sun, 14 Jun 2015 17:46:24 +1000
-Message-ID: <20150614074611.564687158@telegraphics.com.au>
-References: <20150614074607.242676098@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=ppc32-replace-exported-nvram-functions
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] m68k:  Use vsprintf %pM extension
+Date: Sun, 14 Jun 2015 19:01:37 -0700
+Message-ID: <1434333697.2507.31.camel__9820.21032036773$1434334060$gmane$org@perches.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel <linux-kernel@vger.kernel.org>
 
-Make use of arch_nvram_ops in device drivers so that the nvram_*
-function exports can be removed.
+Format mac addresses with the normal kernel extension.
 
-Since they are no longer global symbols, rename the PPC32 nvram_* functions
-appropriately.
-
-Add the missing CONFIG_NVRAM test to imsttfb to avoid a build failure.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/powerpc/kernel/setup_32.c             |    8 ++++----
- drivers/char/generic_nvram.c               |    4 ++--
- drivers/video/fbdev/controlfb.c            |    4 ++--
- drivers/video/fbdev/imsttfb.c              |    7 +++----
- drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
- drivers/video/fbdev/platinumfb.c           |    4 ++--
- drivers/video/fbdev/valkyriefb.c           |    4 ++--
- 7 files changed, 16 insertions(+), 17 deletions(-)
+ arch/m68k/68000/m68EZ328.c | 3 +--
+ arch/m68k/68000/m68VZ328.c | 3 +--
+ arch/m68k/68360/config.c   | 3 +--
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-Index: linux/arch/powerpc/kernel/setup_32.c
-===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-06-14 17:45:53.000000000 +1000
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-06-14 17:45:54.000000000 +1000
-@@ -170,20 +170,18 @@ __setup("l3cr=", ppc_setup_l3cr);
+diff --git a/arch/m68k/68000/m68EZ328.c b/arch/m68k/68000/m68EZ328.c
+index 2195290..e6ab321 100644
+--- a/arch/m68k/68000/m68EZ328.c
++++ b/arch/m68k/68000/m68EZ328.c
+@@ -62,8 +62,7 @@ void __init config_BSP(char *command, int len)
+ #ifdef CONFIG_UCSIMM
+   printk(KERN_INFO "uCsimm serial string [%s]\n",getserialnum());
+   p = cs8900a_hwaddr = gethwaddr(0);
+-  printk(KERN_INFO "uCsimm hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
+-         p[0], p[1], p[2], p[3], p[4], p[5]);
++  printk(KERN_INFO "uCsimm hwaddr %pM\n", p);
  
- #ifdef CONFIG_GENERIC_NVRAM
+   p = getbenv("APPEND");
+   if (p) strcpy(p,command);
+diff --git a/arch/m68k/68000/m68VZ328.c b/arch/m68k/68000/m68VZ328.c
+index 0e5e5a1..1154bdb 100644
+--- a/arch/m68k/68000/m68VZ328.c
++++ b/arch/m68k/68000/m68VZ328.c
+@@ -152,8 +152,7 @@ static void __init init_hardware(char *command, int size)
  
--unsigned char nvram_read_byte(int addr)
-+static unsigned char ppc_nvram_read_byte(int addr)
- {
- 	if (ppc_md.nvram_read_val)
- 		return ppc_md.nvram_read_val(addr);
- 	return 0xff;
- }
--EXPORT_SYMBOL(nvram_read_byte);
+ 	printk(KERN_INFO "uCdimm serial string [%s]\n", getserialnum());
+ 	p = cs8900a_hwaddr = gethwaddr(0);
+-	printk(KERN_INFO "uCdimm hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
+-		p[0], p[1], p[2], p[3], p[4], p[5]);
++	printk(KERN_INFO "uCdimm hwaddr %pM\n", p);
+ 	p = getbenv("APPEND");
+ 	if (p)
+ 		strcpy(p, command);
+diff --git a/arch/m68k/68360/config.c b/arch/m68k/68360/config.c
+index fd1f948c..b65fe4e 100644
+--- a/arch/m68k/68360/config.c
++++ b/arch/m68k/68360/config.c
+@@ -154,8 +154,7 @@ void __init config_BSP(char *command, int len)
+ #if defined(CONFIG_UCQUICC) && 0
+   printk(KERN_INFO "uCquicc serial string [%s]\n",getserialnum());
+   p = scc1_hwaddr = gethwaddr(0);
+-  printk(KERN_INFO "uCquicc hwaddr %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
+-         p[0], p[1], p[2], p[3], p[4], p[5]);
++  printk(KERN_INFO "uCquicc hwaddr %pM\n", p);
  
--void nvram_write_byte(unsigned char val, int addr)
-+static void ppc_nvram_write_byte(unsigned char val, int addr)
- {
- 	if (ppc_md.nvram_write_val)
- 		ppc_md.nvram_write_val(addr, val);
- }
--EXPORT_SYMBOL(nvram_write_byte);
- 
- static ssize_t ppc_nvram_get_size(void)
- {
-@@ -200,6 +198,8 @@ static long ppc_nvram_sync(void)
- }
- 
- const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = ppc_nvram_read_byte,
-+	.write_byte     = ppc_nvram_write_byte,
- 	.get_size       = ppc_nvram_get_size,
- 	.sync           = ppc_nvram_sync,
- };
-Index: linux/drivers/char/generic_nvram.c
-===================================================================
---- linux.orig/drivers/char/generic_nvram.c	2015-06-14 17:45:53.000000000 +1000
-+++ linux/drivers/char/generic_nvram.c	2015-06-14 17:45:54.000000000 +1000
-@@ -64,7 +64,7 @@ static ssize_t read_nvram(struct file *f
- 	if (*ppos >= nvram_len)
- 		return 0;
- 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
--		if (__put_user(nvram_read_byte(i), p))
-+		if (__put_user(arch_nvram_ops.read_byte(i), p))
- 			return -EFAULT;
- 	*ppos = i;
- 	return p - buf;
-@@ -84,7 +84,7 @@ static ssize_t write_nvram(struct file *
- 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
- 		if (__get_user(c, p))
- 			return -EFAULT;
--		nvram_write_byte(c, i);
-+		arch_nvram_ops.write_byte(c, i);
- 	}
- 	*ppos = i;
- 	return p - buf;
-Index: linux/drivers/video/fbdev/controlfb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/controlfb.c	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/video/fbdev/controlfb.c	2015-06-14 17:45:54.000000000 +1000
-@@ -415,7 +415,7 @@ static int __init init_control(struct fb
- 	/* Try to pick a video mode out of NVRAM if we have one. */
- #ifdef CONFIG_NVRAM
- 	if (default_cmode == CMODE_NVRAM) {
--		cmode = nvram_read_byte(NV_CMODE);
-+		cmode = arch_nvram_ops.read_byte(NV_CMODE);
- 		if(cmode < CMODE_8 || cmode > CMODE_32)
- 			cmode = CMODE_8;
- 	} else
-@@ -423,7 +423,7 @@ static int __init init_control(struct fb
- 		cmode=default_cmode;
- #ifdef CONFIG_NVRAM
- 	if (default_vmode == VMODE_NVRAM) {
--		vmode = nvram_read_byte(NV_VMODE);
-+		vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (vmode < 1 || vmode > VMODE_MAX ||
- 		    control_mac_modes[vmode - 1].m[full] < cmode) {
- 			sense = read_control_sense(p);
-Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
-===================================================================
---- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-14 17:45:49.000000000 +1000
-+++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-14 17:45:54.000000000 +1000
-@@ -1888,7 +1888,7 @@ static int initMatrox2(struct matrox_fb_
- 			default_vmode = VMODE_640_480_60;
- #ifdef CONFIG_NVRAM
- 		if (default_cmode == CMODE_NVRAM)
--			default_cmode = nvram_read_byte(NV_CMODE);
-+			default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
- #endif
- 		if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
- 			default_cmode = CMODE_8;
-Index: linux/drivers/video/fbdev/platinumfb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/platinumfb.c	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/video/fbdev/platinumfb.c	2015-06-14 17:45:54.000000000 +1000
-@@ -349,7 +349,7 @@ static int platinum_init_fb(struct fb_in
- 	printk(KERN_INFO "platinumfb: Monitor sense value = 0x%x, ", sense);
- 	if (default_vmode == VMODE_NVRAM) {
- #ifdef CONFIG_NVRAM
--		default_vmode = nvram_read_byte(NV_VMODE);
-+		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (default_vmode <= 0 || default_vmode > VMODE_MAX ||
- 		    !platinum_reg_init[default_vmode-1])
- #endif
-@@ -362,7 +362,7 @@ static int platinum_init_fb(struct fb_in
- 		default_vmode = VMODE_640_480_60;
- #ifdef CONFIG_NVRAM
- 	if (default_cmode == CMODE_NVRAM)
--		default_cmode = nvram_read_byte(NV_CMODE);
-+		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
- #endif
- 	if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
- 		default_cmode = CMODE_8;
-Index: linux/drivers/video/fbdev/valkyriefb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/video/fbdev/valkyriefb.c	2015-06-14 17:45:54.000000000 +1000
-@@ -287,7 +287,7 @@ static void __init valkyrie_choose_mode(
- 	/* Try to pick a video mode out of NVRAM if we have one. */
- #if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
- 	if (default_vmode == VMODE_NVRAM) {
--		default_vmode = nvram_read_byte(NV_VMODE);
-+		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (default_vmode <= 0
- 		 || default_vmode > VMODE_MAX
- 		 || !valkyrie_reg_init[default_vmode - 1])
-@@ -300,7 +300,7 @@ static void __init valkyrie_choose_mode(
- 		default_vmode = VMODE_640_480_67;
- #if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
- 	if (default_cmode == CMODE_NVRAM)
--		default_cmode = nvram_read_byte(NV_CMODE);
-+		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
- #endif
- 
- 	/*
-Index: linux/drivers/video/fbdev/imsttfb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/imsttfb.c	2015-06-14 17:45:34.000000000 +1000
-+++ linux/drivers/video/fbdev/imsttfb.c	2015-06-14 17:45:54.000000000 +1000
-@@ -328,7 +328,6 @@ enum {
- 	TVP = 1
- };
- 
--#define USE_NV_MODES		1
- #define INIT_BPP		8
- #define INIT_XRES		640
- #define INIT_YRES		480
-@@ -1391,17 +1390,17 @@ static void init_imstt(struct fb_info *i
- 		}
- 	}
- 
--#if USE_NV_MODES && defined(CONFIG_PPC32)
-+#if defined(CONFIG_NVRAM) && defined(CONFIG_PPC32)
- 	{
- 		int vmode = init_vmode, cmode = init_cmode;
- 
- 		if (vmode == -1) {
--			vmode = nvram_read_byte(NV_VMODE);
-+			vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 			if (vmode <= 0 || vmode > VMODE_MAX)
- 				vmode = VMODE_640_480_67;
- 		}
- 		if (cmode == -1) {
--			cmode = nvram_read_byte(NV_CMODE);
-+			cmode = arch_nvram_ops.read_byte(NV_CMODE);
- 			if (cmode < CMODE_8 || cmode > CMODE_32)
- 				cmode = CMODE_8;
- 		}
+   p = getbenv("APPEND");
+   if (p)
