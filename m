@@ -1,35 +1,38 @@
-From: Andreas Schwab <schwab-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [RFC v2 23/24] m68k/mac: Fix PRAM accessors
-Date: Thu, 18 Jun 2015 18:52:44 +0200
-Message-ID: <87a8vxarhf.fsf@igel.home>
-References: <20150614074607.242676098@telegraphics.com.au>
-	<20150614074613.054681242@telegraphics.com.au>
-	<CAMuHMdWzKvWjAE3u54E4xewEDX+zJqEDEvRmO2twpeD2vmBzog@mail.gmail.com>
-	<alpine.LNX.2.00.1506152213340.12762@nippy.intranet>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
+Date: Thu, 18 Jun 2015 14:40:18 -0700
+Message-ID: <55833AC2.5080700@codeaurora.org>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-2-git-send-email-linux@roeck-us.net> <55821936.4040704@codeaurora.org> <20150618153003.GA19224@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <alpine.LNX.2.00.1506152213340.12762-i19888lE8tflDoPlx7XIcw@public.gmane.org> (Finn
-	Thain's message of "Tue, 16 Jun 2015 13:10:29 +1000 (AEST)")
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Finn Thain <fthain-PnMVE5gNl/W9dxLkCovUHLpzq4S04n8Q@public.gmane.org>
-Cc: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, "linux-kernel@vger.kernel.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux/m68k <linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "linux-api@vger.kernel.org" <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20150618153003.GA19224@roeck-us.net>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Len Brown <len.brown@intel.com>, linux-xtensa@linux-xtensa.org, Pavel Machek <pavel@ucw.cz>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, Alexander Graf <agraf@suse.de>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.orgli
 
-Finn Thain <fthain-PnMVE5gNl/W9dxLkCovUHLpzq4S04n8Q@public.gmane.org> writes:
+On 06/18/2015 08:30 AM, Guenter Roeck wrote:
+> On Wed, Jun 17, 2015 at 06:04:54PM -0700, Stephen Boyd wrote:
+> [ ... ]
+>> What happened to this series? I want to add shutdown support to my
+>> platform and I need to write a register on the PMIC in one driver to
+>> configure it for shutdown instead of restart and then write an MMIO
+>> register to tell the PMIC to actually do the shutdown in another driver.
+>> It seems that the notifier solves this case for me, albeit with the
+>> slight complication that I need to order the two with some priority.
+>>
+> Can you use the .shutdown driver callback instead ?
+>
+> I see other drivers use that, and check for system_state == SYSTEM_POWER_OFF
+> to power off the hardware.
+>
 
-> When I have reliable documentation I always define macros. So I agree that 
-> "command" bytes like 0x34 and 0x3800 should have names but what are the 
-> correct names? Are we constructing an opcode containing RTC register file 
-> addresses or are we issuing read/write accesses to chip registers?
-
-Any name will do as long as the magic constant is not duplicated.  It is
-more important to document the relation between two uses than to have a
-correct name (which can trivially be updated later).
-
-Andreas.
+Yes I think that will work. I'll still have to hook pm_power_off() for
+the mmio register, but I guess that's ok and I don't need to worry about
+this series then.
 
 -- 
-Andreas Schwab, schwab-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
