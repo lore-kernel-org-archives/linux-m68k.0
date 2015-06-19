@@ -1,38 +1,53 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
-Date: Thu, 18 Jun 2015 14:40:18 -0700
-Message-ID: <55833AC2.5080700@codeaurora.org>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-2-git-send-email-linux@roeck-us.net> <55821936.4040704@codeaurora.org> <20150618153003.GA19224@roeck-us.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: gerg@uclinux.org
+Subject: [PATCH] m68k: improve m68knommu MAINTAINERS entry
+Date: Fri, 19 Jun 2015 11:13:12 +1000
+Message-ID: <1434676392-12766-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150618153003.GA19224@roeck-us.net>
+Received: from nskntqsrv01p.mx.bigpond.com ([61.9.168.231]:53803 "EHLO
+	nskntqsrv01p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751818AbbFSBZ6 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 18 Jun 2015 21:25:58 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Len Brown <len.brown@intel.com>, linux-xtensa@linux-xtensa.org, Pavel Machek <pavel@ucw.cz>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, Alexander Graf <agraf@suse.de>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.orgli
+To: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, geert@linux-m68k.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-On 06/18/2015 08:30 AM, Guenter Roeck wrote:
-> On Wed, Jun 17, 2015 at 06:04:54PM -0700, Stephen Boyd wrote:
-> [ ... ]
->> What happened to this series? I want to add shutdown support to my
->> platform and I need to write a register on the PMIC in one driver to
->> configure it for shutdown instead of restart and then write an MMIO
->> register to tell the PMIC to actually do the shutdown in another driver.
->> It seems that the notifier solves this case for me, albeit with the
->> slight complication that I need to order the two with some priority.
->>
-> Can you use the .shutdown driver callback instead ?
->
-> I see other drivers use that, and check for system_state == SYSTEM_POWER_OFF
-> to power off the hardware.
->
+From: Greg Ungerer <gerg@uclinux.org>
 
-Yes I think that will work. I'll still have to hook pm_power_off() for
-the mmio register, but I guess that's ok and I don't need to worry about
-this series then.
+Improve the information in the m68knommu maintainers entry. This
+should aid in making it clearer what parts of the m68k architecture
+code can go via the m68knommu git tree.
 
+Specifically the entry now lists the relevant git tree where m68knommu
+patches are promoted through. It also spells out that the coldfire
+sub-architecture, and with it the directory of arch/m68k/coldfire, as
+being supported via this tree.
+
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ MAINTAINERS | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d8afd29..bd0090d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10155,11 +10155,14 @@ S:	Maintained
+ F:	Documentation/filesystems/ubifs.txt
+ F:	fs/ubifs/
+ 
+-UCLINUX (AND M68KNOMMU)
++UCLINUX (M68KNOMMU AND COLDFIRE)
+ M:	Greg Ungerer <gerg@uclinux.org>
+ W:	http://www.uclinux.org/
++L:	linux-m68k@lists.linux-m68k.org
+ L:	uclinux-dev@uclinux.org  (subscribers-only)
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+ S:	Maintained
++F:	arch/m68k/coldfire/
+ F:	arch/m68k/*/*_no.*
+ F:	arch/m68k/include/asm/*_no.*
+ 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+1.9.1
