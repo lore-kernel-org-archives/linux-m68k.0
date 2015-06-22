@@ -1,83 +1,58 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] m68k: improve m68knommu MAINTAINERS entry
-Date: Fri, 19 Jun 2015 17:25:19 +1000
-Message-ID: <5583C3DF.6030605@uclinux.org>
-References: <1434676392-12766-1-git-send-email-gerg@uclinux.org> <CAMuHMdWr8CDn0qO1_unnpthMePHQcbMa9Duxc0z40ZKk73sZ0g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWr8CDn0qO1_unnpthMePHQcbMa9Duxc0z40ZKk73sZ0g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.2
+Date: Mon, 22 Jun 2015 09:35:06 +0200
+Message-ID: <1434958506-5444-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Geert,
+	Hi Linus,
 
-On 19/06/15 16:58, Geert Uytterhoeven wrote:
-> Hi Greg,
-> 
-> On Fri, Jun 19, 2015 at 3:13 AM,  <gerg@uclinux.org> wrote:
->> From: Greg Ungerer <gerg@uclinux.org>
->>
->> Improve the information in the m68knommu maintainers entry. This
->> should aid in making it clearer what parts of the m68k architecture
->> code can go via the m68knommu git tree.
->>
->> Specifically the entry now lists the relevant git tree where m68knommu
->> patches are promoted through. It also spells out that the coldfire
->> sub-architecture, and with it the directory of arch/m68k/coldfire, as
->> being supported via this tree.
->>
->> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> with minor nit below...
+The following changes since commit c65b99f046843d2455aa231747b5a07a999a9f3d:
 
-Thanks!
-I'll add arch/m68k/68*/ to catch those too.
+  Linux 4.1-rc6 (2015-05-31 19:01:07 -0700)
 
-Regards
-Greg
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-4.2
 
+for you to fetch changes up to 1214c525484cabb27ed37df936c3451682757263:
 
->> ---
->>  MAINTAINERS | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index d8afd29..bd0090d 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -10155,11 +10155,14 @@ S:    Maintained
->>  F:     Documentation/filesystems/ubifs.txt
->>  F:     fs/ubifs/
->>
->> -UCLINUX (AND M68KNOMMU)
->> +UCLINUX (M68KNOMMU AND COLDFIRE)
->>  M:     Greg Ungerer <gerg@uclinux.org>
->>  W:     http://www.uclinux.org/
->> +L:     linux-m68k@lists.linux-m68k.org
->>  L:     uclinux-dev@uclinux.org  (subscribers-only)
->> +T:     git git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
->>  S:     Maintained
->> +F:     arch/m68k/coldfire/
-> 
-> And "arch/m68k/68*/", to catch 68000 and 68030?
-> 
->>  F:     arch/m68k/*/*_no.*
->>  F:     arch/m68k/include/asm/*_no.*
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+  m68k: Use for_each_sg() (2015-06-01 10:36:29 +0200)
+
+----------------------------------------------------------------
+Akinobu Mita (1):
+      m68k: Use for_each_sg()
+
+Geert Uytterhoeven (1):
+      m68k/defconfig: Update defconfigs for v4.1-rc6
+
+ arch/m68k/configs/amiga_defconfig    |  8 ++++++--
+ arch/m68k/configs/apollo_defconfig   |  8 ++++++--
+ arch/m68k/configs/atari_defconfig    |  8 ++++++--
+ arch/m68k/configs/bvme6000_defconfig |  8 ++++++--
+ arch/m68k/configs/hp300_defconfig    |  8 ++++++--
+ arch/m68k/configs/mac_defconfig      |  8 ++++++--
+ arch/m68k/configs/multi_defconfig    |  8 ++++++--
+ arch/m68k/configs/mvme147_defconfig  |  8 ++++++--
+ arch/m68k/configs/mvme16x_defconfig  |  8 ++++++--
+ arch/m68k/configs/q40_defconfig      |  8 ++++++--
+ arch/m68k/configs/sun3_defconfig     |  8 ++++++--
+ arch/m68k/configs/sun3x_defconfig    |  8 ++++++--
+ arch/m68k/kernel/dma.c               | 19 ++++++++++++-------
+ 13 files changed, 84 insertions(+), 31 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
