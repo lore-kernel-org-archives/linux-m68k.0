@@ -1,105 +1,287 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 00/24] Re-use nvram module
-Date: Sun, 28 Jun 2015 11:41:59 +1000
-Message-ID: <20150628014159.732792697@telegraphics.com.au>
+Subject: [RFC v3 04/24] char/nvram: Re-order functions to remove forward declarations and #ifdefs
+Date: Sun, 28 Jun 2015 11:42:03 +1000
+Message-ID: <20150628014200.712614572@telegraphics.com.au>
+References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43569 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43578 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751969AbbF1Bul (ORCPT
+	with ESMTP id S1751952AbbF1Bul (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:41 -0400
+Content-Disposition: inline; filename=nvram-reorder-functions
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
+Also give functions more sensible names: nvram_misc_* for misc device ops,
+nvram_proc_* for proc file ops and nvram_module_* for init and exit
+functions. This makes them distict from nvram_ops members.
 
-The generic NVRAM module, drivers/char/generic_nvram, implements a
-/dev/nvram misc device. It is used only by 32-bit PowerPC platforms and
-isn't generic enough to be more widely used.
-
-The RTC NVRAM module, drivers/char/nvram, also implements a /dev/nvram
-misc device. It is used by x86, ARM and m68k.
-
-The former module cannot be used on x86, ARM or m68k because it
-cannot co-exist with the latter module, partly due to the Kconfig logic.
-
-It is possible to modify the modules so that one kernel binary could
-have either, neither or both. However, automatically loading the
-appropriate module is then impossible; if both provide the
-char-major-10-144 alias then the wrong module will end up being loaded.
-Hence a multi-platform kernel binary needs a single generic nvram module
-with alias char-major-10-144.
-
-Therefore, drivers/char/nvram.c should be made more generic and the
-arch-specific code therein should be moved to a more appropriate
-place under arch/. Also, drivers/char/generic_nvram.c should be removed
-to reduce code duplication.
-
-In this patch series, Atari-specific code is moved from the nvram module
-to arch/m68k/atari. More arch-specific code in the nvram module could
-be moved, probably to arch/x86, but it is difficult to determine just
-what code is relevant to ARM platforms and what code is x86-only.
-
-In addressing code duplication, this patch series removes three
-inconsistent /dev/nvram misc device implementations. One of these,
-drivers/macintosh/nvram.c is entirely unused already. The other two,
-drivers/char/generic_nvram.c and the misc device implementation in
-arch/powerpc/kernel/nvram_64.c, are replaced by drivers/char/nvram.c.
-
-A benefit of this work is better consistency -- between PPC32 and PPC64
-as well as between PPC_PMAC and MAC. This new uniformity does have
-implications for userspace, that is, some error codes for some ioctl calls
-become consistent on all PowerPC platforms.
-
-The drivers/char/nvram module becomes sufficiently generic to be useful
-to other platforms and architectures, besides those with "CMOS" RTC. At the
-end of this patch series the module is adopted by the m68k Mac port, which
-already has PRAM access functions but lacks the /dev/nvram misc device.
-
-This patch series has been compile-tested for arm, m68k, powerpc and x86.
-The nvram and thinkpad_acpi modules were regression tested on a ThinkPad T43.
-The /dev/nvram functionality was also regression tested on a G3 PowerMac.
-The nvram module was also tested on a PowerBook 520 and Quadra 650.
-Note that my testing doesn't cover PPC64 or Atari.
-
-Changes since v1:
-- Minor changes to patches 7, 15 and 20 as described in commit logs.
-- Revised patches 21 and 24 to address comments from Geert.
-
-Changes since v2:
-- Dropped patch 1, "macintosh/nvram: Remove as unused", because it has
-since been merged.
-- Inserted a new patch, "m68k/mac: Use macros for RTC accesses not
-magic numbers".
-- Revised patches 21 and 23 to address comments from Geert.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/Kconfig                          |    3 
- arch/m68k/atari/Makefile                   |    2 
- arch/m68k/atari/nvram.c                    |  291 +++++++++++
- arch/m68k/kernel/setup_mm.c                |  107 ++++
- arch/m68k/mac/misc.c                       |  207 +++++---
- arch/powerpc/Kconfig                       |    5 
- arch/powerpc/include/asm/nvram.h           |    9 
- arch/powerpc/kernel/nvram_64.c             |  203 +------
- arch/powerpc/kernel/setup_32.c             |   27 -
- arch/powerpc/platforms/chrp/Makefile       |    2 
- arch/powerpc/platforms/chrp/nvram.c        |   14 
- arch/powerpc/platforms/chrp/setup.c        |    2 
- arch/powerpc/platforms/powermac/Makefile   |    5 
- arch/powerpc/platforms/powermac/nvram.c    |    9 
- arch/powerpc/platforms/powermac/setup.c    |    3 
- drivers/char/Kconfig                       |   13 
- drivers/char/Makefile                      |    6 
- drivers/char/generic_nvram.c               |  174 ------
- drivers/char/nvram.c                       |  742 ++++++++++++-----------------
- drivers/platform/x86/thinkpad_acpi.c       |   20 
- drivers/scsi/Kconfig                       |    6 
- drivers/scsi/atari_scsi.c                  |   16 
- drivers/video/fbdev/controlfb.c            |    4 
- drivers/video/fbdev/imsttfb.c              |    7 
- drivers/video/fbdev/matrox/matroxfb_base.c |    4 
- drivers/video/fbdev/platinumfb.c           |    4 
- drivers/video/fbdev/valkyriefb.c           |    4 
- include/linux/nvram.h                      |   23 
- include/uapi/linux/pmu.h                   |    2 
- 29 files changed, 982 insertions(+), 932 deletions(-)
+ drivers/char/nvram.c |  194 ++++++++++++++++++++++-----------------------------
+ 1 file changed, 86 insertions(+), 108 deletions(-)
+
+Index: linux/drivers/char/nvram.c
+===================================================================
+--- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:29.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-28 11:41:32.000000000 +1000
+@@ -54,11 +54,6 @@ static int nvram_open_mode;	/* special o
+ #define NVRAM_WRITE		1 /* opened for writing (exclusive) */
+ #define NVRAM_EXCL		2 /* opened with O_EXCL */
+ 
+-#ifdef CONFIG_PROC_FS
+-static void pc_nvram_proc_read(unsigned char *contents, struct seq_file *seq,
+-                               void *offset);
+-#endif
+-
+ /*
+  * These functions are provided to be called internally or by other parts of
+  * the kernel. It's up to the caller to ensure correct checksum before reading
+@@ -170,7 +165,7 @@ void nvram_set_checksum(void)
+  * The are the file operation function for user access to /dev/nvram
+  */
+ 
+-static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
++static loff_t nvram_misc_llseek(struct file *file, loff_t offset, int origin)
+ {
+ 	switch (origin) {
+ 	case 0:
+@@ -189,8 +184,8 @@ static loff_t nvram_llseek(struct file *
+ 	return (offset >= 0) ? (file->f_pos = offset) : -EINVAL;
+ }
+ 
+-static ssize_t nvram_read(struct file *file, char __user *buf,
+-						size_t count, loff_t *ppos)
++static ssize_t nvram_misc_read(struct file *file, char __user *buf,
++                               size_t count, loff_t *ppos)
+ {
+ 	unsigned char contents[NVRAM_BYTES];
+ 	unsigned i = *ppos;
+@@ -218,8 +213,8 @@ checksum_err:
+ 	return -EIO;
+ }
+ 
+-static ssize_t nvram_write(struct file *file, const char __user *buf,
+-						size_t count, loff_t *ppos)
++static ssize_t nvram_misc_write(struct file *file, const char __user *buf,
++                                size_t count, loff_t *ppos)
+ {
+ 	unsigned char contents[NVRAM_BYTES];
+ 	unsigned i = *ppos;
+@@ -257,8 +252,8 @@ checksum_err:
+ 	return -EIO;
+ }
+ 
+-static long nvram_ioctl(struct file *file, unsigned int cmd,
+-			unsigned long arg)
++static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
++                             unsigned long arg)
+ {
+ 	int i;
+ 
+@@ -298,7 +293,7 @@ static long nvram_ioctl(struct file *fil
+ 	}
+ }
+ 
+-static int nvram_open(struct inode *inode, struct file *file)
++static int nvram_misc_open(struct inode *inode, struct file *file)
+ {
+ 	spin_lock(&nvram_state_lock);
+ 
+@@ -320,7 +315,7 @@ static int nvram_open(struct inode *inod
+ 	return 0;
+ }
+ 
+-static int nvram_release(struct inode *inode, struct file *file)
++static int nvram_misc_release(struct inode *inode, struct file *file)
+ {
+ 	spin_lock(&nvram_state_lock);
+ 
+@@ -337,100 +332,6 @@ static int nvram_release(struct inode *i
+ 	return 0;
+ }
+ 
+-#ifndef CONFIG_PROC_FS
+-static int nvram_add_proc_fs(void)
+-{
+-	return 0;
+-}
+-
+-#else
+-
+-static int nvram_proc_read(struct seq_file *seq, void *offset)
+-{
+-	unsigned char contents[NVRAM_BYTES];
+-	int i = 0;
+-
+-	spin_lock_irq(&rtc_lock);
+-	for (i = 0; i < NVRAM_BYTES; ++i)
+-		contents[i] = __nvram_read_byte(i);
+-	spin_unlock_irq(&rtc_lock);
+-
+-	pc_nvram_proc_read(contents, seq, offset);
+-
+-	return 0;
+-}
+-
+-static int nvram_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, nvram_proc_read, NULL);
+-}
+-
+-static const struct file_operations nvram_proc_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= nvram_proc_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
+-
+-static int nvram_add_proc_fs(void)
+-{
+-	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops))
+-		return -ENOMEM;
+-	return 0;
+-}
+-
+-#endif /* CONFIG_PROC_FS */
+-
+-static const struct file_operations nvram_fops = {
+-	.owner		= THIS_MODULE,
+-	.llseek		= nvram_llseek,
+-	.read		= nvram_read,
+-	.write		= nvram_write,
+-	.unlocked_ioctl	= nvram_ioctl,
+-	.open		= nvram_open,
+-	.release	= nvram_release,
+-};
+-
+-static struct miscdevice nvram_dev = {
+-	NVRAM_MINOR,
+-	"nvram",
+-	&nvram_fops
+-};
+-
+-static int __init nvram_init(void)
+-{
+-	int ret;
+-
+-	ret = misc_register(&nvram_dev);
+-	if (ret) {
+-		printk(KERN_ERR "nvram: can't misc_register on minor=%d\n",
+-		    NVRAM_MINOR);
+-		goto out;
+-	}
+-	ret = nvram_add_proc_fs();
+-	if (ret) {
+-		printk(KERN_ERR "nvram: can't create /proc/driver/nvram\n");
+-		goto outmisc;
+-	}
+-	ret = 0;
+-	printk(KERN_INFO "Non-volatile memory driver v" NVRAM_VERSION "\n");
+-out:
+-	return ret;
+-outmisc:
+-	misc_deregister(&nvram_dev);
+-	goto out;
+-}
+-
+-static void __exit nvram_cleanup_module(void)
+-{
+-	remove_proc_entry("driver/nvram", NULL);
+-	misc_deregister(&nvram_dev);
+-}
+-
+-module_init(nvram_init);
+-module_exit(nvram_cleanup_module);
+-
+ #ifdef CONFIG_PROC_FS
+ 
+ static char *floppy_types[] = {
+@@ -508,7 +409,84 @@ static void pc_nvram_proc_read(unsigned
+ 	return;
+ }
+ 
++static int nvram_proc_read(struct seq_file *seq, void *offset)
++{
++	unsigned char contents[NVRAM_BYTES];
++	int i = 0;
++
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		contents[i] = __nvram_read_byte(i);
++	spin_unlock_irq(&rtc_lock);
++
++	pc_nvram_proc_read(contents, seq, offset);
++
++	return 0;
++}
++
++static int nvram_proc_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, nvram_proc_read, NULL);
++}
++
++static const struct file_operations nvram_proc_fops = {
++	.owner		= THIS_MODULE,
++	.open		= nvram_proc_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++
+ #endif /* CONFIG_PROC_FS */
+ 
++static const struct file_operations nvram_misc_fops = {
++	.owner		= THIS_MODULE,
++	.llseek		= nvram_misc_llseek,
++	.read		= nvram_misc_read,
++	.write		= nvram_misc_write,
++	.unlocked_ioctl	= nvram_misc_ioctl,
++	.open		= nvram_misc_open,
++	.release	= nvram_misc_release,
++};
++
++static struct miscdevice nvram_misc = {
++	NVRAM_MINOR,
++	"nvram",
++	&nvram_misc_fops,
++};
++
++static int __init nvram_module_init(void)
++{
++	int ret;
++
++	ret = misc_register(&nvram_misc);
++	if (ret) {
++		pr_err("nvram: can't misc_register on minor=%d\n", NVRAM_MINOR);
++		return ret;
++	}
++
++#ifdef CONFIG_PROC_FS
++	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops)) {
++		pr_err("nvram: can't create /proc/driver/nvram\n");
++		misc_deregister(&nvram_misc);
++		return -ENOMEM;
++	}
++#endif
++
++	pr_info("Non-volatile memory driver v" NVRAM_VERSION "\n");
++	return 0;
++}
++
++static void __exit nvram_module_exit(void)
++{
++#ifdef CONFIG_PROC_FS
++	remove_proc_entry("driver/nvram", NULL);
++#endif
++	misc_deregister(&nvram_misc);
++}
++
++module_init(nvram_module_init);
++module_exit(nvram_module_exit);
++
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
