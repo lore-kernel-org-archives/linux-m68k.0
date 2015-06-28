@@ -1,130 +1,191 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 05/24] char/nvram: Adopt arch_nvram_ops
-Date: Sun, 28 Jun 2015 11:42:04 +1000
-Message-ID: <20150628014200.952604378@telegraphics.com.au>
+Subject: [RFC v3 15/24] powerpc: Implement nvram sync ioctl
+Date: Sun, 28 Jun 2015 11:42:14 +1000
+Message-ID: <20150628014203.362580884@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43633 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43695 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752052AbbF1Bun (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:43 -0400
-Content-Disposition: inline; filename=nvram-adopt-nvram_ops
+	with ESMTP id S1752255AbbF1Buz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:55 -0400
+Content-Disposition: inline; filename=nvram-add-powerpc-ioctls
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Different platforms and architectures offer different NVRAM sizes and
-access methods. E.g. PPC32 has byte-at-a-time read/write functions whereas
-PPC64 has byte-range read/write functions. Adopt the nvram_ops struct so
-the nvram module can call such functions as are defined by the various 
-platforms and architectures.
+Add the powerpc-specific sync() method to struct nvram_ops and implement
+the corresponding ioctl in the nvram module. This allows the nvram module
+to replace the generic_nvram module.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
 
-The #ifdefs here restrict the procfs and checksumming code to those
-architectures with PC-style RTC NVRAM. There may be a better place for
-that code but it's an open question. See https://lkml.org/lkml/2015/2/3/22
+On PPC32, the IOC_NVRAM_SYNC ioctl call always returns 0, even for those
+platforms that don't implement ppc_md.nvram_sync. This patch retains
+that quirk. It might be better to return failure (which is what PPC64 does).
 
-The procfs code here, if irrelevant to ARM platforms, could be moved to
-arch/x86 (like the earlier patch does for m68k code) and the nvram ops
-could be implemented and exported by the rtc-cmos driver instead. This
-would eliminate these #ifdefs.
+Changed since v1:
+- Don't bother acquiring the mutex for unimplemented ioctls.
 
 ---
- drivers/char/nvram.c  |   30 +++++++++++++++++++++++++++---
- include/linux/nvram.h |    2 ++
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/nvram.h |    3 ---
+ arch/powerpc/kernel/setup_32.c   |    6 +++---
+ drivers/char/generic_nvram.c     |    2 +-
+ drivers/char/nvram.c             |   39 +++++++++++++++++++++++++++++++++++++++
+ include/linux/nvram.h            |    4 ++++
+ 5 files changed, 47 insertions(+), 7 deletions(-)
 
 Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:32.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-06-28 11:41:34.000000000 +1000
-@@ -51,9 +51,12 @@ static DEFINE_MUTEX(nvram_mutex);
+--- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:40.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-28 11:41:44.000000000 +1000
+@@ -48,6 +48,11 @@
+ #include <linux/mutex.h>
+ 
+ 
++#ifdef CONFIG_PPC
++#include <asm/nvram.h>
++#include <asm/machdep.h>
++#endif
++
+ static DEFINE_MUTEX(nvram_mutex);
  static DEFINE_SPINLOCK(nvram_state_lock);
  static int nvram_open_cnt;	/* #times opened */
- static int nvram_open_mode;	/* special open modes */
-+static ssize_t nvram_size;
- #define NVRAM_WRITE		1 /* opened for writing (exclusive) */
- #define NVRAM_EXCL		2 /* opened with O_EXCL */
+@@ -338,6 +343,37 @@ static long nvram_misc_ioctl(struct file
+ 	long ret = -ENOTTY;
  
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM)
+ 	switch (cmd) {
++#ifdef CONFIG_PPC
++#ifdef CONFIG_PPC_PMAC
++	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
++		pr_warn("nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
++		/* fall through */
++	case IOC_NVRAM_GET_OFFSET: {
++		int part, offset;
 +
- /*
-  * These functions are provided to be called internally or by other parts of
-  * the kernel. It's up to the caller to ensure correct checksum before reading
-@@ -161,6 +164,20 @@ void nvram_set_checksum(void)
++		if (!machine_is(powermac))
++			return -EINVAL;
++		if (copy_from_user(&part,
++		                   (void __user *)arg, sizeof(part)) != 0)
++			return -EFAULT;
++		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
++			return -EINVAL;
++		offset = pmac_get_partition(part);
++		if (copy_to_user((void __user *)arg,
++		                 &offset, sizeof(offset)) != 0)
++			return -EFAULT;
++		ret = 0;
++		break;
++	}
++#endif
++	case IOC_NVRAM_SYNC:
++		if (arch_nvram_ops.sync != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.sync();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
++#else /* !CONFIG_PPC */
+ 	case NVRAM_INIT:
+ 		/* initialize NVRAM contents and checksum */
+ 		if (!capable(CAP_SYS_ADMIN))
+@@ -361,6 +397,7 @@ static long nvram_misc_ioctl(struct file
+ 			mutex_unlock(&nvram_mutex);
+ 		}
+ 		break;
++#endif /* CONFIG_PPC */
+ 	}
+ 	return ret;
  }
- #endif  /*  0  */
- 
-+static ssize_t nvram_get_size(void)
-+{
-+	return NVRAM_BYTES;
-+}
-+
-+const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = nvram_read_byte,
-+	.write_byte     = nvram_write_byte,
-+	.get_size       = nvram_get_size,
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+
-+#endif /* CONFIG_X86 || CONFIG_ARM */
-+
- /*
-  * The are the file operation function for user access to /dev/nvram
-  */
-@@ -332,7 +349,7 @@ static int nvram_misc_release(struct ino
- 	return 0;
- }
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 
- static char *floppy_types[] = {
- 	"none", "5.25'' 360k", "5.25'' 1.2M", "3.5'' 720k", "3.5'' 1.44M",
-@@ -459,13 +476,20 @@ static int __init nvram_module_init(void
- {
- 	int ret;
- 
-+	if (arch_nvram_ops.get_size == NULL)
-+		return -ENODEV;
-+
-+	nvram_size = arch_nvram_ops.get_size();
-+	if (nvram_size < 0)
-+		return nvram_size;
-+
- 	ret = misc_register(&nvram_misc);
- 	if (ret) {
- 		pr_err("nvram: can't misc_register on minor=%d\n", NVRAM_MINOR);
- 		return ret;
+@@ -376,6 +413,7 @@ static int nvram_misc_open(struct inode
+ 		return -EBUSY;
  	}
  
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops)) {
- 		pr_err("nvram: can't create /proc/driver/nvram\n");
- 		misc_deregister(&nvram_misc);
-@@ -479,7 +503,7 @@ static int __init nvram_module_init(void
++#ifndef CONFIG_PPC
+ 	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
+ 	if ((arch_nvram_ops.set_checksum != NULL) &&
+ 	    (file->f_mode & FMODE_WRITE) &&
+@@ -383,6 +421,7 @@ static int nvram_misc_open(struct inode
+ 		spin_unlock(&nvram_state_lock);
+ 		return -EBUSY;
+ 	}
++#endif
  
- static void __exit nvram_module_exit(void)
- {
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	remove_proc_entry("driver/nvram", NULL);
- #endif
- 	misc_deregister(&nvram_misc);
+ 	if (file->f_flags & O_EXCL)
+ 		nvram_open_mode |= NVRAM_EXCL;
 Index: linux/include/linux/nvram.h
 ===================================================================
---- linux.orig/include/linux/nvram.h	2015-06-28 11:41:31.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-06-28 11:41:34.000000000 +1000
-@@ -14,6 +14,8 @@ extern int nvram_check_checksum(void);
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-+	unsigned char   (*read_byte)(int);
-+	void            (*write_byte)(unsigned char, int);
+--- linux.orig/include/linux/nvram.h	2015-06-28 11:41:36.000000000 +1000
++++ linux/include/linux/nvram.h	2015-06-28 11:41:44.000000000 +1000
+@@ -17,8 +17,12 @@ struct nvram_ops {
+ 	unsigned char   (*read_byte)(int);
+ 	void            (*write_byte)(unsigned char, int);
  	ssize_t         (*get_size)(void);
++#ifdef CONFIG_PPC
++	long            (*sync)(void);
++#else
+ 	long            (*set_checksum)(void);
+ 	long            (*initialize)(void);
++#endif
  };
  
+ extern const struct nvram_ops arch_nvram_ops;
+Index: linux/arch/powerpc/include/asm/nvram.h
+===================================================================
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-06-28 11:41:43.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-06-28 11:41:44.000000000 +1000
+@@ -78,9 +78,6 @@ extern int	pmac_get_partition(int partit
+ extern u8	pmac_xpram_read(int xpaddr);
+ extern void	pmac_xpram_write(int xpaddr, u8 data);
+ 
+-/* Synchronize NVRAM */
+-extern void	nvram_sync(void);
+-
+ /* Initialize NVRAM OS partition */
+ extern int __init nvram_init_os_partition(struct nvram_os_partition *part);
+ 
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:43.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:44.000000000 +1000
+@@ -170,7 +170,6 @@ __setup("l3cr=", ppc_setup_l3cr);
+ 
+ #ifdef CONFIG_GENERIC_NVRAM
+ 
+-/* Generic nvram hooks used by drivers/char/gen_nvram.c */
+ unsigned char nvram_read_byte(int addr)
+ {
+ 	if (ppc_md.nvram_read_val)
+@@ -193,15 +192,16 @@ static ssize_t ppc_nvram_get_size(void)
+ 	return -ENODEV;
+ }
+ 
+-void nvram_sync(void)
++static long ppc_nvram_sync(void)
+ {
+ 	if (ppc_md.nvram_sync)
+ 		ppc_md.nvram_sync();
++	return 0;
+ }
+-EXPORT_SYMBOL(nvram_sync);
+ 
+ const struct nvram_ops arch_nvram_ops = {
+ 	.get_size       = ppc_nvram_get_size,
++	.sync           = ppc_nvram_sync,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-06-28 11:41:43.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-06-28 11:41:44.000000000 +1000
+@@ -112,7 +112,7 @@ static int nvram_ioctl(struct file *file
+ 	}
+ #endif /* CONFIG_PPC_PMAC */
+ 	case IOC_NVRAM_SYNC:
+-		nvram_sync();
++		arch_nvram_ops.sync();
+ 		break;
+ 	default:
+ 		return -EINVAL;
