@@ -1,169 +1,239 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 07/24] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
-Date: Sun, 28 Jun 2015 11:42:06 +1000
-Message-ID: <20150628014201.432590485@telegraphics.com.au>
+Subject: [RFC v3 08/24] char/nvram: Implement NVRAM read/write methods
+Date: Sun, 28 Jun 2015 11:42:07 +1000
+Message-ID: <20150628014201.672610463@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43635 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43634 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752075AbbF1Bun (ORCPT
+	with ESMTP id S1751817AbbF1Bun (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:43 -0400
-Content-Disposition: inline; filename=nvram-generalize-ioctl
+Content-Disposition: inline; filename=nvram-generalize-read-write
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The drivers/char/nvram module has previously only supported RTC "CMOS"
-NVRAM, for which it provides appropriate checksum ioctls. Make these
-ioctls optional so the module can be re-used with other kinds of NVRAM.
+Refactor the RTC "CMOS" NVRAM functions so that they can be used as
+arch_nvram_ops methods. Checksumming logic is moved from the misc device
+operations to the nvram read/write operations.
 
-The ops struct methods that implement the ioctls now return error
-codes so that a multi-platform kernel binary can do the right thing when
-running on hardware without suitable NVRAM.
+This makes the misc device implementation more generic. This also
+preserves the locking semantics such that "read if checksum valid" and
+"write and update checksum" remain atomic operations.
+
+PPC64 implements byte-range read/write methods which are similar to
+file_operations struct methods. Other platforms provide only
+byte-at-a-time functions. So the misc device prefers the former but
+will fall back on the latter.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
-
-Changed since v1:
-- Don't bother acquiring the mutex for unimplemented ioctls.
-
----
- drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
- include/linux/nvram.h |    2 +
- 2 files changed, 43 insertions(+), 30 deletions(-)
+ drivers/char/nvram.c |  162 +++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 114 insertions(+), 48 deletions(-)
 
 Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:34.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-06-28 11:41:36.000000000 +1000
-@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+--- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:36.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-28 11:41:37.000000000 +1000
+@@ -41,6 +41,7 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
++#include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/io.h>
+ #include <linux/uaccess.h>
+@@ -178,9 +179,48 @@ static ssize_t nvram_get_size(void)
+ 	return NVRAM_BYTES;
  }
  
--#if 0
--void nvram_set_checksum(void)
-+static long nvram_set_checksum(void)
- {
--	unsigned long flags;
++static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
++{
++	char *p = buf;
++	loff_t i;
++
 +	spin_lock_irq(&rtc_lock);
-+	__nvram_set_checksum();
++	if (!__nvram_check_checksum()) {
++		spin_unlock_irq(&rtc_lock);
++		return -EIO;
++	}
++	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
++		*p = __nvram_read_byte(i);
 +	spin_unlock_irq(&rtc_lock);
-+	return 0;
++
++	*ppos = i;
++	return p - buf;
 +}
 +
-+static long nvram_initialize(void)
++static ssize_t nvram_write(char *buf, size_t count, loff_t *ppos)
 +{
-+	ssize_t i;
- 
--	spin_lock_irqsave(&rtc_lock, flags);
++	char *p = buf;
++	loff_t i;
++
 +	spin_lock_irq(&rtc_lock);
-+	for (i = 0; i < NVRAM_BYTES; ++i)
-+		__nvram_write_byte(0, i);
- 	__nvram_set_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
++	if (!__nvram_check_checksum()) {
++		spin_unlock_irq(&rtc_lock);
++		return -EIO;
++	}
++	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
++		__nvram_write_byte(*p, i);
++	__nvram_set_checksum();
 +	spin_unlock_irq(&rtc_lock);
-+	return 0;
- }
--#endif  /*  0  */
- 
- static ssize_t nvram_get_size(void)
- {
-@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
++
++	*ppos = i;
++	return p - buf;
++}
++
+ const struct nvram_ops arch_nvram_ops = {
  	.read_byte      = nvram_read_byte,
  	.write_byte     = nvram_write_byte,
++	.read           = nvram_read,
++	.write          = nvram_write,
  	.get_size       = nvram_get_size,
-+	.set_checksum   = nvram_set_checksum,
-+	.initialize     = nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
- 
-@@ -272,51 +283,51 @@ checksum_err:
- static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
-                              unsigned long arg)
+ 	.set_checksum   = nvram_set_checksum,
+ 	.initialize     = nvram_initialize,
+@@ -215,69 +255,95 @@ static loff_t nvram_misc_llseek(struct f
+ static ssize_t nvram_misc_read(struct file *file, char __user *buf,
+                                size_t count, loff_t *ppos)
  {
--	int i;
-+	long ret = -ENOTTY;
+-	unsigned char contents[NVRAM_BYTES];
+-	unsigned i = *ppos;
+-	unsigned char *tmp;
+-
+-	spin_lock_irq(&rtc_lock);
++	loff_t i;
++	char __user *p = buf;
  
- 	switch (cmd) {
+-	if (!__nvram_check_checksum())
+-		goto checksum_err;
 -
- 	case NVRAM_INIT:
- 		/* initialize NVRAM contents and checksum */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
+-	for (tmp = contents; count-- > 0 && i < NVRAM_BYTES; ++i, ++tmp)
+-		*tmp = __nvram_read_byte(i);
+-
+-	spin_unlock_irq(&rtc_lock);
+-
+-	if (copy_to_user(buf, contents, tmp - contents))
++	if (!access_ok(VERIFY_WRITE, buf, count))
+ 		return -EFAULT;
++	if (*ppos >= nvram_size)
++		return 0;
  
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
+-	*ppos = i;
 -
--		for (i = 0; i < NVRAM_BYTES; ++i)
--			__nvram_write_byte(0, i);
--		__nvram_set_checksum();
--
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
-+		if (arch_nvram_ops.initialize != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.initialize();
-+			mutex_unlock(&nvram_mutex);
+-	return tmp - contents;
++	/* If the arch provided a byte range read op, use it. Otherwise
++	 * fall back on the byte-at-a-time accessor.
++	 */
++	if (arch_nvram_ops.read != NULL) {
++		char *tmp;
++		ssize_t ret;
++
++		count = min_t(size_t, count, nvram_size - *ppos);
++		count = min_t(size_t, count, PAGE_SIZE);
++
++		tmp = kmalloc(count, GFP_KERNEL);
++		if (!tmp)
++			return -ENOMEM;
++
++		ret = arch_nvram_ops.read(tmp, count, ppos);
++		if (ret <= 0)
++			goto out;
++
++		if (copy_to_user(buf, tmp, ret)) {
++			*ppos -= ret;
++			ret = -EFAULT;
 +		}
-+		break;
- 	case NVRAM_SETCKS:
- 		/* just set checksum, contents unchanged (maybe useful after
- 		 * checksum garbaged somehow...) */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
++
++out:
++		kfree(tmp);
++		return ret;
++	}
  
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--		__nvram_set_checksum();
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
--	default:
--		return -ENOTTY;
-+		if (arch_nvram_ops.set_checksum != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.set_checksum();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	}
-+	return ret;
+-checksum_err:
+-	spin_unlock_irq(&rtc_lock);
+-	return -EIO;
++	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count)
++		if (__put_user(arch_nvram_ops.read_byte(i), p))
++			return -EFAULT;
++	*ppos = i;
++	return p - buf;
  }
  
- static int nvram_misc_open(struct inode *inode, struct file *file)
+ static ssize_t nvram_misc_write(struct file *file, const char __user *buf,
+                                 size_t count, loff_t *ppos)
  {
- 	spin_lock(&nvram_state_lock);
+-	unsigned char contents[NVRAM_BYTES];
+-	unsigned i = *ppos;
+-	unsigned char *tmp;
+-
+-	if (i >= NVRAM_BYTES)
+-		return 0;	/* Past EOF */
+-
+-	if (count > NVRAM_BYTES - i)
+-		count = NVRAM_BYTES - i;
+-	if (count > NVRAM_BYTES)
+-		return -EFAULT;	/* Can't happen, but prove it to gcc */
++	loff_t i;
++	const char __user *p = buf;
  
-+	/* Prevent multiple readers/writers if desired. */
- 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
--	    (nvram_open_mode & NVRAM_EXCL) ||
--	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
-+	    (nvram_open_mode & NVRAM_EXCL)) {
-+		spin_unlock(&nvram_state_lock);
-+		return -EBUSY;
-+	}
+-	if (copy_from_user(contents, buf, count))
++	if (!access_ok(VERIFY_READ, buf, count))
+ 		return -EFAULT;
++	if (*ppos >= nvram_size)
++		return 0;
+ 
+-	spin_lock_irq(&rtc_lock);
+-
+-	if (!__nvram_check_checksum())
+-		goto checksum_err;
+-
+-	for (tmp = contents; count--; ++i, ++tmp)
+-		__nvram_write_byte(*tmp, i);
+-
+-	__nvram_set_checksum();
++	/* If the arch provided a byte range write op, use it. Otherwise
++	 * fall back on the byte-at-a-time accessor.
++	 */
++	if (arch_nvram_ops.write != NULL) {
++		char *tmp;
++		ssize_t ret;
 +
-+	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
-+	if ((arch_nvram_ops.set_checksum != NULL) &&
-+	    (file->f_mode & FMODE_WRITE) &&
-+	    (nvram_open_mode & NVRAM_WRITE)) {
- 		spin_unlock(&nvram_state_lock);
- 		return -EBUSY;
- 	}
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-06-28 11:41:34.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-06-28 11:41:36.000000000 +1000
-@@ -17,6 +17,8 @@ struct nvram_ops {
- 	unsigned char   (*read_byte)(int);
- 	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
-+	long            (*set_checksum)(void);
-+	long            (*initialize)(void);
- };
++		count = min_t(size_t, count, nvram_size - *ppos);
++		count = min_t(size_t, count, PAGE_SIZE);
++
++		tmp = kmalloc(count, GFP_KERNEL);
++		if (!tmp)
++			return -ENOMEM;
++
++		if (copy_from_user(tmp, buf, count)) {
++			ret = -EFAULT;
++			goto out;
++		}
++
++		ret = arch_nvram_ops.write(tmp, count, ppos);
++
++out:
++		kfree(tmp);
++		return ret;
++	}
  
- extern const struct nvram_ops arch_nvram_ops;
+-	spin_unlock_irq(&rtc_lock);
++	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count) {
++		char c;
+ 
++		if (__get_user(c, p))
++			return -EFAULT;
++		arch_nvram_ops.write_byte(c, i);
++	}
+ 	*ppos = i;
+-
+-	return tmp - contents;
+-
+-checksum_err:
+-	spin_unlock_irq(&rtc_lock);
+-	return -EIO;
++	return p - buf;
+ }
+ 
+ static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
