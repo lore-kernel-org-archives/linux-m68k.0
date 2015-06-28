@@ -1,49 +1,105 @@
-From: "Herr Martins D Weber" <test@fumeilaistone.cn>
-Subject: Lieber Freund!!!
-Date: Sat, 13 Jun 2015 05:14:17 -0700
-Message-ID: <9D68CE35-B679-4AAF-A49F-CE77F9D3D665@fumeilaistone.cn>
-Reply-To: <martinsdweber@aim.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [RFC v3 00/24] Re-use nvram module
+Date: Sun, 28 Jun 2015 11:41:59 +1000
+Message-ID: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43569 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751969AbbF1Bul (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:41 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-
-Lieber Freund!!!
-
-Ich vermute das diese E-Mail eine ?berraschung f?r Sie sein wird, aber =
-es ist wahr.Ich bin bei einer routinen ?berpr?fung in meiner Bank (Stan=
-dardBank PLC von S?d Afrika) wo ich arbeite, auf einem Konto gesto?en, =
-was nicht in anspruch genommen worden ist, wo derzeit USD$18.5M (Achtze=
-hn Million, F?nf Hundert Tausend, US Dollar)  gutgeschrieben sind.Diese=
-s Konto geh?rte Herrn Manfred Becker, der ein Kunde in unsere Bank war,=
- der leider verstorben ist. Herrn Manfred Becker war ein geb?rtiger Deu=
-tscher.
-
-Damit es mir m?glich ist dieses Geld $18,500,000 inanspruch zunehmen,be=
-n?tige ich die zusammenarbeit eines Ausl?ndischen Partners wie Sie,den =
-ich als Verwandter und Erbe des verstorbenen Herrn Manfred Becker vorst=
-ellen kann,damit wir das Geld inanspruch nehmen k?nnen. F?r diese Unter=
-st?tzung erhalten Sie 30% der Erbschaftsumme und die restlichen 70% tei=
-le ich mirmit meinen zwei Arbeitskollegen, die mich bei dieser Transakt=
-ion ebenfalls unterst?tzen.
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 
 
-Wenn Sie interessiert sind, k?nnen Sie mir bitte eine E-Mail schicken, =
-damit ich Ihnen mehr Details zukommen lassen kann. N.B.BITTE SENDEN SIE=
- MIR Martins D Weber ANTWORT ZU durch mein E-mail: ( martinsdweber@aim.=
-com ) f?R VERTRAULICHEN GRUND. Schicken Sie keine POST ZU MEINEM B?RO-E=
--MAIL.(martinsdweber@aim.com )
+The generic NVRAM module, drivers/char/generic_nvram, implements a
+/dev/nvram misc device. It is used only by 32-bit PowerPC platforms and
+isn't generic enough to be more widely used.
 
+The RTC NVRAM module, drivers/char/nvram, also implements a /dev/nvram
+misc device. It is used by x86, ARM and m68k.
 
-If you understand english,please  kindly reply with english ( martinsdw=
-eber@aim.com )
+The former module cannot be used on x86, ARM or m68k because it
+cannot co-exist with the latter module, partly due to the Kconfig logic.
 
-Mit freundlichen Gr=FC=DFen
+It is possible to modify the modules so that one kernel binary could
+have either, neither or both. However, automatically loading the
+appropriate module is then impossible; if both provide the
+char-major-10-144 alias then the wrong module will end up being loaded.
+Hence a multi-platform kernel binary needs a single generic nvram module
+with alias char-major-10-144.
 
-Herr Martins D Weber
+Therefore, drivers/char/nvram.c should be made more generic and the
+arch-specific code therein should be moved to a more appropriate
+place under arch/. Also, drivers/char/generic_nvram.c should be removed
+to reduce code duplication.
+
+In this patch series, Atari-specific code is moved from the nvram module
+to arch/m68k/atari. More arch-specific code in the nvram module could
+be moved, probably to arch/x86, but it is difficult to determine just
+what code is relevant to ARM platforms and what code is x86-only.
+
+In addressing code duplication, this patch series removes three
+inconsistent /dev/nvram misc device implementations. One of these,
+drivers/macintosh/nvram.c is entirely unused already. The other two,
+drivers/char/generic_nvram.c and the misc device implementation in
+arch/powerpc/kernel/nvram_64.c, are replaced by drivers/char/nvram.c.
+
+A benefit of this work is better consistency -- between PPC32 and PPC64
+as well as between PPC_PMAC and MAC. This new uniformity does have
+implications for userspace, that is, some error codes for some ioctl calls
+become consistent on all PowerPC platforms.
+
+The drivers/char/nvram module becomes sufficiently generic to be useful
+to other platforms and architectures, besides those with "CMOS" RTC. At the
+end of this patch series the module is adopted by the m68k Mac port, which
+already has PRAM access functions but lacks the /dev/nvram misc device.
+
+This patch series has been compile-tested for arm, m68k, powerpc and x86.
+The nvram and thinkpad_acpi modules were regression tested on a ThinkPad T43.
+The /dev/nvram functionality was also regression tested on a G3 PowerMac.
+The nvram module was also tested on a PowerBook 520 and Quadra 650.
+Note that my testing doesn't cover PPC64 or Atari.
+
+Changes since v1:
+- Minor changes to patches 7, 15 and 20 as described in commit logs.
+- Revised patches 21 and 24 to address comments from Geert.
+
+Changes since v2:
+- Dropped patch 1, "macintosh/nvram: Remove as unused", because it has
+since been merged.
+- Inserted a new patch, "m68k/mac: Use macros for RTC accesses not
+magic numbers".
+- Revised patches 21 and 23 to address comments from Geert.
 
 ---
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+ arch/m68k/Kconfig                          |    3 
+ arch/m68k/atari/Makefile                   |    2 
+ arch/m68k/atari/nvram.c                    |  291 +++++++++++
+ arch/m68k/kernel/setup_mm.c                |  107 ++++
+ arch/m68k/mac/misc.c                       |  207 +++++---
+ arch/powerpc/Kconfig                       |    5 
+ arch/powerpc/include/asm/nvram.h           |    9 
+ arch/powerpc/kernel/nvram_64.c             |  203 +------
+ arch/powerpc/kernel/setup_32.c             |   27 -
+ arch/powerpc/platforms/chrp/Makefile       |    2 
+ arch/powerpc/platforms/chrp/nvram.c        |   14 
+ arch/powerpc/platforms/chrp/setup.c        |    2 
+ arch/powerpc/platforms/powermac/Makefile   |    5 
+ arch/powerpc/platforms/powermac/nvram.c    |    9 
+ arch/powerpc/platforms/powermac/setup.c    |    3 
+ drivers/char/Kconfig                       |   13 
+ drivers/char/Makefile                      |    6 
+ drivers/char/generic_nvram.c               |  174 ------
+ drivers/char/nvram.c                       |  742 ++++++++++++-----------------
+ drivers/platform/x86/thinkpad_acpi.c       |   20 
+ drivers/scsi/Kconfig                       |    6 
+ drivers/scsi/atari_scsi.c                  |   16 
+ drivers/video/fbdev/controlfb.c            |    4 
+ drivers/video/fbdev/imsttfb.c              |    7 
+ drivers/video/fbdev/matrox/matroxfb_base.c |    4 
+ drivers/video/fbdev/platinumfb.c           |    4 
+ drivers/video/fbdev/valkyriefb.c           |    4 
+ include/linux/nvram.h                      |   23 
+ include/uapi/linux/pmu.h                   |    2 
+ 29 files changed, 982 insertions(+), 932 deletions(-)
