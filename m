@@ -1,149 +1,30 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 17/24] nvram: Drop nvram_* symbol exports and prototypes
-Date: Sun, 28 Jun 2015 11:42:16 +1000
-Message-ID: <20150628014203.852605978@telegraphics.com.au>
+Subject: [RFC v3 11/24] char/nvram: Add "devname:nvram" module alias
+Date: Sun, 28 Jun 2015 11:42:10 +1000
+Message-ID: <20150628014202.392612846@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43632 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43692 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752257AbbF1Buz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:55 -0400
-Content-Disposition: inline; filename=remove-exported-nvram-functions
+	with ESMTP id S1752164AbbF1But (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:49 -0400
+Content-Disposition: inline; filename=nvram-module-alias
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Drivers now use the arch_nvram_ops calls so remove the function exports and
-prototypes. nvram_check_checksum() is unused so remove it.
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/atari/nvram.c |    6 +++---
- drivers/char/nvram.c    |   27 +++++----------------------
- include/linux/nvram.h   |    8 --------
- 3 files changed, 8 insertions(+), 33 deletions(-)
+ drivers/char/nvram.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:44.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-06-28 11:41:48.000000000 +1000
-@@ -82,13 +82,12 @@ static ssize_t nvram_size;
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
-  */
+--- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:38.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-28 11:41:40.000000000 +1000
+@@ -577,3 +577,4 @@ module_exit(nvram_module_exit);
  
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
- {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
- }
--EXPORT_SYMBOL(__nvram_read_byte);
- 
--unsigned char nvram_read_byte(int i)
-+static unsigned char nvram_read_byte(int i)
- {
- 	unsigned long flags;
- 	unsigned char c;
-@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
- 	spin_unlock_irqrestore(&rtc_lock, flags);
- 	return c;
- }
--EXPORT_SYMBOL(nvram_read_byte);
- 
- /* This races nicely with trying to read with checksum checking (nvram_read) */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
- {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
- }
--EXPORT_SYMBOL(__nvram_write_byte);
- 
--void nvram_write_byte(unsigned char c, int i)
-+static void nvram_write_byte(unsigned char c, int i)
- {
- 	unsigned long flags;
- 
-@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
- 	__nvram_write_byte(c, i);
- 	spin_unlock_irqrestore(&rtc_lock, flags);
- }
--EXPORT_SYMBOL(nvram_write_byte);
- 
- /* On PCs, the checksum is built only over bytes 2..31 */
- #define PC_CKS_RANGE_START	2
- #define PC_CKS_RANGE_END	31
- #define PC_CKS_LOC		32
- 
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned short sum = 0;
-@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
- 	    __nvram_read_byte(PC_CKS_LOC+1);
- 	return (sum & 0xffff) == expect;
- }
--EXPORT_SYMBOL(__nvram_check_checksum);
--
--int nvram_check_checksum(void)
--{
--	unsigned long flags;
--	int rv;
--
--	spin_lock_irqsave(&rtc_lock, flags);
--	rv = __nvram_check_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
--	return rv;
--}
--EXPORT_SYMBOL(nvram_check_checksum);
- 
- static void __nvram_set_checksum(void)
- {
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-06-28 11:41:44.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-06-28 11:41:48.000000000 +1000
-@@ -3,14 +3,6 @@
- 
- #include <uapi/linux/nvram.h>
- 
--/* __foo is foo without grabbing the rtc_lock - get it yourself */
--extern unsigned char __nvram_read_byte(int i);
--extern unsigned char nvram_read_byte(int i);
--extern void __nvram_write_byte(unsigned char c, int i);
--extern void nvram_write_byte(unsigned char c, int i);
--extern int __nvram_check_checksum(void);
--extern int nvram_check_checksum(void);
--
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-Index: linux/arch/m68k/atari/nvram.c
-===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-06-28 11:41:39.000000000 +1000
-+++ linux/arch/m68k/atari/nvram.c	2015-06-28 11:41:48.000000000 +1000
-@@ -33,13 +33,13 @@
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
-  */
- 
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
- {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
- }
- 
- /* This races nicely with trying to read with checksum checking */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
- {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
- }
-@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
- #define ATARI_CKS_RANGE_END	47
- #define ATARI_CKS_LOC		48
- 
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned char sum = 0;
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
++MODULE_ALIAS("devname:nvram");
