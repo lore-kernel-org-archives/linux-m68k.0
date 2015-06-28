@@ -1,143 +1,149 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 18/24] powerpc: Remove CONFIG_GENERIC_NVRAM and adopt CONFIG_HAVE_ARCH_NVRAM_OPS
-Date: Sun, 28 Jun 2015 11:42:17 +1000
-Message-ID: <20150628014204.092620438@telegraphics.com.au>
+Subject: [RFC v3 17/24] nvram: Drop nvram_* symbol exports and prototypes
+Date: Sun, 28 Jun 2015 11:42:16 +1000
+Message-ID: <20150628014203.852605978@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43696 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43632 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752263AbbF1Bu4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:56 -0400
-Content-Disposition: inline; filename=powerpc-adopt-arch_nvram_ops
+	with ESMTP id S1752257AbbF1Buz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:55 -0400
+Content-Disposition: inline; filename=remove-exported-nvram-functions
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Switch PPC32 kernels from the generic_nvram module to the nvram module.
-
-Also fix a theoretical bug where CHRP omits the chrp_nvram_init()
-call when CONFIG_NVRAM_MODULE=m.
-
-As before, when CONFIG_PPC && !CONFIG_PPC_PMAC, the IOC_NVRAM_GET_OFFSET
-ioctl is unimplemented. For the nvram module, unimplemented ioctls return
--ENOTTY. Whereas, for the superseded generic_nvram module they would
-return -EINVAL.
+Drivers now use the arch_nvram_ops calls so remove the function exports and
+prototypes. nvram_check_checksum() is unused so remove it.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/m68k/atari/nvram.c |    6 +++---
+ drivers/char/nvram.c    |   27 +++++----------------------
+ include/linux/nvram.h   |    8 --------
+ 3 files changed, 8 insertions(+), 33 deletions(-)
 
-This ioctl change is visible to userspace code but only in an error path.
-I didn't find any userspace code that uses the IOC_NVRAM_GET_OFFSET ioctl.
-
-The change in the name of the module is also visible. The module that
-implements /dev/nvram on PowerPC now has suitable aliases, i.e.
-MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
-MODULE_ALIAS("devname:nvram"); 
-so that the device special file can be automatically created and the
-module automatically loaded when needed. Previously this was not the case.
-
----
-
-Changes since v1:
-- Small indentation fix.
-
----
- arch/powerpc/Kconfig                    |    2 +-
- arch/powerpc/kernel/setup_32.c          |    2 +-
- arch/powerpc/platforms/chrp/Makefile    |    2 +-
- arch/powerpc/platforms/chrp/setup.c     |    2 +-
- arch/powerpc/platforms/powermac/setup.c |    3 +--
- drivers/char/Kconfig                    |   10 ++++++----
- 6 files changed, 11 insertions(+), 10 deletions(-)
-
-Index: linux/arch/powerpc/Kconfig
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/Kconfig	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/Kconfig	2015-06-28 11:41:49.000000000 +1000
-@@ -178,7 +178,7 @@ config SYSVIPC_COMPAT
- 	default y
+--- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:44.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-06-28 11:41:48.000000000 +1000
+@@ -82,13 +82,12 @@ static ssize_t nvram_size;
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
  
- # All PPC32s use generic nvram driver through ppc_md
--config GENERIC_NVRAM
-+config HAVE_ARCH_NVRAM_OPS
- 	bool
- 	default y if PPC32
- 
-Index: linux/arch/powerpc/kernel/setup_32.c
-===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:46.000000000 +1000
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:49.000000000 +1000
-@@ -168,7 +168,7 @@ int __init ppc_setup_l3cr(char *str)
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
+ {
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
  }
- __setup("l3cr=", ppc_setup_l3cr);
+-EXPORT_SYMBOL(__nvram_read_byte);
  
--#ifdef CONFIG_GENERIC_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 
- static unsigned char ppc_nvram_read_byte(int addr)
+-unsigned char nvram_read_byte(int i)
++static unsigned char nvram_read_byte(int i)
  {
-Index: linux/arch/powerpc/platforms/chrp/Makefile
-===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/Makefile	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/Makefile	2015-06-28 11:41:49.000000000 +1000
-@@ -1,3 +1,3 @@
- obj-y				+= setup.o time.o pegasos_eth.o pci.o
- obj-$(CONFIG_SMP)		+= smp.o
--obj-$(CONFIG_NVRAM)		+= nvram.o
-+obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
-Index: linux/arch/powerpc/platforms/chrp/setup.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/setup.c	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/setup.c	2015-06-28 11:41:49.000000000 +1000
-@@ -557,7 +557,7 @@ void __init chrp_init_IRQ(void)
- void __init
- chrp_init2(void)
+ 	unsigned long flags;
+ 	unsigned char c;
+@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 	return c;
+ }
+-EXPORT_SYMBOL(nvram_read_byte);
+ 
+ /* This races nicely with trying to read with checksum checking (nvram_read) */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
  {
--#ifdef CONFIG_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 	chrp_nvram_init();
- #endif
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ }
+-EXPORT_SYMBOL(__nvram_write_byte);
  
-Index: linux/arch/powerpc/platforms/powermac/setup.c
+-void nvram_write_byte(unsigned char c, int i)
++static void nvram_write_byte(unsigned char c, int i)
+ {
+ 	unsigned long flags;
+ 
+@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
+ 	__nvram_write_byte(c, i);
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ }
+-EXPORT_SYMBOL(nvram_write_byte);
+ 
+ /* On PCs, the checksum is built only over bytes 2..31 */
+ #define PC_CKS_RANGE_START	2
+ #define PC_CKS_RANGE_END	31
+ #define PC_CKS_LOC		32
+ 
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned short sum = 0;
+@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
+ 	    __nvram_read_byte(PC_CKS_LOC+1);
+ 	return (sum & 0xffff) == expect;
+ }
+-EXPORT_SYMBOL(__nvram_check_checksum);
+-
+-int nvram_check_checksum(void)
+-{
+-	unsigned long flags;
+-	int rv;
+-
+-	spin_lock_irqsave(&rtc_lock, flags);
+-	rv = __nvram_check_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
+-	return rv;
+-}
+-EXPORT_SYMBOL(nvram_check_checksum);
+ 
+ static void __nvram_set_checksum(void)
+ {
+Index: linux/include/linux/nvram.h
 ===================================================================
---- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/platforms/powermac/setup.c	2015-06-28 11:41:49.000000000 +1000
-@@ -321,8 +321,7 @@ static void __init pmac_setup_arch(void)
- 	find_via_pmu();
- 	smu_init();
+--- linux.orig/include/linux/nvram.h	2015-06-28 11:41:44.000000000 +1000
++++ linux/include/linux/nvram.h	2015-06-28 11:41:48.000000000 +1000
+@@ -3,14 +3,6 @@
  
--#if defined(CONFIG_NVRAM) || defined(CONFIG_NVRAM_MODULE) || \
--    defined(CONFIG_PPC64)
-+#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
- 	pmac_nvram_init();
- #endif
+ #include <uapi/linux/nvram.h>
  
-Index: linux/drivers/char/Kconfig
+-/* __foo is foo without grabbing the rtc_lock - get it yourself */
+-extern unsigned char __nvram_read_byte(int i);
+-extern unsigned char nvram_read_byte(int i);
+-extern void __nvram_write_byte(unsigned char c, int i);
+-extern void nvram_write_byte(unsigned char c, int i);
+-extern int __nvram_check_checksum(void);
+-extern int nvram_check_checksum(void);
+-
+ struct nvram_ops {
+ 	ssize_t         (*read)(char *, size_t, loff_t *);
+ 	ssize_t         (*write)(char *, size_t, loff_t *);
+Index: linux/arch/m68k/atari/nvram.c
 ===================================================================
---- linux.orig/drivers/char/Kconfig	2015-06-28 11:41:39.000000000 +1000
-+++ linux/drivers/char/Kconfig	2015-06-28 11:41:49.000000000 +1000
-@@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
+--- linux.orig/arch/m68k/atari/nvram.c	2015-06-28 11:41:39.000000000 +1000
++++ linux/arch/m68k/atari/nvram.c	2015-06-28 11:41:48.000000000 +1000
+@@ -33,13 +33,13 @@
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
  
- config NVRAM
- 	tristate "/dev/nvram support"
--	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
-+	depends on X86 || (ARM && RTC_DRV_CMOS) || HAVE_ARCH_NVRAM_OPS
- 	---help---
- 	  If you say Y here and create a character special file /dev/nvram
- 	  with major number 10 and minor number 144 using mknod ("man mknod"),
-@@ -256,9 +256,11 @@ config NVRAM
- 	  and most Ataris.  The actual number of bytes varies, depending on the
- 	  nvram in the system, but is usually 114 (128-14 for the RTC).
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
+ {
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+ }
  
--	  This memory is conventionally called "CMOS RAM" on PCs and "NVRAM"
--	  on Ataris. /dev/nvram may be used to view settings there, or to
--	  change them (with some utility). It could also be used to frequently
-+	  This memory is conventionally called "CMOS RAM" on PCs,
-+	  "NVRAM" on Ataris and "PRAM" on Macintoshes.
-+
-+	  /dev/nvram may be used to view settings in NVRAM, or to change them
-+	  (with some utility). It could also be used to frequently
- 	  save a few bits of very important data that may not be lost over
- 	  power-off and for which writing to disk is too insecure. Note
- 	  however that most NVRAM space in a PC belongs to the BIOS and you
+ /* This races nicely with trying to read with checksum checking */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
+ {
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ }
+@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
+ #define ATARI_CKS_RANGE_END	47
+ #define ATARI_CKS_LOC		48
+ 
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned char sum = 0;
