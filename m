@@ -1,118 +1,107 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 13/24] powerpc: Add missing ppc_md.nvram_size for CHRP and PowerMac
-Date: Sun, 28 Jun 2015 11:42:12 +1000
-Message-ID: <20150628014202.882623971@telegraphics.com.au>
+Subject: [RFC v3 10/24] m68k/atari: Implement arch_nvram_ops methods and enable CONFIG_HAVE_ARCH_NVRAM_OPS
+Date: Sun, 28 Jun 2015 11:42:09 +1000
+Message-ID: <20150628014202.152609351@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43694 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43687 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752171AbbF1But (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:49 -0400
-Content-Disposition: inline; filename=fix-powerpc-machdep-inconsistencies
+	with ESMTP id S1752131AbbF1Bus (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:48 -0400
+Content-Disposition: inline; filename=atari-hook-up-misc-device
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Add the nvram_size() function to those PowerPC platforms that don't already
-have one: CHRP and PowerMac. This means that the ppc_md.nvram_size()
-function can be used to implement arch_nvram_ops.get_size()
-
-Since we are addressing inconsistencies here, also rename chrp_nvram_read
-and chrp_nvram_write, which break the naming convention used across
-PowerPC platforms for NVRAM accessor functions.
+Atari RTC NVRAM has a checksum so implement the remaining arch_nvram_ops
+methods for the set_checksum and initialize ioctls. Enable
+CONFIG_HAVE_ARCH_NVRAM_OPS.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/powerpc/platforms/chrp/nvram.c     |   14 ++++++++++----
- arch/powerpc/platforms/powermac/nvram.c |    9 +++++++++
- 2 files changed, 19 insertions(+), 4 deletions(-)
 
-Index: linux/arch/powerpc/platforms/chrp/nvram.c
+This re-enables the nvram module for Atari.
+
+---
+ arch/m68k/Kconfig       |    3 +++
+ arch/m68k/atari/nvram.c |   24 ++++++++++++++++++++++++
+ drivers/char/Kconfig    |    2 +-
+ 3 files changed, 28 insertions(+), 1 deletion(-)
+
+Index: linux/arch/m68k/atari/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/nvram.c	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/nvram.c	2015-06-28 11:41:42.000000000 +1000
-@@ -23,7 +23,7 @@ static unsigned int nvram_size;
- static unsigned char nvram_buf[4];
- static DEFINE_SPINLOCK(nvram_lock);
- 
--static unsigned char chrp_nvram_read(int addr)
-+static unsigned char chrp_nvram_read_byte(int addr)
- {
- 	unsigned int done;
- 	unsigned long flags;
-@@ -45,7 +45,7 @@ static unsigned char chrp_nvram_read(int
- 	return ret;
+--- linux.orig/arch/m68k/atari/nvram.c	2015-06-28 11:41:31.000000000 +1000
++++ linux/arch/m68k/atari/nvram.c	2015-06-28 11:41:39.000000000 +1000
+@@ -73,6 +73,26 @@ static void __nvram_set_checksum(void)
+ 	__nvram_write_byte(sum, ATARI_CKS_LOC + 1);
  }
  
--static void chrp_nvram_write(int addr, unsigned char val)
-+static void chrp_nvram_write_byte(int addr, unsigned char val)
- {
- 	unsigned int done;
- 	unsigned long flags;
-@@ -63,6 +63,11 @@ static void chrp_nvram_write(int addr, u
- 	spin_unlock_irqrestore(&nvram_lock, flags);
- }
- 
-+static ssize_t chrp_nvram_size(void)
++static long nvram_set_checksum(void)
 +{
-+	return nvram_size;
++	spin_lock_irq(&rtc_lock);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
 +}
 +
- void __init chrp_nvram_init(void)
- {
- 	struct device_node *nvram;
-@@ -84,8 +89,9 @@ void __init chrp_nvram_init(void)
- 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
- 	of_node_put(nvram);
- 
--	ppc_md.nvram_read_val = chrp_nvram_read;
--	ppc_md.nvram_write_val = chrp_nvram_write;
-+	ppc_md.nvram_read_val  = chrp_nvram_read_byte;
-+	ppc_md.nvram_write_val = chrp_nvram_write_byte;
-+	ppc_md.nvram_size      = chrp_nvram_size;
- 
- 	return;
- }
-Index: linux/arch/powerpc/platforms/powermac/nvram.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-06-28 11:41:27.000000000 +1000
-+++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-06-28 11:41:42.000000000 +1000
-@@ -147,6 +147,11 @@ static ssize_t core99_nvram_size(void)
- static volatile unsigned char __iomem *nvram_addr;
- static int nvram_mult;
- 
-+static ssize_t ppc32_nvram_size(void)
++static long nvram_initialize(void)
 +{
-+	return NVRAM_SIZE;
++	loff_t i;
++
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		__nvram_write_byte(0, i);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
 +}
 +
- static unsigned char direct_nvram_read_byte(int addr)
+ static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
  {
- 	return in_8(&nvram_data[(addr & (NVRAM_SIZE - 1)) * nvram_mult]);
-@@ -590,21 +595,25 @@ int __init pmac_nvram_init(void)
- 		nvram_mult = 1;
- 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
- 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 1) {
- 		nvram_data = ioremap(r1.start, s1);
- 		nvram_mult = (s1 + NVRAM_SIZE - 1) / NVRAM_SIZE;
- 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
- 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 2) {
- 		nvram_addr = ioremap(r1.start, s1);
- 		nvram_data = ioremap(r2.start, s2);
- 		ppc_md.nvram_read_val	= indirect_nvram_read_byte;
- 		ppc_md.nvram_write_val	= indirect_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 0 && sys_ctrler == SYS_CTRLER_PMU) {
- #ifdef CONFIG_ADB_PMU
- 		nvram_naddrs = -1;
- 		ppc_md.nvram_read_val	= pmu_nvram_read_byte;
- 		ppc_md.nvram_write_val	= pmu_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- #endif /* CONFIG_ADB_PMU */
- 	} else {
- 		printk(KERN_ERR "Incompatible type of NVRAM\n");
+ 	char *p = buf;
+@@ -119,6 +139,8 @@ static ssize_t nvram_write(char *buf, si
+ 
+ static ssize_t nvram_get_size(void)
+ {
++	if (!MACH_IS_ATARI)
++		return -ENODEV;
+ 	return NVRAM_BYTES;
+ }
+ 
+@@ -126,6 +148,8 @@ const struct nvram_ops arch_nvram_ops =
+ 	.read           = nvram_read,
+ 	.write          = nvram_write,
+ 	.get_size       = nvram_get_size,
++	.set_checksum   = nvram_set_checksum,
++	.initialize     = nvram_initialize,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+Index: linux/drivers/char/Kconfig
+===================================================================
+--- linux.orig/drivers/char/Kconfig	2015-06-28 11:41:28.000000000 +1000
++++ linux/drivers/char/Kconfig	2015-06-28 11:41:39.000000000 +1000
+@@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
+ 
+ config NVRAM
+ 	tristate "/dev/nvram support"
+-	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM
++	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
+ 	---help---
+ 	  If you say Y here and create a character special file /dev/nvram
+ 	  with major number 10 and minor number 144 using mknod ("man mknod"),
+Index: linux/arch/m68k/Kconfig
+===================================================================
+--- linux.orig/arch/m68k/Kconfig	2015-06-28 11:41:27.000000000 +1000
++++ linux/arch/m68k/Kconfig	2015-06-28 11:41:39.000000000 +1000
+@@ -71,6 +71,9 @@ config PGTABLE_LEVELS
+ 	default 2 if SUN3 || COLDFIRE
+ 	default 3
+ 
++config HAVE_ARCH_NVRAM_OPS
++	def_bool ATARI
++
+ source "init/Kconfig"
+ 
+ source "kernel/Kconfig.freezer"
