@@ -1,48 +1,88 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v3 09/24] char/nvram: Use generic fixed_size_llseek()
-Date: Sun, 28 Jun 2015 11:42:08 +1000
-Message-ID: <20150628014201.912602923@telegraphics.com.au>
+Subject: [RFC v3 12/24] powerpc: Cleanup nvram includes
+Date: Sun, 28 Jun 2015 11:42:11 +1000
+Message-ID: <20150628014202.632605096@telegraphics.com.au>
 References: <20150628014159.732792697@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43688 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43691 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752133AbbF1Bus (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:48 -0400
-Content-Disposition: inline; filename=nvram-generic-llseek
+	with ESMTP id S1752163AbbF1But (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sat, 27 Jun 2015 21:50:49 -0400
+Content-Disposition: inline; filename=powerpc-fix-nvram-includes
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+
+The nvram_read_byte() and nvram_write_byte() definitions in asm/nvram.h
+duplicate those in linux/nvram.h. Get rid of the former to prepare for
+adoption of struct arch_nvram_ops (which is defined in linux/nvram.h for
+general use).
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/char/nvram.c |   16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+ arch/powerpc/include/asm/nvram.h           |    3 ---
+ arch/powerpc/kernel/setup_32.c             |    1 +
+ drivers/char/generic_nvram.c               |    4 +++-
+ drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Index: linux/drivers/char/nvram.c
+Index: linux/arch/powerpc/include/asm/nvram.h
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-06-28 11:41:37.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-06-28 11:41:38.000000000 +1000
-@@ -235,21 +235,7 @@ EXPORT_SYMBOL(arch_nvram_ops);
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-06-28 11:41:27.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-06-28 11:41:41.000000000 +1000
+@@ -101,7 +101,4 @@ extern int nvram_write_os_partition(stru
+ /* Determine NVRAM size */
+ extern ssize_t nvram_get_size(void);
  
- static loff_t nvram_misc_llseek(struct file *file, loff_t offset, int origin)
- {
--	switch (origin) {
--	case 0:
--		/* nothing to do */
--		break;
--	case 1:
--		offset += file->f_pos;
--		break;
--	case 2:
--		offset += NVRAM_BYTES;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return (offset >= 0) ? (file->f_pos = offset) : -EINVAL;
-+	return fixed_size_llseek(file, offset, origin, nvram_size);
- }
+-/* Normal access to NVRAM */
+-extern unsigned char nvram_read_byte(int i);
+-extern void nvram_write_byte(unsigned char c, int i);
+ #endif /* _ASM_POWERPC_NVRAM_H */
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:27.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-06-28 11:41:41.000000000 +1000
+@@ -16,6 +16,7 @@
+ #include <linux/cpu.h>
+ #include <linux/console.h>
+ #include <linux/memblock.h>
++#include <linux/nvram.h>
  
- static ssize_t nvram_misc_read(struct file *file, char __user *buf,
+ #include <asm/io.h>
+ #include <asm/prom.h>
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-06-28 11:41:27.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-06-28 11:41:41.000000000 +1000
+@@ -20,9 +20,11 @@
+ #include <linux/fcntl.h>
+ #include <linux/init.h>
+ #include <linux/mutex.h>
++#include <linux/nvram.h>
+ #include <asm/uaccess.h>
+-#include <asm/nvram.h>
++
+ #ifdef CONFIG_PPC_PMAC
++#include <asm/nvram.h>
+ #include <asm/machdep.h>
+ #endif
+ 
+Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-28 11:41:27.000000000 +1000
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-06-28 11:41:41.000000000 +1000
+@@ -111,12 +111,12 @@
+ #include "matroxfb_g450.h"
+ #include <linux/matroxfb.h>
+ #include <linux/interrupt.h>
++#include <linux/nvram.h>
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
+ 
+ #ifdef CONFIG_PPC_PMAC
+ #include <asm/machdep.h>
+-unsigned char nvram_read_byte(int);
+ static int default_vmode = VMODE_NVRAM;
+ static int default_cmode = CMODE_NVRAM;
+ #endif
