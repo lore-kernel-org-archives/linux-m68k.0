@@ -1,66 +1,29 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [RFC v3 24/24] m68k: Dispatch nvram_ops calls to Atari or Mac functions
-Date: Mon, 29 Jun 2015 09:25:47 +0200
-Message-ID: <CAMuHMdX0c3BjhkSMv4fUe1WVWDHhqRMHz=K15750EBatwkJisQ@mail.gmail.com>
+Subject: Re: [RFC v3 02/24] m68k/atari: Move Atari-specific code out of drivers/char/nvram.c
+Date: Mon, 29 Jun 2015 09:26:56 +0200
+Message-ID: <CAMuHMdUY2pM4N3Uddo2TecNo2BL4t-7VVDY=2wrgsqomVnCXFg@mail.gmail.com>
 References: <20150628014159.732792697@telegraphics.com.au>
-	<20150628014205.532621991@telegraphics.com.au>
+	<20150628014200.233057221@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f171.google.com ([209.85.214.171]:33543 "EHLO
-	mail-ob0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750930AbbF2HZs (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Jun 2015 03:25:48 -0400
-In-Reply-To: <20150628014205.532621991@telegraphics.com.au>
+Received: from mail-oi0-f47.google.com ([209.85.218.47]:35160 "EHLO
+	mail-oi0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750824AbbF2H04 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Jun 2015 03:26:56 -0400
+In-Reply-To: <20150628014200.233057221@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Hi Finn,
 
-> A multi-platform kernel binary needs to decide at run-time how to dispatch
-> the arch_nvram_ops calls. Add platform-independent arch_nvram_ops, for use
-> when multiple platform-specific NVRAM ops implementations are needed.
->
-> Enable CONFIG_HAVE_ARCH_NVRAM_OPS for Macs.
-
-Thanks for your patch!
-
 On Sun, Jun 28, 2015 at 3:42 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> --- linux.orig/arch/m68k/kernel/setup_mm.c      2015-06-28 11:41:27.000000000 +1000
-> +++ linux/arch/m68k/kernel/setup_mm.c   2015-06-28 11:41:56.000000000 +1000
+> Change the vmode calculation from logical OR to bitwise OR, since it is
+> obviously wrong.
 
-> @@ -568,3 +569,109 @@ static int __init adb_probe_sync_enable
->
->  __setup("adb_sync", adb_probe_sync_enable);
->  #endif /* CONFIG_ADB */
-> +
-> +#if IS_ENABLED(CONFIG_NVRAM)
-> +extern unsigned char mac_pram_read_byte(int);
-> +extern void mac_pram_write_byte(unsigned char, int);
-> +extern ssize_t mac_pram_get_size(void);
-> +
-> +extern ssize_t atari_nvram_read(char *, size_t, loff_t *);
-> +extern ssize_t atari_nvram_write(char *, size_t, loff_t *);
-> +extern long atari_nvram_set_checksum(void);
-> +extern long atari_nvram_initialize(void);
-> +extern ssize_t atari_nvram_get_size(void);
-
-Forward declarations belong in a header file, to be included by both
-producers and consumers.
-
-> --- linux.orig/arch/m68k/Kconfig        2015-06-28 11:41:39.000000000 +1000
-> +++ linux/arch/m68k/Kconfig     2015-06-28 11:41:56.000000000 +1000
-> @@ -72,7 +72,7 @@ config PGTABLE_LEVELS
->         default 3
->
->  config HAVE_ARCH_NVRAM_OPS
-> -       def_bool ATARI
-> +       def_bool ATARI || MAC
-
-For maintainability, it's better to just have "bool" here, and let both the
-ATARI and MAC config symbols select HAVE_ARCH_NVRAM_OPS.
+Ideally, that should be a separate patch we can put on the fast track.
 
 Gr{oetje,eeting}s,
 
