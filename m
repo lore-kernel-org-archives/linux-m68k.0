@@ -1,47 +1,74 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu arch fixes for 4.2
-Date: Mon, 29 Jun 2015 09:07:50 +1000
-Message-ID: <201506282307.t5SN7oxH015997@goober.accelecon.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [RFC v3 24/24] m68k: Dispatch nvram_ops calls to Atari or Mac functions
+Date: Mon, 29 Jun 2015 09:25:47 +0200
+Message-ID: <CAMuHMdX0c3BjhkSMv4fUe1WVWDHhqRMHz=K15750EBatwkJisQ@mail.gmail.com>
+References: <20150628014159.732792697@telegraphics.com.au>
+	<20150628014205.532621991@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ob0-f171.google.com ([209.85.214.171]:33543 "EHLO
+	mail-ob0-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750930AbbF2HZs (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Jun 2015 03:25:48 -0400
+In-Reply-To: <20150628014205.532621991@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 
-Hi Linus,
+Hi Finn,
 
-Can you please pull the m68knommu git tree, for-next branch.
-Only a couple of small changes. Improved the m68knommu MAINTAINERS
-entry to make it clearer which m68k parts this applies to, and a print
-format clean up.
+> A multi-platform kernel binary needs to decide at run-time how to dispatch
+> the arch_nvram_ops calls. Add platform-independent arch_nvram_ops, for use
+> when multiple platform-specific NVRAM ops implementations are needed.
+>
+> Enable CONFIG_HAVE_ARCH_NVRAM_OPS for Macs.
 
-Regards
-Greg
+Thanks for your patch!
 
+On Sun, Jun 28, 2015 at 3:42 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> --- linux.orig/arch/m68k/kernel/setup_mm.c      2015-06-28 11:41:27.000000000 +1000
+> +++ linux/arch/m68k/kernel/setup_mm.c   2015-06-28 11:41:56.000000000 +1000
 
+> @@ -568,3 +569,109 @@ static int __init adb_probe_sync_enable
+>
+>  __setup("adb_sync", adb_probe_sync_enable);
+>  #endif /* CONFIG_ADB */
+> +
+> +#if IS_ENABLED(CONFIG_NVRAM)
+> +extern unsigned char mac_pram_read_byte(int);
+> +extern void mac_pram_write_byte(unsigned char, int);
+> +extern ssize_t mac_pram_get_size(void);
+> +
+> +extern ssize_t atari_nvram_read(char *, size_t, loff_t *);
+> +extern ssize_t atari_nvram_write(char *, size_t, loff_t *);
+> +extern long atari_nvram_set_checksum(void);
+> +extern long atari_nvram_initialize(void);
+> +extern ssize_t atari_nvram_get_size(void);
 
+Forward declarations belong in a header file, to be included by both
+producers and consumers.
 
-The following changes since commit 0f57d86787d8b1076ea8f9cbdddda2a46d534a27:
+> --- linux.orig/arch/m68k/Kconfig        2015-06-28 11:41:39.000000000 +1000
+> +++ linux/arch/m68k/Kconfig     2015-06-28 11:41:56.000000000 +1000
+> @@ -72,7 +72,7 @@ config PGTABLE_LEVELS
+>         default 3
+>
+>  config HAVE_ARCH_NVRAM_OPS
+> -       def_bool ATARI
+> +       def_bool ATARI || MAC
 
-  Linux 4.1-rc8 (2015-06-14 15:51:10 -1000)
+For maintainability, it's better to just have "bool" here, and let both the
+ATARI and MAC config symbols select HAVE_ARCH_NVRAM_OPS.
 
-are available in the git repository at:
+Gr{oetje,eeting}s,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+                        Geert
 
-for you to fetch changes up to e1632fa2471281c69bb3b6414d2c0fb01c56cc70:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-  m68k: improve m68knommu MAINTAINERS entry (2015-06-19 17:22:17 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68k: improve m68knommu MAINTAINERS entry
-
-Joe Perches (1):
-      m68k: Use vsprintf %pM extension
-
- MAINTAINERS                | 6 +++++-
- arch/m68k/68000/m68EZ328.c | 3 +--
- arch/m68k/68000/m68VZ328.c | 3 +--
- arch/m68k/68360/config.c   | 3 +--
- 4 files changed, 8 insertions(+), 7 deletions(-)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
