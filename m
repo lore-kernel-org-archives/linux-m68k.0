@@ -1,7 +1,7 @@
 From: wenny_budi_p@nusindo.co.id
 Subject: LOAN OFFER
-Date: Tue, 30 Jun 2015 15:10:41 +0100
-Message-ID: <20150630135446.AC93FBA88A0@webmail.nusindo.co.id>
+Date: Tue, 30 Jun 2015 22:00:11 +0100
+Message-ID: <20150630204413.EDC2BBAC7CC@webmail.nusindo.co.id>
 Reply-To: george_18888@hotmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
