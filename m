@@ -1,26 +1,42 @@
-From: wenny_budi_p@nusindo.co.id
-Subject: LOAN OFFER
-Date: Tue, 30 Jun 2015 22:00:11 +0100
-Message-ID: <20150630204413.EDC2BBAC7CC@webmail.nusindo.co.id>
-Reply-To: george_18888@hotmail.com
+From: "stoc international security & finance company."
+	<stoc.interrcompany@gmail.com>
+Subject: Dear Friend, Take For Your Compensation.
+Date: Wed, 1 Jul 2015 01:46:47 +0100
+Message-ID: <CAJ3Qw+L8ve+nwKHkrpymeqcOT53PMEeQgn=3F0YPSsYwM61ciQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <wenny_budi_p@nusindo.co.id>
 
- 
- Hello, do you need a business or personal loan interest rate of 3%? If interested, kindly get back to us with the following information.
-NAME OF BORROWER:
-* COUNTRY:
-* GENDER:
-* OCCUPATION:
-* MONTHLY INCOME:
-* Loan Amount Required:
-* Loan Duration:
-* LOAN PURPOSE:
-* PHONE NUMBERS:
- 
+Dear Friend,
+
+Good Day and compliment of the season. I hope this massage meets you
+in good health. It has been a very long time. I'm happy to inform you
+about my success in getting the fund transferred under the cooperation
+of a new partner from London. Presently I am in London for investment
+projects with my own share of the total sum.
+Meanwhile, I didn't forget your past efforts and attempts to assist us
+in transferring those funds despite that it failed us some how. Now
+contact my secretary, her name is Mrs. Nancy Henshew ask her to send
+you the total US$1,500.000.00, which I kept for your compensation for
+all the past efforts and attempts to assist me in this matter. I
+appreciated your efforts at that time very much. So feel free and get
+in touched with my secretary Mrs. Nancy Henshew with your information
+and instruct her where to send the amount to you. Below is her email
+address contact:
+
+Name: Mrs. Nancy Henshew
+Email Address: henshewn@yahoo.com
+
+Please do let me know immediately you receive it so that we can share
+the joy after all the suffer ness at that time. In the moment, I am
+very busy here because of the investment projects which I and the new
+partner are having at hand.
+Finally, remember that I had forwarded instruction to secretary on
+your behalf to receive that money, so feel free to get in touch with
+Mrs. Nancy Henshaw and she will send the amount to you without any
+delay. I wait to hear from you ASAP notifying me if you have received
+you draft from her.
+With best regards
+Mr. James Eke.
