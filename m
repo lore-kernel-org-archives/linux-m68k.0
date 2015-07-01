@@ -1,42 +1,28 @@
-From: "stoc international security & finance company."
-	<stoc.interrcompany@gmail.com>
-Subject: Dear Friend, Take For Your Compensation.
-Date: Wed, 1 Jul 2015 01:46:47 +0100
-Message-ID: <CAJ3Qw+L8ve+nwKHkrpymeqcOT53PMEeQgn=3F0YPSsYwM61ciQ@mail.gmail.com>
+From: Sasnett_Karen <sasnett_karen@asdk12.org>
+Subject: (unknown)
+Date: Wed, 1 Jul 2015 11:53:31 +0000
+Message-ID: <B3EEA09B9C66584198B6765D1492AEF27A4787B7__16267.6672720865$1435753442$gmane$org@ITEXCH01.asdk12.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Subject: 
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Dear Friend,
 
-Good Day and compliment of the season. I hope this massage meets you
-in good health. It has been a very long time. I'm happy to inform you
-about my success in getting the fund transferred under the cooperation
-of a new partner from London. Presently I am in London for investment
-projects with my own share of the total sum.
-Meanwhile, I didn't forget your past efforts and attempts to assist us
-in transferring those funds despite that it failed us some how. Now
-contact my secretary, her name is Mrs. Nancy Henshew ask her to send
-you the total US$1,500.000.00, which I kept for your compensation for
-all the past efforts and attempts to assist me in this matter. I
-appreciated your efforts at that time very much. So feel free and get
-in touched with my secretary Mrs. Nancy Henshew with your information
-and instruct her where to send the amount to you. Below is her email
-address contact:
 
-Name: Mrs. Nancy Henshew
-Email Address: henshewn@yahoo.com
 
-Please do let me know immediately you receive it so that we can share
-the joy after all the suffer ness at that time. In the moment, I am
-very busy here because of the investment projects which I and the new
-partner are having at hand.
-Finally, remember that I had forwarded instruction to secretary on
-your behalf to receive that money, so feel free to get in touch with
-Mrs. Nancy Henshaw and she will send the amount to you without any
-delay. I wait to hear from you ASAP notifying me if you have received
-you draft from her.
-With best regards
-Mr. James Eke.
+Haben Sie einen Investor brauchen?
+
+Haben Sie gesch=E4ftliche oder pers=F6nliche Darlehen ben=F6tigen?
+
+Wir geben Darlehen an eine nat=FCrliche Person und Unternehmen bei 3% Z=
+insen j=E4hrlich. Weitere Informationen Kontaktieren Sie uns per E-Mail=
+: omfcreditspa@hotmail.com<mailto:omfcreditspa@hotmail.com>
+
+
+
+HINWEIS: Leiten Sie Ihre Antwort nur an diese E-Mail: omfcreditspa@hotm=
+ail.com<mailto:omfcreditspa@hotmail.com>
