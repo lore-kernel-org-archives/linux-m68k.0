@@ -1,28 +1,42 @@
-From: Sasnett_Karen <sasnett_karen@asdk12.org>
-Subject: (unknown)
-Date: Wed, 1 Jul 2015 11:53:31 +0000
-Message-ID: <B3EEA09B9C66584198B6765D1492AEF27A4787B7__16267.6672720865$1435753442$gmane$org@ITEXCH01.asdk12.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [RFC v3 02/24] m68k/atari: Move Atari-specific code out of
+ drivers/char/nvram.c
+Date: Thu, 2 Jul 2015 12:00:01 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1507021154040.15903@nippy.intranet>
+References: <20150628014159.732792697@telegraphics.com.au> <20150628014200.233057221@telegraphics.com.au> <CAMuHMdUY2pM4N3Uddo2TecNo2BL4t-7VVDY=2wrgsqomVnCXFg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
-Content-Language: en-US
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34568 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753996AbbGBCAY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 1 Jul 2015 22:00:24 -0400
+In-Reply-To: <CAMuHMdUY2pM4N3Uddo2TecNo2BL4t-7VVDY=2wrgsqomVnCXFg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 
+On Mon, 29 Jun 2015, Geert Uytterhoeven wrote:
 
+> Hi Finn,
+> 
+> On Sun, Jun 28, 2015 at 3:42 AM, Finn Thain <fthain@telegraphics.com.au> 
+> wrote:
+> > Change the vmode calculation from logical OR to bitwise OR, since it 
+> > is obviously wrong.
+> 
+> Ideally, that should be a separate patch we can put on the fast track.
 
-Haben Sie einen Investor brauchen?
+If you will fast track a portion of this patch series, that's great. I'll 
+send a separate patch. (However, IMHO, that portion which would ideally be 
+fast tracked is a matter of opinion.)
 
-Haben Sie gesch=E4ftliche oder pers=F6nliche Darlehen ben=F6tigen?
+-- 
 
-Wir geben Darlehen an eine nat=FCrliche Person und Unternehmen bei 3% Z=
-insen j=E4hrlich. Weitere Informationen Kontaktieren Sie uns per E-Mail=
-: omfcreditspa@hotmail.com<mailto:omfcreditspa@hotmail.com>
-
-
-
-HINWEIS: Leiten Sie Ihre Antwort nur an diese E-Mail: omfcreditspa@hotm=
-ail.com<mailto:omfcreditspa@hotmail.com>
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
