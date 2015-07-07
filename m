@@ -1,60 +1,51 @@
-From: Greg Ungerer <gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 00/10] m68knommu: fix allnoconfig
-Date: Tue, 07 Jul 2015 22:22:25 +1000
-Message-ID: <559BC481.6010004@uclinux.org>
-References: <1436252124-23051-1-git-send-email-gerg@uclinux.org> <CAMuHMdXenF_87nwbiVAM_+or19xCAMLfDExOxRPbKvGk7Q2AuQ@mail.gmail.com>
+Date: Tue, 7 Jul 2015 14:45:10 +0200
+Message-ID: <CAMuHMdUNxTq4nbi0M9-Yt+MObDXKQ=MVgN-9xV1tOQEPA0bAPQ@mail.gmail.com>
+References: <1436252124-23051-1-git-send-email-gerg@uclinux.org>
+	<CAMuHMdXenF_87nwbiVAM_+or19xCAMLfDExOxRPbKvGk7Q2AuQ@mail.gmail.com>
+	<559BC481.6010004@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out8.external.iinet.net.au ([203.59.1.225]:37290
-	"EHLO icp-osb-irony-out8.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754589AbbGGMXS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Jul 2015 08:23:18 -0400
-In-Reply-To: <CAMuHMdXenF_87nwbiVAM_+or19xCAMLfDExOxRPbKvGk7Q2AuQ@mail.gmail.com>
+Received: from mail-ob0-f175.google.com ([209.85.214.175]:35316 "EHLO
+	mail-ob0-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757087AbbGGMpL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Jul 2015 08:45:11 -0400
+Received: by obbop1 with SMTP id op1so127559359obb.2
+        for <linux-m68k@vger.kernel.org>; Tue, 07 Jul 2015 05:45:11 -0700 (PDT)
+In-Reply-To: <559BC481.6010004@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@uclinux.org>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Geert,
+Hi Greg,
 
-On 07/07/15 19:00, Geert Uytterhoeven wrote:
-> Hi Greg,
->
-> On Tue, Jul 7, 2015 at 8:55 AM, Greg Ungerer <gerg@uclinux.org> wrote:
->> The following set of patches are designed to fix the issues causing a
->> "make allnoconfig" to fail for m68k. There is really only a couple of
->> problems, and those are easily fixed.
-> Thanks!
->
-> For 1-3:
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Tue, Jul 7, 2015 at 2:22 PM, Greg Ungerer <gerg@uclinux.org> wrote:
+> Do we care about allmodconfig and allyesconfig?
+> Looks like problems there too.
 
-Thanks Geert. I will add that on, and push to m68knommu git
-tree in the next day or so.
+On top of the m68k(MMU) defconfigs, the following are part of my
+standard build tests:
+  - allmodconfig
+  - allmodconfig-sun3
+  - allnoconfig-mmu
+  - allyesconfig
+  - allyesconfig-sun3
 
-> Now I only have to fix the m68k+MMU allnoconfig build
->
->      $ echo CONFIG_MMU=y > allno.config
->      $ make allnoconfig KCONFIG_ALLCONFIG=1
->
-> I have patches for some problems, but not all of them...
+Apart from allnoconfig-mmu, all of the above build fine locally, but not all
+patches to fix issues are upstream yet. Most patches have been submitted
+though, except for e.g. a few more complicated dependencies of USB on
+HAS_DMA (for sun3).
 
-Do we care about allmodconfig and allyesconfig?
-Looks like problems there too.
+Gr{oetje,eeting}s,
 
-Regards
-Greg
+                        Geert
 
-> Gr{oetje,eeting}s,
->
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
->
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
