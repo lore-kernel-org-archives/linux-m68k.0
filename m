@@ -1,85 +1,49 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [PATCH 09/10] m68knommu: update defconfig for ColdFire m5407c3
-Date: Tue,  7 Jul 2015 16:55:23 +1000
-Message-ID: <1436252124-23051-10-git-send-email-gerg@uclinux.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/10] m68knommu: fix allnoconfig
+Date: Tue, 7 Jul 2015 11:00:06 +0200
+Message-ID: <CAMuHMdXenF_87nwbiVAM_+or19xCAMLfDExOxRPbKvGk7Q2AuQ@mail.gmail.com>
 References: <1436252124-23051-1-git-send-email-gerg@uclinux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from nskntmtas03p.mx.bigpond.com ([61.9.168.143]:29927 "EHLO
-	nskntmtas03p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755537AbbGGGyP (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Jul 2015 02:54:15 -0400
+Received: from mail-ob0-f180.google.com ([209.85.214.180]:34694 "EHLO
+	mail-ob0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754201AbbGGJAH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Jul 2015 05:00:07 -0400
+Received: by obbkm3 with SMTP id km3so124138536obb.1
+        for <linux-m68k@vger.kernel.org>; Tue, 07 Jul 2015 02:00:06 -0700 (PDT)
 In-Reply-To: <1436252124-23051-1-git-send-email-gerg@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@uclinux.org>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-No change to active configuration settings, updated to match current
-Kconfigs only.
+Hi Greg,
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- arch/m68k/configs/m5407c3_defconfig | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+On Tue, Jul 7, 2015 at 8:55 AM, Greg Ungerer <gerg@uclinux.org> wrote:
+> The following set of patches are designed to fix the issues causing a
+> "make allnoconfig" to fail for m68k. There is really only a couple of
+> problems, and those are easily fixed.
 
-diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
-index 557b39f..275ad543 100644
---- a/arch/m68k/configs/m5407c3_defconfig
-+++ b/arch/m68k/configs/m5407c3_defconfig
-@@ -1,10 +1,6 @@
--# CONFIG_MMU is not set
--CONFIG_EXPERIMENTAL=y
- CONFIG_LOG_BUF_SHIFT=14
--# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
- CONFIG_EXPERT=y
- # CONFIG_KALLSYMS is not set
--# CONFIG_HOTPLUG is not set
- # CONFIG_FUTEX is not set
- # CONFIG_EPOLL is not set
- # CONFIG_SIGNALFD is not set
-@@ -17,9 +13,8 @@ CONFIG_MODULE_UNLOAD=y
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_IOSCHED_DEADLINE is not set
- # CONFIG_IOSCHED_CFQ is not set
-+# CONFIG_MMU is not set
- CONFIG_M5407=y
--CONFIG_CLOCK_SET=y
--CONFIG_CLOCK_FREQ=50000000
- CONFIG_M5407C3=y
- CONFIG_RAMBASE=0x00000000
- CONFIG_RAMSIZE=0x00000000
-@@ -38,22 +33,17 @@ CONFIG_INET=y
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
--CONFIG_MTD_CHAR=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_RAM=y
- CONFIG_MTD_UCLINUX=y
- CONFIG_BLK_DEV_RAM=y
--# CONFIG_MISC_DEVICES is not set
- CONFIG_NETDEVICES=y
--CONFIG_NET_ETHERNET=y
--# CONFIG_NETDEV_1000 is not set
--# CONFIG_NETDEV_10000 is not set
- CONFIG_PPP=y
- # CONFIG_INPUT is not set
- # CONFIG_VT is not set
-+# CONFIG_UNIX98_PTYS is not set
- CONFIG_SERIAL_MCF=y
- CONFIG_SERIAL_MCF_CONSOLE=y
--# CONFIG_UNIX98_PTYS is not set
- # CONFIG_HW_RANDOM is not set
- # CONFIG_HWMON is not set
- # CONFIG_USB_SUPPORT is not set
-@@ -63,8 +53,5 @@ CONFIG_EXT2_FS=y
- CONFIG_ROMFS_FS=y
- CONFIG_ROMFS_BACKED_BY_MTD=y
- # CONFIG_NETWORK_FILESYSTEMS is not set
--# CONFIG_RCU_CPU_STALL_DETECTOR is not set
--CONFIG_SYSCTL_SYSCALL_CHECK=y
- CONFIG_BOOTPARAM=y
- CONFIG_BOOTPARAM_STRING="root=/dev/mtdblock0"
--# CONFIG_CRC32 is not set
--- 
-1.9.1
+Thanks!
+
+For 1-3:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Now I only have to fix the m68k+MMU allnoconfig build
+
+    $ echo CONFIG_MMU=y > allno.config
+    $ make allnoconfig KCONFIG_ALLCONFIG=1
+
+I have patches for some problems, but not all of them...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
