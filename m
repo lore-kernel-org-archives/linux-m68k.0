@@ -1,56 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH V3 2/5] mm: mlock: Add new mlock, munlock, and munlockall
- system calls
-Date: Wed, 8 Jul 2015 09:02:25 +0200
-Message-ID: <CAMuHMdUS72nYDo=chtcZMv-ZNVU0RhxvVLvMYvSFLtRk_wXrgw__36768.2005199187$1436338964$gmane$org@mail.gmail.com>
-References: <1436288623-13007-1-git-send-email-emunson@akamai.com>
-	<1436288623-13007-3-git-send-email-emunson@akamai.com>
-	<20150708064607.GB7079@osiris>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Yannick GICQUEL <yannick.gicquel@open.eurogiciel.org>
+Subject: [RFC 5/8] m68k: m5441x: fix ACR0 base address when MBAR is not present
+Date: Wed,  8 Jul 2015 11:51:29 +0200
+Message-ID: <1436349092-2214-6-git-send-email-yannick.gicquel@gmail.com>
+References: <1436349092-2214-1-git-send-email-yannick.gicquel@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150708064607.GB7079@osiris>
+Received: from mail-wi0-f173.google.com ([209.85.212.173]:33197 "EHLO
+	mail-wi0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S934232AbbGHJvx (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Jul 2015 05:51:53 -0400
+Received: by wiwl6 with SMTP id l6so339206223wiw.0
+        for <linux-m68k@vger.kernel.org>; Wed, 08 Jul 2015 02:51:52 -0700 (PDT)
+Received: from PCL140005.eurogiciel.fr (130.167.26.109.rev.sfr.net. [109.26.167.130])
+        by smtp.gmail.com with ESMTPSA id k16sm2551260wjr.7.2015.07.08.02.51.51
+        for <linux-m68k@vger.kernel.org>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 08 Jul 2015 02:51:51 -0700 (PDT)
+In-Reply-To: <1436349092-2214-1-git-send-email-yannick.gicquel@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Eric B Munson <emunson@akamai.com>, Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.cz>, Vlastimil Babka <vbabka@suse.cz>, alpha <linux-alpha@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Cris <linux-cris-kernel@axis.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux
+To: linux-m68k@vger.kernel.org
 
-On Wed, Jul 8, 2015 at 8:46 AM, Heiko Carstens
-<heiko.carstens@de.ibm.com> wrote:
->> diff --git a/arch/s390/kernel/syscalls.S b/arch/s390/kernel/syscalls.S
->> index 1acad02..f6d81d6 100644
->> --- a/arch/s390/kernel/syscalls.S
->> +++ b/arch/s390/kernel/syscalls.S
->> @@ -363,3 +363,6 @@ SYSCALL(sys_bpf,compat_sys_bpf)
->>  SYSCALL(sys_s390_pci_mmio_write,compat_sys_s390_pci_mmio_write)
->>  SYSCALL(sys_s390_pci_mmio_read,compat_sys_s390_pci_mmio_read)
->>  SYSCALL(sys_execveat,compat_sys_execveat)
->> +SYSCALL(sys_mlock2,compat_sys_mlock2)                        /* 355 */
->> +SYSCALL(sys_munlock2,compat_sys_munlock2)
->> +SYSCALL(sys_munlockall2,compat_sys_munlockall2)
->
-> FWIW, you would also need to add matching lines to the two files
->
-> arch/s390/include/uapi/asm/unistd.h
-> arch/s390/kernel/compat_wrapper.c
->
-> so that the system call would be wired up on s390.
+Signed-off-by: Yannick GICQUEL <yannick.gicquel@gmail.com>
+---
+ arch/m68k/include/asm/m54xxacr.h | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Similar comment for m68k:
-
-arch/m68k/include/asm/unistd.h
-arch/m68k/include/uapi/asm/unistd.h
-
-I think you best look at the last commits that added system calls, for all
-architectures, to make sure you don't do partial updates.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
+index 6d13cae..e79f48e 100644
+--- a/arch/m68k/include/asm/m54xxacr.h
++++ b/arch/m68k/include/asm/m54xxacr.h
+@@ -94,8 +94,20 @@
+  *	register region as non-cacheable. And then we map all our RAM as
+  *	cacheable and supervisor access only.
+  */
++#ifdef CONFIG_M5441x
++/*
++ * MBAR register is not present in this serie
++ *  Periph #0 in 0xe0000000--0x0xefffffff
++ *  Periph #1 in 0xf0000000--0x0xffffffff
++ *
++ * Let's hardcode these values for ACR0
++ */
++#define ACR0_MODE	(ACR_BA(0xE0000000)+ACR_ADMSK(0x20000000)+ \
++			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
++#else
+ #define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
+ 			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
++#endif
+ #if defined(CONFIG_CACHE_COPYBACK)
+ #define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+ 			 ACR_ENABLE+ACR_SUPER+ACR_SP+ACR_CM_CP)
+@@ -106,7 +118,6 @@
+ #define ACR2_MODE	0
+ #define ACR3_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
+ 			 ACR_ENABLE+ACR_SUPER+ACR_SP)
+-
+ #else
+ 
+ /*
+-- 
+1.9.1.286.g5172cb3
