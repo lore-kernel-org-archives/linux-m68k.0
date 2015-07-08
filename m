@@ -1,113 +1,50 @@
-From: Yannick GICQUEL <yannick.gicquel@open.eurogiciel.org>
-Subject: [RFC 8/8] m68k: uImage generation support
-Date: Wed,  8 Jul 2015 11:51:32 +0200
-Message-ID: <1436349092-2214-9-git-send-email-yannick.gicquel@gmail.com>
-References: <1436349092-2214-1-git-send-email-yannick.gicquel@gmail.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH V3 2/5] mm: mlock: Add new mlock, munlock, and munlockall
+ system calls
+Date: Wed, 8 Jul 2015 12:06:51 +0100
+Message-ID: <20150708110651.GC6944__2251.08296513117$1436353636$gmane$org@e104818-lin.cambridge.arm.com>
+References: <1436288623-13007-1-git-send-email-emunson@akamai.com>
+ <1436288623-13007-3-git-send-email-emunson@akamai.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wg0-f42.google.com ([74.125.82.42]:34900 "EHLO
-	mail-wg0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933084AbbGHJvz (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Jul 2015 05:51:55 -0400
-Received: by wgjx7 with SMTP id x7so190632869wgj.2
-        for <linux-m68k@vger.kernel.org>; Wed, 08 Jul 2015 02:51:54 -0700 (PDT)
-Received: from PCL140005.eurogiciel.fr (130.167.26.109.rev.sfr.net. [109.26.167.130])
-        by smtp.gmail.com with ESMTPSA id k16sm2551260wjr.7.2015.07.08.02.51.53
-        for <linux-m68k@vger.kernel.org>
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 08 Jul 2015 02:51:53 -0700 (PDT)
-In-Reply-To: <1436349092-2214-1-git-send-email-yannick.gicquel@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <1436288623-13007-3-git-send-email-emunson@akamai.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Eric B Munson <emunson@akamai.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-arch@vger.kernel.org, Michal Hocko <mhocko@suse.cz>, linux-am33-list@redhat.com, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linux-s390@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org, Vlastimil Babka <vbabka@suse.cz>, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-api@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 
-Adding an arch/m68k/boot subdirectory as output dir
-for generated uImage.
+On Tue, Jul 07, 2015 at 01:03:40PM -0400, Eric B Munson wrote:
+> diff --git a/arch/arm/kernel/calls.S b/arch/arm/kernel/calls.S
+> index 05745eb..514e77b 100644
+> --- a/arch/arm/kernel/calls.S
+> +++ b/arch/arm/kernel/calls.S
+> @@ -397,6 +397,9 @@
+>  /* 385 */	CALL(sys_memfd_create)
+>  		CALL(sys_bpf)
+>  		CALL(sys_execveat)
+> +		CALL(sys_mlock2)
+> +		CALL(sys_munlock2)
+> +/* 400 */	CALL(sys_munlockall2)
 
-Signed-off-by: Yannick GICQUEL <yannick.gicquel@gmail.com>
----
- arch/m68k/Makefile      |  8 +++++++-
- arch/m68k/boot/Makefile | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 1 deletion(-)
- create mode 100644 arch/m68k/boot/Makefile
+s/400/390/
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 0b29dcf..bf5cbdd 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -118,7 +118,6 @@ core-$(CONFIG_M68360)		+= arch/m68k/68360/
- core-$(CONFIG_M68000)		+= arch/m68k/68000/
- core-$(CONFIG_COLDFIRE)		+= arch/m68k/coldfire/
- 
--
- all:	zImage
- 
- lilo:	vmlinux
-@@ -154,8 +153,15 @@ else
- 	bzip2 -1c vmlinux >vmlinux.bz2
- endif
- 
-+boot := arch/m68k/boot
-+
-+uImage: vmlinux
-+	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
-+
- archclean:
- 	rm -f vmlinux.gz vmlinux.bz2
-+	$(Q)$(MAKE) $(clean)=$(boot)
-+
- 
- install:
- 	sh $(srctree)/arch/m68k/install.sh $(KERNELRELEASE) vmlinux.gz System.map "$(INSTALL_PATH)"
-diff --git a/arch/m68k/boot/Makefile b/arch/m68k/boot/Makefile
-new file mode 100644
-index 0000000..af0b110
---- /dev/null
-+++ b/arch/m68k/boot/Makefile
-@@ -0,0 +1,45 @@
-+#
-+# arch/m68k/boot/Makefile
-+#
-+# based on initial file from Freescale m5441x BSP
-+#
-+# This file is subject to the terms and conditions of the GNU General Public
-+# License.  See the file "COPYING" in the main directory of this archive
-+# for more details.
-+#
-+
-+MKIMAGE := $(srctree)/scripts/mkuboot.sh
-+
-+#
-+# Assign safe dummy values if these variables are not defined,
-+# in order to suppress error message.
-+#
-+CONFIG_KERNELBASE	?= 0x40020000
-+
-+targets := uImage
-+
-+UIMAGE_LOADADDR		:= $(CONFIG_KERNELBASE)
-+UIMAGE_ENTRYADDR	:= $(CONFIG_KERNELBASE)
-+UIMAGE_COMPRESSION	?= none
-+
-+export UIMAGE_LOADADDR UIMAGE_ENTRYADDR UIMAGE_COMPRESSION
-+
-+ifeq ($(UIMAGE_COMPRESSION),gzip)
-+UIMAGE_SRCBIN		:= $(obj)/vmlinux.bin.gz
-+else
-+UIMAGE_SRCBIN		:= $(obj)/vmlinux.bin
-+endif
-+
-+$(obj)/uImage: $(UIMAGE_SRCBIN) FORCE
-+	$(call if_changed,uimage)
-+	@echo '  Image $@ is ready'
-+
-+OBJCOPYFLAGS_vmlinux.bin := -I elf32-m68k -O binary
-+$(obj)/vmlinux.bin: vmlinux FORCE
-+	$(call if_changed,objcopy)
-+
-+$(obj)/vmlinux.bin.gz: $(obj)/vmlinux.bin FORCE
-+	$(call if_changed,gzip)
-+
-+clean-files	+= uImage vmlinux.bin vmlinux.bin.gz
-+
--- 
-1.9.1.286.g5172cb3
+> diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+> index cef934a..318072aa 100644
+> --- a/arch/arm64/include/asm/unistd32.h
+> +++ b/arch/arm64/include/asm/unistd32.h
+> @@ -797,3 +797,9 @@ __SYSCALL(__NR_memfd_create, sys_memfd_create)
+>  __SYSCALL(__NR_bpf, sys_bpf)
+>  #define __NR_execveat 387
+>  __SYSCALL(__NR_execveat, compat_sys_execveat)
+> +#define __NR_mlock2 388
+> +__SYSCALL(__NR_mlock2, sys_mlock2)
+> +#define __NR_munlock2 389
+> +__SYSCALL(__NR_munlock2, sys_munlock2)
+> +#define __NR_munlockall2 390
+> +__SYSCALL(__NR_munlockall2, sys_munlockall2)
+
+These look fine.
+
+Catalin
