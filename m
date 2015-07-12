@@ -1,256 +1,139 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v4 22/25] m68k/mac: Adopt naming and calling conventions for PRAM routines
-Date: Sun, 12 Jul 2015 20:25:49 +1000
-Message-ID: <20150712102532.705917057@telegraphics.com.au>
+Subject: [RFC v4 19/25] powerpc: Remove CONFIG_GENERIC_NVRAM and adopt CONFIG_HAVE_ARCH_NVRAM_OPS
+Date: Sun, 12 Jul 2015 20:25:46 +1000
+Message-ID: <20150712102531.985915302@telegraphics.com.au>
 References: <20150712102527.356151908@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-pram-function-names-and-signatures
+Content-Disposition: inline; filename=powerpc-adopt-arch_nvram_ops
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Adopt the existing *_read_byte and *_write_byte naming convention.
-Rename via_pram_readbyte and via_pram_writebyte to avoid confusion.
-Adjust calling conventions of mac_pram_* functions to match the
-arch_nvram_ops struct methods.
+Switch PPC32 kernels from the generic_nvram module to the nvram module.
+
+Also fix a theoretical bug where CHRP omits the chrp_nvram_init()
+call when CONFIG_NVRAM_MODULE=m.
+
+As before, when CONFIG_PPC && !CONFIG_PPC_PMAC, the IOC_NVRAM_GET_OFFSET
+ioctl is unimplemented. For the nvram module, unimplemented ioctls return
+-ENOTTY. Whereas, for the superseded generic_nvram module they would
+return -EINVAL.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
 
-Changes since v1:
-- Don't introduce the arch_nvram_ops struct in this patch, even if it 
-would form a logical progression. Since the struct would get replaced
-later on, some might see it as churn.
+This ioctl change is visible to userspace code but only in an error path.
+I didn't find any userspace code that uses the IOC_NVRAM_GET_OFFSET ioctl.
 
-Changes since v2:
-- Rename via_pram_send() and via_pram_recv() as
-via_rtc_send() and via_rtc_recv() resp.
+The change in the name of the module is also visible. The module that
+implements /dev/nvram on PowerPC now has suitable aliases, i.e.
+MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
+MODULE_ALIAS("devname:nvram"); 
+so that the device special file can be automatically created and the
+module automatically loaded when needed. Previously this was not the case.
 
 ---
- arch/m68k/mac/misc.c |   91 +++++++++++++++++++++++++--------------------------
- 1 file changed, 46 insertions(+), 45 deletions(-)
 
-Index: linux/arch/m68k/mac/misc.c
+Changes since v1:
+- Small indentation fix.
+
+---
+ arch/powerpc/Kconfig                    |    2 +-
+ arch/powerpc/kernel/setup_32.c          |    2 +-
+ arch/powerpc/platforms/chrp/Makefile    |    2 +-
+ arch/powerpc/platforms/chrp/setup.c     |    2 +-
+ arch/powerpc/platforms/powermac/setup.c |    3 +--
+ drivers/char/Kconfig                    |   10 ++++++----
+ 6 files changed, 11 insertions(+), 10 deletions(-)
+
+Index: linux/arch/powerpc/Kconfig
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-07-12 20:24:53.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-07-12 20:25:20.000000000 +1000
-@@ -61,7 +61,7 @@ static void cuda_write_time(long data)
- 		cuda_poll();
- }
+--- linux.orig/arch/powerpc/Kconfig	2015-07-12 20:24:53.000000000 +1000
++++ linux/arch/powerpc/Kconfig	2015-07-12 20:25:16.000000000 +1000
+@@ -178,7 +178,7 @@ config SYSVIPC_COMPAT
+ 	default y
  
--static __u8 cuda_read_pram(int offset)
-+static unsigned char cuda_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (cuda_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
-@@ -72,7 +72,7 @@ static __u8 cuda_read_pram(int offset)
- 	return req.reply[3];
- }
+ # All PPC32s use generic nvram driver through ppc_md
+-config GENERIC_NVRAM
++config HAVE_ARCH_NVRAM_OPS
+ 	bool
+ 	default y if PPC32
  
--static void cuda_write_pram(int offset, __u8 data)
-+static void cuda_pram_write_byte(unsigned char data, int offset)
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:13.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:16.000000000 +1000
+@@ -168,7 +168,7 @@ int __init ppc_setup_l3cr(char *str)
+ }
+ __setup("l3cr=", ppc_setup_l3cr);
+ 
+-#ifdef CONFIG_GENERIC_NVRAM
++#if IS_ENABLED(CONFIG_NVRAM)
+ 
+ static unsigned char ppc_nvram_read_byte(int addr)
  {
- 	struct adb_request req;
- 	if (cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
-@@ -84,8 +84,8 @@ static void cuda_write_pram(int offset,
- #else
- #define cuda_read_time() 0
- #define cuda_write_time(n)
--#define cuda_read_pram NULL
--#define cuda_write_pram NULL
-+#define cuda_pram_read_byte NULL
-+#define cuda_pram_write_byte NULL
+Index: linux/arch/powerpc/platforms/chrp/Makefile
+===================================================================
+--- linux.orig/arch/powerpc/platforms/chrp/Makefile	2015-07-12 20:24:53.000000000 +1000
++++ linux/arch/powerpc/platforms/chrp/Makefile	2015-07-12 20:25:16.000000000 +1000
+@@ -1,3 +1,3 @@
+ obj-y				+= setup.o time.o pegasos_eth.o pci.o
+ obj-$(CONFIG_SMP)		+= smp.o
+-obj-$(CONFIG_NVRAM)		+= nvram.o
++obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
+Index: linux/arch/powerpc/platforms/chrp/setup.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/chrp/setup.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/arch/powerpc/platforms/chrp/setup.c	2015-07-12 20:25:16.000000000 +1000
+@@ -557,7 +557,7 @@ void __init chrp_init_IRQ(void)
+ void __init
+ chrp_init2(void)
+ {
+-#ifdef CONFIG_NVRAM
++#if IS_ENABLED(CONFIG_NVRAM)
+ 	chrp_nvram_init();
  #endif
  
- #ifdef CONFIG_ADB_PMU68K
-@@ -116,7 +116,7 @@ static void pmu_write_time(long data)
- 		pmu_poll();
- }
+Index: linux/arch/powerpc/platforms/powermac/setup.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/setup.c	2015-07-12 20:25:16.000000000 +1000
+@@ -321,8 +321,7 @@ static void __init pmac_setup_arch(void)
+ 	find_via_pmu();
+ 	smu_init();
  
--static __u8 pmu_read_pram(int offset)
-+static unsigned char pmu_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
-@@ -127,7 +127,7 @@ static __u8 pmu_read_pram(int offset)
- 	return req.reply[3];
- }
- 
--static void pmu_write_pram(int offset, __u8 data)
-+static void pmu_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
- 	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
-@@ -139,8 +139,8 @@ static void pmu_write_pram(int offset, _
- #else
- #define pmu_read_time() 0
- #define pmu_write_time(n)
--#define pmu_read_pram NULL
--#define pmu_write_pram NULL
-+#define pmu_pram_read_byte NULL
-+#define pmu_pram_write_byte NULL
+-#if defined(CONFIG_NVRAM) || defined(CONFIG_NVRAM_MODULE) || \
+-    defined(CONFIG_PPC64)
++#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
+ 	pmac_nvram_init();
  #endif
  
- #if 0 /* def CONFIG_ADB_MACIISI */
-@@ -169,7 +169,7 @@ static void maciisi_write_time(long data
- 			(data >> 8) & 0xFF, data & 0xFF);
- }
+Index: linux/drivers/char/Kconfig
+===================================================================
+--- linux.orig/drivers/char/Kconfig	2015-07-12 20:25:05.000000000 +1000
++++ linux/drivers/char/Kconfig	2015-07-12 20:25:16.000000000 +1000
+@@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
  
--static __u8 maciisi_read_pram(int offset)
-+static unsigned char maciisi_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (maciisi_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
-@@ -178,7 +178,7 @@ static __u8 maciisi_read_pram(int offset
- 	return req.reply[3];
- }
+ config NVRAM
+ 	tristate "/dev/nvram support"
+-	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
++	depends on X86 || (ARM && RTC_DRV_CMOS) || HAVE_ARCH_NVRAM_OPS
+ 	---help---
+ 	  If you say Y here and create a character special file /dev/nvram
+ 	  with major number 10 and minor number 144 using mknod ("man mknod"),
+@@ -256,9 +256,11 @@ config NVRAM
+ 	  and most Ataris.  The actual number of bytes varies, depending on the
+ 	  nvram in the system, but is usually 114 (128-14 for the RTC).
  
--static void maciisi_write_pram(int offset, __u8 data)
-+static void maciisi_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
- 	maciisi_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
-@@ -187,8 +187,8 @@ static void maciisi_write_pram(int offse
- #else
- #define maciisi_read_time() 0
- #define maciisi_write_time(n)
--#define maciisi_read_pram NULL
--#define maciisi_write_pram NULL
-+#define maciisi_pram_read_byte NULL
-+#define maciisi_pram_write_byte NULL
- #endif
- 
- /*
-@@ -198,7 +198,7 @@ static void maciisi_write_pram(int offse
-  * the RTC should be enabled.
-  */
- 
--static __u8 via_pram_readbyte(void)
-+static __u8 via_rtc_recv(void)
- {
- 	int	i,reg;
- 	__u8	data;
-@@ -225,7 +225,7 @@ static __u8 via_pram_readbyte(void)
- 	return data;
- }
- 
--static void via_pram_writebyte(__u8 data)
-+static void via_rtc_send(__u8 data)
- {
- 	int	i,reg,bit;
- 
-@@ -262,17 +262,17 @@ static void via_pram_command(int command
- 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
- 
- 	if (command & 0xFF00) {		/* extended (two-byte) command */
--		via_pram_writebyte((command & 0xFF00) >> 8);
--		via_pram_writebyte(command & 0xFF);
-+		via_rtc_send((command & 0xFF00) >> 8);
-+		via_rtc_send(command & 0xFF);
- 		is_read = command & 0x8000;
- 	} else {			/* one-byte command */
--		via_pram_writebyte(command);
-+		via_rtc_send(command);
- 		is_read = command & 0x80;
- 	}
- 	if (is_read) {
--		*data = via_pram_readbyte();
-+		*data = via_rtc_recv();
- 	} else {
--		via_pram_writebyte(*data);
-+		via_rtc_send(*data);
- 	}
- 
- 	/* All done, disable the RTC */
-@@ -282,12 +282,12 @@ static void via_pram_command(int command
- 	local_irq_restore(flags);
- }
- 
--static __u8 via_read_pram(int offset)
-+static unsigned char via_pram_read_byte(int offset)
- {
- 	return 0;
- }
- 
--static void via_write_pram(int offset, __u8 data)
-+static void via_pram_write_byte(unsigned char data, int offset)
- {
- }
- 
-@@ -453,50 +453,51 @@ void pmu_shutdown(void)
-  *-------------------------------------------------------------------
-  */
- 
--void mac_pram_read(int offset, __u8 *buffer, int len)
-+unsigned char mac_pram_read_byte(int addr)
- {
--	__u8 (*func)(int);
--	int i;
-+	unsigned char (*func)(int);
- 
- 	switch(macintosh_config->adb_type) {
- 	case MAC_ADB_IISI:
--		func = maciisi_read_pram; break;
-+		func = maciisi_pram_read_byte;
-+		break;
- 	case MAC_ADB_PB1:
- 	case MAC_ADB_PB2:
--		func = pmu_read_pram; break;
-+		func = pmu_pram_read_byte;
-+		break;
- 	case MAC_ADB_CUDA:
--		func = cuda_read_pram; break;
-+		func = cuda_pram_read_byte;
-+		break;
- 	default:
--		func = via_read_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		buffer[i] = (*func)(offset++);
-+		func = via_pram_read_byte;
- 	}
+-	  This memory is conventionally called "CMOS RAM" on PCs and "NVRAM"
+-	  on Ataris. /dev/nvram may be used to view settings there, or to
+-	  change them (with some utility). It could also be used to frequently
++	  This memory is conventionally called "CMOS RAM" on PCs,
++	  "NVRAM" on Ataris and "PRAM" on Macintoshes.
 +
-+	if (func)
-+		return (*func)(addr);
-+	return 0xff;
- }
- 
--void mac_pram_write(int offset, __u8 *buffer, int len)
-+void mac_pram_write_byte(unsigned char val, int addr)
- {
--	void (*func)(int, __u8);
--	int i;
-+	void (*func)(unsigned char, int);
- 
- 	switch(macintosh_config->adb_type) {
- 	case MAC_ADB_IISI:
--		func = maciisi_write_pram; break;
-+		func = maciisi_pram_write_byte;
-+		break;
- 	case MAC_ADB_PB1:
- 	case MAC_ADB_PB2:
--		func = pmu_write_pram; break;
-+		func = pmu_pram_write_byte;
-+		break;
- 	case MAC_ADB_CUDA:
--		func = cuda_write_pram; break;
-+		func = cuda_pram_write_byte;
-+		break;
- 	default:
--		func = via_write_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		(*func)(offset++, buffer[i]);
-+		func = via_pram_write_byte;
- 	}
-+
-+	if (func)
-+		(*func)(val, addr);
- }
- 
- void mac_poweroff(void)
++	  /dev/nvram may be used to view settings in NVRAM, or to change them
++	  (with some utility). It could also be used to frequently
+ 	  save a few bits of very important data that may not be lost over
+ 	  power-off and for which writing to disk is too insecure. Note
+ 	  however that most NVRAM space in a PC belongs to the BIOS and you
