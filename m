@@ -1,52 +1,115 @@
-From: "  Lloyds TSB Bank PLC" <rocio.suarez@dpss.gob.ec>
-Subject: Darlehen anbieten 1.5%
-Date: Fri, 10 Jul 2015 07:09:27 -0500 (ECT)
-Message-ID: <2073588593.1615063.1436530167777.JavaMail.root__33697.0138982453$1436653569$gmane$org@dpss.gob.ec>
-Reply-To: "lloyds25tsb@gmail.com" <lloyds25tsb@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [RFC v4 00/25] Re-use nvram module
+Date: Sun, 12 Jul 2015 20:25:27 +1000
+Message-ID: <20150712102527.356151908@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58220 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751320AbbGLKke (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jul 2015 06:40:34 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-
-Guten Tag,
-
- Dies ist Lloyds TSB Bank plc Kredite anbieten.
-
-   Lloyds TSB bietet flexible und erschwingliche Kredite f=C3=BCr jeden=
- Zweck zu helfen, Ihre Ziele zu erreichen. wir Darlehen zu niedrigen Zi=
-nssatz von 1,5%. Hier sind einige wichtige Merkmale der pers=C3=B6nlich=
-en Kredit von Lloyds TSB angeboten. Hier sind die Loan Factors arbeiten=
- wir mit den f=C3=BChrenden britischen Broker, die den Zugang zu Top-Kr=
-editgeber haben und in der Lage, die beste finanzielle L=C3=B6sung zu e=
-inem erschwinglichen price.Please finden, wenn Sie interessiert sind ko=
-ntaktieren Sie uns bitte =C3=BCber diese E-Mail: lloyds25tsb@hotmail.co=
-m
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 
 
-Nach der Reaktion, werden Sie einen Antrag auf Kredit fill erhalten. Ke=
-ine soziale Sicherheit und keine Bonit=C3=A4tspr=C3=BCfung, 100% garant=
-iert.
+The generic NVRAM module, drivers/char/generic_nvram, implements a
+/dev/nvram misc device. It is used only by 32-bit PowerPC platforms and
+isn't generic enough to be more widely used.
 
-Es wird uns eine Ehre, wenn Sie uns erlauben, zu Ihren Diensten.
+The RTC NVRAM module, drivers/char/nvram, also implements a /dev/nvram
+misc device. It is used by x86, ARM and m68k.
 
+The former module cannot be used on x86, ARM or m68k because it
+cannot co-exist with the latter module, partly due to the Kconfig logic.
 
-Mehr Informationen ben=C3=B6tigt
+It is possible to modify the modules so that one kernel binary could
+have either, neither or both. However, automatically loading the
+appropriate module is then impossible; if both provide the
+char-major-10-144 alias then the wrong module will end up being loaded.
+Hence a multi-platform kernel binary needs a single generic nvram module
+with alias char-major-10-144.
 
-Ihre Namen:
-Adresse: ...........
-Telefon: ...........
-Ben=C3=B6tigte Menge: ........
-Dauer: ...............
-Beruf: ...........
-Monatliches Einkommen Level: ........
-Geschlecht: ...............
-Geburtsdatum: ........
-Status: ..................
-Land: ..........
-Zweck: .........
+Therefore, drivers/char/nvram.c should be made more generic and the
+arch-specific code therein should be moved to a more appropriate
+place under arch/. Also, drivers/char/generic_nvram.c should be removed
+to reduce code duplication.
 
-Treffen Sie Ihre finanziellen Bed=C3=BCrfnisse ist unser Stolz.
+In this patch series, Atari-specific code is moved from the nvram module
+to arch/m68k/atari. More arch-specific code in the nvram module could
+be moved, probably to arch/x86, but it is difficult to determine just
+what code is relevant to ARM platforms and what code is x86-only.
 
-Dr. John Mahama
+In addressing code duplication, this patch series removes three
+inconsistent /dev/nvram misc device implementations. One of these,
+drivers/macintosh/nvram.c is entirely unused already. The other two,
+drivers/char/generic_nvram.c and the misc device implementation in
+arch/powerpc/kernel/nvram_64.c, are replaced by drivers/char/nvram.c.
+
+A benefit of this work is better consistency -- between PPC32 and PPC64
+as well as between PPC_PMAC and MAC. This new uniformity does have
+implications for userspace, that is, some error codes for some ioctl calls
+become consistent on all PowerPC platforms.
+
+The drivers/char/nvram module becomes sufficiently generic to be useful
+to other platforms and architectures, besides those with "CMOS" RTC. At the
+end of this patch series the module is adopted by the m68k Mac port, which
+already has PRAM access functions but lacks the /dev/nvram misc device.
+
+This patch series has been compile-tested for arm, m68k, powerpc and x86.
+The nvram and thinkpad_acpi modules were regression tested on a ThinkPad T43.
+The /dev/nvram functionality was also regression tested on a G3 PowerMac.
+The nvram module was also tested on a PowerBook 520 and Quadra 650.
+Note that my testing doesn't cover PPC64 or Atari.
+
+Changes since v1:
+- Minor changes to patches 7, 15 and 20 as described in commit logs.
+- Revised patches 21 and 24 to address comments from Geert.
+
+Changes since v2:
+- Dropped patch 1, "macintosh/nvram: Remove as unused", because it has
+since been merged.
+- Inserted a new patch, "m68k/mac: Use macros for RTC accesses not
+magic numbers".
+- Revised patches 21 and 23 to address comments from Geert.
+
+Changes since v3:
+- Split the patch, "m68k/atari: Move Atari-specific code out of
+drivers/char/nvram.c", as suggested by Geert.
+- Revised patches 11 and 25 to address comments from Geert.
+- Minor change to patch 21 as described in commit log.
+
+---
+ arch/m68k/Kconfig                          |    3 
+ arch/m68k/Kconfig.machine                  |    2 
+ arch/m68k/atari/Makefile                   |    2 
+ arch/m68k/atari/nvram.c                    |  291 +++++++++++
+ arch/m68k/include/asm/atarihw.h            |    6 
+ arch/m68k/include/asm/macintosh.h          |    4 
+ arch/m68k/kernel/setup_mm.c                |  100 +++
+ arch/m68k/mac/misc.c                       |  207 +++++---
+ arch/powerpc/Kconfig                       |    5 
+ arch/powerpc/include/asm/nvram.h           |    9 
+ arch/powerpc/kernel/nvram_64.c             |  203 +------
+ arch/powerpc/kernel/setup_32.c             |   27 -
+ arch/powerpc/platforms/chrp/Makefile       |    2 
+ arch/powerpc/platforms/chrp/nvram.c        |   14 
+ arch/powerpc/platforms/chrp/setup.c        |    2 
+ arch/powerpc/platforms/powermac/Makefile   |    5 
+ arch/powerpc/platforms/powermac/nvram.c    |    9 
+ arch/powerpc/platforms/powermac/setup.c    |    3 
+ arch/powerpc/platforms/pseries/nvram.c     |    2 
+ drivers/char/Kconfig                       |   13 
+ drivers/char/Makefile                      |    6 
+ drivers/char/generic_nvram.c               |  174 ------
+ drivers/char/nvram.c                       |  742 ++++++++++++-----------------
+ drivers/platform/x86/thinkpad_acpi.c       |   20 
+ drivers/scsi/Kconfig                       |    6 
+ drivers/scsi/atari_scsi.c                  |   16 
+ drivers/video/fbdev/controlfb.c            |    4 
+ drivers/video/fbdev/imsttfb.c              |    7 
+ drivers/video/fbdev/matrox/matroxfb_base.c |    4 
+ drivers/video/fbdev/platinumfb.c           |    4 
+ drivers/video/fbdev/valkyriefb.c           |    4 
+ include/linux/nvram.h                      |   23 
+ include/uapi/linux/pmu.h                   |    2 
+ 33 files changed, 986 insertions(+), 935 deletions(-)
