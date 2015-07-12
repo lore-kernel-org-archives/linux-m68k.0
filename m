@@ -1,143 +1,116 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v4 23/25] m68k/mac: Use macros for RTC accesses not magic numbers
-Date: Sun, 12 Jul 2015 20:25:50 +1000
-Message-ID: <20150712102532.945909028@telegraphics.com.au>
+Subject: [RFC v4 15/25] powerpc: Implement arch_nvram_ops.get_size() and remove old nvram_* exports
+Date: Sun, 12 Jul 2015 20:25:42 +1000
+Message-ID: <20150712102531.015913041@telegraphics.com.au>
 References: <20150712102527.356151908@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-rtc-macros
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58297 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751741AbbGLKkl (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jul 2015 06:40:41 -0400
+Content-Disposition: inline; filename=ppc32-introduce-nvram_ops-get_size
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Implement arch_nvram_ops for PPC32 and make use of it in the generic_nvram
+misc device module so that the nvram_* function exports can be removed.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/powerpc/include/asm/nvram.h |    3 ---
+ arch/powerpc/kernel/setup_32.c   |   10 +++++++---
+ drivers/char/generic_nvram.c     |   24 ++++++++++++------------
+ 3 files changed, 19 insertions(+), 18 deletions(-)
 
-This is intended to improve code style and not affect code behaviour.
-I've tested this on a Quadra 650.
-
-I don't know the meanings of the 4 undocumented write protect register
-bits 0x55, so I decided against defining 4 macros for those bits.
-
----
- arch/m68k/mac/misc.c |   59 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 41 insertions(+), 18 deletions(-)
-
-Index: linux/arch/m68k/mac/misc.c
+Index: linux/arch/powerpc/include/asm/nvram.h
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-07-12 20:25:20.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-07-12 20:25:22.000000000 +1000
-@@ -242,6 +242,21 @@ static void via_rtc_send(__u8 data)
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-07-12 20:25:08.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-07-12 20:25:10.000000000 +1000
+@@ -98,7 +98,4 @@ extern int nvram_write_os_partition(stru
+ 				    unsigned int err_type,
+ 				    unsigned int error_log_cnt);
+ 
+-/* Determine NVRAM size */
+-extern ssize_t nvram_get_size(void);
+-
+ #endif /* _ASM_POWERPC_NVRAM_H */
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:08.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:10.000000000 +1000
+@@ -186,13 +186,12 @@ void nvram_write_byte(unsigned char val,
  }
+ EXPORT_SYMBOL(nvram_write_byte);
  
- /*
-+ * These values can be found in Inside Macintosh vol. III ch. 2
-+ * which has a description of the RTC chip in the original Mac.
-+ */
-+
-+#define RTC_FLG_READ            BIT(7)
-+#define RTC_FLG_WRITE_PROTECT   BIT(7)
-+#define RTC_CMD_READ(r)         (RTC_FLG_READ | (r << 2))
-+#define RTC_CMD_WRITE(r)        (r << 2)
-+#define RTC_REG_SECONDS_0       0
-+#define RTC_REG_SECONDS_1       1
-+#define RTC_REG_SECONDS_2       2
-+#define RTC_REG_SECONDS_3       3
-+#define RTC_REG_WRITE_PROTECT   13
-+
-+/*
-  * Execute a VIA PRAM/RTC command. For read commands
-  * data should point to a one-byte buffer for the
-  * resulting data. For write commands it should point
-@@ -250,13 +265,17 @@ static void via_rtc_send(__u8 data)
-  * This function disables all interrupts while running.
-  */
- 
--static void via_pram_command(int command, __u8 *data)
-+static void via_rtc_command(int command, __u8 *data)
+-ssize_t nvram_get_size(void)
++static ssize_t ppc_nvram_get_size(void)
  {
- 	unsigned long flags;
- 	int	is_read;
+ 	if (ppc_md.nvram_size)
+ 		return ppc_md.nvram_size();
+-	return -1;
++	return -ENODEV;
+ }
+-EXPORT_SYMBOL(nvram_get_size);
  
- 	local_irq_save(flags);
+ void nvram_sync(void)
+ {
+@@ -201,6 +200,11 @@ void nvram_sync(void)
+ }
+ EXPORT_SYMBOL(nvram_sync);
  
-+	/* The least significant bits must be 0b01 according to Inside Mac */
++const struct nvram_ops arch_nvram_ops = {
++	.get_size       = ppc_nvram_get_size,
++};
++EXPORT_SYMBOL(arch_nvram_ops);
 +
-+	command = (command & ~3) | 1;
+ #endif /* CONFIG_NVRAM */
+ 
+ int __init ppc_init(void)
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-07-12 20:25:08.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-07-12 20:25:10.000000000 +1000
+@@ -28,8 +28,6 @@
+ #include <asm/machdep.h>
+ #endif
+ 
+-#define NVRAM_SIZE	8192
+-
+ static DEFINE_MUTEX(nvram_mutex);
+ static ssize_t nvram_len;
+ 
+@@ -150,20 +148,22 @@ static struct miscdevice nvram_dev = {
+ 
+ int __init nvram_init(void)
+ {
+-	int ret = 0;
++	int ret;
+ 
+-	printk(KERN_INFO "Generic non-volatile memory driver v%s\n",
+-		NVRAM_VERSION);
+-	ret = misc_register(&nvram_dev);
+-	if (ret != 0)
+-		goto out;
++	if (arch_nvram_ops.get_size == NULL)
++		return -ENODEV;
+ 
+-	nvram_len = nvram_get_size();
++	nvram_len = arch_nvram_ops.get_size();
+ 	if (nvram_len < 0)
+-		nvram_len = NVRAM_SIZE;
++		return nvram_len;
+ 
+-out:
+-	return ret;
++	ret = misc_register(&nvram_dev);
++	if (ret)
++		return ret;
 +
- 	/* Enable the RTC and make sure the strobe line is high */
- 
- 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
-@@ -264,10 +283,10 @@ static void via_pram_command(int command
- 	if (command & 0xFF00) {		/* extended (two-byte) command */
- 		via_rtc_send((command & 0xFF00) >> 8);
- 		via_rtc_send(command & 0xFF);
--		is_read = command & 0x8000;
-+		is_read = command & (RTC_FLG_READ << 8);
- 	} else {			/* one-byte command */
- 		via_rtc_send(command);
--		is_read = command & 0x80;
-+		is_read = command & RTC_FLG_READ;
- 	}
- 	if (is_read) {
- 		*data = via_rtc_recv();
-@@ -306,10 +325,10 @@ static long via_read_time(void)
- 	} result, last_result;
- 	int count = 1;
- 
--	via_pram_command(0x81, &last_result.cdata[3]);
--	via_pram_command(0x85, &last_result.cdata[2]);
--	via_pram_command(0x89, &last_result.cdata[1]);
--	via_pram_command(0x8D, &last_result.cdata[0]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0), &last_result.cdata[3]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1), &last_result.cdata[2]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2), &last_result.cdata[1]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3), &last_result.cdata[0]);
- 
- 	/*
- 	 * The NetBSD guys say to loop until you get the same reading
-@@ -317,10 +336,14 @@ static long via_read_time(void)
- 	 */
- 
- 	while (1) {
--		via_pram_command(0x81, &result.cdata[3]);
--		via_pram_command(0x85, &result.cdata[2]);
--		via_pram_command(0x89, &result.cdata[1]);
--		via_pram_command(0x8D, &result.cdata[0]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0),
-+		                &result.cdata[3]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1),
-+		                &result.cdata[2]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2),
-+		                &result.cdata[1]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3),
-+		                &result.cdata[0]);
- 
- 		if (result.idata == last_result.idata)
- 			return result.idata - RTC_OFFSET;
-@@ -356,18 +379,18 @@ static void via_write_time(long time)
- 	/* Clear the write protect bit */
- 
- 	temp = 0x55;
--	via_pram_command(0x35, &temp);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- 
- 	data.idata = time + RTC_OFFSET;
--	via_pram_command(0x01, &data.cdata[3]);
--	via_pram_command(0x05, &data.cdata[2]);
--	via_pram_command(0x09, &data.cdata[1]);
--	via_pram_command(0x0D, &data.cdata[0]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_0), &data.cdata[3]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_1), &data.cdata[2]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_2), &data.cdata[1]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_3), &data.cdata[0]);
- 
- 	/* Set the write protect bit */
- 
--	temp = 0xD5;
--	via_pram_command(0x35, &temp);
-+	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
++	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
++
++	return 0;
  }
  
- static void via_shutdown(void)
+ void __exit nvram_cleanup(void)
