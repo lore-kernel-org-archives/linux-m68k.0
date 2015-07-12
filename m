@@ -1,84 +1,145 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v4 13/25] powerpc: Cleanup nvram includes
-Date: Sun, 12 Jul 2015 20:25:40 +1000
-Message-ID: <20150712102530.535908496@telegraphics.com.au>
+Subject: [RFC v4 18/25] nvram: Drop nvram_* symbol exports and prototypes
+Date: Sun, 12 Jul 2015 20:25:45 +1000
+Message-ID: <20150712102531.745918093@telegraphics.com.au>
 References: <20150712102527.356151908@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=powerpc-fix-nvram-includes
+Content-Disposition: inline; filename=remove-exported-nvram-functions
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-The nvram_read_byte() and nvram_write_byte() definitions in asm/nvram.h
-duplicate those in linux/nvram.h. Get rid of the former to prepare for
-adoption of struct arch_nvram_ops (which is defined in linux/nvram.h for
-general use).
+Drivers now use the arch_nvram_ops calls so remove the function exports and
+prototypes. nvram_check_checksum() is unused so remove it.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/powerpc/include/asm/nvram.h           |    3 ---
- arch/powerpc/kernel/setup_32.c             |    1 +
- drivers/char/generic_nvram.c               |    4 +++-
- drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ arch/m68k/atari/nvram.c |    6 +++---
+ drivers/char/nvram.c    |   27 +++++----------------------
+ include/linux/nvram.h   |    8 --------
+ 3 files changed, 8 insertions(+), 33 deletions(-)
 
-Index: linux/arch/powerpc/include/asm/nvram.h
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/include/asm/nvram.h	2015-07-12 20:24:53.000000000 +1000
-+++ linux/arch/powerpc/include/asm/nvram.h	2015-07-12 20:25:08.000000000 +1000
-@@ -101,7 +101,4 @@ extern int nvram_write_os_partition(stru
- /* Determine NVRAM size */
- extern ssize_t nvram_get_size(void);
+--- linux.orig/drivers/char/nvram.c	2015-07-12 20:25:11.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-07-12 20:25:15.000000000 +1000
+@@ -82,13 +82,12 @@ static ssize_t nvram_size;
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
  
--/* Normal access to NVRAM */
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
+ {
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+ }
+-EXPORT_SYMBOL(__nvram_read_byte);
+ 
+-unsigned char nvram_read_byte(int i)
++static unsigned char nvram_read_byte(int i)
+ {
+ 	unsigned long flags;
+ 	unsigned char c;
+@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 	return c;
+ }
+-EXPORT_SYMBOL(nvram_read_byte);
+ 
+ /* This races nicely with trying to read with checksum checking (nvram_read) */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
+ {
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ }
+-EXPORT_SYMBOL(__nvram_write_byte);
+ 
+-void nvram_write_byte(unsigned char c, int i)
++static void nvram_write_byte(unsigned char c, int i)
+ {
+ 	unsigned long flags;
+ 
+@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
+ 	__nvram_write_byte(c, i);
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ }
+-EXPORT_SYMBOL(nvram_write_byte);
+ 
+ /* On PCs, the checksum is built only over bytes 2..31 */
+ #define PC_CKS_RANGE_START	2
+ #define PC_CKS_RANGE_END	31
+ #define PC_CKS_LOC		32
+ 
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned short sum = 0;
+@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
+ 	    __nvram_read_byte(PC_CKS_LOC+1);
+ 	return (sum & 0xffff) == expect;
+ }
+-EXPORT_SYMBOL(__nvram_check_checksum);
+-
+-int nvram_check_checksum(void)
+-{
+-	unsigned long flags;
+-	int rv;
+-
+-	spin_lock_irqsave(&rtc_lock, flags);
+-	rv = __nvram_check_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
+-	return rv;
+-}
+-EXPORT_SYMBOL(nvram_check_checksum);
+ 
+ static void __nvram_set_checksum(void)
+ {
+Index: linux/include/linux/nvram.h
+===================================================================
+--- linux.orig/include/linux/nvram.h	2015-07-12 20:25:11.000000000 +1000
++++ linux/include/linux/nvram.h	2015-07-12 20:25:15.000000000 +1000
+@@ -3,14 +3,6 @@
+ 
+ #include <uapi/linux/nvram.h>
+ 
+-/* __foo is foo without grabbing the rtc_lock - get it yourself */
+-extern unsigned char __nvram_read_byte(int i);
 -extern unsigned char nvram_read_byte(int i);
+-extern void __nvram_write_byte(unsigned char c, int i);
 -extern void nvram_write_byte(unsigned char c, int i);
- #endif /* _ASM_POWERPC_NVRAM_H */
-Index: linux/arch/powerpc/kernel/setup_32.c
+-extern int __nvram_check_checksum(void);
+-extern int nvram_check_checksum(void);
+-
+ struct nvram_ops {
+ 	ssize_t         (*read)(char *, size_t, loff_t *);
+ 	ssize_t         (*write)(char *, size_t, loff_t *);
+Index: linux/arch/m68k/atari/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-07-12 20:24:53.000000000 +1000
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:08.000000000 +1000
-@@ -16,6 +16,7 @@
- #include <linux/cpu.h>
- #include <linux/console.h>
- #include <linux/memblock.h>
-+#include <linux/nvram.h>
+--- linux.orig/arch/m68k/atari/nvram.c	2015-07-12 20:25:05.000000000 +1000
++++ linux/arch/m68k/atari/nvram.c	2015-07-12 20:25:15.000000000 +1000
+@@ -33,13 +33,13 @@
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
  
- #include <asm/io.h>
- #include <asm/prom.h>
-Index: linux/drivers/char/generic_nvram.c
-===================================================================
---- linux.orig/drivers/char/generic_nvram.c	2015-07-12 20:24:53.000000000 +1000
-+++ linux/drivers/char/generic_nvram.c	2015-07-12 20:25:08.000000000 +1000
-@@ -20,9 +20,11 @@
- #include <linux/fcntl.h>
- #include <linux/init.h>
- #include <linux/mutex.h>
-+#include <linux/nvram.h>
- #include <asm/uaccess.h>
--#include <asm/nvram.h>
-+
- #ifdef CONFIG_PPC_PMAC
-+#include <asm/nvram.h>
- #include <asm/machdep.h>
- #endif
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
+ {
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+ }
  
-Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
-===================================================================
---- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-12 20:24:53.000000000 +1000
-+++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-12 20:25:08.000000000 +1000
-@@ -111,12 +111,12 @@
- #include "matroxfb_g450.h"
- #include <linux/matroxfb.h>
- #include <linux/interrupt.h>
-+#include <linux/nvram.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
+ /* This races nicely with trying to read with checksum checking */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
+ {
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ }
+@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
+ #define ATARI_CKS_RANGE_END	47
+ #define ATARI_CKS_LOC		48
  
- #ifdef CONFIG_PPC_PMAC
- #include <asm/machdep.h>
--unsigned char nvram_read_byte(int);
- static int default_vmode = VMODE_NVRAM;
- static int default_cmode = CMODE_NVRAM;
- #endif
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned char sum = 0;
