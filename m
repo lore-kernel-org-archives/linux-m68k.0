@@ -1,235 +1,42 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v4 09/25] char/nvram: Implement NVRAM read/write methods
-Date: Sun, 12 Jul 2015 20:25:36 +1000
-Message-ID: <20150712102529.565913150@telegraphics.com.au>
-References: <20150712102527.356151908@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-generalize-read-write
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 0/3] IRQ trivial clarifications
+Date: Sun, 12 Jul 2015 17:01:45 -0500
+Message-ID: <20150712215559.7166.33068.stgit__26970.8144864582$1436738527$gmane$org@bhelgaas-glaptop2.roam.corp.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, x86@kernel.org, linuxppc-dev@lists.ozlabs.org
 
-Refactor the RTC "CMOS" NVRAM functions so that they can be used as
-arch_nvram_ops methods. Checksumming logic is moved from the misc device
-operations to the nvram read/write operations.
-
-This makes the misc device implementation more generic. This also
-preserves the locking semantics such that "read if checksum valid" and
-"write and update checksum" remain atomic operations.
-
-PPC64 implements byte-range read/write methods which are similar to
-file_operations struct methods. Other platforms provide only
-byte-at-a-time functions. So the misc device prefers the former but
-will fall back on the latter.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+These don't fix anything at all.  But they might make code understanding
+and debugging slightly easier.
 
 ---
- drivers/char/nvram.c |  162 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 114 insertions(+), 48 deletions(-)
 
-Index: linux/drivers/char/nvram.c
-===================================================================
---- linux.orig/drivers/char/nvram.c	2015-07-12 20:25:02.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-07-12 20:25:03.000000000 +1000
-@@ -41,6 +41,7 @@
- #include <linux/init.h>
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
-+#include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/io.h>
- #include <linux/uaccess.h>
-@@ -178,9 +179,48 @@ static ssize_t nvram_get_size(void)
- 	return NVRAM_BYTES;
- }
- 
-+static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
-+{
-+	char *p = buf;
-+	loff_t i;
-+
-+	spin_lock_irq(&rtc_lock);
-+	if (!__nvram_check_checksum()) {
-+		spin_unlock_irq(&rtc_lock);
-+		return -EIO;
-+	}
-+	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
-+		*p = __nvram_read_byte(i);
-+	spin_unlock_irq(&rtc_lock);
-+
-+	*ppos = i;
-+	return p - buf;
-+}
-+
-+static ssize_t nvram_write(char *buf, size_t count, loff_t *ppos)
-+{
-+	char *p = buf;
-+	loff_t i;
-+
-+	spin_lock_irq(&rtc_lock);
-+	if (!__nvram_check_checksum()) {
-+		spin_unlock_irq(&rtc_lock);
-+		return -EIO;
-+	}
-+	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
-+		__nvram_write_byte(*p, i);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+
-+	*ppos = i;
-+	return p - buf;
-+}
-+
- const struct nvram_ops arch_nvram_ops = {
- 	.read_byte      = nvram_read_byte,
- 	.write_byte     = nvram_write_byte,
-+	.read           = nvram_read,
-+	.write          = nvram_write,
- 	.get_size       = nvram_get_size,
- 	.set_checksum   = nvram_set_checksum,
- 	.initialize     = nvram_initialize,
-@@ -215,69 +255,95 @@ static loff_t nvram_misc_llseek(struct f
- static ssize_t nvram_misc_read(struct file *file, char __user *buf,
-                                size_t count, loff_t *ppos)
- {
--	unsigned char contents[NVRAM_BYTES];
--	unsigned i = *ppos;
--	unsigned char *tmp;
--
--	spin_lock_irq(&rtc_lock);
-+	loff_t i;
-+	char __user *p = buf;
- 
--	if (!__nvram_check_checksum())
--		goto checksum_err;
--
--	for (tmp = contents; count-- > 0 && i < NVRAM_BYTES; ++i, ++tmp)
--		*tmp = __nvram_read_byte(i);
--
--	spin_unlock_irq(&rtc_lock);
--
--	if (copy_to_user(buf, contents, tmp - contents))
-+	if (!access_ok(VERIFY_WRITE, buf, count))
- 		return -EFAULT;
-+	if (*ppos >= nvram_size)
-+		return 0;
- 
--	*ppos = i;
--
--	return tmp - contents;
-+	/* If the arch provided a byte range read op, use it. Otherwise
-+	 * fall back on the byte-at-a-time accessor.
-+	 */
-+	if (arch_nvram_ops.read != NULL) {
-+		char *tmp;
-+		ssize_t ret;
-+
-+		count = min_t(size_t, count, nvram_size - *ppos);
-+		count = min_t(size_t, count, PAGE_SIZE);
-+
-+		tmp = kmalloc(count, GFP_KERNEL);
-+		if (!tmp)
-+			return -ENOMEM;
-+
-+		ret = arch_nvram_ops.read(tmp, count, ppos);
-+		if (ret <= 0)
-+			goto out;
-+
-+		if (copy_to_user(buf, tmp, ret)) {
-+			*ppos -= ret;
-+			ret = -EFAULT;
-+		}
-+
-+out:
-+		kfree(tmp);
-+		return ret;
-+	}
- 
--checksum_err:
--	spin_unlock_irq(&rtc_lock);
--	return -EIO;
-+	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count)
-+		if (__put_user(arch_nvram_ops.read_byte(i), p))
-+			return -EFAULT;
-+	*ppos = i;
-+	return p - buf;
- }
- 
- static ssize_t nvram_misc_write(struct file *file, const char __user *buf,
-                                 size_t count, loff_t *ppos)
- {
--	unsigned char contents[NVRAM_BYTES];
--	unsigned i = *ppos;
--	unsigned char *tmp;
--
--	if (i >= NVRAM_BYTES)
--		return 0;	/* Past EOF */
--
--	if (count > NVRAM_BYTES - i)
--		count = NVRAM_BYTES - i;
--	if (count > NVRAM_BYTES)
--		return -EFAULT;	/* Can't happen, but prove it to gcc */
-+	loff_t i;
-+	const char __user *p = buf;
- 
--	if (copy_from_user(contents, buf, count))
-+	if (!access_ok(VERIFY_READ, buf, count))
- 		return -EFAULT;
-+	if (*ppos >= nvram_size)
-+		return 0;
- 
--	spin_lock_irq(&rtc_lock);
--
--	if (!__nvram_check_checksum())
--		goto checksum_err;
--
--	for (tmp = contents; count--; ++i, ++tmp)
--		__nvram_write_byte(*tmp, i);
--
--	__nvram_set_checksum();
-+	/* If the arch provided a byte range write op, use it. Otherwise
-+	 * fall back on the byte-at-a-time accessor.
-+	 */
-+	if (arch_nvram_ops.write != NULL) {
-+		char *tmp;
-+		ssize_t ret;
-+
-+		count = min_t(size_t, count, nvram_size - *ppos);
-+		count = min_t(size_t, count, PAGE_SIZE);
-+
-+		tmp = kmalloc(count, GFP_KERNEL);
-+		if (!tmp)
-+			return -ENOMEM;
-+
-+		if (copy_from_user(tmp, buf, count)) {
-+			ret = -EFAULT;
-+			goto out;
-+		}
-+
-+		ret = arch_nvram_ops.write(tmp, count, ppos);
-+
-+out:
-+		kfree(tmp);
-+		return ret;
-+	}
- 
--	spin_unlock_irq(&rtc_lock);
-+	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count) {
-+		char c;
- 
-+		if (__get_user(c, p))
-+			return -EFAULT;
-+		arch_nvram_ops.write_byte(c, i);
-+	}
- 	*ppos = i;
--
--	return tmp - contents;
--
--checksum_err:
--	spin_unlock_irq(&rtc_lock);
--	return -EIO;
-+	return p - buf;
- }
- 
- static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
+Bjorn Helgaas (3):
+      x86, irq: Rename VECTOR_UNDEFINED and VECTOR_RETRIGGERED to IRQ_*
+      x86, irq: Clarify "No irq handler" message
+      IRQ: Print "unexpected IRQ" messages consistently across architectures
+
+
+ arch/alpha/kernel/irq.c            |    2 +-
+ arch/blackfin/kernel/irqchip.c     |    2 +-
+ arch/c6x/kernel/irq.c              |    2 +-
+ arch/ia64/kernel/irq.c             |    2 +-
+ arch/m68k/include/asm/hardirq.h    |    2 +-
+ arch/mips/kernel/irq.c             |    2 +-
+ arch/mn10300/kernel/irq.c          |    2 +-
+ arch/parisc/include/asm/hardirq.h  |    2 +-
+ arch/powerpc/include/asm/hardirq.h |    2 +-
+ arch/s390/include/asm/hardirq.h    |    2 +-
+ arch/sh/kernel/irq.c               |    2 +-
+ arch/tile/kernel/irq.c             |    2 +-
+ arch/x86/include/asm/hw_irq.h      |    4 ++--
+ arch/x86/kernel/apic/vector.c      |   14 +++++++-------
+ arch/x86/kernel/irq.c              |   19 +++++++++----------
+ arch/x86/kernel/irqinit.c          |    4 ++--
+ include/asm-generic/hardirq.h      |    2 +-
+ 17 files changed, 33 insertions(+), 34 deletions(-)
