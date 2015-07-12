@@ -1,98 +1,201 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v4 01/25] scsi/atari_scsi: Dont select CONFIG_NVRAM
-Date: Sun, 12 Jul 2015 20:25:28 +1000
-Message-ID: <20150712102527.615932569@telegraphics.com.au>
+Subject: [RFC v4 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
+Date: Sun, 12 Jul 2015 20:25:44 +1000
+Message-ID: <20150712102531.505897278@telegraphics.com.au>
 References: <20150712102527.356151908@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline; filename=atari-nvram-disable
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-scsi@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=ppc32-replace-exported-nvram-functions
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-T24gcG93ZXJwYywgc2V0dGluZyBDT05GSUdfTlZSQU09biBidWlsZHMgYSBrZXJuZWwgd2l0aCBu
-byBOVlJBTSBzdXBwb3J0LgpTZXR0aW5nIENPTkZJR19OVlJBTT1tIGVuYWJsZXMgdGhlIC9kZXYv
-bnZyYW0gbWlzYyBkZXZpY2UgbW9kdWxlIHdpdGhvdXQKZW5hYmxpbmcgTlZSQU0gc3VwcG9ydCBp
-biBkcml2ZXJzLiBTZXR0aW5nIENPTkZJR19OVlJBTT15IGVuYWJsZXMgdGhlCm1pc2MgZGV2aWNl
-IChidWlsdC1pbikgYW5kIGFsc28gZW5hYmxlcyBOVlJBTSBzdXBwb3J0IGluIGRyaXZlcnMuCgpt
-NjhrIHNoYXJlcyB0aGUgdmFsa3lyaWVmYiBkcml2ZXIgd2l0aCBwb3dlcnBjLCBhbmQgc2luY2Ug
-dGhhdCBkcml2ZXIgdXNlcwpOVlJBTSwgaXQgaXMgYWZmZWN0ZWQgYnkgQ09ORklHX0FUQVJJX1ND
-U0ksIGJlY2F1c2Ugb2YgdGhlIHVzZSBvZgoic2VsZWN0IE5WUkFNIi4KCkFkb3B0IHRoZSBwb3dl
-cnBjIGNvbnZlbnRpb24gb24gbTY4ayB0byBhdm9pZCBzdXJwcmlzZXMuCgpTaWduZWQtb2ZmLWJ5
-OiBGaW5uIFRoYWluIDxmdGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdT4KCi0tLQoKVGhpcyBwYXRj
-aCB0ZW1wb3JhcmlseSBkaXNhYmxlcyBDT05GSUdfTlZSQU0gb24gQXRhcmksIHRvIHByZXZlbnQg
-YnVpbGQKZmFpbHVyZXMgd2hlbiBiaXNlY3RpbmcgdGhlIHJlc3Qgb2YgdGhpcyBwYXRjaCBzZXJp
-ZXMuIEl0IGdldHMgZW5hYmxlZAphZ2FpbiB3aXRoIHRoZSBpbnRyb2R1Y3Rpb24gb2YgQ09ORklH
-X0hBVkVfQVJDSF9OVlJBTV9PUFMsIG9uY2UgdGhlCm52cmFtXyogZ2xvYmFsIGZ1bmN0aW9ucyBo
-YXZlIGJlZW4gbW92ZWQgdG8gYW4gb3BzIHN0cnVjdC4KClRoZSByZW1vdmFsIG9mICJzZWxlY3Qg
-TlZSQU0iIG1heSBtZWFuIHRoYXQgc29tZSBrZXJuZWwgY29uZmlncyAoc3VjaAphcyBEZWJpYW4v
-bTY4aykgbWF5IG5lZWQgdHdlYWtpbmcuCgotLS0KIGRyaXZlcnMvY2hhci9LY29uZmlnICAgICAg
-fCAgICA1ICstLS0tCiBkcml2ZXJzL3Njc2kvS2NvbmZpZyAgICAgIHwgICAgNiArKystLS0KIGRy
-aXZlcnMvc2NzaS9hdGFyaV9zY3NpLmMgfCAgICA4ICsrKystLS0tCiAzIGZpbGVzIGNoYW5nZWQs
-IDggaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgpJbmRleDogbGludXgvZHJpdmVycy9j
-aGFyL0tjb25maWcKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgub3JpZy9kcml2ZXJzL2NoYXIvS2NvbmZp
-ZwkyMDE1LTA3LTEyIDIwOjI0OjU0LjAwMDAwMDAwMCArMTAwMAorKysgbGludXgvZHJpdmVycy9j
-aGFyL0tjb25maWcJMjAxNS0wNy0xMiAyMDoyNDo1NC4wMDAwMDAwMDAgKzEwMDAKQEAgLTI0Nyw3
-ICsyNDcsNyBAQCBzb3VyY2UgImRyaXZlcnMvY2hhci9od19yYW5kb20vS2NvbmZpZyIKIAogY29u
-ZmlnIE5WUkFNCiAJdHJpc3RhdGUgIi9kZXYvbnZyYW0gc3VwcG9ydCIKLQlkZXBlbmRzIG9uIEFU
-QVJJIHx8IFg4NiB8fCAoQVJNICYmIFJUQ19EUlZfQ01PUykgfHwgR0VORVJJQ19OVlJBTQorCWRl
-cGVuZHMgb24gWDg2IHx8IChBUk0gJiYgUlRDX0RSVl9DTU9TKSB8fCBHRU5FUklDX05WUkFNCiAJ
-LS0taGVscC0tLQogCSAgSWYgeW91IHNheSBZIGhlcmUgYW5kIGNyZWF0ZSBhIGNoYXJhY3RlciBz
-cGVjaWFsIGZpbGUgL2Rldi9udnJhbQogCSAgd2l0aCBtYWpvciBudW1iZXIgMTAgYW5kIG1pbm9y
-IG51bWJlciAxNDQgdXNpbmcgbWtub2QgKCJtYW4gbWtub2QiKSwKQEAgLTI2NSw5ICsyNjUsNiBA
-QCBjb25maWcgTlZSQU0KIAkgIHNob3VsZCBORVZFUiBpZGx5IHRhbXBlciB3aXRoIGl0LiBTZWUg
-UmFsZiBCcm93bidzIGludGVycnVwdCBsaXN0CiAJICBmb3IgYSBndWlkZSB0byB0aGUgdXNlIG9m
-IENNT1MgYnl0ZXMgYnkgeW91ciBCSU9TLgogCi0JICBPbiBBdGFyaSBtYWNoaW5lcywgL2Rldi9u
-dnJhbSBpcyBhbHdheXMgY29uZmlndXJlZCBhbmQgZG9lcyBub3QgbmVlZAotCSAgdG8gYmUgc2Vs
-ZWN0ZWQuCi0KIAkgIFRvIGNvbXBpbGUgdGhpcyBkcml2ZXIgYXMgYSBtb2R1bGUsIGNob29zZSBN
-IGhlcmU6IHRoZQogCSAgbW9kdWxlIHdpbGwgYmUgY2FsbGVkIG52cmFtLgogCkluZGV4OiBsaW51
-eC9kcml2ZXJzL3Njc2kvS2NvbmZpZwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmlnL2RyaXZlcnMv
-c2NzaS9LY29uZmlnCTIwMTUtMDctMTIgMjA6MjQ6NTQuMDAwMDAwMDAwICsxMDAwCisrKyBsaW51
-eC9kcml2ZXJzL3Njc2kvS2NvbmZpZwkyMDE1LTA3LTEyIDIwOjI0OjU0LjAwMDAwMDAwMCArMTAw
-MApAQCAtMTU5MiwxNCArMTU5MiwxNCBAQCBjb25maWcgQVRBUklfU0NTSQogCXRyaXN0YXRlICJB
-dGFyaSBuYXRpdmUgU0NTSSBzdXBwb3J0IgogCWRlcGVuZHMgb24gQVRBUkkgJiYgU0NTSQogCXNl
-bGVjdCBTQ1NJX1NQSV9BVFRSUwotCXNlbGVjdCBOVlJBTQogCS0tLWhlbHAtLS0KIAkgIElmIHlv
-dSBoYXZlIGFuIEF0YXJpIHdpdGggYnVpbHQtaW4gTkNSNTM4MCBTQ1NJIGNvbnRyb2xsZXIgKFRU
-LAogCSAgRmFsY29uLCAuLi4pIHNheSBZIHRvIGdldCBpdCBzdXBwb3J0ZWQuIE9mIGNvdXJzZSBh
-bHNvLCBpZiB5b3UgaGF2ZQogCSAgYSBjb21wYXRpYmxlIFNDU0kgY29udHJvbGxlciAoZS5nLiBm
-b3IgTWVkdXNhKS4KIAotCSAgVG8gY29tcGlsZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hv
-b3NlIE0gaGVyZTogdGhlCi0JICBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgYXRhcmlfc2NzaS4KKwkg
-IFRvIGNvbXBpbGUgdGhpcyBkcml2ZXIgYXMgYSBtb2R1bGUsIGNob29zZSBNIGhlcmU6IHRoZSBt
-b2R1bGUgd2lsbAorCSAgYmUgY2FsbGVkIGF0YXJpX3Njc2kuIElmIHlvdSBhbHNvIGVuYWJsZSBO
-VlJBTSBzdXBwb3J0LCB0aGUgU0NTSQorCSAgaG9zdCdzIElEIGlzIHRha2VuIGZyb20gdGhlIHNl
-dHRpbmcgaW4gVFQgUlRDIE5WUkFNLgogCiAJICBUaGlzIGRyaXZlciBzdXBwb3J0cyBib3RoIHN0
-eWxlcyBvZiBOQ1IgaW50ZWdyYXRpb24gaW50byB0aGUKIAkgIHN5c3RlbTogdGhlIFRUIHN0eWxl
-IChzZXBhcmF0ZSBETUEpLCBhbmQgdGhlIEZhbGNvbiBzdHlsZSAodmlhCkluZGV4OiBsaW51eC9k
-cml2ZXJzL3Njc2kvYXRhcmlfc2NzaS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvZHJpdmVy
-cy9zY3NpL2F0YXJpX3Njc2kuYwkyMDE1LTA3LTEyIDIwOjI0OjU0LjAwMDAwMDAwMCArMTAwMAor
-KysgbGludXgvZHJpdmVycy9zY3NpL2F0YXJpX3Njc2kuYwkyMDE1LTA3LTEyIDIwOjI0OjU0LjAw
-MDAwMDAwMCArMTAwMApAQCAtODc1LDkgKzg3NSwxMCBAQCBzdGF0aWMgaW50IF9faW5pdCBhdGFy
-aV9zY3NpX3Byb2JlKHN0cnVjCiAJaWYgKEFUQVJJSFdfUFJFU0VOVChUVF9TQ1NJKSAmJiBzZXR1
-cF9zZ190YWJsZXNpemUgPj0gMCkKIAkJYXRhcmlfc2NzaV90ZW1wbGF0ZS5zZ190YWJsZXNpemUg
-PSBzZXR1cF9zZ190YWJsZXNpemU7CiAKLQlpZiAoc2V0dXBfaG9zdGlkID49IDApIHsKKwlpZiAo
-c2V0dXBfaG9zdGlkID49IDApCiAJCWF0YXJpX3Njc2lfdGVtcGxhdGUudGhpc19pZCA9IHNldHVw
-X2hvc3RpZCAmIDc7Ci0JfSBlbHNlIHsKKyNpZmRlZiBDT05GSUdfTlZSQU0KKwllbHNlCiAJCS8q
-IFRlc3QgaWYgYSBob3N0IGlkIGlzIHNldCBpbiB0aGUgTlZSYW0gKi8KIAkJaWYgKEFUQVJJSFdf
-UFJFU0VOVChUVF9DTEspICYmIG52cmFtX2NoZWNrX2NoZWNrc3VtKCkpIHsKIAkJCXVuc2lnbmVk
-IGNoYXIgYiA9IG52cmFtX3JlYWRfYnl0ZSgxNCk7CkBAIC04ODgsOCArODg5LDcgQEAgc3RhdGlj
-IGludCBfX2luaXQgYXRhcmlfc2NzaV9wcm9iZShzdHJ1YwogCQkJaWYgKGIgJiAweDgwKQogCQkJ
-CWF0YXJpX3Njc2lfdGVtcGxhdGUudGhpc19pZCA9IGIgJiA3OwogCQl9Ci0JfQotCisjZW5kaWYK
-IAogI2lmZGVmIFJFQUxfRE1BCiAJLyogSWYgcnVubmluZyBvbiBhIEZhbGNvbiBhbmQgaWYgdGhl
-cmUncyBUVC1SYW0gKGkuZS4sIG1vcmUgdGhhbiBvbmUKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFpbGluZyBsaXN0CkxpbnV4
-cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5m
-by9saW51eHBwYy1kZXY=
+Make use of arch_nvram_ops in device drivers so that the nvram_*
+function exports can be removed.
+
+Since they are no longer global symbols, rename the PPC32 nvram_* functions
+appropriately.
+
+Add the missing CONFIG_NVRAM test to imsttfb to avoid a build failure.
+
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+ arch/powerpc/kernel/setup_32.c             |    8 ++++----
+ drivers/char/generic_nvram.c               |    4 ++--
+ drivers/video/fbdev/controlfb.c            |    4 ++--
+ drivers/video/fbdev/imsttfb.c              |    7 +++----
+ drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
+ drivers/video/fbdev/platinumfb.c           |    4 ++--
+ drivers/video/fbdev/valkyriefb.c           |    4 ++--
+ 7 files changed, 16 insertions(+), 17 deletions(-)
+
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:11.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-07-12 20:25:13.000000000 +1000
+@@ -170,20 +170,18 @@ __setup("l3cr=", ppc_setup_l3cr);
+ 
+ #ifdef CONFIG_GENERIC_NVRAM
+ 
+-unsigned char nvram_read_byte(int addr)
++static unsigned char ppc_nvram_read_byte(int addr)
+ {
+ 	if (ppc_md.nvram_read_val)
+ 		return ppc_md.nvram_read_val(addr);
+ 	return 0xff;
+ }
+-EXPORT_SYMBOL(nvram_read_byte);
+ 
+-void nvram_write_byte(unsigned char val, int addr)
++static void ppc_nvram_write_byte(unsigned char val, int addr)
+ {
+ 	if (ppc_md.nvram_write_val)
+ 		ppc_md.nvram_write_val(addr, val);
+ }
+-EXPORT_SYMBOL(nvram_write_byte);
+ 
+ static ssize_t ppc_nvram_get_size(void)
+ {
+@@ -200,6 +198,8 @@ static long ppc_nvram_sync(void)
+ }
+ 
+ const struct nvram_ops arch_nvram_ops = {
++	.read_byte      = ppc_nvram_read_byte,
++	.write_byte     = ppc_nvram_write_byte,
+ 	.get_size       = ppc_nvram_get_size,
+ 	.sync           = ppc_nvram_sync,
+ };
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-07-12 20:25:11.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-07-12 20:25:13.000000000 +1000
+@@ -64,7 +64,7 @@ static ssize_t read_nvram(struct file *f
+ 	if (*ppos >= nvram_len)
+ 		return 0;
+ 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
+-		if (__put_user(nvram_read_byte(i), p))
++		if (__put_user(arch_nvram_ops.read_byte(i), p))
+ 			return -EFAULT;
+ 	*ppos = i;
+ 	return p - buf;
+@@ -84,7 +84,7 @@ static ssize_t write_nvram(struct file *
+ 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
+ 		if (__get_user(c, p))
+ 			return -EFAULT;
+-		nvram_write_byte(c, i);
++		arch_nvram_ops.write_byte(c, i);
+ 	}
+ 	*ppos = i;
+ 	return p - buf;
+Index: linux/drivers/video/fbdev/controlfb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/controlfb.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/drivers/video/fbdev/controlfb.c	2015-07-12 20:25:13.000000000 +1000
+@@ -415,7 +415,7 @@ static int __init init_control(struct fb
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+ #ifdef CONFIG_NVRAM
+ 	if (default_cmode == CMODE_NVRAM) {
+-		cmode = nvram_read_byte(NV_CMODE);
++		cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ 		if(cmode < CMODE_8 || cmode > CMODE_32)
+ 			cmode = CMODE_8;
+ 	} else
+@@ -423,7 +423,7 @@ static int __init init_control(struct fb
+ 		cmode=default_cmode;
+ #ifdef CONFIG_NVRAM
+ 	if (default_vmode == VMODE_NVRAM) {
+-		vmode = nvram_read_byte(NV_VMODE);
++		vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (vmode < 1 || vmode > VMODE_MAX ||
+ 		    control_mac_modes[vmode - 1].m[full] < cmode) {
+ 			sense = read_control_sense(p);
+Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-12 20:25:08.000000000 +1000
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-12 20:25:13.000000000 +1000
+@@ -1888,7 +1888,7 @@ static int initMatrox2(struct matrox_fb_
+ 			default_vmode = VMODE_640_480_60;
+ #ifdef CONFIG_NVRAM
+ 		if (default_cmode == CMODE_NVRAM)
+-			default_cmode = nvram_read_byte(NV_CMODE);
++			default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 		if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
+ 			default_cmode = CMODE_8;
+Index: linux/drivers/video/fbdev/platinumfb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/platinumfb.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/drivers/video/fbdev/platinumfb.c	2015-07-12 20:25:13.000000000 +1000
+@@ -349,7 +349,7 @@ static int platinum_init_fb(struct fb_in
+ 	printk(KERN_INFO "platinumfb: Monitor sense value = 0x%x, ", sense);
+ 	if (default_vmode == VMODE_NVRAM) {
+ #ifdef CONFIG_NVRAM
+-		default_vmode = nvram_read_byte(NV_VMODE);
++		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (default_vmode <= 0 || default_vmode > VMODE_MAX ||
+ 		    !platinum_reg_init[default_vmode-1])
+ #endif
+@@ -362,7 +362,7 @@ static int platinum_init_fb(struct fb_in
+ 		default_vmode = VMODE_640_480_60;
+ #ifdef CONFIG_NVRAM
+ 	if (default_cmode == CMODE_NVRAM)
+-		default_cmode = nvram_read_byte(NV_CMODE);
++		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 	if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
+ 		default_cmode = CMODE_8;
+Index: linux/drivers/video/fbdev/valkyriefb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/drivers/video/fbdev/valkyriefb.c	2015-07-12 20:25:13.000000000 +1000
+@@ -287,7 +287,7 @@ static void __init valkyrie_choose_mode(
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+ #if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
+ 	if (default_vmode == VMODE_NVRAM) {
+-		default_vmode = nvram_read_byte(NV_VMODE);
++		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (default_vmode <= 0
+ 		 || default_vmode > VMODE_MAX
+ 		 || !valkyrie_reg_init[default_vmode - 1])
+@@ -300,7 +300,7 @@ static void __init valkyrie_choose_mode(
+ 		default_vmode = VMODE_640_480_67;
+ #if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
+ 	if (default_cmode == CMODE_NVRAM)
+-		default_cmode = nvram_read_byte(NV_CMODE);
++		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 
+ 	/*
+Index: linux/drivers/video/fbdev/imsttfb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/imsttfb.c	2015-07-12 20:24:53.000000000 +1000
++++ linux/drivers/video/fbdev/imsttfb.c	2015-07-12 20:25:13.000000000 +1000
+@@ -328,7 +328,6 @@ enum {
+ 	TVP = 1
+ };
+ 
+-#define USE_NV_MODES		1
+ #define INIT_BPP		8
+ #define INIT_XRES		640
+ #define INIT_YRES		480
+@@ -1391,17 +1390,17 @@ static void init_imstt(struct fb_info *i
+ 		}
+ 	}
+ 
+-#if USE_NV_MODES && defined(CONFIG_PPC32)
++#if defined(CONFIG_NVRAM) && defined(CONFIG_PPC32)
+ 	{
+ 		int vmode = init_vmode, cmode = init_cmode;
+ 
+ 		if (vmode == -1) {
+-			vmode = nvram_read_byte(NV_VMODE);
++			vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 			if (vmode <= 0 || vmode > VMODE_MAX)
+ 				vmode = VMODE_640_480_67;
+ 		}
+ 		if (cmode == -1) {
+-			cmode = nvram_read_byte(NV_CMODE);
++			cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ 			if (cmode < CMODE_8 || cmode > CMODE_32)
+ 				cmode = CMODE_8;
+ 		}
