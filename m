@@ -1,41 +1,37 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/3] IRQ: Print "unexpected IRQ" messages consistently
- across architectures
-Date: Mon, 13 Jul 2015 09:14:42 +0200
-Message-ID: <CAMuHMdWW3uHLm=rwQ8cmhxGff8vwFDx7_-eSmiy3dndpDKk35Q__45701.2396342636$1436771703$gmane$org@mail.gmail.com>
-References: <20150712215559.7166.33068.stgit@bhelgaas-glaptop2.roam.corp.google.com>
-	<20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
+Subject: Re: [RFC v4 00/25] Re-use nvram module
+Date: Mon, 13 Jul 2015 09:55:31 +0200
+Message-ID: <CAMuHMdX+5XHWf3sVqAnF_mioS1zZmxQXurEeMGMM3OKa9acxhA@mail.gmail.com>
+References: <20150712102527.356151908@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
+Received: from mail-ob0-f169.google.com ([209.85.214.169]:35757 "EHLO
+	mail-ob0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751139AbbGMHzc (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jul 2015 03:55:32 -0400
+In-Reply-To: <20150712102527.356151908@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Linux-Arch <linux-arch@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, Parisc List <linux-parisc@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, alpha <linux-alpha@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 
-On Mon, Jul 13, 2015 at 12:02 AM, Bjorn Helgaas <bhelgaas@google.com> wrote:
-> Many architectures use a variant of "unexpected IRQ trap at vector %x" to
-> log unexpected IRQs.  This is confusing because (a) it prints the Linux IRQ
-> number, but "vector" more often refers to a CPU vector number, and (b) it
-> prints the IRQ number in hex with no base indication, while Linux IRQ
-> numbers are usually printed in decimal.
->
-> Print the same text ("unexpected IRQ %d") across all architectures.
->
-> No functional change other than the output text.
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
+Hi Finn,
 
-Thanks!
+On Sun, Jul 12, 2015 at 12:25 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> The generic NVRAM module, drivers/char/generic_nvram, implements a
+> /dev/nvram misc device. It is used only by 32-bit PowerPC platforms and
+> isn't generic enough to be more widely used.
 
->  arch/m68k/include/asm/hardirq.h    |    2 +-
+[...]
 
-For m68k:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your work!
 
-And it looks like m68k can switch to the asm-generic version afterwards...
+How are we gonna merge this?
+Have you looked into the dependencies?
+Are there (large) parts we can merge in parallel?
+
+Thanks again!
 
 Gr{oetje,eeting}s,
 
