@@ -1,57 +1,65 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [3/3] IRQ: Print "unexpected IRQ" messages consistently across architectures
-Date: Mon, 13 Jul 2015 13:35:09 -0500
-Message-ID: <CAErSpo52Kk0c=1UHQzxntJc3ph_CX8vcY+QdULBKv-HGUHBK9Q__33838.71893534$1436812705$gmane$org@mail.gmail.com>
-References: <20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
- <20150713032303.D49801402B1@ozlabs.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [RFC v4 00/25] Re-use nvram module
+Date: Tue, 14 Jul 2015 17:57:35 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1507141045020.24654@nippy.intranet>
+References: <20150712102527.356151908@telegraphics.com.au> <CAMuHMdX+5XHWf3sVqAnF_mioS1zZmxQXurEeMGMM3OKa9acxhA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20150713032303.D49801402B1@ozlabs.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34244 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751558AbbGNH54 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 14 Jul 2015 03:57:56 -0400
+In-Reply-To: <CAMuHMdX+5XHWf3sVqAnF_mioS1zZmxQXurEeMGMM3OKa9acxhA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Linux-Arch <linux-arch@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-am33-list@redhat.com, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, adi-buildroot-devel@lists.sourceforge.net, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 
-On Sun, Jul 12, 2015 at 10:23 PM, Michael Ellerman <mpe@ellerman.id.au> wrote:
-> On Sun, 2015-12-07 at 22:02:11 UTC, Bjorn Helgaas wrote:
->> Many architectures use a variant of "unexpected IRQ trap at vector %x" to
->> log unexpected IRQs.  This is confusing because (a) it prints the Linux IRQ
->> number, but "vector" more often refers to a CPU vector number, and (b) it
->> prints the IRQ number in hex with no base indication, while Linux IRQ
->> numbers are usually printed in decimal.
->>
->> Print the same text ("unexpected IRQ %d") across all architectures.
->>
->> No functional change other than the output text.
->
-> There's already a fallback version in asm-generic, so shouldn't you instead
-> just delete all the versions that are identical to that?
->
-> eg. on powerpc we have:
->
->>  static inline void ack_bad_irq(unsigned int irq)
->>  {
->> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
->> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
->>  }
->
-> And the generic version is:
->
->>  #ifndef ack_bad_irq
->>  static inline void ack_bad_irq(unsigned int irq)
->>  {
->> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
->> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
->>  }
->>  #endif
->
-> So we can just delete the powerpc version?
 
-Wow, I really didn't do my homework here.  Not only is there a generic
-version already, but there's also print_irq_desc(), which prints way
-more information than any of the ack_bad_irq() implementations.
+On Mon, 13 Jul 2015, Geert Uytterhoeven wrote:
 
-I'll try again :)
+> 
+> How are we gonna merge this?
 
-Bjorn
+I think the series would have to be merged almost whole. For the most 
+part, no maintainer can merge any of this without ACKs from others:
+
+- to improve code re-use by replacing an API shared by arch-specific code 
+  and a variety of drivers means getting ACKs from everyone concerned (or 
+  the old API can't be removed).
+
+- to move arch-specific code out of a generic driver means getting ACKs 
+  from both arch maintainer and driver maintainer. Some of this 
+  arch-specific code is shared by m68k, x86 and arm (but not powerpc) and 
+  this complicates things.
+
+- to adopt a new Kconfig convention in a uniform and consistent way seems 
+  to require simultaneous changes in various drivers and architectures.
+
+> Have you looked into the dependencies?
+
+What I saw was not pretty.
+
+> Are there (large) parts we can merge in parallel?
+
+Not AFAICT. Two patches could be cherry picked, that might make sense to 
+merge by themselves. Those are patches 2 and 12. Either or both could be 
+reviewed and merged by the char device maintainers.
+
+There are a couple of other small patches that could probably be cherry 
+picked without breaking anything but these changes are not justified 
+except by subsequent patches.
+
+> 
+> Thanks again!
+
+No worries.
+
+-- 
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
