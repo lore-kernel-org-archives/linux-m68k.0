@@ -1,47 +1,40 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC v4 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead
- of nvram_read_byte() and nvram_write_byte()
-Date: Thu, 16 Jul 2015 16:01:41 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
-References: <20150712102527.356151908@telegraphics.com.au>  <20150712102531.505897278@telegraphics.com.au>  <alpine.LNX.2.00.1507141725480.851@nippy.intranet> <1436874720.3948.252.camel@kernel.crashing.org>
- <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
+From: Arno Griffioen <arno@ancienthardware.org>
+Subject: New maintainer and hosting needed for linux-m68k.org services (DNS,
+ Email, Web)
+Date: Thu, 16 Jul 2015 11:44:07 +0200
+Message-ID: <20150716094407.GH14954@ancienthardware.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60695 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751300AbbGPGCN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 16 Jul 2015 02:02:13 -0400
-In-Reply-To: <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
+Received: from cpsmtpb-ews09.kpnxchange.com ([213.75.39.14]:59742 "EHLO
+	cpsmtpb-ews09.kpnxchange.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1754723AbbGPJ5N (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 16 Jul 2015 05:57:13 -0400
+Received: from arno by deepthought.ancienthardware.org with local (Exim 4.86_RC4)
+	(envelope-from <arno@ancienthardware.org>)
+	id 1ZFfi3-0003JL-IJ
+	for linux-m68k@vger.kernel.org; Thu, 16 Jul 2015 11:44:07 +0200
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
+Hi guys!
 
-On Wed, 15 Jul 2015, I wrote:
+It looks like in about a year I'll be losing the option to keep on
+hosting the linux-m68k.org services as far as DNS, email(-forwarding)
+and webpages goes. Also I'm no longer in a position to have the option
+of setting it up again somewhere else.
 
-> On Tue, 14 Jul 2015, Benjamin Herrenschmidt wrote:
-> 
-> > Maybe we should have a dedicated accessor for "mac_xpram" ...
-> 
-> ... I can see how to implement XPRAM for matroxfb and imsttfb 
+I'm quite happy to keep sponsoring the yearly registration fees for the 
+domain itself, but the technical/operational side will need a new home to 
+keep running.
 
-I'll have to retract that. The video mode and color mode settings used by 
-the PowerMac framebuffer drivers don't exist in the PRAM portion of NVRAM.
+So i'm asking for someone to take over these services. I can provide copies of 
+the relevant data (DNS zone files, current email aliases, HTML files, etc.) so 
+everything can be migrated in due time.
 
-Addresses 0x140F and 0x1410 are found in the partition reserved by Apple 
-for "Name Registry properties", according to Designing PCI Cards and 
-Drivers for Power Macintosh Computers. There is no equivalent on m68k 
-Macs, AFAIK.
+If anyone wants to take this on, let me know! Thanks!
 
-This is NVRAM partition 2 on my beige g3, which begins at 0x1400. I'm not 
-sure that this is true on New World PowerMacs, and I suspect that the 
-framebuffer drivers should be calling pmac_get_partition() to determine 
-the offset of the beginning of the Name Registry partition.
-
-The arch_nvram_ops methods don't deal with structures like partitions. 
-They treat the entire 8 KiB as unstructured, because that's how /dev/nvram 
-treats it.
-
--- 
+							Bye, Arno.
