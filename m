@@ -1,83 +1,127 @@
-From: Joerg Dorchain <joerg@dorchain.net>
-Subject: Re: New maintainer and hosting needed for linux-m68k.org services
- (DNS, Email, Web)
-Date: Thu, 16 Jul 2015 14:21:49 +0200
-Message-ID: <20150716122149.GA8439@Redstar.dorchain.net>
-References: <20150716094407.GH14954@ancienthardware.org>
- <55A79714.7080804@physik.fu-berlin.de>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH 08/23] m68k/coldfire/pit: Migrate to new 'set-state' interface
+Date: Thu, 16 Jul 2015 22:42:18 +1000
+Message-ID: <55A7A6AA.1050602__46615.5857932337$1437051107$gmane$org@uclinux.org>
+References: <cover.1437044517.git.viresh.kumar@linaro.org> <e3b21870111e9f0a71a6a9b7ef3aa68fbb772f81.1437044517.git.viresh.kumar@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Content-Disposition: inline
-In-Reply-To: <55A79714.7080804@physik.fu-berlin.de>
-Resent-Message-ID: <C_voWeo3pIO.A.xSG.7N6pVB@bendel>
-List-URL: <http://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Arno Griffioen <arno@ancienthardware.org>, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <e3b21870111e9f0a71a6a9b7ef3aa68fbb772f81.1437044517.git.viresh.kumar@linaro.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Viresh Kumar <viresh.kumar@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: linaro-kernel@lists.linaro.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+
+Hi Viresh,
+
+On 16/07/15 21:26, Viresh Kumar wrote:
+> Migrate m68k driver to the new 'set-state' interface provided by
+> clockevents core, the earlier 'set-mode' interface is marked obsolete
+> now.
+>
+> This also enables us to implement callbacks for new states of clockevent
+> devices, for example: ONESHOT_STOPPED.
+>
+> We weren't doing anything in ->set_mode(RESUME) and so tick_resume()
+> isn't implemented.
+>
+> Cc: Greg Ungerer <gerg@uclinux.org>
+
+Applied and tested ok (against 4.2-rc2).
+
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 16, 2015 at 01:35:48PM +0200, John Paul Adrian Glaubitz wrote:
-> On 07/16/2015 11:44 AM, Arno Griffioen wrote:
-> > It looks like in about a year I'll be losing the option to keep on
-> > hosting the linux-m68k.org services as far as DNS, email(-forwarding)
-> > and webpages goes. Also I'm no longer in a position to have the option
-> > of setting it up again somewhere else.
-> >=20
-> > I'm quite happy to keep sponsoring the yearly registration fees for the=
-=20
-> > domain itself, but the technical/operational side will need a new home =
-to=20
-> > keep running.
-> >=20
-> > So i'm asking for someone to take over these services. I can provide co=
-pies of=20
-> > the relevant data (DNS zone files, current email aliases, HTML files, e=
-tc.) so=20
-> > everything can be migrated in due time.
-> >=20
-> > If anyone wants to take this on, let me know! Thanks!
->=20
-> If it's just a matter of providing a server, I'd be happy to help out!
-
-I can help with that, too. John probably has the better
-bandwidth, I think.
-
-Bye,
-
-Joerg, still stuck with DSL
-
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQJNBAEBAgA3BQJVp6HcMBSAAAAAABUAEnBrYS1hZGRyZXNzQGdudXBnLm9yZ2pv
-ZXJnQGRvcmNoYWluLm5ldAAKCRBxI390Nm4cqNa6D/wIsPaZCfBzxsELOcQz1Wf8
-uRbassrFt69DD2DfrAa3zbZxz+WkQ9vqvZik2mx073kG1tUWbeCkY2N1++D4eF8S
-wrHAYG6t1gTOrz/TMnfiie/pwe8LZ/4AQoa1Du5Edma9l+KD5jUorr6GYZlivnak
-5C5BKP3HGlxQKAABb9b9k7gizc289bHqeu17++n/HpezRDpL/At3nB4mJuUsuxl9
-nnjavaaZCsp9ygoIiSPFsvV1V8R5D2FmJ2pHKeKn40hLb/ve4WWOanERHZ6V7p/T
-mnzwCxQM1WXw+7dGNaJZjkqp7axfF7fw1zw7NIncp2xAFjgoCdlhIs7HfeneaY7A
-kIGOgDgaV4XvHX6PM5itUAlGN0eIOI4ueAzDj+2ba0jEnODE2OnCj6a28X/MEgYL
-PYv2AVeaF13Ufl0Y2lQywLQHwxkeVZw7LmzP0mf95Refldtd52u4Qd+yP8Z7Ipwn
-SOVFOv3JJiEDmMawyg0sfQb0wsiy3k/0dil58acEnmDVphD2N9/DlnfCIAyzGPqK
-oBn06UBeKnfE1IlFNsM4x2fczdhLXbALLw/hCsLG6HWpf8qBATh4wKicoKX5r4UD
-npVa6IEnN5tVn4w6+jbnMzZMFti3Bu9PHP+8ZQgQ/b4uMEoSOjp6rjVpayDB++Oa
-lz4HTd33VUuzPmZLmBEtvQ==
-=6e4l
------END PGP SIGNATURE-----
-
---opJtzjQTFsWo+cga--
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>   arch/m68k/coldfire/pit.c | 66 ++++++++++++++++++++++--------------------------
+>   1 file changed, 30 insertions(+), 36 deletions(-)
+>
+> diff --git a/arch/m68k/coldfire/pit.c b/arch/m68k/coldfire/pit.c
+> index 493b3111d4c1..d86a9ffb3f13 100644
+> --- a/arch/m68k/coldfire/pit.c
+> +++ b/arch/m68k/coldfire/pit.c
+> @@ -42,37 +42,28 @@ static u32 pit_cnt;
+>    * This is also called after resume to bring the PIT into operation again.
+>    */
+>   
+> -static void init_cf_pit_timer(enum clock_event_mode mode,
+> -                             struct clock_event_device *evt)
+> +static int cf_pit_set_periodic(struct clock_event_device *evt)
+>   {
+> -	switch (mode) {
+> -	case CLOCK_EVT_MODE_PERIODIC:
+> -
+> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> -		__raw_writew(PIT_CYCLES_PER_JIFFY, TA(MCFPIT_PMR));
+> -		__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE | \
+> -				MCFPIT_PCSR_OVW | MCFPIT_PCSR_RLD | \
+> -				MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
+> -		break;
+> -
+> -	case CLOCK_EVT_MODE_SHUTDOWN:
+> -	case CLOCK_EVT_MODE_UNUSED:
+> -
+> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> -		break;
+> -
+> -	case CLOCK_EVT_MODE_ONESHOT:
+> -
+> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> -		__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE | \
+> -				MCFPIT_PCSR_OVW | MCFPIT_PCSR_CLK64, \
+> -				TA(MCFPIT_PCSR));
+> -		break;
+> -
+> -	case CLOCK_EVT_MODE_RESUME:
+> -		/* Nothing to do here */
+> -		break;
+> -	}
+> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> +	__raw_writew(PIT_CYCLES_PER_JIFFY, TA(MCFPIT_PMR));
+> +	__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE |
+> +		     MCFPIT_PCSR_OVW | MCFPIT_PCSR_RLD |
+> +		     MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
+> +	return 0;
+> +}
+> +
+> +static int cf_pit_set_oneshot(struct clock_event_device *evt)
+> +{
+> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> +	__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE |
+> +		     MCFPIT_PCSR_OVW | MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
+> +	return 0;
+> +}
+> +
+> +static int cf_pit_shutdown(struct clock_event_device *evt)
+> +{
+> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
+> +	return 0;
+>   }
+>   
+>   /*
+> @@ -88,12 +79,15 @@ static int cf_pit_next_event(unsigned long delta,
+>   }
+>   
+>   struct clock_event_device cf_pit_clockevent = {
+> -	.name		= "pit",
+> -	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+> -	.set_mode	= init_cf_pit_timer,
+> -	.set_next_event	= cf_pit_next_event,
+> -	.shift		= 32,
+> -	.irq		= MCF_IRQ_PIT1,
+> +	.name			= "pit",
+> +	.features		= CLOCK_EVT_FEAT_PERIODIC |
+> +				  CLOCK_EVT_FEAT_ONESHOT,
+> +	.set_state_shutdown	= cf_pit_shutdown,
+> +	.set_state_periodic	= cf_pit_set_periodic,
+> +	.set_state_oneshot	= cf_pit_set_oneshot,
+> +	.set_next_event		= cf_pit_next_event,
+> +	.shift			= 32,
+> +	.irq			= MCF_IRQ_PIT1,
+>   };
+>   
+>   
