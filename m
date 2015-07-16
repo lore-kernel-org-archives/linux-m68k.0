@@ -1,65 +1,47 @@
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [3/3] IRQ: Print "unexpected IRQ" messages consistently across
- architectures
-Date: Thu, 16 Jul 2015 14:12:29 +1000
-Message-ID: <1437019949.28475.6.camel@ellerman.id.au>
-References: <20150712220211.7166.42035.stgit@bhelgaas-glaptop2.roam.corp.google.com>
-	 <20150713032303.D49801402B1@ozlabs.org>
-	 <CAErSpo52Kk0c=1UHQzxntJc3ph_CX8vcY+QdULBKv-HGUHBK9Q@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [RFC v4 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead
+ of nvram_read_byte() and nvram_write_byte()
+Date: Thu, 16 Jul 2015 16:01:41 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
+References: <20150712102527.356151908@telegraphics.com.au>  <20150712102531.505897278@telegraphics.com.au>  <alpine.LNX.2.00.1507141725480.851@nippy.intranet> <1436874720.3948.252.camel@kernel.crashing.org>
+ <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAErSpo52Kk0c=1UHQzxntJc3ph_CX8vcY+QdULBKv-HGUHBK9Q@mail.gmail.com>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60695 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751300AbbGPGCN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 16 Jul 2015 02:02:13 -0400
+In-Reply-To: <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Linux-Arch <linux-arch@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-am33-list@redhat.com, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, adi-buildroot-devel@lists.sourceforge.net, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 
-On Mon, 2015-07-13 at 13:35 -0500, Bjorn Helgaas wrote:
-> On Sun, Jul 12, 2015 at 10:23 PM, Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > On Sun, 2015-12-07 at 22:02:11 UTC, Bjorn Helgaas wrote:
-> >> Many architectures use a variant of "unexpected IRQ trap at vector %x" to
-> >> log unexpected IRQs.  This is confusing because (a) it prints the Linux IRQ
-> >> number, but "vector" more often refers to a CPU vector number, and (b) it
-> >> prints the IRQ number in hex with no base indication, while Linux IRQ
-> >> numbers are usually printed in decimal.
-> >>
-> >> Print the same text ("unexpected IRQ %d") across all architectures.
-> >>
-> >> No functional change other than the output text.
-> >
-> > There's already a fallback version in asm-generic, so shouldn't you instead
-> > just delete all the versions that are identical to that?
-> >
-> > eg. on powerpc we have:
-> >
-> >>  static inline void ack_bad_irq(unsigned int irq)
-> >>  {
-> >> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
-> >> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
-> >>  }
-> >
-> > And the generic version is:
-> >
-> >>  #ifndef ack_bad_irq
-> >>  static inline void ack_bad_irq(unsigned int irq)
-> >>  {
-> >> -     printk(KERN_CRIT "unexpected IRQ trap at vector %02x\n", irq);
-> >> +     printk(KERN_CRIT "unexpected IRQ %d\n", irq);
-> >>  }
-> >>  #endif
-> >
-> > So we can just delete the powerpc version?
+
+On Wed, 15 Jul 2015, I wrote:
+
+> On Tue, 14 Jul 2015, Benjamin Herrenschmidt wrote:
 > 
-> Wow, I really didn't do my homework here.  Not only is there a generic
-> version already, but there's also print_irq_desc(), which prints way
-> more information than any of the ack_bad_irq() implementations.
+> > Maybe we should have a dedicated accessor for "mac_xpram" ...
+> 
+> ... I can see how to implement XPRAM for matroxfb and imsttfb 
 
-Even better :)
+I'll have to retract that. The video mode and color mode settings used by 
+the PowerMac framebuffer drivers don't exist in the PRAM portion of NVRAM.
 
-> I'll try again :)
+Addresses 0x140F and 0x1410 are found in the partition reserved by Apple 
+for "Name Registry properties", according to Designing PCI Cards and 
+Drivers for Power Macintosh Computers. There is no equivalent on m68k 
+Macs, AFAIK.
 
-Thanks.
+This is NVRAM partition 2 on my beige g3, which begins at 0x1400. I'm not 
+sure that this is true on New World PowerMacs, and I suspect that the 
+framebuffer drivers should be calling pmac_get_partition() to determine 
+the offset of the beginning of the Name Registry partition.
 
-cheers
+The arch_nvram_ops methods don't deal with structures like partitions. 
+They treat the entire 8 KiB as unstructured, because that's how /dev/nvram 
+treats it.
+
+-- 
