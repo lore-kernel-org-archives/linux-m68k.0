@@ -1,127 +1,66 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH 08/23] m68k/coldfire/pit: Migrate to new 'set-state' interface
-Date: Thu, 16 Jul 2015 22:42:18 +1000
-Message-ID: <55A7A6AA.1050602__46615.5857932337$1437051107$gmane$org@uclinux.org>
-References: <cover.1437044517.git.viresh.kumar@linaro.org> <e3b21870111e9f0a71a6a9b7ef3aa68fbb772f81.1437044517.git.viresh.kumar@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [git pull] m68knommu/coldfire fixes for 4.2-rc3
+Date: Fri, 17 Jul 2015 09:38:15 +1000
+Message-ID: <201507162338.t6GNcFem029669@goober.accelecon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <e3b21870111e9f0a71a6a9b7ef3aa68fbb772f81.1437044517.git.viresh.kumar@linaro.org>
+Received: from nskntmtas06p.mx.bigpond.com ([61.9.168.152]:39769 "EHLO
+	nskntmtas06p.mx.bigpond.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752358AbbGPXgn (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 16 Jul 2015 19:36:43 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Viresh Kumar <viresh.kumar@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linaro-kernel@lists.linaro.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, geert@linux-m68k.org
 
-Hi Viresh,
+Hi Linus,
 
-On 16/07/15 21:26, Viresh Kumar wrote:
-> Migrate m68k driver to the new 'set-state' interface provided by
-> clockevents core, the earlier 'set-mode' interface is marked obsolete
-> now.
->
-> This also enables us to implement callbacks for new states of clockevent
-> devices, for example: ONESHOT_STOPPED.
->
-> We weren't doing anything in ->set_mode(RESUME) and so tick_resume()
-> isn't implemented.
->
-> Cc: Greg Ungerer <gerg@uclinux.org>
+Can you please pull the m68knommu git tree, for-next branch.
+Contains build fixes and updates for the ColdFire defconfigs.
+Specifically there is a couple of fixes that address problems
+building allnoconfig. Also fix for enabling PCI bus on the
+M54xx family of ColdFire.
 
-Applied and tested ok (against 4.2-rc2).
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+Regards
+Greg
 
 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   arch/m68k/coldfire/pit.c | 66 ++++++++++++++++++++++--------------------------
->   1 file changed, 30 insertions(+), 36 deletions(-)
->
-> diff --git a/arch/m68k/coldfire/pit.c b/arch/m68k/coldfire/pit.c
-> index 493b3111d4c1..d86a9ffb3f13 100644
-> --- a/arch/m68k/coldfire/pit.c
-> +++ b/arch/m68k/coldfire/pit.c
-> @@ -42,37 +42,28 @@ static u32 pit_cnt;
->    * This is also called after resume to bring the PIT into operation again.
->    */
->   
-> -static void init_cf_pit_timer(enum clock_event_mode mode,
-> -                             struct clock_event_device *evt)
-> +static int cf_pit_set_periodic(struct clock_event_device *evt)
->   {
-> -	switch (mode) {
-> -	case CLOCK_EVT_MODE_PERIODIC:
-> -
-> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> -		__raw_writew(PIT_CYCLES_PER_JIFFY, TA(MCFPIT_PMR));
-> -		__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE | \
-> -				MCFPIT_PCSR_OVW | MCFPIT_PCSR_RLD | \
-> -				MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
-> -		break;
-> -
-> -	case CLOCK_EVT_MODE_SHUTDOWN:
-> -	case CLOCK_EVT_MODE_UNUSED:
-> -
-> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> -		break;
-> -
-> -	case CLOCK_EVT_MODE_ONESHOT:
-> -
-> -		__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> -		__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE | \
-> -				MCFPIT_PCSR_OVW | MCFPIT_PCSR_CLK64, \
-> -				TA(MCFPIT_PCSR));
-> -		break;
-> -
-> -	case CLOCK_EVT_MODE_RESUME:
-> -		/* Nothing to do here */
-> -		break;
-> -	}
-> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> +	__raw_writew(PIT_CYCLES_PER_JIFFY, TA(MCFPIT_PMR));
-> +	__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE |
-> +		     MCFPIT_PCSR_OVW | MCFPIT_PCSR_RLD |
-> +		     MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
-> +	return 0;
-> +}
-> +
-> +static int cf_pit_set_oneshot(struct clock_event_device *evt)
-> +{
-> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> +	__raw_writew(MCFPIT_PCSR_EN | MCFPIT_PCSR_PIE |
-> +		     MCFPIT_PCSR_OVW | MCFPIT_PCSR_CLK64, TA(MCFPIT_PCSR));
-> +	return 0;
-> +}
-> +
-> +static int cf_pit_shutdown(struct clock_event_device *evt)
-> +{
-> +	__raw_writew(MCFPIT_PCSR_DISABLE, TA(MCFPIT_PCSR));
-> +	return 0;
->   }
->   
->   /*
-> @@ -88,12 +79,15 @@ static int cf_pit_next_event(unsigned long delta,
->   }
->   
->   struct clock_event_device cf_pit_clockevent = {
-> -	.name		= "pit",
-> -	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
-> -	.set_mode	= init_cf_pit_timer,
-> -	.set_next_event	= cf_pit_next_event,
-> -	.shift		= 32,
-> -	.irq		= MCF_IRQ_PIT1,
-> +	.name			= "pit",
-> +	.features		= CLOCK_EVT_FEAT_PERIODIC |
-> +				  CLOCK_EVT_FEAT_ONESHOT,
-> +	.set_state_shutdown	= cf_pit_shutdown,
-> +	.set_state_periodic	= cf_pit_set_periodic,
-> +	.set_state_oneshot	= cf_pit_set_oneshot,
-> +	.set_next_event		= cf_pit_next_event,
-> +	.shift			= 32,
-> +	.irq			= MCF_IRQ_PIT1,
->   };
->   
->   
+
+The following changes since commit bc0195aad0daa2ad5b0d76cce22b167bc3435590:
+
+  Linux 4.2-rc2 (2015-07-12 15:10:30 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 67592f699cb309559575b89d727d510ea076521c:
+
+  m68k: enable PCI support for m5475evb defconfig (2015-07-13 09:34:40 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (12):
+      m68knommu: force setting of CONFIG_CLOCK_FREQ for ColdFire
+      m68knommu: improve the clock configuration defaults
+      m68knommu: make ColdFire SoC selection a choice
+      m68knommu: update defconfig for m5208evb
+      m68knommu: update defconfig for ColdFire m5249evb
+      m68knommu: update defconfig for ColdFire m5272c3
+      m68knommu: update defconfig for ColdFire m5275evb
+      m68knommu: update defconfig for ColdFire m5307c3
+      m68knommu: update defconfig for ColdFire m5407c3
+      m68knommu: update defconfig for ColdFire m5475evb
+      m68k: fix io functions for ColdFire/MMU/PCI case
+      m68k: enable PCI support for m5475evb defconfig
+
+ arch/m68k/Kconfig.cpu                | 49 ++++++++++++++++++++----------------
+ arch/m68k/configs/m5208evb_defconfig | 22 +++-------------
+ arch/m68k/configs/m5249evb_defconfig | 17 ++-----------
+ arch/m68k/configs/m5272c3_defconfig  | 14 ++---------
+ arch/m68k/configs/m5275evb_defconfig | 19 ++------------
+ arch/m68k/configs/m5307c3_defconfig  | 21 +++-------------
+ arch/m68k/configs/m5407c3_defconfig  | 17 ++-----------
+ arch/m68k/configs/m5475evb_defconfig |  9 +------
+ arch/m68k/include/asm/coldfire.h     |  2 +-
+ arch/m68k/include/asm/io_mm.h        |  3 ++-
+ 10 files changed, 45 insertions(+), 128 deletions(-)
