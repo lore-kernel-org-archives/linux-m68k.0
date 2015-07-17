@@ -1,108 +1,42 @@
-From: Yannick GICQUEL <yannick.gicquel@open.eurogiciel.org>
-Subject: Re: [RFC 6/8] m68k: m5441x: set rambar to end of SRAM physical addr
- space
-Date: Fri, 17 Jul 2015 12:47:06 +0200
-Message-ID: <55A8DD2A.5030506@open.eurogiciel.org>
-References: <1436349092-2214-1-git-send-email-yannick.gicquel@gmail.com> <1436349092-2214-7-git-send-email-yannick.gicquel@gmail.com> <559D2B63.2000007@westnet.com.au>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/3] x86, irq: Rename VECTOR_UNDEFINED and VECTOR_RETRIGGERED
+ to IRQ_*
+Date: Fri, 17 Jul 2015 16:06:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.11.1507171558010.18576__29504.0549048737$1437142040$gmane$org@nanos>
+References: <20150712215559.7166.33068.stgit@bhelgaas-glaptop2.roam.corp.google.com> <20150712220154.7166.48327.stgit@bhelgaas-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wg0-f52.google.com ([74.125.82.52]:33973 "EHLO
-	mail-wg0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1946106AbbGQKrK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Jul 2015 06:47:10 -0400
-Received: by wgkl9 with SMTP id l9so79046281wgk.1
-        for <linux-m68k@vger.kernel.org>; Fri, 17 Jul 2015 03:47:08 -0700 (PDT)
-In-Reply-To: <559D2B63.2000007@westnet.com.au>
+In-Reply-To: <20150712220154.7166.48327.stgit@bhelgaas-glaptop2.roam.corp.google.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>, linux-m68k@vger.kernel.org
-Cc: yannick.gicquel@open.eurogiciel.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, x86@kernel.org, linuxppc-dev@lists.ozlabs.org
 
-Hi Greg,
+On Sun, 12 Jul 2015, Bjorn Helgaas wrote:
 
-Le 08/07/2015 15:53, Greg Ungerer a =E9crit :
-> Hi Yannick,
->
-> On 08/07/15 19:51, Yannick GICQUEL wrote:
->> Even if SRAM is not used, this is required to avoid inconsistency at=
-=20
->> runtime.
->> Otherwise, an assertion failed in ld.so during init process executio=
-n:
->>
->> Inconsistency detected by ld.so: rtld.c: 1290: dl_main: Assertion=20
->> `_rtld_local._dl_rtld_map.l_libname' failed!
->
-> Can you explain further?
-> Is this really the underlying problem?
-> Surely the presence of the SRAM block mapped in shouldn't
-> have any impact on running applications.
+> The per-cpu vector_irq[] table is indexed by CPU vector numbers, and each
+> entry contains an IRQ number.
+> 
+> Rename the special values VECTOR_UNDEFINED and VECTOR_RETRIGGERED to
+> IRQ_UNDEFINED and IRQ_RETRIGGERED to indicate that they are in the IRQ
+> number space, not the CPU vector number space.
 
-I think this is due to SRAM backdoor default activation on m5441x.
+Makes some sense, but OTOH vector_irq actually reflects the vector
+state not the irq number state. The fact that we store the Linux irq
+number in vector_irq is just an implementation detail.
 
-cf. reference manual (p.190):
-(...)By default, the RAMBAR is invalid, but the backdoor is enabled. In=
-=20
-this state, any core accesses to the SRAM are routed through the=20
-backdoor(...)
+VECTOR_UNDEFINED is certainly a misnomer; that should be VECTOR_UNUSED
 
-Also, i think this backdoor must be disabled. In section 4.3.1.2.3, its=
-=20
-explained the "the address mode for normal accesses is determined by th=
-e=20
-MMUBAR, RAMBARs, and ACRs in the priority order listed(...)", before=20
-handling these accesses as virtual addresses.
+VECTOR_RETRIGGERED is pretty accurate. In the case we retrigger an
+interrupt, we merily use the Linux irq number to figure out which
+vector to kick. And after we retriggered it, we lose the association
+to the Linux irq number completely.
 
-Thus, when the backdoor is enable, the virtual address translation is=20
-not performed for the SRAM 64Kb range.
+That said, I'm working on storing the irq descriptor pointer in
+vector_irq instead of the irq number, which has the advantage that we
+avoid the lookup of the irq descriptor in the interrupt hotpath.
 
+Thanks,
 
-I just realized that i didn't simply try disabling the backdoor by=20
-setting RAMBAR to 0.
-I have just done this test and this seems sufficient to fix the=20
-assertion failed at ld.so
-execution.
-
-> Where does CONFIG_SRAM_BASE come from?
-> I didn't see in this series anywhere.
-Old "artifact" from initial FSL BSP ; agreed : it should not be=20
-delivered as is.
-Also, may be this code could be moved outside head.S and put in a m5441=
-=20
-related file... it need a try before patch update.
-
-> Regards
-> Greg
->
->
->
->> Signed-off-by: Yannick GICQUEL <yannick.gicquel@gmail.com>
->> ---
->>   arch/m68k/coldfire/head.S | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/arch/m68k/coldfire/head.S b/arch/m68k/coldfire/head.S
->> index fa31be2..bf39885 100644
->> --- a/arch/m68k/coldfire/head.S
->> +++ b/arch/m68k/coldfire/head.S
->> @@ -151,6 +151,15 @@ _start0:
->>
->>   _start:
->>       nop                    /* filler */
->> +#if defined(CONFIG_M5441x)
->> +#if defined(CONFIG_SRAM_BASE)
->> +    movel    #(CONFIG_SRAM_BASE+0x221), %d0
->> +#else
->> +    movel    #(0x8ff00000+0x221), %d0
->> +#endif
->> +    movec    %d0, %rambar1
->> +#endif
->> +
->>       movew    #0x2700, %sr            /* no interrupts */
->>       movel    #CACHE_INIT,%d0            /* disable cache */
->>       movec    %d0,%CACR
->>
->
+	tglx
