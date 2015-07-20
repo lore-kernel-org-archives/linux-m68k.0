@@ -1,90 +1,152 @@
-From: Arno Griffioen <arno@ancienthardware.org>
-Subject: Re: New maintainer and hosting needed for linux-m68k.org services
- (DNS, Email, Web)
-Date: Mon, 20 Jul 2015 07:30:54 +0200
-Message-ID: <20150720053054.GA4121@attic.nerdnet.nl>
-References: <20150716094407.GH14954@ancienthardware.org>
- <CAMuHMdULThNpYzHQuoHiuC0qmc9=OrC3f24d4i_g_ftG4V69bQ@mail.gmail.com>
+From: Yijing Wang <wangyijing@huawei.com>
+Subject: [PATCH part3 v12 07/10] PCI: Create pci host bridge prior to root bus
+Date: Mon, 20 Jul 2015 20:01:15 +0800
+Message-ID: <1437393678-4077-8-git-send-email-wangyijing@huawei.com>
+References: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from cpsmtpb-ews01.kpnxchange.com ([213.75.39.4]:63320 "EHLO
-	cpsmtpb-ews01.kpnxchange.com" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1754058AbbGTFa6 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 20 Jul 2015 01:30:58 -0400
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdULThNpYzHQuoHiuC0qmc9=OrC3f24d4i_g_ftG4V69bQ@mail.gmail.com>
+In-Reply-To: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arno Griffioen <arno@ancienthardware.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, linux-xtensa@linux-xtensa.org, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Yijing Wang <wangyijing@huawei.com>
 
-On Sun, Jul 19, 2015 at 11:25:59AM +0200, Geert Uytterhoeven wrote:
-> Thanks a lot for taking care of linux-m68k.org for the past (almost) 18 years!
+Pci_host_bridge hold the domain number, we need
+to assign domain number prior to root bus creation,
+because root bus need to know the domain number
+to check whether it's alreay exist. Also it's
+preparation for separating pci_host_bridge creation
+from pci_create_root_bus().
 
-No prob! Case of having the resources available at the time and just 
-fun doing it.
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
+---
+ drivers/pci/probe.c |   58 +++++++++++++++++++++++++++-----------------------
+ 1 files changed, 31 insertions(+), 27 deletions(-)
 
-The resources may come to an end and life is sorta getting in the way at the
-moment so I want to make sure things are moved to a new site and maintainer 
-before things start to break :)
-
-> As one of the big users of the email service, I can offer to have
-> linux-m68k.org hosted at Gandi (I have my company domain there, too).
-> That would include DNS and email forwarding.
-
-First I'd lke to thank everyone who has already offered (virtual-)server 
-capacity to host this! Looks like it should not be an issue to move this
-over to a different location/site.
-
-But to keep things easily maintainable, a solution like Geert proposes is 
-probably the most practical.
-
-'Hitch-hiking' on top of an existing service means that it removed most of
-the secondary work like keeping the underlying setup (OS, spamfilters, etc.)
-up to date for the person administering the forwarding adresses.
-
-The email forwarding itself is little or no work as modifications/update on 
-the adresses are few and far between. Once it's set up it's mostly done..
-
-> For the website (This is static pages only, right? How big is it currently?),
-> I have to check whether I can easily add a vhost for that.
-> It could easily point elsewhere, too.
-> I do not have time to actively maintain the website's pages, though.
-
-Website is as far as I know all static pages with perhaps an ancient CGI
-script that's probably broken anyway. Also there's the mac FTP site data but 
-that has already been moved to a HTTP setup in the past so that's plain files 
-too.
-
-We haven't had an active webmaster for the last 8 to 10 years I think so 
-yeah.. It's pretty ancient :)
-
-I hate doing HTML or most *ML stuff myself so I have not really touched 
-it.
-
-> Is there anything else than DNS, email forwarding, and website, cfr. the
-> "etc."?
-
-Not as far as I can see.
-
-Mailing list(s) have been on vger for ages and other services like CVS 
-trees and the like have always been hosted on various other machines
-in different locations over time. Same for some of the subdomains like
-the NeXT stuff.
-
-So it's basically:
-
-- DNS zones
-- Email alias forwarding (no local mailboxes)
-- (static) Webpages
-
-I agree that putting DNS+email forwarding with a domain registry is
-probably the easiest to do. 
-
-The webpages could be hosted on a simple virtual server or at some time
-moved to some content-management setup to make it more easily maintainable
-for others if.
-
-							Bye, Arno.
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 0ae8bf2..cb525aa 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -515,7 +515,7 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ 	kfree(bridge);
+ }
+ 
+-static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
++static struct pci_host_bridge *pci_alloc_host_bridge(void)
+ {
+ 	struct pci_host_bridge *bridge;
+ 
+@@ -524,7 +524,6 @@ static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
+ 		return NULL;
+ 
+ 	INIT_LIST_HEAD(&bridge->windows);
+-	bridge->bus = b;
+ 	return bridge;
+ }
+ 
+@@ -1938,48 +1937,53 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ {
+ 	int error;
+ 	struct pci_host_bridge *bridge;
+-	struct pci_bus *b, *b2;
++	struct pci_bus *b;
+ 	struct resource_entry *window, *n;
+ 	struct resource *res;
+ 	resource_size_t offset;
+ 	char bus_addr[64];
+ 	char *fmt;
+ 
+-	b = pci_alloc_bus(NULL);
+-	if (!b)
++	bridge = pci_alloc_host_bridge();
++	if (!bridge)
+ 		return NULL;
+ 
+-	b->sysdata = sysdata;
+-	b->ops = ops;
+-	b->number = b->busn_res.start = bus;
+-	pci_bus_assign_domain_nr(b, parent);
+-	b2 = pci_find_bus(pci_domain_nr(b), bus);
+-	if (b2) {
++	bridge->dev.parent = parent;
++	pci_host_assign_domain_nr(bridge, domain);
++
++	b = pci_find_bus(bridge->domain, bus);
++	if (b) {
+ 		/* If we already got to this bus through a different bridge, ignore it */
+-		dev_dbg(&b2->dev, "bus already known\n");
+-		goto err_out;
++		dev_dbg(&b->dev, "bus already known\n");
++		kfree(bridge);
++		return NULL;
+ 	}
+ 
+-	bridge = pci_alloc_host_bridge(b);
+-	if (!bridge)
+-		goto err_out;
+-
+-	bridge->domain = domain;
+-	bridge->dev.parent = parent;
+ 	bridge->dev.release = pci_release_host_bridge_dev;
+ 	dev_set_drvdata(&bridge->dev, sysdata);
+-	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
++	dev_set_name(&bridge->dev, "pci%04x:%02x", bridge->domain, bus);
+ 	error = pcibios_root_bridge_prepare(bridge);
+ 	if (error) {
+ 		kfree(bridge);
+-		goto err_out;
++		return NULL;
+ 	}
+ 
+ 	error = device_register(&bridge->dev);
+ 	if (error) {
+ 		put_device(&bridge->dev);
+-		goto err_out;
++		return NULL;
+ 	}
++
++	b = pci_alloc_bus(NULL);
++	if (!b)
++		goto unregister_host;
++
++	bridge->bus = b;
++	b->sysdata = sysdata;
++	b->ops = ops;
++	b->number = b->busn_res.start = bus;
++	pci_bus_assign_domain_nr(b, parent);
++
+ 	b->bridge = get_device(&bridge->dev);
+ 	device_enable_async_suspend(b->bridge);
+ 	pci_set_bus_of_node(b);
+@@ -1992,11 +1996,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ 	dev_set_name(&b->dev, "%04x:%02x", pci_domain_nr(b), bus);
+ 	error = pcibios_root_bus_prepare(bridge);
+ 	if (error)
+-		goto class_dev_reg_err;
++		goto free_bus;
+ 
+ 	error = device_register(&b->dev);
+ 	if (error)
+-		goto class_dev_reg_err;
++		goto free_bus;
+ 
+ 	pcibios_add_bus(b);
+ 
+@@ -2036,11 +2040,11 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int domain,
+ 
+ 	return b;
+ 
+-class_dev_reg_err:
++free_bus:
++	kfree(b);
+ 	put_device(&bridge->dev);
++unregister_host:
+ 	device_unregister(&bridge->dev);
+-err_out:
+-	kfree(b);
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(pci_create_root_bus);
+-- 
+1.7.1
