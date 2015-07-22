@@ -1,73 +1,33 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC v4 03/25] m68k/atari: Move Atari-specific code out of
- drivers/char/nvram.c
-Date: Wed, 22 Jul 2015 14:22:21 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1507221421100.4187@nippy.intranet>
-References: <20150712102527.356151908@telegraphics.com.au> <20150712102528.107134628@telegraphics.com.au> <87d1zwc4dj.fsf@igel.home> <alpine.LNX.2.00.1507141804300.1622@nippy.intranet> <55AF1364.3080701@gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH V4 2/6] mm: mlock: Add new mlock, munlock, and munlockall
+ system calls
+Date: Wed, 22 Jul 2015 11:16:10 +0200
+Message-ID: <55AF5F5A.3000707@suse.cz>
+References: <1437508781-28655-1-git-send-email-emunson@akamai.com> <1437508781-28655-3-git-send-email-emunson@akamai.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58584 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751756AbbGVEWp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Jul 2015 00:22:45 -0400
-In-Reply-To: <55AF1364.3080701@gmail.com>
+In-Reply-To: <1437508781-28655-3-git-send-email-emunson@akamai.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Eric B Munson <emunson@akamai.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.cz>, Heiko Carstens <heiko.carstens@de.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org
 
+On 07/21/2015 09:59 PM, Eric B Munson wrote:
+> With the refactored mlock code, introduce new system calls for mlock,
+> munlock, and munlockall.  The new calls will allow the user to specify
+> what lock states are being added or cleared.  mlock2 and munlock2 are
+> trivial at the moment, but a follow on patch will add a new mlock state
+> making them useful.
+>
+> munlock2 addresses a limitation of the current implementation.  If a
 
-On Wed, 22 Jul 2015, Michael Schmitz wrote:
+   ^ munlockall2?
 
-> Hi Finn,
-> 
-> I'm afraid I cannot test anything on Atari hardware at present - my 
-> Falcon ate it's IDE disk partition table with all the fun that entails. 
-
-That doesn't sound good.
-
-> Haven't even begun to try and recover that yet.
-> 
-> If you send a patch I could build a kernel and send that to Christian 
-> for testing (if he's got his Falcon up and running - might be a tad warm 
-> in the attic for that, in fact).
-
-Anyone with a suitable Atari, i.e. ATARIHW_PRESENT(TT_CLK), who can boot 
-both TOS and Linux could resolve the question. (Perhaps with an emulator?)
-
-Any old kernel binary would do, since atari_scsi should print either 
-"HOSTID=n" or "this_id n" at startup.
-
-If n doesn't agree with what TOS says about the host's SCSI ID, then I 
-think a trivial patch is safe enough. Especially if cat /proc/driver/nvram 
-produces a "SCSI host ID : m" that does agree with TOS.
-
-Regards,
-Finn
-
-> 
-> Cheers,
-> 
->     Michael
-> 
-> 
-> Am 14.07.15 um 20:17 schrieb Finn Thain:
-> > On Mon, 13 Jul 2015, Andreas Schwab wrote:
-> >
-> > > Finn Thain <fthain@telegraphics.com.au> writes:
-> > >
-> > > > BTW, I didn't change the SCSI ID location in NVRAM. This code says 16
-> > > > whereas atari_scsi says 14. Which one is correct?
-> > > I think atari_scsi is wrong.  The best source I could find
-> > > (http://www.gratifiant.com/nvram-falcon-t561185) places it after the
-> > > video mode byte, thus at byte 16.
-> > Thanks for that. BTW, I googled a phrase from that page and found this one
-> >    http://toshyp.atari.org/en/004009.html
-> > which may be closer to the source.
-> >
-> > I'll send a patch if someone can offer to test such a change to atari_scsi
-> > (or merely confirm that the SCSI ID setting in TOS does not match this_id
-> > given in dmesg).
-> >
-> 
+> user calls mlockall(MCL_CURRENT | MCL_FUTURE) and then later decides
+> that MCL_FUTURE should be removed, they would have to call munlockall()
+> followed by mlockall(MCL_CURRENT) which could potentially be very
+> expensive.  The new munlockall2 system call allows a user to simply
+> clear the MCL_FUTURE flag.
+>
