@@ -1,57 +1,79 @@
-From: "Christian T. Steigies" <cts@debian.org>
-Subject: Re: [RFC v4 03/25] m68k/atari: Move Atari-specific code out of
- drivers/char/nvram.c
-Date: Wed, 22 Jul 2015 16:32:27 +0200
-Message-ID: <20150722143227.GB4738@guido.earth.sol>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [RFC v4 03/25] m68k/atari: Move Atari-specific code out of drivers/char/nvram.c
+Date: Thu, 23 Jul 2015 11:46:44 +1200
+Message-ID: <CAOmrzkLS0BS8gj1tmkJr3_oXdUp--yOM3esZRodLHs=cAbKupw@mail.gmail.com>
 References: <20150712102527.356151908@telegraphics.com.au>
- <20150712102528.107134628@telegraphics.com.au>
- <87d1zwc4dj.fsf@igel.home>
- <alpine.LNX.2.00.1507141804300.1622@nippy.intranet>
- <55AF1364.3080701@gmail.com>
- <alpine.LNX.2.00.1507221421100.4187@nippy.intranet>
+	<20150712102528.107134628@telegraphics.com.au>
+	<87d1zwc4dj.fsf@igel.home>
+	<alpine.LNX.2.00.1507141804300.1622@nippy.intranet>
+	<55AF1364.3080701@gmail.com>
+	<alpine.LNX.2.00.1507221421100.4187@nippy.intranet>
+	<20150722143227.GB4738@guido.earth.sol>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-in-01.arcor-online.net ([151.189.21.41]:53416 "EHLO
-	mail-in-01.arcor-online.net" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S964934AbbGVOdm (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 22 Jul 2015 10:33:42 -0400
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1507221421100.4187@nippy.intranet>
+Received: from mail-ig0-f169.google.com ([209.85.213.169]:34496 "EHLO
+	mail-ig0-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753659AbbGVXqp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Jul 2015 19:46:45 -0400
+In-Reply-To: <20150722143227.GB4738@guido.earth.sol>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-On Wed, Jul 22, 2015 at 02:22:21PM +1000, Finn Thain wrote:
-> 
-> On Wed, 22 Jul 2015, Michael Schmitz wrote:
-> 
-> > Hi Finn,
-> > 
-> > I'm afraid I cannot test anything on Atari hardware at present - my 
-> > Falcon ate it's IDE disk partition table with all the fun that entails. 
-> 
-> That doesn't sound good.
-> 
-> > Haven't even begun to try and recover that yet.
-> > 
-> > If you send a patch I could build a kernel and send that to Christian 
-> > for testing (if he's got his Falcon up and running - might be a tad warm 
-> > in the attic for that, in fact).
-> 
-> Anyone with a suitable Atari, i.e. ATARIHW_PRESENT(TT_CLK), who can boot 
-> both TOS and Linux could resolve the question. (Perhaps with an emulator?)
+Hi Christian,
 
-The Falcon is not powered on currently but it should still work. What should
-I test?
+if I understand Finn right, he needs the SCSI host ID reported for the
+Falcon SCSI chip, as found in this kernel log line:
 
-> Any old kernel binary would do, since atari_scsi should print either 
-> "HOSTID=n" or "this_id n" at startup.
-> 
-> If n doesn't agree with what TOS says about the host's SCSI ID, then I 
-> think a trivial patch is safe enough. Especially if cat /proc/driver/nvram 
-> produces a "SCSI host ID : m" that does agree with TOS.
+scsi host0: Atari native SCSI, io_port 0x0, n_io_port 0, base 0x0, irq
+15, can_queue 8, cmd_per_lun 1, sg_tablesize 0, this_id 7, flags { },
+options { REAL_DMA SUPPORT_TAGS }
 
-Christian
+(see this_id; output from one of my ARAnyM instances, kernel 3.19rc6).
+Also, the SCSI host ID reported by cat /proc/drivers/nvram (also 7, in
+my case)
+
+TOS reports the SCSI host ID during boot (when scannig for bootable
+disks) IIRC. There may be some control panel to view the NVRAM
+settings as well (stuff like default video mode was accessible from
+the CT60 control panel so the SCSI host ID might be there as well).
+
+Cheers,
+
+  Michael
+
+
+
+On Thu, Jul 23, 2015 at 2:32 AM, Christian T. Steigies <cts@debian.org> wrote:
+> On Wed, Jul 22, 2015 at 02:22:21PM +1000, Finn Thain wrote:
+>>
+>> On Wed, 22 Jul 2015, Michael Schmitz wrote:
+>>
+>> > Hi Finn,
+>> >
+>> > I'm afraid I cannot test anything on Atari hardware at present - my
+>> > Falcon ate it's IDE disk partition table with all the fun that entails.
+>>
+>> That doesn't sound good.
+>>
+>> > Haven't even begun to try and recover that yet.
+>> >
+>> > If you send a patch I could build a kernel and send that to Christian
+>> > for testing (if he's got his Falcon up and running - might be a tad warm
+>> > in the attic for that, in fact).
+>>
+>> Anyone with a suitable Atari, i.e. ATARIHW_PRESENT(TT_CLK), who can boot
+>> both TOS and Linux could resolve the question. (Perhaps with an emulator?)
+>
+> The Falcon is not powered on currently but it should still work. What should
+> I test?
+>
+>> Any old kernel binary would do, since atari_scsi should print either
+>> "HOSTID=n" or "this_id n" at startup.
+>>
+>> If n doesn't agree with what TOS says about the host's SCSI ID, then I
+>> think a trivial patch is safe enough. Especially if cat /proc/driver/nvram
+>> produces a "SCSI host ID : m" that does agree with TOS.
+>
+> Christian
