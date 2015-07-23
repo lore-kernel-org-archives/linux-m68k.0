@@ -1,44 +1,46 @@
-From: "Keane, Frieda (RGC) ANA Consultant"
-	<Frieda.Keane@bartshealth.nhs.uk>
-Subject: =?iso-8859-1?Q?Actualizaci=F3n_t=E9cnica?=
-Date: Thu, 23 Jul 2015 04:32:21 +0000
-Message-ID: <20150723043225.4EEF044809A__1597.79842147163$1437625961$gmane$org@nhs-pd1e-esg104.ad1.nhs.net>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH V4 2/6] mm: mlock: Add new mlock, munlock, and munlockall
+ system calls
+Date: Thu, 23 Jul 2015 08:58:31 +0200
+Message-ID: <20150723065830.GA5919@linux-mips.org>
+References: <1437508781-28655-1-git-send-email-emunson@akamai.com>
+ <1437508781-28655-3-git-send-email-emunson@akamai.com>
+ <20150721134441.d69e4e1099bd43e56835b3c5@linux-foundation.org>
+ <1437528316.16792.7.camel@ellerman.id.au>
+ <20150722141501.GA3203@akamai.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Language: en-GB
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <owner-linux-mm@kvack.org>
+Content-Disposition: inline
+In-Reply-To: <20150722141501.GA3203@akamai.com>
+Sender: owner-linux-mm@kvack.org
+To: Eric B Munson <emunson@akamai.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Michal Hocko <mhocko@suse.cz>, linux-mm@kvack.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, linux-am33-list@redhat.com, Geert Uytterhoeven <geert@linux-m68k.org>, Vlastimil Babka <vbabka@suse.cz>, Guenter Roeck <linux@roeck-us.net>, linux-xtensa@linux-xtensa.org, linux-s390@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-cris-kernel@axis.com, linux-parisc@vger.kernel.orglin
 List-Id: linux-m68k@vger.kernel.org
 
-Webmail Cuenta Advertencia
+On Wed, Jul 22, 2015 at 10:15:01AM -0400, Eric B Munson wrote:
 
-Este correo es de servicio de Webmail; deseamos se=F1alar a su atenci=F3=
-n la
-Condiciones de su ACCOUNT.WE correo electr=F3nico acaba de cuenta de qu=
-e se ha superado el l=EDmite de base de datos de correo electr=F3nico d=
-e 500 MB de cuotas y su IP direcci=F3n de correo electr=F3nico est=E1 c=
-ausando el conflicto, ya que se ha accedido en Ubicaci=F3n del servidor=
- diferente. Es necesario actualizar y ampliar su l=EDmite de cuota de c=
-orreo electr=F3nico antes de que pueda seguir utilizando su correo elec=
-tr=F3nico.
-Modificar una cuota l=EDmite email a 2,6 GB, utilice el siguiente enlac=
-e web:
+> > 
+> > You haven't wired it up properly on powerpc, but I haven't mentioned it because
+> > I'd rather we did it.
+> > 
+> > cheers
+> 
+> It looks like I will be spinning a V5, so I will drop all but the x86
+> system calls additions in that version.
 
-=3D=3D=3D=3D=3D=3D=3D=3D> http://correomx.yolasite.com/contact-us.php
+The MIPS bits are looking good however, so
 
-De no hacerlo, dar=E1 lugar al correo electr=F3nico desactivaci=F3n den=
-tro de 72 horas
-Gracias por su comprensi=F3n.
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-Derechos de Autor 2015
-Actualizaci=F3n t=E9cnica
-The information contained in this message is confidential and is intend=
-ed for the addressee only. If you have received this message in error o=
-r there are any problems, please notify the originator immediately. The=
- unauthorised use, disclosure, copying or alteration of this message is=
- strictly forbidden. This mail and any attachments have been scanned fo=
-r viruses prior to leaving the Barts Health NHS Trust network. Barts He=
-alth NHS Trust will not be liable for direct, special, indirect or cons=
-equential damages arising from alteration of the contents of this messa=
-ge by a third party or as a result of any virus being passed on.
+With my ack, will you keep them or maybe carry them as a separate patch?
+
+Cheers,
+
+  Ralf
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
