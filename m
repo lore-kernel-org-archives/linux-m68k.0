@@ -1,37 +1,165 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 02/26] char/nvram: Use bitwise OR to obtain Atari video mode data
-Date: Sat, 25 Jul 2015 17:46:01 +1000
-Message-ID: <20150725074600.033410118@telegraphics.com.au>
+Subject: [RFC v5 08/26] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
+Date: Sat, 25 Jul 2015 17:46:07 +1000
+Message-ID: <20150725074601.483330111@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42363 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754877AbbGYH4s (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 25 Jul 2015 03:56:48 -0400
-Content-Disposition: inline; filename=atari-proc-driver-nvram
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=nvram-generalize-ioctl
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+List-Id: linux-m68k@vger.kernel.org
+
+The drivers/char/nvram module has previously only supported RTC "CMOS"
+NVRAM, for which it provides appropriate checksum ioctls. Make these
+ioctls optional so the module can be re-used with other kinds of NVRAM.
+
+The ops struct methods that implement the ioctls now return error
+codes so that a multi-platform kernel binary can do the right thing when
+running on hardware without suitable NVRAM.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Christian T. Steigies <cts@debian.org>
 
 ---
- drivers/char/nvram.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Changed since v1:
+- Don't bother acquiring the mutex for unimplemented ioctls.
+
+---
+ drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
+ include/linux/nvram.h |    2 +
+ 2 files changed, 43 insertions(+), 30 deletions(-)
 
 Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-07-25 17:42:34.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-07-25 17:45:25.000000000 +1000
-@@ -702,7 +702,7 @@ static void atari_proc_infos(unsigned ch
- 		seq_printf(seq, "%ds%s\n", nvram[10],
- 		    nvram[10] < 8 ? ", no memory test" : "");
+--- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:31.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-07-25 17:45:33.000000000 +1000
+@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
+ 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+ }
  
--	vmode = (nvram[14] << 8) || nvram[15];
-+	vmode = (nvram[14] << 8) | nvram[15];
- 	seq_printf(seq,
- 	    "Video mode       : %s colors, %d columns, %s %s monitor\n",
- 	    colors[vmode & 7],
+-#if 0
+-void nvram_set_checksum(void)
++static long nvram_set_checksum(void)
+ {
+-	unsigned long flags;
++	spin_lock_irq(&rtc_lock);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
++}
++
++static long nvram_initialize(void)
++{
++	ssize_t i;
+ 
+-	spin_lock_irqsave(&rtc_lock, flags);
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		__nvram_write_byte(0, i);
+ 	__nvram_set_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
++	spin_unlock_irq(&rtc_lock);
++	return 0;
+ }
+-#endif  /*  0  */
+ 
+ static ssize_t nvram_get_size(void)
+ {
+@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
+ 	.read_byte      = nvram_read_byte,
+ 	.write_byte     = nvram_write_byte,
+ 	.get_size       = nvram_get_size,
++	.set_checksum   = nvram_set_checksum,
++	.initialize     = nvram_initialize,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+@@ -272,51 +283,51 @@ checksum_err:
+ static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
+                              unsigned long arg)
+ {
+-	int i;
++	long ret = -ENOTTY;
+ 
+ 	switch (cmd) {
+-
+ 	case NVRAM_INIT:
+ 		/* initialize NVRAM contents and checksum */
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
+ 
+-		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
+-
+-		for (i = 0; i < NVRAM_BYTES; ++i)
+-			__nvram_write_byte(0, i);
+-		__nvram_set_checksum();
+-
+-		spin_unlock_irq(&rtc_lock);
+-		mutex_unlock(&nvram_mutex);
+-		return 0;
+-
++		if (arch_nvram_ops.initialize != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.initialize();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
+ 	case NVRAM_SETCKS:
+ 		/* just set checksum, contents unchanged (maybe useful after
+ 		 * checksum garbaged somehow...) */
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
+ 
+-		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
+-		__nvram_set_checksum();
+-		spin_unlock_irq(&rtc_lock);
+-		mutex_unlock(&nvram_mutex);
+-		return 0;
+-
+-	default:
+-		return -ENOTTY;
++		if (arch_nvram_ops.set_checksum != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.set_checksum();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
+ 	}
++	return ret;
+ }
+ 
+ static int nvram_misc_open(struct inode *inode, struct file *file)
+ {
+ 	spin_lock(&nvram_state_lock);
+ 
++	/* Prevent multiple readers/writers if desired. */
+ 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
+-	    (nvram_open_mode & NVRAM_EXCL) ||
+-	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
++	    (nvram_open_mode & NVRAM_EXCL)) {
++		spin_unlock(&nvram_state_lock);
++		return -EBUSY;
++	}
++
++	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
++	if ((arch_nvram_ops.set_checksum != NULL) &&
++	    (file->f_mode & FMODE_WRITE) &&
++	    (nvram_open_mode & NVRAM_WRITE)) {
+ 		spin_unlock(&nvram_state_lock);
+ 		return -EBUSY;
+ 	}
+Index: linux/include/linux/nvram.h
+===================================================================
+--- linux.orig/include/linux/nvram.h	2015-07-25 17:45:31.000000000 +1000
++++ linux/include/linux/nvram.h	2015-07-25 17:45:33.000000000 +1000
+@@ -17,6 +17,8 @@ struct nvram_ops {
+ 	unsigned char   (*read_byte)(int);
+ 	void            (*write_byte)(unsigned char, int);
+ 	ssize_t         (*get_size)(void);
++	long            (*set_checksum)(void);
++	long            (*initialize)(void);
+ };
+ 
+ extern const struct nvram_ops arch_nvram_ops;
