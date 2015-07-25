@@ -1,116 +1,145 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 25/26] m68k/mac: Fix PRAM accessors
-Date: Sat, 25 Jul 2015 17:46:24 +1000
-Message-ID: <20150725074605.633325233@telegraphics.com.au>
+Subject: [RFC v5 19/26] nvram: Drop nvram_* symbol exports and prototypes
+Date: Sat, 25 Jul 2015 17:46:18 +1000
+Message-ID: <20150725074604.173324419@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-fix-pram-accessors
+Content-Disposition: inline; filename=remove-exported-nvram-functions
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-api@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
+
+Drivers now use the arch_nvram_ops calls so remove the function exports and
+prototypes. nvram_check_checksum() is unused so remove it.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/m68k/atari/nvram.c |    6 +++---
+ drivers/char/nvram.c    |   27 +++++----------------------
+ include/linux/nvram.h   |    8 --------
+ 3 files changed, 8 insertions(+), 33 deletions(-)
 
-Tested on a PowerBook 520 and Quadra 650.
-
-Changes since v2:
-- Make use of the RTC_* macros from the previous patch and add a few more
-besides.
-
----
- arch/m68k/mac/misc.c     |   39 +++++++++++++++++++++++++++++++++------
- include/uapi/linux/pmu.h |    2 ++
- 2 files changed, 35 insertions(+), 6 deletions(-)
-
-Index: linux/arch/m68k/mac/misc.c
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-07-25 17:45:54.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-07-25 17:45:55.000000000 +1000
-@@ -119,19 +119,22 @@ static void pmu_write_time(long data)
- static unsigned char pmu_pram_read_byte(int offset)
+--- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:42.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-07-25 17:45:47.000000000 +1000
+@@ -82,13 +82,12 @@ static ssize_t nvram_size;
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
+ 
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
  {
- 	struct adb_request req;
--	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
--			(offset >> 8) & 0xFF, offset & 0xFF) < 0)
-+
-+	if (pmu_request(&req, NULL, 3, PMU_READ_XPRAM,
-+	                offset & 0xFF, 1) < 0)
- 		return 0;
- 	while (!req.complete)
- 		pmu_poll();
--	return req.reply[3];
-+
-+	return req.reply[1];
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
  }
+-EXPORT_SYMBOL(__nvram_read_byte);
  
- static void pmu_pram_write_byte(unsigned char data, int offset)
+-unsigned char nvram_read_byte(int i)
++static unsigned char nvram_read_byte(int i)
  {
- 	struct adb_request req;
--	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
--			(offset >> 8) & 0xFF, offset & 0xFF, data) < 0)
-+
-+	if (pmu_request(&req, NULL, 4, PMU_WRITE_XPRAM,
-+	                offset & 0xFF, 1, data) < 0)
- 		return;
- 	while (!req.complete)
- 		pmu_poll();
-@@ -257,6 +260,16 @@ static void via_rtc_send(__u8 data)
- #define RTC_REG_WRITE_PROTECT   13
- 
- /*
-+ * Inside Mac has no information about two-byte RTC commands but
-+ * the MESS source code has the essentials.
-+ */
-+
-+#define RTC_REG_XPRAM           14
-+#define RTC_CMD_XPRAM_READ      (RTC_CMD_READ(RTC_REG_XPRAM) << 8)
-+#define RTC_CMD_XPRAM_WRITE     (RTC_CMD_WRITE(RTC_REG_XPRAM) << 8)
-+#define RTC_CMD_XPRAM_ARG(a)    (((a & 0xE0) << 3) | ((a & 0x1F) << 2))
-+
-+/*
-  * Execute a VIA PRAM/RTC command. For read commands
-  * data should point to a one-byte buffer for the
-  * resulting data. For write commands it should point
-@@ -303,11 +316,25 @@ static void via_rtc_command(int command,
- 
- static unsigned char via_pram_read_byte(int offset)
- {
--	return 0;
-+	unsigned char temp;
-+
-+	via_rtc_command(RTC_CMD_XPRAM_READ | RTC_CMD_XPRAM_ARG(offset), &temp);
-+
-+	return temp;
+ 	unsigned long flags;
+ 	unsigned char c;
+@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 	return c;
  }
+-EXPORT_SYMBOL(nvram_read_byte);
  
- static void via_pram_write_byte(unsigned char data, int offset)
+ /* This races nicely with trying to read with checksum checking (nvram_read) */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
  {
-+	unsigned char temp;
-+
-+	temp = 0x55;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
-+
-+	temp = data;
-+	via_rtc_command(RTC_CMD_XPRAM_WRITE | RTC_CMD_XPRAM_ARG(offset), &temp);
-+
-+	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
  }
+-EXPORT_SYMBOL(__nvram_write_byte);
  
- /*
-Index: linux/include/uapi/linux/pmu.h
+-void nvram_write_byte(unsigned char c, int i)
++static void nvram_write_byte(unsigned char c, int i)
+ {
+ 	unsigned long flags;
+ 
+@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
+ 	__nvram_write_byte(c, i);
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ }
+-EXPORT_SYMBOL(nvram_write_byte);
+ 
+ /* On PCs, the checksum is built only over bytes 2..31 */
+ #define PC_CKS_RANGE_START	2
+ #define PC_CKS_RANGE_END	31
+ #define PC_CKS_LOC		32
+ 
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned short sum = 0;
+@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
+ 	    __nvram_read_byte(PC_CKS_LOC+1);
+ 	return (sum & 0xffff) == expect;
+ }
+-EXPORT_SYMBOL(__nvram_check_checksum);
+-
+-int nvram_check_checksum(void)
+-{
+-	unsigned long flags;
+-	int rv;
+-
+-	spin_lock_irqsave(&rtc_lock, flags);
+-	rv = __nvram_check_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
+-	return rv;
+-}
+-EXPORT_SYMBOL(nvram_check_checksum);
+ 
+ static void __nvram_set_checksum(void)
+ {
+Index: linux/include/linux/nvram.h
 ===================================================================
---- linux.orig/include/uapi/linux/pmu.h	2015-07-25 17:42:33.000000000 +1000
-+++ linux/include/uapi/linux/pmu.h	2015-07-25 17:45:55.000000000 +1000
-@@ -18,7 +18,9 @@
- #define PMU_POWER_CTRL		0x11	/* control power of some devices */
- #define PMU_ADB_CMD		0x20	/* send ADB packet */
- #define PMU_ADB_POLL_OFF	0x21	/* disable ADB auto-poll */
-+#define PMU_WRITE_XPRAM		0x32	/* write eXtended Parameter RAM */
- #define PMU_WRITE_NVRAM		0x33	/* write non-volatile RAM */
-+#define PMU_READ_XPRAM		0x3a	/* read eXtended Parameter RAM */
- #define PMU_READ_NVRAM		0x3b	/* read non-volatile RAM */
- #define PMU_SET_RTC		0x30	/* set real-time clock */
- #define PMU_READ_RTC		0x38	/* read real-time clock */
+--- linux.orig/include/linux/nvram.h	2015-07-25 17:45:42.000000000 +1000
++++ linux/include/linux/nvram.h	2015-07-25 17:45:47.000000000 +1000
+@@ -3,14 +3,6 @@
+ 
+ #include <uapi/linux/nvram.h>
+ 
+-/* __foo is foo without grabbing the rtc_lock - get it yourself */
+-extern unsigned char __nvram_read_byte(int i);
+-extern unsigned char nvram_read_byte(int i);
+-extern void __nvram_write_byte(unsigned char c, int i);
+-extern void nvram_write_byte(unsigned char c, int i);
+-extern int __nvram_check_checksum(void);
+-extern int nvram_check_checksum(void);
+-
+ struct nvram_ops {
+ 	ssize_t         (*read)(char *, size_t, loff_t *);
+ 	ssize_t         (*write)(char *, size_t, loff_t *);
+Index: linux/arch/m68k/atari/nvram.c
+===================================================================
+--- linux.orig/arch/m68k/atari/nvram.c	2015-07-25 17:45:36.000000000 +1000
++++ linux/arch/m68k/atari/nvram.c	2015-07-25 17:45:47.000000000 +1000
+@@ -33,13 +33,13 @@
+  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+  */
+ 
+-unsigned char __nvram_read_byte(int i)
++static unsigned char __nvram_read_byte(int i)
+ {
+ 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+ }
+ 
+ /* This races nicely with trying to read with checksum checking */
+-void __nvram_write_byte(unsigned char c, int i)
++static void __nvram_write_byte(unsigned char c, int i)
+ {
+ 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ }
+@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
+ #define ATARI_CKS_RANGE_END	47
+ #define ATARI_CKS_LOC		48
+ 
+-int __nvram_check_checksum(void)
++static int __nvram_check_checksum(void)
+ {
+ 	int i;
+ 	unsigned char sum = 0;
