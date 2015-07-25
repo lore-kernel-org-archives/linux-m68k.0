@@ -1,99 +1,235 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 01/26] scsi/atari_scsi: Dont select CONFIG_NVRAM
-Date: Sat, 25 Jul 2015 17:46:00 +1000
-Message-ID: <20150725074559.793301931@telegraphics.com.au>
+Subject: [RFC v5 09/26] char/nvram: Implement NVRAM read/write methods
+Date: Sat, 25 Jul 2015 17:46:08 +1000
+Message-ID: <20150725074601.723320336@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline; filename=atari-nvram-disable
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-scsi@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=nvram-generalize-read-write
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-T24gcG93ZXJwYywgc2V0dGluZyBDT05GSUdfTlZSQU09biBidWlsZHMgYSBrZXJuZWwgd2l0aCBu
-byBOVlJBTSBzdXBwb3J0LgpTZXR0aW5nIENPTkZJR19OVlJBTT1tIGVuYWJsZXMgdGhlIC9kZXYv
-bnZyYW0gbWlzYyBkZXZpY2UgbW9kdWxlIHdpdGhvdXQKZW5hYmxpbmcgTlZSQU0gc3VwcG9ydCBp
-biBkcml2ZXJzLiBTZXR0aW5nIENPTkZJR19OVlJBTT15IGVuYWJsZXMgdGhlCm1pc2MgZGV2aWNl
-IChidWlsdC1pbikgYW5kIGFsc28gZW5hYmxlcyBOVlJBTSBzdXBwb3J0IGluIGRyaXZlcnMuCgpt
-NjhrIHNoYXJlcyB0aGUgdmFsa3lyaWVmYiBkcml2ZXIgd2l0aCBwb3dlcnBjLCBhbmQgc2luY2Ug
-dGhhdCBkcml2ZXIgdXNlcwpOVlJBTSwgaXQgaXMgYWZmZWN0ZWQgYnkgQ09ORklHX0FUQVJJX1ND
-U0ksIGJlY2F1c2Ugb2YgdGhlIHVzZSBvZgoic2VsZWN0IE5WUkFNIi4KCkFkb3B0IHRoZSBwb3dl
-cnBjIGNvbnZlbnRpb24gb24gbTY4ayB0byBhdm9pZCBzdXJwcmlzZXMuCgpTaWduZWQtb2ZmLWJ5
-OiBGaW5uIFRoYWluIDxmdGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdT4KVGVzdGVkLWJ5OiBDaHJp
-c3RpYW4gVC4gU3RlaWdpZXMgPGN0c0BkZWJpYW4ub3JnPgoKLS0tCgpUaGlzIHBhdGNoIHRlbXBv
-cmFyaWx5IGRpc2FibGVzIENPTkZJR19OVlJBTSBvbiBBdGFyaSwgdG8gcHJldmVudCBidWlsZApm
-YWlsdXJlcyB3aGVuIGJpc2VjdGluZyB0aGUgcmVzdCBvZiB0aGlzIHBhdGNoIHNlcmllcy4gSXQg
-Z2V0cyBlbmFibGVkCmFnYWluIHdpdGggdGhlIGludHJvZHVjdGlvbiBvZiBDT05GSUdfSEFWRV9B
-UkNIX05WUkFNX09QUywgb25jZSB0aGUKbnZyYW1fKiBnbG9iYWwgZnVuY3Rpb25zIGhhdmUgYmVl
-biBtb3ZlZCB0byBhbiBvcHMgc3RydWN0LgoKVGhlIHJlbW92YWwgb2YgInNlbGVjdCBOVlJBTSIg
-bWF5IG1lYW4gdGhhdCBzb21lIGtlcm5lbCBjb25maWdzIChzdWNoCmFzIERlYmlhbi9tNjhrKSBt
-YXkgbmVlZCB0d2Vha2luZy4KCi0tLQogZHJpdmVycy9jaGFyL0tjb25maWcgICAgICB8ICAgIDUg
-Ky0tLS0KIGRyaXZlcnMvc2NzaS9LY29uZmlnICAgICAgfCAgICA2ICsrKy0tLQogZHJpdmVycy9z
-Y3NpL2F0YXJpX3Njc2kuYyB8ICAgIDggKysrKy0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCkluZGV4OiBsaW51eC9kcml2ZXJzL2NoYXIvS2Nv
-bmZpZwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmlnL2RyaXZlcnMvY2hhci9LY29uZmlnCTIwMTUt
-MDctMjUgMTc6NDI6MzQuMDAwMDAwMDAwICsxMDAwCisrKyBsaW51eC9kcml2ZXJzL2NoYXIvS2Nv
-bmZpZwkyMDE1LTA3LTI1IDE3OjQ1OjI0LjAwMDAwMDAwMCArMTAwMApAQCAtMjQ3LDcgKzI0Nyw3
-IEBAIHNvdXJjZSAiZHJpdmVycy9jaGFyL2h3X3JhbmRvbS9LY29uZmlnIgogCiBjb25maWcgTlZS
-QU0KIAl0cmlzdGF0ZSAiL2Rldi9udnJhbSBzdXBwb3J0IgotCWRlcGVuZHMgb24gQVRBUkkgfHwg
-WDg2IHx8IChBUk0gJiYgUlRDX0RSVl9DTU9TKSB8fCBHRU5FUklDX05WUkFNCisJZGVwZW5kcyBv
-biBYODYgfHwgKEFSTSAmJiBSVENfRFJWX0NNT1MpIHx8IEdFTkVSSUNfTlZSQU0KIAktLS1oZWxw
-LS0tCiAJICBJZiB5b3Ugc2F5IFkgaGVyZSBhbmQgY3JlYXRlIGEgY2hhcmFjdGVyIHNwZWNpYWwg
-ZmlsZSAvZGV2L252cmFtCiAJICB3aXRoIG1ham9yIG51bWJlciAxMCBhbmQgbWlub3IgbnVtYmVy
-IDE0NCB1c2luZyBta25vZCAoIm1hbiBta25vZCIpLApAQCAtMjY1LDkgKzI2NSw2IEBAIGNvbmZp
-ZyBOVlJBTQogCSAgc2hvdWxkIE5FVkVSIGlkbHkgdGFtcGVyIHdpdGggaXQuIFNlZSBSYWxmIEJy
-b3duJ3MgaW50ZXJydXB0IGxpc3QKIAkgIGZvciBhIGd1aWRlIHRvIHRoZSB1c2Ugb2YgQ01PUyBi
-eXRlcyBieSB5b3VyIEJJT1MuCiAKLQkgIE9uIEF0YXJpIG1hY2hpbmVzLCAvZGV2L252cmFtIGlz
-IGFsd2F5cyBjb25maWd1cmVkIGFuZCBkb2VzIG5vdCBuZWVkCi0JICB0byBiZSBzZWxlY3RlZC4K
-LQogCSAgVG8gY29tcGlsZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hvb3NlIE0gaGVyZTog
-dGhlCiAJICBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgbnZyYW0uCiAKSW5kZXg6IGxpbnV4L2RyaXZl
-cnMvc2NzaS9LY29uZmlnCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvZHJpdmVycy9zY3NpL0tj
-b25maWcJMjAxNS0wNy0yNSAxNzo0MjozNC4wMDAwMDAwMDAgKzEwMDAKKysrIGxpbnV4L2RyaXZl
-cnMvc2NzaS9LY29uZmlnCTIwMTUtMDctMjUgMTc6NDU6MjQuMDAwMDAwMDAwICsxMDAwCkBAIC0x
-NjA5LDE0ICsxNjA5LDE0IEBAIGNvbmZpZyBBVEFSSV9TQ1NJCiAJdHJpc3RhdGUgIkF0YXJpIG5h
-dGl2ZSBTQ1NJIHN1cHBvcnQiCiAJZGVwZW5kcyBvbiBBVEFSSSAmJiBTQ1NJCiAJc2VsZWN0IFND
-U0lfU1BJX0FUVFJTCi0Jc2VsZWN0IE5WUkFNCiAJLS0taGVscC0tLQogCSAgSWYgeW91IGhhdmUg
-YW4gQXRhcmkgd2l0aCBidWlsdC1pbiBOQ1I1MzgwIFNDU0kgY29udHJvbGxlciAoVFQsCiAJICBG
-YWxjb24sIC4uLikgc2F5IFkgdG8gZ2V0IGl0IHN1cHBvcnRlZC4gT2YgY291cnNlIGFsc28sIGlm
-IHlvdSBoYXZlCiAJICBhIGNvbXBhdGlibGUgU0NTSSBjb250cm9sbGVyIChlLmcuIGZvciBNZWR1
-c2EpLgogCi0JICBUbyBjb21waWxlIHRoaXMgZHJpdmVyIGFzIGEgbW9kdWxlLCBjaG9vc2UgTSBo
-ZXJlOiB0aGUKLQkgIG1vZHVsZSB3aWxsIGJlIGNhbGxlZCBhdGFyaV9zY3NpLgorCSAgVG8gY29t
-cGlsZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hvb3NlIE0gaGVyZTogdGhlIG1vZHVsZSB3
-aWxsCisJICBiZSBjYWxsZWQgYXRhcmlfc2NzaS4gSWYgeW91IGFsc28gZW5hYmxlIE5WUkFNIHN1
-cHBvcnQsIHRoZSBTQ1NJCisJICBob3N0J3MgSUQgaXMgdGFrZW4gZnJvbSB0aGUgc2V0dGluZyBp
-biBUVCBSVEMgTlZSQU0uCiAKIAkgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIGJvdGggc3R5bGVzIG9m
-IE5DUiBpbnRlZ3JhdGlvbiBpbnRvIHRoZQogCSAgc3lzdGVtOiB0aGUgVFQgc3R5bGUgKHNlcGFy
-YXRlIERNQSksIGFuZCB0aGUgRmFsY29uIHN0eWxlICh2aWEKSW5kZXg6IGxpbnV4L2RyaXZlcnMv
-c2NzaS9hdGFyaV9zY3NpLmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgub3JpZy9kcml2ZXJzL3Njc2kv
-YXRhcmlfc2NzaS5jCTIwMTUtMDctMjUgMTc6NDI6MzQuMDAwMDAwMDAwICsxMDAwCisrKyBsaW51
-eC9kcml2ZXJzL3Njc2kvYXRhcmlfc2NzaS5jCTIwMTUtMDctMjUgMTc6NDU6MjQuMDAwMDAwMDAw
-ICsxMDAwCkBAIC04NzUsOSArODc1LDEwIEBAIHN0YXRpYyBpbnQgX19pbml0IGF0YXJpX3Njc2lf
-cHJvYmUoc3RydWMKIAlpZiAoQVRBUklIV19QUkVTRU5UKFRUX1NDU0kpICYmIHNldHVwX3NnX3Rh
-Ymxlc2l6ZSA+PSAwKQogCQlhdGFyaV9zY3NpX3RlbXBsYXRlLnNnX3RhYmxlc2l6ZSA9IHNldHVw
-X3NnX3RhYmxlc2l6ZTsKIAotCWlmIChzZXR1cF9ob3N0aWQgPj0gMCkgeworCWlmIChzZXR1cF9o
-b3N0aWQgPj0gMCkKIAkJYXRhcmlfc2NzaV90ZW1wbGF0ZS50aGlzX2lkID0gc2V0dXBfaG9zdGlk
-ICYgNzsKLQl9IGVsc2UgeworI2lmZGVmIENPTkZJR19OVlJBTQorCWVsc2UKIAkJLyogVGVzdCBp
-ZiBhIGhvc3QgaWQgaXMgc2V0IGluIHRoZSBOVlJhbSAqLwogCQlpZiAoQVRBUklIV19QUkVTRU5U
-KFRUX0NMSykgJiYgbnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgewogCQkJdW5zaWduZWQgY2hhciBi
-ID0gbnZyYW1fcmVhZF9ieXRlKDE0KTsKQEAgLTg4OCw4ICs4ODksNyBAQCBzdGF0aWMgaW50IF9f
-aW5pdCBhdGFyaV9zY3NpX3Byb2JlKHN0cnVjCiAJCQlpZiAoYiAmIDB4ODApCiAJCQkJYXRhcmlf
-c2NzaV90ZW1wbGF0ZS50aGlzX2lkID0gYiAmIDc7CiAJCX0KLQl9Ci0KKyNlbmRpZgogCiAjaWZk
-ZWYgUkVBTF9ETUEKIAkvKiBJZiBydW5uaW5nIG9uIGEgRmFsY29uIGFuZCBpZiB0aGVyZSdzIFRU
-LVJhbSAoaS5lLiwgbW9yZSB0aGFuIG9uZQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2
-QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4
-cHBjLWRldg==
+Refactor the RTC "CMOS" NVRAM functions so that they can be used as
+arch_nvram_ops methods. Checksumming logic is moved from the misc device
+operations to the nvram read/write operations.
+
+This makes the misc device implementation more generic. This also
+preserves the locking semantics such that "read if checksum valid" and
+"write and update checksum" remain atomic operations.
+
+PPC64 implements byte-range read/write methods which are similar to
+file_operations struct methods. Other platforms provide only
+byte-at-a-time functions. So the misc device prefers the former but
+will fall back on the latter.
+
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+ drivers/char/nvram.c |  162 +++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 114 insertions(+), 48 deletions(-)
+
+Index: linux/drivers/char/nvram.c
+===================================================================
+--- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:33.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-07-25 17:45:34.000000000 +1000
+@@ -41,6 +41,7 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
++#include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/io.h>
+ #include <linux/uaccess.h>
+@@ -178,9 +179,48 @@ static ssize_t nvram_get_size(void)
+ 	return NVRAM_BYTES;
+ }
+ 
++static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
++{
++	char *p = buf;
++	loff_t i;
++
++	spin_lock_irq(&rtc_lock);
++	if (!__nvram_check_checksum()) {
++		spin_unlock_irq(&rtc_lock);
++		return -EIO;
++	}
++	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
++		*p = __nvram_read_byte(i);
++	spin_unlock_irq(&rtc_lock);
++
++	*ppos = i;
++	return p - buf;
++}
++
++static ssize_t nvram_write(char *buf, size_t count, loff_t *ppos)
++{
++	char *p = buf;
++	loff_t i;
++
++	spin_lock_irq(&rtc_lock);
++	if (!__nvram_check_checksum()) {
++		spin_unlock_irq(&rtc_lock);
++		return -EIO;
++	}
++	for (i = *ppos; count > 0 && i < NVRAM_BYTES; --count, ++i, ++p)
++		__nvram_write_byte(*p, i);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++
++	*ppos = i;
++	return p - buf;
++}
++
+ const struct nvram_ops arch_nvram_ops = {
+ 	.read_byte      = nvram_read_byte,
+ 	.write_byte     = nvram_write_byte,
++	.read           = nvram_read,
++	.write          = nvram_write,
+ 	.get_size       = nvram_get_size,
+ 	.set_checksum   = nvram_set_checksum,
+ 	.initialize     = nvram_initialize,
+@@ -215,69 +255,95 @@ static loff_t nvram_misc_llseek(struct f
+ static ssize_t nvram_misc_read(struct file *file, char __user *buf,
+                                size_t count, loff_t *ppos)
+ {
+-	unsigned char contents[NVRAM_BYTES];
+-	unsigned i = *ppos;
+-	unsigned char *tmp;
+-
+-	spin_lock_irq(&rtc_lock);
++	loff_t i;
++	char __user *p = buf;
+ 
+-	if (!__nvram_check_checksum())
+-		goto checksum_err;
+-
+-	for (tmp = contents; count-- > 0 && i < NVRAM_BYTES; ++i, ++tmp)
+-		*tmp = __nvram_read_byte(i);
+-
+-	spin_unlock_irq(&rtc_lock);
+-
+-	if (copy_to_user(buf, contents, tmp - contents))
++	if (!access_ok(VERIFY_WRITE, buf, count))
+ 		return -EFAULT;
++	if (*ppos >= nvram_size)
++		return 0;
+ 
+-	*ppos = i;
+-
+-	return tmp - contents;
++	/* If the arch provided a byte range read op, use it. Otherwise
++	 * fall back on the byte-at-a-time accessor.
++	 */
++	if (arch_nvram_ops.read != NULL) {
++		char *tmp;
++		ssize_t ret;
++
++		count = min_t(size_t, count, nvram_size - *ppos);
++		count = min_t(size_t, count, PAGE_SIZE);
++
++		tmp = kmalloc(count, GFP_KERNEL);
++		if (!tmp)
++			return -ENOMEM;
++
++		ret = arch_nvram_ops.read(tmp, count, ppos);
++		if (ret <= 0)
++			goto out;
++
++		if (copy_to_user(buf, tmp, ret)) {
++			*ppos -= ret;
++			ret = -EFAULT;
++		}
++
++out:
++		kfree(tmp);
++		return ret;
++	}
+ 
+-checksum_err:
+-	spin_unlock_irq(&rtc_lock);
+-	return -EIO;
++	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count)
++		if (__put_user(arch_nvram_ops.read_byte(i), p))
++			return -EFAULT;
++	*ppos = i;
++	return p - buf;
+ }
+ 
+ static ssize_t nvram_misc_write(struct file *file, const char __user *buf,
+                                 size_t count, loff_t *ppos)
+ {
+-	unsigned char contents[NVRAM_BYTES];
+-	unsigned i = *ppos;
+-	unsigned char *tmp;
+-
+-	if (i >= NVRAM_BYTES)
+-		return 0;	/* Past EOF */
+-
+-	if (count > NVRAM_BYTES - i)
+-		count = NVRAM_BYTES - i;
+-	if (count > NVRAM_BYTES)
+-		return -EFAULT;	/* Can't happen, but prove it to gcc */
++	loff_t i;
++	const char __user *p = buf;
+ 
+-	if (copy_from_user(contents, buf, count))
++	if (!access_ok(VERIFY_READ, buf, count))
+ 		return -EFAULT;
++	if (*ppos >= nvram_size)
++		return 0;
+ 
+-	spin_lock_irq(&rtc_lock);
+-
+-	if (!__nvram_check_checksum())
+-		goto checksum_err;
+-
+-	for (tmp = contents; count--; ++i, ++tmp)
+-		__nvram_write_byte(*tmp, i);
+-
+-	__nvram_set_checksum();
++	/* If the arch provided a byte range write op, use it. Otherwise
++	 * fall back on the byte-at-a-time accessor.
++	 */
++	if (arch_nvram_ops.write != NULL) {
++		char *tmp;
++		ssize_t ret;
++
++		count = min_t(size_t, count, nvram_size - *ppos);
++		count = min_t(size_t, count, PAGE_SIZE);
++
++		tmp = kmalloc(count, GFP_KERNEL);
++		if (!tmp)
++			return -ENOMEM;
++
++		if (copy_from_user(tmp, buf, count)) {
++			ret = -EFAULT;
++			goto out;
++		}
++
++		ret = arch_nvram_ops.write(tmp, count, ppos);
++
++out:
++		kfree(tmp);
++		return ret;
++	}
+ 
+-	spin_unlock_irq(&rtc_lock);
++	for (i = *ppos; count > 0 && i < nvram_size; ++i, ++p, --count) {
++		char c;
+ 
++		if (__get_user(c, p))
++			return -EFAULT;
++		arch_nvram_ops.write_byte(c, i);
++	}
+ 	*ppos = i;
+-
+-	return tmp - contents;
+-
+-checksum_err:
+-	spin_unlock_irq(&rtc_lock);
+-	return -EIO;
++	return p - buf;
+ }
+ 
+ static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
