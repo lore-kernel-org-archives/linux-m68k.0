@@ -1,126 +1,148 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 06/26] char/nvram: Adopt arch_nvram_ops
-Date: Sat, 25 Jul 2015 17:46:05 +1000
-Message-ID: <20150725074601.003325426@telegraphics.com.au>
+Subject: [RFC v5 05/26] char/nvram: Re-order functions to remove forward
+ declarations and #ifdefs
+Date: Sat, 25 Jul 2015 17:46:04 +1000
+Message-ID: <20150725074600.763353220@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-adopt-nvram_ops
-Sender: linux-kernel-owner@vger.kernel.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline; filename=nvram-reorder-functions
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Different platforms and architectures offer different NVRAM sizes and
-access methods. E.g. PPC32 has byte-at-a-time read/write functions whereas
-PPC64 has byte-range read/write functions. Adopt the nvram_ops struct so
-the nvram module can call such functions as are defined by the various 
-platforms and architectures.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
----
-
-The #ifdefs here restrict the procfs and checksumming code to those
-architectures with PC-style RTC NVRAM. There may be a better place for
-that code but it's an open question. See https://lkml.org/lkml/2015/2/3/22
-
-The procfs code here, unless relevant to an ARM platform, could be moved to
-arch/x86 (like the earlier patch does for m68k code) and the nvram ops
-could be implemented and exported by the rtc-cmos driver instead. This
-would eliminate these #ifdefs and almost eliminate the arch-specific code.
-
----
- drivers/char/nvram.c  |   30 +++++++++++++++++++++++++++---
- include/linux/nvram.h |    2 ++
- 2 files changed, 29 insertions(+), 3 deletions(-)
-
-Index: linux/drivers/char/nvram.c
-===================================================================
---- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:29.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-07-25 17:45:31.000000000 +1000
-@@ -51,9 +51,12 @@ static DEFINE_MUTEX(nvram_mutex);
- static DEFINE_SPINLOCK(nvram_state_lock);
- static int nvram_open_cnt;	/* #times opened */
- static int nvram_open_mode;	/* special open modes */
-+static ssize_t nvram_size;
- #define NVRAM_WRITE		1 /* opened for writing (exclusive) */
- #define NVRAM_EXCL		2 /* opened with O_EXCL */
- 
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM)
-+
- /*
-  * These functions are provided to be called internally or by other parts of
-  * the kernel. It's up to the caller to ensure correct checksum before reading
-@@ -161,6 +164,20 @@ void nvram_set_checksum(void)
- }
- #endif  /*  0  */
- 
-+static ssize_t nvram_get_size(void)
-+{
-+	return NVRAM_BYTES;
-+}
-+
-+const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = nvram_read_byte,
-+	.write_byte     = nvram_write_byte,
-+	.get_size       = nvram_get_size,
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+
-+#endif /* CONFIG_X86 || CONFIG_ARM */
-+
- /*
-  * The are the file operation function for user access to /dev/nvram
-  */
-@@ -332,7 +349,7 @@ static int nvram_misc_release(struct ino
- 	return 0;
- }
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 
- static char *floppy_types[] = {
- 	"none", "5.25'' 360k", "5.25'' 1.2M", "3.5'' 720k", "3.5'' 1.44M",
-@@ -459,13 +476,20 @@ static int __init nvram_module_init(void
- {
- 	int ret;
- 
-+	if (arch_nvram_ops.get_size == NULL)
-+		return -ENODEV;
-+
-+	nvram_size = arch_nvram_ops.get_size();
-+	if (nvram_size < 0)
-+		return nvram_size;
-+
- 	ret = misc_register(&nvram_misc);
- 	if (ret) {
- 		pr_err("nvram: can't misc_register on minor=%d\n", NVRAM_MINOR);
- 		return ret;
- 	}
- 
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	if (!proc_create("driver/nvram", 0, NULL, &nvram_proc_fops)) {
- 		pr_err("nvram: can't create /proc/driver/nvram\n");
- 		misc_deregister(&nvram_misc);
-@@ -479,7 +503,7 @@ static int __init nvram_module_init(void
- 
- static void __exit nvram_module_exit(void)
- {
--#ifdef CONFIG_PROC_FS
-+#if defined(CONFIG_PROC_FS) && (defined(CONFIG_X86) || defined(CONFIG_ARM))
- 	remove_proc_entry("driver/nvram", NULL);
- #endif
- 	misc_deregister(&nvram_misc);
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-07-25 17:45:28.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-07-25 17:45:31.000000000 +1000
-@@ -14,6 +14,8 @@ extern int nvram_check_checksum(void);
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-+	unsigned char   (*read_byte)(int);
-+	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
- };
- 
+QWxzbyBnaXZlIGZ1bmN0aW9ucyBtb3JlIHNlbnNpYmxlIG5hbWVzOiBudnJhbV9taXNjXyogZm9y
+IG1pc2MgZGV2aWNlIG9wcywKbnZyYW1fcHJvY18qIGZvciBwcm9jIGZpbGUgb3BzIGFuZCBudnJh
+bV9tb2R1bGVfKiBmb3IgaW5pdCBhbmQgZXhpdApmdW5jdGlvbnMuIFRoaXMgbWFrZXMgdGhlbSBk
+aXN0aWN0IGZyb20gbnZyYW1fb3BzIG1lbWJlcnMuCgpTaWduZWQtb2ZmLWJ5OiBGaW5uIFRoYWlu
+IDxmdGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdT4KCi0tLQogZHJpdmVycy9jaGFyL252cmFtLmMg
+fCAgMTk0ICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQogMSBmaWxlIGNoYW5nZWQsIDg2IGluc2VydGlvbnMoKyksIDEwOCBkZWxldGlvbnMoLSkKCklu
+ZGV4OiBsaW51eC9kcml2ZXJzL2NoYXIvbnZyYW0uYwo9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmln
+L2RyaXZlcnMvY2hhci9udnJhbS5jCTIwMTUtMDctMjUgMTc6NDU6MjYuMDAwMDAwMDAwICsxMDAw
+CisrKyBsaW51eC9kcml2ZXJzL2NoYXIvbnZyYW0uYwkyMDE1LTA3LTI1IDE3OjQ1OjI5LjAwMDAw
+MDAwMCArMTAwMApAQCAtNTQsMTEgKzU0LDYgQEAgc3RhdGljIGludCBudnJhbV9vcGVuX21vZGU7
+CS8qIHNwZWNpYWwgbwogI2RlZmluZSBOVlJBTV9XUklURQkJMSAvKiBvcGVuZWQgZm9yIHdyaXRp
+bmcgKGV4Y2x1c2l2ZSkgKi8KICNkZWZpbmUgTlZSQU1fRVhDTAkJMiAvKiBvcGVuZWQgd2l0aCBP
+X0VYQ0wgKi8KIAotI2lmZGVmIENPTkZJR19QUk9DX0ZTCi1zdGF0aWMgdm9pZCBwY19udnJhbV9w
+cm9jX3JlYWQodW5zaWduZWQgY2hhciAqY29udGVudHMsIHN0cnVjdCBzZXFfZmlsZSAqc2VxLAot
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZvaWQgKm9mZnNldCk7Ci0jZW5kaWYKLQog
+LyoKICAqIFRoZXNlIGZ1bmN0aW9ucyBhcmUgcHJvdmlkZWQgdG8gYmUgY2FsbGVkIGludGVybmFs
+bHkgb3IgYnkgb3RoZXIgcGFydHMgb2YKICAqIHRoZSBrZXJuZWwuIEl0J3MgdXAgdG8gdGhlIGNh
+bGxlciB0byBlbnN1cmUgY29ycmVjdCBjaGVja3N1bSBiZWZvcmUgcmVhZGluZwpAQCAtMTcwLDcg
+KzE2NSw3IEBAIHZvaWQgbnZyYW1fc2V0X2NoZWNrc3VtKHZvaWQpCiAgKiBUaGUgYXJlIHRoZSBm
+aWxlIG9wZXJhdGlvbiBmdW5jdGlvbiBmb3IgdXNlciBhY2Nlc3MgdG8gL2Rldi9udnJhbQogICov
+CiAKLXN0YXRpYyBsb2ZmX3QgbnZyYW1fbGxzZWVrKHN0cnVjdCBmaWxlICpmaWxlLCBsb2ZmX3Qg
+b2Zmc2V0LCBpbnQgb3JpZ2luKQorc3RhdGljIGxvZmZfdCBudnJhbV9taXNjX2xsc2VlayhzdHJ1
+Y3QgZmlsZSAqZmlsZSwgbG9mZl90IG9mZnNldCwgaW50IG9yaWdpbikKIHsKIAlzd2l0Y2ggKG9y
+aWdpbikgewogCWNhc2UgMDoKQEAgLTE4OSw4ICsxODQsOCBAQCBzdGF0aWMgbG9mZl90IG52cmFt
+X2xsc2VlayhzdHJ1Y3QgZmlsZSAqCiAJcmV0dXJuIChvZmZzZXQgPj0gMCkgPyAoZmlsZS0+Zl9w
+b3MgPSBvZmZzZXQpIDogLUVJTlZBTDsKIH0KIAotc3RhdGljIHNzaXplX3QgbnZyYW1fcmVhZChz
+dHJ1Y3QgZmlsZSAqZmlsZSwgY2hhciBfX3VzZXIgKmJ1ZiwKLQkJCQkJCXNpemVfdCBjb3VudCwg
+bG9mZl90ICpwcG9zKQorc3RhdGljIHNzaXplX3QgbnZyYW1fbWlzY19yZWFkKHN0cnVjdCBmaWxl
+ICpmaWxlLCBjaGFyIF9fdXNlciAqYnVmLAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHNpemVfdCBjb3VudCwgbG9mZl90ICpwcG9zKQogewogCXVuc2lnbmVkIGNoYXIgY29udGVudHNb
+TlZSQU1fQllURVNdOwogCXVuc2lnbmVkIGkgPSAqcHBvczsKQEAgLTIxOCw4ICsyMTMsOCBAQCBj
+aGVja3N1bV9lcnI6CiAJcmV0dXJuIC1FSU87CiB9CiAKLXN0YXRpYyBzc2l6ZV90IG52cmFtX3dy
+aXRlKHN0cnVjdCBmaWxlICpmaWxlLCBjb25zdCBjaGFyIF9fdXNlciAqYnVmLAotCQkJCQkJc2l6
+ZV90IGNvdW50LCBsb2ZmX3QgKnBwb3MpCitzdGF0aWMgc3NpemVfdCBudnJhbV9taXNjX3dyaXRl
+KHN0cnVjdCBmaWxlICpmaWxlLCBjb25zdCBjaGFyIF9fdXNlciAqYnVmLAorICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBzaXplX3QgY291bnQsIGxvZmZfdCAqcHBvcykKIHsKIAl1bnNp
+Z25lZCBjaGFyIGNvbnRlbnRzW05WUkFNX0JZVEVTXTsKIAl1bnNpZ25lZCBpID0gKnBwb3M7CkBA
+IC0yNTcsOCArMjUyLDggQEAgY2hlY2tzdW1fZXJyOgogCXJldHVybiAtRUlPOwogfQogCi1zdGF0
+aWMgbG9uZyBudnJhbV9pb2N0bChzdHJ1Y3QgZmlsZSAqZmlsZSwgdW5zaWduZWQgaW50IGNtZCwK
+LQkJCXVuc2lnbmVkIGxvbmcgYXJnKQorc3RhdGljIGxvbmcgbnZyYW1fbWlzY19pb2N0bChzdHJ1
+Y3QgZmlsZSAqZmlsZSwgdW5zaWduZWQgaW50IGNtZCwKKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgdW5zaWduZWQgbG9uZyBhcmcpCiB7CiAJaW50IGk7CiAKQEAgLTI5OCw3ICsyOTMsNyBA
+QCBzdGF0aWMgbG9uZyBudnJhbV9pb2N0bChzdHJ1Y3QgZmlsZSAqZmlsCiAJfQogfQogCi1zdGF0
+aWMgaW50IG52cmFtX29wZW4oc3RydWN0IGlub2RlICppbm9kZSwgc3RydWN0IGZpbGUgKmZpbGUp
+CitzdGF0aWMgaW50IG52cmFtX21pc2Nfb3BlbihzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3Qg
+ZmlsZSAqZmlsZSkKIHsKIAlzcGluX2xvY2soJm52cmFtX3N0YXRlX2xvY2spOwogCkBAIC0zMjAs
+NyArMzE1LDcgQEAgc3RhdGljIGludCBudnJhbV9vcGVuKHN0cnVjdCBpbm9kZSAqaW5vZAogCXJl
+dHVybiAwOwogfQogCi1zdGF0aWMgaW50IG52cmFtX3JlbGVhc2Uoc3RydWN0IGlub2RlICppbm9k
+ZSwgc3RydWN0IGZpbGUgKmZpbGUpCitzdGF0aWMgaW50IG52cmFtX21pc2NfcmVsZWFzZShzdHJ1
+Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZSkKIHsKIAlzcGluX2xvY2soJm52cmFt
+X3N0YXRlX2xvY2spOwogCkBAIC0zMzcsMTAwICszMzIsNiBAQCBzdGF0aWMgaW50IG52cmFtX3Jl
+bGVhc2Uoc3RydWN0IGlub2RlICppCiAJcmV0dXJuIDA7CiB9CiAKLSNpZm5kZWYgQ09ORklHX1BS
+T0NfRlMKLXN0YXRpYyBpbnQgbnZyYW1fYWRkX3Byb2NfZnModm9pZCkKLXsKLQlyZXR1cm4gMDsK
+LX0KLQotI2Vsc2UKLQotc3RhdGljIGludCBudnJhbV9wcm9jX3JlYWQoc3RydWN0IHNlcV9maWxl
+ICpzZXEsIHZvaWQgKm9mZnNldCkKLXsKLQl1bnNpZ25lZCBjaGFyIGNvbnRlbnRzW05WUkFNX0JZ
+VEVTXTsKLQlpbnQgaSA9IDA7Ci0KLQlzcGluX2xvY2tfaXJxKCZydGNfbG9jayk7Ci0JZm9yIChp
+ID0gMDsgaSA8IE5WUkFNX0JZVEVTOyArK2kpCi0JCWNvbnRlbnRzW2ldID0gX19udnJhbV9yZWFk
+X2J5dGUoaSk7Ci0Jc3Bpbl91bmxvY2tfaXJxKCZydGNfbG9jayk7Ci0KLQlwY19udnJhbV9wcm9j
+X3JlYWQoY29udGVudHMsIHNlcSwgb2Zmc2V0KTsKLQotCXJldHVybiAwOwotfQotCi1zdGF0aWMg
+aW50IG52cmFtX3Byb2Nfb3BlbihzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmls
+ZSkKLXsKLQlyZXR1cm4gc2luZ2xlX29wZW4oZmlsZSwgbnZyYW1fcHJvY19yZWFkLCBOVUxMKTsK
+LX0KLQotc3RhdGljIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJhdGlvbnMgbnZyYW1fcHJvY19mb3Bz
+ID0gewotCS5vd25lcgkJPSBUSElTX01PRFVMRSwKLQkub3BlbgkJPSBudnJhbV9wcm9jX29wZW4s
+Ci0JLnJlYWQJCT0gc2VxX3JlYWQsCi0JLmxsc2VlawkJPSBzZXFfbHNlZWssCi0JLnJlbGVhc2UJ
+PSBzaW5nbGVfcmVsZWFzZSwKLX07Ci0KLXN0YXRpYyBpbnQgbnZyYW1fYWRkX3Byb2NfZnModm9p
+ZCkKLXsKLQlpZiAoIXByb2NfY3JlYXRlKCJkcml2ZXIvbnZyYW0iLCAwLCBOVUxMLCAmbnZyYW1f
+cHJvY19mb3BzKSkKLQkJcmV0dXJuIC1FTk9NRU07Ci0JcmV0dXJuIDA7Ci19Ci0KLSNlbmRpZiAv
+KiBDT05GSUdfUFJPQ19GUyAqLwotCi1zdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9u
+cyBudnJhbV9mb3BzID0gewotCS5vd25lcgkJPSBUSElTX01PRFVMRSwKLQkubGxzZWVrCQk9IG52
+cmFtX2xsc2VlaywKLQkucmVhZAkJPSBudnJhbV9yZWFkLAotCS53cml0ZQkJPSBudnJhbV93cml0
+ZSwKLQkudW5sb2NrZWRfaW9jdGwJPSBudnJhbV9pb2N0bCwKLQkub3BlbgkJPSBudnJhbV9vcGVu
+LAotCS5yZWxlYXNlCT0gbnZyYW1fcmVsZWFzZSwKLX07Ci0KLXN0YXRpYyBzdHJ1Y3QgbWlzY2Rl
+dmljZSBudnJhbV9kZXYgPSB7Ci0JTlZSQU1fTUlOT1IsCi0JIm52cmFtIiwKLQkmbnZyYW1fZm9w
+cwotfTsKLQotc3RhdGljIGludCBfX2luaXQgbnZyYW1faW5pdCh2b2lkKQotewotCWludCByZXQ7
+Ci0KLQlyZXQgPSBtaXNjX3JlZ2lzdGVyKCZudnJhbV9kZXYpOwotCWlmIChyZXQpIHsKLQkJcHJp
+bnRrKEtFUk5fRVJSICJudnJhbTogY2FuJ3QgbWlzY19yZWdpc3RlciBvbiBtaW5vcj0lZFxuIiwK
+LQkJICAgIE5WUkFNX01JTk9SKTsKLQkJZ290byBvdXQ7Ci0JfQotCXJldCA9IG52cmFtX2FkZF9w
+cm9jX2ZzKCk7Ci0JaWYgKHJldCkgewotCQlwcmludGsoS0VSTl9FUlIgIm52cmFtOiBjYW4ndCBj
+cmVhdGUgL3Byb2MvZHJpdmVyL252cmFtXG4iKTsKLQkJZ290byBvdXRtaXNjOwotCX0KLQlyZXQg
+PSAwOwotCXByaW50ayhLRVJOX0lORk8gIk5vbi12b2xhdGlsZSBtZW1vcnkgZHJpdmVyIHYiIE5W
+UkFNX1ZFUlNJT04gIlxuIik7Ci1vdXQ6Ci0JcmV0dXJuIHJldDsKLW91dG1pc2M6Ci0JbWlzY19k
+ZXJlZ2lzdGVyKCZudnJhbV9kZXYpOwotCWdvdG8gb3V0OwotfQotCi1zdGF0aWMgdm9pZCBfX2V4
+aXQgbnZyYW1fY2xlYW51cF9tb2R1bGUodm9pZCkKLXsKLQlyZW1vdmVfcHJvY19lbnRyeSgiZHJp
+dmVyL252cmFtIiwgTlVMTCk7Ci0JbWlzY19kZXJlZ2lzdGVyKCZudnJhbV9kZXYpOwotfQotCi1t
+b2R1bGVfaW5pdChudnJhbV9pbml0KTsKLW1vZHVsZV9leGl0KG52cmFtX2NsZWFudXBfbW9kdWxl
+KTsKLQogI2lmZGVmIENPTkZJR19QUk9DX0ZTCiAKIHN0YXRpYyBjaGFyICpmbG9wcHlfdHlwZXNb
+XSA9IHsKQEAgLTUwOCw3ICs0MDksODQgQEAgc3RhdGljIHZvaWQgcGNfbnZyYW1fcHJvY19yZWFk
+KHVuc2lnbmVkCiAJcmV0dXJuOwogfQogCitzdGF0aWMgaW50IG52cmFtX3Byb2NfcmVhZChzdHJ1
+Y3Qgc2VxX2ZpbGUgKnNlcSwgdm9pZCAqb2Zmc2V0KQoreworCXVuc2lnbmVkIGNoYXIgY29udGVu
+dHNbTlZSQU1fQllURVNdOworCWludCBpID0gMDsKKworCXNwaW5fbG9ja19pcnEoJnJ0Y19sb2Nr
+KTsKKwlmb3IgKGkgPSAwOyBpIDwgTlZSQU1fQllURVM7ICsraSkKKwkJY29udGVudHNbaV0gPSBf
+X252cmFtX3JlYWRfYnl0ZShpKTsKKwlzcGluX3VubG9ja19pcnEoJnJ0Y19sb2NrKTsKKworCXBj
+X252cmFtX3Byb2NfcmVhZChjb250ZW50cywgc2VxLCBvZmZzZXQpOworCisJcmV0dXJuIDA7Cit9
+CisKK3N0YXRpYyBpbnQgbnZyYW1fcHJvY19vcGVuKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVj
+dCBmaWxlICpmaWxlKQoreworCXJldHVybiBzaW5nbGVfb3BlbihmaWxlLCBudnJhbV9wcm9jX3Jl
+YWQsIE5VTEwpOworfQorCitzdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9ucyBudnJh
+bV9wcm9jX2ZvcHMgPSB7CisJLm93bmVyCQk9IFRISVNfTU9EVUxFLAorCS5vcGVuCQk9IG52cmFt
+X3Byb2Nfb3BlbiwKKwkucmVhZAkJPSBzZXFfcmVhZCwKKwkubGxzZWVrCQk9IHNlcV9sc2VlaywK
+KwkucmVsZWFzZQk9IHNpbmdsZV9yZWxlYXNlLAorfTsKKwogI2VuZGlmIC8qIENPTkZJR19QUk9D
+X0ZTICovCiAKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZmlsZV9vcGVyYXRpb25zIG52cmFtX21pc2Nf
+Zm9wcyA9IHsKKwkub3duZXIJCT0gVEhJU19NT0RVTEUsCisJLmxsc2VlawkJPSBudnJhbV9taXNj
+X2xsc2VlaywKKwkucmVhZAkJPSBudnJhbV9taXNjX3JlYWQsCisJLndyaXRlCQk9IG52cmFtX21p
+c2Nfd3JpdGUsCisJLnVubG9ja2VkX2lvY3RsCT0gbnZyYW1fbWlzY19pb2N0bCwKKwkub3BlbgkJ
+PSBudnJhbV9taXNjX29wZW4sCisJLnJlbGVhc2UJPSBudnJhbV9taXNjX3JlbGVhc2UsCit9Owor
+CitzdGF0aWMgc3RydWN0IG1pc2NkZXZpY2UgbnZyYW1fbWlzYyA9IHsKKwlOVlJBTV9NSU5PUiwK
+KwkibnZyYW0iLAorCSZudnJhbV9taXNjX2ZvcHMsCit9OworCitzdGF0aWMgaW50IF9faW5pdCBu
+dnJhbV9tb2R1bGVfaW5pdCh2b2lkKQoreworCWludCByZXQ7CisKKwlyZXQgPSBtaXNjX3JlZ2lz
+dGVyKCZudnJhbV9taXNjKTsKKwlpZiAocmV0KSB7CisJCXByX2VycigibnZyYW06IGNhbid0IG1p
+c2NfcmVnaXN0ZXIgb24gbWlub3I9JWRcbiIsIE5WUkFNX01JTk9SKTsKKwkJcmV0dXJuIHJldDsK
+Kwl9CisKKyNpZmRlZiBDT05GSUdfUFJPQ19GUworCWlmICghcHJvY19jcmVhdGUoImRyaXZlci9u
+dnJhbSIsIDAsIE5VTEwsICZudnJhbV9wcm9jX2ZvcHMpKSB7CisJCXByX2VycigibnZyYW06IGNh
+bid0IGNyZWF0ZSAvcHJvYy9kcml2ZXIvbnZyYW1cbiIpOworCQltaXNjX2RlcmVnaXN0ZXIoJm52
+cmFtX21pc2MpOworCQlyZXR1cm4gLUVOT01FTTsKKwl9CisjZW5kaWYKKworCXByX2luZm8oIk5v
+bi12b2xhdGlsZSBtZW1vcnkgZHJpdmVyIHYiIE5WUkFNX1ZFUlNJT04gIlxuIik7CisJcmV0dXJu
+IDA7Cit9CisKK3N0YXRpYyB2b2lkIF9fZXhpdCBudnJhbV9tb2R1bGVfZXhpdCh2b2lkKQorewor
+I2lmZGVmIENPTkZJR19QUk9DX0ZTCisJcmVtb3ZlX3Byb2NfZW50cnkoImRyaXZlci9udnJhbSIs
+IE5VTEwpOworI2VuZGlmCisJbWlzY19kZXJlZ2lzdGVyKCZudnJhbV9taXNjKTsKK30KKworbW9k
+dWxlX2luaXQobnZyYW1fbW9kdWxlX2luaXQpOworbW9kdWxlX2V4aXQobnZyYW1fbW9kdWxlX2V4
+aXQpOworCiBNT0RVTEVfTElDRU5TRSgiR1BMIik7CiBNT0RVTEVfQUxJQVNfTUlTQ0RFVihOVlJB
+TV9NSU5PUik7CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9y
+ZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
