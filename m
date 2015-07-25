@@ -1,145 +1,256 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 19/26] nvram: Drop nvram_* symbol exports and prototypes
-Date: Sat, 25 Jul 2015 17:46:18 +1000
-Message-ID: <20150725074604.173324419@telegraphics.com.au>
+Subject: [RFC v5 23/26] m68k/mac: Adopt naming and calling conventions for PRAM routines
+Date: Sat, 25 Jul 2015 17:46:22 +1000
+Message-ID: <20150725074605.143283098@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=remove-exported-nvram-functions
+Content-Disposition: inline; filename=mac68k-pram-function-names-and-signatures
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Drivers now use the arch_nvram_ops calls so remove the function exports and
-prototypes. nvram_check_checksum() is unused so remove it.
+Adopt the existing *_read_byte and *_write_byte naming convention.
+Rename via_pram_readbyte and via_pram_writebyte to avoid confusion.
+Adjust calling conventions of mac_pram_* functions to match the
+arch_nvram_ops struct methods.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- arch/m68k/atari/nvram.c |    6 +++---
- drivers/char/nvram.c    |   27 +++++----------------------
- include/linux/nvram.h   |    8 --------
- 3 files changed, 8 insertions(+), 33 deletions(-)
 
-Index: linux/drivers/char/nvram.c
+Changes since v1:
+- Don't introduce the arch_nvram_ops struct in this patch, even if it 
+would form a logical progression. Since the struct would get replaced
+later on, some might see it as churn.
+
+Changes since v2:
+- Rename via_pram_send() and via_pram_recv() as
+via_rtc_send() and via_rtc_recv() resp.
+
+---
+ arch/m68k/mac/misc.c |   91 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 46 insertions(+), 45 deletions(-)
+
+Index: linux/arch/m68k/mac/misc.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:42.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-07-25 17:45:47.000000000 +1000
-@@ -82,13 +82,12 @@ static ssize_t nvram_size;
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+--- linux.orig/arch/m68k/mac/misc.c	2015-07-25 17:42:33.000000000 +1000
++++ linux/arch/m68k/mac/misc.c	2015-07-25 17:45:53.000000000 +1000
+@@ -61,7 +61,7 @@ static void cuda_write_time(long data)
+ 		cuda_poll();
+ }
+ 
+-static __u8 cuda_read_pram(int offset)
++static unsigned char cuda_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (cuda_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
+@@ -72,7 +72,7 @@ static __u8 cuda_read_pram(int offset)
+ 	return req.reply[3];
+ }
+ 
+-static void cuda_write_pram(int offset, __u8 data)
++static void cuda_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	if (cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
+@@ -84,8 +84,8 @@ static void cuda_write_pram(int offset,
+ #else
+ #define cuda_read_time() 0
+ #define cuda_write_time(n)
+-#define cuda_read_pram NULL
+-#define cuda_write_pram NULL
++#define cuda_pram_read_byte NULL
++#define cuda_pram_write_byte NULL
+ #endif
+ 
+ #ifdef CONFIG_ADB_PMU68K
+@@ -116,7 +116,7 @@ static void pmu_write_time(long data)
+ 		pmu_poll();
+ }
+ 
+-static __u8 pmu_read_pram(int offset)
++static unsigned char pmu_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
+@@ -127,7 +127,7 @@ static __u8 pmu_read_pram(int offset)
+ 	return req.reply[3];
+ }
+ 
+-static void pmu_write_pram(int offset, __u8 data)
++static void pmu_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
+@@ -139,8 +139,8 @@ static void pmu_write_pram(int offset, _
+ #else
+ #define pmu_read_time() 0
+ #define pmu_write_time(n)
+-#define pmu_read_pram NULL
+-#define pmu_write_pram NULL
++#define pmu_pram_read_byte NULL
++#define pmu_pram_write_byte NULL
+ #endif
+ 
+ #if 0 /* def CONFIG_ADB_MACIISI */
+@@ -169,7 +169,7 @@ static void maciisi_write_time(long data
+ 			(data >> 8) & 0xFF, data & 0xFF);
+ }
+ 
+-static __u8 maciisi_read_pram(int offset)
++static unsigned char maciisi_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (maciisi_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
+@@ -178,7 +178,7 @@ static __u8 maciisi_read_pram(int offset
+ 	return req.reply[3];
+ }
+ 
+-static void maciisi_write_pram(int offset, __u8 data)
++static void maciisi_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	maciisi_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
+@@ -187,8 +187,8 @@ static void maciisi_write_pram(int offse
+ #else
+ #define maciisi_read_time() 0
+ #define maciisi_write_time(n)
+-#define maciisi_read_pram NULL
+-#define maciisi_write_pram NULL
++#define maciisi_pram_read_byte NULL
++#define maciisi_pram_write_byte NULL
+ #endif
+ 
+ /*
+@@ -198,7 +198,7 @@ static void maciisi_write_pram(int offse
+  * the RTC should be enabled.
   */
  
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
+-static __u8 via_pram_readbyte(void)
++static __u8 via_rtc_recv(void)
  {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+ 	int	i,reg;
+ 	__u8	data;
+@@ -225,7 +225,7 @@ static __u8 via_pram_readbyte(void)
+ 	return data;
  }
--EXPORT_SYMBOL(__nvram_read_byte);
  
--unsigned char nvram_read_byte(int i)
-+static unsigned char nvram_read_byte(int i)
+-static void via_pram_writebyte(__u8 data)
++static void via_rtc_send(__u8 data)
  {
- 	unsigned long flags;
- 	unsigned char c;
-@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
- 	spin_unlock_irqrestore(&rtc_lock, flags);
- 	return c;
+ 	int	i,reg,bit;
+ 
+@@ -262,17 +262,17 @@ static void via_pram_command(int command
+ 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
+ 
+ 	if (command & 0xFF00) {		/* extended (two-byte) command */
+-		via_pram_writebyte((command & 0xFF00) >> 8);
+-		via_pram_writebyte(command & 0xFF);
++		via_rtc_send((command & 0xFF00) >> 8);
++		via_rtc_send(command & 0xFF);
+ 		is_read = command & 0x8000;
+ 	} else {			/* one-byte command */
+-		via_pram_writebyte(command);
++		via_rtc_send(command);
+ 		is_read = command & 0x80;
+ 	}
+ 	if (is_read) {
+-		*data = via_pram_readbyte();
++		*data = via_rtc_recv();
+ 	} else {
+-		via_pram_writebyte(*data);
++		via_rtc_send(*data);
+ 	}
+ 
+ 	/* All done, disable the RTC */
+@@ -282,12 +282,12 @@ static void via_pram_command(int command
+ 	local_irq_restore(flags);
  }
--EXPORT_SYMBOL(nvram_read_byte);
  
- /* This races nicely with trying to read with checksum checking (nvram_read) */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
+-static __u8 via_read_pram(int offset)
++static unsigned char via_pram_read_byte(int offset)
  {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
+ 	return 0;
  }
--EXPORT_SYMBOL(__nvram_write_byte);
  
--void nvram_write_byte(unsigned char c, int i)
-+static void nvram_write_byte(unsigned char c, int i)
+-static void via_write_pram(int offset, __u8 data)
++static void via_pram_write_byte(unsigned char data, int offset)
  {
- 	unsigned long flags;
- 
-@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
- 	__nvram_write_byte(c, i);
- 	spin_unlock_irqrestore(&rtc_lock, flags);
  }
--EXPORT_SYMBOL(nvram_write_byte);
  
- /* On PCs, the checksum is built only over bytes 2..31 */
- #define PC_CKS_RANGE_START	2
- #define PC_CKS_RANGE_END	31
- #define PC_CKS_LOC		32
- 
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned short sum = 0;
-@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
- 	    __nvram_read_byte(PC_CKS_LOC+1);
- 	return (sum & 0xffff) == expect;
- }
--EXPORT_SYMBOL(__nvram_check_checksum);
--
--int nvram_check_checksum(void)
--{
--	unsigned long flags;
--	int rv;
--
--	spin_lock_irqsave(&rtc_lock, flags);
--	rv = __nvram_check_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
--	return rv;
--}
--EXPORT_SYMBOL(nvram_check_checksum);
- 
- static void __nvram_set_checksum(void)
- {
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-07-25 17:45:42.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-07-25 17:45:47.000000000 +1000
-@@ -3,14 +3,6 @@
- 
- #include <uapi/linux/nvram.h>
- 
--/* __foo is foo without grabbing the rtc_lock - get it yourself */
--extern unsigned char __nvram_read_byte(int i);
--extern unsigned char nvram_read_byte(int i);
--extern void __nvram_write_byte(unsigned char c, int i);
--extern void nvram_write_byte(unsigned char c, int i);
--extern int __nvram_check_checksum(void);
--extern int nvram_check_checksum(void);
--
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-Index: linux/arch/m68k/atari/nvram.c
-===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-07-25 17:45:36.000000000 +1000
-+++ linux/arch/m68k/atari/nvram.c	2015-07-25 17:45:47.000000000 +1000
-@@ -33,13 +33,13 @@
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
+@@ -453,50 +453,51 @@ void pmu_shutdown(void)
+  *-------------------------------------------------------------------
   */
  
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
+-void mac_pram_read(int offset, __u8 *buffer, int len)
++unsigned char mac_pram_read_byte(int addr)
  {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
+-	__u8 (*func)(int);
+-	int i;
++	unsigned char (*func)(int);
+ 
+ 	switch(macintosh_config->adb_type) {
+ 	case MAC_ADB_IISI:
+-		func = maciisi_read_pram; break;
++		func = maciisi_pram_read_byte;
++		break;
+ 	case MAC_ADB_PB1:
+ 	case MAC_ADB_PB2:
+-		func = pmu_read_pram; break;
++		func = pmu_pram_read_byte;
++		break;
+ 	case MAC_ADB_CUDA:
+-		func = cuda_read_pram; break;
++		func = cuda_pram_read_byte;
++		break;
+ 	default:
+-		func = via_read_pram;
+-	}
+-	if (!func)
+-		return;
+-	for (i = 0 ; i < len ; i++) {
+-		buffer[i] = (*func)(offset++);
++		func = via_pram_read_byte;
+ 	}
++
++	if (func)
++		return (*func)(addr);
++	return 0xff;
  }
  
- /* This races nicely with trying to read with checksum checking */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
+-void mac_pram_write(int offset, __u8 *buffer, int len)
++void mac_pram_write_byte(unsigned char val, int addr)
  {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
- }
-@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
- #define ATARI_CKS_RANGE_END	47
- #define ATARI_CKS_LOC		48
+-	void (*func)(int, __u8);
+-	int i;
++	void (*func)(unsigned char, int);
  
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned char sum = 0;
+ 	switch(macintosh_config->adb_type) {
+ 	case MAC_ADB_IISI:
+-		func = maciisi_write_pram; break;
++		func = maciisi_pram_write_byte;
++		break;
+ 	case MAC_ADB_PB1:
+ 	case MAC_ADB_PB2:
+-		func = pmu_write_pram; break;
++		func = pmu_pram_write_byte;
++		break;
+ 	case MAC_ADB_CUDA:
+-		func = cuda_write_pram; break;
++		func = cuda_pram_write_byte;
++		break;
+ 	default:
+-		func = via_write_pram;
+-	}
+-	if (!func)
+-		return;
+-	for (i = 0 ; i < len ; i++) {
+-		(*func)(offset++, buffer[i]);
++		func = via_pram_write_byte;
+ 	}
++
++	if (func)
++		(*func)(val, addr);
+ }
+ 
+ void mac_poweroff(void)
