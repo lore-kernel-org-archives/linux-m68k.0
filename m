@@ -1,165 +1,143 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 08/26] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
-Date: Sat, 25 Jul 2015 17:46:07 +1000
-Message-ID: <20150725074601.483330111@telegraphics.com.au>
+Subject: [RFC v5 24/26] m68k/mac: Use macros for RTC accesses not magic numbers
+Date: Sat, 25 Jul 2015 17:46:23 +1000
+Message-ID: <20150725074605.393470640@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-generalize-ioctl
+Content-Disposition: inline; filename=mac68k-rtc-macros
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-
-The drivers/char/nvram module has previously only supported RTC "CMOS"
-NVRAM, for which it provides appropriate checksum ioctls. Make these
-ioctls optional so the module can be re-used with other kinds of NVRAM.
-
-The ops struct methods that implement the ioctls now return error
-codes so that a multi-platform kernel binary can do the right thing when
-running on hardware without suitable NVRAM.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
 
-Changed since v1:
-- Don't bother acquiring the mutex for unimplemented ioctls.
+This is intended to improve code style and not affect code behaviour.
+I've tested this on a Quadra 650.
+
+I don't know the meanings of the 4 undocumented write protect register
+bits 0x55, so I decided against defining 4 macros for those bits.
 
 ---
- drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
- include/linux/nvram.h |    2 +
- 2 files changed, 43 insertions(+), 30 deletions(-)
+ arch/m68k/mac/misc.c |   59 +++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 41 insertions(+), 18 deletions(-)
 
-Index: linux/drivers/char/nvram.c
+Index: linux/arch/m68k/mac/misc.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:31.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-07-25 17:45:33.000000000 +1000
-@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+--- linux.orig/arch/m68k/mac/misc.c	2015-07-25 17:45:53.000000000 +1000
++++ linux/arch/m68k/mac/misc.c	2015-07-25 17:45:54.000000000 +1000
+@@ -242,6 +242,21 @@ static void via_rtc_send(__u8 data)
  }
  
--#if 0
--void nvram_set_checksum(void)
-+static long nvram_set_checksum(void)
- {
--	unsigned long flags;
-+	spin_lock_irq(&rtc_lock);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
-+}
+ /*
++ * These values can be found in Inside Macintosh vol. III ch. 2
++ * which has a description of the RTC chip in the original Mac.
++ */
 +
-+static long nvram_initialize(void)
-+{
-+	ssize_t i;
- 
--	spin_lock_irqsave(&rtc_lock, flags);
-+	spin_lock_irq(&rtc_lock);
-+	for (i = 0; i < NVRAM_BYTES; ++i)
-+		__nvram_write_byte(0, i);
- 	__nvram_set_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
- }
--#endif  /*  0  */
- 
- static ssize_t nvram_get_size(void)
- {
-@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
- 	.read_byte      = nvram_read_byte,
- 	.write_byte     = nvram_write_byte,
- 	.get_size       = nvram_get_size,
-+	.set_checksum   = nvram_set_checksum,
-+	.initialize     = nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
- 
-@@ -272,51 +283,51 @@ checksum_err:
- static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
-                              unsigned long arg)
- {
--	int i;
-+	long ret = -ENOTTY;
- 
- 	switch (cmd) {
--
- 	case NVRAM_INIT:
- 		/* initialize NVRAM contents and checksum */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--
--		for (i = 0; i < NVRAM_BYTES; ++i)
--			__nvram_write_byte(0, i);
--		__nvram_set_checksum();
--
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
-+		if (arch_nvram_ops.initialize != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.initialize();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	case NVRAM_SETCKS:
- 		/* just set checksum, contents unchanged (maybe useful after
- 		 * checksum garbaged somehow...) */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--		__nvram_set_checksum();
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
--	default:
--		return -ENOTTY;
-+		if (arch_nvram_ops.set_checksum != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.set_checksum();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	}
-+	return ret;
- }
- 
- static int nvram_misc_open(struct inode *inode, struct file *file)
- {
- 	spin_lock(&nvram_state_lock);
- 
-+	/* Prevent multiple readers/writers if desired. */
- 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
--	    (nvram_open_mode & NVRAM_EXCL) ||
--	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
-+	    (nvram_open_mode & NVRAM_EXCL)) {
-+		spin_unlock(&nvram_state_lock);
-+		return -EBUSY;
-+	}
++#define RTC_FLG_READ            BIT(7)
++#define RTC_FLG_WRITE_PROTECT   BIT(7)
++#define RTC_CMD_READ(r)         (RTC_FLG_READ | (r << 2))
++#define RTC_CMD_WRITE(r)        (r << 2)
++#define RTC_REG_SECONDS_0       0
++#define RTC_REG_SECONDS_1       1
++#define RTC_REG_SECONDS_2       2
++#define RTC_REG_SECONDS_3       3
++#define RTC_REG_WRITE_PROTECT   13
 +
-+	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
-+	if ((arch_nvram_ops.set_checksum != NULL) &&
-+	    (file->f_mode & FMODE_WRITE) &&
-+	    (nvram_open_mode & NVRAM_WRITE)) {
- 		spin_unlock(&nvram_state_lock);
- 		return -EBUSY;
- 	}
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-07-25 17:45:31.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-07-25 17:45:33.000000000 +1000
-@@ -17,6 +17,8 @@ struct nvram_ops {
- 	unsigned char   (*read_byte)(int);
- 	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
-+	long            (*set_checksum)(void);
-+	long            (*initialize)(void);
- };
++/*
+  * Execute a VIA PRAM/RTC command. For read commands
+  * data should point to a one-byte buffer for the
+  * resulting data. For write commands it should point
+@@ -250,13 +265,17 @@ static void via_rtc_send(__u8 data)
+  * This function disables all interrupts while running.
+  */
  
- extern const struct nvram_ops arch_nvram_ops;
+-static void via_pram_command(int command, __u8 *data)
++static void via_rtc_command(int command, __u8 *data)
+ {
+ 	unsigned long flags;
+ 	int	is_read;
+ 
+ 	local_irq_save(flags);
+ 
++	/* The least significant bits must be 0b01 according to Inside Mac */
++
++	command = (command & ~3) | 1;
++
+ 	/* Enable the RTC and make sure the strobe line is high */
+ 
+ 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
+@@ -264,10 +283,10 @@ static void via_pram_command(int command
+ 	if (command & 0xFF00) {		/* extended (two-byte) command */
+ 		via_rtc_send((command & 0xFF00) >> 8);
+ 		via_rtc_send(command & 0xFF);
+-		is_read = command & 0x8000;
++		is_read = command & (RTC_FLG_READ << 8);
+ 	} else {			/* one-byte command */
+ 		via_rtc_send(command);
+-		is_read = command & 0x80;
++		is_read = command & RTC_FLG_READ;
+ 	}
+ 	if (is_read) {
+ 		*data = via_rtc_recv();
+@@ -306,10 +325,10 @@ static long via_read_time(void)
+ 	} result, last_result;
+ 	int count = 1;
+ 
+-	via_pram_command(0x81, &last_result.cdata[3]);
+-	via_pram_command(0x85, &last_result.cdata[2]);
+-	via_pram_command(0x89, &last_result.cdata[1]);
+-	via_pram_command(0x8D, &last_result.cdata[0]);
++	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0), &last_result.cdata[3]);
++	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1), &last_result.cdata[2]);
++	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2), &last_result.cdata[1]);
++	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3), &last_result.cdata[0]);
+ 
+ 	/*
+ 	 * The NetBSD guys say to loop until you get the same reading
+@@ -317,10 +336,14 @@ static long via_read_time(void)
+ 	 */
+ 
+ 	while (1) {
+-		via_pram_command(0x81, &result.cdata[3]);
+-		via_pram_command(0x85, &result.cdata[2]);
+-		via_pram_command(0x89, &result.cdata[1]);
+-		via_pram_command(0x8D, &result.cdata[0]);
++		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0),
++		                &result.cdata[3]);
++		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1),
++		                &result.cdata[2]);
++		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2),
++		                &result.cdata[1]);
++		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3),
++		                &result.cdata[0]);
+ 
+ 		if (result.idata == last_result.idata)
+ 			return result.idata - RTC_OFFSET;
+@@ -356,18 +379,18 @@ static void via_write_time(long time)
+ 	/* Clear the write protect bit */
+ 
+ 	temp = 0x55;
+-	via_pram_command(0x35, &temp);
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
+ 
+ 	data.idata = time + RTC_OFFSET;
+-	via_pram_command(0x01, &data.cdata[3]);
+-	via_pram_command(0x05, &data.cdata[2]);
+-	via_pram_command(0x09, &data.cdata[1]);
+-	via_pram_command(0x0D, &data.cdata[0]);
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_0), &data.cdata[3]);
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_1), &data.cdata[2]);
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_2), &data.cdata[1]);
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_3), &data.cdata[0]);
+ 
+ 	/* Set the write protect bit */
+ 
+-	temp = 0xD5;
+-	via_pram_command(0x35, &temp);
++	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
+ }
+ 
+ static void via_shutdown(void)
