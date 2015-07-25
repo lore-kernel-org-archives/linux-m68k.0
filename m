@@ -1,217 +1,178 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 21/26] char/generic_nvram: Remove as unused
-Date: Sat, 25 Jul 2015 17:46:20 +1000
-Message-ID: <20150725074604.663346928@telegraphics.com.au>
+Subject: [RFC v5 17/26] powerpc, fbdev: Use NV_CMODE and NV_VMODE only when CONFIG_PPC32 and CONFIG_PPC_PMAC and CONFIG_NVRAM
+Date: Sat, 25 Jul 2015 17:46:16 +1000
+Message-ID: <20150725074603.673303850@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=generic_nvram-remove
+Content-Disposition: inline; filename=ppc32-fbdev-NV_CMODE-and-NV_VMODE
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-And thus eliminate some twisted CONFIG_GENERIC_NVRAM logic.
+This patch addresses inconsistencies in Mac framebuffer drivers and their
+use of Kconfig symbols relating to NVRAM, so PPC64 can use CONFIG_NVRAM.
+
+Macintosh framebuffer drivers use default settings for color mode and
+video mode that are found in NVRAM. On PCI Macs, MacOS stores display
+settings in the Name Registry (NR) partition in NVRAM*. On NuBus Macs,
+there is no NR partition and MacOS stores display mode settings in PRAM**.
+
+Early model Macs are the ones most likely to benefit from these settings,
+since they are more likely to have one display: a fixed-frequency monitor
+connected to the built-in framebuffer device. Moreover, a single NV_CMODE
+value and a single NV_VMODE value provide for only one display.
+
+The NV_CMODE and NV_VMODE constants are apparently offsets into the NR
+partition for Old World machines and not New World, which also suggests
+that these defaults are not useful on later models.
+
+All this argues for limiting NVRAM support in PowerMac fbdev drivers to
+PPC32 and indeed this is already the case, since CONFIG_NVRAM cannot be
+enabled on PPC64 at present.
+
+For matroxfb, make the CONFIG_PPC32 condition explicit. That way the
+driver won't crash on PPC64 when CONFIG_NVRAM becomes available there.
+
+In imsttfb, add the missing CONFIG_NVRAM test to prevent a build failure,
+since PPC64 does not implement nvram_read_byte(). Also add a missing
+machine_is(powermac) check. Change the inconsistent CONFIG_PPC dependency
+and the matching #ifdef tests to CONFIG_PPC_PMAC. Drop unused #includes.
+
+In valkyriefb, for clarity and consistency with the other PowerMac fbdev
+drivers, test for CONFIG_PPC_PMAC instead of !CONFIG_MAC. Remove a
+bogus comment regarding PRAM.
+
+* See GetPreferredConfiguration and SavePreferredConfiguration in
+"Designing PCI Cards and Drivers for Power Macintosh Computers".
+
+** See SetDefaultMode and GetDefaultMode in "Designing Cards and Drivers
+for the Macintosh Family".
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
- drivers/char/Makefile        |    6 -
- drivers/char/generic_nvram.c |  175 -------------------------------------------
- 2 files changed, 1 insertion(+), 180 deletions(-)
+ drivers/video/fbdev/Kconfig                |    2 +-
+ drivers/video/fbdev/imsttfb.c              |   13 +++++--------
+ drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
+ drivers/video/fbdev/valkyriefb.c           |   14 ++++++--------
+ 4 files changed, 13 insertions(+), 18 deletions(-)
 
-Index: linux/drivers/char/Makefile
+Index: linux/drivers/video/fbdev/Kconfig
 ===================================================================
---- linux.orig/drivers/char/Makefile	2015-07-25 17:42:33.000000000 +1000
-+++ linux/drivers/char/Makefile	2015-07-25 17:45:50.000000000 +1000
-@@ -29,11 +29,7 @@ obj-$(CONFIG_GEN_RTC)		+= genrtc.o
- obj-$(CONFIG_EFI_RTC)		+= efirtc.o
- obj-$(CONFIG_DS1302)		+= ds1302.o
- obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
--ifeq ($(CONFIG_GENERIC_NVRAM),y)
--  obj-$(CONFIG_NVRAM)	+= generic_nvram.o
--else
--  obj-$(CONFIG_NVRAM)	+= nvram.o
--endif
-+obj-$(CONFIG_NVRAM)		+= nvram.o
- obj-$(CONFIG_TOSHIBA)		+= toshiba.o
- obj-$(CONFIG_DS1620)		+= ds1620.o
- obj-$(CONFIG_HW_RANDOM)		+= hw_random/
-Index: linux/drivers/char/generic_nvram.c
+--- linux.orig/drivers/video/fbdev/Kconfig	2015-07-25 17:42:34.000000000 +1000
++++ linux/drivers/video/fbdev/Kconfig	2015-07-25 17:45:44.000000000 +1000
+@@ -544,7 +544,7 @@ config FB_IMSTT
+ 	bool "IMS Twin Turbo display support"
+ 	depends on (FB = y) && PCI
+ 	select FB_CFB_IMAGEBLIT
+-	select FB_MACMODES if PPC
++	select FB_MACMODES if PPC_PMAC
+ 	help
+ 	  The IMS Twin Turbo is a PCI-based frame buffer card bundled with
+ 	  many Macintosh and compatible computers.
+Index: linux/drivers/video/fbdev/imsttfb.c
 ===================================================================
---- linux.orig/drivers/char/generic_nvram.c	2015-07-25 17:45:45.000000000 +1000
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,175 +0,0 @@
--/*
-- * Generic /dev/nvram driver for architectures providing some
-- * "generic" hooks, that is :
-- *
-- * nvram_read_byte, nvram_write_byte, nvram_sync, nvram_get_size
-- *
-- * Note that an additional hook is supported for PowerMac only
-- * for getting the nvram "partition" informations
-- *
-- */
--
--#define NVRAM_VERSION "1.1"
--
--#include <linux/module.h>
--
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/fs.h>
--#include <linux/miscdevice.h>
--#include <linux/fcntl.h>
--#include <linux/init.h>
--#include <linux/mutex.h>
--#include <linux/nvram.h>
--#include <asm/uaccess.h>
--#include <asm/nvram.h>
--#ifdef CONFIG_PPC_PMAC
--#include <asm/machdep.h>
--#endif
--
--static DEFINE_MUTEX(nvram_mutex);
--static ssize_t nvram_len;
--
--static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
--{
--	switch (origin) {
--	case 0:
--		break;
--	case 1:
--		offset += file->f_pos;
--		break;
--	case 2:
--		offset += nvram_len;
--		break;
--	default:
--		offset = -1;
--	}
--	if (offset < 0)
--		return -EINVAL;
--
--	file->f_pos = offset;
--
--	return file->f_pos;
--}
--
--static ssize_t read_nvram(struct file *file, char __user *buf,
--			  size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	char __user *p = buf;
--
--	if (!access_ok(VERIFY_WRITE, buf, count))
--		return -EFAULT;
--	if (*ppos >= nvram_len)
--		return 0;
--	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
--		if (__put_user(arch_nvram_ops.read_byte(i), p))
--			return -EFAULT;
--	*ppos = i;
--	return p - buf;
--}
--
--static ssize_t write_nvram(struct file *file, const char __user *buf,
--			   size_t count, loff_t *ppos)
--{
--	unsigned int i;
--	const char __user *p = buf;
--	char c;
--
--	if (!access_ok(VERIFY_READ, buf, count))
--		return -EFAULT;
--	if (*ppos >= nvram_len)
--		return 0;
--	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
--		if (__get_user(c, p))
--			return -EFAULT;
--		arch_nvram_ops.write_byte(c, i);
--	}
--	*ppos = i;
--	return p - buf;
--}
--
--static int nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	switch(cmd) {
--#ifdef CONFIG_PPC_PMAC
--	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
--		printk(KERN_WARNING "nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
--	case IOC_NVRAM_GET_OFFSET: {
--		int part, offset;
--
--		if (!machine_is(powermac))
--			return -EINVAL;
--		if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
--			return -EFAULT;
--		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
--			return -EINVAL;
--		offset = pmac_get_partition(part);
--		if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
--			return -EFAULT;
--		break;
--	}
--#endif /* CONFIG_PPC_PMAC */
--	case IOC_NVRAM_SYNC:
--		arch_nvram_ops.sync();
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static long nvram_unlocked_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	int ret;
--
--	mutex_lock(&nvram_mutex);
--	ret = nvram_ioctl(file, cmd, arg);
--	mutex_unlock(&nvram_mutex);
--
--	return ret;
--}
--
--const struct file_operations nvram_fops = {
--	.owner		= THIS_MODULE,
--	.llseek		= nvram_llseek,
--	.read		= read_nvram,
--	.write		= write_nvram,
--	.unlocked_ioctl	= nvram_unlocked_ioctl,
--};
--
--static struct miscdevice nvram_dev = {
--	NVRAM_MINOR,
--	"nvram",
--	&nvram_fops
--};
--
--int __init nvram_init(void)
--{
--	int ret;
--
--	if (arch_nvram_ops.get_size == NULL)
--		return -ENODEV;
--
--	nvram_len = arch_nvram_ops.get_size();
--	if (nvram_len < 0)
--		return nvram_len;
--
--	ret = misc_register(&nvram_dev);
--	if (ret)
--		return ret;
--
--	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
--
--	return 0;
--}
--
--void __exit nvram_cleanup(void)
--{
--        misc_deregister( &nvram_dev );
--}
--
--module_init(nvram_init);
--module_exit(nvram_cleanup);
--MODULE_LICENSE("GPL");
+--- linux.orig/drivers/video/fbdev/imsttfb.c	2015-07-25 17:42:34.000000000 +1000
++++ linux/drivers/video/fbdev/imsttfb.c	2015-07-25 17:45:44.000000000 +1000
+@@ -30,10 +30,8 @@
+ #include <asm/io.h>
+ #include <linux/uaccess.h>
+ 
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ #include <linux/nvram.h>
+-#include <asm/prom.h>
+-#include <asm/pci-bridge.h>
+ #include "macmodes.h"
+ #endif
+ 
+@@ -328,14 +326,13 @@ enum {
+ 	TVP = 1
+ };
+ 
+-#define USE_NV_MODES		1
+ #define INIT_BPP		8
+ #define INIT_XRES		640
+ #define INIT_YRES		480
+ 
+ static int inverse = 0;
+ static char fontname[40] __initdata = { 0 };
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ static signed char init_vmode = -1, init_cmode = -1;
+ #endif
+ 
+@@ -1391,8 +1388,8 @@ static void init_imstt(struct fb_info *i
+ 		}
+ 	}
+ 
+-#if USE_NV_MODES && defined(CONFIG_PPC32)
+-	{
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
++	if (machine_is(powermac)) {
+ 		int vmode = init_vmode, cmode = init_cmode;
+ 
+ 		if (vmode == -1) {
+@@ -1566,7 +1563,7 @@ imsttfb_setup(char *options)
+ 			inverse = 1;
+ 			fb_invert_cmaps();
+ 		}
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ 		else if (!strncmp(this_opt, "vmode:", 6)) {
+ 			int vmode = simple_strtoul(this_opt+6, NULL, 0);
+ 			if (vmode > 0 && vmode <= VMODE_MAX)
+Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-25 17:45:38.000000000 +1000
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-07-25 17:45:44.000000000 +1000
+@@ -1876,7 +1876,7 @@ static int initMatrox2(struct matrox_fb_
+ 		struct fb_var_screeninfo var;
+ 		if (default_vmode <= 0 || default_vmode > VMODE_MAX)
+ 			default_vmode = VMODE_640_480_60;
+-#ifdef CONFIG_NVRAM
++#if defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
+ 		if (default_cmode == CMODE_NVRAM)
+ 			default_cmode = nvram_read_byte(NV_CMODE);
+ #endif
+Index: linux/drivers/video/fbdev/valkyriefb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-07-25 17:42:34.000000000 +1000
++++ linux/drivers/video/fbdev/valkyriefb.c	2015-07-25 17:45:44.000000000 +1000
+@@ -65,14 +65,12 @@
+ #include "macmodes.h"
+ #include "valkyriefb.h"
+ 
+-#ifdef CONFIG_MAC
+-/* We don't yet have functions to read the PRAM... perhaps we can
+-   adapt them from the PPC code? */
+-static int default_vmode = VMODE_CHOOSE;
+-static int default_cmode = CMODE_8;
+-#else
++#ifdef CONFIG_PPC_PMAC
+ static int default_vmode = VMODE_NVRAM;
+ static int default_cmode = CMODE_NVRAM;
++#else
++static int default_vmode = VMODE_CHOOSE;
++static int default_cmode = CMODE_8;
+ #endif
+ 
+ struct fb_par_valkyrie {
+@@ -285,7 +283,7 @@ static void __init valkyrie_choose_mode(
+ 	printk(KERN_INFO "Monitor sense value = 0x%x\n", p->sense);
+ 
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+-#if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_vmode == VMODE_NVRAM) {
+ 		default_vmode = nvram_read_byte(NV_VMODE);
+ 		if (default_vmode <= 0
+@@ -298,7 +296,7 @@ static void __init valkyrie_choose_mode(
+ 		default_vmode = mac_map_monitor_sense(p->sense);
+ 	if (!valkyrie_reg_init[default_vmode - 1])
+ 		default_vmode = VMODE_640_480_67;
+-#if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_cmode == CMODE_NVRAM)
+ 		default_cmode = nvram_read_byte(NV_CMODE);
+ #endif
