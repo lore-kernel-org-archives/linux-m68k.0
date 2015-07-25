@@ -1,143 +1,217 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 24/26] m68k/mac: Use macros for RTC accesses not magic numbers
-Date: Sat, 25 Jul 2015 17:46:23 +1000
-Message-ID: <20150725074605.393470640@telegraphics.com.au>
+Subject: [RFC v5 21/26] char/generic_nvram: Remove as unused
+Date: Sat, 25 Jul 2015 17:46:20 +1000
+Message-ID: <20150725074604.663346928@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-rtc-macros
+Content-Disposition: inline; filename=generic_nvram-remove
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
+
+And thus eliminate some twisted CONFIG_GENERIC_NVRAM logic.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ drivers/char/Makefile        |    6 -
+ drivers/char/generic_nvram.c |  175 -------------------------------------------
+ 2 files changed, 1 insertion(+), 180 deletions(-)
 
-This is intended to improve code style and not affect code behaviour.
-I've tested this on a Quadra 650.
-
-I don't know the meanings of the 4 undocumented write protect register
-bits 0x55, so I decided against defining 4 macros for those bits.
-
----
- arch/m68k/mac/misc.c |   59 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 41 insertions(+), 18 deletions(-)
-
-Index: linux/arch/m68k/mac/misc.c
+Index: linux/drivers/char/Makefile
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-07-25 17:45:53.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-07-25 17:45:54.000000000 +1000
-@@ -242,6 +242,21 @@ static void via_rtc_send(__u8 data)
- }
- 
- /*
-+ * These values can be found in Inside Macintosh vol. III ch. 2
-+ * which has a description of the RTC chip in the original Mac.
-+ */
-+
-+#define RTC_FLG_READ            BIT(7)
-+#define RTC_FLG_WRITE_PROTECT   BIT(7)
-+#define RTC_CMD_READ(r)         (RTC_FLG_READ | (r << 2))
-+#define RTC_CMD_WRITE(r)        (r << 2)
-+#define RTC_REG_SECONDS_0       0
-+#define RTC_REG_SECONDS_1       1
-+#define RTC_REG_SECONDS_2       2
-+#define RTC_REG_SECONDS_3       3
-+#define RTC_REG_WRITE_PROTECT   13
-+
-+/*
-  * Execute a VIA PRAM/RTC command. For read commands
-  * data should point to a one-byte buffer for the
-  * resulting data. For write commands it should point
-@@ -250,13 +265,17 @@ static void via_rtc_send(__u8 data)
-  * This function disables all interrupts while running.
-  */
- 
--static void via_pram_command(int command, __u8 *data)
-+static void via_rtc_command(int command, __u8 *data)
- {
- 	unsigned long flags;
- 	int	is_read;
- 
- 	local_irq_save(flags);
- 
-+	/* The least significant bits must be 0b01 according to Inside Mac */
-+
-+	command = (command & ~3) | 1;
-+
- 	/* Enable the RTC and make sure the strobe line is high */
- 
- 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
-@@ -264,10 +283,10 @@ static void via_pram_command(int command
- 	if (command & 0xFF00) {		/* extended (two-byte) command */
- 		via_rtc_send((command & 0xFF00) >> 8);
- 		via_rtc_send(command & 0xFF);
--		is_read = command & 0x8000;
-+		is_read = command & (RTC_FLG_READ << 8);
- 	} else {			/* one-byte command */
- 		via_rtc_send(command);
--		is_read = command & 0x80;
-+		is_read = command & RTC_FLG_READ;
- 	}
- 	if (is_read) {
- 		*data = via_rtc_recv();
-@@ -306,10 +325,10 @@ static long via_read_time(void)
- 	} result, last_result;
- 	int count = 1;
- 
--	via_pram_command(0x81, &last_result.cdata[3]);
--	via_pram_command(0x85, &last_result.cdata[2]);
--	via_pram_command(0x89, &last_result.cdata[1]);
--	via_pram_command(0x8D, &last_result.cdata[0]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0), &last_result.cdata[3]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1), &last_result.cdata[2]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2), &last_result.cdata[1]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3), &last_result.cdata[0]);
- 
- 	/*
- 	 * The NetBSD guys say to loop until you get the same reading
-@@ -317,10 +336,14 @@ static long via_read_time(void)
- 	 */
- 
- 	while (1) {
--		via_pram_command(0x81, &result.cdata[3]);
--		via_pram_command(0x85, &result.cdata[2]);
--		via_pram_command(0x89, &result.cdata[1]);
--		via_pram_command(0x8D, &result.cdata[0]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0),
-+		                &result.cdata[3]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1),
-+		                &result.cdata[2]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2),
-+		                &result.cdata[1]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3),
-+		                &result.cdata[0]);
- 
- 		if (result.idata == last_result.idata)
- 			return result.idata - RTC_OFFSET;
-@@ -356,18 +379,18 @@ static void via_write_time(long time)
- 	/* Clear the write protect bit */
- 
- 	temp = 0x55;
--	via_pram_command(0x35, &temp);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- 
- 	data.idata = time + RTC_OFFSET;
--	via_pram_command(0x01, &data.cdata[3]);
--	via_pram_command(0x05, &data.cdata[2]);
--	via_pram_command(0x09, &data.cdata[1]);
--	via_pram_command(0x0D, &data.cdata[0]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_0), &data.cdata[3]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_1), &data.cdata[2]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_2), &data.cdata[1]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_3), &data.cdata[0]);
- 
- 	/* Set the write protect bit */
- 
--	temp = 0xD5;
--	via_pram_command(0x35, &temp);
-+	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- }
- 
- static void via_shutdown(void)
+--- linux.orig/drivers/char/Makefile	2015-07-25 17:42:33.000000000 +1000
++++ linux/drivers/char/Makefile	2015-07-25 17:45:50.000000000 +1000
+@@ -29,11 +29,7 @@ obj-$(CONFIG_GEN_RTC)		+= genrtc.o
+ obj-$(CONFIG_EFI_RTC)		+= efirtc.o
+ obj-$(CONFIG_DS1302)		+= ds1302.o
+ obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
+-ifeq ($(CONFIG_GENERIC_NVRAM),y)
+-  obj-$(CONFIG_NVRAM)	+= generic_nvram.o
+-else
+-  obj-$(CONFIG_NVRAM)	+= nvram.o
+-endif
++obj-$(CONFIG_NVRAM)		+= nvram.o
+ obj-$(CONFIG_TOSHIBA)		+= toshiba.o
+ obj-$(CONFIG_DS1620)		+= ds1620.o
+ obj-$(CONFIG_HW_RANDOM)		+= hw_random/
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-07-25 17:45:45.000000000 +1000
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,175 +0,0 @@
+-/*
+- * Generic /dev/nvram driver for architectures providing some
+- * "generic" hooks, that is :
+- *
+- * nvram_read_byte, nvram_write_byte, nvram_sync, nvram_get_size
+- *
+- * Note that an additional hook is supported for PowerMac only
+- * for getting the nvram "partition" informations
+- *
+- */
+-
+-#define NVRAM_VERSION "1.1"
+-
+-#include <linux/module.h>
+-
+-#include <linux/types.h>
+-#include <linux/errno.h>
+-#include <linux/fs.h>
+-#include <linux/miscdevice.h>
+-#include <linux/fcntl.h>
+-#include <linux/init.h>
+-#include <linux/mutex.h>
+-#include <linux/nvram.h>
+-#include <asm/uaccess.h>
+-#include <asm/nvram.h>
+-#ifdef CONFIG_PPC_PMAC
+-#include <asm/machdep.h>
+-#endif
+-
+-static DEFINE_MUTEX(nvram_mutex);
+-static ssize_t nvram_len;
+-
+-static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
+-{
+-	switch (origin) {
+-	case 0:
+-		break;
+-	case 1:
+-		offset += file->f_pos;
+-		break;
+-	case 2:
+-		offset += nvram_len;
+-		break;
+-	default:
+-		offset = -1;
+-	}
+-	if (offset < 0)
+-		return -EINVAL;
+-
+-	file->f_pos = offset;
+-
+-	return file->f_pos;
+-}
+-
+-static ssize_t read_nvram(struct file *file, char __user *buf,
+-			  size_t count, loff_t *ppos)
+-{
+-	unsigned int i;
+-	char __user *p = buf;
+-
+-	if (!access_ok(VERIFY_WRITE, buf, count))
+-		return -EFAULT;
+-	if (*ppos >= nvram_len)
+-		return 0;
+-	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
+-		if (__put_user(arch_nvram_ops.read_byte(i), p))
+-			return -EFAULT;
+-	*ppos = i;
+-	return p - buf;
+-}
+-
+-static ssize_t write_nvram(struct file *file, const char __user *buf,
+-			   size_t count, loff_t *ppos)
+-{
+-	unsigned int i;
+-	const char __user *p = buf;
+-	char c;
+-
+-	if (!access_ok(VERIFY_READ, buf, count))
+-		return -EFAULT;
+-	if (*ppos >= nvram_len)
+-		return 0;
+-	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
+-		if (__get_user(c, p))
+-			return -EFAULT;
+-		arch_nvram_ops.write_byte(c, i);
+-	}
+-	*ppos = i;
+-	return p - buf;
+-}
+-
+-static int nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	switch(cmd) {
+-#ifdef CONFIG_PPC_PMAC
+-	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
+-		printk(KERN_WARNING "nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
+-	case IOC_NVRAM_GET_OFFSET: {
+-		int part, offset;
+-
+-		if (!machine_is(powermac))
+-			return -EINVAL;
+-		if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
+-			return -EFAULT;
+-		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+-			return -EINVAL;
+-		offset = pmac_get_partition(part);
+-		if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
+-			return -EFAULT;
+-		break;
+-	}
+-#endif /* CONFIG_PPC_PMAC */
+-	case IOC_NVRAM_SYNC:
+-		arch_nvram_ops.sync();
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-static long nvram_unlocked_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	int ret;
+-
+-	mutex_lock(&nvram_mutex);
+-	ret = nvram_ioctl(file, cmd, arg);
+-	mutex_unlock(&nvram_mutex);
+-
+-	return ret;
+-}
+-
+-const struct file_operations nvram_fops = {
+-	.owner		= THIS_MODULE,
+-	.llseek		= nvram_llseek,
+-	.read		= read_nvram,
+-	.write		= write_nvram,
+-	.unlocked_ioctl	= nvram_unlocked_ioctl,
+-};
+-
+-static struct miscdevice nvram_dev = {
+-	NVRAM_MINOR,
+-	"nvram",
+-	&nvram_fops
+-};
+-
+-int __init nvram_init(void)
+-{
+-	int ret;
+-
+-	if (arch_nvram_ops.get_size == NULL)
+-		return -ENODEV;
+-
+-	nvram_len = arch_nvram_ops.get_size();
+-	if (nvram_len < 0)
+-		return nvram_len;
+-
+-	ret = misc_register(&nvram_dev);
+-	if (ret)
+-		return ret;
+-
+-	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
+-
+-	return 0;
+-}
+-
+-void __exit nvram_cleanup(void)
+-{
+-        misc_deregister( &nvram_dev );
+-}
+-
+-module_init(nvram_init);
+-module_exit(nvram_cleanup);
+-MODULE_LICENSE("GPL");
