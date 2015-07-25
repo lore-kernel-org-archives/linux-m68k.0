@@ -1,114 +1,120 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 14/26] powerpc: Add missing ppc_md.nvram_size for CHRP and PowerMac
-Date: Sat, 25 Jul 2015 17:46:13 +1000
-Message-ID: <20150725074602.933346206@telegraphics.com.au>
+Subject: [RFC v5 04/26] m68k/atari: Replace nvram_{read,
+ write}_byte with arch_nvram_ops
+Date: Sat, 25 Jul 2015 17:46:03 +1000
+Message-ID: <20150725074600.523330379@telegraphics.com.au>
 References: <20150725074559.543547894@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=fix-powerpc-machdep-inconsistencies
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline; filename=atari_scsi-convert-to-nvram_ops
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-scsi@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Add the nvram_size() function to those PowerPC platforms that don't already
-have one: CHRP and PowerMac. This means that the ppc_md.nvram_size()
-function can be used to implement arch_nvram_ops.get_size()
-
-Since we are addressing inconsistencies here, also rename chrp_nvram_read
-and chrp_nvram_write, which break the naming convention used across
-PowerPC platforms for NVRAM accessor functions.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
----
- arch/powerpc/platforms/chrp/nvram.c     |   14 ++++++++++----
- arch/powerpc/platforms/powermac/nvram.c |    9 +++++++++
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
-Index: linux/arch/powerpc/platforms/chrp/nvram.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/nvram.c	2015-07-25 17:42:34.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/nvram.c	2015-07-25 17:45:40.000000000 +1000
-@@ -23,7 +23,7 @@ static unsigned int nvram_size;
- static unsigned char nvram_buf[4];
- static DEFINE_SPINLOCK(nvram_lock);
- 
--static unsigned char chrp_nvram_read(int addr)
-+static unsigned char chrp_nvram_read_byte(int addr)
- {
- 	unsigned int done;
- 	unsigned long flags;
-@@ -45,7 +45,7 @@ static unsigned char chrp_nvram_read(int
- 	return ret;
- }
- 
--static void chrp_nvram_write(int addr, unsigned char val)
-+static void chrp_nvram_write_byte(int addr, unsigned char val)
- {
- 	unsigned int done;
- 	unsigned long flags;
-@@ -63,6 +63,11 @@ static void chrp_nvram_write(int addr, u
- 	spin_unlock_irqrestore(&nvram_lock, flags);
- }
- 
-+static ssize_t chrp_nvram_size(void)
-+{
-+	return nvram_size;
-+}
-+
- void __init chrp_nvram_init(void)
- {
- 	struct device_node *nvram;
-@@ -84,8 +89,9 @@ void __init chrp_nvram_init(void)
- 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
- 	of_node_put(nvram);
- 
--	ppc_md.nvram_read_val = chrp_nvram_read;
--	ppc_md.nvram_write_val = chrp_nvram_write;
-+	ppc_md.nvram_read_val  = chrp_nvram_read_byte;
-+	ppc_md.nvram_write_val = chrp_nvram_write_byte;
-+	ppc_md.nvram_size      = chrp_nvram_size;
- 
- 	return;
- }
-Index: linux/arch/powerpc/platforms/powermac/nvram.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-07-25 17:42:34.000000000 +1000
-+++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-07-25 17:45:40.000000000 +1000
-@@ -147,6 +147,11 @@ static ssize_t core99_nvram_size(void)
- static volatile unsigned char __iomem *nvram_addr;
- static int nvram_mult;
- 
-+static ssize_t ppc32_nvram_size(void)
-+{
-+	return NVRAM_SIZE;
-+}
-+
- static unsigned char direct_nvram_read_byte(int addr)
- {
- 	return in_8(&nvram_data[(addr & (NVRAM_SIZE - 1)) * nvram_mult]);
-@@ -590,21 +595,25 @@ int __init pmac_nvram_init(void)
- 		nvram_mult = 1;
- 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
- 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 1) {
- 		nvram_data = ioremap(r1.start, s1);
- 		nvram_mult = (s1 + NVRAM_SIZE - 1) / NVRAM_SIZE;
- 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
- 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 2) {
- 		nvram_addr = ioremap(r1.start, s1);
- 		nvram_data = ioremap(r2.start, s2);
- 		ppc_md.nvram_read_val	= indirect_nvram_read_byte;
- 		ppc_md.nvram_write_val	= indirect_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- 	} else if (nvram_naddrs == 0 && sys_ctrler == SYS_CTRLER_PMU) {
- #ifdef CONFIG_ADB_PMU
- 		nvram_naddrs = -1;
- 		ppc_md.nvram_read_val	= pmu_nvram_read_byte;
- 		ppc_md.nvram_write_val	= pmu_nvram_write_byte;
-+		ppc_md.nvram_size	= ppc32_nvram_size;
- #endif /* CONFIG_ADB_PMU */
- 	} else {
- 		printk(KERN_ERR "Incompatible type of NVRAM\n");
+QnkgaW1wbGVtZW50aW5nIGFuIGFyY2hfbnZyYW1fb3BzIHN0cnVjdCwgYW55IHBsYXRmb3JtIGNh
+biByZS11c2UgdGhlCmRyaXZlcnMvY2hhci9udnJhbSBtb2R1bGUgd2l0aG91dCBuZWVkaW5nIGFu
+eSBhcmNoLXNwZWNpZmljIGNvZGUKaW4gdGhhdCBtb2R1bGUuIEF0YXJpIGRvZXMgc28gaGVyZS4K
+CkF0YXJpIGhhcyBvbmUgdXNlciBvZiBudnJhbV9jaGVja19jaGVja3N1bSgpIHdoZXJlYXMgdGhl
+IG90aGVyIHBsYXRmb3JtcwooaS5lLiB4ODYgYW5kIEFSTSBwbGF0Zm9ybXMpIGhhdmUgbm9uZSBh
+dCBhbGwuIFJlcGxhY2UgdGhpcwp2YWxpZGF0ZS1jaGVja3N1bS1hbmQtcmVhZC1ieXRlIHNlcXVl
+bmNlIHdpdGggdGhlIGVxdWl2YWxlbnQKcnRjX252cmFtX29wcy5yZWFkKCkgY2FsbCBhbmQgcmVt
+b3ZlIHRoZSBub3cgdW51c2VkIGZ1bmN0aW9ucy4KClNpZ25lZC1vZmYtYnk6IEZpbm4gVGhhaW4g
+PGZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1PgpUZXN0ZWQtYnk6IENocmlzdGlhbiBULiBTdGVp
+Z2llcyA8Y3RzQGRlYmlhbi5vcmc+CgotLS0KClRoZSBhZHZhbnRhZ2Ugb2YgdGhlIG5ldyBvcHMg
+c3RydWN0IG92ZXIgdGhlIG9sZCBnbG9iYWwgbnZyYW1fKiBmdW5jdGlvbnMKaXMgdGhhdCB0aGUg
+bWlzYyBkZXZpY2UgbW9kdWxlIGNhbiBiZSBzaGFyZWQgYnkgZGlmZmVyZW50IHBsYXRmb3Jtcwp3
+aXRob3V0IHJlcXVpcmluZyBldmVyeSBwbGF0Zm9ybSB0byBpbXBsZW1lbnQgZXZlcnkgbnZyYW1f
+KiBmdW5jdGlvbi4KRS5nLiBvbmx5IFJUQyAiQ01PUyIgTlZSQU1zIGhhdmUgYSBjaGVja3N1bSBm
+b3IgdGhlIGVudGlyZSBOVlJBTQphbmQgb25seSBQb3dlclBDIHBsYXRmb3JtcyBoYXZlIGEgInN5
+bmMiIGlvY3RsLgoKLS0tCiBhcmNoL202OGsvYXRhcmkvbnZyYW0uYyAgIHwgICA4OSArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tCiBkcml2ZXJzL3Njc2kvYXRh
+cmlfc2NzaS5jIHwgICAgOCArKy0tCiBpbmNsdWRlL2xpbnV4L252cmFtLmggICAgIHwgICAgOSAr
+KysrCiAzIGZpbGVzIGNoYW5nZWQsIDcwIGluc2VydGlvbnMoKyksIDM2IGRlbGV0aW9ucygtKQoK
+SW5kZXg6IGxpbnV4L2FyY2gvbTY4ay9hdGFyaS9udnJhbS5jCj09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4
+Lm9yaWcvYXJjaC9tNjhrL2F0YXJpL252cmFtLmMJMjAxNS0wNy0yNSAxNzo0NToyNi4wMDAwMDAw
+MDAgKzEwMDAKKysrIGxpbnV4L2FyY2gvbTY4ay9hdGFyaS9udnJhbS5jCTIwMTUtMDctMjUgMTc6
+NDU6MjguMDAwMDAwMDAwICsxMDAwCkBAIC0zOCwzMyArMzgsMTIgQEAgdW5zaWduZWQgY2hhciBf
+X252cmFtX3JlYWRfYnl0ZShpbnQgaSkKIAlyZXR1cm4gQ01PU19SRUFEKE5WUkFNX0ZJUlNUX0JZ
+VEUgKyBpKTsKIH0KIAotdW5zaWduZWQgY2hhciBudnJhbV9yZWFkX2J5dGUoaW50IGkpCi17Ci0J
+dW5zaWduZWQgbG9uZyBmbGFnczsKLQl1bnNpZ25lZCBjaGFyIGM7Ci0KLQlzcGluX2xvY2tfaXJx
+c2F2ZSgmcnRjX2xvY2ssIGZsYWdzKTsKLQljID0gX19udnJhbV9yZWFkX2J5dGUoaSk7Ci0Jc3Bp
+bl91bmxvY2tfaXJxcmVzdG9yZSgmcnRjX2xvY2ssIGZsYWdzKTsKLQlyZXR1cm4gYzsKLX0KLUVY
+UE9SVF9TWU1CT0wobnZyYW1fcmVhZF9ieXRlKTsKLQogLyogVGhpcyByYWNlcyBuaWNlbHkgd2l0
+aCB0cnlpbmcgdG8gcmVhZCB3aXRoIGNoZWNrc3VtIGNoZWNraW5nICovCiB2b2lkIF9fbnZyYW1f
+d3JpdGVfYnl0ZSh1bnNpZ25lZCBjaGFyIGMsIGludCBpKQogewogCUNNT1NfV1JJVEUoYywgTlZS
+QU1fRklSU1RfQllURSArIGkpOwogfQogCi12b2lkIG52cmFtX3dyaXRlX2J5dGUodW5zaWduZWQg
+Y2hhciBjLCBpbnQgaSkKLXsKLQl1bnNpZ25lZCBsb25nIGZsYWdzOwotCi0Jc3Bpbl9sb2NrX2ly
+cXNhdmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JX19udnJhbV93cml0ZV9ieXRlKGMsIGkpOwotCXNw
+aW5fdW5sb2NrX2lycXJlc3RvcmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci19Ci0KIC8qIE9uIEF0YXJp
+cywgdGhlIGNoZWNrc3VtIGlzIG92ZXIgYWxsIGJ5dGVzIGV4Y2VwdCB0aGUgY2hlY2tzdW0gYnl0
+ZXMKICAqIHRoZW1zZWx2ZXM7IHRoZXNlIGFyZSBhdCB0aGUgdmVyeSBlbmQuCiAgKi8KQEAgLTgz
+LDE4ICs2Miw2IEBAIGludCBfX252cmFtX2NoZWNrX2NoZWNrc3VtKHZvaWQpCiAJICAgICAgIChf
+X252cmFtX3JlYWRfYnl0ZShBVEFSSV9DS1NfTE9DICsgMSkgPT0gKHN1bSAmIDB4ZmYpKTsKIH0K
+IAotaW50IG52cmFtX2NoZWNrX2NoZWNrc3VtKHZvaWQpCi17Ci0JdW5zaWduZWQgbG9uZyBmbGFn
+czsKLQlpbnQgcnY7Ci0KLQlzcGluX2xvY2tfaXJxc2F2ZSgmcnRjX2xvY2ssIGZsYWdzKTsKLQly
+diA9IF9fbnZyYW1fY2hlY2tfY2hlY2tzdW0oKTsKLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZy
+dGNfbG9jaywgZmxhZ3MpOwotCXJldHVybiBydjsKLX0KLUVYUE9SVF9TWU1CT0wobnZyYW1fY2hl
+Y2tfY2hlY2tzdW0pOwotCiBzdGF0aWMgdm9pZCBfX252cmFtX3NldF9jaGVja3N1bSh2b2lkKQog
+ewogCWludCBpOwpAQCAtMTA2LDYgKzczLDYyIEBAIHN0YXRpYyB2b2lkIF9fbnZyYW1fc2V0X2No
+ZWNrc3VtKHZvaWQpCiAJX19udnJhbV93cml0ZV9ieXRlKHN1bSwgQVRBUklfQ0tTX0xPQyArIDEp
+OwogfQogCitzdGF0aWMgc3NpemVfdCBudnJhbV9yZWFkKGNoYXIgKmJ1Ziwgc2l6ZV90IGNvdW50
+LCBsb2ZmX3QgKnBwb3MpCit7CisJY2hhciAqcCA9IGJ1ZjsKKwlsb2ZmX3QgaTsKKworCXNwaW5f
+bG9ja19pcnEoJnJ0Y19sb2NrKTsKKworCWlmICghX19udnJhbV9jaGVja19jaGVja3N1bSgpKSB7
+CisJCXNwaW5fdW5sb2NrX2lycSgmcnRjX2xvY2spOworCQlyZXR1cm4gLUVJTzsKKwl9CisKKwlm
+b3IgKGkgPSAqcHBvczsgY291bnQgPiAwICYmIGkgPCBOVlJBTV9CWVRFUzsgLS1jb3VudCwgKytp
+LCArK3ApCisJCSpwID0gX19udnJhbV9yZWFkX2J5dGUoaSk7CisKKwlzcGluX3VubG9ja19pcnEo
+JnJ0Y19sb2NrKTsKKworCSpwcG9zID0gaTsKKwlyZXR1cm4gcCAtIGJ1ZjsKK30KKworc3RhdGlj
+IHNzaXplX3QgbnZyYW1fd3JpdGUoY2hhciAqYnVmLCBzaXplX3QgY291bnQsIGxvZmZfdCAqcHBv
+cykKK3sKKwljaGFyICpwID0gYnVmOworCWxvZmZfdCBpOworCisJc3Bpbl9sb2NrX2lycSgmcnRj
+X2xvY2spOworCisJaWYgKCFfX252cmFtX2NoZWNrX2NoZWNrc3VtKCkpIHsKKwkJc3Bpbl91bmxv
+Y2tfaXJxKCZydGNfbG9jayk7CisJCXJldHVybiAtRUlPOworCX0KKworCWZvciAoaSA9ICpwcG9z
+OyBjb3VudCA+IDAgJiYgaSA8IE5WUkFNX0JZVEVTOyAtLWNvdW50LCArK2ksICsrcCkKKwkJX19u
+dnJhbV93cml0ZV9ieXRlKCpwLCBpKTsKKworCV9fbnZyYW1fc2V0X2NoZWNrc3VtKCk7CisKKwlz
+cGluX3VubG9ja19pcnEoJnJ0Y19sb2NrKTsKKworCSpwcG9zID0gaTsKKwlyZXR1cm4gcCAtIGJ1
+ZjsKK30KKworc3RhdGljIHNzaXplX3QgbnZyYW1fZ2V0X3NpemUodm9pZCkKK3sKKwlyZXR1cm4g
+TlZSQU1fQllURVM7Cit9CisKK2NvbnN0IHN0cnVjdCBudnJhbV9vcHMgYXJjaF9udnJhbV9vcHMg
+PSB7CisJLnJlYWQgICAgICAgICAgID0gbnZyYW1fcmVhZCwKKwkud3JpdGUgICAgICAgICAgPSBu
+dnJhbV93cml0ZSwKKwkuZ2V0X3NpemUgICAgICAgPSBudnJhbV9nZXRfc2l6ZSwKK307CitFWFBP
+UlRfU1lNQk9MKGFyY2hfbnZyYW1fb3BzKTsKKwogI2lmZGVmIENPTkZJR19QUk9DX0ZTCiBzdGF0
+aWMgc3RydWN0IHsKIAl1bnNpZ25lZCBjaGFyIHZhbDsKSW5kZXg6IGxpbnV4L2RyaXZlcnMvc2Nz
+aS9hdGFyaV9zY3NpLmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgub3JpZy9kcml2ZXJzL3Njc2kvYXRh
+cmlfc2NzaS5jCTIwMTUtMDctMjUgMTc6NDU6MjQuMDAwMDAwMDAwICsxMDAwCisrKyBsaW51eC9k
+cml2ZXJzL3Njc2kvYXRhcmlfc2NzaS5jCTIwMTUtMDctMjUgMTc6NDU6MjguMDAwMDAwMDAwICsx
+MDAwCkBAIC04ODAsMTMgKzg4MCwxNSBAQCBzdGF0aWMgaW50IF9faW5pdCBhdGFyaV9zY3NpX3By
+b2JlKHN0cnVjCiAjaWZkZWYgQ09ORklHX05WUkFNCiAJZWxzZQogCQkvKiBUZXN0IGlmIGEgaG9z
+dCBpZCBpcyBzZXQgaW4gdGhlIE5WUmFtICovCi0JCWlmIChBVEFSSUhXX1BSRVNFTlQoVFRfQ0xL
+KSAmJiBudnJhbV9jaGVja19jaGVja3N1bSgpKSB7Ci0JCQl1bnNpZ25lZCBjaGFyIGIgPSBudnJh
+bV9yZWFkX2J5dGUoMTQpOworCQlpZiAoQVRBUklIV19QUkVTRU5UKFRUX0NMSykpIHsKKwkJCXVu
+c2lnbmVkIGNoYXIgYjsKKwkJCWxvZmZfdCBvZmZzZXQgPSAxNDsKKwkJCXNzaXplX3QgY291bnQg
+PSBhcmNoX252cmFtX29wcy5yZWFkKCZiLCAxLCAmb2Zmc2V0KTsKIAogCQkJLyogQXJiaXRyYXRp
+b24gZW5hYmxlZD8gKGZvciBUT1MpCiAJCQkgKiBJZiB5ZXMsIHVzZSBjb25maWd1cmVkIGhvc3Qg
+SUQKIAkJCSAqLwotCQkJaWYgKGIgJiAweDgwKQorCQkJaWYgKChjb3VudCA9PSAxKSAmJiAoYiAm
+IDB4ODApKQogCQkJCWF0YXJpX3Njc2lfdGVtcGxhdGUudGhpc19pZCA9IGIgJiA3OwogCQl9CiAj
+ZW5kaWYKSW5kZXg6IGxpbnV4L2luY2x1ZGUvbGludXgvbnZyYW0uaAo9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBs
+aW51eC5vcmlnL2luY2x1ZGUvbGludXgvbnZyYW0uaAkyMDE1LTA3LTI1IDE3OjQyOjM0LjAwMDAw
+MDAwMCArMTAwMAorKysgbGludXgvaW5jbHVkZS9saW51eC9udnJhbS5oCTIwMTUtMDctMjUgMTc6
+NDU6MjguMDAwMDAwMDAwICsxMDAwCkBAIC0xMCw0ICsxMCwxMyBAQCBleHRlcm4gdm9pZCBfX252
+cmFtX3dyaXRlX2J5dGUodW5zaWduZWQKIGV4dGVybiB2b2lkIG52cmFtX3dyaXRlX2J5dGUodW5z
+aWduZWQgY2hhciBjLCBpbnQgaSk7CiBleHRlcm4gaW50IF9fbnZyYW1fY2hlY2tfY2hlY2tzdW0o
+dm9pZCk7CiBleHRlcm4gaW50IG52cmFtX2NoZWNrX2NoZWNrc3VtKHZvaWQpOworCitzdHJ1Y3Qg
+bnZyYW1fb3BzIHsKKwlzc2l6ZV90ICAgICAgICAgKCpyZWFkKShjaGFyICosIHNpemVfdCwgbG9m
+Zl90ICopOworCXNzaXplX3QgICAgICAgICAoKndyaXRlKShjaGFyICosIHNpemVfdCwgbG9mZl90
+ICopOworCXNzaXplX3QgICAgICAgICAoKmdldF9zaXplKSh2b2lkKTsKK307CisKK2V4dGVybiBj
+b25zdCBzdHJ1Y3QgbnZyYW1fb3BzIGFyY2hfbnZyYW1fb3BzOworCiAjZW5kaWYgIC8qIF9MSU5V
+WF9OVlJBTV9IICovCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJz
+Lm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
