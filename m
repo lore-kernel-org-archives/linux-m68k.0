@@ -1,119 +1,368 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 00/26] Re-use nvram module
-Date: Sat, 25 Jul 2015 17:45:59 +1000
-Message-ID: <20150725074559.543547894@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [RFC v5 22/26] powerpc: Adopt nvram module for PPC64
+Date: Sat, 25 Jul 2015 17:46:21 +1000
+Message-ID: <20150725074604.903306702@telegraphics.com.au>
+References: <20150725074559.543547894@telegraphics.com.au>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=ppc64-adopt-drivers-char-nvram
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-ClRoZSBnZW5lcmljIE5WUkFNIG1vZHVsZSwgZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0sIGlt
-cGxlbWVudHMgYQovZGV2L252cmFtIG1pc2MgZGV2aWNlLiBJdCBpcyB1c2VkIG9ubHkgYnkgMzIt
-Yml0IFBvd2VyUEMgcGxhdGZvcm1zIGFuZAppc24ndCBnZW5lcmljIGVub3VnaCB0byBiZSBtb3Jl
-IHdpZGVseSB1c2VkLgoKVGhlIFJUQyBOVlJBTSBtb2R1bGUsIGRyaXZlcnMvY2hhci9udnJhbSwg
-YWxzbyBpbXBsZW1lbnRzIGEgL2Rldi9udnJhbQptaXNjIGRldmljZS4gSXQgaXMgdXNlZCBieSB4
-ODYsIEFSTSBhbmQgbTY4ay4KClRoZSBmb3JtZXIgbW9kdWxlIGNhbm5vdCBiZSB1c2VkIG9uIHg4
-NiwgQVJNIG9yIG02OGsgYmVjYXVzZSBpdApjYW5ub3QgY28tZXhpc3Qgd2l0aCB0aGUgbGF0dGVy
-IG1vZHVsZSwgcGFydGx5IGR1ZSB0byB0aGUgS2NvbmZpZyBsb2dpYy4KCkl0IGlzIHBvc3NpYmxl
-IHRvIG1vZGlmeSB0aGUgbW9kdWxlcyBzbyB0aGF0IG9uZSBrZXJuZWwgYmluYXJ5IGNvdWxkCmhh
-dmUgZWl0aGVyLCBuZWl0aGVyIG9yIGJvdGguIEhvd2V2ZXIsIGF1dG9tYXRpY2FsbHkgbG9hZGlu
-ZyB0aGUKYXBwcm9wcmlhdGUgbW9kdWxlIGlzIHRoZW4gaW1wb3NzaWJsZTsgaWYgYm90aCBwcm92
-aWRlIHRoZQpjaGFyLW1ham9yLTEwLTE0NCBhbGlhcyB0aGVuIHRoZSB3cm9uZyBtb2R1bGUgd2ls
-bCBlbmQgdXAgYmVpbmcgbG9hZGVkLgpIZW5jZSBhIG11bHRpLXBsYXRmb3JtIGtlcm5lbCBiaW5h
-cnkgbmVlZHMgYSBzaW5nbGUgZ2VuZXJpYyBudnJhbSBtb2R1bGUKd2l0aCBhbGlhcyBjaGFyLW1h
-am9yLTEwLTE0NC4KClRoZXJlZm9yZSwgZHJpdmVycy9jaGFyL252cmFtLmMgc2hvdWxkIGJlIG1h
-ZGUgbW9yZSBnZW5lcmljIGFuZCB0aGUKYXJjaC1zcGVjaWZpYyBjb2RlIHRoZXJlaW4gc2hvdWxk
-IGJlIG1vdmVkIHRvIGEgbW9yZSBhcHByb3ByaWF0ZQpwbGFjZSB1bmRlciBhcmNoLy4gQWxzbywg
-ZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0uYyBzaG91bGQgYmUgcmVtb3ZlZAp0byByZWR1Y2Ug
-Y29kZSBkdXBsaWNhdGlvbi4KCkluIHRoaXMgcGF0Y2ggc2VyaWVzLCBBdGFyaS1zcGVjaWZpYyBj
-b2RlIGlzIG1vdmVkIGZyb20gdGhlIG52cmFtIG1vZHVsZQp0byBhcmNoL202OGsvYXRhcmkuIE1v
-cmUgYXJjaC1zcGVjaWZpYyBjb2RlIGluIHRoZSBudnJhbSBtb2R1bGUgY291bGQKYmUgbW92ZWQs
-IHByb2JhYmx5IHRvIGFyY2gveDg2LCBidXQgaXQgaXMgZGlmZmljdWx0IHRvIGRldGVybWluZSBq
-dXN0CndoYXQgY29kZSBpcyByZWxldmFudCB0byBBUk0gcGxhdGZvcm1zIGFuZCB3aGF0IGNvZGUg
-aXMgeDg2LW9ubHkuCgpJbiBhZGRyZXNzaW5nIGNvZGUgZHVwbGljYXRpb24sIHYxIG9mIHRoaXMg
-cGF0Y2ggc2VyaWVzIHJlbW92ZXMgdGhyZWUKaW5jb25zaXN0ZW50IC9kZXYvbnZyYW0gbWlzYyBk
-ZXZpY2UgaW1wbGVtZW50YXRpb25zLiBPbmUgb2YgdGhlc2UsCmRyaXZlcnMvbWFjaW50b3NoL252
-cmFtLmMgaXMgZW50aXJlbHkgdW51c2VkIGFscmVhZHkuIFRoZSBvdGhlciB0d28sCmRyaXZlcnMv
-Y2hhci9nZW5lcmljX252cmFtLmMgYW5kIHRoZSBtaXNjIGRldmljZSBpbXBsZW1lbnRhdGlvbiBp
-bgphcmNoL3Bvd2VycGMva2VybmVsL252cmFtXzY0LmMsIGFyZSByZXBsYWNlZCBieSBkcml2ZXJz
-L2NoYXIvbnZyYW0uYy4KCkEgYmVuZWZpdCBvZiB0aGlzIHdvcmsgaXMgYmV0dGVyIGNvbnNpc3Rl
-bmN5IC0tIGJldHdlZW4gUFBDMzIgYW5kIFBQQzY0CmFzIHdlbGwgYXMgYmV0d2VlbiBQUENfUE1B
-QyBhbmQgTUFDLiBUaGlzIG5ldyB1bmlmb3JtaXR5IGRvZXMgaGF2ZQppbXBsaWNhdGlvbnMgZm9y
-IHVzZXJzcGFjZSwgdGhhdCBpcywgc29tZSBlcnJvciBjb2RlcyBmb3Igc29tZSBpb2N0bCBjYWxs
-cwpiZWNvbWUgY29uc2lzdGVudCBvbiBhbGwgUG93ZXJQQyBwbGF0Zm9ybXMuCgpUaGUgZHJpdmVy
-cy9jaGFyL252cmFtIG1vZHVsZSBiZWNvbWVzIHN1ZmZpY2llbnRseSBnZW5lcmljIHRvIGJlIHVz
-ZWZ1bAp0byBvdGhlciBwbGF0Zm9ybXMgYW5kIGFyY2hpdGVjdHVyZXMsIGJlc2lkZXMgdGhvc2Ug
-d2l0aCAiQ01PUyIgUlRDLiBBdCB0aGUKZW5kIG9mIHRoaXMgcGF0Y2ggc2VyaWVzIHRoZSBtb2R1
-bGUgaXMgYWRvcHRlZCBieSB0aGUgbTY4ayBNYWMgcG9ydCwgd2hpY2gKYWxyZWFkeSBoYXMgUFJB
-TSBhY2Nlc3MgZnVuY3Rpb25zIGJ1dCBsYWNrcyB0aGUgL2Rldi9udnJhbSBtaXNjIGRldmljZS4K
-ClRoaXMgcGF0Y2ggc2VyaWVzIGhhcyBiZWVuIGNvbXBpbGUtdGVzdGVkIGZvciBhcm0sIG02OGss
-IHBvd2VycGMgYW5kIHg4Ni4KVGhlIG52cmFtIGFuZCB0aGlua3BhZF9hY3BpIG1vZHVsZXMgd2Vy
-ZSByZWdyZXNzaW9uIHRlc3RlZCBvbiBhIFRoaW5rUGFkClQ0My4gVGhlIC9kZXYvbnZyYW0gZnVu
-Y3Rpb25hbGl0eSB3YXMgYWxzbyByZWdyZXNzaW9uIHRlc3RlZCBvbiBhIEczClBvd2VyTWFjLiBU
-aGUgbnZyYW0gbW9kdWxlIHdhcyBhbHNvIHRlc3RlZCBvbiBhIFBvd2VyQm9vayA1MjAsIFF1YWRy
-YSA2NTAKYW5kIEF0YXJpIEZhbGNvbi4gQUZBSUssIG5vIHRlc3RpbmcgaGFzIGJlZW4gZG9uZSBv
-biBQUEM2NCBhcyB5ZXQuCgpDaGFuZ2VzIHNpbmNlIHYxOgotIE1pbm9yIGNoYW5nZXMgdG8gcGF0
-Y2hlcyA3LCAxNSBhbmQgMjAgYXMgZGVzY3JpYmVkIGluIGNvbW1pdCBsb2dzLgotIFJldmlzZWQg
-cGF0Y2hlcyAyMSBhbmQgMjQgdG8gYWRkcmVzcyBjb21tZW50cyBmcm9tIEdlZXJ0LgoKQ2hhbmdl
-cyBzaW5jZSB2MjoKLSBEcm9wcGVkIHBhdGNoIDEsICJtYWNpbnRvc2gvbnZyYW06IFJlbW92ZSBh
-cyB1bnVzZWQiLCBiZWNhdXNlIGl0IGhhcwpzaW5jZSBiZWVuIG1lcmdlZC4KLSBJbnNlcnRlZCBh
-IG5ldyBwYXRjaCwgIm02OGsvbWFjOiBVc2UgbWFjcm9zIGZvciBSVEMgYWNjZXNzZXMgbm90Cm1h
-Z2ljIG51bWJlcnMiLgotIFJldmlzZWQgcGF0Y2hlcyAyMSBhbmQgMjMgdG8gYWRkcmVzcyBjb21t
-ZW50cyBmcm9tIEdlZXJ0LgoKQ2hhbmdlcyBzaW5jZSB2MzoKLSBTcGxpdCB0aGUgcGF0Y2gsICJt
-NjhrL2F0YXJpOiBNb3ZlIEF0YXJpLXNwZWNpZmljIGNvZGUgb3V0IG9mCmRyaXZlcnMvY2hhci9u
-dnJhbS5jIiwgYXMgc3VnZ2VzdGVkIGJ5IEdlZXJ0LgotIFJldmlzZWQgcGF0Y2hlcyAxMSBhbmQg
-MjUgdG8gYWRkcmVzcyBjb21tZW50cyBmcm9tIEdlZXJ0LgotIE1pbm9yIGNoYW5nZSB0byBwYXRj
-aCAyMSBhcyBkZXNjcmliZWQgaW4gY29tbWl0IGxvZy4KCkNoYW5nZXMgc2luY2UgdjQ6Ci0gU3Bs
-aXQgdGhlIHBhdGNoLCAicG93ZXJwYywgZmJkZXY6IFVzZSBhcmNoX252cmFtX29wcyBtZXRob2Rz
-IGluc3RlYWQKb2YgbnZyYW1fcmVhZF9ieXRlKCkgYW5kIG52cmFtX3dyaXRlX2J5dGUoKSIsIHNv
-IGFzIHRvIHNlcGFyYXRlbHkgYWRkcmVzcwppbmNvbnNpc3RlbnQgdXNlIG9mIEtjb25maWcgc3lt
-Ym9scyBpbiBQb3dlck1hYyBmYmRldiBkcml2ZXJzLgotIEZpeCBwb3NzaWJsZSBnaXQgYmlzZWN0
-IGJ1aWxkIGZhaWx1cmUgd2l0aCBDT05GSUdfUFBDX1BNQUM9bi4KCi0tLQogYXJjaC9tNjhrL0tj
-b25maWcgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGFyY2gvbTY4ay9LY29uZmln
-Lm1hY2hpbmUgICAgICAgICAgICAgICAgICB8ICAgIDIgCiBhcmNoL202OGsvYXRhcmkvTWFrZWZp
-bGUgICAgICAgICAgICAgICAgICAgfCAgICAyIAogYXJjaC9tNjhrL2F0YXJpL252cmFtLmMgICAg
-ICAgICAgICAgICAgICAgIHwgIDI5MSArKysrKysrKysrKwogYXJjaC9tNjhrL2luY2x1ZGUvYXNt
-L2F0YXJpaHcuaCAgICAgICAgICAgIHwgICAgNiAKIGFyY2gvbTY4ay9pbmNsdWRlL2FzbS9tYWNp
-bnRvc2guaCAgICAgICAgICB8ICAgIDQgCiBhcmNoL202OGsva2VybmVsL3NldHVwX21tLmMgICAg
-ICAgICAgICAgICAgfCAgMTAwICsrKwogYXJjaC9tNjhrL21hYy9taXNjLmMgICAgICAgICAgICAg
-ICAgICAgICAgIHwgIDIwNyArKysrKy0tLQogYXJjaC9wb3dlcnBjL0tjb25maWcgICAgICAgICAg
-ICAgICAgICAgICAgIHwgICAgNSAKIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9udnJhbS5oICAg
-ICAgICAgICB8ICAgIDkgCiBhcmNoL3Bvd2VycGMva2VybmVsL252cmFtXzY0LmMgICAgICAgICAg
-ICAgfCAgMjAzICstLS0tLS0KIGFyY2gvcG93ZXJwYy9rZXJuZWwvc2V0dXBfMzIuYyAgICAgICAg
-ICAgICB8ICAgMjcgLQogYXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9jaHJwL01ha2VmaWxlICAgICAg
-IHwgICAgMiAKIGFyY2gvcG93ZXJwYy9wbGF0Zm9ybXMvY2hycC9udnJhbS5jICAgICAgICB8ICAg
-MTQgCiBhcmNoL3Bvd2VycGMvcGxhdGZvcm1zL2NocnAvc2V0dXAuYyAgICAgICAgfCAgICAyIAog
-YXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9wb3dlcm1hYy9NYWtlZmlsZSAgIHwgICAgNSAKIGFyY2gv
-cG93ZXJwYy9wbGF0Zm9ybXMvcG93ZXJtYWMvbnZyYW0uYyAgICB8ICAgIDkgCiBhcmNoL3Bvd2Vy
-cGMvcGxhdGZvcm1zL3Bvd2VybWFjL3NldHVwLmMgICAgfCAgICAzIAogYXJjaC9wb3dlcnBjL3Bs
-YXRmb3Jtcy9wc2VyaWVzL252cmFtLmMgICAgIHwgICAgMiAKIGRyaXZlcnMvY2hhci9LY29uZmln
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTMgCiBkcml2ZXJzL2NoYXIvTWFrZWZpbGUgICAg
-ICAgICAgICAgICAgICAgICAgfCAgICA2IAogZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0uYyAg
-ICAgICAgICAgICAgIHwgIDE3NCAtLS0tLS0KIGRyaXZlcnMvY2hhci9udnJhbS5jICAgICAgICAg
-ICAgICAgICAgICAgICB8ICA3NDIgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0KIGRyaXZl
-cnMvcGxhdGZvcm0veDg2L3RoaW5rcGFkX2FjcGkuYyAgICAgICB8ICAgMjAgCiBkcml2ZXJzL3Nj
-c2kvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgfCAgICA2IAogZHJpdmVycy9zY3NpL2F0
-YXJpX3Njc2kuYyAgICAgICAgICAgICAgICAgIHwgICAxNiAKIGRyaXZlcnMvdmlkZW8vZmJkZXYv
-S2NvbmZpZyAgICAgICAgICAgICAgICB8ICAgIDIgCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvbnRy
-b2xmYi5jICAgICAgICAgICAgfCAgICA0IAogZHJpdmVycy92aWRlby9mYmRldi9pbXN0dGZiLmMg
-ICAgICAgICAgICAgIHwgICAxNyAKIGRyaXZlcnMvdmlkZW8vZmJkZXYvbWF0cm94L21hdHJveGZi
-X2Jhc2UuYyB8ICAgIDYgCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3BsYXRpbnVtZmIuYyAgICAgICAg
-ICAgfCAgICA0IAogZHJpdmVycy92aWRlby9mYmRldi92YWxreXJpZWZiLmMgICAgICAgICAgIHwg
-ICAxOCAKIGluY2x1ZGUvbGludXgvbnZyYW0uaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMjMg
-CiBpbmNsdWRlL3VhcGkvbGludXgvcG11LmggICAgICAgICAgICAgICAgICAgfCAgICAyIAogMzQg
-ZmlsZXMgY2hhbmdlZCwgOTk4IGluc2VydGlvbnMoKyksIDk1MSBkZWxldGlvbnMoLSkKCgoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRl
-diBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0
-cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
+Adopt nvram module to reduce code duplication.
+
+The IOC_NVRAM_GET_OFFSET ioctl as implemented on PPC64 validates the offset
+returned by pmac_get_partition(). Add this test to the nvram module.
+
+Note that the old PPC32 generic_nvram module lacked this test.
+So when CONFIG_PPC32 && CONFIG_PPC_PMAC, the IOC_NVRAM_GET_OFFSET ioctl
+would have returned 0 (always). But when CONFIG_PPC64 && CONFIG_PPC_PMAC,
+the IOC_NVRAM_GET_OFFSET ioctl would have returned -1 (which is -EPERM)
+when the requested partition was not found.
+
+With this patch, the result is now -EINVAL on both PPC32 and PPC64 when
+the requested PowerMac NVRAM partition is not found.
+
+This is a userspace-visible change, in the non-existent partition case,
+which would be in an error path for an IOC_NVRAM_GET_OFFSET ioctl syscall.
+
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+
+BTW, the IOC_NVRAM_SYNC ioctl call returns -EINVAL on PPC64. This patch
+retains this behaviour though it might be better to actually perform a sync.
+Both PPC64 and PPC32 kernels implement ppc_md.nvram_sync() for Core99,
+but on PPC64 the ioctl is unimplemented (unlike PPC32).
+
+---
+
+Changed since v1:
+- The -ENOENT that appeared in v1 was changed to -EINVAL, to be
+consistent with existing logic, that is,
+	if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+		return -EINVAL;
+
+Changed since v3:
+- Fixed comment in powerpc/platforms/pseries/nvram.c
+
+---
+ arch/powerpc/Kconfig                     |    3 
+ arch/powerpc/kernel/nvram_64.c           |  203 ++++---------------------------
+ arch/powerpc/platforms/powermac/Makefile |    5 
+ arch/powerpc/platforms/powermac/setup.c  |    2 
+ arch/powerpc/platforms/pseries/nvram.c   |    2 
+ drivers/char/nvram.c                     |    2 
+ 6 files changed, 36 insertions(+), 181 deletions(-)
+
+Index: linux/arch/powerpc/Kconfig
+===================================================================
+--- linux.orig/arch/powerpc/Kconfig	2015-07-25 17:45:48.000000000 +1000
++++ linux/arch/powerpc/Kconfig	2015-07-25 17:45:51.000000000 +1000
+@@ -179,10 +179,9 @@ config SYSVIPC_COMPAT
+ 	depends on COMPAT && SYSVIPC
+ 	default y
+ 
+-# All PPC32s use generic nvram driver through ppc_md
+ config HAVE_ARCH_NVRAM_OPS
+ 	bool
+-	default y if PPC32
++	default y
+ 
+ config SCHED_OMIT_FRAME_POINTER
+ 	bool
+Index: linux/arch/powerpc/kernel/nvram_64.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/nvram_64.c	2015-07-25 17:42:33.000000000 +1000
++++ linux/arch/powerpc/kernel/nvram_64.c	2015-07-25 17:45:51.000000000 +1000
+@@ -7,12 +7,6 @@
+  *      2 of the License, or (at your option) any later version.
+  *
+  * /dev/nvram driver for PPC64
+- *
+- * This perhaps should live in drivers/char
+- *
+- * TODO: Split the /dev/nvram part (that one can use
+- *       drivers/char/generic_nvram.c) from the arch & partition
+- *       parsing code.
+  */
+ 
+ #include <linux/module.h>
+@@ -731,153 +725,6 @@ static void oops_to_nvram(struct kmsg_du
+ 	spin_unlock_irqrestore(&lock, flags);
+ }
+ 
+-static loff_t dev_nvram_llseek(struct file *file, loff_t offset, int origin)
+-{
+-	int size;
+-
+-	if (ppc_md.nvram_size == NULL)
+-		return -ENODEV;
+-	size = ppc_md.nvram_size();
+-
+-	switch (origin) {
+-	case 1:
+-		offset += file->f_pos;
+-		break;
+-	case 2:
+-		offset += size;
+-		break;
+-	}
+-	if (offset < 0)
+-		return -EINVAL;
+-	file->f_pos = offset;
+-	return file->f_pos;
+-}
+-
+-
+-static ssize_t dev_nvram_read(struct file *file, char __user *buf,
+-			  size_t count, loff_t *ppos)
+-{
+-	ssize_t ret;
+-	char *tmp = NULL;
+-	ssize_t size;
+-
+-	if (!ppc_md.nvram_size) {
+-		ret = -ENODEV;
+-		goto out;
+-	}
+-
+-	size = ppc_md.nvram_size();
+-	if (size < 0) {
+-		ret = size;
+-		goto out;
+-	}
+-
+-	if (*ppos >= size) {
+-		ret = 0;
+-		goto out;
+-	}
+-
+-	count = min_t(size_t, count, size - *ppos);
+-	count = min(count, PAGE_SIZE);
+-
+-	tmp = kmalloc(count, GFP_KERNEL);
+-	if (!tmp) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ret = ppc_md.nvram_read(tmp, count, ppos);
+-	if (ret <= 0)
+-		goto out;
+-
+-	if (copy_to_user(buf, tmp, ret))
+-		ret = -EFAULT;
+-
+-out:
+-	kfree(tmp);
+-	return ret;
+-
+-}
+-
+-static ssize_t dev_nvram_write(struct file *file, const char __user *buf,
+-			  size_t count, loff_t *ppos)
+-{
+-	ssize_t ret;
+-	char *tmp = NULL;
+-	ssize_t size;
+-
+-	ret = -ENODEV;
+-	if (!ppc_md.nvram_size)
+-		goto out;
+-
+-	ret = 0;
+-	size = ppc_md.nvram_size();
+-	if (*ppos >= size || size < 0)
+-		goto out;
+-
+-	count = min_t(size_t, count, size - *ppos);
+-	count = min(count, PAGE_SIZE);
+-
+-	ret = -ENOMEM;
+-	tmp = kmalloc(count, GFP_KERNEL);
+-	if (!tmp)
+-		goto out;
+-
+-	ret = -EFAULT;
+-	if (copy_from_user(tmp, buf, count))
+-		goto out;
+-
+-	ret = ppc_md.nvram_write(tmp, count, ppos);
+-
+-out:
+-	kfree(tmp);
+-	return ret;
+-
+-}
+-
+-static long dev_nvram_ioctl(struct file *file, unsigned int cmd,
+-			    unsigned long arg)
+-{
+-	switch(cmd) {
+-#ifdef CONFIG_PPC_PMAC
+-	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
+-		printk(KERN_WARNING "nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
+-	case IOC_NVRAM_GET_OFFSET: {
+-		int part, offset;
+-
+-		if (!machine_is(powermac))
+-			return -EINVAL;
+-		if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
+-			return -EFAULT;
+-		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+-			return -EINVAL;
+-		offset = pmac_get_partition(part);
+-		if (offset < 0)
+-			return offset;
+-		if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
+-			return -EFAULT;
+-		return 0;
+-	}
+-#endif /* CONFIG_PPC_PMAC */
+-	default:
+-		return -EINVAL;
+-	}
+-}
+-
+-const struct file_operations nvram_fops = {
+-	.owner		= THIS_MODULE,
+-	.llseek		= dev_nvram_llseek,
+-	.read		= dev_nvram_read,
+-	.write		= dev_nvram_write,
+-	.unlocked_ioctl	= dev_nvram_ioctl,
+-};
+-
+-static struct miscdevice nvram_dev = {
+-	NVRAM_MINOR,
+-	"nvram",
+-	&nvram_fops
+-};
+-
+ 
+ #ifdef DEBUG_NVRAM
+ static void __init nvram_print_partitions(char * label)
+@@ -1026,6 +873,8 @@ loff_t __init nvram_create_partition(con
+ 	long size = 0;
+ 	int rc;
+ 
++	BUILD_BUG_ON(NVRAM_BLOCK_LEN != 16);
++
+ 	/* Convert sizes from bytes to blocks */
+ 	req_size = _ALIGN_UP(req_size, NVRAM_BLOCK_LEN) / NVRAM_BLOCK_LEN;
+ 	min_size = _ALIGN_UP(min_size, NVRAM_BLOCK_LEN) / NVRAM_BLOCK_LEN;
+@@ -1226,29 +1075,41 @@ int __init nvram_scan_partitions(void)
+ 	return err;
+ }
+ 
+-static int __init nvram_init(void)
++
++#if IS_ENABLED(CONFIG_NVRAM)
++
++static ssize_t ppc_nvram_read(char *buf, size_t count, loff_t *index)
+ {
+-	int rc;
+-	
+-	BUILD_BUG_ON(NVRAM_BLOCK_LEN != 16);
++	if (ppc_md.nvram_read)
++		return ppc_md.nvram_read(buf, count, index);
++	return -EINVAL;
++}
+ 
+-	if (ppc_md.nvram_size == NULL || ppc_md.nvram_size() <= 0)
+-		return  -ENODEV;
++static ssize_t ppc_nvram_write(char *buf, size_t count, loff_t *index)
++{
++	if (ppc_md.nvram_write)
++		return ppc_md.nvram_write(buf, count, index);
++	return -EINVAL;
++}
+ 
+-  	rc = misc_register(&nvram_dev);
+-	if (rc != 0) {
+-		printk(KERN_ERR "nvram_init: failed to register device\n");
+-		return rc;
+-	}
+-  	
+-  	return rc;
++static ssize_t ppc_nvram_get_size(void)
++{
++	if (ppc_md.nvram_size)
++		return ppc_md.nvram_size();
++	return -ENODEV;
+ }
+ 
+-static void __exit nvram_cleanup(void)
++static long ppc_nvram_sync(void)
+ {
+-        misc_deregister( &nvram_dev );
++	return -EINVAL;
+ }
+ 
+-module_init(nvram_init);
+-module_exit(nvram_cleanup);
+-MODULE_LICENSE("GPL");
++const struct nvram_ops arch_nvram_ops = {
++	.read           = ppc_nvram_read,
++	.write          = ppc_nvram_write,
++	.get_size       = ppc_nvram_get_size,
++	.sync           = ppc_nvram_sync,
++};
++EXPORT_SYMBOL(arch_nvram_ops);
++
++#endif /* CONFIG_NVRAM */
+Index: linux/arch/powerpc/platforms/powermac/Makefile
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/Makefile	2015-07-25 17:42:33.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/Makefile	2015-07-25 17:45:51.000000000 +1000
+@@ -9,11 +9,6 @@ obj-y				+= pic.o setup.o time.o feature
+ 				   sleep.o low_i2c.o cache.o pfunc_core.o \
+ 				   pfunc_base.o udbg_scc.o udbg_adb.o
+ obj-$(CONFIG_PMAC_BACKLIGHT)	+= backlight.o
+-# CONFIG_NVRAM is an arch. independent tristate symbol, for pmac32 we really
+-# need this to be a bool.  Cheat here and pretend CONFIG_NVRAM=m is really
+-# CONFIG_NVRAM=y
+ obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
+-# ppc64 pmac doesn't define CONFIG_NVRAM but needs nvram stuff
+-obj-$(CONFIG_PPC64)		+= nvram.o
+ obj-$(CONFIG_PPC32)		+= bootx_init.o
+ obj-$(CONFIG_SMP)		+= smp.o
+Index: linux/arch/powerpc/platforms/powermac/setup.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-07-25 17:45:48.000000000 +1000
++++ linux/arch/powerpc/platforms/powermac/setup.c	2015-07-25 17:45:51.000000000 +1000
+@@ -321,7 +321,7 @@ static void __init pmac_setup_arch(void)
+ 	find_via_pmu();
+ 	smu_init();
+ 
+-#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
++#if IS_ENABLED(CONFIG_NVRAM)
+ 	pmac_nvram_init();
+ #endif
+ 
+Index: linux/drivers/char/nvram.c
+===================================================================
+--- linux.orig/drivers/char/nvram.c	2015-07-25 17:45:47.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-07-25 17:45:51.000000000 +1000
+@@ -342,6 +342,8 @@ static long nvram_misc_ioctl(struct file
+ 		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+ 			return -EINVAL;
+ 		offset = pmac_get_partition(part);
++		if (offset < 0)
++			return -EINVAL;
+ 		if (copy_to_user((void __user *)arg,
+ 		                 &offset, sizeof(offset)) != 0)
+ 			return -EFAULT;
+Index: linux/arch/powerpc/platforms/pseries/nvram.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/pseries/nvram.c	2015-07-25 17:42:33.000000000 +1000
++++ linux/arch/powerpc/platforms/pseries/nvram.c	2015-07-25 17:45:51.000000000 +1000
+@@ -7,8 +7,6 @@
+  *      2 of the License, or (at your option) any later version.
+  *
+  * /dev/nvram driver for PPC64
+- *
+- * This perhaps should live in drivers/char
+  */
+ 
+ 
