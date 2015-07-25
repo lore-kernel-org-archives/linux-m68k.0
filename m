@@ -1,256 +1,119 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v5 23/26] m68k/mac: Adopt naming and calling conventions for PRAM routines
-Date: Sat, 25 Jul 2015 17:46:22 +1000
-Message-ID: <20150725074605.143283098@telegraphics.com.au>
-References: <20150725074559.543547894@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-pram-function-names-and-signatures
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [RFC v5 00/26] Re-use nvram module
+Date: Sat, 25 Jul 2015 17:45:59 +1000
+Message-ID: <20150725074559.543547894@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: linux-m68k@vger.kernel.org
 
-Adopt the existing *_read_byte and *_write_byte naming convention.
-Rename via_pram_readbyte and via_pram_writebyte to avoid confusion.
-Adjust calling conventions of mac_pram_* functions to match the
-arch_nvram_ops struct methods.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
----
-
-Changes since v1:
-- Don't introduce the arch_nvram_ops struct in this patch, even if it 
-would form a logical progression. Since the struct would get replaced
-later on, some might see it as churn.
-
-Changes since v2:
-- Rename via_pram_send() and via_pram_recv() as
-via_rtc_send() and via_rtc_recv() resp.
-
----
- arch/m68k/mac/misc.c |   91 +++++++++++++++++++++++++--------------------------
- 1 file changed, 46 insertions(+), 45 deletions(-)
-
-Index: linux/arch/m68k/mac/misc.c
-===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-07-25 17:42:33.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-07-25 17:45:53.000000000 +1000
-@@ -61,7 +61,7 @@ static void cuda_write_time(long data)
- 		cuda_poll();
- }
- 
--static __u8 cuda_read_pram(int offset)
-+static unsigned char cuda_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (cuda_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
-@@ -72,7 +72,7 @@ static __u8 cuda_read_pram(int offset)
- 	return req.reply[3];
- }
- 
--static void cuda_write_pram(int offset, __u8 data)
-+static void cuda_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
- 	if (cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
-@@ -84,8 +84,8 @@ static void cuda_write_pram(int offset,
- #else
- #define cuda_read_time() 0
- #define cuda_write_time(n)
--#define cuda_read_pram NULL
--#define cuda_write_pram NULL
-+#define cuda_pram_read_byte NULL
-+#define cuda_pram_write_byte NULL
- #endif
- 
- #ifdef CONFIG_ADB_PMU68K
-@@ -116,7 +116,7 @@ static void pmu_write_time(long data)
- 		pmu_poll();
- }
- 
--static __u8 pmu_read_pram(int offset)
-+static unsigned char pmu_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
-@@ -127,7 +127,7 @@ static __u8 pmu_read_pram(int offset)
- 	return req.reply[3];
- }
- 
--static void pmu_write_pram(int offset, __u8 data)
-+static void pmu_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
- 	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
-@@ -139,8 +139,8 @@ static void pmu_write_pram(int offset, _
- #else
- #define pmu_read_time() 0
- #define pmu_write_time(n)
--#define pmu_read_pram NULL
--#define pmu_write_pram NULL
-+#define pmu_pram_read_byte NULL
-+#define pmu_pram_write_byte NULL
- #endif
- 
- #if 0 /* def CONFIG_ADB_MACIISI */
-@@ -169,7 +169,7 @@ static void maciisi_write_time(long data
- 			(data >> 8) & 0xFF, data & 0xFF);
- }
- 
--static __u8 maciisi_read_pram(int offset)
-+static unsigned char maciisi_pram_read_byte(int offset)
- {
- 	struct adb_request req;
- 	if (maciisi_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
-@@ -178,7 +178,7 @@ static __u8 maciisi_read_pram(int offset
- 	return req.reply[3];
- }
- 
--static void maciisi_write_pram(int offset, __u8 data)
-+static void maciisi_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
- 	maciisi_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
-@@ -187,8 +187,8 @@ static void maciisi_write_pram(int offse
- #else
- #define maciisi_read_time() 0
- #define maciisi_write_time(n)
--#define maciisi_read_pram NULL
--#define maciisi_write_pram NULL
-+#define maciisi_pram_read_byte NULL
-+#define maciisi_pram_write_byte NULL
- #endif
- 
- /*
-@@ -198,7 +198,7 @@ static void maciisi_write_pram(int offse
-  * the RTC should be enabled.
-  */
- 
--static __u8 via_pram_readbyte(void)
-+static __u8 via_rtc_recv(void)
- {
- 	int	i,reg;
- 	__u8	data;
-@@ -225,7 +225,7 @@ static __u8 via_pram_readbyte(void)
- 	return data;
- }
- 
--static void via_pram_writebyte(__u8 data)
-+static void via_rtc_send(__u8 data)
- {
- 	int	i,reg,bit;
- 
-@@ -262,17 +262,17 @@ static void via_pram_command(int command
- 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
- 
- 	if (command & 0xFF00) {		/* extended (two-byte) command */
--		via_pram_writebyte((command & 0xFF00) >> 8);
--		via_pram_writebyte(command & 0xFF);
-+		via_rtc_send((command & 0xFF00) >> 8);
-+		via_rtc_send(command & 0xFF);
- 		is_read = command & 0x8000;
- 	} else {			/* one-byte command */
--		via_pram_writebyte(command);
-+		via_rtc_send(command);
- 		is_read = command & 0x80;
- 	}
- 	if (is_read) {
--		*data = via_pram_readbyte();
-+		*data = via_rtc_recv();
- 	} else {
--		via_pram_writebyte(*data);
-+		via_rtc_send(*data);
- 	}
- 
- 	/* All done, disable the RTC */
-@@ -282,12 +282,12 @@ static void via_pram_command(int command
- 	local_irq_restore(flags);
- }
- 
--static __u8 via_read_pram(int offset)
-+static unsigned char via_pram_read_byte(int offset)
- {
- 	return 0;
- }
- 
--static void via_write_pram(int offset, __u8 data)
-+static void via_pram_write_byte(unsigned char data, int offset)
- {
- }
- 
-@@ -453,50 +453,51 @@ void pmu_shutdown(void)
-  *-------------------------------------------------------------------
-  */
- 
--void mac_pram_read(int offset, __u8 *buffer, int len)
-+unsigned char mac_pram_read_byte(int addr)
- {
--	__u8 (*func)(int);
--	int i;
-+	unsigned char (*func)(int);
- 
- 	switch(macintosh_config->adb_type) {
- 	case MAC_ADB_IISI:
--		func = maciisi_read_pram; break;
-+		func = maciisi_pram_read_byte;
-+		break;
- 	case MAC_ADB_PB1:
- 	case MAC_ADB_PB2:
--		func = pmu_read_pram; break;
-+		func = pmu_pram_read_byte;
-+		break;
- 	case MAC_ADB_CUDA:
--		func = cuda_read_pram; break;
-+		func = cuda_pram_read_byte;
-+		break;
- 	default:
--		func = via_read_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		buffer[i] = (*func)(offset++);
-+		func = via_pram_read_byte;
- 	}
-+
-+	if (func)
-+		return (*func)(addr);
-+	return 0xff;
- }
- 
--void mac_pram_write(int offset, __u8 *buffer, int len)
-+void mac_pram_write_byte(unsigned char val, int addr)
- {
--	void (*func)(int, __u8);
--	int i;
-+	void (*func)(unsigned char, int);
- 
- 	switch(macintosh_config->adb_type) {
- 	case MAC_ADB_IISI:
--		func = maciisi_write_pram; break;
-+		func = maciisi_pram_write_byte;
-+		break;
- 	case MAC_ADB_PB1:
- 	case MAC_ADB_PB2:
--		func = pmu_write_pram; break;
-+		func = pmu_pram_write_byte;
-+		break;
- 	case MAC_ADB_CUDA:
--		func = cuda_write_pram; break;
-+		func = cuda_pram_write_byte;
-+		break;
- 	default:
--		func = via_write_pram;
--	}
--	if (!func)
--		return;
--	for (i = 0 ; i < len ; i++) {
--		(*func)(offset++, buffer[i]);
-+		func = via_pram_write_byte;
- 	}
-+
-+	if (func)
-+		(*func)(val, addr);
- }
- 
- void mac_poweroff(void)
+ClRoZSBnZW5lcmljIE5WUkFNIG1vZHVsZSwgZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0sIGlt
+cGxlbWVudHMgYQovZGV2L252cmFtIG1pc2MgZGV2aWNlLiBJdCBpcyB1c2VkIG9ubHkgYnkgMzIt
+Yml0IFBvd2VyUEMgcGxhdGZvcm1zIGFuZAppc24ndCBnZW5lcmljIGVub3VnaCB0byBiZSBtb3Jl
+IHdpZGVseSB1c2VkLgoKVGhlIFJUQyBOVlJBTSBtb2R1bGUsIGRyaXZlcnMvY2hhci9udnJhbSwg
+YWxzbyBpbXBsZW1lbnRzIGEgL2Rldi9udnJhbQptaXNjIGRldmljZS4gSXQgaXMgdXNlZCBieSB4
+ODYsIEFSTSBhbmQgbTY4ay4KClRoZSBmb3JtZXIgbW9kdWxlIGNhbm5vdCBiZSB1c2VkIG9uIHg4
+NiwgQVJNIG9yIG02OGsgYmVjYXVzZSBpdApjYW5ub3QgY28tZXhpc3Qgd2l0aCB0aGUgbGF0dGVy
+IG1vZHVsZSwgcGFydGx5IGR1ZSB0byB0aGUgS2NvbmZpZyBsb2dpYy4KCkl0IGlzIHBvc3NpYmxl
+IHRvIG1vZGlmeSB0aGUgbW9kdWxlcyBzbyB0aGF0IG9uZSBrZXJuZWwgYmluYXJ5IGNvdWxkCmhh
+dmUgZWl0aGVyLCBuZWl0aGVyIG9yIGJvdGguIEhvd2V2ZXIsIGF1dG9tYXRpY2FsbHkgbG9hZGlu
+ZyB0aGUKYXBwcm9wcmlhdGUgbW9kdWxlIGlzIHRoZW4gaW1wb3NzaWJsZTsgaWYgYm90aCBwcm92
+aWRlIHRoZQpjaGFyLW1ham9yLTEwLTE0NCBhbGlhcyB0aGVuIHRoZSB3cm9uZyBtb2R1bGUgd2ls
+bCBlbmQgdXAgYmVpbmcgbG9hZGVkLgpIZW5jZSBhIG11bHRpLXBsYXRmb3JtIGtlcm5lbCBiaW5h
+cnkgbmVlZHMgYSBzaW5nbGUgZ2VuZXJpYyBudnJhbSBtb2R1bGUKd2l0aCBhbGlhcyBjaGFyLW1h
+am9yLTEwLTE0NC4KClRoZXJlZm9yZSwgZHJpdmVycy9jaGFyL252cmFtLmMgc2hvdWxkIGJlIG1h
+ZGUgbW9yZSBnZW5lcmljIGFuZCB0aGUKYXJjaC1zcGVjaWZpYyBjb2RlIHRoZXJlaW4gc2hvdWxk
+IGJlIG1vdmVkIHRvIGEgbW9yZSBhcHByb3ByaWF0ZQpwbGFjZSB1bmRlciBhcmNoLy4gQWxzbywg
+ZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0uYyBzaG91bGQgYmUgcmVtb3ZlZAp0byByZWR1Y2Ug
+Y29kZSBkdXBsaWNhdGlvbi4KCkluIHRoaXMgcGF0Y2ggc2VyaWVzLCBBdGFyaS1zcGVjaWZpYyBj
+b2RlIGlzIG1vdmVkIGZyb20gdGhlIG52cmFtIG1vZHVsZQp0byBhcmNoL202OGsvYXRhcmkuIE1v
+cmUgYXJjaC1zcGVjaWZpYyBjb2RlIGluIHRoZSBudnJhbSBtb2R1bGUgY291bGQKYmUgbW92ZWQs
+IHByb2JhYmx5IHRvIGFyY2gveDg2LCBidXQgaXQgaXMgZGlmZmljdWx0IHRvIGRldGVybWluZSBq
+dXN0CndoYXQgY29kZSBpcyByZWxldmFudCB0byBBUk0gcGxhdGZvcm1zIGFuZCB3aGF0IGNvZGUg
+aXMgeDg2LW9ubHkuCgpJbiBhZGRyZXNzaW5nIGNvZGUgZHVwbGljYXRpb24sIHYxIG9mIHRoaXMg
+cGF0Y2ggc2VyaWVzIHJlbW92ZXMgdGhyZWUKaW5jb25zaXN0ZW50IC9kZXYvbnZyYW0gbWlzYyBk
+ZXZpY2UgaW1wbGVtZW50YXRpb25zLiBPbmUgb2YgdGhlc2UsCmRyaXZlcnMvbWFjaW50b3NoL252
+cmFtLmMgaXMgZW50aXJlbHkgdW51c2VkIGFscmVhZHkuIFRoZSBvdGhlciB0d28sCmRyaXZlcnMv
+Y2hhci9nZW5lcmljX252cmFtLmMgYW5kIHRoZSBtaXNjIGRldmljZSBpbXBsZW1lbnRhdGlvbiBp
+bgphcmNoL3Bvd2VycGMva2VybmVsL252cmFtXzY0LmMsIGFyZSByZXBsYWNlZCBieSBkcml2ZXJz
+L2NoYXIvbnZyYW0uYy4KCkEgYmVuZWZpdCBvZiB0aGlzIHdvcmsgaXMgYmV0dGVyIGNvbnNpc3Rl
+bmN5IC0tIGJldHdlZW4gUFBDMzIgYW5kIFBQQzY0CmFzIHdlbGwgYXMgYmV0d2VlbiBQUENfUE1B
+QyBhbmQgTUFDLiBUaGlzIG5ldyB1bmlmb3JtaXR5IGRvZXMgaGF2ZQppbXBsaWNhdGlvbnMgZm9y
+IHVzZXJzcGFjZSwgdGhhdCBpcywgc29tZSBlcnJvciBjb2RlcyBmb3Igc29tZSBpb2N0bCBjYWxs
+cwpiZWNvbWUgY29uc2lzdGVudCBvbiBhbGwgUG93ZXJQQyBwbGF0Zm9ybXMuCgpUaGUgZHJpdmVy
+cy9jaGFyL252cmFtIG1vZHVsZSBiZWNvbWVzIHN1ZmZpY2llbnRseSBnZW5lcmljIHRvIGJlIHVz
+ZWZ1bAp0byBvdGhlciBwbGF0Zm9ybXMgYW5kIGFyY2hpdGVjdHVyZXMsIGJlc2lkZXMgdGhvc2Ug
+d2l0aCAiQ01PUyIgUlRDLiBBdCB0aGUKZW5kIG9mIHRoaXMgcGF0Y2ggc2VyaWVzIHRoZSBtb2R1
+bGUgaXMgYWRvcHRlZCBieSB0aGUgbTY4ayBNYWMgcG9ydCwgd2hpY2gKYWxyZWFkeSBoYXMgUFJB
+TSBhY2Nlc3MgZnVuY3Rpb25zIGJ1dCBsYWNrcyB0aGUgL2Rldi9udnJhbSBtaXNjIGRldmljZS4K
+ClRoaXMgcGF0Y2ggc2VyaWVzIGhhcyBiZWVuIGNvbXBpbGUtdGVzdGVkIGZvciBhcm0sIG02OGss
+IHBvd2VycGMgYW5kIHg4Ni4KVGhlIG52cmFtIGFuZCB0aGlua3BhZF9hY3BpIG1vZHVsZXMgd2Vy
+ZSByZWdyZXNzaW9uIHRlc3RlZCBvbiBhIFRoaW5rUGFkClQ0My4gVGhlIC9kZXYvbnZyYW0gZnVu
+Y3Rpb25hbGl0eSB3YXMgYWxzbyByZWdyZXNzaW9uIHRlc3RlZCBvbiBhIEczClBvd2VyTWFjLiBU
+aGUgbnZyYW0gbW9kdWxlIHdhcyBhbHNvIHRlc3RlZCBvbiBhIFBvd2VyQm9vayA1MjAsIFF1YWRy
+YSA2NTAKYW5kIEF0YXJpIEZhbGNvbi4gQUZBSUssIG5vIHRlc3RpbmcgaGFzIGJlZW4gZG9uZSBv
+biBQUEM2NCBhcyB5ZXQuCgpDaGFuZ2VzIHNpbmNlIHYxOgotIE1pbm9yIGNoYW5nZXMgdG8gcGF0
+Y2hlcyA3LCAxNSBhbmQgMjAgYXMgZGVzY3JpYmVkIGluIGNvbW1pdCBsb2dzLgotIFJldmlzZWQg
+cGF0Y2hlcyAyMSBhbmQgMjQgdG8gYWRkcmVzcyBjb21tZW50cyBmcm9tIEdlZXJ0LgoKQ2hhbmdl
+cyBzaW5jZSB2MjoKLSBEcm9wcGVkIHBhdGNoIDEsICJtYWNpbnRvc2gvbnZyYW06IFJlbW92ZSBh
+cyB1bnVzZWQiLCBiZWNhdXNlIGl0IGhhcwpzaW5jZSBiZWVuIG1lcmdlZC4KLSBJbnNlcnRlZCBh
+IG5ldyBwYXRjaCwgIm02OGsvbWFjOiBVc2UgbWFjcm9zIGZvciBSVEMgYWNjZXNzZXMgbm90Cm1h
+Z2ljIG51bWJlcnMiLgotIFJldmlzZWQgcGF0Y2hlcyAyMSBhbmQgMjMgdG8gYWRkcmVzcyBjb21t
+ZW50cyBmcm9tIEdlZXJ0LgoKQ2hhbmdlcyBzaW5jZSB2MzoKLSBTcGxpdCB0aGUgcGF0Y2gsICJt
+NjhrL2F0YXJpOiBNb3ZlIEF0YXJpLXNwZWNpZmljIGNvZGUgb3V0IG9mCmRyaXZlcnMvY2hhci9u
+dnJhbS5jIiwgYXMgc3VnZ2VzdGVkIGJ5IEdlZXJ0LgotIFJldmlzZWQgcGF0Y2hlcyAxMSBhbmQg
+MjUgdG8gYWRkcmVzcyBjb21tZW50cyBmcm9tIEdlZXJ0LgotIE1pbm9yIGNoYW5nZSB0byBwYXRj
+aCAyMSBhcyBkZXNjcmliZWQgaW4gY29tbWl0IGxvZy4KCkNoYW5nZXMgc2luY2UgdjQ6Ci0gU3Bs
+aXQgdGhlIHBhdGNoLCAicG93ZXJwYywgZmJkZXY6IFVzZSBhcmNoX252cmFtX29wcyBtZXRob2Rz
+IGluc3RlYWQKb2YgbnZyYW1fcmVhZF9ieXRlKCkgYW5kIG52cmFtX3dyaXRlX2J5dGUoKSIsIHNv
+IGFzIHRvIHNlcGFyYXRlbHkgYWRkcmVzcwppbmNvbnNpc3RlbnQgdXNlIG9mIEtjb25maWcgc3lt
+Ym9scyBpbiBQb3dlck1hYyBmYmRldiBkcml2ZXJzLgotIEZpeCBwb3NzaWJsZSBnaXQgYmlzZWN0
+IGJ1aWxkIGZhaWx1cmUgd2l0aCBDT05GSUdfUFBDX1BNQUM9bi4KCi0tLQogYXJjaC9tNjhrL0tj
+b25maWcgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMyAKIGFyY2gvbTY4ay9LY29uZmln
+Lm1hY2hpbmUgICAgICAgICAgICAgICAgICB8ICAgIDIgCiBhcmNoL202OGsvYXRhcmkvTWFrZWZp
+bGUgICAgICAgICAgICAgICAgICAgfCAgICAyIAogYXJjaC9tNjhrL2F0YXJpL252cmFtLmMgICAg
+ICAgICAgICAgICAgICAgIHwgIDI5MSArKysrKysrKysrKwogYXJjaC9tNjhrL2luY2x1ZGUvYXNt
+L2F0YXJpaHcuaCAgICAgICAgICAgIHwgICAgNiAKIGFyY2gvbTY4ay9pbmNsdWRlL2FzbS9tYWNp
+bnRvc2guaCAgICAgICAgICB8ICAgIDQgCiBhcmNoL202OGsva2VybmVsL3NldHVwX21tLmMgICAg
+ICAgICAgICAgICAgfCAgMTAwICsrKwogYXJjaC9tNjhrL21hYy9taXNjLmMgICAgICAgICAgICAg
+ICAgICAgICAgIHwgIDIwNyArKysrKy0tLQogYXJjaC9wb3dlcnBjL0tjb25maWcgICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgNSAKIGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9udnJhbS5oICAg
+ICAgICAgICB8ICAgIDkgCiBhcmNoL3Bvd2VycGMva2VybmVsL252cmFtXzY0LmMgICAgICAgICAg
+ICAgfCAgMjAzICstLS0tLS0KIGFyY2gvcG93ZXJwYy9rZXJuZWwvc2V0dXBfMzIuYyAgICAgICAg
+ICAgICB8ICAgMjcgLQogYXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9jaHJwL01ha2VmaWxlICAgICAg
+IHwgICAgMiAKIGFyY2gvcG93ZXJwYy9wbGF0Zm9ybXMvY2hycC9udnJhbS5jICAgICAgICB8ICAg
+MTQgCiBhcmNoL3Bvd2VycGMvcGxhdGZvcm1zL2NocnAvc2V0dXAuYyAgICAgICAgfCAgICAyIAog
+YXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9wb3dlcm1hYy9NYWtlZmlsZSAgIHwgICAgNSAKIGFyY2gv
+cG93ZXJwYy9wbGF0Zm9ybXMvcG93ZXJtYWMvbnZyYW0uYyAgICB8ICAgIDkgCiBhcmNoL3Bvd2Vy
+cGMvcGxhdGZvcm1zL3Bvd2VybWFjL3NldHVwLmMgICAgfCAgICAzIAogYXJjaC9wb3dlcnBjL3Bs
+YXRmb3Jtcy9wc2VyaWVzL252cmFtLmMgICAgIHwgICAgMiAKIGRyaXZlcnMvY2hhci9LY29uZmln
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTMgCiBkcml2ZXJzL2NoYXIvTWFrZWZpbGUgICAg
+ICAgICAgICAgICAgICAgICAgfCAgICA2IAogZHJpdmVycy9jaGFyL2dlbmVyaWNfbnZyYW0uYyAg
+ICAgICAgICAgICAgIHwgIDE3NCAtLS0tLS0KIGRyaXZlcnMvY2hhci9udnJhbS5jICAgICAgICAg
+ICAgICAgICAgICAgICB8ICA3NDIgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0KIGRyaXZl
+cnMvcGxhdGZvcm0veDg2L3RoaW5rcGFkX2FjcGkuYyAgICAgICB8ICAgMjAgCiBkcml2ZXJzL3Nj
+c2kvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgfCAgICA2IAogZHJpdmVycy9zY3NpL2F0
+YXJpX3Njc2kuYyAgICAgICAgICAgICAgICAgIHwgICAxNiAKIGRyaXZlcnMvdmlkZW8vZmJkZXYv
+S2NvbmZpZyAgICAgICAgICAgICAgICB8ICAgIDIgCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvbnRy
+b2xmYi5jICAgICAgICAgICAgfCAgICA0IAogZHJpdmVycy92aWRlby9mYmRldi9pbXN0dGZiLmMg
+ICAgICAgICAgICAgIHwgICAxNyAKIGRyaXZlcnMvdmlkZW8vZmJkZXYvbWF0cm94L21hdHJveGZi
+X2Jhc2UuYyB8ICAgIDYgCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3BsYXRpbnVtZmIuYyAgICAgICAg
+ICAgfCAgICA0IAogZHJpdmVycy92aWRlby9mYmRldi92YWxreXJpZWZiLmMgICAgICAgICAgIHwg
+ICAxOCAKIGluY2x1ZGUvbGludXgvbnZyYW0uaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMjMg
+CiBpbmNsdWRlL3VhcGkvbGludXgvcG11LmggICAgICAgICAgICAgICAgICAgfCAgICAyIAogMzQg
+ZmlsZXMgY2hhbmdlZCwgOTk4IGluc2VydGlvbnMoKyksIDk1MSBkZWxldGlvbnMoLSkKCgoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRl
+diBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0
+cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
