@@ -1,55 +1,71 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC v4 03/25] m68k/atari: Move Atari-specific code out of
- drivers/char/nvram.c
-Date: Mon, 27 Jul 2015 15:51:07 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1507271523480.31622@nippy.intranet>
-References: <20150712102527.356151908@telegraphics.com.au> <20150712102528.107134628@telegraphics.com.au> <87d1zwc4dj.fsf@igel.home> <alpine.LNX.2.00.1507141804300.1622@nippy.intranet> <55AF1364.3080701@gmail.com> <alpine.LNX.2.00.1507221421100.4187@nippy.intranet>
- <20150723092114.GA10989@guido.earth.sol> <CAOmrzkL1rOV=9zu=sfpt4-oveR2j-_KVGYvCvCGWzj83oOihnw@mail.gmail.com> <20150724190749.GA7529@guido.earth.sol> <55B2DD88.2090804@gmail.com> <alpine.LNX.2.00.1507251722580.25996@nippy.intranet> <55B43196.5@gmail.com>
- <alpine.LNX.2.00.1507261103550.21031@nippy.intranet> <CAOmrzkLUfO02c+k31QD3J3pZZOR_BE6zFSwD2cHtyejCJ2Jgxg@mail.gmail.com>
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH V5 2/7] mm: mlock: Add new mlock system call
+Date: Mon, 27 Jul 2015 09:43:00 +0300
+Message-ID: <20150727064300.GB11657__44478.3946186819$1437979406$gmane$org@node.dhcp.inet.fi>
+References: <1437773325-8623-1-git-send-email-emunson@akamai.com>
+ <1437773325-8623-3-git-send-email-emunson@akamai.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33580 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750723AbbG0Fvb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Jul 2015 01:51:31 -0400
-In-Reply-To: <CAOmrzkLUfO02c+k31QD3J3pZZOR_BE6zFSwD2cHtyejCJ2Jgxg@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <1437773325-8623-3-git-send-email-emunson@akamai.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Eric B Munson <emunson@akamai.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@suse.cz>, Vlastimil Babka <vbabka@suse.cz>, Heiko Carstens <heiko.carstens@de.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org
 
+On Fri, Jul 24, 2015 at 05:28:40PM -0400, Eric B Munson wrote:
+> With the refactored mlock code, introduce a new system call for mlock.
+> The new call will allow the user to specify what lock states are being
+> added.  mlock2 is trivial at the moment, but a follow on patch will add
+> a new mlock state making it useful.
+> 
+> Signed-off-by: Eric B Munson <emunson@akamai.com>
+> Cc: Michal Hocko <mhocko@suse.cz>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: adi-buildroot-devel@lists.sourceforge.net
+> Cc: linux-cris-kernel@axis.com
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-am33-list@redhat.com
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: linux-api@vger.kernel.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> ---
+> Changes from V4:
+> * Drop all architectures except x86[_64] from this patch, MIPS is added
+>   later in the series.  All others will be left to their maintainers.
+> 
+> Changes from V3:
+> * Do a (hopefully) complete job of adding the new system calls
+>  arch/alpha/include/uapi/asm/mman.h     | 2 ++
+>  arch/mips/include/uapi/asm/mman.h      | 5 +++++
+>  arch/parisc/include/uapi/asm/mman.h    | 2 ++
+>  arch/powerpc/include/uapi/asm/mman.h   | 2 ++
+>  arch/sparc/include/uapi/asm/mman.h     | 2 ++
+>  arch/tile/include/uapi/asm/mman.h      | 5 +++++
+>  arch/x86/entry/syscalls/syscall_32.tbl | 1 +
+>  arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+>  arch/xtensa/include/uapi/asm/mman.h    | 5 +++++
 
-On Mon, 27 Jul 2015, Michael Schmitz wrote:
+Define MLOCK_LOCKED in include/uapi/asm-generic/mman-common.h.
+This way you can drop changes in powerpc, sparc and tile.
 
-> Finn,
-> 
-> my bad - there is indeed a change in the /proc/driver/nvram output:
-> 
-> --- nvram-4.out    2015-07-24 12:32:44.000000000 +1200
-> +++ nvram-4p2.out    2015-07-27 13:56:06.000000000 +1200
-> @@ -7,7 +7,7 @@
->  Keyboard language: English (US)
->  Date format      : DD.MM.YY, 24h clock
->  Boot delay       : 32s
-> -Video mode       : 4 colors, 40 columns, TV NTSC monitor
-> +Video mode       : 256 colors, 80 columns, VGA PAL monitor
->                     no overscan, compat. mode off
->  00000000  00 00 00 00 00 00 00 00  11 2e 20 01 ff 00 00 3b  |.......... ....;|
->  00000010  84 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-> 
-> 
-> That video mode is indeed the one set in the NVRAM (by ARAnyM config,
-> if running emulated)
+Otherwise looks good.
 
-All's well then.
-
-Thanks.
-
-Finn
-
-> 
-> Cheers,
-> 
->   Michael
-> 
+-- 
+ Kirill A. Shutemov
