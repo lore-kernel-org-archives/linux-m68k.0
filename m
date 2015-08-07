@@ -1,43 +1,36 @@
-From: Andrzej Hajda <a.hajda@samsung.com>
-Subject: [PATCH 03/31] arch/m68k/bootinfo: use kmemdup rather than duplicating
- its implementation
-Date: Fri, 07 Aug 2015 09:59:09 +0200
-Message-ID: <1438934377-4922-4-git-send-email-a.hajda__5024.27944816208$1438935401$gmane$org@samsung.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 03/31] arch/m68k/bootinfo: use kmemdup rather than
+ duplicating its implementation
+Date: Fri, 7 Aug 2015 12:23:20 +0200
+Message-ID: <CAMuHMdUiTkteqpdVuW06L=fbuyscwuRN+fZ8cR3zR=nujimS=Q@mail.gmail.com>
 References: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
+	<1438934377-4922-4-git-send-email-a.hajda@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
+In-Reply-To: <1438934377-4922-4-git-send-email-a.hajda@samsung.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+To: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-The patch was generated using fixed coccinelle semantic patch
-scripts/coccinelle/api/memdup.cocci [1].
+On Fri, Aug 7, 2015 at 9:59 AM, Andrzej Hajda <a.hajda@samsung.com> wrote:
+> The patch was generated using fixed coccinelle semantic patch
+> scripts/coccinelle/api/memdup.cocci [1].
+>
+> [1]: http://permalink.gmane.org/gmane.linux.kernel/2014320
+>
+> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
 
-[1]: http://permalink.gmane.org/gmane.linux.kernel/2014320
+Thanks, will apply and queue for v4.3.
 
-Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
----
- arch/m68k/kernel/bootinfo_proc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/kernel/bootinfo_proc.c b/arch/m68k/kernel/bootinfo_proc.c
-index 7ee853e..2a33a96 100644
---- a/arch/m68k/kernel/bootinfo_proc.c
-+++ b/arch/m68k/kernel/bootinfo_proc.c
-@@ -62,12 +62,10 @@ static int __init init_bootinfo_procfs(void)
- 	if (!bootinfo_size)
- 		return -EINVAL;
- 
--	bootinfo_copy = kmalloc(bootinfo_size, GFP_KERNEL);
-+	bootinfo_copy = kmemdup(bootinfo_tmp, bootinfo_size, GFP_KERNEL);
- 	if (!bootinfo_copy)
- 		return -ENOMEM;
- 
--	memcpy(bootinfo_copy, bootinfo_tmp, bootinfo_size);
--
- 	pde = proc_create_data("bootinfo", 0400, NULL, &bootinfo_fops, NULL);
- 	if (!pde) {
- 		kfree(bootinfo_copy);
--- 
-1.9.1
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
