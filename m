@@ -1,63 +1,42 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH v2] m68k/coldfire: use PFN_DOWN macro
-Date: Thu, 13 Aug 2015 10:27:38 +1000
-Message-ID: <55CBE47A.5020003@uclinux.org>
-References: <1439363699-1803-1-git-send-email-kuleshovmail@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [RFC v5 00/26] Re-use nvram module
+Date: Sun, 16 Aug 2015 11:15:25 +0200
+Message-ID: <CAMuHMdWUQsSG8cZmKX8tHMN1=87Og-xboAFzhP1vWyQF+A3_eg@mail.gmail.com>
+References: <20150725074559.543547894@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1439363699-1803-1-git-send-email-kuleshovmail@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150725074559.543547894@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Alexander Kuleshov <kuleshovmail@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Alexander,
+Hi Finn,
 
-On 12/08/15 17:14, Alexander Kuleshov wrote:
-> Replace ((x) >> PAGE_SHIFT) with the predefined PFN_DOWN macro.
-> 
-> Signed-off-by: Alexander Kuleshov <kuleshovmail@gmail.com>
+On Sat, Jul 25, 2015 at 9:45 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> The generic NVRAM module, drivers/char/generic_nvram, implements a
+> /dev/nvram misc device. It is used only by 32-bit PowerPC platforms and
+> isn't generic enough to be more widely used.
 
-This one looks good. Applied to m68knommu git tree (for-next branch).
+[...]
 
-Thanks
-Greg
+Thanks!
 
+You can add my
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+to patches 03, 04, 11, 19, 23, 24, 25, 26.
 
-> ---
->  arch/m68k/coldfire/m54xx.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/m54xx.c b/arch/m68k/coldfire/m54xx.c
-> index 075aaab..f7836c6 100644
-> --- a/arch/m68k/coldfire/m54xx.c
-> +++ b/arch/m68k/coldfire/m54xx.c
-> @@ -25,6 +25,7 @@
->  #include <asm/m54xxgpt.h>
->  #ifdef CONFIG_MMU
->  #include <asm/mmu_context.h>
-> +#include <linux/pfn.h>
->  #endif
->  
->  /***************************************************************************/
-> @@ -91,13 +92,13 @@ static void __init mcf54xx_bootmem_alloc(void)
->  	m68k_memory[0].size = _ramend - _rambase;
->  
->  	/* compute total pages in system */
-> -	num_pages = (_ramend - _rambase) >> PAGE_SHIFT;
-> +	num_pages = PFN_DOWN(_ramend - _rambase);
->  
->  	/* page numbers */
->  	memstart = PAGE_ALIGN(_ramstart);
-> -	min_low_pfn = _rambase >> PAGE_SHIFT;
-> -	start_pfn = memstart >> PAGE_SHIFT;
-> -	max_low_pfn = _ramend >> PAGE_SHIFT;
-> +	min_low_pfn = PFN_DOWN(_rambase);
-> +	start_pfn = PFN_DOWN(memstart);
-> +	max_low_pfn = PFN_DOWN(_ramend);
->  	high_memory = (void *)_ramend;
->  
->  	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
-> 
+BTW, checkpatch reported a few newly-introduced whitespace errors in patches
+03, 05, 16, 24, and 25.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
