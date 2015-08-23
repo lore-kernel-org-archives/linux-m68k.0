@@ -1,117 +1,191 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v6 24/25] m68k/mac: Fix PRAM accessors
-Date: Sun, 23 Aug 2015 20:41:53 +1000
-Message-ID: <20150823104135.547704709@telegraphics.com.au>
+Subject: [RFC v6 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
+Date: Sun, 23 Aug 2015 20:41:46 +1000
+Message-ID: <20150823104133.787700941@telegraphics.com.au>
 References: <20150823104129.517600532@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-fix-pram-accessors
+Content-Disposition: inline; filename=ppc32-replace-exported-nvram-functions
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-api@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
+Make use of arch_nvram_ops in device drivers so that the nvram_* function
+exports can be removed.
+
+Since they are no longer global symbols, rename the PPC32 nvram_* functions
+appropriately.
+
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 ---
 
-Tested on a PowerBook 520 and Quadra 650.
-
-Changes since v2:
-- Make use of the RTC_* macros from the previous patch and add a few more
-besides.
+Changed since v4:
+- Split off the CONFIG_PPC32, CONFIG_PPC_PMAC and CONFIG_NVRAM tests into
+a separate patch.
 
 ---
- arch/m68k/mac/misc.c     |   39 +++++++++++++++++++++++++++++++++------
- include/uapi/linux/pmu.h |    2 ++
- 2 files changed, 35 insertions(+), 6 deletions(-)
+ arch/powerpc/kernel/setup_32.c             |    8 ++++----
+ drivers/char/generic_nvram.c               |    4 ++--
+ drivers/video/fbdev/controlfb.c            |    4 ++--
+ drivers/video/fbdev/imsttfb.c              |    4 ++--
+ drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
+ drivers/video/fbdev/platinumfb.c           |    4 ++--
+ drivers/video/fbdev/valkyriefb.c           |    4 ++--
+ 7 files changed, 15 insertions(+), 15 deletions(-)
 
-Index: linux/arch/m68k/mac/misc.c
+Index: linux/arch/powerpc/kernel/setup_32.c
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-08-23 20:41:23.000000000 +1000
-+++ linux/arch/m68k/mac/misc.c	2015-08-23 20:41:25.000000000 +1000
-@@ -119,19 +119,22 @@ static void pmu_write_time(long data)
- static unsigned char pmu_pram_read_byte(int offset)
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:11.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:14.000000000 +1000
+@@ -170,20 +170,18 @@ __setup("l3cr=", ppc_setup_l3cr);
+ 
+ #ifdef CONFIG_GENERIC_NVRAM
+ 
+-unsigned char nvram_read_byte(int addr)
++static unsigned char ppc_nvram_read_byte(int addr)
  {
- 	struct adb_request req;
--	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
--			(offset >> 8) & 0xFF, offset & 0xFF) < 0)
-+
-+	if (pmu_request(&req, NULL, 3, PMU_READ_XPRAM,
-+	                offset & 0xFF, 1) < 0)
+ 	if (ppc_md.nvram_read_val)
+ 		return ppc_md.nvram_read_val(addr);
+ 	return 0xff;
+ }
+-EXPORT_SYMBOL(nvram_read_byte);
+ 
+-void nvram_write_byte(unsigned char val, int addr)
++static void ppc_nvram_write_byte(unsigned char val, int addr)
+ {
+ 	if (ppc_md.nvram_write_val)
+ 		ppc_md.nvram_write_val(addr, val);
+ }
+-EXPORT_SYMBOL(nvram_write_byte);
+ 
+ static ssize_t ppc_nvram_get_size(void)
+ {
+@@ -200,6 +198,8 @@ static long ppc_nvram_sync(void)
+ }
+ 
+ const struct nvram_ops arch_nvram_ops = {
++	.read_byte      = ppc_nvram_read_byte,
++	.write_byte     = ppc_nvram_write_byte,
+ 	.get_size       = ppc_nvram_get_size,
+ 	.sync           = ppc_nvram_sync,
+ };
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-08-23 20:41:11.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-08-23 20:41:14.000000000 +1000
+@@ -63,7 +63,7 @@ static ssize_t read_nvram(struct file *f
+ 	if (*ppos >= nvram_len)
  		return 0;
- 	while (!req.complete)
- 		pmu_poll();
--	return req.reply[3];
-+
-+	return req.reply[1];
- }
- 
- static void pmu_pram_write_byte(unsigned char data, int offset)
- {
- 	struct adb_request req;
--	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
--			(offset >> 8) & 0xFF, offset & 0xFF, data) < 0)
-+
-+	if (pmu_request(&req, NULL, 4, PMU_WRITE_XPRAM,
-+	                offset & 0xFF, 1, data) < 0)
- 		return;
- 	while (!req.complete)
- 		pmu_poll();
-@@ -257,6 +260,16 @@ static void via_rtc_send(__u8 data)
- #define RTC_REG_WRITE_PROTECT   13
- 
- /*
-+ * Inside Mac has no information about two-byte RTC commands but
-+ * the MESS source code has the essentials.
-+ */
-+
-+#define RTC_REG_XPRAM           14
-+#define RTC_CMD_XPRAM_READ      (RTC_CMD_READ(RTC_REG_XPRAM) << 8)
-+#define RTC_CMD_XPRAM_WRITE     (RTC_CMD_WRITE(RTC_REG_XPRAM) << 8)
-+#define RTC_CMD_XPRAM_ARG(a)    (((a & 0xE0) << 3) | ((a & 0x1F) << 2))
-+
-+/*
-  * Execute a VIA PRAM/RTC command. For read commands
-  * data should point to a one-byte buffer for the
-  * resulting data. For write commands it should point
-@@ -303,11 +316,25 @@ static void via_rtc_command(int command,
- 
- static unsigned char via_pram_read_byte(int offset)
- {
--	return 0;
-+	unsigned char temp;
-+
-+	via_rtc_command(RTC_CMD_XPRAM_READ | RTC_CMD_XPRAM_ARG(offset), &temp);
-+
-+	return temp;
- }
- 
- static void via_pram_write_byte(unsigned char data, int offset)
- {
-+	unsigned char temp;
-+
-+	temp = 0x55;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
-+
-+	temp = data;
-+	via_rtc_command(RTC_CMD_XPRAM_WRITE | RTC_CMD_XPRAM_ARG(offset), &temp);
-+
-+	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- }
- 
- /*
-Index: linux/include/uapi/linux/pmu.h
+ 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
+-		if (__put_user(nvram_read_byte(i), p))
++		if (__put_user(arch_nvram_ops.read_byte(i), p))
+ 			return -EFAULT;
+ 	*ppos = i;
+ 	return p - buf;
+@@ -83,7 +83,7 @@ static ssize_t write_nvram(struct file *
+ 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
+ 		if (__get_user(c, p))
+ 			return -EFAULT;
+-		nvram_write_byte(c, i);
++		arch_nvram_ops.write_byte(c, i);
+ 	}
+ 	*ppos = i;
+ 	return p - buf;
+Index: linux/drivers/video/fbdev/controlfb.c
 ===================================================================
---- linux.orig/include/uapi/linux/pmu.h	2015-08-23 20:40:53.000000000 +1000
-+++ linux/include/uapi/linux/pmu.h	2015-08-23 20:41:25.000000000 +1000
-@@ -18,7 +18,9 @@
- #define PMU_POWER_CTRL		0x11	/* control power of some devices */
- #define PMU_ADB_CMD		0x20	/* send ADB packet */
- #define PMU_ADB_POLL_OFF	0x21	/* disable ADB auto-poll */
-+#define PMU_WRITE_XPRAM		0x32	/* write eXtended Parameter RAM */
- #define PMU_WRITE_NVRAM		0x33	/* write non-volatile RAM */
-+#define PMU_READ_XPRAM		0x3a	/* read eXtended Parameter RAM */
- #define PMU_READ_NVRAM		0x3b	/* read non-volatile RAM */
- #define PMU_SET_RTC		0x30	/* set real-time clock */
- #define PMU_READ_RTC		0x38	/* read real-time clock */
+--- linux.orig/drivers/video/fbdev/controlfb.c	2015-08-23 20:40:53.000000000 +1000
++++ linux/drivers/video/fbdev/controlfb.c	2015-08-23 20:41:14.000000000 +1000
+@@ -415,7 +415,7 @@ static int __init init_control(struct fb
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+ #ifdef CONFIG_NVRAM
+ 	if (default_cmode == CMODE_NVRAM) {
+-		cmode = nvram_read_byte(NV_CMODE);
++		cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ 		if(cmode < CMODE_8 || cmode > CMODE_32)
+ 			cmode = CMODE_8;
+ 	} else
+@@ -423,7 +423,7 @@ static int __init init_control(struct fb
+ 		cmode=default_cmode;
+ #ifdef CONFIG_NVRAM
+ 	if (default_vmode == VMODE_NVRAM) {
+-		vmode = nvram_read_byte(NV_VMODE);
++		vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (vmode < 1 || vmode > VMODE_MAX ||
+ 		    control_mac_modes[vmode - 1].m[full] < cmode) {
+ 			sense = read_control_sense(p);
+Index: linux/drivers/video/fbdev/imsttfb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/imsttfb.c	2015-08-23 20:41:13.000000000 +1000
++++ linux/drivers/video/fbdev/imsttfb.c	2015-08-23 20:41:14.000000000 +1000
+@@ -1393,12 +1393,12 @@ static void init_imstt(struct fb_info *i
+ 		int vmode = init_vmode, cmode = init_cmode;
+ 
+ 		if (vmode == -1) {
+-			vmode = nvram_read_byte(NV_VMODE);
++			vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 			if (vmode <= 0 || vmode > VMODE_MAX)
+ 				vmode = VMODE_640_480_67;
+ 		}
+ 		if (cmode == -1) {
+-			cmode = nvram_read_byte(NV_CMODE);
++			cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ 			if (cmode < CMODE_8 || cmode > CMODE_32)
+ 				cmode = CMODE_8;
+ 		}
+Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-08-23 20:41:13.000000000 +1000
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-08-23 20:41:14.000000000 +1000
+@@ -1878,7 +1878,7 @@ static int initMatrox2(struct matrox_fb_
+ 			default_vmode = VMODE_640_480_60;
+ #if defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
+ 		if (default_cmode == CMODE_NVRAM)
+-			default_cmode = nvram_read_byte(NV_CMODE);
++			default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 		if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
+ 			default_cmode = CMODE_8;
+Index: linux/drivers/video/fbdev/platinumfb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/platinumfb.c	2015-08-23 20:40:53.000000000 +1000
++++ linux/drivers/video/fbdev/platinumfb.c	2015-08-23 20:41:14.000000000 +1000
+@@ -349,7 +349,7 @@ static int platinum_init_fb(struct fb_in
+ 	printk(KERN_INFO "platinumfb: Monitor sense value = 0x%x, ", sense);
+ 	if (default_vmode == VMODE_NVRAM) {
+ #ifdef CONFIG_NVRAM
+-		default_vmode = nvram_read_byte(NV_VMODE);
++		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (default_vmode <= 0 || default_vmode > VMODE_MAX ||
+ 		    !platinum_reg_init[default_vmode-1])
+ #endif
+@@ -362,7 +362,7 @@ static int platinum_init_fb(struct fb_in
+ 		default_vmode = VMODE_640_480_60;
+ #ifdef CONFIG_NVRAM
+ 	if (default_cmode == CMODE_NVRAM)
+-		default_cmode = nvram_read_byte(NV_CMODE);
++		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 	if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
+ 		default_cmode = CMODE_8;
+Index: linux/drivers/video/fbdev/valkyriefb.c
+===================================================================
+--- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-08-23 20:41:13.000000000 +1000
++++ linux/drivers/video/fbdev/valkyriefb.c	2015-08-23 20:41:14.000000000 +1000
+@@ -285,7 +285,7 @@ static void __init valkyrie_choose_mode(
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+ #if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_vmode == VMODE_NVRAM) {
+-		default_vmode = nvram_read_byte(NV_VMODE);
++		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
+ 		if (default_vmode <= 0
+ 		 || default_vmode > VMODE_MAX
+ 		 || !valkyrie_reg_init[default_vmode - 1])
+@@ -298,7 +298,7 @@ static void __init valkyrie_choose_mode(
+ 		default_vmode = VMODE_640_480_67;
+ #if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_cmode == CMODE_NVRAM)
+-		default_cmode = nvram_read_byte(NV_CMODE);
++		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ #endif
+ 
+ 	/*
