@@ -1,146 +1,108 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v6 18/25] nvram: Drop nvram_* symbol exports and prototypes
-Date: Sun, 23 Aug 2015 20:41:47 +1000
-Message-ID: <20150823104134.037715974@telegraphics.com.au>
+Subject: [RFC v6 06/25] x86/thinkpad_acpi: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
+Date: Sun, 23 Aug 2015 20:41:35 +1000
+Message-ID: <20150823104131.037716253@telegraphics.com.au>
 References: <20150823104129.517600532@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=remove-exported-nvram-functions
+Content-Disposition: inline; filename=pc-rtc-replace-exported-nvram-functions
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Darren Hart <dvhart@infradead.org>, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
 List-Id: linux-m68k@vger.kernel.org
 
-Drivers now use the arch_nvram_ops calls so remove the function exports and
-prototypes. nvram_check_checksum() is unused so remove it.
+Make use of arch_nvram_ops in the thinkpad_acpi driver so that the
+nvram_* function exports can be removed.
+
+This patch series was tested on a ThinkPad T43.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Reviewed-by: Darren Hart <dvhart@linux.intel.com>
 
 ---
- arch/m68k/atari/nvram.c |    6 +++---
- drivers/char/nvram.c    |   27 +++++----------------------
- include/linux/nvram.h   |    8 --------
- 3 files changed, 8 insertions(+), 33 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Index: linux/drivers/char/nvram.c
+Index: linux/drivers/platform/x86/thinkpad_acpi.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-08-23 20:41:11.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-08-23 20:41:16.000000000 +1000
-@@ -82,13 +82,12 @@ static ssize_t nvram_size;
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
-  */
+--- linux.orig/drivers/platform/x86/thinkpad_acpi.c	2015-08-23 20:40:53.000000000 +1000
++++ linux/drivers/platform/x86/thinkpad_acpi.c	2015-08-23 20:41:01.000000000 +1000
+@@ -2312,30 +2312,30 @@ static void hotkey_read_nvram(struct tp_
+ 	u8 d;
  
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
+ 	if (m & TP_NVRAM_HKEY_GROUP_HK2) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_HK2);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_HK2);
+ 		n->thinkpad_toggle = !!(d & TP_NVRAM_MASK_HKT_THINKPAD);
+ 		n->zoom_toggle = !!(d & TP_NVRAM_MASK_HKT_ZOOM);
+ 		n->display_toggle = !!(d & TP_NVRAM_MASK_HKT_DISPLAY);
+ 		n->hibernate_toggle = !!(d & TP_NVRAM_MASK_HKT_HIBERNATE);
+ 	}
+ 	if (m & TP_ACPI_HKEY_THNKLGHT_MASK) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_THINKLIGHT);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_THINKLIGHT);
+ 		n->thinklight_toggle = !!(d & TP_NVRAM_MASK_THINKLIGHT);
+ 	}
+ 	if (m & TP_ACPI_HKEY_DISPXPAND_MASK) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_VIDEO);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_VIDEO);
+ 		n->displayexp_toggle =
+ 				!!(d & TP_NVRAM_MASK_HKT_DISPEXPND);
+ 	}
+ 	if (m & TP_NVRAM_HKEY_GROUP_BRIGHTNESS) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
+ 		n->brightness_level = (d & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 				>> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
+ 		n->brightness_toggle =
+ 				!!(d & TP_NVRAM_MASK_HKT_BRIGHTNESS);
+ 	}
+ 	if (m & TP_NVRAM_HKEY_GROUP_VOLUME) {
+-		d = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
++		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
+ 		n->volume_level = (d & TP_NVRAM_MASK_LEVEL_VOLUME)
+ 				>> TP_NVRAM_POS_LEVEL_VOLUME;
+ 		n->mute = !!(d & TP_NVRAM_MASK_MUTE);
+@@ -6156,7 +6156,7 @@ static unsigned int tpacpi_brightness_nv
  {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
- }
--EXPORT_SYMBOL(__nvram_read_byte);
+ 	u8 lnvram;
  
--unsigned char nvram_read_byte(int i)
-+static unsigned char nvram_read_byte(int i)
- {
- 	unsigned long flags;
- 	unsigned char c;
-@@ -98,16 +97,14 @@ unsigned char nvram_read_byte(int i)
- 	spin_unlock_irqrestore(&rtc_lock, flags);
- 	return c;
- }
--EXPORT_SYMBOL(nvram_read_byte);
+-	lnvram = (nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
++	lnvram = (arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
+ 		  & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 		  >> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
+ 	lnvram &= bright_maxlvl;
+@@ -6181,7 +6181,7 @@ static void tpacpi_brightness_checkpoint
+ 	if (unlikely(!acpi_ec_read(TP_EC_BACKLIGHT, &lec)))
+ 		goto unlock;
+ 	lec &= TP_EC_BACKLIGHT_LVLMSK;
+-	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
++	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
  
- /* This races nicely with trying to read with checksum checking (nvram_read) */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
- {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
- }
--EXPORT_SYMBOL(__nvram_write_byte);
+ 	if (lec != ((b_nvram & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
+ 			     >> TP_NVRAM_POS_LEVEL_BRIGHTNESS)) {
+@@ -6189,7 +6189,7 @@ static void tpacpi_brightness_checkpoint
+ 		b_nvram &= ~(TP_NVRAM_MASK_LEVEL_BRIGHTNESS <<
+ 				TP_NVRAM_POS_LEVEL_BRIGHTNESS);
+ 		b_nvram |= lec;
+-		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
++		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
+ 		dbg_printk(TPACPI_DBG_BRGHT,
+ 			   "updated NVRAM backlight level to %u (0x%02x)\n",
+ 			   (unsigned int) lec, (unsigned int) b_nvram);
+@@ -6797,13 +6797,13 @@ static void tpacpi_volume_checkpoint_nvr
+ 	if (unlikely(!acpi_ec_read(TP_EC_AUDIO, &lec)))
+ 		goto unlock;
+ 	lec &= ec_mask;
+-	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
++	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
  
--void nvram_write_byte(unsigned char c, int i)
-+static void nvram_write_byte(unsigned char c, int i)
- {
- 	unsigned long flags;
- 
-@@ -115,14 +112,13 @@ void nvram_write_byte(unsigned char c, i
- 	__nvram_write_byte(c, i);
- 	spin_unlock_irqrestore(&rtc_lock, flags);
- }
--EXPORT_SYMBOL(nvram_write_byte);
- 
- /* On PCs, the checksum is built only over bytes 2..31 */
- #define PC_CKS_RANGE_START	2
- #define PC_CKS_RANGE_END	31
- #define PC_CKS_LOC		32
- 
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned short sum = 0;
-@@ -134,19 +130,6 @@ int __nvram_check_checksum(void)
- 	    __nvram_read_byte(PC_CKS_LOC+1);
- 	return (sum & 0xffff) == expect;
- }
--EXPORT_SYMBOL(__nvram_check_checksum);
--
--int nvram_check_checksum(void)
--{
--	unsigned long flags;
--	int rv;
--
--	spin_lock_irqsave(&rtc_lock, flags);
--	rv = __nvram_check_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
--	return rv;
--}
--EXPORT_SYMBOL(nvram_check_checksum);
- 
- static void __nvram_set_checksum(void)
- {
-Index: linux/include/linux/nvram.h
-===================================================================
---- linux.orig/include/linux/nvram.h	2015-08-23 20:41:11.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-08-23 20:41:16.000000000 +1000
-@@ -3,14 +3,6 @@
- 
- #include <uapi/linux/nvram.h>
- 
--/* __foo is foo without grabbing the rtc_lock - get it yourself */
--extern unsigned char __nvram_read_byte(int i);
--extern unsigned char nvram_read_byte(int i);
--extern void __nvram_write_byte(unsigned char c, int i);
--extern void nvram_write_byte(unsigned char c, int i);
--extern int __nvram_check_checksum(void);
--extern int nvram_check_checksum(void);
--
- struct nvram_ops {
- 	ssize_t         (*read)(char *, size_t, loff_t *);
- 	ssize_t         (*write)(char *, size_t, loff_t *);
-Index: linux/arch/m68k/atari/nvram.c
-===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-08-23 20:41:05.000000000 +1000
-+++ linux/arch/m68k/atari/nvram.c	2015-08-23 20:41:16.000000000 +1000
-@@ -33,13 +33,13 @@
-  * periodic 11 min sync from kernel/time/ntp.c vs. this driver.)
-  */
- 
--unsigned char __nvram_read_byte(int i)
-+static unsigned char __nvram_read_byte(int i)
- {
- 	return CMOS_READ(NVRAM_FIRST_BYTE + i);
- }
- 
- /* This races nicely with trying to read with checksum checking */
--void __nvram_write_byte(unsigned char c, int i)
-+static void __nvram_write_byte(unsigned char c, int i)
- {
- 	CMOS_WRITE(c, NVRAM_FIRST_BYTE + i);
- }
-@@ -51,7 +51,7 @@ void __nvram_write_byte(unsigned char c,
- #define ATARI_CKS_RANGE_END	47
- #define ATARI_CKS_LOC		48
- 
--int __nvram_check_checksum(void)
-+static int __nvram_check_checksum(void)
- {
- 	int i;
- 	unsigned char sum = 0;
+ 	if (lec != (b_nvram & ec_mask)) {
+ 		/* NVRAM needs update */
+ 		b_nvram &= ~ec_mask;
+ 		b_nvram |= lec;
+-		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
++		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
+ 		dbg_printk(TPACPI_DBG_MIXER,
+ 			   "updated NVRAM mixer status to 0x%02x (0x%02x)\n",
+ 			   (unsigned int) lec, (unsigned int) b_nvram);
