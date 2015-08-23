@@ -1,165 +1,192 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v6 07/25] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
-Date: Sun, 23 Aug 2015 20:41:36 +1000
-Message-ID: <20150823104131.277688739@telegraphics.com.au>
+Subject: [RFC v6 15/25] powerpc: Implement nvram sync ioctl
+Date: Sun, 23 Aug 2015 20:41:44 +1000
+Message-ID: <20150823104133.287719763@telegraphics.com.au>
 References: <20150823104129.517600532@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-generalize-ioctl
+Content-Disposition: inline; filename=nvram-add-powerpc-ioctls
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-The drivers/char/nvram module has previously only supported RTC "CMOS"
-NVRAM, for which it provides appropriate checksum ioctls. Make these
-ioctls optional so the module can be re-used with other kinds of NVRAM.
-
-The ops struct methods that implement the ioctls now return error
-codes so that a multi-platform kernel binary can do the right thing when
-running on hardware without suitable NVRAM.
+Add the powerpc-specific sync() method to struct nvram_ops and implement
+the corresponding ioctl in the nvram module. This allows the nvram module
+to replace the generic_nvram module.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
 
+On PPC32, the IOC_NVRAM_SYNC ioctl call always returns 0, even for those
+platforms that don't implement ppc_md.nvram_sync. This patch retains
+that quirk. It might be better to return -EINVAL (which is what PPC64 does).
+
 Changed since v1:
 - Don't bother acquiring the mutex for unimplemented ioctls.
 
+Changed since v5:
+- The IOC_NVRAM_GET_OFFSET ioctl returns -EINVAL on PowerPC platforms
+other than Power Mac, and -ENOTTY on architectures other than PowerPC.
+This is more consistent with the old generic_nvram module.
+
 ---
- drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
- include/linux/nvram.h |    2 +
- 2 files changed, 43 insertions(+), 30 deletions(-)
+ arch/powerpc/include/asm/nvram.h |    3 ---
+ arch/powerpc/kernel/setup_32.c   |    6 +++---
+ drivers/char/generic_nvram.c     |    2 +-
+ drivers/char/nvram.c             |   39 +++++++++++++++++++++++++++++++++++++++
+ include/linux/nvram.h            |    4 ++++
+ 5 files changed, 47 insertions(+), 7 deletions(-)
 
 Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-08-23 20:40:59.000000000 +1000
-+++ linux/drivers/char/nvram.c	2015-08-23 20:41:02.000000000 +1000
-@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
- }
+--- linux.orig/drivers/char/nvram.c	2015-08-23 20:41:07.000000000 +1000
++++ linux/drivers/char/nvram.c	2015-08-23 20:41:11.000000000 +1000
+@@ -48,6 +48,11 @@
+ #include <linux/mutex.h>
  
--#if 0
--void nvram_set_checksum(void)
-+static long nvram_set_checksum(void)
- {
--	unsigned long flags;
-+	spin_lock_irq(&rtc_lock);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
-+}
+ 
++#ifdef CONFIG_PPC
++#include <asm/nvram.h>
++#include <asm/machdep.h>
++#endif
 +
-+static long nvram_initialize(void)
-+{
-+	ssize_t i;
- 
--	spin_lock_irqsave(&rtc_lock, flags);
-+	spin_lock_irq(&rtc_lock);
-+	for (i = 0; i < NVRAM_BYTES; ++i)
-+		__nvram_write_byte(0, i);
- 	__nvram_set_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
- }
--#endif  /*  0  */
- 
- static ssize_t nvram_get_size(void)
- {
-@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
- 	.read_byte      = nvram_read_byte,
- 	.write_byte     = nvram_write_byte,
- 	.get_size       = nvram_get_size,
-+	.set_checksum   = nvram_set_checksum,
-+	.initialize     = nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
- 
-@@ -272,51 +283,51 @@ checksum_err:
- static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
-                              unsigned long arg)
- {
--	int i;
-+	long ret = -ENOTTY;
+ static DEFINE_MUTEX(nvram_mutex);
+ static DEFINE_SPINLOCK(nvram_state_lock);
+ static int nvram_open_cnt;	/* #times opened */
+@@ -338,6 +343,37 @@ static long nvram_misc_ioctl(struct file
+ 	long ret = -ENOTTY;
  
  	switch (cmd) {
--
++#ifdef CONFIG_PPC
++	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
++		pr_warn("nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
++		/* fall through */
++	case IOC_NVRAM_GET_OFFSET:
++		ret = -EINVAL;
++#ifdef CONFIG_PPC_PMAC
++		if (machine_is(powermac)) {
++			int part, offset;
++
++			if (copy_from_user(&part, (void __user *)arg,
++			                   sizeof(part)) != 0)
++				return -EFAULT;
++			if (part < pmac_nvram_OF || part > pmac_nvram_NR)
++				return -EINVAL;
++			offset = pmac_get_partition(part);
++			if (copy_to_user((void __user *)arg,
++			                 &offset, sizeof(offset)) != 0)
++				return -EFAULT;
++			ret = 0;
++		}
++#endif
++		break;
++	case IOC_NVRAM_SYNC:
++		if (arch_nvram_ops.sync != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.sync();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
++#else /* !CONFIG_PPC */
  	case NVRAM_INIT:
  		/* initialize NVRAM contents and checksum */
  		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--
--		for (i = 0; i < NVRAM_BYTES; ++i)
--			__nvram_write_byte(0, i);
--		__nvram_set_checksum();
--
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
-+		if (arch_nvram_ops.initialize != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.initialize();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	case NVRAM_SETCKS:
- 		/* just set checksum, contents unchanged (maybe useful after
- 		 * checksum garbaged somehow...) */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--		__nvram_set_checksum();
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
--	default:
--		return -ENOTTY;
-+		if (arch_nvram_ops.set_checksum != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.set_checksum();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
+@@ -361,6 +397,7 @@ static long nvram_misc_ioctl(struct file
+ 			mutex_unlock(&nvram_mutex);
+ 		}
+ 		break;
++#endif /* CONFIG_PPC */
  	}
-+	return ret;
+ 	return ret;
  }
+@@ -376,6 +413,7 @@ static int nvram_misc_open(struct inode
+ 		return -EBUSY;
+ 	}
  
- static int nvram_misc_open(struct inode *inode, struct file *file)
- {
- 	spin_lock(&nvram_state_lock);
- 
-+	/* Prevent multiple readers/writers if desired. */
- 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
--	    (nvram_open_mode & NVRAM_EXCL) ||
--	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
-+	    (nvram_open_mode & NVRAM_EXCL)) {
-+		spin_unlock(&nvram_state_lock);
-+		return -EBUSY;
-+	}
-+
-+	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
-+	if ((arch_nvram_ops.set_checksum != NULL) &&
-+	    (file->f_mode & FMODE_WRITE) &&
-+	    (nvram_open_mode & NVRAM_WRITE)) {
++#ifndef CONFIG_PPC
+ 	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
+ 	if ((arch_nvram_ops.set_checksum != NULL) &&
+ 	    (file->f_mode & FMODE_WRITE) &&
+@@ -383,6 +421,7 @@ static int nvram_misc_open(struct inode
  		spin_unlock(&nvram_state_lock);
  		return -EBUSY;
  	}
++#endif
+ 
+ 	if (file->f_flags & O_EXCL)
+ 		nvram_open_mode |= NVRAM_EXCL;
 Index: linux/include/linux/nvram.h
 ===================================================================
---- linux.orig/include/linux/nvram.h	2015-08-23 20:40:59.000000000 +1000
-+++ linux/include/linux/nvram.h	2015-08-23 20:41:02.000000000 +1000
-@@ -17,6 +17,8 @@ struct nvram_ops {
+--- linux.orig/include/linux/nvram.h	2015-08-23 20:41:02.000000000 +1000
++++ linux/include/linux/nvram.h	2015-08-23 20:41:11.000000000 +1000
+@@ -17,8 +17,12 @@ struct nvram_ops {
  	unsigned char   (*read_byte)(int);
  	void            (*write_byte)(unsigned char, int);
  	ssize_t         (*get_size)(void);
-+	long            (*set_checksum)(void);
-+	long            (*initialize)(void);
++#ifdef CONFIG_PPC
++	long            (*sync)(void);
++#else
+ 	long            (*set_checksum)(void);
+ 	long            (*initialize)(void);
++#endif
  };
  
  extern const struct nvram_ops arch_nvram_ops;
+Index: linux/arch/powerpc/include/asm/nvram.h
+===================================================================
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-08-23 20:41:10.000000000 +1000
++++ linux/arch/powerpc/include/asm/nvram.h	2015-08-23 20:41:11.000000000 +1000
+@@ -78,9 +78,6 @@ extern int	pmac_get_partition(int partit
+ extern u8	pmac_xpram_read(int xpaddr);
+ extern void	pmac_xpram_write(int xpaddr, u8 data);
+ 
+-/* Synchronize NVRAM */
+-extern void	nvram_sync(void);
+-
+ /* Initialize NVRAM OS partition */
+ extern int __init nvram_init_os_partition(struct nvram_os_partition *part);
+ 
+Index: linux/arch/powerpc/kernel/setup_32.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:10.000000000 +1000
++++ linux/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:11.000000000 +1000
+@@ -170,7 +170,6 @@ __setup("l3cr=", ppc_setup_l3cr);
+ 
+ #ifdef CONFIG_GENERIC_NVRAM
+ 
+-/* Generic nvram hooks used by drivers/char/gen_nvram.c */
+ unsigned char nvram_read_byte(int addr)
+ {
+ 	if (ppc_md.nvram_read_val)
+@@ -193,15 +192,16 @@ static ssize_t ppc_nvram_get_size(void)
+ 	return -ENODEV;
+ }
+ 
+-void nvram_sync(void)
++static long ppc_nvram_sync(void)
+ {
+ 	if (ppc_md.nvram_sync)
+ 		ppc_md.nvram_sync();
++	return 0;
+ }
+-EXPORT_SYMBOL(nvram_sync);
+ 
+ const struct nvram_ops arch_nvram_ops = {
+ 	.get_size       = ppc_nvram_get_size,
++	.sync           = ppc_nvram_sync,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-08-23 20:41:10.000000000 +1000
++++ linux/drivers/char/generic_nvram.c	2015-08-23 20:41:11.000000000 +1000
+@@ -111,7 +111,7 @@ static int nvram_ioctl(struct file *file
+ 	}
+ #endif /* CONFIG_PPC_PMAC */
+ 	case IOC_NVRAM_SYNC:
+-		nvram_sync();
++		arch_nvram_ops.sync();
+ 		break;
+ 	default:
+ 		return -EINVAL;
