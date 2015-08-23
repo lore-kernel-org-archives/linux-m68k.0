@@ -1,135 +1,121 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [RFC v6 19/25] powerpc: Remove CONFIG_GENERIC_NVRAM and adopt CONFIG_HAVE_ARCH_NVRAM_OPS
-Date: Sun, 23 Aug 2015 20:41:48 +1000
-Message-ID: <20150823104134.287746512@telegraphics.com.au>
+Subject: [RFC v6 10/25] m68k/atari: Implement arch_nvram_ops methods and enable CONFIG_HAVE_ARCH_NVRAM_OPS
+Date: Sun, 23 Aug 2015 20:41:39 +1000
+Message-ID: <20150823104132.038008260@telegraphics.com.au>
 References: <20150823104129.517600532@telegraphics.com.au>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35078 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752392AbbHWLNh (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 23 Aug 2015 07:13:37 -0400
-Content-Disposition: inline; filename=powerpc-adopt-arch_nvram_ops
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=atari-hook-up-misc-device
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Switch PPC32 kernels from the generic_nvram module to the nvram module.
-
-Also fix a theoretical bug where CHRP omits the chrp_nvram_init()
-call when CONFIG_NVRAM_MODULE=m.
+Atari RTC NVRAM has a checksum so implement the remaining arch_nvram_ops
+methods for the set_checksum and initialize ioctls. Enable
+CONFIG_HAVE_ARCH_NVRAM_OPS.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 ---
 
-The change in the name of the module is visible to userspace. The module that
-implements /dev/nvram on PowerPC now has suitable aliases, i.e.
-MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
-MODULE_ALIAS("devname:nvram"); 
-so that the device special file can be automatically created and the
-module automatically loaded when needed. Previously this was not the case.
+This re-enables the nvram module for Atari.
+
+Changes since v3:
+- Use bool (and select) instead of def_bool in the definition of the
+HAVE_ARCH_NVRAM_OPS Kconfig symbol, as requested by Geert.
 
 ---
+ arch/m68k/Kconfig         |    3 +++
+ arch/m68k/Kconfig.machine |    1 +
+ arch/m68k/atari/nvram.c   |   24 ++++++++++++++++++++++++
+ drivers/char/Kconfig      |    2 +-
+ 4 files changed, 29 insertions(+), 1 deletion(-)
 
-Changes since v1:
-- Small indentation fix.
-
----
- arch/powerpc/Kconfig                    |    2 +-
- arch/powerpc/kernel/setup_32.c          |    2 +-
- arch/powerpc/platforms/chrp/Makefile    |    2 +-
- arch/powerpc/platforms/chrp/setup.c     |    2 +-
- arch/powerpc/platforms/powermac/setup.c |    3 +--
- drivers/char/Kconfig                    |   10 ++++++----
- 6 files changed, 11 insertions(+), 10 deletions(-)
-
-Index: linux/arch/powerpc/Kconfig
+Index: linux/arch/m68k/atari/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/Kconfig	2015-08-23 20:40:53.000000000 +1000
-+++ linux/arch/powerpc/Kconfig	2015-08-23 20:41:18.000000000 +1000
-@@ -180,7 +180,7 @@ config SYSVIPC_COMPAT
- 	default y
- 
- # All PPC32s use generic nvram driver through ppc_md
--config GENERIC_NVRAM
-+config HAVE_ARCH_NVRAM_OPS
- 	bool
- 	default y if PPC32
- 
-Index: linux/arch/powerpc/kernel/setup_32.c
-===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:14.000000000 +1000
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-08-23 20:41:18.000000000 +1000
-@@ -168,7 +168,7 @@ int __init ppc_setup_l3cr(char *str)
+--- linux.orig/arch/m68k/atari/nvram.c	2015-08-23 20:40:57.000000000 +1000
++++ linux/arch/m68k/atari/nvram.c	2015-08-23 20:41:05.000000000 +1000
+@@ -73,6 +73,26 @@ static void __nvram_set_checksum(void)
+ 	__nvram_write_byte(sum, ATARI_CKS_LOC + 1);
  }
- __setup("l3cr=", ppc_setup_l3cr);
  
--#ifdef CONFIG_GENERIC_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 
- static unsigned char ppc_nvram_read_byte(int addr)
++static long nvram_set_checksum(void)
++{
++	spin_lock_irq(&rtc_lock);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
++}
++
++static long nvram_initialize(void)
++{
++	loff_t i;
++
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		__nvram_write_byte(0, i);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
++}
++
+ static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
  {
-Index: linux/arch/powerpc/platforms/chrp/Makefile
-===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/Makefile	2015-08-23 20:40:53.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/Makefile	2015-08-23 20:41:18.000000000 +1000
-@@ -1,3 +1,3 @@
- obj-y				+= setup.o time.o pegasos_eth.o pci.o
- obj-$(CONFIG_SMP)		+= smp.o
--obj-$(CONFIG_NVRAM)		+= nvram.o
-+obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
-Index: linux/arch/powerpc/platforms/chrp/setup.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/setup.c	2015-08-23 20:40:53.000000000 +1000
-+++ linux/arch/powerpc/platforms/chrp/setup.c	2015-08-23 20:41:18.000000000 +1000
-@@ -557,7 +557,7 @@ void __init chrp_init_IRQ(void)
- void __init
- chrp_init2(void)
+ 	char *p = buf;
+@@ -119,6 +139,8 @@ static ssize_t nvram_write(char *buf, si
+ 
+ static ssize_t nvram_get_size(void)
  {
--#ifdef CONFIG_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 	chrp_nvram_init();
- #endif
++	if (!MACH_IS_ATARI)
++		return -ENODEV;
+ 	return NVRAM_BYTES;
+ }
  
-Index: linux/arch/powerpc/platforms/powermac/setup.c
-===================================================================
---- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-08-23 20:40:53.000000000 +1000
-+++ linux/arch/powerpc/platforms/powermac/setup.c	2015-08-23 20:41:18.000000000 +1000
-@@ -321,8 +321,7 @@ static void __init pmac_setup_arch(void)
- 	find_via_pmu();
- 	smu_init();
- 
--#if defined(CONFIG_NVRAM) || defined(CONFIG_NVRAM_MODULE) || \
--    defined(CONFIG_PPC64)
-+#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
- 	pmac_nvram_init();
- #endif
+@@ -126,6 +148,8 @@ const struct nvram_ops arch_nvram_ops =
+ 	.read           = nvram_read,
+ 	.write          = nvram_write,
+ 	.get_size       = nvram_get_size,
++	.set_checksum   = nvram_set_checksum,
++	.initialize     = nvram_initialize,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
  
 Index: linux/drivers/char/Kconfig
 ===================================================================
---- linux.orig/drivers/char/Kconfig	2015-08-23 20:41:05.000000000 +1000
-+++ linux/drivers/char/Kconfig	2015-08-23 20:41:18.000000000 +1000
+--- linux.orig/drivers/char/Kconfig	2015-08-23 20:40:53.000000000 +1000
++++ linux/drivers/char/Kconfig	2015-08-23 20:41:05.000000000 +1000
 @@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
  
  config NVRAM
  	tristate "/dev/nvram support"
--	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
-+	depends on X86 || (ARM && RTC_DRV_CMOS) || HAVE_ARCH_NVRAM_OPS
+-	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM
++	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
  	---help---
  	  If you say Y here and create a character special file /dev/nvram
  	  with major number 10 and minor number 144 using mknod ("man mknod"),
-@@ -256,9 +256,11 @@ config NVRAM
- 	  and most Ataris.  The actual number of bytes varies, depending on the
- 	  nvram in the system, but is usually 114 (128-14 for the RTC).
+Index: linux/arch/m68k/Kconfig
+===================================================================
+--- linux.orig/arch/m68k/Kconfig	2015-08-23 20:40:53.000000000 +1000
++++ linux/arch/m68k/Kconfig	2015-08-23 20:41:05.000000000 +1000
+@@ -71,6 +71,9 @@ config PGTABLE_LEVELS
+ 	default 2 if SUN3 || COLDFIRE
+ 	default 3
  
--	  This memory is conventionally called "CMOS RAM" on PCs and "NVRAM"
--	  on Ataris. /dev/nvram may be used to view settings there, or to
--	  change them (with some utility). It could also be used to frequently
-+	  This memory is conventionally called "CMOS RAM" on PCs,
-+	  "NVRAM" on Ataris and "PRAM" on Macintoshes.
++config HAVE_ARCH_NVRAM_OPS
++	bool
 +
-+	  /dev/nvram may be used to view settings in NVRAM, or to change them
-+	  (with some utility). It could also be used to frequently
- 	  save a few bits of very important data that may not be lost over
- 	  power-off and for which writing to disk is too insecure. Note
- 	  however that most NVRAM space in a PC belongs to the BIOS and you
+ source "init/Kconfig"
+ 
+ source "kernel/Kconfig.freezer"
+Index: linux/arch/m68k/Kconfig.machine
+===================================================================
+--- linux.orig/arch/m68k/Kconfig.machine	2015-08-23 20:40:53.000000000 +1000
++++ linux/arch/m68k/Kconfig.machine	2015-08-23 20:41:05.000000000 +1000
+@@ -15,6 +15,7 @@ config ATARI
+ 	bool "Atari support"
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
++	select HAVE_ARCH_NVRAM_OPS
+ 	help
+ 	  This option enables support for the 68000-based Atari series of
+ 	  computers (including the TT, Falcon and Medusa). If you plan to use
