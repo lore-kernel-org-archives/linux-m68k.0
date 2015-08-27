@@ -1,16 +1,34 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: loan services of different types
-Date: Thu, 27 Aug 2015 01:14:23 +0530
-Message-ID: <KL1PR01MB0694C5DC5405408B1C8BA5CCB8600__33602.7202815332$1440618295$gmane$org@KL1PR01MB0694.apcprd01.prod.exchangelabs.com>
-Reply-To: <osmanlender@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: Alexander Kuleshov <kuleshovmail@gmail.com>
+Subject: [PATCH] m68k/sun3: Use %pM format specifier to print ethernet address
+Date: Thu, 27 Aug 2015 18:30:43 +0600
+Message-ID: <1440678643-7171-1-git-send-email-kuleshovmail@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
-From: <>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients@vger.kernel.org
+To: Sam Creasey <sammy@sammy.net>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Alexander Kuleshov <kuleshovmail@gmail.com>
 
-Fast loan offer for you today at just 2% interest rate, both long and short term loan of all amounts and currencies, no collateral required. Apply now for your instant approval and transfer approval process takes just 24hours. Contact us now through our e-mail E-MAIL osmanlender@gmail.com
+printk() supports %pM format specifier for printing 6-byte MAC/FDDI
+addresses in hex notation small buffers, let's use it intead of %x:%x...
+
+Signed-off-by: Alexander Kuleshov <kuleshovmail@gmail.com>
+---
+ arch/m68k/sun3/idprom.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/m68k/sun3/idprom.c b/arch/m68k/sun3/idprom.c
+index c86ac37..cfe9aa4 100644
+--- a/arch/m68k/sun3/idprom.c
++++ b/arch/m68k/sun3/idprom.c
+@@ -125,8 +125,5 @@ void __init idprom_init(void)
+ 
+ 	display_system_type(idprom->id_machtype);
+ 
+-	printk("Ethernet address: %x:%x:%x:%x:%x:%x\n",
+-		    idprom->id_ethaddr[0], idprom->id_ethaddr[1],
+-		    idprom->id_ethaddr[2], idprom->id_ethaddr[3],
+-		    idprom->id_ethaddr[4], idprom->id_ethaddr[5]);
++	printk("Ethernet address: %pM\n", idprom->id_ethaddr);
+ }
+-- 
+2.5.0
