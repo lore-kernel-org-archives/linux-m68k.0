@@ -1,17 +1,16 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: LOAN OFFER OF ALL TYPES
-Date: Fri, 28 Aug 2015 07:47:14 +0530
-Message-ID: <PS1PR02MB1084DA3986ED871187BADE58B86E0@PS1PR02MB1084.apcprd02.prod.outlook.com>
-Reply-To: <paulfredrickfinanceservice@gmail.com>
+From: <jerryfunds9@unitedfunds.onmicrosoft.com>
+Subject: (unknown)
+Date: Sun, 30 Aug 2015 07:59:24 +0530
+Message-ID: <KL1PR02MB11093DF16F0C6CD48B176159B86C0@KL1PR02MB1109.apcprd02.prod.outlook.com>
+Reply-To: <j.funds2000000@inbox.lv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Description: Mail message body
-From: <>
+Subject: 
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Recipients@vger.kernel.org
 
-Good day, PAUL FREDRICK FINANCE offer loans at 2% annual rate. Apply with amount needed, loan duration and phone number Via: 
-:paulfredrickfinanceservice@gmail.com 
+We Give Out Loans For 3% Interest Rate And We Offer Loans From $5,000 To $50,000,000.00, Are You Looking To Buy A House Car Or Company Or Start Up A Truck Company or Buy A Truck Or Personal Loans, Email Us At j.funds2000000@inbox.lv  With Amount Needed And Phone Number.
