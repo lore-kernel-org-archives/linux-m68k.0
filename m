@@ -1,59 +1,40 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.3
-Date: Sun, 30 Aug 2015 22:40:49 +0200
-Message-ID: <1440967249-7651-1-git-send-email-geert@linux-m68k.org>
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: Do you need a loan?
+Date: Tue, 1 Sep 2015 01:12:51 +0530
+Message-ID: <HKXPR02MB08236AA415C3A30E3BC81B12B86B0@HKXPR02MB0823.apcprd02.prod.outlook.com>
+Reply-To: <jmfinancialserviceltd@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Description: Mail message body
+From: <>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Recipients@vger.kernel.org
 
-	Hi Linus,
+We offer private, commercial and personal loans with very low annualinterest rates as low as 2% in one year to 50 years repayment period anywhere in the world. We offer loans ranging from $5000 to $100 million. Our loans are well insured for maximum security is our priority. Are you losing sleep at night worrying how to get a legitimate loan lender? You bite your nails that fast? Instead of beating you, contact JM Financial Services Ltd now, specialists who help stop loans bad credit history to find a solution that victory is our mission. Applicants must fill out a loan application form below:
 
-The following changes since commit d770e558e21961ad6cfdf0ff7df0eb5d7d4f0754:
+FORM credit application
 
-  Linux 4.2-rc1 (2015-07-05 11:01:52 -0700)
+loan applications
+Your full name *
+Your e-mail *
+Your phone *
+Your address *
+Your city *
+State / Province *
+Country *
+Fax*
+Date of birth *
+Do you have an account? *
+Have you applied before? *
+The loan amount is needed *
+The Loan Duration*
+The life expectancy *
+The purpose of the loan *
+Send me a scanned copy of your passport: *
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-for you to fetch changes up to 1ecb40643a9af05683b7a898d7141884bcb28a82:
-
-  m68k/bootinfo: Use kmemdup rather than duplicating its implementation (2015-08-10 10:26:33 +0200)
-
-----------------------------------------------------------------
-Andrzej Hajda (1):
-      m68k/bootinfo: Use kmemdup rather than duplicating its implementation
-
-Geert Uytterhoeven (2):
-      m68k/defconfig: Disable experimental CONFIG_DM_CACHE
-      m68k/defconfig: Update defconfigs for v4.2-rc1
-
- arch/m68k/configs/amiga_defconfig    | 16 +++++++++++-----
- arch/m68k/configs/apollo_defconfig   | 16 +++++++++++-----
- arch/m68k/configs/atari_defconfig    | 16 +++++++++++-----
- arch/m68k/configs/bvme6000_defconfig | 16 +++++++++++-----
- arch/m68k/configs/hp300_defconfig    | 16 +++++++++++-----
- arch/m68k/configs/mac_defconfig      | 16 +++++++++++-----
- arch/m68k/configs/multi_defconfig    | 16 +++++++++++-----
- arch/m68k/configs/mvme147_defconfig  | 16 +++++++++++-----
- arch/m68k/configs/mvme16x_defconfig  | 16 +++++++++++-----
- arch/m68k/configs/q40_defconfig      | 16 +++++++++++-----
- arch/m68k/configs/sun3_defconfig     | 16 +++++++++++-----
- arch/m68k/configs/sun3x_defconfig    | 16 +++++++++++-----
- arch/m68k/kernel/bootinfo_proc.c     |  4 +---
- 13 files changed, 133 insertions(+), 63 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Creditor: Mr. Prakash Lass Dickson.
+Company: JM Financial Services Ltd.
+Copyright JM Financial Ltd. All rights reserved.
