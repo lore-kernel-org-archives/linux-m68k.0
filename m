@@ -1,63 +1,97 @@
 From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu/coldfire fixes for 4.3
-Date: Mon, 7 Sep 2015 11:56:02 +1000
-Message-ID: <55ECEEB2.1010504@uclinux.org>
-Reply-To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: [PATCH 1/2] [RFC] m68k: Wire up direct socket calls
+Date: Mon, 7 Sep 2015 13:24:39 +1000
+Message-ID: <55ED0377.4020603__1382.98137248984$1441596153$gmane$org@uclinux.org>
+References: <1441533991-23853-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dev-bounces@uclinux.org>
-List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
-List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
-List-Post: <mailto:uclinux-dev@uclinux.org>
-List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
-List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
- <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
-Errors-To: uclinux-dev-bounces@uclinux.org
-Sender: uclinux-dev-bounces@uclinux.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1441533991-23853-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Geert,
 
-Can you please pull the m68knommu git tree, for-next branch.
-Only a couple of patches this time. One migrating the clock driver code
-to the new set-state interface. The other cleaning up to use the PFN_DOWN
-macro.
+On 06/09/15 20:06, Geert Uytterhoeven wrote:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Both of these syscall patches look good to me:
+
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
 Regards
 Greg
 
 
-
-The following changes since commit c13dcf9f2d6f5f06ef1bf79ec456df614c5e058b:
-
-  Linux 4.2-rc8 (2015-08-23 20:52:59 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 50e48bd0673180311874d0c1bd88505eefd75c4e:
-
-  m68k/coldfire: use PFN_DOWN macro (2015-08-24 14:31:38 +1000)
-
-----------------------------------------------------------------
-Alexander Kuleshov (1):
-      m68k/coldfire: use PFN_DOWN macro
-
-Viresh Kumar (1):
-      m68k/coldfire/pit: Migrate to new 'set-state' interface
-
- arch/m68k/coldfire/m54xx.c |  9 ++++---
- arch/m68k/coldfire/pit.c   | 66 +++++++++++++++++++++-------------------------
- 2 files changed, 35 insertions(+), 40 deletions(-)
-_______________________________________________
-uClinux-dev mailing list
-uClinux-dev@uclinux.org
-http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
-This message was resent by uclinux-dev@uclinux.org
-To unsubscribe see:
-http://mailman.uclinux.org/mailman/options/uclinux-dev
+> ---
+>  arch/m68k/include/asm/unistd.h      |  2 +-
+>  arch/m68k/include/uapi/asm/unistd.h | 15 +++++++++++++++
+>  arch/m68k/kernel/syscalltable.S     | 16 +++++++++++++++-
+>  3 files changed, 31 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+> index 244e0dbe45dbeda3..47d6b7153960274e 100644
+> --- a/arch/m68k/include/asm/unistd.h
+> +++ b/arch/m68k/include/asm/unistd.h
+> @@ -4,7 +4,7 @@
+>  #include <uapi/asm/unistd.h>
+>  
+>  
+> -#define NR_syscalls		356
+> +#define NR_syscalls		371
+>  
+>  #define __ARCH_WANT_OLD_READDIR
+>  #define __ARCH_WANT_OLD_STAT
+> diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
+> index 61fb6cb9d2ae3c66..bf168d5ec3d96d32 100644
+> --- a/arch/m68k/include/uapi/asm/unistd.h
+> +++ b/arch/m68k/include/uapi/asm/unistd.h
+> @@ -361,5 +361,20 @@
+>  #define __NR_memfd_create	353
+>  #define __NR_bpf		354
+>  #define __NR_execveat		355
+> +#define __NR_socket		356
+> +#define __NR_socketpair		357
+> +#define __NR_bind		358
+> +#define __NR_connect		359
+> +#define __NR_listen		360
+> +#define __NR_accept4		361
+> +#define __NR_getsockopt		362
+> +#define __NR_setsockopt		363
+> +#define __NR_getsockname	364
+> +#define __NR_getpeername	365
+> +#define __NR_sendto		366
+> +#define __NR_sendmsg		367
+> +#define __NR_recvfrom		368
+> +#define __NR_recvmsg		369
+> +#define __NR_shutdown		370
+>  
+>  #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
+> diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+> index a0ec4303f2c8e57a..2cec7cdc8e440f08 100644
+> --- a/arch/m68k/kernel/syscalltable.S
+> +++ b/arch/m68k/kernel/syscalltable.S
+> @@ -376,4 +376,18 @@ ENTRY(sys_call_table)
+>  	.long sys_memfd_create
+>  	.long sys_bpf
+>  	.long sys_execveat		/* 355 */
+> -
+> +	.long sys_socket
+> +	.long sys_socketpair
+> +	.long sys_bind
+> +	.long sys_connect
+> +	.long sys_listen		/* 360 */
+> +	.long sys_accept4
+> +	.long sys_getsockopt
+> +	.long sys_setsockopt
+> +	.long sys_getsockname
+> +	.long sys_getpeername		/* 365 */
+> +	.long sys_sendto
+> +	.long sys_sendmsg
+> +	.long sys_recvfrom
+> +	.long sys_recvmsg
+> +	.long sys_shutdown		/* 370 */
+> 
