@@ -1,24 +1,18 @@
-From: Lillie Phillips <Lillie.Phillips@arkansas.gov>
-Subject: Cher utilisateur de messagerie Web.
-Date: Wed, 9 Sep 2015 08:54:47 +0000
-Message-ID: <C10FB77BE075E24E8EE4B37A4C070B9D015E0C4047@CM-SAS-MBX-06.sas.arkgov.net>
+From: Guaranteed@vger.kernel.org, Loan@vger.kernel.org
+Subject: Contact Us For Unsecured Guaranteed Loans Today!!!?
+Date: Wed, 9 Sep 2015 18:33:19 -0700
+Message-ID: <BN3PR20MB0675CAE73160E65BB4F33E59B8510@BN3PR20MB0675.namprd20.prod.outlook.com>
+Reply-To: <guarloan01@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "info@fedmdical.com" <info@fedmdical.com>
+To: To@vger.kernel.org
 
-Cher utilisateur de messagerie Web.
-
-
-
-Nous avons un probl=E8me technique, nous notre base de date pour le mom=
-ent. vous =EAtes au CLIQUEZ ICI<http://www.demera.honor.es/send.php> po=
-ur vous reconfirmer web compte de messagerie une fois de plus.
-
-
-
-Help desk
+Do you need a genuine Loan to settle your bills and start up a good
+business? Kindly contact us now with your details to get a good
+Loan at a low rate of 3% per Annu, Quick send your details via:
+guarloan01@gmail.com
