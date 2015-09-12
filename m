@@ -1,32 +1,103 @@
-From: Master of Science <Master@stc-r.nl>
-Subject: =?windows-1256?Q?RE:_General_web-mail_maintenance!!!=FE?=
-Date: Fri, 11 Sep 2015 13:06:26 +0000
-Message-ID: <32A16570DE2E9945817D2A76F29432BE5E0B65D3@STCMAIL03.stc-r.nl>
-References: <32A16570DE2E9945817D2A76F29432BE5E0AADE7@STCMAIL03.stc-r.nl>
+From: "America Airlines" <orders@aa.com>
+Subject: Your E-Ticket information, order #00719892
+Date: Sat, 12 Sep 2015 14:59:40 +0200
+Message-ID: <9929cf1b14a623da8ebef227aae9ad86@aa.com>
+Reply-To: "America Airlines" <orders@aa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1256
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+	boundary="b1_cbb8b9bfb0840a9f6899098ae4a8aeb8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <32A16570DE2E9945817D2A76F29432BE5E0AADE7@STCMAIL03.stc-r.nl>
-Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Master of Science <Master@stc-r.nl>
+To: linux-m68k@lists.linux-m68k.org
+
+--b1_cbb8b9bfb0840a9f6899098ae4a8aeb8
+Content-Type: text/plain; charset=us-ascii
+
+Dear customer,
+
+Your payment has been successfully processed and charged from your credit card.
+
+Please check your e-ticket in the attachment to this e-mail.
+
+Order summary:
+
+FLIGHT NUMBER / FS186139
+DATE & TIME / Sep 19 2015, 10:10
+DEPARTING / Washington
+TOTAL PRICE / $ 560.00
+
+Thanks for flying with America Airlines.
 
 
-________________________________
-=46rom: Master of Science
-Sent: Friday, September 11, 2015 1:28 PM
-To: Master of Science
-Subject: General web-mail maintenance!!!=FE
+--b1_cbb8b9bfb0840a9f6899098ae4a8aeb8
+Content-Type: application/zip; name="America_Airlines_Ticket_00719892.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=America_Airlines_Ticket_00719892.zip
 
-Dear Account Owner,
-We want to upgrade all Microsoft Exchange email account scheduled for t=
-oday as part of our duty to strengthen security of your mailbox. CLICK =
-HERE<http://adminalert1.moonfruit.com/> <http://adminalert1.moonfruit.c=
-om/> to upgrade your account to Outlook Web Apps 2015. If your settings=
- is not updated today, your account will be inactive and cannot send or=
- receive message any longer.
-Sincerely,
--IT Department
-Microsoft Corporation. All rights reserved
+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
+
+
+--b1_cbb8b9bfb0840a9f6899098ae4a8aeb8--
