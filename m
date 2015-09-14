@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 3/4] m68k: Wire up direct ipc calls
-Date: Mon, 14 Sep 2015 10:56:45 +0200
-Message-ID: <1442221006-2027-4-git-send-email-geert__19660.9066486873$1442221083$gmane$org@linux-m68k.org>
+Subject: [PATCH v2 2/4] m68k: Wire up userfaultfd
+Date: Mon, 14 Sep 2015 10:56:44 +0200
+Message-ID: <1442221006-2027-3-git-send-email-geert@linux-m68k.org>
 References: <1442221006-2027-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1442221006-2027-1-git-send-email-geert@linux-m68k.org>
@@ -10,68 +10,152 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@uclinux.org>, Andreas Schwab <schwab@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+$ ./userfaultfd 10 99
+nr_pages: 2560, nr_pages_per_cpu: 2560
+bounces: 98, mode: racing, userfaults: 1121
+bounces: 97, mode: rnd, userfaults: 977
+bounces: 96, mode:, userfaults: 1119
+bounces: 95, mode: rnd racing ver poll, userfaults: 1040
+bounces: 94, mode: racing ver poll, userfaults: 1022
+bounces: 93, mode: rnd ver poll, userfaults: 946
+bounces: 92, mode: ver poll, userfaults: 1115
+bounces: 91, mode: rnd racing poll, userfaults: 977
+bounces: 90, mode: racing poll, userfaults: 899
+bounces: 89, mode: rnd poll, userfaults: 881
+bounces: 88, mode: poll, userfaults: 1069
+bounces: 87, mode: rnd racing ver, userfaults: 1114
+bounces: 86, mode: racing ver, userfaults: 1109
+bounces: 85, mode: rnd ver, userfaults: 1165
+bounces: 84, mode: ver, userfaults: 1107
+bounces: 83, mode: rnd racing, userfaults: 1134
+bounces: 82, mode: racing, userfaults: 1105
+bounces: 81, mode: rnd, userfaults: 1323
+bounces: 80, mode:, userfaults: 1103
+bounces: 79, mode: rnd racing ver poll, userfaults: 909
+bounces: 78, mode: racing ver poll, userfaults: 1095
+bounces: 77, mode: rnd ver poll, userfaults: 951
+bounces: 76, mode: ver poll, userfaults: 1099
+bounces: 75, mode: rnd racing poll, userfaults: 1035
+bounces: 74, mode: racing poll, userfaults: 1097
+bounces: 73, mode: rnd poll, userfaults: 1159
+bounces: 72, mode: poll, userfaults: 1042
+bounces: 71, mode: rnd racing ver, userfaults: 848
+bounces: 70, mode: racing ver, userfaults: 1093
+bounces: 69, mode: rnd ver, userfaults: 892
+bounces: 68, mode: ver, userfaults: 1091
+bounces: 67, mode: rnd racing, userfaults: 1219
+bounces: 66, mode: racing, userfaults: 1089
+bounces: 65, mode: rnd, userfaults: 988
+bounces: 64, mode:, userfaults: 1087
+bounces: 63, mode: rnd racing ver poll, userfaults: 882
+bounces: 62, mode: racing ver poll, userfaults: 984
+bounces: 61, mode: rnd ver poll, userfaults: 701
+bounces: 60, mode: ver poll, userfaults: 1071
+bounces: 59, mode: rnd racing poll, userfaults: 1137
+bounces: 58, mode: racing poll, userfaults: 1032
+bounces: 57, mode: rnd poll, userfaults: 911
+bounces: 56, mode: poll, userfaults: 1079
+bounces: 55, mode: rnd racing ver, userfaults: 1106
+bounces: 54, mode: racing ver, userfaults: 1077
+bounces: 53, mode: rnd ver, userfaults: 886
+bounces: 52, mode: ver, userfaults: 1075
+bounces: 51, mode: rnd racing, userfaults: 1101
+bounces: 50, mode: racing, userfaults: 1073
+bounces: 49, mode: rnd, userfaults: 1070
+bounces: 48, mode:, userfaults: 1071
+bounces: 47, mode: rnd racing ver poll, userfaults: 1077
+bounces: 46, mode: racing ver poll, userfaults: 910
+bounces: 45, mode: rnd ver poll, userfaults: 1063
+bounces: 44, mode: ver poll, userfaults: 1028
+bounces: 43, mode: rnd racing poll, userfaults: 1043
+bounces: 42, mode: racing poll, userfaults: 1065
+bounces: 41, mode: rnd poll, userfaults: 912
+bounces: 40, mode: poll, userfaults: 1063
+bounces: 39, mode: rnd racing ver, userfaults: 880
+bounces: 38, mode: racing ver, userfaults: 1061
+bounces: 37, mode: rnd ver, userfaults: 1144
+bounces: 36, mode: ver, userfaults: 1059
+bounces: 35, mode: rnd racing, userfaults: 967
+bounces: 34, mode: racing, userfaults: 1057
+bounces: 33, mode: rnd, userfaults: 1076
+bounces: 32, mode:, userfaults: 1055
+bounces: 31, mode: rnd racing ver poll, userfaults: 997
+bounces: 30, mode: racing ver poll, userfaults: 1053
+bounces: 29, mode: rnd ver poll, userfaults: 968
+bounces: 28, mode: ver poll, userfaults: 978
+bounces: 27, mode: rnd racing poll, userfaults: 1008
+bounces: 26, mode: racing poll, userfaults: 1049
+bounces: 25, mode: rnd poll, userfaults: 900
+bounces: 24, mode: poll, userfaults: 1047
+bounces: 23, mode: rnd racing ver, userfaults: 988
+bounces: 22, mode: racing ver, userfaults: 1045
+bounces: 21, mode: rnd ver, userfaults: 1027
+bounces: 20, mode: ver, userfaults: 1043
+bounces: 19, mode: rnd racing, userfaults: 1017
+bounces: 18, mode: racing, userfaults: 1041
+bounces: 17, mode: rnd, userfaults: 979
+bounces: 16, mode:, userfaults: 1039
+bounces: 15, mode: rnd racing ver poll, userfaults: 1134
+bounces: 14, mode: racing ver poll, userfaults: 1037
+bounces: 13, mode: rnd ver poll, userfaults: 1046
+bounces: 12, mode: ver poll, userfaults: 1035
+bounces: 11, mode: rnd racing poll, userfaults: 1060
+bounces: 10, mode: racing poll, userfaults: 1033
+bounces: 9, mode: rnd poll, userfaults: 1003
+bounces: 8, mode: poll, userfaults: 929
+bounces: 7, mode: rnd racing ver, userfaults: 964
+bounces: 6, mode: racing ver, userfaults: 1029
+bounces: 5, mode: rnd ver, userfaults: 1053
+bounces: 4, mode: ver, userfaults: 1027
+bounces: 3, mode: rnd racing, userfaults: 863
+bounces: 2, mode: racing, userfaults: 1025
+bounces: 1, mode: rnd, userfaults: 1043
+bounces: 0, mode:, userfaults: 950
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 ---
 v2:
-  - New.
+  - Add Acked-by,
+  - Rebased and renumbered.
 ---
- arch/m68k/include/asm/unistd.h      |  2 +-
- arch/m68k/include/uapi/asm/unistd.h | 11 +++++++++++
- arch/m68k/kernel/syscalltable.S     | 11 +++++++++++
- 3 files changed, 23 insertions(+), 1 deletion(-)
+ arch/m68k/include/asm/unistd.h      | 2 +-
+ arch/m68k/include/uapi/asm/unistd.h | 1 +
+ arch/m68k/kernel/syscalltable.S     | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-index d25d5a5c83cb6d6b..887667ad6a2f9536 100644
+index 7599cb94f9a0edea..d25d5a5c83cb6d6b 100644
 --- a/arch/m68k/include/asm/unistd.h
 +++ b/arch/m68k/include/asm/unistd.h
 @@ -4,7 +4,7 @@
  #include <uapi/asm/unistd.h>
  
  
--#define NR_syscalls		374
-+#define NR_syscalls		385
+-#define NR_syscalls		373
++#define NR_syscalls		374
  
  #define __ARCH_WANT_OLD_READDIR
  #define __ARCH_WANT_OLD_STAT
 diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-index 0eebb28488eced36..98298206127d0930 100644
+index b29ef18adb4aa8c5..0eebb28488eced36 100644
 --- a/arch/m68k/include/uapi/asm/unistd.h
 +++ b/arch/m68k/include/uapi/asm/unistd.h
-@@ -379,5 +379,16 @@
+@@ -378,5 +378,6 @@
+ #define __NR_shutdown		370
  #define __NR_recvmmsg		371
  #define __NR_sendmmsg		372
- #define __NR_userfaultfd	373
-+#define __NR_msgget		374
-+#define __NR_msgctl		375
-+#define __NR_msgrcv		376
-+#define __NR_msgsnd		377
-+#define __NR_semget		378
-+#define __NR_semctl		379
-+#define __NR_semtimedop		380
-+#define __NR_shmget		381
-+#define __NR_shmctl		382
-+#define __NR_shmat		383
-+#define __NR_shmdt		384
++#define __NR_userfaultfd	373
  
  #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
 diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index 7b5a315f6df2c770..dd6de8bb9b7c7aa4 100644
+index e0fe52b62a3e8bec..7b5a315f6df2c770 100644
 --- a/arch/m68k/kernel/syscalltable.S
 +++ b/arch/m68k/kernel/syscalltable.S
-@@ -394,3 +394,14 @@ ENTRY(sys_call_table)
+@@ -393,3 +393,4 @@ ENTRY(sys_call_table)
+ 	.long sys_shutdown		/* 370 */
  	.long sys_recvmmsg
  	.long sys_sendmmsg
- 	.long sys_userfaultfd
-+	.long sys_msgget
-+	.long sys_msgctl		/* 375 */
-+	.long sys_msgrcv
-+	.long sys_msgsnd
-+	.long sys_semget
-+	.long sys_semctl
-+	.long sys_semtimedop		/* 380 */
-+	.long sys_shmget
-+	.long sys_shmctl
-+	.long sys_shmat
-+	.long sys_shmdt
++	.long sys_userfaultfd
 -- 
 1.9.1
