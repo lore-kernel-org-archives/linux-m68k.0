@@ -1,37 +1,57 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH v2 3/4] m68k: Wire up direct ipc calls
-Date: Thu, 17 Sep 2015 17:39:59 +0200
-Message-ID: <mvmpp1hkqb4.fsf@hawking.suse.de>
-References: <1442221006-2027-1-git-send-email-geert@linux-m68k.org>
-	<1442221006-2027-4-git-send-email-geert__19660.9066486873$1442221083$gmane$org@linux-m68k.org>
-	<mvma8slm7wd.fsf@hawking.suse.de>
-	<CAMuHMdUncyXjxkS99SDTjx0-sU26jtCmFuHeU1=0DoqZL2AWvQ@mail.gmail.com>
-	<mvmvbb9krpd.fsf@hawking.suse.de>
-	<CAMuHMdW+An7Qa5Jt=JpHooy4Q9LopdKJWrpcJ0-0YsFi-i_FUQ@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [RFC v4 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead
+ of nvram_read_byte() and nvram_write_byte()
+Date: Fri, 18 Sep 2015 18:17:30 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1509181635140.13887@nippy.intranet>
+References: <20150712102527.356151908@telegraphics.com.au>  <20150712102531.505897278@telegraphics.com.au>  <alpine.LNX.2.00.1507141725480.851@nippy.intranet> <1436874720.3948.252.camel@kernel.crashing.org> <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
+ <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW+An7Qa5Jt=JpHooy4Q9LopdKJWrpcJ0-0YsFi-i_FUQ@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Thu, 17 Sep 2015 17:18:53 +0200")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49863 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751764AbbIRISE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Sep 2015 04:18:04 -0400
+In-Reply-To: <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-> Do we currently have architectures that use both sys_ipc and the direct
-> syscalls, where keeping ipc_parse_version() in the direct syscalls is required?
+Hi Ben,
 
-IMHO it doesn't make sense to suport IPC_OLD via the direct syscalls,
-even for those architectures that started with them in the first place.
-There are quite a few architectures that define
-ARCH_WANT_IPC_PARSE_VERSION even though they started life after IPC_64
-was added.  They probably just forgot to adjust ipc/util.h back then.
+On Thu, 16 Jul 2015, I wrote:
 
-Andreas.
+> On Wed, 15 Jul 2015, I wrote:
+> 
+> > On Tue, 14 Jul 2015, Benjamin Herrenschmidt wrote:
+> > 
+> > > Maybe we should have a dedicated accessor for "mac_xpram" ...
+> > 
+> ...
+> 
+> The arch_nvram_ops methods don't deal with structures like partitions ...
+
+Instead of the accessor you suggested, perhaps it would be better to add a 
+method like arch_nvram_ops.get_partition, to replace the 
+pmac_get_partition() exported function?
+
+The call sites for pmac_get_partition() are in the implementation of the 
+IOC_NVRAM_GET_OFFSET ioctl that's used with /dev/nvram, and in 
+pmac_xpram_read(). pmac_xpram_write() has no caller and could be removed.
+
+But this doesn't have much to do with linux-fbdev. I think the old 
+NV_CMODE/NV_VMODE issues*, which this patch avoids, are irrelevant to the 
+problem of nvram module re-use, which is the aim of this patch series.
+
+But if those issues really are relevant then we should move the discussion 
+to the revised patch, that is, [RFC v6 16/25] powerpc, fbdev: Use NV_CMODE 
+and NV_VMODE only when CONFIG_PPC32 and CONFIG_PPC_PMAC and CONFIG_NVRAM.
+
+(There was no response to any patch in RFC v6 from any PowerPC 
+maintainers, which is why I've revived this thread.)
+
+* https://lists.ozlabs.org/pipermail/linuxppc-dev/2001-November/012662.html
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
