@@ -1,57 +1,64 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC v4 17/25] powerpc, fbdev: Use arch_nvram_ops methods instead
- of nvram_read_byte() and nvram_write_byte()
-Date: Fri, 18 Sep 2015 18:17:30 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1509181635140.13887@nippy.intranet>
-References: <20150712102527.356151908@telegraphics.com.au>  <20150712102531.505897278@telegraphics.com.au>  <alpine.LNX.2.00.1507141725480.851@nippy.intranet> <1436874720.3948.252.camel@kernel.crashing.org> <alpine.LNX.2.00.1507151200510.2862@nippy.intranet>
- <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Drop IPC_OLD for direct ipc syscalls? (was: Re: [PATCH v2 3/4] m68k:
+ Wire up direct ipc calls)
+Date: Sun, 20 Sep 2015 11:07:28 +0200
+Message-ID: <CAMuHMdW-w6yMDcgK-T38n45c1rURPHsVw+SwULjbgoG7d1HOOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49863 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751764AbbIRISE (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Sep 2015 04:18:04 -0400
-In-Reply-To: <alpine.LNX.2.00.1507161530270.19651@nippy.intranet>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-arch-owner@vger.kernel.org>
+Sender: linux-arch-owner@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@amacapital.net>, Ingo Molnar <mingo@kernel.org>, "H. Peter Anvin" <hpa@linux.intel.com>
 List-Id: linux-m68k@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 
+Hi Andreas,
 
-Hi Ben,
+On Thu, Sep 17, 2015 at 5:39 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > > > > It would be nice if the direct syscalls would drop the use of
+> > > > > ipc_parse_version.  Currently, apart from going through the ipc
+> > > > > multiplexer, the semctl, shmctl and msgctl wrappers in libc need to add
+> > > > > the IPC_64 bit to the cmd operand.  If that would be implied then no
+> > > > > special wrappers would be needed any more for direct syscalls.
+> > > >
+> > > > You mean that we should drop "select ARCH_WANT_IPC_PARSE_VERSION",
+> > > > but we can't do that because an indirect call through sys_ipc() would
+> > > > still need it when dispatching to sys_{sem,shm,msg}ctl()?
+> > >
+> > > Yes.  But all architectures that currently use both sys_ipc and
+> > > ARCH_WANT_IPC_PARSE_VERSION would benefit from decoupling it when they
+> > > add the direct syscalls.
+> >
+> > Do we currently have architectures that use both sys_ipc and the direct
+> > syscalls, where keeping ipc_parse_version() in the direct syscalls is
+> > required?
+>
+> IMHO it doesn't make sense to suport IPC_OLD via the direct syscalls,
+> even for those architectures that started with them in the first place.
+> There are quite a few architectures that define
+> ARCH_WANT_IPC_PARSE_VERSION even though they started life after IPC_64
+> was added.  They probably just forgot to adjust ipc/util.h back then.
 
-On Thu, 16 Jul 2015, I wrote:
+Thanks!
 
-> On Wed, 15 Jul 2015, I wrote:
-> 
-> > On Tue, 14 Jul 2015, Benjamin Herrenschmidt wrote:
-> > 
-> > > Maybe we should have a dedicated accessor for "mac_xpram" ...
-> > 
-> ...
-> 
-> The arch_nvram_ops methods don't deal with structures like partitions ...
+I had a quick look at the code, but I'm not feeling sufficiently familiar with
+the (g)libc interaction to cook up a patch dropping ipc_parse_version() from
+direct ipc calls.
 
-Instead of the accessor you suggested, perhaps it would be better to add a 
-method like arch_nvram_ops.get_partition, to replace the 
-pmac_get_partition() exported function?
+Should I postpone wiring up the direct ipc syscalls on m68k (and thus renumber
+__NR_membarrier) until the above is resolved, or can they go in in v4.3?
 
-The call sites for pmac_get_partition() are in the implementation of the 
-IOC_NVRAM_GET_OFFSET ioctl that's used with /dev/nvram, and in 
-pmac_xpram_read(). pmac_xpram_write() has no caller and could be removed.
+I guess the same is true for x86-32.
 
-But this doesn't have much to do with linux-fbdev. I think the old 
-NV_CMODE/NV_VMODE issues*, which this patch avoids, are irrelevant to the 
-problem of nvram module re-use, which is the aim of this patch series.
+Thanks again!
 
-But if those issues really are relevant then we should move the discussion 
-to the revised patch, that is, [RFC v6 16/25] powerpc, fbdev: Use NV_CMODE 
-and NV_VMODE only when CONFIG_PPC32 and CONFIG_PPC_PMAC and CONFIG_NVRAM.
+Gr{oetje,eeting}s,
 
-(There was no response to any patch in RFC v6 from any PowerPC 
-maintainers, which is why I've revived this thread.)
+                        Geert
 
-* https://lists.ozlabs.org/pipermail/linuxppc-dev/2001-November/012662.html
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
--- 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
