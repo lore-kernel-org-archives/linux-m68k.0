@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 2/3] m68k: Wire up userfaultfd
-Date: Fri, 25 Sep 2015 09:08:08 +0200
-Message-ID: <1443164889-6217-3-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v3 3/3] m68k: Wire up membarrier
+Date: Fri, 25 Sep 2015 09:08:09 +0200
+Message-ID: <1443164889-6217-4-git-send-email-geert@linux-m68k.org>
 References: <1443164889-6217-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1443164889-6217-1-git-send-email-geert@linux-m68k.org>
@@ -10,117 +10,21 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@uclinux.org>, Andreas Schwab <schwab@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-$ ./userfaultfd 10 99
-nr_pages: 2560, nr_pages_per_cpu: 2560
-bounces: 98, mode: racing, userfaults: 1121
-bounces: 97, mode: rnd, userfaults: 977
-bounces: 96, mode:, userfaults: 1119
-bounces: 95, mode: rnd racing ver poll, userfaults: 1040
-bounces: 94, mode: racing ver poll, userfaults: 1022
-bounces: 93, mode: rnd ver poll, userfaults: 946
-bounces: 92, mode: ver poll, userfaults: 1115
-bounces: 91, mode: rnd racing poll, userfaults: 977
-bounces: 90, mode: racing poll, userfaults: 899
-bounces: 89, mode: rnd poll, userfaults: 881
-bounces: 88, mode: poll, userfaults: 1069
-bounces: 87, mode: rnd racing ver, userfaults: 1114
-bounces: 86, mode: racing ver, userfaults: 1109
-bounces: 85, mode: rnd ver, userfaults: 1165
-bounces: 84, mode: ver, userfaults: 1107
-bounces: 83, mode: rnd racing, userfaults: 1134
-bounces: 82, mode: racing, userfaults: 1105
-bounces: 81, mode: rnd, userfaults: 1323
-bounces: 80, mode:, userfaults: 1103
-bounces: 79, mode: rnd racing ver poll, userfaults: 909
-bounces: 78, mode: racing ver poll, userfaults: 1095
-bounces: 77, mode: rnd ver poll, userfaults: 951
-bounces: 76, mode: ver poll, userfaults: 1099
-bounces: 75, mode: rnd racing poll, userfaults: 1035
-bounces: 74, mode: racing poll, userfaults: 1097
-bounces: 73, mode: rnd poll, userfaults: 1159
-bounces: 72, mode: poll, userfaults: 1042
-bounces: 71, mode: rnd racing ver, userfaults: 848
-bounces: 70, mode: racing ver, userfaults: 1093
-bounces: 69, mode: rnd ver, userfaults: 892
-bounces: 68, mode: ver, userfaults: 1091
-bounces: 67, mode: rnd racing, userfaults: 1219
-bounces: 66, mode: racing, userfaults: 1089
-bounces: 65, mode: rnd, userfaults: 988
-bounces: 64, mode:, userfaults: 1087
-bounces: 63, mode: rnd racing ver poll, userfaults: 882
-bounces: 62, mode: racing ver poll, userfaults: 984
-bounces: 61, mode: rnd ver poll, userfaults: 701
-bounces: 60, mode: ver poll, userfaults: 1071
-bounces: 59, mode: rnd racing poll, userfaults: 1137
-bounces: 58, mode: racing poll, userfaults: 1032
-bounces: 57, mode: rnd poll, userfaults: 911
-bounces: 56, mode: poll, userfaults: 1079
-bounces: 55, mode: rnd racing ver, userfaults: 1106
-bounces: 54, mode: racing ver, userfaults: 1077
-bounces: 53, mode: rnd ver, userfaults: 886
-bounces: 52, mode: ver, userfaults: 1075
-bounces: 51, mode: rnd racing, userfaults: 1101
-bounces: 50, mode: racing, userfaults: 1073
-bounces: 49, mode: rnd, userfaults: 1070
-bounces: 48, mode:, userfaults: 1071
-bounces: 47, mode: rnd racing ver poll, userfaults: 1077
-bounces: 46, mode: racing ver poll, userfaults: 910
-bounces: 45, mode: rnd ver poll, userfaults: 1063
-bounces: 44, mode: ver poll, userfaults: 1028
-bounces: 43, mode: rnd racing poll, userfaults: 1043
-bounces: 42, mode: racing poll, userfaults: 1065
-bounces: 41, mode: rnd poll, userfaults: 912
-bounces: 40, mode: poll, userfaults: 1063
-bounces: 39, mode: rnd racing ver, userfaults: 880
-bounces: 38, mode: racing ver, userfaults: 1061
-bounces: 37, mode: rnd ver, userfaults: 1144
-bounces: 36, mode: ver, userfaults: 1059
-bounces: 35, mode: rnd racing, userfaults: 967
-bounces: 34, mode: racing, userfaults: 1057
-bounces: 33, mode: rnd, userfaults: 1076
-bounces: 32, mode:, userfaults: 1055
-bounces: 31, mode: rnd racing ver poll, userfaults: 997
-bounces: 30, mode: racing ver poll, userfaults: 1053
-bounces: 29, mode: rnd ver poll, userfaults: 968
-bounces: 28, mode: ver poll, userfaults: 978
-bounces: 27, mode: rnd racing poll, userfaults: 1008
-bounces: 26, mode: racing poll, userfaults: 1049
-bounces: 25, mode: rnd poll, userfaults: 900
-bounces: 24, mode: poll, userfaults: 1047
-bounces: 23, mode: rnd racing ver, userfaults: 988
-bounces: 22, mode: racing ver, userfaults: 1045
-bounces: 21, mode: rnd ver, userfaults: 1027
-bounces: 20, mode: ver, userfaults: 1043
-bounces: 19, mode: rnd racing, userfaults: 1017
-bounces: 18, mode: racing, userfaults: 1041
-bounces: 17, mode: rnd, userfaults: 979
-bounces: 16, mode:, userfaults: 1039
-bounces: 15, mode: rnd racing ver poll, userfaults: 1134
-bounces: 14, mode: racing ver poll, userfaults: 1037
-bounces: 13, mode: rnd ver poll, userfaults: 1046
-bounces: 12, mode: ver poll, userfaults: 1035
-bounces: 11, mode: rnd racing poll, userfaults: 1060
-bounces: 10, mode: racing poll, userfaults: 1033
-bounces: 9, mode: rnd poll, userfaults: 1003
-bounces: 8, mode: poll, userfaults: 929
-bounces: 7, mode: rnd racing ver, userfaults: 964
-bounces: 6, mode: racing ver, userfaults: 1029
-bounces: 5, mode: rnd ver, userfaults: 1053
-bounces: 4, mode: ver, userfaults: 1027
-bounces: 3, mode: rnd racing, userfaults: 863
-bounces: 2, mode: racing, userfaults: 1025
-bounces: 1, mode: rnd, userfaults: 1043
-bounces: 0, mode:, userfaults: 950
+$ ./membarrier_test
+membarrier MEMBARRIER_CMD_QUERY syscall available.
+membarrier: MEMBARRIER_CMD_SHARED success.
+membarrier: tests done!
+$
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Greg Ungerer <gerg@uclinux.org>
 ---
 v3:
-  - No changes,
+  - Add Acked-by,
+  - Move before "m68k: Wire up direct ipc calls",
 
 v2:
-  - Add Acked-by,
-  - Rebased and renumbered.
+  - New.
 ---
  arch/m68k/include/asm/unistd.h      | 2 +-
  arch/m68k/include/uapi/asm/unistd.h | 1 +
@@ -128,37 +32,37 @@ v2:
  3 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-index 7599cb94f9a0edea..d25d5a5c83cb6d6b 100644
+index d25d5a5c83cb6d6b..0793a7f174176e6d 100644
 --- a/arch/m68k/include/asm/unistd.h
 +++ b/arch/m68k/include/asm/unistd.h
 @@ -4,7 +4,7 @@
  #include <uapi/asm/unistd.h>
  
  
--#define NR_syscalls		373
-+#define NR_syscalls		374
+-#define NR_syscalls		374
++#define NR_syscalls		375
  
  #define __ARCH_WANT_OLD_READDIR
  #define __ARCH_WANT_OLD_STAT
 diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-index b29ef18adb4aa8c5..0eebb28488eced36 100644
+index 0eebb28488eced36..5e6fae6c275f9b11 100644
 --- a/arch/m68k/include/uapi/asm/unistd.h
 +++ b/arch/m68k/include/uapi/asm/unistd.h
-@@ -378,5 +378,6 @@
- #define __NR_shutdown		370
+@@ -379,5 +379,6 @@
  #define __NR_recvmmsg		371
  #define __NR_sendmmsg		372
-+#define __NR_userfaultfd	373
+ #define __NR_userfaultfd	373
++#define __NR_membarrier		374
  
  #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
 diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index e0fe52b62a3e8bec..7b5a315f6df2c770 100644
+index 7b5a315f6df2c770..5dd0e80042f51107 100644
 --- a/arch/m68k/kernel/syscalltable.S
 +++ b/arch/m68k/kernel/syscalltable.S
-@@ -393,3 +393,4 @@ ENTRY(sys_call_table)
- 	.long sys_shutdown		/* 370 */
+@@ -394,3 +394,4 @@ ENTRY(sys_call_table)
  	.long sys_recvmmsg
  	.long sys_sendmmsg
-+	.long sys_userfaultfd
+ 	.long sys_userfaultfd
++	.long sys_membarrier
 -- 
 1.9.1
