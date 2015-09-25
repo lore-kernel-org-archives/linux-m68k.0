@@ -1,68 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 3/3] m68k: Wire up membarrier
-Date: Fri, 25 Sep 2015 09:08:09 +0200
-Message-ID: <1443164889-6217-4-git-send-email-geert@linux-m68k.org>
-References: <1443164889-6217-1-git-send-email-geert@linux-m68k.org>
+From: Alexander Kuleshov <kuleshovmail@gmail.com>
+Subject: Re: [PATCH] m68k/sun3: Fix virtual addresses of clock and interrupt register
+Date: Fri, 25 Sep 2015 13:50:46 +0600
+Message-ID: <CANCZXo72WVR+-9ryihMSv9DbgRTTK-ajj0ic6v_BptaEiPYh4w__10662.4516928152$1443167488$gmane$org@mail.gmail.com>
+References: <1442223611-30175-1-git-send-email-kuleshovmail@gmail.com> <CAMuHMdU-ZjWPw8D2KYjBgMdRM_k+BTfhKC81RcSkB_s8Mzjmwg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1443164889-6217-1-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <CAMuHMdU-ZjWPw8D2KYjBgMdRM_k+BTfhKC81RcSkB_s8Mzjmwg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>, Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-$ ./membarrier_test
-membarrier MEMBARRIER_CMD_QUERY syscall available.
-membarrier: MEMBARRIER_CMD_SHARED success.
-membarrier: tests done!
-$
+Hello Geert
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
----
-v3:
-  - Add Acked-by,
-  - Move before "m68k: Wire up direct ipc calls",
+On Fri, Sep 25, 2015 at 1:21 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Have you tested this?
+>
+> This means enabling/disabling interrupts never worked on Sun 3, which
+> I find a bit difficult to believe.
+> There are other 0x0f?????? addresses in arch/m68k/sun3/mmu_emu.c.
+>
 
-v2:
-  - New.
----
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/syscalltable.S     | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-index d25d5a5c83cb6d6b..0793a7f174176e6d 100644
---- a/arch/m68k/include/asm/unistd.h
-+++ b/arch/m68k/include/asm/unistd.h
-@@ -4,7 +4,7 @@
- #include <uapi/asm/unistd.h>
- 
- 
--#define NR_syscalls		374
-+#define NR_syscalls		375
- 
- #define __ARCH_WANT_OLD_READDIR
- #define __ARCH_WANT_OLD_STAT
-diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-index 0eebb28488eced36..5e6fae6c275f9b11 100644
---- a/arch/m68k/include/uapi/asm/unistd.h
-+++ b/arch/m68k/include/uapi/asm/unistd.h
-@@ -379,5 +379,6 @@
- #define __NR_recvmmsg		371
- #define __NR_sendmmsg		372
- #define __NR_userfaultfd	373
-+#define __NR_membarrier		374
- 
- #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
-diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index 7b5a315f6df2c770..5dd0e80042f51107 100644
---- a/arch/m68k/kernel/syscalltable.S
-+++ b/arch/m68k/kernel/syscalltable.S
-@@ -394,3 +394,4 @@ ENTRY(sys_call_table)
- 	.long sys_recvmmsg
- 	.long sys_sendmmsg
- 	.long sys_userfaultfd
-+	.long sys_membarrier
--- 
-1.9.1
+Nope, just trying to do it in virtual machine, I'm learning sun3
+architecture now
+and have some cleanups patches for it. I'll send these patches and provide more
+feedback when I'm able to test it.
