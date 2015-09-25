@@ -1,96 +1,59 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: [PATCH] m68k: define asmlinkage_protect
-Date: Wed, 23 Sep 2015 23:12:09 +0200
-Message-ID: <876130j0wm.fsf@igel.home>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/sun3: Fix virtual addresses of clock and interrupt register
+Date: Fri, 25 Sep 2015 09:21:34 +0200
+Message-ID: <CAMuHMdU-ZjWPw8D2KYjBgMdRM_k+BTfhKC81RcSkB_s8Mzjmwg@mail.gmail.com>
+References: <1442223611-30175-1-git-send-email-kuleshovmail@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:56868 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753905AbbIWVMN (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Sep 2015 17:12:13 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 3nLsdl26SCz3hjDZ
-	for <linux-m68k@vger.kernel.org>; Wed, 23 Sep 2015 23:12:11 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-	by mail.m-online.net (Postfix) with ESMTP id 3nLsdl1pGXzvhQG
-	for <linux-m68k@vger.kernel.org>; Wed, 23 Sep 2015 23:12:11 +0200 (CEST)
-Received: from mail.mnet-online.de ([192.168.8.182])
-	by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavisd-new, port 10024)
-	with ESMTP id fOmdkWaZGsOP for <linux-m68k@vger.kernel.org>;
-	Wed, 23 Sep 2015 23:12:10 +0200 (CEST)
-Received: from igel.home (ppp-93-104-61-136.dynamic.mnet-online.de [93.104.61.136])
-	by mail.mnet-online.de (Postfix) with ESMTPA
-	for <linux-m68k@vger.kernel.org>; Wed, 23 Sep 2015 23:12:10 +0200 (CEST)
+In-Reply-To: <1442223611-30175-1-git-send-email-kuleshovmail@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Alexander Kuleshov <kuleshovmail@gmail.com>
+Cc: Sam Creasey <sammy@sammy.net>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Make sure the compiler does not modify arguments of syscall functions.
-This can happen if the compiler generates a tailcall to another
-function.  For example, without asmlinkage_protect sys_openat is compiled
-into this function:
+Hi Alexander,
 
-sys_openat:
-	clr.l %d0
-	move.w 18(%sp),%d0
-	move.l %d0,16(%sp)
-	jbra do_sys_open
+On Mon, Sep 14, 2015 at 11:40 AM, Alexander Kuleshov
+<kuleshovmail@gmail.com> wrote:
+> The MMU base is 32 bits size - 0xfe000000, seems that we missed
+> one zero in the definition of the clock and interrupt register
+> addresses.
 
-Note how the fourth argument is modified in place, modifying the register
-%d4 that gets restored from this stack slot when the function returns to
-user-space.  The caller may expect the register to be unmodified across
-system calls.
+Thanks for your patch!
 
-Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
----
- arch/m68k/include/asm/linkage.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Have you tested this?
 
-diff --git a/arch/m68k/include/asm/linkage.h b/arch/m68k/include/asm/linkage.h
-index 5a822bb..066e74f 100644
---- a/arch/m68k/include/asm/linkage.h
-+++ b/arch/m68k/include/asm/linkage.h
-@@ -4,4 +4,34 @@
- #define __ALIGN .align 4
- #define __ALIGN_STR ".align 4"
- 
-+/*
-+ * Make sure the compiler doesn't do anything stupid with the
-+ * arguments on the stack - they are owned by the *caller*, not
-+ * the callee. This just fools gcc into not spilling into them,
-+ * and keeps it from doing tailcall recursion and/or using the
-+ * stack slots for temporaries, since they are live and "used"
-+ * all the way to the end of the function.
-+ */
-+#define asmlinkage_protect(n, ret, args...) \
-+	__asmlinkage_protect##n(ret, ##args)
-+#define __asmlinkage_protect_n(ret, args...) \
-+	__asm__ __volatile__ ("" : "=r" (ret) : "0" (ret), ##args)
-+#define __asmlinkage_protect0(ret) \
-+	__asmlinkage_protect_n(ret)
-+#define __asmlinkage_protect1(ret, arg1) \
-+	__asmlinkage_protect_n(ret, "m" (arg1))
-+#define __asmlinkage_protect2(ret, arg1, arg2) \
-+	__asmlinkage_protect_n(ret, "m" (arg1), "m" (arg2))
-+#define __asmlinkage_protect3(ret, arg1, arg2, arg3) \
-+	__asmlinkage_protect_n(ret, "m" (arg1), "m" (arg2), "m" (arg3))
-+#define __asmlinkage_protect4(ret, arg1, arg2, arg3, arg4) \
-+	__asmlinkage_protect_n(ret, "m" (arg1), "m" (arg2), "m" (arg3), \
-+			      "m" (arg4))
-+#define __asmlinkage_protect5(ret, arg1, arg2, arg3, arg4, arg5) \
-+	__asmlinkage_protect_n(ret, "m" (arg1), "m" (arg2), "m" (arg3), \
-+			      "m" (arg4), "m" (arg5))
-+#define __asmlinkage_protect6(ret, arg1, arg2, arg3, arg4, arg5, arg6) \
-+	__asmlinkage_protect_n(ret, "m" (arg1), "m" (arg2), "m" (arg3), \
-+			      "m" (arg4), "m" (arg5), "m" (arg6))
-+
- #endif
--- 
-2.5.3
+This means enabling/disabling interrupts never worked on Sun 3, which
+I find a bit difficult to believe.
+There are other 0x0f?????? addresses in arch/m68k/sun3/mmu_emu.c.
 
+> Signed-off-by: Alexander Kuleshov <kuleshovmail@gmail.com>
+> ---
+>  arch/m68k/sun3/config.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+> index a8b942b..c9c388f 100644
+> --- a/arch/m68k/sun3/config.c
+> +++ b/arch/m68k/sun3/config.c
+> @@ -61,8 +61,8 @@ void __init sun3_init(void)
+>         m68k_cputype = CPU_68020;
+>         m68k_fputype = FPU_68881; /* mc68881 actually */
+>         m68k_mmutype = MMU_SUN3;
+> -       clock_va    =          (char *) 0xfe06000;      /* dark  */
+> -       sun3_intreg = (unsigned char *) 0xfe0a000;      /* magic */
+> +       clock_va    =          (char *) 0xfe006000;     /* dark  */
+> +       sun3_intreg = (unsigned char *) 0xfe00a000;     /* magic */
+>         sun3_disable_interrupts();
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
