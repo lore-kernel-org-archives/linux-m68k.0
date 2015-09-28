@@ -1,105 +1,78 @@
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 6/6] net/ethernet: make apple/macmace.c driver explicitly non-modular
-Date: Mon, 28 Sep 2015 15:51:30 -0400
-Message-ID: <1443469890-19485-7-git-send-email-paul.gortmaker@windriver.com>
-References: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
+Subject: [PATCH net-next 0/6] make non-modular code explicitly non-modular
+Date: Mon, 28 Sep 2015 15:51:24 -0400
+Message-ID: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
-Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, "David S. Miller" <davem@davemloft.net>, linux-m68k@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail1.windriver.com ([147.11.146.13]:40490 "EHLO
+	mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751596AbbI1TyY (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Sep 2015 15:54:24 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Alexei Starovoitov <ast@plumgrid.com>, Anish Bhatt <anish@chelsio.com>, Craig Gallek <kraig@google.com>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, John Fastabend <john.r.fastabend@intel.com>, Nicolas Dichtel <nicolas.dichtel@6wind.com>, Or Gerlitz <ogerlitz@mellanox.com>, Shani Michaeli <shanim@mellanox.com>, linux-m68k@vger.kernel.org
 
-The Kconfig for this option is currently:
+In a previous merge window, we made changes to allow better
+delineation between modular and non-modular code in commit
+0fd972a7d91d6e15393c449492a04d94c0b89351 ("module: relocate module_init
+from init.h to module.h").  This allows us to now ensure module code
+looks modular and non-modular code does not accidentally look modular
+just to avoid suffering build breakage.
 
-config MACMACE
-        bool "Macintosh (AV) onboard MACE ethernet"
+Here we target code that is, by nature of their Makefile and/or
+Kconfig settings, only available to be built-in, but implicitly
+presenting itself as being possibly modular by way of using modular
+headers, macros, and functions.
 
-...meaning that it currently is not being built as a module by anyone.
-Lets remove the modular code that is essentially orphaned, so when
-reading the driver there should be no doubt it is builtin-only.
+The goal here is to remove that illusion of modularity from these
+files, but in a way that leaves the actual runtime unchanged.
+In doing so, we remove code that has never been tested and adds
+no value to the tree.  And we continue the process of expecting a
+level of consistency between the Kconfig/Makefile of code and the
+code in use itself.
 
-Since module_init translates to device_initcall in the non-modular
-case, the init ordering remains unchanged with this commit.
+Fortuntately the net subsystem has relatively few instances, given
+the overall amount of code and drivers it contains.  For comparison
+there are over 300 instances tree wide, resulting in a possible net
+removal of on the order of 5000 lines of unused code.
 
-We also delete the MODULE_LICENSE tag etc. since all that information
-is already contained at the top of the file in the comments.
+Build tested on net-next 34c2d9fb0498 on m68k, since that is the arch
+where the three ethernet drivers changed here are available.
 
+Paul.
+--
+
+Cc: Alexei Starovoitov <ast@plumgrid.com>
+Cc: Anish Bhatt <anish@chelsio.com>
+Cc: Craig Gallek <kraig@google.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: John Fastabend <john.r.fastabend@intel.com>
+Cc: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Or Gerlitz <ogerlitz@mellanox.com>
+Cc: Shani Michaeli <shanim@mellanox.com>
 Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- drivers/net/ethernet/apple/macmace.c | 38 +++---------------------------------
- 1 file changed, 3 insertions(+), 35 deletions(-)
+Cc: netdev@vger.kernel.org
 
-diff --git a/drivers/net/ethernet/apple/macmace.c b/drivers/net/ethernet/apple/macmace.c
-index 89914ca17a49..1f78bc1d04ce 100644
---- a/drivers/net/ethernet/apple/macmace.c
-+++ b/drivers/net/ethernet/apple/macmace.c
-@@ -21,7 +21,7 @@
- 
- 
- #include <linux/kernel.h>
--#include <linux/module.h>
-+#include <linux/init.h>
- #include <linux/netdevice.h>
- #include <linux/etherdevice.h>
- #include <linux/delay.h>
-@@ -739,50 +739,18 @@ static irqreturn_t mace_dma_intr(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("Macintosh MACE ethernet driver");
--MODULE_ALIAS("platform:macmace");
--
--static int mac_mace_device_remove(struct platform_device *pdev)
--{
--	struct net_device *dev = platform_get_drvdata(pdev);
--	struct mace_data *mp = netdev_priv(dev);
--
--	unregister_netdev(dev);
--
--	free_irq(dev->irq, dev);
--	free_irq(IRQ_MAC_MACE_DMA, dev);
--
--	dma_free_coherent(mp->device, N_RX_RING * MACE_BUFF_SIZE,
--	                  mp->rx_ring, mp->rx_ring_phys);
--	dma_free_coherent(mp->device, N_TX_RING * MACE_BUFF_SIZE,
--	                  mp->tx_ring, mp->tx_ring_phys);
--
--	free_netdev(dev);
--
--	return 0;
--}
--
- static struct platform_driver mac_mace_driver = {
- 	.probe  = mace_probe,
--	.remove = mac_mace_device_remove,
- 	.driver	= {
- 		.name	= mac_mace_string,
- 	},
- };
- 
--static int __init mac_mace_init_module(void)
-+static int __init mac_mace_init(void)
- {
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
- 	return platform_driver_register(&mac_mace_driver);
- }
--
--static void __exit mac_mace_cleanup_module(void)
--{
--	platform_driver_unregister(&mac_mace_driver);
--}
--
--module_init(mac_mace_init_module);
--module_exit(mac_mace_cleanup_module);
-+device_initcall(mac_mace_init);
+Paul Gortmaker (6):
+  net/core: make sock_diag.c explicitly non-modular
+  net/dcb: make dcbnl.c explicitly non-modular
+  net/sched: make sch_blackhole.c explicitly non-modular
+  net/ethernet: make amd/hplance.c driver explicitly non-modular
+  net/ethernet: make 8390/mac8390.c driver explicitly non-modular
+  net/ethernet: make apple/macmace.c driver explicitly non-modular
+
+ drivers/net/ethernet/8390/mac8390.c  | 40 ++----------------------------------
+ drivers/net/ethernet/amd/hplance.c   | 13 ++----------
+ drivers/net/ethernet/apple/macmace.c | 38 +++-------------------------------
+ net/core/sock_diag.c                 | 14 +++----------
+ net/dcb/dcbnl.c                      | 30 +++------------------------
+ net/sched/sch_blackhole.c            | 15 +++-----------
+ 6 files changed, 16 insertions(+), 134 deletions(-)
+
 -- 
 2.6.0.rc3
