@@ -1,53 +1,111 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: define asmlinkage_protect
-Date: Mon, 28 Sep 2015 10:07:27 +0200
-Message-ID: <CAMuHMdUbeiN4u3aU2FHP81tBDBVJKa3WSd0g13+eA_ayt-NKWQ@mail.gmail.com>
-References: <876130j0wm.fsf@igel.home>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH 5/6] net/ethernet: make 8390/mac8390.c driver explicitly non-modular
+Date: Mon, 28 Sep 2015 15:51:29 -0400
+Message-ID: <1443469890-19485-6-git-send-email-paul.gortmaker@windriver.com>
+References: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f173.google.com ([209.85.214.173]:33890 "EHLO
-	mail-ob0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756469AbbI1IH2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Sep 2015 04:07:28 -0400
-Received: by obbda8 with SMTP id da8so121929773obb.1
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2015 01:07:27 -0700 (PDT)
-In-Reply-To: <876130j0wm.fsf@igel.home>
+Received: from mail.windriver.com ([147.11.1.11]:54948 "EHLO
+	mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751557AbbI1TwD (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Sep 2015 15:52:03 -0400
+In-Reply-To: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: netdev@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, "David S. Miller" <davem@davemloft.net>, linux-m68k@vger.kernel.org
 
-Hi Andreas,
+The Kconfig for this option is currently:
 
-On Wed, Sep 23, 2015 at 11:12 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> Make sure the compiler does not modify arguments of syscall functions.
-> This can happen if the compiler generates a tailcall to another
-> function.  For example, without asmlinkage_protect sys_openat is compiled
-> into this function:
->
-> sys_openat:
->         clr.l %d0
->         move.w 18(%sp),%d0
->         move.l %d0,16(%sp)
->         jbra do_sys_open
->
-> Note how the fourth argument is modified in place, modifying the register
-> %d4 that gets restored from this stack slot when the function returns to
-> user-space.  The caller may expect the register to be unmodified across
-> system calls.
->
-> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+config MAC8390
+    bool "Macintosh NS 8390 based ethernet cards"
 
-Thanks, applied and queued for v4.3 and stable.
+...meaning that it currently is not being built as a module by anyone.
+Lets remove the modular code that is essentially orphaned -- it was never
+even updated to use module_init/module_exit.  After this, when reading
+the driver there should be no doubt it is builtin-only.
 
-Gr{oetje,eeting}s,
+We don't swap module.h for init.h since this file has init.h already.
 
-                        Geert
+Since module_init translates to device_initcall in the non-modular
+case, the init ordering remains unchanged with this commit.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+We move the information from MODULE_AUTHOR to the comments at the top
+of the file for documentation purposes.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+ drivers/net/ethernet/8390/mac8390.c | 40 ++-----------------------------------
+ 1 file changed, 2 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8390/mac8390.c
+index 65cf60f6718c..a971bf629715 100644
+--- a/drivers/net/ethernet/8390/mac8390.c
++++ b/drivers/net/ethernet/8390/mac8390.c
+@@ -4,6 +4,8 @@
+    taken from or inspired by skeleton.c by Donald Becker, acenic.c by
+    Jes Sorensen, and ne2k-pci.c by Donald Becker and Paul Gortmaker.
+ 
++   Author: David Huggins-Daines <dhd@debian.org> and others.
++
+    This software may be used and distributed according to the terms of
+    the GNU Public License, incorporated herein by reference.  */
+ 
+@@ -19,7 +21,6 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+-#include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/fcntl.h>
+@@ -449,43 +450,6 @@ out:
+ 	return ERR_PTR(err);
+ }
+ 
+-#ifdef MODULE
+-MODULE_AUTHOR("David Huggins-Daines <dhd@debian.org> and others");
+-MODULE_DESCRIPTION("Macintosh NS8390-based Nubus Ethernet driver");
+-MODULE_LICENSE("GPL");
+-
+-/* overkill, of course */
+-static struct net_device *dev_mac8390[15];
+-int init_module(void)
+-{
+-	int i;
+-	for (i = 0; i < 15; i++) {
+-		struct net_device *dev = mac8390_probe(-1);
+-		if (IS_ERR(dev))
+-			break;
+-		dev_mac890[i] = dev;
+-	}
+-	if (!i) {
+-		pr_notice("No useable cards found, driver NOT installed.\n");
+-		return -ENODEV;
+-	}
+-	return 0;
+-}
+-
+-void cleanup_module(void)
+-{
+-	int i;
+-	for (i = 0; i < 15; i++) {
+-		struct net_device *dev = dev_mac890[i];
+-		if (dev) {
+-			unregister_netdev(dev);
+-			free_netdev(dev);
+-		}
+-	}
+-}
+-
+-#endif /* MODULE */
+-
+ static const struct net_device_ops mac8390_netdev_ops = {
+ 	.ndo_open 		= mac8390_open,
+ 	.ndo_stop		= mac8390_close,
+-- 
+2.6.0.rc3
