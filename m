@@ -1,95 +1,122 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH net-next 0/6] make non-modular code explicitly non-modular
-Date: Mon, 28 Sep 2015 17:32:21 -0400
-Message-ID: <20150928213220.GK1279@windriver.com>
-References: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com>
- <CAMuHMdXnk2ZoyoMj2U2iz2NYDkX=rQqZzMZyccy3g1JVqbrZMw@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH net-next 0/6] make non-modular code explicitly
+ non-modular
+Date: Tue, 29 Sep 2015 16:32:58 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1509290908080.25162@nippy.intranet>
+References: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com> <CAMuHMdXnk2ZoyoMj2U2iz2NYDkX=rQqZzMZyccy3g1JVqbrZMw@mail.gmail.com> <20150928213220.GK1279@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXnk2ZoyoMj2U2iz2NYDkX=rQqZzMZyccy3g1JVqbrZMw@mail.gmail.com>
-Sender: netdev-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Anish Bhatt <anish@chelsio.com>, Craig Gallek <kraig@google.com>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, John Fastabend <john.r.fastabend@intel.com>, Nicolas Dichtel <nicolas.dichtel@6wind.com>, Or Gerlitz <ogerlitz@mellanox.com>, Shani Michaeli <shanim@mellanox.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58407 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753740AbbI2Gd3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Sep 2015 02:33:29 -0400
+In-Reply-To: <20150928213220.GK1279@windriver.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Anish Bhatt <anish@chelsio.com>, Craig Gallek <kraig@google.com>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, John Fastabend <john.r.fastabend@intel.com>, Nicolas Dichtel <nicolas.dichtel@6wind.com>, Or Gerlitz <ogerlitz@mellanox.com>, Shani Michaeli <shanim@mellanox.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-[Re: [PATCH net-next 0/6] make non-modular code explicitly non-modular] On 28/09/2015 (Mon 23:09) Geert Uytterhoeven wrote:
 
-> Hi Paul,
+Hi Paul,
+
+On Mon, 28 Sep 2015, Paul Gortmaker wrote:
+
+> On 28/09/2015 (Mon 23:09) Geert Uytterhoeven wrote:
 > 
-> On Mon, Sep 28, 2015 at 9:51 PM, Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
-> > In a previous merge window, we made changes to allow better
-> > delineation between modular and non-modular code in commit
-> > 0fd972a7d91d6e15393c449492a04d94c0b89351 ("module: relocate module_init
-> > from init.h to module.h").  This allows us to now ensure module code
-> > looks modular and non-modular code does not accidentally look modular
-> > just to avoid suffering build breakage.
-> >
-> > Here we target code that is, by nature of their Makefile and/or
-> > Kconfig settings, only available to be built-in, but implicitly
-> > presenting itself as being possibly modular by way of using modular
-> > headers, macros, and functions.
-> >
-> > The goal here is to remove that illusion of modularity from these
-> > files, but in a way that leaves the actual runtime unchanged.
-> > In doing so, we remove code that has never been tested and adds
-> > no value to the tree.  And we continue the process of expecting a
-> > level of consistency between the Kconfig/Makefile of code and the
-> > code in use itself.
-> >
-> > Fortuntately the net subsystem has relatively few instances, given
-> > the overall amount of code and drivers it contains.  For comparison
-> > there are over 300 instances tree wide, resulting in a possible net
-> > removal of on the order of 5000 lines of unused code.
-> >
-> > Build tested on net-next 34c2d9fb0498 on m68k, since that is the arch
-> > where the three ethernet drivers changed here are available.
+> > Hi Paul,
+...
+> > 
+> > Why did you choose this approach?
+> > What about changing the "bool"s to "tristate"s in Kconfig instead?
 > 
-> >   net/ethernet: make amd/hplance.c driver explicitly non-modular
-> >   net/ethernet: make 8390/mac8390.c driver explicitly non-modular
-> >   net/ethernet: make apple/macmace.c driver explicitly non-modular
+> Long answer is here:
 > 
-> Why did you choose this approach?
-> What about changing the "bool"s to "tristate"s in Kconfig instead?
+> https://lkml.org/lkml/2015/8/24/888
 
-Long answer is here:
+You wrote, "If there was demand for them to be tristate, then it would 
+have happened by now." I don't follow your reasoning. You might just as 
+well remove entire drivers and then argue, "If there was demand for 
+drivers without bugs, then someone would have written them by now".
 
-https://lkml.org/lkml/2015/8/24/888
-
-To summarize, it adds functionality to code I can't test, and with 300
-or so of these, it already has been a large time sink.  Add to that
-extending the functionality and testing the new functionality, and it
-does not scale.   Plus if something hasn't allowed tristate for over
-10 years, where is the value in adding it now?
-
-> I gave it a try, and with some small changes the three m68k ethernet drivers
-> build fine as modular drivers. I can send patches if you like it.
-
-Per above, I don't see the value in it, but if you want to do it and
-test it and own submitting the patches, then I can drop the corresponding
-ones from my queue.  Either way we get the code matching the Kconfig
-which is what I'm after out of this.
-
-Note that if you do decide to do this, the one driver really needs more
-than just tristate one line change, it had super ancient init code that
-predates module_init and probably needs an update.
-
-Thanks,
-Paul.
---
+Perhaps you meant, "If there was sufficient demand for them to be 
+tristate, then sufficient resources would have been marshalled, as 
+required to get an enhancement written, tested, submitted, reviewed and 
+merged in the mainline kernel."
 
 > 
-> Thanks!
+> To summarize, it adds functionality to code I can't test, and with 300 
+> or so of these, it already has been a large time sink.  Add to that 
+> extending the functionality and testing the new functionality, and it 
+> does not scale. Plus if something hasn't allowed tristate for over 10 
+> years, where is the value in adding it now?
+
+There is value to be gained by completing the tristate support, and there 
+is value destroyed by removing the partial tristate support.
+
+I'm not involved in building distro kernels, but I know that Debian's 
+would benefit from these tristates, because it would reduce the size of 
+the m68k multi-platform kernel binary.
+
+And even if it is dead code you aim to remove, a lot of people have worked 
+on it (according to git blame), including myself. We should not disregard 
+that effort when we could leverage it instead.
+
+For the macmace driver in particular, I did the platform driver 
+conversion, and it should work as a module. I did not change it to 
+tristate at the time because I did not want to deal with the question of 
+the 'psc' global, which lacks an EXPORT_SYMBOL(psc). Anyway, I'll send a 
+patch if Geert doesn't do so first.
+
 > 
-> Gr{oetje,eeting}s,
+> > I gave it a try, and with some small changes the three m68k ethernet 
+> > drivers build fine as modular drivers. I can send patches if you like 
+> > it.
 > 
->                         Geert
+> Per above, I don't see the value in it, but if you want to do it and 
+> test it and own submitting the patches, then I can drop the 
+> corresponding ones from my queue.
+
+I can't test right now but I have the hardware and will attend to any 
+issues if need be. I do not expect any issues, because the modular option 
+seems to involve the same code paths in the driver.
+
+If the CONFIG_MACMACE=m option was implemented badly and did not work 
+correctly, at least it couldn't be called a regression, presuming that 'm' 
+builds okay, and that the default was 'y' or 'n'.
+
+> Either way we get the code matching the Kconfig which is what I'm after 
+> out of this.
+
+Yes, me too.
+
 > 
+> Note that if you do decide to do this, the one driver really needs more 
+> than just tristate one line change, it had super ancient init code that 
+> predates module_init and probably needs an update.
+
+I think the solution for mac8390 is to do in the modular case exactly what 
+Space.c does in the built-in case. That would mean that the modular driver 
+would support only one card, just like the built-in driver. (That 
+limitation is a problem which affects all Nubus card drivers, because they 
+have to do all their own bus matching, because Nubus still lacks the 
+necessary driver model support.)
+
+I haven't looked at amd/hplance, but I expect that the issues are similar.
+
+Geert, do plan to send patches for any of these drivers?
+
+Regards,
+Finn
+
+> 
+> Thanks,
+> Paul.
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 > 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> > 
+> > Thanks!
+> > 
+> > Gr{oetje,eeting}s,
+> > 
+> >                         Geert
