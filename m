@@ -1,40 +1,55 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4/5] m68k/mac: Export Peripheral System Controller (PSC) base address to modules
-Date: Tue, 29 Sep 2015 10:24:05 +0200
-Message-ID: <1443515046-13968-5-git-send-email-geert__12067.2531113543$1443515091$gmane$org@linux-m68k.org>
-References: <1443515046-13968-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 0/5] net: m68k: Allow modular build
+Date: Tue, 29 Sep 2015 10:24:01 +0200
+Message-ID: <1443515046-13968-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1443515046-13968-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>
 Cc: Finn Thain <fthain@telegraphics.com.au>, Joshua Thompson <funaho@jurai.org>, Philip Blundell <philb@gnu.org>, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-If CONFIG_MACMACE=m:
+	Hi David, Paul,
 
-    ERROR: psc [drivers/net/ethernet/apple/macmace.ko] undefined!
+This patch series makes the remaining m68k Ethernet drivers modular.
+It's an alternative to the last 3 patches of Paul Gortmaker's series
+"[PATCH net-next 0/6] make non-modular code explicitly non-modular".
 
-Add the missing export to fix this.
+Note that "[PATCH 5/5] net: macmace: Allow modular build" depends on
+"[PATCH 4/5] m68k/mac: Export Peripheral System Controller (PSC) base
+address to modules". Feel free to take the dependency through the netdev
+tree to avoid modular build breakage.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-I'm OK with this going in through the netdev tree, as "net: macmace:
-Allow modular build" depends on it.
----
- arch/m68k/mac/psc.c | 1 +
- 1 file changed, 1 insertion(+)
+This was compile-tested only (mac_defconfig + allmodconfig) due to lack
+of hardware.
 
-diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-index cd38f29955c87421..2290c0cae48beb8a 100644
---- a/arch/m68k/mac/psc.c
-+++ b/arch/m68k/mac/psc.c
-@@ -29,6 +29,7 @@
- 
- int psc_present;
- volatile __u8 *psc;
-+EXPORT_SYMBOL_GPL(psc);
- 
- /*
-  * Debugging dump, used in various places to see what's going on.
+Thanks!
+
+Geert Uytterhoeven (5):
+  net: mac8390: Allow modular build
+  net: 7990: Export lance_poll() to modules
+  net: hplance: Allow modular build
+  m68k/mac: Export Peripheral System Controller (PSC) base address to
+    modules
+  net: macmace: Allow modular build
+
+ arch/m68k/mac/psc.c                 |  1 +
+ drivers/net/ethernet/8390/Kconfig   |  2 +-
+ drivers/net/ethernet/8390/mac8390.c | 32 ++++++++++----------------------
+ drivers/net/ethernet/amd/7990.c     |  1 +
+ drivers/net/ethernet/amd/Kconfig    |  2 +-
+ drivers/net/ethernet/apple/Kconfig  |  2 +-
+ 6 files changed, 15 insertions(+), 25 deletions(-)
+
 -- 
 1.9.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
