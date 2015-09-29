@@ -1,122 +1,35 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH net-next 0/6] make non-modular code explicitly
- non-modular
-Date: Tue, 29 Sep 2015 16:32:58 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1509290908080.25162@nippy.intranet>
-References: <1443469890-19485-1-git-send-email-paul.gortmaker@windriver.com> <CAMuHMdXnk2ZoyoMj2U2iz2NYDkX=rQqZzMZyccy3g1JVqbrZMw@mail.gmail.com> <20150928213220.GK1279@windriver.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 5/5] net: macmace: Allow modular build
+Date: Tue, 29 Sep 2015 10:24:06 +0200
+Message-ID: <1443515046-13968-6-git-send-email-geert@linux-m68k.org>
+References: <1443515046-13968-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58407 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753740AbbI2Gd3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Sep 2015 02:33:29 -0400
-In-Reply-To: <20150928213220.GK1279@windriver.com>
+In-Reply-To: <1443515046-13968-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Alexei Starovoitov <ast@plumgrid.com>, Anish Bhatt <anish@chelsio.com>, Craig Gallek <kraig@google.com>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, John Fastabend <john.r.fastabend@intel.com>, Nicolas Dichtel <nicolas.dichtel@6wind.com>, Or Gerlitz <ogerlitz@mellanox.com>, Shani Michaeli <shanim@mellanox.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: "David S. Miller" <davem@davemloft.net>, Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Joshua Thompson <funaho@jurai.org>, Philip Blundell <philb@gnu.org>, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This depends on "[PATCH 4/5] m68k/mac: Export Peripheral System
+Controller (PSC) base address to modules".
+---
+ drivers/net/ethernet/apple/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Paul,
-
-On Mon, 28 Sep 2015, Paul Gortmaker wrote:
-
-> On 28/09/2015 (Mon 23:09) Geert Uytterhoeven wrote:
-> 
-> > Hi Paul,
-...
-> > 
-> > Why did you choose this approach?
-> > What about changing the "bool"s to "tristate"s in Kconfig instead?
-> 
-> Long answer is here:
-> 
-> https://lkml.org/lkml/2015/8/24/888
-
-You wrote, "If there was demand for them to be tristate, then it would 
-have happened by now." I don't follow your reasoning. You might just as 
-well remove entire drivers and then argue, "If there was demand for 
-drivers without bugs, then someone would have written them by now".
-
-Perhaps you meant, "If there was sufficient demand for them to be 
-tristate, then sufficient resources would have been marshalled, as 
-required to get an enhancement written, tested, submitted, reviewed and 
-merged in the mainline kernel."
-
-> 
-> To summarize, it adds functionality to code I can't test, and with 300 
-> or so of these, it already has been a large time sink.  Add to that 
-> extending the functionality and testing the new functionality, and it 
-> does not scale. Plus if something hasn't allowed tristate for over 10 
-> years, where is the value in adding it now?
-
-There is value to be gained by completing the tristate support, and there 
-is value destroyed by removing the partial tristate support.
-
-I'm not involved in building distro kernels, but I know that Debian's 
-would benefit from these tristates, because it would reduce the size of 
-the m68k multi-platform kernel binary.
-
-And even if it is dead code you aim to remove, a lot of people have worked 
-on it (according to git blame), including myself. We should not disregard 
-that effort when we could leverage it instead.
-
-For the macmace driver in particular, I did the platform driver 
-conversion, and it should work as a module. I did not change it to 
-tristate at the time because I did not want to deal with the question of 
-the 'psc' global, which lacks an EXPORT_SYMBOL(psc). Anyway, I'll send a 
-patch if Geert doesn't do so first.
-
-> 
-> > I gave it a try, and with some small changes the three m68k ethernet 
-> > drivers build fine as modular drivers. I can send patches if you like 
-> > it.
-> 
-> Per above, I don't see the value in it, but if you want to do it and 
-> test it and own submitting the patches, then I can drop the 
-> corresponding ones from my queue.
-
-I can't test right now but I have the hardware and will attend to any 
-issues if need be. I do not expect any issues, because the modular option 
-seems to involve the same code paths in the driver.
-
-If the CONFIG_MACMACE=m option was implemented badly and did not work 
-correctly, at least it couldn't be called a regression, presuming that 'm' 
-builds okay, and that the default was 'y' or 'n'.
-
-> Either way we get the code matching the Kconfig which is what I'm after 
-> out of this.
-
-Yes, me too.
-
-> 
-> Note that if you do decide to do this, the one driver really needs more 
-> than just tristate one line change, it had super ancient init code that 
-> predates module_init and probably needs an update.
-
-I think the solution for mac8390 is to do in the modular case exactly what 
-Space.c does in the built-in case. That would mean that the modular driver 
-would support only one card, just like the built-in driver. (That 
-limitation is a problem which affects all Nubus card drivers, because they 
-have to do all their own bus matching, because Nubus still lacks the 
-necessary driver model support.)
-
-I haven't looked at amd/hplance, but I expect that the issues are similar.
-
-Geert, do plan to send patches for any of these drivers?
-
-Regards,
-Finn
-
-> 
-> Thanks,
-> Paul.
-> --
-> 
-> > 
-> > Thanks!
-> > 
-> > Gr{oetje,eeting}s,
-> > 
-> >                         Geert
+diff --git a/drivers/net/ethernet/apple/Kconfig b/drivers/net/ethernet/apple/Kconfig
+index d19a41b0c6d26691..31071297896c96b5 100644
+--- a/drivers/net/ethernet/apple/Kconfig
++++ b/drivers/net/ethernet/apple/Kconfig
+@@ -51,7 +51,7 @@ config BMAC
+ 	  will be called bmac.
+ 
+ config MACMACE
+-	bool "Macintosh (AV) onboard MACE ethernet"
++	tristate "Macintosh (AV) onboard MACE ethernet"
+ 	depends on MAC
+ 	select CRC32
+ 	---help---
+-- 
+1.9.1
