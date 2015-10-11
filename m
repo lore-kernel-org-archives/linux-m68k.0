@@ -1,84 +1,16 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC v6 00/25] Re-use nvram module
-Date: Mon, 12 Oct 2015 13:32:06 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1510121326110.23992@nippy.intranet>
-References: <20150823104129.517600532@telegraphics.com.au> <561AC137.9090809@redhat.com>
+From: Christine McCarthy <Christine.McCarthy@co.lake.mn.us>
+Subject: Unexpected Luck
+Date: Sun, 11 Oct 2015 17:02:48 -0400
+Message-ID: <a7935cdf-effc-4450-b65e-460e6c862d8d@EXCHANGE-SERVRM.LakeCounty.local>
+Reply-To: <monicatorresesp@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51403 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753012AbbJLCch (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Oct 2015 22:32:37 -0400
-In-Reply-To: <561AC137.9090809@redhat.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <lvivier@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: Recipients <Christine.McCarthy@co.lake.mn.us>
 
-
-Hi Laurent,
-
-On Sun, 11 Oct 2015, Laurent Vivier wrote:
-> On 23/08/2015 12:41, Finn Thain wrote:
-...
-> > This patch series has been compile-tested for arm, m68k, powerpc and 
-> > x86. The nvram and thinkpad_acpi modules were regression tested on a 
-> > ThinkPad T43. The /dev/nvram functionality was also regression tested 
-> > on a G3 PowerMac. The nvram module was also tested on a PowerBook 520, 
-> > Quadra 650 and Atari Falcon. AFAIK, no testing has been done on PPC64 
-> > as yet.
-> 
-> For PPC64, tested on a PowerMac G5 (PowerMac11,2), kernel 4.3.0-rc4
-> with nvram tools 1.2.24 (Fedora 22 ppc64).
-> 
-> Tested-by: Laurent Vivier <lvivier@redhat.com>
-> 
-> Tests done:
->  # modinfo nvram
->  filename:       /lib/modules/4.3.0-rc4+/kernel/drivers/char/nvram.ko
->  alias:          devname:nvram
->  alias:          char-major-10-144
->  license:        GPL
->  depends:
->  intree:         Y
->  vermagic:       4.3.0-rc4+ SMP mod_unload
-> 
->  # modprobe nvram
->  [  364.655577] Non-volatile memory driver v1.3
-> 
->  # nvram --partitions
->   # Sig Chk  Len  Name
->   0  5a  82  0002 nvram
->   1  5f  45  003e system
->   2  70  bd  00c1 common
->   3  a0  1e  0052 APL,MacOS75
->   4  a1  15  0081 APL,OSXPanic
->   5  7f  45  002c wwwwwwwwwwww
-> 
->  # nvram --dump "nvram"
->  0x00000000  5a820002 6e767261 6d000000 00000000 |Z...nvram.......|
->  0x00000010  cae8613d 000001c9 00000000 00000000 |..a=............|
-> 
->  # nvram --print-config=boot-volume
->  1
-> 
->  # nvram --update-config=boot-volume=6
-> 
->  # rmmod nvram
-> 
->  # nvram --print-config=boot-volume
->  6
-> 
->  # reboot
-> 
->  # nvram --print-config=boot-volume
->  6
-> 
-
-Thanks very much for taking the trouble to test this series.
-
-I will add your Tested-By tag to the relevant powerpc patches and re-send.
-
-Regards,
-Finn
+Contact Monica Torres via email: monicatorresesp@gmail.com for your win=
+nings of =E2=82=AC1,000,000.00.
