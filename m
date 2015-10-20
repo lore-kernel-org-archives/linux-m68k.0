@@ -1,7 +1,7 @@
 From: LOAN@vger.kernel.org, OFFER@vger.kernel.org
 Subject: LOAN OFFER
-Date: Mon, 19 Oct 2015 14:19:58 -0700
-Message-ID: <PS1PR01MB06659AFE8E419CA6B2A0ABD5B83B0@PS1PR01MB0665.apcprd01.prod.exchangelabs.com>
+Date: Tue, 20 Oct 2015 03:23:58 -0700
+Message-ID: <MAXPR01MB0601A27E3EBD51250694DB76B83A0@MAXPR01MB0601.INDPRD01.PROD.OUTLOOK.COM>
 Reply-To: <bricksfastloanfirminvestment@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
