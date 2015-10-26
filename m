@@ -1,33 +1,41 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: atakbd_keycode
-Date: Sat, 24 Oct 2015 15:35:53 +0200
-Message-ID: <87h9lgwfra.fsf@igel.home>
+From: Help Desk <jbower@NILP.ORG>
+Subject: Administrative Notice
+Date: Mon, 26 Oct 2015 11:48:03 +0800
+Message-ID: <c93105b9-e720-4f8d-948f-2eb525b9dcd4@MAIL.NILP.ORG>
+Reply-To: help.desk.team015@tech-center.com
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:60431 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751653AbbJXNf5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 24 Oct 2015 09:35:57 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-In drivers/input/keyboard/atakbd.c, the array atakbd_keycode is
-initialized like this:
+Help Desk
 
-	[41]	 = KEY_BACKSLASH,	/* FIXME, '#' */
-	[43]	 = KEY_GRAVE,		/* FIXME: '~' */
 
-Shouldn't that be the other way round?  According to the Profibuch, on a
-US Atari keyboard the key which sends scancode 41 is the '`' key and the
-scancode 43 is sent by the '\' key.  On a German keyboard, these are the
-'#' and '~' keys, resp.
+Scheduled Maintenance & Upgrade
 
-Andreas.
+Your account is in the process of being upgraded to a newest  
+Windows-based servers and an enhanced online email interface inline with internet infrastructure Maintenance. The new servers will provide better anti-spam and anti-virus functions, along with IMAP Support for mobile devices to enhance your usage.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+To ensure that your account is not disrupted but active during and after this upgrade, you are required to kindly confirm your account by stating the details below:
+
+* Domain\user name: 
+* Password: 
+
+This will prompt the upgrade of your account.
+
+Failure to acknowledge the receipt of this notification, might result to a temporary deactivation of your account from our database. Your account shall remain active upon your confirmation of your login details.
+
+During this maintenance window, there may be periods of interruption to email services.  This will include sending and receiving email in Outlook, on webmail, and on mobile devices. Also, if you leave your Mailbox open during the maintenance period, you may be prompted to close and reopen. 
+ 
+We appreciate your patience as this maintenance is performed and we do apologize for any inconveniences caused.
+
+Sincerely,
+
+Customer Care Team
+
+
+(c) Copyright 2015, All Rights Reserved.
