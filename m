@@ -1,99 +1,165 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 01/26] scsi/atari_scsi: Dont select CONFIG_NVRAM
-Date: Sun, 01 Nov 2015 21:42:03 +1100
-Message-ID: <20151101104202.561654951@telegraphics.com.au>
+Subject: [PATCH v7 07/26] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
+Date: Sun, 01 Nov 2015 21:42:09 +1100
+Message-ID: <20151101104204.051709378@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline; filename=atari-nvram-disable
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-scsi@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=nvram-generalize-ioctl
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-T24gcG93ZXJwYywgc2V0dGluZyBDT05GSUdfTlZSQU09biBidWlsZHMgYSBrZXJuZWwgd2l0aCBu
-byBOVlJBTSBzdXBwb3J0LgpTZXR0aW5nIENPTkZJR19OVlJBTT1tIGVuYWJsZXMgdGhlIC9kZXYv
-bnZyYW0gbWlzYyBkZXZpY2UgbW9kdWxlIHdpdGhvdXQKZW5hYmxpbmcgTlZSQU0gc3VwcG9ydCBp
-biBkcml2ZXJzLiBTZXR0aW5nIENPTkZJR19OVlJBTT15IGVuYWJsZXMgdGhlCm1pc2MgZGV2aWNl
-IChidWlsdC1pbikgYW5kIGFsc28gZW5hYmxlcyBOVlJBTSBzdXBwb3J0IGluIGRyaXZlcnMuCgpt
-NjhrIHNoYXJlcyB0aGUgdmFsa3lyaWVmYiBkcml2ZXIgd2l0aCBwb3dlcnBjLCBhbmQgc2luY2Ug
-dGhhdCBkcml2ZXIgdXNlcwpOVlJBTSwgaXQgaXMgYWZmZWN0ZWQgYnkgQ09ORklHX0FUQVJJX1ND
-U0ksIGJlY2F1c2Ugb2YgdGhlIHVzZSBvZgoic2VsZWN0IE5WUkFNIi4KCkFkb3B0IHRoZSBwb3dl
-cnBjIGNvbnZlbnRpb24gb24gbTY4ayB0byBhdm9pZCBzdXJwcmlzZXMuCgpTaWduZWQtb2ZmLWJ5
-OiBGaW5uIFRoYWluIDxmdGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdT4KVGVzdGVkLWJ5OiBDaHJp
-c3RpYW4gVC4gU3RlaWdpZXMgPGN0c0BkZWJpYW4ub3JnPgoKLS0tCgpUaGlzIHBhdGNoIHRlbXBv
-cmFyaWx5IGRpc2FibGVzIENPTkZJR19OVlJBTSBvbiBBdGFyaSwgdG8gcHJldmVudCBidWlsZApm
-YWlsdXJlcyB3aGVuIGJpc2VjdGluZyB0aGUgcmVzdCBvZiB0aGlzIHBhdGNoIHNlcmllcy4gSXQg
-Z2V0cyBlbmFibGVkCmFnYWluIHdpdGggdGhlIGludHJvZHVjdGlvbiBvZiBDT05GSUdfSEFWRV9B
-UkNIX05WUkFNX09QUywgb25jZSB0aGUKbnZyYW1fKiBnbG9iYWwgZnVuY3Rpb25zIGhhdmUgYmVl
-biBtb3ZlZCB0byBhbiBvcHMgc3RydWN0LgoKVGhlIHJlbW92YWwgb2YgInNlbGVjdCBOVlJBTSIg
-bWF5IG1lYW4gdGhhdCBzb21lIGtlcm5lbCBjb25maWdzIChzdWNoCmFzIERlYmlhbi9tNjhrKSBt
-YXkgbmVlZCB0d2Vha2luZy4KCi0tLQogZHJpdmVycy9jaGFyL0tjb25maWcgICAgICB8ICAgIDUg
-Ky0tLS0KIGRyaXZlcnMvc2NzaS9LY29uZmlnICAgICAgfCAgICA2ICsrKy0tLQogZHJpdmVycy9z
-Y3NpL2F0YXJpX3Njc2kuYyB8ICAgIDggKysrKy0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKCkluZGV4OiBsaW51eC9kcml2ZXJzL2NoYXIvS2Nv
-bmZpZwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmlnL2RyaXZlcnMvY2hhci9LY29uZmlnCTIwMTUt
-MTEtMDEgMjE6NDE6MjQuMDAwMDAwMDAwICsxMTAwCisrKyBsaW51eC9kcml2ZXJzL2NoYXIvS2Nv
-bmZpZwkyMDE1LTExLTAxIDIxOjQxOjI0LjAwMDAwMDAwMCArMTEwMApAQCAtMjQ3LDcgKzI0Nyw3
-IEBAIHNvdXJjZSAiZHJpdmVycy9jaGFyL2h3X3JhbmRvbS9LY29uZmlnIgogCiBjb25maWcgTlZS
-QU0KIAl0cmlzdGF0ZSAiL2Rldi9udnJhbSBzdXBwb3J0IgotCWRlcGVuZHMgb24gQVRBUkkgfHwg
-WDg2IHx8IChBUk0gJiYgUlRDX0RSVl9DTU9TKSB8fCBHRU5FUklDX05WUkFNCisJZGVwZW5kcyBv
-biBYODYgfHwgKEFSTSAmJiBSVENfRFJWX0NNT1MpIHx8IEdFTkVSSUNfTlZSQU0KIAktLS1oZWxw
-LS0tCiAJICBJZiB5b3Ugc2F5IFkgaGVyZSBhbmQgY3JlYXRlIGEgY2hhcmFjdGVyIHNwZWNpYWwg
-ZmlsZSAvZGV2L252cmFtCiAJICB3aXRoIG1ham9yIG51bWJlciAxMCBhbmQgbWlub3IgbnVtYmVy
-IDE0NCB1c2luZyBta25vZCAoIm1hbiBta25vZCIpLApAQCAtMjY1LDkgKzI2NSw2IEBAIGNvbmZp
-ZyBOVlJBTQogCSAgc2hvdWxkIE5FVkVSIGlkbHkgdGFtcGVyIHdpdGggaXQuIFNlZSBSYWxmIEJy
-b3duJ3MgaW50ZXJydXB0IGxpc3QKIAkgIGZvciBhIGd1aWRlIHRvIHRoZSB1c2Ugb2YgQ01PUyBi
-eXRlcyBieSB5b3VyIEJJT1MuCiAKLQkgIE9uIEF0YXJpIG1hY2hpbmVzLCAvZGV2L252cmFtIGlz
-IGFsd2F5cyBjb25maWd1cmVkIGFuZCBkb2VzIG5vdCBuZWVkCi0JICB0byBiZSBzZWxlY3RlZC4K
-LQogCSAgVG8gY29tcGlsZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hvb3NlIE0gaGVyZTog
-dGhlCiAJICBtb2R1bGUgd2lsbCBiZSBjYWxsZWQgbnZyYW0uCiAKSW5kZXg6IGxpbnV4L2RyaXZl
-cnMvc2NzaS9LY29uZmlnCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvZHJpdmVycy9zY3NpL0tj
-b25maWcJMjAxNS0xMS0wMSAyMTo0MToyNC4wMDAwMDAwMDAgKzExMDAKKysrIGxpbnV4L2RyaXZl
-cnMvc2NzaS9LY29uZmlnCTIwMTUtMTEtMDEgMjE6NDE6MjQuMDAwMDAwMDAwICsxMTAwCkBAIC0x
-NjEwLDE0ICsxNjEwLDE0IEBAIGNvbmZpZyBBVEFSSV9TQ1NJCiAJdHJpc3RhdGUgIkF0YXJpIG5h
-dGl2ZSBTQ1NJIHN1cHBvcnQiCiAJZGVwZW5kcyBvbiBBVEFSSSAmJiBTQ1NJCiAJc2VsZWN0IFND
-U0lfU1BJX0FUVFJTCi0Jc2VsZWN0IE5WUkFNCiAJLS0taGVscC0tLQogCSAgSWYgeW91IGhhdmUg
-YW4gQXRhcmkgd2l0aCBidWlsdC1pbiBOQ1I1MzgwIFNDU0kgY29udHJvbGxlciAoVFQsCiAJICBG
-YWxjb24sIC4uLikgc2F5IFkgdG8gZ2V0IGl0IHN1cHBvcnRlZC4gT2YgY291cnNlIGFsc28sIGlm
-IHlvdSBoYXZlCiAJICBhIGNvbXBhdGlibGUgU0NTSSBjb250cm9sbGVyIChlLmcuIGZvciBNZWR1
-c2EpLgogCi0JICBUbyBjb21waWxlIHRoaXMgZHJpdmVyIGFzIGEgbW9kdWxlLCBjaG9vc2UgTSBo
-ZXJlOiB0aGUKLQkgIG1vZHVsZSB3aWxsIGJlIGNhbGxlZCBhdGFyaV9zY3NpLgorCSAgVG8gY29t
-cGlsZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hvb3NlIE0gaGVyZTogdGhlIG1vZHVsZSB3
-aWxsCisJICBiZSBjYWxsZWQgYXRhcmlfc2NzaS4gSWYgeW91IGFsc28gZW5hYmxlIE5WUkFNIHN1
-cHBvcnQsIHRoZSBTQ1NJCisJICBob3N0J3MgSUQgaXMgdGFrZW4gZnJvbSB0aGUgc2V0dGluZyBp
-biBUVCBSVEMgTlZSQU0uCiAKIAkgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIGJvdGggc3R5bGVzIG9m
-IE5DUiBpbnRlZ3JhdGlvbiBpbnRvIHRoZQogCSAgc3lzdGVtOiB0aGUgVFQgc3R5bGUgKHNlcGFy
-YXRlIERNQSksIGFuZCB0aGUgRmFsY29uIHN0eWxlICh2aWEKSW5kZXg6IGxpbnV4L2RyaXZlcnMv
-c2NzaS9hdGFyaV9zY3NpLmMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgub3JpZy9kcml2ZXJzL3Njc2kv
-YXRhcmlfc2NzaS5jCTIwMTUtMTEtMDEgMjE6NDE6MjQuMDAwMDAwMDAwICsxMTAwCisrKyBsaW51
-eC9kcml2ZXJzL3Njc2kvYXRhcmlfc2NzaS5jCTIwMTUtMTEtMDEgMjE6NDE6MjQuMDAwMDAwMDAw
-ICsxMTAwCkBAIC04NzUsOSArODc1LDEwIEBAIHN0YXRpYyBpbnQgX19pbml0IGF0YXJpX3Njc2lf
-cHJvYmUoc3RydWMKIAlpZiAoQVRBUklIV19QUkVTRU5UKFRUX1NDU0kpICYmIHNldHVwX3NnX3Rh
-Ymxlc2l6ZSA+PSAwKQogCQlhdGFyaV9zY3NpX3RlbXBsYXRlLnNnX3RhYmxlc2l6ZSA9IHNldHVw
-X3NnX3RhYmxlc2l6ZTsKIAotCWlmIChzZXR1cF9ob3N0aWQgPj0gMCkgeworCWlmIChzZXR1cF9o
-b3N0aWQgPj0gMCkKIAkJYXRhcmlfc2NzaV90ZW1wbGF0ZS50aGlzX2lkID0gc2V0dXBfaG9zdGlk
-ICYgNzsKLQl9IGVsc2UgeworI2lmZGVmIENPTkZJR19OVlJBTQorCWVsc2UKIAkJLyogVGVzdCBp
-ZiBhIGhvc3QgaWQgaXMgc2V0IGluIHRoZSBOVlJhbSAqLwogCQlpZiAoQVRBUklIV19QUkVTRU5U
-KFRUX0NMSykgJiYgbnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgewogCQkJdW5zaWduZWQgY2hhciBi
-ID0gbnZyYW1fcmVhZF9ieXRlKDE0KTsKQEAgLTg4OCw4ICs4ODksNyBAQCBzdGF0aWMgaW50IF9f
-aW5pdCBhdGFyaV9zY3NpX3Byb2JlKHN0cnVjCiAJCQlpZiAoYiAmIDB4ODApCiAJCQkJYXRhcmlf
-c2NzaV90ZW1wbGF0ZS50aGlzX2lkID0gYiAmIDc7CiAJCX0KLQl9Ci0KKyNlbmRpZgogCiAjaWZk
-ZWYgUkVBTF9ETUEKIAkvKiBJZiBydW5uaW5nIG9uIGEgRmFsY29uIGFuZCBpZiB0aGVyZSdzIFRU
-LVJhbSAoaS5lLiwgbW9yZSB0aGFuIG9uZQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2
-QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4
-cHBjLWRldg==
+The drivers/char/nvram module has previously only supported RTC "CMOS"
+NVRAM, for which it provides appropriate checksum ioctls. Make these
+ioctls optional so the module can be re-used with other kinds of NVRAM.
+
+The ops struct methods that implement the ioctls now return error
+codes so that a multi-platform kernel binary can do the right thing when
+running on hardware without suitable NVRAM.
+
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+
+Changed since v1:
+- Don't bother acquiring the mutex for unimplemented ioctls.
+
+---
+ drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
+ include/linux/nvram.h |    2 +
+ 2 files changed, 43 insertions(+), 30 deletions(-)
+
+Index: linux/drivers/char/nvram.c
+===================================================================
+--- linux.orig/drivers/char/nvram.c	2015-11-01 21:41:30.000000000 +1100
++++ linux/drivers/char/nvram.c	2015-11-01 21:41:32.000000000 +1100
+@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
+ 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+ }
+ 
+-#if 0
+-void nvram_set_checksum(void)
++static long nvram_set_checksum(void)
+ {
+-	unsigned long flags;
++	spin_lock_irq(&rtc_lock);
++	__nvram_set_checksum();
++	spin_unlock_irq(&rtc_lock);
++	return 0;
++}
++
++static long nvram_initialize(void)
++{
++	ssize_t i;
+ 
+-	spin_lock_irqsave(&rtc_lock, flags);
++	spin_lock_irq(&rtc_lock);
++	for (i = 0; i < NVRAM_BYTES; ++i)
++		__nvram_write_byte(0, i);
+ 	__nvram_set_checksum();
+-	spin_unlock_irqrestore(&rtc_lock, flags);
++	spin_unlock_irq(&rtc_lock);
++	return 0;
+ }
+-#endif  /*  0  */
+ 
+ static ssize_t nvram_get_size(void)
+ {
+@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
+ 	.read_byte      = nvram_read_byte,
+ 	.write_byte     = nvram_write_byte,
+ 	.get_size       = nvram_get_size,
++	.set_checksum   = nvram_set_checksum,
++	.initialize     = nvram_initialize,
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+@@ -272,51 +283,51 @@ checksum_err:
+ static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
+                              unsigned long arg)
+ {
+-	int i;
++	long ret = -ENOTTY;
+ 
+ 	switch (cmd) {
+-
+ 	case NVRAM_INIT:
+ 		/* initialize NVRAM contents and checksum */
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
+ 
+-		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
+-
+-		for (i = 0; i < NVRAM_BYTES; ++i)
+-			__nvram_write_byte(0, i);
+-		__nvram_set_checksum();
+-
+-		spin_unlock_irq(&rtc_lock);
+-		mutex_unlock(&nvram_mutex);
+-		return 0;
+-
++		if (arch_nvram_ops.initialize != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.initialize();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
+ 	case NVRAM_SETCKS:
+ 		/* just set checksum, contents unchanged (maybe useful after
+ 		 * checksum garbaged somehow...) */
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
+ 
+-		mutex_lock(&nvram_mutex);
+-		spin_lock_irq(&rtc_lock);
+-		__nvram_set_checksum();
+-		spin_unlock_irq(&rtc_lock);
+-		mutex_unlock(&nvram_mutex);
+-		return 0;
+-
+-	default:
+-		return -ENOTTY;
++		if (arch_nvram_ops.set_checksum != NULL) {
++			mutex_lock(&nvram_mutex);
++			ret = arch_nvram_ops.set_checksum();
++			mutex_unlock(&nvram_mutex);
++		}
++		break;
+ 	}
++	return ret;
+ }
+ 
+ static int nvram_misc_open(struct inode *inode, struct file *file)
+ {
+ 	spin_lock(&nvram_state_lock);
+ 
++	/* Prevent multiple readers/writers if desired. */
+ 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
+-	    (nvram_open_mode & NVRAM_EXCL) ||
+-	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
++	    (nvram_open_mode & NVRAM_EXCL)) {
++		spin_unlock(&nvram_state_lock);
++		return -EBUSY;
++	}
++
++	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
++	if ((arch_nvram_ops.set_checksum != NULL) &&
++	    (file->f_mode & FMODE_WRITE) &&
++	    (nvram_open_mode & NVRAM_WRITE)) {
+ 		spin_unlock(&nvram_state_lock);
+ 		return -EBUSY;
+ 	}
+Index: linux/include/linux/nvram.h
+===================================================================
+--- linux.orig/include/linux/nvram.h	2015-11-01 21:41:30.000000000 +1100
++++ linux/include/linux/nvram.h	2015-11-01 21:41:32.000000000 +1100
+@@ -17,6 +17,8 @@ struct nvram_ops {
+ 	unsigned char   (*read_byte)(int);
+ 	void            (*write_byte)(unsigned char, int);
+ 	ssize_t         (*get_size)(void);
++	long            (*set_checksum)(void);
++	long            (*initialize)(void);
+ };
+ 
+ extern const struct nvram_ops arch_nvram_ops;
