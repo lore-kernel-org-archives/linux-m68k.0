@@ -1,372 +1,121 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 26/26] m68k: Dispatch nvram_ops calls to Atari or Mac functions
-Date: Sun, 01 Nov 2015 21:42:28 +1100
-Message-ID: <20151101104208.761692750@telegraphics.com.au>
+Subject: [PATCH v7 03/26] m68k/atari: Replace nvram_{read,
+ write}_byte with arch_nvram_ops
+Date: Sun, 01 Nov 2015 21:42:05 +1100
+Message-ID: <20151101104203.061678383@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=m68k-introduce-arch_nvram_ops
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline; filename=atari_scsi-convert-to-nvram_ops
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-scsi@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-A multi-platform kernel binary needs to decide at run-time how to dispatch
-the arch_nvram_ops calls. Add platform-independent arch_nvram_ops, for use
-when multiple platform-specific NVRAM ops implementations are needed.
-
-Enable CONFIG_HAVE_ARCH_NVRAM_OPS for Macs.
-
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Christian T. Steigies <cts@debian.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
----
-
-Changed since v1:
-- Removed Mac and Atari ops struct definitions and the associated #ifdefs.
-- Moved extern declarations for fewer lines of code and better readability.
-- The IS_ENABLED(CONFIG_NVRAM) tests were moved to this patch, because it is
-now in this patch that CONFIG_HAVE_ARCH_NVRAM_OPS is enabled for Macs.
-
-Changes since v3:
-- Use bool (and select) instead of def_bool in the definition of the
-HAVE_ARCH_NVRAM_OPS Kconfig symbol, as requested by Geert.
-- Moved extern declarations back to the header files (like in v1)
-as requested by Geert.
-
----
- arch/m68k/Kconfig.machine         |    1 
- arch/m68k/atari/nvram.c           |   21 +------
- arch/m68k/include/asm/atarihw.h   |    6 ++
- arch/m68k/include/asm/macintosh.h |    4 +
- arch/m68k/kernel/setup_mm.c       |  100 +++++++++++++++++++++++++++++++++++++-
- arch/m68k/mac/misc.c              |   18 ++++++
- 6 files changed, 133 insertions(+), 17 deletions(-)
-
-Index: linux/arch/m68k/mac/misc.c
-===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-11-01 21:41:57.000000000 +1100
-+++ linux/arch/m68k/mac/misc.c	2015-11-01 21:41:58.000000000 +1100
-@@ -61,6 +61,7 @@ static void cuda_write_time(long data)
- 		cuda_poll();
- }
- 
-+#if IS_ENABLED(CONFIG_NVRAM)
- static unsigned char cuda_pram_read_byte(int offset)
- {
- 	struct adb_request req;
-@@ -81,6 +82,8 @@ static void cuda_pram_write_byte(unsigne
- 	while (!req.complete)
- 		cuda_poll();
- }
-+#endif /* CONFIG_NVRAM */
-+
- #else
- #define cuda_read_time() 0
- #define cuda_write_time(n)
-@@ -116,6 +119,7 @@ static void pmu_write_time(long data)
- 		pmu_poll();
- }
- 
-+#if IS_ENABLED(CONFIG_NVRAM)
- static unsigned char pmu_pram_read_byte(int offset)
- {
- 	struct adb_request req;
-@@ -139,6 +143,8 @@ static void pmu_pram_write_byte(unsigned
- 	while (!req.complete)
- 		pmu_poll();
- }
-+#endif /* CONFIG_NVRAM */
-+
- #else
- #define pmu_read_time() 0
- #define pmu_write_time(n)
-@@ -172,6 +178,7 @@ static void maciisi_write_time(long data
- 			(data >> 8) & 0xFF, data & 0xFF);
- }
- 
-+#if IS_ENABLED(CONFIG_NVRAM)
- static unsigned char maciisi_pram_read_byte(int offset)
- {
- 	struct adb_request req;
-@@ -187,6 +194,8 @@ static void maciisi_pram_write_byte(unsi
- 	maciisi_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
- 			(offset >> 8) & 0xFF, offset & 0xFF, data);
- }
-+#endif /* CONFIG_NVRAM */
-+
- #else
- #define maciisi_read_time() 0
- #define maciisi_write_time(n)
-@@ -314,6 +323,7 @@ static void via_rtc_command(int command,
- 	local_irq_restore(flags);
- }
- 
-+#if IS_ENABLED(CONFIG_NVRAM)
- static unsigned char via_pram_read_byte(int offset)
- {
- 	unsigned char temp;
-@@ -336,6 +346,7 @@ static void via_pram_write_byte(unsigned
- 	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
- 	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- }
-+#endif /* CONFIG_NVRAM */
- 
- /*
-  * Return the current time in seconds since January 1, 1904.
-@@ -503,6 +514,7 @@ void pmu_shutdown(void)
-  *-------------------------------------------------------------------
-  */
- 
-+#if IS_ENABLED(CONFIG_NVRAM)
- unsigned char mac_pram_read_byte(int addr)
- {
- 	unsigned char (*func)(int);
-@@ -550,6 +562,12 @@ void mac_pram_write_byte(unsigned char v
- 		(*func)(val, addr);
- }
- 
-+ssize_t mac_pram_get_size(void)
-+{
-+	return 256;
-+}
-+#endif /* CONFIG_NVRAM */
-+
- void mac_poweroff(void)
- {
- 	/*
-Index: linux/arch/m68k/atari/nvram.c
-===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-11-01 21:41:47.000000000 +1100
-+++ linux/arch/m68k/atari/nvram.c	2015-11-01 21:41:58.000000000 +1100
-@@ -73,7 +73,7 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum, ATARI_CKS_LOC + 1);
- }
- 
--static long nvram_set_checksum(void)
-+long atari_nvram_set_checksum(void)
- {
- 	spin_lock_irq(&rtc_lock);
- 	__nvram_set_checksum();
-@@ -81,7 +81,7 @@ static long nvram_set_checksum(void)
- 	return 0;
- }
- 
--static long nvram_initialize(void)
-+long atari_nvram_initialize(void)
- {
- 	loff_t i;
- 
-@@ -93,7 +93,7 @@ static long nvram_initialize(void)
- 	return 0;
- }
- 
--static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
-+ssize_t atari_nvram_read(char *buf, size_t count, loff_t *ppos)
- {
- 	char *p = buf;
- 	loff_t i;
-@@ -114,7 +114,7 @@ static ssize_t nvram_read(char *buf, siz
- 	return p - buf;
- }
- 
--static ssize_t nvram_write(char *buf, size_t count, loff_t *ppos)
-+ssize_t atari_nvram_write(char *buf, size_t count, loff_t *ppos)
- {
- 	char *p = buf;
- 	loff_t i;
-@@ -137,22 +137,11 @@ static ssize_t nvram_write(char *buf, si
- 	return p - buf;
- }
- 
--static ssize_t nvram_get_size(void)
-+ssize_t atari_nvram_get_size(void)
- {
--	if (!MACH_IS_ATARI)
--		return -ENODEV;
- 	return NVRAM_BYTES;
- }
- 
--const struct nvram_ops arch_nvram_ops = {
--	.read           = nvram_read,
--	.write          = nvram_write,
--	.get_size       = nvram_get_size,
--	.set_checksum   = nvram_set_checksum,
--	.initialize     = nvram_initialize,
--};
--EXPORT_SYMBOL(arch_nvram_ops);
--
- #ifdef CONFIG_PROC_FS
- static struct {
- 	unsigned char val;
-Index: linux/arch/m68k/kernel/setup_mm.c
-===================================================================
---- linux.orig/arch/m68k/kernel/setup_mm.c	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/m68k/kernel/setup_mm.c	2015-11-01 21:41:58.000000000 +1100
-@@ -23,6 +23,7 @@
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
- #include <linux/module.h>
-+#include <linux/nvram.h>
- #include <linux/initrd.h>
- 
- #include <asm/bootinfo.h>
-@@ -36,13 +37,14 @@
- #ifdef CONFIG_AMIGA
- #include <asm/amigahw.h>
- #endif
--#ifdef CONFIG_ATARI
- #include <asm/atarihw.h>
-+#ifdef CONFIG_ATARI
- #include <asm/atari_stram.h>
- #endif
- #ifdef CONFIG_SUN3X
- #include <asm/dvma.h>
- #endif
-+#include <asm/macintosh.h>
- #include <asm/natfeat.h>
- 
- #if !FPSTATESIZE || !NR_IRQS
-@@ -568,3 +570,99 @@ static int __init adb_probe_sync_enable
- 
- __setup("adb_sync", adb_probe_sync_enable);
- #endif /* CONFIG_ADB */
-+
-+#if IS_ENABLED(CONFIG_NVRAM)
-+#ifdef CONFIG_MAC
-+static unsigned char m68k_nvram_read_byte(int addr)
-+{
-+	if (MACH_IS_MAC)
-+		return mac_pram_read_byte(addr);
-+	return 0xff;
-+}
-+
-+static void m68k_nvram_write_byte(unsigned char val, int addr)
-+{
-+	if (MACH_IS_MAC)
-+		mac_pram_write_byte(val, addr);
-+}
-+#endif /* CONFIG_MAC */
-+
-+#ifdef CONFIG_ATARI
-+static ssize_t m68k_nvram_read(char *buf, size_t count, loff_t *ppos)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_read(buf, count, ppos);
-+	else if (MACH_IS_MAC) {
-+		ssize_t size = mac_pram_get_size();
-+		char *p = buf;
-+		loff_t i;
-+
-+		for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+			*p = mac_pram_read_byte(i);
-+
-+		*ppos = i;
-+		return p - buf;
-+	}
-+	return -EINVAL;
-+}
-+
-+static ssize_t m68k_nvram_write(char *buf, size_t count, loff_t *ppos)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_write(buf, count, ppos);
-+	else if (MACH_IS_MAC) {
-+		ssize_t size = mac_pram_get_size();
-+		char *p = buf;
-+		loff_t i;
-+
-+		for (i = *ppos; count > 0 && i < size; --count, ++i, ++p)
-+			mac_pram_write_byte(*p, i);
-+
-+		*ppos = i;
-+		return p - buf;
-+	}
-+	return -EINVAL;
-+}
-+
-+static long m68k_nvram_set_checksum(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_set_checksum();
-+	return -EINVAL;
-+}
-+
-+static long m68k_nvram_initialize(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_initialize();
-+	return -EINVAL;
-+}
-+#endif /* CONFIG_ATARI */
-+
-+static ssize_t m68k_nvram_get_size(void)
-+{
-+	if (MACH_IS_ATARI)
-+		return atari_nvram_get_size();
-+	else if (MACH_IS_MAC)
-+		return mac_pram_get_size();
-+	return -ENODEV;
-+}
-+
-+/* Atari device drivers call .read (to get checksum validation) whereas
-+ * Mac and PowerMac device drivers just use .read_byte.
-+ */
-+const struct nvram_ops arch_nvram_ops = {
-+#ifdef CONFIG_MAC
-+	.read_byte      = m68k_nvram_read_byte,
-+	.write_byte     = m68k_nvram_write_byte,
-+#endif
-+#ifdef CONFIG_ATARI
-+	.read           = m68k_nvram_read,
-+	.write          = m68k_nvram_write,
-+	.set_checksum   = m68k_nvram_set_checksum,
-+	.initialize     = m68k_nvram_initialize,
-+#endif
-+	.get_size       = m68k_nvram_get_size,
-+};
-+EXPORT_SYMBOL(arch_nvram_ops);
-+#endif /* CONFIG_NVRAM */
-Index: linux/arch/m68k/Kconfig.machine
-===================================================================
---- linux.orig/arch/m68k/Kconfig.machine	2015-11-01 21:41:36.000000000 +1100
-+++ linux/arch/m68k/Kconfig.machine	2015-11-01 21:41:58.000000000 +1100
-@@ -26,6 +26,7 @@ config MAC
- 	bool "Macintosh support"
- 	depends on MMU
- 	select MMU_MOTOROLA if MMU
-+	select HAVE_ARCH_NVRAM_OPS
- 	help
- 	  This option enables support for the Apple Macintosh series of
- 	  computers (yes, there is experimental support now, at least for part
-Index: linux/arch/m68k/include/asm/atarihw.h
-===================================================================
---- linux.orig/arch/m68k/include/asm/atarihw.h	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/m68k/include/asm/atarihw.h	2015-11-01 21:41:58.000000000 +1100
-@@ -32,6 +32,12 @@ extern int atari_dont_touch_floppy_selec
- 
- extern int atari_SCC_reset_done;
- 
-+extern ssize_t atari_nvram_read(char *, size_t, loff_t *);
-+extern ssize_t atari_nvram_write(char *, size_t, loff_t *);
-+extern ssize_t atari_nvram_get_size(void);
-+extern long atari_nvram_set_checksum(void);
-+extern long atari_nvram_initialize(void);
-+
- /* convenience macros for testing machine type */
- #define MACH_IS_ST	((atari_mch_cookie >> 16) == ATARI_MCH_ST)
- #define MACH_IS_STE	((atari_mch_cookie >> 16) == ATARI_MCH_STE && \
-Index: linux/arch/m68k/include/asm/macintosh.h
-===================================================================
---- linux.orig/arch/m68k/include/asm/macintosh.h	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/m68k/include/asm/macintosh.h	2015-11-01 21:41:58.000000000 +1100
-@@ -18,6 +18,10 @@ extern void mac_init_IRQ(void);
- extern void mac_irq_enable(struct irq_data *data);
- extern void mac_irq_disable(struct irq_data *data);
- 
-+extern unsigned char mac_pram_read_byte(int);
-+extern void mac_pram_write_byte(unsigned char, int);
-+extern ssize_t mac_pram_get_size(void);
-+
- /*
-  *	Macintosh Table
-  */
+QnkgaW1wbGVtZW50aW5nIGFuIGFyY2hfbnZyYW1fb3BzIHN0cnVjdCwgYW55IHBsYXRmb3JtIGNh
+biByZS11c2UgdGhlCmRyaXZlcnMvY2hhci9udnJhbSBtb2R1bGUgd2l0aG91dCBuZWVkaW5nIGFu
+eSBhcmNoLXNwZWNpZmljIGNvZGUKaW4gdGhhdCBtb2R1bGUuIEF0YXJpIGRvZXMgc28gaGVyZS4K
+CkF0YXJpIGhhcyBvbmUgdXNlciBvZiBudnJhbV9jaGVja19jaGVja3N1bSgpIHdoZXJlYXMgdGhl
+IG90aGVyIHBsYXRmb3JtcwooaS5lLiB4ODYgYW5kIEFSTSBwbGF0Zm9ybXMpIGhhdmUgbm9uZSBh
+dCBhbGwuIFJlcGxhY2UgdGhpcwp2YWxpZGF0ZS1jaGVja3N1bS1hbmQtcmVhZC1ieXRlIHNlcXVl
+bmNlIHdpdGggdGhlIGVxdWl2YWxlbnQKcnRjX252cmFtX29wcy5yZWFkKCkgY2FsbCBhbmQgcmVt
+b3ZlIHRoZSBub3cgdW51c2VkIGZ1bmN0aW9ucy4KClNpZ25lZC1vZmYtYnk6IEZpbm4gVGhhaW4g
+PGZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1PgpUZXN0ZWQtYnk6IENocmlzdGlhbiBULiBTdGVp
+Z2llcyA8Y3RzQGRlYmlhbi5vcmc+CkFja2VkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0
+QGxpbnV4LW02OGsub3JnPgoKLS0tCgpUaGUgYWR2YW50YWdlIG9mIHRoZSBuZXcgb3BzIHN0cnVj
+dCBvdmVyIHRoZSBvbGQgZ2xvYmFsIG52cmFtXyogZnVuY3Rpb25zCmlzIHRoYXQgdGhlIG1pc2Mg
+ZGV2aWNlIG1vZHVsZSBjYW4gYmUgc2hhcmVkIGJ5IGRpZmZlcmVudCBwbGF0Zm9ybXMKd2l0aG91
+dCByZXF1aXJpbmcgZXZlcnkgcGxhdGZvcm0gdG8gaW1wbGVtZW50IGV2ZXJ5IG52cmFtXyogZnVu
+Y3Rpb24uCkUuZy4gb25seSBSVEMgIkNNT1MiIE5WUkFNcyBoYXZlIGEgY2hlY2tzdW0gZm9yIHRo
+ZSBlbnRpcmUgTlZSQU0KYW5kIG9ubHkgUG93ZXJQQyBwbGF0Zm9ybXMgaGF2ZSBhICJzeW5jIiBp
+b2N0bC4KCi0tLQogYXJjaC9tNjhrL2F0YXJpL252cmFtLmMgICB8ICAgODkgKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQogZHJpdmVycy9zY3NpL2F0YXJpX3Nj
+c2kuYyB8ICAgIDggKystLQogaW5jbHVkZS9saW51eC9udnJhbS5oICAgICB8ICAgIDkgKysrKwog
+MyBmaWxlcyBjaGFuZ2VkLCA3MCBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkKCkluZGV4
+OiBsaW51eC9hcmNoL202OGsvYXRhcmkvbnZyYW0uYwo9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmln
+L2FyY2gvbTY4ay9hdGFyaS9udnJhbS5jCTIwMTUtMTEtMDEgMjE6NDE6MjUuMDAwMDAwMDAwICsx
+MTAwCisrKyBsaW51eC9hcmNoL202OGsvYXRhcmkvbnZyYW0uYwkyMDE1LTExLTAxIDIxOjQxOjI3
+LjAwMDAwMDAwMCArMTEwMApAQCAtMzgsMzMgKzM4LDEyIEBAIHVuc2lnbmVkIGNoYXIgX19udnJh
+bV9yZWFkX2J5dGUoaW50IGkpCiAJcmV0dXJuIENNT1NfUkVBRChOVlJBTV9GSVJTVF9CWVRFICsg
+aSk7CiB9CiAKLXVuc2lnbmVkIGNoYXIgbnZyYW1fcmVhZF9ieXRlKGludCBpKQotewotCXVuc2ln
+bmVkIGxvbmcgZmxhZ3M7Ci0JdW5zaWduZWQgY2hhciBjOwotCi0Jc3Bpbl9sb2NrX2lycXNhdmUo
+JnJ0Y19sb2NrLCBmbGFncyk7Ci0JYyA9IF9fbnZyYW1fcmVhZF9ieXRlKGkpOwotCXNwaW5fdW5s
+b2NrX2lycXJlc3RvcmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JcmV0dXJuIGM7Ci19Ci1FWFBPUlRf
+U1lNQk9MKG52cmFtX3JlYWRfYnl0ZSk7Ci0KIC8qIFRoaXMgcmFjZXMgbmljZWx5IHdpdGggdHJ5
+aW5nIHRvIHJlYWQgd2l0aCBjaGVja3N1bSBjaGVja2luZyAqLwogdm9pZCBfX252cmFtX3dyaXRl
+X2J5dGUodW5zaWduZWQgY2hhciBjLCBpbnQgaSkKIHsKIAlDTU9TX1dSSVRFKGMsIE5WUkFNX0ZJ
+UlNUX0JZVEUgKyBpKTsKIH0KIAotdm9pZCBudnJhbV93cml0ZV9ieXRlKHVuc2lnbmVkIGNoYXIg
+YywgaW50IGkpCi17Ci0JdW5zaWduZWQgbG9uZyBmbGFnczsKLQotCXNwaW5fbG9ja19pcnFzYXZl
+KCZydGNfbG9jaywgZmxhZ3MpOwotCV9fbnZyYW1fd3JpdGVfYnl0ZShjLCBpKTsKLQlzcGluX3Vu
+bG9ja19pcnFyZXN0b3JlKCZydGNfbG9jaywgZmxhZ3MpOwotfQotCiAvKiBPbiBBdGFyaXMsIHRo
+ZSBjaGVja3N1bSBpcyBvdmVyIGFsbCBieXRlcyBleGNlcHQgdGhlIGNoZWNrc3VtIGJ5dGVzCiAg
+KiB0aGVtc2VsdmVzOyB0aGVzZSBhcmUgYXQgdGhlIHZlcnkgZW5kLgogICovCkBAIC04MywxOCAr
+NjIsNiBAQCBpbnQgX19udnJhbV9jaGVja19jaGVja3N1bSh2b2lkKQogCSAgICAgICAoX19udnJh
+bV9yZWFkX2J5dGUoQVRBUklfQ0tTX0xPQyArIDEpID09IChzdW0gJiAweGZmKSk7CiB9CiAKLWlu
+dCBudnJhbV9jaGVja19jaGVja3N1bSh2b2lkKQotewotCXVuc2lnbmVkIGxvbmcgZmxhZ3M7Ci0J
+aW50IHJ2OwotCi0Jc3Bpbl9sb2NrX2lycXNhdmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JcnYgPSBf
+X252cmFtX2NoZWNrX2NoZWNrc3VtKCk7Ci0Jc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcnRjX2xv
+Y2ssIGZsYWdzKTsKLQlyZXR1cm4gcnY7Ci19Ci1FWFBPUlRfU1lNQk9MKG52cmFtX2NoZWNrX2No
+ZWNrc3VtKTsKLQogc3RhdGljIHZvaWQgX19udnJhbV9zZXRfY2hlY2tzdW0odm9pZCkKIHsKIAlp
+bnQgaTsKQEAgLTEwNiw2ICs3Myw2MiBAQCBzdGF0aWMgdm9pZCBfX252cmFtX3NldF9jaGVja3N1
+bSh2b2lkKQogCV9fbnZyYW1fd3JpdGVfYnl0ZShzdW0sIEFUQVJJX0NLU19MT0MgKyAxKTsKIH0K
+IAorc3RhdGljIHNzaXplX3QgbnZyYW1fcmVhZChjaGFyICpidWYsIHNpemVfdCBjb3VudCwgbG9m
+Zl90ICpwcG9zKQoreworCWNoYXIgKnAgPSBidWY7CisJbG9mZl90IGk7CisKKwlzcGluX2xvY2tf
+aXJxKCZydGNfbG9jayk7CisKKwlpZiAoIV9fbnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgeworCQlz
+cGluX3VubG9ja19pcnEoJnJ0Y19sb2NrKTsKKwkJcmV0dXJuIC1FSU87CisJfQorCisJZm9yIChp
+ID0gKnBwb3M7IGNvdW50ID4gMCAmJiBpIDwgTlZSQU1fQllURVM7IC0tY291bnQsICsraSwgKytw
+KQorCQkqcCA9IF9fbnZyYW1fcmVhZF9ieXRlKGkpOworCisJc3Bpbl91bmxvY2tfaXJxKCZydGNf
+bG9jayk7CisKKwkqcHBvcyA9IGk7CisJcmV0dXJuIHAgLSBidWY7Cit9CisKK3N0YXRpYyBzc2l6
+ZV90IG52cmFtX3dyaXRlKGNoYXIgKmJ1Ziwgc2l6ZV90IGNvdW50LCBsb2ZmX3QgKnBwb3MpCit7
+CisJY2hhciAqcCA9IGJ1ZjsKKwlsb2ZmX3QgaTsKKworCXNwaW5fbG9ja19pcnEoJnJ0Y19sb2Nr
+KTsKKworCWlmICghX19udnJhbV9jaGVja19jaGVja3N1bSgpKSB7CisJCXNwaW5fdW5sb2NrX2ly
+cSgmcnRjX2xvY2spOworCQlyZXR1cm4gLUVJTzsKKwl9CisKKwlmb3IgKGkgPSAqcHBvczsgY291
+bnQgPiAwICYmIGkgPCBOVlJBTV9CWVRFUzsgLS1jb3VudCwgKytpLCArK3ApCisJCV9fbnZyYW1f
+d3JpdGVfYnl0ZSgqcCwgaSk7CisKKwlfX252cmFtX3NldF9jaGVja3N1bSgpOworCisJc3Bpbl91
+bmxvY2tfaXJxKCZydGNfbG9jayk7CisKKwkqcHBvcyA9IGk7CisJcmV0dXJuIHAgLSBidWY7Cit9
+CisKK3N0YXRpYyBzc2l6ZV90IG52cmFtX2dldF9zaXplKHZvaWQpCit7CisJcmV0dXJuIE5WUkFN
+X0JZVEVTOworfQorCitjb25zdCBzdHJ1Y3QgbnZyYW1fb3BzIGFyY2hfbnZyYW1fb3BzID0gewor
+CS5yZWFkICAgICAgICAgICA9IG52cmFtX3JlYWQsCisJLndyaXRlICAgICAgICAgID0gbnZyYW1f
+d3JpdGUsCisJLmdldF9zaXplICAgICAgID0gbnZyYW1fZ2V0X3NpemUsCit9OworRVhQT1JUX1NZ
+TUJPTChhcmNoX252cmFtX29wcyk7CisKICNpZmRlZiBDT05GSUdfUFJPQ19GUwogc3RhdGljIHN0
+cnVjdCB7CiAJdW5zaWduZWQgY2hhciB2YWw7CkluZGV4OiBsaW51eC9kcml2ZXJzL3Njc2kvYXRh
+cmlfc2NzaS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvZHJpdmVycy9zY3NpL2F0YXJpX3Nj
+c2kuYwkyMDE1LTExLTAxIDIxOjQxOjI0LjAwMDAwMDAwMCArMTEwMAorKysgbGludXgvZHJpdmVy
+cy9zY3NpL2F0YXJpX3Njc2kuYwkyMDE1LTExLTAxIDIxOjQxOjI3LjAwMDAwMDAwMCArMTEwMApA
+QCAtODgwLDEzICs4ODAsMTUgQEAgc3RhdGljIGludCBfX2luaXQgYXRhcmlfc2NzaV9wcm9iZShz
+dHJ1YwogI2lmZGVmIENPTkZJR19OVlJBTQogCWVsc2UKIAkJLyogVGVzdCBpZiBhIGhvc3QgaWQg
+aXMgc2V0IGluIHRoZSBOVlJhbSAqLwotCQlpZiAoQVRBUklIV19QUkVTRU5UKFRUX0NMSykgJiYg
+bnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgewotCQkJdW5zaWduZWQgY2hhciBiID0gbnZyYW1fcmVh
+ZF9ieXRlKDE0KTsKKwkJaWYgKEFUQVJJSFdfUFJFU0VOVChUVF9DTEspKSB7CisJCQl1bnNpZ25l
+ZCBjaGFyIGI7CisJCQlsb2ZmX3Qgb2Zmc2V0ID0gMTQ7CisJCQlzc2l6ZV90IGNvdW50ID0gYXJj
+aF9udnJhbV9vcHMucmVhZCgmYiwgMSwgJm9mZnNldCk7CiAKIAkJCS8qIEFyYml0cmF0aW9uIGVu
+YWJsZWQ/IChmb3IgVE9TKQogCQkJICogSWYgeWVzLCB1c2UgY29uZmlndXJlZCBob3N0IElECiAJ
+CQkgKi8KLQkJCWlmIChiICYgMHg4MCkKKwkJCWlmICgoY291bnQgPT0gMSkgJiYgKGIgJiAweDgw
+KSkKIAkJCQlhdGFyaV9zY3NpX3RlbXBsYXRlLnRoaXNfaWQgPSBiICYgNzsKIAkJfQogI2VuZGlm
+CkluZGV4OiBsaW51eC9pbmNsdWRlL2xpbnV4L252cmFtLmgKPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgu
+b3JpZy9pbmNsdWRlL2xpbnV4L252cmFtLmgJMjAxNS0xMS0wMSAyMTo0MToyNC4wMDAwMDAwMDAg
+KzExMDAKKysrIGxpbnV4L2luY2x1ZGUvbGludXgvbnZyYW0uaAkyMDE1LTExLTAxIDIxOjQxOjI3
+LjAwMDAwMDAwMCArMTEwMApAQCAtMTAsNCArMTAsMTMgQEAgZXh0ZXJuIHZvaWQgX19udnJhbV93
+cml0ZV9ieXRlKHVuc2lnbmVkCiBleHRlcm4gdm9pZCBudnJhbV93cml0ZV9ieXRlKHVuc2lnbmVk
+IGNoYXIgYywgaW50IGkpOwogZXh0ZXJuIGludCBfX252cmFtX2NoZWNrX2NoZWNrc3VtKHZvaWQp
+OwogZXh0ZXJuIGludCBudnJhbV9jaGVja19jaGVja3N1bSh2b2lkKTsKKworc3RydWN0IG52cmFt
+X29wcyB7CisJc3NpemVfdCAgICAgICAgICgqcmVhZCkoY2hhciAqLCBzaXplX3QsIGxvZmZfdCAq
+KTsKKwlzc2l6ZV90ICAgICAgICAgKCp3cml0ZSkoY2hhciAqLCBzaXplX3QsIGxvZmZfdCAqKTsK
+Kwlzc2l6ZV90ICAgICAgICAgKCpnZXRfc2l6ZSkodm9pZCk7Cit9OworCitleHRlcm4gY29uc3Qg
+c3RydWN0IG52cmFtX29wcyBhcmNoX252cmFtX29wczsKKwogI2VuZGlmICAvKiBfTElOVVhfTlZS
+QU1fSCAqLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcK
+aHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
