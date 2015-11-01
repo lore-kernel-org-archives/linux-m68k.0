@@ -1,108 +1,217 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 06/26] x86/thinkpad_acpi: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
-Date: Sun, 01 Nov 2015 21:42:08 +1100
-Message-ID: <20151101104203.801701049@telegraphics.com.au>
+Subject: [PATCH v7 20/26] char/generic_nvram: Remove as unused
+Date: Sun, 01 Nov 2015 21:42:22 +1100
+Message-ID: <20151101104207.281709646@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=pc-rtc-replace-exported-nvram-functions
+Content-Disposition: inline; filename=generic_nvram-remove
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Darren Hart <dvhart@infradead.org>, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org
-Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Make use of arch_nvram_ops in the thinkpad_acpi driver so that the
-nvram_* function exports can be removed.
-
-This patch series was tested on a ThinkPad T43.
+And thus eliminate some twisted CONFIG_GENERIC_NVRAM logic.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Reviewed-by: Darren Hart <dvhart@linux.intel.com>
 
 ---
- drivers/platform/x86/thinkpad_acpi.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/char/Makefile        |    6 -
+ drivers/char/generic_nvram.c |  175 -------------------------------------------
+ 2 files changed, 1 insertion(+), 180 deletions(-)
 
-Index: linux/drivers/platform/x86/thinkpad_acpi.c
+Index: linux/drivers/char/Makefile
 ===================================================================
---- linux.orig/drivers/platform/x86/thinkpad_acpi.c	2015-11-01 21:41:24.000000000 +1100
-+++ linux/drivers/platform/x86/thinkpad_acpi.c	2015-11-01 21:41:31.000000000 +1100
-@@ -2312,30 +2312,30 @@ static void hotkey_read_nvram(struct tp_
- 	u8 d;
- 
- 	if (m & TP_NVRAM_HKEY_GROUP_HK2) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_HK2);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_HK2);
- 		n->thinkpad_toggle = !!(d & TP_NVRAM_MASK_HKT_THINKPAD);
- 		n->zoom_toggle = !!(d & TP_NVRAM_MASK_HKT_ZOOM);
- 		n->display_toggle = !!(d & TP_NVRAM_MASK_HKT_DISPLAY);
- 		n->hibernate_toggle = !!(d & TP_NVRAM_MASK_HKT_HIBERNATE);
- 	}
- 	if (m & TP_ACPI_HKEY_THNKLGHT_MASK) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_THINKLIGHT);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_THINKLIGHT);
- 		n->thinklight_toggle = !!(d & TP_NVRAM_MASK_THINKLIGHT);
- 	}
- 	if (m & TP_ACPI_HKEY_DISPXPAND_MASK) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_VIDEO);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_VIDEO);
- 		n->displayexp_toggle =
- 				!!(d & TP_NVRAM_MASK_HKT_DISPEXPND);
- 	}
- 	if (m & TP_NVRAM_HKEY_GROUP_BRIGHTNESS) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
- 		n->brightness_level = (d & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 				>> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
- 		n->brightness_toggle =
- 				!!(d & TP_NVRAM_MASK_HKT_BRIGHTNESS);
- 	}
- 	if (m & TP_NVRAM_HKEY_GROUP_VOLUME) {
--		d = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
-+		d = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
- 		n->volume_level = (d & TP_NVRAM_MASK_LEVEL_VOLUME)
- 				>> TP_NVRAM_POS_LEVEL_VOLUME;
- 		n->mute = !!(d & TP_NVRAM_MASK_MUTE);
-@@ -6156,7 +6156,7 @@ static unsigned int tpacpi_brightness_nv
- {
- 	u8 lnvram;
- 
--	lnvram = (nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
-+	lnvram = (arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS)
- 		  & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 		  >> TP_NVRAM_POS_LEVEL_BRIGHTNESS;
- 	lnvram &= bright_maxlvl;
-@@ -6181,7 +6181,7 @@ static void tpacpi_brightness_checkpoint
- 	if (unlikely(!acpi_ec_read(TP_EC_BACKLIGHT, &lec)))
- 		goto unlock;
- 	lec &= TP_EC_BACKLIGHT_LVLMSK;
--	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
-+	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_BRIGHTNESS);
- 
- 	if (lec != ((b_nvram & TP_NVRAM_MASK_LEVEL_BRIGHTNESS)
- 			     >> TP_NVRAM_POS_LEVEL_BRIGHTNESS)) {
-@@ -6189,7 +6189,7 @@ static void tpacpi_brightness_checkpoint
- 		b_nvram &= ~(TP_NVRAM_MASK_LEVEL_BRIGHTNESS <<
- 				TP_NVRAM_POS_LEVEL_BRIGHTNESS);
- 		b_nvram |= lec;
--		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
-+		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_BRIGHTNESS);
- 		dbg_printk(TPACPI_DBG_BRGHT,
- 			   "updated NVRAM backlight level to %u (0x%02x)\n",
- 			   (unsigned int) lec, (unsigned int) b_nvram);
-@@ -6797,13 +6797,13 @@ static void tpacpi_volume_checkpoint_nvr
- 	if (unlikely(!acpi_ec_read(TP_EC_AUDIO, &lec)))
- 		goto unlock;
- 	lec &= ec_mask;
--	b_nvram = nvram_read_byte(TP_NVRAM_ADDR_MIXER);
-+	b_nvram = arch_nvram_ops.read_byte(TP_NVRAM_ADDR_MIXER);
- 
- 	if (lec != (b_nvram & ec_mask)) {
- 		/* NVRAM needs update */
- 		b_nvram &= ~ec_mask;
- 		b_nvram |= lec;
--		nvram_write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
-+		arch_nvram_ops.write_byte(b_nvram, TP_NVRAM_ADDR_MIXER);
- 		dbg_printk(TPACPI_DBG_MIXER,
- 			   "updated NVRAM mixer status to 0x%02x (0x%02x)\n",
- 			   (unsigned int) lec, (unsigned int) b_nvram);
+--- linux.orig/drivers/char/Makefile	2015-11-01 21:41:23.000000000 +1100
++++ linux/drivers/char/Makefile	2015-11-01 21:41:50.000000000 +1100
+@@ -29,11 +29,7 @@ obj-$(CONFIG_GEN_RTC)		+= genrtc.o
+ obj-$(CONFIG_EFI_RTC)		+= efirtc.o
+ obj-$(CONFIG_DS1302)		+= ds1302.o
+ obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
+-ifeq ($(CONFIG_GENERIC_NVRAM),y)
+-  obj-$(CONFIG_NVRAM)	+= generic_nvram.o
+-else
+-  obj-$(CONFIG_NVRAM)	+= nvram.o
+-endif
++obj-$(CONFIG_NVRAM)		+= nvram.o
+ obj-$(CONFIG_TOSHIBA)		+= toshiba.o
+ obj-$(CONFIG_DS1620)		+= ds1620.o
+ obj-$(CONFIG_HW_RANDOM)		+= hw_random/
+Index: linux/drivers/char/generic_nvram.c
+===================================================================
+--- linux.orig/drivers/char/generic_nvram.c	2015-11-01 21:41:45.000000000 +1100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,175 +0,0 @@
+-/*
+- * Generic /dev/nvram driver for architectures providing some
+- * "generic" hooks, that is :
+- *
+- * nvram_read_byte, nvram_write_byte, nvram_sync, nvram_get_size
+- *
+- * Note that an additional hook is supported for PowerMac only
+- * for getting the nvram "partition" informations
+- *
+- */
+-
+-#define NVRAM_VERSION "1.1"
+-
+-#include <linux/module.h>
+-
+-#include <linux/types.h>
+-#include <linux/errno.h>
+-#include <linux/fs.h>
+-#include <linux/miscdevice.h>
+-#include <linux/fcntl.h>
+-#include <linux/init.h>
+-#include <linux/mutex.h>
+-#include <linux/nvram.h>
+-#include <asm/uaccess.h>
+-#include <asm/nvram.h>
+-#ifdef CONFIG_PPC_PMAC
+-#include <asm/machdep.h>
+-#endif
+-
+-static DEFINE_MUTEX(nvram_mutex);
+-static ssize_t nvram_len;
+-
+-static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
+-{
+-	switch (origin) {
+-	case 0:
+-		break;
+-	case 1:
+-		offset += file->f_pos;
+-		break;
+-	case 2:
+-		offset += nvram_len;
+-		break;
+-	default:
+-		offset = -1;
+-	}
+-	if (offset < 0)
+-		return -EINVAL;
+-
+-	file->f_pos = offset;
+-
+-	return file->f_pos;
+-}
+-
+-static ssize_t read_nvram(struct file *file, char __user *buf,
+-			  size_t count, loff_t *ppos)
+-{
+-	unsigned int i;
+-	char __user *p = buf;
+-
+-	if (!access_ok(VERIFY_WRITE, buf, count))
+-		return -EFAULT;
+-	if (*ppos >= nvram_len)
+-		return 0;
+-	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
+-		if (__put_user(arch_nvram_ops.read_byte(i), p))
+-			return -EFAULT;
+-	*ppos = i;
+-	return p - buf;
+-}
+-
+-static ssize_t write_nvram(struct file *file, const char __user *buf,
+-			   size_t count, loff_t *ppos)
+-{
+-	unsigned int i;
+-	const char __user *p = buf;
+-	char c;
+-
+-	if (!access_ok(VERIFY_READ, buf, count))
+-		return -EFAULT;
+-	if (*ppos >= nvram_len)
+-		return 0;
+-	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
+-		if (__get_user(c, p))
+-			return -EFAULT;
+-		arch_nvram_ops.write_byte(c, i);
+-	}
+-	*ppos = i;
+-	return p - buf;
+-}
+-
+-static int nvram_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	switch(cmd) {
+-#ifdef CONFIG_PPC_PMAC
+-	case OBSOLETE_PMAC_NVRAM_GET_OFFSET:
+-		printk(KERN_WARNING "nvram: Using obsolete PMAC_NVRAM_GET_OFFSET ioctl\n");
+-	case IOC_NVRAM_GET_OFFSET: {
+-		int part, offset;
+-
+-		if (!machine_is(powermac))
+-			return -EINVAL;
+-		if (copy_from_user(&part, (void __user*)arg, sizeof(part)) != 0)
+-			return -EFAULT;
+-		if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+-			return -EINVAL;
+-		offset = pmac_get_partition(part);
+-		if (copy_to_user((void __user*)arg, &offset, sizeof(offset)) != 0)
+-			return -EFAULT;
+-		break;
+-	}
+-#endif /* CONFIG_PPC_PMAC */
+-	case IOC_NVRAM_SYNC:
+-		arch_nvram_ops.sync();
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-static long nvram_unlocked_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	int ret;
+-
+-	mutex_lock(&nvram_mutex);
+-	ret = nvram_ioctl(file, cmd, arg);
+-	mutex_unlock(&nvram_mutex);
+-
+-	return ret;
+-}
+-
+-const struct file_operations nvram_fops = {
+-	.owner		= THIS_MODULE,
+-	.llseek		= nvram_llseek,
+-	.read		= read_nvram,
+-	.write		= write_nvram,
+-	.unlocked_ioctl	= nvram_unlocked_ioctl,
+-};
+-
+-static struct miscdevice nvram_dev = {
+-	NVRAM_MINOR,
+-	"nvram",
+-	&nvram_fops
+-};
+-
+-int __init nvram_init(void)
+-{
+-	int ret;
+-
+-	if (arch_nvram_ops.get_size == NULL)
+-		return -ENODEV;
+-
+-	nvram_len = arch_nvram_ops.get_size();
+-	if (nvram_len < 0)
+-		return nvram_len;
+-
+-	ret = misc_register(&nvram_dev);
+-	if (ret)
+-		return ret;
+-
+-	pr_info("Generic non-volatile memory driver v%s\n", NVRAM_VERSION);
+-
+-	return 0;
+-}
+-
+-void __exit nvram_cleanup(void)
+-{
+-        misc_deregister( &nvram_dev );
+-}
+-
+-module_init(nvram_init);
+-module_exit(nvram_cleanup);
+-MODULE_LICENSE("GPL");
