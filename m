@@ -1,144 +1,257 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 24/26] m68k/mac: Use macros for RTC accesses not magic numbers
-Date: Sun, 01 Nov 2015 21:42:26 +1100
-Message-ID: <20151101104208.271700412@telegraphics.com.au>
+Subject: [PATCH v7 23/26] m68k/mac: Adopt naming and calling conventions for PRAM routines
+Date: Sun, 01 Nov 2015 21:42:25 +1100
+Message-ID: <20151101104208.021676439@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=mac68k-rtc-macros
+Content-Disposition: inline; filename=mac68k-pram-function-names-and-signatures
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
+
+Adopt the existing *_read_byte and *_write_byte naming convention.
+Rename via_pram_readbyte and via_pram_writebyte to avoid confusion.
+Adjust calling conventions of mac_pram_* functions to match the
+arch_nvram_ops struct methods.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 ---
 
-This is intended to improve code style and not affect code behaviour.
-I've tested this on a Quadra 650.
+Changes since v1:
+- Don't introduce the arch_nvram_ops struct in this patch, even if it 
+would form a logical progression. Since the struct would get replaced
+later on, some might see it as churn.
 
-I don't know the meanings of the 4 undocumented write protect register
-bits 0x55, so I decided against defining 4 macros for those bits.
+Changes since v2:
+- Rename via_pram_send() and via_pram_recv() as
+via_rtc_send() and via_rtc_recv() resp.
 
 ---
- arch/m68k/mac/misc.c |   59 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 41 insertions(+), 18 deletions(-)
+ arch/m68k/mac/misc.c |   91 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 46 insertions(+), 45 deletions(-)
 
 Index: linux/arch/m68k/mac/misc.c
 ===================================================================
---- linux.orig/arch/m68k/mac/misc.c	2015-11-01 21:41:55.000000000 +1100
-+++ linux/arch/m68k/mac/misc.c	2015-11-01 21:41:56.000000000 +1100
-@@ -242,6 +242,21 @@ static void via_rtc_send(__u8 data)
+--- linux.orig/arch/m68k/mac/misc.c	2015-11-01 21:41:23.000000000 +1100
++++ linux/arch/m68k/mac/misc.c	2015-11-01 21:41:55.000000000 +1100
+@@ -61,7 +61,7 @@ static void cuda_write_time(long data)
+ 		cuda_poll();
  }
+ 
+-static __u8 cuda_read_pram(int offset)
++static unsigned char cuda_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (cuda_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
+@@ -72,7 +72,7 @@ static __u8 cuda_read_pram(int offset)
+ 	return req.reply[3];
+ }
+ 
+-static void cuda_write_pram(int offset, __u8 data)
++static void cuda_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	if (cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
+@@ -84,8 +84,8 @@ static void cuda_write_pram(int offset,
+ #else
+ #define cuda_read_time() 0
+ #define cuda_write_time(n)
+-#define cuda_read_pram NULL
+-#define cuda_write_pram NULL
++#define cuda_pram_read_byte NULL
++#define cuda_pram_write_byte NULL
+ #endif
+ 
+ #ifdef CONFIG_ADB_PMU68K
+@@ -116,7 +116,7 @@ static void pmu_write_time(long data)
+ 		pmu_poll();
+ }
+ 
+-static __u8 pmu_read_pram(int offset)
++static unsigned char pmu_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
+@@ -127,7 +127,7 @@ static __u8 pmu_read_pram(int offset)
+ 	return req.reply[3];
+ }
+ 
+-static void pmu_write_pram(int offset, __u8 data)
++static void pmu_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
+@@ -139,8 +139,8 @@ static void pmu_write_pram(int offset, _
+ #else
+ #define pmu_read_time() 0
+ #define pmu_write_time(n)
+-#define pmu_read_pram NULL
+-#define pmu_write_pram NULL
++#define pmu_pram_read_byte NULL
++#define pmu_pram_write_byte NULL
+ #endif
+ 
+ #if 0 /* def CONFIG_ADB_MACIISI */
+@@ -169,7 +169,7 @@ static void maciisi_write_time(long data
+ 			(data >> 8) & 0xFF, data & 0xFF);
+ }
+ 
+-static __u8 maciisi_read_pram(int offset)
++static unsigned char maciisi_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+ 	if (maciisi_request(&req, NULL, 4, CUDA_PACKET, CUDA_GET_PRAM,
+@@ -178,7 +178,7 @@ static __u8 maciisi_read_pram(int offset
+ 	return req.reply[3];
+ }
+ 
+-static void maciisi_write_pram(int offset, __u8 data)
++static void maciisi_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+ 	maciisi_request(&req, NULL, 5, CUDA_PACKET, CUDA_SET_PRAM,
+@@ -187,8 +187,8 @@ static void maciisi_write_pram(int offse
+ #else
+ #define maciisi_read_time() 0
+ #define maciisi_write_time(n)
+-#define maciisi_read_pram NULL
+-#define maciisi_write_pram NULL
++#define maciisi_pram_read_byte NULL
++#define maciisi_pram_write_byte NULL
+ #endif
  
  /*
-+ * These values can be found in Inside Macintosh vol. III ch. 2
-+ * which has a description of the RTC chip in the original Mac.
-+ */
-+
-+#define RTC_FLG_READ            BIT(7)
-+#define RTC_FLG_WRITE_PROTECT   BIT(7)
-+#define RTC_CMD_READ(r)         (RTC_FLG_READ | (r << 2))
-+#define RTC_CMD_WRITE(r)        (r << 2)
-+#define RTC_REG_SECONDS_0       0
-+#define RTC_REG_SECONDS_1       1
-+#define RTC_REG_SECONDS_2       2
-+#define RTC_REG_SECONDS_3       3
-+#define RTC_REG_WRITE_PROTECT   13
-+
-+/*
-  * Execute a VIA PRAM/RTC command. For read commands
-  * data should point to a one-byte buffer for the
-  * resulting data. For write commands it should point
-@@ -250,13 +265,17 @@ static void via_rtc_send(__u8 data)
-  * This function disables all interrupts while running.
+@@ -198,7 +198,7 @@ static void maciisi_write_pram(int offse
+  * the RTC should be enabled.
   */
  
--static void via_pram_command(int command, __u8 *data)
-+static void via_rtc_command(int command, __u8 *data)
+-static __u8 via_pram_readbyte(void)
++static __u8 via_rtc_recv(void)
  {
- 	unsigned long flags;
- 	int	is_read;
- 
- 	local_irq_save(flags);
- 
-+	/* The least significant bits must be 0b01 according to Inside Mac */
-+
-+	command = (command & ~3) | 1;
-+
- 	/* Enable the RTC and make sure the strobe line is high */
- 
- 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
-@@ -264,10 +283,10 @@ static void via_pram_command(int command
- 	if (command & 0xFF00) {		/* extended (two-byte) command */
- 		via_rtc_send((command & 0xFF00) >> 8);
- 		via_rtc_send(command & 0xFF);
--		is_read = command & 0x8000;
-+		is_read = command & (RTC_FLG_READ << 8);
- 	} else {			/* one-byte command */
- 		via_rtc_send(command);
--		is_read = command & 0x80;
-+		is_read = command & RTC_FLG_READ;
- 	}
- 	if (is_read) {
- 		*data = via_rtc_recv();
-@@ -306,10 +325,10 @@ static long via_read_time(void)
- 	} result, last_result;
- 	int count = 1;
- 
--	via_pram_command(0x81, &last_result.cdata[3]);
--	via_pram_command(0x85, &last_result.cdata[2]);
--	via_pram_command(0x89, &last_result.cdata[1]);
--	via_pram_command(0x8D, &last_result.cdata[0]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0), &last_result.cdata[3]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1), &last_result.cdata[2]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2), &last_result.cdata[1]);
-+	via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3), &last_result.cdata[0]);
- 
- 	/*
- 	 * The NetBSD guys say to loop until you get the same reading
-@@ -317,10 +336,14 @@ static long via_read_time(void)
- 	 */
- 
- 	while (1) {
--		via_pram_command(0x81, &result.cdata[3]);
--		via_pram_command(0x85, &result.cdata[2]);
--		via_pram_command(0x89, &result.cdata[1]);
--		via_pram_command(0x8D, &result.cdata[0]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_0),
-+		                &result.cdata[3]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_1),
-+		                &result.cdata[2]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_2),
-+		                &result.cdata[1]);
-+		via_rtc_command(RTC_CMD_READ(RTC_REG_SECONDS_3),
-+		                &result.cdata[0]);
- 
- 		if (result.idata == last_result.idata)
- 			return result.idata - RTC_OFFSET;
-@@ -356,18 +379,18 @@ static void via_write_time(long time)
- 	/* Clear the write protect bit */
- 
- 	temp = 0x55;
--	via_pram_command(0x35, &temp);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
- 
- 	data.idata = time + RTC_OFFSET;
--	via_pram_command(0x01, &data.cdata[3]);
--	via_pram_command(0x05, &data.cdata[2]);
--	via_pram_command(0x09, &data.cdata[1]);
--	via_pram_command(0x0D, &data.cdata[0]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_0), &data.cdata[3]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_1), &data.cdata[2]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_2), &data.cdata[1]);
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_SECONDS_3), &data.cdata[0]);
- 
- 	/* Set the write protect bit */
- 
--	temp = 0xD5;
--	via_pram_command(0x35, &temp);
-+	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
-+	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
+ 	int	i,reg;
+ 	__u8	data;
+@@ -225,7 +225,7 @@ static __u8 via_pram_readbyte(void)
+ 	return data;
  }
  
- static void via_shutdown(void)
+-static void via_pram_writebyte(__u8 data)
++static void via_rtc_send(__u8 data)
+ {
+ 	int	i,reg,bit;
+ 
+@@ -262,17 +262,17 @@ static void via_pram_command(int command
+ 	via1[vBufB] = (via1[vBufB] | VIA1B_vRTCClk) & ~VIA1B_vRTCEnb;
+ 
+ 	if (command & 0xFF00) {		/* extended (two-byte) command */
+-		via_pram_writebyte((command & 0xFF00) >> 8);
+-		via_pram_writebyte(command & 0xFF);
++		via_rtc_send((command & 0xFF00) >> 8);
++		via_rtc_send(command & 0xFF);
+ 		is_read = command & 0x8000;
+ 	} else {			/* one-byte command */
+-		via_pram_writebyte(command);
++		via_rtc_send(command);
+ 		is_read = command & 0x80;
+ 	}
+ 	if (is_read) {
+-		*data = via_pram_readbyte();
++		*data = via_rtc_recv();
+ 	} else {
+-		via_pram_writebyte(*data);
++		via_rtc_send(*data);
+ 	}
+ 
+ 	/* All done, disable the RTC */
+@@ -282,12 +282,12 @@ static void via_pram_command(int command
+ 	local_irq_restore(flags);
+ }
+ 
+-static __u8 via_read_pram(int offset)
++static unsigned char via_pram_read_byte(int offset)
+ {
+ 	return 0;
+ }
+ 
+-static void via_write_pram(int offset, __u8 data)
++static void via_pram_write_byte(unsigned char data, int offset)
+ {
+ }
+ 
+@@ -453,50 +453,51 @@ void pmu_shutdown(void)
+  *-------------------------------------------------------------------
+  */
+ 
+-void mac_pram_read(int offset, __u8 *buffer, int len)
++unsigned char mac_pram_read_byte(int addr)
+ {
+-	__u8 (*func)(int);
+-	int i;
++	unsigned char (*func)(int);
+ 
+ 	switch(macintosh_config->adb_type) {
+ 	case MAC_ADB_IISI:
+-		func = maciisi_read_pram; break;
++		func = maciisi_pram_read_byte;
++		break;
+ 	case MAC_ADB_PB1:
+ 	case MAC_ADB_PB2:
+-		func = pmu_read_pram; break;
++		func = pmu_pram_read_byte;
++		break;
+ 	case MAC_ADB_CUDA:
+-		func = cuda_read_pram; break;
++		func = cuda_pram_read_byte;
++		break;
+ 	default:
+-		func = via_read_pram;
+-	}
+-	if (!func)
+-		return;
+-	for (i = 0 ; i < len ; i++) {
+-		buffer[i] = (*func)(offset++);
++		func = via_pram_read_byte;
+ 	}
++
++	if (func)
++		return (*func)(addr);
++	return 0xff;
+ }
+ 
+-void mac_pram_write(int offset, __u8 *buffer, int len)
++void mac_pram_write_byte(unsigned char val, int addr)
+ {
+-	void (*func)(int, __u8);
+-	int i;
++	void (*func)(unsigned char, int);
+ 
+ 	switch(macintosh_config->adb_type) {
+ 	case MAC_ADB_IISI:
+-		func = maciisi_write_pram; break;
++		func = maciisi_pram_write_byte;
++		break;
+ 	case MAC_ADB_PB1:
+ 	case MAC_ADB_PB2:
+-		func = pmu_write_pram; break;
++		func = pmu_pram_write_byte;
++		break;
+ 	case MAC_ADB_CUDA:
+-		func = cuda_write_pram; break;
++		func = cuda_pram_write_byte;
++		break;
+ 	default:
+-		func = via_write_pram;
+-	}
+-	if (!func)
+-		return;
+-	for (i = 0 ; i < len ; i++) {
+-		(*func)(offset++, buffer[i]);
++		func = via_pram_write_byte;
+ 	}
++
++	if (func)
++		(*func)(val, addr);
+ }
+ 
+ void mac_poweroff(void)
