@@ -1,121 +1,44 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 10/26] m68k/atari: Implement arch_nvram_ops methods and enable CONFIG_HAVE_ARCH_NVRAM_OPS
-Date: Sun, 01 Nov 2015 21:42:12 +1100
-Message-ID: <20151101104204.791647606@telegraphics.com.au>
+Subject: [PATCH v7 09/26] char/nvram: Use generic fixed_size_llseek()
+Date: Sun, 01 Nov 2015 21:42:11 +1100
+Message-ID: <20151101104204.541636065@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=atari-hook-up-misc-device
+Content-Disposition: inline; filename=nvram-generic-llseek
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Atari RTC NVRAM has a checksum so implement the remaining arch_nvram_ops
-methods for the set_checksum and initialize ioctls. Enable
-CONFIG_HAVE_ARCH_NVRAM_OPS.
-
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 ---
+ drivers/char/nvram.c |   16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-This re-enables the nvram module for Atari.
-
-Changes since v3:
-- Use bool (and select) instead of def_bool in the definition of the
-HAVE_ARCH_NVRAM_OPS Kconfig symbol, as requested by Geert.
-
----
- arch/m68k/Kconfig         |    3 +++
- arch/m68k/Kconfig.machine |    1 +
- arch/m68k/atari/nvram.c   |   24 ++++++++++++++++++++++++
- drivers/char/Kconfig      |    2 +-
- 4 files changed, 29 insertions(+), 1 deletion(-)
-
-Index: linux/arch/m68k/atari/nvram.c
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/arch/m68k/atari/nvram.c	2015-11-01 21:41:27.000000000 +1100
-+++ linux/arch/m68k/atari/nvram.c	2015-11-01 21:41:36.000000000 +1100
-@@ -73,6 +73,26 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum, ATARI_CKS_LOC + 1);
+--- linux.orig/drivers/char/nvram.c	2015-11-01 21:41:34.000000000 +1100
++++ linux/drivers/char/nvram.c	2015-11-01 21:41:35.000000000 +1100
+@@ -235,21 +235,7 @@ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+ static loff_t nvram_misc_llseek(struct file *file, loff_t offset, int origin)
+ {
+-	switch (origin) {
+-	case 0:
+-		/* nothing to do */
+-		break;
+-	case 1:
+-		offset += file->f_pos;
+-		break;
+-	case 2:
+-		offset += NVRAM_BYTES;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return (offset >= 0) ? (file->f_pos = offset) : -EINVAL;
++	return fixed_size_llseek(file, offset, origin, nvram_size);
  }
  
-+static long nvram_set_checksum(void)
-+{
-+	spin_lock_irq(&rtc_lock);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
-+}
-+
-+static long nvram_initialize(void)
-+{
-+	loff_t i;
-+
-+	spin_lock_irq(&rtc_lock);
-+	for (i = 0; i < NVRAM_BYTES; ++i)
-+		__nvram_write_byte(0, i);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
-+}
-+
- static ssize_t nvram_read(char *buf, size_t count, loff_t *ppos)
- {
- 	char *p = buf;
-@@ -119,6 +139,8 @@ static ssize_t nvram_write(char *buf, si
- 
- static ssize_t nvram_get_size(void)
- {
-+	if (!MACH_IS_ATARI)
-+		return -ENODEV;
- 	return NVRAM_BYTES;
- }
- 
-@@ -126,6 +148,8 @@ const struct nvram_ops arch_nvram_ops =
- 	.read           = nvram_read,
- 	.write          = nvram_write,
- 	.get_size       = nvram_get_size,
-+	.set_checksum   = nvram_set_checksum,
-+	.initialize     = nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
- 
-Index: linux/drivers/char/Kconfig
-===================================================================
---- linux.orig/drivers/char/Kconfig	2015-11-01 21:41:24.000000000 +1100
-+++ linux/drivers/char/Kconfig	2015-11-01 21:41:36.000000000 +1100
-@@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
- 
- config NVRAM
- 	tristate "/dev/nvram support"
--	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM
-+	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
- 	---help---
- 	  If you say Y here and create a character special file /dev/nvram
- 	  with major number 10 and minor number 144 using mknod ("man mknod"),
-Index: linux/arch/m68k/Kconfig
-===================================================================
---- linux.orig/arch/m68k/Kconfig	2015-11-01 21:41:24.000000000 +1100
-+++ linux/arch/m68k/Kconfig	2015-11-01 21:41:36.000000000 +1100
-@@ -71,6 +71,9 @@ config PGTABLE_LEVELS
- 	default 2 if SUN3 || COLDFIRE
- 	default 3
- 
-+config HAVE_ARCH_NVRAM_OPS
-+	bool
-+
- source "init/Kconfig"
- 
- source "kernel/Kconfig.freezer"
-Index: linux/arch/m68k/Kconfig.machine
-===================================================================
---- linux.orig/arch/m68k/Kconfig.machine	2015-11-01 21:41:24.000000000 +1100
-+++ linux/arch/m68k/Kconfig.machine	2015-11-01 21:41:36.000000000 +1100
-@@ -15,6 +15,7 @@ config ATARI
- 	bool "Atari support"
- 	depends on MMU
- 	select MMU_MOTOROLA if MMU
-+	select HAVE_ARCH_NVRAM_OPS
- 	help
- 	  This option enables support for the 68000-based Atari series of
- 	  computers (including the TT, Falcon and Medusa). If you plan to use
+ static ssize_t nvram_misc_read(struct file *file, char __user *buf,
