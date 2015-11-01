@@ -1,165 +1,114 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 07/26] char/nvram: Allow the set_checksum and initialize ioctls to be omitted
-Date: Sun, 01 Nov 2015 21:42:09 +1100
-Message-ID: <20151101104204.051709378@telegraphics.com.au>
+Subject: [PATCH v7 13/26] powerpc: Add missing ppc_md.nvram_size for CHRP and PowerMac
+Date: Sun, 01 Nov 2015 21:42:15 +1100
+Message-ID: <20151101104205.541695989@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=nvram-generalize-ioctl
+Content-Disposition: inline; filename=fix-powerpc-machdep-inconsistencies
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>
 List-Id: linux-m68k@vger.kernel.org
 
-The drivers/char/nvram module has previously only supported RTC "CMOS"
-NVRAM, for which it provides appropriate checksum ioctls. Make these
-ioctls optional so the module can be re-used with other kinds of NVRAM.
+Add the nvram_size() function to those PowerPC platforms that don't already
+have one: CHRP and PowerMac. This means that the ppc_md.nvram_size()
+function can be used to implement arch_nvram_ops.get_size()
 
-The ops struct methods that implement the ioctls now return error
-codes so that a multi-platform kernel binary can do the right thing when
-running on hardware without suitable NVRAM.
+Since we are addressing inconsistencies here, also rename chrp_nvram_read
+and chrp_nvram_write, which break the naming convention used across
+PowerPC platforms for NVRAM accessor functions.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/powerpc/platforms/chrp/nvram.c     |   14 ++++++++++----
+ arch/powerpc/platforms/powermac/nvram.c |    9 +++++++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-Changed since v1:
-- Don't bother acquiring the mutex for unimplemented ioctls.
-
----
- drivers/char/nvram.c  |   71 ++++++++++++++++++++++++++++----------------------
- include/linux/nvram.h |    2 +
- 2 files changed, 43 insertions(+), 30 deletions(-)
-
-Index: linux/drivers/char/nvram.c
+Index: linux/arch/powerpc/platforms/chrp/nvram.c
 ===================================================================
---- linux.orig/drivers/char/nvram.c	2015-11-01 21:41:30.000000000 +1100
-+++ linux/drivers/char/nvram.c	2015-11-01 21:41:32.000000000 +1100
-@@ -153,16 +153,25 @@ static void __nvram_set_checksum(void)
- 	__nvram_write_byte(sum & 0xff, PC_CKS_LOC + 1);
+--- linux.orig/arch/powerpc/platforms/chrp/nvram.c	2015-11-01 21:41:24.000000000 +1100
++++ linux/arch/powerpc/platforms/chrp/nvram.c	2015-11-01 21:41:39.000000000 +1100
+@@ -23,7 +23,7 @@ static unsigned int nvram_size;
+ static unsigned char nvram_buf[4];
+ static DEFINE_SPINLOCK(nvram_lock);
+ 
+-static unsigned char chrp_nvram_read(int addr)
++static unsigned char chrp_nvram_read_byte(int addr)
+ {
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -45,7 +45,7 @@ static unsigned char chrp_nvram_read(int
+ 	return ret;
  }
  
--#if 0
--void nvram_set_checksum(void)
-+static long nvram_set_checksum(void)
+-static void chrp_nvram_write(int addr, unsigned char val)
++static void chrp_nvram_write_byte(int addr, unsigned char val)
  {
--	unsigned long flags;
-+	spin_lock_irq(&rtc_lock);
-+	__nvram_set_checksum();
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
+ 	unsigned int done;
+ 	unsigned long flags;
+@@ -63,6 +63,11 @@ static void chrp_nvram_write(int addr, u
+ 	spin_unlock_irqrestore(&nvram_lock, flags);
+ }
+ 
++static ssize_t chrp_nvram_size(void)
++{
++	return nvram_size;
 +}
 +
-+static long nvram_initialize(void)
-+{
-+	ssize_t i;
+ void __init chrp_nvram_init(void)
+ {
+ 	struct device_node *nvram;
+@@ -84,8 +89,9 @@ void __init chrp_nvram_init(void)
+ 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
+ 	of_node_put(nvram);
  
--	spin_lock_irqsave(&rtc_lock, flags);
-+	spin_lock_irq(&rtc_lock);
-+	for (i = 0; i < NVRAM_BYTES; ++i)
-+		__nvram_write_byte(0, i);
- 	__nvram_set_checksum();
--	spin_unlock_irqrestore(&rtc_lock, flags);
-+	spin_unlock_irq(&rtc_lock);
-+	return 0;
+-	ppc_md.nvram_read_val = chrp_nvram_read;
+-	ppc_md.nvram_write_val = chrp_nvram_write;
++	ppc_md.nvram_read_val  = chrp_nvram_read_byte;
++	ppc_md.nvram_write_val = chrp_nvram_write_byte;
++	ppc_md.nvram_size      = chrp_nvram_size;
+ 
+ 	return;
  }
--#endif  /*  0  */
- 
- static ssize_t nvram_get_size(void)
- {
-@@ -173,6 +182,8 @@ const struct nvram_ops arch_nvram_ops =
- 	.read_byte      = nvram_read_byte,
- 	.write_byte     = nvram_write_byte,
- 	.get_size       = nvram_get_size,
-+	.set_checksum   = nvram_set_checksum,
-+	.initialize     = nvram_initialize,
- };
- EXPORT_SYMBOL(arch_nvram_ops);
- 
-@@ -272,51 +283,51 @@ checksum_err:
- static long nvram_misc_ioctl(struct file *file, unsigned int cmd,
-                              unsigned long arg)
- {
--	int i;
-+	long ret = -ENOTTY;
- 
- 	switch (cmd) {
--
- 	case NVRAM_INIT:
- 		/* initialize NVRAM contents and checksum */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--
--		for (i = 0; i < NVRAM_BYTES; ++i)
--			__nvram_write_byte(0, i);
--		__nvram_set_checksum();
--
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
-+		if (arch_nvram_ops.initialize != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.initialize();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	case NVRAM_SETCKS:
- 		/* just set checksum, contents unchanged (maybe useful after
- 		 * checksum garbaged somehow...) */
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
- 
--		mutex_lock(&nvram_mutex);
--		spin_lock_irq(&rtc_lock);
--		__nvram_set_checksum();
--		spin_unlock_irq(&rtc_lock);
--		mutex_unlock(&nvram_mutex);
--		return 0;
--
--	default:
--		return -ENOTTY;
-+		if (arch_nvram_ops.set_checksum != NULL) {
-+			mutex_lock(&nvram_mutex);
-+			ret = arch_nvram_ops.set_checksum();
-+			mutex_unlock(&nvram_mutex);
-+		}
-+		break;
- 	}
-+	return ret;
- }
- 
- static int nvram_misc_open(struct inode *inode, struct file *file)
- {
- 	spin_lock(&nvram_state_lock);
- 
-+	/* Prevent multiple readers/writers if desired. */
- 	if ((nvram_open_cnt && (file->f_flags & O_EXCL)) ||
--	    (nvram_open_mode & NVRAM_EXCL) ||
--	    ((file->f_mode & FMODE_WRITE) && (nvram_open_mode & NVRAM_WRITE))) {
-+	    (nvram_open_mode & NVRAM_EXCL)) {
-+		spin_unlock(&nvram_state_lock);
-+		return -EBUSY;
-+	}
-+
-+	/* Prevent multiple writers if the set_checksum ioctl is implemented. */
-+	if ((arch_nvram_ops.set_checksum != NULL) &&
-+	    (file->f_mode & FMODE_WRITE) &&
-+	    (nvram_open_mode & NVRAM_WRITE)) {
- 		spin_unlock(&nvram_state_lock);
- 		return -EBUSY;
- 	}
-Index: linux/include/linux/nvram.h
+Index: linux/arch/powerpc/platforms/powermac/nvram.c
 ===================================================================
---- linux.orig/include/linux/nvram.h	2015-11-01 21:41:30.000000000 +1100
-+++ linux/include/linux/nvram.h	2015-11-01 21:41:32.000000000 +1100
-@@ -17,6 +17,8 @@ struct nvram_ops {
- 	unsigned char   (*read_byte)(int);
- 	void            (*write_byte)(unsigned char, int);
- 	ssize_t         (*get_size)(void);
-+	long            (*set_checksum)(void);
-+	long            (*initialize)(void);
- };
+--- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-11-01 21:41:24.000000000 +1100
++++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-11-01 21:41:39.000000000 +1100
+@@ -147,6 +147,11 @@ static ssize_t core99_nvram_size(void)
+ static volatile unsigned char __iomem *nvram_addr;
+ static int nvram_mult;
  
- extern const struct nvram_ops arch_nvram_ops;
++static ssize_t ppc32_nvram_size(void)
++{
++	return NVRAM_SIZE;
++}
++
+ static unsigned char direct_nvram_read_byte(int addr)
+ {
+ 	return in_8(&nvram_data[(addr & (NVRAM_SIZE - 1)) * nvram_mult]);
+@@ -590,21 +595,25 @@ int __init pmac_nvram_init(void)
+ 		nvram_mult = 1;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 1) {
+ 		nvram_data = ioremap(r1.start, s1);
+ 		nvram_mult = (s1 + NVRAM_SIZE - 1) / NVRAM_SIZE;
+ 		ppc_md.nvram_read_val	= direct_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= direct_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 2) {
+ 		nvram_addr = ioremap(r1.start, s1);
+ 		nvram_data = ioremap(r2.start, s2);
+ 		ppc_md.nvram_read_val	= indirect_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= indirect_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ 	} else if (nvram_naddrs == 0 && sys_ctrler == SYS_CTRLER_PMU) {
+ #ifdef CONFIG_ADB_PMU
+ 		nvram_naddrs = -1;
+ 		ppc_md.nvram_read_val	= pmu_nvram_read_byte;
+ 		ppc_md.nvram_write_val	= pmu_nvram_write_byte;
++		ppc_md.nvram_size	= ppc32_nvram_size;
+ #endif /* CONFIG_ADB_PMU */
+ 	} else {
+ 		printk(KERN_ERR "Incompatible type of NVRAM\n");
