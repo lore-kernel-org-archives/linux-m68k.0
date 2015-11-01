@@ -1,195 +1,182 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 17/26] powerpc, fbdev: Use arch_nvram_ops methods instead of nvram_read_byte() and nvram_write_byte()
-Date: Sun, 01 Nov 2015 21:42:19 +1100
-Message-ID: <20151101104206.531667409@telegraphics.com.au>
+Subject: [PATCH v7 16/26] powerpc, fbdev: Use NV_CMODE and NV_VMODE only when CONFIG_PPC32 and CONFIG_PPC_PMAC and CONFIG_NVRAM
+Date: Sun, 01 Nov 2015 21:42:18 +1100
+Message-ID: <20151101104206.281686668@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46406 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46405 "EHLO
 	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752546AbbKAKtJ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2015 05:49:09 -0500
-Content-Disposition: inline; filename=ppc32-replace-exported-nvram-functions
+	with ESMTP id S1752532AbbKAKtI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2015 05:49:08 -0500
+Content-Disposition: inline; filename=ppc32-fbdev-NV_CMODE-and-NV_VMODE
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-fbdev@vger.kernel.org
 
-Make use of arch_nvram_ops in device drivers so that the nvram_* function
-exports can be removed.
+This patch addresses inconsistencies in Mac framebuffer drivers and their
+use of Kconfig symbols relating to NVRAM, so PPC64 can use CONFIG_NVRAM.
 
-Since they are no longer global symbols, rename the PPC32 nvram_* functions
-appropriately.
+Macintosh framebuffer drivers use default settings for color mode and
+video mode that are found in NVRAM. On PCI Macs, MacOS stores display
+settings in the Name Registry (NR) partition in NVRAM*. On NuBus Macs,
+there is no NR partition and MacOS stores display mode settings in PRAM**.
+
+Early model Macs are the ones most likely to benefit from these settings,
+since they are more likely to have one display: a fixed-frequency monitor
+connected to the built-in framebuffer device. Moreover, a single NV_CMODE
+value and a single NV_VMODE value provide for only one display.
+
+The NV_CMODE and NV_VMODE constants are apparently offsets into the NR
+partition for Old World machines and not New World, which also suggests
+that these defaults are not useful on later models.
+
+All this argues for limiting NVRAM support in PowerMac fbdev drivers to
+PPC32 and indeed this is already the case, since CONFIG_NVRAM cannot be
+enabled on PPC64 at present.
+
+For matroxfb, make the CONFIG_PPC32 condition explicit. That way the
+driver won't crash on PPC64 when CONFIG_NVRAM becomes available there.
+
+In imsttfb, add the missing CONFIG_NVRAM test to prevent a build failure,
+since PPC64 does not implement nvram_read_byte(). Also add a missing
+machine_is(powermac) check. Change the inconsistent CONFIG_PPC dependency
+and the matching #ifdef tests to CONFIG_PPC_PMAC. Drop unused #includes.
+
+In valkyriefb, for clarity and consistency with the other PowerMac fbdev
+drivers, test for CONFIG_PPC_PMAC instead of !CONFIG_MAC. Remove a
+bogus comment regarding PRAM.
+
+* See GetPreferredConfiguration and SavePreferredConfiguration in
+"Designing PCI Cards and Drivers for Power Macintosh Computers".
+
+** See SetDefaultMode and GetDefaultMode in "Designing Cards and Drivers
+for the Macintosh Family".
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
-
-Changed since v4:
-- Split off the CONFIG_PPC32, CONFIG_PPC_PMAC and CONFIG_NVRAM tests into
-a separate patch.
-
----
- arch/powerpc/kernel/setup_32.c             |    8 ++++----
- drivers/char/generic_nvram.c               |    4 ++--
- drivers/video/fbdev/controlfb.c            |    4 ++--
- drivers/video/fbdev/imsttfb.c              |    4 ++--
+ drivers/video/fbdev/Kconfig                |    2 +-
+ drivers/video/fbdev/imsttfb.c              |   13 +++++--------
  drivers/video/fbdev/matrox/matroxfb_base.c |    2 +-
- drivers/video/fbdev/platinumfb.c           |    4 ++--
- drivers/video/fbdev/valkyriefb.c           |    4 ++--
- 7 files changed, 15 insertions(+), 15 deletions(-)
+ drivers/video/fbdev/valkyriefb.c           |   14 ++++++--------
+ 4 files changed, 13 insertions(+), 18 deletions(-)
 
-Index: linux/arch/powerpc/kernel/setup_32.c
+Index: linux/drivers/video/fbdev/Kconfig
 ===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:42.000000000 +1100
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:45.000000000 +1100
-@@ -176,20 +176,18 @@ __setup("l3cr=", ppc_setup_l3cr);
- 
- #ifdef CONFIG_GENERIC_NVRAM
- 
--unsigned char nvram_read_byte(int addr)
-+static unsigned char ppc_nvram_read_byte(int addr)
- {
- 	if (ppc_md.nvram_read_val)
- 		return ppc_md.nvram_read_val(addr);
- 	return 0xff;
- }
--EXPORT_SYMBOL(nvram_read_byte);
- 
--void nvram_write_byte(unsigned char val, int addr)
-+static void ppc_nvram_write_byte(unsigned char val, int addr)
- {
- 	if (ppc_md.nvram_write_val)
- 		ppc_md.nvram_write_val(addr, val);
- }
--EXPORT_SYMBOL(nvram_write_byte);
- 
- static ssize_t ppc_nvram_get_size(void)
- {
-@@ -206,6 +204,8 @@ static long ppc_nvram_sync(void)
- }
- 
- const struct nvram_ops arch_nvram_ops = {
-+	.read_byte      = ppc_nvram_read_byte,
-+	.write_byte     = ppc_nvram_write_byte,
- 	.get_size       = ppc_nvram_get_size,
- 	.sync           = ppc_nvram_sync,
- };
-Index: linux/drivers/char/generic_nvram.c
-===================================================================
---- linux.orig/drivers/char/generic_nvram.c	2015-11-01 21:41:42.000000000 +1100
-+++ linux/drivers/char/generic_nvram.c	2015-11-01 21:41:45.000000000 +1100
-@@ -63,7 +63,7 @@ static ssize_t read_nvram(struct file *f
- 	if (*ppos >= nvram_len)
- 		return 0;
- 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count)
--		if (__put_user(nvram_read_byte(i), p))
-+		if (__put_user(arch_nvram_ops.read_byte(i), p))
- 			return -EFAULT;
- 	*ppos = i;
- 	return p - buf;
-@@ -83,7 +83,7 @@ static ssize_t write_nvram(struct file *
- 	for (i = *ppos; count > 0 && i < nvram_len; ++i, ++p, --count) {
- 		if (__get_user(c, p))
- 			return -EFAULT;
--		nvram_write_byte(c, i);
-+		arch_nvram_ops.write_byte(c, i);
- 	}
- 	*ppos = i;
- 	return p - buf;
-Index: linux/drivers/video/fbdev/controlfb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/controlfb.c	2015-11-01 21:41:23.000000000 +1100
-+++ linux/drivers/video/fbdev/controlfb.c	2015-11-01 21:41:45.000000000 +1100
-@@ -415,7 +415,7 @@ static int __init init_control(struct fb
- 	/* Try to pick a video mode out of NVRAM if we have one. */
- #ifdef CONFIG_NVRAM
- 	if (default_cmode == CMODE_NVRAM) {
--		cmode = nvram_read_byte(NV_CMODE);
-+		cmode = arch_nvram_ops.read_byte(NV_CMODE);
- 		if(cmode < CMODE_8 || cmode > CMODE_32)
- 			cmode = CMODE_8;
- 	} else
-@@ -423,7 +423,7 @@ static int __init init_control(struct fb
- 		cmode=default_cmode;
- #ifdef CONFIG_NVRAM
- 	if (default_vmode == VMODE_NVRAM) {
--		vmode = nvram_read_byte(NV_VMODE);
-+		vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (vmode < 1 || vmode > VMODE_MAX ||
- 		    control_mac_modes[vmode - 1].m[full] < cmode) {
- 			sense = read_control_sense(p);
+--- linux.orig/drivers/video/fbdev/Kconfig	2015-11-01 21:41:23.000000000 +1100
++++ linux/drivers/video/fbdev/Kconfig	2015-11-01 21:41:43.000000000 +1100
+@@ -544,7 +544,7 @@ config FB_IMSTT
+ 	bool "IMS Twin Turbo display support"
+ 	depends on (FB = y) && PCI
+ 	select FB_CFB_IMAGEBLIT
+-	select FB_MACMODES if PPC
++	select FB_MACMODES if PPC_PMAC
+ 	help
+ 	  The IMS Twin Turbo is a PCI-based frame buffer card bundled with
+ 	  many Macintosh and compatible computers.
 Index: linux/drivers/video/fbdev/imsttfb.c
 ===================================================================
---- linux.orig/drivers/video/fbdev/imsttfb.c	2015-11-01 21:41:43.000000000 +1100
-+++ linux/drivers/video/fbdev/imsttfb.c	2015-11-01 21:41:45.000000000 +1100
-@@ -1393,12 +1393,12 @@ static void init_imstt(struct fb_info *i
+--- linux.orig/drivers/video/fbdev/imsttfb.c	2015-11-01 21:41:23.000000000 +1100
++++ linux/drivers/video/fbdev/imsttfb.c	2015-11-01 21:41:43.000000000 +1100
+@@ -30,10 +30,8 @@
+ #include <asm/io.h>
+ #include <linux/uaccess.h>
+ 
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ #include <linux/nvram.h>
+-#include <asm/prom.h>
+-#include <asm/pci-bridge.h>
+ #include "macmodes.h"
+ #endif
+ 
+@@ -328,14 +326,13 @@ enum {
+ 	TVP = 1
+ };
+ 
+-#define USE_NV_MODES		1
+ #define INIT_BPP		8
+ #define INIT_XRES		640
+ #define INIT_YRES		480
+ 
+ static int inverse = 0;
+ static char fontname[40] __initdata = { 0 };
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ static signed char init_vmode = -1, init_cmode = -1;
+ #endif
+ 
+@@ -1391,8 +1388,8 @@ static void init_imstt(struct fb_info *i
+ 		}
+ 	}
+ 
+-#if USE_NV_MODES && defined(CONFIG_PPC32)
+-	{
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
++	if (machine_is(powermac)) {
  		int vmode = init_vmode, cmode = init_cmode;
  
  		if (vmode == -1) {
--			vmode = nvram_read_byte(NV_VMODE);
-+			vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 			if (vmode <= 0 || vmode > VMODE_MAX)
- 				vmode = VMODE_640_480_67;
+@@ -1566,7 +1563,7 @@ imsttfb_setup(char *options)
+ 			inverse = 1;
+ 			fb_invert_cmaps();
  		}
- 		if (cmode == -1) {
--			cmode = nvram_read_byte(NV_CMODE);
-+			cmode = arch_nvram_ops.read_byte(NV_CMODE);
- 			if (cmode < CMODE_8 || cmode > CMODE_32)
- 				cmode = CMODE_8;
- 		}
+-#if defined(CONFIG_PPC)
++#if defined(CONFIG_PPC_PMAC)
+ 		else if (!strncmp(this_opt, "vmode:", 6)) {
+ 			int vmode = simple_strtoul(this_opt+6, NULL, 0);
+ 			if (vmode > 0 && vmode <= VMODE_MAX)
 Index: linux/drivers/video/fbdev/matrox/matroxfb_base.c
 ===================================================================
---- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-11-01 21:41:43.000000000 +1100
-+++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-11-01 21:41:45.000000000 +1100
-@@ -1878,7 +1878,7 @@ static int initMatrox2(struct matrox_fb_
+--- linux.orig/drivers/video/fbdev/matrox/matroxfb_base.c	2015-11-01 21:41:38.000000000 +1100
++++ linux/drivers/video/fbdev/matrox/matroxfb_base.c	2015-11-01 21:41:43.000000000 +1100
+@@ -1876,7 +1876,7 @@ static int initMatrox2(struct matrox_fb_
+ 		struct fb_var_screeninfo var;
+ 		if (default_vmode <= 0 || default_vmode > VMODE_MAX)
  			default_vmode = VMODE_640_480_60;
- #if defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
+-#ifdef CONFIG_NVRAM
++#if defined(CONFIG_PPC32) && defined(CONFIG_NVRAM)
  		if (default_cmode == CMODE_NVRAM)
--			default_cmode = nvram_read_byte(NV_CMODE);
-+			default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+ 			default_cmode = nvram_read_byte(NV_CMODE);
  #endif
- 		if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
- 			default_cmode = CMODE_8;
-Index: linux/drivers/video/fbdev/platinumfb.c
-===================================================================
---- linux.orig/drivers/video/fbdev/platinumfb.c	2015-11-01 21:41:23.000000000 +1100
-+++ linux/drivers/video/fbdev/platinumfb.c	2015-11-01 21:41:45.000000000 +1100
-@@ -349,7 +349,7 @@ static int platinum_init_fb(struct fb_in
- 	printk(KERN_INFO "platinumfb: Monitor sense value = 0x%x, ", sense);
- 	if (default_vmode == VMODE_NVRAM) {
- #ifdef CONFIG_NVRAM
--		default_vmode = nvram_read_byte(NV_VMODE);
-+		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (default_vmode <= 0 || default_vmode > VMODE_MAX ||
- 		    !platinum_reg_init[default_vmode-1])
- #endif
-@@ -362,7 +362,7 @@ static int platinum_init_fb(struct fb_in
- 		default_vmode = VMODE_640_480_60;
- #ifdef CONFIG_NVRAM
- 	if (default_cmode == CMODE_NVRAM)
--		default_cmode = nvram_read_byte(NV_CMODE);
-+		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
- #endif
- 	if (default_cmode < CMODE_8 || default_cmode > CMODE_32)
- 		default_cmode = CMODE_8;
 Index: linux/drivers/video/fbdev/valkyriefb.c
 ===================================================================
---- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-11-01 21:41:43.000000000 +1100
-+++ linux/drivers/video/fbdev/valkyriefb.c	2015-11-01 21:41:45.000000000 +1100
-@@ -285,7 +285,7 @@ static void __init valkyrie_choose_mode(
- 	/* Try to pick a video mode out of NVRAM if we have one. */
- #if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
- 	if (default_vmode == VMODE_NVRAM) {
--		default_vmode = nvram_read_byte(NV_VMODE);
-+		default_vmode = arch_nvram_ops.read_byte(NV_VMODE);
- 		if (default_vmode <= 0
- 		 || default_vmode > VMODE_MAX
- 		 || !valkyrie_reg_init[default_vmode - 1])
-@@ -298,7 +298,7 @@ static void __init valkyrie_choose_mode(
- 		default_vmode = VMODE_640_480_67;
- #if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
- 	if (default_cmode == CMODE_NVRAM)
--		default_cmode = nvram_read_byte(NV_CMODE);
-+		default_cmode = arch_nvram_ops.read_byte(NV_CMODE);
+--- linux.orig/drivers/video/fbdev/valkyriefb.c	2015-11-01 21:41:23.000000000 +1100
++++ linux/drivers/video/fbdev/valkyriefb.c	2015-11-01 21:41:43.000000000 +1100
+@@ -65,14 +65,12 @@
+ #include "macmodes.h"
+ #include "valkyriefb.h"
+ 
+-#ifdef CONFIG_MAC
+-/* We don't yet have functions to read the PRAM... perhaps we can
+-   adapt them from the PPC code? */
+-static int default_vmode = VMODE_CHOOSE;
+-static int default_cmode = CMODE_8;
+-#else
++#ifdef CONFIG_PPC_PMAC
+ static int default_vmode = VMODE_NVRAM;
+ static int default_cmode = CMODE_NVRAM;
++#else
++static int default_vmode = VMODE_CHOOSE;
++static int default_cmode = CMODE_8;
  #endif
  
- 	/*
+ struct fb_par_valkyrie {
+@@ -285,7 +283,7 @@ static void __init valkyrie_choose_mode(
+ 	printk(KERN_INFO "Monitor sense value = 0x%x\n", p->sense);
+ 
+ 	/* Try to pick a video mode out of NVRAM if we have one. */
+-#if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_vmode == VMODE_NVRAM) {
+ 		default_vmode = nvram_read_byte(NV_VMODE);
+ 		if (default_vmode <= 0
+@@ -298,7 +296,7 @@ static void __init valkyrie_choose_mode(
+ 		default_vmode = mac_map_monitor_sense(p->sense);
+ 	if (!valkyrie_reg_init[default_vmode - 1])
+ 		default_vmode = VMODE_640_480_67;
+-#if !defined(CONFIG_MAC) && defined(CONFIG_NVRAM)
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_NVRAM)
+ 	if (default_cmode == CMODE_NVRAM)
+ 		default_cmode = nvram_read_byte(NV_CMODE);
+ #endif
