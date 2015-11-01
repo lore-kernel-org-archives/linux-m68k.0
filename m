@@ -1,121 +1,117 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 03/26] m68k/atari: Replace nvram_{read,
- write}_byte with arch_nvram_ops
-Date: Sun, 01 Nov 2015 21:42:05 +1100
-Message-ID: <20151101104203.061678383@telegraphics.com.au>
+Subject: [PATCH v7 25/26] m68k/mac: Fix PRAM accessors
+Date: Sun, 01 Nov 2015 21:42:27 +1100
+Message-ID: <20151101104208.511910567@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline; filename=atari_scsi-convert-to-nvram_ops
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-scsi@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline; filename=mac68k-fix-pram-accessors
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-api@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-QnkgaW1wbGVtZW50aW5nIGFuIGFyY2hfbnZyYW1fb3BzIHN0cnVjdCwgYW55IHBsYXRmb3JtIGNh
-biByZS11c2UgdGhlCmRyaXZlcnMvY2hhci9udnJhbSBtb2R1bGUgd2l0aG91dCBuZWVkaW5nIGFu
-eSBhcmNoLXNwZWNpZmljIGNvZGUKaW4gdGhhdCBtb2R1bGUuIEF0YXJpIGRvZXMgc28gaGVyZS4K
-CkF0YXJpIGhhcyBvbmUgdXNlciBvZiBudnJhbV9jaGVja19jaGVja3N1bSgpIHdoZXJlYXMgdGhl
-IG90aGVyIHBsYXRmb3JtcwooaS5lLiB4ODYgYW5kIEFSTSBwbGF0Zm9ybXMpIGhhdmUgbm9uZSBh
-dCBhbGwuIFJlcGxhY2UgdGhpcwp2YWxpZGF0ZS1jaGVja3N1bS1hbmQtcmVhZC1ieXRlIHNlcXVl
-bmNlIHdpdGggdGhlIGVxdWl2YWxlbnQKcnRjX252cmFtX29wcy5yZWFkKCkgY2FsbCBhbmQgcmVt
-b3ZlIHRoZSBub3cgdW51c2VkIGZ1bmN0aW9ucy4KClNpZ25lZC1vZmYtYnk6IEZpbm4gVGhhaW4g
-PGZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1PgpUZXN0ZWQtYnk6IENocmlzdGlhbiBULiBTdGVp
-Z2llcyA8Y3RzQGRlYmlhbi5vcmc+CkFja2VkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0
-QGxpbnV4LW02OGsub3JnPgoKLS0tCgpUaGUgYWR2YW50YWdlIG9mIHRoZSBuZXcgb3BzIHN0cnVj
-dCBvdmVyIHRoZSBvbGQgZ2xvYmFsIG52cmFtXyogZnVuY3Rpb25zCmlzIHRoYXQgdGhlIG1pc2Mg
-ZGV2aWNlIG1vZHVsZSBjYW4gYmUgc2hhcmVkIGJ5IGRpZmZlcmVudCBwbGF0Zm9ybXMKd2l0aG91
-dCByZXF1aXJpbmcgZXZlcnkgcGxhdGZvcm0gdG8gaW1wbGVtZW50IGV2ZXJ5IG52cmFtXyogZnVu
-Y3Rpb24uCkUuZy4gb25seSBSVEMgIkNNT1MiIE5WUkFNcyBoYXZlIGEgY2hlY2tzdW0gZm9yIHRo
-ZSBlbnRpcmUgTlZSQU0KYW5kIG9ubHkgUG93ZXJQQyBwbGF0Zm9ybXMgaGF2ZSBhICJzeW5jIiBp
-b2N0bC4KCi0tLQogYXJjaC9tNjhrL2F0YXJpL252cmFtLmMgICB8ICAgODkgKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQogZHJpdmVycy9zY3NpL2F0YXJpX3Nj
-c2kuYyB8ICAgIDggKystLQogaW5jbHVkZS9saW51eC9udnJhbS5oICAgICB8ICAgIDkgKysrKwog
-MyBmaWxlcyBjaGFuZ2VkLCA3MCBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkKCkluZGV4
-OiBsaW51eC9hcmNoL202OGsvYXRhcmkvbnZyYW0uYwo9PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmln
-L2FyY2gvbTY4ay9hdGFyaS9udnJhbS5jCTIwMTUtMTEtMDEgMjE6NDE6MjUuMDAwMDAwMDAwICsx
-MTAwCisrKyBsaW51eC9hcmNoL202OGsvYXRhcmkvbnZyYW0uYwkyMDE1LTExLTAxIDIxOjQxOjI3
-LjAwMDAwMDAwMCArMTEwMApAQCAtMzgsMzMgKzM4LDEyIEBAIHVuc2lnbmVkIGNoYXIgX19udnJh
-bV9yZWFkX2J5dGUoaW50IGkpCiAJcmV0dXJuIENNT1NfUkVBRChOVlJBTV9GSVJTVF9CWVRFICsg
-aSk7CiB9CiAKLXVuc2lnbmVkIGNoYXIgbnZyYW1fcmVhZF9ieXRlKGludCBpKQotewotCXVuc2ln
-bmVkIGxvbmcgZmxhZ3M7Ci0JdW5zaWduZWQgY2hhciBjOwotCi0Jc3Bpbl9sb2NrX2lycXNhdmUo
-JnJ0Y19sb2NrLCBmbGFncyk7Ci0JYyA9IF9fbnZyYW1fcmVhZF9ieXRlKGkpOwotCXNwaW5fdW5s
-b2NrX2lycXJlc3RvcmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JcmV0dXJuIGM7Ci19Ci1FWFBPUlRf
-U1lNQk9MKG52cmFtX3JlYWRfYnl0ZSk7Ci0KIC8qIFRoaXMgcmFjZXMgbmljZWx5IHdpdGggdHJ5
-aW5nIHRvIHJlYWQgd2l0aCBjaGVja3N1bSBjaGVja2luZyAqLwogdm9pZCBfX252cmFtX3dyaXRl
-X2J5dGUodW5zaWduZWQgY2hhciBjLCBpbnQgaSkKIHsKIAlDTU9TX1dSSVRFKGMsIE5WUkFNX0ZJ
-UlNUX0JZVEUgKyBpKTsKIH0KIAotdm9pZCBudnJhbV93cml0ZV9ieXRlKHVuc2lnbmVkIGNoYXIg
-YywgaW50IGkpCi17Ci0JdW5zaWduZWQgbG9uZyBmbGFnczsKLQotCXNwaW5fbG9ja19pcnFzYXZl
-KCZydGNfbG9jaywgZmxhZ3MpOwotCV9fbnZyYW1fd3JpdGVfYnl0ZShjLCBpKTsKLQlzcGluX3Vu
-bG9ja19pcnFyZXN0b3JlKCZydGNfbG9jaywgZmxhZ3MpOwotfQotCiAvKiBPbiBBdGFyaXMsIHRo
-ZSBjaGVja3N1bSBpcyBvdmVyIGFsbCBieXRlcyBleGNlcHQgdGhlIGNoZWNrc3VtIGJ5dGVzCiAg
-KiB0aGVtc2VsdmVzOyB0aGVzZSBhcmUgYXQgdGhlIHZlcnkgZW5kLgogICovCkBAIC04MywxOCAr
-NjIsNiBAQCBpbnQgX19udnJhbV9jaGVja19jaGVja3N1bSh2b2lkKQogCSAgICAgICAoX19udnJh
-bV9yZWFkX2J5dGUoQVRBUklfQ0tTX0xPQyArIDEpID09IChzdW0gJiAweGZmKSk7CiB9CiAKLWlu
-dCBudnJhbV9jaGVja19jaGVja3N1bSh2b2lkKQotewotCXVuc2lnbmVkIGxvbmcgZmxhZ3M7Ci0J
-aW50IHJ2OwotCi0Jc3Bpbl9sb2NrX2lycXNhdmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JcnYgPSBf
-X252cmFtX2NoZWNrX2NoZWNrc3VtKCk7Ci0Jc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcnRjX2xv
-Y2ssIGZsYWdzKTsKLQlyZXR1cm4gcnY7Ci19Ci1FWFBPUlRfU1lNQk9MKG52cmFtX2NoZWNrX2No
-ZWNrc3VtKTsKLQogc3RhdGljIHZvaWQgX19udnJhbV9zZXRfY2hlY2tzdW0odm9pZCkKIHsKIAlp
-bnQgaTsKQEAgLTEwNiw2ICs3Myw2MiBAQCBzdGF0aWMgdm9pZCBfX252cmFtX3NldF9jaGVja3N1
-bSh2b2lkKQogCV9fbnZyYW1fd3JpdGVfYnl0ZShzdW0sIEFUQVJJX0NLU19MT0MgKyAxKTsKIH0K
-IAorc3RhdGljIHNzaXplX3QgbnZyYW1fcmVhZChjaGFyICpidWYsIHNpemVfdCBjb3VudCwgbG9m
-Zl90ICpwcG9zKQoreworCWNoYXIgKnAgPSBidWY7CisJbG9mZl90IGk7CisKKwlzcGluX2xvY2tf
-aXJxKCZydGNfbG9jayk7CisKKwlpZiAoIV9fbnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgeworCQlz
-cGluX3VubG9ja19pcnEoJnJ0Y19sb2NrKTsKKwkJcmV0dXJuIC1FSU87CisJfQorCisJZm9yIChp
-ID0gKnBwb3M7IGNvdW50ID4gMCAmJiBpIDwgTlZSQU1fQllURVM7IC0tY291bnQsICsraSwgKytw
-KQorCQkqcCA9IF9fbnZyYW1fcmVhZF9ieXRlKGkpOworCisJc3Bpbl91bmxvY2tfaXJxKCZydGNf
-bG9jayk7CisKKwkqcHBvcyA9IGk7CisJcmV0dXJuIHAgLSBidWY7Cit9CisKK3N0YXRpYyBzc2l6
-ZV90IG52cmFtX3dyaXRlKGNoYXIgKmJ1Ziwgc2l6ZV90IGNvdW50LCBsb2ZmX3QgKnBwb3MpCit7
-CisJY2hhciAqcCA9IGJ1ZjsKKwlsb2ZmX3QgaTsKKworCXNwaW5fbG9ja19pcnEoJnJ0Y19sb2Nr
-KTsKKworCWlmICghX19udnJhbV9jaGVja19jaGVja3N1bSgpKSB7CisJCXNwaW5fdW5sb2NrX2ly
-cSgmcnRjX2xvY2spOworCQlyZXR1cm4gLUVJTzsKKwl9CisKKwlmb3IgKGkgPSAqcHBvczsgY291
-bnQgPiAwICYmIGkgPCBOVlJBTV9CWVRFUzsgLS1jb3VudCwgKytpLCArK3ApCisJCV9fbnZyYW1f
-d3JpdGVfYnl0ZSgqcCwgaSk7CisKKwlfX252cmFtX3NldF9jaGVja3N1bSgpOworCisJc3Bpbl91
-bmxvY2tfaXJxKCZydGNfbG9jayk7CisKKwkqcHBvcyA9IGk7CisJcmV0dXJuIHAgLSBidWY7Cit9
-CisKK3N0YXRpYyBzc2l6ZV90IG52cmFtX2dldF9zaXplKHZvaWQpCit7CisJcmV0dXJuIE5WUkFN
-X0JZVEVTOworfQorCitjb25zdCBzdHJ1Y3QgbnZyYW1fb3BzIGFyY2hfbnZyYW1fb3BzID0gewor
-CS5yZWFkICAgICAgICAgICA9IG52cmFtX3JlYWQsCisJLndyaXRlICAgICAgICAgID0gbnZyYW1f
-d3JpdGUsCisJLmdldF9zaXplICAgICAgID0gbnZyYW1fZ2V0X3NpemUsCit9OworRVhQT1JUX1NZ
-TUJPTChhcmNoX252cmFtX29wcyk7CisKICNpZmRlZiBDT05GSUdfUFJPQ19GUwogc3RhdGljIHN0
-cnVjdCB7CiAJdW5zaWduZWQgY2hhciB2YWw7CkluZGV4OiBsaW51eC9kcml2ZXJzL3Njc2kvYXRh
-cmlfc2NzaS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvZHJpdmVycy9zY3NpL2F0YXJpX3Nj
-c2kuYwkyMDE1LTExLTAxIDIxOjQxOjI0LjAwMDAwMDAwMCArMTEwMAorKysgbGludXgvZHJpdmVy
-cy9zY3NpL2F0YXJpX3Njc2kuYwkyMDE1LTExLTAxIDIxOjQxOjI3LjAwMDAwMDAwMCArMTEwMApA
-QCAtODgwLDEzICs4ODAsMTUgQEAgc3RhdGljIGludCBfX2luaXQgYXRhcmlfc2NzaV9wcm9iZShz
-dHJ1YwogI2lmZGVmIENPTkZJR19OVlJBTQogCWVsc2UKIAkJLyogVGVzdCBpZiBhIGhvc3QgaWQg
-aXMgc2V0IGluIHRoZSBOVlJhbSAqLwotCQlpZiAoQVRBUklIV19QUkVTRU5UKFRUX0NMSykgJiYg
-bnZyYW1fY2hlY2tfY2hlY2tzdW0oKSkgewotCQkJdW5zaWduZWQgY2hhciBiID0gbnZyYW1fcmVh
-ZF9ieXRlKDE0KTsKKwkJaWYgKEFUQVJJSFdfUFJFU0VOVChUVF9DTEspKSB7CisJCQl1bnNpZ25l
-ZCBjaGFyIGI7CisJCQlsb2ZmX3Qgb2Zmc2V0ID0gMTQ7CisJCQlzc2l6ZV90IGNvdW50ID0gYXJj
-aF9udnJhbV9vcHMucmVhZCgmYiwgMSwgJm9mZnNldCk7CiAKIAkJCS8qIEFyYml0cmF0aW9uIGVu
-YWJsZWQ/IChmb3IgVE9TKQogCQkJICogSWYgeWVzLCB1c2UgY29uZmlndXJlZCBob3N0IElECiAJ
-CQkgKi8KLQkJCWlmIChiICYgMHg4MCkKKwkJCWlmICgoY291bnQgPT0gMSkgJiYgKGIgJiAweDgw
-KSkKIAkJCQlhdGFyaV9zY3NpX3RlbXBsYXRlLnRoaXNfaWQgPSBiICYgNzsKIAkJfQogI2VuZGlm
-CkluZGV4OiBsaW51eC9pbmNsdWRlL2xpbnV4L252cmFtLmgKPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgu
-b3JpZy9pbmNsdWRlL2xpbnV4L252cmFtLmgJMjAxNS0xMS0wMSAyMTo0MToyNC4wMDAwMDAwMDAg
-KzExMDAKKysrIGxpbnV4L2luY2x1ZGUvbGludXgvbnZyYW0uaAkyMDE1LTExLTAxIDIxOjQxOjI3
-LjAwMDAwMDAwMCArMTEwMApAQCAtMTAsNCArMTAsMTMgQEAgZXh0ZXJuIHZvaWQgX19udnJhbV93
-cml0ZV9ieXRlKHVuc2lnbmVkCiBleHRlcm4gdm9pZCBudnJhbV93cml0ZV9ieXRlKHVuc2lnbmVk
-IGNoYXIgYywgaW50IGkpOwogZXh0ZXJuIGludCBfX252cmFtX2NoZWNrX2NoZWNrc3VtKHZvaWQp
-OwogZXh0ZXJuIGludCBudnJhbV9jaGVja19jaGVja3N1bSh2b2lkKTsKKworc3RydWN0IG52cmFt
-X29wcyB7CisJc3NpemVfdCAgICAgICAgICgqcmVhZCkoY2hhciAqLCBzaXplX3QsIGxvZmZfdCAq
-KTsKKwlzc2l6ZV90ICAgICAgICAgKCp3cml0ZSkoY2hhciAqLCBzaXplX3QsIGxvZmZfdCAqKTsK
-Kwlzc2l6ZV90ICAgICAgICAgKCpnZXRfc2l6ZSkodm9pZCk7Cit9OworCitleHRlcm4gY29uc3Qg
-c3RydWN0IG52cmFtX29wcyBhcmNoX252cmFtX29wczsKKwogI2VuZGlmICAvKiBfTElOVVhfTlZS
-QU1fSCAqLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5vcmcK
-aHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZvL2xpbnV4cHBjLWRldg==
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+---
+
+Tested on a PowerBook 520 and Quadra 650.
+
+Changes since v2:
+- Make use of the RTC_* macros from the previous patch and add a few more
+besides.
+
+---
+ arch/m68k/mac/misc.c     |   39 +++++++++++++++++++++++++++++++++------
+ include/uapi/linux/pmu.h |    2 ++
+ 2 files changed, 35 insertions(+), 6 deletions(-)
+
+Index: linux/arch/m68k/mac/misc.c
+===================================================================
+--- linux.orig/arch/m68k/mac/misc.c	2015-11-01 21:41:56.000000000 +1100
++++ linux/arch/m68k/mac/misc.c	2015-11-01 21:41:57.000000000 +1100
+@@ -119,19 +119,22 @@ static void pmu_write_time(long data)
+ static unsigned char pmu_pram_read_byte(int offset)
+ {
+ 	struct adb_request req;
+-	if (pmu_request(&req, NULL, 3, PMU_READ_NVRAM,
+-			(offset >> 8) & 0xFF, offset & 0xFF) < 0)
++
++	if (pmu_request(&req, NULL, 3, PMU_READ_XPRAM,
++	                offset & 0xFF, 1) < 0)
+ 		return 0;
+ 	while (!req.complete)
+ 		pmu_poll();
+-	return req.reply[3];
++
++	return req.reply[1];
+ }
+ 
+ static void pmu_pram_write_byte(unsigned char data, int offset)
+ {
+ 	struct adb_request req;
+-	if (pmu_request(&req, NULL, 4, PMU_WRITE_NVRAM,
+-			(offset >> 8) & 0xFF, offset & 0xFF, data) < 0)
++
++	if (pmu_request(&req, NULL, 4, PMU_WRITE_XPRAM,
++	                offset & 0xFF, 1, data) < 0)
+ 		return;
+ 	while (!req.complete)
+ 		pmu_poll();
+@@ -257,6 +260,16 @@ static void via_rtc_send(__u8 data)
+ #define RTC_REG_WRITE_PROTECT   13
+ 
+ /*
++ * Inside Mac has no information about two-byte RTC commands but
++ * the MESS source code has the essentials.
++ */
++
++#define RTC_REG_XPRAM           14
++#define RTC_CMD_XPRAM_READ      (RTC_CMD_READ(RTC_REG_XPRAM) << 8)
++#define RTC_CMD_XPRAM_WRITE     (RTC_CMD_WRITE(RTC_REG_XPRAM) << 8)
++#define RTC_CMD_XPRAM_ARG(a)    (((a & 0xE0) << 3) | ((a & 0x1F) << 2))
++
++/*
+  * Execute a VIA PRAM/RTC command. For read commands
+  * data should point to a one-byte buffer for the
+  * resulting data. For write commands it should point
+@@ -303,11 +316,25 @@ static void via_rtc_command(int command,
+ 
+ static unsigned char via_pram_read_byte(int offset)
+ {
+-	return 0;
++	unsigned char temp;
++
++	via_rtc_command(RTC_CMD_XPRAM_READ | RTC_CMD_XPRAM_ARG(offset), &temp);
++
++	return temp;
+ }
+ 
+ static void via_pram_write_byte(unsigned char data, int offset)
+ {
++	unsigned char temp;
++
++	temp = 0x55;
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
++
++	temp = data;
++	via_rtc_command(RTC_CMD_XPRAM_WRITE | RTC_CMD_XPRAM_ARG(offset), &temp);
++
++	temp = 0x55 | RTC_FLG_WRITE_PROTECT;
++	via_rtc_command(RTC_CMD_WRITE(RTC_REG_WRITE_PROTECT), &temp);
+ }
+ 
+ /*
+Index: linux/include/uapi/linux/pmu.h
+===================================================================
+--- linux.orig/include/uapi/linux/pmu.h	2015-11-01 21:41:23.000000000 +1100
++++ linux/include/uapi/linux/pmu.h	2015-11-01 21:41:57.000000000 +1100
+@@ -18,7 +18,9 @@
+ #define PMU_POWER_CTRL		0x11	/* control power of some devices */
+ #define PMU_ADB_CMD		0x20	/* send ADB packet */
+ #define PMU_ADB_POLL_OFF	0x21	/* disable ADB auto-poll */
++#define PMU_WRITE_XPRAM		0x32	/* write eXtended Parameter RAM */
+ #define PMU_WRITE_NVRAM		0x33	/* write non-volatile RAM */
++#define PMU_READ_XPRAM		0x3a	/* read eXtended Parameter RAM */
+ #define PMU_READ_NVRAM		0x3b	/* read non-volatile RAM */
+ #define PMU_SET_RTC		0x30	/* set real-time clock */
+ #define PMU_READ_RTC		0x38	/* read real-time clock */
