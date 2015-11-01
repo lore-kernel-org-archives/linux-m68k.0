@@ -1,131 +1,200 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v7 19/26] powerpc: Remove CONFIG_GENERIC_NVRAM and adopt CONFIG_HAVE_ARCH_NVRAM_OPS
-Date: Sun, 01 Nov 2015 21:42:21 +1100
-Message-ID: <20151101104207.031682320@telegraphics.com.au>
+Subject: [PATCH v7 22/26] powerpc: Remove pmac_xpram_{read,write} functions
+Date: Sun, 01 Nov 2015 21:42:24 +1100
+Message-ID: <20151101104207.781688728@telegraphics.com.au>
 References: <20151101104202.301856132@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=powerpc-adopt-arch_nvram_ops
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46458 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752597AbbKAKtL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2015 05:49:11 -0500
+Content-Disposition: inline; filename=powerpc-remove-pmac_xpram_read-write
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Switch PPC32 kernels from the generic_nvram module to the nvram module.
+The arch_nvram_ops methods provide a uniform API for drivers and ioctls.
+This API is used to replace older APIs like the nvram_{read,write}_byte()
+exports and the pmac_xpram_{read,write} functions.
 
-Also fix a theoretical bug where CHRP omits the chrp_nvram_init()
-call when CONFIG_NVRAM_MODULE=m.
+The latter API is removed in this patch. The addition of the
+get_partition() method to struct nvram_ops makes that possible.
+pmac_xpram_read() becomes unused once pmac_time_init() is converted
+to use arch_nvram_ops. pmac_xpram_write() was already unused.
+
+drivers/char/nvram.c also benefits with the removal of the CONFIG_PPC_PMAC
+macro from that file.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 ---
+ arch/powerpc/include/asm/nvram.h        |    4 ----
+ arch/powerpc/kernel/nvram_64.c          |    3 +++
+ arch/powerpc/kernel/setup_32.c          |    3 +++
+ arch/powerpc/platforms/powermac/nvram.c |   28 +++-------------------------
+ arch/powerpc/platforms/powermac/time.c  |   17 +++++++++++++----
+ drivers/char/nvram.c                    |    6 ++----
+ include/linux/nvram.h                   |    1 +
+ 7 files changed, 25 insertions(+), 37 deletions(-)
 
-The change in the name of the module is visible to userspace. The module that
-implements /dev/nvram on PowerPC now has suitable aliases, i.e.
-MODULE_ALIAS_MISCDEV(NVRAM_MINOR);
-MODULE_ALIAS("devname:nvram"); 
-so that the device special file can be automatically created and the
-module automatically loaded when needed. Previously this was not the case.
-
----
-
-Changes since v1:
-- Small indentation fix.
-
----
- arch/powerpc/Kconfig                    |    2 +-
- arch/powerpc/kernel/setup_32.c          |    2 +-
- arch/powerpc/platforms/chrp/Makefile    |    2 +-
- arch/powerpc/platforms/chrp/setup.c     |    2 +-
- arch/powerpc/platforms/powermac/setup.c |    3 +--
- drivers/char/Kconfig                    |   10 ++++++----
- 6 files changed, 11 insertions(+), 10 deletions(-)
-
-Index: linux/arch/powerpc/Kconfig
+Index: linux/arch/powerpc/include/asm/nvram.h
 ===================================================================
---- linux.orig/arch/powerpc/Kconfig	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/powerpc/Kconfig	2015-11-01 21:41:48.000000000 +1100
-@@ -185,7 +185,7 @@ config SYSVIPC_COMPAT
- 	default y
+--- linux.orig/arch/powerpc/include/asm/nvram.h	2015-11-01 21:41:42.000000000 +1100
++++ linux/arch/powerpc/include/asm/nvram.h	2015-11-01 21:41:53.000000000 +1100
+@@ -74,10 +74,6 @@ extern loff_t nvram_find_partition(const
+ /* Return partition offset in nvram */
+ extern int	pmac_get_partition(int partition);
  
- # All PPC32s use generic nvram driver through ppc_md
--config GENERIC_NVRAM
-+config HAVE_ARCH_NVRAM_OPS
- 	bool
- 	default y if PPC32
+-/* Direct access to XPRAM on PowerMacs */
+-extern u8	pmac_xpram_read(int xpaddr);
+-extern void	pmac_xpram_write(int xpaddr, u8 data);
+-
+ /* Initialize NVRAM OS partition */
+ extern int __init nvram_init_os_partition(struct nvram_os_partition *part);
  
 Index: linux/arch/powerpc/kernel/setup_32.c
 ===================================================================
---- linux.orig/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:45.000000000 +1100
-+++ linux/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:48.000000000 +1100
-@@ -174,7 +174,7 @@ int __init ppc_setup_l3cr(char *str)
+--- linux.orig/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:48.000000000 +1100
++++ linux/arch/powerpc/kernel/setup_32.c	2015-11-01 21:41:53.000000000 +1100
+@@ -208,6 +208,9 @@ const struct nvram_ops arch_nvram_ops =
+ 	.write_byte     = ppc_nvram_write_byte,
+ 	.get_size       = ppc_nvram_get_size,
+ 	.sync           = ppc_nvram_sync,
++#ifdef CONFIG_PPC_PMAC
++	.get_partition  = pmac_get_partition,
++#endif
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
+Index: linux/arch/powerpc/platforms/powermac/nvram.c
+===================================================================
+--- linux.orig/arch/powerpc/platforms/powermac/nvram.c	2015-11-01 21:41:39.000000000 +1100
++++ linux/arch/powerpc/platforms/powermac/nvram.c	2015-11-01 21:41:53.000000000 +1100
+@@ -629,29 +629,7 @@ bail:
+ 
+ int pmac_get_partition(int partition)
+ {
+-	return nvram_partitions[partition];
++	if (machine_is(powermac))
++		return nvram_partitions[partition];
++	return -1;
  }
- __setup("l3cr=", ppc_setup_l3cr);
- 
--#ifdef CONFIG_GENERIC_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 
- static unsigned char ppc_nvram_read_byte(int addr)
- {
-Index: linux/arch/powerpc/platforms/chrp/Makefile
+-
+-u8 pmac_xpram_read(int xpaddr)
+-{
+-	int offset = pmac_get_partition(pmac_nvram_XPRAM);
+-
+-	if (offset < 0 || xpaddr < 0 || xpaddr > 0x100)
+-		return 0xff;
+-
+-	return ppc_md.nvram_read_val(xpaddr + offset);
+-}
+-
+-void pmac_xpram_write(int xpaddr, u8 data)
+-{
+-	int offset = pmac_get_partition(pmac_nvram_XPRAM);
+-
+-	if (offset < 0 || xpaddr < 0 || xpaddr > 0x100)
+-		return;
+-
+-	ppc_md.nvram_write_val(xpaddr + offset, data);
+-}
+-
+-EXPORT_SYMBOL(pmac_get_partition);
+-EXPORT_SYMBOL(pmac_xpram_read);
+-EXPORT_SYMBOL(pmac_xpram_write);
+Index: linux/drivers/char/nvram.c
 ===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/Makefile	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/powerpc/platforms/chrp/Makefile	2015-11-01 21:41:48.000000000 +1100
-@@ -1,3 +1,3 @@
- obj-y				+= setup.o time.o pegasos_eth.o pci.o
- obj-$(CONFIG_SMP)		+= smp.o
--obj-$(CONFIG_NVRAM)		+= nvram.o
-+obj-$(CONFIG_NVRAM:m=y)		+= nvram.o
-Index: linux/arch/powerpc/platforms/chrp/setup.c
+--- linux.orig/drivers/char/nvram.c	2015-11-01 21:41:51.000000000 +1100
++++ linux/drivers/char/nvram.c	2015-11-01 21:41:53.000000000 +1100
+@@ -332,8 +332,7 @@ static long nvram_misc_ioctl(struct file
+ 		/* fall through */
+ 	case IOC_NVRAM_GET_OFFSET:
+ 		ret = -EINVAL;
+-#ifdef CONFIG_PPC_PMAC
+-		if (machine_is(powermac)) {
++		if (arch_nvram_ops.get_partition != NULL) {
+ 			int part, offset;
+ 
+ 			if (copy_from_user(&part, (void __user *)arg,
+@@ -341,7 +340,7 @@ static long nvram_misc_ioctl(struct file
+ 				return -EFAULT;
+ 			if (part < pmac_nvram_OF || part > pmac_nvram_NR)
+ 				return -EINVAL;
+-			offset = pmac_get_partition(part);
++			offset = arch_nvram_ops.get_partition(part);
+ 			if (offset < 0)
+ 				return -EINVAL;
+ 			if (copy_to_user((void __user *)arg,
+@@ -349,7 +348,6 @@ static long nvram_misc_ioctl(struct file
+ 				return -EFAULT;
+ 			ret = 0;
+ 		}
+-#endif
+ 		break;
+ 	case IOC_NVRAM_SYNC:
+ 		if (arch_nvram_ops.sync != NULL) {
+Index: linux/include/linux/nvram.h
 ===================================================================
---- linux.orig/arch/powerpc/platforms/chrp/setup.c	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/powerpc/platforms/chrp/setup.c	2015-11-01 21:41:48.000000000 +1100
-@@ -557,7 +557,7 @@ void __init chrp_init_IRQ(void)
- void __init
- chrp_init2(void)
- {
--#ifdef CONFIG_NVRAM
-+#if IS_ENABLED(CONFIG_NVRAM)
- 	chrp_nvram_init();
- #endif
- 
-Index: linux/arch/powerpc/platforms/powermac/setup.c
+--- linux.orig/include/linux/nvram.h	2015-11-01 21:41:47.000000000 +1100
++++ linux/include/linux/nvram.h	2015-11-01 21:41:53.000000000 +1100
+@@ -11,6 +11,7 @@ struct nvram_ops {
+ 	ssize_t         (*get_size)(void);
+ #ifdef CONFIG_PPC
+ 	long            (*sync)(void);
++	int             (*get_partition)(int);
+ #else
+ 	long            (*set_checksum)(void);
+ 	long            (*initialize)(void);
+Index: linux/arch/powerpc/platforms/powermac/time.c
 ===================================================================
---- linux.orig/arch/powerpc/platforms/powermac/setup.c	2015-11-01 21:41:23.000000000 +1100
-+++ linux/arch/powerpc/platforms/powermac/setup.c	2015-11-01 21:41:48.000000000 +1100
-@@ -321,8 +321,7 @@ static void __init pmac_setup_arch(void)
- 	find_via_pmu();
- 	smu_init();
+--- linux.orig/arch/powerpc/platforms/powermac/time.c	2015-11-01 21:41:51.000000000 +1100
++++ linux/arch/powerpc/platforms/powermac/time.c	2015-11-01 21:41:53.000000000 +1100
+@@ -23,6 +23,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/hardirq.h>
+ #include <linux/rtc.h>
++#include <linux/nvram.h>
  
--#if defined(CONFIG_NVRAM) || defined(CONFIG_NVRAM_MODULE) || \
--    defined(CONFIG_PPC64)
-+#if IS_ENABLED(CONFIG_NVRAM) || defined(CONFIG_PPC64)
- 	pmac_nvram_init();
- #endif
- 
-Index: linux/drivers/char/Kconfig
-===================================================================
---- linux.orig/drivers/char/Kconfig	2015-11-01 21:41:36.000000000 +1100
-+++ linux/drivers/char/Kconfig	2015-11-01 21:41:48.000000000 +1100
-@@ -247,7 +247,7 @@ source "drivers/char/hw_random/Kconfig"
- 
- config NVRAM
- 	tristate "/dev/nvram support"
--	depends on X86 || (ARM && RTC_DRV_CMOS) || GENERIC_NVRAM || HAVE_ARCH_NVRAM_OPS
-+	depends on X86 || (ARM && RTC_DRV_CMOS) || HAVE_ARCH_NVRAM_OPS
- 	---help---
- 	  If you say Y here and create a character special file /dev/nvram
- 	  with major number 10 and minor number 144 using mknod ("man mknod"),
-@@ -256,9 +256,11 @@ config NVRAM
- 	  and most Ataris.  The actual number of bytes varies, depending on the
- 	  nvram in the system, but is usually 114 (128-14 for the RTC).
- 
--	  This memory is conventionally called "CMOS RAM" on PCs and "NVRAM"
--	  on Ataris. /dev/nvram may be used to view settings there, or to
--	  change them (with some utility). It could also be used to frequently
-+	  This memory is conventionally called "CMOS RAM" on PCs,
-+	  "NVRAM" on Ataris and "PRAM" on Macintoshes.
+ #include <asm/sections.h>
+ #include <asm/prom.h>
+@@ -70,13 +71,21 @@ long __init pmac_time_init(void)
+ 	s32 delta = 0;
+ #if defined(CONFIG_NVRAM) && defined(CONFIG_PPC32)
+ 	int dst;
++	int offset = arch_nvram_ops.get_partition(pmac_nvram_XPRAM);
+ 	
+-	delta = ((s32)pmac_xpram_read(PMAC_XPRAM_MACHINE_LOC + 0x9)) << 16;
+-	delta |= ((s32)pmac_xpram_read(PMAC_XPRAM_MACHINE_LOC + 0xa)) << 8;
+-	delta |= pmac_xpram_read(PMAC_XPRAM_MACHINE_LOC + 0xb);
++	if (offset < 0)
++		return 0;
 +
-+	  /dev/nvram may be used to view settings in NVRAM, or to change them
-+	  (with some utility). It could also be used to frequently
- 	  save a few bits of very important data that may not be lost over
- 	  power-off and for which writing to disk is too insecure. Note
- 	  however that most NVRAM space in a PC belongs to the BIOS and you
++	delta = arch_nvram_ops.read_byte(offset + PMAC_XPRAM_MACHINE_LOC + 9);
++	delta <<= 8;
++	delta |= arch_nvram_ops.read_byte(offset + PMAC_XPRAM_MACHINE_LOC + 10);
++	delta <<= 8;
++	delta |= arch_nvram_ops.read_byte(offset + PMAC_XPRAM_MACHINE_LOC + 11);
++
+ 	if (delta & 0x00800000UL)
+ 		delta |= 0xFF000000UL;
+-	dst = ((pmac_xpram_read(PMAC_XPRAM_MACHINE_LOC + 0x8) & 0x80) != 0);
++	dst = arch_nvram_ops.read_byte(offset + PMAC_XPRAM_MACHINE_LOC + 8);
++	dst &= 0x80;
+ 	printk("GMT Delta read from XPRAM: %d minutes, DST: %s\n", delta/60,
+ 		dst ? "on" : "off");
+ #endif
+Index: linux/arch/powerpc/kernel/nvram_64.c
+===================================================================
+--- linux.orig/arch/powerpc/kernel/nvram_64.c	2015-11-01 21:41:51.000000000 +1100
++++ linux/arch/powerpc/kernel/nvram_64.c	2015-11-01 21:41:53.000000000 +1100
+@@ -1109,6 +1109,9 @@ const struct nvram_ops arch_nvram_ops =
+ 	.write          = ppc_nvram_write,
+ 	.get_size       = ppc_nvram_get_size,
+ 	.sync           = ppc_nvram_sync,
++#ifdef CONFIG_PPC_PMAC
++	.get_partition  = pmac_get_partition,
++#endif
+ };
+ EXPORT_SYMBOL(arch_nvram_ops);
+ 
