@@ -1,43 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.4
-Date: Mon,  2 Nov 2015 09:53:22 +0100
-Message-ID: <1446454402-12042-1-git-send-email-geert@linux-m68k.org>
+From: "Jose Calvache" <josecalvach.e@outlook.com>
+Subject: Eure Hilfe
+Date: Wed, 4 Nov 2015 02:56:29 -0500
+Message-ID: <f492d0c2249f0842024cf6fc4136ba4e.squirrel__40155.7658137337$1446625055$gmane$org@wdtraders.com>
+Reply-To: josecalvach.e@aim.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from 18-230-194-104-dedicated.multacom.com ([104.194.230.18]:47698
+	"EHLO server.arnhost.com" rhost-flags-OK-FAIL-OK-FAIL)
+	by vger.kernel.org with ESMTP id S1754095AbbKDIQm (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 4 Nov 2015 03:16:42 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+Guten Tag,
 
-The following changes since commit 6ff33f3902c3b1c5d0db6b1e2c70b6d76fba357f:
+Ich m=F6chte, dass Sie mich auf einem Geldtransfer zu unterst=FCtzen, w=
+enn Sie
+bereit und interessiert sind, antworten Sie mir bitte nach Erhalt diese=
+r
+E-Mails f=FCr mehr Klarheit und Modalit=E4ten f=FCr den erfolgreichen A=
+bschluss
+dieser Transaktion erforderlich.
+Dank und warten Sie Ihre dringende Antwort zu diesem Thema.
 
-  Linux 4.3-rc1 (2015-09-12 16:35:56 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-
-for you to fetch changes up to bab84fa9cc09dfa9702029f83ea6bf8bf5ae96af:
-
-  m68k/sun3: Use %pM format specifier to print ethernet address (2015-09-13 14:37:26 +0200)
-
-----------------------------------------------------------------
-Alexander Kuleshov (1):
-      m68k/sun3: Use %pM format specifier to print ethernet address
-
- arch/m68k/sun3/idprom.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+=46reundliche Gr=FC=DFe,
+Mr. Jose Calvache.
