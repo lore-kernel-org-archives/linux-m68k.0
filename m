@@ -1,51 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: test_user_copy may kill ARAnyM
-Date: Sun, 8 Nov 2015 14:06:15 +0100
-Message-ID: <CAMuHMdVQ93ihgcxUbjptTaHdPjxXLyVAsAr-m3tWBJV0krS2vw@mail.gmail.com>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu/coldfire fixes for 4.4
+Date: Mon, 9 Nov 2015 13:06:01 +1000
+Message-ID: <56400D99.4020309@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc: aranym@lists.bobek.cz
 
-Running "insmod test_user_copy.ko" sometimes kills ARAnyM:
 
-    Unable to handle kernel access at virtual address 0e9ba000
-    Oops: 00000000
-    terminate called after throwing an instance of 'm68k_exception'
-    /home/geert/bin/bin/linux-atari: line 2: 30027 Aborted
-    aranym-mmu -l -c /home/geert/aranym/atari_defconfig
+Hi Linus,
 
-This is not 100% reproducible. Sometimes it just kills the kernel in a bad way"
+Can you please pull the m68knommu git tree, for-next branch.
+Only a single patch, fixes brk area setup problem in nommu environments.
 
-Unable to handle kernel access at virtual address 10d8e000
-** 553 printk messages dropped ** Call Trace: [<00025ca2>] do_exit+0xba/0x8c8
- [<00025d8c>] do_exit+0x1a4/0x8c8
- [<0004295e>] printk+0x0/0x1c
- [<00042974>] printk+0x16/0x1c
- [<00005460>] show_registers+0x3f0/0x3f8
- [<000054ba>] die_if_kernel+0x52/0x56
- [<0004295e>] printk+0x0/0x1c
- [<00006982>] send_fault_sig+0x9e/0xe8
- [<00030001>] set_user+0x17/0x70
- [<00006a0c>] do_page_fault+0x40/0x23c
- [<0004295e>] printk+0x0/0x1c
- [<00005b90>] buserr_c+0x190/0x6d4
- [<0004295e>] printk+0x0/0x1c
- [<000028dc>] buserr+0x20/0x28
- [<00025ca2>] do_exit+0xba/0x8c8
- [<00025d8c>] do_exit+0x1a4/0x8c8
-...
+Regards
+Greg
 
-Gr{oetje,eeting}s,
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The following changes since commit 32b88194f71d6ae7768a29f87fbba454728273ee:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  Linux 4.3-rc7 (2015-10-25 10:39:47 +0900)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 4ac313111018cb44ecc250445de5ccb93026a980:
+
+  fs/binfmt_elf_fdpic.c: fix brk area overlap with stack on NOMMU (2015-10-26 09:02:32 +1000)
+
+----------------------------------------------------------------
+Rich Felker (1):
+      fs/binfmt_elf_fdpic.c: fix brk area overlap with stack on NOMMU
+
+ fs/binfmt_elf_fdpic.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
