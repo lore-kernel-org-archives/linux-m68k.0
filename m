@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 08/16] frv: convert to dma_map_ops
-Date: Mon,  9 Nov 2015 19:17:13 +0100
-Message-ID: <1447093041-21832-9-git-send-email-hch__20466.4745172069$1447093372$gmane$org@lst.de>
+Subject: [PATCH 07/16] nios2: convert to dma_map_ops
+Date: Mon,  9 Nov 2015 19:17:12 +0100
+Message-ID: <1447093041-21832-8-git-send-email-hch__15872.4387678832$1447093375$gmane$org@lst.de>
 References: <1447093041-21832-1-git-send-email-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1447093041-21832-1-git-send-email-hch@lst.de>
@@ -11,150 +11,127 @@ To: Andrew Morton <akpm@linux-foundation.org>, Haavard Skinnemoen <hskinnemoen@g
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/frv/Kconfig                      |   2 +
- arch/frv/include/asm/dma-mapping.h    | 132 ++--------------------------------
- arch/frv/mb93090-mb00/pci-dma-nommu.c |  72 ++++++++++++-------
- arch/frv/mb93090-mb00/pci-dma.c       |  74 ++++++++++++-------
- 4 files changed, 101 insertions(+), 179 deletions(-)
+ arch/nios2/Kconfig                   |   1 +
+ arch/nios2/include/asm/dma-mapping.h | 123 ++---------------------------
+ arch/nios2/mm/dma-mapping.c          | 147 +++++++++++++++++++----------------
+ 3 files changed, 85 insertions(+), 186 deletions(-)
 
-diff --git a/arch/frv/Kconfig b/arch/frv/Kconfig
-index 34aa193..d4fc724 100644
---- a/arch/frv/Kconfig
-+++ b/arch/frv/Kconfig
-@@ -14,6 +14,8 @@ config FRV
- 	select OLD_SIGSUSPEND3
- 	select OLD_SIGACTION
- 	select HAVE_DEBUG_STACKOVERFLOW
-+	select ARCH_NO_COHERENT_DMA_MMAP
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index 4375554..4b2504d 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -16,6 +16,7 @@ config NIOS2
+ 	select SOC_BUS
+ 	select SPARSE_IRQ
+ 	select USB_ARCH_HAS_HCD if USB_SUPPORT
 +	select HAVE_DMA_ATTRS
  
- config ZONE_DMA
- 	bool
-diff --git a/arch/frv/include/asm/dma-mapping.h b/arch/frv/include/asm/dma-mapping.h
-index 2840adc..750951c 100644
---- a/arch/frv/include/asm/dma-mapping.h
-+++ b/arch/frv/include/asm/dma-mapping.h
-@@ -1,128 +1,17 @@
- #ifndef _ASM_DMA_MAPPING_H
- #define _ASM_DMA_MAPPING_H
+ config GENERIC_CSUM
+ 	def_bool y
+diff --git a/arch/nios2/include/asm/dma-mapping.h b/arch/nios2/include/asm/dma-mapping.h
+index b556723..bec8ac8 100644
+--- a/arch/nios2/include/asm/dma-mapping.h
++++ b/arch/nios2/include/asm/dma-mapping.h
+@@ -10,131 +10,20 @@
+ #ifndef _ASM_NIOS2_DMA_MAPPING_H
+ #define _ASM_NIOS2_DMA_MAPPING_H
  
--#include <linux/device.h>
 -#include <linux/scatterlist.h>
- #include <asm/cache.h>
- #include <asm/cacheflush.h>
--#include <asm/io.h>
+-#include <linux/cache.h>
+-#include <asm/cacheflush.h>
++extern struct dma_map_ops nios2_dma_ops;
+ 
+-static inline void __dma_sync_for_device(void *vaddr, size_t size,
+-			      enum dma_data_direction direction)
++static inline struct dma_map_ops *get_dma_ops(struct device *dev)
+ {
+-	switch (direction) {
+-	case DMA_FROM_DEVICE:
+-		invalidate_dcache_range((unsigned long)vaddr,
+-			(unsigned long)(vaddr + size));
+-		break;
+-	case DMA_TO_DEVICE:
+-		/*
+-		 * We just need to flush the caches here , but Nios2 flush
+-		 * instruction will do both writeback and invalidate.
+-		 */
+-	case DMA_BIDIRECTIONAL: /* flush and invalidate */
+-		flush_dcache_range((unsigned long)vaddr,
+-			(unsigned long)(vaddr + size));
+-		break;
+-	default:
+-		BUG();
+-	}
+-}
 -
--/*
-- * See Documentation/DMA-API.txt for the description of how the
-- * following DMA API should work.
-- */
+-static inline void __dma_sync_for_cpu(void *vaddr, size_t size,
+-			      enum dma_data_direction direction)
+-{
+-	switch (direction) {
+-	case DMA_BIDIRECTIONAL:
+-	case DMA_FROM_DEVICE:
+-		invalidate_dcache_range((unsigned long)vaddr,
+-			(unsigned long)(vaddr + size));
+-		break;
+-	case DMA_TO_DEVICE:
+-		break;
+-	default:
+-		BUG();
+-	}
+-}
 -
 -#define dma_alloc_noncoherent(d, s, h, f) dma_alloc_coherent(d, s, h, f)
 -#define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
- 
- extern unsigned long __nongprelbss dma_coherent_mem_start;
- extern unsigned long __nongprelbss dma_coherent_mem_end;
- 
--void *dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t gfp);
--void dma_free_coherent(struct device *dev, size_t size, void *vaddr, dma_addr_t dma_handle);
 -
--extern dma_addr_t dma_map_single(struct device *dev, void *ptr, size_t size,
--				 enum dma_data_direction direction);
+-void *dma_alloc_coherent(struct device *dev, size_t size,
+-			   dma_addr_t *dma_handle, gfp_t flag);
 -
--static inline
--void dma_unmap_single(struct device *dev, dma_addr_t dma_addr, size_t size,
--		      enum dma_data_direction direction)
+-void dma_free_coherent(struct device *dev, size_t size,
+-			 void *vaddr, dma_addr_t dma_handle);
+-
+-static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+-					size_t size,
+-					enum dma_data_direction direction)
 -{
--	BUG_ON(direction == DMA_NONE);
+-	BUG_ON(!valid_dma_direction(direction));
+-	__dma_sync_for_device(ptr, size, direction);
+-	return virt_to_phys(ptr);
+-}
+-
+-static inline void dma_unmap_single(struct device *dev, dma_addr_t dma_addr,
+-				size_t size, enum dma_data_direction direction)
+-{
 -}
 -
 -extern int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
--		      enum dma_data_direction direction);
+-	enum dma_data_direction direction);
+-extern dma_addr_t dma_map_page(struct device *dev, struct page *page,
+-	unsigned long offset, size_t size, enum dma_data_direction direction);
+-extern void dma_unmap_page(struct device *dev, dma_addr_t dma_address,
+-	size_t size, enum dma_data_direction direction);
+-extern void dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+-	int nhwentries, enum dma_data_direction direction);
+-extern void dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle,
+-	size_t size, enum dma_data_direction direction);
+-extern void dma_sync_single_for_device(struct device *dev,
+-	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction);
+-extern void dma_sync_single_range_for_cpu(struct device *dev,
+-	dma_addr_t dma_handle, unsigned long offset, size_t size,
+-	enum dma_data_direction direction);
+-extern void dma_sync_single_range_for_device(struct device *dev,
+-	dma_addr_t dma_handle, unsigned long offset, size_t size,
+-	enum dma_data_direction direction);
+-extern void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
+-	int nelems, enum dma_data_direction direction);
+-extern void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+-	int nelems, enum dma_data_direction direction);
 -
--static inline
--void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nhwentries,
--	     enum dma_data_direction direction)
+-static inline int dma_supported(struct device *dev, u64 mask)
 -{
--	BUG_ON(direction == DMA_NONE);
--}
--
--extern
--dma_addr_t dma_map_page(struct device *dev, struct page *page, unsigned long offset,
--			size_t size, enum dma_data_direction direction);
--
--static inline
--void dma_unmap_page(struct device *dev, dma_addr_t dma_address, size_t size,
--		    enum dma_data_direction direction)
--{
--	BUG_ON(direction == DMA_NONE);
--}
--
--
--static inline
--void dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, size_t size,
--			     enum dma_data_direction direction)
--{
--}
--
--static inline
--void dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, size_t size,
--				enum dma_data_direction direction)
--{
--	flush_write_buffers();
--}
-+extern struct dma_map_ops frv_dma_ops;
- 
--static inline
--void dma_sync_single_range_for_cpu(struct device *dev, dma_addr_t dma_handle,
--				   unsigned long offset, size_t size,
--				   enum dma_data_direction direction)
-+static inline struct dma_map_ops *get_dma_ops(struct device *dev)
- {
--}
--
--static inline
--void dma_sync_single_range_for_device(struct device *dev, dma_addr_t dma_handle,
--				      unsigned long offset, size_t size,
--				      enum dma_data_direction direction)
--{
--	flush_write_buffers();
--}
--
--static inline
--void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems,
--			 enum dma_data_direction direction)
--{
--}
--
--static inline
--void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg, int nelems,
--			    enum dma_data_direction direction)
--{
--	flush_write_buffers();
--}
--
--static inline
--int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
--{
--	return 0;
--}
--
--static inline
--int dma_supported(struct device *dev, u64 mask)
--{
--        /*
--         * we fall back to GFP_DMA when the mask isn't all 1s,
--         * so we can't guarantee allocations that must be
--         * within a tighter range than GFP_DMA..
--         */
--        if (mask < 0x00ffffff)
--                return 0;
--
 -	return 1;
 -}
 -
--static inline
--int dma_set_mask(struct device *dev, u64 mask)
+-static inline int dma_set_mask(struct device *dev, u64 mask)
 -{
 -	if (!dev->dma_mask || !dma_supported(dev, mask))
 -		return -EIO;
@@ -162,242 +139,264 @@ index 2840adc..750951c 100644
 -	*dev->dma_mask = mask;
 -
 -	return 0;
-+	return &frv_dma_ops;
- }
- 
- static inline
-@@ -132,19 +21,6 @@ void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
- 	flush_write_buffers();
- }
- 
--/* Not supported for now */
--static inline int dma_mmap_coherent(struct device *dev,
--				    struct vm_area_struct *vma, void *cpu_addr,
--				    dma_addr_t dma_addr, size_t size)
--{
--	return -EINVAL;
 -}
 -
--static inline int dma_get_sgtable(struct device *dev, struct sg_table *sgt,
--				  void *cpu_addr, dma_addr_t dma_addr,
--				  size_t size)
+-static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 -{
--	return -EINVAL;
--}
-+#include <asm-generic/dma-mapping-common.h>
+-	return 0;
++	return &nios2_dma_ops;
+ }
  
- #endif  /* _ASM_DMA_MAPPING_H */
-diff --git a/arch/frv/mb93090-mb00/pci-dma-nommu.c b/arch/frv/mb93090-mb00/pci-dma-nommu.c
-index 8eeea0d..082be49 100644
---- a/arch/frv/mb93090-mb00/pci-dma-nommu.c
-+++ b/arch/frv/mb93090-mb00/pci-dma-nommu.c
-@@ -34,7 +34,8 @@ struct dma_alloc_record {
- static DEFINE_SPINLOCK(dma_alloc_lock);
- static LIST_HEAD(dma_alloc_list);
- 
--void *dma_alloc_coherent(struct device *hwdev, size_t size, dma_addr_t *dma_handle, gfp_t gfp)
-+static void *frv_dma_alloc(struct device *hwdev, size_t size, dma_addr_t *dma_handle,
-+		gfp_t gfp, struct dma_attrs *attrs)
+ /*
+-* dma_alloc_noncoherent() returns non-cacheable memory, so there's no need to
+-* do any flushing here.
+-*/
++ * dma_alloc_noncoherent() returns non-cacheable memory, so there's no need to
++ * do any flushing here.
++ */
+ static inline void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+ 				  enum dma_data_direction direction)
  {
- 	struct dma_alloc_record *new;
- 	struct list_head *this = &dma_alloc_list;
-@@ -84,9 +85,8 @@ void *dma_alloc_coherent(struct device *hwdev, size_t size, dma_addr_t *dma_hand
- 	return NULL;
  }
  
--EXPORT_SYMBOL(dma_alloc_coherent);
+-/* drivers/base/dma-mapping.c */
+-extern int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
+-		void *cpu_addr, dma_addr_t dma_addr, size_t size);
+-extern int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
+-		void *cpu_addr, dma_addr_t dma_addr,
+-		size_t size);
 -
--void dma_free_coherent(struct device *hwdev, size_t size, void *vaddr, dma_addr_t dma_handle)
-+static void frv_dma_free(struct device *hwdev, size_t size, void *vaddr,
+-#define dma_mmap_coherent(d, v, c, h, s) dma_common_mmap(d, v, c, h, s)
+-#define dma_get_sgtable(d, t, v, h, s) dma_common_get_sgtable(d, t, v, h, s)
+-
+ #endif /* _ASM_NIOS2_DMA_MAPPING_H */
+diff --git a/arch/nios2/mm/dma-mapping.c b/arch/nios2/mm/dma-mapping.c
+index ac5da75..43c1149 100644
+--- a/arch/nios2/mm/dma-mapping.c
++++ b/arch/nios2/mm/dma-mapping.c
+@@ -20,9 +20,46 @@
+ #include <linux/cache.h>
+ #include <asm/cacheflush.h>
+ 
++static inline void __dma_sync_for_device(void *vaddr, size_t size,
++			      enum dma_data_direction direction)
++{
++	switch (direction) {
++	case DMA_FROM_DEVICE:
++		invalidate_dcache_range((unsigned long)vaddr,
++			(unsigned long)(vaddr + size));
++		break;
++	case DMA_TO_DEVICE:
++		/*
++		 * We just need to flush the caches here , but Nios2 flush
++		 * instruction will do both writeback and invalidate.
++		 */
++	case DMA_BIDIRECTIONAL: /* flush and invalidate */
++		flush_dcache_range((unsigned long)vaddr,
++			(unsigned long)(vaddr + size));
++		break;
++	default:
++		BUG();
++	}
++}
+ 
+-void *dma_alloc_coherent(struct device *dev, size_t size,
+-			    dma_addr_t *dma_handle, gfp_t gfp)
++static inline void __dma_sync_for_cpu(void *vaddr, size_t size,
++			      enum dma_data_direction direction)
++{
++	switch (direction) {
++	case DMA_BIDIRECTIONAL:
++	case DMA_FROM_DEVICE:
++		invalidate_dcache_range((unsigned long)vaddr,
++			(unsigned long)(vaddr + size));
++		break;
++	case DMA_TO_DEVICE:
++		break;
++	default:
++		BUG();
++	}
++}
++
++static void *nios2_dma_alloc(struct device *dev, size_t size,
++		dma_addr_t *dma_handle, gfp_t gfp, struct dma_attrs *attrs)
+ {
+ 	void *ret;
+ 
+@@ -45,24 +82,21 @@ void *dma_alloc_coherent(struct device *dev, size_t size,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(dma_alloc_coherent);
+ 
+-void dma_free_coherent(struct device *dev, size_t size, void *vaddr,
+-			dma_addr_t dma_handle)
++static void nios2_dma_free(struct device *dev, size_t size, void *vaddr,
 +		dma_addr_t dma_handle, struct dma_attrs *attrs)
  {
- 	struct dma_alloc_record *rec;
- 	unsigned long flags;
-@@ -105,22 +105,9 @@ void dma_free_coherent(struct device *hwdev, size_t size, void *vaddr, dma_addr_
- 	BUG();
- }
+ 	unsigned long addr = (unsigned long) CAC_ADDR((unsigned long) vaddr);
  
+ 	free_pages(addr, get_order(size));
+ }
 -EXPORT_SYMBOL(dma_free_coherent);
--
--dma_addr_t dma_map_single(struct device *dev, void *ptr, size_t size,
--			  enum dma_data_direction direction)
--{
--	BUG_ON(direction == DMA_NONE);
--
--	frv_cache_wback_inv((unsigned long) ptr, (unsigned long) ptr + size);
--
--	return virt_to_bus(ptr);
--}
--
--EXPORT_SYMBOL(dma_map_single);
--
--int dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
--	       enum dma_data_direction direction)
-+static int frv_dma_map_sg(struct device *dev, struct scatterlist *sglist,
+ 
+-int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+-		enum dma_data_direction direction)
++static int nios2_dma_map_sg(struct device *dev, struct scatterlist *sg,
 +		int nents, enum dma_data_direction direction,
 +		struct dma_attrs *attrs)
  {
  	int i;
- 	struct scatterlist *sg;
-@@ -135,14 +122,49 @@ int dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
+ 
+-	BUG_ON(!valid_dma_direction(direction));
+-
+ 	for_each_sg(sg, sg, nents, i) {
+ 		void *addr;
+ 
+@@ -75,40 +109,32 @@ int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 
  	return nents;
  }
- 
 -EXPORT_SYMBOL(dma_map_sg);
--
--dma_addr_t dma_map_page(struct device *dev, struct page *page, unsigned long offset,
--			size_t size, enum dma_data_direction direction)
-+static dma_addr_t frv_dma_map_page(struct device *dev, struct page *page,
-+		unsigned long offset, size_t size,
-+		enum dma_data_direction direction, struct dma_attrs *attrs)
+ 
+-dma_addr_t dma_map_page(struct device *dev, struct page *page,
++static dma_addr_t nios2_dma_map_page(struct device *dev, struct page *page,
+ 			unsigned long offset, size_t size,
+-			enum dma_data_direction direction)
++			enum dma_data_direction direction,
++			struct dma_attrs *attrs)
  {
- 	BUG_ON(direction == DMA_NONE);
- 	flush_dcache_page(page);
- 	return (dma_addr_t) page_to_phys(page) + offset;
+-	void *addr;
+-
+-	BUG_ON(!valid_dma_direction(direction));
++	void *addr = page_address(page) + offset;
+ 
+-	addr = page_address(page) + offset;
+ 	__dma_sync_for_device(addr, size, direction);
+-
+ 	return page_to_phys(page) + offset;
  }
- 
 -EXPORT_SYMBOL(dma_map_page);
-+static void frv_dma_sync_single_for_device(struct device *dev,
-+		dma_addr_t dma_handle, size_t size,
-+		enum dma_data_direction direction)
-+{
-+	flush_write_buffers();
-+}
-+
-+static void frv_dma_sync_sg_for_device(struct device *dev,
-+		struct scatterlist *sg, int nelems,
-+		enum dma_data_direction direction)
-+{
-+	flush_write_buffers();
-+}
-+
-+
-+static int frv_dma_supported(struct device *dev, u64 mask)
-+{
-+        /*
-+         * we fall back to GFP_DMA when the mask isn't all 1s,
-+         * so we can't guarantee allocations that must be
-+         * within a tighter range than GFP_DMA..
-+         */
-+        if (mask < 0x00ffffff)
-+                return 0;
-+	return 1;
-+}
-+
-+struct dma_map_ops frv_dma_ops = {
-+	.alloc			= frv_dma_alloc,
-+	.free			= frv_dma_free,
-+	.map_page		= frv_dma_map_page,
-+	.map_sg			= frv_dma_map_sg,
-+	.sync_single_for_device	= frv_dma_sync_single_for_device,
-+	.sync_sg_for_device	= frv_dma_sync_sg_for_device,
-+	.dma_supported		= frv_dma_supported,
-+};
-+EXPORT_SYMBOL(frv_dma_ops);
-diff --git a/arch/frv/mb93090-mb00/pci-dma.c b/arch/frv/mb93090-mb00/pci-dma.c
-index 4d1f01d..316b7b6 100644
---- a/arch/frv/mb93090-mb00/pci-dma.c
-+++ b/arch/frv/mb93090-mb00/pci-dma.c
-@@ -18,7 +18,9 @@
- #include <linux/scatterlist.h>
- #include <asm/io.h>
  
--void *dma_alloc_coherent(struct device *hwdev, size_t size, dma_addr_t *dma_handle, gfp_t gfp)
-+static void *frv_dma_alloc(struct device *hwdev, size_t size,
-+		dma_addr_t *dma_handle, gfp_t gfp,
+-void dma_unmap_page(struct device *dev, dma_addr_t dma_address, size_t size,
+-		    enum dma_data_direction direction)
++static void nios2_dma_unmap_page(struct device *dev, dma_addr_t dma_address,
++		size_t size, enum dma_data_direction direction,
 +		struct dma_attrs *attrs)
  {
- 	void *ret;
- 
-@@ -29,29 +31,15 @@ void *dma_alloc_coherent(struct device *hwdev, size_t size, dma_addr_t *dma_hand
- 	return ret;
- }
- 
--EXPORT_SYMBOL(dma_alloc_coherent);
+-	BUG_ON(!valid_dma_direction(direction));
 -
--void dma_free_coherent(struct device *hwdev, size_t size, void *vaddr, dma_addr_t dma_handle)
-+static void frv_dma_free(struct device *hwdev, size_t size, void *vaddr,
-+		dma_addr_t dma_handle, struct dma_attrs *attrs)
+ 	__dma_sync_for_cpu(phys_to_virt(dma_address), size, direction);
+ }
+-EXPORT_SYMBOL(dma_unmap_page);
+ 
+-void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nhwentries,
+-		  enum dma_data_direction direction)
++static void dma_unmap_sg(struct device *dev, struct scatterlist *sg,
++		int nhwentries, enum dma_data_direction direction,
++		struct dma_attrs *attrs)
  {
- 	consistent_free(vaddr);
- }
+ 	void *addr;
+ 	int i;
  
--EXPORT_SYMBOL(dma_free_coherent);
+-	BUG_ON(!valid_dma_direction(direction));
 -
--dma_addr_t dma_map_single(struct device *dev, void *ptr, size_t size,
--			  enum dma_data_direction direction)
+ 	if (direction == DMA_TO_DEVICE)
+ 		return;
+ 
+@@ -118,69 +144,52 @@ void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nhwentries,
+ 			__dma_sync_for_cpu(addr, sg->length, direction);
+ 	}
+ }
+-EXPORT_SYMBOL(dma_unmap_sg);
+-
+-void dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle,
+-			     size_t size, enum dma_data_direction direction)
 -{
--	BUG_ON(direction == DMA_NONE);
--
--	frv_cache_wback_inv((unsigned long) ptr, (unsigned long) ptr + size);
--
--	return virt_to_bus(ptr);
+-	BUG_ON(!valid_dma_direction(direction));
+ 
+-	__dma_sync_for_cpu(phys_to_virt(dma_handle), size, direction);
 -}
+-EXPORT_SYMBOL(dma_sync_single_for_cpu);
 -
--EXPORT_SYMBOL(dma_map_single);
+-void dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle,
+-				size_t size, enum dma_data_direction direction)
+-{
+-	BUG_ON(!valid_dma_direction(direction));
 -
--int dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
--	       enum dma_data_direction direction)
-+static int frv_dma_map_sg(struct device *dev, struct scatterlist *sglist,
-+		int nents, enum dma_data_direction direction,
-+		struct dma_attrs *attrs)
- {
- 	unsigned long dampr2;
- 	void *vaddr;
-@@ -79,14 +67,48 @@ int dma_map_sg(struct device *dev, struct scatterlist *sglist, int nents,
- 	return nents;
- }
- 
--EXPORT_SYMBOL(dma_map_sg);
+-	__dma_sync_for_device(phys_to_virt(dma_handle), size, direction);
+-}
+-EXPORT_SYMBOL(dma_sync_single_for_device);
 -
--dma_addr_t dma_map_page(struct device *dev, struct page *page, unsigned long offset,
--			size_t size, enum dma_data_direction direction)
-+static dma_addr_t frv_dma_map_page(struct device *dev, struct page *page,
-+		unsigned long offset, size_t size,
-+		enum dma_data_direction direction, struct dma_attrs *attrs)
- {
--	BUG_ON(direction == DMA_NONE);
- 	flush_dcache_page(page);
- 	return (dma_addr_t) page_to_phys(page) + offset;
- }
- 
--EXPORT_SYMBOL(dma_map_page);
-+static void frv_dma_sync_single_for_device(struct device *dev,
+-void dma_sync_single_range_for_cpu(struct device *dev, dma_addr_t dma_handle,
+-					unsigned long offset, size_t size,
+-					enum dma_data_direction direction)
++static void nios2_dma_sync_single_for_cpu(struct device *dev,
 +		dma_addr_t dma_handle, size_t size,
 +		enum dma_data_direction direction)
-+{
-+	flush_write_buffers();
-+}
-+
-+static void frv_dma_sync_sg_for_device(struct device *dev,
+ {
+-	BUG_ON(!valid_dma_direction(direction));
+-
+ 	__dma_sync_for_cpu(phys_to_virt(dma_handle), size, direction);
+ }
+-EXPORT_SYMBOL(dma_sync_single_range_for_cpu);
+ 
+-void dma_sync_single_range_for_device(struct device *dev, dma_addr_t dma_handle,
+-					unsigned long offset, size_t size,
+-					enum dma_data_direction direction)
++static void nios2_dma_sync_single_for_device(struct device *dev,
++		dma_addr_t dma_handle, size_t size,
++		enum dma_data_direction direction)
+ {
+-	BUG_ON(!valid_dma_direction(direction));
+-
+ 	__dma_sync_for_device(phys_to_virt(dma_handle), size, direction);
+ }
+-EXPORT_SYMBOL(dma_sync_single_range_for_device);
+ 
+-void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems,
+-			 enum dma_data_direction direction)
++static void nios2_dma_sync_sg_for_cpu(struct device *dev,
 +		struct scatterlist *sg, int nelems,
 +		enum dma_data_direction direction)
-+{
-+	flush_write_buffers();
-+}
+ {
+ 	int i;
+ 
+-	BUG_ON(!valid_dma_direction(direction));
+-
+ 	/* Make sure that gcc doesn't leave the empty loop body.  */
+ 	for_each_sg(sg, sg, nelems, i)
+ 		__dma_sync_for_cpu(sg_virt(sg), sg->length, direction);
+ }
+-EXPORT_SYMBOL(dma_sync_sg_for_cpu);
+ 
+-void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+-				int nelems, enum dma_data_direction direction)
++static void nios2_dma_sync_sg_for_device(struct device *dev,
++		struct scatterlist *sg, int nelems,
++		enum dma_data_direction direction)
+ {
+ 	int i;
+ 
+-	BUG_ON(!valid_dma_direction(direction));
+-
+ 	/* Make sure that gcc doesn't leave the empty loop body.  */
+ 	for_each_sg(sg, sg, nelems, i)
+ 		__dma_sync_for_device(sg_virt(sg), sg->length, direction);
+ 
+ }
+-EXPORT_SYMBOL(dma_sync_sg_for_device);
 +
-+
-+static int frv_dma_supported(struct device *dev, u64 mask)
-+{
-+        /*
-+         * we fall back to GFP_DMA when the mask isn't all 1s,
-+         * so we can't guarantee allocations that must be
-+         * within a tighter range than GFP_DMA..
-+         */
-+        if (mask < 0x00ffffff)
-+                return 0;
-+	return 1;
-+}
-+
-+struct dma_map_ops frv_dma_ops = {
-+	.alloc			= frv_dma_alloc,
-+	.free			= frv_dma_free,
-+	.map_page		= frv_dma_map_page,
-+	.map_sg			= frv_dma_map_sg,
-+	.sync_single_for_device	= frv_dma_sync_single_for_device,
-+	.sync_sg_for_device	= frv_dma_sync_sg_for_device,
-+	.dma_supported		= frv_dma_supported,
++struct dma_map_ops nios2_dma_ops = {
++	.alloc                  = nios2_dma_alloc,
++	.free                   = nios2_dma_free,
++	.map_page               = nios2_dma_map_page,
++	.map_sg                 = nios2_dma_map_sg,
++	.sync_single_for_device = nios2_dma_sync_single_for_device,
++	.sync_single_for_cpu    = nios2_dma_sync_single_for_cpu,
++	.sync_sg_for_cpu        = nios2_dma_sync_sg_for_cpu,
++	.sync_sg_for_dev        = nios2_dma_sync_sg_for_device,
 +};
-+EXPORT_SYMBOL(frv_dma_ops);
++EXPORT_SYMBOL(nios2_dma_ops);
 -- 
 1.9.1
