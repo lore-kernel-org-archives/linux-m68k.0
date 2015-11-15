@@ -1,38 +1,55 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/4] m68k/mm: m54xx - Add missing initialization of max_pfn
-Date: Sun, 15 Nov 2015 12:04:13 +0100
-Message-ID: <1447585455-19671-3-git-send-email-geert@linux-m68k.org>
-References: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68k: Wire up mlock2
+Date: Sun, 15 Nov 2015 12:09:07 +0100
+Message-ID: <1447585747-20316-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-
-If max_pfn is not initialized, the various /proc/kpage* files are empty,
-and selftests/vm/mlock2-tests will fail. max_pfn is also used by the
-block layer to calculate DMA masks.
+To: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Compile-tested only.
----
- arch/m68k/coldfire/m54xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This depends on series "[PATCH 0/4] m68k/mm: Add missing initialization of
+max_pfn and {min,max}_low_pfn" to work.
 
-diff --git a/arch/m68k/coldfire/m54xx.c b/arch/m68k/coldfire/m54xx.c
-index f7836c6a6b60eb24..c32f76791f488ae1 100644
---- a/arch/m68k/coldfire/m54xx.c
-+++ b/arch/m68k/coldfire/m54xx.c
-@@ -98,7 +98,7 @@ static void __init mcf54xx_bootmem_alloc(void)
- 	memstart = PAGE_ALIGN(_ramstart);
- 	min_low_pfn = PFN_DOWN(_rambase);
- 	start_pfn = PFN_DOWN(memstart);
--	max_low_pfn = PFN_DOWN(_ramend);
-+	max_pfn = max_low_pfn = PFN_DOWN(_ramend);
- 	high_memory = (void *)_ramend;
+ arch/m68k/include/asm/unistd.h      | 2 +-
+ arch/m68k/include/uapi/asm/unistd.h | 1 +
+ arch/m68k/kernel/syscalltable.S     | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index 0793a7f174176e6d..f9d96bf869109c02 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -4,7 +4,7 @@
+ #include <uapi/asm/unistd.h>
  
- 	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
+ 
+-#define NR_syscalls		375
++#define NR_syscalls		376
+ 
+ #define __ARCH_WANT_OLD_READDIR
+ #define __ARCH_WANT_OLD_STAT
+diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
+index 5e6fae6c275f9b11..36cf129de663a7ca 100644
+--- a/arch/m68k/include/uapi/asm/unistd.h
++++ b/arch/m68k/include/uapi/asm/unistd.h
+@@ -380,5 +380,6 @@
+ #define __NR_sendmmsg		372
+ #define __NR_userfaultfd	373
+ #define __NR_membarrier		374
++#define __NR_mlock2		375
+ 
+ #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
+diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
+index 5dd0e80042f51107..282cd903f4c46919 100644
+--- a/arch/m68k/kernel/syscalltable.S
++++ b/arch/m68k/kernel/syscalltable.S
+@@ -395,3 +395,4 @@ ENTRY(sys_call_table)
+ 	.long sys_sendmmsg
+ 	.long sys_userfaultfd
+ 	.long sys_membarrier
++	.long sys_mlock2		/* 375 */
 -- 
 1.9.1
