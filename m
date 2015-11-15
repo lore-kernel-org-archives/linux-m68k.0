@@ -1,64 +1,33 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/4] m68k/mm: Add missing initialization of max_pfn and {min,max}_low_pfn
-Date: Sun, 15 Nov 2015 12:04:11 +0100
-Message-ID: <1447585455-19671-1-git-send-email-geert__25963.3428570398$1447587964$gmane$org@linux-m68k.org>
+Subject: [PATCH] [SCSI] st: Remove obsolete scsi_tape.max_pfn
+Date: Sun, 15 Nov 2015 12:48:06 +0100
+Message-ID: <1447588086-21019-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>
+Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi,
+Its last user was removed 10 years ago, in commit
+8b05b773b6030de5 ("[SCSI] convert st to use scsi_execute_async").
 
-This patch series adds missing initialization of max_pfn, min_low_pfn,
-and max_low_pfn on various m68k platforms.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/scsi/st.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-This was exposed by failing selftests/vm/mlock2-tests.
-
-Note that several other architectures lack a proper initialization of
-max_pfn. On some of them it's completely missing, on others max_pfn is a
-local variable, hence it hides the global max_pfn, which is thus not
-initialized neither.
-
-On platforms with MMU, this can easily be verified by reading the
-following virtual files (CONFIG_PROC_PAGE_MONITOR=y):
-
-    /proc/kpagecount
-    /proc/kpageflags
-    /proc/kpagecgroup (CONFIG_MEMCG=y)
-
-If max_pfn is not initialized, all three virtual files are empty.
-
-Besides the above, max_pfn is also used to calculate DMA masks for block
-devices. An uninitialized (zero) value means all RAM is suitable for
-DMA.
-
-Absence of initialization of min_low_pfn and max_low_pfn is more subtle.
-(are there any bad side-effects?).
-
-Geert Uytterhoeven (4):
-  m68k/mm: motorola - Add missing initialization of max_pfn
-  m68k/mm: m54xx - Add missing initialization of max_pfn
-  m68k/mm: sun3 - Add missing initialization of max_pfn and
-    {min,max}_low_pfn
-  m68knommu: Add missing initialization of max_pfn and {min,max}_low_pfn
-
- arch/m68k/coldfire/m54xx.c  | 2 +-
- arch/m68k/kernel/setup_no.c | 9 ++++++---
- arch/m68k/mm/motorola.c     | 2 +-
- arch/m68k/sun3/config.c     | 4 ++--
- 4 files changed, 10 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/scsi/st.h b/drivers/scsi/st.h
+index b6486b5d86811227..8c732c8de0153eb1 100644
+--- a/drivers/scsi/st.h
++++ b/drivers/scsi/st.h
+@@ -148,8 +148,6 @@ struct scsi_tape {
+ 	int tape_type;
+ 	int long_timeout;	/* timeout for commands known to take long time */
+ 
+-	unsigned long max_pfn;	/* the maximum page number reachable by the HBA */
+-
+ 	/* Mode characteristics */
+ 	struct st_modedef modes[ST_NBR_MODES];
+ 	int current_mode;
 -- 
 1.9.1
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
