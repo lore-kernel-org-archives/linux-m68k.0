@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4/4] m68knommu: Add missing initialization of max_pfn and {min,max}_low_pfn
-Date: Sun, 15 Nov 2015 12:04:15 +0100
-Message-ID: <1447585455-19671-5-git-send-email-geert__43421.6586094864$1447587945$gmane$org@linux-m68k.org>
+Subject: [PATCH 1/4] m68k/mm: motorola - Add missing initialization of max_pfn
+Date: Sun, 15 Nov 2015 12:04:12 +0100
+Message-ID: <1447585455-19671-2-git-send-email-geert__34368.3868450627$1447587961$gmane$org@linux-m68k.org>
 References: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
@@ -10,38 +10,27 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@uclinux.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
 Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-If max_pfn is not initialized, the block layer may use wrong DMA masks.
-
-Replace open-coded shifts by PFN_DOWN() while we're at it.
+If max_pfn is not initialized, the various /proc/kpage* files are empty,
+and selftests/vm/mlock2-tests will fail. max_pfn is also used by the
+block layer to calculate DMA masks.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Compile-tested only.
----
- arch/m68k/kernel/setup_no.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/m68k/mm/motorola.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 88c27d94a7214c95..29b44e69f0f47375 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -238,11 +238,14 @@ void __init setup_arch(char **cmdline_p)
- 	 * Give all the memory to the bootmap allocator, tell it to put the
- 	 * boot mem_map at the start of memory.
- 	 */
-+	min_low_pfn = PFN_DOWN(memory_start);
-+	max_pfn = max_low_pfn = PFN_DOWN(memory_end);
-+
- 	bootmap_size = init_bootmem_node(
- 			NODE_DATA(0),
--			memory_start >> PAGE_SHIFT, /* map goes here */
--			PAGE_OFFSET >> PAGE_SHIFT,	/* 0 on coldfire */
--			memory_end >> PAGE_SHIFT);
-+			min_low_pfn,		/* map goes here */
-+			PFN_DOWN(PAGE_OFFSET),	/* 0 on coldfire */
-+			max_pfn);
- 	/*
- 	 * Free the usable memory, we have to make sure we do not free
- 	 * the bootmem bitmap so we then reserve it after freeing it :-)
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index b958916e5eac96b2..8f37fdd80be9e9cc 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -250,7 +250,7 @@ void __init paging_init(void)
+ 	high_memory = phys_to_virt(max_addr);
+ 
+ 	min_low_pfn = availmem >> PAGE_SHIFT;
+-	max_low_pfn = max_addr >> PAGE_SHIFT;
++	max_pfn = max_low_pfn = max_addr >> PAGE_SHIFT;
+ 
+ 	for (i = 0; i < m68k_num_memory; i++) {
+ 		addr = m68k_memory[i].addr;
 -- 
 1.9.1
