@@ -1,55 +1,49 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Wire up mlock2
-Date: Sun, 15 Nov 2015 12:09:07 +0100
-Message-ID: <1447585747-20316-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 3/4] m68k/mm: sun3 - Add missing initialization of max_pfn and {min,max}_low_pfn
+Date: Sun, 15 Nov 2015 12:04:14 +0100
+Message-ID: <1447585455-19671-4-git-send-email-geert@linux-m68k.org>
+References: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@uclinux.org>
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@uclinux.org>, Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+
+If max_pfn is not initialized, the various /proc/kpage* files are empty,
+and selftests/vm/mlock2-tests will fail. max_pfn is also used by the
+block layer to calculate DMA masks.
+
+Switch from init_bootmem_node() to init_bootmem(), as there's only one
+memory node on Sun-3. This will initialize min_low_pfn and max_low_pfn,
+which was also not done before.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-This depends on series "[PATCH 0/4] m68k/mm: Add missing initialization of
-max_pfn and {min,max}_low_pfn" to work.
+Compile-tested only.
+---
+ arch/m68k/sun3/config.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/syscalltable.S     | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-index 0793a7f174176e6d..f9d96bf869109c02 100644
---- a/arch/m68k/include/asm/unistd.h
-+++ b/arch/m68k/include/asm/unistd.h
-@@ -4,7 +4,7 @@
- #include <uapi/asm/unistd.h>
+diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+index a8b942bf71638c97..2a5f43a68ae3d73d 100644
+--- a/arch/m68k/sun3/config.c
++++ b/arch/m68k/sun3/config.c
+@@ -118,13 +118,13 @@ static void __init sun3_bootmem_alloc(unsigned long memory_start,
+ 	memory_end = memory_end & PAGE_MASK;
  
+ 	start_page = __pa(memory_start) >> PAGE_SHIFT;
+-	num_pages = __pa(memory_end) >> PAGE_SHIFT;
++	max_pfn = num_pages = __pa(memory_end) >> PAGE_SHIFT;
  
--#define NR_syscalls		375
-+#define NR_syscalls		376
+ 	high_memory = (void *)memory_end;
+ 	availmem = memory_start;
  
- #define __ARCH_WANT_OLD_READDIR
- #define __ARCH_WANT_OLD_STAT
-diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-index 5e6fae6c275f9b11..36cf129de663a7ca 100644
---- a/arch/m68k/include/uapi/asm/unistd.h
-+++ b/arch/m68k/include/uapi/asm/unistd.h
-@@ -380,5 +380,6 @@
- #define __NR_sendmmsg		372
- #define __NR_userfaultfd	373
- #define __NR_membarrier		374
-+#define __NR_mlock2		375
+ 	m68k_setup_node(0);
+-	availmem += init_bootmem_node(NODE_DATA(0), start_page, 0, num_pages);
++	availmem += init_bootmem(start_page, num_pages);
+ 	availmem = (availmem + (PAGE_SIZE-1)) & PAGE_MASK;
  
- #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
-diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index 5dd0e80042f51107..282cd903f4c46919 100644
---- a/arch/m68k/kernel/syscalltable.S
-+++ b/arch/m68k/kernel/syscalltable.S
-@@ -395,3 +395,4 @@ ENTRY(sys_call_table)
- 	.long sys_sendmmsg
- 	.long sys_userfaultfd
- 	.long sys_membarrier
-+	.long sys_mlock2		/* 375 */
+ 	free_bootmem(__pa(availmem), memory_end - (availmem));
 -- 
 1.9.1
