@@ -1,80 +1,62 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 5/8] ax88796: Add block_input/output hooks to ax_plat_data
-Date: Tue, 17 Nov 2015 12:33:14 +1300
-Message-ID: <1447716797-20906-6-git-send-email-schmitzmic@gmail.com>
-References: <1447716797-20906-1-git-send-email-schmitzmic@gmail.com>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH 4/4] m68knommu: Add missing initialization of max_pfn and
+ {min,max}_low_pfn
+Date: Tue, 17 Nov 2015 09:46:33 +1000
+Message-ID: <564A6AD9.6010307__27873.3498686508$1447717614$gmane$org@uclinux.org>
+References: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
+ <1447585455-19671-5-git-send-email-geert@linux-m68k.org>
+ <5649C987.3050600@uclinux.org>
+ <CAMuHMdXt=UH_YoiRDRHCiHBCAsyyHenz2bDKkqUxF85tj2y6mw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f67.google.com ([209.85.220.67]:33302 "EHLO
-	mail-pa0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752425AbbKPXdo (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Nov 2015 18:33:44 -0500
-Received: by padfb7 with SMTP id fb7so26783506pad.0
-        for <linux-m68k@vger.kernel.org>; Mon, 16 Nov 2015 15:33:43 -0800 (PST)
-In-Reply-To: <1447716797-20906-1-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdXt=UH_YoiRDRHCiHBCAsyyHenz2bDKkqUxF85tj2y6mw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, debian-68k@lists.debian.org, kernel@mkarcher.dialup.fu-berlin.de, Michael Schmitz <schmitzmic@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Add platform specific hooks for block transfer reads/writes of packet
-buffer data, superseding the default provided ax_block_input/output.
-Currently used for m68k Amiga XSurf100.
+Hi Geert,
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/net/ethernet/8390/ax88796.c |   10 ++++++++--
- include/net/ax88796.h               |    7 ++++++-
- 2 files changed, 14 insertions(+), 3 deletions(-)
+On 16/11/15 23:05, Geert Uytterhoeven wrote:
+> On Mon, Nov 16, 2015 at 1:18 PM, Greg Ungerer <gerg@uclinux.org> wrote:
+>>> --- a/arch/m68k/kernel/setup_no.c
+>>> +++ b/arch/m68k/kernel/setup_no.c
+>>> @@ -238,11 +238,14 @@ void __init setup_arch(char **cmdline_p)
+>>>          * Give all the memory to the bootmap allocator, tell it to put
+>>> the
+>>>          * boot mem_map at the start of memory.
+>>>          */
+>>> +       min_low_pfn = PFN_DOWN(memory_start);
+>>> +       max_pfn = max_low_pfn = PFN_DOWN(memory_end);
+>>> +
+>>>         bootmap_size = init_bootmem_node(
+>>>                         NODE_DATA(0),
+>>> -                       memory_start >> PAGE_SHIFT, /* map goes here */
+>>> -                       PAGE_OFFSET >> PAGE_SHIFT,      /* 0 on coldfire
+>>> */
+>>> -                       memory_end >> PAGE_SHIFT);
+>>> +                       min_low_pfn,            /* map goes here */
+>>> +                       PFN_DOWN(PAGE_OFFSET),  /* 0 on coldfire */
+>>> +                       max_pfn);
+>>>         /*
+>>>          * Free the usable memory, we have to make sure we do not free
+>>>          * the bootmem bitmap so we then reserve it after freeing it :-)
+>>
+>> Should this be changed to use init_bootmem() as per your changes
+>> in patch 3 ("m68k/mm: sun3 - Add missing initialization of max_pfn and
+>> {min,max}_low_pfn")? For the same reason?
+> 
+> No. PAGE_OFFSET = PAGE_OFFSET_RAW = CONFIG_RAMBASE.
+> As the comment says, this is zero on coldfire, but not on all m68knommu
+> platforms.
+> 
+> Upon closer look, this isn't even true on all Coldfire boards:
+> 
+> arch/m68k/configs/m5208evb_defconfig:CONFIG_RAMBASE=0x40000000
 
-diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index 6472473..d45c032 100644
---- a/drivers/net/ethernet/8390/ax88796.c
-+++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -789,8 +789,14 @@ static int ax_init_dev(struct net_device *dev)
- #endif
- 
- 	ei_local->reset_8390 = &ax_reset_8390;
--	ei_local->block_input = &ax_block_input;
--	ei_local->block_output = &ax_block_output;
-+	if (ax->plat->block_input)
-+		ei_local->block_input = ax->plat->block_input;
-+	else
-+		ei_local->block_input = &ax_block_input;
-+	if (ax->plat->block_output)
-+		ei_local->block_output = ax->plat->block_output;
-+	else
-+		ei_local->block_output = &ax_block_output;
- 	ei_local->get_8390_hdr = &ax_get_8390_hdr;
- 	ei_local->priv = 0;
- 	ei_local->msg_enable = ax_msg_enable;
-diff --git a/include/net/ax88796.h b/include/net/ax88796.h
-index b9a3bec..28d6a93 100644
---- a/include/net/ax88796.h
-+++ b/include/net/ax88796.h
-@@ -8,10 +8,11 @@
-  * published by the Free Software Foundation.
-  *
- */
--
- #ifndef __NET_AX88796_PLAT_H
- #define __NET_AX88796_PLAT_H
- 
-+struct net_device;
-+
- #define AXFLG_HAS_EEPROM		(1<<0)
- #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
- #define AXFLG_HAS_93CX6			(1<<2)	/* use eeprom_93cx6 driver */
-@@ -26,6 +27,10 @@ struct ax_plat_data {
- 	u32		*reg_offsets;	/* register offsets */
- 	u8		*mac_addr;	/* MAC addr (only used when
- 					   AXFLG_MAC_FROMPLATFORM is used */
-+
-+        /* uses default ax88796 buffer if set to NULL */
-+	void (*block_output)(struct net_device *, int, const unsigned char *, int);
-+	void (*block_input)(struct net_device *, int, struct sk_buff *, int);
- };
- 
- #endif /* __NET_AX88796_PLAT_H */
--- 
-1.7.0.4
+Yes, that comment is definitely wrong!
+
+Regards
+Greg
