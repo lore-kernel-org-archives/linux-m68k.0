@@ -1,40 +1,61 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] include: asm-generic: page.h: Remove useless
- get_user_page and free_user_page
-Date: Thu, 19 Nov 2015 00:11:26 +0000
-Message-ID: <20151119001126.GT8644__5474.77612640268$1447891935$gmane$org@n2100.arm.linux.org.uk>
-References: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380
+ drivers
+Date: Thu, 19 Nov 2015 13:24:56 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1511191321010.9967@nippy.intranet>
+References: <20151118083455.331768508@telegraphics.com.au> <201511181235.15663.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54756 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754125AbbKSCZR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Nov 2015 21:25:17 -0500
+In-Reply-To: <201511181235.15663.linux@rainbow-software.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Chen Gang <xili_gchen_5257@hotmail.com>
-Cc: "vgupta@synopsys.com" <vgupta@synopsys.com>, "dhowells@redhat.com" <dhowells@redhat.com>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "gerg@uclinux.org" <gerg@uclinux.org>, "jonas@southpole.se" <jonas@southpole.se>, Arnd Bergmann <arnd@arndb.de>, "abrodkin@synopsys.com" <abrodkin@synopsys.com>, Andrew Morton <akpm@linux-foundation.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, kernel mailing list <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, linux@lists.openrisc.net
+To: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, Ondrej Zary <linux@rainbow-software.org>
+Cc: "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2015 at 03:40:25AM +0800, Chen Gang wrote:
-> >From ba7c00c4cb976109b6a35812ce9649aaeda81e2d Mon Sep 17 00:00:00 20=
-01
-> From: Chen Gang <gang.chen.5i5j@gmail.com>
-> Date: Thu, 19 Nov 2015 03:24:42 +0800
-> Subject: [PATCH] include: asm-generic: page.h: Remove useless get_use=
-r_page and free_user_page
->=20
-> They are not symmetric with each other, neither are used in real worl=
-d
-> (can not be found by grep command in source code root directory), so
-> remove them.
->=20
-> Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
 
-=46or:
-> =A0arch/arm/include/asm/page-nommu.h | 3 ---
+On Wed, 18 Nov 2015, Ondrej Zary wrote:
 
-Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> On Wednesday 18 November 2015, Finn Thain wrote:
+> 
+> > Like my previous work on the NCR5380 drivers, this patch series has 
+> > bug fixes, code cleanup and modernization. These drivers suffer from 
+> > mistakes, poor style and neglect and this long series addresses the 
+> > worst of it, covering all ten wrapper drivers and both of the core 
+> > driver forks. The combined size of the drivers is reduced by about 750 
+> > LoC.
+> >
+> > This series continues to reduce divergence between the two core driver 
+> > forks, often by copying a bug fix from one to the other. Most patches 
+> > are larger for having to keep the two forks in sync. Making the same 
+> > change to both is churn if one of them is to be removed but neither 
+> > can be as yet. By the end of this series the diff between the two 
+> > forks is minimal, so it becomes clear what caused the fork and what 
+> > can be done about it.
+> >
+> > This patch series did benefit from scripts/checkpatch.pl but not too 
+> > much. Decades ago, these drivers started out with 4-space tabs and if 
+> > the 80 column limit were to be strictly enforced now, it would require 
+> > adding new functions and shortening identifiers. I would defer this 
+> > sort of activity until after the fork has been resolved.
+> >
+> > I have compile-tested all patches to all NCR5380 drivers (x86, ARM, 
+> > m68k) and regression tested mac_scsi and dmx3191d modules on suitable 
+> > hardware. Testing the mac_scsi and dmx3191d modules provides only 
+> > limited coverage. It would be good to see some testing of ISA cards 
+> > and Sun 3 and Atari hardware too (I don't have any).
+> 
+> I have some NCR5380 ISA cards and can test them.
+> 
 
---=20
-=46TTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+Thanks Ondrej. I've no idea which ISA drivers are presently working in 
+mainline. Finding regressions may be more difficult than usual ;-)
+
+Michael, Sam: only atari_scsi and sun3_scsi implement DMA support, so some
+testing of either driver would be helpful.
+
+-- 
