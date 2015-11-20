@@ -1,47 +1,152 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380
- drivers
-Date: Fri, 20 Nov 2015 03:45:15 -0800
-Message-ID: <20151120114515.GA4651@infradead.org>
-References: <20151118083455.331768508@telegraphics.com.au>
- <20151120100047.GA27842@infradead.org>
- <alpine.LNX.2.00.1511202138240.16424@nippy.intranet>
- <201511201240.03828.linux@rainbow-software.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] include: asm-generic: page.h: Remove useless
+ get_user_page and free_user_page
+Date: Fri, 20 Nov 2015 22:15:09 +1000
+Message-ID: <564F0ECD.2050109__21838.1058228717$1448021754$gmane$org@uclinux.org>
+References: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201511201240.03828.linux@rainbow-software.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Christoph Hellwig <hch@infradead.org>, Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Chen Gang <xili_gchen_5257@hotmail.com>, "vgupta@synopsys.com" <vgupta@synopsys.com>, "dhowells@redhat.com" <dhowells@redhat.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "jonas@southpole.se" <jonas@southpole.se>, Arnd Bergmann <arnd@arndb.de>, "abrodkin@synopsys.com" <abrodkin@synopsys.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, kernel mailing list <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, linux@lists.openrisc.net
 
-On Fri, Nov 20, 2015 at 12:40:03PM +0100, Ondrej Zary wrote:
-> > > I'd love to be able to get rid of the ISA drivers to be honest.
-> > 
-> > Is that because of their use of scsi_module.c or their general decrepitude 
-> > or something else?
-> 
-> scsi_module.c usage shouldn't be hard to fix. I can do that after finding a working setup.
+Hi Chen,
 
-It's the general state of them.
+On 19/11/15 05:40, Chen Gang wrote:
+>>From ba7c00c4cb976109b6a35812ce9649aaeda81e2d Mon Sep 17 00:00:00 2001
+> From: Chen Gang <gang.chen.5i5j@gmail.com>
+> Date: Thu, 19 Nov 2015 03:24:42 +0800
+> Subject: [PATCH] include: asm-generic: page.h: Remove useless get_user_page and free_user_page
+>
+> They are not symmetric with each other, neither are used in real world
+> (can not be found by grep command in source code root directory), so
+> remove them.
+>
+> Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
 
-> 
-> > > Given that they appear to be gravely broken before your cleanups this 
-> > > might be an opportunity to get rid of them.
-> > 
-> > At this stage, that's unclear (to me). It could be that g_NCR5380.c is not 
-> > broken. It could be that the core driver can't handle certain targets. I 
-> > think we need to do more testing.
-> 
-> Maybe I was just unlucky and tested a drive that never worked with this driver.
-> 
-> Working ISA means more testing possibilities. It's much easier to get an ISA card than a Sun or Atari. Also faster CPU (such as 1 GHz P3) means quicker testing.
+Compile and run tested on m68k (MMU and noMMU) targets.
+No problems found. So for those parts:
+
+Acked-by: Greg Ungerer <gerg@uclinux.org>
+
+Regards
+Greg
 
 
-Well, if you volunteer to bring the NCR5380 ISA drivers up to date and
-maintain them it's obvuously fine to keep them around.
-
-I'm more worried about all the unmaintained ISA drivers in horrible
-shape.
+> ---
+>   arch/arc/include/asm/page.h       | 3 ---
+>   arch/arm/include/asm/page-nommu.h | 3 ---
+>   arch/frv/include/asm/page.h       | 3 ---
+>   arch/m68k/include/asm/page_mm.h   | 3 ---
+>   arch/m68k/include/asm/page_no.h   | 3 ---
+>   arch/openrisc/include/asm/page.h  | 3 ---
+>   include/asm-generic/page.h        | 3 ---
+>   7 files changed, 21 deletions(-)
+>
+> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+> index 429957f..adf5cbb 100644
+> --- a/arch/arc/include/asm/page.h
+> +++ b/arch/arc/include/asm/page.h
+> @@ -13,9 +13,6 @@
+>
+>   #ifndef __ASSEMBLY__
+>
+> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)	free_page(addr)
+> -
+>   #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
+>   #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
+>
+> diff --git a/arch/arm/include/asm/page-nommu.h b/arch/arm/include/asm/page-nommu.h
+> index d1b162a..503f488 100644
+> --- a/arch/arm/include/asm/page-nommu.h
+> +++ b/arch/arm/include/asm/page-nommu.h
+> @@ -17,9 +17,6 @@
+>   #define KTHREAD_SIZE PAGE_SIZE
+>   #endif
+>
+> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)	free_page(addr)
+> -
+>   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
+>   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
+>
+> diff --git a/arch/frv/include/asm/page.h b/arch/frv/include/asm/page.h
+> index 8c97068..52ace96 100644
+> --- a/arch/frv/include/asm/page.h
+> +++ b/arch/frv/include/asm/page.h
+> @@ -8,9 +8,6 @@
+>
+>   #ifndef __ASSEMBLY__
+>
+> -#define get_user_page(vaddr)			__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)		free_page(addr)
+> -
+>   #define clear_page(pgaddr)			memset((pgaddr), 0, PAGE_SIZE)
+>   #define copy_page(to,from)			memcpy((to), (from), PAGE_SIZE)
+>
+> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
+> index 5029f73..e7a1946 100644
+> --- a/arch/m68k/include/asm/page_mm.h
+> +++ b/arch/m68k/include/asm/page_mm.h
+> @@ -6,9 +6,6 @@
+>   #include <linux/compiler.h>
+>   #include <asm/module.h>
+>
+> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)	free_page(addr)
+> -
+>   /*
+>    * We don't need to check for alignment etc.
+>    */
+> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+> index ef20916..fa7f32d 100644
+> --- a/arch/m68k/include/asm/page_no.h
+> +++ b/arch/m68k/include/asm/page_no.h
+> @@ -6,9 +6,6 @@
+>   extern unsigned long memory_start;
+>   extern unsigned long memory_end;
+>
+> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)	free_page(addr)
+> -
+>   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
+>   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
+>
+> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+> index 108906f..e613d36 100644
+> --- a/arch/openrisc/include/asm/page.h
+> +++ b/arch/openrisc/include/asm/page.h
+> @@ -40,9 +40,6 @@
+>
+>   #ifndef __ASSEMBLY__
+>
+> -#define get_user_page(vaddr)            __get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)      free_page(addr)
+> -
+>   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
+>   #define copy_page(to, from)	memcpy((to), (from), PAGE_SIZE)
+>
+> diff --git a/include/asm-generic/page.h b/include/asm-generic/page.h
+> index 37d1fe2..67cfb7d 100644
+> --- a/include/asm-generic/page.h
+> +++ b/include/asm-generic/page.h
+> @@ -24,9 +24,6 @@
+>
+>   #ifndef __ASSEMBLY__
+>
+> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
+> -#define free_user_page(page, addr)	free_page(addr)
+> -
+>   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
+>   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
+>
+> --
+> 1.9.3
+>
+>   		 	   		
+>
