@@ -1,152 +1,37 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: Re: [PATCH] include: asm-generic: page.h: Remove useless
- get_user_page and free_user_page
-Date: Fri, 20 Nov 2015 22:15:09 +1000
-Message-ID: <564F0ECD.2050109__21838.1058228717$1448021754$gmane$org@uclinux.org>
-References: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380 drivers
+Date: Fri, 20 Nov 2015 13:23:17 +0100
+Message-ID: <CAMuHMdW5CT+Sbe7VP=AtjT5HHfQBm=HphQxKSOFxkjt1uvnAQw@mail.gmail.com>
+References: <20151118083455.331768508@telegraphics.com.au>
+	<20151120100047.GA27842@infradead.org>
+	<alpine.LNX.2.00.1511202138240.16424@nippy.intranet>
+	<201511201240.03828.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <COL130-W7B5F0BB94C76AF6B12EA7B91C0@phx.gbl>
+Received: from mail-ob0-f182.google.com ([209.85.214.182]:35548 "EHLO
+	mail-ob0-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1760057AbbKTMXS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 20 Nov 2015 07:23:18 -0500
+In-Reply-To: <201511201240.03828.linux@rainbow-software.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Chen Gang <xili_gchen_5257@hotmail.com>, "vgupta@synopsys.com" <vgupta@synopsys.com>, "dhowells@redhat.com" <dhowells@redhat.com>, "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "jonas@southpole.se" <jonas@southpole.se>, Arnd Bergmann <arnd@arndb.de>, "abrodkin@synopsys.com" <abrodkin@synopsys.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, kernel mailing list <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, linux@lists.openrisc.net
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Christoph Hellwig <hch@infradead.org>, Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Chen,
+On Fri, Nov 20, 2015 at 12:40 PM, Ondrej Zary
+<linux@rainbow-software.org> wrote:
+> Working ISA means more testing possibilities. It's much easier to get an ISA card than a Sun or Atari. Also faster CPU (such as 1 GHz P3) means quicker testing.
 
-On 19/11/15 05:40, Chen Gang wrote:
->>From ba7c00c4cb976109b6a35812ce9649aaeda81e2d Mon Sep 17 00:00:00 2001
-> From: Chen Gang <gang.chen.5i5j@gmail.com>
-> Date: Thu, 19 Nov 2015 03:24:42 +0800
-> Subject: [PATCH] include: asm-generic: page.h: Remove useless get_user_page and free_user_page
->
-> They are not symmetric with each other, neither are used in real world
-> (can not be found by grep command in source code root directory), so
-> remove them.
->
-> Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
+Faster PCs without ISA slots? ;-)
 
-Compile and run tested on m68k (MMU and noMMU) targets.
-No problems found. So for those parts:
+Gr{oetje,eeting}s,
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+                        Geert
 
-Regards
-Greg
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-> ---
->   arch/arc/include/asm/page.h       | 3 ---
->   arch/arm/include/asm/page-nommu.h | 3 ---
->   arch/frv/include/asm/page.h       | 3 ---
->   arch/m68k/include/asm/page_mm.h   | 3 ---
->   arch/m68k/include/asm/page_no.h   | 3 ---
->   arch/openrisc/include/asm/page.h  | 3 ---
->   include/asm-generic/page.h        | 3 ---
->   7 files changed, 21 deletions(-)
->
-> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-> index 429957f..adf5cbb 100644
-> --- a/arch/arc/include/asm/page.h
-> +++ b/arch/arc/include/asm/page.h
-> @@ -13,9 +13,6 @@
->
->   #ifndef __ASSEMBLY__
->
-> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)	free_page(addr)
-> -
->   #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
->   #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
->
-> diff --git a/arch/arm/include/asm/page-nommu.h b/arch/arm/include/asm/page-nommu.h
-> index d1b162a..503f488 100644
-> --- a/arch/arm/include/asm/page-nommu.h
-> +++ b/arch/arm/include/asm/page-nommu.h
-> @@ -17,9 +17,6 @@
->   #define KTHREAD_SIZE PAGE_SIZE
->   #endif
->
-> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)	free_page(addr)
-> -
->   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
->   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
->
-> diff --git a/arch/frv/include/asm/page.h b/arch/frv/include/asm/page.h
-> index 8c97068..52ace96 100644
-> --- a/arch/frv/include/asm/page.h
-> +++ b/arch/frv/include/asm/page.h
-> @@ -8,9 +8,6 @@
->
->   #ifndef __ASSEMBLY__
->
-> -#define get_user_page(vaddr)			__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)		free_page(addr)
-> -
->   #define clear_page(pgaddr)			memset((pgaddr), 0, PAGE_SIZE)
->   #define copy_page(to,from)			memcpy((to), (from), PAGE_SIZE)
->
-> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-> index 5029f73..e7a1946 100644
-> --- a/arch/m68k/include/asm/page_mm.h
-> +++ b/arch/m68k/include/asm/page_mm.h
-> @@ -6,9 +6,6 @@
->   #include <linux/compiler.h>
->   #include <asm/module.h>
->
-> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)	free_page(addr)
-> -
->   /*
->    * We don't need to check for alignment etc.
->    */
-> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-> index ef20916..fa7f32d 100644
-> --- a/arch/m68k/include/asm/page_no.h
-> +++ b/arch/m68k/include/asm/page_no.h
-> @@ -6,9 +6,6 @@
->   extern unsigned long memory_start;
->   extern unsigned long memory_end;
->
-> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)	free_page(addr)
-> -
->   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
->   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
->
-> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-> index 108906f..e613d36 100644
-> --- a/arch/openrisc/include/asm/page.h
-> +++ b/arch/openrisc/include/asm/page.h
-> @@ -40,9 +40,6 @@
->
->   #ifndef __ASSEMBLY__
->
-> -#define get_user_page(vaddr)            __get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)      free_page(addr)
-> -
->   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
->   #define copy_page(to, from)	memcpy((to), (from), PAGE_SIZE)
->
-> diff --git a/include/asm-generic/page.h b/include/asm-generic/page.h
-> index 37d1fe2..67cfb7d 100644
-> --- a/include/asm-generic/page.h
-> +++ b/include/asm-generic/page.h
-> @@ -24,9 +24,6 @@
->
->   #ifndef __ASSEMBLY__
->
-> -#define get_user_page(vaddr)		__get_free_page(GFP_KERNEL)
-> -#define free_user_page(page, addr)	free_page(addr)
-> -
->   #define clear_page(page)	memset((page), 0, PAGE_SIZE)
->   #define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
->
-> --
-> 1.9.3
->
->   		 	   		
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
