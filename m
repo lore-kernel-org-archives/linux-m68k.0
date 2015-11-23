@@ -1,37 +1,25 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 4/4] m68knommu: Add missing initialization of max_pfn and {min,max}_low_pfn
-Date: Sun, 22 Nov 2015 11:38:08 +0100
-Message-ID: <CAMuHMdWzJq5yrchmRSc3_W7-7VZ7zbvU4mwhzWDdjdXndr0mWw__15760.7891982936$1448188713$gmane$org@mail.gmail.com>
-References: <1447585455-19671-1-git-send-email-geert@linux-m68k.org>
-	<1447585455-19671-5-git-send-email-geert@linux-m68k.org>
-	<564A6CA4.9000206@uclinux.org>
+Subject: Re: [PATCH] m68k/mac: Kill psc_present
+Date: Mon, 23 Nov 2015 09:59:50 +0100
+Message-ID: <CAMuHMdVq+BK0Neg2BPLSrzFsnPojtqtGJxVO8T9nruZog4L+TA@mail.gmail.com>
+References: <1446808833-25458-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <564A6CA4.9000206@uclinux.org>
+In-Reply-To: <1446808833-25458-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: Sam Creasey <sammy@sammy.net>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux-Arch <linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Greg,
+On Fri, Nov 6, 2015 at 12:20 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> The presence of the Apple Peripheral System Controller (PSC) can be
+> tested for by just checking its base address pointer.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Tue, Nov 17, 2015 at 12:54 AM, Greg Ungerer <gerg@uclinux.org> wrote:
-> On 15/11/15 21:04, Geert Uytterhoeven wrote:
->> If max_pfn is not initialized, the block layer may use wrong DMA masks.
->>
->> Replace open-coded shifts by PFN_DOWN() while we're at it.
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Tested and working fine on m68knommu. So:
->
-> Tested-By: Greg Ungerer <gerg@uclinux.org>
->
-> If you respin this patch for any reason I wouldn't object
-> to removing the "/* 0 on coldfire */" comment...
-
-Thanks, done, applied, and queued for v4.4.
+Applied and queued for v4.5.
 
 Gr{oetje,eeting}s,
 
