@@ -1,100 +1,89 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Fix for Falcon 030 boot fault in v4.3
-Date: Wed, 25 Nov 2015 10:06:13 +1300
-Message-ID: <1448399173-24847-1-git-send-email-schmitzmic@gmail.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f50.google.com ([209.85.220.50]:33071 "EHLO
-	mail-pa0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754127AbbKXVGX (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Nov 2015 16:06:23 -0500
-Received: by pabfh17 with SMTP id fh17so34381431pab.0
-        for <linux-m68k@vger.kernel.org>; Tue, 24 Nov 2015 13:06:23 -0800 (PST)
-Sender: linux-m68k-owner@vger.kernel.org
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380 drivers
+Date: Tue, 24 Nov 2015 22:40:24 +0100
+Message-ID: <201511242240.24959.linux@rainbow-software.org>
+References: <20151118083455.331768508@telegraphics.com.au> <201511240904.55085.linux@rainbow-software.org> <alpine.LNX.2.00.1511241932130.7196@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1511241932130.7196@nippy.intranet>
+Content-Disposition: inline
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, schwab@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>, Michael Schmitz <schmitzmic@debian.org>
 
-Geert,
+On Tuesday 24 November 2015 10:13:17 Finn Thain wrote:
+> 
+> On Tue, 24 Nov 2015, Ondrej Zary wrote:
+> 
+> > On Tuesday 24 November 2015, Finn Thain wrote:
+> > > 
+> > > On Mon, 23 Nov 2015, Ondrej Zary wrote:
+> > > 
+> > > > 
+> > > > PDMA seems to be broken in multiple ways. NCR5380_pread cannot 
+> > > > process less than 128 bytes. In fact, 53C400 datasheet says that 
+> > > > it's HW limitation: non-modulo-128-byte transfers should use PIO.
+> > > > 
+> > > > Adding
+> > > >         transfersize = round_down(transfersize, 128);
+> > > > to generic_NCR5380_dma_xfer_len() improves the situation a bit.
+> > > > 
+> > > > After modprobe, some small reads (8, 4, 24 and 64 bytes) are done 
+> > > > using PIO, then eight 512-byte reads using PDMA and then it fails on 
+> > > > a 254-byte read. First 128 bytes are read using PDMA and the next 
+> > > > PDMA operation hangs waiting forever for the host buffer to be 
+> > > > ready.
+> > > > 
+> > > 
+> > > A 128-byte PDMA receive followed by 126-byte PDMA receive? I don't see 
+> > > how that is possible given round_down(126, 128) == 0. Was this the 
+> > > actual 'len' argument to NCR5380_pread() in g_NCR5380.c?
+> > 
+> > No 126-byte PDMA. The 126 bytes were probably lost (or mixed with the 
+> > next read?).
+> 
+> When you said, the "PDMA operation hangs waiting forever", I figured that 
+> you had hit an infinite loop in NCR5380_pread()... but now I'm lost.
+> 
+> My main concern here is to confirm that I didn't break anything e.g. with 
+> patch 24 or 41. It would be nice to know that this hang is not the result 
+> of a new bug.
+> 
+> > The next read was also 254 bytes so another 128-byte PDMA transfer.
+> > 
+> > Then modified NCR5380_information_transfer() to transfer the remaining 
+> > data (126 bytes in this case) using PIO. It did not help, the next PDMA 
+> > transfer failed too.
+> > 
+> 
+> AFAICT, no change to NCR5380_information_transfer() should be needed. It 
+> was always meant to cope with the need to split a transfer between (P)DMA 
+> and PIO.
 
-as discussed, I'm sending a patch to fix my problem booting my Atari
-Falcon running in 030 mode (CT60 disabled, so no FastRAM present).
+Instead of fixing split transfers, simply forced everything non-modulo-128 to
+PIO:
+--- a/drivers/scsi/g_NCR5380.c
++++ b/drivers/scsi/g_NCR5380.c
+@@ -703,6 +703,10 @@ static int generic_NCR5380_dma_xfer_len(struct scsi_cmnd *cmd)
+ 	    !(cmd->SCp.this_residual % transfersize))
+ 		transfersize = 32 * 1024;
 
-As evidenced by adding initcall_debug to the boot options, the boot hangs
-in atari_platform_init() on your v4.3 kernel. I've had a similar fault
-a year ago with 3.18 so it's not a recent regression. 
++	/* 53C400 datasheet: non-modulo-128-byte transfers should use PIO */
++	if (transfersize % 128)
++		transfersize = 0;
++
+ 	return transfersize;
+ }
 
-I've narrowed the problem down to the ioremap() calls used to map the
-EtherNAT and EtherNEC register spaces for probing. For some reason,
-ioremap() blocks with interrupts enabled. The heartbeat signal on the
-IDE LED keeps flashing, albeit at a steadily increasing rate.
+It seems to work and greatly improves performance:
+# hdparm -t --direct /dev/sdb
 
-The patch below fixes the symptoms, i.e. I can boot 4.3 to user space
-with functional EtherNEC adapter. I'm baffled as to why ioremap would
-block instead of returning error though. Maybe Andreas can shed some
-light on this? 
+/dev/sdb:
+ Timing O_DIRECT disk reads:   4 MB in  4.84 seconds = 846.15 kB/sec
 
-Cheers,
-
-	Michael
-
-
-[PATCH] m68k/atari - change device probe in atari_platform_init()
-
-Don't probe for EtherNAT CPLD config register unless running on
-a CT60 type Atari Falcon. The EtherNAT isn't visible from the
-Falcon bus when running in 030 mode.
-
-Don't probe for EtherNEC registers at all - the ROM port is always
-present. Let the ne driver sort out whether there's an adapter
-plugged in.
-
-This saves running early ioremap() in atari_platform_init(),
-which blocks on Falcon in 030 mode.
-
-Signed-off-by: Michael Schmitz <schmitzmic@debian.org>
----
- arch/m68k/atari/config.c |   20 +++++++++++---------
- 1 files changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
-index 192b00f..ef35cb7 100644
---- a/arch/m68k/atari/config.c
-+++ b/arch/m68k/atari/config.c
-@@ -884,6 +884,12 @@ int __init atari_platform_init(void)
- 		return -ENODEV;
- 
- #ifdef CONFIG_ATARI_ETHERNAT
-+	/* 
-+	 * only probe for EtherNAT when running on CT60!
-+	 * EtherNAT can't be found on 030 Falcon, and early
-+	 * ioremap() blocks on Falcon in 030 mode! 
-+	*/
-+	if (CPU_IS_060)
- 	{
- 		unsigned char *enatc_virt;
- 		enatc_virt = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0xf);
-@@ -896,17 +902,13 @@ int __init atari_platform_init(void)
- #endif
- 
- #ifdef CONFIG_ATARI_ETHERNEC
-+	/* don't probe for EtherNEC - just assume it's present */
- 	{
- 		int error;
--		unsigned char *enec_virt;
--		enec_virt = (unsigned char *)ioremap((ATARI_ETHERNEC_PHYS_ADDR), 0xf);
--		if (hwreg_present(enec_virt)) {
--			error = platform_add_devices(atari_netusbee_devices,
--						ARRAY_SIZE(atari_netusbee_devices));
--			if (error && !rv)
--				rv = error;
--		}
--		iounmap(enec_virt);
-+		error = platform_add_devices(atari_netusbee_devices,
-+					ARRAY_SIZE(atari_netusbee_devices));
-+		if (error && !rv)
-+			rv = error;
- 	}
- #endif
- 
 -- 
-1.7.0.4
+Ondrej Zary
