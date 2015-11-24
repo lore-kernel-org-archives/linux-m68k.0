@@ -1,63 +1,100 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
-Date: Tue, 24 Nov 2015 20:08:34 +0100
-Message-ID: <201511242008.35378.linux@rainbow-software.org>
-References: <20151118083455.331768508@telegraphics.com.au> <20151118083501.571002212@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Fix for Falcon 030 boot fault in v4.3
+Date: Wed, 25 Nov 2015 10:06:13 +1300
+Message-ID: <1448399173-24847-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp-1b.atlantis.sk ([80.94.52.26]:60824 "EHLO
-	smtp-1b.atlantis.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753168AbbKXTIp (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Nov 2015 14:08:45 -0500
-In-Reply-To: <20151118083501.571002212@telegraphics.com.au>
-Content-Disposition: inline
+Received: from mail-pa0-f50.google.com ([209.85.220.50]:33071 "EHLO
+	mail-pa0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754127AbbKXVGX (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Nov 2015 16:06:23 -0500
+Received: by pabfh17 with SMTP id fh17so34381431pab.0
+        for <linux-m68k@vger.kernel.org>; Tue, 24 Nov 2015 13:06:23 -0800 (PST)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, schwab@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>, Michael Schmitz <schmitzmic@debian.org>
 
-On Wednesday 18 November 2015 09:35:17 Finn Thain wrote:
-> Linux v2.1.105 changed the algorithm for polling for the BSY signal
-> in NCR5380_select() and NCR5380_main().
-> 
-> Presently, this code has a bug. Back then, NCR5380_set_timer(hostdata, 1)
-> meant reschedule main() after sleeping for 10 ms. Repeated 25 times this
-> provided the recommended 250 ms selection time-out delay. This got broken
-> when HZ became configurable.
-> 
-> We could fix this but there's no need to reschedule the main loop. This
-> BSY polling presently happens when the NCR5380_main() work queue item
-> calls NCR5380_select(), which in turn schedules NCR5380_main(), which
-> calls NCR5380_select() again, and so on.
-> 
-> This algorithm is a deviation from the simpler one in atari_NCR5380.c.
-> The extra complexity and state is pointless. There's no reason to
-> stop selection half-way and return to to the main loop when the main
-> loop can do nothing useful until selection completes.
-> 
-> So just poll for BSY. We can sleep while polling now that we have a
-> suitable workqueue.
+Geert,
 
-Bisecting slow module initialization pointed to this commit.
+as discussed, I'm sending a patch to fix my problem booting my Atari
+Falcon running in 030 mode (CT60 disabled, so no FastRAM present).
 
-Before this commit (2 seconds):
-[   60.317374] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
-[   60.780715] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
-[   62.606260] sd 2:0:1:0: Attached scsi generic sg1 type 0
+As evidenced by adding initcall_debug to the boot options, the boot hangs
+in atari_platform_init() on your v4.3 kernel. I've had a similar fault
+a year ago with 3.18 so it's not a recent regression. 
+
+I've narrowed the problem down to the ioremap() calls used to map the
+EtherNAT and EtherNEC register spaces for probing. For some reason,
+ioremap() blocks with interrupts enabled. The heartbeat signal on the
+IDE LED keeps flashing, albeit at a steadily increasing rate.
+
+The patch below fixes the symptoms, i.e. I can boot 4.3 to user space
+with functional EtherNEC adapter. I'm baffled as to why ioremap would
+block instead of returning error though. Maybe Andreas can shed some
+light on this? 
+
+Cheers,
+
+	Michael
 
 
-After this commit (22 seconds):
-[  137.511711] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
-[  145.028532] clocksource: timekeeping watchdog: Marking clocksource 'tsc' as unstable because the skew is too large:
-[  145.029767] clocksource:                       'acpi_pm' wd_now: a49738 wd_last: f4da04 mask: ffffff
-[  145.029828] clocksource:                       'tsc' cs_now: 2ea624698e cs_last: 2c710aa17f mask: ffffffffffffffff
-[  145.032733] clocksource: Switched to clocksource acpi_pm
-[  145.236951] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
-[  159.959308] sd 2:0:1:0: Attached scsi generic sg1 type 0
+[PATCH] m68k/atari - change device probe in atari_platform_init()
 
+Don't probe for EtherNAT CPLD config register unless running on
+a CT60 type Atari Falcon. The EtherNAT isn't visible from the
+Falcon bus when running in 030 mode.
 
+Don't probe for EtherNEC registers at all - the ROM port is always
+present. Let the ne driver sort out whether there's an adapter
+plugged in.
+
+This saves running early ioremap() in atari_platform_init(),
+which blocks on Falcon in 030 mode.
+
+Signed-off-by: Michael Schmitz <schmitzmic@debian.org>
+---
+ arch/m68k/atari/config.c |   20 +++++++++++---------
+ 1 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 192b00f..ef35cb7 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -884,6 +884,12 @@ int __init atari_platform_init(void)
+ 		return -ENODEV;
+ 
+ #ifdef CONFIG_ATARI_ETHERNAT
++	/* 
++	 * only probe for EtherNAT when running on CT60!
++	 * EtherNAT can't be found on 030 Falcon, and early
++	 * ioremap() blocks on Falcon in 030 mode! 
++	*/
++	if (CPU_IS_060)
+ 	{
+ 		unsigned char *enatc_virt;
+ 		enatc_virt = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0xf);
+@@ -896,17 +902,13 @@ int __init atari_platform_init(void)
+ #endif
+ 
+ #ifdef CONFIG_ATARI_ETHERNEC
++	/* don't probe for EtherNEC - just assume it's present */
+ 	{
+ 		int error;
+-		unsigned char *enec_virt;
+-		enec_virt = (unsigned char *)ioremap((ATARI_ETHERNEC_PHYS_ADDR), 0xf);
+-		if (hwreg_present(enec_virt)) {
+-			error = platform_add_devices(atari_netusbee_devices,
+-						ARRAY_SIZE(atari_netusbee_devices));
+-			if (error && !rv)
+-				rv = error;
+-		}
+-		iounmap(enec_virt);
++		error = platform_add_devices(atari_netusbee_devices,
++					ARRAY_SIZE(atari_netusbee_devices));
++		if (error && !rv)
++			rv = error;
+ 	}
+ #endif
+ 
 -- 
-Ondrej Zary
+1.7.0.4
