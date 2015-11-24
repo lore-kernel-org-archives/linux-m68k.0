@@ -1,69 +1,63 @@
 From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380 drivers
-Date: Tue, 24 Nov 2015 19:04:24 +0100
-Message-ID: <201511241904.26525.linux@rainbow-software.org>
-References: <20151118083455.331768508@telegraphics.com.au> <alpine.LNX.2.00.1511241932130.7196@nippy.intranet> <201511241303.17899.linux@rainbow-software.org>
+Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
+Date: Tue, 24 Nov 2015 20:08:34 +0100
+Message-ID: <201511242008.35378.linux@rainbow-software.org>
+References: <20151118083455.331768508@telegraphics.com.au> <20151118083501.571002212@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: Text/Plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201511241303.17899.linux@rainbow-software.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from smtp-1b.atlantis.sk ([80.94.52.26]:60824 "EHLO
+	smtp-1b.atlantis.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753168AbbKXTIp (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 24 Nov 2015 14:08:45 -0500
+In-Reply-To: <20151118083501.571002212@telegraphics.com.au>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tuesday 24 November 2015 13:03:17 Ondrej Zary wrote:
-> On Tuesday 24 November 2015, Finn Thain wrote:
-> > 
-> > On Tue, 24 Nov 2015, Ondrej Zary wrote:
-> > 
-> > > On Tuesday 24 November 2015, Finn Thain wrote:
-> > > > 
-> > > > On Mon, 23 Nov 2015, Ondrej Zary wrote:
-> > > > 
-> > > > > 
-> > > > > PDMA seems to be broken in multiple ways. NCR5380_pread cannot 
-> > > > > process less than 128 bytes. In fact, 53C400 datasheet says that 
-> > > > > it's HW limitation: non-modulo-128-byte transfers should use PIO.
-> > > > > 
-> > > > > Adding
-> > > > >         transfersize = round_down(transfersize, 128);
-> > > > > to generic_NCR5380_dma_xfer_len() improves the situation a bit.
-> > > > > 
-> > > > > After modprobe, some small reads (8, 4, 24 and 64 bytes) are done 
-> > > > > using PIO, then eight 512-byte reads using PDMA and then it fails on 
-> > > > > a 254-byte read. First 128 bytes are read using PDMA and the next 
-> > > > > PDMA operation hangs waiting forever for the host buffer to be 
-> > > > > ready.
-> > > > > 
-> > > > 
-> > > > A 128-byte PDMA receive followed by 126-byte PDMA receive? I don't see 
-> > > > how that is possible given round_down(126, 128) == 0. Was this the 
-> > > > actual 'len' argument to NCR5380_pread() in g_NCR5380.c?
-> > > 
-> > > No 126-byte PDMA. The 126 bytes were probably lost (or mixed with the 
-> > > next read?).
-> > 
-> > When you said, the "PDMA operation hangs waiting forever", I figured that 
-> > you had hit an infinite loop in NCR5380_pread()... but now I'm lost.
+On Wednesday 18 November 2015 09:35:17 Finn Thain wrote:
+> Linux v2.1.105 changed the algorithm for polling for the BSY signal
+> in NCR5380_select() and NCR5380_main().
 > 
-> The first 128-byte PDMA ended successfully (ignoring what happened to the
-> remaining 126 bytes), then a next request for 254 bytes came. This resulted
-> in a new 128-byte PDMA and that hanged (in one of its possibly infinite loops
-> without a timeout).
+> Presently, this code has a bug. Back then, NCR5380_set_timer(hostdata, 1)
+> meant reschedule main() after sleeping for 10 ms. Repeated 25 times this
+> provided the recommended 250 ms selection time-out delay. This got broken
+> when HZ became configurable.
 > 
-> > My main concern here is to confirm that I didn't break anything e.g. with 
-> > patch 24 or 41. It would be nice to know that this hang is not the result 
-> > of a new bug.
+> We could fix this but there's no need to reschedule the main loop. This
+> BSY polling presently happens when the NCR5380_main() work queue item
+> calls NCR5380_select(), which in turn schedules NCR5380_main(), which
+> calls NCR5380_select() again, and so on.
 > 
-> PDMA was already broken before so it's hard to tell. I can try to modify
-> the unpatched driver to see if PDMA is broken the same way.
+> This algorithm is a deviation from the simpler one in atari_NCR5380.c.
+> The extra complexity and state is pointless. There's no reason to
+> stop selection half-way and return to to the main loop when the main
+> loop can do nothing useful until selection completes.
+> 
+> So just poll for BSY. We can sleep while polling now that we have a
+> suitable workqueue.
 
-Just tested the driver without your patches and it's broken exactly the same
-way.
+Bisecting slow module initialization pointed to this commit.
+
+Before this commit (2 seconds):
+[   60.317374] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
+[   60.780715] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
+[   62.606260] sd 2:0:1:0: Attached scsi generic sg1 type 0
+
+
+After this commit (22 seconds):
+[  137.511711] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
+[  145.028532] clocksource: timekeeping watchdog: Marking clocksource 'tsc' as unstable because the skew is too large:
+[  145.029767] clocksource:                       'acpi_pm' wd_now: a49738 wd_last: f4da04 mask: ffffff
+[  145.029828] clocksource:                       'tsc' cs_now: 2ea624698e cs_last: 2c710aa17f mask: ffffffffffffffff
+[  145.032733] clocksource: Switched to clocksource acpi_pm
+[  145.236951] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
+[  159.959308] sd 2:0:1:0: Attached scsi generic sg1 type 0
+
 
 -- 
 Ondrej Zary
