@@ -1,78 +1,145 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
-Date: Wed, 25 Nov 2015 14:17:09 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1511251312190.24439@nippy.intranet>
-References: <20151118083455.331768508@telegraphics.com.au> <20151118083501.571002212@telegraphics.com.au> <201511242008.35378.linux@rainbow-software.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380 drivers
+Date: Wed, 25 Nov 2015 10:04:10 +0100
+Message-ID: <201511251004.10449.linux@rainbow-software.org>
+References: <20151118083455.331768508@telegraphics.com.au> <201511242240.24959.linux@rainbow-software.org> <alpine.LNX.2.00.1511251246130.24439@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <201511242008.35378.linux@rainbow-software.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1511251246130.24439@nippy.intranet>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-
-On Tue, 24 Nov 2015, Ondrej Zary wrote:
-
-> On Wednesday 18 November 2015 09:35:17 Finn Thain wrote:
-> > Linux v2.1.105 changed the algorithm for polling for the BSY signal
-> > in NCR5380_select() and NCR5380_main().
+On Wednesday 25 November 2015, Finn Thain wrote:
+> 
+> On Tue, 24 Nov 2015, Ondrej Zary wrote:
+> 
+> > On Tuesday 24 November 2015 10:13:17 Finn Thain wrote:
+> > > 
+> > > On Tue, 24 Nov 2015, Ondrej Zary wrote:
+> > > 
+> > > > On Tuesday 24 November 2015, Finn Thain wrote:
+> > > > > 
+> > > > > On Mon, 23 Nov 2015, Ondrej Zary wrote:
+> > > > > 
+> > > > > > 
+> > > > > > PDMA seems to be broken in multiple ways. NCR5380_pread cannot 
+> > > > > > process less than 128 bytes. In fact, 53C400 datasheet says that 
+> > > > > > it's HW limitation: non-modulo-128-byte transfers should use 
+> > > > > > PIO.
+> > > > > > 
+> > > > > > Adding
+> > > > > >         transfersize = round_down(transfersize, 128);
+> > > > > > to generic_NCR5380_dma_xfer_len() improves the situation a bit.
+> > > > > > 
+> > > > > > After modprobe, some small reads (8, 4, 24 and 64 bytes) are 
+> > > > > > done using PIO, then eight 512-byte reads using PDMA and then it 
+> > > > > > fails on a 254-byte read. First 128 bytes are read using PDMA 
+> > > > > > and the next PDMA operation hangs waiting forever for the host 
+> > > > > > buffer to be ready.
+> > > > > > 
+> > > > > 
+> > > > > A 128-byte PDMA receive followed by 126-byte PDMA receive? I don't 
+> > > > > see how that is possible given round_down(126, 128) == 0. Was this 
+> > > > > the actual 'len' argument to NCR5380_pread() in g_NCR5380.c?
+> > > > 
+> > > > No 126-byte PDMA. The 126 bytes were probably lost (or mixed with 
+> > > > the next read?).
+> > > [...]
+> > > > The next read was also 254 bytes so another 128-byte PDMA transfer.
+> > > > 
+> > > > Then modified NCR5380_information_transfer() to transfer the 
+> > > > remaining data (126 bytes in this case) using PIO. It did not help, 
+> > > > the next PDMA transfer failed too.
+> > > > 
+> > > 
+> > > AFAICT, no change to NCR5380_information_transfer() should be needed. 
+> > > It was always meant to cope with the need to split a transfer between 
+> > > (P)DMA and PIO.
 > > 
-> > Presently, this code has a bug. Back then, NCR5380_set_timer(hostdata, 1)
-> > meant reschedule main() after sleeping for 10 ms. Repeated 25 times this
-> > provided the recommended 250 ms selection time-out delay. This got broken
-> > when HZ became configurable.
+> > Instead of fixing split transfers, simply forced everything 
+> > non-modulo-128 to PIO:
+> 
+> The need to split a transfer arises from early chip errata relating to DMA 
+> and the workarounds for them (see the comments in the source). That's why 
+> I believe that the driver was meant to be cope with this. But I don't have 
+> any experimental evidence for it.
+> 
+> I'm almost certain that these errata aren't applicable to your hardware. 
+> So I don't have any reason to think that your card will allow part of a 
+> transfer to be performed with PDMA and the rest with PIO. So I don't 
+> really object to the patch.
+> 
+> But I don't understand the need for it either: I have no idea what state 
+> the driver, chip and scsi bus were in when the 126-byte PIO transfer 
+> failed. If the PIO transfer didn't succeed then the entire command should 
+> have failed.
+
+The patch was just a quick hack to confirm that PDMA is not completely broken.
+Now we know that it mostly works so I can investigate the partial PIO problem.
+
+> > --- a/drivers/scsi/g_NCR5380.c
+> > +++ b/drivers/scsi/g_NCR5380.c
+> > @@ -703,6 +703,10 @@ static int generic_NCR5380_dma_xfer_len(struct scsi_cmnd *cmd)
+> >  	    !(cmd->SCp.this_residual % transfersize))
+> >  		transfersize = 32 * 1024;
 > > 
-> > We could fix this but there's no need to reschedule the main loop. This
-> > BSY polling presently happens when the NCR5380_main() work queue item
-> > calls NCR5380_select(), which in turn schedules NCR5380_main(), which
-> > calls NCR5380_select() again, and so on.
+> > +	/* 53C400 datasheet: non-modulo-128-byte transfers should use PIO */
+> 
+> Do you have a download link for this datasheet?
+
+http://bitsavers.trailing-edge.com/pdf/ncr/scsi/NCR_53C400.pdf
+
+53C400A datasheet would be great too but haven't found any.
+I think that PDMA should work with 53C400A too but seems that the driver was
+never able to do it.
+
+Although there is code for port-mapped transfer in NCR5380_pread(),
+NCR53C400_register_offset is defined to 0 in the port-mapped case. The C400_
+register offsets are thus defined with negative offset:
+
+#define C400_CONTROL_STATUS_REG NCR53C400_register_offset-8
+#define C400_BLOCK_COUNTER_REG   NCR53C400_register_offset-7
+#define C400_RESUME_TRANSFER_REG NCR53C400_register_offset-6
+#define C400_HOST_BUFFER         NCR53C400_register_offset-4
+
+This is probably OK for a port-mapped 53C400 (such card must have some glue
+decoding logic as the 53C400 chip itself can do memory-mapping only) because:
+
+                /*
+                 * On NCR53C400 boards, NCR5380 registers are mapped 8 past
+                 * the base address.
+                 */
+                if (overrides[current_override].board == BOARD_NCR53C400)
+                        instance->io_port += 8;
+
+This means that on a 53C400, first 5380 register will be at base+8 and first
+C400_ register at base.
+
+But on a 53C400A, the 5380 registers are mapped on the base address so the
+C400_ registers would be below the base, which is obviously wrong. I hope that
+PDMA will work if I fix the C400_ registers mapping.
+
+> > +	if (transfersize % 128)
+> > +		transfersize = 0;
+> > +
+> >  	return transfersize;
+> >  }
 > > 
-> > This algorithm is a deviation from the simpler one in atari_NCR5380.c.
-> > The extra complexity and state is pointless. There's no reason to
-> > stop selection half-way and return to to the main loop when the main
-> > loop can do nothing useful until selection completes.
+> > It seems to work and greatly improves performance:
+> > # hdparm -t --direct /dev/sdb
 > > 
-> > So just poll for BSY. We can sleep while polling now that we have a
-> > suitable workqueue.
+> > /dev/sdb:
+> >  Timing O_DIRECT disk reads:   4 MB in  4.84 seconds = 846.15 kB/sec
+> > 
 > 
-> Bisecting slow module initialization pointed to this commit.
-
-That's disappointing. This patch removed some nasty code. Anyway, thanks 
-for taking the trouble to bisect.
-
+> Sounds about right...
 > 
-> Before this commit (2 seconds):
-> [   60.317374] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
-> [   60.780715] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
-> [   62.606260] sd 2:0:1:0: Attached scsi generic sg1 type 0
-> 
-> 
-> After this commit (22 seconds):
-> [  137.511711] scsi host2: Generic NCR5380/NCR53C400 SCSI, io_port 0x0, n_io_port 0, base 0xd8000, irq 0, can_queue 16, cmd_per_lun 2, sg_tablesize 128, this_id 7, flags { NCR53C400 }, USLEEP_POLL 3, USLEEP_SLEEP 50, options { AUTOPROBE_IRQ PSEUDO_DMA }
-> [  145.028532] clocksource: timekeeping watchdog: Marking clocksource 'tsc' as unstable because the skew is too large:
-> [  145.029767] clocksource:                       'acpi_pm' wd_now: a49738 wd_last: f4da04 mask: ffffff
-> [  145.029828] clocksource:                       'tsc' cs_now: 2ea624698e cs_last: 2c710aa17f mask: ffffffffffffffff
-> [  145.032733] clocksource: Switched to clocksource acpi_pm
-
-I figured that it was okay to sleep from an unbound CPU-intensive 
-workqueue but doing so seems to cause problems. (See also patch 66/71 
-"Fix soft lockups".)
-
-Perhaps a kthread is needed instead of a workqueue? (This workqueue 
-already has it's own kthread, but top shows that it doesn't accrue CPU 
-time.)
-
-> [  145.236951] scsi 2:0:1:0: Direct-Access     QUANTUM  LP240S GM240S01X 4.6  PQ: 0 ANSI: 2 CCS
-> [  159.959308] sd 2:0:1:0: Attached scsi generic sg1 type 0
-> 
-> 
-
-This problem doesn't show up on my hardware, and I'd like to know where 
-those 22 seconds are being spent. Would you please apply the entire series 
-and add,
-#define NDEBUG (NDEBUG_ARBITRATION | NDEBUG_SELECTION | NDEBUG_MAIN)
-to the top of g_NCR5380.c and send me the messages logged during modprobe?
 
 -- 
+Ondrej Zary
