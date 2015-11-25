@@ -1,61 +1,45 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 00/71] More fixes, cleanup and modernization for NCR5380
- drivers
-Date: Wed, 25 Nov 2015 22:50:32 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1511252132580.23266@nippy.intranet>
-References: <20151118083455.331768508@telegraphics.com.au> <201511242240.24959.linux@rainbow-software.org> <alpine.LNX.2.00.1511251246130.24439@nippy.intranet> <201511251004.10449.linux@rainbow-software.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <201511251004.10449.linux@rainbow-software.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Sam Creasey <sammy@sammy.net>, Michael Schmitz <schmitzmic@gmail.com>, "James E.J. Bottomley" <JBottomley@odin.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH 72/71] ncr5380: Fix pseudo-DMA
+Date: Wed, 25 Nov 2015 22:34:42 +0100
+Message-ID: <1448487282-31766-1-git-send-email-linux@rainbow-software.org>
+References: <20151118083455.331768508@telegraphics.com.au>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ns.gsystem.sk ([62.176.172.50]:42447 "EHLO gsystem.sk"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751481AbbKYVfB (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 25 Nov 2015 16:35:01 -0500
+In-Reply-To: <20151118083455.331768508@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
+Pseudo-DMA (PDMA) has been broken for ages, resulting in hangs on
+53C400-based cards.
 
-On Wed, 25 Nov 2015, Ondrej Zary wrote:
+According to 53C400 datasheet, PDMA transfer length must be a multiple
+of 128. Check if that's true and use PIO if it's not.
 
-> On Wednesday 25 November 2015, Finn Thain wrote:
-> > 
-> > On Tue, 24 Nov 2015, Ondrej Zary wrote:
-> > 
-> > > Instead of fixing split transfers, simply forced everything 
-> > > non-modulo-128 to PIO:
-> > 
-> > [...]
-> > I don't have any reason to think that your card will allow part of 
-> > a transfer to be performed with PDMA and the rest with PIO. So I don't 
-> > really object to the patch.
-> > 
+This makes PDMA work on 53C400 (Canon FG2-5202).
 
->From looking at the datasheet, I think your patch is correct.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ drivers/scsi/g_NCR5380.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-Your patch needs to be applied after mine, so if you will sign-off, I'll 
-include it in the series with your Signed-off-by and "From:" header.
-
-> > But I don't understand the need for it either: I have no idea what 
-> > state the driver, chip and scsi bus were in when the 126-byte PIO 
-> > transfer failed. If the PIO transfer didn't succeed then the entire 
-> > command should have failed.
-> 
-> The patch was just a quick hack to confirm that PDMA is not completely 
-> broken.
-> Now we know that it mostly works so I can investigate the partial PIO 
-> problem.
-> 
-
-There may not be any problem to investigate. Because this 53C80 core is 
-embedded in other logic, it's hard to say whether or not the partial PIO 
-algorithm could be expected to work at all.
-
-Besides, the DMA errata don't apply to this core. And large transfers will 
-always be divisible by 128 bytes so there's very little to be gained.
-
-> [...]
-> 
-> 53C400A datasheet would be great too but haven't found any.
-
-I don't have one either.
-
+diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
+index 0daffe2..a9a237f 100644
+--- a/drivers/scsi/g_NCR5380.c
++++ b/drivers/scsi/g_NCR5380.c
+@@ -703,6 +703,10 @@ static int generic_NCR5380_dma_xfer_len(struct scsi_cmnd *cmd)
+ 	    !(cmd->SCp.this_residual % transfersize))
+ 		transfersize = 32 * 1024;
+ 
++	/* 53C400 datasheet: non-modulo-128-byte transfers should use PIO */
++	if (transfersize % 128)
++		transfersize = 0;
++
+ 	return transfersize;
+ }
+ 
 -- 
+Ondrej Zary
