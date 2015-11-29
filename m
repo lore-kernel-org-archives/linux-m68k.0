@@ -1,58 +1,180 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.4 (take two)
-Date: Sun, 29 Nov 2015 10:35:51 +0100
-Message-ID: <1448789751-29871-1-git-send-email-geert__32077.4182714105$1448795021$gmane$org@linux-m68k.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [RFC PATCH 75/71] ncr5380: Remove FLAG_DTC3181E
+Date: Sun, 29 Nov 2015 11:01:03 +0100
+Message-ID: <1448791263-30357-1-git-send-email-linux@rainbow-software.org>
+References: <20151118083455.331768508@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ns.gsystem.sk ([62.176.172.50]:58965 "EHLO gsystem.sk"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750915AbbK2KBP (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 29 Nov 2015 05:01:15 -0500
+In-Reply-To: <20151118083455.331768508@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
-	Hi Linus,
+The FLAG_DTC3181E is used to activate a work-around for arbitration lost
+condition that these chips see when ICR is written during arbitration.
 
-The following changes since commit 8005c49d9aea74d382f474ce11afbbc7d7130bec:
+Move the ICR write (to set SEL and BSY) after the arbitration loss check
+and remove FLAG_DTC3181E.
 
-  Linux 4.4-rc1 (2015-11-15 17:00:27 -0800)
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+Weird, we now have two consecutive checks for ICR_ARBITRATION_LOST and
+do different things when they fail...
 
-are available in the git repository at:
+ drivers/scsi/NCR5380.c       |   23 +++++++++--------------
+ drivers/scsi/NCR5380.h       |    1 -
+ drivers/scsi/atari_NCR5380.c |   23 +++++++++--------------
+ drivers/scsi/dmx3191d.c      |    2 +-
+ drivers/scsi/g_NCR5380.c     |    2 +-
+ 5 files changed, 20 insertions(+), 31 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-for you to fetch changes up to 21d380e54c30b5b15aa4167e2458bfe4e4862427:
-
-  m68k: Wire up mlock2 (2015-11-22 11:35:26 +0100)
-
-Summary:
-  - Add missing initialization of max_pfn, which is needed to make
-    selftests/vm/mlock2-tests succeed,
-  - Wire up new mlock2 syscall.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (5):
-      m68k/mm: motorola - Add missing initialization of max_pfn
-      m68k/mm: m54xx - Add missing initialization of max_pfn
-      m68k/mm: sun3 - Add missing initialization of max_pfn and {min,max}_low_pfn
-      m68knommu: Add missing initialization of max_pfn and {min,max}_low_pfn
-      m68k: Wire up mlock2
-
- arch/m68k/coldfire/m54xx.c          | 2 +-
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/setup_no.c         | 9 ++++++---
- arch/m68k/kernel/syscalltable.S     | 1 +
- arch/m68k/mm/motorola.c             | 2 +-
- arch/m68k/sun3/config.c             | 4 ++--
- 7 files changed, 13 insertions(+), 8 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index acb359a..b617f99 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -482,14 +482,13 @@ static void prepare_info(struct Scsi_Host *instance)
+ 	         "base 0x%lx, irq %d, "
+ 	         "can_queue %d, cmd_per_lun %d, "
+ 	         "sg_tablesize %d, this_id %d, "
+-	         "flags { %s%s%s%s}, "
++	         "flags { %s%s%s}, "
+ 	         "options { %s} ",
+ 	         instance->hostt->name, instance->io_port, instance->n_io_port,
+ 	         instance->base, instance->irq,
+ 	         instance->can_queue, instance->cmd_per_lun,
+ 	         instance->sg_tablesize, instance->this_id,
+ 	         hostdata->flags & FLAG_NO_DMA_FIXUP  ? "NO_DMA_FIXUP "  : "",
+-	         hostdata->flags & FLAG_DTC3181E      ? "DTC3181E "      : "",
+ 	         hostdata->flags & FLAG_NO_PSEUDO_DMA ? "NO_PSEUDO_DMA " : "",
+ 	         hostdata->flags & FLAG_TOSHIBA_DELAY ? "TOSHIBA_DELAY "  : "",
+ #ifdef AUTOPROBE_IRQ
+@@ -1078,18 +1077,7 @@ static struct scsi_cmnd *NCR5380_select(struct Scsi_Host *instance,
+ 		goto out;
+ 	}
+ 
+-	/* After/during arbitration, BSY should be asserted.
+-	 * IBM DPES-31080 Version S31Q works now
+-	 * Tnx to Thomas_Roesch@m2.maus.de for finding this! (Roman)
+-	 */
+-	NCR5380_write(INITIATOR_COMMAND_REG,
+-		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
+-
+-	/* RvC: DTC3181E has some trouble with this so we simply removed it.
+-	 * Seems to work with only Mustek scanner attached.
+-	 */
+-	if (!(hostdata->flags & FLAG_DTC3181E) &&
+-	    (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST)) {
++	if (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST) {
+ 		NCR5380_write(MODE_REG, MR_BASE);
+ 		NCR5380_write(INITIATOR_COMMAND_REG, ICR_BASE);
+ 		dsprintk(NDEBUG_ARBITRATION, instance, "arbitration lost, negating SEL\n");
+@@ -1097,6 +1085,13 @@ static struct scsi_cmnd *NCR5380_select(struct Scsi_Host *instance,
+ 		goto out;
+ 	}
+ 
++	/* After/during arbitration, BSY should be asserted.
++	 * IBM DPES-31080 Version S31Q works now
++	 * Tnx to Thomas_Roesch@m2.maus.de for finding this! (Roman)
++	 */
++	NCR5380_write(INITIATOR_COMMAND_REG,
++		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
++
+ 	/*
+ 	 * Again, bus clear + bus settle time is 1.2us, however, this is
+ 	 * a minimum so we'll udelay ceil(1.2)
+diff --git a/drivers/scsi/NCR5380.h b/drivers/scsi/NCR5380.h
+index 0d8ec43..5092580 100644
+--- a/drivers/scsi/NCR5380.h
++++ b/drivers/scsi/NCR5380.h
+@@ -222,7 +222,6 @@
+ 
+ #define FLAG_NO_DMA_FIXUP		1	/* No DMA errata workarounds */
+ #define FLAG_NO_PSEUDO_DMA		8	/* Inhibit DMA */
+-#define FLAG_DTC3181E			16	/* DTC3181E */
+ #define FLAG_LATE_DMA_SETUP		32	/* Setup NCR before DMA H/W */
+ #define FLAG_TAGGED_QUEUING		64	/* as X3T9.2 spelled it */
+ #define FLAG_TOSHIBA_DELAY		128	/* Allow for borken CD-ROMs */
+diff --git a/drivers/scsi/atari_NCR5380.c b/drivers/scsi/atari_NCR5380.c
+index d04374d..7640110 100644
+--- a/drivers/scsi/atari_NCR5380.c
++++ b/drivers/scsi/atari_NCR5380.c
+@@ -586,13 +586,12 @@ static void prepare_info(struct Scsi_Host *instance)
+ 	         "base 0x%lx, irq %d, "
+ 	         "can_queue %d, cmd_per_lun %d, "
+ 	         "sg_tablesize %d, this_id %d, "
+-	         "flags { %s%s%s}, "
++	         "flags { %s%s}, "
+ 	         "options { %s} ",
+ 	         instance->hostt->name, instance->io_port, instance->n_io_port,
+ 	         instance->base, instance->irq,
+ 	         instance->can_queue, instance->cmd_per_lun,
+ 	         instance->sg_tablesize, instance->this_id,
+-	         hostdata->flags & FLAG_DTC3181E       ? "DTC3181E "       : "",
+ 	         hostdata->flags & FLAG_TAGGED_QUEUING ? "TAGGED_QUEUING " : "",
+ 	         hostdata->flags & FLAG_TOSHIBA_DELAY  ? "TOSHIBA_DELAY "  : "",
+ #ifdef DIFFERENTIAL
+@@ -1279,18 +1278,7 @@ static struct scsi_cmnd *NCR5380_select(struct Scsi_Host *instance,
+ 		goto out;
+ 	}
+ 
+-	/* After/during arbitration, BSY should be asserted.
+-	 * IBM DPES-31080 Version S31Q works now
+-	 * Tnx to Thomas_Roesch@m2.maus.de for finding this! (Roman)
+-	 */
+-	NCR5380_write(INITIATOR_COMMAND_REG,
+-		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
+-
+-	/* RvC: DTC3181E has some trouble with this so we simply removed it.
+-	 * Seems to work with only Mustek scanner attached.
+-	 */
+-	if (!(hostdata->flags & FLAG_DTC3181E) &&
+-	    (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST)) {
++	if (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST) {
+ 		NCR5380_write(MODE_REG, MR_BASE);
+ 		NCR5380_write(INITIATOR_COMMAND_REG, ICR_BASE);
+ 		dsprintk(NDEBUG_ARBITRATION, instance, "arbitration lost, negating SEL\n");
+@@ -1298,6 +1286,13 @@ static struct scsi_cmnd *NCR5380_select(struct Scsi_Host *instance,
+ 		goto out;
+ 	}
+ 
++	/* After/during arbitration, BSY should be asserted.
++	 * IBM DPES-31080 Version S31Q works now
++	 * Tnx to Thomas_Roesch@m2.maus.de for finding this! (Roman)
++	 */
++	NCR5380_write(INITIATOR_COMMAND_REG,
++		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
++
+ 	/*
+ 	 * Again, bus clear + bus settle time is 1.2us, however, this is
+ 	 * a minimum so we'll udelay ceil(1.2)
+diff --git a/drivers/scsi/dmx3191d.c b/drivers/scsi/dmx3191d.c
+index 3c60dfb..ddb4e61 100644
+--- a/drivers/scsi/dmx3191d.c
++++ b/drivers/scsi/dmx3191d.c
+@@ -92,7 +92,7 @@ static int dmx3191d_probe_one(struct pci_dev *pdev,
+ 	 */
+ 	shost->irq = NO_IRQ;
+ 
+-	error = NCR5380_init(shost, FLAG_NO_PSEUDO_DMA | FLAG_DTC3181E);
++	error = NCR5380_init(shost, FLAG_NO_PSEUDO_DMA);
+ 	if (error)
+ 		goto out_host_put;
+ 
+diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
+index c3abe48..fae4332 100644
+--- a/drivers/scsi/g_NCR5380.c
++++ b/drivers/scsi/g_NCR5380.c
+@@ -331,7 +331,7 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
+ 			ports = ncr_53c400a_ports;
+ 			break;
+ 		case BOARD_DTC3181E:
+-			flags = FLAG_NO_PSEUDO_DMA | FLAG_DTC3181E;
++			flags = FLAG_NO_PSEUDO_DMA;
+ 			ports = dtc_3181e_ports;
+ 			break;
+ 		}
+-- 
+Ondrej Zary
