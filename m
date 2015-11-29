@@ -1,64 +1,87 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [RFC PATCH 74/71] ncr5380: Enable PDMA for NCR53C400A
-Date: Sun, 29 Nov 2015 10:39:40 +0100
-Message-ID: <1448789980-30094-2-git-send-email-linux@rainbow-software.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
+Date: Sun, 29 Nov 2015 14:50:53 +0100
+Message-ID: <CAMuHMdXwckticSMQpK6Fmm-ACJtqebTZXT9YGvJ3v1RWDD0fdA@mail.gmail.com>
 References: <20151118083455.331768508@telegraphics.com.au>
+	<201511252259.26792.linux@rainbow-software.org>
+	<alpine.LNX.2.00.1511261130120.12333@nippy.intranet>
+	<201511262035.40920.linux@rainbow-software.org>
+	<alpine.LNX.2.00.1511270930280.723@nippy.intranet>
+	<CAMuHMdWt5Vf=iOg0BcqTwE-Md75dTmygVOmw45MXVhKuDDQXxA@mail.gmail.com>
+	<alpine.LNX.2.00.1511292106140.32336@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ns.gsystem.sk ([62.176.172.50]:58907 "EHLO gsystem.sk"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1752186AbbK2Jjx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Sun, 29 Nov 2015 04:39:53 -0500
-In-Reply-To: <20151118083455.331768508@telegraphics.com.au>
+Received: from mail-ob0-f181.google.com ([209.85.214.181]:36390 "EHLO
+	mail-ob0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752435AbbK2Nuy convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Nov 2015 08:50:54 -0500
+In-Reply-To: <alpine.LNX.2.00.1511292106140.32336@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Ondrej Zary <linux@rainbow-software.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Add I/O register mapping for NCR53C400A and enable PDMA mode to
-improve performance and fix non-working IRQ.
+Hi Finn,
 
-Tested with HP C2502 (and user-space enabler).
+On Sun, Nov 29, 2015 at 11:25 AM, Finn Thain <fthain@telegraphics.com.a=
+u> wrote:
+> On Sun, 29 Nov 2015, Geert Uytterhoeven wrote:
+>> This still heavily depends on the processing time spent in
+>> NCR5380_read(). You should never use a value derived from
+>> loops_per_jiffy for a non-empty loop,
+>
+> Sure but the time-out condition isn't supposed to be precise.
+> Plus/minus a jiffy is no problem. Plus/minus a second is no good.
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
----
- drivers/scsi/g_NCR5380.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+If an ISA access takes 8 =C2=B5s, while the CPU runs at 1 GHz, i.e. 500=
+M loops/s,
+the difference will be huge.
 
-diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
-index ce444da..c3abe48 100644
---- a/drivers/scsi/g_NCR5380.c
-+++ b/drivers/scsi/g_NCR5380.c
-@@ -324,7 +324,10 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
- #endif
- 			break;
- 		case BOARD_NCR53C400A:
-+			flags = FLAG_NO_DMA_FIXUP;
-+#ifndef PSEUDO_DMA
- 			flags = FLAG_NO_PSEUDO_DMA;
-+#endif
- 			ports = ncr_53c400a_ports;
- 			break;
- 		case BOARD_DTC3181E:
-@@ -412,6 +415,11 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
- 			hostdata->c400_blk_cnt = 1;
- 			hostdata->c400_host_buf = 4;
- 		}
-+		if (overrides[current_override].board == BOARD_NCR53C400A) {
-+			hostdata->c400_ctl_status = 9;
-+			hostdata->c400_blk_cnt = 10;
-+			hostdata->c400_host_buf = 8;
-+		}
- #else
- 		instance->base = overrides[current_override].NCR5380_map_name;
- 		hostdata->iomem = iomem;
-@@ -425,7 +433,8 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
- 		if (NCR5380_init(instance, flags))
- 			goto out_unregister;
- 
--		if (overrides[current_override].board == BOARD_NCR53C400)
-+		if (overrides[current_override].board == BOARD_NCR53C400 ||
-+		    overrides[current_override].board == BOARD_NCR53C400A)
- 			NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
- 
- 		NCR5380_maybe_reset_bus(instance);
--- 
-Ondrej Zary
+>> as it may take much longer. Always compare with an maximum end time
+>> instead.
+>
+> That can't work with interrupts disabled, which was the problem I was
+> trying to solve by use of loops_per_jiffy.
+
+Then you indeed can't use jiffies.
+Perhaps you can calibrate an NCR5380_read() loop at driver init time,
+and use the calibration value later?
+
+> NCR5380_poll_politely() in mainline doesn't work with interrupts disa=
+bled
+> either, hence patch 21.
+>
+>> E.g.:
+>>
+>>         end =3D jiffies + 2;        /* 1 jiffie + 1 safeguard */
+>>         do {
+>>                  if ((NCR5380_read(reg1) & bit1) =3D=3D val1)
+>>                          return 0;
+>>                  cpu_relax();
+>>         } while (time_before(jiffies, end);
+>>
+>> And a similar loop for "Busy-wait for up to 20 ms".
+>
+> Interrupts may be disabled during that loop also. Please refer to (an=
+d/or
+> respond to) patch 21, "ncr5380: Sleep when polling, if possible", in =
+which
+> these changes were made.
+
+So the above loop may never terminate. Oops...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
