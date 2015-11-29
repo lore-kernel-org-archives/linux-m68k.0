@@ -1,57 +1,58 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
-Date: Sun, 29 Nov 2015 21:25:53 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1511292106140.32336@nippy.intranet>
-References: <20151118083455.331768508@telegraphics.com.au> <201511252259.26792.linux@rainbow-software.org> <alpine.LNX.2.00.1511261130120.12333@nippy.intranet> <201511262035.40920.linux@rainbow-software.org> <alpine.LNX.2.00.1511270930280.723@nippy.intranet>
- <CAMuHMdWt5Vf=iOg0BcqTwE-Md75dTmygVOmw45MXVhKuDDQXxA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWt5Vf=iOg0BcqTwE-Md75dTmygVOmw45MXVhKuDDQXxA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Ondrej Zary <linux@rainbow-software.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.4 (take two)
+Date: Sun, 29 Nov 2015 10:35:51 +0100
+Message-ID: <1448789751-29871-1-git-send-email-geert__32077.4182714105$1448795021$gmane$org@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+	Hi Linus,
 
-On Sun, 29 Nov 2015, Geert Uytterhoeven wrote:
+The following changes since commit 8005c49d9aea74d382f474ce11afbbc7d7130bec:
 
-> This still heavily depends on the processing time spent in 
-> NCR5380_read(). You should never use a value derived from 
-> loops_per_jiffy for a non-empty loop,
+  Linux 4.4-rc1 (2015-11-15 17:00:27 -0800)
 
-Sure but the time-out condition isn't supposed to be precise.
-Plus/minus a jiffy is no problem. Plus/minus a second is no good.
+are available in the git repository at:
 
-> as it may take much longer. Always compare with an maximum end time 
-> instead.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-That can't work with interrupts disabled, which was the problem I was 
-trying to solve by use of loops_per_jiffy.
+for you to fetch changes up to 21d380e54c30b5b15aa4167e2458bfe4e4862427:
 
-NCR5380_poll_politely() in mainline doesn't work with interrupts disabled 
-either, hence patch 21.
+  m68k: Wire up mlock2 (2015-11-22 11:35:26 +0100)
 
-> 
-> E.g.:
-> 
->         end = jiffies + 2;        /* 1 jiffie + 1 safeguard */
->         do {
->                  if ((NCR5380_read(reg1) & bit1) == val1)
->                          return 0;
->                  cpu_relax();
->         } while (time_before(jiffies, end);
-> 
-> And a similar loop for "Busy-wait for up to 20 ms".
+Summary:
+  - Add missing initialization of max_pfn, which is needed to make
+    selftests/vm/mlock2-tests succeed,
+  - Wire up new mlock2 syscall.
 
-Interrupts may be disabled during that loop also. Please refer to (and/or 
-respond to) patch 21, "ncr5380: Sleep when polling, if possible", in which 
-these changes were made.
+----------------------------------------------------------------
+Geert Uytterhoeven (5):
+      m68k/mm: motorola - Add missing initialization of max_pfn
+      m68k/mm: m54xx - Add missing initialization of max_pfn
+      m68k/mm: sun3 - Add missing initialization of max_pfn and {min,max}_low_pfn
+      m68knommu: Add missing initialization of max_pfn and {min,max}_low_pfn
+      m68k: Wire up mlock2
 
--- 
+ arch/m68k/coldfire/m54xx.c          | 2 +-
+ arch/m68k/include/asm/unistd.h      | 2 +-
+ arch/m68k/include/uapi/asm/unistd.h | 1 +
+ arch/m68k/kernel/setup_no.c         | 9 ++++++---
+ arch/m68k/kernel/syscalltable.S     | 1 +
+ arch/m68k/mm/motorola.c             | 2 +-
+ arch/m68k/sun3/config.c             | 4 ++--
+ 7 files changed, 13 insertions(+), 8 deletions(-)
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
