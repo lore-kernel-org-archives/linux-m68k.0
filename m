@@ -1,33 +1,492 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC PATCH 74/71] ncr5380: Enable PDMA for NCR53C400A
-Date: Mon, 30 Nov 2015 23:04:16 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1511302255470.17483@nippy.intranet>
-References: <20151118083455.331768508@telegraphics.com.au> <1448789980-30094-2-git-send-email-linux@rainbow-software.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1448789980-30094-2-git-send-email-linux@rainbow-software.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.4-rc1
+Date: Mon, 30 Nov 2015 13:32:33 +0100
+Message-ID: <1448886753-20106-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    | 4 ++++
+ arch/m68k/configs/apollo_defconfig   | 5 +++++
+ arch/m68k/configs/atari_defconfig    | 4 ++++
+ arch/m68k/configs/bvme6000_defconfig | 4 ++++
+ arch/m68k/configs/hp300_defconfig    | 5 +++++
+ arch/m68k/configs/mac_defconfig      | 5 +++++
+ arch/m68k/configs/multi_defconfig    | 5 +++++
+ arch/m68k/configs/mvme147_defconfig  | 4 ++++
+ arch/m68k/configs/mvme16x_defconfig  | 4 ++++
+ arch/m68k/configs/q40_defconfig      | 5 +++++
+ arch/m68k/configs/sun3_defconfig     | 5 +++++
+ arch/m68k/configs/sun3x_defconfig    | 5 +++++
+ 12 files changed, 55 insertions(+)
 
-On Sun, 29 Nov 2015, Ondrej Zary wrote:
-
-> Add I/O register mapping for NCR53C400A and enable PDMA mode to
-> improve performance and fix non-working IRQ.
-> 
-
-Is CONFIG_SCSI_GENERIC_NCR53C400 is still needed? Can the driver be fully 
-configured at runtime now?
-
-> Tested with HP C2502 (and user-space enabler).
-> 
-
-It would be nice if the enabler was documented.  
-Documentation/scsi/g_NCR5380.txt might be a good place for that. That file 
-could perhaps be updated (?) Certainly obsolete and misleading information 
-should be removed if you see any.
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 5b4ec541ba7c9993..fc96e814188e57aa 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -276,6 +276,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -532,11 +533,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -559,6 +562,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 6e5198e2c124f89b..05c904f08d9d496f 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -274,6 +274,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -372,6 +373,7 @@ CONFIG_INPUT_EVDEV=m
+ # CONFIG_MOUSE_PS2 is not set
+ CONFIG_MOUSE_SERIAL=m
+ CONFIG_SERIO=m
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ # CONFIG_HW_RANDOM is not set
+@@ -490,11 +492,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -517,6 +521,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 659ced89df495df6..3037eff23bcb2958 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -274,6 +274,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -522,11 +523,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -549,6 +552,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index a42d91c389a6fbba..11a30c65ad44cb52 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -272,6 +272,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -483,11 +484,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -510,6 +513,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 77f4a11083e99640..6630a5154b9d797e 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -274,6 +274,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -375,6 +376,7 @@ CONFIG_MOUSE_SERIAL=m
+ CONFIG_INPUT_MISC=y
+ CONFIG_HP_SDC_RTC=m
+ CONFIG_SERIO_SERPORT=m
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ # CONFIG_HW_RANDOM is not set
+@@ -492,11 +494,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -519,6 +523,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 5a329f77329b155e..1d90b71d09038da9 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -276,6 +276,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -394,6 +395,7 @@ CONFIG_MOUSE_SERIAL=m
+ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_M68K_BEEP=m
+ CONFIG_SERIO=m
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ CONFIG_SERIAL_PMACZILOG=y
+@@ -514,11 +516,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -541,6 +545,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 83c80d2030ec96aa..1fd21c1ca87fd8da 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -286,6 +286,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -449,6 +450,7 @@ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_M68K_BEEP=m
+ CONFIG_HP_SDC_RTC=m
+ CONFIG_SERIO_Q40KBD=y
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ CONFIG_SERIAL_PMACZILOG=y
+@@ -594,11 +596,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -621,6 +625,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 6cb42c3bf5a280d1..74e10f79d7b1f947 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -271,6 +271,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -483,11 +484,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -510,6 +513,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index c7508c30330c43ee..7034e716f166be8f 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -272,6 +272,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -483,11 +484,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -510,6 +513,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 64b71664a3036aa2..f7deb5f702a6484d 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -272,6 +272,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -385,6 +386,7 @@ CONFIG_MOUSE_SERIAL=m
+ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_M68K_BEEP=m
+ CONFIG_SERIO_Q40KBD=y
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ CONFIG_PRINTER=m
+@@ -505,11 +507,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -532,6 +536,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 9a4cab78a2ea82ce..0ce79eb0d8050314 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -269,6 +269,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -369,6 +370,7 @@ CONFIG_INPUT_EVDEV=m
+ CONFIG_KEYBOARD_SUNKBD=y
+ # CONFIG_MOUSE_PS2 is not set
+ CONFIG_MOUSE_SERIAL=m
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ # CONFIG_HW_RANDOM is not set
+@@ -484,11 +486,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -510,6 +514,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 1a2eaac13dbdd540..4cb787e4991fcfd0 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -269,6 +269,7 @@ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
++CONFIG_NET_L3_MASTER_DEV=y
+ # CONFIG_WIRELESS is not set
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -369,6 +370,7 @@ CONFIG_INPUT_EVDEV=m
+ CONFIG_KEYBOARD_SUNKBD=y
+ # CONFIG_MOUSE_PS2 is not set
+ CONFIG_MOUSE_SERIAL=m
++CONFIG_USERIO=m
+ # CONFIG_LEGACY_PTYS is not set
+ # CONFIG_DEVKMEM is not set
+ # CONFIG_HW_RANDOM is not set
+@@ -484,11 +486,13 @@ CONFIG_NLS_MAC_INUIT=m
+ CONFIG_NLS_MAC_ROMANIAN=m
+ CONFIG_NLS_MAC_TURKISH=m
+ CONFIG_DLM=m
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
++CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+@@ -511,6 +515,7 @@ CONFIG_CRYPTO_CTS=m
+ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
 -- 
+1.9.1
