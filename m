@@ -1,87 +1,47 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [PATCH 22/71] ncr5380: Eliminate selecting state
-Date: Sun, 29 Nov 2015 14:50:53 +0100
-Message-ID: <CAMuHMdXwckticSMQpK6Fmm-ACJtqebTZXT9YGvJ3v1RWDD0fdA@mail.gmail.com>
-References: <20151118083455.331768508@telegraphics.com.au>
-	<201511252259.26792.linux@rainbow-software.org>
-	<alpine.LNX.2.00.1511261130120.12333@nippy.intranet>
-	<201511262035.40920.linux@rainbow-software.org>
-	<alpine.LNX.2.00.1511270930280.723@nippy.intranet>
-	<CAMuHMdWt5Vf=iOg0BcqTwE-Md75dTmygVOmw45MXVhKuDDQXxA@mail.gmail.com>
-	<alpine.LNX.2.00.1511292106140.32336@nippy.intranet>
+Date: Mon, 30 Nov 2015 13:12:45 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1511301310210.10574@nippy.intranet>
+References: <20151118083455.331768508@telegraphics.com.au> <201511252259.26792.linux@rainbow-software.org> <alpine.LNX.2.00.1511261130120.12333@nippy.intranet> <201511262035.40920.linux@rainbow-software.org> <alpine.LNX.2.00.1511270930280.723@nippy.intranet>
+ <CAMuHMdWt5Vf=iOg0BcqTwE-Md75dTmygVOmw45MXVhKuDDQXxA@mail.gmail.com> <alpine.LNX.2.00.1511292106140.32336@nippy.intranet> <CAMuHMdXwckticSMQpK6Fmm-ACJtqebTZXT9YGvJ3v1RWDD0fdA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ob0-f181.google.com ([209.85.214.181]:36390 "EHLO
-	mail-ob0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752435AbbK2Nuy convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Nov 2015 08:50:54 -0500
-In-Reply-To: <alpine.LNX.2.00.1511292106140.32336@nippy.intranet>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:57720 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751544AbbK3CMy (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Nov 2015 21:12:54 -0500
+In-Reply-To: <CAMuHMdXwckticSMQpK6Fmm-ACJtqebTZXT9YGvJ3v1RWDD0fdA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Ondrej Zary <linux@rainbow-software.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ondrej Zary <linux@rainbow-software.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k <linux-m68k@vger.kernel.org>, linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-Hi Finn,
 
-On Sun, Nov 29, 2015 at 11:25 AM, Finn Thain <fthain@telegraphics.com.a=
-u> wrote:
-> On Sun, 29 Nov 2015, Geert Uytterhoeven wrote:
->> This still heavily depends on the processing time spent in
->> NCR5380_read(). You should never use a value derived from
->> loops_per_jiffy for a non-empty loop,
->
-> Sure but the time-out condition isn't supposed to be precise.
-> Plus/minus a jiffy is no problem. Plus/minus a second is no good.
+On Sun, 29 Nov 2015, Geert Uytterhoeven wrote:
 
-If an ISA access takes 8 =C2=B5s, while the CPU runs at 1 GHz, i.e. 500=
-M loops/s,
-the difference will be huge.
+> If an ISA access takes 8 us, while the CPU runs at 1 GHz, i.e. 500M 
+> loops/s, the difference will be huge.
 
->> as it may take much longer. Always compare with an maximum end time
->> instead.
->
-> That can't work with interrupts disabled, which was the problem I was
-> trying to solve by use of loops_per_jiffy.
+Ondrej showed that an ISA access can take about 1.6 us. I don't know what 
+to make of the "8 uS" comment in the mainline driver. Maybe it was an even 
+slower ISA card.
 
-Then you indeed can't use jiffies.
-Perhaps you can calibrate an NCR5380_read() loop at driver init time,
-and use the calibration value later?
+Anyway, I made a measurement on my hardware and confirmed that lpj is a 
+very bad proxy for device register access throughput. The "loops per 
+access" gap is several orders of magnitude:
 
-> NCR5380_poll_politely() in mainline doesn't work with interrupts disa=
-bled
-> either, hence patch 21.
->
->> E.g.:
->>
->>         end =3D jiffies + 2;        /* 1 jiffie + 1 safeguard */
->>         do {
->>                  if ((NCR5380_read(reg1) & bit1) =3D=3D val1)
->>                          return 0;
->>                  cpu_relax();
->>         } while (time_before(jiffies, end);
->>
->> And a similar loop for "Busy-wait for up to 20 ms".
->
-> Interrupts may be disabled during that loop also. Please refer to (an=
-d/or
-> respond to) patch 21, "ncr5380: Sleep when polling, if possible", in =
-which
-> these changes were made.
+                                      lpj   HZ    access time (us)  lpa
+------------------------------------------------------------------------
+Ondrej's 5380 ISA card (PC):      4797252   250   1.6               1.9k
+My DMX3191D PCI card (PowerMac):   167079   100   0.42              7.0
 
-So the above loop may never terminate. Oops...
+> 
+> Perhaps you can calibrate an NCR5380_read() loop at driver init time, 
+> and use the calibration value later?
 
-Gr{oetje,eeting}s,
+I had the same idea but I didn't think that the complexity was justified 
+by the low precision requirement. But now that I have some timings I have 
+to agree.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-                                -- Linus Torvalds
+-- 
