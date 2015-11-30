@@ -1,174 +1,311 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [RFC PATCH 75/71] ncr5380: Remove FLAG_DTC3181E
-Date: Mon, 30 Nov 2015 15:56:56 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1511301349250.10574@nippy.intranet>
-References: <20151118083455.331768508@telegraphics.com.au> <1448791263-30357-1-git-send-email-linux@rainbow-software.org>
+Subject: Re: [RFC PATCH 73/71] ncr5380: Use runtime register mapping
+Date: Mon, 30 Nov 2015 22:50:13 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1511302213430.17483@nippy.intranet>
+References: <20151118083455.331768508@telegraphics.com.au> <1448789980-30094-1-git-send-email-linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58519 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751788AbbK3E5H (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 29 Nov 2015 23:57:07 -0500
-In-Reply-To: <1448791263-30357-1-git-send-email-linux@rainbow-software.org>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1448789980-30094-1-git-send-email-linux@rainbow-software.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Ondrej Zary <linux@rainbow-software.org>
 Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
 
 On Sun, 29 Nov 2015, Ondrej Zary wrote:
 
-> The FLAG_DTC3181E is used to activate a work-around for arbitration lost
-> condition that these chips see when ICR is written during arbitration.
+> Convert compile-time C400_ register mapping to runtime mapping.
+> This removes the weird negative register offsets and allows adding
+> additional mappings.
 > 
-> Move the ICR write (to set SEL and BSY) after the arbitration loss check
-> and remove FLAG_DTC3181E.
-
-The first test for ICR_ARBITRATION_LOST happens after the required 
-arbitration delay, 2.4 us. The second test for ICR_ARBITRATION_LOST 
-happens after ICR_ASSERT_SEL.
-
-This second test seems to be pointless. It comes from the flow chart in 
-the NCR datasheet (see download link in patch 17). The spec does not 
-require this test but some 5380 devices may do. Who knows? It's almost 
-impossible to be sure, because it would mean losing a race with another 
-bus device right at the end of the arbitration delay (and we extend that 
-delay to 3 us anyway).
-
-Certainly one can find other datasheets with sample code and flow charts 
-that don't do this second check. The reason is that ICR_ARBITRATION_LOST 
-can be triggered when SEL is asserted by any device, so it may be 
-triggered after we've won arbitration (because we then set ICR_ASSERT_SEL 
-ourselves in order to enter selection phase).
-
+> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> ---
+>  drivers/scsi/NCR5380.h   |   13 +---------
+>  drivers/scsi/g_NCR5380.c |   61 ++++++++++++++++++++++++++--------------------
+>  drivers/scsi/g_NCR5380.h |   12 ++++++---
+>  3 files changed, 43 insertions(+), 43 deletions(-)
 > 
-> ... Weird, we now have two consecutive checks for ICR_ARBITRATION_LOST 
-> and do different things when they fail...
+> diff --git a/drivers/scsi/NCR5380.h b/drivers/scsi/NCR5380.h
+> index 36779df..0d8ec43 100644
+> --- a/drivers/scsi/NCR5380.h
+> +++ b/drivers/scsi/NCR5380.h
+> @@ -163,8 +163,7 @@
+>  /* Write any value to this register to start an ini mode DMA receive */
+>  #define START_DMA_INITIATOR_RECEIVE_REG 7	/* wo */
+>  
+> -#define C400_CONTROL_STATUS_REG NCR53C400_register_offset-8	/* rw */
+> -
+> +/* C400_CONTROL_STATUS_REG */
 
-They do different things because the second exit has to cleanup after the 
-ICR write.
+That symbol is removed by this patch. No need for abbreviations. How about
 
-I agree that it would be nice to remove the DTC3181E special case. It 
-would mean replacing patch 49.
+/* NCR 53C400 and 53C400A Control Status Register bits: */
 
-The patch below is another version of your patch 75. It really needs to be 
-tested on all kinds of 5380 device, and if possible with a contested bus 
-(which would imply diconnection privileges, for which the driver still 
-requires that the chip has a working irq).
+>  #define CSR_RESET              0x80	/* wo  Resets 53c400 */
+>  #define CSR_53C80_REG          0x80	/* ro  5380 registers busy */
+>  #define CSR_TRANS_DIR          0x40	/* rw  Data transfer direction */
+> @@ -181,16 +180,6 @@
+>  #define CSR_BASE CSR_53C80_INTR
+>  #endif
+>  
+> -/* Number of 128-byte blocks to be transferred */
+> -#define C400_BLOCK_COUNTER_REG   NCR53C400_register_offset-7	/* rw */
+> -
+> -/* Resume transfer after disconnect */
+> -#define C400_RESUME_TRANSFER_REG NCR53C400_register_offset-6	/* wo */
+> -
+> -/* Access to host buffer stack */
+> -#define C400_HOST_BUFFER         NCR53C400_register_offset-4	/* rw */
+> -
+> -
+>  /* Note : PHASE_* macros are based on the values of the STATUS register */
+>  #define PHASE_MASK 	(SR_MSG | SR_CD | SR_IO)
+>  
+> diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
+> index a9a237f..ce444da 100644
+> --- a/drivers/scsi/g_NCR5380.c
+> +++ b/drivers/scsi/g_NCR5380.c
+> @@ -253,6 +253,7 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
+>  	};
+>  	int flags;
+>  	struct Scsi_Host *instance;
+> +	struct NCR5380_hostdata *hostdata;
+>  #ifdef SCSI_G_NCR5380_MEM
+>  	unsigned long base;
+>  	void __iomem *iomem;
+> @@ -395,6 +396,7 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
+>  		instance = scsi_register(tpnt, sizeof(struct NCR5380_hostdata));
+>  		if (instance == NULL)
+>  			goto out_release;
+> +		hostdata = shost_priv(instance);
+>  
+>  #ifndef SCSI_G_NCR5380_MEM
+>  		instance->io_port = overrides[current_override].NCR5380_map_name;
+> @@ -404,18 +406,27 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
+>  		 * On NCR53C400 boards, NCR5380 registers are mapped 8 past
+>  		 * the base address.
+>  		 */
+> -		if (overrides[current_override].board == BOARD_NCR53C400)
+> +		if (overrides[current_override].board == BOARD_NCR53C400) {
+>  			instance->io_port += 8;
+> +			hostdata->c400_ctl_status = 0;
+> +			hostdata->c400_blk_cnt = 1;
+> +			hostdata->c400_host_buf = 4;
+> +		}
+>  #else
+>  		instance->base = overrides[current_override].NCR5380_map_name;
+> -		((struct NCR5380_hostdata *)instance->hostdata)->iomem = iomem;
+> +		hostdata->iomem = iomem;
+> +		if (overrides[current_override].board == BOARD_NCR53C400) {
+> +			hostdata->c400_ctl_status = 0x100;
+> +			hostdata->c400_blk_cnt = 0x101;
+> +			hostdata->c400_host_buf = 0x104;
+> +		}
+>  #endif
+>  
+>  		if (NCR5380_init(instance, flags))
+>  			goto out_unregister;
+>  
+>  		if (overrides[current_override].board == BOARD_NCR53C400)
+> -			NCR5380_write(C400_CONTROL_STATUS_REG, CSR_BASE);
+> +			NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
+>  
+>  		NCR5380_maybe_reset_bus(instance);
+>  
+> @@ -523,30 +534,28 @@ generic_NCR5380_biosparam(struct scsi_device *sdev, struct block_device *bdev,
+>   
+>  static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst, int len)
+>  {
+> -#ifdef SCSI_G_NCR5380_MEM
+>  	struct NCR5380_hostdata *hostdata = shost_priv(instance);
+> -#endif
+>  	int blocks = len / 128;
+>  	int start = 0;
+>  	int bl;
+>  
+> -	NCR5380_write(C400_CONTROL_STATUS_REG, CSR_BASE | CSR_TRANS_DIR);
+> -	NCR5380_write(C400_BLOCK_COUNTER_REG, blocks);
+> +	NCR5380_write(hostdata->c400_ctl_status, CSR_BASE | CSR_TRANS_DIR);
+> +	NCR5380_write(hostdata->c400_blk_cnt, blocks);
+>  	while (1) {
+> -		if ((bl = NCR5380_read(C400_BLOCK_COUNTER_REG)) == 0) {
+> +		if ((bl = NCR5380_read(hostdata->c400_blk_cnt)) == 0) {
+>  			break;
+>  		}
+> -		if (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_GATED_53C80_IRQ) {
+> +		if (NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ) {
+>  			printk(KERN_ERR "53C400r: Got 53C80_IRQ start=%d, blocks=%d\n", start, blocks);
+>  			return -1;
+>  		}
+> -		while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_HOST_BUF_NOT_RDY);
+> +		while (NCR5380_read(hostdata->c400_ctl_status) & CSR_HOST_BUF_NOT_RDY);
+>  
+>  #ifndef SCSI_G_NCR5380_MEM
+>  		{
+>  			int i;
+>  			for (i = 0; i < 128; i++)
+> -				dst[start + i] = NCR5380_read(C400_HOST_BUFFER);
+> +				dst[start + i] = NCR5380_read(hostdata->c400_host_buf);
+>  		}
+>  #else
+>  		/* implies SCSI_G_NCR5380_MEM */
+> @@ -558,7 +567,7 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
+>  	}
+>  
+>  	if (blocks) {
+> -		while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_HOST_BUF_NOT_RDY)
+> +		while (NCR5380_read(hostdata->c400_ctl_status) & CSR_HOST_BUF_NOT_RDY)
+>  		{
+>  			// FIXME - no timeout
+>  		}
+> @@ -567,7 +576,7 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
+>  		{
+>  			int i;	
+>  			for (i = 0; i < 128; i++)
+> -				dst[start + i] = NCR5380_read(C400_HOST_BUFFER);
+> +				dst[start + i] = NCR5380_read(hostdata->c400_host_buf);
+>  		}
+>  #else
+>  		/* implies SCSI_G_NCR5380_MEM */
+> @@ -578,7 +587,7 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
+>  		blocks--;
+>  	}
+>  
+> -	if (!(NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_GATED_53C80_IRQ))
+> +	if (!(NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ))
+>  		printk("53C400r: no 53C80 gated irq after transfer");
+>  
+>  #if 0
+> @@ -586,7 +595,7 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
+>  	 *	DON'T DO THIS - THEY NEVER ARRIVE!
+>  	 */
+>  	printk("53C400r: Waiting for 53C80 registers\n");
+> -	while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_53C80_REG)
+> +	while (NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG)
+>  		;
+>  #endif
+>  	if (!(NCR5380_read(BUS_AND_STATUS_REG) & BASR_END_DMA_TRANSFER))
+> @@ -607,31 +616,29 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
+>  
+>  static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src, int len)
+>  {
+> -#ifdef SCSI_G_NCR5380_MEM
+>  	struct NCR5380_hostdata *hostdata = shost_priv(instance);
+> -#endif
+>  	int blocks = len / 128;
+>  	int start = 0;
+>  	int bl;
+>  	int i;
+>  
+> -	NCR5380_write(C400_CONTROL_STATUS_REG, CSR_BASE);
+> -	NCR5380_write(C400_BLOCK_COUNTER_REG, blocks);
+> +	NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
+> +	NCR5380_write(hostdata->c400_blk_cnt, blocks);
+>  	while (1) {
+> -		if (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_GATED_53C80_IRQ) {
+> +		if (NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ) {
+>  			printk(KERN_ERR "53C400w: Got 53C80_IRQ start=%d, blocks=%d\n", start, blocks);
+>  			return -1;
+>  		}
+>  
+> -		if ((bl = NCR5380_read(C400_BLOCK_COUNTER_REG)) == 0) {
+> +		if ((bl = NCR5380_read(hostdata->c400_blk_cnt)) == 0) {
+>  			break;
+>  		}
+> -		while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_HOST_BUF_NOT_RDY)
+> +		while (NCR5380_read(hostdata->c400_ctl_status) & CSR_HOST_BUF_NOT_RDY)
+>  			; // FIXME - timeout
+>  #ifndef SCSI_G_NCR5380_MEM
+>  		{
+>  			for (i = 0; i < 128; i++)
+> -				NCR5380_write(C400_HOST_BUFFER, src[start + i]);
+> +				NCR5380_write(hostdata->c400_host_buf, src[start + i]);
+>  		}
+>  #else
+>  		/* implies SCSI_G_NCR5380_MEM */
+> @@ -642,13 +649,13 @@ static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src,
+>  		blocks--;
+>  	}
+>  	if (blocks) {
+> -		while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_HOST_BUF_NOT_RDY)
+> +		while (NCR5380_read(hostdata->c400_ctl_status) & CSR_HOST_BUF_NOT_RDY)
+>  			; // FIXME - no timeout
+>  
+>  #ifndef SCSI_G_NCR5380_MEM
+>  		{
+>  			for (i = 0; i < 128; i++)
+> -				NCR5380_write(C400_HOST_BUFFER, src[start + i]);
+> +				NCR5380_write(hostdata->c400_host_buf, src[start + i]);
+>  		}
+>  #else
+>  		/* implies SCSI_G_NCR5380_MEM */
+> @@ -661,7 +668,7 @@ static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src,
+>  
+>  #if 0
+>  	printk("53C400w: waiting for registers to be available\n");
+> -	THEY NEVER DO ! while (NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_53C80_REG);
+> +	THEY NEVER DO ! while (NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG);
+>  	printk("53C400w: Got em\n");
+>  #endif
+>  
+> @@ -669,7 +676,7 @@ static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src,
+>  	/* All documentation says to check for this. Maybe my hardware is too
+>  	 * fast. Waiting for it seems to work fine! KLL
+>  	 */
+> -	while (!(i = NCR5380_read(C400_CONTROL_STATUS_REG) & CSR_GATED_53C80_IRQ))
+> +	while (!(i = NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ))
+>  		;	// FIXME - no timeout
+>  
+>  	/*
+> diff --git a/drivers/scsi/g_NCR5380.h b/drivers/scsi/g_NCR5380.h
+> index fd201e9..633edd0 100644
+> --- a/drivers/scsi/g_NCR5380.h
+> +++ b/drivers/scsi/g_NCR5380.h
+> @@ -29,7 +29,6 @@
+>  
+>  #define NCR5380_map_type int
+>  #define NCR5380_map_name port
+> -#define NCR53C400_register_offset 0
+>  
+>  #ifdef CONFIG_SCSI_GENERIC_NCR53C400
+>  #define NCR5380_region_size 16
+> @@ -42,7 +41,10 @@
+>  #define NCR5380_write(reg, value) \
+>  	outb(value, instance->io_port + (reg))
+>  
+> -#define NCR5380_implementation_fields /* none */
+> +#define NCR5380_implementation_fields \
+> +	int c400_ctl_status;\
+> +	int c400_blk_cnt;\
+> +	int c400_host_buf;
+>  
+>  #else 
+>  /* therefore SCSI_G_NCR5380_MEM */
 
-Index: linux/drivers/scsi/NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-+++ linux/drivers/scsi/NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-@@ -482,14 +482,13 @@ static void prepare_info(struct Scsi_Hos
- 	         "base 0x%lx, irq %d, "
- 	         "can_queue %d, cmd_per_lun %d, "
- 	         "sg_tablesize %d, this_id %d, "
--	         "flags { %s%s%s%s}, "
-+	         "flags { %s%s%s}, "
- 	         "options { %s} ",
- 	         instance->hostt->name, instance->io_port, instance->n_io_port,
- 	         instance->base, instance->irq,
- 	         instance->can_queue, instance->cmd_per_lun,
- 	         instance->sg_tablesize, instance->this_id,
- 	         hostdata->flags & FLAG_NO_DMA_FIXUP  ? "NO_DMA_FIXUP "  : "",
--	         hostdata->flags & FLAG_DTC3181E      ? "DTC3181E "      : "",
- 	         hostdata->flags & FLAG_NO_PSEUDO_DMA ? "NO_PSEUDO_DMA " : "",
- 	         hostdata->flags & FLAG_TOSHIBA_DELAY ? "TOSHIBA_DELAY "  : "",
- #ifdef AUTOPROBE_IRQ
-@@ -1085,18 +1084,6 @@ static struct scsi_cmnd *NCR5380_select(
- 	NCR5380_write(INITIATOR_COMMAND_REG,
- 		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
- 
--	/* RvC: DTC3181E has some trouble with this so we simply removed it.
--	 * Seems to work with only Mustek scanner attached.
--	 */
--	if (!(hostdata->flags & FLAG_DTC3181E) &&
--	    (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST)) {
--		NCR5380_write(MODE_REG, MR_BASE);
--		NCR5380_write(INITIATOR_COMMAND_REG, ICR_BASE);
--		dsprintk(NDEBUG_ARBITRATION, instance, "arbitration lost, negating SEL\n");
--		spin_lock_irq(&hostdata->lock);
--		goto out;
--	}
--
- 	/*
- 	 * Again, bus clear + bus settle time is 1.2us, however, this is
- 	 * a minimum so we'll udelay ceil(1.2)
-Index: linux/drivers/scsi/NCR5380.h
-===================================================================
---- linux.orig/drivers/scsi/NCR5380.h	2015-11-30 15:34:36.000000000 +1100
-+++ linux/drivers/scsi/NCR5380.h	2015-11-30 15:34:39.000000000 +1100
-@@ -233,7 +233,6 @@
- 
- #define FLAG_NO_DMA_FIXUP		1	/* No DMA errata workarounds */
- #define FLAG_NO_PSEUDO_DMA		8	/* Inhibit DMA */
--#define FLAG_DTC3181E			16	/* DTC3181E */
- #define FLAG_LATE_DMA_SETUP		32	/* Setup NCR before DMA H/W */
- #define FLAG_TAGGED_QUEUING		64	/* as X3T9.2 spelled it */
- #define FLAG_TOSHIBA_DELAY		128	/* Allow for borken CD-ROMs */
-Index: linux/drivers/scsi/atari_NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/atari_NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-+++ linux/drivers/scsi/atari_NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-@@ -586,13 +586,12 @@ static void prepare_info(struct Scsi_Hos
- 	         "base 0x%lx, irq %d, "
- 	         "can_queue %d, cmd_per_lun %d, "
- 	         "sg_tablesize %d, this_id %d, "
--	         "flags { %s%s%s}, "
-+	         "flags { %s%s}, "
- 	         "options { %s} ",
- 	         instance->hostt->name, instance->io_port, instance->n_io_port,
- 	         instance->base, instance->irq,
- 	         instance->can_queue, instance->cmd_per_lun,
- 	         instance->sg_tablesize, instance->this_id,
--	         hostdata->flags & FLAG_DTC3181E       ? "DTC3181E "       : "",
- 	         hostdata->flags & FLAG_TAGGED_QUEUING ? "TAGGED_QUEUING " : "",
- 	         hostdata->flags & FLAG_TOSHIBA_DELAY  ? "TOSHIBA_DELAY "  : "",
- #ifdef DIFFERENTIAL
-@@ -1286,18 +1285,6 @@ static struct scsi_cmnd *NCR5380_select(
- 	NCR5380_write(INITIATOR_COMMAND_REG,
- 		      ICR_BASE | ICR_ASSERT_SEL | ICR_ASSERT_BSY);
- 
--	/* RvC: DTC3181E has some trouble with this so we simply removed it.
--	 * Seems to work with only Mustek scanner attached.
--	 */
--	if (!(hostdata->flags & FLAG_DTC3181E) &&
--	    (NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_LOST)) {
--		NCR5380_write(MODE_REG, MR_BASE);
--		NCR5380_write(INITIATOR_COMMAND_REG, ICR_BASE);
--		dsprintk(NDEBUG_ARBITRATION, instance, "arbitration lost, negating SEL\n");
--		spin_lock_irq(&hostdata->lock);
--		goto out;
--	}
--
- 	/*
- 	 * Again, bus clear + bus settle time is 1.2us, however, this is
- 	 * a minimum so we'll udelay ceil(1.2)
-Index: linux/drivers/scsi/g_NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/g_NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-+++ linux/drivers/scsi/g_NCR5380.c	2015-11-30 15:34:39.000000000 +1100
-@@ -326,7 +326,7 @@ static int __init generic_NCR5380_detect
- 			ports = ncr_53c400a_ports;
- 			break;
- 		case BOARD_DTC3181E:
--			flags = FLAG_NO_PSEUDO_DMA | FLAG_DTC3181E;
-+			flags = FLAG_NO_PSEUDO_DMA;
- 			ports = dtc_3181e_ports;
- 			break;
- 		}
-Index: linux/drivers/scsi/dmx3191d.c
-===================================================================
---- linux.orig/drivers/scsi/dmx3191d.c	2015-11-30 15:34:35.000000000 +1100
-+++ linux/drivers/scsi/dmx3191d.c	2015-11-30 15:34:39.000000000 +1100
-@@ -92,7 +92,7 @@ static int dmx3191d_probe_one(struct pci
- 	 */
- 	shost->irq = NO_IRQ;
- 
--	error = NCR5380_init(shost, FLAG_NO_PSEUDO_DMA | FLAG_DTC3181E);
-+	error = NCR5380_init(shost, FLAG_NO_PSEUDO_DMA);
- 	if (error)
- 		goto out_host_put;
- 
+A space before the backslash would be more consistent.
+
+> @@ -50,7 +52,6 @@
+>  
+>  #define NCR5380_map_type unsigned long
+>  #define NCR5380_map_name base
+> -#define NCR53C400_register_offset 0x108
+>  #define NCR53C400_mem_base 0x3880
+>  #define NCR53C400_host_buffer 0x3900
+>  #define NCR5380_region_size 0x3a00
+> @@ -63,7 +64,10 @@
+>  	       NCR53C400_mem_base + (reg))
+>  
+>  #define NCR5380_implementation_fields \
+> -    void __iomem *iomem;
+> +	void __iomem *iomem;\
+> +	int c400_ctl_status;\
+> +	int c400_blk_cnt;\
+> +	int c400_host_buf;
+>  
+>  #endif
+>  
+
+Same here.
+
+-- 
