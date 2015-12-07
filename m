@@ -1,121 +1,103 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH v2 77/71] ncr5380: Fix wait for 53C80 registers registers after PDMA
-Date: Mon, 7 Dec 2015 09:08:25 +0100
-Message-ID: <201512070908.26036.linux@rainbow-software.org>
-References: <20151118083455.331768508@telegraphics.com.au> <1449443866-27296-1-git-send-email-linux@rainbow-software.org> <alpine.LNX.2.00.1512071359180.16204@nippy.intranet>
+From: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH part3 v12 00/10] Cleanup platform pci_domain_nr()
+Date: Mon, 7 Dec 2015 15:53:56 -0600
+Message-ID: <20151207215356.GD14429__35149.371441412$1449525306$gmane$org@localhost>
+References: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1512071359180.16204@nippy.intranet>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1437393678-4077-1-git-send-email-wangyijing@huawei.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Yijing Wang <wangyijing@huawei.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Russell King <linux@arm.linux.org.uk>, dja@axtens.net, linux-xtensa@linux-xtensa.org, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Rusty Russell <rusty@rustcorp.com.au>, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, Liviu Dudau <liviu@dudau.co.uk>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Monday 07 December 2015 04:16:14 Finn Thain wrote:
+On Mon, Jul 20, 2015 at 08:01:08PM +0800, Yijing Wang wrote:
+> This series is splitted out from previous patchset
+> "Refine PCI scan interfaces and make generic pci host bridge".
+> It try to clean up all platform pci_domain_nr(), save domain
+> in pci_host_bridge, so we could get domain number from the
+> common interface. 
 > 
-> On Mon, 7 Dec 2015, Ondrej Zary wrote:
+> v11->v12:
+>   Introduce wrap function pci_create_root_bus_generic()
+>   and pci_create_root_bus_generic() for arm/arm64 which
+>   enable CONFIG_PCI_DOMAINS_GENERIC.
+>   Rebased this series based 4.2-rc1
 > 
-> > The check for 53C80 registers accessibility was commented out because
-> > it was broken (inverted). Fix and enable it.
-> > 
-> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> > ---
-> >  drivers/scsi/g_NCR5380.c |   37 ++++++-------------------------------
-> >  1 file changed, 6 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
-> > index 038dddf..a7479c6 100644
-> > --- a/drivers/scsi/g_NCR5380.c
-> > +++ b/drivers/scsi/g_NCR5380.c
-> > @@ -603,14 +603,10 @@ static inline int NCR5380_pread(struct Scsi_Host *instance, unsigned char *dst,
-> >  	if (!(NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ))
-> >  		printk("53C400r: no 53C80 gated irq after transfer");
-> >  
-> > -#if 0
-> > -	/*
-> > -	 *	DON'T DO THIS - THEY NEVER ARRIVE!
-> > -	 */
-> > -	printk("53C400r: Waiting for 53C80 registers\n");
-> > -	while (NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG)
-> > +	/* wait for 53C80 registers to be available */
-> > +	while (!(NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG))
-> >  		;
+> Yijing Wang (10):
+>   PCI: Save domain in pci_host_bridge
+>   PCI: Move pci_bus_assign_domain_nr() declaration into
+>     drivers/pci/pci.h
+>   PCI: Remove declaration for pci_get_new_domain_nr()
+>   PCI: Introduce pci_host_assign_domain_nr() to assign domain
+>   powerpc/PCI: Rename pcibios_root_bridge_prepare() to
+>     pcibios_root_bus_prepare()
+>   PCI: Make pci_host_bridge hold sysdata in drvdata
+>   PCI: Create pci host bridge prior to root bus
+>   PCI: Introduce common pci_domain_nr() and remove platform specific
+>     code
+>   PCI: Remove pci_bus_assign_domain_nr()
+>   IA64/PCI: Fix build warning found by kbuild test
 > 
-> In the previous patch, udelay(4) was added to a CSR_GATED_53C80_IRQ 
-> polling loop. It is interesting that you don't need it here when polling 
-> CSR_53C80_REG.
+>  arch/alpha/include/asm/pci.h             |    2 -
+>  arch/alpha/kernel/pci.c                  |    4 +-
+>  arch/alpha/kernel/sys_nautilus.c         |    2 +-
+>  arch/arm/kernel/bios32.c                 |    2 +-
+>  arch/arm/mach-dove/pcie.c                |    2 +-
+>  arch/arm/mach-iop13xx/pci.c              |    4 +-
+>  arch/arm/mach-mv78xx0/pcie.c             |    2 +-
+>  arch/arm/mach-orion5x/pci.c              |    4 +-
+>  arch/frv/mb93090-mb00/pci-vdk.c          |    3 +-
+>  arch/ia64/include/asm/pci.h              |    1 -
+>  arch/ia64/pci/pci.c                      |    6 +-
+>  arch/ia64/sn/kernel/io_acpi_init.c       |    6 +-
+>  arch/ia64/sn/kernel/io_init.c            |    6 +-
+>  arch/m68k/coldfire/pci.c                 |    2 +-
+>  arch/microblaze/include/asm/pci.h        |    2 -
+>  arch/microblaze/pci/pci-common.c         |   15 +----
+>  arch/mips/include/asm/pci.h              |    2 -
+>  arch/mips/pci/pci.c                      |    4 +-
+>  arch/mn10300/unit-asb2305/pci.c          |    3 +-
+>  arch/powerpc/include/asm/machdep.h       |    2 +-
+>  arch/powerpc/include/asm/pci.h           |    2 -
+>  arch/powerpc/kernel/pci-common.c         |   21 ++-----
+>  arch/powerpc/platforms/pseries/pci.c     |    2 +-
+>  arch/powerpc/platforms/pseries/pseries.h |    2 +-
+>  arch/powerpc/platforms/pseries/setup.c   |    2 +-
+>  arch/s390/include/asm/pci.h              |    1 -
+>  arch/s390/pci/pci.c                      |   10 +---
+>  arch/sh/drivers/pci/pci.c                |    4 +-
+>  arch/sh/include/asm/pci.h                |    2 -
+>  arch/sparc/include/asm/pci_64.h          |    1 -
+>  arch/sparc/kernel/leon_pci.c             |    2 +-
+>  arch/sparc/kernel/pci.c                  |   21 +------
+>  arch/sparc/kernel/pcic.c                 |    2 +-
+>  arch/tile/include/asm/pci.h              |    2 -
+>  arch/tile/kernel/pci.c                   |    4 +-
+>  arch/tile/kernel/pci_gx.c                |    4 +-
+>  arch/unicore32/kernel/pci.c              |    2 +-
+>  arch/x86/include/asm/pci.h               |    6 --
+>  arch/x86/pci/acpi.c                      |    6 +-
+>  arch/x86/pci/common.c                    |    2 +-
+>  arch/xtensa/kernel/pci.c                 |    2 +-
+>  drivers/parisc/dino.c                    |    2 +-
+>  drivers/parisc/lba_pci.c                 |    2 +-
+>  drivers/pci/host/pci-versatile.c         |    3 +-
+>  drivers/pci/host/pci-xgene.c             |    2 +-
+>  drivers/pci/host/pcie-designware.c       |    2 +-
+>  drivers/pci/host/pcie-iproc.c            |    2 +-
+>  drivers/pci/host/pcie-xilinx.c           |    2 +-
+>  drivers/pci/hotplug/ibmphp_core.c        |    2 +-
+>  drivers/pci/pci.c                        |   31 ++++++++--
+>  drivers/pci/pci.h                        |    1 +
+>  drivers/pci/probe.c                      |   92 +++++++++++++++++-------------
+>  drivers/pci/xen-pcifront.c               |    2 +-
+>  include/linux/pci.h                      |   39 ++++++-------
+>  54 files changed, 161 insertions(+), 195 deletions(-)
 
-Yes, it's weird. Reads work fine without the delay. Small writes work most of
-the time without the delay but crash sometimes. Large writes crash the chip
-consistently without the delay.
+Doesn't apply to v4.4-rc2.  Please refresh and repost if this is still
+relevant.
 
-> > -#endif
-> > +
-> >  	if (!(NCR5380_read(BUS_AND_STATUS_REG) & BASR_END_DMA_TRANSFER))
-> >  		printk(KERN_ERR "53C400r: no end dma signal\n");
-> >  		
-> > @@ -632,7 +628,6 @@ static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src,
-> >  	struct NCR5380_hostdata *hostdata = shost_priv(instance);
-> >  	int blocks = len / 128;
-> >  	int start = 0;
-> > -	int i;
-> >  
-> >  	NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
-> >  	NCR5380_write(hostdata->c400_blk_cnt, blocks);
-> > @@ -681,36 +676,16 @@ static inline int NCR5380_pwrite(struct Scsi_Host *instance, unsigned char *src,
-> >  		blocks--;
-> >  	}
-> >  
-> > -#if 0
-> > -	printk("53C400w: waiting for registers to be available\n");
-> > -	THEY NEVER DO ! while (NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG);
-> > -	printk("53C400w: Got em\n");
-> > -#endif
-> > -
-> > -	/* Let's wait for this instead - could be ugly */
-> > -	/* All documentation says to check for this. Maybe my hardware is too
-> > -	 * fast. Waiting for it seems to work fine! KLL
-> > -	 */
-> > -	while (!(i = NCR5380_read(hostdata->c400_ctl_status) & CSR_GATED_53C80_IRQ)) {
-> > +	/* wait for 53C80 registers to be available */
-> > +	while (!(NCR5380_read(hostdata->c400_ctl_status) & CSR_53C80_REG)) {
-> >  		udelay(4); /* DTC436 chip hangs without this */
-> 
-> ... based on the above, this udelay is probably not needed.
-> 
-> (Or perhaps it is only needed once, in between the final host_buf register 
-> access and the first ctl_status access??)
-
-I guess that the delay is needed when the chip does write in the background.
-But why only on the last block?
-Adding delays inside the while(1) loop does not help, it crashes anyway.
-Single delay before the first ctl_status does not help either (perhaps only
-if it's long enough for the write to complete).
-
-The chip also crashes in transfer_pio during bigger transfers in a similar
-way. With Quantum HDD, it did not crash once I got PDMA working.
-But with a faster IBM HDD, it crashes even with smaller PIO trasnfers.
-
-> Is there any reference in the docs to timing sensitivity?
-
-Haven't found anything in NCR docs. Unfortunately, we don't have any DTC
-docs.
-
-> >  		/* FIXME - no timeout */
-> >  	}
-> >  
-> > -	/*
-> > -	 * I know. i is certainly != 0 here but the loop is new. See previous
-> > -	 * comment.
-> > -	 */
-> 
-> Thanks for cleaning up this mess!
-> 
-
-
--- 
-Ondrej Zary
+Bjorn
