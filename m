@@ -1,98 +1,206 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH v2 74/71] ncr5380: Enable PDMA for NCR53C400A
-Date: Wed, 9 Dec 2015 14:39:06 +0100
-Message-ID: <201512091439.07424.linux@rainbow-software.org>
-References: <20151118083455.331768508@telegraphics.com.au> <1449440489-9986-1-git-send-email-linux@rainbow-software.org> <alpine.LNX.2.00.1512081242490.18196@nippy.intranet>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] clk: let clk_disable() return immediately if clk is NULL
+ or error
+Date: Thu, 10 Dec 2015 19:40:21 +1000
+Message-ID: <56694885.1080609@uclinux.org>
+References: <1449296276-32208-1-git-send-email-yamada.masahiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1512081242490.18196@nippy.intranet>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1449296276-32208-1-git-send-email-yamada.masahiro@socionext.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-clk@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-sh@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Ryan Mallon <rmallon@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Simon Horman <horms@verge.net.au>, Wan ZongShun <mcuos.com@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Hauke Mehrtens <hauke@hauke-m.de>, adi-buildroot-devel@lists.sourceforge.net, Russell King <linux@arm.linux.org.uk>, linux-m68k@lists.linux-m68k.org, Roland Stigge <stigge@antcom.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, John Crispin <blogic@openwrt.org>
 
-On Tuesday 08 December 2015 03:05:11 Finn Thain wrote:
-> 
-> On Sun, 6 Dec 2015, Ondrej Zary wrote:
-> 
-> > Add I/O register mapping for NCR53C400A and enable PDMA mode to
-> > improve performance and fix non-working IRQ.
-> > 
-> > Tested with HP C2502 (and user-space enabler).
-> > 
-> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> > ---
-> >  drivers/scsi/g_NCR5380.c |   14 +++++++++++---
-> >  1 file changed, 11 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/g_NCR5380.c b/drivers/scsi/g_NCR5380.c
-> > index 86740fd..099fdac 100644
-> > --- a/drivers/scsi/g_NCR5380.c
-> > +++ b/drivers/scsi/g_NCR5380.c
-> > @@ -324,7 +324,7 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
-> >  #endif
-> >  			break;
-> >  		case BOARD_NCR53C400A:
-> > -			flags = FLAG_NO_PSEUDO_DMA;
-> > +			flags = FLAG_NO_DMA_FIXUP;
-> >  			ports = ncr_53c400a_ports;
-> >  			break;
-> >  		case BOARD_DTC3181E:
-> > @@ -406,11 +406,18 @@ static int __init generic_NCR5380_detect(struct scsi_host_template *tpnt)
-> >  		 * On NCR53C400 boards, NCR5380 registers are mapped 8 past
-> >  		 * the base address.
-> >  		 */
-> > -		if (overrides[current_override].board == BOARD_NCR53C400) {
-> > +		switch (overrides[current_override].board) {
-> > +		case BOARD_NCR53C400:
-> >  			instance->io_port += 8;
-> >  			hostdata->c400_ctl_status = 0;
-> >  			hostdata->c400_blk_cnt = 1;
-> >  			hostdata->c400_host_buf = 4;
-> > +			break;
-> > +		case BOARD_NCR53C400A:
-> > +			hostdata->c400_ctl_status = 9;
-> > +			hostdata->c400_blk_cnt = 10;
-> > +			hostdata->c400_host_buf = 8;
-> > +			break;
-> >  		}
-> >  #else
-> >  		instance->base = overrides[current_override].NCR5380_map_name;
-> 
-> 
-> For SCSI_G_NCR5380_MEM and BOARD_NCR53C400A (or BOARD_DTC3181E), you have 
-> not assigned c400_ctl_status, c400_blk_cnt and c400_host_buf. Perhaps we 
-> should throw an error, something like this?
-> 
->  		hostdata->iomem = iomem;
-> -		if (overrides[current_override].board == BOARD_NCR53C400) {
-> +		switch (overrides[current_override].board) {
-> +		case BOARD_NCR53C400:
->  			hostdata->c400_ctl_status = 0x100;
->  			hostdata->c400_blk_cnt = 0x101;
->  			hostdata->c400_host_buf = 0x104;
-> +			break;
-> +		case BOARD_NCR53C400A:
-> +			pr_err(DRV_MODULE_NAME ": unknown register offsets\n");
-> +			goto out_unregister;
->  		}
->  #endif
+Hi Masahiro,
 
-We don't need to fail, just disable PDMA by setting:
-flags = FLAG_NO_PSEUDO_DMA;
+On 05/12/15 16:17, Masahiro Yamada wrote:
+> The clk_disable() in the common clock framework (drivers/clk/clk.c)
+> returns immediately if the given clk is NULL or an error pointer.
+> It allows drivers to call clk_disable() (and clk_disable_unprepare())
+> with a clock that might be NULL or an error pointer as long as the
+> drivers are only used along with the common clock framework.
+>
+> Unfortunately, NULL/error checking is missing from some of non-common
+> clk_disable() implementations.  This prevents us from completely
+> dropping NULL/error from callers.  Let's add IS_ERR_OR_NULL(clk)
+> checks to all callees.
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-And BTW. this:
-                if (overrides[current_override].board == BOARD_NCR53C400 ||
-                    overrides[current_override].board == BOARD_NCR53C400A)
-                        NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
+I have no problems with the m68k/coldfire change:
 
-should then be, solving the problem of growing if condition:
-		if (!(flags & FLAG_NO_PSEUDO_DMA))
-                        NCR5380_write(hostdata->c400_ctl_status, CSR_BASE);
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 
--- 
-Ondrej Zary
+Regards
+Greg
+
+
+> ---
+>
+>  arch/arm/mach-ep93xx/clock.c     |  2 +-
+>  arch/arm/mach-lpc32xx/clock.c    |  3 +++
+>  arch/arm/mach-mmp/clock.c        |  3 +++
+>  arch/arm/mach-sa1100/clock.c     | 15 ++++++++-------
+>  arch/arm/mach-w90x900/clock.c    |  3 +++
+>  arch/blackfin/mach-bf609/clock.c |  3 +++
+>  arch/m68k/coldfire/clk.c         |  4 ++++
+>  arch/mips/bcm63xx/clk.c          |  3 +++
+>  arch/mips/lantiq/clk.c           |  3 +++
+>  drivers/sh/clk/core.c            |  2 +-
+>  10 files changed, 32 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+> index 39ef3b6..4e11f7d 100644
+> --- a/arch/arm/mach-ep93xx/clock.c
+> +++ b/arch/arm/mach-ep93xx/clock.c
+> @@ -293,7 +293,7 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> -	if (!clk)
+> +	if (IS_ERR_OR_NULL(clk))
+>  		return;
+>
+>  	spin_lock_irqsave(&clk_lock, flags);
+> diff --git a/arch/arm/mach-lpc32xx/clock.c b/arch/arm/mach-lpc32xx/clock.c
+> index 661c8f4..07faac2 100644
+> --- a/arch/arm/mach-lpc32xx/clock.c
+> +++ b/arch/arm/mach-lpc32xx/clock.c
+> @@ -1125,6 +1125,9 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	spin_lock_irqsave(&global_clkregs_lock, flags);
+>  	local_clk_disable(clk);
+>  	spin_unlock_irqrestore(&global_clkregs_lock, flags);
+> diff --git a/arch/arm/mach-mmp/clock.c b/arch/arm/mach-mmp/clock.c
+> index 7c6f95f..7b33122 100644
+> --- a/arch/arm/mach-mmp/clock.c
+> +++ b/arch/arm/mach-mmp/clock.c
+> @@ -67,6 +67,9 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	WARN_ON(clk->enabled == 0);
+>
+>  	spin_lock_irqsave(&clocks_lock, flags);
+> diff --git a/arch/arm/mach-sa1100/clock.c b/arch/arm/mach-sa1100/clock.c
+> index cbf53bb..ea103fd 100644
+> --- a/arch/arm/mach-sa1100/clock.c
+> +++ b/arch/arm/mach-sa1100/clock.c
+> @@ -85,13 +85,14 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> -	if (clk) {
+> -		WARN_ON(clk->enabled == 0);
+> -		spin_lock_irqsave(&clocks_lock, flags);
+> -		if (--clk->enabled == 0)
+> -			clk->ops->disable(clk);
+> -		spin_unlock_irqrestore(&clocks_lock, flags);
+> -	}
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+> +	WARN_ON(clk->enabled == 0);
+> +	spin_lock_irqsave(&clocks_lock, flags);
+> +	if (--clk->enabled == 0)
+> +		clk->ops->disable(clk);
+> +	spin_unlock_irqrestore(&clocks_lock, flags);
+>  }
+>  EXPORT_SYMBOL(clk_disable);
+>
+> diff --git a/arch/arm/mach-w90x900/clock.c b/arch/arm/mach-w90x900/clock.c
+> index 2c371ff..90ec250 100644
+> --- a/arch/arm/mach-w90x900/clock.c
+> +++ b/arch/arm/mach-w90x900/clock.c
+> @@ -46,6 +46,9 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	WARN_ON(clk->enabled == 0);
+>
+>  	spin_lock_irqsave(&clocks_lock, flags);
+> diff --git a/arch/blackfin/mach-bf609/clock.c b/arch/blackfin/mach-bf609/clock.c
+> index 3783058..fed8015 100644
+> --- a/arch/blackfin/mach-bf609/clock.c
+> +++ b/arch/blackfin/mach-bf609/clock.c
+> @@ -97,6 +97,9 @@ EXPORT_SYMBOL(clk_enable);
+>
+>  void clk_disable(struct clk *clk)
+>  {
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	if (clk->ops && clk->ops->disable)
+>  		clk->ops->disable(clk);
+>  }
+> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
+> index fddfdcc..eb0e8c1 100644
+> --- a/arch/m68k/coldfire/clk.c
+> +++ b/arch/m68k/coldfire/clk.c
+> @@ -101,6 +101,10 @@ EXPORT_SYMBOL(clk_enable);
+>  void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+> +
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	spin_lock_irqsave(&clk_lock, flags);
+>  	if ((--clk->enabled == 0) && clk->clk_ops)
+>  		clk->clk_ops->disable(clk);
+> diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+> index 6375652..d6a39bf 100644
+> --- a/arch/mips/bcm63xx/clk.c
+> +++ b/arch/mips/bcm63xx/clk.c
+> @@ -326,6 +326,9 @@ EXPORT_SYMBOL(clk_enable);
+>
+>  void clk_disable(struct clk *clk)
+>  {
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	mutex_lock(&clocks_mutex);
+>  	clk_disable_unlocked(clk);
+>  	mutex_unlock(&clocks_mutex);
+> diff --git a/arch/mips/lantiq/clk.c b/arch/mips/lantiq/clk.c
+> index a0706fd..c8d87b1 100644
+> --- a/arch/mips/lantiq/clk.c
+> +++ b/arch/mips/lantiq/clk.c
+> @@ -130,6 +130,9 @@ EXPORT_SYMBOL(clk_enable);
+>
+>  void clk_disable(struct clk *clk)
+>  {
+> +	if (IS_ERR_OR_NULL(clk))
+> +		return;
+> +
+>  	if (unlikely(!clk_good(clk)))
+>  		return;
+>
+> diff --git a/drivers/sh/clk/core.c b/drivers/sh/clk/core.c
+> index be56b22..3dd20cf 100644
+> --- a/drivers/sh/clk/core.c
+> +++ b/drivers/sh/clk/core.c
+> @@ -252,7 +252,7 @@ void clk_disable(struct clk *clk)
+>  {
+>  	unsigned long flags;
+>
+> -	if (!clk)
+> +	if (IS_ERR_OR_NULL(clk))
+>  		return;
+>
+>  	spin_lock_irqsave(&clock_lock, flags);
+>
