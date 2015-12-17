@@ -1,78 +1,24 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] z2ram: Delete a jump label in z2_init()
-Date: Mon, 14 Dec 2015 10:10:57 +0100
-Message-ID: <CAMuHMdVfaPCSZ2EX0MdU8uakqmP734d0QpEgWkMfwL8LbVZVxQ@mail.gmail.com>
-References: <566ABCD9.1060404@users.sourceforge.net>
-	<566B13C1.50907@users.sourceforge.net>
-	<566B1542.7040902@users.sourceforge.net>
-	<20151214003621.GB718@swordfish>
+From: Michael@mail.microamerica.com.pe,
+	"J.Tynan <f.digeronimo"@federconsumatori.abruzzo.it
+Subject: Review & Reply
+Date: Thu, 17 Dec 2015 07:55:35 +0700
+Message-ID: <20151217005626.6562389D5DD8__40096.3441738442$1450341638$gmane$org@mail.microamerica.com.pe>
+Reply-To: michaeljtynan8@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151214003621.GB718@swordfish>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc: SF Markus Elfring <elfring@users.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Julia Lawall <julia.lawall@lip6.fr>, Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@fb.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.microamerica.com.pe ([200.37.170.69]:49279 "EHLO
+	mail.microamerica.com.pe" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S932092AbbLQIkP convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Dec 2015 03:40:15 -0500
+Content-Description: Mail message body
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Recipients <f.digeronimo@federconsumatori.abruzzo.it>
 
-On Mon, Dec 14, 2015 at 1:36 AM, Sergey Senozhatsky
-<sergey.senozhatsky.work@gmail.com> wrote:
-> Cc Jens, Andrew, Geert
->
-> On (12/11/15 19:26), SF Markus Elfring wrote:
->>
->> This issue was detected by using the Coccinelle software.
->>
->> * Let us return directly if a call of the function "register_blkdev" failed.
->>
->> * Remove the jump label "err" then.
->>
->> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
->> ---
->>  drivers/block/z2ram.c | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
->> index 968f9e5..b07581d 100644
->> --- a/drivers/block/z2ram.c
->> +++ b/drivers/block/z2ram.c
->> @@ -345,9 +345,8 @@ z2_init(void)
->>      if (!MACH_IS_AMIGA)
->>       return -ENODEV;
->>
->> -    ret = -EBUSY;
->>      if (register_blkdev(Z2RAM_MAJOR, DEVICE_NAME))
->> -     goto err;
->> +     return -EBUSY;
->>
->>      ret = -ENOMEM;
->>      z2ram_gendisk = alloc_disk(1);
->> @@ -374,7 +373,6 @@ out_queue:
->>      put_disk(z2ram_gendisk);
->>  out_disk:
->>      unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
->> -err:
->>      return ret;
->>  }
->
-> z2ram and zram are different drivers, but the change looks
-> ok to me.
->
-> z2ram can be improved in many ways, so my question is - do
-> people still use it?
-
-I think it's still used.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Greetings,
+My name is Mr.Michael J. Tynan, I am a banker with Bank Of America. It is true that we have not meet each other in person, but I strongly believe in trust and friendship in every business. I have a Lebanese deceased customer's abandoned fund, which I am his personal financial adviser before his accidental death, that being the main reason why I alone working in the bank here, know much about the existence of this fund and the secrets surrounding this money. But before I disclose the full details to you, I will like to know your interest and willingness to assist me. You can call me as soon you receive my message, so that i will send to you full details about the transaction.
+My best regards,
+Mr.Michael J. Tynan
+MOBILE: +1 347 269 3740
