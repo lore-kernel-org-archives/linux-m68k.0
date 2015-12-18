@@ -1,58 +1,24 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/atari, m68k/sun3: Fix SCSI platform device registration
- when driver is modular
-Date: Fri, 18 Dec 2015 12:44:28 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1512181218530.12965@nippy.intranet>
+From: Michael@mail.microamerica.com.pe,
+	"J.Tynan <f.digeronimo"@federconsumatori.abruzzo.it
+Subject: Review & Reply
+Date: Fri, 18 Dec 2015 17:18:54 +0700
+Message-ID: <20151218101947.AE93A8E86296__1425.85800863362$1450448587$gmane$org@mail.microamerica.com.pe>
+Reply-To: michaeljtynan8@gmail.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44003 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752783AbbLRBop (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Dec 2015 20:44:45 -0500
+Received: from mail.microamerica.com.pe ([200.37.170.69]:41180 "EHLO
+	mail.microamerica.com.pe" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754006AbbLROVk convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Dec 2015 09:21:40 -0500
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org
+To: Recipients <f.digeronimo@federconsumatori.abruzzo.it>
 
-
-Fixes: 3ff228af84b5 ("atari_scsi: Convert to platform device")
-Fixes: 0d31f8759109 ("sun3_scsi: Convert to platform device")
-Reported-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
-Index: linux/arch/m68k/atari/config.c
-===================================================================
---- linux.orig/arch/m68k/atari/config.c	2015-12-18 12:06:53.000000000 +1100
-+++ linux/arch/m68k/atari/config.c	2015-12-18 12:07:00.000000000 +1100
-@@ -858,7 +858,7 @@ static struct platform_device *atari_net
- };
- #endif /* CONFIG_ATARI_ETHERNEC */
- 
--#ifdef CONFIG_ATARI_SCSI
-+#if IS_ENABLED(CONFIG_ATARI_SCSI)
- static const struct resource atari_scsi_st_rsrc[] __initconst = {
- 	{
- 		.flags = IORESOURCE_IRQ,
-@@ -910,7 +910,7 @@ int __init atari_platform_init(void)
- 	}
- #endif
- 
--#ifdef CONFIG_ATARI_SCSI
-+#if IS_ENABLED(CONFIG_ATARI_SCSI)
- 	if (ATARIHW_PRESENT(ST_SCSI))
- 		platform_device_register_simple("atari_scsi", -1,
- 			atari_scsi_st_rsrc, ARRAY_SIZE(atari_scsi_st_rsrc));
-Index: linux/arch/m68k/sun3/config.c
-===================================================================
---- linux.orig/arch/m68k/sun3/config.c	2015-12-18 12:06:53.000000000 +1100
-+++ linux/arch/m68k/sun3/config.c	2015-12-18 12:07:00.000000000 +1100
-@@ -171,7 +171,7 @@ static void __init sun3_sched_init(irq_h
-         intersil_clear();
- }
- 
--#ifdef CONFIG_SUN3_SCSI
-+#if IS_ENABLED(CONFIG_SUN3_SCSI)
- 
- static const struct resource sun3_scsi_vme_rsrc[] __initconst = {
- 	{
+Greetings,
+My name is Mr.Michael J. Tynan, I am a banker with Bank Of America. It is true that we have not meet each other in person, but I strongly believe in trust and friendship in every business. I have a Lebanese deceased customer's abandoned fund, which I am his personal financial adviser before his accidental death, that being the main reason why I alone working in the bank here, know much about the existence of this fund and the secrets surrounding this money. But before I disclose the full details to you, I will like to know your interest and willingness to assist me. You can call me as soon you receive my message, so that i will send to you full details about the transaction.
+My best regards,
+Mr.Michael J. Tynan
+MOBILE: +1 347 269 3740
