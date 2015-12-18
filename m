@@ -1,24 +1,26 @@
-From: Michael@mail.microamerica.com.pe,
-	"J.Tynan <f.digeronimo"@federconsumatori.abruzzo.it
-Subject: Review & Reply
-Date: Thu, 17 Dec 2015 07:55:35 +0700
-Message-ID: <20151217005626.6562389D5DD8__40096.3441738442$1450341638$gmane$org@mail.microamerica.com.pe>
-Reply-To: michaeljtynan8@gmail.com
+From: SKY@vger.kernel.org, GROUP@vger.kernel.org
+Subject: Darlehen bieten
+Date: Thu, 17 Dec 2015 23:00:05 -0800
+Message-ID: <MA1PR01MB0470DCA4E60101410BE8DE65B8E00@MA1PR01MB0470.INDPRD01.PROD.OUTLOOK.COM>
+Reply-To: <skygroup.financia211@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.microamerica.com.pe ([200.37.170.69]:49279 "EHLO
-	mail.microamerica.com.pe" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S932092AbbLQIkP convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Dec 2015 03:40:15 -0500
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <f.digeronimo@federconsumatori.abruzzo.it>
+To: Recipients@vger.kernel.org
 
-Greetings,
-My name is Mr.Michael J. Tynan, I am a banker with Bank Of America. It is true that we have not meet each other in person, but I strongly believe in trust and friendship in every business. I have a Lebanese deceased customer's abandoned fund, which I am his personal financial adviser before his accidental death, that being the main reason why I alone working in the bank here, know much about the existence of this fund and the secrets surrounding this money. But before I disclose the full details to you, I will like to know your interest and willingness to assist me. You can call me as soon you receive my message, so that i will send to you full details about the transaction.
-My best regards,
-Mr.Michael J. Tynan
-MOBILE: +1 347 269 3740
+Brauchen Sie jede Art von Darlehen? Haben Sie eine Weihnachts-Darlehen =
+m=FCssen bei 1% Wenn ja, f=FCllen Sie bitte das Anmeldeformular below.R=
+eply-To: skygroup.financia211@gmail.com
+
+(1) Name:
+(2) Der Kreditbetrag erforderlich:
+(3) Laufzeit der Darlehen:
+(4) Land:
+(5) Telefon:
+
+=46reundliche Gr=FC=DFe
+Herr Kelly Williams
