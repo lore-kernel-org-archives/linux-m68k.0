@@ -1,68 +1,40 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3 00/77] More fixes, cleanup and modernization for NCR5380 drivers
-Date: Tue, 22 Dec 2015 12:17:38 +1100
-Message-ID: <20151222011737.980475848@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v3 17/77] ncr5380: Keep BSY asserted when entering
+ SELECTION phase
+Date: Tue, 22 Dec 2015 08:01:49 +0100
+Message-ID: <5678F55D.9020200@suse.de>
+References: <20151222011737.980475848@telegraphics.com.au>
+ <20151222011742.635457254@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx2.suse.de ([195.135.220.15]:41953 "EHLO mx2.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750896AbbLVHBw (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 22 Dec 2015 02:01:52 -0500
+In-Reply-To: <20151222011742.635457254@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>
 
+On 12/22/2015 02:17 AM, Finn Thain wrote:
+> NCR5380.c is not compliant with the SCSI-2 standard (at least, not wi=
+th
+> the draft revision 10L that I have to refer to). The selection algori=
+thm
+> in atari_NCR5380.c is correct, so use that.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
 
-Like my previous work on the NCR5380 drivers, this patch series has bug
-fixes, code cleanup and modernization. These drivers suffer from mistakes,
-poor style and neglect and this long series addresses the worst of it,
-covering all ten wrapper drivers and both of the core driver forks. The
-combined size of the drivers is reduced by over 700 LoC.
+Cheers,
 
-This series continues to reduce divergence between the two core driver
-forks, often by copying a bug fix from one to the other. Most patches are
-larger for having to keep the two forks in sync. Making the same change to
-both is churn if one of them is to be removed but neither can be as yet.
-By the end of this series the diff between the two forks is minimal, so it
-becomes clear what caused the fork and what can be done about it.
-
-This patch series did benefit from scripts/checkpatch.pl but not too much.
-Decades ago, these drivers started out with 4-space tabs and if the 80
-column limit were to be strictly enforced now, it would require adding new
-functions and shortening identifiers. I would defer this sort of activity
-until after the fork has been resolved.
-
-All patches to all NCR5380 drivers (x86, ARM, m68k) have been compile-
-tested. The mac_scsi, dmx3191d, g_NCR5380 and atari_scsi modules were
-regression tested on suitable hardware.
-
-Changes since v1:
-- Patch 8 omits a pointless assignment.
-- Patch 10 gets a better error message.
-- Patch 20 drops the WQ_CPU_INTENSIVE flag.
-- Patch 21 adds timing calibration for the register polling loop.
-- Patch 49 is replaced by a new one that removes FLAG_DTC3181E.
-- Patch 72 by Ondrej Zary was added to fix pseudo DMA on 53C400.
-
-Changes since v2:
-- Patch 21 has better calibration with low HZ values.
-- Patch 57 no longer attempts to dereference a NULL pointer on Atari.
-- Patch 66 initializes max_sectors in the host templates.
-- Patches 73 thru 77 by Ondrej Zary were added with additional fixes for
-  53C400-compatible cards.
-
----
- drivers/scsi/Kconfig         |   17 
- drivers/scsi/NCR5380.c       | 2868 +++++++++++++++++++------------------------
- drivers/scsi/NCR5380.h       |   87 -
- drivers/scsi/arm/cumana_1.c  |   31 
- drivers/scsi/arm/oak.c       |   27 
- drivers/scsi/atari_NCR5380.c | 2292 +++++++++++++++-------------------
- drivers/scsi/atari_scsi.c    |  102 -
- drivers/scsi/dmx3191d.c      |   33 
- drivers/scsi/dtc.c           |  115 -
- drivers/scsi/dtc.h           |   45 
- drivers/scsi/g_NCR5380.c     |  408 +++---
- drivers/scsi/g_NCR5380.h     |   66 
- drivers/scsi/mac_scsi.c      |  117 -
- drivers/scsi/pas16.c         |  116 -
- drivers/scsi/pas16.h         |   40 
- drivers/scsi/sun3_scsi.c     |  141 --
- drivers/scsi/t128.c          |  102 -
- drivers/scsi/t128.h          |   39 
- 18 files changed, 2957 insertions(+), 3689 deletions(-)
+Hannes
+--=20
+Dr. Hannes Reinecke		      zSeries & Storage
+hare@suse.de			      +49 911 74053 688
+SUSE LINUX Products GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
+GF: J. Hawn, J. Guild, F. Imend=F6rffer, HRB 16746 (AG N=FCrnberg)
