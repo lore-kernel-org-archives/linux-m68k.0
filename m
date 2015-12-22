@@ -1,17 +1,16 @@
 From: Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 76/77] ncr5380: Fix wait for 53C80 registers registers
- after PDMA
-Date: Tue, 22 Dec 2015 09:08:43 +0100
-Message-ID: <5679050B.8090602@suse.de>
+Subject: Re: [PATCH v3 77/77] ncr5380: Add support for HP C2502
+Date: Tue, 22 Dec 2015 09:09:11 +0100
+Message-ID: <56790527.4010006@suse.de>
 References: <20151222011737.980475848@telegraphics.com.au>
- <20151222011758.695930028@telegraphics.com.au>
+ <20151222011758.956108574@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20151222011758.695930028@telegraphics.com.au>
-Sender: linux-scsi-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20151222011758.956108574@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: Ondrej Zary <linux@rainbow-software.org>
 List-Id: linux-m68k@vger.kernel.org
@@ -19,16 +18,21 @@ List-Id: linux-m68k@vger.kernel.org
 On 12/22/2015 02:18 AM, Finn Thain wrote:
 > From: Ondrej Zary <linux@rainbow-software.org>
 >
-> The check for 53C80 registers accessibility was commented out because
-> it was broken (inverted). Fix and enable it.
+> HP C2502 cards (based on 53C400A chips) use different magic numbers f=
+or
+> software-based I/O address configuration than other cards.
+> The configuration is also extended to allow setting the IRQ.
+>
+> Move the configuration to a new function magic_configure() and move
+> magic the magic numbers into an array. Add new magic numbers for thes=
+e
+> HP cards and hp_c2502 module parameter to use them, e.g.:
+> modprobe g_NCR5380 ncr_irq=3D7 ncr_addr=3D0x280 hp_c2502=3D1
+>
+> Tested with HP C2502 and DTCT-436P.
 >
 > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->
-> ---
->   drivers/scsi/g_NCR5380.c |   37 ++++++-----------------------------=
---
->   1 file changed, 6 insertions(+), 31 deletions(-)
 >
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 
@@ -40,8 +44,3 @@ Dr. Hannes Reinecke		      zSeries & Storage
 hare@suse.de			      +49 911 74053 688
 SUSE LINUX Products GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
 GF: J. Hawn, J. Guild, F. Imend=F6rffer, HRB 16746 (AG N=FCrnberg)
---
-To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
