@@ -1,46 +1,49 @@
-From: Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 77/77] ncr5380: Add support for HP C2502
-Date: Tue, 22 Dec 2015 09:09:11 +0100
-Message-ID: <56790527.4010006@suse.de>
+From: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Subject: Re: [PATCH v3 66/77] ncr5380: Fix soft lockups
+Date: Tue, 22 Dec 2015 11:39:03 +0000
+Message-ID: <20151222113903.06422dbe@lxorguk.ukuu.org.uk>
 References: <20151222011737.980475848@telegraphics.com.au>
- <20151222011758.956108574@telegraphics.com.au>
+ <20151222011755.965510468@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151222011758.956108574@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Ondrej Zary <linux@rainbow-software.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20151222011755.965510468@telegraphics.com.au>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, "Martin K.
+ Petersen" <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org, "James E.J. Bottomley" <JBottomley@odin.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
 
-On 12/22/2015 02:18 AM, Finn Thain wrote:
-> From: Ondrej Zary <linux@rainbow-software.org>
->
-> HP C2502 cards (based on 53C400A chips) use different magic numbers f=
-or
-> software-based I/O address configuration than other cards.
-> The configuration is also extended to allow setting the IRQ.
->
-> Move the configuration to a new function magic_configure() and move
-> magic the magic numbers into an array. Add new magic numbers for thes=
-e
-> HP cards and hp_c2502 module parameter to use them, e.g.:
-> modprobe g_NCR5380 ncr_irq=3D7 ncr_addr=3D0x280 hp_c2502=3D1
->
-> Tested with HP C2502 and DTCT-436P.
->
-> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->
-Reviewed-by: Hannes Reinecke <hare@suse.com>
+On Tue, 22 Dec 2015 12:18:44 +1100
+Finn Thain <fthain@telegraphics.com.au> wrote:
 
-Cheers,
+> Because of the rudimentary design of the chip, it is necessary to poll the
+> SCSI bus signals during PIO and this tends to hog the CPU. The driver will
+> accept new commands while others execute, and this causes a soft lockup
+> because the workqueue item will not terminate until the issue queue is
+> emptied.
+> 
+> When exercising dmx3191d using sequential IO from dd, the driver is sent
+> 512 KiB WRITE commands and 128 KiB READs. For a PIO transfer, the rate is
+> is only about 300 KiB/s, so these are long-running commands. And although
+> PDMA may run at several MiB/s, interrupts are disabled for the duration
+> of the transfer.
+> 
+> Fix the unresponsiveness and soft lockup issues by calling cond_resched()
+> after each command is completed and by limiting max_sectors for drivers
+> that don't implement real DMA.
 
-Hannes
---=20
-Dr. Hannes Reinecke		      zSeries & Storage
-hare@suse.de			      +49 911 74053 688
-SUSE LINUX Products GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
-GF: J. Hawn, J. Guild, F. Imend=F6rffer, HRB 16746 (AG N=FCrnberg)
+Is there a reason for not doing some limiting in the DMA case too. A 512K
+write command even with DMA on a low end 68K box introduces a second of
+latency before another I/O can be scheduled ?
+
+Alan
