@@ -1,50 +1,74 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [PATCH v3 00/77] More fixes, cleanup and modernization for NCR5380 drivers
-Date: Tue, 22 Dec 2015 21:14:30 +0100
-Message-ID: <201512222114.33005.linux@rainbow-software.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v3 66/77] ncr5380: Fix soft lockups
+Date: Wed, 23 Dec 2015 13:42:54 +1300
+Message-ID: <CAOmrzkKit7to8Rp28soAcMG2CtxwWdKhBD2m1zaYLSnD4XnXAg@mail.gmail.com>
 References: <20151222011737.980475848@telegraphics.com.au>
+	<20151222011755.965510468@telegraphics.com.au>
+	<20151222113903.06422dbe@lxorguk.ukuu.org.uk>
+	<alpine.LNX.2.00.1512222347310.23505@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20151222011737.980475848@telegraphics.com.au>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1512222347310.23505@nippy.intranet>
+Sender: linux-scsi-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <JBottomley@odin.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, "James E.J. Bottomley" <JBottomley@odin.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Tuesday 22 December 2015 02:17:38 Finn Thain wrote:
-> 
-> Like my previous work on the NCR5380 drivers, this patch series has bug
-> fixes, code cleanup and modernization. These drivers suffer from mistakes,
-> poor style and neglect and this long series addresses the worst of it,
-> covering all ten wrapper drivers and both of the core driver forks. The
-> combined size of the drivers is reduced by over 700 LoC.
-> 
-> This series continues to reduce divergence between the two core driver
-> forks, often by copying a bug fix from one to the other. Most patches are
-> larger for having to keep the two forks in sync. Making the same change to
-> both is churn if one of them is to be removed but neither can be as yet.
-> By the end of this series the diff between the two forks is minimal, so it
-> becomes clear what caused the fork and what can be done about it.
-> 
-> This patch series did benefit from scripts/checkpatch.pl but not too much.
-> Decades ago, these drivers started out with 4-space tabs and if the 80
-> column limit were to be strictly enforced now, it would require adding new
-> functions and shortening identifiers. I would defer this sort of activity
-> until after the fork has been resolved.
-> 
-> All patches to all NCR5380 drivers (x86, ARM, m68k) have been compile-
-> tested. The mac_scsi, dmx3191d, g_NCR5380 and atari_scsi modules were
-> regression tested on suitable hardware.
+I'd like to think that, too - probably true for the Atari TT SCSI case
+(can do scatter-gather, can do more than one command per LUN). Worse
+for the Falcon SCSI which is the only one I can test (no
+scatter-gather, one command per LUN, interrupt shared with IDE and IDE
+driver locked out while SCSI command handled).
 
-Tested on HP C2502 (53C400A chip), Canon FG2-5202 (53C400 chip) and DTC-3181L (DTCT-436P chip) ISA cards - everything works fine!
+But that only affects balancing of I/O between IDE and SCSI drivers.
+Is that what you are worried about, Alan?
 
-Thanks.
+Happy to test whether limiting max_sectors makes a difference in the DMA case.
 
-Tested-by: Ondrej Zary <linux@rainbow-software.org>
+Cheers,
 
--- 
-Ondrej Zary
+  Michael
+
+
+
+On Wed, Dec 23, 2015 at 2:47 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+>
+> On Tue, 22 Dec 2015, One Thousand Gnomes wrote:
+>
+>> On Tue, 22 Dec 2015 12:18:44 +1100 Finn Thain
+>> <fthain@telegraphics.com.au> wrote:
+>>
+>> > Because of the rudimentary design of the chip, it is necessary to poll
+>> > the SCSI bus signals during PIO and this tends to hog the CPU. The
+>> > driver will accept new commands while others execute, and this causes
+>> > a soft lockup because the workqueue item will not terminate until the
+>> > issue queue is emptied.
+>> >
+>> > When exercising dmx3191d using sequential IO from dd, the driver is
+>> > sent 512 KiB WRITE commands and 128 KiB READs. For a PIO transfer, the
+>> > rate is is only about 300 KiB/s, so these are long-running commands.
+>> > And although PDMA may run at several MiB/s, interrupts are disabled
+>> > for the duration of the transfer.
+>> >
+>> > Fix the unresponsiveness and soft lockup issues by calling
+>> > cond_resched() after each command is completed and by limiting
+>> > max_sectors for drivers that don't implement real DMA.
+>>
+>> Is there a reason for not doing some limiting in the DMA case too. A
+>> 512K write command even with DMA on a low end 68K box introduces a
+>> second of latency before another I/O can be scheduled ?
+>
+> The DMA case is the atari_scsi case. I'd like to think that atari_scsi
+> would have only the latency issues that might be expected from any SCSI-2
+> host adapter driver.
+>
+> Unlike PDMA, interrupts are not disabled for these DMA transfers. Note
+> that this patch isn't really relevant to DMA, because the main loop
+> iterates only when done == 0, that is, !hostdata->dmalen.
+>
+> --
+>
+>>
+>> Alan
+>
