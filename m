@@ -1,19 +1,30 @@
-From: "Chris Colin Weir" <mcortes@municoquimbo.cl>
-Subject: Hello!!
-Date: Fri, 01 Jan 2016 23:29:40 -1200
-Message-ID: <20160101181928.3EF814CD2541@tritan.municoquimbo.cl>
-Reply-To: chriscolin96@126.com
+From: "Jeff Skoll" <s_w9gc9x@uni-kassel.de>
+Subject: Charity Donation
+Date: Sat, 02 Jan 2016 10:58:59 -0500
+Message-ID: <auto-000000175347@mailadmin.uni-kassel.de>
+Reply-To: jeff.skoll@skollcharity.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from tritan.municoquimbo.cl ([200.54.193.62]:36244 "EHLO
-	tritan.municoquimbo.cl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752161AbcAATkF convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 1 Jan 2016 14:40:05 -0500
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <mcortes@municoquimbo.cl>
+To: Me <s_w9gc9x@uni-kassel.de>
 
-Chris Colin Weir Are Donating 850.000.00 to you. Send NAME*..ADDRESS*..MOBILE*..AGE*..SEX*..COUNTRY
+Hi,
+My name is Jeffrey Skoll, a philanthropist and the founder of one of th=
+e largest private foundations in the world. I believe strongly in =E2=80=
+=98giving while living.=E2=80=99 I had one idea that never changed in m=
+y mind =E2=80=94 that you should use your wealth to help people and I h=
+ave decided to secretly give USD2.498 Million to a randomly selected in=
+dividual. On receipt of this email, you should count yourself as the in=
+dividual. Kindly get back to me at your earliest convenience, so I know=
+ your email address is valid.
+
+Visit the web page to know more about me: http://www.theglobeandmail.co=
+m/news/national/meet-the-canadian-billionaire-whos-giving-it-all-away/a=
+rticle4209888/ or you can read an article of me on Wikipedia.
+
+Regards,
+Jeffrey Skoll.
