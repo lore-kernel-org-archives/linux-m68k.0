@@ -1,38 +1,44 @@
-From: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH] serial: Remove 68328 driver
-Date: Mon, 4 Jan 2016 10:30:31 +0000
-Message-ID: <20160104103031.655b6f61@lxorguk.ukuu.org.uk>
-References: <1449830170-15096-1-git-send-email-frederik.voelkel@fau.de>
-	<1450438103-1059-1-git-send-email-frederik.voelkel@fau.de>
-	<CAMuHMdW6r_QszpXTj1FLtOfjzPqDCU7UcF6OT+7MgW8uo01KYA@mail.gmail.com>
-	<5689FD36.4020609@westnet.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] m68k: fix build failure
+Date: Mon,  4 Jan 2016 16:27:42 +0530
+Message-ID: <1451905062-29561-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from lxorguk.ukuu.org.uk ([81.2.110.251]:43797 "EHLO
-	lxorguk.ukuu.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752624AbcADKa4 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Jan 2016 05:30:56 -0500
-In-Reply-To: <5689FD36.4020609@westnet.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Frederik =?UTF-8?B?VsO2bGtlbA==?= <frederik.voelkel@fau.de>, Jiri Slaby <jslaby@suse.com>, Greg KH <gregkh@linuxfoundation.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-kernel@i4.cs.fau.de, Lukas Braun <lukas.braun@fau.de>, uClinux development list <uclinux-dev@uclinux.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>
 
-On Mon, 4 Jan 2016 15:03:50 +1000
-Greg Ungerer <gregungerer@westnet.com.au> wrote:
+The defconfig build of m68k was failing with the error:
+implicit declaration of function '__pfn_to_phys'
 
-> If 68328serial.c is removed is there any point keeping the
-> architecture support for 68328 platforms?
-> 
-> The 68328serial.c provides pretty much the only type of console
-> that can be used on these devices. They are largely useless
-> without this
+Other architectures have added <asm/memory.h>, but if we do so here then
+we will also get redeclaration of some other functions. So it is better
+to copy these macros into page_mm.h.
 
-Probably we should - unless someone wants to stand up and say "actually
-I'm using this with current kernels, need it, and I'll maintain it"
+Fixes: 0a3c3bf11240 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
 
-Somehow I doubt anyone is.
+m68k defconfig build log of next-20160104 is at:
+https://travis-ci.org/sudipm-mukherjee/parport/jobs/100068521
 
-Alan
+ arch/m68k/include/asm/page_mm.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
+index e7a1946..63aa14d 100644
+--- a/arch/m68k/include/asm/page_mm.h
++++ b/arch/m68k/include/asm/page_mm.h
+@@ -165,6 +165,9 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
+ 	((__p) - pgdat->node_mem_map) + pgdat->node_start_pfn;		\
+ })
+ 
++#define __phys_to_pfn(paddr)	((unsigned long)((paddr) >> PAGE_SHIFT))
++#define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
++
+ #define virt_addr_valid(kaddr)	((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
+ #define pfn_valid(pfn)		virt_addr_valid(pfn_to_virt(pfn))
+ 
+-- 
+1.9.1
