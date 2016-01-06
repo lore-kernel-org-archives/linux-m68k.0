@@ -1,30 +1,33 @@
-From: "Skoll, Jeff" <teb43595@stud.uni-stuttgart.de>
-Subject: Charity/Donation
-Date: Tue, 05 Jan 2016 19:17:17 -0500
-Message-ID: <auto-000204352043@uni-stuttgart.de>
-Reply-To: jeff.skoll@skollcharity.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Geliang Tang <geliangtang@163.com>
+Subject: [PATCH] zorro: use kobj_to_dev()
+Date: Wed,  6 Jan 2016 23:28:39 +0800
+Message-ID: <c7cde940d70112539785968854715fd55af63ecd.1452094082.git.geliangtang@163.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Me <teb43595@stud.uni-stuttgart.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Geliang Tang <geliangtang@163.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi,
-My name is Jeffrey Skoll, a philanthropist and the founder of one of th=
-e largest private foundations in the world. I believe strongly in =E2=80=
-=98giving while living.=E2=80=99 I had one idea that never changed in m=
-y mind =E2=80=94 that you should use your wealth to help people and I h=
-ave decided to secretly give USD2.498 Million to a randomly selected in=
-dividual. On receipt of this email, you should count yourself as the in=
-dividual. Kindly get back to me at your earliest convenience, so I know=
- your email address is valid.
+Use kobj_to_dev() instead of open-coding it.
 
-Visit the web page to know more about me: http://www.theglobeandmail.co=
-m/news/national/meet-the-canadian-billionaire-whos-giving-it-all-away/a=
-rticle4209888/ or you can read an article of me on Wikipedia.
+Signed-off-by: Geliang Tang <geliangtang@163.com>
+---
+ drivers/zorro/zorro-sysfs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Regards,
-Jeffrey Skoll.
+diff --git a/drivers/zorro/zorro-sysfs.c b/drivers/zorro/zorro-sysfs.c
+index 36b210f..9282dbf 100644
+--- a/drivers/zorro/zorro-sysfs.c
++++ b/drivers/zorro/zorro-sysfs.c
+@@ -65,8 +65,7 @@ static ssize_t zorro_read_config(struct file *filp, struct kobject *kobj,
+ 				 struct bin_attribute *bin_attr,
+ 				 char *buf, loff_t off, size_t count)
+ {
+-	struct zorro_dev *z = to_zorro_dev(container_of(kobj, struct device,
+-					   kobj));
++	struct zorro_dev *z = to_zorro_dev(kobj_to_dev(kobj));
+ 	struct ConfigDev cd;
+ 
+ 	/* Construct a ConfigDev */
+-- 
+2.5.0
