@@ -1,33 +1,35 @@
-From: Geliang Tang <geliangtang@163.com>
-Subject: [PATCH] zorro: use kobj_to_dev()
-Date: Wed,  6 Jan 2016 23:28:39 +0800
-Message-ID: <c7cde940d70112539785968854715fd55af63ecd.1452094082.git.geliangtang@163.com>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v4 00/78] More fixes, cleanup and modernization for NCR5380 drivers
+Date: Wed, 06 Jan 2016 21:53:07 -0500
+Message-ID: <yq17fjmayng.fsf@sermon.lab.mkp.net>
+References: <20160103050501.042035135@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from userp1040.oracle.com ([156.151.31.81]:46766 "EHLO
+	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752254AbcAGCxQ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jan 2016 21:53:16 -0500
+In-Reply-To: <20160103050501.042035135@telegraphics.com.au> (Finn Thain's
+	message of "Sun, 03 Jan 2016 16:05:01 +1100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Geliang Tang <geliangtang@163.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Use kobj_to_dev() instead of open-coding it.
+>>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-Signed-off-by: Geliang Tang <geliangtang@163.com>
----
- drivers/zorro/zorro-sysfs.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Finn> Like my previous work on the NCR5380 drivers, this patch series
+Finn> has bug fixes, code cleanup and modernization. These drivers
+Finn> suffer from mistakes, poor style and neglect and this long series
+Finn> addresses the worst of it, covering all ten wrapper drivers and
+Finn> both of the core driver forks. The combined size of the drivers is
+Finn> reduced by over 700 LoC.
 
-diff --git a/drivers/zorro/zorro-sysfs.c b/drivers/zorro/zorro-sysfs.c
-index 36b210f..9282dbf 100644
---- a/drivers/zorro/zorro-sysfs.c
-+++ b/drivers/zorro/zorro-sysfs.c
-@@ -65,8 +65,7 @@ static ssize_t zorro_read_config(struct file *filp, struct kobject *kobj,
- 				 struct bin_attribute *bin_attr,
- 				 char *buf, loff_t off, size_t count)
- {
--	struct zorro_dev *z = to_zorro_dev(container_of(kobj, struct device,
--					   kobj));
-+	struct zorro_dev *z = to_zorro_dev(kobj_to_dev(kobj));
- 	struct ConfigDev cd;
- 
- 	/* Construct a ConfigDev */
+I have staged this for inclusion in a separate branch. Will pull it into
+the main queue unless kbuild complains.
+
+http://git.kernel.org/cgit/linux/kernel/git/mkp/scsi.git/log/?h=4.5/ncr5380
+
 -- 
-2.5.0
+Martin K. Petersen	Oracle Linux Engineering
