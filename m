@@ -1,35 +1,40 @@
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v4 00/78] More fixes, cleanup and modernization for NCR5380 drivers
-Date: Wed, 06 Jan 2016 21:53:07 -0500
-Message-ID: <yq17fjmayng.fsf@sermon.lab.mkp.net>
-References: <20160103050501.042035135@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH -next] m68k: Declare __pfn_to_phys() for nommu case to fix build errors
+Date: Sat,  9 Jan 2016 13:38:02 -0800
+Message-ID: <1452375482-23994-1-git-send-email-linux__27320.0140837163$1452375519$gmane$org@roeck-us.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:46766 "EHLO
-	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752254AbcAGCxQ (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Jan 2016 21:53:16 -0500
-In-Reply-To: <20160103050501.042035135@telegraphics.com.au> (Finn Thain's
-	message of "Sun, 03 Jan 2016 16:05:01 +1100")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Dan Williams <dan.j.williams@intel.com>, Andrew Morton <akpm@linux-foundation.org>
 
->>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
+__pfn_to_phys() was introduced with commit 8b79eb6f5b53e ("libnvdimm, pfn,
+pmem: allocate memmap array in persistent memory") but not declared for
+m68k in nommu configurations. This results in the following build error.
 
-Finn> Like my previous work on the NCR5380 drivers, this patch series
-Finn> has bug fixes, code cleanup and modernization. These drivers
-Finn> suffer from mistakes, poor style and neglect and this long series
-Finn> addresses the worst of it, covering all ten wrapper drivers and
-Finn> both of the core driver forks. The combined size of the drivers is
-Finn> reduced by over 700 LoC.
+mm/page_alloc.c: In function 'memmap_init_zone':
+mm/page_alloc.c:4610:9: error: implicit declaration of function '__pfn_to_phys'
 
-I have staged this for inclusion in a separate branch. Will pull it into
-the main queue unless kbuild complains.
+Fixes: 8b79eb6f5b53e ("libnvdimm, pfn, pmem: allocate memmap array in persistent memory")
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/m68k/include/asm/page_no.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-http://git.kernel.org/cgit/linux/kernel/git/mkp/scsi.git/log/?h=4.5/ncr5380
-
+diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+index fa7f32d9836b..f389f575b93f 100644
+--- a/arch/m68k/include/asm/page_no.h
++++ b/arch/m68k/include/asm/page_no.h
+@@ -19,6 +19,8 @@ extern unsigned long memory_end;
+ #define __pa(vaddr)		((unsigned long)(vaddr))
+ #define __va(paddr)		((void *)(paddr))
+ 
++#define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
++
+ #define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
+ #define pfn_to_virt(pfn)	__va((pfn) << PAGE_SHIFT)
+ 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.1.4
