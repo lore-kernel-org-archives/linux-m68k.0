@@ -1,40 +1,39 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH -next] m68k: Declare __pfn_to_phys() for nommu case to fix build errors
-Date: Sat,  9 Jan 2016 13:38:02 -0800
-Message-ID: <1452375482-23994-1-git-send-email-linux__27320.0140837163$1452375519$gmane$org@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: fix build failure
+Date: Sun, 10 Jan 2016 10:35:37 +0100
+Message-ID: <CAMuHMdUHD-ndoenW9WUwqgWQswS_nYi67oF7tFmxgMa7mGYcWg@mail.gmail.com>
+References: <1451905062-29561-1-git-send-email-sudipm.mukherjee@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1451905062-29561-1-git-send-email-sudipm.mukherjee@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Dan Williams <dan.j.williams@intel.com>, Andrew Morton <akpm@linux-foundation.org>
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>
 
-__pfn_to_phys() was introduced with commit 8b79eb6f5b53e ("libnvdimm, pfn,
-pmem: allocate memmap array in persistent memory") but not declared for
-m68k in nommu configurations. This results in the following build error.
+On Mon, Jan 4, 2016 at 11:57 AM, Sudip Mukherjee
+<sudipm.mukherjee@gmail.com> wrote:
+> The defconfig build of m68k was failing with the error:
+> implicit declaration of function '__pfn_to_phys'
+>
+> Other architectures have added <asm/memory.h>, but if we do so here then
+> we will also get redeclaration of some other functions. So it is better
+> to copy these macros into page_mm.h.
+>
+> Fixes: 0a3c3bf11240 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 
-mm/page_alloc.c: In function 'memmap_init_zone':
-mm/page_alloc.c:4610:9: error: implicit declaration of function '__pfn_to_phys'
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Fixes: 8b79eb6f5b53e ("libnvdimm, pfn, pmem: allocate memmap array in persistent memory")
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/m68k/include/asm/page_no.h | 2 ++
- 1 file changed, 2 insertions(+)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-index fa7f32d9836b..f389f575b93f 100644
---- a/arch/m68k/include/asm/page_no.h
-+++ b/arch/m68k/include/asm/page_no.h
-@@ -19,6 +19,8 @@ extern unsigned long memory_end;
- #define __pa(vaddr)		((unsigned long)(vaddr))
- #define __va(paddr)		((void *)(paddr))
- 
-+#define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
-+
- #define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
- #define pfn_to_virt(pfn)	__va((pfn) << PAGE_SHIFT)
- 
--- 
-2.1.4
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
