@@ -1,82 +1,48 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/atari, m68k/sun3: Fix SCSI platform device
- registration when driver is modular
-Date: Sun, 10 Jan 2016 14:00:14 +0100
-Message-ID: <CAMuHMdVmqtErVxyP=YRPBE2PMx6QBgiWEd0ra3QbFhcptm4beg@mail.gmail.com>
-References: <alpine.LNX.2.00.1512181218530.12965@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] m68k: Provide __phys_to_pfn() and __pfn_to_phys()
+Date: Sun, 10 Jan 2016 14:07:23 +0100
+Message-ID: <1452431243-2586-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ig0-f172.google.com ([209.85.213.172]:37948 "EHLO
-	mail-ig0-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1755290AbcAJNAO (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Jan 2016 08:00:14 -0500
-Received: by mail-ig0-f172.google.com with SMTP id mw1so97385542igb.1
-        for <linux-m68k@vger.kernel.org>; Sun, 10 Jan 2016 05:00:14 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1512181218530.12965@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Greg Ungerer <gerg@uclinux.org>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
+Cc: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Sudip Mukherjee <sudip@vectorindia.org>, Dan Williams <dan.j.williams@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Finn,
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-On Fri, Dec 18, 2015 at 2:44 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Fixes: 3ff228af84b5 ("atari_scsi: Convert to platform device")
-> Fixes: 0d31f8759109 ("sun3_scsi: Convert to platform device")
-> Reported-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+The defconfig build of m68k was failing with the error:
+implicit declaration of function '__pfn_to_phys'
 
-Thanks, applied and queued for v4.5.
+Other architectures have added <asm/memory.h>, but if we do so here then
+we will also get redeclaration of some other functions. So it is better
+to copy these macros into page.h.
 
-> Index: linux/arch/m68k/atari/config.c
-> ===================================================================
-> --- linux.orig/arch/m68k/atari/config.c 2015-12-18 12:06:53.000000000 +1100
-> +++ linux/arch/m68k/atari/config.c      2015-12-18 12:07:00.000000000 +1100
-> @@ -858,7 +858,7 @@ static struct platform_device *atari_net
->  };
->  #endif /* CONFIG_ATARI_ETHERNEC */
->
-> -#ifdef CONFIG_ATARI_SCSI
-> +#if IS_ENABLED(CONFIG_ATARI_SCSI)
->  static const struct resource atari_scsi_st_rsrc[] __initconst = {
->         {
->                 .flags = IORESOURCE_IRQ,
-> @@ -910,7 +910,7 @@ int __init atari_platform_init(void)
->         }
->  #endif
->
-> -#ifdef CONFIG_ATARI_SCSI
-> +#if IS_ENABLED(CONFIG_ATARI_SCSI)
->         if (ATARIHW_PRESENT(ST_SCSI))
->                 platform_device_register_simple("atari_scsi", -1,
->                         atari_scsi_st_rsrc, ARRAY_SIZE(atari_scsi_st_rsrc));
-> Index: linux/arch/m68k/sun3/config.c
-> ===================================================================
-> --- linux.orig/arch/m68k/sun3/config.c  2015-12-18 12:06:53.000000000 +1100
-> +++ linux/arch/m68k/sun3/config.c       2015-12-18 12:07:00.000000000 +1100
-> @@ -171,7 +171,7 @@ static void __init sun3_sched_init(irq_h
->          intersil_clear();
->  }
->
-> -#ifdef CONFIG_SUN3_SCSI
-> +#if IS_ENABLED(CONFIG_SUN3_SCSI)
->
->  static const struct resource sun3_scsi_vme_rsrc[] __initconst = {
->         {
+Fixes: 0a3c3bf11240 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net> (m68knommu)
+[geert: Apply to page.h instead of page_mm.h to cover nommu, reword]
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+I've applied and queued this for v4.5, to replace commit
+7a6101c076fa6ae6 ("m68k: fix build failure") in Andrew's mm tree.
 
-Greg: There's a similar issue on Coldfire with CONFIG_FEC.
+ arch/m68k/include/asm/page.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-We also have an #ifdef for tristate BLK_DEV_FD, but as that one depends on
-broken, we don't care ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
+index 38b024a0b0451ba7..430d4d54c88383a9 100644
+--- a/arch/m68k/include/asm/page.h
++++ b/arch/m68k/include/asm/page.h
+@@ -48,6 +48,9 @@ extern unsigned long _ramend;
+ #include <asm/page_no.h>
+ #endif
+ 
++#define __phys_to_pfn(paddr)	((unsigned long)((paddr) >> PAGE_SHIFT))
++#define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
++
+ #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+ 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ 
+-- 
+1.9.1
