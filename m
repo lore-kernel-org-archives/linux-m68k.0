@@ -1,48 +1,31 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Provide __phys_to_pfn() and __pfn_to_phys()
-Date: Sun, 10 Jan 2016 14:07:23 +0100
-Message-ID: <1452431243-2586-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH] zorro: use kobj_to_dev()
+Date: Sun, 10 Jan 2016 14:08:43 +0100
+Message-ID: <CAMuHMdX44MiektD8ybZU0nqbvkemXABVP29seWAqAX0PXN-nJw@mail.gmail.com>
+References: <c7cde940d70112539785968854715fd55af63ecd.1452094082.git.geliangtang@163.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <c7cde940d70112539785968854715fd55af63ecd.1452094082.git.geliangtang@163.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
-Cc: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Sudip Mukherjee <sudip@vectorindia.org>, Dan Williams <dan.j.williams@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Geliang Tang <geliangtang@163.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+On Wed, Jan 6, 2016 at 4:28 PM, Geliang Tang <geliangtang@163.com> wrote:
+> Use kobj_to_dev() instead of open-coding it.
+>
+> Signed-off-by: Geliang Tang <geliangtang@163.com>
 
-The defconfig build of m68k was failing with the error:
-implicit declaration of function '__pfn_to_phys'
+Thanks, applied and queued for v4.6.
 
-Other architectures have added <asm/memory.h>, but if we do so here then
-we will also get redeclaration of some other functions. So it is better
-to copy these macros into page.h.
+Gr{oetje,eeting}s,
 
-Fixes: 0a3c3bf11240 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net> (m68knommu)
-[geert: Apply to page.h instead of page_mm.h to cover nommu, reword]
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-I've applied and queued this for v4.5, to replace commit
-7a6101c076fa6ae6 ("m68k: fix build failure") in Andrew's mm tree.
+                        Geert
 
- arch/m68k/include/asm/page.h | 3 +++
- 1 file changed, 3 insertions(+)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
-index 38b024a0b0451ba7..430d4d54c88383a9 100644
---- a/arch/m68k/include/asm/page.h
-+++ b/arch/m68k/include/asm/page.h
-@@ -48,6 +48,9 @@ extern unsigned long _ramend;
- #include <asm/page_no.h>
- #endif
- 
-+#define __phys_to_pfn(paddr)	((unsigned long)((paddr) >> PAGE_SHIFT))
-+#define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
-+
- #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
- 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
- 
--- 
-1.9.1
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
