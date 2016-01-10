@@ -1,47 +1,78 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: fix build failure
-Date: Sun, 10 Jan 2016 10:37:14 +0100
-Message-ID: <CAMuHMdV5KYsMXdtQ+NGrjVezG3rENwheTFouPxmqPO=vrTNCLQ@mail.gmail.com>
-References: <1451905062-29561-1-git-send-email-sudipm.mukherjee@gmail.com>
-	<CAMuHMdUHD-ndoenW9WUwqgWQswS_nYi67oF7tFmxgMa7mGYcWg@mail.gmail.com>
+Subject: Re: [PATCH -next] m68k: Declare __pfn_to_phys() for nommu case to fix
+ build errors
+Date: Sun, 10 Jan 2016 10:54:34 +0100
+Message-ID: <CAMuHMdWRZrQawxLXSkXri7XpLArsj6Vgwv9gnEmwCc8+7NMgvw@mail.gmail.com>
+References: <1452375482-23994-1-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUHD-ndoenW9WUwqgWQswS_nYi67oF7tFmxgMa7mGYcWg@mail.gmail.com>
+In-Reply-To: <1452375482-23994-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, Andrew Morton <akpm@linux-foundation.org>
 
-On Sun, Jan 10, 2016 at 10:35 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Jan 4, 2016 at 11:57 AM, Sudip Mukherjee
-> <sudipm.mukherjee@gmail.com> wrote:
->> The defconfig build of m68k was failing with the error:
->> implicit declaration of function '__pfn_to_phys'
->>
->> Other architectures have added <asm/memory.h>, but if we do so here then
->> we will also get redeclaration of some other functions. So it is better
->> to copy these macros into page_mm.h.
->>
->> Fixes: 0a3c3bf11240 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+Hi G=C3=BCnther,
+
+Thanks for reporting!
+
+On Sat, Jan 9, 2016 at 10:38 PM, Guenter Roeck <linux@roeck-us.net> wro=
+te:
+> __pfn_to_phys() was introduced with commit 8b79eb6f5b53e ("libnvdimm,=
+ pfn,
+
+Was it?
+
+> pmem: allocate memmap array in persistent memory") but not declared f=
+or
+> m68k in nommu configurations. This results in the following build err=
+or.
+
+It used to fail on m68k with mmu, too, cfr. (badly-described) commit
+7a6101c076fa6ae6 ("m68k: fix build failure").
+
+> mm/page_alloc.c: In function 'memmap_init_zone':
+> mm/page_alloc.c:4610:9: error: implicit declaration of function '__pf=
+n_to_phys'
 >
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: 8b79eb6f5b53e ("libnvdimm, pfn, pmem: allocate memmap array in=
+ persistent memory")
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  arch/m68k/include/asm/page_no.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/=
+page_no.h
+> index fa7f32d9836b..f389f575b93f 100644
+> --- a/arch/m68k/include/asm/page_no.h
+> +++ b/arch/m68k/include/asm/page_no.h
+> @@ -19,6 +19,8 @@ extern unsigned long memory_end;
+>  #define __pa(vaddr)            ((unsigned long)(vaddr))
+>  #define __va(paddr)            ((void *)(paddr))
+>
+> +#define __pfn_to_phys(pfn)     PFN_PHYS(pfn)
+> +
+>  #define virt_to_pfn(kaddr)     (__pa(kaddr) >> PAGE_SHIFT)
+>  #define pfn_to_virt(pfn)       __va((pfn) << PAGE_SHIFT)
 
-Or should I take this through the m68k tree? It's getting a bit late for
-adding new v4.5 stuff...
-
-I see it's already in mm.
+To avoid adding the same line(s) to page_mm.h and page_no.h, I'm gonna
+apply Sudip's patch to page.h instead of page_mm.h.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
                                 -- Linus Torvalds
