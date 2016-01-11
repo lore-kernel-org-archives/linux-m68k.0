@@ -1,62 +1,94 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH parisc,frv,m68k] timerfd: Fix timeout values with
- CONFIG_TIME_LOW_RES=y
-Date: Sun, 10 Jan 2016 21:57:39 +0100
-Message-ID: <20160110205739.GA21713@p100.box>
-References: <20160104222757.GA969@p100.box>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] m68k/atari, m68k/sun3: Fix SCSI platform device
+ registration when driver is modular
+Date: Mon, 11 Jan 2016 10:13:49 +1000
+Message-ID: <5692F3BD.40408@uclinux.org>
+References: <alpine.LNX.2.00.1512181218530.12965@nippy.intranet>
+ <CAMuHMdVmqtErVxyP=YRPBE2PMx6QBgiWEd0ra3QbFhcptm4beg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160104222757.GA969@p100.box>
+Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:40242
+	"EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1757375AbcAKANS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 10 Jan 2016 19:13:18 -0500
+In-Reply-To: <CAMuHMdVmqtErVxyP=YRPBE2PMx6QBgiWEd0ra3QbFhcptm4beg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-parisc@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On architectures where CONFIG_TIME_LOW_RES is set (currently parisc,
-m68k, frv) calling timerfd_settime() to set a timeout and directly
-afterwards calling timerfd_gettime() to get the remaining time shows a
-behaviour that the remaining time can be higher than the originally set
-timeout.
+Hi Geert,
 
-Here is an example showing the problem, that the nsec value of it_value
-is higher than the set nsec value: 
-  timerfd_settime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=100000000) 
-  timerfd_gettime: interval (sec=0, nsec=100000000) it_value (sec=0, nsec=103029949) 
+On 10/01/16 23:00, Geert Uytterhoeven wrote:
+> Hi Finn,
+> 
+> On Fri, Dec 18, 2015 at 2:44 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+>> Fixes: 3ff228af84b5 ("atari_scsi: Convert to platform device")
+>> Fixes: 0d31f8759109 ("sun3_scsi: Convert to platform device")
+>> Reported-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> 
+> Thanks, applied and queued for v4.5.
+> 
+>> Index: linux/arch/m68k/atari/config.c
+>> ===================================================================
+>> --- linux.orig/arch/m68k/atari/config.c 2015-12-18 12:06:53.000000000 +1100
+>> +++ linux/arch/m68k/atari/config.c      2015-12-18 12:07:00.000000000 +1100
+>> @@ -858,7 +858,7 @@ static struct platform_device *atari_net
+>>  };
+>>  #endif /* CONFIG_ATARI_ETHERNEC */
+>>
+>> -#ifdef CONFIG_ATARI_SCSI
+>> +#if IS_ENABLED(CONFIG_ATARI_SCSI)
+>>  static const struct resource atari_scsi_st_rsrc[] __initconst = {
+>>         {
+>>                 .flags = IORESOURCE_IRQ,
+>> @@ -910,7 +910,7 @@ int __init atari_platform_init(void)
+>>         }
+>>  #endif
+>>
+>> -#ifdef CONFIG_ATARI_SCSI
+>> +#if IS_ENABLED(CONFIG_ATARI_SCSI)
+>>         if (ATARIHW_PRESENT(ST_SCSI))
+>>                 platform_device_register_simple("atari_scsi", -1,
+>>                         atari_scsi_st_rsrc, ARRAY_SIZE(atari_scsi_st_rsrc));
+>> Index: linux/arch/m68k/sun3/config.c
+>> ===================================================================
+>> --- linux.orig/arch/m68k/sun3/config.c  2015-12-18 12:06:53.000000000 +1100
+>> +++ linux/arch/m68k/sun3/config.c       2015-12-18 12:07:00.000000000 +1100
+>> @@ -171,7 +171,7 @@ static void __init sun3_sched_init(irq_h
+>>          intersil_clear();
+>>  }
+>>
+>> -#ifdef CONFIG_SUN3_SCSI
+>> +#if IS_ENABLED(CONFIG_SUN3_SCSI)
+>>
+>>  static const struct resource sun3_scsi_vme_rsrc[] __initconst = {
+>>         {
+> 
+> Greg: There's a similar issue on Coldfire with CONFIG_FEC.
 
-This happens because in hrtimer_start_range_ns() the expiry time is
-rounded to the next jiffies period to avoid short timeouts. When running
-with HZ=250 this is 4ms which can be seen in the example above.
+Thanks, I'll fix and postr a patch here.
 
-This behaviour confuses userspace programs. For example, the debian
-liblinux-fd-perl and libnanomsg-raw-perl packges fail to build because
-the timeout is higher than expected.
+Regards
+Greg
 
-Fix this problem by subtracting the value added by
-hrtimer_start_range_ns() before returning the timeout back to userspace.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
 
-diff --git a/fs/timerfd.c b/fs/timerfd.c
-index b94fa6c..098ac0a 100644
---- a/fs/timerfd.c
-+++ b/fs/timerfd.c
-@@ -152,8 +152,17 @@ static ktime_t timerfd_get_remaining(struct timerfd_ctx *ctx)
- 
- 	if (isalarm(ctx))
- 		remaining = alarm_expires_remaining(&ctx->t.alarm);
--	else
-+	else {
- 		remaining = hrtimer_expires_remaining(&ctx->t.tmr);
-+#ifdef CONFIG_TIME_LOW_RES
-+		/* Expiry time was rounded up in hrtimer_start_range_ns()
-+		 * to the next jiffies period to avoid short timeouts.
-+		 * Subtract it here again to avoid userspace seeing higher
-+		 * values than originally programmed. */
-+		if (!(ctx->settime_flags & TFD_TIMER_ABSTIME))
-+			remaining.tv64 -= hrtimer_resolution;
-+#endif
-+	}
- 
- 	return remaining.tv64 < 0 ? ktime_set(0, 0): remaining;
- }
+> We also have an #ifdef for tristate BLK_DEV_FD, but as that one depends on
+> broken, we don't care ;-)
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
