@@ -1,51 +1,67 @@
-From: Peter Hurley <peter@hurleysoftware.com>
-Subject: Re: [PATCH] serial: Remove 68328 driver
-Date: Mon, 11 Jan 2016 09:57:12 -0800
-Message-ID: <5693ECF8.9020408@hurleysoftware.com>
-References: <1449830170-15096-1-git-send-email-frederik.voelkel@fau.de>
- <1450438103-1059-1-git-send-email-frederik.voelkel@fau.de>
- <CAMuHMdW6r_QszpXTj1FLtOfjzPqDCU7UcF6OT+7MgW8uo01KYA@mail.gmail.com>
- <5689FD36.4020609@westnet.com.au>
- <20160104103031.655b6f61@lxorguk.ukuu.org.uk> <568A530F.8020807@uclinux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.5
+Date: Mon, 11 Jan 2016 20:36:38 +0100
+Message-ID: <1452540998-8715-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pa0-f43.google.com ([209.85.220.43]:33178 "EHLO
-	mail-pa0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757307AbcAKR5P (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jan 2016 12:57:15 -0500
-Received: by mail-pa0-f43.google.com with SMTP id cy9so324757353pac.0
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Jan 2016 09:57:15 -0800 (PST)
-In-Reply-To: <568A530F.8020807@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, =?UTF-8?Q?Frederik_V=c3=b6lkel?= <frederik.voelkel@fau.de>, Jiri Slaby <jslaby@suse.com>, Greg KH <gregkh@linuxfoundation.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-kernel@i4.cs.fau.de, Lukas Braun <lukas.braun@fau.de>, uClinux development list <uclinux-dev@uclinux.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 01/04/2016 03:10 AM, Greg Ungerer wrote:
-> On 04/01/16 20:30, One Thousand Gnomes wrote:
->> On Mon, 4 Jan 2016 15:03:50 +1000
->> Greg Ungerer <gregungerer@westnet.com.au> wrote:
->>
->>> If 68328serial.c is removed is there any point keeping the
->>> architecture support for 68328 platforms?
->>>
->>> The 68328serial.c provides pretty much the only type of console
->>> that can be used on these devices. They are largely useless
->>> without this
->>
->> Probably we should - unless someone wants to stand up and say "actually
->> I'm using this with current kernels, need it, and I'll maintain it"
->>
->> Somehow I doubt anyone is.
-> 
-> Yep, I suspect you are right.
-> I can't even remember the last time a patch or improvement
-> for 68328 came past me. Same goes for 68360 cpu/platform
-> as well.
+	Hi Linus,
 
-And none of it builds (and there's no build coverage in arch/m68k/configs)
+The following changes since commit 1ec218373b8ebda821aec00bb156a9c94fad9cd4:
 
-Regards,
-Peter Hurley
+  Linux 4.4-rc2 (2015-11-22 16:45:59 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+
+for you to fetch changes up to eb37bc3f85b69f529d2ad06c41fad8dedd654c76:
+
+  m68k: Provide __phys_to_pfn() and __pfn_to_phys() (2016-01-10 13:56:40 +0100)
+
+----------------------------------------------------------------
+Finn Thain (1):
+      m68k/atari, m68k/sun3: Fix SCSI platform device registration when driver is modular
+
+Geert Uytterhoeven (2):
+      m68k/mac: Kill psc_present
+      m68k/defconfig: Update defconfigs for v4.4-rc1
+
+Sudip Mukherjee (1):
+      m68k: Provide __phys_to_pfn() and __pfn_to_phys()
+
+ arch/m68k/atari/config.c             | 4 ++--
+ arch/m68k/configs/amiga_defconfig    | 4 ++++
+ arch/m68k/configs/apollo_defconfig   | 5 +++++
+ arch/m68k/configs/atari_defconfig    | 4 ++++
+ arch/m68k/configs/bvme6000_defconfig | 4 ++++
+ arch/m68k/configs/hp300_defconfig    | 5 +++++
+ arch/m68k/configs/mac_defconfig      | 5 +++++
+ arch/m68k/configs/multi_defconfig    | 5 +++++
+ arch/m68k/configs/mvme147_defconfig  | 4 ++++
+ arch/m68k/configs/mvme16x_defconfig  | 4 ++++
+ arch/m68k/configs/q40_defconfig      | 5 +++++
+ arch/m68k/configs/sun3_defconfig     | 5 +++++
+ arch/m68k/configs/sun3x_defconfig    | 5 +++++
+ arch/m68k/include/asm/mac_psc.h      | 1 -
+ arch/m68k/include/asm/page.h         | 3 +++
+ arch/m68k/mac/macints.c              | 6 +++---
+ arch/m68k/mac/psc.c                  | 7 +++----
+ arch/m68k/sun3/config.c              | 2 +-
+ 18 files changed, 67 insertions(+), 11 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
