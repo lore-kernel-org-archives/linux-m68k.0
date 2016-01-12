@@ -1,67 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.5
-Date: Mon, 11 Jan 2016 20:36:38 +0100
-Message-ID: <1452540998-8715-1-git-send-email-geert@linux-m68k.org>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu/coldfire fixes for 4.5
+Date: Tue, 12 Jan 2016 10:12:00 +1000
+Message-ID: <569444D0.1030701@uclinux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:26676
+	"EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1759851AbcALAMI (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 11 Jan 2016 19:12:08 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi Linus,
+Hi Linus,
 
-The following changes since commit 1ec218373b8ebda821aec00bb156a9c94fad9cd4:
+Can you please pull the m68knommu git tree, for-next branch.
+Only a single change, limiting the return values for coldfire gpio
+get function.
 
-  Linux 4.4-rc2 (2015-11-22 16:45:59 -0800)
+Regards
+Greg
+
+
+
+The following changes since commit 168309855a7d1e16db751e9c647119fe2d2dc878:
+
+   Linux 4.4-rc8 (2016-01-03 15:15:37 -0800)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-for you to fetch changes up to eb37bc3f85b69f529d2ad06c41fad8dedd654c76:
+for you to fetch changes up to 4693c2493a9b2d0c5d407496ea107676a690f1c0:
 
-  m68k: Provide __phys_to_pfn() and __pfn_to_phys() (2016-01-10 13:56:40 +0100)
+   m68k: coldfire/gpio: Be sure to clamp return value (2016-01-04 
+13:25:12 +1000)
 
 ----------------------------------------------------------------
-Finn Thain (1):
-      m68k/atari, m68k/sun3: Fix SCSI platform device registration when driver is modular
+Linus Walleij (1):
+       m68k: coldfire/gpio: Be sure to clamp return value
 
-Geert Uytterhoeven (2):
-      m68k/mac: Kill psc_present
-      m68k/defconfig: Update defconfigs for v4.4-rc1
-
-Sudip Mukherjee (1):
-      m68k: Provide __phys_to_pfn() and __pfn_to_phys()
-
- arch/m68k/atari/config.c             | 4 ++--
- arch/m68k/configs/amiga_defconfig    | 4 ++++
- arch/m68k/configs/apollo_defconfig   | 5 +++++
- arch/m68k/configs/atari_defconfig    | 4 ++++
- arch/m68k/configs/bvme6000_defconfig | 4 ++++
- arch/m68k/configs/hp300_defconfig    | 5 +++++
- arch/m68k/configs/mac_defconfig      | 5 +++++
- arch/m68k/configs/multi_defconfig    | 5 +++++
- arch/m68k/configs/mvme147_defconfig  | 4 ++++
- arch/m68k/configs/mvme16x_defconfig  | 4 ++++
- arch/m68k/configs/q40_defconfig      | 5 +++++
- arch/m68k/configs/sun3_defconfig     | 5 +++++
- arch/m68k/configs/sun3x_defconfig    | 5 +++++
- arch/m68k/include/asm/mac_psc.h      | 1 -
- arch/m68k/include/asm/page.h         | 3 +++
- arch/m68k/mac/macints.c              | 6 +++---
- arch/m68k/mac/psc.c                  | 7 +++----
- arch/m68k/sun3/config.c              | 2 +-
- 18 files changed, 67 insertions(+), 11 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  arch/m68k/coldfire/gpio.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
