@@ -1,36 +1,32 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [linux-rt-devel:for-kbuild-bot/prepare-release 32/256] warning:
- (DEBUG_ATOMIC_SLEEP) selects PREEMPT_COUNT which has unmet direct
- dependencies (COLDFIRE)
-Date: Wed, 13 Jan 2016 11:27:38 +0100
-Message-ID: <20160113102738.GA29964__9663.90752369097$1452680897$gmane$org@linutronix.de>
-References: <201512240942.TkGuKeY2%fengguang.wu@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: [patch 0/4] hrtimers: Handle remaining time correctly for
+ CONFIG_TIME_LOW_RES=y
+Date: Thu, 14 Jan 2016 16:54:45 -0000
+Message-ID: <20160114163744.582215466@linutronix.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201512240942.TkGuKeY2%fengguang.wu@intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, kbuild-all@01.org, David Howells <dhowells@redhat.com>, Richard Kuo <rkuo@codeaurora.org>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
 
-* kbuild test robot | 2015-12-24 09:57:43 [+0800]:
+Helge reported, that timerfd returns occasionally remaining time larger than
+the relative time which was used to arm the timer. This is caused by the extra
+jiffy which we add in hrtimer_start_range_ns() if CONFIG_TIME_LOW_RES=y.
 
->All warnings (new ones prefixed by >>):
->
->warning: (DEBUG_ATOMIC_SLEEP) selects PREEMPT_COUNT which has unmet direct dependencies (COLDFIRE)
+This is not only an issue for timerfd. We have the same problem in
+posix-timers and itimers.
 
-The situation slightly changed. Before the patch in question:
-|warning: (PREEMPT && DEBUG_ATOMIC_SLEEP) selects PREEMPT_COUNT which has unmet direct dependencies (COLDFIRE)
+This series adds infrastructure to the core to handle that cases and converts
+the users over to it.
 
-so it is just s@PREEMPT@PREEMPT_COUNT@.
+Thanks,
 
-This pops up because DEBUG_ATOMIC_SLEEP can be selected while
-kernel/Kconfig.preempt has not been included into Kconfig. This warning
-is not limited to m68k but should also pop up on alpha / frv and hexagon.
-Those architectures don't include kernel/Kconfig.preempt at all.
-
-Is this something that should be fixed?
-
-Sebastian
+	tglx
+---
+ fs/timerfd.c               |    2 -
+ include/linux/hrtimer.h    |   34 +++++++++++++++++++++++++--
+ kernel/time/hrtimer.c      |   55 ++++++++++++++++++++++++++++++---------------
+ kernel/time/itimer.c       |    2 -
+ kernel/time/posix-timers.c |    2 -
+ kernel/time/timer_list.c   |    2 -
+ 6 files changed, 72 insertions(+), 25 deletions(-)
