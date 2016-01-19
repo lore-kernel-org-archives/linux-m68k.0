@@ -1,60 +1,103 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: linux-m68k.org services status
-Date: Sun, 17 Jan 2016 11:18:31 +0100
-Message-ID: <CAMuHMdWRUdFdCoRJO++08i5=t6nK3mmZRpC91VcAbYXFYsqOWw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [PATCH] m68k: use conventional function parameters for do_sigreturn
+Date: Tue, 19 Jan 2016 15:56:58 +1000
+Message-ID: <1453183018-11722-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-io0-f178.google.com ([209.85.223.178]:35440 "EHLO
-	mail-io0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750808AbcAQKSc (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jan 2016 05:18:32 -0500
-Received: by mail-io0-f178.google.com with SMTP id 77so493574888ioc.2
-        for <linux-m68k@vger.kernel.org>; Sun, 17 Jan 2016 02:18:32 -0800 (PST)
+Received: from icp-osb-irony-out8.external.iinet.net.au ([203.59.1.225]:11334
+	"EHLO icp-osb-irony-out8.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750930AbcASF5O (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 19 Jan 2016 00:57:14 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
-Cc: Arno Griffioen <arno@ancienthardware.org>
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-Hi all,
+Create conventional stack parameters for the calls to do_sigreturn and
+do_rt_sigreturn. The current C code for do_sigreturn and do_rt_sigreturn
+dig into the stack to create local pointers to the saved switch stack
+and the pt_regs structs.
 
-I'd like to provide you with an update for the linux-m68k.org services.
+Using conventional stack parameters passed to these functions means the
+code here does not need to know the exact details of how the underlying
+entry handler layed these structs out on the stack.
 
-All linux-m68k.org services have been moved from nerdnet.nl to Gandi.
-This includes:
-  1. The domain itself (this was already at Gandi before),
-  2. DNS (service included with the domain).
-     Old entries have been purged (e.g. the "black" subdomain),
-defunct web mirrors
-     now point to the main site.
-  3. Email aliases (service included with the domain).
-     Aliases have been updated/purged where appropriate.
-  4. Web hosting:
-       - http://www.linux-m68k.org/ and http://ftp.mac.linux-m68k.org/
-         are now served by my company's SimpleHosting instance (also at Gandi),
-         which had ample of free space.
-         If anyone wants to actively maintain this, please let me know.
-         Unfortunately I cannot offer direct access to the vhost, but as the
-         main site is now in git (ftp.mac is still a bunch of files, as it has
-         mostly historical importance), we could e.g. setup a pull/push system,
-         or the site could just be hosted elsewhere.
-       - http://mac.linux-m68k.org/ and http://www.mac.linux-m68k.org/ still
-         point to the Linux/mac68k project at SourceForge.
+The motivation for this change is a problem with non-MMU targets that
+have broken signal return paths on newer versions of gcc. It appears as
+though aliasing of the regs and switch stack pointers, caused by their
+construction from pointers derived from the dummy long function parameter,
+is resulting in the gcc optimizer removing what it thinks is useless
+updates to the regs fields. Large parts of restore_sigcontext() and
+mangle_kernel_stack() functions get optimized out. Of course this results
+in non-functional code causing kernel oops. This problem has been observed
+with gcc version 5.2 and 5.3, and probably exists in earlier versions as
+well.
 
-Many thanks to Arno for maintaining linux-m68k.org for the past (almost) 20
-years, and for keeping its registry alive for 10 more years!
-(Of course we're aiming for 2038 and beyond ;-)
+The resulting code after this change is a few bytes larger (due to the
+overhead of creating the stack args and their tear down). Not being hot
+paths I don't think this is too much of a problem here.
 
-If you notice something wrong, please let Arno and me know.
-Thanks!
+This change has been compile tested on all defconfigs, and run tested on
+Atari (through aranym), ColdFire with MMU (M5407EVB) and ColdFire with
+no-MMU (QEMU and M5208EVB).
 
-Gr{oetje,eeting}s,
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+---
+ arch/m68k/kernel/entry.S  | 6 ++++++
+ arch/m68k/kernel/signal.c | 8 ++------
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index b54ac7a..97cd3ea 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -71,13 +71,19 @@ ENTRY(__sys_vfork)
+ 
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%sp@-		  | switch_stack pointer
++	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
+ 	jbsr	do_sigreturn
++	addql	#8,%sp
+ 	RESTORE_SWITCH_STACK
+ 	rts
+ 
+ ENTRY(sys_rt_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%sp@-		  | switch_stack pointer
++	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
+ 	jbsr	do_rt_sigreturn
++	addql	#8,%sp
+ 	RESTORE_SWITCH_STACK
+ 	rts
+ 
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index af1c4f3..2dcee3a 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -737,10 +737,8 @@ badframe:
+ 	return 1;
+ }
+ 
+-asmlinkage int do_sigreturn(unsigned long __unused)
++asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+ {
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
+ 	sigset_t set;
+@@ -764,10 +762,8 @@ badframe:
+ 	return 0;
+ }
+ 
+-asmlinkage int do_rt_sigreturn(unsigned long __unused)
++asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+ {
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
+ 	sigset_t set;
+-- 
+1.9.1
