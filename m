@@ -1,134 +1,436 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v4 34/78] atari_NCR5380: Use arbitration timeout
-Date: Mon, 25 Jan 2016 09:05:09 +0100
-Message-ID: <CAMuHMdVevVnEa=ZgThGMObv--5zoOxvXXEPP9fe00Z1sPQHbhQ@mail.gmail.com>
-References: <20160103050501.042035135@telegraphics.com.au>
-	<20160103050510.031796194@telegraphics.com.au>
-	<CAMuHMdXKDwfEE0J2xjan2vhO3gyfBwaeRMa3Vh4-ewUrW61pvA@mail.gmail.com>
-	<alpine.LNX.2.00.1601251109090.24503@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1601251109090.24503@nippy.intranet>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <JBottomley@odin.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.5-rc1
+Date: Mon, 25 Jan 2016 09:48:14 +0100
+Message-ID: <1453711694-2972-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Finn,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    | 9 +++++++++
+ arch/m68k/configs/apollo_defconfig   | 9 +++++++++
+ arch/m68k/configs/atari_defconfig    | 9 +++++++++
+ arch/m68k/configs/bvme6000_defconfig | 9 +++++++++
+ arch/m68k/configs/hp300_defconfig    | 9 +++++++++
+ arch/m68k/configs/mac_defconfig      | 9 +++++++++
+ arch/m68k/configs/multi_defconfig    | 9 +++++++++
+ arch/m68k/configs/mvme147_defconfig  | 9 +++++++++
+ arch/m68k/configs/mvme16x_defconfig  | 9 +++++++++
+ arch/m68k/configs/q40_defconfig      | 9 +++++++++
+ arch/m68k/configs/sun3_defconfig     | 9 +++++++++
+ arch/m68k/configs/sun3x_defconfig    | 9 +++++++++
+ 12 files changed, 108 insertions(+)
 
-On Mon, Jan 25, 2016 at 3:45 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sun, 24 Jan 2016, Geert Uytterhoeven wrote:
->> On Sun, Jan 3, 2016 at 6:05 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> > Allow target selection to fail with a timeout instead of waiting in
->> > infinite loops. This gets rid of the unused NCR_TIMEOUT macro, it is more
->> > defensive and has proved helpful in debugging.
->> >
->> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->> > Reviewed-by: Hannes Reinecke <hare@suse.com>
->> > Tested-by: Ondrej Zary <linux@rainbow-software.org>
->> > Tested-by: Michael Schmitz <schmitzmic@gmail.com>
->>
->> This patch (commit 55500d9b08295e3b6016b53879dea1cb7787f1b0) causes a hang
->> on ARAnyM with atari_defconfig after:
->>
->>     scsi host0: Atari native SCSI, io_port 0x0, n_io_port 0, base 0x0,
->> irq 15, can_queue 8, cmd_per_lun 1, sg_tablesize 0, this_id 7, flags {
->> }, options { REAL_DMA SUPPORT_TAGS }
->>     blk_queue_max_segments: set to minimum 1
->>
->> > --- linux.orig/drivers/scsi/atari_NCR5380.c     2016-01-03 16:03:43.000000000 +1100
->> > +++ linux/drivers/scsi/atari_NCR5380.c  2016-01-03 16:03:44.000000000 +1100
->> > @@ -1436,42 +1437,28 @@ static int NCR5380_select(struct Scsi_Ho
->> >         NCR5380_write(OUTPUT_DATA_REG, hostdata->id_mask);
->> >         NCR5380_write(MODE_REG, MR_ARBITRATE);
->> >
->> > -       local_irq_restore(flags);
->> > +       /* The chip now waits for BUS FREE phase. Then after the 800 ns
->> > +        * Bus Free Delay, arbitration will begin.
->> > +        */
->> >
->> > -       /* Wait for arbitration logic to complete */
->> > -#if defined(NCR_TIMEOUT)
->> > -       {
->> > -               unsigned long timeout = jiffies + 2*NCR_TIMEOUT;
->> > -
->> > -               while (!(NCR5380_read(INITIATOR_COMMAND_REG) & ICR_ARBITRATION_PROGRESS) &&
->> > -                      time_before(jiffies, timeout) && !hostdata->connected)
->> > -                       ;
->> > -               if (time_after_eq(jiffies, timeout)) {
->> > -                       printk("scsi : arbitration timeout at %d\n", __LINE__);
->> > +       local_irq_restore(flags);
->> > +       timeout = jiffies + HZ;
->> > +       while (1) {
->> > +               if (time_is_before_jiffies(timeout)) {
->> >                         NCR5380_write(MODE_REG, MR_BASE);
->> > -                       NCR5380_write(SELECT_ENABLE_REG, hostdata->id_mask);
->> > +                       shost_printk(KERN_ERR, instance,
->> > +                                    "select: arbitration timeout\n");
->> >                         return -1;
->> >                 }
->> > +               if (!(NCR5380_read(MODE_REG) & MR_ARBITRATE)) {
->>
->> This newly added check always triggers, causing an infinite loop calling
->> NCR5380_select().
->
-> If you bisected and got a failure here, it would not be surprising because
-> some of the remaining patches fix bugs in the exception handlers.
->
-> But if you test the entire patch series and get a hang (after waiting for
-> the command to timeout and abort etc) it could be caused by a known bug in
-> the abort handler. I will be sending a patch for that.
-
-Yes, this was bisected. The issue was originally noticed after merging in
-upstream, though.
-
-Awaiting your patch for testing...
-
->> Perhaps this is an ARAnyM quirk?
->
-> I'd say this is an ARAnyM bug. atari_scsi has been tested on an actual
-> Atari Falcon, hence Michael's tested-by tag.
->
->> If not, does it trigger (on some hardware) with drivers/scsi/NCR5380.c,
->> too?
->
-> For the arbitration and selection phases, there is no difference between
-> NCR5380.c and atari_NCR5380.c. That's one of the benefits of my patches.
->
-> That means this code was tested on silicon from NCR (53C400), Symbios
-> Logic (53C400A), AMD (Am85C80), Domex Technology Corp (DTC-536, DTC-436)
-> and LOGIC Devices (L5380).
-
-> The MR_ARBITRATE bit should remain set until the driver clears it (or the
-> reset logic clears it). But it looks like aranym simply discards writes to
-> the mode register, such that reads always return 0.
->
-> Compare
->   http://sourceforge.net/p/aranym/code/ci/master/tree/src/ncr5380.cpp
-> with the MAME/MESS emulated device
->   https://github.com/mamedev/mame/blob/master/src/devices/machine/ncr5380.cpp
->
-> I don't know what the Hatari emulator does.
->
-> In principle I think that Linux drivers should not carry workarounds for
-> emulators.
-
-Please consider ARAnyM is the current m68k workhorse, so it would be
-nice to handle this someway.
-
-Alternatively, we need to fix ARAnyM, or can make the creation of the
-atari_scsi platform device conditional on not running under ARAnyM.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index fc96e814188e57aa..d1fc4796025edb87 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -108,6 +108,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -266,6 +268,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -366,6 +374,7 @@ CONFIG_ARIADNE=y
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ CONFIG_HYDRA=y
+ CONFIG_APNE=y
+ CONFIG_ZORRO8390=y
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 05c904f08d9d496f..9bfe8be3658c1823 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -106,6 +106,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -264,6 +266,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -344,6 +352,7 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 26265d1fa5dfc1b4..5db0a5d64d84e16f 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -106,6 +106,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -264,6 +266,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -353,6 +361,7 @@ CONFIG_ATARILANCE=y
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ CONFIG_NE2000=y
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 11a30c65ad44cb52..8acc65e549953886 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -104,6 +104,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -262,6 +264,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -343,6 +351,7 @@ CONFIG_BVME6000_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 6630a5154b9d797e..0c6a3d52b26e2b25 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -106,6 +106,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -264,6 +266,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -345,6 +353,7 @@ CONFIG_HPLANCE=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 1d90b71d09038da9..12a8a6cb32f4914f 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -105,6 +105,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -266,6 +268,12 @@ CONFIG_DEV_APPLETALK=m
+ CONFIG_IPDDP=m
+ CONFIG_IPDDP_ENCAP=y
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -362,6 +370,7 @@ CONFIG_MAC89x0=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ CONFIG_MACSONIC=y
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ CONFIG_MAC8390=y
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 1fd21c1ca87fd8da..64ff2dcb34c89a3e 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -115,6 +115,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -276,6 +278,12 @@ CONFIG_DEV_APPLETALK=m
+ CONFIG_IPDDP=m
+ CONFIG_IPDDP_ENCAP=y
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -404,6 +412,7 @@ CONFIG_MVME16x_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ CONFIG_MACSONIC=y
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ CONFIG_HYDRA=y
+ CONFIG_MAC8390=y
+ CONFIG_NE2000=y
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 74e10f79d7b1f947..07fc6abcfe0c50e4 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -103,6 +103,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -261,6 +263,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -343,6 +351,7 @@ CONFIG_MVME147_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 7034e716f166be8f..69903ded88f71d1d 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -104,6 +104,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -262,6 +264,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -343,6 +351,7 @@ CONFIG_MVME16x_NET=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index f7deb5f702a6484d..bd8401686ddef143 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -104,6 +104,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -262,6 +264,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -352,6 +360,7 @@ CONFIG_VETH=m
+ # CONFIG_NET_VENDOR_INTEL is not set
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ CONFIG_NE2000=y
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 0ce79eb0d8050314..5f9fb3ab9636808d 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -101,6 +101,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -259,6 +261,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -340,6 +348,7 @@ CONFIG_SUN3_82586=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 4cb787e4991fcfd0..5d1c674530e2ba73 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -101,6 +101,8 @@ CONFIG_NFT_NAT=m
+ CONFIG_NFT_QUEUE=m
+ CONFIG_NFT_REJECT=m
+ CONFIG_NFT_COMPAT=m
++CONFIG_NFT_DUP_NETDEV=m
++CONFIG_NFT_FWD_NETDEV=m
+ CONFIG_NETFILTER_XT_SET=m
+ CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+ CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+@@ -259,6 +261,12 @@ CONFIG_L2TP=m
+ CONFIG_BRIDGE=m
+ CONFIG_ATALK=m
+ CONFIG_6LOWPAN=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_HOP=m
++CONFIG_6LOWPAN_GHC_UDP=m
++CONFIG_6LOWPAN_GHC_ICMPV6=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_DEST=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_FRAG=m
++CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ CONFIG_BATMAN_ADV_DAT=y
+@@ -341,6 +349,7 @@ CONFIG_SUN3LANCE=y
+ # CONFIG_NET_VENDOR_MARVELL is not set
+ # CONFIG_NET_VENDOR_MICREL is not set
+ # CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
+ # CONFIG_NET_VENDOR_QUALCOMM is not set
+ # CONFIG_NET_VENDOR_RENESAS is not set
+ # CONFIG_NET_VENDOR_ROCKER is not set
+-- 
+1.9.1
