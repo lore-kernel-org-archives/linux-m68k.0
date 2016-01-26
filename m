@@ -1,141 +1,66 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] ncr5380: Correctly clear command pointers and lists after bus reset
-Date: Tue, 26 Jan 2016 13:31:15 +1100
-Message-ID: <20160126023113.871677815@telegraphics.com.au>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-Content-Disposition: inline; filename=ncr5380-null-pointer-dereference
-Sender: linux-scsi-owner@vger.kernel.org
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v4 34/78] atari_NCR5380: Use arbitration timeout
+Date: Tue, 26 Jan 2016 12:13:20 +0100
+Message-ID: <CAMuHMdWNRM88KQRLsKfzbNFJChjVu-jR26jr7S2193p2wRGNCg@mail.gmail.com>
+References: <20160103050501.042035135@telegraphics.com.au>
+	<20160103050510.031796194@telegraphics.com.au>
+	<CAMuHMdXKDwfEE0J2xjan2vhO3gyfBwaeRMa3Vh4-ewUrW61pvA@mail.gmail.com>
+	<alpine.LNX.2.00.1601251109090.24503@nippy.intranet>
+	<CAMuHMdVevVnEa=ZgThGMObv--5zoOxvXXEPP9fe00Z1sPQHbhQ@mail.gmail.com>
+	<alpine.LNX.2.00.1601261117280.15080@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-ig0-f194.google.com ([209.85.213.194]:35139 "EHLO
+	mail-ig0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S933556AbcAZLNV (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jan 2016 06:13:21 -0500
+In-Reply-To: <alpine.LNX.2.00.1601261117280.15080@nippy.intranet>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <JBottomley@odin.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Commands subject to exception handling have to be returned to the scsi
-mid-layer. Make sure that the various command pointers and command lists
-in the low-level driver are correctly cleansed of the affected commands.
+Hi Finn,
 
-This fixes bugs that I accidentally introduced in commit 62717f537e1b
-("ncr5380: Implement new eh_bus_reset_handler") such as the removal of
-INIT_LIST_HEAD for the 'autosense' and 'disconnected' command lists, and
-the possible NULL pointer dereference in NCR5380_bus_reset() that was
-reported by Dan Carpenter.
+On Tue, Jan 26, 2016 at 1:18 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Mon, 25 Jan 2016, Geert Uytterhoeven wrote:
+>> > In principle I think that Linux drivers should not carry workarounds
+>> > for emulators.
+>>
+>> Please consider ARAnyM is the current m68k workhorse, so it would be
+>> nice to handle this someway.
+>
+> AFAICT atari_scsi on aranym never did anything useful. Those aranym users
+> who need to run Linux 4.5 can set CONFIG_ATARI_SCSI=n or blacklist the
+> atari_scsi module (up until aranym can be patched).
 
-hostdata->sensing may also point to an affected command so this pointer
-also has to be cleared. The abort handler calls complete_cmd() to take
-care of this; have the bus reset handler do the same.
+FTR. adding "initcall_blacklist=atari_scsi_driver_init" to the kernel command
+line makes it boot again.
 
-The issue queue may also contain an affected command. If so, remove it.
-This also follows the abort handler logic.
+>> Alternatively, we need to fix ARAnyM,
+>
+> I'll look into writing a patch for the emulator after I've finished
+> testing the exception handling fixes for the driver.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 62717f537e1b ("ncr5380: Implement new eh_bus_reset_handler")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Thank you!
 
----
- drivers/scsi/NCR5380.c       |   19 ++++++++++++-------
- drivers/scsi/atari_NCR5380.c |   19 ++++++++++++-------
- 2 files changed, 24 insertions(+), 14 deletions(-)
+>> or can make the creation of the atari_scsi platform device conditional
+>> on not running under ARAnyM.
+>
+> Fixing the emulator is the only sensible approach. If S operating systems
+> have to carry workarounds for B emulator bugs, the cost is (at least)
+> proportional to S * B.
 
-Index: linux/drivers/scsi/NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/NCR5380.c	2016-01-26 13:31:10.000000000 +1100
-+++ linux/drivers/scsi/NCR5380.c	2016-01-26 13:31:11.000000000 +1100
-@@ -2450,7 +2450,16 @@ static int NCR5380_bus_reset(struct scsi
- 	 * commands!
- 	 */
- 
--	hostdata->selecting = NULL;
-+	if (list_del_cmd(&hostdata->unissued, cmd)) {
-+		cmd->result = DID_RESET << 16;
-+		cmd->scsi_done(cmd);
-+	}
-+
-+	if (hostdata->selecting) {
-+		hostdata->selecting->result = DID_RESET << 16;
-+		complete_cmd(instance, hostdata->selecting);
-+		hostdata->selecting = NULL;
-+	}
- 
- 	list_for_each_entry(ncmd, &hostdata->disconnected, list) {
- 		struct scsi_cmnd *cmd = NCR5380_to_scmd(ncmd);
-@@ -2458,6 +2467,7 @@ static int NCR5380_bus_reset(struct scsi
- 		set_host_byte(cmd, DID_RESET);
- 		cmd->scsi_done(cmd);
- 	}
-+	INIT_LIST_HEAD(&hostdata->disconnected);
- 
- 	list_for_each_entry(ncmd, &hostdata->autosense, list) {
- 		struct scsi_cmnd *cmd = NCR5380_to_scmd(ncmd);
-@@ -2465,6 +2475,7 @@ static int NCR5380_bus_reset(struct scsi
- 		set_host_byte(cmd, DID_RESET);
- 		cmd->scsi_done(cmd);
- 	}
-+	INIT_LIST_HEAD(&hostdata->autosense);
- 
- 	if (hostdata->connected) {
- 		set_host_byte(hostdata->connected, DID_RESET);
-@@ -2472,12 +2483,6 @@ static int NCR5380_bus_reset(struct scsi
- 		hostdata->connected = NULL;
- 	}
- 
--	if (hostdata->sensing) {
--		set_host_byte(hostdata->connected, DID_RESET);
--		complete_cmd(instance, hostdata->sensing);
--		hostdata->sensing = NULL;
--	}
--
- 	for (i = 0; i < 8; ++i)
- 		hostdata->busy[i] = 0;
- #ifdef REAL_DMA
-Index: linux/drivers/scsi/atari_NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/atari_NCR5380.c	2016-01-26 13:31:10.000000000 +1100
-+++ linux/drivers/scsi/atari_NCR5380.c	2016-01-26 13:31:11.000000000 +1100
-@@ -2646,7 +2646,16 @@ static int NCR5380_bus_reset(struct scsi
- 	 * commands!
- 	 */
- 
--	hostdata->selecting = NULL;
-+	if (list_del_cmd(&hostdata->unissued, cmd)) {
-+		cmd->result = DID_RESET << 16;
-+		cmd->scsi_done(cmd);
-+	}
-+
-+	if (hostdata->selecting) {
-+		hostdata->selecting->result = DID_RESET << 16;
-+		complete_cmd(instance, hostdata->selecting);
-+		hostdata->selecting = NULL;
-+	}
- 
- 	list_for_each_entry(ncmd, &hostdata->disconnected, list) {
- 		struct scsi_cmnd *cmd = NCR5380_to_scmd(ncmd);
-@@ -2654,6 +2663,7 @@ static int NCR5380_bus_reset(struct scsi
- 		set_host_byte(cmd, DID_RESET);
- 		cmd->scsi_done(cmd);
- 	}
-+	INIT_LIST_HEAD(&hostdata->disconnected);
- 
- 	list_for_each_entry(ncmd, &hostdata->autosense, list) {
- 		struct scsi_cmnd *cmd = NCR5380_to_scmd(ncmd);
-@@ -2661,6 +2671,7 @@ static int NCR5380_bus_reset(struct scsi
- 		set_host_byte(cmd, DID_RESET);
- 		cmd->scsi_done(cmd);
- 	}
-+	INIT_LIST_HEAD(&hostdata->autosense);
- 
- 	if (hostdata->connected) {
- 		set_host_byte(hostdata->connected, DID_RESET);
-@@ -2668,12 +2679,6 @@ static int NCR5380_bus_reset(struct scsi
- 		hostdata->connected = NULL;
- 	}
- 
--	if (hostdata->sensing) {
--		set_host_byte(hostdata->connected, DID_RESET);
--		complete_cmd(instance, hostdata->sensing);
--		hostdata->sensing = NULL;
--	}
--
- #ifdef SUPPORT_TAGS
- 	free_all_tags(hostdata);
- #endif
+Sure.
 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
