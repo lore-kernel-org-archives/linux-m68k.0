@@ -1,66 +1,71 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v4 34/78] atari_NCR5380: Use arbitration timeout
-Date: Tue, 26 Jan 2016 12:13:20 +0100
-Message-ID: <CAMuHMdWNRM88KQRLsKfzbNFJChjVu-jR26jr7S2193p2wRGNCg@mail.gmail.com>
-References: <20160103050501.042035135@telegraphics.com.au>
-	<20160103050510.031796194@telegraphics.com.au>
-	<CAMuHMdXKDwfEE0J2xjan2vhO3gyfBwaeRMa3Vh4-ewUrW61pvA@mail.gmail.com>
-	<alpine.LNX.2.00.1601251109090.24503@nippy.intranet>
-	<CAMuHMdVevVnEa=ZgThGMObv--5zoOxvXXEPP9fe00Z1sPQHbhQ@mail.gmail.com>
-	<alpine.LNX.2.00.1601261117280.15080@nippy.intranet>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Add mode register to aranym's fake ncr5380
+Date: Wed, 27 Jan 2016 16:22:14 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1601271550050.26292@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-ig0-f194.google.com ([209.85.213.194]:35139 "EHLO
-	mail-ig0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S933556AbcAZLNV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jan 2016 06:13:21 -0500
-In-Reply-To: <alpine.LNX.2.00.1601261117280.15080@nippy.intranet>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50387 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751420AbcA0FWt (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Jan 2016 00:22:49 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <JBottomley@odin.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-Hi Finn,
 
-On Tue, Jan 26, 2016 at 1:18 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Mon, 25 Jan 2016, Geert Uytterhoeven wrote:
->> > In principle I think that Linux drivers should not carry workarounds
->> > for emulators.
->>
->> Please consider ARAnyM is the current m68k workhorse, so it would be
->> nice to handle this someway.
->
-> AFAICT atari_scsi on aranym never did anything useful. Those aranym users
-> who need to run Linux 4.5 can set CONFIG_ATARI_SCSI=n or blacklist the
-> atari_scsi module (up until aranym can be patched).
+I've compile-tested this patch but I didn't do any more than that. Are you 
+able to test whether the mainline atari_scsi module works any better with 
+a patched aranym?
 
-FTR. adding "initcall_blacklist=atari_scsi_driver_init" to the kernel command
-line makes it boot again.
+BTW, the two kernel patches I sent to the mailing lists yesterday are 
+fixes for NCR5380 driver exception handing (EH) bugs. They should help 
+with an unpatched aranym, because the fake NCR 5380 will cause SCSI 
+commands to timeout and hence undergo EH. The eh_ebort_handler call will 
+likely return FAILED and this will escalate to a call to the 
+eh_bus_reset_handler. The command may be retried, but the mid-layer should 
+recover eventually. To observe this, you may need to enable scsi error 
+logging.
 
->> Alternatively, we need to fix ARAnyM,
->
-> I'll look into writing a patch for the emulator after I've finished
-> testing the exception handling fixes for the driver.
-
-Thank you!
-
->> or can make the creation of the atari_scsi platform device conditional
->> on not running under ARAnyM.
->
-> Fixing the emulator is the only sensible approach. If S operating systems
-> have to carry workarounds for B emulator bugs, the cost is (at least)
-> proportional to S * B.
-
-Sure.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/src/include/ncr5380.h b/src/include/ncr5380.h
+index f8fc43b..55bb84d 100644
+--- a/src/include/ncr5380.h
++++ b/src/include/ncr5380.h
+@@ -33,6 +33,7 @@ class NCR5380 {
+ 		uae_u8	hd_count;
+ 
+ 		uae_u8	hd_initiator;
++		uae_u8	hd_mode;
+ 
+ 	public:
+ 		NCR5380(void);
+diff --git a/src/ncr5380.cpp b/src/ncr5380.cpp
+index 75d8f50..b3177f1 100644
+--- a/src/ncr5380.cpp
++++ b/src/ncr5380.cpp
+@@ -120,7 +120,7 @@ NCR5380::~NCR5380(void)
+ 
+ void NCR5380::reset(void)
+ {
+-	hd_count = hd_status = hd_initiator = 0;
++	hd_count = hd_status = hd_initiator = hd_mode = 0;
+ 
+ 	D(bug("ncr5380: reset"));
+ }
+@@ -140,6 +140,7 @@ uae_u8 NCR5380::ReadData(uae_u16 control)
+ 			data = hd_initiator = ICR_ARBITRATION_PROGRESS;
+ 			break;
+ 		case MODE_REG:
++			data = hd_mode;
+ 			break;
+ 		case TARGET_COMMAND_REG:
+ 			break;
+@@ -172,6 +173,7 @@ void NCR5380::WriteData(uae_u16 control, uae_u8 data)
+ 			hd_initiator = data;
+ 			break;
+ 		case MODE_REG:
++			hd_mode = data;
+ 			break;
+ 		case TARGET_COMMAND_REG:
+ 			break;
