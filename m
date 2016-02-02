@@ -1,35 +1,38 @@
-From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
-Subject: Linux/m68k on the Apollo FPGA softcore?
-Date: Tue, 2 Feb 2016 18:16:16 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1602021757210.2761@firda>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH] m68k: use conventional function parameters for do_sigreturn
+Date: Tue, 02 Feb 2016 20:25:32 +0100
+Message-ID: <871t8u7w43.fsf@linux-m68k.org>
+References: <1453183018-11722-1-git-send-email-gerg@uclinux.org>
+	<8737tcxoka.fsf@linux-m68k.org> <56AFF16E.2020506@uclinux.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from epost.ufisa.uninett.no ([158.38.152.65]:39203 "EHLO
-	epost.ufisa.uninett.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751769AbcBBRYF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 2 Feb 2016 12:24:05 -0500
-Received: from [2001:700:1:21:2c4e:4e5f:edf0:4a71] (unknown [IPv6:2001:700:1:21:2c4e:4e5f:edf0:4a71])
-	by epost.ufisa.uninett.no (Postfix) with ESMTPSA id BBC416E12D1
-	for <linux-m68k@vger.kernel.org>; Tue,  2 Feb 2016 18:15:46 +0100 (CET)
+Received: from mail-out.m-online.net ([212.18.0.10]:54437 "EHLO
+	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753880AbcBBTZg (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 2 Feb 2016 14:25:36 -0500
+In-Reply-To: <56AFF16E.2020506@uclinux.org> (Greg Ungerer's message of "Tue, 2
+	Feb 2016 09:59:42 +1000")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@vger.kernel.org
 
+Greg Ungerer <gerg@uclinux.org> writes:
 
-Hello,
+>> Does it work to use this signature:
+>> 
+>> asmlinkage int do_sigreturn(struct switch_stack sw, struct pt_regs regs)
+>> 
+>> without changing the caller?
+>
+> No, same problem.
 
-I have been in lurk mode on Linux/m68k the last few years, but still
-remain quite active in the "Amiga community". The last year or so, a new
-m68k CPU has emerged, the Apollo core, a softcore for FPGAs from developer
-Gunnar von Boehn, and the Apollo Team. From what I understand, the core
-implements a new FPU, not compatible with existing FPUs, and there has
-been talks about a new MMU implementation too. 
+So this is unrelated to aliasing.  Can you create a test case?
 
-I am wondering if any Linux/m68k developers have been in contact with the
-Apollo Team? Some sort of communication would be nice, a chance to make
-sure the softcore also works, and works well, for Linux (and *BSD) :)
+Andreas.
 
-Information can be found here - http://apollo-core.com
-
--- kolla
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
