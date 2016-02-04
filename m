@@ -1,7 +1,7 @@
 From: Kamal Mostafa <kamal@canonical.com>
-Subject: [PATCH 4.2.y-ckt 16/64] itimers: Handle relative timers with CONFIG_TIME_LOW_RES proper
-Date: Thu,  4 Feb 2016 14:43:59 -0800
-Message-ID: <1454625887-18915-17-git-send-email-kamal@canonical.com>
+Subject: [PATCH 4.2.y-ckt 15/64] posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper
+Date: Thu,  4 Feb 2016 14:43:58 -0800
+Message-ID: <1454625887-18915-16-git-send-email-kamal__11901.6158082106$1454627390$gmane$org@canonical.com>
 References: <1454625887-18915-1-git-send-email-kamal@canonical.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1454625887-18915-1-git-send-email-kamal@canonical.com>
@@ -16,12 +16,12 @@ Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 51cbb5242a41700a3f250ecfb48dcfb7e4375ea4 upstream.
+commit 572c39172684c3711e4a03c9a7380067e2b0661c upstream.
 
-As Helge reported for timerfd we have the same issue in itimers. We return
-remaining time larger than the programmed relative time to user space in case
-of CONFIG_TIME_LOW_RES=y. Use the proper function to adjust the extra time
-added in hrtimer_start_range_ns().
+As Helge reported for timerfd we have the same issue in posix timers. We
+return remaining time larger than the programmed relative time to user space
+in case of CONFIG_TIME_LOW_RES=y. Use the proper function to adjust the extra
+time added in hrtimer_start_range_ns().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -29,25 +29,25 @@ Cc: Helge Deller <deller@gmx.de>
 Cc: John Stultz <john.stultz@linaro.org>
 Cc: linux-m68k@lists.linux-m68k.org
 Cc: dhowells@redhat.com
-Link: http://lkml.kernel.org/r/20160114164159.528222587@linutronix.de
+Link: http://lkml.kernel.org/r/20160114164159.450510905@linutronix.de
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Kamal Mostafa <kamal@canonical.com>
 ---
- kernel/time/itimer.c | 2 +-
+ kernel/time/posix-timers.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/itimer.c b/kernel/time/itimer.c
-index 8d262b4..1d5c720 100644
---- a/kernel/time/itimer.c
-+++ b/kernel/time/itimer.c
-@@ -26,7 +26,7 @@
-  */
- static struct timeval itimer_get_remtime(struct hrtimer *timer)
- {
--	ktime_t rem = hrtimer_get_remaining(timer);
-+	ktime_t rem = __hrtimer_get_remaining(timer, true);
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index 31d11ac..f2826c3 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -760,7 +760,7 @@ common_timer_get(struct k_itimer *timr, struct itimerspec *cur_setting)
+ 	    (timr->it_sigev_notify & ~SIGEV_THREAD_ID) == SIGEV_NONE))
+ 		timr->it_overrun += (unsigned int) hrtimer_forward(timer, now, iv);
  
- 	/*
- 	 * Racy but safe: if the itimer expires after the above
+-	remaining = ktime_sub(hrtimer_get_expires(timer), now);
++	remaining = __hrtimer_expires_remaining_adjusted(timer, now);
+ 	/* Return 0 only, when the timer is expired and not pending */
+ 	if (remaining.tv64 <= 0) {
+ 		/*
 -- 
 1.9.1
