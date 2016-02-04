@@ -1,16 +1,16 @@
 From: Kamal Mostafa <kamal@canonical.com>
-Subject: [4.2.y-ckt stable] Patch "hrtimer: Handle remaining time proper for TIME_LOW_RES" has been added to the 4.2.y-ckt tree
-Date: Thu,  4 Feb 2016 14:10:31 -0800
-Message-ID: <1454623831-8521-1-git-send-email-kamal@canonical.com>
+Subject: [4.2.y-ckt stable] Patch "posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper" has been added to the 4.2.y-ckt tree
+Date: Thu,  4 Feb 2016 14:10:33 -0800
+Message-ID: <1454623833-8610-1-git-send-email-kamal@canonical.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
+Cc: Peter Zijlstra <peterz@infradead.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com, Kamal Mostafa <kamal@canonical.com>, kernel-team@lists.ubuntu.com
 
 This is a note to let you know that I have just added a patch titled
 
-    hrtimer: Handle remaining time proper for TIME_LOW_RES
+    posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper
 
 to the linux-4.2.y-queue branch of the 4.2.y-ckt extended stable tree 
 which can be found at:
@@ -30,231 +30,43 @@ Thanks.
 
 ---8<------------------------------------------------------------
 
->From c506523465b30b030fa2c909a0bf2b7e6501cf7c Mon Sep 17 00:00:00 2001
+>From b922fc5f79535400d0bedc7c36e14f392d250e83 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 14 Jan 2016 16:54:46 +0000
-Subject: hrtimer: Handle remaining time proper for TIME_LOW_RES
+Date: Thu, 14 Jan 2016 16:54:47 +0000
+Subject: posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper
 
-commit 203cbf77de59fc8f13502dcfd11350c6d4a5c95f upstream.
+commit 572c39172684c3711e4a03c9a7380067e2b0661c upstream.
 
-If CONFIG_TIME_LOW_RES is enabled we add a jiffie to the relative timeout to
-prevent short sleeps, but we do not account for that in interfaces which
-retrieve the remaining time.
+As Helge reported for timerfd we have the same issue in posix timers. We
+return remaining time larger than the programmed relative time to user space
+in case of CONFIG_TIME_LOW_RES=y. Use the proper function to adjust the extra
+time added in hrtimer_start_range_ns().
 
-Helge observed that timerfd can return a remaining time larger than the
-relative timeout. That's not expected and breaks userland test programs.
-
-Store the information that the timer was armed relative and provide functions
-to adjust the remaining time. To avoid bloating the hrtimer struct make state
-a u8, which as a bonus results in better code on x86 at least.
-
-Reported-and-tested-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Helge Deller <deller@gmx.de>
 Cc: John Stultz <john.stultz@linaro.org>
 Cc: linux-m68k@lists.linux-m68k.org
 Cc: dhowells@redhat.com
-Link: http://lkml.kernel.org/r/20160114164159.273328486@linutronix.de
+Link: http://lkml.kernel.org/r/20160114164159.450510905@linutronix.de
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Kamal Mostafa <kamal@canonical.com>
 ---
- include/linux/hrtimer.h  | 34 +++++++++++++++++++++++++++---
- kernel/time/hrtimer.c    | 55 ++++++++++++++++++++++++++++++++----------------
- kernel/time/timer_list.c |  2 +-
- 3 files changed, 69 insertions(+), 22 deletions(-)
+ kernel/time/posix-timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 76dd4f0..2ead22d 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -87,7 +87,8 @@ enum hrtimer_restart {
-  * @function:	timer expiry callback function
-  * @base:	pointer to the timer base (per cpu and per clock)
-  * @state:	state information (See bit values above)
-- * @start_pid: timer statistics field to store the pid of the task which
-+ * @is_rel:	Set if the timer was armed relative
-+ * @start_pid:  timer statistics field to store the pid of the task which
-  *		started the timer
-  * @start_site:	timer statistics field to store the site where the timer
-  *		was started
-@@ -101,7 +102,8 @@ struct hrtimer {
- 	ktime_t				_softexpires;
- 	enum hrtimer_restart		(*function)(struct hrtimer *);
- 	struct hrtimer_clock_base	*base;
--	unsigned long			state;
-+	u8				state;
-+	u8				is_rel;
- #ifdef CONFIG_TIMER_STATS
- 	int				start_pid;
- 	void				*start_site;
-@@ -321,6 +323,27 @@ static inline void clock_was_set_delayed(void) { }
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index 31d11ac..f2826c3 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -760,7 +760,7 @@ common_timer_get(struct k_itimer *timr, struct itimerspec *cur_setting)
+ 	    (timr->it_sigev_notify & ~SIGEV_THREAD_ID) == SIGEV_NONE))
+ 		timr->it_overrun += (unsigned int) hrtimer_forward(timer, now, iv);
 
- #endif
-
-+static inline ktime_t
-+__hrtimer_expires_remaining_adjusted(const struct hrtimer *timer, ktime_t now)
-+{
-+	ktime_t rem = ktime_sub(timer->node.expires, now);
-+
-+	/*
-+	 * Adjust relative timers for the extra we added in
-+	 * hrtimer_start_range_ns() to prevent short timeouts.
-+	 */
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && timer->is_rel)
-+		rem.tv64 -= hrtimer_resolution;
-+	return rem;
-+}
-+
-+static inline ktime_t
-+hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
-+{
-+	return __hrtimer_expires_remaining_adjusted(timer,
-+						    timer->base->get_time());
-+}
-+
- extern void clock_was_set(void);
- #ifdef CONFIG_TIMERFD
- extern void timerfd_clock_was_set(void);
-@@ -390,7 +413,12 @@ static inline void hrtimer_restart(struct hrtimer *timer)
- }
-
- /* Query timers: */
--extern ktime_t hrtimer_get_remaining(const struct hrtimer *timer);
-+extern ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust);
-+
-+static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-+{
-+	return __hrtimer_get_remaining(timer, false);
-+}
-
- extern u64 hrtimer_get_next_event(void);
-
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 5c7ae4b..5f405b3 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -889,10 +889,10 @@ static int enqueue_hrtimer(struct hrtimer *timer,
-  */
- static void __remove_hrtimer(struct hrtimer *timer,
- 			     struct hrtimer_clock_base *base,
--			     unsigned long newstate, int reprogram)
-+			     u8 newstate, int reprogram)
- {
- 	struct hrtimer_cpu_base *cpu_base = base->cpu_base;
--	unsigned int state = timer->state;
-+	u8 state = timer->state;
-
- 	timer->state = newstate;
- 	if (!(state & HRTIMER_STATE_ENQUEUED))
-@@ -922,7 +922,7 @@ static inline int
- remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
- {
- 	if (hrtimer_is_queued(timer)) {
--		unsigned long state = timer->state;
-+		u8 state = timer->state;
- 		int reprogram;
-
+-	remaining = ktime_sub(hrtimer_get_expires(timer), now);
++	remaining = __hrtimer_expires_remaining_adjusted(timer, now);
+ 	/* Return 0 only, when the timer is expired and not pending */
+ 	if (remaining.tv64 <= 0) {
  		/*
-@@ -946,6 +946,22 @@ remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool rest
- 	return 0;
- }
-
-+static inline ktime_t hrtimer_update_lowres(struct hrtimer *timer, ktime_t tim,
-+					    const enum hrtimer_mode mode)
-+{
-+#ifdef CONFIG_TIME_LOW_RES
-+	/*
-+	 * CONFIG_TIME_LOW_RES indicates that the system has no way to return
-+	 * granular time values. For relative timers we add hrtimer_resolution
-+	 * (i.e. one jiffie) to prevent short timeouts.
-+	 */
-+	timer->is_rel = mode & HRTIMER_MODE_REL;
-+	if (timer->is_rel)
-+		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
-+#endif
-+	return tim;
-+}
-+
- /**
-  * hrtimer_start_range_ns - (re)start an hrtimer on the current CPU
-  * @timer:	the timer to be added
-@@ -966,19 +982,10 @@ void hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- 	/* Remove an active timer from the queue: */
- 	remove_hrtimer(timer, base, true);
-
--	if (mode & HRTIMER_MODE_REL) {
-+	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
--		/*
--		 * CONFIG_TIME_LOW_RES is a temporary way for architectures
--		 * to signal that they simply return xtime in
--		 * do_gettimeoffset(). In this case we want to round up by
--		 * resolution when starting a relative timer, to avoid short
--		 * timeouts. This will go away with the GTOD framework.
--		 */
--#ifdef CONFIG_TIME_LOW_RES
--		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
--#endif
--	}
-+
-+	tim = hrtimer_update_lowres(timer, tim, mode);
-
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
-
-@@ -1066,19 +1073,23 @@ EXPORT_SYMBOL_GPL(hrtimer_cancel);
- /**
-  * hrtimer_get_remaining - get remaining time for the timer
-  * @timer:	the timer to read
-+ * @adjust:	adjust relative timers when CONFIG_TIME_LOW_RES=y
-  */
--ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-+ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust)
- {
- 	unsigned long flags;
- 	ktime_t rem;
-
- 	lock_hrtimer_base(timer, &flags);
--	rem = hrtimer_expires_remaining(timer);
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && adjust)
-+		rem = hrtimer_expires_remaining_adjusted(timer);
-+	else
-+		rem = hrtimer_expires_remaining(timer);
- 	unlock_hrtimer_base(timer, &flags);
-
- 	return rem;
- }
--EXPORT_SYMBOL_GPL(hrtimer_get_remaining);
-+EXPORT_SYMBOL_GPL(__hrtimer_get_remaining);
-
- #ifdef CONFIG_NO_HZ_COMMON
- /**
-@@ -1212,6 +1223,14 @@ static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
- 	fn = timer->function;
-
- 	/*
-+	 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
-+	 * timer is restarted with a period then it becomes an absolute
-+	 * timer. If its not restarted it does not matter.
-+	 */
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES))
-+		timer->is_rel = false;
-+
-+	/*
- 	 * Because we run timers from hardirq context, there is no chance
- 	 * they get migrated to another cpu, therefore its safe to unlock
- 	 * the timer base.
-diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
-index a4536e1..62b146b 100644
---- a/kernel/time/timer_list.c
-+++ b/kernel/time/timer_list.c
-@@ -69,7 +69,7 @@ print_timer(struct seq_file *m, struct hrtimer *taddr, struct hrtimer *timer,
- 	print_name_offset(m, taddr);
- 	SEQ_printf(m, ", ");
- 	print_name_offset(m, timer->function);
--	SEQ_printf(m, ", S:%02lx", timer->state);
-+	SEQ_printf(m, ", S:%02x", timer->state);
- #ifdef CONFIG_TIMER_STATS
- 	SEQ_printf(m, ", ");
- 	print_name_offset(m, timer->start_site);
 --
 1.9.1
