@@ -1,53 +1,47 @@
-From: Kamal Mostafa <kamal@canonical.com>
-Subject: [PATCH 4.2.y-ckt 15/64] posix-timers: Handle relative timers with CONFIG_TIME_LOW_RES proper
-Date: Thu,  4 Feb 2016 14:43:58 -0800
-Message-ID: <1454625887-18915-16-git-send-email-kamal__11901.6158082106$1454627390$gmane$org@canonical.com>
-References: <1454625887-18915-1-git-send-email-kamal@canonical.com>
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+Subject: Re: Linux/m68k on the Apollo FPGA softcore?
+Date: Fri, 5 Feb 2016 15:49:53 +0100 (CET)
+Message-ID: <alpine.OSX.2.20.1602051545100.775@brendeholten.uninett.no>
+References: <alpine.DEB.2.10.1602021757210.2761@firda> <56B36771.9010006@physik.fu-berlin.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1454625887-18915-1-git-send-email-kamal@canonical.com>
+Received: from epost.ufisa.uninett.no ([158.38.152.65]:43501 "EHLO
+	epost.ufisa.uninett.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750958AbcBEOtz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 5 Feb 2016 09:49:55 -0500
+In-Reply-To: <56B36771.9010006@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org, kernel-team@lists.ubuntu.com
-Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com, Kamal Mostafa <kamal@canonical.com>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: linux-m68k@vger.kernel.org
 
-4.2.8-ckt4 -stable review patch.  If anyone has any objections, please let me know.
+On Thu, 4 Feb 2016, John Paul Adrian Glaubitz wrote:
 
----8<------------------------------------------------------------
+> On 02/02/2016 06:16 PM, Kolbj=C3=B8rn Barmen wrote:
+> > From what I understand, the core implements a new FPU, not
+> > compatible with existing FPUs, and there has
+> > been talks about a new MMU implementation too.=20
+>=20
+> Well, that would be too bad given the fact that there is already a hu=
+ge
+> number of applications and kernels which work with the old FPU/MMU
+> combination.
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Sure, but the idea is to move forward from what I understand.
 
-commit 572c39172684c3711e4a03c9a7380067e2b0661c upstream.
+> I'd buy such an accelerator in a heartbeat, but it should be binary
+> compatible with existing 68020+ code.
 
-As Helge reported for timerfd we have the same issue in posix timers. We
-return remaining time larger than the programmed relative time to user space
-in case of CONFIG_TIME_LOW_RES=y. Use the proper function to adjust the extra
-time added in hrtimer_start_range_ns().
+Apparently it will be usermode compatible with all existing 68k, but no=
+t
+supervisor mode compatible, not MMU compatibale, not FPU compatible. An=
+d
+it is already blazingly fast compared to most 68060 systems, without an=
+y
+optimization done.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: dhowells@redhat.com
-Link: http://lkml.kernel.org/r/20160114164159.450510905@linutronix.de
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Kamal Mostafa <kamal@canonical.com>
----
- kernel/time/posix-timers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I guess it will be an AmigaOS only CPU core :)
 
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index 31d11ac..f2826c3 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -760,7 +760,7 @@ common_timer_get(struct k_itimer *timr, struct itimerspec *cur_setting)
- 	    (timr->it_sigev_notify & ~SIGEV_THREAD_ID) == SIGEV_NONE))
- 		timr->it_overrun += (unsigned int) hrtimer_forward(timer, now, iv);
- 
--	remaining = ktime_sub(hrtimer_get_expires(timer), now);
-+	remaining = __hrtimer_expires_remaining_adjusted(timer, now);
- 	/* Return 0 only, when the timer is expired and not pending */
- 	if (remaining.tv64 <= 0) {
- 		/*
--- 
-1.9.1
+-- kolla
