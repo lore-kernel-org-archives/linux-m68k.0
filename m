@@ -1,42 +1,44 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: my contribution
-Date: Tue, 9 Feb 2016 23:40:29 +0100
-Message-ID: <56BA6ADD.4020403@physik.fu-berlin.de>
+Date: Wed, 10 Feb 2016 10:29:47 +0100
+Message-ID: <CAMuHMdXKwEWZLBfMKu=b3cZd1sYiBrk3ZLdodnitWmddauhixw@mail.gmail.com>
 References: <56BA64D9.9000403@sysam.it>
+	<56BA6ADD.4020403@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:38641 "EHLO
-	outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1755534AbcBIWkd (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Feb 2016 17:40:33 -0500
-In-Reply-To: <56BA64D9.9000403@sysam.it>
+Received: from mail-ig0-f178.google.com ([209.85.213.178]:33761 "EHLO
+	mail-ig0-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754779AbcBJJ3s (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Feb 2016 04:29:48 -0500
+Received: by mail-ig0-f178.google.com with SMTP id y8so10744715igp.0
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Feb 2016 01:29:48 -0800 (PST)
+In-Reply-To: <56BA6ADD.4020403@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>, linux-m68k@vger.kernel.org
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Angelo Dureghello <angelo@sysam.it>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Angelo!
+On Tue, Feb 9, 2016 at 11:40 PM, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 02/09/2016 11:14 PM, Angelo Dureghello wrote:
+>> Let me know if there is some job to do, where i can be useful.
+>
+> Join debian-68k@lists.debian.org:
+>
+>> https://lists.debian.org/debian-68k/
+>
+> And help fixing packages that don't build on m68k.
 
-On 02/09/2016 11:14 PM, Angelo Dureghello wrote:
-> Let me know if there is some job to do, where i can be useful.
+IIRC, Debian/m68k doesn't run on Coldfire m5307.
 
-Join debian-68k@lists.debian.org:
+Gr{oetje,eeting}s,
 
-> https://lists.debian.org/debian-68k/
+                        Geert
 
-And help fixing packages that don't build on m68k.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Here are some hints on how to get a working m68k Debian:
-
-> https://wiki.debian.org/M68k
-> https://wiki.debian.org/M68k/Installing
-> https://wiki.debian.org/Aranym/Quick
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
