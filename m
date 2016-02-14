@@ -1,18 +1,18 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.3 098/200] hrtimer: Handle remaining time proper for TIME_LOW_RES
-Date: Sun, 14 Feb 2016 14:21:45 -0800
-Message-ID: <20160214222220.889543226@linuxfoundation.org>
-References: <20160214222217.084543173@linuxfoundation.org>
+Subject: [PATCH 4.4 023/117] hrtimer: Handle remaining time proper for TIME_LOW_RES
+Date: Sun, 14 Feb 2016 14:21:00 -0800
+Message-ID: <20160214222142.097426257__27386.6166513928$1455497364$gmane$org@linuxfoundation.org>
+References: <20160214222141.393531627@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160214222217.084543173@linuxfoundation.org>
+In-Reply-To: <20160214222141.393531627@linuxfoundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
 
-4.3-stable review patch.  If anyone has any objections, please let me know.
+4.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
