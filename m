@@ -1,236 +1,109 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 023/117] hrtimer: Handle remaining time proper for TIME_LOW_RES
-Date: Sun, 14 Feb 2016 14:21:00 -0800
-Message-ID: <20160214222142.097426257__27386.6166513928$1455497364$gmane$org@linuxfoundation.org>
-References: <20160214222141.393531627@linuxfoundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [PATCH v2] m68k: use conventional function parameters for do_sigreturn
+Date: Mon, 15 Feb 2016 16:36:29 +1000
+Message-ID: <1455518189-12478-1-git-send-email-gerg@uclinux.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160214222141.393531627@linuxfoundation.org>
+Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:33803
+	"EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751868AbcBOGgE (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 15 Feb 2016 01:36:04 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@uclinux.org>
 
-4.4-stable review patch.  If anyone has any objections, please let me know.
+Create conventional stack parameters for the calls to do_sigreturn and
+do_rt_sigreturn. The current C code for do_sigreturn and do_rt_sigreturn
+dig into the stack to create local pointers to the saved switch stack
+and the pt_regs structs.
 
-------------------
+The motivation for this change is a problem with non-MMU targets that
+have broken signal return paths on newer versions of gcc. It appears as
+though gcc has determined that the pointers into the saved stack structs,
+and the saved structs themselves, are function parameters and updates to
+them will be lost on function return, so they are optimized away. This
+results in large parts of restore_sigcontext() and mangle_kernel_stack()
+functions being removed. Of course this results in non-functional code
+causing kernel oops. This problem has been observed with gcc version
+5.2 and 5.3, and probably exists in earlier versions as well.
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Using conventional stack parameter pointers passed to these functions has
+the advantage of the code here not needing to know the exact details of
+how the underlying entry handler layed these structs out on the stack.
+So the rather ugly pointer setup casting and arg referencing can be
+removed.
 
-commit 203cbf77de59fc8f13502dcfd11350c6d4a5c95f upstream.
+The resulting code after this change is a few bytes larger (due to the
+overhead of creating the stack args and their tear down). Not being hot
+paths I don't think this is too much of a problem here.
 
-If CONFIG_TIME_LOW_RES is enabled we add a jiffie to the relative timeout to
-prevent short sleeps, but we do not account for that in interfaces which
-retrieve the remaining time.
+An alternative solution is to put a barrier() in the do_sigreturn() code,
+but this doesn't feel quite as clean as this solution.
 
-Helge observed that timerfd can return a remaining time larger than the
-relative timeout. That's not expected and breaks userland test programs.
+This change has been compile tested on all defconfigs, and run tested on
+Atari (through aranym), ColdFire with MMU (M5407EVB) and ColdFire with
+no-MMU (QEMU and M5208EVB).
 
-Store the information that the timer was armed relative and provide functions
-to adjust the remaining time. To avoid bloating the hrtimer struct make state
-a u8, which as a bonus results in better code on x86 at least.
-
-Reported-and-tested-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: dhowells@redhat.com
-Link: http://lkml.kernel.org/r/20160114164159.273328486@linutronix.de
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 ---
- include/linux/hrtimer.h  |   34 ++++++++++++++++++++++++++---
- kernel/time/hrtimer.c    |   55 +++++++++++++++++++++++++++++++----------------
- kernel/time/timer_list.c |    2 -
- 3 files changed, 69 insertions(+), 22 deletions(-)
+v2: reworded the commit log message with better description of problem
 
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -87,7 +87,8 @@ enum hrtimer_restart {
-  * @function:	timer expiry callback function
-  * @base:	pointer to the timer base (per cpu and per clock)
-  * @state:	state information (See bit values above)
-- * @start_pid: timer statistics field to store the pid of the task which
-+ * @is_rel:	Set if the timer was armed relative
-+ * @start_pid:  timer statistics field to store the pid of the task which
-  *		started the timer
-  * @start_site:	timer statistics field to store the site where the timer
-  *		was started
-@@ -101,7 +102,8 @@ struct hrtimer {
- 	ktime_t				_softexpires;
- 	enum hrtimer_restart		(*function)(struct hrtimer *);
- 	struct hrtimer_clock_base	*base;
--	unsigned long			state;
-+	u8				state;
-+	u8				is_rel;
- #ifdef CONFIG_TIMER_STATS
- 	int				start_pid;
- 	void				*start_site;
-@@ -321,6 +323,27 @@ static inline void clock_was_set_delayed
+ arch/m68k/kernel/entry.S  | 6 ++++++
+ arch/m68k/kernel/signal.c | 8 ++------
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index b54ac7a..97cd3ea 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -71,13 +71,19 @@ ENTRY(__sys_vfork)
  
- #endif
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%sp@-		  | switch_stack pointer
++	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
+ 	jbsr	do_sigreturn
++	addql	#8,%sp
+ 	RESTORE_SWITCH_STACK
+ 	rts
  
-+static inline ktime_t
-+__hrtimer_expires_remaining_adjusted(const struct hrtimer *timer, ktime_t now)
-+{
-+	ktime_t rem = ktime_sub(timer->node.expires, now);
-+
-+	/*
-+	 * Adjust relative timers for the extra we added in
-+	 * hrtimer_start_range_ns() to prevent short timeouts.
-+	 */
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && timer->is_rel)
-+		rem.tv64 -= hrtimer_resolution;
-+	return rem;
-+}
-+
-+static inline ktime_t
-+hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
-+{
-+	return __hrtimer_expires_remaining_adjusted(timer,
-+						    timer->base->get_time());
-+}
-+
- extern void clock_was_set(void);
- #ifdef CONFIG_TIMERFD
- extern void timerfd_clock_was_set(void);
-@@ -390,7 +413,12 @@ static inline void hrtimer_restart(struc
+ ENTRY(sys_rt_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%sp@-		  | switch_stack pointer
++	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
+ 	jbsr	do_rt_sigreturn
++	addql	#8,%sp
+ 	RESTORE_SWITCH_STACK
+ 	rts
+ 
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index af1c4f3..2dcee3a 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -737,10 +737,8 @@ badframe:
+ 	return 1;
  }
  
- /* Query timers: */
--extern ktime_t hrtimer_get_remaining(const struct hrtimer *timer);
-+extern ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust);
-+
-+static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-+{
-+	return __hrtimer_get_remaining(timer, false);
-+}
- 
- extern u64 hrtimer_get_next_event(void);
- 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -897,10 +897,10 @@ static int enqueue_hrtimer(struct hrtime
-  */
- static void __remove_hrtimer(struct hrtimer *timer,
- 			     struct hrtimer_clock_base *base,
--			     unsigned long newstate, int reprogram)
-+			     u8 newstate, int reprogram)
+-asmlinkage int do_sigreturn(unsigned long __unused)
++asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
  {
- 	struct hrtimer_cpu_base *cpu_base = base->cpu_base;
--	unsigned int state = timer->state;
-+	u8 state = timer->state;
- 
- 	timer->state = newstate;
- 	if (!(state & HRTIMER_STATE_ENQUEUED))
-@@ -930,7 +930,7 @@ static inline int
- remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
- {
- 	if (hrtimer_is_queued(timer)) {
--		unsigned long state = timer->state;
-+		u8 state = timer->state;
- 		int reprogram;
- 
- 		/*
-@@ -954,6 +954,22 @@ remove_hrtimer(struct hrtimer *timer, st
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
+ 	sigset_t set;
+@@ -764,10 +762,8 @@ badframe:
  	return 0;
  }
  
-+static inline ktime_t hrtimer_update_lowres(struct hrtimer *timer, ktime_t tim,
-+					    const enum hrtimer_mode mode)
-+{
-+#ifdef CONFIG_TIME_LOW_RES
-+	/*
-+	 * CONFIG_TIME_LOW_RES indicates that the system has no way to return
-+	 * granular time values. For relative timers we add hrtimer_resolution
-+	 * (i.e. one jiffie) to prevent short timeouts.
-+	 */
-+	timer->is_rel = mode & HRTIMER_MODE_REL;
-+	if (timer->is_rel)
-+		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
-+#endif
-+	return tim;
-+}
-+
- /**
-  * hrtimer_start_range_ns - (re)start an hrtimer on the current CPU
-  * @timer:	the timer to be added
-@@ -974,19 +990,10 @@ void hrtimer_start_range_ns(struct hrtim
- 	/* Remove an active timer from the queue: */
- 	remove_hrtimer(timer, base, true);
- 
--	if (mode & HRTIMER_MODE_REL) {
-+	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
--		/*
--		 * CONFIG_TIME_LOW_RES is a temporary way for architectures
--		 * to signal that they simply return xtime in
--		 * do_gettimeoffset(). In this case we want to round up by
--		 * resolution when starting a relative timer, to avoid short
--		 * timeouts. This will go away with the GTOD framework.
--		 */
--#ifdef CONFIG_TIME_LOW_RES
--		tim = ktime_add_safe(tim, ktime_set(0, hrtimer_resolution));
--#endif
--	}
-+
-+	tim = hrtimer_update_lowres(timer, tim, mode);
- 
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
- 
-@@ -1074,19 +1081,23 @@ EXPORT_SYMBOL_GPL(hrtimer_cancel);
- /**
-  * hrtimer_get_remaining - get remaining time for the timer
-  * @timer:	the timer to read
-+ * @adjust:	adjust relative timers when CONFIG_TIME_LOW_RES=y
-  */
--ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
-+ktime_t __hrtimer_get_remaining(const struct hrtimer *timer, bool adjust)
+-asmlinkage int do_rt_sigreturn(unsigned long __unused)
++asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
  {
- 	unsigned long flags;
- 	ktime_t rem;
- 
- 	lock_hrtimer_base(timer, &flags);
--	rem = hrtimer_expires_remaining(timer);
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES) && adjust)
-+		rem = hrtimer_expires_remaining_adjusted(timer);
-+	else
-+		rem = hrtimer_expires_remaining(timer);
- 	unlock_hrtimer_base(timer, &flags);
- 
- 	return rem;
- }
--EXPORT_SYMBOL_GPL(hrtimer_get_remaining);
-+EXPORT_SYMBOL_GPL(__hrtimer_get_remaining);
- 
- #ifdef CONFIG_NO_HZ_COMMON
- /**
-@@ -1220,6 +1231,14 @@ static void __run_hrtimer(struct hrtimer
- 	fn = timer->function;
- 
- 	/*
-+	 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
-+	 * timer is restarted with a period then it becomes an absolute
-+	 * timer. If its not restarted it does not matter.
-+	 */
-+	if (IS_ENABLED(CONFIG_TIME_LOW_RES))
-+		timer->is_rel = false;
-+
-+	/*
- 	 * Because we run timers from hardirq context, there is no chance
- 	 * they get migrated to another cpu, therefore its safe to unlock
- 	 * the timer base.
---- a/kernel/time/timer_list.c
-+++ b/kernel/time/timer_list.c
-@@ -69,7 +69,7 @@ print_timer(struct seq_file *m, struct h
- 	print_name_offset(m, taddr);
- 	SEQ_printf(m, ", ");
- 	print_name_offset(m, timer->function);
--	SEQ_printf(m, ", S:%02lx", timer->state);
-+	SEQ_printf(m, ", S:%02x", timer->state);
- #ifdef CONFIG_TIMER_STATS
- 	SEQ_printf(m, ", ");
- 	print_name_offset(m, timer->start_site);
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
+ 	sigset_t set;
+-- 
+1.9.1
