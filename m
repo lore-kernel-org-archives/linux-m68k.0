@@ -1,144 +1,264 @@
-From: Philippe De Muyter <phdm@macq.eu>
-Subject: Re: [PATCH v2] m68k: use conventional function parameters for
-	do_sigreturn
-Date: Mon, 15 Feb 2016 11:03:01 +0100
-Message-ID: <20160215100301.GA30557@frolo.macqel>
-References: <1455518189-12478-1-git-send-email-gerg@uclinux.org>
+From: "FROM MRS.LINAH MOHOHLO" <linahmohohlo2017@gmail.com>
+Subject: Kindly view the attached file for your perusal.,Remain blessed in
+ the name of the Lord.
+Date: Mon, 15 Feb 2016 12:34:32 +0000 (UTC)
+Message-ID: <1789782188.3457928.1455539672750.JavaMail.yahoo@mail.yahoo.com>
+References: <1401021455.10158727.1448889686256.JavaMail.yahoo.ref@mail.yahoo.com> <1401021455.10158727.1448889686256.JavaMail.yahoo@mail.yahoo.com> <1976663523.10020420.1448889771792.JavaMail.yahoo@mail.yahoo.com> <1737006439.11317559.1449065324703.JavaMail.yahoo@mail.yahoo.com> <1330858653.11825426.1449154894651.JavaMail.yahoo@mail.yahoo.com> <242516961.11834291.1449155153449.JavaMail.yahoo@mail.yahoo.com> <606005045.3139036.1452615395724.JavaMail.yahoo@mail.yahoo.com> <1944388882.3153800.1452615560836.JavaMail.yahoo@mail.yahoo.com> <1403181375.3636316.1452692848729.JavaMail.yahoo@mail.yahoo.com> <367411740.4082290.1452781594266.JavaMail.yahoo@mail.yahoo.com> <1808510325.4459926.1452854600098.JavaMail.yahoo@mail.yahoo.com> <1427063419.4532789.1452865758524.JavaMail.yahoo@mail.yahoo.com> <
+ 2103945200.4611743.1452876478055.JavaMail.yahoo@mail.yahoo.com> <1387476887.4868018.1452952343927.JavaMail.yahoo@mail.yahoo.com> <695571126.5130449.1453042190569.JavaMail.yahoo@mail.yahoo.com> <326435739.5337630.1453115916786.JavaMail.yahoo@mail.yahoo.com> <1167525912.5520324.1453135593501.JavaMail.yahoo@mail.yahoo.com> <1541323252.5868569.1453211170534.JavaMail.yahoo@mail.yahoo.com> <652187373.5878913.1453220954474.JavaMail.yahoo@mail.yahoo.com> <1403679156.6496530.1453305894794.JavaMail.yahoo@mail.yahoo.com> <62222396.6863389.1453380211155.JavaMail.yahoo@mail.yahoo.com> <1439815018.54730.1453538771454.JavaMail.yahoo@mail.yahoo.com> <275808471.321352.1453619714175.JavaMail.yahoo@mail.yahoo.com> <218437571.640006.1453644761134.JavaMail.yahoo@mail.yahoo.com> <1952809707.731351.14538984091
+ 77.JavaMail.yahoo@mail.yahoo.com> <1423325579.831120.1453907610845.JavaMail.yahoo@mail.yahoo.com> <463767803.1226920.1453984539699.JavaMail.yahoo@mail.yahoo.com> <902131891.1299446.1453997591010.JavaMail.yahoo@mail.yahoo.com> <569647244.1877808.1454087841544.JavaMail.yahoo@mail.yahoo.com> <1670815.2101729.1454159436987.JavaMail.yahoo@mail.yahoo.com> <701477015.2283325.1454219483231.JavaMail.yahoo@mail.yahoo.com> <1038414040.2257684.1454227021009.JavaMail.yahoo@mail.yahoo.com> <108205329.2316245.1454235383135.JavaMail.yahoo@mail.yahoo.com> <306899387.2279686.1454244722598.JavaMail.yahoo@mail.yahoo.com> <979138734.2640738.1454326426566.JavaMail.yahoo@mail.yahoo.com> <2040769693.2775641.1454346439267.JavaMail.yahoo@mail.yahoo.com> <362087932.241718.1454410431373.JavaMail.yahoo@mail.yahoo.co
+ m> <895120496.377311.1454427504493.JavaMail.yahoo@mail.yahoo.com> <1872965158.1284308.1454585770702.JavaMail.yahoo@mail.yahoo.com> <808908597.193495.1454595954187.JavaMail.yahoo@mail.yahoo.com> <1445401026.1803909.1454666341912.JavaMail.yahoo@mail.yahoo.com> <996502390.1867495.1454681679151.JavaMail.yahoo@mail.yahoo.com> <2108029893.334321.1454811448147.JavaMail.yahoo@mail.yahoo.com> <677331562.352950.1454820907368.JavaMail.yahoo@mail.yahoo.com> <1421676450.422813.1454860770062.JavaMail.yahoo@mail.yahoo.com> <1952218183.690185.1454942409594.JavaMail.yahoo@mail.yahoo.com> <400002151.1156993.1455021649060.JavaMail.yahoo@mail.yahoo.com> <1081975163.1249005.1455038200132.JavaMail.yahoo@mail.yahoo.com> <340148619.2168953.1455199086832.JavaMail.yahoo@mail.yahoo.com> <874788513.2549665.14552890
+ 57081.JavaMail.yahoo@mail.yahoo.com> <161308869.3149880.1455433674508.JavaMail.yahoo@mail.yahoo.com>
+Reply-To: "FROM MRS.LINAH MOHOHLO" <linahmohohlo200@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+	boundary="----=_Part_3457927_1729310404.1455539672750"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp2.macqel.be ([109.135.2.61]:51045 "EHLO smtp2.macqel.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1751027AbcBOKDG (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 15 Feb 2016 05:03:06 -0500
-Content-Disposition: inline
-In-Reply-To: <1455518189-12478-1-git-send-email-gerg@uclinux.org>
+Received: from nm43-vm6.bullet.mail.ne1.yahoo.com ([98.138.120.230]:52738 "EHLO
+	nm43-vm6.bullet.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752752AbcBOMnq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 15 Feb 2016 07:43:46 -0500
+In-Reply-To: <161308869.3149880.1455433674508.JavaMail.yahoo@mail.yahoo.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@vger.kernel.org
 
-Hi Greg,
+------=_Part_3457927_1729310404.1455539672750
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 15, 2016 at 04:36:29PM +1000, Greg Ungerer wrote:
-> Create conventional stack parameters for the calls to do_sigreturn and
-> do_rt_sigreturn. The current C code for do_sigreturn and do_rt_sigreturn
-> dig into the stack to create local pointers to the saved switch stack
-> and the pt_regs structs.
-> 
-> The motivation for this change is a problem with non-MMU targets that
-> have broken signal return paths on newer versions of gcc. It appears as
-> though gcc has determined that the pointers into the saved stack structs,
-> and the saved structs themselves, are function parameters and updates to
-> them will be lost on function return, so they are optimized away. This
-> results in large parts of restore_sigcontext() and mangle_kernel_stack()
-> functions being removed. Of course this results in non-functional code
-> causing kernel oops. This problem has been observed with gcc version
-> 5.2 and 5.3, and probably exists in earlier versions as well.
-> 
-> Using conventional stack parameter pointers passed to these functions has
-> the advantage of the code here not needing to know the exact details of
-> how the underlying entry handler layed these structs out on the stack.
-> So the rather ugly pointer setup casting and arg referencing can be
-> removed.
-> 
-> The resulting code after this change is a few bytes larger (due to the
-> overhead of creating the stack args and their tear down). Not being hot
-> paths I don't think this is too much of a problem here.
+>From the Governor of the Bank of Botswana.Kindly view the attached file for your perusal.
 
-As an intermediate solution, I think that you can avoid part of that overhead ...
+It is a pleasure to write you.Remain blessed in the name of the Lord. 
+------=_Part_3457927_1729310404.1455539672750
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="Mrs. Linah Mohohlo and only Son Favor..docx"
+Content-ID: <e9084d4c-7957-c47b-79cf-9f0861554044@yahoo.com>
 
-> 
-> An alternative solution is to put a barrier() in the do_sigreturn() code,
-> but this doesn't feel quite as clean as this solution.
-> 
-> This change has been compile tested on all defconfigs, and run tested on
-> Atari (through aranym), ColdFire with MMU (M5407EVB) and ColdFire with
-> no-MMU (QEMU and M5208EVB).
-> 
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-> ---
-> v2: reworded the commit log message with better description of problem
-> 
->  arch/m68k/kernel/entry.S  | 6 ++++++
->  arch/m68k/kernel/signal.c | 8 ++------
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-> index b54ac7a..97cd3ea 100644
-> --- a/arch/m68k/kernel/entry.S
-> +++ b/arch/m68k/kernel/entry.S
-> @@ -71,13 +71,19 @@ ENTRY(__sys_vfork)
->  
->  ENTRY(sys_sigreturn)
->  	SAVE_SWITCH_STACK
-> +	movel	%sp,%sp@-		  | switch_stack pointer
-> +	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
+UEsDBBQABgAIAAAAIQDd/JU3ZgEAACAFAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC0
+VMtuwjAQvFfqP0S+Vomhh6qqCBz6OLZIpR9g7A1Y9Uv28vr7bgJEVQtBKuUSKVnvzOzsxIPR2pps
+CTFp70rWL3osAye90m5Wso/JS37PsoTCKWG8g5JtILHR8PpqMNkESBl1u1SyOWJ44DzJOViRCh/A
+UaXy0Qqk1zjjQchPMQN+2+vdcekdgsMcaww2HDxBJRYGs+c1fd4qiWASyx63B2uukokQjJYCSSlf
+OvWDJd8xFNTZnElzHdINyWD8IENdOU6w63sja6JWkI1FxFdhSQZf+ai48nJhaYaiG+aATl9VWkLb
+X6OF6CWkRJ5bU7QVK7Tb6z+qI+HGQPp/FVvcLnrSOY4+JE57OZsf6s0rUDlZESCihnZ1x0cHRLLs
+EsPvkLvGb1KAlHfgzbN/tgcNzEnKin6JiZgaOJvvV/Ja6JMiVjB9v5j738C7hLT5kz7+wYz9dVF3
+H0gdb+634RcAAAD//wMAUEsDBBQABgAIAAAAIQAekRq38wAAAE4CAAALAAgCX3JlbHMvLnJlbHMg
+ogQCKKAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAjJLbSgNBDIbvBd9hyH032woi0tneSKF3IusDhJnsAXcOzKTavr2jILpQ217m9OfLT9ab
+g5vUO6c8Bq9hWdWg2JtgR99reG23iwdQWchbmoJnDUfOsGlub9YvPJGUoTyMMaui4rOGQSQ+ImYz
+sKNchci+VLqQHEkJU4+RzBv1jKu6vsf0VwOamabaWQ1pZ+9AtcdYNl/WDl03Gn4KZu/Yy4kVyAdh
+b9kuYipsScZyjWop9SwabDDPJZ2RYqwKNuBpotX1RP9fi46FLAmhCYnP83x1nANaXg902aJ5x687
+HyFZLBZ9e/tDg7MvaD4BAAD//wMAUEsDBBQABgAIAAAAIQA8hJVIWAEAAFgFAAAcAAgBd29yZC9f
+cmVscy9kb2N1bWVudC54bWwucmVscyCiBAEooAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+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
+AMECAADbLgAAAAA=
 
-if you remove the above asm instruction ...
-
->  	jbsr	do_sigreturn
-> +	addql	#8,%sp
-
-change the 8 by 4 here ...
-
->  	RESTORE_SWITCH_STACK
->  	rts
->  
->  ENTRY(sys_rt_sigreturn)
->  	SAVE_SWITCH_STACK
-> +	movel	%sp,%sp@-		  | switch_stack pointer
-> +	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
-
-ditto here ...
-
->  	jbsr	do_rt_sigreturn
-> +	addql	#8,%sp
-
-and here ...
-
->  	RESTORE_SWITCH_STACK
->  	rts
->  
-> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-> index af1c4f3..2dcee3a 100644
-> --- a/arch/m68k/kernel/signal.c
-> +++ b/arch/m68k/kernel/signal.c
-> @@ -737,10 +737,8 @@ badframe:
->  	return 1;
->  }
->  
-> -asmlinkage int do_sigreturn(unsigned long __unused)
-> +asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
-
-and if you use the following prototype :
- asmlinkage int do_sigreturn(struct switch_stack *sw) ...
-
->  {
-> -	struct switch_stack *sw = (struct switch_stack *) &__unused;
-> -	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
-
-and keep the 'C' instruction above
-
->  	unsigned long usp = rdusp();
->  	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
->  	sigset_t set;
-> @@ -764,10 +762,8 @@ badframe:
->  	return 0;
->  }
->  
-> -asmlinkage int do_rt_sigreturn(unsigned long __unused)
-> +asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
- same here
->  {
-> -	struct switch_stack *sw = (struct switch_stack *) &__unused;
-> -	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
- and here
->  	unsigned long usp = rdusp();
->  	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
->  	sigset_t set;
-
-Philippe
-
--- 
-Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
+------=_Part_3457927_1729310404.1455539672750--
