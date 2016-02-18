@@ -1,173 +1,184 @@
-From: Philippe De Muyter <phdm@macq.eu>
-Subject: Re: [PATCH v2] m68k: use conventional function parameters for
-	do_sigreturn
-Date: Mon, 15 Feb 2016 15:57:48 +0100
-Message-ID: <20160215145748.GA10891@frolo.macqel>
-References: <1455518189-12478-1-git-send-email-gerg@uclinux.org> <20160215100301.GA30557@frolo.macqel> <56C1CD47.8000109@uclinux.org>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [fengguang.wu@intel.com: [pnfs:xfs-nfsd-clone]
+	57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f BUILD DONE]
+Date: Thu, 18 Feb 2016 14:32:40 +0100
+Message-ID: <20160218133240.GA5228@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp2.macqel.be ([109.135.2.61]:60899 "EHLO smtp2.macqel.be"
-	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1753408AbcBOO5x (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 15 Feb 2016 09:57:53 -0500
 Content-Disposition: inline
-In-Reply-To: <56C1CD47.8000109@uclinux.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: linux-m68k@vger.kernel.org
+To: xfs@oss.sgi.com
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>, linux-m68k@lists.linux-m68k.org
 
-Hi Greg,
+Looks like the structure size checker found it's first victim on m68k,
+which doesn't seem to pad to 4 byte boundaries.  I don't think it actua=
+lly
+matters in practice as we'll always the hacky appromiation of a variabl=
+e
+sized array behind it.  I guess we should move this to a modern C99 VLA
+and mark it as __packed?
 
-On Mon, Feb 15, 2016 at 11:06:15PM +1000, Greg Ungerer wrote:
-> Hi Philippe,
->
-> On 15/02/16 20:03, Philippe De Muyter wrote:
->> On Mon, Feb 15, 2016 at 04:36:29PM +1000, Greg Ungerer wrote:
->>> Create conventional stack parameters for the calls to do_sigreturn and
->>> do_rt_sigreturn. The current C code for do_sigreturn and do_rt_sigreturn
->>> dig into the stack to create local pointers to the saved switch stack
->>> and the pt_regs structs.
->>>
->>> The motivation for this change is a problem with non-MMU targets that
->>> have broken signal return paths on newer versions of gcc. It appears as
->>> though gcc has determined that the pointers into the saved stack structs,
->>> and the saved structs themselves, are function parameters and updates to
->>> them will be lost on function return, so they are optimized away. This
->>> results in large parts of restore_sigcontext() and mangle_kernel_stack()
->>> functions being removed. Of course this results in non-functional code
->>> causing kernel oops. This problem has been observed with gcc version
->>> 5.2 and 5.3, and probably exists in earlier versions as well.
->>>
->>> Using conventional stack parameter pointers passed to these functions has
->>> the advantage of the code here not needing to know the exact details of
->>> how the underlying entry handler layed these structs out on the stack.
->>> So the rather ugly pointer setup casting and arg referencing can be
->>> removed.
->>>
->>> The resulting code after this change is a few bytes larger (due to the
->>> overhead of creating the stack args and their tear down). Not being hot
->>> paths I don't think this is too much of a problem here.
->>
->> As an intermediate solution, I think that you can avoid part of that 
->> overhead ...
->>
->>>
->>> An alternative solution is to put a barrier() in the do_sigreturn() code,
->>> but this doesn't feel quite as clean as this solution.
->>>
->>> This change has been compile tested on all defconfigs, and run tested on
->>> Atari (through aranym), ColdFire with MMU (M5407EVB) and ColdFire with
->>> no-MMU (QEMU and M5208EVB).
->>>
->>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
->>> ---
->>> v2: reworded the commit log message with better description of problem
->>>
->>>   arch/m68k/kernel/entry.S  | 6 ++++++
->>>   arch/m68k/kernel/signal.c | 8 ++------
->>>   2 files changed, 8 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
->>> index b54ac7a..97cd3ea 100644
->>> --- a/arch/m68k/kernel/entry.S
->>> +++ b/arch/m68k/kernel/entry.S
->>> @@ -71,13 +71,19 @@ ENTRY(__sys_vfork)
->>>
->>>   ENTRY(sys_sigreturn)
->>>   	SAVE_SWITCH_STACK
->>> +	movel	%sp,%sp@-		  | switch_stack pointer
->>> +	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
->>
->> if you remove the above asm instruction ...
->>
->>>   	jbsr	do_sigreturn
->>> +	addql	#8,%sp
->>
->> change the 8 by 4 here ...
->>
->>>   	RESTORE_SWITCH_STACK
->>>   	rts
->>>
->>>   ENTRY(sys_rt_sigreturn)
->>>   	SAVE_SWITCH_STACK
->>> +	movel	%sp,%sp@-		  | switch_stack pointer
->>> +	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
->>
->> ditto here ...
->>
->>>   	jbsr	do_rt_sigreturn
->>> +	addql	#8,%sp
->>
->> and here ...
->>
->>>   	RESTORE_SWITCH_STACK
->>>   	rts
->>>
->>> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
->>> index af1c4f3..2dcee3a 100644
->>> --- a/arch/m68k/kernel/signal.c
->>> +++ b/arch/m68k/kernel/signal.c
->>> @@ -737,10 +737,8 @@ badframe:
->>>   	return 1;
->>>   }
->>>
->>> -asmlinkage int do_sigreturn(unsigned long __unused)
->>> +asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack 
->>> *sw)
->>
->> and if you use the following prototype :
->>   asmlinkage int do_sigreturn(struct switch_stack *sw) ...
->>
->>>   {
->>> -	struct switch_stack *sw = (struct switch_stack *) &__unused;
->>> -	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
->>
->> and keep the 'C' instruction above
->>
->>>   	unsigned long usp = rdusp();
->>>   	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
->>>   	sigset_t set;
->>> @@ -764,10 +762,8 @@ badframe:
->>>   	return 0;
->>>   }
->>>
->>> -asmlinkage int do_rt_sigreturn(unsigned long __unused)
->>> +asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack 
->>> *sw)
->>   same here
->>>   {
->>> -	struct switch_stack *sw = (struct switch_stack *) &__unused;
->>> -	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
->>   and here
->>>   	unsigned long usp = rdusp();
->>>   	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 
->>> 4);
->>>   	sigset_t set;
->
-> Those changes ultimately make no difference to code size.
-> Although the entry point code is smaller the resulting
-> generated code for do_sigreturn() and do_rt_sigreturn()
-> is slightly larger. (At least that is the case with the gcc-5.3
-> compiler I am currently using).
->
-> Personally  I don't like having to keep that ugly stack referencing
-> definition of regs based on sw either. I would like to remove that.
->
-> "sw" isn't actually used in do_sigreturn() at all, so that could
-> be removed from the its parameters. I chose to keep it there in this
-> patch for consistency with do_rt_sigreturn().
+----- Forwarded message from kbuild test robot <fengguang.wu@intel.com>=
+ -----
 
-OK.  Thanks for the attention and explanation.
+Date: Thu, 18 Feb 2016 21:26:23 +0800
+=46rom: kbuild test robot <fengguang.wu@intel.com>
+Subject: [pnfs:xfs-nfsd-clone] 57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f
+	BUILD DONE
+To: Christoph Hellwig <hch@lst.de>
 
->
-> Regards
-> Greg
+git://git.infradead.org/users/hch/pnfs.git  xfs-nfsd-clone
+57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f  nfs4: fix stateid handling fo=
+r the NFS v4.2 operations
 
-Best regards
+fs/xfs/xfs_ondisk.h:22:2: note: in expansion of macro 'BUILD_BUG_ON_MSG=
+'
+fs/xfs/xfs_ondisk.h:74:2: note: in expansion of macro 'XFS_CHECK_STRUCT=
+_SIZE'
+include/linux/compiler.h:502:38: error: call to '__compiletime_assert_7=
+4' declared with attribute error: XFS: sizeof(xfs_attr_leaf_name_remote=
+_t) is wrong, expected 12
 
-Philippe
+Error ids grouped by kconfigs:
 
--- 
-Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
+recent_errors
+=E2=94=9C=E2=94=80=E2=94=80 m68k-multi_defconfig
+=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 fs-xfs-xfs_ondisk.h:n=
+ote:in-expansion-of-macro-BUILD_BUG_ON_MSG
+=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 fs-xfs-xfs_ondisk.h:n=
+ote:in-expansion-of-macro-XFS_CHECK_STRUCT_SIZE
+=E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 include-linux-compile=
+r.h:error:call-to-__compiletime_assert_NNN-declared-with-attribute-erro=
+r:XFS:sizeof(xfs_attr_leaf_name_remote_t)-is-wrong-expected
+=E2=94=94=E2=94=80=E2=94=80 m68k-sun3_defconfig
+    =E2=94=9C=E2=94=80=E2=94=80 fs-xfs-xfs_ondisk.h:note:in-expansion-o=
+f-macro-BUILD_BUG_ON_MSG
+    =E2=94=9C=E2=94=80=E2=94=80 fs-xfs-xfs_ondisk.h:note:in-expansion-o=
+f-macro-XFS_CHECK_STRUCT_SIZE
+    =E2=94=94=E2=94=80=E2=94=80 include-linux-compiler.h:error:call-to-=
+__compiletime_assert_NNN-declared-with-attribute-error:XFS:sizeof(xfs_a=
+ttr_leaf_name_remote_t)-is-wrong-expected
+
+elapsed time: 66m
+
+configs tested: 111
+
+alpha                               defconfig
+parisc                            allnoconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+arm                          badge4_defconfig
+arm                        cerfcube_defconfig
+powerpc               mpc834x_itxgp_defconfig
+i386                     randconfig-a0-201607
+x86_64                             acpi-redef
+x86_64                           allyesdebian
+x86_64                                nfsroot
+blackfin                BF526-EZBRD_defconfig
+blackfin                BF533-EZKIT_defconfig
+blackfin            BF561-EZKIT-SMP_defconfig
+blackfin                  TCM-BF537_defconfig
+cris                 etrax-100lx_v2_defconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+x86_64                           allmodconfig
+arm                               allnoconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+m32r                       m32104ut_defconfig
+m32r                     mappi3.smp_defconfig
+m32r                         opsput_defconfig
+m32r                           usrv_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+parisc                         b180_defconfig
+arm                         ebsa110_defconfig
+arm                           h3600_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                      walnut_defconfig
+x86_64                 randconfig-x012-201607
+x86_64                 randconfig-x014-201607
+x86_64                 randconfig-x017-201607
+x86_64                 randconfig-x011-201607
+x86_64                 randconfig-x013-201607
+x86_64                 randconfig-x019-201607
+x86_64                 randconfig-x015-201607
+x86_64                 randconfig-x010-201607
+x86_64                 randconfig-x016-201607
+x86_64                 randconfig-x018-201607
+i386                             alldefconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                     randconfig-s0-201607
+i386                     randconfig-s1-201607
+avr32                      atngw100_defconfig
+avr32                     atstk1006_defconfig
+frv                                 defconfig
+mn10300                     asb2364_defconfig
+openrisc                    or1ksim_defconfig
+tile                         tilegx_defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                               tinyconfig
+x86_64                   randconfig-i0-201607
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+i386                     randconfig-i0-201607
+i386                     randconfig-i1-201607
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                             defconfig
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64         rhel+CONFIG_DEBUG_INFO_REDUCED
+i386                     randconfig-n0-201607
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                                defconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+x86_64                 randconfig-x004-201607
+x86_64                 randconfig-x002-201607
+x86_64                 randconfig-x000-201607
+x86_64                 randconfig-x009-201607
+x86_64                 randconfig-x006-201607
+x86_64                 randconfig-x003-201607
+x86_64                 randconfig-x005-201607
+x86_64                 randconfig-x001-201607
+x86_64                 randconfig-x007-201607
+x86_64                 randconfig-x008-201607
+i386                     randconfig-r0-201607
+i386                             allmodconfig
+i386                   randconfig-x001-201607
+i386                   randconfig-x007-201607
+i386                   randconfig-x004-201607
+i386                   randconfig-x002-201607
+i386                   randconfig-x008-201607
+i386                   randconfig-x003-201607
+i386                   randconfig-x006-201607
+i386                   randconfig-x005-201607
+i386                   randconfig-x009-201607
+i386                   randconfig-x000-201607
+mips                              allnoconfig
+mips                      fuloong2e_defconfig
+mips                                   jz4740
+mips                                     txx9
+
+Thanks,
+=46engguang
+
+----- End forwarded message -----
