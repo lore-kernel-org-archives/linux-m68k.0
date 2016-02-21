@@ -1,55 +1,51 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [fengguang.wu@intel.com: [pnfs:xfs-nfsd-clone]
- 57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f BUILD DONE]
-Date: Thu, 18 Feb 2016 15:06:14 +0100
-Message-ID: <CAMuHMdVixG0ihW4pMG7Zv3RgQ+g4nTfof0o4P_kmu7RRFyE9Rg@mail.gmail.com>
-References: <20160218133240.GA5228@lst.de>
+From: Mikael Pettersson <mikpelinux@gmail.com>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Sun, 21 Feb 2016 18:06:35 +0100
+Message-ID: <22217.61083.254294.356622@gargle.gargle.HOWL>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL>
+	<mvm1tuv6dhk.fsf@hawking.suse.de>
+	<21426.40682.197715.245775@gargle.gargle.HOWL>
+	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+	<21786.40688.53001.509365@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160218133240.GA5228@lst.de>
+Received: from mail-lf0-f51.google.com ([209.85.215.51]:36309 "EHLO
+	mail-lf0-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751212AbcBURhS (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 21 Feb 2016 12:37:18 -0500
+Received: by mail-lf0-f51.google.com with SMTP id 78so80859474lfy.3
+        for <linux-m68k@vger.kernel.org>; Sun, 21 Feb 2016 09:37:16 -0800 (PST)
+In-Reply-To: <21786.40688.53001.509365@gargle.gargle.HOWL>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: xfs@oss.sgi.com, "Darrick J. Wong" <darrick.wong@oracle.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Christoph,
+Mikael Pettersson writes:
+ > Michael Schmitz writes:
+ >  > Hi,
+ >  > 
+ >  > has anyone found a solution to this one?
+ >  > 
+ >  > 3.18-rc5 has kswapd0 hogging the CPU - haven't seen ksoftirqd0 yet.
+ >  > Unpacking a large tarball tends to trigger this for me.
+ > 
+ > Alas, no.  I went back to the 3.10.xx kernels and they work Ok for me
+ > (they tend to hang during shutdown, but I can live with that).
+ > 
+ > I should do a git bisect...
 
-On Thu, Feb 18, 2016 at 2:32 PM, Christoph Hellwig <hch@lst.de> wrote:
-> Looks like the structure size checker found it's first victim on m68k,
-> which doesn't seem to pad to 4 byte boundaries.  I don't think it actually
-> matters in practice as we'll always the hacky appromiation of a variable
-> sized array behind it.  I guess we should move this to a modern C99 VLA
-> and mark it as __packed?
+I've done two git bisects on this.  The first one was inconclusive
+(pointed to a harmless commit), but the second one ended up with:
 
-Marking it __packed causes the compiler to assume that the other 32-bit
-values may not be aligned.
+# first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
 
-You can add 2 padding bytes to struct xfs_attr_leaf_name_remote.
-Or change name[1] to name[3].
+That's a big pile of VM changes, so I think it could be the culprit.
 
-> ----- Forwarded message from kbuild test robot <fengguang.wu@intel.com> -----
->
-> Date: Thu, 18 Feb 2016 21:26:23 +0800
-> From: kbuild test robot <fengguang.wu@intel.com>
-> Subject: [pnfs:xfs-nfsd-clone] 57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f
->         BUILD DONE
-> To: Christoph Hellwig <hch@lst.de>
->
-> git://git.infradead.org/users/hch/pnfs.git  xfs-nfsd-clone
-> 57b7d25bf4c57ebe0fbd2d8c5b37edf503175e1f  nfs4: fix stateid handling for the NFS v4.2 operations
->
-> fs/xfs/xfs_ondisk.h:22:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-> fs/xfs/xfs_ondisk.h:74:2: note: in expansion of macro 'XFS_CHECK_STRUCT_SIZE'
-> include/linux/compiler.h:502:38: error: call to '__compiletime_assert_74' declared with attribute error: XFS: sizeof(xfs_attr_leaf_name_remote_t) is wrong, expected 12
+Are people still seeing the kswapd bug with current kernels?  I've
+stayed with the 3.10 kernel series on my aranym VMs, except for the
+one VM that did the bisection tests.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+/Mikael
