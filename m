@@ -1,121 +1,55 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 2/6] ncr5380: Dont release lock for PIO transfer
-Date: Tue, 23 Feb 2016 10:07:05 +1100
-Message-ID: <20160222230704.504641476@telegraphics.com.au>
-References: <20160222230703.994951661@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline; filename=ncr5380-transfer_pio-locking
-Sender: linux-kernel-owner@vger.kernel.org
-To: "James E.J. Bottomley" <JBottomley@odin.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 3.2 04/67] posix-timers: Handle relative timers with
+ CONFIG_TIME_LOW_RES proper
+Date: Tue, 23 Feb 2016 21:42:03 +0000
+Message-ID: <lsq.1456263723.184636852__35095.0140193619$1456265144$gmane$org@decadent.org.uk>
+References: <lsq.1456263722.390955919@decadent.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <lsq.1456263722.390955919@decadent.org.uk>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: akpm@linux-foundation.org, Thomas Gleixner <tglx@linutronix.de>, Helge Deller <deller@gmx.de>, John Stultz <john.stultz@linaro.org>, Peter Zijlstra <peterz@infradead.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
 
-The calls to NCR5380_transfer_pio() for DATA IN and DATA OUT phases will
-modify cmd->SCp.this_residual, cmd->SCp.ptr and cmd->SCp.buffer. That
-works as long as EH does not intervene, which became possible in
-atari_NCR5380.c when I changed the locking to bring it closer to
-NCR5380.c.
+3.2.78-rc1 review patch.  If anyone has any objections, please let me know.
 
-If error recovery aborts the command, the scsi_cmnd in question and its
-buffer will be returned to the mid-layer. So the transfer has to cease,
-but it can't be stopped by the initiator because the target controls the
-bus phase.
+------------------
 
-The problem does not arise if the lock is not released. That was fine for
-atari_scsi, because it implements DMA. For the other drivers, we have to
-release the lock and re-enable interrupts for long PIO data transfers.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-The solution is to split the transfer into small chunks. In between chunks
-the main loop releases the lock and re-enables interrupts. Thus interrupts
-can be serviced and eh_bus_reset_handler can intervene if need be.
+commit 572c39172684c3711e4a03c9a7380067e2b0661c upstream.
 
-This fixes an oops in NCR5380_transfer_pio() that can happen when the EH
-abort handler is invoked during DATA IN or DATA OUT phase.
+As Helge reported for timerfd we have the same issue in posix timers. We
+return remaining time larger than the programmed relative time to user space
+in case of CONFIG_TIME_LOW_RES=y. Use the proper function to adjust the extra
+time added in hrtimer_start_range_ns().
 
-Fixes: 11d2f63b9cf5 ("ncr5380: Change instance->host_lock to hostdata->lock")
-Reported-and-tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: dhowells@redhat.com
+Link: http://lkml.kernel.org/r/20160114164159.450510905@linutronix.de
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+[bwh: Backported to 3.2: adjust filename]
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
- drivers/scsi/NCR5380.c       |   16 +++++++++-------
- drivers/scsi/atari_NCR5380.c |   16 +++++++++-------
- 2 files changed, 18 insertions(+), 14 deletions(-)
+ kernel/posix-timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux/drivers/scsi/NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/NCR5380.c	2016-02-23 10:06:56.000000000 +1100
-+++ linux/drivers/scsi/NCR5380.c	2016-02-23 10:06:57.000000000 +1100
-@@ -1759,9 +1759,7 @@ static void NCR5380_information_transfer
- 	unsigned char msgout = NOP;
- 	int sink = 0;
- 	int len;
--#if defined(PSEUDO_DMA) || defined(REAL_DMA_POLL)
- 	int transfersize;
--#endif
- 	unsigned char *data;
- 	unsigned char phase, tmp, extended_msg[10], old_phase = 0xff;
- 	struct scsi_cmnd *cmd;
-@@ -1854,13 +1852,17 @@ static void NCR5380_information_transfer
- 				} else
- #endif				/* defined(PSEUDO_DMA) || defined(REAL_DMA_POLL) */
- 				{
--					spin_unlock_irq(&hostdata->lock);
--					NCR5380_transfer_pio(instance, &phase,
--					                     (int *)&cmd->SCp.this_residual,
-+					/* Break up transfer into 3 ms chunks,
-+					 * presuming 6 accesses per handshake.
-+					 */
-+					transfersize = min((unsigned long)cmd->SCp.this_residual,
-+					                   hostdata->accesses_per_ms / 2);
-+					len = transfersize;
-+					NCR5380_transfer_pio(instance, &phase, &len,
- 					                     (unsigned char **)&cmd->SCp.ptr);
--					spin_lock_irq(&hostdata->lock);
-+					cmd->SCp.this_residual -= transfersize - len;
- 				}
--				break;
-+				return;
- 			case PHASE_MSGIN:
- 				len = 1;
- 				data = &tmp;
-Index: linux/drivers/scsi/atari_NCR5380.c
-===================================================================
---- linux.orig/drivers/scsi/atari_NCR5380.c	2016-02-23 10:06:56.000000000 +1100
-+++ linux/drivers/scsi/atari_NCR5380.c	2016-02-23 10:06:57.000000000 +1100
-@@ -1838,9 +1838,7 @@ static void NCR5380_information_transfer
- 	unsigned char msgout = NOP;
- 	int sink = 0;
- 	int len;
--#if defined(REAL_DMA)
- 	int transfersize;
--#endif
- 	unsigned char *data;
- 	unsigned char phase, tmp, extended_msg[10], old_phase = 0xff;
- 	struct scsi_cmnd *cmd;
-@@ -1983,18 +1981,22 @@ static void NCR5380_information_transfer
- 				} else
- #endif /* defined(REAL_DMA) */
- 				{
--					spin_unlock_irq(&hostdata->lock);
--					NCR5380_transfer_pio(instance, &phase,
--					                     (int *)&cmd->SCp.this_residual,
-+					/* Break up transfer into 3 ms chunks,
-+					 * presuming 6 accesses per handshake.
-+					 */
-+					transfersize = min((unsigned long)cmd->SCp.this_residual,
-+					                   hostdata->accesses_per_ms / 2);
-+					len = transfersize;
-+					NCR5380_transfer_pio(instance, &phase, &len,
- 					                     (unsigned char **)&cmd->SCp.ptr);
--					spin_lock_irq(&hostdata->lock);
-+					cmd->SCp.this_residual -= transfersize - len;
- 				}
- #if defined(CONFIG_SUN3) && defined(REAL_DMA)
- 				/* if we had intended to dma that command clear it */
- 				if (sun3_dma_setup_done == cmd)
- 					sun3_dma_setup_done = NULL;
- #endif
--				break;
-+				return;
- 			case PHASE_MSGIN:
- 				len = 1;
- 				data = &tmp;
+--- a/kernel/posix-timers.c
++++ b/kernel/posix-timers.c
+@@ -706,7 +706,7 @@ common_timer_get(struct k_itimer *timr,
+ 	    (timr->it_sigev_notify & ~SIGEV_THREAD_ID) == SIGEV_NONE))
+ 		timr->it_overrun += (unsigned int) hrtimer_forward(timer, now, iv);
+ 
+-	remaining = ktime_sub(hrtimer_get_expires(timer), now);
++	remaining = __hrtimer_expires_remaining_adjusted(timer, now);
+ 	/* Return 0 only, when the timer is expired and not pending */
+ 	if (remaining.tv64 <= 0) {
+ 		/*
