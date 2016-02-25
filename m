@@ -1,56 +1,170 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.4 133/137] timerfd: Handle relative timers with CONFIG_TIME_LOW_RES proper
-Date: Tue, 23 Feb 2016 19:34:24 -0800
-Message-ID: <20160224033421.623897691__45500.4285941415$1456288270$gmane$org@linuxfoundation.org>
-References: <20160224033417.270530882@linuxfoundation.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Adam Buchbinder <adam.buchbinder@gmail.com>
+Subject: [PATCH] m68k: Fix misspellings in comments.
+Date: Thu, 25 Feb 2016 00:39:59 -0800
+Message-ID: <1456389599-14349-1-git-send-email-adam.buchbinder@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160224033417.270530882@linuxfoundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, John Stultz <john.stultz@linaro.org>, linux-m68k@lists.linux-m68k.org, dhowells@redhat.com
+To: linux-m68k@lists.linux-m68k.org
+Cc: trivial@kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>
 
-4.4-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
-From: Thomas Gleixner <tglx@linutronix.de>
-
-commit b62526ed11a1fe3861ab98d40b7fdab8981d788a upstream.
-
-Helge reported that a relative timer can return a remaining time larger than
-the programmed relative time on parisc and other architectures which have
-CONFIG_TIME_LOW_RES set. This happens because we add a jiffie to the resulting
-expiry time to prevent short timeouts.
-
-Use the new function hrtimer_expires_remaining_adjusted() to calculate the
-remaining time. It takes that extra added time into account for relative
-timers.
-
-Reported-and-tested-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: dhowells@redhat.com
-Link: http://lkml.kernel.org/r/20160114164159.354500742@linutronix.de
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Adam Buchbinder <adam.buchbinder@gmail.com>
 ---
- fs/timerfd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/include/asm/MC68328.h   | 6 +++---
+ arch/m68k/include/asm/MC68EZ328.h | 6 +++---
+ arch/m68k/include/asm/MC68VZ328.h | 6 +++---
+ arch/m68k/include/asm/m54xxacr.h  | 4 ++--
+ arch/m68k/include/asm/mac_iop.h   | 2 +-
+ arch/m68k/include/asm/mcftimer.h  | 2 +-
+ arch/m68k/mac/via.c               | 2 +-
+ 7 files changed, 14 insertions(+), 14 deletions(-)
 
---- a/fs/timerfd.c
-+++ b/fs/timerfd.c
-@@ -153,7 +153,7 @@ static ktime_t timerfd_get_remaining(str
- 	if (isalarm(ctx))
- 		remaining = alarm_expires_remaining(&ctx->t.alarm);
- 	else
--		remaining = hrtimer_expires_remaining(&ctx->t.tmr);
-+		remaining = hrtimer_expires_remaining_adjusted(&ctx->t.tmr);
+diff --git a/arch/m68k/include/asm/MC68328.h b/arch/m68k/include/asm/MC68328.h
+index 4ebf098..1a8080c 100644
+--- a/arch/m68k/include/asm/MC68328.h
++++ b/arch/m68k/include/asm/MC68328.h
+@@ -798,7 +798,7 @@
  
- 	return remaining.tv64 < 0 ? ktime_set(0, 0): remaining;
- }
+ /**********
+  *
+- * 0xFFFFF7xx -- Serial Periferial Interface Slave (SPIS)
++ * 0xFFFFF7xx -- Serial Peripheral Interface Slave (SPIS)
+  *
+  **********/
+ 
+@@ -824,7 +824,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -904,7 +904,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_GPIOSRC		0x1000	/* GPIO source */
+diff --git a/arch/m68k/include/asm/MC68EZ328.h b/arch/m68k/include/asm/MC68EZ328.h
+index d1bde58..fedac87 100644
+--- a/arch/m68k/include/asm/MC68EZ328.h
++++ b/arch/m68k/include/asm/MC68EZ328.h
+@@ -631,7 +631,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -712,7 +712,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_UCLKDIR		0x2000	/* UCLK Direction */
+@@ -1160,7 +1160,7 @@ typedef volatile struct {
+ #define DRAMMC_COL10		0x0080	/* Col address bit for MD10 PA11/PA0  */
+ #define DRAMMC_COL9		0x0040	/* Col address bit for MD9  PA10/PA0  */
+ #define DRAMMC_COL8		0x0020	/* Col address bit for MD8  PA9/PA0   */
+-#define DRAMMC_REF_MASK		0x001f	/* Reresh Cycle */
++#define DRAMMC_REF_MASK		0x001f	/* Refresh Cycle */
+ #define DRAMMC_REF_SHIFT	0
+ 
+ /*
+diff --git a/arch/m68k/include/asm/MC68VZ328.h b/arch/m68k/include/asm/MC68VZ328.h
+index 6bd1bf1..34a51b2 100644
+--- a/arch/m68k/include/asm/MC68VZ328.h
++++ b/arch/m68k/include/asm/MC68VZ328.h
+@@ -724,7 +724,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -806,7 +806,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_UCLKDIR		0x2000	/* UCLK Direction */
+@@ -1256,7 +1256,7 @@ typedef struct {
+ #define DRAMMC_COL10		0x0080	/* Col address bit for MD10 PA11/PA0  */
+ #define DRAMMC_COL9		0x0040	/* Col address bit for MD9  PA10/PA0  */
+ #define DRAMMC_COL8		0x0020	/* Col address bit for MD8  PA9/PA0   */
+-#define DRAMMC_REF_MASK		0x001f	/* Reresh Cycle */
++#define DRAMMC_REF_MASK		0x001f	/* Refresh Cycle */
+ #define DRAMMC_REF_SHIFT	0
+ 
+ /*
+diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
+index 6d13cae..59e1710 100644
+--- a/arch/m68k/include/asm/m54xxacr.h
++++ b/arch/m68k/include/asm/m54xxacr.h
+@@ -23,8 +23,8 @@
+ #define CACR_IEC	0x00008000	/* Enable instruction cache */
+ #define CACR_DNFB	0x00002000	/* Inhibited fill buffer */
+ #define CACR_IDPI	0x00001000	/* Disable CPUSHL */
+-#define CACR_IHLCK	0x00000800	/* Intruction cache half lock */
+-#define CACR_IDCM	0x00000400	/* Intruction cache inhibit */
++#define CACR_IHLCK	0x00000800	/* Instruction cache half lock */
++#define CACR_IDCM	0x00000400	/* Instruction cache inhibit */
+ #define CACR_ICINVA	0x00000100	/* Invalidate instr cache */
+ #define CACR_EUSP	0x00000020	/* Enable separate user a7 */
+ 
+diff --git a/arch/m68k/include/asm/mac_iop.h b/arch/m68k/include/asm/mac_iop.h
+index fde874a..df3ea1a 100644
+--- a/arch/m68k/include/asm/mac_iop.h
++++ b/arch/m68k/include/asm/mac_iop.h
+@@ -48,7 +48,7 @@
+ 
+ /* IOP message status codes */
+ 
+-#define IOP_MSGSTATUS_UNUSED	0	/* Unusued message structure       */
++#define IOP_MSGSTATUS_UNUSED	0	/* Unused message structure       */
+ #define IOP_MSGSTATUS_WAITING	1	/* waiting for channel             */
+ #define IOP_MSGSTATUS_SENT	2	/* message sent, awaiting reply    */
+ #define IOP_MSGSTATUS_COMPLETE	3	/* message complete and reply rcvd */
+diff --git a/arch/m68k/include/asm/mcftimer.h b/arch/m68k/include/asm/mcftimer.h
+index 089f0f1..1150e42 100644
+--- a/arch/m68k/include/asm/mcftimer.h
++++ b/arch/m68k/include/asm/mcftimer.h
+@@ -51,7 +51,7 @@
+  *	Bit definitions for the Timer Event Registers (TER).
+  */
+ #define	MCFTIMER_TER_CAP	0x01		/* Capture event */
+-#define	MCFTIMER_TER_REF	0x02		/* Refernece event */
++#define	MCFTIMER_TER_REF	0x02		/* Reference event */
+ 
+ /****************************************************************************/
+ #endif	/* mcftimer_h */
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index ce56e04..920ff63 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -68,7 +68,7 @@ static int gIER,gIFR,gBufA,gBufB;
+  * interrupt. This limitation also seems to apply to VIA clone logic cores in
+  * Quadra-like ASICs. (RBV and OSS machines don't have this limitation.)
+  *
+- * We used to fake it by configuring the relevent VIA pin as an output
++ * We used to fake it by configuring the relevant VIA pin as an output
+  * (to mask the interrupt) or input (to unmask). That scheme did not work on
+  * (at least) the Quadra 700. A NuBus card's /NMRQ signal is an open-collector
+  * circuit (see Designing Cards and Drivers for Macintosh II and Macintosh SE,
+-- 
+2.7.0.rc3.207.g0ac5344
