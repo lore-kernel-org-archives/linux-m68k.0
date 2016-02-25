@@ -1,46 +1,172 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k: use conventional function parameters for do_sigreturn
-Date: Thu, 25 Feb 2016 11:55:23 +0100
-Message-ID: <mvmy4a9t5yc.fsf@hawking.suse.de>
-References: <1455518189-12478-1-git-send-email-gerg@uclinux.org>
-	<56CD031C.5040101@uclinux.org>
-	<CAMuHMdVPsqEYwgoXrS6ecdPBUEvDqhaCBYNZPY7op02o70LonQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Adam Buchbinder <adam.buchbinder@gmail.com>
+Subject: [PATCH v2] m68k: Fix misspellings in comments.
+Date: Thu, 25 Feb 2016 09:53:55 -0800
+Message-ID: <1456422835-17879-1-git-send-email-adam.buchbinder@gmail.com>
+References: <alpine.LNX.2.00.1602252014030.11488@nippy.intranet>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:60219 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752104AbcBYKz2 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Feb 2016 05:55:28 -0500
-In-Reply-To: <CAMuHMdVPsqEYwgoXrS6ecdPBUEvDqhaCBYNZPY7op02o70LonQ@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Thu, 25 Feb 2016 11:42:08 +0100")
+In-Reply-To: <alpine.LNX.2.00.1602252014030.11488@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: trivial@kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Signed-off-by: Adam Buchbinder <adam.buchbinder@gmail.com>
+---
+ arch/m68k/include/asm/MC68328.h   | 6 +++---
+ arch/m68k/include/asm/MC68EZ328.h | 6 +++---
+ arch/m68k/include/asm/MC68VZ328.h | 6 +++---
+ arch/m68k/include/asm/m54xxacr.h  | 4 ++--
+ arch/m68k/include/asm/mac_iop.h   | 2 +-
+ arch/m68k/include/asm/mcftimer.h  | 2 +-
+ arch/m68k/mac/via.c               | 2 +-
+ 7 files changed, 14 insertions(+), 14 deletions(-)
 
-> Hi Greg,
->
-> On Wed, Feb 24, 2016 at 2:10 AM, Greg Ungerer <gerg@uclinux.org> wrote:
->> Do you have any objections or issues with this change?
->>
->> Andreas and Philippe kindly gave feedback, which I have addressed
->> (I think to everyone's satisfaction?)
->>
->> I would very much like to see this applied to resolve the compilation
->> issue for non-MMU with modern versions of gcc. I don't mind pushing
->> through my tree. I just want to make sure first that nobody objects
->> to this change or has any remaining issues with it.
->
-> If Andreas is happy with it, I will apply it.
-
-No objections.
-
-Andreas.
-
+diff --git a/arch/m68k/include/asm/MC68328.h b/arch/m68k/include/asm/MC68328.h
+index 4ebf098..1a8080c 100644
+--- a/arch/m68k/include/asm/MC68328.h
++++ b/arch/m68k/include/asm/MC68328.h
+@@ -798,7 +798,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF7xx -- Serial Periferial Interface Slave (SPIS)
++ * 0xFFFFF7xx -- Serial Peripheral Interface Slave (SPIS)
+  *
+  **********/
+ 
+@@ -824,7 +824,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -904,7 +904,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_GPIOSRC		0x1000	/* GPIO source */
+diff --git a/arch/m68k/include/asm/MC68EZ328.h b/arch/m68k/include/asm/MC68EZ328.h
+index d1bde58..fedac87 100644
+--- a/arch/m68k/include/asm/MC68EZ328.h
++++ b/arch/m68k/include/asm/MC68EZ328.h
+@@ -631,7 +631,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -712,7 +712,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_UCLKDIR		0x2000	/* UCLK Direction */
+@@ -1160,7 +1160,7 @@ typedef volatile struct {
+ #define DRAMMC_COL10		0x0080	/* Col address bit for MD10 PA11/PA0  */
+ #define DRAMMC_COL9		0x0040	/* Col address bit for MD9  PA10/PA0  */
+ #define DRAMMC_COL8		0x0020	/* Col address bit for MD8  PA9/PA0   */
+-#define DRAMMC_REF_MASK		0x001f	/* Reresh Cycle */
++#define DRAMMC_REF_MASK		0x001f	/* Refresh Cycle */
+ #define DRAMMC_REF_SHIFT	0
+ 
+ /*
+diff --git a/arch/m68k/include/asm/MC68VZ328.h b/arch/m68k/include/asm/MC68VZ328.h
+index 6bd1bf1..34a51b2 100644
+--- a/arch/m68k/include/asm/MC68VZ328.h
++++ b/arch/m68k/include/asm/MC68VZ328.h
+@@ -724,7 +724,7 @@
+ 
+ /**********
+  *
+- * 0xFFFFF8xx -- Serial Periferial Interface Master (SPIM)
++ * 0xFFFFF8xx -- Serial Peripheral Interface Master (SPIM)
+  *
+  **********/
+ 
+@@ -806,7 +806,7 @@
+ 
+ #define UBAUD_PRESCALER_MASK	0x003f	/* Actual divisor is 65 - PRESCALER */
+ #define UBAUD_PRESCALER_SHIFT	0
+-#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divizor */
++#define UBAUD_DIVIDE_MASK	0x0700	/* Baud Rate freq. divisor */
+ #define UBAUD_DIVIDE_SHIFT	8
+ #define UBAUD_BAUD_SRC		0x0800	/* Baud Rate Source */
+ #define UBAUD_UCLKDIR		0x2000	/* UCLK Direction */
+@@ -1256,7 +1256,7 @@ typedef struct {
+ #define DRAMMC_COL10		0x0080	/* Col address bit for MD10 PA11/PA0  */
+ #define DRAMMC_COL9		0x0040	/* Col address bit for MD9  PA10/PA0  */
+ #define DRAMMC_COL8		0x0020	/* Col address bit for MD8  PA9/PA0   */
+-#define DRAMMC_REF_MASK		0x001f	/* Reresh Cycle */
++#define DRAMMC_REF_MASK		0x001f	/* Refresh Cycle */
+ #define DRAMMC_REF_SHIFT	0
+ 
+ /*
+diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
+index 6d13cae..59e1710 100644
+--- a/arch/m68k/include/asm/m54xxacr.h
++++ b/arch/m68k/include/asm/m54xxacr.h
+@@ -23,8 +23,8 @@
+ #define CACR_IEC	0x00008000	/* Enable instruction cache */
+ #define CACR_DNFB	0x00002000	/* Inhibited fill buffer */
+ #define CACR_IDPI	0x00001000	/* Disable CPUSHL */
+-#define CACR_IHLCK	0x00000800	/* Intruction cache half lock */
+-#define CACR_IDCM	0x00000400	/* Intruction cache inhibit */
++#define CACR_IHLCK	0x00000800	/* Instruction cache half lock */
++#define CACR_IDCM	0x00000400	/* Instruction cache inhibit */
+ #define CACR_ICINVA	0x00000100	/* Invalidate instr cache */
+ #define CACR_EUSP	0x00000020	/* Enable separate user a7 */
+ 
+diff --git a/arch/m68k/include/asm/mac_iop.h b/arch/m68k/include/asm/mac_iop.h
+index fde874a..42566fd 100644
+--- a/arch/m68k/include/asm/mac_iop.h
++++ b/arch/m68k/include/asm/mac_iop.h
+@@ -48,7 +48,7 @@
+ 
+ /* IOP message status codes */
+ 
+-#define IOP_MSGSTATUS_UNUSED	0	/* Unusued message structure       */
++#define IOP_MSGSTATUS_UNUSED	0	/* Unused message structure        */
+ #define IOP_MSGSTATUS_WAITING	1	/* waiting for channel             */
+ #define IOP_MSGSTATUS_SENT	2	/* message sent, awaiting reply    */
+ #define IOP_MSGSTATUS_COMPLETE	3	/* message complete and reply rcvd */
+diff --git a/arch/m68k/include/asm/mcftimer.h b/arch/m68k/include/asm/mcftimer.h
+index 089f0f1..1150e42 100644
+--- a/arch/m68k/include/asm/mcftimer.h
++++ b/arch/m68k/include/asm/mcftimer.h
+@@ -51,7 +51,7 @@
+  *	Bit definitions for the Timer Event Registers (TER).
+  */
+ #define	MCFTIMER_TER_CAP	0x01		/* Capture event */
+-#define	MCFTIMER_TER_REF	0x02		/* Refernece event */
++#define	MCFTIMER_TER_REF	0x02		/* Reference event */
+ 
+ /****************************************************************************/
+ #endif	/* mcftimer_h */
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index ce56e04..920ff63 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -68,7 +68,7 @@ static int gIER,gIFR,gBufA,gBufB;
+  * interrupt. This limitation also seems to apply to VIA clone logic cores in
+  * Quadra-like ASICs. (RBV and OSS machines don't have this limitation.)
+  *
+- * We used to fake it by configuring the relevent VIA pin as an output
++ * We used to fake it by configuring the relevant VIA pin as an output
+  * (to mask the interrupt) or input (to unmask). That scheme did not work on
+  * (at least) the Quadra 700. A NuBus card's /NMRQ signal is an open-collector
+  * circuit (see Designing Cards and Drivers for Macintosh II and Macintosh SE,
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+2.7.0.rc3.207.g0ac5344
