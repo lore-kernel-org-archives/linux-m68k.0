@@ -1,31 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k: Fix misspellings in comments.
-Date: Mon, 29 Feb 2016 10:37:33 +0100
-Message-ID: <CAMuHMdUOPJtJ_FVetKb8KgccsMD2PiBSbKHQzYRjjKirOTp2wA@mail.gmail.com>
-References: <alpine.LNX.2.00.1602252014030.11488@nippy.intranet>
-	<1456422835-17879-1-git-send-email-adam.buchbinder@gmail.com>
+From: "Mr. DOUGLAS" <douglascontact6048@live.com>
+Subject: =?utf-8?q?INFORMA=C3=87=C3=83O_IMPORTANTE__RE=3A_Consultoria_de_Investime?=
+ =?utf-8?q?nto_em_sua_Localidade=2E?=
+Date: Sun, 28 Feb 2016 04:38:43 -0800
+Message-ID: <20160228133741.F29B98FD62E__30464.5968754359$1456777026$gmane$org@webmail.cefet-rj.br>
+Reply-To: johnsondouglas8738@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1456422835-17879-1-git-send-email-adam.buchbinder@gmail.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Adam Buchbinder <adam.buchbinder@gmail.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Jiri Kosina <trivial@kernel.org>
+To: Recipients <douglascontact6048@live.com>
 
-On Thu, Feb 25, 2016 at 6:53 PM, Adam Buchbinder
-<adam.buchbinder@gmail.com> wrote:
-> Signed-off-by: Adam Buchbinder <adam.buchbinder@gmail.com>
+Oi,
 
-Thanks, applied and queued for v4.6 with Greg's Ack.
+Temos planejado investir alguns fundos no seu pa=EDs.
 
-Gr{oetje,eeting}s,
+Responder se voc=EA estiver interessado.
 
-                        Geert
+Sauda=E7=F5es,
+Sir Henry Neville Lindley Keswick
+Presidente da Jardine Matheson Holdings Ltd
+https://en.wikipedia.org/wiki/Keswick_family
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Hi friend,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Our family is interested in investing funds in your locality.
+
+More information for you interest .
+
+Greetings,
+Sir Henry Neville Lindley Keswick
+Chairman of Jardine Matheson Holdings Ltd
+https://en.wikipedia.org/wiki/Keswick_family
