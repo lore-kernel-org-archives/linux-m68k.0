@@ -1,37 +1,18 @@
-From: "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Subject: =?utf-8?Q?=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0?=
-	=?utf-8?Q?=9A=D0=98=D0=95_=D0=91=D0=90=D0=97=D0=AB!_=D0?=
-	=?utf-8?Q?=A2=D0=B5=D0=BB=5CViber=5CWhatsapp=3A_+79133913?=
-	=?utf-8?Q?837_Email=3A_mloginova19=40gmail=2Ecom_Skype=3A?=
-	=?utf-8?Q?_prodawez389?=
-Date: Sat, 27 Feb 2016 17:54:08 +0600
-Message-ID: <B348FC25E93D12D10D0841FE0AA20AFC@lists.linux-m68k.org>
-Reply-To: "linux-m68k@lists.linux-m68k.org" <mloginova19@gmail.com>
+From: =?utf-8?B?5oiR55qE6IGU57O75pa55byP5Zyo?= <zhanglei@lianyijia.com>
+Subject: =?utf-8?B?5oiR55qE6IGU57O75pa55byP5Zyo?=
+Date: Mon, 29 Feb 2016 02:03:44 +0800
+Message-ID: <20160229020352317004@lianyijia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from [183.136.187.36] ([183.136.187.36]:4735 "HELO
+	mail.lianyijia.com" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+	with SMTP id S1753548AbcB1SRq (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 28 Feb 2016 13:17:46 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: linux-m68k@vger.kernel.org
 
-=D0=9A=D0=9B=D0=98=D0=95=D0=9D=D0=A2=D0=A1=D0=9A=D0=98=D0=95 =D0=91=D0=90=
-=D0=97=D0=AB!
-
-=D0=A1=D0=BE=D0=B1=D0=B5=D1=80=D0=B5=D0=BC =D0=B4=D0=BB=D1=8F =D0=92=D0=
-=B0=D1=81 =D0=BF=D0=BE =D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=BD=D0=B5=D1=82=
- =D0=B1=D0=B0=D0=B7=D1=83 =D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85 =D0=BF=D0=
-=BE=D1=82=D0=B5=D0=BD=D1=86=D0=B8=D0=B0=D0=BB=D1=8C=D0=BD=D1=8B=D1=85 =D0=
-=BA=D0=BB=D0=B8=D0=B5=D0=BD=D1=82=D0=BE=D0=B2=20
-=D0=B4=D0=BB=D1=8F =D0=92=D0=B0=D1=88=D0=B5=D0=B3=D0=BE =D0=91=D0=B8=D0=
-=B7=D0=BD=D0=B5=D1=81=D0=B0!
-=D0=9C=D0=BD=D0=BE=D0=B3=D0=BE! =D0=91=D1=8B=D1=81=D1=82=D1=80=D0=BE! =D0=
-=9D=D0=B5=D0=B4=D0=BE=D1=80=D0=BE=D0=B3=D0=BE!=20
-=D0=A3=D0=B7=D0=BD=D0=B0=D0=B9=D1=82=D0=B5 =D0=BE=D0=B1 =D1=8D=D1=82=D0=
-=BE=D0=BC =D0=BF=D0=BE=D0=B4=D1=80=D0=BE=D0=B1=D0=BD=D0=B5=D0=B5 =D0=BF=
-=D0=BE=20
-=D0=A2=D0=B5=D0=BB: +79133913837
-Viber: +79133913837
-Whatsapp: +79133913837
-Skype: prodawez389
-Email: mloginova19@gmail.com
+5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkNCg==
