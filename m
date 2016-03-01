@@ -1,59 +1,44 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
 Subject: Re: [PATCH 0/6] ncr5380: Exception handling fixes for v4.5
-Date: Tue, 1 Mar 2016 14:32:23 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1603011431300.3734@nippy.intranet>
-References: <20160222230703.994951661@telegraphics.com.au> <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
+Date: Tue, 01 Mar 2016 08:00:22 -0500
+Message-ID: <yq17fhmcpzt.fsf@sermon.lab.mkp.net>
+References: <20160222230703.994951661@telegraphics.com.au>
+	<yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
+	<alpine.LNX.2.00.1603011431300.3734@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35369 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750888AbcCADci (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Feb 2016 22:32:38 -0500
-In-Reply-To: <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
+Received: from userp1040.oracle.com ([156.151.31.81]:32395 "EHLO
+	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750827AbcCANAb (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Mar 2016 08:00:31 -0500
+In-Reply-To: <alpine.LNX.2.00.1603011431300.3734@nippy.intranet> (Finn Thain's
+	message of "Tue, 1 Mar 2016 14:32:23 +1100 (AEDT)")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, James Bottomley <James.Bottomley@hansenpartnership.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
+>>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-On Mon, 29 Feb 2016, Martin K. Petersen wrote:
+Finn,
 
-> >>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
-> 
-> Finn> These patches fix some exception handling and autosense bugs that
-> Finn> I accidentally introduced in v4.5-rc1.
-> 
-> Finn> drivers/scsi/NCR5380.c       |  133 +++++++++++++++++++------------------------
-> Finn> drivers/scsi/atari_NCR5380.c |  133 +++++++++++++++++++------------------------
-> Finn> 2 files changed, 118 insertions(+), 148 deletions(-)
-> 
-> This is a pretty big lump of changes for a 4.5 bug fix!
+>> This is a pretty big lump of changes for a 4.5 bug fix!
 
-I'm sure this is a lot of rework when compared to the high standard set by 
-well-funded corporate contributions.
+Finn> Please keep in mind that these fixes are all rework of the changes
+Finn> I made in -rc1. So this submission is 2 files changed, 118
+Finn> insertions(+), 148 deletions(-) which is all rework of the
+Finn> previous submission, which was 18 files changed, 2940
+Finn> insertions(+), 3688 deletions(-)
 
-However, I don't have anyone paying me to write and execute thorough test 
-plans for error paths on a wide variety of different hardware platforms.
+I am well aware of and appreciate the huge amount of work you have done.
 
-Nonetheless, these error paths have now been thoroughly tested on several 
-platforms.
+My concern is merely that Linus is going to get pretty upset with such a
+big delta this late in the 4.5 cycle. By comparison, our other fixes at
+this time are in the 1-5 line bucket!
 
-Please keep in mind that these fixes are all rework of the changes I made 
-in -rc1. So this submission is
-   2 files changed, 118 insertions(+), 148 deletions(-)
-which is all rework of the previous submission, which was
-   18 files changed, 2940 insertions(+), 3688 deletions(-)
-
-Better than 5% rate of rework. Bugs-per-line-of-code should drop quite 
-quickly at that rate, presuming fixes get merged.
-
-> 
-> Given the limited exposure based on the nature of the affected hardware 
-> I have queued them for 4.6.
-> 
-
-The affected hardware doesn't matter (though it is likely outside of any 
-commercial support contract). It's the affected users that interest me.
+I think putting the fixes into 4.6 and tagging them for stable is a
+better (less emperor penguin wrath-inducing) approach.
 
 -- 
+Martin K. Petersen	Oracle Linux Engineering
