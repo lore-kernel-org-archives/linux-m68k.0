@@ -1,31 +1,59 @@
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: [PATCH 0/6] ncr5380: Exception handling fixes for v4.5
-Date: Mon, 29 Feb 2016 21:31:51 -0500
-Message-ID: <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
-References: <20160222230703.994951661@telegraphics.com.au>
+Date: Tue, 1 Mar 2016 14:32:23 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1603011431300.3734@nippy.intranet>
+References: <20160222230703.994951661@telegraphics.com.au> <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20160222230703.994951661@telegraphics.com.au> (Finn Thain's
-	message of "Tue, 23 Feb 2016 10:07:03 +1100")
-Sender: linux-scsi-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35369 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750888AbcCADci (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Feb 2016 22:32:38 -0500
+In-Reply-To: <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 
->>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-Finn> These patches fix some exception handling and autosense bugs that
-Finn> I accidentally introduced in v4.5-rc1.
+On Mon, 29 Feb 2016, Martin K. Petersen wrote:
 
-Finn> drivers/scsi/NCR5380.c       |  133 +++++++++++++++++++------------------------
-Finn> drivers/scsi/atari_NCR5380.c |  133 +++++++++++++++++++------------------------
-Finn> 2 files changed, 118 insertions(+), 148 deletions(-)
+> >>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
+> 
+> Finn> These patches fix some exception handling and autosense bugs that
+> Finn> I accidentally introduced in v4.5-rc1.
+> 
+> Finn> drivers/scsi/NCR5380.c       |  133 +++++++++++++++++++------------------------
+> Finn> drivers/scsi/atari_NCR5380.c |  133 +++++++++++++++++++------------------------
+> Finn> 2 files changed, 118 insertions(+), 148 deletions(-)
+> 
+> This is a pretty big lump of changes for a 4.5 bug fix!
 
-This is a pretty big lump of changes for a 4.5 bug fix!
+I'm sure this is a lot of rework when compared to the high standard set by 
+well-funded corporate contributions.
 
-Given the limited exposure based on the nature of the affected hardware
-I have queued them for 4.6.
+However, I don't have anyone paying me to write and execute thorough test 
+plans for error paths on a wide variety of different hardware platforms.
+
+Nonetheless, these error paths have now been thoroughly tested on several 
+platforms.
+
+Please keep in mind that these fixes are all rework of the changes I made 
+in -rc1. So this submission is
+   2 files changed, 118 insertions(+), 148 deletions(-)
+which is all rework of the previous submission, which was
+   18 files changed, 2940 insertions(+), 3688 deletions(-)
+
+Better than 5% rate of rework. Bugs-per-line-of-code should drop quite 
+quickly at that rate, presuming fixes get merged.
+
+> 
+> Given the limited exposure based on the nature of the affected hardware 
+> I have queued them for 4.6.
+> 
+
+The affected hardware doesn't matter (though it is likely outside of any 
+commercial support contract). It's the affected users that interest me.
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
