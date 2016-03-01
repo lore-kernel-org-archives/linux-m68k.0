@@ -1,39 +1,31 @@
-From: "Mr. DOUGLAS" <douglascontact6048@live.com>
-Subject: =?utf-8?q?INFORMA=C3=87=C3=83O_IMPORTANTE__RE=3A_Consultoria_de_Investime?=
- =?utf-8?q?nto_em_sua_Localidade=2E?=
-Date: Sun, 28 Feb 2016 04:38:43 -0800
-Message-ID: <20160228133741.F29B98FD62E__30464.5968754359$1456777026$gmane$org@webmail.cefet-rj.br>
-Reply-To: johnsondouglas8738@gmail.com
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH 0/6] ncr5380: Exception handling fixes for v4.5
+Date: Mon, 29 Feb 2016 21:31:51 -0500
+Message-ID: <yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
+References: <20160222230703.994951661@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20160222230703.994951661@telegraphics.com.au> (Finn Thain's
+	message of "Tue, 23 Feb 2016 10:07:03 +1100")
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <douglascontact6048@live.com>
 
-Oi,
+>>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-Temos planejado investir alguns fundos no seu pa=EDs.
+Finn> These patches fix some exception handling and autosense bugs that
+Finn> I accidentally introduced in v4.5-rc1.
 
-Responder se voc=EA estiver interessado.
+Finn> drivers/scsi/NCR5380.c       |  133 +++++++++++++++++++------------------------
+Finn> drivers/scsi/atari_NCR5380.c |  133 +++++++++++++++++++------------------------
+Finn> 2 files changed, 118 insertions(+), 148 deletions(-)
 
-Sauda=E7=F5es,
-Sir Henry Neville Lindley Keswick
-Presidente da Jardine Matheson Holdings Ltd
-https://en.wikipedia.org/wiki/Keswick_family
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
+This is a pretty big lump of changes for a 4.5 bug fix!
 
-Hi friend,
+Given the limited exposure based on the nature of the affected hardware
+I have queued them for 4.6.
 
-Our family is interested in investing funds in your locality.
-
-More information for you interest .
-
-Greetings,
-Sir Henry Neville Lindley Keswick
-Chairman of Jardine Matheson Holdings Ltd
-https://en.wikipedia.org/wiki/Keswick_family
+-- 
+Martin K. Petersen	Oracle Linux Engineering
