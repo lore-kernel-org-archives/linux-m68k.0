@@ -1,39 +1,62 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 3/6] powerpc: rtc: provide rtc_class_ops directly
-Date: Tue, 01 Mar 2016 21:31:09 +0100
-Message-ID: <43764978.ST0U01oqaW__22501.8772566274$1456864333$gmane$org@wuerfel>
-References: <201603020228.jios50eU%fengguang.wu@intel.com>
+From: Laison Computech Inc <7sales@laiisoncomputech.com>
+Subject: CISCO AND AVAYA IP Phones
+Date: Wed, 02 Mar 2016 03:10:35 +0700
+Message-ID: <20160301210942.5F83E574BB8__15998.9491491162$1456874273$gmane$org@srv-mta.gcmillenium.com.br>
+Reply-To: sales@laiisoncomputech.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <201603020228.jios50eU%fengguang.wu@intel.com>
+Received: from srv-mta.gcmillenium.com.br ([177.125.218.132]:51815 "EHLO
+	srv-mta.gcmillenium.com.br" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751350AbcCAXRh convert rfc822-to-8bit
+	(ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 1 Mar 2016 18:17:37 -0500
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linuxppc-dev@lists.ozlabs.org
-Cc: kbuild test robot <lkp@intel.com>, Alessandro Zummo <a.zummo@towertech.it>, linux-parisc@vger.kernel.org, rtc-linux@googlegroups.com, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>, linux-m68k@lists.linux-m68k.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>, kbuild-all@01.org, Paul Mackerras <paulus@samba.org>, linux-arm-kernel@lists.infradead.org
+To: Recipients <7sales@laiisoncomputech.com>
 
-On Wednesday 02 March 2016 02:37:14 kbuild test robot wrote:
-> [auto build test ERROR on abelloni/rtc-next]
-> [also build test ERROR on v4.5-rc6 next-20160301]
-> [if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Arnd-Bergmann/rtc-generic-follow-up-for-COMPILE_TEST/20160302-011032
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-> config: powerpc-allnoconfig (attached as .config)
-> reproduce:
->         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         make.cross ARCH=powerpc 
-> 
-> All errors (new ones prefixed by >>):
-> 
->    arch/powerpc/kernel/built-in.o: In function `rtc_generic_get_time':
-> >> time.c:(.text+0x4c58): undefined reference to `rtc_valid_tm'
-> 
+Hi,
 
-I fixed up the powerpc and parisc patches now, will resend them
-after getting some feedback on the overall approach.
+Clean tested working pulls CPUs and QTYs in stock.
 
-	Arnd
+115 X X5650
+65 X E5410
+75 X X5660
+145 X E5530
+100 X E5645
+40 X X5680
+75 X X5690
+
+Brand new sealed IP phones and QTYs in stock.
+
+55 x CP-7937G
+77 x CP-7942G
+54 x CP-7945G
+75 x CP-7962G
+=2E.....
+45 x Avaya 9630
+65 x Avaya 9641
+55 x Avaya 9640=20
+
+USED IT HARDWARE FROM:
+
+=46UJITSU       IBM         SUN        HP
+QUANTUM   DELL       HDS        STK
+NETAPP      SGI         Oracle      EMC=B2
+
+3Com, ADVA, Alcatel, Brocade, Cisco,
+Cabletron, Enterasys, Extreme Networks,
+Huawei, Marconi, Nortel, Qlogic, Avaya
+
+Let me know if you're interested. We are very open to offers and willin=
+g to work with you to make sure that we have a deal.
+
+Sincerely
+Barbara Johnson
+Laison Computech Inc
+Tel: +1-657-205-7860
+=46ax: +1-347-214-0478
+Email: sales@laiisoncomputech.com
+Web: www.laisoncomputech.com
