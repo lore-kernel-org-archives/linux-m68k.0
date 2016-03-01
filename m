@@ -1,44 +1,27 @@
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH 0/6] ncr5380: Exception handling fixes for v4.5
-Date: Tue, 01 Mar 2016 08:00:22 -0500
-Message-ID: <yq17fhmcpzt.fsf@sermon.lab.mkp.net>
-References: <20160222230703.994951661@telegraphics.com.au>
-	<yq1d1rfc4iw.fsf@sermon.lab.mkp.net>
-	<alpine.LNX.2.00.1603011431300.3734@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/6] rtc: generic: follow up for COMPILE_TEST
+Date: Tue,  1 Mar 2016 17:59:56 +0100
+Message-ID: <1456851608-3374907-1-git-send-email-arnd__3957.61717013574$1456851672$gmane$org@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:32395 "EHLO
-	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750827AbcCANAb (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Mar 2016 08:00:31 -0500
-In-Reply-To: <alpine.LNX.2.00.1603011431300.3734@nippy.intranet> (Finn Thain's
-	message of "Tue, 1 Mar 2016 14:32:23 +1100 (AEDT)")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, James Bottomley <James.Bottomley@hansenpartnership.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: linux-arm-kernel@lists.infradead.org, Kyle McMartin <kyle@mcmartin.ca>, rtc-linux@googlegroups.com, Alessandro Zummo <a.zummo@towertech.it>, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-parisc@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 
->>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
+Today's linux-next kernel allowed building the rtc-generic
+driver (and most other rtc drivers) on all architectures,
+but this caused some errors on architectures without asm/rtc.h.
 
-Finn,
+This series reworks that driver to avoid the dependency,
+and simplifies all four implementations. My first approach
+was to split the driver into four separate drivers, but
+that didn't feel right when three of them have their own
+multiplexors.
 
->> This is a pretty big lump of changes for a 4.5 bug fix!
+The first five patches can be applied independent of one other,
+while patch 6 is optional and can be applied when all others
+are merged. Alternatively, they can all go in through the
+rtc tree. I compile-tested only the powerpc and sh targets for
+which I happened to have cross-compilers installed.
 
-Finn> Please keep in mind that these fixes are all rework of the changes
-Finn> I made in -rc1. So this submission is 2 files changed, 118
-Finn> insertions(+), 148 deletions(-) which is all rework of the
-Finn> previous submission, which was 18 files changed, 2940
-Finn> insertions(+), 3688 deletions(-)
-
-I am well aware of and appreciate the huge amount of work you have done.
-
-My concern is merely that Linus is going to get pretty upset with such a
-big delta this late in the 4.5 cycle. By comparison, our other fixes at
-this time are in the 1-5 line bucket!
-
-I think putting the fixes into 4.6 and tagging them for stable is a
-better (less emperor penguin wrath-inducing) approach.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+	Arnd
