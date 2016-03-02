@@ -1,53 +1,21 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/6] rtc: generic: allow building on all architectures
-Date: Wed, 2 Mar 2016 10:39:15 +0100
-Message-ID: <CAMuHMdX2Jc4dT5omKmiie7GK+xDYDgJwm34hwANx3HzHt7LzxA__49614.753566175$1456911578$gmane$org@mail.gmail.com>
-References: <1456851608-3374907-1-git-send-email-arnd@arndb.de>
-	<1456851608-3374907-2-git-send-email-arnd@arndb.de>
-	<CAMuHMdW5+jZ1n9WnCwBrGSGjUa8ziNTTqf-H15EFTQC_iwnw+Q@mail.gmail.com>
-	<mvmwpplns8n.fsf@hawking.suse.de>
+From: =?utf-8?B?5oiR55qE54Wn54mH5ZyoOg==?= <admin@officefans.net>
+Subject: =?utf-8?B?5oiR55qE54Wn54mH5ZyoOg==?=
+Date: Thu, 3 Mar 2016 03:37:24 +0800
+Message-ID: <20160303033730814206@officefans.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <mvmwpplns8n.fsf@hawking.suse.de>
+Received: from mail.fcc-foshan.com ([121.9.251.70]:1909 "EHLO fcc-foshan.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1750797AbcCBT4U (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 2 Mar 2016 14:56:20 -0500
+Received: from DWp.jct by fcc-foshan.com (MDaemon PRO v10.0.1)
+	with ESMTP id md50000537704.msg
+	for <linux-m68k@vger.kernel.org>; Thu, 03 Mar 2016 03:46:17 +0800
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Kyle McMartin <kyle@mcmartin.ca>, RTCLINUX <rtc-linux@googlegroups.com>, Alessandro Zummo <a.zummo@towertech.it>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Linux-sh list <linux-sh@vger.kernel.org>, Parisc List <linux-parisc@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-m68k@vger.kernel.org
 
-On Wed, Mar 2, 2016 at 10:28 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->
->>> +#else
->>> +#define generic_rtc_ops *(struct rtc_class_ops*)NULL
->>> +#endif
->>>
->>>  static int __init generic_rtc_probe(struct platform_device *dev)
->>>  {
->>>         struct rtc_device *rtc;
->>> +       const struct rtc_class_ops *ops;
->>> +
->>> +       ops = dev_get_platdata(&dev->dev);
->>> +       if (!ops)
->>> +               ops = &generic_rtc_ops;
->>
->> I hope no compiler version treats "&*(struct rtc_class_ops*)NULL" as
->> undefined behavior?
->
-> Yes, that is guaranteed, the operations cancel each other (6.5.3.2#3: If
-> the operand is the result of a unary * operator, neither that operator
-> nor the & operator is evaluated and the result is as if both were
-> omitted).
-
-Thanks for confirming.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkNCg==
