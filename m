@@ -1,39 +1,52 @@
 From: Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 07/22] ncr5380: Remove BOARD_REQUIRES_NO_DELAY macro
-Date: Mon, 14 Mar 2016 08:33:16 +0100
-Message-ID: <56E6693C.4020804@suse.de>
+Subject: Re: [PATCH 08/22] ncr5380: Use DMA hooks for PDMA
+Date: Mon, 14 Mar 2016 08:34:55 +0100
+Message-ID: <56E6699F.2050401@suse.de>
 References: <20160314042700.596192247@telegraphics.com.au>
- <20160314042702.466021574@telegraphics.com.au>
+ <20160314042702.716014118@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mx2.suse.de ([195.135.220.15]:55584 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:55646 "EHLO mx2.suse.de"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-	id S1755217AbcCNHdT (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 14 Mar 2016 03:33:19 -0400
-In-Reply-To: <20160314042702.466021574@telegraphics.com.au>
+	id S1751397AbcCNHe5 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 14 Mar 2016 03:34:57 -0400
+In-Reply-To: <20160314042702.716014118@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 
 On 03/14/2016 05:27 AM, Finn Thain wrote:
-> The io_recovery_delay macro is intended to insert a microsecond delay
-> between the chip register accesses that begin a DMA operation. This
-> is reportedly needed for some ISA boards.
+> Those wrapper drivers which use DMA define the REAL_DMA macro and
+> those which use pseudo DMA define PSEUDO_DMA. These macros need to be
+> removed for a number of reasons, not least of which is to have driver=
+s
+> share more code.
 >=20
-> Reverse the sense of the macro test so that in the common case,
-> where no delay is required, drivers need not define the macro.
+> Redefine the PDMA send and receive hooks as DMA setup hooks, so that =
+the
+> DMA code can be shared by all 5380 wrapper drivers. This will help to
+> reunify the forked core driver.
 >=20
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 >=20
 > ---
->  drivers/scsi/NCR5380.c   |   18 ++++++++----------
->  drivers/scsi/dtc.h       |    2 ++
->  drivers/scsi/g_NCR5380.h |    2 ++
->  drivers/scsi/t128.h      |    2 ++
->  4 files changed, 14 insertions(+), 10 deletions(-)
+>  drivers/scsi/NCR5380.c      |   10 ++--------
+>  drivers/scsi/arm/cumana_1.c |   10 ++++++----
+>  drivers/scsi/arm/oak.c      |   10 ++++++----
+>  drivers/scsi/dmx3191d.c     |    4 ++--
+>  drivers/scsi/dtc.c          |    6 ++++--
+>  drivers/scsi/dtc.h          |    2 ++
+>  drivers/scsi/g_NCR5380.c    |   10 ++++++----
+>  drivers/scsi/g_NCR5380.h    |    4 ++--
+>  drivers/scsi/mac_scsi.c     |    5 ++---
+>  drivers/scsi/pas16.c        |   14 ++++++++------
+>  drivers/scsi/pas16.h        |    2 ++
+>  drivers/scsi/t128.c         |   12 ++++++------
+>  drivers/scsi/t128.h         |    2 ++
+>  13 files changed, 50 insertions(+), 41 deletions(-)
 >=20
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 
