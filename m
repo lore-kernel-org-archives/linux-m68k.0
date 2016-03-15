@@ -1,112 +1,58 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 20/22] atari_scsi: Set a reasonable default for
- cmd_per_lun
-Date: Tue, 15 Mar 2016 19:27:49 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1603151809090.28691@nippy.intranet>
-References: <20160314042700.596192247@telegraphics.com.au> <20160314042705.846189331@telegraphics.com.au> <56E66CF5.2070200@suse.de> <alpine.LNX.2.00.1603151403150.20294@nippy.intranet> <56E7B14D.4070704@suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.6
+Date: Tue, 15 Mar 2016 13:21:12 +0100
+Message-ID: <1458044472-20272-1-git-send-email-geert__16633.7232491516$1458044577$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45631 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S964879AbcCOI2d (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 15 Mar 2016 04:28:33 -0400
-In-Reply-To: <56E7B14D.4070704@suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Hannes Reinecke <hare@suse.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
+	Hi Linus,
 
-On Tue, 15 Mar 2016, Hannes Reinecke wrote:
+The following changes since commit 92e963f50fc74041b5e9e744c330dca48e04f08d:
 
-> On 03/15/2016 04:27 AM, Finn Thain wrote:
-> > 
-> > On Mon, 14 Mar 2016, Hannes Reinecke wrote:
-> > 
-> >> On 03/14/2016 05:27 AM, Finn Thain wrote:
-> >>> This setting does not need to be conditional on Atari ST or TT.
-> >>>
-> >>> Without TCQ support, cmd_per_lun == 2 is probably reasonable...
-> >>>
-> >>> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> >>>
-> >>> ---
-> >>>  drivers/scsi/atari_scsi.c |    3 +--
-> >>>  1 file changed, 1 insertion(+), 2 deletions(-)
-> >>>
-> >>> Index: linux/drivers/scsi/atari_scsi.c
-> >>> ===================================================================
-> >>> --- linux.orig/drivers/scsi/atari_scsi.c	2016-03-14 15:26:45.000000000 +1100
-> >>> +++ linux/drivers/scsi/atari_scsi.c	2016-03-14 15:26:55.000000000 +1100
-> >>> @@ -750,6 +750,7 @@ static struct scsi_host_template atari_s
-> >>>  	.eh_abort_handler	= atari_scsi_abort,
-> >>>  	.eh_bus_reset_handler	= atari_scsi_bus_reset,
-> >>>  	.this_id		= 7,
-> >>> +	.cmd_per_lun		= 2,
-> >>>  	.use_clustering		= DISABLE_CLUSTERING,
-> >>>  	.cmd_size		= NCR5380_CMD_SIZE,
-> >>>  };
-> >> _2_ ? Are you being overly cheeky here?
-> >> I sincerely doubt the driver is capable of submitting two 
-> >> simultaneous commands ...
-> > 
-> > Right. The LLD has LU busy flags to prevent a LU from being issued 
-> > more than one command.
-> > 
-> >> Care to explain?
-> > 
-> > It seemed harmless and it is consistent with the all of the other 5380 
-> > drivers.
-> > 
-> > I don't know why it was done that way. Perhaps it was done to create a 
-> > pipeline. That is, to keep a small number of commands in the LLD issue 
-> > queue so that the NCR5380_main() work item does not have to terminate 
-> > and then get requeued needlessly.
-> > 
-> Like I suspected.
-> While I'm aware of the reasoning, I sincerely doubt whether it makes any 
-> difference in real life.
-> After all, a 'BUSY' return value still relies on someone kicking the 
-> queue so that the next command can be submitted.
+  Linux 4.5-rc1 (2016-01-24 13:06:47 -0800)
 
-Well, it is not queuecommand returning SCSI_MLQUEUE_HOST_BUSY. I assume it 
-is scsi_request_fn() bailing out when !scsi_dev_queue_ready().
+are available in the git repository at:
 
-> So it's not much different from using a queuedepth of '1' and use the 
-> 'official' way.
-> 
-> Have you done any benchmarking here?
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
 
-I have now.
+for you to fetch changes up to efbec135f11d6f14f40806935827c53d8889f59b:
 
-> Would be very interesting to check if it makes a difference in real
-> life ...
+  m68k: Fix misspellings in comments. (2016-02-29 09:51:44 +0100)
 
-It seems that the work item startup and shutdown overhead does make a 
-difference on machines where cycles are scarce.
+----------------------------------------------------------------
+Adam Buchbinder (1):
+      m68k: Fix misspellings in comments.
 
-Using mac_scsi on a 25 MHz 68030 I made some test runs of
-# dd if=/dev/sda of=/dev/null count=4096
-and the difference is measurable (effect size is 9+ standard deviations).
+Geliang Tang (1):
+      zorro: Use kobj_to_dev()
 
-cmd_per_lun = 2 is about 3.0% faster than cmd_per_lun = 1.
-cmd_per_lun = 4 is about 3.7% faster than cmd_per_lun = 1.
+Greg Ungerer (1):
+      m68k: Use conventional function parameters for do_sigreturn
 
-Increasing cmd_per_lun to 16 (which equals can_queue) doesn't improve the 
-timing.
+ arch/m68k/include/asm/MC68328.h   | 6 +++---
+ arch/m68k/include/asm/MC68EZ328.h | 6 +++---
+ arch/m68k/include/asm/MC68VZ328.h | 6 +++---
+ arch/m68k/include/asm/m54xxacr.h  | 4 ++--
+ arch/m68k/include/asm/mac_iop.h   | 2 +-
+ arch/m68k/include/asm/mcftimer.h  | 2 +-
+ arch/m68k/kernel/entry.S          | 6 ++++++
+ arch/m68k/kernel/signal.c         | 8 ++------
+ arch/m68k/mac/via.c               | 2 +-
+ drivers/zorro/zorro-sysfs.c       | 3 +--
+ 10 files changed, 23 insertions(+), 22 deletions(-)
 
-I think the 'official' way (the default cmd_per_lun) would not hurt if the 
-CPU was a bit faster.
+Thanks for pulling!
 
-Now that you've got me to test it I think 4 is probably the best for 
-mac_scsi and atari_scsi. When I send v2 I will change patch 20 and 22 
-accordingly.
+Gr{oetje,eeting}s,
 
--- 
+						Geert
 
-> 
-> Cheers,
-> 
-> Hannes
-> 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
