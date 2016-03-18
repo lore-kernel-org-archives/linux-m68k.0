@@ -1,80 +1,80 @@
-From: Greg Ungerer <gerg@uclinux.org>
-Subject: [git pull] m68knommu/coldfire fixes for 4.6
-Date: Fri, 18 Mar 2016 08:18:13 +1000
-Message-ID: <56EB2D25.3020602@uclinux.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 00/22] ncr5380: Eliminate macros, reduce code duplication,
+ fix bugs etc
+Date: Fri, 18 Mar 2016 20:03:00 +1300
+Message-ID: <56EBA824.2040205@gmail.com>
+References: <20160314042700.596192247@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out2.external.iinet.net.au ([203.59.1.155]:33752
-	"EHLO icp-osb-irony-out2.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1756723AbcCQWSV (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 17 Mar 2016 18:18:21 -0400
+Received: from mail-pf0-f193.google.com ([209.85.192.193]:35038 "EHLO
+	mail-pf0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750728AbcCRHDJ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Mar 2016 03:03:09 -0400
+In-Reply-To: <20160314042700.596192247@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 
-Hi Linus,
+Finn,
 
-Can you please pull the m68knommu git tree, for-next branch.
-The main change is the removal of the bit-rotten 68360 support.
-Also a fix to always make the ethernet FEC platform info available.
+tested successfully on Atari Falcon, so:
 
-Regards
-Greg
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
 
-
-
-The following changes since commit f6cede5b49e822ebc41a099fe41ab4989f64e2cb:
-
-  Linux 4.5-rc7 (2016-03-06 14:48:03 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to a3595962d82495f51a80feb19dcdb135556a9527:
-
-  m68knommu: remove obsolete 68360 support (2016-03-07 10:07:17 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (2):
-      m68knommu: fix FEC platform device registration when driver is modular
-      m68knommu: remove obsolete 68360 support
-
- arch/m68k/68360/Makefile             |  12 -
- arch/m68k/68360/commproc.c           | 309 ----------------
- arch/m68k/68360/config.c             | 169 ---------
- arch/m68k/68360/entry.S              | 164 ---------
- arch/m68k/68360/head-ram.S           | 402 ---------------------
- arch/m68k/68360/head-rom.S           | 413 ----------------------
- arch/m68k/68360/ints.c               | 138 --------
- arch/m68k/Kconfig.cpu                |   7 -
- arch/m68k/Kconfig.debug              |   2 +-
- arch/m68k/Kconfig.machine            |   6 -
- arch/m68k/Makefile                   |   3 -
- arch/m68k/coldfire/device.c          |   4 +-
- arch/m68k/include/asm/commproc.h     | 664 -----------------------------------
- arch/m68k/include/asm/m68360.h       |  13 -
- arch/m68k/include/asm/m68360_enet.h  | 177 ----------
- arch/m68k/include/asm/m68360_pram.h  | 431 -----------------------
- arch/m68k/include/asm/m68360_quicc.h | 362 -------------------
- arch/m68k/include/asm/m68360_regs.h  | 408 ---------------------
- arch/m68k/kernel/early_printk.c      |   8 +-
- arch/m68k/kernel/setup_no.c          |   7 -
- 20 files changed, 7 insertions(+), 3692 deletions(-)
- delete mode 100644 arch/m68k/68360/Makefile
- delete mode 100644 arch/m68k/68360/commproc.c
- delete mode 100644 arch/m68k/68360/config.c
- delete mode 100644 arch/m68k/68360/entry.S
- delete mode 100644 arch/m68k/68360/head-ram.S
- delete mode 100644 arch/m68k/68360/head-rom.S
- delete mode 100644 arch/m68k/68360/ints.c
- delete mode 100644 arch/m68k/include/asm/commproc.h
- delete mode 100644 arch/m68k/include/asm/m68360.h
- delete mode 100644 arch/m68k/include/asm/m68360_enet.h
- delete mode 100644 arch/m68k/include/asm/m68360_pram.h
- delete mode 100644 arch/m68k/include/asm/m68360_quicc.h
- delete mode 100644 arch/m68k/include/asm/m68360_regs.h
+Am 14.03.2016 um 17:27 schrieb Finn Thain:
+> This patch series has more macro elimination and some tweaks to the
+> DMA hooks so that all the wrapper drivers can share the same core
+> DMA algorithm. This resolves the major discrepancies between the two
+> core drivers, which relate to code conditional on the REAL_DMA and
+> PSEUDO_DMA macros.
+> 
+> After all the wrapper drivers agree on the DMA hook api, the core driver
+> fork gets resolved. NCR5380.c is adopted by atari_scsi and sun3_scsi and
+> atari_NCR5380.c is then deleted.
+> 
+> Historically, the 5380 drivers suffered from over-use of conditional
+> compilation, which caused the compile-time configuration space to explode,
+> leading to core driver code that was practically untestable, unmaintainable
+> and difficult to reason about. It also prevented driver modules from
+> sharing object code.
+> 
+> Along with REAL_DMA, REAL_DMA_POLL and PSEUDO_DMA, most of the remaining
+> macros are also eradicated, such as CONFIG_SCSI_GENERIC_NCR53C400,
+> SUPPORT_TAGS, DONT_USE_INTR, AUTOPROBE_IRQ and BIOSPARAM.
+> 
+> Also in this patch series, some duplicated documentation is removed and
+> the PDMA implementation in mac_scsi finally gets fixed.
+> 
+> This patch series was tested by exercising the dmx3191d and mac_scsi modules
+> on suitable hardware. Help with driver testing on ISA and Atari hardware
+> is sought as I don't have any (likewise RiscPC ecards and Sun 3 hardware).
+> 
+> ---
+>  Documentation/scsi/g_NCR5380.txt       |   17 
+>  Documentation/scsi/scsi-parameters.txt |   11 
+>  drivers/scsi/Kconfig                   |   11 
+>  drivers/scsi/NCR5380.c                 |  661 ++++----
+>  drivers/scsi/NCR5380.h                 |  145 -
+>  drivers/scsi/arm/cumana_1.c            |   25 
+>  drivers/scsi/arm/oak.c                 |   22 
+>  drivers/scsi/atari_NCR5380.c           | 2676 ---------------------------------
+>  drivers/scsi/atari_scsi.c              |  142 -
+>  drivers/scsi/dmx3191d.c                |   10 
+>  drivers/scsi/dtc.c                     |   27 
+>  drivers/scsi/dtc.h                     |    7 
+>  drivers/scsi/g_NCR5380.c               |  143 -
+>  drivers/scsi/g_NCR5380.h               |   26 
+>  drivers/scsi/mac_scsi.c                |  239 +-
+>  drivers/scsi/pas16.c                   |   27 
+>  drivers/scsi/pas16.h                   |    5 
+>  drivers/scsi/sun3_scsi.c               |   48 
+>  drivers/scsi/t128.c                    |   19 
+>  drivers/scsi/t128.h                    |    7 
+>  20 files changed, 636 insertions(+), 3632 deletions(-)
+> 
+> 
+> 
+> 
