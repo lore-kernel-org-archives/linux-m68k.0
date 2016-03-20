@@ -1,42 +1,32 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 Subject: Re: BUG: workqueue lockup
-Date: Mon, 21 Mar 2016 11:02:09 +1300
-Message-ID: <CAOmrzkKn5Cgqai_5F4rqqotmZazMKQanMjmW6L416=JxK11C=w@mail.gmail.com>
+Date: Mon, 21 Mar 2016 09:29:58 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1603210921330.15763@nippy.intranet>
 References: <87oaa9upgl.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-io0-f173.google.com ([209.85.223.173]:34569 "EHLO
-	mail-io0-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1750942AbcCTWCK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Mar 2016 18:02:10 -0400
-Received: by mail-io0-f173.google.com with SMTP id m184so192541215iof.1
-        for <linux-m68k@vger.kernel.org>; Sun, 20 Mar 2016 15:02:10 -0700 (PDT)
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49066 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750942AbcCTWaH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Mar 2016 18:30:07 -0400
 In-Reply-To: <87oaa9upgl.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>
-
-Hi Andreas,
-
-that's correct - the driver loops forever, retrying unsuccessful
-selection attempts.
-
-Finn had submitted a patch to ARAnyM to rectify that. I have prepared
-another patch to the kernel (using presence of the natfeatures driver
-to detect we're running on ARAnyM, then skipping all platform device
-setup) but haven't submitted that yet.
-
-Cheers,
-
-  Michael
+Cc: linux-m68k@vger.kernel.org
 
 
-On Mon, Mar 21, 2016 at 4:41 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+On Sun, 20 Mar 2016, Andreas Schwab wrote:
+
 > I'm getting this hangup with 4.5 in aranym:
->
-> [    2.060000] scsi host0: Atari native SCSI, io_port 0x0, n_io_port 0, base 0x0, irq 15, can_queue 8, cmd_per_lun 1, sg_tablesize 0, this_id 7, flags { }, options { REAL_DMA SUPPORT_TAGS }
+
+Are you using this aranym patch?
+
+https://sourceforge.net/p/aranym/bugs/40/
+
+> 
+> [    2.060000] scsi host0: Atari native SCSI, io_port 0x0, n_io_port 0, base 0x0, irq 15, can_queue 8, cmd_per_lun 1, sg_tablesize 0, this_id 7, flags { }, options { REAL_DMA SUPPORT_TAGS } 
 > [    2.110000] blk_queue_max_segments: set to minimum 1
 > [   55.130000] random: nonblocking pool is initialized
 > [   60.240000] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 58s!
@@ -55,16 +45,20 @@ On Mon, Mar 21, 2016 at 4:41 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
 > [   60.530000]   pwq 2: cpus=0 node=0 flags=0x4 nice=0 active=1/1
 > [   60.530000]     in-flight: 6:NCR5380_main
 > [   60.560000] pool 2: cpus=0 node=0 flags=0x4 nice=0 hung=58s workers=2 idle: 57
->
+> 
 > I assume that this has something to do with the ncr5380 updates.
->
+
+It also has to do with the assumption that aranym is the same as an atari.
+
+Aranym doesn't actually implement a 5380 device. Instead it attempts to 
+fool the operating system that runs on it. Presumably this is done to 
+avoid having to modify existing operating systems.
+
+Does Geert's "initcall_blacklist=atari_scsi_driver_init" workaround help?
+
+-- 
+
+> 
 > Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-> "And now for something completely different."
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> 
