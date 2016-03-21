@@ -1,39 +1,129 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: BUG: workqueue lockup
-Date: Mon, 21 Mar 2016 01:01:33 +0100
-Message-ID: <877fgwvgv6.fsf@linux-m68k.org>
-References: <87oaa9upgl.fsf@linux-m68k.org>
-	<alpine.LNX.2.00.1603210921330.15763@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v3 02/23] ncr5380: Remove FLAG_NO_PSEUDO_DMA where possible
+Date: Mon, 21 Mar 2016 13:31:51 +1100
+Message-ID: <20160321023150.143987737@telegraphics.com.au>
+References: <20160321023149.604138431@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:59143 "EHLO
-	mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751392AbcCUABi (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Mar 2016 20:01:38 -0400
-In-Reply-To: <alpine.LNX.2.00.1603210921330.15763@nippy.intranet> (Finn
-	Thain's message of "Mon, 21 Mar 2016 09:29:58 +1100 (AEDT)")
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52781 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750758AbcCUEF1 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Mar 2016 00:05:27 -0400
+Content-Disposition: inline; filename=ncr5380-FLAG_NO_PSEUDO_DMA
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k@vger.kernel.org
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 
-Finn Thain <fthain@telegraphics.com.au> writes:
+Drivers that define PSEUDO_DMA also define NCR5380_dma_xfer_len.
+The core driver must call NCR5380_dma_xfer_len which means
+FLAG_NO_PSEUDO_DMA can be eradicated from the core driver.
 
-> On Sun, 20 Mar 2016, Andreas Schwab wrote:
->
->> I'm getting this hangup with 4.5 in aranym:
->
-> Are you using this aranym patch?
->
-> https://sourceforge.net/p/aranym/bugs/40/
+dmx3191d doesn't define PSEUDO_DMA and has no use for FLAG_NO_PSEUDO_DMA,
+so remove it there also.
 
-Thanks, I have committed it now.  In future, please send patches to the
-aranym mailinglist.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Andreas.
+---
+ drivers/scsi/NCR5380.c   |    3 +--
+ drivers/scsi/dmx3191d.c  |    2 +-
+ drivers/scsi/g_NCR5380.c |    7 ++++++-
+ drivers/scsi/g_NCR5380.h |    2 +-
+ drivers/scsi/mac_scsi.c  |   15 ++++++++++++++-
+ 5 files changed, 23 insertions(+), 6 deletions(-)
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Index: linux/drivers/scsi/dmx3191d.c
+===================================================================
+--- linux.orig/drivers/scsi/dmx3191d.c	2016-03-21 13:31:07.000000000 +1100
++++ linux/drivers/scsi/dmx3191d.c	2016-03-21 13:31:09.000000000 +1100
+@@ -93,7 +93,7 @@ static int dmx3191d_probe_one(struct pci
+ 	 */
+ 	shost->irq = NO_IRQ;
+ 
+-	error = NCR5380_init(shost, FLAG_NO_PSEUDO_DMA);
++	error = NCR5380_init(shost, 0);
+ 	if (error)
+ 		goto out_host_put;
+ 
+Index: linux/drivers/scsi/mac_scsi.c
+===================================================================
+--- linux.orig/drivers/scsi/mac_scsi.c	2016-03-21 13:31:07.000000000 +1100
++++ linux/drivers/scsi/mac_scsi.c	2016-03-21 13:31:09.000000000 +1100
+@@ -37,7 +37,9 @@
+ 
+ #define NCR5380_pread                   macscsi_pread
+ #define NCR5380_pwrite                  macscsi_pwrite
+-#define NCR5380_dma_xfer_len(instance, cmd, phase)	(cmd->transfersize)
++
++#define NCR5380_dma_xfer_len(instance, cmd, phase) \
++        macscsi_dma_xfer_len(instance, cmd)
+ 
+ #define NCR5380_intr                    macscsi_intr
+ #define NCR5380_queue_command           macscsi_queue_command
+@@ -303,6 +305,17 @@ static int macscsi_pwrite(struct Scsi_Ho
+ }
+ #endif
+ 
++static int macscsi_dma_xfer_len(struct Scsi_Host *instance,
++                                struct scsi_cmnd *cmd)
++{
++	struct NCR5380_hostdata *hostdata = shost_priv(instance);
++
++	if (hostdata->flags & FLAG_NO_PSEUDO_DMA)
++		return 0;
++
++	return cmd->transfersize;
++}
++
+ #include "NCR5380.c"
+ 
+ #define DRV_MODULE_NAME         "mac_scsi"
+Index: linux/drivers/scsi/g_NCR5380.c
+===================================================================
+--- linux.orig/drivers/scsi/g_NCR5380.c	2016-03-21 13:31:07.000000000 +1100
++++ linux/drivers/scsi/g_NCR5380.c	2016-03-21 13:31:09.000000000 +1100
+@@ -712,10 +712,15 @@ static inline int NCR5380_pwrite(struct
+ 	return 0;
+ }
+ 
+-static int generic_NCR5380_dma_xfer_len(struct scsi_cmnd *cmd)
++static int generic_NCR5380_dma_xfer_len(struct Scsi_Host *instance,
++                                        struct scsi_cmnd *cmd)
+ {
++	struct NCR5380_hostdata *hostdata = shost_priv(instance);
+ 	int transfersize = cmd->transfersize;
+ 
++	if (hostdata->flags & FLAG_NO_PSEUDO_DMA)
++		return 0;
++
+ 	/* Limit transfers to 32K, for xx400 & xx406
+ 	 * pseudoDMA that transfers in 128 bytes blocks.
+ 	 */
+Index: linux/drivers/scsi/NCR5380.c
+===================================================================
+--- linux.orig/drivers/scsi/NCR5380.c	2016-03-21 13:31:07.000000000 +1100
++++ linux/drivers/scsi/NCR5380.c	2016-03-21 13:31:09.000000000 +1100
+@@ -1833,8 +1833,7 @@ static void NCR5380_information_transfer
+ 
+ #if defined(PSEUDO_DMA) || defined(REAL_DMA_POLL)
+ 				transfersize = 0;
+-				if (!cmd->device->borken &&
+-				    !(hostdata->flags & FLAG_NO_PSEUDO_DMA))
++				if (!cmd->device->borken)
+ 					transfersize = NCR5380_dma_xfer_len(instance, cmd, phase);
+ 
+ 				if (transfersize) {
+Index: linux/drivers/scsi/g_NCR5380.h
+===================================================================
+--- linux.orig/drivers/scsi/g_NCR5380.h	2016-03-21 13:31:07.000000000 +1100
++++ linux/drivers/scsi/g_NCR5380.h	2016-03-21 13:31:09.000000000 +1100
+@@ -61,7 +61,7 @@
+ #endif
+ 
+ #define NCR5380_dma_xfer_len(instance, cmd, phase) \
+-        generic_NCR5380_dma_xfer_len(cmd)
++        generic_NCR5380_dma_xfer_len(instance, cmd)
+ 
+ #define NCR5380_intr generic_NCR5380_intr
+ #define NCR5380_queue_command generic_NCR5380_queue_command
