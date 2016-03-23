@@ -1,35 +1,86 @@
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v4 00/23] ncr5380: Eliminate macros, reduce code duplication, fix bugs etc
-Date: Wed, 23 Mar 2016 16:54:26 -0400
-Message-ID: <yq1mvpo29vh.fsf@sermon.lab.mkp.net>
-References: <20160323101009.341929635@telegraphics.com.au>
+From: Laison@seymour.toledo.br, Computech@seymour.toledo.br,
+	"Inc <support"@ensuretech.com
+Subject: CISCO IP PHONES AND CPU's
+Date: Thu, 24 Mar 2016 02:12:04 +0700
+Message-ID: <20160323203603.9913EA7B60__48818.4817521416$1458768361$gmane$org@seymour.toledo.br>
+Reply-To: sales@laisoncomputertech.us
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:50941 "EHLO
-	userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751439AbcCWUzK (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Mar 2016 16:55:10 -0400
-In-Reply-To: <20160323101009.341929635@telegraphics.com.au> (Finn Thain's
-	message of "Wed, 23 Mar 2016 21:10:09 +1100")
+Received: from seymour.toledo.br ([200.148.142.55]:47372 "EHLO
+	seymour.toledo.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757017AbcCWVYt convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Mar 2016 17:24:49 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
+To: Recipients <support@ensuretech.com>
 
->>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
+Hi,
 
-Finn,
+Our Stock list.
 
-Finn> This patch series has been tested on several platforms. I tested
-Finn> the dmx3191d and mac_scsi modules on suitable hardware, Michael
-Finn> tested atari_scsi on an Atari Falcon and Ondrej has tested
-Finn> g_NCR5380 and g_NCR5380_mmio on various ISA cards.
+Brand NEW
+96 x Cisco 7900 IP Phone
+87 x Unified IP Phone 6900
+12 x Unified IP Phone 8900
+76 x Unified IP Phone 9900
+55 x Unified IP Phone 8800
+67 x Cisco 1921
+67 x Cisco 1941
+56 x Cisco CP-7961G 7961G
+34 x Cisco CP-7971G-GE 7971G
+19 x Cisco Unified IP Conference Station 7937G Model: 7937 CP-7937G
+20 x Cisco CP-7975G 7975G
 
-Applied to 4.7/scsi-queue.
+Brand New Sealed :
 
-And thanks for re-posting with all the relevant tags applied. Much
-appreciated!
+23 x  CISCO1921-SEC/K9
+Conditions: Brand New Sealed
+Description: CISCO 1921 Security Bundle w/SEC license PAK
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+45 x CISCO1921/K9
+Conditions: Brand New Sealed
+Description: CISCO 1921 Modular Router, 2 GE, 2 EHWIC slots, 512DRAM, IP Base
+
+(1)  WS-C4500X-16SFP+
+Serial number:  JAE183501L3
+US&#36;2600
+
+(1)  WS-C3850-48PW-S
+Serial number:  FCW1823C0EW
+US&#36;2650
+
+(1)  WS-X6908-10G-2T
+Serial number:  SAL1620CKUB
+US&#36;3650
+
+(1)  ASR1000-ESP10
+Serial number:  JAE181306C3
+US&#36;3800
+
+(1)  AIR-CT5508-250-K9   (this is new but box is open!)
+Serial number:  FCW1521L038
+US&#36;4000
+
+CPUs part number below
+
+89 x  X5650
+
+975 x  X5660
+
+150 x  X5680
+
+265 x  X5690
+
+Kindly make your price offers.
+
+Sincerely
+Barbara Johnson
+Laison Computech
+210 N Scoring Ave,
+Rialto California, 92376
+Tel: +1-657-232-7047
+Fax: +1-347-214-0478
+Email: sales@laisoncomputertech.us
