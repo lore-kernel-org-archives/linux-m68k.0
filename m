@@ -1,69 +1,80 @@
-From: Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 23/23] ncr5380: Call complete_cmd() for disconnected
- commands on bus reset
-Date: Wed, 23 Mar 2016 08:29:32 +0100
-Message-ID: <56F245DC.90801@suse.de>
-References: <20160321023149.604138431@telegraphics.com.au>
- <20160321023155.603958101@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20160321023155.603958101@telegraphics.com.au>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v4 00/23] ncr5380: Eliminate macros, reduce code duplication, fix bugs etc
+Date: Wed, 23 Mar 2016 21:10:09 +1100
+Message-ID: <20160323101009.341929635@telegraphics.com.au>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43631 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754349AbcCWKPL (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Mar 2016 06:15:11 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 
-On 03/21/2016 03:32 AM, Finn Thain wrote:
-> I'm told that some targets are liable to disconnect a REQUEST SENSE
-> command. Theoretically this would cause a command undergoing autosens=
-e to
-> be moved onto the disconnected list. The bus reset handler must call
-> complete_cmd() for these commands, otherwise the hostdata->sensing po=
-inter
-> will not get cleared. That would cause autosense processing to stall =
-and
-> a timeout or an incorrect scsi_eh_restore_cmnd() would eventually fol=
-low.
->=20
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
->=20
-> ---
->  drivers/scsi/NCR5380.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> Index: linux/drivers/scsi/NCR5380.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux.orig/drivers/scsi/NCR5380.c	2016-03-21 13:31:40.000000000 +=
-1100
-> +++ linux/drivers/scsi/NCR5380.c	2016-03-21 13:31:47.000000000 +1100
-> @@ -2437,7 +2437,7 @@ static int NCR5380_bus_reset(struct scsi
->  		struct scsi_cmnd *cmd =3D NCR5380_to_scmd(ncmd);
-> =20
->  		set_host_byte(cmd, DID_RESET);
-> -		cmd->scsi_done(cmd);
-> +		complete_cmd(instance, cmd);
->  	}
->  	INIT_LIST_HEAD(&hostdata->disconnected);
-> =20
->=20
->=20
-Reviewed-by: Hannes Reinecke <hare@suse.com>
 
-Cheers,
+This patch series has more macro elimination and some tweaks to the
+DMA hooks so that all the wrapper drivers can share the same core
+DMA algorithm. This resolves the major discrepancies between the two
+core drivers, which relate to code conditional on the REAL_DMA and
+PSEUDO_DMA macros.
 
-Hannes
---=20
-Dr. Hannes Reinecke		   Teamlead Storage & Networking
-hare@suse.de			               +49 911 74053 688
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
-GF: F. Imend=F6rffer, J. Smithard, J. Guild, D. Upmanyu, G. Norton
-HRB 21284 (AG N=FCrnberg)
---
-To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+After all the wrapper drivers agree on the DMA hook api, the core driver
+fork gets resolved. NCR5380.c is adopted by atari_scsi and sun3_scsi and
+atari_NCR5380.c is then deleted.
+
+Historically, the 5380 drivers suffered from over-use of conditional
+compilation, which caused the compile-time configuration space to explode,
+leading to core driver code that was practically untestable, unmaintainable
+and difficult to reason about. It also prevented driver modules from
+sharing object code.
+
+Along with REAL_DMA, REAL_DMA_POLL and PSEUDO_DMA, most of the remaining
+macros are also eradicated, such as CONFIG_SCSI_GENERIC_NCR53C400,
+SUPPORT_TAGS, DONT_USE_INTR, AUTOPROBE_IRQ and BIOSPARAM.
+
+Also in this patch series, some duplicated documentation is removed and
+the PDMA implementation in mac_scsi finally gets fixed.
+
+This patch series has been tested on several platforms. I tested the
+dmx3191d and mac_scsi modules on suitable hardware, Michael tested
+atari_scsi on an Atari Falcon and Ondrej has tested g_NCR5380 and
+g_NCR5380_mmio on various ISA cards.
+
+Changes since v1:
+- Patch 4: don't remove MIN_DMA_SIZE macro from wrapper drivers.
+- Patch 9: improve commit log entry and add 'Reviewed-by' tag.
+- Patch 14: reduce shost->max_lun limit instead of adding MAX_LUN limit.
+- Patches 20 and 22: set the default cmd_per_lun to 4.
+- For the rest: add 'Reviewed-by' tag.
+
+Changes since v2:
+- Patches 20 and 22: revert the default cmd_per_lun to 2, like the v1 patch
+series.
+- Add patch 23 to fix a theoretical bus reset/autosense issue.
+
+Changes since v3:
+- Added 'Tested-by' tags from Ondrej and 'Reviewed-by' tags from Hannes.
+
+---
+ Documentation/scsi/g_NCR5380.txt       |   17 
+ Documentation/scsi/scsi-parameters.txt |   11 
+ drivers/scsi/Kconfig                   |   11 
+ drivers/scsi/NCR5380.c                 |  659 ++++----
+ drivers/scsi/NCR5380.h                 |  143 -
+ drivers/scsi/arm/cumana_1.c            |   25 
+ drivers/scsi/arm/oak.c                 |   22 
+ drivers/scsi/atari_NCR5380.c           | 2676 ---------------------------------
+ drivers/scsi/atari_scsi.c              |  144 -
+ drivers/scsi/dmx3191d.c                |   10 
+ drivers/scsi/dtc.c                     |   27 
+ drivers/scsi/dtc.h                     |    7 
+ drivers/scsi/g_NCR5380.c               |  143 -
+ drivers/scsi/g_NCR5380.h               |   26 
+ drivers/scsi/mac_scsi.c                |  239 +-
+ drivers/scsi/pas16.c                   |   27 
+ drivers/scsi/pas16.h                   |    5 
+ drivers/scsi/sun3_scsi.c               |   47 
+ drivers/scsi/t128.c                    |   19 
+ drivers/scsi/t128.h                    |    7 
+ 20 files changed, 634 insertions(+), 3631 deletions(-)
