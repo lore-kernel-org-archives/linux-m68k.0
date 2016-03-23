@@ -1,32 +1,46 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v3 00/23] ncr5380: Eliminate macros, reduce code duplication,
- fix bugs etc
-Date: Wed, 23 Mar 2016 12:35:36 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1603231220050.20655@nippy.intranet>
-References: <20160321023149.604138431@telegraphics.com.au> <201603222324.27594.linux@rainbow-software.org>
+From: Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v3 04/23] atari_NCR5380: Remove DMA_MIN_SIZE macro
+Date: Wed, 23 Mar 2016 08:27:23 +0100
+Message-ID: <56F2455B.2080509@suse.de>
+References: <20160321023149.604138431@telegraphics.com.au>
+ <20160321023150.654436098@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <201603222324.27594.linux@rainbow-software.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>, Hannes Reinecke <hare@suse.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, Sam Creasey <sammy@sammy.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mx2.suse.de ([195.135.220.15]:34908 "EHLO mx2.suse.de"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1752518AbcCWH12 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 23 Mar 2016 03:27:28 -0400
+In-Reply-To: <20160321023150.654436098@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 
+On 03/21/2016 03:31 AM, Finn Thain wrote:
+> Only the atari_scsi and sun3_scsi drivers define DMA_MIN_SIZE.
+> Both drivers also define NCR5380_dma_xfer_len, which means
+> DMA_MIN_SIZE can be removed from the core driver.
+>=20
+> This removes another discrepancy between the two core drivers.
+>=20
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+>=20
+> ---
+>=20
+> Changes since v1:
+> - Retain MIN_DMA_SIZE macro in wrapper drivers.
+>=20
+Reviewed-by: Hannes Reinecke <hare@suse.com>
 
-On Tue, 22 Mar 2016, Ondrej Zary wrote:
+Cheers,
 
-> Tested on HP C2502 (53C400A chip), Canon FG2-5202 (53C400 chip) and 
-> DTC-3181L (DTCT-436P chip) ISA cards - everything works fine!
-> 
-> Thanks.
-
-Thanks for testing, Ondrej.
-
-> 
-> Tested-by: Ondrej Zary <linux@rainbow-software.org>
-
-Hannes, would you please take a look at patches 04/23, 14/23, 20/23 and 
-23/23 when convenient? These four patches need a "reviewed-by" tag.
-
--- 
+Hannes
+--=20
+Dr. Hannes Reinecke		   Teamlead Storage & Networking
+hare@suse.de			               +49 911 74053 688
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 N=FCrnberg
+GF: F. Imend=F6rffer, J. Smithard, J. Guild, D. Upmanyu, G. Norton
+HRB 21284 (AG N=FCrnberg)
