@@ -1,80 +1,69 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular
- drivers
-Date: Mon, 28 Mar 2016 11:10:14 -0400
-Message-ID: <20160328151014.GR16831@windriver.com>
-References: <1459098025-26269-1-git-send-email-paul.gortmaker@windriver.com>
- <1459143107.13004.21.camel@linux.vnet.ibm.com>
+From: "Mr. Richard Williams" <rwilliams10929@richardwilliams.hk.tn>
+Subject: Von: Mr Richard Williams.
+Date: Tue, 29 Mar 2016 07:13:50 +0100
+Message-ID: <AM3PR02MB04234FD77D126675D653A873C5870__6475.20692223242$1459235255$gmane$org@AM3PR02MB0423.eurprd02.prod.outlook.com>
+Reply-To: <richard.williamsmr02@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-scsi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1459143107.13004.21.camel@linux.vnet.ibm.com>
-Sender: linux-scsi-owner@vger.kernel.org
-To: James Bottomley <jejb@linux.vnet.ibm.com>
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-scsi@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Description: Mail message body
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Recipients <rwilliams10929@richardwilliams.hk.tn>
 
-[Re: [PATCH 0/2] scsi: remove orphaned modular code from non-modular drivers] On 27/03/2016 (Sun 22:31) James Bottomley wrote:
+Von: Mr Richard Williams.
 
-> On Sun, 2016-03-27 at 13:00 -0400, Paul Gortmaker wrote:
-> > In the ongoing audit/cleanup of non-modular code needlessly using 
-> > modular infrastructure, the SCSI subsystem fortunately only contains 
-> > two instances that I detected.  Both are for legacy drivers that 
-> > predate the git epoch, so cleary there is no demand for converting 
-> > these drivers to be tristate.
-> > 
-> > For anyone new to the underlying goal of this cleanup, we are trying 
-> > to not use module support for code that isn't buildable as a module
-> > since:
-> > 
-> >  (1) it is easy to accidentally write unused module_exit and remove
-> > code
-> >  (2) it can be misleading when reading the source, thinking it can be
-> >      modular when the Makefile and/or Kconfig prohibit it
-> >  (3) it requires the include of the module.h header file which in
-> > turn
-> >      includes nearly everything else, thus adding to CPP overhead.
-> >  (4) it gets copied/replicated into other code and spreads like
-> > weeds.
-> 
-> I don't really buy any of these as being credible issues for the
-> ancient drivers, so there doesn't appear to be an real benefit to this
-> conversion; however, besides the danger of touching old stuff, there
-> are some down sides:
 
-Thanks James for your review and always interesting/alternative
-viewpoints.  You seem pretty clear in your conviction here, so I won't
-bother making counter points ; best we just agree to disagree, and I
-won't bother you with these patches again.
+Nehmen Sie meine aufrichtige Entschuldigung, wenn meine Post Ihre pers=F6=
+nliche Ethik nicht erf=FCllt.
 
-Paul.
---
+Ich werde mich als Herr Richard Williams vorstellen; Ich bin ein B=FCrg=
+er Virgin Islands
+Ein britischer Wohnsitz in London. Ein Direktor in der Kontenverwaltung=
+ Abschnitt, =DCberwachung Finanzgruppe hier im Vereinigten K=F6nigreich=
+=2E
 
-> 
-> > -MODULE_DESCRIPTION("Sun3x ESP SCSI driver");
-> > -MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
-> > -MODULE_LICENSE("GPL");
-> > -MODULE_VERSION(DRV_VERSION);
-> 
-> These tags are usefully greppable for drivers, regardless of whether
-> they generate actual kernel side information.
-> 
-> > We explicitly disallow a driver unbind, since that doesn't have a
-> > sensible use case anyway, and it allows us to drop the ".remove"
-> > code for non-modular drivers.
-> 
-> That's bogus.  I use bind and unbind a lot for testing built in drivers
-> but the usual user use case is for resetting the devices.
-> 
-> > Build tested for mips (jazz) and m68k (sun3x) on 4.6-rc1 to ensure no
-> > silly typos crept in.
-> 
-> For trivial changes, build testing is not really sufficient: a
-> significant fraction of them break something that isn't spotted by the
-> reviewers.  For the older drivers, this isn't discovered for months to
-> years and then someone has to go digging back through all the so called
-> trivial changes to find which one it was.
-> 
-> James
-> 
+Dies ist das Detail, was ich will Sie, mir zu helfen dabei, eines unser=
+er Konten mit Saldo von zwanzig Millionen f=FCnfhunderttausend Pfund St=
+erling halten.
+Wurde dormant und wurde in den letzten f=FCnfzehn Jahren (15 Jahre) nic=
+ht bet=E4tigt wird.
+
+Aus meiner Untersuchungen und Best=E4tigungen, starb der Inhaber dieses=
+ Kontos, ein Ausl=E4nder nach Name (Ost Bob) Am 31. Januar 2000.
+
+
+Und seitdem hat niemand etwas getan in Bezug auf die Inanspruchnahme di=
+eses Geld, weil er keine Familienmitglieder, die weder von der Existenz=
+ des Kontos bewusst sind, hat noch die Mittel.
+
+Ich suche Ihre Zustimmung an Sie als n=E4chsten Angeh=F6rigen / Will Be=
+rechtigte an den Verstorbenen, so dass die Erl=F6se aus diesem Konto im=
+ Wert von (zwanzig Millionen f=FCnfhundert gbp) zu pr=E4sentieren. kann=
+ in Ihrem Land (Transfer) in Ihrem privaten Bankkonto bezahlt werden.
+
+
+Dies wird in den folgenden Prozents=E4tze ausgezahlt oder geteilt werde=
+n, 55% f=FCr mich und 45% auf Sie, 5% wird f=FCr alle expencies verwend=
+et werden, die incured werden, alle notwendigen rechtlichen Dokumente, =
+die verwendet werden k=F6nnen, diese Behauptung zu untermauern wird ges=
+ichert von uns.
+
+Bitte geben Sie mir die folgenden, wie wir haben 7 Tage, es zu durchlau=
+fen.
+Das ist sehr, sehr URGENT PLEASE.
+=20
+1. Vollst=E4ndiger Name.
+2. Der direkte Handynummer.
+3. Ihre Kontaktadresse.
+4. Ihr Alter.
+5. Ihr Beruf.
+6. Faxnummer.
+
+Ihre Zustimmung zu dieser E-Mail und Business-Vorschlag wird sehr gesch=
+=E4tzt.
+=20
+Gr=FC=DFe,
+Herr Richard Williams.
++447 0457 67766
