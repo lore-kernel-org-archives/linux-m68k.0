@@ -1,23 +1,40 @@
-From: yolandaa@my-yd-web.net
-Subject: how are you doing
-Date: Wed, 06 Apr 2016 17:26:30 +0000
-Message-ID: <664862.67471.qm__38903.4575004645$1459964009$gmane$org@smtp104.biz.mail.gq1.yahoo.com>
-Reply-To: susanyolanda@hotmail.com
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: Re: [PATCH] m68k/gpio: remove arch specific sysfs bus device
+Date: Thu, 7 Apr 2016 05:31:14 +1000
+Message-ID: <57056402.8020308@uclinux.org>
+References: <1459909950-26077-1-git-send-email-gerg@uclinux.org>
+ <CACRpkda6SHJC-TfeakPa=ZcYtTyhNijN3H6y8FUDyziVNXCEEw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACRpkda6SHJC-TfeakPa=ZcYtTyhNijN3H6y8FUDyziVNXCEEw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-m68k@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexandre Courbot <gnurou@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <yolandaa@my-yd-web.net>
 
-Hello
+On 06/04/16 16:57, Linus Walleij wrote:
+> On Wed, Apr 6, 2016 at 4:32 AM, Greg Ungerer <gerg@uclinux.org> wrote:
+>
+>> From: Greg Ungerer <gerg@gumby.(none)>
+>>
+>> The ColdFire architecture specific gpio support code registers a sysfs
+>> bus device named "gpio". This clashes with the new generic API device
+>> added in commit 3c702e99 ("gpio: add a userspace chardev ABI for GPIOs").
+>>
+>> The old ColdFire sysfs gpio device was never used for anything specific,
+>> and no links or other nodes were created under it. The new API sysfs gpio
+>> device has all the same default sysfs links (device, drivers, etc) and
+>> they are properly populated.
+>>
+>> Remove the old ColdFire sysfs gpio registration.
+>>
+>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-how are you doing i hope you are fine i will like to know more about you
+Thanks Linus. I will push via the m68knommu git tree.
 
-writ me back so we can know each other very well
-
-am waiting for ur mail  susanyolanda@hotmail.com
-
-thank you 
+Regards
+Greg
