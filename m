@@ -1,114 +1,27 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH v2] clk: let clk_disable() return immediately if clk is
- NULL or error
-Date: Fri, 8 Apr 2016 20:15:05 +0900
-Message-ID: <CAK7LNASmvJfmFKVLWpQ8GZYKs6ntSk1Lae-witX=1hDGotQV_Q@mail.gmail.com>
-References: <1459821083-28116-1-git-send-email-yamada.masahiro@socionext.com>
-	<20160408003328.GA14441@codeaurora.org>
-	<20160408100600.GI1668@linux-mips.org>
+From: AKINWUMI <urr@adminnfo3.website.tk>
+Subject: FROM: MR. OLIVER SENO!!
+Date: Fri, 8 Apr 2016 11:53:03 -0700
+Message-ID: <BY2PR17MB04889866242B40184364F9D3D0910__903.583007357334$1460142579$gmane$org@BY2PR17MB0488.namprd17.prod.outlook.com>
+Reply-To: <officeosenol@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160408100600.GI1668@linux-mips.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ralf Baechle <ralf@linux-mips.org>, Stephen Boyd <sboyd@codeaurora.org>
-Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>, Greg Ungerer <gerg@uclinux.org>, linux-clk@vger.kernel.org, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Russell King <linux@arm.linux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Kevin Hilman <khilman@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, Haojian Zhuang <haojian.zhuang@gmail.com>, Simon Horman <horms@verge.net.au>, linux-omap@vger.kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, John Crispin <blogic@openwrt.or>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Description: Mail message body
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Recipients <urr@adminnfo3.website.tk>
 
-2016-04-08 19:06 GMT+09:00 Ralf Baechle <ralf@linux-mips.org>:
-> On Thu, Apr 07, 2016 at 05:33:28PM -0700, Stephen Boyd wrote:
->
->> On 04/05, Masahiro Yamada wrote:
->> > The clk_disable() in the common clock framework (drivers/clk/clk.c)
->> > returns immediately if a given clk is NULL or an error pointer.  It
->> > allows clock consumers to call clk_disable() without IS_ERR_OR_NULL
->> > checking if drivers are only used with the common clock framework.
->> >
->> > Unfortunately, NULL/error checking is missing from some of non-common
->> > clk_disable() implementations.  This prevents us from completely
->> > dropping NULL/error checking from callers.  Let's make it tree-wide
->> > consistent by adding IS_ERR_OR_NULL(clk) to all callees.
->> >
->> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->> > Acked-by: Greg Ungerer <gerg@uclinux.org>
->> > Acked-by: Wan Zongshun <mcuos.com@gmail.com>
->> > ---
->> >
->> > Stephen,
->> >
->> > This patch has been unapplied for a long time.
->> >
->> > Please let me know if there is something wrong with this patch.
->> >
->>
->> I'm mostly confused why we wouldn't want to encourage people to
->> call clk_disable or unprepare on a clk that's an error pointer.
->> Typically an error pointer should be dealt with, instead of
->> silently ignored, so why wasn't it dealt with by passing it up
->> the probe() path?
->
-> While your argument makes perfect sense, Many clk_disable implementations
-> are already doing similar checks, for example:
->
-> arch/arm/mach-davinci/clock.c:
->
-> void clk_disable(struct clk *clk)
-> {
->         unsigned long flags;
->
->         if (clk == NULL || IS_ERR(clk))
->                 return;
-> [...]
->
-> arch/arm/mach-omap1/clock.c
->
-> void clk_disable(struct clk *clk)
-> {
->         unsigned long flags;
->
->         if (clk == NULL || IS_ERR(clk))
->                 return;
-> [...]
->
-> arch/avr32/mach-at32ap/clock.c
->
-> void clk_disable(struct clk *clk)
-> {
->         unsigned long flags;
->
->         if (IS_ERR_OR_NULL(clk))
->                 return;
-> [...]
->
-> arch/mips/lantiq/clk.c:
->
-> static inline int clk_good(struct clk *clk)
-> {
->         return clk && !IS_ERR(clk);
-> }
->
-> [...]
->
-> void clk_disable(struct clk *clk)
-> {
->         if (unlikely(!clk_good(clk)))
->                 return;
->
->         if (clk->disable)
-> [...]
->
-> So should we go and weed out these checks?
->
->   Ralf
+Dear Sir.
 
+I bring you greetings. My name is Mr.Oliver Seno Lim, I am a staff of Abbey National Plc. London and heading our regional office in West Africa. Our late customer named Engr.Ben W.westland, made a fixed deposit amount of US$7Million.He did not declare any next of kin in any of his paper work, I want you as a foreigner to stand as the beneficiary to transfer this funds out of my bank into your account, after the successful transfer, we shall share in the ratio of 30% for you, 70%for me. Should you be interested please send me your information:
 
-Please help me understand your thought clearly.
+1,Full names.
+2,current residential address.
+3,Tele/Fax numbers./your work.
+ 
+   
+All I need from you is your readiness, trustworthiness and edication. Please email me directly on my private email address: officeosenol@yahoo.com) so we can begin arrangements and I would give you more information on how we would handle this venture and once i hear from you i will give you information of the bank for the transferring funds on your name.
 
-[1] Should calling clk_unprepare/disable() with a NULL pointer be allowed?
-
-[2] Should calling clk_unprepare/disable() with an error pointer be allowed?
-
-
--- 
-Best Regards
-Masahiro Yamada
+Regards,
+Mr.Oliver Seno Lim 
