@@ -1,8 +1,8 @@
-From: AKINWUMI <urr@adminnfo3.website.tk>
-Subject: FROM: MR. OLIVER SENO!!
-Date: Fri, 8 Apr 2016 11:53:03 -0700
-Message-ID: <BY2PR17MB04889866242B40184364F9D3D0910__903.583007357334$1460142579$gmane$org@BY2PR17MB0488.namprd17.prod.outlook.com>
-Reply-To: <officeosenol@yahoo.com>
+From: darlehen@info.com
+Subject: LOAN
+Date: Sat, 09 Apr 2016 03:32:21 +0530
+Message-ID: <20160408220023.6AEAC3B6C44@bescomm.terengganu.my>
+Reply-To: legacyassetgrougp@hotmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -10,18 +10,6 @@ Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <urr@adminnfo3.website.tk>
+To: Recipients <darlehen@info.com>
 
-Dear Sir.
-
-I bring you greetings. My name is Mr.Oliver Seno Lim, I am a staff of Abbey National Plc. London and heading our regional office in West Africa. Our late customer named Engr.Ben W.westland, made a fixed deposit amount of US$7Million.He did not declare any next of kin in any of his paper work, I want you as a foreigner to stand as the beneficiary to transfer this funds out of my bank into your account, after the successful transfer, we shall share in the ratio of 30% for you, 70%for me. Should you be interested please send me your information:
-
-1,Full names.
-2,current residential address.
-3,Tele/Fax numbers./your work.
- 
-   
-All I need from you is your readiness, trustworthiness and edication. Please email me directly on my private email address: officeosenol@yahoo.com) so we can begin arrangements and I would give you more information on how we would handle this venture and once i hear from you i will give you information of the bank for the transferring funds on your name.
-
-Regards,
-Mr.Oliver Seno Lim 
+Brauchen Sie einen Kredit? Wir bieten Darlehen in 2% gelten heute Kontakt mit uns auf: legacyassetgrougp@hotmail.com
