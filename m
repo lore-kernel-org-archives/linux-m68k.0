@@ -1,12 +1,14 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.7
-Date: Mon, 11 Apr 2016 10:26:57 +0200
-Message-ID: <1460363217-9640-1-git-send-email-geert__4769.16875127262$1460363251$gmane$org@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.6 (take two)
+Date: Mon, 11 Apr 2016 10:35:32 +0200
+Message-ID: <1460363732-9940-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+
+(this time with the correct subject, blame my scripts ;-)
 
 	Hi Linus,
 
@@ -21,6 +23,8 @@ are available in the git repository at:
 for you to fetch changes up to 7b8ba82ad4ada669c564ec8ccba9cadc6e8abfb1:
 
   m68k/defconfig: Update defconfigs for v4.6-rc2 (2016-04-07 11:45:31 +0200)
+
+Thanks for pulling!
 
 ----------------------------------------------------------------
 Geert Uytterhoeven (2):
