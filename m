@@ -1,17 +1,12 @@
 From: <Lmohohlo26@mohohlo205.website.tk>
 Subject: It is a pleasure to write you.Kindly get back to me please
 Date: Mon, 11 Apr 2016 15:19:05 +0200
-Message-ID: <AM3PR05MB0885512F4AEF0CBBED272CB0C1940@AM3PR05MB0885.eurprd05.prod.outlook.com>
+Message-ID: <AM2PR05MB0884588EF49FD43CEE5A2394C1940@AM2PR05MB0884.eurprd05.prod.outlook.com>
 Reply-To: <linahmohohlo2018@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-db3hn0248.outbound.protection.outlook.com ([157.55.234.248]:49378
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1754986AbcDKNRj convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Apr 2016 09:17:39 -0400
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
