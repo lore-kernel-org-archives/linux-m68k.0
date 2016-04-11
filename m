@@ -1,62 +1,42 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.6 (take two)
-Date: Mon, 11 Apr 2016 10:35:32 +0200
-Message-ID: <1460363732-9940-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] char: Drop bogus dependency of DEVPORT on !M68K
+Date: Mon, 11 Apr 2016 10:40:55 +0200
+Message-ID: <1460364055-10174-1-git-send-email-geert__47033.9353233159$1460364091$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Al Stone <ahs3@redhat.com>, Geoff Levand <geoff@infradead.org>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-(this time with the correct subject, blame my scripts ;-)
+According to full-history-linux commit d3794f4fa7c3edc3 ("[PATCH] M68k
+update (part 25)"), port operations are allowed on m68k if CONFIG_ISA is
+defined.
 
-	Hi Linus,
+However, commit 153dcc54df826d2f ("[PATCH] mem driver: fix conditional
+on isa i/o support") accidentally changed an "||" into an "&&",
+disabling it completely on m68k. This logic was retained when
+introducing the DEVPORT symbol in commit 4f911d64e04a44c4 ("Make
+/dev/port conditional on config symbol").
 
-The following changes since commit 9735a22799b9214d17d3c231fe377fc852f042e9:
+Drop the bogus dependency on !M68K to fix this.
 
-  Linux 4.6-rc2 (2016-04-03 09:09:40 -0500)
+Fixes: 153dcc54df826d2f ("[PATCH] mem driver: fix conditional on isa i/o support")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/char/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-linus
-
-for you to fetch changes up to 7b8ba82ad4ada669c564ec8ccba9cadc6e8abfb1:
-
-  m68k/defconfig: Update defconfigs for v4.6-rc2 (2016-04-07 11:45:31 +0200)
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k: Wire up preadv2 and pwritev2
-      m68k/defconfig: Update defconfigs for v4.6-rc2
-
- arch/m68k/configs/amiga_defconfig    | 13 ++++++-------
- arch/m68k/configs/apollo_defconfig   | 13 ++++++-------
- arch/m68k/configs/atari_defconfig    | 13 ++++++-------
- arch/m68k/configs/bvme6000_defconfig | 13 ++++++-------
- arch/m68k/configs/hp300_defconfig    | 13 ++++++-------
- arch/m68k/configs/mac_defconfig      | 13 ++++++-------
- arch/m68k/configs/multi_defconfig    | 13 ++++++-------
- arch/m68k/configs/mvme147_defconfig  | 13 ++++++-------
- arch/m68k/configs/mvme16x_defconfig  | 13 ++++++-------
- arch/m68k/configs/q40_defconfig      | 13 ++++++-------
- arch/m68k/configs/sun3_defconfig     | 13 ++++++-------
- arch/m68k/configs/sun3x_defconfig    | 13 ++++++-------
- arch/m68k/include/asm/unistd.h       |  2 +-
- arch/m68k/include/uapi/asm/unistd.h  |  2 ++
- arch/m68k/kernel/syscalltable.S      |  2 ++
- 15 files changed, 77 insertions(+), 85 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+index d3b8ddc6241cac2d..fa56bc757fe98fd1 100644
+--- a/drivers/char/Kconfig
++++ b/drivers/char/Kconfig
+@@ -585,7 +585,6 @@ config TELCLOCK
+ 
+ config DEVPORT
+ 	bool
+-	depends on !M68K
+ 	depends on ISA || PCI
+ 	default y
+ 
+-- 
+1.9.1
