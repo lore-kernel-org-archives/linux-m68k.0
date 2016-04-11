@@ -1,42 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] char: Drop bogus dependency of DEVPORT on !M68K
-Date: Mon, 11 Apr 2016 10:40:55 +0200
-Message-ID: <1460364055-10174-1-git-send-email-geert__47033.9353233159$1460364091$gmane$org@linux-m68k.org>
+From: <Lmohohlo26@mohohlo205.website.tk>
+Subject: It is a pleasure to write you.Kindly get back to me please
+Date: Mon, 11 Apr 2016 15:19:05 +0200
+Message-ID: <AM3PR05MB0885512F4AEF0CBBED272CB0C1940@AM3PR05MB0885.eurprd05.prod.outlook.com>
+Reply-To: <linahmohohlo2018@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-db3hn0248.outbound.protection.outlook.com ([157.55.234.248]:49378
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1754986AbcDKNRj convert rfc822-to-8bit (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Apr 2016 09:17:39 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Al Stone <ahs3@redhat.com>, Geoff Levand <geoff@infradead.org>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Recipients <Lmohohlo26@mohohlo205.website.tk>
 
-According to full-history-linux commit d3794f4fa7c3edc3 ("[PATCH] M68k
-update (part 25)"), port operations are allowed on m68k if CONFIG_ISA is
-defined.
+=46rom Mrs. Linah Mohohlo
+The Governor of the Bank of Botswana.
+Reply-To:  ( linahmohohlo2018@gmail.com )
+My Dearest in Christ,
 
-However, commit 153dcc54df826d2f ("[PATCH] mem driver: fix conditional
-on isa i/o support") accidentally changed an "||" into an "&&",
-disabling it completely on m68k. This logic was retained when
-introducing the DEVPORT symbol in commit 4f911d64e04a44c4 ("Make
-/dev/port conditional on config symbol").
+=46irstly I would like to introduce myself; my name is Mrs. Linah Mohoh=
+lo from Botswana. I am the governor of the Bank of Botswana you can vie=
+w the profile on the panel members at (http://www.africaprogresspanel.o=
+rg/panelmember/linah-mohohlo/) and read about me.  Please I know this m=
+ay come to you as a surprise, because you did not know me. I sincerely =
+need your assistance discretely because of my high business association=
+s, which is the reason why I write to you on a personal level and throu=
+gh divine direction. It is my desire to have a genuinely personal relat=
+ionship with you.
 
-Drop the bogus dependency on !M68K to fix this.
+I deposited the sum of USD$10.5M (Ten Million Five Hundred Thousand U.S=
+=2EDollars) with Finance/bank presently. These funds emanated as a resu=
+lt of an over-invoiced contract which I executed with the Bank of Botsw=
+ana. Though I am the person who approved this contract but I honestly n=
+ever knew at the time that it had been over invoiced. presently this mo=
+ney is still with the bank here in South Africa. I suffer from cancer a=
+nd recently my Doctor informed me that due to my poor health condition =
+I would not be able to stay alive past the next three months due to the=
+ cancer. None the less what disturbs me mostly is the stroke I suffered=
+=2E Having known my condition I decided to donate these funds to a chur=
+ch or better still a Christian individual that will utilize this money =
+the way I am going to instruct here in. I want an individual person or =
+church organization that will use the funds for churches, orphanages, r=
+esearch centers and widows propagating the word of God and to ensure th=
+at the house of God is
+maintained.
 
-Fixes: 153dcc54df826d2f ("[PATCH] mem driver: fix conditional on isa i/o support")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/char/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+The Bible made us to understand that blessed is the hand that gives, I =
+took this decision because I have a child that will inherit this money =
+but my son cannot carry out this work alone. I therefore decided to use=
+ some of the money to work for God and live some for my son to have a b=
+etter future.
+My only son is only just 15 year old now and having to grow up without =
+a father he has a low maturity, hence the reason for me taking this bol=
+d decision to ask for your assistance. I am not afraid of death hence I=
+ know that I am going to be in the bosom of the Lord. Exodus 14 VS 14 s=
+ays that the lord will fight my case and I shall hold my peace.
+I would like you to understand that me contacting you is a divine direc=
+tion from God; As soon as I receive your reply I shall give you the con=
+tact information of the Finance/bank. Any delay in your reply will give=
+ me room in sourcing for a church or Christian individual for this same=
+ purpose.
+Please assure me that you will act accordingly as I stated here and Ple=
+ase I will like you to contact me immediately you receive this mail so =
+that I will instruct the Finance/bank to transfer this fund into your a=
+ccount.
+Remain blessed in the name of the Lord.
 
-diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index d3b8ddc6241cac2d..fa56bc757fe98fd1 100644
---- a/drivers/char/Kconfig
-+++ b/drivers/char/Kconfig
-@@ -585,7 +585,6 @@ config TELCLOCK
- 
- config DEVPORT
- 	bool
--	depends on !M68K
- 	depends on ISA || PCI
- 	default y
- 
--- 
-1.9.1
+Mrs. Linah Mohohlo and only Son Favor.    Reply-To:  ( linahmohohlo2018=
+@gmail.com )
+God=E2=80=99s favor is sufficient for me
