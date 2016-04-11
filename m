@@ -1,7 +1,7 @@
-From: <Lmohohlo26@mohohlo205.website.tk>
+From: <Lmohohlo25@mohohlo18.website.tk>
 Subject: It is a pleasure to write you.Kindly get back to me please
-Date: Mon, 11 Apr 2016 15:19:05 +0200
-Message-ID: <AM2PR05MB0884588EF49FD43CEE5A2394C1940@AM2PR05MB0884.eurprd05.prod.outlook.com>
+Date: Mon, 11 Apr 2016 15:12:43 +0200
+Message-ID: <DB5PR06MB1816D65369F8B0B0F6A93329FC940@DB5PR06MB1816.eurprd06.prod.outlook.com>
 Reply-To: <linahmohohlo2018@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -10,7 +10,7 @@ Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <Lmohohlo26@mohohlo205.website.tk>
+To: Recipients <Lmohohlo25@mohohlo18.website.tk>
 
 =46rom Mrs. Linah Mohohlo
 The Governor of the Bank of Botswana.
