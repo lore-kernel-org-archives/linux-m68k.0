@@ -1,75 +1,47 @@
-From: <Lmohohlo25@mohohlo18.website.tk>
-Subject: It is a pleasure to write you.Kindly get back to me please
-Date: Mon, 11 Apr 2016 15:12:43 +0200
-Message-ID: <VI1PR06MB182227AFB1062F0026BF1581FC940@VI1PR06MB1822.eurprd06.prod.outlook.com>
-Reply-To: <linahmohohlo2018@gmail.com>
+From: Greg Ungerer <gerg@uclinux.org>
+Subject: [git pull] m68knommu/coldfire fixes
+Date: Wed, 13 Apr 2016 09:53:44 +1000
+Message-ID: <570D8A88.7030900@uclinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-am1hn0250.outbound.protection.outlook.com ([157.56.112.250]:40864
-	"EHLO emea01-am1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S932511AbcDKNlU convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Apr 2016 09:41:20 -0400
-Content-Description: Mail message body
+Received: from icp-osb-irony-out7.external.iinet.net.au ([203.59.1.107]:51912
+	"EHLO icp-osb-irony-out7.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S965006AbcDLXxZ (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 12 Apr 2016 19:53:25 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <Lmohohlo25@mohohlo18.website.tk>
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, uClinux development list <uclinux-dev@uclinux.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-=46rom Mrs. Linah Mohohlo
-The Governor of the Bank of Botswana.
-Reply-To:  ( linahmohohlo2018@gmail.com )
-My Dearest in Christ,
+Hi Linus,
 
-=46irstly I would like to introduce myself; my name is Mrs. Linah Mohoh=
-lo from Botswana. I am the governor of the Bank of Botswana you can vie=
-w the profile on the panel members at (http://www.africaprogresspanel.o=
-rg/panelmember/linah-mohohlo/) and read about me.  Please I know this m=
-ay come to you as a surprise, because you did not know me. I sincerely =
-need your assistance discretely because of my high business association=
-s, which is the reason why I write to you on a personal level and throu=
-gh divine direction. It is my desire to have a genuinely personal relat=
-ionship with you.
+Can you please pull the m68knommu git tree, for-linus branch.
+Only a single change that removes a local arch specific gpio bus sysfs
+device that now clashes with the generic gpio bus sysfs device interface.
 
-I deposited the sum of USD$10.5M (Ten Million Five Hundred Thousand U.S=
-=2EDollars) with Finance/bank presently. These funds emanated as a resu=
-lt of an over-invoiced contract which I executed with the Bank of Botsw=
-ana. Though I am the person who approved this contract but I honestly n=
-ever knew at the time that it had been over invoiced. presently this mo=
-ney is still with the bank here in South Africa. I suffer from cancer a=
-nd recently my Doctor informed me that due to my poor health condition =
-I would not be able to stay alive past the next three months due to the=
- cancer. None the less what disturbs me mostly is the stroke I suffered=
-=2E Having known my condition I decided to donate these funds to a chur=
-ch or better still a Christian individual that will utilize this money =
-the way I am going to instruct here in. I want an individual person or =
-church organization that will use the funds for churches, orphanages, r=
-esearch centers and widows propagating the word of God and to ensure th=
-at the house of God is
-maintained.
+Regards
+Greg
 
-The Bible made us to understand that blessed is the hand that gives, I =
-took this decision because I have a child that will inherit this money =
-but my son cannot carry out this work alone. I therefore decided to use=
- some of the money to work for God and live some for my son to have a b=
-etter future.
-My only son is only just 15 year old now and having to grow up without =
-a father he has a low maturity, hence the reason for me taking this bol=
-d decision to ask for your assistance. I am not afraid of death hence I=
- know that I am going to be in the bosom of the Lord. Exodus 14 VS 14 s=
-ays that the lord will fight my case and I shall hold my peace.
-I would like you to understand that me contacting you is a divine direc=
-tion from God; As soon as I receive your reply I shall give you the con=
-tact information of the Finance/bank. Any delay in your reply will give=
- me room in sourcing for a church or Christian individual for this same=
- purpose.
-Please assure me that you will act accordingly as I stated here and Ple=
-ase I will like you to contact me immediately you receive this mail so =
-that I will instruct the Finance/bank to transfer this fund into your a=
-ccount.
-Remain blessed in the name of the Lord.
 
-Mrs. Linah Mohohlo and only Son Favor.    Reply-To:  ( linahmohohlo2018=
-@gmail.com )
-God=E2=80=99s favor is sufficient for me
+
+The following changes since commit bf16200689118d19de1b8d2a3c314fc21f5dc7bb:
+
+  Linux 4.6-rc3 (2016-04-10 17:58:30 -0700) 
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
+
+for you to fetch changes up to 2763ee644809820fb1b741f1e7dd779038092324:
+
+  m68k/gpio: remove arch specific sysfs bus device (2016-04-11 12:03:18 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68k/gpio: remove arch specific sysfs bus device
+
+ arch/m68k/coldfire/gpio.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
