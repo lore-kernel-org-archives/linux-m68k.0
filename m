@@ -1,68 +1,36 @@
 From: Stephen Boyd <sboyd@codeaurora.org>
 Subject: Re: [PATCH v2] clk: let clk_disable() return immediately if clk is
  NULL or error
-Date: Wed, 13 Apr 2016 17:33:41 -0700
-Message-ID: <20160414003341.GH14441__23996.5391149328$1460594051$gmane$org@codeaurora.org>
+Date: Wed, 13 Apr 2016 17:40:50 -0700
+Message-ID: <20160414004050.GJ14441@codeaurora.org>
 References: <1459821083-28116-1-git-send-email-yamada.masahiro@socionext.com>
  <20160408003328.GA14441@codeaurora.org>
- <CAK7LNASW+D0B_k97r__AZeYDR5UqNPqn_j1aoQepHz-bGgV2ng@mail.gmail.com>
+ <20160408100600.GI1668@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
+Return-path: <linux-clk-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAK7LNASW+D0B_k97r__AZeYDR5UqNPqn_j1aoQepHz-bGgV2ng@mail.gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+In-Reply-To: <20160408100600.GI1668@linux-mips.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-clk@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Greg Ungerer <gerg@uclinux.org>, Ryan Mallon <rmallon@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Simon Horman <horms@verge.net.au>, Wan ZongShun <mcuos.com@gmail.com>, Rich Felker <dalias@libc.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, adi-buildroot-devel@lists.sourceforge.net, Russell King <linux@arm.linux.org.uk>, linux-m68k@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, John Crispin <blogic@openwrt.org>H
 List-Id: linux-m68k@vger.kernel.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-clk@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Greg Ungerer <gerg@uclinux.org>, Ryan Mallon <rmallon@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Simon Horman <horms@verge.net.au>, Wan ZongShun <mcuos.com@gmail.com>, Rich Felker <dalias@libc.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, adi-buildroot-devel@lists.sourceforge.net, Russell King <linux@arm.linux.org.uk>, linux-m68k@lists.linux-m68k.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>
 
-On 04/08, Masahiro Yamada wrote:
+On 04/08, Ralf Baechle wrote:
 > 
+> While your argument makes perfect sense, Many clk_disable implementations
+> are already doing similar checks, for example:
 > 
-> This makes our driver programming life easier.
+> arch/arm/mach-davinci/clock.c:
 > 
+[...]
 > 
-> For example, let's see drivers/tty/serial/8250/8250_of.c
-> 
-> 
-> The "clock-frequency" DT property takes precedence over "clocks" property.
-> So, it is valid to probe the driver with a NULL pointer for info->clk.
-> 
-> 
->         if (of_property_read_u32(np, "clock-frequency", &clk)) {
-> 
->                 /* Get clk rate through clk driver if present */
->                 info->clk = devm_clk_get(&ofdev->dev, NULL);
->                 if (IS_ERR(info->clk)) {
->                         dev_warn(&ofdev->dev,
->                                 "clk or clock-frequency not defined\n");
->                         return PTR_ERR(info->clk);
->                 }
-> 
->                 ret = clk_prepare_enable(info->clk);
->                 if (ret < 0)
->                         return ret;
-> 
->                 clk = clk_get_rate(info->clk);
->         }
-> 
-> 
-> As a result, we need to make sure the clk pointer is valid
-> before calling clk_disable_unprepare().
-> 
-> 
-> If we could support pointer checking in callees, we would be able to
-> clean-up lots of clock consumers.
-> 
-> 
+> So should we go and weed out these checks?
 
-I'm not sure if you meant to use that example for the error
-pointer case? It bails out if clk_get() returns an error pointer.
-
-I'm all for a no-op in clk_disable()/unprepare() when the pointer
-is NULL. But when it's an error pointer the driver should be
-handling it and bail out before it would ever call enable/prepare
-on it or disable/unprepare.
+Yes, it would be nice to at least make the differing
+implementations of the clk API consistent. Of course, we should
+really put our efforts towards getting rid of the non-CCF
+implementations instead so that there's less confusion overall.
 
 -- 
 Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
