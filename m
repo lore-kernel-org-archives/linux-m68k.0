@@ -1,172 +1,254 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH v2] clk: let clk_disable() return immediately if clk is
- NULL or error
-Date: Thu, 14 Apr 2016 10:49:43 +0900
-Message-ID: <CAK7LNARbzRLq_NGWJ8CFBBf6w4cVGCNh45fo6JO=+F7FACBSxA__42051.4326695867$1460598691$gmane$org@mail.gmail.com>
-References: <1459821083-28116-1-git-send-email-yamada.masahiro@socionext.com>
-	<20160408003328.GA14441@codeaurora.org>
-	<CAK7LNASW+D0B_k97r__AZeYDR5UqNPqn_j1aoQepHz-bGgV2ng@mail.gmail.com>
-	<20160414003341.GH14441@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: zengzhaoxiu@163.com
+Subject: [PATCH V3 02/29] Include generic parity.h in some architectures' bitops.h
+Date: Thu, 14 Apr 2016 11:04:31 +0800
+Message-ID: <1460603098-4466-1-git-send-email-zengzhaoxiu__20809.4333801002$1460603411$gmane$org@163.com>
+References: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160414003341.GH14441@codeaurora.org>
+In-Reply-To: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: linux-mips@linux-mips.org, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, Greg Ungerer <gerg@uclinux.org>, linux-clk@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Magnus Damm <magnus.damm@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-m68k@lists.linux-m68k.org, Simon Horman <horms@verge.net.au>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, John Crispin <blogic@openwrt.org>, Eric Miao <eric.y.miao@gmail.com>, Ryan Mallon <rmallon@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-renesas-soc@vger.kernel.org, Hartley
+To: linux-kernel@vger.kernel.org
+Cc: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, James Hogan <james.hogan@imgtec.com>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ib>
 
-Hi Stephen,
+From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
+Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+---
+ arch/arc/include/asm/bitops.h      | 1 +
+ arch/arm/include/asm/bitops.h      | 1 +
+ arch/arm64/include/asm/bitops.h    | 1 +
+ arch/avr32/include/asm/bitops.h    | 1 +
+ arch/c6x/include/asm/bitops.h      | 1 +
+ arch/cris/include/asm/bitops.h     | 1 +
+ arch/frv/include/asm/bitops.h      | 1 +
+ arch/h8300/include/asm/bitops.h    | 1 +
+ arch/hexagon/include/asm/bitops.h  | 1 +
+ arch/m32r/include/asm/bitops.h     | 1 +
+ arch/m68k/include/asm/bitops.h     | 1 +
+ arch/metag/include/asm/bitops.h    | 1 +
+ arch/mn10300/include/asm/bitops.h  | 1 +
+ arch/openrisc/include/asm/bitops.h | 1 +
+ arch/parisc/include/asm/bitops.h   | 1 +
+ arch/s390/include/asm/bitops.h     | 1 +
+ arch/sh/include/asm/bitops.h       | 1 +
+ arch/xtensa/include/asm/bitops.h   | 1 +
+ 18 files changed, 18 insertions(+)
 
-2016-04-14 9:33 GMT+09:00 Stephen Boyd <sboyd@codeaurora.org>:
-> On 04/08, Masahiro Yamada wrote:
->>
->>
->> This makes our driver programming life easier.
->>
->>
->> For example, let's see drivers/tty/serial/8250/8250_of.c
->>
->>
->> The "clock-frequency" DT property takes precedence over "clocks" property.
->> So, it is valid to probe the driver with a NULL pointer for info->clk.
->>
->>
->>         if (of_property_read_u32(np, "clock-frequency", &clk)) {
->>
->>                 /* Get clk rate through clk driver if present */
->>                 info->clk = devm_clk_get(&ofdev->dev, NULL);
->>                 if (IS_ERR(info->clk)) {
->>                         dev_warn(&ofdev->dev,
->>                                 "clk or clock-frequency not defined\n");
->>                         return PTR_ERR(info->clk);
->>                 }
->>
->>                 ret = clk_prepare_enable(info->clk);
->>                 if (ret < 0)
->>                         return ret;
->>
->>                 clk = clk_get_rate(info->clk);
->>         }
->>
->>
->> As a result, we need to make sure the clk pointer is valid
->> before calling clk_disable_unprepare().
->>
->>
->> If we could support pointer checking in callees, we would be able to
->> clean-up lots of clock consumers.
->>
->>
->
-> I'm not sure if you meant to use that example for the error
-> pointer case? It bails out if clk_get() returns an error pointer.
->
-> I'm all for a no-op in clk_disable()/unprepare() when the pointer
-> is NULL. But when it's an error pointer the driver should be
-> handling it and bail out before it would ever call enable/prepare
-> on it or disable/unprepare.
-
-
-
-Let me explain my original idea.
-
-We do various initialization in a probe method,
-so we (OK, I) sometimes want to split init code
-into some helper function(s) like this:
-
-
-static int foo_clk_init(struct platform_device *pdev,
-                        struct foo_priv *priv)
-{
-        int ret;
-
-        priv->clk = devm_clk_get(&pdev->dev, NULL);     /* case 1 */
-        if (IS_ERR(priv->clk)) {
-                 dev_err(&pdev->dev, "falied to get clk\n");
-                 return PTR_ERR(priv->clk);
-        }
-
-        ret = clk_prepare_enable(priv->clk);          /* case 2 */
-        if (ret < 0) {
-                 dev_err(&pdev->dev, "falied to enable clk\n");
-                 return ret;
-        }
-
-        priv->clk_rate = clk_get_rate(priv->clk);    /* case 3 */
-        if (!priv->clk_rate) {
-                  dev_err(&pdev->dev, "clk rate should not be zero\n");
-                  return -EINVAL;
-        }
-
-
-        [ do something ]
-
-        return 0;
-}
-
-
-static int foo_probe(struct platform_device *pdev)
-{
-        [memory allocation, OF parse, various init.... ]
-
-        ret = foo_clk_init(pdev, priv);
-        if (ret < 0)
-                goto err;
-
-        ret = foo_blahblah_init(pdev, priv)          /* case 4 */
-        ir (ret < 0)
-                goto err;
-
-        [  more initialization ... ]
-
-        return 0;
-err:
-        clk_disable_unprepare(priv->clk);
-
-        return ret;
-}
-
-
-There are some failure paths in this example.
-
- [1] If case 1 fails, priv->clk contains an error pointer.
-     We should not do clk_disable_unprepare().
- [2] If case 2 fails, priv->clk contains a valid pointer,
-     but we should not do clk_disable_unprepare().
- [3] If case 3 fails, priv->clk contains a valid pointer,
-     and we should do clk_disable_unprepare().
- [4] If case 4 fails, priv->clk contains a valid pointer,
-     and we should do clk_disable_unprepare().
-
-
-My difficulty is that [1]-[3] are contained in one helper function.
-(A real example is drivers/i2c/busses/i2c-uniphier.c)
-
-
-If foo_clk_init() fails for reason [1],
-I want clk_disable_unprepare() to just return.
-(This is my original intention of this patch.)
-
-If foo_clk_init() fails for reason [3],
-I want clk_disable_unprepare() to do its job.
-
-
-OK, now I notice another problem in my code;
-if foo_clk_init() fails for reason [2],
-clk_disable() WARN's due to zero enable_count.
-
-if (WARN_ON(core->enable_count == 0))
-         return;
-
-
-
-Perhaps, I got screwed up by splitting clock init stuff
-into a helper function.
-
-
-
+diff --git a/arch/arc/include/asm/bitops.h b/arch/arc/include/asm/bitops.h
+index 0352fb8..7967e47 100644
+--- a/arch/arc/include/asm/bitops.h
++++ b/arch/arc/include/asm/bitops.h
+@@ -370,6 +370,7 @@ static inline __attribute__ ((const)) int __ffs(unsigned long x)
+ #define ffz(x)	__ffs(~(x))
+ 
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/lock.h>
+diff --git a/arch/arm/include/asm/bitops.h b/arch/arm/include/asm/bitops.h
+index e943e6c..99f28a6 100644
+--- a/arch/arm/include/asm/bitops.h
++++ b/arch/arm/include/asm/bitops.h
+@@ -313,6 +313,7 @@ static inline unsigned long __ffs(unsigned long x)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #ifdef __ARMEB__
+diff --git a/arch/arm64/include/asm/bitops.h b/arch/arm64/include/asm/bitops.h
+index 9c19594..eac4965 100644
+--- a/arch/arm64/include/asm/bitops.h
++++ b/arch/arm64/include/asm/bitops.h
+@@ -44,6 +44,7 @@ extern int test_and_change_bit(int nr, volatile unsigned long *p);
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/non-atomic.h>
+diff --git a/arch/avr32/include/asm/bitops.h b/arch/avr32/include/asm/bitops.h
+index 910d537..9f4a2ce 100644
+--- a/arch/avr32/include/asm/bitops.h
++++ b/arch/avr32/include/asm/bitops.h
+@@ -298,6 +298,7 @@ static inline int ffs(unsigned long word)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ extern unsigned long find_next_zero_bit_le(const void *addr,
+diff --git a/arch/c6x/include/asm/bitops.h b/arch/c6x/include/asm/bitops.h
+index f0ab012..94eb0d1 100644
+--- a/arch/c6x/include/asm/bitops.h
++++ b/arch/c6x/include/asm/bitops.h
+@@ -87,6 +87,7 @@ static inline int ffs(int x)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/atomic.h>
+diff --git a/arch/cris/include/asm/bitops.h b/arch/cris/include/asm/bitops.h
+index 8062cb5..06bc246 100644
+--- a/arch/cris/include/asm/bitops.h
++++ b/arch/cris/include/asm/bitops.h
+@@ -36,6 +36,7 @@
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+diff --git a/arch/frv/include/asm/bitops.h b/arch/frv/include/asm/bitops.h
+index 0df8e95..f2a7ee8 100644
+--- a/arch/frv/include/asm/bitops.h
++++ b/arch/frv/include/asm/bitops.h
+@@ -314,6 +314,7 @@ int __ilog2_u64(u64 n)
+ 
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/h8300/include/asm/bitops.h b/arch/h8300/include/asm/bitops.h
+index 05999ab..e392db2 100644
+--- a/arch/h8300/include/asm/bitops.h
++++ b/arch/h8300/include/asm/bitops.h
+@@ -172,6 +172,7 @@ static inline unsigned long __ffs(unsigned long word)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic.h>
+diff --git a/arch/hexagon/include/asm/bitops.h b/arch/hexagon/include/asm/bitops.h
+index 5e4a59b..2df614e 100644
+--- a/arch/hexagon/include/asm/bitops.h
++++ b/arch/hexagon/include/asm/bitops.h
+@@ -290,6 +290,7 @@ static inline unsigned long __fls(unsigned long word)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ 
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic.h>
+diff --git a/arch/m32r/include/asm/bitops.h b/arch/m32r/include/asm/bitops.h
+index 86ba2b4..e3cf46b 100644
+--- a/arch/m32r/include/asm/bitops.h
++++ b/arch/m32r/include/asm/bitops.h
+@@ -259,6 +259,7 @@ static __inline__ int test_and_change_bit(int nr, volatile void * addr)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #endif /* __KERNEL__ */
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index b4a9b0d..fd673ea 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -519,6 +519,7 @@ static inline int __fls(int x)
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #endif /* __KERNEL__ */
+ 
+diff --git a/arch/metag/include/asm/bitops.h b/arch/metag/include/asm/bitops.h
+index 2671134..ad13087 100644
+--- a/arch/metag/include/asm/bitops.h
++++ b/arch/metag/include/asm/bitops.h
+@@ -118,6 +118,7 @@ static inline int test_and_change_bit(unsigned int bit,
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/mn10300/include/asm/bitops.h b/arch/mn10300/include/asm/bitops.h
+index fe6f8e2..60761b7 100644
+--- a/arch/mn10300/include/asm/bitops.h
++++ b/arch/mn10300/include/asm/bitops.h
+@@ -225,6 +225,7 @@ int ffs(int x)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+ #include <asm-generic/bitops/le.h>
+ 
+diff --git a/arch/openrisc/include/asm/bitops.h b/arch/openrisc/include/asm/bitops.h
+index 3003cda..8c97642 100644
+--- a/arch/openrisc/include/asm/bitops.h
++++ b/arch/openrisc/include/asm/bitops.h
+@@ -43,6 +43,7 @@
+ #include <asm-generic/bitops/sched.h>
+ #include <asm/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ 
+ #include <asm-generic/bitops/atomic.h>
+diff --git a/arch/parisc/include/asm/bitops.h b/arch/parisc/include/asm/bitops.h
+index 3f9406d..867ba10 100644
+--- a/arch/parisc/include/asm/bitops.h
++++ b/arch/parisc/include/asm/bitops.h
+@@ -211,6 +211,7 @@ static __inline__ int fls(int x)
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ 
+diff --git a/arch/s390/include/asm/bitops.h b/arch/s390/include/asm/bitops.h
+index 8043f10..198eead 100644
+--- a/arch/s390/include/asm/bitops.h
++++ b/arch/s390/include/asm/bitops.h
+@@ -460,6 +460,7 @@ static inline int fls(int word)
+ #include <asm-generic/bitops/ffz.h>
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+diff --git a/arch/sh/include/asm/bitops.h b/arch/sh/include/asm/bitops.h
+index fc8e652..4bf0c35 100644
+--- a/arch/sh/include/asm/bitops.h
++++ b/arch/sh/include/asm/bitops.h
+@@ -86,6 +86,7 @@ static inline unsigned long ffz(unsigned long word)
+ #include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/le.h>
+diff --git a/arch/xtensa/include/asm/bitops.h b/arch/xtensa/include/asm/bitops.h
+index 3f44fa2..981fa83 100644
+--- a/arch/xtensa/include/asm/bitops.h
++++ b/arch/xtensa/include/asm/bitops.h
+@@ -229,6 +229,7 @@ test_and_change_bit(unsigned int bit, volatile unsigned long *p)
+ #include <asm-generic/bitops/ext2-atomic-setbit.h>
+ 
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/parity.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+ 
 -- 
-Best Regards
-Masahiro Yamada
+2.5.0
