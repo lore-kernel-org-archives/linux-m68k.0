@@ -1,103 +1,36 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] char: PC rtc: replace blacklist with whitelist
-Date: Mon, 18 Apr 2016 09:09:55 +0200
-Message-ID: <CAMuHMdWQiqNq7-fgn5NONovLQxhOoGD5s-TAYVYZOVRfEs52Zg__11301.2438094758$1460963430$gmane$org@mail.gmail.com>
-References: <1456912137-1578635-1-git-send-email-arnd@arndb.de>
-	<CAMuHMdU26GkyUYxs3DJOFRB5LTdYCOaGTMUwFMd9YXYhkS1W3g@mail.gmail.com>
-	<4192558.Mh1hb3LCLb@wuerfel>
+From: <verifelaw@gmx.com>
+Subject: IMPORTANT MAIL TO YOU
+Date: Mon, 18 Apr 2016 13:09:41 +0200
+Message-ID: <613fad89-f8e9-4340-bd2b-935a5631973f__22781.5488855869$1460977883$gmane$org@GSCADMINS22.gsc.org.uk>
+Reply-To: <lawrencetyman@gmx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <4192558.Mh1hb3LCLb@wuerfel>
+Received: from mail-db3hn0248.outbound.protection.outlook.com ([157.55.234.248]:41114
+	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
+	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1752661AbcDRLKX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Mon, 18 Apr 2016 07:10:23 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, RTCLINUX <rtc-linux@googlegroups.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Arnd,
+I am Capt. Lawrence Tyman, an officer in US Army,and also a West Point
+Graduate, serving in the Military with the 82nd Air Borne Division
+Peace keeping force deployed from Afganistan to Syria.  
+We were moved to Syria from Iraq as the last batch just left,and i
+really need your help in assisting me with the safe keeping of 1 military
+trunk box contain funds amount of $10.2M which i secured on a raiding we carried out in 
+January in one of the chief Syrian IsIs base which i headed the squard as the 
+Captain.  With every possible arrangement to lift this box out, is intended to arrive 
+Belgium from there a diplomat will deliver it to your designated location
+I hope you can be trusted? You will be rewarded handsomely if you could help
+me secure the funds until I conclude my service here in 3 month to meet you while we can 
+plan head to head on a good and profitable business or company i can invest my funds in your country.
+If you can be trusted and willing to support me in securing this safely kindly indicate 
+by Letting me know this (1) Your name (2) Your address (3) Age (4) Occupation and 
+i will explain further when i get a response from you
+kindly contact me in this my private email address below: lawrencetyman@gmx.com
 
-cc linux-m68k
-
-On Sun, Apr 17, 2016 at 11:37 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wednesday 02 March 2016 11:22:04 Geert Uytterhoeven wrote:
->> On Wed, Mar 2, 2016 at 10:48 AM, Arnd Bergmann <arnd@arndb.de> wrote:
->> > Every new architecture has to add itself to the growing list of those
->> > that do not support the legacy PC RTC driver.
->> >
->> > This replaces the long list of architectures that don't support it
->> > with a shorter list of those that do.
->> >
->> > The list is taken from those architectures that have a non-empty
->> > asm/mc146818rtc.h header file and were not explicitly blacklisted.
->>
->> M68K was blacklisted...
->
-> I never got back to you on this topic, sorry about that. I've fixed
-> up the patch to leave out m68k now.
->
-> On a semi-related note, I see that m68k is one of the few architectures
-> still using the (other) genrtc driver. It would be nice to reduce that
-> list and change m68k to use its own rtc driver (ideally one per
-
-We do have hp_sdc_rtc (HP9000/300; why is that under drivers/input/misc/?),
-and rtc-msm6242 and rtc-rp5c01 (both for Amiga).
-
-> platform), but the q40 platform is the only one providing
-> get_rtc_pll()/set_rtc_pll() for the RTC_PLL_GET/RTC_PLL_SET ioctl
-> commands.
-
-Do you mean this is a problem?
-
-> If we do this change on top of the other m68k patch I have, the
-> rtc-generic driver should be usable as a full replacement for
-> genrtc.c on m68k and we can remove all the set_rtc_pll/get_rtc_pll
-> handling from genrtc.
->
-> diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-> index 773b2187210d..f4781d612c37 100644
-> --- a/arch/m68k/kernel/time.c
-> +++ b/arch/m68k/kernel/time.c
-> @@ -100,7 +100,32 @@ static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
->         return 0;
->  }
->
-> +static int rtc_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
-> +{
-> +       struct rtc_pll_info pll;
-> +       struct rtc_pll_info __user *argp = (void __user *)arg;
-> +
-> +       switch (cmd) {
-> +       case RTC_PLL_GET:
-> +               if (!mach_get_rtc_pll || mach_get_rtc_pll(&pll))
-> +                       return -EINVAL;
-> +               return copy_to_user(argp, &pll, sizeof pll) ? -EFAULT : 0;
-> +
-> +       case RTC_PLL_SET:
-> +               if (!mach_set_rtc_pll)
-> +                       return -EINVAL;
-> +               if (!capable(CAP_SYS_TIME))
-> +                       return -EACCES;
-> +               if (copy_from_user(&pll, argp, sizeof(pll)))
-> +                       return -EFAULT;
-> +               return mach_set_rtc_pll(&pll);
-> +       }
-> +
-> +       return -ENOIOCTLCMD;
-> +}
-> +
->  static const struct rtc_class_ops generic_rtc_ops = {
-> +       .ioctl = rtc_ioctl,
->         .read_time = rtc_generic_get_time,
->         .set_time = rtc_generic_set_time,
->  };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Capt. Lawrence Tyman
