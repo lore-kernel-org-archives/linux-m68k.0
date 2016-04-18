@@ -1,36 +1,66 @@
-From: <verifelaw@gmx.com>
-Subject: IMPORTANT MAIL TO YOU
-Date: Mon, 18 Apr 2016 13:09:41 +0200
-Message-ID: <613fad89-f8e9-4340-bd2b-935a5631973f__22781.5488855869$1460977883$gmane$org@GSCADMINS22.gsc.org.uk>
-Reply-To: <lawrencetyman@gmx.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/2] char: PC rtc: replace blacklist with whitelist
+Date: Mon, 18 Apr 2016 13:41:20 +0200
+Message-ID: <5528499.2P7TrvXfau@wuerfel>
+References: <1456912137-1578635-1-git-send-email-arnd@arndb.de> <4192558.Mh1hb3LCLb@wuerfel> <CAMuHMdWQiqNq7-fgn5NONovLQxhOoGD5s-TAYVYZOVRfEs52Zg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-db3hn0248.outbound.protection.outlook.com ([157.55.234.248]:41114
-	"EHLO emea01-db3-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1752661AbcDRLKX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Mon, 18 Apr 2016 07:10:23 -0400
+In-Reply-To: <CAMuHMdWQiqNq7-fgn5NONovLQxhOoGD5s-TAYVYZOVRfEs52Zg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, RTCLINUX <rtc-linux@googlegroups.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-I am Capt. Lawrence Tyman, an officer in US Army,and also a West Point
-Graduate, serving in the Military with the 82nd Air Borne Division
-Peace keeping force deployed from Afganistan to Syria.  
-We were moved to Syria from Iraq as the last batch just left,and i
-really need your help in assisting me with the safe keeping of 1 military
-trunk box contain funds amount of $10.2M which i secured on a raiding we carried out in 
-January in one of the chief Syrian IsIs base which i headed the squard as the 
-Captain.  With every possible arrangement to lift this box out, is intended to arrive 
-Belgium from there a diplomat will deliver it to your designated location
-I hope you can be trusted? You will be rewarded handsomely if you could help
-me secure the funds until I conclude my service here in 3 month to meet you while we can 
-plan head to head on a good and profitable business or company i can invest my funds in your country.
-If you can be trusted and willing to support me in securing this safely kindly indicate 
-by Letting me know this (1) Your name (2) Your address (3) Age (4) Occupation and 
-i will explain further when i get a response from you
-kindly contact me in this my private email address below: lawrencetyman@gmx.com
+On Monday 18 April 2016 09:09:55 Geert Uytterhoeven wrote:
+> Hi Arnd,
+> 
+> cc linux-m68k
+> 
+> On Sun, Apr 17, 2016 at 11:37 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Wednesday 02 March 2016 11:22:04 Geert Uytterhoeven wrote:
+> >> On Wed, Mar 2, 2016 at 10:48 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> >> > Every new architecture has to add itself to the growing list of those
+> >> > that do not support the legacy PC RTC driver.
+> >> >
+> >> > This replaces the long list of architectures that don't support it
+> >> > with a shorter list of those that do.
+> >> >
+> >> > The list is taken from those architectures that have a non-empty
+> >> > asm/mc146818rtc.h header file and were not explicitly blacklisted.
+> >>
+> >> M68K was blacklisted...
+> >
+> > I never got back to you on this topic, sorry about that. I've fixed
+> > up the patch to leave out m68k now.
+> >
+> > On a semi-related note, I see that m68k is one of the few architectures
+> > still using the (other) genrtc driver. It would be nice to reduce that
+> > list and change m68k to use its own rtc driver (ideally one per
+> 
+> We do have hp_sdc_rtc (HP9000/300; why is that under drivers/input/misc/?),
+> and rtc-msm6242 and rtc-rp5c01 (both for Amiga).
 
-Regards,
-Capt. Lawrence Tyman
+fwiw, the hp_sdc_rtc driver does not actually implement the RTC ioctls
+(they are there, but commented out).
+
+The other ones are good, you just have two incompatible ways of doing
+it because the drivers/rtc subsystem is can not be built into the
+kernel at the same time as the old gen_rtc driver for the q40.
+
+> > platform), but the q40 platform is the only one providing
+> > get_rtc_pll()/set_rtc_pll() for the RTC_PLL_GET/RTC_PLL_SET ioctl
+> > commands.
+> 
+> Do you mean this is a problem?
+
+Not a big one, assuming that either nobody actually needs these ioctls
+(very likely), or they don't care about having a single kernel for
+q40 and the other platforms.
+
+The main issue I see is migrating architectures over from gen_rtc to
+rtc-generic over time, but this effort has been going on for at least
+a decade and there is no rush, but it would still be nice.
+
+	Arnd
