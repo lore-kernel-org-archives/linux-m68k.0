@@ -1,62 +1,69 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 09/23] m68k: do away with ARCH_REQUIRE_GPIOLIB
-Date: Wed, 20 Apr 2016 10:58:07 +0200
-Message-ID: <1461142701-21096-10-git-send-email-linus.walleij__15155.7067213163$1461142761$gmane$org@linaro.org>
-References: <1461142701-21096-1-git-send-email-linus.walleij@linaro.org>
+From: Al Stone <ahs3@redhat.com>
+Subject: Re: [PATCH] char: Drop bogus dependency of DEVPORT on !M68K
+Date: Wed, 20 Apr 2016 13:43:10 -0600
+Message-ID: <5717DBCE.2000303@redhat.com>
+References: <1460364055-10174-1-git-send-email-geert@linux-m68k.org>
+Reply-To: ahs3@redhat.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1461142701-21096-1-git-send-email-linus.walleij@linaro.org>
+Received: from mail-ig0-f177.google.com ([209.85.213.177]:36489 "EHLO
+	mail-ig0-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750902AbcDTTnM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Apr 2016 15:43:12 -0400
+Received: by mail-ig0-f177.google.com with SMTP id f1so138069376igr.1
+        for <linux-m68k@vger.kernel.org>; Wed, 20 Apr 2016 12:43:11 -0700 (PDT)
+In-Reply-To: <1460364055-10174-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-gpio@vger.kernel.org, Alexandre Courbot <acourbot@nvidia.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Geoff Levand <geoff@infradead.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 
-Replace "select ARCH_REQUIRE_GPIOLIB" with "select GPIOLIB"
-as this can now be selected directly.
+On 04/11/2016 02:40 AM, Geert Uytterhoeven wrote:
+> According to full-history-linux commit d3794f4fa7c3edc3 ("[PATCH] M68k
+> update (part 25)"), port operations are allowed on m68k if CONFIG_ISA is
+> defined.
+> 
+> However, commit 153dcc54df826d2f ("[PATCH] mem driver: fix conditional
+> on isa i/o support") accidentally changed an "||" into an "&&",
+> disabling it completely on m68k. This logic was retained when
+> introducing the DEVPORT symbol in commit 4f911d64e04a44c4 ("Make
+> /dev/port conditional on config symbol").
+> 
+> Drop the bogus dependency on !M68K to fix this.
+> 
+> Fixes: 153dcc54df826d2f ("[PATCH] mem driver: fix conditional on isa i/o support")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/char/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+> index d3b8ddc6241cac2d..fa56bc757fe98fd1 100644
+> --- a/drivers/char/Kconfig
+> +++ b/drivers/char/Kconfig
+> @@ -585,7 +585,6 @@ config TELCLOCK
+>  
+>  config DEVPORT
+>  	bool
+> -	depends on !M68K
+>  	depends on ISA || PCI
+>  	default y
+>  
+> 
 
-Cc: Michael B=C3=BCsch <m@bues.ch>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Various arch maintainers:
+This solves the particular problem I was running into on an arm64 AMD Seattle
+system.  Thanks!
 
-either ACK this and I will merge it into the GPIO tree for v4.7
-anticipating no clashes, or you wait until I have the enabling patch
-upstream (patch 1 in this series, removing deps on
-ARCH_[WANTS_OPTIONAL|REQUIRES]_GPIOLIB), and you will be able to
-merge it to your arch trees yourselves for late v4.7
-(post GPIO tree merge) or for v4.8.
+Tested-by: Al Stone <ahs3@redhat.com>
 
-You can also ask me for an immutable branch if you prefer that, I
-will put the enabling patch on a branch and the patch for your arch
-on top and ask you to pull it.
-
-Select your option from the menu, silence probably means I will
-merge it to the GPIO tree. Unless you are X86 or ARM in which case
-I will be cautious.
----
- arch/m68k/Kconfig.cpu | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 0dfcf1281e9c..c1beb5ae181f 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -22,11 +22,11 @@ config M68KCLASSIC
-=20
- config COLDFIRE
- 	bool "Coldfire CPU family support"
--	select ARCH_REQUIRE_GPIOLIB
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select CPU_HAS_NO_BITFIELDS
- 	select CPU_HAS_NO_MULDIV64
- 	select GENERIC_CSUM
-+	select GPIOLIB
- 	select HAVE_CLK
-=20
- endchoice
---=20
-2.4.11
+-- 
+ciao,
+al
+-----------------------------------
+Al Stone
+Software Engineer
+Red Hat, Inc.
+ahs3@redhat.com
+-----------------------------------
