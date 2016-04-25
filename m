@@ -1,20 +1,14 @@
-From: Melissa Robert <sambos@unijos.edu.ng>
-Subject: HELLO DEAR
-Date: Fri, 22 Apr 2016 18:48:33 +0100 (WAT)
-Message-ID: <1043083210.431384.1461347313780.JavaMail.zimbra@unijos.edu.ng>
+From: =?utf-8?B?5oiR55qE5Lqk5Y+L5Li76aG15piv?= <hsd@hsddoors.com>
+Subject: =?utf-8?B?5oiR55qE5Lqk5Y+L5Li76aG15piv?=
+Date: Mon, 25 Apr 2016 13:01:34 +0800
+Message-ID: <20160425130145671573@hsddoors.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-
-
-Hello Dear,
-how are you doing hope fine, I am (Melissa Robert) by name. i will like
-to
-know more about you believing that friendship is a free gift of nature.
-Please get back to me as soon as possible through this my private Email.
-(mr4785395@gmail.com)
-thank you.
+5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkg5oqi5LyY5oOg5Yi4
