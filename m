@@ -1,7 +1,7 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 6/6] rtc: generic: remove get_rtc_time/set_rtc_time wrappers
-Date: Tue, 26 Apr 2016 23:52:31 +0200
-Message-ID: <1461707551-1337971-7-git-send-email-arnd__26905.701068654$1461707661$gmane$org@arndb.de>
+Subject: [PATCH v2 1/6] rtc: m68k: provide rtc_class_ops directly
+Date: Tue, 26 Apr 2016 23:52:26 +0200
+Message-ID: <1461707551-1337971-2-git-send-email-arnd__20014.2446360134$1461707689$gmane$org@arndb.de>
 References: <1461707551-1337971-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1461707551-1337971-1-git-send-email-arnd@arndb.de>
@@ -10,64 +10,61 @@ List-Id: linux-m68k@vger.kernel.org
 To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-All architectures using this driver are now converted to
-provide their own operations, so this one can be turned
-into a trivial stub driver relying on its platform data.
+The rtc-generic driver provides an architecture specific
+wrapper on top of the generic rtc_class_ops abstraction,
+and m68k has another abstraction on top, which is a bit
+silly.
+
+This changes the m68k rtc-generic device to provide its
+rtc_class_ops directly, to reduce the number of layers
+by one.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/rtc/rtc-generic.c | 36 +-----------------------------------
- 1 file changed, 1 insertion(+), 35 deletions(-)
+ arch/m68k/kernel/time.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
-index d726c6aa96a8..1bf5d2347928 100644
---- a/drivers/rtc/rtc-generic.c
-+++ b/drivers/rtc/rtc-generic.c
-@@ -9,44 +9,10 @@
- #include <linux/platform_device.h>
- #include <linux/rtc.h>
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index 3857737e3958..fe35890feede 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -86,7 +86,24 @@ void read_persistent_clock(struct timespec *ts)
+ 	}
+ }
  
--#if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
--    defined(CONFIG_PPC) || defined(CONFIG_SUPERH32)
--#include <asm/rtc.h>
--
--static int generic_get_time(struct device *dev, struct rtc_time *tm)
--{
--	unsigned int ret = get_rtc_time(tm);
--
--	if (ret & RTC_BATT_BAD)
--		return -EOPNOTSUPP;
--
--	return rtc_valid_tm(tm);
--}
--
--static int generic_set_time(struct device *dev, struct rtc_time *tm)
--{
--	if (set_rtc_time(tm) < 0)
--		return -EOPNOTSUPP;
--
--	return 0;
--}
--
--static const struct rtc_class_ops generic_rtc_ops = {
--	.read_time = generic_get_time,
--	.set_time = generic_set_time,
--};
--#else
--#define generic_rtc_ops *(struct rtc_class_ops*)NULL
--#endif
--
- static int __init generic_rtc_probe(struct platform_device *dev)
+-#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
++#if defined(CONFIG_ARCH_USES_GETTIMEOFFSET) && defined(CONFIG_RTC_DRV_GENERIC)
++static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
++{
++	mach_hwclk(0, tm);
++	return rtc_valid_tm(tm);
++}
++
++static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
++{
++	if (mach_hwclk(1, tm) < 0)
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++static const struct rtc_class_ops generic_rtc_ops = {
++	.read_time = rtc_generic_get_time,
++	.set_time = rtc_generic_set_time,
++};
+ 
+ static int __init rtc_init(void)
  {
- 	struct rtc_device *rtc;
--	const struct rtc_class_ops *ops;
--
--	ops = dev_get_platdata(&dev->dev);
--	if (!ops)
--		ops = &generic_rtc_ops;
-+	const struct rtc_class_ops *ops = dev_get_platdata(&dev->dev);
+@@ -95,7 +112,10 @@ static int __init rtc_init(void)
+ 	if (!mach_hwclk)
+ 		return -ENODEV;
  
- 	rtc = devm_rtc_device_register(&dev->dev, "rtc-generic",
- 					ops, THIS_MODULE);
+-	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
++	/* or just call devm_rtc_device_register instead? */
++	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
++					     &generic_rtc_ops,
++					     sizeof(generic_rtc_ops));
+ 	return PTR_ERR_OR_ZERO(pdev);
+ }
+ 
 -- 
 2.7.0
