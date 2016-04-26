@@ -1,14 +1,37 @@
-From: =?utf-8?B?5oiR55qE5Lqk5Y+L5Li76aG15piv?= <hsd@hsddoors.com>
-Subject: =?utf-8?B?5oiR55qE5Lqk5Y+L5Li76aG15piv?=
-Date: Mon, 25 Apr 2016 13:01:34 +0800
-Message-ID: <20160425130145671573@hsddoors.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 09/23] m68k: do away with ARCH_REQUIRE_GPIOLIB
+Date: Tue, 26 Apr 2016 14:02:11 +0200
+Message-ID: <CACRpkdZKrvUtcLWZ6v4oRbaVw5awQYqx_fHVYQ-BUhbxiK56_A__1565.53142373941$1461672149$gmane$org@mail.gmail.com>
+References: <1461142701-21096-1-git-send-email-linus.walleij@linaro.org>
+	<1461142701-21096-10-git-send-email-linus.walleij@linaro.org>
+	<5718290D.7030705@westnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <5718290D.7030705@westnet.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Greg Ungerer <gregungerer@westnet.com.au>
+Cc: "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, =?UTF-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
 
-5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkg5oqi5LyY5oOg5Yi4
+On Thu, Apr 21, 2016 at 3:12 AM, Greg Ungerer
+<gregungerer@westnet.com.au> wrote:
+> On 20/04/16 18:58, Linus Walleij wrote:
+>> Replace "select ARCH_REQUIRE_GPIOLIB" with "select GPIOLIB"
+>> as this can now be selected directly.
+>>
+>> Cc: Michael B=C3=BCsch <m@bues.ch>
+>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Cc: linux-m68k@lists.linux-m68k.org
+>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Since this affects ColdFire I am happy to give an ack:
+>
+> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Patch applied to the GPIO tree with your ACK. That
+should be enough I think.
+
+Yours,
+Linus Walleij
