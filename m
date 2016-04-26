@@ -1,37 +1,19 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 09/23] m68k: do away with ARCH_REQUIRE_GPIOLIB
-Date: Tue, 26 Apr 2016 14:02:11 +0200
-Message-ID: <CACRpkdZKrvUtcLWZ6v4oRbaVw5awQYqx_fHVYQ-BUhbxiK56_A__1565.53142373941$1461672149$gmane$org@mail.gmail.com>
-References: <1461142701-21096-1-git-send-email-linus.walleij@linaro.org>
-	<1461142701-21096-10-git-send-email-linus.walleij@linaro.org>
-	<5718290D.7030705@westnet.com.au>
+From: =?utf-8?B?5oiR55qE5L+h5oGv5ZyoOg==?= <jxzhaopin@yonyou.com>
+Subject: =?utf-8?B?5oiR55qE5L+h5oGv5ZyoOg==?=
+Date: Wed, 27 Apr 2016 02:16:58 +0800
+Message-ID: <20160427021710117756@yonyou.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <5718290D.7030705@westnet.com.au>
+Received: from [125.35.5.165] ([125.35.5.165]:38333 "EHLO yonyou.com"
+	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+	id S1753288AbcDZSdo (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 26 Apr 2016 14:33:44 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Cc: "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, =?UTF-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org
 
-On Thu, Apr 21, 2016 at 3:12 AM, Greg Ungerer
-<gregungerer@westnet.com.au> wrote:
-> On 20/04/16 18:58, Linus Walleij wrote:
->> Replace "select ARCH_REQUIRE_GPIOLIB" with "select GPIOLIB"
->> as this can now be selected directly.
->>
->> Cc: Michael B=C3=BCsch <m@bues.ch>
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Cc: linux-m68k@lists.linux-m68k.org
->> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Since this affects ColdFire I am happy to give an ack:
->
-> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Patch applied to the GPIO tree with your ACK. That
-should be enough I think.
-
-Yours,
-Linus Walleij
+5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkg5oqi5LyY5oOg5Yi4IOaKoueI
+seWlh+iJulZJUA==
