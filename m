@@ -1,19 +1,22 @@
-From: =?utf-8?B?5oiR55qE5L+h5oGv5ZyoOg==?= <jxzhaopin@yonyou.com>
-Subject: =?utf-8?B?5oiR55qE5L+h5oGv5ZyoOg==?=
-Date: Wed, 27 Apr 2016 02:16:58 +0800
-Message-ID: <20160427021710117756@yonyou.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2 0/6] simplify rtc-generic driver
+Date: Tue, 26 Apr 2016 23:52:25 +0200
+Message-ID: <1461707551-1337971-1-git-send-email-arnd__20255.0634429373$1461707608$gmane$org@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from [125.35.5.165] ([125.35.5.165]:38333 "EHLO yonyou.com"
-	rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1753288AbcDZSdo (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Tue, 26 Apr 2016 14:33:44 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: geert@linux-m68k.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-5L2g55qE6ICB5pyL5Y+L6YKA5L2g5p2lUee+pDozNDMyNTc3NTkg5oqi5LyY5oOg5Yi4IOaKoueI
-seWlh+iJulZJUA==
+This is a resend of an earlier series, to clean up the rtc-generic
+driver by avoiding the dependency on the architecture specific
+include/asm/rtc.h header that after this series is only used
+for the deprecated "genrtc" driver. As I've shown in another
+series, only three architectures (m68k, powerpc, parisc)
+actually use the genrtc driver, and they all support rtc-generic
+as a replacement as well.
+
+The only missing piece appears to be the ioctl support for
+the m68k q40 machine that I'm adding in patch 2 here.
+
+	Arnd
