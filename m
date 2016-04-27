@@ -1,13 +1,12 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 1/6] rtc: m68k: provide rtc_class_ops directly
-Date: Wed, 27 Apr 2016 09:47:56 +0200
-Message-ID: <CAMuHMdXS0JL_weLvjV4+i0ZPj=N+G6Vs1WDE9jffGUWehq5Xzg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] simplify rtc-generic driver
+Date: Wed, 27 Apr 2016 09:50:58 +0200
+Message-ID: <CAMuHMdWppdXFjoj-+YC137fgPYb4TE_Kp4fycitJdPaqMGn3VA__34778.4122372561$1461743514$gmane$org@mail.gmail.com>
 References: <1461707551-1337971-1-git-send-email-arnd@arndb.de>
-	<1461707551-1337971-2-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1461707551-1337971-2-git-send-email-arnd@arndb.de>
+In-Reply-To: <1461707551-1337971-1-git-send-email-arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
@@ -16,48 +15,31 @@ Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Helge Deller <dell
 Hi Arnd,
 
 On Tue, Apr 26, 2016 at 11:52 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> The rtc-generic driver provides an architecture specific
-> wrapper on top of the generic rtc_class_ops abstraction,
-> and m68k has another abstraction on top, which is a bit
-> silly.
+> This is a resend of an earlier series, to clean up the rtc-generic
+> driver by avoiding the dependency on the architecture specific
+> include/asm/rtc.h header that after this series is only used
+> for the deprecated "genrtc" driver. As I've shown in another
+> series, only three architectures (m68k, powerpc, parisc)
+> actually use the genrtc driver, and they all support rtc-generic
+> as a replacement as well.
 >
-> This changes the m68k rtc-generic device to provide its
-> rtc_class_ops directly, to reduce the number of layers
-> by one.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/m68k/kernel/time.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-> index 3857737e3958..fe35890feede 100644
-> --- a/arch/m68k/kernel/time.c
-> +++ b/arch/m68k/kernel/time.c
-> @@ -86,7 +86,24 @@ void read_persistent_clock(struct timespec *ts)
->         }
->  }
->
-> -#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
-> +#if defined(CONFIG_ARCH_USES_GETTIMEOFFSET) && defined(CONFIG_RTC_DRV_GENERIC)
+> The only missing piece appears to be the ioctl support for
+> the m68k q40 machine that I'm adding in patch 2 here.
 
-s/defined/IS_ENABLED/ for the modular case.
+Apparently I had applied your previous version to my local tree, but I had
+completely forgotten about it. So it has received quite some compile testing.
 
-> @@ -95,7 +112,10 @@ static int __init rtc_init(void)
->         if (!mach_hwclk)
->                 return -ENODEV;
->
-> -       pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
-> +       /* or just call devm_rtc_device_register instead? */
+CONFIG_GEN_RTC is not enabled in any of the m68k defconfigs, so I think it's
+been unused for a while.
+CONFIG_RTC_DRV_GENERIC is modular, so I typically don't run-test it.
+I just did that, and after fixing patch 1 to use IS_ENABLED() it worked fine
+on ARAnyM.
 
-I guess this comment is a bogus leftover? There's no "dev" parameter to
-pass to devm_rtc_device_register() here.
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> +       pdev = platform_device_register_data(NULL, "rtc-generic", -1,
-> +                                            &generic_rtc_ops,
-> +                                            sizeof(generic_rtc_ops));
->         return PTR_ERR_OR_ZERO(pdev);
->  }
+I do not have a Q40, so I couldn't test that part.
+
+Thanks!
 
 Gr{oetje,eeting}s,
 
