@@ -1,60 +1,124 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 1/6] rtc: m68k: provide rtc_class_ops directly
-Date: Wed, 27 Apr 2016 12:34:19 +0200
-Message-ID: <4888267.R0sXv0tuDQ@wuerfel>
-References: <1461707551-1337971-1-git-send-email-arnd@arndb.de> <1461707551-1337971-2-git-send-email-arnd@arndb.de> <CAMuHMdXS0JL_weLvjV4+i0ZPj=N+G6Vs1WDE9jffGUWehq5Xzg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Subject: [PATCH v3 04/16] rtc: sh: provide rtc_class_ops directly
+Date: Thu, 28 Apr 2016 00:34:18 +0200
+Message-ID: <1461796470-1291527-5-git-send-email-arnd@arndb.de>
+References: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXS0JL_weLvjV4+i0ZPj=N+G6Vs1WDE9jffGUWehq5Xzg@mail.gmail.com>
+In-Reply-To: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, Rich Felker <dalias@libc.org>, David Howells <dhowells@redhat.com>, alpha <linux-alpha@vger.kernel.org>, Alessandro Zummo <a.zummo@towertech.it>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, RTCLINUX <rtc-linux@googlegroups.com>, Linux-Arch <linux-arch@vger.kernel.org>
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-On Wednesday 27 April 2016 09:47:56 Geert Uytterhoeven wrote:
-> > --- a/arch/m68k/kernel/time.c
-> > +++ b/arch/m68k/kernel/time.c
-> > @@ -86,7 +86,24 @@ void read_persistent_clock(struct timespec *ts)
-> >         }
-> >  }
-> >
-> > -#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
-> > +#if defined(CONFIG_ARCH_USES_GETTIMEOFFSET) && defined(CONFIG_RTC_DRV_GENERIC)
-> 
-> s/defined/IS_ENABLED/ for the modular case.
+The rtc-generic driver provides an architecture specific
+wrapper on top of the generic rtc_class_ops abstraction,
+and on sh, that goes through another indirection using
+the rtc_sh_get_time/rtc_sh_set_time functions.
 
-Thanks, fixed in all three architectures/
+This changes the sh rtc-generic device to provide its
+rtc_class_ops directly, skipping one of the abstraction
+levels.
 
-> > @@ -95,7 +112,10 @@ static int __init rtc_init(void)
-> >         if (!mach_hwclk)
-> >                 return -ENODEV;
-> >
-> > -       pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
-> > +       /* or just call devm_rtc_device_register instead? */
-> 
-> I guess this comment is a bogus leftover? There's no "dev" parameter to
-> pass to devm_rtc_device_register() here.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/sh/include/asm/rtc.h | 11 -----------
+ arch/sh/kernel/time.c     | 32 +++++++++++++++++++-------------
+ drivers/rtc/rtc-generic.c |  2 +-
+ 3 files changed, 20 insertions(+), 25 deletions(-)
 
-Sort of. When I wrote it, I thought that a NULL argument would work,
-and I later found out myself that it doesn't.
-
-I'll drop the comment there, but there are still a few ways we (probably
-not me, but whoever is interested) could take this further:
-
-- register both the device and the driver here, and call
-  devm_rtc_device_register from the probe function so we can move away
-  from drivers/rtc/rtc-generic.c
-
-- do this separately for mac, mvme147, mvme16x, sun3, q40 and sun3x
-
-- move the six implementations into drivers/rtc as standalone drivers.
-
-One (AFAIK) unsolved problem here is the question of how to handle
-read_boot_clock/read_persistent_clock/update_persistent_clock in this
-case. This is a really odd API that is implemented in various ways
-on a few major architectures, and not at all on others, so it's all
-highly inconsistent.
-
-	Arnd
+diff --git a/arch/sh/include/asm/rtc.h b/arch/sh/include/asm/rtc.h
+index 52b0c2dba979..f7b010d48af7 100644
+--- a/arch/sh/include/asm/rtc.h
++++ b/arch/sh/include/asm/rtc.h
+@@ -6,17 +6,6 @@ extern void (*board_time_init)(void);
+ extern void (*rtc_sh_get_time)(struct timespec *);
+ extern int (*rtc_sh_set_time)(const time_t);
+ 
+-/* some dummy definitions */
+-#define RTC_BATT_BAD 0x100	/* battery bad */
+-#define RTC_SQWE 0x08		/* enable square-wave output */
+-#define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
+-#define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
+-#define RTC_DST_EN 0x01	        /* auto switch DST - works f. USA only */
+-
+-struct rtc_time;
+-unsigned int get_rtc_time(struct rtc_time *);
+-int set_rtc_time(struct rtc_time *);
+-
+ #define RTC_CAP_4_DIGIT_YEAR	(1 << 0)
+ 
+ struct sh_rtc_platform_info {
+diff --git a/arch/sh/kernel/time.c b/arch/sh/kernel/time.c
+index d6d0a986c6e9..92cd676970d9 100644
+--- a/arch/sh/kernel/time.c
++++ b/arch/sh/kernel/time.c
+@@ -50,27 +50,30 @@ int update_persistent_clock(struct timespec now)
+ }
+ #endif
+ 
+-unsigned int get_rtc_time(struct rtc_time *tm)
++static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
+ {
+-	if (rtc_sh_get_time != null_rtc_get_time) {
+-		struct timespec tv;
++	struct timespec tv;
+ 
+-		rtc_sh_get_time(&tv);
+-		rtc_time_to_tm(tv.tv_sec, tm);
+-	}
+-
+-	return RTC_24H;
++	rtc_sh_get_time(&tv);
++	rtc_time_to_tm(tv.tv_sec, tm);
++	return 0;
+ }
+-EXPORT_SYMBOL(get_rtc_time);
+ 
+-int set_rtc_time(struct rtc_time *tm)
++static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
+ {
+ 	unsigned long secs;
+ 
+ 	rtc_tm_to_time(tm, &secs);
+-	return rtc_sh_set_time(secs);
++	if (!rtc_sh_set_time || rtc_sh_set_time(secs) < 0)
++		return -EOPNOTSUPP;
++
++	return 0;
+ }
+-EXPORT_SYMBOL(set_rtc_time);
++
++static const struct rtc_class_ops rtc_generic_ops = {
++	.read_time = rtc_generic_get_time,
++	.set_time = rtc_generic_set_time,
++};
+ 
+ static int __init rtc_generic_init(void)
+ {
+@@ -79,7 +82,10 @@ static int __init rtc_generic_init(void)
+ 	if (rtc_sh_get_time == null_rtc_get_time)
+ 		return -ENODEV;
+ 
+-	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
++	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
++					     &rtc_generic_ops,
++					     sizeof(rtc_generic_ops));
++
+ 
+ 	return PTR_ERR_OR_ZERO(pdev);
+ }
+diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+index d726c6aa96a8..3958e87a05fa 100644
+--- a/drivers/rtc/rtc-generic.c
++++ b/drivers/rtc/rtc-generic.c
+@@ -10,7 +10,7 @@
+ #include <linux/rtc.h>
+ 
+ #if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
+-    defined(CONFIG_PPC) || defined(CONFIG_SUPERH32)
++    defined(CONFIG_PPC)
+ #include <asm/rtc.h>
+ 
+ static int generic_get_time(struct device *dev, struct rtc_time *tm)
+-- 
+2.7.0
