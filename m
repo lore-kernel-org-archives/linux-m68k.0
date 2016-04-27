@@ -1,72 +1,89 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 14/16] rtc: generic: remove get_rtc_time/set_rtc_time wrappers
-Date: Thu, 28 Apr 2016 00:34:28 +0200
-Message-ID: <1461796470-1291527-15-git-send-email-arnd__42050.6312665113$1461796916$gmane$org@arndb.de>
-References: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
+Subject: [PATCH v3 00/16] genrtc removal
+Date: Thu, 28 Apr 2016 00:34:14 +0200
+Message-ID: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1461796470-1291527-1-git-send-email-arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
+Cc: geert@linux-m68k.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-All architectures using this driver are now converted to
-provide their own operations, so this one can be turned
-into a trivial stub driver relying on its platform data.
+I ended up stuffing the two patch series into one, as they are now
+more dependent on one another. This now thoroughly removes the
+genrtc driver including the asm/rtc.h headers it uses. For all
+architectures that still have a meaningful asm/rtc.h, this goes
+through two stages:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/rtc/rtc-generic.c | 35 +----------------------------------
- 1 file changed, 1 insertion(+), 34 deletions(-)
+1) make the rtc-generic implementation independent of asm/rtc.h
+2) remove the asm/rtc.h header and disallow the gen_rtc driver
 
-diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
-index efcb9833cac8..1bf5d2347928 100644
---- a/drivers/rtc/rtc-generic.c
-+++ b/drivers/rtc/rtc-generic.c
-@@ -9,43 +9,10 @@
- #include <linux/platform_device.h>
- #include <linux/rtc.h>
- 
--#if 0
--#include <asm/rtc.h>
--
--static int generic_get_time(struct device *dev, struct rtc_time *tm)
--{
--	unsigned int ret = get_rtc_time(tm);
--
--	if (ret & RTC_BATT_BAD)
--		return -EOPNOTSUPP;
--
--	return rtc_valid_tm(tm);
--}
--
--static int generic_set_time(struct device *dev, struct rtc_time *tm)
--{
--	if (set_rtc_time(tm) < 0)
--		return -EOPNOTSUPP;
--
--	return 0;
--}
--
--static const struct rtc_class_ops generic_rtc_ops = {
--	.read_time = generic_get_time,
--	.set_time = generic_set_time,
--};
--#else
--#define generic_rtc_ops *(struct rtc_class_ops*)NULL
--#endif
--
- static int __init generic_rtc_probe(struct platform_device *dev)
- {
- 	struct rtc_device *rtc;
--	const struct rtc_class_ops *ops;
--
--	ops = dev_get_platdata(&dev->dev);
--	if (!ops)
--		ops = &generic_rtc_ops;
-+	const struct rtc_class_ops *ops = dev_get_platdata(&dev->dev);
- 
- 	rtc = devm_rtc_device_register(&dev->dev, "rtc-generic",
- 					ops, THIS_MODULE);
--- 
-2.7.0
+As the last step, the driver itself gets removed.
+
+	Arnd
+
+ arch/alpha/include/asm/rtc.h          |   1 -
+ arch/alpha/kernel/core_marvel.c       |   1 -
+ arch/alpha/kernel/rtc.c               |   6 +-
+ arch/frv/include/asm/mc146818rtc.h    |  16 -
+ arch/h8300/include/asm/mc146818rtc.h  |   9 -
+ arch/ia64/include/asm/mc146818rtc.h   |  10 -
+ arch/m68k/amiga/config.c              |   1 -
+ arch/m68k/apollo/config.c             |   1 -
+ arch/m68k/bvme6000/config.c           |   1 -
+ arch/m68k/hp300/config.c              |   2 +-
+ arch/m68k/include/asm/rtc.h           |  79 -----
+ arch/m68k/kernel/time.c               |  49 +++-
+ arch/m68k/mac/config.c                |   3 +-
+ arch/m68k/mac/misc.c                  |   1 -
+ arch/m68k/mvme147/config.c            |   1 -
+ arch/m68k/mvme16x/config.c            |   1 -
+ arch/m68k/q40/config.c                |   2 +-
+ arch/m68k/sun3/config.c               |   1 -
+ arch/m68k/sun3/intersil.c             |   2 +-
+ arch/m68k/sun3x/time.c                |   2 +-
+ arch/mips/sni/time.c                  |   1 -
+ arch/mn10300/include/asm/rtc.h        |   2 -
+ arch/mn10300/kernel/rtc.c             |   2 +-
+ arch/parisc/include/asm/mc146818rtc.h |   9 -
+ arch/parisc/include/asm/rtc.h         | 131 ---------
+ arch/parisc/kernel/time.c             |  36 ++-
+ arch/powerpc/include/asm/rtc.h        |  78 -----
+ arch/powerpc/kernel/time.c            |  29 +-
+ arch/powerpc/platforms/Kconfig        |  11 +
+ arch/powerpc/platforms/ps3/time.c     |   2 +-
+ arch/sh/include/asm/mc146818rtc.h     |   7 -
+ arch/sh/include/asm/rtc.h             |  11 -
+ arch/sh/kernel/time.c                 |  32 +-
+ arch/x86/include/asm/mc146818rtc.h    |   1 -
+ arch/x86/include/asm/rtc.h            |   1 -
+ arch/x86/kernel/hpet.c                |   3 +-
+ arch/x86/kernel/rtc.c                 |   3 +-
+ arch/x86/platform/efi/efi.c           |   1 -
+ drivers/acpi/acpi_cmos_rtc.c          |   2 +-
+ drivers/base/power/trace.c            |   6 +-
+ drivers/char/Kconfig                  |  26 --
+ drivers/char/Makefile                 |   1 -
+ drivers/char/genrtc.c                 | 539 ----------------------------------
+ drivers/rtc/rtc-cmos.c                |  12 +-
+ drivers/rtc/rtc-generic.c             |  36 +--
+ drivers/rtc/rtc-mrst.c                |   2 +-
+ include/asm-generic/rtc.h             | 247 ----------------
+ include/linux/mc146818rtc.h           | 194 ++++++++++++
+ 48 files changed, 358 insertions(+), 1256 deletions(-)
+
+ [PATCH v3 01/16] rtc: cmos: remove empty asm/mc146818rtc.h files
+ [PATCH v3 02/16] rtc: cmos: move mc146818rtc code out of
+ [PATCH v3 03/16] char/genrtc: x86: remove remnants of asm/rtc.h
+ [PATCH v3 04/16] rtc: sh: provide rtc_class_ops directly
+ [PATCH v3 05/16] char/genrtc: remove alpha support
+ [PATCH v3 06/16] char/genrtc: remove mn10300 support
+ [PATCH v3 07/16] rtc: parisc: provide rtc_class_ops directly
+ [PATCH v3 08/16] char/genrtc: remove parisc support
+ [PATCH v3 09/16] rtc: m68k: provide rtc_class_ops directly
+ [PATCH v3 10/16] rtc: m68k: provide ioctl for q40
+ [PATCH v3 11/16] char/genrtc: remove m68k support
+ [PATCH v3 12/16] rtc: powerpc: provide rtc_class_ops directly
+ [PATCH v3 13/16] char/genrtc: remove powerpc support
+ [PATCH v3 14/16] rtc: generic: remove get_rtc_time/set_rtc_time
+ [PATCH v3 15/16] char/genrtc: remove asm-generic/rtc.h from mips
+ [PATCH v3 16/16] char/genrtc: remove the rest of the driver
