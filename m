@@ -1,30 +1,43 @@
-From: David Kedogo <barr.williamsamadu@gmail.com>
-Subject: FOR YOUR INFORMATION DEAR BENEFICIARY,
-Date: Thu, 28 Apr 2016 18:55:34 +0100
-Message-ID: <CABniH0crm8LTeh5J0ra9EUSbGsiABkuRUfgBVU1r6tujru+hrw__18641.504555899$1461866139$gmane$org@mail.gmail.com>
-Reply-To: peterakupa112@gmail.com
+From: Rich Felker <dalias@libc.org>
+Subject: Re: [patch V3] lib: GCD: add binary GCD algorithm
+Date: Thu, 28 Apr 2016 13:58:44 -0400
+Message-ID: <20160428175843.GZ21636__18399.9971174218$1461866589$gmane$org@brightrain.aerifal.cx>
+References: <1461843824-19853-1-git-send-email-zengzhaoxiu@163.com>
+ <20160428164856.10120.qmail@ns.horizon.com>
+ <CAMuHMdU2e2PdwKYVaEsJ73X8Di1XHNPqnxuunr8R8bN8udazxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdU2e2PdwKYVaEsJ73X8Di1XHNPqnxuunr8R8bN8udazxw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: George Spelvin <linux@horizon.com>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, zengzhaoxiu@163.com, "David S. Miller" <davem@davemloft.net>, Helge Deller <deller@gmx.de>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, James Hogan <james.hogan@imgtec.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Lennox Wu <lennox.wu@gmail.com>, Ley Foon Tan <lftan@altera.com>, alpha <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Russell
 
- Contact the Office Manager
+On Thu, Apr 28, 2016 at 07:51:06PM +0200, Geert Uytterhoeven wrote:
+> On Thu, Apr 28, 2016 at 6:48 PM, George Spelvin <linux@horizon.com> wrote:
+> > Another few comments:
+> >
+> > 1. Would ARCH_HAS_FAST_FFS involve fewer changes than CPU_NO_EFFICIENT_FFS?
+> 
+> No, as you want to _disable_ ARCH_HAS_FAST_FFS / _enable_
+> CPU_NO_EFFICIENT_FFS as soon as you're enabling support for a
+> CPU that doesn't support it.
+> 
+> Logical OR is easier in both the Kconfig and C preprocessor languages
+> than logical NAND.
+> 
+> E.g. in Kconfig, a CPU core not supporting it can just select
+> CPU_NO_EFFICIENT_FFS.
 
- your ATM Card payment of $1.5MUSD by the UN Office have deposited to
-the ATM MASTER CARD OFFICE. All you have to do now is to contact the
-Office Manager Dr. peter Akupa Boni at: (peterakupa112@gmail.com) and
-Phone number: +229 62 16 49 41 , he will give you direction on how you
-will receive your ATM MASTER CARD immediately.
+How does a CPU lack an efficient ffs/ctz anyway? There are all sorts
+of ways to implement it without a native insn, some of which are
+almost or just as fast as the native insn on cpus that have the
+latter. On anything with a fast multiply, the de Bruijn sequence
+approach is near-optimal, and otherwise one of the binary-search type
+approaches (possibly branchless) can be used. If the compiler doesn't
+generate an appropriate one for __builtin_ctz, that's arguably a
+compiler bug.
 
-Contact person: Dr. peter Akupa, E-mail: (peterakupa112@gmail.com )
-
-You have to also contact him with the following details:
-
-1. Your full name:
-2. Your contact cell phone number:
-3. Your age:
-4. your Email
-
-Thanks
-David Kedogo
+Rich
