@@ -1,103 +1,29 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [patch V4] lib: GCD: Use binary GCD algorithm instead of
- Euclidean
-Date: Fri, 6 May 2016 16:00:41 -0700
-Message-ID: <20160506160041.2b5e47757329c288efaed4fb@linux-foundation.org>
-References: <1462527763-15301-1-git-send-email-zengzhaoxiu@163.com>
+From: "Acct. Dept. Bank Of China" <jslee@infonetg.com>
+Subject: STRICTLY CONFIDENTIAL.
+Date: Sat, 7 May 2016 01:22:27 -0500
+Message-ID: <201605070609.u47698OI002826__41710.9814043672$1462602653$gmane$org@infonetg.com>
+Reply-To: <zhu.shumin@yahoo.com.hk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1462527763-15301-1-git-send-email-zengzhaoxiu@163.com>
-Sender: linux-parisc-owner@vger.kernel.org
-To: zengzhaoxiu@163.com
-Cc: linux@horizon.com, peterz@infradead.org, jjuran@gmail.com, James.Bottomley@HansenPartnership.com, geert@linux-m68k.org, dalias@libc.org, sam@ravnborg.org, davem@davemloft.net, Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, linux-kernel@vger
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail.infonetg.com ([1.224.163.43]:40180 "EHLO infonetg.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751275AbcEGGaS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 7 May 2016 02:30:18 -0400
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-On Fri,  6 May 2016 17:42:42 +0800 zengzhaoxiu@163.com wrote:
+I have important transaction for you as next of kin to claim US$8.37m  email me at   zhu.shumin@yahoo.com.hk   so i can send you more details
 
-> From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-> 
-> The binary GCD algorithm is based on the following facts:
-> 	1. If a and b are all evens, then gcd(a,b) = 2 * gcd(a/2, b/2)
-> 	2. If a is even and b is odd, then gcd(a,b) = gcd(a/2, b)
-> 	3. If a and b are all odds, then gcd(a,b) = gcd((a-b)/2, b) = gcd((a+b)/2, b)
-> 
-> Even on x86 machines with reasonable division hardware, the binary
-> algorithm runs about 25% faster (80% the execution time) than the
-> division-based Euclidian algorithm.
-> 
-> On platforms like Alpha and ARMv6 where division is a function call to
-> emulation code, it's even more significant.
-> 
-> There are two variants of the code here, depending on whether a
-> fast __ffs (find least significant set bit) instruction is available.
-> This allows the unpredictable branches in the bit-at-a-time shifting
-> loop to be eliminated.
-> 
-> ...
->
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -27,6 +27,7 @@ config ALPHA
->  	select MODULES_USE_ELF_RELA
->  	select ODD_RT_SIGACTION
->  	select OLD_SIGSUSPEND
-> +	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
->  	help
+Thanks
 
-argh.  Please don't always put new items at end-of-list.  That's the
-perfect way of maximizing the number of patch collisions.  Insert it at
-a random position. avoiding the end (if the list isn't alpha-sorted,
-which it should be).
+Mr.Zhu Shumin
 
-<fixes it all up>
+(Security Code 00746igit)
+= = = = = = = = = = = = =
 
->
-> ...
->
-> --- a/arch/mips/include/asm/cpu-features.h
-> +++ b/arch/mips/include/asm/cpu-features.h
-> @@ -180,6 +180,16 @@
->  #endif
->  #endif
->  
-> +/* __builtin_constant_p(cpu_has_mips_r) && cpu_has_mips_r */
-> +#if !((defined(cpu_has_mips32r1) && cpu_has_mips32r1) || \
-> +	  (defined(cpu_has_mips32r2) && cpu_has_mips32r2) || \
-> +	  (defined(cpu_has_mips32r6) && cpu_has_mips32r6) || \
-> +	  (defined(cpu_has_mips64r1) && cpu_has_mips64r1) || \
-> +	  (defined(cpu_has_mips64r2) && cpu_has_mips64r2) || \
-> +	  (defined(cpu_has_mips64r6) && cpu_has_mips64r6))
-> +#define CONFIG_CPU_NO_EFFICIENT_FFS 1
-> +#endif
 
-#defining a CONFIG_ variable is pretty rude - defining these is the
-role of the Kconfig system, not of header files macros.
 
-This was easy:
-
---- a/arch/mips/include/asm/cpu-features.h~lib-gcd-use-binary-gcd-algorithm-instead-of-euclidean-fix
-+++ a/arch/mips/include/asm/cpu-features.h
-@@ -187,7 +187,7 @@
- 	  (defined(cpu_has_mips64r1) && cpu_has_mips64r1) || \
- 	  (defined(cpu_has_mips64r2) && cpu_has_mips64r2) || \
- 	  (defined(cpu_has_mips64r6) && cpu_has_mips64r6))
--#define CONFIG_CPU_NO_EFFICIENT_FFS 1
-+#define CPU_NO_EFFICIENT_FFS 1
- #endif
- 
- #ifndef cpu_has_mips_1
---- a/lib/gcd.c~lib-gcd-use-binary-gcd-algorithm-instead-of-euclidean-fix
-+++ a/lib/gcd.c
-@@ -10,7 +10,7 @@
-  * has decent hardware division.
-  */
- 
--#if !defined(CONFIG_CPU_NO_EFFICIENT_FFS)
-+#if !defined(CONFIG_CPU_NO_EFFICIENT_FFS) && !defined(CPU_NO_EFFICIENT_FFS)
- 
- /* If __ffs is available, the even/odd algorithm benchmarks slower. */
- unsigned long gcd(unsigned long a, unsigned long b)
-_
-
+                 Move to inbox
