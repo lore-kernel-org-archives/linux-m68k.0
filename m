@@ -1,175 +1,74 @@
 From: "George Spelvin" <linux@horizon.com>
-Subject: [RFC PATCH 1/2] arch/m68k/lib/mulsi3.S: Optimize]
-Date: 11 May 2016 06:24:14 -0400
-Message-ID: <20160511102414.3631.qmail@ns.horizon.com>
+Subject: [RFC PATCH 2/2] arch/m68k: Add CONFIG_CPU_HAS_NO_MULDIV32
+Date: 11 May 2016 06:25:35 -0400
+Message-ID: <20160511102535.5858.qmail@ns.horizon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ns.horizon.com ([71.41.210.147]:48110 "HELO ns.horizon.com"
+Received: from ns.horizon.com ([71.41.210.147]:53476 "HELO ns.horizon.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1751271AbcEKK3T (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Wed, 11 May 2016 06:29:19 -0400
+	id S1751462AbcEKKbB (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Wed, 11 May 2016 06:31:01 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 Cc: linux@horizon.com
 
-The __mulsi3 function implements 32x32-bit multiply when the processor
-(mc68000 or mc68010) does not have native support.
-
-This rewrite shrinks the code from 16 words to 13 (32 bytes to 26), and
-eliminates one stack frame access, saving in total 4 words and 16 cycles.
-
-The improvement is small (about 1/16 of the cost of the call overall),
-but multiply is a popular enough operation that it's nice to have.
-
-One open question is why the code includes a ColdFire option.
-Every ColdFire processor back to the original ISA A includes a 32x32-bit
-multiply, and so does not need this routine at all.
+Assembly of 32-bit multiply/divide helpers was dependent on
+CONFIG_CPU_HAS_NO_MULDIV64, which is not necessary.
 
 Signed-off-by: George Spelvin <linux@horizon.com>
 ---
- arch/m68k/lib/mulsi3.S | 132 ++++++++++++-------------------------------------
- 1 file changed, 31 insertions(+), 101 deletions(-)
+This also turns out to be a very useful symbol for some other work
+I'm doing to <linux/hash.h>.
 
-diff --git a/arch/m68k/lib/mulsi3.S b/arch/m68k/lib/mulsi3.S
-index c39ad4e..b4204fc 100644
---- a/arch/m68k/lib/mulsi3.S
-+++ b/arch/m68k/lib/mulsi3.S
-@@ -1,105 +1,35 @@
--/* libgcc1 routines for 68000 w/o floating-point hardware.
--   Copyright (C) 1994, 1996, 1997, 1998 Free Software Foundation, Inc.
--
--This file is part of GNU CC.
--
--GNU CC is free software; you can redistribute it and/or modify it
--under the terms of the GNU General Public License as published by the
--Free Software Foundation; either version 2, or (at your option) any
--later version.
--
--In addition to the permissions in the GNU General Public License, the
--Free Software Foundation gives you unlimited permission to link the
--compiled version of this file with other programs, and to distribute
--those programs without any restriction coming from the use of this
--file.  (The General Public License restrictions do apply in other
--respects; for example, they cover modification of the file, and
--distribution when not linked into another program.)
--
--This file is distributed in the hope that it will be useful, but
--WITHOUT ANY WARRANTY; without even the implied warranty of
--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--General Public License for more details. */
--
--/* As a special exception, if you link this library with files
--   compiled with GCC to produce an executable, this does not cause
--   the resulting executable to be covered by the GNU General Public License.
--   This exception does not however invalidate any other reasons why
--   the executable file might be covered by the GNU General Public License.  */
--
--/* Use this one for any 680x0; assumes no floating point hardware.
--   The trailing " '" appearing on some lines is for ANSI preprocessors.  Yuk.
--   Some of this code comes from MINIX, via the folks at ericsson.
--   D. V. Henkel-Wallace (gumby@cygnus.com) Fete Bastille, 1992
--*/
--
--/* These are predefined by new versions of GNU cpp.  */
--
--#ifndef __USER_LABEL_PREFIX__
--#define __USER_LABEL_PREFIX__ _
--#endif
--
--#ifndef __REGISTER_PREFIX__
--#define __REGISTER_PREFIX__
--#endif
--
--#ifndef __IMMEDIATE_PREFIX__
--#define __IMMEDIATE_PREFIX__ #
--#endif
--
--/* ANSI concatenation macros.  */
--
--#define CONCAT1(a, b) CONCAT2(a, b)
--#define CONCAT2(a, b) a ## b
--
--/* Use the right prefix for global labels.  */
--
--#define SYM(x) CONCAT1 (__USER_LABEL_PREFIX__, x)
--
--/* Use the right prefix for registers.  */
--
--#define REG(x) CONCAT1 (__REGISTER_PREFIX__, x)
--
--/* Use the right prefix for immediate values.  */
--
--#define IMM(x) CONCAT1 (__IMMEDIATE_PREFIX__, x)
--
--#define d0 REG (d0)
--#define d1 REG (d1)
--#define d2 REG (d2)
--#define d3 REG (d3)
--#define d4 REG (d4)
--#define d5 REG (d5)
--#define d6 REG (d6)
--#define d7 REG (d7)
--#define a0 REG (a0)
--#define a1 REG (a1)
--#define a2 REG (a2)
--#define a3 REG (a3)
--#define a4 REG (a4)
--#define a5 REG (a5)
--#define a6 REG (a6)
--#define fp REG (fp)
--#define sp REG (sp)
--
-+/*
-+ * 32x32->32-bit multiply.  This is made up of three 16x16->32-bit
-+ * partial products.
-+ *
-+ * Assuming the average argument has half its bits set, this takes
-+ * 238 68000 cycles.
-+ */
- 	.text
- 	.proc
--	.globl	SYM (__mulsi3)
--SYM (__mulsi3):
--	movew	sp@(4), d0	/* x0 -> d0 */
--	muluw	sp@(10), d0	/* x0*y1 */
--	movew	sp@(6), d1	/* x1 -> d1 */
--	muluw	sp@(8), d1	/* x1*y0 */
--#if !(defined(__mcf5200__) || defined(__mcoldfire__))
--	addw	d1, d0
--#else
--	addl	d1, d0
--#endif
-+	.globl	___mulsi3
-+___mulsi3:
-+	lea	4(sp), a0
-+	move.w	(a0)+, d0	/* xhigh */
-+	move.w	(a0)+, d1	/* xlow */
-+	move.w	d1, a1
-+	mulu.w	(a0)+, d1	/* yhigh */
-+	mulu.w	(a0),  d0	/* ylow */
+ arch/m68k/Kconfig.cpu  | 11 +++++++++++
+ arch/m68k/lib/Makefile |  4 ++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 0dfcf12..3fce7bf 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -37,6 +37,7 @@ config M68000
+ 	bool "MC68000"
+ 	depends on !MMU
+ 	select CPU_HAS_NO_BITFIELDS
++	select CPU_HAS_NO_MULDIV32
+ 	select CPU_HAS_NO_MULDIV64
+ 	select CPU_HAS_NO_UNALIGNED
+ 	select GENERIC_CSUM
+@@ -391,8 +392,18 @@ config NODES_SHIFT
+ config CPU_HAS_NO_BITFIELDS
+ 	bool
+ 
++config CPU_HAS_NO_MULDIV32
++	bool
++	help
++	  This option indicates the CPU lacks 32x32->32-bit multiply
++	  and divide instructions, and thus requires the GCC helper
++	  functions __mulsi3, __divsi3 __modsi3, etc.
 +
-+#if defined(__mcf5200__) || defined(__mcoldfire__)
-+	/* Why do we need this?  All ColdFire have MULU.L */
-+	add.l	d0, d1
-+	move.w	a1, d0		/* xlow */
-+	mulu.w	(a0),d0		/* ylow */
-+	swap	d1
-+	clr.w	d1
-+	add.l	d1, d0
-+#else /* 68000 or 68010 */
-+	add.w	d0, d1
-+	move.w	a1, d0		/* xlow */
-+	mulu.w	(a0),d0		/* ylow */
- 	swap	d0
--	clrw	d0
--	movew	sp@(6), d1	/* x1 -> d1 */
--	muluw	sp@(10), d1	/* x1*y1 */
--	addl	d1, d0
--
-+	add.w	d1, d0
-+	swap	d0
-+#endif
- 	rts
--
+ config CPU_HAS_NO_MULDIV64
+ 	bool
++	help
++	  This option indicates the CPU lacks "widening" 32x32->64-bit
++	  multiply and 64/32->(32,32)-bit divide instructions.
+ 
+ config CPU_HAS_NO_UNALIGNED
+ 	bool
+diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
+index fcd8eb1..e6553db 100644
+--- a/arch/m68k/lib/Makefile
++++ b/arch/m68k/lib/Makefile
+@@ -7,8 +7,8 @@ lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
+ 	   memcpy.o memset.o memmove.o
+ 
+ lib-$(CONFIG_MMU) += uaccess.o
+-lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += mulsi3.o divsi3.o udivsi3.o
+-lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += modsi3.o umodsi3.o
++lib-$(CONFIG_CPU_HAS_NO_MULDIV32) += mulsi3.o divsi3.o udivsi3.o
++lib-$(CONFIG_CPU_HAS_NO_MULDIV32) += modsi3.o umodsi3.o
+ 
+ ifndef CONFIG_GENERIC_CSUM
+ lib-y	+= checksum.o
 -- 
 2.8.1
