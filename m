@@ -1,92 +1,244 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [RFC PATCH 2/2] arch/m68k: Add CONFIG_CPU_HAS_NO_MULDIV32
-Date: Thu, 12 May 2016 22:55:46 +1000
-Message-ID: <57347D52.2060801@linux-m68k.org>
-References: <20160511102535.5858.qmail@ns.horizon.com>
+Subject: Re: [RFC PATCH 1/2] arch/m68k/lib/mulsi3.S: Optimize]
+Date: Thu, 12 May 2016 23:14:10 +1000
+Message-ID: <573481A2.4040504@linux-m68k.org>
+References: <20160512080429.31536.qmail@ns.horizon.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160511102535.5858.qmail@ns.horizon.com>
+In-Reply-To: <20160512080429.31536.qmail@ns.horizon.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: George Spelvin <linux@horizon.com>, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 
 Hi George,
 
-On 11/05/16 20:25, George Spelvin wrote:
-> Assembly of 32-bit multiply/divide helpers was dependent on
-> CONFIG_CPU_HAS_NO_MULDIV64, which is not necessary.
+On 12/05/16 18:04, George Spelvin wrote:
+> Thanks for the response!
 >
-> Signed-off-by: George Spelvin <linux@horizon.com>
-> ---
-> This also turns out to be a very useful symbol for some other work
-> I'm doing to <linux/hash.h>.
+>> That mulsi3.S code was taken directly from gcc's lb1sf68.S (and that
+>> was lb1sf68.asm in older versions of gcc). It has always had that
+>> coldfire conditional code in it. Not sure why it was in there though.
 >
->   arch/m68k/Kconfig.cpu  | 11 +++++++++++
->   arch/m68k/lib/Makefile |  4 ++--
->   2 files changed, 13 insertions(+), 2 deletions(-)
+> I went digging through a lot of ColdFire documentation to see if
+> there were ever any that needed it, and apparently it's been in there
+> since the beginning.
 >
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 0dfcf12..3fce7bf 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -37,6 +37,7 @@ config M68000
->   	bool "MC68000"
->   	depends on !MMU
->   	select CPU_HAS_NO_BITFIELDS
-> +	select CPU_HAS_NO_MULDIV32
->   	select CPU_HAS_NO_MULDIV64
->   	select CPU_HAS_NO_UNALIGNED
->   	select GENERIC_CSUM
-> @@ -391,8 +392,18 @@ config NODES_SHIFT
->   config CPU_HAS_NO_BITFIELDS
->   	bool
+> It did occur to me that perhaps someone wanted to support tne
+> intersection of all 68k family CPUs, so that meant only MULU.W
+> and ADD.L.  But I can't see a gcc option to ask for that.
 >
-> +config CPU_HAS_NO_MULDIV32
-> +	bool
-> +	help
-> +	  This option indicates the CPU lacks 32x32->32-bit multiply
-> +	  and divide instructions, and thus requires the GCC helper
-> +	  functions __mulsi3, __divsi3 __modsi3, etc.
-> +
->   config CPU_HAS_NO_MULDIV64
->   	bool
-> +	help
-> +	  This option indicates the CPU lacks "widening" 32x32->64-bit
-> +	  multiply and 64/32->(32,32)-bit divide instructions.
 >
->   config CPU_HAS_NO_UNALIGNED
->   	bool
-> diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-> index fcd8eb1..e6553db 100644
-> --- a/arch/m68k/lib/Makefile
-> +++ b/arch/m68k/lib/Makefile
-> @@ -7,8 +7,8 @@ lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
->   	   memcpy.o memset.o memmove.o
->
->   lib-$(CONFIG_MMU) += uaccess.o
-> -lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += mulsi3.o divsi3.o udivsi3.o
-> -lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += modsi3.o umodsi3.o
-> +lib-$(CONFIG_CPU_HAS_NO_MULDIV32) += mulsi3.o divsi3.o udivsi3.o
-> +lib-$(CONFIG_CPU_HAS_NO_MULDIV32) += modsi3.o umodsi3.o
+> Mostly I just thought that saving a few cycles was a nice win.
 
-Did you intend to no longer compile any of mulsi3.o, etc, for
-ColdFire targets?
+Yep, that is always nice.
 
-CPU_HAS_NO_MULDIV64 is selected by both M68000 and ColdFire, so
-those functions used to be compiled. But with this change on
-only M68000 will compile them.
+After a few test builds I am pretty sure that we never need or
+use mulsi3 on ColdFire. So I think we can move to not even bothering
+to compile it for that case.
 
-That causes a problem if we are forced to fallback and use the
-gcc -m5200 cpu switch. (That may be the case if the version of
-gcc we are compiling with doesn't support the more advanced
-ColdFire CPU selection switches).
 
-When compiling with m5200 gcc will generate calls to divsi3,
-udivsi3, modsi3 and umodsi3. (As far as I can tell we never need
-mulsi3 for ColdFire). So linking will fail with this patch as-is
-in that m5200 case.
+> This is tangential to some work I'm doing on the hash functions.
+> in <linux/hash.h>, there are hash_32(x, bits) and hash_64(x, bits)
+> which basically do "return (x * CONSTANT) >> (32 - bits)", or
+> 64 - bits for the 64-bit version.
+>
+> The CONSTANTs were chosen to be efficient when computed using
+> shift-and-add sequences, but that made them less effective hashes.
+>
+> The 64-bit constant was recently revised to avoid a bad case found when
+> hashing page-aligned pointers, since it's a pointless optimization;
+> all 64-bit processors have fast multipliers.  But 32 bits was left alone
+> for fear of breaking performance.
+>
+> After some research (partly by searching for __mulsi3), I found that m68k
+> is the only platform that doesn't have a fast multiplier.  SPARC used
+> to be in that boat too, but SPARCv7 syupport was dropped a few years
+> ago.
+>
+> That led to me optimizing the multiply-by-constant code for m68k.
+>
+>
+>
+> Do you have any interest in the matter?  Basically, the options are
+> to optimize the implementation of the multiplication, or come up with
+> a different hash function that works better in that environment.
+
+It looks like only the original m68000 targets will benefit from
+a faster mulsi3. But there is nothing wrong with making it faster
+for that case in general.
+
+I don't have any feel for how much of a performance problem the
+hash functions are on m68000 though. Keep in mind that those are
+all non-MMU platforms.
 
 Regards
 Greg
+
+
+> The current multiply by 0x9e370001 compiles to, depending on compiler
+> flags, either a call to __mulsi3 or (omitting prologue & epilogue,
+> since it's designed as an in-line function):
+>
+> 	move.l	%d0,%d1		 4
+> 	lsl.l	#6,%d1		20  24
+> 	move.l	%d1,%d2		 4  28
+> 	lsl.l	#3,%d2		14  42
+> 	sub.l	%d1,%d2		 8  50
+> 	sub.l	%d0,%d2		 8  58
+> 	move.l	%d2,%d1		 4  62
+> 	lsl.l	#3,%d1		14  76
+> 	sub.l	%d2,%d1		 8  84
+> 	lsl.l	#3,%d1		14  98
+> 	add.l	%d0,%d1		 8 106
+> 	swap	%d1		 4 110
+> 	clr.w	%d1		 4 114
+> 	sub.l	%d1,%d0		 8 122
+>
+> (The columns on the right are cycle counts.)
+>
+> Tangent: I'm surprised I can't coax it into the equivalent:
+> 	move.w %d0,%d1		 4
+> 	mulu.w #0x9e37,%d1	58  62
+> 	add.l %d1,%d0		 8  70
+>
+> Anyway, the problem is the low Hamming weight of the low 16 bits,
+> which has to be solved somehow.  The "more random" high 16 bits of the
+> multiplier are only multiplied by the low 16 bits of the argument.
+> The high 16 bits of the argument are just multiplied by 1.  If the
+> argument is a page-aligned pointer, with 12 low-order bits zero, we have
+> very poor mixing.
+>
+> Using the better constant 0x61C88647 (both this and the previous one are
+> chosen to be close to phi, the golden ratio (sqrt(5)-1)/2, but this is
+> the negative), gcc struggles.
+>
+> I searched for an efficient shift-and-add sequence,
+> and came up with the 68000-optimized:
+>
+> /* Multiply by 0x61C88647 */
+> unsigned hash_32(unsigned x)
+> {
+> 	unsigned a, b, c;
+>
+> 	a = b = c = x;	
+> 	c <<= 19;
+> 	a += c;		/* a = (x << 19) + x */
+> 	b <<= 9;
+> 	b += a;		/* b = (x << 9) + a */
+> 	c <<= 4;
+> 	c += b;		/* c = (x << 23) + b */
+> 	b <<= 5;
+> 	b += c;		/* (b << 5) + c */
+> 	b <<= 3;
+> 	b += a;		/* ((b << 5) + c << 3) + a */
+> 	b <<= 3;
+> 	b -= c;		/* (((b << 5) + c << 3) + a << 3) - c */
+> 	return x;
+> }
+>
+> which gcc turns into:
+> 	move.l	%d1,%d2		 4
+> 	lsl.w	#3,%d2		12  16
+> 	swap	%d2		 4  20
+> 	clr.w	%d2		 4  24
+> 	move.l	%d1,%a1		 4  28
+> 	add.l	%d2,%a1		 8  36
+> 	moveq	#9,%d0		 4  40
+> 	lsl.l	%d0,%d1		26  66
+> 	add.l	%a1,%d1		 8  74
+> 	lsl.l	#4,%d2		16  90
+> 	move.l	%d1,%a0		 4  94
+> 	add.l	%d2,%a0		 8 102
+> 	lsl.l	#5,%d1		18 120
+> 	move.l	%a0,%d0		 4 124
+> 	add.l	%d1,%d0		 8 132
+> 	move.l	%d0,%d1		 4 136
+> 	lsl.l	#3,%d1		14 150
+> 	move.l	%a1,%d0		 4 154
+> 	add.l	%d1,%d0		 8 162
+> 	lsl.l	#3,%d0		14 176
+> 	sub.l	%a0,%d0		 8 184
+>
+> I can shave a few cycles with hand-optimized code, but the result is
+> barely faster than the much smaller multiply-based:
+>
+> 	; y = #k * x, with z as a temp
+> 	move.w  #klow, y        ;  8
+> 	move.w  x, z            ;  4     12
+> 	swap    x               ;  4     16
+> 	mulu.w  y, x            ; 52     68	(Using klow = 0x8647)
+> 	mulu.w  z, y            ; 54    122	(Assuming 50% ones)
+> 	mulu.w  #khigh, z       ; 54    176	(Using khigh = 0x61C8)
+> 	swap    y               ;  4    180
+> 	add.w   x, y            ;  4    184
+> 	add.w   z, y            ;  4    188
+> 	swap    y               ;  4    192
+> 	;; 12 words
+>
+> Another way to divide it up is to compute xlow * khigh with a multiply,
+> and x * klow with shifts and adds.  x * 0x8647 can be evauated as:
+>
+> 	unsigned a = (x << 9) + x;
+> 	unsigned b = (x << 1) + a;
+> 	unsigned c = (b << 1) + (a << 6) + a;
+> 	return c + ((uint16_t)(x * 0x61C8) << 16);
+>
+> If I write it in the following form:
+> 	register unsigned a, b;
+>
+> 	b = x << 1;
+> 	asm("" : "=g" (a) : "0" (b));	/* "a = b, DAMN IT" */
+> 	a <<= 8;
+> 	a += x;
+> 	b += a;
+> 	b += b;
+> 	b += a;
+> 	a <<= 6;
+> 	return a + b + ((uint16_t)(x * 0x61c8) << 16);
+>
+> The gcc can be coaxed into generating the desired code.
+> (The "asm" is the only way I found to stop GCC from collapsing
+> "(x << 1) << 8" to "x << 9", which is slower.)
+>
+> baz:
+> 	move.l 4(%sp),%d1
+> 	move.l %d1,%a0		 4
+> 	add.l %d1,%a0		 8  12
+> 	move.l %a0,%d0		 4  16
+> 	lsl.l #8,%d0		24  40
+> 	add.l %d1,%d0		 8  48
+> 	add.l %d0,%a0		 8  56
+> 	muls.w #25032,%d1	56 112
+> 	swap %d1		 4 116
+> 	clr.w %d1		 4 120
+> 	add.l %d0,%d1		 8 128
+> 	add.l %a0,%d1		 8 136
+> 	add.l %a0,%d1		 8 144
+> 	lsl.l #6,%d0		20 164
+> 	add.l %d1,%d0		 8 172
+> 	rts
+>
+> Well, that's a *little* bit faster.
+>
+>
+>
+> Alternatively, I could just invent a whole different hash function for
+> the case.  One idea is to use two, rather than three, 16-bit multiplies.
+> Split the input into two 16-bit halves, multiply them by separate
+> constants, sum the results, and then swap the halves.
+>
+> 	move.w	x, y		 4
+> 	swap	x		 4   8
+> 	mulu.w	#K1, y		58  66
+> 	mulu.w	#K2, x		58 124
+> 	add.l	y, x		 8 132
+> 	swap	x		 4 136
+>
+> The swap is important; hash_32() is documented as putting the "most mixed"
+> bits in the most significant bits, as hash tables are indexed by the most
+> significant bits.
+>
+> If you have any thoughts on the matter, they'd definitely be appreciated.
+>
