@@ -1,49 +1,75 @@
-From: "Mr. Ragner Henderson" <p2@1qa2ws3ed.synergize.co>
-Subject: URGENT RESPONSE NEEDED, PLEASE REPLY....
-Date: Thu, 12 May 2016 07:10:01 -0700
-Message-ID: <PN1PR01MB0174B5525FF632D4D0742098F3730__36339.3884072595$1463063219$gmane$org@PN1PR01MB0174.INDPRD01.PROD.OUTLOOK.COM>
-Reply-To: <mr.ragnerhenderson@yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: "George Spelvin" <linux@horizon.com>
+Subject: Re: [RFC PATCH 2/2] arch/m68k: Add CONFIG_CPU_HAS_NO_MULDIV32
+Date: 12 May 2016 16:31:16 -0400
+Message-ID: <20160512203116.8654.qmail@ns.horizon.com>
+References: <57347D52.2060801@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-bo1ind01hn0224.outbound.protection.outlook.com ([104.47.101.224]:40873
-	"EHLO IND01-BO1-obe.outbound.protection.outlook.com"
-	rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-	id S1751901AbcELO0f convert rfc822-to-8bit (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Thu, 12 May 2016 10:26:35 -0400
-Content-Description: Mail message body
+Received: from ns.horizon.com ([71.41.210.147]:11209 "HELO ns.horizon.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+	id S1751537AbcELUbR (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 12 May 2016 16:31:17 -0400
+In-Reply-To: <57347D52.2060801@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <p2@1qa2ws3ed.synergize.co>
+To: geert@linux-m68k.org, gerg@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux@horizon.com
 
-Dear Friend,
+> Did you intend to no longer compile any of mulsi3.o, etc, for
+> ColdFire targets?
+>
+> CPU_HAS_NO_MULDIV64 is selected by both M68000 and ColdFire, so
+> those functions used to be compiled. But with this change on
+> only M68000 will compile them.
 
-Pardon me for not having the pleasure of knowing your mindset before ma=
-king you this offer and it is utterly confidential and genuine by virtu=
-e of its nature I write to solicit your assistance in a funds transfer =
-deal involving =A315.2M.This fund has been stashed out of the excess pr=
-ofit made last 2years by my branch office of  the Co-operative Bank Plc=
- here in United Kingdom which I am the manager.
+Yes, that's exactly the point.  ColdFire doesn't need or use them.
 
-I have already submitted an approved end-of-the-year report for the yea=
-r 2015 to my head office here in Manchester UK. and they will never kno=
-w of this excess.
+This was baiscally my answer to "why is there a ColdFire path
+in __mulsi3"?
 
-I have since then, placed this amount on a Non-Investment Account witho=
-ut a beneficiary. Upon your response, I will configure your name on our=
- database as holder of the Non-Investment Account. I will then guide yo=
-u on how to apply to my head office for the Account Closure/bank-to-ban=
-k remittance of the funds to your designated bank account.
-If you concur with this proposal, I intend for you to retain 30% of the=
- funds while 70% shall be for me. Kindly forward your response to me im=
-mediately to my private mail box: (mr.ragnerhenderson@yahoo.com) thank =
-you.
+> When compiling with m5200 gcc will generate calls to divsi3,
+> udivsi3, modsi3 and umodsi3. (As far as I can tell we never need
+> mulsi3 for ColdFire). So linking will fail with this patch as-is
+> in that m5200 case.
 
-With Regards,
+Ah!  I missed that on my testing.  Yes, indeed, there is *one* ColdFire
+that needs the divides.  And -mcpu=5206 is a supported option.
 
-Mr. Ragner Henderson.
+I had tested with
 
----
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+m68k-linux-gnu-gcc-6 -march=isaa -fomit-frame-pointer -S mul.c
+
+unsigned mul(unsigned x, unsigned y) { return x * y; }
+unsigned div(unsigned x, unsigned y) { return x / y; }
+unsigned rem(unsigned x, unsigned y) { return x % y; }
+int sdiv(int x, int y) { return x / y; }
+int srem(int x, int y) { return x % y; }
+
+But yes, -m5206 isn't the same as "-march=isaa -mtune=5200"; the very
+first is "ISA A minus" and doesn't have the *divides*.
+
+Now that you point it out, I also see the -m5200 fallback in the Makefile.
+
+
+Grumble, that just got more complicated.  It's easy enough to split
+the option into CPU_HAS_NO_MUL32 and CPU_HAS_NO_DIV32, but the answer
+depends on the GCC version, not just the config settings.
+
+Options include:
+- Punt on the divide part entirely, and just always compile divides like now.
+  It's just a tiny bit of code space.
+- (falsely) set CPU_HAS_NO_DIV32 for those CPUs always.
+  The problem is, some future code might make optimization decisions
+  based on that (e.g. using binary vs. Euclidean GCD algorithms),
+  and for the 99% of people using a modern compiler, it'll be wrong.
+- Do some post-Kconfig Makefile magic to detect the situation.
+
+How ugly is this:
+
++lib-$(CONFIG_CPU_HAS_NO_MUL32) += mulsi3.o
++lib-$(CONFIG_CPU_HAS_NO_DIV32) += divsi3.o udivsi3.o modsi3.o umodsi3.o
++
++# Old GCC versions fall back to -m5200 compilation, generating these calls
++# even though the CPU doesn't actually need it.  See arch/m68k/Makefile.
++
++ifeq ($(cpuflags-y),-m5200)
++lib-y += divsi3.o udivsi3.o modsi3.o umodsi3.o
++endif
