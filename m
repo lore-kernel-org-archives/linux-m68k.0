@@ -1,46 +1,29 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
+From: "George Spelvin" <linux@horizon.com>
 Subject: Re: [RFC PATCH 1/2] arch/m68k/lib/mulsi3.S: Optimize]
-Date: Fri, 13 May 2016 11:07:52 +1000
-Message-ID: <573528E8.8070301@westnet.com.au>
-References: <20160512205217.19233.qmail@ns.horizon.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Date: 12 May 2016 22:36:31 -0400
+Message-ID: <20160513023631.15160.qmail@ns.horizon.com>
+References: <573528E8.8070301@westnet.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160512205217.19233.qmail@ns.horizon.com>
+Received: from ns.horizon.com ([71.41.210.147]:61147 "HELO ns.horizon.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+	id S1753103AbcEMCgd (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 12 May 2016 22:36:33 -0400
+In-Reply-To: <573528E8.8070301@westnet.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: George Spelvin <linux@horizon.com>, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+To: geert@linux-m68k.org, gregungerer@westnet.com.au, linux-m68k@lists.linux-m68k.org, linux@horizon.com
 
-On 13/05/16 06:52, George Spelvin wrote:
-> Thank you very much!
+> I have many test setups for ColdFire (qemu and real hardware) but
+> none of them actually use the mulsi3 code. I don't have anything
+> for testing classic m68000 builds.
 > 
-> Greg Ungerer wrote:
->> This syntax fails for me (using a binutils-2.25.1 based toolchain).
->> Registers must be prefixed with a "%", so here %sp and %a0.
->>
->>   arch/m68k/lib/mulsi3.S: Assembler messages:
->>   arch/m68k/lib/mulsi3.S:12: Error: syntax error -- statement `lea 4(sp),a0' ignored
->>
->> That was compiling with just this one patch for a ColdFire target.
-> 
-> Well, *that* is an embarrassing oversight.  If you fix that obvious typo
-> (I used ":%s/[ad][01]/%&/g"), do you have a way of testing it?
-> 
-> Setting up a suitable Qemu environment is many times the effort needed
-> to write the code, so I was hoping someone with the facilities already
-> in place would be willing to test.
-> 
-> I've stared at the code and am convinced it's right, but I remember
-> Knuth's words: "Beware of bugs in the above code; I have only proved it
-> correct, not tried it."
+> So other than compiling it I don't have an easy way to currently
+> test it.
 
-I have many test setups for ColdFire (qemu and real hardware) but
-none of them actually use the mulsi3 code. I don't have anything
-for testing classic m68000 builds.
+You couldn't write a user-level test program which calls __mulsi3(x,y)
+explicitly and compares the result to x*y?
 
-So other than compiling it I don't have an easy way to currently
-test it.
+I'll write it for you if you like.
 
-Regards
-Greg
+Even if we can only test the ColdFire branch, that reduces the number
+of untested lines considerably.
