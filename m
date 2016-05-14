@@ -1,45 +1,110 @@
 From: "George Spelvin" <linux@horizon.com>
-Subject: Re: [RFC PATCH 1/2] arch/m68k/lib/mulsi3.S: Optimize]
-Date: 13 May 2016 05:02:10 -0400
-Message-ID: <20160513090210.15223.qmail@ns.horizon.com>
-References: <57357809.1000308@linux-m68k.org>
+Subject: Hashing via multiply on 68000, H8 and Microblaze
+Date: 14 May 2016 00:14:29 -0400
+Message-ID: <20160514041429.6631.qmail@ns.horizon.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ns.horizon.com ([71.41.210.147]:44158 "HELO ns.horizon.com"
+Received: from ns.horizon.com ([71.41.210.147]:64808 "HELO ns.horizon.com"
 	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
-	id S1751089AbcEMJCN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 13 May 2016 05:02:13 -0400
-In-Reply-To: <57357809.1000308@linux-m68k.org>
+	id S1750835AbcENEOb (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Sat, 14 May 2016 00:14:31 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org, gerg@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux@horizon.com
+To: geert@linux-m68k.org, gerg@linux-m68k.org, monstr@monstr.eu, ysato@users.sourceforge.jp
+Cc: linux@horizon.com, linux-m68k@lists.linux-m68k.org, michal.simek@xilinx.com, uclinux-h8-devel@lists.sourceforge.jp
 
->> I'll write it for you if you like.
-> I was hoping you would write the code :-)
+My current project is reworking <linux/hash.h>.  The most urgent fix
+went in to 4.6-rc7 as commit 689de1d6ca ("Minimal fix-up of bad hashing
+behavior of hash_64()"), but there's more.
 
-And then you beat it to me anyway.
+This is done by multiplication on most platforms, but there are some
+where that's very inefficient.  This message is:
 
-> So is something like this what you had in mind?
+1. A brain dump on the subject,
+2. Establishing contact with the relevant architecture maintainers
+   in preparation for future patches, and
+3. A solicitation for ideas.
 
-I would probably have done it slightly differently,
-but basically yes.
 
-> That runs with no fails in qemu and on real ColdFire hardware.
+The Linux kernel makes heavy use of the inline functions hash_32(x, bits)
+and hash_64(x, bits) to compute hash table indexes from an integer, pointer,
+or word-sized string hash.
 
-Yay!  Thank you very much.
+hash_32() is just { return x * CONSTANT >> (32 - bits); } for some
+suitably chosen 32-bit CONSTANT, and equivalently (with a larger constant)
+for hash_64.  The multiply basically causes each bit of the input to
+affect all more-significant bits of the output, and then those bits
+are extracted for the final index.
 
-> I guess it wouldn't hurt to specifically check the corner cases
-> either (at MAX_INT, MIN_INT and 0 for example).
+But the current constant was chosen to be easy to compute with a
+shift-and-add sequence on platforms without a good hardware multiplier,
+which causes bad bit mixing, and I've been looking into the implications
+of changing that.
 
-Not really necessary, as those aren't special-cased in the code
-in any way.  An error would be multiplying the wrong parts of
-the inputs or summing the partial products wrong.
+On Sun, 1 May 2016 at 09:5, Linus Torvalds wrote:
+> On Sun, May 1, 2016 at 2:43 AM, George Spelvin <linux@horizon.com> wrote:
+>> * If you feel ambitious, add a 32-bit CONFIG_ARCH_HAS_SLOW_MULTIPLIER
+>>   exception path.
+> 
+> Let's make that a separate worry, and just fix hash_64() first.
+> 
+> In particular, that means "let's not touch COLDEN_RATIO_32 yet". I
+> suspect that when we *do* change that value, we do want the
+> non-multiplying version you had.
 
-Which, like most math and crypto code, would result in immediate
-massive errors.  Just a handful of test cases is enough.
+Upon research, I've found that all 64-bit processors have decent
+64x64-bit multiplier, so there's no benefit to choosing a "simpler"
+constant.
 
-(Typical code coverage tests want to hit every execution path,
-meaning both sides of every conditional branch.  Since this is
-straight-line code, it's very easy to test.)
+As do most 32-bit processors that Linux supports.  But not all.
 
-FWIW, I've severly rethought that second patch, but don't have time
-to write it up in the detail it needs just now.
+The current exceptions are:
+
+* MC68000/010/328 (arch/m68k, no-mmu)
+* H8 (arch/h8300)
+* Microblaze (Xilinx soft-core) may be configured without multiplier
+
+The thing about these is, they *also* don't have barrel shifters.
+I have an efficient shift-and-add pattern for computing x * 0x61C88647:
+	a = x + (x << 19);
+	b = a + (x << 9);
+	c = b + (x << 23);
+	reutrn (b << 11) + (c << 6) + (a << 3) - c;
+... but it involves large shifts, and without efficient support for them,
+this isn't a great alternative!
+
+The 68000 has multi-bit shifts, but they're also multi-cycle.
+
+The H8/300 has only 1-bit shift instructions, and more recent models have
+been extended with 2-bit shifts, but either way, large shifts are a PITA.
+
+Both of these have moderately efficient 16x16->32-bit multiplies.  (On some
+H8 models, the multiply is actually a practical way to do left shifts!)
+
+Both also provide efficient access to the 16-bit halves of 32-bit values,
+which can be used by large shits and rotates.
+
+Microblaze is complicated.  Both barrel shifter and multiplier are
+configurable options.  If missing, so are the corresponding instructions.
+(And arch/microblaze/Kconfig.platform supports omitting both.)
+
+
+Given that it's not necessary to compute the same hash function on all
+platforms (as long as it's still a good hash), my current thoughts are
+that "generic" fallback code is impractical and I should instead:
+- Add a CONFIG_ARCH_HASH option, which works like CONFIG_ARCH_RANDOM,
+  indicating that the gneric code should #include <asm/archhash.h>
+- Within that, platforms may define replacement functions and #define
+  HAVE_ARCH_FOO variable to suppress the standard definitions.
+  (This is all conditional, as other m68k platforms with MULU.L can
+  use the generic functions.)
+- On 68000 and H8, I'll define
+  hash32(x) = swap((x & 0xffff) * CONST1 + (x >> 16) * CONST2)
+  This isn't quite as good mixing as a 32-bit multiply, but only needs
+  2 (not 3) 16x16->32-bit multiplies and the swap put the most-mixed bits
+  in the msbits.
+- If a Microblaze has a barrel shifter (but no multiplier), I'll use the
+  shift-and-add code.
+- If a Microblaze does not have a barrel shifter, I don't know what
+  the heck I'll do.  Any ideas?
+- There are some other hash operations that depend on large shifts that
+  will also take some thinking.
