@@ -1,50 +1,64 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.7
-Date: Mon, 16 May 2016 13:23:20 +0200
-Message-ID: <1463397800-1169-1-git-send-email-geert@linux-m68k.org>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH] phy: remove irq param to fix crash in fixed_phy_add()
+Date: Mon, 16 May 2016 14:29:03 +0200
+Message-ID: <20160516122903.GA27725@lunn.ch>
+References: <1463397356-5656-1-git-send-email-rabin.vincent@axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1463397356-5656-1-git-send-email-rabin.vincent@axis.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Rabin Vincent <rabin.vincent@axis.com>
+Cc: "David S. Miller" <davem@davemloft.net>, f.fainelli@gmail.com, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org, Rabin Vincent <rabinv@axis.com>
 
-	Hi Linus,
+On Mon, May 16, 2016 at 01:15:56PM +0200, Rabin Vincent wrote:
+> From: Rabin Vincent <rabinv@axis.com>
+> 
+> Since e7f4dc3536a ("mdio: Move allocation of interrupts into core"),
+> platforms which call fixed_phy_add() before fixed_mdio_bus_init() is
+> called (for example, because the platform code and the fixed_phy driver
+> use the same initcall level) crash in fixed_phy_add() since the
+> ->mii_bus is not allocated.
+> 
+> Also since e7f4dc3536a, these interrupts are initalized to polling by
+> default.  All callers of both fixed_phy_register() and fixed_phy_add()
+> pass PHY_POLL for the irq argument, so we can fix these crashes by
+> simply removing the irq parameter, since the default is correct for all
+> users.
 
-The following changes since commit f55532a0c0b8bb6148f4e07853b876ef73bc69ca:
+Hi Rabin
 
-  Linux 4.6-rc1 (2016-03-26 16:03:24 -0700)
+Thanks for the patch. However, this is more of a work around than a
+fix. And it leaves one case still open for bad things to happen. Take
+the call sequence:
 
-are available in the git repository at:
+	ret = of_phy_register_fixed_link(port_dn);
+        if (ret) {
+        	netdev_err(slave_dev, "failed to register fixed PHY: %d\n", ret);
+                return ret;
+  	}
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.7-tag1
+	p->phy = of_phy_connect(slave_dev, phy_dn,
+        			dsa_slave_adjust_link,
+                                phy_flags,
+                                p->phy_interface);
+ 
+This is taken from net/dsa/slave.c
 
-for you to fetch changes up to 9a6462763b170bd22be707d5d9e2b8ba8cc4028e:
+With your patch, of_phy_register_fixed_link() will be successful, but
+the call to of_phy_connect() will fail, returning NULL, because the
+mdio bus the phy is on has not yet been added to the bus.
 
-  m68k/mvme16x: Include generic <linux/rtc.h> (2016-05-03 16:02:59 +0200)
+What i think is better is to make fixed_phy_add() return -EPROBE_DEFER
+if it is called before fixed_mdio_bus_init().
 
-----------------------------------------------------------------
-m68k updates for 4.7
+I also think it is a bad idea to remove the interrupt
+parameter. fixed_phy can actually change it state, so maybe at some
+point in the future, somebody will want an interrupt for this? We
+should try to keep this phy emulation as similar to real phys as
+possible, so lets keep the interrupt for the moment.
 
-  - Preparatory work for Arnd's genrtc removal series.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k/bvme6000: Include generic <linux/rtc.h>
-      m68k/mvme16x: Include generic <linux/rtc.h>
-
- arch/m68k/bvme6000/rtc.c | 2 +-
- arch/m68k/mvme16x/rtc.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+	Thanks
+	  Andrew
