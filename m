@@ -1,127 +1,226 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: Hashing via multiply on 68000, H8 and Microblaze
-Date: Mon, 16 May 2016 08:52:59 +0200
-Message-ID: <57396E4B.4010307@xilinx.com>
-References: <20160514041429.6631.qmail@ns.horizon.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+From: Rabin Vincent <rabin.vincent@axis.com>
+Subject: [PATCH] phy: remove irq param to fix crash in fixed_phy_add()
+Date: Mon, 16 May 2016 13:15:56 +0200
+Message-ID: <1463397356-5656-1-git-send-email-rabin.vincent@axis.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160514041429.6631.qmail@ns.horizon.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: George Spelvin <linux@horizon.com>, geert@linux-m68k.org, gerg@linux-m68k.org, monstr@monstr.eu, ysato@users.sourceforge.jp
-Cc: linux-m68k@lists.linux-m68k.org, michal.simek@xilinx.com, uclinux-h8-devel@lists.sourceforge.jp
+To: "David S. Miller" <davem@davemloft.net>
+Cc: andrew@lunn.ch, f.fainelli@gmail.com, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org, Rabin Vincent <rabinv@axis.com>
 
-On 14.5.2016 06:14, George Spelvin wrote:
-> My current project is reworking <linux/hash.h>.  The most urgent fix
-> went in to 4.6-rc7 as commit 689de1d6ca ("Minimal fix-up of bad hashing
-> behavior of hash_64()"), but there's more.
-> 
-> This is done by multiplication on most platforms, but there are some
-> where that's very inefficient.  This message is:
-> 
-> 1. A brain dump on the subject,
-> 2. Establishing contact with the relevant architecture maintainers
->    in preparation for future patches, and
-> 3. A solicitation for ideas.
-> 
-> 
-> The Linux kernel makes heavy use of the inline functions hash_32(x, bits)
-> and hash_64(x, bits) to compute hash table indexes from an integer, pointer,
-> or word-sized string hash.
-> 
-> hash_32() is just { return x * CONSTANT >> (32 - bits); } for some
-> suitably chosen 32-bit CONSTANT, and equivalently (with a larger constant)
-> for hash_64.  The multiply basically causes each bit of the input to
-> affect all more-significant bits of the output, and then those bits
-> are extracted for the final index.
-> 
-> But the current constant was chosen to be easy to compute with a
-> shift-and-add sequence on platforms without a good hardware multiplier,
-> which causes bad bit mixing, and I've been looking into the implications
-> of changing that.
-> 
-> On Sun, 1 May 2016 at 09:5, Linus Torvalds wrote:
->> On Sun, May 1, 2016 at 2:43 AM, George Spelvin <linux@horizon.com> wrote:
->>> * If you feel ambitious, add a 32-bit CONFIG_ARCH_HAS_SLOW_MULTIPLIER
->>>   exception path.
->>
->> Let's make that a separate worry, and just fix hash_64() first.
->>
->> In particular, that means "let's not touch COLDEN_RATIO_32 yet". I
->> suspect that when we *do* change that value, we do want the
->> non-multiplying version you had.
-> 
-> Upon research, I've found that all 64-bit processors have decent
-> 64x64-bit multiplier, so there's no benefit to choosing a "simpler"
-> constant.
-> 
-> As do most 32-bit processors that Linux supports.  But not all.
-> 
-> The current exceptions are:
-> 
-> * MC68000/010/328 (arch/m68k, no-mmu)
-> * H8 (arch/h8300)
-> * Microblaze (Xilinx soft-core) may be configured without multiplier
+From: Rabin Vincent <rabinv@axis.com>
 
-yes. Microblaze can be configured without multiplier.
+Since e7f4dc3536a ("mdio: Move allocation of interrupts into core"),
+platforms which call fixed_phy_add() before fixed_mdio_bus_init() is
+called (for example, because the platform code and the fixed_phy driver
+use the same initcall level) crash in fixed_phy_add() since the
+->mii_bus is not allocated.
 
-> 
-> The thing about these is, they *also* don't have barrel shifters.
+Also since e7f4dc3536a, these interrupts are initalized to polling by
+default.  All callers of both fixed_phy_register() and fixed_phy_add()
+pass PHY_POLL for the irq argument, so we can fix these crashes by
+simply removing the irq parameter, since the default is correct for all
+users.
 
-Barrel shifter is optional for Microblaze too.
-But for most of systems which runs Linux has multiplier and BS ON
-(size of logic is not a problem today).
+Fixes: e7f4dc3536a400 ("mdio: Move allocation of interrupts into core")
+Signed-off-by: Rabin Vincent <rabinv@axis.com>
+---
+ arch/m68k/coldfire/m5272.c                   |  2 +-
+ arch/mips/ar7/platform.c                     |  5 ++---
+ arch/mips/bcm47xx/setup.c                    |  2 +-
+ drivers/net/ethernet/broadcom/bgmac.c        |  2 +-
+ drivers/net/ethernet/broadcom/genet/bcmmii.c |  2 +-
+ drivers/net/phy/fixed_phy.c                  | 10 +++-------
+ drivers/of/of_mdio.c                         |  6 +++---
+ include/linux/phy_fixed.h                    | 16 ++++++----------
+ 8 files changed, 18 insertions(+), 27 deletions(-)
 
-
-> I have an efficient shift-and-add pattern for computing x * 0x61C88647:
-> 	a = x + (x << 19);
-> 	b = a + (x << 9);
-> 	c = b + (x << 23);
-> 	reutrn (b << 11) + (c << 6) + (a << 3) - c;
-> ... but it involves large shifts, and without efficient support for them,
-> this isn't a great alternative!
-> 
-> The 68000 has multi-bit shifts, but they're also multi-cycle.
-> 
-> The H8/300 has only 1-bit shift instructions, and more recent models have
-> been extended with 2-bit shifts, but either way, large shifts are a PITA.
-> 
-> Both of these have moderately efficient 16x16->32-bit multiplies.  (On some
-> H8 models, the multiply is actually a practical way to do left shifts!)
-> 
-> Both also provide efficient access to the 16-bit halves of 32-bit values,
-> which can be used by large shits and rotates.
-> 
-> Microblaze is complicated.  Both barrel shifter and multiplier are
-> configurable options.  If missing, so are the corresponding instructions.
-> (And arch/microblaze/Kconfig.platform supports omitting both.)
-
-As I said above you can design your code to be optional when MUL and BS
-are on and say when one of then it is not then hashes calculation wont'
-be optimal.
-
-> Given that it's not necessary to compute the same hash function on all
-> platforms (as long as it's still a good hash), my current thoughts are
-> that "generic" fallback code is impractical and I should instead:
-> - Add a CONFIG_ARCH_HASH option, which works like CONFIG_ARCH_RANDOM,
->   indicating that the gneric code should #include <asm/archhash.h>
-> - Within that, platforms may define replacement functions and #define
->   HAVE_ARCH_FOO variable to suppress the standard definitions.
->   (This is all conditional, as other m68k platforms with MULU.L can
->   use the generic functions.)
-> - On 68000 and H8, I'll define
->   hash32(x) = swap((x & 0xffff) * CONST1 + (x >> 16) * CONST2)
->   This isn't quite as good mixing as a 32-bit multiply, but only needs
->   2 (not 3) 16x16->32-bit multiplies and the swap put the most-mixed bits
->   in the msbits.
-> - If a Microblaze has a barrel shifter (but no multiplier), I'll use the
->   shift-and-add code.
-> - If a Microblaze does not have a barrel shifter, I don't know what
->   the heck I'll do.  Any ideas?
-
-Just keep it inefficient.
-
-Thanks,
-Michal
+diff --git a/arch/m68k/coldfire/m5272.c b/arch/m68k/coldfire/m5272.c
+index c525e4c..217e2e0 100644
+--- a/arch/m68k/coldfire/m5272.c
++++ b/arch/m68k/coldfire/m5272.c
+@@ -126,7 +126,7 @@ static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
+ static int __init init_BSP(void)
+ {
+ 	m5272_uarts_init();
+-	fixed_phy_add(PHY_POLL, 0, &nettel_fixed_phy_status, -1);
++	fixed_phy_add(0, &nettel_fixed_phy_status, -1);
+ 	return 0;
+ }
+ 
+diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
+index 58fca9a..0a024b0 100644
+--- a/arch/mips/ar7/platform.c
++++ b/arch/mips/ar7/platform.c
+@@ -678,8 +678,7 @@ static int __init ar7_register_devices(void)
+ 	}
+ 
+ 	if (ar7_has_high_cpmac()) {
+-		res = fixed_phy_add(PHY_POLL, cpmac_high.id,
+-				    &fixed_phy_status, -1);
++		res = fixed_phy_add(cpmac_high.id, &fixed_phy_status, -1);
+ 		if (!res) {
+ 			cpmac_get_mac(1, cpmac_high_data.dev_addr);
+ 
+@@ -692,7 +691,7 @@ static int __init ar7_register_devices(void)
+ 	} else
+ 		cpmac_low_data.phy_mask = 0xffffffff;
+ 
+-	res = fixed_phy_add(PHY_POLL, cpmac_low.id, &fixed_phy_status, -1);
++	res = fixed_phy_add(cpmac_low.id, &fixed_phy_status, -1);
+ 	if (!res) {
+ 		cpmac_get_mac(0, cpmac_low_data.dev_addr);
+ 		res = platform_device_register(&cpmac_low);
+diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
+index c807e32..ca3fbd1 100644
+--- a/arch/mips/bcm47xx/setup.c
++++ b/arch/mips/bcm47xx/setup.c
+@@ -243,7 +243,7 @@ static int __init bcm47xx_register_bus_complete(void)
+ 	bcm47xx_leds_register();
+ 	bcm47xx_workarounds();
+ 
+-	fixed_phy_add(PHY_POLL, 0, &bcm47xx_fixed_phy_status, -1);
++	fixed_phy_add(0, &bcm47xx_fixed_phy_status, -1);
+ 	return 0;
+ }
+ device_initcall(bcm47xx_register_bus_complete);
+diff --git a/drivers/net/ethernet/broadcom/bgmac.c b/drivers/net/ethernet/broadcom/bgmac.c
+index 38db2e4..0c8f467 100644
+--- a/drivers/net/ethernet/broadcom/bgmac.c
++++ b/drivers/net/ethernet/broadcom/bgmac.c
+@@ -1460,7 +1460,7 @@ static int bgmac_fixed_phy_register(struct bgmac *bgmac)
+ 	struct phy_device *phy_dev;
+ 	int err;
+ 
+-	phy_dev = fixed_phy_register(PHY_POLL, &fphy_status, -1, NULL);
++	phy_dev = fixed_phy_register(&fphy_status, -1, NULL);
+ 	if (!phy_dev || IS_ERR(phy_dev)) {
+ 		bgmac_err(bgmac, "Failed to register fixed PHY device\n");
+ 		return -ENODEV;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+index 457c3bc..f181fd1 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+@@ -595,7 +595,7 @@ static int bcmgenet_mii_pd_init(struct bcmgenet_priv *priv)
+ 			.asym_pause = 0,
+ 		};
+ 
+-		phydev = fixed_phy_register(PHY_POLL, &fphy_status, -1, NULL);
++		phydev = fixed_phy_register(&fphy_status, -1, NULL);
+ 		if (!phydev || IS_ERR(phydev)) {
+ 			dev_err(kdev, "failed to register fixed PHY device\n");
+ 			return -ENODEV;
+diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+index fc07a88..295e6bd 100644
+--- a/drivers/net/phy/fixed_phy.c
++++ b/drivers/net/phy/fixed_phy.c
+@@ -241,8 +241,7 @@ int fixed_phy_update_state(struct phy_device *phydev,
+ }
+ EXPORT_SYMBOL(fixed_phy_update_state);
+ 
+-int fixed_phy_add(unsigned int irq, int phy_addr,
+-		  struct fixed_phy_status *status,
++int fixed_phy_add(int phy_addr, struct fixed_phy_status *status,
+ 		  int link_gpio)
+ {
+ 	int ret;
+@@ -255,8 +254,6 @@ int fixed_phy_add(unsigned int irq, int phy_addr,
+ 
+ 	memset(fp->regs, 0xFF,  sizeof(fp->regs[0]) * MII_REGS_NUM);
+ 
+-	fmb->mii_bus->irq[phy_addr] = irq;
+-
+ 	fp->addr = phy_addr;
+ 	fp->status = *status;
+ 	fp->link_gpio = link_gpio;
+@@ -304,8 +301,7 @@ static void fixed_phy_del(int phy_addr)
+ static int phy_fixed_addr;
+ static DEFINE_SPINLOCK(phy_fixed_addr_lock);
+ 
+-struct phy_device *fixed_phy_register(unsigned int irq,
+-				      struct fixed_phy_status *status,
++struct phy_device *fixed_phy_register(struct fixed_phy_status *status,
+ 				      int link_gpio,
+ 				      struct device_node *np)
+ {
+@@ -323,7 +319,7 @@ struct phy_device *fixed_phy_register(unsigned int irq,
+ 	phy_addr = phy_fixed_addr++;
+ 	spin_unlock(&phy_fixed_addr_lock);
+ 
+-	ret = fixed_phy_add(irq, phy_addr, status, link_gpio);
++	ret = fixed_phy_add(phy_addr, status, link_gpio);
+ 	if (ret < 0)
+ 		return ERR_PTR(ret);
+ 
+diff --git a/drivers/of/of_mdio.c b/drivers/of/of_mdio.c
+index 8453f08..bc4ef2ce 100644
+--- a/drivers/of/of_mdio.c
++++ b/drivers/of/of_mdio.c
+@@ -411,7 +411,7 @@ int of_phy_register_fixed_link(struct device_node *np)
+ 	if (err == 0) {
+ 		if (strcmp(managed, "in-band-status") == 0) {
+ 			/* status is zeroed, namely its .link member */
+-			phy = fixed_phy_register(PHY_POLL, &status, -1, np);
++			phy = fixed_phy_register(&status, -1, np);
+ 			return PTR_ERR_OR_ZERO(phy);
+ 		}
+ 	}
+@@ -433,7 +433,7 @@ int of_phy_register_fixed_link(struct device_node *np)
+ 		if (link_gpio == -EPROBE_DEFER)
+ 			return -EPROBE_DEFER;
+ 
+-		phy = fixed_phy_register(PHY_POLL, &status, link_gpio, np);
++		phy = fixed_phy_register(&status, link_gpio, np);
+ 		return PTR_ERR_OR_ZERO(phy);
+ 	}
+ 
+@@ -445,7 +445,7 @@ int of_phy_register_fixed_link(struct device_node *np)
+ 		status.speed = be32_to_cpu(fixed_link_prop[2]);
+ 		status.pause = be32_to_cpu(fixed_link_prop[3]);
+ 		status.asym_pause = be32_to_cpu(fixed_link_prop[4]);
+-		phy = fixed_phy_register(PHY_POLL, &status, -1, np);
++		phy = fixed_phy_register(&status, -1, np);
+ 		return PTR_ERR_OR_ZERO(phy);
+ 	}
+ 
+diff --git a/include/linux/phy_fixed.h b/include/linux/phy_fixed.h
+index 1d41ec4..43aca21 100644
+--- a/include/linux/phy_fixed.h
++++ b/include/linux/phy_fixed.h
+@@ -12,11 +12,9 @@ struct fixed_phy_status {
+ struct device_node;
+ 
+ #if IS_ENABLED(CONFIG_FIXED_PHY)
+-extern int fixed_phy_add(unsigned int irq, int phy_id,
+-			 struct fixed_phy_status *status,
++extern int fixed_phy_add(int phy_id, struct fixed_phy_status *status,
+ 			 int link_gpio);
+-extern struct phy_device *fixed_phy_register(unsigned int irq,
+-					     struct fixed_phy_status *status,
++extern struct phy_device *fixed_phy_register(struct fixed_phy_status *status,
+ 					     int link_gpio,
+ 					     struct device_node *np);
+ extern void fixed_phy_unregister(struct phy_device *phydev);
+@@ -27,16 +25,14 @@ extern int fixed_phy_update_state(struct phy_device *phydev,
+ 			   const struct fixed_phy_status *status,
+ 			   const struct fixed_phy_status *changed);
+ #else
+-static inline int fixed_phy_add(unsigned int irq, int phy_id,
+-				struct fixed_phy_status *status,
++static inline int fixed_phy_add(int phy_id, struct fixed_phy_status *status,
+ 				int link_gpio)
+ {
+ 	return -ENODEV;
+ }
+-static inline struct phy_device *fixed_phy_register(unsigned int irq,
+-						struct fixed_phy_status *status,
+-						int gpio_link,
+-						struct device_node *np)
++static inline struct phy_device *
++fixed_phy_register(struct fixed_phy_status *status, int gpio_link,
++		   struct device_node *np)
+ {
+ 	return ERR_PTR(-ENODEV);
+ }
+-- 
+2.1.4
