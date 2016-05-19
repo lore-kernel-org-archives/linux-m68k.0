@@ -1,53 +1,108 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] phy: remove irq param to fix crash in fixed_phy_add()
-Date: Tue, 17 May 2016 14:30:30 -0400 (EDT)
-Message-ID: <20160517.143030.176679255082144481.davem@davemloft.net>
-References: <1463397356-5656-1-git-send-email-rabin.vincent@axis.com>
-	<20160517.142034.611823602956859056.davem@davemloft.net>
-	<573B6280.3030405@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v4 22/23] mac_scsi: Fix pseudo DMA implementation
+Date: Thu, 19 May 2016 11:00:02 +0200
+Message-ID: <CAMuHMdULODOJH7ozh3Qp=cSnuU=VrZr_CeSaDUJNdjjGf7s=zw@mail.gmail.com>
+References: <20160323101009.341929635@telegraphics.com.au>
+	<20160323101014.931733618@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <573B6280.3030405@gmail.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20160323101014.931733618@telegraphics.com.au>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ondrej Zary <linux@rainbow-software.org>, Sam Creasey <sammy@sammy.net>
 List-Id: linux-m68k@vger.kernel.org
-To: f.fainelli@gmail.com
-Cc: rabin.vincent@axis.com, andrew@lunn.ch, netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, devicetree@vger.kernel.org, rabinv@axis.com
 
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Tue, 17 May 2016 11:27:12 -0700
+Hi Finn,
 
-> On 05/17/2016 11:20 AM, David Miller wrote:
->> From: Rabin Vincent <rabin.vincent@axis.com>
->> Date: Mon, 16 May 2016 13:15:56 +0200
->> 
->>> From: Rabin Vincent <rabinv@axis.com>
->>>
->>> Since e7f4dc3536a ("mdio: Move allocation of interrupts into core"),
->>> platforms which call fixed_phy_add() before fixed_mdio_bus_init() is
->>> called (for example, because the platform code and the fixed_phy driver
->>> use the same initcall level) crash in fixed_phy_add() since the
->>> ->mii_bus is not allocated.
->>>
->>> Also since e7f4dc3536a, these interrupts are initalized to polling by
->>> default.  All callers of both fixed_phy_register() and fixed_phy_add()
->>> pass PHY_POLL for the irq argument, so we can fix these crashes by
->>> simply removing the irq parameter, since the default is correct for all
->>> users.
->>>
->>> Fixes: e7f4dc3536a400 ("mdio: Move allocation of interrupts into core")
->>> Signed-off-by: Rabin Vincent <rabinv@axis.com>
->> 
->> Applied.
-> 
-> David, there was a v2 sent just earlier this morning here:
-> 
-> http://patchwork.ozlabs.org/patch/622967/
-> 
-> which was appropriately marked with Changes Requested, so why would we
-> apply v1?
+On Wed, Mar 23, 2016 at 11:10 AM, Finn Thain <fthain@telegraphics.com.a=
+u> wrote:
+> Fix various issues: Comments about bus errors are incorrect. The
+> PDMA asm must return the size of the memory access that faulted so th=
+e
+> transfer count can be adjusted accordingly. A phase change may cause =
+a
+> bus error but should not be treated as failure. A bus error does not
+> always imply a phase change and generally the transfer may continue.
+> Scatter/gather doesn't seem to work with PDMA due to overruns. This i=
+s
+> a pity because peak throughput seems to double with SG_ALL.
+> Tested on a Mac LC III and a PowerBook 520.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Reviewed-by: Hannes Reinecke <hare@suse.com>
 
-And that v2 needs changes still.
+> --- linux.orig/drivers/scsi/mac_scsi.c  2016-03-23 21:09:53.000000000=
+ +1100
+> +++ linux/drivers/scsi/mac_scsi.c       2016-03-23 21:10:05.000000000=
+ +1100
 
-My bad I'll revert v1, sorry.
+> @@ -104,18 +105,9 @@ static int __init mac_scsi_setup(char *s
+
+>  static int macscsi_pread(struct Scsi_Host *instance,
+>                           unsigned char *dst, int len)
+>  {
+>         struct NCR5380_hostdata *hostdata =3D shost_priv(instance);
+> -       unsigned char *d;
+> -       unsigned char *s;
+> -
+> -       s =3D hostdata->pdma_base + (INPUT_DATA_REG << 4);
+> -       d =3D dst;
+> -
+> -       /* These conditions are derived from MacOS */
+> -
+> -       while (!(NCR5380_read(BUS_AND_STATUS_REG) & BASR_DRQ) &&
+> -              !(NCR5380_read(STATUS_REG) & SR_REQ))
+> -               ;
+> -
+> -       if (!(NCR5380_read(BUS_AND_STATUS_REG) & BASR_DRQ) &&
+> -           (NCR5380_read(BUS_AND_STATUS_REG) & BASR_PHASE_MATCH)) {
+> -               pr_err("Error in macscsi_pread\n");
+> -               return -1;
+> -       }
+> -
+> -       CP_IO_TO_MEM(s, d, len);
+> -
+> -       if (len !=3D 0) {
+> -               pr_notice("Bus error in macscsi_pread\n");
+> -               return -1;
+> +       unsigned char *s =3D hostdata->pdma_base + (INPUT_DATA_REG <<=
+ 4);
+> +       unsigned char *d =3D dst;
+> +       int n =3D len;
+> +       int transferred;
+> +
+> +       while (!NCR5380_poll_politely(instance, BUS_AND_STATUS_REG,
+> +                                     BASR_DRQ | BASR_PHASE_MATCH,
+> +                                     BASR_DRQ | BASR_PHASE_MATCH, HZ=
+ / 64)) {
+> +               CP_IO_TO_MEM(s, d, n);
+
+This is now before the inclusion of NCR5380.c, causing
+
+In file included from drivers/scsi/mac_scsi.c:335:
+drivers/scsi/NCR5380.h:295: warning: =E2=80=98NCR5380_poll_politely=E2=80=
+=99 declared
+inline after being called
+drivers/scsi/NCR5380.h:295: warning: previous declaration of
+=E2=80=98NCR5380_poll_politely=E2=80=99 was here
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
+--
+To unsubscribe from this list: send the line "unsubscribe linux-scsi" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
