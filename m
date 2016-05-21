@@ -1,42 +1,30 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Subject: Re: [PATCH 0171/1529] Fix typo
-Date: Sat, 21 May 2016 23:34:56 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1605212334490.9375@nippy.intranet>
+Date: Sat, 21 May 2016 15:40:00 +0200
+Message-ID: <4aabe806-a792-9a17-0fa9-21998c6a8aa6@physik.fu-berlin.de>
 References: <20160521115830.8693-1-andrea.gelmini@gelma.net>
+ <alpine.LNX.2.00.1605212334490.9375@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160521115830.8693-1-andrea.gelmini@gelma.net>
+In-Reply-To: <alpine.LNX.2.00.1605212334490.9375@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrea Gelmini <andrea.gelmini@gelma.net>
+To: Finn Thain <fthain@telegraphics.com.au>, Andrea Gelmini <andrea.gelmini@gelma.net>
 Cc: trivial@kernel.org, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 
+On 05/21/2016 03:34 PM, Finn Thain wrote:
+> That change doesn't make sense. And "defhand" is not a typo. It refers 
+> to the default handler q40_defhand() which was removed in commit 
+> 77dda339e512.
 
-On Sat, 21 May 2016, Andrea Gelmini wrote:
+I assume that's what happens when you blindly trust spell checkers :).
 
-> Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
-> ---
->  arch/m68k/q40/q40ints.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-> index 513f9bb..51991bc 100644
-> --- a/arch/m68k/q40/q40ints.c
-> +++ b/arch/m68k/q40/q40ints.c
-> @@ -287,7 +287,7 @@ static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
->  	}
->   iirq:
->  	mir = master_inb(IIRQ_REG);
-> -	/* should test whether keyboard irq is really enabled, doing it in defhand */
-> +	/* should test whether keyboard irq is really enabled, doing it in defend */
->  	if (mir & Q40_IRQ_KEYB_MASK)
->  		do_IRQ(Q40_IRQ_KEYBOARD, fp);
->  
-> 
-
-That change doesn't make sense. And "defhand" is not a typo. It refers 
-to the default handler q40_defhand() which was removed in commit 
-77dda339e512.
+Adrian
 
 -- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
