@@ -1,7 +1,7 @@
 From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 0166/1529] Fix typo
-Date: Sat, 21 May 2016 13:57:54 +0200
-Message-ID: <20160521115754.8432-1-andrea.gelmini@gelma.net>
+Subject: [PATCH 0167/1529] Fix typo
+Date: Sat, 21 May 2016 13:58:01 +0200
+Message-ID: <20160521115801.8483-1-andrea.gelmini@gelma.net>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
@@ -10,25 +10,21 @@ Cc: trivial@kernel.org, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 
 Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 ---
- arch/m68k/include/asm/m525xsim.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/include/asm/mcfmmu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/m525xsim.h b/arch/m68k/include/asm/m525xsim.h
-index f186459..699f20c 100644
---- a/arch/m68k/include/asm/m525xsim.h
-+++ b/arch/m68k/include/asm/m525xsim.h
-@@ -123,10 +123,10 @@
+diff --git a/arch/m68k/include/asm/mcfmmu.h b/arch/m68k/include/asm/mcfmmu.h
+index 26cc3d5..8824236 100644
+--- a/arch/m68k/include/asm/mcfmmu.h
++++ b/arch/m68k/include/asm/mcfmmu.h
+@@ -38,7 +38,7 @@
  /*
-  *	I2C module.
+  *	MMU Operation register.
   */
--#define MCFI2C_BASE0		(MCF_MBAR + 0x280)	/* Base addreess I2C0 */
-+#define MCFI2C_BASE0		(MCF_MBAR + 0x280)	/* Base address I2C0 */
- #define MCFI2C_SIZE0		0x20			/* Register set size */
- 
--#define MCFI2C_BASE1		(MCF_MBAR2 + 0x440)	/* Base addreess I2C1 */
-+#define MCFI2C_BASE1		(MCF_MBAR2 + 0x440)	/* Base address I2C1 */
- #define MCFI2C_SIZE1		0x20			/* Register set size */
- 
- /*
+-#define	MMUOR_UAA	0x00000001		/* Update allocatiom address */
++#define	MMUOR_UAA	0x00000001		/* Update allocation address */
+ #define	MMUOR_ACC	0x00000002		/* TLB access */
+ #define	MMUOR_RD	0x00000004		/* TLB access read */
+ #define	MMUOR_WR	0x00000000		/* TLB access write */
 -- 
 2.8.2.534.g1f66975
