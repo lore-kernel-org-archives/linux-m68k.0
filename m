@@ -1,30 +1,45 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [PATCH 0171/1529] Fix typo
-Date: Sat, 21 May 2016 15:40:00 +0200
-Message-ID: <4aabe806-a792-9a17-0fa9-21998c6a8aa6@physik.fu-berlin.de>
-References: <20160521115830.8693-1-andrea.gelmini@gelma.net>
- <alpine.LNX.2.00.1605212334490.9375@nippy.intranet>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes
+Date: Mon, 23 May 2016 10:46:23 +1000
+Message-ID: <574252DF.3000700@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1605212334490.9375@nippy.intranet>
+Received: from icp-osb-irony-out8.external.iinet.net.au ([203.59.1.225]:50816
+	"EHLO icp-osb-irony-out8.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1752702AbcEWApN (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Sun, 22 May 2016 20:45:13 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, Andrea Gelmini <andrea.gelmini@gelma.net>
-Cc: trivial@kernel.org, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 05/21/2016 03:34 PM, Finn Thain wrote:
-> That change doesn't make sense. And "defhand" is not a typo. It refers 
-> to the default handler q40_defhand() which was removed in commit 
-> 77dda339e512.
+Hi Linus,
 
-I assume that's what happens when you blindly trust spell checkers :).
+Can you please pull the m68knommu git tree, for-next branch.
+Only a single change to update my email address in the MAINTAINERS file.
 
-Adrian
+Regards
+Greg
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
+The following changes since commit 44549e8f5eea4e0a41b487b63e616cb089922b99:
+
+  Linux 4.6-rc7 (2016-05-08 14:38:32 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 44156affd1844bdfd90cc791cf5fdb6f9a04e238:
+
+  m68k: change m68knommu maintainer email address (2016-05-10 16:59:23 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68k: change m68knommu maintainer email address
+
+ MAINTAINERS | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
