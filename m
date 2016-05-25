@@ -1,39 +1,64 @@
 From: "George Spelvin" <linux@sciencehorizons.net>
-Subject: Re: [PATCH 00/10] String hash improvements
-Date: 25 May 2016 05:07:45 -0400
-Message-ID: <20160525090745.8999.qmail@ns.sciencehorizons.net>
-References: <CAMuHMdUuAi_EdWPJmYNgNpUv_Zh34Oc3G7TgqcsChwzuyz0c-Q@mail.gmail.com>
+Subject: Re: [PATCH 08/10] m68k: Add <asm/archhash.h>
+Date: 25 May 2016 05:14:35 -0400
+Message-ID: <20160525091435.9218.qmail@ns.sciencehorizons.net>
+References: <20160525085653.GA9917@frolo.macqel>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from science.sciencehorizons.net ([71.41.210.147]:14249 "HELO
+Received: from science.sciencehorizons.net ([71.41.210.147]:14840 "HELO
 	ns.sciencehorizons.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-	with SMTP id S1754125AbcEYJHr (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 May 2016 05:07:47 -0400
-In-Reply-To: <CAMuHMdUuAi_EdWPJmYNgNpUv_Zh34Oc3G7TgqcsChwzuyz0c-Q@mail.gmail.com>
+	with SMTP id S1753089AbcEYJOh (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 May 2016 05:14:37 -0400
+In-Reply-To: <20160525085653.GA9917@frolo.macqel>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: geert@linux-m68k.org, linux@sciencehorizons.net
-Cc: alistair.francis@xilinx.com, bfields@fieldses.org, gerg@linux-m68k.org, jlayton@poochiereds.net, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-nfs@vger.kernel.org, michal.simek@xilinx.com, tglx@linutronix.de, torvalds@linux-foundation.org, uclinux-h8-devel@lists.sourceforge.jp, ysato@users.sourceforge.jp
+To: linux@sciencehorizons.net, phdm@macq.eu
+Cc: geert@linux-m68k.org, gerg@linux-m68k.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, tglx@linutronix.de, torvalds@linux-foundation.org
 
->> +#if defined(CONFIG_M68000) || defined(CONFIG_M68010)
+> On Wed, May 25, 2016 at 03:34:55AM -0400, George Spelvin wrote:
+>> +static inline u32 __attribute_const__ __hash_32(u32 x)
+>> +{
+>> +	u32 a, b;
+>> +
+>> +	asm(   "move.l %2,%0"	/* 0x0001 */
+>> +	"\n	lsl.l #2,%0"	/* 0x0004 */
+>> +	"\n	move.l %0,%1"
+>> +	"\n	lsl.l #7,%0"	/* 0x0200 */
+>> +	"\n	add.l %2,%0"	/* 0x0201 */
+>> +	"\n	add.l %0,%1"	/* 0x0205 */
+>> +	"\n	add.l %0,%0"	/* 0x0402 */
+>> +	"\n	add.l %0,%1"	/* 0x0607 */
+>> +	"\n	lsl.l #5,%0"	/* 0x8040 */
+>> +				/* 0x8647 */
 
-> As I said before, I don't think you need this check, given HAVE_ARCH_HASH is
-> selected by M68000, and M68010 doesn't exist.
+> There is no standard way to write asm in the kernel, but I prefer
+> a simple semicolon after each insn
 
-I was going belt & suspenders on general principles, but yes, I'm happy
-to leave it out.
+I did it the way I did above because it makes the gcc -S output very
+legible.  Just like I put a space before the perands on m68k but a tab
+on h8300: that's what GCC does on those platforms.
 
-I noticed that CONFIG_M68010 doesn't exist in Linus' tree, but you
-recommended it, so I thought you might know something I don't.
+I started with the "\n\t" suffixes on each line like so much other
+kernel code, but then figured out the format above which is legible
+both in C source and compiler output.
 
-> As you only include <asm/archhash.h> if CONFIG_HAVE_ARCH_HASH
-> is defined, you can also just call the arch-specific one <asm/hash.h>.
+>>	asm("move.l	%2,%0;"	/* 0x0001 */
+>>	    "lsl.l	#2,%0;"	/* 0x0004 */
+>>	    "move.l	%0,%1;"
+>>	    "lsl.l	#7,%0;"	/* 0x0200 */
+>>	    "add.l	%2,%0;"	/* 0x0201 */
+>>	    "add.l	%0,%1;"	/* 0x0205 */
+>>	    "add.l	%0,%0;"	/* 0x0402 */
+>>	    "add.l	%0,%1;"	/* 0x0607 */
+>>	    "lsl.l	#5,%0"	/* 0x8040 */
+>>				/* 0x8647 */
 
-Yes, that's a possibility, too.  But weren't we still discussing whether
-I should use conditional #inclusion based on a symbol, or asm-generic?
-
-If neither of us has a killer argument that convinces the other, style
-issues like this are amenable to voting, so I was going to wait a little
-bit for others to chime in.
+> Also, it took me some time to understand the hexadecimal constants
+> in the comments (and the last one predicts a future event :)).
 
 
-Thank you very much for the comments!
+Can you recmmend a better way to comment this?  My nose is so deep
+in the code it's hard for me to judge.
+
+> Just my two cents
+
+And thank you very much for them!
