@@ -1,47 +1,40 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 08v2/10] m68k: Add <asm/archhash.h>
-Date: Wed, 25 May 2016 10:48:34 +0200
-Message-ID: <CAMuHMdWncJ30REHVSBz0zOPkg5G1m_z6rWHpfD-2ZRxLLkS5QA__21524.1121979945$1464166140$gmane$org@mail.gmail.com>
-References: <CAMuHMdU51iHeG6rhDmGRK90ZrxfrdDifxt2gome7BWn+ciumMw@mail.gmail.com>
-	<20160525082401.7249.qmail@ns.sciencehorizons.net>
+Subject: Re: [PATCH 00/10] String hash improvements
+Date: Wed, 25 May 2016 10:50:11 +0200
+Message-ID: <CAMuHMdUuAi_EdWPJmYNgNpUv_Zh34Oc3G7TgqcsChwzuyz0c-Q__41068.8738724732$1464166223$gmane$org@mail.gmail.com>
+References: <CAMuHMdUUCYfGfX1CDVxxihGSC+dz2D1JJVXUWC5H0_W-MmHe7Q@mail.gmail.com>
+	<20160525081128.6920.qmail@ns.sciencehorizons.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160525082401.7249.qmail@ns.sciencehorizons.net>
+In-Reply-To: <20160525081128.6920.qmail@ns.sciencehorizons.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: George Spelvin <linux@sciencehorizons.net>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Thomas Gleixner <tglx@linutronix.de>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: alistair.francis@xilinx.com, Bruce Fields <bfields@fieldses.org>, Greg Ungerer <gerg@linux-m68k.org>, Jeff Layton <jlayton@poochiereds.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>, Michal Simek <michal.simek@xilinx.com>, Thomas Gleixner <tglx@linutronix.de>, Linus Torvalds <torvalds@linux-foundation.org>, uclinux-h8-devel@lists.sourceforge.jp, Yoshinori Sato <ysato@users.sourceforge.jp>
 
-On Wed, May 25, 2016 at 10:24 AM, George Spelvin
+On Wed, May 25, 2016 at 10:11 AM, George Spelvin
 <linux@sciencehorizons.net> wrote:
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -40,6 +40,7 @@ config M68000
->         select CPU_HAS_NO_MULDIV64
->         select CPU_HAS_NO_UNALIGNED
->         select GENERIC_CSUM
-> +       select HAVE_ARCH_HASH
->         help
->           The Freescale (was Motorola) 68000 CPU is the first generation of
->           the well known M68K family of processors. The CPU core as well as
-> diff --git a/arch/m68k/include/asm/archhash.h b/arch/m68k/include/asm/archhash.h
-> new file mode 100644
-> index 00000000..2532cf92
-> --- /dev/null
-> +++ b/arch/m68k/include/asm/archhash.h
-> @@ -0,0 +1,58 @@
-> +#ifndef _ASM_ARCHHASH_H
-> +#define _ASM_ARCHHASH_H
-> +
-> +/*
-> + * The only 68k processors that lack MULU.L and so need this workaround
-> + * are the original 68000 and 68010.
-> + */
-> +#if defined(CONFIG_M68000) || defined(CONFIG_M68010)
+> Geert Uytterhoeven wrote:
+>> Usually this is handled through include/asm-generic/.
+>> Put the generic default implementation in include/asm-generic/hash.h.
+>>
+>> Architectures that need to override provide their own version, e.g.
+>> arch/m68k/include/asm/hash.h. They may #include <asm-generic/hash.h>
+>> if they still want to reuse parts of the generic implementation.
+>>
+>> Other architectures add "generic-y += hash.h" to their
+>> arch/<ARCH>/include/asm/Kbuild.
+>
+> I thought about that, but then I'd have to edit *every* architecture,
+> and might need acks from all the maintainers.
+>
+> I was looking for something that was a total no-op on most architectures.
+>
+> But if this is preferred, it's not technically difficult at all.
 
-As I said before, I don't think you need this check, given HAVE_ARCH_HASH is
-selected by M68000, and M68010 doesn't exist.
+As you only include <asm/archhash.h> if CONFIG_HAVE_ARCH_HASH
+is defined, you can also just call the arch-specific one <asm/hash.h>.
 
 Gr{oetje,eeting}s,
 
