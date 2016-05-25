@@ -1,79 +1,109 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: BUG: scheduling while atomic: cron/715/0x10cac0c0
-Date: Tue, 24 May 2016 10:44:34 +0200
-Message-ID: <CAMuHMdWp_dnJSNvWzge=pteeg64DjLxgBCG7j-1Ua1Eyk3FNog__38756.6337864429$1464079494$gmane$org@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: "George Spelvin" <linux@sciencehorizons.net>
+Subject: [PATCH 00/10] String hash improvements
+Date: 25 May 2016 03:20:27 -0400
+Message-ID: <20160525072027.5107.qmail@ns.sciencehorizons.net>
+References: <CA+55aFxPSW+84KfQ1N_WmND-wtvgj2zQm8nFPkRcc+gyU=uing@mail.gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from science.sciencehorizons.net ([71.41.210.147]:19174 "HELO
+	ns.sciencehorizons.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+	with SMTP id S1751326AbcEYHU3 (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 May 2016 03:20:29 -0400
+In-Reply-To: <CA+55aFxPSW+84KfQ1N_WmND-wtvgj2zQm8nFPkRcc+gyU=uing@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
+Cc: alistair.francis@xilinx.com, bfields@fieldses.org, geert@linux-m68k.org, gerg@linux-m68k.org, jlayton@poochiereds.net, linux-m68k@lists.linux-m68k.org, linux-nfs@vger.kernel.org, linux@sciencehorizons.net, michal.simek@xilinx.com, tglx@linutronix.de, uclinux-h8-devel@lists.sourceforge.jp, ysato@users.sourceforge.jp
 
-Somewhere during this merge window, I started sometimes seeing the below during
-shutdown of my Debian/m68k system running under ARAnyM:
+On Tue, 17 May 2016 at 09:32, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Tue, May 17, 2016 at 6:41 AM, George Spelvin <linux@horizon.com> wrote:
+>> I had assumed that since they weren't fully baked when the window opened,
+>> they weren't eligible, but I'll try.
 
-BUG: scheduling while atomic: cron/715/0x10cac0c0
-Modules linked in:
-CPU: 0 PID: 715 Comm: cron Not tainted 4.6.0-atari-09955-g55db2ee398e5862f #338
-Stack from 10cac074:
-        10cac074 0037ad52 0003d9b4 0036636e 00cd0814 000002cb 10cac0c0 10cac0c0
-        002f45ba 00cd05c0 00000000 00000082 00491068 00000000 00000000 002f42a8
-        000412c2 00000000 00000000 10cac0e0 002f47a4 00000000 7fffffff 10cac180
-        003b5490 00cd05ec 10cac1f0 10cac118 002f63a8 00000000 10cac174 10cac180
-        001ab966 008a6400 10cac130 0000021a 003bbba0 0000021a 0000021a 00000002
-        efa44d50 10cac128 002f4806 7fffffff 00000082 002f4c8a 002f4c9c 7fffffff
-Call Trace: [<0003d9b4>] __schedule_bug+0x40/0x54
- [<002f45ba>] __schedule+0x312/0x388
- [<002f42a8>] __schedule+0x0/0x388
- [<000412c2>] prepare_to_wait+0x0/0x52
- [<002f47a4>] schedule+0x64/0x82
- [<002f63a8>] schedule_timeout+0xda/0x104
- [<001ab966>] __radix_tree_lookup+0x5a/0xa4
- [<002f4806>] io_schedule_timeout+0x36/0x4a
- [<002f4c8a>] bit_wait_io+0x0/0x40
- [<002f4c9c>] bit_wait_io+0x12/0x40
- [<002f493c>] __wait_on_bit+0x46/0x76
- [<0006a252>] wait_on_page_bit_killable+0x64/0x6c
- [<002f4c8a>] bit_wait_io+0x0/0x40
- [<000413e2>] wake_bit_function+0x0/0x4e
- [<0006a3a0>] __lock_page_or_retry+0xde/0x124
- [<0021a000>] scsi_scan_host+0xd6/0x196
- [<00098a82>] lookup_swap_cache+0x1e/0x48
- [<0008ba3e>] handle_mm_fault+0x626/0x7de
- [<0008f1de>] find_vma+0x0/0x66
- [<002f5c8a>] down_read+0x0/0xe
- [<0006a201>] wait_on_page_bit_killable+0x13/0x6c
- [<0008f1f4>] find_vma+0x16/0x66
- [<00006c50>] do_page_fault+0xe6/0x23a
- [<0000c350>] res_func+0x930/0x141a
- [<00005cc4>] buserr_c+0x190/0x6d4
- [<0000c350>] res_func+0x930/0x141a
- [<000028f8>] buserr+0x20/0x28
- [<0000c350>] res_func+0x930/0x141a
- [<000028f8>] buserr+0x20/0x28
- [<0000c350>] res_func+0x930/0x141a
- [<000028f8>] buserr+0x20/0x28
- [<0000c350>] res_func+0x930/0x141a
- [<000028f8>] buserr+0x20/0x28
- [<0000c350>] res_func+0x930/0x141a
- [<000028f8>] buserr+0x20/0x28
+> Hey, if they aren't ready, they aren't.
 
-Note that my tree does contain some local patches, so you cannot try the
-exact same commit ID.
+Well, they're close, and I can and did *get* them ready.
 
-Unfortunately this isn't reproducible at will, so I cannot bisect it.
-I saw it first after merging in commit 07be1337b9e8bfcd.
+> How about just the minimal set of patches that you'er happy with as-is?
 
-Anyone with a clue? Thanks!
+The things are a bit interdependent.  I can't fix hash_64() on 32-bit systems until
+I get rid of hash_string()'s need for it to return 64 bits, which requires work
+on the dcache hashes to make them suitable replacements...
 
-Gr{oetje,eeting}s,
+The real fun has come from TPTB deciding to sell the horizon.com domain,
+and it turns out that updating rDNS takes the ISP a whole freaking week,
+during which time outgoing mail trips everyone's spam filters.
 
-                        Geert
+That finally got fixed, just in time for me to put my dominant hand through
+a piece of glass.  It's been a week. :-(
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Anyway, the patches...
+
+This series does several related things:
+1) Gets rid of the string hashes in <linux/sunrpc/svcauth.h>,
+   and uses the dcache hash (fs/namei.c) instead.
+2) Avoid 64-bit multiplies in hash_64() on 32-bit platforms.
+   Two 32-bit multiplies will do well enough.
+3) Rids the world of the bad hash multipliers in hash_32.
+   This finishes the job started in 689de1d6ca.
+   The vast majority of Linux architectures have hardware support
+   for 32x32-bit multiply and so derive no benefit from "simplified"
+   multipliers.
+   The few processors that do not (68000, h8/300 and some models of
+   Microblaze) have arch-specific implementations added.  Those patches
+   are last in the series so they can go through the relevant arch
+   maintainers.
+4) Overhauls the dcache hash mixing.
+   The patch in 2bf0b16954 was an off-the-cuff suggestion.  Replaced with
+   a much more careful design that's simultaneously faster and better.
+   (My own invention, as there was noting suitable in the literature I
+   could find.  Comments welcome!)
+
+Things I thought about but can wait for now:
+5) Modify the hash_name() loop to skip the initial HASH_MIX().
+   That would let us salt the hash if we ever wanted to.
+6) Modify bytemask_from_count to handle inputs of 1..sizeof(long)
+   rather than 0..sizeof(long)-1.  This would simplify all its users
+   including full_name_hash.
+7) Sort out partial_name_hash().
+   The hash function is declared as using a long state, even though
+   it's truncated to 32 bits at the end and the extra internal state
+   contributes nothing to the result.  And some callers do odd things:
+   * fs/hfs/string.c only allocates 32 bits of state
+   * fs/hfsplus/unicode.c uses it to hash 16-bit unicode symbols not bytes
+
+I'm not particularly fond of the names of the header files I created,
+but if anyone has a better idea please talk fast!
+
+George Spelvin (10):
+  Pull out string hash to <linux/stringhash.h>
+  fs/namei.c: Add hash_string() function.
+  <linux/sunrpc/svcauth.h>: Define hash_str() in terms of hash_string()
+  Change hash_64() return value to 32 bits.
+  Eliminate bad hash multipliers from hash_32() and hash_64().
+  fs/namei.c: Improve dcache hash function
+  <linux/hash.h>: Add support for architecture-specific functions
+  m68k: Add <asm/archhash.h>
+  microblaze: Add <asm/archhash.h>
+  h8300: Add <asm/archhash.h>
+
+ arch/Kconfig                           |   8 ++
+ arch/h8300/Kconfig                     |   1 +
+ arch/h8300/include/asm/archhash.h      |  52 ++++++++++++
+ arch/m68k/Kconfig                      |   1 +
+ arch/m68k/include/asm/archhash.h       |  67 +++++++++++++++
+ arch/microblaze/Kconfig                |   1 +
+ arch/microblaze/include/asm/archhash.h |  80 ++++++++++++++++++
+ fs/namei.c                             | 149 +++++++++++++++++++++++++--------
+ include/linux/dcache.h                 |  27 +-----
+ include/linux/hash.h                   | 111 ++++++++++++------------
+ include/linux/stringhash.h             |  76 +++++++++++++++++
+ include/linux/sunrpc/svcauth.h         |  36 ++------
+ 12 files changed, 464 insertions(+), 145 deletions(-)
+ create mode 100644 arch/h8300/include/asm/archhash.h
+ create mode 100644 arch/m68k/include/asm/archhash.h
+ create mode 100644 arch/microblaze/include/asm/archhash.h
+ create mode 100644 include/linux/stringhash.h
+
+-- 
+2.8.1
