@@ -1,109 +1,116 @@
 From: "George Spelvin" <linux@sciencehorizons.net>
-Subject: [PATCH 00/10] String hash improvements
-Date: 25 May 2016 03:20:27 -0400
-Message-ID: <20160525072027.5107.qmail@ns.sciencehorizons.net>
+Subject: [PATCH 07/10] <linux/hash.h>: Add support for architecture-specific functions
+Date: 25 May 2016 03:33:11 -0400
+Message-ID: <20160525073311.5600.qmail@ns.sciencehorizons.net>
 References: <CA+55aFxPSW+84KfQ1N_WmND-wtvgj2zQm8nFPkRcc+gyU=uing@mail.gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from science.sciencehorizons.net ([71.41.210.147]:19174 "HELO
+Received: from science.sciencehorizons.net ([71.41.210.147]:15825 "HELO
 	ns.sciencehorizons.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-	with SMTP id S1751326AbcEYHU3 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 May 2016 03:20:29 -0400
+	with SMTP id S1752329AbcEYHdM (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Wed, 25 May 2016 03:33:12 -0400
 In-Reply-To: <CA+55aFxPSW+84KfQ1N_WmND-wtvgj2zQm8nFPkRcc+gyU=uing@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
-Cc: alistair.francis@xilinx.com, bfields@fieldses.org, geert@linux-m68k.org, gerg@linux-m68k.org, jlayton@poochiereds.net, linux-m68k@lists.linux-m68k.org, linux-nfs@vger.kernel.org, linux@sciencehorizons.net, michal.simek@xilinx.com, tglx@linutronix.de, uclinux-h8-devel@lists.sourceforge.jp, ysato@users.sourceforge.jp
+Cc: alistair.francis@xilinx.com, geert@linux-m68k.org, gerg@linux-m68k.org, linux-m68k@lists.linux-m68k.org, linux@sciencehorizons.net, michal.simek@xilinx.com, tglx@linutronix.de, uclinux-h8-devel@lists.sourceforge.jp, ysato@users.sourceforge.jp
 
-On Tue, 17 May 2016 at 09:32, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Tue, May 17, 2016 at 6:41 AM, George Spelvin <linux@horizon.com> wrote:
->> I had assumed that since they weren't fully baked when the window opened,
->> they weren't eligible, but I'll try.
+This is just the infrastructure; there are no users yet.
 
-> Hey, if they aren't ready, they aren't.
+This is modelled on CONFIG_ARCH_RANDOM; a CONFIG_ symbol declares
+the existence of <asm/archhash.h>.
 
-Well, they're close, and I can and did *get* them ready.
+That file may define its own versions of various functions, and define
+HAVE_* symbols (no CONFIG_ prefix!) to suppress the generic ones.
 
-> How about just the minimal set of patches that you'er happy with as-is?
+Signed-off-by: George Spelvin <linux@sciencehorizons.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: Alistair Francis <alistai@xilinx.com>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+---
+ arch/Kconfig         |  8 ++++++++
+ fs/namei.c           |  6 +++++-
+ include/linux/hash.h | 11 +++++++++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
 
-The things are a bit interdependent.  I can't fix hash_64() on 32-bit systems until
-I get rid of hash_string()'s need for it to return 64 bits, which requires work
-on the dcache hashes to make them suitable replacements...
-
-The real fun has come from TPTB deciding to sell the horizon.com domain,
-and it turns out that updating rDNS takes the ISP a whole freaking week,
-during which time outgoing mail trips everyone's spam filters.
-
-That finally got fixed, just in time for me to put my dominant hand through
-a piece of glass.  It's been a week. :-(
-
-
-Anyway, the patches...
-
-This series does several related things:
-1) Gets rid of the string hashes in <linux/sunrpc/svcauth.h>,
-   and uses the dcache hash (fs/namei.c) instead.
-2) Avoid 64-bit multiplies in hash_64() on 32-bit platforms.
-   Two 32-bit multiplies will do well enough.
-3) Rids the world of the bad hash multipliers in hash_32.
-   This finishes the job started in 689de1d6ca.
-   The vast majority of Linux architectures have hardware support
-   for 32x32-bit multiply and so derive no benefit from "simplified"
-   multipliers.
-   The few processors that do not (68000, h8/300 and some models of
-   Microblaze) have arch-specific implementations added.  Those patches
-   are last in the series so they can go through the relevant arch
-   maintainers.
-4) Overhauls the dcache hash mixing.
-   The patch in 2bf0b16954 was an off-the-cuff suggestion.  Replaced with
-   a much more careful design that's simultaneously faster and better.
-   (My own invention, as there was noting suitable in the literature I
-   could find.  Comments welcome!)
-
-Things I thought about but can wait for now:
-5) Modify the hash_name() loop to skip the initial HASH_MIX().
-   That would let us salt the hash if we ever wanted to.
-6) Modify bytemask_from_count to handle inputs of 1..sizeof(long)
-   rather than 0..sizeof(long)-1.  This would simplify all its users
-   including full_name_hash.
-7) Sort out partial_name_hash().
-   The hash function is declared as using a long state, even though
-   it's truncated to 32 bits at the end and the extra internal state
-   contributes nothing to the result.  And some callers do odd things:
-   * fs/hfs/string.c only allocates 32 bits of state
-   * fs/hfsplus/unicode.c uses it to hash 16-bit unicode symbols not bytes
-
-I'm not particularly fond of the names of the header files I created,
-but if anyone has a better idea please talk fast!
-
-George Spelvin (10):
-  Pull out string hash to <linux/stringhash.h>
-  fs/namei.c: Add hash_string() function.
-  <linux/sunrpc/svcauth.h>: Define hash_str() in terms of hash_string()
-  Change hash_64() return value to 32 bits.
-  Eliminate bad hash multipliers from hash_32() and hash_64().
-  fs/namei.c: Improve dcache hash function
-  <linux/hash.h>: Add support for architecture-specific functions
-  m68k: Add <asm/archhash.h>
-  microblaze: Add <asm/archhash.h>
-  h8300: Add <asm/archhash.h>
-
- arch/Kconfig                           |   8 ++
- arch/h8300/Kconfig                     |   1 +
- arch/h8300/include/asm/archhash.h      |  52 ++++++++++++
- arch/m68k/Kconfig                      |   1 +
- arch/m68k/include/asm/archhash.h       |  67 +++++++++++++++
- arch/microblaze/Kconfig                |   1 +
- arch/microblaze/include/asm/archhash.h |  80 ++++++++++++++++++
- fs/namei.c                             | 149 +++++++++++++++++++++++++--------
- include/linux/dcache.h                 |  27 +-----
- include/linux/hash.h                   | 111 ++++++++++++------------
- include/linux/stringhash.h             |  76 +++++++++++++++++
- include/linux/sunrpc/svcauth.h         |  36 ++------
- 12 files changed, 464 insertions(+), 145 deletions(-)
- create mode 100644 arch/h8300/include/asm/archhash.h
- create mode 100644 arch/m68k/include/asm/archhash.h
- create mode 100644 arch/microblaze/include/asm/archhash.h
- create mode 100644 include/linux/stringhash.h
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 81869a5e..33e8d7b1 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -589,6 +589,14 @@ config HAVE_STACK_VALIDATION
+ 	  Architecture supports the 'objtool check' host tool command, which
+ 	  performs compile-time stack metadata validation.
+ 
++config HAVE_ARCH_HASH
++	bool
++	default n
++	help
++	  If this is set, the architecture provides an <asm/archhash.h>
++	  file which provides platform-specific implementations of some
++	  functions in <linux/hash.h> or fs/namei.c.
++
+ #
+ # ABI hall of shame
+ #
+diff --git a/fs/namei.c b/fs/namei.c
+index 2b8d0650..380e8057 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1788,7 +1788,11 @@ static int walk_component(struct nameidata *nd, int flags)
+ 
+ #include <asm/word-at-a-time.h>
+ 
+-#ifdef CONFIG_64BIT
++#ifdef HASH_MIX
++
++/* Architecture provides HASH_MIX and fold_hash() in <linux/hash.h> */
++
++#elif defined(CONFIG_64BIT)
+ /*
+  * Register pressure in the mixing function is an issue, particularly
+  * on 32-bit x86, but almost any function requires one state value and
+diff --git a/include/linux/hash.h b/include/linux/hash.h
+index 8926f369..838bc84b 100644
+--- a/include/linux/hash.h
++++ b/include/linux/hash.h
+@@ -41,17 +41,27 @@
+ #define GOLDEN_RATIO_32 0x61C88647
+ #define GOLDEN_RATIO_64 0x61C8864680B583EBull
+ 
++#ifdef CONFIG_HAVE_ARCH_HASH
++/* This header may use the GOLDEN_RATIO_xx constants */
++#include <asm/archhash.h>
++#endif
++
++#ifndef HAVE_ARCH__HASH_32
+ static inline u32 __hash_32(u32 val)
+ {
+ 	return val * GOLDEN_RATIO_32;
+ }
++#endif
+ 
++#ifndef HAVE_ARCH_HASH_32
+ static inline u32 hash_32(u32 val, unsigned int bits)
+ {
+ 	/* High bits are more random, so use them. */
+ 	return __hash_32(val) >> (32 - bits);
+ }
++#endif
+ 
++#ifndef HAVE_ARCH_HASH_64
+ static __always_inline u32 hash_64(u64 val, unsigned int bits)
+ {
+ 	if (__builtin_constant_p(bits > 32 || bits == 0)) {
+@@ -74,6 +84,7 @@ static __always_inline u32 hash_64(u64 val, unsigned int bits)
+ 	return hash_32((u32)val - __hash_32(val >> 32), bits);
+ #endif
+ }
++#endif
+ 
+ static inline u32 hash_ptr(const void *ptr, unsigned int bits)
+ {
 -- 
 2.8.1
