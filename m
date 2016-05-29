@@ -1,81 +1,364 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v3 07/10] <linux/hash.h>: Add support for
- architecture-specific functions
-Date: Sun, 29 May 2016 09:57:15 +0200
-Message-ID: <CAMuHMdWQmxt2ZF8d=Ck7AX44TWO91WryT_E8_NGwTKF6Xr38Pg@mail.gmail.com>
-References: <CAADWXX_F0jOjui1iHti1eC6tsD+cwMzZ0T_16e9nCzAK6raFxA@mail.gmail.com>
-	<1464465443-25305-1-git-send-email-linux@sciencehorizons.net>
-	<1464465443-25305-8-git-send-email-linux@sciencehorizons.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.7-rc1
+Date: Sun, 29 May 2016 20:09:47 +0200
+Message-ID: <1464545387-5364-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1464465443-25305-8-git-send-email-linux@sciencehorizons.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: George Spelvin <linux@sciencehorizons.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, lkml <linux-kernel@vger.kernel.org>, "J . Bruce Fields" <bfields@redhat.com>, Greg Ungerer <gerg@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, Philippe De Muyter <phdm@macq.eu>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Alistair Francis <alistai@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, uclinux-h8-devel@lists.sourceforge.jp
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi George,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    | 3 +++
+ arch/m68k/configs/apollo_defconfig   | 3 +++
+ arch/m68k/configs/atari_defconfig    | 3 +++
+ arch/m68k/configs/bvme6000_defconfig | 3 +++
+ arch/m68k/configs/hp300_defconfig    | 3 +++
+ arch/m68k/configs/mac_defconfig      | 3 +++
+ arch/m68k/configs/multi_defconfig    | 3 +++
+ arch/m68k/configs/mvme147_defconfig  | 3 +++
+ arch/m68k/configs/mvme16x_defconfig  | 3 +++
+ arch/m68k/configs/q40_defconfig      | 3 +++
+ arch/m68k/configs/sun3_defconfig     | 3 +++
+ arch/m68k/configs/sun3x_defconfig    | 3 +++
+ 12 files changed, 36 insertions(+)
 
-I see this has been applied in the mean time, but improvements
-never hurt...
-
-On Sat, May 28, 2016 at 9:57 PM, George Spelvin
-<linux@sciencehorizons.net> wrote:
-> --- /dev/null
-> +++ b/lib/test_hash.c
-> @@ -0,0 +1,250 @@
-
-> +/*
-> + * Test the various integer hash functions.  h64 (or its low-order bits)
-> + * is the integer to hash.  hash_or accumulates the OR of the hash values,
-> + * which are later checked to see that they cover all the requested bits.
-> + *
-> + * Because these functions (as opposed to the string hashes) are all
-> + * inline, the code being tested is actually in the module, and you can
-> + * recompile and re-test the module without rebooting.
-> + */
-> +static bool __init
-> +test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-> +{
-> +       int k;
-> +       u32 h0 = (u32)h64, h1, h2;
-> +
-> +       /* Test __hash32 */
-> +       hash_or[0][0] |= h1 = __hash_32(h0);
-> +#ifdef HAVE_ARCH__HASH_32
-> +       hash_or[1][0] |= h2 = __hash_32_generic(h0);
-
-__hash_32_generic() always exist, right?
-So you can reduce #ifdefery and increase compile coverage by dropping the
-#ifdef ...
-
-> +#if HAVE_ARCH__HASH_32 == 1
-> +       if (h1 != h2) {
-
-... and replacing this test by
-
-        if (identical_hashes && (h1 != h2))
-
-with identical_hashes a static const bool initialized depending on
-HAVE_ARCH__HASH_32.
-
-> +               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-> +                       h0, h1, h2);
-> +               return false;
-> +       }
-> +#endif
-> +#endif
-
-The same comment applies to the other hunks.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 3ee6976f60885e5b..2a8f5ee65f763ba5 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -359,6 +360,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -554,6 +556,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index e96787ffcbced33f..a8e1537b03a9e45e 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -341,6 +342,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -513,6 +515,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index e68adc7806fea2e7..8d85823f704d598f 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -350,6 +351,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -541,6 +543,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 475130c06dcba04b..09a0a9696c0341a1 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -340,6 +341,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -505,6 +507,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 4339658c200f3eb8..84570670e47aad6f 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -341,6 +342,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -515,6 +517,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 831cc8c3a2e259f6..2c70dd21a14a1941 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -357,6 +358,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -537,6 +539,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 6377afeb522bbb9a..63764afbacbd0690 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -390,6 +391,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -617,6 +619,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 4304b3d56262bc67..bc03811152018e36 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -339,6 +340,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -505,6 +507,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 074bda4094ffd5b0..41834a7a75e21b72 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -340,6 +341,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -505,6 +507,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 07b9fa8d7f2ea71d..91f80c651a9ffdcf 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -346,6 +347,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -528,6 +530,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 36e6fae02d458e2d..7c9ca70af640a331 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -337,6 +338,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -507,6 +509,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 903acf929511e506..95147e158282add6 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+ CONFIG_MODULES=y
+@@ -337,6 +338,7 @@ CONFIG_MACVTAP=m
+ CONFIG_IPVLAN=m
+ CONFIG_VXLAN=m
+ CONFIG_GENEVE=m
++CONFIG_GTP=m
+ CONFIG_MACSEC=m
+ CONFIG_NETCONSOLE=m
+ CONFIG_NETCONSOLE_DYNAMIC=y
+@@ -507,6 +509,7 @@ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_RHASHTABLE=m
++CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+ CONFIG_TEST_USER_COPY=m
+ CONFIG_TEST_BPF=m
+-- 
+1.9.1
