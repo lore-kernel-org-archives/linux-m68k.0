@@ -1,7 +1,7 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v4 06/16] char/genrtc: remove mn10300 support
-Date: Mon, 30 May 2016 20:57:54 +0200
-Message-ID: <1464634684-1248135-7-git-send-email-arnd__15640.885991934$1464634978$gmane$org@arndb.de>
+Subject: [PATCH v4 07/16] rtc: parisc: provide rtc_class_ops directly
+Date: Mon, 30 May 2016 20:57:55 +0200
+Message-ID: <1464634684-1248135-8-git-send-email-arnd__13754.3778670535$1464635028$gmane$org@arndb.de>
 References: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
@@ -10,90 +10,96 @@ List-Id: linux-m68k@vger.kernel.org
 To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, gregkh@linuxfoundation.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-The genrtc driver serves no purpose on mn10300 because it drives the
-same hardware as the original rtc.c driver, and the newer rtc-generic.c
-or rtc-cmos.c drivers on architectures that use the asm-generic/rtc.h
-header.
+The rtc-generic driver provides an architecture specific
+wrapper on top of the generic rtc_class_ops abstraction,
+and on pa-risc, that is implemented using an open-coded
+version of rtc_time_to_tm/rtc_tm_to_time.
 
-I assume it was initially only added for completeness when the
-mn10300 port was done, but the older rtc.c driver was always used
-instead.
-
-We can also stop include asm-generic/rtc.h now, because we
-just call mc146818_set_time() directly.
-
-It would be nice to change the architecture to use the rtc-cmos driver
-next, and remove support for the old rtc driver as well.
+This changes the parisc rtc-generic device to provide its
+rtc_class_ops directly, using the normal helper functions,
+which makes this y2038 safe (on 32-bit) and simplifies
+the implementation.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mn10300/include/asm/rtc.h          | 2 --
- arch/mn10300/kernel/rtc.c               | 2 +-
- arch/mn10300/proc-mn103e010/proc-init.c | 1 +
- arch/mn10300/proc-mn2ws0050/proc-init.c | 1 +
- drivers/char/Kconfig                    | 2 +-
- 5 files changed, 4 insertions(+), 4 deletions(-)
+ arch/parisc/kernel/time.c | 36 +++++++++++++++++++++++++++++++++++-
+ drivers/rtc/rtc-generic.c |  3 +--
+ 2 files changed, 36 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mn10300/include/asm/rtc.h b/arch/mn10300/include/asm/rtc.h
-index 6c14bb1d0d9b..07dc87656197 100644
---- a/arch/mn10300/include/asm/rtc.h
-+++ b/arch/mn10300/include/asm/rtc.h
-@@ -25,6 +25,4 @@ static inline void calibrate_clock(void)
- 
- #endif /* !CONFIG_MN10300_RTC */
- 
--#include <asm-generic/rtc.h>
--
- #endif /* _ASM_RTC_H */
-diff --git a/arch/mn10300/kernel/rtc.c b/arch/mn10300/kernel/rtc.c
-index 48d7058b3295..77e0be4d92ea 100644
---- a/arch/mn10300/kernel/rtc.c
-+++ b/arch/mn10300/kernel/rtc.c
-@@ -27,7 +27,7 @@ void read_persistent_clock(struct timespec *ts)
- {
- 	struct rtc_time tm;
- 
--	get_rtc_time(&tm);
-+	mc146818_set_time(&tm);
- 
- 	ts->tv_nsec = 0;
- 	ts->tv_sec = mktime(tm.tm_year, tm.tm_mon, tm.tm_mday,
-diff --git a/arch/mn10300/proc-mn103e010/proc-init.c b/arch/mn10300/proc-mn103e010/proc-init.c
-index 27b97980dca4..d4dcb0c56b35 100644
---- a/arch/mn10300/proc-mn103e010/proc-init.c
-+++ b/arch/mn10300/proc-mn103e010/proc-init.c
-@@ -9,6 +9,7 @@
-  * 2 of the Licence, or (at your option) any later version.
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 58dd6801f5be..744878789752 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -12,6 +12,7 @@
   */
+ #include <linux/errno.h>
+ #include <linux/module.h>
++#include <linux/rtc.h>
+ #include <linux/sched.h>
  #include <linux/kernel.h>
-+#include <asm/cacheflush.h>
- #include <asm/fpu.h>
- #include <asm/rtc.h>
- #include <asm/busctl-regs.h>
-diff --git a/arch/mn10300/proc-mn2ws0050/proc-init.c b/arch/mn10300/proc-mn2ws0050/proc-init.c
-index ee6d03dbc8d8..950cc8dbb284 100644
---- a/arch/mn10300/proc-mn2ws0050/proc-init.c
-+++ b/arch/mn10300/proc-mn2ws0050/proc-init.c
-@@ -14,6 +14,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
+ #include <linux/param.h>
+@@ -248,14 +249,47 @@ void __init start_cpu_itimer(void)
+ 	per_cpu(cpu_data, cpu).it_value = next_tick;
+ }
  
-+#include <asm/cacheflush.h>
- #include <asm/processor.h>
- #include <asm/uaccess.h>
- #include <asm/io.h>
-diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index e3f2f3e293e5..1d9e3063373b 100644
---- a/drivers/char/Kconfig
-+++ b/drivers/char/Kconfig
-@@ -328,7 +328,7 @@ config JS_RTC
- config GEN_RTC
- 	tristate "Generic /dev/rtc emulation"
- 	depends on RTC!=y
--	depends on M68K || MN10300 || PARISC || PPC
-+	depends on M68K || PARISC || PPC
- 	---help---
- 	  If you say Y here and create a character special file /dev/rtc with
- 	  major number 10 and minor number 135 using mknod ("man mknod"), you
++#if IS_ENABLED(CONFIG_RTC_DRV_GENERIC)
++static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
++{
++	struct pdc_tod tod_data;
++
++	memset(tm, 0, sizeof(*tm));
++	if (pdc_tod_read(&tod_data) < 0)
++		return -EOPNOTSUPP;
++
++	/* we treat tod_sec as unsigned, so this can work until year 2106 */
++	rtc_time64_to_tm(tod_data.tod_sec, tm);
++	return rtc_valid_tm(tm);
++}
++
++static int rtc_generic_set_time(struct device *dev, struct rtc_time *tm)
++{
++	time64_t secs = rtc_tm_to_time64(tm);
++
++	if (pdc_tod_set(secs, 0) < 0)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++
++static const struct rtc_class_ops rtc_generic_ops = {
++	.read_time = rtc_generic_get_time,
++	.set_time = rtc_generic_set_time,
++};
++
+ static int __init rtc_init(void)
+ {
+ 	struct platform_device *pdev;
+ 
+-	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
++	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
++					     &rtc_generic_ops,
++					     sizeof(rtc_generic_ops));
++
+ 	return PTR_ERR_OR_ZERO(pdev);
+ }
+ device_initcall(rtc_init);
++#endif
+ 
+ void read_persistent_clock(struct timespec *ts)
+ {
+diff --git a/drivers/rtc/rtc-generic.c b/drivers/rtc/rtc-generic.c
+index 3958e87a05fa..92b5e02a3750 100644
+--- a/drivers/rtc/rtc-generic.c
++++ b/drivers/rtc/rtc-generic.c
+@@ -9,8 +9,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+ 
+-#if defined(CONFIG_M68K) || defined(CONFIG_PARISC) || \
+-    defined(CONFIG_PPC)
++#if defined(CONFIG_M68K) || defined(CONFIG_PPC)
+ #include <asm/rtc.h>
+ 
+ static int generic_get_time(struct device *dev, struct rtc_time *tm)
 -- 
 2.7.0
