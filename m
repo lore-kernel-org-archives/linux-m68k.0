@@ -1,7 +1,7 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v4 13/16] char/genrtc: remove powerpc support
-Date: Mon, 30 May 2016 20:58:01 +0200
-Message-ID: <1464634684-1248135-14-git-send-email-arnd__5147.38955903358$1464634791$gmane$org@arndb.de>
+Subject: [PATCH v4 08/16] char/genrtc: remove parisc support
+Date: Mon, 30 May 2016 20:57:56 +0200
+Message-ID: <1464634684-1248135-9-git-send-email-arnd__16619.5813370452$1464634811$gmane$org@arndb.de>
 References: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
@@ -10,88 +10,135 @@ List-Id: linux-m68k@vger.kernel.org
 To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, geert@linux-m68k.org, gregkh@linuxfoundation.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
 
-PowerPC is the last architecture using the GEN_RTC driver on some
-machines, but we can migrate them all to using the RTC_DRV_GENERIC
-driver instead now.
+This architecture selects RTC_CLASS unconditionally, so the GEN_RTC
+has not worked here for a long time.
 
-This moves over the CONFIG_GEN_RTC option from drivers/char into
-arch/powerpc/platforms/Kconfig and makes it just select the
-replacement driver instead, for the only reason of not breaking
-existing defconfig and .config files that users may have.
+Now we can remove both the asm/rtc.h header and the Kconfig dependency
+for CONFIG_GEN_RTC.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/powerpc/include/asm/rtc.h    | 78 ---------------------------------------
- arch/powerpc/platforms/Kconfig    | 11 ++++++
- arch/powerpc/platforms/ps3/time.c |  2 +-
- drivers/char/Kconfig              |  4 +-
- drivers/char/Makefile             |  2 +-
- 5 files changed, 15 insertions(+), 82 deletions(-)
- delete mode 100644 arch/powerpc/include/asm/rtc.h
+ arch/parisc/include/asm/rtc.h | 131 ------------------------------------------
+ drivers/char/Kconfig          |   2 +-
+ 2 files changed, 1 insertion(+), 132 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/rtc.h
 
-diff --git a/arch/powerpc/include/asm/rtc.h b/arch/powerpc/include/asm/rtc.h
+diff --git a/arch/parisc/include/asm/rtc.h b/arch/parisc/include/asm/rtc.h
 deleted file mode 100644
-index f5802926b6c0..000000000000
---- a/arch/powerpc/include/asm/rtc.h
+index 099d641a42c2..000000000000
+--- a/arch/parisc/include/asm/rtc.h
 +++ /dev/null
-@@ -1,78 +0,0 @@
--/*
-- * Real-time clock definitions and interfaces
+@@ -1,131 +0,0 @@
+-/* 
+- * include/asm-parisc/rtc.h
 - *
-- * Author: Tom Rini <trini@mvista.com>
+- * Copyright 2002 Randolph CHung <tausq@debian.org>
 - *
-- * 2002 (c) MontaVista, Software, Inc.  This file is licensed under
-- * the terms of the GNU General Public License version 2.  This program
-- * is licensed "as is" without any warranty of any kind, whether express
-- * or implied.
-- *
-- * Based on:
-- * include/asm-m68k/rtc.h
-- *
-- * Copyright Richard Zidlicky
-- * implementation details for genrtc/q40rtc driver
-- *
-- * And the old drivers/macintosh/rtc.c which was heavily based on:
-- * Linux/SPARC Real Time Clock Driver
-- * Copyright (C) 1996 Thomas K. Dyas (tdyas@eden.rutgers.edu)
-- *
-- * With additional work by Paul Mackerras and Franz Sirl.
+- * Based on: include/asm-ppc/rtc.h and the genrtc driver in the
+- * 2.4 parisc linux tree
 - */
 -
--#ifndef __ASM_POWERPC_RTC_H__
--#define __ASM_POWERPC_RTC_H__
+-#ifndef __ASM_RTC_H__
+-#define __ASM_RTC_H__
 -
 -#ifdef __KERNEL__
 -
 -#include <linux/rtc.h>
 -
--#include <asm/machdep.h>
--#include <asm/time.h>
+-#include <asm/pdc.h>
+-
+-#define SECS_PER_HOUR   (60 * 60)
+-#define SECS_PER_DAY    (SECS_PER_HOUR * 24)
+-
 -
 -#define RTC_PIE 0x40		/* periodic interrupt enable */
 -#define RTC_AIE 0x20		/* alarm interrupt enable */
 -#define RTC_UIE 0x10		/* update-finished interrupt enable */
 -
--/* some dummy definitions */
 -#define RTC_BATT_BAD 0x100	/* battery bad */
+-
+-/* some dummy definitions */
 -#define RTC_SQWE 0x08		/* enable square-wave output */
 -#define RTC_DM_BINARY 0x04	/* all time/date values are BCD if clear */
 -#define RTC_24H 0x02		/* 24 hour mode - else hours bit 7 means pm */
 -#define RTC_DST_EN 0x01	        /* auto switch DST - works f. USA only */
 -
--static inline unsigned int get_rtc_time(struct rtc_time *time)
+-# define __isleap(year) \
+-  ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
+-
+-/* How many days come before each month (0-12).  */
+-static const unsigned short int __mon_yday[2][13] =
 -{
--	if (ppc_md.get_rtc_time)
--		ppc_md.get_rtc_time(time);
+-	/* Normal years.  */
+-	{ 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
+-	/* Leap years.  */
+-	{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
+-};
+-
+-static inline unsigned int get_rtc_time(struct rtc_time *wtime)
+-{
+-	struct pdc_tod tod_data;
+-	long int days, rem, y;
+-	const unsigned short int *ip;
+-
+-	memset(wtime, 0, sizeof(*wtime));
+-	if (pdc_tod_read(&tod_data) < 0)
+-		return RTC_24H | RTC_BATT_BAD;
+-
+-	// most of the remainder of this function is:
+-//	Copyright (C) 1991, 1993, 1997, 1998 Free Software Foundation, Inc.
+-//	This was originally a part of the GNU C Library.
+-//      It is distributed under the GPL, and was swiped from offtime.c
+-
+-
+-	days = tod_data.tod_sec / SECS_PER_DAY;
+-	rem = tod_data.tod_sec % SECS_PER_DAY;
+-
+-	wtime->tm_hour = rem / SECS_PER_HOUR;
+-	rem %= SECS_PER_HOUR;
+-	wtime->tm_min = rem / 60;
+-	wtime->tm_sec = rem % 60;
+-
+-	y = 1970;
+-
+-#define DIV(a, b) ((a) / (b) - ((a) % (b) < 0))
+-#define LEAPS_THRU_END_OF(y) (DIV (y, 4) - DIV (y, 100) + DIV (y, 400))
+-
+-	while (days < 0 || days >= (__isleap (y) ? 366 : 365))
+-	{
+-		/* Guess a corrected year, assuming 365 days per year.  */
+-		long int yg = y + days / 365 - (days % 365 < 0);
+-
+-		/* Adjust DAYS and Y to match the guessed year.  */
+-		days -= ((yg - y) * 365
+-			 + LEAPS_THRU_END_OF (yg - 1)
+-			 - LEAPS_THRU_END_OF (y - 1));
+-		y = yg;
+-	}
+-	wtime->tm_year = y - 1900;
+-
+-	ip = __mon_yday[__isleap(y)];
+-	for (y = 11; days < (long int) ip[y]; --y)
+-		continue;
+-	days -= ip[y];
+-	wtime->tm_mon = y;
+-	wtime->tm_mday = days + 1;
+-
 -	return RTC_24H;
 -}
 -
--/* Set the current date and time in the real time clock. */
--static inline int set_rtc_time(struct rtc_time *time)
+-static int set_rtc_time(struct rtc_time *wtime)
 -{
--	if (ppc_md.set_rtc_time)
--		return ppc_md.set_rtc_time(time);
--	return -EINVAL;
+-	u_int32_t secs;
+-
+-	secs = mktime(wtime->tm_year + 1900, wtime->tm_mon + 1, wtime->tm_mday, 
+-		      wtime->tm_hour, wtime->tm_min, wtime->tm_sec);
+-
+-	if(pdc_tod_set(secs, 0) < 0)
+-		return -1;
+-	else
+-		return 0;
+-
 -}
 -
 -static inline unsigned int get_rtc_ss(void)
@@ -112,73 +159,19 @@ index f5802926b6c0..000000000000
 -}
 -
 -#endif /* __KERNEL__ */
--#endif /* __ASM_POWERPC_RTC_H__ */
-diff --git a/arch/powerpc/platforms/Kconfig b/arch/powerpc/platforms/Kconfig
-index 46a3533d3acb..863aa4341390 100644
---- a/arch/powerpc/platforms/Kconfig
-+++ b/arch/powerpc/platforms/Kconfig
-@@ -321,6 +321,17 @@ config OF_RTC
- 	  Uses information from the OF or flattened device tree to instantiate
- 	  platform devices for direct mapped RTC chips like the DS1742 or DS1743.
- 
-+config GEN_RTC
-+	bool "Use the platform RTC operations from user space"
-+	select RTC_CLASS
-+	select RTC_DRV_GENERIC
-+	help
-+	  This option provides backwards compatibility with the old gen_rtc.ko
-+	  module that was traditionally used for old PowerPC machines.
-+	  Platforms should migrate to enabling the RTC_DRV_GENERIC by hand
-+	  replacing their get_rtc_time/set_rtc_time callbacks with
-+	  a proper RTC device driver.
-+
- config SIMPLE_GPIO
- 	bool "Support for simple, memory-mapped GPIO controllers"
- 	depends on PPC
-diff --git a/arch/powerpc/platforms/ps3/time.c b/arch/powerpc/platforms/ps3/time.c
-index 791c6142c4a7..11b45b58c81b 100644
---- a/arch/powerpc/platforms/ps3/time.c
-+++ b/arch/powerpc/platforms/ps3/time.c
-@@ -20,9 +20,9 @@
- 
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/rtc.h>
- 
- #include <asm/firmware.h>
--#include <asm/rtc.h>
- #include <asm/lv1call.h>
- #include <asm/ps3.h>
- 
+-#endif /* __ASM_RTC_H__ */
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index fccac76257c9..153e90f8a445 100644
+index 1d9e3063373b..074bc394e31b 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
-@@ -325,10 +325,10 @@ config JS_RTC
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called js-rtc.
- 
--config GEN_RTC
-+config OLD_GEN_RTC
+@@ -328,7 +328,7 @@ config JS_RTC
+ config GEN_RTC
  	tristate "Generic /dev/rtc emulation"
  	depends on RTC!=y
--	depends on PPC
-+	depends on BROKEN
+-	depends on M68K || PARISC || PPC
++	depends on M68K || PPC
  	---help---
  	  If you say Y here and create a character special file /dev/rtc with
  	  major number 10 and minor number 135 using mknod ("man mknod"), you
-diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-index d8a7579300d2..fc0905aa7373 100644
---- a/drivers/char/Makefile
-+++ b/drivers/char/Makefile
-@@ -25,7 +25,7 @@ obj-$(CONFIG_APPLICOM)		+= applicom.o
- obj-$(CONFIG_SONYPI)		+= sonypi.o
- obj-$(CONFIG_RTC)		+= rtc.o
- obj-$(CONFIG_HPET)		+= hpet.o
--obj-$(CONFIG_GEN_RTC)		+= genrtc.o
-+obj-$(CONFIG_OLD_GEN_RTC)	+= genrtc.o
- obj-$(CONFIG_EFI_RTC)		+= efirtc.o
- obj-$(CONFIG_DS1302)		+= ds1302.o
- obj-$(CONFIG_XILINX_HWICAP)	+= xilinx_hwicap/
 -- 
 2.7.0
