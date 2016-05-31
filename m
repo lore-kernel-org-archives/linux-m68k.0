@@ -1,57 +1,47 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH v4 00/16] genrtc removal
-Date: Mon, 30 May 2016 22:32:07 +0200
-Message-ID: <20160530203207.GY3451__45267.4163425856$1464640352$gmane$org@piout.net>
-References: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Tue, 31 May 2016 14:52:11 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL> <mvm1tuv6dhk.fsf@hawking.suse.de> <21426.40682.197715.245775@gargle.gargle.HOWL> <CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com> <21786.40688.53001.509365@gargle.gargle.HOWL>
+ <22217.61083.254294.356622@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1464634684-1248135-1-git-send-email-arnd@arndb.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41281 "EHLO
+	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750750AbcEaExR (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 31 May 2016 00:53:17 -0400
+In-Reply-To: <22217.61083.254294.356622@gargle.gargle.HOWL>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: geert@linux-m68k.org, gregkh@linuxfoundation.org, deller@gmx.de, benh@kernel.crashing.org, mpe@ellerman.id.au, dalias@libc.org, dhowells@redhat.com, linux-alpha@vger.kernel.org, a.zummo@towertech.it, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, rtc-linux@googlegroups.com, linux-arch@vger.kernel.org
+To: Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi,
 
-On 30/05/2016 at 20:57:48 +0200, Arnd Bergmann wrote :
-> This is the promised resend of the removal of the genrtc driver and some
-> related code, now that we are at a good time to merge this for the coming
-> merge window.
+On Sun, 21 Feb 2016, Mikael Pettersson wrote:
+
+> I've done two git bisects on this.  The first one was inconclusive 
+> (pointed to a harmless commit), but the second one ended up with:
 > 
-
-Thanks a lot!
-
-I'm applying the series right now so it sits in linux-next for a while
-before the next merge window.
-
-I would still happily take any acks, Reviewed-by or Tested-by tags.
-
-
-> - CONFIG_EFI_RTC is actively used on all six Itanium configurations,
->   though the CONFIG_RTC_DRV_EFI replacement driver is also available
->   there (and has been Itanium-only until ARM64 support for EFI was
->   merged). I suspect it's just a matter of getting an Ack from the
->   Itanium maintainers to remove it and change the defconfigs.
+> # first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
 > 
+> That's a big pile of VM changes, so I think it could be the culprit.
 
-I have that one on my radar. There was an impressive number of separate
-drivers for EFI and CMOS...
+I think this issue may date back to v2.6.38 or earlier.
 
-> - the last remaining legacy RTC driver after those is CONFIG_DS1302,
->   which has a slightly nonstandard ioctl interface and is only used
->   on arch/m32r. I have experimented with this a bit and think it
->   can be converted in a backward-compatible way as well.
-> 
+The redhat.com bug report was closed in 2012 but Fedora users were still 
+seeing the problem after it was supposedly fixed.
+  https://bugzilla.redhat.com/show_bug.cgi?id=712019
 
-That one has been converted to a standard SPI driver in v4.6. Following
-some discussion, driving it using gpios will be added. m32r will have to
-use one of those two interfaces. It is broken on that architecture for
-now but we never got any reply from maintainers.
+That page also has a link to the bug report for Ubuntu:
+  https://bugs.launchpad.net/ubuntu/+source/linux/+bug/484045
 
+BTW, I came across this recently: "Rik van Riel pointed out that [the 
+kswapd thread] tends to be slow for [the purpose of compaction], and it 
+can get stuck in a shrinker somewhere waiting for a lock."
+  http://lwn.net/Articles/684611/
+
+Perhaps a stack trace would help to ascertain whether this is the same 
+known bug or not (?)
 
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
