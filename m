@@ -1,53 +1,101 @@
-From: Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0 (was: Re: mm,
- page_alloc: avoid looking up the first zone in a zonelist twice)
-Date: Tue, 31 May 2016 11:13:56 +0100
-Message-ID: <20160531101356.GS2527@techsingularity.net>
-References: <CAMuHMdV00vJJxoA7XABw+mFF+2QUd1MuQbPKKgkmGnK_NySZpg@mail.gmail.com>
- <20160530155644.GP2527@techsingularity.net>
- <CAMuHMdWioTRo1PGymqCEv+3CoQYH8qnhP2T__orSbMw1q-CBMA@mail.gmail.com>
- <20160530185616.GQ2527@techsingularity.net>
- <CAMuHMdXCN5LeNCNJ9=B5sGAtdd81JeRNrUMSCOjSL_Bx1-tDvA@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Tue, 31 May 2016 12:21:05 +0200
+Message-ID: <CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL>
+	<mvm1tuv6dhk.fsf@hawking.suse.de>
+	<21426.40682.197715.245775@gargle.gargle.HOWL>
+	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+	<21786.40688.53001.509365@gargle.gargle.HOWL>
+	<22217.61083.254294.356622@gargle.gargle.HOWL>
+	<alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
+	<22349.25130.697316.272584@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXCN5LeNCNJ9=B5sGAtdd81JeRNrUMSCOjSL_Bx1-tDvA@mail.gmail.com>
+Received: from mail-it0-f65.google.com ([209.85.214.65]:36198 "EHLO
+	mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1751043AbcEaKVH (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 31 May 2016 06:21:07 -0400
+Received: by mail-it0-f65.google.com with SMTP id i127so7274100ita.3
+        for <linux-m68k@vger.kernel.org>; Tue, 31 May 2016 03:21:06 -0700 (PDT)
+In-Reply-To: <22349.25130.697316.272584@gargle.gargle.HOWL>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Mikael Pettersson <mikpelinux@gmail.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, May 31, 2016 at 11:28:05AM +0200, Geert Uytterhoeven wrote:
-> Hi Mel,
-> 
-> On Mon, May 30, 2016 at 8:56 PM, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > Thanks. Please try the following instead
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index bb320cde4d6d..557549c81083 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3024,6 +3024,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
-> >                 apply_fair = false;
-> >                 fair_skipped = false;
-> >                 reset_alloc_batches(ac->preferred_zoneref->zone);
-> > +               z = ac->preferred_zoneref;
-> >                 goto zonelist_scan;
-> >         }
-> 
-> Thanks a lot, that seems to fix the issue!.
-> 
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> JFTR, without the fix, sometimes I get a different, but equally obscure, crash
-> than the one I posted before:
-> 
+Hi Mikael,
 
-I'm afraid I don't recognise it. Given the nature of the previous bug
-though, I have a vague suspicion that someone is not handling a page
-allocation failure properly and goes boom later.
+On Tue, May 31, 2016 at 12:06 PM, Mikael Pettersson
+<mikpelinux@gmail.com> wrote:
+> Finn Thain writes:
+>  > On Sun, 21 Feb 2016, Mikael Pettersson wrote:
+>  > > I've done two git bisects on this.  The first one was inconclusive
+>  > > (pointed to a harmless commit), but the second one ended up with:
+>  > >
+>  > > # first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
+>  > >
+>  > > That's a big pile of VM changes, so I think it could be the culprit.
+>  >
+>  > I think this issue may date back to v2.6.38 or earlier.
+>  >
+>  > The redhat.com bug report was closed in 2012 but Fedora users were still
+>  > seeing the problem after it was supposedly fixed.
+>  >   https://bugzilla.redhat.com/show_bug.cgi?id=712019
+>  >
+>  > That page also has a link to the bug report for Ubuntu:
+>  >   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/484045
+>  >
+>  > BTW, I came across this recently: "Rik van Riel pointed out that [the
+>  > kswapd thread] tends to be slow for [the purpose of compaction], and it
+>  > can get stuck in a shrinker somewhere waiting for a lock."
+>  >   http://lwn.net/Articles/684611/
+>  >
+>  > Perhaps a stack trace would help to ascertain whether this is the same
+>  > known bug or not (?)
+>  >
+>  > --
+>
+> FWIW, my latest round(s) of bisects identified the following:
+>
+> fdbadebec27cc92358ed4f593e8763cf10b82687 is the first bad commit
+> commit fdbadebec27cc92358ed4f593e8763cf10b82687
+> Author: Li Zefan <lizefan@huawei.com>
+> Date:   Thu Sep 12 15:13:19 2013 -0700
+>
+>     memcg: remove redundant code in mem_cgroup_force_empty_write()
+>
+>     vfs guarantees the cgroup won't be destroyed, so it's redundant to get a
+>     css reference.
+>
+>     Signed-off-by: Li Zefan <lizefan@huawei.com>
+>     Acked-by: Michal Hocko <mhocko@suse.cz>
+>     Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+>     Cc: Johannes Weiner <hannes@cmpxchg.org>
+>     Cc: Tejun Heo <tj@kernel.org>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+>
+> :040000 040000 1f6b5b056995067c7c60e6f87e9cd1f181e8fbeb ea29d63e70ce2320e144fac7b157a146d41360bf M      mm
+>
+> This appears to be the first commit in the merge (git bisect refuses to
+> bisect before it), so either it's it or the problem predates the merge.
 
--- 
-Mel Gorman
-SUSE Labs
+That's upstream commit c33bd8354f3a3bb26a98d2b6bf600b7b35657328?
+
+Well done! Looks indeed like a suspect for the behavior you're seeing.
+I suppose you will follow up with the mm people?
+
+Thx!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
