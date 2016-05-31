@@ -1,95 +1,81 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0 (was: Re: mm,
- page_alloc: avoid looking up the first zone in a zonelist twice)
-Date: Tue, 31 May 2016 11:28:05 +0200
-Message-ID: <CAMuHMdXCN5LeNCNJ9=B5sGAtdd81JeRNrUMSCOjSL_Bx1-tDvA__7238.23341909355$1464686910$gmane$org@mail.gmail.com>
-References: <CAMuHMdV00vJJxoA7XABw+mFF+2QUd1MuQbPKKgkmGnK_NySZpg@mail.gmail.com>
-	<20160530155644.GP2527@techsingularity.net>
-	<CAMuHMdWioTRo1PGymqCEv+3CoQYH8qnhP2T__orSbMw1q-CBMA@mail.gmail.com>
-	<20160530185616.GQ2527@techsingularity.net>
+From: Mikael Pettersson <mikpelinux@gmail.com>
+Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
+Date: Tue, 31 May 2016 12:06:34 +0200
+Message-ID: <22349.25130.697316.272584@gargle.gargle.HOWL>
+References: <21393.43065.207399.530921@gargle.gargle.HOWL>
+	<mvm1tuv6dhk.fsf@hawking.suse.de>
+	<21426.40682.197715.245775@gargle.gargle.HOWL>
+	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+	<21786.40688.53001.509365@gargle.gargle.HOWL>
+	<22217.61083.254294.356622@gargle.gargle.HOWL>
+	<alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160530185616.GQ2527@techsingularity.net>
+Received: from mail-lf0-f67.google.com ([209.85.215.67]:35436 "EHLO
+	mail-lf0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1750738AbcEaKGj (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>); Tue, 31 May 2016 06:06:39 -0400
+Received: by mail-lf0-f67.google.com with SMTP id q63so6788792lfi.2
+        for <linux-m68k@vger.kernel.org>; Tue, 31 May 2016 03:06:38 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Mel Gorman <mgorman@techsingularity.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Mikael Pettersson <mikpelinux@gmail.com>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Mel,
+Finn Thain writes:
+ > 
+ > On Sun, 21 Feb 2016, Mikael Pettersson wrote:
+ > 
+ > > I've done two git bisects on this.  The first one was inconclusive 
+ > > (pointed to a harmless commit), but the second one ended up with:
+ > > 
+ > > # first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
+ > > 
+ > > That's a big pile of VM changes, so I think it could be the culprit.
+ > 
+ > I think this issue may date back to v2.6.38 or earlier.
+ > 
+ > The redhat.com bug report was closed in 2012 but Fedora users were still 
+ > seeing the problem after it was supposedly fixed.
+ >   https://bugzilla.redhat.com/show_bug.cgi?id=712019
+ > 
+ > That page also has a link to the bug report for Ubuntu:
+ >   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/484045
+ > 
+ > BTW, I came across this recently: "Rik van Riel pointed out that [the 
+ > kswapd thread] tends to be slow for [the purpose of compaction], and it 
+ > can get stuck in a shrinker somewhere waiting for a lock."
+ >   http://lwn.net/Articles/684611/
+ > 
+ > Perhaps a stack trace would help to ascertain whether this is the same 
+ > known bug or not (?)
+ > 
+ > -- 
 
-On Mon, May 30, 2016 at 8:56 PM, Mel Gorman <mgorman@techsingularity.net> wrote:
-> Thanks. Please try the following instead
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index bb320cde4d6d..557549c81083 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3024,6 +3024,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
->                 apply_fair = false;
->                 fair_skipped = false;
->                 reset_alloc_batches(ac->preferred_zoneref->zone);
-> +               z = ac->preferred_zoneref;
->                 goto zonelist_scan;
->         }
+FWIW, my latest round(s) of bisects identified the following:
 
-Thanks a lot, that seems to fix the issue!.
+fdbadebec27cc92358ed4f593e8763cf10b82687 is the first bad commit
+commit fdbadebec27cc92358ed4f593e8763cf10b82687
+Author: Li Zefan <lizefan@huawei.com>
+Date:   Thu Sep 12 15:13:19 2013 -0700
 
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+    memcg: remove redundant code in mem_cgroup_force_empty_write()
 
-JFTR, without the fix, sometimes I get a different, but equally obscure, crash
-than the one I posted before:
+    vfs guarantees the cgroup won't be destroyed, so it's redundant to get a
+    css reference.
 
-Kernel panic - not syncing: Aiee, killing interrupt handler!
-CPU: 0 PID: 668 Comm: cron Not tainted
-4.7.0-rc1-atari-01184-g21f2f74eaf41989e #370
-Stack from 00bf9be0:
-        00bf9be0 0031a075 000236d0 0000000f 007e9060 efcc5cd0 00bf800c 00bf9fcc
-        00000000 00000000 ffffffff 00bf9c18 00024cbe 00303d7f 0000000f 007e9060
-        efcc5cd0 007e9104 00bf9fcc 00bf9ea0 000061b2 00bf9cf8 efcc5d54 00bf9cf8
-        00000007 00000000 00000000 efcc5d50 00000000 00000000 00000000 00000000
-        00000000 00029efe 008fe870 008fe858 efcc5d50 008fe5d0 00029ee4 00bf9eb4
-        00000009 008fe858 008fe5d0 00355490 008fe5d0 0002a880 efcc5d50 007e9060
-Call Trace: [<000236d0>] panic+0xae/0x23e
- [<00024cbe>] do_exit+0x8e/0x6e4
- [<000061b2>] send_fault_sig+0x5a/0xb8
- [<00029efe>] __dequeue_signal+0x1a/0xb2
- [<00029ee4>] __dequeue_signal+0x0/0xb2
- [<0002a880>] dequeue_signal+0xec/0xf6
- [<0002538e>] do_group_exit+0x7a/0xa2
- [<0002c084>] get_signal+0x19c/0x3d2
- [<0002c280>] get_signal+0x398/0x3d2
- [<00003648>] do_notify_resume+0x2e/0x786
- [<00005654>] buserr_c+0x2d4/0x610
- [<00034212>] search_exception_tables+0x1a/0x34
- [<00005654>] buserr_c+0x2d4/0x610
- [<00003db0>] handle_kernel_fault+0x10/0x58
- [<00005654>] buserr_c+0x2d4/0x610
- [<000061b2>] send_fault_sig+0x5a/0xb8
- [<00046e3e>] update_rmtp+0x4e/0x68
- [<00034212>] search_exception_tables+0x1a/0x34
- [<00046e3e>] update_rmtp+0x4e/0x68
- [<00003db0>] handle_kernel_fault+0x10/0x58
- [<00046e3e>] update_rmtp+0x4e/0x68
- [<000061b2>] send_fault_sig+0x5a/0xb8
- [<000056b2>] buserr_c+0x332/0x610
- [<0000c350>] dnrm_lp+0x162/0x17e
- [<00047276>] hrtimer_nanosleep+0xdc/0x128
- [<00046e58>] hrtimer_wakeup+0x0/0x1e
- [<00010000>] stanh+0xd8/0x140
- [<000029a0>] do_signal_return+0x10/0x1a
- [<00002924>] syscall+0x8/0xc
- [<0008c00b>] ___cache_free+0xcd/0x13e
+    Signed-off-by: Li Zefan <lizefan@huawei.com>
+    Acked-by: Michal Hocko <mhocko@suse.cz>
+    Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+    Cc: Johannes Weiner <hannes@cmpxchg.org>
+    Cc: Tejun Heo <tj@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 
----[ end Kernel panic - not syncing: Aiee, killing interrupt handler!
+:040000 040000 1f6b5b056995067c7c60e6f87e9cd1f181e8fbeb ea29d63e70ce2320e144fac7b157a146d41360bf M      mm
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+This appears to be the first commit in the merge (git bisect refuses to
+bisect before it), so either it's it or the problem predates the merge.
