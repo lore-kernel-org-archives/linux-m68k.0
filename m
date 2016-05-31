@@ -1,101 +1,46 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
-Date: Tue, 31 May 2016 12:21:05 +0200
-Message-ID: <CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
+Date: Tue, 31 May 2016 12:39:52 +0200
+Message-ID: <2782d89d-8baa-c4b1-b1cc-4a48008ef1fa@physik.fu-berlin.de>
 References: <21393.43065.207399.530921@gargle.gargle.HOWL>
-	<mvm1tuv6dhk.fsf@hawking.suse.de>
-	<21426.40682.197715.245775@gargle.gargle.HOWL>
-	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
-	<21786.40688.53001.509365@gargle.gargle.HOWL>
-	<22217.61083.254294.356622@gargle.gargle.HOWL>
-	<alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
-	<22349.25130.697316.272584@gargle.gargle.HOWL>
+ <mvm1tuv6dhk.fsf@hawking.suse.de>
+ <21426.40682.197715.245775@gargle.gargle.HOWL>
+ <CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
+ <21786.40688.53001.509365@gargle.gargle.HOWL>
+ <22217.61083.254294.356622@gargle.gargle.HOWL>
+ <alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
+ <22349.25130.697316.272584@gargle.gargle.HOWL>
+ <CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f65.google.com ([209.85.214.65]:36198 "EHLO
-	mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751043AbcEaKVH (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 31 May 2016 06:21:07 -0400
-Received: by mail-it0-f65.google.com with SMTP id i127so7274100ita.3
-        for <linux-m68k@vger.kernel.org>; Tue, 31 May 2016 03:21:06 -0700 (PDT)
-In-Reply-To: <22349.25130.697316.272584@gargle.gargle.HOWL>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37930 "EHLO
+	outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1751325AbcEaKjz (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Tue, 31 May 2016 06:39:55 -0400
+In-Reply-To: <CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Mikael Pettersson <mikpelinux@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Mikael Pettersson <mikpelinux@gmail.com>
 Cc: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Mikael,
+On 05/31/2016 12:21 PM, Geert Uytterhoeven wrote:
+> That's upstream commit c33bd8354f3a3bb26a98d2b6bf600b7b35657328?
+> 
+> Well done! Looks indeed like a suspect for the behavior you're seeing.
+> I suppose you will follow up with the mm people?
 
-On Tue, May 31, 2016 at 12:06 PM, Mikael Pettersson
-<mikpelinux@gmail.com> wrote:
-> Finn Thain writes:
->  > On Sun, 21 Feb 2016, Mikael Pettersson wrote:
->  > > I've done two git bisects on this.  The first one was inconclusive
->  > > (pointed to a harmless commit), but the second one ended up with:
->  > >
->  > > # first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
->  > >
->  > > That's a big pile of VM changes, so I think it could be the culprit.
->  >
->  > I think this issue may date back to v2.6.38 or earlier.
->  >
->  > The redhat.com bug report was closed in 2012 but Fedora users were still
->  > seeing the problem after it was supposedly fixed.
->  >   https://bugzilla.redhat.com/show_bug.cgi?id=712019
->  >
->  > That page also has a link to the bug report for Ubuntu:
->  >   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/484045
->  >
->  > BTW, I came across this recently: "Rik van Riel pointed out that [the
->  > kswapd thread] tends to be slow for [the purpose of compaction], and it
->  > can get stuck in a shrinker somewhere waiting for a lock."
->  >   http://lwn.net/Articles/684611/
->  >
->  > Perhaps a stack trace would help to ascertain whether this is the same
->  > known bug or not (?)
->  >
->  > --
->
-> FWIW, my latest round(s) of bisects identified the following:
->
-> fdbadebec27cc92358ed4f593e8763cf10b82687 is the first bad commit
-> commit fdbadebec27cc92358ed4f593e8763cf10b82687
-> Author: Li Zefan <lizefan@huawei.com>
-> Date:   Thu Sep 12 15:13:19 2013 -0700
->
->     memcg: remove redundant code in mem_cgroup_force_empty_write()
->
->     vfs guarantees the cgroup won't be destroyed, so it's redundant to get a
->     css reference.
->
->     Signed-off-by: Li Zefan <lizefan@huawei.com>
->     Acked-by: Michal Hocko <mhocko@suse.cz>
->     Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
->     Cc: Johannes Weiner <hannes@cmpxchg.org>
->     Cc: Tejun Heo <tj@kernel.org>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
->
-> :040000 040000 1f6b5b056995067c7c60e6f87e9cd1f181e8fbeb ea29d63e70ce2320e144fac7b157a146d41360bf M      mm
->
-> This appears to be the first commit in the merge (git bisect refuses to
-> bisect before it), so either it's it or the problem predates the merge.
+Yay, great news. I'm currently building a native GHC package for Debian/m68k
+on Aranym and [kswapd] is taking around half of the CPU load. The suggestion
+with drop_caches doesn't help all the time, unfortunately, so I'm really
+looking forward getting this fixed :).
 
-That's upstream commit c33bd8354f3a3bb26a98d2b6bf600b7b35657328?
+Adrian
 
-Well done! Looks indeed like a suspect for the behavior you're seeing.
-I suppose you will follow up with the mm people?
-
-Thx!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
