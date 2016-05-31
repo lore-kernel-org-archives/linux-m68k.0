@@ -1,57 +1,67 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
-Date: Tue, 31 May 2016 12:41:04 +0200
-Message-ID: <CAMuHMdWfs9jEnR=g=pACg31cbnab2sxRXtjN5nc4TFj-=umtqA@mail.gmail.com>
-References: <21393.43065.207399.530921@gargle.gargle.HOWL>
-	<mvm1tuv6dhk.fsf@hawking.suse.de>
-	<21426.40682.197715.245775@gargle.gargle.HOWL>
-	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
-	<21786.40688.53001.509365@gargle.gargle.HOWL>
-	<22217.61083.254294.356622@gargle.gargle.HOWL>
-	<alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
-	<22349.25130.697316.272584@gargle.gargle.HOWL>
-	<CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
-	<2782d89d-8baa-c4b1-b1cc-4a48008ef1fa@physik.fu-berlin.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0 (was: Re: mm,
+ page_alloc: avoid looking up the first zone in a zonelist twice)
+Date: Tue, 31 May 2016 23:44:24 +0200
+Message-ID: <574E05B8.3060009__25904.3487058536$1464731282$gmane$org@suse.cz>
+References: <CAMuHMdV00vJJxoA7XABw+mFF+2QUd1MuQbPKKgkmGnK_NySZpg@mail.gmail.com>
+ <20160530155644.GP2527@techsingularity.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-io0-f193.google.com ([209.85.223.193]:35040 "EHLO
-	mail-io0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1751340AbcEaKlF (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Tue, 31 May 2016 06:41:05 -0400
-Received: by mail-io0-f193.google.com with SMTP id k19so5994780ioi.2
-        for <linux-m68k@vger.kernel.org>; Tue, 31 May 2016 03:41:05 -0700 (PDT)
-In-Reply-To: <2782d89d-8baa-c4b1-b1cc-4a48008ef1fa@physik.fu-berlin.de>
+In-Reply-To: <20160530155644.GP2527@techsingularity.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Mikael Pettersson <mikpelinux@gmail.com>, Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Mel Gorman <mgorman@techsingularity.net>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Adrian,
+On 05/30/2016 05:56 PM, Mel Gorman wrote:
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index dba8cfd0b2d6..f2c1e47adc11 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3232,6 +3232,9 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+>  		 * allocations are system rather than user orientated
+>  		 */
+>  		ac->zonelist = node_zonelist(numa_node_id(), gfp_mask);
+> +		ac->preferred_zoneref = first_zones_zonelist(ac->zonelist,
+> +					ac->high_zoneidx, ac->nodemask);
+> +		ac->classzone_idx = zonelist_zone_idx(ac->preferred_zoneref);
+>  		page = get_page_from_freelist(gfp_mask, order,
+>  						ALLOC_NO_WATERMARKS, ac);
+>  		if (page)
+> 
 
-On Tue, May 31, 2016 at 12:39 PM, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On 05/31/2016 12:21 PM, Geert Uytterhoeven wrote:
->> That's upstream commit c33bd8354f3a3bb26a98d2b6bf600b7b35657328?
->>
->> Well done! Looks indeed like a suspect for the behavior you're seeing.
->> I suppose you will follow up with the mm people?
->
-> Yay, great news. I'm currently building a native GHC package for Debian/m68k
-> on Aranym and [kswapd] is taking around half of the CPU load. The suggestion
-> with drop_caches doesn't help all the time, unfortunately, so I'm really
-> looking forward getting this fixed :).
+Even if that didn't help for this report, I think it's needed too
+(except the classzone_idx which doesn't exist anymore?).
 
-I expect the bad commit can just be reverted, as the surrounding code hasn't
-changed?
+And I think the following as well. (the changed comment could be also
+just deleted).
 
-Gr{oetje,eeting}s,
 
-                        Geert
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f8f3bfc435ee..0a8d8e2bf331 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3808,7 +3808,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned
+int order,
+        /* Dirty zone balancing only done in the fast path */
+        ac.spread_dirty_pages = (gfp_mask & __GFP_WRITE);
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-       /* The preferred zone is used for statistics later */
++       /* The preferred zone is crucial for get_page_from_freelist */
+        ac.preferred_zoneref = first_zones_zonelist(ac.zonelist,
+                                        ac.high_zoneidx, ac.nodemask);
+        if (!ac.preferred_zoneref) {
+@@ -3832,8 +3832,11 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned
+int order,
+         * Restore the original nodemask if it was potentially replaced with
+         * &cpuset_current_mems_allowed to optimize the fast-path attempt.
+         */
+-       if (cpusets_enabled())
++       if (cpusets_enabled()) {
+                ac.nodemask = nodemask;
++               ac.preferred_zoneref = first_zones_zonelist(ac.zonelist,
++                                       ac.high_zoneidx, ac.nodemask);
++       }
+        page = __alloc_pages_slowpath(alloc_mask, order, &ac);
