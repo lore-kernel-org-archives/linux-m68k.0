@@ -1,96 +1,61 @@
-From: Mikael Pettersson <mikpelinux@gmail.com>
-Subject: Re: [3.13 regression] kswapd0 and ksoftirqd/0 CPU hogs
-Date: Wed, 1 Jun 2016 08:36:14 +0200
-Message-ID: <22350.33374.510810.977906@gargle.gargle.HOWL>
-References: <21393.43065.207399.530921@gargle.gargle.HOWL>
-	<mvm1tuv6dhk.fsf@hawking.suse.de>
-	<21426.40682.197715.245775@gargle.gargle.HOWL>
-	<CAOmrzkK7vXueZ4SYSr49DAZDZn5cVkm=6rYUn6GJq4cvXLSmew@mail.gmail.com>
-	<21786.40688.53001.509365@gargle.gargle.HOWL>
-	<22217.61083.254294.356622@gargle.gargle.HOWL>
-	<alpine.LNX.2.00.1605311429500.12286@nippy.intranet>
-	<22349.25130.697316.272584@gargle.gargle.HOWL>
-	<CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
+From: Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0 (was: Re: mm,
+ page_alloc: avoid looking up the first zone in a zonelist twice)
+Date: Wed, 1 Jun 2016 10:19:21 +0100
+Message-ID: <20160601091921.GT2527__43648.2035358951$1464773301$gmane$org@techsingularity.net>
+References: <CAMuHMdV00vJJxoA7XABw+mFF+2QUd1MuQbPKKgkmGnK_NySZpg@mail.gmail.com>
+ <20160530155644.GP2527@techsingularity.net>
+ <574E05B8.3060009@suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-lf0-f65.google.com ([209.85.215.65]:32957 "EHLO
-	mail-lf0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1757170AbcFAGgS (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Wed, 1 Jun 2016 02:36:18 -0400
-Received: by mail-lf0-f65.google.com with SMTP id w16so899014lfd.0
-        for <linux-m68k@vger.kernel.org>; Tue, 31 May 2016 23:36:18 -0700 (PDT)
-In-Reply-To: <CAMuHMdVwZvPyqknDuu_v072xeKgA+i-sZVQB3Pzc0hUNMx-A6w@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <574E05B8.3060009@suse.cz>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mikael Pettersson <mikpelinux@gmail.com>, Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Geert Uytterhoeven writes:
- > Hi Mikael,
- > 
- > On Tue, May 31, 2016 at 12:06 PM, Mikael Pettersson
- > <mikpelinux@gmail.com> wrote:
- > > Finn Thain writes:
- > >  > On Sun, 21 Feb 2016, Mikael Pettersson wrote:
- > >  > > I've done two git bisects on this.  The first one was inconclusive
- > >  > > (pointed to a harmless commit), but the second one ended up with:
- > >  > >
- > >  > > # first bad commit: [ac4de9543aca59f2b763746647577302fbedd57e] Merge branch 'akpm' (patches from Andrew Morton)
- > >  > >
- > >  > > That's a big pile of VM changes, so I think it could be the culprit.
- > >  >
- > >  > I think this issue may date back to v2.6.38 or earlier.
- > >  >
- > >  > The redhat.com bug report was closed in 2012 but Fedora users were still
- > >  > seeing the problem after it was supposedly fixed.
- > >  >   https://bugzilla.redhat.com/show_bug.cgi?id=712019
- > >  >
- > >  > That page also has a link to the bug report for Ubuntu:
- > >  >   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/484045
- > >  >
- > >  > BTW, I came across this recently: "Rik van Riel pointed out that [the
- > >  > kswapd thread] tends to be slow for [the purpose of compaction], and it
- > >  > can get stuck in a shrinker somewhere waiting for a lock."
- > >  >   http://lwn.net/Articles/684611/
- > >  >
- > >  > Perhaps a stack trace would help to ascertain whether this is the same
- > >  > known bug or not (?)
- > >  >
- > >  > --
- > >
- > > FWIW, my latest round(s) of bisects identified the following:
- > >
- > > fdbadebec27cc92358ed4f593e8763cf10b82687 is the first bad commit
- > > commit fdbadebec27cc92358ed4f593e8763cf10b82687
- > > Author: Li Zefan <lizefan@huawei.com>
- > > Date:   Thu Sep 12 15:13:19 2013 -0700
- > >
- > >     memcg: remove redundant code in mem_cgroup_force_empty_write()
- > >
- > >     vfs guarantees the cgroup won't be destroyed, so it's redundant to get a
- > >     css reference.
- > >
- > >     Signed-off-by: Li Zefan <lizefan@huawei.com>
- > >     Acked-by: Michal Hocko <mhocko@suse.cz>
- > >     Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
- > >     Cc: Johannes Weiner <hannes@cmpxchg.org>
- > >     Cc: Tejun Heo <tj@kernel.org>
- > >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
- > >     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
- > >
- > > :040000 040000 1f6b5b056995067c7c60e6f87e9cd1f181e8fbeb ea29d63e70ce2320e144fac7b157a146d41360bf M      mm
- > >
- > > This appears to be the first commit in the merge (git bisect refuses to
- > > bisect before it), so either it's it or the problem predates the merge.
- > 
- > That's upstream commit c33bd8354f3a3bb26a98d2b6bf600b7b35657328?
- > 
- > Well done! Looks indeed like a suspect for the behavior you're seeing.
- > I suppose you will follow up with the mm people?
+On Tue, May 31, 2016 at 11:44:24PM +0200, Vlastimil Babka wrote:
+> On 05/30/2016 05:56 PM, Mel Gorman wrote:
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index dba8cfd0b2d6..f2c1e47adc11 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -3232,6 +3232,9 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+> >  		 * allocations are system rather than user orientated
+> >  		 */
+> >  		ac->zonelist = node_zonelist(numa_node_id(), gfp_mask);
+> > +		ac->preferred_zoneref = first_zones_zonelist(ac->zonelist,
+> > +					ac->high_zoneidx, ac->nodemask);
+> > +		ac->classzone_idx = zonelist_zone_idx(ac->preferred_zoneref);
+> >  		page = get_page_from_freelist(gfp_mask, order,
+> >  						ALLOC_NO_WATERMARKS, ac);
+> >  		if (page)
+> > 
+> 
+> Even if that didn't help for this report, I think it's needed too
+> (except the classzone_idx which doesn't exist anymore?).
+> 
+> And I think the following as well. (the changed comment could be also
+> just deleted).
+> 
 
-Alas, this was a false find.  This commit is definitely in the bad range,
-but reverting it from 3.12.60 doesn't eliminate the kswapd bug.
+Why?
 
-I'll have to bisect mainline again.
+The comment is fine but I do not see why the recalculation would occur.
+
+In the original code, the preferred_zoneref for statistics is calculated
+based on either the supplied nodemask or cpuset_current_mems_allowed during
+the initial attempt. It then relies on the cpuset checks in the slowpath
+to encorce mems_allowed but the preferred zone doesn't change.
+
+With your proposed change, it's possible that the
+preferred_zoneref recalculation points to a zoneref disallowed by
+cpuset_current_mems_sllowed. While it'll be skipped during allocation,
+the statistics will still be against a zone that is potentially outside
+what is allowed.
+
+-- 
+Mel Gorman
+SUSE Labs
