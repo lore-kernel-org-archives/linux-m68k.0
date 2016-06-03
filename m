@@ -1,27 +1,51 @@
-From: Fubo Chen <fubo.chen@gmail.com>
-Subject: Re: [PATCH 00/10] String hash improvements
-Date: Thu, 2 Jun 2016 15:59:38 -0700
-Message-ID: <CAJAFBLD5ipSiNNCUxkeqYn59+7r59LGAy2fXt-ag7aGh+s6Ckg@mail.gmail.com>
-References: <CA+55aFxPSW+84KfQ1N_WmND-wtvgj2zQm8nFPkRcc+gyU=uing@mail.gmail.com>
-	<20160525072027.5107.qmail@ns.sciencehorizons.net>
-	<CAADWXX_F0jOjui1iHti1eC6tsD+cwMzZ0T_16e9nCzAK6raFxA@mail.gmail.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0
+Date: Fri, 3 Jun 2016 13:52:38 +1000
+Message-ID: <20160603135238.2657c1b7@canb.auug.org.au>
+References: <CAMuHMdV00vJJxoA7XABw+mFF+2QUd1MuQbPKKgkmGnK_NySZpg@mail.gmail.com>
+	<20160530155644.GP2527@techsingularity.net>
+	<574E05B8.3060009@suse.cz>
+	<20160601091921.GT2527@techsingularity.net>
+	<574EB274.4030408@suse.cz>
+	<20160602103936.GU2527@techsingularity.net>
+	<0eb1f112-65d4-f2e5-911e-697b21324b9f@suse.cz>
+	<20160602121936.GV2527@techsingularity.net>
+	<20160602114341.e3b974640fc3f8cbcb54898b@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAADWXX_F0jOjui1iHti1eC6tsD+cwMzZ0T_16e9nCzAK6raFxA@mail.gmail.com>
+Received: from ozlabs.org ([103.22.144.67]:36886 "EHLO ozlabs.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751138AbcFCDwl (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+	Thu, 2 Jun 2016 23:52:41 -0400
+In-Reply-To: <20160602114341.e3b974640fc3f8cbcb54898b@linux-foundation.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: George Spelvin <linux@sciencehorizons.net>, lkml <linux-kernel@vger.kernel.org>, alistair.francis@xilinx.com, Bruce Fields <bfields@fieldses.org>, geert@linux-m68k.org, gerg@linux-m68k.org, jlayton@poochiereds.net, linux-m68k@lists.linux-m68k.org, linux-nfs@vger.kernel.org, michal.simek@xilinx.com, Thomas Gleixner <tglx@linutronix.de>, uclinux-h8-devel@lists.sourceforge.jp, ysato@users.sourceforge.jp
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>, Vlastimil Babka <vbabka@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@vger.kernel.org>
 
-On Wed, May 25, 2016 at 9:08 AM, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> Ok, thanks. For some odd reason all your emails in this series got
-> marked as spam. Every single one, including the cover letter (but not
-> your replies to the replies to this).
+Hi Andrew,
 
-I have added the following filter to my gmail account: "never send
-e-mails with [PATCH in the subject to the spam folder". That helps a
-lot.
+On Thu, 2 Jun 2016 11:43:41 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Thu, 2 Jun 2016 13:19:36 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > > >Signed-off-by: Mel Gorman <mgorman@techsingularity.net>  
+> > > 
+> > > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > >   
+> > 
+> > Thanks.  
+> 
+> I queued this.  A tested-by:Geert would be nice?
+> 
+> 
+> From: Mel Gorman <mgorman@techsingularity.net>
+> Subject: mm, page_alloc: recalculate the preferred zoneref if the context can ignore memory policies
 
-Fubo.
+I dumped that into linux-next today as well.
+
+-- 
+Cheers,
+Stephen Rothwell
