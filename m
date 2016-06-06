@@ -1,44 +1,174 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: BUG: scheduling while atomic: cron/668/0x10c9a0c0
-Date: Fri, 3 Jun 2016 09:49:56 -0700
-Message-ID: <20160603094956.51b9346e260df0168a04c53d@linux-foundation.org>
-References: <20160601091921.GT2527@techsingularity.net>
-	<574EB274.4030408@suse.cz>
-	<20160602103936.GU2527@techsingularity.net>
-	<0eb1f112-65d4-f2e5-911e-697b21324b9f@suse.cz>
-	<20160602121936.GV2527@techsingularity.net>
-	<20160602114341.e3b974640fc3f8cbcb54898b@linux-foundation.org>
-	<CAMuHMdX07bUE+3QTbFmbxrjkXPBzFLoLQbupL=WAbLXTuN+6Ww@mail.gmail.com>
-	<20160603084142.GY2527@techsingularity.net>
-	<CAMuHMdWPsx0r4HMYy+prhnQaW0bkrm+FHOyzb8vBO7S70FQOog@mail.gmail.com>
-	<20160603093518.09699af30ba0555847511487@linux-foundation.org>
-	<20160603164625.GB2527@techsingularity.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.7-rc2
+Date: Mon,  6 Jun 2016 09:45:38 +0200
+Message-ID: <1465199138-22805-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12]:46818 "EHLO
-	mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752133AbcFCQt5 (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Jun 2016 12:49:57 -0400
-In-Reply-To: <20160603164625.GB2527@techsingularity.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Mel Gorman <mgorman@techsingularity.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Vlastimil Babka <vbabka@suse.cz>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>, linux-m68k <linux-m68k@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Fri, 3 Jun 2016 17:46:25 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be folded into m68k/defconfig: Update defconfigs for v4.7-rc1
+---
+ arch/m68k/configs/amiga_defconfig    | 1 +
+ arch/m68k/configs/apollo_defconfig   | 1 +
+ arch/m68k/configs/atari_defconfig    | 1 +
+ arch/m68k/configs/bvme6000_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig    | 1 +
+ arch/m68k/configs/mac_defconfig      | 1 +
+ arch/m68k/configs/multi_defconfig    | 1 +
+ arch/m68k/configs/mvme147_defconfig  | 1 +
+ arch/m68k/configs/mvme16x_defconfig  | 1 +
+ arch/m68k/configs/q40_defconfig      | 1 +
+ arch/m68k/configs/sun3_defconfig     | 1 +
+ arch/m68k/configs/sun3x_defconfig    | 1 +
+ 12 files changed, 12 insertions(+)
 
-> On Fri, Jun 03, 2016 at 09:35:18AM -0700, Andrew Morton wrote:
-> > On Fri, 3 Jun 2016 11:00:30 +0200 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > 
-> > > In the mean time my tests completed successfully with both patches applied.
-> > 
-> > Can we please identify "both patches" with specificity?  I have the
-> > below one.
-> > 
-> 
-> mm, page_alloc: Reset zonelist iterator after resetting fair zone allocation policy
-> mm, page_alloc: Recalculate the preferred zoneref if the context can ignore memory policies
-
-Cool, thanks.  I'll get both over to Linus today.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 2a8f5ee65f763ba5..8f5b6f7dd1366024 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -555,6 +555,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index a8e1537b03a9e45e..31bded9c83d45f3a 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -514,6 +514,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index c513d49b6ac3e175..44be88dfdd1baa79 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -545,6 +545,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 09a0a9696c0341a1..2cbb5c465fec0348 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -506,6 +506,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 84570670e47aad6f..96102a42c156ee2d 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -516,6 +516,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 2c70dd21a14a1941..97d88f7dc5a7bd60 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -538,6 +538,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 63764afbacbd0690..be25ef208f0f6237 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -618,6 +618,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index bc03811152018e36..a008344360c91611 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -506,6 +506,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 41834a7a75e21b72..6735a25f36d446f3 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -506,6 +506,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 91f80c651a9ffdcf..780c6e9f6cf9113d 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -529,6 +529,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 7c9ca70af640a331..44693cf361e5df9c 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -508,6 +508,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 95147e158282add6..ef0071d611583465 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -508,6 +508,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_BITMAP=m
++CONFIG_TEST_UUID=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_HASH=m
+ CONFIG_TEST_LKM=m
+-- 
+1.9.1
