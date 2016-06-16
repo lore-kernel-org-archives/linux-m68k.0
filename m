@@ -1,35 +1,43 @@
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH -v2 14/33] locking,m68k: Implement
- atomic_fetch_{add,sub,and,or,xor}()
-Date: Thu, 16 Jun 2016 14:49:49 +0200
-Message-ID: <20160616124949.GF30921__1963.72876312143$1466081435$gmane$org@twins.programming.kicks-ass.net>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH -v2 14/33] locking,m68k: Implement atomic_fetch_{add,sub,and,or,xor}()
+Date: Thu, 16 Jun 2016 14:53:09 +0200
+Message-ID: <mvma8ilxpl6.fsf__17123.8769231879$1466081625$gmane$org@hawking.suse.de>
 References: <20160531101925.702692792@infradead.org>
- <20160531102642.333689893@infradead.org>
- <CAMuHMdXG4veEOqr5vcZQEQH55=CT6CPXOfqrc_m=fpXEseAdLA@mail.gmail.com>
- <20160616101309.GD30921@twins.programming.kicks-ass.net>
- <mvmk2hpxq1a.fsf@hawking.suse.de>
+	<20160531102642.333689893@infradead.org>
+	<CAMuHMdXG4veEOqr5vcZQEQH55=CT6CPXOfqrc_m=fpXEseAdLA@mail.gmail.com>
+	<20160616101309.GD30921@twins.programming.kicks-ass.net>
+	<mvmk2hpxq1a.fsf@hawking.suse.de>
+	<20160616124949.GF30921@twins.programming.kicks-ass.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <mvmk2hpxq1a.fsf@hawking.suse.de>
+In-Reply-To: <20160616124949.GF30921@twins.programming.kicks-ass.net> (Peter
+	Zijlstra's message of "Thu, 16 Jun 2016 14:49:49 +0200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will.deacon@arm.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, boqun.feng@gmail.com, waiman.long@hpe.com, =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Miao Steven <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>Ja
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will.deacon@arm.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, boqun.feng@gmail.com, waiman.long@hpe.com, =?utf-8?B?RnLDqWTDqXJpYw==?= Weisbecker <fweisbec@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Miao Steven <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>Ja
 
-On Thu, Jun 16, 2016 at 02:43:29PM +0200, Andreas Schwab wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> >> > +/*
-> >> > + * Am I reading these CAS loops right in that %2 is the old value and the first
-> >> > + * iteration uses an uninitialized value?
-> >> > + *
-> >> > + * Would it not make sense to add: tmp = atomic_read(v); to avoid this?
-> >> > + */
+Peter Zijlstra <peterz@infradead.org> writes:
 
-> No, there is nothing to fix here.
+> On Thu, Jun 16, 2016 at 02:43:29PM +0200, Andreas Schwab wrote:
+>> Peter Zijlstra <peterz@infradead.org> writes:
+>> >> > +/*
+>> >> > + * Am I reading these CAS loops right in that %2 is the old value and the first
+>> >> > + * iteration uses an uninitialized value?
+>> >> > + *
+>> >> > + * Would it not make sense to add: tmp = atomic_read(v); to avoid this?
+>> >> > + */
+>
+>> No, there is nothing to fix here.
+>
+> OK, care to elucidate? Clearly I need help reading this.
 
-OK, care to elucidate? Clearly I need help reading this.
+grep '2.*atomic_read'
 
-I'm more than happy to remove the comment, but I would like to better
-understand.
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
