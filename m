@@ -1,31 +1,59 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: Issues with vmalloc and ebtables on ColdFire V4e
-Date: Sun, 12 Jun 2016 12:44:02 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1606121226130.32749@nippy.intranet>
-References: <loom.20160611T070345-553@post.gmane.org> <fbca48b5-7a46-c583-7457-372d865e6684@physik.fu-berlin.de> <9b4733d6-fe6d-a27b-aa59-c3285b1fb917@rallycraft.com> <575C0ECB.3050600@linux-m68k.org> <8b213da6-fbfe-f55e-b5c1-b6a2a0ee87c4@rallycraft.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH -v2 14/33] locking,m68k: Implement atomic_fetch_{add,sub,and,or,xor}()
+Date: Thu, 16 Jun 2016 12:08:27 +0200
+Message-ID: <CAMuHMdXG4veEOqr5vcZQEQH55=CT6CPXOfqrc_m=fpXEseAdLA@mail.gmail.com>
+References: <20160531101925.702692792@infradead.org> <20160531102642.333689893@infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54083 "EHLO
-	kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752602AbcFLCoT (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Jun 2016 22:44:19 -0400
-In-Reply-To: <8b213da6-fbfe-f55e-b5c1-b6a2a0ee87c4@rallycraft.com>
+In-Reply-To: <20160531102642.333689893@infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Reid Lindsay <reidlindsay@rallycraft.com>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, linux-m68k@vger.kernel.org
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will.deacon@arm.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, boqun.feng@gmail.com, waiman.long@hpe.com, =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Miao Steven <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>
 
+Hi Peter,
 
-On Sun, 12 Jun 2016, Reid Lindsay wrote:
+On Tue, May 31, 2016 at 12:19 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> Implement FETCH-OP atomic primitives, these are very similar to the
+> existing OP-RETURN primitives we already have, except they return the
+> value of the atomic variable _before_ modification.
+>
+> This is especially useful for irreversible operations -- such as
+> bitops (because it becomes impossible to reconstruct the state prior
+> to modification).
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/m68k/include/asm/atomic.h |   53 +++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 49 insertions(+), 4 deletions(-)
+>
+> --- a/arch/m68k/include/asm/atomic.h
+> +++ b/arch/m68k/include/asm/atomic.h
+> @@ -38,6 +38,13 @@ static inline void atomic_##op(int i, at
+>
+>  #ifdef CONFIG_RMW_INSNS
+>
+> +/*
+> + * Am I reading these CAS loops right in that %2 is the old value and the first
+> + * iteration uses an uninitialized value?
+> + *
+> + * Would it not make sense to add: tmp = atomic_read(v); to avoid this?
+> + */
+> +
+>  #define ATOMIC_OP_RETURN(op, c_op, asm_op)                             \
+>  static inline int atomic_##op##_return(int i, atomic_t *v)             \
+>  {                                                                      \
 
-> 
-> Incidentally, our board has been stable since 2012, this issue only came 
-> to light once ebtables was enabled.
+Do we want the above comment in the code?
 
-If the issue were to be reproduced using a 680x0 emulator like Aranym (and 
-maybe the Debian compiler) one might suspect some code in ebtables is 
-assuming natural alignment of integers...
-$ grep -i align net/bridge/netfilter/ebt*
+Gr{oetje,eeting}s,
 
--- 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
