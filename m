@@ -1,52 +1,134 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH -v2 14/33] locking,m68k: Implement atomic_fetch_{add,sub,and,or,xor}()
-Date: Thu, 16 Jun 2016 21:55:05 +0200
-Message-ID: <CAMuHMdXxw23dUpSgQRZz0XO=4tx-ZEbpmjfx3ivHqL8Qx0vn9g__37972.3078491681$1466106940$gmane$org@mail.gmail.com>
-References: <20160531102642.333689893@infradead.org> <CAMuHMdXG4veEOqr5vcZQEQH55=CT6CPXOfqrc_m=fpXEseAdLA@mail.gmail.com>
- <20160616101309.GD30921@twins.programming.kicks-ass.net> <mvmk2hpxq1a.fsf@hawking.suse.de>
- <20160616124949.GF30921@twins.programming.kicks-ass.net> <mvma8ilxpl6.fsf@hawking.suse.de>
- <20160616143530.GG30921@twins.programming.kicks-ass.net> <mvma8ilw66n.fsf@hawking.suse.de>
- <20160616145653.GH30921@twins.programming.kicks-ass.net> <mvm4m8tw4xz.fsf@hawking.suse.de>
- <20160616174421.GK30921@twins.programming.kicks-ass.net>
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH -v2 14/33] locking,m68k: Implement
+ atomic_fetch_{add,sub,and,or,xor}()
+Date: Fri, 17 Jun 2016 17:40:24 +0200
+Message-ID: <20160617154024.GY30154__9585.86612619019$1466178107$gmane$org@twins.programming.kicks-ass.net>
+References: <20160531101925.702692792@infradead.org>
+ <20160531102642.333689893@infradead.org>
+ <CAMuHMdXG4veEOqr5vcZQEQH55=CT6CPXOfqrc_m=fpXEseAdLA@mail.gmail.com>
+ <20160616101309.GD30921@twins.programming.kicks-ass.net>
+ <mvmk2hpxq1a.fsf@hawking.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160616174421.GK30921@twins.programming.kicks-ass.net>
+Content-Disposition: inline
+In-Reply-To: <mvmk2hpxq1a.fsf@hawking.suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will.deacon@arm.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, boqun.feng@gmail.com, waiman.long@hpe.com, =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Miao Steven <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>James
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will.deacon@arm.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, boqun.feng@gmail.com, waiman.long@hpe.com, =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Richard Henderson <rth@twiddle.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@arm.linux.org.uk>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Miao Steven <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>Ja
 
-Hi Peter,
 
-On Thu, Jun 16, 2016 at 7:44 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> On Thu, Jun 16, 2016 at 05:04:24PM +0200, Andreas Schwab wrote:
->> Peter Zijlstra <peterz@infradead.org> writes:
->>
->> > If not, do you want me to 'fix' this or just remove the comment?
->>
->> It's not broken, so nothing to fix.
->
-> Its non obvious code, that's usually plenty reason to change it.
->
-> Geert, you maintain this stuff, what say you? Is there still a good
-> reason (like supporting ancient compilers that don't do "+d" for
-> example) to keep the code as is?
+Could either of you comment on the below patch?
 
-I don't know when support for "+d" was introduced.
-But given people regularly use old compilers, I'm not inclined to change it,
-unless there's a very good reason.
+All atomic functions that return a value should imply full memory
+barrier semantics -- this very much includes a compiler barrier / memory
+clobber.
 
-BTW, what's the failure mode if an old compiler not supporting "+d"
-encounters it?
 
-Gr{oetje,eeting}s,
 
-                        Geert
+---
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ arch/m68k/include/asm/atomic.h  | 19 ++++++++++++-------
+ arch/m68k/include/asm/cmpxchg.h |  9 ++++++---
+ 2 files changed, 18 insertions(+), 10 deletions(-)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/atomic.h
+index 3e03de7ae33b..062a60417cb9 100644
+--- a/arch/m68k/include/asm/atomic.h
++++ b/arch/m68k/include/asm/atomic.h
+@@ -56,7 +56,8 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
+ 			"	casl %2,%1,%0\n"			\
+ 			"	jne 1b"					\
+ 			: "+m" (*v), "=&d" (t), "=&d" (tmp)		\
+-			: "g" (i), "2" (atomic_read(v)));		\
++			: "g" (i), "2" (atomic_read(v))			\
++			: "memory");					\
+ 	return t;							\
+ }
+ 
+@@ -71,7 +72,8 @@ static inline int atomic_fetch_##op(int i, atomic_t *v)			\
+ 			"	casl %2,%1,%0\n"			\
+ 			"	jne 1b"					\
+ 			: "+m" (*v), "=&d" (t), "=&d" (tmp)		\
+-			: "g" (i), "2" (atomic_read(v)));		\
++			: "g" (i), "2" (atomic_read(v))			\
++			: "memory");					\
+ 	return tmp;							\
+ }
+ 
+@@ -141,7 +143,7 @@ static inline void atomic_dec(atomic_t *v)
+ static inline int atomic_dec_and_test(atomic_t *v)
+ {
+ 	char c;
+-	__asm__ __volatile__("subql #1,%1; seq %0" : "=d" (c), "+m" (*v));
++	__asm__ __volatile__("subql #1,%1; seq %0" : "=d" (c), "+m" (*v) : : "memory");
+ 	return c != 0;
+ }
+ 
+@@ -151,14 +153,15 @@ static inline int atomic_dec_and_test_lt(atomic_t *v)
+ 	__asm__ __volatile__(
+ 		"subql #1,%1; slt %0"
+ 		: "=d" (c), "=m" (*v)
+-		: "m" (*v));
++		: "m" (*v)
++		: "memory");
+ 	return c != 0;
+ }
+ 
+ static inline int atomic_inc_and_test(atomic_t *v)
+ {
+ 	char c;
+-	__asm__ __volatile__("addql #1,%1; seq %0" : "=d" (c), "+m" (*v));
++	__asm__ __volatile__("addql #1,%1; seq %0" : "=d" (c), "+m" (*v) : : "memory");
+ 	return c != 0;
+ }
+ 
+@@ -204,7 +207,8 @@ static inline int atomic_sub_and_test(int i, atomic_t *v)
+ 	char c;
+ 	__asm__ __volatile__("subl %2,%1; seq %0"
+ 			     : "=d" (c), "+m" (*v)
+-			     : ASM_DI (i));
++			     : ASM_DI (i)
++			     : "memory");
+ 	return c != 0;
+ }
+ 
+@@ -213,7 +217,8 @@ static inline int atomic_add_negative(int i, atomic_t *v)
+ 	char c;
+ 	__asm__ __volatile__("addl %2,%1; smi %0"
+ 			     : "=d" (c), "+m" (*v)
+-			     : ASM_DI (i));
++			     : ASM_DI (i)
++			     : "memory");
+ 	return c != 0;
+ }
+ 
+diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
+index 83b1df80f0ac..d8b3d2b48785 100644
+--- a/arch/m68k/include/asm/cmpxchg.h
++++ b/arch/m68k/include/asm/cmpxchg.h
+@@ -98,17 +98,20 @@ static inline unsigned long __cmpxchg(volatile void *p, unsigned long old,
+ 	case 1:
+ 		__asm__ __volatile__ ("casb %0,%2,%1"
+ 				      : "=d" (old), "=m" (*(char *)p)
+-				      : "d" (new), "0" (old), "m" (*(char *)p));
++				      : "d" (new), "0" (old), "m" (*(char *)p)
++				      : "memory");
+ 		break;
+ 	case 2:
+ 		__asm__ __volatile__ ("casw %0,%2,%1"
+ 				      : "=d" (old), "=m" (*(short *)p)
+-				      : "d" (new), "0" (old), "m" (*(short *)p));
++				      : "d" (new), "0" (old), "m" (*(short *)p)
++				      : "memory");
+ 		break;
+ 	case 4:
+ 		__asm__ __volatile__ ("casl %0,%2,%1"
+ 				      : "=d" (old), "=m" (*(int *)p)
+-				      : "d" (new), "0" (old), "m" (*(int *)p));
++				      : "d" (new), "0" (old), "m" (*(int *)p)
++				      : "memory");
+ 		break;
+ 	default:
+ 		old = __invalid_cmpxchg_size(p, old, new, size);
