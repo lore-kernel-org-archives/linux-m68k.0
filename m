@@ -1,42 +1,24 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0164/1529] Fix typo
-Date: Sun, 3 Jul 2016 14:06:53 +0200
-Message-ID: <CAMuHMdV5o7ZZ8nqGcsHenzJve24wGraEY8etDsv8S1wmHQSnaA@mail.gmail.com>
-References: <20160521115739.8325-1-andrea.gelmini@gelma.net>
+Subject: Re: [PATCH 0161/1529] Fix typo
+Date: Sun, 3 Jul 2016 14:10:38 +0200
+Message-ID: <CAMuHMdUU2gqr2fn7A3b3gCLmXiaARt8EXfZGdeB6ktE2Q8K0zg@mail.gmail.com>
+References: <20160521115830.8693-1-andrea.gelmini@gelma.net>
+ <alpine.LNX.2.00.1605212334490.9375@nippy.intranet> <4aabe806-a792-9a17-0fa9-21998c6a8aa6@physik.fu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160521115739.8325-1-andrea.gelmini@gelma.net>
+In-Reply-To: <4aabe806-a792-9a17-0fa9-21998c6a8aa6@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Andrea Gelmini <andrea.gelmini@gelma.net>
-Cc: Jiri Kosina <trivial@kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Jiri Kosina <trivial@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
 On Sat, May 21, 2016 at 1:57 PM, Andrea Gelmini
 <andrea.gelmini@gelma.net> wrote:
-> diff --git a/arch/m68k/ifpsp060/src/fpsp.S b/arch/m68k/ifpsp060/src/fpsp.S
-> index 78cb60f..9bbffeb 100644
-> --- a/arch/m68k/ifpsp060/src/fpsp.S
-> +++ b/arch/m68k/ifpsp060/src/fpsp.S
-> @@ -23196,14 +23196,14 @@ m_sign:
->  #
->  #  1. Branch on the sign of the adjusted exponent.
->  #  2p.(positive exp)
-> -#   2. Check M16 and the digits in lwords 2 and 3 in decending order.
-> +#   2. Check M16 and the digits in lwords 2 and 3 in descending order.
->  #   3. Add one for each zero encountered until a non-zero digit.
->  #   4. Subtract the count from the exp.
->  #   5. Check if the exp has crossed zero in #3 above; make the exp abs
->  #         and set SE.
->  #      6. Multiply the mantissa by 10**count.
->  #  2n.(negative exp)
-> -#   2. Check the digits in lwords 3 and 2 in decending order.
-> +#   2. Check the digits in lwords 3 and 2 in descending order.
->  #   3. Add one for each zero encountered until a non-zero digit.
->  #   4. Add the count to the exp.
->  #   5. Check if the exp has crossed zero in #3 above; clear SE.
+> Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 
-Funny, you've missed the same typo in arch/m68k/ifpsp060/src/pfpsp.S ;-)
+Thanks, applied 161-170 (incl. the fix for pfpsp.S) squashed into a single
+commit, and queued for v4.8.
 
 Gr{oetje,eeting}s,
 
