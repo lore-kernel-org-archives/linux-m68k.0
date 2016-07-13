@@ -1,110 +1,17 @@
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: [PATCH v6 29/46] m68k: dma-mapping: Use unsigned long for dma_attrs
-Date: Wed, 13 Jul 2016 10:41:20 +0200
-Message-ID: <1468399300-5399-29-git-send-email-k.kozlowski__6467.82420012659$1468399896$gmane$org@samsung.com>
-References: <1468399167-28083-1-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-1-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-2-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-3-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-4-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-5-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-6-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-7-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-8-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-9-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-10-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-11-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-12-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-13-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-14-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-15-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-16-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-17-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-18-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-19-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-20-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-21-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-22-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-23-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-24-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-25-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-26-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-27-git-send-email-k.kozlowski@samsung.com>
- <1468399300-5399-28-git-send-email-k.kozlowski@samsung.com>
+From: Financial Service <bambang.prasodjo@customs.go.id>
+Subject: Fast Loans
+Date: Wed, 13 Jul 2016 17:57:43 +0530
+Message-ID: <20160713122828.0A8001BC8EA4__9169.50058094717$1468440428$gmane$org@mail.customs.go.id>
+Reply-To: m_rajeshkumar@aol.co.uk
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <1468399300-5399-28-git-send-email-k.kozlowski@samsung.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, hch@infradead.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Recipients <bambang.prasodjo@customs.go.id>
 
-Split out subsystem specific changes for easier reviews. This will be
-squashed with main commit.
+Hae lainaa 3% vastaus t=E4h=E4n viestiin lis=E4tietoja
 
-Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-[for m68k]
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/kernel/dma.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index cbc78b4117b5..8cf97cbadc91 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -19,7 +19,7 @@
- #if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
- 
- static void *m68k_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
--		gfp_t flag, struct dma_attrs *attrs)
-+		gfp_t flag, unsigned long attrs)
- {
- 	struct page *page, **map;
- 	pgprot_t pgprot;
-@@ -62,7 +62,7 @@ static void *m68k_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
- }
- 
- static void m68k_dma_free(struct device *dev, size_t size, void *addr,
--		dma_addr_t handle, struct dma_attrs *attrs)
-+		dma_addr_t handle, unsigned long attrs)
- {
- 	pr_debug("dma_free_coherent: %p, %x\n", addr, handle);
- 	vfree(addr);
-@@ -73,7 +73,7 @@ static void m68k_dma_free(struct device *dev, size_t size, void *addr,
- #include <asm/cacheflush.h>
- 
- static void *m68k_dma_alloc(struct device *dev, size_t size,
--		dma_addr_t *dma_handle, gfp_t gfp, struct dma_attrs *attrs)
-+		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
- {
- 	void *ret;
- 	/* ignore region specifiers */
-@@ -91,7 +91,7 @@ static void *m68k_dma_alloc(struct device *dev, size_t size,
- }
- 
- static void m68k_dma_free(struct device *dev, size_t size, void *vaddr,
--		dma_addr_t dma_handle, struct dma_attrs *attrs)
-+		dma_addr_t dma_handle, unsigned long attrs)
- {
- 	free_pages((unsigned long)vaddr, get_order(size));
- }
-@@ -130,7 +130,7 @@ static void m68k_dma_sync_sg_for_device(struct device *dev,
- 
- static dma_addr_t m68k_dma_map_page(struct device *dev, struct page *page,
- 		unsigned long offset, size_t size, enum dma_data_direction dir,
--		struct dma_attrs *attrs)
-+		unsigned long attrs)
- {
- 	dma_addr_t handle = page_to_phys(page) + offset;
- 
-@@ -139,7 +139,7 @@ static dma_addr_t m68k_dma_map_page(struct device *dev, struct page *page,
- }
- 
- static int m68k_dma_map_sg(struct device *dev, struct scatterlist *sglist,
--		int nents, enum dma_data_direction dir, struct dma_attrs *attrs)
-+		int nents, enum dma_data_direction dir, unsigned long attrs)
- {
- 	int i;
- 	struct scatterlist *sg;
--- 
-1.9.1
+Apply for a loan at 3% reply to this Email for more Info
