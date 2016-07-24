@@ -1,7 +1,7 @@
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
-Subject: [PATCH v5 15/15] ARM: enable binfmt_flat on systems with an MMU
-Date: Sun, 24 Jul 2016 11:30:29 -0400
-Message-ID: <1469374229-21585-16-git-send-email-nicolas.pitre__24725.6577633836$1469375162$gmane$org@linaro.org>
+Subject: [PATCH v5 13/15] m68k: fix bFLT executable running on MMU enabled systems
+Date: Sun, 24 Jul 2016 11:30:27 -0400
+Message-ID: <1469374229-21585-14-git-send-email-nicolas.pitre__36274.6103703559$1469375162$gmane$org@linaro.org>
 References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
@@ -10,45 +10,55 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, linux-fsdevel@vger.kernel.org
 Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Now that the generic changes are in place, this can be enabled on ARM
-with the use of proper user space accessors in the flat_get_addr_from_rp()
-and flat_put_addr_at_rp() handlers as rp actually holds a user space
-address.
+From: Greg Ungerer <gerg@linux-m68k.org>
 
+Even after recent changes to support running flat format executables on
+MMU enabled systems (by nicolas.pitre@linaro.org) they still failed to
+run on m68k/ColdFire MMU enabled systems. On trying to run a flat format
+binary the application would immediately crash with a SIGSEGV.
+
+Code to setup the D5 register with the base of the application data
+region was only in the non-MMU code path, so it was not being set for
+the MMU enabled case. Flat binaries on m68k/ColdFire use this to support
+GOT/PIC flat built application code.
+
+Fix this so that D5 is always setup when loading/running a bFLT executable
+on m68k systems.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Nicolas Pitre <nico@linaro.org>
 ---
- arch/arm/include/asm/flat.h | 5 +++--
- fs/Kconfig.binfmt           | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/m68k/include/asm/flat.h      | 6 ++++++
+ arch/m68k/include/asm/processor.h | 2 --
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/include/asm/flat.h b/arch/arm/include/asm/flat.h
-index e847d23351..acf1d14b89 100644
---- a/arch/arm/include/asm/flat.h
-+++ b/arch/arm/include/asm/flat.h
-@@ -8,8 +8,9 @@
- #define	flat_argvp_envp_on_stack()		1
- #define	flat_old_ram_flag(flags)		(flags)
- #define	flat_reloc_valid(reloc, size)		((reloc) <= (size))
--#define	flat_get_addr_from_rp(rp, relval, flags, persistent) ((void)persistent,get_unaligned(rp))
--#define	flat_put_addr_at_rp(rp, val, relval)	put_unaligned(val,rp)
-+#define	flat_get_addr_from_rp(rp, relval, flags, persistent) \
-+	({ unsigned long __val; __get_user_unaligned(__val, rp); __val; })
-+#define	flat_put_addr_at_rp(rp, val, relval)	__put_user_unaligned(val, rp)
- #define	flat_get_relocate_addr(rel)		(rel)
- #define	flat_set_persistent(relval, p)		0
+diff --git a/arch/m68k/include/asm/flat.h b/arch/m68k/include/asm/flat.h
+index f9454b89a5..f46c2f044f 100644
+--- a/arch/m68k/include/asm/flat.h
++++ b/arch/m68k/include/asm/flat.h
+@@ -18,4 +18,10 @@ static inline int flat_set_persistent(unsigned long relval,
+ 	return 0;
+ }
  
-diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
-index c7efddf6e0..4c09d93d95 100644
---- a/fs/Kconfig.binfmt
-+++ b/fs/Kconfig.binfmt
-@@ -89,7 +89,7 @@ config BINFMT_SCRIPT
- 
- config BINFMT_FLAT
- 	bool "Kernel support for flat binaries"
--	depends on !MMU || M68K
-+	depends on !MMU || ARM || M68K
- 	depends on !FRV || BROKEN
- 	help
- 	  Support uClinux FLAT format binaries.
++#define FLAT_PLAT_INIT(regs) \
++	do { \
++		if (current->mm) \
++			(regs)->d5 = current->mm->start_data; \
++	} while (0)
++
+ #endif /* __M68KNOMMU_FLAT_H__ */
+diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
+index a6ce2ec8d6..46672d1f4d 100644
+--- a/arch/m68k/include/asm/processor.h
++++ b/arch/m68k/include/asm/processor.h
+@@ -131,8 +131,6 @@ extern int handle_kernel_fault(struct pt_regs *regs);
+ do {                                                    \
+ 	(_regs)->pc = (_pc);                            \
+ 	setframeformat(_regs);                          \
+-	if (current->mm)                                \
+-		(_regs)->d5 = current->mm->start_data;  \
+ 	(_regs)->sr &= ~0x2000;                         \
+ 	wrusp(_usp);                                    \
+ } while(0)
 -- 
 2.7.4
