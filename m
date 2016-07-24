@@ -1,7 +1,7 @@
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
-Subject: [PATCH v5 09/15] binfmt_flat: use clear_user() rather than memset() to clear .bss
-Date: Sun, 24 Jul 2016 11:30:23 -0400
-Message-ID: <1469374229-21585-10-git-send-email-nicolas.pitre__6335.83274106986$1469375162$gmane$org@linaro.org>
+Subject: [PATCH v5 15/15] ARM: enable binfmt_flat on systems with an MMU
+Date: Sun, 24 Jul 2016 11:30:29 -0400
+Message-ID: <1469374229-21585-16-git-send-email-nicolas.pitre__24725.6577633836$1469375162$gmane$org@linaro.org>
 References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
@@ -10,33 +10,45 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, linux-fsdevel@vger.kernel.org
 Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-This is needed on systems with a MMU.
+Now that the generic changes are in place, this can be enabled on ARM
+with the use of proper user space accessors in the flat_get_addr_from_rp()
+and flat_put_addr_at_rp() handlers as rp actually holds a user space
+address.
 
 Signed-off-by: Nicolas Pitre <nico@linaro.org>
-Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- fs/binfmt_flat.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/include/asm/flat.h | 5 +++--
+ fs/Kconfig.binfmt           | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
-index 63756ca6a7..92c1530a2c 100644
---- a/fs/binfmt_flat.c
-+++ b/fs/binfmt_flat.c
-@@ -795,10 +795,11 @@ static int load_flat_file(struct linux_binprm *bprm,
- 	flush_icache_range(start_code, end_code);
+diff --git a/arch/arm/include/asm/flat.h b/arch/arm/include/asm/flat.h
+index e847d23351..acf1d14b89 100644
+--- a/arch/arm/include/asm/flat.h
++++ b/arch/arm/include/asm/flat.h
+@@ -8,8 +8,9 @@
+ #define	flat_argvp_envp_on_stack()		1
+ #define	flat_old_ram_flag(flags)		(flags)
+ #define	flat_reloc_valid(reloc, size)		((reloc) <= (size))
+-#define	flat_get_addr_from_rp(rp, relval, flags, persistent) ((void)persistent,get_unaligned(rp))
+-#define	flat_put_addr_at_rp(rp, val, relval)	put_unaligned(val,rp)
++#define	flat_get_addr_from_rp(rp, relval, flags, persistent) \
++	({ unsigned long __val; __get_user_unaligned(__val, rp); __val; })
++#define	flat_put_addr_at_rp(rp, val, relval)	__put_user_unaligned(val, rp)
+ #define	flat_get_relocate_addr(rel)		(rel)
+ #define	flat_set_persistent(relval, p)		0
  
- 	/* zero the BSS,  BRK and stack areas */
--	memset((void *)(datapos + data_len), 0, bss_len +
--			(memp + memp_size - stack_len -		/* end brk */
--			libinfo->lib_list[id].start_brk) +	/* start brk */
--			stack_len);
-+	if (clear_user((void __user *)(datapos + data_len), bss_len +
-+		       (memp + memp_size - stack_len -		/* end brk */
-+		       libinfo->lib_list[id].start_brk) +	/* start brk */
-+		       stack_len))
-+		return -EFAULT;
+diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
+index c7efddf6e0..4c09d93d95 100644
+--- a/fs/Kconfig.binfmt
++++ b/fs/Kconfig.binfmt
+@@ -89,7 +89,7 @@ config BINFMT_SCRIPT
  
- 	return 0;
- err:
+ config BINFMT_FLAT
+ 	bool "Kernel support for flat binaries"
+-	depends on !MMU || M68K
++	depends on !MMU || ARM || M68K
+ 	depends on !FRV || BROKEN
+ 	help
+ 	  Support uClinux FLAT format binaries.
 -- 
 2.7.4
