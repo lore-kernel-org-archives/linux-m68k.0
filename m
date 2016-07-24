@@ -1,65 +1,41 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 3/3] m68k: use same start_thread() on MMU and no-MMU
-Date: Fri, 22 Jul 2016 10:40:09 +1000
-Message-ID: <1469148009-25426-4-git-send-email-gerg@linux-m68k.org>
-References: <1469148009-25426-1-git-send-email-gerg@linux-m68k.org>
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+Subject: [PATCH v5 03/15] binfmt_flat: prevent kernel dammage from corrupted executable headers
+Date: Sun, 24 Jul 2016 11:30:17 -0400
+Message-ID: <1469374229-21585-4-git-send-email-nicolas.pitre__43909.9506977529$1469375154$gmane$org@linaro.org>
+References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:64836
-	"EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1752818AbcGVAsk (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 21 Jul 2016 20:48:40 -0400
-In-Reply-To: <1469148009-25426-1-git-send-email-gerg@linux-m68k.org>
+In-Reply-To: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>, linux-fsdevel@vger.kernel.org
+Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-The MMU and no-MMU versions of start_thread() are now identical, so use
-the same common code for both.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Nicolas Pitre <nico@linaro.org>
 ---
- arch/m68k/include/asm/processor.h | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ fs/binfmt_flat.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-index 46672d1..c84a218 100644
---- a/arch/m68k/include/asm/processor.h
-+++ b/arch/m68k/include/asm/processor.h
-@@ -110,7 +110,6 @@ struct thread_struct {
- #define setframeformat(_regs)	do { } while (0)
- #endif
+diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+index c3ccdefdea..03301bad1f 100644
+--- a/fs/binfmt_flat.c
++++ b/fs/binfmt_flat.c
+@@ -466,6 +466,17 @@ static int load_flat_file(struct linux_binprm *bprm,
+ 	}
  
--#ifdef CONFIG_MMU
- /*
-  * Do necessary setup to start up a newly executed thread.
-  */
-@@ -123,24 +122,14 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
- 	wrusp(usp);
- }
- 
-+#ifdef CONFIG_MMU
- extern int handle_kernel_fault(struct pt_regs *regs);
--
- #else
--
--#define start_thread(_regs, _pc, _usp)                  \
--do {                                                    \
--	(_regs)->pc = (_pc);                            \
--	setframeformat(_regs);                          \
--	(_regs)->sr &= ~0x2000;                         \
--	wrusp(_usp);                                    \
--} while(0)
--
- static inline  int handle_kernel_fault(struct pt_regs *regs)
- {
- 	/* Any fault in kernel is fatal on non-mmu */
- 	return 0;
- }
--
- #endif
- 
- /* Forward declaration, a strange C thing */
+ 	/*
++	 * Make sure the header params are sane.
++	 * 28 bits (256 MB) is way more than reasonable in this case.
++	 * If some top bits are set we have probable binary corruption.
++	*/
++	if ((text_len | data_len | bss_len | stack_len | full_data) >> 28) {
++		pr_err("bad header\n");
++		ret = -ENOEXEC;
++		goto err;
++	}
++
++	/*
+ 	 * fix up the flags for the older format,  there were all kinds
+ 	 * of endian hacks,  this only works for the simple cases
+ 	 */
 -- 
-1.9.1
+2.7.4
