@@ -1,39 +1,56 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC/PATCH 00/14] split exception table content out of module.h
- into extable.h
-Date: Sun, 24 Jul 2016 21:18:19 -0700
-Message-ID: <CA+55aFyDw_jK609LcjpWvVMTzCWuH6nLUXiZDeYC2tpSaZqhXA@mail.gmail.com>
-References: <20160725034247.109173-1-paul.gortmaker@windriver.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v5 12/15] binfmt_flat: allow compressed flat binary format to work on MMU systems
+Date: Mon, 25 Jul 2016 10:18:52 +0200
+Message-ID: <9805659.OeD7S5yAQd@wuerfel>
+References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org> <4262519.L4vdOGcrh0@wuerfel> <alpine.LFD.2.20.1607241612480.1594@knanqh.ubzr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20160725034247.109173-1-paul.gortmaker@windriver.com>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, "David S. Miller" <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Russell King <linux@armlinux.org.uk>Rus
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.LFD.2.20.1607241612480.1594@knanqh.ubzr>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Alan Cox <gnomes@lxorguk.ukuu.org.uk>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
 
-On Sun, Jul 24, 2016 at 8:42 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> While doing an audit looking for unnecessary instances of module.h
-> inclusion across arch/x86/ I found a significant number of includes
-> of module.h were for things like search_exception_table and friends.
->
-> For historical reasons (i.e. pre-git) the exception table stuff was
-> buried in the middle of the module.h file.  So we have core kernel
-> files that are completely non-modular (both arch specific and arch
-> independent) that are just including module.h for this.
->
-> The converse is also true, in that conventional drivers, be they for
-> filesystems or actual hardware peripherals or similar, do not
-> normally care about the exception tables.
->
-> Here we fork the exception table content [...]
+On Sunday, July 24, 2016 4:25:16 PM CEST Nicolas Pitre wrote:
+> On Sun, 24 Jul 2016, Arnd Bergmann wrote:
+> 
+> > On Sunday, July 24, 2016 11:30:26 AM CEST Nicolas Pitre wrote:
+> > > +#else
+> > > +                       /*
+> > > +                        * This is used on MMU systems mainly for testing.
+> > > +                        * Let's use a kernel buffer to simplify things.
+> > > +                        */
+> > > +                       long unz_text_len = text_len - sizeof(struct flat_hdr);
+> > > +                       long unz_len = unz_text_len + full_data;
+> > > +                       char *unz_data = vmalloc(unz_len);
+> > > +                       if (!unz_data) {
+> > > +                               result = -ENOMEM;
+> > > 
+> > 
+> > Is there a risk of a malicious user exhausting vmalloc space with a
+> > binary that has forged headers? If there is, maybe put an upper bound on
+> > the size of allocation.
+> 
+> Patch #3 enforces a cap on all parameters to avoid overflows and 
+> unreasonable section sizes.
+> 
+> Then vmalloc space is used here only for decompressing the binary into, 
+> after which the whole thing is copied to user space and the vmalloc area 
+> is freed right away.
+> 
+> > More broadly speaking, are there any other attacks that may get enabled
+> > through forged binaries? We've had a couple of vulnerabilities in
+> > binfmt_elf over the years, and I wonder how dangerous it might be
+> > if distros turn on binfmt_flat support by default.
+> 
+> That was Alan's concern too which prompted patch #3. But with a clamp on 
+> all parameters, everything else is done via user accessors.  So an 
+> executable still can crap onto itself or generate a segfault but I doubt 
+> we really care at that point.
+> 
 
-This looks to be the right thing to do as far as I can tell. I'm not
-sure how big of a problem the extable stuff is (we definitely have
-much bigger unnecessary include files that cause a lot more problems),
-but it seems like a reasonable cleanup.
+Ok, sounds good.
 
-              Linus
+	Arnd
