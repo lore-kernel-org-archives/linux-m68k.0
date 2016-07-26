@@ -1,56 +1,101 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v5 12/15] binfmt_flat: allow compressed flat binary format to work on MMU systems
-Date: Mon, 25 Jul 2016 10:18:52 +0200
-Message-ID: <9805659.OeD7S5yAQd@wuerfel>
-References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org> <4262519.L4vdOGcrh0@wuerfel> <alpine.LFD.2.20.1607241612480.1594@knanqh.ubzr>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: Re: [PATCH v5 00/15] allow BFLT executables on systems with a MMU
+Date: Tue, 26 Jul 2016 10:53:28 +1000
+Message-ID: <1712235f-a4b3-3026-adc5-3f19e1a47ae4__45557.5124979534$1469494916$gmane$org@linux-m68k.org>
+References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LFD.2.20.1607241612480.1594@knanqh.ubzr>
+In-Reply-To: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Alan Cox <gnomes@lxorguk.ukuu.org.uk>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, linux-m68k@lists.linux-m68k.org, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
+To: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-fsdevel@vger.kernel.org
+Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Sunday, July 24, 2016 4:25:16 PM CEST Nicolas Pitre wrote:
-> On Sun, 24 Jul 2016, Arnd Bergmann wrote:
+On 25/07/16 01:30, Nicolas Pitre wrote:
+> This series provides the necessary changes to allow "flat" executable
+> binaries meant for no-MMU systems to actually run on systems with a MMU.
+> Also thrown in are various cleanups to binfmt_flat.c.
 > 
-> > On Sunday, July 24, 2016 11:30:26 AM CEST Nicolas Pitre wrote:
-> > > +#else
-> > > +                       /*
-> > > +                        * This is used on MMU systems mainly for testing.
-> > > +                        * Let's use a kernel buffer to simplify things.
-> > > +                        */
-> > > +                       long unz_text_len = text_len - sizeof(struct flat_hdr);
-> > > +                       long unz_len = unz_text_len + full_data;
-> > > +                       char *unz_data = vmalloc(unz_len);
-> > > +                       if (!unz_data) {
-> > > +                               result = -ENOMEM;
-> > > 
-> > 
-> > Is there a risk of a malicious user exhausting vmalloc space with a
-> > binary that has forged headers? If there is, maybe put an upper bound on
-> > the size of allocation.
+> This can also be found in the following git repo:
 > 
-> Patch #3 enforces a cap on all parameters to avoid overflows and 
-> unreasonable section sizes.
-> 
-> Then vmalloc space is used here only for decompressing the binary into, 
-> after which the whole thing is copied to user space and the vmalloc area 
-> is freed right away.
-> 
-> > More broadly speaking, are there any other attacks that may get enabled
-> > through forged binaries? We've had a couple of vulnerabilities in
-> > binfmt_elf over the years, and I wonder how dangerous it might be
-> > if distros turn on binfmt_flat support by default.
-> 
-> That was Alan's concern too which prompted patch #3. But with a clamp on 
-> all parameters, everything else is done via user accessors.  So an 
-> executable still can crap onto itself or generate a segfault but I doubt 
-> we really care at that point.
-> 
+> 	git://git.linaro.org/people/nicolas.pitre/linux binfmt_flat_with_mmu
 
-Ok, sounds good.
+So everyone is in the loop - I have pulled this into my for-linus branch
+at https://git.kernel.org/cgit/linux/kernel/git/gerg/m68knommu.git/ ,
+excepting patch 15 (ARM specific changes).
 
-	Arnd
+My continued testing hasn't found any issues on m68k platforms.
+I can completely boot up with a no-MMU user space and run on an
+MMU enabled ColdFire platform).
+
+I'll like to consider pushing this to Linus nearer the end of the
+merge window if no-one has any objections.
+
+Regards
+Greg
+
+
+> *Why?*
+> 
+> Because developing and testing natively on a large system with lots of
+> RAM makes it so much more convenient to use all the existing profiling
+> tools and debugging facilities that a kernel with lots of RAM can give.
+> And incidentally, those systems with lots of RAM all have a MMU.
+> 
+> *Why not use elf_fdpic?*
+> 
+> The flat executable format is simple with very small footprint
+> overhead, either in the executables themselves or kernel support.
+> This makes the flat format more suitable than elf_fdpic for very small
+> single user-app embedded systems.
+> 
+> And while elf_fdpic binaries can run on MMU systems, flat binaries still
+> couldn't, which just felt wrong.
+> 
+> So here it is. The no-MMU support should remain unaffected, confirmed by
+> Greg Ungerer. Tested with MMU on ARM and M68K.
+> 
+> Changes since v4:
+> 
+> - Isolated architecture specific changes in their own patches for easier
+>   review through their own path to mainline.
+> 
+> - Added needed m68k register fixup from Greg Ungerer.
+> 
+> Changes since v3:
+> 
+> - Small cosmetic changes to pr_*().
+> 
+> - Addressed most important checkpatch complaints on the whole source file
+>   and patches in this seris.
+> 
+> Changes since  v2:
+> 
+> - Added protection against a corrupted header that could have caused nasty
+>   overflows etc. Suggested by Alan Cox.
+> 
+> - printk() modernization. Suggested by Greg Ungerer / Geert Uytterhoeven.
+> 
+> - Added Greg Ungerer's reviewed-by tag.
+> 
+> Changes since v1:
+> 
+> - Removed SuperH and Xtensa from the Kconfig rule as they fail to build
+>   due to lack of get/put_unaligned_user().
+> 
+> - Clarified some commit logs a bit.
+> 
+> diffstat:
+> 
+>  arch/arm/include/asm/flat.h       |   5 +-
+>  arch/m68k/include/asm/flat.h      |  11 +-
+>  arch/m68k/include/asm/processor.h |   2 -
+>  fs/Kconfig.binfmt                 |   3 +-
+>  fs/binfmt_elf_fdpic.c             |  38 +--
+>  fs/binfmt_flat.c                  | 525 ++++++++++++++++++--------------
+>  fs/exec.c                         |  33 ++
+>  include/linux/binfmts.h           |   2 +
+>  8 files changed, 345 insertions(+), 274 deletions(-)
+> 
