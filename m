@@ -1,58 +1,40 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH] m68knommu: fix user a5 register being overwritten
-Date: Fri, 29 Jul 2016 14:33:41 +1000
-Message-ID: <1469766821-30282-1-git-send-email-gerg@linux-m68k.org>
+Subject: Re: [PATCH 0/3] m68k: flat file load fix and cleanup
+Date: Fri, 29 Jul 2016 14:39:20 +1000
+Message-ID: <9cb6afd7-3052-8510-3a36-4bc085ae0d63@linux-m68k.org>
+References: <1469148009-25426-1-git-send-email-gerg@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.153]:37084
+Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.153]:37438
 	"EHLO icp-osb-irony-out3.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750721AbcG2Egu (ORCPT
+	by vger.kernel.org with ESMTP id S1750721AbcG2EiN (ORCPT
 	<rfc822;linux-m68k@vger.kernel.org>);
-	Fri, 29 Jul 2016 00:36:50 -0400
+	Fri, 29 Jul 2016 00:38:13 -0400
+In-Reply-To: <1469148009-25426-1-git-send-email-gerg@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-On no-MMU systems the application a5 register can be overwitten with the
-address of the process data segment when processing application signals.
-For flat format applications compiled with full absolute relocation this
-effectively corrupts the a5 register on signal processing - and this very
-quickly leads to process crash and often takes out the whole system with
-a panic as well.
+Hi Geert,
 
-This has no effect on flat format applications compiled with the more
-common PIC methods (such as -msep-data). These format applications reserve
-a5 for the pointer to the data segment anyway - so it doesn't change it.
+On 22/07/16 10:40, Greg Ungerer wrote:
+> The following 3 patches fix m68k loading of flat binaries on MMU-enabled
+> systems, and then based on that we can cleanup and combine some common
+> code.
+> 
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> ---
+>  b/arch/m68k/include/asm/flat.h      |    8 +++++++-
+>  b/arch/m68k/include/asm/processor.h |   15 +--------------
+>  2 files changed, 8 insertions(+), 15 deletions(-)
 
-A long time ago the a5 register was used in the code packed into the user
-stack to enable signal return processing. And so it had to be restored on
-end of signal cleanup processing back to the original a5 user value. This
-was historically done by saving away a5 in the sigcontext structure. At
-some point (a long time back it seems) the a5 restore process was changed
-and it was hard coded to put the user data segment address directly into a5.
-Which is ok for the common PIC compiled application case, but breaks the
-full relocation application code.
+Do you have any objection to me pushing these via the m68knommu
+tree to Linus later next week?
 
-We no longer use this type of signal handling mechanism and so we don't
-need to do anything special to save and restore a5 at all now. So remove the
-code that hard codes a5 to the address of the user data segment.
+They should only effect non-MMU targets.
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/kernel/signal.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 2dcee3a..9202f82 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -213,7 +213,6 @@ static inline int frame_extra_sizes(int f)
- 
- static inline void adjustformat(struct pt_regs *regs)
- {
--	((struct switch_stack *)regs - 1)->a5 = current->mm->start_data;
- 	/*
- 	 * set format byte to make stack appear modulo 4, which it will
- 	 * be when doing the rte
--- 
-1.9.1
+Regards
+Greg
