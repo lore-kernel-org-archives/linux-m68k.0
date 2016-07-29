@@ -1,101 +1,58 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH v5 00/15] allow BFLT executables on systems with a MMU
-Date: Tue, 26 Jul 2016 10:53:28 +1000
-Message-ID: <1712235f-a4b3-3026-adc5-3f19e1a47ae4__45557.5124979534$1469494916$gmane$org@linux-m68k.org>
-References: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] m68knommu: fix user a5 register being overwritten
+Date: Fri, 29 Jul 2016 14:33:41 +1000
+Message-ID: <1469766821-30282-1-git-send-email-gerg@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1469374229-21585-1-git-send-email-nicolas.pitre@linaro.org>
+Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.153]:37084
+	"EHLO icp-osb-irony-out3.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+	by vger.kernel.org with ESMTP id S1750721AbcG2Egu (ORCPT
+	<rfc822;linux-m68k@vger.kernel.org>);
+	Fri, 29 Jul 2016 00:36:50 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-fsdevel@vger.kernel.org
-Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Alexander Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
 
-On 25/07/16 01:30, Nicolas Pitre wrote:
-> This series provides the necessary changes to allow "flat" executable
-> binaries meant for no-MMU systems to actually run on systems with a MMU.
-> Also thrown in are various cleanups to binfmt_flat.c.
-> 
-> This can also be found in the following git repo:
-> 
-> 	git://git.linaro.org/people/nicolas.pitre/linux binfmt_flat_with_mmu
+On no-MMU systems the application a5 register can be overwitten with the
+address of the process data segment when processing application signals.
+For flat format applications compiled with full absolute relocation this
+effectively corrupts the a5 register on signal processing - and this very
+quickly leads to process crash and often takes out the whole system with
+a panic as well.
 
-So everyone is in the loop - I have pulled this into my for-linus branch
-at https://git.kernel.org/cgit/linux/kernel/git/gerg/m68knommu.git/ ,
-excepting patch 15 (ARM specific changes).
+This has no effect on flat format applications compiled with the more
+common PIC methods (such as -msep-data). These format applications reserve
+a5 for the pointer to the data segment anyway - so it doesn't change it.
 
-My continued testing hasn't found any issues on m68k platforms.
-I can completely boot up with a no-MMU user space and run on an
-MMU enabled ColdFire platform).
+A long time ago the a5 register was used in the code packed into the user
+stack to enable signal return processing. And so it had to be restored on
+end of signal cleanup processing back to the original a5 user value. This
+was historically done by saving away a5 in the sigcontext structure. At
+some point (a long time back it seems) the a5 restore process was changed
+and it was hard coded to put the user data segment address directly into a5.
+Which is ok for the common PIC compiled application case, but breaks the
+full relocation application code.
 
-I'll like to consider pushing this to Linus nearer the end of the
-merge window if no-one has any objections.
+We no longer use this type of signal handling mechanism and so we don't
+need to do anything special to save and restore a5 at all now. So remove the
+code that hard codes a5 to the address of the user data segment.
 
-Regards
-Greg
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/kernel/signal.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-> *Why?*
-> 
-> Because developing and testing natively on a large system with lots of
-> RAM makes it so much more convenient to use all the existing profiling
-> tools and debugging facilities that a kernel with lots of RAM can give.
-> And incidentally, those systems with lots of RAM all have a MMU.
-> 
-> *Why not use elf_fdpic?*
-> 
-> The flat executable format is simple with very small footprint
-> overhead, either in the executables themselves or kernel support.
-> This makes the flat format more suitable than elf_fdpic for very small
-> single user-app embedded systems.
-> 
-> And while elf_fdpic binaries can run on MMU systems, flat binaries still
-> couldn't, which just felt wrong.
-> 
-> So here it is. The no-MMU support should remain unaffected, confirmed by
-> Greg Ungerer. Tested with MMU on ARM and M68K.
-> 
-> Changes since v4:
-> 
-> - Isolated architecture specific changes in their own patches for easier
->   review through their own path to mainline.
-> 
-> - Added needed m68k register fixup from Greg Ungerer.
-> 
-> Changes since v3:
-> 
-> - Small cosmetic changes to pr_*().
-> 
-> - Addressed most important checkpatch complaints on the whole source file
->   and patches in this seris.
-> 
-> Changes since  v2:
-> 
-> - Added protection against a corrupted header that could have caused nasty
->   overflows etc. Suggested by Alan Cox.
-> 
-> - printk() modernization. Suggested by Greg Ungerer / Geert Uytterhoeven.
-> 
-> - Added Greg Ungerer's reviewed-by tag.
-> 
-> Changes since v1:
-> 
-> - Removed SuperH and Xtensa from the Kconfig rule as they fail to build
->   due to lack of get/put_unaligned_user().
-> 
-> - Clarified some commit logs a bit.
-> 
-> diffstat:
-> 
->  arch/arm/include/asm/flat.h       |   5 +-
->  arch/m68k/include/asm/flat.h      |  11 +-
->  arch/m68k/include/asm/processor.h |   2 -
->  fs/Kconfig.binfmt                 |   3 +-
->  fs/binfmt_elf_fdpic.c             |  38 +--
->  fs/binfmt_flat.c                  | 525 ++++++++++++++++++--------------
->  fs/exec.c                         |  33 ++
->  include/linux/binfmts.h           |   2 +
->  8 files changed, 345 insertions(+), 274 deletions(-)
-> 
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 2dcee3a..9202f82 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -213,7 +213,6 @@ static inline int frame_extra_sizes(int f)
+ 
+ static inline void adjustformat(struct pt_regs *regs)
+ {
+-	((struct switch_stack *)regs - 1)->a5 = current->mm->start_data;
+ 	/*
+ 	 * set format byte to make stack appear modulo 4, which it will
+ 	 * be when doing the rte
+-- 
+1.9.1
