@@ -1,48 +1,32 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v4.8-rc1
-Date: Thu, 11 Aug 2016 14:35:24 +1000
-Message-ID: <7b32e508-b82a-e0ad-3d53-e65d25c3c127@linux-m68k.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Any ColdFire evaluation boards still available?
+Date: Wed, 17 Aug 2016 10:51:56 +0200
+Message-ID: <cda2202c-7c3d-015b-b707-fb0e3bc283c2@physik.fu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:22254
-	"EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-	by vger.kernel.org with ESMTP id S1750741AbcHKEeB (ORCPT
-	<rfc822;linux-m68k@vger.kernel.org>);
-	Thu, 11 Aug 2016 00:34:01 -0400
-Sender: linux-m68k-owner@vger.kernel.org
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Resent-Message-ID: <PTNEqWJoJ3I.A.MZB.9WCtXB@bendel>
+List-URL: <https://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/cda2202c-7c3d-015b-b707-fb0e3bc283c2@physik.fu-berlin.de
+To: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Linus,
+Hi!
 
-Can you please pull the m68knommu git tree, for-linus branch.
+I was wondering whether anyone knows whether there is still a source for ColdFire
+evaluation boards available? I would love to have one and I'd also be willing
+to pay a decent price for one of these boards.
 
-This contains only a single fix for a register corruption problem on certain
-types of m68k flat format binaries.
+I'm specifically looking into getting a M5485EVB since this board has a rather
+powerful CPU [1].
 
-Regards
-Greg
+Thanks,
+Adrian
 
-
-
-The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
-
-  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-for you to fetch changes up to 0b98027122d0715aa2dc39882e4c295112275785:
-
-  m68knommu: fix user a5 register being overwritten (2016-08-08 12:38:47 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68knommu: fix user a5 register being overwritten
-
- arch/m68k/kernel/signal.c | 1 -
- 1 file changed, 1 deletion(-)
+> [1]
+http://www.nxp.com/products/microcontrollers-and-processors/more-processors/coldfire-plus-coldfire-32-bit-mcus/coldfire-mpus/v4-mpu/mcf5485-evaluation-board:M5485EVB
