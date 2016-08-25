@@ -1,111 +1,37 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v3] clk: let clk_disable() return immediately if clk is NULL
-Date: Thu, 25 Aug 2016 02:26:53 +0900
-Message-ID: <1472059613-30551-1-git-send-email-yamada.masahiro__34037.8363653601$1472060683$gmane$org@socionext.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is NULL
+Date: Thu, 25 Aug 2016 09:52:47 +0200
+Message-ID: <CAMuHMdUC9d4KNPTDY51DCptmMFQ1F2jLmRDO9WLt=WZA09qRew__35528.5884849311$1472111612$gmane$org@mail.gmail.com>
+References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-clk@vger.kernel.org
-Cc: Stephen Boyd <sboyd@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-mips@linux-mips.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, bcm-kernel-feedback-list@broadcom.com, Wan ZongShun <mcuos.com@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-clk <linux-clk@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, bcm-kernel-feedback-list@broadcom.com, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>"linux-arm-kernel@lists.infradead.org" <l>
 
-Many of clk_disable() implementations just return for NULL pointer,
-but this check is missing from some.  Let's make it tree-wide
-consistent.  It will allow clock consumers to call clk_disable()
-without NULL pointer check.
+On Wed, Aug 24, 2016 at 7:26 PM, Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+> Many of clk_disable() implementations just return for NULL pointer,
+> but this check is missing from some.  Let's make it tree-wide
+> consistent.  It will allow clock consumers to call clk_disable()
+> without NULL pointer check.
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Acked-by: Greg Ungerer <gerg@uclinux.org>
+> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-Acked-by: Wan Zongshun <mcuos.com@gmail.com>
----
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I came back after a long pause.
-You can see the discussion about the previous version:
-https://www.linux-mips.org/archives/linux-mips/2016-04/msg00063.html
+Gr{oetje,eeting}s,
 
+                        Geert
 
-Changes in v3:
-  - Return only when clk is NULL.  Do not take care of error pointer.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Changes in v2:
-  - Rebase on Linux 4.6-rc1
-
- arch/arm/mach-mmp/clock.c        | 3 +++
- arch/arm/mach-w90x900/clock.c    | 3 +++
- arch/blackfin/mach-bf609/clock.c | 3 +++
- arch/m68k/coldfire/clk.c         | 4 ++++
- arch/mips/bcm63xx/clk.c          | 3 +++
- 5 files changed, 16 insertions(+)
-
-diff --git a/arch/arm/mach-mmp/clock.c b/arch/arm/mach-mmp/clock.c
-index ac6633d..28fe64c 100644
---- a/arch/arm/mach-mmp/clock.c
-+++ b/arch/arm/mach-mmp/clock.c
-@@ -67,6 +67,9 @@ void clk_disable(struct clk *clk)
- {
- 	unsigned long flags;
- 
-+	if (!clk)
-+		return;
-+
- 	WARN_ON(clk->enabled == 0);
- 
- 	spin_lock_irqsave(&clocks_lock, flags);
-diff --git a/arch/arm/mach-w90x900/clock.c b/arch/arm/mach-w90x900/clock.c
-index 2c371ff..ac6fd1a 100644
---- a/arch/arm/mach-w90x900/clock.c
-+++ b/arch/arm/mach-w90x900/clock.c
-@@ -46,6 +46,9 @@ void clk_disable(struct clk *clk)
- {
- 	unsigned long flags;
- 
-+	if (!clk)
-+		return;
-+
- 	WARN_ON(clk->enabled == 0);
- 
- 	spin_lock_irqsave(&clocks_lock, flags);
-diff --git a/arch/blackfin/mach-bf609/clock.c b/arch/blackfin/mach-bf609/clock.c
-index 3783058..392a59b 100644
---- a/arch/blackfin/mach-bf609/clock.c
-+++ b/arch/blackfin/mach-bf609/clock.c
-@@ -97,6 +97,9 @@ EXPORT_SYMBOL(clk_enable);
- 
- void clk_disable(struct clk *clk)
- {
-+	if (!clk)
-+		return;
-+
- 	if (clk->ops && clk->ops->disable)
- 		clk->ops->disable(clk);
- }
-diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-index fddfdcc..1e3c7e9 100644
---- a/arch/m68k/coldfire/clk.c
-+++ b/arch/m68k/coldfire/clk.c
-@@ -101,6 +101,10 @@ EXPORT_SYMBOL(clk_enable);
- void clk_disable(struct clk *clk)
- {
- 	unsigned long flags;
-+
-+	if (!clk)
-+		return;
-+
- 	spin_lock_irqsave(&clk_lock, flags);
- 	if ((--clk->enabled == 0) && clk->clk_ops)
- 		clk->clk_ops->disable(clk);
-diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-index 6375652..b49fc9c 100644
---- a/arch/mips/bcm63xx/clk.c
-+++ b/arch/mips/bcm63xx/clk.c
-@@ -326,6 +326,9 @@ EXPORT_SYMBOL(clk_enable);
- 
- void clk_disable(struct clk *clk)
- {
-+	if (!clk)
-+		return;
-+
- 	mutex_lock(&clocks_mutex);
- 	clk_disable_unlocked(clk);
- 	mutex_unlock(&clocks_mutex);
--- 
-1.9.1
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
