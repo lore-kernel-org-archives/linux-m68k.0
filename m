@@ -1,49 +1,70 @@
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is
- NULL
-Date: Thu, 25 Aug 2016 08:27:07 -0700
-Message-ID: <194aebe5-38dd-f43d-fb4d-16ce592a68e8@gmail.com>
-References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH 2/3] scsi/ncr5380: Avoid a compiler warning
+Date: Sat, 27 Aug 2016 12:30:00 +1000
+Message-ID: <20160827022959.211730285@telegraphics.com.au>
+References: <20160827022958.983743612@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59158 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754241AbcH0CmQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Aug 2016 22:42:16 -0400
+Content-Disposition: inline; filename=ncr5380-warning-declared-inline-after-called
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-clk@vger.kernel.org
-Cc: Stephen Boyd <sboyd@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, linux-mips@linux-mips.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, bcm-kernel-feedback-list@broadcom.com, Wan ZongShun <mcuos.com@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
 
-On 08/24/2016 10:26 AM, Masahiro Yamada wrote:
-> Many of clk_disable() implementations just return for NULL pointer,
-> but this check is missing from some.  Let's make it tree-wide
-> consistent.  It will allow clock consumers to call clk_disable()
-> without NULL pointer check.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Greg Ungerer <gerg@uclinux.org>
-> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
-> ---
-> 
-> I came back after a long pause.
-> You can see the discussion about the previous version:
-> https://www.linux-mips.org/archives/linux-mips/2016-04/msg00063.html
-> 
-> 
-> Changes in v3:
->   - Return only when clk is NULL.  Do not take care of error pointer.
-> 
-> Changes in v2:
->   - Rebase on Linux 4.6-rc1
-> 
->  arch/arm/mach-mmp/clock.c        | 3 +++
->  arch/arm/mach-w90x900/clock.c    | 3 +++
->  arch/blackfin/mach-bf609/clock.c | 3 +++
->  arch/m68k/coldfire/clk.c         | 4 ++++
->  arch/mips/bcm63xx/clk.c          | 3 +++
+With commit 3a0f64bfa907 ("mac_scsi: Fix pseudo DMA implementation")
+some versions of gcc now warn:
 
-For bcm63xx:
+In file included from drivers/scsi/mac_scsi.c:335:
+drivers/scsi/NCR5380.h:295: warning: `NCR5380_poll_politely' declared inline after being called
+drivers/scsi/NCR5380.h:295: warning: previous declaration of `NCR5380_poll_politely' was here
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Avoid this by defining NCR5380_poll_politely() in NCR5380.h.
+
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+---
+ drivers/scsi/NCR5380.c |    7 -------
+ drivers/scsi/NCR5380.h |    8 +++++++-
+ 2 files changed, 7 insertions(+), 8 deletions(-)
+
+Index: linux/drivers/scsi/NCR5380.c
+===================================================================
+--- linux.orig/drivers/scsi/NCR5380.c	2016-08-27 12:29:57.000000000 +1000
++++ linux/drivers/scsi/NCR5380.c	2016-08-27 12:29:57.000000000 +1000
+@@ -230,13 +230,6 @@ static int NCR5380_poll_politely2(struct
+ 	return -ETIMEDOUT;
+ }
+ 
+-static inline int NCR5380_poll_politely(struct Scsi_Host *instance,
+-                                        int reg, int bit, int val, int wait)
+-{
+-	return NCR5380_poll_politely2(instance, reg, bit, val,
+-	                                        reg, bit, val, wait);
+-}
+-
+ #if NDEBUG
+ static struct {
+ 	unsigned char mask;
+Index: linux/drivers/scsi/NCR5380.h
+===================================================================
+--- linux.orig/drivers/scsi/NCR5380.h	2016-08-27 12:29:57.000000000 +1000
++++ linux/drivers/scsi/NCR5380.h	2016-08-27 12:29:57.000000000 +1000
+@@ -292,8 +292,14 @@ static void NCR5380_reselect(struct Scsi
+ static struct scsi_cmnd *NCR5380_select(struct Scsi_Host *, struct scsi_cmnd *);
+ static int NCR5380_transfer_dma(struct Scsi_Host *instance, unsigned char *phase, int *count, unsigned char **data);
+ static int NCR5380_transfer_pio(struct Scsi_Host *instance, unsigned char *phase, int *count, unsigned char **data);
+-static int NCR5380_poll_politely(struct Scsi_Host *, int, int, int, int);
+ static int NCR5380_poll_politely2(struct Scsi_Host *, int, int, int, int, int, int, int);
+ 
++static inline int NCR5380_poll_politely(struct Scsi_Host *instance,
++                                        int reg, int bit, int val, int wait)
++{
++	return NCR5380_poll_politely2(instance, reg, bit, val,
++	                                        reg, bit, val, wait);
++}
++
+ #endif				/* __KERNEL__ */
+ #endif				/* NCR5380_H */
