@@ -1,19 +1,38 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 0/3] Small fixes and cleanup
-Date: Sat, 27 Aug 2016 12:29:58 +1000
-Message-ID: <20160827022958.983743612@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/3] documentation/scsi: Remove nodisconnect parameter
+Date: Sun, 28 Aug 2016 10:07:13 +0200
+Message-ID: <CAMuHMdUTwL8HoPk=YEuYYucEiUgpNJ_Hho8Duo0MOiTbP8WE+w@mail.gmail.com>
+References: <20160827022958.983743612@telegraphics.com.au> <20160827022959.119870978@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-it0-f67.google.com ([209.85.214.67]:36678 "EHLO
+        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753008AbcH1IHO (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 28 Aug 2016 04:07:14 -0400
+In-Reply-To: <20160827022959.119870978@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
 
+On Sat, Aug 27, 2016 at 4:29 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> The driver that used the 'nodisconnect' parameter was removed in
+> commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver"). Related documentation
+> was cleaned up in commit f37a7238d379 ("[SCSI] 53c7xx: fix removal
+> fallout"), except for the remaining two mentions that are removed here.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Miscellaneous small patches for an interrupt latency issue,
-a compiler warning and a documentation cleanup.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
----
- Documentation/kernel-parameters.txt    |    2 --
- Documentation/scsi/scsi-parameters.txt |    2 --
- drivers/scsi/NCR5380.c                 |   13 +++----------
- drivers/scsi/NCR5380.h                 |    8 +++++++-
- 4 files changed, 10 insertions(+), 15 deletions(-)
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
