@@ -1,71 +1,63 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 6/8] m68k: always make available dump_fpu()
-Date: Mon, 29 Aug 2016 21:43:22 +1000
-Message-ID: <1472471004-4580-7-git-send-email-gerg@linux-m68k.org>
-References: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 7/8] m68k: only generate FPU instructions of CONFIG_FPU
+Date: Mon, 29 Aug 2016 14:53:05 +0200
+Message-ID: <CAMuHMdWZEG+mtX+339QbKVfaHXf6TsTs6dVvFsuBjaXDP9t8Rw@mail.gmail.com>
+References: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org> <1472471004-4580-8-git-send-email-gerg@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49458
-        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932817AbcH2LmT (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 29 Aug 2016 07:42:19 -0400
-In-Reply-To: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
+Received: from mail-it0-f67.google.com ([209.85.214.67]:36740 "EHLO
+        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932763AbcH2MxG (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Aug 2016 08:53:06 -0400
+Received: by mail-it0-f67.google.com with SMTP id x131so6348167ite.3
+        for <linux-m68k@vger.kernel.org>; Mon, 29 Aug 2016 05:53:06 -0700 (PDT)
+In-Reply-To: <1472471004-4580-8-git-send-email-gerg@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Our local m68k architecture dump_fpu() is conditionally compiled in on
-CONFIG_FPU. That is OK for all existing MMU enabled CPU types, but won't
-handle the case for some ColdFire SoC CPU parts that we want to support
-that have no FPU hardware.
+Hi Greg,
 
-dump_fpu() is expected to be present by the ELF loader, so we must always
-have it available and exported.
+On Mon, Aug 29, 2016 at 1:43 PM, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> Most of the m68k code that supports a hardware FPU is surrounded by
+> CONFIG_FPU. Except this setup code in setup_mm.c. Be consistent and
+> surround these hardware FPU instructions with CONFIG_FPU instead of
+> a check based on CONFIG_M68KFPU_EMU_ONLY.
+>
+> The side effect of this is that we can now compile a kernel with no
+> m68k/ColdFire hardware support FPU instructions at all (if we do not
+> define CONFIG_FPU).
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> ---
+>  arch/m68k/kernel/setup_mm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 13f4640..00290c4 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -245,7 +245,7 @@ void __init setup_arch(char **cmdline_p)
+>          * We should really do our own FPU check at startup.
+>          * [what do we do with buggy 68LC040s? if we have problems
+>          *  with them, we should add a test to check_bugs() below] */
+> -#ifndef CONFIG_M68KFPU_EMU_ONLY
+> +#ifdef CONFIG_FPU
+>         /* clear the fpu if we have one */
+>         if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060|FPU_COLDFIRE)) {
+>                 volatile int zero = 0;
 
-Modify the position of the conditional to allow supporting the case where
-CONFIG_FPU is not defined.
+This piece of code is now compiled in if CONFIG_M68KFPU_EMU_ONLY=y?
 
-This change based on changes and discussion from Yannick Gicquel
-<yannick.gicquel@open.eurogiciel.org>.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/kernel/process.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+                        Geert
 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index c55ff71..44ec789 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -203,7 +203,6 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- }
- 
- /* Fill in the fpu structure for a core dump.  */
--#ifdef CONFIG_FPU
- int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- {
- 	char fpustate[216];
-@@ -222,6 +221,7 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- 		return 1;
- 	}
- 
-+#ifdef CONFIG_FPU
- 	/* First dump the fpu context to avoid protocol violation.  */
- 	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
- 	if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
-@@ -248,11 +248,11 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- 			      : "m" (fpu->fpregs[0])
- 			      : "memory");
- 	}
-+#endif /* CONFIG_FPU */
- 
- 	return 1;
- }
- EXPORT_SYMBOL(dump_fpu);
--#endif /* CONFIG_FPU */
- 
- unsigned long get_wchan(struct task_struct *p)
- {
--- 
-1.9.1
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
