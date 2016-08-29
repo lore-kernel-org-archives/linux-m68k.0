@@ -1,83 +1,51 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 3/3] scsi/ncr5380: Improve interrupt latency during PIO
- tranfers
-Date: Mon, 29 Aug 2016 14:06:09 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1608291219110.20939@nippy.intranet>
-References: <20160827022958.983743612@telegraphics.com.au> <20160827022959.303563262@telegraphics.com.au> <CAMuHMdUwLAJJUO6L9gKYU4w_RO4s38xzjpRehnNBJPQ7s1+MkA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH 0/8] m68k: prepare to support ColdFire M5441x MMU enabled
+Date: Mon, 29 Aug 2016 21:43:16 +1000
+Message-ID: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51200 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750724AbcH2EIA (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 29 Aug 2016 00:08:00 -0400
-In-Reply-To: <CAMuHMdUwLAJJUO6L9gKYU4w_RO4s38xzjpRehnNBJPQ7s1+MkA@mail.gmail.com>
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49426
+        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S932628AbcH2LmF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 29 Aug 2016 07:42:05 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, scsi <linux-scsi@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Schmitz <schmitzmic@gmail.com>
+To: linux-m68k@vger.kernel.org
+
+The following changes are in preparation for supporting the ColdFire
+M5441x SoC with its MMU enabled. (It is already supported in the no-MMU
+mode).
+
+Quite a few relate to the ability to run with no FPU hardware (and no
+software emulation of FP). I have taken CONFIG_FPU to mean that we expect
+a hardware FPU to be present - and we generate code to support that in
+the kernel. If CONFIG_FPU is not defined we generate no support code
+(so no use of FPU specific instructions). That is mostly what the code
+already did, but not comepletely.
+
+I don't actually enable the M5441x to run with MMU enabled in this
+series. I don't have that hardware, so I can't verify that it actually
+works. But these changes don't break the m547x, so I expect all is ok.
+With the extra MMU enabling configuration line added you can cleanly
+build for the M5441x with MMU enabled after this series though.
+
+These patches are based on the ideas from Yannick Gicquel's
+<yannick.gicquel@open.eurogiciel.org> patches from some time back.
+
+Regards
+Greg
 
 
-On Sun, 28 Aug 2016, Geert Uytterhoeven wrote:
-
-> Hi Finn,
-> 
-> On Sat, Aug 27, 2016 at 4:30 AM, Finn Thain <fthain@telegraphics.com.au> 
-> wrote:
-> > Large PIO transfers are broken up into chunks to try to avoid 
-> > disabling local IRQs for long periods. But IRQs are still disabled for 
-> > too long and this causes SCC FIFO overruns during serial port 
-> > transfers. This patch fixes the problem by halving the PIO chunk size.
-> >
-> > Testing with mac_scsi shows that the extra NCR5380_main() loop 
-> > iterations have negligible performance impact on SCSI transfers (about 
-> > 1% slower). On a faster system (using the dmx3191d module) transfers 
-> > showed no measurable change.
-> >
-> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> >
-> > ---
-> >  drivers/scsi/NCR5380.c |    6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > Index: linux/drivers/scsi/NCR5380.c
-> > ===================================================================
-> > --- linux.orig/drivers/scsi/NCR5380.c   2016-08-27 12:29:57.000000000 +1000
-> > +++ linux/drivers/scsi/NCR5380.c        2016-08-27 12:29:58.000000000 +1000
-> > @@ -1847,11 +1847,11 @@ static void NCR5380_information_transfer
-> >                                                 /* XXX - need to source or sink data here, as appropriate */
-> >                                         }
-> >                                 } else {
-> > -                                       /* Break up transfer into 3 ms chunks,
-> > -                                        * presuming 6 accesses per handshake.
-> > +                                       /* Transfer a small chunk so that the
-> > +                                        * irq mode lock is not held too long.
-> >                                          */
-> >                                         transfersize = min((unsigned long)cmd->SCp.this_residual,
-> > -                                                          hostdata->accesses_per_ms / 2);
-> > +                                                          hostdata->accesses_per_ms >> 2);
-> 
-> I think it's easier to read if you use "/ 4".
-
-I think the factor, "1/4 byte milliseconds per access" is not very 
-meaningful. The PIO transfersize can be understood as,
-
-        pio_bytes_until_scc_fifo_overflow = accesses_per_ms /
-                         (accesses_per_pio_byte / ms_until_fifo_overflow)
-
-This loop seemed like a good place to avoid a DIV instruction (though I 
-didn't try to confirm that) and so I used a bit shift to indicate that 
-intention.
-
-The shift amount was an empirical result that happened to work for the 
-hardware I tested it on, at the baud rate I was using. Admittedly, if we 
-want to avoid further tweaks to this then I'll have to do more testing and 
-find a better approximation.
-
--- 
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+ arch/m68k/Kconfig                     |    1
+ arch/m68k/Kconfig.cpu                 |    6 +++++
+ arch/m68k/coldfire/head.S             |    8 +++---
+ arch/m68k/coldfire/m54xx.c            |   40 ----------------------------------
+ arch/m68k/include/asm/m5441xsim.h     |    4 +++
+ arch/m68k/include/asm/m54xxacr.h      |    2 -
+ arch/m68k/include/asm/m54xxsim.h      |    4 +++
+ arch/m68k/include/asm/mcfmmu.h        |    1
+ arch/m68k/include/uapi/asm/bootinfo.h |    1
+ arch/m68k/kernel/process.c            |    4 +--
+ arch/m68k/kernel/setup_mm.c           |    5 ++--
+ arch/m68k/mm/mcfmmu.c                 |   31 +++++++++++++++++++++++++-
+ 12 files changed, 57 insertions(+), 50 deletions(-)
