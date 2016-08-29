@@ -1,12 +1,12 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 5/8] m68k: generalize io memory region setup for ColdFire ACR registers
-Date: Mon, 29 Aug 2016 21:43:21 +1000
-Message-ID: <1472471004-4580-6-git-send-email-gerg@linux-m68k.org>
+Subject: [PATCH 6/8] m68k: always make available dump_fpu()
+Date: Mon, 29 Aug 2016 21:43:22 +1000
+Message-ID: <1472471004-4580-7-git-send-email-gerg@linux-m68k.org>
 References: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49463
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49458
         "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932808AbcH2LmT (ORCPT
+        by vger.kernel.org with ESMTP id S932817AbcH2LmT (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
         Mon, 29 Aug 2016 07:42:19 -0400
 In-Reply-To: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
@@ -15,64 +15,57 @@ List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
 
-The ACR registers of the ColdFire define at a macro level what regions
-of the addresses space should have caching or other attribute types applied.
+Our local m68k architecture dump_fpu() is conditionally compiled in on
+CONFIG_FPU. That is OK for all existing MMU enabled CPU types, but won't
+handle the case for some ColdFire SoC CPU parts that we want to support
+that have no FPU hardware.
 
-Currently for the MMU enabled setups we map the interal IO peripheral addres
-space as uncachable based on the define for the MBAR address (CONFIG_MBAR).
-Not all ColdFire SoC use a programmable MBAR register address. Some parts
-have fixed addressing for their internal peripheral registers.
+dump_fpu() is expected to be present by the ELF loader, so we must always
+have it available and exported.
 
-Generalize the way we get the internal peripheral base address so all types
-can be accomodated in the ACR definitions. Each ColdFire SoC type now sets
-its IO memory base and size definitions (which may be based on MBAR) which
-are then used in the ACR definitions.
+Modify the position of the conditional to allow supporting the case where
+CONFIG_FPU is not defined.
+
+This change based on changes and discussion from Yannick Gicquel
+<yannick.gicquel@open.eurogiciel.org>.
 
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/include/asm/m5441xsim.h | 2 ++
- arch/m68k/include/asm/m54xxacr.h  | 2 +-
- arch/m68k/include/asm/m54xxsim.h  | 2 ++
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ arch/m68k/kernel/process.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index 4279c0d..64f60be 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -12,6 +12,8 @@
- #define MCF_BUSCLK		(MCF_CLK / 2)
- #define MACHINE			MACH_M5441X
- #define FPUTYPE			0
-+#define IOMEMBASE		0xe0000000
-+#define IOMEMSIZE		0x20000000
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index c55ff71..44ec789 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -203,7 +203,6 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ }
  
- #include <asm/m54xxacr.h>
+ /* Fill in the fpu structure for a core dump.  */
+-#ifdef CONFIG_FPU
+ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+ {
+ 	char fpustate[216];
+@@ -222,6 +221,7 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+ 		return 1;
+ 	}
  
-diff --git a/arch/m68k/include/asm/m54xxacr.h b/arch/m68k/include/asm/m54xxacr.h
-index 59e1710..c6ac05c 100644
---- a/arch/m68k/include/asm/m54xxacr.h
-+++ b/arch/m68k/include/asm/m54xxacr.h
-@@ -94,7 +94,7 @@
-  *	register region as non-cacheable. And then we map all our RAM as
-  *	cacheable and supervisor access only.
-  */
--#define ACR0_MODE	(ACR_BA(CONFIG_MBAR)+ACR_ADMSK(0x1000000)+ \
-+#define ACR0_MODE	(ACR_BA(IOMEMBASE)+ACR_ADMSK(IOMEMSIZE)+ \
- 			 ACR_ENABLE+ACR_SUPER+ACR_CM_OFF_PRE+ACR_SP)
- #if defined(CONFIG_CACHE_COPYBACK)
- #define ACR1_MODE	(ACR_BA(CONFIG_RAMBASE)+ACR_ADMSK(CONFIG_RAMSIZE)+ \
-diff --git a/arch/m68k/include/asm/m54xxsim.h b/arch/m68k/include/asm/m54xxsim.h
-index 7dd6cc4..73d937f 100644
---- a/arch/m68k/include/asm/m54xxsim.h
-+++ b/arch/m68k/include/asm/m54xxsim.h
-@@ -10,6 +10,8 @@
- #define	MCF_BUSCLK		(MCF_CLK / 2)
- #define	MACHINE			MACH_M54XX
- #define	FPUTYPE			FPU_COLDFIRE
-+#define	IOMEMBASE		MCF_MBAR
-+#define	IOMEMSIZE		0x01000000
++#ifdef CONFIG_FPU
+ 	/* First dump the fpu context to avoid protocol violation.  */
+ 	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
+ 	if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
+@@ -248,11 +248,11 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
+ 			      : "m" (fpu->fpregs[0])
+ 			      : "memory");
+ 	}
++#endif /* CONFIG_FPU */
  
- #include <asm/m54xxacr.h>
+ 	return 1;
+ }
+ EXPORT_SYMBOL(dump_fpu);
+-#endif /* CONFIG_FPU */
  
+ unsigned long get_wchan(struct task_struct *p)
+ {
 -- 
 1.9.1
