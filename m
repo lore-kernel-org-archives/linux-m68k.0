@@ -1,100 +1,154 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 2/8] m68k: set appropriate machine type for m5411x SoC platforms
-Date: Mon, 29 Aug 2016 21:43:18 +1000
-Message-ID: <1472471004-4580-3-git-send-email-gerg@linux-m68k.org>
+Subject: [PATCH 4/8] m68k: move ColdFire _bootmem_alloc code
+Date: Mon, 29 Aug 2016 21:43:20 +1000
+Message-ID: <1472471004-4580-5-git-send-email-gerg@linux-m68k.org>
 References: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49463
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:49468
         "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S932808AbcH2LmR (ORCPT
+        by vger.kernel.org with ESMTP id S932814AbcH2LmT (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 29 Aug 2016 07:42:17 -0400
+        Mon, 29 Aug 2016 07:42:19 -0400
 In-Reply-To: <1472471004-4580-1-git-send-email-gerg@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: linux-m68k@vger.kernel.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
 
-Create a new machine type for platforms based around the ColdFire 5441x
-SoC family. Set that machine type on startup when building for this
-platform type.
-
-Currently the ColdFire head.S hard codes a M54xx machine type at startup -
-since that is the only platform type currently supported with MMU enabled.
-The m5441x has an MMU and this change forms part of the support required
-to run it with the MMU enabled.
+The early ColdFire bootmem_alloc() code is currently only included in
+the board support for the Coldire 54xx platforms. It will be used on all
+ColdFire MMU enabled platforms as others are supported. So move the
+mcf54xx_bootmem_alloc() function to be generally available to all MMU
+enabled ColdFire parts (and use a more generic name for it).
 
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/coldfire/head.S             | 4 ++--
- arch/m68k/include/asm/m5441xsim.h     | 1 +
- arch/m68k/include/asm/m54xxsim.h      | 1 +
- arch/m68k/include/uapi/asm/bootinfo.h | 1 +
- arch/m68k/kernel/setup_mm.c           | 1 +
- 5 files changed, 6 insertions(+), 2 deletions(-)
+ arch/m68k/coldfire/m54xx.c     | 40 +---------------------------------------
+ arch/m68k/include/asm/mcfmmu.h |  1 +
+ arch/m68k/mm/mcfmmu.c          | 31 ++++++++++++++++++++++++++++++-
+ 3 files changed, 32 insertions(+), 40 deletions(-)
 
-diff --git a/arch/m68k/coldfire/head.S b/arch/m68k/coldfire/head.S
-index 73d92ea..4ba5d562 100644
---- a/arch/m68k/coldfire/head.S
-+++ b/arch/m68k/coldfire/head.S
-@@ -282,8 +282,8 @@ _clear_bss:
- 	movel	%d0,m68k_mmutype
- 	movel	#FPU_COLDFIRE,%d0
- 	movel	%d0,m68k_fputype
--	movel	#MACH_M54XX,%d0
--	movel	%d0,m68k_machtype		/* Mark us as a 54xx machine */
-+	movel	#MACHINE,%d0
-+	movel	%d0,m68k_machtype		/* Mark machine type */
- 	lea	init_task,%a2			/* Set "current" init task */
+diff --git a/arch/m68k/coldfire/m54xx.c b/arch/m68k/coldfire/m54xx.c
+index c32f767..386df3b 100644
+--- a/arch/m68k/coldfire/m54xx.c
++++ b/arch/m68k/coldfire/m54xx.c
+@@ -25,7 +25,6 @@
+ #include <asm/m54xxgpt.h>
+ #ifdef CONFIG_MMU
+ #include <asm/mmu_context.h>
+-#include <linux/pfn.h>
  #endif
  
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index cc798ab..60768b5 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -10,6 +10,7 @@
- #define CPU_NAME		"COLDFIRE(m5441x)"
- #define CPU_INSTR_PER_JIFFY	2
- #define MCF_BUSCLK		(MCF_CLK / 2)
-+#define MACHINE			MACH_M5441X
+ /***************************************************************************/
+@@ -78,47 +77,10 @@ static void mcf54xx_reset(void)
  
- #include <asm/m54xxacr.h>
+ /***************************************************************************/
  
-diff --git a/arch/m68k/include/asm/m54xxsim.h b/arch/m68k/include/asm/m54xxsim.h
-index a5fbd17..cde0390 100644
---- a/arch/m68k/include/asm/m54xxsim.h
-+++ b/arch/m68k/include/asm/m54xxsim.h
-@@ -8,6 +8,7 @@
- #define	CPU_NAME		"COLDFIRE(m54xx)"
- #define	CPU_INSTR_PER_JIFFY	2
- #define	MCF_BUSCLK		(MCF_CLK / 2)
-+#define	MACHINE			MACH_M54XX
- 
- #include <asm/m54xxacr.h>
- 
-diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
-index cdeb26a0..a48cf54 100644
---- a/arch/m68k/include/uapi/asm/bootinfo.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo.h
-@@ -81,6 +81,7 @@ struct mem_info {
- #define MACH_Q40		10
- #define MACH_SUN3X		11
- #define MACH_M54XX		12
-+#define MACH_M5441X		13
- 
- 
-     /*
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 5b8ec4d..13f4640 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -341,6 +341,7 @@ void __init setup_arch(char **cmdline_p)
+-#ifdef CONFIG_MMU
+-
+-unsigned long num_pages;
+-
+-static void __init mcf54xx_bootmem_alloc(void)
+-{
+-	unsigned long start_pfn;
+-	unsigned long memstart;
+-
+-	/* _rambase and _ramend will be naturally page aligned */
+-	m68k_memory[0].addr = _rambase;
+-	m68k_memory[0].size = _ramend - _rambase;
+-
+-	/* compute total pages in system */
+-	num_pages = PFN_DOWN(_ramend - _rambase);
+-
+-	/* page numbers */
+-	memstart = PAGE_ALIGN(_ramstart);
+-	min_low_pfn = PFN_DOWN(_rambase);
+-	start_pfn = PFN_DOWN(memstart);
+-	max_pfn = max_low_pfn = PFN_DOWN(_ramend);
+-	high_memory = (void *)_ramend;
+-
+-	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
+-	module_fixup(NULL, __start_fixup, __stop_fixup);
+-
+-	/* setup bootmem data */
+-	m68k_setup_node(0);
+-	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
+-		min_low_pfn, max_low_pfn);
+-	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
+-}
+-
+-#endif /* CONFIG_MMU */
+-
+-/***************************************************************************/
+-
+ void __init config_BSP(char *commandp, int size)
+ {
+ #ifdef CONFIG_MMU
+-	mcf54xx_bootmem_alloc();
++	cf_bootmem_alloc();
+ 	mmu_context_init();
  #endif
- #ifdef CONFIG_COLDFIRE
- 	case MACH_M54XX:
-+	case MACH_M5441X:
- 		config_BSP(NULL, 0);
- 		break;
+ 	mach_reset = mcf54xx_reset;
+diff --git a/arch/m68k/include/asm/mcfmmu.h b/arch/m68k/include/asm/mcfmmu.h
+index 8824236..10f9930 100644
+--- a/arch/m68k/include/asm/mcfmmu.h
++++ b/arch/m68k/include/asm/mcfmmu.h
+@@ -105,6 +105,7 @@ static inline void mmu_write(u32 a, u32 v)
+ 	__asm__ __volatile__ ("nop");
+ }
+ 
++void cf_bootmem_alloc(void);
+ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word);
+ 
  #endif
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index f58fafe..87131cd 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -27,7 +27,7 @@ mm_context_t next_mmu_context;
+ unsigned long context_map[LAST_CONTEXT / BITS_PER_LONG + 1];
+ atomic_t nr_free_contexts;
+ struct mm_struct *context_mm[LAST_CONTEXT+1];
+-extern unsigned long num_pages;
++unsigned long num_pages;
+ 
+ /*
+  * ColdFire paging_init derived from sun3.
+@@ -150,6 +150,35 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
+ 	return 0;
+ }
+ 
++void __init cf_bootmem_alloc(void)
++{
++	unsigned long start_pfn;
++	unsigned long memstart;
++
++	/* _rambase and _ramend will be naturally page aligned */
++	m68k_memory[0].addr = _rambase;
++	m68k_memory[0].size = _ramend - _rambase;
++
++	/* compute total pages in system */
++	num_pages = PFN_DOWN(_ramend - _rambase);
++
++	/* page numbers */
++	memstart = PAGE_ALIGN(_ramstart);
++	min_low_pfn = PFN_DOWN(_rambase);
++	start_pfn = PFN_DOWN(memstart);
++	max_pfn = max_low_pfn = PFN_DOWN(_ramend);
++	high_memory = (void *)_ramend;
++
++	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
++	module_fixup(NULL, __start_fixup, __stop_fixup);
++
++	/* setup bootmem data */
++	m68k_setup_node(0);
++	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
++		min_low_pfn, max_low_pfn);
++	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
++}
++
+ /*
+  * Initialize the context management stuff.
+  * The following was taken from arch/ppc/mmu_context.c
 -- 
 1.9.1
