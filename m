@@ -1,119 +1,86 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCHv2 6/8] m68k: always make available dump_fpu()
-Date: Fri,  2 Sep 2016 17:11:07 +1000
-Message-ID: <1472800267-30786-1-git-send-email-gerg@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Use IS_ENABLED() instead of checking for built-in or module
+Date: Mon,  5 Sep 2016 13:19:50 +0200
+Message-ID: <1473074390-16894-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out4.external.iinet.net.au ([203.59.1.220]:38234
-        "EHLO icp-osb-irony-out4.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751494AbcIBHJS (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Sep 2016 03:09:18 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Our local m68k architecture dump_fpu() is conditionally compiled in on
-CONFIG_FPU. That is OK for all existing MMU enabled CPU types, but won't
-handle the case for some ColdFire SoC CPU parts that we want to support
-that have no FPU hardware.
-
-dump_fpu() is expected to be present by the ELF loader, so we must always
-have it available and exported.
-
-Remove the conditional and reorganize the dump_fpu hard FPU code path
-to let the compiler remove code when not needed.
-
-This change based on changes and discussion from Yannick Gicquel
-<yannick.gicquel@open.eurogiciel.org>.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/process.c | 56 +++++++++++++++++++++++-----------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ arch/m68k/amiga/config.c    | 2 +-
+ arch/m68k/atari/config.c    | 2 +-
+ arch/m68k/kernel/setup_mm.c | 2 +-
+ arch/m68k/mac/config.c      | 2 +-
+ arch/m68k/q40/config.c      | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-v2: Modify to avoid warnings about unused fpustate in some configurations
-
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index c55ff71..4ba1ae7 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -203,11 +203,8 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
- }
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index ec9cc1fdd237dec4..ddb8192a36618df4 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -396,7 +396,7 @@ void __init config_amiga(void)
+ 	mach_max_dma_address = 0xffffffff;
  
- /* Fill in the fpu structure for a core dump.  */
--#ifdef CONFIG_FPU
- int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- {
--	char fpustate[216];
--
- 	if (FPU_IS_EMU) {
- 		int i;
+ 	mach_reset           = amiga_reset;
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
++#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ 	mach_beep            = amiga_mksound;
+ #endif
  
-@@ -222,37 +219,40 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
- 		return 1;
- 	}
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index cbd5991fd49aa875..97a3c38cd1f550cc 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -211,7 +211,7 @@ void __init config_atari(void)
+ 	arch_gettimeoffset   = atari_gettimeoffset;
+ 	mach_reset           = atari_reset;
+ 	mach_max_dma_address = 0xffffff;
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
++#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ 	mach_beep          = atari_mksound;
+ #endif
+ #ifdef CONFIG_HEARTBEAT
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 5b8ec4d5f8e8d79d..50633c38f1e2b0d6 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -105,7 +105,7 @@ EXPORT_SYMBOL(mach_heartbeat);
+ #ifdef CONFIG_M68K_L2_CACHE
+ void (*mach_l2_flush) (int);
+ #endif
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
++#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ void (*mach_beep)(unsigned int, unsigned int);
+ EXPORT_SYMBOL(mach_beep);
+ #endif
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 1c05727bc7fe81c6..9f2c5d8e5b4346e6 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -162,7 +162,7 @@ void __init config_mac(void)
+ 	mach_halt = mac_poweroff;
+ 	mach_power_off = mac_poweroff;
+ 	mach_max_dma_address = 0xffffffff;
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
++#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ 	mach_beep = mac_mksound;
+ #endif
  
--	/* First dump the fpu context to avoid protocol violation.  */
--	asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
--	if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
--		return 0;
-+	if (IS_ENABLED(CONFIG_FPU)) {
-+		char fpustate[216];
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index fcb7f05b60b60a7e..ea89a24f46000e4f 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -180,7 +180,7 @@ void __init config_q40(void)
+ 	mach_reset = q40_reset;
+ 	mach_get_model = q40_get_model;
  
--	if (CPU_IS_COLDFIRE) {
--		asm volatile ("fmovel %/fpiar,%0\n\t"
--			      "fmovel %/fpcr,%1\n\t"
--			      "fmovel %/fpsr,%2\n\t"
--			      "fmovemd %/fp0-%/fp7,%3"
--			      :
--			      : "m" (fpu->fpcntl[0]),
--				"m" (fpu->fpcntl[1]),
--				"m" (fpu->fpcntl[2]),
--				"m" (fpu->fpregs[0])
--			      : "memory");
--	} else {
--		asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
--			      :
--			      : "m" (fpu->fpcntl[0])
--			      : "memory");
--		asm volatile ("fmovemx %/fp0-%/fp7,%0"
--			      :
--			      : "m" (fpu->fpregs[0])
--			      : "memory");
-+		/* First dump the fpu context to avoid protocol violation.  */
-+		asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
-+		if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
-+			return 0;
-+
-+		if (CPU_IS_COLDFIRE) {
-+			asm volatile ("fmovel %/fpiar,%0\n\t"
-+				      "fmovel %/fpcr,%1\n\t"
-+				      "fmovel %/fpsr,%2\n\t"
-+				      "fmovemd %/fp0-%/fp7,%3"
-+				      :
-+				      : "m" (fpu->fpcntl[0]),
-+					"m" (fpu->fpcntl[1]),
-+					"m" (fpu->fpcntl[2]),
-+					"m" (fpu->fpregs[0])
-+				      : "memory");
-+		} else {
-+			asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
-+				      :
-+				      : "m" (fpu->fpcntl[0])
-+				      : "memory");
-+			asm volatile ("fmovemx %/fp0-%/fp7,%0"
-+				      :
-+				      : "m" (fpu->fpregs[0])
-+				      : "memory");
-+		}
- 	}
- 
- 	return 1;
- }
- EXPORT_SYMBOL(dump_fpu);
--#endif /* CONFIG_FPU */
- 
- unsigned long get_wchan(struct task_struct *p)
- {
+-#if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
++#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ 	mach_beep = q40_mksound;
+ #endif
+ #ifdef CONFIG_HEARTBEAT
 -- 
 1.9.1
