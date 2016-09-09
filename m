@@ -1,45 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: generalize uboot command line support
-Date: Fri, 9 Sep 2016 09:33:00 +0200
-Message-ID: <CAMuHMdUKLufiHyRuo3HhrXZ-fcDK5=qQ3mMsguKk2xBXtbrnjQ@mail.gmail.com>
-References: <1473405228-928-1-git-send-email-gerg@linux-m68k.org>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v2 3/3] scsi/ncr5380: Improve interrupt latency during PIO tranfers
+Date: Fri, 09 Sep 2016 07:28:54 -0400
+Message-ID: <yq1r38tfh1l.fsf@sermon.lab.mkp.net>
+References: <20160827022959.303563262@telegraphics.com.au>
+        <20160831044453.413698369@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-oi0-f67.google.com ([209.85.218.67]:34094 "EHLO
-        mail-oi0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751786AbcIIHdB (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Sep 2016 03:33:01 -0400
-Received: by mail-oi0-f67.google.com with SMTP id a144so536521oii.1
-        for <linux-m68k@vger.kernel.org>; Fri, 09 Sep 2016 00:33:01 -0700 (PDT)
-In-Reply-To: <1473405228-928-1-git-send-email-gerg@linux-m68k.org>
+Received: from aserp1040.oracle.com ([141.146.126.69]:48449 "EHLO
+        aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753715AbcIIL3F (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Sep 2016 07:29:05 -0400
+In-Reply-To: <20160831044453.413698369@telegraphics.com.au> (Finn Thain's
+        message of "Wed, 31 Aug 2016 14:44:56 +1000")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
 
-Hi Greg,
+>>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-On Fri, Sep 9, 2016 at 9:13 AM, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> The uboot command line support needs to be used by both MMU and no-MMU
-> setups, but currently we only have the code in the no-MMU code paths.
-> Move the uboot command line processing code into its own file. Add
-> appropriate calls to it from both the MMU and no-MMU arch setup code.
->
-> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Finn> Large PIO transfers are broken up into chunks to try to avoid
+Finn> disabling local IRQs for long periods. But IRQs are still disabled
+Finn> for too long and this causes SCC FIFO overruns during serial port
+Finn> transfers.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Finn> This patch reduces the PIO chunk size to reduce interrupt latency
+Finn> to something on the order of milliseconds, at the expense of
+Finn> additional CPU overhead from extra iterations of the
+Finn> NCR5380_main() loop.
 
-If you want me to take this through the m68k tree instead, just let me know.
-Thanks!
+Finn> That CPU overhead is a problem for slow machines (e.g. mac_scsi on
+Finn> 25 MHz
+Finn> 68030) but these machines generally use PDMA not PIO. This patch
+Finn>        doesn't
+Finn> make the overhead any worse on my Mac LC III (because it only gets
+Finn> about 510 accesses per ms).
 
-Gr{oetje,eeting}s,
+Finn> This patch decreases disk performance by a fraction of one percent
+Finn> for dmx3191d on my 333 MHz PowerPC 750. Other affected hardware
+Finn> (such as g_NCR5380 on x86) was not tested but 5380 ISA cards
+Finn> generally use PDMA and not PIO.
 
-                        Geert
+Geert?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Martin K. Petersen	Oracle Linux Engineering
