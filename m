@@ -1,39 +1,51 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH] m68knommu: clean up uClinux boot log output
-Date: Fri, 09 Sep 2016 16:20:57 +0200
-Message-ID: <874m5pp31y.fsf@linux-m68k.org>
-References: <1473383446-4861-1-git-send-email-gerg@linux-m68k.org>
+Date: Fri, 9 Sep 2016 16:45:39 +0200
+Message-ID: <CAMuHMdVA=xDfJOe8MMKVdT6UsfDP=cF_y33YEDR_ekDJcXBtxA@mail.gmail.com>
+References: <1473383446-4861-1-git-send-email-gerg@linux-m68k.org> <874m5pp31y.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.10]:46671 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750768AbcIIOVA (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Sep 2016 10:21:00 -0400
-In-Reply-To: <1473383446-4861-1-git-send-email-gerg@linux-m68k.org> (Greg
-        Ungerer's message of "Fri, 9 Sep 2016 11:10:46 +1000")
+Received: from mail-oi0-f66.google.com ([209.85.218.66]:34037 "EHLO
+        mail-oi0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750888AbcIIOpl (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Sep 2016 10:45:41 -0400
+Received: by mail-oi0-f66.google.com with SMTP id a144so2365118oii.1
+        for <linux-m68k@vger.kernel.org>; Fri, 09 Sep 2016 07:45:40 -0700 (PDT)
+In-Reply-To: <874m5pp31y.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Sep 09 2016, Greg Ungerer <gerg@linux-m68k.org> wrote:
+Hi Andreas,
 
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index 72d272e..a160695 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -106,7 +106,7 @@ void __init setup_arch(char **cmdline_p)
->  	process_uboot_commandline(&command_line[0], sizeof(command_line));
->  #endif /* CONFIG_UBOOT */
->  
-> -	printk(KERN_INFO "\x0F\r\n\nuClinux/" CPU_NAME "\n");
+On Fri, Sep 9, 2016 at 4:20 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> On Sep 09 2016, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>
+>> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+>> index 72d272e..a160695 100644
+>> --- a/arch/m68k/kernel/setup_no.c
+>> +++ b/arch/m68k/kernel/setup_no.c
+>> @@ -106,7 +106,7 @@ void __init setup_arch(char **cmdline_p)
+>>       process_uboot_commandline(&command_line[0], sizeof(command_line));
+>>  #endif /* CONFIG_UBOOT */
+>>
+>> -     printk(KERN_INFO "\x0F\r\n\nuClinux/" CPU_NAME "\n");
+>
+> Do you have any idea what's the significance of ^O here?
 
-Do you have any idea what's the significance of ^O here?
+You raised my interest, too ;-)
 
-Andreas.
+http://mailman.uclinux.org/pipermail/uclinux-dev//2003-March/016122.html
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
