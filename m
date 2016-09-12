@@ -1,23 +1,30 @@
-From: Christoph Hellwig <hch@infradead.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: mvme147 status
-Date: Mon, 12 Sep 2016 00:52:29 -0700
-Message-ID: <20160912075229.GA27712@infradead.org>
-References: <20160911171618.GA13380@infradead.org>
- <20233753-7fb2-1e1c-1820-15f684b1100b@physik.fu-berlin.de>
+Date: Mon, 12 Sep 2016 10:00:38 +0200
+Message-ID: <CAMuHMdW6FgEobCdEttS+32gT+BhdCTX1OyDr7tO5NjoYB9TfUQ@mail.gmail.com>
+References: <20160911171618.GA13380@infradead.org> <CACz-3rgtA0pvSZV38ezRWAxDsgcEa_+_teQ3-1dvY4Cf22hfyQ@mail.gmail.com>
+ <CAMuHMdUFxc_OBR8L84gbgNW8u0aArQNxMGf5P4mPSj56xQXeNQ@mail.gmail.com> <20160912074642.GA21474@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20233753-7fb2-1e1c-1820-15f684b1100b@physik.fu-berlin.de>
+In-Reply-To: <20160912074642.GA21474@infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Christoph Hellwig <hch@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Kars de Jong <nacirrut@gmail.com>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Stephen N Chivers <schivers@csc.com.au>
 
-On Mon, Sep 12, 2016 at 09:46:47AM +0200, John Paul Adrian Glaubitz wrote:
-> This task sounds like a low-hanging fruit though and since I actually have
-> a VME system among other 68k machines, I have also a personal interest to
-> keep this driver.
+On Mon, Sep 12, 2016 at 9:46 AM, Christoph Hellwig <hch@infradead.org> wrote:
+> Let's hope the buildbot covers m68k..
 
-That sounds great.  Once you've ressurrected your system I'd be happy to
-mentor you for the SCSI driver work.
+Yes it does.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
