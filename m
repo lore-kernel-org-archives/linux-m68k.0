@@ -1,22 +1,34 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: mvme147 status
-Date: Mon, 12 Sep 2016 10:00:38 +0200
-Message-ID: <CAMuHMdW6FgEobCdEttS+32gT+BhdCTX1OyDr7tO5NjoYB9TfUQ@mail.gmail.com>
-References: <20160911171618.GA13380@infradead.org> <CACz-3rgtA0pvSZV38ezRWAxDsgcEa_+_teQ3-1dvY4Cf22hfyQ@mail.gmail.com>
- <CAMuHMdUFxc_OBR8L84gbgNW8u0aArQNxMGf5P4mPSj56xQXeNQ@mail.gmail.com> <20160912074642.GA21474@infradead.org>
+Date: Mon, 12 Sep 2016 10:00:56 +0200
+Message-ID: <CAMuHMdXBjq5ADbbGDe-0pU4JPNCFU_mgqkZn5AfAKOfRMqiFNg@mail.gmail.com>
+References: <20160911171618.GA13380@infradead.org> <20233753-7fb2-1e1c-1820-15f684b1100b@physik.fu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20160912074642.GA21474@infradead.org>
+In-Reply-To: <20233753-7fb2-1e1c-1820-15f684b1100b@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Kars de Jong <nacirrut@gmail.com>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Stephen N Chivers <schivers@csc.com.au>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On Mon, Sep 12, 2016 at 9:46 AM, Christoph Hellwig <hch@infradead.org> wrote:
-> Let's hope the buildbot covers m68k..
+Hi Adrian,
 
-Yes it does.
+On Mon, Sep 12, 2016 at 9:46 AM, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 09/11/2016 07:16 PM, Christoph Hellwig wrote:
+>> Unlike some other drivers it should be fairly trivial to convert, but
+>> I'd like to first know if there is any point in investing that work.
+>
+> I would be very interested in doing that, probably with some assistance from
+> Geert. I'm interested in getting more involved into kernel development but I
+> have successfully submitted only two patches so far.
+>
+> This task sounds like a low-hanging fruit though and since I actually have
+> a VME system among other 68k machines, I have also a personal interest to
+> keep this driver.
+
+Thanks a lot!
 
 Gr{oetje,eeting}s,
 
