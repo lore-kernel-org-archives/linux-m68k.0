@@ -1,31 +1,32 @@
-From: Kars de Jong <jongk@linux-m68k.org>
-Subject: Re: mvme147 status
-Date: Wed, 14 Sep 2016 15:04:41 +0200
-Message-ID: <CACz-3ri-X8S7dxW2h9DMuRk9zupmO0PVLU0CfyP6Rwzca8XdMg@mail.gmail.com>
-References: <20160911171618.GA13380@infradead.org> <CACz-3rgtA0pvSZV38ezRWAxDsgcEa_+_teQ3-1dvY4Cf22hfyQ@mail.gmail.com>
- <CAMuHMdUFxc_OBR8L84gbgNW8u0aArQNxMGf5P4mPSj56xQXeNQ@mail.gmail.com> <OF8E989A33.2EDB4279-ONCA25802D.006D188C-CA25802D.006E5D75@csc.com>
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v2 3/3] scsi/ncr5380: Improve interrupt latency during PIO tranfers
+Date: Wed, 14 Sep 2016 14:12:29 -0400
+Message-ID: <yq1twdil59u.fsf@sermon.lab.mkp.net>
+References: <20160827022959.303563262@telegraphics.com.au>
+        <20160831044453.413698369@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtpq4.tb.mail.iss.as9143.net ([212.54.42.167]:48004 "EHLO
-        smtpq4.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1756319AbcINN1k (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 14 Sep 2016 09:27:40 -0400
-In-Reply-To: <OF8E989A33.2EDB4279-ONCA25802D.006D188C-CA25802D.006E5D75@csc.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20160831044453.413698369@telegraphics.com.au> (Finn Thain's
+        message of "Wed, 31 Aug 2016 14:44:56 +1000")
+Sender: linux-scsi-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
-To: Stephen N Chivers <schivers@csc.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig <hch@infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@vger.kernel.org>, linux-m68k-owner@vger.kernel.org
 
-2016-09-13 22:05 GMT+02:00 Stephen N Chivers <schivers@csc.com>:
-> > Stephen, are you still using them?
->
-> Yes, I am still using the Motorola MVME-167 boards.
+>>>>> "Finn" == Finn Thain <fthain@telegraphics.com.au> writes:
 
-Note that this is about the MVME-147, not 167. Those are completely
-different hardware (for instance, NCR SCSI instead of WD).
+Finn> Large PIO transfers are broken up into chunks to try to avoid
+Finn> disabling local IRQs for long periods. But IRQs are still disabled
+Finn> for too long and this causes SCC FIFO overruns during serial port
+Finn> transfers.
 
-Regards,
+Finn> This patch reduces the PIO chunk size to reduce interrupt latency
+Finn> to something on the order of milliseconds, at the expense of
+Finn> additional CPU overhead from extra iterations of the
+Finn> NCR5380_main() loop.
 
-Kars.
+Applied to 4.9/scsi-queue.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
