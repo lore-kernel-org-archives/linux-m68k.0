@@ -1,39 +1,70 @@
-From: Matthias Reis <matthias.reis@hu-berlin.de>
-Subject: Re: Crash in entry.S:resume on Atari ST
-Date: Fri, 16 Sep 2016 16:47:46 +0200
-Message-ID: <20160916144746.GB6030@hu-berlin.de>
-References: <8132f924080d98f2bbe149d35352507d@hu-berlin.de>
- <87y42rx6t2.fsf@linux-m68k.org>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is
+ NULL
+Date: Fri, 16 Sep 2016 16:11:25 -0700
+Message-ID: <20160916231125.GW7243@codeaurora.org>
+References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+ <194aebe5-38dd-f43d-fb4d-16ce592a68e8@gmail.com>
+ <CAK7LNARaV6Ga5G1GnYf9hywrr+YwOqqm-v1AzBpfXtM4u9ofBA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87y42rx6t2.fsf@linux-m68k.org>
+In-Reply-To: <CAK7LNARaV6Ga5G1GnYf9hywrr+YwOqqm-v1AzBpfXtM4u9ofBA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-clk <linux-clk@vger.kernel.org>, linux-mips@linux-mips.org, Eric Miao <eric.y.miao@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Florian Fainelli <f.fainelli@gmail.com>, Andrew Morton <akpm@linux-foundation.org>
 
-Hi Andreas,
-
-On Fri, Sep 16, 2016 at 04:23:05PM +0200, Andreas Schwab wrote:
-> > ===  hatari emulator output:
-> > CPU=$48f2, VBL=6379, FrameCycles=86856, HBL=387, LineCycles=168, DSP=N/A
-> > $000048f2 : 4e75                               rts
-> > r
-> >   D0 00000008   D1 00002200   D2 00005401   D3 00961EC8
-> >   D4 00000000   D5 00940020   D6 602E0206   D7 00E00030
-> >   A0 00865B68   A1 00961EEC   A2 0080E000   A3 000026E4
-> >   A4 000045C0   A5 000045E4   A6 00004794   A7 00000000
-> > USP  00000000 ISP  00000018
-> > T=00 S=0 M=0 X=0 N=0 Z=0 V=0 C=0 IMASK=2 STP=0
+On 09/16, Masahiro Yamada wrote:
+> Hi Stephen, Michael,
 > 
-> Given the value of SSP and the values loaded into D6/D7 (which match the
-> ROM shadow at address 0), it is clear that SP was 0 at $48ea.  So it
-> looks like A1 is just pointing at a block of zeros, not at a valid task
-> struct.
+> 2016-08-26 0:27 GMT+09:00 Florian Fainelli <f.fainelli@gmail.com>:
+> > On 08/24/2016 10:26 AM, Masahiro Yamada wrote:
+> >> Many of clk_disable() implementations just return for NULL pointer,
+> >> but this check is missing from some.  Let's make it tree-wide
+> >> consistent.  It will allow clock consumers to call clk_disable()
+> >> without NULL pointer check.
+> >>
+> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >> Acked-by: Greg Ungerer <gerg@uclinux.org>
+> >> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
+> >> ---
+> >>
+> >> I came back after a long pause.
+> >> You can see the discussion about the previous version:
+> >> https://www.linux-mips.org/archives/linux-mips/2016-04/msg00063.html
+> >>
+> >>
+> >> Changes in v3:
+> >>   - Return only when clk is NULL.  Do not take care of error pointer.
+> >>
+> >> Changes in v2:
+> >>   - Rebase on Linux 4.6-rc1
+> >>
+> >>  arch/arm/mach-mmp/clock.c        | 3 +++
+> >>  arch/arm/mach-w90x900/clock.c    | 3 +++
+> >>  arch/blackfin/mach-bf609/clock.c | 3 +++
+> >>  arch/m68k/coldfire/clk.c         | 4 ++++
+> >>  arch/mips/bcm63xx/clk.c          | 3 +++
+> >
+> 
+> 
+> Gentle ping...
+> 
+> 
+> If you are not keen on this,
+> shall I split it per-arch and send to each arch subsystem?
+> 
 
-Maybe the allocation for the task struct failed? I will check that. Thanks for
-your analysis!
+If we get acks from more arch maintainers we could take it
+through clk tree, but we really don't maintain these other clk
+implementations so it isn't very appropriate to take it through
+clk tree anyway. Perhaps splitting it up per arch and sending it
+that way and then Ccing akpm (aka the patch collector) would make
+sure things get merged in a timely manner. Or Andrew could just
+pick up this patch as is.
 
-Matthias
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
