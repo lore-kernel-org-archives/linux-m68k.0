@@ -1,32 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] CREDITS: Update fingerprint for Geert Uytterhoeven
-Date: Mon, 19 Sep 2016 08:48:11 +0200
-Message-ID: <1474267691-29808-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] m68k: migrate exception table users off module.h and onto extable.h
+Date: Mon, 19 Sep 2016 17:01:38 -0400
+Message-ID: <20160919210138.30082-1-paul.gortmaker@windriver.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-My old key was revoked in 2007.
+This file was only including module.h for exception table related
+functions.  We've now separated that content out into its own file
+"extable.h" so now move over to that and avoid all the extra header
+content in module.h that we don't really need to compile this.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- CREDITS | 2 +-
+
+[see: https://lkml.org/lkml/2016/7/24/224 for additional context if needed]
+
+ arch/m68k/kernel/signal.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/CREDITS b/CREDITS
-index 2a3fbcd229e66660..7cf4e5606d0a4911 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -3691,7 +3691,7 @@ S: Germany
- N: Geert Uytterhoeven
- E: geert@linux-m68k.org
- W: http://users.telenet.be/geertu/
--P: 1024/862678A6 C51D 361C 0BD1 4C90 B275  C553 6EEA 11BA 8626 78A6
-+P: 4096R/4804B4BC3F55EEFB 750D 82B0 A781 5431 5E25  925B 4804 B4BC 3F55 EEFB
- D: m68k/Amiga and PPC/CHRP Longtrail coordinator
- D: Frame buffer device and XF68_FBDev maintainer
- D: m68k IDE maintainer
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 2dcee3a88867..db775322b485 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -42,7 +42,7 @@
+ #include <linux/personality.h>
+ #include <linux/tty.h>
+ #include <linux/binfmts.h>
+-#include <linux/module.h>
++#include <linux/extable.h>
+ #include <linux/tracehook.h>
+ 
+ #include <asm/setup.h>
 -- 
-1.9.1
+2.8.4
