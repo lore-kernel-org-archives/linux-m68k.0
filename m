@@ -1,52 +1,85 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] m68k: add Sysam AMCORE open board support
-Date: Wed, 5 Oct 2016 15:06:27 +0200
-Message-ID: <CAMuHMdWb34hm6yJC0iUj5VRr+p0BM56BAodiVX3rmXWKgrpaiQ@mail.gmail.com>
-References: <1475367526-20169-1-git-send-email-angelo@sysam.it>
- <1ed14396-ce6a-7e01-9bb2-5486ab7c7d1c@linux-m68k.org> <8d50761d-2c8d-1509-394f-104c3818c310@sysam.it>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v4.9
+Date: Thu, 6 Oct 2016 10:13:34 +1000
+Message-ID: <e494fb35-ea65-2985-78ae-8302cf901351@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f68.google.com ([209.85.214.68]:36046 "EHLO
-        mail-it0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750964AbcJENG2 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Oct 2016 09:06:28 -0400
-Received: by mail-it0-f68.google.com with SMTP id o19so10106439ito.3
-        for <linux-m68k@vger.kernel.org>; Wed, 05 Oct 2016 06:06:28 -0700 (PDT)
-In-Reply-To: <8d50761d-2c8d-1509-394f-104c3818c310@sysam.it>
+Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:7287
+        "EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S934542AbcJFANb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Oct 2016 20:13:31 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Angelo,
+Hi Linus,
 
-On Wed, Oct 5, 2016 at 2:51 PM, Angelo Dureghello <angelo@sysam.it> wrote:
->         /* physical address of the data register (CMD [A2] to 0) */
->         [0] = {
->                 .start  = DM9000_ADDR,
->                 .end    = DM9000_ADDR,
+Can you please pull the m68knommu git tree, for-next branch.
 
-DM9000_ADDR + 3?
+The bulk of the changes here are to clean up the ColdFire 5441x SoC
+support so that it can run with MMU enabled. We have only supported
+it with MMU disabled up to now. There is also a few individual bug
+fixes across the ColdFire support code.
 
->                 .flags  = IORESOURCE_MEM,
->         }
->         /* physical address of the data register (CMD [A2] to 1) */
->         [1] = {
->                 .start  = DM9000_ADDR + 4,
->                 .end    = DM9000_ADDR + 4,
+Regards
+Greg
 
-DM9000_ADDR + 7?
 
->                 .flags  = IORESOURCE_MEM,
 
-Gr{oetje,eeting}s,
+The following changes since commit 08895a8b6b06ed2323cd97a36ee40a116b3db8ed:
 
-                        Geert
+  Linux 4.8-rc8 (2016-09-25 18:47:13 -0700)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+are available in the git repository at:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 742859adc721da65ff4e8b59412d73bd3d2a57fe:
+
+  m68k: let clk_disable() return immediately if clk is NULL (2016-09-26 12:02:59 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (14):
+      m68knommu: fix early setup to not access variables
+      m68knommu: switch to using IO access methods in WildFire board code
+      m68knommu: fix IO write size in nettel pin set
+      m68k: move CONFIG_FPU set to per-CPU configuration
+      m68k: set appropriate machine type for m5411x SoC platforms
+      m68k: report correct FPU type on ColdFire MMU platforms
+      m68k: move ColdFire _bootmem_alloc code
+      m68k: generalize io memory region setup for ColdFire ACR registers
+      m68k: always make available dump_fpu()
+      m68k: only generate FPU instructions if CONFIG_FPU enabled
+      m68k: don't panic if no hardware FPU defined
+      m68k: generalize uboot command line support
+      m68knommu: clean up uClinux boot log output
+      m68knommu: convert printk(KERN_INFO) to pr_info()
+
+Masahiro Yamada (1):
+      m68k: let clk_disable() return immediately if clk is NULL
+
+ arch/m68k/Kconfig                     |   1 -
+ arch/m68k/Kconfig.cpu                 |   6 ++
+ arch/m68k/coldfire/clk.c              |   4 ++
+ arch/m68k/coldfire/head.S             |   8 +--
+ arch/m68k/coldfire/m528x.c            |   8 +--
+ arch/m68k/coldfire/m53xx.c            |   8 +--
+ arch/m68k/coldfire/m54xx.c            |  40 +------------
+ arch/m68k/include/asm/bootinfo.h      |   6 ++
+ arch/m68k/include/asm/m5441xsim.h     |   4 ++
+ arch/m68k/include/asm/m54xxacr.h      |   2 +-
+ arch/m68k/include/asm/m54xxsim.h      |   4 ++
+ arch/m68k/include/asm/mcfmmu.h        |   1 +
+ arch/m68k/include/asm/nettel.h        |   2 +-
+ arch/m68k/include/uapi/asm/bootinfo.h |   1 +
+ arch/m68k/kernel/Makefile             |   1 +
+ arch/m68k/kernel/process.c            |  56 +++++++++---------
+ arch/m68k/kernel/setup_mm.c           |   6 +-
+ arch/m68k/kernel/setup_no.c           | 103 +++++---------------------------
+ arch/m68k/kernel/uboot.c              | 107 ++++++++++++++++++++++++++++++++++
+ arch/m68k/mm/mcfmmu.c                 |  31 +++++++++-
+ 20 files changed, 222 insertions(+), 177 deletions(-)
+ create mode 100644 arch/m68k/kernel/uboot.c
