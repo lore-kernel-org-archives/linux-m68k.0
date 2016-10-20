@@ -1,15 +1,54 @@
-From: Xen-devel <bunkertor@tiscali.it>
-Subject: =?utf-8?B?YW1hemluZyBhbmQgZXhjaXRpbmc=?=
-Date: Mon, 17 Oct 2016 20:40:33 +0300
-Message-ID: <00005aaa4411$fc0e315d$9a522049$__7683.59335274926$1476758260$gmane$org@tiscali.it>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: Re: [PATCH] m68knommu: AMCORE board, add iMX i2c support
+Date: Thu, 20 Oct 2016 22:37:23 +1000
+Message-ID: <07dab77f-e1d4-e027-0ac4-45a78ff7ded6@linux-m68k.org>
+References: <1476911979-4926-1-git-send-email-angelo@sysam.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:19479
+        "EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S934912AbcJTORM (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 20 Oct 2016 10:17:12 -0400
+In-Reply-To: <1476911979-4926-1-git-send-email-angelo@sysam.it>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-snps-arc <linux-snps-arc@lists.infradead.org>
+To: Angelo Dureghello <angelo@sysam.it>
+Cc: linux-i2c@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hello! 
-I've just heard from  a friend about  that  amazing stuff,  I'm so excited, you've got to take a look  <http://dear.johanneskepler.info/oipssysc>
-Kind regards, Xen-devel
+Hi Angelo,
+
+On 20/10/16 07:19, Angelo Dureghello wrote:
+> Add iMX i2c support for the Sysam AMCORE board.
+>
+> Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+
+CCing linux-m68k email list as well.
+
+I will pick this up and push it in to the m68knommu
+git tree, for-next branch.
+
+Thanks
+Greg
+
+
+> ---
+>  arch/m68k/configs/amcore_defconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
+> index 2bf02e9..dc5adae 100644
+> --- a/arch/m68k/configs/amcore_defconfig
+> +++ b/arch/m68k/configs/amcore_defconfig
+> @@ -87,7 +87,7 @@ CONFIG_I2C=y
+>  # CONFIG_I2C_COMPAT is not set
+>  CONFIG_I2C_CHARDEV=y
+>  # CONFIG_I2C_HELPER_AUTO is not set
+> -CONFIG_I2C_COLDFIRE=y
+> +CONFIG_I2C_IMX=y
+>  CONFIG_PPS=y
+>  # CONFIG_HWMON is not set
+>  # CONFIG_USB_SUPPORT is not set
+>
