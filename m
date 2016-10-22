@@ -1,54 +1,68 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH] m68knommu: AMCORE board, add iMX i2c support
-Date: Thu, 20 Oct 2016 22:37:23 +1000
-Message-ID: <07dab77f-e1d4-e027-0ac4-45a78ff7ded6@linux-m68k.org>
-References: <1476911979-4926-1-git-send-email-angelo@sysam.it>
+From: Steven Moore <zgpt66p@cplonetie.me>
+Subject: Get A Part Time Job Today
+Date: Sat, 22 Oct 2016 04:54:36 -0700
+Message-ID: <BLUPR14MB03228939813B5A25667172D9D6D70__31343.301307834$1477140033$gmane$org@BLUPR14MB0322.namprd14.prod.outlook.com>
+Reply-To: <231101xyz@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:19479
-        "EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S934912AbcJTORM (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Thu, 20 Oct 2016 10:17:12 -0400
-In-Reply-To: <1476911979-4926-1-git-send-email-angelo@sysam.it>
+Received: from mail-cys01nam02hn0222.outbound.protection.outlook.com ([104.47.37.222]:27036
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S936453AbcJVMkJ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sat, 22 Oct 2016 08:40:09 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>
-Cc: linux-i2c@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Recipients <zgpt66p@cplonetie.me>
 
-Hi Angelo,
+Hello
+ =
 
-On 20/10/16 07:19, Angelo Dureghello wrote:
-> Add iMX i2c support for the Sysam AMCORE board.
->
-> Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+ =
 
-CCing linux-m68k email list as well.
+My Name is Steven Moore.We seek the service of a Secret Shopper in our apex=
+-consult Organization. The assignment will pay  per duty .You can make $200=
+ everyday , depends on how fast you able to take up your work. I am sure yo=
+u cannot spend more than 1-2 hours per day on your assignment . No Money or=
+ Fee is required to become secret shopper.
+ =
 
-I will pick this up and push it in to the m68knommu
-git tree, for-next branch.
+ =
 
-Thanks
-Greg
+ =
 
+KINDLY SEND YOUR INFORMATION BELOW IF INTERESTED:
+ =
 
-> ---
->  arch/m68k/configs/amcore_defconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
-> index 2bf02e9..dc5adae 100644
-> --- a/arch/m68k/configs/amcore_defconfig
-> +++ b/arch/m68k/configs/amcore_defconfig
-> @@ -87,7 +87,7 @@ CONFIG_I2C=y
->  # CONFIG_I2C_COMPAT is not set
->  CONFIG_I2C_CHARDEV=y
->  # CONFIG_I2C_HELPER_AUTO is not set
-> -CONFIG_I2C_COLDFIRE=y
-> +CONFIG_I2C_IMX=y
->  CONFIG_PPS=y
->  # CONFIG_HWMON is not set
->  # CONFIG_USB_SUPPORT is not set
->
+ =
+
+ =
+
+Your Name:
+Street Address: ( Not PO. BOX )
+Apartment Number:
+City: State:
+Zip Code:  =
+
+Country:
+Cell/Home phone number:
+Age:
+Present working Status:
+ =
+
+You can also vist our website to Regrister online:
+ =
+
+ =
+
+http://www.apex-consult.net/
+ =
+
+ =
+
+Regards,
+Steven Moore
+231101xyz@gmail.com
+=20
