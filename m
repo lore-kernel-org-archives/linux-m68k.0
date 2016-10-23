@@ -1,68 +1,29 @@
-From: Steven Moore <zgpt66p@cplonetie.me>
-Subject: Get A Part Time Job Today
-Date: Sat, 22 Oct 2016 04:54:36 -0700
-Message-ID: <BLUPR14MB03228939813B5A25667172D9D6D70__31343.301307834$1477140033$gmane$org@BLUPR14MB0322.namprd14.prod.outlook.com>
-Reply-To: <231101xyz@gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] M68K: Fine-tuning for two function implementations
+Date: Sun, 23 Oct 2016 23:10:14 +0200
+Message-ID: <cc9b366d-4d5e-3ed6-4665-cbc577c69f74@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-cys01nam02hn0222.outbound.protection.outlook.com ([104.47.37.222]:27036
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S936453AbcJVMkJ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sat, 22 Oct 2016 08:40:09 -0400
-Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <zgpt66p@cplonetie.me>
+To: linux-m68k@lists.linux-m68k.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 
-Hello
- =
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 23 Oct 2016 23:05:23 +0200
 
- =
+A few update suggestions were taken into account
+from static source code analysis.
 
-My Name is Steven Moore.We seek the service of a Secret Shopper in our apex=
--consult Organization. The assignment will pay  per duty .You can make $200=
- everyday , depends on how fast you able to take up your work. I am sure yo=
-u cannot spend more than 1-2 hours per day on your assignment . No Money or=
- Fee is required to become secret shopper.
- =
+Markus Elfring (2):
+  Use seq_puts() in amiga_get_hardware_list()
+  Use seq_puts() in atari_get_hardware_list()
 
- =
+ arch/m68k/amiga/config.c | 3 +--
+ arch/m68k/atari/config.c | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
- =
-
-KINDLY SEND YOUR INFORMATION BELOW IF INTERESTED:
- =
-
- =
-
- =
-
-Your Name:
-Street Address: ( Not PO. BOX )
-Apartment Number:
-City: State:
-Zip Code:  =
-
-Country:
-Cell/Home phone number:
-Age:
-Present working Status:
- =
-
-You can also vist our website to Regrister online:
- =
-
- =
-
-http://www.apex-consult.net/
- =
-
- =
-
-Regards,
-Steven Moore
-231101xyz@gmail.com
-=20
+-- 
+2.10.1
