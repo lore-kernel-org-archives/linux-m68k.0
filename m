@@ -1,17 +1,17 @@
 From: Alexander Duyck <alexander.h.duyck@intel.com>
-Subject: [net-next PATCH RFC 10/26] arch/m68k: Add option to skip DMA sync
- as a part of mapping
-Date: Mon, 24 Oct 2016 08:05:19 -0400
-Message-ID: <20161024120519.16276.58002.stgit@ahduyck-blue-test.jf.intel.com>
-References: <20161024115737.16276.71059.stgit@ahduyck-blue-test.jf.intel.com>
+Subject: [net-next PATCH 11/27] arch/m68k: Add option to skip DMA sync as a
+ part of mapping
+Date: Tue, 25 Oct 2016 11:37:46 -0400
+Message-ID: <20161025153746.4815.67012.stgit__9027.23715776137$1477431826$gmane$org@ahduyck-blue-test.jf.intel.com>
+References: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20161024115737.16276.71059.stgit@ahduyck-blue-test.jf.intel.com>
+In-Reply-To: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+To: netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, davem@davemloft.net, brouer@redhat.com
 
 This change allows us to pass DMA_ATTR_SKIP_CPU_SYNC which allows us to
