@@ -1,42 +1,79 @@
-From: Thomas Graf <tgraf@suug.ch>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: concurrent rhashtable test failure
-Date: Wed, 26 Oct 2016 11:51:39 +0200
-Message-ID: <20161026095139.GA16590__31902.8510865339$1477475522$gmane$org@pox.localdomain>
+Date: Wed, 26 Oct 2016 13:45:48 +0200
+Message-ID: <CAMuHMdXQoXc9=TccFQk==p9WnGNYz=JNHcPvva+KT8U_UghNiQ__17089.6591189832$1477482393$gmane$org@mail.gmail.com>
 References: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
+ <20161026095139.GA16590@pox.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
+In-Reply-To: <20161026095139.GA16590@pox.localdomain>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Thomas Graf <tgraf@suug.ch>
 Cc: Phil Sutter <phil@nwl.cc>, Herbert Xu <herbert@gondor.apana.org.au>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On 10/24/16 at 02:11pm, Geert Uytterhoeven wrote:
-> Hi Phil,
-> 
-> On m68k/ARAnyM, test_rhashtable fails with:
-> 
->     Test failed: thread 0 returned: -4
-> 
-> (-4 = -EINTR)
+Hi Thomas,
 
-The error is returned by kthread_stop(), I suspect we are running into
-this:
+On Wed, Oct 26, 2016 at 11:51 AM, Thomas Graf <tgraf@suug.ch> wrote:
+> On 10/24/16 at 02:11pm, Geert Uytterhoeven wrote:
+>> On m68k/ARAnyM, test_rhashtable fails with:
+>>
+>>     Test failed: thread 0 returned: -4
+>>
+>> (-4 = -EINTR)
+>
+> The error is returned by kthread_stop(), I suspect we are running into
+> this:
+>
+> static int kthread(void *_create)
+> {
+>         [...]
+>         complete(done);
+>         schedule();
+>
+>         ret = -EINTR;
+>
+>         if (!test_bit(KTHREAD_SHOULD_STOP, &self.flags)) {
+>                 __kthread_parkme(&self);
+>                 ret = threadfn(data);
+>         }
+>         /* we can't just return, we must preserve "self" on stack */
+>         do_exit(ret);
+> }
 
-static int kthread(void *_create)
-{
-	[...]
-        complete(done);
-        schedule();
+Looks reasonable. Adding a small delay like in the (whitespace-damaged)
+patch below fixes the issue for me.
 
-        ret = -EINTR;
+However, shouldn't the prestart_sem take care of making sure that
+all threads have been started?
 
-        if (!test_bit(KTHREAD_SHOULD_STOP, &self.flags)) {
-                __kthread_parkme(&self);
-                ret = threadfn(data);
-        }
-        /* we can't just return, we must preserve "self" on stack */
-        do_exit(ret);
-}
+--- a/lib/test_rhashtable.c
++++ b/lib/test_rhashtable.c
+@@ -13,6 +13,7 @@
+  * Self Test
+  **************************************************************************/
+
++#include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/jhash.h>
+ #include <linux/kernel.h>
+@@ -403,6 +404,7 @@ static int __init test_rht_init(void)
+                pr_err("  down interruptible failed\n");
+        for (i = 0; i < tcount; i++)
+                up(&startup_sem);
++       msleep(1000);
+        for (i = 0; i < tcount; i++) {
+                if (IS_ERR(tdata[i].task))
+                        continue;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
