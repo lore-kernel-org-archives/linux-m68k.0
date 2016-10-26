@@ -1,53 +1,72 @@
-From: Alexander Duyck <alexander.h.duyck@intel.com>
-Subject: [net-next PATCH 11/27] arch/m68k: Add option to skip DMA sync as a
- part of mapping
-Date: Tue, 25 Oct 2016 11:37:46 -0400
-Message-ID: <20161025153746.4815.67012.stgit__9027.23715776137$1477431826$gmane$org@ahduyck-blue-test.jf.intel.com>
-References: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
+From: Phil Sutter <phil@nwl.cc>
+Subject: Re: concurrent rhashtable test failure
+Date: Wed, 26 Oct 2016 09:33:37 +0200
+Message-ID: <20161026073337.GM5640__42186.3949079581$1477467250$gmane$org@orbyte.nwl.cc>
+References: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20161025153220.4815.61239.stgit@ahduyck-blue-test.jf.intel.com>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, davem@davemloft.net, brouer@redhat.com
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-This change allows us to pass DMA_ATTR_SKIP_CPU_SYNC which allows us to
-avoid invoking cache line invalidation if the driver will just handle it
-later via a sync_for_cpu or sync_for_device call.
+Hi Geert,
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Alexander Duyck <alexander.h.duyck@intel.com>
----
- arch/m68k/kernel/dma.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+On Mon, Oct 24, 2016 at 02:11:32PM +0200, Geert Uytterhoeven wrote:
+> On m68k/ARAnyM, test_rhashtable fails with:
+> 
+>     Test failed: thread 0 returned: -4
+> 
+> (-4 = -EINTR)
 
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index 8cf97cb..0707006 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -134,7 +134,9 @@ static dma_addr_t m68k_dma_map_page(struct device *dev, struct page *page,
- {
- 	dma_addr_t handle = page_to_phys(page) + offset;
- 
--	dma_sync_single_for_device(dev, handle, size, dir);
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-+		dma_sync_single_for_device(dev, handle, size, dir);
-+
- 	return handle;
- }
- 
-@@ -146,6 +148,10 @@ static int m68k_dma_map_sg(struct device *dev, struct scatterlist *sglist,
- 
- 	for_each_sg(sglist, sg, nents, i) {
- 		sg->dma_address = sg_phys(sg);
-+
-+		if (attrs & DMA_ATTR_SKIP_CPU_SYNC)
-+			continue;
-+
- 		dma_sync_single_for_device(dev, sg->dma_address, sg->length,
- 					   dir);
- 	}
+How reproducible is this? I wonder why out of the ten threads only the
+first one fails.
+
+> I traced this back to your commit f4a3e90ba5739cfd ("rhashtable-test: extend
+> to test concurrency"), which added that part of the test.
+> 
+> Diff of the test output between the failing commit and its parent:
+> 
+>  Running rhashtable test nelem=8, max_size=65536, shrinking=0
+>  Test 00:
+>    Adding 50000 keys
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Deleting 50000 keys
+> -  Duration of test: 1029960000 ns
+> +  Duration of test: 990000000 ns
+>  Test 01:
+>    Adding 50000 keys
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Deleting 50000 keys
+> -  Duration of test: 990000000 ns
+> +  Duration of test: 720000000 ns
+>  Test 02:
+>    Adding 50000 keys
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Deleting 50000 keys
+> -  Duration of test: 1130000000 ns
+> +  Duration of test: 700000000 ns
+>  Test 03:
+>    Adding 50000 keys
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
+>    Deleting 50000 keys
+> -  Duration of test: 1080000000 ns
+> -Average test time: 1057490000
+> +  Duration of test: 700000000 ns
+> +Average test time: 777500000
+> +Testing concurrent rhashtable access from 10 threads
+> +Test failed: thread 0 returned: -4
+> +Started 10 threads, 1 failed
+> 
+> Do you have any clue?
+
+Not really, I merely implemented the test.
+
+Thanks, Phil
