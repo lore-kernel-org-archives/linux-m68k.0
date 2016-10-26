@@ -1,72 +1,39 @@
-From: Phil Sutter <phil@nwl.cc>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: concurrent rhashtable test failure
-Date: Wed, 26 Oct 2016 09:33:37 +0200
-Message-ID: <20161026073337.GM5640__42186.3949079581$1477467250$gmane$org@orbyte.nwl.cc>
+Date: Wed, 26 Oct 2016 11:11:46 +0200
+Message-ID: <CAMuHMdVNXLxkAdxZxHt_YWpqaZnijpjEanCCud5euC+Duon_GA@mail.gmail.com>
 References: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
+ <20161026073337.GM5640@orbyte.nwl.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
+In-Reply-To: <20161026073337.GM5640@orbyte.nwl.cc>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Phil Sutter <phil@nwl.cc>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-Hi Geert,
+On Wed, Oct 26, 2016 at 9:33 AM, Phil Sutter <phil@nwl.cc> wrote:
+> On Mon, Oct 24, 2016 at 02:11:32PM +0200, Geert Uytterhoeven wrote:
+>> On m68k/ARAnyM, test_rhashtable fails with:
+>>
+>>     Test failed: thread 0 returned: -4
+>>
+>> (-4 = -EINTR)
+>
+> How reproducible is this? I wonder why out of the ten threads only the
+> first one fails.
 
-On Mon, Oct 24, 2016 at 02:11:32PM +0200, Geert Uytterhoeven wrote:
-> On m68k/ARAnyM, test_rhashtable fails with:
-> 
->     Test failed: thread 0 returned: -4
-> 
-> (-4 = -EINTR)
+100% reproducible.
 
-How reproducible is this? I wonder why out of the ten threads only the
-first one fails.
+Does it need SMP?
 
-> I traced this back to your commit f4a3e90ba5739cfd ("rhashtable-test: extend
-> to test concurrency"), which added that part of the test.
-> 
-> Diff of the test output between the failing commit and its parent:
-> 
->  Running rhashtable test nelem=8, max_size=65536, shrinking=0
->  Test 00:
->    Adding 50000 keys
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Deleting 50000 keys
-> -  Duration of test: 1029960000 ns
-> +  Duration of test: 990000000 ns
->  Test 01:
->    Adding 50000 keys
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Deleting 50000 keys
-> -  Duration of test: 990000000 ns
-> +  Duration of test: 720000000 ns
->  Test 02:
->    Adding 50000 keys
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Deleting 50000 keys
-> -  Duration of test: 1130000000 ns
-> +  Duration of test: 700000000 ns
->  Test 03:
->    Adding 50000 keys
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Traversal complete: counted=50000, nelems=50000, entries=50000, table-jumps=0
->    Deleting 50000 keys
-> -  Duration of test: 1080000000 ns
-> -Average test time: 1057490000
-> +  Duration of test: 700000000 ns
-> +Average test time: 777500000
-> +Testing concurrent rhashtable access from 10 threads
-> +Test failed: thread 0 returned: -4
-> +Started 10 threads, 1 failed
-> 
-> Do you have any clue?
+Gr{oetje,eeting}s,
 
-Not really, I merely implemented the test.
+                        Geert
 
-Thanks, Phil
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
