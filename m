@@ -1,39 +1,33 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Philippe De Muyter <phdm@macq.eu>
 Subject: Re: [PATCH] m68k: Fix ndelay() macro
-Date: Fri, 28 Oct 2016 23:08:46 +0200
-Message-ID: <CAMuHMdWEAkASM5TBRbYTtQGcnJpReF+bkV9OTLYEzJ7MzYVj_w__36541.4741485894$1477688963$gmane$org@mail.gmail.com>
+Date: Fri, 28 Oct 2016 23:03:35 +0200
+Message-ID: <20161028210335.GA3940__18066.8731024072$1477689164$gmane$org@frolo.macqel>
 References: <1477667548-740-1-git-send-email-boris.brezillon@free-electrons.com>
- <20161028210335.GA3940@frolo.macqel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20161028210335.GA3940@frolo.macqel>
+Content-Disposition: inline
+In-Reply-To: <1477667548-740-1-git-send-email-boris.brezillon@free-electrons.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Philippe De Muyter <phdm@macq.eu>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Philippe,
+On Fri, Oct 28, 2016 at 05:12:28PM +0200, Boris Brezillon wrote:
+> The current ndelay() macro definition has an extra semi-colon at the
+> end of the line thus leading to a compilation error when ndelay is used
+> in a conditional block with curly braces like this one:
 
-On Fri, Oct 28, 2016 at 11:03 PM, Philippe De Muyter <phdm@macq.eu> wrote:
-> On Fri, Oct 28, 2016 at 05:12:28PM +0200, Boris Brezillon wrote:
->> The current ndelay() macro definition has an extra semi-colon at the
->> end of the line thus leading to a compilation error when ndelay is used
->> in a conditional block with curly braces like this one:
->
-> without curly braces
+without curly braces
 
-Thanks, I'm fixing that up.
+> 
+> 	if (cond)
+> 		ndelay(t);
+> 	else
+> 		...
+> 
 
-Boris: No need to resend.
+Philippe
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
