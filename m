@@ -1,79 +1,52 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: concurrent rhashtable test failure
-Date: Wed, 26 Oct 2016 13:45:48 +0200
-Message-ID: <CAMuHMdXQoXc9=TccFQk==p9WnGNYz=JNHcPvva+KT8U_UghNiQ__17089.6591189832$1477482393$gmane$org@mail.gmail.com>
-References: <CAMuHMdWTqXaJAM-O+mmha=JbuyvvNxYyHuV6e4YK7oUkh9rCkA@mail.gmail.com>
- <20161026095139.GA16590@pox.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] m68k: Fix ndelay() macro
+Date: Fri, 28 Oct 2016 17:12:28 +0200
+Message-ID: <1477667548-740-1-git-send-email-boris.brezillon__41390.0040825412$1477667583$gmane$org@free-electrons.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20161026095139.GA16590@pox.localdomain>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Thomas Graf <tgraf@suug.ch>
-Cc: Phil Sutter <phil@nwl.cc>, Herbert Xu <herbert@gondor.apana.org.au>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Hi Thomas,
+The current ndelay() macro definition has an extra semi-colon at the
+end of the line thus leading to a compilation error when ndelay is used
+in a conditional block with curly braces like this one:
 
-On Wed, Oct 26, 2016 at 11:51 AM, Thomas Graf <tgraf@suug.ch> wrote:
-> On 10/24/16 at 02:11pm, Geert Uytterhoeven wrote:
->> On m68k/ARAnyM, test_rhashtable fails with:
->>
->>     Test failed: thread 0 returned: -4
->>
->> (-4 = -EINTR)
->
-> The error is returned by kthread_stop(), I suspect we are running into
-> this:
->
-> static int kthread(void *_create)
-> {
->         [...]
->         complete(done);
->         schedule();
->
->         ret = -EINTR;
->
->         if (!test_bit(KTHREAD_SHOULD_STOP, &self.flags)) {
->                 __kthread_parkme(&self);
->                 ret = threadfn(data);
->         }
->         /* we can't just return, we must preserve "self" on stack */
->         do_exit(ret);
-> }
+	if (cond)
+		ndelay(t);
+	else
+		...
 
-Looks reasonable. Adding a small delay like in the (whitespace-damaged)
-patch below fixes the issue for me.
+which, after the preprocessor pass gives:
 
-However, shouldn't the prestart_sem take care of making sure that
-all threads have been started?
+	if (cond)
+		m68k_ndelay(t);;
+	else
+		...
 
---- a/lib/test_rhashtable.c
-+++ b/lib/test_rhashtable.c
-@@ -13,6 +13,7 @@
-  * Self Test
-  **************************************************************************/
+thus leading to the following gcc error:
 
-+#include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/jhash.h>
- #include <linux/kernel.h>
-@@ -403,6 +404,7 @@ static int __init test_rht_init(void)
-                pr_err("  down interruptible failed\n");
-        for (i = 0; i < tcount; i++)
-                up(&startup_sem);
-+       msleep(1000);
-        for (i = 0; i < tcount; i++) {
-                if (IS_ERR(tdata[i].task))
-                        continue;
+	error: 'else' without a previous 'if'
 
-Gr{oetje,eeting}s,
+Remove this extra semi-colon.
 
-                        Geert
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Fixes: c8ee038bd1488 ("m68k: Implement ndelay() based on the existing udelay() logic")
+---
+ arch/m68k/include/asm/delay.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+index d28fa8fe26fe..c598d847d56b 100644
+--- a/arch/m68k/include/asm/delay.h
++++ b/arch/m68k/include/asm/delay.h
+@@ -114,6 +114,6 @@ static inline void __udelay(unsigned long usecs)
+  */
+ #define	HZSCALE		(268435456 / (1000000 / HZ))
+ 
+-#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000));
++#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000))
+ 
+ #endif /* defined(_M68K_DELAY_H) */
+-- 
+2.7.4
