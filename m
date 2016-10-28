@@ -1,52 +1,58 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH] m68k: Fix ndelay() macro
-Date: Fri, 28 Oct 2016 17:12:28 +0200
-Message-ID: <1477667548-740-1-git-send-email-boris.brezillon__41390.0040825412$1477667583$gmane$org@free-electrons.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: Fix ndelay() macro
+Date: Fri, 28 Oct 2016 18:09:41 +0200
+Message-ID: <CAMuHMdUw=k4uFjRm=16qrMmdBAn3UJgQ+1Yjy6CboXY4Y6u1nA@mail.gmail.com>
+References: <1477667548-740-1-git-send-email-boris.brezillon@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1477667548-740-1-git-send-email-boris.brezillon@free-electrons.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-The current ndelay() macro definition has an extra semi-colon at the
-end of the line thus leading to a compilation error when ndelay is used
-in a conditional block with curly braces like this one:
+Hi Boris,
 
-	if (cond)
-		ndelay(t);
-	else
-		...
+On Fri, Oct 28, 2016 at 5:12 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> The current ndelay() macro definition has an extra semi-colon at the
+> end of the line thus leading to a compilation error when ndelay is used
+> in a conditional block with curly braces like this one:
+>
+>         if (cond)
+>                 ndelay(t);
+>         else
+>                 ...
+>
+> which, after the preprocessor pass gives:
+>
+>         if (cond)
+>                 m68k_ndelay(t);;
+>         else
+>                 ...
+>
+> thus leading to the following gcc error:
+>
+>         error: 'else' without a previous 'if'
+>
+> Remove this extra semi-colon.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-which, after the preprocessor pass gives:
+Thank you, will apply and queue for v4.9.
 
-	if (cond)
-		m68k_ndelay(t);;
-	else
-		...
+> Fixes: c8ee038bd1488 ("m68k: Implement ndelay() based on the existing udelay() logic")
 
-thus leading to the following gcc error:
+Wow, that's even a quite recent commit. Needs backporting only to v3.10+...
 
-	error: 'else' without a previous 'if'
+Gr{oetje,eeting}s,
 
-Remove this extra semi-colon.
+                        Geert
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Fixes: c8ee038bd1488 ("m68k: Implement ndelay() based on the existing udelay() logic")
----
- arch/m68k/include/asm/delay.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
-index d28fa8fe26fe..c598d847d56b 100644
---- a/arch/m68k/include/asm/delay.h
-+++ b/arch/m68k/include/asm/delay.h
-@@ -114,6 +114,6 @@ static inline void __udelay(unsigned long usecs)
-  */
- #define	HZSCALE		(268435456 / (1000000 / HZ))
- 
--#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000));
-+#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000))
- 
- #endif /* defined(_M68K_DELAY_H) */
--- 
-2.7.4
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
