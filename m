@@ -1,64 +1,75 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: esp_scsi QTAG in FAS216
-Date: Mon, 31 Oct 2016 21:03:44 +1300
-Message-ID: <50ffb9f6-ebe0-9e87-1244-25dfb2ec01d2@gmail.com>
-References: <CAOmrzkK1hoT72zA4CzajCH2uNwkiVPWi8vJQswB=4Q4uf-kSZQ@mail.gmail.com>
- <CACz-3rjNixJBjKxzjpneFE8BHKpzR-hvhWsabT_AtrWZZUgvsA@mail.gmail.com>
- <CAOmrzkJZEZigKEyb5_66H2FNaEX7F_TXyvQNMpMZu1MyuOudBw@mail.gmail.com>
- <20140413.221414.853080853067673824.davem@davemloft.net>
- <alpine.LNX.2.00.1610281658120.30954@nippy.intranet>
- <alpine.LNX.2.00.1610301331301.20114@nippy.intranet>
+From: Angelo Dureghello <angelo@sysam.it>
+Subject: Re: [RFC] m68k: network interface on amcore board
+Date: Mon, 31 Oct 2016 11:35:41 +0100
+Message-ID: <a697d297-6ecb-817a-fc84-9b802cd3958f@sysam.it>
+References: <1e301293-ea8d-5cf3-9561-336b634659ea@sysam.it>
+ <CAMuHMdUOWZRffrytiP-6sB4SB1gcA=Vv9pc9u4PFzdMrMF16Ow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pf0-f174.google.com ([209.85.192.174]:34439 "EHLO
-        mail-pf0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1761999AbcJaIDx (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 31 Oct 2016 04:03:53 -0400
-In-Reply-To: <alpine.LNX.2.00.1610301331301.20114@nippy.intranet>
+Received: from sysam.it ([5.39.81.93]:35875 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1765434AbcJaKfp (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 31 Oct 2016 06:35:45 -0400
+In-Reply-To: <CAMuHMdUOWZRffrytiP-6sB4SB1gcA=Vv9pc9u4PFzdMrMF16Ow@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, David Miller <davem@davemloft.net>
-Cc: jongk@linux-m68k.org, tuomas.vainikka@aalto.fi, geert@linux-m68k.org, linux-m68k@vger.kernel.org, linux-scsi@vger.kernel.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Finn,
+Hi Geert,
 
-Am 30.10.2016 um 15:33 schrieb Finn Thain:
-> 
-> On Sat, 29 Oct 2016, I wrote:
-> 
+On 31/10/2016 09:01, Geert Uytterhoeven wrote:
+> Hi Angelo,
+>
+> On Mon, Oct 31, 2016 at 8:26 AM, Angelo Dureghello <angelo@sysam.it> wrote:
+>> i have still a last issue open on mcf5307-based "amcore"
+>> board i would like to fix, and need a suggestion:
 >>
->> On Sun, 13 Apr 2014, David Miller wrote:
+>> at design time, i wired the 32bit parallel data bus from cpu to
+>> the ethernet chip as "straight" (D0 to D0, ... D32 to D32).
 >>
->>>
->>> But oddly in the NCR53CX docs:
->>>
->>> 	http://www.ibiblio.org/pub/historic-linux/early-ports/Sparc/NCR/NCR53C9X.txt
->>>
->>> it speaks as if ESP_CONFIG3_TMS and ESP_CONFIG3_TENB are merely finer 
->>> grained versions of config2 register setting ESP_CONFIG2_SCSI2ENAB, 
->>> which enables both features.
+>> dm9000 driver btw works for little-endian cpu only. To have it
+>> working, i actually keep a byte "swap" patch in the driver.
 >>
->> Yes, so setting the ESP_CONFIG2_SCSI2ENAB bit is correct. The only 
->> problem is, doesn't the ESP_CONFIG3_TMS bit get cleared again later, 
->> when the CONFIG3 register is written to?
+>> Since i guess i cannot pretend any driver patch for this case,
+>> i am planning a new pcb version with 32bit data bus bytes swapped
+>> in hardware.
 >>
-> 
-> Nevermind my question. To falsify my own theory, I see that 
-> ESP_CONFIG3_TMS == ESP_CONFIG3_FCLK, and thus esp_scsi does actually set 
-> the relevant bit, and therefore "the FSC can receive 3-byte messages 
-> during businitiated select with ATN."
+>> What do you think ?
+>
+> BenH has written some excellent background information about this:
+> Big and Little Endian inside / out
+> https://www.linuxplumbersconf.org/2012/wp-content/uploads/2012/09/2012-lpc-ref-big-little-endian-herrenschmidt.odp
+> https://www.youtube.com/watch?v=oBSuXP-1Tc0
+>
+> Happy reading!
+>
 
->From my reading of the quoted docs,ESP_CONFIG3_TMS is valid for FAS100A
-(and later?). What esp_scsi sets (for FAS236 chips) is fast SCSI clock
-mode. The relevant bit for three byte message support for Mac and Amiga
-ESP hardware should be ESP_CONFIG3_TENB.
 
-I had tried to set that bit in zorro_esp_slave_configure but had not
-done a proper job of it - I'd only set esp->config3 and forgot to set
-tp->esp_config3. Time to retest this ...
+many thanks for the very interesting presentation,
+so from what i understand, the issue is in this terms:
 
-Cheers,
+* dm9000 registers/memory byte order is little endian.
+* coldfire memory byte order is big endian
 
-	Michael
+The proper way to fix this should be as said in the presentation
+above to swap bytes in hardware.
+
+Best regards,
+Angelo Dureghello
+
+
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
