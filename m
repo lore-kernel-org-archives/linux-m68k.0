@@ -1,78 +1,59 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Angelo Dureghello <angelo@sysam.it>
 Subject: Re: gcc-4.6.3, was Re: Debian on mac68k
-Date: Mon, 7 Nov 2016 11:37:30 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1611071123340.19460@nippy.intranet>
-References: <574C132F.3070404@abbuc.de> <574C15C2.90908@abbuc.de> <ec5ded9d-b3c0-0bba-65b7-1e4d2cc063a2@physik.fu-berlin.de> <574C1792.4030403@abbuc.de> <57557722.5040808@yahoo.com> <alpine.LNX.2.00.1610251358330.443@nippy.intranet> <5810FA8D.4060702@yahoo.com>
- <58114F74.40408@yahoo.com> <alpine.LNX.2.00.1610271244020.21780@nippy.intranet> <5811F96F.3090602@yahoo.com> <58121D46.8060506@yahoo.com> <alpine.LNX.2.00.1611052134280.2870@nippy.intranet> <fbb16cf0-6fe1-8231-c85a-8c65b3d8f50d@physik.fu-berlin.de>
- <alpine.LNX.2.00.1611070917240.29060@nippy.intranet> <7e252240-de89-6d27-fa6e-518beedf1cd6@physik.fu-berlin.de>
+Date: Mon, 7 Nov 2016 10:35:06 +0100
+Message-ID: <5873dbec-38c0-7f7f-4a6b-68c5deb546be@sysam.it>
+References: <574C132F.3070404@abbuc.de> <574C15C2.90908@abbuc.de>
+ <ec5ded9d-b3c0-0bba-65b7-1e4d2cc063a2@physik.fu-berlin.de>
+ <574C1792.4030403@abbuc.de> <57557722.5040808@yahoo.com>
+ <alpine.LNX.2.00.1610251358330.443@nippy.intranet>
+ <5810FA8D.4060702@yahoo.com> <58114F74.40408@yahoo.com>
+ <alpine.LNX.2.00.1610271244020.21780@nippy.intranet>
+ <5811F96F.3090602@yahoo.com> <58121D46.8060506@yahoo.com>
+ <alpine.LNX.2.00.1611052134280.2870@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42848 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751260AbcKGAhS (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Nov 2016 19:37:18 -0500
-In-Reply-To: <7e252240-de89-6d27-fa6e-518beedf1cd6@physik.fu-berlin.de>
+Received: from sysam.it ([5.39.81.93]:37740 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751970AbcKGJfK (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 7 Nov 2016 04:35:10 -0500
+In-Reply-To: <alpine.LNX.2.00.1611052134280.2870@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, debian-68k@lists.debian.org, linux-m68k@vger.kernel.org
+
+Hi Finn,
+
+On 06/11/2016 03:03, Finn Thain wrote:
+>
+> Has anyone else tried the m68k cross-compiler from kernel.org and observed
+> strange behaviour from the binaries it produces?
+>
+> I used that cross-compiler (the i686 one) to build the kernel seen booting
+> below. The resulting binary consistently crashes two different systems (LC
+> III and LC 475), both during kernel startup. These two machines use
+> different drivers and have different failure modes, but the failures are
+> completely repeatable. The failures went away when I reverted to my usual
+> (patched) gcc-4.4.6.
+>
+> Perhaps gcc-4.6.3 is more strict than gcc-4.4, in such a way that would
+> affect code generation, when presented with incorrect or undefined code?
+> Are there any warnings that could be enabled to discover that code?
+>
+> Is there some way to run the GCC test suite against this cross-compiler?
+>
+
+I also observed issues with some kernel.org toolchains, at least for coldfire
+the 4.9.x was producing some wrong opcode, due to incorrect gcc libs used
+over linking.
+
+Maybe you can try some toolchains i prepared, they are the kernel.org with
+some packaging adjustments done by me. Let me know in case if they work
+for you.
 
 
-On Sun, 6 Nov 2016, John Paul Adrian Glaubitz wrote:
+http://sysam.it/toolchains.html
 
-> On 11/06/2016 11:22 PM, Finn Thain wrote:
-> 
-> >> In Debian, we have up-to-date versions of the gcc cross-toolchain for 
-> >> all target architectures we have in Debian,
-> > 
-> > Some years ago, for Debian users, I added links to those tools here: 
-> > http://www.mac.linux-m68k.org/docs/cross-dev.php
-> > 
-> > But I suspect that this information is no longer current. It may give 
-> > the impression that Debian m68k cross-compilers are unavailable. Do 
-> > you have any better sources of information that I could link to?
-> 
-> If you're on Debian Stretch or newer, you can just install everything 
-> directly from the regular package archives, very convenient:
-> 
-> $ apt install gcc-m68k-linux-gnu g++-m68k-linux-gnu binutils-m68k-linux-gnu
-
-Nice. More widely useful might be a docker image or some other portable 
-app container offering these packages. That's not a criticism of Debian, 
-just a reflection of upstream development practices.
-
-> 
-> >> so I think there is little incentive to use these old compilers.
-> > 
-> > It is useful for upstream developers to have distro-neutral tools. 
-> > Ideally, we could use the kernel.org compiler as a "reference 
-> > compiler". For automated builds, it seems to be that already. But 
-> > no-one boots those binaries AFAIK.
-> 
-> The problem with the toolchain on kernel.org seems that it's not updated 
-> very often if at all.
-
-Updating gcc in this case may or may not fix the crash. I fixed it by 
-downgrading gcc, but even that result can't be taken to imply a compiler 
-"bug", just a change in behaviour in gcc-4.6.3 which may even benefit 
-someone somewhere.
-
-Updating needlessly makes fault-finding more difficult, as witnessed by 
-the effort required to isolate the "kernel BUG" regression earlier in this 
-thread.
-
-Dependable tools are more important to me than new tools. YMMV.
-
--- 
-
-> I mean, gcc-4.6.3 is ancient, that was released over four years ago [1]. 
-> gcc has seen lots of improvements and fixes, particularly the SH has had 
-> so many bugs fixed that I'd highly discourage people using any of the 
-> older versions.
-> 
-> Adrian
-> 
-> > [1] https://gcc.gnu.org/gcc-4.6/
-> 
-> 
+Regards,
+Angelo Durgehello
