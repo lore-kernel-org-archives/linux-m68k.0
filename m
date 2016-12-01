@@ -1,125 +1,333 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 01/10] via-cuda: Cleanup printk calls
-Date: Thu,  1 Dec 2016 01:09:33 -0500 (EST)
-Message-ID: <9a7138cc43b5fa07b719600fae74e656ea6b096c.1480572271.git.fthain@telegraphics.com.au>
+Subject: [PATCH 09/10] via-cuda: Add support for Egret system controller
+Date: Thu,  1 Dec 2016 01:09:34 -0500 (EST)
+Message-ID: <dfc0e6859aada2b166a8ce85fc1ff1b0b9f8c805.1480572271.git.fthain@telegraphics.com.au>
 References: <cover.1480572271.git.fthain@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59576 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1758938AbcLAGJg (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 1 Dec 2016 01:09:36 -0500
 In-Reply-To: <cover.1480572271.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
 
-Add missing log message severity, remove old debug messages and
-replace printk() loop with print_hex_dump() call.
+The Egret system controller was the predecessor to the Cuda and the
+differences are minor.
+
+On Cuda, byte acknowledgement requires one transition of the TACK
+signal; on Egret two are needed. On Cuda, TIP is active low; on Egret
+it is active high. And Cuda raises certain interrupts that Egret omits.
+
+Accomodating these differences complicates the Cuda driver slightly
+but avoids a lot of duplication (see next patch).
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/via-cuda.c | 26 ++++++--------------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ drivers/macintosh/via-cuda.c | 155 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 134 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/macintosh/via-cuda.c b/drivers/macintosh/via-cuda.c
-index bad1813..98ced65 100644
+index f1b2c5b..3254070 100644
 --- a/drivers/macintosh/via-cuda.c
 +++ b/drivers/macintosh/via-cuda.c
-@@ -221,7 +221,7 @@ static int __init via_cuda_start(void)
+@@ -1,10 +1,10 @@
+ /*
+- * Device driver for the via-cuda on Apple Powermacs.
++ * Device driver for the Cuda and Egret system controllers found on PowerMacs
++ * and 68k Macs.
+  *
+- * The VIA (versatile interface adapter) interfaces to the CUDA,
+- * a 6805 microprocessor core which controls the ADB (Apple Desktop
+- * Bus) which connects to the keyboard and mouse.  The CUDA also
+- * controls system power and the RTC (real time clock) chip.
++ * The Cuda or Egret is a 6805 microcontroller interfaced to the 6522 VIA.
++ * This MCU controls system power, Parameter RAM, Real Time Clock and the
++ * Apple Desktop Bus (ADB) that connects to the keyboard and mouse.
+  *
+  * Copyright (C) 1996 Paul Mackerras.
+  */
+@@ -50,10 +50,27 @@ static DEFINE_SPINLOCK(cuda_lock);
+ #define IER		(14*RS)		/* Interrupt enable register */
+ #define ANH		(15*RS)		/* A-side data, no handshake */
+ 
+-/* Bits in B data register: all active low */
+-#define TREQ		0x08		/* Transfer request (input) */
+-#define TACK		0x10		/* Transfer acknowledge (output) */
+-#define TIP		0x20		/* Transfer in progress (output) */
++/*
++ * When the Cuda design replaced the Egret, some signal names and
++ * logic sense changed. They all serve the same purposes, however.
++ *
++ *   VIA pin       |  Egret pin
++ * ----------------+------------------------------------------
++ *   PB3 (input)   |  Transceiver session   (active low)
++ *   PB4 (output)  |  VIA full              (active high)
++ *   PB5 (output)  |  System session        (active high)
++ *
++ *   VIA pin       |  Cuda pin
++ * ----------------+------------------------------------------
++ *   PB3 (input)   |  Transfer request      (active low)
++ *   PB4 (output)  |  Byte acknowledge      (active low)
++ *   PB5 (output)  |  Transfer in progress  (active low)
++ */
++
++/* Bits in Port B data register */
++#define TREQ		0x08		/* Transfer request */
++#define TACK		0x10		/* Transfer acknowledge */
++#define TIP		0x20		/* Transfer in progress */
+ 
+ /* Bits in ACR */
+ #define SR_CTRL		0x1c		/* Shift register control bits */
+@@ -65,6 +82,19 @@ static DEFINE_SPINLOCK(cuda_lock);
+ #define IER_CLR		0		/* clear bits in IER */
+ #define SR_INT		0x04		/* Shift register full/empty */
+ 
++/* Duration of byte acknowledgement pulse (us) */
++#define EGRET_TACK_ASSERTED_DELAY	300
++#define EGRET_TACK_NEGATED_DELAY	400
++
++/* Interval from interrupt to start of session (us) */
++#define EGRET_SESSION_DELAY		450
++
++#ifdef CONFIG_PPC
++#define mcu_is_egret	false
++#else
++static bool mcu_is_egret;
++#endif
++
+ static inline bool TREQ_asserted(u8 portb)
+ {
+ 	return !(portb & TREQ);
+@@ -72,12 +102,29 @@ static inline bool TREQ_asserted(u8 portb)
+ 
+ static inline void assert_TIP(void)
+ {
+-	out_8(&via[B], in_8(&via[B]) & ~TIP);
++	if (mcu_is_egret) {
++		udelay(EGRET_SESSION_DELAY);
++		out_8(&via[B], in_8(&via[B]) | TIP);
++	} else
++		out_8(&via[B], in_8(&via[B]) & ~TIP);
++}
++
++static inline void assert_TIP_and_TACK(void)
++{
++	if (mcu_is_egret) {
++		udelay(EGRET_SESSION_DELAY);
++		out_8(&via[B], in_8(&via[B]) | TIP | TACK);
++	} else
++		out_8(&via[B], in_8(&via[B]) & ~(TIP | TACK));
+ }
+ 
+ static inline void assert_TACK(void)
+ {
+-	out_8(&via[B], in_8(&via[B]) & ~TACK);
++	if (mcu_is_egret) {
++		udelay(EGRET_TACK_NEGATED_DELAY);
++		out_8(&via[B], in_8(&via[B]) | TACK);
++	} else
++		out_8(&via[B], in_8(&via[B]) & ~TACK);
+ }
+ 
+ static inline void toggle_TACK(void)
+@@ -87,12 +134,20 @@ static inline void toggle_TACK(void)
+ 
+ static inline void negate_TACK(void)
+ {
+-	out_8(&via[B], in_8(&via[B]) | TACK);
++	if (mcu_is_egret) {
++		udelay(EGRET_TACK_ASSERTED_DELAY);
++		out_8(&via[B], in_8(&via[B]) & ~TACK);
++	} else
++		out_8(&via[B], in_8(&via[B]) | TACK);
+ }
+ 
+ static inline void negate_TIP_and_TACK(void)
+ {
+-	out_8(&via[B], in_8(&via[B]) | TIP | TACK);
++	if (mcu_is_egret) {
++		udelay(EGRET_TACK_ASSERTED_DELAY);
++		out_8(&via[B], in_8(&via[B]) & ~(TIP | TACK));
++	} else
++		out_8(&via[B], in_8(&via[B]) | TIP | TACK);
+ }
+ 
+ static enum cuda_state {
+@@ -155,6 +210,7 @@ int __init find_via_cuda(void)
+ 
+     via = via1;
+     cuda_state = idle;
++    mcu_is_egret = false;
+ 
+     err = cuda_init_via();
+     if (err) {
+@@ -251,7 +307,7 @@ static int __init via_cuda_start(void)
  	return -EAGAIN;
      }
  
--    printk("Macintosh CUDA driver v0.5 for Unified ADB.\n");
-+    pr_info("Macintosh CUDA driver v0.5 for Unified ADB.\n");
+-    pr_info("Macintosh CUDA driver v0.5 for Unified ADB.\n");
++    pr_info("Macintosh Cuda and Egret driver.\n");
  
      cuda_fully_inited = 1;
      return 0;
-@@ -251,7 +251,7 @@ cuda_probe(void)
-     	int x;							\
- 	for (x = 1000; !(cond); --x) {				\
- 	    if (x == 0) {					\
--		printk("Timeout waiting for " what "\n");	\
-+		pr_err("Timeout waiting for " what "\n");	\
- 		return -ENXIO;					\
- 	    }							\
- 	    udelay(100);					\
-@@ -357,6 +357,7 @@ cuda_reset_adb_bus(void)
-     return 0;
+@@ -276,6 +332,33 @@ cuda_probe(void)
  }
  #endif /* CONFIG_ADB */
+ 
++static int __init sync_egret(void)
++{
++	if (TREQ_asserted(in_8(&via[B]))) {
++		/* Complete the inbound transfer */
++		assert_TIP_and_TACK();
++		while (1) {
++			negate_TACK();
++			mdelay(1);
++			(void)in_8(&via[SR]);
++			assert_TACK();
++			if (!TREQ_asserted(in_8(&via[B])))
++				break;
++		}
++		negate_TIP_and_TACK();
++	} else if (in_8(&via[B]) & TIP) {
++		/* Terminate the outbound transfer */
++		negate_TACK();
++		assert_TACK();
++		mdelay(1);
++		negate_TIP_and_TACK();
++	}
++	/* Clear shift register interrupt */
++	if (in_8(&via[IFR]) & SR_INT)
++		(void)in_8(&via[SR]);
++	return 0;
++}
 +
- /* Construct and send a cuda request */
- int
- cuda_request(struct adb_request *req, void (*done)(struct adb_request *),
-@@ -474,12 +475,9 @@ cuda_interrupt(int irq, void *arg)
-     }
-     
-     status = (~in_8(&via[B]) & (TIP|TREQ)) | (in_8(&via[ACR]) & SR_OUT);
--    /* printk("cuda_interrupt: state=%d status=%x\n", cuda_state, status); */
+ #define WAIT_FOR(cond, what)					\
+     do {                                                        \
+     	int x;							\
+@@ -291,10 +374,6 @@ cuda_probe(void)
+ static int
+ __init cuda_init_via(void)
+ {
+-    out_8(&via[DIRB], (in_8(&via[DIRB]) | TACK | TIP) & ~TREQ);	/* TACK & TIP out */
+-    negate_TIP_and_TACK();
+-    out_8(&via[ACR] ,(in_8(&via[ACR]) & ~SR_CTRL) | SR_EXT);	/* SR data in */
+-    (void)in_8(&via[SR]);						/* clear any left-over data */
+ #ifdef CONFIG_PPC
+     out_8(&via[IER], 0x7f);					/* disable interrupts from VIA */
+     (void)in_8(&via[IER]);
+@@ -302,6 +381,15 @@ __init cuda_init_via(void)
+     out_8(&via[IER], SR_INT);					/* disable SR interrupt from VIA */
+ #endif
+ 
++    out_8(&via[DIRB], (in_8(&via[DIRB]) | TACK | TIP) & ~TREQ);	/* TACK & TIP out */
++    out_8(&via[ACR], (in_8(&via[ACR]) & ~SR_CTRL) | SR_EXT);	/* SR data in */
++    (void)in_8(&via[SR]);					/* clear any left-over data */
++
++    if (mcu_is_egret)
++	return sync_egret();
++
++    negate_TIP_and_TACK();
++
+     /* delay 4ms and then clear any pending interrupt */
+     mdelay(4);
+     (void)in_8(&via[SR]);
+@@ -453,7 +541,10 @@ cuda_start(void)
+     /* set the shift register to shift out and send a byte */
+     out_8(&via[ACR], in_8(&via[ACR]) | SR_OUT);
+     out_8(&via[SR], current_req->data[data_index++]);
+-    assert_TIP();
++    if (mcu_is_egret)
++	assert_TIP_and_TACK();
++    else
++	assert_TIP();
+     cuda_state = sent_first_byte;
+ }
+ 
+@@ -500,8 +591,9 @@ cuda_interrupt(int irq, void *arg)
+ 
      switch (cuda_state) {
      case idle:
- 	/* CUDA has sent us the first byte of data - unsolicited */
--	if (status != TREQ)
--	    printk("cuda: state=idle, status=%x\n", status);
+-	/* CUDA has sent us the first byte of data - unsolicited */
++	/* System controller has unsolicited data for us */
  	(void)in_8(&via[SR]);
- 	out_8(&via[B], in_8(&via[B]) & ~TIP);
++idle_state:
+ 	assert_TIP();
  	cuda_state = reading;
-@@ -489,8 +487,6 @@ cuda_interrupt(int irq, void *arg)
+ 	reply_ptr = cuda_rbuf;
+@@ -509,7 +601,7 @@ cuda_interrupt(int irq, void *arg)
+ 	break;
  
      case awaiting_reply:
- 	/* CUDA has sent us the first byte of data of a reply */
--	if (status != TREQ)
--	    printk("cuda: state=awaiting_reply, status=%x\n", status);
+-	/* CUDA has sent us the first byte of data of a reply */
++	/* System controller has reply data for us */
  	(void)in_8(&via[SR]);
- 	out_8(&via[B], in_8(&via[B]) & ~TIP);
+ 	assert_TIP();
  	cuda_state = reading;
-@@ -506,9 +502,6 @@ cuda_interrupt(int irq, void *arg)
- 	    out_8(&via[B], in_8(&via[B]) | TIP | TACK);
+@@ -524,9 +616,14 @@ cuda_interrupt(int irq, void *arg)
+ 	    (void)in_8(&via[SR]);
+ 	    negate_TIP_and_TACK();
  	    cuda_state = idle;
++	    /* Egret does not raise an "aborted" interrupt */
++	    if (mcu_is_egret)
++		goto idle_state;
  	} else {
--	    /* assert status == TIP + SR_OUT */
--	    if (status != TIP + SR_OUT)
--		printk("cuda: state=sent_first_byte status=%x\n", status);
- 	    out_8(&via[SR], current_req->data[1]);
- 	    out_8(&via[B], in_8(&via[B]) ^ TACK);
- 	    data_index = 2;
-@@ -545,9 +538,6 @@ cuda_interrupt(int irq, void *arg)
- 	    out_8(&via[B], in_8(&via[B]) | TACK | TIP);
- 	    cuda_state = read_done;
- 	} else {
--	    /* assert status == TIP | TREQ */
--	    if (status != TIP + TREQ)
--		printk("cuda: state=reading status=%x\n", status);
- 	    out_8(&via[B], in_8(&via[B]) ^ TACK);
+ 	    out_8(&via[SR], current_req->data[data_index++]);
+ 	    toggle_TACK();
++	    if (mcu_is_egret)
++		assert_TACK();
+ 	    cuda_state = sending;
  	}
  	break;
-@@ -593,7 +583,7 @@ cuda_interrupt(int irq, void *arg)
+@@ -550,6 +647,8 @@ cuda_interrupt(int irq, void *arg)
+ 	} else {
+ 	    out_8(&via[SR], req->data[data_index++]);
+ 	    toggle_TACK();
++	    if (mcu_is_egret)
++		assert_TACK();
+ 	}
  	break;
  
-     default:
--	printk("cuda_interrupt: unknown cuda_state %d?\n", cuda_state);
-+	pr_err("cuda_interrupt: unknown cuda_state %d?\n", cuda_state);
-     }
-     spin_unlock(&cuda_lock);
-     if (complete && req) {
-@@ -614,8 +604,6 @@ cuda_interrupt(int irq, void *arg)
- static void
- cuda_input(unsigned char *buf, int nb)
- {
--    int i;
--
-     switch (buf[0]) {
-     case ADB_PACKET:
- #ifdef CONFIG_XMON
-@@ -633,9 +621,7 @@ cuda_input(unsigned char *buf, int nb)
+@@ -560,16 +659,24 @@ cuda_interrupt(int irq, void *arg)
+ 	else
+ 	    *reply_ptr++ = in_8(&via[SR]);
+ 	if (!TREQ_asserted(status)) {
++	    if (mcu_is_egret)
++		assert_TACK();
+ 	    /* that's all folks */
+ 	    negate_TIP_and_TACK();
+ 	    cuda_state = read_done;
++	    /* Egret does not raise a "read done" interrupt */
++	    if (mcu_is_egret)
++		goto read_done_state;
+ 	} else {
+ 	    toggle_TACK();
++	    if (mcu_is_egret)
++		negate_TACK();
+ 	}
  	break;
  
+     case read_done:
+ 	(void)in_8(&via[SR]);
++read_done_state:
+ 	if (reading_reply) {
+ 	    req = current_req;
+ 	    req->reply_len = reply_ptr - req->reply;
+@@ -645,6 +752,12 @@ cuda_input(unsigned char *buf, int nb)
+ #endif /* CONFIG_ADB */
+ 	break;
+ 
++    case TIMER_PACKET:
++	/* Egret sends these periodically. Might be useful as a 'heartbeat'
++	 * to trigger a recovery for the VIA shift register errata.
++	 */
++	break;
++
      default:
--	printk("data from cuda (%d bytes):", nb);
--	for (i = 0; i < nb; ++i)
--	    printk(" %.2x", buf[i]);
--	printk("\n");
-+	print_hex_dump(KERN_INFO, "cuda_input: ", DUMP_PREFIX_NONE, 32, 1,
-+	               buf, nb, false);
-     }
- }
+ 	print_hex_dump(KERN_INFO, "cuda_input: ", DUMP_PREFIX_NONE, 32, 1,
+ 	               buf, nb, false);
 -- 
 2.7.3
