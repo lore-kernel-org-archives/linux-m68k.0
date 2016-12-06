@@ -1,57 +1,30 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 05/10] via-cuda: Fix re-initialization of reply_ptr and
- reading_reply
-Date: Thu,  1 Dec 2016 01:09:33 -0500 (EST)
-Message-ID: <a37515307234712df62487e79a4eacb53cee59ed.1480572271.git.fthain@telegraphics.com.au>
-References: <cover.1480572271.git.fthain@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1480572271.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From: Barad Fufana <rasank001@gmail.com>
+Subject: VERY IMPORTANT.
+Date: Tue, 6 Dec 2016 12:36:28 +0000
+Message-ID: <CA+4BBYr7-UiNLA8N7TNQLH8zzkO0+AuqRZTcGTH-KzAGRFMZjA@mail.gmail.com>
+Reply-To: barafufan@gmail.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-oi0-f68.google.com ([209.85.218.68]:36002 "EHLO
+        mail-oi0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752183AbcLFMgb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 6 Dec 2016 07:36:31 -0500
+Received: by mail-oi0-f68.google.com with SMTP id u15so40905288oie.3
+        for <linux-m68k@vger.kernel.org>; Tue, 06 Dec 2016 04:36:29 -0800 (PST)
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-When reading_reply is set, reply_ptr points into an adb_request struct.
+Compliment of the season,
 
-Hence, when reply_ptr instead points into the global cuda_rbuf,
-it must be the case that reading_reply is not set.
+I am contacting you regarding a venture through which we both can come
+on a substantial amount of money.
 
-Unfortunately, this rule can be violated because re-initialization
-of reply_ptr and reading_reply presently depends on the TREQ input.
+My name is  Barad Fufana, I work with one of the reputable banks here
+in West Africa, and also as the personal banker to a customer of our
+bank who passed on heart-related condition. If you are interested
+please get back to me through this email: (barafufan@gmail.com) for a
+complete details.
 
-Fix this by re-initializing reply_ptr and reading_reply as soon as they
-are known to be invalid.
-
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- drivers/macintosh/via-cuda.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/macintosh/via-cuda.c b/drivers/macintosh/via-cuda.c
-index acf3a95..e65c0b6 100644
---- a/drivers/macintosh/via-cuda.c
-+++ b/drivers/macintosh/via-cuda.c
-@@ -592,6 +592,7 @@ cuda_interrupt(int irq, void *arg)
- 	    }
- 	    current_req = req->next;
- 	    complete = 1;
-+	    reading_reply = 0;
- 	} else {
- 	    /* This is tricky. We must break the spinlock to call
- 	     * cuda_input. However, doing so means we might get
-@@ -603,11 +604,10 @@ cuda_interrupt(int irq, void *arg)
- 	    ibuf_len = reply_ptr - cuda_rbuf;
- 	    memcpy(ibuf, cuda_rbuf, ibuf_len);
- 	}
-+	reply_ptr = cuda_rbuf;
- 	if (TREQ_asserted(status)) {
- 	    assert_TIP();
- 	    cuda_state = reading;
--	    reply_ptr = cuda_rbuf;
--	    reading_reply = 0;
- 	} else {
- 	    cuda_state = idle;
- 	    cuda_start();
--- 
-2.7.3
+Regards
+Mr. Baradi Fufana.
